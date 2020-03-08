@@ -3,7 +3,9 @@ import util._
 
 object Test extends App {
 
-  object I { def unapply(x: String): Option[Int] = Try(x.toInt).toOption }
+  object I {
+    def unapply(x: String): Option[Int] = Try(x.toInt).toOption
+  }
   implicit class RX(val sc: StringContext) {
     def rx = sc.parts.mkString("(.+)").r
   }

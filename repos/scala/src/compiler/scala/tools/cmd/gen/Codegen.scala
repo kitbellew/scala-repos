@@ -20,7 +20,9 @@ object Codegen {
     if (args0.isEmpty)
       return println(CodegenSpec.helpMsg)
 
-    val out = outDir getOrElse { return println("--out is required.") }
+    val out = outDir getOrElse {
+      return println("--out is required.")
+    }
     val all = genall || !anyvals
 
     echo("Generating sources into " + out)

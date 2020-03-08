@@ -28,17 +28,23 @@ object BytesToString {
     new String(arg, charset)
 
   def fromList(args: Seq[Array[Byte]], charset: Charset = Charsets.Utf8) =
-    args.map { arg => BytesToString(arg, charset) }
+    args.map { arg =>
+      BytesToString(arg, charset)
+    }
 
   def fromTuples(
       args: Seq[(Array[Byte], Array[Byte])],
       charset: Charset = Charsets.Utf8) =
-    args map { arg => (BytesToString(arg._1), BytesToString(arg._2)) }
+    args map { arg =>
+      (BytesToString(arg._1), BytesToString(arg._2))
+    }
 
   def fromTuplesWithDoubles(
       args: Seq[(Array[Byte], Double)],
       charset: Charset = Charsets.Utf8) =
-    args map { arg => (BytesToString(arg._1, charset), arg._2) }
+    args map { arg =>
+      (BytesToString(arg._1, charset), arg._2)
+    }
 }
 
 object GetMonadArg {
@@ -50,7 +56,9 @@ object StringToBytes {
   def apply(arg: String, charset: Charset = Charsets.Utf8) =
     arg.getBytes(charset)
   def fromList(args: List[String], charset: Charset = Charsets.Utf8) =
-    args.map { arg => arg.getBytes(charset) }
+    args.map { arg =>
+      arg.getBytes(charset)
+    }
 }
 object StringToChannelBuffer {
   def apply(string: String, charset: Charset = Charsets.Utf8) = {
@@ -62,17 +70,23 @@ object CBToString {
     arg.toString(charset)
   }
   def fromList(args: Seq[ChannelBuffer], charset: Charset = Charsets.Utf8) =
-    args.map { arg => CBToString(arg, charset) }
+    args.map { arg =>
+      CBToString(arg, charset)
+    }
 
   def fromTuples(
       args: Seq[(ChannelBuffer, ChannelBuffer)],
       charset: Charset = Charsets.Utf8) =
-    args map { arg => (CBToString(arg._1), CBToString(arg._2)) }
+    args map { arg =>
+      (CBToString(arg._1), CBToString(arg._2))
+    }
 
   def fromTuplesWithDoubles(
       args: Seq[(ChannelBuffer, Double)],
       charset: Charset = Charsets.Utf8) =
-    args map { arg => (CBToString(arg._1, charset), arg._2) }
+    args map { arg =>
+      (CBToString(arg._1, charset), arg._2)
+    }
 }
 object NumberFormat {
   import com.twitter.finagle.redis.naggati.ProtocolError

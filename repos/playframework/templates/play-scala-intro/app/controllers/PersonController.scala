@@ -65,7 +65,9 @@ class PersonController @Inject() (
     * A REST endpoint that gets all the people as JSON.
     */
   def getPersons = Action.async {
-    repo.list().map { people => Ok(Json.toJson(people)) }
+    repo.list().map { people =>
+      Ok(Json.toJson(people))
+    }
   }
 }
 

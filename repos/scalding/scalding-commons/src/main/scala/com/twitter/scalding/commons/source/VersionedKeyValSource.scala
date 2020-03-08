@@ -155,10 +155,14 @@ class VersionedKeyValSource[K, V](
   def resourceExists(mode: Mode): Boolean =
     mode match {
       case Test(buffers) => {
-        buffers(this) map { !_.isEmpty } getOrElse false
+        buffers(this) map {
+          !_.isEmpty
+        } getOrElse false
       }
       case HadoopTest(conf, buffers) => {
-        buffers(this) map { !_.isEmpty } getOrElse false
+        buffers(this) map {
+          !_.isEmpty
+        } getOrElse false
       }
       case _ => {
         val conf = new JobConf(mode.asInstanceOf[HadoopMode].jobConf)
@@ -171,10 +175,14 @@ class VersionedKeyValSource[K, V](
       case Some(version) =>
         mode match {
           case Test(buffers) =>
-            buffers(this) map { !_.isEmpty } getOrElse false
+            buffers(this) map {
+              !_.isEmpty
+            } getOrElse false
 
           case HadoopTest(conf, buffers) =>
-            buffers(this) map { !_.isEmpty } getOrElse false
+            buffers(this) map {
+              !_.isEmpty
+            } getOrElse false
 
           case m: HadoopMode =>
             val conf = new JobConf(m.jobConf)
@@ -290,15 +298,25 @@ class TypedRichPipeEx[K: Ordering, V: Monoid](pipe: TypedPipe[(K, V)])
       else {
         val oldPairs = TypedPipe
           .from[(K, V)](src.read, (0, 1))
-          .map { case (k, v) => (k, v, 0) }
+          .map {
+            case (k, v) => (k, v, 0)
+          }
 
-        val newPairs = pipe.sumByLocalKeys.map { case (k, v) => (k, v, 1) }
+        val newPairs = pipe.sumByLocalKeys.map {
+          case (k, v) => (k, v, 1)
+        }
 
         (oldPairs ++ newPairs)
-          .groupBy { _._1 }
+          .groupBy {
+            _._1
+          }
           .withReducers(reducers)
-          .sortBy { _._3 }
-          .mapValues { _._2 }
+          .sortBy {
+            _._3
+          }
+          .mapValues {
+            _._2
+          }
           .sum
           .toTypedPipe
       }
@@ -332,7 +350,9 @@ class RichPipeEx(pipe: Pipe) extends java.io.Serializable {
         val newPairs = appendToken(pipe, 1)
 
         (oldPairs ++ newPairs)
-          .groupBy('key) { _.reducers(reducers).sortBy('isNew).sum[V]('value) }
+          .groupBy('key) {
+            _.reducers(reducers).sortBy('isNew).sum[V]('value)
+          }
           .project(('key, 'value))
           .rename(('key, 'value) -> fields)
       }

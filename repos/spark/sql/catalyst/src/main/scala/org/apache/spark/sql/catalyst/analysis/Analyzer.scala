@@ -236,7 +236,9 @@ class Analyzer(
      *  represented as the bit masks.
      */
     def bitmasks(r: Rollup): Seq[Int] = {
-      Seq.tabulate(r.groupByExprs.length + 1)(idx => { (1 << idx) - 1 })
+      Seq.tabulate(r.groupByExprs.length + 1)(idx => {
+        (1 << idx) - 1
+      })
     }
 
     /*
@@ -625,7 +627,9 @@ class Analyzer(
           case expr =>
             deserializerToAttributes
               .get(new TreeNodeRef(expr))
-              .map { attributes => resolveDeserializer(expr, attributes) }
+              .map { attributes =>
+                resolveDeserializer(expr, attributes)
+              }
               .getOrElse(expr)
         }
 
@@ -690,14 +694,18 @@ class Analyzer(
     }
 
     def findAliases(projectList: Seq[NamedExpression]): AttributeSet = {
-      AttributeSet(projectList.collect { case a: Alias => a.toAttribute })
+      AttributeSet(projectList.collect {
+        case a: Alias => a.toAttribute
+      })
     }
 
     /**
       * Returns true if `exprs` contains a [[Star]].
       */
     def containsStar(exprs: Seq[Expression]): Boolean =
-      exprs.exists(_.collect { case _: Star => true }.nonEmpty)
+      exprs.exists(_.collect {
+        case _: Star => true
+      }.nonEmpty)
   }
 
   private def resolveExpression(
@@ -711,7 +719,9 @@ class Analyzer(
     try {
       expr transformUp {
         case u @ UnresolvedAttribute(nameParts) =>
-          withPosition(u) { plan.resolve(nameParts, resolver).getOrElse(u) }
+          withPosition(u) {
+            plan.resolve(nameParts, resolver).getOrElse(u)
+          }
         case UnresolvedExtractValue(child, fieldName) if child.resolved =>
           ExtractValue(child, fieldName, resolver)
       }
@@ -1477,8 +1487,12 @@ class Analyzer(
               // TODO: skip null handling for not-nullable primitive inputs after we can completely
               // trust the `nullable` information.
               // .filter { case (cls, expr) => cls.isPrimitive && expr.nullable }
-              .filter { case (cls, _) => cls.isPrimitive }
-              .map { case (_, expr) => IsNull(expr) }
+              .filter {
+                case (cls, _) => cls.isPrimitive
+              }
+              .map {
+                case (_, expr) => IsNull(expr)
+              }
               .reduceLeftOption[Expression]((e1, e2) => Or(e1, e2))
             inputsNullCheck
               .map(If(_, Literal.create(null, udf.dataType), udf))

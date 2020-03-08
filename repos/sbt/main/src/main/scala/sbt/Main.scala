@@ -247,8 +247,11 @@ object BuiltinCommands {
     case Some(si.version) => si.version; case _ => si.actualVersion
   }
   private[this] def quiet[T](t: => T): Option[T] =
-    try { Some(t) }
-    catch { case e: Exception => None }
+    try {
+      Some(t)
+    } catch {
+      case e: Exception => None
+    }
 
   def settingsCommand =
     showSettingLike(
@@ -313,7 +316,9 @@ object BuiltinCommands {
             None
         }
       }
-      .collect { case Some(s) => s }
+      .collect {
+        case Some(s) => s
+      }
       .distinct
   }
 
@@ -346,7 +351,9 @@ object BuiltinCommands {
   }
 
   def taskStrings(key: AttributeKey[_]): Option[(String, String)] =
-    key.description map { d => (key.label, d) }
+    key.description map { d =>
+      (key.label, d)
+    }
 
   def defaults = Command.command(DefaultsCommand) { s =>
     s.copy(definedCommands = DefaultCommands)
@@ -504,7 +511,9 @@ object BuiltinCommands {
         catch {
           case e: Exception =>
             try export0(s)
-            finally { throw e }
+            finally {
+              throw e
+            }
         }
       export0(newS)
     }
@@ -683,7 +692,9 @@ object BuiltinCommands {
       Nil
   def loadProject =
     Command(LoadProject, LoadProjectBrief, LoadProjectDetailed)(
-      loadProjectParser) { (s, arg) => loadProjectCommands(arg) ::: s }
+      loadProjectParser) { (s, arg) =>
+      loadProjectCommands(arg) ::: s
+    }
   private[this] def loadProjectParser =
     (s: State) => matched(Project.loadActionParser)
   private[this] def loadProjectCommand(command: String, arg: String): String =

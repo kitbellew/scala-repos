@@ -104,7 +104,9 @@ object TableModule {
     def isAscending: Boolean
   }
 
-  case object SortAscending extends DesiredSortOrder { val isAscending = true }
+  case object SortAscending extends DesiredSortOrder {
+    val isAscending = true
+  }
   case object SortDescending extends DesiredSortOrder {
     val isAscending = false
   }

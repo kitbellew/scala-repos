@@ -19,5 +19,7 @@ trait ComposeLaws[F[_, _]] {
 
 object ComposeLaws {
   def apply[F[_, _]](implicit ev: Compose[F]): ComposeLaws[F] =
-    new ComposeLaws[F] { def F: Compose[F] = ev }
+    new ComposeLaws[F] {
+      def F: Compose[F] = ev
+    }
 }

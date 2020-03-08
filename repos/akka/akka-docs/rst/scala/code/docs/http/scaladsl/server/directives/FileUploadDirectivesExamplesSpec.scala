@@ -55,9 +55,13 @@ class FileUploadDirectivesExamplesSpec extends RoutingSpec {
                 .via(Framing.delimiter(ByteString("\n"), 1024))
                 .mapConcat(_.utf8String.split(",").toVector)
                 .map(_.toInt)
-                .runFold(0) { (acc, n) => acc + n }
+                .runFold(0) { (acc, n) =>
+                  acc + n
+                }
 
-            onSuccess(sumF) { sum => complete(s"Sum: $sum") }
+            onSuccess(sumF) { sum =>
+              complete(s"Sum: $sum")
+            }
         }
       }
 

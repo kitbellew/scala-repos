@@ -116,14 +116,18 @@ final class Slave(
 
   private def stopSlave(): Try[Unit] = {
     ensureRunnerExists()
-    val res = Try { runner.done(); () }
+    val res = Try {
+      runner.done(); ()
+    }
     runner = null
     res
   }
 
   private def incomingRunnerMessage(msg: String): Try[Unit] = {
     ensureRunnerExists()
-    Try { runner.receiveMessage(msg); () }
+    Try {
+      runner.receiveMessage(msg); ()
+    }
   }
 
   // Private helper classes

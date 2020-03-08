@@ -123,7 +123,13 @@ trait FlexMenuBuilder {
       contents: NodeSeq,
       path: Boolean,
       current: Boolean): Elem =
-    updateForCurrent(updateForPath(<li>{contents}</li>, path), current)
+    updateForCurrent(
+      updateForPath(
+        <li>{
+          contents
+        }</li>,
+        path),
+      current)
 
   /**
     * Render a placeholder
@@ -132,7 +138,11 @@ trait FlexMenuBuilder {
       item: MenuItem,
       renderInner: Seq[MenuItem] => NodeSeq): Elem = {
     buildInnerTag(
-      <xml:group><span>{item.text}</span>{renderInner(item.kids)}</xml:group>,
+      <xml:group><span>{
+        item.text
+      }</span>{
+        renderInner(item.kids)
+      }</xml:group>,
       item.path,
       item.current)
   }
@@ -144,7 +154,9 @@ trait FlexMenuBuilder {
       item: MenuItem,
       renderInner: Seq[MenuItem] => NodeSeq): Elem =
     buildInnerTag(
-      <xml:group>{renderLink(item.uri, item.text, item.path, item.current)}{
+      <xml:group>{
+        renderLink(item.uri, item.text, item.path, item.current)
+      }{
         renderInner(item.kids)
       }</xml:group>,
       item.path,
@@ -157,14 +169,21 @@ trait FlexMenuBuilder {
       item: MenuItem,
       renderInner: Seq[MenuItem] => NodeSeq): Elem =
     buildInnerTag(
-      <xml:group>{renderSelf(item)}{renderInner(item.kids)}</xml:group>,
+      <xml:group>{
+        renderSelf(item)
+      }{
+        renderInner(item.kids)
+      }</xml:group>,
       item.path,
       item.current)
 
   /**
     * Render the currently selected menu item
     */
-  protected def renderSelf(item: MenuItem): NodeSeq = <span>{item.text}</span>
+  protected def renderSelf(item: MenuItem): NodeSeq =
+    <span>{
+      item.text
+    }</span>
 
   /**
     * Render a generic link
@@ -174,7 +193,11 @@ trait FlexMenuBuilder {
       text: NodeSeq,
       path: Boolean,
       current: Boolean): NodeSeq =
-    <a href={uri}>{text}</a>
+    <a href={
+      uri
+    }>{
+      text
+    }</a>
 
   /**
     * Render an item in the current path
@@ -183,7 +206,9 @@ trait FlexMenuBuilder {
       item: MenuItem,
       renderInner: Seq[MenuItem] => NodeSeq): Elem =
     buildInnerTag(
-      <xml:group>{renderLink(item.uri, item.text, item.path, item.current)}{
+      <xml:group>{
+        renderLink(item.uri, item.text, item.path, item.current)
+      }{
         renderInner(item.kids)
       }</xml:group>,
       item.path,
@@ -196,7 +221,9 @@ trait FlexMenuBuilder {
       item: MenuItem,
       renderInner: Seq[MenuItem] => NodeSeq): Elem =
     buildInnerTag(
-      <xml:group>{renderLink(item.uri, item.text, item.path, item.current)}{
+      <xml:group>{
+        renderLink(item.uri, item.text, item.path, item.current)
+      }{
         renderInner(item.kids)
       }</xml:group>,
       item.path,
@@ -206,7 +233,9 @@ trait FlexMenuBuilder {
     * Render the outer tag for a group of menu items
     */
   protected def renderOuterTag(inner: NodeSeq, top: Boolean): NodeSeq =
-    <ul>{inner}</ul>
+    <ul>{
+      inner
+    }</ul>
 
   /**
     * The default set of MenuItems to be rendered

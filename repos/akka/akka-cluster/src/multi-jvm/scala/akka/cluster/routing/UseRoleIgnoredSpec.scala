@@ -95,9 +95,15 @@ abstract class UseRoleIgnoredSpec
   "A cluster" must {
     "start cluster" taggedAs LongRunningTest in {
       awaitClusterUp(first, second, third)
-      runOn(first) { info("first, roles: " + cluster.selfRoles) }
-      runOn(second) { info("second, roles: " + cluster.selfRoles) }
-      runOn(third) { info("third, roles: " + cluster.selfRoles) }
+      runOn(first) {
+        info("first, roles: " + cluster.selfRoles)
+      }
+      runOn(second) {
+        info("second, roles: " + cluster.selfRoles)
+      }
+      runOn(third) {
+        info("third, roles: " + cluster.selfRoles)
+      }
 
       // routees for the group routers
       system.actorOf(Props(classOf[SomeActor], GroupRoutee), "foo")

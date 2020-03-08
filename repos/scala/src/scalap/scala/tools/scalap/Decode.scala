@@ -103,7 +103,9 @@ object Decode {
       clazz <- appLoader.tryToLoadClass[AnyRef](pkg + ".package")
       ssig <- ScalaSigParser.parse(clazz)
     } yield {
-      val typeAliases = ssig.symbols collect { case x: AliasSymbol => x }
+      val typeAliases = ssig.symbols collect {
+        case x: AliasSymbol => x
+      }
       Map(typeAliases map (x => (x.name, getAliasSymbol(x.infoType).path)): _*)
     }
   }

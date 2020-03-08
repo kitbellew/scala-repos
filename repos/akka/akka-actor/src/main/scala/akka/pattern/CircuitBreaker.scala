@@ -166,7 +166,9 @@ class CircuitBreaker(
     Await.result(
       withCircuitBreaker(
         try Future.successful(body)
-        catch { case NonFatal(t) ⇒ Future.failed(t) }),
+        catch {
+          case NonFatal(t) ⇒ Future.failed(t)
+        }),
       callTimeout)
 
   /**
@@ -187,7 +189,9 @@ class CircuitBreaker(
     * @return CircuitBreaker for fluent usage
     */
   def onOpen(callback: ⇒ Unit): CircuitBreaker =
-    onOpen(new Runnable { def run = callback })
+    onOpen(new Runnable {
+      def run = callback
+    })
 
   /**
     * Java API for onOpen
@@ -209,7 +213,9 @@ class CircuitBreaker(
     * @return CircuitBreaker for fluent usage
     */
   def onHalfOpen(callback: ⇒ Unit): CircuitBreaker =
-    onHalfOpen(new Runnable { def run = callback })
+    onHalfOpen(new Runnable {
+      def run = callback
+    })
 
   /**
     * JavaAPI for onHalfOpen
@@ -231,7 +237,9 @@ class CircuitBreaker(
     * @return CircuitBreaker for fluent usage
     */
   def onClose(callback: ⇒ Unit): CircuitBreaker =
-    onClose(new Runnable { def run = callback })
+    onClose(new Runnable {
+      def run = callback
+    })
 
   /**
     * JavaAPI for onClose
@@ -331,7 +339,9 @@ class CircuitBreaker(
 
       def materialize[U](value: ⇒ Future[U]): Future[U] =
         try value
-        catch { case NonFatal(t) ⇒ Future.failed(t) }
+        catch {
+          case NonFatal(t) ⇒ Future.failed(t)
+        }
 
       if (callTimeout == Duration.Zero) {
         materialize(body)

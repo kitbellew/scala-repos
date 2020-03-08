@@ -33,12 +33,18 @@ abstract class Response extends Message with HttpResponseProxy {
   def isRequest = false
 
   def status: Status = from(getStatus)
-  def status_=(value: Status) { setStatus(from(value)) }
+  def status_=(value: Status) {
+    setStatus(from(value))
+  }
   def statusCode: Int = getStatus.getCode
-  def statusCode_=(value: Int) { setStatus(HttpResponseStatus.valueOf(value)) }
+  def statusCode_=(value: Int) {
+    setStatus(HttpResponseStatus.valueOf(value))
+  }
 
   def getStatusCode(): Int = statusCode
-  def setStatusCode(value: Int) { statusCode = value }
+  def setStatusCode(value: Int) {
+    statusCode = value
+  }
 
   /** Encode as an HTTP message */
   def encodeString(): String = {

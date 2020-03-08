@@ -47,7 +47,9 @@ object EventStreamSpec {
         bus.subscribe(context.self, classOf[SetTarget])
         bus.subscribe(context.self, classOf[UnhandledMessage])
         sender() ! Logging.LoggerInitialized
-      case SetTarget(ref) ⇒ { dst = ref; dst ! "OK" }
+      case SetTarget(ref) ⇒ {
+        dst = ref; dst ! "OK"
+      }
       case e: Logging.LogEvent ⇒ dst ! e
       case u: UnhandledMessage ⇒ dst ! u
     }
@@ -305,7 +307,9 @@ class EventStreamSpec extends AkkaSpec(EventStreamSpec.config) {
 
         val target = sys.actorOf(
           Props(new Actor {
-            def receive = { case in ⇒ a1.ref forward in }
+            def receive = {
+              case in ⇒ a1.ref forward in
+            }
           }),
           "to-be-killed")
 
@@ -337,7 +341,9 @@ class EventStreamSpec extends AkkaSpec(EventStreamSpec.config) {
 
         val target = system.actorOf(
           Props(new Actor {
-            def receive = { case in ⇒ a1.ref forward in }
+            def receive = {
+              case in ⇒ a1.ref forward in
+            }
           }),
           "to-be-killed")
 

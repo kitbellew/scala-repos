@@ -63,9 +63,13 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
         (uindex -> iindex) -> 1
       }
-      .filter { case ((u, i), v) => (i != -1) && (u != -1) }
+      .filter {
+        case ((u, i), v) => (i != -1) && (u != -1)
+      }
       .reduceByKey(_ + _) // aggregate all view events of same item
-      .map { case ((u, i), v) => MLlibRating(u, i, v) }
+      .map {
+        case ((u, i), v) => MLlibRating(u, i, v)
+      }
 
     // MLLib ALS cannot handle empty training data.
     require(
@@ -100,7 +104,9 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       Array[(Int, Double)]()
     } else {
       model.productFeatures
-        .mapValues { f ⇒ queryFeatures.map(cosine(_, f)).reduce(_ + _) }
+        .mapValues { f ⇒
+          queryFeatures.map(cosine(_, f)).reduce(_ + _)
+        }
         .filter(_._2 > 0) // keep items with score > 0
         .collect()
     }

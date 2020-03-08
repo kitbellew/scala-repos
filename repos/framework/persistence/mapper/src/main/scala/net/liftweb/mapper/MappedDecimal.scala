@@ -102,7 +102,9 @@ abstract class MappedDecimal[T <: Mapper[T]](
     * Get the source field metadata for the field
     * @return the source field metadata for the field
     */
-  def sourceInfoMetadata(): SourceFieldMetadata { type ST = BigDecimal } =
+  def sourceInfoMetadata(): SourceFieldMetadata {
+    type ST = BigDecimal
+  } =
     SourceFieldMetadataRep(
       name,
       manifest,

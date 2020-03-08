@@ -57,7 +57,9 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
   def invoke(
       project: Project,
       elements: Array[PsiElement],
-      dataContext: DataContext) { /*do nothing*/ }
+      dataContext: DataContext) {
+    /*do nothing*/
+  }
 
   def invoke(
       project: Project,

@@ -110,7 +110,9 @@ trait MappedForeignKey[
           case xs =>
             Full(SHtml.selectObj(xs, Full(this.get), this.set))
         }
-        .openOr(<span>{immutableMsg}</span>))
+        .openOr(<span>{
+          immutableMsg
+        }</span>))
 
   /**
     * Is the key defined
@@ -120,7 +122,9 @@ trait MappedForeignKey[
   /**
     * Is the obj field cached
     */
-  def cached_? : Boolean = synchronized { _calcedObj }
+  def cached_? : Boolean = synchronized {
+    _calcedObj
+  }
 
   override protected def dirty_?(b: Boolean) = synchronized { // issue 165
     // invalidate if the primary key has changed Issue 370

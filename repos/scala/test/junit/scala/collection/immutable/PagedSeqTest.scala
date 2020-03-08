@@ -27,7 +27,9 @@ class PagedSeqTest {
     var readAttempt = 0
     val sideEffectingIterator = new Iterator[Int] {
       def hasNext = readAttempt < 65536
-      def next = { readAttempt += 1; readAttempt }
+      def next = {
+        readAttempt += 1; readAttempt
+      }
     }
     val s = PagedSeq.fromIterator(sideEffectingIterator).slice(0, 2).mkString
     assertEquals(s, "12")

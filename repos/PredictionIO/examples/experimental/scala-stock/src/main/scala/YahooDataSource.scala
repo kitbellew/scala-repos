@@ -107,7 +107,9 @@ class YahooDataSource(val params: YahooDataSource.Params)
     val newDailyMap: Map[DateTime, YahooDataSource.Daily] =
       tList.zipWithIndex
         .drop(1)
-        .filter { case (t, idx) => timeIndexSetOpt.map(_(t)).getOrElse(true) }
+        .filter {
+          case (t, idx) => timeIndexSetOpt.map(_(t)).getOrElse(true)
+        }
         .map {
           case (t, idx) =>
             val adjReturn = (adjCloseList(idx) / adjCloseList(idx - 1)) - 1
@@ -318,7 +320,9 @@ class YahooDataSource(val params: YahooDataSource.Params)
             math.min(idx + dsp.maxTestingWindowSize, dsp.untilIdx - 1)
 
           val queries = (idx until testingUntilIdx)
-            .map { idx => (QueryDate(idx), None) }
+            .map { idx =>
+              (QueryDate(idx), None)
+            }
           (trainingData, queries)
         }
       }

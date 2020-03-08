@@ -132,7 +132,9 @@ private[camel] class Registry(activationTracker: ActorRef)
               child.path.toString,
               getClass,
               cause.getMessage)
-          } catch { case NonFatal(_) ⇒ }
+          } catch {
+            case NonFatal(_) ⇒
+          }
         case _ ⇒ super.logFailure(context, child, cause, decision)
       }
   }

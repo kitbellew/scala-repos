@@ -34,7 +34,9 @@ private[video] final class Youtube(
               description = entry.snippet.description,
               duration = Some(entry.contentDetails.seconds),
               publishedAt = entry.snippet.publishedAt.flatMap { at =>
-                scala.util.Try { new DateTime(at) }.toOption
+                scala.util.Try {
+                  new DateTime(at)
+                }.toOption
               }
             )
           )

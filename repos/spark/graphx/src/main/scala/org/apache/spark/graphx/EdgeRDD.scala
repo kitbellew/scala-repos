@@ -41,7 +41,9 @@ abstract class EdgeRDD[ED](sc: SparkContext, deps: Seq[Dependency[_]])
 
   // scalastyle:off structural.type
   private[graphx] def partitionsRDD
-      : RDD[(PartitionID, EdgePartition[ED, VD])] forSome { type VD }
+      : RDD[(PartitionID, EdgePartition[ED, VD])] forSome {
+        type VD
+      }
   // scalastyle:on structural.type
 
   override protected def getPartitions: Array[Partition] =
@@ -110,7 +112,9 @@ object EdgeRDD {
       edges: RDD[Edge[ED]]): EdgeRDDImpl[ED, VD] = {
     val edgePartitions = edges.mapPartitionsWithIndex { (pid, iter) =>
       val builder = new EdgePartitionBuilder[ED, VD]
-      iter.foreach { e => builder.add(e.srcId, e.dstId, e.attr) }
+      iter.foreach { e =>
+        builder.add(e.srcId, e.dstId, e.attr)
+      }
       Iterator((pid, builder.toEdgePartition))
     }
     EdgeRDD.fromEdgePartitions(edgePartitions)

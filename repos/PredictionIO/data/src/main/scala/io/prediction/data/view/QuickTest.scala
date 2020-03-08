@@ -76,19 +76,27 @@ object TestEventTime {
     )
     // untilTimeOpt = Some(new DateTime(2000, 1, 1, 0, 0)))
 
-    e.foreach { println }
+    e.foreach {
+      println
+    }
     println()
     println()
     println()
     val u = batchView.aggregateProperties("pio_item")
-    u.foreach { println }
+    u.foreach {
+      println
+    }
     println()
     println()
     println()
 
     // val l: Seq[Event] = e
-    val l = e.map { _.entityId }
-    l.foreach { println }
+    val l = e.map {
+      _.entityId
+    }
+    l.foreach {
+      println
+    }
   }
 
 }

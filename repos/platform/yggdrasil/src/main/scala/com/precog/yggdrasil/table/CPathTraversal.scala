@@ -53,7 +53,9 @@ sealed trait CPathTraversal { self =>
         paths: List[(List[CPathNode], List[CPathNode])],
         idx: Int): CPathComparator = t match {
       case Done =>
-        val validPaths = paths map { case (_, nodes) => CPath(nodes.reverse) }
+        val validPaths = paths map {
+          case (_, nodes) => CPath(nodes.reverse)
+        }
 
         def makeCols(
             pathToCol: Map[CPath, Set[Column]]): Array[(CPath, Column)] = {
@@ -136,7 +138,9 @@ sealed trait CPathTraversal { self =>
         }
 
       case Select(n, t) =>
-        val matches = paths collect { case (`n` :: ns, p) => (ns, n :: p) }
+        val matches = paths collect {
+          case (`n` :: ns, p) => (ns, n :: p)
+        }
         plan0(t, matches, idx)
 
       case Loop(s, e, t) =>
@@ -229,11 +233,15 @@ object CPathTraversal {
         os: List[CPathTraversal],
         seq: List[CPathTraversal]): CPathTraversal = os match {
       case Select(n, t) :: os =>
-        val (ts, os2) = collectWhile(os) { case Select(`n`, t2) => t2 }
+        val (ts, os2) = collectWhile(os) {
+          case Select(`n`, t2) => t2
+        }
         join(os2, Select(n, join(t :: ts, Nil)) :: seq)
 
       case Loop(s, e, t) :: os =>
-        val (ts, os2) = collectWhile(os) { case Loop(`s`, `e`, t2) => t2 }
+        val (ts, os2) = collectWhile(os) {
+          case Loop(`s`, `e`, t2) => t2
+        }
         join(os2, Loop(s, e, join(t :: ts, Nil)) :: seq)
 
       case t :: os =>

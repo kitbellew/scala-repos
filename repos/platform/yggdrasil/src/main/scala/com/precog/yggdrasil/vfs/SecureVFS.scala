@@ -152,7 +152,11 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
         apiKey: APIKey,
         path: Path,
         version: Version): EitherT[M, ResourceError, Long] = {
-      readResource(apiKey, path, version, AccessMode.ReadMetadata) flatMap { //need mapM
+      readResource(
+        apiKey,
+        path,
+        version,
+        AccessMode.ReadMetadata) flatMap { //need mapM
         _.fold(
           br => EitherT.right(br.byteLength.point[M]),
           pr => EitherT.right(pr.recordCount))
@@ -242,7 +246,11 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
           val recacheAction = (
             recacheAfter
               .exists(ms => timestamp.plus(ms) < clock.instant()))
-            .whenM[({ type l[a] = EitherT[M, EvaluationError, a] })#l, UUID] {
+            .whenM[
+              ({
+                type l[a] = EitherT[M, EvaluationError, a]
+              })#l,
+              UUID] {
               // if recacheAfter has expired since the head version was cached,
               // then return the cached version and refresh the cache
               for {
@@ -311,10 +319,14 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
           ctx.apiKey,
           path,
           Version.Current,
-          AccessMode.Execute) leftMap { storageError _ }
+          AccessMode.Execute) leftMap {
+          storageError _
+        }
         query <- Resource
           .asQuery(path, Version.Current)
-          .apply(queryRes) leftMap { storageError _ }
+          .apply(queryRes) leftMap {
+          storageError _
+        }
         _ = logger.debug(
           "Text of stored query at %s: \n%s".format(path.path, query))
         raw <- executor.execute(query, ctx, queryOptions)

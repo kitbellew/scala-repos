@@ -123,7 +123,9 @@ abstract class StreamingLinearAlgorithm[
       throw new IllegalArgumentException(
         "Model must be initialized before starting prediction.")
     }
-    data.map { x => model.get.predict(x) }
+    data.map { x =>
+      model.get.predict(x)
+    }
   }
 
   /**
@@ -150,7 +152,9 @@ abstract class StreamingLinearAlgorithm[
       throw new IllegalArgumentException(
         "Model must be initialized before starting prediction")
     }
-    data.mapValues { x => model.get.predict(x) }
+    data.mapValues { x =>
+      model.get.predict(x)
+    }
   }
 
   /**

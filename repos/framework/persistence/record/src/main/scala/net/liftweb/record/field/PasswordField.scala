@@ -98,10 +98,18 @@ trait PasswordTypedField extends TypedField[String] {
   override def formInputType = "password"
 
   private def elem = S.fmapFunc(SFuncHolder(this.setFromAny(_))) { funcName =>
-    <input type={formInputType}
-      name={funcName}
-      value={valueBox openOr ""}
-      tabindex={tabIndex.toString}/>
+    <input type={
+      formInputType
+    }
+      name={
+      funcName
+    }
+      value={
+      valueBox openOr ""
+    }
+      tabindex={
+      tabIndex.toString
+    }/>
   }
 
   def toForm: Box[NodeSeq] =
@@ -119,7 +127,9 @@ trait PasswordTypedField extends TypedField[String] {
           if s == "" || s == PasswordField.blankPw || s.length < PasswordField.minPasswordLength => {
         invalidPw = true; invalidMsg = S.?("password.too.short")
       }
-      case _ => { invalidPw = false; invalidMsg = "" }
+      case _ => {
+        invalidPw = false; invalidMsg = ""
+      }
     }
     invalidPw
   }

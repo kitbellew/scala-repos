@@ -99,7 +99,9 @@ class VecCheck extends Specification with ScalaCheck {
     }
 
     "zipmap works" in {
-      forAll { (v: Vec[Double]) => v.zipMap(v)(_ + _) must_== v * 2.0 }
+      forAll { (v: Vec[Double]) =>
+        v.zipMap(v)(_ + _) must_== v * 2.0
+      }
     }
 
     "dropNA works" in {
@@ -174,7 +176,9 @@ class VecCheck extends Specification with ScalaCheck {
     "forall works" in {
       forAll { (v: Vec[Double]) =>
         var c = 0
-        v.forall(_ > 0.5) { i => if (!i.isNaN) c += 1 }
+        v.forall(_ > 0.5) { i =>
+          if (!i.isNaN) c += 1
+        }
         val exp = v.filter(_ > 0.5).count
         c must_== exp
       }
@@ -183,7 +187,9 @@ class VecCheck extends Specification with ScalaCheck {
     "foreach works" in {
       forAll { (v: Vec[Double]) =>
         var c = 0
-        v.foreach { i => if (!i.isNaN) c += 1 }
+        v.foreach { i =>
+          if (!i.isNaN) c += 1
+        }
         val exp = v.count
         c must_== exp
       }
@@ -219,8 +225,10 @@ class VecCheck extends Specification with ScalaCheck {
 
     "foldLeft works" in {
       forAll { (v: Vec[Double]) =>
-        val res =
-          v.foldLeft(0)((c: Int, x: Double) => c + { if (x.isNaN) 0 else 1 })
+        val res = v.foldLeft(0)((c: Int, x: Double) =>
+          c + {
+            if (x.isNaN) 0 else 1
+          })
         val exp = v.count
         res must_== exp
       }
@@ -240,7 +248,9 @@ class VecCheck extends Specification with ScalaCheck {
           (c: Int, x: Double) => c < 3)
         var c = 0
         val exp = v.contents.takeWhile { (v: Double) =>
-          v.isNaN || { c += 1; c <= 3 }
+          v.isNaN || {
+            c += 1; c <= 3
+          }
         }
         res must_== Vec(exp).count
       }
@@ -371,7 +381,9 @@ class VecCheck extends Specification with ScalaCheck {
     }
 
     "serialization works" in {
-      forAll { v: Vec[Double] => v must_== serializedCopy(v) }
+      forAll { v: Vec[Double] =>
+        v must_== serializedCopy(v)
+      }
     }
 
   }

@@ -14,7 +14,9 @@ class TestTimeSpec extends AkkaSpec(Map("akka.test.timefactor" -> 2.0)) {
 
       val probe = TestProbe()
       val now = System.nanoTime
-      intercept[AssertionError] { probe.awaitCond(false, 1.second) }
+      intercept[AssertionError] {
+        probe.awaitCond(false, 1.second)
+      }
       val diff = System.nanoTime - now
       val target = (1000000000L * testKitSettings.TestTimeFactor).toLong
       diff should be >= target

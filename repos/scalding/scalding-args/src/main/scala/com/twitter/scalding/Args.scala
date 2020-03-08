@@ -38,20 +38,29 @@ object Args {
     * empty string: ""
     */
   def apply(args: Iterable[String]): Args = {
-    def startingDashes(word: String) = word.takeWhile { _ == '-' }.length
+    def startingDashes(word: String) =
+      word.takeWhile {
+        _ == '-'
+      }.length
     new Args(
       //Fold into a list of (arg -> List[values])
       args
-        .filter { a => !a.matches("\\s*") }
+        .filter { a =>
+          !a.matches("\\s*")
+        }
         .foldLeft(List("" -> List[String]())) { (acc, arg) =>
-          val noDashes = arg.dropWhile { _ == '-' }
+          val noDashes = arg.dropWhile {
+            _ == '-'
+          }
           if (arg == noDashes || isNumber(arg))
             (acc.head._1 -> (arg :: acc.head._2)) :: acc.tail
           else
             (noDashes -> List()) :: acc
         }
         //Now reverse the values to keep the same order
-        .map { case (key, value) => key -> value.reverse }
+        .map {
+          case (key, value) => key -> value.reverse
+        }
         .toMap)
   }
 

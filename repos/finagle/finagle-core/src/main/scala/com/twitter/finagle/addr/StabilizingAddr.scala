@@ -19,7 +19,9 @@ private[finagle] object StabilizingAddr {
   }
 
   private def qcontains[T](q: Queue[(T, _)], elem: T): Boolean =
-    q exists { case (e, _) => e == elem }
+    q exists {
+      case (e, _) => e == elem
+    }
 
   /**
     * A StabilizingAddr conservatively removes elements from a bound
@@ -48,8 +50,12 @@ private[finagle] object StabilizingAddr {
     @volatile var nq = 0
     @volatile var healthStat = Healthy.id
 
-    val health = statsReceiver.addGauge("health") { healthStat }
-    val limbo = statsReceiver.addGauge("limbo") { nq }
+    val health = statsReceiver.addGauge("health") {
+      healthStat
+    }
+    val limbo = statsReceiver.addGauge("limbo") {
+      nq
+    }
     val stabilized = new Broker[Addr]
 
     /**
@@ -77,7 +83,9 @@ private[finagle] object StabilizingAddr {
             case Healthy =>
               // Transitioned to healthy: push back
               val newTime = Time.now + grace
-              val newq = remq map { case (elem, _) => (elem, newTime) }
+              val newq = remq map {
+                case (elem, _) => (elem, newTime)
+              }
               loop(newq, Healthy, active, needPush, srcAddr)
             case newh =>
               loop(remq, newh, active, needPush, srcAddr)
@@ -87,7 +95,9 @@ private[finagle] object StabilizingAddr {
           case addr @ Addr.Bound(newSet, _) =>
             // Update our pending queue so that newly added
             // entries aren't later removed.
-            var q = remq filter { case (e, _) => !(newSet contains e) }
+            var q = remq filter {
+              case (e, _) => !(newSet contains e)
+            }
 
             // Add newly removed elements to the remove queue.
             val until = Time.now + grace

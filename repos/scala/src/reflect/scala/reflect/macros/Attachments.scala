@@ -29,7 +29,9 @@ abstract class Attachments { self =>
   def pos: Pos
 
   /** Creates a copy of this attachment with the position replaced by `newPos` */
-  def withPos(newPos: Pos): Attachments { type Pos = self.Pos }
+  def withPos(newPos: Pos): Attachments {
+    type Pos = self.Pos
+  }
 
   /** The underlying payload with the guarantee that no two elements have the same type. */
   def all: Set[Any] = Set.empty
@@ -48,13 +50,19 @@ abstract class Attachments { self =>
   /** Creates a copy of this attachment with the payload slot of T added/updated with the provided value.
     *  Replaces an existing payload of the same type, if exists.
     */
-  def update[T: ClassTag](attachment: T): Attachments { type Pos = self.Pos } =
+  def update[T: ClassTag](attachment: T): Attachments {
+    type Pos = self.Pos
+  } =
     new NonemptyAttachments[Pos](this.pos, remove[T].all + attachment)
 
   /** Creates a copy of this attachment with the payload of the given class type `T` removed. */
-  def remove[T: ClassTag]: Attachments { type Pos = self.Pos } = {
+  def remove[T: ClassTag]: Attachments {
+    type Pos = self.Pos
+  } = {
     val newAll = all filterNot matchesTag[T]
-    if (newAll.isEmpty) pos.asInstanceOf[Attachments { type Pos = self.Pos }]
+    if (newAll.isEmpty) pos.asInstanceOf[Attachments {
+      type Pos = self.Pos
+    }]
     else new NonemptyAttachments[Pos](this.pos, newAll)
   }
 

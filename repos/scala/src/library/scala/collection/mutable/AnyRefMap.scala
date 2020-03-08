@@ -106,7 +106,9 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
     var e = h & mask
     var x = 0
     var g = 0
-    while ({ g = _hashes(e); g != 0 }) {
+    while ({
+      g = _hashes(e); g != 0
+    }) {
       if (g == h && {
             val q = _keys(e); (q eq k) || ((q ne null) && (q equals k))
           }) return e
@@ -121,7 +123,9 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
     var x = 0
     var g = 0
     var o = -1
-    while ({ g = _hashes(e); g != 0 }) {
+    while ({
+      g = _hashes(e); g != 0
+    }) {
       if (g == h && {
             val q = _keys(e); (q eq k) || ((q ne null) && (q equals k))
           }) return e
@@ -213,7 +217,9 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
       if (h + h != 0) {
         var e = h & mask
         var x = 0
-        while (_hashes(e) != 0) { x += 1; e = (e + 2 * (x + 1) * x - 3) & mask }
+        while (_hashes(e) != 0) {
+          x += 1; e = (e + 2 * (x + 1) * x - 3) & mask
+        }
         _hashes(e) = h
         _keys(e) = ok(i)
         _values(e) = ov(i)
@@ -284,9 +290,13 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
   }
 
   /** Adds a new key/value pair to this map and returns the map. */
-  def +=(key: K, value: V): this.type = { update(key, value); this }
+  def +=(key: K, value: V): this.type = {
+    update(key, value); this
+  }
 
-  def +=(kv: (K, V)): this.type = { update(kv._1, kv._2); this }
+  def +=(kv: (K, V)): this.type = {
+    update(kv._1, kv._2); this
+  }
 
   def -=(key: K): this.type = {
     val i = seekEntry(hashOf(key), key)
@@ -382,10 +392,14 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
   }
 
   /** Applies a function to all keys of this map. */
-  def foreachKey[A](f: K => A) { foreachElement[K, A](_keys, f) }
+  def foreachKey[A](f: K => A) {
+    foreachElement[K, A](_keys, f)
+  }
 
   /** Applies a function to all values of this map. */
-  def foreachValue[A](f: V => A) { foreachElement[V, A](_values, f) }
+  def foreachValue[A](f: V => A) {
+    foreachElement[V, A](_values, f)
+  }
 
   /** Creates a new `AnyRefMap` with different values.
     *  Unlike `mapValues`, this method generates a new
@@ -454,7 +468,9 @@ object AnyRefMap {
       elems += entry
       this
     }
-    def clear() { elems = new AnyRefMap[K, V] }
+    def clear() {
+      elems = new AnyRefMap[K, V]
+    }
     def result(): AnyRefMap[K, V] = elems
   }
 
@@ -462,7 +478,9 @@ object AnyRefMap {
   def apply[K <: AnyRef, V](elems: (K, V)*): AnyRefMap[K, V] = {
     val sz = if (elems.hasDefiniteSize) elems.size else 4
     val arm = new AnyRefMap[K, V](sz * 2)
-    elems.foreach { case (k, v) => arm(k) = v }
+    elems.foreach {
+      case (k, v) => arm(k) = v
+    }
     if (arm.size < (sz >> 3)) arm.repack()
     arm
   }
@@ -483,7 +501,9 @@ object AnyRefMap {
     val sz = math.min(keys.length, values.length)
     val arm = new AnyRefMap[K, V](sz * 2)
     var i = 0
-    while (i < sz) { arm(keys(i)) = values(i); i += 1 }
+    while (i < sz) {
+      arm(keys(i)) = values(i); i += 1
+    }
     if (arm.size < (sz >> 3)) arm.repack()
     arm
   }

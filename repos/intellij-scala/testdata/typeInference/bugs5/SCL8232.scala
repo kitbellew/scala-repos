@@ -13,7 +13,11 @@ object Moo {
 
     def map2[EE >: E, B, C](that: Either[EE, B])(
         f: (A, B) => C): Either[EE, C] = {
-      self flatMap { a => that flatMap { b => f(a, b).right } }
+      self flatMap { a =>
+        that flatMap { b =>
+          f(a, b).right
+        }
+      }
     }
   }
 

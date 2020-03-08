@@ -53,7 +53,9 @@ private[ui] class ExecutorTable(
       hasBytesSpilled = data.hasBytesSpilled
     })
 
-    <table class={UIUtils.TABLE_CLASS_STRIPED_SORTABLE}>
+    <table class={
+      UIUtils.TABLE_CLASS_STRIPED_SORTABLE
+    }>
       <thead>
         <th id="executorid">Executor ID</th>
         <th>Address</th>
@@ -64,21 +66,27 @@ private[ui] class ExecutorTable(
         {
       if (hasInput) {
         <th>
-            <span data-toggle="tooltip" title={ToolTips.INPUT}>Input Size / Records</span>
+            <span data-toggle="tooltip" title={
+          ToolTips.INPUT
+        }>Input Size / Records</span>
           </th>
       }
     }
         {
       if (hasOutput) {
         <th>
-            <span data-toggle="tooltip" title={ToolTips.OUTPUT}>Output Size / Records</span>
+            <span data-toggle="tooltip" title={
+          ToolTips.OUTPUT
+        }>Output Size / Records</span>
           </th>
       }
     }
         {
       if (hasShuffleRead) {
         <th>
-            <span data-toggle="tooltip" title={ToolTips.SHUFFLE_READ}>
+            <span data-toggle="tooltip" title={
+          ToolTips.SHUFFLE_READ
+        }>
             Shuffle Read Size / Records</span>
           </th>
       }
@@ -86,7 +94,9 @@ private[ui] class ExecutorTable(
         {
       if (hasShuffleWrite) {
         <th>
-            <span data-toggle="tooltip" title={ToolTips.SHUFFLE_WRITE}>
+            <span data-toggle="tooltip" title={
+          ToolTips.SHUFFLE_WRITE
+        }>
             Shuffle Write Size / Records</span>
           </th>
       }
@@ -99,7 +109,9 @@ private[ui] class ExecutorTable(
     }
       </thead>
       <tbody>
-        {createExecutorTable()}
+        {
+      createExecutorTable()
+    }
       </tbody>
     </table>
     <script>
@@ -129,31 +141,53 @@ private[ui] class ExecutorTable(
         stageData.executorSummary.toSeq.sortBy(_._1).map {
           case (k, v) =>
             <tr>
-            <td>{k}</td>
-            <td>{executorIdToAddress.getOrElse(k, "CANNOT FIND ADDRESS")}</td>
-            <td sorttable_customkey={v.taskTime.toString}>{
+            <td>{
+              k
+            }</td>
+            <td>{
+              executorIdToAddress.getOrElse(k, "CANNOT FIND ADDRESS")
+            }</td>
+            <td sorttable_customkey={
+              v.taskTime.toString
+            }>{
               UIUtils.formatDuration(v.taskTime)
             }</td>
-            <td>{v.failedTasks + v.succeededTasks}</td>
-            <td>{v.failedTasks}</td>
-            <td>{v.succeededTasks}</td>
+            <td>{
+              v.failedTasks + v.succeededTasks
+            }</td>
+            <td>{
+              v.failedTasks
+            }</td>
+            <td>{
+              v.succeededTasks
+            }</td>
             {
               if (stageData.hasInput) {
-                <td sorttable_customkey={v.inputBytes.toString}>
-                {s"${Utils.bytesToString(v.inputBytes)} / ${v.inputRecords}"}
+                <td sorttable_customkey={
+                  v.inputBytes.toString
+                }>
+                {
+                  s"${Utils.bytesToString(v.inputBytes)} / ${v.inputRecords}"
+                }
               </td>
               }
             }
             {
               if (stageData.hasOutput) {
-                <td sorttable_customkey={v.outputBytes.toString}>
-                {s"${Utils.bytesToString(v.outputBytes)} / ${v.outputRecords}"}
+                <td sorttable_customkey={
+                  v.outputBytes.toString
+                }>
+                {
+                  s"${Utils.bytesToString(v.outputBytes)} / ${v.outputRecords}"
+                }
               </td>
               }
             }
             {
               if (stageData.hasShuffleRead) {
-                <td sorttable_customkey={v.shuffleRead.toString}>
+                <td sorttable_customkey={
+                  v.shuffleRead.toString
+                }>
                 {
                   s"${Utils.bytesToString(v.shuffleRead)} / ${v.shuffleReadRecords}"
                 }
@@ -162,7 +196,9 @@ private[ui] class ExecutorTable(
             }
             {
               if (stageData.hasShuffleWrite) {
-                <td sorttable_customkey={v.shuffleWrite.toString}>
+                <td sorttable_customkey={
+                  v.shuffleWrite.toString
+                }>
                 {
                   s"${Utils.bytesToString(v.shuffleWrite)} / ${v.shuffleWriteRecords}"
                 }
@@ -171,11 +207,19 @@ private[ui] class ExecutorTable(
             }
             {
               if (stageData.hasBytesSpilled) {
-                <td sorttable_customkey={v.memoryBytesSpilled.toString}>
-                {Utils.bytesToString(v.memoryBytesSpilled)}
+                <td sorttable_customkey={
+                  v.memoryBytesSpilled.toString
+                }>
+                {
+                  Utils.bytesToString(v.memoryBytesSpilled)
+                }
               </td>
-              <td sorttable_customkey={v.diskBytesSpilled.toString}>
-                {Utils.bytesToString(v.diskBytesSpilled)}
+              <td sorttable_customkey={
+                  v.diskBytesSpilled.toString
+                }>
+                {
+                  Utils.bytesToString(v.diskBytesSpilled)
+                }
               </td>
               }
             }

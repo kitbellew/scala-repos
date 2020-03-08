@@ -10,7 +10,9 @@ class Test {
     trait U {
       def x1() = 2
     }
-    class Bippy extends T with U { def z() = x() + x1() }
+    class Bippy extends T with U {
+      def z() = x() + x1()
+    }
     new Bippy
   }
   def b() {

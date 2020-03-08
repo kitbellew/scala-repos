@@ -1,4 +1,6 @@
-object A { implicit val x: Int = 1 }
+object A {
+  implicit val x: Int = 1
+}
 
 // Problem as stated in the ticket.
 object Test1 {

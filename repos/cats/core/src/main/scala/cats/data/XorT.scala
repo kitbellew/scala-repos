@@ -241,9 +241,16 @@ private[data] abstract class XorTInstances extends XorTInstances1 {
       val F0: Traverse[F] = F
     }
 
-  implicit def xortTransLift[M[_], E](implicit
-      M: Functor[M]): TransLift[({ type λ[α[_], β] = XorT[α, E, β] })#λ, M] =
-    new TransLift[({ type λ[α[_], β] = XorT[α, E, β] })#λ, M] {
+  implicit def xortTransLift[M[_], E](implicit M: Functor[M]): TransLift[
+    ({
+      type λ[α[_], β] = XorT[α, E, β]
+    })#λ,
+    M] =
+    new TransLift[
+      ({
+        type λ[α[_], β] = XorT[α, E, β]
+      })#λ,
+      M] {
       def liftT[A](ma: M[A]): XorT[M, E, A] =
         XorT(M.map(ma)(Xor.right))
     }
@@ -288,7 +295,9 @@ private[data] abstract class XorTInstances2 extends XorTInstances3 {
   implicit def xorTMonadError[F[_], L](
       implicit F: Monad[F]): MonadError[XorT[F, L, ?], L] = {
     implicit val F0 = F
-    new XorTMonadError[F, L] { implicit val F = F0 }
+    new XorTMonadError[F, L] {
+      implicit val F = F0
+    }
   }
 
   implicit def xorTSemigroupK[F[_], L](implicit
@@ -296,7 +305,9 @@ private[data] abstract class XorTInstances2 extends XorTInstances3 {
       L: Semigroup[L]): SemigroupK[XorT[F, L, ?]] = {
     implicit val F0 = F
     implicit val L0 = L
-    new XorTSemigroupK[F, L] { implicit val F = F0; implicit val L = L0 }
+    new XorTSemigroupK[F, L] {
+      implicit val F = F0; implicit val L = L0
+    }
   }
 
   implicit def xorTEq[F[_], L, R](
@@ -310,7 +321,9 @@ private[data] abstract class XorTInstances3 {
   implicit def xorTFunctor[F[_], L](
       implicit F: Functor[F]): Functor[XorT[F, L, ?]] = {
     implicit val F0 = F
-    new XorTFunctor[F, L] { implicit val F = F0 }
+    new XorTFunctor[F, L] {
+      implicit val F = F0
+    }
   }
 }
 

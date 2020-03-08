@@ -1,17 +1,35 @@
 import scala.tools.nsc.io._
 import java.net.URL
 
-object A { def apply(d: { def apply(): Int }) = d.apply() }
-object A2 { def apply(d: { def apply(): Int }) = d.apply() }
-object A3 { def apply(d: { def apply(): Int }) = d.apply() }
-object A4 { def apply(d: { def apply(): Int }) = d.apply() }
+object A {
+  def apply(d: {
+    def apply(): Int
+  }) = d.apply()
+}
+object A2 {
+  def apply(d: {
+    def apply(): Int
+  }) = d.apply()
+}
+object A3 {
+  def apply(d: {
+    def apply(): Int
+  }) = d.apply()
+}
+object A4 {
+  def apply(d: {
+    def apply(): Int
+  }) = d.apply()
+}
 
 class B extends Function0[Int] {
   def apply() = 3
 }
 
 object Test {
-  type StructF0 = { def apply(): Int }
+  type StructF0 = {
+    def apply(): Int
+  }
   def main(args: Array[String]) {
     for (i <- 0 until 150)
       println(

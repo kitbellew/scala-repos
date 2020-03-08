@@ -12,20 +12,26 @@ object LowPriorityTests {
     object TC {
       def apply[T](implicit tc: TC[T]): TC[T] = tc
 
-      implicit val intTC: TC[Int] = new TC[Int] { def prop = true }
+      implicit val intTC: TC[Int] = new TC[Int] {
+        def prop = true
+      }
     }
 
     case class CC(s: String)
 
     object CC {
-      implicit val ccTC: TC[CC] = new TC[CC] { def prop = true }
+      implicit val ccTC: TC[CC] = new TC[CC] {
+        def prop = true
+      }
     }
 
     case class CC2(s: String)
 
     object Extra {
       implicit def extraTC[T](implicit ev: LowPriority): TC[T] =
-        new TC[T] { def prop = false }
+        new TC[T] {
+          def prop = false
+        }
     }
   }
 
@@ -35,19 +41,25 @@ object LowPriorityTests {
     }
 
     trait LowPriTC {
-      implicit def anyTC[T]: TC[T] = new TC[T] { def prop = None }
+      implicit def anyTC[T]: TC[T] = new TC[T] {
+        def prop = None
+      }
     }
 
     object TC extends LowPriTC {
       def apply[T](implicit tc: TC[T]): TC[T] = tc
 
-      implicit val intTC: TC[Int] = new TC[Int] { def prop = Some(true) }
+      implicit val intTC: TC[Int] = new TC[Int] {
+        def prop = Some(true)
+      }
     }
 
     case class CC(s: String)
 
     object CC {
-      implicit val ccTC: TC[CC] = new TC[CC] { def prop = Some(true) }
+      implicit val ccTC: TC[CC] = new TC[CC] {
+        def prop = Some(true)
+      }
     }
 
     case class CC2(s: String)
@@ -55,7 +67,9 @@ object LowPriorityTests {
     object Extra {
       implicit def extraTC[T](
           implicit ev: LowPriority.Ignoring[Witness.`"anyTC"`.T]): TC[T] =
-        new TC[T] { def prop = Some(false) }
+        new TC[T] {
+          def prop = Some(false)
+        }
     }
   }
 
@@ -78,7 +92,9 @@ class LowPriorityTests {
     assert(!TC[CC2].prop)
 
     {
-      implicit val cc2TC: TC[CC2] = new TC[CC2] { def prop = true }
+      implicit val cc2TC: TC[CC2] = new TC[CC2] {
+        def prop = true
+      }
       assert(TC[CC2].prop)
     }
   }
@@ -98,7 +114,9 @@ class LowPriorityTests {
     assert(TC[CC2].prop == Some(false))
 
     {
-      implicit val cc2TC: TC[CC2] = new TC[CC2] { def prop = Some(true) }
+      implicit val cc2TC: TC[CC2] = new TC[CC2] {
+        def prop = Some(true)
+      }
       assert(TC[CC2].prop == Some(true))
     }
   }

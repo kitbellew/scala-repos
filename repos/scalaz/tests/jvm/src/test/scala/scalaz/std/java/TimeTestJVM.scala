@@ -30,7 +30,9 @@ object TimeTestJVM extends SpecLite {
       )(LocalDateTime.of(_, _, _, _, _, _, _)))
 
   implicit val InstantArbitrary: Arbitrary[Instant] =
-    arb[Long].map { Instant.ofEpochMilli(_) }
+    arb[Long].map {
+      Instant.ofEpochMilli(_)
+    }
 
   implicit val zonedOffsetArbitrary: Arbitrary[ZoneOffset] =
     Arbitrary(

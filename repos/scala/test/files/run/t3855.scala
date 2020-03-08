@@ -4,14 +4,20 @@ object Test {
 
   def f1(s: String) = {
     var n =
-      try { s.toInt }
-      catch { case _: Throwable => 1 }
+      try {
+        s.toInt
+      } catch {
+        case _: Throwable => 1
+      }
     byval(n)
   }
   def f2(s: String) = {
     var n =
-      try { s.toInt }
-      catch { case _: Throwable => 1 }
+      try {
+        s.toInt
+      } catch {
+        case _: Throwable => 1
+      }
     closure(() => n)
   }
 

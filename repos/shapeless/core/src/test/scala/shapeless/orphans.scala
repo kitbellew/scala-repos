@@ -23,13 +23,17 @@ package OrphansTestDefns {
   trait Ca[T]
 
   object Ca extends Ca0 {
-    val caFoo = new Ca[Foo] { override def toString = "Ca.caFoo" }
+    val caFoo = new Ca[Foo] {
+      override def toString = "Ca.caFoo"
+    }
     implicit def caFoo0: Ca[Foo] = caFoo
   }
 
   trait Ca0 {
     trait Dummy
-    val caFallback = new Ca[Dummy] { override def toString = "Ca.caFallback" }
+    val caFallback = new Ca[Dummy] {
+      override def toString = "Ca.caFallback"
+    }
 
     implicit def fallback[T]: Ca[T] = caFallback.asInstanceOf[Ca[T]]
   }
@@ -48,13 +52,17 @@ package OrphansTestDefns {
   trait Cb[T]
 
   object Cb extends Cb0 {
-    val cbFoo = new Cb[Foo] { override def toString = "Cb.cbFoo" }
+    val cbFoo = new Cb[Foo] {
+      override def toString = "Cb.cbFoo"
+    }
     implicit def cbFoo0: Cb[Foo] = cbFoo
   }
 
   trait Cb0 {
     trait Dummy
-    val cbFallback = new Cb[Dummy] { override def toString = "Cb.cbFallback" }
+    val cbFallback = new Cb[Dummy] {
+      override def toString = "Cb.cbFallback"
+    }
 
     implicit def fallback[T]: Cb[T] = cbFallback.asInstanceOf[Cb[T]]
   }
@@ -74,10 +82,14 @@ package OrphansTestDefns {
   case class Bar(s: String)
   case class Baz(d: Double)
   object Baz {
-    val caBaz = new Ca[Baz] { override def toString = "Baz.caBaz" }
+    val caBaz = new Ca[Baz] {
+      override def toString = "Baz.caBaz"
+    }
     implicit def caBaz0: Ca[Baz] = caBaz
 
-    val cbBaz = new Cb[Baz] { override def toString = "Baz.cbBaz" }
+    val cbBaz = new Cb[Baz] {
+      override def toString = "Baz.cbBaz"
+    }
     implicit def cbBaz0: Cb[Baz] = cbBaz
 
     implicit val eqBaz: Eq[Baz] = new Eq[Baz] {

@@ -47,7 +47,11 @@ object SbtLauncherPlugin extends AutoPlugin {
     // TODO - Check if we should rebuild the jar or not....
     IO.withTemporaryDirectory { dir =>
       IO.unzip(jar, dir)
-      IO.copy(overrides.map({ case (n, f) => (f, dir / n) }), overwrite = true)
+      IO.copy(
+        overrides.map({
+          case (n, f) => (f, dir / n)
+        }),
+        overwrite = true)
       // TODO - is the ok for creating a jar?
       IO.zip((dir.*** --- dir) pair relativeTo(dir), target)
     }

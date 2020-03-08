@@ -1,1 +1,3 @@
-case class Outer(i: Int) { class Inner }
+case class Outer(i: Int) {
+  class Inner
+}

@@ -166,7 +166,9 @@ sealed trait Execution[+T] extends java.io.Serializable {
       conf.setScaldingExecutionId(java.util.UUID.randomUUID.toString)
     val result = runStats(confWithId, mode, ec)(cec).map(_._1)
     // When the final future in complete we stop the submit thread
-    result.onComplete { _ => ec.finished() }
+    result.onComplete { _ =>
+      ec.finished()
+    }
     // wait till the end to start the thread in case the above throws
     ec.start()
     result
@@ -291,7 +293,9 @@ object Execution {
     */
   implicit def semigroup[T: Semigroup]: Semigroup[Execution[T]] =
     Semigroup.from[Execution[T]] { (a, b) =>
-      a.zip(b).map { case (ta, tb) => Semigroup.plus(ta, tb) }
+      a.zip(b).map {
+        case (ta, tb) => Semigroup.plus(ta, tb)
+      }
     }
 
   /**
@@ -302,7 +306,9 @@ object Execution {
     */
   implicit def monoid[T: Monoid]: Monoid[Execution[T]] =
     Monoid.from(Execution.from(Monoid.zero[T])) { (a, b) =>
-      a.zip(b).map { case (ta, tb) => Monoid.plus(ta, tb) }
+      a.zip(b).map {
+        case (ta, tb) => Monoid.plus(ta, tb)
+      }
     }
 
   /**
@@ -467,7 +473,9 @@ object Execution {
         this,
         prev
           .runStats(conf, mode, cache)
-          .map { case (s, stats) => (fn(s), stats) })
+          .map {
+            case (s, stats) => (fn(s), stats)
+          })
   }
   private case class GetCounters[T](prev: Execution[T])
       extends Execution[(T, ExecutionCounters)] {
@@ -476,7 +484,9 @@ object Execution {
       cache.getOrElseInsert(
         conf,
         this,
-        prev.runStats(conf, mode, cache).map { case tc @ (t, c) => (tc, c) })
+        prev.runStats(conf, mode, cache).map {
+          case tc @ (t, c) => (tc, c)
+        })
   }
   private case class ResetCounters[T](prev: Execution[T]) extends Execution[T] {
     def runStats(conf: Config, mode: Mode, cache: EvalCache)(
@@ -572,7 +582,9 @@ object Execution {
   def failFastSequence[T](t: Iterable[Future[T]])(
       implicit cec: ConcurrentExecutionContext): Future[List[T]] = {
     t.foldLeft(Future.successful(Nil: List[T])) { (f, i) =>
-        failFastZip(f, i).map { case (tail, h) => h :: tail }
+        failFastZip(f, i).map {
+          case (tail, h) => h :: tail
+        }
       }
       .map(_.reverse)
   }
@@ -650,7 +662,9 @@ object Execution {
           val f1 = one.runStats(conf, mode, cache)
           val f2 = two.runStats(conf, mode, cache)
           failFastZip(f1, f2)
-            .map { case ((s, ss), (t, st)) => ((s, t), Monoid.plus(ss, st)) }
+            .map {
+              case ((s, ss), (t, st)) => ((s, t), Monoid.plus(ss, st))
+            }
         }
       )
   }
@@ -729,7 +743,9 @@ object Execution {
       WriteExecution(
         head,
         tail,
-        { (conf: Config, mode: Mode) => mapFn(fn(conf, mode)) })
+        { (conf: Config, mode: Mode) =>
+          mapFn(fn(conf, mode))
+        })
 
     /* Run a list of ToWrite elements */
     private[this] def scheduleToWrites(
@@ -772,7 +788,9 @@ object Execution {
           val cacheLookup: List[(
               ToWrite,
               Either[Promise[ExecutionCounters], Future[ExecutionCounters]])] =
-            (head :: tail).map { tw => (tw, cache.getOrLock(conf, tw)) }
+            (head :: tail).map { tw =>
+              (tw, cache.getOrLock(conf, tw))
+            }
           val (weDoOperation, someoneElseDoesOperation) =
             unwrapListEither(cacheLookup)
 
@@ -852,7 +870,9 @@ object Execution {
     * time run is called.
     */
   def from[T](t: => T): Execution[T] = fromTry(Try(t))
-  def fromTry[T](t: => Try[T]): Execution[T] = fromFuture { _ => toFuture(t) }
+  def fromTry[T](t: => Try[T]): Execution[T] = fromFuture { _ =>
+    toFuture(t)
+  }
 
   /**
     * The call to fn will happen when the run method on the result is called.
@@ -901,7 +921,9 @@ object Execution {
     WriteExecution(
       SimpleWrite(pipe, sink),
       Nil,
-      { (_: Config, _: Mode) => presentType })
+      { (_: Config, _: Mode) =>
+        presentType
+      })
 
   /**
     * Here we allow both the targets to write and the sources to be generated from the config and mode.
@@ -940,7 +962,9 @@ object Execution {
     * to get Args, which are in the Config
     */
   def withArgs[T](fn: Args => Execution[T]): Execution[T] =
-    getConfig.flatMap { conf => fn(conf.getArgs) }
+    getConfig.flatMap { conf =>
+      fn(conf.getArgs)
+    }
 
   /**
     * Use this to use counters/stats with Execution. You do this:
@@ -962,7 +986,11 @@ object Execution {
    */
   def run[C](flow: Flow[C]): Future[JobStats] =
     // This is in Java because of the cascading API's raw types on FlowListener
-    FlowListenerPromise.start(flow, { f: Flow[C] => JobStats(f.getFlowStats) })
+    FlowListenerPromise.start(
+      flow,
+      { f: Flow[C] =>
+        JobStats(f.getFlowStats)
+      })
 
   /*
    * This blocks the current thread until the job completes with either success or
@@ -987,7 +1015,9 @@ object Execution {
       ax: Execution[A],
       bx: Execution[B],
       cx: Execution[C]): Execution[(A, B, C)] =
-    ax.zip(bx).zip(cx).map { case ((a, b), c) => (a, b, c) }
+    ax.zip(bx).zip(cx).map {
+      case ((a, b), c) => (a, b, c)
+    }
 
   /**
     * combine several executions and run them in parallel when .run is called
@@ -997,7 +1027,9 @@ object Execution {
       bx: Execution[B],
       cx: Execution[C],
       dx: Execution[D]): Execution[(A, B, C, D)] =
-    ax.zip(bx).zip(cx).zip(dx).map { case (((a, b), c), d) => (a, b, c, d) }
+    ax.zip(bx).zip(cx).zip(dx).map {
+      case (((a, b), c), d) => (a, b, c, d)
+    }
 
   /**
     * combine several executions and run them in parallel when .run is called
@@ -1026,8 +1058,13 @@ object Execution {
     def go(
         xs: List[Execution[T]],
         acc: Execution[List[T]]): Execution[List[T]] = xs match {
-      case Nil       => acc
-      case h :: tail => go(tail, h.zip(acc).map { case (y, ys) => y :: ys })
+      case Nil => acc
+      case h :: tail =>
+        go(
+          tail,
+          h.zip(acc).map {
+            case (y, ys) => y :: ys
+          })
     }
     // This pushes all of them onto a list, and then reverse to keep order
     go(exs.toList, from(Nil)).map(_.reverse)
@@ -1057,7 +1094,9 @@ object Execution {
           case Failure(ex) =>
             throw ex // should never happen or there is a logic bug
         }
-        .flatMap { case (ex, _) => fromTry(ex) }
+        .flatMap {
+          case (ex, _) => fromTry(ex)
+        }
     }
 
     Execution.sequence(executions.map(waitRun))
@@ -1088,7 +1127,9 @@ trait ExecutionCounters {
     */
   def get(key: StatKey): Option[Long]
   def toMap: Map[StatKey, Long] =
-    keys.map { k => (k, get(k).getOrElse(0L)) }.toMap
+    keys.map { k =>
+      (k, get(k).getOrElse(0L))
+    }.toMap
 }
 
 /**

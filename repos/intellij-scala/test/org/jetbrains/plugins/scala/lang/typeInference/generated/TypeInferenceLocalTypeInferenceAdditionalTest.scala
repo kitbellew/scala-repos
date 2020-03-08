@@ -7,7 +7,11 @@ class TypeInferenceLocalTypeInferenceAdditionalTest
   override def folderPath: String =
     super.folderPath + "localTypeInference/additional/"
 
-  def testSCL1948FlatMap() { doTest() }
+  def testSCL1948FlatMap() {
+    doTest()
+  }
 
-  def testSCL1948Flattern() { doTest() }
+  def testSCL1948Flattern() {
+    doTest()
+  }
 }

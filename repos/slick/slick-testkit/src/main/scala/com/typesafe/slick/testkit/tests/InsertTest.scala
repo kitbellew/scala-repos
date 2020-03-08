@@ -23,8 +23,12 @@ class InsertTest extends AsyncTest[JdbcTestDB] {
     println("Insert 2: " + dst2.forceInsertStatementFor(q2))
     val q3 = (42, "X".bind)
     println("Insert 3: " + dst2.forceInsertStatementFor(q3))
-    val q4comp = Compiled { dst2.filter(_.id < 10) }
-    val dst3comp = Compiled { dst3 }
+    val q4comp = Compiled {
+      dst2.filter(_.id < 10)
+    }
+    val dst3comp = Compiled {
+      dst3
+    }
 
     DBIO.sequence(
       Seq(
@@ -73,12 +77,18 @@ class InsertTest extends AsyncTest[JdbcTestDB] {
 
     (for {
       _ <- as.schema.create
-      _ <- (ins1 += ("a", "b")) map { id1: Int => id1 shouldBe 1 }
+      _ <- (ins1 += ("a", "b")) map { id1: Int =>
+        id1 shouldBe 1
+      }
       _ <- ifCap(jcap.returnInsertOther) {
-        (ins2 += ("c", "d")) map { id2: (Int, String) => id2 shouldBe (2, "c") }
+        (ins2 += ("c", "d")) map { id2: (Int, String) =>
+          id2 shouldBe (2, "c")
+        }
       }
       _ <- ifNotCap(jcap.returnInsertOther) {
-        (ins1 += ("c", "d")) map { id2: Int => id2 shouldBe 2 }
+        (ins1 += ("c", "d")) map { id2: Int =>
+          id2 shouldBe 2
+        }
       }
       _ <- (ins1 ++= Seq(("e", "f"), ("g", "h"))) map (_ shouldBe Seq(3, 4))
       _ <- (ins3 += ("i", "j")) map (_ shouldBe (5, "i", "j"))

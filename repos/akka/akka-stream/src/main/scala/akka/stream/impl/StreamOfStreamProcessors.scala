@@ -246,7 +246,9 @@ private[akka] abstract class MultiStreamOutputProcessor(
     extends ActorProcessorImpl(_settings)
     with MultiStreamOutputProcessorLike {
   private var _nextId = 0L
-  protected def nextId(): Long = { _nextId += 1; _nextId }
+  protected def nextId(): Long = {
+    _nextId += 1; _nextId
+  }
 
   override val subscriptionTimeoutSettings =
     _settings.subscriptionTimeoutSettings

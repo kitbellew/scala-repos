@@ -11,7 +11,9 @@ import docs.http.scaladsl.server.RoutingSpec
 class MethodDirectivesExamplesSpec extends RoutingSpec {
 
   "delete-method" in {
-    val route = delete { complete("This is a DELETE request.") }
+    val route = delete {
+      complete("This is a DELETE request.")
+    }
 
     // tests:
     Delete("/") ~> route ~> check {
@@ -20,7 +22,9 @@ class MethodDirectivesExamplesSpec extends RoutingSpec {
   }
 
   "get-method" in {
-    val route = get { complete("This is a GET request.") }
+    val route = get {
+      complete("This is a GET request.")
+    }
 
     // tests:
     Get("/") ~> route ~> check {
@@ -29,7 +33,9 @@ class MethodDirectivesExamplesSpec extends RoutingSpec {
   }
 
   "head-method" in {
-    val route = head { complete("This is a HEAD request.") }
+    val route = head {
+      complete("This is a HEAD request.")
+    }
 
     // tests:
     Head("/") ~> route ~> check {
@@ -38,7 +44,9 @@ class MethodDirectivesExamplesSpec extends RoutingSpec {
   }
 
   "options-method" in {
-    val route = options { complete("This is an OPTIONS request.") }
+    val route = options {
+      complete("This is an OPTIONS request.")
+    }
 
     // tests:
     Options("/") ~> route ~> check {
@@ -47,7 +55,9 @@ class MethodDirectivesExamplesSpec extends RoutingSpec {
   }
 
   "patch-method" in {
-    val route = patch { complete("This is a PATCH request.") }
+    val route = patch {
+      complete("This is a PATCH request.")
+    }
 
     // tests:
     Patch("/", "patch content") ~> route ~> check {
@@ -56,7 +66,9 @@ class MethodDirectivesExamplesSpec extends RoutingSpec {
   }
 
   "post-method" in {
-    val route = post { complete("This is a POST request.") }
+    val route = post {
+      complete("This is a POST request.")
+    }
 
     // tests:
     Post("/", "post content") ~> route ~> check {
@@ -65,7 +77,9 @@ class MethodDirectivesExamplesSpec extends RoutingSpec {
   }
 
   "put-method" in {
-    val route = put { complete("This is a PUT request.") }
+    val route = put {
+      complete("This is a PUT request.")
+    }
 
     // tests:
     Put("/", "put content") ~> route ~> check {
@@ -74,7 +88,9 @@ class MethodDirectivesExamplesSpec extends RoutingSpec {
   }
 
   "method-example" in {
-    val route = method(HttpMethods.PUT) { complete("This is a PUT request.") }
+    val route = method(HttpMethods.PUT) {
+      complete("This is a PUT request.")
+    }
 
     // tests:
     Put("/", "put content") ~> route ~> check {

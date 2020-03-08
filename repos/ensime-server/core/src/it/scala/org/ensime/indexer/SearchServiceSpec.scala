@@ -26,7 +26,9 @@ class SearchServiceSpec
   }
 
   it should "not refresh files that have not changed" in {
-    withSearchService { implicit service => refresh() shouldBe ((0, 0)) }
+    withSearchService { implicit service =>
+      refresh() shouldBe ((0, 0))
+    }
   }
 
   it should "refresh files that have 'changed'" in {

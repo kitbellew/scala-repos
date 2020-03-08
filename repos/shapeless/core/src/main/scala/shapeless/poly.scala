@@ -42,7 +42,9 @@ object PolyDefns extends Cases {
   }
 
   object Case extends CaseInst {
-    type Aux[P, L <: HList, Result0] = Case[P, L] { type Result = Result0 }
+    type Aux[P, L <: HList, Result0] = Case[P, L] {
+      type Result = Result0
+    }
     type Hom[P, T] = Aux[P, T :: HNil, T]
 
     def apply[P, L <: HList, R](v: L => R): Aux[P, L, R] = new Case[P, L] {
@@ -222,7 +224,9 @@ trait Poly extends PolyApply with Serializable {
   object ProductCase extends Serializable {
 
     /** The type of a case of this polymorphic function of the form `L => R` */
-    type Aux[L <: HList, Result0] = ProductCase[L] { type Result = Result0 }
+    type Aux[L <: HList, Result0] = ProductCase[L] {
+      type Result = Result0
+    }
 
     /** The type of a case of this polymorphic function of the form `T => T` */
     type Hom[T] = Aux[T :: HNil, T]

@@ -441,7 +441,9 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
         }
 
         val tableIdent = extractTableIdent(tableNameParts)
-        val alias = aliasClause.map { case Token(a, Nil) => cleanIdentifier(a) }
+        val alias = aliasClause.map {
+          case Token(a, Nil) => cleanIdentifier(a)
+        }
         val relation = UnresolvedRelation(tableIdent, alias)
 
         // Apply sampling if requested.

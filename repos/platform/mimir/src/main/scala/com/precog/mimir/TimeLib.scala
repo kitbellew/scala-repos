@@ -184,7 +184,9 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
     //ok to `get` because CoerceToDate is defined for StrColumn
     def createDateCol(c: StrColumn) =
-      cf.util.CoerceToDate(c) collect { case (dc: DateColumn) => dc } get
+      cf.util.CoerceToDate(c) collect {
+        case (dc: DateColumn) => dc
+      } get
 
     object ChangeTimeZone extends Op2F2(TimeNamespace, "changeTimeZone") {
       val tpe = BinaryOperationType(StrAndDateT, JTextT, JDateT)
@@ -275,8 +277,12 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
           // creates a BitSet for each array-column with index `idx`
           def defined(idx: Int): BitSet = {
-            val bools = dateTimes map { _.length > idx }
-            val indices = bools.zipWithIndex collect { case (true, idx) => idx }
+            val bools = dateTimes map {
+              _.length > idx
+            }
+            val indices = bools.zipWithIndex collect {
+              case (true, idx) => idx
+            }
 
             BitSetUtil.create(indices)
           }
@@ -288,7 +294,9 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           }
 
           val result = {
-            val lengths = dateTimes map { _.length }
+            val lengths = dateTimes map {
+              _.length
+            }
 
             (0 until lengths.max) map { idx =>
               val colRef = ColumnRef(CPathIndex(idx), CDate)

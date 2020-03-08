@@ -61,5 +61,7 @@ trait ArrowTests[F[_, _]]
 
 object ArrowTests {
   def apply[F[_, _]: Arrow]: ArrowTests[F] =
-    new ArrowTests[F] { def laws: ArrowLaws[F] = ArrowLaws[F] }
+    new ArrowTests[F] {
+      def laws: ArrowLaws[F] = ArrowLaws[F]
+    }
 }

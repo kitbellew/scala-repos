@@ -135,7 +135,9 @@ class WatermarkPoolTest extends FunSpec with MockitoSugar {
         val cause = new Exception
         f1.raise(cause)
         assert(f1.isDefined)
-        val failure = intercept[Failure] { Await.result(f1) }
+        val failure = intercept[Failure] {
+          Await.result(f1)
+        }
         assert(failure.getCause.isInstanceOf[CancelledConnectionException])
         assert(failure.isFlagged(Failure.Interrupted))
       }
@@ -233,7 +235,9 @@ class WatermarkPoolTest extends FunSpec with MockitoSugar {
       // three waiters and i freak out.
       val f3 = pool()
       assert(f3.isDefined)
-      intercept[TooManyWaitersException] { Await.result(f3) }
+      intercept[TooManyWaitersException] {
+        Await.result(f3)
+      }
       assert(2 == numWaited())
       assert(1 == numTooManyWaiters())
 
@@ -282,11 +286,17 @@ class WatermarkPoolTest extends FunSpec with MockitoSugar {
     it("should return the cached connections for the next 100 apply calls") {
       // We can now fetch them again, incurring no additional object
       // creation.
-      0 until 100 foreach { _ => Await.result(pool()) }
-      mocks foreach { service => verify(service, times(2)).status }
+      0 until 100 foreach { _ =>
+        Await.result(pool())
+      }
+      mocks foreach { service =>
+        verify(service, times(2)).status
+      }
 
       verify(factory, times(100))()
-      mocks foreach { service => verify(service, never()).close(any[Time]) }
+      mocks foreach { service =>
+        verify(service, never()).close(any[Time])
+      }
     }
   }
 
@@ -350,7 +360,9 @@ class WatermarkPoolTest extends FunSpec with MockitoSugar {
       new WatermarkPoolLowOneHighFive {
         val slowService = new Promise[Service[Int, Int]] {
           @volatile var interrupted: Option[Throwable] = None
-          setInterruptHandler { case exc => interrupted = Some(exc) }
+          setInterruptHandler {
+            case exc => interrupted = Some(exc)
+          }
         }
         when(factory()).thenReturn(slowService)
 
@@ -395,16 +407,24 @@ class WatermarkPoolTest extends FunSpec with MockitoSugar {
         when(factory()).thenReturn(s)
         pool()
       }
-      0 until maxWaiters map { _ => pool() }
+      0 until maxWaiters map { _ =>
+        pool()
+      }
       val f = pool()
       assert(f.isDefined)
-      intercept[TooManyWaitersException] { Await.result(f) }
+      intercept[TooManyWaitersException] {
+        Await.result(f)
+      }
 
       // # of services does not change after the cancellation
-      wrappedServices foreach { _.raise(new Exception) }
+      wrappedServices foreach {
+        _.raise(new Exception)
+      }
       val f1 = pool()
       assert(f1.isDefined)
-      intercept[TooManyWaitersException] { Await.result(f1) }
+      intercept[TooManyWaitersException] {
+        Await.result(f1)
+      }
     }
   }
 
@@ -434,7 +454,9 @@ class WatermarkPoolTest extends FunSpec with MockitoSugar {
     it("should deny new requests") {
       new WatermarkPoolLowOneHighFive {
         pool.close()
-        intercept[ServiceClosedException] { Await.result(pool()) }
+        intercept[ServiceClosedException] {
+          Await.result(pool())
+        }
       }
     }
 

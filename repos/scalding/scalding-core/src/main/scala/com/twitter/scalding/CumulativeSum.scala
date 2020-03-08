@@ -41,7 +41,9 @@ object CumulativeSum {
         ordU: Ordering[U],
         ordK: Ordering[K]): SortedGrouped[K, (U, V)] = {
       pipe.group
-        .sortBy { case (u, _) => u }
+        .sortBy {
+          case (u, _) => u
+        }
         .scanLeft(Nil: List[(U, V)]) {
           case (acc, (u, v)) =>
             acc match {
@@ -67,11 +69,17 @@ object CumulativeSum {
         ordK: Ordering[K]): TypedPipe[(K, (U, V))] = {
 
       val sumPerS = pipe
-        .map { case (k, (u, v)) => (k, partition(u)) -> v }
+        .map {
+          case (k, (u, v)) => (k, partition(u)) -> v
+        }
         .sumByKey
-        .map { case ((k, s), v) => (k, (s, v)) }
+        .map {
+          case ((k, s), v) => (k, (s, v))
+        }
         .group
-        .sortBy { case (s, v) => s }
+        .sortBy {
+          case (s, v) => s
+        }
         .scanLeft(None: Option[(Option[V], V, S)]) {
           case (acc, (s, v)) =>
             acc match {
@@ -96,7 +104,9 @@ object CumulativeSum {
         } ++ sumPerS
 
       summands.group
-        .sortBy { case (u, _) => u }
+        .sortBy {
+          case (u, _) => u
+        }
         .scanLeft(None: Option[(Option[U], V)]) {
           case (acc, (maybeU, v)) =>
             acc match {

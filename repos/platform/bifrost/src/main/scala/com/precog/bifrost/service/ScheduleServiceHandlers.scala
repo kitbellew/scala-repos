@@ -205,12 +205,15 @@ class DeleteScheduledQueryServiceHandler[A](scheduler: Scheduler[Future])(
       idStr <- request.parameters
         .get('scheduleId)
         .toSuccess(DispatchError(BadRequest, "scheduleId parameter required"))
-      id <- Validation.fromTryCatch { UUID.fromString(idStr) } leftMap {
-        error =>
-          DispatchError(BadRequest, "Invalid schedule Id \"%s\"".format(idStr))
+      id <- Validation.fromTryCatch {
+        UUID.fromString(idStr)
+      } leftMap { error =>
+        DispatchError(BadRequest, "Invalid schedule Id \"%s\"".format(idStr))
       }
     } yield {
-      scheduler.deleteTask(id) map { _ => ok[String](None) } valueOr { error =>
+      scheduler.deleteTask(id) map { _ =>
+        ok[String](None)
+      } valueOr { error =>
         sys.error("todo")
       //serverError("An error occurred deleting your query", Some(error))
       }
@@ -232,7 +235,9 @@ class ScheduledQueryStatusServiceHandler[A](scheduler: Scheduler[Future])(
       idStr <- request.parameters
         .get('scheduleId)
         .toSuccess(DispatchError(BadRequest, "Missing schedule Id for status."))
-      id <- Validation.fromTryCatch { UUID.fromString(idStr) } leftMap { ex =>
+      id <- Validation.fromTryCatch {
+        UUID.fromString(idStr)
+      } leftMap { ex =>
         DispatchError(
           BadRequest,
           "Invalid schedule Id \"%s\"".format(idStr),
@@ -250,7 +255,9 @@ class ScheduledQueryStatusServiceHandler[A](scheduler: Scheduler[Future])(
           val nextTime: Option[DateTime] = task.repeat.flatMap {
             sched: CronExpression =>
               Option(sched.getNextValidTimeAfter(new java.util.Date))
-          } map { d => new DateTime(d) }
+          } map { d =>
+            new DateTime(d)
+          }
 
           val body: JValue = JObject(
             "task" -> task.serialize,

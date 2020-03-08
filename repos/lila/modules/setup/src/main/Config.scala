@@ -57,7 +57,9 @@ trait Positional { self: Config =>
   def strictFen: Boolean
 
   lazy val validFen = variant != chess.variant.FromPosition || {
-    fen ?? { f => ~(Forsyth <<< f).map(_.situation playable strictFen) }
+    fen ?? { f =>
+      ~(Forsyth <<< f).map(_.situation playable strictFen)
+    }
   }
 
   def fenGame(builder: ChessGame => Game): Game = {

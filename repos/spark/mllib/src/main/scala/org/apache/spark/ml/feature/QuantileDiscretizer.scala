@@ -99,7 +99,9 @@ final class QuantileDiscretizer(override val uid: String)
   override def fit(dataset: DataFrame): Bucketizer = {
     val samples = QuantileDiscretizer
       .getSampledInput(dataset.select($(inputCol)), $(numBuckets), $(seed))
-      .map { case Row(feature: Double) => feature }
+      .map {
+        case Row(feature: Double) => feature
+      }
     val candidates =
       QuantileDiscretizer.findSplitCandidates(samples, $(numBuckets) - 1)
     val splits = QuantileDiscretizer.getSplits(candidates)

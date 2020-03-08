@@ -115,7 +115,9 @@ class MacrosUnitTests extends WordSpec with Matchers {
     mgSet(inter) shouldBe te
   }
 
-  def canExternalize(t: AnyRef) { Externalizer(t).javaWorks shouldBe true }
+  def canExternalize(t: AnyRef) {
+    Externalizer(t).javaWorks shouldBe true
+  }
 
   "MacroGenerated TupleConverter" should {
     "Not compile for Option[Option[Int]]" in {
@@ -154,12 +156,24 @@ class MacrosUnitTests extends WordSpec with Matchers {
     def doesJavaWork[T](implicit set: TupleSetter[T]) {
       canExternalize(isMg(set))
     }
-    "be serializable for case class A" in { doesJavaWork[SampleClassA] }
-    "be serializable for case class B" in { doesJavaWork[SampleClassB] }
-    "be serializable for case class C" in { doesJavaWork[SampleClassC] }
-    "be serializable for case class D" in { doesJavaWork[SampleClassD] }
-    "be serializable for case class E" in { doesJavaWork[SampleClassE] }
-    "be serializable for case class F" in { doesJavaWork[SampleClassF] }
+    "be serializable for case class A" in {
+      doesJavaWork[SampleClassA]
+    }
+    "be serializable for case class B" in {
+      doesJavaWork[SampleClassB]
+    }
+    "be serializable for case class C" in {
+      doesJavaWork[SampleClassC]
+    }
+    "be serializable for case class D" in {
+      doesJavaWork[SampleClassD]
+    }
+    "be serializable for case class E" in {
+      doesJavaWork[SampleClassE]
+    }
+    "be serializable for case class F" in {
+      doesJavaWork[SampleClassF]
+    }
   }
 
   "MacroGenerated TupleConverter" should {
@@ -198,12 +212,24 @@ class MacrosUnitTests extends WordSpec with Matchers {
     def doesJavaWork[T](implicit conv: TupleConverter[T]) {
       canExternalize(isMg(conv))
     }
-    "be serializable for case class A" in { doesJavaWork[SampleClassA] }
-    "be serializable for case class B" in { doesJavaWork[SampleClassB] }
-    "be serializable for case class C" in { doesJavaWork[SampleClassC] }
-    "be serializable for case class D" in { doesJavaWork[SampleClassD] }
-    "be serializable for case class E" in { doesJavaWork[SampleClassE] }
-    "be serializable for case class F" in { doesJavaWork[SampleClassF] }
+    "be serializable for case class A" in {
+      doesJavaWork[SampleClassA]
+    }
+    "be serializable for case class B" in {
+      doesJavaWork[SampleClassB]
+    }
+    "be serializable for case class C" in {
+      doesJavaWork[SampleClassC]
+    }
+    "be serializable for case class D" in {
+      doesJavaWork[SampleClassD]
+    }
+    "be serializable for case class E" in {
+      doesJavaWork[SampleClassE]
+    }
+    "be serializable for case class F" in {
+      doesJavaWork[SampleClassF]
+    }
   }
 
   "MacroGenerated TypeDescriptor" should {
@@ -236,12 +262,24 @@ class MacrosUnitTests extends WordSpec with Matchers {
     def doesJavaWork[T](implicit conv: TypeDescriptor[T]) {
       canExternalize(isMg(conv))
     }
-    "be serializable for case class A" in { doesJavaWork[SampleClassA] }
-    "be serializable for case class B" in { doesJavaWork[SampleClassB] }
-    "be serializable for case class C" in { doesJavaWork[SampleClassC] }
-    "be serializable for case class D" in { doesJavaWork[SampleClassD] }
-    "be serializable for case class E" in { doesJavaWork[SampleClassE] }
-    "be serializable for case class F" in { doesJavaWork[SampleClassF] }
+    "be serializable for case class A" in {
+      doesJavaWork[SampleClassA]
+    }
+    "be serializable for case class B" in {
+      doesJavaWork[SampleClassB]
+    }
+    "be serializable for case class C" in {
+      doesJavaWork[SampleClassC]
+    }
+    "be serializable for case class D" in {
+      doesJavaWork[SampleClassD]
+    }
+    "be serializable for case class E" in {
+      doesJavaWork[SampleClassE]
+    }
+    "be serializable for case class F" in {
+      doesJavaWork[SampleClassF]
+    }
   }
 
   "MacroGenerated TupleSetter and TupleConverter" should {

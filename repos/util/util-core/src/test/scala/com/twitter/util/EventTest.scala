@@ -63,7 +63,9 @@ class EventTest extends FunSuite {
 
   test("Event.collect") {
     val e = Event[Int]()
-    val events = e collect { case i if i % 2 == 0 => i * 2 }
+    val events = e collect {
+      case i if i % 2 == 0 => i * 2
+    }
     val ref = new AtomicReference[Seq[Int]](Seq.empty)
     events.build.register(Witness(ref))
 
@@ -138,11 +140,15 @@ class EventTest extends FunSuite {
       def register(w: Witness[Int]) = {
         n += 1
         w.notify(1)
-        Closable.make { _ => n -= 1; Future.Done }
+        Closable.make { _ =>
+          n -= 1; Future.Done
+        }
       }
     }
 
-    val e12 = e1 mergeMap { _ => e2 }
+    val e12 = e1 mergeMap { _ =>
+      e2
+    }
 
     val ref = new AtomicReference(Seq.empty[Int])
     val closable = e12.build.register(Witness(ref))
@@ -265,7 +271,9 @@ class EventTest extends FunSuite {
     val exc = new Exception
     f.raise(exc)
     assert(f.isDefined)
-    val caught = intercept[Exception] { Await.result(f) }
+    val caught = intercept[Exception] {
+      Await.result(f)
+    }
     assert(caught == exc)
   }
 
@@ -276,7 +284,9 @@ class EventTest extends FunSuite {
     }
 
     def ite[T](i: Var[Boolean], t: Var[T], e: Var[T]) =
-      i flatMap { i => if (i) t else e }
+      i flatMap { i =>
+        if (i) t else e
+      }
 
     val b = Var(true)
     val x = Var(7)
@@ -326,7 +336,11 @@ class EventTest extends FunSuite {
     val e = Event[Int]()
     val ref = new AtomicReference[IndexedSeq[Int]]
 
-    e.dedupWith { (a, b) => a >= b }.build.register(Witness(ref))
+    e.dedupWith { (a, b) =>
+        a >= b
+      }
+      .build
+      .register(Witness(ref))
     e.notify(0)
     e.notify(0)
     e.notify(1)

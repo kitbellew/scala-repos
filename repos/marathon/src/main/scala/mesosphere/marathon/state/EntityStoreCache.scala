@@ -93,7 +93,9 @@ class EntityStoreCache[T <: MarathonState[_, T]](store: EntityStore[T])
     def preloadEntries(unversionedNames: Seq[String]): Future[Unit] = {
       unversionedNames.foldLeft[Future[Unit]](Future.successful(())) {
         (completed, nextName) =>
-          completed.flatMap { _ => preloadEntry(nextName) }
+          completed.flatMap { _ =>
+            preloadEntry(nextName)
+          }
       }
     }
 

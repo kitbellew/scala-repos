@@ -888,7 +888,9 @@ object JavaToScala {
     Option(constructor.getBody)
       .map(_.getStatements)
       .flatMap(_.headOption)
-      .collect { case exp: PsiExpressionStatement => exp }
+      .collect {
+        case exp: PsiExpressionStatement => exp
+      }
   }
 
   // build map of constructor and constructor that it call

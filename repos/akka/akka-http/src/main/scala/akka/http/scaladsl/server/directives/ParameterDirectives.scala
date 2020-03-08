@@ -71,15 +71,18 @@ object ParameterDirectives extends ParameterDirectives {
     def apply(): Out
   }
   object ParamMagnet {
-    implicit def apply[T](value: T)(
-        implicit pdef: ParamDef[T]): ParamMagnet { type Out = pdef.Out } =
+    implicit def apply[T](value: T)(implicit pdef: ParamDef[T]): ParamMagnet {
+      type Out = pdef.Out
+    } =
       new ParamMagnet {
         type Out = pdef.Out
         def apply() = pdef(value)
       }
   }
 
-  type ParamDefAux[T, U] = ParamDef[T] { type Out = U }
+  type ParamDefAux[T, U] = ParamDef[T] {
+    type Out = U
+  }
   sealed trait ParamDef[T] {
     type Out
     def apply(value: T): Out
@@ -125,13 +128,19 @@ object ParameterDirectives extends ParameterDirectives {
       }
     implicit def forString(
         implicit fsu: FSU[String]): ParamDefAux[String, Directive1[String]] =
-      extractParameter[String, String] { string ⇒ filter(string, fsu) }
+      extractParameter[String, String] { string ⇒
+        filter(string, fsu)
+      }
     implicit def forSymbol(
         implicit fsu: FSU[String]): ParamDefAux[Symbol, Directive1[String]] =
-      extractParameter[Symbol, String] { symbol ⇒ filter(symbol.name, fsu) }
+      extractParameter[Symbol, String] { symbol ⇒
+        filter(symbol.name, fsu)
+      }
     implicit def forNR[T](
         implicit fsu: FSU[T]): ParamDefAux[NameReceptacle[T], Directive1[T]] =
-      extractParameter[NameReceptacle[T], T] { nr ⇒ filter(nr.name, fsu) }
+      extractParameter[NameReceptacle[T], T] { nr ⇒
+        filter(nr.name, fsu)
+      }
     implicit def forNUR[T]
         : ParamDefAux[NameUnmarshallerReceptacle[T], Directive1[T]] =
       extractParameter[NameUnmarshallerReceptacle[T], T] { nr ⇒
@@ -221,12 +230,18 @@ object ParameterDirectives extends ParameterDirectives {
 
     object ConvertParamDefAndConcatenate extends BinaryPolyFunc {
       implicit def from[P, TA, TB](implicit
-          pdef: ParamDef[P] { type Out = Directive[TB] },
+          pdef: ParamDef[P] {
+            type Out = Directive[TB]
+          },
           ev: Join[TA, TB]): BinaryPolyFunc.Case[
         Directive[TA],
         P,
-        ConvertParamDefAndConcatenate.type] { type Out = Directive[ev.Out] } =
-        at[Directive[TA], P] { (a, t) ⇒ a & pdef(t) }
+        ConvertParamDefAndConcatenate.type] {
+        type Out = Directive[ev.Out]
+      } =
+        at[Directive[TA], P] { (a, t) ⇒
+          a & pdef(t)
+        }
     }
   }
 }

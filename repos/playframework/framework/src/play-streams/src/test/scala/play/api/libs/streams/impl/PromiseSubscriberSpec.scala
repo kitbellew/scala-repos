@@ -24,7 +24,9 @@ class PromiseSubscriberSpec extends Specification {
 
     val prom = Promise[T]()
     val subr = new PromiseSubscriber(prom)
-    prom.future.onComplete { result => record(OnComplete(result)) }
+    prom.future.onComplete { result =>
+      record(OnComplete(result))
+    }
 
   }
 

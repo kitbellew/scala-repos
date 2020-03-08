@@ -252,7 +252,9 @@ object JavaTypeInference {
         }
 
         primitiveMethod
-          .map { method => Invoke(getPath, method, ObjectType(c)) }
+          .map { method =>
+            Invoke(getPath, method, ObjectType(c))
+          }
           .getOrElse {
             Invoke(
               MapObjects(

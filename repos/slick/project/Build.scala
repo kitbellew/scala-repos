@@ -140,7 +140,9 @@ object SlickBuild extends Build {
     },
     publishMavenStyle := true,
     publishArtifact in Test := false,
-    pomIncludeRepository := { _ => false },
+    pomIncludeRepository := { _ =>
+      false
+    },
     makePomConfiguration ~= {
       _.copy(configurations = Some(Seq(Compile, Runtime, Optional)))
     },

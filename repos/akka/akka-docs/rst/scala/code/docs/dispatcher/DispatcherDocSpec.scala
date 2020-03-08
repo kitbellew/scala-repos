@@ -368,7 +368,9 @@ class DispatcherDocSpec extends AkkaSpec(DispatcherDocSpec.config) {
       //#prio-dispatcher
 
       watch(a)
-      expectMsgPF() { case Terminated(`a`) => () }
+      expectMsgPF() {
+        case Terminated(`a`) => ()
+      }
     }
   }
 
@@ -401,7 +403,9 @@ class DispatcherDocSpec extends AkkaSpec(DispatcherDocSpec.config) {
       //#control-aware-dispatcher
 
       watch(a)
-      expectMsgPF() { case Terminated(`a`) => () }
+      expectMsgPF() {
+        case Terminated(`a`) => ()
+      }
     }
   }
 

@@ -62,7 +62,9 @@ trait Internals { self: Universe =>
       *  @see [[Importer]]
       */
     // SI-6241: move importers to a mirror
-    def createImporter(from0: Universe): Importer { val from: from0.type }
+    def createImporter(from0: Universe): Importer {
+      val from: from0.type
+    }
 
     /**
       * Convert a [[scala.reflect.api.TypeTags#TypeTag]] to a [[scala.reflect.Manifest]].
@@ -1077,7 +1079,9 @@ trait Internals { self: Universe =>
     /** An importer that works in reverse direction, namely:
       *  imports reflection artifacts from the current universe to the universe specified in `from`.
       */
-    val reverse: from.Importer { val from: self.type }
+    val reverse: from.Importer {
+      val from: self.type
+    }
 
     /** In the current universe, locates or creates a symbol that corresponds to the provided symbol in the source universe.
       *  If necessary imports the owner chain, companions, type signature, annotations and attachments.
@@ -1100,8 +1104,9 @@ trait Internals { self: Universe =>
   }
 
   @deprecated("Use `internal.createImporter` instead", "2.11.0")
-  def mkImporter(from0: Universe): Importer { val from: from0.type } =
-    internal.createImporter(from0)
+  def mkImporter(from0: Universe): Importer {
+    val from: from0.type
+  } = internal.createImporter(from0)
 
   /** Marks underlying reference to id as boxed.
     *

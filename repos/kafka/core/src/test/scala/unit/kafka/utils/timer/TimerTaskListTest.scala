@@ -76,17 +76,23 @@ class TimerTaskListTest {
     assertEquals(tasks.size, sharedCounter.get)
 
     // cancel tasks in lists
-    list1.foreach { _.cancel() }
+    list1.foreach {
+      _.cancel()
+    }
     assertEquals(0, size(list1))
     assertEquals(4, size(list2))
     assertEquals(6, size(list3))
 
-    list2.foreach { _.cancel() }
+    list2.foreach {
+      _.cancel()
+    }
     assertEquals(0, size(list1))
     assertEquals(0, size(list2))
     assertEquals(6, size(list3))
 
-    list3.foreach { _.cancel() }
+    list3.foreach {
+      _.cancel()
+    }
     assertEquals(0, size(list1))
     assertEquals(0, size(list2))
     assertEquals(0, size(list3))

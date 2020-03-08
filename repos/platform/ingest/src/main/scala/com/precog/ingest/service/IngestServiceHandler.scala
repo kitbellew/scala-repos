@@ -232,7 +232,9 @@ class IngestServiceHandler(
 
               val durabilityM = request.method match {
                 case HttpMethods.POST =>
-                  createJob map { jobId => (GlobalDurability(jobId), postMode) }
+                  createJob map { jobId =>
+                    (GlobalDurability(jobId), postMode)
+                  }
                 case HttpMethods.PUT =>
                   createJob map { jobId =>
                     (GlobalDurability(jobId), AccessMode.Replace)

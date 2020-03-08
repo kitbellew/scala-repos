@@ -82,7 +82,9 @@ class Servlet30AsyncProvider(req: HTTPRequest)
 
   private var asyncCtx: Object = null
 
-  type SetTimeout = { def setTimeout(timeout: Long): Unit; }
+  type SetTimeout = {
+    def setTimeout(timeout: Long): Unit;
+  }
 
   import Servlet30AsyncProvider._
 

@@ -168,7 +168,11 @@ class UISeleniumSuite
     withSpark(newSparkContext()) { sc =>
       // Regression test for SPARK-3021
       intercept[SparkException] {
-        sc.parallelize(1 to 10).map { x => throw new Exception() }.collect()
+        sc.parallelize(1 to 10)
+          .map { x =>
+            throw new Exception()
+          }
+          .collect()
       }
       eventually(timeout(5 seconds), interval(50 milliseconds)) {
         goToUi(sc, "/stages")
@@ -184,7 +188,11 @@ class UISeleniumSuite
       class NotSerializable
       val unserializableObject = new NotSerializable
       intercept[SparkException] {
-        sc.parallelize(1 to 10).map { x => unserializableObject }.collect()
+        sc.parallelize(1 to 10)
+          .map { x =>
+            unserializableObject
+          }
+          .collect()
       }
       eventually(timeout(5 seconds), interval(50 milliseconds)) {
         goToUi(sc, "/stages")
@@ -202,7 +210,11 @@ class UISeleniumSuite
   test("spark.ui.killEnabled should properly control kill button display") {
     def hasKillLink: Boolean = find(className("kill-link")).isDefined
     def runSlowJob(sc: SparkContext) {
-      sc.parallelize(1 to 10).map { x => Thread.sleep(10000); x }.countAsync()
+      sc.parallelize(1 to 10)
+        .map { x =>
+          Thread.sleep(10000); x
+        }
+        .countAsync()
     }
 
     withSpark(newSparkContext(killEnabled = true)) { sc =>
@@ -507,7 +519,11 @@ class UISeleniumSuite
     }
 
     withSpark(newSparkContext(killEnabled = true)) { sc =>
-      sc.parallelize(1 to 10).map { x => Thread.sleep(10000); x }.countAsync()
+      sc.parallelize(1 to 10)
+        .map { x =>
+          Thread.sleep(10000); x
+        }
+        .countAsync()
       eventually(timeout(5 seconds), interval(50 milliseconds)) {
         val url = new URL(
           sc.ui.get.appUIAddress

@@ -24,5 +24,7 @@ trait MonadReaderLaws[F[_], R] extends MonadLaws[F] {
 
 object MonadReaderLaws {
   def apply[F[_], R](implicit FR: MonadReader[F, R]): MonadReaderLaws[F, R] =
-    new MonadReaderLaws[F, R] { def F: MonadReader[F, R] = FR }
+    new MonadReaderLaws[F, R] {
+      def F: MonadReader[F, R] = FR
+    }
 }

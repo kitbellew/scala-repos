@@ -15,7 +15,13 @@ class IteratorTest {
   @Test def groupedIteratorShouldNotAskForUnneededElement(): Unit = {
     var counter = 0
     val it = new Iterator[Int] {
-      var i = 0; def hasNext = { counter = i; true }; def next = { i += 1; i }
+      var i = 0;
+      def hasNext = {
+        counter = i; true
+      };
+      def next = {
+        i += 1; i
+      }
     }
     val slidingIt = it sliding 2
     slidingIt.next
@@ -28,7 +34,13 @@ class IteratorTest {
   @Test def groupedIteratorIsLazyWhenPadded(): Unit = {
     var counter = 0
     def it = new Iterator[Int] {
-      var i = 0; def hasNext = { counter = i; true }; def next = { i += 1; i }
+      var i = 0;
+      def hasNext = {
+        counter = i; true
+      };
+      def next = {
+        i += 1; i
+      }
     }
     val slidingIt = it sliding 2 withPadding -1
     slidingIt.next
@@ -126,7 +138,9 @@ class IteratorTest {
   @Test def foreach(): Unit = {
     val it1 = Iterator.from(0) take 20
     var n = 0
-    it1 foreach { n += _ }
+    it1 foreach {
+      n += _
+    }
     assertEquals(190, n)
   }
   // ticket #429
@@ -149,10 +163,14 @@ class IteratorTest {
   @Test def indexWhere(): Unit = {
     assertEquals(
       3,
-      List(1, 2, 3, 4, 5).iterator.indexWhere { x: Int => x >= 4 })
+      List(1, 2, 3, 4, 5).iterator.indexWhere { x: Int =>
+        x >= 4
+      })
     assertEquals(
       -1,
-      List(1, 2, 3, 4, 5).iterator.indexWhere { x: Int => x >= 16 })
+      List(1, 2, 3, 4, 5).iterator.indexWhere { x: Int =>
+        x >= 16
+      })
   }
   @Test def indexOfFrom(): Unit = {
     assertEquals(1, List(1, 2, 3, 4, 5).iterator.indexOf(2, 0))
@@ -181,8 +199,13 @@ class IteratorTest {
   // SI-3516
   @Test def toStreamIsSufficientlyLazy(): Unit = {
     val results = collection.mutable.ListBuffer.empty[Int]
-    def mkIterator = (1 to 5).iterator map (x => { results += x; x })
-    def mkInfinite = Iterator continually { results += 1; 1 }
+    def mkIterator =
+      (1 to 5).iterator map (x => {
+        results += x; x
+      })
+    def mkInfinite = Iterator continually {
+      results += 1; 1
+    }
 
     // Stream is strict in its head so we should see 1 from each of them.
     val s1 = mkIterator.toStream
@@ -221,7 +244,9 @@ class IteratorTest {
     def it: Iterator[Int] = new Iterator[Int] {
       val parent = List(1, 2, 3).iterator
       def next(): Int = parent.next
-      def hasNext: Boolean = { counter += 1; parent.hasNext }
+      def hasNext: Boolean = {
+        counter += 1; parent.hasNext
+      }
     }
     // Iterate separately
     val res = new mutable.ArrayBuffer[Int]

@@ -39,7 +39,9 @@ object JsonParserSpec extends Specification with JValueGen with ScalaCheck {
   "JSON Parser Specification".title
 
   "Any valid json can be parsed" in {
-    val parsing = (json: JValue) => { parse(prettyRender(json)); true }
+    val parsing = (json: JValue) => {
+      parse(prettyRender(json)); true
+    }
     forAll(genJValue)(parsing)
   }
 
@@ -58,7 +60,9 @@ object JsonParserSpec extends Specification with JValueGen with ScalaCheck {
     val executor = Executors.newFixedThreadPool(100)
     val results = (0 to 100)
       .map(_ =>
-        executor.submit(new Callable[JValue] { def call = parse(json) }))
+        executor.submit(new Callable[JValue] {
+          def call = parse(json)
+        }))
       .toList
       .map(_.get)
     results.zip(results.tail).forall(pair => pair._1 == pair._2) mustEqual true

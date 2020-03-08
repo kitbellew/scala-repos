@@ -11,7 +11,9 @@ final class StreamerList(val store: {
 
   import StreamerList._
 
-  def get: Fu[List[Streamer]] = store.get.map { text => validate(text)._1 }
+  def get: Fu[List[Streamer]] = store.get.map { text =>
+    validate(text)._1
+  }
 
   def find(id: String): Fu[Option[Streamer]] = get map (_ find (_.id == id))
 

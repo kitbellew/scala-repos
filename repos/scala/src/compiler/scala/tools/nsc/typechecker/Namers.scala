@@ -456,7 +456,9 @@ trait Namers extends MethodSynthesis {
       *  has been defined in a separate file.
       */
     def validateCompanionDefs(tree: ImplDef) {
-      val sym = tree.symbol orElse { return }
+      val sym = tree.symbol orElse {
+        return
+      }
       val ctx =
         if (context.owner.isPackageObjectClass) context.outer else context
       val module = if (sym.isModule) sym else ctx.scope lookupModule tree.name
@@ -1119,7 +1121,8 @@ trait Namers extends MethodSynthesis {
        * so the resulting type is a valid external method type, it does not contain (references to) skolems.
        */
       def thisMethodType(restpe: Type) = {
-        if (vparamSymss.lengthCompare(0) > 0) { // OPT fast path for methods of 0-1 parameter lists
+        if (vparamSymss.lengthCompare(
+              0) > 0) { // OPT fast path for methods of 0-1 parameter lists
           val checkDependencies = new DependentTypeChecker(context)(this)
           checkDependencies check vparamSymss
         }

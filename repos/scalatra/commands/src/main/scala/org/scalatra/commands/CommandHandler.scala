@@ -28,7 +28,9 @@ trait CommandHandler {
         { failures =>
           "with %d failures\n%s".format(failures.size, failures.list)
         },
-        { _ => "successfully" }
+        { _ =>
+          "successfully"
+        }
       )
       commandLogger.debug(
         "Command [%s] executed %s." format (cmd.getClass.getName, resultLog))

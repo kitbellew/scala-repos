@@ -31,7 +31,9 @@ case class Flags(flags: Long) {
   /**
     * @param field Is this flag set or not? Pass a field identifier from the Flags object.
     */
-  def isFlagSet(field: Long): Boolean = { (flags & field) == field }
+  def isFlagSet(field: Long): Boolean = {
+    (flags & field) == field
+  }
 
   /**
     * @param field Field to set. Pass a field identifier from the Flags object.

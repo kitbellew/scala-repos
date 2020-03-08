@@ -124,7 +124,11 @@ trait Pattern {
 
     /** Folds all subexpressions in this expression in depth-first order */
     def fold[A](v: A)(f: (A, Expr[_]) => A): A =
-      f(args.foldLeft(v) { (a, b) => b.fold(a)(f) }, this)
+      f(
+        args.foldLeft(v) { (a, b) =>
+          b.fold(a)(f)
+        },
+        this)
 
     /** Replaces all occurrences of one subexpression with another one */
     def replace(from: Expr[_], to: Expr[_]): Expr[T] =
@@ -150,7 +154,9 @@ trait Pattern {
       if (f.isDefinedAt(this)) (f(this) :: a) else a
     }
 
-    def leaves: List[Leaf[T]] = collect { case l: Leaf[T] => l }
+    def leaves: List[Leaf[T]] = collect {
+      case l: Leaf[T] => l
+    }
 
     def +(other: Expr[T])(implicit n: NumericOps[T]) = Add(List(this, other))
     def -(other: Expr[T])(implicit n: NumericOps[T]) = Sub(this, other)
@@ -225,7 +231,9 @@ trait Pattern {
           val noOnes = noZeros.map {
             case y: One[_] => Const(num.one); case y => y
           }
-          val constant = num.sum(noOnes.collect { case c: Const[T] => c.value })
+          val constant = num.sum(noOnes.collect {
+            case c: Const[T] => c.value
+          })
           val rest = noOnes.filter(x => !x.isInstanceOf[Const[_]]).toList
           val reduced = reduceComponents(rest)
           val args =
@@ -307,7 +315,9 @@ trait Pattern {
 
     private def optimizeWith(f: Expr[T] => Expr[T]): Expr[T] = {
       f(mapArgs(EndoFunction[Expr[_]](a =>
-        a match { case x: Expr[T] => x.optimizeWith(f) })))
+        a match {
+          case x: Expr[T] => x.optimizeWith(f)
+        })))
     }
 
     /** Simplifies this expression to make evaluation faster and more accurate.*/

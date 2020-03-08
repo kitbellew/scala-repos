@@ -49,7 +49,9 @@ object DbProviders {
 
       def deleteIt(file: File) {
         if (file.exists) {
-          if (file.isDirectory) file.listFiles.foreach { f => deleteIt(f) }
+          if (file.isDirectory) file.listFiles.foreach { f =>
+            deleteIt(f)
+          }
           file.delete
         }
       }

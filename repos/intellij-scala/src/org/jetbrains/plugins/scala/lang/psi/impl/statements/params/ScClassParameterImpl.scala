@@ -28,7 +28,9 @@ class ScClassParameterImpl private (
     extends ScParameterImpl(stub, nodeType, node)
     with ScClassParameter {
 
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
 
   def this(stub: ScParameterStub) = {
     this(stub, ScalaElementTypes.CLASS_PARAM, null)

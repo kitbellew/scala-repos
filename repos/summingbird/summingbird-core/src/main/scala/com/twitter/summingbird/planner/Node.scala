@@ -38,7 +38,9 @@ sealed trait Node[P <: Platform[P]] {
 
   def collapseNamedNodes(sanitize: String => String): String = {
     val membersCombined = members.reverse
-      .collect { case NamedProducer(_, n) => sanitize(n) }
+      .collect {
+        case NamedProducer(_, n) => sanitize(n)
+      }
       .mkString(",")
     if (membersCombined.size > 0) "|" + membersCombined + "|" else ""
   }
@@ -181,7 +183,9 @@ object Dag {
       producerToPriorityNames,
       tail,
       registry,
-      { (s: String) => s.replaceAll("""[\[\]]|\-""", "|") })
+      { (s: String) =>
+        s.replaceAll("""[\[\]]|\-""", "|")
+      })
 
   def apply[P <: Platform[P], T](
       originalTail: TailProducer[P, Any],
@@ -191,7 +195,9 @@ object Dag {
       sanitizeName: String => String): Dag[P] = {
 
     require(
-      registry.collect { case n @ SourceNode(_) => n }.size > 0,
+      registry.collect {
+        case n @ SourceNode(_) => n
+      }.size > 0,
       "Valid registries should have at least one source node")
 
     def buildProducerToNodeLookUp(
@@ -257,7 +263,9 @@ object Dag {
     }
 
     def allTails(dag: Dag[P]): List[Node[P]] = {
-      dag.nodes.filter { m => dag.dependantsOf(m).size == 0 }
+      dag.nodes.filter { m =>
+        dag.dependantsOf(m).size == 0
+      }
     }
 
     //start with the true tail

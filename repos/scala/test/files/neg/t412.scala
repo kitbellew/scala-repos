@@ -1,9 +1,15 @@
 object Magic {
 
   abstract class A[T1, T2]() {
-    trait C { type T; }
-    trait C1 extends C { type T = T1; }
-    trait C2 extends C { type T <: T2; }
+    trait C {
+      type T;
+    }
+    trait C1 extends C {
+      type T = T1;
+    }
+    trait C2 extends C {
+      type T <: T2;
+    }
 
     type CX >: Null;
     val c: CX with C2 = null;

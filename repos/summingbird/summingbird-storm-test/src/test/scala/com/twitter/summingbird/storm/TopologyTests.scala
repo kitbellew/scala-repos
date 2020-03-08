@@ -62,7 +62,9 @@ class TopologyTests extends WordSpec {
     * ScalaCheck, as we need to know the number of tuples that the
     * flatMap will produce.
     */
-  val testFn = { i: Int => List((i -> i)) }
+  val testFn = { i: Int =>
+    List((i -> i))
+  }
 
   implicit val storm = Storm.local()
 
@@ -119,7 +121,9 @@ class TopologyTests extends WordSpec {
     val bolts = stormTopo.get_bolts
 
     // Tail will have 1 -, distance from there should be onwards
-    val TDistMap = bolts.map { case (k, v) => (k.split("-").size - 1, v) }
+    val TDistMap = bolts.map {
+      case (k, v) => (k.split("-").size - 1, v)
+    }
 
     assert(TDistMap(1).get_common.get_parallelism_hint == 50)
   }
@@ -144,7 +148,9 @@ class TopologyTests extends WordSpec {
     val bolts = stormTopo.get_bolts
 
     // Tail will have 1 -, distance from there should be onwards
-    val TDistMap = bolts.map { case (k, v) => (k.split("-").size - 1, v) }
+    val TDistMap = bolts.map {
+      case (k, v) => (k.split("-").size - 1, v)
+    }
 
     assert(TDistMap(1).get_common.get_parallelism_hint == 50)
   }
@@ -168,7 +174,9 @@ class TopologyTests extends WordSpec {
     val bolts = stormTopo.get_bolts
 
     // Tail will have 1 -, distance from there should be onwards
-    val TDistMap = bolts.map { case (k, v) => (k.split("-").size - 1, v) }
+    val TDistMap = bolts.map {
+      case (k, v) => (k.split("-").size - 1, v)
+    }
 
     assert(TDistMap(1).get_common.get_parallelism_hint == 50)
   }
@@ -217,7 +225,9 @@ class TopologyTests extends WordSpec {
     val bolts = stormTopo.get_bolts
 
     // Tail will have 1 -, distance from there should be onwards
-    val TDistMap = bolts.map { case (k, v) => (k.split("-").size - 1, v) }
+    val TDistMap = bolts.map {
+      case (k, v) => (k.split("-").size - 1, v)
+    }
 
     assert(TDistMap(0).get_common.get_parallelism_hint == 5)
   }

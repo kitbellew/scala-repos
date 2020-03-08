@@ -73,7 +73,9 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
       graph.aggregateMessages(_.sendToSrc(1), _ + _, TripletFields.None)
     } else { // EdgeDirection.Either
       graph.aggregateMessages(
-        ctx => { ctx.sendToSrc(1); ctx.sendToDst(1) },
+        ctx => {
+          ctx.sendToSrc(1); ctx.sendToDst(1)
+        },
         _ + _,
         TripletFields.None)
     }
@@ -295,8 +297,11 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
     var retVal: VertexId = null.asInstanceOf[VertexId]
     while (!found) {
       val selectedVertices = graph.vertices.flatMap { vidVvals =>
-        if (Random.nextDouble() < probability) { Some(vidVvals._1) }
-        else { None }
+        if (Random.nextDouble() < probability) {
+          Some(vidVvals._1)
+        } else {
+          None
+        }
       }
       if (selectedVertices.count > 1) {
         found = true

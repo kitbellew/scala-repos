@@ -1,5 +1,7 @@
 object Test1 {
-  def f[T](xs: Array[T]): Array[T] = xs match { case xs => xs }
+  def f[T](xs: Array[T]): Array[T] = xs match {
+    case xs => xs
+  }
   // [check: patmat] The symbol, tpe or info of tree `(x) : Array[T]` refers to a out-of-scope symbol, type T. tree.symbol.ownerChain: value x
   // [check: patmat] The symbol, tpe or info of tree `(x) : Array[T]` refers to a out-of-scope symbol, type T. tree.symbol.ownerChain: value x
 

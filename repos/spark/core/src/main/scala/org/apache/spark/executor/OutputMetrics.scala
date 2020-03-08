@@ -63,7 +63,9 @@ class OutputMetrics private (
     this(
       InternalAccumulator
         .createOutputAccums()
-        .map { a => (a.name.get, a) }
+        .map { a =>
+          (a.name.get, a)
+        }
         .toMap[String, Accumulator[_]])
   }
 

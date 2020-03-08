@@ -13,7 +13,9 @@ object ActorSubscriberOneByOneRequestTest {
   class StrategySubscriber(val requestStrategy: RequestStrategy)
       extends ActorSubscriber {
 
-    override def receive: Receive = { case _ ⇒ }
+    override def receive: Receive = {
+      case _ ⇒
+    }
   }
 }
 

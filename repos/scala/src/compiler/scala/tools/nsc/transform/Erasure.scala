@@ -23,7 +23,9 @@ abstract class Erasure
   import definitions._
   import CODE._
 
-  val analyzer: typechecker.Analyzer { val global: Erasure.this.global.type } =
+  val analyzer: typechecker.Analyzer {
+    val global: Erasure.this.global.type
+  } =
     this.asInstanceOf[typechecker.Analyzer {
       val global: Erasure.this.global.type
     }]
@@ -388,7 +390,9 @@ abstract class Erasure
         jsig(info, toplevel = true) + throwsArgs
           .map("^" + jsig(_, toplevel = true))
           .mkString(""))
-      catch { case ex: UnknownSig => None }
+      catch {
+        case ex: UnknownSig => None
+      }
     } else None
   }
 
@@ -983,7 +987,9 @@ abstract class Erasure
           (fn: @unchecked) match {
             case TypeApply(Select(qual, _), List(targ)) =>
               if (qual.tpe <:< targ.tpe)
-                atPos(tree.pos) { Typed(qual, TypeTree(targ.tpe)) }
+                atPos(tree.pos) {
+                  Typed(qual, TypeTree(targ.tpe))
+                }
               else if (isNumericValueClass(
                          qual.tpe.typeSymbol) && isNumericValueClass(
                          targ.tpe.typeSymbol))

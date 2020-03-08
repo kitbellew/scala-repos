@@ -73,7 +73,9 @@ class EndToEndTest extends FunSuite {
       var result = ""
       val latch = new CountDownLatch(1)
       (clientRes.error ?) ensure {
-        Future { latch.countDown() }
+        Future {
+          latch.countDown()
+        }
       }
 
       clientRes.messages.foreach {
@@ -265,7 +267,9 @@ class EndToEndTest extends FunSuite {
       val latch = new CountDownLatch(1)
 
       (clientRes.error ?) ensure {
-        Future { latch.countDown() }
+        Future {
+          latch.countDown()
+        }
       }
 
       clientRes.messages.foreach {
@@ -387,7 +391,9 @@ class EndToEndTest extends FunSuite {
       .bindTo(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
       .name("Streams")
       .build((new MyService(serverRes)).map { r: Request =>
-        synchronized { count += 1 }
+        synchronized {
+          count += 1
+        }
         r
       })
     val client = ClientBuilder()

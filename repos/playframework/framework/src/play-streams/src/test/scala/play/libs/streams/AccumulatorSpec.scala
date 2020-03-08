@@ -37,7 +37,9 @@ object AccumulatorSpec extends org.specs2.mutable.Specification {
     Accumulator.fromSink(
       Sink.fold[Int, Int](
         0,
-        new JFn2[Int, Int, Int] { def apply(a: Int, b: Int) = a + b }))
+        new JFn2[Int, Int, Int] {
+          def apply(a: Int, b: Int) = a + b
+        }))
 
   def source = Source from asJavaIterable(1 to 3)
   def sawait[T](f: Future[T]) = Await.result(f, 10.seconds)

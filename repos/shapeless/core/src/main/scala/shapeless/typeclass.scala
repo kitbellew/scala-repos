@@ -100,7 +100,9 @@ trait LabelledProductTypeClassCompanion[C[_]] extends Serializable {
   }
 
   object Wrap {
-    type Aux[KV, V0] = Wrap[KV] { type V = V0 }
+    type Aux[KV, V0] = Wrap[KV] {
+      type V = V0
+    }
   }
 
   implicit def deriveHNil: Wrap.Aux[HNil, HNil] =
@@ -114,7 +116,9 @@ trait LabelledProductTypeClassCompanion[C[_]] extends Serializable {
   implicit def deriveHCons[HK <: Symbol, HV, TKV <: HList](implicit
       ch: Lazy[C[HV]],
       key: Witness.Aux[HK],
-      ct: Lazy[Wrap[TKV] { type V <: HList }]
+      ct: Lazy[Wrap[TKV] {
+        type V <: HList
+      }]
   ): Wrap.Aux[FieldType[HK, HV] :: TKV, HV :: ct.value.V] =
     new Wrap[FieldType[HK, HV] :: TKV] {
       type V = HV :: ct.value.V
@@ -203,7 +207,9 @@ trait LabelledTypeClassCompanion[C[_]]
   implicit def deriveCCons[HK <: Symbol, HV, TKV <: Coproduct](implicit
       ch: Lazy[C[HV]],
       key: Witness.Aux[HK],
-      ct: Lazy[Wrap[TKV] { type V <: Coproduct }]
+      ct: Lazy[Wrap[TKV] {
+        type V <: Coproduct
+      }]
   ): Wrap.Aux[FieldType[HK, HV] :+: TKV, HV :+: ct.value.V] =
     new Wrap[FieldType[HK, HV] :+: TKV] {
       type V = HV :+: ct.value.V

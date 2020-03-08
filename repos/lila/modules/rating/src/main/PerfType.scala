@@ -150,8 +150,12 @@ object PerfType {
     RacingKings,
     Puzzle,
     Opening)
-  val byKey = all map { p => (p.key, p) } toMap
-  val byId = all map { p => (p.id, p) } toMap
+  val byKey = all map { p =>
+    (p.key, p)
+  } toMap
+  val byId = all map { p =>
+    (p.id, p)
+  } toMap
 
   val default = Standard
 

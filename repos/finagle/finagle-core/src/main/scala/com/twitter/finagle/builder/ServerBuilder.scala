@@ -290,7 +290,9 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
                 life,
                 timer,
                 sr.scope("expired")) {
-                protected def onExpire() { dispatcher.close(Time.now) }
+                protected def onExpire() {
+                  dispatcher.close(Time.now)
+                }
               }
           }
         }

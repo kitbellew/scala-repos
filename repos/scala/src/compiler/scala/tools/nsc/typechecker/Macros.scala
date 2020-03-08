@@ -210,7 +210,9 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
       val nucleus = Ident(newTermName("macro"))
       val wrapped = Apply(
         nucleus,
-        payload map { case (k, v) => Assign(pickleAtom(k), pickleAtom(v)) })
+        payload map {
+          case (k, v) => Assign(pickleAtom(k), pickleAtom(v))
+        })
       val pickle = gen.mkTypeApply(wrapped, targs map (_.duplicate))
 
       // assign NoType to all freshly created AST nodes
@@ -654,7 +656,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
         else null
       if (Statistics.canEnable) Statistics.incCounter(macroExpandCount)
       try {
-        withInfoLevel(nodePrinters.InfoLevel.Quiet) { // verbose printing might cause recursive macro expansions
+        withInfoLevel(
+          nodePrinters.InfoLevel.Quiet) { // verbose printing might cause recursive macro expansions
           if (expandee.symbol.isErroneous || (expandee exists (_.isErroneous))) {
             val reason =
               if (expandee.symbol.isErroneous)
@@ -887,7 +890,9 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
         try {
           val numErrors = reporter.ERROR.count
           def hasNewErrors = reporter.ERROR.count > numErrors
-          val expanded = { pushMacroContext(args.c); runtime(args) }
+          val expanded = {
+            pushMacroContext(args.c); runtime(args)
+          }
           if (hasNewErrors) MacroGeneratedTypeError(expandee)
           def validateResultingTree(expanded: Tree) = {
             macroLogVerbose("original:")
@@ -1062,7 +1067,9 @@ object MacrosStats {
 }
 
 class Fingerprint private[Fingerprint] (val value: Int) extends AnyVal {
-  def paramPos = { assert(isTag, this); value }
+  def paramPos = {
+    assert(isTag, this); value
+  }
   def isTag = value >= 0
   override def toString = this match {
     case Other         => "Other"

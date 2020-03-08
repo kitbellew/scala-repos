@@ -65,7 +65,9 @@ trait Counter2Like[
 
   def contains(k1: K1, k2: K2) = data.contains(k1) && data(k1).contains(k2)
 
-  def update(i: (K1, K2), v: V) { update(i._1, i._2, v) }
+  def update(i: (K1, K2), v: V) {
+    update(i._1, i._2, v)
+  }
 
   def update(k1: K1, k2: K2, v: V) =
     innerGetOrElseUpdate(k1, data)(k2) = v
@@ -95,7 +97,9 @@ trait Counter2Like[
 
   override def toString: String = {
     data.iterator
-      .map { case (k1, c) => k1 + " -> " + c.toString }
+      .map {
+        case (k1, c) => k1 + " -> " + c.toString
+      }
       .mkString("Counter2(", ",\n", ")")
   }
 
@@ -170,7 +174,9 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
   def count[K1, K2](
       values: TraversableOnce[(K1, K2)]): Counter2[K1, K2, Int] = {
     val rv = apply[K1, K2, Int]()
-    values.foreach({ case (k1, k2) => rv(k1, k2) += 1; })
+    values.foreach({
+      case (k1, k2) => rv(k1, k2) += 1;
+    })
     rv
   }
 

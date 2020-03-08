@@ -295,11 +295,13 @@ trait Reshape {
     }
 
     private def trimAccessors(deff: Tree, stats: List[Tree]): List[Tree] = {
-      val symdefs =
-        (stats collect { case vodef: ValOrDefDef => vodef } map (vodeff =>
-          vodeff.symbol -> vodeff)).toMap
+      val symdefs = (stats collect {
+        case vodef: ValOrDefDef => vodef
+      } map (vodeff => vodeff.symbol -> vodeff)).toMap
       val accessors = scala.collection.mutable.Map[ValDef, List[DefDef]]()
-      stats collect { case ddef: DefDef => ddef } foreach (defdef => {
+      stats collect {
+        case ddef: DefDef => ddef
+      } foreach (defdef => {
         val valdef = symdefs get defdef.symbol.accessedOrSelf collect {
           case vdef: ValDef => vdef
         } getOrElse null
@@ -374,7 +376,9 @@ trait Reshape {
 
     private def reshapeLazyVals(stats: List[Tree]): List[Tree] = {
       val lazyvaldefs: Map[Symbol, DefDef] = stats
-        .collect({ case ddef: DefDef if ddef.mods.isLazy => ddef })
+        .collect({
+          case ddef: DefDef if ddef.mods.isLazy => ddef
+        })
         .map((ddef: DefDef) => ddef.symbol -> ddef)
         .toMap
       // lazy valdef and defdef are in the same block.
@@ -422,16 +426,17 @@ trait Reshape {
 
     private def trimSyntheticCaseClassCompanions(
         stats: List[Tree]): List[Tree] =
-      stats diff (stats collect { case moddef: ModuleDef => moddef } filter (
-        moddef => {
-          val isSynthetic = moddef.symbol.isSynthetic
-          // this doesn't work for local classes, e.g. for ones that are top-level to a quasiquote (see comments to companionClass)
-          // that's why I replace the check with an assumption that all synthetic modules are, in fact, companions of case classes
-          // val isCaseCompanion = moddef.symbol.companionClass.isCaseClass
-          val isCaseCompanion = true
-          if (isSynthetic && isCaseCompanion && reifyDebug)
-            println("discarding synthetic case class companion: " + moddef)
-          isSynthetic && isCaseCompanion
-        }))
+      stats diff (stats collect {
+        case moddef: ModuleDef => moddef
+      } filter (moddef => {
+        val isSynthetic = moddef.symbol.isSynthetic
+        // this doesn't work for local classes, e.g. for ones that are top-level to a quasiquote (see comments to companionClass)
+        // that's why I replace the check with an assumption that all synthetic modules are, in fact, companions of case classes
+        // val isCaseCompanion = moddef.symbol.companionClass.isCaseClass
+        val isCaseCompanion = true
+        if (isSynthetic && isCaseCompanion && reifyDebug)
+          println("discarding synthetic case class companion: " + moddef)
+        isSynthetic && isCaseCompanion
+      }))
   }
 }

@@ -15,7 +15,9 @@ trait Tupler[T] {
 }
 
 object Tupler extends LowerPriorityTupler {
-  implicit def forTuple[T: Tuple]: Tupler[T] { type Out = T } =
+  implicit def forTuple[T: Tuple]: Tupler[T] {
+    type Out = T
+  } =
     new Tupler[T] {
       type Out = T
       def OutIsTuple = implicitly[Tuple[Out]]
@@ -24,7 +26,9 @@ object Tupler extends LowerPriorityTupler {
 }
 
 private[server] abstract class LowerPriorityTupler {
-  implicit def forAnyRef[T]: Tupler[T] { type Out = Tuple1[T] } =
+  implicit def forAnyRef[T]: Tupler[T] {
+    type Out = Tuple1[T]
+  } =
     new Tupler[T] {
       type Out = Tuple1[T]
       def OutIsTuple = implicitly[Tuple[Out]]

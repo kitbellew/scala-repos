@@ -504,8 +504,12 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
     )
 
     // Test error handling for invalid expressions.
-    intercept[IllegalArgumentException] { $"key".when($"key" === 1, -1) }
-    intercept[IllegalArgumentException] { $"key".otherwise(-1) }
+    intercept[IllegalArgumentException] {
+      $"key".when($"key" === 1, -1)
+    }
+    intercept[IllegalArgumentException] {
+      $"key".otherwise(-1)
+    }
     intercept[IllegalArgumentException] {
       when($"key" === 1, -1).otherwise(-1).otherwise(-1)
     }
@@ -570,7 +574,9 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
     // Make sure we have 2 partitions, each with 2 records.
     val df = sparkContext
       .parallelize(Seq[Int](), 2)
-      .mapPartitions { _ => Iterator(Tuple1(1), Tuple1(2)) }
+      .mapPartitions { _ =>
+        Iterator(Tuple1(1), Tuple1(2))
+      }
       .toDF("a")
     checkAnswer(
       df.select(monotonicallyIncreasingId()),
@@ -586,7 +592,9 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
     // Make sure we have 2 partitions, each with 2 records.
     val df = sparkContext
       .parallelize(Seq[Int](), 2)
-      .mapPartitions { _ => Iterator(Tuple1(1), Tuple1(2)) }
+      .mapPartitions { _ =>
+        Iterator(Tuple1(1), Tuple1(2))
+      }
       .toDF("a")
     checkAnswer(
       df.select(spark_partition_id()),

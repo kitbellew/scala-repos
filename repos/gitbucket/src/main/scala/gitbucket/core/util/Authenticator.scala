@@ -10,7 +10,9 @@ import ControlUtil._
   * Allows only oneself and administrators.
   */
 trait OneselfAuthenticator { self: ControllerBase =>
-  protected def oneselfOnly(action: => Any) = { authenticate(action) }
+  protected def oneselfOnly(action: => Any) = {
+    authenticate(action)
+  }
   protected def oneselfOnly[T](action: T => Any) = (form: T) => {
     authenticate(action(form))
   }
@@ -37,7 +39,9 @@ trait OwnerAuthenticator {
     authenticate(action)
   }
   protected def ownerOnly[T](action: (T, RepositoryInfo) => Any) =
-    (form: T) => { authenticate(action(form, _)) }
+    (form: T) => {
+      authenticate(action(form, _))
+    }
 
   private def authenticate(action: (RepositoryInfo) => Any) = {
     {
@@ -64,7 +68,9 @@ trait OwnerAuthenticator {
   * Allows only signed in users.
   */
 trait UsersAuthenticator { self: ControllerBase =>
-  protected def usersOnly(action: => Any) = { authenticate(action) }
+  protected def usersOnly(action: => Any) = {
+    authenticate(action)
+  }
   protected def usersOnly[T](action: T => Any) = (form: T) => {
     authenticate(action(form))
   }
@@ -83,7 +89,9 @@ trait UsersAuthenticator { self: ControllerBase =>
   * Allows only administrators.
   */
 trait AdminAuthenticator { self: ControllerBase =>
-  protected def adminOnly(action: => Any) = { authenticate(action) }
+  protected def adminOnly(action: => Any) = {
+    authenticate(action)
+  }
   protected def adminOnly[T](action: T => Any) = (form: T) => {
     authenticate(action(form))
   }
@@ -107,7 +115,9 @@ trait CollaboratorsAuthenticator {
     authenticate(action)
   }
   protected def collaboratorsOnly[T](action: (T, RepositoryInfo) => Any) =
-    (form: T) => { authenticate(action(form, _)) }
+    (form: T) => {
+      authenticate(action(form, _))
+    }
 
   private def authenticate(action: (RepositoryInfo) => Any) = {
     {
@@ -136,7 +146,9 @@ trait ReferrerAuthenticator { self: ControllerBase with RepositoryService =>
     authenticate(action)
   }
   protected def referrersOnly[T](action: (T, RepositoryInfo) => Any) =
-    (form: T) => { authenticate(action(form, _)) }
+    (form: T) => {
+      authenticate(action(form, _))
+    }
 
   private def authenticate(action: (RepositoryInfo) => Any) = {
     {
@@ -170,7 +182,9 @@ trait ReadableUsersAuthenticator {
     authenticate(action)
   }
   protected def readableUsersOnly[T](action: (T, RepositoryInfo) => Any) =
-    (form: T) => { authenticate(action(form, _)) }
+    (form: T) => {
+      authenticate(action(form, _))
+    }
 
   private def authenticate(action: (RepositoryInfo) => Any) = {
     {
@@ -197,7 +211,9 @@ trait ReadableUsersAuthenticator {
   * Allows only the group managers.
   */
 trait GroupManagerAuthenticator { self: ControllerBase with AccountService =>
-  protected def managersOnly(action: => Any) = { authenticate(action) }
+  protected def managersOnly(action: => Any) = {
+    authenticate(action)
+  }
   protected def managersOnly[T](action: T => Any) = (form: T) => {
     authenticate(action(form))
   }

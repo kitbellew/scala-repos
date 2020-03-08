@@ -140,7 +140,9 @@ trait ScFunction
       override def initialValue(): Boolean = false
     }
   def isProbablyRecursive = probablyRecursive.get()
-  def setProbablyRecursive(b: Boolean) { probablyRecursive.set(b) }
+  def setProbablyRecursive(b: Boolean) {
+    probablyRecursive.set(b)
+  }
 
   def isEmptyParen =
     paramClauses.clauses.size == 1 && paramClauses.params.isEmpty
@@ -153,7 +155,9 @@ trait ScFunction
   def removeAllClauses() {
     paramClauses.clauses.headOption
       .zip(paramClauses.clauses.lastOption)
-      .foreach { p => paramClauses.deleteChildRange(p._1, p._2) }
+      .foreach { p =>
+        paramClauses.deleteChildRange(p._1, p._2)
+      }
   }
 
   def isNative: Boolean = {
@@ -571,7 +575,9 @@ trait ScFunction
         .getOrElse(return Seq.empty)
         .supers
         .filter(_.info.isInstanceOf[PhysicalSignature])
-        .map { _.info.asInstanceOf[PhysicalSignature].method }
+        .map {
+          _.info.asInstanceOf[PhysicalSignature].method
+        }
     else Seq.empty
   }
 
@@ -605,8 +611,11 @@ trait ScFunction
       .forName(ScalaPsiUtil.convertMemberName(name))
       ._1
       .fastPhysicalSignatureGet(s) match {
-      case Some(x) => x.supers.map { _.info }
-      case None    => Seq[Signature]()
+      case Some(x) =>
+        x.supers.map {
+          _.info
+        }
+      case None => Seq[Signature]()
     }
     t
   }
@@ -622,19 +631,32 @@ trait ScFunction
         .forName(ScalaPsiUtil.convertMemberName(name))
         ._1
       signs.fastPhysicalSignatureGet(s) match {
-        case Some(x) if x.info.namedElement == this => x.supers.map { _.info }
-        case Some(x) =>
-          x.supers.filter { _.info.namedElement != this }.map {
+        case Some(x) if x.info.namedElement == this =>
+          x.supers.map {
             _.info
-          } :+ x.info
+          }
+        case Some(x) =>
+          x.supers
+            .filter {
+              _.info.namedElement != this
+            }
+            .map {
+              _.info
+            } :+ x.info
         case None =>
           signs.get(s) match {
             case Some(x) if x.info.namedElement == this =>
-              x.supers.map { _.info }
-            case Some(x) =>
-              x.supers.filter { _.info.namedElement != this }.map {
+              x.supers.map {
                 _.info
-              } :+ x.info
+              }
+            case Some(x) =>
+              x.supers
+                .filter {
+                  _.info.namedElement != this
+                }
+                .map {
+                  _.info
+                } :+ x.info
             case None => Seq.empty
           }
       }
@@ -644,8 +666,11 @@ trait ScFunction
         .forName(ScalaPsiUtil.convertMemberName(name))
         ._1
         .fastPhysicalSignatureGet(s) match {
-        case Some(x) => x.supers.map { _.info }
-        case None    => Seq.empty
+        case Some(x) =>
+          x.supers.map {
+            _.info
+          }
+        case None => Seq.empty
       }
     }
   }

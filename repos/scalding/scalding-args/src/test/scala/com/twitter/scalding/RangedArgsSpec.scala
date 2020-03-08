@@ -29,19 +29,25 @@ class RangeSpecs extends WordSpec {
 
     "throw errors for misordered ranges" in {
       Range(4, 4)
-      intercept[AssertionError] { Range(5, 4) }
+      intercept[AssertionError] {
+        Range(5, 4)
+      }
     }
 
     "assert lower bounds" in {
       testRange.assertLowerBound(3)
       testRange.assertLowerBound(4)
-      intercept[AssertionError] { testRange.assertLowerBound(5) }
+      intercept[AssertionError] {
+        testRange.assertLowerBound(5)
+      }
     }
 
     "assert upper bounds" in {
       testRange.assertUpperBound(6)
       testRange.assertUpperBound(5)
-      intercept[AssertionError] { testRange.assertUpperBound(4) }
+      intercept[AssertionError] {
+        testRange.assertUpperBound(4)
+      }
     }
 
     "print nicely with mkString" should {

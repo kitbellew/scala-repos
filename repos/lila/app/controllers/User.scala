@@ -43,10 +43,18 @@ object User extends LilaController {
     OptionFuResult(UserRepo named username) { user =>
       GameRepo lastPlayedPlaying user zip
         Env.donation.isDonor(user.id) zip
-        (ctx.userId ?? { relationApi.fetchBlocks(user.id, _) }) zip
-        (ctx.userId ?? { Env.game.crosstableApi(user.id, _) }) zip
-        (ctx.isAuth ?? { Env.pref.api.followable(user.id) }) zip
-        (ctx.userId ?? { relationApi.fetchRelation(_, user.id) }) map {
+        (ctx.userId ?? {
+          relationApi.fetchBlocks(user.id, _)
+        }) zip
+        (ctx.userId ?? {
+          Env.game.crosstableApi(user.id, _)
+        }) zip
+        (ctx.isAuth ?? {
+          Env.pref.api.followable(user.id)
+        }) zip
+        (ctx.userId ?? {
+          relationApi.fetchRelation(_, user.id)
+        }) map {
         case (((((pov, donor), blocked), crosstable), followable), relation) =>
           Ok(html.user
             .mini(user, pov, blocked, followable, relation, crosstable, donor))
@@ -89,7 +97,10 @@ object User extends LilaController {
                 userGames(u, filterOption, page) map {
                   case (filterName, pag) => html.user.games(u, pag, filterName)
                 }
-            }.map { status(_) }.mon(_.http.response.user.show.website),
+            }.map {
+                status(_)
+              }
+              .mon(_.http.response.user.show.website),
             api = _ =>
               userGames(u, filterOption, page)
                 .map {
@@ -118,12 +129,20 @@ object User extends LilaController {
         filter = filters.current,
         me = ctx.me,
         page = page)(ctx.body)
-      relation <- ctx.userId ?? { relationApi.fetchRelation(_, u.id) }
-      notes <- ctx.me ?? { me =>
-        relationApi fetchFriends me.id flatMap { env.noteApi.get(u, me, _) }
+      relation <- ctx.userId ?? {
+        relationApi.fetchRelation(_, u.id)
       }
-      followable <- ctx.isAuth ?? { Env.pref.api followable u.id }
-      blocked <- ctx.userId ?? { relationApi.fetchBlocks(u.id, _) }
+      notes <- ctx.me ?? { me =>
+        relationApi fetchFriends me.id flatMap {
+          env.noteApi.get(u, me, _)
+        }
+      }
+      followable <- ctx.isAuth ?? {
+        Env.pref.api followable u.id
+      }
+      blocked <- ctx.userId ?? {
+        relationApi.fetchBlocks(u.id, _)
+      }
       searchForm = GameFilterMenu.searchForm(userGameSearch, filters.current)(
         ctx.body)
     } yield html.user.show(
@@ -150,7 +169,9 @@ object User extends LilaController {
         filter = GameFilterMenu.currentOf(GameFilterMenu.all, filterName),
         me = ctx.me,
         page = page
-      )(ctx.body) map { filterName -> _ }
+      )(ctx.body) map {
+        filterName -> _
+      }
     }
   }
 
@@ -254,8 +275,12 @@ object User extends LilaController {
             case ((u, nb), followable) =>
               ctx.userId ?? {
                 relationApi.fetchRelation(_, u.id)
-              } map { lila.relation.Related(u, nb.some, followable, _) }
-          }.sequenceFu map { relateds => html.user.opponents(user, relateds) }
+              } map {
+                lila.relation.Related(u, nb.some, followable, _)
+              }
+          }.sequenceFu map { relateds =>
+            html.user.opponents(user, relateds)
+          }
         }
       }
     }

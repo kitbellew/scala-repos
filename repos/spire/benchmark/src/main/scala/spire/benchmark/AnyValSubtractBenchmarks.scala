@@ -39,7 +39,9 @@ class AnyValSubtractBenchmarks extends MyBenchmark {
     var total = Ring[A].zero
     var i = 0
     val len = data.length
-    while (i < len) { total = Ring[A].minus(data(i), total); i += 1 }
+    while (i < len) {
+      total = Ring[A].minus(data(i), total); i += 1
+    }
     total
   }
 
@@ -47,7 +49,9 @@ class AnyValSubtractBenchmarks extends MyBenchmark {
     var total = 0.toByte
     var i = 0
     val len = data.length
-    while (i < len) { total = (data(i) - total).toByte; i += 1 }
+    while (i < len) {
+      total = (data(i) - total).toByte; i += 1
+    }
     total
   }
 
@@ -55,7 +59,9 @@ class AnyValSubtractBenchmarks extends MyBenchmark {
     var total = 0.toShort
     var i = 0
     val len = data.length
-    while (i < len) { total = (data(i) - total).toShort; i += 1 }
+    while (i < len) {
+      total = (data(i) - total).toShort; i += 1
+    }
     total
   }
 
@@ -63,7 +69,9 @@ class AnyValSubtractBenchmarks extends MyBenchmark {
     var total = 0
     var i = 0
     val len = data.length
-    while (i < len) { total = (data(i) - total); i += 1 }
+    while (i < len) {
+      total = (data(i) - total); i += 1
+    }
     total
   }
 
@@ -71,7 +79,9 @@ class AnyValSubtractBenchmarks extends MyBenchmark {
     var total = 0L
     var i = 0
     val len = data.length
-    while (i < len) { total = (data(i) - total); i += 1 }
+    while (i < len) {
+      total = (data(i) - total); i += 1
+    }
     total
   }
 
@@ -79,7 +89,9 @@ class AnyValSubtractBenchmarks extends MyBenchmark {
     var total = 0.0f
     var i = 0
     val len = data.length
-    while (i < len) { total = (data(i) - total); i += 1 }
+    while (i < len) {
+      total = (data(i) - total); i += 1
+    }
     total
   }
 
@@ -87,7 +99,9 @@ class AnyValSubtractBenchmarks extends MyBenchmark {
     var total = 0.0
     var i = 0
     val len = data.length
-    while (i < len) { total = (data(i) - total); i += 1 }
+    while (i < len) {
+      total = (data(i) - total); i += 1
+    }
     total
   }
 

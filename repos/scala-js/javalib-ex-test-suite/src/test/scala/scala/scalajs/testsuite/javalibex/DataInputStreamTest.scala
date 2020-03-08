@@ -212,8 +212,9 @@ object DataInputStreamTest extends JasmineTest {
         class BurstyStream(length: Int, burst: Int) extends InputStream {
           private var i: Int = 0
           def read(): Int =
-            if (i < length) { i += 1; i }
-            else -1
+            if (i < length) {
+              i += 1; i
+            } else -1
           override def read(buf: Array[Byte], off: Int, reqLen: Int): Int = {
             val len = Math.min(Math.min(reqLen, burst), length - i)
             if (reqLen == 0) 0

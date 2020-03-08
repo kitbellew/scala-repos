@@ -30,7 +30,11 @@ object Routing {
   def intercept[A, B](
       interceptor: (A) => Unit,
       interceptee: PF[A, B]): PF[A, B] =
-    filter({ case a if a.isInstanceOf[A] => interceptor(a) }, interceptee)
+    filter(
+      {
+        case a if a.isInstanceOf[A] => interceptor(a)
+      },
+      interceptee)
 
   /**
     * Creates a LoadBalancer from the thunk-supplied InfiniteIterator.
@@ -64,5 +68,9 @@ object Routing {
     * both another actor and through the supplied function
     */
   def loggerActor(actorToLog: ActorRef, logger: (Any) => Unit): ActorRef =
-    dispatcherActor({ case _ => actorToLog }, logger)
+    dispatcherActor(
+      {
+        case _ => actorToLog
+      },
+      logger)
 }

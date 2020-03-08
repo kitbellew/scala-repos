@@ -3,5 +3,7 @@ object Test extends App {
   try {
     val buffer = collection.mutable.ArrayBuffer.fill(Int.MaxValue / 2 + 1)(0)
     buffer append 1
-  } catch { case _: OutOfMemoryError => }
+  } catch {
+    case _: OutOfMemoryError =>
+  }
 }

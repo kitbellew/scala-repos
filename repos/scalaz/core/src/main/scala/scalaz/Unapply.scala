@@ -471,13 +471,16 @@ object UnapplyProduct {
     * members of the two `Unapply` instances in such a way that we can refer to
     * them in the implicit parameter list.
     */
-  case class SingletonOf[T, U <: { type A; type M[_] }](widen: T {
+  case class SingletonOf[T, U <: {
+    type A; type M[_]
+  }](widen: T {
     type A = U#A; type M[x] = U#M[x]
   })
 
   object SingletonOf {
-    implicit def mkSingletonOf[T <: { type A; type M[_] }](
-        implicit t: T): SingletonOf[T, t.type] =
+    implicit def mkSingletonOf[T <: {
+      type A; type M[_]
+    }](implicit t: T): SingletonOf[T, t.type] =
       SingletonOf(t)
   }
 
@@ -485,8 +488,12 @@ object UnapplyProduct {
       TC[_[_]],
       MA0,
       MB0,
-      U1 <: { type A; type M[_] },
-      U2 <: { type A; type M[_] }](implicit
+      U1 <: {
+        type A; type M[_]
+      },
+      U2 <: {
+        type A; type M[_]
+      }](implicit
       sU1: SingletonOf[Unapply[TC, MA0], U1],
       sU2: SingletonOf[Unapply[TC, MB0], U2],
       iso: U1#M <~> U2#M

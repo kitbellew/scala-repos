@@ -72,22 +72,32 @@ private[ui] class ExecutorsPage(
     val logsExist = execInfo.filter(_.executorLogs.nonEmpty).nonEmpty
 
     val execTable = {
-      <table class={UIUtils.TABLE_CLASS_STRIPED_SORTABLE}>
+      <table class={
+        UIUtils.TABLE_CLASS_STRIPED_SORTABLE
+      }>
         <thead>
           <th>Executor ID</th>
           <th>Address</th>
           <th>Status</th>
           <th>RDD Blocks</th>
-          <th><span data-toggle="tooltip" title={ToolTips.STORAGE_MEMORY}>Storage Memory</span></th>
+          <th><span data-toggle="tooltip" title={
+        ToolTips.STORAGE_MEMORY
+      }>Storage Memory</span></th>
           <th>Disk Used</th>
           <th>Cores</th>
           <th>Active Tasks</th>
           <th>Failed Tasks</th>
           <th>Complete Tasks</th>
           <th>Total Tasks</th>
-          <th><span data-toggle="tooltip" title={ToolTips.TASK_TIME}>Task Time (GC Time)</span></th>
-          <th><span data-toggle="tooltip" title={ToolTips.INPUT}>Input</span></th>
-          <th><span data-toggle="tooltip" title={ToolTips.SHUFFLE_READ}>Shuffle Read</span></th>
+          <th><span data-toggle="tooltip" title={
+        ToolTips.TASK_TIME
+      }>Task Time (GC Time)</span></th>
+          <th><span data-toggle="tooltip" title={
+        ToolTips.INPUT
+      }>Input</span></th>
+          <th><span data-toggle="tooltip" title={
+        ToolTips.SHUFFLE_READ
+      }>Shuffle Read</span></th>
           <th>
             <!-- Place the shuffle write tooltip on the left (rather than the default position
               of on top) because the shuffle write column is the last column on the right side and
@@ -98,14 +108,18 @@ private[ui] class ExecutorsPage(
               Shuffle Write
             </span>
           </th>
-          {if (logsExist) <th class="sorttable_nosort">Logs</th> else Seq.empty}
+          {
+        if (logsExist) <th class="sorttable_nosort">Logs</th> else Seq.empty
+      }
           {
         if (threadDumpEnabled) <th class="sorttable_nosort">Thread Dump</th>
         else Seq.empty
       }
         </thead>
         <tbody>
-          {execInfoSorted.map(execRow(_, logsExist))}
+          {
+        execInfoSorted.map(execRow(_, logsExist))
+      }
         </tbody>
       </table>
     }
@@ -114,13 +128,17 @@ private[ui] class ExecutorsPage(
       <div class="row">
         <div class="span12">
           <h4>Summary</h4>
-          {execSummary(activeExecutorInfo, deadExecutorInfo)}
+          {
+        execSummary(activeExecutorInfo, deadExecutorInfo)
+      }
         </div>
       </div>
       <div class = "row">
         <div class="span12">
           <h4>Executors</h4>
-          {execTable}
+          {
+        execTable
+      }
         </div>
       </div>;
 
@@ -140,20 +158,42 @@ private[ui] class ExecutorsPage(
       }
 
     <tr>
-      <td>{info.id}</td>
-      <td>{info.hostPort}</td>
-      <td sorttable_customkey={executorStatus.toString}>
-        {executorStatus}
+      <td>{
+      info.id
+    }</td>
+      <td>{
+      info.hostPort
+    }</td>
+      <td sorttable_customkey={
+      executorStatus.toString
+    }>
+        {
+      executorStatus
+    }
       </td>
-      <td>{info.rddBlocks}</td>
-      <td sorttable_customkey={memoryUsed.toString}>
-        {Utils.bytesToString(memoryUsed)} /
-        {Utils.bytesToString(maximumMemory)}
+      <td>{
+      info.rddBlocks
+    }</td>
+      <td sorttable_customkey={
+      memoryUsed.toString
+    }>
+        {
+      Utils.bytesToString(memoryUsed)
+    } /
+        {
+      Utils.bytesToString(maximumMemory)
+    }
       </td>
-      <td sorttable_customkey={diskUsed.toString}>
-        {Utils.bytesToString(diskUsed)}
+      <td sorttable_customkey={
+      diskUsed.toString
+    }>
+        {
+      Utils.bytesToString(diskUsed)
+    }
       </td>
-      <td>{info.totalCores}</td>
+      <td>{
+      info.totalCores
+    }</td>
       {
       taskData(
         info.maxTasks,
@@ -164,14 +204,26 @@ private[ui] class ExecutorsPage(
         info.totalDuration,
         info.totalGCTime)
     }
-      <td sorttable_customkey={info.totalInputBytes.toString}>
-        {Utils.bytesToString(info.totalInputBytes)}
+      <td sorttable_customkey={
+      info.totalInputBytes.toString
+    }>
+        {
+      Utils.bytesToString(info.totalInputBytes)
+    }
       </td>
-      <td sorttable_customkey={info.totalShuffleRead.toString}>
-        {Utils.bytesToString(info.totalShuffleRead)}
+      <td sorttable_customkey={
+      info.totalShuffleRead.toString
+    }>
+        {
+      Utils.bytesToString(info.totalShuffleRead)
+    }
       </td>
-      <td sorttable_customkey={info.totalShuffleWrite.toString}>
-        {Utils.bytesToString(info.totalShuffleWrite)}
+      <td sorttable_customkey={
+      info.totalShuffleWrite.toString
+    }>
+        {
+      Utils.bytesToString(info.totalShuffleWrite)
+    }
       </td>
       {
       if (logsExist) {
@@ -180,8 +232,12 @@ private[ui] class ExecutorsPage(
           info.executorLogs.map {
             case (logName, logUrl) =>
               <div>
-                  <a href={logUrl}>
-                    {logName}
+                  <a href={
+                logUrl
+              }>
+                    {
+                logName
+              }
                   </a>
                 </div>
           }
@@ -194,7 +250,9 @@ private[ui] class ExecutorsPage(
         if (info.isActive) {
           val encodedId = URLEncoder.encode(info.id, "UTF-8")
           <td>
-              <a href={s"threadDump/?executorId=${encodedId}"}>Thread Dump</a>
+              <a href={
+            s"threadDump/?executorId=${encodedId}"
+          }>Thread Dump</a>
             </td>
         } else {
           <td> </td>
@@ -218,16 +276,34 @@ private[ui] class ExecutorsPage(
     val totalShuffleWrite = execInfo.map(_.totalShuffleWrite).sum
 
     <tr>
-      <td><b>{rowName}({execInfo.size})</b></td>
-      <td>{execInfo.map(_.rddBlocks).sum}</td>
-      <td sorttable_customkey={memoryUsed.toString}>
-        {Utils.bytesToString(memoryUsed)} /
-        {Utils.bytesToString(maximumMemory)}
+      <td><b>{
+      rowName
+    }({
+      execInfo.size
+    })</b></td>
+      <td>{
+      execInfo.map(_.rddBlocks).sum
+    }</td>
+      <td sorttable_customkey={
+      memoryUsed.toString
+    }>
+        {
+      Utils.bytesToString(memoryUsed)
+    } /
+        {
+      Utils.bytesToString(maximumMemory)
+    }
       </td>
-      <td sorttable_customkey={diskUsed.toString}>
-        {Utils.bytesToString(diskUsed)}
+      <td sorttable_customkey={
+      diskUsed.toString
+    }>
+        {
+      Utils.bytesToString(diskUsed)
+    }
       </td>
-      <td>{totalCores}</td>
+      <td>{
+      totalCores
+    }</td>
       {
       taskData(
         execInfo.map(_.maxTasks).sum,
@@ -239,14 +315,26 @@ private[ui] class ExecutorsPage(
         execInfo.map(_.totalGCTime).sum
       )
     }
-      <td sorttable_customkey={totalInputBytes.toString}>
-        {Utils.bytesToString(totalInputBytes)}
+      <td sorttable_customkey={
+      totalInputBytes.toString
+    }>
+        {
+      Utils.bytesToString(totalInputBytes)
+    }
       </td>
-      <td sorttable_customkey={totalShuffleRead.toString}>
-        {Utils.bytesToString(totalShuffleRead)}
+      <td sorttable_customkey={
+      totalShuffleRead.toString
+    }>
+        {
+      Utils.bytesToString(totalShuffleRead)
+    }
       </td>
-      <td sorttable_customkey={totalShuffleWrite.toString}>
-        {Utils.bytesToString(totalShuffleWrite)}
+      <td sorttable_customkey={
+      totalShuffleWrite.toString
+    }>
+        {
+      Utils.bytesToString(totalShuffleWrite)
+    }
       </td>
     </tr>
   }
@@ -259,20 +347,30 @@ private[ui] class ExecutorsPage(
     val deadRow = execSummaryRow(deadExecInfo, "Dead");
     val totalRow = execSummaryRow(totalExecInfo, "Total");
 
-    <table class={UIUtils.TABLE_CLASS_STRIPED}>
+    <table class={
+      UIUtils.TABLE_CLASS_STRIPED
+    }>
       <thead>
         <th></th>
         <th>RDD Blocks</th>
-        <th><span data-toggle="tooltip" title={ToolTips.STORAGE_MEMORY}>Storage Memory</span></th>
+        <th><span data-toggle="tooltip" title={
+      ToolTips.STORAGE_MEMORY
+    }>Storage Memory</span></th>
         <th>Disk Used</th>
         <th>Cores</th>
         <th>Active Tasks</th>
         <th>Failed Tasks</th>
         <th>Complete Tasks</th>
         <th>Total Tasks</th>
-        <th><span data-toggle="tooltip" title={ToolTips.TASK_TIME}>Task Time (GC Time)</span></th>
-        <th><span data-toggle="tooltip" title={ToolTips.INPUT}>Input</span></th>
-        <th><span data-toggle="tooltip" title={ToolTips.SHUFFLE_READ}>Shuffle Read</span></th>
+        <th><span data-toggle="tooltip" title={
+      ToolTips.TASK_TIME
+    }>Task Time (GC Time)</span></th>
+        <th><span data-toggle="tooltip" title={
+      ToolTips.INPUT
+    }>Input</span></th>
+        <th><span data-toggle="tooltip" title={
+      ToolTips.SHUFFLE_READ
+    }>Shuffle Read</span></th>
         <th>
           <span data-toggle="tooltip" data-placement="left" title={
       ToolTips.SHUFFLE_WRITE
@@ -282,9 +380,15 @@ private[ui] class ExecutorsPage(
         </th>
       </thead>
       <tbody>
-        {activeRow}
-        {deadRow}
-        {totalRow}
+        {
+      activeRow
+    }
+        {
+      deadRow
+    }
+        {
+      totalRow
+    }
       </tbody>
     </table>
   }
@@ -327,17 +431,27 @@ private[ui] class ExecutorsPage(
         } else {
           ""
         }
-      }>{activeTasks}</td>
+      }>{
+        activeTasks
+      }</td>
     <td style={
         if (failedTasks > 0) {
           "background:hsla(0, 100%, 50%, " + failedTasksAlpha + ");color:white"
         } else {
           ""
         }
-      }>{failedTasks}</td>
-    <td>{completedTasks}</td>
-    <td>{totalTasks}</td>
-    <td sorttable_customkey={totalDuration.toString} style={
+      }>{
+        failedTasks
+      }</td>
+    <td>{
+        completedTasks
+      }</td>
+    <td>{
+        totalTasks
+      }</td>
+    <td sorttable_customkey={
+        totalDuration.toString
+      } style={
         // Red if GC time over GCTimePercent of total time
         if (totalGCTime > GCTimePercent * totalDuration) {
           "background:hsla(0, 100%, 50%, " + totalDurationAlpha + ");color:white"
@@ -345,8 +459,12 @@ private[ui] class ExecutorsPage(
           ""
         }
       }>
-      {Utils.msDurationToString(totalDuration)}
-      ({Utils.msDurationToString(totalGCTime)})
+      {
+        Utils.msDurationToString(totalDuration)
+      }
+      ({
+        Utils.msDurationToString(totalGCTime)
+      })
     </td>;
 
     tableData

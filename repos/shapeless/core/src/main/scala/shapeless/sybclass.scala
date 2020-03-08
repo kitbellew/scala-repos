@@ -103,7 +103,9 @@ trait DataT[F, T] extends Serializable {
 }
 
 trait DataT0 {
-  type Aux[F, T, Out0] = DataT[F, T] { type Out = Out0 }
+  type Aux[F, T, Out0] = DataT[F, T] {
+    type Out = Out0
+  }
 
   /**
     * Default DataT type class instance.

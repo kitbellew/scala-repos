@@ -158,7 +158,9 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
       qry: DBObject,
       sort: Option[DBObject],
       opts: FindOption*): List[BaseRecord] = {
-    findAll(sort, opts: _*) { coll => coll.find(qry) }
+    findAll(sort, opts: _*) { coll =>
+      coll.find(qry)
+    }
   }
 
   /**
@@ -169,7 +171,9 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
       keys: DBObject,
       sort: Option[DBObject],
       opts: FindOption*): List[BaseRecord] = {
-    findAll(sort, opts: _*) { coll => coll.find(qry, keys) }
+    findAll(sort, opts: _*) { coll =>
+      coll.find(qry, keys)
+    }
   }
 
   protected def findAll(sort: Option[DBObject], opts: FindOption*)(
@@ -268,7 +272,9 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
     foreachCallback(inst, _.beforeSave)
     f
     foreachCallback(inst, _.afterSave)
-    inst.allFields.foreach { _.resetDirty }
+    inst.allFields.foreach {
+      _.resetDirty
+    }
     true
   }
 
@@ -276,21 +282,27 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
     foreachCallback(inst, _.beforeUpdate)
     f
     foreachCallback(inst, _.afterUpdate)
-    inst.allFields.foreach { _.resetDirty }
+    inst.allFields.foreach {
+      _.resetDirty
+    }
   }
 
   /**
     * Save the instance in the appropriate backing store. Uses the WriteConcern set on the MongoClient instance.
     */
   def save(inst: BaseRecord): Boolean = saveOp(inst) {
-    useColl { coll => coll.save(inst.asDBObject) }
+    useColl { coll =>
+      coll.save(inst.asDBObject)
+    }
   }
 
   /**
     * Save the instance in the appropriate backing store
     */
   def save(inst: BaseRecord, concern: WriteConcern): Boolean = saveOp(inst) {
-    useColl { coll => coll.save(inst.asDBObject, concern) }
+    useColl { coll =>
+      coll.save(inst.asDBObject, concern)
+    }
   }
 
   /*

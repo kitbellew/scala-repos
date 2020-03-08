@@ -24,12 +24,16 @@ object nat {
     *
     * @author Miles Sabin
     */
-  trait Pred[A <: Nat] extends Serializable { type Out <: Nat }
+  trait Pred[A <: Nat] extends Serializable {
+    type Out <: Nat
+  }
 
   object Pred {
     def apply[A <: Nat](implicit pred: Pred[A]): Aux[A, pred.Out] = pred
 
-    type Aux[A <: Nat, B <: Nat] = Pred[A] { type Out = B }
+    type Aux[A <: Nat, B <: Nat] = Pred[A] {
+      type Out = B
+    }
 
     implicit def pred[B <: Nat]: Aux[Succ[B], B] = new Pred[Succ[B]] {
       type Out = B
@@ -41,18 +45,26 @@ object nat {
     *
     * @author Miles Sabin
     */
-  trait Sum[A <: Nat, B <: Nat] extends Serializable { type Out <: Nat }
+  trait Sum[A <: Nat, B <: Nat] extends Serializable {
+    type Out <: Nat
+  }
 
   object Sum {
     def apply[A <: Nat, B <: Nat](implicit sum: Sum[A, B]): Aux[A, B, sum.Out] =
       sum
 
-    type Aux[A <: Nat, B <: Nat, C <: Nat] = Sum[A, B] { type Out = C }
+    type Aux[A <: Nat, B <: Nat, C <: Nat] = Sum[A, B] {
+      type Out = C
+    }
 
-    implicit def sum1[B <: Nat]: Aux[_0, B, B] = new Sum[_0, B] { type Out = B }
+    implicit def sum1[B <: Nat]: Aux[_0, B, B] = new Sum[_0, B] {
+      type Out = B
+    }
     implicit def sum2[A <: Nat, B <: Nat](
         implicit sum: Sum[A, Succ[B]]): Aux[Succ[A], B, sum.Out] =
-      new Sum[Succ[A], B] { type Out = sum.Out }
+      new Sum[Succ[A], B] {
+        type Out = sum.Out
+      }
   }
 
   /**
@@ -60,20 +72,26 @@ object nat {
     *
     * @author Miles Sabin
     */
-  trait Diff[A <: Nat, B <: Nat] extends Serializable { type Out <: Nat }
+  trait Diff[A <: Nat, B <: Nat] extends Serializable {
+    type Out <: Nat
+  }
 
   object Diff {
     def apply[A <: Nat, B <: Nat](
         implicit diff: Diff[A, B]): Aux[A, B, diff.Out] = diff
 
-    type Aux[A <: Nat, B <: Nat, C <: Nat] = Diff[A, B] { type Out = C }
+    type Aux[A <: Nat, B <: Nat, C <: Nat] = Diff[A, B] {
+      type Out = C
+    }
 
     implicit def diff1[A <: Nat]: Aux[A, _0, A] = new Diff[A, _0] {
       type Out = A
     }
     implicit def diff2[A <: Nat, B <: Nat](
         implicit diff: Diff[A, B]): Aux[Succ[A], Succ[B], diff.Out] =
-      new Diff[Succ[A], Succ[B]] { type Out = diff.Out }
+      new Diff[Succ[A], Succ[B]] {
+        type Out = diff.Out
+      }
   }
 
   /**
@@ -81,13 +99,17 @@ object nat {
     *
     * @author Miles Sabin
     */
-  trait Prod[A <: Nat, B <: Nat] extends Serializable { type Out <: Nat }
+  trait Prod[A <: Nat, B <: Nat] extends Serializable {
+    type Out <: Nat
+  }
 
   object Prod {
     def apply[A <: Nat, B <: Nat](
         implicit prod: Prod[A, B]): Aux[A, B, prod.Out] = prod
 
-    type Aux[A <: Nat, B <: Nat, C <: Nat] = Prod[A, B] { type Out = C }
+    type Aux[A <: Nat, B <: Nat, C <: Nat] = Prod[A, B] {
+      type Out = C
+    }
 
     implicit def prod1[B <: Nat]: Aux[_0, B, _0] = new Prod[_0, B] {
       type Out = _0
@@ -104,7 +126,9 @@ object nat {
     *
     * @author Tom Switzer
     */
-  trait Div[A <: Nat, B <: Nat] extends Serializable { type Out <: Nat }
+  trait Div[A <: Nat, B <: Nat] extends Serializable {
+    type Out <: Nat
+  }
 
   object Div {
     def apply[A <: Nat, B <: Nat](implicit div: Div[A, B]): Aux[A, B, div.Out] =
@@ -112,19 +136,25 @@ object nat {
 
     import LT._
 
-    type Aux[A <: Nat, B <: Nat, C <: Nat] = Div[A, B] { type Out = C }
+    type Aux[A <: Nat, B <: Nat, C <: Nat] = Div[A, B] {
+      type Out = C
+    }
 
     implicit def div1[A <: Nat]: Aux[_0, A, _0] = new Div[_0, A] {
       type Out = _0
     }
 
     implicit def div2[A <: Nat, B <: Nat](implicit lt: A < B): Aux[A, B, _0] =
-      new Div[A, B] { type Out = _0 }
+      new Div[A, B] {
+        type Out = _0
+      }
 
     implicit def div3[A <: Nat, B <: Nat, C <: Nat, D <: Nat](implicit
         diff: Diff.Aux[Succ[A], B, C],
         div: Div.Aux[C, B, D]): Aux[Succ[A], B, Succ[D]] =
-      new Div[Succ[A], B] { type Out = Succ[D] }
+      new Div[Succ[A], B] {
+        type Out = Succ[D]
+      }
   }
 
   /**
@@ -132,20 +162,26 @@ object nat {
     *
     * @author Tom Switzer
     */
-  trait Mod[A <: Nat, B <: Nat] extends Serializable { type Out <: Nat }
+  trait Mod[A <: Nat, B <: Nat] extends Serializable {
+    type Out <: Nat
+  }
 
   object Mod {
     def apply[A <: Nat, B <: Nat](implicit mod: Mod[A, B]): Aux[A, B, mod.Out] =
       mod
 
-    type Aux[A <: Nat, B <: Nat, C <: Nat] = Mod[A, B] { type Out = C }
+    type Aux[A <: Nat, B <: Nat, C <: Nat] = Mod[A, B] {
+      type Out = C
+    }
 
     implicit def modAux[A <: Nat, B <: Nat, C <: Nat, D <: Nat, E <: Nat](
         implicit
         div: Div.Aux[A, B, C],
         prod: Prod.Aux[C, B, D],
         diff: Diff.Aux[A, D, E]): Aux[A, B, E] =
-      new Mod[A, B] { type Out = E }
+      new Mod[A, B] {
+        type Out = E
+      }
   }
 
   /**
@@ -218,20 +254,26 @@ object nat {
     *
     * @author George Leontiev
     */
-  trait Min[A <: Nat, B <: Nat] extends Serializable { type Out <: Nat }
+  trait Min[A <: Nat, B <: Nat] extends Serializable {
+    type Out <: Nat
+  }
 
   object Min {
     def apply[A <: Nat, B <: Nat](implicit min: Min[A, B]): Aux[A, B, min.Out] =
       min
 
-    type Aux[A <: Nat, B <: Nat, C <: Nat] = Min[A, B] { type Out = C }
+    type Aux[A <: Nat, B <: Nat, C <: Nat] = Min[A, B] {
+      type Out = C
+    }
 
     implicit def minAux0[A <: Nat, B <: Nat, C <: Nat](
         implicit lteq: LTEq[A, B]): Aux[A, B, A] = new Min[A, B] {
       type Out = A
     }
     implicit def minAux1[A <: Nat, B <: Nat, C <: Nat](
-        implicit lteq: LT[B, A]): Aux[A, B, B] = new Min[A, B] { type Out = B }
+        implicit lteq: LT[B, A]): Aux[A, B, B] = new Min[A, B] {
+      type Out = B
+    }
   }
 
   /**
@@ -239,20 +281,26 @@ object nat {
     *
     * @author Alexander Konovalov
     */
-  trait Max[A <: Nat, B <: Nat] extends Serializable { type Out <: Nat }
+  trait Max[A <: Nat, B <: Nat] extends Serializable {
+    type Out <: Nat
+  }
 
   object Max {
     def apply[A <: Nat, B <: Nat](implicit max: Max[A, B]): Aux[A, B, max.Out] =
       max
 
-    type Aux[A <: Nat, B <: Nat, C <: Nat] = Max[A, B] { type Out = C }
+    type Aux[A <: Nat, B <: Nat, C <: Nat] = Max[A, B] {
+      type Out = C
+    }
 
     implicit def maxAux0[A <: Nat, B <: Nat, C <: Nat](
         implicit lteq: LTEq[A, B]): Aux[A, B, B] = new Max[A, B] {
       type Out = B
     }
     implicit def maxAux1[A <: Nat, B <: Nat, C <: Nat](
-        implicit lteq: LT[B, A]): Aux[A, B, A] = new Max[A, B] { type Out = A }
+        implicit lteq: LT[B, A]): Aux[A, B, A] = new Max[A, B] {
+      type Out = A
+    }
   }
 
   /**
@@ -260,7 +308,9 @@ object nat {
     *
     * @author George Leontiev
     */
-  trait Pow[N <: Nat, X <: Nat] extends Serializable { type Out <: Nat }
+  trait Pow[N <: Nat, X <: Nat] extends Serializable {
+    type Out <: Nat
+  }
 
   object Pow {
     def apply[A <: Nat, B <: Nat](implicit pow: Pow[A, B]): Aux[A, B, pow.Out] =
@@ -268,7 +318,9 @@ object nat {
 
     import shapeless.nat._1
 
-    type Aux[N <: Nat, X <: Nat, Z <: Nat] = Pow[N, X] { type Out = Z }
+    type Aux[N <: Nat, X <: Nat, Z <: Nat] = Pow[N, X] {
+      type Out = Z
+    }
 
     implicit def pow1[A <: Nat]: Aux[Succ[A], _0, _0] = new Pow[Succ[A], _0] {
       type Out = _0
@@ -340,7 +392,9 @@ object nat {
     def apply[A <: Nat, B <: Nat](implicit gcd: GCD[A, B]): Aux[A, B, gcd.Out] =
       gcd
 
-    type Aux[A <: Nat, B <: Nat, Out0 <: Nat] = GCD[A, B] { type Out = Out0 }
+    type Aux[A <: Nat, B <: Nat, Out0 <: Nat] = GCD[A, B] {
+      type Out = Out0
+    }
 
     implicit def terminationCase[A <: Nat]: Aux[A, _0, A] = new GCD[A, _0] {
       type Out = A
@@ -360,7 +414,9 @@ object nat {
     def apply[A <: Nat, B <: Nat](implicit lcm: LCM[A, B]): Aux[A, B, lcm.Out] =
       lcm
 
-    type Aux[A <: Nat, B <: Nat, Out0 <: Nat] = LCM[A, B] { type Out = Out0 }
+    type Aux[A <: Nat, B <: Nat, Out0 <: Nat] = LCM[A, B] {
+      type Out = Out0
+    }
 
     implicit def lcm[A <: Nat, B <: Nat, M <: Nat, N <: Nat, Res <: Nat](
         implicit

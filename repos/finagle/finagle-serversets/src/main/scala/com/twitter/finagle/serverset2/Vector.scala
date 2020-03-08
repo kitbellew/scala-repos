@@ -61,8 +61,12 @@ private[serverset2] object Descriptor {
       StringObj(s) <- d("select")
       selector <- Selector.parse(s)
     } yield {
-      val w = for { DoubleObj(w) <- d("weight") } yield w
-      val p = for { IntObj(p) <- d("priority") } yield p
+      val w = for {
+        DoubleObj(w) <- d("weight")
+      } yield w
+      val p = for {
+        IntObj(p) <- d("priority")
+      } yield p
       Descriptor(selector, w getOrElse 1.0, p getOrElse 1)
     }
 }

@@ -6,8 +6,12 @@ import scala.pickling.Defaults._
 import json._
 
 sealed abstract class Base
-final class C extends Base { override def toString = "C" }
-final class D extends Base { override def toString = "D" }
+final class C extends Base {
+  override def toString = "C"
+}
+final class D extends Base {
+  override def toString = "D"
+}
 
 class BaseTest extends FunSuite {
   test("main") {

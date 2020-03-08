@@ -154,49 +154,65 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
       case BIT | BOOLEAN =>
         val column = ArrayBoolColumn.empty
         val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) { column.update(rowId, rs.getBoolean(index)) }
+          if (notNull(rs, index)) {
+            column.update(rowId, rs.getBoolean(index))
+          }
         SingleDBColumn(ColumnRef(selector, CBoolean), column, update)
 
       case CHAR | LONGNVARCHAR | LONGVARCHAR | NCHAR | NVARCHAR | VARCHAR =>
         val column = ArrayStrColumn.empty(yggConfig.maxSliceSize)
         val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) { column.update(rowId, rs.getString(index)) }
+          if (notNull(rs, index)) {
+            column.update(rowId, rs.getString(index))
+          }
         SingleDBColumn(ColumnRef(selector, CString), column, update)
 
       case TINYINT =>
         val column = ArrayLongColumn.empty(yggConfig.maxSliceSize)
         val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) { column.update(rowId, rs.getByte(index)) }
+          if (notNull(rs, index)) {
+            column.update(rowId, rs.getByte(index))
+          }
         SingleDBColumn(ColumnRef(selector, CLong), column, update)
 
       case SMALLINT =>
         val column = ArrayLongColumn.empty(yggConfig.maxSliceSize)
         val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) { column.update(rowId, rs.getShort(index)) }
+          if (notNull(rs, index)) {
+            column.update(rowId, rs.getShort(index))
+          }
         SingleDBColumn(ColumnRef(selector, CLong), column, update)
 
       case INTEGER =>
         val column = ArrayLongColumn.empty(yggConfig.maxSliceSize)
         val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) { column.update(rowId, rs.getInt(index)) }
+          if (notNull(rs, index)) {
+            column.update(rowId, rs.getInt(index))
+          }
         SingleDBColumn(ColumnRef(selector, CLong), column, update)
 
       case BIGINT =>
         val column = ArrayLongColumn.empty(yggConfig.maxSliceSize)
         val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) { column.update(rowId, rs.getLong(index)) }
+          if (notNull(rs, index)) {
+            column.update(rowId, rs.getLong(index))
+          }
         SingleDBColumn(ColumnRef(selector, CLong), column, update)
 
       case REAL =>
         val column = ArrayDoubleColumn.empty(yggConfig.maxSliceSize)
         val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) { column.update(rowId, rs.getFloat(index)) }
+          if (notNull(rs, index)) {
+            column.update(rowId, rs.getFloat(index))
+          }
         SingleDBColumn(ColumnRef(selector, CDouble), column, update)
 
       case DOUBLE | FLOAT =>
         val column = ArrayDoubleColumn.empty(yggConfig.maxSliceSize)
         val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) { column.update(rowId, rs.getDouble(index)) }
+          if (notNull(rs, index)) {
+            column.update(rowId, rs.getDouble(index))
+          }
         SingleDBColumn(ColumnRef(selector, CDouble), column, update)
 
       case DECIMAL | NUMERIC =>
@@ -239,7 +255,9 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                     pgo.getValue
                       .split(",|=>")
                       .toList
-                      .map { v => val t = v.trim; t.substring(1, t.length - 1) }
+                      .map { v =>
+                        val t = v.trim; t.substring(1, t.length - 1)
+                      }
                       .grouped(2)
                       .foreach {
                         case List(key, value) =>
@@ -249,7 +267,9 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                               hsRef,
                               ArrayStrColumn.empty(yggConfig.maxSliceSize))
                             .asInstanceOf[ArrayStrColumn]
-                            .unsafeTap { c => c.update(rowId, value) }
+                            .unsafeTap { c =>
+                              c.update(rowId, value)
+                            }
                           buildColumns += (hsRef -> column)
 
                         case invalid =>
@@ -318,7 +338,9 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
         elements
           .map {
             case (index, childType) =>
-              val newPaths = current.map { s => s + "[" + index + "]" }
+              val newPaths = current.map { s =>
+                s + "[" + index + "]"
+              }
               jTypeToProperties(childType, newPaths)
           }
           .toSet
@@ -329,7 +351,9 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
           .map {
             case (name, childType) =>
               val newPaths = if (current.nonEmpty) {
-                current.map { s => s + "." + name }
+                current.map { s =>
+                  s + "." + name
+                }
               } else {
                 Set(name)
               }
@@ -342,12 +366,16 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
     }
 
     case class Query(expr: String, limit: Int) {
-      private val baseQuery = if (limit > 0) { expr + " LIMIT " + limit }
-      else { expr }
+      private val baseQuery = if (limit > 0) {
+        expr + " LIMIT " + limit
+      } else {
+        expr
+      }
 
       def atOffset(offset: Long) =
-        if (offset > 0) { baseQuery + " OFFSET " + offset }
-        else baseQuery
+        if (offset > 0) {
+          baseQuery + " OFFSET " + offset
+        } else baseQuery
     }
 
     sealed trait LoadState
@@ -458,7 +486,9 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
           var rowIndex = 0
 
           while (results.next && rowIndex < yggConfig.maxSliceSize) {
-            valColumns.foreach { dbc => dbc.extract(results, rowIndex) }
+            valColumns.foreach { dbc =>
+              dbc.extract(results, rowIndex)
+            }
 
             rowIndex += 1
           }

@@ -9,13 +9,16 @@ import scala.reflect.internal.Flags._
 // SI-6241: move importers to a mirror
 trait Importers { to: SymbolTable =>
 
-  override def mkImporter(
-      from0: api.Universe): Importer { val from: from0.type } =
+  override def mkImporter(from0: api.Universe): Importer {
+    val from: from0.type
+  } =
     (
       if (to eq from0) {
         new Importer {
           val from = from0
-          val reverse = this.asInstanceOf[from.Importer { val from: to.type }]
+          val reverse = this.asInstanceOf[from.Importer {
+            val from: to.type
+          }]
           def importSymbol(their: from.Symbol) = their.asInstanceOf[to.Symbol]
           def importType(their: from.Type) = their.asInstanceOf[to.Type]
           def importTree(their: from.Tree) = their.asInstanceOf[to.Tree]
@@ -27,9 +30,13 @@ trait Importers { to: SymbolTable =>
         assert(
           from0.isInstanceOf[SymbolTable],
           "`from` should be an instance of scala.reflect.internal.SymbolTable")
-        new StandardImporter { val from = from0.asInstanceOf[SymbolTable] }
+        new StandardImporter {
+          val from = from0.asInstanceOf[SymbolTable]
+        }
       }
-    ).asInstanceOf[Importer { val from: from0.type }]
+    ).asInstanceOf[Importer {
+      val from: from0.type
+    }]
 
   abstract class StandardImporter extends Importer {
 
@@ -53,7 +60,9 @@ trait Importers { to: SymbolTable =>
       if (pendingSyms == 0 && pendingTpes == 0) {
         val fixups = this.fixups.toList
         this.fixups.clear()
-        fixups foreach { _() }
+        fixups foreach {
+          _()
+        }
       }
     }
 

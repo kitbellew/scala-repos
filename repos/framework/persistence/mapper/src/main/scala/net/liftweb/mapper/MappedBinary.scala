@@ -46,7 +46,9 @@ abstract class MappedBinary[T <: Mapper[T]](val fieldOwner: T)
     * Get the source field metadata for the field
     * @return the source field metadata for the field
     */
-  def sourceInfoMetadata(): SourceFieldMetadata { type ST = Array[Byte] } =
+  def sourceInfoMetadata(): SourceFieldMetadata {
+    type ST = Array[Byte]
+  } =
     SourceFieldMetadataRep(
       name,
       manifest,
@@ -104,7 +106,9 @@ abstract class MappedBinary[T <: Mapper[T]](val fieldOwner: T)
 
   protected def i_was_! = orgData.get
 
-  protected[mapper] def doneWithSave() { orgData.setFrom(data) }
+  protected[mapper] def doneWithSave() {
+    orgData.setFrom(data)
+  }
 
   protected def i_obscure_!(in: Array[Byte]): Array[Byte] = {
     new Array[Byte](0)
@@ -188,7 +192,9 @@ abstract class MappedText[T <: Mapper[T]](val fieldOwner: T)
     * Get the source field metadata for the field
     * @return the source field metadata for the field
     */
-  def sourceInfoMetadata(): SourceFieldMetadata { type ST = String } =
+  def sourceInfoMetadata(): SourceFieldMetadata {
+    type ST = String
+  } =
     SourceFieldMetadataRep(
       name,
       manifest,
@@ -246,7 +252,9 @@ abstract class MappedText[T <: Mapper[T]](val fieldOwner: T)
 
   protected def i_was_! = orgData.get
 
-  protected[mapper] def doneWithSave() { orgData.setFrom(data) }
+  protected[mapper] def doneWithSave() {
+    orgData.setFrom(data)
+  }
 
   def asJsExp: JsExp = JE.Str(get)
 
@@ -356,7 +364,9 @@ abstract class MappedFakeClob[T <: Mapper[T]](val fieldOwner: T)
     * Get the source field metadata for the field
     * @return the source field metadata for the field
     */
-  def sourceInfoMetadata(): SourceFieldMetadata { type ST = String } =
+  def sourceInfoMetadata(): SourceFieldMetadata {
+    type ST = String
+  } =
     SourceFieldMetadataRep(
       name,
       manifest,
@@ -412,7 +422,9 @@ abstract class MappedFakeClob[T <: Mapper[T]](val fieldOwner: T)
 
   protected def i_was_! = orgData.get
 
-  protected[mapper] def doneWithSave() { orgData.setFrom(data) }
+  protected[mapper] def doneWithSave() {
+    orgData.setFrom(data)
+  }
 
   protected def i_obscure_!(in: String): String = ""
 

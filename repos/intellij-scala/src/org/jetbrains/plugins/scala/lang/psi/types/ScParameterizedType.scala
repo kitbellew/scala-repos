@@ -444,13 +444,17 @@ case class ScTypeParameterType(
       },
       ptp match {
         case tp: ScTypeParam =>
-          tp.typeParameters.toList.map { new ScTypeParameterType(_, s) }
+          tp.typeParameters.toList.map {
+            new ScTypeParameterType(_, s)
+          }
         case _ =>
           ptp.getTypeParameters.toList.map(new ScTypeParameterType(_, s))
       },
       ptp match {
         case tp: ScTypeParam =>
-          new Suspension[ScType]({ () => s.subst(tp.lowerBound.getOrNothing) })
+          new Suspension[ScType]({ () =>
+            s.subst(tp.lowerBound.getOrNothing)
+          })
         case _ =>
           new Suspension[ScType]({ () =>
             s.subst(
@@ -468,7 +472,9 @@ case class ScTypeParameterType(
       },
       ptp match {
         case tp: ScTypeParam =>
-          new Suspension[ScType]({ () => s.subst(tp.upperBound.getOrAny) })
+          new Suspension[ScType]({ () =>
+            s.subst(tp.upperBound.getOrAny)
+          })
         case _ =>
           new Suspension[ScType]({ () =>
             s.subst(

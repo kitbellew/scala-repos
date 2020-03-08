@@ -266,7 +266,9 @@ abstract class Pickler extends SubComponent {
           throw new FatalError("bad type: " + tp + "(" + tp.getClass + ")")
       }
     }
-    private def putTypes(tps: List[Type]) { tps foreach putType }
+    private def putTypes(tps: List[Type]) {
+      tps foreach putType
+    }
 
     private object putTreeTraverser extends Traverser {
       // Only used when pickling trees, i.e. in an argument of some Annotation

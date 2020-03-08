@@ -12,7 +12,9 @@ final class TeamSearchApi(
     extends SearchReadApi[Team, Query] {
 
   def search(query: Query, from: From, size: Size) =
-    client.search(query, from, size) flatMap { res => fetcher(res.ids) }
+    client.search(query, from, size) flatMap { res =>
+      fetcher(res.ids)
+    }
 
   def count(query: Query) = client.count(query) map (_.count)
 

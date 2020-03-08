@@ -30,5 +30,7 @@ object Checksums {
     }
 
   def hex(bytes: Array[Byte]): String =
-    bytes map { it => "%02x" format (it.toInt & 0xff) } mkString ""
+    bytes map { it =>
+      "%02x" format (it.toInt & 0xff)
+    } mkString ""
 }

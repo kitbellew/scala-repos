@@ -58,7 +58,9 @@ trait MongoTestKit extends Specification with BeforeAfterEach {
       else {
         dbs foreach {
           case (id, _) =>
-            MongoDB.use(id)(db => { db.getName })
+            MongoDB.use(id)(db => {
+              db.getName
+            })
         }
         true
       }
@@ -74,7 +76,9 @@ trait MongoTestKit extends Specification with BeforeAfterEach {
       // drop the databases
       dbs foreach {
         case (id, _) =>
-          MongoDB.use(id) { db => db.dropDatabase }
+          MongoDB.use(id) { db =>
+            db.dropDatabase
+          }
       }
     }
 

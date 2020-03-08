@@ -94,7 +94,9 @@ object SerializationTestDefns {
   }
 
   object selInt extends Poly1 {
-    implicit def ci = at[Int] { x => x }
+    implicit def ci = at[Int] { x =>
+      x
+    }
   }
 
   object smear extends Poly {
@@ -925,7 +927,9 @@ class SerializationTests {
 
     // To satisfy serialization of `ToSizedHList` we must provide a serializable `IsTraversableLike`
     import scala.collection.generic.IsTraversableLike
-    implicit val hack: IsTraversableLike[List[Int]] { type A = Int } = null
+    implicit val hack: IsTraversableLike[List[Int]] {
+      type A = Int
+    } = null
     assertSerializable(ToSizedHList[List, Int, _4])
 
   }

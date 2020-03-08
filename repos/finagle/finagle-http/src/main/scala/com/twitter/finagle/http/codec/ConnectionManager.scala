@@ -47,5 +47,7 @@ class ConnectionManager {
     isIdle = chunks == 0
   }
 
-  def shouldClose() = synchronized { isIdle && !isKeepAlive }
+  def shouldClose() = synchronized {
+    isIdle && !isKeepAlive
+  }
 }

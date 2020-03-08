@@ -134,8 +134,12 @@ trait BaselineComparisons {
                   JNum(count) <- stats \? "count" flatMap (_ -->? classOf[JNum])
                 } yield {
                   val path = (
-                    jpath collect { case JString(p)                => p },
-                    (obj \? "query") collect { case JString(query) => query })
+                    jpath collect {
+                      case JString(p) => p
+                    },
+                    (obj \? "query") collect {
+                      case JString(query) => query
+                    })
                   val n = count.toInt
                   path -> Statistics(
                     0,

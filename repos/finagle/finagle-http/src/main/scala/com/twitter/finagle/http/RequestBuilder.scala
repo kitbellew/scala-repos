@@ -240,7 +240,9 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
    */
   def add(elems: Seq[FormElement]): RequestBuilder[HasUrl, Yes] = {
     val first = this.add(elems.head)
-    elems.tail.foldLeft(first) { (b, elem) => b.add(elem) }
+    elems.tail.foldLeft(first) { (b, elem) =>
+      b.add(elem)
+    }
   }
 
   /**
@@ -287,7 +289,9 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
     * Add group of headers expressed as a Map
     */
   def addHeaders(headers: Map[String, String]): This = {
-    headers.foldLeft(this) { case (b, (k, v)) => b.addHeader(k, v) }
+    headers.foldLeft(this) {
+      case (b, (k, v)) => b.addHeader(k, v)
+    }
   }
 
   /**
@@ -452,7 +456,9 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
     val req = Request(config.version, method, resource)
     config.headers foreach {
       case (field, values) =>
-        values foreach { v => req.headers.add(field, v) }
+        values foreach { v =>
+          req.headers.add(field, v)
+        }
     }
     req
   }

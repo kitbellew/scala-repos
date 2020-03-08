@@ -13,6 +13,8 @@ object NotNothing {
     type B = Unit
   }
 
-  implicit def notNothing[A]: NotNothing[A] = new NotNothing[A] { type B = A }
+  implicit def notNothing[A]: NotNothing[A] = new NotNothing[A] {
+    type B = A
+  }
 
 }

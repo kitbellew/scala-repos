@@ -255,7 +255,9 @@ object Duration extends TimeLikeOps[Duration] {
 
           // It's OK to use reduce because the regex ensures that there is
           // at least one element
-        } reduce { _ + _ }
+        } reduce {
+          _ + _
+        }
       case _ => throw new NumberFormatException("Invalid duration: " + s)
     }
   }

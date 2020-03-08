@@ -110,7 +110,9 @@ def $name($args): $name = {
           .map(_.exposedType)
           .distinct
           .zipWithIndex
-          .map { case (t, i) => s"""e$i: GR[$t]""" }
+          .map {
+            case (t, i) => s"""e$i: GR[$t]"""
+          }
           .mkString(", ")
         val rearranged = compoundValue(
           desiredColumnOrder.map(i => if (hlistEnabled) s"r($i)" else tuple(i)))

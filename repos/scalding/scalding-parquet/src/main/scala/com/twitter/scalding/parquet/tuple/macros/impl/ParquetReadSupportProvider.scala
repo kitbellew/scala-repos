@@ -213,7 +213,9 @@ object ParquetReadSupportProvider {
 
     def expandMethod(outerTpe: Type): List[(Tree, Tree, Tree, Tree)] =
       outerTpe.declarations
-        .collect { case m: MethodSymbol if m.isCaseAccessor => m }
+        .collect {
+          case m: MethodSymbol if m.isCaseAccessor => m
+        }
         .zipWithIndex
         .map {
           case (accessorMethod, idx) =>

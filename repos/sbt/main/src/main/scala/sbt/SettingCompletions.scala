@@ -165,7 +165,9 @@ private[sbt] object SettingCompletions {
     } toMap;
     def inputScopedKey(pred: AttributeKey[_] => Boolean): Parser[ScopedKey[_]] =
       scopedKeyParser(
-        keyMap.filter { case (_, k) => pred(k) },
+        keyMap.filter {
+          case (_, k) => pred(k)
+        },
         settings,
         context)
     val full = for {
@@ -364,8 +366,12 @@ private[sbt] object SettingCompletions {
       all: Map[String, T],
       detailLimit: Int)(description: T => Option[String])(
       prominent: (String, T) => Boolean): Seq[Completion] = {
-    val applicable = all.toSeq.filter { case (k, v) => k startsWith seen }
-    val prominentOnly = applicable filter { case (k, v) => prominent(k, v) }
+    val applicable = all.toSeq.filter {
+      case (k, v) => k startsWith seen
+    }
+    val prominentOnly = applicable filter {
+      case (k, v) => prominent(k, v)
+    }
 
     val showAll =
       (level >= 3) || (level == 2 && prominentOnly.size <= detailLimit) || prominentOnly.isEmpty
@@ -382,7 +388,9 @@ private[sbt] object SettingCompletions {
     if (in.isEmpty)
       Nil
     else if (showDescriptions) {
-      val withDescriptions = in map { case (id, key) => (id, description(key)) }
+      val withDescriptions = in map {
+        case (id, key) => (id, description(key))
+      }
       val padded = CommandUtil.aligned("", "   ", withDescriptions)
       (padded, in).zipped.map {
         case (line, (id, key)) =>

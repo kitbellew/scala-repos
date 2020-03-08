@@ -103,7 +103,9 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       try {
         num.toIntExact; true
       } catch {
-        case e: java.lang.ArithmeticException => { false }
+        case e: java.lang.ArithmeticException => {
+          false
+        }
       }
     }
 
@@ -305,38 +307,54 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       val tpe = BinaryOperationType(StrAndDateT, JNumberT, JTextT)
       def f2(ctx: MorphContext): F2 = CF2P("builtin::str::substring::" + name) {
         case (c1: StrColumn, c2: LongColumn) =>
-          new StrFrom.SL(c1, c2, (s, n) => n >= 0, { (s, n) => f(s, n.toInt) })
+          new StrFrom.SL(
+            c1,
+            c2,
+            (s, n) => n >= 0,
+            { (s, n) =>
+              f(s, n.toInt)
+            })
         case (c1: StrColumn, c2: DoubleColumn) =>
           new StrFrom.SD(
             c1,
             c2,
             (s, n) => n >= 0 && (n % 1 == 0),
-            { (s, n) => f(s, n.toInt) })
+            { (s, n) =>
+              f(s, n.toInt)
+            })
         case (c1: StrColumn, c2: NumColumn) =>
           new StrFrom.SN(
             c1,
             c2,
             (s, n) => n >= 0 && (n % 1 == 0),
-            { (s, n) => f(s, n.toInt) })
+            { (s, n) =>
+              f(s, n.toInt)
+            })
 
         case (c1: DateColumn, c2: LongColumn) =>
           new StrFrom.SL(
             dateToStrCol(c1),
             c2,
             (s, n) => n >= 0,
-            { (s, n) => f(s, n.toInt) })
+            { (s, n) =>
+              f(s, n.toInt)
+            })
         case (c1: DateColumn, c2: DoubleColumn) =>
           new StrFrom.SD(
             dateToStrCol(c1),
             c2,
             (s, n) => n >= 0 && (n % 1 == 0),
-            { (s, n) => f(s, n.toInt) })
+            { (s, n) =>
+              f(s, n.toInt)
+            })
         case (c1: DateColumn, c2: NumColumn) =>
           new StrFrom.SN(
             dateToStrCol(c1),
             c2,
             (s, n) => n >= 0 && (n % 1 == 0),
-            { (s, n) => f(s, n.toInt) })
+            { (s, n) =>
+              f(s, n.toInt)
+            })
       }
     }
 

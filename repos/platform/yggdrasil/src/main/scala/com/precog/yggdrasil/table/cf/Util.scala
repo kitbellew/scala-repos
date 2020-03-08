@@ -414,19 +414,29 @@ object util {
 
   def Remap(f: Int => Int) = CF1P("builtin::ct::remap") {
     case c: BoolColumn =>
-      new RemapColumn(c, f) with BoolColumn { def apply(row: Int) = c(f(row)) }
+      new RemapColumn(c, f) with BoolColumn {
+        def apply(row: Int) = c(f(row))
+      }
     case c: LongColumn =>
-      new RemapColumn(c, f) with LongColumn { def apply(row: Int) = c(f(row)) }
+      new RemapColumn(c, f) with LongColumn {
+        def apply(row: Int) = c(f(row))
+      }
     case c: DoubleColumn =>
       new RemapColumn(c, f) with DoubleColumn {
         def apply(row: Int) = c(f(row))
       }
     case c: NumColumn =>
-      new RemapColumn(c, f) with NumColumn { def apply(row: Int) = c(f(row)) }
+      new RemapColumn(c, f) with NumColumn {
+        def apply(row: Int) = c(f(row))
+      }
     case c: StrColumn =>
-      new RemapColumn(c, f) with StrColumn { def apply(row: Int) = c(f(row)) }
+      new RemapColumn(c, f) with StrColumn {
+        def apply(row: Int) = c(f(row))
+      }
     case c: DateColumn =>
-      new RemapColumn(c, f) with DateColumn { def apply(row: Int) = c(f(row)) }
+      new RemapColumn(c, f) with DateColumn {
+        def apply(row: Int) = c(f(row))
+      }
     case c: PeriodColumn =>
       new RemapColumn(c, f) with PeriodColumn {
         def apply(row: Int) = c(f(row))

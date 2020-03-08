@@ -385,7 +385,9 @@ private[kafka] class ZookeeperConsumerConnector(
   /**
     * KAFKA-1743: This method added for backward compatibility.
     */
-  def commitOffsets { commitOffsets(true) }
+  def commitOffsets {
+    commitOffsets(true)
+  }
 
   def commitOffsets(isAutoCommit: Boolean) {
 

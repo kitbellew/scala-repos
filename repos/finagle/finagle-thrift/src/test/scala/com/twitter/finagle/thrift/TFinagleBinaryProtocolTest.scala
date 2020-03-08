@@ -113,7 +113,9 @@ class TFinagleBinaryProtocolTest
     val offset = 2
 
     val bbuf = ByteBuffer.allocate(len)
-    0 until len foreach { i => bbuf.put(i.toByte) }
+    0 until len foreach { i =>
+      bbuf.put(i.toByte)
+    }
     bbuf.position(offset)
     val withOffset = bbuf.slice()
     withOffset.arrayOffset() should be(offset)
@@ -132,7 +134,9 @@ class TFinagleBinaryProtocolTest
     val limit = 18
 
     val buffer = ByteBuffer.allocate(len)
-    0.until(len).foreach { i => buffer.put(i.toByte) }
+    0.until(len).foreach { i =>
+      buffer.put(i.toByte)
+    }
     buffer.position(offset)
     buffer.limit(limit)
 
@@ -148,7 +152,9 @@ class TFinagleBinaryProtocolTest
     val len = 24
 
     val buffer = ByteBuffer.allocate(len)
-    0.until(len).foreach { i => buffer.put(i.toByte) }
+    0.until(len).foreach { i =>
+      buffer.put(i.toByte)
+    }
     buffer.position(0)
 
     val trans = new TMemoryBuffer(128)

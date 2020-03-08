@@ -51,7 +51,9 @@ case class TreePrinter(
         val p = prefix2 + Iterator
           .fill(name.length + (if (name.length == 0) 0 else 2))(' ')
           .mkString + cYellow + multi2 + cNormal
-        lines.foreach { l => out.println(p + l) }
+        lines.foreach { l =>
+          out.println(p + l)
+        }
       } else {
         out.println(
           di.mainInfo + (if (di.attrInfo.isEmpty) ""
@@ -79,7 +81,9 @@ case class TreePrinter(
       if (mark(value)) Some(n)
       else {
         val children = value.getDumpInfo.children.map(_._2).toVector
-        val markedChildren = children.map(find).collect { case Some(d) => d }
+        val markedChildren = children.map(find).collect {
+          case Some(d) => d
+        }
         if (markedChildren.length > 1) Some(n)
         else if (markedChildren.length == 1) Some(markedChildren.head)
         else None

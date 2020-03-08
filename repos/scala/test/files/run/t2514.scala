@@ -1,7 +1,9 @@
 import scala.language.{implicitConversions, postfixOps, reflectiveCalls}
 
 object Test {
-  implicit def x[A](a: A) = new { def xx = a }
+  implicit def x[A](a: A) = new {
+    def xx = a
+  }
 
   def main(args: Array[String]): Unit = {
     val r1 = 12 xx;

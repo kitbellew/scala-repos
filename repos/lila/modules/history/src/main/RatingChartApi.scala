@@ -67,7 +67,9 @@ final class RatingChartApi(
             Horde,
             RacingKings,
             Crazyhouse,
-            Puzzle) map { pt => ratingsMapToJson(pt, history(pt)) }
+            Puzzle) map { pt =>
+            ratingsMapToJson(pt, history(pt))
+          }
         }
       }
     }

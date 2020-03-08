@@ -154,7 +154,9 @@ trait StreamTest extends QueryTest with Timeouts {
   /** Assert that a body is true */
   class Assert(condition: => Boolean, val message: String = "")
       extends StreamAction {
-    def run(): Unit = { Assertions.assert(condition) }
+    def run(): Unit = {
+      Assertions.assert(condition)
+    }
     override def toString: String = s"Assert(<condition>, $message)"
   }
 
@@ -162,8 +164,17 @@ trait StreamTest extends QueryTest with Timeouts {
     def apply(condition: => Boolean, message: String = ""): Assert =
       new Assert(condition, message)
     def apply(message: String)(body: => Unit): Assert =
-      new Assert({ body; true }, message)
-    def apply(body: => Unit): Assert = new Assert({ body; true }, "")
+      new Assert(
+        {
+          body; true
+        },
+        message)
+    def apply(body: => Unit): Assert =
+      new Assert(
+        {
+          body; true
+        },
+        "")
   }
 
   /** Assert that a condition on the active query is true */
@@ -397,7 +408,11 @@ trait StreamTest extends QueryTest with Timeouts {
 
           case a: Assert =>
             val streamToAssert = Option(currentStream).getOrElse(lastStream)
-            verify({ a.run(); true }, s"Assert failed: ${a.message}")
+            verify(
+              {
+                a.run(); true
+              },
+              s"Assert failed: ${a.message}")
 
           case a: AddData =>
             awaiting.put(a.source, a.addData())
@@ -454,7 +469,9 @@ trait StreamTest extends QueryTest with Timeouts {
     var running = true
     val actions = new ArrayBuffer[StreamAction]()
 
-    def addCheck() = { actions += CheckAnswer(1 to dataPos: _*) }
+    def addCheck() = {
+      actions += CheckAnswer(1 to dataPos: _*)
+    }
 
     def addRandomData() = {
       val numItems = Random.nextInt(10)
@@ -489,7 +506,9 @@ trait StreamTest extends QueryTest with Timeouts {
         }
       }
     }
-    if (!running) { actions += StartStream }
+    if (!running) {
+      actions += StartStream
+    }
     addCheck()
     testStream(ds)(actions: _*)
   }

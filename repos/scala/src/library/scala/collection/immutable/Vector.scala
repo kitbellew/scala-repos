@@ -513,11 +513,17 @@ final class Vector[+A] private[immutable] (
   }
 
   private def zeroLeft(array: Array[AnyRef], index: Int): Unit = {
-    var i = 0; while (i < index) { array(i) = null; i += 1 }
+    var i = 0;
+    while (i < index) {
+      array(i) = null; i += 1
+    }
   }
 
   private def zeroRight(array: Array[AnyRef], index: Int): Unit = {
-    var i = index; while (i < array.length) { array(i) = null; i += 1 }
+    var i = index;
+    while (i < array.length) {
+      array(i) = null; i += 1
+    }
   }
 
   private def copyLeft(array: Array[AnyRef], right: Int): Array[AnyRef] = {

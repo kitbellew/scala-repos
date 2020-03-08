@@ -20,8 +20,9 @@ trait Internals extends api.Internals {
   trait SymbolTableInternal extends MacroInternalApi {
     lazy val reificationSupport: ReificationSupportApi = self.build
 
-    def createImporter(from0: Universe): Importer { val from: from0.type } =
-      self.mkImporter(from0)
+    def createImporter(from0: Universe): Importer {
+      val from: from0.type
+    } = self.mkImporter(from0)
 
     def newScopeWith(elems: Symbol*): Scope = self.newScopeWith(elems: _*)
     def enter(scope: Scope, sym: Symbol): scope.type = {
@@ -41,8 +42,9 @@ trait Internals extends api.Internals {
       tree.substituteTypes(from, to)
     def substituteThis(tree: Tree, clazz: Symbol, to: Tree): Tree =
       tree.substituteThis(clazz, to)
-    def attachments(tree: Tree): Attachments { type Pos = Position } =
-      tree.attachments
+    def attachments(tree: Tree): Attachments {
+      type Pos = Position
+    } = tree.attachments
     def updateAttachment[T: ClassTag](tree: Tree, attachment: T): tree.type =
       tree.updateAttachment(attachment)
     def removeAttachment[T: ClassTag](tree: Tree): tree.type =
@@ -144,8 +146,9 @@ trait Internals extends api.Internals {
     def fullyInitialize(scope: Scope): scope.type =
       definitions.fullyInitializeScope(scope).asInstanceOf[scope.type]
     def flags(symbol: Symbol): FlagSet = symbol.flags
-    def attachments(symbol: Symbol): Attachments { type Pos = Position } =
-      symbol.attachments
+    def attachments(symbol: Symbol): Attachments {
+      type Pos = Position
+    } = symbol.attachments
     def updateAttachment[T: ClassTag](
         symbol: Symbol,
         attachment: T): symbol.type = symbol.updateAttachment(attachment)

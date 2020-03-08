@@ -174,7 +174,12 @@ trait ProtoUser[T <: ProtoUser[T]] extends Record[T] {
     case _                                      => email.get
   }
 
-  def niceNameWEmailLink = <a href={"mailto:" + email.get}>{niceName}</a>
+  def niceNameWEmailLink =
+    <a href={
+      "mailto:" + email.get
+    }>{
+      niceName
+    }</a>
 }
 
 /**

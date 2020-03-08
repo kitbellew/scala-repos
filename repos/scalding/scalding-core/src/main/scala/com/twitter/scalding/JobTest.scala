@@ -62,7 +62,9 @@ class JobTest(cons: (Args) => Job) {
   private val statsCallbacks = Buffer[(CascadingStats) => Unit]()
   // TODO: Switch the following maps and sets from Source to String keys
   // to guard for scala equality bugs
-  private var sourceMap: (Source) => Option[Buffer[Tuple]] = { _ => None }
+  private var sourceMap: (Source) => Option[Buffer[Tuple]] = { _ =>
+    None
+  }
   private var sinkSet = Set[Source]()
   private var fileSet = Set[String]()
   private var validateJob = false
@@ -80,7 +82,9 @@ class JobTest(cons: (Args) => Job) {
   private def sourceBuffer[T: TupleSetter](
       s: Source,
       tups: Iterable[T]): JobTest = {
-    source { src => if (src == s) Some(tups) else None }
+    source { src =>
+      if (src == s) Some(tups) else None
+    }
     this
   }
 
@@ -89,7 +93,9 @@ class JobTest(cons: (Args) => Job) {
       implicit setter: TupleSetter[T]): JobTest = {
     val oldSm = sourceMap
     val bufferTupFn = fn.andThen { optItT =>
-      optItT.map { _.map(t => setter(t)).toBuffer }
+      optItT.map {
+        _.map(t => setter(t)).toBuffer
+      }
     }
     // We have to memoize to return the same buffer each time
     val memo = scala.collection.mutable.Map[Source, Option[Buffer[Tuple]]]()
@@ -129,7 +135,10 @@ class JobTest(cons: (Args) => Job) {
      * you also modify the `finalize` function accordingly.
      */
     sinkSet += s
-    callbacks += (() => op(buffer.map { tup => conv(new TupleEntry(tup)) }))
+    callbacks += (() =>
+      op(buffer.map { tup =>
+        conv(new TupleEntry(tup))
+      }))
     this
   }
 
@@ -183,7 +192,9 @@ class JobTest(cons: (Args) => Job) {
   }
 
   // This SITS is unfortunately needed to get around Specs
-  def finish: Unit = { () }
+  def finish: Unit = {
+    ()
+  }
 
   def validate(v: Boolean) = {
     validateJob = v
@@ -241,8 +252,11 @@ class JobTest(cons: (Args) => Job) {
     // Make sure to clean the state:
     job.clear
 
-    val next: Option[Job] = if (runNext) { job.next }
-    else { None }
+    val next: Option[Job] = if (runNext) {
+      job.next
+    } else {
+      None
+    }
     next match {
       case Some(nextjob) => runJob(nextjob, runNext)
       case None => {
@@ -253,13 +267,19 @@ class JobTest(cons: (Args) => Job) {
              * you also modify the `finalize` function accordingly.
              */
             // The sinks are written to disk, we need to clean them up:
-            sinkSet.foreach { hadoopTest.finalize(_) }
+            sinkSet.foreach {
+              hadoopTest.finalize(_)
+            }
           }
           case _ => ()
         }
         // Now it is time to check the test conditions:
-        callbacks.foreach { cb => cb() }
-        statsCallbacks.foreach { cb => cb(job.scaldingCascadingStats.get) }
+        callbacks.foreach { cb =>
+          cb()
+        }
+        statsCallbacks.foreach { cb =>
+          cb(job.scaldingCascadingStats.get)
+        }
       }
     }
   }

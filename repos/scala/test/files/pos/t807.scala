@@ -1,7 +1,9 @@
 trait Matcher {
   trait Link {
     type Self <: Link;
-    type Match <: Link { type Match = Link.this.Self; }
+    type Match <: Link {
+      type Match = Link.this.Self;
+    }
   }
   trait HasLinks {
     def link(b: Boolean): Link = null;

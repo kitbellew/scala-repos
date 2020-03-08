@@ -65,12 +65,16 @@ abstract class AutoOps {
       names: List[String],
       x: String = "x",
       y: String = "y"): Option[c.Expr[A]] =
-    names find { name => hasMethod1[A, A, A](name) } map (binop[A](_, x, y))
+    names find { name =>
+      hasMethod1[A, A, A](name)
+    } map (binop[A](_, x, y))
 
   def unopSearch[A: c.WeakTypeTag](
       names: List[String],
       x: String = "x"): Option[c.Expr[A]] =
-    names find { name => hasMethod0[A, A](name) } map (unop[A](_, x))
+    names find { name =>
+      hasMethod0[A, A](name)
+    } map (unop[A](_, x))
 
   def hasMethod0[A: c.WeakTypeTag, B: c.WeakTypeTag](name: String): Boolean = {
     val tpeA = c.weakTypeTag[A].tpe

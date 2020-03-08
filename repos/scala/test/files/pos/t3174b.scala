@@ -1,4 +1,6 @@
-trait Foo[X] { def foo: Map[String, Foo[X]] }
+trait Foo[X] {
+  def foo: Map[String, Foo[X]]
+}
 
 object Test {
   def f[T](): Foo[T] = {

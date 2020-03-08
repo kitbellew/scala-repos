@@ -346,7 +346,9 @@ private[python] class PythonMLLibAPI extends Serializable {
       isotonic: Boolean): JList[Object] = {
     val isotonicRegressionAlg = new IsotonicRegression().setIsotonic(isotonic)
     val input = data.rdd
-      .map { x => (x(0), x(1), x(2)) }
+      .map { x =>
+        (x(0), x(1), x(2))
+      }
       .persist(StorageLevel.MEMORY_AND_DISK)
     try {
       val model = isotonicRegressionAlg.run(input)

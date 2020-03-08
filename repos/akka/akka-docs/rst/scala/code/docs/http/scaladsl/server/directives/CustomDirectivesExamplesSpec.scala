@@ -12,7 +12,9 @@ class CustomDirectivesExamplesSpec extends RoutingSpec {
     val getOrPut = get | put
 
     // tests:
-    val route = getOrPut { complete("ok") }
+    val route = getOrPut {
+      complete("ok")
+    }
 
     Get("/") ~> route ~> check {
       responseAs[String] shouldEqual "ok"

@@ -166,7 +166,9 @@ private[akka] class OutputStreamAdapter(
     send(() ⇒ {
       try {
         dataQueue.put(data)
-      } catch { case NonFatal(ex) ⇒ throw new IOException(ex) }
+      } catch {
+        case NonFatal(ex) ⇒ throw new IOException(ex)
+      }
       if (downstreamStatus.get() == Canceled) {
         isPublisherAlive = false
         throw publisherClosedException

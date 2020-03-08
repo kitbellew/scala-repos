@@ -1,7 +1,11 @@
 class A
 trait B[T <: B[T]] extends A
-class C extends B[C] { override def toString = "C" }
-class D extends B[D] { override def toString = "D" }
+class C extends B[C] {
+  override def toString = "C"
+}
+class D extends B[D] {
+  override def toString = "D"
+}
 
 class E {
   val ys = List(List(new C), Stream(new D))

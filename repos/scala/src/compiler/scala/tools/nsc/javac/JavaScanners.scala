@@ -233,7 +233,9 @@ trait JavaScanners extends ast.parser.ScannersCommon {
 
     /** append Unicode character to "lit" buffer
       */
-    protected def putChar(c: Char) { cbuf.append(c) }
+    protected def putChar(c: Char) {
+      cbuf.append(c)
+    }
 
     /** Clear buffer and set name */
     private def setName() {
@@ -809,7 +811,9 @@ trait JavaScanners extends ast.parser.ScannersCommon {
 
     /** generate an error at the current token position
       */
-    def syntaxError(msg: String) { syntaxError(pos, msg) }
+    def syntaxError(msg: String) {
+      syntaxError(pos, msg)
+    }
 
     /** signal an error where the input ended in the middle of a token */
     def incompleteInputError(msg: String) {

@@ -91,7 +91,9 @@ class SnapshotSerializer(val system: ExtendedActorSystem)
     // serialize actor references with full address information (defaultAddress)
     transportInformation match {
       case Some(ti) ⇒
-        Serialization.currentTransportInformation.withValue(ti) { serialize() }
+        Serialization.currentTransportInformation.withValue(ti) {
+          serialize()
+        }
       case None ⇒ serialize()
     }
   }
@@ -160,7 +162,9 @@ class SnapshotSerializer(val system: ExtendedActorSystem)
   }
 
   private def writeInt(outputStream: OutputStream, i: Int) =
-    0 to 24 by 8 foreach { shift ⇒ outputStream.write(i >> shift) }
+    0 to 24 by 8 foreach { shift ⇒
+      outputStream.write(i >> shift)
+    }
 
   private def readShort(inputStream: InputStream) = {
     val ch1 = inputStream.read()

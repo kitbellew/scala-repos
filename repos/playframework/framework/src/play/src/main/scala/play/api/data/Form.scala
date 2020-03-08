@@ -54,7 +54,9 @@ case class Form[T](
     * Formats associated to this form, indexed by field name. *
     */
   val formats: Map[String, (String, Seq[Any])] = mapping.mappings
-    .map { m => m.key -> m.format }
+    .map { m =>
+      m.key -> m.format
+    }
     .collect {
       case (k, Some(f)) => k -> f
     }
@@ -180,7 +182,9 @@ case class Form[T](
       key,
       constraints.get(key).getOrElse(Nil),
       formats.get(key),
-      errors.collect { case e if e.key == key => e },
+      errors.collect {
+        case e if e.key == key => e
+      },
       data.get(key))
 
   /**
@@ -440,7 +444,9 @@ private[data] object FormUtils {
       }
       case JsArray(values) => {
         values.zipWithIndex
-          .map { case (value, i) => fromJson(prefix + "[" + i + "]", value) }
+          .map {
+            case (value, i) => fromJson(prefix + "[" + i + "]", value)
+          }
           .foldLeft(Map.empty[String, String])(_ ++ _)
       }
       case JsNull           => Map.empty
@@ -739,7 +745,9 @@ object RepeatedMapping {
     val KeyPattern =
       ("^" + java.util.regex.Pattern.quote(key) + """\[(\d+)\].*$""").r
     data.toSeq
-      .collect { case (KeyPattern(index), _) => index.toInt }
+      .collect {
+        case (KeyPattern(index), _) => index.toInt
+      }
       .sorted
       .distinct
   }
@@ -794,7 +802,9 @@ case class RepeatedMapping[T](
       Right(allErrorsOrItems.map(_.right.get).toList).right
         .flatMap(applyConstraints)
     } else {
-      Left(allErrorsOrItems.collect { case Left(errors) => errors }.flatten)
+      Left(allErrorsOrItems.collect {
+        case Left(errors) => errors
+      }.flatten)
     }
   }
 
@@ -891,9 +901,13 @@ case class OptionalMapping[T](
       .filter(p =>
         p == key || p.startsWith(key + ".") || p.startsWith(key + "["))
       .map(k => data.get(k).filterNot(_.isEmpty))
-      .collect { case Some(v) => v }
+      .collect {
+        case Some(v) => v
+      }
       .headOption
-      .map { _ => wrapped.bind(data).right.map(Some(_)) }
+      .map { _ =>
+        wrapped.bind(data).right.map(Some(_))
+      }
       .getOrElse {
         Right(None)
       }
@@ -993,7 +1007,9 @@ case class FieldMapping[T](
     * @return either a concrete value of type `T` or a set of errors, if binding failed
     */
   def bind(data: Map[String, String]): Either[Seq[FormError], T] = {
-    binder.bind(key, data).right.flatMap { applyConstraints(_) }
+    binder.bind(key, data).right.flatMap {
+      applyConstraints(_)
+    }
   }
 
   /**
@@ -1060,7 +1076,9 @@ trait ObjectMapping {
       : Either[Seq[FormError], Seq[Any]] = {
     val all: Seq[Either[Seq[FormError], Seq[Any]]] =
       results.map(_.right.map(Seq(_)))
-    all.fold(Right(Nil)) { (s, i) => merge2(s, i) }
+    all.fold(Right(Nil)) { (s, i) =>
+      merge2(s, i)
+    }
   }
 
 }

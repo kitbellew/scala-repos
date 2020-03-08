@@ -146,7 +146,9 @@ object Test extends DirectTest {
     val res = output
       .groupBy(identity)
       .mapValues(_.size)
-      .map { case (k, v) => s"$k [$v]" }
+      .map {
+        case (k, v) => s"$k [$v]"
+      }
       .toList
       .sorted
     println(res.mkString("\n"))

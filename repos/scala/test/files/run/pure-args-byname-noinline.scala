@@ -9,7 +9,9 @@ object Test {
   def f3[A](a: => Seq[A]) = println(a.toString)
 
   def foo() = println(2)
-  def client(f: () => Unit) = { f(); f() }
+  def client(f: () => Unit) = {
+    f(); f()
+  }
   def attempt2() {
     val bar: () => Unit = foo _
     //The code causing SI-6306 was supposed to optimize code like this:

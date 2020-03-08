@@ -275,11 +275,19 @@ object AdminUtils extends Logging {
   private[admin] def getInverseMap(
       brokerRackMap: Map[Int, String]): Map[String, Seq[Int]] = {
     brokerRackMap.toSeq
-      .map { case (id, rack) => (rack, id) }
-      .groupBy { case (rack, _) => rack }
+      .map {
+        case (id, rack) => (rack, id)
+      }
+      .groupBy {
+        case (rack, _) => rack
+      }
       .map {
         case (rack, rackAndIdList) =>
-          (rack, rackAndIdList.map { case (_, id) => id }.sorted)
+          (
+            rack,
+            rackAndIdList.map {
+              case (_, id) => id
+            }.sorted)
       }
   }
 
@@ -669,7 +677,9 @@ object AdminUtils extends Logging {
       Json.parseFull(str) match {
         case None => // there are no config overrides
         case Some(mapAnon: Map[_, _]) =>
-          val map = mapAnon collect { case (k: String, v: Any) => k -> v }
+          val map = mapAnon collect {
+            case (k: String, v: Any) => k -> v
+          }
           require(map("version") == 1)
           map.get("config") match {
             case Some(config: Map[_, _]) =>

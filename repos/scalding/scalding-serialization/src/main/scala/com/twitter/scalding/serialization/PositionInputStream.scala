@@ -32,7 +32,9 @@ class PositionInputStream(val wraps: InputStream) extends InputStream {
 
   override def available = wraps.available
 
-  override def close() { wraps.close() }
+  override def close() {
+    wraps.close()
+  }
 
   override def mark(limit: Int) {
     wraps.mark(limit)

@@ -118,7 +118,9 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
             } else {
               None
             }
-          } catch { case ignore: InternalException => None }
+          } catch {
+            case ignore: InternalException => None
+          }
         } else None
       }
     }

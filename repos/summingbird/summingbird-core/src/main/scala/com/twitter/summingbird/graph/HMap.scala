@@ -45,8 +45,12 @@ sealed abstract class HMap[K[_], V[_]] {
 
   def contains[T](id: K[T]): Boolean = get(id).isDefined
 
-  def filter(pred: GenFunction[Pair, ({ type BoolT[T] = Boolean })#BoolT])
-      : HMap[K, V] = {
+  def filter(
+      pred: GenFunction[
+        Pair,
+        ({
+          type BoolT[T] = Boolean
+        })#BoolT]): HMap[K, V] = {
     val filtered = map.asInstanceOf[Map[K[Any], V[Any]]].filter(pred.apply[Any])
     HMap.from[K, V](filtered.asInstanceOf[Map[K[_], V[_]]])
   }
@@ -76,7 +80,9 @@ sealed abstract class HMap[K[_], V[_]] {
     map
       .asInstanceOf[Map[K[Any], V[Any]]]
       .collectFirst(collector)
-      .map { kv => (this + kv, kv._1) }
+      .map { kv =>
+        (this + kv, kv._1)
+      }
   }
 
   def collect[R[_]](p: GenPartial[Pair, R]): Stream[R[_]] =
@@ -98,7 +104,9 @@ trait GenPartial[T[_], R[_]] {
 object HMap {
   def empty[K[_], V[_]]: HMap[K, V] = from[K, V](Map.empty[K[_], V[_]])
   private def from[K[_], V[_]](m: Map[K[_], V[_]]): HMap[K, V] =
-    new HMap[K, V] { override val map = m }
+    new HMap[K, V] {
+      override val map = m
+    }
 }
 
 /**

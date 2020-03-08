@@ -14,12 +14,16 @@ object ForwardActorSpec {
 
   def createForwardingChain(system: ActorSystem): ActorRef = {
     val replier = system.actorOf(Props(new Actor {
-      def receive = { case x ⇒ sender() ! x }
+      def receive = {
+        case x ⇒ sender() ! x
+      }
     }))
 
     def mkforwarder(forwardTo: ActorRef) =
       system.actorOf(Props(new Actor {
-        def receive = { case x ⇒ forwardTo forward x }
+        def receive = {
+          case x ⇒ forwardTo forward x
+        }
       }))
 
     mkforwarder(mkforwarder(mkforwarder(replier)))
@@ -34,7 +38,9 @@ class ForwardActorSpec extends AkkaSpec {
 
     "forward actor reference when invoking forward on tell" in {
       val replyTo = system.actorOf(Props(new Actor {
-        def receive = { case ExpectedMessage ⇒ testActor ! ExpectedMessage }
+        def receive = {
+          case ExpectedMessage ⇒ testActor ! ExpectedMessage
+        }
       }))
 
       val chain = createForwardingChain(system)

@@ -48,7 +48,9 @@ trait ScalaResultsHandlingSpec
         TestServer(
           port,
           GuiceApplicationBuilder()
-            .routes { case _ => Action(result) }
+            .routes {
+              case _ => Action(result)
+            }
             .build())) {
         block(port)
       }

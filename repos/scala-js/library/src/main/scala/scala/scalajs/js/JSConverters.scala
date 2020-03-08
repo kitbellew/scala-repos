@@ -43,7 +43,9 @@ object JSConverters extends JSConvertersLowPrioImplicits {
   implicit class JSRichGenMap[T](val map: GenMap[String, T]) extends AnyVal {
     @inline final def toJSDictionary: Dictionary[T] = {
       val result = Dictionary.empty[T]
-      map.foreach { case (key, value) => result(key) = value }
+      map.foreach {
+        case (key, value) => result(key) = value
+      }
       result
     }
   }

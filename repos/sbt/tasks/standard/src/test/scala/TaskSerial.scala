@@ -54,7 +54,9 @@ object TaskSerial extends Properties("task serial") {
       size: Int,
       restrictions: ConcurrentRestrictions[Task[_]],
       shouldSucceed: Boolean) = {
-    val latch = task { new CountDownLatch(size) }
+    val latch = task {
+      new CountDownLatch(size)
+    }
     def mktask = latch map { l =>
       l.countDown()
       l.await(Timeout, TimeUnit.MILLISECONDS)
@@ -90,8 +92,11 @@ object TaskTest {
       Execute.config(checkCycles),
       Execute.noTriggers,
       ExecuteProgress.empty[Task])(taskToNode(idK[Task]))
-    try { x.run(root)(service) }
-    finally { shutdown() }
+    try {
+      x.run(root)(service)
+    } finally {
+      shutdown()
+    }
   }
   def tryRun[T](
       root: Task[T],

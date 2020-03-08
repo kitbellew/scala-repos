@@ -48,7 +48,9 @@ private[mux] object TagMap {
     private[this] val fastOff = set.range.start
     private[this] def inFast(tag: Int): Boolean = tag < fastSize + fastOff
     private[this] def getFast(tag: Int): T = fast(tag - fastOff)
-    private[this] def setFast(tag: Int, el: T) { fast(tag - fastOff) = el }
+    private[this] def setFast(tag: Int, el: T) {
+      fast(tag - fastOff) = el
+    }
 
     def map(el: T): Option[Int] = synchronized {
       set.acquire().map { tag =>

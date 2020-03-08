@@ -280,7 +280,9 @@ sealed trait BoxTrait {
     * res1: net.liftweb.common.Box[Int] = Full(5)
     * }}}
     */
-  def asA[B](in: T forSome { type T })(implicit m: Manifest[B]): Box[B] = {
+  def asA[B](in: T forSome {
+    type T
+  })(implicit m: Manifest[B]): Box[B] = {
     (Box !! in).asA[B]
   }
 }
@@ -671,7 +673,9 @@ sealed abstract class Box[+A] extends Product with Serializable {
     *
     * @return This box.
     */
-  def pass(f: Box[A] => Unit): Box[A] = { f(this); this }
+  def pass(f: Box[A] => Unit): Box[A] = {
+    f(this); this
+  }
 
   /**
     * Alias for `[[pass]]`.

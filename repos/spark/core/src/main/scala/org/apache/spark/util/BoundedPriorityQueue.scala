@@ -41,7 +41,9 @@ private[spark] class BoundedPriorityQueue[A](maxSize: Int)(
   override def size: Int = underlying.size
 
   override def ++=(xs: TraversableOnce[A]): this.type = {
-    xs.foreach { this += _ }
+    xs.foreach {
+      this += _
+    }
     this
   }
 
@@ -58,7 +60,9 @@ private[spark] class BoundedPriorityQueue[A](maxSize: Int)(
     this += elem1 += elem2 ++= elems
   }
 
-  override def clear() { underlying.clear() }
+  override def clear() {
+    underlying.clear()
+  }
 
   private def maybeReplaceLowest(a: A): Boolean = {
     val head = underlying.peek()

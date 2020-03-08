@@ -22,12 +22,16 @@ object Timeline extends LilaController {
             }
           else {
             val entries = Env.timeline.entryRepo.moreUserEntries(me.id, nb)
-            entries map { html.timeline.more(_) }
+            entries map {
+              html.timeline.more(_)
+            }
           }
         },
         _ => {
           val entries = Env.timeline.entryRepo.moreUserEntries(me.id, nb)
-          entries map { es => Ok(Json.obj("entries" -> es)) }
+          entries map { es =>
+            Ok(Json.obj("entries" -> es))
+          }
         }
       )
   }

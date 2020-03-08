@@ -22,5 +22,9 @@ class C extends B {
 }
 
 // #2235
-trait A2235 { def f(x: Int = 1) = x }
-trait B2235 { def f(x: String = "1") = x }
+trait A2235 {
+  def f(x: Int = 1) = x
+}
+trait B2235 {
+  def f(x: String = "1") = x
+}

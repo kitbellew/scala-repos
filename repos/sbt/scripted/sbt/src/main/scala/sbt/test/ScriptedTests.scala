@@ -65,8 +65,9 @@ final class ScriptedTests(
             log.info("D " + str + " [DISABLED]")
             None
           } else {
-            try { scriptedTest(str, testDirectory, prescripted, log); None }
-            catch {
+            try {
+              scriptedTest(str, testDirectory, prescripted, log); None
+            } catch {
               case _: TestException | _: PendingTestSuccessException =>
                 Some(str)
             }
@@ -130,12 +131,16 @@ final class ScriptedTests(
       case e: Exception =>
         testFailed()
         if (!pending) throw e
-    } finally { buffered.clear() }
+    } finally {
+      buffered.clear()
+    }
   }
 }
 
 object ScriptedTests extends ScriptedRunner {
-  val emptyCallback: File => Unit = { _ => () }
+  val emptyCallback: File => Unit = { _ =>
+    ()
+  }
   def main(args: Array[String]): Unit = {
     val directory = new File(args(0))
     val buffer = args(1).toBoolean
@@ -192,7 +197,9 @@ class ScriptedRunner {
       ConsoleLogger(),
       bootProperties,
       launchOpts,
-      { f: File => prescripted.add(f); () }
+      { f: File =>
+        prescripted.add(f); ()
+      }
     ) //new FullLogger(Logger.xlog2Log(log)))
 
   @deprecated("No longer used", "0.13.9")

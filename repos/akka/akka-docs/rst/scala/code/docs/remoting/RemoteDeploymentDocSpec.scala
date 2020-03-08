@@ -13,7 +13,9 @@ import akka.remote.RemoteScope
 object RemoteDeploymentDocSpec {
 
   class SampleActor extends Actor {
-    def receive = { case _ => sender() ! self }
+    def receive = {
+      case _ => sender() ! self
+    }
   }
 
 }
@@ -36,7 +38,9 @@ class RemoteDeploymentDocSpec
     .getExternalAddressFor(Address("akka.tcp", "s", "host", 1))
     .get
 
-  override def afterTermination() { shutdown(other) }
+  override def afterTermination() {
+    shutdown(other)
+  }
 
   "demonstrate programmatic deployment" in {
     //#deploy

@@ -91,7 +91,9 @@ class StringOrderedSerialization extends OrderedSerialization[String] {
       val byteString = new Array[Byte](in.readPosVarInt)
       in.readFully(byteString)
       Success(new String(byteString, "UTF-8"))
-    } catch { case NonFatal(e) => Failure(e) }
+    } catch {
+      case NonFatal(e) => Failure(e)
+    }
 
   override def write(b: OutputStream, s: String) =
     try {
@@ -99,7 +101,9 @@ class StringOrderedSerialization extends OrderedSerialization[String] {
       b.writePosVarInt(bytes.length)
       b.writeBytes(bytes)
       Serialization.successUnit
-    } catch { case NonFatal(e) => Failure(e) }
+    } catch {
+      case NonFatal(e) => Failure(e)
+    }
 
   override def compareBinary(lhs: InputStream, rhs: InputStream) =
     try {

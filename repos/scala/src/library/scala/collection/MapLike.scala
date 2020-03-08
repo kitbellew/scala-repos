@@ -380,7 +380,9 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
       sep: String,
       end: String): StringBuilder =
     this.iterator
-      .map { case (k, v) => k + " -> " + v }
+      .map {
+        case (k, v) => k + " -> " + v
+      }
       .addString(b, start, sep, end)
 
   /** Defines the prefix of this object's `toString` representation.

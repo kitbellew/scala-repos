@@ -39,8 +39,12 @@ class CheckpointJob(args: Args) extends Job(args) {
   def out = Checkpoint[(Int, Int, Int)]("c2", ('x0, 'x1, 'score)) {
     in0
       .joinWithSmaller('y0 -> 'y1, in1)
-      .map(('s0, 's1) -> 'score) { v: (Int, Int) => v._1 * v._2 }
-      .groupBy('x0, 'x1) { _.sum[Double]('score) }
+      .map(('s0, 's1) -> 'score) { v: (Int, Int) =>
+        v._1 * v._2
+      }
+      .groupBy('x0, 'x1) {
+        _.sum[Double]('score)
+      }
   }
 
   out.write(Tsv("output"))
@@ -60,7 +64,9 @@ class TypedCheckpointJob(args: Args) extends Job(args) {
     in0
       .groupBy(_._2)
       .join(in1.groupBy(_._2))
-      .mapValues { case (l, r) => ((l._1, r._1), (l._3 * r._3).toDouble) }
+      .mapValues {
+        case (l, r) => ((l._1, r._1), (l._3 * r._3).toDouble)
+      }
       .values
       .group
       .sum

@@ -2,7 +2,9 @@
   *  !!!
   */
 class A {
-  def f() = { case class Bob(); Bob }
+  def f() = {
+    case class Bob(); Bob
+  }
 
   val quux0 = f()
   def quux1 = f()

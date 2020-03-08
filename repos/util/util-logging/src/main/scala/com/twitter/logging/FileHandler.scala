@@ -251,7 +251,9 @@ class FileHandler(
       }
     }
 
-    rv map { _.getTimeInMillis }
+    rv map {
+      _.getTimeInMillis
+    }
   }
 
   /**

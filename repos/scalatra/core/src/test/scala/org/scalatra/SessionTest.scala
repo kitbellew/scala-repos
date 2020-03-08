@@ -13,7 +13,9 @@ class SessionTestServlet extends ScalatraServlet {
   }
 
   get("/session-option") {
-    sessionOption map { _ => "Some" } getOrElse "None"
+    sessionOption map { _ =>
+      "Some"
+    } getOrElse "None"
   }
   get("/session-symbol") {
     session.getOrElse('val, "failure!")

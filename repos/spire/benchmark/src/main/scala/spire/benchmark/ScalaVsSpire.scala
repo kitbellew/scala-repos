@@ -62,7 +62,9 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
   def doPairwiseDirect(as: Array[Int], bs: Array[Int], cs: Array[Int]): Unit = {
     var i = 0
     val len = as.length
-    while (i < len) { cs(i) = as(i) + bs(i); i += 1 }
+    while (i < len) {
+      cs(i) = as(i) + bs(i); i += 1
+    }
   }
 
   def doPairwiseGeneric[A: ScalaN](
@@ -72,7 +74,9 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
     import ScalaN.Implicits._
     var i = 0
     val len = as.length
-    while (i < len) { cs(i) = as(i) + bs(i); i += 1 }
+    while (i < len) {
+      cs(i) = as(i) + bs(i); i += 1
+    }
   }
 
   def doPairwiseSpire[@sp(Int) A: Ring](
@@ -82,7 +86,9 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
     import spire.implicits._
     var i = 0
     val len = as.length
-    while (i < len) { cs(i) = as(i) + bs(i); i += 1 }
+    while (i < len) {
+      cs(i) = as(i) + bs(i); i += 1
+    }
   }
 
   /**
@@ -91,7 +97,9 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
   def doIncrementDirect(start: Int, n: Int) = {
     var t = start
     var i = 0
-    while (i < n) { t += 1; i += 1 }
+    while (i < n) {
+      t += 1; i += 1
+    }
     t
   }
 
@@ -101,7 +109,9 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
     import ev.mkOrderingOps
     var t = start
     var i = ev.zero
-    while (i < n) { t += ev.one; i += ev.one }
+    while (i < n) {
+      t += ev.one; i += ev.one
+    }
     t
   }
 
@@ -110,7 +120,9 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
     val ev = Ring[A]
     var t = start
     var i = ev.zero
-    while (i < n) { t += ev.one; i += ev.one }
+    while (i < n) {
+      t += ev.one; i += ev.one
+    }
     t
   }
 
@@ -173,7 +185,9 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
   def doGcdDirect(as: Array[Int], bs: Array[Int], cs: Array[Int]) = {
     var i = 0
     val len = as.length
-    while (i < len) { cs(i) = gcdDirect(as(i), bs(i)); i += 1 }
+    while (i < len) {
+      cs(i) = gcdDirect(as(i), bs(i)); i += 1
+    }
   }
 
   import scala.math.{Integral => ScalaI}
@@ -185,7 +199,9 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
   def doGcdGeneric[A: ScalaI](as: Array[A], bs: Array[A], cs: Array[A]) = {
     var i = 0
     val len = as.length
-    while (i < len) { cs(i) = gcdGeneric(as(i), bs(i)); i += 1 }
+    while (i < len) {
+      cs(i) = gcdGeneric(as(i), bs(i)); i += 1
+    }
   }
 
   @tailrec final def gcdSpire[@sp(Int) A](a: A, b: A)(implicit
@@ -201,7 +217,9 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
       cs: Array[A]) = {
     var i = 0
     val len = as.length
-    while (i < len) { cs(i) = gcdSpire(as(i), bs(i)); i += 1 }
+    while (i < len) {
+      cs(i) = gcdSpire(as(i), bs(i)); i += 1
+    }
   }
 
   /**
@@ -210,14 +228,18 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
   def doScaleDirect(as: Array[Int], n: Int, d: Int, cs: Array[Int]) = {
     var i = 0
     val len = as.length
-    while (i < len) { cs(i) = as(i) * n / d; i += 1 }
+    while (i < len) {
+      cs(i) = as(i) * n / d; i += 1
+    }
   }
 
   def doScaleGeneric[A: ScalaI](as: Array[A], n: A, d: A, cs: Array[A]) = {
     import ScalaI.Implicits._
     var i = 0
     val len = as.length
-    while (i < len) { cs(i) = as(i) * n / d; i += 1 }
+    while (i < len) {
+      cs(i) = as(i) * n / d; i += 1
+    }
   }
 
   def doScaleSpire[@sp(Int) A: EuclideanRing](
@@ -228,7 +250,9 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
     import spire.implicits._
     var i = 0
     val len = as.length
-    while (i < len) { cs(i) = as(i) * n /~ d; i += 1 }
+    while (i < len) {
+      cs(i) = as(i) * n /~ d; i += 1
+    }
   }
 }
 

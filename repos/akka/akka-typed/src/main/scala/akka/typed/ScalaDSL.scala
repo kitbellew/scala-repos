@@ -256,7 +256,11 @@ object ScalaDSL {
   }
   object Tap {
     def monitor[T](monitor: ActorRef[T], behavior: Behavior[T]): Tap[T] =
-      Tap({ case Msg(_, msg) ⇒ monitor ! msg }, behavior)
+      Tap(
+        {
+          case Msg(_, msg) ⇒ monitor ! msg
+        },
+        behavior)
   }
 
   /**

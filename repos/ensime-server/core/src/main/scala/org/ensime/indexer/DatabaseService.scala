@@ -196,5 +196,7 @@ object DatabaseService {
         onDelete = ForeignKeyAction.Cascade)
   }
   private val fqnSymbols = TableQuery[FqnSymbols]
-  private val fqnSymbolsCompiled = Compiled { TableQuery[FqnSymbols] }
+  private val fqnSymbolsCompiled = Compiled {
+    TableQuery[FqnSymbols]
+  }
 }

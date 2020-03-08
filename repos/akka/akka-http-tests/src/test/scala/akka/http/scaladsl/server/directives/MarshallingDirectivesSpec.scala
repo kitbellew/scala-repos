@@ -26,7 +26,9 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
       ContentTypeRange(`text/xml`, iso88592),
       `text/html`) map {
       case NodeSeq.Empty ⇒ throw Unmarshaller.NoContentException
-      case x ⇒ { val i = x.text.toInt; require(i >= 0); i }
+      case x ⇒ {
+        val i = x.text.toInt; require(i >= 0); i
+      }
     }
 
   val `text/xxml` = MediaType.customWithFixedCharset("text", "xxml", `UTF-8`)
@@ -34,23 +36,37 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
     Marshaller.oneOf[MediaType.NonBinary, Int, MessageEntity](
       `application/xhtml+xml`,
       `text/xxml`) { mediaType ⇒
-      nodeSeqMarshaller(mediaType).wrap(mediaType) { (i: Int) ⇒ <int>{i}</int> }
+      nodeSeqMarshaller(mediaType).wrap(mediaType) { (i: Int) ⇒
+        <int>{
+          i
+        }</int>
+      }
     }
 
   "The 'entityAs' directive" should {
     "extract an object from the requests entity using the in-scope Unmarshaller" in {
       Put("/", <p>cool</p>) ~> {
-        entity(as[NodeSeq]) { echoComplete }
-      } ~> check { responseAs[String] shouldEqual "<p>cool</p>" }
+        entity(as[NodeSeq]) {
+          echoComplete
+        }
+      } ~> check {
+        responseAs[String] shouldEqual "<p>cool</p>"
+      }
     }
     "return a RequestEntityExpectedRejection rejection if the request has no entity" in {
       Put() ~> {
-        entity(as[Int]) { echoComplete }
-      } ~> check { rejection shouldEqual RequestEntityExpectedRejection }
+        entity(as[Int]) {
+          echoComplete
+        }
+      } ~> check {
+        rejection shouldEqual RequestEntityExpectedRejection
+      }
     }
     "return an UnsupportedRequestContentTypeRejection if no matching unmarshaller is in scope" in {
       Put("/", HttpEntity(`text/css` withCharset `UTF-8`, "<p>cool</p>")) ~> {
-        entity(as[NodeSeq]) { echoComplete }
+        entity(as[NodeSeq]) {
+          echoComplete
+        }
       } ~> check {
         rejection shouldEqual UnsupportedRequestContentTypeRejection(
           Set(
@@ -62,7 +78,9 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
       Put(
         "/",
         HttpEntity(ContentType(`text/xml`, `UTF-16`), "<int>26</int>")) ~> {
-        entity(as[Int]) { echoComplete }
+        entity(as[Int]) {
+          echoComplete
+        }
       } ~> check {
         rejection shouldEqual UnsupportedRequestContentTypeRejection(
           Set(ContentTypeRange(`text/xml`, iso88592), `text/html`))
@@ -70,15 +88,25 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
     }
     "cancel UnsupportedRequestContentTypeRejections if a subsequent `entity` directive succeeds" in {
       Put("/", HttpEntity(ContentTypes.`text/plain(UTF-8)`, "yeah")) ~> {
-        entity(as[NodeSeq]) { _ ⇒ completeOk } ~
-          entity(as[String]) { _ ⇒ validate(false, "Problem") { completeOk } }
-      } ~> check { rejection shouldEqual ValidationRejection("Problem") }
+        entity(as[NodeSeq]) { _ ⇒
+          completeOk
+        } ~
+          entity(as[String]) { _ ⇒
+            validate(false, "Problem") {
+              completeOk
+            }
+          }
+      } ~> check {
+        rejection shouldEqual ValidationRejection("Problem")
+      }
     }
     "return a ValidationRejection if the request entity is semantically invalid (IllegalArgumentException)" in {
       Put(
         "/",
         HttpEntity(ContentType(`text/xml`, iso88592), "<int>-3</int>")) ~> {
-        entity(as[Int]) { _ ⇒ completeOk }
+        entity(as[Int]) { _ ⇒
+          completeOk
+        }
       } ~> check {
         inside(rejection) {
           case ValidationRejection(
@@ -93,7 +121,9 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
         HttpEntity(
           ContentTypes.`text/xml(UTF-8)`,
           "<foo attr='illegal xml'")) ~> {
-        entity(as[NodeSeq]) { _ ⇒ completeOk }
+        entity(as[NodeSeq]) { _ ⇒
+          completeOk
+        }
       } ~> check {
         rejection shouldEqual MalformedRequestContentRejection(
           "XML document structures must start and end within the same entity.",
@@ -102,17 +132,27 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
     }
     "extract an Option[T] from the requests entity using the in-scope Unmarshaller" in {
       Put("/", <p>cool</p>) ~> {
-        entity(as[Option[NodeSeq]]) { echoComplete }
-      } ~> check { responseAs[String] shouldEqual "Some(<p>cool</p>)" }
+        entity(as[Option[NodeSeq]]) {
+          echoComplete
+        }
+      } ~> check {
+        responseAs[String] shouldEqual "Some(<p>cool</p>)"
+      }
     }
     "extract an Option[T] as None if the request has no entity" in {
       Put() ~> {
-        entity(as[Option[Int]]) { echoComplete }
-      } ~> check { responseAs[String] shouldEqual "None" }
+        entity(as[Option[Int]]) {
+          echoComplete
+        }
+      } ~> check {
+        responseAs[String] shouldEqual "None"
+      }
     }
     "return an UnsupportedRequestContentTypeRejection if no matching unmarshaller is in scope (for Option[T]s)" in {
       Put("/", HttpEntity(`text/css` withCharset `UTF-8`, "<p>cool</p>")) ~> {
-        entity(as[Option[NodeSeq]]) { echoComplete }
+        entity(as[Option[NodeSeq]]) {
+          echoComplete
+        }
       } ~> check {
         rejection shouldEqual UnsupportedRequestContentTypeRejection(
           Set(
@@ -133,7 +173,9 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
       implicit val unmarshaller =
         Unmarshaller.firstOf(jsonUnmarshaller, xmlUnmarshaller)
 
-      val route = entity(as[Person]) { echoComplete }
+      val route = entity(as[Person]) {
+        echoComplete
+      }
 
       Put(
         "/",
@@ -162,7 +204,9 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
 
   "The 'completeWith' directive" should {
     "provide a completion function converting custom objects to an HttpEntity using the in-scope marshaller" in {
-      Get() ~> completeWith(instanceOf[Int]) { prod ⇒ prod(42) } ~> check {
+      Get() ~> completeWith(instanceOf[Int]) { prod ⇒
+        prod(42)
+      } ~> check {
         responseEntity shouldEqual HttpEntity(
           ContentType(`application/xhtml+xml`, `UTF-8`),
           "<int>42</int>")

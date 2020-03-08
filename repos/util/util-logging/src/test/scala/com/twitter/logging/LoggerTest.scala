@@ -83,7 +83,9 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
     * substring somewhere inside it.
     */
   def mustLog(substring: String) = {
-    assert(logLines().filter { _ contains substring }.size > 0)
+    assert(logLines().filter {
+      _ contains substring
+    }.size > 0)
   }
 
   class LoggerSpecHelper {

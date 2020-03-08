@@ -24,7 +24,9 @@ class Test {
     import scala._
     5
   }
-  locally { (x: Int) => import scala.util._ }
+  locally { (x: Int) =>
+    import scala.util._
+  }
   1 match {
     case 1 => import scala.concurrent._
   }

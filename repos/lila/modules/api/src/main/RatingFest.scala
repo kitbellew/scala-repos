@@ -60,7 +60,9 @@ object RatingFest {
               "blitz",
               "classical",
               "correspondence"
-            ).map { name => s"perfs.$name" -> BSONBoolean(true) }
+            ).map { name =>
+              s"perfs.$name" -> BSONBoolean(true)
+            }
           )),
         multi = true
       )
@@ -96,7 +98,9 @@ object RatingFest {
             }
             .sequenceFu
             .void
-        } andThen { case _ => log(nb) }
+        } andThen {
+          case _ => log(nb)
+        }
       }
     } yield ()
   }

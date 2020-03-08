@@ -534,7 +534,8 @@ final case class SuppressedDeadLetter(
 
 private[akka] object DeadLetterActorRef {
   @SerialVersionUID(1L)
-  class SerializedDeadLetterActorRef extends Serializable { //TODO implement as Protobuf for performance?
+  class SerializedDeadLetterActorRef
+      extends Serializable { //TODO implement as Protobuf for performance?
     @throws(classOf[java.io.ObjectStreamException])
     private def readResolve(): AnyRef =
       JavaSerializer.currentSystem.value.deadLetters
@@ -901,7 +902,9 @@ private[akka] final class FunctionRef(
 
   private def publish(e: Logging.LogEvent): Unit =
     try eventStream.publish(e)
-    catch { case NonFatal(_) ⇒ }
+    catch {
+      case NonFatal(_) ⇒
+    }
 
   /**
     * Have this FunctionRef watch the given Actor. This method must not be

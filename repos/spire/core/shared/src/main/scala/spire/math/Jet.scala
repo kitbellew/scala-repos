@@ -612,7 +612,9 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
 
   def ===(that: Jet[_]): Boolean =
     real == that.real && dimension == that.dimension &&
-      infinitesimal.zip(that.infinitesimal).forall { case (x, y) => x == y }
+      infinitesimal.zip(that.infinitesimal).forall {
+        case (x, y) => x == y
+      }
 
   def =!=(that: Jet[_]): Boolean =
     !(this === that)
@@ -770,7 +772,9 @@ private[math] class JetAlgebra[@sp(Float, Double) T](implicit
   def dot(x: Jet[T], y: Jet[T]): T = {
     x.infinitesimal
       .zip(y.infinitesimal)
-      .foldLeft { scalar.times(x.real, y.real) } { (xx, yy) =>
+      .foldLeft {
+        scalar.times(x.real, y.real)
+      } { (xx, yy) =>
         scalar.plus(xx, scalar.times(yy._1, yy._2))
       }
   }

@@ -296,16 +296,24 @@ package object numerics {
   object sincpi extends UFunc with MappingUFunc {
     implicit object sincpiIntImpl extends Impl[Int, Double] {
       def apply(v: Int) =
-        if (v == 0) 1d else { val temp = v.toDouble * m.Pi; m.sin(temp) / temp }
+        if (v == 0) 1d
+        else {
+          val temp = v.toDouble * m.Pi; m.sin(temp) / temp
+        }
     }
     implicit object sincpiDoubleImpl extends Impl[Double, Double] {
       def apply(v: Double) =
-        if (v == 0) 1d else { val temp = v * m.Pi; m.sin(temp) / temp }
+        if (v == 0) 1d
+        else {
+          val temp = v * m.Pi; m.sin(temp) / temp
+        }
     }
     implicit object sincpiFloatImpl extends Impl[Float, Float] {
       def apply(v: Float) =
         if (v == 0) 1f
-        else { val temp = v * m.Pi; (m.sin(temp) / temp).toFloat }
+        else {
+          val temp = v * m.Pi; (m.sin(temp) / temp).toFloat
+        }
     }
   }
 
@@ -502,7 +510,9 @@ package object numerics {
   }
 
   object ceil extends UFunc with MappingUFunc {
-    implicit object ceilIntImpl extends Impl[Int, Int] { def apply(v: Int) = v }
+    implicit object ceilIntImpl extends Impl[Int, Int] {
+      def apply(v: Int) = v
+    }
     implicit object ceilDoubleImpl extends Impl[Double, Double] {
       def apply(v: Double) = m.ceil(v)
     }
@@ -524,7 +534,9 @@ package object numerics {
   }
 
   object rint extends UFunc with MappingUFunc {
-    implicit object rintIntImpl extends Impl[Int, Int] { def apply(v: Int) = v }
+    implicit object rintIntImpl extends Impl[Int, Int] {
+      def apply(v: Int) = v
+    }
     implicit object rintDoubleImpl extends Impl[Double, Double] {
       def apply(v: Double) = m.rint(v)
     }
@@ -569,7 +581,9 @@ package object numerics {
     implicit def isOddImpl[@expand.args(Int, Double, Float, Long) T]
         : Impl[T, Boolean] = {
       new Impl[T, Boolean] {
-        def apply(v: T) = { v % 2 == 1 }
+        def apply(v: T) = {
+          v % 2 == 1
+        }
       }
     }
   }
@@ -583,7 +597,9 @@ package object numerics {
     implicit def isEvenImpl[@expand.args(Int, Double, Float, Long) T]
         : Impl[T, Boolean] = {
       new Impl[T, Boolean] {
-        def apply(v: T) = { v % 2 == 0 }
+        def apply(v: T) = {
+          v % 2 == 0
+        }
       }
     }
   }

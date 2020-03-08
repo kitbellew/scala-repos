@@ -160,7 +160,9 @@ sealed trait Stack[T] {
     */
   def tails: Iterator[Stack[T]] = {
     val buf = new mutable.ArrayBuffer[Stack[T]]
-    foreach { buf += _ }
+    foreach {
+      buf += _
+    }
     buf.toIterator
   }
 

@@ -26,7 +26,11 @@ object Resolvers {
     val to = uniqueSubdirectoryFor(uri, in = info.staging)
 
     if (from.isDirectory) Some { () =>
-      if (from.canWrite) from else creates(to) { IO.copyDirectory(from, to) }
+      if (from.canWrite) from
+      else
+        creates(to) {
+          IO.copyDirectory(from, to)
+        }
     }
     else None
   }
@@ -35,7 +39,11 @@ object Resolvers {
     val url = info.uri.toURL
     val to = uniqueSubdirectoryFor(info.uri, in = info.staging)
 
-    Some { () => creates(to) { IO.unzipURL(url, to) } }
+    Some { () =>
+      creates(to) {
+        IO.unzipURL(url, to)
+      }
+    }
   }
 
   val subversion: Resolver = (info: ResolveInfo) => {
@@ -115,7 +123,12 @@ object Resolvers {
             checkout(branch, in = localCopy)
           }
         }
-      } else Some { () => creates(localCopy) { clone(from, to = localCopy) } }
+      } else
+        Some { () =>
+          creates(localCopy) {
+            clone(from, to = localCopy)
+          }
+        }
     }
 
     private def normalized(uri: URI) = uri.copy(scheme = scheme)

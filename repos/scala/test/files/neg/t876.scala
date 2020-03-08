@@ -13,7 +13,9 @@ object AssertionError extends AnyRef with App {
     val map = new HashMap[A, B]
   }
 
-  def test[T](f: => T) { f }
+  def test[T](f: => T) {
+    f
+  }
 
   test {
     val manager = new Manager

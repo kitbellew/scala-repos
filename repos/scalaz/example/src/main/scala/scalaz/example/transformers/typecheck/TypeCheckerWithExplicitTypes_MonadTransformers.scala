@@ -33,7 +33,9 @@ object TypeCheckerWithExplicitTypes_MonadTransformers {
   def typeCheck(expr: Exp): ReaderT[V, TypeEnv, Type] = expr match {
     case Lit(v) => liftK(success(litToTy(v)))
     case Id(x) =>
-      for { env <- ask[V, TypeEnv]; res <- liftK(find(x, env)) } yield res
+      for {
+        env <- ask[V, TypeEnv]; res <- liftK(find(x, env))
+      } yield res
     // make sure the first branch is a boolean and then
     // make sure the second and third branches have the same type
     case If(tst, texp, fexp) =>

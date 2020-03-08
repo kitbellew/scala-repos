@@ -313,10 +313,18 @@ trait OracleProfile extends JdbcProfile {
       val b =
         new StringBuilder append "create sequence " append quoteIdentifier(
           seq.name)
-      seq._increment.foreach { b append " increment by " append _ }
-      seq._minValue.foreach { b append " minvalue " append _ }
-      seq._maxValue.foreach { b append " maxvalue " append _ }
-      seq._start.foreach { b append " start with " append _ }
+      seq._increment.foreach {
+        b append " increment by " append _
+      }
+      seq._minValue.foreach {
+        b append " minvalue " append _
+      }
+      seq._maxValue.foreach {
+        b append " maxvalue " append _
+      }
+      seq._start.foreach {
+        b append " start with " append _
+      }
       if (seq._cycle) b append " cycle nocache"
       DDL(b.toString, "drop sequence " + quoteIdentifier(seq.name))
     }
@@ -464,7 +472,9 @@ trait OracleProfile extends JdbcProfile {
     val name = "removeSubqueryOrdering"
 
     def apply(state: CompilerState) =
-      state.map { n => ClientSideOp.mapServerSide(n)(n => rewrite(n, false)) }
+      state.map { n =>
+        ClientSideOp.mapServerSide(n)(n => rewrite(n, false))
+      }
 
     def rewrite(n: Node, inScalar: Boolean): Node = n match {
       case n: Comprehension if inScalar && n.orderBy.nonEmpty =>

@@ -69,7 +69,8 @@ private[streaming] class StateDStream[K: ClassTag, V: ClassTag, S: ClassTag](
 
         // Try to get the parent RDD
         parent.getOrCompute(validTime) match {
-          case Some(parentRDD) => { // If parent RDD exists, then compute as usual
+          case Some(
+              parentRDD) => { // If parent RDD exists, then compute as usual
             computeUsingPreviousRDD(parentRDD, prevStateRDD)
           }
           case None => { // If parent RDD does not exist
@@ -91,7 +92,8 @@ private[streaming] class StateDStream[K: ClassTag, V: ClassTag, S: ClassTag](
 
         // Try to get the parent RDD
         parent.getOrCompute(validTime) match {
-          case Some(parentRDD) => { // If parent RDD exists, then compute as usual
+          case Some(
+              parentRDD) => { // If parent RDD exists, then compute as usual
             initialRDD match {
               case None => {
                 // Define the function for the mapPartition operation on grouped RDD;

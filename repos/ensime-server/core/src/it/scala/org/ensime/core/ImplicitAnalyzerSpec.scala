@@ -32,7 +32,9 @@ class ImplicitAnalyzerSpec
           "param",
           content.substring(c.start, c.end),
           c.fun.name,
-          c.params.map { p => p.name },
+          c.params.map { p =>
+            p.name
+          },
           c.funIsImplicit
         )
     }

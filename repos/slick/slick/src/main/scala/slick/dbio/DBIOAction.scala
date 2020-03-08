@@ -211,7 +211,8 @@ object DBIOAction {
     implicit val ec = DBIO.sameThreadExecutionContext
     def sequenceGroupAsM(g: Vector[DBIOAction[R, NoStream, E]])
         : DBIOAction[M[R], NoStream, E] = {
-      if (g.head.isInstanceOf[SynchronousDatabaseAction[_, _, _, _]]) { // fuse synchronous group
+      if (g.head.isInstanceOf[
+            SynchronousDatabaseAction[_, _, _, _]]) { // fuse synchronous group
         new SynchronousDatabaseAction.Fused[M[R], NoStream, BasicBackend, E] {
           def run(context: BasicBackend#Context) = {
             val b = cbf()
@@ -229,7 +230,12 @@ object DBIOAction {
     def sequenceGroupAsSeq(g: Vector[DBIOAction[R, NoStream, E]])
         : DBIOAction[Seq[R], NoStream, E] = {
       if (g.length == 1) {
-        if (g.head.isInstanceOf[SynchronousDatabaseAction[_, _, _, _]]) { // fuse synchronous group
+        if (g.head.isInstanceOf[
+              SynchronousDatabaseAction[
+                _,
+                _,
+                _,
+                _]]) { // fuse synchronous group
           new SynchronousDatabaseAction.Fused[
             Seq[R],
             NoStream,
@@ -244,7 +250,12 @@ object DBIOAction {
           }
         } else g.head.map(_ :: Nil)
       } else {
-        if (g.head.isInstanceOf[SynchronousDatabaseAction[_, _, _, _]]) { // fuse synchronous group
+        if (g.head.isInstanceOf[
+              SynchronousDatabaseAction[
+                _,
+                _,
+                _,
+                _]]) { // fuse synchronous group
           new SynchronousDatabaseAction.Fused[
             Seq[R],
             NoStream,
@@ -361,7 +372,9 @@ object DBIOAction {
         var r = first
         while (r ne null) {
           try r.run()
-          catch { case t: Throwable => err = t }
+          catch {
+            case t: Throwable => err = t
+          }
           trampoline.get() match {
             case r2 :: rest =>
               trampoline.set(rest)
@@ -753,7 +766,9 @@ object SynchronousDatabaseAction {
                         BasicBackend,
                         Effect]]
                       .run(context)
-                  } catch { case NonFatal(_) if keepFailure => () }
+                  } catch {
+                    case NonFatal(_) if keepFailure => ()
+                  }
                   throw ex
               }
             val a2 = f(None)

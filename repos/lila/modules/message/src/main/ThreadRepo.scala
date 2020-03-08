@@ -57,7 +57,9 @@ object ThreadRepo {
         allowDiskUse = false
       )
       .map {
-        _.documents.headOption ?? { ~_.getAs[List[String]]("ids") }
+        _.documents.headOption ?? {
+          ~_.getAs[List[String]]("ids")
+        }
       }
   }
 

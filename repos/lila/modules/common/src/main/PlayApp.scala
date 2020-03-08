@@ -25,7 +25,9 @@ object PlayApp {
   def withApp[A](op: Application => A): A =
     Play.maybeApplication map op err "Play application is not started!"
 
-  def system = withApp { implicit app => play.api.libs.concurrent.Akka.system }
+  def system = withApp { implicit app =>
+    play.api.libs.concurrent.Akka.system
+  }
 
   lazy val langs =
     loadConfig.getStringList("play.i18n.langs").toList map Lang.apply
@@ -45,13 +47,17 @@ object PlayApp {
             .parse(Messages.UrlMessageSource(messageFile), messageFile.toString)
             .fold(e => throw e, identity)
         }
-        .foldLeft(Map.empty[String, String]) { _ ++ _ }
+        .foldLeft(Map.empty[String, String]) {
+          _ ++ _
+        }
   }
 
   lazy val messages: Map[String, Map[String, String]] =
     langs
       .map(_.code)
-      .map { lang => (lang, loadMessages("messages." + lang)) }
+      .map { lang =>
+        (lang, loadMessages("messages." + lang))
+      }
       .toMap
       .+("default" -> loadMessages("messages"))
       .+("default.play" -> loadMessages("messages.default"))
@@ -73,5 +79,7 @@ object PlayApp {
   lazy val isProd = isMode(_.Prod) && !loadConfig.getBoolean("forcedev")
   def isServer = !isTest
 
-  def isMode(f: Mode.type => Mode.Mode) = withApp { _.mode == f(Mode) }
+  def isMode(f: Mode.type => Mode.Mode) = withApp {
+    _.mode == f(Mode)
+  }
 }

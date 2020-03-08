@@ -29,7 +29,10 @@ object TestUtil {
               found)
           }
         )
-      case s: Parsed.Success[_] => assert { implicitly(input); false }
+      case s: Parsed.Success[_] =>
+        assert {
+          implicitly(input); false
+        }
     }
   }
 

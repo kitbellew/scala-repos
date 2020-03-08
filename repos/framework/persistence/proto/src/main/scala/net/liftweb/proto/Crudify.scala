@@ -339,7 +339,11 @@ trait Crudify {
     */
   protected def _editTemplate = {
     <div data-lift="crud.edit?form=post">
-      <table id={editId} class={editClass}>
+      <table id={
+      editId
+    } class={
+      editClass
+    }>
         <tr class="field">
           <td class="name"></td>
           <td class="form"></td>
@@ -347,7 +351,9 @@ trait Crudify {
 
         <tr>
           <td>&nbsp;</td>
-          <td><button type="submit">{editButton}</button></td>
+          <td><button type="submit">{
+      editButton
+    }</button></td>
         </tr>
       </table>
     </div>
@@ -462,7 +468,11 @@ trait Crudify {
     */
   def _deleteTemplate = {
     <div data-lift="crud.delete?form=post">
-      <table id={deleteId} class={deleteClass}>
+      <table id={
+      deleteId
+    } class={
+      deleteClass
+    }>
         <tr class="field">
           <td class="name"></td>
           <td class="value"></td>
@@ -470,7 +480,9 @@ trait Crudify {
 
         <tr>
           <td>&nbsp;</td>
-          <td><button type="submit">{deleteButton}</button></td>
+          <td><button type="submit">{
+      deleteButton
+    }</button></td>
         </tr>
       </table>
     </div>
@@ -495,7 +507,11 @@ trait Crudify {
     */
   def _createTemplate = {
     <div data-lift="crud.create?form=post">
-      <table id={createId} class={createClass}>
+      <table id={
+      createId
+    } class={
+      createClass
+    }>
         <tr class="field">
           <td class="name"></td>
           <td class="form"></td>
@@ -503,7 +519,9 @@ trait Crudify {
 
         <tr>
           <td>&nbsp;</td>
-          <td><button type="submit">{createButton}</button></td>
+          <td><button type="submit">{
+      createButton
+    }</button></td>
         </tr>
       </table>
     </div>
@@ -528,7 +546,11 @@ trait Crudify {
     */
   def _viewTemplate = {
     <div data-lift="crud.view">
-      <table id={viewId} class={viewClass}>
+      <table id={
+      viewId
+    } class={
+      viewClass
+    }>
         <tr class="row">
           <td class="name"></td>
           <td class="value"></td>
@@ -554,7 +576,11 @@ trait Crudify {
     */
   def _showAllTemplate = {
     <div data-lift="crud.all">
-      <table id={showAllId} class={showAllClass}>
+      <table id={
+      showAllId
+    } class={
+      showAllClass
+    }>
         <thead>
           <tr>
             <th class="header-item"></th>
@@ -569,16 +595,26 @@ trait Crudify {
           <tr class="row">
             <td class="row-item"></td>
 
-            <td><a class="view" href="view-uri">{S ? "View"}</a></td>
-            <td><a class="edit" href="edit-uri">{S ? "Edit"}</a></td>
-            <td><a class="delete" href="delete-uri">{S ? "Delete"}</a></td>
+            <td><a class="view" href="view-uri">{
+      S ? "View"
+    }</a></td>
+            <td><a class="edit" href="edit-uri">{
+      S ? "Edit"
+    }</a></td>
+            <td><a class="delete" href="delete-uri">{
+      S ? "Delete"
+    }</a></td>
           </tr>
         </tbody>
 
         <tfoot>
           <tr>
-            <td colspan="3" class="previous">{previousWord}</td>
-            <td colspan="3" class="next">{nextWord}</td>
+            <td colspan="3" class="previous">{
+      previousWord
+    }</td>
+            <td colspan="3" class="next">{
+      nextWord
+    }</td>
             </tr>
         </tfoot>
       </table>
@@ -765,7 +801,9 @@ trait Crudify {
     */
   def wrapNameInRequired(fieldName: NodeSeq, required: Boolean): NodeSeq = {
     if (required) {
-      <span class="required_field">{fieldName}</span>
+      <span class="required_field">{
+        fieldName
+      }</span>
     } else {
       fieldName
     }
@@ -782,7 +820,13 @@ trait Crudify {
             S.getNotices
               .filter(_._3 == fid)
               .flatMap(err =>
-                List(Text(" "), <span class={editErrorClass}>{err._2}</span>))
+                List(
+                  Text(" "),
+                  <span class={
+                    editErrorClass
+                  }>{
+                    err._2
+                  }</span>))
 
           case _ => NodeSeq.Empty
         }

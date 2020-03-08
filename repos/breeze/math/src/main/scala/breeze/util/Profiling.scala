@@ -56,14 +56,18 @@ object Profiling {
 
     def loop1 = {
       var sum = 0;
-      for (i <- 0 until n) { sum += i; }
+      for (i <- 0 until n) {
+        sum += i;
+      }
       sum;
     }
 
     def loop2 = {
       var sum = 0;
       var i = 0;
-      while (i < n) { sum += i; i += 1; }
+      while (i < n) {
+        sum += i; i += 1;
+      }
       sum;
     }
 

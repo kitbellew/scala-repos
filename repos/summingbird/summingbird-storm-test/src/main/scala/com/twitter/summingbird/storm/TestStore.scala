@@ -80,7 +80,9 @@ case class TestStore[K, V: Semigroup](storeID: String, initialData: Map[K, V])
   val reads: AtomicInteger = new AtomicInteger(0)
 
   def toScala: Map[K, V] =
-    backingStore.asScala.collect { case (k, Some(v)) => (k, v) }.toMap
+    backingStore.asScala.collect {
+      case (k, Some(v)) => (k, v)
+    }.toMap
 
   private def getOpt(k: K) = {
     reads.incrementAndGet

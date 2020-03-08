@@ -44,10 +44,14 @@ class WatermarkPool[Req, Rep](
   private[this] val tooManyWaiters =
     statsReceiver.counter("pool_num_too_many_waiters")
   private[this] val waitersStat = statsReceiver.addGauge("pool_waiters") {
-    thePool.synchronized { waiters.size }
+    thePool.synchronized {
+      waiters.size
+    }
   }
   private[this] val sizeStat = statsReceiver.addGauge("pool_size") {
-    thePool.synchronized { numServices }
+    thePool.synchronized {
+      numServices
+    }
   }
 
   /**
@@ -143,7 +147,9 @@ class WatermarkPool[Req, Rep](
     // If we reach this point, we've committed to creating a service
     // (numServices was increased by one).
     val p = new Promise[Service[Req, Rep]]
-    val underlying = factory(conn).map { new ServiceWrapper(_) }
+    val underlying = factory(conn).map {
+      new ServiceWrapper(_)
+    }
     underlying.respond { res =>
       p.updateIfEmpty(res)
       if (res.isThrow) thePool.synchronized {
@@ -156,7 +162,9 @@ class WatermarkPool[Req, Rep](
         val failure =
           Failure.adapt(e, Failure.Restartable | Failure.Interrupted)
         if (p.updateIfEmpty(Throw(failure)))
-          underlying.onSuccess { _.close() }
+          underlying.onSuccess {
+            _.close()
+          }
     }
     p
   }
@@ -170,11 +178,15 @@ class WatermarkPool[Req, Rep](
     isOpen = false
 
     // Drain the pool.
-    queue.asScala foreach { _.close() }
+    queue.asScala foreach {
+      _.close()
+    }
     queue.clear()
 
     // Kill the existing waiters.
-    waiters.asScala foreach { _() = Throw(new ServiceClosedException) }
+    waiters.asScala foreach {
+      _() = Throw(new ServiceClosedException)
+    }
     waiters.clear()
 
     // Close the underlying factory.

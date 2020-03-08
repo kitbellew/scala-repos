@@ -1,10 +1,18 @@
 // isEmpty returns non-boolean
-class Casey(a: Int) { def isEmpty = this; def get = this }
-object Casey { def unapply(a: Casey) = a }
+class Casey(a: Int) {
+  def isEmpty = this; def get = this
+}
+object Casey {
+  def unapply(a: Casey) = a
+}
 
 // no isEmpty method at all
-class Dingy(a: Int) { def get = this }
-object Dingy { def unapply(a: Dingy) = a }
+class Dingy(a: Int) {
+  def get = this
+}
+object Dingy {
+  def unapply(a: Dingy) = a
+}
 
 object Test {
   def main(args: Array[String]) {

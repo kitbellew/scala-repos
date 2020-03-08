@@ -44,13 +44,17 @@ class Broker[T] {
   private[this] def rmElem(elem: AnyRef) {
     state.get match {
       case s @ Sending(q) =>
-        val nextq = q filter { _ ne elem }
+        val nextq = q filter {
+          _ ne elem
+        }
         val nextState = if (nextq.isEmpty) Quiet else Sending(nextq)
         if (!state.compareAndSet(s, nextState))
           rmElem(elem)
 
       case s @ Receiving(q) =>
-        val nextq = q filter { _ ne elem }
+        val nextq = q filter {
+          _ ne elem
+        }
         val nextState = if (nextq.isEmpty) Quiet else Receiving(nextq)
         if (!state.compareAndSet(s, nextState))
           rmElem(elem)
@@ -108,7 +112,9 @@ class Broker[T] {
 
         case s @ (Quiet | Receiving(_)) =>
           val p = new Promise[Tx[T]]
-          p.setInterruptHandler { case _ => rmElem(p) }
+          p.setInterruptHandler {
+            case _ => rmElem(p)
+          }
           val nextState = s match {
             case Quiet        => Receiving(Queue(p))
             case Receiving(q) => Receiving(q enqueue p)

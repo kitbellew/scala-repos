@@ -38,7 +38,9 @@ object JobStats {
         stats
           .getCountersFor(group)
           .asScala
-          .map { counter => (counter, stats.getCounterValue(group, counter)) }
+          .map { counter =>
+            (counter, stats.getCounterValue(group, counter))
+          }
           .toMap)
     }.toMap
 
@@ -87,7 +89,9 @@ object JobStats {
     if (a == null) "null"
     else {
       Try(a.toString.toInt)
-        .recoverWith { case t: Throwable => Try(a.toString.toDouble) }
+        .recoverWith {
+          case t: Throwable => Try(a.toString.toDouble)
+        }
         .recover {
           case t: Throwable =>
             val s = a.toString
@@ -110,6 +114,8 @@ case class JobStats(toMap: Map[String, Any]) {
 
   def toJson: String =
     toMap
-      .map { case (k, v) => "\"%s\" : %s".format(k, JobStats.toJsonValue(v)) }
+      .map {
+        case (k, v) => "\"%s\" : %s".format(k, JobStats.toJsonValue(v))
+      }
       .mkString("{", ",", "}")
 }

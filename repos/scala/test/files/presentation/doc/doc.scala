@@ -83,7 +83,9 @@ object Test extends InteractiveTest {
             if (expanded.isEmpty)
               None
             else
-              Some(ask { () => parseAtSymbol(expanded, raw, pos, sym.owner) })
+              Some(ask { () =>
+                parseAtSymbol(expanded, raw, pos, sym.owner)
+              })
         }
       }
     }

@@ -122,7 +122,9 @@ object StepWise {
         f: (T, U) ⇒ Unit): Steps[T, U] =
       copy(ops = Message(
         timeout,
-        (msg, value) ⇒ { f.asInstanceOf[(Any, Any) ⇒ Any](msg, value); value },
+        (msg, value) ⇒ {
+          f.asInstanceOf[(Any, Any) ⇒ Any](msg, value); value
+        },
         getTrace()) :: ops)
 
     def expectMultipleMessagesKeep(timeout: FiniteDuration, count: Int)(

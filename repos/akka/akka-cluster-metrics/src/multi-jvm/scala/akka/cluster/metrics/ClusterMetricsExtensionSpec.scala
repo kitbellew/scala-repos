@@ -105,7 +105,9 @@ abstract class ClusterMetricsEnabledSpec
     val conf = cluster.system.settings.config
     val text = conf.root.render
     val file = new File(s"target/${myself.name}_application.conf")
-    Some(new PrintWriter(file)) map { p ⇒ p.write(text); p.close }
+    Some(new PrintWriter(file)) map { p ⇒
+      p.write(text); p.close
+    }
   }
 
   saveApplicationConf()

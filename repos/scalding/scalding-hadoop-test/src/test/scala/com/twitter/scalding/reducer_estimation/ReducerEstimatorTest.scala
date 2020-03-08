@@ -44,10 +44,14 @@ class HipJob(args: Args, customConfig: Config) extends Job(args) {
 
   wordCounts
     .leftJoin(scores)
-    .mapValues { case (count, score) => (count, score.getOrElse(0.0)) }
+    .mapValues {
+      case (count, score) => (count, score.getOrElse(0.0))
+    }
     // force another M/R step - should use reducer estimation
     .toTypedPipe
-    .map { case (word, (count, score)) => (count, score) }
+    .map {
+      case (word, (count, score)) => (count, score)
+    }
     .group
     .sum
     // force another M/R step - this should force 1 reducer because it is essentially a groupAll

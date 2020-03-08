@@ -48,9 +48,13 @@ object WSClientAutobahnTest extends App {
     s"ws://localhost:9001/updateReports?agent=$agent"
 
   def runCase(caseIndex: Int, agent: String = Agent): Future[CaseStatus] =
-    runWs(runCaseUri(caseIndex, agent), echo).recover { case _ ⇒ () }.flatMap {
-      _ ⇒ getCaseStatus(caseIndex, agent)
-    }
+    runWs(runCaseUri(caseIndex, agent), echo)
+      .recover {
+        case _ ⇒ ()
+      }
+      .flatMap { _ ⇒
+        getCaseStatus(caseIndex, agent)
+      }
 
   def richRunCase(caseIndex: Int, agent: String = Agent): Future[CaseResult] = {
     val info = getCaseInfo(caseIndex)
@@ -101,7 +105,9 @@ object WSClientAutobahnTest extends App {
           .traverse(1 to count)(getCaseInfo)
           .map(_.map(e ⇒ e.caseInfo.id -> e).toMap)
       }
-    res.foreach { res ⇒ println(s"Received info for ${res.size} cases") }
+    res.foreach { res ⇒
+      println(s"Received info for ${res.size} cases")
+    }
     res
   }
 

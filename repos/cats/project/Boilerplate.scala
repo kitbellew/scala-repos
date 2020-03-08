@@ -16,7 +16,9 @@ object Boilerplate {
     def block(args: Any*): String = {
       val interpolated = sc.standardInterpolator(treatEscapes, args)
       val rawLines = interpolated split '\n'
-      val trimmedLines = rawLines map { _ dropWhile (_.isWhitespace) }
+      val trimmedLines = rawLines map {
+        _ dropWhile (_.isWhitespace)
+      }
       trimmedLines mkString "\n"
     }
   }
@@ -42,7 +44,9 @@ object Boilerplate {
   final class TemplateVals(val arity: Int) {
     val synTypes = (0 until arity) map (n => s"A$n")
     val synVals = (0 until arity) map (n => s"a$n")
-    val synTypedVals = (synVals zip synTypes) map { case (v, t) => v + ":" + t }
+    val synTypedVals = (synVals zip synTypes) map {
+      case (v, t) => v + ":" + t
+    }
     val `A..N` = synTypes.mkString(", ")
     val `a..n` = synVals.mkString(", ")
     val `_.._` = Seq.fill(arity)("_").mkString(", ")
@@ -97,7 +101,9 @@ object Boilerplate {
     def content(tv: TemplateVals) = {
       import tv._
 
-      val tpes = synTypes map { tpe => s"F[$tpe]" }
+      val tpes = synTypes map { tpe =>
+        s"F[$tpe]"
+      }
       val tpesString = synTypes mkString ", "
       val params = (synVals zip tpes) map {
         case (v, t) => s"$v:$t"
@@ -108,8 +114,11 @@ object Boilerplate {
         ""
       }
 
-      val n = if (arity == 1) { "" }
-      else { arity.toString }
+      val n = if (arity == 1) {
+        ""
+      } else {
+        arity.toString
+      }
 
       val map =
         if (arity == 1)
@@ -163,8 +172,12 @@ object Boilerplate {
     def content(tv: TemplateVals) = {
       import tv._
 
-      val tpes = synTypes map { tpe => s"F[$tpe]" }
-      val fargs = (0 until arity) map { "f" + _ }
+      val tpes = synTypes map { tpe =>
+        s"F[$tpe]"
+      }
+      val fargs = (0 until arity) map {
+        "f" + _
+      }
       val fparams = (fargs zip tpes) map {
         case (v, t) => s"$v:$t"
       } mkString ", "
@@ -172,14 +185,28 @@ object Boilerplate {
       val a = arity / 2
       val b = arity - a
 
-      val fArgsA = (0 until a) map { "f" + _ } mkString ","
-      val fArgsB = (a until arity) map { "f" + _ } mkString ","
-      val argsA = (0 until a) map { n => "a" + n + ":A" + n } mkString ","
-      val argsB = (a until arity) map { n => "a" + n + ":A" + n } mkString ","
+      val fArgsA = (0 until a) map {
+        "f" + _
+      } mkString ","
+      val fArgsB = (a until arity) map {
+        "f" + _
+      } mkString ","
+      val argsA = (0 until a) map { n =>
+        "a" + n + ":A" + n
+      } mkString ","
+      val argsB = (a until arity) map { n =>
+        "a" + n + ":A" + n
+      } mkString ","
       def apN(n: Int) =
-        if (n == 1) { "ap" }
-        else { s"ap$n" }
-      def allArgs = (0 until arity) map { "a" + _ } mkString ","
+        if (n == 1) {
+          "ap"
+        } else {
+          s"ap$n"
+        }
+      def allArgs =
+        (0 until arity) map {
+          "a" + _
+        } mkString ","
 
       val apply =
         block"""
@@ -206,8 +233,12 @@ object Boilerplate {
     def content(tv: TemplateVals) = {
       import tv._
 
-      val tpes = synTypes map { tpe => s"F[$tpe]" }
-      val fargs = (0 until arity) map { "f" + _ }
+      val tpes = synTypes map { tpe =>
+        s"F[$tpe]"
+      }
+      val fargs = (0 until arity) map {
+        "f" + _
+      }
       val fparams = (fargs zip tpes) map {
         case (v, t) => s"$v:$t"
       } mkString ", "

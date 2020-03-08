@@ -79,7 +79,9 @@ class CoronerSpec extends WordSpec with Matchers {
           new Runnable {
             def run =
               try recursiveLock(initialLocks)
-              catch { case _: InterruptedException ⇒ () }
+              catch {
+                case _: InterruptedException ⇒ ()
+              }
 
             def recursiveLock(locks: List[ReentrantLock]) {
               locks match {

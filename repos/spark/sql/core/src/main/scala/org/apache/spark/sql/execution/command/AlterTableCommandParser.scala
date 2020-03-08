@@ -253,16 +253,22 @@ object AlterTableCommandParser {
         //   :  :  :  :- '2009-09-09'
         //   :  :  :  +- 'uk'
         //   +- TOK_STOREASDIR
-        val names = colNames.map { n => cleanAndUnquoteString(n.text) }
+        val names = colNames.map { n =>
+          cleanAndUnquoteString(n.text)
+        }
         val values = colValues match {
           case Token("TOK_TABCOLVALUE", vals) =>
-            Seq(vals.map { n => cleanAndUnquoteString(n.text) })
+            Seq(vals.map { n =>
+              cleanAndUnquoteString(n.text)
+            })
           case Token("TOK_TABCOLVALUE_PAIR", pairs) =>
             pairs.map {
               case Token(
                   "TOK_TABCOLVALUES",
                   Token("TOK_TABCOLVALUE", vals) :: Nil) =>
-                vals.map { n => cleanAndUnquoteString(n.text) }
+                vals.map { n =>
+                  cleanAndUnquoteString(n.text)
+                }
               case _ =>
                 parseFailed("Invalid ALTER TABLE command", node)
             }
@@ -401,7 +407,11 @@ object AlterTableCommandParser {
         // E.g. we can't differentiate between INPUTFORMAT and OUTPUTFORMAT if either is set.
         // Right now this just stores the values, but we should figure out how to get the keys.
         val fFormat = fileFormat
-          .map { _.children.map { n => cleanAndUnquoteString(n.text) } }
+          .map {
+            _.children.map { n =>
+              cleanAndUnquoteString(n.text)
+            }
+          }
           .getOrElse(Seq())
         val gFormat = genericFormat.map { f =>
           cleanAndUnquoteString(f.children(0).text)

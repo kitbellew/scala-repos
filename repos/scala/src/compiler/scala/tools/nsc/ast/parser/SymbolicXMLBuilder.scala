@@ -143,7 +143,9 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
             if (empty) Literal(Constant(true))
             else Literal(Constant(false))) ::: starArgs))
 
-    atPos(pos) { if (isPattern) pat else nonpat }
+    atPos(pos) {
+      if (isPattern) pat else nonpat
+    }
   }
 
   final def entityRef(pos: Position, n: String) =

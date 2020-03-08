@@ -4,7 +4,9 @@ import java.io.File
 import File.{pathSeparator => /}
 import scala.io.Source
 
-class Holder { var value: Any = _ }
+class Holder {
+  var value: Any = _
+}
 
 import scala.tools.nsc.{GenericRunnerSettings, Interpreter, Settings}
 
@@ -36,6 +38,8 @@ class Foo {
 object Test {
   def main(args: Array[String]) {
     val foo = new Foo
-    args.foreach { arg => foo.eval(arg) == arg.toInt }
+    args.foreach { arg =>
+      foo.eval(arg) == arg.toInt
+    }
   }
 }

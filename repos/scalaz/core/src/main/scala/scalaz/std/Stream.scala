@@ -24,7 +24,9 @@ trait StreamInstances {
         implicit G: Applicative[G]): G[Stream[B]] = {
       val seed: G[Stream[B]] = G.point(Stream[B]())
 
-      foldRight(fa, seed) { (x, ys) => G.apply2(f(x), ys)((b, bs) => b #:: bs) }
+      foldRight(fa, seed) { (x, ys) =>
+        G.apply2(f(x), ys)((b, bs) => b #:: bs)
+      }
     }
 
     override def length[A](fa: Stream[A]) = fa.length
@@ -140,7 +142,9 @@ trait StreamInstances {
   }
 
   implicit def streamEqual[A](implicit A0: Equal[A]): Equal[Stream[A]] =
-    new StreamEqual[A] { def A = A0 }
+    new StreamEqual[A] {
+      def A = A0
+    }
   implicit def streamOrder[A](implicit A0: Order[A]): Order[Stream[A]] =
     new Order[Stream[A]] with StreamEqual[A] {
       def A = A0

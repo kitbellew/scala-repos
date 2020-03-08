@@ -18,8 +18,12 @@ class CacheConditionDirectivesSpec extends RoutingSpec {
     val tag = EntityTag("fresh")
     val responseHeaders = List(ETag(tag), `Last-Modified`(timestamp))
 
-    def taggedAndTimestamped = conditional(tag, timestamp) { completeOk }
-    def weak = conditional(tag.copy(weak = true), timestamp) { completeOk }
+    def taggedAndTimestamped = conditional(tag, timestamp) {
+      completeOk
+    }
+    def weak = conditional(tag.copy(weak = true), timestamp) {
+      completeOk
+    }
 
     "return OK for new resources" in {
       Get() ~> taggedAndTimestamped ~> check {

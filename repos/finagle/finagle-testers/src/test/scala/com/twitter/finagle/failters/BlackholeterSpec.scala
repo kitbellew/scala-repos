@@ -47,7 +47,9 @@ case class BlackholeterSpec() extends FlatSpec with MustMatchers {
     evaluating {
       Await.result(
         Future.collect(1 to repeatFor map { _ =>
-          stack("hello") onSuccess { _ => pass += 1 }
+          stack("hello") onSuccess { _ =>
+            pass += 1
+          }
         }),
         10.seconds)
     } must produce[TimeoutException]
@@ -69,7 +71,9 @@ case class BlackholeterSpec() extends FlatSpec with MustMatchers {
     evaluating {
       Await.result(
         Future.collect(1 to repeatFor map { _ =>
-          stack("hello") onSuccess { _ => pass += 1 }
+          stack("hello") onSuccess { _ =>
+            pass += 1
+          }
         }),
         10.seconds)
     } must produce[TimeoutException]

@@ -26,8 +26,12 @@ class CorsTest extends FlatSpec with MustMatchers {
       case origin if origin.endsWith("street") => Some(origin)
       case _                                   => None
     },
-    allowsMethods = { method => Some(method :: "TRAP" :: Nil) },
-    allowsHeaders = { headers => Some(headers) },
+    allowsMethods = { method =>
+      Some(method :: "TRAP" :: Nil)
+    },
+    allowsHeaders = { headers =>
+      Some(headers)
+    },
     exposedHeaders = "Icey" :: Nil,
     supportsCredentials = true,
     maxAge = Some(Duration.Top)

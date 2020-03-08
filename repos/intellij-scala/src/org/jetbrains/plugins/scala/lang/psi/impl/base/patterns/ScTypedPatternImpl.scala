@@ -63,7 +63,9 @@ class ScTypedPatternImpl(node: ASTNode)
           tp.typeElement.getType(ctx).map {
             case tp: ScExistentialType =>
               val skolem = tp.skolem
-              ScType.extractClassType(skolem, Some(getProject)) match { //todo: type aliases?
+              ScType.extractClassType(
+                skolem,
+                Some(getProject)) match { //todo: type aliases?
                 case Some((clazz: ScTypeDefinition, subst)) =>
                   val typeParams = clazz.typeParameters
                   skolem match {

@@ -85,7 +85,9 @@ final class FishnetApi(
             repo.updateAnalysis(work assignTo client) inject work.some
           }
         }
-    }.map { _ map JsonApi.fromWork }
+    }.map {
+      _ map JsonApi.fromWork
+    }
 
   def postMove(
       workId: Work.Id,
@@ -142,9 +144,13 @@ final class FishnetApi(
       }
     }.chronometer
       .mon(_.fishnet.analysis.post)
-      .logIfSlow(200, logger) { res => s"post analysis for ${res.??(_.id)}" }
+      .logIfSlow(200, logger) { res =>
+        s"post analysis for ${res.??(_.id)}"
+      }
       .result
-      .flatMap { _ ?? saveAnalysis }
+      .flatMap {
+        _ ?? saveAnalysis
+      }
 
   def abort(workId: Work.Id, client: Client): Funit = sequencer {
     repo.getAnalysis(workId).map(_.filter(_ isAcquiredBy client)) flatMap {

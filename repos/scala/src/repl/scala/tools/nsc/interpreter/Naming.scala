@@ -99,7 +99,9 @@ trait Naming {
 
   val freshLineId = {
     var x = 0
-    () => { x += 1; x }
+    () => {
+      x += 1; x
+    }
   }
   def freshUserVarName() = userVar()
   def freshInternalVarName() = internalVar()

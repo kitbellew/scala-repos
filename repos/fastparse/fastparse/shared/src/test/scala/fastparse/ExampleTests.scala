@@ -350,7 +350,9 @@ object ExampleTests extends TestSuite {
           val plus = P("+")
           val num = P(CharIn('0' to '9').rep(1)).!.map(_.toInt)
           val side = P("(" ~ expr ~ ")" | num)
-          val expr: P[Int] = P(side ~ plus ~ side).map { case (l, r) => l + r }
+          val expr: P[Int] = P(side ~ plus ~ side).map {
+            case (l, r) => l + r
+          }
         }
 
         check(
@@ -365,7 +367,9 @@ object ExampleTests extends TestSuite {
           val plus = P("+")
           val num = P(CharIn('0' to '9').rep(1)).!.map(_.toInt)
           val side = P("(" ~/ expr ~ ")" | num)
-          val expr: P[Int] = P(side ~ plus ~ side).map { case (l, r) => l + r }
+          val expr: P[Int] = P(side ~ plus ~ side).map {
+            case (l, r) => l + r
+          }
         }
         check(
           Foo.expr.parse("(1+(2+3x))+4"),
@@ -380,8 +384,11 @@ object ExampleTests extends TestSuite {
           val plus = P("+")
           val num = P(CharIn('0' to '9').rep(1)).!.map(_.toInt)
           val side = P("(" ~/ expr ~ ")" | num).log()
-          val expr: P[Int] =
-            P(side ~ plus ~ side).map { case (l, r) => l + r }.log()
+          val expr: P[Int] = P(side ~ plus ~ side)
+            .map {
+              case (l, r) => l + r
+            }
+            .log()
         }
 
         Foo.expr.parse("(1+(2+3x))+4")

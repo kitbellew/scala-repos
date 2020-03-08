@@ -58,7 +58,9 @@ private[python] object Converter extends Logging {
             throw err
         }
       }
-      .getOrElse { defaultConverter }
+      .getOrElse {
+        defaultConverter
+      }
   }
 }
 
@@ -169,7 +171,9 @@ private[python] object PythonHadoopUtil {
     */
   def mapToConf(map: java.util.Map[String, String]): Configuration = {
     val conf = new Configuration()
-    map.asScala.foreach { case (k, v) => conf.set(k, v) }
+    map.asScala.foreach {
+      case (k, v) => conf.set(k, v)
+    }
     conf
   }
 

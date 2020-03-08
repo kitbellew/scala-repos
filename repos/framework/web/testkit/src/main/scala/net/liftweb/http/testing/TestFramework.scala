@@ -156,7 +156,9 @@ trait BaseGetPoster {
     val params = faux_params.toList.map(x => (x._1, x._2.toString))
     val fullUrl = url + (params
       .map(v => urlEncode(v._1) + "=" + urlEncode(v._2))
-      .mkString("&") match { case s if s.length == 0 => ""; case s => "?" + s })
+      .mkString("&") match {
+      case s if s.length == 0 => ""; case s => "?" + s
+    })
     val getter = new GetMethod(baseUrl + fullUrl)
     getter.getParams().setCookiePolicy(CookiePolicy.RFC_2965)
     for ((name, value) <- headers) getter.setRequestHeader(name, value)
@@ -181,7 +183,9 @@ trait BaseGetPoster {
     val params = faux_params.toList.map(x => (x._1, x._2.toString))
     val fullUrl = url + (params
       .map(v => urlEncode(v._1) + "=" + urlEncode(v._2))
-      .mkString("&") match { case s if s.length == 0 => ""; case s => "?" + s })
+      .mkString("&") match {
+      case s if s.length == 0 => ""; case s => "?" + s
+    })
     val getter = new DeleteMethod(baseUrl + fullUrl)
     getter.getParams().setCookiePolicy(CookiePolicy.RFC_2965)
     for ((name, value) <- headers) getter.setRequestHeader(name, value)
@@ -483,7 +487,9 @@ trait TestKit extends ClientBuilder with GetPoster with GetPosterHelper {
   class TestHandler(res: TestResponse) {
     def then(f: TestResponse => TestResponse): TestResponse = f(res)
 
-    def also(f: TestResponse => Any): TestResponse = { f(res); res }
+    def also(f: TestResponse => Any): TestResponse = {
+      f(res); res
+    }
   }
   implicit def reqToHander(in: TestResponse): TestHandler = new TestHandler(in)
 }
@@ -549,7 +555,11 @@ trait TestFramework extends TestKit {
 
   def fork(cnt: Int)(f: Int => Any) {
     val threads = for (t <- (1 to cnt).toList) yield {
-      val th = new Thread(new Runnable { def run { f(t) } })
+      val th = new Thread(new Runnable {
+        def run {
+          f(t)
+        }
+      })
       th.start
       th
     }
@@ -630,7 +640,9 @@ object TestHelpers {
       headers: List[(String, String)],
       respHeaders: Map[String, List[String]]): Box[String] = {
     val ret = (headers
-      .filter { case ("Cookie", _) => true; case _ => false }
+      .filter {
+        case ("Cookie", _) => true; case _ => false
+      }
       .map(_._2) :::
       respHeaders.get("Set-Cookie").toList.flatMap(x => x)) match {
       case Nil       => Empty
@@ -920,7 +932,9 @@ abstract class BaseResponse(
     * The content type header of the response
     */
   lazy val contentType: String = headers
-    .filter { case (name, value) => name equalsIgnoreCase "content-type" }
+    .filter {
+      case (name, value) => name equalsIgnoreCase "content-type"
+    }
     .toList
     .headOption
     .map(_._2.head) getOrElse ""
@@ -934,7 +948,10 @@ abstract class BaseResponse(
     } yield new String(b, "UTF-8")
 
   def !@(msg: => String)(implicit errorFunc: ReportFailure): SelfType =
-    if (code == 200) this.asInstanceOf[SelfType] else { errorFunc.fail(msg) }
+    if (code == 200) this.asInstanceOf[SelfType]
+    else {
+      errorFunc.fail(msg)
+    }
 
   def !(msg: => String)(implicit errorFunc: ReportFailure): SelfType =
     this.asInstanceOf[SelfType]

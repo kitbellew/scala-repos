@@ -17,7 +17,9 @@ class JsonValueReader(val data: JValue)(implicit formats: Formats)
   }
 
   def read(key: String): Either[String, Option[JValue]] =
-    allCatch.withApply(t => Left(t.getMessage)) { Right(readPath(key)) }
+    allCatch.withApply(t => Left(t.getMessage)) {
+      Right(readPath(key))
+    }
 
   protected def readPath(path: String, subj: JValue = data): Option[JValue] = {
     val partIndex = path.indexOf(separator.beginning)

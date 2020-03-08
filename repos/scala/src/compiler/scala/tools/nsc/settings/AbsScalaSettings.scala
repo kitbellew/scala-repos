@@ -16,17 +16,33 @@ trait AbsScalaSettings {
 
   type Setting <: AbsSetting
 
-  type BooleanSetting <: Setting { type T = Boolean }
-  type ChoiceSetting <: Setting { type T = String }
-  type IntSetting <: Setting { type T = Int }
-  type MultiStringSetting <: Setting { type T = List[String] }
+  type BooleanSetting <: Setting {
+    type T = Boolean
+  }
+  type ChoiceSetting <: Setting {
+    type T = String
+  }
+  type IntSetting <: Setting {
+    type T = Int
+  }
+  type MultiStringSetting <: Setting {
+    type T = List[String]
+  }
   type MultiChoiceSetting[E <: MultiChoiceEnumeration] <: Setting {
     type T <: E#ValueSet
   }
-  type PathSetting <: Setting { type T = String }
-  type PhasesSetting <: Setting { type T = List[String] }
-  type StringSetting <: Setting { type T = String }
-  type PrefixSetting <: Setting { type T = List[String] }
+  type PathSetting <: Setting {
+    type T = String
+  }
+  type PhasesSetting <: Setting {
+    type T = List[String]
+  }
+  type StringSetting <: Setting {
+    type T = String
+  }
+  type PrefixSetting <: Setting {
+    type T = List[String]
+  }
 
   type OutputDirs
   type OutputSetting <: Setting

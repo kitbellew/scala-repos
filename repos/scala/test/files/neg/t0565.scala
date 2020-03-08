@@ -13,7 +13,9 @@ object Test extends App {
         val y = "foo";
         def z(w: String) = w + "bar"
       }
-    lazy val u = { println("u evaluated"); x }
+    lazy val u = {
+      println("u evaluated"); x
+    }
     def foo(v: => u.type#T): u.type#T = {
       x = new {
         type T = MacGuffin;

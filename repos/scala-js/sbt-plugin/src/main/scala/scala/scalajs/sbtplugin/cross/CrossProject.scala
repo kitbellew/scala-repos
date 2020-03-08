@@ -347,7 +347,9 @@ object CrossProject extends CrossProjectExtra {
       methodName =>
         s"""$methodName must be directly assigned to a val, such as `val x = $methodName`.""")
     val name = c.Expr[String](Literal(Constant(enclosingValName)))
-    reify { new Builder(name.splice, new File(name.splice)) }
+    reify {
+      new Builder(name.splice, new File(name.splice))
+    }
   }
 
 }

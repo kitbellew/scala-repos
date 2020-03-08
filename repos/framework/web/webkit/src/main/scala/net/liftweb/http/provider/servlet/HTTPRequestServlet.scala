@@ -150,7 +150,9 @@ class HTTPRequestServlet(
         lazy val progList: (Long, Long, Int) => Unit = S.session.flatMap(
           _.progressListener) openOr LiftRules.progressListener
 
-        def update(a: Long, b: Long, c: Int) { progList(a, b, c) }
+        def update(a: Long, b: Long, c: Int) {
+          progList(a, b, c)
+        }
       })
 
       mimeUpload.setSizeMax(LiftRules.maxMimeSize)

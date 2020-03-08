@@ -89,7 +89,9 @@ private[persistence] trait LeveldbStore
     })
 
     if (hasPersistenceIdSubscribers) {
-      persistenceIds.foreach { pid ⇒ notifyPersistenceIdChange(pid) }
+      persistenceIds.foreach { pid ⇒
+        notifyPersistenceIdChange(pid)
+      }
     }
     if (hasTagSubscribers && allTags.nonEmpty)
       allTags.foreach(notifyTagChange)
@@ -220,7 +222,9 @@ private[persistence] trait LeveldbStore
     val tagKeys = tagSubscribers.collect {
       case (k, s) if s.contains(subscriber) ⇒ k
     }
-    tagKeys.foreach { key ⇒ tagSubscribers.removeBinding(key, subscriber) }
+    tagKeys.foreach { key ⇒
+      tagSubscribers.removeBinding(key, subscriber)
+    }
 
     allPersistenceIdsSubscribers -= subscriber
   }

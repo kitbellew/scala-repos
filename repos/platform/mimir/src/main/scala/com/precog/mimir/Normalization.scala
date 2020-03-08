@@ -110,8 +110,9 @@ trait NormalizationHelperModule[M[+_]]
               val augPath = path \ CPathField(reduction.name)
               val jtype = Schema.mkType(List(ColumnRef(augPath, CNum)))
 
-              val cols =
-                jtype map { schema.columns } getOrElse Set.empty[Column]
+              val cols = jtype map {
+                schema.columns
+              } getOrElse Set.empty[Column]
               val unifiedCol = unifyNumColumns(cols.toList)
 
               (path, unifiedCol)
@@ -175,7 +176,9 @@ trait NormalizationHelperModule[M[+_]]
           }
 
           val groupedCols: Map[CPath, Map[ColumnRef, Column]] =
-            numericCols.groupBy { case (ColumnRef(selector, _), _) => selector }
+            numericCols.groupBy {
+              case (ColumnRef(selector, _), _) => selector
+            }
 
           def continue: Map[ColumnRef, Column] = {
             val unifiedCols: Map[ColumnRef, Column] = {
@@ -206,7 +209,9 @@ trait NormalizationHelperModule[M[+_]]
               }
             }
 
-            val bitsets = resultsAll.values map { _.definedAt(0, range.end) }
+            val bitsets = resultsAll.values map {
+              _.definedAt(0, range.end)
+            }
             val definedBitset = bitsets reduceOption {
               _ & _
             } getOrElse BitSetUtil.create()
@@ -225,7 +230,9 @@ trait NormalizationHelperModule[M[+_]]
 
           val subsumes = singleSummary forall {
             case (cpath, _) =>
-              groupedCols.keySet exists { _.hasSuffix(cpath) }
+              groupedCols.keySet exists {
+                _.hasSuffix(cpath)
+              }
           }
 
           if (subsumes)
@@ -243,7 +250,9 @@ trait NormalizationHelperModule[M[+_]]
       def alignCustom(t1: Table, t2: Table): M[(Table, Morph1Apply)] = {
         val valueTable = t2.transform(
           trans.DerefObjectStatic(trans.TransSpec1.Id, paths.Value))
-        valueTable.reduce(reducer) map { summary => (t1, morph1Apply(summary)) }
+        valueTable.reduce(reducer) map { summary =>
+          (t1, morph1Apply(summary))
+        }
       }
     }
   }

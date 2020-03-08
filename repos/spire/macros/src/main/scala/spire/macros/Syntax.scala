@@ -79,7 +79,9 @@ case class SyntaxUtil[C <: Context with Singleton](val c: C) {
 }
 
 // This is Scala reflection source compatibility hack between Scala 2.10 and 2.11
-private object HasCompat { val compat = ??? }; import HasCompat._
+private object HasCompat {
+  val compat = ???
+}; import HasCompat._
 
 class InlineUtil[C <: Context with Singleton](val c: C) {
   import c.universe._

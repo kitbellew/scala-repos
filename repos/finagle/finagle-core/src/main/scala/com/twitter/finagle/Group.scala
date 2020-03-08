@@ -54,7 +54,9 @@ trait Group[T] { outer =>
     * with `f`. `f` is guaranteed to be invoked exactly once for each
     * element of the groups, even for dynamic groups.
     */
-  def map[U](f: T => U): Group[U] = collect { case e => f(e) }
+  def map[U](f: T => U): Group[U] = collect {
+    case e => f(e)
+  }
 
   /**
     * Create a new group by collecting each element of this group
@@ -113,8 +115,11 @@ trait Group[T] { outer =>
 private[finagle] case class NameGroup(name: Name.Bound)
     extends Group[SocketAddress] {
   protected[finagle] lazy val set: Var[Set[SocketAddress]] = name.addr map {
-    case Addr.Bound(set, _) => set.collect { case Address.Inet(ia, _) => ia }
-    case _                  => Set()
+    case Addr.Bound(set, _) =>
+      set.collect {
+        case Address.Inet(ia, _) => ia
+      }
+    case _ => Set()
   }
 }
 
@@ -155,7 +160,9 @@ object Group {
     new Group[SocketAddress] {
       protected[finagle] val set: Var[Set[SocketAddress]] = va map {
         case Addr.Bound(addrs, _) =>
-          addrs.collect { case Address.Inet(ia, _) => ia }
+          addrs.collect {
+            case Address.Inet(ia, _) => ia
+          }
         case _ => Set[SocketAddress]()
       }
     }
@@ -182,7 +189,9 @@ object Group {
     "2014-11-21")
   def mutable[T](initial: T*): MutableGroup[T] = new MutableGroup[T] {
     protected[finagle] val set = Var(Set(initial: _*))
-    def update(newMembers: Set[T]) { set() = newMembers }
+    def update(newMembers: Set[T]) {
+      set() = newMembers
+    }
   }
 
   /**

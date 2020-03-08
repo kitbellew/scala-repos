@@ -43,7 +43,9 @@ class DataSourceTest {
     val db = JdbcBackend.Database.forConfig("databaseUrl")
     try {
       try Await.result(db.run(sqlu"dummy"), Duration.Inf)
-      catch { case ex: SQLException => }
+      catch {
+        case ex: SQLException =>
+      }
       val (url, info) = MockDriver.getLast.getOrElse(
         fail("No connection data recorded").asInstanceOf[Nothing])
       assertEquals("jdbc:postgresql://host/dbname", url)

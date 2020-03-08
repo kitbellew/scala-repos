@@ -9,7 +9,9 @@ import std.tuple._
 object Free extends FreeInstances {
 
   /** Collapse a trampoline to a single step. */
-  def reset[A](r: Trampoline[A]): Trampoline[A] = { val a = r.run; return_(a) }
+  def reset[A](r: Trampoline[A]): Trampoline[A] = {
+    val a = r.run; return_(a)
+  }
 
   /** Suspend the given computation in a single step. */
   def return_[S[_], A](value: => A)(implicit S: Applicative[S]): Free[S, A] =

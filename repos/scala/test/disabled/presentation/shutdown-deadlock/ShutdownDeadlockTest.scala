@@ -8,7 +8,9 @@ object Test extends InteractiveTest {
   def askSomething(): Response[Tree] = {
     // println("*")
     Thread.sleep(50)
-    ask { compiler.askStructure(true)(sourceFiles.head, _) }
+    ask {
+      compiler.askStructure(true)(sourceFiles.head, _)
+    }
   }
 
   def fireAsks() {

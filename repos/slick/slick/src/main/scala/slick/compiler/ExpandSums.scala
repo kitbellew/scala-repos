@@ -170,7 +170,9 @@ class ExpandSums extends Phase {
       val global: Set[List[TermSymbol]] = t match {
         case NominalType(ts, exp) =>
           val c = discCandidates
-            .filter { case (t, ss) => t == ts && ss.nonEmpty }
+            .filter {
+              case (t, ss) => t == ts && ss.nonEmpty
+            }
             .map(_._2)
           logger.debug(
             "Discriminator candidates from surrounding Filter and Join predicates: " +
@@ -181,8 +183,9 @@ class ExpandSums extends Phase {
       def find(t: Type, path: List[TermSymbol]): Vector[List[TermSymbol]] =
         t.structural match {
           case StructType(defs) =>
-            defs.toSeq.flatMap { case (s, t) => find(t, s :: path) }(
-              collection.breakOut)
+            defs.toSeq.flatMap {
+              case (s, t) => find(t, s :: path)
+            }(collection.breakOut)
           case p: ProductType =>
             p.elements.iterator.zipWithIndex.flatMap {
               case (t, i) => find(t, ElementSymbol(i + 1) :: path)
@@ -305,7 +308,9 @@ class ExpandSums extends Phase {
     (tpe.structural match {
       case ProductType(ch) => ProductNode(ch.map(buildMultiColumnNone))
       case StructType(ch) =>
-        StructNode(ch.map { case (sym, t) => (sym, buildMultiColumnNone(t)) })
+        StructNode(ch.map {
+          case (sym, t) => (sym, buildMultiColumnNone(t))
+        })
       case OptionType(ch) => LiteralNode(tpe, None)
       case t =>
         throw new SlickException(
@@ -363,9 +368,12 @@ class ExpandSums extends Phase {
   object PathOnTypeSymbol {
     def unapply(n: Node): Option[(TypeSymbol, List[TermSymbol])] = n match {
       case (n: PathElement) :@ NominalType(ts, _) => Some((ts, Nil))
-      case Select(in, s)                          => unapply(in).map { case (ts, l) => (ts, s :: l) }
-      case Library.SilentCast(ch)                 => unapply(ch)
-      case _                                      => None
+      case Select(in, s) =>
+        unapply(in).map {
+          case (ts, l) => (ts, s :: l)
+        }
+      case Library.SilentCast(ch) => unapply(ch)
+      case _                      => None
     }
   }
 
@@ -374,7 +382,9 @@ class ExpandSums extends Phase {
   def expandConditionals(n: Node): Node = {
     val invalid = mutable.HashSet.empty[TypeSymbol]
     def invalidate(n: Node): Unit =
-      invalid ++= n.nodeType.collect { case NominalType(ts, _) => ts }.toSeq
+      invalid ++= n.nodeType.collect {
+        case NominalType(ts, _) => ts
+      }.toSeq
 
     def tr(n: Node): Node = n.mapChildren(tr, keepType = true) match {
       // Expand multi-column SilentCasts

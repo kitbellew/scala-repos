@@ -59,14 +59,18 @@ case class NativeConnector(
     serialized {
       connection getOrElse {
         val c = mkConnection
-        c.sessionEvents foreach { event => sessionBroker.send(event()).sync() }
+        c.sessionEvents foreach { event =>
+          sessionBroker.send(event()).sync()
+        }
         connection = Some(c)
         c
       } apply ()
     }.flatten
       .rescue {
         case e: NativeConnector.ConnectTimeoutException =>
-          release() flatMap { _ => Future.exception(e) }
+          release() flatMap { _ =>
+            Future.exception(e)
+          }
       }
 
   /**
@@ -153,7 +157,9 @@ object NativeConnector {
     val sessionEvents: Offer[StateEvent] = {
       val broker = new Broker[StateEvent]
       def loop() {
-        sessionBroker.recv sync () map { StateEvent(_) } onSuccess {
+        sessionBroker.recv sync () map {
+          StateEvent(_)
+        } onSuccess {
           case StateEvent.Connected =>
             zookeeper foreach { zk =>
               connectPromise.updateIfEmpty(Return(zk))
@@ -164,7 +170,9 @@ object NativeConnector {
               }
             }
           case _ =>
-        } flatMap { broker.send(_).sync() } ensure loop()
+        } flatMap {
+          broker.send(_).sync()
+        } ensure loop()
       }
       loop()
       broker.recv
@@ -178,7 +186,9 @@ object NativeConnector {
       */
     def apply(): Future[ZooKeeper] = {
       assert(!releasePromise.isDefined)
-      zookeeper = zookeeper orElse Some { mkZooKeeper }
+      zookeeper = zookeeper orElse Some {
+        mkZooKeeper
+      }
       connected
     }
 

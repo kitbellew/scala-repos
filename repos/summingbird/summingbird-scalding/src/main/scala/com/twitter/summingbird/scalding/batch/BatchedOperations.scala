@@ -47,7 +47,9 @@ private class BatchedOperations(batcher: Batcher) {
 
   // This does not look correct. How does this work for closed intervals for instance?
   def batchToTimestamp(bint: Interval[BatchID]): Interval[Timestamp] =
-    bint.mapNonDecreasing { batcher.earliestTimeOf(_) }
+    bint.mapNonDecreasing {
+      batcher.earliestTimeOf(_)
+    }
 
   def intersect(
       batches: Interval[BatchID],
@@ -57,7 +59,9 @@ private class BatchedOperations(batcher: Batcher) {
   def intersect(
       batches: Iterable[BatchID],
       ts: Interval[Timestamp]): Option[Interval[Timestamp]] =
-    BatchID.toInterval(batches).map { intersect(_, ts) }
+    BatchID.toInterval(batches).map {
+      intersect(_, ts)
+    }
 
   def readAvailableTimes[T](
       inTimes: Interval[Timestamp],

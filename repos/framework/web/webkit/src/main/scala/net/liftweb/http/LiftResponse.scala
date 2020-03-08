@@ -456,7 +456,9 @@ final case class InMemoryResponse(
 }
 
 final case class StreamingResponse(
-    data: { def read(buf: Array[Byte]): Int },
+    data: {
+      def read(buf: Array[Byte]): Int
+    },
     onEnd: () => Unit,
     size: Long,
     headers: List[(String, String)],

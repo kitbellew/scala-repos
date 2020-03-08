@@ -56,8 +56,11 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
       expectedNodeText: String): Seq[(String, String)] = {
     props.map {
       case Token(x, keysAndValue) if x == expectedNodeText =>
-        val key =
-          keysAndValue.init.map { x => unquoteString(x.text) }.mkString(".")
+        val key = keysAndValue.init
+          .map { x =>
+            unquoteString(x.text)
+          }
+          .mkString(".")
         val value = unquoteString(keysAndValue.last.text)
         (key, value)
       case p =>

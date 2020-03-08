@@ -37,7 +37,9 @@ object InlinerTest extends ClearAfterClass.Clearable {
     )
   notPerRun foreach compiler.perRunCaches.unrecordCache
 
-  def clear(): Unit = { compiler = null; inlineOnlyCompiler = null }
+  def clear(): Unit = {
+    compiler = null; inlineOnlyCompiler = null
+  }
 }
 
 @RunWith(classOf[JUnit4])
@@ -516,7 +518,9 @@ class InlinerTest extends ClearAfterClass {
     val List(b) = compile(
       scalaCode,
       List((javaCode, "A.java")),
-      allowMessage = i => { c += 1; i.msg contains warn })
+      allowMessage = i => {
+        c += 1; i.msg contains warn
+      })
     assert(c == 1, c)
     val ins = getSingleMethod(b, "g").instructions
     val invokeFlop = Invoke(INVOKEVIRTUAL, "B", "flop", "()I", false)
@@ -592,7 +596,9 @@ class InlinerTest extends ClearAfterClass {
     var count = 0
     val List(c, t) = compile(
       code,
-      allowMessage = i => { count += 1; warns.exists(i.msg contains _) })
+      allowMessage = i => {
+        count += 1; warns.exists(i.msg contains _)
+      })
     // 3rd warnings because of mixin-method, see SD-86
     assert(count == 3, count)
     assertInvoke(getSingleMethod(c, "t1"), "T", "f")
@@ -639,7 +645,9 @@ class InlinerTest extends ClearAfterClass {
     var count = 0
     val List(c, oMirror, oModule, t) = compile(
       code,
-      allowMessage = i => { count += 1; warns.exists(i.msg contains _) })
+      allowMessage = i => {
+        count += 1; warns.exists(i.msg contains _)
+      })
     assert(count == 3, count) // SD-86
 
 //    assertNoInvoke(getSingleMethod(oModule, "f")) // SD-86
@@ -753,7 +761,9 @@ class InlinerTest extends ClearAfterClass {
     var count = 0
     val List(ca, cb, t1, t2a, t2b) = compile(
       code,
-      allowMessage = i => { count += 1; warnings.exists(i.msg contains _) })
+      allowMessage = i => {
+        count += 1; warnings.exists(i.msg contains _)
+      })
     assert(
       count == 8,
       count
@@ -839,7 +849,11 @@ class InlinerTest extends ClearAfterClass {
     val warn =
       "C::foo()I is annotated @inline but cannot be inlined: the method is not final and may be overridden"
     var c = 0
-    compile(code, allowMessage = i => { c += 1; i.msg contains warn })
+    compile(
+      code,
+      allowMessage = i => {
+        c += 1; i.msg contains warn
+      })
     assert(c == 1, c)
   }
 
@@ -855,7 +869,11 @@ class InlinerTest extends ClearAfterClass {
       """.stripMargin
     val err = "abstract member may not have final modifier"
     var i = 0
-    compile(code, allowMessage = info => { i += 1; info.msg contains err })
+    compile(
+      code,
+      allowMessage = info => {
+        i += 1; info.msg contains err
+      })
     assert(i == 2, i)
   }
 
@@ -969,7 +987,9 @@ class InlinerTest extends ClearAfterClass {
       newCompiler(extraArgs = InlinerTest.args + " -Yopt-warnings:_"))(
       scalaCode,
       List((javaCode, "A.java")),
-      allowMessage = i => { c += 1; i.msg contains warn })
+      allowMessage = i => {
+        c += 1; i.msg contains warn
+      })
     assert(c == 1, c)
   }
 
@@ -1007,8 +1027,11 @@ class InlinerTest extends ClearAfterClass {
         |The callee B::f1()I contains the instruction INVOKESPECIAL Aa.f1 ()I
         |that would cause an IllegalAccessError when inlined into class T.""".stripMargin
     var c = 0
-    val List(a, b, t) =
-      compile(code, allowMessage = i => { c += 1; i.msg contains warn })
+    val List(a, b, t) = compile(
+      code,
+      allowMessage = i => {
+        c += 1; i.msg contains warn
+      })
     assert(c == 1, c)
 
     assertInvoke(getSingleMethod(b, "t1"), "Aa", "f1")
@@ -1062,10 +1085,18 @@ class InlinerTest extends ClearAfterClass {
     val t = getSingleMethod(c, "t").instructions
     assertNoInvoke(t)
     assert(
-      1 == t.collect({ case Ldc(_, "hai!") => }).size
+      1 == t
+        .collect({
+          case Ldc(_, "hai!") =>
+        })
+        .size
     ) // push-pop eliminates the first LDC("hai!")
     assert(
-      1 == t.collect({ case Jump(IFNONNULL, _) => }).size
+      1 == t
+        .collect({
+          case Jump(IFNONNULL, _) =>
+        })
+        .size
     ) // one single null check
   }
 

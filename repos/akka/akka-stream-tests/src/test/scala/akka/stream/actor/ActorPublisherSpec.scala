@@ -341,7 +341,9 @@ class ActorPublisherSpec
           .toMat(sink)(Keep.both)
           .run()
 
-        (1 to 3) foreach { snd ! _ }
+        (1 to 3) foreach {
+          snd ! _
+        }
         probe.expectMsg("elem-2")
 
         (4 to 500) foreach { n ⇒
@@ -349,7 +351,9 @@ class ActorPublisherSpec
           snd ! n
         }
 
-        (4 to 500 by 2) foreach { n ⇒ probe.expectMsg("elem-" + n) }
+        (4 to 500 by 2) foreach { n ⇒
+          probe.expectMsg("elem-" + n)
+        }
 
         watch(snd)
         rcv ! PoisonPill

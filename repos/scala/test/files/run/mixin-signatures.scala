@@ -9,7 +9,9 @@ trait Foo1[T] extends Base[T, String] {
   def g(x: T): String
 }
 trait Foo2[R] extends Base[String, R] {
-  def f(x: String): R = { print(x.length); null.asInstanceOf[R] }
+  def f(x: String): R = {
+    print(x.length); null.asInstanceOf[R]
+  }
   def g(x: String): R
 }
 abstract class Foo3[T] extends Base[T, String] {
@@ -17,22 +19,32 @@ abstract class Foo3[T] extends Base[T, String] {
   def g(x: T): String
 }
 abstract class Foo4[R] extends Base[String, R] {
-  def f(x: String): R = { print(x.length); null.asInstanceOf[R] }
+  def f(x: String): R = {
+    print(x.length); null.asInstanceOf[R]
+  }
   def g(x: String): R
 }
 
 object Test {
   object bar1 extends Foo1[String] {
-    def g(x: String): String = { print(x.length); "" }
+    def g(x: String): String = {
+      print(x.length); ""
+    }
   }
   object bar2 extends Foo2[String] {
-    def g(x: String): String = { print(x.length); "" }
+    def g(x: String): String = {
+      print(x.length); ""
+    }
   }
   object bar3 extends Foo3[String] {
-    def g(x: String): String = { print(x.length); "" }
+    def g(x: String): String = {
+      print(x.length); ""
+    }
   }
   object bar4 extends Foo4[String] {
-    def g(x: String): String = { print(x.length); "" }
+    def g(x: String): String = {
+      print(x.length); ""
+    }
   }
 
   // Notice that in bar5, f and g require THREE bridges, because the final
@@ -48,23 +60,51 @@ object Test {
   // public java.lang.Object Test$bar5$.g(java.lang.Object) <bridge> <synthetic>
   // public java.lang.String Test$bar5$.g(java.lang.Object) <bridge> <synthetic>
   object bar5 extends Foo1[String] with Foo2[String] {
-    override def f(x: String): String = { print(x.length); x }
-    def g(x: String): String = { print(x.length); x }
+    override def f(x: String): String = {
+      print(x.length); x
+    }
+    def g(x: String): String = {
+      print(x.length); x
+    }
   }
 
-  final def m1[T, R](x: Base[T, R], y: T) = { x.f(y); x.g(y); x.h(y) }
-  final def m2[T](x: Base[T, String], y: T) = { x.f(y); x.g(y); x.h(y) }
-  final def m3[R](x: Base[String, R]) = { x.f(""); x.g(""); x.h("") }
-  final def m4(x: Base[String, String]) = { x.f(""); x.g(""); x.h("") }
+  final def m1[T, R](x: Base[T, R], y: T) = {
+    x.f(y); x.g(y); x.h(y)
+  }
+  final def m2[T](x: Base[T, String], y: T) = {
+    x.f(y); x.g(y); x.h(y)
+  }
+  final def m3[R](x: Base[String, R]) = {
+    x.f(""); x.g(""); x.h("")
+  }
+  final def m4(x: Base[String, String]) = {
+    x.f(""); x.g(""); x.h("")
+  }
 
-  final def m11[T](x: Foo1[T], y: T) = { x.f(y); x.g(y); x.h(y) }
-  final def m12(x: Foo1[String]) = { x.f(""); x.g(""); x.h("") }
-  final def m21[T](x: Foo2[T], y: T) = { x.f(""); x.g(""); x.h("") }
-  final def m22(x: Foo2[String]) = { x.f(""); x.g(""); x.h("") }
-  final def m31[T](x: Foo3[T], y: T) = { x.f(y); x.g(y); x.h(y) }
-  final def m32(x: Foo3[String]) = { x.f(""); x.g(""); x.h("") }
-  final def m41[T](x: Foo4[T], y: T) = { x.f(""); x.g(""); x.h("") }
-  final def m42(x: Foo4[String]) = { x.f(""); x.g(""); x.h("") }
+  final def m11[T](x: Foo1[T], y: T) = {
+    x.f(y); x.g(y); x.h(y)
+  }
+  final def m12(x: Foo1[String]) = {
+    x.f(""); x.g(""); x.h("")
+  }
+  final def m21[T](x: Foo2[T], y: T) = {
+    x.f(""); x.g(""); x.h("")
+  }
+  final def m22(x: Foo2[String]) = {
+    x.f(""); x.g(""); x.h("")
+  }
+  final def m31[T](x: Foo3[T], y: T) = {
+    x.f(y); x.g(y); x.h(y)
+  }
+  final def m32(x: Foo3[String]) = {
+    x.f(""); x.g(""); x.h("")
+  }
+  final def m41[T](x: Foo4[T], y: T) = {
+    x.f(""); x.g(""); x.h("")
+  }
+  final def m42(x: Foo4[String]) = {
+    x.f(""); x.g(""); x.h("")
+  }
 
   def go = {
     m1(bar1, ""); m2(bar1, ""); m3(bar1); m4(bar1)
@@ -106,8 +146,12 @@ object Test {
     println("\n}")
     println("")
   }
-  def show(x: AnyRef) { show(x.getClass) }
-  def show(x: String) { show(Class.forName(x)) }
+  def show(x: AnyRef) {
+    show(x.getClass)
+  }
+  def show(x: String) {
+    show(Class.forName(x))
+  }
 
   def main(args: Array[String]): Unit = {
     List(bar1, bar2, bar3, bar4, bar5) foreach show

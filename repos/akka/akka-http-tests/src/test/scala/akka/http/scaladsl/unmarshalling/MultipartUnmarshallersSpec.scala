@@ -493,7 +493,9 @@ class MultipartUnmarshallersSpec
               .runWith(Sink.head)
           }
           .fast
-          .recover { case _: NoSuchElementException ⇒ Nil },
+          .recover {
+            case _: NoSuchElementException ⇒ Nil
+          },
         1.second
       )
     }

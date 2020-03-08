@@ -9,8 +9,16 @@ class DynamicTest extends ResolveTestBase {
     super.folderPath + "dynamic/"
   }
 
-  def testApplyDynamic() { doTest() }
-  def testApplyDynamicNoMethod() { doTest() }
-  def testApplyDynamicOrdinaryType() { doTest() }
-  def testApplyDynamicWrongSygnature() { doTest() }
+  def testApplyDynamic() {
+    doTest()
+  }
+  def testApplyDynamicNoMethod() {
+    doTest()
+  }
+  def testApplyDynamicOrdinaryType() {
+    doTest()
+  }
+  def testApplyDynamicWrongSygnature() {
+    doTest()
+  }
 }

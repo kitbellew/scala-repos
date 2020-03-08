@@ -229,9 +229,12 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
     * List all tables in the specified database, including temporary tables.
     */
   def listTables(db: String): Seq[TableIdentifier] = {
-    val dbTables =
-      externalCatalog.listTables(db).map { t => TableIdentifier(t, Some(db)) }
-    val _tempTables = tempTables.keys().asScala.map { t => TableIdentifier(t) }
+    val dbTables = externalCatalog.listTables(db).map { t =>
+      TableIdentifier(t, Some(db))
+    }
+    val _tempTables = tempTables.keys().asScala.map { t =>
+      TableIdentifier(t)
+    }
     dbTables ++ _tempTables
   }
 
@@ -247,8 +250,12 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
     val _tempTables = tempTables
       .keys()
       .asScala
-      .filter { t => regex.pattern.matcher(t).matches() }
-      .map { t => TableIdentifier(t) }
+      .filter { t =>
+        regex.pattern.matcher(t).matches()
+      }
+      .map { t =>
+        TableIdentifier(t)
+      }
     dbTables ++ _tempTables
   }
 
@@ -492,8 +499,12 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
     val _tempFunctions = tempFunctions
       .keys()
       .asScala
-      .filter { f => regex.pattern.matcher(f).matches() }
-      .map { f => FunctionIdentifier(f) }
+      .filter { f =>
+        regex.pattern.matcher(f).matches()
+      }
+      .map { f =>
+        FunctionIdentifier(f)
+      }
     dbFunctions ++ _tempFunctions
   }
 

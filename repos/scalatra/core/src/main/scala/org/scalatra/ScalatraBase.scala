@@ -339,7 +339,9 @@ trait ScalatraBase
   protected var doNotFound: Action
 
   def notFound(fun: => Any): Unit = {
-    doNotFound = { () => fun }
+    doNotFound = { () =>
+      fun
+    }
   }
 
   /**

@@ -129,7 +129,9 @@ private[finagle] class InetResolver(
           log.warning(s"Failed to resolve $host. Error $e")
           dnsLookupFailures.incr()
         }
-        .ensure { permit.release() }
+        .ensure {
+          permit.release()
+        }
     }
   }
 
@@ -181,7 +183,9 @@ private[finagle] class InetResolver(
 
   def bindHostPortsToAddr(hosts: Seq[HostPortMetadata]): Var[Addr] = {
     Var.async(Addr.Pending: Addr) { u =>
-      toAddr(hosts) onSuccess { u() = _ }
+      toAddr(hosts) onSuccess {
+        u() = _
+      }
       pollIntervalOpt match {
         case Some(pollInterval) =>
           val updater = new Updater[Unit] {
@@ -293,7 +297,9 @@ private[finagle] abstract class BaseResolver(f: () => Seq[Resolver]) {
 
     val dups = resolvers
       .groupBy(_.scheme)
-      .filter { case (_, rs) => rs.size > 1 }
+      .filter {
+        case (_, rs) => rs.size > 1
+      }
 
     if (dups.nonEmpty) throw new MultipleResolversPerSchemeException(dups)
 
@@ -304,7 +310,9 @@ private[finagle] abstract class BaseResolver(f: () => Seq[Resolver]) {
   }
 
   def get[T <: Resolver](clazz: Class[T]): Option[T] =
-    resolvers find { _.getClass isAssignableFrom clazz } map {
+    resolvers find {
+      _.getClass isAssignableFrom clazz
+    } map {
       _.asInstanceOf[T]
     }
 
@@ -352,7 +360,9 @@ private[finagle] abstract class BaseResolver(f: () => Seq[Resolver]) {
     */
   @deprecated("Use Resolver.eval", "6.7.x")
   def resolve(addr: String): Try[Group[SocketAddress]] =
-    Try { eval(addr) } flatMap {
+    Try {
+      eval(addr)
+    } flatMap {
       case Name.Path(_) =>
         Throw(
           new IllegalArgumentException(

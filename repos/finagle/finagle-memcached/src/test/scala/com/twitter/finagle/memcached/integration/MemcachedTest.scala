@@ -148,43 +148,67 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
       val stats = Await.result(client.stats())
       assert(stats != null)
       assert(!stats.isEmpty)
-      stats.foreach { stat => assert(stat.startsWith("STAT")) }
+      stats.foreach { stat =>
+        assert(stat.startsWith("STAT"))
+      }
     }
   }
 
   test("send malformed keys") {
     // test key validation trait
-    intercept[ClientError] { Await.result(client.get("fo o")) }
-    intercept[ClientError] { Await.result(client.set("", Buf.Utf8("bar"))) }
-    intercept[ClientError] { Await.result(client.get("    foo")) }
-    intercept[ClientError] { Await.result(client.get("foo   ")) }
-    intercept[ClientError] { Await.result(client.get("    foo")) }
+    intercept[ClientError] {
+      Await.result(client.get("fo o"))
+    }
+    intercept[ClientError] {
+      Await.result(client.set("", Buf.Utf8("bar")))
+    }
+    intercept[ClientError] {
+      Await.result(client.get("    foo"))
+    }
+    intercept[ClientError] {
+      Await.result(client.get("foo   "))
+    }
+    intercept[ClientError] {
+      Await.result(client.get("    foo"))
+    }
     val nullString: String = null
-    intercept[NullPointerException] { Await.result(client.get(nullString)) }
+    intercept[NullPointerException] {
+      Await.result(client.get(nullString))
+    }
     intercept[NullPointerException] {
       Await.result(client.set(nullString, Buf.Utf8("bar")))
     }
-    intercept[ClientError] { Await.result(client.set("    ", Buf.Utf8("bar"))) }
+    intercept[ClientError] {
+      Await.result(client.set("    ", Buf.Utf8("bar")))
+    }
 
     assert(
       Await.result(client.set("\t", Buf.Utf8("bar")).liftToTry) == Return.Unit
     ) // "\t" is a valid key
-    intercept[ClientError] { Await.result(client.set("\r", Buf.Utf8("bar"))) }
-    intercept[ClientError] { Await.result(client.set("\n", Buf.Utf8("bar"))) }
+    intercept[ClientError] {
+      Await.result(client.set("\r", Buf.Utf8("bar")))
+    }
+    intercept[ClientError] {
+      Await.result(client.set("\n", Buf.Utf8("bar")))
+    }
     intercept[ClientError] {
       Await.result(client.set("\u0000", Buf.Utf8("bar")))
     }
 
     val veryLongKey =
       "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz"
-    intercept[ClientError] { Await.result(client.get(veryLongKey)) }
+    intercept[ClientError] {
+      Await.result(client.get(veryLongKey))
+    }
     intercept[ClientError] {
       Await.result(client.set(veryLongKey, Buf.Utf8("bar")))
     }
 
     // test other keyed command validation
     val nullSeq: Seq[String] = null
-    intercept[NullPointerException] { Await.result(client.get(nullSeq)) }
+    intercept[NullPointerException] {
+      Await.result(client.get(nullSeq))
+    }
     intercept[ClientError] {
       Await.result(client.append("bad key", Buf.Utf8("rab")))
     }
@@ -200,9 +224,15 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
     intercept[ClientError] {
       Await.result(client.cas("bad key", Buf.Utf8("z"), Buf.Utf8("2")))
     }
-    intercept[ClientError] { Await.result(client.incr("bad key")) }
-    intercept[ClientError] { Await.result(client.decr("bad key")) }
-    intercept[ClientError] { Await.result(client.delete("bad key")) }
+    intercept[ClientError] {
+      Await.result(client.incr("bad key"))
+    }
+    intercept[ClientError] {
+      Await.result(client.decr("bad key"))
+    }
+    intercept[ClientError] {
+      Await.result(client.delete("bad key"))
+    }
   }
 
   test("re-hash when a bad host is ejected") {
@@ -217,7 +247,9 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
     // set values
     Await.result(
       Future.collect(
-        (0 to 20).map { i => client.set(s"foo$i", Buf.Utf8(s"bar$i")) }
+        (0 to 20).map { i =>
+          client.set(s"foo$i", Buf.Utf8(s"bar$i"))
+        }
       ),
       TimeOut)
 
@@ -304,7 +336,9 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
 
     Time.withCurrentTimeFrozen { timeControl =>
       // Send a bad request
-      intercept[Exception] { Await.result(client.set("foo", Buf.Utf8("bar"))) }
+      intercept[Exception] {
+        Await.result(client.set("foo", Buf.Utf8("bar")))
+      }
 
       // Node should have been ejected
       assert(

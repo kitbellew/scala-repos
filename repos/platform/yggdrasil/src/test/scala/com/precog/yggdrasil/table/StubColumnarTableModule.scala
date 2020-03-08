@@ -87,14 +87,18 @@ trait StubColumnarTableModule[M[+_]] extends ColumnarTableModuleTestSupport[M] {
       }
 
       tableWithSortKey.toJson
-        .map { jvals => fromJson(jvals.toList.sortBy(_ \ "0").toStream) }
+        .map { jvals =>
+          fromJson(jvals.toList.sortBy(_ \ "0").toStream)
+        }
         .map(_.transform(DerefObjectStatic(Leaf(Source), CPathField("1"))))
     }
 
     override def load(apiKey: APIKey, jtpe: JType) = EitherT {
       self.toJson map { events =>
         val parsedV = events.toStream.traverse[
-          ({ type λ[α] = Validation[ResourceError, α] })#λ,
+          ({
+            type λ[α] = Validation[ResourceError, α]
+          })#λ,
           Stream[JObject]] {
           case JString(pathStr) =>
             success {

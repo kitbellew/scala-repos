@@ -57,7 +57,9 @@ class WeightedPageRank(args: Args) extends Job(args) {
     .mapTo(('mass_input, 'mass_n) -> 'mass_diff) { args: (Double, Double) =>
       scala.math.abs(args._1 - args._2)
     }
-    .groupAll { _.sum[Double]('mass_diff) }
+    .groupAll {
+      _.sum[Double]('mass_diff)
+    }
     .write(TypedTsv[Double](PWD + "/totaldiff"))
 
   /**
@@ -102,13 +104,17 @@ class WeightedPageRank(args: Args) extends Job(args) {
                   input._1,
                   // convert string to int array
                   if (input._2 != null && input._2.length > 0) {
-                    input._2.split(",").map { _.toInt }
+                    input._2.split(",").map {
+                      _.toInt
+                    }
                   } else {
                     Array[Int]()
                   },
                   // convert string to float array
                   if (input._3 != null && input._3.length > 0) {
-                    input._3.split(",").map { _.toFloat }
+                    input._3.split(",").map {
+                      _.toFloat
+                    }
                   } else {
                     Array[Float]()
                   },
@@ -124,7 +130,9 @@ class WeightedPageRank(args: Args) extends Job(args) {
     */
   def getNumNodes(fileName: String) = {
     Tsv(fileName).read
-      .mapTo(0 -> 'size) { input: Int => input }
+      .mapTo(0 -> 'size) { input: Int =>
+        input
+      }
   }
 
   /**
@@ -172,7 +180,9 @@ class WeightedPageRank(args: Args) extends Job(args) {
               } else {
                 // equal distribution
                 val dist: Double = args._3 / args._1.length
-                args._1.map { id: Int => (id, dist) }
+                args._1.map { id: Int =>
+                  (id, dist)
+                }
               }
             } else {
               //Here is a node that points to no other nodes (dangling)

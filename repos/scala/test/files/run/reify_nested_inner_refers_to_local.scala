@@ -8,7 +8,9 @@ object Test extends App {
   val code = reify {
     val x = 2
 // was:    reify{x}.eval
-    reify { x }.eval
+    reify {
+      x
+    }.eval
   };
 
   val toolbox = cm.mkToolBox()

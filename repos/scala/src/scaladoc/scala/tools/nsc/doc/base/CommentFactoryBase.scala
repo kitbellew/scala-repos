@@ -226,10 +226,14 @@ trait CommentFactoryBase { this: MemberLookupBase =>
         }
       }
       val strippedComment = comment.trim.stripPrefix("/*").stripSuffix("*/")
-      val safeComment =
-        DangerousTags.replaceAllIn(strippedComment, { htmlReplacement(_) })
-      val javadoclessComment =
-        JavadocTags.replaceAllIn(safeComment, { javadocReplacement(_) })
+      val safeComment = DangerousTags.replaceAllIn(
+        strippedComment, {
+          htmlReplacement(_)
+        })
+      val javadoclessComment = JavadocTags.replaceAllIn(
+        safeComment, {
+          javadocReplacement(_)
+        })
       val markedTagComment =
         SafeTags.replaceAllIn(
           javadoclessComment,
@@ -617,8 +621,9 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       }
 
       val indent = countWhitespace
-      val style = (listStyles.keys find { checkSkipInitWhitespace(_) })
-        .getOrElse(listStyles.keys.head)
+      val style = (listStyles.keys find {
+        checkSkipInitWhitespace(_)
+      }).getOrElse(listStyles.keys.head)
       listLevel(indent, style)
     }
 
@@ -688,7 +693,9 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       }
 
       do {
-        val str = readUntil { char == safeTagMarker || char == endOfText }
+        val str = readUntil {
+          char == safeTagMarker || char == endOfText
+        }
         nextChar()
 
         list += str
@@ -832,7 +839,9 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       jump("[[")
       val parens = 2 + repeatJump('[')
       val stop = "]" * parens
-      val target = readUntil { check(stop) || isWhitespaceOrNewLine(char) }
+      val target = readUntil {
+        check(stop) || isWhitespaceOrNewLine(char)
+      }
       val title =
         if (!check(stop)) Some({
           jumpWhitespaceOrNewLine()

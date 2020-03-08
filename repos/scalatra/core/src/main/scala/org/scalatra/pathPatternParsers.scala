@@ -82,7 +82,11 @@ class SinatraPathPatternParser extends RegexPathPatternParser {
         throw new IllegalArgumentException("Invalid path pattern: " + pattern)
     }
 
-  private def pathPattern = rep(token) ^^ { _.reduceLeft { _ + _ } }
+  private def pathPattern = rep(token) ^^ {
+    _.reduceLeft {
+      _ + _
+    }
+  }
 
   private def token = splat | namedGroup | literal
 
@@ -98,7 +102,9 @@ class SinatraPathPatternParser extends RegexPathPatternParser {
     PartialPathPattern("\\" + c)
   }
 
-  private def normalChar = ".".r ^^ { c => PartialPathPattern(c) }
+  private def normalChar = ".".r ^^ { c =>
+    PartialPathPattern(c)
+  }
 
 }
 
@@ -127,7 +133,11 @@ class RailsPathPatternParser extends RegexPathPatternParser {
       e.captureGroupNames).toPathPattern
   }
 
-  private def expr = rep1(token) ^^ { _.reduceLeft { _ + _ } }
+  private def expr = rep1(token) ^^ {
+    _.reduceLeft {
+      _ + _
+    }
+  }
 
   private def token = param | glob | optional | static
 
@@ -145,17 +155,23 @@ class RailsPathPatternParser extends RegexPathPatternParser {
     e => PartialPathPattern("(?:" + e.regex + ")?", e.captureGroupNames)
   }
 
-  private def static = (escaped | char) ^^ { str => PartialPathPattern(str) }
+  private def static = (escaped | char) ^^ { str =>
+    PartialPathPattern(str)
+  }
 
   private def escaped = literal("\\") ~> (char | paren)
 
   private def char = metachar | stdchar
 
-  private def metachar = """[.^$|?+*{}\\\[\]-]""".r ^^ { "\\" + _ }
+  private def metachar = """[.^$|?+*{}\\\[\]-]""".r ^^ {
+    "\\" + _
+  }
 
   private def stdchar = """[^()]""".r
 
-  private def paren = ("(" | ")") ^^ { "\\" + _ }
+  private def paren = ("(" | ")") ^^ {
+    "\\" + _
+  }
 }
 
 object RailsPathPatternParser {

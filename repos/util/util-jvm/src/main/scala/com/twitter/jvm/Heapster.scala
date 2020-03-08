@@ -32,12 +32,18 @@ class Heapster(klass: Class[_]) {
   private val setSamplingPeriodM =
     klass.getDeclaredMethod("setSamplingPeriod", classOf[java.lang.Integer])
 
-  def start() { startM.invoke(null) }
-  def shutdown() { stopM.invoke(null) }
+  def start() {
+    startM.invoke(null)
+  }
+  def shutdown() {
+    stopM.invoke(null)
+  }
   def setSamplingPeriod(period: java.lang.Integer) {
     setSamplingPeriodM.invoke(null, period)
   }
-  def clearProfile() { clearProfileM.invoke(null) }
+  def clearProfile() {
+    clearProfileM.invoke(null)
+  }
   def dumpProfile(forceGC: java.lang.Boolean): Array[Byte] =
     dumpProfileM.invoke(null, forceGC).asInstanceOf[Array[Byte]]
 

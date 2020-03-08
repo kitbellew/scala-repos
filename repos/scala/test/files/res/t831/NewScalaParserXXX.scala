@@ -2,9 +2,13 @@ package t831;
 
 trait ScalaNodeScannerXXX {
   type Node <: NodeImpl;
-  trait NodeImpl { def self: Node; }
+  trait NodeImpl {
+    def self: Node;
+  }
   type Unfixed <: Node with UnfixedImpl;
-  trait UnfixedImpl extends NodeImpl { def self: Unfixed; }
+  trait UnfixedImpl extends NodeImpl {
+    def self: Unfixed;
+  }
 }
 //def f = { Console.println("hello"); 42; }
 //for (ns <-n; val i <- 0.until(ns)) yield f;
@@ -13,13 +17,17 @@ trait NewScalaScannerXXX extends ScalaNodeScannerXXX {
   type Unfixed <: Node with UnfixedImpl;
   trait UnfixedImpl extends super.UnfixedImpl with NodeImpl;
   type Statement <: Unfixed with StatementImpl;
-  trait StatementImpl extends UnfixedImpl { def self: Statement; }
+  trait StatementImpl extends UnfixedImpl {
+    def self: Statement;
+  }
   type NewLine <: Statement with NewLineImpl;
   trait NewLineImpl extends StatementImpl {
     def self: NewLine;
     def isActive: Boolean = true;
   }
-  object ArrowMode extends Enumeration { val Def, Case, Expr = Value }
+  object ArrowMode extends Enumeration {
+    val Def, Case, Expr = Value
+  }
 }
 
 trait ScalaPrecedenceXXX extends NewScalaScannerXXX {

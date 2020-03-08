@@ -84,12 +84,16 @@ class TransportTest extends FunSuite with GeneratorDrivenPropertyChecks {
     reader.discard()
     assert(Await.result(f) == Some(Buf.Empty))
     assert(done.isDefined)
-    intercept[Reader.ReaderDiscarded] { Await.result(reader.read(1)) }
+    intercept[Reader.ReaderDiscarded] {
+      Await.result(reader.read(1))
+    }
   }
 
   test("Transport.copyToWriter - concurrent reads") {
     val p = new Promise[Unit]
-    val failed = new Failed { override def read() = p }
+    val failed = new Failed {
+      override def read() = p
+    }
     val reader = Reader.writable()
     val done =
       Transport.copyToWriter(failed, reader)(_ => Future.None) respond {
@@ -98,7 +102,9 @@ class TransportTest extends FunSuite with GeneratorDrivenPropertyChecks {
         case _          =>
       }
     val f = reader.read(1)
-    intercept[IllegalStateException] { Await.result(reader.read(1)) }
+    intercept[IllegalStateException] {
+      Await.result(reader.read(1))
+    }
     p.setDone()
     assert(Await.result(f) == None)
   }
@@ -135,7 +141,9 @@ class TransportTest extends FunSuite with GeneratorDrivenPropertyChecks {
         case _          =>
       }
       val f = Reader.readAll(reader)
-      val result = intercept[Exception] { Await.result(f) }
+      val result = intercept[Exception] {
+        Await.result(f)
+      }
       assert(result == exc)
       assert(done.isDefined)
     }
@@ -156,7 +164,9 @@ class TransportTest extends FunSuite with GeneratorDrivenPropertyChecks {
 
     def assertDiscarded(f: Future[_]) {
       assert(f.isDefined)
-      intercept[Reader.ReaderDiscarded] { Await.result(f) }
+      intercept[Reader.ReaderDiscarded] {
+        Await.result(f)
+      }
     }
   }
 

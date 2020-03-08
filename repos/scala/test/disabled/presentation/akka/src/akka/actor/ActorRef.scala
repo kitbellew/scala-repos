@@ -993,7 +993,9 @@ class LocalActorRef private[akka] (
             throw e
         }
       }
-    } finally { guard.lock.unlock }
+    } finally {
+      guard.lock.unlock
+    }
   }
 
   protected[akka] def handleTrapExit(dead: ActorRef, reason: Throwable) {
@@ -1260,8 +1262,8 @@ class LocalActorRef private[akka] (
 
   protected[akka] def checkReceiveTimeout = {
     cancelReceiveTimeout
-    if (receiveTimeout.isDefined && dispatcher
-          .mailboxSize(this) <= 0) { //Only reschedule if desired and there are currently no more messages to be processed
+    if (receiveTimeout.isDefined && dispatcher.mailboxSize(
+          this) <= 0) { //Only reschedule if desired and there are currently no more messages to be processed
       _futureTimeout = Some(
         Scheduler.scheduleOnce(
           this,

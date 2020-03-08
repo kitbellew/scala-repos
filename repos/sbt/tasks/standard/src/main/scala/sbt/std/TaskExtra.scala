@@ -122,7 +122,9 @@ trait TaskExtra {
     }
 
   final implicit def multT2Task[A, B](in: (Task[A], Task[B])) =
-    multInputTask[({ type l[L[x]] = (L[A], L[B]) })#l](in)(AList.tuple2[A, B])
+    multInputTask[({
+      type l[L[x]] = (L[A], L[B])
+    })#l](in)(AList.tuple2[A, B])
 
   final implicit def multInputTask[K[L[X]]](tasks: K[Task])(
       implicit a: AList[K]): MultiInTask[K] = new MultiInTask[K] {
@@ -164,9 +166,15 @@ trait TaskExtra {
       def mapFailure[T](f: Incomplete => T): Task[T] = mapR(f compose failM)
 
       def andFinally(fin: => Unit): Task[S] =
-        mapR(x => Result.tryValue[S]({ fin; x }))
+        mapR(x =>
+          Result.tryValue[S]({
+            fin; x
+          }))
       def doFinally(t: Task[Unit]): Task[S] =
-        flatMapR(x => t.mapR { tx => Result.tryValues[S](tx :: Nil, x) })
+        flatMapR(x =>
+          t.mapR { tx =>
+            Result.tryValues[S](tx :: Nil, x)
+          })
       def ||[T >: S](alt: Task[T]): Task[T] = flatMapR {
         case Value(v) => task(v); case Inc(i) => alt
       }
@@ -189,7 +197,9 @@ trait TaskExtra {
         val in = s.readBinary(key(t), sid)
         val pio = TaskExtra
           .processIO(s)
-          .withInput(out => { BasicIO.transferFully(in, out); out.close() })
+          .withInput(out => {
+            BasicIO.transferFully(in, out); out.close()
+          })
         (p run pio).exitValue
       }
   }
@@ -207,7 +217,9 @@ trait TaskExtra {
     private def pipe0[T](
         sid: Option[String],
         f: BufferedInputStream => T): Task[T] =
-      streams map { s => f(s.readBinary(key(in), sid)) }
+      streams map { s =>
+        f(s.readBinary(key(in), sid))
+      }
 
     private def toFile(f: File) = (in: InputStream) => IO.transfer(in, f)
   }
@@ -219,7 +231,9 @@ trait TaskExtra {
       pipe0(Some(sid), f)
 
     private def pipe0[T](sid: Option[String], f: BufferedReader => T): Task[T] =
-      streams map { s => f(s.readText(key(in), sid)) }
+      streams map { s =>
+        f(s.readText(key(in), sid))
+      }
   }
   final implicit def linesTask[Key](in: Task[_])(implicit
       streams: Task[TaskStreams[Key]],
@@ -228,7 +242,9 @@ trait TaskExtra {
     def lines(sid: String): Task[List[String]] = lines0(Some(sid))
 
     private def lines0[T](sid: Option[String]): Task[List[String]] =
-      streams map { s => IO.readLines(s.readText(key(in), sid)) }
+      streams map { s =>
+        IO.readLines(s.readText(key(in), sid))
+      }
   }
   implicit def processToTask(p: ProcessBuilder)(
       implicit streams: Task[TaskStreams[_]]): Task[Int] = streams map { s =>
@@ -253,8 +269,9 @@ object TaskExtra extends TaskExtra {
     }
 
   def reducePair[S](a: Task[S], b: Task[S], f: (S, S) => S): Task[S] =
-    multInputTask[({ type l[L[x]] = (L[S], L[S]) })#l]((a, b))(
-      AList.tuple2[S, S]) map f.tupled
+    multInputTask[({
+      type l[L[x]] = (L[S], L[S])
+    })#l]((a, b))(AList.tuple2[S, S]) map f.tupled
 
   def anyFailM[K[L[x]]](implicit a: AList[K]): K[Result] => Seq[Incomplete] =
     in => {

@@ -20,5 +20,7 @@ private[finagle] class RefcountedFactory[Req, Rep](
     self: ServiceFactory[Req, Rep]
 ) extends ServiceFactoryProxy(self) {
   override def apply(conn: ClientConnection) =
-    super.apply(conn) map { new RefcountedService(_) }
+    super.apply(conn) map {
+      new RefcountedService(_)
+    }
 }

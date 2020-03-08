@@ -243,7 +243,9 @@ class SpectralProjectedGradientTest
       0.52078, -0.00000, 0.18040, 0.62915, 0.16329, -0.06424, 0.37539, 0.01659,
       0.00000, 0.11215, 0.24778, 0.04082)
 
-    val s = octaveL1.foldLeft(0.0) { case (agg, entry) => agg + abs(entry) }
+    val s = octaveL1.foldLeft(0.0) {
+      case (agg, entry) => agg + abs(entry)
+    }
     val projectL1 = ProjectL1(s)
     val spgResult = new SpectralProjectedGradient[DenseVector[Double]](
       Projection(projectL1).project)

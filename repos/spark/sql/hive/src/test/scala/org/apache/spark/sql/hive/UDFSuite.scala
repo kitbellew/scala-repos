@@ -25,8 +25,16 @@ case class FunctionResult(f1: String, f2: String)
 class UDFSuite extends QueryTest with TestHiveSingleton {
 
   test("UDF case insensitive") {
-    hiveContext.udf.register("random0", () => { Math.random() })
-    hiveContext.udf.register("RANDOM1", () => { Math.random() })
+    hiveContext.udf.register(
+      "random0",
+      () => {
+        Math.random()
+      })
+    hiveContext.udf.register(
+      "RANDOM1",
+      () => {
+        Math.random()
+      })
     hiveContext.udf.register("strlenScala", (_: String).length + (_: Int))
     assert(
       hiveContext

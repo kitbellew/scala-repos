@@ -24,7 +24,11 @@ class FrameworkIdUtil(
   def store(proto: FrameworkID): FrameworkId = {
     log.info(s"Store framework id: $proto")
     val frameworkId = FrameworkId(proto.getValue)
-    Await.result(mStore.modify(key) { _ => frameworkId }, timeout)
+    Await.result(
+      mStore.modify(key) { _ =>
+        frameworkId
+      },
+      timeout)
   }
   def expunge(): Future[Boolean] = {
     log.info(s"Expunge framework id!")

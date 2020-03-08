@@ -129,7 +129,9 @@ class ObservableMapSpec[K, V]
   it should "return changed map" in {
     // Preparation
     val map = ObservableMap((1, "one"), (2, "two"))
-    map onChange { (sourceMap, change) => sourceMap should be(map) }
+    map onChange { (sourceMap, change) =>
+      sourceMap should be(map)
+    }
 
     // Execution
     map(3) = "three"
@@ -231,7 +233,9 @@ class ObservableMapSpec[K, V]
     //      The `for` loop implements operation equivalent to `map.retain`
     //      without throwing ConcurrentModificationException.
     //    compareInstances(map.retain((i, str) => i % 2 == 0), map, true)
-    for (k <- map.keys.toArray if (k % 2 != 0)) { map.remove(k) }
+    for (k <- map.keys.toArray if (k % 2 != 0)) {
+      map.remove(k)
+    }
     map should equal(
       ObservableMap((10 to 20).filter(_ % 2 == 0).map(i => (i, i.toString))))
     removedEntries.toList.sortWith(_._1 < _._1) should equal(

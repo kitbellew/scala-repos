@@ -576,7 +576,9 @@ class StandaloneDynamicAllocationSuite
   private def syncExecutors(sc: SparkContext): Unit = {
     val driverExecutors = sc.getExecutorStorageStatus
       .map(_.blockManagerId.executorId)
-      .filter { _ != SparkContext.DRIVER_IDENTIFIER }
+      .filter {
+        _ != SparkContext.DRIVER_IDENTIFIER
+      }
     val masterExecutors = getExecutorIds(sc)
     val missingExecutors =
       masterExecutors.toSet.diff(driverExecutors.toSet).toSeq.sorted

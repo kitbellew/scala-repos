@@ -59,7 +59,9 @@ trait MongoRefField[RefType <: MongoRecord[RefType], MyType]
     _obj
   }
 
-  def cached_? : Boolean = synchronized { _calcedObj }
+  def cached_? : Boolean = synchronized {
+    _calcedObj
+  }
 
   def primeObj(obj: Box[RefType]) = synchronized {
     _obj = obj

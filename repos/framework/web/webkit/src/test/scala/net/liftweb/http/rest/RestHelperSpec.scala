@@ -52,7 +52,9 @@ class RestHelperSpec extends WebSpec(RestHelperSpecBoot.boot _) {
           case ContinuationException(_, _, resolverFunction) =>
             val result = new LAFuture[LiftResponse]
 
-            resolverFunction({ response => result.satisfy(response) })
+            resolverFunction({ response =>
+              result.satisfy(response)
+            })
 
             helper.future.satisfy(JObject(Nil))
 

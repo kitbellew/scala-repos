@@ -117,7 +117,9 @@ class SecurityServiceHandlers(
               authAPIKey,
               request.grants.toSet) flatMap { k =>
               if (k.isDefined) {
-                (k collect recordDetails sequence) map { ok[v1.APIKeyDetails] }
+                (k collect recordDetails sequence) map {
+                  ok[v1.APIKeyDetails]
+                }
               } else {
                 Promise successful badRequest(
                   "Error creating new API key.",

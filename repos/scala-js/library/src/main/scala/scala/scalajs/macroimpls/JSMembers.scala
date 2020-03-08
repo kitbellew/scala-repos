@@ -57,7 +57,9 @@ private[macroimpls] trait JSMembers {
         params.size >= thatParams.size &&
         resultType <:< thatResultType &&
         unused.forall(_.isDefault) &&
-        (used zip thatParams).forall { case (x, y) => x.conformsTo(y) }
+        (used zip thatParams).forall {
+          case (x, y) => x.conformsTo(y)
+        }
 
       case _ =>
         false

@@ -41,7 +41,9 @@ class TlsEndpointVerificationSpec
 
       whenReady(
         pipe(HttpRequest(uri = "https://akka.example.org/")).failed,
-        timeout) { e ⇒ e shouldBe an[Exception] }
+        timeout) { e ⇒
+        e shouldBe an[Exception]
+      }
     }
     "accept certificates signed by known CA" in {
       val pipe = pipeline(

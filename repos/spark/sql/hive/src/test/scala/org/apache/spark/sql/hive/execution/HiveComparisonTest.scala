@@ -408,7 +408,9 @@ abstract class HiveComparisonTest
                       fail(errorMessage)
                   }
               }.toSeq
-            if (reset) { TestHive.reset() }
+            if (reset) {
+              TestHive.reset()
+            }
 
             computedResults
           }

@@ -157,7 +157,9 @@ object Parsed {
         input.slice(index, index + 10))
     }
     def filterFullStack(fullStack: Seq[Frame]) = {
-      fullStack.collect { case f @ Frame(i, p) if p.shortTraced => f }
+      fullStack.collect {
+        case f @ Frame(i, p) if p.shortTraced => f
+      }
     }
   }
 

@@ -21,7 +21,9 @@ class ScAnnotationsImpl private (
     node: ASTNode)
     extends ScalaStubBasedElementImpl(stub, nodeType, node)
     with ScAnnotations {
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
   def this(stub: ScAnnotationsStub) = {
     this(stub, ScalaElementTypes.ANNOTATIONS, null)
   }

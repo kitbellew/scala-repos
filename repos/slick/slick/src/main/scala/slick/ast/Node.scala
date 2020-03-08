@@ -174,10 +174,14 @@ final case class StructNode(elements: ConstArray[(TermSymbol, Node)])
   override def childNames = elements.map(_._1.toString).toSeq
   val children = elements.map(_._2)
   override protected[this] def rebuild(ch: ConstArray[Node]) =
-    new StructNode(elements.zip(ch).map { case ((s, _), n) => (s, n) })
+    new StructNode(elements.zip(ch).map {
+      case ((s, _), n) => (s, n)
+    })
   def generators = elements
   protected[this] def rebuildWithSymbols(gen: ConstArray[TermSymbol]): Node =
-    copy(elements = elements.zip(gen).map { case (e, s) => (s, e._2) })
+    copy(elements = elements.zip(gen).map {
+      case (e, s) => (s, e._2)
+    })
 
   override protected def buildType: Type =
     StructType(elements.map {
@@ -402,7 +406,11 @@ final case class SortBy(
   type Self = SortBy
   lazy val children = from +: by.map(_._1)
   protected[this] def rebuild(ch: ConstArray[Node]) =
-    copy(from = ch(0), by = by.zip(ch.tail).map { case ((_, o), n) => (n, o) })
+    copy(
+      from = ch(0),
+      by = by.zip(ch.tail).map {
+        case ((_, o), n) => (n, o)
+      })
   override def childNames =
     ("from " + generator) +: by.zipWithIndex.map("by" + _._2).toSeq
   protected[this] def rebuildWithSymbols(gen: ConstArray[TermSymbol]) =
@@ -428,9 +436,15 @@ object Ordering {
   final case object NullsFirst extends NullOrdering(true, false)
   final case object NullsLast extends NullOrdering(false, true)
 
-  sealed abstract class Direction(val desc: Boolean) { def reverse: Direction }
-  final case object Asc extends Direction(false) { def reverse = Desc }
-  final case object Desc extends Direction(true) { def reverse = Asc }
+  sealed abstract class Direction(val desc: Boolean) {
+    def reverse: Direction
+  }
+  final case object Asc extends Direction(false) {
+    def reverse = Desc
+  }
+  final case object Desc extends Direction(true) {
+    def reverse = Asc
+  }
 }
 
 /** A .groupBy call. */
@@ -756,7 +770,9 @@ object Path {
 object FwdPath {
   def apply(ch: List[TermSymbol]): PathElement = {
     var p: PathElement = Ref(ch.head)
-    ch.tail.foreach { sym => p = Select(p, sym) }
+    ch.tail.foreach { sym =>
+      p = Select(p, sym)
+    }
     p
   }
   def unapply(n: PathElement): Option[List[TermSymbol]] = {

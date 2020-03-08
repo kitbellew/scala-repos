@@ -322,7 +322,9 @@ trait PCDataMarkupParser[PCM <: MarkupParser with MarkupHandler]
     val pos1 = pos
     val sb: StringBuilder = new StringBuilder()
     while (true) {
-      if (ch == ']' && { sb.append(ch); nextch; ch == ']' } && {
+      if (ch == ']' && {
+            sb.append(ch); nextch; ch == ']'
+          } && {
             sb.append(ch); nextch; ch == '>'
           }) {
         sb.setLength(sb.length - 2);
@@ -437,7 +439,9 @@ object PCDataXmlParser {
 
   private def apply(source: Source): Box[NodeSeq] = {
     for {
-      p <- tryo { new PCDataXmlParser(source) }
+      p <- tryo {
+        new PCDataXmlParser(source)
+      }
       _ = while (p.ch != '<' && p.curInput.hasNext)
         p.nextch // side effects, baby
       bd <- tryo(p.document)

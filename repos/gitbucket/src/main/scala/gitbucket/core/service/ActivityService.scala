@@ -26,8 +26,12 @@ trait ActivityService {
             (t1.activityUserName === activityUserName.bind)
           }
       }
-      .sortBy { case (t1, t2) => t1.activityId desc }
-      .map { case (t1, t2) => t1 }
+      .sortBy {
+        case (t1, t2) => t1.activityId desc
+      }
+      .map {
+        case (t1, t2) => t1
+      }
       .take(30)
       .list
 
@@ -35,9 +39,15 @@ trait ActivityService {
     Activities
       .innerJoin(Repositories)
       .on((t1, t2) => t1.byRepository(t2.userName, t2.repositoryName))
-      .filter { case (t1, t2) => t2.isPrivate === false.bind }
-      .sortBy { case (t1, t2) => t1.activityId desc }
-      .map { case (t1, t2) => t1 }
+      .filter {
+        case (t1, t2) => t2.isPrivate === false.bind
+      }
+      .sortBy {
+        case (t1, t2) => t1.activityId desc
+      }
+      .map {
+        case (t1, t2) => t1
+      }
       .take(30)
       .list
 
@@ -50,8 +60,12 @@ trait ActivityService {
         case (t1, t2) =>
           (t2.isPrivate === false.bind) || (t2.userName inSetBind owners)
       }
-      .sortBy { case (t1, t2) => t1.activityId desc }
-      .map { case (t1, t2) => t1 }
+      .sortBy {
+        case (t1, t2) => t1.activityId desc
+      }
+      .map {
+        case (t1, t2) => t1
+      }
       .take(30)
       .list
 
@@ -226,7 +240,9 @@ trait ActivityService {
       s"[user:${activityUserName}] pushed to [branch:${userName}/${repositoryName}#${branchName}] at [repo:${userName}/${repositoryName}]",
       Some(
         commits
-          .map { commit => commit.id + ":" + commit.shortMessage }
+          .map { commit =>
+            commit.id + ":" + commit.shortMessage
+          }
           .mkString("\n")),
       currentDate
     )

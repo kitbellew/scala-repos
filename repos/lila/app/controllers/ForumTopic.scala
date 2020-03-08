@@ -15,7 +15,9 @@ object ForumTopic extends LilaController with ForumController {
     NotForKids {
       CategGrantWrite(categSlug) {
         OptionFuOk(CategRepo bySlug categSlug) { categ =>
-          forms.anyCaptcha map { html.forum.topic.form(categ, forms.topic, _) }
+          forms.anyCaptcha map {
+            html.forum.topic.form(categ, forms.topic, _)
+          }
         }
       }
     }

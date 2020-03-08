@@ -394,7 +394,9 @@ object svd extends UFunc {
         val siMatrix: DenseMatrix[Double] = diag(
           DenseVector(sp.map(u => 1 / u).toArray))
 
-        val va = mp.map { case (ek, ev) => ev }
+        val va = mp.map {
+          case (ek, ev) => ev
+        }
         val uOutput = DenseMatrix(va.map(r => r.toArray).toSeq: _*).t
         val vtOutput = siMatrix * DenseMatrix(
           va.map(r => mulTrans(mtTrans, r).toArray).toSeq: _*)

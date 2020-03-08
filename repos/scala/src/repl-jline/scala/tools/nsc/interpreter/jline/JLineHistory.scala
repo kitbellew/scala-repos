@@ -78,5 +78,7 @@ object JLineHistory {
 
   def apply(): History =
     try new JLineFileHistory
-    catch { case x: Exception => new SimpleHistory() }
+    catch {
+      case x: Exception => new SimpleHistory()
+    }
 }

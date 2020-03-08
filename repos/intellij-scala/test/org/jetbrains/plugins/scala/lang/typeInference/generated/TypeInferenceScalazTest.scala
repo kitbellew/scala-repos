@@ -13,17 +13,31 @@ class TypeInferenceScalazTest extends TypeInferenceTestBase {
 
   protected override def additionalLibraries = Array("scalaz")
 
-  def testSCL3819() { doTest() }
+  def testSCL3819() {
+    doTest()
+  }
 
-  def testSCL4033() { doTest() }
+  def testSCL4033() {
+    doTest()
+  }
 
-  def testSCL4352() { doTest() }
+  def testSCL4352() {
+    doTest()
+  }
 
-  def testSCL4468() { doTest() }
+  def testSCL4468() {
+    doTest()
+  }
 
-  def testSCL4912() { doTest() }
+  def testSCL4912() {
+    doTest()
+  }
 
-  def testSCL6417() { doTest() }
+  def testSCL6417() {
+    doTest()
+  }
 
-  def testSCL6417_Performance() { doTest() }
+  def testSCL6417_Performance() {
+    doTest()
+  }
 }

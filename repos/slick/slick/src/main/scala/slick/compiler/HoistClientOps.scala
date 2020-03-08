@@ -18,7 +18,9 @@ class HoistClientOps extends Phase {
       from1 match {
         case Bind(s2, from2, Pure(StructNode(defs2), ts2)) =>
           // Extract client-side operations into ResultSetMapping
-          val hoisted = defs2.map { case (ts, n) => (ts, n, unwrap(n, true)) }
+          val hoisted = defs2.map {
+            case (ts, n) => (ts, n, unwrap(n, true))
+          }
           logger.debug(
             "Hoisting operations from defs: " + hoisted.iterator
               .filter(t => t._2 ne t._3._1)
@@ -176,7 +178,9 @@ class HoistClientOps extends Phase {
           val res = Bind(
             s1,
             CollectionCast(bfrom1, cons2),
-            sel1.replace { case Ref(s) if s == s1 => Ref(s) }).infer()
+            sel1.replace {
+              case Ref(s) if s == s1 => Ref(s)
+            }).infer()
           logger.debug(
             "Pulled Bind out of CollectionCast",
             Ellipsis(res, List(0, 0)))
@@ -201,9 +205,13 @@ class HoistClientOps extends Phase {
               bfrom1,
               pred1.replace {
                 case Select(Ref(s), f) if s == s1 =>
-                  defs(f).replace { case Ref(s) if s == bs1 => Ref(s3) }
+                  defs(f).replace {
+                    case Ref(s) if s == bs1 => Ref(s3)
+                  }
               }),
-            sel1.replace { case Ref(s) if s == bs1 => Ref(s) }
+            sel1.replace {
+              case Ref(s) if s == bs1 => Ref(s)
+            }
           )
           logger.debug("Pulled Bind out of Filter", Ellipsis(res, List(0, 0)))
           res.infer()
@@ -219,10 +227,18 @@ class HoistClientOps extends Phase {
   def unwrap(n: Node, topLevel: Boolean): (Node, (Node => Node)) = n match {
     case GetOrElse(ch, default) =>
       val (recCh, recTr) = unwrap(ch, topLevel)
-      (recCh, { sym => GetOrElse(recTr(sym), default) })
+      (
+        recCh,
+        { sym =>
+          GetOrElse(recTr(sym), default)
+        })
     case OptionApply(ch) =>
       val (recCh, recTr) = unwrap(ch, topLevel)
-      (recCh, { sym => OptionApply(recTr(sym)) })
+      (
+        recCh,
+        { sym =>
+          OptionApply(recTr(sym))
+        })
     case IfThenElse(
           ConstArray(
             Library.==(ch, LiteralNode(null)),
@@ -243,7 +259,11 @@ class HoistClientOps extends Phase {
           })
     case Library.SilentCast(ch) :@ tpe if !topLevel =>
       val (recCh, recTr) = unwrap(ch, topLevel)
-      (recCh, { n => Library.SilentCast.typed(tpe, recTr(n)) })
+      (
+        recCh,
+        { n =>
+          Library.SilentCast.typed(tpe, recTr(n))
+        })
     case n => (n, identity)
   }
 

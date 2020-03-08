@@ -96,18 +96,30 @@ object Test1 {
     val xs5 = List(List(3, 4), List(3), List(4, 5))
 
     {
-      val n1 = xs1 count { e => e % 2 != 0 }
-      val n2 = xs4 count { e => e < 5 }
+      val n1 = xs1 count { e =>
+        e % 2 != 0
+      }
+      val n2 = xs4 count { e =>
+        e < 5
+      }
       assert(4 == (n1 + n2), "check_count")
     }
     {
-      val b1 = xs1 exists { e => e % 2 == 0 }
-      val b2 = xs4 exists { e => e == 5 }
+      val b1 = xs1 exists { e =>
+        e % 2 == 0
+      }
+      val b2 = xs4 exists { e =>
+        e == 5
+      }
       assert(!(b1 & b2), "check_exists")
     }
     {
-      val ys1 = xs1 filter { e => e % 2 == 0 }
-      val ys2 = xs4 filter { e => e < 5 }
+      val ys1 = xs1 filter { e =>
+        e % 2 == 0
+      }
+      val ys2 = xs4 filter { e =>
+        e < 5
+      }
       assert(3 == ys1.length + ys2.length, "check_filter")
     }
     {
@@ -116,13 +128,21 @@ object Test1 {
       assert(10 == n1 + ys1.length, "check_foldLeft")
     }
     {
-      val b1 = xs1 forall { e => e < 10 }
-      val b2 = xs4 forall { e => e % 2 == 0 }
+      val b1 = xs1 forall { e =>
+        e < 10
+      }
+      val b2 = xs4 forall { e =>
+        e % 2 == 0
+      }
       assert(b1 & b2, "check_forall")
     }
     {
-      val ys1 = xs1 filterNot { e => e % 2 != 0 }
-      val ys2 = xs4 filterNot { e => e < 5 }
+      val ys1 = xs1 filterNot { e =>
+        e % 2 != 0
+      }
+      val ys2 = xs4 filterNot { e =>
+        e < 5
+      }
       assert(3 == ys1.length + ys2.length, "check_remove")
     }
     {

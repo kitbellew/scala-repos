@@ -14,7 +14,9 @@ final class IdOps[A](val self: A) extends AnyVal {
 
   /** Safe version of tap. */
   final def tap[B](f: A => IO[B]): IO[A] =
-    for { _ <- f(self) } yield self
+    for {
+      _ <- f(self)
+    } yield self
 
 }
 

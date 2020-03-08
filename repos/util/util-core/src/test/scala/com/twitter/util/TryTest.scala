@@ -11,12 +11,16 @@ class TryTest extends FunSuite {
 
   test("Try.apply(): should catch exceptions and lift into the Try type") {
     assert(Try[Int](1) == Return(1))
-    assert(Try[Int] { throw e } == Throw(e))
+    assert(Try[Int] {
+      throw e
+    } == Throw(e))
   }
 
   test("Try.apply(): should propagate fatal exceptions") {
     intercept[AbstractMethodError] {
-      Try[Int] { throw new AbstractMethodError }
+      Try[Int] {
+        throw new AbstractMethodError
+      }
     }
   }
 
@@ -52,9 +56,15 @@ class TryTest extends FunSuite {
   }
 
   test("Try.rescue") {
-    val result1 = Return(1) rescue { case _ => Return(2) }
-    val result2 = Throw(e) rescue { case _  => Return(2) }
-    val result3 = Throw(e) rescue { case _  => Throw(e) }
+    val result1 = Return(1) rescue {
+      case _ => Return(2)
+    }
+    val result2 = Throw(e) rescue {
+      case _ => Return(2)
+    }
+    val result3 = Throw(e) rescue {
+      case _ => Throw(e)
+    }
 
     assert(result1 == Return(1))
     assert(result2 == Return(2))
@@ -68,7 +78,9 @@ class TryTest extends FunSuite {
 
   test("Try.apply") {
     assert(Return(1)() == 1)
-    intercept[Exception] { Throw[Int](e)() }
+    intercept[Exception] {
+      Throw[Int](e)()
+    }
   }
 
   test("Try.map: when there is no exception") {
@@ -183,22 +195,30 @@ class TryTest extends FunSuite {
 
   test("Try.orThrow: returns on Some") {
     val exc = new Exception("boom!")
-    assert(Try.orThrow(Some("OK")) { () => exc } == Return("OK"))
+    assert(Try.orThrow(Some("OK")) { () =>
+      exc
+    } == Return("OK"))
   }
 
   test("Try.orThrow: fails on empty on Some") {
     val exc = new Exception("boom!")
-    assert(Try.orThrow(None) { () => exc } == Throw(exc))
+    assert(Try.orThrow(None) { () =>
+      exc
+    } == Throw(exc))
   }
 
   test("Try.orThrow: OK if you throw") {
     val exc = new Exception("boom!")
-    assert(Try.orThrow(None) { () => throw exc } == Throw(exc))
+    assert(Try.orThrow(None) { () =>
+      throw exc
+    } == Throw(exc))
   }
 
   test("OrThrow implicits in nicely") {
     import Try._
     val exc = new Exception("boom!")
-    assert(Some("OK").orThrow { exc } == Return("OK"))
+    assert(Some("OK").orThrow {
+      exc
+    } == Return("OK"))
   }
 }

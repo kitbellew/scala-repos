@@ -22,6 +22,8 @@ package com.example.p1 {
   class LowerBound[T >: Int]
 
   class ExistentialType {
-    def foo(array: Array[T] forSome { type T <: AnyVal }) = 0
+    def foo(array: Array[T] forSome {
+      type T <: AnyVal
+    }) = 0
   }
 }

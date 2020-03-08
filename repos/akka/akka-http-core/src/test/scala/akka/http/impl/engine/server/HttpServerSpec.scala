@@ -367,7 +367,9 @@ class HttpServerSpec
     }
 
     "proceed to next request once previous request's entity has beed drained" in new TestSetup {
-      def twice(action: => Unit): Unit = { action; action }
+      def twice(action: => Unit): Unit = {
+        action; action
+      }
 
       twice {
         send("""POST / HTTP/1.1

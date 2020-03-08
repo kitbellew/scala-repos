@@ -202,7 +202,9 @@ trait PersistentFSMBase[S, D, E]
 
   final class TransformHelper(func: StateFunction) {
     def using(andThen: PartialFunction[State, State]): StateFunction =
-      func andThen (andThen orElse { case x ⇒ x })
+      func andThen (andThen orElse {
+        case x ⇒ x
+      })
   }
 
   final def transform(func: StateFunction): TransformHelper =
@@ -302,7 +304,9 @@ trait PersistentFSMBase[S, D, E]
       transitionHandler: (S, S) ⇒ Unit): TransitionHandler =
     new TransitionHandler {
       def isDefinedAt(in: (S, S)) = true
-      def apply(in: (S, S)) { transitionHandler(in._1, in._2) }
+      def apply(in: (S, S)) {
+        transitionHandler(in._1, in._2)
+      }
     }
 
   /**
@@ -420,7 +424,9 @@ trait PersistentFSMBase[S, D, E]
   private var transitionEvent: List[TransitionHandler] = Nil
   private def handleTransition(prev: S, next: S) {
     val tuple = (prev, next)
-    for (te ← transitionEvent) { if (te.isDefinedAt(tuple)) te(tuple) }
+    for (te ← transitionEvent) {
+      if (te.isDefinedAt(tuple)) te(tuple)
+    }
   }
 
   /*
@@ -494,7 +500,9 @@ trait PersistentFSMBase[S, D, E]
     nextState.stopReason match {
       case None ⇒ makeTransition(nextState)
       case _ ⇒
-        nextState.replies.reverse foreach { r ⇒ sender() ! r }
+        nextState.replies.reverse foreach { r ⇒
+          sender() ! r
+        }
         terminate(nextState)
         context.stop(self)
     }
@@ -506,7 +514,9 @@ trait PersistentFSMBase[S, D, E]
         stay withStopReason Failure(
           "Next state %s does not exist".format(nextState.stateName)))
     } else {
-      nextState.replies.reverse foreach { r ⇒ sender() ! r }
+      nextState.replies.reverse foreach { r ⇒
+        sender() ! r
+      }
       if (currentState.stateName != nextState.stateName || nextState.notifies) {
         this.nextState = nextState
         handleTransition(currentState.stateName, nextState.stateName)

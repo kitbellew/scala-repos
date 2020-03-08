@@ -30,15 +30,27 @@ class ScalateFuturesSupportServlet(exec: ExecutorService)
   protected implicit val executor = ExecutionContext.fromExecutorService(exec)
 
   get("/barf") {
-    new AsyncResult { val is = Future { throw new RuntimeException } }
+    new AsyncResult {
+      val is = Future {
+        throw new RuntimeException
+      }
+    }
   }
 
   get("/happy-happy") {
-    new AsyncResult { val is = Future { "puppy dogs" } }
+    new AsyncResult {
+      val is = Future {
+        "puppy dogs"
+      }
+    }
   }
 
   get("/simple-template") {
-    new AsyncResult { val is = Future { layoutTemplate("/simple.jade") } }
+    new AsyncResult {
+      val is = Future {
+        layoutTemplate("/simple.jade")
+      }
+    }
   }
 
   get("/params") {
@@ -50,42 +62,66 @@ class ScalateFuturesSupportServlet(exec: ExecutorService)
   }
 
   get("/jade-template") {
-    new AsyncResult { val is = Future { jade("simple") } }
+    new AsyncResult {
+      val is = Future {
+        jade("simple")
+      }
+    }
   }
 
   get("/jade-params") {
     new AsyncResult {
-      val is = Future { jade("params", "foo" -> "Configurable") }
+      val is = Future {
+        jade("params", "foo" -> "Configurable")
+      }
     }
   }
 
   get("/scaml-template") {
-    new AsyncResult { val is = Future { scaml("simple") } }
+    new AsyncResult {
+      val is = Future {
+        scaml("simple")
+      }
+    }
   }
 
   get("/scaml-params") {
     new AsyncResult {
-      val is = Future { scaml("params", "foo" -> "Configurable") }
+      val is = Future {
+        scaml("params", "foo" -> "Configurable")
+      }
     }
   }
 
   get("/ssp-template") {
-    new AsyncResult { val is = Future { ssp("simple") } }
+    new AsyncResult {
+      val is = Future {
+        ssp("simple")
+      }
+    }
   }
 
   get("/ssp-params") {
     new AsyncResult {
-      val is = Future { ssp("params", "foo" -> "Configurable") }
+      val is = Future {
+        ssp("params", "foo" -> "Configurable")
+      }
     }
   }
 
   get("/mustache-template") {
-    new AsyncResult { val is = Future { mustache("simple") } }
+    new AsyncResult {
+      val is = Future {
+        mustache("simple")
+      }
+    }
   }
 
   get("/mustache-params") {
     new AsyncResult {
-      val is = Future { mustache("params", "foo" -> "Configurable") }
+      val is = Future {
+        mustache("params", "foo" -> "Configurable")
+      }
     }
   }
 
@@ -101,7 +137,9 @@ class ScalateFuturesSupportServlet(exec: ExecutorService)
 
   val urlGeneration = get("/url-generation") {
     new AsyncResult {
-      val is = Future { layoutTemplate("/urlGeneration.jade") }
+      val is = Future {
+        layoutTemplate("/urlGeneration.jade")
+      }
     }
   }
 
@@ -119,11 +157,19 @@ class ScalateFuturesSupportServlet(exec: ExecutorService)
   }
 
   get("/legacy-view-path") {
-    new AsyncResult { val is = Future { jade("legacy") } }
+    new AsyncResult {
+      val is = Future {
+        jade("legacy")
+      }
+    }
   }
 
   get("/directory") {
-    new AsyncResult { val is = Future { jade("directory/index") } }
+    new AsyncResult {
+      val is = Future {
+        jade("directory/index")
+      }
+    }
   }
 
   get("/bindings/*") {
@@ -138,11 +184,19 @@ class ScalateFuturesSupportServlet(exec: ExecutorService)
   }
 
   get("/bindings/params/:foo") {
-    new AsyncResult { val is = Future { jade("/bindings/params") } }
+    new AsyncResult {
+      val is = Future {
+        jade("/bindings/params")
+      }
+    }
   }
 
   get("/bindings/multiParams/*/*") {
-    new AsyncResult { val is = Future { jade("/bindings/multiParams") } }
+    new AsyncResult {
+      val is = Future {
+        jade("/bindings/multiParams")
+      }
+    }
   }
 
   get("/template-attributes") {

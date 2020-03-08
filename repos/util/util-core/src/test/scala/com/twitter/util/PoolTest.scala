@@ -30,7 +30,9 @@ class PoolTest extends WordSpec {
       class PoolSpecHelper {
         var count = 0
         val pool = new FactoryPool[Int](4) {
-          def makeItem() = { count += 1; Future(count) }
+          def makeItem() = {
+            count += 1; Future(count)
+          }
           def isHealthy(i: Int) = i % 2 == 0
         }
       }

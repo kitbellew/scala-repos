@@ -54,13 +54,17 @@ object hlist {
     *
     * @author Miles Sabin
     */
-  trait Reverse[L <: HList] extends DepFn1[L] { type Out <: HList }
+  trait Reverse[L <: HList] extends DepFn1[L] {
+    type Out <: HList
+  }
 
   object Reverse {
     def apply[L <: HList](implicit reverse: Reverse[L]): Aux[L, reverse.Out] =
       reverse
 
-    type Aux[L <: HList, Out0 <: HList] = Reverse[L] { type Out = Out0 }
+    type Aux[L <: HList, Out0 <: HList] = Reverse[L] {
+      type Out = Out0
+    }
 
     implicit def reverse[L <: HList, Out0 <: HList](
         implicit reverse: Reverse0[HNil, L, Out0]): Aux[L, Out0] =

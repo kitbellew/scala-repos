@@ -7,5 +7,7 @@ class B() extends A() {
 }
 abstract class C() {
   val b: B = new B();
-  val a: A { val y: b.type };
+  val a: A {
+    val y: b.type
+  };
 }

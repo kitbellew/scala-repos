@@ -23,7 +23,9 @@ class ScPatternListImpl private (
     extends ScalaStubBasedElementImpl(stub, nodeType, node)
     with ScPatternList {
 
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
   def this(stub: ScPatternListStub) = {
     this(stub, ScalaElementTypes.PATTERN_LIST, null)
   }

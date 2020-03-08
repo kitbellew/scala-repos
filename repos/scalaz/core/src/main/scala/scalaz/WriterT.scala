@@ -78,7 +78,9 @@ final case class WriterT[F[_], W, A](run: F[(W, A)]) { self =>
   }
 
   def foldRight[B](z: => B)(f: (A, => B) => B)(implicit F: Foldable[F]) =
-    F.foldr(run, z) { a => b => f(a._2, b) }
+    F.foldr(run, z) { a => b =>
+      f(a._2, b)
+    }
 
   def bimap[C, D](f: W => C, g: A => D)(implicit F: Functor[F]) =
     writerT[F, C, D](F.map(run)({
@@ -325,8 +327,12 @@ trait WriterTFunctions {
   def writerT[F[_], W, A](v: F[(W, A)]): WriterT[F, W, A] = WriterT(v)
 
   def writerTU[FAB, AB, A0, B0](fab: FAB)(implicit
-      u1: Unapply[Functor, FAB] { type A = AB },
-      u2: Unapply2[Bifunctor, AB] { type A = A0; type B = B0 },
+      u1: Unapply[Functor, FAB] {
+        type A = AB
+      },
+      u2: Unapply2[Bifunctor, AB] {
+        type A = A0; type B = B0
+      },
       l: Leibniz.===[AB, (A0, B0)]
   ): WriterT[u1.M, A0, B0] = WriterT(l.subst[u1.M](u1(fab)))
 
@@ -516,5 +522,7 @@ private trait WriterTMonadListen[F[_], W]
   def writer[A](w: W, v: A): WriterT[F, W, A] = WriterT.writerT(F.point((w, v)))
 
   def listen[A](fa: WriterT[F, W, A]): WriterT[F, W, (A, W)] =
-    WriterT(F.bind(fa.run) { case (w, a) => F.point((w, (a, w))) })
+    WriterT(F.bind(fa.run) {
+      case (w, a) => F.point((w, (a, w)))
+    })
 }

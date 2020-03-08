@@ -73,7 +73,9 @@ trait Paginator[T] extends Loggable {
       List(curPage - 1020, curPage - 120, curPage - 20) ++
         (curPage - 10 to curPage + 10) ++
         List(curPage + 20, curPage + 120, curPage + 1020)
-    ) filter { n => n >= 0 && n < numPages }
+    ) filter { n =>
+      n >= 0 && n < numPages
+    }
 }
 
 /**
@@ -229,7 +231,11 @@ trait PaginatorSnippet[T] extends Paginator[T] {
     if (first == newFirst || newFirst < 0 || newFirst >= count)
       ns
     else
-      <a href={pageUrl(newFirst)}>{ns}</a>
+      <a href={
+        pageUrl(newFirst)
+      }>{
+        ns
+      }</a>
 
   /**
     * Generates links to multiple pages with arbitrary XML delimiting them.
@@ -356,7 +362,11 @@ trait SortedPaginatorSnippet[T, C]
       headers.zipWithIndex.map {
         case ((binding, _), colIndex) =>
           s".$binding *" #> { ns: NodeSeq =>
-            <a href={sortedPageUrl(first, sortedBy(colIndex))}>{ns}</a>
+            <a href={
+              sortedPageUrl(first, sortedBy(colIndex))
+            }>{
+              ns
+            }</a>
           }
       }
 

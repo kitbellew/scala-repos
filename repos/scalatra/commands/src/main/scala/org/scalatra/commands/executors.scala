@@ -69,7 +69,9 @@ abstract class BlockingExecutor[T <: Command, S](
             { failures ⇒
               s"with ${failures.size} ${plur(failures.size)}\n${failures.list}"
             },
-            { _ ⇒ "successfully" })
+            { _ ⇒
+              "successfully"
+            })
           logger.debug(s"Command [${cmd.getClass.getName}] executed $resultLog")
           r
         case Fail(t) ⇒
@@ -135,7 +137,9 @@ abstract class AsyncExecutor[T <: Command, S](
             { failures ⇒
               s"with ${failures.size} ${plur(failures.size)}.\n${failures.list}"
             },
-            { _ ⇒ "successfully" })
+            { _ ⇒
+              "successfully"
+            })
           logger.debug(s"Command [${cmd.getClass.getName}] executed $resultLog")
       }
 

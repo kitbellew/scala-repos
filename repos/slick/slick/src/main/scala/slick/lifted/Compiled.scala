@@ -141,7 +141,9 @@ object Executable {
       (BU1, BU2)]
   @inline implicit def scalarIsExecutable[R, U](
       implicit shape: Shape[_ <: FlatShapeLevel, R, U, _]): Executable[R, U] =
-    new Executable[R, U] { def toNode(value: R) = shape.toNode(value) }
+    new Executable[R, U] {
+      def toNode(value: R) = shape.toNode(value)
+    }
 }
 
 /** Typeclass for types that can be executed as streaming queries, i.e. only

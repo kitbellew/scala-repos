@@ -162,7 +162,9 @@ private[util] class RestrictParallelExecutionsActor(
 
         val future: Future[_] =
           try metrics.processingTimer.timeFuture(next.func())
-          catch { case NonFatal(e) => Future.failed(e) }
+          catch {
+            case NonFatal(e) => Future.failed(e)
+          }
 
         val myself = self
         future.onComplete { (result: Try[_]) =>

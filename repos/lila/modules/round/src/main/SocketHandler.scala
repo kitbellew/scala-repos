@@ -33,10 +33,15 @@ private[round] final class SocketHandler(
       ref: PovRef,
       member: Member): Handler.Controller = {
 
-    def send(msg: Any) { roundMap ! Tell(gameId, msg) }
+    def send(msg: Any) {
+      roundMap ! Tell(gameId, msg)
+    }
 
     member.playerIdOption.fold[Handler.Controller]({
-      case ("p", o) => o int "v" foreach { v => socket ! PingVersion(uid, v) }
+      case ("p", o) =>
+        o int "v" foreach { v =>
+          socket ! PingVersion(uid, v)
+        }
       case ("talk", o) =>
         o str "d" foreach { text =>
           messenger.watcher(gameId, member, text, socket)
@@ -44,7 +49,10 @@ private[round] final class SocketHandler(
       case ("outoftime", _) => send(Outoftime)
     }) { playerId =>
       {
-        case ("p", o) => o int "v" foreach { v => socket ! PingVersion(uid, v) }
+        case ("p", o) =>
+          o int "v" foreach { v =>
+            socket ! PingVersion(uid, v)
+          }
         case ("move", o) =>
           parseMove(o) foreach {
             case (move, blur, lag) =>
@@ -119,7 +127,9 @@ private[round] final class SocketHandler(
       ip: String,
       userTv: Option[String]): Fu[Option[JsSocketHandler]] =
     GameRepo.pov(gameId, colorName) flatMap {
-      _ ?? { join(_, none, uid, "", user, ip, userTv = userTv) map some }
+      _ ?? {
+        join(_, none, uid, "", user, ip, userTv = userTv) map some
+      }
     }
 
   def player(

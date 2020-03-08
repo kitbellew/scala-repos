@@ -86,7 +86,9 @@ class QueueingHandlerTest
       val logger = freshLogger()
       var wasFlushed = false
       val handler = new MockHandler {
-        override def flush() { wasFlushed = true }
+        override def flush() {
+          wasFlushed = true
+        }
       }
       val queueHandler = new QueueingHandler(handler, 1)
       logger.addHandler(queueHandler)
@@ -101,7 +103,9 @@ class QueueingHandlerTest
       val logger = freshLogger()
       var wasClosed = false
       val handler = new MockHandler {
-        override def close() { wasClosed = true }
+        override def close() {
+          wasClosed = true
+        }
       }
       val queueHandler = new QueueingHandler(handler)
       logger.addHandler(queueHandler)

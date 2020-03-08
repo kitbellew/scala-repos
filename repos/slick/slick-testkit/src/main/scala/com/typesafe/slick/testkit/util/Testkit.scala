@@ -66,7 +66,9 @@ class Testkit(clazz: Class[_ <: ProfileTest], runnerBuilder: RunnerBuilder)
     try {
       val is = children.iterator
         .map(ch => (ch, ch.cl.newInstance()))
-        .filter { case (_, to) => to.setTestDB(tdb) }
+        .filter {
+          case (_, to) => to.setTestDB(tdb)
+        }
         .zipWithIndex
         .toIndexedSeq
       val last = is.length - 1
@@ -108,7 +110,9 @@ case class TestMethod(
     cl: Class[_ <: GenericTest[_ >: Null <: TestDB]]) {
   private[this] def await[T](f: Future[T]): T =
     try Await.result(f, TestkitConfig.asyncTimeout)
-    catch { case ex: ExecutionException => throw ex.getCause }
+    catch {
+      case ex: ExecutionException => throw ex.getCause
+    }
 
   def run(testObject: GenericTest[_]): Unit = {
     val r = method.getReturnType
@@ -204,7 +208,9 @@ sealed abstract class GenericTest[TDB >: Null <: TestDB](
     val qc = new QueryCompiler(
       tdb.profile.queryCompiler.phases.takeWhile(_.name != "codeGen"))
     val cs = qc.run(q.toNode)
-    val found = cs.tree.collect { case c: Comprehension => c }.length
+    val found = cs.tree.collect {
+      case c: Comprehension => c
+    }.length
     if (found != exp)
       throw cs.symbolNamer.use(
         new SlickTreeException(
@@ -348,7 +354,9 @@ abstract class AsyncTest[TDB >: Null <: TestDB](
       def onError(t: Throwable): Unit = pr.failure(t)
       def onNext(t: T): Unit = builder += t
     })
-    catch { case NonFatal(ex) => pr.failure(ex) }
+    catch {
+      case NonFatal(ex) => pr.failure(ex)
+    }
     pr.future
   }
 
@@ -361,7 +369,9 @@ abstract class AsyncTest[TDB >: Null <: TestDB](
       def onError(t: Throwable): Unit = pr.failure(t)
       def onNext(t: T): Unit = f(t)
     })
-    catch { case NonFatal(ex) => pr.failure(ex) }
+    catch {
+      case NonFatal(ex) => pr.failure(ex)
+    }
     pr.future
   }
 
@@ -414,7 +424,9 @@ abstract class AsyncTest[TDB >: Null <: TestDB](
         }(ec)
       }
     })
-    catch { case NonFatal(ex) => pr.tryFailure(ex) }
+    catch {
+      case NonFatal(ex) => pr.tryFailure(ex)
+    }
     val f = pr.future
     f.onComplete(_ => exe.shutdown())
     f
@@ -443,8 +455,11 @@ abstract class AsyncTest[TDB >: Null <: TestDB](
 
     def shouldFail(f: T => Unit): Unit = {
       var ok = false
-      try { f(v); ok = true }
-      catch { case t: Throwable => }
+      try {
+        f(v); ok = true
+      } catch {
+        case t: Throwable =>
+      }
       if (ok) fixStack(Assert.fail("Expected failure"))
     }
 

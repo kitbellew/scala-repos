@@ -25,7 +25,9 @@ case class Player(
     name: Option[String] = None) {
 
   def playerUser = userId flatMap { uid =>
-    rating map { PlayerUser(uid, _, ratingDiff) }
+    rating map {
+      PlayerUser(uid, _, ratingDiff)
+    }
   }
 
   def withUser(id: User.ID, perf: lila.rating.Perf): Player =

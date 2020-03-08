@@ -26,7 +26,9 @@ class FreeTests extends CatsSuite {
   }
 
   test("suspend doesn't change value") {
-    forAll { x: Free[List, Int] => Free.suspend(x) should ===(x) }
+    forAll { x: Free[List, Int] =>
+      Free.suspend(x) should ===(x)
+    }
   }
 
   test("suspend is lazy") {

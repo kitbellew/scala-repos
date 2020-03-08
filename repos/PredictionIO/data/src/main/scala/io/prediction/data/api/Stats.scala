@@ -60,8 +60,11 @@ class Stats(val startTime: DateTime) {
     m.toSeq
       .flatMap {
         case (k, v) =>
-          if (k._1 == appId) { Seq(KV(k._2, v)) }
-          else { Seq() }
+          if (k._1 == appId) {
+            Seq(KV(k._2, v))
+          } else {
+            Seq()
+          }
       }
   }
 

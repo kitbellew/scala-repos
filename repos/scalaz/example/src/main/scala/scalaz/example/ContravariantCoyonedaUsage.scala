@@ -437,7 +437,9 @@ object ContravariantCoyonedaUsage extends App {
   // cleaned up quite nicely.
 
   def sortSpecOrdF(s: SortSpec): CtCoyo[Order, Vector[String]] =
-    s.foldMap { case (st, i) => recItemOrd(i, sortTypeOrd(st)) }
+    s.foldMap {
+      case (st, i) => recItemOrd(i, sortTypeOrd(st))
+    }
 
   // “But how can this follow the monoid laws; it isn’t associative
   // because `I' changes depending on the order of the fold!”  Well,
@@ -475,7 +477,9 @@ object ContravariantCoyonedaUsage extends App {
   }
 
   object Binfmt {
-    def apply[A](s: String): Binfmt[A] = new Binfmt[A] { val describe = s }
+    def apply[A](s: String): Binfmt[A] = new Binfmt[A] {
+      val describe = s
+    }
 
     implicit val descLong: Binfmt[Long] = Binfmt("<Long>")
     implicit val descInt: Binfmt[Int] = Binfmt("<Int>")
@@ -546,7 +550,9 @@ object ContravariantCoyonedaUsage extends App {
     Monoid instance (binOrdFanout(_, _), unitBinOrd)
 
   def sortSpecBinOrdF(s: SortSpec): CtCoyo[BinOrd, Vector[String]] =
-    s.foldMap { case (st, i) => recItem[BinOrd](i, sortTypeBinOrd(st)) }
+    s.foldMap {
+      case (st, i) => recItem[BinOrd](i, sortTypeBinOrd(st))
+    }
 
   // The drawback here is that I can’t just build a separate stack
   // willynilly for `Binfmt'.  I have to prove at each step that *the

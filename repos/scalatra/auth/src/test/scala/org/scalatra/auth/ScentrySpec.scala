@@ -42,8 +42,12 @@ object ScentrySpec extends Specification with Mockito {
 
     val theScentry = new Scentry[User](
       context,
-      { case User(id)  => id },
-      { case s: String => User(s) },
+      {
+        case User(id) => id
+      },
+      {
+        case s: String => User(s)
+      },
       new SessionAuthStore(context))
     var beforeFetchCalled = false
     var afterFetchCalled = false
@@ -99,7 +103,9 @@ object ScentrySpec extends Specification with Mockito {
           response: HttpServletResponse) = afterAuthenticateCalled = true
       override def unauthenticated()(implicit
           request: HttpServletRequest,
-          response: HttpServletResponse) { unauthenticatedSuccessCalled = true }
+          response: HttpServletResponse) {
+        unauthenticatedSuccessCalled = true
+      }
     }
 
     val sUnsuccess = new ScentryStrategy[User] {
@@ -119,7 +125,9 @@ object ScentrySpec extends Specification with Mockito {
           response: HttpServletResponse) = afterAuthenticateCalled = true
       override def unauthenticated()(implicit
           request: HttpServletRequest,
-          response: HttpServletResponse) { unauthenticatedCalled = true }
+          response: HttpServletResponse) {
+        unauthenticatedCalled = true
+      }
     }
     "allow registration of global strategies" in {
       Scentry.register("Bogus", (_: ScalatraBase) => s)

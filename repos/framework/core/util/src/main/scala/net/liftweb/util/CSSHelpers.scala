@@ -41,7 +41,9 @@ object CSSHelpers extends ControlHelpers {
     val res = new StringBuilder;
     var line: String = null;
     try {
-      while ({ line = reader.readLine(); line != null }) {
+      while ({
+        line = reader.readLine(); line != null
+      }) {
         res append line + "\n"
       }
     } finally {

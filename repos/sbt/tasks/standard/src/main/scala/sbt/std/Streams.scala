@@ -91,15 +91,21 @@ trait Streams[Key] {
   def use[T](key: Key)(f: TaskStreams[Key] => T): T = {
     val s = apply(key)
     s.open()
-    try { f(s) }
-    finally { s.close() }
+    try {
+      f(s)
+    } finally {
+      s.close()
+    }
   }
 }
 trait CloseableStreams[Key] extends Streams[Key] with java.io.Closeable
 object Streams {
   private[this] val closeQuietly = (c: Closeable) =>
-    try { c.close() }
-    catch { case _: IOException => () }
+    try {
+      c.close()
+    } catch {
+      case _: IOException => ()
+    }
 
   def closeable[Key](delegate: Streams[Key]): CloseableStreams[Key] =
     new CloseableStreams[Key] {
@@ -118,7 +124,9 @@ object Streams {
         }
 
       def close(): Unit =
-        synchronized { streams.values.foreach(_.close()); streams.clear() }
+        synchronized {
+          streams.values.foreach(_.close()); streams.clear()
+        }
     }
 
   def apply[Key](
@@ -170,7 +178,9 @@ object Streams {
 
       def key: Key = a
       def open(): Unit = ()
-      def isClosed: Boolean = synchronized { closed }
+      def isClosed: Boolean = synchronized {
+        closed
+      }
 
       def close(): Unit = synchronized {
         if (!closed) {

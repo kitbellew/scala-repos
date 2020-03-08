@@ -1,6 +1,8 @@
 import scala.reflect.runtime.universe._
 
-class Foo { val bar = 2 }
+class Foo {
+  val bar = 2
+}
 
 object Test extends App {
   val foo = new Foo

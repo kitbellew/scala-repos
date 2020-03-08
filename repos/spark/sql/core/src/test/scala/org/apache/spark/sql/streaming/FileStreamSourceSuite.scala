@@ -78,7 +78,9 @@ class FileStreamSourceTest extends StreamTest with SharedSQLContext {
       .stream(path)
       .queryExecution
       .analyzed
-      .collect { case StreamingRelation(s: FileStreamSource, _) => s }
+      .collect {
+        case StreamingRelation(s: FileStreamSource, _) => s
+      }
       .head
   }
 
@@ -103,7 +105,9 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
         reader.stream()
       }
     df.queryExecution.analyzed
-      .collect { case StreamingRelation(s: FileStreamSource, _) => s }
+      .collect {
+        case StreamingRelation(s: FileStreamSource, _) => s
+      }
       .head
       .schema
   }

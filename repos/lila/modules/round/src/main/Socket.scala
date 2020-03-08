@@ -48,7 +48,9 @@ private[round] final class Socket(
     var userId = none[String]
 
     def ping {
-      isGone foreach { _ ?? notifyGone(color, false) }
+      isGone foreach {
+        _ ?? notifyGone(color, false)
+      }
       if (bye > 0) bye = bye - 1
       time = nowMillis
     }
@@ -113,7 +115,9 @@ private[round] final class Socket(
     case PingVersion(uid, v) =>
       timeBomb.delay
       ping(uid)
-      ownerOf(uid) foreach { o => playerDo(o.color, _.ping) }
+      ownerOf(uid) foreach { o =>
+        playerDo(o.color, _.ping)
+      }
       withMember(uid) { member =>
         (history getEventsSince v).fold(resyncNow(member))(batch(member, _))
       }
@@ -124,7 +128,9 @@ private[round] final class Socket(
       broom
       if (timeBomb.boom) self ! PoisonPill
       else if (!hasAi) Color.all foreach { c =>
-        playerGet(c, _.isGone) foreach { _ ?? notifyGone(c, true) }
+        playerGet(c, _.isGone) foreach {
+          _ ?? notifyGone(c, true)
+        }
       }
 
     case GetVersion => sender ! history.getVersion
@@ -207,7 +213,9 @@ private[round] final class Socket(
 
   def notify(events: Events) {
     val vevents = history addEvents events
-    members.values foreach { m => batch(m, vevents) }
+    members.values foreach { m =>
+      batch(m, vevents)
+    }
   }
 
   def batch(member: Member, vevents: List[VersionedEvent]) {
@@ -219,7 +227,9 @@ private[round] final class Socket(
   }
 
   def notifyOwner[A: Writes](color: Color, t: String, data: A) {
-    ownerOf(color) foreach { m => m push makeMessage(t, data) }
+    ownerOf(color) foreach { m =>
+      m push makeMessage(t, data)
+    }
   }
 
   def notifyGone(color: Color, gone: Boolean) {
@@ -227,7 +237,9 @@ private[round] final class Socket(
   }
 
   def ownerOf(color: Color): Option[Member] =
-    members.values find { m => m.owner && m.color == color }
+    members.values find { m =>
+      m.owner && m.color == color
+    }
 
   def ownerOf(uid: String): Option[Member] =
     members get uid filter (_.owner)

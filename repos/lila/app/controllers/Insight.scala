@@ -12,7 +12,9 @@ object Insight extends LilaController {
   private def env = Env.insight
 
   def refresh(username: String) = Open { implicit ctx =>
-    Accessible(username) { user => env.api indexAll user inject Ok }
+    Accessible(username) { user =>
+      env.api indexAll user inject Ok
+    }
   }
 
   def index(username: String) =
@@ -60,7 +62,9 @@ object Insight extends LilaController {
               qJson.question.fold(BadRequest.fuccess) { q =>
                 env.api.ask(q, user) map
                   lila.insight.Chart.fromAnswer(Env.user.lightUser) map
-                  env.jsonView.chart.apply map { Ok(_) }
+                  env.jsonView.chart.apply map {
+                  Ok(_)
+                }
               }
           )
       }

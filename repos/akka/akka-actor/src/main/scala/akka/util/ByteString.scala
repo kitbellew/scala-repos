@@ -360,7 +360,9 @@ object ByteString {
     def asByteBuffer: ByteBuffer = compact.asByteBuffer
 
     def asByteBuffers: scala.collection.immutable.Iterable[ByteBuffer] =
-      bytestrings map { _.asByteBuffer }
+      bytestrings map {
+        _.asByteBuffer
+      }
 
     def decodeString(charset: String): String = compact.decodeString(charset)
 
@@ -851,7 +853,9 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
           target(offset + i) = (x >>> start - 8 * i).toByte
         }
       } else if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
-        (0 until n) foreach { i ⇒ target(offset + i) = (x >>> 8 * i).toByte }
+        (0 until n) foreach { i ⇒
+          target(offset + i) = (x >>> 8 * i).toByte
+        }
       } else
         throw new IllegalArgumentException("Unknown byte order " + byteOrder)
     }
@@ -910,7 +914,9 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
     */
   def putInts(array: Array[Int], start: Int, len: Int)(
       implicit byteOrder: ByteOrder): this.type =
-    fillByteBuffer(len * 4, byteOrder) { _.asIntBuffer.put(array, start, len) }
+    fillByteBuffer(len * 4, byteOrder) {
+      _.asIntBuffer.put(array, start, len)
+    }
 
   /**
     * Add a number of Longs from an array to this builder.
@@ -923,7 +929,9 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
     */
   def putLongs(array: Array[Long], start: Int, len: Int)(
       implicit byteOrder: ByteOrder): this.type =
-    fillByteBuffer(len * 8, byteOrder) { _.asLongBuffer.put(array, start, len) }
+    fillByteBuffer(len * 8, byteOrder) {
+      _.asLongBuffer.put(array, start, len)
+    }
 
   /**
     * Add a number of Floats from an array to this builder.

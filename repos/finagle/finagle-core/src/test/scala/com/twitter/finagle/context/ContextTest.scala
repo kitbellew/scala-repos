@@ -91,7 +91,9 @@ class ContextTest extends FunSuite with AssertionsForJUnit {
         assert(!ctx.contains(b))
         assert(ctx.get(b).isEmpty)
         assert(ctx.getOrElse(b, IntFn) == DefaultInt)
-        intercept[NoSuchElementException] { ctx(b) }
+        intercept[NoSuchElementException] {
+          ctx(b)
+        }
       }
       assert(ranInner == 1)
     }
@@ -102,7 +104,9 @@ class ContextTest extends FunSuite with AssertionsForJUnit {
     val empty = ctx.Empty
     assert(empty.get(a).isEmpty)
     assert(empty.getOrElse(a, StrFn) == DefaultStr)
-    intercept[NoSuchElementException] { empty(a) }
+    intercept[NoSuchElementException] {
+      empty(a)
+    }
     assert(!empty.contains(a))
   }
 

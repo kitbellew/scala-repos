@@ -40,7 +40,9 @@ class ScPatternDefinitionImpl private (
     }
   }
 
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
 
   def this(stub: ScValueStub) = {
     this(stub, ScalaElementTypes.PATTERN_DEFINITION, null)

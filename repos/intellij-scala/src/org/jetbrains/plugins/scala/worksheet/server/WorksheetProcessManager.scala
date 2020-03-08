@@ -14,7 +14,9 @@ object WorksheetProcessManager {
     new ConcurrentWeakHashMap[VirtualFile, CompilationProcess]()
 
   def add(file: VirtualFile, process: CompilationProcess) {
-    process.addTerminationCallback({ remove(file) })
+    process.addTerminationCallback({
+      remove(file)
+    })
     processes.put(file, process)
   }
 

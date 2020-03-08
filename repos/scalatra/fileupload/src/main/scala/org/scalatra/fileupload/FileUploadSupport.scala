@@ -136,10 +136,14 @@ trait FileUploadSupport extends ServletBase {
       formMap: Map[String, Seq[String]]) = {
     val wrapped = new HttpServletRequestWrapper(req) {
       override def getParameter(name: String) =
-        formMap.get(name) map { _.head } getOrElse null
+        formMap.get(name) map {
+          _.head
+        } getOrElse null
       override def getParameterNames = formMap.keysIterator
       override def getParameterValues(name: String) =
-        formMap.get(name) map { _.toArray } getOrElse null
+        formMap.get(name) map {
+          _.toArray
+        } getOrElse null
       override def getParameterMap =
         new JHashMap[String, Array[String]] ++ (formMap transform { (k, v) =>
           v.toArray
@@ -174,10 +178,14 @@ trait FileUploadSupport extends ServletBase {
     extractMultipartParams(request).fileParams
 
   protected val _fileParams = new collection.Map[String, FileItem] {
-    def get(key: String) = fileMultiParams.get(key) flatMap { _.headOption }
+    def get(key: String) = fileMultiParams.get(key) flatMap {
+      _.headOption
+    }
     override def size = fileMultiParams.size
     override def iterator =
-      (fileMultiParams map { case (k, v) => (k, v.head) }).iterator
+      (fileMultiParams map {
+        case (k, v) => (k, v.head)
+      }).iterator
     override def -(key: String) = Map() ++ this - key
     override def +[B1 >: FileItem](kv: (String, B1)) = Map() ++ this + kv
   }

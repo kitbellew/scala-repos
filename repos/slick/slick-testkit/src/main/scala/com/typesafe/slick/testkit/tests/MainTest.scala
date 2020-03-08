@@ -14,7 +14,9 @@ class MainTest extends AsyncTest[JdbcTestDB] { mainTest =>
     def first = column[String]("first", O SqlType "varchar(64)")
     def last = column[Option[String]]("last")
     def * = (id, first, last)
-    def orders = mainTest.orders filter { _.userID === id }
+    def orders = mainTest.orders filter {
+      _.userID === id
+    }
   }
   lazy val users = TableQuery[Users]
 
@@ -77,8 +79,9 @@ class MainTest extends AsyncTest[JdbcTestDB] { mainTest =>
       _ = r1 shouldBe expectedUserTuples
     } yield ()) andThen q1.result).withPinnedSession)
 
-    materialize(p1.mapResult { case (id, f, l) => User(id, f, l.orNull) })
-      .flatMap { allUsers =>
+    materialize(p1.mapResult {
+      case (id, f, l) => User(id, f, l.orNull)
+    }).flatMap { allUsers =>
         allUsers shouldBe expectedUserTuples.map {
           case (id, f, l) => User(id, f, l.orNull)
         }
@@ -131,7 +134,9 @@ class MainTest extends AsyncTest[JdbcTestDB] { mainTest =>
         def maxOfPer[T <: Table[_], C[_]](
             c: Query[T, _, C])(m: (T => Rep[Int]), p: (T => Rep[Int])) =
           c filter { o =>
-            m(o) === (for { o2 <- c if p(o) === p(o2) } yield m(o2)).max
+            m(o) === (for {
+              o2 <- c if p(o) === p(o2)
+            } yield m(o2)).max
           }
 
         val q4b =
@@ -197,7 +202,9 @@ class MainTest extends AsyncTest[JdbcTestDB] { mainTest =>
         b9.result.statements.toSeq.length.should(_ >= 1)
         b10.result.statements.toSeq.length.should(_ >= 1)
 
-        val q5 = users filterNot { _.id in orders.map(_.userID) }
+        val q5 = users filterNot {
+          _.id in orders.map(_.userID)
+        }
         q5.result.statements.toSeq.length.should(_ >= 1)
         q5.delete.statements.toSeq.length.should(_ >= 1)
         val q6 = Query(q5.length)

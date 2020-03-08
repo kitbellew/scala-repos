@@ -70,7 +70,9 @@ object Previous {
       synchronized {
         map = map.put(key, new Referenced(key, format))
       }
-    def getReferences: IMap[ScopedTaskKey, Referenced] = synchronized { map }
+    def getReferences: IMap[ScopedTaskKey, Referenced] = synchronized {
+      map
+    }
   }
 
   /** Persists values of tasks t where there is some task referencing it via t.previous. */
@@ -94,14 +96,18 @@ object Previous {
 
   private def read[T](stream: InputStream, format: Format[T]): Option[T] =
     try Some(format.reads(stream))
-    catch { case e: Exception => None }
+    catch {
+      case e: Exception => None
+    }
 
   private def write[T](
       stream: OutputStream,
       format: Format[T],
       value: T): Unit =
     try format.writes(stream, value)
-    catch { case e: Exception => () }
+    catch {
+      case e: Exception => ()
+    }
 
   /** Public as a macro implementation detail.  Do not call directly. */
   def runtime[T](skey: TaskKey[T])(

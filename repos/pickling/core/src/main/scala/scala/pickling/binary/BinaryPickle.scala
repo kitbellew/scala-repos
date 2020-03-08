@@ -265,7 +265,9 @@ class BinaryPickleReader(in: BinaryInput, format: BinaryPickleFormat)
   def readField(name: String): BinaryPickleReader =
     this
 
-  def endEntry(): Unit = { /* do nothing */ }
+  def endEntry(): Unit = {
+    /* do nothing */
+  }
 
   def beginCollection(): PReader = this
 
@@ -273,6 +275,8 @@ class BinaryPickleReader(in: BinaryInput, format: BinaryPickleFormat)
 
   def readElement(): PReader = this
 
-  def endCollection(): Unit = { /* do nothing */ }
+  def endCollection(): Unit = {
+    /* do nothing */
+  }
 
 }

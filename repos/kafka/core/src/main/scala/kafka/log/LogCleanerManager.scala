@@ -71,7 +71,9 @@ private[log] class LogCleanerManager(
   @volatile private var dirtiestLogCleanableRatio = 0.0
   newGauge(
     "max-dirty-percent",
-    new Gauge[Int] { def value = (100 * dirtiestLogCleanableRatio).toInt })
+    new Gauge[Int] {
+      def value = (100 * dirtiestLogCleanableRatio).toInt
+    })
 
   /**
     * @return the position processed for all logs.

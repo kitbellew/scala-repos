@@ -695,7 +695,9 @@ object Project extends ProjectExtra {
 
     val data = scopedKeyData(structure, scope, key) map {
       _.description
-    } getOrElse { "No entry for key." }
+    } getOrElse {
+      "No entry for key."
+    }
     val description = key.description match {
       case Some(desc) => "Description:\n\t" + desc + "\n"; case None => ""
     }
@@ -994,7 +996,9 @@ object Project extends ProjectExtra {
       methodName =>
         s"""$methodName must be directly assigned to a val, such as `val x = $methodName`.""")
     val name = c.Expr[String](Literal(Constant(enclosingValName)))
-    reify { Project(name.splice, new File(name.splice)) }
+    reify {
+      Project(name.splice, new File(name.splice))
+    }
   }
 }
 

@@ -88,20 +88,24 @@ trait ReductionFinderModule[M[+_]]
       }
 
       // for each ancestor, assemble a list of the parents it created
-      val parentsByAncestor = (info groupBy { _.ancestor })
-        .foldLeft(Map[DepGraph, List[DepGraph]]()) {
-          case (parentsByAncestor, (ancestor, lst)) =>
-            parentsByAncestor + (ancestor -> (lst map {
-              _.reduce.parent
-            } distinct))
-        }
+      val parentsByAncestor = (info groupBy {
+        _.ancestor
+      }).foldLeft(Map[DepGraph, List[DepGraph]]()) {
+        case (parentsByAncestor, (ancestor, lst)) =>
+          parentsByAncestor + (ancestor -> (lst map {
+            _.reduce.parent
+          } distinct))
+      }
 
       // for each parent, assemble a list of the reduces it created
-      val reducesByParent = (info groupBy { _.reduce.parent })
-        .foldLeft(Map[DepGraph, List[dag.Reduce]]()) {
-          case (reducesByParent, (parent, lst)) =>
-            reducesByParent + (parent -> (lst map { _.reduce }))
-        }
+      val reducesByParent = (info groupBy {
+        _.reduce.parent
+      }).foldLeft(Map[DepGraph, List[dag.Reduce]]()) {
+        case (reducesByParent, (parent, lst)) =>
+          reducesByParent + (parent -> (lst map {
+            _.reduce
+          }))
+      }
 
       MegaReduceState(
         ancestorByReduce,
@@ -119,7 +123,11 @@ trait ReductionFinderModule[M[+_]]
       def buildMembers(
           ancestor: DepGraph): List[(TransSpec1, List[Reduction])] = {
         parentsByAncestor(ancestor) map { p =>
-          (specByParent(p), reducesByParent(p) map { _.red })
+          (
+            specByParent(p),
+            reducesByParent(p) map {
+              _.red
+            })
         }
       }
     }

@@ -11,7 +11,9 @@ object Test {
       try {
         a
         sys.error("no CCE!")
-      } catch { case _: ClassCastException => }
+      } catch {
+        case _: ClassCastException =>
+      }
 
     test(noExpectedType())
     test(withExpectedType())

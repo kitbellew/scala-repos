@@ -347,7 +347,9 @@ case class PartitionFetchState(offset: Long, delay: DelayedItem) {
 
   def this(offset: Long) = this(offset, new DelayedItem(0))
 
-  def isActive: Boolean = { delay.getDelay(TimeUnit.MILLISECONDS) == 0 }
+  def isActive: Boolean = {
+    delay.getDelay(TimeUnit.MILLISECONDS) == 0
+  }
 
   override def toString = "%d-%b".format(offset, isActive)
 }

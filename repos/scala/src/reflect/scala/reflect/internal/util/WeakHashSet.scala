@@ -235,7 +235,9 @@ final class WeakHashSet[A <: AnyRef](
   def +=(elem: A) = this + elem
 
   // from scala.reflect.internal.Set
-  override def addEntry(x: A) { this += x }
+  override def addEntry(x: A) {
+    this += x
+  }
 
   // remove an element from this set and return this set
   override def -(elem: A): this.type = elem match {

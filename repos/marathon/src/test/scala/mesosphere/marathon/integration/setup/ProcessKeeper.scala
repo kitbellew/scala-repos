@@ -291,7 +291,9 @@ object ProcessKeeper {
         5.seconds)
     }
     //retry on fail
-    Try(killProcess) recover { case _ => killProcess } match {
+    Try(killProcess) recover {
+      case _ => killProcess
+    } match {
       case Success(value) => processes -= name
       case Failure(NonFatal(e)) =>
         log.error("giving up waiting for processes to finish", e)
@@ -312,8 +314,9 @@ object ProcessKeeper {
   def stopAllServices(): Unit = {
     services.foreach(_.stopAsync())
     services.par.foreach { service =>
-      try { service.awaitTerminated(5, TimeUnit.SECONDS) }
-      catch {
+      try {
+        service.awaitTerminated(5, TimeUnit.SECONDS)
+      } catch {
         case NonFatal(ex) => log.error(s"Could not stop service $service", ex)
       }
     }

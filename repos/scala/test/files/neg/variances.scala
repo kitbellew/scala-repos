@@ -76,7 +76,9 @@ object Covariant {
     }
   }
   object ST extends T[String] {
-    val x: T[String] { val m: String => String } = ST
+    val x: T[String] {
+      val m: String => String
+    } = ST
     val m: String => String = (_.substring(1))
   }
   val t: T[Any] = ST

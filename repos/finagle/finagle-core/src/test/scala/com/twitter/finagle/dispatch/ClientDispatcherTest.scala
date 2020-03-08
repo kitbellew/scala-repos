@@ -168,8 +168,12 @@ class ClientDispatcherTest extends FunSuite with MockitoSugar {
     closeP.setException(new Exception("fin"))
 
     // pending requests are failed
-    val e1 = intercept[Exception] { (Await.result(r2, 2.seconds)) }
-    val e2 = intercept[Exception] { (Await.result(r3, 2.seconds)) }
+    val e1 = intercept[Exception] {
+      (Await.result(r2, 2.seconds))
+    }
+    val e2 = intercept[Exception] {
+      (Await.result(r3, 2.seconds))
+    }
 
     assert(e1.getMessage == "fin")
     assert(e2.getMessage == "fin")
@@ -183,9 +187,15 @@ class ClientDispatcherTest extends FunSuite with MockitoSugar {
     val (r1, r2, r3) = (disp("0"), disp("1"), disp("2"))
 
     // requests are failed
-    val e1 = intercept[Exception] { (Await.result(r1, 2.seconds)) }
-    val e2 = intercept[Exception] { (Await.result(r2, 2.seconds)) }
-    val e3 = intercept[Exception] { (Await.result(r3, 2.seconds)) }
+    val e1 = intercept[Exception] {
+      (Await.result(r1, 2.seconds))
+    }
+    val e2 = intercept[Exception] {
+      (Await.result(r2, 2.seconds))
+    }
+    val e3 = intercept[Exception] {
+      (Await.result(r3, 2.seconds))
+    }
 
     assert(e1.getMessage == "fin")
     assert(e2.getMessage == "fin")

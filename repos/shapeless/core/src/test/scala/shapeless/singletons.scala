@@ -102,15 +102,29 @@ class SingletonTypesTests {
   }
 
   object Show {
-    implicit val showTrue = new Show[True] { def show = "true" }
-    implicit val showFalse = new Show[False] { def show = "false" }
+    implicit val showTrue = new Show[True] {
+      def show = "true"
+    }
+    implicit val showFalse = new Show[False] {
+      def show = "false"
+    }
 
-    implicit val showOne = new Show[_1] { def show = "One" }
-    implicit val showTwo = new Show[_2] { def show = "Two" }
-    implicit val showThree = new Show[_3] { def show = "Three" }
+    implicit val showOne = new Show[_1] {
+      def show = "One"
+    }
+    implicit val showTwo = new Show[_2] {
+      def show = "Two"
+    }
+    implicit val showThree = new Show[_3] {
+      def show = "Three"
+    }
 
-    implicit val showFoo = new Show[Foo] { def show = "'foo" }
-    implicit val showBar = new Show[Bar] { def show = "'bar" }
+    implicit val showFoo = new Show[Foo] {
+      def show = "'foo"
+    }
+    implicit val showBar = new Show[Bar] {
+      def show = "'bar"
+    }
   }
 
   def show[T](t: T)(implicit s: Show[T]) = s.show
@@ -155,8 +169,12 @@ class SingletonTypesTests {
       def show = "false"
     }
 
-    implicit val showOne = new LiteralShow[Witness.`1`.T] { def show = "One" }
-    implicit val showTwo = new LiteralShow[Witness.`2`.T] { def show = "Two" }
+    implicit val showOne = new LiteralShow[Witness.`1`.T] {
+      def show = "One"
+    }
+    implicit val showTwo = new LiteralShow[Witness.`2`.T] {
+      def show = "Two"
+    }
     implicit val showThree = new LiteralShow[Witness.`3`.T] {
       def show = "Three"
     }
@@ -480,10 +498,14 @@ class SingletonTypesTests {
   }
 
   object Rel {
-    implicit def relTrue: Rel[True] { type Out = Int } = new Rel[True] {
+    implicit def relTrue: Rel[True] {
+      type Out = Int
+    } = new Rel[True] {
       type Out = Int
     }
-    implicit def relFalse: Rel[False] { type Out = String } = new Rel[False] {
+    implicit def relFalse: Rel[False] {
+      type Out = String
+    } = new Rel[False] {
       type Out = String
     }
   }

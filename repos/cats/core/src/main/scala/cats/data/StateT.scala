@@ -21,7 +21,9 @@ final class StateT[F[_], S, A](val runF: F[S => F[(S, A)]])
       })
 
   def map[B](f: A => B)(implicit F: Monad[F]): StateT[F, S, B] =
-    transform { case (s, a) => (s, f(a)) }
+    transform {
+      case (s, a) => (s, f(a))
+    }
 
   /**
     * Run with the provided initial state value
@@ -62,7 +64,11 @@ final class StateT[F[_], S, A](val runF: F[S => F[(S, A)]])
     * Like [[map]], but also allows the state (`S`) value to be modified.
     */
   def transform[B](f: (S, A) => (S, B))(implicit F: Monad[F]): StateT[F, S, B] =
-    transformF { fsa => F.map(fsa) { case (s, a) => f(s, a) } }
+    transformF { fsa =>
+      F.map(fsa) {
+        case (s, a) => f(s, a)
+      }
+    }
 
   /**
     * Like [[transform]], but allows the context to change from `F` to `G`.
@@ -96,7 +102,9 @@ final class StateT[F[_], S, A](val runF: F[S => F[(S, A)]])
       F.flatMap(runF) { ff =>
         val s = f(r)
         val nextState = ff(s)
-        F.map(nextState) { case (s, a) => (g(r, s), a) }
+        F.map(nextState) {
+          case (s, a) => (g(r, s), a)
+        }
       }
     }
 
@@ -150,9 +158,16 @@ private[data] sealed abstract class StateTInstances {
         fa.map(f)
     }
 
-  implicit def stateTLift[M[_], S](implicit M: Applicative[M])
-      : TransLift[({ type λ[α[_], β] = StateT[α, S, β] })#λ, M] =
-    new TransLift[({ type λ[α[_], β] = StateT[α, S, β] })#λ, M] {
+  implicit def stateTLift[M[_], S](implicit M: Applicative[M]): TransLift[
+    ({
+      type λ[α[_], β] = StateT[α, S, β]
+    })#λ,
+    M] =
+    new TransLift[
+      ({
+        type λ[α[_], β] = StateT[α, S, β]
+      })#λ,
+      M] {
       def liftT[A](ma: M[A]): StateT[M, S, A] = StateT(s => M.map(ma)(s -> _))
     }
 

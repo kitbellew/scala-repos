@@ -26,7 +26,9 @@ class ScTraitParentsImpl private (
     node: ASTNode)
     extends ScalaStubBasedElementImpl(stub, nodeType, node)
     with ScTraitParents {
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
   def this(stub: ScTemplateParentsStub) = {
     this(stub, ScalaElementTypes.TRAIT_PARENTS, null)
   }

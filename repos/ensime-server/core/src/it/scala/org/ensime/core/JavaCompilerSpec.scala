@@ -27,7 +27,8 @@ class JavaCompilerSpec
         "import java.io.File;",
         "class Test1 {",
         "  ksjdfkdjsf @1@",
-        "}") { (sf, p, label, cc) => }
+        "}") { (sf, p, label, cc) =>
+      }
       store.notes should not be empty
     }
   }
@@ -67,10 +68,14 @@ class JavaCompilerSpec
 
       cc.askLinkPos(
         JavaFqn("org.example", "Test2", None),
-        test2) should matchPattern { case Some(OffsetSourcePosition(f, 22)) => }
+        test2) should matchPattern {
+        case Some(OffsetSourcePosition(f, 22)) =>
+      }
       cc.askLinkPos(
         JavaFqn("org.example", "Foo", None),
-        test2) should matchPattern { case None => }
+        test2) should matchPattern {
+        case None =>
+      }
       cc.askLinkPos(
         JavaFqn("org.example", "Test2.Bar", None),
         test2) should matchPattern {

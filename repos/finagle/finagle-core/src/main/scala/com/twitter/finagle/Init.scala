@@ -66,7 +66,9 @@ private[twitter] object Init {
   private[this] val once = Once {
     FinagleScheduler.init()
 
-    val p = loadBuildProperties.getOrElse { new Properties() }
+    val p = loadBuildProperties.getOrElse {
+      new Properties()
+    }
 
     _finagleVersion.set(p.getProperty("version", unknownVersion))
     _finagleBuildRevision.set(p.getProperty("build_revision", unknownVersion))

@@ -446,7 +446,9 @@ class ImplicitParametersTreeStructure(
   private class RootNode extends AbstractTreeNode[Any](project, ()) {
     override def getChildren: util.Collection[_ <: AbstractTreeNode[_]] = {
       val list = new util.ArrayList[AbstractTreeNode[_]]()
-      results.foreach { result => list.add(new ImplicitParametersNode(result)) }
+      results.foreach { result =>
+        list.add(new ImplicitParametersNode(result))
+      }
       list
     }
 

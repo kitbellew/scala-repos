@@ -57,7 +57,9 @@ class MetricsReporterService @Inject() (
     val params = Option(url.getQuery)
       .getOrElse("")
       .split("&")
-      .collect { case QueryParam(k, v) => k -> v }
+      .collect {
+        case QueryParam(k, v) => k -> v
+      }
       .toMap
 
     val graphite = new Graphite(new InetSocketAddress(url.getHost, url.getPort))
@@ -101,7 +103,9 @@ class MetricsReporterService @Inject() (
     val params = Option(url.getQuery)
       .getOrElse("")
       .split("&")
-      .collect { case QueryParam(k, v) => k -> v }
+      .collect {
+        case QueryParam(k, v) => k -> v
+      }
       .toMap
 
     val transport = url.getScheme match {

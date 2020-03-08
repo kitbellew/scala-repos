@@ -245,10 +245,14 @@ object HashVector
       @expand.args(OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
       implicit
       @expand.sequence[Op](
-        { _ * _ }, {
+        {
+          _ * _
+        }, {
           _ / _
         },
-        { (a, b) => b }, {
+        { (a, b) =>
+          b
+        }, {
           _ % _
         }, {
           _ pow _

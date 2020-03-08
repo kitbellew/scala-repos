@@ -15,21 +15,32 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
   import AsyncStreamTest._
 
   test("strict head") {
-    intercept[Exception] { (undefined: Unit) +:: AsyncStream.empty }
-    intercept[Exception] { mk(undefined, AsyncStream.empty) }
-    intercept[Exception] { of(undefined) }
+    intercept[Exception] {
+      (undefined: Unit) +:: AsyncStream.empty
+    }
+    intercept[Exception] {
+      mk(undefined, AsyncStream.empty)
+    }
+    intercept[Exception] {
+      of(undefined)
+    }
   }
 
   test("lazy tail") {
     var forced = false
-    val s = () +:: { forced = true; AsyncStream.empty[Unit] }
+    val s = () +:: {
+      forced = true; AsyncStream.empty[Unit]
+    }
     assert(await(s.head) == Some(()))
     assert(!forced)
     await(s.tail)
     assert(forced)
 
     var forced1 = false
-    val t = mk((), { forced1 = true; AsyncStream.empty[Unit] })
+    val t = mk(
+      (), {
+        forced1 = true; AsyncStream.empty[Unit]
+      })
     assert(await(t.head) == Some(()))
     assert(!forced1)
     await(t.tail)
@@ -48,7 +59,9 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("ops that force tail evaluation") {
     def isForced(f: AsyncStream[_] => Future[_]): Unit = {
       var forced = false
-      Await.ready(f(() +:: { forced = true; AsyncStream.empty }))
+      Await.ready(f(() +:: {
+        forced = true; AsyncStream.empty
+      }))
       assert(forced)
     }
 
@@ -84,8 +97,12 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
     val x = new Promise[Unit]
     val y = new Promise[Unit]
 
-    def f() = { x.setDone(); () }
-    def g() = { y.setDone(); () }
+    def f() = {
+      x.setDone(); ()
+    }
+    def g() = {
+      y.setDone(); ()
+    }
 
     val s = () +:: f() +:: g() +:: AsyncStream.empty[Unit]
     assert(!x.isDefined)
@@ -130,10 +147,14 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
     s.uncons
     assert(!p.isDefined)
 
-    s.foldRight(Future.Done) { (_, _) => Future.Done }
+    s.foldRight(Future.Done) { (_, _) =>
+      Future.Done
+    }
     assert(!p.isDefined)
 
-    s.scanLeft(Future.Done) { (_, _) => Future.Done }
+    s.scanLeft(Future.Done) { (_, _) =>
+      Future.Done
+    }
     assert(!p.isDefined)
 
     s ++ s
@@ -142,7 +163,9 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
     assert(await(s.head) == Some(()))
     assert(!p.isDefined)
 
-    intercept[Exception] { await(s.tail).isEmpty }
+    intercept[Exception] {
+      await(s.tail).isEmpty
+    }
     assert(p.isDefined)
   }
 
@@ -168,7 +191,10 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
     new Ctx(s => s.withFilter(_ => true))
     new Ctx(s => s.take(2))
     new Ctx(s => s.takeWhile(_ => true))
-    new Ctx(s => s.scanLeft(Future.Done) { (_, _) => Future.Done })
+    new Ctx(s =>
+      s.scanLeft(Future.Done) { (_, _) =>
+        Future.Done
+      })
     new Ctx(s => s ++ s)
   }
 
@@ -279,7 +305,9 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
   }
 
   test("head") {
-    forAll { (a: List[Int]) => assert(await(fromSeq(a).head) == a.headOption) }
+    forAll { (a: List[Int]) =>
+      assert(await(fromSeq(a).head) == a.headOption)
+    }
   }
 
   test("isEmpty") {
@@ -334,7 +362,9 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
   }
 
   test("toSeq") {
-    forAll { (as: List[Int]) => assert(await(fromSeq(as).toSeq()) == as) }
+    forAll { (as: List[Int]) =>
+      assert(await(fromSeq(as).toSeq()) == as)
+    }
   }
 
   test("identity") {
@@ -638,7 +668,9 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
     forAll { xs: List[Int] =>
       val p = new Promise[Unit]
       // The promise will be defined iff the tail is forced.
-      val s = AsyncStream.fromSeq(xs) ++ { p.setDone(); AsyncStream.empty }
+      val s = AsyncStream.fromSeq(xs) ++ {
+        p.setDone(); AsyncStream.empty
+      }
 
       // If the input is empty, then the tail will be forced right away.
       assert(p.isDefined == xs.isEmpty)

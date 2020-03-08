@@ -19,7 +19,9 @@ class FlowCompileSpec extends AkkaSpec {
   val strSeq = Source(Seq("a", "b", "c"))
 
   import scala.concurrent.ExecutionContext.Implicits.global
-  val intFut = Source.fromFuture(Future { 3 })
+  val intFut = Source.fromFuture(Future {
+    3
+  })
   implicit val materializer = ActorMaterializer(
     ActorMaterializerSettings(system))
 
@@ -117,16 +119,18 @@ class FlowCompileSpec extends AkkaSpec {
 
   "FlowOps" should {
     "be extensible" in {
-      val f: FlowOps[Int, NotUsed] { type Closed = Sink[Int, NotUsed] } =
-        Flow[Int]
+      val f: FlowOps[Int, NotUsed] {
+        type Closed = Sink[Int, NotUsed]
+      } = Flow[Int]
       val fm = f.map(identity)
       val f2: FlowOps[Int, NotUsed] = fm
       val s: Sink[Int, NotUsed] = fm.to(Sink.ignore)
     }
 
     "be extensible (with MaterializedValue)" in {
-      val f: FlowOpsMat[Int, NotUsed] { type ClosedMat[+M] = Sink[Int, M] } =
-        Flow[Int]
+      val f: FlowOpsMat[Int, NotUsed] {
+        type ClosedMat[+M] = Sink[Int, M]
+      } = Flow[Int]
       val fm = f.map(identity).concatMat(Source.empty)(Keep.both)
       // this asserts only the FlowOpsMat part of the signature, but fm also carries the
       // CloseMat type without which `.to(sink)` does not work

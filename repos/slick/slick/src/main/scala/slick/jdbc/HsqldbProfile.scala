@@ -181,9 +181,15 @@ trait HsqldbProfile extends JdbcProfile {
       val b =
         new StringBuilder append "CREATE SEQUENCE " append quoteIdentifier(
           seq.name)
-      seq._increment.foreach { b append " INCREMENT BY " append _ }
-      seq._minValue.foreach { b append " MINVALUE " append _ }
-      seq._maxValue.foreach { b append " MAXVALUE " append _ }
+      seq._increment.foreach {
+        b append " INCREMENT BY " append _
+      }
+      seq._minValue.foreach {
+        b append " MINVALUE " append _
+      }
+      seq._maxValue.foreach {
+        b append " MAXVALUE " append _
+      }
       /* The START value in Hsqldb defaults to 0 instead of the more
        * conventional 1/-1 so we rewrite it to make 1/-1 the default. */
       if (start != 0) b append " START WITH " append start

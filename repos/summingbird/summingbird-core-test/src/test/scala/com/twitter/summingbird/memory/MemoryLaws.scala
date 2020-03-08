@@ -49,9 +49,13 @@ class MemoryLaws extends WordSpec {
       K: Arbitrary,
       V: Monoid: Arbitrary: Equiv] =
     new TestGraphs[Memory, T, K, V](new Memory)(() => MutableMap.empty[K, V])(
-      () => new BufferFunc[T])(Memory.toSource(_))(s => { s.get(_) })({
-      (f, items) => f.asInstanceOf[BufferFunc[T]].buf.toList == items
-    })({ (p: Memory, plan: Memory#Plan[_]) => p.run(plan) })
+      () => new BufferFunc[T])(Memory.toSource(_))(s => {
+      s.get(_)
+    })({ (f, items) =>
+      f.asInstanceOf[BufferFunc[T]].buf.toList == items
+    })({ (p: Memory, plan: Memory#Plan[_]) =>
+      p.run(plan)
+    })
 
   /**
     * Tests the in-memory planner against a job with a single flatMap
@@ -92,7 +96,12 @@ class MemoryLaws extends WordSpec {
       Arbitrary.arbitrary[MemoryService[K, JoinedU]].sample.get
     testGraph[T, K, V].leftJoinChecker[U, JoinedU](
       serviceFn,
-      { svc => { (k: K) => svc.get(k) } },
+      {
+        svc =>
+          { (k: K) =>
+            svc.get(k)
+          }
+      },
       sample[List[T]],
       sample[T => List[(K, U)]],
       sample[((K, (U, Option[JoinedU]))) => List[(K, V)]])
@@ -147,7 +156,9 @@ class MemoryLaws extends WordSpec {
       .sumByKey(
         items2
           .flatMap(fnB)
-          .map { case (k, u) => (k, (u, serviceFn(k))) }
+          .map {
+            case (k, u) => (k, (u, serviceFn(k)))
+          }
           .flatMap(postJoinFn)
       )
       .forall {
@@ -197,12 +208,18 @@ class MemoryLaws extends WordSpec {
     val prod = TestGraphs.lookupJob[Memory, T, U](
       Memory.toSource(input),
       srv,
-      { tu: (T, U) => buffer = buffer :+ tu })
+      { tu: (T, U) =>
+        buffer = buffer :+ tu
+      })
     mem.run(mem.plan(prod))
     // check it out:
     Equiv[List[(T, U)]].equiv(
       (buffer.toList),
-      TestGraphs.lookupJobInScala(input, { (t: T) => srv.get(t) }))
+      TestGraphs.lookupJobInScala(
+        input,
+        { (t: T) =>
+          srv.get(t)
+        }))
   }
 
   /**
@@ -295,10 +312,14 @@ class MemoryLaws extends WordSpec {
       val sinkBuffer = collection.mutable.Buffer[Int]()
       val source = Memory.toSource(List(1, 2))
       val store: Memory#Store[Int, Int] = collection.mutable.Map.empty[Int, Int]
-      val sink: Memory#Sink[Int] = { x: Int => sinkBuffer += x }
+      val sink: Memory#Sink[Int] = { x: Int =>
+        sinkBuffer += x
+      }
 
       val summed = source
-        .map { v => (v, v) }
+        .map { v =>
+          (v, v)
+        }
         .sumByKey(store)
         .map {
           case (_, (existingEventOpt, currentEvent)) =>

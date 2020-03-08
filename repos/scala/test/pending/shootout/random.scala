@@ -8,7 +8,9 @@ object random {
     var n = toPositiveInt(args);
     var result: Double = 0
 
-    while (n > 0) { result = generate(100.0); n = n - 1; }
+    while (n > 0) {
+      result = generate(100.0); n = n - 1;
+    }
 
     Console.printf("{0,number,#.000000000}\n", result)
   }
@@ -25,8 +27,11 @@ object random {
 
   private def toPositiveInt(s: Array[String]) = {
     val i =
-      try { Integer.parseInt(s(0)); }
-      catch { case _ => 1 }
+      try {
+        Integer.parseInt(s(0));
+      } catch {
+        case _ => 1
+      }
     if (i > 0) i; else 1;
   }
 }

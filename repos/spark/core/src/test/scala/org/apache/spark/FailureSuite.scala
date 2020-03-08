@@ -91,8 +91,12 @@ class FailureSuite extends SparkFunSuite with LocalSparkContext {
   // Run a map-reduce job in which the map stage always fails.
   test("failure in a map stage") {
     sc = new SparkContext("local", "test")
-    val data =
-      sc.makeRDD(1 to 3).map(x => { throw new Exception; (x, x) }).groupByKey(3)
+    val data = sc
+      .makeRDD(1 to 3)
+      .map(x => {
+        throw new Exception; (x, x)
+      })
+      .groupByKey(3)
     intercept[SparkException] {
       data.collect()
     }
@@ -224,7 +228,9 @@ class FailureSuite extends SparkFunSuite with LocalSparkContext {
     "failure cause stacktrace is sent back to driver if exception is not serializable") {
     sc = new SparkContext("local", "test")
     val thrown = intercept[SparkException] {
-      sc.makeRDD(1 to 3).foreach { _ => throw new NonSerializableUserException }
+      sc.makeRDD(1 to 3).foreach { _ =>
+        throw new NonSerializableUserException
+      }
     }
     assert(thrown.getClass === classOf[SparkException])
     assert(thrown.getCause === null)

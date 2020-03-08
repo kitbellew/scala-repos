@@ -21,5 +21,7 @@ trait MonadFilterLaws[F[_]] extends MonadLaws[F] {
 
 object MonadFilterLaws {
   def apply[F[_]](implicit ev: MonadFilter[F]): MonadFilterLaws[F] =
-    new MonadFilterLaws[F] { def F: MonadFilter[F] = ev }
+    new MonadFilterLaws[F] {
+      def F: MonadFilter[F] = ev
+    }
 }

@@ -129,7 +129,9 @@ class PEventsSpec extends Specification with TestEvents {
     )(sc)
 
     val results = resultRDD.collect.toList
-      .map { _.copy(eventId = None) } // ignore eventId
+      .map {
+        _.copy(eventId = None)
+      } // ignore eventId
 
     results must containTheSameElementsAs(listOfEvents)
   }
@@ -141,7 +143,9 @@ class PEventsSpec extends Specification with TestEvents {
     )(sc)
 
     val results = resultRDD.collect.toList
-      .map { _.copy(eventId = None) } // ignore eventId
+      .map {
+        _.copy(eventId = None)
+      } // ignore eventId
 
     results must containTheSameElementsAs(listOfEventsChannel)
   }
@@ -189,7 +193,9 @@ class PEventsSpec extends Specification with TestEvents {
     )(sc)
 
     val results = resultRDD.collect.toList
-      .map { _.copy(eventId = None) } // ignore eventId
+      .map {
+        _.copy(eventId = None)
+      } // ignore eventId
 
     val expected = listOfEvents ++ written
 
@@ -208,7 +214,9 @@ class PEventsSpec extends Specification with TestEvents {
     )(sc)
 
     val results = resultRDD.collect.toList
-      .map { _.copy(eventId = None) } // ignore eventId
+      .map {
+        _.copy(eventId = None)
+      } // ignore eventId
 
     val expected = listOfEventsChannel ++ written
 

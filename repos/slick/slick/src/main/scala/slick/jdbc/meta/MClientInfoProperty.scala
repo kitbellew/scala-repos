@@ -13,7 +13,11 @@ object MClientInfoProperty {
   def getClientInfoProperties = {
     ResultSetAction[MClientInfoProperty] { s =>
       try s.metaData.getClientInfoProperties()
-      catch { case _: AbstractMethodError => null }
-    } { r => MClientInfoProperty(r.<<, r.<<, r.<<, r.<<) }
+      catch {
+        case _: AbstractMethodError => null
+      }
+    } { r =>
+      MClientInfoProperty(r.<<, r.<<, r.<<, r.<<)
+    }
   }
 }

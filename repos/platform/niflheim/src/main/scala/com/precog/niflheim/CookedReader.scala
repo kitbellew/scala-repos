@@ -73,7 +73,9 @@ final class CookedReader(
   private def loadFromDisk(): Validation[IOException, CookedBlockMetadata] = {
     read(metadataFile) { channel =>
       val segsV = blockFormat.readCookedBlock(channel)
-      segsV foreach { segs0 => block = new SoftReference(segs0) }
+      segsV foreach { segs0 =>
+        block = new SoftReference(segs0)
+      }
       segsV
     }
   }
@@ -89,12 +91,16 @@ final class CookedReader(
     val refConstraints = pathConstraints map {
       _.flatMap { path =>
         val tpes = groupedPaths.get(path) map {
-          _.map { case (segId, _) => segId.ctype }
+          _.map {
+            case (segId, _) => segId.ctype
+          }
         } getOrElse {
           Array.empty[CType]
         }
 
-        tpes.map { tpe => ColumnRef(path, tpe) }.toSet
+        tpes.map { tpe =>
+          ColumnRef(path, tpe)
+        }.toSet
       }
     }
 
@@ -103,16 +109,21 @@ final class CookedReader(
 
   def snapshotRef(refConstraints: Option[Set[ColumnRef]]): Block = {
     val segments: Seq[Segment] = refConstraints map { refs =>
-      load(refs.toList).map({ segs => segs flatMap (_._2) }).valueOr { nel =>
-        throw nel.head
-      }
+      load(refs.toList)
+        .map({ segs =>
+          segs flatMap (_._2)
+        })
+        .valueOr { nel =>
+          throw nel.head
+        }
     } getOrElse {
       metadata.valueOr(throw _).segments map {
         case (segId, file0) =>
           val file =
             if (file0.isAbsolute) file0 else new File(baseDir, file0.getPath)
-          read(file) { channel => segmentFormat.reader.readSegment(channel) }
-            .valueOr(throw _)
+          read(file) { channel =>
+            segmentFormat.reader.readSegment(channel)
+          }.valueOr(throw _)
       }
     }
 
@@ -168,12 +179,16 @@ final class CookedReader(
                 }
               }
               .sequence[
-                ({ type λ[α] = ValidationNel[IOException, α] })#λ,
+                ({
+                  type λ[α] = ValidationNel[IOException, α]
+                })#λ,
                 Segment]
             v map (path -> _)
           }
           .sequence[
-            ({ type λ[α] = ValidationNel[IOException, α] })#λ,
+            ({
+              type λ[α] = ValidationNel[IOException, α]
+            })#λ,
             (ColumnRef, List[Segment])]
     }
   }

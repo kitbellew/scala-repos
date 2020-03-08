@@ -51,7 +51,9 @@ object Concurrent {
       *
       * @param item The item to push
       */
-    def push(item: E) { push(Input.El(item)) }
+    def push(item: E) {
+      push(Input.El(item))
+    }
 
     /**
       * Send a failure to this channel.  This results in any promises that the enumerator associated with this channel
@@ -215,7 +217,9 @@ object Concurrent {
               iteratees.swap(List())
             }
             itPromise.failure(e)
-            its.foreach { case (it, p) => p.success(it) }
+            its.foreach {
+              case (it, p) => p.success(it)
+            }
           }
         }(dec)
       }
@@ -229,10 +233,14 @@ object Concurrent {
               redeemed() = Some(Failure(e))
               iteratees.swap(List())
             }
-            its.foreach { case (it, p) => p.failure(e) }
+            its.foreach {
+              case (it, p) => p.failure(e)
+            }
           }(dec)
 
-        current.fold { case _ => endEveryone() }(dec)
+        current.fold {
+          case _ => endEveryone()
+        }(dec)
       }
 
       def end() = schedule {
@@ -244,9 +252,13 @@ object Concurrent {
               redeemed() = Some(Success(()))
               iteratees.swap(List())
             }
-            its.foreach { case (it, p) => p.success(it) }
+            its.foreach {
+              case (it, p) => p.success(it)
+            }
           }(dec)
-        current.fold { case _ => endEveryone() }(dec)
+        current.fold {
+          case _ => endEveryone()
+        }(dec)
       }
 
     }
@@ -458,7 +470,9 @@ object Concurrent {
                           case Step.Error(msg, e) =>
                             Done(Error(msg, e), Input.Empty)
                         }(dec)
-                        .map(i => { busy.single() = false; Left(i) })(dec),
+                        .map(i => {
+                          busy.single() = false; Left(i)
+                        })(dec),
                       timeoutFuture(Right(()), duration, unit)
                     )
                   )(dec)
@@ -520,7 +534,9 @@ object Concurrent {
             .swap(Future.successful(None))
             .onComplete {
               case Success(maybeK) =>
-                maybeK.foreach { k => promise.success(k(Input.EOF)) }
+                maybeK.foreach { k =>
+                  promise.success(k(Input.EOF))
+                }
               case Failure(e) => promise.failure(e)
             }(dec)
         }
@@ -690,7 +706,9 @@ object Concurrent {
                 case Failure(e) => p.failure(e)
               }(dec)
         }
-        .fold(Future.successful(())) { (s, p) => s.flatMap(_ => p)(dec) }
+        .fold(Future.successful(())) { (s, p) =>
+          s.flatMap(_ => p)(dec)
+        }
 
       Iteratee.flatten(ready.flatMap { _ =>
         val downToZero = atomic { implicit txn =>
@@ -734,10 +752,14 @@ object Concurrent {
               }
               v match {
                 case Failure(e) =>
-                  its.foreach { case (_, p) => p.failure(e) }
+                  its.foreach {
+                    case (_, p) => p.failure(e)
+                  }
 
                 case Success(_) =>
-                  its.foreach { case (it, p) => p.success(it) }
+                  its.foreach {
+                    case (it, p) => p.success(it)
+                  }
               }
             }(dec)
           }

@@ -78,6 +78,8 @@ case class OffsetCommitResponse(
       partitionStatus.size * (4 /* partition */ + 2 /* error code */ )
     })
 
-  override def describe(details: Boolean): String = { toString }
+  override def describe(details: Boolean): String = {
+    toString
+  }
 
 }

@@ -71,7 +71,9 @@ object Test {
     for ((code, expected) <- tests) {
       val out = toLines(runScript(code))
       val exp = toLines(expected)
-      val nomatch = out zip exp filter { case (x, y) => x != y }
+      val nomatch = out zip exp filter {
+        case (x, y) => x != y
+      }
       val success = out.size == exp.size && nomatch.isEmpty
 
       assert(

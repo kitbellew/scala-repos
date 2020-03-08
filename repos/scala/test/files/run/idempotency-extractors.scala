@@ -4,9 +4,13 @@ import scala.tools.reflect.{ToolBox, ToolBoxError}
 import scala.tools.reflect.Eval
 
 object Test extends App {
-  object Extractor { def unapply(x: Int): Option[Int] = Some(x) }
+  object Extractor {
+    def unapply(x: Int): Option[Int] = Some(x)
+  }
   val extractor = reify {
-    2 match { case Extractor(x) => x }
+    2 match {
+      case Extractor(x) => x
+    }
   }
   println(extractor.eval)
   val tb = cm.mkToolBox()

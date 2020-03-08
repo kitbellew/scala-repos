@@ -40,13 +40,21 @@ class EncoderErrorMessageSuite extends SparkFunSuite {
   // That is done in Java because Scala cannot create truly private classes.
 
   test("primitive types in encoders using Kryo serialization") {
-    intercept[UnsupportedOperationException] { Encoders.kryo[Int] }
-    intercept[UnsupportedOperationException] { Encoders.kryo[Long] }
-    intercept[UnsupportedOperationException] { Encoders.kryo[Char] }
+    intercept[UnsupportedOperationException] {
+      Encoders.kryo[Int]
+    }
+    intercept[UnsupportedOperationException] {
+      Encoders.kryo[Long]
+    }
+    intercept[UnsupportedOperationException] {
+      Encoders.kryo[Char]
+    }
   }
 
   test("primitive types in encoders using Java serialization") {
-    intercept[UnsupportedOperationException] { Encoders.javaSerialization[Int] }
+    intercept[UnsupportedOperationException] {
+      Encoders.javaSerialization[Int]
+    }
     intercept[UnsupportedOperationException] {
       Encoders.javaSerialization[Long]
     }

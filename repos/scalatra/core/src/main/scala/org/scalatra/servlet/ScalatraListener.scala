@@ -54,13 +54,15 @@ class ScalatraListener extends ServletContextListener {
                                                                cycleClassName))
 
     val lifeCycleClass: Class[_] =
-      try { Class.forName(cycleClassName, true, classLoader) }
-      catch {
+      try {
+        Class.forName(cycleClassName, true, classLoader)
+      } catch {
         case _: ClassNotFoundException => null; case t: Throwable => throw t
       }
     def oldLifeCycleClass: Class[_] =
-      try { Class.forName(OldDefaultLifeCycle, true, classLoader) }
-      catch {
+      try {
+        Class.forName(OldDefaultLifeCycle, true, classLoader)
+      } catch {
         case _: ClassNotFoundException => null; case t: Throwable => throw t
       }
     val cycleClass: Class[_] =

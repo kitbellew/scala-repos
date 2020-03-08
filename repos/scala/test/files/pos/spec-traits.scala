@@ -1,12 +1,20 @@
-trait A[@specialized(Int) T] { def foo: T }
-class B extends A[Int] { val foo = 10 }
+trait A[@specialized(Int) T] {
+  def foo: T
+}
+class B extends A[Int] {
+  val foo = 10
+}
 class C extends B
 
 // issue 3309
 class Lazy {
-  def test[U](block: => U): Unit = { block }
+  def test[U](block: => U): Unit = {
+    block
+  }
 
-  test { lazy val x = 1 }
+  test {
+    lazy val x = 1
+  }
 }
 
 // issue 3307
@@ -15,7 +23,11 @@ class Bug3307 {
     block("abc")
   }
 
-  ({ () => f { implicit x => println(x) } })()
+  ({ () =>
+    f { implicit x =>
+      println(x)
+    }
+  })()
 }
 
 // issue 3301
@@ -54,8 +66,14 @@ object AA {
     }
   }
 
-  def foo[T](x: T) = { object A; false }
+  def foo[T](x: T) = {
+    object A; false
+  }
 }
 
 // issue 3325
-object O { def f[@specialized T] { for (k <- Nil: List[T]) {} } }
+object O {
+  def f[@specialized T] {
+    for (k <- Nil: List[T]) {}
+  }
+}

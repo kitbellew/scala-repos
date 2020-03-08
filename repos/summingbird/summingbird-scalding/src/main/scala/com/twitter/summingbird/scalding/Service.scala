@@ -188,7 +188,10 @@ private[scalding] object InternalService {
           case ValueFlatMappedProducer(prod, fn) =>
             cummulativeFn match {
               case Some(cfn) => {
-                val newFn = (e: Any) => fn(e).flatMap { r => cfn(r) }
+                val newFn = (e: Any) =>
+                  fn(e).flatMap { r =>
+                    cfn(r)
+                  }
                 recurse(prod, Some(newFn))
               }
               case None => recurse(prod, Some(fn))
@@ -203,7 +206,9 @@ private[scalding] object InternalService {
         }
 
       val fn = recurse(summerProd, None)
-      fn.map { f => (f.asInstanceOf[ValueFlatMapFn], None) }
+      fn.map { f =>
+        (f.asInstanceOf[ValueFlatMapFn], None)
+      }
     }
 
     res.getOrElse(sys.error(
@@ -244,8 +249,12 @@ private[scalding] object InternalService {
       case Right(_) => 1
     }
 
-    val bothPipes = (left.map { case (t, (k, v)) => (k, (t, Left(v))) } ++
-      mergeLog.map { case (t, (k, u))            => (k, (t, Right(u))) }).group
+    val bothPipes = (left.map {
+      case (t, (k, v)) => (k, (t, Left(v)))
+    } ++
+      mergeLog.map {
+        case (t, (k, u)) => (k, (t, Right(u)))
+      }).group
       .withReducers(
         reducers.getOrElse(-1)
       ) // jank, but scalding needs a way to maybe set reducers

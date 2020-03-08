@@ -200,7 +200,9 @@ class MessageTest extends FunSuite {
 
   test("withWriter") {
     val response = Response()
-    response.withWriter { writer => writer.write("hello") }
+    response.withWriter { writer =>
+      writer.write("hello")
+    }
 
     assert(response.contentString == "hello")
     assert(response.length == 5)

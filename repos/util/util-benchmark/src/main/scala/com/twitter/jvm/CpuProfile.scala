@@ -70,13 +70,19 @@ object CpuProfileBenchmark {
         }
       }
 
-      threads foreach { t => t.start() }
+      threads foreach { t =>
+        t.start()
+      }
     }
 
     @TearDown(Level.Iteration)
     def tearDown() {
-      threads foreach { t => t.interrupt() }
-      threads foreach { t => t.join() }
+      threads foreach { t =>
+        t.interrupt()
+      }
+      threads foreach { t =>
+        t.join()
+      }
       threads = Seq()
     }
     var threads = Seq[Thread]()

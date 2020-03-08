@@ -35,7 +35,9 @@ object FormatterUtil {
     val text = node.getPsi.getContainingFile.getText
     var offset = node.getTextRange.getStartOffset - 1
     var result = 0
-    while (offset >= 0 && text(offset) != '\n') { offset += -1; result += 1 }
+    while (offset >= 0 && text(offset) != '\n') {
+      offset += -1; result += 1
+    }
     result
   }
 

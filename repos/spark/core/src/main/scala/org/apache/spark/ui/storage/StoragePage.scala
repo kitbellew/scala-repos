@@ -73,17 +73,29 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
         UIUtils.prependBaseUri(parent.basePath),
         rdd.id)
     }>
-          {rdd.name}
+          {
+      rdd.name
+    }
         </a>
       </td>
-      <td>{rdd.storageLevel.description}
+      <td>{
+      rdd.storageLevel.description
+    }
       </td>
-      <td>{rdd.numCachedPartitions.toString}</td>
-      <td>{"%.0f%%".format(rdd.numCachedPartitions * 100.0 / rdd.numPartitions)}</td>
-      <td sorttable_customkey={rdd.memSize.toString}>{
+      <td>{
+      rdd.numCachedPartitions.toString
+    }</td>
+      <td>{
+      "%.0f%%".format(rdd.numCachedPartitions * 100.0 / rdd.numPartitions)
+    }</td>
+      <td sorttable_customkey={
+      rdd.memSize.toString
+    }>{
       Utils.bytesToString(rdd.memSize)
     }</td>
-      <td sorttable_customkey={rdd.diskSize.toString} >{
+      <td sorttable_customkey={
+      rdd.diskSize.toString
+    } >{
       Utils.bytesToString(rdd.diskSize)
     }</td>
     </tr>
@@ -104,8 +116,12 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
 
       <div>
         <h4>Receiver Blocks</h4>
-        {executorMetricsTable(statuses)}
-        {streamBlockTable(blocks)}
+        {
+        executorMetricsTable(statuses)
+      }
+        {
+        streamBlockTable(blocks)
+      }
       </div>
     }
   }
@@ -135,19 +151,33 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
       status: ExecutorStreamBlockStatus): Seq[Node] = {
     <tr>
       <td>
-        {status.executorId}
+        {
+      status.executorId
+    }
       </td>
       <td>
-        {status.location}
+        {
+      status.location
+    }
       </td>
-      <td sorttable_customkey={status.totalMemSize.toString}>
-        {Utils.bytesToString(status.totalMemSize)}
+      <td sorttable_customkey={
+      status.totalMemSize.toString
+    }>
+        {
+      Utils.bytesToString(status.totalMemSize)
+    }
       </td>
-      <td sorttable_customkey={status.totalDiskSize.toString}>
-        {Utils.bytesToString(status.totalDiskSize)}
+      <td sorttable_customkey={
+      status.totalDiskSize.toString
+    }>
+        {
+      Utils.bytesToString(status.totalDiskSize)
+    }
       </td>
       <td>
-        {status.numStreamBlocks.toString}
+        {
+      status.numStreamBlocks.toString
+    }
       </td>
     </tr>
   }
@@ -208,17 +238,31 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
     <tr>
       {
       if (firstSubrow) {
-        <td rowspan={replication.toString}>
-            {block.blockId.toString}
+        <td rowspan={
+          replication.toString
+        }>
+            {
+          block.blockId.toString
+        }
           </td>
-          <td rowspan={replication.toString}>
-            {replication.toString}
+          <td rowspan={
+          replication.toString
+        }>
+            {
+          replication.toString
+        }
           </td>
       }
     }
-      <td>{block.location}</td>
-      <td>{storageLevel}</td>
-      <td>{Utils.bytesToString(size)}</td>
+      <td>{
+      block.location
+    }</td>
+      <td>{
+      storageLevel
+    }</td>
+      <td>{
+      Utils.bytesToString(size)
+    }</td>
     </tr>
   }
 

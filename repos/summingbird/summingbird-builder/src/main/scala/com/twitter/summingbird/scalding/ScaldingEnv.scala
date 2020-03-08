@@ -165,7 +165,9 @@ case class ScaldingEnv(override val jobName: String, inargs: Array[String])
           throw f
         } else {
           println("[ERROR]: ========== FlowPlanException =========")
-          errs.foreach { println(_) }
+          errs.foreach {
+            println(_)
+          }
           println("========== FlowPlanException =========")
         }
     }

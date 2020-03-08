@@ -74,14 +74,18 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
     depData
       .dependantsOf(p)
       .get
-      .collect { case s: Summer[_, _, _] => s }
+      .collect {
+        case s: Summer[_, _, _] => s
+      }
       .headOption
       .isDefined
 
   private def dependsOnSummerProducer(p: Prod[_]): Boolean =
     Producer
       .dependenciesOf(p)
-      .collect { case s: Summer[_, _, _] => s }
+      .collect {
+        case s: Summer[_, _, _] => s
+      }
       .headOption
       .isDefined
 
@@ -273,7 +277,9 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
   val (nodeSet, _) =
     addWithDependencies(tail, FlatMapNode(), List[CNode](), Set())
   require(
-    nodeSet.collect { case n @ SourceNode(_) => n }.size > 0,
+    nodeSet.collect {
+      case n @ SourceNode(_) => n
+    }.size > 0,
     "Valid nodeSet should have at least one source node")
 }
 

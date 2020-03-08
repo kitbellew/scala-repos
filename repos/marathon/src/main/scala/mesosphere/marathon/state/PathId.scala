@@ -81,7 +81,9 @@ case class PathId(path: List[String], absolute: Boolean = true)
   def includes(definition: plugin.PathId): Boolean = {
     //scalastyle:off return
     if (path.size < definition.path.size) return false
-    path.zip(definition.path).forall { case (left, right) => left == right }
+    path.zip(definition.path).forall {
+      case (left, right) => left == right
+    }
   }
 
   override def toString: String = toString("/")

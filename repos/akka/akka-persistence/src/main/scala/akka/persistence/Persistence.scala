@@ -329,7 +329,9 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
           List(pluginConfig)
         ) // will throw if not found
         List(pluginConfig)
-      } catch { case NonFatal(_) ⇒ Nil } // otherwise use empty constructor
+      } catch {
+        case NonFatal(_) ⇒ Nil
+      } // otherwise use empty constructor
     val pluginActorProps = Props(
       Deploy(dispatcher = pluginDispatcherId),
       pluginClass,

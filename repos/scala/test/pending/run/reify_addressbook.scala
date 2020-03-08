@@ -23,8 +23,12 @@ object Test extends App {
           </tr>
           {
           for (p <- people) yield <tr>
-                <td> {p.name} </td>
-                <td> {p.age.toString()} </td>
+                <td> {
+            p.name
+          } </td>
+                <td> {
+            p.age.toString()
+          } </td>
               </tr>
         }
         </table>;
@@ -37,7 +41,9 @@ object Test extends App {
     val header =
       <head>
         <title>
-          {"My Address Book"}
+          {
+        "My Address Book"
+      }
         </title>
         <style type="text/css"> {
         """table { border-right: 1px solid #cccccc; }
@@ -55,9 +61,13 @@ object Test extends App {
 
     val page =
       <html>
-        {header}
+        {
+        header
+      }
         <body>
-         {people.toXHTML}
+         {
+        people.toXHTML
+      }
         </body>
       </html>;
 

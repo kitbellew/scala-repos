@@ -22,13 +22,17 @@ trait FutureTimeoutSupport {
       implicit ec: ExecutionContext): Future[T] =
     if (duration.isFinite() && duration.length < 1) {
       try value
-      catch { case NonFatal(t) ⇒ Future.failed(t) }
+      catch {
+        case NonFatal(t) ⇒ Future.failed(t)
+      }
     } else {
       val p = Promise[T]()
       using.scheduleOnce(duration) {
         p completeWith {
           try value
-          catch { case NonFatal(t) ⇒ Future.failed(t) }
+          catch {
+            case NonFatal(t) ⇒ Future.failed(t)
+          }
         }
       }
       p.future
@@ -43,7 +47,9 @@ trait FutureTimeoutSupport {
       implicit ec: ExecutionContext): CompletionStage[T] =
     if (duration.isFinite() && duration.length < 1) {
       try value
-      catch { case NonFatal(t) ⇒ Futures.failedCompletionStage(t) }
+      catch {
+        case NonFatal(t) ⇒ Futures.failedCompletionStage(t)
+      }
     } else {
       val p = new CompletableFuture[T]
       using.scheduleOnce(duration) {

@@ -5,7 +5,9 @@ object TupleNInstances {
   def apply(outputDir: File): File = {
     val header = "package scalaz\npackage std\n\n"
     val source = header + (2 to 8)
-      .map { n => tupleNTraverse(n) + tupleNBindRec(n) + tupleNMonad(n) }
+      .map { n =>
+        tupleNTraverse(n) + tupleNBindRec(n) + tupleNMonad(n)
+      }
       .mkString("\n")
 
     val file = outputDir / "scalaz" / "std" / "TupleNInstances.scala"

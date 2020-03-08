@@ -144,7 +144,9 @@ case class SieveSegment(start: SafeLong, primes: BitSet, cutoff: SafeLong) {
       val m2 = if (p < len) {
         val k = p.toInt
         val kk = k + k
-        while (i < len) { primes -= i; i += kk }
+        while (i < len) {
+          primes -= i; i += kk
+        }
         start + i
       } else {
         primes -= i
@@ -170,7 +172,9 @@ case class SieveSegment(start: SafeLong, primes: BitSet, cutoff: SafeLong) {
           var k = m.toInt
           primes -= k
           val lim = len - pp
-          while (k < lim) { k += pp; primes -= k }
+          while (k < lim) {
+            k += pp; primes -= k
+          }
           m = k.toLong + pp
         }
         if (p < 7) {} else if (m - primes.length < primes.length) {

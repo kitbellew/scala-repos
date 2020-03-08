@@ -162,7 +162,9 @@ abstract class MailboxSpec
             yield createProducer(i, Math.min(enqueueN, i + step - 1))
 
         if (parallel == false)
-          ps foreach { Await.ready(_, remainingOrDefault) }
+          ps foreach {
+            Await.ready(_, remainingOrDefault)
+          }
 
         ps
       }
@@ -171,7 +173,9 @@ abstract class MailboxSpec
         var r = Vector[Envelope]()
 
         while (producers.exists(_.isCompleted == false) || q.hasMessages)
-          Option(q.dequeue) foreach { message ⇒ r = r :+ message }
+          Option(q.dequeue) foreach { message ⇒
+            r = r :+ message
+          }
 
         r
       }

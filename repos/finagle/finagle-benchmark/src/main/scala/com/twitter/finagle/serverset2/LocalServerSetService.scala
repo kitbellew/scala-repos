@@ -48,7 +48,9 @@ private[serverset2] object LocalServerSetService extends App {
   @volatile private var nextMemberId = 0
 
   def createServerSetPaths(num: Int): Seq[String] =
-    (1 to num).map { id => s"/twitter/service/testset_$id/staging/job" }
+    (1 to num).map { id =>
+      s"/twitter/service/testset_$id/staging/job"
+    }
 
   def main(): Unit = {
     logger.info(s"Starting zookeeper on localhost:${zkListenPort()}")
@@ -87,7 +89,9 @@ private[serverset2] object LocalServerSetService extends App {
   }
 
   private def scheduleUpdate(): Unit =
-    timer.doLater(churnFrequency()) { update() }
+    timer.doLater(churnFrequency()) {
+      update()
+    }
 
   private def update(): Unit = {
     // choose the single serverset to update, advance

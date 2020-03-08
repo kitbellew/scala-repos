@@ -281,9 +281,13 @@ trait TypeComparers {
             equalTypeParamsAndResult(qs1, res1, qs2, res2); case _ => false
         }
       case ThisType(sym1) =>
-        tp2 match { case ThisType(sym2) => sym1 eq sym2; case _ => false }
+        tp2 match {
+          case ThisType(sym2) => sym1 eq sym2; case _ => false
+        }
       case ConstantType(c1) =>
-        tp2 match { case ConstantType(c2) => c1 == c2; case _ => false }
+        tp2 match {
+          case ConstantType(c2) => c1 == c2; case _ => false
+        }
       case NullaryMethodType(res1) =>
         tp2 match {
           case NullaryMethodType(res2) => res1 =:= res2; case _ => false

@@ -70,7 +70,9 @@ private[spark] class ContextCleaner(sc: SparkContext) extends Logging {
   private val listeners = new ConcurrentLinkedQueue[CleanerListener]()
 
   private val cleaningThread = new Thread() {
-    override def run() { keepCleaning() }
+    override def run() {
+      keepCleaning()
+    }
   }
 
   private val periodicGCService: ScheduledExecutorService =

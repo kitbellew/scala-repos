@@ -76,15 +76,22 @@ sealed trait Spool[+A] {
     */
   def foreachElem[B](f: Option[A] => B): Future[Unit] = {
     if (!isEmpty) {
-      Future { f(Some(head)) } flatMap { _ =>
+      Future {
+        f(Some(head))
+      } flatMap { _ =>
         tail transform {
-          case Return(s)              => s.foreachElem(f)
-          case Throw(_: EOFException) => Future { f(None) }
-          case Throw(cause)           => Future.exception(cause)
+          case Return(s) => s.foreachElem(f)
+          case Throw(_: EOFException) =>
+            Future {
+              f(None)
+            }
+          case Throw(cause) => Future.exception(cause)
         }
       }
     } else {
-      Future { f(None) }
+      Future {
+        f(None)
+      }
     }
   }
 
@@ -149,7 +156,9 @@ sealed trait Spool[+A] {
     }
 
   def map[B](f: A => B): Spool[B] = {
-    val s = collect { case x => f(x) }
+    val s = collect {
+      case x => f(x)
+    }
     Await.result(s, Duration.Zero)
   }
 
@@ -161,7 +170,9 @@ sealed trait Spool[+A] {
   def mapFuture[B](f: A => Future[B]): Future[Spool[B]] = {
     if (isEmpty) Future.value(empty[B])
     else {
-      f(head) map { h => new LazyCons(h, tail flatMap (_ mapFuture f)) }
+      f(head) map { h =>
+        new LazyCons(h, tail flatMap (_ mapFuture f))
+      }
     }
   }
 
@@ -261,14 +272,20 @@ sealed trait Spool[+A] {
     */
   def toSeq: Future[Seq[A]] = {
     val as = new ArrayBuffer[A]
-    foreach { a => as += a } map { _ => as }
+    foreach { a =>
+      as += a
+    } map { _ =>
+      as
+    }
   }
 
   /**
     * Eagerly executes all computation represented by this Spool (presumably for
     * side-effects), and returns a Future representing its completion.
     */
-  def force: Future[Unit] = foreach { _ => () }
+  def force: Future[Unit] = foreach { _ =>
+    ()
+  }
 }
 
 /**

@@ -109,7 +109,9 @@ private trait PeakEwma[Req, Rep] { self: Balancer[Req, Rep] =>
     private[this] var pending: Int = 0 // instantaneous rate
     private[this] var cost: Double = 0.0 // ewma of rtt, sensitive to peaks.
 
-    def rate(): Int = synchronized { pending }
+    def rate(): Int = synchronized {
+      pending
+    }
 
     // Calculate the exponential weighted moving average of our
     // round trip time. It isn't exactly an ewma, but rather a

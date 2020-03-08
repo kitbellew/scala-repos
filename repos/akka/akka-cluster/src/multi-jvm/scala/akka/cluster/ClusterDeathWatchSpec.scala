@@ -117,8 +117,9 @@ abstract class ClusterDeathWatchSpec
 
       runOn(second, third, fourth) {
         system.actorOf(
-          Props(new Actor { def receive = Actor.emptyBehavior })
-            .withDeploy(Deploy.local),
+          Props(new Actor {
+            def receive = Actor.emptyBehavior
+          }).withDeploy(Deploy.local),
           name = "subject")
         enterBarrier("subjected-started")
         enterBarrier("watch-established")
@@ -174,8 +175,9 @@ abstract class ClusterDeathWatchSpec
       20 seconds) {
       runOn(fifth) {
         system.actorOf(
-          Props(new Actor { def receive = Actor.emptyBehavior })
-            .withDeploy(Deploy.local),
+          Props(new Actor {
+            def receive = Actor.emptyBehavior
+          }).withDeploy(Deploy.local),
           name = "subject5")
       }
       enterBarrier("subjected-started")

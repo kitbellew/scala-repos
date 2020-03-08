@@ -212,7 +212,9 @@ private[cluster] class Reachability private (
         newVersions += (observer -> observerVersion2)
     }
 
-    newVersions = newVersions.filterNot { case (k, _) ⇒ !allowed(k) }
+    newVersions = newVersions.filterNot {
+      case (k, _) ⇒ !allowed(k)
+    }
 
     new Reachability(recordBuilder.result(), newVersions)
   }
@@ -289,8 +291,9 @@ private[cluster] class Reachability private (
     records.groupBy(_.subject).collect {
       case (subject, records) if records.exists(_.status == Unreachable) ⇒
         val observers: Set[UniqueAddress] =
-          records.collect { case r if r.status == Unreachable ⇒ r.observer }(
-            breakOut)
+          records.collect {
+            case r if r.status == Unreachable ⇒ r.observer
+          }(breakOut)
         (subject -> observers)
     }
   }

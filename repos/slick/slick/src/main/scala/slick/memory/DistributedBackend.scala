@@ -34,7 +34,9 @@ trait DistributedBackend extends RelationalBackend with Logging {
       extends super.DatabaseDef {
     protected[this] def createDatabaseActionContext[T](
         _useSameThread: Boolean): Context =
-      new BasicActionContext { val useSameThread = _useSameThread }
+      new BasicActionContext {
+        val useSameThread = _useSameThread
+      }
 
     protected[this] def createStreamingDatabaseActionContext[T](
         s: Subscriber[_ >: T],
@@ -46,7 +48,9 @@ trait DistributedBackend extends RelationalBackend with Logging {
       for (db <- dbs)
         sessions += Try(db.createSession()).recoverWith {
           case ex =>
-            sessions.reverseIterator.foreach { s => Try(s.close()) }
+            sessions.reverseIterator.foreach { s =>
+              Try(s.close())
+            }
             Failure(ex)
         }.get
       new SessionDef(sessions.toVector)
@@ -81,7 +85,9 @@ trait DistributedBackend extends RelationalBackend with Logging {
     def close() {
       sessions
         .map(s => Try(s.close()))
-        .collectFirst { case Failure(t) => t }
+        .collectFirst {
+          case Failure(t) => t
+        }
         .foreach(throw _)
     }
 

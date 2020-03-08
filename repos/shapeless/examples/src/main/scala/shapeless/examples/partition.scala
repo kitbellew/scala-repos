@@ -74,8 +74,10 @@ object ADTPartitionExample extends App {
         type Out = FieldType[K, List[H]] :: OutT
 
         def apply(c: List[FieldType[K, H] :+: T]): Out =
-          field[K](c.collect { case Inl(h) => h: H }) :: cp(c.collect {
-            case Inr(t)                    => t
+          field[K](c.collect {
+            case Inl(h) => h: H
+          }) :: cp(c.collect {
+            case Inr(t) => t
           })
       }
   }

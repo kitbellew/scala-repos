@@ -27,5 +27,7 @@ trait SplitTests[F[_, _]] extends ComposeTests[F] {
 
 object SplitTests {
   def apply[F[_, _]: Split]: SplitTests[F] =
-    new SplitTests[F] { def laws: SplitLaws[F] = SplitLaws[F] }
+    new SplitTests[F] {
+      def laws: SplitLaws[F] = SplitLaws[F]
+    }
 }

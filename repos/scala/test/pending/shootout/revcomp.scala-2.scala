@@ -16,7 +16,9 @@ object revcomp {
     val a: Array[Byte] = new Array('z'.toByte)
 
     for (indexValue <- code zip comp)
-      indexValue match { case (i, v) => a(i) = v }
+      indexValue match {
+        case (i, v) => a(i) = v
+      }
 
     a
   }
@@ -81,9 +83,14 @@ object revcomp {
       inplaceComplementReverse(line)
 
       if (isSplitLine) {
-        if (isFirstLine) { w.write(line); isFirstLine = false }
-        else { w.write(line, 0, n - k); w.write(nl); w.write(line, n - k, k) }
-      } else { w.write(line); w.write(nl) }
+        if (isFirstLine) {
+          w.write(line); isFirstLine = false
+        } else {
+          w.write(line, 0, n - k); w.write(nl); w.write(line, n - k, k)
+        }
+      } else {
+        w.write(line); w.write(nl)
+      }
     }
     if (isSplitLine && !isFirstLine) w.write(nl)
   }

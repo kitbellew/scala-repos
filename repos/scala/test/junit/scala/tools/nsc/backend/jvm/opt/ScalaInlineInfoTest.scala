@@ -18,7 +18,9 @@ import scala.tools.testing.ClearAfterClass
 
 object ScalaInlineInfoTest extends ClearAfterClass.Clearable {
   var compiler = newCompiler(extraArgs = "-Yopt:l:none")
-  def clear(): Unit = { compiler = null }
+  def clear(): Unit = {
+    compiler = null
+  }
 }
 
 @RunWith(classOf[JUnit4])
@@ -29,7 +31,9 @@ class ScalaInlineInfoTest extends ClearAfterClass {
 
   def inlineInfo(c: ClassNode): InlineInfo =
     c.attrs.asScala
-      .collect({ case a: InlineInfoAttribute => a.inlineInfo })
+      .collect({
+        case a: InlineInfoAttribute => a.inlineInfo
+      })
       .head
 
   @Test

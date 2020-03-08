@@ -82,7 +82,9 @@ trait Locals {
 }
 
 object Types {
-  private object Dongo { def f = this } // warn
+  private object Dongo {
+    def f = this
+  } // warn
   private class Bar1 // warn
   private class Bar2 // no warn
   private type Alias1 = String // warn
@@ -92,7 +94,9 @@ object Types {
   def f(x: Alias2) = x.length
 
   def l1() = {
-    object HiObject { def f = this } // warn
+    object HiObject {
+      def f = this
+    } // warn
     class Hi { // warn
       def f1: Hi = new Hi
       def f2(x: Hi) = x

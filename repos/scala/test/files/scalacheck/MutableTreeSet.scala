@@ -48,7 +48,9 @@ package scala.collection.mutable {
       val oldElems = set.toList
       set --= ks
       val deletedElems = ks.toSet
-      oldElems.forall { e => set.contains(e) == !deletedElems(e) }
+      oldElems.forall { e =>
+        set.contains(e) == !deletedElems(e)
+      }
     }
 
     property("iterator") = forAll { (ks: Set[K]) =>
@@ -177,7 +179,9 @@ package scala.collection.mutable {
           until: Option[K]) =>
         val setView = set.rangeImpl(from, until)
         setView --= ks
-        ks.toSet.forall { k => !set.contains(k) && !setView.contains(k) }
+        ks.toSet.forall { k =>
+          !set.contains(k) && !setView.contains(k)
+        }
     }
 
     property("iterator") = forAll {

@@ -57,7 +57,9 @@ class ShuffleWriteMetrics private (
     this(
       InternalAccumulator
         .createShuffleWriteAccums()
-        .map { a => (a.name.get, a) }
+        .map { a =>
+          (a.name.get, a)
+        }
         .toMap)
   }
 

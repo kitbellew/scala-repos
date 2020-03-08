@@ -36,18 +36,24 @@ object GameRepo {
     $find.one($select(gameId) ++ Query.finished)
 
   def player(gameId: ID, color: Color): Fu[Option[Player]] =
-    $find byId gameId map2 { (game: Game) => game player color }
+    $find byId gameId map2 { (game: Game) =>
+      game player color
+    }
 
   def player(gameId: ID, playerId: ID): Fu[Option[Player]] =
     $find byId gameId map { gameOption =>
-      gameOption flatMap { _ player playerId }
+      gameOption flatMap {
+        _ player playerId
+      }
     }
 
   def player(playerRef: PlayerRef): Fu[Option[Player]] =
     player(playerRef.gameId, playerRef.playerId)
 
   def pov(gameId: ID, color: Color): Fu[Option[Pov]] =
-    $find byId gameId map2 { (game: Game) => Pov(game, game player color) }
+    $find byId gameId map2 { (game: Game) =>
+      Pov(game, game player color)
+    }
 
   def pov(gameId: ID, color: String): Fu[Option[Pov]] =
     Color(color) ?? (pov(gameId, _))
@@ -55,7 +61,9 @@ object GameRepo {
   def pov(playerRef: PlayerRef): Fu[Option[Pov]] =
     $find byId playerRef.gameId map { gameOption =>
       gameOption flatMap { game =>
-        game player playerRef.playerId map { Pov(game, _) }
+        game player playerRef.playerId map {
+          Pov(game, _)
+        }
       }
     }
 
@@ -70,13 +78,17 @@ object GameRepo {
   )
 
   def userPovsByGameIds(gameIds: List[String], user: User): Fu[List[Pov]] =
-    $find.byOrderedIds(gameIds) map { _.flatMap(g => Pov(g, user)) }
+    $find.byOrderedIds(gameIds) map {
+      _.flatMap(g => Pov(g, user))
+    }
 
   def recentPovsByUser(user: User, nb: Int): Fu[List[Pov]] =
     $find(
       $query(Query user user) sort Query.sortCreated,
       nb
-    ) map { _.flatMap(g => Pov(g, user)) }
+    ) map {
+      _.flatMap(g => Pov(g, user))
+    }
 
   def gamesForAssessment(userId: String, nb: Int): Fu[List[Game]] = $find(
     $query(
@@ -154,7 +166,9 @@ object GameRepo {
 
   def urgentGames(user: User): Fu[List[Pov]] =
     $find(Query nowPlaying user.id, 100) map { games =>
-      val povs = games flatMap { Pov(_, user) }
+      val povs = games flatMap {
+        Pov(_, user)
+      }
       try {
         povs sortWith Pov.priority
       } catch {
@@ -171,12 +185,16 @@ object GameRepo {
   def lastPlayedPlaying(user: User): Fu[Option[Pov]] =
     $find.one(
       $query(Query recentlyPlaying user.id) sort Query.sortUpdatedNoIndex) map {
-      _ flatMap { Pov(_, user) }
+      _ flatMap {
+        Pov(_, user)
+      }
     }
 
   def lastPlayed(user: User): Fu[Option[Pov]] =
     $find($query(Query user user.id) sort ($sort desc F.createdAt), 20) map {
-      _.sortBy(_.updatedAt).lastOption flatMap { Pov(_, user) }
+      _.sortBy(_.updatedAt).lastOption flatMap {
+        Pov(_, user)
+      }
     }
 
   def lastFinishedRatedNotFromPosition(user: User): Fu[Option[Game]] =
@@ -385,7 +403,9 @@ object GameRepo {
       )
       .map(_.documents.flatMap { obj =>
         obj.getAs[String]("_id") flatMap { id =>
-          obj.getAs[Int]("gs") map { id -> _ }
+          obj.getAs[Int]("gs") map {
+            id -> _
+          }
         }
       })
   }
@@ -436,7 +456,9 @@ object GameRepo {
           F.binaryPgn -> true
         )
       )
-      .one[BSONDocument] map { _ flatMap extractPgnMoves }
+      .one[BSONDocument] map {
+      _ flatMap extractPgnMoves
+    }
 
   def lastGameBetween(
       u1: String,
@@ -458,7 +480,9 @@ object GameRepo {
           F.playerUids -> true
         )
       )
-      .one[BSONDocument] map { ~_.flatMap(_.getAs[List[String]](F.playerUids)) }
+      .one[BSONDocument] map {
+      ~_.flatMap(_.getAs[List[String]](F.playerUids))
+    }
 
   // #TODO this breaks it all since reactivemongo > 0.11.9
   def activePlayersSinceNOPENOPENOPE(
@@ -495,12 +519,16 @@ object GameRepo {
         )
       )
       .map(_.documents.flatMap { obj =>
-        obj.getAs[Int]("nb") map { nb => UidNb(~obj.getAs[String]("_id"), nb) }
+        obj.getAs[Int]("nb") map { nb =>
+          UidNb(~obj.getAs[String]("_id"), nb)
+        }
       })
   }
 
   private def extractPgnMoves(doc: BSONDocument) =
     doc.getAs[BSONBinary](F.binaryPgn) map { bin =>
-      BinaryFormat.pgn read { ByteArray.ByteArrayBSONHandler read bin }
+      BinaryFormat.pgn read {
+        ByteArray.ByteArrayBSONHandler read bin
+      }
     }
 }

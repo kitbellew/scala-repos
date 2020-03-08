@@ -147,14 +147,18 @@ trait MetadataGenerators extends util.ArbitraryJValue {
     genStringMetadata)
 
   def genMetadataList: Gen[List[Metadata]] =
-    for (cnt <- choose(0, 10); l <- listOfN(cnt, genMetadata)) yield { l }
+    for (cnt <- choose(0, 10); l <- listOfN(cnt, genMetadata)) yield {
+      l
+    }
 
   def genMetadataMap: Gen[Map[MetadataType, Metadata]] = genMetadataList map {
     l => Map(l.map(m => (m.metadataType, m)): _*)
   }
 
   def genMetadata: Gen[Metadata] =
-    frequency(metadataGenerators.map { (1, _) }: _*)
+    frequency(metadataGenerators.map {
+      (1, _)
+    }: _*)
 
   def genBooleanMetadata: Gen[BooleanValueStats] =
     for (count <- choose(0, 1000); trueCount <- choose(0, count))

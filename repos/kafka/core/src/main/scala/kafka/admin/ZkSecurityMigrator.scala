@@ -281,7 +281,9 @@ class ZkSecurityMigrator(zkUtils: ZkUtils) extends Logging {
         future match {
           case Some(a) =>
             Await.result(a, 6000 millis)
-            futures.synchronized { futures.dequeue }
+            futures.synchronized {
+              futures.dequeue
+            }
             recurse
           case None =>
         }

@@ -2,8 +2,12 @@ import scala.language.{reflectiveCalls}
 
 object test1 {
 
-  val o1 = new Object { override def toString = "ohone" }
-  val o2 = new Object { override def toString = "ohtwo" }
+  val o1 = new Object {
+    override def toString = "ohone"
+  }
+  val o2 = new Object {
+    override def toString = "ohtwo"
+  }
 
   val t1 = new Tata("tieone")
   val t2 = new Tata("tietwo")
@@ -19,11 +23,17 @@ object test1 {
     val a = 1
     val b = 2
     val c = "hey"
-    def d(x: AnyRef) = new Object { override def toString = "dee" }
+    def d(x: AnyRef) = new Object {
+      override def toString = "dee"
+    }
     def e(x: Tata) = new Tata("iei")
     def f(x: Int) = x + 1
-    def g(x: Int) = { v = x }
-    def h(x: Unit) = new Object { override def toString = "eitch" }
+    def g(x: Int) = {
+      v = x
+    }
+    def h(x: Unit) = new Object {
+      override def toString = "eitch"
+    }
     def i(x: Array[Int]) = x(0)
     def j(x: Array[AnyRef]) = x(0)
     def k(x: Array[Char]) = x(0)
@@ -101,15 +111,21 @@ object test1 {
     println("30. " + r.e(r.x)) // static error
   }*/
 
-  def mb(r: Object { def e[T](x: T): T }) {
+  def mb(r: Object {
+    def e[T](x: T): T
+  }) {
     println("31. " + r.e[Int](4)) // while this is ok
   }
 
-  def m1(r: Object { def z(x: Tata): Unit }) {
+  def m1(r: Object {
+    def z(x: Tata): Unit
+  }) {
     println("32. " + r.z(new Titi)) // while this is ok
   }
 
-  def m2[T](r: Object { def e(x: Tata): T; val x: Tata }) {
+  def m2[T](r: Object {
+    def e(x: Tata): T; val x: Tata
+  }) {
     println("33. " + r.e(r.x)) // and this too
   }
 
@@ -124,31 +140,61 @@ object test1 {
   Rec.g(11)
 
   this.l(Rec)
-  this.mb(new Object { def e[T](x: T): T = x })
+  this.mb(new Object {
+    def e[T](x: T): T = x
+  })
   this.m1(Rec)
   this.m2[Tata](Rec)
   this.m3[Tata](new Rec3[Tata], t1)
 }
 
 object test2 {
-  class C extends { def f() { println("1") } }
+  class C extends {
+    def f() {
+      println("1")
+    }
+  }
   val x1 = new C
   x1.f()
 
-  abstract class D extends { def f() }
-  val x2 = new D { def f() { println("2") } }
+  abstract class D extends {
+    def f()
+  }
+  val x2 = new D {
+    def f() {
+      println("2")
+    }
+  }
   x2.f()
 
-  val x3 = new { def f() { println("3") } }
-  def run(x: { def f() }) { x.f() }
+  val x3 = new {
+    def f() {
+      println("3")
+    }
+  }
+  def run(x: {
+    def f()
+  }) {
+    x.f()
+  }
   run(x3)
 
-  type T = { def f() }
-  val x4 = new AnyRef { def f() { println("4") } } // ok!
+  type T = {
+    def f()
+  }
+  val x4 = new AnyRef {
+    def f() {
+      println("4")
+    }
+  } // ok!
   //val x4 = new T { def f() { println("4") } }        // error! (bug #1241)
   x4.f()
 
-  val x5: T = new { def f() { println("5") } }
+  val x5: T = new {
+    def f() {
+      println("5")
+    }
+  }
   x5.f()
 }
 
@@ -160,7 +206,9 @@ object test3 {
     def f = throw Exc()
   }
 
-  def m(r: { def f: Nothing }) =
+  def m(r: {
+    def f: Nothing
+  }) =
     try {
       r.f
     } catch {
@@ -179,7 +227,9 @@ object test4 {
   val aar = Array(new A, new A, new A)
   val nar = Array(1, 2)
 
-  def f(p: { def size: Int }) = println(p.size)
+  def f(p: {
+    def size: Int
+  }) = println(p.size)
   //def g[T <: {def size: Int}](p: T) = println(p.size) // open issue
   //def h[T <% {def size: Int}](p: T) = println(p.size) // open issue
 

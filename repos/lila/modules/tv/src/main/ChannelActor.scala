@@ -37,12 +37,18 @@ private[tv] final class ChannelActor(channel: Tv.Channel) extends Actor {
             rematch(game) orElse feature(candidates) foreach elect
           case _ => feature(candidates) foreach elect
         }
-        manyIds = candidates.sortBy { g => -(~g.averageUsersRating) }.map(_.id)
+        manyIds = candidates
+          .sortBy { g =>
+            -(~g.averageUsersRating)
+          }
+          .map(_.id)
       }
   }
 
   def elect(gameOption: Option[Game]) {
-    gameOption foreach { self ! SetGame(_) }
+    gameOption foreach {
+      self ! SetGame(_)
+    }
   }
 
   def wayBetter(game: Game, candidates: List[Game]) = feature(candidates) map {
@@ -56,7 +62,9 @@ private[tv] final class ChannelActor(channel: Tv.Channel) extends Actor {
   def rematch(game: Game) = game.next ?? GameRepo.game
 
   def feature(candidates: List[Game]) = fuccess {
-    candidates sortBy { -score(_) } headOption
+    candidates sortBy {
+      -score(_)
+    } headOption
   }
 
   def score(game: Game): Int = math.round {

@@ -113,7 +113,9 @@ object ScalaSigParsers extends RulesWithState with MemoisableRules {
 
   def parseEntry[A](parser: ScalaSigEntryParsers.EntryParser[A])(
       index: Int): Parser[A] =
-    entry(index) -~ parser >> { a => entry => Success(entry.scalaSig, a) }
+    entry(index) -~ parser >> { a => entry =>
+      Success(entry.scalaSig, a)
+    }
 
   def allEntries[A](f: ScalaSigEntryParsers.EntryParser[A]) = size >> { n =>
     anyOf((0 until n) map parseEntry(f))

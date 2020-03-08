@@ -35,7 +35,9 @@ final class TriangularArray[T: ClassTag](val dimension: Int)
   private def numElems = dimension * (dimension + 1) / 2
   val data = new Array[T](numElems)
 
-  def update(r: Int, c: Int, t: T) { data(index(r, c)) = t }
+  def update(r: Int, c: Int, t: T) {
+    data(index(r, c)) = t
+  }
 
   @inline
   def apply(r: Int, c: Int) = data(index(r, c))
@@ -51,7 +53,9 @@ final class TriangularArray[T: ClassTag](val dimension: Int)
   }
 
   def iterator = Iterator.range(0, numElems) map slice
-  def foreach(f: T => Unit) { data foreach f }
+  def foreach(f: T => Unit) {
+    data foreach f
+  }
 
   def map[U: ClassTag](f: T => U) =
     tabulate(dimension)((i, j) => f(apply(i, j)))

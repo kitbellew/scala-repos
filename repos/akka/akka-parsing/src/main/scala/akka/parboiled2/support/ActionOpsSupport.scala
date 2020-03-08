@@ -53,8 +53,10 @@ object Join {
       L2 <: HList,
       R,
       In0 <: HList,
-      Out0 <: HList](implicit x: Aux[I, L1, L2, R, HNil, In0, Out0])
-      : Join[I, L1, L2, R] { type In = In0; type Out = Out0 } = `n/a`
+      Out0 <: HList](
+      implicit x: Aux[I, L1, L2, R, HNil, In0, Out0]): Join[I, L1, L2, R] {
+    type In = In0; type Out = Out0
+  } = `n/a`
 
   sealed trait Aux[
       I <: HList,

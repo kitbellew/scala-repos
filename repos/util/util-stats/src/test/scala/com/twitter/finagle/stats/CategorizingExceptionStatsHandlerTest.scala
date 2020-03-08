@@ -6,7 +6,9 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class CategorizingExceptionStatsHandlerTest extends FunSuite {
-  val categorizer = (t: Throwable) => { "clienterrors" }
+  val categorizer = (t: Throwable) => {
+    "clienterrors"
+  }
 
   test("uses category, source, exception chains and rollup") {
     val receiver = new InMemoryStatsReceiver

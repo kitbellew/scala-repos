@@ -32,7 +32,9 @@ class ScAccessModifierImpl private (
     node: ASTNode)
     extends ScalaStubBasedElementImpl(stub, nodeType, node)
     with ScAccessModifier {
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
   def this(stub: ScAccessModifierStub) = {
     this(stub, ScalaElementTypes.ACCESS_MODIFIER, null)
   }

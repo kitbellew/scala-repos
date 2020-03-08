@@ -23,7 +23,9 @@ trait HOSeq {
     def filter(p: t => Boolean): m[t] = {
       val buf = accumulator[t]
       val elems = iterator
-      while (elems.hasNext) { val x = elems.next; if (p(x)) buf += x }
+      while (elems.hasNext) {
+        val x = elems.next; if (p(x)) buf += x
+      }
       buf.result
     }
 

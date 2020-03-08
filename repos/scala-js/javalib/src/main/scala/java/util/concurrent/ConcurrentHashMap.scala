@@ -37,13 +37,17 @@ class ConcurrentHashMap[K >: Null, V >: Null]
   override def containsKey(key: Any): Boolean = {
     if (key == null)
       throw new NullPointerException()
-    inner.exists { case (ik, _) => key === ik() }
+    inner.exists {
+      case (ik, _) => key === ik()
+    }
   }
 
   override def containsValue(value: Any): Boolean = {
     if (value == null)
       throw new NullPointerException()
-    inner.exists { case (_, iv) => value === iv }
+    inner.exists {
+      case (_, iv) => value === iv
+    }
   }
 
   override def put(key: K, value: V): V = {

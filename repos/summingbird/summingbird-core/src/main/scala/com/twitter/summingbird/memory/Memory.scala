@@ -45,7 +45,9 @@ class Memory(implicit jobID: JobId = JobId("default.memory.jobId"))
 
   def counter(group: Group, name: Name): Option[Long] =
     MemoryStatProvider.getCountersForJob(jobID).flatMap {
-      _.get(group.getString + "/" + name.getString).map { _.get }
+      _.get(group.getString + "/" + name.getString).map {
+        _.get
+      }
     }
 
   private def toStream[T](
@@ -100,7 +102,11 @@ class Memory(implicit jobID: JobId = JobId("default.memory.jobId"))
 
           case WrittenProducer(producer, fn) =>
             val (s, m) = toStream(producer, jamfs)
-            (s.map { i => fn(i); i }, m)
+            (
+              s.map { i =>
+                fn(i); i
+              },
+              m)
 
           case LeftJoinedProducer(producer, service) =>
             val (s, m) = toStream(producer, jamfs)
@@ -115,7 +121,9 @@ class Memory(implicit jobID: JobId = JobId("default.memory.jobId"))
               case (k, deltaV) =>
                 val oldV = store.get(k)
                 val newV = oldV
-                  .map { semigroup.plus(_, deltaV) }
+                  .map {
+                    semigroup.plus(_, deltaV)
+                  }
                   .getOrElse(deltaV)
                 store.update(k, newV)
                 (k, (oldV, deltaV))

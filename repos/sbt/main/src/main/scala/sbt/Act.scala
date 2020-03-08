@@ -167,9 +167,13 @@ object Act {
   def optionalAxis[T](
       p: Parser[T],
       ifNone: ScopeAxis[T]): Parser[ScopeAxis[T]] =
-    p.? map { opt => toAxis(opt, ifNone) }
+    p.? map { opt =>
+      toAxis(opt, ifNone)
+    }
   def toAxis[T](opt: Option[T], ifNone: ScopeAxis[T]): ScopeAxis[T] =
-    opt match { case Some(t) => Select(t); case None => ifNone }
+    opt match {
+      case Some(t) => Select(t); case None => ifNone
+    }
 
   def config(confs: Set[String]): Parser[ParsedAxis[String]] = {
     val sep = ':' !!! "Expected ':' (if selecting a configuration)"
@@ -321,7 +325,9 @@ object Act {
       trailing: Parser[_]): Parser[ResolvedReference] = {
     def projectID(uri: URI) =
       token(examplesStrict(ID, index projects uri, "project ID") <~ trailing)
-    def projectRef(uri: URI) = projectID(uri) map { id => ProjectRef(uri, id) }
+    def projectRef(uri: URI) = projectID(uri) map { id =>
+      ProjectRef(uri, id)
+    }
 
     val uris = index.buildURIs
     val resolvedURI =
@@ -403,7 +409,9 @@ object Act {
       structure.index.keyMap,
       structure.data)
 
-  type KeysParser = Parser[Seq[ScopedKey[T]] forSome { type T }]
+  type KeysParser = Parser[Seq[ScopedKey[T]] forSome {
+    type T
+  }]
   def aggregatedKeyParser(state: State): KeysParser =
     aggregatedKeyParser(Project extract state)
   def aggregatedKeyParser(extracted: Extracted): KeysParser =

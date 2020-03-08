@@ -274,7 +274,9 @@ object ConsumerOffsetChecker extends Logging {
       println(
         "%-15s %-30s %-3s %-15s %-15s %-15s %s"
           .format("Group", "Topic", "Pid", "Offset", "logSize", "Lag", "Owner"))
-      topicList.sorted.foreach { topic => processTopic(zkUtils, group, topic) }
+      topicList.sorted.foreach { topic =>
+        processTopic(zkUtils, group, topic)
+      }
 
       if (options.has("broker-info"))
         printBrokerInfo()

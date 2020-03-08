@@ -153,7 +153,9 @@ trait ModelLibModule[M[+_]] {
         }
 
         def defined(cols: Map[ColumnRef, Column], range: Range): BitSet = {
-          val columns = cols map { case (_, col) => col }
+          val columns = cols map {
+            case (_, col) => col
+          }
 
           BitSetUtil.filteredRange(range) { i =>
             if (columns.isEmpty) false
@@ -180,9 +182,13 @@ trait ModelLibModule[M[+_]] {
           val definedModel = defined(includedModel, range)
 
           val cpaths = includedModel
-            .map { case (ColumnRef(cpath, _), _) => cpath }
+            .map {
+              case (ColumnRef(cpath, _), _) => cpath
+            }
             .toSeq sorted
-          val modelDoubles = cpaths map { model.featureValues(_) }
+          val modelDoubles = cpaths map {
+            model.featureValues(_)
+          }
 
           val includedCols = includedModel.collect {
             case (ColumnRef(cpath, _), col: DoubleColumn) => (cpath, col)
@@ -191,7 +197,9 @@ trait ModelLibModule[M[+_]] {
           val resultArray = filteredRange(includedModel, range).foldLeft(
             new Array[Double](range.end)) {
             case (arr, i) =>
-              val includedDoubles = cpaths map { includedCols(_).apply(i) }
+              val includedDoubles = cpaths map {
+                includedCols(_).apply(i)
+              }
 
               if (modelDoubles.length == includedDoubles.length) {
                 val res = dotProduct(
@@ -371,7 +379,9 @@ trait ModelLibModule[M[+_]] {
             val joined = joined0 filterNot {
               case (_, cols) =>
                 val definedCols = cols map {
-                  _ filter { case (_, col) => col.isDefinedAt(i) }
+                  _ filter {
+                    case (_, col) => col.isDefinedAt(i)
+                  }
                 }
                 definedCols.exists(_.isEmpty)
             }
@@ -383,17 +393,23 @@ trait ModelLibModule[M[+_]] {
                 val cnst = constant.map {
                   case (_, col) =>
                     col.apply(i)
-                }.headOption getOrElse { sys.error("Constant term must exist") }
+                }.headOption getOrElse {
+                  sys.error("Constant term must exist")
+                }
 
                 val rse = resStdErr.map {
                   case (_, col) =>
                     col.apply(i)
-                }.headOption getOrElse { sys.error("Error term must exist") }
+                }.headOption getOrElse {
+                  sys.error("Error term must exist")
+                }
 
                 val dof = degs.map {
                   case (_, col) =>
                     col.apply(i).toInt
-                }.headOption getOrElse { sys.error("DOF term must exist") }
+                }.headOption getOrElse {
+                  sys.error("DOF term must exist")
+                }
 
                 val fts = values map {
                   case (
@@ -508,7 +524,9 @@ trait ModelLibModule[M[+_]] {
             val joined = joined0 filterNot {
               case (_, cols) =>
                 val definedCols = cols map {
-                  _ filter { case (_, col) => col.isDefinedAt(i) }
+                  _ filter {
+                    case (_, col) => col.isDefinedAt(i)
+                  }
                 }
                 definedCols.exists(_.isEmpty)
             }
@@ -518,7 +536,9 @@ trait ModelLibModule[M[+_]] {
                 val cnst = constant.map {
                   case (_, col) =>
                     col.apply(i)
-                }.headOption getOrElse { sys.error("Constant term must exist") }
+                }.headOption getOrElse {
+                  sys.error("Constant term must exist")
+                }
 
                 val fts = values collect {
                   case (

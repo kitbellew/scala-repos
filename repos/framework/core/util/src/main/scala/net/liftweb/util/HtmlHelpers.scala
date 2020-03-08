@@ -318,7 +318,9 @@ trait HtmlHelpers extends CssBindImplicits {
       case Props.RunModes.Development | Props.RunModes.Test =>
         Full(
           <div class="snippeterror" style="display: block; padding: 4px; margin: 8px; border: 2px solid red">
-             {body}
+             {
+            body
+          }
           <i>note: this error is displayed in the browser because
           your application is running in "development" or "test" mode.If you
           set the system property run.mode=production, this error will not

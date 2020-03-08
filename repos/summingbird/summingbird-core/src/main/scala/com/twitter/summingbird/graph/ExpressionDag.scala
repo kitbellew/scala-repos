@@ -49,12 +49,28 @@ object Literal {
     * equivalent structures (not just structurally equivalent)
     */
   def evaluate[T, N[_]](lit: Literal[T, N]): N[T] =
-    evaluate(HMap.empty[({ type L[T] = Literal[T, N] })#L, N], lit)._2
+    evaluate(
+      HMap.empty[
+        ({
+          type L[T] = Literal[T, N]
+        })#L,
+        N],
+      lit)._2
 
   // Memoized version of the above to handle diamonds
   private def evaluate[T, N[_]](
-      hm: HMap[({ type L[T] = Literal[T, N] })#L, N],
-      lit: Literal[T, N]): (HMap[({ type L[T] = Literal[T, N] })#L, N], N[T]) =
+      hm: HMap[
+        ({
+          type L[T] = Literal[T, N]
+        })#L,
+        N],
+      lit: Literal[T, N]): (
+      HMap[
+        ({
+          type L[T] = Literal[T, N]
+        })#L,
+        N],
+      N[T]) =
     hm.get(lit) match {
       case Some(prod) => (hm, prod)
       case None =>
@@ -104,9 +120,17 @@ sealed trait ExpressionDag[N[_]] { self =>
 
   // This is a cache of Id[T] => Option[N[T]]
   private val idToN =
-    new HCache[Id, ({ type ON[T] = Option[N[T]] })#ON]()
+    new HCache[
+      Id,
+      ({
+        type ON[T] = Option[N[T]]
+      })#ON]()
   private val nodeToId =
-    new HCache[N, ({ type OID[T] = Option[Id[T]] })#OID]()
+    new HCache[
+      N,
+      ({
+        type OID[T] = Option[Id[T]]
+      })#OID]()
 
   /**
     * Add a GC root, or tail in the DAG, that can never be deleted
@@ -148,7 +172,9 @@ sealed trait ExpressionDag[N[_]] { self =>
     val goodIds = reachableIds
     type BoolT[t] = Boolean
     val toKeepI2E = idToExp.filter(new GenFunction[HMap[Id, E]#Pair, BoolT] {
-      def apply[T] = { idExp => goodIds(idExp._1) }
+      def apply[T] = { idExp =>
+        goodIds(idExp._1)
+      }
     })
     copy(id2Exp = toKeepI2E)
   }
@@ -307,7 +333,11 @@ sealed trait ExpressionDag[N[_]] { self =>
     */
   def fanOut(id: Id[_]): Int = {
     // We make a fake IntT[T] which is just Int
-    val partial = new GenPartial[E, ({ type IntT[T] = Int })#IntT] {
+    val partial = new GenPartial[
+      E,
+      ({
+        type IntT[T] = Int
+      })#IntT] {
       def apply[T] = {
         case Var(id1) if (id1 == id)                            => 1
         case Unary(id1, fn) if (id1 == id)                      => 1
@@ -316,7 +346,11 @@ sealed trait ExpressionDag[N[_]] { self =>
         case _                                                  => 0
       }
     }
-    idToExp.collectValues[({ type IntT[T] = Int })#IntT](partial).sum
+    idToExp
+      .collectValues[({
+        type IntT[T] = Int
+      })#IntT](partial)
+      .sum
   }
 
   /**
@@ -329,10 +363,17 @@ sealed trait ExpressionDag[N[_]] { self =>
 
 object ExpressionDag {
   private def empty[N[_]](
-      n2l: GenFunction[N, ({ type L[t] = Literal[t, N] })#L])
-      : ExpressionDag[N] =
+      n2l: GenFunction[
+        N,
+        ({
+          type L[t] = Literal[t, N]
+        })#L]): ExpressionDag[N] =
     new ExpressionDag[N] {
-      val idToExp = HMap.empty[Id, ({ type E[t] = Expr[t, N] })#E]
+      val idToExp = HMap.empty[
+        Id,
+        ({
+          type E[t] = Expr[t, N]
+        })#E]
       val nodeToLiteral = n2l
       val roots = Set.empty[Id[_]]
       val nextId = 0
@@ -343,8 +384,11 @@ object ExpressionDag {
     */
   def apply[T, N[_]](
       n: N[T],
-      nodeToLit: GenFunction[N, ({ type L[t] = Literal[t, N] })#L])
-      : (ExpressionDag[N], Id[T]) = {
+      nodeToLit: GenFunction[
+        N,
+        ({
+          type L[t] = Literal[t, N]
+        })#L]): (ExpressionDag[N], Id[T]) = {
     val (dag, id) = empty(nodeToLit).ensure(n)
     (dag.addRoot(id), id)
   }
@@ -356,7 +400,11 @@ object ExpressionDag {
     */
   def applyRule[T, N[_]](
       n: N[T],
-      nodeToLit: GenFunction[N, ({ type L[t] = Literal[t, N] })#L],
+      nodeToLit: GenFunction[
+        N,
+        ({
+          type L[t] = Literal[t, N]
+        })#L],
       rule: Rule[N]): N[T] = {
     val (dag, id) = apply(n, nodeToLit)
     dag(rule).evaluate(id)

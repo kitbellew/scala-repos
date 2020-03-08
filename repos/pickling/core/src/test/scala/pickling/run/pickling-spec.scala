@@ -12,8 +12,12 @@ import java.util.{Calendar, Date, GregorianCalendar}
 
 object PicklingSpec {
   sealed abstract class Base
-  final class C(s: String) extends Base { override def toString = "C" }
-  final class D(i: Int) extends Base { override def toString = "D" }
+  final class C(s: String) extends Base {
+    override def toString = "C"
+  }
+  final class D(i: Int) extends Base {
+    override def toString = "D"
+  }
 
   implicit val arbitraryBase: Arbitrary[Base] = Arbitrary[Base](
     oneOf(

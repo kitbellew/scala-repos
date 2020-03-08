@@ -26,5 +26,7 @@ trait MonoidKTests[F[_]] extends SemigroupKTests[F] {
 
 object MonoidKTests {
   def apply[F[_]: MonoidK]: MonoidKTests[F] =
-    new MonoidKTests[F] { def laws: MonoidKLaws[F] = MonoidKLaws[F] }
+    new MonoidKTests[F] {
+      def laws: MonoidKLaws[F] = MonoidKLaws[F]
+    }
 }

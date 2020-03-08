@@ -68,8 +68,11 @@ object Coroner { // FIXME: remove once going back to project dependencies
     }
 
     override def result(atMost: Duration)(implicit permit: CanAwait): Boolean =
-      try { Await.result(cancelPromise.future, atMost) }
-      catch { case _: TimeoutException ⇒ false }
+      try {
+        Await.result(cancelPromise.future, atMost)
+      } catch {
+        case _: TimeoutException ⇒ false
+      }
 
   }
 
@@ -124,7 +127,9 @@ object Coroner { // FIXME: remove once going back to project dependencies
       }
     }
     new Thread(
-      new Runnable { def run = triggerReportIfOverdue(duration) },
+      new Runnable {
+        def run = triggerReportIfOverdue(duration)
+      },
       "Coroner").start()
     watchedHandle.waitForStart()
     watchedHandle

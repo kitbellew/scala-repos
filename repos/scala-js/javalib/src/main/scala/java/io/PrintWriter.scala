@@ -96,15 +96,33 @@ class PrintWriter(protected[io] var out: Writer, autoFlush: Boolean)
       flush()
   }
 
-  def println(b: Boolean): Unit = { print(b); println() }
-  def println(c: Char): Unit = { print(c); println() }
-  def println(i: Int): Unit = { print(i); println() }
-  def println(l: Long): Unit = { print(l); println() }
-  def println(f: Float): Unit = { print(f); println() }
-  def println(d: Double): Unit = { print(d); println() }
-  def println(s: Array[Char]): Unit = { print(s); println() }
-  def println(s: String): Unit = { print(s); println() }
-  def println(obj: AnyRef): Unit = { print(obj); println() }
+  def println(b: Boolean): Unit = {
+    print(b); println()
+  }
+  def println(c: Char): Unit = {
+    print(c); println()
+  }
+  def println(i: Int): Unit = {
+    print(i); println()
+  }
+  def println(l: Long): Unit = {
+    print(l); println()
+  }
+  def println(f: Float): Unit = {
+    print(f); println()
+  }
+  def println(d: Double): Unit = {
+    print(d); println()
+  }
+  def println(s: Array[Char]): Unit = {
+    print(s); println()
+  }
+  def println(s: String): Unit = {
+    print(s); println()
+  }
+  def println(obj: AnyRef): Unit = {
+    print(obj); println()
+  }
 
   def printf(fmt: String, args: Array[Object]): PrintWriter =
     format(fmt, args)

@@ -33,7 +33,9 @@ trait GroupFinder extends parser.AST with Tracer {
   def findGroups(
       solve: Solve,
       dispatches: Set[Dispatch]): Set[(Sigma, Where, List[Dispatch])] = {
-    val vars = solve.vars map { findVars(solve, _)(solve.child) } reduceOption {
+    val vars = solve.vars map {
+      findVars(solve, _)(solve.child)
+    } reduceOption {
       _ ++ _
     } getOrElse Set()
 
@@ -45,7 +47,9 @@ trait GroupFinder extends parser.AST with Tracer {
 
       val mapped = result map {
         case (sigma, where) =>
-          val dtrace = btrace map { _._2 } dropWhile {
+          val dtrace = btrace map {
+            _._2
+          } dropWhile {
             !_.isInstanceOf[Where]
           } collect {
             case d: Dispatch if d.binding.isInstanceOf[LetBinding] => d
@@ -68,7 +72,9 @@ trait GroupFinder extends parser.AST with Tracer {
        */
       mapped filter {
         case (_, _, dtrace) =>
-          dispatches filter { _.actuals.length > 0 } forall dtrace.contains
+          dispatches filter {
+            _.actuals.length > 0
+          } forall dtrace.contains
       }
     }
   }
@@ -126,6 +132,8 @@ trait GroupFinder extends parser.AST with Tracer {
       case _: TicVar => Set()
 
       case NaryOp(_, values) =>
-        values map findVars(solve, id) reduceOption { _ ++ _ } getOrElse Set()
+        values map findVars(solve, id) reduceOption {
+          _ ++ _
+        } getOrElse Set()
     }
 }

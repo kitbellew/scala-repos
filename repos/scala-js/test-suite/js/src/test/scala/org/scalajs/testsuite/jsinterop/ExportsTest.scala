@@ -1138,8 +1138,9 @@ class ExportsTest {
 
     import scala.language.reflectiveCalls
 
-    val obj2 = getObj()
-      .asInstanceOf[{ val x1: String; var y1: String; def z1(): String }]
+    val obj2 = getObj().asInstanceOf[{
+      val x1: String; var y1: String; def z1(): String
+    }]
 
     assertThrows(classOf[Throwable], obj2.x1)
     assertThrows(classOf[Throwable], obj2.y1)
@@ -1226,11 +1227,17 @@ class ExportsTest {
 
   @Test def should_ignore_invalid_descendants(): Unit = {
     // This is just to check that everything here compiles
-    object A extends AutoExportIgnoreTrait { var x = 1 }
-    object B extends AutoExportIgnoreClass { var x = 2 }
+    object A extends AutoExportIgnoreTrait {
+      var x = 1
+    }
+    object B extends AutoExportIgnoreClass {
+      var x = 2
+    }
 
     @ScalaJSDefined
-    object C extends SJSDefinedAutoExportIgnoreClass { var x = 3 }
+    object C extends SJSDefinedAutoExportIgnoreClass {
+      var x = 3
+    }
 
     // Check that the objects are usable
     assertEquals(1, A.x)
@@ -1350,23 +1357,43 @@ class ExportsTest {
   }
 
   @Test def should_ignore_invalid_descendants2(): Unit = {
-    trait HasBar { def bar: Int }
+    trait HasBar {
+      def bar: Int
+    }
 
     @ScalaJSDefined
-    trait SJSDefinedHasBar extends js.Any { def bar: Int }
+    trait SJSDefinedHasBar extends js.Any {
+      def bar: Int
+    }
 
     // This is just to check that everything here compiles
-    class A extends AutoExportIgnoreTrait { def foo: Int = 1 }
-    class B extends AutoExportIgnoreClass { def foo: Int = 2 }
+    class A extends AutoExportIgnoreTrait {
+      def foo: Int = 1
+    }
+    class B extends AutoExportIgnoreClass {
+      def foo: Int = 2
+    }
 
     @ScalaJSDefined
-    class C extends SJSDefinedAutoExportIgnoreClass { def foo: Int = 3 }
+    class C extends SJSDefinedAutoExportIgnoreClass {
+      def foo: Int = 3
+    }
 
-    val a = new A { override def foo: Int = 3 }
-    val b = new B { override def foo: Int = 4 }
-    val c = new C { override def foo: Int = 5 }
-    val d = new AutoExportIgnoreClass with HasBar { def bar: Int = 1 }
-    val e = new AutoExportIgnoreTrait with HasBar { def bar: Int = 1 }
+    val a = new A {
+      override def foo: Int = 3
+    }
+    val b = new B {
+      override def foo: Int = 4
+    }
+    val c = new C {
+      override def foo: Int = 5
+    }
+    val d = new AutoExportIgnoreClass with HasBar {
+      def bar: Int = 1
+    }
+    val e = new AutoExportIgnoreTrait with HasBar {
+      def bar: Int = 1
+    }
     val f = new SJSDefinedAutoExportIgnoreClass with SJSDefinedHasBar {
       def bar: Int = 1
     }

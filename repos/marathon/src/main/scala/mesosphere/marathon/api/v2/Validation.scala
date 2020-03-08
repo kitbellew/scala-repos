@@ -76,7 +76,12 @@ object Validation {
         parent: String,
         child: Option[String],
         slash: Boolean): String = {
-      child.map(c => parent + { if (slash) "/" else "" } + c).getOrElse(parent)
+      child
+        .map(c =>
+          parent + {
+            if (slash) "/" else ""
+          } + c)
+        .getOrElse(parent)
     }
 
     violation match {
@@ -163,7 +168,9 @@ object Validation {
   def elementsAreUniqueBy[A, B](
       fn: A => B,
       errorMessage: String = "Elements must be unique.",
-      filter: B => Boolean = { _: B => true }): Validator[Seq[A]] = {
+      filter: B => Boolean = { _: B =>
+        true
+      }): Validator[Seq[A]] = {
     new Validator[Seq[A]] {
       def apply(seq: Seq[A]) =
         areUnique(seq.map(fn).filter(filter), errorMessage)
@@ -173,7 +180,9 @@ object Validation {
   def elementsAreUniqueByOptional[A, B](
       fn: A => GenTraversableOnce[B],
       errorMessage: String = "Elements must be unique.",
-      filter: B => Boolean = { _: B => true }): Validator[Seq[A]] = {
+      filter: B => Boolean = { _: B =>
+        true
+      }): Validator[Seq[A]] = {
     new Validator[Seq[A]] {
       def apply(seq: Seq[A]) =
         areUnique(seq.flatMap(fn).filter(filter), errorMessage)

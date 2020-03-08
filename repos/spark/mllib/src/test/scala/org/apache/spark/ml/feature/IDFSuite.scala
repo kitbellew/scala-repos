@@ -39,7 +39,9 @@ class IDFSuite
   def scaleDataWithIDF(dataSet: Array[Vector], model: Vector): Array[Vector] = {
     dataSet.map {
       case data: DenseVector =>
-        val res = data.toArray.zip(model.toArray).map { case (x, y) => x * y }
+        val res = data.toArray.zip(model.toArray).map {
+          case (x, y) => x * y
+        }
         Vectors.dense(res)
       case data: SparseVector =>
         val res = data.indices.zip(data.values).map {

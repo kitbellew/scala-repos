@@ -15,8 +15,12 @@ object ReflectSpec {
   class Two(a: A, b: B)
 
   class MultipleOne(a: A, b: B) {
-    def this(a: A) { this(a, null) }
-    def this(b: B) { this(null, b) }
+    def this(a: A) {
+      this(a, null)
+    }
+    def this(b: B) {
+      this(null, b)
+    }
   }
 }
 

@@ -776,9 +776,12 @@ trait CssBind extends CssSel {
 
   def apply(in: NodeSeq): NodeSeq = css match {
     case Full(c) => selectorMap(in)
-    case _       => Helpers.errorDiv(<div>
+    case _ =>
+      Helpers.errorDiv(<div>
         Syntax error in CSS selector definition:
-        {stringSelector openOr "N/A"}
+        {
+        stringSelector openOr "N/A"
+      }
         .
         The selector will not be applied.
       </div>) openOr NodeSeq.Empty

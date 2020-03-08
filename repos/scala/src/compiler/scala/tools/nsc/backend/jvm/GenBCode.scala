@@ -71,7 +71,9 @@ abstract class GenBCode extends BCodeSyncAndTry {
     /* ---------------- q1 ---------------- */
 
     case class Item1(arrivalPos: Int, cd: ClassDef, cunit: CompilationUnit) {
-      def isPoison = { arrivalPos == Int.MaxValue }
+      def isPoison = {
+        arrivalPos == Int.MaxValue
+      }
     }
     private val poison1 = Item1(Int.MaxValue, null, null)
     private val q1 = new java.util.LinkedList[Item1]
@@ -84,7 +86,9 @@ abstract class GenBCode extends BCodeSyncAndTry {
         plain: asm.tree.ClassNode,
         bean: asm.tree.ClassNode,
         outFolder: scala.tools.nsc.io.AbstractFile) {
-      def isPoison = { arrivalPos == Int.MaxValue }
+      def isPoison = {
+        arrivalPos == Int.MaxValue
+      }
     }
 
     private val poison2 = Item2(Int.MaxValue, null, null, null, null)
@@ -111,7 +115,9 @@ abstract class GenBCode extends BCodeSyncAndTry {
         bean: SubItem3,
         outFolder: scala.tools.nsc.io.AbstractFile) {
 
-      def isPoison = { arrivalPos == Int.MaxValue }
+      def isPoison = {
+        arrivalPos == Int.MaxValue
+      }
     }
     private val i3comparator = new java.util.Comparator[Item3] {
       override def compare(a: Item3, b: Item3) = {
@@ -137,8 +143,9 @@ abstract class GenBCode extends BCodeSyncAndTry {
             q2 add poison2
             return
           } else {
-            try { withCurrentUnit(item.cunit)(visit(item)) }
-            catch {
+            try {
+              withCurrentUnit(item.cunit)(visit(item))
+            } catch {
               case ex: Throwable =>
                 ex.printStackTrace()
                 error(

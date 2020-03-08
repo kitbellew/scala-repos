@@ -119,7 +119,9 @@ object DataFlow {
       * JavaAPI.
       * Sets the value of this variable (if unset) with the value of the supplied variable.
       */
-    def set(ref: DataFlowVariable[T]) { this << ref }
+    def set(ref: DataFlowVariable[T]) {
+      this << ref
+    }
 
     /**
       * Sets the value of this variable (if unset).
@@ -135,7 +137,9 @@ object DataFlow {
       * JavaAPI.
       * Sets the value of this variable (if unset) with the value of the supplied variable.
       */
-    def set(value: T) { this << value }
+    def set(value: T) {
+      this << value
+    }
 
     /**
       * Retrieves the value of variable, throws a DataFlowVariableException if it times out.
@@ -165,6 +169,8 @@ object DataFlow {
       }
     }
 
-    def shutdown() { in ! Exit }
+    def shutdown() {
+      in ! Exit
+    }
   }
 }

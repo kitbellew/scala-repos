@@ -55,7 +55,9 @@ trait AbstractExamples extends Specification {
   }
 
   "Remove example" in {
-    val json = parse(person) removeField { _ == JField("name", "Marilyn") }
+    val json = parse(person) removeField {
+      _ == JField("name", "Marilyn")
+    }
     compactRender(json \\ "name") mustEqual """{"name":"Joe"}"""
   }
 

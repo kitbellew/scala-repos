@@ -1,5 +1,7 @@
 object Tag {
-  type Tagged[U] = { type Tag = U }
+  type Tagged[U] = {
+    type Tag = U
+  }
   type @@[T, U] = T with Tagged[U]
   @inline def apply[A, T](a: A): A @@ T = a.asInstanceOf[A @@ T]
 }

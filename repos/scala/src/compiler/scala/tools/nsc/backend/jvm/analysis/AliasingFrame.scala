@@ -420,7 +420,9 @@ object AliasingFrame {
   val timer2 = newTimer("t2", "jvm")
   val timer3 = newTimer("t3", "jvm")
   val timers = List(timer1, timer2, timer3)
-  def reset(): Unit = for (t <- timers) { t.nanos = 0; t.timings = 0 }
+  def reset(): Unit = for (t <- timers) {
+    t.nanos = 0; t.timings = 0
+  }
 }
 
 /**
@@ -464,8 +466,14 @@ class AliasSet(var set: Object /*SmallBitSet | Array[Long]*/, var size: Int) {
     case s: SmallBitSet =>
       (size: @switch) match {
         case 0 => s.a = value; size = 1
-        case 1 => if (value != s.a) { s.b = value; size = 2 }
-        case 2 => if (value != s.a && value != s.b) { s.c = value; size = 3 }
+        case 1 =>
+          if (value != s.a) {
+            s.b = value; size = 2
+          }
+        case 2 =>
+          if (value != s.a && value != s.b) {
+            s.c = value; size = 3
+          }
         case 3 =>
           if (value != s.a && value != s.b && value != s.c) {
             s.d = value; size = 4
@@ -490,20 +498,33 @@ class AliasSet(var set: Object /*SmallBitSet | Array[Long]*/, var size: Int) {
       (size: @switch) match {
         case 0 =>
         case 1 =>
-          if (value == s.a) { s.a = -1; size = 0 }
+          if (value == s.a) {
+            s.a = -1; size = 0
+          }
         case 2 =>
-          if (value == s.a) { s.a = s.b; s.b = -1; size = 1 }
-          else if (value == s.b) { s.b = -1; size = 1 }
+          if (value == s.a) {
+            s.a = s.b; s.b = -1; size = 1
+          } else if (value == s.b) {
+            s.b = -1; size = 1
+          }
         case 3 =>
-          if (value == s.a) { s.a = s.b; s.b = s.c; s.c = -1; size = 2 }
-          else if (value == s.b) { s.b = s.c; s.c = -1; size = 2 }
-          else if (value == s.c) { s.c = -1; size = 2 }
+          if (value == s.a) {
+            s.a = s.b; s.b = s.c; s.c = -1; size = 2
+          } else if (value == s.b) {
+            s.b = s.c; s.c = -1; size = 2
+          } else if (value == s.c) {
+            s.c = -1; size = 2
+          }
         case 4 =>
           if (value == s.a) {
             s.a = s.b; s.b = s.c; s.c = s.d; s.d = -1; size = 3
-          } else if (value == s.b) { s.b = s.c; s.c = s.d; s.d = -1; size = 3 }
-          else if (value == s.c) { s.c = s.d; s.d = -1; size = 3 }
-          else if (value == s.d) { s.d = -1; size = 3 }
+          } else if (value == s.b) {
+            s.b = s.c; s.c = s.d; s.d = -1; size = 3
+          } else if (value == s.c) {
+            s.c = s.d; s.d = -1; size = 3
+          } else if (value == s.d) {
+            s.d = -1; size = 3
+          }
       }
     case bits: Array[Long] =>
       bsRemove(this, value)

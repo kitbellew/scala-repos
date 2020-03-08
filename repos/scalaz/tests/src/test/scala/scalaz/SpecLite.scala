@@ -22,7 +22,9 @@ abstract class SpecLite extends Properties("") with SpecLitePlatform {
   class PropertyOps(props: Properties) {
     def withProp(propName: String, prop: Prop): Properties = {
       val p = new Properties(props.name)
-      for { (name, x) <- props.properties } p.property(name) = x
+      for {
+        (name, x) <- props.properties
+      } p.property(name) = x
       p.property(propName) = prop
       p
     }
@@ -116,7 +118,10 @@ abstract class SpecLite extends Properties("") with SpecLitePlatform {
       toProp: (=> R) => Prop,
       a: Arbitrary[T],
       s: Shrink[T]): Prop = Prop.forAll((t: T) => toProp(result(t)))
-  implicit def unitToProp(u: => Unit): Prop = booleanToProp({ u; true })
+  implicit def unitToProp(u: => Unit): Prop =
+    booleanToProp({
+      u; true
+    })
   implicit def unitToProp2(u: Unit): Prop = booleanToProp(true)
   implicit def booleanToProp(b: => Boolean): Prop = Prop.secure(b)
 

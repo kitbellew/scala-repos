@@ -78,9 +78,15 @@ object ArraySupport {
       y: Array[A]): Array[A] = {
     val z = new Array[A](spire.math.max(x.length, y.length))
     var i = 0
-    while (i < x.length && i < y.length) { z(i) = x(i) + y(i); i += 1 }
-    while (i < x.length) { z(i) = x(i); i += 1 }
-    while (i < y.length) { z(i) = y(i); i += 1 }
+    while (i < x.length && i < y.length) {
+      z(i) = x(i) + y(i); i += 1
+    }
+    while (i < x.length) {
+      z(i) = x(i); i += 1
+    }
+    while (i < y.length) {
+      z(i) = y(i); i += 1
+    }
     z
   }
 
@@ -89,9 +95,15 @@ object ArraySupport {
       y: Array[A]): Array[A] = {
     val z = new Array[A](spire.math.max(x.length, y.length))
     var i = 0
-    while (i < x.length && i < y.length) { z(i) = x(i) - y(i); i += 1 }
-    while (i < x.length) { z(i) = x(i); i += 1 }
-    while (i < y.length) { z(i) = -y(i); i += 1 }
+    while (i < x.length && i < y.length) {
+      z(i) = x(i) - y(i); i += 1
+    }
+    while (i < x.length) {
+      z(i) = x(i); i += 1
+    }
+    while (i < y.length) {
+      z(i) = -y(i); i += 1
+    }
     z
   }
 
@@ -104,7 +116,9 @@ object ArraySupport {
       x: Array[A]): Array[A] = {
     val y = new Array[A](x.length)
     var i = 0
-    while (i < y.length) { y(i) = r * x(i); i += 1 }
+    while (i < y.length) {
+      y(i) = r * x(i); i += 1
+    }
     y
   }
 
@@ -112,7 +126,9 @@ object ArraySupport {
       implicit sc: Rig[A]): A = {
     var z = sc.zero
     var i = 0
-    while (i < x.length && i < y.length) { z += x(i) * y(i); i += 1 }
+    while (i < x.length && i < y.length) {
+      z += x(i) * y(i); i += 1
+    }
     z
   }
 
@@ -121,7 +137,9 @@ object ArraySupport {
       sc: Rig[A]): Array[A] = {
     val v = new Array[A](dimensions)
     var j = 0
-    while (j < v.length) { v(j) = sc.zero; j += 1 }
+    while (j < v.length) {
+      v(j) = sc.zero; j += 1
+    }
     if (i < dimensions) v(i) = sc.one
     v
   }

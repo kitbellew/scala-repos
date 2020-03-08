@@ -20,7 +20,9 @@ object Chronometer {
     }
 
     def mon(path: lila.mon.RecPath) = {
-      lap foreach { l => lila.mon.recPath(path)(l.nanos) }
+      lap foreach { l =>
+        lila.mon.recPath(path)(l.nanos)
+      }
       this
     }
 
@@ -29,6 +31,8 @@ object Chronometer {
 
   def apply[A](f: => Fu[A]): FuLap[A] = {
     val start = nowNanos
-    FuLap(f map { Lap(_, nowNanos - start) })
+    FuLap(f map {
+      Lap(_, nowNanos - start)
+    })
   }
 }

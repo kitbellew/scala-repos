@@ -135,7 +135,9 @@ object WriteSupportProvider {
         pValueTree: Tree,
         groupName: TermName): (Int, Tree) = {
       outerTpe.declarations
-        .collect { case m: MethodSymbol if m.isCaseAccessor => m }
+        .collect {
+          case m: MethodSymbol if m.isCaseAccessor => m
+        }
         .foldLeft((0, q"")) {
           case ((idx, existingTree), getter) =>
             val (newIdx, subTree) = matchField(

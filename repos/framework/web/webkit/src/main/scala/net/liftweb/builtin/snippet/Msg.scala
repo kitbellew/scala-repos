@@ -81,7 +81,11 @@ object Msg extends DispatchSnippet {
         (attr("noticeClass") or attr("noticeclass")).map(cls =>
           MsgNoticeMeta += (id -> cls))
 
-        <span id={id}>{renderIdMsgs(id)}</span> ++ effects(id)
+        <span id={
+          id
+        }>{
+          renderIdMsgs(id)
+        }</span> ++ effects(id)
       }
       case _ => NodeSeq.Empty
     }
@@ -107,7 +111,10 @@ object Msg extends DispatchSnippet {
           case msgList =>
             style match {
               case Some(s) =>
-                msgList.flatMap(t => <span>{t}</span> % ("class" -> s))
+                msgList.flatMap(t =>
+                  <span>{
+                    t
+                  }</span> % ("class" -> s))
               case _ => msgList flatMap (n => n)
             }
         }
@@ -117,7 +124,9 @@ object Msg extends DispatchSnippet {
     msgs match {
       case Nil => Text("")
       case spans =>
-        spans.reduceLeft { (output, span) => output ++ Text(", ") ++ span }
+        spans.reduceLeft { (output, span) =>
+          output ++ Text(", ") ++ span
+        }
     }
   }
 

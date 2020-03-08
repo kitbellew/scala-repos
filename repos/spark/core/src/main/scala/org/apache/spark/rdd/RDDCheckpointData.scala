@@ -103,7 +103,9 @@ private[spark] abstract class RDDCheckpointData[T: ClassTag](
     * For tests only.
     */
   def getPartitions: Array[Partition] = RDDCheckpointData.synchronized {
-    cpRDD.map(_.partitions).getOrElse { Array.empty }
+    cpRDD.map(_.partitions).getOrElse {
+      Array.empty
+    }
   }
 
 }

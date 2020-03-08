@@ -104,7 +104,9 @@ object Hook {
       mode = mode.id,
       allowAnon = allowAnon || user.isEmpty,
       color = color,
-      user = user map { LobbyUser.make(_, blocking) },
+      user = user map {
+        LobbyUser.make(_, blocking)
+      },
       sid = sid,
       ratingRange = ratingRange.toString,
       createdAt = DateTime.now)

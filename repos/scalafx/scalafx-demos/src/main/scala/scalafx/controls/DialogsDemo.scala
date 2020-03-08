@@ -71,7 +71,9 @@ object DialogsDemo extends JFXApp {
   }
 
   def button[R](text: String, action: () => R) = new Button(text) {
-    onAction = handle { action() }
+    onAction = handle {
+      action()
+    }
     alignmentInParent = Pos.Center
     hgrow = Priority.Always
     maxWidth = Double.MaxValue

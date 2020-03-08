@@ -113,7 +113,9 @@ private object PoolConductor {
   // the connection of the respective slot has a number of requests in flight and all of them
   // are idempotent which allows more requests to be pipelined onto the connection if required
   private final case class Loaded(openIdempotentRequests: Int)
-      extends SlotState { require(openIdempotentRequests > 0) }
+      extends SlotState {
+    require(openIdempotentRequests > 0)
+  }
 
   // the connection of the respective slot has a number of requests in flight and the
   // last one of these is not idempotent which blocks the connection for more pipelined requests
@@ -264,7 +266,9 @@ private object PoolConductor {
 
     override def createLogic(effectiveAttributes: Attributes) =
       new GraphStageLogic(shape) {
-        shape.outArray foreach { setHandler(_, ignoreTerminateOutput) }
+        shape.outArray foreach {
+          setHandler(_, ignoreTerminateOutput)
+        }
 
         val in = shape.in
         setHandler(

@@ -37,7 +37,9 @@ class ServerSet(
         additionalEndpoints.asJava,
         status
       ) // blocks
-    } map { new EndpointStatus(_, pool) } // wrap for async updates
+    } map {
+      new EndpointStatus(_, pool)
+    } // wrap for async updates
 
   /**
     * Monitor the ServerSet
@@ -71,7 +73,9 @@ object ServerSet {
   /** Wraps a common Status in a matchable way. */
   class Status(val underlying: CommonStatus) {
     def apply(): CommonStatus = underlying
-    def unapply(status: CommonStatus): Boolean = { status == underlying }
+    def unapply(status: CommonStatus): Boolean = {
+      status == underlying
+    }
   }
 
   /** Status matchers */

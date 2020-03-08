@@ -20,7 +20,9 @@ object SnapshotExample extends App {
       case SaveSnapshotSuccess(metadata)         => // ...
       case SaveSnapshotFailure(metadata, reason) => // ...
       case s: String =>
-        persist(s) { evt => state = state.updated(evt) }
+        persist(s) { evt =>
+          state = state.updated(evt)
+        }
     }
 
     def receiveRecover: Receive = {

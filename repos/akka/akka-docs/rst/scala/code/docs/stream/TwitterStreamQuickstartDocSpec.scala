@@ -27,7 +27,9 @@ object TwitterStreamQuickstartDocSpec {
     def hashtags: Set[Hashtag] =
       body
         .split(" ")
-        .collect { case t if t.startsWith("#") => Hashtag(t) }
+        .collect {
+          case t if t.startsWith("#") => Hashtag(t)
+        }
         .toSet
   }
 
@@ -93,7 +95,9 @@ class TwitterStreamQuickstartDocSpec extends AkkaSpec {
     trait Example3 {
       //#authors-collect
       val authors: Source[Author, NotUsed] =
-        tweets.collect { case t if t.hashtags.contains(akka) => t.author }
+        tweets.collect {
+          case t if t.hashtags.contains(akka) => t.author
+        }
       //#authors-collect
     }
 
@@ -163,7 +167,9 @@ class TwitterStreamQuickstartDocSpec extends AkkaSpec {
       //#backpressure-by-readline
       val completion: Future[Done] =
         Source(1 to 10)
-          .map(i => { println(s"map => $i"); i })
+          .map(i => {
+            println(s"map => $i"); i
+          })
           .runForeach { i =>
             readLine(s"Element = $i; continue reading? [press enter]\n")
           }
@@ -217,7 +223,9 @@ class TwitterStreamQuickstartDocSpec extends AkkaSpec {
 
     val sum: Future[Int] = counterRunnableGraph.run()
 
-    sum.map { c => println(s"Total tweets processed: $c") }
+    sum.map { c =>
+      println(s"Total tweets processed: $c")
+    }
   }
 
 }

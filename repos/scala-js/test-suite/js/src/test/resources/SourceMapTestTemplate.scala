@@ -226,7 +226,9 @@ case object JsTrue extends JsBoolean {
 }
 
 case object JsNull extends JsValue {
-  def value = { null }
+  def value = {
+    null
+  }
 }
 
 trait Writer {

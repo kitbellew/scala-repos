@@ -221,7 +221,9 @@ object MapTest extends SpecLite {
     "lookupIndex" ! forAll { (a: Byte ==>> Int, n: Byte) =>
       val x = a.keys.indexOf(n)
       a.lookupIndex(n) must_=== (if (x < 0) None else Some(x))
-      a.lookupIndex(n).foreach { b => a.elemAt(b).map(_._1) must_=== Some(n) }
+      a.lookupIndex(n).foreach { b =>
+        a.elemAt(b).map(_._1) must_=== Some(n)
+      }
     }
   }
 
@@ -601,7 +603,9 @@ object MapTest extends SpecLite {
       if (a isSubmapOf b) {
         (a.keySet isSubsetOf b.keySet) must_=== true
         a.difference(b) must_=== ==>>.empty
-        a.toList.foreach { case (k, v) => b.lookup(k) must_=== Some(v) }
+        a.toList.foreach {
+          case (k, v) => b.lookup(k) must_=== Some(v)
+        }
       }
     }
   }

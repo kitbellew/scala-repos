@@ -281,7 +281,9 @@ class CaseClassShape[
   def buildValue(elems: IndexedSeq[Any]) =
     mapLifted(TupleSupport.buildTuple(elems).asInstanceOf[LiftedTuple])
   def copy(s: Seq[Shape[_ <: ShapeLevel, _, _, _]]) =
-    new CaseClassShape(mapLifted, mapPlain) { override val shapes = s }
+    new CaseClassShape(mapLifted, mapPlain) {
+      override val shapes = s
+    }
 }
 
 /** A generic Product class shape that can be used to lift a class of
@@ -443,8 +445,12 @@ object ShapedValue {
       "Fast Path of (" + fields
         .map(_._2)
         .mkString(", ") + ").mapTo[" + rTag.tpe + "]")
-    val fpChildren = fields.map { case (_, t, n)     => q"val $n = next[$t]" }
-    val fpReadChildren = fields.map { case (_, _, n) => q"$n.read(r)" }
+    val fpChildren = fields.map {
+      case (_, t, n) => q"val $n = next[$t]"
+    }
+    val fpReadChildren = fields.map {
+      case (_, _, n) => q"$n.read(r)"
+    }
     val fpSetChildren = fields.map {
       case (fn, _, n) => q"$n.set(value.$fn, pp)"
     }

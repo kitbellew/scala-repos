@@ -276,7 +276,11 @@ class ShuffleBlockFetcherIteratorSuite
     // The first block should be returned without an exception, and the last two should throw
     // FetchFailedExceptions (due to failure)
     iterator.next()
-    intercept[FetchFailedException] { iterator.next() }
-    intercept[FetchFailedException] { iterator.next() }
+    intercept[FetchFailedException] {
+      iterator.next()
+    }
+    intercept[FetchFailedException] {
+      iterator.next()
+    }
   }
 }

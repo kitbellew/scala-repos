@@ -1,7 +1,9 @@
 import scala.language.reflectiveCalls
 
 object Test {
-  type valueType = { def value: this.type }
+  type valueType = {
+    def value: this.type
+  }
 
   class StringValue(x: String) {
     def value: this.type = this

@@ -174,10 +174,14 @@ trait PostgresProfile extends JdbcProfile {
           }
           if (eligible(onNodes) && eligible(selNodes) &&
               onNodes.iterator
-                .collect[List[TermSymbol]] { case FwdPath(ss) => ss }
+                .collect[List[TermSymbol]] {
+                  case FwdPath(ss) => ss
+                }
                 .toSet ==
                 selNodes.iterator
-                  .collect[List[TermSymbol]] { case FwdPath(ss) => ss }
+                  .collect[List[TermSymbol]] {
+                    case FwdPath(ss) => ss
+                  }
                   .toSet) b"distinct "
           else super.buildSelectModifiers(c)
         case _ => super.buildSelectModifiers(c)

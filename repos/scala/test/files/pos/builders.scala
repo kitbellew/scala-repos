@@ -9,14 +9,18 @@ object builders {
     new Builder[Iterable[A], Iterable[B], B] {
       println("new iterable builder")
       private val buf = new scala.collection.mutable.ListBuffer[B]
-      def +=(elem: B) { buf += elem }
+      def +=(elem: B) {
+        buf += elem
+      }
       def result: Iterable[B] = buf.toList
     }
 
   implicit def listBuilder[A, B] = new Builder[List[A], List[B], B] {
     println("new list builder")
     private val buf = new scala.collection.mutable.ListBuffer[B]
-    def +=(elem: B) { buf += elem }
+    def +=(elem: B) {
+      buf += elem
+    }
     def result: List[B] = buf.toList
   }
   /*

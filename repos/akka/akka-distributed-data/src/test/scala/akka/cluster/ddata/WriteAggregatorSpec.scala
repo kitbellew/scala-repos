@@ -43,7 +43,12 @@ object WriteAggregatorSpec {
       context.actorSelection(probes(address).path)
 
     override def senderAddress(): Address =
-      probes.find { case (a, r) ⇒ r == sender() }.get._1
+      probes
+        .find {
+          case (a, r) ⇒ r == sender()
+        }
+        .get
+        ._1
   }
 
   def writeAckAdapterProps(replica: ActorRef): Props =

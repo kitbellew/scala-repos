@@ -125,7 +125,9 @@ object PlayerRepo {
       .collect[List]()
 
   private def aggregationUserIdList(res: Stream[BSONDocument]): List[String] =
-    res.headOption flatMap { _.getAs[List[String]]("uids") } getOrElse Nil
+    res.headOption flatMap {
+      _.getAs[List[String]]("uids")
+    } getOrElse Nil
 
   import reactivemongo.api.collections.bson.BSONBatchCommands.AggregationFramework.{
     Descending,
@@ -204,7 +206,11 @@ object PlayerRepo {
       players: List[Player],
       ranking: Ranking): RankedPlayers =
     players
-      .flatMap { p => ranking get p.userId map { RankedPlayer(_, p) } }
+      .flatMap { p =>
+        ranking get p.userId map {
+          RankedPlayer(_, p)
+        }
+      }
       .sortBy(_.rank)
 
   def rankedByTourAndUserIds(
@@ -212,7 +218,9 @@ object PlayerRepo {
       userIds: Iterable[String],
       ranking: Ranking): Fu[RankedPlayers] =
     byTourAndUserIds(tourId, userIds)
-      .map { rankPlayers(_, ranking) }
+      .map {
+        rankPlayers(_, ranking)
+      }
       .chronometer
       .logIfSlow(200, logger) { players =>
         s"PlayerRepo.rankedByTourAndUserIds $tourId ${userIds.size} user IDs, ${ranking.size} ranking, ${players.size} players"

@@ -124,9 +124,11 @@ object VersionLog {
       if (logFile.exists) {
         for {
           jvs <- JParser.parseManyFromFile(logFile).leftMap(Error.thrown)
-          versions <- jvs.toList
-            .traverse[({ type λ[α] = Validation[Error, α] })#λ, VersionEntry](
-              _.validated[VersionEntry])
+          versions <- jvs.toList.traverse[
+            ({
+              type λ[α] = Validation[Error, α]
+            })#λ,
+            VersionEntry](_.validated[VersionEntry])
         } yield versions
       } else {
         Success(Nil)
@@ -136,9 +138,11 @@ object VersionLog {
       if (completedFile.exists) {
         for {
           jvs <- JParser.parseManyFromFile(completedFile).leftMap(Error.thrown)
-          versions <- jvs.toList
-            .traverse[({ type λ[α] = Validation[Error, α] })#λ, UUID](
-              _.validated[UUID])
+          versions <- jvs.toList.traverse[
+            ({
+              type λ[α] = Validation[Error, α]
+            })#λ,
+            UUID](_.validated[UUID])
         } yield versions.toSet
       } else {
         Success(Set.empty)
@@ -178,7 +182,9 @@ class VersionLog(
   }
 
   def addVersion(entry: VersionEntry): IO[PrecogUnit] =
-    allVersions.find(_ == entry) map { _ => IO(PrecogUnit) } getOrElse {
+    allVersions.find(_ == entry) map { _ =>
+      IO(PrecogUnit)
+    } getOrElse {
       logger.debug("Adding version entry: " + entry)
       IOUtils.writeToFile(
         entry.serialize.renderCompact + "\n",
@@ -196,7 +202,9 @@ class VersionLog(
         IOUtils.writeToFile(
           version.serialize.renderCompact + "\n",
           completedFile)
-      } map { _ => PrecogUnit }
+      } map { _ =>
+        PrecogUnit
+      }
     } else {
       IO.throwIO(
         new IllegalStateException(
@@ -210,13 +218,17 @@ class VersionLog(
         logger.debug("Setting HEAD to " + newHead)
         IOUtils.writeToFile(
           entry.serialize.renderCompact + "\n",
-          headFile) map { _ => currentVersion = Some(entry); }
+          headFile) map { _ =>
+          currentVersion = Some(entry);
+        }
       } flatMap {
         _.isEmpty.whenM(
           IO.throwIO(new IllegalStateException(
             "Attempt to set head to nonexistent version %s" format newHead)))
       }
-    } map { _ => PrecogUnit }
+    } map { _ =>
+      PrecogUnit
+    }
   }
 
   def clearHead = IOUtils.writeToFile(unsetSentinelJV, headFile).map { _ =>

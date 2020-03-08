@@ -54,7 +54,9 @@ trait GlobalSettingsSpec
 
   "GlobalSettings filters" should {
     "not have X-Foo header when no Global is configured" in withServer(None)(
-      "/scala") { body => body must_== "null" }
+      "/scala") { body =>
+      body must_== "null"
+    }
     "have X-Foo header when Scala Global with filters is configured" in withServer(
       Some("FooFilteringScalaGlobal"))("/scala") { body =>
       body must_== "filter-constructor-called-by-scala-global"

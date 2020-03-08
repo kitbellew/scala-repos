@@ -1,7 +1,9 @@
 import scala.language.experimental.macros
 import scala.reflect.macros.blackbox.Context
 
-class X { type T }
+class X {
+  type T
+}
 
 object X {
   // this works

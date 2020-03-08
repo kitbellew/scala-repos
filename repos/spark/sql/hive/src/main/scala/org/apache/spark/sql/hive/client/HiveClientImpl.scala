@@ -420,8 +420,12 @@ private[hive] class HiveClientImpl(
     specs.zip(newSpecs).foreach {
       case (oldSpec, newSpec) =>
         val hivePart = getPartitionOption(catalogTable, oldSpec)
-          .map { p => toHivePartition(p.copy(spec = newSpec), hiveTable) }
-          .getOrElse { throw new NoSuchPartitionException(db, table, oldSpec) }
+          .map { p =>
+            toHivePartition(p.copy(spec = newSpec), hiveTable)
+          }
+          .getOrElse {
+            throw new NoSuchPartitionException(db, table, oldSpec)
+          }
         client.renamePartition(hiveTable, oldSpec.asJava, hivePart)
     }
   }
@@ -433,7 +437,9 @@ private[hive] class HiveClientImpl(
     val hiveTable = toHiveTable(getTable(db, table))
     client.alterPartitions(
       table,
-      newParts.map { p => toHivePartition(p, hiveTable) }.asJava)
+      newParts.map { p =>
+        toHivePartition(p, hiveTable)
+      }.asJava)
   }
 
   override def getPartitionOption(
@@ -720,9 +726,15 @@ private[hive] class HiveClientImpl(
     table.storage.serdeProperties.foreach {
       case (k, v) => hiveTable.setSerdeParam(k, v)
     }
-    table.properties.foreach { case (k, v) => hiveTable.setProperty(k, v) }
-    table.viewOriginalText.foreach { t => hiveTable.setViewOriginalText(t) }
-    table.viewText.foreach { t => hiveTable.setViewExpandedText(t) }
+    table.properties.foreach {
+      case (k, v) => hiveTable.setProperty(k, v)
+    }
+    table.viewOriginalText.foreach { t =>
+      hiveTable.setViewOriginalText(t)
+    }
+    table.viewText.foreach { t =>
+      hiveTable.setViewExpandedText(t)
+    }
     hiveTable
   }
 
@@ -740,7 +752,9 @@ private[hive] class HiveClientImpl(
     new HivePartition(
       ht,
       p.spec.asJava,
-      p.storage.locationUri.map { l => new Path(l) }.orNull)
+      p.storage.locationUri.map { l =>
+        new Path(l)
+      }.orNull)
   }
 
   private def fromHivePartition(hp: HivePartition): CatalogTablePartition = {

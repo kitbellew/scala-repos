@@ -18,17 +18,23 @@ object properties {
     def update(newValue: T) /*?*/ = value = setter(newValue)
 
     /** Change the getter. */
-    def get(newGetter: T => T) /*?*/ = { getter = newGetter; this }
+    def get(newGetter: T => T) /*?*/ = {
+      getter = newGetter; this
+    }
 
     /** Change the setter */
-    def set(newSetter: T => T) = { setter = newSetter; this }
+    def set(newSetter: T => T) = {
+      setter = newSetter; this
+    }
   }
 
   class User {
     // Create a property with custom getter and setter
     val firstname = Property(""). /*!*/ get { v =>
       v.toUpperCase()
-    }. /*!*/ set { v => "Mr. " + v }
+    }. /*!*/ set { v =>
+      "Mr. " + v
+    }
     val lastname = Property("<noname>")
 
     /** Scala provides syntactic sugar for calling 'apply'. Simply

@@ -43,7 +43,9 @@ trait DefaultSymbolicLabelling[T] extends DepFn0 with Serializable {
 }
 
 object DefaultSymbolicLabelling {
-  type Aux[T, Out0] = DefaultSymbolicLabelling[T] { type Out = Out0 }
+  type Aux[T, Out0] = DefaultSymbolicLabelling[T] {
+    type Out = Out0
+  }
 
   def apply[T](implicit lab: DefaultSymbolicLabelling[T]): Aux[T, lab.Out] = lab
 
@@ -95,7 +97,9 @@ class LabelledMacros(val c: whitebox.Context)
   def mkDefaultSymbolicLabellingImpl[T](implicit tTag: WeakTypeTag[T]): Tree = {
     val tTpe = weakTypeOf[T]
     val labels: List[String] =
-      if (isProduct(tTpe)) fieldsOf(tTpe).map { f => nameAsString(f._1) }
+      if (isProduct(tTpe)) fieldsOf(tTpe).map { f =>
+        nameAsString(f._1)
+      }
       else if (isCoproduct(tTpe)) ctorsOf(tTpe).map { tpe =>
         nameAsString(nameOf(tpe))
       }

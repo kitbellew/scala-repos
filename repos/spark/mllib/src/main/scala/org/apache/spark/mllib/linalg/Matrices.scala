@@ -57,7 +57,9 @@ sealed trait Matrix extends Serializable {
   @Since("1.0.0")
   def toArray: Array[Double] = {
     val newArray = new Array[Double](numRows * numCols)
-    foreachActive { (i, j, v) => newArray(j * numRows + i) = v }
+    foreachActive { (i, j, v) =>
+      newArray(j * numRows + i) = v
+    }
     newArray
   }
 

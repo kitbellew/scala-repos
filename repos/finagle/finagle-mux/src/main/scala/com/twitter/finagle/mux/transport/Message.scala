@@ -346,13 +346,19 @@ private[twitter] object Message {
       extends Rdispatch(2, contexts, ChannelBuffers.EMPTY_BUFFER)
 
   /** Indicates to the client to stop sending new requests. */
-  case class Tdrain(tag: Int) extends EmptyMessage { def typ = Types.Tdrain }
+  case class Tdrain(tag: Int) extends EmptyMessage {
+    def typ = Types.Tdrain
+  }
 
   /** Response from the client to a `Tdrain` message */
-  case class Rdrain(tag: Int) extends EmptyMessage { def typ = Types.Rdrain }
+  case class Rdrain(tag: Int) extends EmptyMessage {
+    def typ = Types.Rdrain
+  }
 
   /** Used to check liveness */
-  case class Tping(tag: Int) extends EmptyMessage { def typ = Types.Tping }
+  case class Tping(tag: Int) extends EmptyMessage {
+    def typ = Types.Tping
+  }
 
   /**
     * We pre-encode a ping message with the reserved ping tag
@@ -378,7 +384,9 @@ private[twitter] object Message {
   }
 
   /** Response to a `Tping` message */
-  case class Rping(tag: Int) extends EmptyMessage { def typ = Types.Rping }
+  case class Rping(tag: Int) extends EmptyMessage {
+    def typ = Types.Rping
+  }
 
   /** Indicates that the corresponding T message produced an error. */
   case class Rerr(tag: Int, error: String) extends Message {

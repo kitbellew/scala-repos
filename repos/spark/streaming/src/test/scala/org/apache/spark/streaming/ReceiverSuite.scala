@@ -175,7 +175,11 @@ class ReceiverSuite extends TestSuiteBase with Timeouts with Serializable {
       expectedMessagesPerBlock - 0.05 * expectedMessagesPerBlock
     val maxExpectedMessagesPerBlock =
       expectedMessagesPerBlock + 0.05 * expectedMessagesPerBlock
-    val receivedBlockSizes = recordedBlocks.map { _.size }.mkString(",")
+    val receivedBlockSizes = recordedBlocks
+      .map {
+        _.size
+      }
+      .mkString(",")
 
     // the first and last block may be incomplete, so we slice them out
     val validBlocks = recordedBlocks.drop(1).dropRight(1)
@@ -223,9 +227,14 @@ class ReceiverSuite extends TestSuiteBase with Timeouts with Serializable {
     def getCurrentLogFiles(logDirectory: File): Seq[String] = {
       try {
         if (logDirectory.exists()) {
-          logDirectory1.listFiles().filter { _.getName.startsWith("log") }.map {
-            _.toString
-          }
+          logDirectory1
+            .listFiles()
+            .filter {
+              _.getName.startsWith("log")
+            }
+            .map {
+              _.toString
+            }
         } else {
           Seq.empty
         }

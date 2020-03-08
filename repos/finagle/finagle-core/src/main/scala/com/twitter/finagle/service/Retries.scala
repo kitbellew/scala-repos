@@ -230,7 +230,9 @@ object Retries {
       // We define the gauge inside of the ServiceFactory so that their lifetimes
       // are tied together.
       private[this] val budgetGauge =
-        statsReceiver.addGauge("budget") { retryBudget.balance }
+        statsReceiver.addGauge("budget") {
+          retryBudget.balance
+        }
       private[this] val notOpenCounter =
         statsReceiver.counter("not_open")
 

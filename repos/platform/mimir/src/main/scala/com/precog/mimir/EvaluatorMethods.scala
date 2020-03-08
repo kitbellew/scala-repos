@@ -90,7 +90,9 @@ trait EvaluatorMethodsModule[M[+_]]
     }
 
     def combineTransSpecs(specs: List[TransSpec1]): TransSpec1 =
-      specs map { trans.WrapArray(_): TransSpec1 } reduceLeftOption {
+      specs map {
+        trans.WrapArray(_): TransSpec1
+      } reduceLeftOption {
         trans.OuterArrayConcat(_, _)
       } get
 
@@ -100,7 +102,9 @@ trait EvaluatorMethodsModule[M[+_]]
           yield trans.WrapArray(
             DerefArrayStatic(SourceKey.Single, CPathIndex(i))): TransSpec1
 
-      components reduceLeft { trans.InnerArrayConcat(_, _) }
+      components reduceLeft {
+        trans.InnerArrayConcat(_, _)
+      }
     }
 
     def buildWrappedJoinSpec(
@@ -132,7 +136,9 @@ trait EvaluatorMethodsModule[M[+_]]
         if (derefs.isEmpty)
           trans.ConstLiteral(CEmptyArray, Leaf(SourceLeft))
         else
-          derefs reduceLeft { trans.InnerArrayConcat(_, _) }
+          derefs reduceLeft {
+            trans.InnerArrayConcat(_, _)
+          }
 
       val wrappedIdentitySpec =
         trans.WrapObject(newIdentitySpec, paths.Key.name)
@@ -185,7 +191,9 @@ trait EvaluatorMethodsModule[M[+_]]
       indexes map { idx =>
         trans.WrapArray(
           DerefArrayStatic(Leaf(Source), CPathIndex(idx))): TransSpec1
-      } reduceLeft { trans.InnerArrayConcat(_, _) }
+      } reduceLeft {
+        trans.InnerArrayConcat(_, _)
+      }
     }
   }
 }

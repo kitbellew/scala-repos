@@ -286,7 +286,9 @@ abstract class ScaladocSyntaxAnalyzer[G <: Global](val global: G)
         }
         joined.find(_.pos.isOpaqueRange) foreach { main =>
           val mains = List(main)
-          joined foreach { t => if (t ne main) ensureNonOverlapping(t, mains) }
+          joined foreach { t =>
+            if (t ne main) ensureNonOverlapping(t, mains)
+          }
         }
         joined
       } else trees

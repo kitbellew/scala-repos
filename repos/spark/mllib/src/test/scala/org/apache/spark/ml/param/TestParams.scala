@@ -33,9 +33,13 @@ class TestParams(override val uid: String)
 
   def this() = this(Identifiable.randomUID("testParams"))
 
-  def setMaxIter(value: Int): this.type = { set(maxIter, value); this }
+  def setMaxIter(value: Int): this.type = {
+    set(maxIter, value); this
+  }
 
-  def setInputCol(value: String): this.type = { set(inputCol, value); this }
+  def setInputCol(value: String): this.type = {
+    set(inputCol, value); this
+  }
 
   setDefault(maxIter -> 10)
 

@@ -14,7 +14,9 @@ trait Enclosures {
     enclosingMacros map (_.macroApplication.pos) filterNot (_ eq NoPosition)
 
   private def lenientEnclosure[T <: Tree: ClassTag]: Tree =
-    enclTrees collectFirst { case x: T => x } getOrElse EmptyTree
+    enclTrees collectFirst {
+      case x: T => x
+    } getOrElse EmptyTree
   private def strictEnclosure[T <: Tree: ClassTag]: T =
     enclTrees collectFirst {
       case x: T => x

@@ -18,7 +18,9 @@ class PresentationCompilerCompleter(intp: IMain) extends Completion {
   private var tabCount = 0
   private var lastCommonPrefixCompletion: Option[String] = None
 
-  def resetVerbosity(): Unit = { tabCount = 0; lastRequest = NoRequest }
+  def resetVerbosity(): Unit = {
+    tabCount = 0; lastRequest = NoRequest
+  }
 
   // A convenience for testing
   def complete(before: String, after: String = ""): Candidates =

@@ -43,7 +43,9 @@ private class NameTreeParsers private (str: String) {
     if (atEnd) EOI
     else str(idx)
 
-  private[this] def next() { idx += 1 }
+  private[this] def next() {
+    idx += 1
+  }
 
   private[this] def maybeEat(char: Char) =
     if (peek != char) false

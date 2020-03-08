@@ -25,7 +25,11 @@ class TemplateListModel(
     */
   private val (indexedItems, idToItem) = {
     val a1 = items.sortBy(a => a._2.title)
-    (a1.map { case (a, b) => FullTemplateData(a, b) }, a1.toMap)
+    (
+      a1.map {
+        case (a, b) => FullTemplateData(a, b)
+      },
+      a1.toMap)
   }
 
   override def getSize: Int = Math.max(indexedItems.length, temp)

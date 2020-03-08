@@ -118,15 +118,18 @@ trait IsTraversableLike[Repr] {
 object IsTraversableLike {
   import scala.language.higherKinds
 
-  implicit val stringRepr: IsTraversableLike[String] { type A = Char } =
+  implicit val stringRepr: IsTraversableLike[String] {
+    type A = Char
+  } =
     new IsTraversableLike[String] {
       type A = Char
       val conversion = implicitly[String => GenTraversableLike[Char, String]]
     }
 
-  implicit def genTraversableLikeRepr[C[_], A0](
-      implicit conv: C[A0] => GenTraversableLike[A0, C[A0]])
-      : IsTraversableLike[C[A0]] { type A = A0 } =
+  implicit def genTraversableLikeRepr[C[_], A0](implicit
+      conv: C[A0] => GenTraversableLike[A0, C[A0]]): IsTraversableLike[C[A0]] {
+    type A = A0
+  } =
     new IsTraversableLike[C[A0]] {
       type A = A0
       val conversion = conv

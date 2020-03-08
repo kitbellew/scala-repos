@@ -17,7 +17,9 @@ object SoftReferenceCacheSpec extends Specification {
     }
     "Allow objects to be retrieved" in {
       val cached = cache("test")
-      cached must beLike { case Full("test") => ok }
+      cached must beLike {
+        case Full("test") => ok
+      }
     }
     "Properly age out entries" in {
       cache += ("test2" -> "test2")

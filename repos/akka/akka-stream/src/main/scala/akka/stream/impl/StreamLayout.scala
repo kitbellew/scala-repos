@@ -496,10 +496,14 @@ object StreamLayout {
                .replaceAll("\n", "\n    ")}")
            .mkString("\n    ")}
          |  Downstreams: ${downstreams.iterator
-           .map { case (in, out) ⇒ s"\n    $in -> $out" }
+           .map {
+             case (in, out) ⇒ s"\n    $in -> $out"
+           }
            .mkString("")}
          |  Upstreams: ${upstreams.iterator
-           .map { case (out, in) ⇒ s"\n    $out -> $in" }
+           .map {
+             case (out, in) ⇒ s"\n    $out -> $in"
+           }
            .mkString("")}
          |  MatValue: $materializedValueComputation""".stripMargin
   }
@@ -549,10 +553,14 @@ object StreamLayout {
                m.toString.replaceAll("\n", "\n    ")))
            .mkString("\n    ")}
          |  Downstreams: ${downstreams.iterator
-           .map { case (in, out) ⇒ s"\n    $in -> $out" }
+           .map {
+             case (in, out) ⇒ s"\n    $in -> $out"
+           }
            .mkString("")}
          |  Upstreams: ${upstreams.iterator
-           .map { case (out, in) ⇒ s"\n    $out -> $in" }
+           .map {
+             case (out, in) ⇒ s"\n    $out -> $in"
+           }
            .mkString("")}
          |  MatValue: $materializedValueComputation""".stripMargin
   }
@@ -760,12 +768,14 @@ private[stream] final class VirtualProcessor[T]
                   ErrorPublisher(ex, "failed-VirtualProcessor"))) rec()
           case s: Subscriber[_] =>
             try s.onError(ex)
-            catch { case NonFatal(_) => }
-            finally set(Inert)
+            catch {
+              case NonFatal(_) =>
+            } finally set(Inert)
           case Both(s) =>
             try s.onError(ex)
-            catch { case NonFatal(_) => }
-            finally set(Inert)
+            catch {
+              case NonFatal(_) =>
+            } finally set(Inert)
           case _ => // spec violation or cancellation race, but nothing we can do
         }
       rec()

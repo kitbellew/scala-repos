@@ -131,7 +131,9 @@ class ObservableSetSpec[T]
   it should "return changed set" in {
     // Preparation
     val set = ObservableSet(1, 2)
-    set onChange { (sourceSet, change) => sourceSet should be(set) }
+    set onChange { (sourceSet, change) =>
+      sourceSet should be(set)
+    }
 
     // Execution
     set += 3

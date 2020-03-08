@@ -169,7 +169,9 @@ object FieldsProviderImpl {
             if (tpe.typeSymbol.isClass && tpe.typeSymbol.asClass.isCaseClass) =>
           CaseClassBuilder(
             name,
-            expandMethod(tpe).map { case (t, s) => matchField(t, s) })
+            expandMethod(tpe).map {
+              case (t, s) => matchField(t, s)
+            })
         case tpe if allowUnknownTypes => Primitive(name, tpe)
         case tpe =>
           c.abort(c.enclosingPosition, s"${T.tpe} is unsupported at $tpe")
@@ -177,7 +179,9 @@ object FieldsProviderImpl {
 
     def expandMethod(outerTpe: Type): Vector[(Type, String)] =
       outerTpe.declarations
-        .collect { case m: MethodSymbol if m.isCaseAccessor => m }
+        .collect {
+          case m: MethodSymbol if m.isCaseAccessor => m
+        }
         .map { accessorMethod =>
           val fieldName = accessorMethod.name.toTermName.toString
           val fieldType = accessorMethod.returnType.asSeenFrom(

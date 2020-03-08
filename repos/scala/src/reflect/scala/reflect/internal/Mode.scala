@@ -92,7 +92,9 @@ object Mode {
       (1 << 14) -> "<>", // formerly HKmode
       (1 << 15) -> "BYVALmode",
       (1 << 16) -> "TYPEPATmode"
-    ).map({ case (k, v) => Mode(k) -> v })
+    ).map({
+      case (k, v) => Mode(k) -> v
+    })
 }
 import Mode._
 

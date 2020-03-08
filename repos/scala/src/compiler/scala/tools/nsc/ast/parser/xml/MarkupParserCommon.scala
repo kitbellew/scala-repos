@@ -116,7 +116,9 @@ private[scala] trait MarkupParserCommon {
     var c = it.next()
     Utility.parseCharRef(
       () => c,
-      () => { c = it.next() },
+      () => {
+        c = it.next()
+      },
       reportSyntaxError _,
       truncatedError _)
   }
@@ -157,21 +159,28 @@ private[scala] trait MarkupParserCommon {
     if (ch == that) nextch()
     else xHandleError(that, "'%s' expected instead of '%s'".format(that, ch))
   }
-  def xToken(that: Seq[Char]) { that foreach xToken }
+  def xToken(that: Seq[Char]) {
+    that foreach xToken
+  }
 
   /** scan [S] '=' [S]*/
-  def xEQ() = { xSpaceOpt(); xToken('='); xSpaceOpt() }
+  def xEQ() = {
+    xSpaceOpt(); xToken('='); xSpaceOpt()
+  }
 
   /** skip optional space S? */
   def xSpaceOpt() = while (isSpace(ch) && !eof) nextch()
 
   /** scan [3] S ::= (#x20 | #x9 | #xD | #xA)+ */
   def xSpace() =
-    if (isSpace(ch)) { nextch(); xSpaceOpt() }
-    else xHandleError(ch, "whitespace expected")
+    if (isSpace(ch)) {
+      nextch(); xSpaceOpt()
+    } else xHandleError(ch, "whitespace expected")
 
   /** Apply a function and return the passed value */
-  def returning[T](x: T)(f: T => Unit): T = { f(x); x }
+  def returning[T](x: T)(f: T => Unit): T = {
+    f(x); x
+  }
 
   /** Execute body with a variable saved and restored after execution */
   def saving[A, B](getter: A, setter: A => Unit)(body: => B): B = {

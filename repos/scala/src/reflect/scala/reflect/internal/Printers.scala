@@ -111,8 +111,11 @@ trait Printers extends api.Printers { self: SymbolTable =>
 
     def printColumn(ts: List[Tree], start: String, sep: String, end: String) = {
       print(start); indent(); println()
-      printSeq(ts) { print(_) } { print(sep); println() }; undent(); println();
-      print(end)
+      printSeq(ts) {
+        print(_)
+      } {
+        print(sep); println()
+      }; undent(); println(); print(end)
     }
 
     def printRow(
@@ -120,7 +123,12 @@ trait Printers extends api.Printers { self: SymbolTable =>
         start: String,
         sep: String,
         end: String): Unit = {
-      print(start); printSeq(ts) { print(_) } { print(sep) }; print(end)
+      print(start);
+      printSeq(ts) {
+        print(_)
+      } {
+        print(sep)
+      }; print(end)
     }
 
     def printRow(ts: List[Tree], sep: String): Unit = printRow(ts, "", sep, "")
@@ -136,12 +144,18 @@ trait Printers extends api.Printers { self: SymbolTable =>
             print("+")
           }
           printParam(t)
-        } { print(", ") }; print("]")
+        } {
+          print(", ")
+        }; print("]")
       }
 
     def printLabelParams(ps: List[Ident]) = {
       print("(")
-      printSeq(ps) { printLabelParam } { print(", ") }
+      printSeq(ps) {
+        printLabelParam
+      } {
+        print(", ")
+      }
       print(")")
     }
 
@@ -171,7 +185,11 @@ trait Printers extends api.Printers { self: SymbolTable =>
         inParentheses: Boolean = true): Unit =
       parenthesize(inParentheses) {
         printImplicitInParamsList(ts)
-        printSeq(ts) { printParam } { print(", ") }
+        printSeq(ts) {
+          printParam
+        } {
+          print(", ")
+        }
       }
 
     def printParam(tree: Tree) =
@@ -201,8 +219,9 @@ trait Printers extends api.Printers { self: SymbolTable =>
       }
     private def ifSym(tree: Tree, p: Symbol => Boolean) = symFn(tree, p, false)
 
-    def printOpt(prefix: String, tree: Tree) =
-      if (tree.nonEmpty) { print(prefix, tree) }
+    def printOpt(prefix: String, tree: Tree) = if (tree.nonEmpty) {
+      print(prefix, tree)
+    }
 
     def printModifiers(tree: Tree, mods: Modifiers): Unit = printFlags(
       if (tree.symbol == NoSymbol) mods.flags else tree.symbol.flags,
@@ -254,7 +273,9 @@ trait Printers extends api.Printers { self: SymbolTable =>
       printModifiers(tree, mods)
       print("def " + resultName)
       printTypeParams(tparams);
-      vparamss foreach { printValueParams(_) }
+      vparamss foreach {
+        printValueParams(_)
+      }
       printTypeSignature
       printRhs
     }
@@ -791,7 +812,9 @@ trait Printers extends api.Printers { self: SymbolTable =>
 
     override def printAnnotations(tree: MemberDef) = {
       val annots = tree.mods.annotations
-      annots foreach { annot => printAnnot(annot); print(" ") }
+      annots foreach { annot =>
+        printAnnot(annot); print(" ")
+      }
     }
 
     protected def printAnnot(tree: Tree) = {
@@ -1183,8 +1206,11 @@ trait Printers extends api.Printers { self: SymbolTable =>
                 else splitValue
               val trQuotes = "\"\"\""
               print(trQuotes);
-              printSeq(multilineStringValue) { print(_) } { print(LF) };
-              print(trQuotes)
+              printSeq(multilineStringValue) {
+                print(_)
+              } {
+                print(LF)
+              }; print(trQuotes)
             case _ =>
               // processing Float constants
               val printValue =
@@ -1195,8 +1221,9 @@ trait Printers extends api.Printers { self: SymbolTable =>
 
         case an @ Annotated(ap, tree) =>
           val printParentheses = needsParentheses(tree)()
-          parenthesize(printParentheses) { print(tree) };
-          print(if (tree.isType) " " else ": ")
+          parenthesize(printParentheses) {
+            print(tree)
+          }; print(if (tree.isType) " " else ": ")
           printAnnot(ap)
 
         case SelectFromTypeTree(qualifier, selector) =>
@@ -1263,14 +1290,20 @@ trait Printers extends api.Printers { self: SymbolTable =>
     * output stream.
     */
   object ConsoleWriter extends Writer {
-    override def write(str: String) { Console.print(str) }
+    override def write(str: String) {
+      Console.print(str)
+    }
 
     def write(cbuf: Array[Char], off: Int, len: Int) {
       write(new String(cbuf, off, len))
     }
 
-    def close = { /* do nothing */ }
-    def flush = { /* do nothing */ }
+    def close = {
+      /* do nothing */
+    }
+    def flush = {
+      /* do nothing */
+    }
   }
 
   def newRawTreePrinter(writer: PrintWriter): RawTreePrinter =
@@ -1304,7 +1337,14 @@ trait Printers extends api.Printers { self: SymbolTable =>
 
     def get[T: ClassTag]: List[(Int, Any)] =
       classFootnotes[T].toList map (fi =>
-        (fi, classIndex[T].find { case (any, ii) => ii == fi }.get._1))
+        (
+          fi,
+          classIndex[T]
+            .find {
+              case (any, ii) => ii == fi
+            }
+            .get
+            ._1))
 
     def print[T: ClassTag](printer: Printers.super.TreePrinter): Unit = {
       val footnotes = get[T]

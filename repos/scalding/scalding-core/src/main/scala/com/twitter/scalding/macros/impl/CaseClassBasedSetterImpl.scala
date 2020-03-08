@@ -85,7 +85,9 @@ object CaseClassBasedSetterImpl {
                 off + sb.columns,
                 Some(q"val $cca = ${access(value)}; ${sb.setTree(ccaT, off)}"))
           }
-          .collect { case (_, Some(tree)) => tree }
+          .collect {
+            case (_, Some(tree)) => tree
+          }
         q"""..$setters"""
       }
     }
@@ -126,13 +128,19 @@ object CaseClassBasedSetterImpl {
     }
     def expandMethod(outerTpe: Type): Vector[(Tree => Tree, Type)] =
       outerTpe.declarations
-        .collect { case m: MethodSymbol if m.isCaseAccessor => m }
+        .collect {
+          case m: MethodSymbol if m.isCaseAccessor => m
+        }
         .map { accessorMethod =>
           val fieldType = normalized(
             accessorMethod.returnType
               .asSeenFrom(outerTpe, outerTpe.typeSymbol.asClass))
 
-          ({ pTree: Tree => q"""$pTree.$accessorMethod""" }, fieldType)
+          (
+            { pTree: Tree =>
+              q"""$pTree.$accessorMethod"""
+            },
+            fieldType)
         }
         .toVector
 

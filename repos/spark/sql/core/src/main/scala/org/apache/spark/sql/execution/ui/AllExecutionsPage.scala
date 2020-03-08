@@ -96,49 +96,81 @@ private[ui] abstract class ExecutionTable(
       executionUIData.completionTime.getOrElse(currentTime) - submissionTime
 
     val runningJobs = executionUIData.runningJobs.map { jobId =>
-      <a href={jobURL(jobId)}>{jobId.toString}</a><br/>
+      <a href={
+        jobURL(jobId)
+      }>{
+        jobId.toString
+      }</a><br/>
     }
     val succeededJobs = executionUIData.succeededJobs.sorted.map { jobId =>
-      <a href={jobURL(jobId)}>{jobId.toString}</a><br/>
+      <a href={
+        jobURL(jobId)
+      }>{
+        jobId.toString
+      }</a><br/>
     }
     val failedJobs = executionUIData.failedJobs.sorted.map { jobId =>
-      <a href={jobURL(jobId)}>{jobId.toString}</a><br/>
+      <a href={
+        jobURL(jobId)
+      }>{
+        jobId.toString
+      }</a><br/>
     }
     <tr>
       <td>
-        {executionUIData.executionId.toString}
+        {
+      executionUIData.executionId.toString
+    }
       </td>
       <td>
-        {descriptionCell(executionUIData)}
+        {
+      descriptionCell(executionUIData)
+    }
       </td>
-      <td sorttable_customkey={submissionTime.toString}>
-        {UIUtils.formatDate(submissionTime)}
+      <td sorttable_customkey={
+      submissionTime.toString
+    }>
+        {
+      UIUtils.formatDate(submissionTime)
+    }
       </td>
-      <td sorttable_customkey={duration.toString}>
-        {UIUtils.formatDuration(duration)}
+      <td sorttable_customkey={
+      duration.toString
+    }>
+        {
+      UIUtils.formatDuration(duration)
+    }
       </td>
       {
       if (showRunningJobs) {
         <td>
-          {runningJobs}
+          {
+          runningJobs
+        }
         </td>
       }
     }
       {
       if (showSucceededJobs) {
         <td>
-          {succeededJobs}
+          {
+          succeededJobs
+        }
         </td>
       }
     }
       {
       if (showFailedJobs) {
         <td>
-          {failedJobs}
+          {
+          failedJobs
+        }
         </td>
       }
     }
-      {detailCell(executionUIData.physicalPlanDescription)}
+      {
+      detailCell(executionUIData.physicalPlanDescription)
+    }
     </tr>
   }
 
@@ -149,17 +181,27 @@ private[ui] abstract class ExecutionTable(
         +details
       </span> ++
         <div class="stage-details collapsed">
-        <pre>{execution.details}</pre>
+        <pre>{
+          execution.details
+        }</pre>
       </div>
     } else {
       Nil
     }
 
     val desc = {
-      <a href={executionURL(execution.executionId)}>{execution.description}</a>
+      <a href={
+        executionURL(execution.executionId)
+      }>{
+        execution.description
+      }</a>
     }
 
-    <div>{desc} {details}</div>
+    <div>{
+      desc
+    } {
+      details
+    }</div>
   }
 
   private def detailCell(physicalPlan: String): Seq[Node] = {
@@ -176,18 +218,26 @@ private[ui] abstract class ExecutionTable(
         +details
       </span> ++
         <div class="stacktrace-details collapsed">
-          <pre>{physicalPlan}</pre>
+          <pre>{
+          physicalPlan
+        }</pre>
         </div>
       // scalastyle:on
     } else {
       ""
     }
-    <td>{summary}{details}</td>
+    <td>{
+      summary
+    }{
+      details
+    }</td>
   }
 
   def toNodeSeq: Seq[Node] = {
     <div>
-      <h4>{tableName}</h4>
+      <h4>{
+      tableName
+    }</h4>
       {
       UIUtils.listingTable[SQLExecutionUIData](
         header,

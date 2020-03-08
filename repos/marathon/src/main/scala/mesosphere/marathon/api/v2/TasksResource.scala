@@ -131,8 +131,9 @@ class TasksResource @Inject() (
     implicit identity =>
       val taskIds = (Json.parse(body) \ "ids").as[Set[String]]
       val tasksToAppId = taskIds.map { id =>
-        try { id -> Task.Id.appId(id) }
-        catch {
+        try {
+          id -> Task.Id.appId(id)
+        } catch {
           case e: MatchError =>
             throw new BadRequestException(s"Invalid task id '$id'.")
         }
@@ -162,8 +163,12 @@ class TasksResource @Inject() (
           case (taskId, appId) =>
             taskTracker.tasksByAppSync.task(Task.Id(taskId))
         }
-        .groupBy { task => task.taskId.appId }
-        .map { case (appId, tasks) => appId -> tasks }
+        .groupBy { task =>
+          task.taskId.appId
+        }
+        .map {
+          case (appId, tasks) => appId -> tasks
+        }
 
       if (scale) scaleAppWithKill(tasksByAppId)
       else killTasks(tasksByAppId)

@@ -31,8 +31,12 @@ trait Witness extends Serializable {
 }
 
 object Witness extends Dynamic {
-  type Aux[T0] = Witness { type T = T0 }
-  type Lt[Lub] = Witness { type T <: Lub }
+  type Aux[T0] = Witness {
+    type T = T0
+  }
+  type Lt[Lub] = Witness {
+    type T <: Lub
+  }
 
   implicit def apply[T]: Witness.Aux[T] =
     macro SingletonTypeMacros.materializeImpl[T]
@@ -67,14 +71,21 @@ trait WitnessWith[TC[_]] extends Witness {
 }
 
 trait LowPriorityWitnessWith {
-  implicit def apply2[H, TC2[_ <: H, _], S <: H, T](
-      t: T): WitnessWith.Lt[({ type λ[X] = TC2[S, X] })#λ, T] =
+  implicit def apply2[H, TC2[_ <: H, _], S <: H, T](t: T): WitnessWith.Lt[
+    ({
+      type λ[X] = TC2[S, X]
+    })#λ,
+    T] =
     macro SingletonTypeMacros.convertInstanceImpl2[H, TC2, S]
 }
 
 object WitnessWith extends LowPriorityWitnessWith {
-  type Aux[TC[_], T0] = WitnessWith[TC] { type T = T0 }
-  type Lt[TC[_], Lub] = WitnessWith[TC] { type T <: Lub }
+  type Aux[TC[_], T0] = WitnessWith[TC] {
+    type T = T0
+  }
+  type Lt[TC[_], Lub] = WitnessWith[TC] {
+    type T <: Lub
+  }
 
   implicit def apply1[TC[_], T](t: T): WitnessWith.Lt[TC, T] =
     macro SingletonTypeMacros.convertInstanceImpl1[TC]
@@ -87,13 +98,16 @@ trait NatWith[TC[_ <: Nat]] {
 }
 
 object NatWith {
-  type Aux[TC[_ <: Nat], N0 <: Nat] = NatWith[TC] { type N = N0 }
+  type Aux[TC[_ <: Nat], N0 <: Nat] = NatWith[TC] {
+    type N = N0
+  }
 
   implicit def apply[TC[_ <: Nat]](i: Any): NatWith[TC] =
     macro SingletonTypeMacros.convertInstanceImplNat[TC]
 
-  implicit def apply2[B, T <: B, TC[_ <: B, _ <: Nat]](
-      i: Int): NatWith[({ type λ[t <: Nat] = TC[T, t] })#λ] =
+  implicit def apply2[B, T <: B, TC[_ <: B, _ <: Nat]](i: Int): NatWith[({
+    type λ[t <: Nat] = TC[T, t]
+  })#λ] =
     macro SingletonTypeMacros.convertInstanceImplNat1[B, T, TC]
 }
 
@@ -116,12 +130,16 @@ object NatWith {
   *
   * @author Alexandre Archambault
   */
-trait Widen[T] extends DepFn1[T] { type Out >: T }
+trait Widen[T] extends DepFn1[T] {
+  type Out >: T
+}
 
 object Widen {
   def apply[T](implicit widen: Widen[T]): Aux[T, widen.Out] = widen
 
-  type Aux[T, Out0 >: T] = Widen[T] { type Out = Out0 }
+  type Aux[T, Out0 >: T] = Widen[T] {
+    type Out = Out0
+  }
 
   def instance[T, Out0 >: T](f: T => Out0): Aux[T, Out0] =
     new Widen[T] {
@@ -412,7 +430,9 @@ class SingletonTypeMacros(val c: whitebox.Context)
       val tc2 = tc2Tag.tpe.typeConstructor
       val s = sTag.tpe
 
-      val parent = weakTypeOf[WitnessWith[({ type λ[X] = TC2[S, X] })#λ]].map {
+      val parent = weakTypeOf[WitnessWith[({
+        type λ[X] = TC2[S, X]
+      })#λ]].map {
         case TypeRef(prefix, sym, args) if sym.isFreeType =>
           internal.typeRef(NoPrefix, tc2.typeSymbol, args)
         case tpe => tpe
@@ -424,7 +444,9 @@ class SingletonTypeMacros(val c: whitebox.Context)
     }
 
   def mkSingletonOps(t: Tree): Tree =
-    extractResult(t) { (tpe, tree) => mkOps(tpe, mkWitness(tpe, tree)) }
+    extractResult(t) { (tpe, tree) =>
+      mkOps(tpe, mkWitness(tpe, tree))
+    }
 
   def narrowSymbol[S <: String: WeakTypeTag](t: Tree): Tree = {
     (weakTypeOf[S], t) match {

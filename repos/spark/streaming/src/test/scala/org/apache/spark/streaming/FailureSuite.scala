@@ -43,7 +43,9 @@ class FailureSuite extends SparkFunSuite with BeforeAndAfter with Logging {
     if (directory != null) {
       Utils.deleteRecursively(directory)
     }
-    StreamingContext.getActive().foreach { _.stop() }
+    StreamingContext.getActive().foreach {
+      _.stop()
+    }
 
     // Stop SparkContext if active
     SparkContext

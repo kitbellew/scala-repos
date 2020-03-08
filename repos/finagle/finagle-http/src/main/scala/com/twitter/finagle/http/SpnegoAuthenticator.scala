@@ -26,7 +26,9 @@ object SpnegoAuthenticator {
   private object AuthHeader {
     val SchemePrefixLength = AuthScheme.length + 1
     def apply(token: Option[Token]): Option[String] =
-      token map { t => AuthScheme + " " + Base64StringEncoder.encode(t) }
+      token map { t =>
+        AuthScheme + " " + Base64StringEncoder.encode(t)
+      }
 
     /** If the header represents a valid spnego negotiation, return it. */
     def unapply(header: String): Option[Token] =

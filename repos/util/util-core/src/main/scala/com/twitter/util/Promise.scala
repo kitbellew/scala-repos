@@ -294,7 +294,9 @@ object Promise {
         new DetachablePromise[A](p.asInstanceOf[Promise[A]])
       case _ =>
         val p = new DetachableFuture[A]()
-        parent.respond { t => if (p.detach()) p.update(t) }
+        parent.respond { t =>
+          if (p.detach()) p.update(t)
+        }
         p
     }
 }
@@ -595,7 +597,9 @@ class Promise[A]
       case Waiting(_, _) | Interruptible(_, _) | Interrupted(_, _) |
           Transforming(_, _) =>
         val condition = new java.util.concurrent.CountDownLatch(1)
-        respond { _ => condition.countDown() }
+        respond { _ =>
+          condition.countDown()
+        }
         Scheduler.flush()
         if (condition.await(timeout.inNanoseconds, TimeUnit.NANOSECONDS)) this
         else throw new TimeoutException(timeout.toString)

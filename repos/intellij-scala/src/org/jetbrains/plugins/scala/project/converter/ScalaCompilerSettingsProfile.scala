@@ -10,8 +10,14 @@ case class ScalaCompilerSettingsProfile(
     modules: Seq[String],
     settings: ScalaCompilerSettings) {
   def toXml: Elem = {
-    <profile name={name} modules={modules.mkString(", ")}>
-      {settings.toXml}
+    <profile name={
+      name
+    } modules={
+      modules.mkString(", ")
+    }>
+      {
+      settings.toXml
+    }
     </profile>
   }
 }

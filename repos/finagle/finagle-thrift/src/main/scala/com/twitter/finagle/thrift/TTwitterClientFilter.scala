@@ -27,7 +27,9 @@ private[thrift] class TTwitterClientFilter(
     clientId: Option[ClientId],
     protocolFactory: TProtocolFactory)
     extends SimpleFilter[ThriftClientRequest, Array[Byte]] {
-  private[this] val clientIdBuf = clientId map { id => Buf.Utf8(id.name) }
+  private[this] val clientIdBuf = clientId map { id =>
+    Buf.Utf8(id.name)
+  }
 
   /**
     * Produces an upgraded TTwitter ThriftClientRequest based on Trace,
@@ -45,7 +47,9 @@ private[thrift] class TTwitterClientFilter(
 
     val traceId = Trace.id
     header.setSpan_id(traceId.spanId.toLong)
-    traceId._parentId.foreach { id => header.setParent_span_id(id.toLong) }
+    traceId._parentId.foreach { id =>
+      header.setParent_span_id(id.toLong)
+    }
     header.setTrace_id(traceId.traceId.toLong)
     header.setFlags(traceId.flags.toLong)
 

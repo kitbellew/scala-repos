@@ -101,7 +101,9 @@ class CommandSpec extends Specification {
       val form = new MixAndMatchCommand
       val params =
         Map("name" -> "John", "age" -> "45", "limit" -> "30", "skip" -> "20")
-      val multi = MultiMap(params map { case (k, v) => k -> Seq(v) })
+      val multi = MultiMap(params map {
+        case (k, v) => k -> Seq(v)
+      })
       val hdrs = Map("API-TOKEN" -> "123")
       form.bindTo(params, multi, hdrs)
       form.name.value must beSome("John")
@@ -218,7 +220,9 @@ class CommandSupportSpec extends Specification with Mockito {
       val page = new ScalatraPage
       val instance = new CommandSample
       val key = page.commandRequestKey[CommandSample]
-      mockRequest.getAttribute(key) answers { k => instance }
+      mockRequest.getAttribute(key) answers { k =>
+        instance
+      }
       page.commandOption[CommandSample] must beSome[CommandSample]
       page.commandOption[CommandSample].get must_== instance
     }

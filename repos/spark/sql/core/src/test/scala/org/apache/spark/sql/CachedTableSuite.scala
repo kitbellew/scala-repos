@@ -57,7 +57,9 @@ class CachedTableSuite
 
   test("withColumn doesn't invalidate cached dataframe") {
     var evalCount = 0
-    val myUDF = udf((x: String) => { evalCount += 1; "result" })
+    val myUDF = udf((x: String) => {
+      evalCount += 1; "result"
+    })
     val df = Seq(("test", 1)).toDF("s", "i").select(myUDF($"s"))
     df.cache()
 
@@ -395,7 +397,9 @@ class CachedTableSuite
     assert(sparkPlan.collect {
       case e: InMemoryColumnarTableScan => e
     }.size === 3)
-    assert(sparkPlan.collect { case e: PhysicalRDD => e }.size === 0)
+    assert(sparkPlan.collect {
+      case e: PhysicalRDD => e
+    }.size === 0)
   }
 
   /**

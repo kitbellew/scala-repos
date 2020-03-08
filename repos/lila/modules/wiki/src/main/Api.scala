@@ -21,7 +21,9 @@ private[wiki] final class Api {
           Json.obj(
             "lang" -> $in(Seq(lang, DefaultLang))
           )).sort($sort asc "number"))
-    } yield page map { _ -> makeMenu(pages) }
+    } yield page map {
+      _ -> makeMenu(pages)
+    }
 
   private def makeMenu(pages: List[Page]): List[Page] = {
     val (defaultPages, langPages) = pages partition (_.isDefaultLang)

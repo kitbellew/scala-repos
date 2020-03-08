@@ -11,8 +11,12 @@ class SetLikeTest {
   class MySet(self: Set[String])
       extends Set[String]
       with SetLike[String, MySet] {
-    override def -=(elem: String) = { self -= elem; this }
-    override def +=(elem: String) = { self += elem; this }
+    override def -=(elem: String) = {
+      self -= elem; this
+    }
+    override def +=(elem: String) = {
+      self += elem; this
+    }
 
     override def empty = new MySet(self.empty)
     override def iterator = self.iterator

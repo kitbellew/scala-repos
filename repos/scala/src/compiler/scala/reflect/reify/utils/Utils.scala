@@ -12,8 +12,12 @@ trait Utils
   val global: Global
   val typer: global.analyzer.Typer
 
-  lazy val reifier: Reifier { val global: Utils.this.global.type } = getReifier
-  def getReifier: Reifier { val global: Utils.this.global.type } = ???
+  lazy val reifier: Reifier {
+    val global: Utils.this.global.type
+  } = getReifier
+  def getReifier: Reifier {
+    val global: Utils.this.global.type
+  } = ???
   def hasReifier = false
 
   val reifyDebug = global.settings.Yreifydebug.value

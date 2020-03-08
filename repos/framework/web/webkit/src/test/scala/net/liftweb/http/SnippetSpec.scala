@@ -103,7 +103,9 @@ object SnippetSpec extends Specification with XmlMatchers {
               s <- S.session
             } yield s.processSurroundAndInclude(
               "test",
-              <lift:foo>{res}</lift:foo>)
+              <lift:foo>{
+                res
+              }</lift:foo>)
           }
         }
 
@@ -118,7 +120,11 @@ object SnippetSpec extends Specification with XmlMatchers {
           S.mapSnippetsWith("foo" -> ((a: NodeSeq) => a)) {
             for {
               s <- S.session
-            } yield s.processSurroundAndInclude("test", <l:foo>{res}</l:foo>)
+            } yield s.processSurroundAndInclude(
+              "test",
+              <l:foo>{
+                res
+              }</l:foo>)
           }
         }
 
@@ -205,7 +211,11 @@ object SnippetSpec extends Specification with XmlMatchers {
               "l:foo?bing=bong&amp;fuzz=faz+snark&amp;noodle=FatPoodle"
             for {
               s <- S.session
-            } yield s.processSurroundAndInclude("test", <div class={clStr} />)
+            } yield s.processSurroundAndInclude(
+              "test",
+              <div class={
+                clStr
+              } />)
           }
         }
 
@@ -295,7 +305,9 @@ object SnippetSpec extends Specification with XmlMatchers {
               s <- S.session
             } yield s.processSurroundAndInclude(
               "test",
-              <lift:foo>{res}</lift:foo>)
+              <lift:foo>{
+                res
+              }</lift:foo>)
           }
         }
 
@@ -314,7 +326,9 @@ object SnippetSpec extends Specification with XmlMatchers {
               s <- S.session
             } yield s.processSurroundAndInclude(
               "test",
-              <lift:foo>{res}</lift:foo>)
+              <lift:foo>{
+                res
+              }</lift:foo>)
           }
         }
 
@@ -331,7 +345,9 @@ object SnippetSpec extends Specification with XmlMatchers {
               s <- S.session
             } yield s.processSurroundAndInclude(
               "test",
-              <lift:foo>{res}</lift:foo>)
+              <lift:foo>{
+                res
+              }</lift:foo>)
           }
         }
 
@@ -350,7 +366,9 @@ object SnippetSpec extends Specification with XmlMatchers {
               s <- S.session
             } yield s.processSurroundAndInclude(
               "test",
-              <lift:foo>{res}</lift:foo>)
+              <lift:foo>{
+                res
+              }</lift:foo>)
           }
         }
 

@@ -89,7 +89,9 @@ object UserRepo {
       .cursor[BSONDocument](ReadPreference.secondaryPreferred)
       .collect[List](nb)
       .map {
-        _.flatMap { _.getAs[String]("_id") }
+        _.flatMap {
+          _.getAs[String]("_id")
+        }
       }
 
   def allSortToints(nb: Int) = $find($query.all sort ($sort desc F.toints), nb)
@@ -242,10 +244,14 @@ object UserRepo {
   def removeAllToints = $update($select.all, $unset("toints"), multi = true)
 
   def authenticateById(id: ID, password: String): Fu[Option[User]] =
-    checkPasswordById(id, password) flatMap { _ ?? ($find byId id) }
+    checkPasswordById(id, password) flatMap {
+      _ ?? ($find byId id)
+    }
 
   def authenticateByEmail(email: String, password: String): Fu[Option[User]] =
-    checkPasswordByEmail(email, password) flatMap { _ ?? byEmail(email) }
+    checkPasswordByEmail(email, password) flatMap {
+      _ ?? byEmail(email)
+    }
 
   private case class AuthData(
       password: String,
@@ -405,7 +411,9 @@ object UserRepo {
         Match(BSONDocument("_id" -> BSONDocument("$in" -> ids))),
         List(Group(BSONNull)(F.toints -> SumField(F.toints))))
       .map(
-        _.documents.headOption flatMap { _.getAs[Int](F.toints) }
+        _.documents.headOption flatMap {
+          _.getAs[Int](F.toints)
+        }
       )
       .map(~_)
 

@@ -97,7 +97,9 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration)
   }
 
   def broom {
-    members.keys foreach { uid => if (!aliveUids.get(uid)) eject(uid) }
+    members.keys foreach { uid =>
+      if (!aliveUids.get(uid)) eject(uid)
+    }
   }
 
   def eject(uid: String) {
@@ -142,7 +144,9 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration)
     lilaBus.publish(SocketEnter(uid, member), 'socketDoor)
   }
 
-  def setAlive(uid: String) { aliveUids put uid }
+  def setAlive(uid: String) {
+    aliveUids put uid
+  }
 
   def membersByUserId(userId: String): Iterable[M] = members collect {
     case (_, member) if member.userId.contains(userId) => member
@@ -171,7 +175,11 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration)
     else
       Json.obj(
         "nb" -> total,
-        "users" -> userIds.flatMap { lightUser(_) }.map(_.titleName),
+        "users" -> userIds
+          .flatMap {
+            lightUser(_)
+          }
+          .map(_.titleName),
         "anons" -> anons)
   }
 

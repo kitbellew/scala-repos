@@ -100,7 +100,9 @@ trait ColumnarTableModuleTestSupport[M[+_]]
     val lib = Map[String, CF1](
       "negate" -> cf.math.Negate,
       "coerceToDouble" -> cf.util.CoerceToDouble,
-      "true" -> CF1("testing::true") { _ => Some(Column.const(true)) }
+      "true" -> CF1("testing::true") { _ =>
+        Some(Column.const(true))
+      }
     )
 
     lib(name)
@@ -133,13 +135,17 @@ trait ColumnarTableModuleTestSupport[M[+_]]
           }
 
           val mask = BitSetUtil.filteredRange(range.start, range.end) { i =>
-            prioritized exists { _ isDefinedAt i }
+            prioritized exists {
+              _ isDefinedAt i
+            }
           }
 
           val (a2, arr) =
             mask.toList.foldLeft((a, new Array[BigDecimal](range.end))) {
               case ((acc, arr), i) => {
-                val col = prioritized find { _ isDefinedAt i }
+                val col = prioritized find {
+                  _ isDefinedAt i
+                }
 
                 val acc2 = col map {
                   case lc: LongColumn =>
@@ -152,7 +158,9 @@ trait ColumnarTableModuleTestSupport[M[+_]]
                     acc + nc(i)
                 }
 
-                acc2 foreach { arr(i) = _ }
+                acc2 foreach {
+                  arr(i) = _
+                }
 
                 (acc2 getOrElse acc, arr)
               }

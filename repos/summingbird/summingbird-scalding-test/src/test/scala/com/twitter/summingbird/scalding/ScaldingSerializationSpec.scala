@@ -73,11 +73,15 @@ class ScaldingSerializationSpecs extends WordSpec {
 
       val summer = TestGraphs.singleStepJob[Scalding, (Long, Int), Int, Int](
         source,
-        testStore) { tup => List((1 -> tup._2)) }
+        testStore) { tup =>
+        List((1 -> tup._2))
+      }
 
       val mode = HadoopTest(
         new Configuration,
-        { case x: ScaldingSource => buffer.get(x) })
+        {
+          case x: ScaldingSource => buffer.get(x)
+        })
       val intr = Interval.leftClosedRightOpen(
         Timestamp(0L),
         Timestamp(inWithTime.size.toLong))
@@ -85,7 +89,9 @@ class ScaldingSerializationSpecs extends WordSpec {
 
       assert((try {
         scald.toFlow(Config.default, intr, mode, scald.plan(summer)); true
-      } catch { case t: Throwable => println(toTry(t)); false }) == true)
+      } catch {
+        case t: Throwable => println(toTry(t)); false
+      }) == true)
     }
   }
 }

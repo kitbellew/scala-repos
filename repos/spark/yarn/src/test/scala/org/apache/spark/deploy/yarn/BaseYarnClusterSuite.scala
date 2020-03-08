@@ -246,7 +246,9 @@ abstract class BaseYarnClusterSuite
           props.setProperty(k, v)
         }
     }
-    extraConf.foreach { case (k, v) => props.setProperty(k, v) }
+    extraConf.foreach {
+      case (k, v) => props.setProperty(k, v)
+    }
 
     val propsFile = File.createTempFile("spark", ".properties", tempDir)
     val writer = new OutputStreamWriter(

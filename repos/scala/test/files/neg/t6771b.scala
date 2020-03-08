@@ -9,5 +9,7 @@
 object Test {
   val a = ""; var b: a.type = a
 
-  b = b match { case x => x }
+  b = b match {
+    case x => x
+  }
 }

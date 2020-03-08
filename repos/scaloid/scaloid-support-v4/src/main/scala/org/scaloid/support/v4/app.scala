@@ -317,7 +317,9 @@ trait TraitFragmentManager[This <: android.support.v4.app.FragmentManager] {
   @inline def onBackStackChanged[U](f: => U): This = {
     basis.addOnBackStackChangedListener(
       new android.support.v4.app.FragmentManager.OnBackStackChangedListener {
-        def onBackStackChanged(): Unit = { f }
+        def onBackStackChanged(): Unit = {
+          f
+        }
       })
     basis
   }
@@ -380,7 +382,9 @@ trait TraitFragmentTransaction[
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/FragmentTransaction.html#setBreadCrumbTitle(int) setBreadCrumbTitle(int)]]`
     */
-  @inline def breadCrumbTitle_=(p: Int) = { basis.setBreadCrumbTitle(p); basis }
+  @inline def breadCrumbTitle_=(p: Int) = {
+    basis.setBreadCrumbTitle(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/FragmentTransaction.html#setBreadCrumbTitle(java.lang.CharSequence) setBreadCrumbTitle(java.lang.CharSequence)]]`
@@ -405,7 +409,9 @@ trait TraitFragmentTransaction[
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/FragmentTransaction.html#setTransition(int) setTransition(int)]]`
     */
-  @inline def transition_=(p: Int) = { basis.setTransition(p); basis }
+  @inline def transition_=(p: Int) = {
+    basis.setTransition(p); basis
+  }
 
   @inline def transitionStyle(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'transitionStyle'")
@@ -418,7 +424,9 @@ trait TraitFragmentTransaction[
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/FragmentTransaction.html#setTransitionStyle(int) setTransitionStyle(int)]]`
     */
-  @inline def transitionStyle_=(p: Int) = { basis.setTransitionStyle(p); basis }
+  @inline def transitionStyle_=(p: Int) = {
+    basis.setTransitionStyle(p); basis
+  }
 
 }
 
@@ -478,7 +486,9 @@ trait TraitListFragment[This <: android.support.v4.app.ListFragment]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/ListFragment.html#setListShown(boolean) setListShown(boolean)]]`
     */
-  @inline def listShown_=(p: Boolean) = { basis.setListShown(p); basis }
+  @inline def listShown_=(p: Boolean) = {
+    basis.setListShown(p); basis
+  }
 
   @inline def listShownNoAnimation(
       implicit no: NoGetterForThisProperty): Nothing =
@@ -523,7 +533,9 @@ trait TraitListFragment[This <: android.support.v4.app.ListFragment]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/ListFragment.html#setSelection(int) setSelection(int)]]`
     */
-  @inline def selection_=(p: Int) = { basis.setSelection(p); basis }
+  @inline def selection_=(p: Int) = {
+    basis.setSelection(p); basis
+  }
 
 }
 
@@ -573,7 +585,9 @@ trait TraitDialogFragment[This <: android.support.v4.app.DialogFragment]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/DialogFragment.html#setCancelable(boolean) setCancelable(boolean)]]`
     */
-  @inline def cancelable_=(p: Boolean) = { basis.setCancelable(p); basis }
+  @inline def cancelable_=(p: Boolean) = {
+    basis.setCancelable(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/DialogFragment.html#getDialog() getDialog()]]`
@@ -593,7 +607,9 @@ trait TraitDialogFragment[This <: android.support.v4.app.DialogFragment]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/DialogFragment.html#setShowsDialog(boolean) setShowsDialog(boolean)]]`
     */
-  @inline def showsDialog_=(p: Boolean) = { basis.setShowsDialog(p); basis }
+  @inline def showsDialog_=(p: Boolean) = {
+    basis.setShowsDialog(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/DialogFragment.html#getTheme() getTheme()]]`

@@ -445,7 +445,9 @@ final case class `Content-Disposition`(
     with RequestResponseHeader {
   def renderValue[R <: Rendering](r: R): r.type = {
     r ~~ dispositionType
-    params foreach { case (k, v) ⇒ r ~~ "; " ~~ k ~~ '=' ~~# v }
+    params foreach {
+      case (k, v) ⇒ r ~~ "; " ~~ k ~~ '=' ~~# v
+    }
     r
   }
   protected def companion = `Content-Disposition`

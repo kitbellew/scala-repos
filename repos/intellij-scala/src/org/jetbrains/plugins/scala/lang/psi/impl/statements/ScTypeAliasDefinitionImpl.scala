@@ -28,7 +28,9 @@ class ScTypeAliasDefinitionImpl private (
     node: ASTNode)
     extends ScalaStubBasedElementImpl(stub, nodeType, node)
     with ScTypeAliasDefinition {
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
   def this(stub: ScTypeAliasStub) = {
     this(stub, ScalaElementTypes.TYPE_DEFINITION, null)
   }

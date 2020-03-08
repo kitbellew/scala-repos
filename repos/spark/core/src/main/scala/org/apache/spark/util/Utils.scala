@@ -173,7 +173,9 @@ private[spark] object Utils extends Logging {
   /** Determines whether the provided class is loadable in the current thread. */
   def classIsLoadable(clazz: String): Boolean = {
     // scalastyle:off classforname
-    Try { Class.forName(clazz, false, getContextOrSparkClassLoader) }.isSuccess
+    Try {
+      Class.forName(clazz, false, getContextOrSparkClassLoader)
+    }.isSuccess
     // scalastyle:on classforname
   }
 
@@ -245,7 +247,9 @@ private[spark] object Utils extends Logging {
         if (dir.exists() || !dir.mkdirs()) {
           dir = null
         }
-      } catch { case e: SecurityException => dir = null; }
+      } catch {
+        case e: SecurityException => dir = null;
+      }
     }
 
     dir.getCanonicalFile
@@ -1490,7 +1494,9 @@ private[spark] object Utils extends Logging {
     * the given order. See figure below for more details.
     */
   def offsetBytes(files: Seq[File], start: Long, end: Long): String = {
-    val fileLengths = files.map { _.length }
+    val fileLengths = files.map {
+      _.length
+    }
     val startIndex = math.max(start, 0)
     val endIndex = math.min(end, fileLengths.sum)
     val fileToLength = files.zip(fileLengths).toMap
@@ -1961,7 +1967,12 @@ private[spark] object Utils extends Logging {
     if (paths == null || paths.trim.isEmpty) {
       ""
     } else {
-      paths.split(",").map { p => Utils.resolveURI(p) }.mkString(",")
+      paths
+        .split(",")
+        .map { p =>
+          Utils.resolveURI(p)
+        }
+        .mkString(",")
     }
   }
 
@@ -2039,8 +2050,12 @@ private[spark] object Utils extends Logging {
   def getDefaultPropertiesFile(env: Map[String, String] = sys.env): String = {
     env
       .get("SPARK_CONF_DIR")
-      .orElse(env.get("SPARK_HOME").map { t => s"$t${File.separator}conf" })
-      .map { t => new File(s"$t${File.separator}spark-defaults.conf") }
+      .orElse(env.get("SPARK_HOME").map { t =>
+        s"$t${File.separator}conf"
+      })
+      .map { t =>
+        new File(s"$t${File.separator}spark-defaults.conf")
+      }
       .filter(_.isFile)
       .map(_.getAbsolutePath)
       .orNull
@@ -2086,8 +2101,12 @@ private[spark] object Utils extends Logging {
       conf: SparkConf,
       filterKey: (String => Boolean) = _ => true): Seq[String] = {
     conf.getAll
-      .filter { case (k, _) => filterKey(k) }
-      .map { case (k, v) => s"-D$k=$v" }
+      .filter {
+        case (k, _) => filterKey(k)
+      }
+      .map {
+        case (k, v) => s"-D$k=$v"
+      }
   }
 
   /**

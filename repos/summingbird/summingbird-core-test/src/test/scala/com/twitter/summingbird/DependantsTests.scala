@@ -53,7 +53,9 @@ object DependantsTest extends Properties("Dependants") {
     forAll { (prod: Producer[Memory, _]) =>
       val deps = Producer.dependenciesOf(prod)
       (Producer.transitiveDependenciesOf(prod) == deps) ==> {
-        deps.forall { case s @ Source(_) => true; case _ => false }
+        deps.forall {
+          case s @ Source(_) => true; case _ => false
+        }
       }
     }
   def implies(a: Boolean, b: => Boolean): Boolean = if (a) b else true
@@ -68,7 +70,9 @@ object DependantsTest extends Properties("Dependants") {
           tdepth > 0,
           (Producer
             .dependenciesOf(t)
-            .map { deps.depth(_).get }
+            .map {
+              deps.depth(_).get
+            }
             .max) < tdepth) &&
         implies(
           tdepth > 0,
@@ -117,9 +121,17 @@ object DependantsTest extends Properties("Dependants") {
       import dependants._
 
       val tails = allTails.toSet
-      tails.map { dependantsOf(_) }.forall { _.get.isEmpty } && {
+      tails
+        .map {
+          dependantsOf(_)
+        }
+        .forall {
+          _.get.isEmpty
+        } && {
         nodes
-          .filter { dependantsOf(_) == Some(Nil) }
+          .filter {
+            dependantsOf(_) == Some(Nil)
+          }
           .forall(tails)
       }
     }
@@ -159,10 +171,13 @@ object DependantsTest extends Properties("Dependants") {
   property("Sources + transitive dependants are all the nodes") = forAll {
     (prod: Producer[Memory, _]) =>
       val allNodes = Producer.entireGraphOf(prod)
-      val sources = allNodes.collect { case s @ Source(_) => s }.toSet
+      val sources = allNodes.collect {
+        case s @ Source(_) => s
+      }.toSet
       val dependants = Dependants(prod)
-      val sAndDown =
-        (sources ++ sources.flatMap { dependants.transitiveDependantsOf(_) })
+      val sAndDown = (sources ++ sources.flatMap {
+        dependants.transitiveDependantsOf(_)
+      })
       allNodes.toSet == sAndDown
   }
 
@@ -192,11 +207,15 @@ object DependantsTest extends Properties("Dependants") {
           .collect {
             case t: TailProducer[_, _] => t
           }
-          .flatMap { n => n :: Producer.transitiveDependenciesOf(n) }
+          .flatMap { n =>
+            n :: Producer.transitiveDependenciesOf(n)
+          }
           .toSet
 
         depTillWrite
-          .collectFirst { case MergedProducer(_, _) => true }
+          .collectFirst {
+            case MergedProducer(_, _) => true
+          }
           .getOrElse(
             false) || writerDependencies.isEmpty || ((depTillWrite.toSet intersect writerDependencies) == depTillWrite.toSet)
       }
@@ -212,10 +231,14 @@ object DependantsTest extends Properties("Dependants") {
             case s @ Summer(_, _, _)       => s
             case w @ WrittenProducer(_, _) => w
           }
-          .flatMap { dependants.transitiveDependantsOf(_) }
+          .flatMap {
+            dependants.transitiveDependantsOf(_)
+          }
           .toSet[Producer[Memory, Any]]
         tillWrite
-          .collectFirst { case MergedProducer(_, _) => true }
+          .collectFirst {
+            case MergedProducer(_, _) => true
+          }
           .getOrElse(
             false) || (tillWrite.toSet & outputChildren.toSet).size == 0
       }

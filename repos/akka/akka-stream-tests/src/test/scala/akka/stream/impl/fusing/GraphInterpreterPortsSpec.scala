@@ -19,8 +19,12 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(false)
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       in.pull()
 
@@ -30,9 +34,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(true)
       in.isClosed should be(false)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       stepAll()
 
@@ -42,8 +52,12 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(true)
       in.isClosed should be(false)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       out.push(0)
 
@@ -53,9 +67,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(true)
       in.isClosed should be(false)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       stepAll()
 
@@ -65,7 +85,9 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(true)
       in.hasBeenPulled should be(false)
       in.isClosed should be(false)
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
 
       in.grab() should ===(0)
 
@@ -75,8 +97,12 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(false)
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       // Cycle completed
     }
@@ -92,7 +118,9 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
 
       in.pull()
 
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
     }
 
     "propagate complete while downstream is active" in new PortTestSetup {
@@ -111,7 +139,9 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(false)
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
 
       stepAll()
 
@@ -121,9 +151,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       in.cancel() // This should have no effect now
       stepAll()
@@ -134,9 +170,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       out.complete() // This should have no effect now
       stepAll()
@@ -147,9 +189,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
     }
 
     "propagate complete while upstream is active" in new PortTestSetup {
@@ -171,7 +219,9 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(true)
       in.isClosed should be(false)
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
 
       stepAll()
 
@@ -181,9 +231,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       in.cancel() // This should have no effect now
       stepAll()
@@ -194,9 +250,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       out.complete() // This should have no effect now
       stepAll()
@@ -207,9 +269,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
     }
 
@@ -231,7 +299,9 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(true)
       in.isClosed should be(false)
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
 
       stepAll()
 
@@ -241,9 +311,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       in.cancel() // This should have no effect now
       stepAll()
@@ -254,9 +330,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       out.complete() // This should have no effect now
       stepAll()
@@ -267,9 +349,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
     }
 
     "propagate complete while push is in flight" in new PortTestSetup {
@@ -294,7 +382,9 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(true)
       in.isClosed should be(false)
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
 
       step()
 
@@ -304,9 +394,13 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(true)
       in.hasBeenPulled should be(false)
       in.isClosed should be(false)
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
       in.grab() should ===(0)
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       step()
 
@@ -316,9 +410,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       out.complete() // This should have no effect now
       stepAll()
@@ -329,9 +429,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
     }
 
     "propagate complete while push is in flight and keep ungrabbed element" in new PortTestSetup {
@@ -376,9 +482,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
     }
 
     "ignore pull while completing" in new PortTestSetup {
@@ -395,9 +507,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
     }
 
     "propagate cancel while downstream is active" in new PortTestSetup {
@@ -416,8 +534,12 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       stepAll()
 
@@ -427,9 +549,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       out.complete() // This should have no effect now
       stepAll()
@@ -440,9 +568,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       in.cancel() // This should have no effect now
       stepAll()
@@ -453,9 +587,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
     }
 
     "propagate cancel while upstream is active" in new PortTestSetup {
@@ -477,8 +617,12 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       stepAll()
 
@@ -488,9 +632,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       out.complete() // This should have no effect now
       stepAll()
@@ -501,9 +651,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       in.cancel() // This should have no effect now
       stepAll()
@@ -514,9 +670,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
     }
 
@@ -538,8 +700,12 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       stepAll()
 
@@ -549,9 +715,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       out.complete() // This should have no effect now
       stepAll()
@@ -562,9 +734,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       in.cancel() // This should have no effect now
       stepAll()
@@ -575,9 +753,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
     }
 
     "propagate cancel while push is in flight" in new PortTestSetup {
@@ -602,7 +786,9 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
 
       stepAll()
 
@@ -612,9 +798,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       out.complete() // This should have no effect now
       stepAll()
@@ -625,9 +817,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       in.cancel() // This should have no effect now
       stepAll()
@@ -638,9 +836,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
     }
 
     "ignore push while cancelling" in new PortTestSetup {
@@ -661,9 +865,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
     }
 
     "clear ungrabbed element even when cancelled" in new PortTestSetup {
@@ -683,8 +893,12 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       stepAll()
       lastEvents() should be(Set(Cancel(out)))
@@ -693,9 +907,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
     }
 
     "ignore any completion if they are concurrent (cancel first)" in new PortTestSetup {
@@ -710,9 +930,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
     }
 
     "ignore any completion if they are concurrent (complete first)" in new PortTestSetup {
@@ -727,9 +953,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
     }
 
     "ignore completion from a push-complete if cancelled while in flight" in new PortTestSetup {
@@ -749,9 +981,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
     }
 
     "ignore completion from a push-complete if cancelled after onPush" in new PortTestSetup {
@@ -770,7 +1008,9 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(true)
       in.hasBeenPulled should be(false)
       in.isClosed should be(false)
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
       in.grab() should ===(0)
 
       in.cancel()
@@ -782,9 +1022,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
     }
 
     "not allow to grab element before it arrives" in new PortTestSetup {
@@ -792,7 +1038,9 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       stepAll()
       out.push(0)
 
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
     }
 
     "not allow to grab element if already cancelled" in new PortTestSetup {
@@ -804,7 +1052,9 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
 
       stepAll()
 
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
     }
 
     "propagate failure while downstream is active" in new PortTestSetup {
@@ -823,7 +1073,9 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(false)
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
 
       stepAll()
 
@@ -833,9 +1085,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       in.cancel() // This should have no effect now
       stepAll()
@@ -846,9 +1104,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       out.complete() // This should have no effect now
       stepAll()
@@ -859,9 +1123,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
     }
 
     "propagate failure while upstream is active" in new PortTestSetup {
@@ -883,7 +1153,9 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(true)
       in.isClosed should be(false)
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
 
       stepAll()
 
@@ -893,9 +1165,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       in.cancel() // This should have no effect now
       stepAll()
@@ -906,9 +1184,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       out.complete() // This should have no effect now
       stepAll()
@@ -919,9 +1203,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
     }
 
@@ -943,7 +1233,9 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(true)
       in.isClosed should be(false)
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
 
       stepAll()
 
@@ -953,9 +1245,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       in.cancel() // This should have no effect now
       stepAll()
@@ -966,9 +1264,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       out.complete() // This should have no effect now
       stepAll()
@@ -979,9 +1283,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
     }
 
     "propagate failure while push is in flight" in new PortTestSetup {
@@ -1006,7 +1316,9 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(true)
       in.isClosed should be(false)
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
 
       step()
 
@@ -1016,9 +1328,13 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(true)
       in.hasBeenPulled should be(false)
       in.isClosed should be(false)
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
       in.grab() should ===(0)
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       step()
 
@@ -1028,9 +1344,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
 
       out.complete() // This should have no effect now
       stepAll()
@@ -1041,9 +1363,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
     }
 
     "propagate failure while push is in flight and keep ungrabbed element" in new PortTestSetup {
@@ -1080,9 +1408,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
     }
 
     "ignore any failure completion if they are concurrent (cancel first)" in new PortTestSetup {
@@ -1097,9 +1431,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
     }
 
     "ignore any failure completion if they are concurrent (complete first)" in new PortTestSetup {
@@ -1114,9 +1454,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
     }
 
     "ignore failure from a push-then-fail if cancelled while in flight" in new PortTestSetup {
@@ -1136,9 +1482,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
     }
 
     "ignore failure from a push-then-fail if cancelled after onPush" in new PortTestSetup {
@@ -1157,7 +1509,9 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(true)
       in.hasBeenPulled should be(false)
       in.isClosed should be(false)
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
       in.grab() should ===(0)
 
       in.cancel()
@@ -1169,9 +1523,15 @@ class GraphInterpreterPortsSpec extends AkkaSpec with GraphInterpreterSpecKit {
       in.isAvailable should be(false)
       in.hasBeenPulled should be(false)
       in.isClosed should be(true)
-      an[IllegalArgumentException] should be thrownBy { in.pull() }
-      an[IllegalArgumentException] should be thrownBy { out.push(0) }
-      an[IllegalArgumentException] should be thrownBy { in.grab() }
+      an[IllegalArgumentException] should be thrownBy {
+        in.pull()
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        out.push(0)
+      }
+      an[IllegalArgumentException] should be thrownBy {
+        in.grab()
+      }
     }
 
   }

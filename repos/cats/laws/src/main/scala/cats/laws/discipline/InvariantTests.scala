@@ -27,5 +27,7 @@ trait InvariantTests[F[_]] extends Laws {
 
 object InvariantTests {
   def apply[F[_]: Invariant]: InvariantTests[F] =
-    new InvariantTests[F] { def laws: InvariantLaws[F] = InvariantLaws[F] }
+    new InvariantTests[F] {
+      def laws: InvariantLaws[F] = InvariantLaws[F]
+    }
 }

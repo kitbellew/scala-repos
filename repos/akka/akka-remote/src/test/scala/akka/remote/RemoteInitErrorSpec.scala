@@ -39,7 +39,9 @@ class RemoteInitErrorSpec extends FlatSpec with Matchers {
 
   def currentThreadIds(): Set[Long] = {
     val threads = Thread.getAllStackTraces().keySet()
-    threads.collect({ case t: Thread if (!t.isDaemon()) ⇒ t.getId() })
+    threads.collect({
+      case t: Thread if (!t.isDaemon()) ⇒ t.getId()
+    })
   }
 
   "Remoting" must "shut down properly on RemoteActorRefProvider initialization failure" in {

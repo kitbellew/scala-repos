@@ -31,13 +31,28 @@ class TypedCosineSimJob(args: Args) extends Job(args) {
   val simOf = new DiscoInCosine[Int](0.001, 0.1, 0.01)
   val graph = withInDegree {
     TypedTsv[(Int, Int)]("ingraph")
-      .map { case (from, to) => Edge(from, to, ()) }
+      .map {
+        case (from, to) => Edge(from, to, ())
+      }
   }
   // Just keep the degree
-    .map { edge => edge.mapData { _._2 } }
+    .map { edge =>
+      edge.mapData {
+        _._2
+      }
+    }
 
-  simOf(graph, { n: Int => n % 2 == 0 }, { n: Int => n % 2 == 1 })
-    .map { edge => (edge.from, edge.to, edge.data) }
+  simOf(
+    graph,
+    { n: Int =>
+      n % 2 == 0
+    },
+    { n: Int =>
+      n % 2 == 1
+    })
+    .map { edge =>
+      (edge.from, edge.to, edge.data)
+    }
     .write(TypedTsv[(Int, Int, Double)]("out"))
 }
 
@@ -46,11 +61,22 @@ class TypedDimsumCosineSimJob(args: Args) extends Job(args) {
   val simOf = new DimsumInCosine[Int](0.001, 0.1, 0.01)
   val graph = withInNorm {
     TypedTsv[(Int, Int, Double)]("ingraph")
-      .map { case (from, to, weight) => Edge(from, to, Weight(weight)) }
+      .map {
+        case (from, to, weight) => Edge(from, to, Weight(weight))
+      }
   }
 
-  simOf(graph, { n: Int => n % 2 == 0 }, { n: Int => n % 2 == 1 })
-    .map { edge => (edge.from, edge.to, edge.data) }
+  simOf(
+    graph,
+    { n: Int =>
+      n % 2 == 0
+    },
+    { n: Int =>
+      n % 2 == 1
+    })
+    .map { edge =>
+      (edge.from, edge.to, edge.data)
+    }
     .toPipe('from, 'to, 'data)
     .write(TypedTsv[(Int, Int, Double)]("out"))
 }
@@ -61,8 +87,9 @@ class TypedSimilarityTest extends WordSpec with Matchers {
   val edges = (0 to nodes).flatMap { n =>
     // try to get at least 6 edges for each node
     (0 to ((nodes / 5) max (6))).foldLeft(Set[(Int, Int)]()) { (set, idx) =>
-      if (set.size > 6) { set }
-      else {
+      if (set.size > 6) {
+        set
+      } else {
         set + (n -> rand.nextInt(nodes))
       }
     }
@@ -73,8 +100,9 @@ class TypedSimilarityTest extends WordSpec with Matchers {
     // try to get at least 10 edges for each node
     (0 to ((nodes / 5) max (10))).foldLeft(Set[(Int, Int, Double)]()) {
       (set, idx) =>
-        if (set.size > 10) { set }
-        else {
+        if (set.size > 10) {
+          set
+        } else {
           set + ((n, rand.nextInt(nodes), rand.nextDouble * MaxWeight))
         }
     }
@@ -83,9 +111,14 @@ class TypedSimilarityTest extends WordSpec with Matchers {
   def cosineOf(es: Seq[(Int, Int)]): Map[(Int, Int), Double] = {
     // Get followers of each node:
     val matrix: Map[Int, Map[Int, Double]] =
-      es.groupBy { _._2 }.mapValues { seq =>
-        seq.map { case (from, to) => (from, 1.0) }.toMap
-      }
+      es.groupBy {
+          _._2
+        }
+        .mapValues { seq =>
+          seq.map {
+            case (from, to) => (from, 1.0)
+          }.toMap
+        }
     for ((k1, v1) <- matrix if (k1 % 2 == 0);
          (k2, v2) <- matrix if (k2 % 2 == 1))
       yield ((k1, k2) -> (dot(v1, v2) / scala.math.sqrt(
@@ -95,9 +128,14 @@ class TypedSimilarityTest extends WordSpec with Matchers {
   def weightedCosineOf(es: Seq[(Int, Int, Double)]): Map[(Int, Int), Double] = {
     // Get followers of each node:
     val matrix: Map[Int, Map[Int, Double]] =
-      es.groupBy { _._2 }.mapValues { seq =>
-        seq.map { case (from, to, weight) => (from, weight) }.toMap
-      }
+      es.groupBy {
+          _._2
+        }
+        .mapValues { seq =>
+          seq.map {
+            case (from, to, weight) => (from, weight)
+          }.toMap
+        }
     for ((k1, v1) <- matrix if (k1 % 2 == 0);
          (k2, v2) <- matrix if (k2 % 2 == 1))
       yield ((k1, k2) -> (dot(v1, v2) / scala.math.sqrt(
@@ -110,7 +148,9 @@ class TypedSimilarityTest extends WordSpec with Matchers {
       JobTest(new TypedCosineSimJob(_))
         .source(TypedTsv[(Int, Int)]("ingraph"), edges)
         .sink[(Int, Int, Double)](TypedTsv[(Int, Int, Double)]("out")) { ob =>
-          val result = ob.map { case (n1, n2, d) => ((n1 -> n2) -> d) }.toMap
+          val result = ob.map {
+            case (n1, n2, d) => ((n1 -> n2) -> d)
+          }.toMap
           val error = Group.minus(result, cosineOf(edges))
           dot(error, error) should be < 0.001
         }
@@ -121,7 +161,9 @@ class TypedSimilarityTest extends WordSpec with Matchers {
       JobTest(new TypedDimsumCosineSimJob(_))
         .source(TypedTsv[(Int, Int, Double)]("ingraph"), weightedEdges)
         .sink[(Int, Int, Double)](TypedTsv[(Int, Int, Double)]("out")) { ob =>
-          val result = ob.map { case (n1, n2, d) => ((n1 -> n2) -> d) }.toMap
+          val result = ob.map {
+            case (n1, n2, d) => ((n1 -> n2) -> d)
+          }.toMap
           val error = Group.minus(result, weightedCosineOf(weightedEdges))
           dot(error, error) should be < (0.01 * error.size)
         }

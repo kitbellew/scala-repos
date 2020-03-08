@@ -30,7 +30,9 @@ trait JettyContainer extends Container {
         klass + " is not assignable to either HttpServlet or Filter")
   }
 
-  def mount(servlet: HttpServlet, path: String) { addServlet(servlet, path) }
+  def mount(servlet: HttpServlet, path: String) {
+    addServlet(servlet, path)
+  }
   def mount(servlet: HttpServlet, path: String, name: String) {
     addServlet(servlet, path, name)
   }

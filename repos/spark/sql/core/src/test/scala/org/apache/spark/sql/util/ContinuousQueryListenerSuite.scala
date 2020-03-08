@@ -153,7 +153,9 @@ class ContinuousQueryListenerSuite
             listener.startStatus !== null,
             "onQueryStarted not called before query returned"),
           StopStream,
-          Assert { listener.checkAsyncErrors() }
+          Assert {
+            listener.checkAsyncErrors()
+          }
         )
       }
     }

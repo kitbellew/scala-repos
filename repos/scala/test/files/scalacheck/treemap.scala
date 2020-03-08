@@ -39,13 +39,18 @@ object Test extends Properties("TreeMap") {
       val values = (1 to highest).reverse
       val subject = TreeMap(values zip values: _*)
       val it = subject.iterator
-      try { while (it.hasNext) it.next; true }
-      catch { case _ => false }
+      try {
+        while (it.hasNext) it.next; true
+      } catch {
+        case _ => false
+      }
     }
 
   property("sorted") = forAll { (subject: TreeMap[Int, String]) =>
     (subject.size >= 3) ==> {
-      subject.zip(subject.tail).forall { case (x, y) => x._1 < y._1 }
+      subject.zip(subject.tail).forall {
+        case (x, y) => x._1 < y._1
+      }
     }
   }
 

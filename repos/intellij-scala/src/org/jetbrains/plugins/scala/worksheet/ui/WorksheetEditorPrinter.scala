@@ -259,7 +259,9 @@ class WorksheetEditorPrinter(
     terminated = true
   }
 
-  private def updateWithPersistentScroll(document: Document, text: String) { //todo - to do
+  private def updateWithPersistentScroll(
+      document: Document,
+      text: String) { //todo - to do
     val foldingOffsetsCopy = foldingOffsets.clone()
     foldingOffsets.clear()
     val ed = getViewerEditor

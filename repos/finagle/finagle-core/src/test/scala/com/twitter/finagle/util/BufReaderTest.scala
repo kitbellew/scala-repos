@@ -15,7 +15,9 @@ class BufReaderTest extends FunSuite with GeneratorDrivenPropertyChecks {
     val buf = Buf.ByteArray.Owned(Array(byte))
     val br = BufReader(buf)
     assert(br.readByte() == byte)
-    val exc = intercept[UnderflowException] { br.readByte() }
+    val exc = intercept[UnderflowException] {
+      br.readByte()
+    }
   })
 
   test("readShortBE")(forAll { short: Short =>
@@ -25,7 +27,9 @@ class BufReaderTest extends FunSuite with GeneratorDrivenPropertyChecks {
     // note, we need to cast here toShort so that the
     // MSB is intepreted as the sign bit.
     assert(br.readShortBE().toShort == short)
-    val exc = intercept[UnderflowException] { br.readByte() }
+    val exc = intercept[UnderflowException] {
+      br.readByte()
+    }
   })
 
   test("readIntBE")(forAll { int: Int =>
@@ -38,7 +42,9 @@ class BufReaderTest extends FunSuite with GeneratorDrivenPropertyChecks {
       ))
     val br = BufReader(buf)
     assert(br.readIntBE() == int)
-    val exc = intercept[UnderflowException] { br.readByte() }
+    val exc = intercept[UnderflowException] {
+      br.readByte()
+    }
   })
 
   test("readLongBE")(forAll { long: Long =>
@@ -55,7 +61,9 @@ class BufReaderTest extends FunSuite with GeneratorDrivenPropertyChecks {
       ))
     val br = BufReader(buf)
     assert(br.readLongBE() == long)
-    val exc = intercept[UnderflowException] { br.readByte() }
+    val exc = intercept[UnderflowException] {
+      br.readByte()
+    }
   })
 
   test("readBytes")(forAll { bytes: Array[Byte] =>

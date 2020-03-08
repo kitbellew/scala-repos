@@ -8,8 +8,9 @@ object SCL7805 {
 
   object TailSwitch {
     implicit def tailSwitch[L <: HList, T <: HList, R <: HList, Out0 <: HList](
-        implicit ts: Aux[L, L, T, T, R, HNil, Out0])
-        : TailSwitch[L, T, R] { type Out = Out0 } = ???
+        implicit ts: Aux[L, L, T, T, R, HNil, Out0]): TailSwitch[L, T, R] {
+      type Out = Out0
+    } = ???
   }
 
   trait Aux[

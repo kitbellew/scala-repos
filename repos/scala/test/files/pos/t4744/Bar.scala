@@ -1,1 +1,3 @@
-class Bar { val quux = new Foo[java.lang.Integer]() }
+class Bar {
+  val quux = new Foo[java.lang.Integer]()
+}

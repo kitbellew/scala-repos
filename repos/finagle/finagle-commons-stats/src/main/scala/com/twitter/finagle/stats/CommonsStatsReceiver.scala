@@ -34,7 +34,9 @@ class CommonsStatsReceiver extends StatsReceiverWithCumulativeGauges {
       if (!counters.contains(name)) {
         val counter = new Counter {
           private[this] val underlying = Stats.exportLong(variableName(name))
-          def incr(delta: Int) { underlying.addAndGet(delta) }
+          def incr(delta: Int) {
+            underlying.addAndGet(delta)
+          }
         }
 
         counters += (name -> counter)

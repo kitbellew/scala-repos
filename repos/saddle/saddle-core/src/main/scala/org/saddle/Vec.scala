@@ -321,7 +321,9 @@ trait Vec[@spec(Boolean, Int, Long, Double) T]
     * Execute a (side-effecting) operation on each (non-NA) element in the vec
     * @param op operation to execute
     */
-  def foreach(op: T => Unit) { VecImpl.foreach(this)(op)(scalarTag) }
+  def foreach(op: T => Unit) {
+    VecImpl.foreach(this)(op)(scalarTag)
+  }
 
   /**
     * Execute a (side-effecting) operation on each (non-NA) element in vec which satisfies
@@ -530,13 +532,14 @@ trait Vec[@spec(Boolean, Int, Long, Double) T]
       buf append "Empty Vec"
     else {
       buf.append("[%d x 1]\n" format (length))
-      val vlen = { head(half) concat tail(half) }
-        .map(scalarTag.show(_))
-        .foldLeft(0)(maxf)
+      val vlen = {
+        head(half) concat tail(half)
+      }.map(scalarTag.show(_)).foldLeft(0)(maxf)
 
       def createRow(r: Int): String =
-        ("%" + { if (vlen > 0) vlen else 1 } + "s\n")
-          .format(scalarTag.show(apply(r)))
+        ("%" + {
+          if (vlen > 0) vlen else 1
+        } + "s\n").format(scalarTag.show(apply(r)))
       buf append util.buildStr(len, length, createRow, " ... \n")
     }
 

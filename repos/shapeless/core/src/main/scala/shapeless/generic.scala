@@ -146,7 +146,9 @@ object Generic {
     * @tparam T the type for which we want to find a Generic
     * @tparam Repr0 the generic representation type equivalent to T.
     */
-  type Aux[T, Repr0] = Generic[T] { type Repr = Repr0 }
+  type Aux[T, Repr0] = Generic[T] {
+    type Repr = Repr0
+  }
 
   /** Provides an instance of Generic. Prefer this over finding one with `implicitly`, or else use `the`.
     *
@@ -212,7 +214,9 @@ object LabelledGeneric {
     * @tparam T the type
     * @tparam Repr0 the labelled generic representation of the type
     */
-  type Aux[T, Repr0] = LabelledGeneric[T] { type Repr = Repr0 }
+  type Aux[T, Repr0] = LabelledGeneric[T] {
+    type Repr = Repr0
+  }
 
   /** Provides an instance of LabelledGeneric for the given T. As with [[shapeless.Generic]],
     * use this method or {{{the[LabelledGeneric[T]]}}} to obtain an instance for suitable given T. */
@@ -860,7 +864,9 @@ trait CaseClassMacros extends ReprTypes {
         ts match {
           case Nil => Some(acc.reverse)
           case Seq(hd, tl @ _*) =>
-            fields.span { case (_, tpe) => !(tpe =:= hd) } match {
+            fields.span {
+              case (_, tpe) => !(tpe =:= hd)
+            } match {
               case (fpre, List(f, fsuff @ _*)) =>
                 loop(fpre ++ fsuff, tl, f :: acc)
               case _ => None
@@ -994,11 +1000,15 @@ trait CaseClassMacros extends ReprTypes {
           def binding: (Tree, List[Tree]) =
             (
               pattern,
-              elems.map { case (binder, tpe) => narrow(q"$binder", tpe) })
+              elems.map {
+                case (binder, tpe) => narrow(q"$binder", tpe)
+              })
           def reprBinding: (Tree, List[Tree]) =
             (
               reprPattern,
-              elems.map { case (binder, tpe) => narrow1(q"$binder", tpe) })
+              elems.map {
+                case (binder, tpe) => narrow1(q"$binder", tpe)
+              })
         }
       }
 
@@ -1016,7 +1026,9 @@ trait CaseClassMacros extends ReprTypes {
           def reprBinding: (Tree, List[Tree]) =
             (
               reprPattern,
-              elems.map { case (binder, _, tpe) => narrow1(q"$binder", tpe) })
+              elems.map {
+                case (binder, _, tpe) => narrow1(q"$binder", tpe)
+              })
         }
       }
 

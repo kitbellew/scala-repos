@@ -13,14 +13,18 @@ class NameTest extends FunSuite {
     val n = Name.fromGroup(g)
 
     var addr: Addr = Addr.Pending
-    n.addr.changes.register(Witness({ addr = _ }))
+    n.addr.changes.register(Witness({
+      addr = _
+    }))
     assert(addr == Addr.Pending)
     val set =
       Set[SocketAddress](new InetSocketAddress(0), new InetSocketAddress(1))
     g() = set
 
     val Addr.Bound(s2, r) = addr
-    assert(s2.collect { case Address.Inet(ia, _) => ia } == set)
+    assert(s2.collect {
+      case Address.Inet(ia, _) => ia
+    } == set)
     assert(r.isEmpty)
 
     g() = Set(new SocketAddress {})
@@ -41,7 +45,11 @@ class NameTest extends FunSuite {
   }
 
   test("Name.all maintains equality") {
-    val names = Seq.fill(10) { Name.Bound.singleton(Var(Addr.Pending)) }.toSet
+    val names = Seq
+      .fill(10) {
+        Name.Bound.singleton(Var(Addr.Pending))
+      }
+      .toSet
 
     assert(Name.all(names) == Name.all(names))
     assert(Name.all(names) != Name.all(names drop 1))

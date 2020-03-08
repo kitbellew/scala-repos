@@ -58,7 +58,9 @@ private[repl] class SparkJLineReader(_completion: => Completion)
       this.readVirtualKey()
     }
     def eraseLine() = consoleReader.resetPromptLine("", "", 0)
-    def redrawLineAndFlush(): Unit = { flush(); drawLine(); flush() }
+    def redrawLineAndFlush(): Unit = {
+      flush(); drawLine(); flush()
+    }
     // override def readLine(prompt: String): String
 
     // A hook for running code after the repl is done initializing.

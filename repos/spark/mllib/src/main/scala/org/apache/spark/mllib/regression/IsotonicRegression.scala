@@ -212,7 +212,9 @@ object IsotonicRegressionModel extends Loader[IsotonicRegressionModel] {
 
       sqlContext
         .createDataFrame(
-          boundaries.toSeq.zip(predictions).map { case (b, p) => Data(b, p) }
+          boundaries.toSeq.zip(predictions).map {
+            case (b, p) => Data(b, p)
+          }
         )
         .write
         .parquet(dataPath(path))
@@ -225,7 +227,9 @@ object IsotonicRegressionModel extends Loader[IsotonicRegressionModel] {
       checkSchema[Data](dataRDD.schema)
       val dataArray = dataRDD.select("boundary", "prediction").collect()
       val (boundaries, predictions) = dataArray
-        .map { x => (x.getDouble(0), x.getDouble(1)) }
+        .map { x =>
+          (x.getDouble(0), x.getDouble(1))
+        }
         .toList
         .sortBy(_._1)
         .unzip

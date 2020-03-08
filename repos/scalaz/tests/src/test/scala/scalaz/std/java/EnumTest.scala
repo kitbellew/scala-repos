@@ -18,7 +18,9 @@ object EnumTest extends SpecLite {
       case Nil | (_ :: Nil)      => acc
       case x :: (xxs @ (_ :: _)) => pairs(xxs, (xxs map (x -> _)) ::: acc)
     }
-    pairs(TimeUnit.values.toList) forall { case (tu1, tu2) => tu1 =/= tu2 }
+    pairs(TimeUnit.values.toList) forall {
+      case (tu1, tu2) => tu1 =/= tu2
+    }
   }
 
 }

@@ -47,7 +47,9 @@ case class Dirichlet[T, @specialized(Int) I](params: T)(implicit
   def unnormalizedDraw() = {
     mapActiveValues(
       params,
-      { (v: Double) => if (v == 0.0) 0.0 else new Gamma(v, 1).draw() })
+      { (v: Double) =>
+        if (v == 0.0) 0.0 else new Gamma(v, 1).draw()
+      })
   }
 
   /**
@@ -56,7 +58,9 @@ case class Dirichlet[T, @specialized(Int) I](params: T)(implicit
   def logDraw() = {
     val x = mapActiveValues(
       params,
-      { (v: Double) => if (v == 0.0) 0.0 else new Gamma(v, 1).logDraw() })
+      { (v: Double) =>
+        if (v == 0.0) 0.0 else new Gamma(v, 1).logDraw()
+      })
     val m = softmax(x.activeValuesIterator)
     assert(!m.isInfinite, x)
     x.activeKeysIterator.foreach(i => x(i) -= m)
@@ -97,7 +101,10 @@ object Dirichlet {
   /**
     * Creates a new symmetric Dirichlet of dimension k
     */
-  def sym(alpha: Double, k: Int) = this(Array.tabulate(k) { x => alpha })
+  def sym(alpha: Double, k: Int) =
+    this(Array.tabulate(k) { x =>
+      alpha
+    })
 
   def apply(arr: Array[Double]): Dirichlet[DenseVector[Double], Int] =
     Dirichlet(new DenseVector[Double](arr))

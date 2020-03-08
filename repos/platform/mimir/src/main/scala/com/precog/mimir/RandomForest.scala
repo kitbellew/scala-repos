@@ -615,7 +615,9 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         val table = table0.transform(spec)
 
         val schemas: M[List[JType]] =
-          table.transform(independentSpec).schemas map { _.toList }
+          table.transform(independentSpec).schemas map {
+            _.toList
+          }
 
         schemas flatMap (_ traverse { tpe =>
           makeForest(table, tpe) map (tpe -> _)
@@ -785,7 +787,9 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           t1.transform(trans.DerefObjectStatic(TransSpec1.Id, paths.Value))
         val forestsM = makeForests(trainingTable)
 
-        forestsM map { forests => (t2, morph1Apply(forests)) }
+        forestsM map { forests =>
+          (t2, morph1Apply(forests))
+        }
       }
     }
   }

@@ -50,7 +50,9 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
       _.filter(fk => tableNamersByQName.isDefinedAt(fk.pkTable))
         .groupBy(fk => (fk.pkTable, fk.fkName, fk.pkName, fk.fkTable))
         .toSeq
-        .sortBy { case (key, _) => (key._1.name, key._2, key._3, key._4.name) }
+        .sortBy {
+          case (key, _) => (key._1.name, key._2, key._3, key._4.name)
+        }
         .map(_._2.sortBy(_.keySeq)) // respect order
     )
 

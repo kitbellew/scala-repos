@@ -30,7 +30,9 @@ private[ui] class ExecutorThreadDumpPage(parent: ExecutorsTab)
 
   def render(request: HttpServletRequest): Seq[Node] = {
     val executorId = Option(request.getParameter("executorId"))
-      .map { executorId => UIUtils.decodeURLParameter(executorId) }
+      .map { executorId =>
+        UIUtils.decodeURLParameter(executorId)
+      }
       .getOrElse {
         throw new IllegalArgumentException(s"Missing executorId parameter")
       }
@@ -57,21 +59,45 @@ private[ui] class ExecutorThreadDumpPage(parent: ExecutorsTab)
           }
           .map { thread =>
             val threadId = thread.threadId
-            <tr id={s"thread_${threadId}_tr"} class="accordion-heading"
-            onclick={s"toggleThreadStackTrace($threadId, false)"}
-            onmouseover={s"onMouseOverAndOut($threadId)"}
-            onmouseout={s"onMouseOverAndOut($threadId)"}>
-          <td id={s"${threadId}_td_id"}>{threadId}</td>
-          <td id={s"${threadId}_td_name"}>{thread.threadName}</td>
-          <td id={s"${threadId}_td_state"}>{thread.threadState}</td>
-          <td id={s"${threadId}_td_stacktrace"} class="hidden">{
+            <tr id={
+              s"thread_${threadId}_tr"
+            } class="accordion-heading"
+            onclick={
+              s"toggleThreadStackTrace($threadId, false)"
+            }
+            onmouseover={
+              s"onMouseOverAndOut($threadId)"
+            }
+            onmouseout={
+              s"onMouseOverAndOut($threadId)"
+            }>
+          <td id={
+              s"${threadId}_td_id"
+            }>{
+              threadId
+            }</td>
+          <td id={
+              s"${threadId}_td_name"
+            }>{
+              thread.threadName
+            }</td>
+          <td id={
+              s"${threadId}_td_state"
+            }>{
+              thread.threadState
+            }</td>
+          <td id={
+              s"${threadId}_td_stacktrace"
+            } class="hidden">{
               thread.stackTrace
             }</td>
         </tr>
           }
 
         <div class="row-fluid">
-      <p>Updated at {UIUtils.formatDate(time)}</p>
+      <p>Updated at {
+          UIUtils.formatDate(time)
+        }</p>
       {
           // scalastyle:off
           <p><a class="expandbutton" onClick="expandAllThreadStackTrace(true)">
@@ -100,7 +126,9 @@ private[ui] class ExecutorThreadDumpPage(parent: ExecutorsTab)
           <th onClick="collapseAllThreadStackTrace(false)">Thread Name</th>
           <th onClick="collapseAllThreadStackTrace(false)">Thread State</th>
         </thead>
-        <tbody>{dumpRows}</tbody>
+        <tbody>{
+          dumpRows
+        }</tbody>
       </table>
     </div>
       }

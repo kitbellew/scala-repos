@@ -53,7 +53,9 @@ class Performance(
         result: BenchmarkResults[A]): BenchmarkResults[A] = {
       if (result.testRuns < parameters.testRuns) {
         val (t, r) = time(result.repCount, test)
-        parameters.restBetweenTests foreach { Thread.sleep }
+        parameters.restBetweenTests foreach {
+          Thread.sleep
+        }
         benchmark(test, result.add(t, r))
       } else {
         result

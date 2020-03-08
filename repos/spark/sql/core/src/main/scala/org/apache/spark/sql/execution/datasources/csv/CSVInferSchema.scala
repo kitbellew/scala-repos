@@ -64,7 +64,9 @@ private[csv] object CSVInferSchema {
       rowSoFar: Array[DataType],
       next: Array[String]): Array[DataType] = {
     var i = 0
-    while (i < math.min(rowSoFar.length, next.length)) { // May have columns on right missing.
+    while (i < math.min(
+             rowSoFar.length,
+             next.length)) { // May have columns on right missing.
       rowSoFar(i) = inferField(rowSoFar(i), next(i), nullValue)
       i += 1
     }

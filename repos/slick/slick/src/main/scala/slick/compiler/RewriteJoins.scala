@@ -132,7 +132,9 @@ class RewriteJoins extends Phase {
         sel1.replace(
           {
             case FwdPath(s :: rest) if s == s1 =>
-              rest.foldLeft(f1) { case (n, s) => n.select(s) }
+              rest.foldLeft(f1) {
+                case (n, s) => n.select(s)
+              }
           },
           keepType = true)) :@ n.nodeType
       logger.debug("Inlined Pure 'from' in:", res)
@@ -151,7 +153,9 @@ class RewriteJoins extends Phase {
         case n       => (n, Set.empty[TypeSymbol])
       }) match {
         case (Filter(s, f, p), invalid) =>
-          val p2 = p.replace({ case Ref(rs) :@ tpe if rs == s => Ref(ts) })
+          val p2 = p.replace({
+            case Ref(rs) :@ tpe if rs == s => Ref(ts)
+          })
           val (f2, pOpt, invalid2) = hoist(ts, f)
           (f2, Some(and(pOpt, p2)), invalid ++ invalid2)
         case (n, invalid) => (n, None, invalid)
@@ -196,7 +200,9 @@ class RewriteJoins extends Phase {
               p,
               (
                 pOnBGen, /*None: Option[Symbol]*/ struct1
-                  .find { case (s, n) => pOnBGen == n }
+                  .find {
+                    case (s, n) => pOnBGen == n
+                  }
                   .map(_._1)))
         }.toMap
         logger.debug(
@@ -206,8 +212,10 @@ class RewriteJoins extends Phase {
         }
         logger.debug("New references for predicate: " + newDefs.mkString(", "))
         val allRefs = foundRefs.collect {
-          case (p, (_, Some(s)))            => (p, s)
-        } ++ newDefs.map { case (p, (_, s)) => (p, s) }
+          case (p, (_, Some(s))) => (p, s)
+        } ++ newDefs.map {
+          case (p, (_, s)) => (p, s)
+        }
         logger.debug(
           "All reference mappings for predicate: " + allRefs.mkString(", "))
         val (sel, tss) =
@@ -268,8 +276,9 @@ class RewriteJoins extends Phase {
             ", ") + "] with OK base " + ok + " out of:",
           sn)
         val requiredOkPaths = illegalDefs
-          .flatMap(
-            _._2.collect { case p @ FwdPath(s :: _) if s == ok => p }.toSeq)
+          .flatMap(_._2.collect {
+            case p @ FwdPath(s :: _) if s == ok => p
+          }.toSeq)
           .toSet
         val existingOkDefs = legalDefs.collect {
           case (s, p @ FwdPath(s2 :: _)) if s2 == ok => (p, s)
@@ -279,8 +288,9 @@ class RewriteJoins extends Phase {
           .toMap
         val sn2 = StructNode(ConstArray.from(legalDefs ++ createDefs))
         logger.debug("Pulled refs out of:", sn2)
-        val replacements =
-          (existingOkDefs ++ createDefs.map { case (s, n) => (n, s) }).toMap
+        val replacements = (existingOkDefs ++ createDefs.map {
+          case (s, n) => (n, s)
+        }).toMap
         def rebase(n: Node): Node =
           n.replace(
             {
@@ -307,7 +317,11 @@ class RewriteJoins extends Phase {
         if (sn2 eq sn1) (b, Map.empty)
         else {
           val b2 = b.copy(select = Pure(sn2, ts)).infer()
-          (b2, pulled.map { case (s, n) => (s :: Nil, n) })
+          (
+            b2,
+            pulled.map {
+              case (s, n) => (s :: Nil, n)
+            })
         }
       case n => (n, Map.empty)
     }
@@ -336,8 +350,12 @@ class RewriteJoins extends Phase {
       logger.debug(
         "Eliminated illegal refs [" + illegal.mkString(", ") + "] in:",
         j2)
-      val m = l1m.map { case (p, n) => (ElementSymbol(1) :: p, n) } ++
-        r1m.map { case (p, n)       => (ElementSymbol(2) :: p, n) }
+      val m = l1m.map {
+        case (p, n) => (ElementSymbol(1) :: p, n)
+      } ++
+        r1m.map {
+          case (p, n) => (ElementSymbol(2) :: p, n)
+        }
       val m2 = m.mapValues(
         _.replace(
           {
@@ -427,7 +445,12 @@ class RewriteJoins extends Phase {
         Pure(StructNode(p2), ts2)) =>
       def isAliasing(s: ConstArray[(TermSymbol, Node)]) = s.forall {
         case (_, n) =>
-          n.collect({ case Path(_) => true }, stopOnMatch = true).length <= 1
+          n.collect(
+              {
+                case Path(_) => true
+              },
+              stopOnMatch = true)
+            .length <= 1
       }
       val a1 = isAliasing(p1)
       if (a1 || isAliasing(p2)) {

@@ -3,6 +3,8 @@ class M(val t: Int) extends AnyVal {
     object X
     class Y
 
-    () => { X; new Y }
+    () => {
+      X; new Y
+    }
   }
 }

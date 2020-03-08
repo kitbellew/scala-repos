@@ -25,13 +25,17 @@ class ActorTimeoutSpec extends AkkaSpec {
       implicit val timeout = Timeout(testTimeout)
       val echo = system.actorOf(Props.empty)
       val f = (echo ? "hallo")
-      intercept[AskTimeoutException] { Await.result(f, testTimeout + leeway) }
+      intercept[AskTimeoutException] {
+        Await.result(f, testTimeout + leeway)
+      }
     }
 
     "use explicitly supplied timeout" in {
       val echo = system.actorOf(Props.empty)
       val f = echo.?("hallo")(testTimeout)
-      intercept[AskTimeoutException] { Await.result(f, testTimeout + leeway) }
+      intercept[AskTimeoutException] {
+        Await.result(f, testTimeout + leeway)
+      }
     }
   }
 }

@@ -150,7 +150,11 @@ private[camel] class ActorProducer(val endpoint: ActorEndpoint, camel: Camel)
     val isDone = new CountDownLatch(1)
     processExchangeAdapter(
       exchange,
-      new AsyncCallback { def done(doneSync: Boolean) { isDone.countDown() } })
+      new AsyncCallback {
+        def done(doneSync: Boolean) {
+          isDone.countDown()
+        }
+      })
     isDone.await(endpoint.replyTimeout.length, endpoint.replyTimeout.unit)
   }
 
@@ -198,10 +202,14 @@ private[camel] class ActorProducer(val endpoint: ActorEndpoint, camel: Camel)
       val async =
         try actorFor(endpoint.path)
           .ask(messageFor(exchange))(Timeout(endpoint.replyTimeout))
-        catch { case NonFatal(e) ⇒ Future.failed(e) }
+        catch {
+          case NonFatal(e) ⇒ Future.failed(e)
+        }
       implicit val ec =
         camel.system.dispatcher // FIXME which ExecutionContext should be used here?
-      async.onComplete(action andThen { _ ⇒ callback.done(false) })
+      async.onComplete(action andThen { _ ⇒
+        callback.done(false)
+      })
       false
     }
 
@@ -211,8 +219,11 @@ private[camel] class ActorProducer(val endpoint: ActorEndpoint, camel: Camel)
   private def fireAndForget(
       message: CamelMessage,
       exchange: CamelExchangeAdapter): Unit =
-    try { actorFor(endpoint.path) ! message }
-    catch { case NonFatal(e) ⇒ exchange.setFailure(new FailureResult(e)) }
+    try {
+      actorFor(endpoint.path) ! message
+    } catch {
+      case NonFatal(e) ⇒ exchange.setFailure(new FailureResult(e))
+    }
 
   private[this] def actorFor(path: ActorEndpointPath): ActorRef =
     path.findActorIn(

@@ -159,7 +159,9 @@ trait Logic extends Debugging {
         val newSym = new Sym(variable, const)
         (uniques findEntryOrUpdate newSym)
       }
-      def nextSymId = { _symId += 1; _symId }; private var _symId = 0
+      def nextSymId = {
+        _symId += 1; _symId
+      }; private var _symId = 0
       implicit val SymOrdering: Ordering[Sym] = Ordering.by(_.id)
     }
 
@@ -384,7 +386,9 @@ trait Logic extends Debugging {
         // exactly one of the types (and whatever it implies, imposed separately) must be chosen
         // consider X ::= A | B | C, and A => B
         // coverage is formulated as: A \/ B \/ C and the implications are
-        v.domainSyms foreach { dsyms => addAxiom(\/(dsyms)) }
+        v.domainSyms foreach { dsyms =>
+          addAxiom(\/(dsyms))
+        }
 
         // when this variable cannot be null the equality corresponding to the type test `(x: T)`, where T is x's static type,
         // is always true; when the variable may be null we use the implication `(x != null) => (x: T)` for the axiom
@@ -463,9 +467,13 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
 
     object Var extends VarExtractor {
       private var _nextId = 0
-      def nextId = { _nextId += 1; _nextId }
+      def nextId = {
+        _nextId += 1; _nextId
+      }
 
-      def resetUniques() = { _nextId = 0; uniques.clear() }
+      def resetUniques() = {
+        _nextId = 0; uniques.clear()
+      }
       private val uniques = new mutable.HashMap[Tree, Var]
       def apply(x: Tree): Var = uniques getOrElseUpdate (x, new Var(x, x.tpe))
       def unapply(v: Var) = Some(v.path)
@@ -708,10 +716,14 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
       }
 
       private var _nextTypeId = 0
-      def nextTypeId = { _nextTypeId += 1; _nextTypeId }
+      def nextTypeId = {
+        _nextTypeId += 1; _nextTypeId
+      }
 
       private var _nextValueId = 0
-      def nextValueId = { _nextValueId += 1; _nextValueId }
+      def nextValueId = {
+        _nextValueId += 1; _nextValueId
+      }
 
       private val uniques = new mutable.HashMap[Type, Const]
       private[TreesAndTypesDomain] def unique(
@@ -719,7 +731,9 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
           mkFresh: => Const): Const =
         uniques
           .get(tp)
-          .getOrElse(uniques.find { case (oldTp, oldC) => oldTp =:= tp } match {
+          .getOrElse(uniques.find {
+            case (oldTp, oldC) => oldTp =:= tp
+          } match {
             case Some((_, c)) =>
               debug.patmat("unique const: " + ((tp, c)))
               c

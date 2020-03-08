@@ -83,7 +83,9 @@ private[graphx] class EdgePartition[
   /** Return a new `EdgePartition` with the specified active set, provided as an iterator. */
   def withActiveSet(iter: Iterator[VertexId]): EdgePartition[ED, VD] = {
     val activeSet = new VertexSet
-    while (iter.hasNext) { activeSet.add(iter.next()) }
+    while (iter.hasNext) {
+      activeSet.add(iter.next())
+    }
     new EdgePartition(
       localSrcIds,
       localDstIds,
@@ -342,10 +344,14 @@ private[graphx] class EdgePartition[
       val srcId = this.srcIds(i)
       val dstId = this.dstIds(i)
       // ... forward j to the index of the corresponding edge in `other`, and...
-      while (j < other.size && other.srcIds(j) < srcId) { j += 1 }
+      while (j < other.size && other.srcIds(j) < srcId) {
+        j += 1
+      }
       if (j < other.size && other.srcIds(j) == srcId) {
         while (j < other.size && other.srcIds(j) == srcId && other.dstIds(
-                 j) < dstId) { j += 1 }
+                 j) < dstId) {
+          j += 1
+        }
         if (j < other.size && other.srcIds(j) == srcId && other.dstIds(
               j) == dstId) {
           // ... run `f` on the matching edge

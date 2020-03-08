@@ -57,13 +57,27 @@ class ActorDSLSpec extends AkkaSpec {
       import system.dispatcher
       val res = Future.sequence(
         Seq(
-          Future { i.receive() } recover { case x ⇒ x },
           Future {
-            Thread.sleep(100); i.select() { case "world" ⇒ 1 }
-          } recover { case x ⇒ x },
+            i.receive()
+          } recover {
+            case x ⇒ x
+          },
           Future {
-            Thread.sleep(200); i.select() { case "hello" ⇒ 2 }
-          } recover { case x ⇒ x }
+            Thread.sleep(100);
+            i.select() {
+              case "world" ⇒ 1
+            }
+          } recover {
+            case x ⇒ x
+          },
+          Future {
+            Thread.sleep(200);
+            i.select() {
+              case "hello" ⇒ 2
+            }
+          } recover {
+            case x ⇒ x
+          }
         ))
       Thread.sleep(1000)
       res.isCompleted should ===(false)
@@ -165,8 +179,12 @@ class ActorDSLSpec extends AkkaSpec {
     "support setup/teardown" in {
       //#simple-start-stop
       val a = actor(new Act {
-        whenStarting { testActor ! "started" }
-        whenStopping { testActor ! "stopped" }
+        whenStarting {
+          testActor ! "started"
+        }
+        whenStopping {
+          testActor ! "stopped"
+        }
       })
       //#simple-start-stop
 
@@ -181,16 +199,24 @@ class ActorDSLSpec extends AkkaSpec {
         become {
           case "die" ⇒ throw new Exception
         }
-        whenFailing { case m @ (cause, msg) ⇒ testActor ! m }
-        whenRestarted { cause ⇒ testActor ! cause }
+        whenFailing {
+          case m @ (cause, msg) ⇒ testActor ! m
+        }
+        whenRestarted { cause ⇒
+          testActor ! cause
+        }
       })
       //#failing-actor
 
       EventFilter[Exception](occurrences = 1) intercept {
         a ! "die"
       }
-      expectMsgPF() { case (x: Exception, Some("die")) ⇒ }
-      expectMsgPF() { case _: Exception ⇒ }
+      expectMsgPF() {
+        case (x: Exception, Some("die")) ⇒
+      }
+      expectMsgPF() {
+        case _: Exception ⇒
+      }
     }
 
     "support superviseWith" in {
@@ -203,7 +229,8 @@ class ActorDSLSpec extends AkkaSpec {
         })
         //#supervise-with
         val child = actor("child")(new Act {
-          whenFailing { (_, _) ⇒ }
+          whenFailing { (_, _) ⇒
+          }
           become {
             case ref: ActorRef ⇒ whenStopping(ref ! "stopped")
             case ex: Exception ⇒ throw ex
@@ -230,7 +257,9 @@ class ActorDSLSpec extends AkkaSpec {
       // here we pass in the ActorRefFactory explicitly as an example
       val a = actor(system, "fred")(new Act {
         val b = actor("barney")(new Act {
-          whenStarting { context.parent ! ("hello from " + self.path) }
+          whenStarting {
+            context.parent ! ("hello from " + self.path)
+          }
         })
         become {
           case x ⇒ testActor ! x

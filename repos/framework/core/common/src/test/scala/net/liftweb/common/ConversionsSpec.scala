@@ -90,14 +90,20 @@ class ConversionsSpec extends Specification with XmlMatchers {
     }
 
     "be created by a constant that can be converted to a NodeSeq" in {
-      implicit def intToNS(in: Int): NodeSeq = <a>{in}</a>
+      implicit def intToNS(in: Int): NodeSeq =
+        <a>{
+          in
+        }</a>
       val sf: NodeSeqFunc = 55
 
       sf.func() must ==/(<a>55</a>)
     }
 
     "be created by a function that can be converted to a NodeSeq" in {
-      implicit def intToNodeSeq(in: Int): NodeSeq = <a>{in}</a>
+      implicit def intToNodeSeq(in: Int): NodeSeq =
+        <a>{
+          in
+        }</a>
       val sf: NodeSeqFunc = () => 55
 
       sf.func() must ==/(<a>55</a>)

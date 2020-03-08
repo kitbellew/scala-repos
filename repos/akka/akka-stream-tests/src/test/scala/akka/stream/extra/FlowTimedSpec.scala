@@ -38,7 +38,10 @@ class FlowTimedSpec extends AkkaSpec with ScriptedTest {
       val n = 20
       val testRuns = 1 to 2
 
-      def script = Script((1 to n) map { x ⇒ Seq(x) -> Seq(x) }: _*)
+      def script =
+        Script((1 to n) map { x ⇒
+          Seq(x) -> Seq(x)
+        }: _*)
       testRuns foreach (_ ⇒
         runScript(script, settings) { flow ⇒
           flow
@@ -66,13 +69,18 @@ class FlowTimedSpec extends AkkaSpec with ScriptedTest {
 
       val testRuns = 1 to 3
 
-      def script = Script((1 to n) map { x ⇒ Seq(x) -> Seq(x) }: _*)
+      def script =
+        Script((1 to n) map { x ⇒
+          Seq(x) -> Seq(x)
+        }: _*)
       testRuns foreach (_ ⇒
         runScript(script, settings) { flow ⇒
           flow.timed(_.map(identity), onComplete = printInfo)
         })
 
-      testRuns foreach { _ ⇒ testActor.expectMsgType[Duration] }
+      testRuns foreach { _ ⇒
+        testActor.expectMsgType[Duration]
+      }
       testActor.expectNoMsg(1.second)
     }
 
@@ -112,7 +120,9 @@ class FlowTimedSpec extends AkkaSpec with ScriptedTest {
           .timed(
             _.map(_.toDouble).map(_.toInt).map(_.toString),
             duration ⇒ probe.ref ! duration)
-          .map { s: String ⇒ s + "!" }
+          .map { s: String ⇒
+            s + "!"
+          }
 
       val (flowIn: Subscriber[Int], flowOut: Publisher[String]) =
         flow.runWith(Source.asSubscriber[Int], Sink.asPublisher[String](false))
@@ -125,7 +135,9 @@ class FlowTimedSpec extends AkkaSpec with ScriptedTest {
 
       val s = c1.expectSubscription()
       s.request(200)
-      0 to 100 foreach { i ⇒ c1.expectNext(i.toString + "!") }
+      0 to 100 foreach { i ⇒
+        c1.expectNext(i.toString + "!")
+      }
       c1.expectComplete()
 
       val duration = probe.expectMsgType[Duration]

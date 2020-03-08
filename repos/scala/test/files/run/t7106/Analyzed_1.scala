@@ -1,4 +1,6 @@
-abstract class Base0 { def p2: Int }
+abstract class Base0 {
+  def p2: Int
+}
 class Base(p1: Int, override val p2: Int) extends Base0
 
 abstract class Sub1(q1: Int, q2: Int, q3: Int) extends Base(q1, q2) {

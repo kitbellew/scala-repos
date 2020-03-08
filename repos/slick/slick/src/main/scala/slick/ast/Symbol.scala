@@ -77,8 +77,9 @@ trait DefNode extends Node {
         (o, ch)
     }
     val mapped = all.map(f.tupled)
-    if (ch.zip(mapped).force.exists { case (n1, n2) => n1 ne n2 })
-      rebuild(mapped).asInstanceOf[Self with DefNode]
+    if (ch.zip(mapped).force.exists {
+          case (n1, n2) => n1 ne n2
+        }) rebuild(mapped).asInstanceOf[Self with DefNode]
     else this
   }
   final def mapSymbols(f: TermSymbol => TermSymbol): Node = {

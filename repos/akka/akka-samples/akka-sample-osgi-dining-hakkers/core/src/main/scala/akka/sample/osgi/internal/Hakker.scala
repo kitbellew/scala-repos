@@ -198,7 +198,9 @@ class Hakker(name: String, chair: Int) extends Actor {
 
   def pubStateChange(from: String, to: String): Unit = {
     val chg = HakkerStateChange(name, from, to)
-    subscribers foreach { _ ! chg }
+    subscribers foreach {
+      _ ! chg
+    }
   }
 
 }

@@ -215,7 +215,9 @@ trait TraitContext[This <: android.content.Context] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#setTheme(int) setTheme(int)]]`
     */
-  @inline def theme_=(p: Int) = { basis.setTheme(p); basis }
+  @inline def theme_=(p: Int) = {
+    basis.setTheme(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#getWallpaper() getWallpaper()]]`

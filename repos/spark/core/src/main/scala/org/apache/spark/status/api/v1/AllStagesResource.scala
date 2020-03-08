@@ -84,7 +84,9 @@ private[v1] object AllStagesResource {
       }
 
     val taskData = if (includeDetails) {
-      Some(stageUiData.taskData.map { case (k, v) => k -> convertTaskData(v) })
+      Some(stageUiData.taskData.map {
+        case (k, v) => k -> convertTaskData(v)
+      })
     } else {
       None
     }
@@ -167,7 +169,9 @@ private[v1] object AllStagesResource {
         convertAccumulableInfo
       },
       errorMessage = uiData.errorMessage,
-      taskMetrics = uiData.taskMetrics.map { convertUiTaskMetrics }
+      taskMetrics = uiData.taskMetrics.map {
+        convertUiTaskMetrics
+      }
     )
   }
 
@@ -175,10 +179,14 @@ private[v1] object AllStagesResource {
       allTaskData: Iterable[TaskUIData],
       quantiles: Array[Double]): TaskMetricDistributions = {
 
-    val rawMetrics = allTaskData.flatMap { _.taskMetrics }.toSeq
+    val rawMetrics = allTaskData.flatMap {
+      _.taskMetrics
+    }.toSeq
 
     def metricQuantiles(f: InternalTaskMetrics => Double): IndexedSeq[Double] =
-      Distribution(rawMetrics.map { d => f(d) }).get.getQuantiles(quantiles)
+      Distribution(rawMetrics.map { d =>
+        f(d)
+      }).get.getQuantiles(quantiles)
 
     // We need to do a lot of similar munging to nested metrics here.  For each one,
     // we want (a) extract the values for nested metrics (b) make a distribution for each metric
@@ -285,7 +293,9 @@ private[v1] object AllStagesResource {
       resultSerializationTime = internal.resultSerializationTime,
       memoryBytesSpilled = internal.memoryBytesSpilled,
       diskBytesSpilled = internal.diskBytesSpilled,
-      inputMetrics = internal.inputMetrics.map { convertInputMetrics },
+      inputMetrics = internal.inputMetrics.map {
+        convertInputMetrics
+      },
       outputMetrics = Option(internal.outputMetrics).flatten.map {
         convertOutputMetrics
       },
@@ -352,7 +362,9 @@ private[v1] abstract class MetricHelper[I, O](
 
   /** applies the given function to all input metrics, and returns the quantiles */
   def submetricQuantiles(f: I => Double): IndexedSeq[Double] = {
-    Distribution(data.map { d => f(d) }).get.getQuantiles(quantiles)
+    Distribution(data.map { d =>
+      f(d)
+    }).get.getQuantiles(quantiles)
   }
 
   def metricOption: Option[O] = {

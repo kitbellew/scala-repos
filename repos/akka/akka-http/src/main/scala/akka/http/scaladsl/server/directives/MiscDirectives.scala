@@ -70,9 +70,15 @@ object MiscDirectives extends MiscDirectives {
   import RouteResult._
 
   private val _extractClientIP: Directive1[RemoteAddress] =
-    headerValuePF { case `X-Forwarded-For`(Seq(address, _*)) ⇒ address } |
-      headerValuePF { case `Remote-Address`(address) ⇒ address } |
-      headerValuePF { case `X-Real-Ip`(address) ⇒ address }
+    headerValuePF {
+      case `X-Forwarded-For`(Seq(address, _*)) ⇒ address
+    } |
+      headerValuePF {
+        case `Remote-Address`(address) ⇒ address
+      } |
+      headerValuePF {
+        case `X-Real-Ip`(address) ⇒ address
+      }
 
   private val _requestEntityEmpty: Directive0 =
     extract(_.request.entity.isKnownEmpty).flatMap(if (_) pass else reject)

@@ -127,9 +127,13 @@ object ASMConverters {
   case class NewArray(opcode: Int, desc: String, dims: Int) extends Instruction
   case class TypeOp(opcode: Int, desc: String) extends Instruction
   case class VarOp(opcode: Int, `var`: Int) extends Instruction
-  case class Label(offset: Int) extends Instruction { def opcode: Int = -1 }
+  case class Label(offset: Int) extends Instruction {
+    def opcode: Int = -1
+  }
   case class FrameEntry(`type`: Int, local: List[Any], stack: List[Any])
-      extends Instruction { def opcode: Int = -1 }
+      extends Instruction {
+    def opcode: Int = -1
+  }
   case class LineNumber(line: Int, start: Label) extends Instruction {
     def opcode: Int = -1
   }
@@ -266,7 +270,9 @@ object ASMConverters {
       if (m contains v1) m(v1) == v2
       else if (m.valuesIterator contains v2)
         false // v2 is already associated with some different value v1
-      else { m(v1) = v2; true }
+      else {
+        m(v1) = v2; true
+      }
     }
     def sameVar(v1: Int, v2: Int) = same(v1, v2, varMap)
     def sameLabel(l1: Label, l2: Label) = same(l1.offset, l2.offset, labelMap)

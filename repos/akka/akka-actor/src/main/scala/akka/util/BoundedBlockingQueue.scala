@@ -71,7 +71,8 @@ class BoundedBlockingQueue[E <: AnyRef](
     } finally lock.unlock()
   }
 
-  def offer(e: E): Boolean = { //Tries to do it immediately, if fail return false
+  def offer(
+      e: E): Boolean = { //Tries to do it immediately, if fail return false
     if (e eq null) throw new NullPointerException
     lock.lock()
     try {
@@ -84,7 +85,11 @@ class BoundedBlockingQueue[E <: AnyRef](
     } finally lock.unlock()
   }
 
-  def offer(e: E, timeout: Long, unit: TimeUnit): Boolean = { //Tries to do it within the timeout, return false if fail
+  def offer(
+      e: E,
+      timeout: Long,
+      unit: TimeUnit)
+      : Boolean = { //Tries to do it within the timeout, return false if fail
     if (e eq null) throw new NullPointerException
     lock.lockInterruptibly()
     try {
@@ -100,7 +105,10 @@ class BoundedBlockingQueue[E <: AnyRef](
     } finally lock.unlock()
   }
 
-  def poll(timeout: Long, unit: TimeUnit): E = { //Tries to do it within the timeout, returns null if fail
+  def poll(
+      timeout: Long,
+      unit: TimeUnit)
+      : E = { //Tries to do it within the timeout, returns null if fail
     lock.lockInterruptibly()
     try {
       @tailrec def pollElement(remainingNanos: Long): E = {
@@ -129,7 +137,9 @@ class BoundedBlockingQueue[E <: AnyRef](
     } finally lock.unlock()
   }
 
-  override def remove(e: AnyRef): Boolean = { //Tries to do it immediately, if fail, return false
+  override def remove(
+      e: AnyRef)
+      : Boolean = { //Tries to do it immediately, if fail, return false
     if (e eq null) throw new NullPointerException
     lock.lock()
     try {

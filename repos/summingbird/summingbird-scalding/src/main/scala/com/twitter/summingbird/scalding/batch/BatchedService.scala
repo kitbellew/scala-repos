@@ -63,7 +63,9 @@ trait BatchedService[K, V] extends ExternalService[K, V] {
 
     implicit val ord = ordering
     LookupJoin(incoming, servStream, reducers)
-      .map { case (t, (k, (w, optoptv))) => (t, (k, (w, flatOpt(optoptv)))) }
+      .map {
+        case (t, (k, (w, optoptv))) => (t, (k, (w, flatOpt(optoptv))))
+      }
   }
 
   protected def batchedLookup[W](
@@ -78,7 +80,9 @@ trait BatchedService[K, V] extends ExternalService[K, V] {
         val earliestInLast = batcher.earliestTimeOf(last._1)
         val liftedLast: KeyValuePipe[K, Option[V]] = last
           ._2(flowMode)
-          .map { case (k, w) => (earliestInLast, (k, Some(w))) }
+          .map {
+            case (k, w) => (earliestInLast, (k, Some(w)))
+          }
         // TODO (https://github.com/twitter/summingbird/issues/91): we
         // could not bother to load streams outside the covers, but
         // probably we aren't anyway assuming the time spans are not
@@ -103,17 +107,25 @@ trait BatchedService[K, V] extends ExternalService[K, V] {
           val (startingBatch, init) = batchLastFlow
           val streamBatches =
             BatchID.range(startingBatch.next, coveringBatches.max)
-          val batchStreams = streamBatches.map { b => (b, readStream(b, mode)) }
+          val batchStreams = streamBatches.map { b =>
+            (b, readStream(b, mode))
+          }
           // only produce continuous output, so stop at the first none:
           val existing = batchStreams
-            .takeWhile { _._2.isDefined }
-            .collect { case (batch, Some(flow)) => (batch, flow) }
+            .takeWhile {
+              _._2.isDefined
+            }
+            .collect {
+              case (batch, Some(flow)) => (batch, flow)
+            }
 
           if (existing.isEmpty) {
             Left(List(
               "[ERROR] Could not load any batches of the service stream in: " + toString + " for: " + timeSpan.toString))
           } else {
-            val inBatches = List(startingBatch) ++ existing.map { _._1 }
+            val inBatches = List(startingBatch) ++ existing.map {
+              _._1
+            }
             val bInt =
               BatchID
                 .toInterval(inBatches)

@@ -1,6 +1,8 @@
 object Magic {
   class O[X, Y] {
-    abstract class I { type T >: X <: Y; }
+    abstract class I {
+      type T >: X <: Y;
+    }
     val i: I = null;
     def magic(v: i.T): i.T = v;
   }

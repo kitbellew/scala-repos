@@ -20,7 +20,9 @@ object Cli extends LilaController {
       {
         case (command, password) =>
           CliAuth(password) {
-            Env.api.cli(command.split(" ").toList) map { res => Ok(res) }
+            Env.api.cli(command.split(" ").toList) map { res =>
+              Ok(res)
+            }
           }
       })
   }

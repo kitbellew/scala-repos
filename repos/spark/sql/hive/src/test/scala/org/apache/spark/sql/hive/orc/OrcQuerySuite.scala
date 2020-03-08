@@ -122,7 +122,9 @@ class OrcQuerySuite extends QueryTest with BeforeAndAfterAll with OrcTest {
       Person(
         s"name_$i",
         i,
-        (0 to 1).map { m => Contact(s"contact_$m", s"phone_$m") })
+        (0 to 1).map { m =>
+          Contact(s"contact_$m", s"phone_$m")
+        })
     }
 
     withOrcTable(data, "t") {

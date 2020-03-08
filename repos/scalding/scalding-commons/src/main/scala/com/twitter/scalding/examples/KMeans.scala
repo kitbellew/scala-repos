@@ -12,23 +12,31 @@ object KMeans {
     math.sqrt(
       v1.iterator
         .zip(v2.iterator)
-        .map { case (l, r) => (l - r) * (l - r) }
+        .map {
+          case (l, r) => (l - r) * (l - r)
+        }
         .sum)
 
   // Just normal vector addition
   private def add(v1: Vector[Double], v2: Vector[Double]): Vector[Double] =
-    v1.zip(v2).map { case (l, r) => l + r }
+    v1.zip(v2).map {
+      case (l, r) => l + r
+    }
 
   // normal scalar multiplication
   private def scale(s: Double, v: Vector[Double]): Vector[Double] =
-    v.map { x => s * x }
+    v.map { x =>
+      s * x
+    }
 
   // Here we return the centroid of some vectors
   private def centroidOf(
       vecs: TraversableOnce[Vector[Double]]): Vector[Double] = {
     val (vec, count) = vecs
     // add a 1 to each value to count the number of vectors in one pass:
-      .map { v => (v, 1) }
+      .map { v =>
+        (v, 1)
+      }
       // Here we add both the count and the vectors:
       .reduce { (ll, rr) =>
         val (l, lc) = ll
@@ -44,9 +52,13 @@ object KMeans {
       centroids: TraversableOnce[(Id, Vector[Double])]): (Id, Vector[Double]) =
     centroids
     // compute the distance to each center
-      .map { case (id, cent) => (distance(from, cent), (id, cent)) }
+      .map {
+        case (id, cent) => (distance(from, cent), (id, cent))
+      }
       // take the minimum by the distance, ignoring the id and the centroid
-      .minBy { case (dist, _) => dist }
+      .minBy {
+        case (dist, _) => dist
+      }
       // Just keep the id and the centroid
       ._2
 
@@ -87,7 +99,9 @@ object KMeans {
           pipe.group
           // There is no need to use more than k reducers
             .withReducers(k)
-            .mapValueStream { vectors => Iterator(centroidOf(vectors)) }
+            .mapValueStream { vectors =>
+              Iterator(centroidOf(vectors))
+            }
             // Now collect them all into one big
             .groupAll
             .toList
@@ -102,16 +116,22 @@ object KMeans {
     val rng = new java.util.Random(123)
     // take a random k vectors:
     val clusters = points
-      .map { v => (rng.nextDouble, v) }
+      .map { v =>
+        (rng.nextDouble, v)
+      }
       .groupAll
       .sortedTake(k)(Ordering.by(_._1))
       .mapValues { randk =>
-        randk.iterator.zipWithIndex.map { case ((_, v), id) => (id, v) }.toList
+        randk.iterator.zipWithIndex.map {
+          case ((_, v), id) => (id, v)
+        }.toList
       }
       .values
 
     // attach a random cluster to each vector
-    val labeled = points.map { v => (rng.nextInt(k), v) }
+    val labeled = points.map { v =>
+      (rng.nextInt(k), v)
+    }
 
     (ComputedValue(clusters), labeled)
   }
@@ -142,7 +162,9 @@ object KMeans {
             else go(s, nextC, nextP, step + 1)
         }
 
-    Execution.withId { implicit uid => go(Stat(key), clusters, points, 0) }
+    Execution.withId { implicit uid =>
+      go(Stat(key), clusters, points, 0)
+    }
   }
 
   def apply(k: Int, points: TypedPipe[Vector[Double]]): Execution[

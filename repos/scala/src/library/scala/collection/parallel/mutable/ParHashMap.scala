@@ -80,7 +80,9 @@ class ParHashMap[K, V] private[collection] (
   def put(key: K, value: V): Option[V] = {
     val e = findOrAddEntry(key, value)
     if (e eq null) None
-    else { val v = e.value; e.value = value; Some(v) }
+    else {
+      val v = e.value; e.value = value; Some(v)
+    }
   }
 
   def update(key: K, value: V): Unit = put(key, value)
@@ -97,7 +99,9 @@ class ParHashMap[K, V] private[collection] (
     this
   }
 
-  def -=(key: K): this.type = { removeEntry(key); this }
+  def -=(key: K): this.type = {
+    removeEntry(key); this
+  }
 
   override def stringPrefix = "ParHashMap"
 
@@ -154,7 +158,9 @@ class ParHashMap[K, V] private[collection] (
       if (e eq null) 0 else 1 + count(e.next)
     val expected = sizemap(i)
     val found = ((i * sizeMapBucketSize) until ((i + 1) * sizeMapBucketSize))
-      .foldLeft(0) { (acc, c) => acc + count(table(c)) }
+      .foldLeft(0) { (acc, c) =>
+        acc + count(table(c))
+      }
     if (found != expected)
       List("Found " + found + " elements, while sizemap showed " + expected)
     else Nil
@@ -228,7 +234,9 @@ private[mutable] abstract class ParHashMapCombiner[K, V](
       // TODO parallelize by keeping separate sizemaps and merging them
       object table extends HashTable[K, DefaultEntry[K, V]] {
         type Entry = DefaultEntry[K, V]
-        def insertEntry(e: Entry) { super.findOrAddEntry(e.key, e) }
+        def insertEntry(e: Entry) {
+          super.findOrAddEntry(e.key, e)
+        }
         def createNewEntry[E](key: K, entry: E): Entry =
           entry.asInstanceOf[Entry]
         sizeMapInit(table.length)

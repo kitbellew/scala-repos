@@ -10,7 +10,9 @@ object Test extends App {
     println("ListSet.tail should not use a builder!")
 
   // class that always causes hash collisions
-  case class Collision(value: Int) { override def hashCode = 0 }
+  case class Collision(value: Int) {
+    override def hashCode = 0
+  }
 
   // create a set that should have a collison
   val x = HashSet.empty + Collision(0) + Collision(1)

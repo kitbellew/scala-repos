@@ -211,7 +211,9 @@ final class InMemoryReadableByteChannel(bytes: Array[Byte])
   val buffer = ByteBuffer.wrap(bytes)
 
   var isOpen = true
-  def close() { isOpen = false }
+  def close() {
+    isOpen = false
+  }
   def read(dst: ByteBuffer): Int =
     if (buffer.remaining() == 0) {
       -1

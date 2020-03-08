@@ -75,7 +75,9 @@ object Connection extends App {
       val a = q.result
       val f: Future[Seq[String]] = db.run(a)
 
-      f.onSuccess { case s => println(s"Result: $s") }
+      f.onSuccess {
+        case s => println(s"Result: $s")
+      }
       //#materialize
       Await.result(f, Duration.Inf)
     };
@@ -90,7 +92,9 @@ object Connection extends App {
       //#stream
       val f =
         //#stream
-        p.foreach { s => println(s"Element: $s") }
+        p.foreach { s =>
+          println(s"Element: $s")
+        }
       //#stream
       Await.result(f, Duration.Inf)
     };

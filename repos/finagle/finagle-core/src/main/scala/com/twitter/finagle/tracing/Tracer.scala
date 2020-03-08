@@ -87,7 +87,9 @@ trait Tracer {
 
 class NullTracer extends Tracer {
   val factory: Tracer.Factory = () => this
-  def record(record: Record): Unit = { /*ignore*/ }
+  def record(record: Record): Unit = {
+    /*ignore*/
+  }
   def sampleTrace(traceId: TraceId): Option[Boolean] = None
 }
 
@@ -122,13 +124,19 @@ object BroadcastTracer {
 
   private class N(tracers: Seq[Tracer]) extends Tracer {
     def record(record: Record): Unit = {
-      tracers foreach { _.record(record) }
+      tracers foreach {
+        _.record(record)
+      }
     }
 
     def sampleTrace(traceId: TraceId): Option[Boolean] = {
-      if (tracers exists { _.sampleTrace(traceId) == Some(true) })
+      if (tracers exists {
+            _.sampleTrace(traceId) == Some(true)
+          })
         Some(true)
-      else if (tracers forall { _.sampleTrace(traceId) == Some(false) })
+      else if (tracers forall {
+                 _.sampleTrace(traceId) == Some(false)
+               })
         Some(false)
       else
         None
@@ -168,7 +176,9 @@ class BufferingTracer extends Tracer with Iterable[Record] {
 
   def iterator: Iterator[Record] = synchronized(buf).reverseIterator
 
-  def clear(): Unit = synchronized { buf = Nil }
+  def clear(): Unit = synchronized {
+    buf = Nil
+  }
 
   def sampleTrace(traceId: TraceId): Option[Boolean] = None
 }

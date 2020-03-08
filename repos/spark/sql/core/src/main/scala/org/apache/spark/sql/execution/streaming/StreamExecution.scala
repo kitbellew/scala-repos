@@ -59,7 +59,9 @@ class StreamExecution(
 
   /** All stream sources present the query plan. */
   private val sources =
-    logicalPlan.collect { case s: StreamingRelation => s.source }
+    logicalPlan.collect {
+      case s: StreamingRelation => s.source
+    }
 
   /** Defines the internal state of execution */
   @volatile
@@ -74,7 +76,9 @@ class StreamExecution(
   /** The thread that runs the micro-batches of this stream. */
   private[sql] val microBatchThread = new Thread(
     s"stream execution thread for $name") {
-    override def run(): Unit = { runBatches() }
+    override def run(): Unit = {
+      runBatches()
+    }
   }
 
   /** Whether the query is currently active or not */
@@ -273,7 +277,9 @@ class StreamExecution(
 
     while (notDone) {
       logInfo(s"Waiting until $newOffset at $source")
-      awaitBatchLock.synchronized { awaitBatchLock.wait(100) }
+      awaitBatchLock.synchronized {
+        awaitBatchLock.wait(100)
+      }
     }
     logDebug(s"Unblocked at $newOffset for $source")
   }

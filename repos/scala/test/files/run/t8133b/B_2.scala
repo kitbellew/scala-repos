@@ -1,7 +1,11 @@
 //  b.scala
 package pkg {
   package object other
-  package other { class Crash { foo("") } }
+  package other {
+    class Crash {
+      foo("")
+    }
+  }
 }
 
 object Test {

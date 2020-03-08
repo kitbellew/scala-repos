@@ -7,9 +7,13 @@ class Logger {
 }
 
 object Impls {
-  type LoggerContext1 = BlackboxContext { type PrefixType = Logger }
+  type LoggerContext1 = BlackboxContext {
+    type PrefixType = Logger
+  }
   def error1(c: LoggerContext1)(message: c.Expr[String]): c.Expr[Unit] = ???
 
-  type LoggerContext2 = WhiteboxContext { type PrefixType = Logger }
+  type LoggerContext2 = WhiteboxContext {
+    type PrefixType = Logger
+  }
   def error2(c: LoggerContext2)(message: c.Expr[String]): c.Expr[Unit] = ???
 }

@@ -74,7 +74,9 @@ class ActorProducerTest
           "process the exchange" in {
             producer = given(outCapable = false, autoAck = false)
             import system.dispatcher
-            val future = Future { producer.processExchangeAdapter(exchange) }
+            val future = Future {
+              producer.processExchangeAdapter(exchange)
+            }
             within(1 second) {
               probe.expectMsgType[CamelMessage]
               info("message sent to consumer")
@@ -428,7 +430,9 @@ private[camel] trait ActorProducerFixture
     def expectNoCallWithin(duration: Duration): Unit =
       if (callbackReceived.await(duration.length, duration.unit))
         fail("NOT expected callback, but received one!")
-    def awaitCalled(timeout: Duration = 1 second) { valueWithin(1 second) }
+    def awaitCalled(timeout: Duration = 1 second) {
+      valueWithin(1 second)
+    }
 
     val callbackReceived = new CountDownLatch(1)
     val callbackValue = new AtomicBoolean()
@@ -474,7 +478,9 @@ private[camel] trait ActorProducerFixture
   def echoActor =
     system.actorOf(
       Props(new Actor {
-        def receive = { case msg ⇒ sender() ! "received " + msg }
+        def receive = {
+          case msg ⇒ sender() ! "received " + msg
+        }
       }),
       name = "echoActor")
 

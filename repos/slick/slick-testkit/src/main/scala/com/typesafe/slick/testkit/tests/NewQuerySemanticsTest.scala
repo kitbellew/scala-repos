@@ -87,23 +87,31 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
       mark("qa", qa.result).map(_.toSet).map { ra =>
         ra.size shouldBe 3
         // No sorting, so result contents can vary
-        ra shouldAllMatch { case (s: Int, (i: String, 42)) => () }
+        ra shouldAllMatch {
+          case (s: Int, (i: String, 42)) => ()
+        }
       },
       mark("qa2", qa2.result).map(_.toSet).map(_.size shouldBe 2),
       mark("qb", qb.result).map(_.toSet).map { rb =>
         rb.size shouldBe 2
         // No sorting, so result contents can vary
-        rb shouldAllMatch { case (i: String, 42) => () }
+        rb shouldAllMatch {
+          case (i: String, 42) => ()
+        }
       },
       mark("qb2", qb2.result).map(_.toSet).map { rb2 =>
         rb2.size shouldBe 2
         // No sorting, so result contents can vary
-        rb2 shouldAllMatch { case (i: String, 42) => () }
+        rb2 shouldAllMatch {
+          case (i: String, 42) => ()
+        }
       },
       mark("qc", qc.result).map(_.toSet).map { rc =>
         rc.size shouldBe 2
         // No sorting, so result contents can vary
-        rc shouldAllMatch { case (i: String, 42) => () }
+        rc shouldAllMatch {
+          case (i: String, 42) => ()
+        }
       }
     )
 
@@ -435,7 +443,9 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
 
     val q2 = for {
       u <- users.sortBy(u => (u.first, u.last.desc))
-      o <- orders filter { o => u.id === o.userID }
+      o <- orders filter { o =>
+        u.id === o.userID
+      }
     } yield u.first ~ u.last ~ o.orderID
 
     val q3 = for (u <- users filter (_.id === 42)) yield u.first ~ u.last
@@ -578,7 +588,9 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
 
     val q1 = (as join as on (_.id === _.id))
     val q2 = (as join as on (_.id === _.id) join as on (_._1.id === _.id))
-    val q3 = q2.map { case ((a1, a2), a3) => (a1.id, a2.a, a3.b) }
+    val q3 = q2.map {
+      case ((a1, a2), a3) => (a1.id, a2.a, a3.b)
+    }
     val q4 = as.map(a => (a.id, a.a, a.b, a)).filter(_._3 === "b").map {
       case (id, a1, b, a2) => (id, a2)
     }
@@ -599,7 +611,9 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
     val q8 = as.sortBy(_.id.desc).map(_.a)
     val q9a = as.sortBy(_.b).sortBy(_.a.desc).map(_.id)
     val q9b = as.sortBy(a => (a.a.desc, a.b)).map(_.id)
-    val q10 = (as join as).map { case (a1, a2) => a1.id * 3 + a2.id - 3 }.sorted
+    val q10 = (as join as).map {
+      case (a1, a2) => a1.id * 3 + a2.id - 3
+    }.sorted
     val q11a = q10.take(5)
     val q11b = q10.take(5).take(3)
     val q11c = q10.take(5).take(3).drop(1)
@@ -620,20 +634,34 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
     }
     val q18 = as
       .joinLeft(as)
-      .on { case (a1, a2) => a1.id === a2.id }
-      .filter { case (a1, a2) => a1.id === 3 }
-      .map { case (a1, a2) => a2 }
+      .on {
+        case (a1, a2) => a1.id === a2.id
+      }
+      .filter {
+        case (a1, a2) => a1.id === 3
+      }
+      .map {
+        case (a1, a2) => a2
+      }
     val q19 = as
       .joinLeft(as)
-      .on { case (a1, a2) => a1.id === a2.id }
+      .on {
+        case (a1, a2) => a1.id === a2.id
+      }
       .joinLeft(as)
-      .on { case ((_, a2), a3) => a2.map(_.b) === a3.b }
+      .on {
+        case ((_, a2), a3) => a2.map(_.b) === a3.b
+      }
       .map(_._2)
     val q19b = as
       .joinLeft(as)
-      .on { case (a1, a2) => a1.id === a2.id }
+      .on {
+        case (a1, a2) => a1.id === a2.id
+      }
       .joinLeft(as)
-      .on { case ((_, a2), a3) => a2.map(_.b) === a3.b }
+      .on {
+        case ((_, a2), a3) => a2.map(_.b) === a3.b
+      }
       .subquery
       .map(_._2)
 

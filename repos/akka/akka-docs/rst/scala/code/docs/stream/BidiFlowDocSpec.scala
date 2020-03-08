@@ -174,7 +174,9 @@ class BidiFlowDocSpec extends AkkaSpec {
       val stack = codec.atop(framing)
 
       // test it by plugging it into its own inverse and closing the right end
-      val pingpong = Flow[Message].collect { case Ping(id) => Pong(id) }
+      val pingpong = Flow[Message].collect {
+        case Ping(id) => Pong(id)
+      }
       val flow = stack.atop(stack.reversed).join(pingpong)
       val result =
         Source((0 to 9).map(Ping)).via(flow).limit(20).runWith(Sink.seq)
@@ -187,7 +189,9 @@ class BidiFlowDocSpec extends AkkaSpec {
       val flow = stack
         .atop(chopUp)
         .atop(stack.reversed)
-        .join(Flow[Message].map { case Ping(id) => Pong(id) })
+        .join(Flow[Message].map {
+          case Ping(id) => Pong(id)
+        })
       val f = Source((0 to 9).map(Ping)).via(flow).limit(20).runWith(Sink.seq)
       Await.result(f, 1.second) should ===((0 to 9).map(Pong))
     }
@@ -197,7 +201,9 @@ class BidiFlowDocSpec extends AkkaSpec {
       val flow = stack
         .atop(accumulate)
         .atop(stack.reversed)
-        .join(Flow[Message].map { case Ping(id) => Pong(id) })
+        .join(Flow[Message].map {
+          case Ping(id) => Pong(id)
+        })
       val f = Source((0 to 9).map(Ping)).via(flow).limit(20).runWith(Sink.seq)
       Await.result(f, 1.second) should ===((0 to 9).map(Pong))
     }

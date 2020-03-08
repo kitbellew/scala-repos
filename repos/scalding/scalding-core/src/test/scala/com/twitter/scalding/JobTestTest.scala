@@ -30,7 +30,9 @@ class JobTestTest extends WordSpec with Matchers {
           .arg("output", "output")
           .source(incorrectSource, testInput)
           .sink[(String, Int)](Tsv("output")) { outBuf =>
-            { outBuf shouldBe testInput }
+            {
+              outBuf shouldBe testInput
+            }
           }
           .run
 

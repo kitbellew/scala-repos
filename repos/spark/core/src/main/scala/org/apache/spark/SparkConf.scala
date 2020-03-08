@@ -166,7 +166,9 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
 
   /** Set multiple parameters together */
   def setAll(settings: Traversable[(String, String)]): SparkConf = {
-    settings.foreach { case (k, v) => set(k, v) }
+    settings.foreach {
+      case (k, v) => set(k, v)
+    }
     this
   }
 
@@ -232,8 +234,12 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
   /** Gets all the avro schemas in the configuration used in the generic Avro record serializer */
   def getAvroSchema: Map[Long, String] = {
     getAll
-      .filter { case (k, v) => k.startsWith(avroNamespace) }
-      .map { case (k, v) => (k.substring(avroNamespace.length).toLong, v) }
+      .filter {
+        case (k, v) => k.startsWith(avroNamespace)
+      }
+      .map {
+        case (k, v) => (k.substring(avroNamespace.length).toLong, v)
+      }
       .toMap
   }
 
@@ -407,8 +413,12 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
   def getExecutorEnv: Seq[(String, String)] = {
     val prefix = "spark.executorEnv."
     getAll
-      .filter { case (k, v) => k.startsWith(prefix) }
-      .map { case (k, v) => (k.substring(prefix.length), v) }
+      .filter {
+        case (k, v) => k.startsWith(prefix)
+      }
+      .map {
+        case (k, v) => (k.substring(prefix.length), v)
+      }
   }
 
   /**
@@ -624,7 +634,11 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     * configuration out for debugging.
     */
   def toDebugString: String = {
-    getAll.sorted.map { case (k, v) => k + "=" + v }.mkString("\n")
+    getAll.sorted
+      .map {
+        case (k, v) => k + "=" + v
+      }
+      .mkString("\n")
   }
 
 }
@@ -658,7 +672,9 @@ private[spark] object SparkConf extends Logging {
       DeprecatedConfig("spark.rpc", "2.0", "Not used any more.")
     )
 
-    Map(configs.map { cfg => (cfg.key -> cfg) }: _*)
+    Map(configs.map { cfg =>
+      (cfg.key -> cfg)
+    }: _*)
   }
 
   /**
@@ -730,7 +746,9 @@ private[spark] object SparkConf extends Logging {
     */
   private val allAlternatives: Map[String, (String, AlternateConfig)] = {
     configsWithAlternatives.keys.flatMap { key =>
-      configsWithAlternatives(key).map { cfg => (cfg.key -> (key -> cfg)) }
+      configsWithAlternatives(key).map { cfg =>
+        (cfg.key -> (key -> cfg))
+      }
     }.toMap
   }
 

@@ -26,17 +26,39 @@ class Cookie(private[http] val underlying: NettyCookie) {
   def isDiscard: Boolean = underlying.isDiscard
   def isSecure: Boolean = underlying.isSecure
 
-  def comment_=(comment: String) { underlying.setComment(comment) }
-  def commentUrl_=(commentUrl: String) { underlying.setCommentUrl(commentUrl) }
-  def domain_=(domain: String) { underlying.setDomain(domain) }
-  def maxAge_=(maxAge: Duration) { underlying.setMaxAge(maxAge.inSeconds) }
-  def path_=(path: String) { underlying.setPath(path) }
-  def ports_=(ports: Seq[Int]) { underlying.setPorts(ports: _*) }
-  def value_=(value: String) { underlying.setValue(value) }
-  def version_=(version: Int) { underlying.setVersion(version) }
-  def httpOnly_=(httpOnly: Boolean) { underlying.setHttpOnly(httpOnly) }
-  def isDiscard_=(discard: Boolean) { underlying.setDiscard(discard) }
-  def isSecure_=(secure: Boolean) { underlying.setSecure(secure) }
+  def comment_=(comment: String) {
+    underlying.setComment(comment)
+  }
+  def commentUrl_=(commentUrl: String) {
+    underlying.setCommentUrl(commentUrl)
+  }
+  def domain_=(domain: String) {
+    underlying.setDomain(domain)
+  }
+  def maxAge_=(maxAge: Duration) {
+    underlying.setMaxAge(maxAge.inSeconds)
+  }
+  def path_=(path: String) {
+    underlying.setPath(path)
+  }
+  def ports_=(ports: Seq[Int]) {
+    underlying.setPorts(ports: _*)
+  }
+  def value_=(value: String) {
+    underlying.setValue(value)
+  }
+  def version_=(version: Int) {
+    underlying.setVersion(version)
+  }
+  def httpOnly_=(httpOnly: Boolean) {
+    underlying.setHttpOnly(httpOnly)
+  }
+  def isDiscard_=(discard: Boolean) {
+    underlying.setDiscard(discard)
+  }
+  def isSecure_=(secure: Boolean) {
+    underlying.setSecure(secure)
+  }
 
   override def equals(obj: Any): Boolean = obj match {
     case c: Cookie => underlying.equals(c.underlying)

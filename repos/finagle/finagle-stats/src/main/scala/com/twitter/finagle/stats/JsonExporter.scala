@@ -137,7 +137,9 @@ class JsonExporter(registry: Metrics, timer: Timer)
   ): Boolean = {
     val vals = params.getAll(name)
     if (vals.nonEmpty)
-      vals.exists { v => v == "1" || v == "true" }
+      vals.exists { v =>
+        v == "1" || v == "true"
+      }
     else
       default
   }
@@ -149,7 +151,9 @@ class JsonExporter(registry: Metrics, timer: Timer)
         // Latching should happen every minute, at the top of the minute.
         deltas = Some(new CounterDeltas())
         timer.schedule(startOfNextMinute, 1.minute) {
-          val ds = self.synchronized { deltas.get }
+          val ds = self.synchronized {
+            deltas.get
+          }
           ds.update(registry.sampleCounters())
         }
         deltas.get

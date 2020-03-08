@@ -483,7 +483,9 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
                   ("./lib/" + kind + "_diagram.png")
                 } width="16px" height="16px" preserveAspectRatio="xMinYMin meet" x={
                   xposition.get.toString
-                } y={yposition.get.toString}/>
+                } y={
+                  yposition.get.toString
+                }/>
               val anchorNode = (g \ "a") match {
                 case Seq(Elem(prefix, "a", attribs, scope, children @ _*)) =>
                   transform(
@@ -509,7 +511,9 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
       } else res
     }
     // remove titles
-    case <title>{_*}</title> =>
+    case <title>{
+          _*
+        }</title> =>
       scala.xml.Text("")
     // apply recursively
     case Elem(prefix, label, attribs, scope, child @ _*) =>
@@ -611,7 +615,9 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
 
   private def flatten(attributes: Map[String, String]) =
     attributes
-      .map { case (key, value) => key + "=\"" + value + "\"" }
+      .map {
+        case (key, value) => key + "=\"" + value + "\""
+      }
       .mkString(", ")
 
   private val graphAttributesStr = graphAttributes.map {

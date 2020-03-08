@@ -32,12 +32,16 @@ class Decoder(storageCommands: collection.Set[ChannelBuffer])
     state match {
       case AwaitingCommand() =>
         decodeLine(buffer, needsData) { tokens =>
-          Tokens(tokens.map { ChannelBufferBuf.Owned(_) })
+          Tokens(tokens.map {
+            ChannelBufferBuf.Owned(_)
+          })
         }
       case AwaitingData(tokens, bytesNeeded) =>
         decodeData(bytesNeeded, buffer) { data =>
           TokensWithData(
-            tokens.map { ChannelBufferBuf.Owned(_) },
+            tokens.map {
+              ChannelBufferBuf.Owned(_)
+            },
             ChannelBufferBuf.Owned(data))
         }
     }

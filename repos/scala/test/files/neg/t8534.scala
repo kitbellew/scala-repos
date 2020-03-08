@@ -3,5 +3,7 @@ object line1 {
 }
 object line2 {
   import line2._
-  class BugTest { def isTheBugHere(in: MyTrait.this.type#SomeData) = false }
+  class BugTest {
+    def isTheBugHere(in: MyTrait.this.type#SomeData) = false
+  }
 }

@@ -163,10 +163,14 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
         !deltaMap.contains(key)
     }
 
-    val updatedStates = deltaMap.iterator.filter { !_._2.deleted }.map {
-      case (key, stateInfo) =>
-        (key, stateInfo.data, stateInfo.updateTime)
-    }
+    val updatedStates = deltaMap.iterator
+      .filter {
+        !_._2.deleted
+      }
+      .map {
+        case (key, stateInfo) =>
+          (key, stateInfo.data, stateInfo.updateTime)
+      }
     oldStates ++ updatedStates
   }
 
@@ -263,7 +267,9 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
       new OpenHashMapBasedStateMap[K, S](
         initialCapacity = initCapacity,
         deltaChainThreshold)
-    } else { null }
+    } else {
+      null
+    }
 
     val iterOfActiveSessions = parentStateMap.getAll()
 

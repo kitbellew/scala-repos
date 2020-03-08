@@ -81,7 +81,9 @@ class Pool[K, V](valueFactory: Option[(K) => V] = None)
     new ArrayList[V](pool.values())
   }
 
-  def clear() { pool.clear() }
+  def clear() {
+    pool.clear()
+  }
 
   override def size = pool.size
 

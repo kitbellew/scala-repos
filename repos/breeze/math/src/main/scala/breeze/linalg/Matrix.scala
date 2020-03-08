@@ -63,9 +63,9 @@ trait Matrix[@spec(Double, Int, Float, Long) V]
     def -(elem: (Int, Int)): Set[(Int, Int)] = Set() ++ iterator - elem
 
     def iterator: Iterator[(Int, Int)] =
-      for { j <- Iterator.range(0, cols); i <- Iterator.range(0, rows) } yield (
-        i,
-        j)
+      for {
+        j <- Iterator.range(0, cols); i <- Iterator.range(0, rows)
+      } yield (i, j)
   }
 
   def iterator =
@@ -147,7 +147,9 @@ trait Matrix[@spec(Double, Int, Float, Long) V]
     toString(Terminal.terminalHeight, Terminal.terminalWidth)
 
   def toDenseMatrix(implicit cm: ClassTag[V], zero: Zero[V]) = {
-    DenseMatrix.tabulate(rows, cols) { (i, j) => apply(i, j) }
+    DenseMatrix.tabulate(rows, cols) { (i, j) =>
+      apply(i, j)
+    }
   }
 
   def copy: Matrix[V]
@@ -321,7 +323,11 @@ trait MatrixConstructors[Mat[T] <: Matrix[T]] {
       rl: LiteralRow[R, V],
       rows: Seq[R]) {
     for ((row, i) <- rows.zipWithIndex) {
-      rl.foreach(row, { (j, v) => rv(i, j) = v })
+      rl.foreach(
+        row,
+        { (j, v) =>
+          rv(i, j) = v
+        })
     }
   }
 

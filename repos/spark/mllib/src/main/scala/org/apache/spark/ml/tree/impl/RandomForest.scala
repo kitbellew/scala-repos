@@ -1369,7 +1369,9 @@ private[ml] object RandomForest extends Logging {
     val total = map.map(_._2).sum
     if (total != 0) {
       val keys = map.iterator.map(_._1).toArray
-      keys.foreach { key => map.changeValue(key, 0.0, _ / total) }
+      keys.foreach { key =>
+        map.changeValue(key, 0.0, _ / total)
+      }
     }
   }
 

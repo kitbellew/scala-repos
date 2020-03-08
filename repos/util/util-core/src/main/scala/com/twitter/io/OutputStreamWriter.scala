@@ -35,7 +35,10 @@ private[io] class OutputStreamWriter(out: OutputStream, bufsize: Int)
   }
 
   private[this] def doWrite: Buf => Future[Unit] =
-    buf => FuturePool.interruptibleUnboundedPool { drain(buf) }
+    buf =>
+      FuturePool.interruptibleUnboundedPool {
+        drain(buf)
+      }
 
   def write(buf: Buf): Future[Unit] =
     if (done.isDefined) done

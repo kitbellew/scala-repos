@@ -159,7 +159,12 @@ private[akka] class RemoteWatcher(
     // test purpose
     case Stats ⇒
       val watchSet = watching.iterator
-        .flatMap { case (wee, wers) ⇒ wers.map { wer ⇒ wee → wer } }
+        .flatMap {
+          case (wee, wers) ⇒
+            wers.map { wer ⇒
+              wee → wer
+            }
+        }
         .toSet[(ActorRef, ActorRef)]
       sender() ! Stats(
         watching = watchSet.size,

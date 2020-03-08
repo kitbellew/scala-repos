@@ -169,7 +169,9 @@ trait RelationalTestDB extends TestDB {
   def assertNotTablesExist(tables: String*): DBIO[Unit]
 }
 
-trait SqlTestDB extends RelationalTestDB { type Profile <: SqlProfile }
+trait SqlTestDB extends RelationalTestDB {
+  type Profile <: SqlProfile
+}
 
 abstract class JdbcTestDB(val confName: String) extends SqlTestDB {
   import profile.api.actionBasedSQLInterpolation
@@ -245,7 +247,9 @@ abstract class JdbcTestDB(val confName: String) extends SqlTestDB {
   }
   protected[this] def await[T](f: Future[T]): T =
     try Await.result(f, TestkitConfig.asyncTimeout)
-    catch { case ex: ExecutionException => throw ex.getCause }
+    catch {
+      case ex: ExecutionException => throw ex.getCause
+    }
 }
 
 abstract class InternalJdbcTestDB(confName: String)

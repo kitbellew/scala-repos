@@ -3,7 +3,9 @@ import language.existentials
 object Test {
   class Def[T]
   class Exp[T]
-  class Contra[-T] { def head[T1 <: T]: T1 = ??? }
+  class Contra[-T] {
+    def head[T1 <: T]: T1 = ???
+  }
   class Cov[+T] {}
 
   case class ArrayApply[T](x: Exp[Array[T]], i: Exp[Int], j: Exp[_])

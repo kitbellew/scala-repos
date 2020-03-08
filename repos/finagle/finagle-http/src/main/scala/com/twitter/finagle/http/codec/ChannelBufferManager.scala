@@ -31,13 +31,21 @@ class ChannelBufferUsageTracker(
       currentUsage.inBytes
     }
   private[this] val maxUsageStat =
-    statsReceiver.addGauge("channel_buffer_max_usage") { maxUsage.inBytes }
+    statsReceiver.addGauge("channel_buffer_max_usage") {
+      maxUsage.inBytes
+    }
 
-  def currentUsage: StorageUnit = synchronized { state.currentUsage.bytes }
+  def currentUsage: StorageUnit = synchronized {
+    state.currentUsage.bytes
+  }
 
-  def maxUsage: StorageUnit = synchronized { state.maxUsage.bytes }
+  def maxUsage: StorageUnit = synchronized {
+    state.maxUsage.bytes
+  }
 
-  def usageLimit(): StorageUnit = synchronized { state.usageLimit }
+  def usageLimit(): StorageUnit = synchronized {
+    state.usageLimit
+  }
 
   def setUsageLimit(limit: StorageUnit) = synchronized {
     state.usageLimit = limit

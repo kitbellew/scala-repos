@@ -94,7 +94,9 @@ trait ScalarTagImplicitsL2 extends ScalarTagImplicitsL3 {
 }
 
 trait ScalarTagImplicitsL3 {
-  implicit def stAny[T: CLM] = new ScalarTagAny[T] { override def isAny = true }
+  implicit def stAny[T: CLM] = new ScalarTagAny[T] {
+    override def isAny = true
+  }
 }
 
 trait CouldBeOrdered[@spec(Boolean, Int, Long, Float, Double) T] {

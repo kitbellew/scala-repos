@@ -22,5 +22,7 @@ class ConsoleWriter extends Writer {
       write(new String(cbuf.slice(off, off + len)))
   }
 
-  override def write(str: String) { Console.print(str) }
+  override def write(str: String) {
+    Console.print(str)
+  }
 }

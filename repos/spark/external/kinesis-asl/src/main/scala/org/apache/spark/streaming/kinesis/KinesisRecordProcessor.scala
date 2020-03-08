@@ -169,7 +169,9 @@ private[kinesis] object KinesisRecordProcessor extends Logging {
       expression: => T,
       numRetriesLeft: Int,
       maxBackOffMillis: Int): T = {
-    util.Try { expression } match {
+    util.Try {
+      expression
+    } match {
       /* If the function succeeded, evaluate to x. */
       case util.Success(x) => x
       /* If the function failed, either retry or throw the exception */

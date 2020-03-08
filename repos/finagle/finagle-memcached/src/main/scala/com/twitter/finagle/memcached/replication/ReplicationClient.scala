@@ -142,7 +142,9 @@ class BaseReplicationClient(
   def getOne(
       key: String,
       useRandomOrder: Boolean = false): Future[Option[Buf]] =
-    getOne(Seq(key), useRandomOrder) map { _.values.headOption }
+    getOne(Seq(key), useRandomOrder) map {
+      _.values.headOption
+    }
 
   def getOne(
       keys: Iterable[String],
@@ -160,22 +162,25 @@ class BaseReplicationClient(
     * all replicas.
     */
   def getAll(key: String): Future[ReplicationStatus[Option[Buf]]] =
-    getAll(Seq(key)) map { _.values.head }
+    getAll(Seq(key)) map {
+      _.values.head
+    }
 
   def getAll(keys: Iterable[String])
       : Future[Map[String, ReplicationStatus[Option[Buf]]]] = {
     val keySet = keys.toSet
-    Future.collect(clients map { _.getResult(keySet) }) map {
-      results: Seq[GetResult] =>
-        keySet.map { k =>
-          val replicasResult = results map {
-            case r if (r.hits.contains(k)) =>
-              Return(Some(r.hits.get(k).get.value))
-            case r if (r.misses.contains(k))   => Return(None)
-            case r if (r.failures.contains(k)) => Throw(r.failures.get(k).get)
-          }
-          k -> toReplicationStatus(replicasResult)
-        }.toMap
+    Future.collect(clients map {
+      _.getResult(keySet)
+    }) map { results: Seq[GetResult] =>
+      keySet.map { k =>
+        val replicasResult = results map {
+          case r if (r.hits.contains(k)) =>
+            Return(Some(r.hits.get(k).get.value))
+          case r if (r.misses.contains(k))   => Return(None)
+          case r if (r.failures.contains(k)) => Throw(r.failures.get(k).get)
+        }
+        k -> toReplicationStatus(replicasResult)
+      }.toMap
     }
   }
 
@@ -192,23 +197,26 @@ class BaseReplicationClient(
     */
   def getsAll(
       key: String): Future[ReplicationStatus[Option[(Buf, ReplicaCasUnique)]]] =
-    getsAll(Seq(key)) map { _.values.head }
+    getsAll(Seq(key)) map {
+      _.values.head
+    }
 
   def getsAll(keys: Iterable[String]): Future[
     Map[String, ReplicationStatus[Option[(Buf, ReplicaCasUnique)]]]] = {
     val keySet = keys.toSet
-    Future.collect(clients map { _.getsResult(keySet) }) map {
-      results: Seq[GetsResult] =>
-        keySet.map { k =>
-          val replicasResult = results map {
-            case r if (r.hits.contains(k)) =>
-              Return(Some(r.hits.get(k).get.value))
-            case r if (r.misses.contains(k))   => Return(None)
-            case r if (r.failures.contains(k)) => Throw(r.failures.get(k).get)
-          }
+    Future.collect(clients map {
+      _.getsResult(keySet)
+    }) map { results: Seq[GetsResult] =>
+      keySet.map { k =>
+        val replicasResult = results map {
+          case r if (r.hits.contains(k)) =>
+            Return(Some(r.hits.get(k).get.value))
+          case r if (r.misses.contains(k))   => Return(None)
+          case r if (r.failures.contains(k)) => Throw(r.failures.get(k).get)
+        }
 
-          k -> attachCas(toReplicationStatus(replicasResult), results, k)
-        }.toMap
+        k -> attachCas(toReplicationStatus(replicasResult), results, k)
+      }.toMap
     }
   }
 
@@ -237,7 +245,9 @@ class BaseReplicationClient(
         }
         InconsistentReplication(transformed)
       case FailedReplication(fs) =>
-        FailedReplication(fs map { t => Throw(t.e) })
+        FailedReplication(fs map { t =>
+          Throw(t.e)
+        })
     }
 
   /**
@@ -274,7 +284,9 @@ class BaseReplicationClient(
     Future.collect((clients zip casUniques) map {
       case (c, u) =>
         c.checkAndSet(key, flags, expiry, value, u).transform(Future.value)
-    }) map { toReplicationStatus }
+    }) map {
+      toReplicationStatus
+    }
   }
 
   /**
@@ -362,7 +374,9 @@ class BaseReplicationClient(
       "stats is not supported for cache replication client.")
 
   def release() {
-    clients foreach { _.release() }
+    clients foreach {
+      _.release()
+    }
   }
 
   /**
@@ -388,7 +402,9 @@ class BaseReplicationClient(
         InconsistentReplication(results)
       case _ =>
         failedCounter.incr()
-        FailedReplication(results collect { case t @ Throw(_) => t })
+        FailedReplication(results collect {
+          case t @ Throw(_) => t
+        })
     }
   }
 
@@ -399,7 +415,9 @@ class BaseReplicationClient(
   private[this] def collectAndResolve[T](op: Client => Future[T]) =
     Future.collect(clients map {
       op(_).transform(Future.value)
-    }) map { toReplicationStatus }
+    }) map {
+      toReplicationStatus
+    }
 }
 
 /**
@@ -436,7 +454,9 @@ class SimpleReplicationClient(underlying: BaseReplicationClient)
     underlyingClient.getsAll(keys) map { resultsMap =>
       val getsResultSeq = resultsMap map {
         case (key, ConsistentReplication(Some((value, RCasUnique(uniques))))) =>
-          val newCas = uniques map { case Buf.Utf8(s) => s } mkString ("|")
+          val newCas = uniques map {
+            case Buf.Utf8(s) => s
+          } mkString ("|")
           val newValue = Value(Buf.Utf8(key), value, Some(Buf.Utf8(newCas)))
           GetsResult(GetResult(hits = Map(key -> newValue)))
         case (key, ConsistentReplication(None)) =>
@@ -468,7 +488,9 @@ class SimpleReplicationClient(underlying: BaseReplicationClient)
       value: Buf,
       casUnique: Buf): Future[CasResult] = {
     val Buf.Utf8(casUniqueStr) = casUnique
-    val casUniqueBufs = casUniqueStr.split('|') map { Buf.Utf8(_) }
+    val casUniqueBufs = casUniqueStr.split('|') map {
+      Buf.Utf8(_)
+    }
     resolve[CasResult](
       "checkAndSet",
       _.checkAndSet(key, flags, expiry, value, casUniqueBufs),

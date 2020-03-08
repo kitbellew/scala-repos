@@ -60,7 +60,9 @@ class ArrayBuffer[A](override protected val initialSize: Int)
 
   def this() = this(16)
 
-  def clear() { reduceToSize(0) }
+  def clear() {
+    reduceToSize(0)
+  }
 
   override def sizeHint(len: Int) {
     if (len > size && len >= 1) {

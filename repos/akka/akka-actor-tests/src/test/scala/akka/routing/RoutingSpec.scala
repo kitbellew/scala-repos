@@ -35,7 +35,9 @@ object RoutingSpec {
     """
 
   class TestActor extends Actor {
-    def receive = { case _ ⇒ }
+    def receive = {
+      case _ ⇒
+    }
   }
 
   class Echo extends Actor {
@@ -98,7 +100,9 @@ class RoutingSpec
       router ! GetRoutees
       val routees = expectMsgType[Routees].routees
       routees.size should ===(2)
-      routees foreach { _.send(PoisonPill, testActor) }
+      routees foreach {
+        _.send(PoisonPill, testActor)
+      }
       // expect no Terminated
       expectNoMsg(2.seconds)
     }
@@ -214,7 +218,9 @@ class RoutingSpec
           case "start" ⇒
             context.actorOf(
               RoundRobinPool(2).props(routeeProps = Props(new Actor {
-                def receive = { case x ⇒ sender() ! x }
+                def receive = {
+                  case x ⇒ sender() ! x
+                }
               }))) ? "hello" pipeTo sender()
         }
       })) ! "start"

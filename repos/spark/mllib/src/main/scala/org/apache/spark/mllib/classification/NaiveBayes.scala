@@ -91,7 +91,9 @@ class NaiveBayesModel private[spark] (
     case Multinomial => (None, None)
     case Bernoulli =>
       val negTheta = thetaMatrix.map(value => math.log(1.0 - math.exp(value)))
-      val ones = new DenseVector(Array.fill(thetaMatrix.numCols) { 1.0 })
+      val ones = new DenseVector(Array.fill(thetaMatrix.numCols) {
+        1.0
+      })
       val thetaMinusNegTheta = thetaMatrix.map { value =>
         value - math.log(1.0 - math.exp(value))
       }
@@ -451,7 +453,9 @@ class NaiveBayes private (
       case (_, (n, _)) =>
         numDocuments += n
     }
-    val numFeatures = aggregated.head match { case (_, (_, v)) => v.size }
+    val numFeatures = aggregated.head match {
+      case (_, (_, v)) => v.size
+    }
 
     val labels = new Array[Double](numLabels)
     val pi = new Array[Double](numLabels)

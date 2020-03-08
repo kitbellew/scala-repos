@@ -256,9 +256,15 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
     executionContext
       .flatMap(_.buildFlow)
       .map { flow =>
-        listeners.foreach { flow.addListener(_) }
-        stepListeners.foreach { flow.addStepListener(_) }
-        skipStrategy.foreach { flow.setFlowSkipStrategy(_) }
+        listeners.foreach {
+          flow.addListener(_)
+        }
+        stepListeners.foreach {
+          flow.addStepListener(_)
+        }
+        skipStrategy.foreach {
+          flow.setFlowSkipStrategy(_)
+        }
         stepStrategy.foreach { strategy =>
           val existing = flow.getFlowStepStrategy
           val composed =
@@ -365,7 +371,9 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
     * access the implicit Pipe => RichPipe which makes: pipe.write( )
     * convenient
     */
-  def write(pipe: Pipe, src: Source) { src.writeFrom(pipe) }
+  def write(pipe: Pipe, src: Source) {
+    src.writeFrom(pipe)
+  }
 
   /*
    * Need to be lazy to be used within pipes.

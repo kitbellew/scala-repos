@@ -1,6 +1,8 @@
 import scala.reflect.runtime.universe._
 
-object Foo { val bar = 2 }
+object Foo {
+  val bar = 2
+}
 
 object Test extends App {
   val tpe = getType(Foo)

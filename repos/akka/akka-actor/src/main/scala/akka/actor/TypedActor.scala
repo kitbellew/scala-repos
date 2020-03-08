@@ -165,7 +165,9 @@ object TypedActor
           case args if args.length == 0 ⇒ method.invoke(instance)
           case args ⇒ method.invoke(instance, args: _*)
         }
-      } catch { case i: InvocationTargetException ⇒ throw i.getTargetException }
+      } catch {
+        case i: InvocationTargetException ⇒ throw i.getTargetException
+      }
 
     @throws(classOf[ObjectStreamException]) private def writeReplace(): AnyRef =
       parameters match {
@@ -509,8 +511,11 @@ object TypedActor
               }
             case m if m.returnsJOption || m.returnsOption ⇒
               val f = ask(actor, m)(timeout)
-              (try { Await.ready(f, timeout.duration).value }
-              catch { case _: TimeoutException ⇒ None }) match {
+              (try {
+                Await.ready(f, timeout.duration).value
+              } catch {
+                case _: TimeoutException ⇒ None
+              }) match {
                 case None | Some(Success(NullResponse)) | Some(
                       Failure(_: AskTimeoutException)) ⇒
                   if (m.returnsJOption) JOption.none[Any] else None

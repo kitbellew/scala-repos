@@ -13,9 +13,15 @@ package settings
 abstract class MutableSettings extends AbsSettings {
 
   type Setting <: SettingValue
-  type BooleanSetting <: Setting { type T = Boolean }
-  type IntSetting <: Setting { type T = Int }
-  type MultiStringSetting <: Setting { type T = List[String] }
+  type BooleanSetting <: Setting {
+    type T = Boolean
+  }
+  type IntSetting <: Setting {
+    type T = Int
+  }
+  type MultiStringSetting <: Setting {
+    type T = List[String]
+  }
 
   // basically this is a value which remembers if it's been modified
   trait SettingValue extends AbsSettingValue {

@@ -120,7 +120,9 @@ trait ProcessCreation {
       extraEnv: (String, String)*): ProcessBuilder = {
     val jpb = new JProcessBuilder(command.toArray: _*)
     cwd foreach (jpb directory _)
-    extraEnv foreach { case (k, v) => jpb.environment.put(k, v) }
+    extraEnv foreach {
+      case (k, v) => jpb.environment.put(k, v)
+    }
     apply(jpb)
   }
 

@@ -62,7 +62,9 @@ object Delta extends Delta0 {
       implicit delta: Lazy[Delta[In]]): Delta.Aux[In, delta.value.Out] =
     delta.value
 
-  type Aux[In, Out0] = Delta[In] { type Out = Out0 }
+  type Aux[In, Out0] = Delta[In] {
+    type Out = Out0
+  }
 
   implicit val booleanDelta: Delta.Aux[Boolean, Boolean] = new Delta[Boolean] {
     type Out = Boolean
@@ -107,7 +109,9 @@ object Delta extends Delta0 {
 
   implicit def deriveHCons[H, T <: HList](implicit
       deltaH: Delta[H],
-      deltaT: Lazy[Delta[T] { type Out <: HList }]
+      deltaT: Lazy[Delta[T] {
+        type Out <: HList
+      }]
   ): Delta.Aux[H :: T, deltaH.Out :: deltaT.value.Out] = new Delta[H :: T] {
     type Out = deltaH.Out :: deltaT.value.Out
 

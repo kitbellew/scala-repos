@@ -107,7 +107,9 @@ trait Record[MyType <: Record[MyType]] extends FieldContainer {
   /**
     * Sets the fields of this Record from the given Req.
     */
-  def setFieldsFromReq(req: Req) { meta.setFieldsFromReq(this, req) }
+  def setFieldsFromReq(req: Req) {
+    meta.setFieldsFromReq(this, req)
+  }
 
   /**
     * Present the model as a form and execute the function on submission of the form
@@ -120,8 +122,10 @@ trait Record[MyType <: Record[MyType]] extends FieldContainer {
   def toForm(button: Box[String])(f: MyType => Unit): NodeSeq = {
     meta.toForm(this) ++
       (SHtml.hidden(() => f(this))) ++
-      ((button.map(b => (<input type="submit" value={b}/>)) openOr scala.xml
-        .Text("")))
+      ((button.map(b =>
+        (<input type="submit" value={
+          b
+        }/>)) openOr scala.xml.Text("")))
   }
 
   /**

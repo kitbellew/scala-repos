@@ -46,7 +46,9 @@ class AsyncTest {
 
     steps += "prep-foreach"
 
-    f2 foreach { _ => steps += "foreach" }
+    f2 foreach { _ =>
+      steps += "foreach"
+    }
 
     steps += "done"
 
@@ -79,7 +81,9 @@ class AsyncTest {
   @Test def scala_scalajs_concurrent_JSExecutionContext_queue(): Unit = {
     assumeTrue(js.isUndefined(js.Dynamic.global.Promise))
     TimeoutMock.withMockedTimeout { tick =>
-      queueExecOrderTests { () => tick(1) }(JSExecutionContext.queue)
+      queueExecOrderTests { () =>
+        tick(1)
+      }(JSExecutionContext.queue)
     }
   }
 
@@ -101,7 +105,9 @@ class AsyncTest {
   @Test def scala_scala_concurrent_ExecutionContext_global(): Unit = {
     assumeTrue(js.isUndefined(js.Dynamic.global.Promise))
     TimeoutMock.withMockedTimeout { tick =>
-      queueExecOrderTests { () => tick(1) }(ExecutionContext.global)
+      queueExecOrderTests { () =>
+        tick(1)
+      }(ExecutionContext.global)
 
       assertSame(JSExecutionContext.queue, ExecutionContext.global)
     }
@@ -122,14 +128,18 @@ class AsyncTest {
   @Test def scala_scalajs_concurrent_QueueExecutionContext_timeouts(): Unit = {
     TimeoutMock.withMockedTimeout { tick =>
       implicit val executor = QueueExecutionContext.timeouts()
-      queueExecOrderTests { () => tick(1) }
+      queueExecOrderTests { () =>
+        tick(1)
+      }
     }
   }
 
   @Test def scala_scalajs_concurrent_QueueExecutionContext_promises(): Unit = {
     PromiseMock.withMockedPromise { processQueue =>
       implicit val executor = QueueExecutionContext.promises()
-      queueExecOrderTests { () => processQueue() }
+      queueExecOrderTests { () =>
+        processQueue()
+      }
     }
   }
 
@@ -181,7 +191,9 @@ class AsyncTest {
     PromiseMock.withMockedPromise { processQueue =>
       implicit val ec = QueueExecutionContext.promises()
 
-      val f = Future { 42 }
+      val f = Future {
+        42
+      }
       val p = f.toJSPromise
       val pAssertType: js.Promise[Int] = p
 
@@ -209,7 +221,9 @@ class AsyncTest {
             reject: js.Function1[Any, _]) => resolve(42)
       })
 
-      val f = Future { initialPromise }
+      val f = Future {
+        initialPromise
+      }
       val p = f.toJSPromise
       val pAssertType: js.Promise[Int] = p
 

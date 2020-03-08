@@ -199,7 +199,8 @@ trait Trees { self: Universe =>
   /** The API that all term trees support
     *  @group API
     */
-  trait TermTreeApi extends TreeApi { this: TermTree => }
+  trait TermTreeApi extends TreeApi { this: TermTree =>
+  }
 
   /** A tree for a type. Not all trees representing types are TypTrees; use isType
     *  to reliably identify types.
@@ -211,7 +212,8 @@ trait Trees { self: Universe =>
   /** The API that all typ trees support
     *  @group API
     */
-  trait TypTreeApi extends TreeApi { this: TypTree => }
+  trait TypTreeApi extends TreeApi { this: TypTree =>
+  }
 
   /** A tree that carries a symbol, e.g. by defining it (`DefTree`) or by referring to it (`RefTree`).
     *  Such trees start their life naked, returning `NoSymbol`, but after being typechecked without errors
@@ -1653,7 +1655,8 @@ trait Trees { self: Universe =>
   /** The API that all type applies support
     *  @group API
     */
-  trait TypeApplyApi extends GenericApplyApi { this: TypeApply => }
+  trait TypeApplyApi extends GenericApplyApi { this: TypeApply =>
+  }
 
   /** Value application
     *  @group Trees
@@ -1688,7 +1691,8 @@ trait Trees { self: Universe =>
   /** The API that all applies support
     *  @group API
     */
-  trait ApplyApi extends GenericApplyApi { this: Apply => }
+  trait ApplyApi extends GenericApplyApi { this: Apply =>
+  }
 
   /** Super reference, where `qual` is the corresponding `this` reference.
     *  A super reference `C.super[M]` is represented as `Super(This(C), M)`.
@@ -2653,7 +2657,9 @@ trait Trees { self: Universe =>
 
     /** Leave apply available in the generic traverser to do something else.
       */
-    def apply[T <: Tree](tree: T): T = { traverse(tree); tree }
+    def apply[T <: Tree](tree: T): T = {
+      traverse(tree); tree
+    }
   }
 
   /** Delegates the traversal strategy to `scala.reflect.internal.Trees`,

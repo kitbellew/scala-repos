@@ -590,8 +590,12 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
         StandardCharsets.UTF_8)
       val properties = Utils.getPropertiesFromFile(outFile.getAbsolutePath)
       properties
-        .filter { case (k, v) => k.startsWith("spark.") }
-        .foreach { case (k, v) => sys.props.getOrElseUpdate(k, v) }
+        .filter {
+          case (k, v) => k.startsWith("spark.")
+        }
+        .foreach {
+          case (k, v) => sys.props.getOrElseUpdate(k, v)
+        }
       val sparkConf = new SparkConf
       assert(sparkConf.getBoolean("spark.test.fileNameLoadA", false) === true)
       assert(sparkConf.getInt("spark.test.fileNameLoadB", 1) === 2)

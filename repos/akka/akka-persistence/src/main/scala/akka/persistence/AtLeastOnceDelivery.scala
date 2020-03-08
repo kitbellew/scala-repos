@@ -302,7 +302,9 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
     var warnings = Vector.empty[UnconfirmedDelivery]
 
     unconfirmed.iterator
-      .filter { case (_, delivery) ⇒ delivery.timestamp <= deadline }
+      .filter {
+        case (_, delivery) ⇒ delivery.timestamp <= deadline
+      }
       .take(redeliveryBurstLimit)
       .foreach {
         case (deliveryId, delivery) ⇒

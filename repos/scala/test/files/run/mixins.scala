@@ -62,7 +62,14 @@ object Test3 {
     println("B");
   }
 
-  class C extends A({ println("one"); }, { println("two"); }) with B {
+  class C
+      extends A(
+        {
+          println("one");
+        }, {
+          println("two");
+        })
+      with B {
     println("C");
   }
 

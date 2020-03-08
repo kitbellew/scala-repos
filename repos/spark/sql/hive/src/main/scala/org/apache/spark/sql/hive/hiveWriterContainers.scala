@@ -189,8 +189,9 @@ private[hive] class SparkHiveWriterContainer(
       .map(_.getFieldObjectInspector)
       .toArray
     val dataTypes = inputSchema.map(_.dataType)
-    val wrappers =
-      fieldOIs.zip(dataTypes).map { case (f, dt) => wrapperFor(f, dt) }
+    val wrappers = fieldOIs.zip(dataTypes).map {
+      case (f, dt) => wrapperFor(f, dt)
+    }
     val outputData = new Array[Any](fieldOIs.length)
     (serializer, standardOI, fieldOIs, dataTypes, wrappers, outputData)
   }

@@ -14,8 +14,12 @@ object Test {
     val M = 1500
     var unmatchedLeft = new PMHashSet[Int]
     var unmatchedRight = new PMHashSet[Int]
-    Range(0, N).foreach { x => unmatchedLeft += x }
-    Range(0, M).foreach { x => unmatchedRight += x }
+    Range(0, N).foreach { x =>
+      unmatchedLeft += x
+    }
+    Range(0, M).foreach { x =>
+      unmatchedRight += x
+    }
 
     try {
       val matches = unmatchedLeft.flatMap { lind: Int =>

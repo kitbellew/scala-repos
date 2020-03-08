@@ -44,7 +44,9 @@ object Supervision {
       this(
         restartStrategy,
         worker.toList,
-        { (aRef, max) => restartHandler.apply(aRef, max) })
+        { (aRef, max) =>
+          restartHandler.apply(aRef, max)
+        })
   }
 
   class Supervise(

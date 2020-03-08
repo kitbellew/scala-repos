@@ -24,15 +24,21 @@ object NotificationUtil {
       NotificationDisplayType.BALLOON
     private var handler: Handler = IdHandler
 
-    def setGroup(group: String) = { this.group = group; this }
-    def setTitle(title: String) = { this.title = title; this }
+    def setGroup(group: String) = {
+      this.group = group; this
+    }
+    def setTitle(title: String) = {
+      this.title = title; this
+    }
     def setNotificationType(notificationType: NotificationType) = {
       this.notificationType = notificationType; this
     }
     def setDisplayType(displayType: NotificationDisplayType) = {
       this.displayType = displayType; this
     }
-    def setHandler(handler: Handler) = { this.handler = handler; this }
+    def setHandler(handler: Handler) = {
+      this.handler = handler; this
+    }
 
     def notification =
       new Notification(
@@ -66,7 +72,9 @@ object NotificationUtil {
 
   type Handler = (String) => (Unit)
 
-  private val IdHandler: Handler = { (s: String) => {} }
+  private val IdHandler: Handler = { (s: String) =>
+    {}
+  }
 
   private class HyperlinkListener(handler: Handler)
       extends NotificationListener {

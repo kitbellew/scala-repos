@@ -25,9 +25,15 @@ object ActorLifeCycleSpec {
     def report(msg: Any) = testActor ! message(msg)
     def message(msg: Any): Tuple3[Any, String, Int] = (msg, id, currentGen)
     val currentGen = generationProvider.getAndIncrement()
-    override def preStart() { report("preStart") }
-    override def postStop() { report("postStop") }
-    def receive = { case "status" ⇒ sender() ! message("OK") }
+    override def preStart() {
+      report("preStart")
+    }
+    override def postStop() {
+      report("postStop")
+    }
+    def receive = {
+      case "status" ⇒ sender() ! message("OK")
+    }
   }
 
 }
@@ -54,7 +60,9 @@ class ActorLifeCycleSpec
           override def preRestart(reason: Throwable, message: Option[Any]) {
             report("preRestart")
           }
-          override def postRestart(reason: Throwable) { report("postRestart") }
+          override def postRestart(reason: Throwable) {
+            report("postRestart")
+          }
         }).withDeploy(Deploy.local)
         val restarter = Await.result(
           (supervisor ? restarterProps).mapTo[ActorRef],
@@ -142,7 +150,9 @@ class ActorLifeCycleSpec
     "log failues in postStop" in {
       val a = system.actorOf(Props(new Actor {
         def receive = Actor.emptyBehavior
-        override def postStop { throw new Exception("hurrah") }
+        override def postStop {
+          throw new Exception("hurrah")
+        }
       }))
       EventFilter[Exception]("hurrah", occurrences = 1) intercept {
         a ! PoisonPill

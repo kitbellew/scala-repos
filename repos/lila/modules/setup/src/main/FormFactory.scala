@@ -14,7 +14,9 @@ private[setup] final class FormFactory(casualOnly: Boolean) {
 
   def filterFilled(
       implicit ctx: UserContext): Fu[(Form[FilterConfig], FilterConfig)] =
-    filterConfig map { f => filter(ctx).fill(f) -> f }
+    filterConfig map { f =>
+      filter(ctx).fill(f) -> f
+    }
 
   def filter(ctx: UserContext) = Form(
     mapping(

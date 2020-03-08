@@ -140,11 +140,15 @@ object gen {
       Gen.const(Unbound[A]))
 
   def bounds[A: Arbitrary: Order]: Gen[(A, A)] =
-    arbitrary[(A, A)].map { case (x, y) => if (x <= y) (x, y) else (y, x) }
+    arbitrary[(A, A)].map {
+      case (x, y) => if (x <= y) (x, y) else (y, x)
+    }
 
   def makeBoundedInterval[A: Arbitrary: Order](
       f: (A, A) => Interval[A]): Gen[Interval[A]] =
-    bounds[A].map { case (l, u) => f(l, u) }
+    bounds[A].map {
+      case (l, u) => f(l, u)
+    }
 
   def openInterval[A: Arbitrary: Order]: Gen[Interval[A]] =
     makeBoundedInterval[A](Interval.open(_, _))
@@ -178,7 +182,9 @@ object gen {
   def freeMonoid[A: Arbitrary]: Gen[FreeMonoid[A]] =
     for {
       as <- arbitrary[List[A]]
-    } yield as.foldLeft(FreeMonoid.id[A]) { (acc, a) => acc |+| FreeMonoid(a) }
+    } yield as.foldLeft(FreeMonoid.id[A]) { (acc, a) =>
+      acc |+| FreeMonoid(a)
+    }
 
   def freeGroup[A: Arbitrary]: Gen[FreeGroup[A]] =
     for {
@@ -207,6 +213,8 @@ object gen {
         images(i) = images(j)
         images(j) = i
       }
-      Perm(images.zipWithIndex.filter { case (p, i) => p != i }.toMap)
+      Perm(images.zipWithIndex.filter {
+        case (p, i) => p != i
+      }.toMap)
     }
 }

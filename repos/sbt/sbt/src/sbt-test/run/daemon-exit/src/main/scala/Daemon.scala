@@ -12,7 +12,9 @@ object DaemonExit {
     t.start()
 
     val t2 = new Thread {
-      override def run(): Unit = synchronized { wait() }
+      override def run(): Unit = synchronized {
+        wait()
+      }
     }
     t2.start()
   }

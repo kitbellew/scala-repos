@@ -38,12 +38,24 @@ trait Publisher[Evt] {
   private val filters = new HashMap[Sub, Set[Filter]] with MultiMap[Sub, Filter]
   private val suspended = new HashSet[Sub]
 
-  def subscribe(sub: Sub) { subscribe(sub, event => true) }
-  def subscribe(sub: Sub, filter: Filter) { filters.addBinding(sub, filter) }
-  def suspendSubscription(sub: Sub) { suspended += sub }
-  def activateSubscription(sub: Sub) { suspended -= sub }
-  def removeSubscription(sub: Sub) { filters -= sub }
-  def removeSubscriptions() { filters.clear() }
+  def subscribe(sub: Sub) {
+    subscribe(sub, event => true)
+  }
+  def subscribe(sub: Sub, filter: Filter) {
+    filters.addBinding(sub, filter)
+  }
+  def suspendSubscription(sub: Sub) {
+    suspended += sub
+  }
+  def activateSubscription(sub: Sub) {
+    suspended -= sub
+  }
+  def removeSubscription(sub: Sub) {
+    filters -= sub
+  }
+  def removeSubscriptions() {
+    filters.clear()
+  }
 
   protected def publish(event: Evt) {
     filters.keys.foreach(sub =>

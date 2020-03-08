@@ -26,7 +26,9 @@ object Test {
       a
     }
 
-    val r = a.merged(b) { collision }
+    val r = a.merged(b) {
+      collision
+    }
     println(r)
     println(r(1))
   }
@@ -39,7 +41,9 @@ object Test {
       b
     }
 
-    val r = a.merged(b) { collision }
+    val r = a.merged(b) {
+      collision
+    }
     println(r)
     println(r(1))
   }
@@ -51,7 +55,9 @@ object Test {
       (a._1, a._2 + b._2)
     }
 
-    val r = a.merged(b) { collision }
+    val r = a.merged(b) {
+      collision
+    }
     for ((k, v) <- r) assert(v == 100 + 2 * k, (k, v))
   }
 

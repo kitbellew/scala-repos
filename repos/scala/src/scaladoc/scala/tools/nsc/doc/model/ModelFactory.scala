@@ -188,7 +188,9 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
           case (None, None) => Body(Nil)
         })
       else
-        comment flatMap { _.deprecated }
+        comment flatMap {
+          _.deprecated
+        }
     def migration =
       if (sym.hasMigrationAnnotation)
         Some((sym.migrationMessage, sym.migrationVersion) match {
@@ -319,7 +321,9 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
               case _                                           => Nil
             }
           case _ => sym.tpe.parents
-        }) map { _.asSeenFrom(sym.thisType, sym) }
+        }) map {
+          _.asSeenFrom(sym.thisType, sym)
+        }
         makeParentTypes(RefinedType(tps, EmptyScope), Some(this), inTpl)
       }
   }
@@ -438,10 +442,18 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     def templates = members collect {
       case c: TemplateEntity with MemberEntity => c
     }
-    def methods = members collect { case d: Def                => d }
-    def values = members collect { case v: Val                 => v }
-    def abstractTypes = members collect { case t: AbstractType => t }
-    def aliasTypes = members collect { case t: AliasType       => t }
+    def methods = members collect {
+      case d: Def => d
+    }
+    def values = members collect {
+      case v: Val => v
+    }
+    def abstractTypes = members collect {
+      case t: AbstractType => t
+    }
+    def aliasTypes = members collect {
+      case t: AliasType => t
+    }
 
     /**
       * This is the final point in the core model creation: no DocTemplates are created after the model has finished, but
@@ -521,10 +533,14 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       }
 
     def constructors: List[MemberImpl with Constructor] =
-      if (isClass) members collect { case d: Constructor => d }
+      if (isClass) members collect {
+        case d: Constructor => d
+      }
       else Nil
     def primaryConstructor: Option[MemberImpl with Constructor] =
-      if (isClass) constructors find { _.isPrimary }
+      if (isClass) constructors find {
+        _.isPrimary
+      }
       else None
     override def valueParams =
       // we don't want params on a class (non case class) signature
@@ -597,7 +613,9 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       val inRealTpl = conversion.flatMap { conv =>
         nonRootTemplate(conv.toType.typeSymbol)
       } orElse nonRootTemplate(sym.owner) orElse Option(inTpl)
-      inRealTpl flatMap { tpl => thisFactory.comment(sym, tpl, tpl) }
+      inRealTpl flatMap { tpl =>
+        thisFactory.comment(sym, tpl, tpl)
+      }
     }
 
     override def inDefinitionTemplates =
@@ -665,7 +683,11 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       case TypeBounds(lo, hi) if lo.typeSymbol != NothingClass =>
         Some(
           makeTypeInTemplateContext(
-            appliedType(lo, sym.info.typeParams map { _.tpe }),
+            appliedType(
+              lo,
+              sym.info.typeParams map {
+                _.tpe
+              }),
             inTpl,
             sym))
       case _ => None
@@ -674,7 +696,11 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       case TypeBounds(lo, hi) if hi.typeSymbol != AnyClass =>
         Some(
           makeTypeInTemplateContext(
-            appliedType(hi, sym.info.typeParams map { _.tpe }),
+            appliedType(
+              hi,
+              sym.info.typeParams map {
+                _.tpe
+              }),
             inTpl,
             sym))
       case _ => None
@@ -785,7 +811,9 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
         else if (bSym.isAbstractType)
           new DocTemplateImpl(bSym, inTpl)
             with TypeBoundsImpl
-            with AbstractType { override def isAbstractType = true }
+            with AbstractType {
+            override def isAbstractType = true
+          }
         else if (bSym.isModule)
           new DocTemplateImpl(bSym, inTpl) with Object {}
         else if (bSym.isTrait)
@@ -986,7 +1014,9 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
         member.toList
       else
         // Use cases replace the original definitions - SI-5054
-        allSyms flatMap { makeMember0(_, member) }
+        allSyms flatMap {
+          makeMember0(_, member)
+        }
     }
   }
 
@@ -1155,7 +1185,9 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
                 findTemplateMaybe(pre.typeSymbol) match {
                   case Some(tpl) =>
                     findMember(parent.typeSymbol, tpl)
-                      .collect({ case t: TemplateImpl => t })
+                      .collect({
+                        case t: TemplateImpl => t
+                      })
                       .getOrElse(noDocTemplate)
                   case None => noDocTemplate
                 }

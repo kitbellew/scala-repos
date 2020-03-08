@@ -22,14 +22,30 @@ import kafka.common.{BaseEnum, KafkaException}
   * Different operations a client may perform on kafka resources.
   */
 sealed trait Operation extends BaseEnum
-case object Read extends Operation { val name = "Read" }
-case object Write extends Operation { val name = "Write" }
-case object Create extends Operation { val name = "Create" }
-case object Delete extends Operation { val name = "Delete" }
-case object Alter extends Operation { val name = "Alter" }
-case object Describe extends Operation { val name = "Describe" }
-case object ClusterAction extends Operation { val name = "ClusterAction" }
-case object All extends Operation { val name = "All" }
+case object Read extends Operation {
+  val name = "Read"
+}
+case object Write extends Operation {
+  val name = "Write"
+}
+case object Create extends Operation {
+  val name = "Create"
+}
+case object Delete extends Operation {
+  val name = "Delete"
+}
+case object Alter extends Operation {
+  val name = "Alter"
+}
+case object Describe extends Operation {
+  val name = "Describe"
+}
+case object ClusterAction extends Operation {
+  val name = "ClusterAction"
+}
+case object All extends Operation {
+  val name = "All"
+}
 
 object Operation {
   def fromString(operation: String): Operation = {

@@ -5,5 +5,7 @@ object Comment {
 }
 
 object HiddenTokens {
-  "foo" match { case Comment(_) => }
+  "foo" match {
+    case Comment(_) =>
+  }
 }

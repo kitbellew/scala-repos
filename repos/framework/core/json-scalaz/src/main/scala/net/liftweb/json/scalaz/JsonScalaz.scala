@@ -88,7 +88,9 @@ trait Types {
     kleisli(field[A](name))
 
   def makeObj(fields: Traversable[(String, JValue)]): JObject =
-    JObject(fields.toList.map { case (n, v) => JField(n, v) })
+    JObject(fields.toList.map {
+      case (n, v) => JField(n, v)
+    })
 }
 
 object JsonScalaz extends Types with Lifting with Base with Tuples

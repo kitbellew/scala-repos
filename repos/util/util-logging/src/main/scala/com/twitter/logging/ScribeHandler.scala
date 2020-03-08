@@ -174,7 +174,9 @@ class ScribeHandler(
 
   private var serverType: ServerType = Unknown
 
-  private def isArchaicServer() = { serverType == Archaic }
+  private def isArchaicServer() = {
+    serverType == Archaic
+  }
 
   // Could be rewritten using a simple Condition (await/notify) or producer/consumer
   // with timed batching
@@ -326,7 +328,9 @@ class ScribeHandler(
     }
 
     flusher.execute(new Runnable {
-      def run() { sendBatch() }
+      def run() {
+        sendBatch()
+      }
     })
   }
 
@@ -524,8 +528,12 @@ class ScribeHandler(
     val totalConnects = statsReceiver.counter("connects")
     val totalPublished = statsReceiver.counter("published")
     val totalCloses = statsReceiver.counter("closes")
-    val instances = statsReceiver.addGauge("instances") { 1 }
-    val unsentQueue = statsReceiver.addGauge("unsent_queue") { queueSize }
+    val instances = statsReceiver.addGauge("instances") {
+      1
+    }
+    val unsentQueue = statsReceiver.addGauge("unsent_queue") {
+      queueSize
+    }
 
     def incrSentRecords(count: Int): Unit = {
       sentRecords.addAndGet(count)

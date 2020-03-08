@@ -1,6 +1,8 @@
 // constructors used to drop outer fields when they were not accessed
 // however, how can you know (respecting separate compilation) that they're not accessed!?
-class Outer { final class Inner }
+class Outer {
+  final class Inner
+}
 
 // the matches below require Inner's outer pointer
 // until SI-4440 is fixed properly, we can't make this a run test

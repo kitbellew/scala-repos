@@ -124,9 +124,15 @@ class FusingSpec extends AkkaSpec {
           GraphInterpreter.currentInterpreter.log.asInstanceOf[BusLogging]
         bus.logSource
       }
-      val async = Flow[Int].map(x ⇒ { testActor ! ref; x }).async
+      val async = Flow[Int]
+        .map(x ⇒ {
+          testActor ! ref; x
+        })
+        .async
       Source(0 to 9)
-        .map(x ⇒ { testActor ! ref; x })
+        .map(x ⇒ {
+          testActor ! ref; x
+        })
         .flatMapMerge(5, i ⇒ Source.single(i).via(async))
         .grouped(1000)
         .runWith(Sink.head)
@@ -144,9 +150,13 @@ class FusingSpec extends AkkaSpec {
           GraphInterpreter.currentInterpreter.log.asInstanceOf[BusLogging]
         bus.logSource
       }
-      val flow = Flow[Int].map(x ⇒ { testActor ! ref; x })
+      val flow = Flow[Int].map(x ⇒ {
+        testActor ! ref; x
+      })
       Source(0 to 9)
-        .map(x ⇒ { testActor ! ref; x })
+        .map(x ⇒ {
+          testActor ! ref; x
+        })
         .flatMapMerge(5, i ⇒ Source.single(i).via(flow.async))
         .grouped(1000)
         .runWith(Sink.head)

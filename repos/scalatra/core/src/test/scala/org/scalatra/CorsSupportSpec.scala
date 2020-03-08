@@ -7,7 +7,9 @@ class CorsSupportSpec extends ScalatraSpec {
   addServlet(
     new ScalatraServlet with CorsSupport {
 
-      get("/") { "OK" }
+      get("/") {
+        "OK"
+      }
 
       override def initialize(config: ConfigT) {
         config.context.setInitParameter(
@@ -82,7 +84,9 @@ class DisabledCorsSupportSpec extends ScalatraSpec {
   addServlet(
     new ScalatraServlet with CorsSupport {
 
-      get("/") { "OK" }
+      get("/") {
+        "OK"
+      }
 
       override def initialize(config: ConfigT) {
         config.context.setInitParameter(

@@ -434,7 +434,9 @@ class LiftSession(
   private[http] def withAjaxRequests[T](
       fn: (
           scala.collection.mutable.Map[String, List[AjaxRequestInfo]]) => T) = {
-    ajaxRequests.synchronized { fn(ajaxRequests) }
+    ajaxRequests.synchronized {
+      fn(ajaxRequests)
+    }
   }
 
   /**
@@ -858,7 +860,9 @@ class LiftSession(
     def latestPostPageFunctions = {
       accessPostPageFuncs {
         val ret = postPageFunctions.get(rv)
-        ret.foreach { r => postPageFunctions += (rv -> r.updateLastSeen) }
+        ret.foreach { r =>
+          postPageFunctions += (rv -> r.updateLastSeen)
+        }
         ret
       }
     }
@@ -1601,16 +1605,24 @@ class LiftSession(
 
       Helpers.errorDiv(<div>Error processing snippet:
         <b>
-          {snippetName openOr "N/A"}
+          {
+        snippetName openOr "N/A"
+      }
         </b> <br/>
         Reason:
         <b>
-          {why}{addlMsg}
+          {
+        why
+      }{
+        addlMsg
+      }
         </b> <br/>
         XML causing this error:
           <br/>
         <pre style="background: lightgrey; padding: 6px; border: 1px solid">
-          {whole.toString}
+          {
+        whole.toString
+      }
         </pre>
       </div>) openOr NodeSeq.Empty
     }
@@ -1924,11 +1936,15 @@ class LiftSession(
                               if (intersection.isEmpty) NodeSeq.Empty
                               else
                                 <div>There are possible matching methods (
-                                {intersection}
+                                {
+                                  intersection
+                                }
                                 ),
                                 but none has the required signature:
                                 <pre>def
-                                  {method}
+                                  {
+                                  method
+                                }
                                   (in: NodeSeq): NodeSeq</pre>
                               </div>,
                               wholeTag
@@ -2019,8 +2035,14 @@ class LiftSession(
           }
 
         case Some(ft) =>
-          <form action={S.uri} method={ft}>
-            {ret}
+          <form action={
+            S.uri
+          } method={
+            ft
+          }>
+            {
+            ret
+          }
           </form> %
             checkMultiPart(attrs) % LiftRules.formAttrs.vend.foldLeft[MetaData](
             Null)((base, name) => checkAttr(name, attrs, base))
@@ -2141,7 +2163,9 @@ class LiftSession(
 
       val renderVersion = RenderVersion.get
 
-      val theNode = <lift_deferred:node id={nodeId}/>
+      val theNode = <lift_deferred:node id={
+        nodeId
+      }/>
 
       // take a snapshot of the hashmap used to communicate between threads
       val hash = deferredSnippets.is
@@ -2812,11 +2836,20 @@ class LiftSession(
             <br/>
           Message:
           <b>
-            {in.msg}
+            {
+        in.msg
+      }
           </b> <br/>{
-        in.exception.map(e => <pre>
-          {e.toString}{e.getStackTrace.map(_.toString).mkString("\n")}
-        </pre>).openOr(NodeSeq.Empty)
+        in.exception
+          .map(e =>
+            <pre>
+          {
+              e.toString
+            }{
+              e.getStackTrace.map(_.toString).mkString("\n")
+            }
+        </pre>)
+          .openOr(NodeSeq.Empty)
       }
         </div>) openOr NodeSeq.Empty
     }
@@ -2953,8 +2986,9 @@ class LiftSession(
             payload = in \ "payload"
             reified <- if (func.manifest == jvmanifest) Some(payload)
             else {
-              try { Some(payload.extract(defaultFormats, func.manifest)) }
-              catch {
+              try {
+                Some(payload.extract(defaultFormats, func.manifest))
+              } catch {
                 case e: Exception =>
                   logger.error(
                     "Failed to extract " + payload + " as " + func.manifest,

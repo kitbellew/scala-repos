@@ -91,7 +91,9 @@ trait ModelBuilders { self: RichPresentationCompiler =>
         val byView = members.groupBy(_.viaView)
         val viaView = if (byView.size == 1) {
           byView.keys.headOption.filter(_ != NoSymbol)
-        } else { None }
+        } else {
+          None
+        }
 
         // Do one top level sort by name on members, before
         // subdividing into kinds of members.
@@ -233,7 +235,9 @@ trait ModelBuilders { self: RichPresentationCompiler =>
   object ParamSectionInfo {
     def apply(params: Iterable[Symbol]): ParamSectionInfo = {
       new ParamSectionInfo(
-        params.map { s => (s.nameString, TypeInfo(s.tpe)) },
+        params.map { s =>
+          (s.nameString, TypeInfo(s.tpe))
+        },
         params.exists(_.isImplicit)
       )
     }

@@ -65,8 +65,12 @@ class LocalCheckpointSuite extends SparkFunSuite with LocalSparkContext {
   test("basic lineage truncation") {
     val numPartitions = 4
     val parallelRdd = sc.parallelize(1 to 100, numPartitions)
-    val mappedRdd = parallelRdd.map { i => i + 1 }
-    val filteredRdd = mappedRdd.filter { i => i % 2 == 0 }
+    val mappedRdd = parallelRdd.map { i =>
+      i + 1
+    }
+    val filteredRdd = mappedRdd.filter { i =>
+      i % 2 == 0
+    }
     val expectedPartitionIndices = (0 until numPartitions).toArray
     assert(filteredRdd.checkpointData.isEmpty)
     assert(filteredRdd.getStorageLevel === StorageLevel.NONE)
@@ -205,8 +209,12 @@ class LocalCheckpointSuite extends SparkFunSuite with LocalSparkContext {
     */
   private def newRdd: RDD[Int] = {
     sc.parallelize(1 to 100, 4)
-      .map { i => i + 1 }
-      .filter { i => i % 2 == 0 }
+      .map { i =>
+        i + 1
+      }
+      .filter { i =>
+        i % 2 == 0
+      }
   }
 
   /**
@@ -249,9 +257,15 @@ class LocalCheckpointSuite extends SparkFunSuite with LocalSparkContext {
       targetStorageLevel: StorageLevel): Unit = {
     require(targetStorageLevel !== StorageLevel.NONE)
     require(rdd.isLocallyCheckpointed)
-    val rdd1 = rdd.map { i => i + "1" }
-    val rdd2 = rdd1.map { i => i + "2" }
-    val rdd3 = rdd2.map { i => i + "3" }
+    val rdd1 = rdd.map { i =>
+      i + "1"
+    }
+    val rdd2 = rdd1.map { i =>
+      i + "2"
+    }
+    val rdd3 = rdd2.map { i =>
+      i + "3"
+    }
     val rddDependencies = rdd.dependencies
     val rdd1Dependencies = rdd1.dependencies
     val rdd2Dependencies = rdd2.dependencies

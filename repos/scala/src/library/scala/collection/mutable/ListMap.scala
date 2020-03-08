@@ -58,7 +58,9 @@ class ListMap[A, B]
   @deprecatedOverriding(
     "No sensible way to override -= as private remove is used in multiple places internally.",
     "2.11.0")
-  def -=(key: A) = { elems = remove(key, elems, List()); this }
+  def -=(key: A) = {
+    elems = remove(key, elems, List()); this
+  }
 
   @tailrec
   private def remove(
@@ -66,13 +68,16 @@ class ListMap[A, B]
       elems: List[(A, B)],
       acc: List[(A, B)]): List[(A, B)] = {
     if (elems.isEmpty) acc
-    else if (elems.head._1 == key) { siz -= 1; acc ::: elems.tail }
-    else remove(key, elems.tail, elems.head :: acc)
+    else if (elems.head._1 == key) {
+      siz -= 1; acc ::: elems.tail
+    } else remove(key, elems.tail, elems.head :: acc)
   }
   @deprecatedOverriding(
     "No sensible way to override as this functionality relies upon access to private methods.",
     "2.11.0")
-  override def clear() = { elems = List(); siz = 0 }
+  override def clear() = {
+    elems = List(); siz = 0
+  }
 
   @deprecatedOverriding(
     "No sensible way to override as this functionality relies upon access to private methods.",

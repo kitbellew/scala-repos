@@ -12,7 +12,9 @@ object Spawn {
     override def run() {
       Thread.sleep(1000)
       (new ThreadB).start()
-      synchronized { wait() }
+      synchronized {
+        wait()
+      }
     }
   }
   class ThreadB extends Thread {

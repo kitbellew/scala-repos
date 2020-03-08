@@ -15,12 +15,16 @@ object prodcons {
     val cDone = new SyncVar[Boolean];
 
     spawn {
-      while (p < n) { p = p + 1; buffer put (p); }
+      while (p < n) {
+        p = p + 1; buffer put (p);
+      }
     }
 
     spawn {
       var v: Int = _;
-      while (c < n) { c = c + 1; v = buffer.get; }
+      while (c < n) {
+        c = c + 1; v = buffer.get;
+      }
       cDone set true;
     }
 
@@ -30,8 +34,11 @@ object prodcons {
 
   private def toPositiveInt(s: Array[String]) = {
     val i =
-      try { Integer.parseInt(s(0)); }
-      catch { case _ => 1 }
+      try {
+        Integer.parseInt(s(0));
+      } catch {
+        case _ => 1
+      }
     if (i > 0) i; else 1;
   }
 }

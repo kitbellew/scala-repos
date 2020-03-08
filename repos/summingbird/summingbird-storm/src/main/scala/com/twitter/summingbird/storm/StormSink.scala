@@ -42,6 +42,8 @@ class StormBuffer[K, V](supplier: => Store[K, V])
     extends StormSink[(K, V)]
     with OnlineServiceFactory[K, V] {
   private lazy val constructed = supplier // only construct it once
-  def toFn = { (kv: (K, V)) => constructed.put((kv._1, Some(kv._2))) }
+  def toFn = { (kv: (K, V)) =>
+    constructed.put((kv._1, Some(kv._2)))
+  }
   def serviceStore: () => ReadableStore[K, V] = () => constructed
 }

@@ -60,7 +60,9 @@ class ParquetFilterSuite
       filterClass: Class[_ <: FilterPredicate],
       checker: (DataFrame, Seq[Row]) => Unit,
       expected: Seq[Row]): Unit = {
-    val output = predicate.collect { case a: Attribute => a }.distinct
+    val output = predicate.collect {
+      case a: Attribute => a
+    }.distinct
 
     withSQLConf(SQLConf.PARQUET_FILTER_PUSHDOWN_ENABLED.key -> "true") {
       withSQLConf(SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key -> "false") {

@@ -1296,7 +1296,9 @@ class SparkContext(config: SparkConf)
         kc.writableClass(km).asInstanceOf[Class[Writable]],
         vc.writableClass(vm).asInstanceOf[Class[Writable]],
         minPartitions)
-      writables.map { case (k, v) => (kc.convert(k), vc.convert(v)) }
+      writables.map {
+        case (k, v) => (kc.convert(k), vc.convert(v))
+      }
     }
   }
 
@@ -2071,7 +2073,9 @@ class SparkContext(config: SparkConf)
     var result: MapOutputStatistics = null
     val waiter = dagScheduler.submitMapStage(
       dependency,
-      (r: MapOutputStatistics) => { result = r },
+      (r: MapOutputStatistics) => {
+        result = r
+      },
       callSite,
       localProperties.get)
     new SimpleFutureAction[MapOutputStatistics](waiter, result)

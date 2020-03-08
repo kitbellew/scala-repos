@@ -6,7 +6,9 @@ object T {
 
 class Dim {
   def dim = new Dimension(0, 0)
-  def dim_=(d: Dimension) { println(d) }
+  def dim_=(d: Dimension) {
+    println(d)
+  }
 }
 
 object Test extends App {

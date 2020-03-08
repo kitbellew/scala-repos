@@ -55,7 +55,9 @@ trait Parsers {
   }
 
   def apply_++[s, tt](fun: Parser[s => tt], arg: Parser[s]): Parser[tt] =
-    lift[Tuple2[s => tt, s], tt]({ case (f, a) => f(a) })(sq(fun, arg))
+    lift[Tuple2[s => tt, s], tt]({
+      case (f, a) => f(a)
+    })(sq(fun, arg))
 
   def success[u](v: u): Parser[u] = new Parser[u] {
     def apply(in: Input) = Success(in, v)

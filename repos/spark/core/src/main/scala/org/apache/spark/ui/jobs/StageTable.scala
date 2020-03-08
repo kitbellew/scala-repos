@@ -37,16 +37,23 @@ private[ui] class StageTableBase(
 
   protected def columns: Seq[Node] = {
     <th>Stage Id</th> ++ {
-      if (isFairScheduler) { <th>Pool Name</th> }
-      else Seq.empty
+      if (isFairScheduler) {
+        <th>Pool Name</th>
+      } else Seq.empty
     } ++
       <th>Description</th>
     <th>Submitted</th>
     <th>Duration</th>
     <th>Tasks: Succeeded/Total</th>
-    <th><span data-toggle="tooltip" title={ToolTips.INPUT}>Input</span></th>
-    <th><span data-toggle="tooltip" title={ToolTips.OUTPUT}>Output</span></th>
-    <th><span data-toggle="tooltip" title={ToolTips.SHUFFLE_READ}>Shuffle Read</span></th>
+    <th><span data-toggle="tooltip" title={
+        ToolTips.INPUT
+      }>Input</span></th>
+    <th><span data-toggle="tooltip" title={
+        ToolTips.OUTPUT
+      }>Output</span></th>
+    <th><span data-toggle="tooltip" title={
+        ToolTips.SHUFFLE_READ
+      }>Shuffle Read</span></th>
     <th>
       <!-- Place the shuffle write tooltip on the left (rather than the default position
         of on top) because the shuffle write column is the last column on the right side and
@@ -70,9 +77,13 @@ private[ui] class StageTableBase(
       makeRow: T => Seq[Node],
       rows: Seq[T]): Seq[Node] = {
     <table class="table table-bordered table-striped table-condensed sortable">
-      <thead>{columns}</thead>
+      <thead>{
+      columns
+    }</thead>
       <tbody>
-        {rows.map(r => makeRow(r))}
+        {
+      rows.map(r => makeRow(r))
+    }
       </tbody>
     </table>
   }
@@ -95,12 +106,20 @@ private[ui] class StageTableBase(
        */
       val killLinkUri =
         s"$basePathUri/stages/stage/kill/?id=${s.stageId}&terminate=true"
-      <a href={killLinkUri} onclick={confirm} class="kill-link">(kill)</a>
+      <a href={
+        killLinkUri
+      } onclick={
+        confirm
+      } class="kill-link">(kill)</a>
     }
 
     val nameLinkUri =
       s"$basePathUri/stages/stage?id=${s.stageId}&attempt=${s.attemptId}"
-    val nameLink = <a href={nameLinkUri} class="name-link">{s.name}</a>
+    val nameLink = <a href={
+      nameLinkUri
+    } class="name-link">{
+      s.name
+    }</a>
 
     val cachedRddInfos = s.rddInfos.filter(_.numCachedPartitions > 0)
     val details = if (s.details.nonEmpty) {
@@ -113,11 +132,17 @@ private[ui] class StageTableBase(
           if (cachedRddInfos.nonEmpty) {
             Text("RDD: ") ++
               cachedRddInfos.map { i =>
-                <a href={s"$basePathUri/storage/rdd?id=${i.id}"}>{i.name}</a>
+                <a href={
+                  s"$basePathUri/storage/rdd?id=${i.id}"
+                }>{
+                  i.name
+                }</a>
               }
           }
         }
-        <pre>{s.details}</pre>
+        <pre>{
+          s.details
+        }</pre>
       </div>
     }
 
@@ -127,13 +152,24 @@ private[ui] class StageTableBase(
     } yield {
       UIUtils.makeDescription(desc, basePathUri)
     }
-    <div>{stageDesc.getOrElse("")} {killLink} {nameLink} {details}</div>
+    <div>{
+      stageDesc.getOrElse("")
+    } {
+      killLink
+    } {
+      nameLink
+    } {
+      details
+    }</div>
   }
 
   protected def missingStageRow(stageId: Int): Seq[Node] = {
-    <td>{stageId}</td> ++ {
-      if (isFairScheduler) { <td>-</td> }
-      else Seq.empty
+    <td>{
+      stageId
+    }</td> ++ {
+      if (isFairScheduler) {
+        <td>-</td>
+      } else Seq.empty
     } ++
       <td>No data available for this stage</td> ++ // Description
       <td></td> ++ // Submitted
@@ -191,9 +227,15 @@ private[ui] class StageTableBase(
 
     {
       if (s.attemptId > 0) {
-        <td>{s.stageId} (retry {s.attemptId})</td>
+        <td>{
+          s.stageId
+        } (retry {
+          s.attemptId
+        })</td>
       } else {
-        <td>{s.stageId}</td>
+        <td>{
+          s.stageId
+        }</td>
       }
     } ++ {
       if (isFairScheduler) {
@@ -202,18 +244,28 @@ private[ui] class StageTableBase(
           "%s/stages/pool?poolname=%s"
             .format(UIUtils.prependBaseUri(basePath), stageData.schedulingPool)
         }>
-          {stageData.schedulingPool}
+          {
+          stageData.schedulingPool
+        }
         </a>
       </td>
       } else {
         Seq.empty
       }
     } ++
-      <td>{makeDescription(s)}</td>
-    <td sorttable_customkey={s.submissionTime.getOrElse(0).toString} valign="middle">
-      {submissionTime}
+      <td>{
+        makeDescription(s)
+      }</td>
+    <td sorttable_customkey={
+        s.submissionTime.getOrElse(0).toString
+      } valign="middle">
+      {
+        submissionTime
+      }
     </td>
-    <td sorttable_customkey={duration.getOrElse(-1).toString}>{
+    <td sorttable_customkey={
+        duration.getOrElse(-1).toString
+      }>{
         formattedDuration
       }</td>
     <td class="progress-cell">
@@ -226,15 +278,35 @@ private[ui] class StageTableBase(
           total = s.numTasks)
       }
     </td>
-    <td sorttable_customkey={inputRead.toString}>{inputReadWithUnit}</td>
-    <td sorttable_customkey={outputWrite.toString}>{outputWriteWithUnit}</td>
-    <td sorttable_customkey={shuffleRead.toString}>{shuffleReadWithUnit}</td>
-    <td sorttable_customkey={shuffleWrite.toString}>{shuffleWriteWithUnit}</td>
+    <td sorttable_customkey={
+        inputRead.toString
+      }>{
+        inputReadWithUnit
+      }</td>
+    <td sorttable_customkey={
+        outputWrite.toString
+      }>{
+        outputWriteWithUnit
+      }</td>
+    <td sorttable_customkey={
+        shuffleRead.toString
+      }>{
+        shuffleReadWithUnit
+      }</td>
+    <td sorttable_customkey={
+        shuffleWrite.toString
+      }>{
+        shuffleWriteWithUnit
+      }</td>
   }
 
   /** Render an HTML row that represents a stage */
   private def renderStageRow(s: StageInfo): Seq[Node] =
-    <tr id={"stage-" + s.stageId + "-" + s.attemptId}>{stageRow(s)}</tr>
+    <tr id={
+      "stage-" + s.stageId + "-" + s.attemptId
+    }>{
+      stageRow(s)
+    }</tr>
 }
 
 private[ui] class FailedStageTable(
@@ -269,13 +341,17 @@ private[ui] class FailedStageTable(
         +details
       </span> ++
         <div class="stacktrace-details collapsed">
-          <pre>{failureReason}</pre>
+          <pre>{
+          failureReason
+        }</pre>
         </div>
       // scalastyle:on
     } else {
       ""
     }
-    val failureReasonHtml = <td valign="middle">{failureReasonSummary}{
+    val failureReasonHtml = <td valign="middle">{
+      failureReasonSummary
+    }{
       details
     }</td>
     basicColumns ++ failureReasonHtml

@@ -175,7 +175,9 @@ class BernoulliSampler[T: ClassTag](fraction: Double)
     } else if (fraction <= RandomSampler.defaultMaxGapSamplingFraction) {
       new GapSamplingIterator(items, fraction, rng, RandomSampler.rngEpsilon)
     } else {
-      items.filter { _ => rng.nextDouble() <= fraction }
+      items.filter { _ =>
+        rng.nextDouble() <= fraction
+      }
     }
   }
 
@@ -254,9 +256,13 @@ private[spark] class GapSamplingIterator[T: ClassTag](
     val arrayBufferClass = ArrayBuffer.empty[T].iterator.getClass
     data.getClass match {
       case `arrayClass` =>
-        (n: Int) => { data = data.drop(n) }
+        (n: Int) => {
+          data = data.drop(n)
+        }
       case `arrayBufferClass` =>
-        (n: Int) => { data = data.drop(n) }
+        (n: Int) => {
+          data = data.drop(n)
+        }
       case _ =>
         (n: Int) => {
           var j = 0
@@ -308,9 +314,13 @@ private[spark] class GapSamplingReplacementIterator[T: ClassTag](
     val arrayBufferClass = ArrayBuffer.empty[T].iterator.getClass
     data.getClass match {
       case `arrayClass` =>
-        (n: Int) => { data = data.drop(n) }
+        (n: Int) => {
+          data = data.drop(n)
+        }
       case `arrayBufferClass` =>
-        (n: Int) => { data = data.drop(n) }
+        (n: Int) => {
+          data = data.drop(n)
+        }
       case _ =>
         (n: Int) => {
           var j = 0

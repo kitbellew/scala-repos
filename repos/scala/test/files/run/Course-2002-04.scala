@@ -45,8 +45,9 @@ object M1 {
   def mergesort[a](less: (a, a) => Boolean)(xs: Array[a]): Unit = {
 
     def While(c: => Boolean)(b: => Unit): Unit =
-      if (c) { b; While(c)(b) }
-      else ();
+      if (c) {
+        b; While(c)(b)
+      } else ();
 
     def swap(i: Int, j: Int): Unit = {
       val t = xs(i);
@@ -60,8 +61,12 @@ object M1 {
       var i = l;
       var j = r;
       While(i <= j) {
-        While(less(xs(i), pivot)) { i = i + 1 }
-        While(less(pivot, xs(j))) { j = j - 1 }
+        While(less(xs(i), pivot)) {
+          i = i + 1
+        }
+        While(less(pivot, xs(j))) {
+          j = j - 1
+        }
         if (i <= j) {
           swap(i, j);
           i = i + 1;

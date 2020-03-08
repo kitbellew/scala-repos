@@ -91,7 +91,9 @@ trait AssignClusterModule[M[+_]]
                   }
 
                 case _ => None
-              } groupBy { _._1 }
+              } groupBy {
+                _._1
+              }
             }
 
             val modelsByCluster = modelTuples map {
@@ -164,7 +166,9 @@ trait AssignClusterModule[M[+_]]
             }
 
             def defined(cols: Map[ColumnRef, Column]): BitSet = {
-              val columns = cols map { case (_, col) => col }
+              val columns = cols map {
+                case (_, col) => col
+              }
 
               BitSetUtil.filteredRange(range) { i =>
                 if (columns.isEmpty) false
@@ -189,8 +193,12 @@ trait AssignClusterModule[M[+_]]
                     val clusterCenters: Array[Array[Double]] =
                       (model.clusters).map {
                         _.featureValues.toArray
-                          .sortBy { case (path, _) => path }
-                          .map { case (_, col) => col }
+                          .sortBy {
+                            case (path, _) => path
+                          }
+                          .map {
+                            case (_, col) => col
+                          }
                           .toArray
                       }
 
@@ -202,7 +210,9 @@ trait AssignClusterModule[M[+_]]
 
                     val featureColumns0 = includedModel.collect {
                       case (ref, col: DoubleColumn) => (ref, col)
-                    }.toArray sortBy { case (ColumnRef(path, _), _) => path }
+                    }.toArray sortBy {
+                      case (ColumnRef(path, _), _) => path
+                    }
                     val featureColumns = featureColumns0 map {
                       case (_, col) => col
                     }
@@ -333,7 +343,9 @@ trait AssignClusterModule[M[+_]]
           }
           val tables: M[Seq[Table]] = (tables0.toList).sequence
 
-          tables.map(_.reduceOption { _ concat _ } getOrElse Table.empty)
+          tables.map(_.reduceOption {
+            _ concat _
+          } getOrElse Table.empty)
         }
       }
     }

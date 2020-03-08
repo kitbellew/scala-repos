@@ -13,5 +13,7 @@ trait MonadErrorLaws[F[_], E]
 
 object MonadErrorLaws {
   def apply[F[_], E](implicit ev: MonadError[F, E]): MonadErrorLaws[F, E] =
-    new MonadErrorLaws[F, E] { def F: MonadError[F, E] = ev }
+    new MonadErrorLaws[F, E] {
+      def F: MonadError[F, E] = ev
+    }
 }

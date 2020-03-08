@@ -37,7 +37,9 @@ class ScParameterImpl protected (
     node: ASTNode)
     extends ScalaStubBasedElementImpl(stub, nodeType, node)
     with ScParameter {
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
 
   def this(stub: ScParameterStub) = {
     this(stub, ScalaElementTypes.PARAM, null)

@@ -27,10 +27,20 @@ import Helpers._
 
 trait TextareaTypedField extends StringTypedField {
   private def elem = S.fmapFunc(SFuncHolder(this.setFromAny(_))) { funcName =>
-    <textarea name={funcName}
-      rows={textareaRows.toString}
-      cols={textareaCols.toString}
-      tabindex={tabIndex.toString}>{valueBox openOr ""}</textarea>
+    <textarea name={
+      funcName
+    }
+      rows={
+      textareaRows.toString
+    }
+      cols={
+      textareaCols.toString
+    }
+      tabindex={
+      tabIndex.toString
+    }>{
+      valueBox openOr ""
+    }</textarea>
   }
 
   override def toForm: Box[NodeSeq] =

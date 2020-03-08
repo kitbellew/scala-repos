@@ -114,7 +114,9 @@ private[streaming] class ReceiverTracker(
     extends Logging {
 
   private val receiverInputStreams = ssc.graph.getReceiverInputStreams()
-  private val receiverInputStreamIds = receiverInputStreams.map { _.id }
+  private val receiverInputStreamIds = receiverInputStreams.map {
+    _.id
+  }
   private val receivedBlockTracker = new ReceivedBlockTracker(
     ssc.sparkContext.conf,
     ssc.sparkContext.hadoopConfiguration,

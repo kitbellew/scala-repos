@@ -79,7 +79,8 @@ class PhantomJSEnv(
 
     private var mgrIsRunning: Boolean = false
 
-    private object websocketListener extends WebsocketListener { // scalastyle:ignore
+    private object websocketListener
+        extends WebsocketListener { // scalastyle:ignore
       def onRunning(): Unit = ComPhantomRunner.this.synchronized {
         mgrIsRunning = true
         ComPhantomRunner.this.notifyAll()

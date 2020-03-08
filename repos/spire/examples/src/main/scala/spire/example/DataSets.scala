@@ -188,7 +188,9 @@ object Variable {
     def apply() = new Builder[String, String => List[F]] {
       def +=(s: String) = this
       def clear(): Unit = ()
-      def result() = { s => f(s) :: Nil }
+      def result() = { s =>
+        f(s) :: Nil
+      }
     }
   }
 
@@ -201,7 +203,9 @@ object Variable {
         categories += s
         this
       }
-      def clear(): Unit = { categories = Set.empty }
+      def clear(): Unit = {
+        categories = Set.empty
+      }
       def result() = {
         val orderedCategories = categories.toList
 
@@ -228,7 +232,9 @@ object Variable {
         }
         this
       }
-      def clear(): Unit = { values.clear(); defaultBuilder.clear() }
+      def clear(): Unit = {
+        values.clear(); defaultBuilder.clear()
+      }
       def result() = {
         val real = defaultBuilder.result()
         val occurences = values.foldLeft(Map.empty[List[F], Int]) { (acc, v) =>
@@ -237,7 +243,9 @@ object Variable {
         }
         val mostCommon = occurences.maxBy(_._2)._1
 
-        { s => if (s == sentinel) mostCommon else real(s) }
+        { s =>
+          if (s == sentinel) mostCommon else real(s)
+        }
       }
     }
   }

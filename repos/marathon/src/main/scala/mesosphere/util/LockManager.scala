@@ -33,7 +33,9 @@ object LockManager {
         lock.acquire()
       }
       val result = future
-      result.onComplete { _ => lock.release() }
+      result.onComplete { _ =>
+        lock.release()
+      }
       result
     }
   }

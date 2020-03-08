@@ -86,7 +86,9 @@ private[finagle] object MultiReaderHelper {
     }
 
     def onClose(handles: Set[ReadHandle]) {
-      handles foreach { _.close() }
+      handles foreach {
+        _.close()
+      }
       error ! ReadClosedException
     }
 
@@ -96,7 +98,9 @@ private[finagle] object MultiReaderHelper {
         return
       }
 
-      val queues = handles.map { _.messages }.toSeq
+      val queues = handles.map {
+        _.messages
+      }.toSeq
       val errors = handles.map { h =>
         h.error map { e =>
           logger.warning(
@@ -109,7 +113,9 @@ private[finagle] object MultiReaderHelper {
       // We sequence here to ensure that `close` gets priority over reads.
       Offer
         .prioritize(
-          close.recv { _ => onClose(handles) },
+          close.recv { _ =>
+            onClose(handles)
+          },
           Offer.choose(queues: _*) { m =>
             messages ! trackMessage(m)
             loop(handles)
@@ -167,7 +173,9 @@ private[finagle] object MultiReaderHelper {
     }
 
     val closeHandleOf: Offer[Unit] = close.send(()) map { _ =>
-      closeWitness onSuccess { _.close() }
+      closeWitness onSuccess {
+        _.close()
+      }
     }
 
     def createReadHandle(
@@ -389,7 +397,9 @@ object MultiReader {
 
   @deprecated("Use Var[Addr]-based `apply` method", "6.8.2")
   def apply(clients: Seq[Client], queueName: String): ReadHandle =
-    apply(clients map { _.readReliably(queueName) })
+    apply(clients map {
+      _.readReliably(queueName)
+    })
 
   /**
     * A java friendly interface: we use scala's implicit conversions to
@@ -408,7 +418,9 @@ object MultiReader {
 
   @deprecated("Use Var[Addr]-based `apply` method", "6.8.2")
   def merge(readHandleCluster: Cluster[ReadHandle]): ReadHandle = {
-    val varTrySet = Group.fromCluster(readHandleCluster).set map { Try(_) }
+    val varTrySet = Group.fromCluster(readHandleCluster).set map {
+      Try(_)
+    }
     MultiReaderHelper.merge(varTrySet)
   }
 }
@@ -584,7 +596,9 @@ abstract class MultiReaderBuilder[Req, Rep, Builder] private[kestrel] (
         }
 
         synchronized {
-          currentHandles.retain { case (addr, _) => addrs.contains(addr) }
+          currentHandles.retain {
+            case (addr, _) => addrs.contains(addr)
+          }
           currentHandles ++= newHandles
         }
 

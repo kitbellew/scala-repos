@@ -148,7 +148,9 @@ class ContinuousQueryManagerSuite
       testAwaitAnyTermination(ExpectNotBlocked)
       require(!q3.isActive)
       val q4 = stopRandomQueryAsync(10 milliseconds, withError = true)
-      eventually(Timeout(streamingTimeout)) { require(!q4.isActive) }
+      eventually(Timeout(streamingTimeout)) {
+        require(!q4.isActive)
+      }
       // After q4 terminates with exception, awaitAnyTerm should start throwing exception
       testAwaitAnyTermination(ExpectException[SparkException])
     }
@@ -245,7 +247,9 @@ class ContinuousQueryManagerSuite
         expectedReturnedValue = true)
       require(!q4.isActive)
       val q5 = stopRandomQueryAsync(10 milliseconds, withError = true)
-      eventually(Timeout(streamingTimeout)) { require(!q5.isActive) }
+      eventually(Timeout(streamingTimeout)) {
+        require(!q5.isActive)
+      }
       // After q5 terminates with exception, awaitAnyTerm should start throwing exception
       testAwaitAnyTermination(
         ExpectException[SparkException],

@@ -30,7 +30,9 @@ case class Info(
   def invert = copy(score = score.map(_.invert), mate = mate.map(-_))
 
   def scoreComment: Option[String] = score map (_.showPawns)
-  def mateComment: Option[String] = mate map { m => s"Mate in ${math.abs(m)}" }
+  def mateComment: Option[String] = mate map { m =>
+    s"Mate in ${math.abs(m)}"
+  }
   def evalComment: Option[String] = scoreComment orElse mateComment
 
   def isEmpty = score.isEmpty && mate.isEmpty

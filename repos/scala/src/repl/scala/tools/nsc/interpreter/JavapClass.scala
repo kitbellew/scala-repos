@@ -285,7 +285,9 @@ class JavapClass(
       // name#fragment is OK, but otherwise fragile
       def uri(name: String): URI =
         try new URI(name) // new URI("jfo:" + name)
-        catch { case _: URISyntaxException => new URI("dummy") }
+        catch {
+          case _: URISyntaxException => new URI("dummy")
+        }
 
       def inputNamed(name: String): Try[ByteAry] =
         (managed find (_._1 == name)).get._2
@@ -548,7 +550,9 @@ object Javap {
   }
 
   def helpText: String =
-    (helps map { case (name, help) => f"$name%-12.12s$help%n" }).mkString
+    (helps map {
+      case (name, help) => f"$name%-12.12s$help%n"
+    }).mkString
 
   def helper(pw: PrintWriter) = new Showable {
     def show() = pw print helpText

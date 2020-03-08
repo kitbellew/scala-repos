@@ -153,7 +153,9 @@ class SparkIMain(
 
   private val nextReqId = {
     var counter = 0
-    () => { counter += 1; counter }
+    () => {
+      counter += 1; counter
+    }
   }
 
   private def compilerClasspath: Seq[URL] = (
@@ -209,7 +211,9 @@ class SparkIMain(
   import reporter.{printMessage, withoutTruncating}
 
   // This exists mostly because using the reporter too early leads to deadlock.
-  private def echo(msg: String) { Console println msg }
+  private def echo(msg: String) {
+    Console println msg
+  }
   private def _initSources =
     List(new BatchSourceFile("<init>", "class $repl_$init { }"))
   private def _initialize() = {
@@ -746,13 +750,17 @@ class SparkIMain(
 
   private def safePos(t: Tree, alt: Int): Int =
     try t.pos.startOrPoint
-    catch { case _: UnsupportedOperationException => alt }
+    catch {
+      case _: UnsupportedOperationException => alt
+    }
 
   // Given an expression like 10 * 10 * 10 we receive the parent tree positioned
   // at a '*'.  So look at each subtree and find the earliest of all positions.
   private def earliestPosition(tree: Tree): Int = {
     var pos = Int.MaxValue
-    tree foreach { t => pos = math.min(pos, safePos(t, Int.MaxValue)) }
+    tree foreach { t =>
+      pos = math.min(pos, safePos(t, Int.MaxValue))
+    }
     pos
   }
 
@@ -772,7 +780,9 @@ class SparkIMain(
         // however Martin and I have removed the conversion
         // (it was conflicting with the new reflection API),
         // so I had to rewrite this a bit
-        val subs = t collect { case sub => sub }
+        val subs = t collect {
+          case sub => sub
+        }
         subs map (t0 =>
           "  " + safePos(t0, -1) + ": " + t0.shortClass + "\n") mkString ""
       }) mkString "\n"
@@ -994,7 +1004,9 @@ class SparkIMain(
   @DeveloperApi
   def rebind(p: NamedParam): IR.Result = {
     val name = p.name
-    val oldType = typeOfTerm(name) orElse { return IR.Error }
+    val oldType = typeOfTerm(name) orElse {
+      return IR.Error
+    }
     val newType = p.tpe
     val tempName = freshInternalVarName()
 
@@ -1128,11 +1140,15 @@ class SparkIMain(
 
     def callEither(name: String, args: Any*): Either[Throwable, AnyRef] =
       try Right(call(name, args: _*))
-      catch { case ex: Throwable => Left(ex) }
+      catch {
+        case ex: Throwable => Left(ex)
+      }
 
     def callOpt(name: String, args: Any*): Option[AnyRef] =
       try Some(call(name, args: _*))
-      catch { case ex: Throwable => bindError(ex); None }
+      catch {
+        case ex: Throwable => bindError(ex); None
+      }
 
     class EvalException(msg: String, cause: Throwable)
         extends RuntimeException(msg, cause) {}
@@ -1145,7 +1161,9 @@ class SparkIMain(
     private def load(path: String): Class[_] = {
       // scalastyle:off classforname
       try Class.forName(path, true, classLoader)
-      catch { case ex: Throwable => evalError(path, unwrap(ex)) }
+      catch {
+        case ex: Throwable => evalError(path, unwrap(ex))
+      }
       // scalastyle:on classforname
     }
 
@@ -1225,13 +1243,17 @@ class SparkIMain(
     val lineRep = new ReadEvalPrint()
 
     private var _originalLine: String = null
-    def withOriginalLine(s: String): this.type = { _originalLine = s; this }
+    def withOriginalLine(s: String): this.type = {
+      _originalLine = s; this
+    }
     def originalLine = if (_originalLine == null) line else _originalLine
 
     /** handlers for each tree in this request */
     val handlers: List[MemberHandler] =
       trees map (memberHandlers chooseHandler _)
-    def defHandlers = handlers collect { case x: MemberDefHandler => x }
+    def defHandlers = handlers collect {
+      case x: MemberDefHandler => x
+    }
 
     /** all (public) names defined by these statements */
     val definedNames = handlers flatMap (_.definedNames)
@@ -1437,8 +1459,11 @@ class SparkIMain(
 
     /** load and run the code using reflection */
     def loadAndRun: (String, Boolean) = {
-      try { ("" + (lineRep call sessionNames.print), true) }
-      catch { case ex: Throwable => (lineRep.bindError(ex), false) }
+      try {
+        ("" + (lineRep call sessionNames.print), true)
+      } catch {
+        case ex: Throwable => (lineRep.bindError(ex), false)
+      }
     }
 
     override def toString =
@@ -1588,7 +1613,9 @@ class SparkIMain(
   @DeveloperApi
   def runtimeTypeOfTerm(id: String): Type = {
     typeOfTerm(id) andAlso { tpe =>
-      val clazz = classOfTerm(id) getOrElse { return NoType }
+      val clazz = classOfTerm(id) getOrElse {
+        return NoType
+      }
       val staticSym = tpe.typeSymbol
       val runtimeSym = getClassIfDefined(clazz.getName)
 
@@ -1647,8 +1674,12 @@ class SparkIMain(
   def typeOfExpression(expr: String, silent: Boolean = true): Type =
     exprTyper.typeOfExpression(expr, silent)
 
-  protected def onlyTerms(xs: List[Name]) = xs collect { case x: TermName => x }
-  protected def onlyTypes(xs: List[Name]) = xs collect { case x: TypeName => x }
+  protected def onlyTerms(xs: List[Name]) = xs collect {
+    case x: TermName => x
+  }
+  protected def onlyTypes(xs: List[Name]) = xs collect {
+    case x: TypeName => x
+  }
 
   /**
     * Retrieves the defined, public names in the compiler.
@@ -1726,7 +1757,9 @@ class SparkIMain(
     * @return The list of matching ClassSymbol instances
     */
   @DeveloperApi
-  def classSymbols = allDefSymbols collect { case x: ClassSymbol => x }
+  def classSymbols = allDefSymbols collect {
+    case x: ClassSymbol => x
+  }
 
   /**
     * Retrieves the Symbols representing methods in the compiler.
@@ -1734,7 +1767,9 @@ class SparkIMain(
     * @return The list of matching MethodSymbol instances
     */
   @DeveloperApi
-  def methodSymbols = allDefSymbols collect { case x: MethodSymbol => x }
+  def methodSymbols = allDefSymbols collect {
+    case x: MethodSymbol => x
+  }
 
   /** the previous requests this interpreter has processed */
   private var executingRequest: Request = _

@@ -48,8 +48,11 @@ class PregelSuite extends SparkFunSuite with LocalSparkContext {
         chain.vertices.collect.toSet === (1 to n)
           .map(x => (x: VertexId, 0))
           .toSet)
-      val chainWithSeed =
-        chain.mapVertices { (vid, attr) => if (vid == 1) 1 else 0 }.cache()
+      val chainWithSeed = chain
+        .mapVertices { (vid, attr) =>
+          if (vid == 1) 1 else 0
+        }
+        .cache()
       assert(
         chainWithSeed.vertices.collect.toSet ===
           Set((1: VertexId, 1)) ++ (2 to n).map(x => (x: VertexId, 0)).toSet)
@@ -61,7 +64,12 @@ class PregelSuite extends SparkFunSuite with LocalSparkContext {
         (a: Int, b: Int) => math.max(a, b))
       assert(
         result.vertices.collect.toSet ===
-          chain.vertices.mapValues { (vid, attr) => attr + 1 }.collect.toSet)
+          chain.vertices
+            .mapValues { (vid, attr) =>
+              attr + 1
+            }
+            .collect
+            .toSet)
     }
   }
 }

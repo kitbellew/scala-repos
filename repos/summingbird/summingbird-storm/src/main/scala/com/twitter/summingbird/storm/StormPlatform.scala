@@ -212,9 +212,13 @@ abstract class Storm(
       case x: StormNode => stormDag.getNodeName(x)
     }
     if (usePreferLocalDependency.get) {
-      dependenciesNames.foreach { declarer.localOrShuffleGrouping(_) }
+      dependenciesNames.foreach {
+        declarer.localOrShuffleGrouping(_)
+      }
     } else {
-      dependenciesNames.foreach { declarer.shuffleGrouping(_) }
+      dependenciesNames.foreach {
+        declarer.shuffleGrouping(_)
+      }
     }
   }
 
@@ -234,7 +238,10 @@ abstract class Storm(
             spout // The source is still in the members list so drop it
           case OptionMappedProducer(_, op) =>
             spout.flatMap {
-              case (time, t) => op.apply(t).map { x => (time, x) }
+              case (time, t) =>
+                op.apply(t).map { x =>
+                  (time, x)
+                }
             }
           case NamedProducer(_, _)      => spout
           case IdentityKeyedProducer(_) => spout

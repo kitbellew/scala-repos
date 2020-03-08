@@ -338,7 +338,9 @@ object SparkBuild extends PomBuild {
     ).contains(x)
   }
 
-  mimaProjects.foreach { x => enable(MimaBuild.mimaSettings(sparkHome, x))(x) }
+  mimaProjects.foreach { x =>
+    enable(MimaBuild.mimaSettings(sparkHome, x))(x)
+  }
 
   /* Unsafe settings */
   enable(Unsafe.settings)(unsafe)
@@ -459,7 +461,9 @@ object DependencyOverrides {
   */
 object ExcludedDependencies {
   lazy val settings = Seq(
-    libraryDependencies ~= { libs => libs.filterNot(_.name == "groovy-all") }
+    libraryDependencies ~= { libs =>
+      libs.filterNot(_.name == "groovy-all")
+    }
   )
 }
 
@@ -472,7 +476,9 @@ object OldDeps {
 
   lazy val allPreviousArtifactKeys = Def.settingDyn[Seq[Option[ModuleID]]] {
     SparkBuild.mimaProjects
-      .map { project => MimaKeys.previousArtifact in project }
+      .map { project =>
+        MimaKeys.previousArtifact in project
+      }
       .map(k => Def.setting(k.value))
       .join
   }
@@ -877,7 +883,9 @@ object CopyDependencies {
 
       (dependencyClasspath in Compile).value
         .map(_.data)
-        .filter { jar => jar.isFile() }
+        .filter { jar =>
+          jar.isFile()
+        }
         .foreach { jar =>
           val destJar = new File(dest, jar.getName())
           if (destJar.isFile()) {
@@ -933,7 +941,9 @@ object TestSettings {
     javaOptions in Test += "-Dderby.system.durability=test",
     javaOptions in Test ++= System.getProperties.asScala
       .filter(_._1.startsWith("spark"))
-      .map { case (k, v) => s"-D$k=$v" }
+      .map {
+        case (k, v) => s"-D$k=$v"
+      }
       .toSeq,
     javaOptions in Test += "-ea",
     javaOptions in Test ++= "-Xmx3g -Xss4096k -XX:PermSize=128M -XX:MaxNewSize=256m -XX:MaxPermSize=1g"
@@ -945,13 +955,22 @@ object TestSettings {
       TestFrameworks.ScalaTest,
       sys.props
         .get("test.exclude.tags")
-        .map { tags => tags.split(",").flatMap { tag => Seq("-l", tag) }.toSeq }
+        .map { tags =>
+          tags
+            .split(",")
+            .flatMap { tag =>
+              Seq("-l", tag)
+            }
+            .toSeq
+        }
         .getOrElse(Nil): _*),
     testOptions in Test += Tests.Argument(
       TestFrameworks.JUnit,
       sys.props
         .get("test.exclude.tags")
-        .map { tags => Seq("--exclude-categories=" + tags) }
+        .map { tags =>
+          Seq("--exclude-categories=" + tags)
+        }
         .getOrElse(Nil): _*),
     // Show full stack trace and duration in test cases.
     testOptions in Test += Tests.Argument("-oDF"),

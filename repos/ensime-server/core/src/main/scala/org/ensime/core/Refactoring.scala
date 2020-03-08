@@ -194,9 +194,12 @@ trait RefactoringImpl { self: RichPresentationCompiler =>
     new RefactoringEnvironment(file.getPath, start, end) {
       val refactoring = new Rename with GlobalIndexes {
         val global = RefactoringImpl.this
-        val invalidSet = toBeRemoved.synchronized { toBeRemoved.toSet }
-        val cuIndexes =
-          this.global.activeUnits().map { u => CompilationUnitIndex(u.body) }
+        val invalidSet = toBeRemoved.synchronized {
+          toBeRemoved.toSet
+        }
+        val cuIndexes = this.global.activeUnits().map { u =>
+          CompilationUnitIndex(u.body)
+        }
         val index = GlobalIndex(cuIndexes.toList)
       }
       val result = performRefactoring(procId, tpe, name)
@@ -212,8 +215,9 @@ trait RefactoringImpl { self: RichPresentationCompiler =>
     new RefactoringEnvironment(file.getPath, start, end) {
       val refactoring = new ExtractMethod with GlobalIndexes {
         val global = RefactoringImpl.this
-        val cuIndexes =
-          this.global.activeUnits().map { u => CompilationUnitIndex(u.body) }
+        val cuIndexes = this.global.activeUnits().map { u =>
+          CompilationUnitIndex(u.body)
+        }
         val index = GlobalIndex(cuIndexes.toList)
       }
       val result = performRefactoring(procId, tpe, name)
@@ -229,8 +233,9 @@ trait RefactoringImpl { self: RichPresentationCompiler =>
     new RefactoringEnvironment(file.getPath, start, end) {
       val refactoring = new ExtractLocal with GlobalIndexes {
         val global = RefactoringImpl.this
-        val cuIndexes =
-          this.global.activeUnits().map { u => CompilationUnitIndex(u.body) }
+        val cuIndexes = this.global.activeUnits().map { u =>
+          CompilationUnitIndex(u.body)
+        }
         val index = GlobalIndex(cuIndexes.toList)
       }
       val result = performRefactoring(procId, tpe, name)
@@ -245,8 +250,9 @@ trait RefactoringImpl { self: RichPresentationCompiler =>
     new RefactoringEnvironment(file.getPath, start, end) {
       val refactoring = new InlineLocal with GlobalIndexes {
         val global = RefactoringImpl.this
-        val cuIndexes =
-          this.global.activeUnits().map { u => CompilationUnitIndex(u.body) }
+        val cuIndexes = this.global.activeUnits().map { u =>
+          CompilationUnitIndex(u.body)
+        }
         val index = GlobalIndex(cuIndexes.toList)
       }
       val result =
@@ -275,7 +281,11 @@ trait RefactoringImpl { self: RichPresentationCompiler =>
       )
     }.result
 
-  private def using[A, R <: { def close(): Unit }](r: R)(f: R => A): A = {
+  private def using[
+      A,
+      R <: {
+        def close(): Unit
+      }](r: R)(f: R => A): A = {
     import scala.language.reflectiveCalls
     try {
       f(r)

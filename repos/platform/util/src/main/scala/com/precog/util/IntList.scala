@@ -95,8 +95,12 @@ final case object IntNil extends IntList {
 
 final class IntListBuilder extends Builder[Int, IntList] {
   private var xs: IntList = IntNil
-  def +=(x: Int) = { xs = x :: xs; this }
-  def clear() { xs = IntNil }
+  def +=(x: Int) = {
+    xs = x :: xs; this
+  }
+  def clear() {
+    xs = IntNil
+  }
   def result() = xs.reverse
 }
 

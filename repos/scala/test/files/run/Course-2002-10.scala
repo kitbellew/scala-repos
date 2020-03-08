@@ -16,7 +16,9 @@ object M0 {
     var i = 0;
     fib
       .take(20)
-      .foreach(n => { Console.println("fib(" + i + ") = " + n); i = i + 1 });
+      .foreach(n => {
+        Console.println("fib(" + i + ") = " + n); i = i + 1
+      });
     Console.println;
   }
 }
@@ -26,7 +28,9 @@ object M0 {
 object M1 {
 
   def scale(x: Double, s: Stream[Double]): Stream[Double] =
-    s map { e: Double => e * x }
+    s map { e: Double =>
+      e * x
+    }
 
   def partialSums(s: Stream[Double]): Stream[Double] =
     Stream.cons(s.head, partialSums(s.tail) map (x => x + s.head));
@@ -51,14 +55,22 @@ object M1 {
     better(s, transform) map (x => x.head);
 
   def lnSummands(n: Double): Stream[Double] =
-    Stream.cons(1.0 / n, lnSummands(n + 1.0) map { x: Double => -x })
+    Stream.cons(
+      1.0 / n,
+      lnSummands(n + 1.0) map { x: Double =>
+        -x
+      })
 
   var ln0 = partialSums(lnSummands(1.0));
   var ln1 = euler(ln0);
   var ln2 = veryGood(ln0, euler);
 
   def piSummands(n: Double): Stream[Double] =
-    Stream.cons(1.0 / n, piSummands(n + 2.0) map { x: Double => -x })
+    Stream.cons(
+      1.0 / n,
+      piSummands(n + 2.0) map { x: Double =>
+        -x
+      })
 
   var pi0 = scale(4.0, partialSums(piSummands(1.0)));
   var pi1 = euler(pi0);
@@ -67,7 +79,9 @@ object M1 {
   def pad(s: String, n: Int): String =
     if (n <= 0) s.substring(0, s.length() + n)
     else pad(s + " ", n - 1);
-  def str(d: Double) = { val s = d.toString(); pad(s, 18 - s.length()) };
+  def str(d: Double) = {
+    val s = d.toString(); pad(s, 18 - s.length())
+  };
 
   def test = {
     var i = 0;
@@ -106,7 +120,9 @@ object M2 {
   class IntIterator(start: Int) extends Iterator[Int] {
     var current: Int = start;
     def hasNext = true;
-    def next = { current = current + 1; current - 1 };
+    def next = {
+      current = current + 1; current - 1
+    };
   }
 
   class PrimeIterator() extends Iterator[Int] {
@@ -114,7 +130,9 @@ object M2 {
     def hasNext = true;
     def next = {
       val p = current.next;
-      current = current filter { x => !((x % p) == 0) };
+      current = current filter { x =>
+        !((x % p) == 0)
+      };
       p
     }
   }
@@ -122,7 +140,9 @@ object M2 {
   def test = {
     val i = (new PrimeIterator()).take(30);
     Console.print("prime numbers:");
-    while (i.hasNext) { Console.print(" " + i.next); }
+    while (i.hasNext) {
+      Console.print(" " + i.next);
+    }
     Console.println;
   }
 }

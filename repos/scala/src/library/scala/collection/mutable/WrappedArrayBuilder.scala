@@ -95,7 +95,9 @@ class WrappedArrayBuilder[A](tag: ClassTag[A])
     this
   }
 
-  def clear() { size = 0 }
+  def clear() {
+    size = 0
+  }
 
   def result() = {
     if (capacity != 0 && capacity == size) {

@@ -81,13 +81,21 @@ trait IndexedSeqView[A, +Coll]
     *  This method could be eliminated if Scala had virtual classes
     */
   protected override def newFiltered(p: A => Boolean): Transformed[A] =
-    new { val pred = p } with AbstractTransformed[A] with Filtered
+    new {
+      val pred = p
+    } with AbstractTransformed[A] with Filtered
   protected override def newSliced(_endpoints: SliceInterval): Transformed[A] =
-    new { val endpoints = _endpoints } with AbstractTransformed[A] with Sliced
+    new {
+      val endpoints = _endpoints
+    } with AbstractTransformed[A] with Sliced
   protected override def newDroppedWhile(p: A => Boolean): Transformed[A] =
-    new { val pred = p } with AbstractTransformed[A] with DroppedWhile
+    new {
+      val pred = p
+    } with AbstractTransformed[A] with DroppedWhile
   protected override def newTakenWhile(p: A => Boolean): Transformed[A] =
-    new { val pred = p } with AbstractTransformed[A] with TakenWhile
+    new {
+      val pred = p
+    } with AbstractTransformed[A] with TakenWhile
   protected override def newReversed: Transformed[A] =
     new AbstractTransformed[A] with Reversed
 
@@ -117,7 +125,9 @@ trait IndexedSeqView[A, +Coll]
   * `map` cannot do its work and maintain a pointer into the original indexed sequence.
   */
 object IndexedSeqView {
-  type Coll = TraversableView[_, C] forSome { type C <: Traversable[_] }
+  type Coll = TraversableView[_, C] forSome {
+    type C <: Traversable[_]
+  }
   implicit def canBuildFrom[A]: CanBuildFrom[Coll, A, SeqView[A, Seq[_]]] =
     new CanBuildFrom[Coll, A, SeqView[A, Seq[_]]] {
       def apply(from: Coll) = new NoBuilder

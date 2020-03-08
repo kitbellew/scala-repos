@@ -49,7 +49,9 @@ class ArrayMap[@specialized V](defValue: => V, private val arr: ArrayBuffer[V])
     }
   }
   override def get(i: Int) = if (i < arr.length) Some(arr(i)) else None
-  override def +=(k: (Int, V)): this.type = { update(k._1, k._2); this }
+  override def +=(k: (Int, V)): this.type = {
+    update(k._1, k._2); this
+  }
   override def clear = arr.clear()
 
   override def getOrElseUpdate(i: Int, v: => V) = {
@@ -74,7 +76,9 @@ class ArrayMap[@specialized V](defValue: => V, private val arr: ArrayBuffer[V])
   /**
     * Note that removing an element in the array simply replaces it with the default(i)
     */
-  def -=(i: Int): this.type = { arr(i) = default(i); this }
+  def -=(i: Int): this.type = {
+    arr(i) = default(i); this
+  }
   override def size = arr.size
   def iterator = keysIterator zip valuesIterator
   override def keysIterator = (0 until arr.length).iterator

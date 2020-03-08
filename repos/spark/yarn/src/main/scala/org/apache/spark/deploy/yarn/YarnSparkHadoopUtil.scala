@@ -68,7 +68,9 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
 
   // Note that all params which start with SPARK are propagated all the way through, so if in yarn
   // mode, this MUST be set to true.
-  override def isYarnMode(): Boolean = { true }
+  override def isYarnMode(): Boolean = {
+    true
+  }
 
   // Return an appropriate (subclass) of Configuration. Creating a config initializes some Hadoop
   // subsystems. Always create a new config, don't reuse yarnConf.

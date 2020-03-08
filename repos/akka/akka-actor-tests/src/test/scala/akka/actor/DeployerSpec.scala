@@ -66,7 +66,9 @@ object DeployerSpec {
   )
 
   class RecipeActor extends Actor {
-    def receive = { case _ ⇒ }
+    def receive = {
+      case _ ⇒
+    }
   }
 
 }

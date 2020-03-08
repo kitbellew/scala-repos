@@ -170,7 +170,9 @@ trait TestKitBase {
   /**
     * Stop ignoring messages in the test actor.
     */
-  def ignoreNoMsg() { testActor ! TestActor.SetIgnore(None) }
+  def ignoreNoMsg() {
+    testActor ! TestActor.SetIgnore(None)
+  }
 
   /**
     * Have the testActor watch someone (i.e. `context.watch(...)`).
@@ -295,8 +297,9 @@ trait TestKitBase {
     @tailrec
     def poll(t: Duration) {
       val failed =
-        try { a; false }
-        catch {
+        try {
+          a; false
+        } catch {
           case NonFatal(e) ⇒
             if ((now + t) >= stop) throw e
             true
@@ -676,12 +679,16 @@ trait TestKitBase {
   /**
     * Same as `expectNoMsg(remainingOrDefault)`, but correctly treating the timeFactor.
     */
-  def expectNoMsg() { expectNoMsg_internal(remainingOrDefault) }
+  def expectNoMsg() {
+    expectNoMsg_internal(remainingOrDefault)
+  }
 
   /**
     * Assert that no message is received for the specified time.
     */
-  def expectNoMsg(max: FiniteDuration) { expectNoMsg_internal(max.dilated) }
+  def expectNoMsg(max: FiniteDuration) {
+    expectNoMsg_internal(max.dilated)
+  }
 
   private def expectNoMsg_internal(max: FiniteDuration) {
     val o = receiveOne(max)
@@ -758,7 +765,9 @@ trait TestKitBase {
       n: Int,
       max: Duration): immutable.Seq[AnyRef] = {
     val stop = max + now
-    for { x ← 1 to n } yield {
+    for {
+      x ← 1 to n
+    } yield {
       val timeout = stop - now
       val o = receiveOne(timeout)
       assert(
@@ -854,8 +863,9 @@ trait TestKitBase {
   *
   * @since 1.1
   */
-class TestKit(_system: ActorSystem) extends { implicit val system = _system }
-with TestKitBase
+class TestKit(_system: ActorSystem) extends {
+  implicit val system = _system
+} with TestKitBase
 
 object TestKit {
   private[testkit] val testActorId = new AtomicInteger(0)
@@ -994,7 +1004,10 @@ private[testkit] abstract class CachingPartialFunction[A, B <: AnyRef]
 
   var cache: B = _
   final def isDefinedAt(x: A): Boolean =
-    try { cache = `match`(x); true }
-    catch { case NoMatch ⇒ cache = null.asInstanceOf[B]; false }
+    try {
+      cache = `match`(x); true
+    } catch {
+      case NoMatch ⇒ cache = null.asInstanceOf[B]; false
+    }
   final override def apply(x: A): B = cache
 }

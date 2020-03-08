@@ -60,7 +60,9 @@ class SetMapConsistencyTest {
       case _ => oor("get", n)
     }
     def fiddlers: Int = 0
-    def fiddle(n: Int) { oor("fiddle", n) }
+    def fiddle(n: Int) {
+      oor("fiddle", n)
+    }
     def keys = m.keysIterator
     def has(a: A) = m contains a
     override def toString = m.toString
@@ -177,7 +179,9 @@ class SetMapConsistencyTest {
       case _ => oor("get", n)
     }
     def fiddlers: Int = 0
-    def fiddle(n: Int) { oor("fiddle", n) }
+    def fiddle(n: Int) {
+      oor("fiddle", n)
+    }
     def keys = m.keysIterator
     def has(a: A) = m contains a
     override def toString = m.toString
@@ -237,7 +241,9 @@ class SetMapConsistencyTest {
     def getters: Int = 1
     def get(n: Int, a: A) = if (m(a)) 0 else -1
     def fiddlers: Int = 0
-    def fiddle(n: Int) { oor("fiddle", n) }
+    def fiddle(n: Int) {
+      oor("fiddle", n)
+    }
     def keys = m.iterator
     def has(a: A) = m(a)
     override def toString = m.toString
@@ -285,7 +291,9 @@ class SetMapConsistencyTest {
     def getters: Int = 1
     def get(n: Int, a: A) = if (m(a)) 0 else -1
     def fiddlers: Int = 0
-    def fiddle(n: Int) { oor("fiddle", n) }
+    def fiddle(n: Int) {
+      oor("fiddle", n)
+    }
     def keys = m.iterator
     def has(a: A) = m(a)
     override def toString = m.toString
@@ -424,8 +432,9 @@ class SetMapConsistencyTest {
       () => boxIlm[Int],
       () => boxItm[Int]
     )
-    assert(
-      maps.sliding(2).forall { ms => churn(ms(0)(), ms(1)(), intKeys, 2000) })
+    assert(maps.sliding(2).forall { ms =>
+      churn(ms(0)(), ms(1)(), intKeys, 2000)
+    })
   }
 
   @Test
@@ -441,8 +450,9 @@ class SetMapConsistencyTest {
       () => boxIhm[Long],
       () => boxIlm[Long]
     )
-    assert(
-      maps.sliding(2).forall { ms => churn(ms(0)(), ms(1)(), longKeys, 10000) })
+    assert(maps.sliding(2).forall { ms =>
+      churn(ms(0)(), ms(1)(), longKeys, 10000)
+    })
   }
 
   @Test
@@ -471,8 +481,9 @@ class SetMapConsistencyTest {
       () => boxIhm[Any],
       () => boxIlm[Any]
     )
-    assert(
-      maps.sliding(2).forall { ms => churn(ms(0)(), ms(1)(), anyKeys, 10000) })
+    assert(maps.sliding(2).forall { ms =>
+      churn(ms(0)(), ms(1)(), anyKeys, 10000)
+    })
   }
 
   @Test
@@ -513,9 +524,13 @@ class SetMapConsistencyTest {
   def extraMutableLongMapTests() {
     import cm.{LongMap, HashMap}
     var lm = LongMap.empty[Long]
-    longKeys.zipWithIndex.foreach { case (k, i) => lm(k) = i }
+    longKeys.zipWithIndex.foreach {
+      case (k, i) => lm(k) = i
+    }
     assert {
-      lm.map { case (k, v) => -k * k -> v.toString }.getClass == lm.getClass
+      lm.map {
+        case (k, v) => -k * k -> v.toString
+      }.getClass == lm.getClass
     }
 
     assert {
@@ -528,8 +543,12 @@ class SetMapConsistencyTest {
 
     lm = LongMap(8L -> 22L, -5L -> 5L, Long.MinValue -> 0L)
 
-    assert { var s = 0L; lm.foreachKey(s += _); s == Long.MinValue + 3 }
-    assert { var s = 0L; lm.foreachValue(s += _); s == 27L }
+    assert {
+      var s = 0L; lm.foreachKey(s += _); s == Long.MinValue + 3
+    }
+    assert {
+      var s = 0L; lm.foreachValue(s += _); s == 27L
+    }
     assert {
       val m2 = lm.mapValuesNow(_ + 2)
       lm.transformValues(_ + 2)
@@ -552,7 +571,9 @@ class SetMapConsistencyTest {
   def extraMutableAnyRefMapTests() {
     import cm.{AnyRefMap, HashMap}
     var arm = AnyRefMap.empty[String, Int]
-    stringKeys.zipWithIndex.foreach { case (k, i) => arm(k) = i }
+    stringKeys.zipWithIndex.foreach {
+      case (k, i) => arm(k) = i
+    }
 
     assert {
       arm.map {
@@ -580,7 +601,9 @@ class SetMapConsistencyTest {
       s.contains("budgie")
     }
 
-    assert { var s = 0L; arm.foreachValue(s += _); s == 27L }
+    assert {
+      var s = 0L; arm.foreachValue(s += _); s == 27L
+    }
 
     assert {
       val m2 = arm.mapValuesNow(_ + 2)
@@ -609,8 +632,12 @@ class SetMapConsistencyTest {
     val manyKVs =
       (0 to 1000).map(i => i * i * i).map(x => x -> ((x * x * x) < 0))
     val rn = new scala.util.Random(42)
-    def mhm: M = { val m = new cm.HashMap[Int, Boolean]; m ++= manyKVs; m }
-    def mohm: M = { val m = new cm.OpenHashMap[Int, Boolean]; m ++= manyKVs; m }
+    def mhm: M = {
+      val m = new cm.HashMap[Int, Boolean]; m ++= manyKVs; m
+    }
+    def mohm: M = {
+      val m = new cm.OpenHashMap[Int, Boolean]; m ++= manyKVs; m
+    }
     def ihm: M = ci.HashMap.empty[Int, Boolean] ++ manyKVs
     val densities = List(0, 0.05, 0.2, 0.5, 0.8, 0.95, 1)
     def repeat = rn.nextInt(100) < 33
@@ -635,11 +662,17 @@ class SetMapConsistencyTest {
   def testSI8213() {
     val am = new scala.collection.mutable.AnyRefMap[String, Int]
     for (i <- 0 until 1024) am += i.toString -> i
-    am.getOrElseUpdate("1024", { am.clear; -1 })
+    am.getOrElseUpdate(
+      "1024", {
+        am.clear; -1
+      })
     assert(am == scala.collection.mutable.AnyRefMap("1024" -> -1))
     val lm = new scala.collection.mutable.LongMap[Int]
     for (i <- 0 until 1024) lm += i.toLong -> i
-    lm.getOrElseUpdate(1024, { lm.clear; -1 })
+    lm.getOrElseUpdate(
+      1024, {
+        lm.clear; -1
+      })
     assert(lm == scala.collection.mutable.LongMap(1024L -> -1))
   }
 
@@ -691,8 +724,14 @@ class SetMapConsistencyTest {
     type NSEE = NoSuchElementException
     val map = Map(0 -> "zero", 1 -> "one")
     val m = map.filterKeys(i => if (map contains i) true else throw new NSEE)
-    assert { (m contains 0) && (m get 0).nonEmpty }
-    assertThrows[NSEE] { m contains 2 }
-    assertThrows[NSEE] { m get 2 }
+    assert {
+      (m contains 0) && (m get 0).nonEmpty
+    }
+    assertThrows[NSEE] {
+      m contains 2
+    }
+    assertThrows[NSEE] {
+      m get 2
+    }
   }
 }

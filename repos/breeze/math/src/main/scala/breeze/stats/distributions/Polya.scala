@@ -58,7 +58,10 @@ object Polya {
   /**
     * Creates a new symmetric Polya of dimension k
     */
-  def sym(alpha: Double, k: Int) = this(Array.tabulate(k) { x => alpha })
+  def sym(alpha: Double, k: Int) =
+    this(Array.tabulate(k) { x =>
+      alpha
+    })
 
   /**
     * Creates a new Polya of dimension k with the given parameters

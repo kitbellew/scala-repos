@@ -707,7 +707,9 @@ class GroupMetadataManager(
                 timestamp = timestamp,
                 magicValue = magicValue))
         }
-        .groupBy { case (partition, tombstone) => partition }
+        .groupBy {
+          case (partition, tombstone) => partition
+        }
 
       // Append the tombstone messages to the offset partitions. It is okay if the replicas don't receive these (say,
       // if we crash or leaders move) since the new leaders will get rid of expired offsets during their own purge cycles.

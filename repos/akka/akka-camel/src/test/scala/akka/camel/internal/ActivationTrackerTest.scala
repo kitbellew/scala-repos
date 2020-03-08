@@ -20,7 +20,9 @@ class ActivationTrackerTest
     with BeforeAndAfterEach
     with GivenWhenThen {
 
-  override protected def afterAll() { shutdown() }
+  override protected def afterAll() {
+    shutdown()
+  }
 
   var actor: TestProbe = _
   var awaiting: Awaiting = _
@@ -136,7 +138,9 @@ class ActivationTrackerTest
       probe.expectMsg(EndpointActivated(actor.ref))
     }
     def verifyDeActivated()(implicit timeout: FiniteDuration) =
-      within(timeout) { probe.expectMsg(EndpointDeActivated(actor.ref)) }
+      within(timeout) {
+        probe.expectMsg(EndpointDeActivated(actor.ref))
+      }
 
     def verifyFailedToActivate()(implicit timeout: FiniteDuration) =
       within(timeout) {

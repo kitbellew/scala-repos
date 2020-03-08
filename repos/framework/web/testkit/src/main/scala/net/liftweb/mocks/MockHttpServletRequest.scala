@@ -190,7 +190,11 @@ class MockHttpServletRequest(
 
   def queryString: String =
     if (method == "GET" && !parameters.isEmpty) {
-      parameters.map { case (k, v) => k + "=" + v }.mkString("&")
+      parameters
+        .map {
+          case (k, v) => k + "=" + v
+        }
+        .mkString("&")
     } else {
       null
     }
@@ -432,7 +436,9 @@ class MockHttpServletRequest(
     }
 
     newMap
-      .map { case (k, v) => (k, v.toArray) }
+      .map {
+        case (k, v) => (k, v.toArray)
+      }
       .asInstanceOf[Map[String, Array[String]]]
 //    asMap(newMap.map{case (k,v) => (k,v.toArray)}.asInstanceOf[Map[Object,Object]])
   }

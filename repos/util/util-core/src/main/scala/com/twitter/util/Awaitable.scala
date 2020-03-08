@@ -97,7 +97,10 @@ object Await {
   @throws(classOf[InterruptedException])
   def ready[T <: Awaitable[_]](awaitable: T, timeout: Duration): T = {
     if (awaitable.isReady) awaitable.ready(timeout)
-    else Scheduler.blocking { awaitable.ready(timeout) }
+    else
+      Scheduler.blocking {
+        awaitable.ready(timeout)
+      }
   }
 
   /** $result */
@@ -114,7 +117,10 @@ object Await {
   @throws(classOf[Exception])
   def result[T](awaitable: Awaitable[T], timeout: Duration): T =
     if (awaitable.isReady) awaitable.result(timeout)
-    else Scheduler.blocking { awaitable.result(timeout) }
+    else
+      Scheduler.blocking {
+        awaitable.result(timeout)
+      }
 
   /** $all */
   @throws(classOf[TimeoutException])
@@ -132,7 +138,9 @@ object Await {
   @throws(classOf[TimeoutException])
   @throws(classOf[InterruptedException])
   def all(awaitables: Seq[Awaitable[_]], timeout: Duration): Unit =
-    awaitables foreach { _.ready(timeout) }
+    awaitables foreach {
+      _.ready(timeout)
+    }
 
   /**
     * $all

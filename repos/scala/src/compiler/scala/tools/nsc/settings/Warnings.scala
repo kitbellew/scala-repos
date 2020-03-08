@@ -150,7 +150,10 @@ trait Warnings {
 
   allLintWarnings foreach {
     case w if w.yAliased =>
-      BooleanSetting(s"-Ywarn-${w.name}", { w.help }) withPostSetHook { s =>
+      BooleanSetting(
+        s"-Ywarn-${w.name}", {
+          w.help
+        }) withPostSetHook { s =>
         lint.add(if (s) w.name else s"-${w.name}")
       } // withDeprecationMessage s"Enable -Xlint:${c._1}"
     case _ =>

@@ -131,7 +131,9 @@ class IterateeSubscriberSpec extends Specification {
       testEnv.isEmptyAfterDelay() must beTrue
 
       testEnv.contStep()
-      testEnv.next must beLike { case Result(Success(Step.Cont(_))) => ok }
+      testEnv.next must beLike {
+        case Result(Success(Step.Cont(_))) => ok
+      }
       testEnv.isEmptyAfterDelay() must beTrue
     }
 

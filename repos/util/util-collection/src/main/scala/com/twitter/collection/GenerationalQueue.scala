@@ -28,11 +28,17 @@ class ExactGenerationalQueue[A] extends GenerationalQueue[A] {
   /**
     * touch insert the element if it is not yet present
     */
-  def touch(a: A) = synchronized { container.update(a, Time.now) }
+  def touch(a: A) = synchronized {
+    container.update(a, Time.now)
+  }
 
-  def add(a: A) = synchronized { container += ((a, Time.now)) }
+  def add(a: A) = synchronized {
+    container += ((a, Time.now))
+  }
 
-  def remove(a: A) = synchronized { container.remove(a) }
+  def remove(a: A) = synchronized {
+    container.remove(a)
+  }
 
   def collect(age: Duration): Option[A] = synchronized {
     if (container.isEmpty)
@@ -45,7 +51,9 @@ class ExactGenerationalQueue[A] extends GenerationalQueue[A] {
   }
 
   def collectAll(age: Duration): Iterable[A] = synchronized {
-    (container filter { case (_, t) => t.untilNow > age }).keys
+    (container filter {
+      case (_, t) => t.untilNow > age
+    }).keys
   }
 }
 
@@ -114,7 +122,9 @@ class BucketGenerationalQueue[A](timeout: Duration)
       news
     else {
       val tailBucket = olds.head
-      olds drop 1 foreach { tailBucket ++= _ }
+      olds drop 1 foreach {
+        tailBucket ++= _
+      }
       if (tailBucket.isEmpty)
         news
       else
@@ -128,7 +138,9 @@ class BucketGenerationalQueue[A](timeout: Duration)
   }
 
   def touch(a: A) = synchronized {
-    buckets drop 1 foreach { _.remove(a) }
+    buckets drop 1 foreach {
+      _.remove(a)
+    }
     add(a)
   }
 
@@ -138,7 +150,9 @@ class BucketGenerationalQueue[A](timeout: Duration)
   }
 
   def remove(a: A) = synchronized {
-    buckets foreach { _.remove(a) }
+    buckets foreach {
+      _.remove(a)
+    }
     buckets = compactChain()
   }
 

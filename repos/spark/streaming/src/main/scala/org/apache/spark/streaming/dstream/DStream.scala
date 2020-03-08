@@ -443,7 +443,9 @@ abstract class DStream[T: ClassTag](
     getOrCompute(time) match {
       case Some(rdd) => {
         val jobFunc = () => {
-          val emptyFunc = { (iterator: Iterator[T]) => {} }
+          val emptyFunc = { (iterator: Iterator[T]) =>
+            {}
+          }
           context.sparkContext.runJob(rdd, emptyFunc)
         }
         Some(new Job(time, jobFunc))

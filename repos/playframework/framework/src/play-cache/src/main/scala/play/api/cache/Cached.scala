@@ -59,7 +59,9 @@ class Cached @Inject() (cache: CacheApi) {
     new CachedBuilder(
       cache,
       key,
-      { case (_: ResponseHeader) => Duration(duration, SECONDS) })
+      {
+        case (_: ResponseHeader) => Duration(duration, SECONDS)
+      })
   }
 
   /**
@@ -147,7 +149,9 @@ object Cached {
       duration: Int): UnboundCachedBuilder = {
     new UnboundCachedBuilder(
       key,
-      { case (_: ResponseHeader) => Duration(duration, SECONDS) })
+      {
+        case (_: ResponseHeader) => Duration(duration, SECONDS)
+      })
   }
 
   /**

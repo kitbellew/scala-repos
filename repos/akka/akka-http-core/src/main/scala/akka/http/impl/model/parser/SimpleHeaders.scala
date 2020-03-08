@@ -69,7 +69,9 @@ private[parser] trait SimpleHeaders {
   }
 
   // http://tools.ietf.org/html/rfc7234#section-5.1
-  def age = rule { `delta-seconds` ~ EOI ~> (Age(_)) }
+  def age = rule {
+    `delta-seconds` ~ EOI ~> (Age(_))
+  }
 
   // http://tools.ietf.org/html/rfc7231#section-7.4.1
   def allow = rule {
@@ -77,7 +79,9 @@ private[parser] trait SimpleHeaders {
   }
 
   // http://tools.ietf.org/html/rfc7235#section-4.2
-  def authorization = rule { credentials ~ EOI ~> (Authorization(_)) }
+  def authorization = rule {
+    credentials ~ EOI ~> (Authorization(_))
+  }
 
   // http://tools.ietf.org/html/rfc7230#section-6.1
   def connection = rule {
@@ -109,7 +113,9 @@ private[parser] trait SimpleHeaders {
   // https://tools.ietf.org/html/rfc6265#section-4.2
   def `cookie` = rule {
     oneOrMore(`optional-cookie-pair`).separatedBy(';' ~ OWS) ~ EOI ~> { pairs ⇒
-      val validPairs = pairs.collect { case Some(p) ⇒ p }
+      val validPairs = pairs.collect {
+        case Some(p) ⇒ p
+      }
       `Cookie` {
         if (validPairs.nonEmpty) validPairs
         // Parsing infrastructure requires to return an HttpHeader value here but it is not possible
@@ -126,7 +132,9 @@ private[parser] trait SimpleHeaders {
   }
 
   // http://tools.ietf.org/html/rfc7232#section-2.3
-  def etag = rule { `entity-tag` ~ EOI ~> (ETag(_)) }
+  def etag = rule {
+    `entity-tag` ~ EOI ~> (ETag(_))
+  }
 
   // http://tools.ietf.org/html/rfc7231#section-5.1.1
   def `expect` = rule {
@@ -134,7 +142,9 @@ private[parser] trait SimpleHeaders {
   }
 
   // http://tools.ietf.org/html/rfc7234#section-5.3
-  def `expires` = rule { `HTTP-date` ~ EOI ~> (Expires(_)) }
+  def `expires` = rule {
+    `HTTP-date` ~ EOI ~> (Expires(_))
+  }
 
   // http://tools.ietf.org/html/rfc7230#section-5.4
   // We don't accept scoped IPv6 addresses as they should not appear in the Host header,
@@ -178,7 +188,9 @@ private[parser] trait SimpleHeaders {
   }
 
   // http://tools.ietf.org/html/rfc7232#section-2.2
-  def `last-modified` = rule { `HTTP-date` ~ EOI ~> (`Last-Modified`(_)) }
+  def `last-modified` = rule {
+    `HTTP-date` ~ EOI ~> (`Last-Modified`(_))
+  }
 
   // http://tools.ietf.org/html/rfc7231#section-7.1.2
   def location = rule {
@@ -186,7 +198,9 @@ private[parser] trait SimpleHeaders {
   }
 
   // http://tools.ietf.org/html/rfc6454#section-7
-  def `origin` = rule { `origin-list-or-null` ~ EOI ~> (Origin(_)) }
+  def `origin` = rule {
+    `origin-list-or-null` ~ EOI ~> (Origin(_))
+  }
 
   // http://tools.ietf.org/html/rfc7235#section-4.3
   def `proxy-authenticate` = rule {
@@ -213,7 +227,9 @@ private[parser] trait SimpleHeaders {
   }
 
   // http://tools.ietf.org/html/rfc7231#section-7.4.2
-  def server = rule { products ~ EOI ~> (Server(_)) }
+  def server = rule {
+    products ~ EOI ~> (Server(_))
+  }
 
   def `strict-transport-security` = rule {
     ignoreCase("max-age=") ~ `delta-seconds` ~ optional(
@@ -243,7 +259,9 @@ private[parser] trait SimpleHeaders {
   }
 
   // http://tools.ietf.org/html/rfc7231#section-5.5.3
-  def `user-agent` = rule { products ~ EOI ~> (`User-Agent`(_)) }
+  def `user-agent` = rule {
+    products ~ EOI ~> (`User-Agent`(_))
+  }
 
   // http://tools.ietf.org/html/rfc7235#section-4.1
   def `www-authenticate` = rule {

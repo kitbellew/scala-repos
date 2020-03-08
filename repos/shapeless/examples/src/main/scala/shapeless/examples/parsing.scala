@@ -55,7 +55,9 @@ object CombinatorTesting extends App {
   implicit def flattenPattern[A, B](implicit
       flattenA: Flatten[A],
       flattenB: Flatten[B]) = new Flatten[A ~ B] {
-    def apply(m: A ~ B) = m match { case a ~ b => flattenA(a) ::: flattenB(b) }
+    def apply(m: A ~ B) = m match {
+      case a ~ b => flattenA(a) ::: flattenB(b)
+    }
   }
 
   /**

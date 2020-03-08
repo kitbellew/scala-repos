@@ -436,7 +436,9 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         .fast
         .map(source(_: _*))
         .fast
-        .recover { case _: NoSuchElementException ⇒ source() }
+        .recover {
+          case _: NoSuchElementException ⇒ source()
+        }
 
     def prep(response: String) = response.stripMarginWithNewline("\r\n")
 

@@ -245,7 +245,9 @@ object Trace {
       Trace.recordBinary("finagle.version", Init.finagleVersion)
       Trace.recordServiceName(service)
       Trace.recordRpc(rpc)
-      hostOpt.map { Trace.recordServerAddr(_) }
+      hostOpt.map {
+        Trace.recordServerAddr(_)
+      }
       Trace.record(Annotation.ServerRecv())
       try f
       finally {
@@ -270,7 +272,9 @@ object Trace {
     * Record a raw record without checking if it's sampled/enabled/etc.
     */
   private[this] def uncheckedRecord(rec: Record): Unit = {
-    tracers.distinct.foreach { t: Tracer => t.record(rec) }
+    tracers.distinct.foreach { t: Tracer =>
+      t.record(rec)
+    }
   }
 
   /**

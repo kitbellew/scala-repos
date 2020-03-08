@@ -38,7 +38,9 @@ abstract class InterruptReq {
     while (result.isEmpty) {
       try {
         wait()
-      } catch { case _: InterruptedException => () }
+      } catch {
+        case _: InterruptedException => ()
+      }
     }
 
     result.get match {

@@ -148,6 +148,8 @@ final class RemoteSettings(val config: Config) {
     getConfig(transportName)
 
   private def configToMap(cfg: Config): Map[String, String] =
-    cfg.root.unwrapped.asScala.toMap.map { case (k, v) ⇒ (k, v.toString) }
+    cfg.root.unwrapped.asScala.toMap.map {
+      case (k, v) ⇒ (k, v.toString)
+    }
 
 }

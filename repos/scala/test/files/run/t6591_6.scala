@@ -4,7 +4,9 @@ import scala.tools.reflect.ToolBox
 import scala.tools.reflect.Eval
 import java.lang.reflect.InvocationTargetException
 
-class O { class I }
+class O {
+  class I
+}
 
 class A extends O {
   val x = new O

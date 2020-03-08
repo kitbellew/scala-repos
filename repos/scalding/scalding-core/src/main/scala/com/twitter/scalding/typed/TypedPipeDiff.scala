@@ -31,8 +31,12 @@ object TypedPipeDiff {
       left: TypedPipe[T],
       right: TypedPipe[T],
       reducers: Option[Int] = None): UnsortedGrouped[T, (Long, Long)] = {
-    val lefts = left.map { x => (x, (1L, 0L)) }
-    val rights = right.map { x => (x, (0L, 1L)) }
+    val lefts = left.map { x =>
+      (x, (1L, 0L))
+    }
+    val rights = right.map { x =>
+      (x, (0L, 1L))
+    }
     val counts = (lefts ++ rights).sumByKey
     val diff = counts.filter {
       case (key, (lCount, rCount)) => lCount != rCount
@@ -54,7 +58,9 @@ object TypedPipeDiff {
     val wrapFn = HashEqualsArrayWrapper.wrapByClassTagFn[T]
 
     diffByHashCode(left.map(wrapFn), right.map(wrapFn), reducers)
-      .map { case (k, counts) => (k.wrapped, counts) }
+      .map {
+        case (k, counts) => (k.wrapped, counts)
+      }
   }
 
   /**
@@ -86,11 +92,17 @@ object TypedPipeDiff {
       reducers: Option[Int] = None)(
       groupByFn: T => K): TypedPipe[(T, (Long, Long))] = {
 
-    val lefts = left.map { t => (groupByFn(t), Map(t -> (1L, 0L))) }
-    val rights = right.map { t => (groupByFn(t), Map(t -> (0L, 1L))) }
+    val lefts = left.map { t =>
+      (groupByFn(t), Map(t -> (1L, 0L)))
+    }
+    val rights = right.map { t =>
+      (groupByFn(t), Map(t -> (0L, 1L)))
+    }
 
     val diff = (lefts ++ rights).sumByKey.flattenValues
-      .filter { case (k, (t, (lCount, rCount))) => lCount != rCount }
+      .filter {
+        case (k, (t, (lCount, rCount))) => lCount != rCount
+      }
 
     reducers.map(diff.withReducers).getOrElse(diff).values
   }

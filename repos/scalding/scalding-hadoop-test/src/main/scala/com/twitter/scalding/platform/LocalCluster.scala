@@ -75,7 +75,9 @@ class LocalCluster(mutex: Boolean = true) {
 
   private[this] def releaseMutex() {
     LOG.debug("Releasing mutex")
-    lock.foreach { _.release() }
+    lock.foreach {
+      _.release()
+    }
     LOG.debug("Mutex released")
     lock = None
   }
@@ -129,7 +131,9 @@ class LocalCluster(mutex: Boolean = true) {
     fileSystem.mkdirs(LocalCluster.HADOOP_CLASSPATH_DIR)
 
     // merge in input configuration
-    inConf.toMap.foreach { case (k, v) => mrJobConf.set(k, v) }
+    inConf.toMap.foreach {
+      case (k, v) => mrJobConf.set(k, v)
+    }
 
     hadoop = Some(dfs, cluster, mrJobConf)
 
@@ -162,7 +166,9 @@ class LocalCluster(mutex: Boolean = true) {
       classOf[com.twitter.chill.hadoop.KryoSerialization],
       classOf[com.twitter.maple.tap.TupleMemoryInputFormat],
       classOf[org.apache.commons.configuration.Configuration]
-    ).foreach { addClassSourceToClassPath(_) }
+    ).foreach {
+      addClassSourceToClassPath(_)
+    }
     this
   }
 

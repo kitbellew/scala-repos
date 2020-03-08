@@ -104,7 +104,9 @@ object MainLoop {
     }
 
   def next(state: State): State =
-    ErrorHandling.wideConvert { state.process(Command.process) } match {
+    ErrorHandling.wideConvert {
+      state.process(Command.process)
+    } match {
       case Right(s)                  => s
       case Left(t: xsbti.FullReload) => throw t
       case Left(t)                   => state.handleError(t)

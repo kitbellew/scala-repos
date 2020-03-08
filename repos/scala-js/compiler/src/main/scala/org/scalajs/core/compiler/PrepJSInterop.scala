@@ -179,14 +179,18 @@ abstract class PrepJSInterop
 
         // Catch the definition of scala.Enumeration itself
         case cldef: ClassDef if cldef.symbol == ScalaEnumClass =>
-          enterOwner(OwnerKind.EnumImpl) { super.transform(cldef) }
+          enterOwner(OwnerKind.EnumImpl) {
+            super.transform(cldef)
+          }
 
         // Catch Scala Enumerations to transform calls to scala.Enumeration.Value
         case idef: ImplDef if isScalaEnum(idef) =>
           val kind =
             if (idef.isInstanceOf[ModuleDef]) OwnerKind.EnumMod
             else OwnerKind.EnumClass
-          enterOwner(kind) { super.transform(idef) }
+          enterOwner(kind) {
+            super.transform(idef)
+          }
 
         // Catch (Scala) ClassDefs to forbid js.Anys
         case cldef: ClassDef =>
@@ -207,7 +211,9 @@ abstract class PrepJSInterop
             } reporter.error(exp.pos, "You may not export a trait")
           }
 
-          enterOwner(OwnerKind.NonEnumScalaClass) { super.transform(cldef) }
+          enterOwner(OwnerKind.NonEnumScalaClass) {
+            super.transform(cldef)
+          }
 
         // Module export sanity check (export generated in JSCode phase)
         case modDef: ModuleDef =>
@@ -223,7 +229,9 @@ abstract class PrepJSInterop
           if (shouldPrepareExports)
             registerModuleExports(sym.moduleClass)
 
-          enterOwner(OwnerKind.NonEnumScalaMod) { super.transform(modDef) }
+          enterOwner(OwnerKind.NonEnumScalaMod) {
+            super.transform(modDef)
+          }
 
         // ValOrDefDef's that are local to a block must not be transformed
         case vddef: ValOrDefDef if vddef.symbol.isLocalToBlock =>
@@ -338,7 +346,9 @@ abstract class PrepJSInterop
           if (scalaJSOpts.fixClassOf) {
             // Replace call by literal constant containing type
             if (typer.checkClassType(tpeArg)) {
-              typer.typed { Literal(Constant(tpeArg.tpe.dealias.widen)) }
+              typer.typed {
+                Literal(Constant(tpeArg.tpe.dealias.widen))
+              }
             } else {
               reporter.error(tpeArg.pos, s"Type ${tpeArg} is not a class type")
               EmptyTree
@@ -682,7 +692,9 @@ abstract class PrepJSInterop
           else OwnerKind.JSNativeClass
         }
       }
-      enterOwner(kind) { super.transform(implDef) }
+      enterOwner(kind) {
+        super.transform(implDef)
+      }
     }
 
     /** Verify a ValOrDefDef inside a js.Any */

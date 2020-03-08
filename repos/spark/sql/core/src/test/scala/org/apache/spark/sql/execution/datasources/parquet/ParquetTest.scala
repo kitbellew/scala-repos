@@ -192,11 +192,15 @@ private[sql] trait ParquetTest extends SQLTestUtils {
   protected def testStandardAndLegacyModes(testName: String)(
       f: => Unit): Unit = {
     test(s"Standard mode - $testName") {
-      withSQLConf(SQLConf.PARQUET_WRITE_LEGACY_FORMAT.key -> "false") { f }
+      withSQLConf(SQLConf.PARQUET_WRITE_LEGACY_FORMAT.key -> "false") {
+        f
+      }
     }
 
     test(s"Legacy mode - $testName") {
-      withSQLConf(SQLConf.PARQUET_WRITE_LEGACY_FORMAT.key -> "true") { f }
+      withSQLConf(SQLConf.PARQUET_WRITE_LEGACY_FORMAT.key -> "true") {
+        f
+      }
     }
   }
 

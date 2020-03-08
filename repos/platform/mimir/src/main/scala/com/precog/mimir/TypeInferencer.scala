@@ -120,14 +120,18 @@ trait TypeInferencer extends DAG {
 
           case Join(DerefObject, Cross(_), left, right @ ConstString(str)) =>
             inner(
-              jtpe map { jtpe0 => JObjectFixedT(Map(str -> jtpe0)) },
+              jtpe map { jtpe0 =>
+                JObjectFixedT(Map(str -> jtpe0))
+              },
               typing,
               splits,
               left)
 
           case Join(DerefArray, Cross(_), left, right @ ConstDecimal(d)) =>
             inner(
-              jtpe map { jtpe0 => JArrayFixedT(Map(d.toInt -> jtpe0)) },
+              jtpe map { jtpe0 =>
+                JArrayFixedT(Map(d.toInt -> jtpe0))
+              },
               typing,
               splits,
               left)

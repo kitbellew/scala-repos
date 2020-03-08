@@ -118,12 +118,16 @@ class ExecutorBasedEventDrivenWorkStealingDispatcher(
               aType))
     }
 
-    synchronized { members :+= actorRef } //Update members
+    synchronized {
+      members :+= actorRef
+    } //Update members
     super.register(actorRef)
   }
 
   private[akka] override def unregister(actorRef: ActorRef) = {
-    synchronized { members = members.filterNot(actorRef eq) } //Update members
+    synchronized {
+      members = members.filterNot(actorRef eq)
+    } //Update members
     super.unregister(actorRef)
   }
 
@@ -145,7 +149,9 @@ class ExecutorBasedEventDrivenWorkStealingDispatcher(
       donationInProgress.value = true
       while (donateFrom(
                mbox)) {} //When we reregister, first donate messages to another actor
-    } finally { donationInProgress.value = false }
+    } finally {
+      donationInProgress.value = false
+    }
 
     if (!mbox.isEmpty) //If we still have messages left to process, reschedule for execution
       super.reRegisterForExecution(mbox)
@@ -188,7 +194,9 @@ class ExecutorBasedEventDrivenWorkStealingDispatcher(
         case null      => false
         case recipient => donate(message, recipient)
       }
-    } finally { donationInProgress.value = false }
+    } finally {
+      donationInProgress.value = false
+    }
 
   /**
     * Rewrites the message and adds that message to the recipients mailbox

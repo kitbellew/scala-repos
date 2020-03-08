@@ -106,7 +106,9 @@ object OpenSSL {
       configMap.put("ssl.key_path", keyPath)
       configMap.put(
         "ssl.cipher_spec",
-        Option(ciphers).getOrElse { defaultCiphers })
+        Option(ciphers).getOrElse {
+          defaultCiphers
+        })
 
       if (caPath != null)
         configMap.put("ssl.ca_path", caPath)

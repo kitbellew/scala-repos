@@ -464,7 +464,9 @@ final case class ::[@specialized B](
 
   private def writeObject(out: ObjectOutputStream) {
     var xs: List[B] = this
-    while (!xs.isEmpty) { out.writeObject(xs.head); xs = xs.tail }
+    while (!xs.isEmpty) {
+      out.writeObject(xs.head); xs = xs.tail
+    }
     out.writeObject(ListSerializeEnd)
   }
 

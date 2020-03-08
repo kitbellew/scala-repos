@@ -41,7 +41,9 @@ class TestJob1(env: Env) extends AbstractJob(env) {
   try {
     EventSource[Long](Some(null), None)
       .withTime(new java.util.Date(_))
-      .map { e => (e % 2, e) }
+      .map { e =>
+        (e % 2, e)
+      }
       .groupAndSumTo(CompoundStore.fromOffline[Long, Long](
         new InitialBatchedStore(BatchID(12L), null)))
       .set(BMonoidIsCommutative(true))
@@ -69,7 +71,9 @@ class OptionsTest extends WordSpec {
 
     val opts = scalding.build.platform.options
     val dependants = Dependants(scalding.build.toRun)
-    val summers = dependants.nodes.collect { case s: Summer[_, _, _] => s }
+    val summers = dependants.nodes.collect {
+      case s: Summer[_, _, _] => s
+    }
 
     assert(summers.size == 1)
     val names = dependants.namesOf(summers.head).map(_.id)

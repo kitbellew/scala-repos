@@ -21,7 +21,9 @@ final class Tv(actor: ActorRef) {
       case e: Exception =>
         logger.warn("[TV]" + e.getMessage)
         none
-    } flatMap { _ ?? GameRepo.game }
+    } flatMap {
+      _ ?? GameRepo.game
+    }
 
   def getGames(channel: Tv.Channel, max: Int): Fu[List[Game]] =
     (actor ? TvActor
@@ -48,7 +50,9 @@ object Tv {
       val name: String,
       val icon: String,
       filters: Seq[Game => Boolean]) {
-    def filter(g: Game) = filters forall { _(g) }
+    def filter(g: Game) = filters forall {
+      _(g)
+    }
     val key = toString.head.toLower + toString.drop(1)
   }
   object Channel {
@@ -131,7 +135,9 @@ object Tv {
       Horde,
       RacingKings,
       Computer)
-    val byKey = all.map { c => c.key -> c }.toMap
+    val byKey = all.map { c =>
+      c.key -> c
+    }.toMap
   }
 
   private def rated = (g: Game) => g.rated

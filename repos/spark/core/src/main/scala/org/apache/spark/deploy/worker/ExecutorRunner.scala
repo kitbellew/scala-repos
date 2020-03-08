@@ -70,7 +70,9 @@ private[deploy] class ExecutorRunner(
 
   private[worker] def start() {
     workerThread = new Thread("ExecutorRunner for " + fullId) {
-      override def run() { fetchAndRunExecutor() }
+      override def run() {
+        fetchAndRunExecutor()
+      }
     }
     workerThread.start()
     // Shutdown hook that kills actors on shutdown.

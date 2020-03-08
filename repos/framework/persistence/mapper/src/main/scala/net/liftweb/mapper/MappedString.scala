@@ -77,7 +77,9 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
     * Get the source field metadata for the field
     * @return the source field metadata for the field
     */
-  def sourceInfoMetadata(): SourceFieldMetadata { type ST = String } =
+  def sourceInfoMetadata(): SourceFieldMetadata {
+    type ST = String
+  } =
     SourceFieldMetadataRep(
       name,
       manifest,
@@ -157,9 +159,17 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
   }
 
   override def _toForm: Box[Elem] =
-    fmapFunc({ s: List[String] => this.setFromAny(s) }) { name =>
-      Full(appendFieldId(<input type={formInputType} maxlength={maxLen.toString}
-                       name={name}
+    fmapFunc({ s: List[String] =>
+      this.setFromAny(s)
+    }) { name =>
+      Full(appendFieldId(<input type={
+        formInputType
+      } maxlength={
+        maxLen.toString
+      }
+                       name={
+        name
+      }
                        value={
         get match {
           case null => ""
@@ -242,7 +252,9 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
       doField(
         inst,
         accessor,
-        { case f: MappedString[T] => f.wholeSet(if (v eq null) null else v) })
+        {
+          case f: MappedString[T] => f.wholeSet(if (v eq null) null else v)
+        })
 
   def buildSetDateValue(
       accessor: Method,

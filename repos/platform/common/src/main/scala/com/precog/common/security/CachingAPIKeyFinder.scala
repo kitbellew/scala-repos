@@ -51,13 +51,17 @@ class CachingAPIKeyFinder[M[+_]: Monad](
   private val apiKeyCache =
     Cache.simple[APIKey, v1.APIKeyDetails](settings.apiKeyCacheSettings: _*)
 
-  protected def add(r: v1.APIKeyDetails) = IO { apiKeyCache.put(r.apiKey, r) }
+  protected def add(r: v1.APIKeyDetails) = IO {
+    apiKeyCache.put(r.apiKey, r)
+  }
 
   def findAPIKey(tid: APIKey, rootKey: Option[APIKey]) =
     apiKeyCache.get(tid) match {
       case None =>
         delegate.findAPIKey(tid, rootKey).map {
-          _ map { _ tap add unsafePerformIO }
+          _ map {
+            _ tap add unsafePerformIO
+          }
         }
       case t => t.point[M]
     }

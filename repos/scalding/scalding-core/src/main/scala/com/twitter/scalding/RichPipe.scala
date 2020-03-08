@@ -97,7 +97,9 @@ object RichPipe extends java.io.Serializable {
   }
 
   def setPipeDescriptionFrom(p: Pipe, ste: Option[StackTraceElement]): Pipe = {
-    ste.foreach { ste => setPipeDescriptions(p, List(ste.toString)) }
+    ste.foreach { ste =>
+      setPipeDescriptions(p, List(ste.toString))
+    }
     p
   }
 
@@ -124,7 +126,9 @@ class RichPipe(val pipe: Pipe)
     * Beginning of block with access to expensive nonserializable state. The state object should
     * contain a function release() for resource management purpose.
     */
-  def using[C <: { def release() }](bf: => C) = new {
+  def using[C <: {
+    def release()
+  }](bf: => C) = new {
 
     /**
       * For pure side effect.
@@ -142,7 +146,9 @@ class RichPipe(val pipe: Pipe)
           bf,
           fn,
           new Function1[C, Unit] with java.io.Serializable {
-            def apply(c: C) { c.release() }
+            def apply(c: C) {
+              c.release()
+            }
           },
           Fields.NONE,
           conv,
@@ -163,7 +169,9 @@ class RichPipe(val pipe: Pipe)
         bf,
         fn,
         new Function1[C, Unit] with java.io.Serializable {
-          def apply(c: C) { c.release() }
+          def apply(c: C) {
+            c.release()
+          }
         },
         fs._2,
         conv,
@@ -184,7 +192,9 @@ class RichPipe(val pipe: Pipe)
         bf,
         fn,
         new Function1[C, Unit] with java.io.Serializable {
-          def apply(c: C) { c.release() }
+          def apply(c: C) {
+            c.release()
+          }
         },
         fs._2,
         conv,
@@ -233,7 +243,9 @@ class RichPipe(val pipe: Pipe)
     * Returns the set of distinct tuples containing the specified fields
     */
   def distinct(f: Fields): Pipe =
-    groupBy(f) { _.size('__uniquecount__) }.project(f)
+    groupBy(f) {
+      _.size('__uniquecount__)
+    }.project(f)
 
   /**
     * Returns the set of unique tuples containing the specified fields. Same as distinct
@@ -259,7 +271,9 @@ class RichPipe(val pipe: Pipe)
     * This is probably only useful just before setting a tail such as Database
     * tail, so that only one reducer talks to the DB.  Kind of a hack.
     */
-  def groupAll: Pipe = groupAll { _.pass }
+  def groupAll: Pipe = groupAll {
+    _.pass
+  }
 
   /**
     * == Warning ==
@@ -272,20 +286,27 @@ class RichPipe(val pipe: Pipe)
     * or count all the rows.
     */
   def groupAll(gs: GroupBuilder => GroupBuilder) =
-    map(() -> '__groupAll__) { (u: Unit) => 1 }
-      .groupBy('__groupAll__) { gs(_).reducers(1) }
+    map(() -> '__groupAll__) { (u: Unit) =>
+      1
+    }.groupBy('__groupAll__) {
+        gs(_).reducers(1)
+      }
       .discard('__groupAll__)
 
   /**
     * Force a random shuffle of all the data to exactly n reducers
     */
-  def shard(n: Int): Pipe = groupRandomly(n) { _.pass }
+  def shard(n: Int): Pipe = groupRandomly(n) {
+    _.pass
+  }
 
   /**
     * Force a random shuffle of all the data to exactly n reducers,
     * with a given seed if you need repeatability.
     */
-  def shard(n: Int, seed: Int): Pipe = groupRandomly(n, seed) { _.pass }
+  def shard(n: Int, seed: Int): Pipe = groupRandomly(n, seed) {
+    _.pass
+  }
 
   /**
     * Like groupAll, but randomly groups data into n reducers.
@@ -309,14 +330,20 @@ class RichPipe(val pipe: Pipe)
   protected def groupRandomlyAux(n: Int, optSeed: Option[Long])(
       gs: GroupBuilder => GroupBuilder): Pipe = {
     using(statefulRandom(optSeed))
-      .map(() -> '__shard__) { (r: Random, _: Unit) => r.nextInt(n) }
-      .groupBy('__shard__) { gs(_).reducers(n) }
+      .map(() -> '__shard__) { (r: Random, _: Unit) =>
+        r.nextInt(n)
+      }
+      .groupBy('__shard__) {
+        gs(_).reducers(n)
+      }
       .discard('__shard__)
   }
 
   private def statefulRandom(optSeed: Option[Long]): Random with Stateful = {
     val random = new Random with Stateful
-    optSeed.foreach { x => random.setSeed(x) }
+    optSeed.foreach { x =>
+      random.setSeed(x)
+    }
     random
   }
 
@@ -326,9 +353,13 @@ class RichPipe(val pipe: Pipe)
     * you can provide a seed for the random number generator
     * to get reproducible results
     */
-  def shuffle(shards: Int): Pipe = groupAndShuffleRandomly(shards) { _.pass }
+  def shuffle(shards: Int): Pipe = groupAndShuffleRandomly(shards) {
+    _.pass
+  }
   def shuffle(shards: Int, seed: Long): Pipe =
-    groupAndShuffleRandomly(shards, seed) { _.pass }
+    groupAndShuffleRandomly(shards, seed) {
+      _.pass
+    }
 
   /**
     * Like shard, except do some operation im the reducers
@@ -347,7 +378,9 @@ class RichPipe(val pipe: Pipe)
   private def groupAndShuffleRandomlyAux(reducers: Int, optSeed: Option[Long])(
       gs: GroupBuilder => GroupBuilder): Pipe = {
     using(statefulRandom(optSeed))
-      .map(() -> ('__shuffle__)) { (r: Random, _: Unit) => r.nextDouble() }
+      .map(() -> ('__shuffle__)) { (r: Random, _: Unit) =>
+        r.nextDouble()
+      }
       .groupRandomlyAux(reducers, optSeed) { g: GroupBuilder =>
         gs(g.sortBy('__shuffle__))
       }
@@ -363,9 +396,9 @@ class RichPipe(val pipe: Pipe)
     * }}}
     */
   def insert[A](fs: Fields, value: A)(implicit setter: TupleSetter[A]): Pipe =
-    map[Unit, A](() -> fs) { _: Unit => value }(
-      implicitly[TupleConverter[Unit]],
-      setter)
+    map[Unit, A](() -> fs) { _: Unit =>
+      value
+    }(implicitly[TupleConverter[Unit]], setter)
 
   /**
     * Rename some set of N fields as another set of N fields
@@ -418,7 +451,9 @@ class RichPipe(val pipe: Pipe)
     * cascading trap you can filter out corrupted data from your pipe.
     */
   def verifyTypes[A](f: Fields)(implicit conv: TupleConverter[A]): Pipe = {
-    pipe.filter(f) { (a: A) => true }
+    pipe.filter(f) { (a: A) =>
+      true
+    }
   }
 
   /**
@@ -446,9 +481,9 @@ class RichPipe(val pipe: Pipe)
 
     map(fromFields -> tmpFields)(fn)(conv, TupleSetter.singleSetter[R])
       .groupBy(tmpFields)(builder)
-      .map[R, R](tmpFields -> toFields) { (r: R) => r }(
-        TupleConverter.singleConverter[R],
-        rset)
+      .map[R, R](tmpFields -> toFields) { (r: R) =>
+        r
+      }(TupleConverter.singleConverter[R], rset)
       .discard(tmpFields)
   }
 
@@ -542,9 +577,9 @@ class RichPipe(val pipe: Pipe)
   def flatten[T](fs: (Fields, Fields))(implicit
       conv: TupleConverter[TraversableOnce[T]],
       setter: TupleSetter[T]): Pipe =
-    flatMap[TraversableOnce[T], T](fs)({ it: TraversableOnce[T] => it })(
-      conv,
-      setter)
+    flatMap[TraversableOnce[T], T](fs)({ it: TraversableOnce[T] =>
+      it
+    })(conv, setter)
 
   /**
     * the same as
@@ -558,9 +593,9 @@ class RichPipe(val pipe: Pipe)
   def flattenTo[T](fs: (Fields, Fields))(implicit
       conv: TupleConverter[TraversableOnce[T]],
       setter: TupleSetter[T]): Pipe =
-    flatMapTo[TraversableOnce[T], T](fs)({ it: TraversableOnce[T] => it })(
-      conv,
-      setter)
+    flatMapTo[TraversableOnce[T], T](fs)({ it: TraversableOnce[T] =>
+      it
+    })(conv, setter)
 
   /**
     * Force a materialization to disk in the flow.
@@ -614,7 +649,9 @@ class RichPipe(val pipe: Pipe)
       "Must specify exactly two Field names for the results")
     // toKeyValueList comes from TupleConversions
     pipe
-      .flatMap(fieldDef) { te: TupleEntry => TupleConverter.KeyValueList(te) }
+      .flatMap(fieldDef) { te: TupleEntry =>
+        TupleConverter.KeyValueList(te)
+      }
       .discard(fieldDef._1)
   }
 
@@ -699,7 +736,9 @@ class RichPipe(val pipe: Pipe)
     * in some cases, crossWithTiny has been broken, the implementation supports a work-around
     */
   def normalize(f: Fields, useTiny: Boolean = true): Pipe = {
-    val total = groupAll { _.sum[Double](f -> '__total_for_normalize__) }
+    val total = groupAll {
+      _.sum[Double](f -> '__total_for_normalize__)
+    }
     (if (useTiny) {
        crossWithTiny(total)
      } else {
@@ -727,7 +766,9 @@ class RichPipe(val pipe: Pipe)
     val (fromFields, toFields) = fs
     assert(toFields.size == 1, "Can only output 1 field in pack")
     val conv = packer.newConverter(fromFields)
-    pipe.map(fs) { input: T => input }(conv, setter)
+    pipe.map(fs) { input: T =>
+      input
+    }(conv, setter)
   }
 
   /**
@@ -739,7 +780,9 @@ class RichPipe(val pipe: Pipe)
     val (fromFields, toFields) = fs
     assert(toFields.size == 1, "Can only output 1 field in pack")
     val conv = packer.newConverter(fromFields)
-    pipe.mapTo(fs) { input: T => input }(conv, setter)
+    pipe.mapTo(fs) { input: T =>
+      input
+    }(conv, setter)
   }
 
   /**
@@ -759,7 +802,9 @@ class RichPipe(val pipe: Pipe)
     assert(fromFields.size == 1, "Can only take 1 input field in unpack")
     val fields = (fromFields, unpacker.getResultFields(toFields))
     val setter = unpacker.newSetter(toFields)
-    pipe.map(fields) { input: T => input }(conv, setter)
+    pipe.map(fields) { input: T =>
+      input
+    }(conv, setter)
   }
 
   /**
@@ -772,7 +817,9 @@ class RichPipe(val pipe: Pipe)
     assert(fromFields.size == 1, "Can only take 1 input field in unpack")
     val fields = (fromFields, unpacker.getResultFields(toFields))
     val setter = unpacker.newSetter(toFields)
-    pipe.mapTo(fields) { input: T => input }(conv, setter)
+    pipe.mapTo(fields) { input: T =>
+      input
+    }(conv, setter)
   }
 
   /**
@@ -822,7 +869,9 @@ class RichPipe(val pipe: Pipe)
     FlowStateMap.get(flowDef).foreach { fstm =>
       fstm.flowConfigUpdates.foreach {
         case (k, v) =>
-          allPipes.foreach { p => p.getStepConfigDef().setProperty(k, v) }
+          allPipes.foreach { p =>
+            p.getStepConfigDef().setProperty(k, v)
+          }
       }
     }
     pipe

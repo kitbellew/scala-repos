@@ -7,5 +7,7 @@ abstract class A(val x: Int)
 class C(x: Int) extends A(x) {
   override def toString() = "OK"
   val v = new D
-  class D { def value = x }
+  class D {
+    def value = x
+  }
 }

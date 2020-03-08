@@ -181,7 +181,9 @@ final class MongoJobManager(
             database(
               insert(message.serialize.asInstanceOf[JObject])
                 .into(settings.messages))
-          } map { _ => Right(status) }
+          } map { _ =>
+            Right(status)
+          }
       }
     }
   }
@@ -225,7 +227,9 @@ final class MongoJobManager(
       val message = Message(jobId, id, channel, value)
       database {
         insert(message.serialize.asInstanceOf[JObject]).into(settings.messages)
-      } map { _ => message }
+      } map { _ =>
+        message
+      }
     }
   }
 
@@ -239,7 +243,9 @@ final class MongoJobManager(
     } getOrElse filter0
     database {
       selectAll.from(settings.messages).where(filter)
-    } map { _.map(_.deserialize[Message]).toList }
+    } map {
+      _.map(_.deserialize[Message]).toList
+    }
   }
 
   protected def transition(jobId: JobId)(
@@ -253,14 +259,20 @@ final class MongoJobManager(
               update(settings.jobs)
                 .set(newJob.serialize.asInstanceOf[JObject])
                 .where("id" === job.id)
-            } map { _ => Right(newJob) }
+            } map { _ =>
+              Right(newJob)
+            }
 
           case Left(error) =>
-            Future { Left(error) }
+            Future {
+              Left(error)
+            }
         }
 
       case None =>
-        Future { Left("Cannot find job with ID '%s'." format jobId) }
+        Future {
+          Left("Cannot find job with ID '%s'." format jobId)
+        }
     }
   }
 }

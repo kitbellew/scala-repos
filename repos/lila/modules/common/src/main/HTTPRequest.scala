@@ -52,7 +52,9 @@ object HTTPRequest {
       regex: scala.util.matching.Regex): RequestHeader => Boolean = {
     val pattern = regex.pattern
     req => {
-      userAgent(req) ?? { ua => pattern.matcher(ua).matches }
+      userAgent(req) ?? { ua =>
+        pattern.matcher(ua).matches
+      }
     }
   }
 

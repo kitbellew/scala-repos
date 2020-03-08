@@ -429,19 +429,25 @@ private[ui] class SQLExecutionUIData(
 
   def runningJobs: Seq[Long] =
     jobs
-      .filter { case (_, status) => status == JobExecutionStatus.RUNNING }
+      .filter {
+        case (_, status) => status == JobExecutionStatus.RUNNING
+      }
       .keys
       .toSeq
 
   def succeededJobs: Seq[Long] =
     jobs
-      .filter { case (_, status) => status == JobExecutionStatus.SUCCEEDED }
+      .filter {
+        case (_, status) => status == JobExecutionStatus.SUCCEEDED
+      }
       .keys
       .toSeq
 
   def failedJobs: Seq[Long] =
     jobs
-      .filter { case (_, status) => status == JobExecutionStatus.FAILED }
+      .filter {
+        case (_, status) => status == JobExecutionStatus.FAILED
+      }
       .keys
       .toSeq
 }

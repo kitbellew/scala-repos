@@ -97,7 +97,9 @@ object SimplifyBooleanUtil {
       .conforms(lang.psi.types.Boolean, checkWeak = true)
 
   private def getScExprChildren(expr: ScExpression) =
-    expr.children.collect { case expr: ScExpression => expr }.toList
+    expr.children.collect {
+      case expr: ScExpression => expr
+    }.toList
 
   private def booleanConst(expr: ScExpression): Option[Boolean] = expr match {
     case literal: ScLiteral =>

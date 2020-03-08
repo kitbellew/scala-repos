@@ -102,7 +102,9 @@ private[spark] abstract class Task[T](
           // because there are no other tasks left to notify it. Since this is safe to do but may
           // not be strictly necessary, we should revisit whether we can remove this in the future.
           val memoryManager = SparkEnv.get.memoryManager
-          memoryManager.synchronized { memoryManager.notifyAll() }
+          memoryManager.synchronized {
+            memoryManager.notifyAll()
+          }
         }
       } finally {
         TaskContext.unset()

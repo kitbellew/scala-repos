@@ -52,12 +52,16 @@ class Switch(startAsOn: Boolean = false) {
   /**
     * Switches the switch off (if on), uses locking
     */
-  def switchOff: Boolean = synchronized { switch.compareAndSet(true, false) }
+  def switchOff: Boolean = synchronized {
+    switch.compareAndSet(true, false)
+  }
 
   /**
     * Switches the switch on (if off), uses locking
     */
-  def switchOn: Boolean = synchronized { switch.compareAndSet(false, true) }
+  def switchOn: Boolean = synchronized {
+    switch.compareAndSet(false, true)
+  }
 
   /**
     * Executes the provided action and returns its value if the switch is IMMEDIATELY on (i.e. no lock involved)
@@ -140,7 +144,9 @@ class Switch(startAsOn: Boolean = false) {
   /**
     * Executes the given code while holding this switch’s lock, i.e. protected from concurrent modification of the switch status.
     */
-  def locked[T](code: ⇒ T): T = synchronized { code }
+  def locked[T](code: ⇒ T): T = synchronized {
+    code
+  }
 
   /**
     * Returns whether the switch is IMMEDIATELY on (no locking)

@@ -46,7 +46,9 @@ class XORShiftRandomSuite extends SparkFunSuite with Matchers {
 
     // populate bins based on modulus of the random number for each row
     for (r <- 0 to numRows - 1) {
-      times(f.hundMil) { bins(r)(math.abs(f.xorRand.nextInt) % numBins) += 1 }
+      times(f.hundMil) {
+        bins(r)(math.abs(f.xorRand.nextInt) % numBins) += 1
+      }
     }
 
     /*

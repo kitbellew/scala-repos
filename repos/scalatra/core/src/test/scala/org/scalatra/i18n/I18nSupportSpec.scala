@@ -27,7 +27,9 @@ class I18nSupportSpec extends ScalatraWordSpec {
   "Servlet with I18nSupport" should {
     "handle locale change via HTTP param and set it to cookie" in {
       session {
-        get("/name", I18nSupport.LocaleKey -> "id_ID") { // Bug in Java6: id_ID is changed to in_ID by java.util.Locale
+        get(
+          "/name",
+          I18nSupport.LocaleKey -> "id_ID") { // Bug in Java6: id_ID is changed to in_ID by java.util.Locale
           body should equal("Nama")
         }
         get("/getcookie") {

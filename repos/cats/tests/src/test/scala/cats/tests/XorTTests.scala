@@ -151,17 +151,23 @@ class XorTTests extends CatsSuite {
 
   test("recover recovers handled values") {
     val xort = XorT.left[Id, String, Int]("xort")
-    xort.recover { case "xort" => 5 }.isRight should ===(true)
+    xort.recover {
+      case "xort" => 5
+    }.isRight should ===(true)
   }
 
   test("recover ignores unhandled values") {
     val xort = XorT.left[Id, String, Int]("xort")
-    xort.recover { case "notxort" => 5 } should ===(xort)
+    xort.recover {
+      case "notxort" => 5
+    } should ===(xort)
   }
 
   test("recover ignores the right side") {
     val xort = XorT.right[Id, String, Int](10)
-    xort.recover { case "xort" => 5 } should ===(xort)
+    xort.recover {
+      case "xort" => 5
+    } should ===(xort)
   }
 
   test("recoverWith recovers handled values") {
@@ -231,7 +237,9 @@ class XorTTests extends CatsSuite {
   test("orElse evaluates effect only once") {
     forAll { (xor: String Xor Int, fallback: XorT[Eval, String, Int]) =>
       var evals = 0
-      val xort = (XorT(Eval.always { evals += 1; xor }) orElse fallback)
+      val xort = (XorT(Eval.always {
+        evals += 1; xor
+      }) orElse fallback)
       xort.value.value
       evals should ===(1)
     }
@@ -290,7 +298,9 @@ class XorTTests extends CatsSuite {
   }
 
   test("merge with Id consistent with Xor merge") {
-    forAll { (x: XorT[Id, Int, Int]) => x.merge should ===(x.value.merge) }
+    forAll { (x: XorT[Id, Int, Int]) =>
+      x.merge should ===(x.value.merge)
+    }
   }
 
   test("to consistent with toOption") {

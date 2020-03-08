@@ -1,6 +1,8 @@
 object Test {
   trait A;
-  trait Foo0 { def foo: A; }
+  trait Foo0 {
+    def foo: A;
+  }
   trait Baz extends Foo0;
   trait B extends A {
     def initialize = {

@@ -75,6 +75,8 @@ class GetResultTest extends FunSuite with MockitoSugar {
         failures = Map("f" + i -> mock[Exception]))
     }
 
-    assert(GetResult.merged(subResults) == (subResults.reduceLeft { _ ++ _ }))
+    assert(GetResult.merged(subResults) == (subResults.reduceLeft {
+      _ ++ _
+    }))
   }
 }

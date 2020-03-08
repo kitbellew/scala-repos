@@ -19,8 +19,9 @@ final class PresentationCompilerThread(var compiler: Global, name: String = "")
     while (compiler ne null) try {
       compiler.checkNoResponsesOutstanding()
       compiler.log.logreplay(
-        "wait for more work",
-        { compiler.scheduler.waitForMoreWork(); true })
+        "wait for more work", {
+          compiler.scheduler.waitForMoreWork(); true
+        })
       compiler.pollForWork(compiler.NoPosition)
       while (compiler.isOutOfDate) {
         try {

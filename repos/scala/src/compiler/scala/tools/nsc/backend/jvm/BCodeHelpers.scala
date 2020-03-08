@@ -507,7 +507,9 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
    * can-multi-thread
    */
   def methodSymbols(cd: ClassDef): List[Symbol] = {
-    cd.impl.body collect { case dd: DefDef => dd.symbol }
+    cd.impl.body collect {
+      case dd: DefDef => dd.symbol
+    }
   }
 
   /*
@@ -793,8 +795,9 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       (arg: @unchecked) match {
 
         case LiteralAnnotArg(const) =>
-          if (const.isNonUnitAnyVal) { av.visit(name, const.value) }
-          else {
+          if (const.isNonUnitAnyVal) {
+            av.visit(name, const.value)
+          } else {
             const.tag match {
               case StringTag =>
                 assert(
@@ -825,13 +828,17 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
             av.visit(name, strEncode(sb))
           } else {
             val arrAnnotV: asm.AnnotationVisitor = av.visitArray(name)
-            for (arg <- arrEncode(sb)) { arrAnnotV.visit(name, arg) }
+            for (arg <- arrEncode(sb)) {
+              arrAnnotV.visit(name, arg)
+            }
             arrAnnotV.visitEnd()
           } // for the lazy val in ScalaSigBytes to be GC'ed, the invoker of emitAnnotations() should hold the ScalaSigBytes in a method-local var that doesn't escape.
 
         case ArrayAnnotArg(args) =>
           val arrAnnotV: asm.AnnotationVisitor = av.visitArray(name)
-          for (arg <- args) { emitArgument(arrAnnotV, null, arg) }
+          for (arg <- args) {
+            emitArgument(arrAnnotV, null, arg)
+          }
           arrAnnotV.visitEnd()
 
         case NestedAnnotArg(annInfo) =>
@@ -968,17 +975,24 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         sym: Symbol,
         owner: Symbol,
         memberTpe: Type): String = {
-      if (!needsGenericSignature(sym)) { return null }
+      if (!needsGenericSignature(sym)) {
+        return null
+      }
 
       val jsOpt: Option[String] = erasure.javaSig(sym, memberTpe)
-      if (jsOpt.isEmpty) { return null }
+      if (jsOpt.isEmpty) {
+        return null
+      }
 
       val sig = jsOpt.get
       log(sig) // This seems useful enough in the general case.
 
       def wrap(op: => Unit) = {
-        try { op; true }
-        catch { case _: Throwable => false }
+        try {
+          op; true
+        } catch {
+          case _: Throwable => false
+        }
       }
 
       if (settings.Xverify) {
@@ -989,8 +1003,11 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
           if (sym.isMethod) {
             CheckClassAdapter checkMethodSignature sig
           } // requires asm-util.jar
-          else if (sym.isTerm) { CheckClassAdapter checkFieldSignature sig }
-          else { CheckClassAdapter checkClassSignature sig }
+          else if (sym.isTerm) {
+            CheckClassAdapter checkFieldSignature sig
+          } else {
+            CheckClassAdapter checkClassSignature sig
+          }
         }
 
         if (!isValidSignature) {
@@ -1323,7 +1340,9 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         fieldSymbols: List[Symbol],
         methodSymbols: List[Symbol]): asm.tree.ClassNode = {
 
-      def javaSimpleName(s: Symbol): String = { s.javaSimpleName.toString }
+      def javaSimpleName(s: Symbol): String = {
+        s.javaSimpleName.toString
+      }
 
       val beanInfoType = beanInfoClassClassBType(cls)
 
@@ -1384,8 +1403,11 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         for (f <- lst) {
           constructor.visitInsn(asm.Opcodes.DUP)
           constructor.visitLdcInsn(new java.lang.Integer(fi))
-          if (f == null) { constructor.visitInsn(asm.Opcodes.ACONST_NULL) }
-          else { constructor.visitLdcInsn(f) }
+          if (f == null) {
+            constructor.visitInsn(asm.Opcodes.ACONST_NULL)
+          } else {
+            constructor.visitLdcInsn(f)
+          }
           constructor.visitInsn(StringRef.typedOpcode(asm.Opcodes.IASTORE))
           fi += 1
         }

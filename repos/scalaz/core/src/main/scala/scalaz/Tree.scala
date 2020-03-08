@@ -190,8 +190,14 @@ sealed abstract class TreeInstances {
         Tree.Node(
           f(\&/(ta.rootLabel, tb.rootLabel)),
           Align[Stream].alignWith[Tree[A], Tree[B], Tree[C]]({
-            case \&/.This(sta) ⇒ sta map { a ⇒ f(\&/.This(a)) }
-            case \&/.That(stb) ⇒ stb map { b ⇒ f(\&/.That(b)) }
+            case \&/.This(sta) ⇒
+              sta map { a ⇒
+                f(\&/.This(a))
+              }
+            case \&/.That(stb) ⇒
+              stb map { b ⇒
+                f(\&/.That(b))
+              }
             case \&/(sta, stb) ⇒ align(sta, stb)
           })(ta.subForest, tb.subForest)
         )
@@ -208,7 +214,9 @@ sealed abstract class TreeInstances {
   }
 
   implicit def treeEqual[A](implicit A0: Equal[A]): Equal[Tree[A]] =
-    new TreeEqual[A] { def A = A0 }
+    new TreeEqual[A] {
+      def A = A0
+    }
 
   implicit def treeOrder[A](implicit A0: Order[A]): Order[Tree[A]] =
     new Order[Tree[A]] with TreeEqual[A] {

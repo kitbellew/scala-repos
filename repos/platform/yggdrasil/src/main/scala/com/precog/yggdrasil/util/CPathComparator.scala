@@ -40,10 +40,18 @@ sealed abstract class MaybeOrdering(val toInt: Int) {
 }
 
 object MaybeOrdering {
-  case object Lt extends MaybeOrdering(-1) { def complement = Gt }
-  case object Gt extends MaybeOrdering(1) { def complement = Lt }
-  case object Eq extends MaybeOrdering(0) { def complement = Eq }
-  case object NoComp extends MaybeOrdering(0) { def complement = NoComp }
+  case object Lt extends MaybeOrdering(-1) {
+    def complement = Gt
+  }
+  case object Gt extends MaybeOrdering(1) {
+    def complement = Lt
+  }
+  case object Eq extends MaybeOrdering(0) {
+    def complement = Eq
+  }
+  case object NoComp extends MaybeOrdering(0) {
+    def complement = NoComp
+  }
 
   def fromInt(n: Int): MaybeOrdering = if (n < 0) Lt else if (n == 0) Eq else Gt
 }

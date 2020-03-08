@@ -4,7 +4,9 @@ object Macros {
   def impl(c: Context) = {
     import c.universe._
     val Expr(Block((cdef: ClassDef) :: Nil, _)) = reify {
-      class C { def x = 2 }
+      class C {
+        def x = 2
+      }
     }
     val cdef1 =
       new Transformer {

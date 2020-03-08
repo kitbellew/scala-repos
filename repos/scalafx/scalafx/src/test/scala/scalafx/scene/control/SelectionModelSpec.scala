@@ -54,8 +54,12 @@ class SelectionModelSpec[T]
     def selectFirst() {}
     def selectNext() {}
     def selectPrevious() {}
-    def isEmpty = { true }
-    def isSelected(index: Int) = { true }
+    def isEmpty = {
+      true
+    }
+    def isSelected(index: Int) = {
+      true
+    }
     def clearSelection() {}
     def clearSelection(index: Int) {}
     def select(obj: T) {}

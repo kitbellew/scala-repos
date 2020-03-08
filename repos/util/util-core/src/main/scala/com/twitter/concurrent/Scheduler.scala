@@ -209,7 +209,9 @@ class LocalScheduler(lifo: Boolean) extends Scheduler {
   def flush(): Unit = get().flush()
 
   private[this] def activationsSum(f: Activation => Long): Long =
-    activations.synchronized { activations.keysIterator.map(f).sum }
+    activations.synchronized {
+      activations.keysIterator.map(f).sum
+    }
 
   def numDispatches: Long = activationsSum(_.numDispatches)
 
@@ -249,8 +251,12 @@ trait ExecutorScheduler { self: Scheduler =>
 
   protected[this] val executor = executorFactory(threadFactory)
 
-  def shutdown() { executor.shutdown() }
-  def submit(r: Runnable) { executor.execute(r) }
+  def shutdown() {
+    executor.shutdown()
+  }
+  def submit(r: Runnable) {
+    executor.execute(r)
+  }
   def flush() = ()
 
   // Unsupported

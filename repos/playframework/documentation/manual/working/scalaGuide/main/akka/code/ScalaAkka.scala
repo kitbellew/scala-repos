@@ -87,7 +87,9 @@ package scalaguide.akka {
         import akka.actor._
         val testActor = system.actorOf(
           Props(new Actor() {
-            def receive = { case _: String => }
+            def receive = {
+              case _: String =>
+            }
           }),
           name = "testActor")
         //#schedule-actor

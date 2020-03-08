@@ -21,7 +21,9 @@ class RollupStatsReceiver(val self: StatsReceiver)
         Seq(s)
 
       case Seq(hd, tl @ _*) =>
-        Seq(Seq(hd)) ++ (tails(tl) map { t => Seq(hd) ++ t })
+        Seq(Seq(hd)) ++ (tails(tl) map { t =>
+          Seq(hd) ++ t
+        })
     }
   }
 
@@ -42,7 +44,11 @@ class RollupStatsReceiver(val self: StatsReceiver)
   }
 
   def addGauge(names: String*)(f: => Float): Gauge = new Gauge {
-    private[this] val underlying = tails(names) map { self.addGauge(_: _*)(f) }
-    def remove() = underlying foreach { _.remove() }
+    private[this] val underlying = tails(names) map {
+      self.addGauge(_: _*)(f)
+    }
+    def remove() = underlying foreach {
+      _.remove()
+    }
   }
 }

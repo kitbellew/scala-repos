@@ -254,7 +254,9 @@ trait ExecutorServiceDelegate extends ExecutorService {
 
   def execute(command: Runnable) = executor.execute(command)
 
-  def shutdown() { executor.shutdown() }
+  def shutdown() {
+    executor.shutdown()
+  }
 
   def shutdownNow() = executor.shutdownNow()
 

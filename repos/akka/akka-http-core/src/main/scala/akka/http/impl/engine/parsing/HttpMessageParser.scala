@@ -415,7 +415,9 @@ private[http] abstract class HttpMessageParser[
       var errorInfo: ErrorInfo = null
       val lineEnd =
         try headerParser.parseHeaderLine(input, lineStart)()
-        catch { case e: ParsingException ⇒ errorInfo = e.info; 0 }
+        catch {
+          case e: ParsingException ⇒ errorInfo = e.info; 0
+        }
       if (errorInfo eq null) {
         headerParser.resultHeader match {
           case EmptyHeader ⇒

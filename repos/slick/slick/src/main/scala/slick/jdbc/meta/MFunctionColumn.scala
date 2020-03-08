@@ -34,7 +34,9 @@ object MFunctionColumn {
         functionPattern.schema_?,
         functionPattern.name,
         columnNamePattern)
-      catch { case _: AbstractMethodError => null }
+      catch {
+        case _: AbstractMethodError => null
+      }
     } { r =>
       MFunctionColumn(
         MQName.from(r),

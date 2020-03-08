@@ -59,13 +59,17 @@ object MarkovChain {
       /**
         * Sequence two transitions together. This is Kliesli arrow composition.
         */
-      def >=>[V](k2: T => Rand[V]) = { (t: T) => k1(t).flatMap(k2); }
+      def >=>[V](k2: T => Rand[V]) = { (t: T) =>
+        k1(t).flatMap(k2);
+      }
 
       /**
         * Sequence two transitions together, in reverse order
         * This is Kliesli arrow composition.
         */
-      def <=<[V](k2: V => Rand[T]) = { (t: V) => k2(t).flatMap(k1); }
+      def <=<[V](k2: V => Rand[T]) = { (t: V) =>
+        k2(t).flatMap(k1);
+      }
 
       /**
         * Promotes a kernel to map over sequence.
@@ -309,7 +313,11 @@ object MarkovChain {
     */
   def metropolisHastings[T](init: T, proposal: T => (Density[T] with Rand[T]))(
       logMeasure: T => Double) = {
-    MarkovChain(init) { Kernels.metropolisHastings(proposal) { logMeasure } };
+    MarkovChain(init) {
+      Kernels.metropolisHastings(proposal) {
+        logMeasure
+      }
+    };
   }
 
   /**

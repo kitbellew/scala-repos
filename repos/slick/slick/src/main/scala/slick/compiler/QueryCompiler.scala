@@ -85,7 +85,10 @@ class QueryCompiler(val phases: Vector[Phase]) extends Logging {
           benchmarkLogger.debug(f"$name%25s: $millis%11.6f ms")
       }
       res
-    } else it.foldLeft(state) { case (n, p) => runPhase(p, n) }
+    } else
+      it.foldLeft(state) {
+        case (n, p) => runPhase(p, n)
+      }
   }
 
   protected[this] def runPhase(p: Phase, state: CompilerState): CompilerState =
@@ -116,7 +119,9 @@ class QueryCompiler(val phases: Vector[Phase]) extends Logging {
       val chres =
         n1.children.iterator
           .zip(n2.children.iterator)
-          .map { case (n1, n2) => detectRebuiltLeafs(n1, n2) }
+          .map {
+            case (n1, n2) => detectRebuiltLeafs(n1, n2)
+          }
           .foldLeft(Set.empty[RefId[Dumpable]])(_ ++ _)
       if (chres.isEmpty) Set(RefId(n2)) else chres
     }
@@ -243,7 +248,11 @@ class CompilerState private (
     state.get(p.name).asInstanceOf[Option[p.State]]
 
   /** Return a new `CompilerState` with the given mapping of phase to phase state */
-  def +[S, P <: Phase { type State = S }](t: (P, S)) =
+  def +[
+      S,
+      P <: Phase {
+        type State = S
+      }](t: (P, S)) =
     new CompilerState(
       compiler,
       symbolNamer,

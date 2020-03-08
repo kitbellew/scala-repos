@@ -249,7 +249,9 @@ private[akka] class RemoteSystemDaemon(
       case TerminationHook ⇒
         terminating.switchOn {
           terminationHookDoneWhenNoChildren()
-          foreachChild { system.stop }
+          foreachChild {
+            system.stop
+          }
         }
 
       case AddressTerminated(address) ⇒

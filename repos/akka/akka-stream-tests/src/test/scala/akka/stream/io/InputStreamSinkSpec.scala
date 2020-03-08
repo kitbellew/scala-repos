@@ -173,7 +173,9 @@ class InputStreamSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
         .runWith(testSink(sinkProbe))
 
       //need to wait while all elements arrive to sink
-      bytes foreach { _ ⇒ sinkProbe.expectMsg(GraphStageMessages.Push) }
+      bytes foreach { _ ⇒
+        sinkProbe.expectMsg(GraphStageMessages.Push)
+      }
 
       for (i ← 0 to 1)
         readN(inputStream, 8) should ===((8, bytes(i * 2) ++ bytes(i * 2 + 1)))

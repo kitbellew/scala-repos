@@ -278,7 +278,9 @@ private[spark] class MemoryStore(
   }
 
   def getBytes(blockId: BlockId): Option[ChunkedByteBuffer] = {
-    val entry = entries.synchronized { entries.get(blockId) }
+    val entry = entries.synchronized {
+      entries.get(blockId)
+    }
     entry match {
       case null => None
       case e: DeserializedMemoryEntry =>
@@ -289,7 +291,9 @@ private[spark] class MemoryStore(
   }
 
   def getValues(blockId: BlockId): Option[Iterator[Any]] = {
-    val entry = entries.synchronized { entries.get(blockId) }
+    val entry = entries.synchronized {
+      entries.get(blockId)
+    }
     entry match {
       case null => None
       case e: SerializedMemoryEntry =>
@@ -376,7 +380,9 @@ private[spark] class MemoryStore(
       if (freedMemory >= space) {
         logInfo(s"${selectedBlocks.size} blocks selected for dropping")
         for (blockId <- selectedBlocks) {
-          val entry = entries.synchronized { entries.get(blockId) }
+          val entry = entries.synchronized {
+            entries.get(blockId)
+          }
           // This should never be null as only one task should be dropping
           // blocks and removing entries. However the check is still here for
           // future safety.
@@ -405,14 +411,18 @@ private[spark] class MemoryStore(
             s"Will not store $id as it would require dropping another block " +
               "from the same RDD")
         }
-        selectedBlocks.foreach { id => blockManager.releaseLock(id) }
+        selectedBlocks.foreach { id =>
+          blockManager.releaseLock(id)
+        }
         0L
       }
     }
   }
 
   def contains(blockId: BlockId): Boolean = {
-    entries.synchronized { entries.containsKey(blockId) }
+    entries.synchronized {
+      entries.containsKey(blockId)
+    }
   }
 
   private def currentTaskAttemptId(): Long = {

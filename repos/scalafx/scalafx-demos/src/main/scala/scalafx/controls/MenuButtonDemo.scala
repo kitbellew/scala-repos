@@ -48,7 +48,9 @@ object MenuButtonDemo extends JFXApp {
             items = List(
               new MenuItem("MenuItem A") {
                 onAction = { ae: ActionEvent =>
-                  { println(ae.eventType + " occurred on Menu Item A") }
+                  {
+                    println(ae.eventType + " occurred on Menu Item A")
+                  }
                 }
               },
               new MenuItem("MenuItem B")
@@ -59,7 +61,9 @@ object MenuButtonDemo extends JFXApp {
             items = List(
               new MenuItem("MenuItem C") {
                 onAction = { ae: ActionEvent =>
-                  { println(ae.eventType + " occurred on Menu Item C") }
+                  {
+                    println(ae.eventType + " occurred on Menu Item C")
+                  }
                 }
               },
               new MenuItem("MenuItem D")

@@ -310,7 +310,9 @@ private[cats] trait EvalInstances extends EvalInstances0 {
     }
 
   implicit def evalGroup[A: Group]: Group[Eval[A]] =
-    new EvalGroup[A] { val algebra: Group[A] = Group[A] }
+    new EvalGroup[A] {
+      val algebra: Group[A] = Group[A]
+    }
 }
 
 private[cats] trait EvalInstances0 extends EvalInstances1 {
@@ -321,7 +323,9 @@ private[cats] trait EvalInstances0 extends EvalInstances1 {
     }
 
   implicit def evalMonoid[A: Monoid]: Monoid[Eval[A]] =
-    new EvalMonoid[A] { val algebra = Monoid[A] }
+    new EvalMonoid[A] {
+      val algebra = Monoid[A]
+    }
 }
 
 private[cats] trait EvalInstances1 {
@@ -332,13 +336,17 @@ private[cats] trait EvalInstances1 {
     }
 
   implicit def evalSemigroup[A: Semigroup]: Semigroup[Eval[A]] =
-    new EvalSemigroup[A] { val algebra = Semigroup[A] }
+    new EvalSemigroup[A] {
+      val algebra = Semigroup[A]
+    }
 }
 
 trait EvalSemigroup[A] extends Semigroup[Eval[A]] {
   implicit def algebra: Semigroup[A]
   def combine(lx: Eval[A], ly: Eval[A]): Eval[A] =
-    for { x <- lx; y <- ly } yield x |+| y
+    for {
+      x <- lx; y <- ly
+    } yield x |+| y
 }
 
 trait EvalMonoid[A] extends Monoid[Eval[A]] with EvalSemigroup[A] {
@@ -351,5 +359,7 @@ trait EvalGroup[A] extends Group[Eval[A]] with EvalMonoid[A] {
   def inverse(lx: Eval[A]): Eval[A] =
     lx.map(_.inverse)
   override def remove(lx: Eval[A], ly: Eval[A]): Eval[A] =
-    for { x <- lx; y <- ly } yield x |-| y
+    for {
+      x <- lx; y <- ly
+    } yield x |-| y
 }

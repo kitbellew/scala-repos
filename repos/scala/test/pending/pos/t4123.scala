@@ -10,5 +10,7 @@ trait Iter[@specialized(Byte) +A] extends Iterator[A] {
 class ByteIter extends Iter[Byte] {
   var i = 0
   def hasNext = i < 3
-  def next = { i += 1; i.toByte }
+  def next = {
+    i += 1; i.toByte
+  }
 }

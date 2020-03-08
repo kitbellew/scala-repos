@@ -44,7 +44,9 @@ object Line {
           case List(Win(m))   => path :+ m
           case List(Retry(_)) => loop(siblings)
           case ahead =>
-            val children = ahead collect { case Node(m, ls) => path :+ m }
+            val children = ahead collect {
+              case Node(m, ls) => path :+ m
+            }
             loop(siblings ::: children)
         }
     }

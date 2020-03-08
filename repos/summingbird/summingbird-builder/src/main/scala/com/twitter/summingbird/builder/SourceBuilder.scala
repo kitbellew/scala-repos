@@ -117,7 +117,9 @@ case class SourceBuilder[T: Manifest] private (
         .write(
           sink.offline.map(new BatchedSinkFromOffline[U](batcher, _)),
           sink.online.map { supplier =>
-            new StormSink[U] { lazy val toFn = supplier() }
+            new StormSink[U] {
+              lazy val toFn = supplier()
+            }
           }
         )
     copy(
@@ -134,7 +136,9 @@ case class SourceBuilder[T: Manifest] private (
       node = node.write(
         sink.offline.map(new BatchedSinkFromOffline[T](batcher, _)),
         sink.online.map { supplier =>
-          new StormSink[T] { lazy val toFn = supplier() }
+          new StormSink[T] {
+            lazy val toFn = supplier()
+          }
         }
       )
     )
@@ -213,7 +217,9 @@ case class SourceBuilder[T: Manifest] private (
         // Set the store to reset if needed
         val batchSetStore = scalding
           .initialBatch(batcher)
-          .map { givenStore.withInitialBatch(_) }
+          .map {
+            givenStore.withInitialBatch(_)
+          }
           .getOrElse(givenStore)
 
         val newNode = OptionalUnzip2[Scalding, Storm]()(node)._1

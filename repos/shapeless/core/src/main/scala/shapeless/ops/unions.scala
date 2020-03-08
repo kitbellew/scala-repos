@@ -36,7 +36,9 @@ object union {
   }
 
   trait LowPrioritySelector {
-    type Aux[C <: Coproduct, K, V0] = Selector[C, K] { type V = V0 }
+    type Aux[C <: Coproduct, K, V0] = Selector[C, K] {
+      type V = V0
+    }
 
     implicit def tlSelector[H, T <: Coproduct, K](
         implicit st: Selector[T, K]): Aux[H :+: T, K, st.V] =
@@ -76,7 +78,9 @@ object union {
   object Keys {
     def apply[U <: Coproduct](implicit keys: Keys[U]): Aux[U, keys.Out] = keys
 
-    type Aux[U <: Coproduct, Out0 <: HList] = Keys[U] { type Out = Out0 }
+    type Aux[U <: Coproduct, Out0 <: HList] = Keys[U] {
+      type Out = Out0
+    }
 
     implicit def cnilKeys[U <: CNil]: Aux[U, HNil] =
       new Keys[U] {
@@ -106,7 +110,9 @@ object union {
     def apply[U <: Coproduct](implicit values: Values[U]): Aux[U, values.Out] =
       values
 
-    type Aux[U <: Coproduct, Out0 <: Coproduct] = Values[U] { type Out = Out0 }
+    type Aux[U <: Coproduct, Out0 <: Coproduct] = Values[U] {
+      type Out = Out0
+    }
 
     implicit def cnilValues[U <: CNil]: Aux[U, CNil] =
       new Values[U] {
@@ -138,7 +144,9 @@ object union {
     def apply[U <: Coproduct](implicit fields: Fields[U]): Aux[U, fields.Out] =
       fields
 
-    type Aux[L <: Coproduct, Out0 <: Coproduct] = Fields[L] { type Out = Out0 }
+    type Aux[L <: Coproduct, Out0 <: Coproduct] = Fields[L] {
+      type Out = Out0
+    }
 
     implicit val cnilFields: Aux[CNil, CNil] =
       new Fields[CNil] {

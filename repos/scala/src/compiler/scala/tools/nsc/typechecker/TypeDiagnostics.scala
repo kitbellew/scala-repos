@@ -192,7 +192,9 @@ trait TypeDiagnostics {
   def disambiguate(ss: List[String]) = ss match {
     case Nil => Nil
     case s :: ss =>
-      s :: (ss map { case `s` => "(some other)" + s; case x => x })
+      s :: (ss map {
+        case `s` => "(some other)" + s; case x => x
+      })
   }
 
   // todo: use also for other error messages

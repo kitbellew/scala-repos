@@ -68,6 +68,8 @@ object FromString {
     def apply(s: String) = safeToInt(s).get
     def safeToInt(s: String): Option[Int] =
       try Some(java.lang.Integer.parseInt(s))
-      catch { case _: NumberFormatException => None }
+      catch {
+        case _: NumberFormatException => None
+      }
   }
 }

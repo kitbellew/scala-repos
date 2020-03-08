@@ -53,7 +53,9 @@ trait CounterLike[
     data.get(k) getOrElse default
   }
 
-  def update(k: K, v: V) { data(k) = v }
+  def update(k: K, v: V) {
+    data(k) = v
+  }
 
   def get(k: K) = data.get(k)
 
@@ -100,7 +102,9 @@ object Counter extends CounterOps {
       values: TraversableOnce[(K, V)]): Counter[K, V] = {
     val rv = apply[K, V]()
     val field = implicitly[Semiring[V]]
-    values.foreach({ case (k, v) => rv(k) = field.+(v, rv(k)) })
+    values.foreach({
+      case (k, v) => rv(k) = field.+(v, rv(k))
+    })
     rv
   }
 

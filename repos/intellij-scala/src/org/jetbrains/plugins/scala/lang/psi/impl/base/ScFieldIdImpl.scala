@@ -30,7 +30,9 @@ class ScFieldIdImpl private (
     extends ScalaStubBasedElementImpl(stub, nodeType, node)
     with ScFieldId
     with ScImportableDeclarationsOwner {
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
   def this(stub: ScFieldIdStub) = {
     this(stub, ScalaElementTypes.FIELD_ID, null)
   }

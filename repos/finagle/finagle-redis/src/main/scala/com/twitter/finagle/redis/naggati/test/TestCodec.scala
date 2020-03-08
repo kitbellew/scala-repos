@@ -32,8 +32,12 @@ object TestCodec {
     val codec = new Codec(
       firstStage,
       encoder,
-      { n => counter.readBytes += n },
-      { n => counter.writtenBytes += n })
+      { n =>
+        counter.readBytes += n
+      },
+      { n =>
+        counter.writtenBytes += n
+      })
     val testCodec = new TestCodec(codec)
     (testCodec, counter)
   }

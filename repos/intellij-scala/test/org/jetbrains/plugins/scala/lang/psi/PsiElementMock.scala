@@ -15,7 +15,9 @@ class PsiElementMock(val name: String, children: PsiElementMock*)
   private var firstChild: PsiElement = children.headOption.orNull
   private var lastChild: PsiElement = children.lastOption.orNull
 
-  for (child <- children) { child.parent = this }
+  for (child <- children) {
+    child.parent = this
+  }
 
   if (children.nonEmpty) {
     for ((a, b) <- children.zip(children.tail)) {

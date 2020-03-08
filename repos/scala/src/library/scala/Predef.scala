@@ -259,9 +259,15 @@ object Predef extends LowPriorityImplicits with DeprecatedPredef {
   }
 
   implicit final class Ensuring[A](private val self: A) extends AnyVal {
-    def ensuring(cond: Boolean): A = { assert(cond); self }
-    def ensuring(cond: Boolean, msg: => Any): A = { assert(cond, msg); self }
-    def ensuring(cond: A => Boolean): A = { assert(cond(self)); self }
+    def ensuring(cond: Boolean): A = {
+      assert(cond); self
+    }
+    def ensuring(cond: Boolean, msg: => Any): A = {
+      assert(cond, msg); self
+    }
+    def ensuring(cond: A => Boolean): A = {
+      assert(cond(self)); self
+    }
     def ensuring(cond: A => Boolean, msg: => Any): A = {
       assert(cond(self), msg); self
     }

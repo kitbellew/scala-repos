@@ -47,7 +47,9 @@ class FirstActor extends Actor {
 //#context-actorOf
 
 class ActorWithArgs(arg: String) extends Actor {
-  def receive = { case _ => () }
+  def receive = {
+    case _ => ()
+  }
 }
 
 class DemoActorWrapper extends Actor {
@@ -135,7 +137,9 @@ class ReplyException extends Actor {
     //#reply-exception
   }
 
-  def operation(): String = { "Hi" }
+  def operation(): String = {
+    "Hi"
+  }
 
 }
 
@@ -303,7 +307,9 @@ class ActorDocSpec extends AkkaSpec("""
     system.eventStream.subscribe(testActor, classOf[Logging.Info])
 
     myActor ! "test"
-    expectMsgPF(1 second) { case Logging.Info(_, _, "received test") => true }
+    expectMsgPF(1 second) {
+      case Logging.Info(_, _, "received test") => true
+    }
 
     myActor ! "unknown"
     expectMsgPF(1 second) {
@@ -355,7 +361,9 @@ class ActorDocSpec extends AkkaSpec("""
       }
     }
 
-    val a: { def actorRef: ActorRef } = new AnyRef {
+    val a: {
+      def actorRef: ActorRef
+    } = new AnyRef {
       val applicationContext = this
 
       //#creating-indirectly

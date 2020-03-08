@@ -70,7 +70,9 @@ final class ListBuffer[A]
   private def writeObject(out: ObjectOutputStream) {
     // write start
     var xs: List[A] = start
-    while (!xs.isEmpty) { out.writeObject(xs.head); xs = xs.tail }
+    while (!xs.isEmpty) {
+      out.writeObject(xs.head); xs = xs.tail
+    }
     out.writeObject(ListSerializeEnd)
 
     // no need to write last0

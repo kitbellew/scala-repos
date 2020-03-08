@@ -10,7 +10,9 @@ object InfoTest extends Build {
     ivyXML <<= (customInfo, organization, moduleName, version) apply inlineXML,
     scalaVersion := "2.9.1",
     projectID ~= (_ cross false),
-    customInfo <<= baseDirectory { _ / "info" exists },
+    customInfo <<= baseDirectory {
+      _ / "info" exists
+    },
     TaskKey[Unit]("check-download") <<= checkDownload,
     delivered <<= deliverLocal map XML.loadFile,
     TaskKey[Unit]("check-info") <<= checkInfo
@@ -24,7 +26,13 @@ object InfoTest extends Build {
       moduleID: String,
       version: String): NodeSeq =
     if (addInfo)
-      (<info organisation={organization} module={moduleID} revision={version}>
+      (<info organisation={
+        organization
+      } module={
+        moduleID
+      } revision={
+        version
+      }>
 				<license name="Two-clause BSD-style" url="http://github.com/szeiger/scala-query/blob/master/LICENSE.txt" />
 				<description homepage="http://github.com/szeiger/scala-query/">
 					ScalaQuery is a type-safe database query API for Scala.

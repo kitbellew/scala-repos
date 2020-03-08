@@ -35,7 +35,10 @@ object XmlApiSpec extends Specification {
 
   object XMLApiExample extends XMLApiHelper {
     // Define our root tag
-    def createTag(contents: NodeSeq): Elem = <api>{contents}</api>
+    def createTag(contents: NodeSeq): Elem =
+      <api>{
+        contents
+      }</api>
 
     // This method exists to test the non-XML implicit conversions on XMLApiHelper
     def produce(in: Any): LiftResponse = in match {
@@ -43,7 +46,10 @@ object XmlApiSpec extends Specification {
       case "true"  => true
       case "false" => false
       // Tests canBoolToResponse
-      case s: String => tryo[Boolean] { s.toInt > 5 }
+      case s: String =>
+        tryo[Boolean] {
+          s.toInt > 5
+        }
       // Tests pairToResponse
       case i: Int if i == 42 => (true, "But what is the question?")
       // These test the listElemToResponse conversion
@@ -67,7 +73,9 @@ object XmlApiSpec extends Specification {
     def reduceOp(operation: (Int, Int) => Int)(r: Req): Box[Elem] =
       tryo {
         (r.param("args").map { args =>
-          <result>{args.split(",").map(_.toInt).reduceLeft(operation)}</result>
+          <result>{
+            args.split(",").map(_.toInt).reduceLeft(operation)
+          }</result>
         }) ?~ "Missing args"
       } match {
         case Full(x)    => x

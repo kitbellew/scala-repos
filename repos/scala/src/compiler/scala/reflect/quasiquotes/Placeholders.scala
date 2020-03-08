@@ -88,7 +88,9 @@ trait Placeholders { self: Quasiquotes =>
     def matching: PartialFunction[Any, Name]
     def unapply(scrutinee: Any): Option[Hole] = {
       val name = matching.lift(scrutinee)
-      name.flatMap { holeMap.get(_) }
+      name.flatMap {
+        holeMap.get(_)
+      }
     }
   }
 

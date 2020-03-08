@@ -27,5 +27,7 @@ class ScStableReferenceElementPatternImpl(node: ASTNode)
   override def toString: String = "StableElementPattern"
 
   override def getType(ctx: TypingContext) =
-    wrap(getReferenceExpression) flatMap { e => e.getType(TypingContext.empty) }
+    wrap(getReferenceExpression) flatMap { e =>
+      e.getType(TypingContext.empty)
+    }
 }

@@ -66,10 +66,14 @@ trait Extractors {
       def gc(symtab: SymbolTable): SymbolTable = {
         def loop(symtab: SymbolTable): SymbolTable = {
           def extractNames(tree: Tree) =
-            tree.collect { case ref: RefTree => ref.name }.toSet
+            tree.collect {
+              case ref: RefTree => ref.name
+            }.toSet
           val usedNames = extractNames(rtree) ++ symtab.syms.flatMap(sym =>
             extractNames(symtab.symDef(sym)))
-          symtab filterAliases { case (_, name) => usedNames(name) }
+          symtab filterAliases {
+            case (_, name) => usedNames(name)
+          }
         }
         var prev = symtab
         var next = loop(symtab)

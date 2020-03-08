@@ -711,8 +711,10 @@ class ScalaAnnotator
     }
     val file = element.getContainingFile
     if (named.isValid && named.getContainingFile == file &&
-        !PsiTreeUtil
-          .isAncestor(named, element, true)) { //to filter recursive usages
+        !PsiTreeUtil.isAncestor(
+          named,
+          element,
+          true)) { //to filter recursive usages
       val value: ValueUsed = element match {
         case ref: ScReferenceExpression
             if checkWrite &&
@@ -1458,7 +1460,8 @@ class ScalaAnnotator
   private def checkFunctionForVariance(
       fun: ScFunction,
       holder: AnnotationHolder) {
-    if (!modifierIsThis(fun) && !compoundType(fun)) { //if modifier contains [this] or if it is a compound type we do not highlight it
+    if (!modifierIsThis(fun) && !compoundType(
+          fun)) { //if modifier contains [this] or if it is a compound type we do not highlight it
       checkBoundsVariance(fun, holder, fun.nameId, fun.getParent)
       if (!childHasAnnotation(fun.returnTypeElement, "uncheckedVariance")) {
         fun.returnType match {

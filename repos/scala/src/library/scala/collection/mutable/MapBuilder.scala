@@ -33,6 +33,8 @@ class MapBuilder[A, B, Coll <: scala.collection.GenMap[
     // for hk-types we might be able to enforce this in the future, though.
     this
   }
-  def clear() { elems = empty }
+  def clear() {
+    elems = empty
+  }
   def result: Coll = elems
 }

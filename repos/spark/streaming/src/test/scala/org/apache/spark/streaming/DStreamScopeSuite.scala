@@ -52,8 +52,12 @@ class DStreamScopeSuite
     }
   }
 
-  before { assertPropertiesNotSet() }
-  after { assertPropertiesNotSet() }
+  before {
+    assertPropertiesNotSet()
+  }
+  after {
+    assertPropertiesNotSet()
+  }
 
   test("dstream without scope") {
     val dummyStream = new DummyDStream(ssc)
@@ -86,8 +90,12 @@ class DStreamScopeSuite
 
   test("scoping simple operations") {
     val inputStream = new DummyInputDStream(ssc)
-    val mappedStream = inputStream.map { i => i + 1 }
-    val filteredStream = mappedStream.filter { i => i % 2 == 0 }
+    val mappedStream = inputStream.map { i =>
+      i + 1
+    }
+    val filteredStream = mappedStream.filter { i =>
+      i % 2 == 0
+    }
     filteredStream.initialize(Time(0))
 
     val mappedScopeBase = mappedStream.baseScope.map(RDDOperationScope.fromJson)
@@ -160,7 +168,9 @@ class DStreamScopeSuite
   test("transform should allow RDD operations to be captured in scopes") {
     val inputStream = new DummyInputDStream(ssc)
     val transformedStream = inputStream.transform {
-      _.map { _ -> 1 }.reduceByKey(_ + _)
+      _.map {
+        _ -> 1
+      }.reduceByKey(_ + _)
     }
     transformedStream.initialize(Time(0))
 
@@ -194,7 +204,11 @@ class DStreamScopeSuite
     val inputStream = new DummyInputDStream(ssc)
     val generatedRDDs = new ArrayBuffer[RDD[(Int, Int)]]
     inputStream.foreachRDD { rdd =>
-      generatedRDDs += rdd.map { _ -> 1 }.reduceByKey(_ + _)
+      generatedRDDs += rdd
+        .map {
+          _ -> 1
+        }
+        .reduceByKey(_ + _)
     }
     val batchCounter = new BatchCounter(ssc)
     ssc.start()
@@ -212,7 +226,9 @@ class DStreamScopeSuite
     assertDefined(foreachBaseScope)
     assert(foreachBaseScope.get.name === "foreachRDD")
 
-    val rddScopes = generatedRDDs.map { _.scope }
+    val rddScopes = generatedRDDs.map {
+      _.scope
+    }
     assertDefined(rddScopes: _*)
     rddScopes.zipWithIndex.foreach {
       case (rddScope, idx) =>

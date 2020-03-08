@@ -180,13 +180,17 @@ class KleisliTests extends CatsSuite {
   }
 
   test("lift") {
-    val f = Kleisli { (x: Int) => (Some(x + 1): Option[Int]) }
+    val f = Kleisli { (x: Int) =>
+      (Some(x + 1): Option[Int])
+    }
     val l = f.lift[List]
     (List(1, 2, 3) >>= l.run) should ===(List(Some(2), Some(3), Some(4)))
   }
 
   test("transform") {
-    val opt = Kleisli { (x: Int) => Option(x.toDouble) }
+    val opt = Kleisli { (x: Int) =>
+      Option(x.toDouble)
+    }
     val optToList = new (Option ~> List) {
       def apply[A](fa: Option[A]): List[A] = fa.toList
     }
@@ -201,9 +205,13 @@ class KleisliTests extends CatsSuite {
   test("local") {
     case class Config(i: Int, s: String)
 
-    val kint = Kleisli { (x: Int) => Option(x.toDouble) }
+    val kint = Kleisli { (x: Int) =>
+      Option(x.toDouble)
+    }
     val kconfig1 = kint.local[Config](_.i)
-    val kconfig2 = Kleisli { (c: Config) => Option(c.i.toDouble) }
+    val kconfig2 = Kleisli { (c: Config) =>
+      Option(c.i.toDouble)
+    }
 
     val config = Config(0, "cats")
     kconfig1.run(config) should ===(kconfig2.run(config))

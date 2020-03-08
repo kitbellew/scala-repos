@@ -104,7 +104,9 @@ final class PrefApi(coll: Coll, cacheTtl: Duration, bus: lila.common.Bus) {
         BSONDocument("_id" -> user.id),
         BSONDocument("$set" -> BSONDocument(s"tags.$name" -> value)),
         upsert = true)
-      .void >>- { cache remove user.id }
+      .void >>- {
+      cache remove user.id
+    }
 
   def getPrefById(id: String): Fu[Pref] =
     cache(id) map (_ getOrElse Pref.create(id))
@@ -147,20 +149,26 @@ final class PrefApi(coll: Coll, cacheTtl: Duration, bus: lila.common.Bus) {
     }
 
   def setPref(user: User, change: Pref => Pref, notifyChange: Boolean): Funit =
-    getPref(user) map change flatMap { setPref(_, notifyChange) }
+    getPref(user) map change flatMap {
+      setPref(_, notifyChange)
+    }
 
   def setPref(
       userId: String,
       change: Pref => Pref,
       notifyChange: Boolean): Funit =
-    getPref(userId) map change flatMap { setPref(_, notifyChange) }
+    getPref(userId) map change flatMap {
+      setPref(_, notifyChange)
+    }
 
   def setPrefString(
       user: User,
       name: String,
       value: String,
       notifyChange: Boolean): Funit =
-    getPref(user) map { _.set(name, value) } flatten
+    getPref(user) map {
+      _.set(name, value)
+    } flatten
       s"Bad pref ${user.id} $name -> $value" flatMap {
       setPref(_, notifyChange)
     }

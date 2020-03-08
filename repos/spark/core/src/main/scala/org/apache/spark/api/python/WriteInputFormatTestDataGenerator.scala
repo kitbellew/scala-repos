@@ -38,11 +38,17 @@ case class TestWritable(var str: String, var int: Int, var double: Double)
   def this() = this("", 0, 0.0)
 
   def getStr: String = str
-  def setStr(str: String) { this.str = str }
+  def setStr(str: String) {
+    this.str = str
+  }
   def getInt: Int = int
-  def setInt(int: Int) { this.int = int }
+  def setInt(int: Int) {
+    this.int = int
+  }
   def getDouble: Double = double
-  def setDouble(double: Double) { this.double = double }
+  def setDouble(double: Double) {
+    this.double = double
+  }
 
   def write(out: DataOutput): Unit = {
     out.writeUTF(str)
@@ -143,9 +149,13 @@ object WriteInputFormatTestDataGenerator {
     val intKeys =
       Seq((1, "aa"), (2, "bb"), (2, "aa"), (3, "cc"), (2, "bb"), (1, "aa"))
     sc.parallelize(intKeys).saveAsSequenceFile(intPath)
-    sc.parallelize(intKeys.map { case (k, v) => (k.toDouble, v) })
+    sc.parallelize(intKeys.map {
+        case (k, v) => (k.toDouble, v)
+      })
       .saveAsSequenceFile(doublePath)
-    sc.parallelize(intKeys.map { case (k, v) => (k.toString, v) })
+    sc.parallelize(intKeys.map {
+        case (k, v) => (k.toString, v)
+      })
       .saveAsSequenceFile(textPath)
     sc.parallelize(intKeys.map {
         case (k, v) => (k, v.getBytes(StandardCharsets.UTF_8))

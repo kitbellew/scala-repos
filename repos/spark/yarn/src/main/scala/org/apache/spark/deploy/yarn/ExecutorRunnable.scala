@@ -102,7 +102,9 @@ private[yarn] class ExecutorRunnable(
       |===============================================================================
       |YARN executor launch context:
       |  env:
-      |${env.map { case (k, v) => s"    $k -> $v\n" }.mkString}
+      |${env.map {
+                 case (k, v) => s"    $k -> $v\n"
+               }.mkString}
       |  command:
       |    ${commands.mkString(" ")}
       |===============================================================================
@@ -187,7 +189,9 @@ private[yarn] class ExecutorRunnable(
     // uses RPC to connect to the scheduler, the RPC settings are needed as well as the
     // authentication settings.
     sparkConf.getAll
-      .filter { case (k, v) => SparkConf.isExecutorStartupConf(k) }
+      .filter {
+        case (k, v) => SparkConf.isExecutorStartupConf(k)
+      }
       .foreach {
         case (k, v) =>
           javaOpts += YarnSparkHadoopUtil.escapeForShell(s"-D$k=$v")
@@ -380,7 +384,9 @@ private[yarn] class ExecutorRunnable(
       .getenv()
       .asScala
       .filterKeys(_.startsWith("SPARK"))
-      .foreach { case (k, v) => env(k) = v }
+      .foreach {
+        case (k, v) => env(k) = v
+      }
     env
   }
 }

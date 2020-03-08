@@ -161,7 +161,9 @@ private[tournament] final class TournamentApi(
             sendTo(tour.id, Reload)
             publish()
             PlayerRepo withPoints tour.id foreach {
-              _ foreach { p => UserRepo.incToints(p.userId, p.score) }
+              _ foreach { p =>
+                UserRepo.incToints(p.userId, p.score)
+              }
             }
             awardTrophies(tour)
             indexLeaderboard(tour)
@@ -200,7 +202,9 @@ private[tournament] final class TournamentApi(
   }
 
   private def updateNbPlayers(tourId: String) =
-    PlayerRepo count tourId flatMap { TournamentRepo.setNbPlayers(tourId, _) }
+    PlayerRepo count tourId flatMap {
+      TournamentRepo.setNbPlayers(tourId, _)
+    }
 
   private def withdrawAllNonMarathonOrUniqueBut(
       tourId: String,
@@ -372,7 +376,9 @@ private[tournament] final class TournamentApi(
       nb: Int): Fu[List[Pov]] =
     PairingRepo.recentIdsByTourAndUserId(tourId, userId, nb) flatMap { ids =>
       GameRepo games ids map {
-        _.flatMap { Pov.ofUserId(_, userId) }
+        _.flatMap {
+          Pov.ofUserId(_, userId)
+        }
       }
     }
 
@@ -415,7 +421,9 @@ private[tournament] final class TournamentApi(
               } pipeToSelection lobby
             }
           })))
-    def apply() { debouncer ! Debouncer.Nothing }
+    def apply() {
+      debouncer ! Debouncer.Nothing
+    }
   }
 
   private object updateTournamentStanding {

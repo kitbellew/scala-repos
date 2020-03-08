@@ -174,7 +174,9 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
         delta.map { flow =>
           flow.map { typedP =>
             sumByBatches(typedP, capturedBatcher, Commutative)
-              .map { case (LTuple2(k, _), (ts, v)) => (ts, (k, v)) }
+              .map {
+                case (LTuple2(k, _), (ts, v)) => (ts, (k, v))
+              }
           }
         }
       case NonCommutative => delta
@@ -215,14 +217,18 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
 
     def prepareOld(
         old: TypedPipe[(K, V)]): TypedPipe[(K, (BatchID, (Timestamp, V)))] =
-      old.map { case (k, v) => (k, (inBatch, (Timestamp.Min, v))) }
+      old.map {
+        case (k, v) => (k, (inBatch, (Timestamp.Min, v)))
+      }
 
     val capturedBatcher = batcher //avoid a closure on the whole store
 
     def prepareDeltas(ins: TypedPipe[(Timestamp, (K, V))])
         : TypedPipe[(K, (BatchID, (Timestamp, V)))] =
       sumByBatches(ins, capturedBatcher, commutativity)
-        .map { case (LTuple2(k, batch), (ts, v)) => (k, (batch, (ts, v))) }
+        .map {
+          case (LTuple2(k, batch), (ts, v)) => (k, (batch, (ts, v)))
+        }
 
     /**
       * Produce a merged stream such that each BatchID, Key pair appears only one time.
@@ -244,11 +250,13 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
       // by batch is more efficient because the reducers' input is almost sorted.
       val sorted = commutativity match {
         case NonCommutative =>
-          grouped.sortBy { case (_, (t, _)) => t }(
-            BinaryOrdering.ordSer[com.twitter.summingbird.batch.Timestamp])
+          grouped.sortBy {
+            case (_, (t, _)) => t
+          }(BinaryOrdering.ordSer[com.twitter.summingbird.batch.Timestamp])
         case Commutative =>
-          grouped
-            .sortBy { case (b, (_, _)) => b }(BinaryOrdering.ordSer[BatchID])
+          grouped.sortBy {
+            case (b, (_, _)) => b
+          }(BinaryOrdering.ordSer[BatchID])
       }
 
       sorted.mapValueStream { it: Iterator[(BatchID, (Timestamp, V))] =>
@@ -274,7 +282,9 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
         case (k, (batchid, (prev, v))) =>
           val totalSum =
             Semigroup.plus[Option[(Timestamp, V)]](flatOpt(prev), v)
-          totalSum.map { case (_, sumv) => (batchid, (k, sumv)) }
+          totalSum.map {
+            case (_, sumv) => (batchid, (k, sumv))
+          }
       }
 
     // This builds the format we send to consumer nodes
@@ -417,7 +427,11 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
       case (actualLast, snapshot, deltaFlow2Pipe) =>
         val snapshotTs = batcher.latestTimeOf(actualLast)
         Scalding.merge(
-          snapshot.map { pipe => pipe.map { (snapshotTs, _) } },
+          snapshot.map { pipe =>
+            pipe.map {
+              (snapshotTs, _)
+            }
+          },
           deltaFlow2Pipe)
     }
 

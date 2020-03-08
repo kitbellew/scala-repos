@@ -66,8 +66,9 @@ trait StandaloneIngestServer
       Some("/"))
     val permissionsFinder =
       new PermissionsFinder(apiKeyFinder, accountFinder, clock.instant())
-    val jobManager =
-      new InMemoryJobManager[({ type λ[+α] = EitherT[Future, String, α] })#λ]()
+    val jobManager = new InMemoryJobManager[({
+      type λ[+α] = EitherT[Future, String, α]
+    })#λ]()
 
     val (eventStore, stoppable) =
       KafkaEventStore(config.detach("eventStore"), permissionsFinder) valueOr {

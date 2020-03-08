@@ -114,7 +114,9 @@ object ConsumerGroupCommand {
         getPartitionOffset: TopicAndPartition => Option[Long],
         getOwner: TopicAndPartition => Option[String]): Unit = {
       topicPartitions
-        .sortBy { case topicPartition => topicPartition.partition }
+        .sortBy {
+          case topicPartition => topicPartition.partition
+        }
         .foreach { topicPartition =>
           describePartition(
             group,
@@ -225,7 +227,9 @@ object ConsumerGroupCommand {
           .readDataMaybeNull(
             groupDirs.consumerOwnerDir + "/" + topicPartition.partition)
           ._1
-          .map { owner => topicPartition -> owner }
+          .map { owner =>
+            topicPartition -> owner
+          }
       }.toMap
       val partitionOffsets = getPartitionOffsets(
         group,

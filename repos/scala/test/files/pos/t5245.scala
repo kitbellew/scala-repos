@@ -1,3 +1,5 @@
 object Foo {
-  def bar = { var x = (); def foo() = x }
+  def bar = {
+    var x = (); def foo() = x
+  }
 }

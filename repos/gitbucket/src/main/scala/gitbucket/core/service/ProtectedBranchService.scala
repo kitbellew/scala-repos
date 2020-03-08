@@ -18,7 +18,9 @@ trait ProtectedBranchService {
       .on {
         case (pb, c) => pb.byBranch(c.userName, c.repositoryName, c.branch)
       }
-      .map { case (pb, c) => pb -> c.context.? }
+      .map {
+        case (pb, c) => pb -> c.context.?
+      }
       .filter(_._1.byPrimaryKey(owner, repository, branch))
       .list
       .groupBy(_._1)

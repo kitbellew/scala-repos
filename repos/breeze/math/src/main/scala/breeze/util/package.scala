@@ -151,7 +151,9 @@ package object util {
   /**
     * prints a and returns it.
     */
-  def trace[T](a: T) = { println(a); a }
+  def trace[T](a: T) = {
+    println(a); a
+  }
 
   // this should be a separate trait but Scala is freaking out
   class SeqExtras[T](s: Seq[T]) {
@@ -193,7 +195,9 @@ package object util {
         implicit cbf: CanBuildFrom[java.util.BitSet, U, C]) = {
       val r: mutable.Builder[U, C] = cbf(bs)
       r.sizeHint(bs.size)
-      iterator foreach { i => r += f(i) }
+      iterator foreach { i =>
+        r += f(i)
+      }
 
       r.result()
     }

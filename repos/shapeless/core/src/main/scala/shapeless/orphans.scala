@@ -98,7 +98,9 @@ class OrphanMacros(val c: whitebox.Context) extends CaseClassMacros {
         val proxyTpe = proxyOwner.typeSignature
         val proxyNames = proxyTpe.members.filter(_.isImplicit).map(_.name)
 
-        proxyNames.map { name => q"def ${name.toTermName} = ???" }
+        proxyNames.map { name =>
+          q"def ${name.toTermName} = ???"
+        }
       }
 
     val probe =

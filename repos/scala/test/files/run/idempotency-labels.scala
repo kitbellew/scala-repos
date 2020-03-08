@@ -6,7 +6,9 @@ import scala.tools.reflect.Eval
 object Test extends App {
   val label = reify {
     var x = 0
-    while (x < 2) { x += 1 }
+    while (x < 2) {
+      x += 1
+    }
     x
   }
   println(label.eval)

@@ -18,7 +18,9 @@ import scala.concurrent.duration._
 
 object EndToEndEventAdapterSpec {
 
-  trait AppModel { def payload: Any }
+  trait AppModel {
+    def payload: Any
+  }
   case class A(payload: Any) extends AppModel
   case class B(payload: Any) extends AppModel
   case class NewA(payload: Any) extends AppModel
@@ -30,7 +32,9 @@ object EndToEndEventAdapterSpec {
     override def manifest(event: Any): String = event.getClass.getCanonicalName
 
     override def toJournal(event: Any): Any =
-      event match { case m: AppModel ⇒ JSON(m.payload) }
+      event match {
+        case m: AppModel ⇒ JSON(m.payload)
+      }
     override def fromJournal(event: Any, manifest: String): EventSeq =
       event match {
         case m: JSON if m.payload.toString.startsWith("a") ⇒
@@ -42,7 +46,9 @@ object EndToEndEventAdapterSpec {
     override def manifest(event: Any): String = event.getClass.getCanonicalName
 
     override def toJournal(event: Any): Any =
-      event match { case m: AppModel ⇒ JSON(m.payload) }
+      event match {
+        case m: AppModel ⇒ JSON(m.payload)
+      }
     override def fromJournal(event: Any, manifest: String): EventSeq =
       event match {
         case m: JSON if m.payload.toString.startsWith("a") ⇒
@@ -54,7 +60,9 @@ object EndToEndEventAdapterSpec {
     override def manifest(event: Any): String = event.getClass.getCanonicalName
 
     override def toJournal(event: Any): Any =
-      event match { case m: AppModel ⇒ JSON(m.payload) }
+      event match {
+        case m: AppModel ⇒ JSON(m.payload)
+      }
     override def fromJournal(event: Any, manifest: String): EventSeq =
       event match {
         case m: JSON if m.payload.toString.startsWith("b") ⇒
@@ -66,7 +74,9 @@ object EndToEndEventAdapterSpec {
     override def manifest(event: Any): String = event.getClass.getCanonicalName
 
     override def toJournal(event: Any): Any =
-      event match { case m: AppModel ⇒ JSON(m.payload) }
+      event match {
+        case m: AppModel ⇒ JSON(m.payload)
+      }
     override def fromJournal(event: Any, manifest: String): EventSeq =
       event match {
         case m: JSON if m.payload.toString.startsWith("b") ⇒
@@ -86,7 +96,9 @@ object EndToEndEventAdapterSpec {
 
     val persistIncoming: Receive = {
       case GetState ⇒
-        state.reverse.foreach { sender() ! _ }
+        state.reverse.foreach {
+          sender() ! _
+        }
       case in ⇒
         persist(in) { e ⇒
           state ::= e

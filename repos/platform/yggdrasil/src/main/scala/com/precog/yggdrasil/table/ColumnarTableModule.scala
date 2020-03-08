@@ -207,7 +207,9 @@ object ColumnarTableModule extends Logging {
         sb.append(a(0))
         var i = 1
         val len = n
-        while (i < len) { sb.append(','); sb.append(a(i)); i += 1 }
+        while (i < len) {
+          sb.append(','); sb.append(a(i)); i += 1
+        }
         sb.append("\r\n")
       }
     }
@@ -221,7 +223,9 @@ object ColumnarTableModule extends Logging {
         val m = mutable.Map.empty[String, Int]
         var i = 0
         val len = paths.length
-        while (i < len) { m(paths(i)) = i; i += 1 }
+        while (i < len) {
+          m(paths(i)) = i; i += 1
+        }
         new Indices(len, m, paths)
       }
     }
@@ -587,7 +591,9 @@ trait ColumnarTableModule[M[+_]]
         }
 
       def mkProjections(spec: GroupKeySpec) =
-        toVector(dnf(spec)).map(sources(_).map { s => (s.key, s.spec) })
+        toVector(dnf(spec)).map(sources(_).map { s =>
+          (s.key, s.spec)
+        })
 
       case class IndexedSource(
           groupId: GroupId,
@@ -817,7 +823,9 @@ trait ColumnarTableModule[M[+_]]
       StreamT
         .Skip({
           readStarts.getAndIncrement
-          slices0.map(s => { blockReads.getAndIncrement; s })
+          slices0.map(s => {
+            blockReads.getAndIncrement; s
+          })
         })
         .point[M]
     )
@@ -945,7 +953,9 @@ trait ColumnarTableModule[M[+_]]
     }
 
     def toArray[A](implicit tpe: CValueType[A]): Table = {
-      val slices2 = slices map { _.toArray[A] }
+      val slices2 = slices map {
+        _.toArray[A]
+      }
       Table(slices2, size)
     }
 
@@ -1630,14 +1640,22 @@ trait ColumnarTableModule[M[+_]]
             val optM = cogroup orElse {
               leftUnconsed map {
                 case (head, tail) => EndLeft(stlr.initial, head, tail)
-              } map { M point _ }
+              } map {
+                M point _
+              }
             } orElse {
               rightUnconsed map {
                 case (head, tail) => EndRight(strr.initial, head, tail)
-              } map { M point _ }
+              } map {
+                M point _
+              }
             }
 
-            optM map { m => m map { Some(_) } } getOrElse {
+            optM map { m =>
+              m map {
+                Some(_)
+              }
+            } getOrElse {
               M.point(None)
             }
           }
@@ -2122,9 +2140,13 @@ trait ColumnarTableModule[M[+_]]
         def fresh(paths: List[CPathNode], leaf: JType): Option[JType] =
           paths match {
             case CPathField(field) :: paths =>
-              fresh(paths, leaf) map { tpe => JObjectFixedT(Map(field -> tpe)) }
+              fresh(paths, leaf) map { tpe =>
+                JObjectFixedT(Map(field -> tpe))
+              }
             case CPathIndex(i) :: paths =>
-              fresh(paths, leaf) map { tpe => JArrayFixedT(Map(i -> tpe)) }
+              fresh(paths, leaf) map { tpe =>
+                JArrayFixedT(Map(i -> tpe))
+              }
             case CPathArray :: paths =>
               fresh(paths, leaf) map (JArrayHomogeneousT(_))
             case CPathMeta(field) :: _ => None
@@ -2225,7 +2247,12 @@ trait ColumnarTableModule[M[+_]]
       Table(
         StreamT(
           StreamT
-            .Skip({ println(prelude); slices map { s => println(f(s)); s } })
+            .Skip({
+              println(prelude);
+              slices map { s =>
+                println(f(s)); s
+              }
+            })
             .point[M]),
         size)
     }
@@ -2258,11 +2285,15 @@ trait ColumnarTableModule[M[+_]]
       slicePrinter(prelude)(s => s.toJsonString(flag))
 
     def toStrings: M[Iterable[String]] = {
-      toEvents { (slice, row) => slice.toString(row) }
+      toEvents { (slice, row) =>
+        slice.toString(row)
+      }
     }
 
     def toJson: M[Iterable[JValue]] = {
-      toEvents { (slice, row) => slice.toJson(row) }
+      toEvents { (slice, row) =>
+        slice.toJson(row)
+      }
     }
 
     private def toEvents[A](f: (Slice, RowId) => Option[A]): M[Iterable[A]] = {

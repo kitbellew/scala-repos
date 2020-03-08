@@ -62,9 +62,15 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
         "Need data to be sent to multiple shards")
 
       shardIds = shardIdToDataAndSeqNumbers.keySet.toSeq
-      shardIdToData = shardIdToDataAndSeqNumbers.mapValues { _.map { _._1 } }
+      shardIdToData = shardIdToDataAndSeqNumbers.mapValues {
+        _.map {
+          _._1
+        }
+      }
       shardIdToSeqNumbers = shardIdToDataAndSeqNumbers.mapValues {
-        _.map { _._2 }
+        _.map {
+          _._2
+        }
       }
       shardIdToRange = shardIdToSeqNumbers.map {
         case (shardId, seqNumbers) =>
@@ -106,7 +112,9 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
       testUtils.endpointUrl,
       fakeBlockIds(1),
       Array(SequenceNumberRanges(allRanges.toArray)))
-      .map { bytes => new String(bytes).toInt }
+      .map { bytes =>
+        new String(bytes).toInt
+      }
       .collect()
     assert(receivedData1.toSet === testData.toSet)
 
@@ -116,8 +124,12 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
       testUtils.regionName,
       testUtils.endpointUrl,
       fakeBlockIds(allRanges.size),
-      allRanges.map { range => SequenceNumberRanges(Array(range)) }.toArray)
-      .map { bytes => new String(bytes).toInt }
+      allRanges.map { range =>
+        SequenceNumberRanges(Array(range))
+      }.toArray)
+      .map { bytes =>
+        new String(bytes).toInt
+      }
       .collect()
     assert(receivedData2.toSet === testData.toSet)
 
@@ -127,8 +139,12 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
       testUtils.regionName,
       testUtils.endpointUrl,
       fakeBlockIds(allRanges.size),
-      allRanges.map { range => SequenceNumberRanges(Array(range)) }.toArray)
-      .map { bytes => new String(bytes).toInt }
+      allRanges.map { range =>
+        SequenceNumberRanges(Array(range))
+      }.toArray)
+      .map { bytes =>
+        new String(bytes).toInt
+      }
       .collectPartitions()
     assert(receivedData3.length === allRanges.size)
     for (i <- 0 until allRanges.size) {
@@ -265,14 +281,18 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
     // Make sure that the right sequence `numPartitionsInKinesis` are configured, and others are not
     require(
       ranges.takeRight(numPartitionsInKinesis).forall {
-        _.ranges.forall { _.streamName == testUtils.streamName }
+        _.ranges.forall {
+          _.streamName == testUtils.streamName
+        }
       },
       "Incorrect configuration of RDD, expected ranges not set: "
     )
 
     require(
       ranges.dropRight(numPartitionsInKinesis).forall {
-        _.ranges.forall { _.streamName != testUtils.streamName }
+        _.ranges.forall {
+          _.streamName != testUtils.streamName
+        }
       },
       "Incorrect configuration of RDD, unexpected ranges set"
     )
@@ -283,7 +303,11 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
       testUtils.endpointUrl,
       blockIds,
       ranges)
-    val collectedData = rdd.map { bytes => new String(bytes).toInt }.collect()
+    val collectedData = rdd
+      .map { bytes =>
+        new String(bytes).toInt
+      }
+      .collect()
     assert(collectedData.toSet === testData.toSet)
 
     // Verify that the block fetching is skipped when isBlockValid is set to false.
@@ -319,7 +343,9 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
       rdd.removeBlocks()
       assert(
         rdd
-          .map { bytes => new String(bytes).toInt }
+          .map { bytes =>
+            new String(bytes).toInt
+          }
           .collect()
           .toSet === testData.toSet)
     }
@@ -327,7 +353,9 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
 
   /** Generate fake block ids */
   private def fakeBlockIds(num: Int): Array[BlockId] = {
-    Array.tabulate(num) { i => new StreamBlockId(0, i) }
+    Array.tabulate(num) { i =>
+      new StreamBlockId(0, i)
+    }
   }
 }
 

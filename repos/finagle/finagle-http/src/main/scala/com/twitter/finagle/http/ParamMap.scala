@@ -67,7 +67,9 @@ abstract class ParamMap
 
   /** Get Short value.  Uses forgiving StringUtil.toSomeShort to parse. */
   def getShort(name: String): Option[Short] =
-    get(name) map { StringUtil.toSomeShort(_) }
+    get(name) map {
+      StringUtil.toSomeShort(_)
+    }
 
   /** Get Short value or default.  Equivalent to getShort(name).getOrElse(default). */
   def getShortOrElse(name: String, default: => Short): Short =
@@ -75,7 +77,9 @@ abstract class ParamMap
 
   /** Get Int value.  Uses forgiving StringUtil.toSomeInt to parse. */
   def getInt(name: String): Option[Int] =
-    get(name) map { StringUtil.toSomeInt(_) }
+    get(name) map {
+      StringUtil.toSomeInt(_)
+    }
 
   /** Get Int value or default.  Equivalent to getInt(name).getOrElse(default). */
   def getIntOrElse(name: String, default: => Int): Int =
@@ -83,7 +87,9 @@ abstract class ParamMap
 
   /** Get Long value.  Uses forgiving StringUtil.toLong to parse. */
   def getLong(name: String): Option[Long] =
-    get(name) map { StringUtil.toSomeLong(_) }
+    get(name) map {
+      StringUtil.toSomeLong(_)
+    }
 
   /** Get Long value or default.  Equivalent to getLong(name).getOrElse(default). */
   def getLongOrElse(name: String, default: => Long): Long =
@@ -91,7 +97,9 @@ abstract class ParamMap
 
   /** Get Boolean value.  Uses StringUtil.toBoolean to parse. */
   def getBoolean(name: String): Option[Boolean] =
-    get(name) map { StringUtil.toBoolean(_) }
+    get(name) map {
+      StringUtil.toBoolean(_)
+    }
 
   /** Get Boolean value or default. Equivalent to getBoolean(name).getOrElse(default). */
   def getBooleanOrElse(name: String, default: => Boolean): Boolean =
@@ -114,7 +122,9 @@ class MapParamMap(
     extends ParamMap {
 
   def get(name: String): Option[String] =
-    underlying.get(name) flatMap { _.headOption }
+    underlying.get(name) flatMap {
+      _.headOption
+    }
 
   def getAll(name: String): Iterable[String] =
     underlying.getOrElse(name, Nil)
@@ -135,14 +145,23 @@ object MapParamMap {
     new MapParamMap(MapParamMap.tuplesToMultiMap(params))
 
   def apply(map: Map[String, String]): MapParamMap =
-    new MapParamMap(map.mapValues { value => Seq(value) })
+    new MapParamMap(map.mapValues { value =>
+      Seq(value)
+    })
 
   private[http] def tuplesToMultiMap(
       tuples: Seq[Tuple2[String, String]]
   ): Map[String, Seq[String]] = {
     tuples
-      .groupBy { case (k, v) => k }
-      .mapValues { case values => values.map { _._2 } }
+      .groupBy {
+        case (k, v) => k
+      }
+      .mapValues {
+        case values =>
+          values.map {
+            _._2
+          }
+      }
   }
 }
 
@@ -240,7 +259,9 @@ class RequestParamMap(val request: Request) extends ParamMap {
   private def jiterator(
       params: JMap[String, JList[String]]): Iterator[(String, String)] =
     params.entrySet.asScala.flatMap { entry =>
-      entry.getValue.asScala map { value => (entry.getKey, value) }
+      entry.getValue.asScala map { value =>
+        (entry.getKey, value)
+      }
     }.toIterator
 }
 

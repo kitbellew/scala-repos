@@ -103,7 +103,9 @@ object ScalaWebSockets extends PlaySpecification {
 
       "allow rejecting the WebSocket" in new WithApplication() {
         runWebSocket(Samples.Controller2.socket, Source.empty, 0) must beLeft
-          .which { result => result.header.status must_== FORBIDDEN }
+          .which { result =>
+            result.header.status must_== FORBIDDEN
+          }
       }
 
       "allow creating a json actor" in new WithApplication() {
@@ -134,12 +136,16 @@ object ScalaWebSockets extends PlaySpecification {
 
       "iteratee1" in new WithApplication() {
         runWebSocket(Samples.Controller6.socket, Source.empty, 1) must beRight
-          .which { out => out must_== List(TextMessage("Hello!")) }
+          .which { out =>
+            out must_== List(TextMessage("Hello!"))
+          }
       }
 
       "iteratee2" in new WithApplication() {
         runWebSocket(Samples.Controller7.socket, Source.maybe, 1) must beRight
-          .which { out => out must_== List(TextMessage("Hello!")) }
+          .which { out =>
+            out must_== List(TextMessage("Hello!"))
+          }
       }
 
       "iteratee3" in new WithApplication() {
@@ -292,8 +298,9 @@ object Samples {
 
     def socket = WebSocket.using[String] { request =>
       // Log events to the console
-      val in =
-        Iteratee.foreach[String](println).map { _ => println("Disconnected") }
+      val in = Iteratee.foreach[String](println).map { _ =>
+        println("Disconnected")
+      }
 
       // Send a single 'Hello!' message
       val out = Enumerator("Hello!")

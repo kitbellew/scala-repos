@@ -209,8 +209,12 @@ object PersistenceDocSpec {
       override def receiveCommand: Receive = {
         case c: String => {
           sender() ! c
-          persistAsync(s"evt-$c-1") { e => sender() ! e }
-          persistAsync(s"evt-$c-2") { e => sender() ! e }
+          persistAsync(s"evt-$c-1") { e =>
+            sender() ! e
+          }
+          persistAsync(s"evt-$c-2") { e =>
+            sender() ! e
+          }
         }
       }
     }
@@ -244,9 +248,15 @@ object PersistenceDocSpec {
       override def receiveCommand: Receive = {
         case c: String => {
           sender() ! c
-          persistAsync(s"evt-$c-1") { e => sender() ! e }
-          persistAsync(s"evt-$c-2") { e => sender() ! e }
-          deferAsync(s"evt-$c-3") { e => sender() ! e }
+          persistAsync(s"evt-$c-1") { e =>
+            sender() ! e
+          }
+          persistAsync(s"evt-$c-2") { e =>
+            sender() ! e
+          }
+          deferAsync(s"evt-$c-3") { e =>
+            sender() ! e
+          }
         }
       }
     }
@@ -285,12 +295,16 @@ object PersistenceDocSpec {
 
           persist(s"$c-1-outer") { outer1 =>
             sender() ! outer1
-            persist(s"$c-1-inner") { inner1 => sender() ! inner1 }
+            persist(s"$c-1-inner") { inner1 =>
+              sender() ! inner1
+            }
           }
 
           persist(s"$c-2-outer") { outer2 =>
             sender() ! outer2
-            persist(s"$c-2-inner") { inner2 => sender() ! inner2 }
+            persist(s"$c-2-inner") { inner2 =>
+              sender() ! inner2
+            }
           }
       }
       //#nested-persist-persist
@@ -328,11 +342,15 @@ object PersistenceDocSpec {
           sender() ! c
           persistAsync(c + "-outer-1") { outer ⇒
             sender() ! outer
-            persistAsync(c + "-inner-1") { inner ⇒ sender() ! inner }
+            persistAsync(c + "-inner-1") { inner ⇒
+              sender() ! inner
+            }
           }
           persistAsync(c + "-outer-2") { outer ⇒
             sender() ! outer
-            persistAsync(c + "-inner-2") { inner ⇒ sender() ! inner }
+            persistAsync(c + "-inner-2") { inner ⇒
+              sender() ! inner
+            }
           }
       }
       //#nested-persistAsync-persistAsync
@@ -373,7 +391,9 @@ object PersistenceDocSpec {
       override def receiveCommand: Receive = {
         case c: String =>
           println(c)
-          persist(s"handle-$c") { println(_) }
+          persist(s"handle-$c") {
+            println(_)
+          }
         case Shutdown =>
           context.stop(self)
       }

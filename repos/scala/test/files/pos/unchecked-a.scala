@@ -11,5 +11,7 @@ object Test {
   }
 
   // NonLocalReturnControl[_] warnings
-  def foo: Int = List(0).foldLeft(0) { case _ => return 0 }
+  def foo: Int = List(0).foldLeft(0) {
+    case _ => return 0
+  }
 }

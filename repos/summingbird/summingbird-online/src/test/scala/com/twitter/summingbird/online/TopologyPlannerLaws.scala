@@ -47,7 +47,9 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
   implicit def genProducer: Arbitrary[TailProducer[Memory, _]] =
     Arbitrary(genGraph)
 
-  val testFn = { i: Int => List((i -> i)) }
+  val testFn = { i: Int =>
+    List((i -> i))
+  }
 
   def sample[T: Arbitrary]: T = Arbitrary.arbitrary[T].sample.get
 
@@ -90,11 +92,16 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
   }
 
   property("Must have at least one producer in each MemoryNode") = forAll {
-    (dag: MemoryDag) => dag.nodes.forall { n => n.members.size > 0 }
+    (dag: MemoryDag) =>
+      dag.nodes.forall { n =>
+        n.members.size > 0
+      }
   }
 
   property("If a Node contains a Summer, all other producers must be NOP's") =
-    forAll { (dag: MemoryDag) => summersOnlyShareNoOps(dag) }
+    forAll { (dag: MemoryDag) =>
+      summersOnlyShareNoOps(dag)
+    }
 
   property("The first producer in a online node cannot be a NamedProducer") =
     forAll { (dag: MemoryDag) =>
@@ -199,7 +206,9 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
 
   property("Nodes in the DAG should have unique names") = forAll {
     (dag: MemoryDag) =>
-      val allNames = dag.nodes.toList.map { n => dag.getNodeName(n) }
+      val allNames = dag.nodes.toList.map { n =>
+        dag.getNodeName(n)
+      }
       allNames.size == allNames.distinct.size
   }
 

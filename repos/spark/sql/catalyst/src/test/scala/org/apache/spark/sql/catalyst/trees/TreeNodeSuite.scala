@@ -51,20 +51,26 @@ case class ExpressionInMap(map: Map[String, Expression])
 
 class TreeNodeSuite extends SparkFunSuite {
   test("top node changed") {
-    val after = Literal(1) transform { case Literal(1, _) => Literal(2) }
+    val after = Literal(1) transform {
+      case Literal(1, _) => Literal(2)
+    }
     assert(after === Literal(2))
   }
 
   test("one child changed") {
     val before = Add(Literal(1), Literal(2))
-    val after = before transform { case Literal(2, _) => Literal(1) }
+    val after = before transform {
+      case Literal(2, _) => Literal(1)
+    }
 
     assert(after === Add(Literal(1), Literal(1)))
   }
 
   test("no change") {
     val before = Add(Literal(1), Add(Literal(2), Add(Literal(3), Literal(4))))
-    val after = before transform { case Literal(5, _) => Literal(1) }
+    val after = before transform {
+      case Literal(5, _) => Literal(1)
+    }
 
     assert(before === after)
     // Ensure that the objects after are the same objects before the transformation.
@@ -78,7 +84,9 @@ class TreeNodeSuite extends SparkFunSuite {
 
   test("collect") {
     val tree = Add(Literal(1), Add(Literal(2), Add(Literal(3), Literal(4))))
-    val literals = tree collect { case l: Literal => l }
+    val literals = tree collect {
+      case l: Literal => l
+    }
 
     assert(literals.size === 4)
     (1 to 4).foreach(i => assert(literals contains Literal(i)))

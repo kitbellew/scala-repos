@@ -31,7 +31,9 @@ class ScAnnotationImpl private (
     extends ScalaStubBasedElementImpl(stub, nodeType, node)
     with ScAnnotation
     with PsiAnnotationParameterList {
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
   def this(stub: ScAnnotationStub) = {
     this(stub, ScalaElementTypes.ANNOTATION, null)
   }

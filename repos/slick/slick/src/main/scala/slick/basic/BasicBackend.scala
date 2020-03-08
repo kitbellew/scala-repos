@@ -94,7 +94,9 @@ trait BasicBackend { self =>
         createDatabaseActionContext(useSameThread),
         false,
         true)
-      catch { case NonFatal(ex) => Future.failed(ex) }
+      catch {
+        case NonFatal(ex) => Future.failed(ex)
+      }
 
     /** Create a `Publisher` for Reactive Streams which, when subscribed to, will run the specified
       * `DBIOAction` and return the result directly as a stream without buffering everything first.
@@ -138,8 +140,9 @@ trait BasicBackend { self =>
         if (streamLogger.isDebugEnabled)
           streamLogger.debug(s"Signaling onSubscribe($ctx)")
         val subscribed =
-          try { s.onSubscribe(ctx.subscription); true }
-          catch {
+          try {
+            s.onSubscribe(ctx.subscription); true
+          } catch {
             case NonFatal(ex) =>
               streamLogger
                 .warn("Subscriber.onSubscribe failed unexpectedly", ex)
@@ -151,7 +154,9 @@ trait BasicBackend { self =>
               case Success(_) => ctx.tryOnComplete
               case Failure(t) => ctx.tryOnError(t)
             }(DBIO.sameThreadExecutionContext)
-          } catch { case NonFatal(ex) => ctx.tryOnError(ex) }
+          } catch {
+            case NonFatal(ex) => ctx.tryOnError(ex)
+          }
         }
       }
     }
@@ -294,7 +299,9 @@ trait BasicBackend { self =>
         discardErrors: Boolean): Unit =
       if (!ctx.isPinned) {
         try ctx.currentSession.close()
-        catch { case NonFatal(ex) if (discardErrors) => }
+        catch {
+          case NonFatal(ex) if (discardErrors) =>
+        }
         ctx.currentSession = null
       }
 
@@ -324,9 +331,13 @@ trait BasicBackend { self =>
                     }
                   releaseSession(ctx, false)
                   res
-                } finally { ctx.sync = 0 }
+                } finally {
+                  ctx.sync = 0
+                }
               promise.success(res)
-            } catch { case NonFatal(ex) => promise.tryFailure(ex) }
+            } catch {
+              case NonFatal(ex) => promise.tryFailure(ex)
+            }
         })
       promise.future
     }

@@ -108,7 +108,9 @@ private[concurrent] object ExecutionContextImpl {
                   try {
                     // When we block, switch out the BlockContext temporarily so that nested blocking does not created N new Threads
                     BlockContext.withBlockContext(
-                      BlockContext.defaultBlockContext) { thunk }
+                      BlockContext.defaultBlockContext) {
+                      thunk
+                    }
                   } finally {
                     isdone = true
                   }
@@ -189,8 +191,9 @@ private[concurrent] object ExecutionContextImpl {
     final override def setRawResult(u: Unit): Unit = ()
     final override def getRawResult(): Unit = ()
     final override def exec(): Boolean =
-      try { runnable.run(); true }
-      catch {
+      try {
+        runnable.run(); true
+      } catch {
         case anything: Throwable =>
           val t = Thread.currentThread
           t.getUncaughtExceptionHandler match {
@@ -219,7 +222,9 @@ private[concurrent] object ExecutionContextImpl {
       final def asExecutorService: ExecutorService =
         executor.asInstanceOf[ExecutorService]
       override def execute(command: Runnable) = executor.execute(command)
-      override def shutdown() { asExecutorService.shutdown() }
+      override def shutdown() {
+        asExecutorService.shutdown()
+      }
       override def shutdownNow() = asExecutorService.shutdownNow()
       override def isShutdown = asExecutorService.isShutdown
       override def isTerminated = asExecutorService.isTerminated

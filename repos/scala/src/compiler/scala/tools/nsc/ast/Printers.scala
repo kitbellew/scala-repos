@@ -37,7 +37,9 @@ trait Printers extends scala.reflect.internal.Printers { this: Global =>
       case unit: CompilationUnit =>
         print("// Scala source: " + unit.source + "\n")
         if (unit.body == null) print("<null>")
-        else { print(unit.body); println() }
+        else {
+          print(unit.body); println()
+        }
         println()
         out.flush()
       case arg =>

@@ -34,7 +34,9 @@ object UserAnalysis extends LilaController with TheftPrevention {
     val fenStr =
       Some(urlFen.trim.replace("_", " ")).filter(_.nonEmpty) orElse get("fen")
     val decodedFen = fenStr
-      .map { java.net.URLDecoder.decode(_, "UTF-8").trim }
+      .map {
+        java.net.URLDecoder.decode(_, "UTF-8").trim
+      }
       .filter(_.nonEmpty)
     val situation = decodedFen.flatMap {
       Forsyth.<<<@(variant, _)
@@ -46,7 +48,9 @@ object UserAnalysis extends LilaController with TheftPrevention {
       ctx.pref,
       decodedFen,
       orientation,
-      owner = false) map { data => Ok(html.board.userAnalysis(data, pov)) }
+      owner = false) map { data =>
+      Ok(html.board.userAnalysis(data, pov))
+    }
   }
 
   private def makePov(from: SituationPlus) =
@@ -102,7 +106,9 @@ object UserAnalysis extends LilaController with TheftPrevention {
                   ctx.pref,
                   initialFen = none,
                   pov.color,
-                  owner = false) map { data => Ok(data) }
+                  owner = false) map { data =>
+                  Ok(data)
+                }
               }
             )
       )

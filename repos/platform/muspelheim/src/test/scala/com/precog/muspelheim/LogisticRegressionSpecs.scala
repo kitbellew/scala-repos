@@ -62,7 +62,9 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
             case SObject(obj) =>
               obj.keys mustEqual Set("estimate")
 
-              obj("estimate") must beLike { case SDecimal(d) => ok }
+              obj("estimate") must beLike {
+                case SDecimal(d) => ok
+              }
           }
       }
     }
@@ -90,7 +92,9 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
           elems("model1") must beLike {
             case SObject(obj) =>
               obj.keySet mustEqual Set("fit")
-              obj("fit") must beLike { case SDecimal(_) => ok }
+              obj("fit") must beLike {
+                case SDecimal(_) => ok
+              }
           }
         }
       }

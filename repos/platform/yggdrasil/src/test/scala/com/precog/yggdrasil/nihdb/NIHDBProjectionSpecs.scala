@@ -79,7 +79,9 @@ class NIHDBProjectionSpecs
         Duration(60, "seconds"),
         txLogScheduler)(actorSystem)
       .unsafePerformIO
-      .valueOr { e => throw new Exception(e.message) }
+      .valueOr { e =>
+        throw new Exception(e.message)
+      }
 
   val maxDuration = Duration(60, "seconds")
 
@@ -110,7 +112,9 @@ class NIHDBProjectionSpecs
 
     def stop = {
       (for {
-        _ <- IO { close(nihdb) }
+        _ <- IO {
+          close(nihdb)
+        }
         _ <- IOUtils.recursiveDelete(workDir)
       } yield ()).unsafePerformIO
     }
@@ -123,7 +127,11 @@ class NIHDBProjectionSpecs
 
       val results = projection.getBlockAfter(None, None)
 
-      results.onComplete { _ => ctxt.stop } must awaited(maxDuration) { beNone }
+      results.onComplete { _ =>
+        ctxt.stop
+      } must awaited(maxDuration) {
+        beNone
+      }
     }
 
     "Insert and retrieve values below the cook threshold" in check {
@@ -143,7 +151,9 @@ class NIHDBProjectionSpecs
             result <- projection.getBlockAfter(None, None)
           } yield result
 
-        results.onComplete { _ => ctxt.stop } must awaited(maxDuration)(beLike {
+        results.onComplete { _ =>
+          ctxt.stop
+        } must awaited(maxDuration)(beLike {
           case Some(BlockProjectionData(min, max, data)) =>
             min mustEqual 0L
             max mustEqual 0L
@@ -181,7 +191,9 @@ class NIHDBProjectionSpecs
           r <- projection.getBlockAfter(None, None)
         } yield r
 
-        result.onComplete { _ => ctxt.stop } must awaited(maxDuration) {
+        result.onComplete { _ =>
+          ctxt.stop
+        } must awaited(maxDuration) {
           beLike {
             case Some(BlockProjectionData(min, max, data)) =>
               min mustEqual 0L

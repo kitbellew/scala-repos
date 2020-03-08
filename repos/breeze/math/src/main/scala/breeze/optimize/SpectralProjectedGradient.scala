@@ -36,7 +36,9 @@ import breeze.util.SerializableLogging
   * @param curvilinear if curvilinear true, do the projection inside line search in place of doing it in chooseDescentDirection
   */
 class SpectralProjectedGradient[T](
-    val projection: T => T = { (t: T) => t },
+    val projection: T => T = { (t: T) =>
+      t
+    },
     tolerance: Double = 1e-6,
     suffDec: Double = 1e-4,
     fvalMemory: Int = 30,

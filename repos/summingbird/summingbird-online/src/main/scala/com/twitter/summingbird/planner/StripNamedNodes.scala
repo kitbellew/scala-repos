@@ -68,7 +68,9 @@ object StripNamedNode {
     def transIrr(p: Producer[P, Any]): Map[Any, Int] =
       (p :: Producer.transitiveDependenciesOf(p))
         .map(irreducible)
-        .collect { case Some(irr) => irr }
+        .collect {
+          case Some(irr) => irr
+        }
         .groupBy(identity)
         .mapValues(_.size)
 

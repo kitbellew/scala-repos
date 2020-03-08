@@ -51,7 +51,9 @@ class OWLQN[K, T](maxIter: Int, m: Int, l1reg: K => Double, tolerance: Double)(
     val correctedDir = space.zipMapValues.map(
       descentDir,
       state.adjustedGradient,
-      { case (d, g) => if (d * g < 0) d else 0.0 })
+      {
+        case (d, g) => if (d * g < 0) d else 0.0
+      })
 
     correctedDir
   }

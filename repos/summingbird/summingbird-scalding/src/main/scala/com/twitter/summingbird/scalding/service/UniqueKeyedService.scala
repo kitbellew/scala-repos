@@ -45,12 +45,20 @@ trait UniqueKeyedService[K, V] extends SimpleService[K, V] {
       mode: Mode): TypedPipe[(Timestamp, (K, (W, Option[V])))] = {
     implicit val ord: Ordering[K] = ordering
     def withReducers[U, T](grouped: Grouped[U, T]) =
-      reducers.map { grouped.withReducers(_) }.getOrElse(grouped)
+      reducers
+        .map {
+          grouped.withReducers(_)
+        }
+        .getOrElse(grouped)
 
-    withReducers(in.map { case (t, (k, w)) => (k, (t, w)) }.group)
+    withReducers(in.map {
+      case (t, (k, w)) => (k, (t, w))
+    }.group)
       .leftJoin(withReducers(serv.group))
       .toTypedPipe
-      .map { case (k, ((t, w), optV)) => (t, (k, (w, optV))) }
+      .map {
+        case (k, ((t, w), optV)) => (t, (k, (w, optV)))
+      }
   }
 
   final override def serve[W](

@@ -32,7 +32,9 @@ class ArrayBufferTest {
       insertAt(traver.size))
 
     // Overflow is caught
-    AssertUtil.assertThrows[IndexOutOfBoundsException] { insertAt(-1) }
+    AssertUtil.assertThrows[IndexOutOfBoundsException] {
+      insertAt(-1)
+    }
     AssertUtil.assertThrows[IndexOutOfBoundsException] {
       insertAt(traver.size + 10)
     }

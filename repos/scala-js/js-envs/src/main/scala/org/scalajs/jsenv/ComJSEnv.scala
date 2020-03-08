@@ -34,7 +34,9 @@ trait ComJSEnv extends AsyncJSEnv {
   final def comRunner(code: VirtualJSFile): ComJSRunner = comRunner(Nil, code)
 
   override def loadLibs(libs: Seq[ResolvedJSDependency]): ComJSEnv =
-    new ComLoadedLibs { val loadedLibs = libs }
+    new ComLoadedLibs {
+      val loadedLibs = libs
+    }
 
   private[jsenv] trait ComLoadedLibs extends AsyncLoadedLibs with ComJSEnv {
     def comRunner(

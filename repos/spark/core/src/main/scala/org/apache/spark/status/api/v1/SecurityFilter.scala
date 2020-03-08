@@ -25,7 +25,9 @@ private[v1] class SecurityFilter
     extends ContainerRequestFilter
     with UIRootFromServletContext {
   def filter(req: ContainerRequest): ContainerRequest = {
-    val user = Option(req.getUserPrincipal).map { _.getName }.orNull
+    val user = Option(req.getUserPrincipal).map {
+      _.getName
+    }.orNull
     if (uiRoot.securityManager.checkUIViewPermissions(user)) {
       req
     } else {

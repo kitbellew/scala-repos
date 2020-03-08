@@ -90,7 +90,9 @@ object TimePathedSource extends java.io.Serializable {
         "%1$td" -> Days(1)(tz),
         "%1$tm" -> Months(1)(tz),
         "%1$tY" -> Years(1)(tz))
-        .find { unitDur: (String, Duration) => pattern.contains(unitDur._1) }
+        .find { unitDur: (String, Duration) =>
+          pattern.contains(unitDur._1)
+        }
         .map(_._2)
 
     def allPaths(dateRange: DateRange): Iterable[(DateRange, String)] =
@@ -98,7 +100,9 @@ object TimePathedSource extends java.io.Serializable {
         .map {
           dateRange
             .each(_)
-            .map { dr => (dr, toPath(dr.start)) }
+            .map { dr =>
+              (dr, toPath(dr.start))
+            }
         }
         .getOrElse(
           List((dateRange, pattern))
@@ -117,9 +121,13 @@ object TimePathedSource extends java.io.Serializable {
 
     val vertractor = { (dr: DateRange) =>
       allPaths(dr)
-        .takeWhile { case (_, path) => pathIsGood(path) }
+        .takeWhile {
+          case (_, path) => pathIsGood(path)
+        }
         .map(_._1)
-        .reduceOption { (older, newer) => DateRange(older.start, newer.end) }
+        .reduceOption { (older, newer) =>
+          DateRange(older.start, newer.end)
+        }
     }
     minify(expander, vertractor)(desired)
   }

@@ -94,19 +94,27 @@ class ValidatedTests extends CatsSuite {
   test("catchOnly catches matching exceptions") {
     assert(
       Validated
-        .catchOnly[NumberFormatException] { "foo".toInt }
+        .catchOnly[NumberFormatException] {
+          "foo".toInt
+        }
         .isInstanceOf[Invalid[NumberFormatException]])
   }
 
   test("catchOnly lets non-matching exceptions escape") {
     val _ = intercept[NumberFormatException] {
-      Validated.catchOnly[IndexOutOfBoundsException] { "foo".toInt }
+      Validated.catchOnly[IndexOutOfBoundsException] {
+        "foo".toInt
+      }
     }
   }
 
   test("catchNonFatal catches non-fatal exceptions") {
-    assert(Validated.catchNonFatal { "foo".toInt }.isInvalid)
-    assert(Validated.catchNonFatal { throw new Throwable("blargh") }.isInvalid)
+    assert(Validated.catchNonFatal {
+      "foo".toInt
+    }.isInvalid)
+    assert(Validated.catchNonFatal {
+      throw new Throwable("blargh")
+    }.isInvalid)
   }
 
   test("fromTry is invalid for failed try") {
@@ -205,11 +213,15 @@ class ValidatedTests extends CatsSuite {
   }
 
   test("isInvalid consistent with isValid") {
-    forAll { (x: Validated[String, Int]) => x.isInvalid should !==(x.isValid) }
+    forAll { (x: Validated[String, Int]) =>
+      x.isInvalid should !==(x.isValid)
+    }
   }
 
   test("double swap is identity") {
-    forAll { (x: Validated[String, Int]) => x.swap.swap should ===(x) }
+    forAll { (x: Validated[String, Int]) =>
+      x.swap.swap should ===(x)
+    }
   }
 
   test("swap negates isInvalid/isValid") {

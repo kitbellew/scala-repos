@@ -398,7 +398,9 @@ object RelationSpecs
     "accept difference on differing dynamic provenances when related" in {
       val tree =
         compileSingle("s1 := new 1 s2 := new 1 s1 ~ s2 s1 difference s2")
-      tree.provenance must beLike { case DynamicProvenance(_) => ok }
+      tree.provenance must beLike {
+        case DynamicProvenance(_) => ok
+      }
       tree.errors must beEmpty
     }
 

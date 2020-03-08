@@ -5,12 +5,16 @@ trait A {
   def foo[T <: Foo]
 }
 class B extends A {
-  def foo[Bar] { println("B.foo[Bar]") }
+  def foo[Bar] {
+    println("B.foo[Bar]")
+  }
 }
 object Test {
   val x = new B
   val y = new A {
-    def foo[Bar] { println("A.foo[Bar]") }
+    def foo[Bar] {
+      println("A.foo[Bar]")
+    }
   }
   def main(args: Array[String]) {
     x.foo // ok

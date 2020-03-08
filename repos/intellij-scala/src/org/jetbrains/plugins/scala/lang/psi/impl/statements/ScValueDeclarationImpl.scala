@@ -30,7 +30,9 @@ class ScValueDeclarationImpl private (
     node: ASTNode)
     extends ScalaStubBasedElementImpl(stub, nodeType, node)
     with ScValueDeclaration {
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
 
   def this(stub: ScValueStub) = {
     this(stub, ScalaElementTypes.VALUE_DECLARATION, null)

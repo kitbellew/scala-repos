@@ -25,8 +25,12 @@ case class ScalaCompilerSettings(
 
   def toXml: Seq[Node] = {
     when(compileOrder != DefaultComipileOrder)(
-      <option name="compilerOrder" value={compileOrder}/>) ++
-      when(!warnings)(<option name="warnings" value={warnings.toString}/>) ++
+      <option name="compilerOrder" value={
+        compileOrder
+      }/>) ++
+      when(!warnings)(<option name="warnings" value={
+        warnings.toString
+      }/>) ++
       when(deprecationWarnings)(<option name="deprecationWarnings" value={
         deprecationWarnings.toString
       }/>) ++
@@ -43,12 +47,20 @@ case class ScalaCompilerSettings(
         continuations.toString
       }/>) ++
       when(debuggingInfoLevel != DefaultDebuggingLevel)(
-        <option name="debuggingInfoLevel" value={debuggingInfoLevel}/>) ++
+        <option name="debuggingInfoLevel" value={
+          debuggingInfoLevel
+        }/>) ++
       when(additionalCompilerOptions.nonEmpty)(<parameters>{
-        additionalCompilerOptions.map(option => <parameter value={option}/>)
+        additionalCompilerOptions.map(option =>
+          <parameter value={
+            option
+          }/>)
       }</parameters>) ++
       when(compilerPlugins.nonEmpty)(<plugins>{
-        compilerPlugins.map(option => <plugin path={option}/>)
+        compilerPlugins.map(option =>
+          <plugin path={
+            option
+          }/>)
       }</plugins>)
   }
 

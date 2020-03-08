@@ -133,7 +133,9 @@ object Utils {
       val children = strings
         .filter(!_.isEmpty)
         .groupBy(_(0))
-        .map { case (k, ss) => k -> new TrieNode(ss.map(_.tail)) }
+        .map {
+          case (k, ss) => k -> new TrieNode(ss.map(_.tail))
+        }
       if (children.size == 0) (0.toChar, 0.toChar, new Array[TrieNode](0))
       else {
         val min = children.keysIterator.min

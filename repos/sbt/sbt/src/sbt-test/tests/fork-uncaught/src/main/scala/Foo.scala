@@ -1,3 +1,5 @@
 package foo.test
 
-object Foo { val foo = 5 }
+object Foo {
+  val foo = 5
+}

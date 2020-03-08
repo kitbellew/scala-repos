@@ -74,7 +74,9 @@ class MutableList[A]
     *  @param elem  the element to prepend.
     *  @return   this $coll.
     */
-  def +=:(elem: A): this.type = { prependElem(elem); this }
+  def +=:(elem: A): this.type = {
+    prependElem(elem); this
+  }
 
   /** Returns the length of this list.
     */
@@ -151,7 +153,9 @@ class MutableList[A]
     *
     *  @param elem  the element to append.
     */
-  def +=(elem: A): this.type = { appendElem(elem); this }
+  def +=(elem: A): this.type = {
+    appendElem(elem); this
+  }
 
   def clear() {
     first0 = new LinkedList[A]

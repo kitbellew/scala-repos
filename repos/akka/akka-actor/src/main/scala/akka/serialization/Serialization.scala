@@ -69,7 +69,9 @@ object Serialization {
           case system ⇒
             try path.toSerializationFormatWithAddress(
               system.provider.getDefaultAddress)
-            catch { case NonFatal(_) ⇒ path.toSerializationFormat }
+            catch {
+              case NonFatal(_) ⇒ path.toSerializationFormat
+            }
         }
       case Information(address, system) ⇒
         if (originalSystem == null || originalSystem == system)
@@ -193,7 +195,9 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
               0)._1)) ||
             (possibilities forall (_._2 == possibilities(0)._2))
 
-        val ser = bindings filter { _._1 isAssignableFrom clazz } match {
+        val ser = bindings filter {
+          _._1 isAssignableFrom clazz
+        } match {
           case Seq() ⇒
             throw new NotSerializableException(
               "No configured serialization-bindings for class [%s]" format clazz.getName)

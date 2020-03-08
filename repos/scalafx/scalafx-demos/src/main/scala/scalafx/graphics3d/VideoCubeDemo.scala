@@ -156,11 +156,19 @@ object VideoCubeDemo extends JFXApp {
     animation = new Timeline {
       cycleCount = Timeline.Indefinite
       keyFrames = Seq(
-        at(0 s) { c1.ry.angle -> 0d; c1.rx.angle -> 0d; c1.rz.angle -> 0d },
-        at(4 s) { c1.rx.angle -> 360d; c1.ry.angle -> 520d; },
+        at(0 s) {
+          c1.ry.angle -> 0d; c1.rx.angle -> 0d; c1.rz.angle -> 0d
+        },
+        at(4 s) {
+          c1.rx.angle -> 360d; c1.ry.angle -> 520d;
+        },
         //        at (4 s) { c1.rz.angle -> 0d ; c1.ry.angle -> 720d; }
-        at(7 s) { c1.rx.angle -> 360d; c1.ry.angle -> 520d },
-        at(10 s) { c1.rz.angle -> 1080d }
+        at(7 s) {
+          c1.rx.angle -> 360d; c1.ry.angle -> 520d
+        },
+        at(10 s) {
+          c1.rz.angle -> 1080d
+        }
       )
     }
 
@@ -169,12 +177,16 @@ object VideoCubeDemo extends JFXApp {
 
   def play() {
     animation.play()
-    for (mp <- mediaPlayers) { mp.play() }
+    for (mp <- mediaPlayers) {
+      mp.play()
+    }
   }
 
   def stop() {
     animation.pause()
-    for (mp <- mediaPlayers) { mp.stop() }
+    for (mp <- mediaPlayers) {
+      mp.stop()
+    }
   }
 
   play()

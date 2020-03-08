@@ -13,14 +13,20 @@ object Help {
   var vars: Array[String] = new Array[String](max);
   def init: Unit = {
     var i = 0;
-    while (i < max) { vars(i) = null; i = i + 1; }
+    while (i < max) {
+      vars(i) = null; i = i + 1;
+    }
     next = 0;
   }
   def check(count: Int, value: String): Boolean = {
     var b: Boolean = true;
     var i: Int = 0;
-    while (i < count) { if (vars(i) != value) b = false; i = i + 1; }
-    while (i < max) { if (vars(i) != null) b = false; i = i + 1; }
+    while (i < count) {
+      if (vars(i) != value) b = false; i = i + 1;
+    }
+    while (i < max) {
+      if (vars(i) != null) b = false; i = i + 1;
+    }
     b;
   }
   def print: Unit = {
@@ -29,10 +35,18 @@ object Help {
       if (i > 0) Console.print(", "); Console.print(vars(i)); i = i + 1;
     }
   }
-  def foo = { vars(next) = "foo"; next = next + 1; }
-  def bar = { vars(next) = "bar"; next = next + 1; }
-  def mix = { vars(next) = "mix"; next = next + 1; }
-  def sub = { vars(next) = "sub"; next = next + 1; }
+  def foo = {
+    vars(next) = "foo"; next = next + 1;
+  }
+  def bar = {
+    vars(next) = "bar"; next = next + 1;
+  }
+  def mix = {
+    vars(next) = "mix"; next = next + 1;
+  }
+  def sub = {
+    vars(next) = "sub"; next = next + 1;
+  }
 }
 
 import Help.foo;
@@ -40,382 +54,706 @@ import Help.bar;
 import Help.mix;
 import Help.sub;
 
-abstract class Foo___ { type I >: Null <: AnyRef; def f: I; f; }
-abstract class Foo__f { type I >: Null <: AnyRef; def f: I = { foo; null }; f; }
-abstract class Foo_I_ { class I; def f: I; f; }
-abstract class Foo_If { class I; def f: I = { foo; null }; f; }
-abstract class FooX__[X] { type I >: Null <: AnyRef; def f: I; f; }
-abstract class FooX_f[X] {
-  type I >: Null <: AnyRef; def f: I = { foo; null }; f;
+abstract class Foo___ {
+  type I >: Null <: AnyRef; def f: I; f;
 }
-abstract class FooXI_[X] { class I; def f: I; f; }
-abstract class FooXIf[X] { class I; def f: I = { foo; null }; f; }
+abstract class Foo__f {
+  type I >: Null <: AnyRef;
+  def f: I = {
+    foo; null
+  }; f;
+}
+abstract class Foo_I_ {
+  class I; def f: I; f;
+}
+abstract class Foo_If {
+  class I;
+  def f: I = {
+    foo; null
+  }; f;
+}
+abstract class FooX__[X] {
+  type I >: Null <: AnyRef; def f: I; f;
+}
+abstract class FooX_f[X] {
+  type I >: Null <: AnyRef;
+  def f: I = {
+    foo; null
+  }; f;
+}
+abstract class FooXI_[X] {
+  class I; def f: I; f;
+}
+abstract class FooXIf[X] {
+  class I;
+  def f: I = {
+    foo; null
+  }; f;
+}
 
-trait Bar___ { type I >: Null <: AnyRef; def f: I; f; }
-trait Bar__f { type I >: Null <: AnyRef; def f: I = { bar; null }; f; }
-trait Bar_I_ { class I; def f: I; f; }
-trait Bar_If { class I; def f: I = { bar; null }; f; }
-trait BarY__[Y] { type I >: Null <: AnyRef; def f: I; f; }
-trait BarY_f[Y] { type I >: Null <: AnyRef; def f: I = { bar; null }; f; }
-trait BarYI_[Y] { class I; def f: I; f; }
-trait BarYIf[Y] { class I; def f: I = { bar; null }; f; }
+trait Bar___ {
+  type I >: Null <: AnyRef; def f: I; f;
+}
+trait Bar__f {
+  type I >: Null <: AnyRef;
+  def f: I = {
+    bar; null
+  }; f;
+}
+trait Bar_I_ {
+  class I; def f: I; f;
+}
+trait Bar_If {
+  class I;
+  def f: I = {
+    bar; null
+  }; f;
+}
+trait BarY__[Y] {
+  type I >: Null <: AnyRef; def f: I; f;
+}
+trait BarY_f[Y] {
+  type I >: Null <: AnyRef;
+  def f: I = {
+    bar; null
+  }; f;
+}
+trait BarYI_[Y] {
+  class I; def f: I; f;
+}
+trait BarYIf[Y] {
+  class I;
+  def f: I = {
+    bar; null
+  }; f;
+}
 
 /* */
-abstract class Mix___eFoo___ extends Foo___ { ;; f; }
+abstract class Mix___eFoo___ extends Foo___ {
+  ;; f;
+}
 /* */
-abstract class Mix___eFoo___wBar___ extends Foo___ with Bar___ { ;; f; }
+abstract class Mix___eFoo___wBar___ extends Foo___ with Bar___ {
+  ;; f;
+}
 /* */
-abstract class Mix___eFoo___wBar__f extends Foo___ with Bar__f { ;; f; }
+abstract class Mix___eFoo___wBar__f extends Foo___ with Bar__f {
+  ;; f;
+}
 /* */
-abstract class Mix___eFoo___wBar_I_ extends Foo___ with Bar_I_ { ;; f; }
+abstract class Mix___eFoo___wBar_I_ extends Foo___ with Bar_I_ {
+  ;; f;
+}
 /* */ /*    */
-class Mix___eFoo___wBar_If extends Foo___ with Bar_If { ;; f; }
+class Mix___eFoo___wBar_If extends Foo___ with Bar_If {
+  ;; f;
+}
 /* */
-abstract class Mix___eFoo___wBarY__ extends Foo___ with BarY__[B] { ;; f; }
+abstract class Mix___eFoo___wBarY__ extends Foo___ with BarY__[B] {
+  ;; f;
+}
 /* */
-abstract class Mix___eFoo___wBarY_f extends Foo___ with BarY_f[B] { ;; f; }
+abstract class Mix___eFoo___wBarY_f extends Foo___ with BarY_f[B] {
+  ;; f;
+}
 /* */
-abstract class Mix___eFoo___wBarYI_ extends Foo___ with BarYI_[B] { ;; f; }
+abstract class Mix___eFoo___wBarYI_ extends Foo___ with BarYI_[B] {
+  ;; f;
+}
 /* */ /*    */
-class Mix___eFoo___wBarYIf extends Foo___ with BarYIf[B] { ;; f; }
+class Mix___eFoo___wBarYIf extends Foo___ with BarYIf[B] {
+  ;; f;
+}
 /* */
-abstract class Mix___eFoo__f extends Foo__f { ;; f; }
+abstract class Mix___eFoo__f extends Foo__f {
+  ;; f;
+}
 /* */
-abstract class Mix___eFoo__fwBar___ extends Foo__f with Bar___ { ;; f; }
+abstract class Mix___eFoo__fwBar___ extends Foo__f with Bar___ {
+  ;; f;
+}
 // */abstract class Mix___eFoo__fwBar__f     extends Foo__f    with Bar__f    {        ;                                ; f; }
 /* */ /*    */
-class Mix___eFoo__fwBar_I_ extends Foo__f with Bar_I_ { ;; f; }
+class Mix___eFoo__fwBar_I_ extends Foo__f with Bar_I_ {
+  ;; f;
+}
 // *//*    */ class Mix___eFoo__fwBar_If     extends Foo__f    with Bar_If    {        ;                                ; f; }
 /* */
-abstract class Mix___eFoo__fwBarY__ extends Foo__f with BarY__[B] { ;; f; }
+abstract class Mix___eFoo__fwBarY__ extends Foo__f with BarY__[B] {
+  ;; f;
+}
 // */abstract class Mix___eFoo__fwBarY_f     extends Foo__f    with BarY_f[B] {        ;                                ; f; }
 /* */ /*    */
-class Mix___eFoo__fwBarYI_ extends Foo__f with BarYI_[B] { ;; f; }
+class Mix___eFoo__fwBarYI_ extends Foo__f with BarYI_[B] {
+  ;; f;
+}
 // *//*    */ class Mix___eFoo__fwBarYIf     extends Foo__f    with BarYIf[B] {        ;                                ; f; }
 /* */
-abstract class Mix___eFoo_I_ extends Foo_I_ { ;; f; }
+abstract class Mix___eFoo_I_ extends Foo_I_ {
+  ;; f;
+}
 /* */
-abstract class Mix___eFoo_I_wBar___ extends Foo_I_ with Bar___ { ;; f; }
+abstract class Mix___eFoo_I_wBar___ extends Foo_I_ with Bar___ {
+  ;; f;
+}
 /* */ /*    */
-class Mix___eFoo_I_wBar__f extends Foo_I_ with Bar__f { ;; f; }
+class Mix___eFoo_I_wBar__f extends Foo_I_ with Bar__f {
+  ;; f;
+}
 // */abstract class Mix___eFoo_I_wBar_I_     extends Foo_I_    with Bar_I_    {        ;                                ; f; }
 // *//*    */ class Mix___eFoo_I_wBar_If     extends Foo_I_    with Bar_If    {        ;                                ; f; }
 /* */
-abstract class Mix___eFoo_I_wBarY__ extends Foo_I_ with BarY__[B] { ;; f; }
+abstract class Mix___eFoo_I_wBarY__ extends Foo_I_ with BarY__[B] {
+  ;; f;
+}
 /* */ /*    */
-class Mix___eFoo_I_wBarY_f extends Foo_I_ with BarY_f[B] { ;; f; }
+class Mix___eFoo_I_wBarY_f extends Foo_I_ with BarY_f[B] {
+  ;; f;
+}
 // */abstract class Mix___eFoo_I_wBarYI_     extends Foo_I_    with BarYI_[B] {        ;                                ; f; }
 // *//*    */ class Mix___eFoo_I_wBarYIf     extends Foo_I_    with BarYIf[B] {        ;                                ; f; }
 /* */ /*    */
-class Mix___eFoo_If extends Foo_If { ;; f; }
+class Mix___eFoo_If extends Foo_If {
+  ;; f;
+}
 /* */ /*    */
-class Mix___eFoo_IfwBar___ extends Foo_If with Bar___ { ;; f; }
+class Mix___eFoo_IfwBar___ extends Foo_If with Bar___ {
+  ;; f;
+}
 // *//*    */ class Mix___eFoo_IfwBar__f     extends Foo_If    with Bar__f    {        ;                                ; f; }
 // *//*    */ class Mix___eFoo_IfwBar_I_     extends Foo_If    with Bar_I_    {        ;                                ; f; }
 // *//*    */ class Mix___eFoo_IfwBar_If     extends Foo_If    with Bar_If    {        ;                                ; f; }
 /* */ /*    */
-class Mix___eFoo_IfwBarY__ extends Foo_If with BarY__[B] { ;; f; }
+class Mix___eFoo_IfwBarY__ extends Foo_If with BarY__[B] {
+  ;; f;
+}
 // *//*    */ class Mix___eFoo_IfwBarY_f     extends Foo_If    with BarY_f[B] {        ;                                ; f; }
 // *//*    */ class Mix___eFoo_IfwBarYI_     extends Foo_If    with BarYI_[B] {        ;                                ; f; }
 // *//*    */ class Mix___eFoo_IfwBarYIf     extends Foo_If    with BarYIf[B] {        ;                                ; f; }
 /* */
-abstract class Mix___eFooX__ extends FooX__[A] { ;; f; }
+abstract class Mix___eFooX__ extends FooX__[A] {
+  ;; f;
+}
 /* */
-abstract class Mix___eFooX__wBar___ extends FooX__[A] with Bar___ { ;; f; }
+abstract class Mix___eFooX__wBar___ extends FooX__[A] with Bar___ {
+  ;; f;
+}
 /* */
-abstract class Mix___eFooX__wBar__f extends FooX__[A] with Bar__f { ;; f; }
+abstract class Mix___eFooX__wBar__f extends FooX__[A] with Bar__f {
+  ;; f;
+}
 /* */
-abstract class Mix___eFooX__wBar_I_ extends FooX__[A] with Bar_I_ { ;; f; }
+abstract class Mix___eFooX__wBar_I_ extends FooX__[A] with Bar_I_ {
+  ;; f;
+}
 /* */ /*    */
-class Mix___eFooX__wBar_If extends FooX__[A] with Bar_If { ;; f; }
+class Mix___eFooX__wBar_If extends FooX__[A] with Bar_If {
+  ;; f;
+}
 /* */
-abstract class Mix___eFooX__wBarY__ extends FooX__[A] with BarY__[B] { ;; f; }
+abstract class Mix___eFooX__wBarY__ extends FooX__[A] with BarY__[B] {
+  ;; f;
+}
 /* */
-abstract class Mix___eFooX__wBarY_f extends FooX__[A] with BarY_f[B] { ;; f; }
+abstract class Mix___eFooX__wBarY_f extends FooX__[A] with BarY_f[B] {
+  ;; f;
+}
 /* */
-abstract class Mix___eFooX__wBarYI_ extends FooX__[A] with BarYI_[B] { ;; f; }
+abstract class Mix___eFooX__wBarYI_ extends FooX__[A] with BarYI_[B] {
+  ;; f;
+}
 /* */ /*    */
-class Mix___eFooX__wBarYIf extends FooX__[A] with BarYIf[B] { ;; f; }
+class Mix___eFooX__wBarYIf extends FooX__[A] with BarYIf[B] {
+  ;; f;
+}
 /* */
-abstract class Mix___eFooX_f extends FooX_f[A] { ;; f; }
+abstract class Mix___eFooX_f extends FooX_f[A] {
+  ;; f;
+}
 /* */
-abstract class Mix___eFooX_fwBar___ extends FooX_f[A] with Bar___ { ;; f; }
+abstract class Mix___eFooX_fwBar___ extends FooX_f[A] with Bar___ {
+  ;; f;
+}
 // */abstract class Mix___eFooX_fwBar__f     extends FooX_f[A] with Bar__f    {        ;                                ; f; }
 /* */ /*    */
-class Mix___eFooX_fwBar_I_ extends FooX_f[A] with Bar_I_ { ;; f; }
+class Mix___eFooX_fwBar_I_ extends FooX_f[A] with Bar_I_ {
+  ;; f;
+}
 // *//*    */ class Mix___eFooX_fwBar_If     extends FooX_f[A] with Bar_If    {        ;                                ; f; }
 /* */
-abstract class Mix___eFooX_fwBarY__ extends FooX_f[A] with BarY__[B] { ;; f; }
+abstract class Mix___eFooX_fwBarY__ extends FooX_f[A] with BarY__[B] {
+  ;; f;
+}
 // */abstract class Mix___eFooX_fwBarY_f     extends FooX_f[A] with BarY_f[B] {        ;                                ; f; }
 /* */ /*    */
-class Mix___eFooX_fwBarYI_ extends FooX_f[A] with BarYI_[B] { ;; f; }
+class Mix___eFooX_fwBarYI_ extends FooX_f[A] with BarYI_[B] {
+  ;; f;
+}
 // *//*    */ class Mix___eFooX_fwBarYIf     extends FooX_f[A] with BarYIf[B] {        ;                                ; f; }
 /* */
-abstract class Mix___eFooXI_ extends FooXI_[A] { ;; f; }
+abstract class Mix___eFooXI_ extends FooXI_[A] {
+  ;; f;
+}
 /* */
-abstract class Mix___eFooXI_wBar___ extends FooXI_[A] with Bar___ { ;; f; }
+abstract class Mix___eFooXI_wBar___ extends FooXI_[A] with Bar___ {
+  ;; f;
+}
 /* */ /*    */
-class Mix___eFooXI_wBar__f extends FooXI_[A] with Bar__f { ;; f; }
+class Mix___eFooXI_wBar__f extends FooXI_[A] with Bar__f {
+  ;; f;
+}
 // */abstract class Mix___eFooXI_wBar_I_     extends FooXI_[A] with Bar_I_    {        ;                                ; f; }
 // *//*    */ class Mix___eFooXI_wBar_If     extends FooXI_[A] with Bar_If    {        ;                                ; f; }
 /* */
-abstract class Mix___eFooXI_wBarY__ extends FooXI_[A] with BarY__[B] { ;; f; }
+abstract class Mix___eFooXI_wBarY__ extends FooXI_[A] with BarY__[B] {
+  ;; f;
+}
 /* */ /*    */
-class Mix___eFooXI_wBarY_f extends FooXI_[A] with BarY_f[B] { ;; f; }
+class Mix___eFooXI_wBarY_f extends FooXI_[A] with BarY_f[B] {
+  ;; f;
+}
 // */abstract class Mix___eFooXI_wBarYI_     extends FooXI_[A] with BarYI_[B] {        ;                                ; f; }
 // *//*    */ class Mix___eFooXI_wBarYIf     extends FooXI_[A] with BarYIf[B] {        ;                                ; f; }
 /* */ /*    */
-class Mix___eFooXIf extends FooXIf[A] { ;; f; }
+class Mix___eFooXIf extends FooXIf[A] {
+  ;; f;
+}
 /* */ /*    */
-class Mix___eFooXIfwBar___ extends FooXIf[A] with Bar___ { ;; f; }
+class Mix___eFooXIfwBar___ extends FooXIf[A] with Bar___ {
+  ;; f;
+}
 // *//*    */ class Mix___eFooXIfwBar__f     extends FooXIf[A] with Bar__f    {        ;                                ; f; }
 // *//*    */ class Mix___eFooXIfwBar_I_     extends FooXIf[A] with Bar_I_    {        ;                                ; f; }
 // *//*    */ class Mix___eFooXIfwBar_If     extends FooXIf[A] with Bar_If    {        ;                                ; f; }
 /* */ /*    */
-class Mix___eFooXIfwBarY__ extends FooXIf[A] with BarY__[B] { ;; f; }
+class Mix___eFooXIfwBarY__ extends FooXIf[A] with BarY__[B] {
+  ;; f;
+}
 // *//*    */ class Mix___eFooXIfwBarY_f     extends FooXIf[A] with BarY_f[B] {        ;                                ; f; }
 // *//*    */ class Mix___eFooXIfwBarYI_     extends FooXIf[A] with BarYI_[B] {        ;                                ; f; }
 // *//*    */ class Mix___eFooXIfwBarYIf     extends FooXIf[A] with BarYIf[B] {        ;                                ; f; }
 
 /* */
-abstract class Mix__feFoo___ extends Foo___ { ; def f: I = { mix; null }; f; }
+abstract class Mix__feFoo___ extends Foo___ {
+  ;
+  def f: I = {
+    mix; null
+  }; f;
+}
 /* */
 abstract class Mix__feFoo___wBar___ extends Foo___ with Bar___ {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__feFoo___wBar__f extends Foo___ with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__feFoo___wBar_I_ extends Foo___ with Bar_I_ {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__feFoo___wBar_If extends Foo___ with Bar_If {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__feFoo___wBarY__ extends Foo___ with BarY__[B] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__feFoo___wBarY_f extends Foo___ with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__feFoo___wBarYI_ extends Foo___ with BarYI_[B] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__feFoo___wBarYIf extends Foo___ with BarYIf[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__feFoo__f extends Foo__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__feFoo__fwBar___ extends Foo__f with Bar___ {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__feFoo__fwBar__f extends Foo__f with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__feFoo__fwBar_I_ extends Foo__f with Bar_I_ {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__feFoo__fwBar_If extends Foo__f with Bar_If {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__feFoo__fwBarY__ extends Foo__f with BarY__[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__feFoo__fwBarY_f extends Foo__f with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__feFoo__fwBarYI_ extends Foo__f with BarYI_[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__feFoo__fwBarYIf extends Foo__f with BarYIf[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
-class Mix__feFoo_I_ extends Foo_I_ { ; def f: I = { mix; null }; f; }
+class Mix__feFoo_I_ extends Foo_I_ {
+  ;
+  def f: I = {
+    mix; null
+  }; f;
+}
 /* */ /*    */
 class Mix__feFoo_I_wBar___ extends Foo_I_ with Bar___ {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__feFoo_I_wBar__f extends Foo_I_ with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix__feFoo_I_wBar_I_     extends Foo_I_    with Bar_I_    {        ;          def f: I = {mix; null}; f; }
 // *//*    */ class Mix__feFoo_I_wBar_If     extends Foo_I_    with Bar_If    {        ; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class Mix__feFoo_I_wBarY__ extends Foo_I_ with BarY__[B] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__feFoo_I_wBarY_f extends Foo_I_ with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix__feFoo_I_wBarYI_     extends Foo_I_    with BarYI_[B] {        ;          def f: I = {mix; null}; f; }
 // *//*    */ class Mix__feFoo_I_wBarYIf     extends Foo_I_    with BarYIf[B] {        ; override def f: I = {mix; null}; f; }
 /* */ /*    */
-class Mix__feFoo_If extends Foo_If { ; override def f: I = { mix; null }; f; }
+class Mix__feFoo_If extends Foo_If {
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
+}
 /* */ /*    */
 class Mix__feFoo_IfwBar___ extends Foo_If with Bar___ {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__feFoo_IfwBar__f extends Foo_If with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix__feFoo_IfwBar_I_     extends Foo_If    with Bar_I_    {        ; override def f: I = {mix; null}; f; }
 // *//*    */ class Mix__feFoo_IfwBar_If     extends Foo_If    with Bar_If    {        ; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class Mix__feFoo_IfwBarY__ extends Foo_If with BarY__[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__feFoo_IfwBarY_f extends Foo_If with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix__feFoo_IfwBarYI_     extends Foo_If    with BarYI_[B] {        ; override def f: I = {mix; null}; f; }
 // *//*    */ class Mix__feFoo_IfwBarYIf     extends Foo_If    with BarYIf[B] {        ; override def f: I = {mix; null}; f; }
 /* */
 abstract class Mix__feFooX__ extends FooX__[A] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__feFooX__wBar___ extends FooX__[A] with Bar___ {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__feFooX__wBar__f extends FooX__[A] with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__feFooX__wBar_I_ extends FooX__[A] with Bar_I_ {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__feFooX__wBar_If extends FooX__[A] with Bar_If {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__feFooX__wBarY__ extends FooX__[A] with BarY__[B] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__feFooX__wBarY_f extends FooX__[A] with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__feFooX__wBarYI_ extends FooX__[A] with BarYI_[B] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__feFooX__wBarYIf extends FooX__[A] with BarYIf[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__feFooX_f extends FooX_f[A] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__feFooX_fwBar___ extends FooX_f[A] with Bar___ {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__feFooX_fwBar__f extends FooX_f[A] with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__feFooX_fwBar_I_ extends FooX_f[A] with Bar_I_ {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__feFooX_fwBar_If extends FooX_f[A] with Bar_If {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__feFooX_fwBarY__ extends FooX_f[A] with BarY__[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__feFooX_fwBarY_f extends FooX_f[A] with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__feFooX_fwBarYI_ extends FooX_f[A] with BarYI_[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__feFooX_fwBarYIf extends FooX_f[A] with BarYIf[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
-class Mix__feFooXI_ extends FooXI_[A] { ; def f: I = { mix; null }; f; }
+class Mix__feFooXI_ extends FooXI_[A] {
+  ;
+  def f: I = {
+    mix; null
+  }; f;
+}
 /* */ /*    */
 class Mix__feFooXI_wBar___ extends FooXI_[A] with Bar___ {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__feFooXI_wBar__f extends FooXI_[A] with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix__feFooXI_wBar_I_     extends FooXI_[A] with Bar_I_    {        ;          def f: I = {mix; null}; f; }
 // *//*    */ class Mix__feFooXI_wBar_If     extends FooXI_[A] with Bar_If    {        ; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class Mix__feFooXI_wBarY__ extends FooXI_[A] with BarY__[B] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__feFooXI_wBarY_f extends FooXI_[A] with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix__feFooXI_wBarYI_     extends FooXI_[A] with BarYI_[B] {        ;          def f: I = {mix; null}; f; }
 // *//*    */ class Mix__feFooXI_wBarYIf     extends FooXI_[A] with BarYIf[B] {        ; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class Mix__feFooXIf extends FooXIf[A] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__feFooXIfwBar___ extends FooXIf[A] with Bar___ {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__feFooXIfwBar__f extends FooXIf[A] with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix__feFooXIfwBar_I_     extends FooXIf[A] with Bar_I_    {        ; override def f: I = {mix; null}; f; }
 // *//*    */ class Mix__feFooXIfwBar_If     extends FooXIf[A] with Bar_If    {        ; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class Mix__feFooXIfwBarY__ extends FooXIf[A] with BarY__[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__feFooXIfwBarY_f extends FooXIf[A] with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix__feFooXIfwBarYI_     extends FooXIf[A] with BarYI_[B] {        ; override def f: I = {mix; null}; f; }
 // *//*    */ class Mix__feFooXIfwBarYIf     extends FooXIf[A] with BarYIf[B] {        ; override def f: I = {mix; null}; f; }
 
 /* */
-abstract class Mix_I_eFoo___ extends Foo___ { class I;; f; }
+abstract class Mix_I_eFoo___ extends Foo___ {
+  class I;; f;
+}
 /* */
-abstract class Mix_I_eFoo___wBar___ extends Foo___ with Bar___ { class I;; f; }
+abstract class Mix_I_eFoo___wBar___ extends Foo___ with Bar___ {
+  class I;; f;
+}
 /* */ /*    */
-class Mix_I_eFoo___wBar__f extends Foo___ with Bar__f { class I;; f; }
+class Mix_I_eFoo___wBar__f extends Foo___ with Bar__f {
+  class I;; f;
+}
 // */abstract class Mix_I_eFoo___wBar_I_     extends Foo___    with Bar_I_    { class I;                                ; f; }
 // *//*    */ class Mix_I_eFoo___wBar_If     extends Foo___    with Bar_If    { class I;                                ; f; }
 /* */
@@ -423,18 +761,26 @@ abstract class Mix_I_eFoo___wBarY__ extends Foo___ with BarY__[B] {
   class I;; f;
 }
 /* */ /*    */
-class Mix_I_eFoo___wBarY_f extends Foo___ with BarY_f[B] { class I;; f; }
+class Mix_I_eFoo___wBarY_f extends Foo___ with BarY_f[B] {
+  class I;; f;
+}
 // */abstract class Mix_I_eFoo___wBarYI_     extends Foo___    with BarYI_[B] { class I;                                ; f; }
 // *//*    */ class Mix_I_eFoo___wBarYIf     extends Foo___    with BarYIf[B] { class I;                                ; f; }
 /* */ /*    */
-class Mix_I_eFoo__f extends Foo__f { class I;; f; }
+class Mix_I_eFoo__f extends Foo__f {
+  class I;; f;
+}
 /* */ /*    */
-class Mix_I_eFoo__fwBar___ extends Foo__f with Bar___ { class I;; f; }
+class Mix_I_eFoo__fwBar___ extends Foo__f with Bar___ {
+  class I;; f;
+}
 // *//*    */ class Mix_I_eFoo__fwBar__f     extends Foo__f    with Bar__f    { class I;                                ; f; }
 // *//*    */ class Mix_I_eFoo__fwBar_I_     extends Foo__f    with Bar_I_    { class I;                                ; f; }
 // *//*    */ class Mix_I_eFoo__fwBar_If     extends Foo__f    with Bar_If    { class I;                                ; f; }
 /* */ /*    */
-class Mix_I_eFoo__fwBarY__ extends Foo__f with BarY__[B] { class I;; f; }
+class Mix_I_eFoo__fwBarY__ extends Foo__f with BarY__[B] {
+  class I;; f;
+}
 // *//*    */ class Mix_I_eFoo__fwBarY_f     extends Foo__f    with BarY_f[B] { class I;                                ; f; }
 // *//*    */ class Mix_I_eFoo__fwBarYI_     extends Foo__f    with BarYI_[B] { class I;                                ; f; }
 // *//*    */ class Mix_I_eFoo__fwBarYIf     extends Foo__f    with BarYIf[B] { class I;                                ; f; }
@@ -457,13 +803,17 @@ class Mix_I_eFoo__fwBarY__ extends Foo__f with BarY__[B] { class I;; f; }
 // *//*    */ class Mix_I_eFoo_IfwBarYI_     extends Foo_If    with BarYI_[B] { class I;                                ; f; }
 // *//*    */ class Mix_I_eFoo_IfwBarYIf     extends Foo_If    with BarYIf[B] { class I;                                ; f; }
 /* */
-abstract class Mix_I_eFooX__ extends FooX__[A] { class I;; f; }
+abstract class Mix_I_eFooX__ extends FooX__[A] {
+  class I;; f;
+}
 /* */
 abstract class Mix_I_eFooX__wBar___ extends FooX__[A] with Bar___ {
   class I;; f;
 }
 /* */ /*    */
-class Mix_I_eFooX__wBar__f extends FooX__[A] with Bar__f { class I;; f; }
+class Mix_I_eFooX__wBar__f extends FooX__[A] with Bar__f {
+  class I;; f;
+}
 // */abstract class Mix_I_eFooX__wBar_I_     extends FooX__[A] with Bar_I_    { class I;                                ; f; }
 // *//*    */ class Mix_I_eFooX__wBar_If     extends FooX__[A] with Bar_If    { class I;                                ; f; }
 /* */
@@ -471,18 +821,26 @@ abstract class Mix_I_eFooX__wBarY__ extends FooX__[A] with BarY__[B] {
   class I;; f;
 }
 /* */ /*    */
-class Mix_I_eFooX__wBarY_f extends FooX__[A] with BarY_f[B] { class I;; f; }
+class Mix_I_eFooX__wBarY_f extends FooX__[A] with BarY_f[B] {
+  class I;; f;
+}
 // */abstract class Mix_I_eFooX__wBarYI_     extends FooX__[A] with BarYI_[B] { class I;                                ; f; }
 // *//*    */ class Mix_I_eFooX__wBarYIf     extends FooX__[A] with BarYIf[B] { class I;                                ; f; }
 /* */ /*    */
-class Mix_I_eFooX_f extends FooX_f[A] { class I;; f; }
+class Mix_I_eFooX_f extends FooX_f[A] {
+  class I;; f;
+}
 /* */ /*    */
-class Mix_I_eFooX_fwBar___ extends FooX_f[A] with Bar___ { class I;; f; }
+class Mix_I_eFooX_fwBar___ extends FooX_f[A] with Bar___ {
+  class I;; f;
+}
 // *//*    */ class Mix_I_eFooX_fwBar__f     extends FooX_f[A] with Bar__f    { class I;                                ; f; }
 // *//*    */ class Mix_I_eFooX_fwBar_I_     extends FooX_f[A] with Bar_I_    { class I;                                ; f; }
 // *//*    */ class Mix_I_eFooX_fwBar_If     extends FooX_f[A] with Bar_If    { class I;                                ; f; }
 /* */ /*    */
-class Mix_I_eFooX_fwBarY__ extends FooX_f[A] with BarY__[B] { class I;; f; }
+class Mix_I_eFooX_fwBarY__ extends FooX_f[A] with BarY__[B] {
+  class I;; f;
+}
 // *//*    */ class Mix_I_eFooX_fwBarY_f     extends FooX_f[A] with BarY_f[B] { class I;                                ; f; }
 // *//*    */ class Mix_I_eFooX_fwBarYI_     extends FooX_f[A] with BarYI_[B] { class I;                                ; f; }
 // *//*    */ class Mix_I_eFooX_fwBarYIf     extends FooX_f[A] with BarYIf[B] { class I;                                ; f; }
@@ -506,48 +864,80 @@ class Mix_I_eFooX_fwBarY__ extends FooX_f[A] with BarY__[B] { class I;; f; }
 // *//*    */ class Mix_I_eFooXIfwBarYIf     extends FooXIf[A] with BarYIf[B] { class I;                                ; f; }
 
 /* */ /*    */
-class Mix_IfeFoo___ extends Foo___ { class I; def f: I = { mix; null }; f; }
+class Mix_IfeFoo___ extends Foo___ {
+  class I;
+  def f: I = {
+    mix; null
+  }; f;
+}
 /* */ /*    */
 class Mix_IfeFoo___wBar___ extends Foo___ with Bar___ {
-  class I; def f: I = { mix; null }; f;
+  class I;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix_IfeFoo___wBar__f extends Foo___ with Bar__f {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix_IfeFoo___wBar_I_     extends Foo___    with Bar_I_    { class I;          def f: I = {mix; null}; f; }
 // *//*    */ class Mix_IfeFoo___wBar_If     extends Foo___    with Bar_If    { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class Mix_IfeFoo___wBarY__ extends Foo___ with BarY__[B] {
-  class I; def f: I = { mix; null }; f;
+  class I;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix_IfeFoo___wBarY_f extends Foo___ with BarY_f[B] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix_IfeFoo___wBarYI_     extends Foo___    with BarYI_[B] { class I;          def f: I = {mix; null}; f; }
 // *//*    */ class Mix_IfeFoo___wBarYIf     extends Foo___    with BarYIf[B] { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class Mix_IfeFoo__f extends Foo__f {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix_IfeFoo__fwBar___ extends Foo__f with Bar___ {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix_IfeFoo__fwBar__f extends Foo__f with Bar__f {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix_IfeFoo__fwBar_I_     extends Foo__f    with Bar_I_    { class I; override def f: I = {mix; null}; f; }
 // *//*    */ class Mix_IfeFoo__fwBar_If     extends Foo__f    with Bar_If    { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class Mix_IfeFoo__fwBarY__ extends Foo__f with BarY__[B] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix_IfeFoo__fwBarY_f extends Foo__f with BarY_f[B] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix_IfeFoo__fwBarYI_     extends Foo__f    with BarYI_[B] { class I; override def f: I = {mix; null}; f; }
 // *//*    */ class Mix_IfeFoo__fwBarYIf     extends Foo__f    with BarYIf[B] { class I; override def f: I = {mix; null}; f; }
@@ -570,48 +960,80 @@ class Mix_IfeFoo__fwBarY_f extends Foo__f with BarY_f[B] {
 // *//*    */ class Mix_IfeFoo_IfwBarYI_     extends Foo_If    with BarYI_[B] { class I; override def f: I = {mix; null}; f; }
 // *//*    */ class Mix_IfeFoo_IfwBarYIf     extends Foo_If    with BarYIf[B] { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
-class Mix_IfeFooX__ extends FooX__[A] { class I; def f: I = { mix; null }; f; }
+class Mix_IfeFooX__ extends FooX__[A] {
+  class I;
+  def f: I = {
+    mix; null
+  }; f;
+}
 /* */ /*    */
 class Mix_IfeFooX__wBar___ extends FooX__[A] with Bar___ {
-  class I; def f: I = { mix; null }; f;
+  class I;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix_IfeFooX__wBar__f extends FooX__[A] with Bar__f {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix_IfeFooX__wBar_I_     extends FooX__[A] with Bar_I_    { class I;          def f: I = {mix; null}; f; }
 // *//*    */ class Mix_IfeFooX__wBar_If     extends FooX__[A] with Bar_If    { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class Mix_IfeFooX__wBarY__ extends FooX__[A] with BarY__[B] {
-  class I; def f: I = { mix; null }; f;
+  class I;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix_IfeFooX__wBarY_f extends FooX__[A] with BarY_f[B] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix_IfeFooX__wBarYI_     extends FooX__[A] with BarYI_[B] { class I;          def f: I = {mix; null}; f; }
 // *//*    */ class Mix_IfeFooX__wBarYIf     extends FooX__[A] with BarYIf[B] { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class Mix_IfeFooX_f extends FooX_f[A] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix_IfeFooX_fwBar___ extends FooX_f[A] with Bar___ {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix_IfeFooX_fwBar__f extends FooX_f[A] with Bar__f {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix_IfeFooX_fwBar_I_     extends FooX_f[A] with Bar_I_    { class I; override def f: I = {mix; null}; f; }
 // *//*    */ class Mix_IfeFooX_fwBar_If     extends FooX_f[A] with Bar_If    { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class Mix_IfeFooX_fwBarY__ extends FooX_f[A] with BarY__[B] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix_IfeFooX_fwBarY_f extends FooX_f[A] with BarY_f[B] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix_IfeFooX_fwBarYI_     extends FooX_f[A] with BarYI_[B] { class I; override def f: I = {mix; null}; f; }
 // *//*    */ class Mix_IfeFooX_fwBarYIf     extends FooX_f[A] with BarYIf[B] { class I; override def f: I = {mix; null}; f; }
@@ -635,73 +1057,127 @@ class Mix_IfeFooX_fwBarY_f extends FooX_f[A] with BarY_f[B] {
 // *//*    */ class Mix_IfeFooXIfwBarYIf     extends FooXIf[A] with BarYIf[B] { class I; override def f: I = {mix; null}; f; }
 
 /* */
-abstract class MixZ__eFoo___[Z] extends Foo___ { ;; f; }
+abstract class MixZ__eFoo___[Z] extends Foo___ {
+  ;; f;
+}
 /* */
-abstract class MixZ__eFoo___wBar___[Z] extends Foo___ with Bar___ { ;; f; }
+abstract class MixZ__eFoo___wBar___[Z] extends Foo___ with Bar___ {
+  ;; f;
+}
 /* */
-abstract class MixZ__eFoo___wBar__f[Z] extends Foo___ with Bar__f { ;; f; }
+abstract class MixZ__eFoo___wBar__f[Z] extends Foo___ with Bar__f {
+  ;; f;
+}
 /* */
-abstract class MixZ__eFoo___wBar_I_[Z] extends Foo___ with Bar_I_ { ;; f; }
+abstract class MixZ__eFoo___wBar_I_[Z] extends Foo___ with Bar_I_ {
+  ;; f;
+}
 /* */ /*    */
-class MixZ__eFoo___wBar_If[Z] extends Foo___ with Bar_If { ;; f; }
+class MixZ__eFoo___wBar_If[Z] extends Foo___ with Bar_If {
+  ;; f;
+}
 /* */
-abstract class MixZ__eFoo___wBarY__[Z] extends Foo___ with BarY__[B] { ;; f; }
+abstract class MixZ__eFoo___wBarY__[Z] extends Foo___ with BarY__[B] {
+  ;; f;
+}
 /* */
-abstract class MixZ__eFoo___wBarY_f[Z] extends Foo___ with BarY_f[B] { ;; f; }
+abstract class MixZ__eFoo___wBarY_f[Z] extends Foo___ with BarY_f[B] {
+  ;; f;
+}
 /* */
-abstract class MixZ__eFoo___wBarYI_[Z] extends Foo___ with BarYI_[B] { ;; f; }
+abstract class MixZ__eFoo___wBarYI_[Z] extends Foo___ with BarYI_[B] {
+  ;; f;
+}
 /* */ /*    */
-class MixZ__eFoo___wBarYIf[Z] extends Foo___ with BarYIf[B] { ;; f; }
+class MixZ__eFoo___wBarYIf[Z] extends Foo___ with BarYIf[B] {
+  ;; f;
+}
 /* */
-abstract class MixZ__eFoo__f[Z] extends Foo__f { ;; f; }
+abstract class MixZ__eFoo__f[Z] extends Foo__f {
+  ;; f;
+}
 /* */
-abstract class MixZ__eFoo__fwBar___[Z] extends Foo__f with Bar___ { ;; f; }
+abstract class MixZ__eFoo__fwBar___[Z] extends Foo__f with Bar___ {
+  ;; f;
+}
 // */abstract class MixZ__eFoo__fwBar__f[Z]  extends Foo__f    with Bar__f    {        ;                                ; f; }
 /* */ /*    */
-class MixZ__eFoo__fwBar_I_[Z] extends Foo__f with Bar_I_ { ;; f; }
+class MixZ__eFoo__fwBar_I_[Z] extends Foo__f with Bar_I_ {
+  ;; f;
+}
 // *//*    */ class MixZ__eFoo__fwBar_If[Z]  extends Foo__f    with Bar_If    {        ;                                ; f; }
 /* */
-abstract class MixZ__eFoo__fwBarY__[Z] extends Foo__f with BarY__[B] { ;; f; }
+abstract class MixZ__eFoo__fwBarY__[Z] extends Foo__f with BarY__[B] {
+  ;; f;
+}
 // */abstract class MixZ__eFoo__fwBarY_f[Z]  extends Foo__f    with BarY_f[B] {        ;                                ; f; }
 /* */ /*    */
-class MixZ__eFoo__fwBarYI_[Z] extends Foo__f with BarYI_[B] { ;; f; }
+class MixZ__eFoo__fwBarYI_[Z] extends Foo__f with BarYI_[B] {
+  ;; f;
+}
 // *//*    */ class MixZ__eFoo__fwBarYIf[Z]  extends Foo__f    with BarYIf[B] {        ;                                ; f; }
 /* */
-abstract class MixZ__eFoo_I_[Z] extends Foo_I_ { ;; f; }
+abstract class MixZ__eFoo_I_[Z] extends Foo_I_ {
+  ;; f;
+}
 /* */
-abstract class MixZ__eFoo_I_wBar___[Z] extends Foo_I_ with Bar___ { ;; f; }
+abstract class MixZ__eFoo_I_wBar___[Z] extends Foo_I_ with Bar___ {
+  ;; f;
+}
 /* */ /*    */
-class MixZ__eFoo_I_wBar__f[Z] extends Foo_I_ with Bar__f { ;; f; }
+class MixZ__eFoo_I_wBar__f[Z] extends Foo_I_ with Bar__f {
+  ;; f;
+}
 // */abstract class MixZ__eFoo_I_wBar_I_[Z]  extends Foo_I_    with Bar_I_    {        ;                                ; f; }
 // *//*    */ class MixZ__eFoo_I_wBar_If[Z]  extends Foo_I_    with Bar_If    {        ;                                ; f; }
 /* */
-abstract class MixZ__eFoo_I_wBarY__[Z] extends Foo_I_ with BarY__[B] { ;; f; }
+abstract class MixZ__eFoo_I_wBarY__[Z] extends Foo_I_ with BarY__[B] {
+  ;; f;
+}
 /* */ /*    */
-class MixZ__eFoo_I_wBarY_f[Z] extends Foo_I_ with BarY_f[B] { ;; f; }
+class MixZ__eFoo_I_wBarY_f[Z] extends Foo_I_ with BarY_f[B] {
+  ;; f;
+}
 // */abstract class MixZ__eFoo_I_wBarYI_[Z]  extends Foo_I_    with BarYI_[B] {        ;                                ; f; }
 // *//*    */ class MixZ__eFoo_I_wBarYIf[Z]  extends Foo_I_    with BarYIf[B] {        ;                                ; f; }
 /* */ /*    */
-class MixZ__eFoo_If[Z] extends Foo_If { ;; f; }
+class MixZ__eFoo_If[Z] extends Foo_If {
+  ;; f;
+}
 /* */ /*    */
-class MixZ__eFoo_IfwBar___[Z] extends Foo_If with Bar___ { ;; f; }
+class MixZ__eFoo_IfwBar___[Z] extends Foo_If with Bar___ {
+  ;; f;
+}
 // *//*    */ class MixZ__eFoo_IfwBar__f[Z]  extends Foo_If    with Bar__f    {        ;                                ; f; }
 // *//*    */ class MixZ__eFoo_IfwBar_I_[Z]  extends Foo_If    with Bar_I_    {        ;                                ; f; }
 // *//*    */ class MixZ__eFoo_IfwBar_If[Z]  extends Foo_If    with Bar_If    {        ;                                ; f; }
 /* */ /*    */
-class MixZ__eFoo_IfwBarY__[Z] extends Foo_If with BarY__[B] { ;; f; }
+class MixZ__eFoo_IfwBarY__[Z] extends Foo_If with BarY__[B] {
+  ;; f;
+}
 // *//*    */ class MixZ__eFoo_IfwBarY_f[Z]  extends Foo_If    with BarY_f[B] {        ;                                ; f; }
 // *//*    */ class MixZ__eFoo_IfwBarYI_[Z]  extends Foo_If    with BarYI_[B] {        ;                                ; f; }
 // *//*    */ class MixZ__eFoo_IfwBarYIf[Z]  extends Foo_If    with BarYIf[B] {        ;                                ; f; }
 /* */
-abstract class MixZ__eFooX__[Z] extends FooX__[A] { ;; f; }
+abstract class MixZ__eFooX__[Z] extends FooX__[A] {
+  ;; f;
+}
 /* */
-abstract class MixZ__eFooX__wBar___[Z] extends FooX__[A] with Bar___ { ;; f; }
+abstract class MixZ__eFooX__wBar___[Z] extends FooX__[A] with Bar___ {
+  ;; f;
+}
 /* */
-abstract class MixZ__eFooX__wBar__f[Z] extends FooX__[A] with Bar__f { ;; f; }
+abstract class MixZ__eFooX__wBar__f[Z] extends FooX__[A] with Bar__f {
+  ;; f;
+}
 /* */
-abstract class MixZ__eFooX__wBar_I_[Z] extends FooX__[A] with Bar_I_ { ;; f; }
+abstract class MixZ__eFooX__wBar_I_[Z] extends FooX__[A] with Bar_I_ {
+  ;; f;
+}
 /* */ /*    */
-class MixZ__eFooX__wBar_If[Z] extends FooX__[A] with Bar_If { ;; f; }
+class MixZ__eFooX__wBar_If[Z] extends FooX__[A] with Bar_If {
+  ;; f;
+}
 /* */
 abstract class MixZ__eFooX__wBarY__[Z] extends FooX__[A] with BarY__[B] {
   ;; f;
@@ -715,14 +1191,22 @@ abstract class MixZ__eFooX__wBarYI_[Z] extends FooX__[A] with BarYI_[B] {
   ;; f;
 }
 /* */ /*    */
-class MixZ__eFooX__wBarYIf[Z] extends FooX__[A] with BarYIf[B] { ;; f; }
+class MixZ__eFooX__wBarYIf[Z] extends FooX__[A] with BarYIf[B] {
+  ;; f;
+}
 /* */
-abstract class MixZ__eFooX_f[Z] extends FooX_f[A] { ;; f; }
+abstract class MixZ__eFooX_f[Z] extends FooX_f[A] {
+  ;; f;
+}
 /* */
-abstract class MixZ__eFooX_fwBar___[Z] extends FooX_f[A] with Bar___ { ;; f; }
+abstract class MixZ__eFooX_fwBar___[Z] extends FooX_f[A] with Bar___ {
+  ;; f;
+}
 // */abstract class MixZ__eFooX_fwBar__f[Z]  extends FooX_f[A] with Bar__f    {        ;                                ; f; }
 /* */ /*    */
-class MixZ__eFooX_fwBar_I_[Z] extends FooX_f[A] with Bar_I_ { ;; f; }
+class MixZ__eFooX_fwBar_I_[Z] extends FooX_f[A] with Bar_I_ {
+  ;; f;
+}
 // *//*    */ class MixZ__eFooX_fwBar_If[Z]  extends FooX_f[A] with Bar_If    {        ;                                ; f; }
 /* */
 abstract class MixZ__eFooX_fwBarY__[Z] extends FooX_f[A] with BarY__[B] {
@@ -730,14 +1214,22 @@ abstract class MixZ__eFooX_fwBarY__[Z] extends FooX_f[A] with BarY__[B] {
 }
 // */abstract class MixZ__eFooX_fwBarY_f[Z]  extends FooX_f[A] with BarY_f[B] {        ;                                ; f; }
 /* */ /*    */
-class MixZ__eFooX_fwBarYI_[Z] extends FooX_f[A] with BarYI_[B] { ;; f; }
+class MixZ__eFooX_fwBarYI_[Z] extends FooX_f[A] with BarYI_[B] {
+  ;; f;
+}
 // *//*    */ class MixZ__eFooX_fwBarYIf[Z]  extends FooX_f[A] with BarYIf[B] {        ;                                ; f; }
 /* */
-abstract class MixZ__eFooXI_[Z] extends FooXI_[A] { ;; f; }
+abstract class MixZ__eFooXI_[Z] extends FooXI_[A] {
+  ;; f;
+}
 /* */
-abstract class MixZ__eFooXI_wBar___[Z] extends FooXI_[A] with Bar___ { ;; f; }
+abstract class MixZ__eFooXI_wBar___[Z] extends FooXI_[A] with Bar___ {
+  ;; f;
+}
 /* */ /*    */
-class MixZ__eFooXI_wBar__f[Z] extends FooXI_[A] with Bar__f { ;; f; }
+class MixZ__eFooXI_wBar__f[Z] extends FooXI_[A] with Bar__f {
+  ;; f;
+}
 // */abstract class MixZ__eFooXI_wBar_I_[Z]  extends FooXI_[A] with Bar_I_    {        ;                                ; f; }
 // *//*    */ class MixZ__eFooXI_wBar_If[Z]  extends FooXI_[A] with Bar_If    {        ;                                ; f; }
 /* */
@@ -745,267 +1237,451 @@ abstract class MixZ__eFooXI_wBarY__[Z] extends FooXI_[A] with BarY__[B] {
   ;; f;
 }
 /* */ /*    */
-class MixZ__eFooXI_wBarY_f[Z] extends FooXI_[A] with BarY_f[B] { ;; f; }
+class MixZ__eFooXI_wBarY_f[Z] extends FooXI_[A] with BarY_f[B] {
+  ;; f;
+}
 // */abstract class MixZ__eFooXI_wBarYI_[Z]  extends FooXI_[A] with BarYI_[B] {        ;                                ; f; }
 // *//*    */ class MixZ__eFooXI_wBarYIf[Z]  extends FooXI_[A] with BarYIf[B] {        ;                                ; f; }
 /* */ /*    */
-class MixZ__eFooXIf[Z] extends FooXIf[A] { ;; f; }
+class MixZ__eFooXIf[Z] extends FooXIf[A] {
+  ;; f;
+}
 /* */ /*    */
-class MixZ__eFooXIfwBar___[Z] extends FooXIf[A] with Bar___ { ;; f; }
+class MixZ__eFooXIfwBar___[Z] extends FooXIf[A] with Bar___ {
+  ;; f;
+}
 // *//*    */ class MixZ__eFooXIfwBar__f[Z]  extends FooXIf[A] with Bar__f    {        ;                                ; f; }
 // *//*    */ class MixZ__eFooXIfwBar_I_[Z]  extends FooXIf[A] with Bar_I_    {        ;                                ; f; }
 // *//*    */ class MixZ__eFooXIfwBar_If[Z]  extends FooXIf[A] with Bar_If    {        ;                                ; f; }
 /* */ /*    */
-class MixZ__eFooXIfwBarY__[Z] extends FooXIf[A] with BarY__[B] { ;; f; }
+class MixZ__eFooXIfwBarY__[Z] extends FooXIf[A] with BarY__[B] {
+  ;; f;
+}
 // *//*    */ class MixZ__eFooXIfwBarY_f[Z]  extends FooXIf[A] with BarY_f[B] {        ;                                ; f; }
 // *//*    */ class MixZ__eFooXIfwBarYI_[Z]  extends FooXIf[A] with BarYI_[B] {        ;                                ; f; }
 // *//*    */ class MixZ__eFooXIfwBarYIf[Z]  extends FooXIf[A] with BarYIf[B] {        ;                                ; f; }
 
 /* */
 abstract class MixZ_feFoo___[Z] extends Foo___ {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_feFoo___wBar___[Z] extends Foo___ with Bar___ {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_feFoo___wBar__f[Z] extends Foo___ with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_feFoo___wBar_I_[Z] extends Foo___ with Bar_I_ {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_feFoo___wBar_If[Z] extends Foo___ with Bar_If {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_feFoo___wBarY__[Z] extends Foo___ with BarY__[B] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_feFoo___wBarY_f[Z] extends Foo___ with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_feFoo___wBarYI_[Z] extends Foo___ with BarYI_[B] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_feFoo___wBarYIf[Z] extends Foo___ with BarYIf[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_feFoo__f[Z] extends Foo__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_feFoo__fwBar___[Z] extends Foo__f with Bar___ {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_feFoo__fwBar__f[Z] extends Foo__f with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_feFoo__fwBar_I_[Z] extends Foo__f with Bar_I_ {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_feFoo__fwBar_If[Z] extends Foo__f with Bar_If {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_feFoo__fwBarY__[Z] extends Foo__f with BarY__[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_feFoo__fwBarY_f[Z] extends Foo__f with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_feFoo__fwBarYI_[Z] extends Foo__f with BarYI_[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_feFoo__fwBarYIf[Z] extends Foo__f with BarYIf[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
-class MixZ_feFoo_I_[Z] extends Foo_I_ { ; def f: I = { mix; null }; f; }
+class MixZ_feFoo_I_[Z] extends Foo_I_ {
+  ;
+  def f: I = {
+    mix; null
+  }; f;
+}
 /* */ /*    */
 class MixZ_feFoo_I_wBar___[Z] extends Foo_I_ with Bar___ {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_feFoo_I_wBar__f[Z] extends Foo_I_ with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZ_feFoo_I_wBar_I_[Z]  extends Foo_I_    with Bar_I_    {        ;          def f: I = {mix; null}; f; }
 // *//*    */ class MixZ_feFoo_I_wBar_If[Z]  extends Foo_I_    with Bar_If    {        ; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class MixZ_feFoo_I_wBarY__[Z] extends Foo_I_ with BarY__[B] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_feFoo_I_wBarY_f[Z] extends Foo_I_ with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZ_feFoo_I_wBarYI_[Z]  extends Foo_I_    with BarYI_[B] {        ;          def f: I = {mix; null}; f; }
 // *//*    */ class MixZ_feFoo_I_wBarYIf[Z]  extends Foo_I_    with BarYIf[B] {        ; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class MixZ_feFoo_If[Z] extends Foo_If {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_feFoo_IfwBar___[Z] extends Foo_If with Bar___ {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_feFoo_IfwBar__f[Z] extends Foo_If with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZ_feFoo_IfwBar_I_[Z]  extends Foo_If    with Bar_I_    {        ; override def f: I = {mix; null}; f; }
 // *//*    */ class MixZ_feFoo_IfwBar_If[Z]  extends Foo_If    with Bar_If    {        ; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class MixZ_feFoo_IfwBarY__[Z] extends Foo_If with BarY__[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_feFoo_IfwBarY_f[Z] extends Foo_If with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZ_feFoo_IfwBarYI_[Z]  extends Foo_If    with BarYI_[B] {        ; override def f: I = {mix; null}; f; }
 // *//*    */ class MixZ_feFoo_IfwBarYIf[Z]  extends Foo_If    with BarYIf[B] {        ; override def f: I = {mix; null}; f; }
 /* */
 abstract class MixZ_feFooX__[Z] extends FooX__[A] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_feFooX__wBar___[Z] extends FooX__[A] with Bar___ {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_feFooX__wBar__f[Z] extends FooX__[A] with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_feFooX__wBar_I_[Z] extends FooX__[A] with Bar_I_ {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_feFooX__wBar_If[Z] extends FooX__[A] with Bar_If {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_feFooX__wBarY__[Z] extends FooX__[A] with BarY__[B] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_feFooX__wBarY_f[Z] extends FooX__[A] with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_feFooX__wBarYI_[Z] extends FooX__[A] with BarYI_[B] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_feFooX__wBarYIf[Z] extends FooX__[A] with BarYIf[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_feFooX_f[Z] extends FooX_f[A] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_feFooX_fwBar___[Z] extends FooX_f[A] with Bar___ {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_feFooX_fwBar__f[Z] extends FooX_f[A] with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_feFooX_fwBar_I_[Z] extends FooX_f[A] with Bar_I_ {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_feFooX_fwBar_If[Z] extends FooX_f[A] with Bar_If {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_feFooX_fwBarY__[Z] extends FooX_f[A] with BarY__[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_feFooX_fwBarY_f[Z] extends FooX_f[A] with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_feFooX_fwBarYI_[Z] extends FooX_f[A] with BarYI_[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_feFooX_fwBarYIf[Z] extends FooX_f[A] with BarYIf[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
-class MixZ_feFooXI_[Z] extends FooXI_[A] { ; def f: I = { mix; null }; f; }
+class MixZ_feFooXI_[Z] extends FooXI_[A] {
+  ;
+  def f: I = {
+    mix; null
+  }; f;
+}
 /* */ /*    */
 class MixZ_feFooXI_wBar___[Z] extends FooXI_[A] with Bar___ {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_feFooXI_wBar__f[Z] extends FooXI_[A] with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZ_feFooXI_wBar_I_[Z]  extends FooXI_[A] with Bar_I_    {        ;          def f: I = {mix; null}; f; }
 // *//*    */ class MixZ_feFooXI_wBar_If[Z]  extends FooXI_[A] with Bar_If    {        ; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class MixZ_feFooXI_wBarY__[Z] extends FooXI_[A] with BarY__[B] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_feFooXI_wBarY_f[Z] extends FooXI_[A] with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZ_feFooXI_wBarYI_[Z]  extends FooXI_[A] with BarYI_[B] {        ;          def f: I = {mix; null}; f; }
 // *//*    */ class MixZ_feFooXI_wBarYIf[Z]  extends FooXI_[A] with BarYIf[B] {        ; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class MixZ_feFooXIf[Z] extends FooXIf[A] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_feFooXIfwBar___[Z] extends FooXIf[A] with Bar___ {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_feFooXIfwBar__f[Z] extends FooXIf[A] with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZ_feFooXIfwBar_I_[Z]  extends FooXIf[A] with Bar_I_    {        ; override def f: I = {mix; null}; f; }
 // *//*    */ class MixZ_feFooXIfwBar_If[Z]  extends FooXIf[A] with Bar_If    {        ; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class MixZ_feFooXIfwBarY__[Z] extends FooXIf[A] with BarY__[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_feFooXIfwBarY_f[Z] extends FooXIf[A] with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZ_feFooXIfwBarYI_[Z]  extends FooXIf[A] with BarYI_[B] {        ; override def f: I = {mix; null}; f; }
 // *//*    */ class MixZ_feFooXIfwBarYIf[Z]  extends FooXIf[A] with BarYIf[B] {        ; override def f: I = {mix; null}; f; }
 
 /* */
-abstract class MixZI_eFoo___[Z] extends Foo___ { class I;; f; }
+abstract class MixZI_eFoo___[Z] extends Foo___ {
+  class I;; f;
+}
 /* */
 abstract class MixZI_eFoo___wBar___[Z] extends Foo___ with Bar___ {
   class I;; f;
 }
 /* */ /*    */
-class MixZI_eFoo___wBar__f[Z] extends Foo___ with Bar__f { class I;; f; }
+class MixZI_eFoo___wBar__f[Z] extends Foo___ with Bar__f {
+  class I;; f;
+}
 // */abstract class MixZI_eFoo___wBar_I_[Z]  extends Foo___    with Bar_I_    { class I;                                ; f; }
 // *//*    */ class MixZI_eFoo___wBar_If[Z]  extends Foo___    with Bar_If    { class I;                                ; f; }
 /* */
@@ -1013,18 +1689,26 @@ abstract class MixZI_eFoo___wBarY__[Z] extends Foo___ with BarY__[B] {
   class I;; f;
 }
 /* */ /*    */
-class MixZI_eFoo___wBarY_f[Z] extends Foo___ with BarY_f[B] { class I;; f; }
+class MixZI_eFoo___wBarY_f[Z] extends Foo___ with BarY_f[B] {
+  class I;; f;
+}
 // */abstract class MixZI_eFoo___wBarYI_[Z]  extends Foo___    with BarYI_[B] { class I;                                ; f; }
 // *//*    */ class MixZI_eFoo___wBarYIf[Z]  extends Foo___    with BarYIf[B] { class I;                                ; f; }
 /* */ /*    */
-class MixZI_eFoo__f[Z] extends Foo__f { class I;; f; }
+class MixZI_eFoo__f[Z] extends Foo__f {
+  class I;; f;
+}
 /* */ /*    */
-class MixZI_eFoo__fwBar___[Z] extends Foo__f with Bar___ { class I;; f; }
+class MixZI_eFoo__fwBar___[Z] extends Foo__f with Bar___ {
+  class I;; f;
+}
 // *//*    */ class MixZI_eFoo__fwBar__f[Z]  extends Foo__f    with Bar__f    { class I;                                ; f; }
 // *//*    */ class MixZI_eFoo__fwBar_I_[Z]  extends Foo__f    with Bar_I_    { class I;                                ; f; }
 // *//*    */ class MixZI_eFoo__fwBar_If[Z]  extends Foo__f    with Bar_If    { class I;                                ; f; }
 /* */ /*    */
-class MixZI_eFoo__fwBarY__[Z] extends Foo__f with BarY__[B] { class I;; f; }
+class MixZI_eFoo__fwBarY__[Z] extends Foo__f with BarY__[B] {
+  class I;; f;
+}
 // *//*    */ class MixZI_eFoo__fwBarY_f[Z]  extends Foo__f    with BarY_f[B] { class I;                                ; f; }
 // *//*    */ class MixZI_eFoo__fwBarYI_[Z]  extends Foo__f    with BarYI_[B] { class I;                                ; f; }
 // *//*    */ class MixZI_eFoo__fwBarYIf[Z]  extends Foo__f    with BarYIf[B] { class I;                                ; f; }
@@ -1047,13 +1731,17 @@ class MixZI_eFoo__fwBarY__[Z] extends Foo__f with BarY__[B] { class I;; f; }
 // *//*    */ class MixZI_eFoo_IfwBarYI_[Z]  extends Foo_If    with BarYI_[B] { class I;                                ; f; }
 // *//*    */ class MixZI_eFoo_IfwBarYIf[Z]  extends Foo_If    with BarYIf[B] { class I;                                ; f; }
 /* */
-abstract class MixZI_eFooX__[Z] extends FooX__[A] { class I;; f; }
+abstract class MixZI_eFooX__[Z] extends FooX__[A] {
+  class I;; f;
+}
 /* */
 abstract class MixZI_eFooX__wBar___[Z] extends FooX__[A] with Bar___ {
   class I;; f;
 }
 /* */ /*    */
-class MixZI_eFooX__wBar__f[Z] extends FooX__[A] with Bar__f { class I;; f; }
+class MixZI_eFooX__wBar__f[Z] extends FooX__[A] with Bar__f {
+  class I;; f;
+}
 // */abstract class MixZI_eFooX__wBar_I_[Z]  extends FooX__[A] with Bar_I_    { class I;                                ; f; }
 // *//*    */ class MixZI_eFooX__wBar_If[Z]  extends FooX__[A] with Bar_If    { class I;                                ; f; }
 /* */
@@ -1061,18 +1749,26 @@ abstract class MixZI_eFooX__wBarY__[Z] extends FooX__[A] with BarY__[B] {
   class I;; f;
 }
 /* */ /*    */
-class MixZI_eFooX__wBarY_f[Z] extends FooX__[A] with BarY_f[B] { class I;; f; }
+class MixZI_eFooX__wBarY_f[Z] extends FooX__[A] with BarY_f[B] {
+  class I;; f;
+}
 // */abstract class MixZI_eFooX__wBarYI_[Z]  extends FooX__[A] with BarYI_[B] { class I;                                ; f; }
 // *//*    */ class MixZI_eFooX__wBarYIf[Z]  extends FooX__[A] with BarYIf[B] { class I;                                ; f; }
 /* */ /*    */
-class MixZI_eFooX_f[Z] extends FooX_f[A] { class I;; f; }
+class MixZI_eFooX_f[Z] extends FooX_f[A] {
+  class I;; f;
+}
 /* */ /*    */
-class MixZI_eFooX_fwBar___[Z] extends FooX_f[A] with Bar___ { class I;; f; }
+class MixZI_eFooX_fwBar___[Z] extends FooX_f[A] with Bar___ {
+  class I;; f;
+}
 // *//*    */ class MixZI_eFooX_fwBar__f[Z]  extends FooX_f[A] with Bar__f    { class I;                                ; f; }
 // *//*    */ class MixZI_eFooX_fwBar_I_[Z]  extends FooX_f[A] with Bar_I_    { class I;                                ; f; }
 // *//*    */ class MixZI_eFooX_fwBar_If[Z]  extends FooX_f[A] with Bar_If    { class I;                                ; f; }
 /* */ /*    */
-class MixZI_eFooX_fwBarY__[Z] extends FooX_f[A] with BarY__[B] { class I;; f; }
+class MixZI_eFooX_fwBarY__[Z] extends FooX_f[A] with BarY__[B] {
+  class I;; f;
+}
 // *//*    */ class MixZI_eFooX_fwBarY_f[Z]  extends FooX_f[A] with BarY_f[B] { class I;                                ; f; }
 // *//*    */ class MixZI_eFooX_fwBarYI_[Z]  extends FooX_f[A] with BarYI_[B] { class I;                                ; f; }
 // *//*    */ class MixZI_eFooX_fwBarYIf[Z]  extends FooX_f[A] with BarYIf[B] { class I;                                ; f; }
@@ -1096,48 +1792,80 @@ class MixZI_eFooX_fwBarY__[Z] extends FooX_f[A] with BarY__[B] { class I;; f; }
 // *//*    */ class MixZI_eFooXIfwBarYIf[Z]  extends FooXIf[A] with BarYIf[B] { class I;                                ; f; }
 
 /* */ /*    */
-class MixZIfeFoo___[Z] extends Foo___ { class I; def f: I = { mix; null }; f; }
+class MixZIfeFoo___[Z] extends Foo___ {
+  class I;
+  def f: I = {
+    mix; null
+  }; f;
+}
 /* */ /*    */
 class MixZIfeFoo___wBar___[Z] extends Foo___ with Bar___ {
-  class I; def f: I = { mix; null }; f;
+  class I;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZIfeFoo___wBar__f[Z] extends Foo___ with Bar__f {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZIfeFoo___wBar_I_[Z]  extends Foo___    with Bar_I_    { class I;          def f: I = {mix; null}; f; }
 // *//*    */ class MixZIfeFoo___wBar_If[Z]  extends Foo___    with Bar_If    { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class MixZIfeFoo___wBarY__[Z] extends Foo___ with BarY__[B] {
-  class I; def f: I = { mix; null }; f;
+  class I;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZIfeFoo___wBarY_f[Z] extends Foo___ with BarY_f[B] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZIfeFoo___wBarYI_[Z]  extends Foo___    with BarYI_[B] { class I;          def f: I = {mix; null}; f; }
 // *//*    */ class MixZIfeFoo___wBarYIf[Z]  extends Foo___    with BarYIf[B] { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class MixZIfeFoo__f[Z] extends Foo__f {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZIfeFoo__fwBar___[Z] extends Foo__f with Bar___ {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZIfeFoo__fwBar__f[Z] extends Foo__f with Bar__f {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZIfeFoo__fwBar_I_[Z]  extends Foo__f    with Bar_I_    { class I; override def f: I = {mix; null}; f; }
 // *//*    */ class MixZIfeFoo__fwBar_If[Z]  extends Foo__f    with Bar_If    { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class MixZIfeFoo__fwBarY__[Z] extends Foo__f with BarY__[B] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZIfeFoo__fwBarY_f[Z] extends Foo__f with BarY_f[B] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZIfeFoo__fwBarYI_[Z]  extends Foo__f    with BarYI_[B] { class I; override def f: I = {mix; null}; f; }
 // *//*    */ class MixZIfeFoo__fwBarYIf[Z]  extends Foo__f    with BarYIf[B] { class I; override def f: I = {mix; null}; f; }
@@ -1161,49 +1889,79 @@ class MixZIfeFoo__fwBarY_f[Z] extends Foo__f with BarY_f[B] {
 // *//*    */ class MixZIfeFoo_IfwBarYIf[Z]  extends Foo_If    with BarYIf[B] { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class MixZIfeFooX__[Z] extends FooX__[A] {
-  class I; def f: I = { mix; null }; f;
+  class I;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZIfeFooX__wBar___[Z] extends FooX__[A] with Bar___ {
-  class I; def f: I = { mix; null }; f;
+  class I;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZIfeFooX__wBar__f[Z] extends FooX__[A] with Bar__f {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZIfeFooX__wBar_I_[Z]  extends FooX__[A] with Bar_I_    { class I;          def f: I = {mix; null}; f; }
 // *//*    */ class MixZIfeFooX__wBar_If[Z]  extends FooX__[A] with Bar_If    { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class MixZIfeFooX__wBarY__[Z] extends FooX__[A] with BarY__[B] {
-  class I; def f: I = { mix; null }; f;
+  class I;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZIfeFooX__wBarY_f[Z] extends FooX__[A] with BarY_f[B] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZIfeFooX__wBarYI_[Z]  extends FooX__[A] with BarYI_[B] { class I;          def f: I = {mix; null}; f; }
 // *//*    */ class MixZIfeFooX__wBarYIf[Z]  extends FooX__[A] with BarYIf[B] { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class MixZIfeFooX_f[Z] extends FooX_f[A] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZIfeFooX_fwBar___[Z] extends FooX_f[A] with Bar___ {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZIfeFooX_fwBar__f[Z] extends FooX_f[A] with Bar__f {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZIfeFooX_fwBar_I_[Z]  extends FooX_f[A] with Bar_I_    { class I; override def f: I = {mix; null}; f; }
 // *//*    */ class MixZIfeFooX_fwBar_If[Z]  extends FooX_f[A] with Bar_If    { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class MixZIfeFooX_fwBarY__[Z] extends FooX_f[A] with BarY__[B] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZIfeFooX_fwBarY_f[Z] extends FooX_f[A] with BarY_f[B] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZIfeFooX_fwBarYI_[Z]  extends FooX_f[A] with BarYI_[B] { class I; override def f: I = {mix; null}; f; }
 // *//*    */ class MixZIfeFooX_fwBarYIf[Z]  extends FooX_f[A] with BarYIf[B] { class I; override def f: I = {mix; null}; f; }
@@ -1227,361 +1985,631 @@ class MixZIfeFooX_fwBarY_f[Z] extends FooX_f[A] with BarY_f[B] {
 // *//*    */ class MixZIfeFooXIfwBarYIf[Z]  extends FooXIf[A] with BarYIf[B] { class I; override def f: I = {mix; null}; f; }
 
 /* */
-abstract class Mix___wFoo___ extends Foo___ { ;; f; }
+abstract class Mix___wFoo___ extends Foo___ {
+  ;; f;
+}
 /* */
-abstract class Mix___wFoo___wBar___ extends Foo___ with Bar___ { ;; f; }
+abstract class Mix___wFoo___wBar___ extends Foo___ with Bar___ {
+  ;; f;
+}
 /* */
-abstract class Mix___wFoo___wBar__f extends Foo___ with Bar__f { ;; f; }
+abstract class Mix___wFoo___wBar__f extends Foo___ with Bar__f {
+  ;; f;
+}
 /* */
-abstract class Mix___wFoo___wBar_I_ extends Foo___ with Bar_I_ { ;; f; }
+abstract class Mix___wFoo___wBar_I_ extends Foo___ with Bar_I_ {
+  ;; f;
+}
 /* */ /*    */
-class Mix___wFoo___wBar_If extends Foo___ with Bar_If { ;; f; }
+class Mix___wFoo___wBar_If extends Foo___ with Bar_If {
+  ;; f;
+}
 /* */
-abstract class Mix___wFoo___wBarY__ extends Foo___ with BarY__[B] { ;; f; }
+abstract class Mix___wFoo___wBarY__ extends Foo___ with BarY__[B] {
+  ;; f;
+}
 /* */
-abstract class Mix___wFoo___wBarY_f extends Foo___ with BarY_f[B] { ;; f; }
+abstract class Mix___wFoo___wBarY_f extends Foo___ with BarY_f[B] {
+  ;; f;
+}
 /* */
-abstract class Mix___wFoo___wBarYI_ extends Foo___ with BarYI_[B] { ;; f; }
+abstract class Mix___wFoo___wBarYI_ extends Foo___ with BarYI_[B] {
+  ;; f;
+}
 /* */ /*    */
-class Mix___wFoo___wBarYIf extends Foo___ with BarYIf[B] { ;; f; }
+class Mix___wFoo___wBarYIf extends Foo___ with BarYIf[B] {
+  ;; f;
+}
 /* */
-abstract class Mix___wFoo__f extends Foo__f { ;; f; }
+abstract class Mix___wFoo__f extends Foo__f {
+  ;; f;
+}
 /* */
-abstract class Mix___wFoo__fwBar___ extends Foo__f with Bar___ { ;; f; }
+abstract class Mix___wFoo__fwBar___ extends Foo__f with Bar___ {
+  ;; f;
+}
 // */abstract class Mix___wFoo__fwBar__f     extends Foo__f    with Bar__f    {        ;                                ; f; }
 /* */ /*    */
-class Mix___wFoo__fwBar_I_ extends Foo__f with Bar_I_ { ;; f; }
+class Mix___wFoo__fwBar_I_ extends Foo__f with Bar_I_ {
+  ;; f;
+}
 // *//*    */ class Mix___wFoo__fwBar_If     extends Foo__f    with Bar_If    {        ;                                ; f; }
 /* */
-abstract class Mix___wFoo__fwBarY__ extends Foo__f with BarY__[B] { ;; f; }
+abstract class Mix___wFoo__fwBarY__ extends Foo__f with BarY__[B] {
+  ;; f;
+}
 // */abstract class Mix___wFoo__fwBarY_f     extends Foo__f    with BarY_f[B] {        ;                                ; f; }
 /* */ /*    */
-class Mix___wFoo__fwBarYI_ extends Foo__f with BarYI_[B] { ;; f; }
+class Mix___wFoo__fwBarYI_ extends Foo__f with BarYI_[B] {
+  ;; f;
+}
 // *//*    */ class Mix___wFoo__fwBarYIf     extends Foo__f    with BarYIf[B] {        ;                                ; f; }
 /* */
-abstract class Mix___wFoo_I_ extends Foo_I_ { ;; f; }
+abstract class Mix___wFoo_I_ extends Foo_I_ {
+  ;; f;
+}
 /* */
-abstract class Mix___wFoo_I_wBar___ extends Foo_I_ with Bar___ { ;; f; }
+abstract class Mix___wFoo_I_wBar___ extends Foo_I_ with Bar___ {
+  ;; f;
+}
 /* */ /*    */
-class Mix___wFoo_I_wBar__f extends Foo_I_ with Bar__f { ;; f; }
+class Mix___wFoo_I_wBar__f extends Foo_I_ with Bar__f {
+  ;; f;
+}
 // */abstract class Mix___wFoo_I_wBar_I_     extends Foo_I_    with Bar_I_    {        ;                                ; f; }
 // *//*    */ class Mix___wFoo_I_wBar_If     extends Foo_I_    with Bar_If    {        ;                                ; f; }
 /* */
-abstract class Mix___wFoo_I_wBarY__ extends Foo_I_ with BarY__[B] { ;; f; }
+abstract class Mix___wFoo_I_wBarY__ extends Foo_I_ with BarY__[B] {
+  ;; f;
+}
 /* */ /*    */
-class Mix___wFoo_I_wBarY_f extends Foo_I_ with BarY_f[B] { ;; f; }
+class Mix___wFoo_I_wBarY_f extends Foo_I_ with BarY_f[B] {
+  ;; f;
+}
 // */abstract class Mix___wFoo_I_wBarYI_     extends Foo_I_    with BarYI_[B] {        ;                                ; f; }
 // *//*    */ class Mix___wFoo_I_wBarYIf     extends Foo_I_    with BarYIf[B] {        ;                                ; f; }
 /* */ /*    */
-class Mix___wFoo_If extends Foo_If { ;; f; }
+class Mix___wFoo_If extends Foo_If {
+  ;; f;
+}
 /* */ /*    */
-class Mix___wFoo_IfwBar___ extends Foo_If with Bar___ { ;; f; }
+class Mix___wFoo_IfwBar___ extends Foo_If with Bar___ {
+  ;; f;
+}
 // *//*    */ class Mix___wFoo_IfwBar__f     extends Foo_If    with Bar__f    {        ;                                ; f; }
 // *//*    */ class Mix___wFoo_IfwBar_I_     extends Foo_If    with Bar_I_    {        ;                                ; f; }
 // *//*    */ class Mix___wFoo_IfwBar_If     extends Foo_If    with Bar_If    {        ;                                ; f; }
 /* */ /*    */
-class Mix___wFoo_IfwBarY__ extends Foo_If with BarY__[B] { ;; f; }
+class Mix___wFoo_IfwBarY__ extends Foo_If with BarY__[B] {
+  ;; f;
+}
 // *//*    */ class Mix___wFoo_IfwBarY_f     extends Foo_If    with BarY_f[B] {        ;                                ; f; }
 // *//*    */ class Mix___wFoo_IfwBarYI_     extends Foo_If    with BarYI_[B] {        ;                                ; f; }
 // *//*    */ class Mix___wFoo_IfwBarYIf     extends Foo_If    with BarYIf[B] {        ;                                ; f; }
 /* */
-abstract class Mix___wFooX__ extends FooX__[A] { ;; f; }
+abstract class Mix___wFooX__ extends FooX__[A] {
+  ;; f;
+}
 /* */
-abstract class Mix___wFooX__wBar___ extends FooX__[A] with Bar___ { ;; f; }
+abstract class Mix___wFooX__wBar___ extends FooX__[A] with Bar___ {
+  ;; f;
+}
 /* */
-abstract class Mix___wFooX__wBar__f extends FooX__[A] with Bar__f { ;; f; }
+abstract class Mix___wFooX__wBar__f extends FooX__[A] with Bar__f {
+  ;; f;
+}
 /* */
-abstract class Mix___wFooX__wBar_I_ extends FooX__[A] with Bar_I_ { ;; f; }
+abstract class Mix___wFooX__wBar_I_ extends FooX__[A] with Bar_I_ {
+  ;; f;
+}
 /* */ /*    */
-class Mix___wFooX__wBar_If extends FooX__[A] with Bar_If { ;; f; }
+class Mix___wFooX__wBar_If extends FooX__[A] with Bar_If {
+  ;; f;
+}
 /* */
-abstract class Mix___wFooX__wBarY__ extends FooX__[A] with BarY__[B] { ;; f; }
+abstract class Mix___wFooX__wBarY__ extends FooX__[A] with BarY__[B] {
+  ;; f;
+}
 /* */
-abstract class Mix___wFooX__wBarY_f extends FooX__[A] with BarY_f[B] { ;; f; }
+abstract class Mix___wFooX__wBarY_f extends FooX__[A] with BarY_f[B] {
+  ;; f;
+}
 /* */
-abstract class Mix___wFooX__wBarYI_ extends FooX__[A] with BarYI_[B] { ;; f; }
+abstract class Mix___wFooX__wBarYI_ extends FooX__[A] with BarYI_[B] {
+  ;; f;
+}
 /* */ /*    */
-class Mix___wFooX__wBarYIf extends FooX__[A] with BarYIf[B] { ;; f; }
+class Mix___wFooX__wBarYIf extends FooX__[A] with BarYIf[B] {
+  ;; f;
+}
 /* */
-abstract class Mix___wFooX_f extends FooX_f[A] { ;; f; }
+abstract class Mix___wFooX_f extends FooX_f[A] {
+  ;; f;
+}
 /* */
-abstract class Mix___wFooX_fwBar___ extends FooX_f[A] with Bar___ { ;; f; }
+abstract class Mix___wFooX_fwBar___ extends FooX_f[A] with Bar___ {
+  ;; f;
+}
 // */abstract class Mix___wFooX_fwBar__f     extends FooX_f[A] with Bar__f    {        ;                                ; f; }
 /* */ /*    */
-class Mix___wFooX_fwBar_I_ extends FooX_f[A] with Bar_I_ { ;; f; }
+class Mix___wFooX_fwBar_I_ extends FooX_f[A] with Bar_I_ {
+  ;; f;
+}
 // *//*    */ class Mix___wFooX_fwBar_If     extends FooX_f[A] with Bar_If    {        ;                                ; f; }
 /* */
-abstract class Mix___wFooX_fwBarY__ extends FooX_f[A] with BarY__[B] { ;; f; }
+abstract class Mix___wFooX_fwBarY__ extends FooX_f[A] with BarY__[B] {
+  ;; f;
+}
 // */abstract class Mix___wFooX_fwBarY_f     extends FooX_f[A] with BarY_f[B] {        ;                                ; f; }
 /* */ /*    */
-class Mix___wFooX_fwBarYI_ extends FooX_f[A] with BarYI_[B] { ;; f; }
+class Mix___wFooX_fwBarYI_ extends FooX_f[A] with BarYI_[B] {
+  ;; f;
+}
 // *//*    */ class Mix___wFooX_fwBarYIf     extends FooX_f[A] with BarYIf[B] {        ;                                ; f; }
 /* */
-abstract class Mix___wFooXI_ extends FooXI_[A] { ;; f; }
+abstract class Mix___wFooXI_ extends FooXI_[A] {
+  ;; f;
+}
 /* */
-abstract class Mix___wFooXI_wBar___ extends FooXI_[A] with Bar___ { ;; f; }
+abstract class Mix___wFooXI_wBar___ extends FooXI_[A] with Bar___ {
+  ;; f;
+}
 /* */ /*    */
-class Mix___wFooXI_wBar__f extends FooXI_[A] with Bar__f { ;; f; }
+class Mix___wFooXI_wBar__f extends FooXI_[A] with Bar__f {
+  ;; f;
+}
 // */abstract class Mix___wFooXI_wBar_I_     extends FooXI_[A] with Bar_I_    {        ;                                ; f; }
 // *//*    */ class Mix___wFooXI_wBar_If     extends FooXI_[A] with Bar_If    {        ;                                ; f; }
 /* */
-abstract class Mix___wFooXI_wBarY__ extends FooXI_[A] with BarY__[B] { ;; f; }
+abstract class Mix___wFooXI_wBarY__ extends FooXI_[A] with BarY__[B] {
+  ;; f;
+}
 /* */ /*    */
-class Mix___wFooXI_wBarY_f extends FooXI_[A] with BarY_f[B] { ;; f; }
+class Mix___wFooXI_wBarY_f extends FooXI_[A] with BarY_f[B] {
+  ;; f;
+}
 // */abstract class Mix___wFooXI_wBarYI_     extends FooXI_[A] with BarYI_[B] {        ;                                ; f; }
 // *//*    */ class Mix___wFooXI_wBarYIf     extends FooXI_[A] with BarYIf[B] {        ;                                ; f; }
 /* */ /*    */
-class Mix___wFooXIf extends FooXIf[A] { ;; f; }
+class Mix___wFooXIf extends FooXIf[A] {
+  ;; f;
+}
 /* */ /*    */
-class Mix___wFooXIfwBar___ extends FooXIf[A] with Bar___ { ;; f; }
+class Mix___wFooXIfwBar___ extends FooXIf[A] with Bar___ {
+  ;; f;
+}
 // *//*    */ class Mix___wFooXIfwBar__f     extends FooXIf[A] with Bar__f    {        ;                                ; f; }
 // *//*    */ class Mix___wFooXIfwBar_I_     extends FooXIf[A] with Bar_I_    {        ;                                ; f; }
 // *//*    */ class Mix___wFooXIfwBar_If     extends FooXIf[A] with Bar_If    {        ;                                ; f; }
 /* */ /*    */
-class Mix___wFooXIfwBarY__ extends FooXIf[A] with BarY__[B] { ;; f; }
+class Mix___wFooXIfwBarY__ extends FooXIf[A] with BarY__[B] {
+  ;; f;
+}
 // *//*    */ class Mix___wFooXIfwBarY_f     extends FooXIf[A] with BarY_f[B] {        ;                                ; f; }
 // *//*    */ class Mix___wFooXIfwBarYI_     extends FooXIf[A] with BarYI_[B] {        ;                                ; f; }
 // *//*    */ class Mix___wFooXIfwBarYIf     extends FooXIf[A] with BarYIf[B] {        ;                                ; f; }
 
 /* */
-abstract class Mix__fwFoo___ extends Foo___ { ; def f: I = { mix; null }; f; }
+abstract class Mix__fwFoo___ extends Foo___ {
+  ;
+  def f: I = {
+    mix; null
+  }; f;
+}
 /* */
 abstract class Mix__fwFoo___wBar___ extends Foo___ with Bar___ {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__fwFoo___wBar__f extends Foo___ with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__fwFoo___wBar_I_ extends Foo___ with Bar_I_ {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__fwFoo___wBar_If extends Foo___ with Bar_If {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__fwFoo___wBarY__ extends Foo___ with BarY__[B] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__fwFoo___wBarY_f extends Foo___ with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__fwFoo___wBarYI_ extends Foo___ with BarYI_[B] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__fwFoo___wBarYIf extends Foo___ with BarYIf[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__fwFoo__f extends Foo__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__fwFoo__fwBar___ extends Foo__f with Bar___ {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__fwFoo__fwBar__f extends Foo__f with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__fwFoo__fwBar_I_ extends Foo__f with Bar_I_ {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__fwFoo__fwBar_If extends Foo__f with Bar_If {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__fwFoo__fwBarY__ extends Foo__f with BarY__[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__fwFoo__fwBarY_f extends Foo__f with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__fwFoo__fwBarYI_ extends Foo__f with BarYI_[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__fwFoo__fwBarYIf extends Foo__f with BarYIf[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
-class Mix__fwFoo_I_ extends Foo_I_ { ; def f: I = { mix; null }; f; }
+class Mix__fwFoo_I_ extends Foo_I_ {
+  ;
+  def f: I = {
+    mix; null
+  }; f;
+}
 /* */ /*    */
 class Mix__fwFoo_I_wBar___ extends Foo_I_ with Bar___ {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__fwFoo_I_wBar__f extends Foo_I_ with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix__fwFoo_I_wBar_I_     extends Foo_I_    with Bar_I_    {        ;          def f: I = {mix; null}; f; }
 // *//*    */ class Mix__fwFoo_I_wBar_If     extends Foo_I_    with Bar_If    {        ; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class Mix__fwFoo_I_wBarY__ extends Foo_I_ with BarY__[B] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__fwFoo_I_wBarY_f extends Foo_I_ with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix__fwFoo_I_wBarYI_     extends Foo_I_    with BarYI_[B] {        ;          def f: I = {mix; null}; f; }
 // *//*    */ class Mix__fwFoo_I_wBarYIf     extends Foo_I_    with BarYIf[B] {        ; override def f: I = {mix; null}; f; }
 /* */ /*    */
-class Mix__fwFoo_If extends Foo_If { ; override def f: I = { mix; null }; f; }
+class Mix__fwFoo_If extends Foo_If {
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
+}
 /* */ /*    */
 class Mix__fwFoo_IfwBar___ extends Foo_If with Bar___ {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__fwFoo_IfwBar__f extends Foo_If with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix__fwFoo_IfwBar_I_     extends Foo_If    with Bar_I_    {        ; override def f: I = {mix; null}; f; }
 // *//*    */ class Mix__fwFoo_IfwBar_If     extends Foo_If    with Bar_If    {        ; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class Mix__fwFoo_IfwBarY__ extends Foo_If with BarY__[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__fwFoo_IfwBarY_f extends Foo_If with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix__fwFoo_IfwBarYI_     extends Foo_If    with BarYI_[B] {        ; override def f: I = {mix; null}; f; }
 // *//*    */ class Mix__fwFoo_IfwBarYIf     extends Foo_If    with BarYIf[B] {        ; override def f: I = {mix; null}; f; }
 /* */
 abstract class Mix__fwFooX__ extends FooX__[A] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__fwFooX__wBar___ extends FooX__[A] with Bar___ {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__fwFooX__wBar__f extends FooX__[A] with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__fwFooX__wBar_I_ extends FooX__[A] with Bar_I_ {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__fwFooX__wBar_If extends FooX__[A] with Bar_If {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__fwFooX__wBarY__ extends FooX__[A] with BarY__[B] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__fwFooX__wBarY_f extends FooX__[A] with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__fwFooX__wBarYI_ extends FooX__[A] with BarYI_[B] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__fwFooX__wBarYIf extends FooX__[A] with BarYIf[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__fwFooX_f extends FooX_f[A] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__fwFooX_fwBar___ extends FooX_f[A] with Bar___ {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__fwFooX_fwBar__f extends FooX_f[A] with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__fwFooX_fwBar_I_ extends FooX_f[A] with Bar_I_ {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__fwFooX_fwBar_If extends FooX_f[A] with Bar_If {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__fwFooX_fwBarY__ extends FooX_f[A] with BarY__[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class Mix__fwFooX_fwBarY_f extends FooX_f[A] with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__fwFooX_fwBarYI_ extends FooX_f[A] with BarYI_[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__fwFooX_fwBarYIf extends FooX_f[A] with BarYIf[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
-class Mix__fwFooXI_ extends FooXI_[A] { ; def f: I = { mix; null }; f; }
+class Mix__fwFooXI_ extends FooXI_[A] {
+  ;
+  def f: I = {
+    mix; null
+  }; f;
+}
 /* */ /*    */
 class Mix__fwFooXI_wBar___ extends FooXI_[A] with Bar___ {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__fwFooXI_wBar__f extends FooXI_[A] with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix__fwFooXI_wBar_I_     extends FooXI_[A] with Bar_I_    {        ;          def f: I = {mix; null}; f; }
 // *//*    */ class Mix__fwFooXI_wBar_If     extends FooXI_[A] with Bar_If    {        ; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class Mix__fwFooXI_wBarY__ extends FooXI_[A] with BarY__[B] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__fwFooXI_wBarY_f extends FooXI_[A] with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix__fwFooXI_wBarYI_     extends FooXI_[A] with BarYI_[B] {        ;          def f: I = {mix; null}; f; }
 // *//*    */ class Mix__fwFooXI_wBarYIf     extends FooXI_[A] with BarYIf[B] {        ; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class Mix__fwFooXIf extends FooXIf[A] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__fwFooXIfwBar___ extends FooXIf[A] with Bar___ {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__fwFooXIfwBar__f extends FooXIf[A] with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix__fwFooXIfwBar_I_     extends FooXIf[A] with Bar_I_    {        ; override def f: I = {mix; null}; f; }
 // *//*    */ class Mix__fwFooXIfwBar_If     extends FooXIf[A] with Bar_If    {        ; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class Mix__fwFooXIfwBarY__ extends FooXIf[A] with BarY__[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix__fwFooXIfwBarY_f extends FooXIf[A] with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix__fwFooXIfwBarYI_     extends FooXIf[A] with BarYI_[B] {        ; override def f: I = {mix; null}; f; }
 // *//*    */ class Mix__fwFooXIfwBarYIf     extends FooXIf[A] with BarYIf[B] {        ; override def f: I = {mix; null}; f; }
 
 /* */
-abstract class Mix_I_wFoo___ extends Foo___ { class I;; f; }
+abstract class Mix_I_wFoo___ extends Foo___ {
+  class I;; f;
+}
 /* */
-abstract class Mix_I_wFoo___wBar___ extends Foo___ with Bar___ { class I;; f; }
+abstract class Mix_I_wFoo___wBar___ extends Foo___ with Bar___ {
+  class I;; f;
+}
 /* */ /*    */
-class Mix_I_wFoo___wBar__f extends Foo___ with Bar__f { class I;; f; }
+class Mix_I_wFoo___wBar__f extends Foo___ with Bar__f {
+  class I;; f;
+}
 // */abstract class Mix_I_wFoo___wBar_I_     extends Foo___    with Bar_I_    { class I;                                ; f; }
 // *//*    */ class Mix_I_wFoo___wBar_If     extends Foo___    with Bar_If    { class I;                                ; f; }
 /* */
@@ -1589,18 +2617,26 @@ abstract class Mix_I_wFoo___wBarY__ extends Foo___ with BarY__[B] {
   class I;; f;
 }
 /* */ /*    */
-class Mix_I_wFoo___wBarY_f extends Foo___ with BarY_f[B] { class I;; f; }
+class Mix_I_wFoo___wBarY_f extends Foo___ with BarY_f[B] {
+  class I;; f;
+}
 // */abstract class Mix_I_wFoo___wBarYI_     extends Foo___    with BarYI_[B] { class I;                                ; f; }
 // *//*    */ class Mix_I_wFoo___wBarYIf     extends Foo___    with BarYIf[B] { class I;                                ; f; }
 /* */ /*    */
-class Mix_I_wFoo__f extends Foo__f { class I;; f; }
+class Mix_I_wFoo__f extends Foo__f {
+  class I;; f;
+}
 /* */ /*    */
-class Mix_I_wFoo__fwBar___ extends Foo__f with Bar___ { class I;; f; }
+class Mix_I_wFoo__fwBar___ extends Foo__f with Bar___ {
+  class I;; f;
+}
 // *//*    */ class Mix_I_wFoo__fwBar__f     extends Foo__f    with Bar__f    { class I;                                ; f; }
 // *//*    */ class Mix_I_wFoo__fwBar_I_     extends Foo__f    with Bar_I_    { class I;                                ; f; }
 // *//*    */ class Mix_I_wFoo__fwBar_If     extends Foo__f    with Bar_If    { class I;                                ; f; }
 /* */ /*    */
-class Mix_I_wFoo__fwBarY__ extends Foo__f with BarY__[B] { class I;; f; }
+class Mix_I_wFoo__fwBarY__ extends Foo__f with BarY__[B] {
+  class I;; f;
+}
 // *//*    */ class Mix_I_wFoo__fwBarY_f     extends Foo__f    with BarY_f[B] { class I;                                ; f; }
 // *//*    */ class Mix_I_wFoo__fwBarYI_     extends Foo__f    with BarYI_[B] { class I;                                ; f; }
 // *//*    */ class Mix_I_wFoo__fwBarYIf     extends Foo__f    with BarYIf[B] { class I;                                ; f; }
@@ -1623,13 +2659,17 @@ class Mix_I_wFoo__fwBarY__ extends Foo__f with BarY__[B] { class I;; f; }
 // *//*    */ class Mix_I_wFoo_IfwBarYI_     extends Foo_If    with BarYI_[B] { class I;                                ; f; }
 // *//*    */ class Mix_I_wFoo_IfwBarYIf     extends Foo_If    with BarYIf[B] { class I;                                ; f; }
 /* */
-abstract class Mix_I_wFooX__ extends FooX__[A] { class I;; f; }
+abstract class Mix_I_wFooX__ extends FooX__[A] {
+  class I;; f;
+}
 /* */
 abstract class Mix_I_wFooX__wBar___ extends FooX__[A] with Bar___ {
   class I;; f;
 }
 /* */ /*    */
-class Mix_I_wFooX__wBar__f extends FooX__[A] with Bar__f { class I;; f; }
+class Mix_I_wFooX__wBar__f extends FooX__[A] with Bar__f {
+  class I;; f;
+}
 // */abstract class Mix_I_wFooX__wBar_I_     extends FooX__[A] with Bar_I_    { class I;                                ; f; }
 // *//*    */ class Mix_I_wFooX__wBar_If     extends FooX__[A] with Bar_If    { class I;                                ; f; }
 /* */
@@ -1637,18 +2677,26 @@ abstract class Mix_I_wFooX__wBarY__ extends FooX__[A] with BarY__[B] {
   class I;; f;
 }
 /* */ /*    */
-class Mix_I_wFooX__wBarY_f extends FooX__[A] with BarY_f[B] { class I;; f; }
+class Mix_I_wFooX__wBarY_f extends FooX__[A] with BarY_f[B] {
+  class I;; f;
+}
 // */abstract class Mix_I_wFooX__wBarYI_     extends FooX__[A] with BarYI_[B] { class I;                                ; f; }
 // *//*    */ class Mix_I_wFooX__wBarYIf     extends FooX__[A] with BarYIf[B] { class I;                                ; f; }
 /* */ /*    */
-class Mix_I_wFooX_f extends FooX_f[A] { class I;; f; }
+class Mix_I_wFooX_f extends FooX_f[A] {
+  class I;; f;
+}
 /* */ /*    */
-class Mix_I_wFooX_fwBar___ extends FooX_f[A] with Bar___ { class I;; f; }
+class Mix_I_wFooX_fwBar___ extends FooX_f[A] with Bar___ {
+  class I;; f;
+}
 // *//*    */ class Mix_I_wFooX_fwBar__f     extends FooX_f[A] with Bar__f    { class I;                                ; f; }
 // *//*    */ class Mix_I_wFooX_fwBar_I_     extends FooX_f[A] with Bar_I_    { class I;                                ; f; }
 // *//*    */ class Mix_I_wFooX_fwBar_If     extends FooX_f[A] with Bar_If    { class I;                                ; f; }
 /* */ /*    */
-class Mix_I_wFooX_fwBarY__ extends FooX_f[A] with BarY__[B] { class I;; f; }
+class Mix_I_wFooX_fwBarY__ extends FooX_f[A] with BarY__[B] {
+  class I;; f;
+}
 // *//*    */ class Mix_I_wFooX_fwBarY_f     extends FooX_f[A] with BarY_f[B] { class I;                                ; f; }
 // *//*    */ class Mix_I_wFooX_fwBarYI_     extends FooX_f[A] with BarYI_[B] { class I;                                ; f; }
 // *//*    */ class Mix_I_wFooX_fwBarYIf     extends FooX_f[A] with BarYIf[B] { class I;                                ; f; }
@@ -1672,48 +2720,80 @@ class Mix_I_wFooX_fwBarY__ extends FooX_f[A] with BarY__[B] { class I;; f; }
 // *//*    */ class Mix_I_wFooXIfwBarYIf     extends FooXIf[A] with BarYIf[B] { class I;                                ; f; }
 
 /* */ /*    */
-class Mix_IfwFoo___ extends Foo___ { class I; def f: I = { mix; null }; f; }
+class Mix_IfwFoo___ extends Foo___ {
+  class I;
+  def f: I = {
+    mix; null
+  }; f;
+}
 /* */ /*    */
 class Mix_IfwFoo___wBar___ extends Foo___ with Bar___ {
-  class I; def f: I = { mix; null }; f;
+  class I;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix_IfwFoo___wBar__f extends Foo___ with Bar__f {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix_IfwFoo___wBar_I_     extends Foo___    with Bar_I_    { class I;          def f: I = {mix; null}; f; }
 // *//*    */ class Mix_IfwFoo___wBar_If     extends Foo___    with Bar_If    { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class Mix_IfwFoo___wBarY__ extends Foo___ with BarY__[B] {
-  class I; def f: I = { mix; null }; f;
+  class I;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix_IfwFoo___wBarY_f extends Foo___ with BarY_f[B] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix_IfwFoo___wBarYI_     extends Foo___    with BarYI_[B] { class I;          def f: I = {mix; null}; f; }
 // *//*    */ class Mix_IfwFoo___wBarYIf     extends Foo___    with BarYIf[B] { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class Mix_IfwFoo__f extends Foo__f {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix_IfwFoo__fwBar___ extends Foo__f with Bar___ {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix_IfwFoo__fwBar__f extends Foo__f with Bar__f {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix_IfwFoo__fwBar_I_     extends Foo__f    with Bar_I_    { class I; override def f: I = {mix; null}; f; }
 // *//*    */ class Mix_IfwFoo__fwBar_If     extends Foo__f    with Bar_If    { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class Mix_IfwFoo__fwBarY__ extends Foo__f with BarY__[B] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix_IfwFoo__fwBarY_f extends Foo__f with BarY_f[B] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix_IfwFoo__fwBarYI_     extends Foo__f    with BarYI_[B] { class I; override def f: I = {mix; null}; f; }
 // *//*    */ class Mix_IfwFoo__fwBarYIf     extends Foo__f    with BarYIf[B] { class I; override def f: I = {mix; null}; f; }
@@ -1736,48 +2816,80 @@ class Mix_IfwFoo__fwBarY_f extends Foo__f with BarY_f[B] {
 // *//*    */ class Mix_IfwFoo_IfwBarYI_     extends Foo_If    with BarYI_[B] { class I; override def f: I = {mix; null}; f; }
 // *//*    */ class Mix_IfwFoo_IfwBarYIf     extends Foo_If    with BarYIf[B] { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
-class Mix_IfwFooX__ extends FooX__[A] { class I; def f: I = { mix; null }; f; }
+class Mix_IfwFooX__ extends FooX__[A] {
+  class I;
+  def f: I = {
+    mix; null
+  }; f;
+}
 /* */ /*    */
 class Mix_IfwFooX__wBar___ extends FooX__[A] with Bar___ {
-  class I; def f: I = { mix; null }; f;
+  class I;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix_IfwFooX__wBar__f extends FooX__[A] with Bar__f {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix_IfwFooX__wBar_I_     extends FooX__[A] with Bar_I_    { class I;          def f: I = {mix; null}; f; }
 // *//*    */ class Mix_IfwFooX__wBar_If     extends FooX__[A] with Bar_If    { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class Mix_IfwFooX__wBarY__ extends FooX__[A] with BarY__[B] {
-  class I; def f: I = { mix; null }; f;
+  class I;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix_IfwFooX__wBarY_f extends FooX__[A] with BarY_f[B] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix_IfwFooX__wBarYI_     extends FooX__[A] with BarYI_[B] { class I;          def f: I = {mix; null}; f; }
 // *//*    */ class Mix_IfwFooX__wBarYIf     extends FooX__[A] with BarYIf[B] { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class Mix_IfwFooX_f extends FooX_f[A] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix_IfwFooX_fwBar___ extends FooX_f[A] with Bar___ {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix_IfwFooX_fwBar__f extends FooX_f[A] with Bar__f {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix_IfwFooX_fwBar_I_     extends FooX_f[A] with Bar_I_    { class I; override def f: I = {mix; null}; f; }
 // *//*    */ class Mix_IfwFooX_fwBar_If     extends FooX_f[A] with Bar_If    { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class Mix_IfwFooX_fwBarY__ extends FooX_f[A] with BarY__[B] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class Mix_IfwFooX_fwBarY_f extends FooX_f[A] with BarY_f[B] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class Mix_IfwFooX_fwBarYI_     extends FooX_f[A] with BarYI_[B] { class I; override def f: I = {mix; null}; f; }
 // *//*    */ class Mix_IfwFooX_fwBarYIf     extends FooX_f[A] with BarYIf[B] { class I; override def f: I = {mix; null}; f; }
@@ -1801,73 +2913,127 @@ class Mix_IfwFooX_fwBarY_f extends FooX_f[A] with BarY_f[B] {
 // *//*    */ class Mix_IfwFooXIfwBarYIf     extends FooXIf[A] with BarYIf[B] { class I; override def f: I = {mix; null}; f; }
 
 /* */
-abstract class MixZ__wFoo___[Z] extends Foo___ { ;; f; }
+abstract class MixZ__wFoo___[Z] extends Foo___ {
+  ;; f;
+}
 /* */
-abstract class MixZ__wFoo___wBar___[Z] extends Foo___ with Bar___ { ;; f; }
+abstract class MixZ__wFoo___wBar___[Z] extends Foo___ with Bar___ {
+  ;; f;
+}
 /* */
-abstract class MixZ__wFoo___wBar__f[Z] extends Foo___ with Bar__f { ;; f; }
+abstract class MixZ__wFoo___wBar__f[Z] extends Foo___ with Bar__f {
+  ;; f;
+}
 /* */
-abstract class MixZ__wFoo___wBar_I_[Z] extends Foo___ with Bar_I_ { ;; f; }
+abstract class MixZ__wFoo___wBar_I_[Z] extends Foo___ with Bar_I_ {
+  ;; f;
+}
 /* */ /*    */
-class MixZ__wFoo___wBar_If[Z] extends Foo___ with Bar_If { ;; f; }
+class MixZ__wFoo___wBar_If[Z] extends Foo___ with Bar_If {
+  ;; f;
+}
 /* */
-abstract class MixZ__wFoo___wBarY__[Z] extends Foo___ with BarY__[B] { ;; f; }
+abstract class MixZ__wFoo___wBarY__[Z] extends Foo___ with BarY__[B] {
+  ;; f;
+}
 /* */
-abstract class MixZ__wFoo___wBarY_f[Z] extends Foo___ with BarY_f[B] { ;; f; }
+abstract class MixZ__wFoo___wBarY_f[Z] extends Foo___ with BarY_f[B] {
+  ;; f;
+}
 /* */
-abstract class MixZ__wFoo___wBarYI_[Z] extends Foo___ with BarYI_[B] { ;; f; }
+abstract class MixZ__wFoo___wBarYI_[Z] extends Foo___ with BarYI_[B] {
+  ;; f;
+}
 /* */ /*    */
-class MixZ__wFoo___wBarYIf[Z] extends Foo___ with BarYIf[B] { ;; f; }
+class MixZ__wFoo___wBarYIf[Z] extends Foo___ with BarYIf[B] {
+  ;; f;
+}
 /* */
-abstract class MixZ__wFoo__f[Z] extends Foo__f { ;; f; }
+abstract class MixZ__wFoo__f[Z] extends Foo__f {
+  ;; f;
+}
 /* */
-abstract class MixZ__wFoo__fwBar___[Z] extends Foo__f with Bar___ { ;; f; }
+abstract class MixZ__wFoo__fwBar___[Z] extends Foo__f with Bar___ {
+  ;; f;
+}
 // */abstract class MixZ__wFoo__fwBar__f[Z]  extends Foo__f    with Bar__f    {        ;                                ; f; }
 /* */ /*    */
-class MixZ__wFoo__fwBar_I_[Z] extends Foo__f with Bar_I_ { ;; f; }
+class MixZ__wFoo__fwBar_I_[Z] extends Foo__f with Bar_I_ {
+  ;; f;
+}
 // *//*    */ class MixZ__wFoo__fwBar_If[Z]  extends Foo__f    with Bar_If    {        ;                                ; f; }
 /* */
-abstract class MixZ__wFoo__fwBarY__[Z] extends Foo__f with BarY__[B] { ;; f; }
+abstract class MixZ__wFoo__fwBarY__[Z] extends Foo__f with BarY__[B] {
+  ;; f;
+}
 // */abstract class MixZ__wFoo__fwBarY_f[Z]  extends Foo__f    with BarY_f[B] {        ;                                ; f; }
 /* */ /*    */
-class MixZ__wFoo__fwBarYI_[Z] extends Foo__f with BarYI_[B] { ;; f; }
+class MixZ__wFoo__fwBarYI_[Z] extends Foo__f with BarYI_[B] {
+  ;; f;
+}
 // *//*    */ class MixZ__wFoo__fwBarYIf[Z]  extends Foo__f    with BarYIf[B] {        ;                                ; f; }
 /* */
-abstract class MixZ__wFoo_I_[Z] extends Foo_I_ { ;; f; }
+abstract class MixZ__wFoo_I_[Z] extends Foo_I_ {
+  ;; f;
+}
 /* */
-abstract class MixZ__wFoo_I_wBar___[Z] extends Foo_I_ with Bar___ { ;; f; }
+abstract class MixZ__wFoo_I_wBar___[Z] extends Foo_I_ with Bar___ {
+  ;; f;
+}
 /* */ /*    */
-class MixZ__wFoo_I_wBar__f[Z] extends Foo_I_ with Bar__f { ;; f; }
+class MixZ__wFoo_I_wBar__f[Z] extends Foo_I_ with Bar__f {
+  ;; f;
+}
 // */abstract class MixZ__wFoo_I_wBar_I_[Z]  extends Foo_I_    with Bar_I_    {        ;                                ; f; }
 // *//*    */ class MixZ__wFoo_I_wBar_If[Z]  extends Foo_I_    with Bar_If    {        ;                                ; f; }
 /* */
-abstract class MixZ__wFoo_I_wBarY__[Z] extends Foo_I_ with BarY__[B] { ;; f; }
+abstract class MixZ__wFoo_I_wBarY__[Z] extends Foo_I_ with BarY__[B] {
+  ;; f;
+}
 /* */ /*    */
-class MixZ__wFoo_I_wBarY_f[Z] extends Foo_I_ with BarY_f[B] { ;; f; }
+class MixZ__wFoo_I_wBarY_f[Z] extends Foo_I_ with BarY_f[B] {
+  ;; f;
+}
 // */abstract class MixZ__wFoo_I_wBarYI_[Z]  extends Foo_I_    with BarYI_[B] {        ;                                ; f; }
 // *//*    */ class MixZ__wFoo_I_wBarYIf[Z]  extends Foo_I_    with BarYIf[B] {        ;                                ; f; }
 /* */ /*    */
-class MixZ__wFoo_If[Z] extends Foo_If { ;; f; }
+class MixZ__wFoo_If[Z] extends Foo_If {
+  ;; f;
+}
 /* */ /*    */
-class MixZ__wFoo_IfwBar___[Z] extends Foo_If with Bar___ { ;; f; }
+class MixZ__wFoo_IfwBar___[Z] extends Foo_If with Bar___ {
+  ;; f;
+}
 // *//*    */ class MixZ__wFoo_IfwBar__f[Z]  extends Foo_If    with Bar__f    {        ;                                ; f; }
 // *//*    */ class MixZ__wFoo_IfwBar_I_[Z]  extends Foo_If    with Bar_I_    {        ;                                ; f; }
 // *//*    */ class MixZ__wFoo_IfwBar_If[Z]  extends Foo_If    with Bar_If    {        ;                                ; f; }
 /* */ /*    */
-class MixZ__wFoo_IfwBarY__[Z] extends Foo_If with BarY__[B] { ;; f; }
+class MixZ__wFoo_IfwBarY__[Z] extends Foo_If with BarY__[B] {
+  ;; f;
+}
 // *//*    */ class MixZ__wFoo_IfwBarY_f[Z]  extends Foo_If    with BarY_f[B] {        ;                                ; f; }
 // *//*    */ class MixZ__wFoo_IfwBarYI_[Z]  extends Foo_If    with BarYI_[B] {        ;                                ; f; }
 // *//*    */ class MixZ__wFoo_IfwBarYIf[Z]  extends Foo_If    with BarYIf[B] {        ;                                ; f; }
 /* */
-abstract class MixZ__wFooX__[Z] extends FooX__[A] { ;; f; }
+abstract class MixZ__wFooX__[Z] extends FooX__[A] {
+  ;; f;
+}
 /* */
-abstract class MixZ__wFooX__wBar___[Z] extends FooX__[A] with Bar___ { ;; f; }
+abstract class MixZ__wFooX__wBar___[Z] extends FooX__[A] with Bar___ {
+  ;; f;
+}
 /* */
-abstract class MixZ__wFooX__wBar__f[Z] extends FooX__[A] with Bar__f { ;; f; }
+abstract class MixZ__wFooX__wBar__f[Z] extends FooX__[A] with Bar__f {
+  ;; f;
+}
 /* */
-abstract class MixZ__wFooX__wBar_I_[Z] extends FooX__[A] with Bar_I_ { ;; f; }
+abstract class MixZ__wFooX__wBar_I_[Z] extends FooX__[A] with Bar_I_ {
+  ;; f;
+}
 /* */ /*    */
-class MixZ__wFooX__wBar_If[Z] extends FooX__[A] with Bar_If { ;; f; }
+class MixZ__wFooX__wBar_If[Z] extends FooX__[A] with Bar_If {
+  ;; f;
+}
 /* */
 abstract class MixZ__wFooX__wBarY__[Z] extends FooX__[A] with BarY__[B] {
   ;; f;
@@ -1881,14 +3047,22 @@ abstract class MixZ__wFooX__wBarYI_[Z] extends FooX__[A] with BarYI_[B] {
   ;; f;
 }
 /* */ /*    */
-class MixZ__wFooX__wBarYIf[Z] extends FooX__[A] with BarYIf[B] { ;; f; }
+class MixZ__wFooX__wBarYIf[Z] extends FooX__[A] with BarYIf[B] {
+  ;; f;
+}
 /* */
-abstract class MixZ__wFooX_f[Z] extends FooX_f[A] { ;; f; }
+abstract class MixZ__wFooX_f[Z] extends FooX_f[A] {
+  ;; f;
+}
 /* */
-abstract class MixZ__wFooX_fwBar___[Z] extends FooX_f[A] with Bar___ { ;; f; }
+abstract class MixZ__wFooX_fwBar___[Z] extends FooX_f[A] with Bar___ {
+  ;; f;
+}
 // */abstract class MixZ__wFooX_fwBar__f[Z]  extends FooX_f[A] with Bar__f    {        ;                                ; f; }
 /* */ /*    */
-class MixZ__wFooX_fwBar_I_[Z] extends FooX_f[A] with Bar_I_ { ;; f; }
+class MixZ__wFooX_fwBar_I_[Z] extends FooX_f[A] with Bar_I_ {
+  ;; f;
+}
 // *//*    */ class MixZ__wFooX_fwBar_If[Z]  extends FooX_f[A] with Bar_If    {        ;                                ; f; }
 /* */
 abstract class MixZ__wFooX_fwBarY__[Z] extends FooX_f[A] with BarY__[B] {
@@ -1896,14 +3070,22 @@ abstract class MixZ__wFooX_fwBarY__[Z] extends FooX_f[A] with BarY__[B] {
 }
 // */abstract class MixZ__wFooX_fwBarY_f[Z]  extends FooX_f[A] with BarY_f[B] {        ;                                ; f; }
 /* */ /*    */
-class MixZ__wFooX_fwBarYI_[Z] extends FooX_f[A] with BarYI_[B] { ;; f; }
+class MixZ__wFooX_fwBarYI_[Z] extends FooX_f[A] with BarYI_[B] {
+  ;; f;
+}
 // *//*    */ class MixZ__wFooX_fwBarYIf[Z]  extends FooX_f[A] with BarYIf[B] {        ;                                ; f; }
 /* */
-abstract class MixZ__wFooXI_[Z] extends FooXI_[A] { ;; f; }
+abstract class MixZ__wFooXI_[Z] extends FooXI_[A] {
+  ;; f;
+}
 /* */
-abstract class MixZ__wFooXI_wBar___[Z] extends FooXI_[A] with Bar___ { ;; f; }
+abstract class MixZ__wFooXI_wBar___[Z] extends FooXI_[A] with Bar___ {
+  ;; f;
+}
 /* */ /*    */
-class MixZ__wFooXI_wBar__f[Z] extends FooXI_[A] with Bar__f { ;; f; }
+class MixZ__wFooXI_wBar__f[Z] extends FooXI_[A] with Bar__f {
+  ;; f;
+}
 // */abstract class MixZ__wFooXI_wBar_I_[Z]  extends FooXI_[A] with Bar_I_    {        ;                                ; f; }
 // *//*    */ class MixZ__wFooXI_wBar_If[Z]  extends FooXI_[A] with Bar_If    {        ;                                ; f; }
 /* */
@@ -1911,267 +3093,451 @@ abstract class MixZ__wFooXI_wBarY__[Z] extends FooXI_[A] with BarY__[B] {
   ;; f;
 }
 /* */ /*    */
-class MixZ__wFooXI_wBarY_f[Z] extends FooXI_[A] with BarY_f[B] { ;; f; }
+class MixZ__wFooXI_wBarY_f[Z] extends FooXI_[A] with BarY_f[B] {
+  ;; f;
+}
 // */abstract class MixZ__wFooXI_wBarYI_[Z]  extends FooXI_[A] with BarYI_[B] {        ;                                ; f; }
 // *//*    */ class MixZ__wFooXI_wBarYIf[Z]  extends FooXI_[A] with BarYIf[B] {        ;                                ; f; }
 /* */ /*    */
-class MixZ__wFooXIf[Z] extends FooXIf[A] { ;; f; }
+class MixZ__wFooXIf[Z] extends FooXIf[A] {
+  ;; f;
+}
 /* */ /*    */
-class MixZ__wFooXIfwBar___[Z] extends FooXIf[A] with Bar___ { ;; f; }
+class MixZ__wFooXIfwBar___[Z] extends FooXIf[A] with Bar___ {
+  ;; f;
+}
 // *//*    */ class MixZ__wFooXIfwBar__f[Z]  extends FooXIf[A] with Bar__f    {        ;                                ; f; }
 // *//*    */ class MixZ__wFooXIfwBar_I_[Z]  extends FooXIf[A] with Bar_I_    {        ;                                ; f; }
 // *//*    */ class MixZ__wFooXIfwBar_If[Z]  extends FooXIf[A] with Bar_If    {        ;                                ; f; }
 /* */ /*    */
-class MixZ__wFooXIfwBarY__[Z] extends FooXIf[A] with BarY__[B] { ;; f; }
+class MixZ__wFooXIfwBarY__[Z] extends FooXIf[A] with BarY__[B] {
+  ;; f;
+}
 // *//*    */ class MixZ__wFooXIfwBarY_f[Z]  extends FooXIf[A] with BarY_f[B] {        ;                                ; f; }
 // *//*    */ class MixZ__wFooXIfwBarYI_[Z]  extends FooXIf[A] with BarYI_[B] {        ;                                ; f; }
 // *//*    */ class MixZ__wFooXIfwBarYIf[Z]  extends FooXIf[A] with BarYIf[B] {        ;                                ; f; }
 
 /* */
 abstract class MixZ_fwFoo___[Z] extends Foo___ {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_fwFoo___wBar___[Z] extends Foo___ with Bar___ {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_fwFoo___wBar__f[Z] extends Foo___ with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_fwFoo___wBar_I_[Z] extends Foo___ with Bar_I_ {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_fwFoo___wBar_If[Z] extends Foo___ with Bar_If {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_fwFoo___wBarY__[Z] extends Foo___ with BarY__[B] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_fwFoo___wBarY_f[Z] extends Foo___ with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_fwFoo___wBarYI_[Z] extends Foo___ with BarYI_[B] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_fwFoo___wBarYIf[Z] extends Foo___ with BarYIf[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_fwFoo__f[Z] extends Foo__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_fwFoo__fwBar___[Z] extends Foo__f with Bar___ {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_fwFoo__fwBar__f[Z] extends Foo__f with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_fwFoo__fwBar_I_[Z] extends Foo__f with Bar_I_ {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_fwFoo__fwBar_If[Z] extends Foo__f with Bar_If {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_fwFoo__fwBarY__[Z] extends Foo__f with BarY__[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_fwFoo__fwBarY_f[Z] extends Foo__f with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_fwFoo__fwBarYI_[Z] extends Foo__f with BarYI_[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_fwFoo__fwBarYIf[Z] extends Foo__f with BarYIf[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
-class MixZ_fwFoo_I_[Z] extends Foo_I_ { ; def f: I = { mix; null }; f; }
+class MixZ_fwFoo_I_[Z] extends Foo_I_ {
+  ;
+  def f: I = {
+    mix; null
+  }; f;
+}
 /* */ /*    */
 class MixZ_fwFoo_I_wBar___[Z] extends Foo_I_ with Bar___ {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_fwFoo_I_wBar__f[Z] extends Foo_I_ with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZ_fwFoo_I_wBar_I_[Z]  extends Foo_I_    with Bar_I_    {        ;          def f: I = {mix; null}; f; }
 // *//*    */ class MixZ_fwFoo_I_wBar_If[Z]  extends Foo_I_    with Bar_If    {        ; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class MixZ_fwFoo_I_wBarY__[Z] extends Foo_I_ with BarY__[B] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_fwFoo_I_wBarY_f[Z] extends Foo_I_ with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZ_fwFoo_I_wBarYI_[Z]  extends Foo_I_    with BarYI_[B] {        ;          def f: I = {mix; null}; f; }
 // *//*    */ class MixZ_fwFoo_I_wBarYIf[Z]  extends Foo_I_    with BarYIf[B] {        ; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class MixZ_fwFoo_If[Z] extends Foo_If {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_fwFoo_IfwBar___[Z] extends Foo_If with Bar___ {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_fwFoo_IfwBar__f[Z] extends Foo_If with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZ_fwFoo_IfwBar_I_[Z]  extends Foo_If    with Bar_I_    {        ; override def f: I = {mix; null}; f; }
 // *//*    */ class MixZ_fwFoo_IfwBar_If[Z]  extends Foo_If    with Bar_If    {        ; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class MixZ_fwFoo_IfwBarY__[Z] extends Foo_If with BarY__[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_fwFoo_IfwBarY_f[Z] extends Foo_If with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZ_fwFoo_IfwBarYI_[Z]  extends Foo_If    with BarYI_[B] {        ; override def f: I = {mix; null}; f; }
 // *//*    */ class MixZ_fwFoo_IfwBarYIf[Z]  extends Foo_If    with BarYIf[B] {        ; override def f: I = {mix; null}; f; }
 /* */
 abstract class MixZ_fwFooX__[Z] extends FooX__[A] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_fwFooX__wBar___[Z] extends FooX__[A] with Bar___ {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_fwFooX__wBar__f[Z] extends FooX__[A] with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_fwFooX__wBar_I_[Z] extends FooX__[A] with Bar_I_ {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_fwFooX__wBar_If[Z] extends FooX__[A] with Bar_If {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_fwFooX__wBarY__[Z] extends FooX__[A] with BarY__[B] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_fwFooX__wBarY_f[Z] extends FooX__[A] with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_fwFooX__wBarYI_[Z] extends FooX__[A] with BarYI_[B] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_fwFooX__wBarYIf[Z] extends FooX__[A] with BarYIf[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_fwFooX_f[Z] extends FooX_f[A] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_fwFooX_fwBar___[Z] extends FooX_f[A] with Bar___ {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_fwFooX_fwBar__f[Z] extends FooX_f[A] with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_fwFooX_fwBar_I_[Z] extends FooX_f[A] with Bar_I_ {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_fwFooX_fwBar_If[Z] extends FooX_f[A] with Bar_If {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_fwFooX_fwBarY__[Z] extends FooX_f[A] with BarY__[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */
 abstract class MixZ_fwFooX_fwBarY_f[Z] extends FooX_f[A] with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_fwFooX_fwBarYI_[Z] extends FooX_f[A] with BarYI_[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_fwFooX_fwBarYIf[Z] extends FooX_f[A] with BarYIf[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
-class MixZ_fwFooXI_[Z] extends FooXI_[A] { ; def f: I = { mix; null }; f; }
+class MixZ_fwFooXI_[Z] extends FooXI_[A] {
+  ;
+  def f: I = {
+    mix; null
+  }; f;
+}
 /* */ /*    */
 class MixZ_fwFooXI_wBar___[Z] extends FooXI_[A] with Bar___ {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_fwFooXI_wBar__f[Z] extends FooXI_[A] with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZ_fwFooXI_wBar_I_[Z]  extends FooXI_[A] with Bar_I_    {        ;          def f: I = {mix; null}; f; }
 // *//*    */ class MixZ_fwFooXI_wBar_If[Z]  extends FooXI_[A] with Bar_If    {        ; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class MixZ_fwFooXI_wBarY__[Z] extends FooXI_[A] with BarY__[B] {
-  ; def f: I = { mix; null }; f;
+  ;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_fwFooXI_wBarY_f[Z] extends FooXI_[A] with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZ_fwFooXI_wBarYI_[Z]  extends FooXI_[A] with BarYI_[B] {        ;          def f: I = {mix; null}; f; }
 // *//*    */ class MixZ_fwFooXI_wBarYIf[Z]  extends FooXI_[A] with BarYIf[B] {        ; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class MixZ_fwFooXIf[Z] extends FooXIf[A] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_fwFooXIfwBar___[Z] extends FooXIf[A] with Bar___ {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_fwFooXIfwBar__f[Z] extends FooXIf[A] with Bar__f {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZ_fwFooXIfwBar_I_[Z]  extends FooXIf[A] with Bar_I_    {        ; override def f: I = {mix; null}; f; }
 // *//*    */ class MixZ_fwFooXIfwBar_If[Z]  extends FooXIf[A] with Bar_If    {        ; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class MixZ_fwFooXIfwBarY__[Z] extends FooXIf[A] with BarY__[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZ_fwFooXIfwBarY_f[Z] extends FooXIf[A] with BarY_f[B] {
-  ; override def f: I = { mix; null }; f;
+  ;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZ_fwFooXIfwBarYI_[Z]  extends FooXIf[A] with BarYI_[B] {        ; override def f: I = {mix; null}; f; }
 // *//*    */ class MixZ_fwFooXIfwBarYIf[Z]  extends FooXIf[A] with BarYIf[B] {        ; override def f: I = {mix; null}; f; }
 
 /* */
-abstract class MixZI_wFoo___[Z] extends Foo___ { class I;; f; }
+abstract class MixZI_wFoo___[Z] extends Foo___ {
+  class I;; f;
+}
 /* */
 abstract class MixZI_wFoo___wBar___[Z] extends Foo___ with Bar___ {
   class I;; f;
 }
 /* */ /*    */
-class MixZI_wFoo___wBar__f[Z] extends Foo___ with Bar__f { class I;; f; }
+class MixZI_wFoo___wBar__f[Z] extends Foo___ with Bar__f {
+  class I;; f;
+}
 // */abstract class MixZI_wFoo___wBar_I_[Z]  extends Foo___    with Bar_I_    { class I;                                ; f; }
 // *//*    */ class MixZI_wFoo___wBar_If[Z]  extends Foo___    with Bar_If    { class I;                                ; f; }
 /* */
@@ -2179,18 +3545,26 @@ abstract class MixZI_wFoo___wBarY__[Z] extends Foo___ with BarY__[B] {
   class I;; f;
 }
 /* */ /*    */
-class MixZI_wFoo___wBarY_f[Z] extends Foo___ with BarY_f[B] { class I;; f; }
+class MixZI_wFoo___wBarY_f[Z] extends Foo___ with BarY_f[B] {
+  class I;; f;
+}
 // */abstract class MixZI_wFoo___wBarYI_[Z]  extends Foo___    with BarYI_[B] { class I;                                ; f; }
 // *//*    */ class MixZI_wFoo___wBarYIf[Z]  extends Foo___    with BarYIf[B] { class I;                                ; f; }
 /* */ /*    */
-class MixZI_wFoo__f[Z] extends Foo__f { class I;; f; }
+class MixZI_wFoo__f[Z] extends Foo__f {
+  class I;; f;
+}
 /* */ /*    */
-class MixZI_wFoo__fwBar___[Z] extends Foo__f with Bar___ { class I;; f; }
+class MixZI_wFoo__fwBar___[Z] extends Foo__f with Bar___ {
+  class I;; f;
+}
 // *//*    */ class MixZI_wFoo__fwBar__f[Z]  extends Foo__f    with Bar__f    { class I;                                ; f; }
 // *//*    */ class MixZI_wFoo__fwBar_I_[Z]  extends Foo__f    with Bar_I_    { class I;                                ; f; }
 // *//*    */ class MixZI_wFoo__fwBar_If[Z]  extends Foo__f    with Bar_If    { class I;                                ; f; }
 /* */ /*    */
-class MixZI_wFoo__fwBarY__[Z] extends Foo__f with BarY__[B] { class I;; f; }
+class MixZI_wFoo__fwBarY__[Z] extends Foo__f with BarY__[B] {
+  class I;; f;
+}
 // *//*    */ class MixZI_wFoo__fwBarY_f[Z]  extends Foo__f    with BarY_f[B] { class I;                                ; f; }
 // *//*    */ class MixZI_wFoo__fwBarYI_[Z]  extends Foo__f    with BarYI_[B] { class I;                                ; f; }
 // *//*    */ class MixZI_wFoo__fwBarYIf[Z]  extends Foo__f    with BarYIf[B] { class I;                                ; f; }
@@ -2213,13 +3587,17 @@ class MixZI_wFoo__fwBarY__[Z] extends Foo__f with BarY__[B] { class I;; f; }
 // *//*    */ class MixZI_wFoo_IfwBarYI_[Z]  extends Foo_If    with BarYI_[B] { class I;                                ; f; }
 // *//*    */ class MixZI_wFoo_IfwBarYIf[Z]  extends Foo_If    with BarYIf[B] { class I;                                ; f; }
 /* */
-abstract class MixZI_wFooX__[Z] extends FooX__[A] { class I;; f; }
+abstract class MixZI_wFooX__[Z] extends FooX__[A] {
+  class I;; f;
+}
 /* */
 abstract class MixZI_wFooX__wBar___[Z] extends FooX__[A] with Bar___ {
   class I;; f;
 }
 /* */ /*    */
-class MixZI_wFooX__wBar__f[Z] extends FooX__[A] with Bar__f { class I;; f; }
+class MixZI_wFooX__wBar__f[Z] extends FooX__[A] with Bar__f {
+  class I;; f;
+}
 // */abstract class MixZI_wFooX__wBar_I_[Z]  extends FooX__[A] with Bar_I_    { class I;                                ; f; }
 // *//*    */ class MixZI_wFooX__wBar_If[Z]  extends FooX__[A] with Bar_If    { class I;                                ; f; }
 /* */
@@ -2227,18 +3605,26 @@ abstract class MixZI_wFooX__wBarY__[Z] extends FooX__[A] with BarY__[B] {
   class I;; f;
 }
 /* */ /*    */
-class MixZI_wFooX__wBarY_f[Z] extends FooX__[A] with BarY_f[B] { class I;; f; }
+class MixZI_wFooX__wBarY_f[Z] extends FooX__[A] with BarY_f[B] {
+  class I;; f;
+}
 // */abstract class MixZI_wFooX__wBarYI_[Z]  extends FooX__[A] with BarYI_[B] { class I;                                ; f; }
 // *//*    */ class MixZI_wFooX__wBarYIf[Z]  extends FooX__[A] with BarYIf[B] { class I;                                ; f; }
 /* */ /*    */
-class MixZI_wFooX_f[Z] extends FooX_f[A] { class I;; f; }
+class MixZI_wFooX_f[Z] extends FooX_f[A] {
+  class I;; f;
+}
 /* */ /*    */
-class MixZI_wFooX_fwBar___[Z] extends FooX_f[A] with Bar___ { class I;; f; }
+class MixZI_wFooX_fwBar___[Z] extends FooX_f[A] with Bar___ {
+  class I;; f;
+}
 // *//*    */ class MixZI_wFooX_fwBar__f[Z]  extends FooX_f[A] with Bar__f    { class I;                                ; f; }
 // *//*    */ class MixZI_wFooX_fwBar_I_[Z]  extends FooX_f[A] with Bar_I_    { class I;                                ; f; }
 // *//*    */ class MixZI_wFooX_fwBar_If[Z]  extends FooX_f[A] with Bar_If    { class I;                                ; f; }
 /* */ /*    */
-class MixZI_wFooX_fwBarY__[Z] extends FooX_f[A] with BarY__[B] { class I;; f; }
+class MixZI_wFooX_fwBarY__[Z] extends FooX_f[A] with BarY__[B] {
+  class I;; f;
+}
 // *//*    */ class MixZI_wFooX_fwBarY_f[Z]  extends FooX_f[A] with BarY_f[B] { class I;                                ; f; }
 // *//*    */ class MixZI_wFooX_fwBarYI_[Z]  extends FooX_f[A] with BarYI_[B] { class I;                                ; f; }
 // *//*    */ class MixZI_wFooX_fwBarYIf[Z]  extends FooX_f[A] with BarYIf[B] { class I;                                ; f; }
@@ -2262,48 +3648,80 @@ class MixZI_wFooX_fwBarY__[Z] extends FooX_f[A] with BarY__[B] { class I;; f; }
 // *//*    */ class MixZI_wFooXIfwBarYIf[Z]  extends FooXIf[A] with BarYIf[B] { class I;                                ; f; }
 
 /* */ /*    */
-class MixZIfwFoo___[Z] extends Foo___ { class I; def f: I = { mix; null }; f; }
+class MixZIfwFoo___[Z] extends Foo___ {
+  class I;
+  def f: I = {
+    mix; null
+  }; f;
+}
 /* */ /*    */
 class MixZIfwFoo___wBar___[Z] extends Foo___ with Bar___ {
-  class I; def f: I = { mix; null }; f;
+  class I;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZIfwFoo___wBar__f[Z] extends Foo___ with Bar__f {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZIfwFoo___wBar_I_[Z]  extends Foo___    with Bar_I_    { class I;          def f: I = {mix; null}; f; }
 // *//*    */ class MixZIfwFoo___wBar_If[Z]  extends Foo___    with Bar_If    { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class MixZIfwFoo___wBarY__[Z] extends Foo___ with BarY__[B] {
-  class I; def f: I = { mix; null }; f;
+  class I;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZIfwFoo___wBarY_f[Z] extends Foo___ with BarY_f[B] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZIfwFoo___wBarYI_[Z]  extends Foo___    with BarYI_[B] { class I;          def f: I = {mix; null}; f; }
 // *//*    */ class MixZIfwFoo___wBarYIf[Z]  extends Foo___    with BarYIf[B] { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class MixZIfwFoo__f[Z] extends Foo__f {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZIfwFoo__fwBar___[Z] extends Foo__f with Bar___ {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZIfwFoo__fwBar__f[Z] extends Foo__f with Bar__f {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZIfwFoo__fwBar_I_[Z]  extends Foo__f    with Bar_I_    { class I; override def f: I = {mix; null}; f; }
 // *//*    */ class MixZIfwFoo__fwBar_If[Z]  extends Foo__f    with Bar_If    { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class MixZIfwFoo__fwBarY__[Z] extends Foo__f with BarY__[B] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZIfwFoo__fwBarY_f[Z] extends Foo__f with BarY_f[B] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZIfwFoo__fwBarYI_[Z]  extends Foo__f    with BarYI_[B] { class I; override def f: I = {mix; null}; f; }
 // *//*    */ class MixZIfwFoo__fwBarYIf[Z]  extends Foo__f    with BarYIf[B] { class I; override def f: I = {mix; null}; f; }
@@ -2327,49 +3745,79 @@ class MixZIfwFoo__fwBarY_f[Z] extends Foo__f with BarY_f[B] {
 // *//*    */ class MixZIfwFoo_IfwBarYIf[Z]  extends Foo_If    with BarYIf[B] { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class MixZIfwFooX__[Z] extends FooX__[A] {
-  class I; def f: I = { mix; null }; f;
+  class I;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZIfwFooX__wBar___[Z] extends FooX__[A] with Bar___ {
-  class I; def f: I = { mix; null }; f;
+  class I;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZIfwFooX__wBar__f[Z] extends FooX__[A] with Bar__f {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZIfwFooX__wBar_I_[Z]  extends FooX__[A] with Bar_I_    { class I;          def f: I = {mix; null}; f; }
 // *//*    */ class MixZIfwFooX__wBar_If[Z]  extends FooX__[A] with Bar_If    { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class MixZIfwFooX__wBarY__[Z] extends FooX__[A] with BarY__[B] {
-  class I; def f: I = { mix; null }; f;
+  class I;
+  def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZIfwFooX__wBarY_f[Z] extends FooX__[A] with BarY_f[B] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZIfwFooX__wBarYI_[Z]  extends FooX__[A] with BarYI_[B] { class I;          def f: I = {mix; null}; f; }
 // *//*    */ class MixZIfwFooX__wBarYIf[Z]  extends FooX__[A] with BarYIf[B] { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class MixZIfwFooX_f[Z] extends FooX_f[A] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZIfwFooX_fwBar___[Z] extends FooX_f[A] with Bar___ {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZIfwFooX_fwBar__f[Z] extends FooX_f[A] with Bar__f {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZIfwFooX_fwBar_I_[Z]  extends FooX_f[A] with Bar_I_    { class I; override def f: I = {mix; null}; f; }
 // *//*    */ class MixZIfwFooX_fwBar_If[Z]  extends FooX_f[A] with Bar_If    { class I; override def f: I = {mix; null}; f; }
 /* */ /*    */
 class MixZIfwFooX_fwBarY__[Z] extends FooX_f[A] with BarY__[B] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 /* */ /*    */
 class MixZIfwFooX_fwBarY_f[Z] extends FooX_f[A] with BarY_f[B] {
-  class I; override def f: I = { mix; null }; f;
+  class I;
+  override def f: I = {
+    mix; null
+  }; f;
 }
 // *//*    */ class MixZIfwFooX_fwBarYI_[Z]  extends FooX_f[A] with BarYI_[B] { class I; override def f: I = {mix; null}; f; }
 // *//*    */ class MixZIfwFooX_fwBarYIf[Z]  extends FooX_f[A] with BarYIf[B] { class I; override def f: I = {mix; null}; f; }
@@ -2394,305 +3842,546 @@ class MixZIfwFooX_fwBarY_f[Z] extends FooX_f[A] with BarY_f[B] {
 
 /* */
 class S_____eFoo___ extends Mix___eFoo___ {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
 class S_____eFoo___wBar___ extends Mix___eFoo___wBar___ {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_____eFoo___wBar__f extends Mix___eFoo___wBar__f { class I;; f; }
+class S_____eFoo___wBar__f extends Mix___eFoo___wBar__f {
+  class I;; f;
+}
 /* */
 class S_____eFoo___wBar_I_ extends Mix___eFoo___wBar_I_ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_____eFoo___wBar_If extends Mix___eFoo___wBar_If { ;; f; }
+class S_____eFoo___wBar_If extends Mix___eFoo___wBar_If {
+  ;; f;
+}
 /* */
 class S_____eFoo___wBarY__ extends Mix___eFoo___wBarY__ {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_____eFoo___wBarY_f extends Mix___eFoo___wBarY_f { class I;; f; }
+class S_____eFoo___wBarY_f extends Mix___eFoo___wBarY_f {
+  class I;; f;
+}
 /* */
 class S_____eFoo___wBarYI_ extends Mix___eFoo___wBarYI_ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_____eFoo___wBarYIf extends Mix___eFoo___wBarYIf { ;; f; }
+class S_____eFoo___wBarYIf extends Mix___eFoo___wBarYIf {
+  ;; f;
+}
 /* */
-class S_____eFoo__f extends Mix___eFoo__f { class I;; f; }
+class S_____eFoo__f extends Mix___eFoo__f {
+  class I;; f;
+}
 /* */
-class S_____eFoo__fwBar___ extends Mix___eFoo__fwBar___ { class I;; f; }
+class S_____eFoo__fwBar___ extends Mix___eFoo__fwBar___ {
+  class I;; f;
+}
 // */class S_____eFoo__fwBar__f     extends Mix___eFoo__fwBar__f     { class I;                                ; f; }
 /* */
-class S_____eFoo__fwBar_I_ extends Mix___eFoo__fwBar_I_ { ;; f; }
+class S_____eFoo__fwBar_I_ extends Mix___eFoo__fwBar_I_ {
+  ;; f;
+}
 // */class S_____eFoo__fwBar_If     extends Mix___eFoo__fwBar_If     {        ;                                ; f; }
 /* */
-class S_____eFoo__fwBarY__ extends Mix___eFoo__fwBarY__ { class I;; f; }
+class S_____eFoo__fwBarY__ extends Mix___eFoo__fwBarY__ {
+  class I;; f;
+}
 // */class S_____eFoo__fwBarY_f     extends Mix___eFoo__fwBarY_f     { class I;                                ; f; }
 /* */
-class S_____eFoo__fwBarYI_ extends Mix___eFoo__fwBarYI_ { ;; f; }
+class S_____eFoo__fwBarYI_ extends Mix___eFoo__fwBarYI_ {
+  ;; f;
+}
 // */class S_____eFoo__fwBarYIf     extends Mix___eFoo__fwBarYIf     {        ;                                ; f; }
 /* */
-class S_____eFoo_I_ extends Mix___eFoo_I_ { ; def f: I = { sub; null }; f; }
-/* */
-class S_____eFoo_I_wBar___ extends Mix___eFoo_I_wBar___ {
-  ; def f: I = { sub; null }; f;
+class S_____eFoo_I_ extends Mix___eFoo_I_ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_____eFoo_I_wBar__f extends Mix___eFoo_I_wBar__f { ;; f; }
+class S_____eFoo_I_wBar___ extends Mix___eFoo_I_wBar___ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
+}
+/* */
+class S_____eFoo_I_wBar__f extends Mix___eFoo_I_wBar__f {
+  ;; f;
+}
 // */class S_____eFoo_I_wBar_I_     extends Mix___eFoo_I_wBar_I_     {        ;          def f: I = {sub; null}; f; }
 // */class S_____eFoo_I_wBar_If     extends Mix___eFoo_I_wBar_If     {        ;                                ; f; }
 /* */
 class S_____eFoo_I_wBarY__ extends Mix___eFoo_I_wBarY__ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_____eFoo_I_wBarY_f extends Mix___eFoo_I_wBarY_f { ;; f; }
+class S_____eFoo_I_wBarY_f extends Mix___eFoo_I_wBarY_f {
+  ;; f;
+}
 // */class S_____eFoo_I_wBarYI_     extends Mix___eFoo_I_wBarYI_     {        ;          def f: I = {sub; null}; f; }
 // */class S_____eFoo_I_wBarYIf     extends Mix___eFoo_I_wBarYIf     {        ;                                ; f; }
 /* */
-class S_____eFoo_If extends Mix___eFoo_If { ;; f; }
+class S_____eFoo_If extends Mix___eFoo_If {
+  ;; f;
+}
 /* */
-class S_____eFoo_IfwBar___ extends Mix___eFoo_IfwBar___ { ;; f; }
+class S_____eFoo_IfwBar___ extends Mix___eFoo_IfwBar___ {
+  ;; f;
+}
 // */class S_____eFoo_IfwBar__f     extends Mix___eFoo_IfwBar__f     {        ;                                ; f; }
 // */class S_____eFoo_IfwBar_I_     extends Mix___eFoo_IfwBar_I_     {        ;                                ; f; }
 // */class S_____eFoo_IfwBar_If     extends Mix___eFoo_IfwBar_If     {        ;                                ; f; }
 /* */
-class S_____eFoo_IfwBarY__ extends Mix___eFoo_IfwBarY__ { ;; f; }
+class S_____eFoo_IfwBarY__ extends Mix___eFoo_IfwBarY__ {
+  ;; f;
+}
 // */class S_____eFoo_IfwBarY_f     extends Mix___eFoo_IfwBarY_f     {        ;                                ; f; }
 // */class S_____eFoo_IfwBarYI_     extends Mix___eFoo_IfwBarYI_     {        ;                                ; f; }
 // */class S_____eFoo_IfwBarYIf     extends Mix___eFoo_IfwBarYIf     {        ;                                ; f; }
 /* */
 class S_____eFooX__ extends Mix___eFooX__ {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
 class S_____eFooX__wBar___ extends Mix___eFooX__wBar___ {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_____eFooX__wBar__f extends Mix___eFooX__wBar__f { class I;; f; }
+class S_____eFooX__wBar__f extends Mix___eFooX__wBar__f {
+  class I;; f;
+}
 /* */
 class S_____eFooX__wBar_I_ extends Mix___eFooX__wBar_I_ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_____eFooX__wBar_If extends Mix___eFooX__wBar_If { ;; f; }
+class S_____eFooX__wBar_If extends Mix___eFooX__wBar_If {
+  ;; f;
+}
 /* */
 class S_____eFooX__wBarY__ extends Mix___eFooX__wBarY__ {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_____eFooX__wBarY_f extends Mix___eFooX__wBarY_f { class I;; f; }
+class S_____eFooX__wBarY_f extends Mix___eFooX__wBarY_f {
+  class I;; f;
+}
 /* */
 class S_____eFooX__wBarYI_ extends Mix___eFooX__wBarYI_ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_____eFooX__wBarYIf extends Mix___eFooX__wBarYIf { ;; f; }
+class S_____eFooX__wBarYIf extends Mix___eFooX__wBarYIf {
+  ;; f;
+}
 /* */
-class S_____eFooX_f extends Mix___eFooX_f { class I;; f; }
+class S_____eFooX_f extends Mix___eFooX_f {
+  class I;; f;
+}
 /* */
-class S_____eFooX_fwBar___ extends Mix___eFooX_fwBar___ { class I;; f; }
+class S_____eFooX_fwBar___ extends Mix___eFooX_fwBar___ {
+  class I;; f;
+}
 // */class S_____eFooX_fwBar__f     extends Mix___eFooX_fwBar__f     { class I;                                ; f; }
 /* */
-class S_____eFooX_fwBar_I_ extends Mix___eFooX_fwBar_I_ { ;; f; }
+class S_____eFooX_fwBar_I_ extends Mix___eFooX_fwBar_I_ {
+  ;; f;
+}
 // */class S_____eFooX_fwBar_If     extends Mix___eFooX_fwBar_If     {        ;                                ; f; }
 /* */
-class S_____eFooX_fwBarY__ extends Mix___eFooX_fwBarY__ { class I;; f; }
+class S_____eFooX_fwBarY__ extends Mix___eFooX_fwBarY__ {
+  class I;; f;
+}
 // */class S_____eFooX_fwBarY_f     extends Mix___eFooX_fwBarY_f     { class I;                                ; f; }
 /* */
-class S_____eFooX_fwBarYI_ extends Mix___eFooX_fwBarYI_ { ;; f; }
+class S_____eFooX_fwBarYI_ extends Mix___eFooX_fwBarYI_ {
+  ;; f;
+}
 // */class S_____eFooX_fwBarYIf     extends Mix___eFooX_fwBarYIf     {        ;                                ; f; }
 /* */
-class S_____eFooXI_ extends Mix___eFooXI_ { ; def f: I = { sub; null }; f; }
-/* */
-class S_____eFooXI_wBar___ extends Mix___eFooXI_wBar___ {
-  ; def f: I = { sub; null }; f;
+class S_____eFooXI_ extends Mix___eFooXI_ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_____eFooXI_wBar__f extends Mix___eFooXI_wBar__f { ;; f; }
+class S_____eFooXI_wBar___ extends Mix___eFooXI_wBar___ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
+}
+/* */
+class S_____eFooXI_wBar__f extends Mix___eFooXI_wBar__f {
+  ;; f;
+}
 // */class S_____eFooXI_wBar_I_     extends Mix___eFooXI_wBar_I_     {        ;          def f: I = {sub; null}; f; }
 // */class S_____eFooXI_wBar_If     extends Mix___eFooXI_wBar_If     {        ;                                ; f; }
 /* */
 class S_____eFooXI_wBarY__ extends Mix___eFooXI_wBarY__ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_____eFooXI_wBarY_f extends Mix___eFooXI_wBarY_f { ;; f; }
+class S_____eFooXI_wBarY_f extends Mix___eFooXI_wBarY_f {
+  ;; f;
+}
 // */class S_____eFooXI_wBarYI_     extends Mix___eFooXI_wBarYI_     {        ;          def f: I = {sub; null}; f; }
 // */class S_____eFooXI_wBarYIf     extends Mix___eFooXI_wBarYIf     {        ;                                ; f; }
 /* */
-class S_____eFooXIf extends Mix___eFooXIf { ;; f; }
+class S_____eFooXIf extends Mix___eFooXIf {
+  ;; f;
+}
 /* */
-class S_____eFooXIfwBar___ extends Mix___eFooXIfwBar___ { ;; f; }
+class S_____eFooXIfwBar___ extends Mix___eFooXIfwBar___ {
+  ;; f;
+}
 // */class S_____eFooXIfwBar__f     extends Mix___eFooXIfwBar__f     {        ;                                ; f; }
 // */class S_____eFooXIfwBar_I_     extends Mix___eFooXIfwBar_I_     {        ;                                ; f; }
 // */class S_____eFooXIfwBar_If     extends Mix___eFooXIfwBar_If     {        ;                                ; f; }
 /* */
-class S_____eFooXIfwBarY__ extends Mix___eFooXIfwBarY__ { ;; f; }
+class S_____eFooXIfwBarY__ extends Mix___eFooXIfwBarY__ {
+  ;; f;
+}
 // */class S_____eFooXIfwBarY_f     extends Mix___eFooXIfwBarY_f     {        ;                                ; f; }
 // */class S_____eFooXIfwBarYI_     extends Mix___eFooXIfwBarYI_     {        ;                                ; f; }
 // */class S_____eFooXIfwBarYIf     extends Mix___eFooXIfwBarYIf     {        ;                                ; f; }
 
 /* */
-class S____feFoo___ extends Mix__feFoo___ { class I;; f; }
+class S____feFoo___ extends Mix__feFoo___ {
+  class I;; f;
+}
 /* */
-class S____feFoo___wBar___ extends Mix__feFoo___wBar___ { class I;; f; }
+class S____feFoo___wBar___ extends Mix__feFoo___wBar___ {
+  class I;; f;
+}
 /* */
-class S____feFoo___wBar__f extends Mix__feFoo___wBar__f { class I;; f; }
+class S____feFoo___wBar__f extends Mix__feFoo___wBar__f {
+  class I;; f;
+}
 /* */
-class S____feFoo___wBar_I_ extends Mix__feFoo___wBar_I_ { ;; f; }
+class S____feFoo___wBar_I_ extends Mix__feFoo___wBar_I_ {
+  ;; f;
+}
 /* */
-class S____feFoo___wBar_If extends Mix__feFoo___wBar_If { ;; f; }
+class S____feFoo___wBar_If extends Mix__feFoo___wBar_If {
+  ;; f;
+}
 /* */
-class S____feFoo___wBarY__ extends Mix__feFoo___wBarY__ { class I;; f; }
+class S____feFoo___wBarY__ extends Mix__feFoo___wBarY__ {
+  class I;; f;
+}
 /* */
-class S____feFoo___wBarY_f extends Mix__feFoo___wBarY_f { class I;; f; }
+class S____feFoo___wBarY_f extends Mix__feFoo___wBarY_f {
+  class I;; f;
+}
 /* */
-class S____feFoo___wBarYI_ extends Mix__feFoo___wBarYI_ { ;; f; }
+class S____feFoo___wBarYI_ extends Mix__feFoo___wBarYI_ {
+  ;; f;
+}
 /* */
-class S____feFoo___wBarYIf extends Mix__feFoo___wBarYIf { ;; f; }
+class S____feFoo___wBarYIf extends Mix__feFoo___wBarYIf {
+  ;; f;
+}
 /* */
-class S____feFoo__f extends Mix__feFoo__f { class I;; f; }
+class S____feFoo__f extends Mix__feFoo__f {
+  class I;; f;
+}
 /* */
-class S____feFoo__fwBar___ extends Mix__feFoo__fwBar___ { class I;; f; }
+class S____feFoo__fwBar___ extends Mix__feFoo__fwBar___ {
+  class I;; f;
+}
 /* */
-class S____feFoo__fwBar__f extends Mix__feFoo__fwBar__f { class I;; f; }
+class S____feFoo__fwBar__f extends Mix__feFoo__fwBar__f {
+  class I;; f;
+}
 /* */
-class S____feFoo__fwBar_I_ extends Mix__feFoo__fwBar_I_ { ;; f; }
+class S____feFoo__fwBar_I_ extends Mix__feFoo__fwBar_I_ {
+  ;; f;
+}
 /* */
-class S____feFoo__fwBar_If extends Mix__feFoo__fwBar_If { ;; f; }
+class S____feFoo__fwBar_If extends Mix__feFoo__fwBar_If {
+  ;; f;
+}
 /* */
-class S____feFoo__fwBarY__ extends Mix__feFoo__fwBarY__ { class I;; f; }
+class S____feFoo__fwBarY__ extends Mix__feFoo__fwBarY__ {
+  class I;; f;
+}
 /* */
-class S____feFoo__fwBarY_f extends Mix__feFoo__fwBarY_f { class I;; f; }
+class S____feFoo__fwBarY_f extends Mix__feFoo__fwBarY_f {
+  class I;; f;
+}
 /* */
-class S____feFoo__fwBarYI_ extends Mix__feFoo__fwBarYI_ { ;; f; }
+class S____feFoo__fwBarYI_ extends Mix__feFoo__fwBarYI_ {
+  ;; f;
+}
 /* */
-class S____feFoo__fwBarYIf extends Mix__feFoo__fwBarYIf { ;; f; }
+class S____feFoo__fwBarYIf extends Mix__feFoo__fwBarYIf {
+  ;; f;
+}
 /* */
-class S____feFoo_I_ extends Mix__feFoo_I_ { ;; f; }
+class S____feFoo_I_ extends Mix__feFoo_I_ {
+  ;; f;
+}
 /* */
-class S____feFoo_I_wBar___ extends Mix__feFoo_I_wBar___ { ;; f; }
+class S____feFoo_I_wBar___ extends Mix__feFoo_I_wBar___ {
+  ;; f;
+}
 /* */
-class S____feFoo_I_wBar__f extends Mix__feFoo_I_wBar__f { ;; f; }
+class S____feFoo_I_wBar__f extends Mix__feFoo_I_wBar__f {
+  ;; f;
+}
 // */class S____feFoo_I_wBar_I_     extends Mix__feFoo_I_wBar_I_     {        ;                                ; f; }
 // */class S____feFoo_I_wBar_If     extends Mix__feFoo_I_wBar_If     {        ;                                ; f; }
 /* */
-class S____feFoo_I_wBarY__ extends Mix__feFoo_I_wBarY__ { ;; f; }
+class S____feFoo_I_wBarY__ extends Mix__feFoo_I_wBarY__ {
+  ;; f;
+}
 /* */
-class S____feFoo_I_wBarY_f extends Mix__feFoo_I_wBarY_f { ;; f; }
+class S____feFoo_I_wBarY_f extends Mix__feFoo_I_wBarY_f {
+  ;; f;
+}
 // */class S____feFoo_I_wBarYI_     extends Mix__feFoo_I_wBarYI_     {        ;                                ; f; }
 // */class S____feFoo_I_wBarYIf     extends Mix__feFoo_I_wBarYIf     {        ;                                ; f; }
 /* */
-class S____feFoo_If extends Mix__feFoo_If { ;; f; }
+class S____feFoo_If extends Mix__feFoo_If {
+  ;; f;
+}
 /* */
-class S____feFoo_IfwBar___ extends Mix__feFoo_IfwBar___ { ;; f; }
+class S____feFoo_IfwBar___ extends Mix__feFoo_IfwBar___ {
+  ;; f;
+}
 /* */
-class S____feFoo_IfwBar__f extends Mix__feFoo_IfwBar__f { ;; f; }
+class S____feFoo_IfwBar__f extends Mix__feFoo_IfwBar__f {
+  ;; f;
+}
 // */class S____feFoo_IfwBar_I_     extends Mix__feFoo_IfwBar_I_     {        ;                                ; f; }
 // */class S____feFoo_IfwBar_If     extends Mix__feFoo_IfwBar_If     {        ;                                ; f; }
 /* */
-class S____feFoo_IfwBarY__ extends Mix__feFoo_IfwBarY__ { ;; f; }
+class S____feFoo_IfwBarY__ extends Mix__feFoo_IfwBarY__ {
+  ;; f;
+}
 /* */
-class S____feFoo_IfwBarY_f extends Mix__feFoo_IfwBarY_f { ;; f; }
+class S____feFoo_IfwBarY_f extends Mix__feFoo_IfwBarY_f {
+  ;; f;
+}
 // */class S____feFoo_IfwBarYI_     extends Mix__feFoo_IfwBarYI_     {        ;                                ; f; }
 // */class S____feFoo_IfwBarYIf     extends Mix__feFoo_IfwBarYIf     {        ;                                ; f; }
 /* */
-class S____feFooX__ extends Mix__feFooX__ { class I;; f; }
+class S____feFooX__ extends Mix__feFooX__ {
+  class I;; f;
+}
 /* */
-class S____feFooX__wBar___ extends Mix__feFooX__wBar___ { class I;; f; }
+class S____feFooX__wBar___ extends Mix__feFooX__wBar___ {
+  class I;; f;
+}
 /* */
-class S____feFooX__wBar__f extends Mix__feFooX__wBar__f { class I;; f; }
+class S____feFooX__wBar__f extends Mix__feFooX__wBar__f {
+  class I;; f;
+}
 /* */
-class S____feFooX__wBar_I_ extends Mix__feFooX__wBar_I_ { ;; f; }
+class S____feFooX__wBar_I_ extends Mix__feFooX__wBar_I_ {
+  ;; f;
+}
 /* */
-class S____feFooX__wBar_If extends Mix__feFooX__wBar_If { ;; f; }
+class S____feFooX__wBar_If extends Mix__feFooX__wBar_If {
+  ;; f;
+}
 /* */
-class S____feFooX__wBarY__ extends Mix__feFooX__wBarY__ { class I;; f; }
+class S____feFooX__wBarY__ extends Mix__feFooX__wBarY__ {
+  class I;; f;
+}
 /* */
-class S____feFooX__wBarY_f extends Mix__feFooX__wBarY_f { class I;; f; }
+class S____feFooX__wBarY_f extends Mix__feFooX__wBarY_f {
+  class I;; f;
+}
 /* */
-class S____feFooX__wBarYI_ extends Mix__feFooX__wBarYI_ { ;; f; }
+class S____feFooX__wBarYI_ extends Mix__feFooX__wBarYI_ {
+  ;; f;
+}
 /* */
-class S____feFooX__wBarYIf extends Mix__feFooX__wBarYIf { ;; f; }
+class S____feFooX__wBarYIf extends Mix__feFooX__wBarYIf {
+  ;; f;
+}
 /* */
-class S____feFooX_f extends Mix__feFooX_f { class I;; f; }
+class S____feFooX_f extends Mix__feFooX_f {
+  class I;; f;
+}
 /* */
-class S____feFooX_fwBar___ extends Mix__feFooX_fwBar___ { class I;; f; }
+class S____feFooX_fwBar___ extends Mix__feFooX_fwBar___ {
+  class I;; f;
+}
 /* */
-class S____feFooX_fwBar__f extends Mix__feFooX_fwBar__f { class I;; f; }
+class S____feFooX_fwBar__f extends Mix__feFooX_fwBar__f {
+  class I;; f;
+}
 /* */
-class S____feFooX_fwBar_I_ extends Mix__feFooX_fwBar_I_ { ;; f; }
+class S____feFooX_fwBar_I_ extends Mix__feFooX_fwBar_I_ {
+  ;; f;
+}
 /* */
-class S____feFooX_fwBar_If extends Mix__feFooX_fwBar_If { ;; f; }
+class S____feFooX_fwBar_If extends Mix__feFooX_fwBar_If {
+  ;; f;
+}
 /* */
-class S____feFooX_fwBarY__ extends Mix__feFooX_fwBarY__ { class I;; f; }
+class S____feFooX_fwBarY__ extends Mix__feFooX_fwBarY__ {
+  class I;; f;
+}
 /* */
-class S____feFooX_fwBarY_f extends Mix__feFooX_fwBarY_f { class I;; f; }
+class S____feFooX_fwBarY_f extends Mix__feFooX_fwBarY_f {
+  class I;; f;
+}
 /* */
-class S____feFooX_fwBarYI_ extends Mix__feFooX_fwBarYI_ { ;; f; }
+class S____feFooX_fwBarYI_ extends Mix__feFooX_fwBarYI_ {
+  ;; f;
+}
 /* */
-class S____feFooX_fwBarYIf extends Mix__feFooX_fwBarYIf { ;; f; }
+class S____feFooX_fwBarYIf extends Mix__feFooX_fwBarYIf {
+  ;; f;
+}
 /* */
-class S____feFooXI_ extends Mix__feFooXI_ { ;; f; }
+class S____feFooXI_ extends Mix__feFooXI_ {
+  ;; f;
+}
 /* */
-class S____feFooXI_wBar___ extends Mix__feFooXI_wBar___ { ;; f; }
+class S____feFooXI_wBar___ extends Mix__feFooXI_wBar___ {
+  ;; f;
+}
 /* */
-class S____feFooXI_wBar__f extends Mix__feFooXI_wBar__f { ;; f; }
+class S____feFooXI_wBar__f extends Mix__feFooXI_wBar__f {
+  ;; f;
+}
 // */class S____feFooXI_wBar_I_     extends Mix__feFooXI_wBar_I_     {        ;                                ; f; }
 // */class S____feFooXI_wBar_If     extends Mix__feFooXI_wBar_If     {        ;                                ; f; }
 /* */
-class S____feFooXI_wBarY__ extends Mix__feFooXI_wBarY__ { ;; f; }
+class S____feFooXI_wBarY__ extends Mix__feFooXI_wBarY__ {
+  ;; f;
+}
 /* */
-class S____feFooXI_wBarY_f extends Mix__feFooXI_wBarY_f { ;; f; }
+class S____feFooXI_wBarY_f extends Mix__feFooXI_wBarY_f {
+  ;; f;
+}
 // */class S____feFooXI_wBarYI_     extends Mix__feFooXI_wBarYI_     {        ;                                ; f; }
 // */class S____feFooXI_wBarYIf     extends Mix__feFooXI_wBarYIf     {        ;                                ; f; }
 /* */
-class S____feFooXIf extends Mix__feFooXIf { ;; f; }
+class S____feFooXIf extends Mix__feFooXIf {
+  ;; f;
+}
 /* */
-class S____feFooXIfwBar___ extends Mix__feFooXIfwBar___ { ;; f; }
+class S____feFooXIfwBar___ extends Mix__feFooXIfwBar___ {
+  ;; f;
+}
 /* */
-class S____feFooXIfwBar__f extends Mix__feFooXIfwBar__f { ;; f; }
+class S____feFooXIfwBar__f extends Mix__feFooXIfwBar__f {
+  ;; f;
+}
 // */class S____feFooXIfwBar_I_     extends Mix__feFooXIfwBar_I_     {        ;                                ; f; }
 // */class S____feFooXIfwBar_If     extends Mix__feFooXIfwBar_If     {        ;                                ; f; }
 /* */
-class S____feFooXIfwBarY__ extends Mix__feFooXIfwBarY__ { ;; f; }
+class S____feFooXIfwBarY__ extends Mix__feFooXIfwBarY__ {
+  ;; f;
+}
 /* */
-class S____feFooXIfwBarY_f extends Mix__feFooXIfwBarY_f { ;; f; }
+class S____feFooXIfwBarY_f extends Mix__feFooXIfwBarY_f {
+  ;; f;
+}
 // */class S____feFooXIfwBarYI_     extends Mix__feFooXIfwBarYI_     {        ;                                ; f; }
 // */class S____feFooXIfwBarYIf     extends Mix__feFooXIfwBarYIf     {        ;                                ; f; }
 
 /* */
-class S___I_eFoo___ extends Mix_I_eFoo___ { ; def f: I = { sub; null }; f; }
-/* */
-class S___I_eFoo___wBar___ extends Mix_I_eFoo___wBar___ {
-  ; def f: I = { sub; null }; f;
+class S___I_eFoo___ extends Mix_I_eFoo___ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S___I_eFoo___wBar__f extends Mix_I_eFoo___wBar__f { ;; f; }
+class S___I_eFoo___wBar___ extends Mix_I_eFoo___wBar___ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
+}
+/* */
+class S___I_eFoo___wBar__f extends Mix_I_eFoo___wBar__f {
+  ;; f;
+}
 // */class S___I_eFoo___wBar_I_     extends Mix_I_eFoo___wBar_I_     {        ;          def f: I = {sub; null}; f; }
 // */class S___I_eFoo___wBar_If     extends Mix_I_eFoo___wBar_If     {        ;                                ; f; }
 /* */
 class S___I_eFoo___wBarY__ extends Mix_I_eFoo___wBarY__ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S___I_eFoo___wBarY_f extends Mix_I_eFoo___wBarY_f { ;; f; }
+class S___I_eFoo___wBarY_f extends Mix_I_eFoo___wBarY_f {
+  ;; f;
+}
 // */class S___I_eFoo___wBarYI_     extends Mix_I_eFoo___wBarYI_     {        ;          def f: I = {sub; null}; f; }
 // */class S___I_eFoo___wBarYIf     extends Mix_I_eFoo___wBarYIf     {        ;                                ; f; }
 /* */
-class S___I_eFoo__f extends Mix_I_eFoo__f { ;; f; }
+class S___I_eFoo__f extends Mix_I_eFoo__f {
+  ;; f;
+}
 /* */
-class S___I_eFoo__fwBar___ extends Mix_I_eFoo__fwBar___ { ;; f; }
+class S___I_eFoo__fwBar___ extends Mix_I_eFoo__fwBar___ {
+  ;; f;
+}
 // */class S___I_eFoo__fwBar__f     extends Mix_I_eFoo__fwBar__f     {        ;                                ; f; }
 // */class S___I_eFoo__fwBar_I_     extends Mix_I_eFoo__fwBar_I_     {        ;                                ; f; }
 // */class S___I_eFoo__fwBar_If     extends Mix_I_eFoo__fwBar_If     {        ;                                ; f; }
 /* */
-class S___I_eFoo__fwBarY__ extends Mix_I_eFoo__fwBarY__ { ;; f; }
+class S___I_eFoo__fwBarY__ extends Mix_I_eFoo__fwBarY__ {
+  ;; f;
+}
 // */class S___I_eFoo__fwBarY_f     extends Mix_I_eFoo__fwBarY_f     {        ;                                ; f; }
 // */class S___I_eFoo__fwBarYI_     extends Mix_I_eFoo__fwBarYI_     {        ;                                ; f; }
 // */class S___I_eFoo__fwBarYIf     extends Mix_I_eFoo__fwBarYIf     {        ;                                ; f; }
@@ -2715,32 +4404,53 @@ class S___I_eFoo__fwBarY__ extends Mix_I_eFoo__fwBarY__ { ;; f; }
 // */class S___I_eFoo_IfwBarYI_     extends Mix_I_eFoo_IfwBarYI_     {        ;                                ; f; }
 // */class S___I_eFoo_IfwBarYIf     extends Mix_I_eFoo_IfwBarYIf     {        ;                                ; f; }
 /* */
-class S___I_eFooX__ extends Mix_I_eFooX__ { ; def f: I = { sub; null }; f; }
-/* */
-class S___I_eFooX__wBar___ extends Mix_I_eFooX__wBar___ {
-  ; def f: I = { sub; null }; f;
+class S___I_eFooX__ extends Mix_I_eFooX__ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S___I_eFooX__wBar__f extends Mix_I_eFooX__wBar__f { ;; f; }
+class S___I_eFooX__wBar___ extends Mix_I_eFooX__wBar___ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
+}
+/* */
+class S___I_eFooX__wBar__f extends Mix_I_eFooX__wBar__f {
+  ;; f;
+}
 // */class S___I_eFooX__wBar_I_     extends Mix_I_eFooX__wBar_I_     {        ;          def f: I = {sub; null}; f; }
 // */class S___I_eFooX__wBar_If     extends Mix_I_eFooX__wBar_If     {        ;                                ; f; }
 /* */
 class S___I_eFooX__wBarY__ extends Mix_I_eFooX__wBarY__ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S___I_eFooX__wBarY_f extends Mix_I_eFooX__wBarY_f { ;; f; }
+class S___I_eFooX__wBarY_f extends Mix_I_eFooX__wBarY_f {
+  ;; f;
+}
 // */class S___I_eFooX__wBarYI_     extends Mix_I_eFooX__wBarYI_     {        ;          def f: I = {sub; null}; f; }
 // */class S___I_eFooX__wBarYIf     extends Mix_I_eFooX__wBarYIf     {        ;                                ; f; }
 /* */
-class S___I_eFooX_f extends Mix_I_eFooX_f { ;; f; }
+class S___I_eFooX_f extends Mix_I_eFooX_f {
+  ;; f;
+}
 /* */
-class S___I_eFooX_fwBar___ extends Mix_I_eFooX_fwBar___ { ;; f; }
+class S___I_eFooX_fwBar___ extends Mix_I_eFooX_fwBar___ {
+  ;; f;
+}
 // */class S___I_eFooX_fwBar__f     extends Mix_I_eFooX_fwBar__f     {        ;                                ; f; }
 // */class S___I_eFooX_fwBar_I_     extends Mix_I_eFooX_fwBar_I_     {        ;                                ; f; }
 // */class S___I_eFooX_fwBar_If     extends Mix_I_eFooX_fwBar_If     {        ;                                ; f; }
 /* */
-class S___I_eFooX_fwBarY__ extends Mix_I_eFooX_fwBarY__ { ;; f; }
+class S___I_eFooX_fwBarY__ extends Mix_I_eFooX_fwBarY__ {
+  ;; f;
+}
 // */class S___I_eFooX_fwBarY_f     extends Mix_I_eFooX_fwBarY_f     {        ;                                ; f; }
 // */class S___I_eFooX_fwBarYI_     extends Mix_I_eFooX_fwBarYI_     {        ;                                ; f; }
 // */class S___I_eFooX_fwBarYIf     extends Mix_I_eFooX_fwBarYIf     {        ;                                ; f; }
@@ -2764,31 +4474,51 @@ class S___I_eFooX_fwBarY__ extends Mix_I_eFooX_fwBarY__ { ;; f; }
 // */class S___I_eFooXIfwBarYIf     extends Mix_I_eFooXIfwBarYIf     {        ;                                ; f; }
 
 /* */
-class S___IfeFoo___ extends Mix_IfeFoo___ { ;; f; }
+class S___IfeFoo___ extends Mix_IfeFoo___ {
+  ;; f;
+}
 /* */
-class S___IfeFoo___wBar___ extends Mix_IfeFoo___wBar___ { ;; f; }
+class S___IfeFoo___wBar___ extends Mix_IfeFoo___wBar___ {
+  ;; f;
+}
 /* */
-class S___IfeFoo___wBar__f extends Mix_IfeFoo___wBar__f { ;; f; }
+class S___IfeFoo___wBar__f extends Mix_IfeFoo___wBar__f {
+  ;; f;
+}
 // */class S___IfeFoo___wBar_I_     extends Mix_IfeFoo___wBar_I_     {        ;                                ; f; }
 // */class S___IfeFoo___wBar_If     extends Mix_IfeFoo___wBar_If     {        ;                                ; f; }
 /* */
-class S___IfeFoo___wBarY__ extends Mix_IfeFoo___wBarY__ { ;; f; }
+class S___IfeFoo___wBarY__ extends Mix_IfeFoo___wBarY__ {
+  ;; f;
+}
 /* */
-class S___IfeFoo___wBarY_f extends Mix_IfeFoo___wBarY_f { ;; f; }
+class S___IfeFoo___wBarY_f extends Mix_IfeFoo___wBarY_f {
+  ;; f;
+}
 // */class S___IfeFoo___wBarYI_     extends Mix_IfeFoo___wBarYI_     {        ;                                ; f; }
 // */class S___IfeFoo___wBarYIf     extends Mix_IfeFoo___wBarYIf     {        ;                                ; f; }
 /* */
-class S___IfeFoo__f extends Mix_IfeFoo__f { ;; f; }
+class S___IfeFoo__f extends Mix_IfeFoo__f {
+  ;; f;
+}
 /* */
-class S___IfeFoo__fwBar___ extends Mix_IfeFoo__fwBar___ { ;; f; }
+class S___IfeFoo__fwBar___ extends Mix_IfeFoo__fwBar___ {
+  ;; f;
+}
 /* */
-class S___IfeFoo__fwBar__f extends Mix_IfeFoo__fwBar__f { ;; f; }
+class S___IfeFoo__fwBar__f extends Mix_IfeFoo__fwBar__f {
+  ;; f;
+}
 // */class S___IfeFoo__fwBar_I_     extends Mix_IfeFoo__fwBar_I_     {        ;                                ; f; }
 // */class S___IfeFoo__fwBar_If     extends Mix_IfeFoo__fwBar_If     {        ;                                ; f; }
 /* */
-class S___IfeFoo__fwBarY__ extends Mix_IfeFoo__fwBarY__ { ;; f; }
+class S___IfeFoo__fwBarY__ extends Mix_IfeFoo__fwBarY__ {
+  ;; f;
+}
 /* */
-class S___IfeFoo__fwBarY_f extends Mix_IfeFoo__fwBarY_f { ;; f; }
+class S___IfeFoo__fwBarY_f extends Mix_IfeFoo__fwBarY_f {
+  ;; f;
+}
 // */class S___IfeFoo__fwBarYI_     extends Mix_IfeFoo__fwBarYI_     {        ;                                ; f; }
 // */class S___IfeFoo__fwBarYIf     extends Mix_IfeFoo__fwBarYIf     {        ;                                ; f; }
 // */class S___IfeFoo_I_            extends Mix_IfeFoo_I_            {        ;                                ; f; }
@@ -2810,31 +4540,51 @@ class S___IfeFoo__fwBarY_f extends Mix_IfeFoo__fwBarY_f { ;; f; }
 // */class S___IfeFoo_IfwBarYI_     extends Mix_IfeFoo_IfwBarYI_     {        ;                                ; f; }
 // */class S___IfeFoo_IfwBarYIf     extends Mix_IfeFoo_IfwBarYIf     {        ;                                ; f; }
 /* */
-class S___IfeFooX__ extends Mix_IfeFooX__ { ;; f; }
+class S___IfeFooX__ extends Mix_IfeFooX__ {
+  ;; f;
+}
 /* */
-class S___IfeFooX__wBar___ extends Mix_IfeFooX__wBar___ { ;; f; }
+class S___IfeFooX__wBar___ extends Mix_IfeFooX__wBar___ {
+  ;; f;
+}
 /* */
-class S___IfeFooX__wBar__f extends Mix_IfeFooX__wBar__f { ;; f; }
+class S___IfeFooX__wBar__f extends Mix_IfeFooX__wBar__f {
+  ;; f;
+}
 // */class S___IfeFooX__wBar_I_     extends Mix_IfeFooX__wBar_I_     {        ;                                ; f; }
 // */class S___IfeFooX__wBar_If     extends Mix_IfeFooX__wBar_If     {        ;                                ; f; }
 /* */
-class S___IfeFooX__wBarY__ extends Mix_IfeFooX__wBarY__ { ;; f; }
+class S___IfeFooX__wBarY__ extends Mix_IfeFooX__wBarY__ {
+  ;; f;
+}
 /* */
-class S___IfeFooX__wBarY_f extends Mix_IfeFooX__wBarY_f { ;; f; }
+class S___IfeFooX__wBarY_f extends Mix_IfeFooX__wBarY_f {
+  ;; f;
+}
 // */class S___IfeFooX__wBarYI_     extends Mix_IfeFooX__wBarYI_     {        ;                                ; f; }
 // */class S___IfeFooX__wBarYIf     extends Mix_IfeFooX__wBarYIf     {        ;                                ; f; }
 /* */
-class S___IfeFooX_f extends Mix_IfeFooX_f { ;; f; }
+class S___IfeFooX_f extends Mix_IfeFooX_f {
+  ;; f;
+}
 /* */
-class S___IfeFooX_fwBar___ extends Mix_IfeFooX_fwBar___ { ;; f; }
+class S___IfeFooX_fwBar___ extends Mix_IfeFooX_fwBar___ {
+  ;; f;
+}
 /* */
-class S___IfeFooX_fwBar__f extends Mix_IfeFooX_fwBar__f { ;; f; }
+class S___IfeFooX_fwBar__f extends Mix_IfeFooX_fwBar__f {
+  ;; f;
+}
 // */class S___IfeFooX_fwBar_I_     extends Mix_IfeFooX_fwBar_I_     {        ;                                ; f; }
 // */class S___IfeFooX_fwBar_If     extends Mix_IfeFooX_fwBar_If     {        ;                                ; f; }
 /* */
-class S___IfeFooX_fwBarY__ extends Mix_IfeFooX_fwBarY__ { ;; f; }
+class S___IfeFooX_fwBarY__ extends Mix_IfeFooX_fwBarY__ {
+  ;; f;
+}
 /* */
-class S___IfeFooX_fwBarY_f extends Mix_IfeFooX_fwBarY_f { ;; f; }
+class S___IfeFooX_fwBarY_f extends Mix_IfeFooX_fwBarY_f {
+  ;; f;
+}
 // */class S___IfeFooX_fwBarYI_     extends Mix_IfeFooX_fwBarYI_     {        ;                                ; f; }
 // */class S___IfeFooX_fwBarYIf     extends Mix_IfeFooX_fwBarYIf     {        ;                                ; f; }
 // */class S___IfeFooXI_            extends Mix_IfeFooXI_            {        ;                                ; f; }
@@ -2858,305 +4608,546 @@ class S___IfeFooX_fwBarY_f extends Mix_IfeFooX_fwBarY_f { ;; f; }
 
 /* */
 class S__Z__eFoo___ extends MixZ__eFoo___[C] {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
 class S__Z__eFoo___wBar___ extends MixZ__eFoo___wBar___[C] {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__Z__eFoo___wBar__f extends MixZ__eFoo___wBar__f[C] { class I;; f; }
+class S__Z__eFoo___wBar__f extends MixZ__eFoo___wBar__f[C] {
+  class I;; f;
+}
 /* */
 class S__Z__eFoo___wBar_I_ extends MixZ__eFoo___wBar_I_[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__Z__eFoo___wBar_If extends MixZ__eFoo___wBar_If[C] { ;; f; }
+class S__Z__eFoo___wBar_If extends MixZ__eFoo___wBar_If[C] {
+  ;; f;
+}
 /* */
 class S__Z__eFoo___wBarY__ extends MixZ__eFoo___wBarY__[C] {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__Z__eFoo___wBarY_f extends MixZ__eFoo___wBarY_f[C] { class I;; f; }
+class S__Z__eFoo___wBarY_f extends MixZ__eFoo___wBarY_f[C] {
+  class I;; f;
+}
 /* */
 class S__Z__eFoo___wBarYI_ extends MixZ__eFoo___wBarYI_[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__Z__eFoo___wBarYIf extends MixZ__eFoo___wBarYIf[C] { ;; f; }
+class S__Z__eFoo___wBarYIf extends MixZ__eFoo___wBarYIf[C] {
+  ;; f;
+}
 /* */
-class S__Z__eFoo__f extends MixZ__eFoo__f[C] { class I;; f; }
+class S__Z__eFoo__f extends MixZ__eFoo__f[C] {
+  class I;; f;
+}
 /* */
-class S__Z__eFoo__fwBar___ extends MixZ__eFoo__fwBar___[C] { class I;; f; }
+class S__Z__eFoo__fwBar___ extends MixZ__eFoo__fwBar___[C] {
+  class I;; f;
+}
 // */class S__Z__eFoo__fwBar__f     extends MixZ__eFoo__fwBar__f[C]  { class I;                                ; f; }
 /* */
-class S__Z__eFoo__fwBar_I_ extends MixZ__eFoo__fwBar_I_[C] { ;; f; }
+class S__Z__eFoo__fwBar_I_ extends MixZ__eFoo__fwBar_I_[C] {
+  ;; f;
+}
 // */class S__Z__eFoo__fwBar_If     extends MixZ__eFoo__fwBar_If[C]  {        ;                                ; f; }
 /* */
-class S__Z__eFoo__fwBarY__ extends MixZ__eFoo__fwBarY__[C] { class I;; f; }
+class S__Z__eFoo__fwBarY__ extends MixZ__eFoo__fwBarY__[C] {
+  class I;; f;
+}
 // */class S__Z__eFoo__fwBarY_f     extends MixZ__eFoo__fwBarY_f[C]  { class I;                                ; f; }
 /* */
-class S__Z__eFoo__fwBarYI_ extends MixZ__eFoo__fwBarYI_[C] { ;; f; }
+class S__Z__eFoo__fwBarYI_ extends MixZ__eFoo__fwBarYI_[C] {
+  ;; f;
+}
 // */class S__Z__eFoo__fwBarYIf     extends MixZ__eFoo__fwBarYIf[C]  {        ;                                ; f; }
 /* */
-class S__Z__eFoo_I_ extends MixZ__eFoo_I_[C] { ; def f: I = { sub; null }; f; }
-/* */
-class S__Z__eFoo_I_wBar___ extends MixZ__eFoo_I_wBar___[C] {
-  ; def f: I = { sub; null }; f;
+class S__Z__eFoo_I_ extends MixZ__eFoo_I_[C] {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__Z__eFoo_I_wBar__f extends MixZ__eFoo_I_wBar__f[C] { ;; f; }
+class S__Z__eFoo_I_wBar___ extends MixZ__eFoo_I_wBar___[C] {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
+}
+/* */
+class S__Z__eFoo_I_wBar__f extends MixZ__eFoo_I_wBar__f[C] {
+  ;; f;
+}
 // */class S__Z__eFoo_I_wBar_I_     extends MixZ__eFoo_I_wBar_I_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S__Z__eFoo_I_wBar_If     extends MixZ__eFoo_I_wBar_If[C]  {        ;                                ; f; }
 /* */
 class S__Z__eFoo_I_wBarY__ extends MixZ__eFoo_I_wBarY__[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__Z__eFoo_I_wBarY_f extends MixZ__eFoo_I_wBarY_f[C] { ;; f; }
+class S__Z__eFoo_I_wBarY_f extends MixZ__eFoo_I_wBarY_f[C] {
+  ;; f;
+}
 // */class S__Z__eFoo_I_wBarYI_     extends MixZ__eFoo_I_wBarYI_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S__Z__eFoo_I_wBarYIf     extends MixZ__eFoo_I_wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S__Z__eFoo_If extends MixZ__eFoo_If[C] { ;; f; }
+class S__Z__eFoo_If extends MixZ__eFoo_If[C] {
+  ;; f;
+}
 /* */
-class S__Z__eFoo_IfwBar___ extends MixZ__eFoo_IfwBar___[C] { ;; f; }
+class S__Z__eFoo_IfwBar___ extends MixZ__eFoo_IfwBar___[C] {
+  ;; f;
+}
 // */class S__Z__eFoo_IfwBar__f     extends MixZ__eFoo_IfwBar__f[C]  {        ;                                ; f; }
 // */class S__Z__eFoo_IfwBar_I_     extends MixZ__eFoo_IfwBar_I_[C]  {        ;                                ; f; }
 // */class S__Z__eFoo_IfwBar_If     extends MixZ__eFoo_IfwBar_If[C]  {        ;                                ; f; }
 /* */
-class S__Z__eFoo_IfwBarY__ extends MixZ__eFoo_IfwBarY__[C] { ;; f; }
+class S__Z__eFoo_IfwBarY__ extends MixZ__eFoo_IfwBarY__[C] {
+  ;; f;
+}
 // */class S__Z__eFoo_IfwBarY_f     extends MixZ__eFoo_IfwBarY_f[C]  {        ;                                ; f; }
 // */class S__Z__eFoo_IfwBarYI_     extends MixZ__eFoo_IfwBarYI_[C]  {        ;                                ; f; }
 // */class S__Z__eFoo_IfwBarYIf     extends MixZ__eFoo_IfwBarYIf[C]  {        ;                                ; f; }
 /* */
 class S__Z__eFooX__ extends MixZ__eFooX__[C] {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
 class S__Z__eFooX__wBar___ extends MixZ__eFooX__wBar___[C] {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__Z__eFooX__wBar__f extends MixZ__eFooX__wBar__f[C] { class I;; f; }
+class S__Z__eFooX__wBar__f extends MixZ__eFooX__wBar__f[C] {
+  class I;; f;
+}
 /* */
 class S__Z__eFooX__wBar_I_ extends MixZ__eFooX__wBar_I_[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__Z__eFooX__wBar_If extends MixZ__eFooX__wBar_If[C] { ;; f; }
+class S__Z__eFooX__wBar_If extends MixZ__eFooX__wBar_If[C] {
+  ;; f;
+}
 /* */
 class S__Z__eFooX__wBarY__ extends MixZ__eFooX__wBarY__[C] {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__Z__eFooX__wBarY_f extends MixZ__eFooX__wBarY_f[C] { class I;; f; }
+class S__Z__eFooX__wBarY_f extends MixZ__eFooX__wBarY_f[C] {
+  class I;; f;
+}
 /* */
 class S__Z__eFooX__wBarYI_ extends MixZ__eFooX__wBarYI_[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__Z__eFooX__wBarYIf extends MixZ__eFooX__wBarYIf[C] { ;; f; }
+class S__Z__eFooX__wBarYIf extends MixZ__eFooX__wBarYIf[C] {
+  ;; f;
+}
 /* */
-class S__Z__eFooX_f extends MixZ__eFooX_f[C] { class I;; f; }
+class S__Z__eFooX_f extends MixZ__eFooX_f[C] {
+  class I;; f;
+}
 /* */
-class S__Z__eFooX_fwBar___ extends MixZ__eFooX_fwBar___[C] { class I;; f; }
+class S__Z__eFooX_fwBar___ extends MixZ__eFooX_fwBar___[C] {
+  class I;; f;
+}
 // */class S__Z__eFooX_fwBar__f     extends MixZ__eFooX_fwBar__f[C]  { class I;                                ; f; }
 /* */
-class S__Z__eFooX_fwBar_I_ extends MixZ__eFooX_fwBar_I_[C] { ;; f; }
+class S__Z__eFooX_fwBar_I_ extends MixZ__eFooX_fwBar_I_[C] {
+  ;; f;
+}
 // */class S__Z__eFooX_fwBar_If     extends MixZ__eFooX_fwBar_If[C]  {        ;                                ; f; }
 /* */
-class S__Z__eFooX_fwBarY__ extends MixZ__eFooX_fwBarY__[C] { class I;; f; }
+class S__Z__eFooX_fwBarY__ extends MixZ__eFooX_fwBarY__[C] {
+  class I;; f;
+}
 // */class S__Z__eFooX_fwBarY_f     extends MixZ__eFooX_fwBarY_f[C]  { class I;                                ; f; }
 /* */
-class S__Z__eFooX_fwBarYI_ extends MixZ__eFooX_fwBarYI_[C] { ;; f; }
+class S__Z__eFooX_fwBarYI_ extends MixZ__eFooX_fwBarYI_[C] {
+  ;; f;
+}
 // */class S__Z__eFooX_fwBarYIf     extends MixZ__eFooX_fwBarYIf[C]  {        ;                                ; f; }
 /* */
-class S__Z__eFooXI_ extends MixZ__eFooXI_[C] { ; def f: I = { sub; null }; f; }
-/* */
-class S__Z__eFooXI_wBar___ extends MixZ__eFooXI_wBar___[C] {
-  ; def f: I = { sub; null }; f;
+class S__Z__eFooXI_ extends MixZ__eFooXI_[C] {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__Z__eFooXI_wBar__f extends MixZ__eFooXI_wBar__f[C] { ;; f; }
+class S__Z__eFooXI_wBar___ extends MixZ__eFooXI_wBar___[C] {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
+}
+/* */
+class S__Z__eFooXI_wBar__f extends MixZ__eFooXI_wBar__f[C] {
+  ;; f;
+}
 // */class S__Z__eFooXI_wBar_I_     extends MixZ__eFooXI_wBar_I_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S__Z__eFooXI_wBar_If     extends MixZ__eFooXI_wBar_If[C]  {        ;                                ; f; }
 /* */
 class S__Z__eFooXI_wBarY__ extends MixZ__eFooXI_wBarY__[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__Z__eFooXI_wBarY_f extends MixZ__eFooXI_wBarY_f[C] { ;; f; }
+class S__Z__eFooXI_wBarY_f extends MixZ__eFooXI_wBarY_f[C] {
+  ;; f;
+}
 // */class S__Z__eFooXI_wBarYI_     extends MixZ__eFooXI_wBarYI_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S__Z__eFooXI_wBarYIf     extends MixZ__eFooXI_wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S__Z__eFooXIf extends MixZ__eFooXIf[C] { ;; f; }
+class S__Z__eFooXIf extends MixZ__eFooXIf[C] {
+  ;; f;
+}
 /* */
-class S__Z__eFooXIfwBar___ extends MixZ__eFooXIfwBar___[C] { ;; f; }
+class S__Z__eFooXIfwBar___ extends MixZ__eFooXIfwBar___[C] {
+  ;; f;
+}
 // */class S__Z__eFooXIfwBar__f     extends MixZ__eFooXIfwBar__f[C]  {        ;                                ; f; }
 // */class S__Z__eFooXIfwBar_I_     extends MixZ__eFooXIfwBar_I_[C]  {        ;                                ; f; }
 // */class S__Z__eFooXIfwBar_If     extends MixZ__eFooXIfwBar_If[C]  {        ;                                ; f; }
 /* */
-class S__Z__eFooXIfwBarY__ extends MixZ__eFooXIfwBarY__[C] { ;; f; }
+class S__Z__eFooXIfwBarY__ extends MixZ__eFooXIfwBarY__[C] {
+  ;; f;
+}
 // */class S__Z__eFooXIfwBarY_f     extends MixZ__eFooXIfwBarY_f[C]  {        ;                                ; f; }
 // */class S__Z__eFooXIfwBarYI_     extends MixZ__eFooXIfwBarYI_[C]  {        ;                                ; f; }
 // */class S__Z__eFooXIfwBarYIf     extends MixZ__eFooXIfwBarYIf[C]  {        ;                                ; f; }
 
 /* */
-class S__Z_feFoo___ extends MixZ_feFoo___[C] { class I;; f; }
+class S__Z_feFoo___ extends MixZ_feFoo___[C] {
+  class I;; f;
+}
 /* */
-class S__Z_feFoo___wBar___ extends MixZ_feFoo___wBar___[C] { class I;; f; }
+class S__Z_feFoo___wBar___ extends MixZ_feFoo___wBar___[C] {
+  class I;; f;
+}
 /* */
-class S__Z_feFoo___wBar__f extends MixZ_feFoo___wBar__f[C] { class I;; f; }
+class S__Z_feFoo___wBar__f extends MixZ_feFoo___wBar__f[C] {
+  class I;; f;
+}
 /* */
-class S__Z_feFoo___wBar_I_ extends MixZ_feFoo___wBar_I_[C] { ;; f; }
+class S__Z_feFoo___wBar_I_ extends MixZ_feFoo___wBar_I_[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFoo___wBar_If extends MixZ_feFoo___wBar_If[C] { ;; f; }
+class S__Z_feFoo___wBar_If extends MixZ_feFoo___wBar_If[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFoo___wBarY__ extends MixZ_feFoo___wBarY__[C] { class I;; f; }
+class S__Z_feFoo___wBarY__ extends MixZ_feFoo___wBarY__[C] {
+  class I;; f;
+}
 /* */
-class S__Z_feFoo___wBarY_f extends MixZ_feFoo___wBarY_f[C] { class I;; f; }
+class S__Z_feFoo___wBarY_f extends MixZ_feFoo___wBarY_f[C] {
+  class I;; f;
+}
 /* */
-class S__Z_feFoo___wBarYI_ extends MixZ_feFoo___wBarYI_[C] { ;; f; }
+class S__Z_feFoo___wBarYI_ extends MixZ_feFoo___wBarYI_[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFoo___wBarYIf extends MixZ_feFoo___wBarYIf[C] { ;; f; }
+class S__Z_feFoo___wBarYIf extends MixZ_feFoo___wBarYIf[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFoo__f extends MixZ_feFoo__f[C] { class I;; f; }
+class S__Z_feFoo__f extends MixZ_feFoo__f[C] {
+  class I;; f;
+}
 /* */
-class S__Z_feFoo__fwBar___ extends MixZ_feFoo__fwBar___[C] { class I;; f; }
+class S__Z_feFoo__fwBar___ extends MixZ_feFoo__fwBar___[C] {
+  class I;; f;
+}
 /* */
-class S__Z_feFoo__fwBar__f extends MixZ_feFoo__fwBar__f[C] { class I;; f; }
+class S__Z_feFoo__fwBar__f extends MixZ_feFoo__fwBar__f[C] {
+  class I;; f;
+}
 /* */
-class S__Z_feFoo__fwBar_I_ extends MixZ_feFoo__fwBar_I_[C] { ;; f; }
+class S__Z_feFoo__fwBar_I_ extends MixZ_feFoo__fwBar_I_[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFoo__fwBar_If extends MixZ_feFoo__fwBar_If[C] { ;; f; }
+class S__Z_feFoo__fwBar_If extends MixZ_feFoo__fwBar_If[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFoo__fwBarY__ extends MixZ_feFoo__fwBarY__[C] { class I;; f; }
+class S__Z_feFoo__fwBarY__ extends MixZ_feFoo__fwBarY__[C] {
+  class I;; f;
+}
 /* */
-class S__Z_feFoo__fwBarY_f extends MixZ_feFoo__fwBarY_f[C] { class I;; f; }
+class S__Z_feFoo__fwBarY_f extends MixZ_feFoo__fwBarY_f[C] {
+  class I;; f;
+}
 /* */
-class S__Z_feFoo__fwBarYI_ extends MixZ_feFoo__fwBarYI_[C] { ;; f; }
+class S__Z_feFoo__fwBarYI_ extends MixZ_feFoo__fwBarYI_[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFoo__fwBarYIf extends MixZ_feFoo__fwBarYIf[C] { ;; f; }
+class S__Z_feFoo__fwBarYIf extends MixZ_feFoo__fwBarYIf[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFoo_I_ extends MixZ_feFoo_I_[C] { ;; f; }
+class S__Z_feFoo_I_ extends MixZ_feFoo_I_[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFoo_I_wBar___ extends MixZ_feFoo_I_wBar___[C] { ;; f; }
+class S__Z_feFoo_I_wBar___ extends MixZ_feFoo_I_wBar___[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFoo_I_wBar__f extends MixZ_feFoo_I_wBar__f[C] { ;; f; }
+class S__Z_feFoo_I_wBar__f extends MixZ_feFoo_I_wBar__f[C] {
+  ;; f;
+}
 // */class S__Z_feFoo_I_wBar_I_     extends MixZ_feFoo_I_wBar_I_[C]  {        ;                                ; f; }
 // */class S__Z_feFoo_I_wBar_If     extends MixZ_feFoo_I_wBar_If[C]  {        ;                                ; f; }
 /* */
-class S__Z_feFoo_I_wBarY__ extends MixZ_feFoo_I_wBarY__[C] { ;; f; }
+class S__Z_feFoo_I_wBarY__ extends MixZ_feFoo_I_wBarY__[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFoo_I_wBarY_f extends MixZ_feFoo_I_wBarY_f[C] { ;; f; }
+class S__Z_feFoo_I_wBarY_f extends MixZ_feFoo_I_wBarY_f[C] {
+  ;; f;
+}
 // */class S__Z_feFoo_I_wBarYI_     extends MixZ_feFoo_I_wBarYI_[C]  {        ;                                ; f; }
 // */class S__Z_feFoo_I_wBarYIf     extends MixZ_feFoo_I_wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S__Z_feFoo_If extends MixZ_feFoo_If[C] { ;; f; }
+class S__Z_feFoo_If extends MixZ_feFoo_If[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFoo_IfwBar___ extends MixZ_feFoo_IfwBar___[C] { ;; f; }
+class S__Z_feFoo_IfwBar___ extends MixZ_feFoo_IfwBar___[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFoo_IfwBar__f extends MixZ_feFoo_IfwBar__f[C] { ;; f; }
+class S__Z_feFoo_IfwBar__f extends MixZ_feFoo_IfwBar__f[C] {
+  ;; f;
+}
 // */class S__Z_feFoo_IfwBar_I_     extends MixZ_feFoo_IfwBar_I_[C]  {        ;                                ; f; }
 // */class S__Z_feFoo_IfwBar_If     extends MixZ_feFoo_IfwBar_If[C]  {        ;                                ; f; }
 /* */
-class S__Z_feFoo_IfwBarY__ extends MixZ_feFoo_IfwBarY__[C] { ;; f; }
+class S__Z_feFoo_IfwBarY__ extends MixZ_feFoo_IfwBarY__[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFoo_IfwBarY_f extends MixZ_feFoo_IfwBarY_f[C] { ;; f; }
+class S__Z_feFoo_IfwBarY_f extends MixZ_feFoo_IfwBarY_f[C] {
+  ;; f;
+}
 // */class S__Z_feFoo_IfwBarYI_     extends MixZ_feFoo_IfwBarYI_[C]  {        ;                                ; f; }
 // */class S__Z_feFoo_IfwBarYIf     extends MixZ_feFoo_IfwBarYIf[C]  {        ;                                ; f; }
 /* */
-class S__Z_feFooX__ extends MixZ_feFooX__[C] { class I;; f; }
+class S__Z_feFooX__ extends MixZ_feFooX__[C] {
+  class I;; f;
+}
 /* */
-class S__Z_feFooX__wBar___ extends MixZ_feFooX__wBar___[C] { class I;; f; }
+class S__Z_feFooX__wBar___ extends MixZ_feFooX__wBar___[C] {
+  class I;; f;
+}
 /* */
-class S__Z_feFooX__wBar__f extends MixZ_feFooX__wBar__f[C] { class I;; f; }
+class S__Z_feFooX__wBar__f extends MixZ_feFooX__wBar__f[C] {
+  class I;; f;
+}
 /* */
-class S__Z_feFooX__wBar_I_ extends MixZ_feFooX__wBar_I_[C] { ;; f; }
+class S__Z_feFooX__wBar_I_ extends MixZ_feFooX__wBar_I_[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFooX__wBar_If extends MixZ_feFooX__wBar_If[C] { ;; f; }
+class S__Z_feFooX__wBar_If extends MixZ_feFooX__wBar_If[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFooX__wBarY__ extends MixZ_feFooX__wBarY__[C] { class I;; f; }
+class S__Z_feFooX__wBarY__ extends MixZ_feFooX__wBarY__[C] {
+  class I;; f;
+}
 /* */
-class S__Z_feFooX__wBarY_f extends MixZ_feFooX__wBarY_f[C] { class I;; f; }
+class S__Z_feFooX__wBarY_f extends MixZ_feFooX__wBarY_f[C] {
+  class I;; f;
+}
 /* */
-class S__Z_feFooX__wBarYI_ extends MixZ_feFooX__wBarYI_[C] { ;; f; }
+class S__Z_feFooX__wBarYI_ extends MixZ_feFooX__wBarYI_[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFooX__wBarYIf extends MixZ_feFooX__wBarYIf[C] { ;; f; }
+class S__Z_feFooX__wBarYIf extends MixZ_feFooX__wBarYIf[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFooX_f extends MixZ_feFooX_f[C] { class I;; f; }
+class S__Z_feFooX_f extends MixZ_feFooX_f[C] {
+  class I;; f;
+}
 /* */
-class S__Z_feFooX_fwBar___ extends MixZ_feFooX_fwBar___[C] { class I;; f; }
+class S__Z_feFooX_fwBar___ extends MixZ_feFooX_fwBar___[C] {
+  class I;; f;
+}
 /* */
-class S__Z_feFooX_fwBar__f extends MixZ_feFooX_fwBar__f[C] { class I;; f; }
+class S__Z_feFooX_fwBar__f extends MixZ_feFooX_fwBar__f[C] {
+  class I;; f;
+}
 /* */
-class S__Z_feFooX_fwBar_I_ extends MixZ_feFooX_fwBar_I_[C] { ;; f; }
+class S__Z_feFooX_fwBar_I_ extends MixZ_feFooX_fwBar_I_[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFooX_fwBar_If extends MixZ_feFooX_fwBar_If[C] { ;; f; }
+class S__Z_feFooX_fwBar_If extends MixZ_feFooX_fwBar_If[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFooX_fwBarY__ extends MixZ_feFooX_fwBarY__[C] { class I;; f; }
+class S__Z_feFooX_fwBarY__ extends MixZ_feFooX_fwBarY__[C] {
+  class I;; f;
+}
 /* */
-class S__Z_feFooX_fwBarY_f extends MixZ_feFooX_fwBarY_f[C] { class I;; f; }
+class S__Z_feFooX_fwBarY_f extends MixZ_feFooX_fwBarY_f[C] {
+  class I;; f;
+}
 /* */
-class S__Z_feFooX_fwBarYI_ extends MixZ_feFooX_fwBarYI_[C] { ;; f; }
+class S__Z_feFooX_fwBarYI_ extends MixZ_feFooX_fwBarYI_[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFooX_fwBarYIf extends MixZ_feFooX_fwBarYIf[C] { ;; f; }
+class S__Z_feFooX_fwBarYIf extends MixZ_feFooX_fwBarYIf[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFooXI_ extends MixZ_feFooXI_[C] { ;; f; }
+class S__Z_feFooXI_ extends MixZ_feFooXI_[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFooXI_wBar___ extends MixZ_feFooXI_wBar___[C] { ;; f; }
+class S__Z_feFooXI_wBar___ extends MixZ_feFooXI_wBar___[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFooXI_wBar__f extends MixZ_feFooXI_wBar__f[C] { ;; f; }
+class S__Z_feFooXI_wBar__f extends MixZ_feFooXI_wBar__f[C] {
+  ;; f;
+}
 // */class S__Z_feFooXI_wBar_I_     extends MixZ_feFooXI_wBar_I_[C]  {        ;                                ; f; }
 // */class S__Z_feFooXI_wBar_If     extends MixZ_feFooXI_wBar_If[C]  {        ;                                ; f; }
 /* */
-class S__Z_feFooXI_wBarY__ extends MixZ_feFooXI_wBarY__[C] { ;; f; }
+class S__Z_feFooXI_wBarY__ extends MixZ_feFooXI_wBarY__[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFooXI_wBarY_f extends MixZ_feFooXI_wBarY_f[C] { ;; f; }
+class S__Z_feFooXI_wBarY_f extends MixZ_feFooXI_wBarY_f[C] {
+  ;; f;
+}
 // */class S__Z_feFooXI_wBarYI_     extends MixZ_feFooXI_wBarYI_[C]  {        ;                                ; f; }
 // */class S__Z_feFooXI_wBarYIf     extends MixZ_feFooXI_wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S__Z_feFooXIf extends MixZ_feFooXIf[C] { ;; f; }
+class S__Z_feFooXIf extends MixZ_feFooXIf[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFooXIfwBar___ extends MixZ_feFooXIfwBar___[C] { ;; f; }
+class S__Z_feFooXIfwBar___ extends MixZ_feFooXIfwBar___[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFooXIfwBar__f extends MixZ_feFooXIfwBar__f[C] { ;; f; }
+class S__Z_feFooXIfwBar__f extends MixZ_feFooXIfwBar__f[C] {
+  ;; f;
+}
 // */class S__Z_feFooXIfwBar_I_     extends MixZ_feFooXIfwBar_I_[C]  {        ;                                ; f; }
 // */class S__Z_feFooXIfwBar_If     extends MixZ_feFooXIfwBar_If[C]  {        ;                                ; f; }
 /* */
-class S__Z_feFooXIfwBarY__ extends MixZ_feFooXIfwBarY__[C] { ;; f; }
+class S__Z_feFooXIfwBarY__ extends MixZ_feFooXIfwBarY__[C] {
+  ;; f;
+}
 /* */
-class S__Z_feFooXIfwBarY_f extends MixZ_feFooXIfwBarY_f[C] { ;; f; }
+class S__Z_feFooXIfwBarY_f extends MixZ_feFooXIfwBarY_f[C] {
+  ;; f;
+}
 // */class S__Z_feFooXIfwBarYI_     extends MixZ_feFooXIfwBarYI_[C]  {        ;                                ; f; }
 // */class S__Z_feFooXIfwBarYIf     extends MixZ_feFooXIfwBarYIf[C]  {        ;                                ; f; }
 
 /* */
-class S__ZI_eFoo___ extends MixZI_eFoo___[C] { ; def f: I = { sub; null }; f; }
-/* */
-class S__ZI_eFoo___wBar___ extends MixZI_eFoo___wBar___[C] {
-  ; def f: I = { sub; null }; f;
+class S__ZI_eFoo___ extends MixZI_eFoo___[C] {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__ZI_eFoo___wBar__f extends MixZI_eFoo___wBar__f[C] { ;; f; }
+class S__ZI_eFoo___wBar___ extends MixZI_eFoo___wBar___[C] {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
+}
+/* */
+class S__ZI_eFoo___wBar__f extends MixZI_eFoo___wBar__f[C] {
+  ;; f;
+}
 // */class S__ZI_eFoo___wBar_I_     extends MixZI_eFoo___wBar_I_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S__ZI_eFoo___wBar_If     extends MixZI_eFoo___wBar_If[C]  {        ;                                ; f; }
 /* */
 class S__ZI_eFoo___wBarY__ extends MixZI_eFoo___wBarY__[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__ZI_eFoo___wBarY_f extends MixZI_eFoo___wBarY_f[C] { ;; f; }
+class S__ZI_eFoo___wBarY_f extends MixZI_eFoo___wBarY_f[C] {
+  ;; f;
+}
 // */class S__ZI_eFoo___wBarYI_     extends MixZI_eFoo___wBarYI_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S__ZI_eFoo___wBarYIf     extends MixZI_eFoo___wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S__ZI_eFoo__f extends MixZI_eFoo__f[C] { ;; f; }
+class S__ZI_eFoo__f extends MixZI_eFoo__f[C] {
+  ;; f;
+}
 /* */
-class S__ZI_eFoo__fwBar___ extends MixZI_eFoo__fwBar___[C] { ;; f; }
+class S__ZI_eFoo__fwBar___ extends MixZI_eFoo__fwBar___[C] {
+  ;; f;
+}
 // */class S__ZI_eFoo__fwBar__f     extends MixZI_eFoo__fwBar__f[C]  {        ;                                ; f; }
 // */class S__ZI_eFoo__fwBar_I_     extends MixZI_eFoo__fwBar_I_[C]  {        ;                                ; f; }
 // */class S__ZI_eFoo__fwBar_If     extends MixZI_eFoo__fwBar_If[C]  {        ;                                ; f; }
 /* */
-class S__ZI_eFoo__fwBarY__ extends MixZI_eFoo__fwBarY__[C] { ;; f; }
+class S__ZI_eFoo__fwBarY__ extends MixZI_eFoo__fwBarY__[C] {
+  ;; f;
+}
 // */class S__ZI_eFoo__fwBarY_f     extends MixZI_eFoo__fwBarY_f[C]  {        ;                                ; f; }
 // */class S__ZI_eFoo__fwBarYI_     extends MixZI_eFoo__fwBarYI_[C]  {        ;                                ; f; }
 // */class S__ZI_eFoo__fwBarYIf     extends MixZI_eFoo__fwBarYIf[C]  {        ;                                ; f; }
@@ -3179,32 +5170,53 @@ class S__ZI_eFoo__fwBarY__ extends MixZI_eFoo__fwBarY__[C] { ;; f; }
 // */class S__ZI_eFoo_IfwBarYI_     extends MixZI_eFoo_IfwBarYI_[C]  {        ;                                ; f; }
 // */class S__ZI_eFoo_IfwBarYIf     extends MixZI_eFoo_IfwBarYIf[C]  {        ;                                ; f; }
 /* */
-class S__ZI_eFooX__ extends MixZI_eFooX__[C] { ; def f: I = { sub; null }; f; }
-/* */
-class S__ZI_eFooX__wBar___ extends MixZI_eFooX__wBar___[C] {
-  ; def f: I = { sub; null }; f;
+class S__ZI_eFooX__ extends MixZI_eFooX__[C] {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__ZI_eFooX__wBar__f extends MixZI_eFooX__wBar__f[C] { ;; f; }
+class S__ZI_eFooX__wBar___ extends MixZI_eFooX__wBar___[C] {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
+}
+/* */
+class S__ZI_eFooX__wBar__f extends MixZI_eFooX__wBar__f[C] {
+  ;; f;
+}
 // */class S__ZI_eFooX__wBar_I_     extends MixZI_eFooX__wBar_I_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S__ZI_eFooX__wBar_If     extends MixZI_eFooX__wBar_If[C]  {        ;                                ; f; }
 /* */
 class S__ZI_eFooX__wBarY__ extends MixZI_eFooX__wBarY__[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__ZI_eFooX__wBarY_f extends MixZI_eFooX__wBarY_f[C] { ;; f; }
+class S__ZI_eFooX__wBarY_f extends MixZI_eFooX__wBarY_f[C] {
+  ;; f;
+}
 // */class S__ZI_eFooX__wBarYI_     extends MixZI_eFooX__wBarYI_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S__ZI_eFooX__wBarYIf     extends MixZI_eFooX__wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S__ZI_eFooX_f extends MixZI_eFooX_f[C] { ;; f; }
+class S__ZI_eFooX_f extends MixZI_eFooX_f[C] {
+  ;; f;
+}
 /* */
-class S__ZI_eFooX_fwBar___ extends MixZI_eFooX_fwBar___[C] { ;; f; }
+class S__ZI_eFooX_fwBar___ extends MixZI_eFooX_fwBar___[C] {
+  ;; f;
+}
 // */class S__ZI_eFooX_fwBar__f     extends MixZI_eFooX_fwBar__f[C]  {        ;                                ; f; }
 // */class S__ZI_eFooX_fwBar_I_     extends MixZI_eFooX_fwBar_I_[C]  {        ;                                ; f; }
 // */class S__ZI_eFooX_fwBar_If     extends MixZI_eFooX_fwBar_If[C]  {        ;                                ; f; }
 /* */
-class S__ZI_eFooX_fwBarY__ extends MixZI_eFooX_fwBarY__[C] { ;; f; }
+class S__ZI_eFooX_fwBarY__ extends MixZI_eFooX_fwBarY__[C] {
+  ;; f;
+}
 // */class S__ZI_eFooX_fwBarY_f     extends MixZI_eFooX_fwBarY_f[C]  {        ;                                ; f; }
 // */class S__ZI_eFooX_fwBarYI_     extends MixZI_eFooX_fwBarYI_[C]  {        ;                                ; f; }
 // */class S__ZI_eFooX_fwBarYIf     extends MixZI_eFooX_fwBarYIf[C]  {        ;                                ; f; }
@@ -3228,31 +5240,51 @@ class S__ZI_eFooX_fwBarY__ extends MixZI_eFooX_fwBarY__[C] { ;; f; }
 // */class S__ZI_eFooXIfwBarYIf     extends MixZI_eFooXIfwBarYIf[C]  {        ;                                ; f; }
 
 /* */
-class S__ZIfeFoo___ extends MixZIfeFoo___[C] { ;; f; }
+class S__ZIfeFoo___ extends MixZIfeFoo___[C] {
+  ;; f;
+}
 /* */
-class S__ZIfeFoo___wBar___ extends MixZIfeFoo___wBar___[C] { ;; f; }
+class S__ZIfeFoo___wBar___ extends MixZIfeFoo___wBar___[C] {
+  ;; f;
+}
 /* */
-class S__ZIfeFoo___wBar__f extends MixZIfeFoo___wBar__f[C] { ;; f; }
+class S__ZIfeFoo___wBar__f extends MixZIfeFoo___wBar__f[C] {
+  ;; f;
+}
 // */class S__ZIfeFoo___wBar_I_     extends MixZIfeFoo___wBar_I_[C]  {        ;                                ; f; }
 // */class S__ZIfeFoo___wBar_If     extends MixZIfeFoo___wBar_If[C]  {        ;                                ; f; }
 /* */
-class S__ZIfeFoo___wBarY__ extends MixZIfeFoo___wBarY__[C] { ;; f; }
+class S__ZIfeFoo___wBarY__ extends MixZIfeFoo___wBarY__[C] {
+  ;; f;
+}
 /* */
-class S__ZIfeFoo___wBarY_f extends MixZIfeFoo___wBarY_f[C] { ;; f; }
+class S__ZIfeFoo___wBarY_f extends MixZIfeFoo___wBarY_f[C] {
+  ;; f;
+}
 // */class S__ZIfeFoo___wBarYI_     extends MixZIfeFoo___wBarYI_[C]  {        ;                                ; f; }
 // */class S__ZIfeFoo___wBarYIf     extends MixZIfeFoo___wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S__ZIfeFoo__f extends MixZIfeFoo__f[C] { ;; f; }
+class S__ZIfeFoo__f extends MixZIfeFoo__f[C] {
+  ;; f;
+}
 /* */
-class S__ZIfeFoo__fwBar___ extends MixZIfeFoo__fwBar___[C] { ;; f; }
+class S__ZIfeFoo__fwBar___ extends MixZIfeFoo__fwBar___[C] {
+  ;; f;
+}
 /* */
-class S__ZIfeFoo__fwBar__f extends MixZIfeFoo__fwBar__f[C] { ;; f; }
+class S__ZIfeFoo__fwBar__f extends MixZIfeFoo__fwBar__f[C] {
+  ;; f;
+}
 // */class S__ZIfeFoo__fwBar_I_     extends MixZIfeFoo__fwBar_I_[C]  {        ;                                ; f; }
 // */class S__ZIfeFoo__fwBar_If     extends MixZIfeFoo__fwBar_If[C]  {        ;                                ; f; }
 /* */
-class S__ZIfeFoo__fwBarY__ extends MixZIfeFoo__fwBarY__[C] { ;; f; }
+class S__ZIfeFoo__fwBarY__ extends MixZIfeFoo__fwBarY__[C] {
+  ;; f;
+}
 /* */
-class S__ZIfeFoo__fwBarY_f extends MixZIfeFoo__fwBarY_f[C] { ;; f; }
+class S__ZIfeFoo__fwBarY_f extends MixZIfeFoo__fwBarY_f[C] {
+  ;; f;
+}
 // */class S__ZIfeFoo__fwBarYI_     extends MixZIfeFoo__fwBarYI_[C]  {        ;                                ; f; }
 // */class S__ZIfeFoo__fwBarYIf     extends MixZIfeFoo__fwBarYIf[C]  {        ;                                ; f; }
 // */class S__ZIfeFoo_I_            extends MixZIfeFoo_I_       [C]  {        ;                                ; f; }
@@ -3274,31 +5306,51 @@ class S__ZIfeFoo__fwBarY_f extends MixZIfeFoo__fwBarY_f[C] { ;; f; }
 // */class S__ZIfeFoo_IfwBarYI_     extends MixZIfeFoo_IfwBarYI_[C]  {        ;                                ; f; }
 // */class S__ZIfeFoo_IfwBarYIf     extends MixZIfeFoo_IfwBarYIf[C]  {        ;                                ; f; }
 /* */
-class S__ZIfeFooX__ extends MixZIfeFooX__[C] { ;; f; }
+class S__ZIfeFooX__ extends MixZIfeFooX__[C] {
+  ;; f;
+}
 /* */
-class S__ZIfeFooX__wBar___ extends MixZIfeFooX__wBar___[C] { ;; f; }
+class S__ZIfeFooX__wBar___ extends MixZIfeFooX__wBar___[C] {
+  ;; f;
+}
 /* */
-class S__ZIfeFooX__wBar__f extends MixZIfeFooX__wBar__f[C] { ;; f; }
+class S__ZIfeFooX__wBar__f extends MixZIfeFooX__wBar__f[C] {
+  ;; f;
+}
 // */class S__ZIfeFooX__wBar_I_     extends MixZIfeFooX__wBar_I_[C]  {        ;                                ; f; }
 // */class S__ZIfeFooX__wBar_If     extends MixZIfeFooX__wBar_If[C]  {        ;                                ; f; }
 /* */
-class S__ZIfeFooX__wBarY__ extends MixZIfeFooX__wBarY__[C] { ;; f; }
+class S__ZIfeFooX__wBarY__ extends MixZIfeFooX__wBarY__[C] {
+  ;; f;
+}
 /* */
-class S__ZIfeFooX__wBarY_f extends MixZIfeFooX__wBarY_f[C] { ;; f; }
+class S__ZIfeFooX__wBarY_f extends MixZIfeFooX__wBarY_f[C] {
+  ;; f;
+}
 // */class S__ZIfeFooX__wBarYI_     extends MixZIfeFooX__wBarYI_[C]  {        ;                                ; f; }
 // */class S__ZIfeFooX__wBarYIf     extends MixZIfeFooX__wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S__ZIfeFooX_f extends MixZIfeFooX_f[C] { ;; f; }
+class S__ZIfeFooX_f extends MixZIfeFooX_f[C] {
+  ;; f;
+}
 /* */
-class S__ZIfeFooX_fwBar___ extends MixZIfeFooX_fwBar___[C] { ;; f; }
+class S__ZIfeFooX_fwBar___ extends MixZIfeFooX_fwBar___[C] {
+  ;; f;
+}
 /* */
-class S__ZIfeFooX_fwBar__f extends MixZIfeFooX_fwBar__f[C] { ;; f; }
+class S__ZIfeFooX_fwBar__f extends MixZIfeFooX_fwBar__f[C] {
+  ;; f;
+}
 // */class S__ZIfeFooX_fwBar_I_     extends MixZIfeFooX_fwBar_I_[C]  {        ;                                ; f; }
 // */class S__ZIfeFooX_fwBar_If     extends MixZIfeFooX_fwBar_If[C]  {        ;                                ; f; }
 /* */
-class S__ZIfeFooX_fwBarY__ extends MixZIfeFooX_fwBarY__[C] { ;; f; }
+class S__ZIfeFooX_fwBarY__ extends MixZIfeFooX_fwBarY__[C] {
+  ;; f;
+}
 /* */
-class S__ZIfeFooX_fwBarY_f extends MixZIfeFooX_fwBarY_f[C] { ;; f; }
+class S__ZIfeFooX_fwBarY_f extends MixZIfeFooX_fwBarY_f[C] {
+  ;; f;
+}
 // */class S__ZIfeFooX_fwBarYI_     extends MixZIfeFooX_fwBarYI_[C]  {        ;                                ; f; }
 // */class S__ZIfeFooX_fwBarYIf     extends MixZIfeFooX_fwBarYIf[C]  {        ;                                ; f; }
 // */class S__ZIfeFooXI_            extends MixZIfeFooXI_       [C]  {        ;                                ; f; }
@@ -3322,305 +5374,546 @@ class S__ZIfeFooX_fwBarY_f extends MixZIfeFooX_fwBarY_f[C] { ;; f; }
 
 /* */
 class S_____wFoo___ extends Mix___wFoo___ {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
 class S_____wFoo___wBar___ extends Mix___wFoo___wBar___ {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_____wFoo___wBar__f extends Mix___wFoo___wBar__f { class I;; f; }
+class S_____wFoo___wBar__f extends Mix___wFoo___wBar__f {
+  class I;; f;
+}
 /* */
 class S_____wFoo___wBar_I_ extends Mix___wFoo___wBar_I_ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_____wFoo___wBar_If extends Mix___wFoo___wBar_If { ;; f; }
+class S_____wFoo___wBar_If extends Mix___wFoo___wBar_If {
+  ;; f;
+}
 /* */
 class S_____wFoo___wBarY__ extends Mix___wFoo___wBarY__ {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_____wFoo___wBarY_f extends Mix___wFoo___wBarY_f { class I;; f; }
+class S_____wFoo___wBarY_f extends Mix___wFoo___wBarY_f {
+  class I;; f;
+}
 /* */
 class S_____wFoo___wBarYI_ extends Mix___wFoo___wBarYI_ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_____wFoo___wBarYIf extends Mix___wFoo___wBarYIf { ;; f; }
+class S_____wFoo___wBarYIf extends Mix___wFoo___wBarYIf {
+  ;; f;
+}
 /* */
-class S_____wFoo__f extends Mix___wFoo__f { class I;; f; }
+class S_____wFoo__f extends Mix___wFoo__f {
+  class I;; f;
+}
 /* */
-class S_____wFoo__fwBar___ extends Mix___wFoo__fwBar___ { class I;; f; }
+class S_____wFoo__fwBar___ extends Mix___wFoo__fwBar___ {
+  class I;; f;
+}
 // */class S_____wFoo__fwBar__f     extends Mix___wFoo__fwBar__f     { class I;                                ; f; }
 /* */
-class S_____wFoo__fwBar_I_ extends Mix___wFoo__fwBar_I_ { ;; f; }
+class S_____wFoo__fwBar_I_ extends Mix___wFoo__fwBar_I_ {
+  ;; f;
+}
 // */class S_____wFoo__fwBar_If     extends Mix___wFoo__fwBar_If     {        ;                                ; f; }
 /* */
-class S_____wFoo__fwBarY__ extends Mix___wFoo__fwBarY__ { class I;; f; }
+class S_____wFoo__fwBarY__ extends Mix___wFoo__fwBarY__ {
+  class I;; f;
+}
 // */class S_____wFoo__fwBarY_f     extends Mix___wFoo__fwBarY_f     { class I;                                ; f; }
 /* */
-class S_____wFoo__fwBarYI_ extends Mix___wFoo__fwBarYI_ { ;; f; }
+class S_____wFoo__fwBarYI_ extends Mix___wFoo__fwBarYI_ {
+  ;; f;
+}
 // */class S_____wFoo__fwBarYIf     extends Mix___wFoo__fwBarYIf     {        ;                                ; f; }
 /* */
-class S_____wFoo_I_ extends Mix___wFoo_I_ { ; def f: I = { sub; null }; f; }
-/* */
-class S_____wFoo_I_wBar___ extends Mix___wFoo_I_wBar___ {
-  ; def f: I = { sub; null }; f;
+class S_____wFoo_I_ extends Mix___wFoo_I_ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_____wFoo_I_wBar__f extends Mix___wFoo_I_wBar__f { ;; f; }
+class S_____wFoo_I_wBar___ extends Mix___wFoo_I_wBar___ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
+}
+/* */
+class S_____wFoo_I_wBar__f extends Mix___wFoo_I_wBar__f {
+  ;; f;
+}
 // */class S_____wFoo_I_wBar_I_     extends Mix___wFoo_I_wBar_I_     {        ;          def f: I = {sub; null}; f; }
 // */class S_____wFoo_I_wBar_If     extends Mix___wFoo_I_wBar_If     {        ;                                ; f; }
 /* */
 class S_____wFoo_I_wBarY__ extends Mix___wFoo_I_wBarY__ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_____wFoo_I_wBarY_f extends Mix___wFoo_I_wBarY_f { ;; f; }
+class S_____wFoo_I_wBarY_f extends Mix___wFoo_I_wBarY_f {
+  ;; f;
+}
 // */class S_____wFoo_I_wBarYI_     extends Mix___wFoo_I_wBarYI_     {        ;          def f: I = {sub; null}; f; }
 // */class S_____wFoo_I_wBarYIf     extends Mix___wFoo_I_wBarYIf     {        ;                                ; f; }
 /* */
-class S_____wFoo_If extends Mix___wFoo_If { ;; f; }
+class S_____wFoo_If extends Mix___wFoo_If {
+  ;; f;
+}
 /* */
-class S_____wFoo_IfwBar___ extends Mix___wFoo_IfwBar___ { ;; f; }
+class S_____wFoo_IfwBar___ extends Mix___wFoo_IfwBar___ {
+  ;; f;
+}
 // */class S_____wFoo_IfwBar__f     extends Mix___wFoo_IfwBar__f     {        ;                                ; f; }
 // */class S_____wFoo_IfwBar_I_     extends Mix___wFoo_IfwBar_I_     {        ;                                ; f; }
 // */class S_____wFoo_IfwBar_If     extends Mix___wFoo_IfwBar_If     {        ;                                ; f; }
 /* */
-class S_____wFoo_IfwBarY__ extends Mix___wFoo_IfwBarY__ { ;; f; }
+class S_____wFoo_IfwBarY__ extends Mix___wFoo_IfwBarY__ {
+  ;; f;
+}
 // */class S_____wFoo_IfwBarY_f     extends Mix___wFoo_IfwBarY_f     {        ;                                ; f; }
 // */class S_____wFoo_IfwBarYI_     extends Mix___wFoo_IfwBarYI_     {        ;                                ; f; }
 // */class S_____wFoo_IfwBarYIf     extends Mix___wFoo_IfwBarYIf     {        ;                                ; f; }
 /* */
 class S_____wFooX__ extends Mix___wFooX__ {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
 class S_____wFooX__wBar___ extends Mix___wFooX__wBar___ {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_____wFooX__wBar__f extends Mix___wFooX__wBar__f { class I;; f; }
+class S_____wFooX__wBar__f extends Mix___wFooX__wBar__f {
+  class I;; f;
+}
 /* */
 class S_____wFooX__wBar_I_ extends Mix___wFooX__wBar_I_ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_____wFooX__wBar_If extends Mix___wFooX__wBar_If { ;; f; }
+class S_____wFooX__wBar_If extends Mix___wFooX__wBar_If {
+  ;; f;
+}
 /* */
 class S_____wFooX__wBarY__ extends Mix___wFooX__wBarY__ {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_____wFooX__wBarY_f extends Mix___wFooX__wBarY_f { class I;; f; }
+class S_____wFooX__wBarY_f extends Mix___wFooX__wBarY_f {
+  class I;; f;
+}
 /* */
 class S_____wFooX__wBarYI_ extends Mix___wFooX__wBarYI_ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_____wFooX__wBarYIf extends Mix___wFooX__wBarYIf { ;; f; }
+class S_____wFooX__wBarYIf extends Mix___wFooX__wBarYIf {
+  ;; f;
+}
 /* */
-class S_____wFooX_f extends Mix___wFooX_f { class I;; f; }
+class S_____wFooX_f extends Mix___wFooX_f {
+  class I;; f;
+}
 /* */
-class S_____wFooX_fwBar___ extends Mix___wFooX_fwBar___ { class I;; f; }
+class S_____wFooX_fwBar___ extends Mix___wFooX_fwBar___ {
+  class I;; f;
+}
 // */class S_____wFooX_fwBar__f     extends Mix___wFooX_fwBar__f     { class I;                                ; f; }
 /* */
-class S_____wFooX_fwBar_I_ extends Mix___wFooX_fwBar_I_ { ;; f; }
+class S_____wFooX_fwBar_I_ extends Mix___wFooX_fwBar_I_ {
+  ;; f;
+}
 // */class S_____wFooX_fwBar_If     extends Mix___wFooX_fwBar_If     {        ;                                ; f; }
 /* */
-class S_____wFooX_fwBarY__ extends Mix___wFooX_fwBarY__ { class I;; f; }
+class S_____wFooX_fwBarY__ extends Mix___wFooX_fwBarY__ {
+  class I;; f;
+}
 // */class S_____wFooX_fwBarY_f     extends Mix___wFooX_fwBarY_f     { class I;                                ; f; }
 /* */
-class S_____wFooX_fwBarYI_ extends Mix___wFooX_fwBarYI_ { ;; f; }
+class S_____wFooX_fwBarYI_ extends Mix___wFooX_fwBarYI_ {
+  ;; f;
+}
 // */class S_____wFooX_fwBarYIf     extends Mix___wFooX_fwBarYIf     {        ;                                ; f; }
 /* */
-class S_____wFooXI_ extends Mix___wFooXI_ { ; def f: I = { sub; null }; f; }
-/* */
-class S_____wFooXI_wBar___ extends Mix___wFooXI_wBar___ {
-  ; def f: I = { sub; null }; f;
+class S_____wFooXI_ extends Mix___wFooXI_ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_____wFooXI_wBar__f extends Mix___wFooXI_wBar__f { ;; f; }
+class S_____wFooXI_wBar___ extends Mix___wFooXI_wBar___ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
+}
+/* */
+class S_____wFooXI_wBar__f extends Mix___wFooXI_wBar__f {
+  ;; f;
+}
 // */class S_____wFooXI_wBar_I_     extends Mix___wFooXI_wBar_I_     {        ;          def f: I = {sub; null}; f; }
 // */class S_____wFooXI_wBar_If     extends Mix___wFooXI_wBar_If     {        ;                                ; f; }
 /* */
 class S_____wFooXI_wBarY__ extends Mix___wFooXI_wBarY__ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_____wFooXI_wBarY_f extends Mix___wFooXI_wBarY_f { ;; f; }
+class S_____wFooXI_wBarY_f extends Mix___wFooXI_wBarY_f {
+  ;; f;
+}
 // */class S_____wFooXI_wBarYI_     extends Mix___wFooXI_wBarYI_     {        ;          def f: I = {sub; null}; f; }
 // */class S_____wFooXI_wBarYIf     extends Mix___wFooXI_wBarYIf     {        ;                                ; f; }
 /* */
-class S_____wFooXIf extends Mix___wFooXIf { ;; f; }
+class S_____wFooXIf extends Mix___wFooXIf {
+  ;; f;
+}
 /* */
-class S_____wFooXIfwBar___ extends Mix___wFooXIfwBar___ { ;; f; }
+class S_____wFooXIfwBar___ extends Mix___wFooXIfwBar___ {
+  ;; f;
+}
 // */class S_____wFooXIfwBar__f     extends Mix___wFooXIfwBar__f     {        ;                                ; f; }
 // */class S_____wFooXIfwBar_I_     extends Mix___wFooXIfwBar_I_     {        ;                                ; f; }
 // */class S_____wFooXIfwBar_If     extends Mix___wFooXIfwBar_If     {        ;                                ; f; }
 /* */
-class S_____wFooXIfwBarY__ extends Mix___wFooXIfwBarY__ { ;; f; }
+class S_____wFooXIfwBarY__ extends Mix___wFooXIfwBarY__ {
+  ;; f;
+}
 // */class S_____wFooXIfwBarY_f     extends Mix___wFooXIfwBarY_f     {        ;                                ; f; }
 // */class S_____wFooXIfwBarYI_     extends Mix___wFooXIfwBarYI_     {        ;                                ; f; }
 // */class S_____wFooXIfwBarYIf     extends Mix___wFooXIfwBarYIf     {        ;                                ; f; }
 
 /* */
-class S____fwFoo___ extends Mix__fwFoo___ { class I;; f; }
+class S____fwFoo___ extends Mix__fwFoo___ {
+  class I;; f;
+}
 /* */
-class S____fwFoo___wBar___ extends Mix__fwFoo___wBar___ { class I;; f; }
+class S____fwFoo___wBar___ extends Mix__fwFoo___wBar___ {
+  class I;; f;
+}
 /* */
-class S____fwFoo___wBar__f extends Mix__fwFoo___wBar__f { class I;; f; }
+class S____fwFoo___wBar__f extends Mix__fwFoo___wBar__f {
+  class I;; f;
+}
 /* */
-class S____fwFoo___wBar_I_ extends Mix__fwFoo___wBar_I_ { ;; f; }
+class S____fwFoo___wBar_I_ extends Mix__fwFoo___wBar_I_ {
+  ;; f;
+}
 /* */
-class S____fwFoo___wBar_If extends Mix__fwFoo___wBar_If { ;; f; }
+class S____fwFoo___wBar_If extends Mix__fwFoo___wBar_If {
+  ;; f;
+}
 /* */
-class S____fwFoo___wBarY__ extends Mix__fwFoo___wBarY__ { class I;; f; }
+class S____fwFoo___wBarY__ extends Mix__fwFoo___wBarY__ {
+  class I;; f;
+}
 /* */
-class S____fwFoo___wBarY_f extends Mix__fwFoo___wBarY_f { class I;; f; }
+class S____fwFoo___wBarY_f extends Mix__fwFoo___wBarY_f {
+  class I;; f;
+}
 /* */
-class S____fwFoo___wBarYI_ extends Mix__fwFoo___wBarYI_ { ;; f; }
+class S____fwFoo___wBarYI_ extends Mix__fwFoo___wBarYI_ {
+  ;; f;
+}
 /* */
-class S____fwFoo___wBarYIf extends Mix__fwFoo___wBarYIf { ;; f; }
+class S____fwFoo___wBarYIf extends Mix__fwFoo___wBarYIf {
+  ;; f;
+}
 /* */
-class S____fwFoo__f extends Mix__fwFoo__f { class I;; f; }
+class S____fwFoo__f extends Mix__fwFoo__f {
+  class I;; f;
+}
 /* */
-class S____fwFoo__fwBar___ extends Mix__fwFoo__fwBar___ { class I;; f; }
+class S____fwFoo__fwBar___ extends Mix__fwFoo__fwBar___ {
+  class I;; f;
+}
 /* */
-class S____fwFoo__fwBar__f extends Mix__fwFoo__fwBar__f { class I;; f; }
+class S____fwFoo__fwBar__f extends Mix__fwFoo__fwBar__f {
+  class I;; f;
+}
 /* */
-class S____fwFoo__fwBar_I_ extends Mix__fwFoo__fwBar_I_ { ;; f; }
+class S____fwFoo__fwBar_I_ extends Mix__fwFoo__fwBar_I_ {
+  ;; f;
+}
 /* */
-class S____fwFoo__fwBar_If extends Mix__fwFoo__fwBar_If { ;; f; }
+class S____fwFoo__fwBar_If extends Mix__fwFoo__fwBar_If {
+  ;; f;
+}
 /* */
-class S____fwFoo__fwBarY__ extends Mix__fwFoo__fwBarY__ { class I;; f; }
+class S____fwFoo__fwBarY__ extends Mix__fwFoo__fwBarY__ {
+  class I;; f;
+}
 /* */
-class S____fwFoo__fwBarY_f extends Mix__fwFoo__fwBarY_f { class I;; f; }
+class S____fwFoo__fwBarY_f extends Mix__fwFoo__fwBarY_f {
+  class I;; f;
+}
 /* */
-class S____fwFoo__fwBarYI_ extends Mix__fwFoo__fwBarYI_ { ;; f; }
+class S____fwFoo__fwBarYI_ extends Mix__fwFoo__fwBarYI_ {
+  ;; f;
+}
 /* */
-class S____fwFoo__fwBarYIf extends Mix__fwFoo__fwBarYIf { ;; f; }
+class S____fwFoo__fwBarYIf extends Mix__fwFoo__fwBarYIf {
+  ;; f;
+}
 /* */
-class S____fwFoo_I_ extends Mix__fwFoo_I_ { ;; f; }
+class S____fwFoo_I_ extends Mix__fwFoo_I_ {
+  ;; f;
+}
 /* */
-class S____fwFoo_I_wBar___ extends Mix__fwFoo_I_wBar___ { ;; f; }
+class S____fwFoo_I_wBar___ extends Mix__fwFoo_I_wBar___ {
+  ;; f;
+}
 /* */
-class S____fwFoo_I_wBar__f extends Mix__fwFoo_I_wBar__f { ;; f; }
+class S____fwFoo_I_wBar__f extends Mix__fwFoo_I_wBar__f {
+  ;; f;
+}
 // */class S____fwFoo_I_wBar_I_     extends Mix__fwFoo_I_wBar_I_     {        ;                                ; f; }
 // */class S____fwFoo_I_wBar_If     extends Mix__fwFoo_I_wBar_If     {        ;                                ; f; }
 /* */
-class S____fwFoo_I_wBarY__ extends Mix__fwFoo_I_wBarY__ { ;; f; }
+class S____fwFoo_I_wBarY__ extends Mix__fwFoo_I_wBarY__ {
+  ;; f;
+}
 /* */
-class S____fwFoo_I_wBarY_f extends Mix__fwFoo_I_wBarY_f { ;; f; }
+class S____fwFoo_I_wBarY_f extends Mix__fwFoo_I_wBarY_f {
+  ;; f;
+}
 // */class S____fwFoo_I_wBarYI_     extends Mix__fwFoo_I_wBarYI_     {        ;                                ; f; }
 // */class S____fwFoo_I_wBarYIf     extends Mix__fwFoo_I_wBarYIf     {        ;                                ; f; }
 /* */
-class S____fwFoo_If extends Mix__fwFoo_If { ;; f; }
+class S____fwFoo_If extends Mix__fwFoo_If {
+  ;; f;
+}
 /* */
-class S____fwFoo_IfwBar___ extends Mix__fwFoo_IfwBar___ { ;; f; }
+class S____fwFoo_IfwBar___ extends Mix__fwFoo_IfwBar___ {
+  ;; f;
+}
 /* */
-class S____fwFoo_IfwBar__f extends Mix__fwFoo_IfwBar__f { ;; f; }
+class S____fwFoo_IfwBar__f extends Mix__fwFoo_IfwBar__f {
+  ;; f;
+}
 // */class S____fwFoo_IfwBar_I_     extends Mix__fwFoo_IfwBar_I_     {        ;                                ; f; }
 // */class S____fwFoo_IfwBar_If     extends Mix__fwFoo_IfwBar_If     {        ;                                ; f; }
 /* */
-class S____fwFoo_IfwBarY__ extends Mix__fwFoo_IfwBarY__ { ;; f; }
+class S____fwFoo_IfwBarY__ extends Mix__fwFoo_IfwBarY__ {
+  ;; f;
+}
 /* */
-class S____fwFoo_IfwBarY_f extends Mix__fwFoo_IfwBarY_f { ;; f; }
+class S____fwFoo_IfwBarY_f extends Mix__fwFoo_IfwBarY_f {
+  ;; f;
+}
 // */class S____fwFoo_IfwBarYI_     extends Mix__fwFoo_IfwBarYI_     {        ;                                ; f; }
 // */class S____fwFoo_IfwBarYIf     extends Mix__fwFoo_IfwBarYIf     {        ;                                ; f; }
 /* */
-class S____fwFooX__ extends Mix__fwFooX__ { class I;; f; }
+class S____fwFooX__ extends Mix__fwFooX__ {
+  class I;; f;
+}
 /* */
-class S____fwFooX__wBar___ extends Mix__fwFooX__wBar___ { class I;; f; }
+class S____fwFooX__wBar___ extends Mix__fwFooX__wBar___ {
+  class I;; f;
+}
 /* */
-class S____fwFooX__wBar__f extends Mix__fwFooX__wBar__f { class I;; f; }
+class S____fwFooX__wBar__f extends Mix__fwFooX__wBar__f {
+  class I;; f;
+}
 /* */
-class S____fwFooX__wBar_I_ extends Mix__fwFooX__wBar_I_ { ;; f; }
+class S____fwFooX__wBar_I_ extends Mix__fwFooX__wBar_I_ {
+  ;; f;
+}
 /* */
-class S____fwFooX__wBar_If extends Mix__fwFooX__wBar_If { ;; f; }
+class S____fwFooX__wBar_If extends Mix__fwFooX__wBar_If {
+  ;; f;
+}
 /* */
-class S____fwFooX__wBarY__ extends Mix__fwFooX__wBarY__ { class I;; f; }
+class S____fwFooX__wBarY__ extends Mix__fwFooX__wBarY__ {
+  class I;; f;
+}
 /* */
-class S____fwFooX__wBarY_f extends Mix__fwFooX__wBarY_f { class I;; f; }
+class S____fwFooX__wBarY_f extends Mix__fwFooX__wBarY_f {
+  class I;; f;
+}
 /* */
-class S____fwFooX__wBarYI_ extends Mix__fwFooX__wBarYI_ { ;; f; }
+class S____fwFooX__wBarYI_ extends Mix__fwFooX__wBarYI_ {
+  ;; f;
+}
 /* */
-class S____fwFooX__wBarYIf extends Mix__fwFooX__wBarYIf { ;; f; }
+class S____fwFooX__wBarYIf extends Mix__fwFooX__wBarYIf {
+  ;; f;
+}
 /* */
-class S____fwFooX_f extends Mix__fwFooX_f { class I;; f; }
+class S____fwFooX_f extends Mix__fwFooX_f {
+  class I;; f;
+}
 /* */
-class S____fwFooX_fwBar___ extends Mix__fwFooX_fwBar___ { class I;; f; }
+class S____fwFooX_fwBar___ extends Mix__fwFooX_fwBar___ {
+  class I;; f;
+}
 /* */
-class S____fwFooX_fwBar__f extends Mix__fwFooX_fwBar__f { class I;; f; }
+class S____fwFooX_fwBar__f extends Mix__fwFooX_fwBar__f {
+  class I;; f;
+}
 /* */
-class S____fwFooX_fwBar_I_ extends Mix__fwFooX_fwBar_I_ { ;; f; }
+class S____fwFooX_fwBar_I_ extends Mix__fwFooX_fwBar_I_ {
+  ;; f;
+}
 /* */
-class S____fwFooX_fwBar_If extends Mix__fwFooX_fwBar_If { ;; f; }
+class S____fwFooX_fwBar_If extends Mix__fwFooX_fwBar_If {
+  ;; f;
+}
 /* */
-class S____fwFooX_fwBarY__ extends Mix__fwFooX_fwBarY__ { class I;; f; }
+class S____fwFooX_fwBarY__ extends Mix__fwFooX_fwBarY__ {
+  class I;; f;
+}
 /* */
-class S____fwFooX_fwBarY_f extends Mix__fwFooX_fwBarY_f { class I;; f; }
+class S____fwFooX_fwBarY_f extends Mix__fwFooX_fwBarY_f {
+  class I;; f;
+}
 /* */
-class S____fwFooX_fwBarYI_ extends Mix__fwFooX_fwBarYI_ { ;; f; }
+class S____fwFooX_fwBarYI_ extends Mix__fwFooX_fwBarYI_ {
+  ;; f;
+}
 /* */
-class S____fwFooX_fwBarYIf extends Mix__fwFooX_fwBarYIf { ;; f; }
+class S____fwFooX_fwBarYIf extends Mix__fwFooX_fwBarYIf {
+  ;; f;
+}
 /* */
-class S____fwFooXI_ extends Mix__fwFooXI_ { ;; f; }
+class S____fwFooXI_ extends Mix__fwFooXI_ {
+  ;; f;
+}
 /* */
-class S____fwFooXI_wBar___ extends Mix__fwFooXI_wBar___ { ;; f; }
+class S____fwFooXI_wBar___ extends Mix__fwFooXI_wBar___ {
+  ;; f;
+}
 /* */
-class S____fwFooXI_wBar__f extends Mix__fwFooXI_wBar__f { ;; f; }
+class S____fwFooXI_wBar__f extends Mix__fwFooXI_wBar__f {
+  ;; f;
+}
 // */class S____fwFooXI_wBar_I_     extends Mix__fwFooXI_wBar_I_     {        ;                                ; f; }
 // */class S____fwFooXI_wBar_If     extends Mix__fwFooXI_wBar_If     {        ;                                ; f; }
 /* */
-class S____fwFooXI_wBarY__ extends Mix__fwFooXI_wBarY__ { ;; f; }
+class S____fwFooXI_wBarY__ extends Mix__fwFooXI_wBarY__ {
+  ;; f;
+}
 /* */
-class S____fwFooXI_wBarY_f extends Mix__fwFooXI_wBarY_f { ;; f; }
+class S____fwFooXI_wBarY_f extends Mix__fwFooXI_wBarY_f {
+  ;; f;
+}
 // */class S____fwFooXI_wBarYI_     extends Mix__fwFooXI_wBarYI_     {        ;                                ; f; }
 // */class S____fwFooXI_wBarYIf     extends Mix__fwFooXI_wBarYIf     {        ;                                ; f; }
 /* */
-class S____fwFooXIf extends Mix__fwFooXIf { ;; f; }
+class S____fwFooXIf extends Mix__fwFooXIf {
+  ;; f;
+}
 /* */
-class S____fwFooXIfwBar___ extends Mix__fwFooXIfwBar___ { ;; f; }
+class S____fwFooXIfwBar___ extends Mix__fwFooXIfwBar___ {
+  ;; f;
+}
 /* */
-class S____fwFooXIfwBar__f extends Mix__fwFooXIfwBar__f { ;; f; }
+class S____fwFooXIfwBar__f extends Mix__fwFooXIfwBar__f {
+  ;; f;
+}
 // */class S____fwFooXIfwBar_I_     extends Mix__fwFooXIfwBar_I_     {        ;                                ; f; }
 // */class S____fwFooXIfwBar_If     extends Mix__fwFooXIfwBar_If     {        ;                                ; f; }
 /* */
-class S____fwFooXIfwBarY__ extends Mix__fwFooXIfwBarY__ { ;; f; }
+class S____fwFooXIfwBarY__ extends Mix__fwFooXIfwBarY__ {
+  ;; f;
+}
 /* */
-class S____fwFooXIfwBarY_f extends Mix__fwFooXIfwBarY_f { ;; f; }
+class S____fwFooXIfwBarY_f extends Mix__fwFooXIfwBarY_f {
+  ;; f;
+}
 // */class S____fwFooXIfwBarYI_     extends Mix__fwFooXIfwBarYI_     {        ;                                ; f; }
 // */class S____fwFooXIfwBarYIf     extends Mix__fwFooXIfwBarYIf     {        ;                                ; f; }
 
 /* */
-class S___I_wFoo___ extends Mix_I_wFoo___ { ; def f: I = { sub; null }; f; }
-/* */
-class S___I_wFoo___wBar___ extends Mix_I_wFoo___wBar___ {
-  ; def f: I = { sub; null }; f;
+class S___I_wFoo___ extends Mix_I_wFoo___ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S___I_wFoo___wBar__f extends Mix_I_wFoo___wBar__f { ;; f; }
+class S___I_wFoo___wBar___ extends Mix_I_wFoo___wBar___ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
+}
+/* */
+class S___I_wFoo___wBar__f extends Mix_I_wFoo___wBar__f {
+  ;; f;
+}
 // */class S___I_wFoo___wBar_I_     extends Mix_I_wFoo___wBar_I_     {        ;          def f: I = {sub; null}; f; }
 // */class S___I_wFoo___wBar_If     extends Mix_I_wFoo___wBar_If     {        ;                                ; f; }
 /* */
 class S___I_wFoo___wBarY__ extends Mix_I_wFoo___wBarY__ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S___I_wFoo___wBarY_f extends Mix_I_wFoo___wBarY_f { ;; f; }
+class S___I_wFoo___wBarY_f extends Mix_I_wFoo___wBarY_f {
+  ;; f;
+}
 // */class S___I_wFoo___wBarYI_     extends Mix_I_wFoo___wBarYI_     {        ;          def f: I = {sub; null}; f; }
 // */class S___I_wFoo___wBarYIf     extends Mix_I_wFoo___wBarYIf     {        ;                                ; f; }
 /* */
-class S___I_wFoo__f extends Mix_I_wFoo__f { ;; f; }
+class S___I_wFoo__f extends Mix_I_wFoo__f {
+  ;; f;
+}
 /* */
-class S___I_wFoo__fwBar___ extends Mix_I_wFoo__fwBar___ { ;; f; }
+class S___I_wFoo__fwBar___ extends Mix_I_wFoo__fwBar___ {
+  ;; f;
+}
 // */class S___I_wFoo__fwBar__f     extends Mix_I_wFoo__fwBar__f     {        ;                                ; f; }
 // */class S___I_wFoo__fwBar_I_     extends Mix_I_wFoo__fwBar_I_     {        ;                                ; f; }
 // */class S___I_wFoo__fwBar_If     extends Mix_I_wFoo__fwBar_If     {        ;                                ; f; }
 /* */
-class S___I_wFoo__fwBarY__ extends Mix_I_wFoo__fwBarY__ { ;; f; }
+class S___I_wFoo__fwBarY__ extends Mix_I_wFoo__fwBarY__ {
+  ;; f;
+}
 // */class S___I_wFoo__fwBarY_f     extends Mix_I_wFoo__fwBarY_f     {        ;                                ; f; }
 // */class S___I_wFoo__fwBarYI_     extends Mix_I_wFoo__fwBarYI_     {        ;                                ; f; }
 // */class S___I_wFoo__fwBarYIf     extends Mix_I_wFoo__fwBarYIf     {        ;                                ; f; }
@@ -3643,32 +5936,53 @@ class S___I_wFoo__fwBarY__ extends Mix_I_wFoo__fwBarY__ { ;; f; }
 // */class S___I_wFoo_IfwBarYI_     extends Mix_I_wFoo_IfwBarYI_     {        ;                                ; f; }
 // */class S___I_wFoo_IfwBarYIf     extends Mix_I_wFoo_IfwBarYIf     {        ;                                ; f; }
 /* */
-class S___I_wFooX__ extends Mix_I_wFooX__ { ; def f: I = { sub; null }; f; }
-/* */
-class S___I_wFooX__wBar___ extends Mix_I_wFooX__wBar___ {
-  ; def f: I = { sub; null }; f;
+class S___I_wFooX__ extends Mix_I_wFooX__ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S___I_wFooX__wBar__f extends Mix_I_wFooX__wBar__f { ;; f; }
+class S___I_wFooX__wBar___ extends Mix_I_wFooX__wBar___ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
+}
+/* */
+class S___I_wFooX__wBar__f extends Mix_I_wFooX__wBar__f {
+  ;; f;
+}
 // */class S___I_wFooX__wBar_I_     extends Mix_I_wFooX__wBar_I_     {        ;          def f: I = {sub; null}; f; }
 // */class S___I_wFooX__wBar_If     extends Mix_I_wFooX__wBar_If     {        ;                                ; f; }
 /* */
 class S___I_wFooX__wBarY__ extends Mix_I_wFooX__wBarY__ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S___I_wFooX__wBarY_f extends Mix_I_wFooX__wBarY_f { ;; f; }
+class S___I_wFooX__wBarY_f extends Mix_I_wFooX__wBarY_f {
+  ;; f;
+}
 // */class S___I_wFooX__wBarYI_     extends Mix_I_wFooX__wBarYI_     {        ;          def f: I = {sub; null}; f; }
 // */class S___I_wFooX__wBarYIf     extends Mix_I_wFooX__wBarYIf     {        ;                                ; f; }
 /* */
-class S___I_wFooX_f extends Mix_I_wFooX_f { ;; f; }
+class S___I_wFooX_f extends Mix_I_wFooX_f {
+  ;; f;
+}
 /* */
-class S___I_wFooX_fwBar___ extends Mix_I_wFooX_fwBar___ { ;; f; }
+class S___I_wFooX_fwBar___ extends Mix_I_wFooX_fwBar___ {
+  ;; f;
+}
 // */class S___I_wFooX_fwBar__f     extends Mix_I_wFooX_fwBar__f     {        ;                                ; f; }
 // */class S___I_wFooX_fwBar_I_     extends Mix_I_wFooX_fwBar_I_     {        ;                                ; f; }
 // */class S___I_wFooX_fwBar_If     extends Mix_I_wFooX_fwBar_If     {        ;                                ; f; }
 /* */
-class S___I_wFooX_fwBarY__ extends Mix_I_wFooX_fwBarY__ { ;; f; }
+class S___I_wFooX_fwBarY__ extends Mix_I_wFooX_fwBarY__ {
+  ;; f;
+}
 // */class S___I_wFooX_fwBarY_f     extends Mix_I_wFooX_fwBarY_f     {        ;                                ; f; }
 // */class S___I_wFooX_fwBarYI_     extends Mix_I_wFooX_fwBarYI_     {        ;                                ; f; }
 // */class S___I_wFooX_fwBarYIf     extends Mix_I_wFooX_fwBarYIf     {        ;                                ; f; }
@@ -3692,31 +6006,51 @@ class S___I_wFooX_fwBarY__ extends Mix_I_wFooX_fwBarY__ { ;; f; }
 // */class S___I_wFooXIfwBarYIf     extends Mix_I_wFooXIfwBarYIf     {        ;                                ; f; }
 
 /* */
-class S___IfwFoo___ extends Mix_IfwFoo___ { ;; f; }
+class S___IfwFoo___ extends Mix_IfwFoo___ {
+  ;; f;
+}
 /* */
-class S___IfwFoo___wBar___ extends Mix_IfwFoo___wBar___ { ;; f; }
+class S___IfwFoo___wBar___ extends Mix_IfwFoo___wBar___ {
+  ;; f;
+}
 /* */
-class S___IfwFoo___wBar__f extends Mix_IfwFoo___wBar__f { ;; f; }
+class S___IfwFoo___wBar__f extends Mix_IfwFoo___wBar__f {
+  ;; f;
+}
 // */class S___IfwFoo___wBar_I_     extends Mix_IfwFoo___wBar_I_     {        ;                                ; f; }
 // */class S___IfwFoo___wBar_If     extends Mix_IfwFoo___wBar_If     {        ;                                ; f; }
 /* */
-class S___IfwFoo___wBarY__ extends Mix_IfwFoo___wBarY__ { ;; f; }
+class S___IfwFoo___wBarY__ extends Mix_IfwFoo___wBarY__ {
+  ;; f;
+}
 /* */
-class S___IfwFoo___wBarY_f extends Mix_IfwFoo___wBarY_f { ;; f; }
+class S___IfwFoo___wBarY_f extends Mix_IfwFoo___wBarY_f {
+  ;; f;
+}
 // */class S___IfwFoo___wBarYI_     extends Mix_IfwFoo___wBarYI_     {        ;                                ; f; }
 // */class S___IfwFoo___wBarYIf     extends Mix_IfwFoo___wBarYIf     {        ;                                ; f; }
 /* */
-class S___IfwFoo__f extends Mix_IfwFoo__f { ;; f; }
+class S___IfwFoo__f extends Mix_IfwFoo__f {
+  ;; f;
+}
 /* */
-class S___IfwFoo__fwBar___ extends Mix_IfwFoo__fwBar___ { ;; f; }
+class S___IfwFoo__fwBar___ extends Mix_IfwFoo__fwBar___ {
+  ;; f;
+}
 /* */
-class S___IfwFoo__fwBar__f extends Mix_IfwFoo__fwBar__f { ;; f; }
+class S___IfwFoo__fwBar__f extends Mix_IfwFoo__fwBar__f {
+  ;; f;
+}
 // */class S___IfwFoo__fwBar_I_     extends Mix_IfwFoo__fwBar_I_     {        ;                                ; f; }
 // */class S___IfwFoo__fwBar_If     extends Mix_IfwFoo__fwBar_If     {        ;                                ; f; }
 /* */
-class S___IfwFoo__fwBarY__ extends Mix_IfwFoo__fwBarY__ { ;; f; }
+class S___IfwFoo__fwBarY__ extends Mix_IfwFoo__fwBarY__ {
+  ;; f;
+}
 /* */
-class S___IfwFoo__fwBarY_f extends Mix_IfwFoo__fwBarY_f { ;; f; }
+class S___IfwFoo__fwBarY_f extends Mix_IfwFoo__fwBarY_f {
+  ;; f;
+}
 // */class S___IfwFoo__fwBarYI_     extends Mix_IfwFoo__fwBarYI_     {        ;                                ; f; }
 // */class S___IfwFoo__fwBarYIf     extends Mix_IfwFoo__fwBarYIf     {        ;                                ; f; }
 // */class S___IfwFoo_I_            extends Mix_IfwFoo_I_            {        ;                                ; f; }
@@ -3738,31 +6072,51 @@ class S___IfwFoo__fwBarY_f extends Mix_IfwFoo__fwBarY_f { ;; f; }
 // */class S___IfwFoo_IfwBarYI_     extends Mix_IfwFoo_IfwBarYI_     {        ;                                ; f; }
 // */class S___IfwFoo_IfwBarYIf     extends Mix_IfwFoo_IfwBarYIf     {        ;                                ; f; }
 /* */
-class S___IfwFooX__ extends Mix_IfwFooX__ { ;; f; }
+class S___IfwFooX__ extends Mix_IfwFooX__ {
+  ;; f;
+}
 /* */
-class S___IfwFooX__wBar___ extends Mix_IfwFooX__wBar___ { ;; f; }
+class S___IfwFooX__wBar___ extends Mix_IfwFooX__wBar___ {
+  ;; f;
+}
 /* */
-class S___IfwFooX__wBar__f extends Mix_IfwFooX__wBar__f { ;; f; }
+class S___IfwFooX__wBar__f extends Mix_IfwFooX__wBar__f {
+  ;; f;
+}
 // */class S___IfwFooX__wBar_I_     extends Mix_IfwFooX__wBar_I_     {        ;                                ; f; }
 // */class S___IfwFooX__wBar_If     extends Mix_IfwFooX__wBar_If     {        ;                                ; f; }
 /* */
-class S___IfwFooX__wBarY__ extends Mix_IfwFooX__wBarY__ { ;; f; }
+class S___IfwFooX__wBarY__ extends Mix_IfwFooX__wBarY__ {
+  ;; f;
+}
 /* */
-class S___IfwFooX__wBarY_f extends Mix_IfwFooX__wBarY_f { ;; f; }
+class S___IfwFooX__wBarY_f extends Mix_IfwFooX__wBarY_f {
+  ;; f;
+}
 // */class S___IfwFooX__wBarYI_     extends Mix_IfwFooX__wBarYI_     {        ;                                ; f; }
 // */class S___IfwFooX__wBarYIf     extends Mix_IfwFooX__wBarYIf     {        ;                                ; f; }
 /* */
-class S___IfwFooX_f extends Mix_IfwFooX_f { ;; f; }
+class S___IfwFooX_f extends Mix_IfwFooX_f {
+  ;; f;
+}
 /* */
-class S___IfwFooX_fwBar___ extends Mix_IfwFooX_fwBar___ { ;; f; }
+class S___IfwFooX_fwBar___ extends Mix_IfwFooX_fwBar___ {
+  ;; f;
+}
 /* */
-class S___IfwFooX_fwBar__f extends Mix_IfwFooX_fwBar__f { ;; f; }
+class S___IfwFooX_fwBar__f extends Mix_IfwFooX_fwBar__f {
+  ;; f;
+}
 // */class S___IfwFooX_fwBar_I_     extends Mix_IfwFooX_fwBar_I_     {        ;                                ; f; }
 // */class S___IfwFooX_fwBar_If     extends Mix_IfwFooX_fwBar_If     {        ;                                ; f; }
 /* */
-class S___IfwFooX_fwBarY__ extends Mix_IfwFooX_fwBarY__ { ;; f; }
+class S___IfwFooX_fwBarY__ extends Mix_IfwFooX_fwBarY__ {
+  ;; f;
+}
 /* */
-class S___IfwFooX_fwBarY_f extends Mix_IfwFooX_fwBarY_f { ;; f; }
+class S___IfwFooX_fwBarY_f extends Mix_IfwFooX_fwBarY_f {
+  ;; f;
+}
 // */class S___IfwFooX_fwBarYI_     extends Mix_IfwFooX_fwBarYI_     {        ;                                ; f; }
 // */class S___IfwFooX_fwBarYIf     extends Mix_IfwFooX_fwBarYIf     {        ;                                ; f; }
 // */class S___IfwFooXI_            extends Mix_IfwFooXI_            {        ;                                ; f; }
@@ -3786,305 +6140,546 @@ class S___IfwFooX_fwBarY_f extends Mix_IfwFooX_fwBarY_f { ;; f; }
 
 /* */
 class S__Z__wFoo___ extends MixZ__wFoo___[C] {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
 class S__Z__wFoo___wBar___ extends MixZ__wFoo___wBar___[C] {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__Z__wFoo___wBar__f extends MixZ__wFoo___wBar__f[C] { class I;; f; }
+class S__Z__wFoo___wBar__f extends MixZ__wFoo___wBar__f[C] {
+  class I;; f;
+}
 /* */
 class S__Z__wFoo___wBar_I_ extends MixZ__wFoo___wBar_I_[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__Z__wFoo___wBar_If extends MixZ__wFoo___wBar_If[C] { ;; f; }
+class S__Z__wFoo___wBar_If extends MixZ__wFoo___wBar_If[C] {
+  ;; f;
+}
 /* */
 class S__Z__wFoo___wBarY__ extends MixZ__wFoo___wBarY__[C] {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__Z__wFoo___wBarY_f extends MixZ__wFoo___wBarY_f[C] { class I;; f; }
+class S__Z__wFoo___wBarY_f extends MixZ__wFoo___wBarY_f[C] {
+  class I;; f;
+}
 /* */
 class S__Z__wFoo___wBarYI_ extends MixZ__wFoo___wBarYI_[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__Z__wFoo___wBarYIf extends MixZ__wFoo___wBarYIf[C] { ;; f; }
+class S__Z__wFoo___wBarYIf extends MixZ__wFoo___wBarYIf[C] {
+  ;; f;
+}
 /* */
-class S__Z__wFoo__f extends MixZ__wFoo__f[C] { class I;; f; }
+class S__Z__wFoo__f extends MixZ__wFoo__f[C] {
+  class I;; f;
+}
 /* */
-class S__Z__wFoo__fwBar___ extends MixZ__wFoo__fwBar___[C] { class I;; f; }
+class S__Z__wFoo__fwBar___ extends MixZ__wFoo__fwBar___[C] {
+  class I;; f;
+}
 // */class S__Z__wFoo__fwBar__f     extends MixZ__wFoo__fwBar__f[C]  { class I;                                ; f; }
 /* */
-class S__Z__wFoo__fwBar_I_ extends MixZ__wFoo__fwBar_I_[C] { ;; f; }
+class S__Z__wFoo__fwBar_I_ extends MixZ__wFoo__fwBar_I_[C] {
+  ;; f;
+}
 // */class S__Z__wFoo__fwBar_If     extends MixZ__wFoo__fwBar_If[C]  {        ;                                ; f; }
 /* */
-class S__Z__wFoo__fwBarY__ extends MixZ__wFoo__fwBarY__[C] { class I;; f; }
+class S__Z__wFoo__fwBarY__ extends MixZ__wFoo__fwBarY__[C] {
+  class I;; f;
+}
 // */class S__Z__wFoo__fwBarY_f     extends MixZ__wFoo__fwBarY_f[C]  { class I;                                ; f; }
 /* */
-class S__Z__wFoo__fwBarYI_ extends MixZ__wFoo__fwBarYI_[C] { ;; f; }
+class S__Z__wFoo__fwBarYI_ extends MixZ__wFoo__fwBarYI_[C] {
+  ;; f;
+}
 // */class S__Z__wFoo__fwBarYIf     extends MixZ__wFoo__fwBarYIf[C]  {        ;                                ; f; }
 /* */
-class S__Z__wFoo_I_ extends MixZ__wFoo_I_[C] { ; def f: I = { sub; null }; f; }
-/* */
-class S__Z__wFoo_I_wBar___ extends MixZ__wFoo_I_wBar___[C] {
-  ; def f: I = { sub; null }; f;
+class S__Z__wFoo_I_ extends MixZ__wFoo_I_[C] {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__Z__wFoo_I_wBar__f extends MixZ__wFoo_I_wBar__f[C] { ;; f; }
+class S__Z__wFoo_I_wBar___ extends MixZ__wFoo_I_wBar___[C] {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
+}
+/* */
+class S__Z__wFoo_I_wBar__f extends MixZ__wFoo_I_wBar__f[C] {
+  ;; f;
+}
 // */class S__Z__wFoo_I_wBar_I_     extends MixZ__wFoo_I_wBar_I_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S__Z__wFoo_I_wBar_If     extends MixZ__wFoo_I_wBar_If[C]  {        ;                                ; f; }
 /* */
 class S__Z__wFoo_I_wBarY__ extends MixZ__wFoo_I_wBarY__[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__Z__wFoo_I_wBarY_f extends MixZ__wFoo_I_wBarY_f[C] { ;; f; }
+class S__Z__wFoo_I_wBarY_f extends MixZ__wFoo_I_wBarY_f[C] {
+  ;; f;
+}
 // */class S__Z__wFoo_I_wBarYI_     extends MixZ__wFoo_I_wBarYI_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S__Z__wFoo_I_wBarYIf     extends MixZ__wFoo_I_wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S__Z__wFoo_If extends MixZ__wFoo_If[C] { ;; f; }
+class S__Z__wFoo_If extends MixZ__wFoo_If[C] {
+  ;; f;
+}
 /* */
-class S__Z__wFoo_IfwBar___ extends MixZ__wFoo_IfwBar___[C] { ;; f; }
+class S__Z__wFoo_IfwBar___ extends MixZ__wFoo_IfwBar___[C] {
+  ;; f;
+}
 // */class S__Z__wFoo_IfwBar__f     extends MixZ__wFoo_IfwBar__f[C]  {        ;                                ; f; }
 // */class S__Z__wFoo_IfwBar_I_     extends MixZ__wFoo_IfwBar_I_[C]  {        ;                                ; f; }
 // */class S__Z__wFoo_IfwBar_If     extends MixZ__wFoo_IfwBar_If[C]  {        ;                                ; f; }
 /* */
-class S__Z__wFoo_IfwBarY__ extends MixZ__wFoo_IfwBarY__[C] { ;; f; }
+class S__Z__wFoo_IfwBarY__ extends MixZ__wFoo_IfwBarY__[C] {
+  ;; f;
+}
 // */class S__Z__wFoo_IfwBarY_f     extends MixZ__wFoo_IfwBarY_f[C]  {        ;                                ; f; }
 // */class S__Z__wFoo_IfwBarYI_     extends MixZ__wFoo_IfwBarYI_[C]  {        ;                                ; f; }
 // */class S__Z__wFoo_IfwBarYIf     extends MixZ__wFoo_IfwBarYIf[C]  {        ;                                ; f; }
 /* */
 class S__Z__wFooX__ extends MixZ__wFooX__[C] {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
 class S__Z__wFooX__wBar___ extends MixZ__wFooX__wBar___[C] {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__Z__wFooX__wBar__f extends MixZ__wFooX__wBar__f[C] { class I;; f; }
+class S__Z__wFooX__wBar__f extends MixZ__wFooX__wBar__f[C] {
+  class I;; f;
+}
 /* */
 class S__Z__wFooX__wBar_I_ extends MixZ__wFooX__wBar_I_[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__Z__wFooX__wBar_If extends MixZ__wFooX__wBar_If[C] { ;; f; }
+class S__Z__wFooX__wBar_If extends MixZ__wFooX__wBar_If[C] {
+  ;; f;
+}
 /* */
 class S__Z__wFooX__wBarY__ extends MixZ__wFooX__wBarY__[C] {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__Z__wFooX__wBarY_f extends MixZ__wFooX__wBarY_f[C] { class I;; f; }
+class S__Z__wFooX__wBarY_f extends MixZ__wFooX__wBarY_f[C] {
+  class I;; f;
+}
 /* */
 class S__Z__wFooX__wBarYI_ extends MixZ__wFooX__wBarYI_[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__Z__wFooX__wBarYIf extends MixZ__wFooX__wBarYIf[C] { ;; f; }
+class S__Z__wFooX__wBarYIf extends MixZ__wFooX__wBarYIf[C] {
+  ;; f;
+}
 /* */
-class S__Z__wFooX_f extends MixZ__wFooX_f[C] { class I;; f; }
+class S__Z__wFooX_f extends MixZ__wFooX_f[C] {
+  class I;; f;
+}
 /* */
-class S__Z__wFooX_fwBar___ extends MixZ__wFooX_fwBar___[C] { class I;; f; }
+class S__Z__wFooX_fwBar___ extends MixZ__wFooX_fwBar___[C] {
+  class I;; f;
+}
 // */class S__Z__wFooX_fwBar__f     extends MixZ__wFooX_fwBar__f[C]  { class I;                                ; f; }
 /* */
-class S__Z__wFooX_fwBar_I_ extends MixZ__wFooX_fwBar_I_[C] { ;; f; }
+class S__Z__wFooX_fwBar_I_ extends MixZ__wFooX_fwBar_I_[C] {
+  ;; f;
+}
 // */class S__Z__wFooX_fwBar_If     extends MixZ__wFooX_fwBar_If[C]  {        ;                                ; f; }
 /* */
-class S__Z__wFooX_fwBarY__ extends MixZ__wFooX_fwBarY__[C] { class I;; f; }
+class S__Z__wFooX_fwBarY__ extends MixZ__wFooX_fwBarY__[C] {
+  class I;; f;
+}
 // */class S__Z__wFooX_fwBarY_f     extends MixZ__wFooX_fwBarY_f[C]  { class I;                                ; f; }
 /* */
-class S__Z__wFooX_fwBarYI_ extends MixZ__wFooX_fwBarYI_[C] { ;; f; }
+class S__Z__wFooX_fwBarYI_ extends MixZ__wFooX_fwBarYI_[C] {
+  ;; f;
+}
 // */class S__Z__wFooX_fwBarYIf     extends MixZ__wFooX_fwBarYIf[C]  {        ;                                ; f; }
 /* */
-class S__Z__wFooXI_ extends MixZ__wFooXI_[C] { ; def f: I = { sub; null }; f; }
-/* */
-class S__Z__wFooXI_wBar___ extends MixZ__wFooXI_wBar___[C] {
-  ; def f: I = { sub; null }; f;
+class S__Z__wFooXI_ extends MixZ__wFooXI_[C] {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__Z__wFooXI_wBar__f extends MixZ__wFooXI_wBar__f[C] { ;; f; }
+class S__Z__wFooXI_wBar___ extends MixZ__wFooXI_wBar___[C] {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
+}
+/* */
+class S__Z__wFooXI_wBar__f extends MixZ__wFooXI_wBar__f[C] {
+  ;; f;
+}
 // */class S__Z__wFooXI_wBar_I_     extends MixZ__wFooXI_wBar_I_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S__Z__wFooXI_wBar_If     extends MixZ__wFooXI_wBar_If[C]  {        ;                                ; f; }
 /* */
 class S__Z__wFooXI_wBarY__ extends MixZ__wFooXI_wBarY__[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__Z__wFooXI_wBarY_f extends MixZ__wFooXI_wBarY_f[C] { ;; f; }
+class S__Z__wFooXI_wBarY_f extends MixZ__wFooXI_wBarY_f[C] {
+  ;; f;
+}
 // */class S__Z__wFooXI_wBarYI_     extends MixZ__wFooXI_wBarYI_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S__Z__wFooXI_wBarYIf     extends MixZ__wFooXI_wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S__Z__wFooXIf extends MixZ__wFooXIf[C] { ;; f; }
+class S__Z__wFooXIf extends MixZ__wFooXIf[C] {
+  ;; f;
+}
 /* */
-class S__Z__wFooXIfwBar___ extends MixZ__wFooXIfwBar___[C] { ;; f; }
+class S__Z__wFooXIfwBar___ extends MixZ__wFooXIfwBar___[C] {
+  ;; f;
+}
 // */class S__Z__wFooXIfwBar__f     extends MixZ__wFooXIfwBar__f[C]  {        ;                                ; f; }
 // */class S__Z__wFooXIfwBar_I_     extends MixZ__wFooXIfwBar_I_[C]  {        ;                                ; f; }
 // */class S__Z__wFooXIfwBar_If     extends MixZ__wFooXIfwBar_If[C]  {        ;                                ; f; }
 /* */
-class S__Z__wFooXIfwBarY__ extends MixZ__wFooXIfwBarY__[C] { ;; f; }
+class S__Z__wFooXIfwBarY__ extends MixZ__wFooXIfwBarY__[C] {
+  ;; f;
+}
 // */class S__Z__wFooXIfwBarY_f     extends MixZ__wFooXIfwBarY_f[C]  {        ;                                ; f; }
 // */class S__Z__wFooXIfwBarYI_     extends MixZ__wFooXIfwBarYI_[C]  {        ;                                ; f; }
 // */class S__Z__wFooXIfwBarYIf     extends MixZ__wFooXIfwBarYIf[C]  {        ;                                ; f; }
 
 /* */
-class S__Z_fwFoo___ extends MixZ_fwFoo___[C] { class I;; f; }
+class S__Z_fwFoo___ extends MixZ_fwFoo___[C] {
+  class I;; f;
+}
 /* */
-class S__Z_fwFoo___wBar___ extends MixZ_fwFoo___wBar___[C] { class I;; f; }
+class S__Z_fwFoo___wBar___ extends MixZ_fwFoo___wBar___[C] {
+  class I;; f;
+}
 /* */
-class S__Z_fwFoo___wBar__f extends MixZ_fwFoo___wBar__f[C] { class I;; f; }
+class S__Z_fwFoo___wBar__f extends MixZ_fwFoo___wBar__f[C] {
+  class I;; f;
+}
 /* */
-class S__Z_fwFoo___wBar_I_ extends MixZ_fwFoo___wBar_I_[C] { ;; f; }
+class S__Z_fwFoo___wBar_I_ extends MixZ_fwFoo___wBar_I_[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFoo___wBar_If extends MixZ_fwFoo___wBar_If[C] { ;; f; }
+class S__Z_fwFoo___wBar_If extends MixZ_fwFoo___wBar_If[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFoo___wBarY__ extends MixZ_fwFoo___wBarY__[C] { class I;; f; }
+class S__Z_fwFoo___wBarY__ extends MixZ_fwFoo___wBarY__[C] {
+  class I;; f;
+}
 /* */
-class S__Z_fwFoo___wBarY_f extends MixZ_fwFoo___wBarY_f[C] { class I;; f; }
+class S__Z_fwFoo___wBarY_f extends MixZ_fwFoo___wBarY_f[C] {
+  class I;; f;
+}
 /* */
-class S__Z_fwFoo___wBarYI_ extends MixZ_fwFoo___wBarYI_[C] { ;; f; }
+class S__Z_fwFoo___wBarYI_ extends MixZ_fwFoo___wBarYI_[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFoo___wBarYIf extends MixZ_fwFoo___wBarYIf[C] { ;; f; }
+class S__Z_fwFoo___wBarYIf extends MixZ_fwFoo___wBarYIf[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFoo__f extends MixZ_fwFoo__f[C] { class I;; f; }
+class S__Z_fwFoo__f extends MixZ_fwFoo__f[C] {
+  class I;; f;
+}
 /* */
-class S__Z_fwFoo__fwBar___ extends MixZ_fwFoo__fwBar___[C] { class I;; f; }
+class S__Z_fwFoo__fwBar___ extends MixZ_fwFoo__fwBar___[C] {
+  class I;; f;
+}
 /* */
-class S__Z_fwFoo__fwBar__f extends MixZ_fwFoo__fwBar__f[C] { class I;; f; }
+class S__Z_fwFoo__fwBar__f extends MixZ_fwFoo__fwBar__f[C] {
+  class I;; f;
+}
 /* */
-class S__Z_fwFoo__fwBar_I_ extends MixZ_fwFoo__fwBar_I_[C] { ;; f; }
+class S__Z_fwFoo__fwBar_I_ extends MixZ_fwFoo__fwBar_I_[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFoo__fwBar_If extends MixZ_fwFoo__fwBar_If[C] { ;; f; }
+class S__Z_fwFoo__fwBar_If extends MixZ_fwFoo__fwBar_If[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFoo__fwBarY__ extends MixZ_fwFoo__fwBarY__[C] { class I;; f; }
+class S__Z_fwFoo__fwBarY__ extends MixZ_fwFoo__fwBarY__[C] {
+  class I;; f;
+}
 /* */
-class S__Z_fwFoo__fwBarY_f extends MixZ_fwFoo__fwBarY_f[C] { class I;; f; }
+class S__Z_fwFoo__fwBarY_f extends MixZ_fwFoo__fwBarY_f[C] {
+  class I;; f;
+}
 /* */
-class S__Z_fwFoo__fwBarYI_ extends MixZ_fwFoo__fwBarYI_[C] { ;; f; }
+class S__Z_fwFoo__fwBarYI_ extends MixZ_fwFoo__fwBarYI_[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFoo__fwBarYIf extends MixZ_fwFoo__fwBarYIf[C] { ;; f; }
+class S__Z_fwFoo__fwBarYIf extends MixZ_fwFoo__fwBarYIf[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFoo_I_ extends MixZ_fwFoo_I_[C] { ;; f; }
+class S__Z_fwFoo_I_ extends MixZ_fwFoo_I_[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFoo_I_wBar___ extends MixZ_fwFoo_I_wBar___[C] { ;; f; }
+class S__Z_fwFoo_I_wBar___ extends MixZ_fwFoo_I_wBar___[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFoo_I_wBar__f extends MixZ_fwFoo_I_wBar__f[C] { ;; f; }
+class S__Z_fwFoo_I_wBar__f extends MixZ_fwFoo_I_wBar__f[C] {
+  ;; f;
+}
 // */class S__Z_fwFoo_I_wBar_I_     extends MixZ_fwFoo_I_wBar_I_[C]  {        ;                                ; f; }
 // */class S__Z_fwFoo_I_wBar_If     extends MixZ_fwFoo_I_wBar_If[C]  {        ;                                ; f; }
 /* */
-class S__Z_fwFoo_I_wBarY__ extends MixZ_fwFoo_I_wBarY__[C] { ;; f; }
+class S__Z_fwFoo_I_wBarY__ extends MixZ_fwFoo_I_wBarY__[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFoo_I_wBarY_f extends MixZ_fwFoo_I_wBarY_f[C] { ;; f; }
+class S__Z_fwFoo_I_wBarY_f extends MixZ_fwFoo_I_wBarY_f[C] {
+  ;; f;
+}
 // */class S__Z_fwFoo_I_wBarYI_     extends MixZ_fwFoo_I_wBarYI_[C]  {        ;                                ; f; }
 // */class S__Z_fwFoo_I_wBarYIf     extends MixZ_fwFoo_I_wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S__Z_fwFoo_If extends MixZ_fwFoo_If[C] { ;; f; }
+class S__Z_fwFoo_If extends MixZ_fwFoo_If[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFoo_IfwBar___ extends MixZ_fwFoo_IfwBar___[C] { ;; f; }
+class S__Z_fwFoo_IfwBar___ extends MixZ_fwFoo_IfwBar___[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFoo_IfwBar__f extends MixZ_fwFoo_IfwBar__f[C] { ;; f; }
+class S__Z_fwFoo_IfwBar__f extends MixZ_fwFoo_IfwBar__f[C] {
+  ;; f;
+}
 // */class S__Z_fwFoo_IfwBar_I_     extends MixZ_fwFoo_IfwBar_I_[C]  {        ;                                ; f; }
 // */class S__Z_fwFoo_IfwBar_If     extends MixZ_fwFoo_IfwBar_If[C]  {        ;                                ; f; }
 /* */
-class S__Z_fwFoo_IfwBarY__ extends MixZ_fwFoo_IfwBarY__[C] { ;; f; }
+class S__Z_fwFoo_IfwBarY__ extends MixZ_fwFoo_IfwBarY__[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFoo_IfwBarY_f extends MixZ_fwFoo_IfwBarY_f[C] { ;; f; }
+class S__Z_fwFoo_IfwBarY_f extends MixZ_fwFoo_IfwBarY_f[C] {
+  ;; f;
+}
 // */class S__Z_fwFoo_IfwBarYI_     extends MixZ_fwFoo_IfwBarYI_[C]  {        ;                                ; f; }
 // */class S__Z_fwFoo_IfwBarYIf     extends MixZ_fwFoo_IfwBarYIf[C]  {        ;                                ; f; }
 /* */
-class S__Z_fwFooX__ extends MixZ_fwFooX__[C] { class I;; f; }
+class S__Z_fwFooX__ extends MixZ_fwFooX__[C] {
+  class I;; f;
+}
 /* */
-class S__Z_fwFooX__wBar___ extends MixZ_fwFooX__wBar___[C] { class I;; f; }
+class S__Z_fwFooX__wBar___ extends MixZ_fwFooX__wBar___[C] {
+  class I;; f;
+}
 /* */
-class S__Z_fwFooX__wBar__f extends MixZ_fwFooX__wBar__f[C] { class I;; f; }
+class S__Z_fwFooX__wBar__f extends MixZ_fwFooX__wBar__f[C] {
+  class I;; f;
+}
 /* */
-class S__Z_fwFooX__wBar_I_ extends MixZ_fwFooX__wBar_I_[C] { ;; f; }
+class S__Z_fwFooX__wBar_I_ extends MixZ_fwFooX__wBar_I_[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFooX__wBar_If extends MixZ_fwFooX__wBar_If[C] { ;; f; }
+class S__Z_fwFooX__wBar_If extends MixZ_fwFooX__wBar_If[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFooX__wBarY__ extends MixZ_fwFooX__wBarY__[C] { class I;; f; }
+class S__Z_fwFooX__wBarY__ extends MixZ_fwFooX__wBarY__[C] {
+  class I;; f;
+}
 /* */
-class S__Z_fwFooX__wBarY_f extends MixZ_fwFooX__wBarY_f[C] { class I;; f; }
+class S__Z_fwFooX__wBarY_f extends MixZ_fwFooX__wBarY_f[C] {
+  class I;; f;
+}
 /* */
-class S__Z_fwFooX__wBarYI_ extends MixZ_fwFooX__wBarYI_[C] { ;; f; }
+class S__Z_fwFooX__wBarYI_ extends MixZ_fwFooX__wBarYI_[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFooX__wBarYIf extends MixZ_fwFooX__wBarYIf[C] { ;; f; }
+class S__Z_fwFooX__wBarYIf extends MixZ_fwFooX__wBarYIf[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFooX_f extends MixZ_fwFooX_f[C] { class I;; f; }
+class S__Z_fwFooX_f extends MixZ_fwFooX_f[C] {
+  class I;; f;
+}
 /* */
-class S__Z_fwFooX_fwBar___ extends MixZ_fwFooX_fwBar___[C] { class I;; f; }
+class S__Z_fwFooX_fwBar___ extends MixZ_fwFooX_fwBar___[C] {
+  class I;; f;
+}
 /* */
-class S__Z_fwFooX_fwBar__f extends MixZ_fwFooX_fwBar__f[C] { class I;; f; }
+class S__Z_fwFooX_fwBar__f extends MixZ_fwFooX_fwBar__f[C] {
+  class I;; f;
+}
 /* */
-class S__Z_fwFooX_fwBar_I_ extends MixZ_fwFooX_fwBar_I_[C] { ;; f; }
+class S__Z_fwFooX_fwBar_I_ extends MixZ_fwFooX_fwBar_I_[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFooX_fwBar_If extends MixZ_fwFooX_fwBar_If[C] { ;; f; }
+class S__Z_fwFooX_fwBar_If extends MixZ_fwFooX_fwBar_If[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFooX_fwBarY__ extends MixZ_fwFooX_fwBarY__[C] { class I;; f; }
+class S__Z_fwFooX_fwBarY__ extends MixZ_fwFooX_fwBarY__[C] {
+  class I;; f;
+}
 /* */
-class S__Z_fwFooX_fwBarY_f extends MixZ_fwFooX_fwBarY_f[C] { class I;; f; }
+class S__Z_fwFooX_fwBarY_f extends MixZ_fwFooX_fwBarY_f[C] {
+  class I;; f;
+}
 /* */
-class S__Z_fwFooX_fwBarYI_ extends MixZ_fwFooX_fwBarYI_[C] { ;; f; }
+class S__Z_fwFooX_fwBarYI_ extends MixZ_fwFooX_fwBarYI_[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFooX_fwBarYIf extends MixZ_fwFooX_fwBarYIf[C] { ;; f; }
+class S__Z_fwFooX_fwBarYIf extends MixZ_fwFooX_fwBarYIf[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFooXI_ extends MixZ_fwFooXI_[C] { ;; f; }
+class S__Z_fwFooXI_ extends MixZ_fwFooXI_[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFooXI_wBar___ extends MixZ_fwFooXI_wBar___[C] { ;; f; }
+class S__Z_fwFooXI_wBar___ extends MixZ_fwFooXI_wBar___[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFooXI_wBar__f extends MixZ_fwFooXI_wBar__f[C] { ;; f; }
+class S__Z_fwFooXI_wBar__f extends MixZ_fwFooXI_wBar__f[C] {
+  ;; f;
+}
 // */class S__Z_fwFooXI_wBar_I_     extends MixZ_fwFooXI_wBar_I_[C]  {        ;                                ; f; }
 // */class S__Z_fwFooXI_wBar_If     extends MixZ_fwFooXI_wBar_If[C]  {        ;                                ; f; }
 /* */
-class S__Z_fwFooXI_wBarY__ extends MixZ_fwFooXI_wBarY__[C] { ;; f; }
+class S__Z_fwFooXI_wBarY__ extends MixZ_fwFooXI_wBarY__[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFooXI_wBarY_f extends MixZ_fwFooXI_wBarY_f[C] { ;; f; }
+class S__Z_fwFooXI_wBarY_f extends MixZ_fwFooXI_wBarY_f[C] {
+  ;; f;
+}
 // */class S__Z_fwFooXI_wBarYI_     extends MixZ_fwFooXI_wBarYI_[C]  {        ;                                ; f; }
 // */class S__Z_fwFooXI_wBarYIf     extends MixZ_fwFooXI_wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S__Z_fwFooXIf extends MixZ_fwFooXIf[C] { ;; f; }
+class S__Z_fwFooXIf extends MixZ_fwFooXIf[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFooXIfwBar___ extends MixZ_fwFooXIfwBar___[C] { ;; f; }
+class S__Z_fwFooXIfwBar___ extends MixZ_fwFooXIfwBar___[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFooXIfwBar__f extends MixZ_fwFooXIfwBar__f[C] { ;; f; }
+class S__Z_fwFooXIfwBar__f extends MixZ_fwFooXIfwBar__f[C] {
+  ;; f;
+}
 // */class S__Z_fwFooXIfwBar_I_     extends MixZ_fwFooXIfwBar_I_[C]  {        ;                                ; f; }
 // */class S__Z_fwFooXIfwBar_If     extends MixZ_fwFooXIfwBar_If[C]  {        ;                                ; f; }
 /* */
-class S__Z_fwFooXIfwBarY__ extends MixZ_fwFooXIfwBarY__[C] { ;; f; }
+class S__Z_fwFooXIfwBarY__ extends MixZ_fwFooXIfwBarY__[C] {
+  ;; f;
+}
 /* */
-class S__Z_fwFooXIfwBarY_f extends MixZ_fwFooXIfwBarY_f[C] { ;; f; }
+class S__Z_fwFooXIfwBarY_f extends MixZ_fwFooXIfwBarY_f[C] {
+  ;; f;
+}
 // */class S__Z_fwFooXIfwBarYI_     extends MixZ_fwFooXIfwBarYI_[C]  {        ;                                ; f; }
 // */class S__Z_fwFooXIfwBarYIf     extends MixZ_fwFooXIfwBarYIf[C]  {        ;                                ; f; }
 
 /* */
-class S__ZI_wFoo___ extends MixZI_wFoo___[C] { ; def f: I = { sub; null }; f; }
-/* */
-class S__ZI_wFoo___wBar___ extends MixZI_wFoo___wBar___[C] {
-  ; def f: I = { sub; null }; f;
+class S__ZI_wFoo___ extends MixZI_wFoo___[C] {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__ZI_wFoo___wBar__f extends MixZI_wFoo___wBar__f[C] { ;; f; }
+class S__ZI_wFoo___wBar___ extends MixZI_wFoo___wBar___[C] {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
+}
+/* */
+class S__ZI_wFoo___wBar__f extends MixZI_wFoo___wBar__f[C] {
+  ;; f;
+}
 // */class S__ZI_wFoo___wBar_I_     extends MixZI_wFoo___wBar_I_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S__ZI_wFoo___wBar_If     extends MixZI_wFoo___wBar_If[C]  {        ;                                ; f; }
 /* */
 class S__ZI_wFoo___wBarY__ extends MixZI_wFoo___wBarY__[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__ZI_wFoo___wBarY_f extends MixZI_wFoo___wBarY_f[C] { ;; f; }
+class S__ZI_wFoo___wBarY_f extends MixZI_wFoo___wBarY_f[C] {
+  ;; f;
+}
 // */class S__ZI_wFoo___wBarYI_     extends MixZI_wFoo___wBarYI_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S__ZI_wFoo___wBarYIf     extends MixZI_wFoo___wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S__ZI_wFoo__f extends MixZI_wFoo__f[C] { ;; f; }
+class S__ZI_wFoo__f extends MixZI_wFoo__f[C] {
+  ;; f;
+}
 /* */
-class S__ZI_wFoo__fwBar___ extends MixZI_wFoo__fwBar___[C] { ;; f; }
+class S__ZI_wFoo__fwBar___ extends MixZI_wFoo__fwBar___[C] {
+  ;; f;
+}
 // */class S__ZI_wFoo__fwBar__f     extends MixZI_wFoo__fwBar__f[C]  {        ;                                ; f; }
 // */class S__ZI_wFoo__fwBar_I_     extends MixZI_wFoo__fwBar_I_[C]  {        ;                                ; f; }
 // */class S__ZI_wFoo__fwBar_If     extends MixZI_wFoo__fwBar_If[C]  {        ;                                ; f; }
 /* */
-class S__ZI_wFoo__fwBarY__ extends MixZI_wFoo__fwBarY__[C] { ;; f; }
+class S__ZI_wFoo__fwBarY__ extends MixZI_wFoo__fwBarY__[C] {
+  ;; f;
+}
 // */class S__ZI_wFoo__fwBarY_f     extends MixZI_wFoo__fwBarY_f[C]  {        ;                                ; f; }
 // */class S__ZI_wFoo__fwBarYI_     extends MixZI_wFoo__fwBarYI_[C]  {        ;                                ; f; }
 // */class S__ZI_wFoo__fwBarYIf     extends MixZI_wFoo__fwBarYIf[C]  {        ;                                ; f; }
@@ -4107,32 +6702,53 @@ class S__ZI_wFoo__fwBarY__ extends MixZI_wFoo__fwBarY__[C] { ;; f; }
 // */class S__ZI_wFoo_IfwBarYI_     extends MixZI_wFoo_IfwBarYI_[C]  {        ;                                ; f; }
 // */class S__ZI_wFoo_IfwBarYIf     extends MixZI_wFoo_IfwBarYIf[C]  {        ;                                ; f; }
 /* */
-class S__ZI_wFooX__ extends MixZI_wFooX__[C] { ; def f: I = { sub; null }; f; }
-/* */
-class S__ZI_wFooX__wBar___ extends MixZI_wFooX__wBar___[C] {
-  ; def f: I = { sub; null }; f;
+class S__ZI_wFooX__ extends MixZI_wFooX__[C] {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__ZI_wFooX__wBar__f extends MixZI_wFooX__wBar__f[C] { ;; f; }
+class S__ZI_wFooX__wBar___ extends MixZI_wFooX__wBar___[C] {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
+}
+/* */
+class S__ZI_wFooX__wBar__f extends MixZI_wFooX__wBar__f[C] {
+  ;; f;
+}
 // */class S__ZI_wFooX__wBar_I_     extends MixZI_wFooX__wBar_I_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S__ZI_wFooX__wBar_If     extends MixZI_wFooX__wBar_If[C]  {        ;                                ; f; }
 /* */
 class S__ZI_wFooX__wBarY__ extends MixZI_wFooX__wBarY__[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S__ZI_wFooX__wBarY_f extends MixZI_wFooX__wBarY_f[C] { ;; f; }
+class S__ZI_wFooX__wBarY_f extends MixZI_wFooX__wBarY_f[C] {
+  ;; f;
+}
 // */class S__ZI_wFooX__wBarYI_     extends MixZI_wFooX__wBarYI_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S__ZI_wFooX__wBarYIf     extends MixZI_wFooX__wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S__ZI_wFooX_f extends MixZI_wFooX_f[C] { ;; f; }
+class S__ZI_wFooX_f extends MixZI_wFooX_f[C] {
+  ;; f;
+}
 /* */
-class S__ZI_wFooX_fwBar___ extends MixZI_wFooX_fwBar___[C] { ;; f; }
+class S__ZI_wFooX_fwBar___ extends MixZI_wFooX_fwBar___[C] {
+  ;; f;
+}
 // */class S__ZI_wFooX_fwBar__f     extends MixZI_wFooX_fwBar__f[C]  {        ;                                ; f; }
 // */class S__ZI_wFooX_fwBar_I_     extends MixZI_wFooX_fwBar_I_[C]  {        ;                                ; f; }
 // */class S__ZI_wFooX_fwBar_If     extends MixZI_wFooX_fwBar_If[C]  {        ;                                ; f; }
 /* */
-class S__ZI_wFooX_fwBarY__ extends MixZI_wFooX_fwBarY__[C] { ;; f; }
+class S__ZI_wFooX_fwBarY__ extends MixZI_wFooX_fwBarY__[C] {
+  ;; f;
+}
 // */class S__ZI_wFooX_fwBarY_f     extends MixZI_wFooX_fwBarY_f[C]  {        ;                                ; f; }
 // */class S__ZI_wFooX_fwBarYI_     extends MixZI_wFooX_fwBarYI_[C]  {        ;                                ; f; }
 // */class S__ZI_wFooX_fwBarYIf     extends MixZI_wFooX_fwBarYIf[C]  {        ;                                ; f; }
@@ -4156,31 +6772,51 @@ class S__ZI_wFooX_fwBarY__ extends MixZI_wFooX_fwBarY__[C] { ;; f; }
 // */class S__ZI_wFooXIfwBarYIf     extends MixZI_wFooXIfwBarYIf[C]  {        ;                                ; f; }
 
 /* */
-class S__ZIfwFoo___ extends MixZIfwFoo___[C] { ;; f; }
+class S__ZIfwFoo___ extends MixZIfwFoo___[C] {
+  ;; f;
+}
 /* */
-class S__ZIfwFoo___wBar___ extends MixZIfwFoo___wBar___[C] { ;; f; }
+class S__ZIfwFoo___wBar___ extends MixZIfwFoo___wBar___[C] {
+  ;; f;
+}
 /* */
-class S__ZIfwFoo___wBar__f extends MixZIfwFoo___wBar__f[C] { ;; f; }
+class S__ZIfwFoo___wBar__f extends MixZIfwFoo___wBar__f[C] {
+  ;; f;
+}
 // */class S__ZIfwFoo___wBar_I_     extends MixZIfwFoo___wBar_I_[C]  {        ;                                ; f; }
 // */class S__ZIfwFoo___wBar_If     extends MixZIfwFoo___wBar_If[C]  {        ;                                ; f; }
 /* */
-class S__ZIfwFoo___wBarY__ extends MixZIfwFoo___wBarY__[C] { ;; f; }
+class S__ZIfwFoo___wBarY__ extends MixZIfwFoo___wBarY__[C] {
+  ;; f;
+}
 /* */
-class S__ZIfwFoo___wBarY_f extends MixZIfwFoo___wBarY_f[C] { ;; f; }
+class S__ZIfwFoo___wBarY_f extends MixZIfwFoo___wBarY_f[C] {
+  ;; f;
+}
 // */class S__ZIfwFoo___wBarYI_     extends MixZIfwFoo___wBarYI_[C]  {        ;                                ; f; }
 // */class S__ZIfwFoo___wBarYIf     extends MixZIfwFoo___wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S__ZIfwFoo__f extends MixZIfwFoo__f[C] { ;; f; }
+class S__ZIfwFoo__f extends MixZIfwFoo__f[C] {
+  ;; f;
+}
 /* */
-class S__ZIfwFoo__fwBar___ extends MixZIfwFoo__fwBar___[C] { ;; f; }
+class S__ZIfwFoo__fwBar___ extends MixZIfwFoo__fwBar___[C] {
+  ;; f;
+}
 /* */
-class S__ZIfwFoo__fwBar__f extends MixZIfwFoo__fwBar__f[C] { ;; f; }
+class S__ZIfwFoo__fwBar__f extends MixZIfwFoo__fwBar__f[C] {
+  ;; f;
+}
 // */class S__ZIfwFoo__fwBar_I_     extends MixZIfwFoo__fwBar_I_[C]  {        ;                                ; f; }
 // */class S__ZIfwFoo__fwBar_If     extends MixZIfwFoo__fwBar_If[C]  {        ;                                ; f; }
 /* */
-class S__ZIfwFoo__fwBarY__ extends MixZIfwFoo__fwBarY__[C] { ;; f; }
+class S__ZIfwFoo__fwBarY__ extends MixZIfwFoo__fwBarY__[C] {
+  ;; f;
+}
 /* */
-class S__ZIfwFoo__fwBarY_f extends MixZIfwFoo__fwBarY_f[C] { ;; f; }
+class S__ZIfwFoo__fwBarY_f extends MixZIfwFoo__fwBarY_f[C] {
+  ;; f;
+}
 // */class S__ZIfwFoo__fwBarYI_     extends MixZIfwFoo__fwBarYI_[C]  {        ;                                ; f; }
 // */class S__ZIfwFoo__fwBarYIf     extends MixZIfwFoo__fwBarYIf[C]  {        ;                                ; f; }
 // */class S__ZIfwFoo_I_            extends MixZIfwFoo_I_       [C]  {        ;                                ; f; }
@@ -4202,31 +6838,51 @@ class S__ZIfwFoo__fwBarY_f extends MixZIfwFoo__fwBarY_f[C] { ;; f; }
 // */class S__ZIfwFoo_IfwBarYI_     extends MixZIfwFoo_IfwBarYI_[C]  {        ;                                ; f; }
 // */class S__ZIfwFoo_IfwBarYIf     extends MixZIfwFoo_IfwBarYIf[C]  {        ;                                ; f; }
 /* */
-class S__ZIfwFooX__ extends MixZIfwFooX__[C] { ;; f; }
+class S__ZIfwFooX__ extends MixZIfwFooX__[C] {
+  ;; f;
+}
 /* */
-class S__ZIfwFooX__wBar___ extends MixZIfwFooX__wBar___[C] { ;; f; }
+class S__ZIfwFooX__wBar___ extends MixZIfwFooX__wBar___[C] {
+  ;; f;
+}
 /* */
-class S__ZIfwFooX__wBar__f extends MixZIfwFooX__wBar__f[C] { ;; f; }
+class S__ZIfwFooX__wBar__f extends MixZIfwFooX__wBar__f[C] {
+  ;; f;
+}
 // */class S__ZIfwFooX__wBar_I_     extends MixZIfwFooX__wBar_I_[C]  {        ;                                ; f; }
 // */class S__ZIfwFooX__wBar_If     extends MixZIfwFooX__wBar_If[C]  {        ;                                ; f; }
 /* */
-class S__ZIfwFooX__wBarY__ extends MixZIfwFooX__wBarY__[C] { ;; f; }
+class S__ZIfwFooX__wBarY__ extends MixZIfwFooX__wBarY__[C] {
+  ;; f;
+}
 /* */
-class S__ZIfwFooX__wBarY_f extends MixZIfwFooX__wBarY_f[C] { ;; f; }
+class S__ZIfwFooX__wBarY_f extends MixZIfwFooX__wBarY_f[C] {
+  ;; f;
+}
 // */class S__ZIfwFooX__wBarYI_     extends MixZIfwFooX__wBarYI_[C]  {        ;                                ; f; }
 // */class S__ZIfwFooX__wBarYIf     extends MixZIfwFooX__wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S__ZIfwFooX_f extends MixZIfwFooX_f[C] { ;; f; }
+class S__ZIfwFooX_f extends MixZIfwFooX_f[C] {
+  ;; f;
+}
 /* */
-class S__ZIfwFooX_fwBar___ extends MixZIfwFooX_fwBar___[C] { ;; f; }
+class S__ZIfwFooX_fwBar___ extends MixZIfwFooX_fwBar___[C] {
+  ;; f;
+}
 /* */
-class S__ZIfwFooX_fwBar__f extends MixZIfwFooX_fwBar__f[C] { ;; f; }
+class S__ZIfwFooX_fwBar__f extends MixZIfwFooX_fwBar__f[C] {
+  ;; f;
+}
 // */class S__ZIfwFooX_fwBar_I_     extends MixZIfwFooX_fwBar_I_[C]  {        ;                                ; f; }
 // */class S__ZIfwFooX_fwBar_If     extends MixZIfwFooX_fwBar_If[C]  {        ;                                ; f; }
 /* */
-class S__ZIfwFooX_fwBarY__ extends MixZIfwFooX_fwBarY__[C] { ;; f; }
+class S__ZIfwFooX_fwBarY__ extends MixZIfwFooX_fwBarY__[C] {
+  ;; f;
+}
 /* */
-class S__ZIfwFooX_fwBarY_f extends MixZIfwFooX_fwBarY_f[C] { ;; f; }
+class S__ZIfwFooX_fwBarY_f extends MixZIfwFooX_fwBarY_f[C] {
+  ;; f;
+}
 // */class S__ZIfwFooX_fwBarYI_     extends MixZIfwFooX_fwBarYI_[C]  {        ;                                ; f; }
 // */class S__ZIfwFooX_fwBarYIf     extends MixZIfwFooX_fwBarYIf[C]  {        ;                                ; f; }
 // */class S__ZIfwFooXI_            extends MixZIfwFooXI_       [C]  {        ;                                ; f; }
@@ -4250,305 +6906,546 @@ class S__ZIfwFooX_fwBarY_f extends MixZIfwFooX_fwBarY_f[C] { ;; f; }
 
 /* */
 class S_T___eFoo___[T] extends Mix___eFoo___ {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
 class S_T___eFoo___wBar___[T] extends Mix___eFoo___wBar___ {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T___eFoo___wBar__f[T] extends Mix___eFoo___wBar__f { class I;; f; }
+class S_T___eFoo___wBar__f[T] extends Mix___eFoo___wBar__f {
+  class I;; f;
+}
 /* */
 class S_T___eFoo___wBar_I_[T] extends Mix___eFoo___wBar_I_ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T___eFoo___wBar_If[T] extends Mix___eFoo___wBar_If { ;; f; }
+class S_T___eFoo___wBar_If[T] extends Mix___eFoo___wBar_If {
+  ;; f;
+}
 /* */
 class S_T___eFoo___wBarY__[T] extends Mix___eFoo___wBarY__ {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T___eFoo___wBarY_f[T] extends Mix___eFoo___wBarY_f { class I;; f; }
+class S_T___eFoo___wBarY_f[T] extends Mix___eFoo___wBarY_f {
+  class I;; f;
+}
 /* */
 class S_T___eFoo___wBarYI_[T] extends Mix___eFoo___wBarYI_ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T___eFoo___wBarYIf[T] extends Mix___eFoo___wBarYIf { ;; f; }
+class S_T___eFoo___wBarYIf[T] extends Mix___eFoo___wBarYIf {
+  ;; f;
+}
 /* */
-class S_T___eFoo__f[T] extends Mix___eFoo__f { class I;; f; }
+class S_T___eFoo__f[T] extends Mix___eFoo__f {
+  class I;; f;
+}
 /* */
-class S_T___eFoo__fwBar___[T] extends Mix___eFoo__fwBar___ { class I;; f; }
+class S_T___eFoo__fwBar___[T] extends Mix___eFoo__fwBar___ {
+  class I;; f;
+}
 // */class S_T___eFoo__fwBar__f[T]  extends Mix___eFoo__fwBar__f     { class I;                                ; f; }
 /* */
-class S_T___eFoo__fwBar_I_[T] extends Mix___eFoo__fwBar_I_ { ;; f; }
+class S_T___eFoo__fwBar_I_[T] extends Mix___eFoo__fwBar_I_ {
+  ;; f;
+}
 // */class S_T___eFoo__fwBar_If[T]  extends Mix___eFoo__fwBar_If     {        ;                                ; f; }
 /* */
-class S_T___eFoo__fwBarY__[T] extends Mix___eFoo__fwBarY__ { class I;; f; }
+class S_T___eFoo__fwBarY__[T] extends Mix___eFoo__fwBarY__ {
+  class I;; f;
+}
 // */class S_T___eFoo__fwBarY_f[T]  extends Mix___eFoo__fwBarY_f     { class I;                                ; f; }
 /* */
-class S_T___eFoo__fwBarYI_[T] extends Mix___eFoo__fwBarYI_ { ;; f; }
+class S_T___eFoo__fwBarYI_[T] extends Mix___eFoo__fwBarYI_ {
+  ;; f;
+}
 // */class S_T___eFoo__fwBarYIf[T]  extends Mix___eFoo__fwBarYIf     {        ;                                ; f; }
 /* */
-class S_T___eFoo_I_[T] extends Mix___eFoo_I_ { ; def f: I = { sub; null }; f; }
-/* */
-class S_T___eFoo_I_wBar___[T] extends Mix___eFoo_I_wBar___ {
-  ; def f: I = { sub; null }; f;
+class S_T___eFoo_I_[T] extends Mix___eFoo_I_ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T___eFoo_I_wBar__f[T] extends Mix___eFoo_I_wBar__f { ;; f; }
+class S_T___eFoo_I_wBar___[T] extends Mix___eFoo_I_wBar___ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
+}
+/* */
+class S_T___eFoo_I_wBar__f[T] extends Mix___eFoo_I_wBar__f {
+  ;; f;
+}
 // */class S_T___eFoo_I_wBar_I_[T]  extends Mix___eFoo_I_wBar_I_     {        ;          def f: I = {sub; null}; f; }
 // */class S_T___eFoo_I_wBar_If[T]  extends Mix___eFoo_I_wBar_If     {        ;                                ; f; }
 /* */
 class S_T___eFoo_I_wBarY__[T] extends Mix___eFoo_I_wBarY__ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T___eFoo_I_wBarY_f[T] extends Mix___eFoo_I_wBarY_f { ;; f; }
+class S_T___eFoo_I_wBarY_f[T] extends Mix___eFoo_I_wBarY_f {
+  ;; f;
+}
 // */class S_T___eFoo_I_wBarYI_[T]  extends Mix___eFoo_I_wBarYI_     {        ;          def f: I = {sub; null}; f; }
 // */class S_T___eFoo_I_wBarYIf[T]  extends Mix___eFoo_I_wBarYIf     {        ;                                ; f; }
 /* */
-class S_T___eFoo_If[T] extends Mix___eFoo_If { ;; f; }
+class S_T___eFoo_If[T] extends Mix___eFoo_If {
+  ;; f;
+}
 /* */
-class S_T___eFoo_IfwBar___[T] extends Mix___eFoo_IfwBar___ { ;; f; }
+class S_T___eFoo_IfwBar___[T] extends Mix___eFoo_IfwBar___ {
+  ;; f;
+}
 // */class S_T___eFoo_IfwBar__f[T]  extends Mix___eFoo_IfwBar__f     {        ;                                ; f; }
 // */class S_T___eFoo_IfwBar_I_[T]  extends Mix___eFoo_IfwBar_I_     {        ;                                ; f; }
 // */class S_T___eFoo_IfwBar_If[T]  extends Mix___eFoo_IfwBar_If     {        ;                                ; f; }
 /* */
-class S_T___eFoo_IfwBarY__[T] extends Mix___eFoo_IfwBarY__ { ;; f; }
+class S_T___eFoo_IfwBarY__[T] extends Mix___eFoo_IfwBarY__ {
+  ;; f;
+}
 // */class S_T___eFoo_IfwBarY_f[T]  extends Mix___eFoo_IfwBarY_f     {        ;                                ; f; }
 // */class S_T___eFoo_IfwBarYI_[T]  extends Mix___eFoo_IfwBarYI_     {        ;                                ; f; }
 // */class S_T___eFoo_IfwBarYIf[T]  extends Mix___eFoo_IfwBarYIf     {        ;                                ; f; }
 /* */
 class S_T___eFooX__[T] extends Mix___eFooX__ {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
 class S_T___eFooX__wBar___[T] extends Mix___eFooX__wBar___ {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T___eFooX__wBar__f[T] extends Mix___eFooX__wBar__f { class I;; f; }
+class S_T___eFooX__wBar__f[T] extends Mix___eFooX__wBar__f {
+  class I;; f;
+}
 /* */
 class S_T___eFooX__wBar_I_[T] extends Mix___eFooX__wBar_I_ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T___eFooX__wBar_If[T] extends Mix___eFooX__wBar_If { ;; f; }
+class S_T___eFooX__wBar_If[T] extends Mix___eFooX__wBar_If {
+  ;; f;
+}
 /* */
 class S_T___eFooX__wBarY__[T] extends Mix___eFooX__wBarY__ {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T___eFooX__wBarY_f[T] extends Mix___eFooX__wBarY_f { class I;; f; }
+class S_T___eFooX__wBarY_f[T] extends Mix___eFooX__wBarY_f {
+  class I;; f;
+}
 /* */
 class S_T___eFooX__wBarYI_[T] extends Mix___eFooX__wBarYI_ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T___eFooX__wBarYIf[T] extends Mix___eFooX__wBarYIf { ;; f; }
+class S_T___eFooX__wBarYIf[T] extends Mix___eFooX__wBarYIf {
+  ;; f;
+}
 /* */
-class S_T___eFooX_f[T] extends Mix___eFooX_f { class I;; f; }
+class S_T___eFooX_f[T] extends Mix___eFooX_f {
+  class I;; f;
+}
 /* */
-class S_T___eFooX_fwBar___[T] extends Mix___eFooX_fwBar___ { class I;; f; }
+class S_T___eFooX_fwBar___[T] extends Mix___eFooX_fwBar___ {
+  class I;; f;
+}
 // */class S_T___eFooX_fwBar__f[T]  extends Mix___eFooX_fwBar__f     { class I;                                ; f; }
 /* */
-class S_T___eFooX_fwBar_I_[T] extends Mix___eFooX_fwBar_I_ { ;; f; }
+class S_T___eFooX_fwBar_I_[T] extends Mix___eFooX_fwBar_I_ {
+  ;; f;
+}
 // */class S_T___eFooX_fwBar_If[T]  extends Mix___eFooX_fwBar_If     {        ;                                ; f; }
 /* */
-class S_T___eFooX_fwBarY__[T] extends Mix___eFooX_fwBarY__ { class I;; f; }
+class S_T___eFooX_fwBarY__[T] extends Mix___eFooX_fwBarY__ {
+  class I;; f;
+}
 // */class S_T___eFooX_fwBarY_f[T]  extends Mix___eFooX_fwBarY_f     { class I;                                ; f; }
 /* */
-class S_T___eFooX_fwBarYI_[T] extends Mix___eFooX_fwBarYI_ { ;; f; }
+class S_T___eFooX_fwBarYI_[T] extends Mix___eFooX_fwBarYI_ {
+  ;; f;
+}
 // */class S_T___eFooX_fwBarYIf[T]  extends Mix___eFooX_fwBarYIf     {        ;                                ; f; }
 /* */
-class S_T___eFooXI_[T] extends Mix___eFooXI_ { ; def f: I = { sub; null }; f; }
-/* */
-class S_T___eFooXI_wBar___[T] extends Mix___eFooXI_wBar___ {
-  ; def f: I = { sub; null }; f;
+class S_T___eFooXI_[T] extends Mix___eFooXI_ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T___eFooXI_wBar__f[T] extends Mix___eFooXI_wBar__f { ;; f; }
+class S_T___eFooXI_wBar___[T] extends Mix___eFooXI_wBar___ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
+}
+/* */
+class S_T___eFooXI_wBar__f[T] extends Mix___eFooXI_wBar__f {
+  ;; f;
+}
 // */class S_T___eFooXI_wBar_I_[T]  extends Mix___eFooXI_wBar_I_     {        ;          def f: I = {sub; null}; f; }
 // */class S_T___eFooXI_wBar_If[T]  extends Mix___eFooXI_wBar_If     {        ;                                ; f; }
 /* */
 class S_T___eFooXI_wBarY__[T] extends Mix___eFooXI_wBarY__ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T___eFooXI_wBarY_f[T] extends Mix___eFooXI_wBarY_f { ;; f; }
+class S_T___eFooXI_wBarY_f[T] extends Mix___eFooXI_wBarY_f {
+  ;; f;
+}
 // */class S_T___eFooXI_wBarYI_[T]  extends Mix___eFooXI_wBarYI_     {        ;          def f: I = {sub; null}; f; }
 // */class S_T___eFooXI_wBarYIf[T]  extends Mix___eFooXI_wBarYIf     {        ;                                ; f; }
 /* */
-class S_T___eFooXIf[T] extends Mix___eFooXIf { ;; f; }
+class S_T___eFooXIf[T] extends Mix___eFooXIf {
+  ;; f;
+}
 /* */
-class S_T___eFooXIfwBar___[T] extends Mix___eFooXIfwBar___ { ;; f; }
+class S_T___eFooXIfwBar___[T] extends Mix___eFooXIfwBar___ {
+  ;; f;
+}
 // */class S_T___eFooXIfwBar__f[T]  extends Mix___eFooXIfwBar__f     {        ;                                ; f; }
 // */class S_T___eFooXIfwBar_I_[T]  extends Mix___eFooXIfwBar_I_     {        ;                                ; f; }
 // */class S_T___eFooXIfwBar_If[T]  extends Mix___eFooXIfwBar_If     {        ;                                ; f; }
 /* */
-class S_T___eFooXIfwBarY__[T] extends Mix___eFooXIfwBarY__ { ;; f; }
+class S_T___eFooXIfwBarY__[T] extends Mix___eFooXIfwBarY__ {
+  ;; f;
+}
 // */class S_T___eFooXIfwBarY_f[T]  extends Mix___eFooXIfwBarY_f     {        ;                                ; f; }
 // */class S_T___eFooXIfwBarYI_[T]  extends Mix___eFooXIfwBarYI_     {        ;                                ; f; }
 // */class S_T___eFooXIfwBarYIf[T]  extends Mix___eFooXIfwBarYIf     {        ;                                ; f; }
 
 /* */
-class S_T__feFoo___[T] extends Mix__feFoo___ { class I;; f; }
+class S_T__feFoo___[T] extends Mix__feFoo___ {
+  class I;; f;
+}
 /* */
-class S_T__feFoo___wBar___[T] extends Mix__feFoo___wBar___ { class I;; f; }
+class S_T__feFoo___wBar___[T] extends Mix__feFoo___wBar___ {
+  class I;; f;
+}
 /* */
-class S_T__feFoo___wBar__f[T] extends Mix__feFoo___wBar__f { class I;; f; }
+class S_T__feFoo___wBar__f[T] extends Mix__feFoo___wBar__f {
+  class I;; f;
+}
 /* */
-class S_T__feFoo___wBar_I_[T] extends Mix__feFoo___wBar_I_ { ;; f; }
+class S_T__feFoo___wBar_I_[T] extends Mix__feFoo___wBar_I_ {
+  ;; f;
+}
 /* */
-class S_T__feFoo___wBar_If[T] extends Mix__feFoo___wBar_If { ;; f; }
+class S_T__feFoo___wBar_If[T] extends Mix__feFoo___wBar_If {
+  ;; f;
+}
 /* */
-class S_T__feFoo___wBarY__[T] extends Mix__feFoo___wBarY__ { class I;; f; }
+class S_T__feFoo___wBarY__[T] extends Mix__feFoo___wBarY__ {
+  class I;; f;
+}
 /* */
-class S_T__feFoo___wBarY_f[T] extends Mix__feFoo___wBarY_f { class I;; f; }
+class S_T__feFoo___wBarY_f[T] extends Mix__feFoo___wBarY_f {
+  class I;; f;
+}
 /* */
-class S_T__feFoo___wBarYI_[T] extends Mix__feFoo___wBarYI_ { ;; f; }
+class S_T__feFoo___wBarYI_[T] extends Mix__feFoo___wBarYI_ {
+  ;; f;
+}
 /* */
-class S_T__feFoo___wBarYIf[T] extends Mix__feFoo___wBarYIf { ;; f; }
+class S_T__feFoo___wBarYIf[T] extends Mix__feFoo___wBarYIf {
+  ;; f;
+}
 /* */
-class S_T__feFoo__f[T] extends Mix__feFoo__f { class I;; f; }
+class S_T__feFoo__f[T] extends Mix__feFoo__f {
+  class I;; f;
+}
 /* */
-class S_T__feFoo__fwBar___[T] extends Mix__feFoo__fwBar___ { class I;; f; }
+class S_T__feFoo__fwBar___[T] extends Mix__feFoo__fwBar___ {
+  class I;; f;
+}
 /* */
-class S_T__feFoo__fwBar__f[T] extends Mix__feFoo__fwBar__f { class I;; f; }
+class S_T__feFoo__fwBar__f[T] extends Mix__feFoo__fwBar__f {
+  class I;; f;
+}
 /* */
-class S_T__feFoo__fwBar_I_[T] extends Mix__feFoo__fwBar_I_ { ;; f; }
+class S_T__feFoo__fwBar_I_[T] extends Mix__feFoo__fwBar_I_ {
+  ;; f;
+}
 /* */
-class S_T__feFoo__fwBar_If[T] extends Mix__feFoo__fwBar_If { ;; f; }
+class S_T__feFoo__fwBar_If[T] extends Mix__feFoo__fwBar_If {
+  ;; f;
+}
 /* */
-class S_T__feFoo__fwBarY__[T] extends Mix__feFoo__fwBarY__ { class I;; f; }
+class S_T__feFoo__fwBarY__[T] extends Mix__feFoo__fwBarY__ {
+  class I;; f;
+}
 /* */
-class S_T__feFoo__fwBarY_f[T] extends Mix__feFoo__fwBarY_f { class I;; f; }
+class S_T__feFoo__fwBarY_f[T] extends Mix__feFoo__fwBarY_f {
+  class I;; f;
+}
 /* */
-class S_T__feFoo__fwBarYI_[T] extends Mix__feFoo__fwBarYI_ { ;; f; }
+class S_T__feFoo__fwBarYI_[T] extends Mix__feFoo__fwBarYI_ {
+  ;; f;
+}
 /* */
-class S_T__feFoo__fwBarYIf[T] extends Mix__feFoo__fwBarYIf { ;; f; }
+class S_T__feFoo__fwBarYIf[T] extends Mix__feFoo__fwBarYIf {
+  ;; f;
+}
 /* */
-class S_T__feFoo_I_[T] extends Mix__feFoo_I_ { ;; f; }
+class S_T__feFoo_I_[T] extends Mix__feFoo_I_ {
+  ;; f;
+}
 /* */
-class S_T__feFoo_I_wBar___[T] extends Mix__feFoo_I_wBar___ { ;; f; }
+class S_T__feFoo_I_wBar___[T] extends Mix__feFoo_I_wBar___ {
+  ;; f;
+}
 /* */
-class S_T__feFoo_I_wBar__f[T] extends Mix__feFoo_I_wBar__f { ;; f; }
+class S_T__feFoo_I_wBar__f[T] extends Mix__feFoo_I_wBar__f {
+  ;; f;
+}
 // */class S_T__feFoo_I_wBar_I_[T]  extends Mix__feFoo_I_wBar_I_     {        ;                                ; f; }
 // */class S_T__feFoo_I_wBar_If[T]  extends Mix__feFoo_I_wBar_If     {        ;                                ; f; }
 /* */
-class S_T__feFoo_I_wBarY__[T] extends Mix__feFoo_I_wBarY__ { ;; f; }
+class S_T__feFoo_I_wBarY__[T] extends Mix__feFoo_I_wBarY__ {
+  ;; f;
+}
 /* */
-class S_T__feFoo_I_wBarY_f[T] extends Mix__feFoo_I_wBarY_f { ;; f; }
+class S_T__feFoo_I_wBarY_f[T] extends Mix__feFoo_I_wBarY_f {
+  ;; f;
+}
 // */class S_T__feFoo_I_wBarYI_[T]  extends Mix__feFoo_I_wBarYI_     {        ;                                ; f; }
 // */class S_T__feFoo_I_wBarYIf[T]  extends Mix__feFoo_I_wBarYIf     {        ;                                ; f; }
 /* */
-class S_T__feFoo_If[T] extends Mix__feFoo_If { ;; f; }
+class S_T__feFoo_If[T] extends Mix__feFoo_If {
+  ;; f;
+}
 /* */
-class S_T__feFoo_IfwBar___[T] extends Mix__feFoo_IfwBar___ { ;; f; }
+class S_T__feFoo_IfwBar___[T] extends Mix__feFoo_IfwBar___ {
+  ;; f;
+}
 /* */
-class S_T__feFoo_IfwBar__f[T] extends Mix__feFoo_IfwBar__f { ;; f; }
+class S_T__feFoo_IfwBar__f[T] extends Mix__feFoo_IfwBar__f {
+  ;; f;
+}
 // */class S_T__feFoo_IfwBar_I_[T]  extends Mix__feFoo_IfwBar_I_     {        ;                                ; f; }
 // */class S_T__feFoo_IfwBar_If[T]  extends Mix__feFoo_IfwBar_If     {        ;                                ; f; }
 /* */
-class S_T__feFoo_IfwBarY__[T] extends Mix__feFoo_IfwBarY__ { ;; f; }
+class S_T__feFoo_IfwBarY__[T] extends Mix__feFoo_IfwBarY__ {
+  ;; f;
+}
 /* */
-class S_T__feFoo_IfwBarY_f[T] extends Mix__feFoo_IfwBarY_f { ;; f; }
+class S_T__feFoo_IfwBarY_f[T] extends Mix__feFoo_IfwBarY_f {
+  ;; f;
+}
 // */class S_T__feFoo_IfwBarYI_[T]  extends Mix__feFoo_IfwBarYI_     {        ;                                ; f; }
 // */class S_T__feFoo_IfwBarYIf[T]  extends Mix__feFoo_IfwBarYIf     {        ;                                ; f; }
 /* */
-class S_T__feFooX__[T] extends Mix__feFooX__ { class I;; f; }
+class S_T__feFooX__[T] extends Mix__feFooX__ {
+  class I;; f;
+}
 /* */
-class S_T__feFooX__wBar___[T] extends Mix__feFooX__wBar___ { class I;; f; }
+class S_T__feFooX__wBar___[T] extends Mix__feFooX__wBar___ {
+  class I;; f;
+}
 /* */
-class S_T__feFooX__wBar__f[T] extends Mix__feFooX__wBar__f { class I;; f; }
+class S_T__feFooX__wBar__f[T] extends Mix__feFooX__wBar__f {
+  class I;; f;
+}
 /* */
-class S_T__feFooX__wBar_I_[T] extends Mix__feFooX__wBar_I_ { ;; f; }
+class S_T__feFooX__wBar_I_[T] extends Mix__feFooX__wBar_I_ {
+  ;; f;
+}
 /* */
-class S_T__feFooX__wBar_If[T] extends Mix__feFooX__wBar_If { ;; f; }
+class S_T__feFooX__wBar_If[T] extends Mix__feFooX__wBar_If {
+  ;; f;
+}
 /* */
-class S_T__feFooX__wBarY__[T] extends Mix__feFooX__wBarY__ { class I;; f; }
+class S_T__feFooX__wBarY__[T] extends Mix__feFooX__wBarY__ {
+  class I;; f;
+}
 /* */
-class S_T__feFooX__wBarY_f[T] extends Mix__feFooX__wBarY_f { class I;; f; }
+class S_T__feFooX__wBarY_f[T] extends Mix__feFooX__wBarY_f {
+  class I;; f;
+}
 /* */
-class S_T__feFooX__wBarYI_[T] extends Mix__feFooX__wBarYI_ { ;; f; }
+class S_T__feFooX__wBarYI_[T] extends Mix__feFooX__wBarYI_ {
+  ;; f;
+}
 /* */
-class S_T__feFooX__wBarYIf[T] extends Mix__feFooX__wBarYIf { ;; f; }
+class S_T__feFooX__wBarYIf[T] extends Mix__feFooX__wBarYIf {
+  ;; f;
+}
 /* */
-class S_T__feFooX_f[T] extends Mix__feFooX_f { class I;; f; }
+class S_T__feFooX_f[T] extends Mix__feFooX_f {
+  class I;; f;
+}
 /* */
-class S_T__feFooX_fwBar___[T] extends Mix__feFooX_fwBar___ { class I;; f; }
+class S_T__feFooX_fwBar___[T] extends Mix__feFooX_fwBar___ {
+  class I;; f;
+}
 /* */
-class S_T__feFooX_fwBar__f[T] extends Mix__feFooX_fwBar__f { class I;; f; }
+class S_T__feFooX_fwBar__f[T] extends Mix__feFooX_fwBar__f {
+  class I;; f;
+}
 /* */
-class S_T__feFooX_fwBar_I_[T] extends Mix__feFooX_fwBar_I_ { ;; f; }
+class S_T__feFooX_fwBar_I_[T] extends Mix__feFooX_fwBar_I_ {
+  ;; f;
+}
 /* */
-class S_T__feFooX_fwBar_If[T] extends Mix__feFooX_fwBar_If { ;; f; }
+class S_T__feFooX_fwBar_If[T] extends Mix__feFooX_fwBar_If {
+  ;; f;
+}
 /* */
-class S_T__feFooX_fwBarY__[T] extends Mix__feFooX_fwBarY__ { class I;; f; }
+class S_T__feFooX_fwBarY__[T] extends Mix__feFooX_fwBarY__ {
+  class I;; f;
+}
 /* */
-class S_T__feFooX_fwBarY_f[T] extends Mix__feFooX_fwBarY_f { class I;; f; }
+class S_T__feFooX_fwBarY_f[T] extends Mix__feFooX_fwBarY_f {
+  class I;; f;
+}
 /* */
-class S_T__feFooX_fwBarYI_[T] extends Mix__feFooX_fwBarYI_ { ;; f; }
+class S_T__feFooX_fwBarYI_[T] extends Mix__feFooX_fwBarYI_ {
+  ;; f;
+}
 /* */
-class S_T__feFooX_fwBarYIf[T] extends Mix__feFooX_fwBarYIf { ;; f; }
+class S_T__feFooX_fwBarYIf[T] extends Mix__feFooX_fwBarYIf {
+  ;; f;
+}
 /* */
-class S_T__feFooXI_[T] extends Mix__feFooXI_ { ;; f; }
+class S_T__feFooXI_[T] extends Mix__feFooXI_ {
+  ;; f;
+}
 /* */
-class S_T__feFooXI_wBar___[T] extends Mix__feFooXI_wBar___ { ;; f; }
+class S_T__feFooXI_wBar___[T] extends Mix__feFooXI_wBar___ {
+  ;; f;
+}
 /* */
-class S_T__feFooXI_wBar__f[T] extends Mix__feFooXI_wBar__f { ;; f; }
+class S_T__feFooXI_wBar__f[T] extends Mix__feFooXI_wBar__f {
+  ;; f;
+}
 // */class S_T__feFooXI_wBar_I_[T]  extends Mix__feFooXI_wBar_I_     {        ;                                ; f; }
 // */class S_T__feFooXI_wBar_If[T]  extends Mix__feFooXI_wBar_If     {        ;                                ; f; }
 /* */
-class S_T__feFooXI_wBarY__[T] extends Mix__feFooXI_wBarY__ { ;; f; }
+class S_T__feFooXI_wBarY__[T] extends Mix__feFooXI_wBarY__ {
+  ;; f;
+}
 /* */
-class S_T__feFooXI_wBarY_f[T] extends Mix__feFooXI_wBarY_f { ;; f; }
+class S_T__feFooXI_wBarY_f[T] extends Mix__feFooXI_wBarY_f {
+  ;; f;
+}
 // */class S_T__feFooXI_wBarYI_[T]  extends Mix__feFooXI_wBarYI_     {        ;                                ; f; }
 // */class S_T__feFooXI_wBarYIf[T]  extends Mix__feFooXI_wBarYIf     {        ;                                ; f; }
 /* */
-class S_T__feFooXIf[T] extends Mix__feFooXIf { ;; f; }
+class S_T__feFooXIf[T] extends Mix__feFooXIf {
+  ;; f;
+}
 /* */
-class S_T__feFooXIfwBar___[T] extends Mix__feFooXIfwBar___ { ;; f; }
+class S_T__feFooXIfwBar___[T] extends Mix__feFooXIfwBar___ {
+  ;; f;
+}
 /* */
-class S_T__feFooXIfwBar__f[T] extends Mix__feFooXIfwBar__f { ;; f; }
+class S_T__feFooXIfwBar__f[T] extends Mix__feFooXIfwBar__f {
+  ;; f;
+}
 // */class S_T__feFooXIfwBar_I_[T]  extends Mix__feFooXIfwBar_I_     {        ;                                ; f; }
 // */class S_T__feFooXIfwBar_If[T]  extends Mix__feFooXIfwBar_If     {        ;                                ; f; }
 /* */
-class S_T__feFooXIfwBarY__[T] extends Mix__feFooXIfwBarY__ { ;; f; }
+class S_T__feFooXIfwBarY__[T] extends Mix__feFooXIfwBarY__ {
+  ;; f;
+}
 /* */
-class S_T__feFooXIfwBarY_f[T] extends Mix__feFooXIfwBarY_f { ;; f; }
+class S_T__feFooXIfwBarY_f[T] extends Mix__feFooXIfwBarY_f {
+  ;; f;
+}
 // */class S_T__feFooXIfwBarYI_[T]  extends Mix__feFooXIfwBarYI_     {        ;                                ; f; }
 // */class S_T__feFooXIfwBarYIf[T]  extends Mix__feFooXIfwBarYIf     {        ;                                ; f; }
 
 /* */
-class S_T_I_eFoo___[T] extends Mix_I_eFoo___ { ; def f: I = { sub; null }; f; }
-/* */
-class S_T_I_eFoo___wBar___[T] extends Mix_I_eFoo___wBar___ {
-  ; def f: I = { sub; null }; f;
+class S_T_I_eFoo___[T] extends Mix_I_eFoo___ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T_I_eFoo___wBar__f[T] extends Mix_I_eFoo___wBar__f { ;; f; }
+class S_T_I_eFoo___wBar___[T] extends Mix_I_eFoo___wBar___ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
+}
+/* */
+class S_T_I_eFoo___wBar__f[T] extends Mix_I_eFoo___wBar__f {
+  ;; f;
+}
 // */class S_T_I_eFoo___wBar_I_[T]  extends Mix_I_eFoo___wBar_I_     {        ;          def f: I = {sub; null}; f; }
 // */class S_T_I_eFoo___wBar_If[T]  extends Mix_I_eFoo___wBar_If     {        ;                                ; f; }
 /* */
 class S_T_I_eFoo___wBarY__[T] extends Mix_I_eFoo___wBarY__ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T_I_eFoo___wBarY_f[T] extends Mix_I_eFoo___wBarY_f { ;; f; }
+class S_T_I_eFoo___wBarY_f[T] extends Mix_I_eFoo___wBarY_f {
+  ;; f;
+}
 // */class S_T_I_eFoo___wBarYI_[T]  extends Mix_I_eFoo___wBarYI_     {        ;          def f: I = {sub; null}; f; }
 // */class S_T_I_eFoo___wBarYIf[T]  extends Mix_I_eFoo___wBarYIf     {        ;                                ; f; }
 /* */
-class S_T_I_eFoo__f[T] extends Mix_I_eFoo__f { ;; f; }
+class S_T_I_eFoo__f[T] extends Mix_I_eFoo__f {
+  ;; f;
+}
 /* */
-class S_T_I_eFoo__fwBar___[T] extends Mix_I_eFoo__fwBar___ { ;; f; }
+class S_T_I_eFoo__fwBar___[T] extends Mix_I_eFoo__fwBar___ {
+  ;; f;
+}
 // */class S_T_I_eFoo__fwBar__f[T]  extends Mix_I_eFoo__fwBar__f     {        ;                                ; f; }
 // */class S_T_I_eFoo__fwBar_I_[T]  extends Mix_I_eFoo__fwBar_I_     {        ;                                ; f; }
 // */class S_T_I_eFoo__fwBar_If[T]  extends Mix_I_eFoo__fwBar_If     {        ;                                ; f; }
 /* */
-class S_T_I_eFoo__fwBarY__[T] extends Mix_I_eFoo__fwBarY__ { ;; f; }
+class S_T_I_eFoo__fwBarY__[T] extends Mix_I_eFoo__fwBarY__ {
+  ;; f;
+}
 // */class S_T_I_eFoo__fwBarY_f[T]  extends Mix_I_eFoo__fwBarY_f     {        ;                                ; f; }
 // */class S_T_I_eFoo__fwBarYI_[T]  extends Mix_I_eFoo__fwBarYI_     {        ;                                ; f; }
 // */class S_T_I_eFoo__fwBarYIf[T]  extends Mix_I_eFoo__fwBarYIf     {        ;                                ; f; }
@@ -4571,32 +7468,53 @@ class S_T_I_eFoo__fwBarY__[T] extends Mix_I_eFoo__fwBarY__ { ;; f; }
 // */class S_T_I_eFoo_IfwBarYI_[T]  extends Mix_I_eFoo_IfwBarYI_     {        ;                                ; f; }
 // */class S_T_I_eFoo_IfwBarYIf[T]  extends Mix_I_eFoo_IfwBarYIf     {        ;                                ; f; }
 /* */
-class S_T_I_eFooX__[T] extends Mix_I_eFooX__ { ; def f: I = { sub; null }; f; }
-/* */
-class S_T_I_eFooX__wBar___[T] extends Mix_I_eFooX__wBar___ {
-  ; def f: I = { sub; null }; f;
+class S_T_I_eFooX__[T] extends Mix_I_eFooX__ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T_I_eFooX__wBar__f[T] extends Mix_I_eFooX__wBar__f { ;; f; }
+class S_T_I_eFooX__wBar___[T] extends Mix_I_eFooX__wBar___ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
+}
+/* */
+class S_T_I_eFooX__wBar__f[T] extends Mix_I_eFooX__wBar__f {
+  ;; f;
+}
 // */class S_T_I_eFooX__wBar_I_[T]  extends Mix_I_eFooX__wBar_I_     {        ;          def f: I = {sub; null}; f; }
 // */class S_T_I_eFooX__wBar_If[T]  extends Mix_I_eFooX__wBar_If     {        ;                                ; f; }
 /* */
 class S_T_I_eFooX__wBarY__[T] extends Mix_I_eFooX__wBarY__ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T_I_eFooX__wBarY_f[T] extends Mix_I_eFooX__wBarY_f { ;; f; }
+class S_T_I_eFooX__wBarY_f[T] extends Mix_I_eFooX__wBarY_f {
+  ;; f;
+}
 // */class S_T_I_eFooX__wBarYI_[T]  extends Mix_I_eFooX__wBarYI_     {        ;          def f: I = {sub; null}; f; }
 // */class S_T_I_eFooX__wBarYIf[T]  extends Mix_I_eFooX__wBarYIf     {        ;                                ; f; }
 /* */
-class S_T_I_eFooX_f[T] extends Mix_I_eFooX_f { ;; f; }
+class S_T_I_eFooX_f[T] extends Mix_I_eFooX_f {
+  ;; f;
+}
 /* */
-class S_T_I_eFooX_fwBar___[T] extends Mix_I_eFooX_fwBar___ { ;; f; }
+class S_T_I_eFooX_fwBar___[T] extends Mix_I_eFooX_fwBar___ {
+  ;; f;
+}
 // */class S_T_I_eFooX_fwBar__f[T]  extends Mix_I_eFooX_fwBar__f     {        ;                                ; f; }
 // */class S_T_I_eFooX_fwBar_I_[T]  extends Mix_I_eFooX_fwBar_I_     {        ;                                ; f; }
 // */class S_T_I_eFooX_fwBar_If[T]  extends Mix_I_eFooX_fwBar_If     {        ;                                ; f; }
 /* */
-class S_T_I_eFooX_fwBarY__[T] extends Mix_I_eFooX_fwBarY__ { ;; f; }
+class S_T_I_eFooX_fwBarY__[T] extends Mix_I_eFooX_fwBarY__ {
+  ;; f;
+}
 // */class S_T_I_eFooX_fwBarY_f[T]  extends Mix_I_eFooX_fwBarY_f     {        ;                                ; f; }
 // */class S_T_I_eFooX_fwBarYI_[T]  extends Mix_I_eFooX_fwBarYI_     {        ;                                ; f; }
 // */class S_T_I_eFooX_fwBarYIf[T]  extends Mix_I_eFooX_fwBarYIf     {        ;                                ; f; }
@@ -4620,31 +7538,51 @@ class S_T_I_eFooX_fwBarY__[T] extends Mix_I_eFooX_fwBarY__ { ;; f; }
 // */class S_T_I_eFooXIfwBarYIf[T]  extends Mix_I_eFooXIfwBarYIf     {        ;                                ; f; }
 
 /* */
-class S_T_IfeFoo___[T] extends Mix_IfeFoo___ { ;; f; }
+class S_T_IfeFoo___[T] extends Mix_IfeFoo___ {
+  ;; f;
+}
 /* */
-class S_T_IfeFoo___wBar___[T] extends Mix_IfeFoo___wBar___ { ;; f; }
+class S_T_IfeFoo___wBar___[T] extends Mix_IfeFoo___wBar___ {
+  ;; f;
+}
 /* */
-class S_T_IfeFoo___wBar__f[T] extends Mix_IfeFoo___wBar__f { ;; f; }
+class S_T_IfeFoo___wBar__f[T] extends Mix_IfeFoo___wBar__f {
+  ;; f;
+}
 // */class S_T_IfeFoo___wBar_I_[T]  extends Mix_IfeFoo___wBar_I_     {        ;                                ; f; }
 // */class S_T_IfeFoo___wBar_If[T]  extends Mix_IfeFoo___wBar_If     {        ;                                ; f; }
 /* */
-class S_T_IfeFoo___wBarY__[T] extends Mix_IfeFoo___wBarY__ { ;; f; }
+class S_T_IfeFoo___wBarY__[T] extends Mix_IfeFoo___wBarY__ {
+  ;; f;
+}
 /* */
-class S_T_IfeFoo___wBarY_f[T] extends Mix_IfeFoo___wBarY_f { ;; f; }
+class S_T_IfeFoo___wBarY_f[T] extends Mix_IfeFoo___wBarY_f {
+  ;; f;
+}
 // */class S_T_IfeFoo___wBarYI_[T]  extends Mix_IfeFoo___wBarYI_     {        ;                                ; f; }
 // */class S_T_IfeFoo___wBarYIf[T]  extends Mix_IfeFoo___wBarYIf     {        ;                                ; f; }
 /* */
-class S_T_IfeFoo__f[T] extends Mix_IfeFoo__f { ;; f; }
+class S_T_IfeFoo__f[T] extends Mix_IfeFoo__f {
+  ;; f;
+}
 /* */
-class S_T_IfeFoo__fwBar___[T] extends Mix_IfeFoo__fwBar___ { ;; f; }
+class S_T_IfeFoo__fwBar___[T] extends Mix_IfeFoo__fwBar___ {
+  ;; f;
+}
 /* */
-class S_T_IfeFoo__fwBar__f[T] extends Mix_IfeFoo__fwBar__f { ;; f; }
+class S_T_IfeFoo__fwBar__f[T] extends Mix_IfeFoo__fwBar__f {
+  ;; f;
+}
 // */class S_T_IfeFoo__fwBar_I_[T]  extends Mix_IfeFoo__fwBar_I_     {        ;                                ; f; }
 // */class S_T_IfeFoo__fwBar_If[T]  extends Mix_IfeFoo__fwBar_If     {        ;                                ; f; }
 /* */
-class S_T_IfeFoo__fwBarY__[T] extends Mix_IfeFoo__fwBarY__ { ;; f; }
+class S_T_IfeFoo__fwBarY__[T] extends Mix_IfeFoo__fwBarY__ {
+  ;; f;
+}
 /* */
-class S_T_IfeFoo__fwBarY_f[T] extends Mix_IfeFoo__fwBarY_f { ;; f; }
+class S_T_IfeFoo__fwBarY_f[T] extends Mix_IfeFoo__fwBarY_f {
+  ;; f;
+}
 // */class S_T_IfeFoo__fwBarYI_[T]  extends Mix_IfeFoo__fwBarYI_     {        ;                                ; f; }
 // */class S_T_IfeFoo__fwBarYIf[T]  extends Mix_IfeFoo__fwBarYIf     {        ;                                ; f; }
 // */class S_T_IfeFoo_I_       [T]  extends Mix_IfeFoo_I_            {        ;                                ; f; }
@@ -4666,31 +7604,51 @@ class S_T_IfeFoo__fwBarY_f[T] extends Mix_IfeFoo__fwBarY_f { ;; f; }
 // */class S_T_IfeFoo_IfwBarYI_[T]  extends Mix_IfeFoo_IfwBarYI_     {        ;                                ; f; }
 // */class S_T_IfeFoo_IfwBarYIf[T]  extends Mix_IfeFoo_IfwBarYIf     {        ;                                ; f; }
 /* */
-class S_T_IfeFooX__[T] extends Mix_IfeFooX__ { ;; f; }
+class S_T_IfeFooX__[T] extends Mix_IfeFooX__ {
+  ;; f;
+}
 /* */
-class S_T_IfeFooX__wBar___[T] extends Mix_IfeFooX__wBar___ { ;; f; }
+class S_T_IfeFooX__wBar___[T] extends Mix_IfeFooX__wBar___ {
+  ;; f;
+}
 /* */
-class S_T_IfeFooX__wBar__f[T] extends Mix_IfeFooX__wBar__f { ;; f; }
+class S_T_IfeFooX__wBar__f[T] extends Mix_IfeFooX__wBar__f {
+  ;; f;
+}
 // */class S_T_IfeFooX__wBar_I_[T]  extends Mix_IfeFooX__wBar_I_     {        ;                                ; f; }
 // */class S_T_IfeFooX__wBar_If[T]  extends Mix_IfeFooX__wBar_If     {        ;                                ; f; }
 /* */
-class S_T_IfeFooX__wBarY__[T] extends Mix_IfeFooX__wBarY__ { ;; f; }
+class S_T_IfeFooX__wBarY__[T] extends Mix_IfeFooX__wBarY__ {
+  ;; f;
+}
 /* */
-class S_T_IfeFooX__wBarY_f[T] extends Mix_IfeFooX__wBarY_f { ;; f; }
+class S_T_IfeFooX__wBarY_f[T] extends Mix_IfeFooX__wBarY_f {
+  ;; f;
+}
 // */class S_T_IfeFooX__wBarYI_[T]  extends Mix_IfeFooX__wBarYI_     {        ;                                ; f; }
 // */class S_T_IfeFooX__wBarYIf[T]  extends Mix_IfeFooX__wBarYIf     {        ;                                ; f; }
 /* */
-class S_T_IfeFooX_f[T] extends Mix_IfeFooX_f { ;; f; }
+class S_T_IfeFooX_f[T] extends Mix_IfeFooX_f {
+  ;; f;
+}
 /* */
-class S_T_IfeFooX_fwBar___[T] extends Mix_IfeFooX_fwBar___ { ;; f; }
+class S_T_IfeFooX_fwBar___[T] extends Mix_IfeFooX_fwBar___ {
+  ;; f;
+}
 /* */
-class S_T_IfeFooX_fwBar__f[T] extends Mix_IfeFooX_fwBar__f { ;; f; }
+class S_T_IfeFooX_fwBar__f[T] extends Mix_IfeFooX_fwBar__f {
+  ;; f;
+}
 // */class S_T_IfeFooX_fwBar_I_[T]  extends Mix_IfeFooX_fwBar_I_     {        ;                                ; f; }
 // */class S_T_IfeFooX_fwBar_If[T]  extends Mix_IfeFooX_fwBar_If     {        ;                                ; f; }
 /* */
-class S_T_IfeFooX_fwBarY__[T] extends Mix_IfeFooX_fwBarY__ { ;; f; }
+class S_T_IfeFooX_fwBarY__[T] extends Mix_IfeFooX_fwBarY__ {
+  ;; f;
+}
 /* */
-class S_T_IfeFooX_fwBarY_f[T] extends Mix_IfeFooX_fwBarY_f { ;; f; }
+class S_T_IfeFooX_fwBarY_f[T] extends Mix_IfeFooX_fwBarY_f {
+  ;; f;
+}
 // */class S_T_IfeFooX_fwBarYI_[T]  extends Mix_IfeFooX_fwBarYI_     {        ;                                ; f; }
 // */class S_T_IfeFooX_fwBarYIf[T]  extends Mix_IfeFooX_fwBarYIf     {        ;                                ; f; }
 // */class S_T_IfeFooXI_       [T]  extends Mix_IfeFooXI_            {        ;                                ; f; }
@@ -4714,311 +7672,546 @@ class S_T_IfeFooX_fwBarY_f[T] extends Mix_IfeFooX_fwBarY_f { ;; f; }
 
 /* */
 class S_TZ__eFoo___[T] extends MixZ__eFoo___[C] {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
 class S_TZ__eFoo___wBar___[T] extends MixZ__eFoo___wBar___[C] {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZ__eFoo___wBar__f[T] extends MixZ__eFoo___wBar__f[C] { class I;; f; }
+class S_TZ__eFoo___wBar__f[T] extends MixZ__eFoo___wBar__f[C] {
+  class I;; f;
+}
 /* */
 class S_TZ__eFoo___wBar_I_[T] extends MixZ__eFoo___wBar_I_[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZ__eFoo___wBar_If[T] extends MixZ__eFoo___wBar_If[C] { ;; f; }
+class S_TZ__eFoo___wBar_If[T] extends MixZ__eFoo___wBar_If[C] {
+  ;; f;
+}
 /* */
 class S_TZ__eFoo___wBarY__[T] extends MixZ__eFoo___wBarY__[C] {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZ__eFoo___wBarY_f[T] extends MixZ__eFoo___wBarY_f[C] { class I;; f; }
+class S_TZ__eFoo___wBarY_f[T] extends MixZ__eFoo___wBarY_f[C] {
+  class I;; f;
+}
 /* */
 class S_TZ__eFoo___wBarYI_[T] extends MixZ__eFoo___wBarYI_[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZ__eFoo___wBarYIf[T] extends MixZ__eFoo___wBarYIf[C] { ;; f; }
+class S_TZ__eFoo___wBarYIf[T] extends MixZ__eFoo___wBarYIf[C] {
+  ;; f;
+}
 /* */
-class S_TZ__eFoo__f[T] extends MixZ__eFoo__f[C] { class I;; f; }
+class S_TZ__eFoo__f[T] extends MixZ__eFoo__f[C] {
+  class I;; f;
+}
 /* */
-class S_TZ__eFoo__fwBar___[T] extends MixZ__eFoo__fwBar___[C] { class I;; f; }
+class S_TZ__eFoo__fwBar___[T] extends MixZ__eFoo__fwBar___[C] {
+  class I;; f;
+}
 // */class S_TZ__eFoo__fwBar__f[T]  extends MixZ__eFoo__fwBar__f[C]  { class I;                                ; f; }
 /* */
-class S_TZ__eFoo__fwBar_I_[T] extends MixZ__eFoo__fwBar_I_[C] { ;; f; }
+class S_TZ__eFoo__fwBar_I_[T] extends MixZ__eFoo__fwBar_I_[C] {
+  ;; f;
+}
 // */class S_TZ__eFoo__fwBar_If[T]  extends MixZ__eFoo__fwBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZ__eFoo__fwBarY__[T] extends MixZ__eFoo__fwBarY__[C] { class I;; f; }
+class S_TZ__eFoo__fwBarY__[T] extends MixZ__eFoo__fwBarY__[C] {
+  class I;; f;
+}
 // */class S_TZ__eFoo__fwBarY_f[T]  extends MixZ__eFoo__fwBarY_f[C]  { class I;                                ; f; }
 /* */
-class S_TZ__eFoo__fwBarYI_[T] extends MixZ__eFoo__fwBarYI_[C] { ;; f; }
+class S_TZ__eFoo__fwBarYI_[T] extends MixZ__eFoo__fwBarYI_[C] {
+  ;; f;
+}
 // */class S_TZ__eFoo__fwBarYIf[T]  extends MixZ__eFoo__fwBarYIf[C]  {        ;                                ; f; }
 /* */
 class S_TZ__eFoo_I_[T] extends MixZ__eFoo_I_[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
 class S_TZ__eFoo_I_wBar___[T] extends MixZ__eFoo_I_wBar___[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZ__eFoo_I_wBar__f[T] extends MixZ__eFoo_I_wBar__f[C] { ;; f; }
+class S_TZ__eFoo_I_wBar__f[T] extends MixZ__eFoo_I_wBar__f[C] {
+  ;; f;
+}
 // */class S_TZ__eFoo_I_wBar_I_[T]  extends MixZ__eFoo_I_wBar_I_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S_TZ__eFoo_I_wBar_If[T]  extends MixZ__eFoo_I_wBar_If[C]  {        ;                                ; f; }
 /* */
 class S_TZ__eFoo_I_wBarY__[T] extends MixZ__eFoo_I_wBarY__[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZ__eFoo_I_wBarY_f[T] extends MixZ__eFoo_I_wBarY_f[C] { ;; f; }
+class S_TZ__eFoo_I_wBarY_f[T] extends MixZ__eFoo_I_wBarY_f[C] {
+  ;; f;
+}
 // */class S_TZ__eFoo_I_wBarYI_[T]  extends MixZ__eFoo_I_wBarYI_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S_TZ__eFoo_I_wBarYIf[T]  extends MixZ__eFoo_I_wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S_TZ__eFoo_If[T] extends MixZ__eFoo_If[C] { ;; f; }
+class S_TZ__eFoo_If[T] extends MixZ__eFoo_If[C] {
+  ;; f;
+}
 /* */
-class S_TZ__eFoo_IfwBar___[T] extends MixZ__eFoo_IfwBar___[C] { ;; f; }
+class S_TZ__eFoo_IfwBar___[T] extends MixZ__eFoo_IfwBar___[C] {
+  ;; f;
+}
 // */class S_TZ__eFoo_IfwBar__f[T]  extends MixZ__eFoo_IfwBar__f[C]  {        ;                                ; f; }
 // */class S_TZ__eFoo_IfwBar_I_[T]  extends MixZ__eFoo_IfwBar_I_[C]  {        ;                                ; f; }
 // */class S_TZ__eFoo_IfwBar_If[T]  extends MixZ__eFoo_IfwBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZ__eFoo_IfwBarY__[T] extends MixZ__eFoo_IfwBarY__[C] { ;; f; }
+class S_TZ__eFoo_IfwBarY__[T] extends MixZ__eFoo_IfwBarY__[C] {
+  ;; f;
+}
 // */class S_TZ__eFoo_IfwBarY_f[T]  extends MixZ__eFoo_IfwBarY_f[C]  {        ;                                ; f; }
 // */class S_TZ__eFoo_IfwBarYI_[T]  extends MixZ__eFoo_IfwBarYI_[C]  {        ;                                ; f; }
 // */class S_TZ__eFoo_IfwBarYIf[T]  extends MixZ__eFoo_IfwBarYIf[C]  {        ;                                ; f; }
 /* */
 class S_TZ__eFooX__[T] extends MixZ__eFooX__[C] {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
 class S_TZ__eFooX__wBar___[T] extends MixZ__eFooX__wBar___[C] {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZ__eFooX__wBar__f[T] extends MixZ__eFooX__wBar__f[C] { class I;; f; }
+class S_TZ__eFooX__wBar__f[T] extends MixZ__eFooX__wBar__f[C] {
+  class I;; f;
+}
 /* */
 class S_TZ__eFooX__wBar_I_[T] extends MixZ__eFooX__wBar_I_[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZ__eFooX__wBar_If[T] extends MixZ__eFooX__wBar_If[C] { ;; f; }
+class S_TZ__eFooX__wBar_If[T] extends MixZ__eFooX__wBar_If[C] {
+  ;; f;
+}
 /* */
 class S_TZ__eFooX__wBarY__[T] extends MixZ__eFooX__wBarY__[C] {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZ__eFooX__wBarY_f[T] extends MixZ__eFooX__wBarY_f[C] { class I;; f; }
+class S_TZ__eFooX__wBarY_f[T] extends MixZ__eFooX__wBarY_f[C] {
+  class I;; f;
+}
 /* */
 class S_TZ__eFooX__wBarYI_[T] extends MixZ__eFooX__wBarYI_[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZ__eFooX__wBarYIf[T] extends MixZ__eFooX__wBarYIf[C] { ;; f; }
+class S_TZ__eFooX__wBarYIf[T] extends MixZ__eFooX__wBarYIf[C] {
+  ;; f;
+}
 /* */
-class S_TZ__eFooX_f[T] extends MixZ__eFooX_f[C] { class I;; f; }
+class S_TZ__eFooX_f[T] extends MixZ__eFooX_f[C] {
+  class I;; f;
+}
 /* */
-class S_TZ__eFooX_fwBar___[T] extends MixZ__eFooX_fwBar___[C] { class I;; f; }
+class S_TZ__eFooX_fwBar___[T] extends MixZ__eFooX_fwBar___[C] {
+  class I;; f;
+}
 // */class S_TZ__eFooX_fwBar__f[T]  extends MixZ__eFooX_fwBar__f[C]  { class I;                                ; f; }
 /* */
-class S_TZ__eFooX_fwBar_I_[T] extends MixZ__eFooX_fwBar_I_[C] { ;; f; }
+class S_TZ__eFooX_fwBar_I_[T] extends MixZ__eFooX_fwBar_I_[C] {
+  ;; f;
+}
 // */class S_TZ__eFooX_fwBar_If[T]  extends MixZ__eFooX_fwBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZ__eFooX_fwBarY__[T] extends MixZ__eFooX_fwBarY__[C] { class I;; f; }
+class S_TZ__eFooX_fwBarY__[T] extends MixZ__eFooX_fwBarY__[C] {
+  class I;; f;
+}
 // */class S_TZ__eFooX_fwBarY_f[T]  extends MixZ__eFooX_fwBarY_f[C]  { class I;                                ; f; }
 /* */
-class S_TZ__eFooX_fwBarYI_[T] extends MixZ__eFooX_fwBarYI_[C] { ;; f; }
+class S_TZ__eFooX_fwBarYI_[T] extends MixZ__eFooX_fwBarYI_[C] {
+  ;; f;
+}
 // */class S_TZ__eFooX_fwBarYIf[T]  extends MixZ__eFooX_fwBarYIf[C]  {        ;                                ; f; }
 /* */
 class S_TZ__eFooXI_[T] extends MixZ__eFooXI_[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
 class S_TZ__eFooXI_wBar___[T] extends MixZ__eFooXI_wBar___[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZ__eFooXI_wBar__f[T] extends MixZ__eFooXI_wBar__f[C] { ;; f; }
+class S_TZ__eFooXI_wBar__f[T] extends MixZ__eFooXI_wBar__f[C] {
+  ;; f;
+}
 // */class S_TZ__eFooXI_wBar_I_[T]  extends MixZ__eFooXI_wBar_I_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S_TZ__eFooXI_wBar_If[T]  extends MixZ__eFooXI_wBar_If[C]  {        ;                                ; f; }
 /* */
 class S_TZ__eFooXI_wBarY__[T] extends MixZ__eFooXI_wBarY__[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZ__eFooXI_wBarY_f[T] extends MixZ__eFooXI_wBarY_f[C] { ;; f; }
+class S_TZ__eFooXI_wBarY_f[T] extends MixZ__eFooXI_wBarY_f[C] {
+  ;; f;
+}
 // */class S_TZ__eFooXI_wBarYI_[T]  extends MixZ__eFooXI_wBarYI_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S_TZ__eFooXI_wBarYIf[T]  extends MixZ__eFooXI_wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S_TZ__eFooXIf[T] extends MixZ__eFooXIf[C] { ;; f; }
+class S_TZ__eFooXIf[T] extends MixZ__eFooXIf[C] {
+  ;; f;
+}
 /* */
-class S_TZ__eFooXIfwBar___[T] extends MixZ__eFooXIfwBar___[C] { ;; f; }
+class S_TZ__eFooXIfwBar___[T] extends MixZ__eFooXIfwBar___[C] {
+  ;; f;
+}
 // */class S_TZ__eFooXIfwBar__f[T]  extends MixZ__eFooXIfwBar__f[C]  {        ;                                ; f; }
 // */class S_TZ__eFooXIfwBar_I_[T]  extends MixZ__eFooXIfwBar_I_[C]  {        ;                                ; f; }
 // */class S_TZ__eFooXIfwBar_If[T]  extends MixZ__eFooXIfwBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZ__eFooXIfwBarY__[T] extends MixZ__eFooXIfwBarY__[C] { ;; f; }
+class S_TZ__eFooXIfwBarY__[T] extends MixZ__eFooXIfwBarY__[C] {
+  ;; f;
+}
 // */class S_TZ__eFooXIfwBarY_f[T]  extends MixZ__eFooXIfwBarY_f[C]  {        ;                                ; f; }
 // */class S_TZ__eFooXIfwBarYI_[T]  extends MixZ__eFooXIfwBarYI_[C]  {        ;                                ; f; }
 // */class S_TZ__eFooXIfwBarYIf[T]  extends MixZ__eFooXIfwBarYIf[C]  {        ;                                ; f; }
 
 /* */
-class S_TZ_feFoo___[T] extends MixZ_feFoo___[C] { class I;; f; }
+class S_TZ_feFoo___[T] extends MixZ_feFoo___[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_feFoo___wBar___[T] extends MixZ_feFoo___wBar___[C] { class I;; f; }
+class S_TZ_feFoo___wBar___[T] extends MixZ_feFoo___wBar___[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_feFoo___wBar__f[T] extends MixZ_feFoo___wBar__f[C] { class I;; f; }
+class S_TZ_feFoo___wBar__f[T] extends MixZ_feFoo___wBar__f[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_feFoo___wBar_I_[T] extends MixZ_feFoo___wBar_I_[C] { ;; f; }
+class S_TZ_feFoo___wBar_I_[T] extends MixZ_feFoo___wBar_I_[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFoo___wBar_If[T] extends MixZ_feFoo___wBar_If[C] { ;; f; }
+class S_TZ_feFoo___wBar_If[T] extends MixZ_feFoo___wBar_If[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFoo___wBarY__[T] extends MixZ_feFoo___wBarY__[C] { class I;; f; }
+class S_TZ_feFoo___wBarY__[T] extends MixZ_feFoo___wBarY__[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_feFoo___wBarY_f[T] extends MixZ_feFoo___wBarY_f[C] { class I;; f; }
+class S_TZ_feFoo___wBarY_f[T] extends MixZ_feFoo___wBarY_f[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_feFoo___wBarYI_[T] extends MixZ_feFoo___wBarYI_[C] { ;; f; }
+class S_TZ_feFoo___wBarYI_[T] extends MixZ_feFoo___wBarYI_[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFoo___wBarYIf[T] extends MixZ_feFoo___wBarYIf[C] { ;; f; }
+class S_TZ_feFoo___wBarYIf[T] extends MixZ_feFoo___wBarYIf[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFoo__f[T] extends MixZ_feFoo__f[C] { class I;; f; }
+class S_TZ_feFoo__f[T] extends MixZ_feFoo__f[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_feFoo__fwBar___[T] extends MixZ_feFoo__fwBar___[C] { class I;; f; }
+class S_TZ_feFoo__fwBar___[T] extends MixZ_feFoo__fwBar___[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_feFoo__fwBar__f[T] extends MixZ_feFoo__fwBar__f[C] { class I;; f; }
+class S_TZ_feFoo__fwBar__f[T] extends MixZ_feFoo__fwBar__f[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_feFoo__fwBar_I_[T] extends MixZ_feFoo__fwBar_I_[C] { ;; f; }
+class S_TZ_feFoo__fwBar_I_[T] extends MixZ_feFoo__fwBar_I_[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFoo__fwBar_If[T] extends MixZ_feFoo__fwBar_If[C] { ;; f; }
+class S_TZ_feFoo__fwBar_If[T] extends MixZ_feFoo__fwBar_If[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFoo__fwBarY__[T] extends MixZ_feFoo__fwBarY__[C] { class I;; f; }
+class S_TZ_feFoo__fwBarY__[T] extends MixZ_feFoo__fwBarY__[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_feFoo__fwBarY_f[T] extends MixZ_feFoo__fwBarY_f[C] { class I;; f; }
+class S_TZ_feFoo__fwBarY_f[T] extends MixZ_feFoo__fwBarY_f[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_feFoo__fwBarYI_[T] extends MixZ_feFoo__fwBarYI_[C] { ;; f; }
+class S_TZ_feFoo__fwBarYI_[T] extends MixZ_feFoo__fwBarYI_[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFoo__fwBarYIf[T] extends MixZ_feFoo__fwBarYIf[C] { ;; f; }
+class S_TZ_feFoo__fwBarYIf[T] extends MixZ_feFoo__fwBarYIf[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFoo_I_[T] extends MixZ_feFoo_I_[C] { ;; f; }
+class S_TZ_feFoo_I_[T] extends MixZ_feFoo_I_[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFoo_I_wBar___[T] extends MixZ_feFoo_I_wBar___[C] { ;; f; }
+class S_TZ_feFoo_I_wBar___[T] extends MixZ_feFoo_I_wBar___[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFoo_I_wBar__f[T] extends MixZ_feFoo_I_wBar__f[C] { ;; f; }
+class S_TZ_feFoo_I_wBar__f[T] extends MixZ_feFoo_I_wBar__f[C] {
+  ;; f;
+}
 // */class S_TZ_feFoo_I_wBar_I_[T]  extends MixZ_feFoo_I_wBar_I_[C]  {        ;                                ; f; }
 // */class S_TZ_feFoo_I_wBar_If[T]  extends MixZ_feFoo_I_wBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZ_feFoo_I_wBarY__[T] extends MixZ_feFoo_I_wBarY__[C] { ;; f; }
+class S_TZ_feFoo_I_wBarY__[T] extends MixZ_feFoo_I_wBarY__[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFoo_I_wBarY_f[T] extends MixZ_feFoo_I_wBarY_f[C] { ;; f; }
+class S_TZ_feFoo_I_wBarY_f[T] extends MixZ_feFoo_I_wBarY_f[C] {
+  ;; f;
+}
 // */class S_TZ_feFoo_I_wBarYI_[T]  extends MixZ_feFoo_I_wBarYI_[C]  {        ;                                ; f; }
 // */class S_TZ_feFoo_I_wBarYIf[T]  extends MixZ_feFoo_I_wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S_TZ_feFoo_If[T] extends MixZ_feFoo_If[C] { ;; f; }
+class S_TZ_feFoo_If[T] extends MixZ_feFoo_If[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFoo_IfwBar___[T] extends MixZ_feFoo_IfwBar___[C] { ;; f; }
+class S_TZ_feFoo_IfwBar___[T] extends MixZ_feFoo_IfwBar___[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFoo_IfwBar__f[T] extends MixZ_feFoo_IfwBar__f[C] { ;; f; }
+class S_TZ_feFoo_IfwBar__f[T] extends MixZ_feFoo_IfwBar__f[C] {
+  ;; f;
+}
 // */class S_TZ_feFoo_IfwBar_I_[T]  extends MixZ_feFoo_IfwBar_I_[C]  {        ;                                ; f; }
 // */class S_TZ_feFoo_IfwBar_If[T]  extends MixZ_feFoo_IfwBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZ_feFoo_IfwBarY__[T] extends MixZ_feFoo_IfwBarY__[C] { ;; f; }
+class S_TZ_feFoo_IfwBarY__[T] extends MixZ_feFoo_IfwBarY__[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFoo_IfwBarY_f[T] extends MixZ_feFoo_IfwBarY_f[C] { ;; f; }
+class S_TZ_feFoo_IfwBarY_f[T] extends MixZ_feFoo_IfwBarY_f[C] {
+  ;; f;
+}
 // */class S_TZ_feFoo_IfwBarYI_[T]  extends MixZ_feFoo_IfwBarYI_[C]  {        ;                                ; f; }
 // */class S_TZ_feFoo_IfwBarYIf[T]  extends MixZ_feFoo_IfwBarYIf[C]  {        ;                                ; f; }
 /* */
-class S_TZ_feFooX__[T] extends MixZ_feFooX__[C] { class I;; f; }
+class S_TZ_feFooX__[T] extends MixZ_feFooX__[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_feFooX__wBar___[T] extends MixZ_feFooX__wBar___[C] { class I;; f; }
+class S_TZ_feFooX__wBar___[T] extends MixZ_feFooX__wBar___[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_feFooX__wBar__f[T] extends MixZ_feFooX__wBar__f[C] { class I;; f; }
+class S_TZ_feFooX__wBar__f[T] extends MixZ_feFooX__wBar__f[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_feFooX__wBar_I_[T] extends MixZ_feFooX__wBar_I_[C] { ;; f; }
+class S_TZ_feFooX__wBar_I_[T] extends MixZ_feFooX__wBar_I_[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFooX__wBar_If[T] extends MixZ_feFooX__wBar_If[C] { ;; f; }
+class S_TZ_feFooX__wBar_If[T] extends MixZ_feFooX__wBar_If[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFooX__wBarY__[T] extends MixZ_feFooX__wBarY__[C] { class I;; f; }
+class S_TZ_feFooX__wBarY__[T] extends MixZ_feFooX__wBarY__[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_feFooX__wBarY_f[T] extends MixZ_feFooX__wBarY_f[C] { class I;; f; }
+class S_TZ_feFooX__wBarY_f[T] extends MixZ_feFooX__wBarY_f[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_feFooX__wBarYI_[T] extends MixZ_feFooX__wBarYI_[C] { ;; f; }
+class S_TZ_feFooX__wBarYI_[T] extends MixZ_feFooX__wBarYI_[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFooX__wBarYIf[T] extends MixZ_feFooX__wBarYIf[C] { ;; f; }
+class S_TZ_feFooX__wBarYIf[T] extends MixZ_feFooX__wBarYIf[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFooX_f[T] extends MixZ_feFooX_f[C] { class I;; f; }
+class S_TZ_feFooX_f[T] extends MixZ_feFooX_f[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_feFooX_fwBar___[T] extends MixZ_feFooX_fwBar___[C] { class I;; f; }
+class S_TZ_feFooX_fwBar___[T] extends MixZ_feFooX_fwBar___[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_feFooX_fwBar__f[T] extends MixZ_feFooX_fwBar__f[C] { class I;; f; }
+class S_TZ_feFooX_fwBar__f[T] extends MixZ_feFooX_fwBar__f[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_feFooX_fwBar_I_[T] extends MixZ_feFooX_fwBar_I_[C] { ;; f; }
+class S_TZ_feFooX_fwBar_I_[T] extends MixZ_feFooX_fwBar_I_[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFooX_fwBar_If[T] extends MixZ_feFooX_fwBar_If[C] { ;; f; }
+class S_TZ_feFooX_fwBar_If[T] extends MixZ_feFooX_fwBar_If[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFooX_fwBarY__[T] extends MixZ_feFooX_fwBarY__[C] { class I;; f; }
+class S_TZ_feFooX_fwBarY__[T] extends MixZ_feFooX_fwBarY__[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_feFooX_fwBarY_f[T] extends MixZ_feFooX_fwBarY_f[C] { class I;; f; }
+class S_TZ_feFooX_fwBarY_f[T] extends MixZ_feFooX_fwBarY_f[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_feFooX_fwBarYI_[T] extends MixZ_feFooX_fwBarYI_[C] { ;; f; }
+class S_TZ_feFooX_fwBarYI_[T] extends MixZ_feFooX_fwBarYI_[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFooX_fwBarYIf[T] extends MixZ_feFooX_fwBarYIf[C] { ;; f; }
+class S_TZ_feFooX_fwBarYIf[T] extends MixZ_feFooX_fwBarYIf[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFooXI_[T] extends MixZ_feFooXI_[C] { ;; f; }
+class S_TZ_feFooXI_[T] extends MixZ_feFooXI_[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFooXI_wBar___[T] extends MixZ_feFooXI_wBar___[C] { ;; f; }
+class S_TZ_feFooXI_wBar___[T] extends MixZ_feFooXI_wBar___[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFooXI_wBar__f[T] extends MixZ_feFooXI_wBar__f[C] { ;; f; }
+class S_TZ_feFooXI_wBar__f[T] extends MixZ_feFooXI_wBar__f[C] {
+  ;; f;
+}
 // */class S_TZ_feFooXI_wBar_I_[T]  extends MixZ_feFooXI_wBar_I_[C]  {        ;                                ; f; }
 // */class S_TZ_feFooXI_wBar_If[T]  extends MixZ_feFooXI_wBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZ_feFooXI_wBarY__[T] extends MixZ_feFooXI_wBarY__[C] { ;; f; }
+class S_TZ_feFooXI_wBarY__[T] extends MixZ_feFooXI_wBarY__[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFooXI_wBarY_f[T] extends MixZ_feFooXI_wBarY_f[C] { ;; f; }
+class S_TZ_feFooXI_wBarY_f[T] extends MixZ_feFooXI_wBarY_f[C] {
+  ;; f;
+}
 // */class S_TZ_feFooXI_wBarYI_[T]  extends MixZ_feFooXI_wBarYI_[C]  {        ;                                ; f; }
 // */class S_TZ_feFooXI_wBarYIf[T]  extends MixZ_feFooXI_wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S_TZ_feFooXIf[T] extends MixZ_feFooXIf[C] { ;; f; }
+class S_TZ_feFooXIf[T] extends MixZ_feFooXIf[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFooXIfwBar___[T] extends MixZ_feFooXIfwBar___[C] { ;; f; }
+class S_TZ_feFooXIfwBar___[T] extends MixZ_feFooXIfwBar___[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFooXIfwBar__f[T] extends MixZ_feFooXIfwBar__f[C] { ;; f; }
+class S_TZ_feFooXIfwBar__f[T] extends MixZ_feFooXIfwBar__f[C] {
+  ;; f;
+}
 // */class S_TZ_feFooXIfwBar_I_[T]  extends MixZ_feFooXIfwBar_I_[C]  {        ;                                ; f; }
 // */class S_TZ_feFooXIfwBar_If[T]  extends MixZ_feFooXIfwBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZ_feFooXIfwBarY__[T] extends MixZ_feFooXIfwBarY__[C] { ;; f; }
+class S_TZ_feFooXIfwBarY__[T] extends MixZ_feFooXIfwBarY__[C] {
+  ;; f;
+}
 /* */
-class S_TZ_feFooXIfwBarY_f[T] extends MixZ_feFooXIfwBarY_f[C] { ;; f; }
+class S_TZ_feFooXIfwBarY_f[T] extends MixZ_feFooXIfwBarY_f[C] {
+  ;; f;
+}
 // */class S_TZ_feFooXIfwBarYI_[T]  extends MixZ_feFooXIfwBarYI_[C]  {        ;                                ; f; }
 // */class S_TZ_feFooXIfwBarYIf[T]  extends MixZ_feFooXIfwBarYIf[C]  {        ;                                ; f; }
 
 /* */
 class S_TZI_eFoo___[T] extends MixZI_eFoo___[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
 class S_TZI_eFoo___wBar___[T] extends MixZI_eFoo___wBar___[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZI_eFoo___wBar__f[T] extends MixZI_eFoo___wBar__f[C] { ;; f; }
+class S_TZI_eFoo___wBar__f[T] extends MixZI_eFoo___wBar__f[C] {
+  ;; f;
+}
 // */class S_TZI_eFoo___wBar_I_[T]  extends MixZI_eFoo___wBar_I_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S_TZI_eFoo___wBar_If[T]  extends MixZI_eFoo___wBar_If[C]  {        ;                                ; f; }
 /* */
 class S_TZI_eFoo___wBarY__[T] extends MixZI_eFoo___wBarY__[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZI_eFoo___wBarY_f[T] extends MixZI_eFoo___wBarY_f[C] { ;; f; }
+class S_TZI_eFoo___wBarY_f[T] extends MixZI_eFoo___wBarY_f[C] {
+  ;; f;
+}
 // */class S_TZI_eFoo___wBarYI_[T]  extends MixZI_eFoo___wBarYI_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S_TZI_eFoo___wBarYIf[T]  extends MixZI_eFoo___wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S_TZI_eFoo__f[T] extends MixZI_eFoo__f[C] { ;; f; }
+class S_TZI_eFoo__f[T] extends MixZI_eFoo__f[C] {
+  ;; f;
+}
 /* */
-class S_TZI_eFoo__fwBar___[T] extends MixZI_eFoo__fwBar___[C] { ;; f; }
+class S_TZI_eFoo__fwBar___[T] extends MixZI_eFoo__fwBar___[C] {
+  ;; f;
+}
 // */class S_TZI_eFoo__fwBar__f[T]  extends MixZI_eFoo__fwBar__f[C]  {        ;                                ; f; }
 // */class S_TZI_eFoo__fwBar_I_[T]  extends MixZI_eFoo__fwBar_I_[C]  {        ;                                ; f; }
 // */class S_TZI_eFoo__fwBar_If[T]  extends MixZI_eFoo__fwBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZI_eFoo__fwBarY__[T] extends MixZI_eFoo__fwBarY__[C] { ;; f; }
+class S_TZI_eFoo__fwBarY__[T] extends MixZI_eFoo__fwBarY__[C] {
+  ;; f;
+}
 // */class S_TZI_eFoo__fwBarY_f[T]  extends MixZI_eFoo__fwBarY_f[C]  {        ;                                ; f; }
 // */class S_TZI_eFoo__fwBarYI_[T]  extends MixZI_eFoo__fwBarYI_[C]  {        ;                                ; f; }
 // */class S_TZI_eFoo__fwBarYIf[T]  extends MixZI_eFoo__fwBarYIf[C]  {        ;                                ; f; }
@@ -5042,33 +8235,52 @@ class S_TZI_eFoo__fwBarY__[T] extends MixZI_eFoo__fwBarY__[C] { ;; f; }
 // */class S_TZI_eFoo_IfwBarYIf[T]  extends MixZI_eFoo_IfwBarYIf[C]  {        ;                                ; f; }
 /* */
 class S_TZI_eFooX__[T] extends MixZI_eFooX__[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
 class S_TZI_eFooX__wBar___[T] extends MixZI_eFooX__wBar___[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZI_eFooX__wBar__f[T] extends MixZI_eFooX__wBar__f[C] { ;; f; }
+class S_TZI_eFooX__wBar__f[T] extends MixZI_eFooX__wBar__f[C] {
+  ;; f;
+}
 // */class S_TZI_eFooX__wBar_I_[T]  extends MixZI_eFooX__wBar_I_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S_TZI_eFooX__wBar_If[T]  extends MixZI_eFooX__wBar_If[C]  {        ;                                ; f; }
 /* */
 class S_TZI_eFooX__wBarY__[T] extends MixZI_eFooX__wBarY__[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZI_eFooX__wBarY_f[T] extends MixZI_eFooX__wBarY_f[C] { ;; f; }
+class S_TZI_eFooX__wBarY_f[T] extends MixZI_eFooX__wBarY_f[C] {
+  ;; f;
+}
 // */class S_TZI_eFooX__wBarYI_[T]  extends MixZI_eFooX__wBarYI_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S_TZI_eFooX__wBarYIf[T]  extends MixZI_eFooX__wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S_TZI_eFooX_f[T] extends MixZI_eFooX_f[C] { ;; f; }
+class S_TZI_eFooX_f[T] extends MixZI_eFooX_f[C] {
+  ;; f;
+}
 /* */
-class S_TZI_eFooX_fwBar___[T] extends MixZI_eFooX_fwBar___[C] { ;; f; }
+class S_TZI_eFooX_fwBar___[T] extends MixZI_eFooX_fwBar___[C] {
+  ;; f;
+}
 // */class S_TZI_eFooX_fwBar__f[T]  extends MixZI_eFooX_fwBar__f[C]  {        ;                                ; f; }
 // */class S_TZI_eFooX_fwBar_I_[T]  extends MixZI_eFooX_fwBar_I_[C]  {        ;                                ; f; }
 // */class S_TZI_eFooX_fwBar_If[T]  extends MixZI_eFooX_fwBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZI_eFooX_fwBarY__[T] extends MixZI_eFooX_fwBarY__[C] { ;; f; }
+class S_TZI_eFooX_fwBarY__[T] extends MixZI_eFooX_fwBarY__[C] {
+  ;; f;
+}
 // */class S_TZI_eFooX_fwBarY_f[T]  extends MixZI_eFooX_fwBarY_f[C]  {        ;                                ; f; }
 // */class S_TZI_eFooX_fwBarYI_[T]  extends MixZI_eFooX_fwBarYI_[C]  {        ;                                ; f; }
 // */class S_TZI_eFooX_fwBarYIf[T]  extends MixZI_eFooX_fwBarYIf[C]  {        ;                                ; f; }
@@ -5092,31 +8304,51 @@ class S_TZI_eFooX_fwBarY__[T] extends MixZI_eFooX_fwBarY__[C] { ;; f; }
 // */class S_TZI_eFooXIfwBarYIf[T]  extends MixZI_eFooXIfwBarYIf[C]  {        ;                                ; f; }
 
 /* */
-class S_TZIfeFoo___[T] extends MixZIfeFoo___[C] { ;; f; }
+class S_TZIfeFoo___[T] extends MixZIfeFoo___[C] {
+  ;; f;
+}
 /* */
-class S_TZIfeFoo___wBar___[T] extends MixZIfeFoo___wBar___[C] { ;; f; }
+class S_TZIfeFoo___wBar___[T] extends MixZIfeFoo___wBar___[C] {
+  ;; f;
+}
 /* */
-class S_TZIfeFoo___wBar__f[T] extends MixZIfeFoo___wBar__f[C] { ;; f; }
+class S_TZIfeFoo___wBar__f[T] extends MixZIfeFoo___wBar__f[C] {
+  ;; f;
+}
 // */class S_TZIfeFoo___wBar_I_[T]  extends MixZIfeFoo___wBar_I_[C]  {        ;                                ; f; }
 // */class S_TZIfeFoo___wBar_If[T]  extends MixZIfeFoo___wBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZIfeFoo___wBarY__[T] extends MixZIfeFoo___wBarY__[C] { ;; f; }
+class S_TZIfeFoo___wBarY__[T] extends MixZIfeFoo___wBarY__[C] {
+  ;; f;
+}
 /* */
-class S_TZIfeFoo___wBarY_f[T] extends MixZIfeFoo___wBarY_f[C] { ;; f; }
+class S_TZIfeFoo___wBarY_f[T] extends MixZIfeFoo___wBarY_f[C] {
+  ;; f;
+}
 // */class S_TZIfeFoo___wBarYI_[T]  extends MixZIfeFoo___wBarYI_[C]  {        ;                                ; f; }
 // */class S_TZIfeFoo___wBarYIf[T]  extends MixZIfeFoo___wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S_TZIfeFoo__f[T] extends MixZIfeFoo__f[C] { ;; f; }
+class S_TZIfeFoo__f[T] extends MixZIfeFoo__f[C] {
+  ;; f;
+}
 /* */
-class S_TZIfeFoo__fwBar___[T] extends MixZIfeFoo__fwBar___[C] { ;; f; }
+class S_TZIfeFoo__fwBar___[T] extends MixZIfeFoo__fwBar___[C] {
+  ;; f;
+}
 /* */
-class S_TZIfeFoo__fwBar__f[T] extends MixZIfeFoo__fwBar__f[C] { ;; f; }
+class S_TZIfeFoo__fwBar__f[T] extends MixZIfeFoo__fwBar__f[C] {
+  ;; f;
+}
 // */class S_TZIfeFoo__fwBar_I_[T]  extends MixZIfeFoo__fwBar_I_[C]  {        ;                                ; f; }
 // */class S_TZIfeFoo__fwBar_If[T]  extends MixZIfeFoo__fwBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZIfeFoo__fwBarY__[T] extends MixZIfeFoo__fwBarY__[C] { ;; f; }
+class S_TZIfeFoo__fwBarY__[T] extends MixZIfeFoo__fwBarY__[C] {
+  ;; f;
+}
 /* */
-class S_TZIfeFoo__fwBarY_f[T] extends MixZIfeFoo__fwBarY_f[C] { ;; f; }
+class S_TZIfeFoo__fwBarY_f[T] extends MixZIfeFoo__fwBarY_f[C] {
+  ;; f;
+}
 // */class S_TZIfeFoo__fwBarYI_[T]  extends MixZIfeFoo__fwBarYI_[C]  {        ;                                ; f; }
 // */class S_TZIfeFoo__fwBarYIf[T]  extends MixZIfeFoo__fwBarYIf[C]  {        ;                                ; f; }
 // */class S_TZIfeFoo_I_       [T]  extends MixZIfeFoo_I_       [C]  {        ;                                ; f; }
@@ -5138,31 +8370,51 @@ class S_TZIfeFoo__fwBarY_f[T] extends MixZIfeFoo__fwBarY_f[C] { ;; f; }
 // */class S_TZIfeFoo_IfwBarYI_[T]  extends MixZIfeFoo_IfwBarYI_[C]  {        ;                                ; f; }
 // */class S_TZIfeFoo_IfwBarYIf[T]  extends MixZIfeFoo_IfwBarYIf[C]  {        ;                                ; f; }
 /* */
-class S_TZIfeFooX__[T] extends MixZIfeFooX__[C] { ;; f; }
+class S_TZIfeFooX__[T] extends MixZIfeFooX__[C] {
+  ;; f;
+}
 /* */
-class S_TZIfeFooX__wBar___[T] extends MixZIfeFooX__wBar___[C] { ;; f; }
+class S_TZIfeFooX__wBar___[T] extends MixZIfeFooX__wBar___[C] {
+  ;; f;
+}
 /* */
-class S_TZIfeFooX__wBar__f[T] extends MixZIfeFooX__wBar__f[C] { ;; f; }
+class S_TZIfeFooX__wBar__f[T] extends MixZIfeFooX__wBar__f[C] {
+  ;; f;
+}
 // */class S_TZIfeFooX__wBar_I_[T]  extends MixZIfeFooX__wBar_I_[C]  {        ;                                ; f; }
 // */class S_TZIfeFooX__wBar_If[T]  extends MixZIfeFooX__wBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZIfeFooX__wBarY__[T] extends MixZIfeFooX__wBarY__[C] { ;; f; }
+class S_TZIfeFooX__wBarY__[T] extends MixZIfeFooX__wBarY__[C] {
+  ;; f;
+}
 /* */
-class S_TZIfeFooX__wBarY_f[T] extends MixZIfeFooX__wBarY_f[C] { ;; f; }
+class S_TZIfeFooX__wBarY_f[T] extends MixZIfeFooX__wBarY_f[C] {
+  ;; f;
+}
 // */class S_TZIfeFooX__wBarYI_[T]  extends MixZIfeFooX__wBarYI_[C]  {        ;                                ; f; }
 // */class S_TZIfeFooX__wBarYIf[T]  extends MixZIfeFooX__wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S_TZIfeFooX_f[T] extends MixZIfeFooX_f[C] { ;; f; }
+class S_TZIfeFooX_f[T] extends MixZIfeFooX_f[C] {
+  ;; f;
+}
 /* */
-class S_TZIfeFooX_fwBar___[T] extends MixZIfeFooX_fwBar___[C] { ;; f; }
+class S_TZIfeFooX_fwBar___[T] extends MixZIfeFooX_fwBar___[C] {
+  ;; f;
+}
 /* */
-class S_TZIfeFooX_fwBar__f[T] extends MixZIfeFooX_fwBar__f[C] { ;; f; }
+class S_TZIfeFooX_fwBar__f[T] extends MixZIfeFooX_fwBar__f[C] {
+  ;; f;
+}
 // */class S_TZIfeFooX_fwBar_I_[T]  extends MixZIfeFooX_fwBar_I_[C]  {        ;                                ; f; }
 // */class S_TZIfeFooX_fwBar_If[T]  extends MixZIfeFooX_fwBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZIfeFooX_fwBarY__[T] extends MixZIfeFooX_fwBarY__[C] { ;; f; }
+class S_TZIfeFooX_fwBarY__[T] extends MixZIfeFooX_fwBarY__[C] {
+  ;; f;
+}
 /* */
-class S_TZIfeFooX_fwBarY_f[T] extends MixZIfeFooX_fwBarY_f[C] { ;; f; }
+class S_TZIfeFooX_fwBarY_f[T] extends MixZIfeFooX_fwBarY_f[C] {
+  ;; f;
+}
 // */class S_TZIfeFooX_fwBarYI_[T]  extends MixZIfeFooX_fwBarYI_[C]  {        ;                                ; f; }
 // */class S_TZIfeFooX_fwBarYIf[T]  extends MixZIfeFooX_fwBarYIf[C]  {        ;                                ; f; }
 // */class S_TZIfeFooXI_       [T]  extends MixZIfeFooXI_       [C]  {        ;                                ; f; }
@@ -5186,305 +8438,546 @@ class S_TZIfeFooX_fwBarY_f[T] extends MixZIfeFooX_fwBarY_f[C] { ;; f; }
 
 /* */
 class S_T___wFoo___[T] extends Mix___wFoo___ {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
 class S_T___wFoo___wBar___[T] extends Mix___wFoo___wBar___ {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T___wFoo___wBar__f[T] extends Mix___wFoo___wBar__f { class I;; f; }
+class S_T___wFoo___wBar__f[T] extends Mix___wFoo___wBar__f {
+  class I;; f;
+}
 /* */
 class S_T___wFoo___wBar_I_[T] extends Mix___wFoo___wBar_I_ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T___wFoo___wBar_If[T] extends Mix___wFoo___wBar_If { ;; f; }
+class S_T___wFoo___wBar_If[T] extends Mix___wFoo___wBar_If {
+  ;; f;
+}
 /* */
 class S_T___wFoo___wBarY__[T] extends Mix___wFoo___wBarY__ {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T___wFoo___wBarY_f[T] extends Mix___wFoo___wBarY_f { class I;; f; }
+class S_T___wFoo___wBarY_f[T] extends Mix___wFoo___wBarY_f {
+  class I;; f;
+}
 /* */
 class S_T___wFoo___wBarYI_[T] extends Mix___wFoo___wBarYI_ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T___wFoo___wBarYIf[T] extends Mix___wFoo___wBarYIf { ;; f; }
+class S_T___wFoo___wBarYIf[T] extends Mix___wFoo___wBarYIf {
+  ;; f;
+}
 /* */
-class S_T___wFoo__f[T] extends Mix___wFoo__f { class I;; f; }
+class S_T___wFoo__f[T] extends Mix___wFoo__f {
+  class I;; f;
+}
 /* */
-class S_T___wFoo__fwBar___[T] extends Mix___wFoo__fwBar___ { class I;; f; }
+class S_T___wFoo__fwBar___[T] extends Mix___wFoo__fwBar___ {
+  class I;; f;
+}
 // */class S_T___wFoo__fwBar__f[T]  extends Mix___wFoo__fwBar__f     { class I;                                ; f; }
 /* */
-class S_T___wFoo__fwBar_I_[T] extends Mix___wFoo__fwBar_I_ { ;; f; }
+class S_T___wFoo__fwBar_I_[T] extends Mix___wFoo__fwBar_I_ {
+  ;; f;
+}
 // */class S_T___wFoo__fwBar_If[T]  extends Mix___wFoo__fwBar_If     {        ;                                ; f; }
 /* */
-class S_T___wFoo__fwBarY__[T] extends Mix___wFoo__fwBarY__ { class I;; f; }
+class S_T___wFoo__fwBarY__[T] extends Mix___wFoo__fwBarY__ {
+  class I;; f;
+}
 // */class S_T___wFoo__fwBarY_f[T]  extends Mix___wFoo__fwBarY_f     { class I;                                ; f; }
 /* */
-class S_T___wFoo__fwBarYI_[T] extends Mix___wFoo__fwBarYI_ { ;; f; }
+class S_T___wFoo__fwBarYI_[T] extends Mix___wFoo__fwBarYI_ {
+  ;; f;
+}
 // */class S_T___wFoo__fwBarYIf[T]  extends Mix___wFoo__fwBarYIf     {        ;                                ; f; }
 /* */
-class S_T___wFoo_I_[T] extends Mix___wFoo_I_ { ; def f: I = { sub; null }; f; }
-/* */
-class S_T___wFoo_I_wBar___[T] extends Mix___wFoo_I_wBar___ {
-  ; def f: I = { sub; null }; f;
+class S_T___wFoo_I_[T] extends Mix___wFoo_I_ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T___wFoo_I_wBar__f[T] extends Mix___wFoo_I_wBar__f { ;; f; }
+class S_T___wFoo_I_wBar___[T] extends Mix___wFoo_I_wBar___ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
+}
+/* */
+class S_T___wFoo_I_wBar__f[T] extends Mix___wFoo_I_wBar__f {
+  ;; f;
+}
 // */class S_T___wFoo_I_wBar_I_[T]  extends Mix___wFoo_I_wBar_I_     {        ;          def f: I = {sub; null}; f; }
 // */class S_T___wFoo_I_wBar_If[T]  extends Mix___wFoo_I_wBar_If     {        ;                                ; f; }
 /* */
 class S_T___wFoo_I_wBarY__[T] extends Mix___wFoo_I_wBarY__ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T___wFoo_I_wBarY_f[T] extends Mix___wFoo_I_wBarY_f { ;; f; }
+class S_T___wFoo_I_wBarY_f[T] extends Mix___wFoo_I_wBarY_f {
+  ;; f;
+}
 // */class S_T___wFoo_I_wBarYI_[T]  extends Mix___wFoo_I_wBarYI_     {        ;          def f: I = {sub; null}; f; }
 // */class S_T___wFoo_I_wBarYIf[T]  extends Mix___wFoo_I_wBarYIf     {        ;                                ; f; }
 /* */
-class S_T___wFoo_If[T] extends Mix___wFoo_If { ;; f; }
+class S_T___wFoo_If[T] extends Mix___wFoo_If {
+  ;; f;
+}
 /* */
-class S_T___wFoo_IfwBar___[T] extends Mix___wFoo_IfwBar___ { ;; f; }
+class S_T___wFoo_IfwBar___[T] extends Mix___wFoo_IfwBar___ {
+  ;; f;
+}
 // */class S_T___wFoo_IfwBar__f[T]  extends Mix___wFoo_IfwBar__f     {        ;                                ; f; }
 // */class S_T___wFoo_IfwBar_I_[T]  extends Mix___wFoo_IfwBar_I_     {        ;                                ; f; }
 // */class S_T___wFoo_IfwBar_If[T]  extends Mix___wFoo_IfwBar_If     {        ;                                ; f; }
 /* */
-class S_T___wFoo_IfwBarY__[T] extends Mix___wFoo_IfwBarY__ { ;; f; }
+class S_T___wFoo_IfwBarY__[T] extends Mix___wFoo_IfwBarY__ {
+  ;; f;
+}
 // */class S_T___wFoo_IfwBarY_f[T]  extends Mix___wFoo_IfwBarY_f     {        ;                                ; f; }
 // */class S_T___wFoo_IfwBarYI_[T]  extends Mix___wFoo_IfwBarYI_     {        ;                                ; f; }
 // */class S_T___wFoo_IfwBarYIf[T]  extends Mix___wFoo_IfwBarYIf     {        ;                                ; f; }
 /* */
 class S_T___wFooX__[T] extends Mix___wFooX__ {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
 class S_T___wFooX__wBar___[T] extends Mix___wFooX__wBar___ {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T___wFooX__wBar__f[T] extends Mix___wFooX__wBar__f { class I;; f; }
+class S_T___wFooX__wBar__f[T] extends Mix___wFooX__wBar__f {
+  class I;; f;
+}
 /* */
 class S_T___wFooX__wBar_I_[T] extends Mix___wFooX__wBar_I_ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T___wFooX__wBar_If[T] extends Mix___wFooX__wBar_If { ;; f; }
+class S_T___wFooX__wBar_If[T] extends Mix___wFooX__wBar_If {
+  ;; f;
+}
 /* */
 class S_T___wFooX__wBarY__[T] extends Mix___wFooX__wBarY__ {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T___wFooX__wBarY_f[T] extends Mix___wFooX__wBarY_f { class I;; f; }
+class S_T___wFooX__wBarY_f[T] extends Mix___wFooX__wBarY_f {
+  class I;; f;
+}
 /* */
 class S_T___wFooX__wBarYI_[T] extends Mix___wFooX__wBarYI_ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T___wFooX__wBarYIf[T] extends Mix___wFooX__wBarYIf { ;; f; }
+class S_T___wFooX__wBarYIf[T] extends Mix___wFooX__wBarYIf {
+  ;; f;
+}
 /* */
-class S_T___wFooX_f[T] extends Mix___wFooX_f { class I;; f; }
+class S_T___wFooX_f[T] extends Mix___wFooX_f {
+  class I;; f;
+}
 /* */
-class S_T___wFooX_fwBar___[T] extends Mix___wFooX_fwBar___ { class I;; f; }
+class S_T___wFooX_fwBar___[T] extends Mix___wFooX_fwBar___ {
+  class I;; f;
+}
 // */class S_T___wFooX_fwBar__f[T]  extends Mix___wFooX_fwBar__f     { class I;                                ; f; }
 /* */
-class S_T___wFooX_fwBar_I_[T] extends Mix___wFooX_fwBar_I_ { ;; f; }
+class S_T___wFooX_fwBar_I_[T] extends Mix___wFooX_fwBar_I_ {
+  ;; f;
+}
 // */class S_T___wFooX_fwBar_If[T]  extends Mix___wFooX_fwBar_If     {        ;                                ; f; }
 /* */
-class S_T___wFooX_fwBarY__[T] extends Mix___wFooX_fwBarY__ { class I;; f; }
+class S_T___wFooX_fwBarY__[T] extends Mix___wFooX_fwBarY__ {
+  class I;; f;
+}
 // */class S_T___wFooX_fwBarY_f[T]  extends Mix___wFooX_fwBarY_f     { class I;                                ; f; }
 /* */
-class S_T___wFooX_fwBarYI_[T] extends Mix___wFooX_fwBarYI_ { ;; f; }
+class S_T___wFooX_fwBarYI_[T] extends Mix___wFooX_fwBarYI_ {
+  ;; f;
+}
 // */class S_T___wFooX_fwBarYIf[T]  extends Mix___wFooX_fwBarYIf     {        ;                                ; f; }
 /* */
-class S_T___wFooXI_[T] extends Mix___wFooXI_ { ; def f: I = { sub; null }; f; }
-/* */
-class S_T___wFooXI_wBar___[T] extends Mix___wFooXI_wBar___ {
-  ; def f: I = { sub; null }; f;
+class S_T___wFooXI_[T] extends Mix___wFooXI_ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T___wFooXI_wBar__f[T] extends Mix___wFooXI_wBar__f { ;; f; }
+class S_T___wFooXI_wBar___[T] extends Mix___wFooXI_wBar___ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
+}
+/* */
+class S_T___wFooXI_wBar__f[T] extends Mix___wFooXI_wBar__f {
+  ;; f;
+}
 // */class S_T___wFooXI_wBar_I_[T]  extends Mix___wFooXI_wBar_I_     {        ;          def f: I = {sub; null}; f; }
 // */class S_T___wFooXI_wBar_If[T]  extends Mix___wFooXI_wBar_If     {        ;                                ; f; }
 /* */
 class S_T___wFooXI_wBarY__[T] extends Mix___wFooXI_wBarY__ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T___wFooXI_wBarY_f[T] extends Mix___wFooXI_wBarY_f { ;; f; }
+class S_T___wFooXI_wBarY_f[T] extends Mix___wFooXI_wBarY_f {
+  ;; f;
+}
 // */class S_T___wFooXI_wBarYI_[T]  extends Mix___wFooXI_wBarYI_     {        ;          def f: I = {sub; null}; f; }
 // */class S_T___wFooXI_wBarYIf[T]  extends Mix___wFooXI_wBarYIf     {        ;                                ; f; }
 /* */
-class S_T___wFooXIf[T] extends Mix___wFooXIf { ;; f; }
+class S_T___wFooXIf[T] extends Mix___wFooXIf {
+  ;; f;
+}
 /* */
-class S_T___wFooXIfwBar___[T] extends Mix___wFooXIfwBar___ { ;; f; }
+class S_T___wFooXIfwBar___[T] extends Mix___wFooXIfwBar___ {
+  ;; f;
+}
 // */class S_T___wFooXIfwBar__f[T]  extends Mix___wFooXIfwBar__f     {        ;                                ; f; }
 // */class S_T___wFooXIfwBar_I_[T]  extends Mix___wFooXIfwBar_I_     {        ;                                ; f; }
 // */class S_T___wFooXIfwBar_If[T]  extends Mix___wFooXIfwBar_If     {        ;                                ; f; }
 /* */
-class S_T___wFooXIfwBarY__[T] extends Mix___wFooXIfwBarY__ { ;; f; }
+class S_T___wFooXIfwBarY__[T] extends Mix___wFooXIfwBarY__ {
+  ;; f;
+}
 // */class S_T___wFooXIfwBarY_f[T]  extends Mix___wFooXIfwBarY_f     {        ;                                ; f; }
 // */class S_T___wFooXIfwBarYI_[T]  extends Mix___wFooXIfwBarYI_     {        ;                                ; f; }
 // */class S_T___wFooXIfwBarYIf[T]  extends Mix___wFooXIfwBarYIf     {        ;                                ; f; }
 
 /* */
-class S_T__fwFoo___[T] extends Mix__fwFoo___ { class I;; f; }
+class S_T__fwFoo___[T] extends Mix__fwFoo___ {
+  class I;; f;
+}
 /* */
-class S_T__fwFoo___wBar___[T] extends Mix__fwFoo___wBar___ { class I;; f; }
+class S_T__fwFoo___wBar___[T] extends Mix__fwFoo___wBar___ {
+  class I;; f;
+}
 /* */
-class S_T__fwFoo___wBar__f[T] extends Mix__fwFoo___wBar__f { class I;; f; }
+class S_T__fwFoo___wBar__f[T] extends Mix__fwFoo___wBar__f {
+  class I;; f;
+}
 /* */
-class S_T__fwFoo___wBar_I_[T] extends Mix__fwFoo___wBar_I_ { ;; f; }
+class S_T__fwFoo___wBar_I_[T] extends Mix__fwFoo___wBar_I_ {
+  ;; f;
+}
 /* */
-class S_T__fwFoo___wBar_If[T] extends Mix__fwFoo___wBar_If { ;; f; }
+class S_T__fwFoo___wBar_If[T] extends Mix__fwFoo___wBar_If {
+  ;; f;
+}
 /* */
-class S_T__fwFoo___wBarY__[T] extends Mix__fwFoo___wBarY__ { class I;; f; }
+class S_T__fwFoo___wBarY__[T] extends Mix__fwFoo___wBarY__ {
+  class I;; f;
+}
 /* */
-class S_T__fwFoo___wBarY_f[T] extends Mix__fwFoo___wBarY_f { class I;; f; }
+class S_T__fwFoo___wBarY_f[T] extends Mix__fwFoo___wBarY_f {
+  class I;; f;
+}
 /* */
-class S_T__fwFoo___wBarYI_[T] extends Mix__fwFoo___wBarYI_ { ;; f; }
+class S_T__fwFoo___wBarYI_[T] extends Mix__fwFoo___wBarYI_ {
+  ;; f;
+}
 /* */
-class S_T__fwFoo___wBarYIf[T] extends Mix__fwFoo___wBarYIf { ;; f; }
+class S_T__fwFoo___wBarYIf[T] extends Mix__fwFoo___wBarYIf {
+  ;; f;
+}
 /* */
-class S_T__fwFoo__f[T] extends Mix__fwFoo__f { class I;; f; }
+class S_T__fwFoo__f[T] extends Mix__fwFoo__f {
+  class I;; f;
+}
 /* */
-class S_T__fwFoo__fwBar___[T] extends Mix__fwFoo__fwBar___ { class I;; f; }
+class S_T__fwFoo__fwBar___[T] extends Mix__fwFoo__fwBar___ {
+  class I;; f;
+}
 /* */
-class S_T__fwFoo__fwBar__f[T] extends Mix__fwFoo__fwBar__f { class I;; f; }
+class S_T__fwFoo__fwBar__f[T] extends Mix__fwFoo__fwBar__f {
+  class I;; f;
+}
 /* */
-class S_T__fwFoo__fwBar_I_[T] extends Mix__fwFoo__fwBar_I_ { ;; f; }
+class S_T__fwFoo__fwBar_I_[T] extends Mix__fwFoo__fwBar_I_ {
+  ;; f;
+}
 /* */
-class S_T__fwFoo__fwBar_If[T] extends Mix__fwFoo__fwBar_If { ;; f; }
+class S_T__fwFoo__fwBar_If[T] extends Mix__fwFoo__fwBar_If {
+  ;; f;
+}
 /* */
-class S_T__fwFoo__fwBarY__[T] extends Mix__fwFoo__fwBarY__ { class I;; f; }
+class S_T__fwFoo__fwBarY__[T] extends Mix__fwFoo__fwBarY__ {
+  class I;; f;
+}
 /* */
-class S_T__fwFoo__fwBarY_f[T] extends Mix__fwFoo__fwBarY_f { class I;; f; }
+class S_T__fwFoo__fwBarY_f[T] extends Mix__fwFoo__fwBarY_f {
+  class I;; f;
+}
 /* */
-class S_T__fwFoo__fwBarYI_[T] extends Mix__fwFoo__fwBarYI_ { ;; f; }
+class S_T__fwFoo__fwBarYI_[T] extends Mix__fwFoo__fwBarYI_ {
+  ;; f;
+}
 /* */
-class S_T__fwFoo__fwBarYIf[T] extends Mix__fwFoo__fwBarYIf { ;; f; }
+class S_T__fwFoo__fwBarYIf[T] extends Mix__fwFoo__fwBarYIf {
+  ;; f;
+}
 /* */
-class S_T__fwFoo_I_[T] extends Mix__fwFoo_I_ { ;; f; }
+class S_T__fwFoo_I_[T] extends Mix__fwFoo_I_ {
+  ;; f;
+}
 /* */
-class S_T__fwFoo_I_wBar___[T] extends Mix__fwFoo_I_wBar___ { ;; f; }
+class S_T__fwFoo_I_wBar___[T] extends Mix__fwFoo_I_wBar___ {
+  ;; f;
+}
 /* */
-class S_T__fwFoo_I_wBar__f[T] extends Mix__fwFoo_I_wBar__f { ;; f; }
+class S_T__fwFoo_I_wBar__f[T] extends Mix__fwFoo_I_wBar__f {
+  ;; f;
+}
 // */class S_T__fwFoo_I_wBar_I_[T]  extends Mix__fwFoo_I_wBar_I_     {        ;                                ; f; }
 // */class S_T__fwFoo_I_wBar_If[T]  extends Mix__fwFoo_I_wBar_If     {        ;                                ; f; }
 /* */
-class S_T__fwFoo_I_wBarY__[T] extends Mix__fwFoo_I_wBarY__ { ;; f; }
+class S_T__fwFoo_I_wBarY__[T] extends Mix__fwFoo_I_wBarY__ {
+  ;; f;
+}
 /* */
-class S_T__fwFoo_I_wBarY_f[T] extends Mix__fwFoo_I_wBarY_f { ;; f; }
+class S_T__fwFoo_I_wBarY_f[T] extends Mix__fwFoo_I_wBarY_f {
+  ;; f;
+}
 // */class S_T__fwFoo_I_wBarYI_[T]  extends Mix__fwFoo_I_wBarYI_     {        ;                                ; f; }
 // */class S_T__fwFoo_I_wBarYIf[T]  extends Mix__fwFoo_I_wBarYIf     {        ;                                ; f; }
 /* */
-class S_T__fwFoo_If[T] extends Mix__fwFoo_If { ;; f; }
+class S_T__fwFoo_If[T] extends Mix__fwFoo_If {
+  ;; f;
+}
 /* */
-class S_T__fwFoo_IfwBar___[T] extends Mix__fwFoo_IfwBar___ { ;; f; }
+class S_T__fwFoo_IfwBar___[T] extends Mix__fwFoo_IfwBar___ {
+  ;; f;
+}
 /* */
-class S_T__fwFoo_IfwBar__f[T] extends Mix__fwFoo_IfwBar__f { ;; f; }
+class S_T__fwFoo_IfwBar__f[T] extends Mix__fwFoo_IfwBar__f {
+  ;; f;
+}
 // */class S_T__fwFoo_IfwBar_I_[T]  extends Mix__fwFoo_IfwBar_I_     {        ;                                ; f; }
 // */class S_T__fwFoo_IfwBar_If[T]  extends Mix__fwFoo_IfwBar_If     {        ;                                ; f; }
 /* */
-class S_T__fwFoo_IfwBarY__[T] extends Mix__fwFoo_IfwBarY__ { ;; f; }
+class S_T__fwFoo_IfwBarY__[T] extends Mix__fwFoo_IfwBarY__ {
+  ;; f;
+}
 /* */
-class S_T__fwFoo_IfwBarY_f[T] extends Mix__fwFoo_IfwBarY_f { ;; f; }
+class S_T__fwFoo_IfwBarY_f[T] extends Mix__fwFoo_IfwBarY_f {
+  ;; f;
+}
 // */class S_T__fwFoo_IfwBarYI_[T]  extends Mix__fwFoo_IfwBarYI_     {        ;                                ; f; }
 // */class S_T__fwFoo_IfwBarYIf[T]  extends Mix__fwFoo_IfwBarYIf     {        ;                                ; f; }
 /* */
-class S_T__fwFooX__[T] extends Mix__fwFooX__ { class I;; f; }
+class S_T__fwFooX__[T] extends Mix__fwFooX__ {
+  class I;; f;
+}
 /* */
-class S_T__fwFooX__wBar___[T] extends Mix__fwFooX__wBar___ { class I;; f; }
+class S_T__fwFooX__wBar___[T] extends Mix__fwFooX__wBar___ {
+  class I;; f;
+}
 /* */
-class S_T__fwFooX__wBar__f[T] extends Mix__fwFooX__wBar__f { class I;; f; }
+class S_T__fwFooX__wBar__f[T] extends Mix__fwFooX__wBar__f {
+  class I;; f;
+}
 /* */
-class S_T__fwFooX__wBar_I_[T] extends Mix__fwFooX__wBar_I_ { ;; f; }
+class S_T__fwFooX__wBar_I_[T] extends Mix__fwFooX__wBar_I_ {
+  ;; f;
+}
 /* */
-class S_T__fwFooX__wBar_If[T] extends Mix__fwFooX__wBar_If { ;; f; }
+class S_T__fwFooX__wBar_If[T] extends Mix__fwFooX__wBar_If {
+  ;; f;
+}
 /* */
-class S_T__fwFooX__wBarY__[T] extends Mix__fwFooX__wBarY__ { class I;; f; }
+class S_T__fwFooX__wBarY__[T] extends Mix__fwFooX__wBarY__ {
+  class I;; f;
+}
 /* */
-class S_T__fwFooX__wBarY_f[T] extends Mix__fwFooX__wBarY_f { class I;; f; }
+class S_T__fwFooX__wBarY_f[T] extends Mix__fwFooX__wBarY_f {
+  class I;; f;
+}
 /* */
-class S_T__fwFooX__wBarYI_[T] extends Mix__fwFooX__wBarYI_ { ;; f; }
+class S_T__fwFooX__wBarYI_[T] extends Mix__fwFooX__wBarYI_ {
+  ;; f;
+}
 /* */
-class S_T__fwFooX__wBarYIf[T] extends Mix__fwFooX__wBarYIf { ;; f; }
+class S_T__fwFooX__wBarYIf[T] extends Mix__fwFooX__wBarYIf {
+  ;; f;
+}
 /* */
-class S_T__fwFooX_f[T] extends Mix__fwFooX_f { class I;; f; }
+class S_T__fwFooX_f[T] extends Mix__fwFooX_f {
+  class I;; f;
+}
 /* */
-class S_T__fwFooX_fwBar___[T] extends Mix__fwFooX_fwBar___ { class I;; f; }
+class S_T__fwFooX_fwBar___[T] extends Mix__fwFooX_fwBar___ {
+  class I;; f;
+}
 /* */
-class S_T__fwFooX_fwBar__f[T] extends Mix__fwFooX_fwBar__f { class I;; f; }
+class S_T__fwFooX_fwBar__f[T] extends Mix__fwFooX_fwBar__f {
+  class I;; f;
+}
 /* */
-class S_T__fwFooX_fwBar_I_[T] extends Mix__fwFooX_fwBar_I_ { ;; f; }
+class S_T__fwFooX_fwBar_I_[T] extends Mix__fwFooX_fwBar_I_ {
+  ;; f;
+}
 /* */
-class S_T__fwFooX_fwBar_If[T] extends Mix__fwFooX_fwBar_If { ;; f; }
+class S_T__fwFooX_fwBar_If[T] extends Mix__fwFooX_fwBar_If {
+  ;; f;
+}
 /* */
-class S_T__fwFooX_fwBarY__[T] extends Mix__fwFooX_fwBarY__ { class I;; f; }
+class S_T__fwFooX_fwBarY__[T] extends Mix__fwFooX_fwBarY__ {
+  class I;; f;
+}
 /* */
-class S_T__fwFooX_fwBarY_f[T] extends Mix__fwFooX_fwBarY_f { class I;; f; }
+class S_T__fwFooX_fwBarY_f[T] extends Mix__fwFooX_fwBarY_f {
+  class I;; f;
+}
 /* */
-class S_T__fwFooX_fwBarYI_[T] extends Mix__fwFooX_fwBarYI_ { ;; f; }
+class S_T__fwFooX_fwBarYI_[T] extends Mix__fwFooX_fwBarYI_ {
+  ;; f;
+}
 /* */
-class S_T__fwFooX_fwBarYIf[T] extends Mix__fwFooX_fwBarYIf { ;; f; }
+class S_T__fwFooX_fwBarYIf[T] extends Mix__fwFooX_fwBarYIf {
+  ;; f;
+}
 /* */
-class S_T__fwFooXI_[T] extends Mix__fwFooXI_ { ;; f; }
+class S_T__fwFooXI_[T] extends Mix__fwFooXI_ {
+  ;; f;
+}
 /* */
-class S_T__fwFooXI_wBar___[T] extends Mix__fwFooXI_wBar___ { ;; f; }
+class S_T__fwFooXI_wBar___[T] extends Mix__fwFooXI_wBar___ {
+  ;; f;
+}
 /* */
-class S_T__fwFooXI_wBar__f[T] extends Mix__fwFooXI_wBar__f { ;; f; }
+class S_T__fwFooXI_wBar__f[T] extends Mix__fwFooXI_wBar__f {
+  ;; f;
+}
 // */class S_T__fwFooXI_wBar_I_[T]  extends Mix__fwFooXI_wBar_I_     {        ;                                ; f; }
 // */class S_T__fwFooXI_wBar_If[T]  extends Mix__fwFooXI_wBar_If     {        ;                                ; f; }
 /* */
-class S_T__fwFooXI_wBarY__[T] extends Mix__fwFooXI_wBarY__ { ;; f; }
+class S_T__fwFooXI_wBarY__[T] extends Mix__fwFooXI_wBarY__ {
+  ;; f;
+}
 /* */
-class S_T__fwFooXI_wBarY_f[T] extends Mix__fwFooXI_wBarY_f { ;; f; }
+class S_T__fwFooXI_wBarY_f[T] extends Mix__fwFooXI_wBarY_f {
+  ;; f;
+}
 // */class S_T__fwFooXI_wBarYI_[T]  extends Mix__fwFooXI_wBarYI_     {        ;                                ; f; }
 // */class S_T__fwFooXI_wBarYIf[T]  extends Mix__fwFooXI_wBarYIf     {        ;                                ; f; }
 /* */
-class S_T__fwFooXIf[T] extends Mix__fwFooXIf { ;; f; }
+class S_T__fwFooXIf[T] extends Mix__fwFooXIf {
+  ;; f;
+}
 /* */
-class S_T__fwFooXIfwBar___[T] extends Mix__fwFooXIfwBar___ { ;; f; }
+class S_T__fwFooXIfwBar___[T] extends Mix__fwFooXIfwBar___ {
+  ;; f;
+}
 /* */
-class S_T__fwFooXIfwBar__f[T] extends Mix__fwFooXIfwBar__f { ;; f; }
+class S_T__fwFooXIfwBar__f[T] extends Mix__fwFooXIfwBar__f {
+  ;; f;
+}
 // */class S_T__fwFooXIfwBar_I_[T]  extends Mix__fwFooXIfwBar_I_     {        ;                                ; f; }
 // */class S_T__fwFooXIfwBar_If[T]  extends Mix__fwFooXIfwBar_If     {        ;                                ; f; }
 /* */
-class S_T__fwFooXIfwBarY__[T] extends Mix__fwFooXIfwBarY__ { ;; f; }
+class S_T__fwFooXIfwBarY__[T] extends Mix__fwFooXIfwBarY__ {
+  ;; f;
+}
 /* */
-class S_T__fwFooXIfwBarY_f[T] extends Mix__fwFooXIfwBarY_f { ;; f; }
+class S_T__fwFooXIfwBarY_f[T] extends Mix__fwFooXIfwBarY_f {
+  ;; f;
+}
 // */class S_T__fwFooXIfwBarYI_[T]  extends Mix__fwFooXIfwBarYI_     {        ;                                ; f; }
 // */class S_T__fwFooXIfwBarYIf[T]  extends Mix__fwFooXIfwBarYIf     {        ;                                ; f; }
 
 /* */
-class S_T_I_wFoo___[T] extends Mix_I_wFoo___ { ; def f: I = { sub; null }; f; }
-/* */
-class S_T_I_wFoo___wBar___[T] extends Mix_I_wFoo___wBar___ {
-  ; def f: I = { sub; null }; f;
+class S_T_I_wFoo___[T] extends Mix_I_wFoo___ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T_I_wFoo___wBar__f[T] extends Mix_I_wFoo___wBar__f { ;; f; }
+class S_T_I_wFoo___wBar___[T] extends Mix_I_wFoo___wBar___ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
+}
+/* */
+class S_T_I_wFoo___wBar__f[T] extends Mix_I_wFoo___wBar__f {
+  ;; f;
+}
 // */class S_T_I_wFoo___wBar_I_[T]  extends Mix_I_wFoo___wBar_I_     {        ;          def f: I = {sub; null}; f; }
 // */class S_T_I_wFoo___wBar_If[T]  extends Mix_I_wFoo___wBar_If     {        ;                                ; f; }
 /* */
 class S_T_I_wFoo___wBarY__[T] extends Mix_I_wFoo___wBarY__ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T_I_wFoo___wBarY_f[T] extends Mix_I_wFoo___wBarY_f { ;; f; }
+class S_T_I_wFoo___wBarY_f[T] extends Mix_I_wFoo___wBarY_f {
+  ;; f;
+}
 // */class S_T_I_wFoo___wBarYI_[T]  extends Mix_I_wFoo___wBarYI_     {        ;          def f: I = {sub; null}; f; }
 // */class S_T_I_wFoo___wBarYIf[T]  extends Mix_I_wFoo___wBarYIf     {        ;                                ; f; }
 /* */
-class S_T_I_wFoo__f[T] extends Mix_I_wFoo__f { ;; f; }
+class S_T_I_wFoo__f[T] extends Mix_I_wFoo__f {
+  ;; f;
+}
 /* */
-class S_T_I_wFoo__fwBar___[T] extends Mix_I_wFoo__fwBar___ { ;; f; }
+class S_T_I_wFoo__fwBar___[T] extends Mix_I_wFoo__fwBar___ {
+  ;; f;
+}
 // */class S_T_I_wFoo__fwBar__f[T]  extends Mix_I_wFoo__fwBar__f     {        ;                                ; f; }
 // */class S_T_I_wFoo__fwBar_I_[T]  extends Mix_I_wFoo__fwBar_I_     {        ;                                ; f; }
 // */class S_T_I_wFoo__fwBar_If[T]  extends Mix_I_wFoo__fwBar_If     {        ;                                ; f; }
 /* */
-class S_T_I_wFoo__fwBarY__[T] extends Mix_I_wFoo__fwBarY__ { ;; f; }
+class S_T_I_wFoo__fwBarY__[T] extends Mix_I_wFoo__fwBarY__ {
+  ;; f;
+}
 // */class S_T_I_wFoo__fwBarY_f[T]  extends Mix_I_wFoo__fwBarY_f     {        ;                                ; f; }
 // */class S_T_I_wFoo__fwBarYI_[T]  extends Mix_I_wFoo__fwBarYI_     {        ;                                ; f; }
 // */class S_T_I_wFoo__fwBarYIf[T]  extends Mix_I_wFoo__fwBarYIf     {        ;                                ; f; }
@@ -5507,32 +9000,53 @@ class S_T_I_wFoo__fwBarY__[T] extends Mix_I_wFoo__fwBarY__ { ;; f; }
 // */class S_T_I_wFoo_IfwBarYI_[T]  extends Mix_I_wFoo_IfwBarYI_     {        ;                                ; f; }
 // */class S_T_I_wFoo_IfwBarYIf[T]  extends Mix_I_wFoo_IfwBarYIf     {        ;                                ; f; }
 /* */
-class S_T_I_wFooX__[T] extends Mix_I_wFooX__ { ; def f: I = { sub; null }; f; }
-/* */
-class S_T_I_wFooX__wBar___[T] extends Mix_I_wFooX__wBar___ {
-  ; def f: I = { sub; null }; f;
+class S_T_I_wFooX__[T] extends Mix_I_wFooX__ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T_I_wFooX__wBar__f[T] extends Mix_I_wFooX__wBar__f { ;; f; }
+class S_T_I_wFooX__wBar___[T] extends Mix_I_wFooX__wBar___ {
+  ;
+  def f: I = {
+    sub; null
+  }; f;
+}
+/* */
+class S_T_I_wFooX__wBar__f[T] extends Mix_I_wFooX__wBar__f {
+  ;; f;
+}
 // */class S_T_I_wFooX__wBar_I_[T]  extends Mix_I_wFooX__wBar_I_     {        ;          def f: I = {sub; null}; f; }
 // */class S_T_I_wFooX__wBar_If[T]  extends Mix_I_wFooX__wBar_If     {        ;                                ; f; }
 /* */
 class S_T_I_wFooX__wBarY__[T] extends Mix_I_wFooX__wBarY__ {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_T_I_wFooX__wBarY_f[T] extends Mix_I_wFooX__wBarY_f { ;; f; }
+class S_T_I_wFooX__wBarY_f[T] extends Mix_I_wFooX__wBarY_f {
+  ;; f;
+}
 // */class S_T_I_wFooX__wBarYI_[T]  extends Mix_I_wFooX__wBarYI_     {        ;          def f: I = {sub; null}; f; }
 // */class S_T_I_wFooX__wBarYIf[T]  extends Mix_I_wFooX__wBarYIf     {        ;                                ; f; }
 /* */
-class S_T_I_wFooX_f[T] extends Mix_I_wFooX_f { ;; f; }
+class S_T_I_wFooX_f[T] extends Mix_I_wFooX_f {
+  ;; f;
+}
 /* */
-class S_T_I_wFooX_fwBar___[T] extends Mix_I_wFooX_fwBar___ { ;; f; }
+class S_T_I_wFooX_fwBar___[T] extends Mix_I_wFooX_fwBar___ {
+  ;; f;
+}
 // */class S_T_I_wFooX_fwBar__f[T]  extends Mix_I_wFooX_fwBar__f     {        ;                                ; f; }
 // */class S_T_I_wFooX_fwBar_I_[T]  extends Mix_I_wFooX_fwBar_I_     {        ;                                ; f; }
 // */class S_T_I_wFooX_fwBar_If[T]  extends Mix_I_wFooX_fwBar_If     {        ;                                ; f; }
 /* */
-class S_T_I_wFooX_fwBarY__[T] extends Mix_I_wFooX_fwBarY__ { ;; f; }
+class S_T_I_wFooX_fwBarY__[T] extends Mix_I_wFooX_fwBarY__ {
+  ;; f;
+}
 // */class S_T_I_wFooX_fwBarY_f[T]  extends Mix_I_wFooX_fwBarY_f     {        ;                                ; f; }
 // */class S_T_I_wFooX_fwBarYI_[T]  extends Mix_I_wFooX_fwBarYI_     {        ;                                ; f; }
 // */class S_T_I_wFooX_fwBarYIf[T]  extends Mix_I_wFooX_fwBarYIf     {        ;                                ; f; }
@@ -5556,31 +9070,51 @@ class S_T_I_wFooX_fwBarY__[T] extends Mix_I_wFooX_fwBarY__ { ;; f; }
 // */class S_T_I_wFooXIfwBarYIf[T]  extends Mix_I_wFooXIfwBarYIf     {        ;                                ; f; }
 
 /* */
-class S_T_IfwFoo___[T] extends Mix_IfwFoo___ { ;; f; }
+class S_T_IfwFoo___[T] extends Mix_IfwFoo___ {
+  ;; f;
+}
 /* */
-class S_T_IfwFoo___wBar___[T] extends Mix_IfwFoo___wBar___ { ;; f; }
+class S_T_IfwFoo___wBar___[T] extends Mix_IfwFoo___wBar___ {
+  ;; f;
+}
 /* */
-class S_T_IfwFoo___wBar__f[T] extends Mix_IfwFoo___wBar__f { ;; f; }
+class S_T_IfwFoo___wBar__f[T] extends Mix_IfwFoo___wBar__f {
+  ;; f;
+}
 // */class S_T_IfwFoo___wBar_I_[T]  extends Mix_IfwFoo___wBar_I_     {        ;                                ; f; }
 // */class S_T_IfwFoo___wBar_If[T]  extends Mix_IfwFoo___wBar_If     {        ;                                ; f; }
 /* */
-class S_T_IfwFoo___wBarY__[T] extends Mix_IfwFoo___wBarY__ { ;; f; }
+class S_T_IfwFoo___wBarY__[T] extends Mix_IfwFoo___wBarY__ {
+  ;; f;
+}
 /* */
-class S_T_IfwFoo___wBarY_f[T] extends Mix_IfwFoo___wBarY_f { ;; f; }
+class S_T_IfwFoo___wBarY_f[T] extends Mix_IfwFoo___wBarY_f {
+  ;; f;
+}
 // */class S_T_IfwFoo___wBarYI_[T]  extends Mix_IfwFoo___wBarYI_     {        ;                                ; f; }
 // */class S_T_IfwFoo___wBarYIf[T]  extends Mix_IfwFoo___wBarYIf     {        ;                                ; f; }
 /* */
-class S_T_IfwFoo__f[T] extends Mix_IfwFoo__f { ;; f; }
+class S_T_IfwFoo__f[T] extends Mix_IfwFoo__f {
+  ;; f;
+}
 /* */
-class S_T_IfwFoo__fwBar___[T] extends Mix_IfwFoo__fwBar___ { ;; f; }
+class S_T_IfwFoo__fwBar___[T] extends Mix_IfwFoo__fwBar___ {
+  ;; f;
+}
 /* */
-class S_T_IfwFoo__fwBar__f[T] extends Mix_IfwFoo__fwBar__f { ;; f; }
+class S_T_IfwFoo__fwBar__f[T] extends Mix_IfwFoo__fwBar__f {
+  ;; f;
+}
 // */class S_T_IfwFoo__fwBar_I_[T]  extends Mix_IfwFoo__fwBar_I_     {        ;                                ; f; }
 // */class S_T_IfwFoo__fwBar_If[T]  extends Mix_IfwFoo__fwBar_If     {        ;                                ; f; }
 /* */
-class S_T_IfwFoo__fwBarY__[T] extends Mix_IfwFoo__fwBarY__ { ;; f; }
+class S_T_IfwFoo__fwBarY__[T] extends Mix_IfwFoo__fwBarY__ {
+  ;; f;
+}
 /* */
-class S_T_IfwFoo__fwBarY_f[T] extends Mix_IfwFoo__fwBarY_f { ;; f; }
+class S_T_IfwFoo__fwBarY_f[T] extends Mix_IfwFoo__fwBarY_f {
+  ;; f;
+}
 // */class S_T_IfwFoo__fwBarYI_[T]  extends Mix_IfwFoo__fwBarYI_     {        ;                                ; f; }
 // */class S_T_IfwFoo__fwBarYIf[T]  extends Mix_IfwFoo__fwBarYIf     {        ;                                ; f; }
 // */class S_T_IfwFoo_I_       [T]  extends Mix_IfwFoo_I_            {        ;                                ; f; }
@@ -5602,31 +9136,51 @@ class S_T_IfwFoo__fwBarY_f[T] extends Mix_IfwFoo__fwBarY_f { ;; f; }
 // */class S_T_IfwFoo_IfwBarYI_[T]  extends Mix_IfwFoo_IfwBarYI_     {        ;                                ; f; }
 // */class S_T_IfwFoo_IfwBarYIf[T]  extends Mix_IfwFoo_IfwBarYIf     {        ;                                ; f; }
 /* */
-class S_T_IfwFooX__[T] extends Mix_IfwFooX__ { ;; f; }
+class S_T_IfwFooX__[T] extends Mix_IfwFooX__ {
+  ;; f;
+}
 /* */
-class S_T_IfwFooX__wBar___[T] extends Mix_IfwFooX__wBar___ { ;; f; }
+class S_T_IfwFooX__wBar___[T] extends Mix_IfwFooX__wBar___ {
+  ;; f;
+}
 /* */
-class S_T_IfwFooX__wBar__f[T] extends Mix_IfwFooX__wBar__f { ;; f; }
+class S_T_IfwFooX__wBar__f[T] extends Mix_IfwFooX__wBar__f {
+  ;; f;
+}
 // */class S_T_IfwFooX__wBar_I_[T]  extends Mix_IfwFooX__wBar_I_     {        ;                                ; f; }
 // */class S_T_IfwFooX__wBar_If[T]  extends Mix_IfwFooX__wBar_If     {        ;                                ; f; }
 /* */
-class S_T_IfwFooX__wBarY__[T] extends Mix_IfwFooX__wBarY__ { ;; f; }
+class S_T_IfwFooX__wBarY__[T] extends Mix_IfwFooX__wBarY__ {
+  ;; f;
+}
 /* */
-class S_T_IfwFooX__wBarY_f[T] extends Mix_IfwFooX__wBarY_f { ;; f; }
+class S_T_IfwFooX__wBarY_f[T] extends Mix_IfwFooX__wBarY_f {
+  ;; f;
+}
 // */class S_T_IfwFooX__wBarYI_[T]  extends Mix_IfwFooX__wBarYI_     {        ;                                ; f; }
 // */class S_T_IfwFooX__wBarYIf[T]  extends Mix_IfwFooX__wBarYIf     {        ;                                ; f; }
 /* */
-class S_T_IfwFooX_f[T] extends Mix_IfwFooX_f { ;; f; }
+class S_T_IfwFooX_f[T] extends Mix_IfwFooX_f {
+  ;; f;
+}
 /* */
-class S_T_IfwFooX_fwBar___[T] extends Mix_IfwFooX_fwBar___ { ;; f; }
+class S_T_IfwFooX_fwBar___[T] extends Mix_IfwFooX_fwBar___ {
+  ;; f;
+}
 /* */
-class S_T_IfwFooX_fwBar__f[T] extends Mix_IfwFooX_fwBar__f { ;; f; }
+class S_T_IfwFooX_fwBar__f[T] extends Mix_IfwFooX_fwBar__f {
+  ;; f;
+}
 // */class S_T_IfwFooX_fwBar_I_[T]  extends Mix_IfwFooX_fwBar_I_     {        ;                                ; f; }
 // */class S_T_IfwFooX_fwBar_If[T]  extends Mix_IfwFooX_fwBar_If     {        ;                                ; f; }
 /* */
-class S_T_IfwFooX_fwBarY__[T] extends Mix_IfwFooX_fwBarY__ { ;; f; }
+class S_T_IfwFooX_fwBarY__[T] extends Mix_IfwFooX_fwBarY__ {
+  ;; f;
+}
 /* */
-class S_T_IfwFooX_fwBarY_f[T] extends Mix_IfwFooX_fwBarY_f { ;; f; }
+class S_T_IfwFooX_fwBarY_f[T] extends Mix_IfwFooX_fwBarY_f {
+  ;; f;
+}
 // */class S_T_IfwFooX_fwBarYI_[T]  extends Mix_IfwFooX_fwBarYI_     {        ;                                ; f; }
 // */class S_T_IfwFooX_fwBarYIf[T]  extends Mix_IfwFooX_fwBarYIf     {        ;                                ; f; }
 // */class S_T_IfwFooXI_       [T]  extends Mix_IfwFooXI_            {        ;                                ; f; }
@@ -5650,311 +9204,546 @@ class S_T_IfwFooX_fwBarY_f[T] extends Mix_IfwFooX_fwBarY_f { ;; f; }
 
 /* */
 class S_TZ__wFoo___[T] extends MixZ__wFoo___[C] {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
 class S_TZ__wFoo___wBar___[T] extends MixZ__wFoo___wBar___[C] {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZ__wFoo___wBar__f[T] extends MixZ__wFoo___wBar__f[C] { class I;; f; }
+class S_TZ__wFoo___wBar__f[T] extends MixZ__wFoo___wBar__f[C] {
+  class I;; f;
+}
 /* */
 class S_TZ__wFoo___wBar_I_[T] extends MixZ__wFoo___wBar_I_[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZ__wFoo___wBar_If[T] extends MixZ__wFoo___wBar_If[C] { ;; f; }
+class S_TZ__wFoo___wBar_If[T] extends MixZ__wFoo___wBar_If[C] {
+  ;; f;
+}
 /* */
 class S_TZ__wFoo___wBarY__[T] extends MixZ__wFoo___wBarY__[C] {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZ__wFoo___wBarY_f[T] extends MixZ__wFoo___wBarY_f[C] { class I;; f; }
+class S_TZ__wFoo___wBarY_f[T] extends MixZ__wFoo___wBarY_f[C] {
+  class I;; f;
+}
 /* */
 class S_TZ__wFoo___wBarYI_[T] extends MixZ__wFoo___wBarYI_[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZ__wFoo___wBarYIf[T] extends MixZ__wFoo___wBarYIf[C] { ;; f; }
+class S_TZ__wFoo___wBarYIf[T] extends MixZ__wFoo___wBarYIf[C] {
+  ;; f;
+}
 /* */
-class S_TZ__wFoo__f[T] extends MixZ__wFoo__f[C] { class I;; f; }
+class S_TZ__wFoo__f[T] extends MixZ__wFoo__f[C] {
+  class I;; f;
+}
 /* */
-class S_TZ__wFoo__fwBar___[T] extends MixZ__wFoo__fwBar___[C] { class I;; f; }
+class S_TZ__wFoo__fwBar___[T] extends MixZ__wFoo__fwBar___[C] {
+  class I;; f;
+}
 // */class S_TZ__wFoo__fwBar__f[T]  extends MixZ__wFoo__fwBar__f[C]  { class I;                                ; f; }
 /* */
-class S_TZ__wFoo__fwBar_I_[T] extends MixZ__wFoo__fwBar_I_[C] { ;; f; }
+class S_TZ__wFoo__fwBar_I_[T] extends MixZ__wFoo__fwBar_I_[C] {
+  ;; f;
+}
 // */class S_TZ__wFoo__fwBar_If[T]  extends MixZ__wFoo__fwBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZ__wFoo__fwBarY__[T] extends MixZ__wFoo__fwBarY__[C] { class I;; f; }
+class S_TZ__wFoo__fwBarY__[T] extends MixZ__wFoo__fwBarY__[C] {
+  class I;; f;
+}
 // */class S_TZ__wFoo__fwBarY_f[T]  extends MixZ__wFoo__fwBarY_f[C]  { class I;                                ; f; }
 /* */
-class S_TZ__wFoo__fwBarYI_[T] extends MixZ__wFoo__fwBarYI_[C] { ;; f; }
+class S_TZ__wFoo__fwBarYI_[T] extends MixZ__wFoo__fwBarYI_[C] {
+  ;; f;
+}
 // */class S_TZ__wFoo__fwBarYIf[T]  extends MixZ__wFoo__fwBarYIf[C]  {        ;                                ; f; }
 /* */
 class S_TZ__wFoo_I_[T] extends MixZ__wFoo_I_[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
 class S_TZ__wFoo_I_wBar___[T] extends MixZ__wFoo_I_wBar___[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZ__wFoo_I_wBar__f[T] extends MixZ__wFoo_I_wBar__f[C] { ;; f; }
+class S_TZ__wFoo_I_wBar__f[T] extends MixZ__wFoo_I_wBar__f[C] {
+  ;; f;
+}
 // */class S_TZ__wFoo_I_wBar_I_[T]  extends MixZ__wFoo_I_wBar_I_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S_TZ__wFoo_I_wBar_If[T]  extends MixZ__wFoo_I_wBar_If[C]  {        ;                                ; f; }
 /* */
 class S_TZ__wFoo_I_wBarY__[T] extends MixZ__wFoo_I_wBarY__[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZ__wFoo_I_wBarY_f[T] extends MixZ__wFoo_I_wBarY_f[C] { ;; f; }
+class S_TZ__wFoo_I_wBarY_f[T] extends MixZ__wFoo_I_wBarY_f[C] {
+  ;; f;
+}
 // */class S_TZ__wFoo_I_wBarYI_[T]  extends MixZ__wFoo_I_wBarYI_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S_TZ__wFoo_I_wBarYIf[T]  extends MixZ__wFoo_I_wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S_TZ__wFoo_If[T] extends MixZ__wFoo_If[C] { ;; f; }
+class S_TZ__wFoo_If[T] extends MixZ__wFoo_If[C] {
+  ;; f;
+}
 /* */
-class S_TZ__wFoo_IfwBar___[T] extends MixZ__wFoo_IfwBar___[C] { ;; f; }
+class S_TZ__wFoo_IfwBar___[T] extends MixZ__wFoo_IfwBar___[C] {
+  ;; f;
+}
 // */class S_TZ__wFoo_IfwBar__f[T]  extends MixZ__wFoo_IfwBar__f[C]  {        ;                                ; f; }
 // */class S_TZ__wFoo_IfwBar_I_[T]  extends MixZ__wFoo_IfwBar_I_[C]  {        ;                                ; f; }
 // */class S_TZ__wFoo_IfwBar_If[T]  extends MixZ__wFoo_IfwBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZ__wFoo_IfwBarY__[T] extends MixZ__wFoo_IfwBarY__[C] { ;; f; }
+class S_TZ__wFoo_IfwBarY__[T] extends MixZ__wFoo_IfwBarY__[C] {
+  ;; f;
+}
 // */class S_TZ__wFoo_IfwBarY_f[T]  extends MixZ__wFoo_IfwBarY_f[C]  {        ;                                ; f; }
 // */class S_TZ__wFoo_IfwBarYI_[T]  extends MixZ__wFoo_IfwBarYI_[C]  {        ;                                ; f; }
 // */class S_TZ__wFoo_IfwBarYIf[T]  extends MixZ__wFoo_IfwBarYIf[C]  {        ;                                ; f; }
 /* */
 class S_TZ__wFooX__[T] extends MixZ__wFooX__[C] {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
 class S_TZ__wFooX__wBar___[T] extends MixZ__wFooX__wBar___[C] {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZ__wFooX__wBar__f[T] extends MixZ__wFooX__wBar__f[C] { class I;; f; }
+class S_TZ__wFooX__wBar__f[T] extends MixZ__wFooX__wBar__f[C] {
+  class I;; f;
+}
 /* */
 class S_TZ__wFooX__wBar_I_[T] extends MixZ__wFooX__wBar_I_[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZ__wFooX__wBar_If[T] extends MixZ__wFooX__wBar_If[C] { ;; f; }
+class S_TZ__wFooX__wBar_If[T] extends MixZ__wFooX__wBar_If[C] {
+  ;; f;
+}
 /* */
 class S_TZ__wFooX__wBarY__[T] extends MixZ__wFooX__wBarY__[C] {
-  class I; def f: I = { sub; null }; f;
+  class I;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZ__wFooX__wBarY_f[T] extends MixZ__wFooX__wBarY_f[C] { class I;; f; }
+class S_TZ__wFooX__wBarY_f[T] extends MixZ__wFooX__wBarY_f[C] {
+  class I;; f;
+}
 /* */
 class S_TZ__wFooX__wBarYI_[T] extends MixZ__wFooX__wBarYI_[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZ__wFooX__wBarYIf[T] extends MixZ__wFooX__wBarYIf[C] { ;; f; }
+class S_TZ__wFooX__wBarYIf[T] extends MixZ__wFooX__wBarYIf[C] {
+  ;; f;
+}
 /* */
-class S_TZ__wFooX_f[T] extends MixZ__wFooX_f[C] { class I;; f; }
+class S_TZ__wFooX_f[T] extends MixZ__wFooX_f[C] {
+  class I;; f;
+}
 /* */
-class S_TZ__wFooX_fwBar___[T] extends MixZ__wFooX_fwBar___[C] { class I;; f; }
+class S_TZ__wFooX_fwBar___[T] extends MixZ__wFooX_fwBar___[C] {
+  class I;; f;
+}
 // */class S_TZ__wFooX_fwBar__f[T]  extends MixZ__wFooX_fwBar__f[C]  { class I;                                ; f; }
 /* */
-class S_TZ__wFooX_fwBar_I_[T] extends MixZ__wFooX_fwBar_I_[C] { ;; f; }
+class S_TZ__wFooX_fwBar_I_[T] extends MixZ__wFooX_fwBar_I_[C] {
+  ;; f;
+}
 // */class S_TZ__wFooX_fwBar_If[T]  extends MixZ__wFooX_fwBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZ__wFooX_fwBarY__[T] extends MixZ__wFooX_fwBarY__[C] { class I;; f; }
+class S_TZ__wFooX_fwBarY__[T] extends MixZ__wFooX_fwBarY__[C] {
+  class I;; f;
+}
 // */class S_TZ__wFooX_fwBarY_f[T]  extends MixZ__wFooX_fwBarY_f[C]  { class I;                                ; f; }
 /* */
-class S_TZ__wFooX_fwBarYI_[T] extends MixZ__wFooX_fwBarYI_[C] { ;; f; }
+class S_TZ__wFooX_fwBarYI_[T] extends MixZ__wFooX_fwBarYI_[C] {
+  ;; f;
+}
 // */class S_TZ__wFooX_fwBarYIf[T]  extends MixZ__wFooX_fwBarYIf[C]  {        ;                                ; f; }
 /* */
 class S_TZ__wFooXI_[T] extends MixZ__wFooXI_[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
 class S_TZ__wFooXI_wBar___[T] extends MixZ__wFooXI_wBar___[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZ__wFooXI_wBar__f[T] extends MixZ__wFooXI_wBar__f[C] { ;; f; }
+class S_TZ__wFooXI_wBar__f[T] extends MixZ__wFooXI_wBar__f[C] {
+  ;; f;
+}
 // */class S_TZ__wFooXI_wBar_I_[T]  extends MixZ__wFooXI_wBar_I_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S_TZ__wFooXI_wBar_If[T]  extends MixZ__wFooXI_wBar_If[C]  {        ;                                ; f; }
 /* */
 class S_TZ__wFooXI_wBarY__[T] extends MixZ__wFooXI_wBarY__[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZ__wFooXI_wBarY_f[T] extends MixZ__wFooXI_wBarY_f[C] { ;; f; }
+class S_TZ__wFooXI_wBarY_f[T] extends MixZ__wFooXI_wBarY_f[C] {
+  ;; f;
+}
 // */class S_TZ__wFooXI_wBarYI_[T]  extends MixZ__wFooXI_wBarYI_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S_TZ__wFooXI_wBarYIf[T]  extends MixZ__wFooXI_wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S_TZ__wFooXIf[T] extends MixZ__wFooXIf[C] { ;; f; }
+class S_TZ__wFooXIf[T] extends MixZ__wFooXIf[C] {
+  ;; f;
+}
 /* */
-class S_TZ__wFooXIfwBar___[T] extends MixZ__wFooXIfwBar___[C] { ;; f; }
+class S_TZ__wFooXIfwBar___[T] extends MixZ__wFooXIfwBar___[C] {
+  ;; f;
+}
 // */class S_TZ__wFooXIfwBar__f[T]  extends MixZ__wFooXIfwBar__f[C]  {        ;                                ; f; }
 // */class S_TZ__wFooXIfwBar_I_[T]  extends MixZ__wFooXIfwBar_I_[C]  {        ;                                ; f; }
 // */class S_TZ__wFooXIfwBar_If[T]  extends MixZ__wFooXIfwBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZ__wFooXIfwBarY__[T] extends MixZ__wFooXIfwBarY__[C] { ;; f; }
+class S_TZ__wFooXIfwBarY__[T] extends MixZ__wFooXIfwBarY__[C] {
+  ;; f;
+}
 // */class S_TZ__wFooXIfwBarY_f[T]  extends MixZ__wFooXIfwBarY_f[C]  {        ;                                ; f; }
 // */class S_TZ__wFooXIfwBarYI_[T]  extends MixZ__wFooXIfwBarYI_[C]  {        ;                                ; f; }
 // */class S_TZ__wFooXIfwBarYIf[T]  extends MixZ__wFooXIfwBarYIf[C]  {        ;                                ; f; }
 
 /* */
-class S_TZ_fwFoo___[T] extends MixZ_fwFoo___[C] { class I;; f; }
+class S_TZ_fwFoo___[T] extends MixZ_fwFoo___[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_fwFoo___wBar___[T] extends MixZ_fwFoo___wBar___[C] { class I;; f; }
+class S_TZ_fwFoo___wBar___[T] extends MixZ_fwFoo___wBar___[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_fwFoo___wBar__f[T] extends MixZ_fwFoo___wBar__f[C] { class I;; f; }
+class S_TZ_fwFoo___wBar__f[T] extends MixZ_fwFoo___wBar__f[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_fwFoo___wBar_I_[T] extends MixZ_fwFoo___wBar_I_[C] { ;; f; }
+class S_TZ_fwFoo___wBar_I_[T] extends MixZ_fwFoo___wBar_I_[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFoo___wBar_If[T] extends MixZ_fwFoo___wBar_If[C] { ;; f; }
+class S_TZ_fwFoo___wBar_If[T] extends MixZ_fwFoo___wBar_If[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFoo___wBarY__[T] extends MixZ_fwFoo___wBarY__[C] { class I;; f; }
+class S_TZ_fwFoo___wBarY__[T] extends MixZ_fwFoo___wBarY__[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_fwFoo___wBarY_f[T] extends MixZ_fwFoo___wBarY_f[C] { class I;; f; }
+class S_TZ_fwFoo___wBarY_f[T] extends MixZ_fwFoo___wBarY_f[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_fwFoo___wBarYI_[T] extends MixZ_fwFoo___wBarYI_[C] { ;; f; }
+class S_TZ_fwFoo___wBarYI_[T] extends MixZ_fwFoo___wBarYI_[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFoo___wBarYIf[T] extends MixZ_fwFoo___wBarYIf[C] { ;; f; }
+class S_TZ_fwFoo___wBarYIf[T] extends MixZ_fwFoo___wBarYIf[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFoo__f[T] extends MixZ_fwFoo__f[C] { class I;; f; }
+class S_TZ_fwFoo__f[T] extends MixZ_fwFoo__f[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_fwFoo__fwBar___[T] extends MixZ_fwFoo__fwBar___[C] { class I;; f; }
+class S_TZ_fwFoo__fwBar___[T] extends MixZ_fwFoo__fwBar___[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_fwFoo__fwBar__f[T] extends MixZ_fwFoo__fwBar__f[C] { class I;; f; }
+class S_TZ_fwFoo__fwBar__f[T] extends MixZ_fwFoo__fwBar__f[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_fwFoo__fwBar_I_[T] extends MixZ_fwFoo__fwBar_I_[C] { ;; f; }
+class S_TZ_fwFoo__fwBar_I_[T] extends MixZ_fwFoo__fwBar_I_[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFoo__fwBar_If[T] extends MixZ_fwFoo__fwBar_If[C] { ;; f; }
+class S_TZ_fwFoo__fwBar_If[T] extends MixZ_fwFoo__fwBar_If[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFoo__fwBarY__[T] extends MixZ_fwFoo__fwBarY__[C] { class I;; f; }
+class S_TZ_fwFoo__fwBarY__[T] extends MixZ_fwFoo__fwBarY__[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_fwFoo__fwBarY_f[T] extends MixZ_fwFoo__fwBarY_f[C] { class I;; f; }
+class S_TZ_fwFoo__fwBarY_f[T] extends MixZ_fwFoo__fwBarY_f[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_fwFoo__fwBarYI_[T] extends MixZ_fwFoo__fwBarYI_[C] { ;; f; }
+class S_TZ_fwFoo__fwBarYI_[T] extends MixZ_fwFoo__fwBarYI_[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFoo__fwBarYIf[T] extends MixZ_fwFoo__fwBarYIf[C] { ;; f; }
+class S_TZ_fwFoo__fwBarYIf[T] extends MixZ_fwFoo__fwBarYIf[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFoo_I_[T] extends MixZ_fwFoo_I_[C] { ;; f; }
+class S_TZ_fwFoo_I_[T] extends MixZ_fwFoo_I_[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFoo_I_wBar___[T] extends MixZ_fwFoo_I_wBar___[C] { ;; f; }
+class S_TZ_fwFoo_I_wBar___[T] extends MixZ_fwFoo_I_wBar___[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFoo_I_wBar__f[T] extends MixZ_fwFoo_I_wBar__f[C] { ;; f; }
+class S_TZ_fwFoo_I_wBar__f[T] extends MixZ_fwFoo_I_wBar__f[C] {
+  ;; f;
+}
 // */class S_TZ_fwFoo_I_wBar_I_[T]  extends MixZ_fwFoo_I_wBar_I_[C]  {        ;                                ; f; }
 // */class S_TZ_fwFoo_I_wBar_If[T]  extends MixZ_fwFoo_I_wBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZ_fwFoo_I_wBarY__[T] extends MixZ_fwFoo_I_wBarY__[C] { ;; f; }
+class S_TZ_fwFoo_I_wBarY__[T] extends MixZ_fwFoo_I_wBarY__[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFoo_I_wBarY_f[T] extends MixZ_fwFoo_I_wBarY_f[C] { ;; f; }
+class S_TZ_fwFoo_I_wBarY_f[T] extends MixZ_fwFoo_I_wBarY_f[C] {
+  ;; f;
+}
 // */class S_TZ_fwFoo_I_wBarYI_[T]  extends MixZ_fwFoo_I_wBarYI_[C]  {        ;                                ; f; }
 // */class S_TZ_fwFoo_I_wBarYIf[T]  extends MixZ_fwFoo_I_wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S_TZ_fwFoo_If[T] extends MixZ_fwFoo_If[C] { ;; f; }
+class S_TZ_fwFoo_If[T] extends MixZ_fwFoo_If[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFoo_IfwBar___[T] extends MixZ_fwFoo_IfwBar___[C] { ;; f; }
+class S_TZ_fwFoo_IfwBar___[T] extends MixZ_fwFoo_IfwBar___[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFoo_IfwBar__f[T] extends MixZ_fwFoo_IfwBar__f[C] { ;; f; }
+class S_TZ_fwFoo_IfwBar__f[T] extends MixZ_fwFoo_IfwBar__f[C] {
+  ;; f;
+}
 // */class S_TZ_fwFoo_IfwBar_I_[T]  extends MixZ_fwFoo_IfwBar_I_[C]  {        ;                                ; f; }
 // */class S_TZ_fwFoo_IfwBar_If[T]  extends MixZ_fwFoo_IfwBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZ_fwFoo_IfwBarY__[T] extends MixZ_fwFoo_IfwBarY__[C] { ;; f; }
+class S_TZ_fwFoo_IfwBarY__[T] extends MixZ_fwFoo_IfwBarY__[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFoo_IfwBarY_f[T] extends MixZ_fwFoo_IfwBarY_f[C] { ;; f; }
+class S_TZ_fwFoo_IfwBarY_f[T] extends MixZ_fwFoo_IfwBarY_f[C] {
+  ;; f;
+}
 // */class S_TZ_fwFoo_IfwBarYI_[T]  extends MixZ_fwFoo_IfwBarYI_[C]  {        ;                                ; f; }
 // */class S_TZ_fwFoo_IfwBarYIf[T]  extends MixZ_fwFoo_IfwBarYIf[C]  {        ;                                ; f; }
 /* */
-class S_TZ_fwFooX__[T] extends MixZ_fwFooX__[C] { class I;; f; }
+class S_TZ_fwFooX__[T] extends MixZ_fwFooX__[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_fwFooX__wBar___[T] extends MixZ_fwFooX__wBar___[C] { class I;; f; }
+class S_TZ_fwFooX__wBar___[T] extends MixZ_fwFooX__wBar___[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_fwFooX__wBar__f[T] extends MixZ_fwFooX__wBar__f[C] { class I;; f; }
+class S_TZ_fwFooX__wBar__f[T] extends MixZ_fwFooX__wBar__f[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_fwFooX__wBar_I_[T] extends MixZ_fwFooX__wBar_I_[C] { ;; f; }
+class S_TZ_fwFooX__wBar_I_[T] extends MixZ_fwFooX__wBar_I_[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFooX__wBar_If[T] extends MixZ_fwFooX__wBar_If[C] { ;; f; }
+class S_TZ_fwFooX__wBar_If[T] extends MixZ_fwFooX__wBar_If[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFooX__wBarY__[T] extends MixZ_fwFooX__wBarY__[C] { class I;; f; }
+class S_TZ_fwFooX__wBarY__[T] extends MixZ_fwFooX__wBarY__[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_fwFooX__wBarY_f[T] extends MixZ_fwFooX__wBarY_f[C] { class I;; f; }
+class S_TZ_fwFooX__wBarY_f[T] extends MixZ_fwFooX__wBarY_f[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_fwFooX__wBarYI_[T] extends MixZ_fwFooX__wBarYI_[C] { ;; f; }
+class S_TZ_fwFooX__wBarYI_[T] extends MixZ_fwFooX__wBarYI_[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFooX__wBarYIf[T] extends MixZ_fwFooX__wBarYIf[C] { ;; f; }
+class S_TZ_fwFooX__wBarYIf[T] extends MixZ_fwFooX__wBarYIf[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFooX_f[T] extends MixZ_fwFooX_f[C] { class I;; f; }
+class S_TZ_fwFooX_f[T] extends MixZ_fwFooX_f[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_fwFooX_fwBar___[T] extends MixZ_fwFooX_fwBar___[C] { class I;; f; }
+class S_TZ_fwFooX_fwBar___[T] extends MixZ_fwFooX_fwBar___[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_fwFooX_fwBar__f[T] extends MixZ_fwFooX_fwBar__f[C] { class I;; f; }
+class S_TZ_fwFooX_fwBar__f[T] extends MixZ_fwFooX_fwBar__f[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_fwFooX_fwBar_I_[T] extends MixZ_fwFooX_fwBar_I_[C] { ;; f; }
+class S_TZ_fwFooX_fwBar_I_[T] extends MixZ_fwFooX_fwBar_I_[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFooX_fwBar_If[T] extends MixZ_fwFooX_fwBar_If[C] { ;; f; }
+class S_TZ_fwFooX_fwBar_If[T] extends MixZ_fwFooX_fwBar_If[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFooX_fwBarY__[T] extends MixZ_fwFooX_fwBarY__[C] { class I;; f; }
+class S_TZ_fwFooX_fwBarY__[T] extends MixZ_fwFooX_fwBarY__[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_fwFooX_fwBarY_f[T] extends MixZ_fwFooX_fwBarY_f[C] { class I;; f; }
+class S_TZ_fwFooX_fwBarY_f[T] extends MixZ_fwFooX_fwBarY_f[C] {
+  class I;; f;
+}
 /* */
-class S_TZ_fwFooX_fwBarYI_[T] extends MixZ_fwFooX_fwBarYI_[C] { ;; f; }
+class S_TZ_fwFooX_fwBarYI_[T] extends MixZ_fwFooX_fwBarYI_[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFooX_fwBarYIf[T] extends MixZ_fwFooX_fwBarYIf[C] { ;; f; }
+class S_TZ_fwFooX_fwBarYIf[T] extends MixZ_fwFooX_fwBarYIf[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFooXI_[T] extends MixZ_fwFooXI_[C] { ;; f; }
+class S_TZ_fwFooXI_[T] extends MixZ_fwFooXI_[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFooXI_wBar___[T] extends MixZ_fwFooXI_wBar___[C] { ;; f; }
+class S_TZ_fwFooXI_wBar___[T] extends MixZ_fwFooXI_wBar___[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFooXI_wBar__f[T] extends MixZ_fwFooXI_wBar__f[C] { ;; f; }
+class S_TZ_fwFooXI_wBar__f[T] extends MixZ_fwFooXI_wBar__f[C] {
+  ;; f;
+}
 // */class S_TZ_fwFooXI_wBar_I_[T]  extends MixZ_fwFooXI_wBar_I_[C]  {        ;                                ; f; }
 // */class S_TZ_fwFooXI_wBar_If[T]  extends MixZ_fwFooXI_wBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZ_fwFooXI_wBarY__[T] extends MixZ_fwFooXI_wBarY__[C] { ;; f; }
+class S_TZ_fwFooXI_wBarY__[T] extends MixZ_fwFooXI_wBarY__[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFooXI_wBarY_f[T] extends MixZ_fwFooXI_wBarY_f[C] { ;; f; }
+class S_TZ_fwFooXI_wBarY_f[T] extends MixZ_fwFooXI_wBarY_f[C] {
+  ;; f;
+}
 // */class S_TZ_fwFooXI_wBarYI_[T]  extends MixZ_fwFooXI_wBarYI_[C]  {        ;                                ; f; }
 // */class S_TZ_fwFooXI_wBarYIf[T]  extends MixZ_fwFooXI_wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S_TZ_fwFooXIf[T] extends MixZ_fwFooXIf[C] { ;; f; }
+class S_TZ_fwFooXIf[T] extends MixZ_fwFooXIf[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFooXIfwBar___[T] extends MixZ_fwFooXIfwBar___[C] { ;; f; }
+class S_TZ_fwFooXIfwBar___[T] extends MixZ_fwFooXIfwBar___[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFooXIfwBar__f[T] extends MixZ_fwFooXIfwBar__f[C] { ;; f; }
+class S_TZ_fwFooXIfwBar__f[T] extends MixZ_fwFooXIfwBar__f[C] {
+  ;; f;
+}
 // */class S_TZ_fwFooXIfwBar_I_[T]  extends MixZ_fwFooXIfwBar_I_[C]  {        ;                                ; f; }
 // */class S_TZ_fwFooXIfwBar_If[T]  extends MixZ_fwFooXIfwBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZ_fwFooXIfwBarY__[T] extends MixZ_fwFooXIfwBarY__[C] { ;; f; }
+class S_TZ_fwFooXIfwBarY__[T] extends MixZ_fwFooXIfwBarY__[C] {
+  ;; f;
+}
 /* */
-class S_TZ_fwFooXIfwBarY_f[T] extends MixZ_fwFooXIfwBarY_f[C] { ;; f; }
+class S_TZ_fwFooXIfwBarY_f[T] extends MixZ_fwFooXIfwBarY_f[C] {
+  ;; f;
+}
 // */class S_TZ_fwFooXIfwBarYI_[T]  extends MixZ_fwFooXIfwBarYI_[C]  {        ;                                ; f; }
 // */class S_TZ_fwFooXIfwBarYIf[T]  extends MixZ_fwFooXIfwBarYIf[C]  {        ;                                ; f; }
 
 /* */
 class S_TZI_wFoo___[T] extends MixZI_wFoo___[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
 class S_TZI_wFoo___wBar___[T] extends MixZI_wFoo___wBar___[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZI_wFoo___wBar__f[T] extends MixZI_wFoo___wBar__f[C] { ;; f; }
+class S_TZI_wFoo___wBar__f[T] extends MixZI_wFoo___wBar__f[C] {
+  ;; f;
+}
 // */class S_TZI_wFoo___wBar_I_[T]  extends MixZI_wFoo___wBar_I_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S_TZI_wFoo___wBar_If[T]  extends MixZI_wFoo___wBar_If[C]  {        ;                                ; f; }
 /* */
 class S_TZI_wFoo___wBarY__[T] extends MixZI_wFoo___wBarY__[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZI_wFoo___wBarY_f[T] extends MixZI_wFoo___wBarY_f[C] { ;; f; }
+class S_TZI_wFoo___wBarY_f[T] extends MixZI_wFoo___wBarY_f[C] {
+  ;; f;
+}
 // */class S_TZI_wFoo___wBarYI_[T]  extends MixZI_wFoo___wBarYI_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S_TZI_wFoo___wBarYIf[T]  extends MixZI_wFoo___wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S_TZI_wFoo__f[T] extends MixZI_wFoo__f[C] { ;; f; }
+class S_TZI_wFoo__f[T] extends MixZI_wFoo__f[C] {
+  ;; f;
+}
 /* */
-class S_TZI_wFoo__fwBar___[T] extends MixZI_wFoo__fwBar___[C] { ;; f; }
+class S_TZI_wFoo__fwBar___[T] extends MixZI_wFoo__fwBar___[C] {
+  ;; f;
+}
 // */class S_TZI_wFoo__fwBar__f[T]  extends MixZI_wFoo__fwBar__f[C]  {        ;                                ; f; }
 // */class S_TZI_wFoo__fwBar_I_[T]  extends MixZI_wFoo__fwBar_I_[C]  {        ;                                ; f; }
 // */class S_TZI_wFoo__fwBar_If[T]  extends MixZI_wFoo__fwBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZI_wFoo__fwBarY__[T] extends MixZI_wFoo__fwBarY__[C] { ;; f; }
+class S_TZI_wFoo__fwBarY__[T] extends MixZI_wFoo__fwBarY__[C] {
+  ;; f;
+}
 // */class S_TZI_wFoo__fwBarY_f[T]  extends MixZI_wFoo__fwBarY_f[C]  {        ;                                ; f; }
 // */class S_TZI_wFoo__fwBarYI_[T]  extends MixZI_wFoo__fwBarYI_[C]  {        ;                                ; f; }
 // */class S_TZI_wFoo__fwBarYIf[T]  extends MixZI_wFoo__fwBarYIf[C]  {        ;                                ; f; }
@@ -5978,33 +9767,52 @@ class S_TZI_wFoo__fwBarY__[T] extends MixZI_wFoo__fwBarY__[C] { ;; f; }
 // */class S_TZI_wFoo_IfwBarYIf[T]  extends MixZI_wFoo_IfwBarYIf[C]  {        ;                                ; f; }
 /* */
 class S_TZI_wFooX__[T] extends MixZI_wFooX__[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
 class S_TZI_wFooX__wBar___[T] extends MixZI_wFooX__wBar___[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZI_wFooX__wBar__f[T] extends MixZI_wFooX__wBar__f[C] { ;; f; }
+class S_TZI_wFooX__wBar__f[T] extends MixZI_wFooX__wBar__f[C] {
+  ;; f;
+}
 // */class S_TZI_wFooX__wBar_I_[T]  extends MixZI_wFooX__wBar_I_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S_TZI_wFooX__wBar_If[T]  extends MixZI_wFooX__wBar_If[C]  {        ;                                ; f; }
 /* */
 class S_TZI_wFooX__wBarY__[T] extends MixZI_wFooX__wBarY__[C] {
-  ; def f: I = { sub; null }; f;
+  ;
+  def f: I = {
+    sub; null
+  }; f;
 }
 /* */
-class S_TZI_wFooX__wBarY_f[T] extends MixZI_wFooX__wBarY_f[C] { ;; f; }
+class S_TZI_wFooX__wBarY_f[T] extends MixZI_wFooX__wBarY_f[C] {
+  ;; f;
+}
 // */class S_TZI_wFooX__wBarYI_[T]  extends MixZI_wFooX__wBarYI_[C]  {        ;          def f: I = {sub; null}; f; }
 // */class S_TZI_wFooX__wBarYIf[T]  extends MixZI_wFooX__wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S_TZI_wFooX_f[T] extends MixZI_wFooX_f[C] { ;; f; }
+class S_TZI_wFooX_f[T] extends MixZI_wFooX_f[C] {
+  ;; f;
+}
 /* */
-class S_TZI_wFooX_fwBar___[T] extends MixZI_wFooX_fwBar___[C] { ;; f; }
+class S_TZI_wFooX_fwBar___[T] extends MixZI_wFooX_fwBar___[C] {
+  ;; f;
+}
 // */class S_TZI_wFooX_fwBar__f[T]  extends MixZI_wFooX_fwBar__f[C]  {        ;                                ; f; }
 // */class S_TZI_wFooX_fwBar_I_[T]  extends MixZI_wFooX_fwBar_I_[C]  {        ;                                ; f; }
 // */class S_TZI_wFooX_fwBar_If[T]  extends MixZI_wFooX_fwBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZI_wFooX_fwBarY__[T] extends MixZI_wFooX_fwBarY__[C] { ;; f; }
+class S_TZI_wFooX_fwBarY__[T] extends MixZI_wFooX_fwBarY__[C] {
+  ;; f;
+}
 // */class S_TZI_wFooX_fwBarY_f[T]  extends MixZI_wFooX_fwBarY_f[C]  {        ;                                ; f; }
 // */class S_TZI_wFooX_fwBarYI_[T]  extends MixZI_wFooX_fwBarYI_[C]  {        ;                                ; f; }
 // */class S_TZI_wFooX_fwBarYIf[T]  extends MixZI_wFooX_fwBarYIf[C]  {        ;                                ; f; }
@@ -6028,31 +9836,51 @@ class S_TZI_wFooX_fwBarY__[T] extends MixZI_wFooX_fwBarY__[C] { ;; f; }
 // */class S_TZI_wFooXIfwBarYIf[T]  extends MixZI_wFooXIfwBarYIf[C]  {        ;                                ; f; }
 
 /* */
-class S_TZIfwFoo___[T] extends MixZIfwFoo___[C] { ;; f; }
+class S_TZIfwFoo___[T] extends MixZIfwFoo___[C] {
+  ;; f;
+}
 /* */
-class S_TZIfwFoo___wBar___[T] extends MixZIfwFoo___wBar___[C] { ;; f; }
+class S_TZIfwFoo___wBar___[T] extends MixZIfwFoo___wBar___[C] {
+  ;; f;
+}
 /* */
-class S_TZIfwFoo___wBar__f[T] extends MixZIfwFoo___wBar__f[C] { ;; f; }
+class S_TZIfwFoo___wBar__f[T] extends MixZIfwFoo___wBar__f[C] {
+  ;; f;
+}
 // */class S_TZIfwFoo___wBar_I_[T]  extends MixZIfwFoo___wBar_I_[C]  {        ;                                ; f; }
 // */class S_TZIfwFoo___wBar_If[T]  extends MixZIfwFoo___wBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZIfwFoo___wBarY__[T] extends MixZIfwFoo___wBarY__[C] { ;; f; }
+class S_TZIfwFoo___wBarY__[T] extends MixZIfwFoo___wBarY__[C] {
+  ;; f;
+}
 /* */
-class S_TZIfwFoo___wBarY_f[T] extends MixZIfwFoo___wBarY_f[C] { ;; f; }
+class S_TZIfwFoo___wBarY_f[T] extends MixZIfwFoo___wBarY_f[C] {
+  ;; f;
+}
 // */class S_TZIfwFoo___wBarYI_[T]  extends MixZIfwFoo___wBarYI_[C]  {        ;                                ; f; }
 // */class S_TZIfwFoo___wBarYIf[T]  extends MixZIfwFoo___wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S_TZIfwFoo__f[T] extends MixZIfwFoo__f[C] { ;; f; }
+class S_TZIfwFoo__f[T] extends MixZIfwFoo__f[C] {
+  ;; f;
+}
 /* */
-class S_TZIfwFoo__fwBar___[T] extends MixZIfwFoo__fwBar___[C] { ;; f; }
+class S_TZIfwFoo__fwBar___[T] extends MixZIfwFoo__fwBar___[C] {
+  ;; f;
+}
 /* */
-class S_TZIfwFoo__fwBar__f[T] extends MixZIfwFoo__fwBar__f[C] { ;; f; }
+class S_TZIfwFoo__fwBar__f[T] extends MixZIfwFoo__fwBar__f[C] {
+  ;; f;
+}
 // */class S_TZIfwFoo__fwBar_I_[T]  extends MixZIfwFoo__fwBar_I_[C]  {        ;                                ; f; }
 // */class S_TZIfwFoo__fwBar_If[T]  extends MixZIfwFoo__fwBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZIfwFoo__fwBarY__[T] extends MixZIfwFoo__fwBarY__[C] { ;; f; }
+class S_TZIfwFoo__fwBarY__[T] extends MixZIfwFoo__fwBarY__[C] {
+  ;; f;
+}
 /* */
-class S_TZIfwFoo__fwBarY_f[T] extends MixZIfwFoo__fwBarY_f[C] { ;; f; }
+class S_TZIfwFoo__fwBarY_f[T] extends MixZIfwFoo__fwBarY_f[C] {
+  ;; f;
+}
 // */class S_TZIfwFoo__fwBarYI_[T]  extends MixZIfwFoo__fwBarYI_[C]  {        ;                                ; f; }
 // */class S_TZIfwFoo__fwBarYIf[T]  extends MixZIfwFoo__fwBarYIf[C]  {        ;                                ; f; }
 // */class S_TZIfwFoo_I_       [T]  extends MixZIfwFoo_I_       [C]  {        ;                                ; f; }
@@ -6074,31 +9902,51 @@ class S_TZIfwFoo__fwBarY_f[T] extends MixZIfwFoo__fwBarY_f[C] { ;; f; }
 // */class S_TZIfwFoo_IfwBarYI_[T]  extends MixZIfwFoo_IfwBarYI_[C]  {        ;                                ; f; }
 // */class S_TZIfwFoo_IfwBarYIf[T]  extends MixZIfwFoo_IfwBarYIf[C]  {        ;                                ; f; }
 /* */
-class S_TZIfwFooX__[T] extends MixZIfwFooX__[C] { ;; f; }
+class S_TZIfwFooX__[T] extends MixZIfwFooX__[C] {
+  ;; f;
+}
 /* */
-class S_TZIfwFooX__wBar___[T] extends MixZIfwFooX__wBar___[C] { ;; f; }
+class S_TZIfwFooX__wBar___[T] extends MixZIfwFooX__wBar___[C] {
+  ;; f;
+}
 /* */
-class S_TZIfwFooX__wBar__f[T] extends MixZIfwFooX__wBar__f[C] { ;; f; }
+class S_TZIfwFooX__wBar__f[T] extends MixZIfwFooX__wBar__f[C] {
+  ;; f;
+}
 // */class S_TZIfwFooX__wBar_I_[T]  extends MixZIfwFooX__wBar_I_[C]  {        ;                                ; f; }
 // */class S_TZIfwFooX__wBar_If[T]  extends MixZIfwFooX__wBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZIfwFooX__wBarY__[T] extends MixZIfwFooX__wBarY__[C] { ;; f; }
+class S_TZIfwFooX__wBarY__[T] extends MixZIfwFooX__wBarY__[C] {
+  ;; f;
+}
 /* */
-class S_TZIfwFooX__wBarY_f[T] extends MixZIfwFooX__wBarY_f[C] { ;; f; }
+class S_TZIfwFooX__wBarY_f[T] extends MixZIfwFooX__wBarY_f[C] {
+  ;; f;
+}
 // */class S_TZIfwFooX__wBarYI_[T]  extends MixZIfwFooX__wBarYI_[C]  {        ;                                ; f; }
 // */class S_TZIfwFooX__wBarYIf[T]  extends MixZIfwFooX__wBarYIf[C]  {        ;                                ; f; }
 /* */
-class S_TZIfwFooX_f[T] extends MixZIfwFooX_f[C] { ;; f; }
+class S_TZIfwFooX_f[T] extends MixZIfwFooX_f[C] {
+  ;; f;
+}
 /* */
-class S_TZIfwFooX_fwBar___[T] extends MixZIfwFooX_fwBar___[C] { ;; f; }
+class S_TZIfwFooX_fwBar___[T] extends MixZIfwFooX_fwBar___[C] {
+  ;; f;
+}
 /* */
-class S_TZIfwFooX_fwBar__f[T] extends MixZIfwFooX_fwBar__f[C] { ;; f; }
+class S_TZIfwFooX_fwBar__f[T] extends MixZIfwFooX_fwBar__f[C] {
+  ;; f;
+}
 // */class S_TZIfwFooX_fwBar_I_[T]  extends MixZIfwFooX_fwBar_I_[C]  {        ;                                ; f; }
 // */class S_TZIfwFooX_fwBar_If[T]  extends MixZIfwFooX_fwBar_If[C]  {        ;                                ; f; }
 /* */
-class S_TZIfwFooX_fwBarY__[T] extends MixZIfwFooX_fwBarY__[C] { ;; f; }
+class S_TZIfwFooX_fwBarY__[T] extends MixZIfwFooX_fwBarY__[C] {
+  ;; f;
+}
 /* */
-class S_TZIfwFooX_fwBarY_f[T] extends MixZIfwFooX_fwBarY_f[C] { ;; f; }
+class S_TZIfwFooX_fwBarY_f[T] extends MixZIfwFooX_fwBarY_f[C] {
+  ;; f;
+}
 // */class S_TZIfwFooX_fwBarYI_[T]  extends MixZIfwFooX_fwBarYI_[C]  {        ;                                ; f; }
 // */class S_TZIfwFooX_fwBarYIf[T]  extends MixZIfwFooX_fwBarYIf[C]  {        ;                                ; f; }
 // */class S_TZIfwFooXI_       [T]  extends MixZIfwFooXI_       [C]  {        ;                                ; f; }

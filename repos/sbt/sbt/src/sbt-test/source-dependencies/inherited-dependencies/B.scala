@@ -13,7 +13,9 @@ class B {
 
   def y(j: Int): Unit = {
     // not public
-    val w: D { def length: Int } = ???
+    val w: D {
+      def length: Int
+    } = ???
     ()
   }
 }

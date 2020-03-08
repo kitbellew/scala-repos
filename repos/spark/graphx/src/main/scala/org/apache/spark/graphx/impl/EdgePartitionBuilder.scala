@@ -61,12 +61,14 @@ private[graphx] class EdgePartitionBuilder[@specialized(
         val srcId = edgeArray(i).srcId
         val dstId = edgeArray(i).dstId
         localSrcIds(i) = global2local.changeValue(
-          srcId,
-          { currLocalId += 1; local2global += srcId; currLocalId },
+          srcId, {
+            currLocalId += 1; local2global += srcId; currLocalId
+          },
           identity)
         localDstIds(i) = global2local.changeValue(
-          dstId,
-          { currLocalId += 1; local2global += dstId; currLocalId },
+          dstId, {
+            currLocalId += 1; local2global += dstId; currLocalId
+          },
           identity)
         data(i) = edgeArray(i).attr
         if (srcId != currSrcId) {

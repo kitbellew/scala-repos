@@ -78,10 +78,14 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
           case Success(prep) ⇒
             // try in case the asyncWriteMessages throws
             try breaker.withCircuitBreaker(asyncWriteMessages(prep))
-            catch { case NonFatal(e) ⇒ Future.failed(e) }
+            catch {
+              case NonFatal(e) ⇒ Future.failed(e)
+            }
           case f @ Failure(_) ⇒
             // exception from preparePersistentBatch => rejected
-            Future.successful(messages.collect { case a: AtomicWrite ⇒ f })
+            Future.successful(messages.collect {
+              case a: AtomicWrite ⇒ f
+            })
         }).map { results ⇒
           if (results.nonEmpty && results.size != atomicWriteCount)
             throw new IllegalStateException(
@@ -204,7 +208,9 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
               }.map(_ ⇒ highSeqNr)
             }
           }
-          .map { highSeqNr ⇒ RecoverySuccess(highSeqNr) }
+          .map { highSeqNr ⇒
+            RecoverySuccess(highSeqNr)
+          }
           .recover {
             case e ⇒ ReplayMessagesFailure(e)
           }

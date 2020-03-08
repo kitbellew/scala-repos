@@ -45,7 +45,9 @@ class ScReferencePatternImpl private (
     }
   }
 
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
   def this(stub: ScReferencePatternStub) = {
     this(stub, ScalaElementTypes.REFERENCE_PATTERN, null)
   }

@@ -86,13 +86,19 @@ class VectorOps_DoubleTest
       : Arbitrary[(Vector[Double], Vector[Double], Vector[Double])] = {
     Arbitrary {
       for {
-        x <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
+        x <- Arbitrary.arbitrary[Double].map {
+          _ % 1e100
+        }
         bx <- Arbitrary.arbitrary[Boolean]
         xl <- Arbitrary.arbitrary[List[Int]]
-        y <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
+        y <- Arbitrary.arbitrary[Double].map {
+          _ % 1e100
+        }
         by <- Arbitrary.arbitrary[Boolean]
         yl <- Arbitrary.arbitrary[List[Int]]
-        z <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
+        z <- Arbitrary.arbitrary[Double].map {
+          _ % 1e100
+        }
         bz <- Arbitrary.arbitrary[Boolean]
         zl <- Arbitrary.arbitrary[List[Int]]
       } yield {
@@ -108,7 +114,9 @@ class VectorOps_DoubleTest
   }
 
   def genScalar: Arbitrary[Double] =
-    Arbitrary(Arbitrary.arbitrary[Double].map { _ % 1e10 })
+    Arbitrary(Arbitrary.arbitrary[Double].map {
+      _ % 1e10
+    })
 }
 
 @RunWith(classOf[JUnitRunner])
@@ -122,13 +130,19 @@ class VectorOps_FloatTest
       : Arbitrary[(Vector[Float], Vector[Float], Vector[Float])] = {
     Arbitrary {
       for {
-        x <- Arbitrary.arbitrary[Float].map { _ % 1000f }
+        x <- Arbitrary.arbitrary[Float].map {
+          _ % 1000f
+        }
         bx <- Arbitrary.arbitrary[Boolean]
         xl <- Arbitrary.arbitrary[List[Int]]
-        y <- Arbitrary.arbitrary[Float].map { _ % 1000f }
+        y <- Arbitrary.arbitrary[Float].map {
+          _ % 1000f
+        }
         by <- Arbitrary.arbitrary[Boolean]
         yl <- Arbitrary.arbitrary[List[Int]]
-        z <- Arbitrary.arbitrary[Float].map { _ % 1000f }
+        z <- Arbitrary.arbitrary[Float].map {
+          _ % 1000f
+        }
         bz <- Arbitrary.arbitrary[Boolean]
         zl <- Arbitrary.arbitrary[List[Int]]
       } yield {
@@ -150,7 +164,9 @@ class VectorOps_FloatTest
   }
 
   def genScalar: Arbitrary[Float] =
-    Arbitrary(Arbitrary.arbitrary[Float].map { _ % 1000f })
+    Arbitrary(Arbitrary.arbitrary[Float].map {
+      _ % 1000f
+    })
 }
 
 @RunWith(classOf[JUnitRunner])
@@ -161,13 +177,19 @@ class VectorOps_IntTest extends TensorSpaceTestBase[Vector[Int], Int, Int] {
   implicit def genTriple: Arbitrary[(Vector[Int], Vector[Int], Vector[Int])] = {
     Arbitrary {
       for {
-        x <- Arbitrary.arbitrary[Int].map { _ % 1000 }
+        x <- Arbitrary.arbitrary[Int].map {
+          _ % 1000
+        }
         bx <- Arbitrary.arbitrary[Boolean]
         xl <- Arbitrary.arbitrary[List[Int]]
-        y <- Arbitrary.arbitrary[Int].map { _ % 1000 }
+        y <- Arbitrary.arbitrary[Int].map {
+          _ % 1000
+        }
         by <- Arbitrary.arbitrary[Boolean]
         yl <- Arbitrary.arbitrary[List[Int]]
-        z <- Arbitrary.arbitrary[Int].map { _ % 1000 }
+        z <- Arbitrary.arbitrary[Int].map {
+          _ % 1000
+        }
         bz <- Arbitrary.arbitrary[Boolean]
         zl <- Arbitrary.arbitrary[List[Int]]
       } yield {
@@ -189,7 +211,9 @@ class VectorOps_IntTest extends TensorSpaceTestBase[Vector[Int], Int, Int] {
   }
 
   def genScalar: Arbitrary[Int] =
-    Arbitrary(Arbitrary.arbitrary[Int].map { _ % 1000 })
+    Arbitrary(Arbitrary.arbitrary[Int].map {
+      _ % 1000
+    })
 }
 
 @RunWith(classOf[JUnitRunner])

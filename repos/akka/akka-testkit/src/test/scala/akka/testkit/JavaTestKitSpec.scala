@@ -13,7 +13,9 @@ class JavaTestKitSpec extends AkkaSpec with DefaultTimeout {
     "be able to receiveN messages" in {
       new JavaTestKit(system) {
         val sent = List(1, 2, 3, 4, 5)
-        for (m ← sent) { getRef() ! m }
+        for (m ← sent) {
+          getRef() ! m
+        }
         val received = receiveN(sent.size, 5 seconds)
         sent.toSet should be(received.toSet)
       }
@@ -22,7 +24,9 @@ class JavaTestKitSpec extends AkkaSpec with DefaultTimeout {
     "be able to receiveN messages with default duration" in {
       new JavaTestKit(system) {
         val sent = List(1, 2, 3)
-        for (m ← sent) { getRef() ! m }
+        for (m ← sent) {
+          getRef() ! m
+        }
         val received = receiveN(sent.size)
         sent.toSet should be(received.toSet)
       }
@@ -31,7 +35,9 @@ class JavaTestKitSpec extends AkkaSpec with DefaultTimeout {
     "be able to expectTerminated" in {
       new JavaTestKit(system) {
         val actor = system.actorOf(Props(new Actor {
-          def receive = { case _ ⇒ }
+          def receive = {
+            case _ ⇒
+          }
         }))
 
         watch(actor)

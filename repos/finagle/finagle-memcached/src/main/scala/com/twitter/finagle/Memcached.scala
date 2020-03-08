@@ -84,13 +84,17 @@ private[finagle] object MemcachedTraceInitializer {
               case Values(vals) =>
                 val cmd = command.asInstanceOf[RetrievalCommand]
                 val misses = mutable.Set.empty[String]
-                cmd.keys foreach { case Buf.Utf8(key) => misses += key }
+                cmd.keys foreach {
+                  case Buf.Utf8(key) => misses += key
+                }
                 vals foreach { value =>
                   val Buf.Utf8(key) = value.key
                   Trace.recordBinary(key, "Hit")
                   misses.remove(key)
                 }
-                misses foreach { Trace.recordBinary(_, "Miss") }
+                misses foreach {
+                  Trace.recordBinary(_, "Miss")
+                }
               case _ =>
             }
           case _ =>

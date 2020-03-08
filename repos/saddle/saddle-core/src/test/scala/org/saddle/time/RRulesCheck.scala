@@ -42,7 +42,9 @@ class RRulesCheck extends Specification with ScalaCheck {
   }
 
   private def genWeekday: Gen[Weekday] =
-    for { i <- Gen.choose(1, 7) } yield toWeekday(i)
+    for {
+      i <- Gen.choose(1, 7)
+    } yield toWeekday(i)
 
   private def isNotWeekend(dt: DateTime) = {
     dt.dayOfWeek().get() must_!= DateTimeConstants.SUNDAY

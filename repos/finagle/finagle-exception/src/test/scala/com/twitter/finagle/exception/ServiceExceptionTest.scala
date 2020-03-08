@@ -169,7 +169,9 @@ private[exception] class TestServiceException(
           assert(jsonValue.isNumber)
           hasCardinality = verifyOption(
             jsonValue.intValue,
-            cardinality map { _ + 1 },
+            cardinality map {
+              _ + 1
+            },
             "cardinality",
             hasCardinality,
             false)

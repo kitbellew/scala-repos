@@ -95,7 +95,9 @@ class ProxyTest extends FunSuite with BeforeAndAfter {
         val stats = Await.result(externalClient.stats(arg))
         assert(stats != null)
         assert(!stats.isEmpty)
-        stats.foreach { line => assert(line.startsWith("STAT")) }
+        stats.foreach { line =>
+          assert(line.startsWith("STAT"))
+        }
       }
       externalClient.release()
     }
@@ -114,8 +116,12 @@ class ProxyTest extends FunSuite with BeforeAndAfter {
         Await.result(externalClient.stats(Some("cachedump " + n + " 100")))
       assert(stats != null)
       assert(!stats.isEmpty)
-      stats.foreach { stat => assert(stat.startsWith("ITEM")) }
-      assert(stats.find { stat => stat.contains("foo") }.isDefined)
+      stats.foreach { stat =>
+        assert(stat.startsWith("ITEM"))
+      }
+      assert(stats.find { stat =>
+        stat.contains("foo")
+      }.isDefined)
       externalClient.release()
     }
   }

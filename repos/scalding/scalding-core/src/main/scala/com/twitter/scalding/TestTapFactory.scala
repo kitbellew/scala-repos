@@ -57,18 +57,24 @@ object TestTapFactory extends Serializable {
       src: Source,
       scheme: Scheme[JobConf, RecordReader[_, _], OutputCollector[_, _], A, B],
       sinkMode: SinkMode): TestTapFactory =
-    new TestTapFactory(src, sinkMode) { override def hdfsScheme = Some(scheme) }
+    new TestTapFactory(src, sinkMode) {
+      override def hdfsScheme = Some(scheme)
+    }
 }
 
 class TestTapFactory(src: Source, sinkMode: SinkMode) extends Serializable {
   def sourceFields: Fields =
     hdfsScheme
-      .map { _.getSourceFields }
+      .map {
+        _.getSourceFields
+      }
       .getOrElse(sys.error("No sourceFields defined"))
 
   def sinkFields: Fields =
     hdfsScheme
-      .map { _.getSinkFields }
+      .map {
+        _.getSinkFields
+      }
       .getOrElse(sys.error("No sinkFields defined"))
 
   def hdfsScheme: Option[

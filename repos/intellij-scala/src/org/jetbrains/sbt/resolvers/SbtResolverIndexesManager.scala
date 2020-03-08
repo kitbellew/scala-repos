@@ -47,10 +47,14 @@ class SbtResolverIndexesManager(val testIndexesDir: Option[File])
   }
 
   def find(resolver: SbtResolver): Option[SbtResolverIndex] =
-    indexes find { _.root == resolver.root }
+    indexes find {
+      _.root == resolver.root
+    }
 
   def dispose() =
-    indexes foreach { _.close() }
+    indexes foreach {
+      _.close()
+    }
 
   def update(resolvers: Seq[SbtResolver]) {
 

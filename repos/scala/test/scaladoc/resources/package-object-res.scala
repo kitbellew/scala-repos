@@ -1,8 +1,12 @@
 /** This package has A and B.
   */
 package test {
-  trait A { def hi = "hello" }
-  trait B { def bye = "bye!" }
+  trait A {
+    def hi = "hello"
+  }
+  trait B {
+    def bye = "bye!"
+  }
 }
 
 /** This package object extends A and B.

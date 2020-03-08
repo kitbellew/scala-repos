@@ -215,7 +215,9 @@ class SparkILoop(
         }
       } else {
         // We need new URI(jar).getPath here for the case that `jar` includes encoded white space (%20).
-        SparkILoop.getAddedJars.map { jar => new URI(jar).getPath }
+        SparkILoop.getAddedJars.map { jar =>
+          new URI(jar).getPath
+        }
       }
     // work around for Scala bug
     val totalClassPath = addedJars.foldLeft(settings.classpath.value)((l, r) =>
@@ -297,7 +299,9 @@ class SparkILoop(
       val current = history.index
       val count =
         try xs.head.toInt
-        catch { case _: Exception => defaultLines }
+        catch {
+          case _: Exception => defaultLines
+        }
       val lines = history.asStrings takeRight count
       val offset = current - lines.size + 1
 
@@ -585,7 +589,9 @@ class SparkILoop(
   // private lazy val javap = substituteAndLog[Javap]("javap", NoJavap)(newJavap())
   private lazy val javap =
     try newJavap()
-    catch { case _: Exception => null }
+    catch {
+      case _: Exception => null
+    }
 
   // Still todo: modules.
   private def typeCommand(line0: String): Result = {
@@ -705,9 +711,12 @@ class SparkILoop(
       case _ =>
         def fn(): Boolean =
           try in.readYesOrNo(
-            replayQuestionMessage,
-            { echo("\nYou must enter y or n."); fn() })
-          catch { case _: RuntimeException => false }
+            replayQuestionMessage, {
+              echo("\nYou must enter y or n."); fn()
+            })
+          catch {
+            case _: RuntimeException => false
+          }
 
         if (fn()) replay()
         else echo("\nAbandoning crashed session.")
@@ -742,7 +751,9 @@ class SparkILoop(
       val shouldContinue =
         try {
           processLine(readOneLine())
-        } catch { case t: Throwable => crashRecovery(t) }
+        } catch {
+          case t: Throwable => crashRecovery(t)
+        }
       if (shouldContinue)
         innerLoop()
     }

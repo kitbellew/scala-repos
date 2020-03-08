@@ -264,7 +264,9 @@ package object saddle {
   implicit def seqToFrame[RX: ST: ORD, CX: ST: ORD, T: ST](
       s: Seq[(RX, CX, T)]) = new {
     def toFrame: Frame[RX, CX, T] = {
-      val grp = s.map { case (r, c, v) => ((r, c), v) }
+      val grp = s.map {
+        case (r, c, v) => ((r, c), v)
+      }
       grp.toSeries.pivot
     }
   }

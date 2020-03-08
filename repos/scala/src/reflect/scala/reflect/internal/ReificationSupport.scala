@@ -136,7 +136,9 @@ trait ReificationSupport { self: SymbolTable =>
 
     def thisPrefix(sym: Symbol): Type = sym.thisPrefix
 
-    def setType[T <: Tree](tree: T, tpe: Type): T = { tree.setType(tpe); tree }
+    def setType[T <: Tree](tree: T, tpe: Type): T = {
+      tree.setType(tpe); tree
+    }
 
     def setSymbol[T <: Tree](tree: T, sym: Symbol): T = {
       tree.setSymbol(sym); tree
@@ -169,7 +171,11 @@ trait ReificationSupport { self: SymbolTable =>
         argss: List[List[Tree]],
         extraFlags: FlagSet = NoFlags,
         excludeFlags: FlagSet = DEFERRED): List[List[ValDef]] =
-      argss.map { args => args.map { mkParam(_, extraFlags, excludeFlags) } }
+      argss.map { args =>
+        args.map {
+          mkParam(_, extraFlags, excludeFlags)
+        }
+      }
 
     def mkParam(
         tree: Tree,
@@ -389,7 +395,9 @@ trait ReificationSupport { self: SymbolTable =>
             body: List[Tree]) =
           Some((parents, selfType, ctorMods, vparamss, edefs, body))
         def indexOfCtor(trees: List[Tree]) =
-          trees.indexWhere { case UnCtor(_, _, _) => true; case _ => false }
+          trees.indexWhere {
+            case UnCtor(_, _, _) => true; case _ => false
+          }
 
         if (tbody forall treeInfo.isInterfaceMember)
           result(NoMods | Flag.TRAIT, Nil, Nil, tbody)
@@ -624,7 +632,9 @@ trait ReificationSupport { self: SymbolTable =>
     // match references to `scala.$name`
     protected class ScalaMemberRef(symbols: Seq[Symbol]) {
       def result(name: Name): Option[Symbol] =
-        symbols.collect { case sym if sym.name == name => sym }.headOption
+        symbols.collect {
+          case sym if sym.name == name => sym
+        }.headOption
       def unapply(tree: Tree): Option[Symbol] = tree match {
         case id @ Ident(name)
             if symbols.contains(id.symbol) && name == id.symbol.name =>
@@ -639,7 +649,9 @@ trait ReificationSupport { self: SymbolTable =>
     }
     protected object TupleClassRef extends ScalaMemberRef(TupleClass.seq)
     protected object TupleCompanionRef
-        extends ScalaMemberRef(TupleClass.seq.map { _.companionModule })
+        extends ScalaMemberRef(TupleClass.seq.map {
+          _.companionModule
+        })
     protected object UnitClassRef extends ScalaMemberRef(Seq(UnitClass))
     protected object FunctionClassRef extends ScalaMemberRef(FunctionClass.seq)
 
@@ -751,7 +763,9 @@ trait ReificationSupport { self: SymbolTable =>
       def apply(params: List[Tree], body: Tree): Function = {
         val params0 :: Nil = mkParam(params :: Nil, PARAM)
         require(
-          params0.forall { _.rhs.isEmpty },
+          params0.forall {
+            _.rhs.isEmpty
+          },
           "anonymous functions don't support parameters with default values")
         Function(params0, body)
       }
@@ -886,7 +900,9 @@ trait ReificationSupport { self: SymbolTable =>
     def UnliftListElementwise[T](unliftable: Unliftable[T]) =
       new UnliftListElementwise[T] {
         def unapply(lst: List[Tree]): Option[List[T]] = {
-          val unlifted = lst.flatMap { unliftable.unapply(_) }
+          val unlifted = lst.flatMap {
+            unliftable.unapply(_)
+          }
           if (unlifted.length == lst.length) Some(unlifted) else None
         }
       }
@@ -894,7 +910,11 @@ trait ReificationSupport { self: SymbolTable =>
     def UnliftListOfListsElementwise[T](unliftable: Unliftable[T]) =
       new UnliftListOfListsElementwise[T] {
         def unapply(lst: List[List[Tree]]): Option[List[List[T]]] = {
-          val unlifted = lst.map { l => l.flatMap { unliftable.unapply(_) } }
+          val unlifted = lst.map { l =>
+            l.flatMap {
+              unliftable.unapply(_)
+            }
+          }
           if (unlifted.flatten.length == lst.flatten.length) Some(unlifted)
           else None
         }

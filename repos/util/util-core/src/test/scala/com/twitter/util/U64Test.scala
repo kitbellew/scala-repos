@@ -155,16 +155,28 @@ class U64Test extends WordSpec {
     }
 
     "not parse with +" in {
-      intercept[NumberFormatException] { "+0".toU64Long }
-      intercept[NumberFormatException] { "0+".toU64Long }
-      intercept[NumberFormatException] { "00+0".toU64Long }
-      intercept[NumberFormatException] { "0+00".toU64Long }
-      intercept[NumberFormatException] { "+ffffffffffffffff".toU64Long }
+      intercept[NumberFormatException] {
+        "+0".toU64Long
+      }
+      intercept[NumberFormatException] {
+        "0+".toU64Long
+      }
+      intercept[NumberFormatException] {
+        "00+0".toU64Long
+      }
+      intercept[NumberFormatException] {
+        "0+00".toU64Long
+      }
+      intercept[NumberFormatException] {
+        "+ffffffffffffffff".toU64Long
+      }
     }
 
     "not parse non-latin unicode digits" in {
       // \u09e6 = BENGALI DIGIT ZERO (accepted by parseLong)
-      intercept[NumberFormatException] { "\u09e6".toU64Long }
+      intercept[NumberFormatException] {
+        "\u09e6".toU64Long
+      }
     }
 
     "parse mixed case" in {
@@ -172,19 +184,33 @@ class U64Test extends WordSpec {
     }
 
     "not parse if negative" in {
-      val actual = intercept[NumberFormatException] { "-1".toU64Long }
+      val actual = intercept[NumberFormatException] {
+        "-1".toU64Long
+      }
       assert(actual.getMessage == "For input string: \"-1\"")
 
-      intercept[NumberFormatException] { "".toU64Long }
-      intercept[NumberFormatException] { "-f".toU64Long }
-      intercept[NumberFormatException] { "-af".toU64Long }
-      intercept[NumberFormatException] { "10-aff".toU64Long }
-      intercept[NumberFormatException] { "1-0aff".toU64Long }
+      intercept[NumberFormatException] {
+        "".toU64Long
+      }
+      intercept[NumberFormatException] {
+        "-f".toU64Long
+      }
+      intercept[NumberFormatException] {
+        "-af".toU64Long
+      }
+      intercept[NumberFormatException] {
+        "10-aff".toU64Long
+      }
+      intercept[NumberFormatException] {
+        "1-0aff".toU64Long
+      }
     }
 
     "not parse empty string" in {
       // this is what Long.parseLong("") does
-      intercept[NumberFormatException] { "".toU64Long }
+      intercept[NumberFormatException] {
+        "".toU64Long
+      }
     }
   }
 }

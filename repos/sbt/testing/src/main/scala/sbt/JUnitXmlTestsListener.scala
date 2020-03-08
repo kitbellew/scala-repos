@@ -42,7 +42,9 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
       val props: ListBuffer[XNode] = new ListBuffer()
       while (iter.hasNext) {
         val next = iter.next
-        props += <property name={next.getKey.toString} value={
+        props += <property name={
+          next.getKey.toString
+        } value={
           next.getValue.toString
         }/>
       }
@@ -73,19 +75,33 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
       val (errors, failures, tests) =
         (count(TStatus.Error), count(TStatus.Failure), events.size)
 
-      val result = <testsuite hostname={hostname} name={name} tests={
+      val result = <testsuite hostname={
+        hostname
+      } name={
+        name
+      } tests={
         tests + ""
-      } errors={errors + ""} failures={failures + ""} time={
+      } errors={
+        errors + ""
+      } failures={
+        failures + ""
+      } time={
         (duration / 1000.0).toString
       }>
-                     {properties}
                      {
-        for (e <- events) yield <testcase classname={name} name={
+        properties
+      }
+                     {
+        for (e <- events) yield <testcase classname={
+          name
+        } name={
           e.selector match {
             case selector: TestSelector => selector.testName.split('.').last
             case _                      => "(It is not a test)"
           }
-        } time={(e.duration() / 1000.0).toString}>
+        } time={
+          (e.duration() / 1000.0).toString
+        }>
                                                  {
           val trace: String = if (e.throwable.isDefined) {
             val stringWriter = new StringWriter()
@@ -98,17 +114,29 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
           }
           e.status match {
             case TStatus.Error if (e.throwable.isDefined) =>
-              <error message={e.throwable.get.getMessage} type={
+              <error message={
+                e.throwable.get.getMessage
+              } type={
                 e.throwable.get.getClass.getName
-              }>{trace}</error>
+              }>{
+                trace
+              }</error>
             case TStatus.Error =>
-              <error message={"No Exception or message provided"}/>
+              <error message={
+                "No Exception or message provided"
+              }/>
             case TStatus.Failure if (e.throwable.isDefined) =>
-              <failure message={e.throwable.get.getMessage} type={
+              <failure message={
+                e.throwable.get.getMessage
+              } type={
                 e.throwable.get.getClass.getName
-              }>{trace}</failure>
+              }>{
+                trace
+              }</failure>
             case TStatus.Failure =>
-              <failure message={"No Exception or message provided"}/>
+              <failure message={
+                "No Exception or message provided"
+              }/>
             case TStatus.Skipped => <skipped/>
             case _               => {}
           }
@@ -128,7 +156,9 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
   val testSuite = new DynamicVariable(null: TestSuite)
 
   /**Creates the output Dir*/
-  override def doInit() = { targetDir.mkdirs() }
+  override def doInit() = {
+    targetDir.mkdirs()
+  }
 
   /**
     * Starts a new, initially empty Suite with the given name.

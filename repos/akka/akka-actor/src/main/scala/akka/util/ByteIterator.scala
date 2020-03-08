@@ -41,14 +41,18 @@ object ByteIterator {
 
     final def next(): Byte = {
       if (!hasNext) Iterator.empty.next
-      else { val i = from; from = from + 1; array(i) }
+      else {
+        val i = from; from = from + 1; array(i)
+      }
     }
 
     def clear(): Unit = {
       this.array = ByteArrayIterator.emptyArray; from = 0; until = from
     }
 
-    final override def length: Int = { val l = len; clear(); l }
+    final override def length: Int = {
+      val l = len; clear(); l
+    }
 
     final override def ++(that: TraversableOnce[Byte]): ByteIterator =
       that match {
@@ -76,12 +80,16 @@ object ByteIterator {
       new ByteArrayIterator(array, from, until)
 
     final override def take(n: Int): this.type = {
-      if (n < len) until = { if (n > 0) (from + n) else from }
+      if (n < len) until = {
+        if (n > 0) (from + n) else from
+      }
       this
     }
 
     final override def drop(n: Int): this.type = {
-      if (n > 0) from = { if (n < len) (from + n) else until }
+      if (n > 0) from = {
+        if (n < len) (from + n) else until
+      }
       this
     }
 
@@ -95,8 +103,11 @@ object ByteIterator {
     final override def dropWhile(p: Byte ⇒ Boolean): this.type = {
       var stop = false
       while (!stop && hasNext) {
-        if (p(array(from))) { from = from + 1 }
-        else { stop = true }
+        if (p(array(from))) {
+          from = from + 1
+        } else {
+          stop = true
+        }
       }
       this
     }
@@ -222,7 +233,9 @@ object ByteIterator {
     normalize()
 
     @inline private def current: ByteArrayIterator = iterators.head
-    @inline private def dropCurrent(): Unit = { iterators = iterators.tail }
+    @inline private def dropCurrent(): Unit = {
+      iterators = iterators.tail
+    }
     @inline def clear(): Unit = {
       iterators = MultiByteArrayIterator.empty.iterators
     }
@@ -237,7 +250,9 @@ object ByteIterator {
       result
     }
 
-    final override def len: Int = iterators.foldLeft(0) { _ + _.len }
+    final override def len: Int = iterators.foldLeft(0) {
+      _ + _.len
+    }
 
     final override def length: Int = {
       val result = len
@@ -340,7 +355,9 @@ object ByteIterator {
     }
 
     override def foreach[@specialized U](f: Byte ⇒ U): Unit = {
-      iterators foreach { _ foreach f }
+      iterators foreach {
+        _ foreach f
+      }
       clear()
     }
 
@@ -377,40 +394,56 @@ object ByteIterator {
       }
 
     def getBytes(xs: Array[Byte], offset: Int, n: Int): this.type =
-      getToArray(xs, offset, n, 1) { getByte } { current.getBytes(_, _, _) }
+      getToArray(xs, offset, n, 1) {
+        getByte
+      } {
+        current.getBytes(_, _, _)
+      }
 
     def getShorts(xs: Array[Short], offset: Int, n: Int)(
         implicit byteOrder: ByteOrder): this.type =
-      getToArray(xs, offset, n, 2) { getShort(byteOrder) } {
+      getToArray(xs, offset, n, 2) {
+        getShort(byteOrder)
+      } {
         current.getShorts(_, _, _)(byteOrder)
       }
 
     def getInts(xs: Array[Int], offset: Int, n: Int)(
         implicit byteOrder: ByteOrder): this.type =
-      getToArray(xs, offset, n, 4) { getInt(byteOrder) } {
+      getToArray(xs, offset, n, 4) {
+        getInt(byteOrder)
+      } {
         current.getInts(_, _, _)(byteOrder)
       }
 
     def getLongs(xs: Array[Long], offset: Int, n: Int)(
         implicit byteOrder: ByteOrder): this.type =
-      getToArray(xs, offset, n, 8) { getLong(byteOrder) } {
+      getToArray(xs, offset, n, 8) {
+        getLong(byteOrder)
+      } {
         current.getLongs(_, _, _)(byteOrder)
       }
 
     def getFloats(xs: Array[Float], offset: Int, n: Int)(
         implicit byteOrder: ByteOrder): this.type =
-      getToArray(xs, offset, n, 8) { getFloat(byteOrder) } {
+      getToArray(xs, offset, n, 8) {
+        getFloat(byteOrder)
+      } {
         current.getFloats(_, _, _)(byteOrder)
       }
 
     def getDoubles(xs: Array[Double], offset: Int, n: Int)(
         implicit byteOrder: ByteOrder): this.type =
-      getToArray(xs, offset, n, 8) { getDouble(byteOrder) } {
+      getToArray(xs, offset, n, 8) {
+        getDouble(byteOrder)
+      } {
         current.getDoubles(_, _, _)(byteOrder)
       }
 
     def copyToBuffer(buffer: ByteBuffer): Int = {
-      val n = iterators.foldLeft(0) { _ + _.copyToBuffer(buffer) }
+      val n = iterators.foldLeft(0) {
+        _ + _.copyToBuffer(buffer)
+      }
       normalize()
       n
     }
@@ -512,14 +545,21 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
   override def indexWhere(p: Byte ⇒ Boolean): Int = {
     var index = 0
     var found = false
-    while (!found && hasNext) if (p(next())) { found = true }
-    else { index += 1 }
+    while (!found && hasNext) if (p(next())) {
+      found = true
+    } else {
+      index += 1
+    }
     if (found) index else -1
   }
 
-  def indexOf(elem: Byte): Int = indexWhere { _ == elem }
+  def indexOf(elem: Byte): Int = indexWhere {
+    _ == elem
+  }
 
-  override def indexOf[B >: Byte](elem: B): Int = indexWhere { _ == elem }
+  override def indexOf[B >: Byte](elem: B): Int = indexWhere {
+    _ == elem
+  }
 
   def toByteString: ByteString
 
@@ -530,7 +570,9 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
 
   override def foldLeft[@specialized B](z: B)(op: (B, Byte) ⇒ B): B = {
     var acc = z
-    foreach { byte ⇒ acc = op(acc, byte) }
+    foreach { byte ⇒
+      acc = op(acc, byte)
+    }
     acc
   }
 

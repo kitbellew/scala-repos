@@ -65,7 +65,9 @@ sealed trait Context extends lila.user.UserContextWrapper {
   def requiresFingerprint = isAuth && !pageData.hasFingerprint
 
   private def ctxPref(name: String): Option[String] =
-    userContext.req.session get name orElse { pref get name }
+    userContext.req.session get name orElse {
+      pref get name
+    }
 }
 
 sealed abstract class BaseContext(

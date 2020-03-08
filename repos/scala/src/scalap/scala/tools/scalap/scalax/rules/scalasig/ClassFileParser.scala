@@ -55,8 +55,12 @@ class ByteCode(val bytes: Array[Byte], val pos: Int, val length: Int) {
 
   override def toString = length + " bytes"
 
-  def toInt = fold(0) { (x, b) => (x << 8) + (b & 0xFF) }
-  def toLong = fold(0L) { (x, b) => (x << 8) + (b & 0xFF) }
+  def toInt = fold(0) { (x, b) =>
+    (x << 8) + (b & 0xFF)
+  }
+  def toLong = fold(0L) { (x, b) =>
+    (x << 8) + (b & 0xFF)
+  }
 
   /**
     * Transforms array subsequence of the current buffer into the UTF8 String and
@@ -99,7 +103,9 @@ object ClassFileParser extends ByteCodeReader {
 
   val magicNumber =
     (u4 filter (_ == 0xCAFEBABE)) | error("Not a valid class file")
-  val version = u2 ~ u2 ^^ { case minor ~ major => (major, minor) }
+  val version = u2 ~ u2 ^^ {
+    case minor ~ major => (major, minor)
+  }
   val constantPool =
     (u2 ^^ ConstantPool) >> repeatUntil(constantPoolEntry)(_ isFull)
 
@@ -108,12 +114,24 @@ object ClassFileParser extends ByteCodeReader {
   val utf8String = (u2 >> bytes) ^^ add1 { raw => pool =>
     raw.fromUTF8StringAndBytes
   }
-  val intConstant = u4 ^^ add1 { x => pool => x }
-  val floatConstant = bytes(4) ^^ add1 { raw => pool => "Float: TODO" }
-  val longConstant = bytes(8) ^^ add2 { raw => pool => raw.toLong }
-  val doubleConstant = bytes(8) ^^ add2 { raw => pool => "Double: TODO" }
-  val classRef = u2 ^^ add1 { x => pool => "Class: " + pool(x) }
-  val stringRef = u2 ^^ add1 { x => pool => "String: " + pool(x) }
+  val intConstant = u4 ^^ add1 { x => pool =>
+    x
+  }
+  val floatConstant = bytes(4) ^^ add1 { raw => pool =>
+    "Float: TODO"
+  }
+  val longConstant = bytes(8) ^^ add2 { raw => pool =>
+    raw.toLong
+  }
+  val doubleConstant = bytes(8) ^^ add2 { raw => pool =>
+    "Double: TODO"
+  }
+  val classRef = u2 ^^ add1 { x => pool =>
+    "Class: " + pool(x)
+  }
+  val stringRef = u2 ^^ add1 { x => pool =>
+    "String: " + pool(x)
+  }
   val fieldRef = memberRef("Field")
   val methodRef = memberRef("Method")
   val interfaceMethodRef = memberRef("InterfaceMethod")
@@ -207,7 +225,9 @@ object ClassFileParser extends ByteCodeReader {
   def add1[T](f: T => ConstantPool => Any)(raw: T)(pool: ConstantPool) =
     pool add f(raw)
   def add2[T](f: T => ConstantPool => Any)(raw: T)(pool: ConstantPool) =
-    pool add f(raw) add { pool => "<empty>" }
+    pool add f(raw) add { pool =>
+      "<empty>"
+    }
 }
 
 case class ClassFile(

@@ -55,7 +55,9 @@ object UserInfo {
     }
 
     private lazy val signedFields = params.get("openid.signed") flatMap {
-      _.headOption map { _.split(",") }
+      _.headOption map {
+        _.split(",")
+      }
     } getOrElse (Array())
 
     def id =
@@ -68,7 +70,9 @@ object UserInfo {
       case (result, (key, values)) =>
         extractAxAttribute.lift(key) flatMap {
           case (fullKey, shortKey) if signedFields.contains(fullKey) =>
-            values.headOption map { value => Map(shortKey -> value) }
+            values.headOption map { value =>
+              Map(shortKey -> value)
+            }
           case _ => None
         } map (result ++ _) getOrElse result
     }
@@ -191,7 +195,8 @@ class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
       queryString.get("openid.mode").flatMap(_.headOption),
       queryString
         .get("openid.claimed_id")
-        .flatMap(_.headOption)) match { // The Claimed Identifier. "openid.claimed_id" and "openid.identity" SHALL be either both present or both absent.
+        .flatMap(
+          _.headOption)) match { // The Claimed Identifier. "openid.claimed_id" and "openid.identity" SHALL be either both present or both absent.
       case (Some("id_res"), Some(id)) => {
         // MUST perform discovery on the claimedId to resolve the op_endpoint.
         val server: Future[OpenIDServer] = discovery.discoverServer(id)

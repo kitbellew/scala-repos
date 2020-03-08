@@ -9,7 +9,9 @@ object GenProductTypes {
     def typeName(i: Int): String = (64 + i).toChar.toString
     val types = (1 to arity) map (typeName(_)) mkString ", "
     val specTypes = if (arity == 2) {
-      (1 to arity) map { i => spec + typeName(i) } mkString ","
+      (1 to arity) map { i =>
+        spec + typeName(i)
+      } mkString ","
     } else {
       types
     }
@@ -79,7 +81,9 @@ object GenProductTypes {
   def unary(op: String) = method(op, DelegateArg :: Nil)
   def binary(op: String) = method(op, DelegateArg :: DelegateArg :: Nil)
 
-  def endTrait: Block = { tpe => "}" }
+  def endTrait: Block = { tpe =>
+    "}"
+  }
 
   def constructor: Block = { tpe =>
     import tpe._

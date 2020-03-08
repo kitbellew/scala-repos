@@ -42,7 +42,9 @@ class PageRank(args: Args) extends Job(args) {
      * The first step is to append that value.  We also need to have a column for the degree.
      * It doesn't matter what the initial degree is, we recompute below
      */
-    .map(() -> ('rowtype, 'd_src)) { (u: Unit) => (NODESET, -1) }
+    .map(() -> ('rowtype, 'd_src)) { (u: Unit) =>
+      (NODESET, -1)
+    }
     .thenDo(doPageRank(STEPS) _)
     .thenDo(computeError _)
     .thenDo(output _)
@@ -106,13 +108,18 @@ class PageRank(args: Args) extends Job(args) {
 
   @tailrec
   final def doPageRank(steps: Int)(pagerank: RichPipe): RichPipe = {
-    if (steps <= 0) { pagerank }
-    else {
+    if (steps <= 0) {
+      pagerank
+    } else {
       val nodeRows = pagerank
       //remove any EDGE rows from the previous loop
-        .filter('rowtype) { (rowtype: Int) => rowtype == NODESET }
+        .filter('rowtype) { (rowtype: Int) =>
+          rowtype == NODESET
+        }
       //compute the incremental rank due to the random jump:
-      val randomJump = nodeRows.map('rank -> 'rank) { (rank: Double) => ALPHA }
+      val randomJump = nodeRows.map('rank -> 'rank) { (rank: Double) =>
+        ALPHA
+      }
       //expand the neighbor list inte an edge list and out-degree of the src
       val edges = nodeRows
         .flatMap(('dst, 'd_src) -> ('dst, 'd_src)) { args: (String, Long) =>
@@ -120,7 +127,9 @@ class PageRank(args: Args) extends Job(args) {
             val dsts = args._1.split(",")
             //Ignore the old degree:
             val deg = dsts.size
-            dsts.map { str => (str.toLong, deg) }
+            dsts.map { str =>
+              (str.toLong, deg)
+            }
           } else {
             //Here is a node that points to no other nodes (dangling)
             Nil
@@ -185,7 +194,9 @@ class PageRank(args: Args) extends Job(args) {
         .mapTo(('rank0, 'rank) -> 'err) { ranks: (Double, Double) =>
           scala.math.abs(ranks._1 - ranks._2)
         }
-        .groupAll { _.average('err) }
+        .groupAll {
+          _.average('err)
+        }
         .write(TypedTsv[Double](errOut))
     }
     pr

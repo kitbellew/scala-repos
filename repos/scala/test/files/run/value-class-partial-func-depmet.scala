@@ -1,5 +1,7 @@
 class C
-class A { class C }
+class A {
+  class C
+}
 
 object Test {
   def main(args: Array[String]) {
@@ -11,7 +13,9 @@ object Test {
 
 class VC(val a: Any) extends AnyVal {
   def foo(a: A) = {
-    val pf: PartialFunction[a.C, Any] = { case x => x }
+    val pf: PartialFunction[a.C, Any] = {
+      case x => x
+    }
     (pf: PartialFunction[Null, Any]).isDefinedAt(null)
   }
 }

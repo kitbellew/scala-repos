@@ -9,7 +9,9 @@ sealed trait DelegateIndex {
 private final class DelegateIndex0(refs: Map[ProjectRef, ProjectDelegates])
     extends DelegateIndex {
   def project(ref: ProjectRef): Seq[ScopeAxis[ResolvedReference]] =
-    refs.get(ref) match { case Some(pd) => pd.refs; case None => Nil }
+    refs.get(ref) match {
+      case Some(pd) => pd.refs; case None => Nil
+    }
   def config(ref: ProjectRef, conf: ConfigKey): Seq[ScopeAxis[ConfigKey]] =
     refs.get(ref) match {
       case Some(pd) =>

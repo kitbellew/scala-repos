@@ -207,18 +207,42 @@ class Function(val i: Int) extends Group("Function") with Arity {
 
   def toStr() = "\"" + ("<function%d>" format i) + "\""
   def apply() = {
-    <file name={fileName}>{header}
+    <file name={
+      fileName
+    }>{
+      header
+    }
 
-/** A function of {i} parameter{s}.
- *{descriptiveComment}
+/** A function of {
+      i
+    } parameter{
+      s
+    }.
+ *{
+      descriptiveComment
+    }
  */
-{classAnnotation}trait {className}{contraCoArgs} extends AnyRef {{ self =>
-  /** Apply the body of this function to the argument{s}.
+{
+      classAnnotation
+    }trait {
+      className
+    }{
+      contraCoArgs
+    } extends AnyRef {{ self =>
+  /** Apply the body of this function to the argument{
+      s
+    }.
    *  @return   the result of function application.
    */
-  def apply({funArgs}): R
-{moreMethods}
-  override def toString() = {toStr}
+  def apply({
+      funArgs
+    }): R
+{
+      moreMethods
+    }
+  override def toString() = {
+      toStr
+    }
 }}
 </file>
   }
@@ -340,21 +364,47 @@ class Tuple(val i: Int) extends Group("Tuple") with Arity {
   }
 
   def apply() = {
-    <file name={fileName}>{header}
+    <file name={
+      fileName
+    }>{
+      header
+    }
 
-/** A tuple of {i} elements; the canonical representation of a [[scala.{
+/** A tuple of {
+      i
+    } elements; the canonical representation of a [[scala.{
       Product.className(i)
     }]].
  *
- *  @constructor  Create a new tuple with {i} elements.{idiomatic}
-{params}
+ *  @constructor  Create a new tuple with {
+      i
+    } elements.{
+      idiomatic
+    }
+{
+      params
+    }
  */
 @deprecatedInheritance("Tuples will be made final in a future version.", "2.11.0")
-case class {className}{covariantArgs}({fields})
-  extends {Product.className(i)}{invariantArgs}
+case class {
+      className
+    }{
+      covariantArgs
+    }({
+      fields
+    })
+  extends {
+      Product.className(i)
+    }{
+      invariantArgs
+    }
 {{
-  override def toString() = "(" + {mkToString} + ")"
-  {moreMethods}
+  override def toString() = "(" + {
+      mkToString
+    } + ")"
+  {
+      moreMethods
+    }
 }}
 </file>
   }
@@ -414,29 +464,65 @@ class Product(val i: Int) extends Group("Product") with Arity {
   }
 
   def apply() = {
-    <file name={fileName}>{header}
-object {className} {{
-  def unapply{invariantArgs}(x: {className}{invariantArgs}): Option[{className}{
+    <file name={
+      fileName
+    }>{
+      header
+    }
+object {
+      className
+    } {{
+  def unapply{
+      invariantArgs
+    }(x: {
+      className
+    }{
+      invariantArgs
+    }): Option[{
+      className
+    }{
       invariantArgs
     }] =
     Some(x)
 }}
 
-/** {className} is a cartesian product of {i} component{s}.
+/** {
+      className
+    } is a cartesian product of {
+      i
+    } component{
+      s
+    }.
  *  @since 2.3
  */
-trait {className}{covariantArgs} extends Any with Product {{
+trait {
+      className
+    }{
+      covariantArgs
+    } extends Any with Product {{
   /** The arity of this product.
-   *  @return {i}
+   *  @return {
+      i
+    }
    */
-  override def productArity = {i}
+  override def productArity = {
+      i
+    }
 
-  {productElementComment}
+  {
+      productElementComment
+    }
   @throws(classOf[IndexOutOfBoundsException])
-  override def productElement(n: Int) = n match {{ {cases} }}
+  override def productElement(n: Int) = n match {{ {
+      cases
+    } }}
 
-{proj}
-{moreMethods}
+{
+      proj
+    }
+{
+      moreMethods
+    }
 }}
 </file>
   }
@@ -466,9 +552,23 @@ class AbstractFunction(val i: Int)
   val superTypeArgs = typeArgsString(targs ::: List("R"))
 
   def apply() = {
-    <file name={"runtime/" + fileName}>{header}
-abstract class {className}{contraCoArgs} extends Function{i}{superTypeArgs} {{
-{moreMethods}
+    <file name={
+      "runtime/" + fileName
+    }>{
+      header
+    }
+abstract class {
+      className
+    }{
+      contraCoArgs
+    } extends Function{
+      i
+    }{
+      superTypeArgs
+    } {{
+{
+      moreMethods
+    }
 }}
 </file>
   }

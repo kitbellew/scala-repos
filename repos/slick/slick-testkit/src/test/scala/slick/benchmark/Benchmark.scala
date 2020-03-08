@@ -34,7 +34,9 @@ object Benchmark {
     val q1 = for (u <- users) yield u
     val q2 = for {
       u <- users
-      o <- orders filter { o => u.id === o.userID }
+      o <- orders filter { o =>
+        u.id === o.userID
+      }
     } yield (u.first, u.last, o.orderID)
     val q3 = for (u <- users filter (_.id === 42)) yield (u.first, u.last)
     val q4 =

@@ -24,9 +24,14 @@ private[lobby] final class SocketHandler(
       socket: ActorRef,
       uid: String,
       member: Member): Handler.Controller = {
-    case ("p", o) => o int "v" foreach { v => socket ! PingVersion(uid, v) }
+    case ("p", o) =>
+      o int "v" foreach { v =>
+        socket ! PingVersion(uid, v)
+      }
     case ("join", o) =>
-      o str "d" foreach { id => lobby ! BiteHook(id, uid, member.user) }
+      o str "d" foreach { id =>
+        lobby ! BiteHook(id, uid, member.user)
+      }
     case ("cancel", o) =>
       lobby ! CancelHook(uid)
     case ("joinSeek", o) =>

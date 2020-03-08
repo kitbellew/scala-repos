@@ -85,7 +85,9 @@ object TestUtil {
       inputRange: Interval[Timestamp],
       batcher: Batcher): TraversableOnce[(Long, T)] = {
     val batchRange = batcher.toTimestamp(batcher.batchesCoveredBy(inputRange))
-    input.filter { case (ts, _) => batchRange.contains(Timestamp(ts)) }
+    input.filter {
+      case (ts, _) => batchRange.contains(Timestamp(ts))
+    }
   }
 
   /* keep just the values */
@@ -128,7 +130,9 @@ object TestUtil {
       randomBatcher(items.iterator.map(_._1).min, items.iterator.map(_._1).max)
   }
 
-  def randomBatcher(mintimeInc: Long, maxtimeInc: Long): Batcher = { //simpleBatcher
+  def randomBatcher(
+      mintimeInc: Long,
+      maxtimeInc: Long): Batcher = { //simpleBatcher
     // we can have between 1 and (maxtime - mintime + 1) batches.
     val delta = (maxtimeInc - mintimeInc)
     val MaxBatches = 5L min delta

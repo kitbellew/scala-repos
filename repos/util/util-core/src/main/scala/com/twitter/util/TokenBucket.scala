@@ -67,7 +67,9 @@ object TokenBucket {
       }
     }
 
-    def count: Long = synchronized { counter }
+    def count: Long = synchronized {
+      counter
+    }
   }
 
   /**

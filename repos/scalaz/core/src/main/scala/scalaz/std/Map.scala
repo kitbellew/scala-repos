@@ -217,7 +217,9 @@ trait MapSubFunctions extends MapSub {
     */
   final def mapKeys[K, K2: BuildKeyConstraint, A](m: XMap[K, A])(
       f: K => K2): XMap[K2, A] =
-    m map { case (k, v) => f(k) -> v }
+    m map {
+      case (k, v) => f(k) -> v
+    }
 
   /** Like `unionWith`, but telling `f` about the key. */
   final def unionWithKey[K: BuildKeyConstraint, A](

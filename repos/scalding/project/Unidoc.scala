@@ -22,7 +22,9 @@ object Unidoc {
       thisProjectRef,
       buildStructure,
       unidocExclude) flatMap allSources,
-    unidocSources <<= unidocAllSources map { _.flatten },
+    unidocSources <<= unidocAllSources map {
+      _.flatten
+    },
     unidocAllClasspaths <<= (
       thisProjectRef,
       buildStructure,

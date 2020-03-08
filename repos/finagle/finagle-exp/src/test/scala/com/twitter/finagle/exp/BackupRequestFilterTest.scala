@@ -208,7 +208,9 @@ class BackupRequestFilterTest extends FunSuite with MockitoSugar with Matchers {
       backupPromise.setValue("backup")
       assert(f.poll == Some(Return("backup")))
       assert(backupPromise.isInterrupted == None)
-      val ex = intercept[Exception] { Await.result(origPromise) }
+      val ex = intercept[Exception] {
+        Await.result(origPromise)
+      }
       assert(ex == cancelEx)
       assert(statsReceiver.counters(Seq("lost")) == 1)
       // original request fails instead of timing out
@@ -266,7 +268,9 @@ class BackupRequestFilterTest extends FunSuite with MockitoSugar with Matchers {
       backupPromise.setValue("backup")
       assert(f.poll == Some(Return("backup")))
       assert(backupPromise.isInterrupted == None)
-      val ex = intercept[Exception] { Await.result(origPromise) }
+      val ex = intercept[Exception] {
+        Await.result(origPromise)
+      }
       assert(ex == cancelEx)
       assert(statsReceiver.counters(Seq("lost")) == 1)
       // original request takes longer than cutoff

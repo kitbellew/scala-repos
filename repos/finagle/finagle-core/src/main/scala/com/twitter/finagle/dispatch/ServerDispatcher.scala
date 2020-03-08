@@ -60,7 +60,9 @@ abstract class GenSerialServerDispatcher[Req, Rep, In, Out](
               }
             }
         } finally Local.restore(save)
-        p map { res => (res, eos) }
+        p map { res =>
+          (res, eos)
+        }
       } else Eof
     } flatMap {
       case (rep, eos) =>
@@ -75,7 +77,9 @@ abstract class GenSerialServerDispatcher[Req, Rep, In, Out](
   }
 
   // Clear all locals to start the loop; we want a clean slate.
-  private[this] val looping = Local.letClear { loop() }
+  private[this] val looping = Local.letClear {
+    loop()
+  }
 
   trans.onClose ensure {
     looping.raise(cancelled)

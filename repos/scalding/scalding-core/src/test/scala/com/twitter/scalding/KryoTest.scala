@@ -87,10 +87,14 @@ class KryoTest extends WordSpec with Matchers {
 
   //These are analogous to how Hadoop will serialize
   def serialize(ins: List[AnyRef]) = {
-    ins.map { v => (v.getClass, serObj(v)) }
+    ins.map { v =>
+      (v.getClass, serObj(v))
+    }
   }
   def deserialize(input: List[(Class[_], Array[Byte])]) = {
-    input.map { tup => deserObj[AnyRef](tup._1, tup._2) }
+    input.map { tup =>
+      deserObj[AnyRef](tup._1, tup._2)
+    }
   }
   def serializationRT(ins: List[AnyRef]) = deserialize(serialize(ins))
 
@@ -134,7 +138,9 @@ class KryoTest extends WordSpec with Matchers {
         AveragedValue(100, 32.0),
         // Serialize an instance of the HLL monoid
         hllmon.apply(42),
-        Monoid.sum(List(1, 2, 3, 4).map { hllmon(_) }),
+        Monoid.sum(List(1, 2, 3, 4).map {
+          hllmon(_)
+        }),
         'hai
       ).asInstanceOf[List[AnyRef]]
       serializationRT(test) shouldBe test
@@ -174,7 +180,9 @@ class KryoTest extends WordSpec with Matchers {
       val bigList = (1 to 100000).toList
       val list2 = deserObj[List[Int]](bigList.getClass, serObj(bigList))
       //Specs, it turns out, also doesn't deal with giant lists well:
-      list2.zip(bigList).foreach { case (l, r) => l shouldBe r }
+      list2.zip(bigList).foreach {
+        case (l, r) => l shouldBe r
+      }
     }
   }
 }

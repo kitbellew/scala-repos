@@ -124,7 +124,9 @@ object Array extends FallbackArrayBuilding {
   def apply[T: ClassTag](xs: T*): Array[T] = {
     val array = new Array[T](xs.length)
     var i = 0
-    for (x <- xs.iterator) { array(i) = x; i += 1 }
+    for (x <- xs.iterator) {
+      array(i) = x; i += 1
+    }
     array
   }
 
@@ -134,7 +136,9 @@ object Array extends FallbackArrayBuilding {
     val array = new Array[Boolean](xs.length + 1)
     array(0) = x
     var i = 1
-    for (x <- xs.iterator) { array(i) = x; i += 1 }
+    for (x <- xs.iterator) {
+      array(i) = x; i += 1
+    }
     array
   }
 
@@ -144,7 +148,9 @@ object Array extends FallbackArrayBuilding {
     val array = new Array[Byte](xs.length + 1)
     array(0) = x
     var i = 1
-    for (x <- xs.iterator) { array(i) = x; i += 1 }
+    for (x <- xs.iterator) {
+      array(i) = x; i += 1
+    }
     array
   }
 
@@ -154,7 +160,9 @@ object Array extends FallbackArrayBuilding {
     val array = new Array[Short](xs.length + 1)
     array(0) = x
     var i = 1
-    for (x <- xs.iterator) { array(i) = x; i += 1 }
+    for (x <- xs.iterator) {
+      array(i) = x; i += 1
+    }
     array
   }
 
@@ -164,7 +172,9 @@ object Array extends FallbackArrayBuilding {
     val array = new Array[Char](xs.length + 1)
     array(0) = x
     var i = 1
-    for (x <- xs.iterator) { array(i) = x; i += 1 }
+    for (x <- xs.iterator) {
+      array(i) = x; i += 1
+    }
     array
   }
 
@@ -174,7 +184,9 @@ object Array extends FallbackArrayBuilding {
     val array = new Array[Int](xs.length + 1)
     array(0) = x
     var i = 1
-    for (x <- xs.iterator) { array(i) = x; i += 1 }
+    for (x <- xs.iterator) {
+      array(i) = x; i += 1
+    }
     array
   }
 
@@ -184,7 +196,9 @@ object Array extends FallbackArrayBuilding {
     val array = new Array[Long](xs.length + 1)
     array(0) = x
     var i = 1
-    for (x <- xs.iterator) { array(i) = x; i += 1 }
+    for (x <- xs.iterator) {
+      array(i) = x; i += 1
+    }
     array
   }
 
@@ -194,7 +208,9 @@ object Array extends FallbackArrayBuilding {
     val array = new Array[Float](xs.length + 1)
     array(0) = x
     var i = 1
-    for (x <- xs.iterator) { array(i) = x; i += 1 }
+    for (x <- xs.iterator) {
+      array(i) = x; i += 1
+    }
     array
   }
 
@@ -204,7 +220,9 @@ object Array extends FallbackArrayBuilding {
     val array = new Array[Double](xs.length + 1)
     array(0) = x
     var i = 1
-    for (x <- xs.iterator) { array(i) = x; i += 1 }
+    for (x <- xs.iterator) {
+      array(i) = x; i += 1
+    }
     array
   }
 
@@ -213,7 +231,9 @@ object Array extends FallbackArrayBuilding {
     val array = new Array[Unit](xs.length + 1)
     array(0) = x
     var i = 1
-    for (x <- xs.iterator) { array(i) = x; i += 1 }
+    for (x <- xs.iterator) {
+      array(i) = x; i += 1
+    }
     array
   }
 
@@ -582,7 +602,9 @@ final class Array[T](_length: Int)
     *  @param    x   the value to be written at index `i`
     *  @throws       ArrayIndexOutOfBoundsException if `i < 0` or `length <= i`
     */
-  def update(i: Int, x: T) { throw new Error() }
+  def update(i: Int, x: T) {
+    throw new Error()
+  }
 
   /** Clone the Array.
     *

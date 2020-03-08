@@ -24,8 +24,12 @@ class PresentationReporter(handler: ReportHandler)
 
   val log = LoggerFactory.getLogger(classOf[PresentationReporter])
   private var enabled = true
-  def enable(): Unit = { enabled = true }
-  def disable(): Unit = { enabled = false }
+  def enable(): Unit = {
+    enabled = true
+  }
+  def disable(): Unit = {
+    enabled = false
+  }
 
   override def reset(): Unit = {
     super.reset()

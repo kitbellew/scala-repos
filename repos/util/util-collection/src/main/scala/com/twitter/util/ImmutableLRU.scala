@@ -36,7 +36,9 @@ class ImmutableLRU[K, V] private (
   // Scala's SortedMap requires a key ordering; ImmutableLRU doesn't
   // care about pulling a minimum value out of the SortedMap, so the
   // following kOrd treats every value as equal.
-  protected implicit val kOrd = new Ordering[K] { def compare(l: K, r: K) = 0 }
+  protected implicit val kOrd = new Ordering[K] {
+    def compare(l: K, r: K) = 0
+  }
 
   /**
     * the number of entries in the cache
@@ -61,7 +63,12 @@ class ImmutableLRU[K, V] private (
     val newIdx = idx + 1
     val newMap = map + (key -> ((newIdx, value)))
     // Now update the ordered cache:
-    val baseOrd = map.get(key).map { case (id, _) => ord - id }.getOrElse(ord)
+    val baseOrd = map
+      .get(key)
+      .map {
+        case (id, _) => ord - id
+      }
+      .getOrElse(ord)
     val ordWithNewKey = baseOrd + (newIdx -> key)
     // Do we need to remove an old key:
     val (evicts, finalMap, finalOrd) = if (ordWithNewKey.size > maxSize) {
@@ -80,7 +87,9 @@ class ImmutableLRU[K, V] private (
     */
   def get(k: K): (Option[V], ImmutableLRU[K, V]) = {
     val (optionalValue, lru) = remove(k)
-    val newLru = optionalValue.map { v => (lru + (k -> v))._2 } getOrElse (lru)
+    val newLru = optionalValue.map { v =>
+      (lru + (k -> v))._2
+    } getOrElse (lru)
     (optionalValue, newLru)
   }
 
@@ -101,5 +110,7 @@ class ImmutableLRU[K, V] private (
       }
       .getOrElse((None, this))
 
-  override def toString = { "ImmutableLRU(" + map.toList.mkString(",") + ")" }
+  override def toString = {
+    "ImmutableLRU(" + map.toList.mkString(",") + ")"
+  }
 }

@@ -70,7 +70,9 @@ final case class Chef(blockFormat: CookedBlockFormat, format: SegmentFormat)
     }
 
     val files = files0.toList.sequence[
-      ({ type λ[α] = ValidationNel[IOException, α] })#λ,
+      ({
+        type λ[α] = ValidationNel[IOException, α]
+      })#λ,
       (SegmentId, File)]
     files flatMap { segs =>
       val metadata = CookedBlockMetadata(reader.id, reader.length, segs.toArray)

@@ -22,7 +22,9 @@ class TestAuthFixture extends Mockito {
 
   var authenticated: Boolean = true
   var authorized: Boolean = true
-  var authFn: Any => Boolean = { _ => true }
+  var authFn: Any => Boolean = { _ =>
+    true
+  }
 
   val UnauthorizedStatus = 401
   val NotAuthenticatedStatus = 403

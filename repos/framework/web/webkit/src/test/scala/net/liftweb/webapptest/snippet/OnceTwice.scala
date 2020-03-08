@@ -30,7 +30,11 @@ class Oneshot {
   def render(in: NodeSeq): NodeSeq = {
     S.disableTestFuncNames {
       S.oneShot {
-        SHtml.text("", s => { Counter.x += 1 })
+        SHtml.text(
+          "",
+          s => {
+            Counter.x += 1
+          })
       }
     }
   }

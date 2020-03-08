@@ -249,9 +249,15 @@ trait MappedNullableField[
     * Create an input field for the item
     */
   override def _toForm: Box[NodeSeq] =
-    S.fmapFunc({ s: List[String] => this.setFromAny(s) }) { funcName =>
-      Full(appendFieldId(<input type={formInputType}
-                       name={funcName}
+    S.fmapFunc({ s: List[String] =>
+      this.setFromAny(s)
+    }) { funcName =>
+      Full(appendFieldId(<input type={
+        formInputType
+      }
+                       name={
+        funcName
+      }
                        value={
         get match {
           case null       => ""
@@ -295,10 +301,13 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
     * Get the source field metadata for the field
     * @return the source field metadata for the field
     */
-  def sourceInfoMetadata(): SourceFieldMetadata { type ST = FieldType }
+  def sourceInfoMetadata(): SourceFieldMetadata {
+    type ST = FieldType
+  }
 
-  def sourceFieldInfo(): SourceFieldInfo { type T = FieldType } =
-    SourceFieldInfoRep(get, sourceInfoMetadata())
+  def sourceFieldInfo(): SourceFieldInfo {
+    type T = FieldType
+  } = SourceFieldInfoRep(get, sourceInfoMetadata())
 
   /**
     * Get the field that this prototypical field represents
@@ -317,7 +326,9 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
     * Given the driver type, return a list of SQL creation strings for the columns represented by this field
     */
   def fieldCreatorString(dbType: DriverType): List[String] =
-    dbColumnNames(name).map { c => fieldCreatorString(dbType, c) }
+    dbColumnNames(name).map { c =>
+      fieldCreatorString(dbType, c)
+    }
 
   def notNullAppender() = if (dbNotNull_?) " NOT NULL " else ""
 
@@ -479,9 +490,15 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
     * Create an input field for the item
     */
   override def _toForm: Box[NodeSeq] =
-    S.fmapFunc({ s: List[String] => this.setFromAny(s) }) { funcName =>
-      Full(appendFieldId(<input type={formInputType}
-                       name={funcName}
+    S.fmapFunc({ s: List[String] =>
+      this.setFromAny(s)
+    }) { funcName =>
+      Full(appendFieldId(<input type={
+        formInputType
+      }
+                       name={
+        funcName
+      }
                        value={
         get match {
           case null => ""

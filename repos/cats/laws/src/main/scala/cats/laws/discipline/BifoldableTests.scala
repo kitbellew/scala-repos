@@ -24,5 +24,7 @@ trait BifoldableTests[F[_, _]] extends Laws {
 
 object BifoldableTests {
   def apply[F[_, _]: Bifoldable]: BifoldableTests[F] =
-    new BifoldableTests[F] { def laws: BifoldableLaws[F] = BifoldableLaws[F] }
+    new BifoldableTests[F] {
+      def laws: BifoldableLaws[F] = BifoldableLaws[F]
+    }
 }

@@ -63,7 +63,9 @@ private[round] final class Finisher(
           case (whiteO, blackO) => {
             val finish = FinishGame(g, whiteO, blackO)
             updateCountAndPerfs(finish) inject {
-              message foreach { messenger.system(g, _) }
+              message foreach {
+                messenger.system(g, _)
+              }
               GameRepo game g.id foreach { newGame =>
                 bus.publish(finish.copy(game = newGame | g), 'finishGame)
               }

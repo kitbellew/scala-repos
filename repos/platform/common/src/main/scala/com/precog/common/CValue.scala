@@ -83,7 +83,9 @@ sealed trait RValue { self =>
 object RValue {
   def fromJValue(jv: JValue): RValue = jv match {
     case JObject(fields) =>
-      RObject(fields map { case (k, v) => (k, fromJValue(v)) })
+      RObject(fields map {
+        case (k, v) => (k, fromJValue(v))
+      })
     case JArray(elements) => RArray(elements map fromJValue)
     case other            => CType.toCValue(other)
   }
@@ -161,7 +163,10 @@ object RValue {
 }
 
 case class RObject(fields: Map[String, RValue]) extends RValue {
-  def toJValue = JObject(fields map { case (k, v) => (k, v.toJValue) })
+  def toJValue =
+    JObject(fields map {
+      case (k, v) => (k, v.toJValue)
+    })
   def \(fieldName: String): RValue = fields(fieldName)
 }
 
@@ -171,7 +176,10 @@ object RObject {
 }
 
 case class RArray(elements: List[RValue]) extends RValue {
-  def toJValue = JArray(elements map { _.toJValue })
+  def toJValue =
+    JArray(elements map {
+      _.toJValue
+    })
   def \(fieldName: String): RValue = CUndefined
 }
 

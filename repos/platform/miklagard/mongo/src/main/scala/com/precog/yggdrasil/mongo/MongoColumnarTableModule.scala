@@ -99,7 +99,9 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
         elements
           .map {
             case (index, childType) =>
-              val newPaths = current.map { s => s + "[" + index + "]" }
+              val newPaths = current.map { s =>
+                s + "[" + index + "]"
+              }
               jTypeToProperties(childType, newPaths)
           }
           .toSet
@@ -110,7 +112,9 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
           .map {
             case (name, childType) =>
               val newPaths = if (current.nonEmpty) {
-                current.map { s => s + "." + name }
+                current.map { s =>
+                  s + "." + name
+                }
               } else {
                 Set(name)
               }
@@ -132,7 +136,9 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
 
     def safeOp[A](nullMessage: String)(v: => A): Option[A] =
       try {
-        Option(v) orElse { logger.error(nullMessage); None }
+        Option(v) orElse {
+          logger.error(nullMessage); None
+        }
       } catch {
         case t: Throwable =>
           logger.error(

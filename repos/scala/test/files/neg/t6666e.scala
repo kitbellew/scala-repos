@@ -3,5 +3,7 @@ import scala.math.Ordering
 
 class Crash(a: Any) {
   def this() =
-    this(Nil.collect { case x => })
+    this(Nil.collect {
+      case x =>
+    })
 }

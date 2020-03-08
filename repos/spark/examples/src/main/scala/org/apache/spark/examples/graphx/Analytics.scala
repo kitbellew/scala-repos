@@ -113,7 +113,10 @@ object Analytics extends Logging {
 
         if (!outFname.isEmpty) {
           logWarning("Saving pageranks of pages to " + outFname)
-          pr.map { case (id, r) => id + "\t" + r }.saveAsTextFile(outFname)
+          pr.map {
+              case (id, r) => id + "\t" + r
+            }
+            .saveAsTextFile(outFname)
         }
 
         sc.stop()
@@ -144,7 +147,9 @@ object Analytics extends Logging {
         val cc = ConnectedComponents.run(graph)
         println(
           "Components: " + cc.vertices
-            .map { case (vid, data) => data }
+            .map {
+              case (vid, data) => data
+            }
             .distinct())
         sc.stop()
 

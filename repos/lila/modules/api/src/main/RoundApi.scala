@@ -44,8 +44,9 @@ private[api] final class RoundApi(
               withSimul(pov, simulOption) _ compose
               withSteps(pov, none, initialFen, withOpening = false) _ compose
               withNote(note) _ compose
-              withBookmark(
-                ctx.me ?? { bookmarkApi.bookmarked(pov.game, _) }) _ compose
+              withBookmark(ctx.me ?? {
+                bookmarkApi.bookmarked(pov.game, _)
+              }) _ compose
               withForecastCount(forecast.map(_.steps.size)) _
           )(json)
       }
@@ -79,8 +80,9 @@ private[api] final class RoundApi(
                 withTournament(pov, tourOption) _ compose
                 withSimul(pov, simulOption) _ compose
                 withNote(note) _ compose
-                withBookmark(
-                  ctx.me ?? { bookmarkApi.bookmarked(pov.game, _) }) _ compose
+                withBookmark(ctx.me ?? {
+                  bookmarkApi.bookmarked(pov.game, _)
+                }) _ compose
                 withSteps(
                   pov,
                   analysis,

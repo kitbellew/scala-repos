@@ -29,7 +29,9 @@ object CategoricalNaiveBayes {
     */
   def train(points: RDD[LabeledPoint]): CategoricalNaiveBayesModel = {
     val labelCountFeatureLikelihoods = points
-      .map { p => (p.label, p.features) }
+      .map { p =>
+        (p.label, p.features)
+      }
       .combineByKey[(Long, Array[Map[String, Long]])](
         createCombiner = (features: Array[String]) => {
           val featureCounts = features.map { feature =>
@@ -59,7 +61,9 @@ object CategoricalNaiveBayes {
             labelCount1 + labelCount2,
             featureCounts1.zip(featureCounts2).map {
               case (m1, m2) =>
-                m2 ++ m2.map { case (k, v) => k -> (v + m2(k)) }
+                m2 ++ m2.map {
+                  case (k, v) => k -> (v + m2(k))
+                }
             })
         }
       )
@@ -152,7 +156,9 @@ case class CategoricalNaiveBayesModel(
     */
   def predict(features: Array[String]): String = {
     priors.keySet
-      .map { label => (label, logScoreInternal(label, features)) }
+      .map { label =>
+        (label, logScoreInternal(label, features))
+      }
       .toSeq
       .sortBy(_._2)(Ordering.Double.reverse)
       .take(1)

@@ -90,17 +90,27 @@ class ClosureCleanerSuite extends SparkFunSuite {
 
     withSpark(new SparkContext("local", "test")) { sc =>
       val rdd = sc.parallelize(1 to 10)
-      val pairRdd = rdd.map { i => (i, i) }
-      expectCorrectException { TestUserClosuresActuallyCleaned.testMap(rdd) }
+      val pairRdd = rdd.map { i =>
+        (i, i)
+      }
+      expectCorrectException {
+        TestUserClosuresActuallyCleaned.testMap(rdd)
+      }
       expectCorrectException {
         TestUserClosuresActuallyCleaned.testFlatMap(rdd)
       }
-      expectCorrectException { TestUserClosuresActuallyCleaned.testFilter(rdd) }
-      expectCorrectException { TestUserClosuresActuallyCleaned.testSortBy(rdd) }
+      expectCorrectException {
+        TestUserClosuresActuallyCleaned.testFilter(rdd)
+      }
+      expectCorrectException {
+        TestUserClosuresActuallyCleaned.testSortBy(rdd)
+      }
       expectCorrectException {
         TestUserClosuresActuallyCleaned.testGroupBy(rdd)
       }
-      expectCorrectException { TestUserClosuresActuallyCleaned.testKeyBy(rdd) }
+      expectCorrectException {
+        TestUserClosuresActuallyCleaned.testKeyBy(rdd)
+      }
       expectCorrectException {
         TestUserClosuresActuallyCleaned.testMapPartitions(rdd)
       }
@@ -122,11 +132,15 @@ class ClosureCleanerSuite extends SparkFunSuite {
       expectCorrectException {
         TestUserClosuresActuallyCleaned.testForeachPartition(rdd)
       }
-      expectCorrectException { TestUserClosuresActuallyCleaned.testReduce(rdd) }
+      expectCorrectException {
+        TestUserClosuresActuallyCleaned.testReduce(rdd)
+      }
       expectCorrectException {
         TestUserClosuresActuallyCleaned.testTreeReduce(rdd)
       }
-      expectCorrectException { TestUserClosuresActuallyCleaned.testFold(rdd) }
+      expectCorrectException {
+        TestUserClosuresActuallyCleaned.testFold(rdd)
+      }
       expectCorrectException {
         TestUserClosuresActuallyCleaned.testAggregate(rdd)
       }
@@ -160,8 +174,12 @@ class ClosureCleanerSuite extends SparkFunSuite {
       expectCorrectException {
         TestUserClosuresActuallyCleaned.testForeachPartitionAsync(rdd)
       }
-      expectCorrectException { TestUserClosuresActuallyCleaned.testRunJob1(sc) }
-      expectCorrectException { TestUserClosuresActuallyCleaned.testRunJob2(sc) }
+      expectCorrectException {
+        TestUserClosuresActuallyCleaned.testRunJob1(sc)
+      }
+      expectCorrectException {
+        TestUserClosuresActuallyCleaned.testRunJob2(sc)
+      }
       expectCorrectException {
         TestUserClosuresActuallyCleaned.testRunApproximateJob(sc)
       }
@@ -244,7 +262,9 @@ object TestObjectWithBogusReturns {
     withSpark(new SparkContext("local", "test")) { sc =>
       val nums = sc.parallelize(Array(1, 2, 3, 4))
       // this return is invalid since it will transfer control outside the closure
-      nums.map { x => return 1; x * 2 }
+      nums.map { x =>
+        return 1; x * 2
+      }
       1
     }
   }
@@ -256,7 +276,9 @@ object TestObjectWithNestedReturns {
       val nums = sc.parallelize(Array(1, 2, 3, 4))
       nums.map { x =>
         // this return is fine since it will not transfer control outside the closure
-        def foo(): Int = { return 5; 1 }
+        def foo(): Int = {
+          return 5; 1
+        }
         foo()
       }
       1
@@ -308,115 +330,217 @@ class TestClassWithNesting(val y: Int) extends Serializable {
   * ClosureCleaner did not actually clean our closure, in which case we should fail the test.
   */
 private object TestUserClosuresActuallyCleaned {
-  def testMap(rdd: RDD[Int]): Unit = { rdd.map { _ => return; 0 }.count() }
+  def testMap(rdd: RDD[Int]): Unit = {
+    rdd
+      .map { _ =>
+        return; 0
+      }
+      .count()
+  }
   def testFlatMap(rdd: RDD[Int]): Unit = {
-    rdd.flatMap { _ => return; Seq() }.count()
+    rdd
+      .flatMap { _ =>
+        return; Seq()
+      }
+      .count()
   }
   def testFilter(rdd: RDD[Int]): Unit = {
-    rdd.filter { _ => return; true }.count()
+    rdd
+      .filter { _ =>
+        return; true
+      }
+      .count()
   }
   def testSortBy(rdd: RDD[Int]): Unit = {
-    rdd.sortBy { _ => return; 1 }.count()
+    rdd
+      .sortBy { _ =>
+        return; 1
+      }
+      .count()
   }
-  def testKeyBy(rdd: RDD[Int]): Unit = { rdd.keyBy { _ => return; 1 }.count() }
+  def testKeyBy(rdd: RDD[Int]): Unit = {
+    rdd
+      .keyBy { _ =>
+        return; 1
+      }
+      .count()
+  }
   def testGroupBy(rdd: RDD[Int]): Unit = {
-    rdd.groupBy { _ => return; 1 }.count()
+    rdd
+      .groupBy { _ =>
+        return; 1
+      }
+      .count()
   }
   def testMapPartitions(rdd: RDD[Int]): Unit = {
-    rdd.mapPartitions { it => return; it }.count()
+    rdd
+      .mapPartitions { it =>
+        return; it
+      }
+      .count()
   }
   def testMapPartitionsWithIndex(rdd: RDD[Int]): Unit = {
-    rdd.mapPartitionsWithIndex { (_, it) => return; it }.count()
+    rdd
+      .mapPartitionsWithIndex { (_, it) =>
+        return; it
+      }
+      .count()
   }
   def testZipPartitions2(rdd: RDD[Int]): Unit = {
-    rdd.zipPartitions(rdd) { case (it1, it2) => return; it1 }.count()
+    rdd
+      .zipPartitions(rdd) {
+        case (it1, it2) => return; it1
+      }
+      .count()
   }
   def testZipPartitions3(rdd: RDD[Int]): Unit = {
-    rdd.zipPartitions(rdd, rdd) { case (it1, it2, it3) => return; it1 }.count()
+    rdd
+      .zipPartitions(rdd, rdd) {
+        case (it1, it2, it3) => return; it1
+      }
+      .count()
   }
   def testZipPartitions4(rdd: RDD[Int]): Unit = {
     rdd
-      .zipPartitions(rdd, rdd, rdd) { case (it1, it2, it3, it4) => return; it1 }
+      .zipPartitions(rdd, rdd, rdd) {
+        case (it1, it2, it3, it4) => return; it1
+      }
       .count()
   }
-  def testForeach(rdd: RDD[Int]): Unit = { rdd.foreach { _ => return } }
+  def testForeach(rdd: RDD[Int]): Unit = {
+    rdd.foreach { _ =>
+      return
+    }
+  }
   def testForeachPartition(rdd: RDD[Int]): Unit = {
-    rdd.foreachPartition { _ => return }
+    rdd.foreachPartition { _ =>
+      return
+    }
   }
   def testReduce(rdd: RDD[Int]): Unit = {
-    rdd.reduce { case (_, _) => return; 1 }
+    rdd.reduce {
+      case (_, _) => return; 1
+    }
   }
   def testTreeReduce(rdd: RDD[Int]): Unit = {
-    rdd.treeReduce { case (_, _) => return; 1 }
+    rdd.treeReduce {
+      case (_, _) => return; 1
+    }
   }
   def testFold(rdd: RDD[Int]): Unit = {
-    rdd.fold(0) { case (_, _) => return; 1 }
+    rdd.fold(0) {
+      case (_, _) => return; 1
+    }
   }
   def testAggregate(rdd: RDD[Int]): Unit = {
-    rdd.aggregate(0)({ case (_, _) => return; 1 }, { case (_, _) => return; 1 })
+    rdd.aggregate(0)(
+      {
+        case (_, _) => return; 1
+      },
+      {
+        case (_, _) => return; 1
+      })
   }
   def testTreeAggregate(rdd: RDD[Int]): Unit = {
     rdd.treeAggregate(0)(
-      { case (_, _) => return; 1 },
-      { case (_, _) => return; 1 })
+      {
+        case (_, _) => return; 1
+      },
+      {
+        case (_, _) => return; 1
+      })
   }
 
   // Test pair RDD functions
   def testCombineByKey(rdd: RDD[(Int, Int)]): Unit = {
     rdd
       .combineByKey(
-        { _ => return; 1 }: Int => Int,
-        { case (_, _) => return; 1 }: (Int, Int) => Int,
-        { case (_, _) => return; 1 }: (Int, Int) => Int
+        { _ =>
+          return; 1
+        }: Int => Int,
+        {
+          case (_, _) => return; 1
+        }: (Int, Int) => Int,
+        {
+          case (_, _) => return; 1
+        }: (Int, Int) => Int
       )
       .count()
   }
   def testAggregateByKey(rdd: RDD[(Int, Int)]): Unit = {
     rdd
       .aggregateByKey(0)(
-        { case (_, _) => return; 1 },
-        { case (_, _) => return; 1 })
+        {
+          case (_, _) => return; 1
+        },
+        {
+          case (_, _) => return; 1
+        })
       .count()
   }
   def testFoldByKey(rdd: RDD[(Int, Int)]): Unit = {
-    rdd.foldByKey(0) { case (_, _) => return; 1 }
+    rdd.foldByKey(0) {
+      case (_, _) => return; 1
+    }
   }
   def testReduceByKey(rdd: RDD[(Int, Int)]): Unit = {
-    rdd.reduceByKey { case (_, _) => return; 1 }
+    rdd.reduceByKey {
+      case (_, _) => return; 1
+    }
   }
   def testReduceByKeyLocally(rdd: RDD[(Int, Int)]): Unit = {
-    rdd.reduceByKeyLocally { case (_, _) => return; 1 }
+    rdd.reduceByKeyLocally {
+      case (_, _) => return; 1
+    }
   }
   def testMapValues(rdd: RDD[(Int, Int)]): Unit = {
-    rdd.mapValues { _ => return; 1 }
+    rdd.mapValues { _ =>
+      return; 1
+    }
   }
   def testFlatMapValues(rdd: RDD[(Int, Int)]): Unit = {
-    rdd.flatMapValues { _ => return; Seq() }
+    rdd.flatMapValues { _ =>
+      return; Seq()
+    }
   }
 
   // Test async RDD actions
   def testForeachAsync(rdd: RDD[Int]): Unit = {
-    rdd.foreachAsync { _ => return }
+    rdd.foreachAsync { _ =>
+      return
+    }
   }
   def testForeachPartitionAsync(rdd: RDD[Int]): Unit = {
-    rdd.foreachPartitionAsync { _ => return }
+    rdd.foreachPartitionAsync { _ =>
+      return
+    }
   }
 
   // Test SparkContext runJob
   def testRunJob1(sc: SparkContext): Unit = {
     val rdd = sc.parallelize(1 to 10, 10)
-    sc.runJob(rdd, { (ctx: TaskContext, iter: Iterator[Int]) => return; 1 })
+    sc.runJob(
+      rdd,
+      { (ctx: TaskContext, iter: Iterator[Int]) =>
+        return; 1
+      })
   }
   def testRunJob2(sc: SparkContext): Unit = {
     val rdd = sc.parallelize(1 to 10, 10)
-    sc.runJob(rdd, { iter: Iterator[Int] => return; 1 })
+    sc.runJob(
+      rdd,
+      { iter: Iterator[Int] =>
+        return; 1
+      })
   }
   def testRunApproximateJob(sc: SparkContext): Unit = {
     val rdd = sc.parallelize(1 to 10, 10)
     val evaluator = new CountEvaluator(1, 0.5)
     sc.runApproximateJob(
       rdd,
-      { (ctx: TaskContext, iter: Iterator[Int]) => return; 1L },
+      { (ctx: TaskContext, iter: Iterator[Int]) =>
+        return; 1L
+      },
       evaluator,
       1000)
   }
@@ -424,10 +548,15 @@ private object TestUserClosuresActuallyCleaned {
     val rdd = sc.parallelize(1 to 10, 10)
     sc.submitJob(
       rdd,
-      { _ => return; 1 }: Iterator[Int] => Int,
+      { _ =>
+        return; 1
+      }: Iterator[Int] => Int,
       Seq.empty,
-      { case (_, _) => return }: (Int, Int) => Unit,
-      { return }
+      {
+        case (_, _) => return
+      }: (Int, Int) => Unit, {
+        return
+      }
     )
   }
 }

@@ -34,10 +34,14 @@ final class JUnitMethodMetadata(
     annotations.exists(_.isInstanceOf[org.junit.AfterClass])
 
   def getTestAnnotation: Option[org.junit.Test] =
-    annotations.collectFirst { case test: org.junit.Test => test }
+    annotations.collectFirst {
+      case test: org.junit.Test => test
+    }
 
   def getIgnoreAnnotation: Option[org.junit.Ignore] =
-    annotations.collectFirst { case ign: org.junit.Ignore => ign }
+    annotations.collectFirst {
+      case ign: org.junit.Ignore => ign
+    }
 }
 
 final class JUnitClassMetadata(

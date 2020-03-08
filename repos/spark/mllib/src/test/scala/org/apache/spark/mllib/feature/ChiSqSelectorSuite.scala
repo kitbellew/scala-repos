@@ -66,7 +66,9 @@ class ChiSqSelectorSuite extends SparkFunSuite with MLlibTestSparkContext {
       )
     val model = new ChiSqSelector(1).fit(labeledDiscreteData)
     val filteredData = labeledDiscreteData
-      .map { lp => LabeledPoint(lp.label, model.transform(lp.features)) }
+      .map { lp =>
+        LabeledPoint(lp.label, model.transform(lp.features))
+      }
       .collect()
       .toSet
     assert(filteredData == preFilteredData)

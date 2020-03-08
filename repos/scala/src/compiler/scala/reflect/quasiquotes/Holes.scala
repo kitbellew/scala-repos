@@ -5,7 +5,9 @@ import scala.reflect.internal.Flags._
 import scala.reflect.macros.TypecheckException
 
 class Rank private[Rank] (val value: Int) extends AnyVal {
-  def pred = { assert(value - 1 >= 0); new Rank(value - 1) }
+  def pred = {
+    assert(value - 1 >= 0); new Rank(value - 1)
+  }
   def succ = new Rank(value + 1)
   override def toString = if (value == 0) "no dots" else "." * (value + 1)
 }
@@ -14,7 +16,9 @@ object Rank {
   val NoDot = new Rank(0)
   val DotDot = new Rank(1)
   val DotDotDot = new Rank(2)
-  object Dot { def unapply(rank: Rank) = rank != NoDot }
+  object Dot {
+    def unapply(rank: Rank) = rank != NoDot
+  }
   def parseDots(part: String) = {
     if (part.endsWith("...")) (part.stripSuffix("..."), DotDotDot)
     else if (part.endsWith("..")) (part.stripSuffix(".."), DotDot)
@@ -243,7 +247,9 @@ trait Holes { self: Quasiquotes =>
                   s"Can't find $unliftableType[$strippedTpe], consider providing it")
               }
         }
-        .getOrElse { treeNoUnlift }
+        .getOrElse {
+          treeNoUnlift
+        }
   }
 
   /** Full support for unliftable implies that it's possible to interleave
@@ -263,10 +269,14 @@ trait Holes { self: Quasiquotes =>
       if (unlifter == EmptyTree) None
       else if (rank == NoDot) Some(unlifter)
       else {
-        val idx = records.indexWhere { p => p._1 =:= tpe && p._2 == rank }
+        val idx = records.indexWhere { p =>
+          p._1 =:= tpe && p._2 == rank
+        }
         val resIdx =
           if (idx != -1) idx
-          else { records +:= ((tpe, rank)); records.length - 1 }
+          else {
+            records +:= ((tpe, rank)); records.length - 1
+          }
         Some(Ident(TermName(nme.QUASIQUOTE_UNLIFT_HELPER + resIdx)))
       }
     }

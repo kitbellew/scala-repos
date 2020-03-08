@@ -82,7 +82,9 @@ object BigIntConvertor {
     val bb = java.nio.ByteBuffer.wrap(bytes)
     // asLongBuffer.array doesn't support .array
     val longs = Array.ofDim[Long](longLength)
-    for { i <- 0 until longLength } {
+    for {
+      i <- 0 until longLength
+    } {
       longs(i) = bb.getLong(i * 8)
     }
     longs.reverse

@@ -13,7 +13,9 @@ private[finagle] class Ema(window: Long) {
   private[this] var time = Long.MinValue
   private[this] var ema = 0d
 
-  def isEmpty: Boolean = synchronized { time < 0 }
+  def isEmpty: Boolean = synchronized {
+    time < 0
+  }
 
   /**
     * Update the average with observed value `x`, and return the new average.
@@ -39,7 +41,9 @@ private[finagle] class Ema(window: Long) {
     * Return the last observation. This is generally only safe to use if you
     * control your own clock, since the current value depends on it.
     */
-  def last: Double = synchronized { ema }
+  def last: Double = synchronized {
+    ema
+  }
 
   /**
     * Reset the average to 0 and erase all observations.

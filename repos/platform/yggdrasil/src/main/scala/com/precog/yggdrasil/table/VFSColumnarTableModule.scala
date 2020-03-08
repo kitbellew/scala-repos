@@ -62,7 +62,9 @@ trait VFSColumnarTableModule
         })
         paths <- EitherT.right(pathsM(table))
         projections <- paths.toList.traverse[
-          ({ type l[a] = EitherT[Future, ResourceError, a] })#l,
+          ({
+            type l[a] = EitherT[Future, ResourceError, a]
+          })#l,
           ProjectionLike[Future, Slice]] { path =>
           logger.debug("Loading path: " + path)
           vfs.readProjection(

@@ -102,10 +102,14 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
           indicator.setFraction(0.0)
         }
       override def scanningFinished(p1: IndexingContext, p2: ScanningResult) =
-        progressIndicator foreach { _.setFraction(0.5) }
+        progressIndicator foreach {
+          _.setFraction(0.5)
+        }
       override def artifactError(p1: ArtifactContext, p2: Exception) {}
       override def artifactDiscovered(p1: ArtifactContext): Unit =
-        progressIndicator foreach { _.checkCanceled() }
+        progressIndicator foreach {
+          _.checkCanceled()
+        }
     }
 
     val repoDir = context.getRepository
@@ -179,7 +183,9 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
       val reader = searcher.getIndexReader
       val maxDoc = reader.maxDoc()
       1.to(maxDoc) foreach { i =>
-        progressIndicator foreach { _.checkCanceled() }
+        progressIndicator foreach {
+          _.checkCanceled()
+        }
         val info =
           IndexUtils.constructArtifactInfo(reader.document(i - 1), context)
         if (info != null)

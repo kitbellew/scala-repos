@@ -2,10 +2,18 @@ import scala.reflect.runtime.universe._
 
 // inference illuminator
 object Test {
-  class D1[T1: TypeTag, T2 <: T1: TypeTag](x: T1) { println(typeOf[(T1, T2)]) }
-  class D2[T1: TypeTag, T2 >: T1: TypeTag](x: T1) { println(typeOf[(T1, T2)]) }
-  class D3[+T1: TypeTag, T2 <: T1: TypeTag](x: T1) { println(typeOf[(T1, T2)]) }
-  class D4[-T1: TypeTag, T2 >: T1: TypeTag](x: T1) { println(typeOf[(T1, T2)]) }
+  class D1[T1: TypeTag, T2 <: T1: TypeTag](x: T1) {
+    println(typeOf[(T1, T2)])
+  }
+  class D2[T1: TypeTag, T2 >: T1: TypeTag](x: T1) {
+    println(typeOf[(T1, T2)])
+  }
+  class D3[+T1: TypeTag, T2 <: T1: TypeTag](x: T1) {
+    println(typeOf[(T1, T2)])
+  }
+  class D4[-T1: TypeTag, T2 >: T1: TypeTag](x: T1) {
+    println(typeOf[(T1, T2)])
+  }
 
   class E1[T1: TypeTag, T2 <: T1: TypeTag](x: D1[T1, T2]) {
     println(typeOf[(T1, T2)])

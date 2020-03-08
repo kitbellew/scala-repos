@@ -22,7 +22,9 @@ object fin {
   /**
     * Type class supporting conversion of type-level Nats to a Fin, only available if M < N
     */
-  trait FromNat[M <: Nat, N <: Succ[_]] extends DepFn0 { type Out <: Fin[N] }
+  trait FromNat[M <: Nat, N <: Succ[_]] extends DepFn0 {
+    type Out <: Fin[N]
+  }
 
   object FromNat {
     def apply[M <: Nat, N <: Succ[_]](
@@ -59,7 +61,9 @@ object fin {
   object ToNat {
     def apply[F <: Fin[_]](implicit toNat: ToNat[F]): Aux[F, toNat.Out] = toNat
 
-    type Aux[F <: Fin[_], Out0 <: Nat] = ToNat[F] { type Out = Out0 }
+    type Aux[F <: Fin[_], Out0 <: Nat] = ToNat[F] {
+      type Out = Out0
+    }
 
     implicit def finZeroToNat[N <: Succ[_]]: Aux[FinZero[N], Nat._0] =
       new ToNat[FinZero[N]] {

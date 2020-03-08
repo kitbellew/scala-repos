@@ -28,5 +28,7 @@ trait ChoiceTests[F[_, _]] extends CategoryTests[F] {
 
 object ChoiceTests {
   def apply[F[_, _]: Choice]: ChoiceTests[F] =
-    new ChoiceTests[F] { def laws: ChoiceLaws[F] = ChoiceLaws[F] }
+    new ChoiceTests[F] {
+      def laws: ChoiceLaws[F] = ChoiceLaws[F]
+    }
 }

@@ -76,7 +76,9 @@ class BufTest
     val buf = Buf.ByteArray.Owned(a1) concat Buf.ByteArray.Owned(
       a2) concat Buf.ByteArray.Owned(a3)
     assert(buf.length == 9)
-    val x = Array.fill(9) { 0.toByte }
+    val x = Array.fill(9) {
+      0.toByte
+    }
     buf.write(x, 0)
     assert(x.toSeq == (a1 ++ a2 ++ a3).toSeq)
   }
@@ -174,7 +176,9 @@ class BufTest
       def slice(i: Int, j: Int) = throw new Exception("not implemented")
       def length = 12
       def write(output: Array[Byte], off: Int) =
-        (off until off + length) foreach { i => output(i) = 'a'.toByte }
+        (off until off + length) foreach { i =>
+          output(i) = 'a'.toByte
+        }
     }
 
     val Buf.Utf8(str) = buf
@@ -420,14 +424,18 @@ class BufTest
       case (buf, _) => buf concat Buf.ByteArray.Owned(Array[Byte](b))
     }
 
-    val expected = Array.fill(size) { 'x'.toByte }
+    val expected = Array.fill(size) {
+      'x'.toByte
+    }
     val output = Buf.ByteArray.Owned.extract(bigBuf)
     assert(bigBuf.length == size)
     assert(expected.toSeq == output.toSeq)
 
     val sliced = bigBuf.slice(1, size - 1)
     val size2 = size - 2
-    val expected2 = Array.fill(size2) { 'x'.toByte }
+    val expected2 = Array.fill(size2) {
+      'x'.toByte
+    }
     val output2 = Buf.ByteArray.Owned.extract(sliced)
     assert(sliced.length == size2)
     assert(expected2.toSeq == output2.toSeq)

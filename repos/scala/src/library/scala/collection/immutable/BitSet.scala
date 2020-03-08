@@ -72,7 +72,9 @@ object BitSet extends BitSetFactory[BitSet] {
   /** A builder that takes advantage of mutable BitSets. */
   def newBuilder: Builder[Int, BitSet] = new Builder[Int, BitSet] {
     private[this] val b = new mutable.BitSet
-    def +=(x: Int) = { b += x; this }
+    def +=(x: Int) = {
+      b += x; this
+    }
     def clear() = b.clear()
     def result() = b.toImmutable
   }

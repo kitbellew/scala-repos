@@ -85,7 +85,9 @@ class DontLeakActorsOnFailingConnectionSpecs
         }
 
         val resps = source.via(clientFlow).runWith(sink)
-        resps.onComplete({ case _ ⇒ countDown.countDown() })
+        resps.onComplete({
+          case _ ⇒ countDown.countDown()
+        })
 
         countDown.await(10, TimeUnit.SECONDS)
         Thread.sleep(5000)

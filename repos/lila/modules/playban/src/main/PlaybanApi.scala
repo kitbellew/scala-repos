@@ -37,7 +37,10 @@ final class PlaybanApi(coll: Coll, isRematch: String => Boolean) {
         Blame(_, Outcome.NoPlay)
       }
       else if (pov.game olderThan 15) none
-      else pov.player.some map { Blame(_, Outcome.Abort) }
+      else
+        pov.player.some map {
+          Blame(_, Outcome.Abort)
+        }
     } ?? {
       case Blame(player, outcome) => player.userId.??(save(outcome))
     }
@@ -83,7 +86,9 @@ final class PlaybanApi(coll: Coll, isRematch: String => Boolean) {
       .map {
         _.flatMap { obj =>
           obj.getAs[String]("_id") flatMap { id =>
-            obj.getAs[BSONArray]("b") map { id -> _.stream.size }
+            obj.getAs[BSONArray]("b") map {
+              id -> _.stream.size
+            }
           }
         }.toMap
       }

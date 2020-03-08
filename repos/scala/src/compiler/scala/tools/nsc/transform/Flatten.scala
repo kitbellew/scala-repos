@@ -66,10 +66,14 @@ abstract class Flatten extends InfoTransform {
         val decls1 = scopeTransform(clazz) {
           val decls1 = newScope
           if (clazz.isPackageClass) {
-            exitingFlatten { decls foreach (decls1 enter _) }
+            exitingFlatten {
+              decls foreach (decls1 enter _)
+            }
           } else {
             val oldowner = clazz.owner
-            exitingFlatten { oldowner.info }
+            exitingFlatten {
+              oldowner.info
+            }
             parents1 = parents mapConserve (this)
 
             for (sym <- decls) {

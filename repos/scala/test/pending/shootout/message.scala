@@ -34,13 +34,18 @@ object message {
         }
       }
 
-      def pid() = { this.start; this.self }
+      def pid() = {
+        this.start; this.self
+      }
     }
 
     def actorChain(i: Int, a: Pid): Pid =
       if (i > 0) actorChain(i - 1, new Incrementor(a).pid) else a
 
     val firstActor = actorChain(nActors, null)
-    var i = n; while (i > 0) { firstActor ! Message(0); i = i - 1 }
+    var i = n;
+    while (i > 0) {
+      firstActor ! Message(0); i = i - 1
+    }
   }
 }

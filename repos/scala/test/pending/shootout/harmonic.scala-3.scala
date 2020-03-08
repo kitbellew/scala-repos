@@ -9,7 +9,9 @@ object harmonic {
     var partialSum = 0.0;
     var i = 1;
 
-    while (i < n) { partialSum = partialSum + 1.0 / i; i = i + 1; }
+    while (i < n) {
+      partialSum = partialSum + 1.0 / i; i = i + 1;
+    }
     Console.printf("{0,number,#.000000000}\n", partialSum);
   }
 }

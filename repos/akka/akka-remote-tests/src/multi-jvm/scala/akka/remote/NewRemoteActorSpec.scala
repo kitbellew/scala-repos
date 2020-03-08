@@ -123,7 +123,9 @@ class NewRemoteActorSpec
 
         // master system is supposed to be shutdown after slave
         // this should be triggered by slave system.terminate
-        expectMsgPF() { case Terminated(`actor`) ⇒ true }
+        expectMsgPF() {
+          case Terminated(`actor`) ⇒ true
+        }
       }
 
       runOn(slave) {

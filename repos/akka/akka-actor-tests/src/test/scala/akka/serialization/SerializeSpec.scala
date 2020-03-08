@@ -45,7 +45,9 @@ object SerializationTests {
       no: String,
       street: String,
       city: String,
-      zip: String) { def this() = this("", "", "", "") }
+      zip: String) {
+    def this() = this("", "", "", "")
+  }
   @BeanInfo
   final case class Person(name: String, age: Int, address: Address) {
     def this() = this("", 0, null)
@@ -177,7 +179,9 @@ class SerializeSpec extends AkkaSpec(SerializationTests.serializeConf) {
         def receive = {
           case o: ObjectOutputStream ⇒
             try o.writeObject(this)
-            catch { case _: NotSerializableException ⇒ testActor ! "pass" }
+            catch {
+              case _: NotSerializableException ⇒ testActor ! "pass"
+            }
         }
       }))
       a ! new ObjectOutputStream(new ByteArrayOutputStream())
@@ -344,7 +348,9 @@ class ReferenceSerializationSpec
     }
 
     "not support serialization for other classes" in {
-      intercept[NotSerializableException] { ser.serializerFor(classOf[Object]) }
+      intercept[NotSerializableException] {
+        ser.serializerFor(classOf[Object])
+      }
     }
 
   }

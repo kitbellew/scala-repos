@@ -119,7 +119,9 @@ object Writer {
         @annotation.tailrec
         def go(p: Int): Unit =
           if (p == size) ()
-          else { writerT.write(os, a(p)); go(p + 1) }
+          else {
+            writerT.write(os, a(p)); go(p + 1)
+          }
 
         go(0)
       }
@@ -131,7 +133,9 @@ object Writer {
     def write(os: OutputStream, c: C) = {
       val size = c.size
       os.writePosVarInt(size)
-      c.foreach { t: T => writerT.write(os, t) }
+      c.foreach { t: T =>
+        writerT.write(os, t)
+      }
     }
   }
 }

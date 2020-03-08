@@ -84,7 +84,9 @@ package scalaguide.http.scalaresults {
     }
 
     def testContentType(results: Result, contentType: String) = {
-      results.body.contentType must beSome.which { _ must contain(contentType) }
+      results.body.contentType must beSome.which {
+        _ must contain(contentType)
+      }
     }
 
     def testHeader(results: Result, key: String, value: String) = {
@@ -95,7 +97,9 @@ package scalaguide.http.scalaresults {
         action: Action[A],
         expectedResponse: Int = OK,
         request: Request[A] = FakeRequest()) = {
-      assertAction(action, expectedResponse, request) { result => success }
+      assertAction(action, expectedResponse, request) { result =>
+        success
+      }
     }
 
     def assertAction[A, T: AsResult](

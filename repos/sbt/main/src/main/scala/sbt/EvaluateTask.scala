@@ -297,7 +297,9 @@ object EvaluateTask {
       state: State): TaskCancellationStrategy =
     getSetting(
       Keys.taskCancelStrategy,
-      { (_: State) => TaskCancellationStrategy.Null },
+      { (_: State) =>
+        TaskCancellationStrategy.Null
+      },
       extracted,
       structure)(state)
 
@@ -436,7 +438,9 @@ object EvaluateTask {
     val keyed =
       for (Incomplete(Some(key: ScopedKey[_]), _, msg, _, ex) <- all)
         yield (key, msg, ex)
-    val un = all.filter { i => i.node.isEmpty || i.message.isEmpty }
+    val un = all.filter { i =>
+      i.node.isEmpty || i.message.isEmpty
+    }
 
     import ExceptionCategory._
     for ((key, msg, Some(ex)) <- keyed) {
@@ -469,8 +473,11 @@ object EvaluateTask {
   def withStreams[T](structure: BuildStructure, state: State)(
       f: Streams => T): T = {
     val str = std.Streams.closeable(structure.streams(state))
-    try { f(str) }
-    finally { str.close() }
+    try {
+      f(str)
+    } finally {
+      str.close()
+    }
   }
 
   def getTask[T](
@@ -553,8 +560,9 @@ object EvaluateTask {
           val results = x.runKeep(root)(service)
           storeValuesForPrevious(results, state, streams)
           applyResults(results, state, root)
-        } catch { case inc: Incomplete => (state, Inc(inc)) }
-        finally shutdown()
+        } catch {
+          case inc: Incomplete => (state, Inc(inc))
+        } finally shutdown()
       val replaced = transformInc(result)
       logIncResult(replaced, state, streams)
       (newState, replaced)
@@ -638,7 +646,9 @@ object EvaluateTask {
       result: Result[T],
       log: Logger,
       show: Boolean = false): T =
-    onResult(result, log) { v => if (show) println("Result: " + v); v }
+    onResult(result, log) { v =>
+      if (show) println("Result: " + v); v
+    }
   def onResult[T, S](result: Result[T], log: Logger)(f: T => S): S =
     result match {
       case Value(v) => f(v)

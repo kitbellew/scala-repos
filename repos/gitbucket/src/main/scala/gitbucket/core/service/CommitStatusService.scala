@@ -91,7 +91,9 @@ trait CommitStatusService {
       sha: String)(implicit s: Session): List[(CommitStatus, Account)] =
     byCommitStatues(userName, repositoryName, sha)
       .innerJoin(Accounts)
-      .filter { case (t, a) => t.creator === a.userName }
+      .filter {
+        case (t, a) => t.creator === a.userName
+      }
       .list
 
   protected def byCommitStatues(

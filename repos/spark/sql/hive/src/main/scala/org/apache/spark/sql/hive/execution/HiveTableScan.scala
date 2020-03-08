@@ -136,7 +136,9 @@ private[hive] case class HiveTableScan(
           val dataTypes = relation.partitionKeys.map(_.dataType)
           val castedValues = part.getValues.asScala
             .zip(dataTypes)
-            .map { case (value, dataType) => castFromString(value, dataType) }
+            .map {
+              case (value, dataType) => castFromString(value, dataType)
+            }
 
           // Only partitioned values are needed here, since the predicate has already been bound to
           // partition key attribute references.

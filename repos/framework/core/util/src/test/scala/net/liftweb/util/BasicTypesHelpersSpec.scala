@@ -34,8 +34,16 @@ object BasicTypesHelpersSpec extends Specification with DataTables {
   "Basic types helpers" should {
 
     "be lazy" in {
-      (false.?[Int]({ throw new Exception("Bummer") }).|(3)) must_== 3
-      (true.?[Int](3).|({ throw new Exception("Bummer") })) must_== 3
+      (false
+        .?[Int]({
+          throw new Exception("Bummer")
+        })
+        .|(3)) must_== 3
+      (true
+        .?[Int](3)
+        .|({
+          throw new Exception("Bummer")
+        })) must_== 3
     }
 
     "provide a ternary operator: (condition) ? A | B" in {
@@ -115,7 +123,9 @@ object BasicTypesHelpersSpec extends Specification with DataTables {
         failure !! 0 |
         "3" !! 3 |
         "n" !! 0 |
-        date(3000) !! 3 | { (o: Any, result: Int) => toInt(o) must_== result }
+        date(3000) !! 3 | { (o: Any, result: Int) =>
+        toInt(o) must_== result
+      }
     }
 
     "have a toLong method converting any object to a reasonable Long value" in {

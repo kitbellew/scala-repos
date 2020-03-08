@@ -85,7 +85,9 @@ object CsvParser {
     if (locs.length == 0) locs = (0 until firstLine.length).toArray
 
     // set up buffers to store parsed data
-    val bufdata = for { c <- locs } yield Buffer[String](1024)
+    val bufdata = for {
+      c <- locs
+    } yield Buffer[String](1024)
 
     // this seriously helps reduce memory footprint w/o major perf. impact
     val interner = new ObjectLinkedOpenHashSet[String]()
@@ -99,17 +101,23 @@ object CsvParser {
 
     // first line is either header, or needs to be processed
     val fields = Vec(firstLine).take(locs)
-    fields.toSeq.zipWithIndex.map { case (s, i) => addToBuffer(s, i) }
+    fields.toSeq.zipWithIndex.map {
+      case (s, i) => addToBuffer(s, i)
+    }
 
     // parse remaining rows
     var str: String = null
     var nln: Int = 0
-    while ({ str = source.readLine; str != null }) {
+    while ({
+      str = source.readLine; str != null
+    }) {
       extractFields(str, addToBuffer, locs, params)
       nln += 1
     }
 
-    val columns = bufdata map { b => Vec(b.toArray) }
+    val columns = bufdata map { b =>
+      Vec(b.toArray)
+    }
 
     Frame(columns: _*).row(params.skipLines -> *)
   }
@@ -238,18 +246,30 @@ object CsvParser {
   }
 
   def parseInt(s: String) =
-    try { java.lang.Integer.parseInt(s) }
-    catch { case _: NumberFormatException => Int.MinValue }
+    try {
+      java.lang.Integer.parseInt(s)
+    } catch {
+      case _: NumberFormatException => Int.MinValue
+    }
 
   def parseLong(s: String) =
-    try { java.lang.Long.parseLong(s) }
-    catch { case _: NumberFormatException => Long.MinValue }
+    try {
+      java.lang.Long.parseLong(s)
+    } catch {
+      case _: NumberFormatException => Long.MinValue
+    }
 
   def parseFloat(s: String) =
-    try { java.lang.Float.parseFloat(s) }
-    catch { case _: NumberFormatException => Float.NaN }
+    try {
+      java.lang.Float.parseFloat(s)
+    } catch {
+      case _: NumberFormatException => Float.NaN
+    }
 
   def parseDouble(s: String) =
-    try { java.lang.Double.parseDouble(s) }
-    catch { case _: NumberFormatException => Double.NaN }
+    try {
+      java.lang.Double.parseDouble(s)
+    } catch {
+      case _: NumberFormatException => Double.NaN
+    }
 }

@@ -49,19 +49,25 @@ class HttpClientDispatcherTest extends FunSuite {
     val c = res.reader.read(Int.MaxValue)
     assert(!c.isDefined)
     req.writer.write(Buf.Utf8("a"))
-    serverT.read().flatMap { c => serverT.write(c) }
+    serverT.read().flatMap { c =>
+      serverT.write(c)
+    }
     assert(Await.result(c, timeout) == Some(Buf.Utf8("a")))
 
     val cc = res.reader.read(Int.MaxValue)
     assert(!cc.isDefined)
     req.writer.write(Buf.Utf8("some other thing"))
-    serverT.read() flatMap { c => serverT.write(c) }
+    serverT.read() flatMap { c =>
+      serverT.write(c)
+    }
     assert(Await.result(cc, timeout) == Some(Buf.Utf8("some other thing")))
 
     val last = res.reader.read(Int.MaxValue)
     assert(!last.isDefined)
     req.close()
-    serverT.read() flatMap { c => serverT.write(c) }
+    serverT.read() flatMap { c =>
+      serverT.write(c)
+    }
     assert(Await.result(last, timeout).isEmpty)
   }
 
@@ -146,7 +152,9 @@ class HttpClientDispatcherTest extends FunSuite {
     // transport closure and the clientside reader to
     // fail reads.
     serverT.write("invalid message")
-    intercept[IllegalArgumentException] { Await.result(cc, timeout) }
+    intercept[IllegalArgumentException] {
+      Await.result(cc, timeout)
+    }
     verify(clientTSpy, times(1)).close()
   }
 
@@ -174,7 +182,9 @@ class HttpClientDispatcherTest extends FunSuite {
     writep.setException(new Exception)
 
     assert(g.isDefined)
-    intercept[Reader.ReaderDiscarded] { Await.result(g, timeout) }
+    intercept[Reader.ReaderDiscarded] {
+      Await.result(g, timeout)
+    }
   }
 
   test("upstream interrupt: during req stream (read)") {
@@ -392,7 +402,9 @@ class HttpClientDispatcherTest extends FunSuite {
   test("write failures are wrapped as WriteExceptions") {
     val disp = new HttpClientDispatcher(failingT)
     val d = disp(Request())
-    intercept[WriteException] { Await.result(d, 2.seconds) }
+    intercept[WriteException] {
+      Await.result(d, 2.seconds)
+    }
   }
 
   val stallT = new Transport[Any, Any] {

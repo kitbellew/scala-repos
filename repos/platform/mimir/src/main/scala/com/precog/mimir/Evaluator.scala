@@ -124,8 +124,12 @@ trait EvaluatorModule[M[+_]]
 
     def freshIdScanner: Scanner
 
-    def Forall: Reduction { type Result = Option[Boolean] }
-    def Exists: Reduction { type Result = Option[Boolean] }
+    def Forall: Reduction {
+      type Result = Option[Boolean]
+    }
+    def Exists: Reduction {
+      type Result = Option[Boolean]
+    }
     def concatString(ctx: MorphContext): F2
     def coerceToDouble(ctx: MorphContext): F1
 
@@ -160,7 +164,9 @@ trait EvaluatorModule[M[+_]]
             // TODO: Predicate pullups break a SnapEngage query (see PLATFORM-951)
             //predicatePullups(_, ctx),
             inferTypes(JType.JUniverseT),
-            { g => megaReduce(g, findReductions(g, ctx)) },
+            { g =>
+              megaReduce(g, findReductions(g, ctx))
+            },
             memoize
           )
         )
@@ -307,7 +313,9 @@ trait EvaluatorModule[M[+_]]
           for {
             state <- monadState.gets(identity)
             extraId = state.extraCount
-            _ <- monadState.modify { _.copy(extraCount = extraId + 1) }
+            _ <- monadState.modify {
+              _.copy(extraCount = extraId + 1)
+            }
 
             liftedTrans = TransSpec.deepMap(spec) {
               case Leaf(_) => DerefObjectStatic(Leaf(Source), paths.Value)
@@ -490,7 +498,9 @@ trait EvaluatorModule[M[+_]]
                     DerefArrayStatic(
                       SourceKey.Single,
                       CPathIndex(i))): TransSpec1
-              components reduceLeft { trans.InnerArrayConcat(_, _) }
+              components reduceLeft {
+                trans.InnerArrayConcat(_, _)
+              }
             }
           }
 
@@ -507,7 +517,9 @@ trait EvaluatorModule[M[+_]]
 
           def isSorted(sort: TableOrder): Boolean = (joinKey, sort) match {
             case (IdentityJoin(keys), IdentityOrder(ids)) =>
-              ids.zipWithIndex take keys.length forall { case (i, j) => i == j }
+              ids.zipWithIndex take keys.length forall {
+                case (i, j) => i == j
+              }
             case (ValueJoin(id0), ValueOrder(id1)) => id0 == id1
             case _                                 => false
           }
@@ -1205,7 +1217,9 @@ trait EvaluatorModule[M[+_]]
             graph: DepGraph): EvaluatorStateT[DepGraph] = {
           for {
             state <- monadState gets identity
-            optPoint = toEval find { g => !(state.assume contains g) }
+            optPoint = toEval find { g =>
+              !(state.assume contains g)
+            }
 
             optBack = optPoint map { point =>
               for {
@@ -1361,7 +1375,11 @@ trait EvaluatorModule[M[+_]]
           (queue3, addend)
         }
 
-        listStagingPoints(queue3, addend map { _ :: acc } getOrElse acc)
+        listStagingPoints(
+          queue3,
+          addend map {
+            _ :: acc
+          } getOrElse acc)
       }
     }
 
@@ -1388,11 +1406,15 @@ trait EvaluatorModule[M[+_]]
       def bfs(kernels: Set[Kernel]): Set[DepGraph] = {
         // check for convergence
         val results = kernels flatMap { k =>
-          val results = kernels.foldLeft(k.nodes) { _ & _.seen }
+          val results = kernels.foldLeft(k.nodes) {
+            _ & _.seen
+          }
 
           // TODO if the below isEmpty, then can drop results from all kernels
           nodes.foldLeft(results) { (results, node) =>
-            results filter { isTransSpecable(node, _) }
+            results filter {
+              isTransSpecable(node, _)
+            }
           }
         }
 
@@ -1405,7 +1427,9 @@ trait EvaluatorModule[M[+_]]
             Kernel(nodes3, k.seen ++ nodes3)
           }
 
-          if (kernels2 forall { _.nodes.isEmpty }) {
+          if (kernels2 forall {
+                _.nodes.isEmpty
+              }) {
             Set()
           } else {
             bfs(kernels2)
@@ -1418,7 +1442,9 @@ trait EvaluatorModule[M[+_]]
       if (nodes.size == 1) {
         nodes.headOption
       } else {
-        val kernels = nodes map { n => Kernel(Set(n), Set(n)) }
+        val kernels = nodes map { n =>
+          Kernel(Set(n), Set(n))
+        }
         val results = bfs(kernels)
 
         if (results.size == 1)
@@ -1580,7 +1606,9 @@ trait EvaluatorModule[M[+_]]
         table1: StateT[N, EvaluatorState, A],
         table2: StateT[N, EvaluatorState, A])
         : StateT[N, EvaluatorState, (A, A)] =
-      monadState.apply2(table1, table2) { (_, _) }
+      monadState.apply2(table1, table2) {
+        (_, _)
+      }
 
     private case class EvaluatorState(
         assume: Map[DepGraph, (Table, TableOrder)] = Map.empty,

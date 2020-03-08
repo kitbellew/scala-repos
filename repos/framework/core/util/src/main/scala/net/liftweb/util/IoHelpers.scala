@@ -119,7 +119,10 @@ trait IoHelpers {
     try {
       f
     } finally {
-      is.foreach(stream => tryo { stream.close })
+      is.foreach(stream =>
+        tryo {
+          stream.close
+        })
     }
   }
 }

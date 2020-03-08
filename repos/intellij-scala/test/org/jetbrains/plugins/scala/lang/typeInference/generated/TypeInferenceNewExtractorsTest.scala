@@ -18,8 +18,16 @@ class TypeInferenceNewExtractorsTest extends TypeInferenceTestBase {
     super.setUp()
   }
 
-  def testUnapply() { doTest() }
-  def testUnapply2() { doTest() }
-  def testUnapplySeq() { doTest() }
-  def testUnapplySeq2() { doTest() }
+  def testUnapply() {
+    doTest()
+  }
+  def testUnapply2() {
+    doTest()
+  }
+  def testUnapplySeq() {
+    doTest()
+  }
+  def testUnapplySeq2() {
+    doTest()
+  }
 }

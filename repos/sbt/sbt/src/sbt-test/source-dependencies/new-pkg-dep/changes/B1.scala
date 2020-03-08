@@ -1,2 +1,4 @@
 package b
-object B { val x = a.A.x }
+object B {
+  val x = a.A.x
+}

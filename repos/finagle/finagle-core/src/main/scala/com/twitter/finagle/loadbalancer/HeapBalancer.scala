@@ -35,7 +35,9 @@ class HeapBalancer[Req, Rep](
   import HeapBalancer._
 
   private[this] val sizeGauge = statsReceiver.addGauge("size") {
-    synchronized { size }
+    synchronized {
+      size
+    }
   }
   private[this] val adds = statsReceiver.counter("adds")
   private[this] val removes = statsReceiver.counter("removes")
@@ -94,7 +96,9 @@ class HeapBalancer[Req, Rep](
   }
 
   private[this] val availableGauge = statsReceiver.addGauge("available") {
-    val nodes = synchronized { heap.drop(1) }
+    val nodes = synchronized {
+      heap.drop(1)
+    }
     nodes.count(_.factory.status == Status.Open)
   }
 
@@ -215,7 +219,11 @@ class HeapBalancer[Req, Rep](
       n
     }
 
-    node.factory(conn) map { new Wrapped(node, _) } onFailure { _ => put(node) }
+    node.factory(conn) map {
+      new Wrapped(node, _)
+    } onFailure { _ =>
+      put(node)
+    }
   }
 
   private[this] val nodesClosable: Closable = Closable.make { deadline =>

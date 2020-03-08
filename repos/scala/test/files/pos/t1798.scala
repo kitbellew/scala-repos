@@ -1,5 +1,9 @@
-object Foo { private def bar(): Int = 55 }
-class Foo(x: Int) { def this() = this(Foo.bar()) }
+object Foo {
+  private def bar(): Int = 55
+}
+class Foo(x: Int) {
+  def this() = this(Foo.bar())
+}
 
 /*
  * scalac28 a.scala

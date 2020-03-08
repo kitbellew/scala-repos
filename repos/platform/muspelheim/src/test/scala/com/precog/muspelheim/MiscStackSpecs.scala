@@ -210,7 +210,9 @@ trait MiscStackSpecs extends EvalStackSpecs {
       val weights = result collect {
         case (_, SObject(elems)) => elems("weight")
       }
-      val expectedWeights = result2 collect { case (_, w) => w }
+      val expectedWeights = result2 collect {
+        case (_, w) => w
+      }
 
       val weightsPlus = result collect {
         case (_, SObject(elems)) => elems("increasedWeight")
@@ -252,9 +254,13 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
       val fives = result collect {
         case (_, SObject(elems)) =>
-          (elems("five"): @unchecked) match { case SDecimal(d) => d }
+          (elems("five"): @unchecked) match {
+            case SDecimal(d) => d
+          }
       }
-      val weights = result2 collect { case (_, w) => w }
+      val weights = result2 collect {
+        case (_, w) => w
+      }
 
       val weightsPlus = result collect {
         case (_, SObject(elems)) => elems("increasedWeight")
@@ -318,7 +324,9 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
           elems must haveSize(4)
 
-          val decimals = elems collect { case SDecimal(d) => d }
+          val decimals = elems collect {
+            case SDecimal(d) => d
+          }
 
           decimals(0) must be < (decimals(1))
           decimals(0) mustEqual decimals(2)
@@ -953,10 +961,18 @@ trait MiscStackSpecs extends EvalStackSpecs {
         case (ids, SObject(obj)) => obj
       }
 
-      val india = maps filter { _.values forall { _ == SString("India") } }
+      val india = maps filter {
+        _.values forall {
+          _ == SString("India")
+        }
+      }
       india.size mustEqual (16)
 
-      val canada = maps filter { _.values forall { _ == SString("Canada") } }
+      val canada = maps filter {
+        _.values forall {
+          _ == SString("Canada")
+        }
+      }
       canada.size mustEqual (570)
     }
 
@@ -980,7 +996,11 @@ trait MiscStackSpecs extends EvalStackSpecs {
         case (ids, SObject(obj)) => obj
       }
 
-      val india = maps filter { _.values forall { _ == SString("India") } }
+      val india = maps filter {
+        _.values forall {
+          _ == SString("India")
+        }
+      }
       india.size mustEqual (16)
     }
 

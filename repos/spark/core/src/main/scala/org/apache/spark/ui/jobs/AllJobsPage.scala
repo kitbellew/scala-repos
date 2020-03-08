@@ -56,7 +56,9 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
       job: JobUIData): (String, String) = {
     val lastStageInfo = Option(job.stageIds)
       .filter(_.nonEmpty)
-      .flatMap { ids => parent.jobProgresslistener.stageIdToInfo.get(ids.max) }
+      .flatMap { ids =>
+        parent.jobProgresslistener.stageIdToInfo.get(ids.max)
+      }
     val lastStageData = lastStageInfo.flatMap { s =>
       parent.jobProgresslistener.stageIdToData.get((s.stageId, s.attemptId))
     }
@@ -193,7 +195,9 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
 
     <span class="expand-application-timeline">
       <span class="expand-application-timeline-arrow arrow-closed"></span>
-      <a data-toggle="tooltip" title={ToolTips.JOB_TIMELINE} data-placement="right">
+      <a data-toggle="tooltip" title={
+      ToolTips.JOB_TIMELINE
+    } data-placement="right">
         Event Timeline
       </a>
     </span> ++
@@ -218,7 +222,9 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
     val someJobHasJobGroup = jobs.exists(_.jobGroup.isDefined)
 
     val columns: Seq[Node] = {
-      <th>{if (someJobHasJobGroup) "Job Id (Job Group)" else "Job Id"}</th>
+      <th>{
+        if (someJobHasJobGroup) "Job Id (Job Group)" else "Job Id"
+      }</th>
       <th>Description</th>
       <th>Submitted</th>
       <th>Duration</th>
@@ -244,26 +250,52 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
         UIUtils.makeDescription(lastStageDescription, basePathUri)
 
       val detailUrl = "%s/jobs/job?id=%s".format(basePathUri, job.jobId)
-      <tr id={"job-" + job.jobId}>
-        <td sorttable_customkey={job.jobId.toString}>
-          {job.jobId} {job.jobGroup.map(id => s"($id)").getOrElse("")}
+      <tr id={
+        "job-" + job.jobId
+      }>
+        <td sorttable_customkey={
+        job.jobId.toString
+      }>
+          {
+        job.jobId
+      } {
+        job.jobGroup.map(id => s"($id)").getOrElse("")
+      }
         </td>
         <td>
-          {jobDescription}
-          <a href={detailUrl} class="name-link">{lastStageName}</a>
+          {
+        jobDescription
+      }
+          <a href={
+        detailUrl
+      } class="name-link">{
+        lastStageName
+      }</a>
         </td>
-        <td sorttable_customkey={job.submissionTime.getOrElse(-1).toString}>
-          {formattedSubmissionTime}
+        <td sorttable_customkey={
+        job.submissionTime.getOrElse(-1).toString
+      }>
+          {
+        formattedSubmissionTime
+      }
         </td>
-        <td sorttable_customkey={duration.getOrElse(-1).toString}>{
+        <td sorttable_customkey={
+        duration.getOrElse(-1).toString
+      }>{
         formattedDuration
       }</td>
         <td class="stage-progress-cell">
-          {job.completedStageIndices.size}/{
+          {
+        job.completedStageIndices.size
+      }/{
         job.stageIds.size - job.numSkippedStages
       }
-          {if (job.numFailedStages > 0) s"(${job.numFailedStages} failed)"}
-          {if (job.numSkippedStages > 0) s"(${job.numSkippedStages} skipped)"}
+          {
+        if (job.numFailedStages > 0) s"(${job.numFailedStages} failed)"
+      }
+          {
+        if (job.numSkippedStages > 0) s"(${job.numSkippedStages} skipped)"
+      }
         </td>
         <td class="progress-cell">
           {
@@ -280,9 +312,13 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
     }
 
     <table class="table table-bordered table-striped table-condensed sortable">
-      <thead>{columns}</thead>
+      <thead>{
+      columns
+    }</thead>
       <tbody>
-        {jobs.map(makeRow)}
+        {
+      jobs.map(makeRow)
+    }
       </tbody>
     </table>
   }
@@ -329,13 +365,17 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
             </li>
             <li>
               <strong>Scheduling Mode: </strong>
-              {listener.schedulingMode.map(_.toString).getOrElse("Unknown")}
+              {
+          listener.schedulingMode.map(_.toString).getOrElse("Unknown")
+        }
             </li>
             {
           if (shouldShowActiveJobs) {
             <li>
                   <a href="#active"><strong>Active Jobs:</strong></a>
-                  {activeJobs.size}
+                  {
+              activeJobs.size
+            }
                 </li>
           }
         }
@@ -343,7 +383,9 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
           if (shouldShowCompletedJobs) {
             <li id="completed-summary">
                   <a href="#completed"><strong>Completed Jobs:</strong></a>
-                  {completedJobNumStr}
+                  {
+              completedJobNumStr
+            }
                 </li>
           }
         }
@@ -351,7 +393,9 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
           if (shouldShowFailedJobs) {
             <li>
                   <a href="#failed"><strong>Failed Jobs:</strong></a>
-                  {listener.numFailedJobs}
+                  {
+              listener.numFailedJobs
+            }
                 </li>
           }
         }
@@ -366,7 +410,9 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
         startTime)
 
       if (shouldShowActiveJobs) {
-        content ++= <h4 id="active">Active Jobs ({activeJobs.size})</h4> ++
+        content ++= <h4 id="active">Active Jobs ({
+          activeJobs.size
+        })</h4> ++
           activeJobsTable
       }
       if (shouldShowCompletedJobs) {
@@ -376,7 +422,9 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
           completedJobsTable
       }
       if (shouldShowFailedJobs) {
-        content ++= <h4 id ="failed">Failed Jobs ({failedJobs.size})</h4> ++
+        content ++= <h4 id ="failed">Failed Jobs ({
+          failedJobs.size
+        })</h4> ++
           failedJobsTable
       }
 

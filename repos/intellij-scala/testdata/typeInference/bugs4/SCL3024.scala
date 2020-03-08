@@ -4,7 +4,9 @@ object FunctionTypes {
     def foo(f: String => List[Int]) = f
   }
 
-  val f = a foo { v => List(1) }
+  val f = a foo { v =>
+    List(1)
+  }
   /*start*/
   f /*end*/
 }

@@ -165,7 +165,9 @@ object LinearDataGenerator {
         val indices = weights.indices.filter { _ =>
           rnd.nextDouble() <= sparsity
         }
-        val values = indices.map { rndElement(_) }
+        val values = indices.map {
+          rndElement(_)
+        }
         val features =
           Vectors.sparse(weights.length, indices.toArray, values.toArray)
         val label = BLAS.dot(Vectors.dense(weights), features) +

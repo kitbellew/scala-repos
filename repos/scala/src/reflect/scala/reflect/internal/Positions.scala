@@ -148,7 +148,9 @@ trait Positions extends api.Positions { self: SymbolTable =>
             case xs => {
               positionError(
                 "Overlapping trees " + xs
-                  .map { case (x, y) => (x.id, y.id) }
+                  .map {
+                    case (x, y) => (x.id, y.id)
+                  }
                   .mkString("", ", ", "")) {
                 reportTree("Ancestor", tree)
                 for ((x, y) <- xs) {

@@ -43,7 +43,9 @@ object ZigguratGenerator {
       new java.io.PrintStream(new java.io.FileOutputStream("zigguratrexp.m"))
 
     fnor.print("rnor = [")
-    for (i <- rnor) { fnor.print(i); fnor.print(", ") }
+    for (i <- rnor) {
+      fnor.print(i); fnor.print(", ")
+    }
     fnor.println("]")
     fnor.println("x = -5:0.05:5")
     fnor.println("hist(rnor,x)")
@@ -51,7 +53,9 @@ object ZigguratGenerator {
     fnor.close()
 
     fexp.print("rexp = [")
-    for (i <- rexp) { fexp.print(i); fexp.print(", ") }
+    for (i <- rexp) {
+      fexp.print(i); fexp.print(", ")
+    }
     fexp.println("]")
     fexp.println("x = -1:0.05:10")
     fexp.println("hist(rexp,x)")

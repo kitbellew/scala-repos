@@ -99,14 +99,18 @@ abstract class Taggers {
           translatingReificationErrors(materializer)
       }
     try c.typecheck(result)
-    catch { case terr @ TypecheckException(pos, msg) => failTag(result, terr) }
+    catch {
+      case terr @ TypecheckException(pos, msg) => failTag(result, terr)
+    }
   }
 
   def materializeExpr(universe: Tree, mirror: Tree, expr: Tree): Tree = {
     val result = translatingReificationErrors(
       c.reifyTree(universe, mirror, expr))
     try c.typecheck(result)
-    catch { case terr @ TypecheckException(pos, msg) => failExpr(result, terr) }
+    catch {
+      case terr @ TypecheckException(pos, msg) => failExpr(result, terr)
+    }
   }
 
   private def translatingReificationErrors(materializer: => Tree): Tree = {

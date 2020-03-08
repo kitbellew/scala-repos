@@ -500,7 +500,9 @@ package play.api.mvc {
       */
     def remove(keys: String*) = {
       val keySet = TreeSet(keys: _*)(CaseInsensitiveOrdered)
-      new Headers(headers.filterNot { case (name, _) => keySet(name) })
+      new Headers(headers.filterNot {
+        case (name, _) => keySet(name)
+      })
     }
 
     /**

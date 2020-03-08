@@ -13,11 +13,19 @@ trait T {
     // auto-tupling which promotes an empty parameter list to `(): Unit`
     foo((u: Any) => ma)()
 
-    { { (u: Any) => ma }; this }.foo(0)()
+    {
+      { (u: Any) =>
+        ma
+      }; this
+    }.foo(0)()
 
-    foo({ def foo = ma; 0 })()
+    foo({
+      def foo = ma; 0
+    })()
 
-    { def foo = ma; this }.foo(0)()
+    {
+      def foo = ma; this
+    }.foo(0)()
   }
 
   def foo(f: Any): Any => Any

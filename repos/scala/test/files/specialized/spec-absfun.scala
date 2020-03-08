@@ -15,18 +15,25 @@ object Test {
   }
 
   def notSpecialized() {
-    val pairs = for { i <- 1 to Max; j <- 1 to i } yield new Pair(i, j)
+    val pairs = for {
+      i <- 1 to Max; j <- 1 to i
+    } yield new Pair(i, j)
     val time0 = System.nanoTime
-    pairs foreach { p => p.first * p.second }
+    pairs foreach { p =>
+      p.first * p.second
+    }
     val time1 = System.nanoTime
 //    println(time1 - time0)
   }
 
   def specialized() {
-    val pairs =
-      for { i <- 1 to Max; j <- 1 to i } yield new SpecializedPair(i, j)
+    val pairs = for {
+      i <- 1 to Max; j <- 1 to i
+    } yield new SpecializedPair(i, j)
     val time0 = System.nanoTime
-    pairs foreach { p => p.first * p.second }
+    pairs foreach { p =>
+      p.first * p.second
+    }
     val time1 = System.nanoTime
 //    println(time1 - time0)
   }

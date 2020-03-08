@@ -6,14 +6,22 @@ import scala.{specialized => sp}
 
 object Test {
   def caller = new Exception().getStackTrace()(1).getMethodName
-  def f1[@sp(Int) A](a: A, b: Any) = { val c = caller; print(""); c }
-  def f2[@sp(Int) A, B](a: A, b: String) = { val c = caller; print(""); c }
-  def f3[B, @sp(Int) A](a: A, b: List[B]) = { val c = caller; print(""); c }
+  def f1[@sp(Int) A](a: A, b: Any) = {
+    val c = caller; print(""); c
+  }
+  def f2[@sp(Int) A, B](a: A, b: String) = {
+    val c = caller; print(""); c
+  }
+  def f3[B, @sp(Int) A](a: A, b: List[B]) = {
+    val c = caller; print(""); c
+  }
   def f4[B, @sp(Int) A](a: A, b: List[(A, B)]) = {
     val c = caller; print(""); c
   }
 
-  def f5[@sp(Int) A, B <: Object](a: A, b: B) = { val c = caller; print(""); c }
+  def f5[@sp(Int) A, B <: Object](a: A, b: B) = {
+    val c = caller; print(""); c
+  }
 
   // `uncurryTreeType` calls a TypeMap on the call to this method and we end up with new
   // type parameter symbols, which are not found in `TypeEnv.includes(typeEnv(member), env)`

@@ -40,7 +40,9 @@ class PythonRunnerSuite extends SparkFunSuite {
         PythonRunner.formatPath("C:\\a b\\spark.py", testWindows = true) ===
           "C:/a b/spark.py")
     }
-    intercept[IllegalArgumentException] { PythonRunner.formatPath("one:two") }
+    intercept[IllegalArgumentException] {
+      PythonRunner.formatPath("one:two")
+    }
     intercept[IllegalArgumentException] {
       PythonRunner.formatPath("hdfs:s3:xtremeFS")
     }

@@ -70,7 +70,11 @@ object Form extends DispatchSnippet {
               }))
         new Elem(null, "form", meta, e.scope, e.minimizeEmpty, e.child: _*)
       } else {
-        <form method="post" action={S.uri}>{kids}</form>
+        <form method="post" action={
+          S.uri
+        }>{
+          kids
+        }</form>
       }
 
     S.attr("multipart") match {

@@ -535,8 +535,16 @@ final class ConstArrayBuilder[T](
         .asInstanceOf[Array[Any]]
   }
 
-  def +(v: T): this.type = { this += v; this }
-  def ++(vs: ConstArray[T]): this.type = { this ++= vs; this }
-  def ++(vs: TraversableOnce[T]): this.type = { this ++= vs; this }
-  def ++(vs: Option[T]): this.type = { this ++= vs; this }
+  def +(v: T): this.type = {
+    this += v; this
+  }
+  def ++(vs: ConstArray[T]): this.type = {
+    this ++= vs; this
+  }
+  def ++(vs: TraversableOnce[T]): this.type = {
+    this ++= vs; this
+  }
+  def ++(vs: Option[T]): this.type = {
+    this ++= vs; this
+  }
 }

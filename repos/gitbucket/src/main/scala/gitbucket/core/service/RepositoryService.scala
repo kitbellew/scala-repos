@@ -102,14 +102,18 @@ trait RepositoryService { self: AccountService =>
           .filter { t =>
             (t.originUserName === oldUserName.bind) && (t.originRepositoryName === oldRepositoryName.bind)
           }
-          .map { t => t.originUserName -> t.originRepositoryName }
+          .map { t =>
+            t.originUserName -> t.originRepositoryName
+          }
           .update(newUserName, newRepositoryName)
 
         Repositories
           .filter { t =>
             (t.parentUserName === oldUserName.bind) && (t.parentRepositoryName === oldRepositoryName.bind)
           }
-          .map { t => t.originUserName -> t.originRepositoryName }
+          .map { t =>
+            t.originUserName -> t.originRepositoryName
+          }
           .update(newUserName, newRepositoryName)
 
         // Updates activity fk before deleting repository because activity is sorted by activityId
@@ -200,7 +204,9 @@ trait RepositoryService { self: AccountService =>
           .filter { t =>
             (t.requestUserName === oldUserName.bind) && (t.requestRepositoryName === oldRepositoryName.bind)
           }
-          .map { t => t.requestUserName -> t.requestRepositoryName }
+          .map { t =>
+            t.requestUserName -> t.requestRepositoryName
+          }
           .update(newUserName, newRepositoryName)
 
         // Convert labelId
@@ -236,7 +242,9 @@ trait RepositoryService { self: AccountService =>
             (t.message like s"%:${oldUserName}/${oldRepositoryName}#%") ||
             (t.message like s"%:${oldUserName}/${oldRepositoryName}@%")
           }
-          .map { t => t.activityId -> t.message }
+          .map { t =>
+            t.activityId -> t.message
+          }
           .list
           .foreach {
             case (activityId, message) =>
@@ -290,7 +298,9 @@ trait RepositoryService { self: AccountService =>
       .filter { x =>
         (x.originUserName === userName.bind) && (x.originRepositoryName === repositoryName.bind)
       }
-      .map { x => (x.userName, x.repositoryName) }
+      .map { x =>
+        (x.userName, x.repositoryName)
+      }
       .list
       .foreach {
         case (userName, repositoryName) =>
@@ -305,7 +315,9 @@ trait RepositoryService { self: AccountService =>
       .filter { x =>
         (x.parentUserName === userName.bind) && (x.parentRepositoryName === repositoryName.bind)
       }
-      .map { x => (x.userName, x.repositoryName) }
+      .map { x =>
+        (x.userName, x.repositoryName)
+      }
       .list
       .foreach {
         case (userName, repositoryName) =>
@@ -382,7 +394,9 @@ trait RepositoryService { self: AccountService =>
         } exists)
       }
       .sortBy(_.lastActivityDate desc)
-      .map { t => (t.userName, t.repositoryName) }
+      .map { t =>
+        (t.userName, t.repositoryName)
+      }
       .list
   }
 
@@ -506,7 +520,9 @@ trait RepositoryService { self: AccountService =>
       isPrivate: Boolean)(implicit s: Session): Unit =
     Repositories
       .filter(_.byRepository(userName, repositoryName))
-      .map { r => (r.description.?, r.isPrivate, r.updatedDate) }
+      .map { r =>
+        (r.description.?, r.isPrivate, r.updatedDate)
+      }
       .update(description, isPrivate, currentDate)
 
   def saveRepositoryDefaultBranch(
@@ -515,7 +531,9 @@ trait RepositoryService { self: AccountService =>
       defaultBranch: String)(implicit s: Session): Unit =
     Repositories
       .filter(_.byRepository(userName, repositoryName))
-      .map { r => r.defaultBranch }
+      .map { r =>
+        r.defaultBranch
+      }
       .update(defaultBranch)
 
   /**

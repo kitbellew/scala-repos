@@ -36,7 +36,9 @@ object GradientTester extends SerializableLogging {
       skipZeros: Boolean = false,
       epsilon: Double = 1e-8,
       tolerance: Double = 1e-3,
-      toString: K => String = { (_: K).toString })(implicit
+      toString: K => String = {
+        (_: K).toString
+      })(implicit
       view2: T <:< NumericOps[T],
       view: T <:< Tensor[K, Double],
       copy: CanCopy[T],
@@ -55,7 +57,9 @@ object GradientTester extends SerializableLogging {
       x: T,
       indices: Traversable[K],
       skipZeros: Boolean = false,
-      toString: (K) => String = { (_: K).toString },
+      toString: (K) => String = {
+        (_: K).toString
+      },
       epsilon: Double = 1e-8,
       tolerance: Double = 1e-3)(implicit
       view2: T <:< NumericOps[T],

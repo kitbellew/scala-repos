@@ -395,8 +395,9 @@ class TimeFormatTest extends WordSpec {
 }
 
 @RunWith(classOf[JUnitRunner])
-class TimeTest extends { val ops = Time } with TimeLikeSpec[Time]
-with Eventually with IntegrationPatience {
+class TimeTest extends {
+  val ops = Time
+} with TimeLikeSpec[Time] with Eventually with IntegrationPatience {
 
   "Time" should {
     "work in collections" in {
@@ -405,9 +406,9 @@ with Eventually with IntegrationPatience {
       assert(t0 == t1)
       assert(t0.hashCode == t1.hashCode)
       val pairs = List((t0, "foo"), (t1, "bar"))
-      assert(
-        pairs.groupBy { case (time: Time, value: String) => time } == Map(
-          t0 -> pairs))
+      assert(pairs.groupBy {
+        case (time: Time, value: String) => time
+      } == Map(t0 -> pairs))
     }
 
     "now should be now" in {
@@ -429,7 +430,9 @@ with Eventually with IntegrationPatience {
       val t1 = t0 + 10.minutes
       Time.withTimeAt(t0) { _ =>
         assert(Time.now == t0)
-        Time.withTimeAt(t1) { _ => assert(Time.now == t1) }
+        Time.withTimeAt(t1) { _ =>
+          assert(Time.now == t1)
+        }
         assert(Time.now == t0)
       }
       assert((Time.now.inMillis - System.currentTimeMillis).abs < 20L)
@@ -506,7 +509,9 @@ with Eventually with IntegrationPatience {
         val t = new Thread(r)
         t.start()
         assert(t.isAlive == true)
-        eventually { assert(t.getState == Thread.State.TIMED_WAITING) }
+        eventually {
+          assert(t.getState == Thread.State.TIMED_WAITING)
+        }
         ctl.advance(5.seconds)
         t.join()
         assert(t.isAlive == false)

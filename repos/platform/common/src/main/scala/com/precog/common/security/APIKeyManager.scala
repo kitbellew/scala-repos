@@ -107,7 +107,10 @@ trait APIKeyManager[M[+_]] extends Logging { self =>
     findAPIKey(apiKey) flatMap {
       case Some(keyRecord) =>
         if (keyRecord.issuerKey == apiKey) M.point(List(keyRecord))
-        else findAPIKeyAncestry(keyRecord.issuerKey) map { keyRecord :: _ }
+        else
+          findAPIKeyAncestry(keyRecord.issuerKey) map {
+            keyRecord :: _
+          }
 
       case None =>
         M.point(List.empty[APIKeyRecord])
@@ -188,7 +191,9 @@ trait APIKeyManager[M[+_]] extends Logging { self =>
             issuerKey,
             minimized,
             perms,
-            expiration) map { some }
+            expiration) map {
+            some
+          }
         }
       }
     }
@@ -210,7 +215,9 @@ trait APIKeyManager[M[+_]] extends Logging { self =>
             issuerKey,
             Set(parentId),
             perms,
-            expiration) map { some }
+            expiration) map {
+            some
+          }
         case _ => none[Grant].point[M]
       }
     }
@@ -225,7 +232,11 @@ trait APIKeyManager[M[+_]] extends Logging { self =>
       expiration: Option[DateTime] = None): M[Option[Grant]] = {
     deriveGrant(name, description, issuerKey, perms, expiration) flatMap {
       case Some(grant) =>
-        addGrants(recipientKey, Set(grant.grantId)) map { _ map { _ => grant } }
+        addGrants(recipientKey, Set(grant.grantId)) map {
+          _ map { _ =>
+            grant
+          }
+        }
       case None => none[Grant].point[M]
     }
   }

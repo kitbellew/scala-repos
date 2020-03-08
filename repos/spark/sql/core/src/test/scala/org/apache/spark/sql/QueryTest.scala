@@ -255,8 +255,12 @@ abstract class QueryTest extends PlanTest {
     // RDDs/data are not serializable to JSON, so we need to collect LogicalPlans that contains
     // these non-serializable stuff, and use these original ones to replace the null-placeholders
     // in the logical plans parsed from JSON.
-    var logicalRDDs = logicalPlan.collect { case l: LogicalRDD       => l }
-    var localRelations = logicalPlan.collect { case l: LocalRelation => l }
+    var logicalRDDs = logicalPlan.collect {
+      case l: LogicalRDD => l
+    }
+    var localRelations = logicalPlan.collect {
+      case l: LocalRelation => l
+    }
     var inMemoryRelations = logicalPlan.collect {
       case i: InMemoryRelation => i
     }
@@ -341,7 +345,9 @@ object QueryTest {
     * @param expectedAnswer the expected result in a [[Seq]] of [[Row]]s.
     */
   def checkAnswer(df: DataFrame, expectedAnswer: Seq[Row]): Option[String] = {
-    val isSorted = df.logicalPlan.collect { case s: logical.Sort => s }.nonEmpty
+    val isSorted = df.logicalPlan.collect {
+      case s: logical.Sort => s
+    }.nonEmpty
 
     val sparkAnswer =
       try df.collect().toSeq

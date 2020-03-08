@@ -12,9 +12,15 @@ import scala.collection.mutable.{Buffer, ListBuffer}
 class SimpleHistory extends History {
   private var _index: Int = 0
   protected val buf: Buffer[String] = new ListBuffer[String]
-  private def setTo(num: Int) = { _index = num; true }
-  private def minusOne = { _index -= 1; true }
-  private def plusOne = { _index += 1; true }
+  private def setTo(num: Int) = {
+    _index = num; true
+  }
+  private def minusOne = {
+    _index -= 1; true
+  }
+  private def plusOne = {
+    _index += 1; true
+  }
   private def lastIndex = size - 1
   private def fail(msg: String): String = {
     repldbg(

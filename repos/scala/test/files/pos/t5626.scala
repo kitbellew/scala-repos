@@ -1,9 +1,13 @@
 class C {
   val blob = {
-    new { case class Foo() }
+    new {
+      case class Foo()
+    }
   }
   val blub = {
-    class Inner { case class Foo() }
+    class Inner {
+      case class Foo()
+    }
     new Inner
   }
 

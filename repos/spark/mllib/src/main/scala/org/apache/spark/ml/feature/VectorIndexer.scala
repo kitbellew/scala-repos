@@ -127,8 +127,9 @@ class VectorIndexer(override val uid: String)
       firstRow.length == 1,
       s"VectorIndexer cannot be fit on an empty dataset.")
     val numFeatures = firstRow(0).getAs[Vector](0).size
-    val vectorDataset =
-      dataset.select($(inputCol)).rdd.map { case Row(v: Vector) => v }
+    val vectorDataset = dataset.select($(inputCol)).rdd.map {
+      case Row(v: Vector) => v
+    }
     val maxCats = $(maxCategories)
     val categoryStats: VectorIndexer.CategoryStats = vectorDataset
       .mapPartitions { iter =>
@@ -401,7 +402,9 @@ class VectorIndexerModel private[ml] (
   override def transform(dataset: DataFrame): DataFrame = {
     transformSchema(dataset.schema, logging = true)
     val newField = prepOutputField(dataset.schema)
-    val transformUDF = udf { (vector: Vector) => transformFunc(vector) }
+    val transformUDF = udf { (vector: Vector) =>
+      transformFunc(vector)
+    }
     val newCol = transformUDF(dataset($(inputCol)))
     dataset.withColumn($(outputCol), newCol, newField.metadata)
   }

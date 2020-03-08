@@ -48,6 +48,8 @@ object WrappedProperties {
   object AccessControl extends WrappedProperties {
     def wrap[T](body: => T) =
       try Some(body)
-      catch { case _: AccessControlException => None }
+      catch {
+        case _: AccessControlException => None
+      }
   }
 }

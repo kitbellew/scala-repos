@@ -526,9 +526,13 @@ class TestServer(portToBind: Int = 0) extends Logging {
     }
   }
 
-  def send(msg: String) { queue.put(msg) }
+  def send(msg: String) {
+    queue.put(msg)
+  }
 
-  def stop() { servingThread.interrupt() }
+  def stop() {
+    servingThread.interrupt()
+  }
 
   def port: Int = serverSocket.getLocalPort
 }

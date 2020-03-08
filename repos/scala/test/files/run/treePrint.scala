@@ -34,7 +34,9 @@ object Test {
     }
   """
 
-  class NullOutputStream extends OutputStream { def write(b: Int) {} }
+  class NullOutputStream extends OutputStream {
+    def write(b: Int) {}
+  }
 
   def main(args: Array[String]) {
     val settings = new Settings

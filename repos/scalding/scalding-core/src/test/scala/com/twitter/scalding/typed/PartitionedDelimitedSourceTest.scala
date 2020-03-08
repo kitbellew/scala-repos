@@ -30,7 +30,9 @@ object PartitionedDelimitedTestSources {
 class PartitionedDelimitedWriteJob(args: Args) extends Job(args) {
   import PartitionedDelimitedTestSources._
   TypedCsv[(String, String, String)]("in")
-    .map { case (v1, v2, v3) => (v1, (v2, v3)) }
+    .map {
+      case (v1, v2, v3) => (v1, (v2, v3))
+    }
     .write(singlePartition)
 }
 
@@ -57,7 +59,12 @@ class PartitionedDelimitedTest extends WordSpec with Matchers {
 
       val directory = new File(testMode.getWritePathFor(singlePartition))
 
-      directory.listFiles().map({ _.getName() }).toSet shouldBe Set("A", "B")
+      directory
+        .listFiles()
+        .map({
+          _.getName()
+        })
+        .toSet shouldBe Set("A", "B")
 
       val aSource =
         ScalaSource.fromFile(new File(directory, "A/part-00000-00000"))

@@ -17,7 +17,9 @@ case class ByteArray(value: Array[Byte]) {
 
   def showBytes: String =
     value map { b =>
-      "%08d" format { b & 0xff }.toBinaryString.toInt
+      "%08d" format {
+        b & 0xff
+      }.toBinaryString.toInt
     } mkString ","
 
   override def toString = toHexStr

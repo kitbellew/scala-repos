@@ -62,7 +62,9 @@ object Outcome {
 
   val all = List(Good, Abort, NoPlay, RageQuit)
 
-  val byId = all map { v => (v.id, v) } toMap
+  val byId = all map { v =>
+    (v.id, v)
+  } toMap
 
   def apply(id: Int): Option[Outcome] = byId get id
 }

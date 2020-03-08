@@ -77,7 +77,9 @@ case class Group(
 
   def updateApps(timestamp: Timestamp = Timestamp.now())(
       fn: AppDefinition => AppDefinition): Group = {
-    update(timestamp) { group => group.copy(apps = group.apps.map(fn)) }
+    update(timestamp) { group =>
+      group.copy(apps = group.apps.map(fn))
+    }
   }
 
   def update(timestamp: Timestamp = Timestamp.now())(
@@ -184,7 +186,9 @@ case class Group(
 
   def appsWithNoDependencies: Set[AppDefinition] = {
     val g = dependencyGraph
-    g.vertexSet.filter { v => g.outDegreeOf(v) == 0 }.toSet
+    g.vertexSet.filter { v =>
+      g.outDegreeOf(v) == 0
+    }.toSet
   }
 
   def hasNonCyclicDependencies: Boolean = {

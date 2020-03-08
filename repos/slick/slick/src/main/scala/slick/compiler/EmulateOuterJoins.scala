@@ -111,14 +111,18 @@ class EmulateOuterJoins(val useLeftJoin: Boolean, val useRightJoin: Boolean)
   def nullStructFor(t: Type): Node = t.structural match {
     case ProductType(ts) => ProductNode(ts.map(nullStructFor))
     case StructType(sts) =>
-      StructNode(sts.map { case (s, t) => (s, nullStructFor(t)) })
+      StructNode(sts.map {
+        case (s, t) => (s, nullStructFor(t))
+      })
     case t: OptionType => LiteralNode(t, None)
     case t             => LiteralNode(OptionType(t), None)
   }
 
   /** Assign new TypeSymbols to a subtree that needs to be copied into multiple places. */
   def assignFreshSymbols(n: Node): Node = {
-    val typeSyms = n.collect { case n: TypeGenerator => n.identity }.toSet
+    val typeSyms = n.collect {
+      case n: TypeGenerator => n.identity
+    }.toSet
     val repl = typeSyms.map {
       case ts: TableIdentitySymbol => ts -> new AnonTableIdentitySymbol
       case ts                      => ts -> new AnonTypeSymbol

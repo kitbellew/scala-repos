@@ -37,7 +37,9 @@ object PersistentActorSpec {
       case "boom" ⇒ throw new TestException("boom")
       case GetState ⇒ sender() ! events.reverse
       case Delete(toSequenceNr) ⇒
-        persist(Some(sender())) { s ⇒ askedForDelete = s }
+        persist(Some(sender())) { s ⇒
+          askedForDelete = s
+        }
         deleteMessages(toSequenceNr)
     }
 
@@ -401,41 +403,75 @@ object PersistentActorSpec {
       extends ExamplePersistentActor(name) {
     val receiveCommand: Receive = {
       case Cmd(data) ⇒
-        deferAsync("d-1") { sender() ! _ }
-        persist(s"$data-2") { sender() ! _ }
-        deferAsync("d-3") { sender() ! _ }
-        deferAsync("d-4") { sender() ! _ }
+        deferAsync("d-1") {
+          sender() ! _
+        }
+        persist(s"$data-2") {
+          sender() ! _
+        }
+        deferAsync("d-3") {
+          sender() ! _
+        }
+        deferAsync("d-4") {
+          sender() ! _
+        }
     }
   }
   class DeferringWithAsyncPersistActor(name: String)
       extends ExamplePersistentActor(name) {
     val receiveCommand: Receive = {
       case Cmd(data) ⇒
-        deferAsync(s"d-$data-1") { sender() ! _ }
-        persistAsync(s"pa-$data-2") { sender() ! _ }
-        deferAsync(s"d-$data-3") { sender() ! _ }
-        deferAsync(s"d-$data-4") { sender() ! _ }
+        deferAsync(s"d-$data-1") {
+          sender() ! _
+        }
+        persistAsync(s"pa-$data-2") {
+          sender() ! _
+        }
+        deferAsync(s"d-$data-3") {
+          sender() ! _
+        }
+        deferAsync(s"d-$data-4") {
+          sender() ! _
+        }
     }
   }
   class DeferringMixedCallsPPADDPADPersistActor(name: String)
       extends ExamplePersistentActor(name) {
     val receiveCommand: Receive = {
       case Cmd(data) ⇒
-        persist(s"p-$data-1") { sender() ! _ }
-        persistAsync(s"pa-$data-2") { sender() ! _ }
-        deferAsync(s"d-$data-3") { sender() ! _ }
-        deferAsync(s"d-$data-4") { sender() ! _ }
-        persistAsync(s"pa-$data-5") { sender() ! _ }
-        deferAsync(s"d-$data-6") { sender() ! _ }
+        persist(s"p-$data-1") {
+          sender() ! _
+        }
+        persistAsync(s"pa-$data-2") {
+          sender() ! _
+        }
+        deferAsync(s"d-$data-3") {
+          sender() ! _
+        }
+        deferAsync(s"d-$data-4") {
+          sender() ! _
+        }
+        persistAsync(s"pa-$data-5") {
+          sender() ! _
+        }
+        deferAsync(s"d-$data-6") {
+          sender() ! _
+        }
     }
   }
   class DeferringWithNoPersistCallsPersistActor(name: String)
       extends ExamplePersistentActor(name) {
     val receiveCommand: Receive = {
       case Cmd(data) ⇒
-        deferAsync("d-1") { sender() ! _ }
-        deferAsync("d-2") { sender() ! _ }
-        deferAsync("d-3") { sender() ! _ }
+        deferAsync("d-1") {
+          sender() ! _
+        }
+        deferAsync("d-2") {
+          sender() ! _
+        }
+        deferAsync("d-3") {
+          sender() ! _
+        }
     }
   }
 
@@ -460,11 +496,15 @@ object PersistentActorSpec {
         probe ! s
         persist(s + "-outer-1") { outer ⇒
           probe ! outer
-          persist(s + "-inner-1") { inner ⇒ probe ! inner }
+          persist(s + "-inner-1") { inner ⇒
+            probe ! inner
+          }
         }
         persist(s + "-outer-2") { outer ⇒
           probe ! outer
-          persist(s + "-inner-2") { inner ⇒ probe ! inner }
+          persist(s + "-inner-2") { inner ⇒
+            probe ! inner
+          }
         }
     }
   }
@@ -475,11 +515,15 @@ object PersistentActorSpec {
         probe ! s
         persistAsync(s + "-outer-1") { outer ⇒
           probe ! outer
-          persistAsync(s + "-inner-1") { inner ⇒ probe ! inner }
+          persistAsync(s + "-inner-1") { inner ⇒
+            probe ! inner
+          }
         }
         persistAsync(s + "-outer-2") { outer ⇒
           probe ! outer
-          persistAsync(s + "-inner-2") { inner ⇒ probe ! inner }
+          persistAsync(s + "-inner-2") { inner ⇒
+            probe ! inner
+          }
         }
     }
   }
@@ -513,11 +557,15 @@ object PersistentActorSpec {
         probe ! s
         persist(s + "-outer-1") { outer ⇒
           probe ! outer
-          persistAsync(s + "-inner-async-1") { inner ⇒ probe ! inner }
+          persistAsync(s + "-inner-async-1") { inner ⇒
+            probe ! inner
+          }
         }
         persist(s + "-outer-2") { outer ⇒
           probe ! outer
-          persistAsync(s + "-inner-async-2") { inner ⇒ probe ! inner }
+          persistAsync(s + "-inner-async-2") { inner ⇒
+            probe ! inner
+          }
         }
     }
   }
@@ -528,11 +576,15 @@ object PersistentActorSpec {
         probe ! s
         persistAsync(s + "-outer-async-1") { outer ⇒
           probe ! outer
-          persist(s + "-inner-1") { inner ⇒ probe ! inner }
+          persist(s + "-inner-1") { inner ⇒
+            probe ! inner
+          }
         }
         persistAsync(s + "-outer-async-2") { outer ⇒
           probe ! outer
-          persist(s + "-inner-2") { inner ⇒ probe ! inner }
+          persist(s + "-inner-2") { inner ⇒
+            probe ! inner
+          }
         }
     }
   }
@@ -547,7 +599,9 @@ object PersistentActorSpec {
             probe ! inner
             Thread.sleep(1000) // really long wait here...
             // the next incoming command must be handled by the following function
-            context.become({ case _ ⇒ sender() ! "done" })
+            context.become({
+              case _ ⇒ sender() ! "done"
+            })
           }
         }
     }
@@ -854,7 +908,9 @@ abstract class PersistentActorSpec(config: Config)
     "support multiple persistAsync calls for one command, and execute them 'when possible', not hindering command processing" in {
       val persistentActor =
         namedPersistentActor[AsyncPersistThreeTimesPersistentActor]
-      val commands = 1 to 10 map { i ⇒ Cmd(s"c-$i") }
+      val commands = 1 to 10 map { i ⇒
+        Cmd(s"c-$i")
+      }
 
       commands foreach { i ⇒
         Thread.sleep(Random.nextInt(10))
@@ -869,7 +925,9 @@ abstract class PersistentActorSpec(config: Config)
       val replies = all.filter(r ⇒ r.count(_ == '-') == 1)
       replies should equal(commands.map(_.data))
 
-      val expectedAcks = (3 to 32) map { i ⇒ s"a-${i / 3}-${i - 2}" }
+      val expectedAcks = (3 to 32) map { i ⇒
+        s"a-${i / 3}-${i - 2}"
+      }
       val acks = all.filter(r ⇒ r.count(_ == '-') == 2)
       acks should equal(expectedAcks)
     }
@@ -879,7 +937,9 @@ abstract class PersistentActorSpec(config: Config)
       val persistentActor =
         namedPersistentActor[AsyncPersistThreeTimesPersistentActor]
 
-      val commands = 1 to 10 map { i ⇒ Cmd(s"c-$i") }
+      val commands = 1 to 10 map { i ⇒
+        Cmd(s"c-$i")
+      }
       val probes = Vector.fill(10)(TestProbe())
 
       (probes zip commands) foreach {
@@ -889,7 +949,9 @@ abstract class PersistentActorSpec(config: Config)
 
       val ackClass = classOf[String]
       within(3.seconds) {
-        probes foreach { _.expectMsgAllClassOf(ackClass, ackClass, ackClass) }
+        probes foreach {
+          _.expectMsgAllClassOf(ackClass, ackClass, ackClass)
+        }
       }
     }
     "support the same event being asyncPersist'ed multiple times" in {

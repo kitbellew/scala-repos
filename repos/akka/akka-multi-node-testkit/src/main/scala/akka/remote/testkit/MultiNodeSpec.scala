@@ -41,7 +41,9 @@ abstract class MultiNodeConfig {
     */
   def nodeConfig(roles: RoleName*)(configs: Config*): Unit = {
     val c = configs.reduceLeft(_ withFallback _)
-    _nodeConf ++= roles map { _ -> c }
+    _nodeConf ++= roles map {
+      _ -> c
+    }
   }
 
   /**

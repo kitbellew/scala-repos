@@ -42,14 +42,18 @@ object Test extends App {
 
     import lazyLib._
 
-    val s: Susp[Int] = delay { println("evaluating..."); 3 }
+    val s: Susp[Int] = delay {
+      println("evaluating..."); 3
+    }
 
     println("s     = " + s) // show that s is unevaluated
     println("s()   = " + s()) // evaluate s
     println("s     = " + s) // show that the value is saved
     println("2 + s = " + (2 + s)) // implicit call to force()
 
-    val sl = delay { Some(3) }
+    val sl = delay {
+      Some(3)
+    }
     val sl1: Susp[Some[Int]] = sl
     val sl2: Susp[Option[Int]] = sl1 // the type is covariant
 

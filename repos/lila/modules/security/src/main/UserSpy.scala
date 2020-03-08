@@ -66,7 +66,9 @@ object UserSpy {
 
   private def exploreSimilar(field: String)(user: User): Fu[Set[User]] =
     nextValues(field)(user) flatMap { nValues =>
-      nextUsers(field)(nValues, user) map { _ + user }
+      nextUsers(field)(nValues, user) map {
+        _ + user
+      }
     }
 
   private def nextValues(field: String)(user: User): Fu[Set[Value]] =

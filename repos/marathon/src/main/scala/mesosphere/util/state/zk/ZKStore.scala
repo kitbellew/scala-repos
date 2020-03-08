@@ -49,7 +49,9 @@ class ZKStore(
       .map { data =>
         Some(ZKEntity(node, ZKData(data.bytes), Some(data.stat.getVersion)))
       }
-      .recover { case ex: NoNodeException => None }
+      .recover {
+        case ex: NoNodeException => None
+      }
       .recover(exceptionTransform(s"Could not load key $key"))
   }
 
@@ -60,7 +62,9 @@ class ZKStore(
     node
       .create(data.toProto(compressionConf).toByteArray)
       .asScala
-      .map { n => ZKEntity(n, data, Some(0)) } //first version after create is 0
+      .map { n =>
+        ZKEntity(n, data, Some(0))
+      } //first version after create is 0
       .recover(exceptionTransform(s"Can not create entity $key"))
   }
 
@@ -78,7 +82,9 @@ class ZKStore(
     zk.node
       .setData(zk.data.toProto(compressionConf).toByteArray, version)
       .asScala
-      .map { data => zk.copy(version = Some(data.stat.getVersion)) }
+      .map { data =>
+        zk.copy(version = Some(data.stat.getVersion))
+      }
       .recover(exceptionTransform(s"Can not update entity $entity"))
   }
 
@@ -91,8 +97,12 @@ class ZKStore(
     node
       .exists()
       .asScala
-      .flatMap { d => node.delete(d.stat.getVersion).asScala.map(_ => true) }
-      .recover { case ex: NoNodeException => false }
+      .flatMap { d =>
+        node.delete(d.stat.getVersion).asScala.map(_ => true)
+      }
+      .recover {
+        case ex: NoNodeException => false
+      }
       .recover(exceptionTransform(s"Can not delete entity $key"))
   }
 
@@ -125,14 +135,18 @@ class ZKStore(
         .exists()
         .asScala
         .map(_ => true)
-        .recover { case ex: NoNodeException => false }
+        .recover {
+          case ex: NoNodeException => false
+        }
         .recover(exceptionTransform("Can not query for exists"))
 
     def createNode(node: ZNode): Future[ZNode] =
       node
         .create()
         .asScala
-        .recover { case ex: NodeExistsException => node }
+        .recover {
+          case ex: NodeExistsException => node
+        }
         .recover(exceptionTransform("Can not create"))
 
     def createPath(node: ZNode): Future[ZNode] = {

@@ -32,7 +32,9 @@ object Scentry {
   }
 
   def globalStrategies = _globalStrategies
-  def clearGlobalStrategies() { _globalStrategies.clear() }
+  def clearGlobalStrategies() {
+    _globalStrategies.clear()
+  }
 
   val scentryAuthKey = "scentry.auth.default.user"
   val ScentryRequestKey = "org.scalatra.auth.Scentry"
@@ -91,9 +93,13 @@ class Scentry[UserType <: AnyRef](
       response: HttpServletResponse): Option[UserType] =
     Option(_user) orElse {
       store.get.blankOption flatMap { key =>
-        runCallbacks() { _.beforeFetch(key) }
+        runCallbacks() {
+          _.beforeFetch(key)
+        }
         val o = fromSession lift key flatMap (Option(_)) map { res =>
-          runCallbacks() { _.afterFetch(res) }
+          runCallbacks() {
+            _.afterFetch(res)
+          }
           request(scentryAuthKey) = res
           res
         }
@@ -112,10 +118,14 @@ class Scentry[UserType <: AnyRef](
       response: HttpServletResponse) = {
     request(scentryAuthKey) = v
     if (v != null) {
-      runCallbacks() { _.beforeSetUser(v) }
+      runCallbacks() {
+        _.beforeSetUser(v)
+      }
       val res = toSession(v)
       store.set(res)
-      runCallbacks() { _.afterSetUser(v) }
+      runCallbacks() {
+        _.afterSetUser(v)
+      }
       res
     } else ""
   }
@@ -149,7 +159,9 @@ class Scentry[UserType <: AnyRef](
       response: HttpServletResponse): Option[UserType] = {
     val r = runAuthentication(names: _*) map {
       case (stratName, usr) ⇒
-        runCallbacks() { _.afterAuthenticate(stratName, usr) }
+        runCallbacks() {
+          _.afterAuthenticate(stratName, usr)
+        }
         user_=(usr)
         user
     }
@@ -167,7 +179,9 @@ class Scentry[UserType <: AnyRef](
       else strategies.filterKeys(names.contains).values
     (subset filter (_.isValid) map { strat =>
       logger.debug("Authenticating with: %s" format strat.name)
-      runCallbacks(_.isValid) { _.beforeAuthenticate }
+      runCallbacks(_.isValid) {
+        _.beforeAuthenticate
+      }
       strat.authenticate() match {
         case Some(usr) ⇒ Some(strat.name -> usr)
         case _ ⇒
@@ -187,10 +201,14 @@ class Scentry[UserType <: AnyRef](
       request: HttpServletRequest,
       response: HttpServletResponse) {
     val usr = user
-    runCallbacks() { _.beforeLogout(usr) }
+    runCallbacks() {
+      _.beforeLogout(usr)
+    }
     request -= scentryAuthKey
     store.invalidate()
-    runCallbacks() { _.afterLogout(usr) }
+    runCallbacks() {
+      _.afterLogout(usr)
+    }
   }
 
   private[this] def runCallbacks(guard: StrategyType ⇒ Boolean = s ⇒ true)(

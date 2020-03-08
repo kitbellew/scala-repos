@@ -90,7 +90,9 @@ final class PgnDump(
         Tag(_.Variant, game.variant.name.capitalize),
         Tag(
           _.TimeControl,
-          game.clock.fold("-") { c => s"${c.limit}+${c.increment}" }),
+          game.clock.fold("-") { c =>
+            s"${c.limit}+${c.increment}"
+          }),
         Tag(_.ECO, game.opening.fold("?")(_.opening.eco)),
         Tag(_.Opening, game.opening.fold("?")(_.opening.name)),
         Tag(
@@ -118,8 +120,12 @@ final class PgnDump(
       case (moves, index) =>
         chessPgn.Turn(
           number = index + from,
-          white = moves.headOption filter (".." !=) map { chessPgn.Move(_) },
-          black = moves lift 1 map { chessPgn.Move(_) })
+          white = moves.headOption filter (".." !=) map {
+            chessPgn.Move(_)
+          },
+          black = moves lift 1 map {
+            chessPgn.Move(_)
+          })
     } filterNot (_.isEmpty)
 }
 

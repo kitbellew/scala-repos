@@ -12,16 +12,24 @@ class TryTests extends MinimalScalaTest {
   "Try()" should {
     "catch exceptions and lift into the Try type" in {
       Try[Int](1) mustEqual Success(1)
-      Try[Int] { throw e } mustEqual Failure(e)
+      Try[Int] {
+        throw e
+      } mustEqual Failure(e)
     }
   }
 
   "Try" should {
     "recoverWith" in {
       val myException = new MyException
-      Success(1) recoverWith { case _ => Success(2) } mustEqual Success(1)
-      Failure(e) recoverWith { case _ => Success(2) } mustEqual Success(2)
-      Failure(e) recoverWith { case _ => Failure(e) } mustEqual Failure(e)
+      Success(1) recoverWith {
+        case _ => Success(2)
+      } mustEqual Success(1)
+      Failure(e) recoverWith {
+        case _ => Success(2)
+      } mustEqual Success(2)
+      Failure(e) recoverWith {
+        case _ => Failure(e)
+      } mustEqual Failure(e)
     }
 
     "getOrElse" in {

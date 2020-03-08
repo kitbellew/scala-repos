@@ -70,7 +70,9 @@ class StorageStatus(val blockManagerId: BlockManagerId, val maxMem: Long) {
       maxMem: Long,
       initialBlocks: Map[BlockId, BlockStatus]) {
     this(bmid, maxMem)
-    initialBlocks.foreach { case (bid, bstatus) => addBlock(bid, bstatus) }
+    initialBlocks.foreach {
+      case (bid, bstatus) => addBlock(bid, bstatus)
+    }
   }
 
   /**
@@ -224,7 +226,9 @@ class StorageStatus(val blockManagerId: BlockManagerId, val maxMem: Long) {
       case RDDBlockId(rddId, _) =>
         _rddStorageInfo
           .get(rddId)
-          .map { case (mem, disk, _) => (mem, disk) }
+          .map {
+            case (mem, disk, _) => (mem, disk)
+          }
           .getOrElse((0L, 0L))
       case _ =>
         _nonRddStorageInfo

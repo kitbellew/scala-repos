@@ -99,7 +99,9 @@ class JavaCompiler(
 
   def askLinkPos(fqn: JavaFqn, file: SourceFileInfo): Option[SourcePosition] = {
     val infos = typecheckForUnits(List(file))
-    infos.headOption.flatMap { info => findInCompiledUnit(info, fqn) }
+    infos.headOption.flatMap { info =>
+      findInCompiledUnit(info, fqn)
+    }
   }
 
   def askTypeAtPoint(file: SourceFileInfo, offset: Int): Option[TypeInfo] = {
@@ -164,7 +166,9 @@ class JavaCompiler(
     val infos = typecheckForUnits(List(file))
     infos.headOption.flatMap { info =>
       val path = Option(new TreeUtilities(info).pathFor(offset))
-      path.map { p => (info, p) }
+      path.map { p =>
+        (info, p)
+      }
     }
   }
 
@@ -174,7 +178,9 @@ class JavaCompiler(
     val infos = typecheckForUnits(List(file))
     infos.headOption.flatMap { info =>
       val path = Option(new TreeUtilities(info).scopeFor(offset))
-      path.map { p => (info, p) }
+      path.map { p =>
+        (info, p)
+      }
     }
   }
 
@@ -194,7 +200,9 @@ class JavaCompiler(
     val path = Option(new TreeUtilities(info).pathFor(offset))
     // Uncomment to debug the AST path.
     //for (p <- path) { for (t <- p) { System.err.println(t.toString()) } }
-    path.flatMap { p => Option(info.getTrees().getTypeMirror(p)) }
+    path.flatMap { p =>
+      Option(info.getTrees().getTypeMirror(p))
+    }
   }
 
   private def typecheckAll(): Unit = {
@@ -216,14 +224,18 @@ class JavaCompiler(
       inputs: List[SourceFileInfo]): Vector[CompilationInfo] = {
     // We only want the compilation units for inputs, but we need to typecheck them w.r.t
     // the full working set.
-    val inputJfos = inputs.map { sf => internSource(sf).toUri }.toSet
+    val inputJfos = inputs.map { sf =>
+      internSource(sf).toUri
+    }.toSet
     val task = getTask("none", silencer, workingSet.values)
     val t = System.currentTimeMillis()
     try {
       val units = task
         .parse()
         .asScala
-        .filter { unit => inputJfos.contains(unit.getSourceFile.toUri) }
+        .filter { unit =>
+          inputJfos.contains(unit.getSourceFile.toUri)
+        }
         .map(new CompilationInfo(task, _))
         .toVector
       task.analyze()

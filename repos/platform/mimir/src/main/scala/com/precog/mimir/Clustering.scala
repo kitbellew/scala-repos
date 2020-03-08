@@ -102,7 +102,9 @@ trait KMediansCoreSetClustering {
     }
 
     private def insertCoreSet(coreset: CoreSet, level: Int): CoreSetTree = {
-      val (prefix, suffix) = tree partition { case (idx, _) => idx < level }
+      val (prefix, suffix) = tree partition {
+        case (idx, _) => idx < level
+      }
 
       def rec(
           tree0: List[(Int, CoreSet)],
@@ -336,8 +338,13 @@ trait KMediansCoreSetClustering {
     * @note Clustering to Minimize the Maximum Intercluster Distance, Gonzalez 1984
     * @link http://www.cs.ucsb.edu/~TEO/papers/Ktmm.pdf
     */
-  def approxKMedian(points: Array[Array[Double]], weights: Array[Long], k: Int)
-      : (Double, Array[Array[Double]], Array[Boolean]) = { // (cost, centers, isCenter)
+  def approxKMedian(
+      points: Array[Array[Double]],
+      weights: Array[Long],
+      k: Int): (
+      Double,
+      Array[Array[Double]],
+      Array[Boolean]) = { // (cost, centers, isCenter)
 
     val reps = new Array[Array[Double]](k)
     reps(0) = points(0)
@@ -645,7 +652,9 @@ trait ClusteringLibModule[M[+_]]
                   if c.tpe.manifest.erasure == classOf[Array[Double]] =>
                 val mapped = range.toArray filter { r =>
                   c.isDefinedAt(r)
-                } map { i => c.asInstanceOf[HomogeneousArrayColumn[Double]](i) }
+                } map { i =>
+                  c.asInstanceOf[HomogeneousArrayColumn[Double]](i)
+                }
                 mapped
             }
 
@@ -676,7 +685,9 @@ trait ClusteringLibModule[M[+_]]
           Table.fromRValues(Stream(RArray(pt.map(CNum(_)).toList)))
         }
 
-        val transformedTables = tables map { table => table.transform(spec) }
+        val transformedTables = tables map { table =>
+          table.transform(spec)
+        }
 
         val wrappedTables = transformedTables.zipWithIndex map {
           case (tbl, idx) =>
@@ -711,10 +722,14 @@ trait ClusteringLibModule[M[+_]]
           val defaultNumber = new java.util.concurrent.atomic.AtomicInteger(1)
 
           val res = ks map { k =>
-            val schemas: M[Seq[JType]] = table.schemas map { _.toSeq }
+            val schemas: M[Seq[JType]] = table.schemas map {
+              _.toSeq
+            }
 
             val specs: M[Seq[(TransSpec1, JType)]] = schemas map {
-              _ map { jtype => (trans.Typed(TransSpec1.Id, jtype), jtype) }
+              _ map { jtype =>
+                (trans.Typed(TransSpec1.Id, jtype), jtype)
+              }
             }
 
             val tables: StreamT[M, (Table, JType)] = StreamT.wrapEffect {
@@ -773,7 +788,9 @@ trait ClusteringLibModule[M[+_]]
       }
 
       def alignCustom(t1: Table, t2: Table): M[(Table, Morph1Apply)] =
-        t2.reduce(reducerKS) map { ks => (t1, morph1Apply(ks)) }
+        t2.reduce(reducerKS) map { ks =>
+          (t1, morph1Apply(ks))
+        }
     }
 
     object AssignClusters

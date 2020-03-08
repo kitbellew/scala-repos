@@ -1,7 +1,9 @@
 object Sessions {
   trait Session[This] {
     type Dual
-    type HasDual[D] = Session[This] { type Dual = D }
+    type HasDual[D] = Session[This] {
+      type Dual = D
+    }
     def run(p: This, dp: Dual): Unit
   }
 

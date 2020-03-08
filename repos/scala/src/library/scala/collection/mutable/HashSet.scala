@@ -53,9 +53,13 @@ class HashSet[A] private[collection] (contents: FlatHashTable.Contents[A])
 
   def contains(elem: A): Boolean = containsElem(elem)
 
-  def +=(elem: A): this.type = { addElem(elem); this }
+  def +=(elem: A): this.type = {
+    addElem(elem); this
+  }
 
-  def -=(elem: A): this.type = { removeElem(elem); this }
+  def -=(elem: A): this.type = {
+    removeElem(elem); this
+  }
 
   override def par = new ParHashSet(hashTableContents)
 
@@ -63,7 +67,9 @@ class HashSet[A] private[collection] (contents: FlatHashTable.Contents[A])
 
   override def remove(elem: A): Boolean = removeElem(elem)
 
-  override def clear() { clearTable() }
+  override def clear() {
+    clearTable()
+  }
 
   override def iterator: Iterator[A] = super[FlatHashTable].iterator
 

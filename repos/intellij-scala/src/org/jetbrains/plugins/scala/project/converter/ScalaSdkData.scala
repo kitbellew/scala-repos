@@ -74,21 +74,45 @@ private case class ScalaSdkData(
   }
 
   private def createLibraryElement(): Elem = {
-    <library name={name} type="Scala">
+    <library name={
+      name
+    } type="Scala">
       <properties>
-        <option name="languageLevel" value={languageLevel} />
+        <option name="languageLevel" value={
+      languageLevel
+    } />
         <compiler-classpath>
-          {compilerClasspath.map(url => <root url={url}/>)}
+          {
+      compilerClasspath.map(url =>
+        <root url={
+          url
+        }/>)
+    }
         </compiler-classpath>
       </properties>
       <CLASSES>
-        {standardLibrary.classes.map(url => <root url={url}/>)}
+        {
+      standardLibrary.classes.map(url =>
+        <root url={
+          url
+        }/>)
+    }
       </CLASSES>
       <JAVADOC>
-        {standardLibrary.docs.map(url => <root url={url}/>)}
+        {
+      standardLibrary.docs.map(url =>
+        <root url={
+          url
+        }/>)
+    }
       </JAVADOC>
       <SOURCES>
-        {standardLibrary.sources.map(url => <root url={url}/>)}
+        {
+      standardLibrary.sources.map(url =>
+        <root url={
+          url
+        }/>)
+    }
       </SOURCES>
     </library>
   }

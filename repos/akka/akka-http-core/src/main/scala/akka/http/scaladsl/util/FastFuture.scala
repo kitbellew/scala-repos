@@ -44,7 +44,9 @@ class FastFuture[A](val future: Future[A]) extends AnyVal {
       implicit executor: ExecutionContext): Future[B] = {
     def strictTransform[T](x: T, f: T ⇒ Future[B]) =
       try f(x)
-      catch { case NonFatal(e) ⇒ ErrorFuture(e) }
+      catch {
+        case NonFatal(e) ⇒ ErrorFuture(e)
+      }
 
     future match {
       case FulfilledFuture(a) ⇒ strictTransform(a, s)

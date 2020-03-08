@@ -52,8 +52,12 @@ class Code extends UsefulStuff {
   val methods: Array[String] = classOf[Math].getMethods.map(_.getName)
   val parameters = classOf[Math].getMethods.map(_.getParameterTypes)
   val map = (methods zip parameters) toMap
-  val arityOne = map.filter { case ((_, par)) => par.length == 1 }
-  val arityTwo = map.filter { case ((_, par)) => par.length == 2 }
+  val arityOne = map.filter {
+    case ((_, par)) => par.length == 1
+  }
+  val arityTwo = map.filter {
+    case ((_, par)) => par.length == 2
+  }
   val methodsOne = arityOne.keySet.toList diff List("equals")
   val methodsTwo = arityTwo.keySet.toList diff List("scalb", "wait")
 
@@ -101,8 +105,12 @@ class Code extends UsefulStuff {
     )
   }
 
-  val methodsOneGen = methodsOne map { x => objects1(x) }
-  val methodsTwoGen = methodsTwo map { x => objects2(x) }
+  val methodsOneGen = methodsOne map { x =>
+    objects1(x)
+  }
+  val methodsTwoGen = methodsTwo map { x =>
+    objects2(x)
+  }
   val methodsAll = methodsOneGen ++ methodsTwoGen
 
   val trees = imports :: trait1 :: trait2 :: Nil

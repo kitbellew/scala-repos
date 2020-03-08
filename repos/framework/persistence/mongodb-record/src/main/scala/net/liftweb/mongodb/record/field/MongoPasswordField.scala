@@ -71,9 +71,13 @@ class MongoPasswordField[OwnerType <: BsonRecord[OwnerType]](
   private def elem = S.fmapFunc(S.SFuncHolder(this.setPassword(_))) {
     funcName =>
       <input type="password"
-      name={funcName}
+      name={
+        funcName
+      }
       value=""
-      tabindex={tabIndex.toString}/>
+      tabindex={
+        tabIndex.toString
+      }/>
   }
 
   override def toForm: Box[NodeSeq] =

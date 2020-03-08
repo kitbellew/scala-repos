@@ -45,7 +45,9 @@ class ZookeeperTopicEventWatcher(
     topicEventListener.handleChildChange(ZkUtils.BrokerTopicsPath, topics)
   }
 
-  private def stopWatchingTopicEvents() { zkUtils.zkClient.unsubscribeAll() }
+  private def stopWatchingTopicEvents() {
+    zkUtils.zkClient.unsubscribeAll()
+  }
 
   def shutdown() {
     lock.synchronized {

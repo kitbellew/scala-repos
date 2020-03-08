@@ -70,9 +70,15 @@ object FilterConfig {
 
     def reads(r: BSON.Reader): FilterConfig =
       FilterConfig(
-        variant = r intsD "v" flatMap { chess.variant.Variant(_) },
-        mode = r intsD "m" flatMap { Mode(_) },
-        speed = r intsD "s" flatMap { Speed(_) },
+        variant = r intsD "v" flatMap {
+          chess.variant.Variant(_)
+        },
+        mode = r intsD "m" flatMap {
+          Mode(_)
+        },
+        speed = r intsD "s" flatMap {
+          Speed(_)
+        },
         ratingRange =
           r strO "e" flatMap RatingRange.apply getOrElse RatingRange.default
       )

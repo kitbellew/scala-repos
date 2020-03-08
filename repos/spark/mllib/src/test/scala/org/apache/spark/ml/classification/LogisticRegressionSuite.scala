@@ -195,7 +195,9 @@ class LogisticRegressionSuite
       .transform(dataset)
       .select("prediction", "myProbability")
       .collect()
-      .map { case Row(pred: Double, prob: Vector) => pred }
+      .map {
+        case Row(pred: Double, prob: Vector) => pred
+      }
     assert(
       predAllZero.forall(_ === 0),
       s"With threshold=1.0, expected predictions to be all 0, but only" +
@@ -210,7 +212,9 @@ class LogisticRegressionSuite
           model.probabilityCol -> "myProb")
         .select("prediction", "myProb")
         .collect()
-        .map { case Row(pred: Double, prob: Vector) => pred }
+        .map {
+          case Row(pred: Double, prob: Vector) => pred
+        }
     assert(predNotAllZero.exists(_ !== 0.0))
 
     // Call fit() with new params, and check as many params as we can.
@@ -851,7 +855,9 @@ class LogisticRegressionSuite
     val model2 = trainer2.fit(binaryDataset)
 
     val histogram = binaryDataset.rdd
-      .map { case Row(label: Double, features: Vector) => label }
+      .map {
+        case Row(label: Double, features: Vector) => label
+      }
       .treeAggregate(new MultiClassSummarizer)(
         seqOp = (c, v) =>
           (c, v) match {

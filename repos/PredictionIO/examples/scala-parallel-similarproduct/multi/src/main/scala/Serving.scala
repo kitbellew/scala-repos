@@ -47,7 +47,9 @@ class Serving extends LServing[Query, PredictedResult] {
       .toArray // array of (item id, score)
       .sortBy(_._2)(Ordering.Double.reverse)
       .take(query.num)
-      .map { case (k, v) => ItemScore(k, v) }
+      .map {
+        case (k, v) => ItemScore(k, v)
+      }
 
     new PredictedResult(combined)
   }

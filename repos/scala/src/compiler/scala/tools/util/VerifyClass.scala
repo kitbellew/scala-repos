@@ -41,9 +41,9 @@ object VerifyClass {
     println("As urls: " + urls.mkString(","))
     val cl = URLClassLoader.newInstance(urls, null)
     val results = args.flatMap(n => checkClasses(n, cl)).toMap
-    (for { (name, result) <- results } yield (
-      name,
-      result.getOrElse(null))).asJava
+    (for {
+      (name, result) <- results
+    } yield (name, result.getOrElse(null))).asJava
   }
 
   def main(args: Array[String]): Unit = {

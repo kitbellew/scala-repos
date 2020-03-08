@@ -593,9 +593,15 @@ private[spark] class CoarseGrainedSchedulerBackend(
     // If an executor is already pending to be removed, do not kill it again (SPARK-9795)
     // If this executor is busy, do not kill it unless we are told to force kill it (SPARK-9552)
     val executorsToKill = knownExecutors
-      .filter { id => !executorsPendingToRemove.contains(id) }
-      .filter { id => force || !scheduler.isExecutorBusy(id) }
-    executorsToKill.foreach { id => executorsPendingToRemove(id) = !replace }
+      .filter { id =>
+        !executorsPendingToRemove.contains(id)
+      }
+      .filter { id =>
+        force || !scheduler.isExecutorBusy(id)
+      }
+    executorsToKill.foreach { id =>
+      executorsPendingToRemove(id) = !replace
+    }
 
     // If we do not wish to replace the executors we kill, sync the target number of executors
     // with the cluster manager to avoid allocating new ones. When computing the new target,

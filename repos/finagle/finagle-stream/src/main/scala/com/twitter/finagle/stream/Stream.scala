@@ -33,12 +33,16 @@ private[stream] class DelayedReleaseService[Req](
             res.release()
           }
         }
-      } onFailure { _ => p.setDone() }
+      } onFailure { _ =>
+        p.setDone()
+      }
     }
   }
 
   override def close(deadline: Time) =
-    done ensure { self.close(deadline) }
+    done ensure {
+      self.close(deadline)
+    }
 }
 
 object Stream {

@@ -66,7 +66,9 @@ class InterpreterTest extends FunSuite {
       interpreter(
         Set(noExpiry, 0, Time.epoch, value)
       ) // set without an expiry...
-      atomicMap.lock(key) { data => assert(data.contains(key) == true) }
+      atomicMap.lock(key) { data =>
+        assert(data.contains(key) == true)
+      }
 
       info("verify we can retrieve it up until the expiry")
       control.advance(9.seconds)
@@ -79,7 +81,9 @@ class InterpreterTest extends FunSuite {
       assert(interpreter(Get(Seq(key))) == Values(Seq()))
 
       info("and verify that the entry is cleaned up from the underlying map")
-      atomicMap.lock(key) { data => assert(data.contains(key) == false) }
+      atomicMap.lock(key) { data =>
+        assert(data.contains(key) == false)
+      }
 
       info(
         "but the value without an expiry should still be accessible (even minutes later)")

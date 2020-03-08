@@ -711,7 +711,9 @@ object Regex {
     /** The match itself with matcher-dependent lazy vals forced,
       *  so that match is valid even once matcher is advanced.
       */
-    def force: this.type = { starts; ends; this }
+    def force: this.type = {
+      starts; ends; this
+    }
   }
 
   /** An extractor object for Matches, yielding the matched string.
@@ -799,7 +801,9 @@ object Regex {
     /** Convert to an iterator that yields MatchData elements instead of Strings. */
     def matchData: Iterator[Match] = new AbstractIterator[Match] {
       def hasNext = self.hasNext
-      def next = { self.next(); new Match(source, matcher, groupNames).force }
+      def next = {
+        self.next(); new Match(source, matcher, groupNames).force
+      }
     }
 
     /** Convert to an iterator that yields MatchData elements instead of Strings and has replacement support. */
@@ -807,7 +811,9 @@ object Regex {
       new AbstractIterator[Match] with Replacement {
         def matcher = self.matcher
         def hasNext = self.hasNext
-        def next = { self.next(); new Match(source, matcher, groupNames).force }
+        def next = {
+          self.next(); new Match(source, matcher, groupNames).force
+        }
       }
   }
 

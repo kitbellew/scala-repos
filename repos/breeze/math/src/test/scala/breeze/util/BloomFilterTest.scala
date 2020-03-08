@@ -32,8 +32,12 @@ class BloomFilterTest extends FunSuite with Checkers {
         val numBuckets = (_numBuckets / 1000).abs % 1000 + 1
         assert(numBuckets >= 0, numBuckets + " " + _numBuckets)
         val bf = new BloomFilter[String](numBuckets, numHashes.abs)
-        strings foreach { bf += _ }
-        strings forall { bf contains _ }
+        strings foreach {
+          bf += _
+        }
+        strings forall {
+          bf contains _
+        }
       }
     }
   }
@@ -60,9 +64,13 @@ class BloomFilterTest extends FunSuite with Checkers {
         assert(numBuckets >= 0, numBuckets + " " + _numBuckets)
         val bf = new BloomFilter[String](numBuckets, numHashes.abs)
         val bf2 = new BloomFilter[String](numBuckets, numHashes.abs)
-        strings foreach { bf += _ }
+        strings foreach {
+          bf += _
+        }
         bf2 |= bf
-        strings forall { bf2 contains _ }
+        strings forall {
+          bf2 contains _
+        }
       }
     }
   }

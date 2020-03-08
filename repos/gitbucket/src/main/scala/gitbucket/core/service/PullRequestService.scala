@@ -21,7 +21,9 @@ trait PullRequestService { self: IssuesService =>
       PullRequests
         .filter(_.byPrimaryKey(owner, repository, issueId))
         .firstOption
-        .map { pullreq => (issue, pullreq) }
+        .map { pullreq =>
+          (issue, pullreq)
+        }
     }
 
   def updateCommitId(
@@ -50,11 +52,17 @@ trait PullRequestService { self: IssuesService =>
             (t1.userName === owner.get.bind, owner.isDefined) &&
             (t1.repositoryName === repository.get.bind, repository.isDefined)
       }
-      .groupBy { case (t1, t2) => t2.openedUserName }
-      .map { case (userName, t) => userName -> t.length }
+      .groupBy {
+        case (t1, t2) => t2.openedUserName
+      }
+      .map {
+        case (userName, t) => userName -> t.length
+      }
       .sortBy(_._2 desc)
       .list
-      .map { x => PullRequestCount(x._1, x._2) }
+      .map { x =>
+        PullRequestCount(x._1, x._2)
+      }
 
 //  def getAllPullRequestCountGroupByUser(closed: Boolean, userName: String)(implicit s: Session): List[PullRequestCount] =
 //    PullRequests
@@ -112,7 +120,9 @@ trait PullRequestService { self: IssuesService =>
             (t1.requestBranch === branch.bind) &&
             (t2.closed === closed.bind)
       }
-      .map { case (t1, t2) => t1 }
+      .map {
+        case (t1, t2) => t1
+      }
       .list
 
   /**
@@ -142,7 +152,9 @@ trait PullRequestService { self: IssuesService =>
             (t1.repositoryName === repositoryName.bind) &&
             (t2.closed === false.bind)
       }
-      .sortBy { case (t1, t2) => t1.branch =!= defaultBranch.bind }
+      .sortBy {
+        case (t1, t2) => t1.branch =!= defaultBranch.bind
+      }
       .firstOption
 
   /**
@@ -237,7 +249,9 @@ object PullRequestService {
       val stateMap = statuses.groupBy(_.state)
       val state = CommitState.combine(stateMap.keySet)
       val summary = stateMap
-        .map { case (keyState, states) => states.size + " " + keyState.name }
+        .map {
+          case (keyState, states) => states.size + " " + keyState.name
+        }
         .mkString(", ")
       state -> summary
     }

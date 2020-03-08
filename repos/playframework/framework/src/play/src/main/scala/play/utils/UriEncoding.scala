@@ -180,7 +180,9 @@ object UriEncoding {
   /** Create a BitSet to act as a membership lookup table for the given characters. */
   private def membershipTable(chars: Seq[Char]): BitSet = {
     val bits = new BitSet(256)
-    for (c <- chars) { bits.set(c.toInt) }
+    for (c <- chars) {
+      bits.set(c.toInt)
+    }
     bits
   }
 

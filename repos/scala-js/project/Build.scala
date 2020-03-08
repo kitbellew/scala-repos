@@ -273,7 +273,9 @@ object Build extends sbt.Build {
             </developer>
           </developers>
     ),
-    pomIncludeRepository := { _ => false }
+    pomIncludeRepository := { _ =>
+      false
+    }
   )
 
   val fatalWarningsSettings = Seq(
@@ -983,7 +985,9 @@ object Build extends sbt.Build {
       binaryIssueFilters ++= BinaryIncompatibilities.CLI,
       // assembly options
       mainClass in assembly := None, // don't want an executable JAR
-      assemblyOption in assembly ~= { _.copy(includeScala = false) },
+      assemblyOption in assembly ~= {
+        _.copy(includeScala = false)
+      },
       assemblyJarName in assembly :=
         s"${normalizedName.value}-assembly_${scalaBinaryVersion.value}-${version.value}.jar"
     )

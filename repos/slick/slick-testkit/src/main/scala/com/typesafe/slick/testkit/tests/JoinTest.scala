@@ -114,7 +114,9 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
         ((2, "b"), Some((2, "b"))))
       // Left outer, lift non-primitive value, then map to primitive
       q4 = (xs joinLeft ys on (_.b === _.b))
-        .map { case (x, yo) => (x.a, yo.map(_.a)) }
+        .map {
+          case (x, yo) => (x.a, yo.map(_.a))
+        }
         .to[Set]
       r4 <- mark("q4", q4.result)
       r4t: Set[(Int, Option[Int])] = r4
@@ -175,7 +177,9 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
       )
       // Right outer, lift non-primitive value, then map to primitive
       q9 = (ys joinRight xs on (_.b === _.b))
-        .map { case (yo, x) => (yo.map(_.a), x.a) }
+        .map {
+          case (yo, x) => (yo.map(_.a), x.a)
+        }
         .to[Set]
       r9 <- mark("q9", q9.result)
       r9t: Set[(Option[Int], Int)] = r9

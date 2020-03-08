@@ -8,20 +8,29 @@ package support
 class TensorPairs[K, V, +This](
     private val tensor: This,
     active: Boolean,
-    f: ((K, V)) => Boolean = { (x: (K, V)) => true })(
-    implicit ev: This <:< Tensor[K, V]) {
+    f: ((K, V)) => Boolean = { (x: (K, V)) =>
+      true
+    })(implicit ev: This <:< Tensor[K, V]) {
   def size = tensor.size
 
-  def iterator = { if (active) tensor.activeIterator else tensor.iterator }
-    .filter(f)
+  def iterator = {
+    if (active) tensor.activeIterator else tensor.iterator
+  }.filter(f)
 
   def foreach[U](fn: ((K, V)) => U) = iterator foreach fn
-  def foreach[U](fn: (K, V) => U) = iterator foreach { case (a, b) => fn(a, b) }
+  def foreach[U](fn: (K, V) => U) = iterator foreach {
+    case (a, b) => fn(a, b)
+  }
 
   def filter(p: ((K, V)) => Boolean) = withFilter(p)
 
   def withFilter(p: ((K, V)) => Boolean): TensorPairs[K, V, This] = {
-    new TensorPairs[K, V, This](tensor, active, { a => f(a) && p(a) })(ev)
+    new TensorPairs[K, V, This](
+      tensor,
+      active,
+      { a =>
+        f(a) && p(a)
+      })(ev)
   }
 
   override def toString = iterator.mkString("TensorKeys(", ",", ")")

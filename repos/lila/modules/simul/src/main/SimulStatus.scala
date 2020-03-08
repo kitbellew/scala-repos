@@ -19,7 +19,9 @@ private[simul] object SimulStatus {
 
   val all = List(Created, Started, Finished)
 
-  val byId = all map { v => (v.id, v) } toMap
+  val byId = all map { v =>
+    (v.id, v)
+  } toMap
 
   def apply(id: Int): Option[SimulStatus] = byId get id
 }

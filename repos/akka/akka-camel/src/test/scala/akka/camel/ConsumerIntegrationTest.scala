@@ -67,7 +67,9 @@ class ConsumerIntegrationTest
           override def replyTimeout = SHORT_TIMEOUT
           def endpointUri = "direct:a3"
           def receive = {
-            case _ ⇒ { Thread.sleep(LONG_WAIT.toMillis); sender() ! "done" }
+            case _ ⇒ {
+              Thread.sleep(LONG_WAIT.toMillis); sender() ! "done"
+            }
           }
         },
         name = "ignore-this-deadletter-timeout-consumer-reply"
@@ -173,7 +175,9 @@ class ConsumerIntegrationTest
       val ref = start(
         new ManualAckConsumer() {
           def endpointUri = "direct:manual-ack"
-          def receive = { case _ ⇒ sender() ! Ack }
+          def receive = {
+            case _ ⇒ sender() ! Ack
+          }
         },
         name = "direct-manual-ack-1")
       camel.template
@@ -189,7 +193,9 @@ class ConsumerIntegrationTest
       val ref = start(
         new ManualAckConsumer() {
           def endpointUri = "direct:manual-ack"
-          def receive = { case _ ⇒ sender() ! Failure(someException) }
+          def receive = {
+            case _ ⇒ sender() ! Failure(someException)
+          }
         },
         name = "direct-manual-ack-2")
 
@@ -206,7 +212,9 @@ class ConsumerIntegrationTest
         new ManualAckConsumer() {
           override def replyTimeout = 10 millis
           def endpointUri = "direct:manual-ack"
-          def receive = { case _ ⇒ }
+          def receive = {
+            case _ ⇒
+          }
         },
         name = "direct-manual-ack-3")
 
@@ -279,7 +287,9 @@ class FailingOnceConsumer(override val endpointUri: String) extends Consumer {
 
 class TestActor(uri: String = "file://target/abcde") extends Consumer {
   def endpointUri = uri
-  def receive = { case _ ⇒ /* do nothing */ }
+  def receive = {
+    case _ ⇒ /* do nothing */
+  }
 }
 
 trait ManualAckConsumer extends Consumer {

@@ -70,7 +70,9 @@ object RingDequeSpecs extends Specification with ScalaCheck {
     "append a full list following a half-appending" in check { xs: List[Int] =>
       val deque = new RingDeque[Int](xs.length)
       xs take (xs.length / 2) foreach deque.pushBack
-      (0 until (xs.length / 2)) foreach { _ => deque.popFront() }
+      (0 until (xs.length / 2)) foreach { _ =>
+        deque.popFront()
+      }
       xs foreach deque.pushBack
       deque.toList mustEqual xs
     }

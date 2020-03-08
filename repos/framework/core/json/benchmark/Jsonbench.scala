@@ -11,10 +11,16 @@ object Jsonbench extends Benchmark {
   import net.liftweb.json.JsonParser
 
   def main(args: Array[String]) = {
-    benchmark("Scala std") { JSON.parse(json) }
+    benchmark("Scala std") {
+      JSON.parse(json)
+    }
     val mapper = new ObjectMapper
-    benchmark("Jackson") { mapper.readValue(json, classOf[JsonNode]) }
-    benchmark("lift-json") { JsonParser.parse(json) }
+    benchmark("Jackson") {
+      mapper.readValue(json, classOf[JsonNode])
+    }
+    benchmark("lift-json") {
+      JsonParser.parse(json)
+    }
   }
 
   def benchmark(name: String)(f: => Any) = run(name, 50000, 50000)(f)

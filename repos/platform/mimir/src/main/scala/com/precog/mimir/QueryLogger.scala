@@ -119,7 +119,9 @@ trait JobQueryLogger[M[+_], P] extends QueryLogger[M, P] {
   }
 
   private def send(channel: String, pos: P, msg: String): M[Unit] =
-    jobManager.addMessage(jobId, channel, mkMessage(pos, msg)) map { _ => () }
+    jobManager.addMessage(jobId, channel, mkMessage(pos, msg)) map { _ =>
+      ()
+    }
 
   def die(): M[Unit] =
     for {
@@ -140,7 +142,9 @@ trait LoggingQueryLogger[M[+_], P] extends QueryLogger[M, P] {
 
   protected val logger = LoggerFactory.getLogger("com.precog.mimir.QueryLogger")
 
-  def die(): M[Unit] = M.point { () }
+  def die(): M[Unit] = M.point {
+    ()
+  }
 
   def error(pos: P, msg: String): M[Unit] = M.point {
     logger.error(pos.toString + " - " + msg)
@@ -202,7 +206,9 @@ trait TimingQueryLogger[M[+_], P] extends QueryLogger[M, P] {
             .format(stats.count, stats.sum, stats.sumSq, stats.min, stats.max))
     }
 
-    logging reduceOption { _ >> _ } getOrElse (M point ())
+    logging reduceOption {
+      _ >> _
+    } getOrElse (M point ())
   }
 
   private case class Stats(

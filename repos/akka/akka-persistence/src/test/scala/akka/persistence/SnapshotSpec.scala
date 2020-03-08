@@ -46,7 +46,9 @@ object SnapshotSpec {
     override def receiveCommand = {
       case "done" ⇒ probe ! "done"
       case payload: String ⇒
-        persist(payload) { _ ⇒ probe ! s"${payload}-${lastSequenceNr}" }
+        persist(payload) { _ ⇒
+          probe ! s"${payload}-${lastSequenceNr}"
+        }
       case offer @ SnapshotOffer(md, s) ⇒ probe ! offer
       case other ⇒ probe ! other
     }
@@ -293,7 +295,9 @@ class SnapshotSpec
       }
       expectMsg(RecoveryCompleted)
       deleteProbe.expectMsgType[DeleteSnapshots]
-      expectMsgPF() { case DeleteSnapshotsSuccess(`criteria`) ⇒ }
+      expectMsgPF() {
+        case DeleteSnapshotsSuccess(`criteria`) ⇒
+      }
 
       // recover persistentActor from replayed messages (all snapshots deleted)
       val persistentActor2 = system.actorOf(

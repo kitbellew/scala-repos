@@ -30,7 +30,9 @@ class AsyncLatch(initialCount: Int = 0) {
     if (count == 0)
       f
     else
-      waiters += { () => f }
+      waiters += { () =>
+        f
+      }
   }
 
   /**
@@ -39,7 +41,9 @@ class AsyncLatch(initialCount: Int = 0) {
     *
     * @return the latch's count after being incremented
     */
-  def incr(): Int = synchronized { count += 1; count }
+  def incr(): Int = synchronized {
+    count += 1; count
+  }
 
   /**
     * Decrement the latch. If the latch's count reaches zero, awaiting
@@ -62,7 +66,9 @@ class AsyncLatch(initialCount: Int = 0) {
 
     pendingTasks match {
       case Left(tasks) =>
-        tasks foreach { _() }; 0
+        tasks foreach {
+          _()
+        }; 0
       case Right(count) =>
         count
     }

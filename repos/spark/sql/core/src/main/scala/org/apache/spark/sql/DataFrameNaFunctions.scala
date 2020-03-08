@@ -404,7 +404,9 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     val columnEquals = df.sqlContext.sessionState.analyzer.resolver
     val projections = df.schema.fields.map { f =>
       values
-        .find { case (k, _) => columnEquals(k, f.name) }
+        .find {
+          case (k, _) => columnEquals(k, f.name)
+        }
         .map {
           case (_, v) =>
             v match {

@@ -32,7 +32,9 @@ class IsotonicRegressionSuite
   private def generateIsotonicInput(labels: Seq[Double]): DataFrame = {
     sqlContext
       .createDataFrame(
-        labels.zipWithIndex.map { case (label, i) => (label, i.toDouble, 1.0) }
+        labels.zipWithIndex.map {
+          case (label, i) => (label, i.toDouble, 1.0)
+        }
       )
       .toDF("label", "features", "weight")
   }

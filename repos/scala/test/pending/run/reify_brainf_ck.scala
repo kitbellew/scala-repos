@@ -18,7 +18,9 @@ object Test extends App {
       override def inc(t: Byte) = ((t + 1) & 0xFF).toByte
       override def dec(t: Byte) = ((t - 1) & 0xFF).toByte
       override def in: Byte = readByte
-      override def out(t: Byte) { print(t.toChar) }
+      override def out(t: Byte) {
+        print(t.toChar)
+      }
     }
 
     case class Tape[T](left: List[T], cell: T, right: List[T])(

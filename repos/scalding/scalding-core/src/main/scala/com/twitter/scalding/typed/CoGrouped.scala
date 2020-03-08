@@ -336,7 +336,9 @@ trait CoGrouped[K, +R]
             sys.error(
               "Except for self joins, where you are joining something with only itself,\n" +
                 "left-most pipe can only appear once. Firsts: " +
-                inputs.collect { case x if x == inputs.head => x }.toString)
+                inputs.collect {
+                  case x if x == inputs.head => x
+                }.toString)
           }
       }
       /*
@@ -395,7 +397,9 @@ abstract class CoGroupedJoiner[K](
     val leftMost = iters.head
 
     def toIterable(didx: Int) =
-      new Iterable[CTuple] { def iterator = jc.getIterator(didx).asScala }
+      new Iterable[CTuple] {
+        def iterator = jc.getIterator(didx).asScala
+      }
 
     val rest = restIndices.map(toIterable(_))
     joinFunction

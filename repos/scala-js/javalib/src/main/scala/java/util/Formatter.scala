@@ -266,8 +266,12 @@ final class Formatter(private val dest: Appendable)
   }
 
   def ioException(): IOException = null
-  def locale(): Locale = ifNotClosed { null }
-  def out(): Appendable = ifNotClosed { dest }
+  def locale(): Locale = ifNotClosed {
+    null
+  }
+  def out(): Appendable = ifNotClosed {
+    dest
+  }
 
   override def toString(): String = out().toString()
 

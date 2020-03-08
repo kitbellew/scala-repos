@@ -37,7 +37,9 @@ class ScTypeParamImpl private (
     with ScTypeBoundsOwnerImpl
     with ScTypeParam
     with PsiClassFake {
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
   def this(stub: ScTypeParamStub) = {
     this(stub, ScalaElementTypes.TYPE_PARAM, null)
   }

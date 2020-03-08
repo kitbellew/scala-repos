@@ -599,7 +599,9 @@ private[spark] class Client(
       distribute(args.primaryPyFile, appMasterOnly = true)
     }
 
-    pySparkArchives.foreach { f => distribute(f) }
+    pySparkArchives.foreach { f =>
+      distribute(f)
+    }
 
     // The python files list needs to be treated especially. All files that are not an
     // archive need to be placed in a subdirectory that will be added to PYTHONPATH.
@@ -690,7 +692,9 @@ private[spark] class Client(
 
       // Save Spark configuration to a file in the archive.
       val props = new Properties()
-      sparkConf.getAll.foreach { case (k, v) => props.setProperty(k, v) }
+      sparkConf.getAll.foreach {
+        case (k, v) => props.setProperty(k, v)
+      }
       confStream.putNextEntry(new ZipEntry(SPARK_CONF_FILE))
       val writer = new OutputStreamWriter(confStream, StandardCharsets.UTF_8)
       props.store(writer, "Spark configuration.")
@@ -762,8 +766,12 @@ private[spark] class Client(
     // Pick up any environment variables for the AM provided through spark.yarn.appMasterEnv.*
     val amEnvPrefix = "spark.yarn.appMasterEnv."
     sparkConf.getAll
-      .filter { case (k, v) => k.startsWith(amEnvPrefix) }
-      .map { case (k, v) => (k.substring(amEnvPrefix.length), v) }
+      .filter {
+        case (k, v) => k.startsWith(amEnvPrefix)
+      }
+      .map {
+        case (k, v) => (k.substring(amEnvPrefix.length), v)
+      }
       .foreach {
         case (k, v) => YarnSparkHadoopUtil.addPathToEnvironment(env, k, v)
       }
@@ -1038,9 +1046,13 @@ private[spark] class Client(
     logDebug("YARN AM launch context:")
     logDebug(s"    user class: ${Option(args.userClass).getOrElse("N/A")}")
     logDebug("    env:")
-    launchEnv.foreach { case (k, v) => logDebug(s"        $k -> $v") }
+    launchEnv.foreach {
+      case (k, v) => logDebug(s"        $k -> $v")
+    }
     logDebug("    resources:")
-    localResources.foreach { case (k, v) => logDebug(s"        $k -> $v") }
+    localResources.foreach {
+      case (k, v) => logDebug(s"        $k -> $v")
+    }
     logDebug("    command:")
     logDebug(s"        ${printableCommands.mkString(" ")}")
     logDebug(

@@ -21,7 +21,9 @@ class Bar extends Foo with Serializable {
   def size = a
   @transient var second: Any = null
 
-  def checkMember { if (first == null) print("") }
+  def checkMember {
+    if (first == null) print("")
+  }
 
   private def writeObject(out: java.io.ObjectOutputStream) {
     serializeTo(out)

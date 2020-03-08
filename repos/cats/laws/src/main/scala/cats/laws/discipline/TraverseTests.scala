@@ -49,5 +49,7 @@ trait TraverseTests[F[_]] extends FunctorTests[F] with FoldableTests[F] {
 
 object TraverseTests {
   def apply[F[_]: Traverse]: TraverseTests[F] =
-    new TraverseTests[F] { def laws: TraverseLaws[F] = TraverseLaws[F] }
+    new TraverseTests[F] {
+      def laws: TraverseLaws[F] = TraverseLaws[F]
+    }
 }

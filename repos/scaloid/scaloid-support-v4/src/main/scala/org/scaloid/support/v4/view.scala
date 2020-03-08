@@ -79,7 +79,9 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#setCurrentItem(int) setCurrentItem(int)]]`
     */
-  @inline def currentItem_=(p: Int) = { basis.setCurrentItem(p); basis }
+  @inline def currentItem_=(p: Int) = {
+    basis.setCurrentItem(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#getOffscreenPageLimit() getOffscreenPageLimit()]]`
@@ -131,7 +133,9 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#setPageMargin(int) setPageMargin(int)]]`
     */
-  @inline def pageMargin_=(p: Int) = { basis.setPageMargin(p); basis }
+  @inline def pageMargin_=(p: Int) = {
+    basis.setPageMargin(p); basis
+  }
 
   @inline def pageMarginDrawable(
       implicit no: NoGetterForThisProperty): Nothing =
@@ -166,7 +170,9 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
   @inline def onPageScrollStateChanged[U](f: Int => U): This = {
     basis.setOnPageChangeListener(
       new android.support.v4.view.ViewPager.OnPageChangeListener {
-        def onPageScrollStateChanged(p: Int): Unit = { f(p) }
+        def onPageScrollStateChanged(p: Int): Unit = {
+          f(p)
+        }
         def onPageScrolled(p1: Int, p2: Float, p3: Int): Unit = {}
         def onPageSelected(p: Int): Unit = {}
       })
@@ -176,7 +182,9 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
   @inline def onPageScrollStateChanged[U](f: => U): This = {
     basis.setOnPageChangeListener(
       new android.support.v4.view.ViewPager.OnPageChangeListener {
-        def onPageScrollStateChanged(p: Int): Unit = { f }
+        def onPageScrollStateChanged(p: Int): Unit = {
+          f
+        }
         def onPageScrolled(p1: Int, p2: Float, p3: Int): Unit = {}
         def onPageSelected(p: Int): Unit = {}
       })
@@ -199,7 +207,9 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
     basis.setOnPageChangeListener(
       new android.support.v4.view.ViewPager.OnPageChangeListener {
         def onPageScrollStateChanged(p: Int): Unit = {}
-        def onPageScrolled(p1: Int, p2: Float, p3: Int): Unit = { f }
+        def onPageScrolled(p1: Int, p2: Float, p3: Int): Unit = {
+          f
+        }
         def onPageSelected(p: Int): Unit = {}
       })
     basis
@@ -210,7 +220,9 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
       new android.support.v4.view.ViewPager.OnPageChangeListener {
         def onPageScrollStateChanged(p: Int): Unit = {}
         def onPageScrolled(p1: Int, p2: Float, p3: Int): Unit = {}
-        def onPageSelected(p: Int): Unit = { f(p) }
+        def onPageSelected(p: Int): Unit = {
+          f(p)
+        }
       })
     basis
   }
@@ -220,7 +232,9 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
       new android.support.v4.view.ViewPager.OnPageChangeListener {
         def onPageScrollStateChanged(p: Int): Unit = {}
         def onPageScrolled(p1: Int, p2: Float, p3: Int): Unit = {}
-        def onPageSelected(p: Int): Unit = { f }
+        def onPageSelected(p: Int): Unit = {
+          f
+        }
       })
     basis
   }

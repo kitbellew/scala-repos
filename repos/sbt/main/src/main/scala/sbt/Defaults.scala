@@ -237,7 +237,9 @@ object Defaults extends BuildCommon {
         try onUnload.value(s)
         finally IO.delete(taskTemporaryDirectory.value)
       },
-      extraLoggers :== { _ => Nil },
+      extraLoggers :== { _ =>
+        Nil
+      },
       watchSources :== Nil,
       skip :== false,
       taskTemporaryDirectory := {
@@ -245,7 +247,9 @@ object Defaults extends BuildCommon {
       },
       onComplete := {
         val dir = taskTemporaryDirectory.value;
-        () => { IO.delete(dir); IO.createDirectory(dir) }
+        () => {
+          IO.delete(dir); IO.createDirectory(dir)
+        }
       },
       Previous.cache <<= Previous.cacheSetting,
       Previous.references :== new Previous.References,
@@ -470,7 +474,9 @@ object Defaults extends BuildCommon {
   )
 
   def generate(generators: SettingKey[Seq[Task[Seq[File]]]])
-      : Initialize[Task[Seq[File]]] = generators { _.join.map(_.flatten) }
+      : Initialize[Task[Seq[File]]] = generators {
+    _.join.map(_.flatten)
+  }
 
   @deprecated("Use the new <key>.all(<ScopeFilter>) API", "0.13.0")
   def inAllConfigurations[T](key: TaskKey[T]): Initialize[Task[Seq[T]]] =
@@ -487,7 +493,9 @@ object Defaults extends BuildCommon {
     val selectDeps = ScopeFilter(
       inAggregates(ThisProject) || inDeps(ThisProject))
     val allWatched = (watchSources ?? Nil).all(selectDeps)
-    Def.task { allWatched.value.flatten }
+    Def.task {
+      allWatched.value.flatten
+    }
   }
 
   def transitiveUpdateTask: Initialize[Task[Seq[UpdateReport]]] = {
@@ -495,7 +503,9 @@ object Defaults extends BuildCommon {
     val selectDeps = ScopeFilter(inDeps(ThisProject, includeRoot = false))
     val allUpdates = update.?.all(selectDeps)
     // If I am a "build" (a project inside project/) then I have a globalPluginUpdate.
-    Def.task { allUpdates.value.flatten ++ globalPluginUpdate.?.value }
+    Def.task {
+      allUpdates.value.flatten ++ globalPluginUpdate.?.value
+    }
   }
 
   def watchSetting: Initialize[Watched] =
@@ -908,7 +918,9 @@ object Defaults extends BuildCommon {
     if (includeFilters.isEmpty && excludeArgs.isEmpty) {
       Seq(const(true))
     } else if (includeFilters.isEmpty) {
-      Seq({ (s: String) => !matches(excludeFilters, s) })
+      Seq({ (s: String) =>
+        !matches(excludeFilters, s)
+      })
     } else {
       includeFilters.map { f => (s: String) =>
         (f.accept(s) && !matches(excludeFilters, s))
@@ -961,8 +973,12 @@ object Defaults extends BuildCommon {
       packageTaskSettings(packageDoc, packageDocMappings) ++
       Seq(`package` := packageBin.value)
 
-  def packageBinMappings = products map { _ flatMap Path.allSubpaths }
-  def packageDocMappings = doc map { Path.allSubpaths(_).toSeq }
+  def packageBinMappings = products map {
+    _ flatMap Path.allSubpaths
+  }
+  def packageDocMappings = doc map {
+    Path.allSubpaths(_).toSeq
+  }
   def packageSrcMappings = concatMappings(resourceMappings, sourceMappings)
 
   @deprecated("Use `packageBinMappings` instead", "0.12.0")
@@ -974,7 +990,10 @@ object Defaults extends BuildCommon {
 
   private type Mappings = Initialize[Task[Seq[(File, String)]]]
   def concatMappings(as: Mappings, bs: Mappings) =
-    (as zipWith bs)((a, b) => (a, b) map { case (a, b) => a ++ b })
+    (as zipWith bs)((a, b) =>
+      (a, b) map {
+        case (a, b) => a ++ b
+      })
 
   // drop base directories, since there are no valid mappings for these
   def sourceMappings =
@@ -1049,7 +1068,9 @@ object Defaults extends BuildCommon {
 
   @deprecated("Use the cacheDirectory val on streams.", "0.13.0")
   def perTaskCache(key: TaskKey[_]): Setting[File] =
-    cacheDirectory ~= { _ / ("for_" + key.key.label) }
+    cacheDirectory ~= {
+      _ / ("for_" + key.key.label)
+    }
 
   @deprecated("Use `packageTaskSettings` instead", "0.12.0")
   def packageTasks(
@@ -1633,7 +1654,9 @@ object Classpaths {
   private[this] def exportClasspath(
       s: Setting[Task[Classpath]]): Setting[Task[Classpath]] =
     s.mapInitialize(init =>
-      Def.task { exportClasspath(streams.value, init.value) })
+      Def.task {
+        exportClasspath(streams.value, init.value)
+      })
   private[this] def exportClasspath(
       s: TaskStreams,
       cp: Classpath): Classpath = {
@@ -1661,7 +1684,9 @@ object Classpaths {
     def notFound =
       sys.error(
         "Configuration to use for managed classpath must be explicitly defined when default configurations are not present.")
-    search find { defined contains _.name } getOrElse notFound
+    search find {
+      defined contains _.name
+    } getOrElse notFound
   }
 
   def packaged(
@@ -1674,7 +1699,9 @@ object Classpaths {
       key: SettingKey[T],
       pkgTasks: Seq[TaskKey[File]]): Initialize[Seq[T]] =
     (forallIn(key, pkgTasks) zipWith forallIn(publishArtifact, pkgTasks))(
-      _ zip _ collect { case (a, true) => a })
+      _ zip _ collect {
+        case (a, true) => a
+      })
   def forallIn[T](
       key: SettingKey[T],
       pkgTasks: Seq[TaskKey[_]]): Initialize[Seq[T]] =
@@ -1787,9 +1814,14 @@ object Classpaths {
         appResolvers,
         useJCenter) {
         case (Some(delegated), Seq(), _, _) => delegated
-        case (_, rs, Some(ars), uj)         => task { ars ++ rs }
+        case (_, rs, Some(ars), uj) =>
+          task {
+            ars ++ rs
+          }
         case (_, rs, _, uj) =>
-          task { Resolver.withDefaultResolvers(rs, uj, true) }
+          task {
+            Resolver.withDefaultResolvers(rs, uj, true)
+          }
       },
       appResolvers := {
         val ac = appConfiguration.value
@@ -1955,8 +1987,12 @@ object Classpaths {
           (evictionWarningOptions in evicted).value,
           report,
           log)
-        ew.lines foreach { log.warn(_) }
-        ew.infoAllTheThings foreach { log.info(_) }
+        ew.lines foreach {
+          log.warn(_)
+        }
+        ew.infoAllTheThings foreach {
+          log.info(_)
+        }
         ew
       },
       classifiersModule in updateClassifiers := {
@@ -2262,8 +2298,9 @@ object Classpaths {
       case _                                 => uc0
     }
     val ewo =
-      if (executionRoots.value exists { _.key == evicted.key })
-        EvictionWarningOptions.empty
+      if (executionRoots.value exists {
+            _.key == evicted.key
+          }) EvictionWarningOptions.empty
       else (evictionWarningOptions in update).value
     cachedUpdate(
       s.cacheDirectory / updateCacheName.value,
@@ -2345,14 +2382,20 @@ object Classpaths {
           log) match {
           case Right(ur) => ur
           case Left(uw) =>
-            uw.lines foreach { log.warn(_) }
+            uw.lines foreach {
+              log.warn(_)
+            }
             throw uw.resolveException
         }
         log.info("Done updating.")
         val result = transform(r)
         val ew = EvictionWarning(module, ewo, result, log)
-        ew.lines foreach { log.warn(_) }
-        ew.infoAllTheThings foreach { log.info(_) }
+        ew.lines foreach {
+          log.warn(_)
+        }
+        ew.infoAllTheThings foreach {
+          log.info(_)
+        }
         val cw =
           CompatibilityWarning.run(compatWarning, module, mavenStyle, log)
         result
@@ -2387,7 +2430,9 @@ object Classpaths {
               log.warn(
                 "Update task has failed to cache the report due to null.")
               log.warn("Report the following output to sbt:")
-              r.toString.lines foreach { log.warn(_) }
+              r.toString.lines foreach {
+                log.warn(_)
+              }
               log.trace(e)
               r
             case e: OutOfMemoryError =>
@@ -2422,7 +2467,9 @@ object Classpaths {
         }
         Map(settings flatMap {
           case s: Setting[Seq[ModuleID]] @unchecked =>
-            s.init.evaluate(empty) map { _ -> s.pos }
+            s.init.evaluate(empty) map {
+              _ -> s.pos
+            }
         }: _*)
       } catch {
         case _: Throwable => Map()
@@ -2521,7 +2568,9 @@ object Classpaths {
       data: Settings[Scope],
       log: Logger): Task[Map[ModuleRevisionId, ModuleDescriptor]] =
     projects.flatMap(ivyModule in _ get data).join.map { mod =>
-      mod map { _.dependencyMapping(log) } toMap;
+      mod map {
+        _.dependencyMapping(log)
+      } toMap;
     }
 
   def projectResolverTask: Initialize[Task[Resolver]] =
@@ -2706,7 +2755,10 @@ object Classpaths {
   }
 
   def union[A, B](maps: Seq[A => Seq[B]]): A => Seq[B] =
-    a => (Seq[B]() /: maps) { _ ++ _(a) } distinct;
+    a =>
+      (Seq[B]() /: maps) {
+        _ ++ _(a)
+      } distinct;
 
   def parseList(s: String, allConfs: Seq[String]): Seq[String] =
     (trim(s split ",") flatMap replaceWildcard(allConfs)).distinct
@@ -2791,9 +2843,13 @@ object Classpaths {
   def unmanagedScalaLibrary: Initialize[Task[Seq[File]]] =
     Def.taskDyn {
       if (autoScalaLibrary.value && scalaHome.value.isDefined)
-        Def.task { scalaInstance.value.libraryJar :: Nil }
+        Def.task {
+          scalaInstance.value.libraryJar :: Nil
+        }
       else
-        Def.task { Nil }
+        Def.task {
+          Nil
+        }
     }
 
   import DependencyFilter._
@@ -2883,42 +2939,63 @@ object Classpaths {
 
   // try/catch for supporting earlier launchers
   def bootIvyHome(app: xsbti.AppConfiguration): Option[File] =
-    try { Option(app.provider.scalaProvider.launcher.ivyHome) }
-    catch { case _: NoSuchMethodError => None }
+    try {
+      Option(app.provider.scalaProvider.launcher.ivyHome)
+    } catch {
+      case _: NoSuchMethodError => None
+    }
 
   def bootChecksums(app: xsbti.AppConfiguration): Seq[String] =
-    try { app.provider.scalaProvider.launcher.checksums.toSeq }
-    catch { case _: NoSuchMethodError => IvySbt.DefaultChecksums }
+    try {
+      app.provider.scalaProvider.launcher.checksums.toSeq
+    } catch {
+      case _: NoSuchMethodError => IvySbt.DefaultChecksums
+    }
 
   def isOverrideRepositories(app: xsbti.AppConfiguration): Boolean =
     try app.provider.scalaProvider.launcher.isOverrideRepositories
-    catch { case _: NoSuchMethodError => false }
+    catch {
+      case _: NoSuchMethodError => false
+    }
 
   /** Loads the `appRepositories` configured for this launcher, if supported. */
   def appRepositories(app: xsbti.AppConfiguration): Option[Seq[Resolver]] =
     try {
       Some(
         app.provider.scalaProvider.launcher.appRepositories.toSeq map bootRepository)
-    } catch { case _: NoSuchMethodError => None }
+    } catch {
+      case _: NoSuchMethodError => None
+    }
 
   def bootRepositories(app: xsbti.AppConfiguration): Option[Seq[Resolver]] =
     try {
       Some(
         app.provider.scalaProvider.launcher.ivyRepositories.toSeq map bootRepository)
-    } catch { case _: NoSuchMethodError => None }
+    } catch {
+      case _: NoSuchMethodError => None
+    }
 
   private[this] def mavenCompatible(ivyRepo: xsbti.IvyRepository): Boolean =
-    try { ivyRepo.mavenCompatible }
-    catch { case _: NoSuchMethodError => false }
+    try {
+      ivyRepo.mavenCompatible
+    } catch {
+      case _: NoSuchMethodError => false
+    }
 
   private[this] def skipConsistencyCheck(
       ivyRepo: xsbti.IvyRepository): Boolean =
-    try { ivyRepo.skipConsistencyCheck }
-    catch { case _: NoSuchMethodError => false }
+    try {
+      ivyRepo.skipConsistencyCheck
+    } catch {
+      case _: NoSuchMethodError => false
+    }
 
   private[this] def descriptorOptional(ivyRepo: xsbti.IvyRepository): Boolean =
-    try { ivyRepo.descriptorOptional }
-    catch { case _: NoSuchMethodError => false }
+    try {
+      ivyRepo.descriptorOptional
+    } catch {
+      case _: NoSuchMethodError => false
+    }
 
   private[this] def bootRepository(repo: xsbti.Repository): Resolver = {
     import xsbti.Predefined
@@ -2935,8 +3012,9 @@ object Classpaths {
           case "file" =>
             // This hackery is to deal suitably with UNC paths on Windows. Once we can assume Java7, Paths should save us from this.
             val file =
-              try { new File(i.url.toURI) }
-              catch {
+              try {
+                new File(i.url.toURI)
+              } catch {
                 case e: java.net.URISyntaxException => new File(i.url.getPath)
               }
             Resolver.file(i.id, file)(patterns)
@@ -3224,7 +3302,9 @@ trait BuildCommon {
     val overridden = configurations map { conf =>
       newByName.getOrElse(conf.name, conf)
     }
-    val newConfigs = cs filter { c => !existingName(c.name) }
+    val newConfigs = cs filter { c =>
+      !existingName(c.name)
+    }
     overridden ++ newConfigs
   }
 
@@ -3265,10 +3345,14 @@ trait BuildCommon {
   // these are for use for constructing Tasks
   def loadPrevious[T](task: TaskKey[T])(
       implicit f: sbinary.Format[T]): Initialize[Task[Option[T]]] =
-    (state, resolvedScoped) map { (s, ctx) => loadFromContext(task, ctx, s)(f) }
+    (state, resolvedScoped) map { (s, ctx) =>
+      loadFromContext(task, ctx, s)(f)
+    }
 
   def getPrevious[T](task: TaskKey[T]): Initialize[Task[Option[T]]] =
-    (state, resolvedScoped) map { (s, ctx) => getFromContext(task, ctx, s) }
+    (state, resolvedScoped) map { (s, ctx) =>
+      getFromContext(task, ctx, s)
+    }
 
   private[sbt] def derive[T](s: Setting[T]): Setting[T] =
     Def.derive(

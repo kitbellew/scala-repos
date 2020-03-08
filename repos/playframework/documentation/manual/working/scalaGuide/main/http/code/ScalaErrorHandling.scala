@@ -34,7 +34,9 @@ object ScalaErrorHandling extends PlaySpecification with WsTestClient {
         Environment.simple(mode = mode),
         Configuration.empty,
         new OptionalSourceMapper(None),
-        new Provider[Router] { def get = Router.empty }
+        new Provider[Router] {
+          def get = Router.empty
+        }
       )
       def errorContent(mode: Mode.Mode) =
         contentAsString(

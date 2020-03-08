@@ -140,8 +140,9 @@ sealed trait SValue {
 
   lazy val toJValue: JValue = this match {
     case SObject(obj) =>
-      JObject(
-        obj.map({ case (k, v) => JField(k, v.toJValue) })(collection.breakOut))
+      JObject(obj.map({
+        case (k, v) => JField(k, v.toJValue)
+      })(collection.breakOut))
     case SArray(arr) => JArray(arr.map(_.toJValue)(collection.breakOut): _*)
     case SString(s)  => JString(s)
     case STrue       => JBool(true)
@@ -152,14 +153,17 @@ sealed trait SValue {
   }
 
   lazy val toRValue: RValue = this match {
-    case SObject(obj) => RObject(obj.map({ case (k, v) => (k, v.toRValue) }))
-    case SArray(arr)  => RArray(arr.map(_.toRValue)(collection.breakOut): _*)
-    case SString(s)   => CString(s)
-    case STrue        => CBoolean(true)
-    case SFalse       => CBoolean(false)
-    case SDecimal(n)  => CNum(n)
-    case SNull        => CNull
-    case SUndefined   => CUndefined
+    case SObject(obj) =>
+      RObject(obj.map({
+        case (k, v) => (k, v.toRValue)
+      }))
+    case SArray(arr) => RArray(arr.map(_.toRValue)(collection.breakOut): _*)
+    case SString(s)  => CString(s)
+    case STrue       => CBoolean(true)
+    case SFalse      => CBoolean(false)
+    case SDecimal(n) => CNum(n)
+    case SNull       => CNull
+    case SUndefined  => CUndefined
   }
 }
 
@@ -291,9 +295,9 @@ object SValue extends SValueInstances {
   @inline
   def fromJValue(jv: JValue): SValue = jv match {
     case JObject(fields) =>
-      SObject(
-        fields.map { case JField(name, v) => (name, fromJValue(v)) }(
-          collection.breakOut))
+      SObject(fields.map {
+        case JField(name, v) => (name, fromJValue(v))
+      }(collection.breakOut))
     case JArray(elements) =>
       SArray((elements map fromJValue)(collection.breakOut))
     case JString(s) => SString(s)

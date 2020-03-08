@@ -7,7 +7,9 @@ object Test {
       implicit bf: CanBuildFrom[Repr, B, That]): That = {
     val repr: Repr = _this.asInstanceOf[Repr]
     val b = bf(repr)
-    _this foreach { x => if (pf isDefinedAt x) b += pf(x) }
+    _this foreach { x =>
+      if (pf isDefinedAt x) b += pf(x)
+    }
     b.result
   }
 
@@ -16,7 +18,9 @@ object Test {
       implicit bf: CanBuildFrom[Repr, B, That]): That = {
     val repr: Repr = _this.asInstanceOf[Repr]
     val b = bf(repr)
-    val f = pf runWith { b += _ }
+    val f = pf runWith {
+      b += _
+    }
     _this foreach f
     b.result
   }
@@ -37,7 +41,9 @@ object Test {
     }
   }
 
-  def resetCnt() = { val r = cnt; cnt = 0; r }
+  def resetCnt() = {
+    val r = cnt; cnt = 0; r
+  }
 
   val pf: PartialFunction[Int, Int] = {
     case Ex1(result) => result
@@ -67,16 +73,28 @@ object Test {
 
   def orElseTest() {
     val pf0 = new PartialFunction[Unit, Unit] {
-      def apply(u: Unit) { println("0:apply") }
-      def isDefinedAt(u: Unit) = { println("0:isDefinedAt"); false }
+      def apply(u: Unit) {
+        println("0:apply")
+      }
+      def isDefinedAt(u: Unit) = {
+        println("0:isDefinedAt"); false
+      }
     }
     val pf1 = new PartialFunction[Unit, Unit] {
-      def apply(u: Unit) { println("1:apply") }
-      def isDefinedAt(u: Unit) = { println("1:isDefinedAt"); false }
+      def apply(u: Unit) {
+        println("1:apply")
+      }
+      def isDefinedAt(u: Unit) = {
+        println("1:isDefinedAt"); false
+      }
     }
     val pf2 = new PartialFunction[Unit, Unit] {
-      def apply(u: Unit) { println("2:apply") }
-      def isDefinedAt(u: Unit) = { println("2:isDefinedAt"); true }
+      def apply(u: Unit) {
+        println("2:apply")
+      }
+      def isDefinedAt(u: Unit) = {
+        println("2:isDefinedAt"); true
+      }
     }
 
     val chained = pf0 orElse pf1 orElse pf2

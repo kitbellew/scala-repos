@@ -100,7 +100,9 @@ trait Mailer extends SimpleInjector {
 
   implicit def addressToAddress(in: AddressType): Address = {
     val ret = new InternetAddress(in.address)
-    in.name.foreach { n => ret.setPersonal(n) }
+    in.name.foreach { n =>
+      ret.setPersonal(n)
+    }
     ret
   }
 
@@ -135,7 +137,9 @@ trait Mailer extends SimpleInjector {
 
   lazy val properties: Properties = {
     val p = System.getProperties.clone.asInstanceOf[Properties]
-    customProperties.foreach { case (name, value) => p.put(name, value) }
+    customProperties.foreach {
+      case (name, value) => p.put(name, value)
+    }
     // allow the properties file to set/override system properties
 
     Props.props.foreach {

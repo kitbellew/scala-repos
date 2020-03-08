@@ -65,7 +65,9 @@ trait ParMapLike[
       def next() = iter.next()._1
       def split = {
         val ss = iter.split.map(keysIterator(_))
-        ss.foreach { _.signalDelegate = i.signalDelegate }
+        ss.foreach {
+          _.signalDelegate = i.signalDelegate
+        }
         ss
       }
       def remaining = iter.remaining
@@ -83,7 +85,9 @@ trait ParMapLike[
       def next() = iter.next()._2
       def split = {
         val ss = iter.split.map(valuesIterator(_))
-        ss.foreach { _.signalDelegate = i.signalDelegate }
+        ss.foreach {
+          _.signalDelegate = i.signalDelegate
+        }
         ss
       }
       def remaining = iter.remaining

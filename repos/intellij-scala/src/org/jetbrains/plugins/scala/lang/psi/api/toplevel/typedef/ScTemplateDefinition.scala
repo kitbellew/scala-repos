@@ -235,7 +235,9 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
             TypeDefinitionMembers
               .getTypes(c, Some(clazzType), this)
               .allFirstSeq()
-              .flatMap(_.map { case (_, n) => (n.info, n.substitutor) })
+              .flatMap(_.map {
+                case (_, n) => (n.info, n.substitutor)
+              })
           case _ =>
             allTypeAliases
         }
@@ -261,7 +263,9 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
                   }
               })
         })
-      .map { case (_, n) => (n.info.namedElement, n.substitutor) }
+      .map {
+        case (_, n) => (n.info.namedElement, n.substitutor)
+      }
 
   def allValsIncludingSelfType = {
     selfType match {
@@ -285,7 +289,9 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
                           }
                       })
                 })
-              .map { case (_, n) => (n.info.namedElement, n.substitutor) }
+              .map {
+                case (_, n) => (n.info.namedElement, n.substitutor)
+              }
           case _ =>
             allVals
         }
@@ -301,7 +307,9 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
       .flatMap(_.filter {
         case (_, n) => n.info.isInstanceOf[PhysicalSignature]
       })
-      .map { case (_, n) => n.info.asInstanceOf[PhysicalSignature] } ++
+      .map {
+        case (_, n) => n.info.asInstanceOf[PhysicalSignature]
+      } ++
       syntheticMethodsNoOverride.map(
         new PhysicalSignature(_, ScSubstitutor.empty))
 
@@ -317,7 +325,9 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
               .flatMap(_.filter {
                 case (_, n) => n.info.isInstanceOf[PhysicalSignature]
               })
-              .map { case (_, n) => n.info.asInstanceOf[PhysicalSignature] } ++
+              .map {
+                case (_, n) => n.info.asInstanceOf[PhysicalSignature]
+              } ++
               syntheticMethodsNoOverride.map(
                 new PhysicalSignature(_, ScSubstitutor.empty))
           case _ =>
@@ -332,7 +342,9 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
     TypeDefinitionMembers
       .getSignatures(this)
       .allFirstSeq()
-      .flatMap(_.map { case (_, n) => n.info })
+      .flatMap(_.map {
+        case (_, n) => n.info
+      })
 
   def allSignaturesIncludingSelfType = {
     selfType match {
@@ -343,7 +355,9 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
             TypeDefinitionMembers
               .getSignatures(c, Some(clazzType), this)
               .allFirstSeq()
-              .flatMap(_.map { case (_, n) => n.info })
+              .flatMap(_.map {
+                case (_, n) => n.info
+              })
           case _ =>
             allSignatures
         }

@@ -1,5 +1,9 @@
-class Optiony[X] { def isEmpty = true; def get: X = ??? }
-class Seqy[X] { def head: X = ???; def length = 0; def apply(i: Int): X = ??? }
+class Optiony[X] {
+  def isEmpty = true; def get: X = ???
+}
+class Seqy[X] {
+  def head: X = ???; def length = 0; def apply(i: Int): X = ???
+}
 
 object G {
   def unapply(m: Any): Optiony[_] = ???

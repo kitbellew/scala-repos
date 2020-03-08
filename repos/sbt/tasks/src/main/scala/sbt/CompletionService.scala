@@ -30,7 +30,11 @@ object CompletionService {
       def take() = completion.take().get()
     }
   def submit[T](work: () => T, completion: JCompletionService[T]): () => T = {
-    val future = completion.submit { new Callable[T] { def call = work() } }
+    val future = completion.submit {
+      new Callable[T] {
+        def call = work()
+      }
+    }
     () => future.get()
   }
   def manage[A, T](service: CompletionService[A, T])(
@@ -38,8 +42,11 @@ object CompletionService {
       cleanup: A => Unit): CompletionService[A, T] =
     wrap(service) { (node, work) => () =>
       setup(node)
-      try { work() }
-      finally { cleanup(node) }
+      try {
+        work()
+      } finally {
+        cleanup(node)
+      }
     }
   def wrap[A, T](service: CompletionService[A, T])(
       w: (A, () => T) => (() => T)): CompletionService[A, T] =

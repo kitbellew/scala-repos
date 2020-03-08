@@ -162,7 +162,9 @@ class TaskSchedulerImplSuite
     val attempt1 = FakeTask.createTaskSet(1, 0)
     val attempt2 = FakeTask.createTaskSet(1, 1)
     taskScheduler.submitTasks(attempt1)
-    intercept[IllegalStateException] { taskScheduler.submitTasks(attempt2) }
+    intercept[IllegalStateException] {
+      taskScheduler.submitTasks(attempt2)
+    }
 
     // OK to submit multiple if previous attempts are all zombie
     taskScheduler
@@ -171,7 +173,9 @@ class TaskSchedulerImplSuite
       .isZombie = true
     taskScheduler.submitTasks(attempt2)
     val attempt3 = FakeTask.createTaskSet(1, 2)
-    intercept[IllegalStateException] { taskScheduler.submitTasks(attempt3) }
+    intercept[IllegalStateException] {
+      taskScheduler.submitTasks(attempt3)
+    }
     taskScheduler
       .taskSetManagerForAttempt(attempt2.stageId, attempt2.stageAttemptId)
       .get

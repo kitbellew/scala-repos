@@ -221,7 +221,9 @@ private object FaultToleranceTest extends App with Logging {
   /** Creates a SparkContext, which constructs a Client to interact with our cluster. */
   private def createClient() = {
     logInfo(">>>>> CREATE CLIENT <<<<<")
-    if (sc != null) { sc.stop() }
+    if (sc != null) {
+      sc.stop()
+    }
     // Counter-hack: Because of a hack in SparkEnv#create() that changes this
     // property, we need to reset it.
     System.setProperty("spark.driver.port", "0")
@@ -397,7 +399,9 @@ private class TestMasterInfo(
     }
   }
 
-  def kill() { Docker.kill(dockerId) }
+  def kill() {
+    Docker.kill(dockerId)
+  }
 
   override def toString: String =
     "[ip=%s, id=%s, logFile=%s, state=%s]".format(
@@ -417,7 +421,9 @@ private class TestWorkerInfo(
 
   logDebug("Created worker: " + this)
 
-  def kill() { Docker.kill(dockerId) }
+  def kill() {
+    Docker.kill(dockerId)
+  }
 
   override def toString: String =
     "[ip=%s, id=%s, logFile=%s]".format(ip, dockerId, logFile.getAbsolutePath)
@@ -470,8 +476,9 @@ private object Docker extends Logging {
       imageTag: String,
       args: String = "",
       mountDir: String = ""): ProcessBuilder = {
-    val mountCmd = if (mountDir != "") { " -v " + mountDir }
-    else ""
+    val mountCmd = if (mountDir != "") {
+      " -v " + mountDir
+    } else ""
 
     val cmd = "docker run -privileged %s %s %s".format(mountCmd, imageTag, args)
     logDebug("Run command: " + cmd)

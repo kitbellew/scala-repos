@@ -96,7 +96,9 @@ object SimpleListenerExample {
     val listener = Netty3Listener[String, String](
       StringServerPipeline,
       StackServer.defaultParams)
-    val server = listener.listen(address) { serveTransport(_) }
+    val server = listener.listen(address) {
+      serveTransport(_)
+    }
     //#simplelisten
 
     Await.ready(Future.never)
@@ -123,7 +125,9 @@ object BasicClient {
     StackClient.defaultParams)
 
   val bridge: Future[Service[String, String]] =
-    transporter(addr) map { transport => new SerialClientDispatcher(transport) }
+    transporter(addr) map { transport =>
+      new SerialClientDispatcher(transport)
+    }
 
   val client = new Service[String, String] {
     def apply(req: String) = bridge flatMap { svc =>

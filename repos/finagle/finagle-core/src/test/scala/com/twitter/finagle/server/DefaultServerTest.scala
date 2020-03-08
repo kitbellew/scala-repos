@@ -31,8 +31,10 @@ class DefaultServerTest extends FunSpec with MockitoSugar {
           Transport[Try[Int], Try[Int]],
           Service[Try[Int], Try[Int]]) => Closable = {
         case (transport, service) =>
-          val f = transport.read() flatMap { num => service(num) } respond {
-            result => transport.write(result.flatten)
+          val f = transport.read() flatMap { num =>
+            service(num)
+          } respond { result =>
+            transport.write(result.flatten)
           }
           service
       }
@@ -79,7 +81,9 @@ class DefaultServerTest extends FunSpec with MockitoSugar {
 
       val socket = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
       val factory = mock[ServiceFactory[Try[Int], Try[Int]]]
-      val service = Service.mk[Try[Int], Try[Int]] { Future.value }
+      val service = Service.mk[Try[Int], Try[Int]] {
+        Future.value
+      }
       when(factory(any[ClientConnection])) thenReturn Future.value(service)
       when(factory.close(any[Time])) thenReturn Future.Done
       val listeningServer: ListeningServer = server.serve(socket, factory)
@@ -114,7 +118,9 @@ class DefaultServerTest extends FunSpec with MockitoSugar {
       val socket = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
 
       val p = Promise[Try[Int]]
-      val svc = Service.mk[Try[Int], Try[Int]] { _ => p }
+      val svc = Service.mk[Try[Int], Try[Int]] { _ =>
+        p
+      }
       val factory = ServiceFactory.const(svc)
       val listeningServer: ListeningServer = server.serve(socket, factory)
 

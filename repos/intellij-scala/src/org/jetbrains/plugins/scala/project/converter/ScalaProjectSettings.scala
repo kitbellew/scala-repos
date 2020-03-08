@@ -82,7 +82,9 @@ class ScalaProjectSettings(basePackages: Seq[String]) extends XmlConversion {
   def createSettingsElement(options: Elem): Elem = {
     <project version="4">
       <component name="ScalaProjectSettings">
-        {options}
+        {
+      options
+    }
       </component>
     </project>
   }
@@ -90,7 +92,12 @@ class ScalaProjectSettings(basePackages: Seq[String]) extends XmlConversion {
   private def createOptionsElement(basePackages: Seq[String]): Elem = {
     <option name="basePackages">
       <list>
-        {basePackages.map(name => <option value={name} />)}
+        {
+      basePackages.map(name =>
+        <option value={
+          name
+        } />)
+    }
       </list>
     </option>
   }

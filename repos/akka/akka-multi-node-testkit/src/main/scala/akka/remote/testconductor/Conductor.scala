@@ -222,7 +222,9 @@ trait Conductor { this: TestConductorExt ⇒
     // the recover is needed to handle ClientDisconnectedException exception,
     // which is normal during shutdown
     controller ? Terminate(node, Right(exitValue)) mapTo classTag[
-      Done] recover { case _: ClientDisconnectedException ⇒ Done }
+      Done] recover {
+      case _: ClientDisconnectedException ⇒ Done
+    }
   }
 
   /**
@@ -643,7 +645,9 @@ private[akka] class BarrierCoordinator
   var failed = false
 
   override def preRestart(reason: Throwable, message: Option[Any]) {}
-  override def postRestart(reason: Throwable) { failed = true }
+  override def postRestart(reason: Throwable) {
+    failed = true
+  }
 
   // TODO what happens with the other waiting players in case of a test failure?
 

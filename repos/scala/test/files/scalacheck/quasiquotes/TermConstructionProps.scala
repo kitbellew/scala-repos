@@ -172,7 +172,9 @@ object TermConstructionProps extends QuasiquoteProperties("term construction") {
 
   property("anonymous functions don't support default values") = test {
     val x = q"val x: Int = 1"
-    assertThrows[IllegalArgumentException] { q"($x) => x" }
+    assertThrows[IllegalArgumentException] {
+      q"($x) => x"
+    }
   }
 
   property("assign variable") = test {
@@ -218,7 +220,9 @@ object TermConstructionProps extends QuasiquoteProperties("term construction") {
   }
 
   property("unquote iterable of non-parametric type") = test {
-    object O extends Iterable[Tree] { def iterator = List(q"foo").iterator }
+    object O extends Iterable[Tree] {
+      def iterator = List(q"foo").iterator
+    }
     q"f(..$O)"
   }
 
@@ -259,13 +263,17 @@ object TermConstructionProps extends QuasiquoteProperties("term construction") {
 
   property("SI-7275 c1") = test {
     object O
-    implicit val liftO = Liftable[O.type] { _ => q"foo; bar" }
+    implicit val liftO = Liftable[O.type] { _ =>
+      q"foo; bar"
+    }
     assertEqAst(q"f(..$O)", "f(foo, bar)")
   }
 
   property("SI-7275 c2") = test {
     object O
-    implicit val liftO = Liftable[O.type] { _ => q"{ foo; bar }; { baz; bax }" }
+    implicit val liftO = Liftable[O.type] { _ =>
+      q"{ foo; bar }; { baz; bax }"
+    }
     assertEqAst(q"f(...$O)", "f(foo, bar)(baz, bax)")
   }
 

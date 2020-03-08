@@ -168,13 +168,17 @@ object Plugins extends PluginsFunctions {
     if (defined0.isEmpty)(_, _) => Nil
     else {
       // TODO: defined should return all the plugins
-      val allReqs = (defined0 flatMap { asRequirements }).toSet
+      val allReqs = (defined0 flatMap {
+        asRequirements
+      }).toSet
       val diff = allReqs diff defined0.toSet
       val defined =
         if (diff.nonEmpty) diff.toList ::: defined0
         else defined0
 
-      val byAtom = defined map { x => (Atom(x.label), x) }
+      val byAtom = defined map { x =>
+        (Atom(x.label), x)
+      }
       val byAtomMap = byAtom.toMap
       if (byAtom.size != byAtomMap.size) duplicateProvidesError(byAtom)
       // Ignore clauses for plugins that does not require anything else.
@@ -214,14 +218,17 @@ object Plugins extends PluginsFunctions {
                 a,
                 throw AutoPluginException(s"${a} was not found in atom map."))
             }
-            val forbidden: Set[AutoPlugin] =
-              (selectedPlugins flatMap { Plugins.asExclusions }).toSet
+            val forbidden: Set[AutoPlugin] = (selectedPlugins flatMap {
+              Plugins.asExclusions
+            }).toSet
             val c = selectedPlugins.toSet & forbidden
             if (c.nonEmpty) {
               exlusionConflictError(
                 requestedPlugins,
                 selectedPlugins,
-                c.toSeq sortBy { _.label })
+                c.toSeq sortBy {
+                  _.label
+                })
             }
             val retval = topologicalSort(selectedPlugins, log)
             log.debug(s"  :: sorted deduced result: ${retval.toString}")
@@ -263,7 +270,9 @@ object Plugins extends PluginsFunctions {
       s"Cycles in plugin requirements cannot involve excludes.  The problematic cycle is: ${literalsString(cn.cycle)}"
   }
   private[this] def literalsString(lits: Seq[Literal]): String =
-    lits map { case Atom(l) => l; case Negated(Atom(l)) => l } mkString (", ")
+    lits map {
+      case Atom(l) => l; case Negated(Atom(l)) => l
+    } mkString (", ")
 
   private[this] def duplicateProvidesError(
       byAtom: Seq[(Atom, AutoPlugin)]): Unit = {
@@ -287,11 +296,15 @@ object Plugins extends PluginsFunctions {
           (if (c.requires != empty && c.trigger == allRequirements)
              List(s"enabled by ${c.requires.toString}")
            else Nil) ++ {
-          val reqs = selected filter { x => asRequirements(x) contains c }
+          val reqs = selected filter { x =>
+            asRequirements(x) contains c
+          }
           if (reqs.nonEmpty) List(s"""required by ${reqs.mkString(", ")}""")
           else Nil
         } ++ {
-          val exs = selected filter { x => asExclusions(x) contains c }
+          val exs = selected filter { x =>
+            asExclusions(x) contains c
+          }
           if (exs.nonEmpty) List(s"""excluded by ${exs.mkString(", ")}""")
           else Nil
         }
@@ -343,7 +356,9 @@ ${listConflicts(conflicting)}""")
   /** Defines requirements clauses for `ap`. */
   private[sbt] def asRequirementsClauses(ap: AutoPlugin): List[Clause] =
     // required plugin is the head and `ap` is the body.
-    asRequirements(ap) map { x => Clause(convert(ap), Set(Atom(x.label))) }
+    asRequirements(ap) map { x =>
+      Clause(convert(ap), Set(Atom(x.label)))
+    }
   private[sbt] def asRequirements(ap: AutoPlugin): List[AutoPlugin] =
     flatten(ap.requires).toList collect {
       case x: AutoPlugin => x

@@ -47,7 +47,9 @@ trait HttpAuthentication {
 }
 
 object NoAuthentication extends HttpAuthentication {
-  def verified_? = { case req => true }
+  def verified_? = {
+    case req => true
+  }
 }
 
 object userRoles extends RequestVar[List[Role]](Nil)

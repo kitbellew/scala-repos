@@ -22,29 +22,53 @@ class BrokerChannelHandler extends SimpleChannelHandler {
   }
 
   case class Message(e: MessageEvent, ctx: ChannelHandlerContext)
-      extends UpstreamEvent { type E = MessageEvent }
+      extends UpstreamEvent {
+    type E = MessageEvent
+  }
   case class WriteComplete(e: WriteCompletionEvent, ctx: ChannelHandlerContext)
-      extends UpstreamEvent { type E = WriteCompletionEvent }
+      extends UpstreamEvent {
+    type E = WriteCompletionEvent
+  }
   case class ChildOpen(e: ChildChannelStateEvent, ctx: ChannelHandlerContext)
-      extends UpstreamEvent { type E = ChildChannelStateEvent }
+      extends UpstreamEvent {
+    type E = ChildChannelStateEvent
+  }
   case class ChildClosed(e: ChildChannelStateEvent, ctx: ChannelHandlerContext)
-      extends UpstreamEvent { type E = ChildChannelStateEvent }
+      extends UpstreamEvent {
+    type E = ChildChannelStateEvent
+  }
   case class Open(e: ChannelStateEvent, ctx: ChannelHandlerContext)
-      extends UpstreamEvent { type E = ChannelStateEvent }
+      extends UpstreamEvent {
+    type E = ChannelStateEvent
+  }
   case class Closed(e: ChannelStateEvent, ctx: ChannelHandlerContext)
-      extends UpstreamEvent { type E = ChannelStateEvent }
+      extends UpstreamEvent {
+    type E = ChannelStateEvent
+  }
   case class Bound(e: ChannelStateEvent, ctx: ChannelHandlerContext)
-      extends UpstreamEvent { type E = ChannelStateEvent }
+      extends UpstreamEvent {
+    type E = ChannelStateEvent
+  }
   case class Unbound(e: ChannelStateEvent, ctx: ChannelHandlerContext)
-      extends UpstreamEvent { type E = ChannelStateEvent }
+      extends UpstreamEvent {
+    type E = ChannelStateEvent
+  }
   case class Connected(e: ChannelStateEvent, ctx: ChannelHandlerContext)
-      extends UpstreamEvent { type E = ChannelStateEvent }
+      extends UpstreamEvent {
+    type E = ChannelStateEvent
+  }
   case class Disconnected(e: ChannelStateEvent, ctx: ChannelHandlerContext)
-      extends UpstreamEvent { type E = ChannelStateEvent }
+      extends UpstreamEvent {
+    type E = ChannelStateEvent
+  }
   case class InterestChanged(e: ChannelStateEvent, ctx: ChannelHandlerContext)
-      extends UpstreamEvent { type E = ChannelStateEvent }
+      extends UpstreamEvent {
+    type E = ChannelStateEvent
+  }
   case class Exception(e: ExceptionEvent, ctx: ChannelHandlerContext)
-      extends UpstreamEvent { type E = ExceptionEvent }
+      extends UpstreamEvent {
+    type E = ExceptionEvent
+  }
 
   object MessageValue {
     def unapply(e: UpstreamEvent): Option[(Any, ChannelHandlerContext)] =
@@ -61,19 +85,33 @@ class BrokerChannelHandler extends SimpleChannelHandler {
   }
 
   case class Write(e: MessageEvent, ctx: ChannelHandlerContext)
-      extends DownstreamEvent { type E = MessageEvent }
+      extends DownstreamEvent {
+    type E = MessageEvent
+  }
   case class Bind(e: ChannelStateEvent, ctx: ChannelHandlerContext)
-      extends DownstreamEvent { type E = ChannelStateEvent }
+      extends DownstreamEvent {
+    type E = ChannelStateEvent
+  }
   case class Connect(e: ChannelStateEvent, ctx: ChannelHandlerContext)
-      extends DownstreamEvent { type E = ChannelStateEvent }
+      extends DownstreamEvent {
+    type E = ChannelStateEvent
+  }
   case class InterestOps(e: ChannelStateEvent, ctx: ChannelHandlerContext)
-      extends DownstreamEvent { type E = ChannelStateEvent }
+      extends DownstreamEvent {
+    type E = ChannelStateEvent
+  }
   case class Disconnect(e: ChannelStateEvent, ctx: ChannelHandlerContext)
-      extends DownstreamEvent { type E = ChannelStateEvent }
+      extends DownstreamEvent {
+    type E = ChannelStateEvent
+  }
   case class Unbind(e: ChannelStateEvent, ctx: ChannelHandlerContext)
-      extends DownstreamEvent { type E = ChannelStateEvent }
+      extends DownstreamEvent {
+    type E = ChannelStateEvent
+  }
   case class Close(e: ChannelStateEvent, ctx: ChannelHandlerContext)
-      extends DownstreamEvent { type E = ChannelStateEvent }
+      extends DownstreamEvent {
+    type E = ChannelStateEvent
+  }
 
   object WriteValue {
     def unapply(e: DownstreamEvent): Option[(Any, ChannelHandlerContext)] =
@@ -87,14 +125,18 @@ class BrokerChannelHandler extends SimpleChannelHandler {
     * Proxy further downstream events.
     */
   protected def proxyDownstream() {
-    downstreamEvent foreach { _.sendDownstream() }
+    downstreamEvent foreach {
+      _.sendDownstream()
+    }
   }
 
   /**
     * Proxy further upstream events.
     */
   protected def proxyUpstream() {
-    upstreamEvent foreach { _.sendUpstream() }
+    upstreamEvent foreach {
+      _.sendUpstream()
+    }
   }
 
   /**

@@ -16,7 +16,9 @@ import akka.testkit.TestProbe
 
 object ScatterGatherFirstCompletedSpec {
   class TestActor extends Actor {
-    def receive = { case _ ⇒ }
+    def receive = {
+      case _ ⇒
+    }
   }
 
   final case class Stop(id: Option[Int] = None)

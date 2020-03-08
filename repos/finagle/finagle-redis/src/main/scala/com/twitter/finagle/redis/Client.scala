@@ -196,7 +196,9 @@ private[redis] class ConnectedTransactionalClient(
   def transaction(cmds: Seq[Command]): Future[Seq[Reply]] = {
     serviceFactory() flatMap { svc =>
       multi(svc) before {
-        val cmdQueue = cmds map { cmd => svc(cmd) }
+        val cmdQueue = cmds map { cmd =>
+          svc(cmd)
+        }
         Future.collect(cmdQueue).unit before exec(svc)
       } rescue {
         case e =>

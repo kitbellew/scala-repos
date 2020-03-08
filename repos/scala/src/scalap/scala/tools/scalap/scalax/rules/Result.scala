@@ -48,7 +48,9 @@ case class Success[+Out, +A](out: Out, value: A)
   def mapOut[Out2](f: Out => Out2): Result[Out2, A, Nothing] =
     Success(f(out), value)
   def map[Out2, B](f: (Out, A) => (Out2, B)): Success[Out2, B] =
-    f(out, value) match { case (out2, b) => Success(out2, b) }
+    f(out, value) match {
+      case (out2, b) => Success(out2, b)
+    }
   def flatMap[Out2, B](
       f: (Out, A) => Result[Out2, B, Nothing]): Result[Out2, B, Nothing] =
     f(out, value)

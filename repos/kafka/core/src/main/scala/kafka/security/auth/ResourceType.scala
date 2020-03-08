@@ -22,7 +22,9 @@ import org.apache.kafka.common.protocol.Errors
 /**
   * ResourceTypes.
   */
-sealed trait ResourceType extends BaseEnum { def errorCode: Short }
+sealed trait ResourceType extends BaseEnum {
+  def errorCode: Short
+}
 
 case object Cluster extends ResourceType {
   val name = "Cluster"

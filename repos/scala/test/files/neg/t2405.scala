@@ -1,4 +1,6 @@
-object A { implicit val x: Int = 1 }
+object A {
+  implicit val x: Int = 1
+}
 
 // Expecting shadowing #1
 object Test2 {

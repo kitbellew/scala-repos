@@ -42,20 +42,32 @@ import scalaz.syntax.apply._
 import scalaz.syntax.plusEmpty._
 import Permission._
 
-sealed trait AccessMode { def name: String }
+sealed trait AccessMode {
+  def name: String
+}
 sealed trait ReadMode extends AccessMode
 sealed trait WriteMode extends AccessMode
 
 object AccessMode {
-  case object Read extends AccessMode with ReadMode { val name = "read" }
-  case object Execute extends AccessMode with ReadMode { val name = "execute" }
+  case object Read extends AccessMode with ReadMode {
+    val name = "read"
+  }
+  case object Execute extends AccessMode with ReadMode {
+    val name = "execute"
+  }
   case object ReadMetadata extends AccessMode with ReadMode {
     val name = "metadata"
   }
 
-  case object Create extends AccessMode with WriteMode { val name = "create" }
-  case object Replace extends AccessMode with WriteMode { val name = "replace" }
-  case object Append extends AccessMode with WriteMode { val name = "append" }
+  case object Create extends AccessMode with WriteMode {
+    val name = "create"
+  }
+  case object Replace extends AccessMode with WriteMode {
+    val name = "replace"
+  }
+  case object Append extends AccessMode with WriteMode {
+    val name = "append"
+  }
 }
 
 sealed trait Permission extends Logging {
@@ -192,8 +204,9 @@ object Permission {
         pathV: Validation[Error, Path])(
         f: (Path, WrittenBy) => Permission): Validation[Error, Permission] = {
       (obj \? "ownerAccountIds") map { ids =>
-        Apply[({ type l[a] = Validation[Error, a] })#l].zip
-          .zip(pathV, ids.validated[Set[AccountId]]) flatMap {
+        Apply[({
+          type l[a] = Validation[Error, a]
+        })#l].zip.zip(pathV, ids.validated[Set[AccountId]]) flatMap {
           case (path, accountIds) =>
             if (accountIds.isEmpty) success(f(path, WrittenByAny))
             else if (accountIds.size == 1)
@@ -203,7 +216,9 @@ object Permission {
                 "Cannot extract read permission for more than one account ID."))
         }
       } getOrElse {
-        pathV map { f(_: Path, WrittenByAny) }
+        pathV map {
+          f(_: Path, WrittenByAny)
+        }
       }
     }
 
@@ -216,15 +231,23 @@ object Permission {
               WritePermission(path, WriteAs(accountIds))
             }
           } getOrElse {
-            pathV map { WritePermission(_: Path, WriteAsAny) }
+            pathV map {
+              WritePermission(_: Path, WriteAsAny)
+            }
           }
 
         case "read" =>
-          writtenByPermission(obj, pathV) { ReadPermission.apply _ }
+          writtenByPermission(obj, pathV) {
+            ReadPermission.apply _
+          }
         case "reduce" =>
-          writtenByPermission(obj, pathV) { ReducePermission.apply _ }
+          writtenByPermission(obj, pathV) {
+            ReducePermission.apply _
+          }
         case "owner" | "delete" =>
-          writtenByPermission(obj, pathV) { DeletePermission.apply _ }
+          writtenByPermission(obj, pathV) {
+            DeletePermission.apply _
+          }
         case other => failure(Invalid("Unrecognized permission type: " + other))
       }
     }
@@ -237,9 +260,13 @@ object Permission {
         f: (Path, WrittenBy) => Permission): Validation[Error, Permission] = {
       obj.validated[Option[String]]("ownerAccountId") flatMap { opt =>
         opt map { id =>
-          pathV map { f(_: Path, WrittenByAccount(id)) }
+          pathV map {
+            f(_: Path, WrittenByAccount(id))
+          }
         } getOrElse {
-          pathV map { f(_: Path, WrittenByAny) }
+          pathV map {
+            f(_: Path, WrittenByAny)
+          }
         }
       }
     }
@@ -250,18 +277,28 @@ object Permission {
         case "write" =>
           obj.validated[Option[String]]("ownerAccountId") flatMap { opt =>
             opt map { id =>
-              pathV map { WritePermission(_: Path, WriteAs(Set(id))) }
+              pathV map {
+                WritePermission(_: Path, WriteAs(Set(id)))
+              }
             } getOrElse {
-              pathV map { WritePermission(_: Path, WriteAsAny) }
+              pathV map {
+                WritePermission(_: Path, WriteAsAny)
+              }
             }
           }
 
         case "read" =>
-          writtenByPermission(obj, pathV) { ReadPermission.apply _ }
+          writtenByPermission(obj, pathV) {
+            ReadPermission.apply _
+          }
         case "reduce" =>
-          writtenByPermission(obj, pathV) { ReducePermission.apply _ }
+          writtenByPermission(obj, pathV) {
+            ReducePermission.apply _
+          }
         case "owner" | "delete" =>
-          writtenByPermission(obj, pathV) { DeletePermission.apply _ }
+          writtenByPermission(obj, pathV) {
+            DeletePermission.apply _
+          }
         case other => failure(Invalid("Unrecognized permission type: " + other))
       }
     }

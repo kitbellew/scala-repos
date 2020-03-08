@@ -512,7 +512,9 @@ abstract class KafkaShardIngestActor(
         Error,
         Future[(Vector[(Long, EventMessage)], YggCheckpoint)]] =
         eventMessages.sequence[
-          ({ type λ[α] = Validation[Error, α] })#λ,
+          ({
+            type λ[α] = Validation[Error, α]
+          })#λ,
           (Long, EventMessage.EventMessageExtraction)] map { messageSet =>
           val apiKeys: List[(APIKey, Path)] = msTime({ t =>
             logger.debug(
@@ -568,7 +570,9 @@ abstract class KafkaShardIngestActor(
                   }
               }
 
-            msTime({ t => logger.debug("Batch built in %d ms".format(t)) }) {
+            msTime({ t =>
+              logger.debug("Batch built in %d ms".format(t))
+            }) {
               buildBatch(updatedMessages, Vector.empty, fromCheckpoint)
             }
           }

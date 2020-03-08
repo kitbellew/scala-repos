@@ -299,7 +299,9 @@ trait Implicits {
 
     private[this] final def computeIsCyclicOrErroneous =
       try sym.hasFlag(LOCKED) || containsError(tpe)
-      catch { case _: CyclicReference => true }
+      catch {
+        case _: CyclicReference => true
+      }
 
     var useCountArg: Int = 0
     var useCountView: Int = 0
@@ -1182,7 +1184,9 @@ trait Implicits {
         rankImplicits(eligible, Nil) match {
           case Nil => ()
           case (chosenResult, chosenInfo) :: rest =>
-            rest find { case (_, alt) => !improves(chosenInfo, alt) } match {
+            rest find {
+              case (_, alt) => !improves(chosenInfo, alt)
+            } match {
               case Some((competingResult, competingInfo)) =>
                 AmbiguousImplicitError(
                   chosenInfo,
@@ -1796,7 +1800,9 @@ trait Implicits {
     // collect the constraints that result from typing each implicit
     def allImplicitsPoly(
         tvars: List[TypeVar]): List[(SearchResult, List[TypeConstraint])] = {
-      def resetTVars() = tvars foreach { _.constr = new TypeConstraint }
+      def resetTVars() = tvars foreach {
+        _.constr = new TypeConstraint
+      }
 
       def eligibleInfos(iss: Infoss, isLocalToCallsite: Boolean) = {
         val eligible = new ImplicitComputation(iss, isLocalToCallsite).eligible

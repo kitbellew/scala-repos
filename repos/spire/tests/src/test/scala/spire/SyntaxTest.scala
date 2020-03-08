@@ -27,7 +27,9 @@ class SyntaxTest extends SpireTests with Checkers with BaseSyntaxTest {
   implicit def ArbNonZero[A: Ring: Eq: Arbitrary]: Arbitrary[NonZero[A]] = {
     Arbitrary(
       arbitrary[A]
-        .map { a => if (a === Ring[A].zero) Ring[A].one else a }
+        .map { a =>
+          if (a === Ring[A].zero) Ring[A].one else a
+        }
         .map(NonZero[A](_)))
   }
 
@@ -37,7 +39,9 @@ class SyntaxTest extends SpireTests with Checkers with BaseSyntaxTest {
   def ArbPositive[A: Ring: Eq: Signed: Arbitrary]: Arbitrary[Positive[A]] = {
     Arbitrary(
       arbitrary[A]
-        .map { a => if (a === Ring[A].zero) Ring[A].one else a.abs }
+        .map { a =>
+          if (a === Ring[A].zero) Ring[A].one else a.abs
+        }
         .filter(_.sign == Sign.Positive)
         .map(Positive(_)))
   }
@@ -51,15 +55,21 @@ class SyntaxTest extends SpireTests with Checkers with BaseSyntaxTest {
 
   import spire.laws.arb.rational
 
-  test("Eq syntax")(check(forAll { (a: Int, b: Int) => testEqSyntax(a, b) }))
+  test("Eq syntax")(check(forAll { (a: Int, b: Int) =>
+    testEqSyntax(a, b)
+  }))
   test("Partial order syntax")(check(forAll { (a: Int, b: Int) =>
     testPartialOrderSyntax(a, b)
   }))
   test("Order syntax")(check(forAll { (a: Int, b: Int) =>
     testOrderSyntax(a, b)
   }))
-  test("Signed syntax")(check(forAll { (a: Int) => testSignedSyntax(a) }))
-  test("IsReal syntax")(check(forAll { (a: Double) => testIsRealSyntax(a) }))
+  test("Signed syntax")(check(forAll { (a: Int) =>
+    testSignedSyntax(a)
+  }))
+  test("IsReal syntax")(check(forAll { (a: Double) =>
+    testIsRealSyntax(a)
+  }))
   test("Semigroup syntax")(check(forAll { (a: String, b: String) =>
     testSemigroupSyntax(a, b)
   }))
@@ -90,8 +100,12 @@ class SyntaxTest extends SpireTests with Checkers with BaseSyntaxTest {
   test("Semiring syntax")(check(forAll { (a: Int, b: Int) =>
     testSemiringSyntax(a, b)
   }))
-  test("Rig syntax")(check(forAll { (a: Int, b: Int) => testRigSyntax(a, b) }))
-  test("Rng syntax")(check(forAll { (a: Int, b: Int) => testRngSyntax(a, b) }))
+  test("Rig syntax")(check(forAll { (a: Int, b: Int) =>
+    testRigSyntax(a, b)
+  }))
+  test("Rng syntax")(check(forAll { (a: Int, b: Int) =>
+    testRngSyntax(a, b)
+  }))
   test("Ring syntax")(check(forAll { (a: Int, b: Int) =>
     testRingSyntax(a, b)
   }))

@@ -46,13 +46,21 @@ object TinyJoinAndMergeJob {
 class TinyJoinAndMergeJob(args: Args) extends Job(args) {
   import TinyJoinAndMergeJob._
 
-  val people = peopleInput.read.mapTo(0 -> 'id) { v: Int => v }
+  val people = peopleInput.read.mapTo(0 -> 'id) { v: Int =>
+    v
+  }
 
   val messages = messageInput.read
-    .mapTo(0 -> 'id) { v: Int => v }
+    .mapTo(0 -> 'id) { v: Int =>
+      v
+    }
     .joinWithTiny('id -> 'id, people)
 
-  (messages ++ people).groupBy('id) { _.size('count) }.write(output)
+  (messages ++ people)
+    .groupBy('id) {
+      _.size('count)
+    }
+    .write(output)
 }
 
 object TsvNoCacheJob {
@@ -71,10 +79,16 @@ class TsvNoCacheJob(args: Args) extends Job(args) {
     .flatMap(new cascading.tuple.Fields(Integer.valueOf(0)) -> 'word) {
       line: String => line.split("\\s")
     }
-    .groupBy('word) { group => group.size }
-    .mapTo('word -> 'num) { (w: String) => w.toFloat }
+    .groupBy('word) { group =>
+      group.size
+    }
+    .mapTo('word -> 'num) { (w: String) =>
+      w.toFloat
+    }
     .write(throwAwayOutput)
-    .groupAll { _.sortBy('num) }
+    .groupAll {
+      _.sortBy('num)
+    }
     .write(realOuput)
 }
 
@@ -104,7 +118,9 @@ class NormalDistinctJob(args: Args) extends Job(args) {
 object MultipleGroupByJobData {
   val data: List[String] = {
     val rnd = new scala.util.Random(22)
-    (0 until 20).map { _ => rnd.nextLong.toString }.toList
+    (0 until 20).map { _ =>
+      rnd.nextLong.toString
+    }.toList
   }.distinct
 }
 
@@ -114,11 +130,18 @@ class MultipleGroupByJob(args: Args) extends Job(args) {
   implicit val stringOrdSer = new StringOrderedSerialization()
   implicit val stringTup2OrdSer =
     new OrderedSerialization2(stringOrdSer, stringOrdSer)
-  val otherStream = TypedPipe.from(data).map { k => (k, k) }.group
+  val otherStream = TypedPipe
+    .from(data)
+    .map { k =>
+      (k, k)
+    }
+    .group
 
   TypedPipe
     .from(data)
-    .map { k => (k, 1L) }
+    .map { k =>
+      (k, 1L)
+    }
     .group[String, Long](implicitly, stringOrdSer)
     .sum
     .map {
@@ -127,7 +150,9 @@ class MultipleGroupByJob(args: Args) extends Job(args) {
     }
     .sumByKey[(String, String), Long](implicitly, stringTup2OrdSer, implicitly)
     .map(_._1._1)
-    .map { t => (t.toString, t) }
+    .map { t =>
+      (t.toString, t)
+    }
     .group
     .leftJoin(otherStream)
     .map(_._1)
@@ -139,7 +164,9 @@ class TypedPipeWithDescriptionJob(args: Args) extends Job(args) {
   TypedPipe
     .from[String](List("word1", "word1", "word2"))
     .withDescription("map stage - assign words to 1")
-    .map { w => (w, 1L) }
+    .map { w =>
+      (w, 1L)
+    }
     .group
     .withDescription("reduce stage - sum")
     .sum
@@ -250,7 +277,9 @@ class TypedPipeHashJoinWithGroupByJob(args: Args) extends Job(args) {
   val x = TypedPipe.from[(String, Int)](Tsv("input1", ('x1, 'y1)), Fields.ALL)
   val y = Tsv("input2", ('x2, 'y2))
 
-  val yGroup = y.groupBy('x2) { p => p }
+  val yGroup = y.groupBy('x2) { p =>
+    p
+  }
   val yTypedPipe = TypedPipe.from[(String, Int)](yGroup, Fields.ALL)
 
   x.hashJoin(yTypedPipe)
@@ -275,7 +304,9 @@ class TypedPipeHashJoinWithCoGroupJob(args: Args) extends Job(args) {
 
   val coGroupTypedPipe =
     TypedPipe.from[(Int, Int, Int)](coGroupPipe, Fields.ALL)
-  val coGroupTuplePipe = coGroupTypedPipe.map { case (a, b, c) => (a, (b, c)) }
+  val coGroupTuplePipe = coGroupTypedPipe.map {
+    case (a, b, c) => (a, (b, c))
+  }
   x.hashJoin(coGroupTuplePipe)
     .withDescription("hashJoin")
     .write(TypedTsv[(Int, (Int, (Int, Int)))]("output"))
@@ -286,7 +317,9 @@ class TypedPipeHashJoinWithEveryJob(args: Args) extends Job(args) {
 
   val x = TypedPipe.from[(Int, String)](Tsv("input1", ('x1, 'y1)), Fields.ALL)
   val y = Tsv("input2", ('x2, 'y2)).groupBy('x2) {
-    _.foldLeft('y2 -> 'y2)(0) { (b: Int, a: Int) => b + a }
+    _.foldLeft('y2 -> 'y2)(0) { (b: Int, a: Int) =>
+      b + a
+    }
   }
 
   val yTypedPipe = TypedPipe.from[(Int, Int)](y, Fields.ALL)
@@ -300,7 +333,9 @@ class TypedPipeForceToDiskWithDescriptionJob(args: Args) extends Job(args) {
     TypedPipe
       .from[String](List("word1 word2", "word1", "word2"))
       .withDescription("write words to disk")
-      .flatMap { _.split("\\s+") }
+      .flatMap {
+        _.split("\\s+")
+      }
       .forceToDisk
   }
   writeWords
@@ -421,7 +456,9 @@ class CheckForFlowProcessInTypedJob(args: Args) extends Job(args) {
         throw new NullPointerException("No active FlowProcess was available.")
       }
 
-      valuesIter.map({ case (a, b) => s"$a:$b" })
+      valuesIter.map({
+        case (a, b) => s"$a:$b"
+      })
     })
     .toTypedPipe
     .write(TypedTsv[(String, String)]("output"))
@@ -451,7 +488,9 @@ class PlatformTest
     "reading then writing shouldn't change the data" in {
       HadoopPlatformJobTest(new InAndOutJob(_), cluster)
         .source("input", inAndOut)
-        .sink[String]("output") { _.toSet shouldBe (inAndOut.toSet) }
+        .sink[String]("output") {
+          _.toSet shouldBe (inAndOut.toSet)
+        }
         .run
     }
   }
@@ -463,7 +502,9 @@ class PlatformTest
       HadoopPlatformJobTest(new TinyJoinAndMergeJob(_), cluster)
         .source(peopleInput, peopleData)
         .source(messageInput, messageData)
-        .sink(output) { _.toSet shouldBe (outputData.toSet) }
+        .sink(output) {
+          _.toSet shouldBe (outputData.toSet)
+        }
         .run
     }
   }
@@ -474,10 +515,14 @@ class PlatformTest
     "Writing to a tsv in a flow shouldn't effect the output" in {
       HadoopPlatformJobTest(new TsvNoCacheJob(_), cluster)
         .source(dataInput, data)
-        .sink(typedThrowAwayOutput) { _.toSet should have size 4 }
+        .sink(typedThrowAwayOutput) {
+          _.toSet should have size 4
+        }
         .sink(typedRealOutput) {
-          _.map { f: Float => (f * 10).toInt }.toList shouldBe (outputData.map {
-            f: Float => (f * 10).toInt
+          _.map { f: Float =>
+            (f * 10).toInt
+          }.toList shouldBe (outputData.map { f: Float =>
+            (f * 10).toInt
           }.toList)
         }
         .run
@@ -490,7 +535,9 @@ class PlatformTest
     "do some ops and not stamp on each other ordered serializations" in {
       HadoopPlatformJobTest(new MultipleGroupByJob(_), cluster)
         .source[String]("input", data)
-        .sink[String]("output") { _.toSet shouldBe data.map(_.toString).toSet }
+        .sink[String]("output") {
+          _.toSet shouldBe data.map(_.toString).toSet
+        }
         .run
     }
 
@@ -530,7 +577,9 @@ class PlatformTest
         }
         firstStep should include("leftJoin")
         firstStep should include("hashJoin")
-        lines.foreach { l => firstStep should include(l) }
+        lines.foreach { l =>
+          firstStep should include(l)
+        }
         steps
           .map(_.getConfig.get(Config.StepDescriptions))
           .foreach(s => info(s))
@@ -711,19 +760,25 @@ class PlatformTest
     "distinct properly from normal data" in {
       HadoopPlatformJobTest(new NormalDistinctJob(_), cluster)
         .source[String]("input", data ++ data ++ data)
-        .sink[String]("output") { _.toList shouldBe data }
+        .sink[String]("output") {
+          _.toList shouldBe data
+        }
         .run
     }
 
     "distinctBy(identity) properly from a list in memory" in {
       HadoopPlatformJobTest(new IterableSourceDistinctIdentityJob(_), cluster)
-        .sink[String]("output") { _.toList shouldBe data }
+        .sink[String]("output") {
+          _.toList shouldBe data
+        }
         .run
     }
 
     "distinct properly from a list" in {
       HadoopPlatformJobTest(new IterableSourceDistinctJob(_), cluster)
-        .sink[String]("output") { _.toList shouldBe data }
+        .sink[String]("output") {
+          _.toList shouldBe data
+        }
         .run
     }
   }
@@ -738,8 +793,12 @@ class PlatformTest
         // Here we are just testing that we hit no exceptions in the course of this run
         // the previous issue would have caused OOM or other exceptions. If we get to the end
         // then we are good.
-        .sink[String](TypedTsv[String]("output2")) { x => () }
-        .sink[String](TypedTsv[String]("output1")) { x => () }
+        .sink[String](TypedTsv[String]("output2")) { x =>
+          ()
+        }
+        .sink[String](TypedTsv[String]("output1")) { x =>
+          ()
+        }
         .run
     }
 
@@ -751,8 +810,12 @@ class PlatformTest
         // Here we are just testing that we hit no exceptions in the course of this run
         // the previous issue would have caused OOM or other exceptions. If we get to the end
         // then we are good.
-        .sink[String](TypedTsv[String]("output2")) { x => () }
-        .sink[String](TypedTsv[String]("output1")) { x => () }
+        .sink[String](TypedTsv[String]("output2")) { x =>
+          ()
+        }
+        .sink[String](TypedTsv[String]("output1")) { x =>
+          ()
+        }
         .run
     }
   }

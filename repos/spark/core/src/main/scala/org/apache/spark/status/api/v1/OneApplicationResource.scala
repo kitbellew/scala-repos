@@ -24,7 +24,9 @@ private[v1] class OneApplicationResource(uiRoot: UIRoot) {
 
   @GET
   def getApp(@PathParam("appId") appId: String): ApplicationInfo = {
-    val apps = uiRoot.getApplicationInfoList.find { _.id == appId }
+    val apps = uiRoot.getApplicationInfoList.find {
+      _.id == appId
+    }
     apps.getOrElse(throw new NotFoundException("unknown app: " + appId))
   }
 

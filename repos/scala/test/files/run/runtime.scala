@@ -60,21 +60,39 @@ package test1.bar {
 object Test1Test {
 
   def test(args: Array[String]): Unit = {
-    { Console.print(10) }; Console.println;
+    {
+      Console.print(10)
+    }; Console.println;
     // {System.out.print(11); java}.lang.System.out.println();
     // {System.out.print(12); java.lang}.System.out.println();
     // {System.out.print(13); java.lang.System}.out.println();
-    { Console.print(14); Console }.println;
-    { Console.print(15); (() => Console.println): (() => Unit) } apply ();
-    { Console.print(16); Console.println };
+    {
+      Console.print(14); Console
+    }.println;
+    {
+      Console.print(15); (() => Console.println): (() => Unit)
+    } apply ();
+    {
+      Console.print(16); Console.println
+    };
 
-    { Console.print(20) }; test1.bar.System.out.println();
+    {
+      Console.print(20)
+    }; test1.bar.System.out.println();
     // {System.out.print(21); test1}.bar.System.out.println();
     // {System.out.print(22); test1.bar}.System.out.println();
-    { Console.print(23); test1.bar.System }.out.println();
-    { Console.print(24); test1.bar.System.out }.println();
-    { Console.print(25); test1.bar.System.out.println: (() => Unit) } apply ();
-    { Console.print(26); test1.bar.System.out.println() };
+    {
+      Console.print(23); test1.bar.System
+    }.out.println();
+    {
+      Console.print(24); test1.bar.System.out
+    }.println();
+    {
+      Console.print(25); test1.bar.System.out.println: (() => Unit)
+    } apply ();
+    {
+      Console.print(26); test1.bar.System.out.println()
+    };
   }
 
 }
@@ -89,19 +107,27 @@ package test2 {
   }
 
   trait M0 extends A {
-    override def run = { super.run; Console.println("M0"); }
+    override def run = {
+      super.run; Console.println("M0");
+    }
   }
 
   class M1 extends M0 {
-    override def run = { super.run; Console.println("M1"); }
+    override def run = {
+      super.run; Console.println("M1");
+    }
   }
 
   trait N0 extends A {
-    override def run = { super.run; Console.println("N0"); }
+    override def run = {
+      super.run; Console.println("N0");
+    }
   }
 
   class N1 extends N0 {
-    override def run = { super.run; Console.println("N1"); }
+    override def run = {
+      super.run; Console.println("N1");
+    }
   }
 
   object M0N0 extends M0 with N0;
@@ -125,7 +151,9 @@ object Test2Test {
 
 object Test3Test {
 
-  class Foo { override def equals(that: Any) = sys.error("abort"); }
+  class Foo {
+    override def equals(that: Any) = sys.error("abort");
+  }
 
   def check(expected: Boolean, actual1: Boolean, actual2: Boolean): Unit =
     Console.println(

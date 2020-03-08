@@ -188,7 +188,9 @@ class HBLEvents(
         case Some(x)  => eventsIter.take(x)
       }
 
-      val eventsIt = results.map { resultToEvent(_, appId) }
+      val eventsIt = results.map {
+        resultToEvent(_, appId)
+      }
 
       eventsIt
     }

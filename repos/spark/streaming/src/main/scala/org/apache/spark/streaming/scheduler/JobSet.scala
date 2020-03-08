@@ -37,7 +37,9 @@ private[streaming] case class JobSet(
   private var processingEndTime =
     -1L // when the last job of this jobset finished processing
 
-  jobs.zipWithIndex.foreach { case (job, i) => job.setOutputOpId(i) }
+  jobs.zipWithIndex.foreach {
+    case (job, i) => job.setOutputOpId(i)
+  }
   incompleteJobs ++= jobs
 
   def handleJobStart(job: Job) {
@@ -69,7 +71,9 @@ private[streaming] case class JobSet(
       submissionTime,
       if (hasStarted) Some(processingStartTime) else None,
       if (hasCompleted) Some(processingEndTime) else None,
-      jobs.map { job => (job.outputOpId, job.toOutputOperationInfo) }.toMap
+      jobs.map { job =>
+        (job.outputOpId, job.toOutputOperationInfo)
+      }.toMap
     )
   }
 }

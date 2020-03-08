@@ -70,7 +70,11 @@ object PhysicalNode {
       extends ConcurrentMemoryPlan
       with PhysicalNode[Nothing] {
     def run(implicit ec: ExecutionContext): Future[Unit] =
-      Future.sequence(data.map { o => next.push(o) }).map(_ => ())
+      Future
+        .sequence(data.map { o =>
+          next.push(o)
+        })
+        .map(_ => ())
 
     def push(item: Nothing)(implicit ec: ExecutionContext) =
       Future.successful(())
@@ -166,7 +170,9 @@ class ConcurrentMemory(
 
   def counter(group: Group, name: Name): Option[Long] =
     MemoryStatProvider.getCountersForJob(jobID).flatMap {
-      _.get(group.getString + "/" + name.getString).map { _.get }
+      _.get(group.getString + "/" + name.getString).map {
+        _.get
+      }
     }
 
   /**
@@ -194,7 +200,9 @@ class ConcurrentMemory(
                 }
               (
                 res.last._1,
-                FanOut[U](res.collect { case (_, Some(phys)) => phys }))
+                FanOut[U](res.collect {
+                  case (_, Some(phys)) => phys
+                }))
           }
 
         def cast[A](out: (HMap[ProdCons, PhysicalNode], PhysicalNode[A]))
@@ -279,7 +287,9 @@ class ConcurrentMemory(
       .orElse(ValueFlatMapToFlatMap)
 
     val deps = Dependants(optimize(prod, ourRule))
-    val heads = deps.nodes.collect { case s @ Source(_) => s }
+    val heads = deps.nodes.collect {
+      case s @ Source(_) => s
+    }
     heads
       .foldLeft(
         (HMap.empty[ProdCons, PhysicalNode], NullPlan: ConcurrentMemoryPlan)) {

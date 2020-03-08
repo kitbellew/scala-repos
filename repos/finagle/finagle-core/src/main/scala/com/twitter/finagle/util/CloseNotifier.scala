@@ -26,11 +26,17 @@ object CloseNotifier {
       if (closing.isDefined)
         h
       else
-        closeHandlers ::= { () => h }
+        closeHandlers ::= { () =>
+          h
+        }
     }
 
     // Invokes close handlers in reverse order from which they were added.
-    closing ensure { closeHandlers foreach { handler => handler() } }
+    closing ensure {
+      closeHandlers foreach { handler =>
+        handler()
+      }
+    }
   }
 
   def makeLifoCloser(): CloseNotifier with Closable =

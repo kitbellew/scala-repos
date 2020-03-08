@@ -16,13 +16,15 @@ object Test extends AnyRef with App {
   def try2 = {
     Console.print("1 + 1 = ");
     Console.println(
-      (try { x }
-      catch {
+      (try {
+        x
+      } catch {
         case _: Error => 1;
       })
         +
-          (try { x }
-          catch {
+          (try {
+            x
+          } catch {
             case _: Error => 1;
           })
     );
@@ -33,13 +35,15 @@ object Test extends AnyRef with App {
   def try3 = {
     Console.print("1 + 1 = ");
     val x =
-      try { 1 }
-      catch {
+      try {
+        1
+      } catch {
         case e: Error => 1;
       }
     this.n =
-      try { 1 }
-      catch {
+      try {
+        1
+      } catch {
         case e: Error => 1;
       }
     Console.println(x + n);
@@ -86,8 +90,9 @@ object Test extends AnyRef with App {
   class A {
     private val result = {
       val y =
-        try { x }
-        catch {
+        try {
+          x
+        } catch {
           case _: Error => 1;
         };
       x + y

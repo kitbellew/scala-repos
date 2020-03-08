@@ -268,7 +268,9 @@ class MarathonHealthCheckManagerTest
           gracePeriod = (i * 3 + j).seconds)
       }.toSet
     }
-    val versions = List(0L, 1L, 2L).map { Timestamp(_) }.toArray
+    val versions = List(0L, 1L, 2L).map {
+      Timestamp(_)
+    }.toArray
     val tasks = List(0, 1, 2).map { i =>
       MarathonTestHelper.stagedTaskForApp(appId, appVersion = versions(i))
     }

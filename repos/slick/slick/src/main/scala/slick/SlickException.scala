@@ -43,6 +43,8 @@ private[slick] object SlickTreeException {
             if (!removeUnmarked || (_mark eq null)) detail
             else tp.findMarkedTop(detail)
           "\n" + tp.get(markedTop)
-        } catch { case t: Throwable => " <Error formatting detail: " + t + ">" }
+        } catch {
+          case t: Throwable => " <Error formatting detail: " + t + ">"
+        }
       }
 }

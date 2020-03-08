@@ -26,5 +26,7 @@ trait ComposeTests[F[_, _]] extends Laws {
 
 object ComposeTests {
   def apply[F[_, _]: Compose]: ComposeTests[F] =
-    new ComposeTests[F] { def laws: ComposeLaws[F] = ComposeLaws[F] }
+    new ComposeTests[F] {
+      def laws: ComposeLaws[F] = ComposeLaws[F]
+    }
 }

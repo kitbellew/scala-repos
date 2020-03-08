@@ -58,12 +58,16 @@ class MarathonHealthCheckManager @Inject() (
     listActive(appId).map(_.healthCheck)
 
   protected[this] def listActive(appId: PathId): Set[ActiveHealthCheck] =
-    appHealthChecks.readLock { ahcs => ahcs(appId).values.flatten.toSet }
+    appHealthChecks.readLock { ahcs =>
+      ahcs(appId).values.flatten.toSet
+    }
 
   protected[this] def listActive(
       appId: PathId,
       appVersion: Timestamp): Set[ActiveHealthCheck] =
-    appHealthChecks.readLock { ahcs => ahcs(appId)(appVersion) }
+    appHealthChecks.readLock { ahcs =>
+      ahcs(appId)(appVersion)
+    }
 
   override def add(
       appId: PathId,
@@ -138,7 +142,9 @@ class MarathonHealthCheckManager @Inject() (
     }
 
   override def removeAll(): Unit =
-    appHealthChecks.writeLock { _.keys foreach removeAllFor }
+    appHealthChecks.writeLock {
+      _.keys foreach removeAllFor
+    }
 
   override def removeAllFor(appId: PathId): Unit =
     appHealthChecks.writeLock { ahcs =>
@@ -194,7 +200,9 @@ class MarathonHealthCheckManager @Inject() (
                 addAllFor(appVersion)
             }
           }
-        Future.sequence(res) map { _ => () }
+        Future.sequence(res) map { _ =>
+          ()
+        }
     }
 
   override def update(taskStatus: TaskStatus, version: Timestamp): Unit =
@@ -280,6 +288,8 @@ class MarathonHealthCheckManager @Inject() (
     }
 
   protected[this] def deactivate(healthCheck: ActiveHealthCheck): Unit =
-    appHealthChecks.writeLock { _ => system stop healthCheck.actor }
+    appHealthChecks.writeLock { _ =>
+      system stop healthCheck.actor
+    }
 
 }

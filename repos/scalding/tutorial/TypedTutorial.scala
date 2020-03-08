@@ -162,7 +162,9 @@ class TypedTutorial(args: Args) extends Job(args) {
       val scoredLinesByNumber =
         scoredWords
         // select the line offset and score fields
-          .map { case (word, (offset, score)) => (offset, score) }
+          .map {
+            case (word, (offset, score)) => (offset, score)
+          }
           // group by line offset (groups all the words for a line together)
           .group
           // compute total score per line

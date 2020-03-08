@@ -155,7 +155,9 @@ class FaultHandlingDocSpec(_system: ActorSystem)
       //#stop
       watch(child) // have testActor watch “child”
       child ! new IllegalArgumentException // break it
-      expectMsgPF() { case Terminated(`child`) => () }
+      expectMsgPF() {
+        case Terminated(`child`) => ()
+      }
       //#stop
     }
     EventFilter[Exception]("CRASH", occurrences = 2) intercept {

@@ -550,8 +550,11 @@ final class BigDecimal(val bigDecimal: BigDec, val mc: MathContext)
   }
 
   private def noArithmeticException(body: => Unit): Boolean = {
-    try { body; true }
-    catch { case _: ArithmeticException => false }
+    try {
+      body; true
+    } catch {
+      case _: ArithmeticException => false
+    }
   }
 
   def isWhole() = scale <= 0 || bigDecimal.stripTrailingZeros.scale <= 0
@@ -802,7 +805,9 @@ final class BigDecimal(val bigDecimal: BigDec, val mc: MathContext)
   def toBigIntExact(): Option[BigInt] =
     if (isWhole()) {
       try Some(new BigInt(this.bigDecimal.toBigIntegerExact()))
-      catch { case _: ArithmeticException => None }
+      catch {
+        case _: ArithmeticException => None
+      }
     } else None
 
   /** Returns the decimal String representation of this BigDecimal.

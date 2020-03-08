@@ -17,13 +17,17 @@ class BufInputStream(val buf: Buf) extends InputStream {
   // Returns an estimate of the number of bytes that can be read (or
   // skipped over) from this input stream without blocking by the next
   // invocation of a method for this input stream.
-  override def available(): Int = synchronized { rest.length }
+  override def available(): Int = synchronized {
+    rest.length
+  }
 
   // Closing a BufInputStream has no effect.
   override def close() {}
 
   // Marks the current position in this input stream.
-  override def mark(readlimit: Int) = synchronized { mrk = rest }
+  override def mark(readlimit: Int) = synchronized {
+    mrk = rest
+  }
 
   // Tests if this input stream supports the mark and reset methods.
   override def markSupported(): Boolean = true
@@ -60,7 +64,9 @@ class BufInputStream(val buf: Buf) extends InputStream {
     * Repositions this stream to the position at the time the mark
     * method was last called on this input stream.
     */
-  override def reset() = synchronized { rest = mrk }
+  override def reset() = synchronized {
+    rest = mrk
+  }
 
   /**
     * Skips over and discards n bytes of data from this input stream.

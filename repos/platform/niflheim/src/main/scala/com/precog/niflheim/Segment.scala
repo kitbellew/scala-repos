@@ -57,7 +57,9 @@ sealed trait ValueSegment[@spec(Boolean, Long, Double) A] extends Segment {
     case seg: ArraySegment[_] if seg.ctype == CBoolean =>
       val values0 = seg.values.asInstanceOf[Array[Boolean]]
       val values = BitSetUtil.create()
-      defined.foreach { row => values(row) = values0(row) }
+      defined.foreach { row =>
+        values(row) = values0(row)
+      }
       BooleanSegment(blockid, cpath, defined, values, values.length)
         .asInstanceOf[ValueSegment[A]]
 
@@ -90,14 +92,18 @@ case class ArraySegment[@spec(Boolean, Long, Double) A](
     val arr = new Array[A](values.length + amount)
     var i = 0
     val len = values.length
-    while (i < len) { arr(i) = values(i); i += 1 }
+    while (i < len) {
+      arr(i) = values(i); i += 1
+    }
     ArraySegment(blockid, cpath, ctype, defined.copy, arr)
   }
 
   def map[@spec(Boolean, Long, Double) B: CValueType: Manifest](
       f: A => B): ValueSegment[B] = {
     val values0 = new Array[B](values.length)
-    defined.foreach { row => values0(row) = f(values(row)) }
+    defined.foreach { row =>
+      values0(row) = f(values(row))
+    }
     ArraySegment[B](blockid, cpath, CValueType[B], defined, values0).normalize
   }
 }
@@ -124,7 +130,9 @@ case class BooleanSegment(
   def map[@spec(Boolean, Long, Double) B: CValueType: Manifest](
       f: Boolean => B): ValueSegment[B] = {
     val values0 = new Array[B](values.length)
-    defined.foreach { row => values0(row) = f(values(row)) }
+    defined.foreach { row =>
+      values0(row) = f(values(row))
+    }
     ArraySegment[B](blockid, cpath, CValueType[B], defined, values0).normalize
   }
 }

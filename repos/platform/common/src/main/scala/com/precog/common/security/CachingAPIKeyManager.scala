@@ -115,12 +115,16 @@ class CachingAPIKeyManager[M[+_]](
       issuerKey,
       parentIds,
       perms,
-      expiration) map { _ tap add unsafePerformIO }
+      expiration) map {
+      _ tap add unsafePerformIO
+    }
 
   def findAPIKey(tid: APIKey) = apiKeyCache.get(tid) match {
     case None =>
       logger.debug("Cache miss on api key " + tid)
-      manager.findAPIKey(tid) map { _.traverse(_ tap add).unsafePerformIO }
+      manager.findAPIKey(tid) map {
+        _.traverse(_ tap add).unsafePerformIO
+      }
 
     case t => M.point(t)
   }
@@ -128,7 +132,9 @@ class CachingAPIKeyManager[M[+_]](
   def findGrant(gid: GrantId) = grantCache.get(gid) match {
     case None =>
       logger.debug("Cache miss on grant " + gid)
-      manager.findGrant(gid) map { _.traverse(_ tap add).unsafePerformIO }
+      manager.findGrant(gid) map {
+        _.traverse(_ tap add).unsafePerformIO
+      }
 
     case s @ Some(_) => M.point(s)
   }
@@ -156,14 +162,18 @@ class CachingAPIKeyManager[M[+_]](
     manager.findDeletedGrantChildren(gid)
 
   def addGrants(tid: APIKey, grants: Set[GrantId]) =
-    manager.addGrants(tid, grants) map { _.traverse(_ tap add).unsafePerformIO }
+    manager.addGrants(tid, grants) map {
+      _.traverse(_ tap add).unsafePerformIO
+    }
   def removeGrants(tid: APIKey, grants: Set[GrantId]) =
     manager.removeGrants(tid, grants) map {
       _.traverse(_ tap remove).unsafePerformIO
     }
 
   def deleteAPIKey(tid: APIKey) =
-    manager.deleteAPIKey(tid) map { _.traverse(_ tap remove).unsafePerformIO }
+    manager.deleteAPIKey(tid) map {
+      _.traverse(_ tap remove).unsafePerformIO
+    }
   def deleteGrant(gid: GrantId) =
     manager.deleteGrant(gid) map {
       _.toList.traverse(_ tap remove).unsafePerformIO.toSet

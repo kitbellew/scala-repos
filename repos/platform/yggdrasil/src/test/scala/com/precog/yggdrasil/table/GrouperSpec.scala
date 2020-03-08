@@ -136,7 +136,9 @@ trait GrouperSpec[M[+_]]
         val histoKeyInt = histoKey0.toInt
 
         gs1Json must not(beEmpty)
-        forall(gs1Json) { record => (record \ "value") mustEqual histoKey }
+        forall(gs1Json) { record =>
+          (record \ "value") mustEqual histoKey
+        }
 
         gs1Json.size must_== set.count(_ == histoKeyInt)
 
@@ -148,11 +150,15 @@ trait GrouperSpec[M[+_]]
 
     resultIter must haveSize(set.distinct.size)
 
-    val expectedSet = (set.toSeq groupBy identity values) map { _.length } map {
+    val expectedSet = (set.toSeq groupBy identity values) map {
+      _.length
+    } map {
       JNum(_)
     }
 
-    forall(resultIter) { i => expectedSet must contain(i) }
+    forall(resultIter) { i =>
+      expectedSet must contain(i)
+    }
   }
 
   def testHistogramByValueMapped(set: Stream[Int]) = {
@@ -215,11 +221,15 @@ trait GrouperSpec[M[+_]]
 
     resultIter must haveSize(set.distinct.size)
 
-    val expectedSet = (set.toSeq groupBy identity values) map { _.length } map {
+    val expectedSet = (set.toSeq groupBy identity values) map {
+      _.length
+    } map {
       JNum(_)
     }
 
-    forall(resultIter) { i => expectedSet must contain(i) }
+    forall(resultIter) { i =>
+      expectedSet must contain(i)
+    }
   }
 
   def testHistogramEvenOdd(set: Stream[Int]) = {
@@ -274,13 +284,21 @@ trait GrouperSpec[M[+_]]
 
     val resultIter = result.flatMap(_.toJson).copoint
 
-    resultIter must haveSize((set map { _ % 2 } distinct) size)
+    resultIter must haveSize((set map {
+      _ % 2
+    } distinct) size)
 
-    val expectedSet = (set.toSeq groupBy { _ % 2 } values) map {
+    val expectedSet = (set.toSeq groupBy {
+      _ % 2
+    } values) map {
       _.length
-    } map { JNum(_) }
+    } map {
+      JNum(_)
+    }
 
-    forall(resultIter) { i => expectedSet must contain(i) }
+    forall(resultIter) { i =>
+      expectedSet must contain(i)
+    }
   }
 
   def simpleMultiKeyData = {
@@ -643,7 +661,9 @@ trait GrouperSpec[M[+_]]
       val JNum(k) = record \ "key"
       val JNum(v) = record \ "value"
 
-      v mustEqual ((rawData1 ++ rawData2) filter { k == _ } length)
+      v mustEqual ((rawData1 ++ rawData2) filter {
+        k == _
+      } length)
     }
   }
 
@@ -743,13 +763,22 @@ trait GrouperSpec[M[+_]]
 
     val joinKeys = (rawData1.map(_._1).toSet intersect rawData2.toSet)
 
-    val grouped1 = rawData1.filter({ case (a, b) => joinKeys(a) }).groupBy(_._1)
+    val grouped1 = rawData1
+      .filter({
+        case (a, b) => joinKeys(a)
+      })
+      .groupBy(_._1)
     val grouped2 = rawData2.groupBy(identity[Int]).filterKeys(joinKeys)
 
     // in order to get a binding for both 'a and 'b, values must come from
     // rawData1 and 'a must be in the join keys.
     resultJson must haveSize(
-      rawData1.filter({ case (a, b) => joinKeys(a) }).distinct.size)
+      rawData1
+        .filter({
+          case (a, b) => joinKeys(a)
+        })
+        .distinct
+        .size)
 
     val grouped1ab = grouped1.mapValues(_.groupBy(_._2.get))
     forall(resultJson) { v =>
@@ -865,7 +894,9 @@ trait GrouperSpec[M[+_]]
     //println("total elapsed outside of body: " + (elapsedOverMerge - elapsed))
 
     val joinKeys = (rawData1.map(_._1).toSet intersect rawData2.toSet)
-    val joinRows = rawData1.filter({ case (a, b) => joinKeys(a) })
+    val joinRows = rawData1.filter({
+      case (a, b) => joinKeys(a)
+    })
 
     val crossRows = for {
       (row1a, Some(row1b)) <- rawData1
@@ -1027,7 +1058,9 @@ trait GrouperSpec[M[+_]]
       }
     }
 
-    val forallJson = forallResult flatMap { _.toJson } copoint
+    val forallJson = forallResult flatMap {
+      _.toJson
+    } copoint
 
     forallJson must not(beEmpty)
     forallJson must haveSize(3)

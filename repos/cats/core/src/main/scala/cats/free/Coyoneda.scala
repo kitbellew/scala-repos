@@ -46,7 +46,9 @@ object Coyoneda {
   /** Lift the `Pivot` type member to a parameter. It is usually more
     * convenient to use `Aux` than a structural type.
     */
-  type Aux[F[_], A, B] = Coyoneda[F, A] { type Pivot = B }
+  type Aux[F[_], A, B] = Coyoneda[F, A] {
+    type Pivot = B
+  }
 
   /** `F[A]` converts to `Coyoneda[F,A]` for any `F` */
   def lift[F[_], A](fa: F[A]): Coyoneda[F, A] = apply(fa)(identity[A])

@@ -1,5 +1,7 @@
 class Bar[F[_]] extends Foo[F] {
-  def foo[G[_[_], _]](implicit M: M[G]): X[({ type λ[α] = G[F, α] })#λ] = null
+  def foo[G[_[_], _]](implicit M: M[G]): X[({
+    type λ[α] = G[F, α]
+  })#λ] = null
 }
 // vim: set ts=4 sw=4 et:
 

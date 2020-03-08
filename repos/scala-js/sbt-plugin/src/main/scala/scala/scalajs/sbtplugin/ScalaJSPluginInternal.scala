@@ -288,14 +288,18 @@ object ScalaJSPluginInternal {
   private def dispatchSettingKeySettings[T](key: SettingKey[T]) = Seq(
     key <<= Def.settingDyn {
       val stageKey = stageKeys(scalaJSStage.value)
-      Def.setting { (key in stageKey).value }
+      Def.setting {
+        (key in stageKey).value
+      }
     }
   )
 
   private def dispatchTaskKeySettings[T](key: TaskKey[T]) = Seq(
     key <<= Def.taskDyn {
       val stageKey = stageKeys(scalaJSStage.value)
-      Def.task { (key in stageKey).value }
+      Def.task {
+        (key in stageKey).value
+      }
     }
   )
 
@@ -308,7 +312,9 @@ object ScalaJSPluginInternal {
       token(
         OptSpace ~> (
           (literal("-i") | "--infos") ^^^ ((_: Options).copy(infos = true))
-        )).* map { fns => Function.chain(fns)(Options()) }
+        )).* map { fns =>
+        Function.chain(fns)(Options())
+      }
     }
 
     def sjsirFileOnClasspathParser(relPaths: Seq[String]): Parser[String] = {

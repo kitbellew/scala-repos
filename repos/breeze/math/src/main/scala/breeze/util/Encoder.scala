@@ -160,7 +160,9 @@ trait Encoder[T] {
     * Converts an array into a Map from T's to whatever was in the array.
     */
   def decode[V](array: Array[V]): Map[T, V] = {
-    Map.empty ++ array.zipWithIndex.map { case (v, i) => (index.get(i), v) }
+    Map.empty ++ array.zipWithIndex.map {
+      case (v, i) => (index.get(i), v)
+    }
   }
 
   def fillSparseArrayMap[V: ClassTag: Zero](default: => V) =
@@ -168,7 +170,9 @@ trait Encoder[T] {
 
   def mkSparseArray[V: ClassTag: Zero] = new SparseArray[V](index.size)
   def decode[V](array: SparseArray[V]): Map[T, V] = {
-    Map.empty ++ array.iterator.map { case (i, v) => (index.get(i), v) }
+    Map.empty ++ array.iterator.map {
+      case (i, v) => (index.get(i), v)
+    }
   }
 
 }

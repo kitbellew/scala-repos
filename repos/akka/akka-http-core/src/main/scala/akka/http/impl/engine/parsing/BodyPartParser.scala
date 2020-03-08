@@ -211,7 +211,9 @@ private[http] final class BodyPartParser(
               entityParts ⇒
                 HttpEntity.IndefiniteLength(
                   ct,
-                  entityParts.collect { case EntityPart(data) ⇒ data })))
+                  entityParts.collect {
+                    case EntityPart(data) ⇒ data
+                  })))
           emit(bytes)
       },
       emitFinalPartChunk: (List[HttpHeader], ContentType, ByteString) ⇒ Unit = {

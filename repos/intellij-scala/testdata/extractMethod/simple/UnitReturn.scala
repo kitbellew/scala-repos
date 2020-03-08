@@ -3,7 +3,9 @@ class UnitReturn {
     var i = 23
     /*start*/
 
-    { 1; () }
+    {
+      1; ()
+    }
     /*end*/
     val j = i
   }

@@ -796,7 +796,10 @@ trait TaskSequential {
       tasks: Seq[Initialize[Task[Unit]]],
       last: Initialize[Task[B]]): Initialize[Task[B]] =
     tasks.toList match {
-      case Nil => Def.task { last.value }
+      case Nil =>
+        Def.task {
+          last.value
+        }
       case x :: xs =>
         Def.taskDyn {
           val _ = x.value

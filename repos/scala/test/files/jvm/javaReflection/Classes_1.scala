@@ -1,6 +1,8 @@
 // See Test.scala for comments
 
-trait T { def f = 1 }
+trait T {
+  def f = 1
+}
 
 class A {
   // member class
@@ -14,7 +16,9 @@ class A {
     object D
     new T {}
     (() => "-1")
-    def f = { class KB }
+    def f = {
+      class KB
+    }
   }
 
   // anonymous class, not a member

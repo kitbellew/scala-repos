@@ -35,15 +35,21 @@ class BalancingDispatcherSpec extends AkkaSpec(BalancingDispatcherSpec.config) {
   }
 
   class FirstActor extends Actor {
-    def receive = { case _ ⇒ {} }
+    def receive = {
+      case _ ⇒ {}
+    }
   }
 
   class SecondActor extends Actor {
-    def receive = { case _ ⇒ {} }
+    def receive = {
+      case _ ⇒ {}
+    }
   }
 
   class ParentActor extends Actor {
-    def receive = { case _ ⇒ {} }
+    def receive = {
+      case _ ⇒ {}
+    }
   }
 
   class ChildActor extends ParentActor {}

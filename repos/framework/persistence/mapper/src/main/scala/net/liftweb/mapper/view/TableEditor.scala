@@ -302,7 +302,9 @@ trait ItemsListEditor[T <: Mapper[T]] {
           ".fields" #> eachField(
             item,
             { f: MappedField[_, T] =>
-              ".form" #> <strike>{f.asHtml}</strike>
+              ".form" #> <strike>{
+                f.asHtml
+              }</strike>
             }) &
             ".removeBtn" #> SHtml.submit(
               ?("Remove"),
@@ -316,7 +318,9 @@ trait ItemsListEditor[T <: Mapper[T]] {
         "^" #> customBind(item) andThen
           ".fields" #> eachField(
             item,
-            { f: MappedField[_, T] => ".form" #> f.toForm }) &
+            { f: MappedField[_, T] =>
+              ".form" #> f.toForm
+            }) &
             ".removeBtn" #> SHtml.submit(
               ?("Remove"),
               () => onRemove(item),
@@ -331,7 +335,12 @@ trait ItemsListEditor[T <: Mapper[T]] {
                   else
                     NodeSeq.Empty
                 case errors =>
-                  <ul>{errors.flatMap(e => <li>{e.msg}</li>)}</ul>
+                  <ul>{
+                    errors.flatMap(e =>
+                      <li>{
+                        e.msg
+                      }</li>)
+                  }</ul>
               }
             }
       }

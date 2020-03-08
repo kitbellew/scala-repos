@@ -2084,7 +2084,8 @@ object ScalaEvaluatorBuilderUtil {
     isGenerateAnonfunSimple || isGenerateAnonfunWithCache
   }
 
-  def anonClassCount(elem: PsiElement): Int = { //todo: non irrefutable patterns?
+  def anonClassCount(
+      elem: PsiElement): Int = { //todo: non irrefutable patterns?
     elem match {
       case (e: ScExpression) childOf (f: ScForStatement) =>
         f.enumerators.fold(1)(e => e.generators.length)

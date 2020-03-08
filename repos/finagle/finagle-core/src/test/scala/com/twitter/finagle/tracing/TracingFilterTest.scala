@@ -30,7 +30,9 @@ class TracingFilterTest
     super.test(testName, testTags: _*) {
       tracer = spy(new NullTracer)
       captor = ArgumentCaptor.forClass(classOf[Record])
-      Trace.letTracer(tracer) { f }
+      Trace.letTracer(tracer) {
+        f
+      }
     }
   }
 
@@ -43,7 +45,9 @@ class TracingFilterTest
 
   def recordException(filter: Filter[Int, Int, Int, Int]): Seq[Record] = {
     val composed = filter andThen exceptingService
-    intercept[Exception] { Await.result(composed(4)) }
+    intercept[Exception] {
+      Await.result(composed(4))
+    }
     verify(tracer, atLeastOnce()).record(captor.capture())
     captor.getAllValues.asScala
   }

@@ -73,7 +73,9 @@ trait Plugins { global: Global =>
 
       def note(msg: String): Unit =
         if (settings.verbose) inform(msg format plug.name)
-      def fail(msg: String) = { note(msg); withoutPlug }
+      def fail(msg: String) = {
+        note(msg); withoutPlug
+      }
 
       if (plugNames contains plug.name)
         fail("[skipping a repeated plugin: %s]")

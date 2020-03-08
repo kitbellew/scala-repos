@@ -1,7 +1,9 @@
 import scala.language.{reflectiveCalls}
 
 object Test {
-  private type Clearable = { def clear(): Unit }
+  private type Clearable = {
+    def clear(): Unit
+  }
   private def choke() = {
     try new Array[Object](
       (Runtime.getRuntime().maxMemory min Int.MaxValue).toInt)

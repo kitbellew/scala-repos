@@ -7,11 +7,15 @@ object main {
     object b {
 
       trait c {}
-      def foo(x: c): c = { Console.println("foo(" + x + ")"); x }
+      def foo(x: c): c = {
+        Console.println("foo(" + x + ")"); x
+      }
 
     }
 
-    def bar(x: b.c): a.this.b.c = { b.foo(x); x }
+    def bar(x: b.c): a.this.b.c = {
+      b.foo(x); x
+    }
   }
 
   def main(args: Array[String]) = {

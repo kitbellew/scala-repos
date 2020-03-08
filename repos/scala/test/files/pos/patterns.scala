@@ -33,6 +33,8 @@ object test {
 trait John[A, B] {
   def filter(x: Any) = x match {
     case (x :: xs, _) => "ga"
-    case _            => { x: String => "foobar" }
+    case _ => { x: String =>
+      "foobar"
+    }
   }
 }

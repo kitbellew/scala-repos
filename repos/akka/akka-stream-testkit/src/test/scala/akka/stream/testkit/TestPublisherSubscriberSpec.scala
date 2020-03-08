@@ -35,12 +35,18 @@ class TestPublisherSubscriberSpec extends AkkaSpec {
 
       upstreamSubscription.sendNext(1)
       downstreamSubscription.request(1)
-      upstream.expectEventPF { case RequestMore(_, e) ⇒ e } should ===(1)
-      downstream.expectEventPF { case OnNext(e) ⇒ e } should ===(1)
+      upstream.expectEventPF {
+        case RequestMore(_, e) ⇒ e
+      } should ===(1)
+      downstream.expectEventPF {
+        case OnNext(e) ⇒ e
+      } should ===(1)
 
       upstreamSubscription.sendNext(1)
       downstreamSubscription.request(1)
-      downstream.expectNextPF[Int] { case e: Int ⇒ e } should ===(1)
+      downstream.expectNextPF[Int] {
+        case e: Int ⇒ e
+      } should ===(1)
 
       upstreamSubscription.sendComplete()
       downstream.expectEventPF {

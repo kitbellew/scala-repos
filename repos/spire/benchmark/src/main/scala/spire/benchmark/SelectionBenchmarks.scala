@@ -47,7 +47,9 @@ class SelectionBenchmarks extends MyBenchmark {
   def mkarray[A: ClassTag: Order](size: Int)(init: => A): Array[A] = {
     val data = Array.ofDim[A](size)
     var i = 0
-    while (i < size) { data(i) = init; i += 1 }
+    while (i < size) {
+      data(i) = init; i += 1
+    }
     if (layout == "random") return data
     spire.math.Sorting.sort(data)
     if (layout == "sorted") data else data.reverse

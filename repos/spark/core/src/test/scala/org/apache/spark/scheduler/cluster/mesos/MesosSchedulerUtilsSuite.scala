@@ -33,7 +33,9 @@ class MesosSchedulerUtilsSuite
 
   // scalastyle:off structural.type
   // this is the documented way of generating fixtures in scalatest
-  def fixture: Object { val sc: SparkContext; val sparkConf: SparkConf } = new {
+  def fixture: Object {
+    val sc: SparkContext; val sparkConf: SparkConf
+  } = new {
     val sparkConf = new SparkConf
     val sc = mock[SparkContext]
     when(sc.conf).thenReturn(sparkConf)

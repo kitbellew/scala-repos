@@ -38,7 +38,10 @@ object ParserInstance extends Instance {
   private[this] implicit val parserApplicative: Applicative[M] =
     new Applicative[M] {
       def apply[S, T](f: M[S => T], v: M[S]): M[T] =
-        s => (f(s) ~ v(s)) map { case (a, b) => a(b) }
+        s =>
+          (f(s) ~ v(s)) map {
+            case (a, b) => a(b)
+          }
       def pure[S](s: => S) = const(Parser.success(s))
       def map[S, T](f: S => T, v: M[S]) = s => v(s).map(f)
     }
@@ -69,7 +72,9 @@ object FullInstance
     (in, settingsData, Def.capturedTransformations) apply {
       (a: Task[Initialize[Task[T]]], data: Task[SS], f) =>
         import TaskExtra.multT2Task
-        (a, data) flatMap { case (a, d) => f(a) evaluate d }
+        (a, data) flatMap {
+          case (a, d) => f(a) evaluate d
+        }
     }
   }
   def flattenFun[S, T](in: Initialize[Task[S => Initialize[Task[T]]]])
@@ -78,7 +83,9 @@ object FullInstance
     (in, settingsData, Def.capturedTransformations) apply {
       (a: Task[S => Initialize[Task[T]]], data: Task[SS], f) => (s: S) =>
         import TaskExtra.multT2Task
-        (a, data) flatMap { case (af, d) => f(af(s)) evaluate d }
+        (a, data) flatMap {
+          case (af, d) => f(af(s)) evaluate d
+        }
     }
   }
 }
@@ -128,10 +135,14 @@ object TaskMacro {
     settingAssignPosition(c)(app)
   def taskAssignPositionT[T: c.WeakTypeTag](c: Context)(
       app: c.Expr[Task[T]]): c.Expr[Setting[Task[T]]] =
-    itaskAssignPosition(c)(c.universe.reify { Def.valueStrict(app.splice) })
+    itaskAssignPosition(c)(c.universe.reify {
+      Def.valueStrict(app.splice)
+    })
   def taskAssignPositionPure[T: c.WeakTypeTag](c: Context)(
       app: c.Expr[T]): c.Expr[Setting[Task[T]]] =
-    taskAssignPositionT(c)(c.universe.reify { TaskExtra.constant(app.splice) })
+    taskAssignPositionT(c)(c.universe.reify {
+      TaskExtra.constant(app.splice)
+    })
 
   def taskTransformPosition[S: c.WeakTypeTag](c: Context)(
       f: c.Expr[S => S]): c.Expr[Setting[Task[S]]] =
@@ -167,7 +178,9 @@ object TaskMacro {
 
   def settingAssignPure[T: c.WeakTypeTag](c: Context)(
       app: c.Expr[T]): c.Expr[Setting[T]] =
-    settingAssignPosition(c)(c.universe.reify { Def.valueStrict(app.splice) })
+    settingAssignPosition(c)(c.universe.reify {
+      Def.valueStrict(app.splice)
+    })
   def settingAssignPosition[T: c.WeakTypeTag](c: Context)(
       app: c.Expr[Initialize[T]]): c.Expr[Setting[T]] =
     c.Expr[Setting[T]](transformMacroImpl(c)(app.tree)(AssignInitName))
@@ -307,9 +320,13 @@ object TaskMacro {
       val f = pos.source.file
       val name = constant[String](c, settingSource(c, f.path, f.name))
       val line = constant[Int](c, pos.line)
-      reify { LinePosition(name.splice, line.splice) }
+      reify {
+        LinePosition(name.splice, line.splice)
+      }
     } else
-      reify { NoPosition }
+      reify {
+        NoPosition
+      }
   }
   private[this] def settingSource(
       c: Context,
@@ -342,8 +359,12 @@ object TaskMacro {
   private[this] def inputTaskMacro0[T: c.WeakTypeTag](c: Context)(
       t: c.Expr[T]): c.Expr[Initialize[InputTask[T]]] =
     iInitializeMacro(c)(t) { et =>
-      val pt = iParserMacro(c)(et) { pt => iTaskMacro(c)(pt) }
-      c.universe.reify { InputTask.make(pt.splice) }
+      val pt = iParserMacro(c)(et) { pt =>
+        iTaskMacro(c)(pt)
+      }
+      c.universe.reify {
+        InputTask.make(pt.splice)
+      }
     }
 
   private[this] def iInitializeMacro[M[_], T](c: Context)(t: c.Expr[T])(
@@ -421,7 +442,9 @@ object TaskMacro {
       Instance.idTransform)
 
   // TODO 2.11 Remove this after dropping 2.10.x support.
-  private object HasCompat { val compat = ??? }; import HasCompat._
+  private object HasCompat {
+    val compat = ???
+  }; import HasCompat._
 
   private[this] def inputTaskDynMacro0[T: c.WeakTypeTag](c: Context)(
       t: c.Expr[Initialize[Task[T]]]): c.Expr[Initialize[InputTask[T]]] = {

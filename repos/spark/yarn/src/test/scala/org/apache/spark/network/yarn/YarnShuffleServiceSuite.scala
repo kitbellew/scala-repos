@@ -214,7 +214,9 @@ class YarnShuffleServiceSuite
     // make a corrupt registeredExecutor File
     s1.stop()
 
-    execStateFile.listFiles().foreach { _.delete() }
+    execStateFile.listFiles().foreach {
+      _.delete()
+    }
 
     val out =
       new DataOutputStream(new FileOutputStream(execStateFile + "/CURRENT"))

@@ -3,8 +3,12 @@ class C {
   def bar = 12
   val quux = 13
   def baz = 14
-  class C { override def toString = "CC" }
-  object O { override def toString = "CO" }
+  class C {
+    override def toString = "CC"
+  }
+  object O {
+    override def toString = "CO"
+  }
   override def toString = "an instance of class C"
 }
 
@@ -19,8 +23,12 @@ class E {
   def bar = 32
   val quux = 33
   def baz = 34
-  class C { override def toString = "EC" }
-  object O { override def toString = "EO" }
+  class C {
+    override def toString = "EC"
+  }
+  object O {
+    override def toString = "EO"
+  }
   override def toString = "an instance of class E"
 }
 
@@ -32,7 +40,9 @@ object Test extends App {
   def test(tpe: Type): Unit = {
     def failsafe(action: => Any): Any =
       try action
-      catch { case ex: Throwable => ex.toString }
+      catch {
+        case ex: Throwable => ex.toString
+      }
     println(
       s"=========members of ${tpe.typeSymbol.name} in a mirror of D=========")
     println(

@@ -35,9 +35,9 @@ abstract class LightScalaTestCase extends LightCodeInsightFixtureTestCase {
 
 object LightScalaTestCase {
   val SCALA_DESCRIPTOR = new LightProjectDescriptor {
-    override def getModuleType
-        : ModuleType[T] forSome { type T <: ModuleBuilder } =
-      StdModuleTypes.JAVA
+    override def getModuleType: ModuleType[T] forSome {
+      type T <: ModuleBuilder
+    } = StdModuleTypes.JAVA
     override def getSdk = IdeaTestUtil.getMockJdk14
     override def configureModule(
         module: Module,

@@ -67,7 +67,9 @@ trait BaseParsers extends RegexParsers {
 
   /** Accepts a unix newline and returns a string containing a single newline.
     */
-  def nl: Parser[String] = '\n' ^^^ { "\n" }
+  def nl: Parser[String] = '\n' ^^^ {
+    "\n"
+  }
 
   /**
     * Matches everything in the parsed string up to the end.
@@ -283,8 +285,12 @@ trait BaseParsers extends RegexParsers {
     * That way you can omit xml escaping when writing inline XML in markdown.
     */
   def xmlAttrVal: Parser[String] =
-    ('"' ~> ((not('"') ~> aChar) *) <~ '"' ^^ { '"' + _.mkString + '"' }) |
-      ('\'' ~> ((not('\'') ~> aChar) *) <~ '\'' ^^ { '\'' + _.mkString + '\'' })
+    ('"' ~> ((not('"') ~> aChar) *) <~ '"' ^^ {
+      '"' + _.mkString + '"'
+    }) |
+      ('\'' ~> ((not('\'') ~> aChar) *) <~ '\'' ^^ {
+        '\'' + _.mkString + '\''
+      })
 
   /** Parses an XML Attribute with simplified value handling like xmlAttrVal.
     */
@@ -301,7 +307,9 @@ trait BaseParsers extends RegexParsers {
 
   /** Parses closing xml tags.
     */
-  def xmlEndTag: Parser[String] = "</" ~> xmlName <~ ">" ^^ { "</" + _ + ">" }
+  def xmlEndTag: Parser[String] = "</" ~> xmlName <~ ">" ^^ {
+    "</" + _ + ">"
+  }
 
   /** Runs the given parser on the given input.
     *  Expects the parser to succeed and consume all input.

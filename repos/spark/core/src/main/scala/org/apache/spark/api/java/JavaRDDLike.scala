@@ -729,7 +729,9 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
   def foreachAsync(f: VoidFunction[T]): JavaFutureAction[Void] = {
     new JavaFutureActionWrapper[Unit, Void](
       rdd.foreachAsync(x => f.call(x)),
-      { x => null.asInstanceOf[Void] })
+      { x =>
+        null.asInstanceOf[Void]
+      })
   }
 
   /**
@@ -740,6 +742,8 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
       f: VoidFunction[java.util.Iterator[T]]): JavaFutureAction[Void] = {
     new JavaFutureActionWrapper[Unit, Void](
       rdd.foreachPartitionAsync(x => f.call(x.asJava)),
-      { x => null.asInstanceOf[Void] })
+      { x =>
+        null.asInstanceOf[Void]
+      })
   }
 }

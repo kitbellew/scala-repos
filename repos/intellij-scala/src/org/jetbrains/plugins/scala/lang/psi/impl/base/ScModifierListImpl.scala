@@ -27,7 +27,9 @@ class ScModifierListImpl private (
     node: ASTNode)
     extends ScalaStubBasedElementImpl(stub, nodeType, node)
     with ScModifierList {
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
   def this(stub: ScModifiersStub) = {
     this(stub, ScalaElementTypes.MODIFIERS, null)
   }

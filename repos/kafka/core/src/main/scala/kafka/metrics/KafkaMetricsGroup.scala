@@ -234,10 +234,14 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
   private def toMBeanName(
       tags: collection.Map[String, String]): Option[String] = {
     val filteredTags = tags
-      .filter { case (tagKey, tagValue) => tagValue != "" }
+      .filter {
+        case (tagKey, tagValue) => tagValue != ""
+      }
     if (filteredTags.nonEmpty) {
       val tagsString = filteredTags
-        .map { case (key, value) => "%s=%s".format(key, value) }
+        .map {
+          case (key, value) => "%s=%s".format(key, value)
+        }
         .mkString(",")
 
       Some(tagsString)
@@ -248,7 +252,9 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
 
   private def toScope(tags: collection.Map[String, String]): Option[String] = {
     val filteredTags = tags
-      .filter { case (tagKey, tagValue) => tagValue != "" }
+      .filter {
+        case (tagKey, tagValue) => tagValue != ""
+      }
     if (filteredTags.nonEmpty) {
       // convert dot to _ since reporters like Graphite typically use dot to represent hierarchy
       val tagsString = filteredTags.toList

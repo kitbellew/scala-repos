@@ -56,20 +56,42 @@ class ScalaVersionTest {
     assertEquals(NoScalaVersion, ScalaVersion("none"))
     assertEquals(AnyScalaVersion, ScalaVersion("any"))
 
-    assertThrows[NumberFormatException] { ScalaVersion("2.11.7.2") }
-    assertThrows[NumberFormatException] { ScalaVersion("2.11.7.beta") }
-    assertThrows[NumberFormatException] { ScalaVersion("2.x.7") }
-    assertThrows[NumberFormatException] { ScalaVersion("2.-11.7") }
-    assertThrows[NumberFormatException] { ScalaVersion("2. ") }
-    assertThrows[NumberFormatException] { ScalaVersion("2.1 .7") }
-    assertThrows[NumberFormatException] { ScalaVersion("2.") }
-    assertThrows[NumberFormatException] { ScalaVersion("2..") }
-    assertThrows[NumberFormatException] { ScalaVersion("2...") }
-    assertThrows[NumberFormatException] { ScalaVersion("2-") }
+    assertThrows[NumberFormatException] {
+      ScalaVersion("2.11.7.2")
+    }
+    assertThrows[NumberFormatException] {
+      ScalaVersion("2.11.7.beta")
+    }
+    assertThrows[NumberFormatException] {
+      ScalaVersion("2.x.7")
+    }
+    assertThrows[NumberFormatException] {
+      ScalaVersion("2.-11.7")
+    }
+    assertThrows[NumberFormatException] {
+      ScalaVersion("2. ")
+    }
+    assertThrows[NumberFormatException] {
+      ScalaVersion("2.1 .7")
+    }
+    assertThrows[NumberFormatException] {
+      ScalaVersion("2.")
+    }
+    assertThrows[NumberFormatException] {
+      ScalaVersion("2..")
+    }
+    assertThrows[NumberFormatException] {
+      ScalaVersion("2...")
+    }
+    assertThrows[NumberFormatException] {
+      ScalaVersion("2-")
+    }
     assertThrows[NumberFormatException] {
       ScalaVersion("2-.")
     } // scalacheck territory
-    assertThrows[NumberFormatException] { ScalaVersion("any.7") }
+    assertThrows[NumberFormatException] {
+      ScalaVersion("any.7")
+    }
 
     assertThrows[NumberFormatException](
       ScalaVersion("2.11-ok"),

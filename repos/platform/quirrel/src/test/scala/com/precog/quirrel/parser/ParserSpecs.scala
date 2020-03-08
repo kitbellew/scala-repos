@@ -491,11 +491,15 @@ object ParserSpecs
     }
 
     "accept a tic-variable" in {
-      parseSingle("'x") must beLike { case TicVar(_, "'x") => ok }
+      parseSingle("'x") must beLike {
+        case TicVar(_, "'x") => ok
+      }
       parseSingle("'cafe_Babe__42_") must beLike {
         case TicVar(_, "'cafe_Babe__42_") => ok
       }
-      parseSingle("'x'") must beLike { case TicVar(_, "'x'") => ok }
+      parseSingle("'x'") must beLike {
+        case TicVar(_, "'x'") => ok
+      }
     }
 
     "reject a tic-variable where the second character is a '" in {
@@ -506,7 +510,9 @@ object ParserSpecs
 
     "accept a path literal" in {
       // TODO find a way to use LoadId instead
-      parseSingle("//foo") must beLike { case PathLit("/foo") => ok }
+      parseSingle("//foo") must beLike {
+        case PathLit("/foo") => ok
+      }
       parseSingle("//foo/bar/baz") must beLike {
         case PathLit("/foo/bar/baz") => ok
       }
@@ -517,7 +523,9 @@ object ParserSpecs
 
     "accept a relative path literal" in {
       // TODO find a way to use LoadId instead
-      parseSingle("./foo") must beLike { case RelPathLit("foo") => ok }
+      parseSingle("./foo") must beLike {
+        case RelPathLit("foo") => ok
+      }
       parseSingle("./foo/bar/baz") must beLike {
         case RelPathLit("foo/bar/baz") => ok
       }
@@ -530,7 +538,9 @@ object ParserSpecs
       parseSingle("\"I have a dream\"") must beLike {
         case StrLit(_, "I have a dream") => ok
       }
-      parseSingle("\"\"") must beLike { case StrLit(_, "") => ok }
+      parseSingle("\"\"") must beLike {
+        case StrLit(_, "") => ok
+      }
     }
 
     "reject a string literal that wraps onto a newline" in {
@@ -546,22 +556,48 @@ object ParserSpecs
     }
 
     "resolve all escape sequences in string literals" in {
-      parseSingle("\"\\\"\"") must beLike { case StrLit(_, "\"") => ok }
-      parseSingle("\"\\n\"") must beLike { case StrLit(_, "\n")  => ok }
-      parseSingle("\"\\r\"") must beLike { case StrLit(_, "\r")  => ok }
-      parseSingle("\"\\f\"") must beLike { case StrLit(_, "\f")  => ok }
-      parseSingle("\"\\t\"") must beLike { case StrLit(_, "\t")  => ok }
-      parseSingle("\"\\0\"") must beLike { case StrLit(_, "\0")  => ok }
-      parseSingle("\"\\\\\"") must beLike { case StrLit(_, "\\") => ok }
+      parseSingle("\"\\\"\"") must beLike {
+        case StrLit(_, "\"") => ok
+      }
+      parseSingle("\"\\n\"") must beLike {
+        case StrLit(_, "\n") => ok
+      }
+      parseSingle("\"\\r\"") must beLike {
+        case StrLit(_, "\r") => ok
+      }
+      parseSingle("\"\\f\"") must beLike {
+        case StrLit(_, "\f") => ok
+      }
+      parseSingle("\"\\t\"") must beLike {
+        case StrLit(_, "\t") => ok
+      }
+      parseSingle("\"\\0\"") must beLike {
+        case StrLit(_, "\0") => ok
+      }
+      parseSingle("\"\\\\\"") must beLike {
+        case StrLit(_, "\\") => ok
+      }
     }
 
     "accept a number literal" in {
-      parseSingle("1") must beLike { case NumLit(_, "1")                 => ok }
-      parseSingle("256") must beLike { case NumLit(_, "256")             => ok }
-      parseSingle("256.715") must beLike { case NumLit(_, "256.715")     => ok }
-      parseSingle("3.1415") must beLike { case NumLit(_, "3.1415")       => ok }
-      parseSingle("2.7183e26") must beLike { case NumLit(_, "2.7183e26") => ok }
-      parseSingle("2.7183E26") must beLike { case NumLit(_, "2.7183E26") => ok }
+      parseSingle("1") must beLike {
+        case NumLit(_, "1") => ok
+      }
+      parseSingle("256") must beLike {
+        case NumLit(_, "256") => ok
+      }
+      parseSingle("256.715") must beLike {
+        case NumLit(_, "256.715") => ok
+      }
+      parseSingle("3.1415") must beLike {
+        case NumLit(_, "3.1415") => ok
+      }
+      parseSingle("2.7183e26") must beLike {
+        case NumLit(_, "2.7183e26") => ok
+      }
+      parseSingle("2.7183E26") must beLike {
+        case NumLit(_, "2.7183E26") => ok
+      }
     }
 
     "reject a number literal ending with a ." in {
@@ -569,20 +605,30 @@ object ParserSpecs
     }
 
     "accept a boolean literal" in {
-      parseSingle("true") must beLike { case BoolLit(_, true)   => ok }
-      parseSingle("false") must beLike { case BoolLit(_, false) => ok }
+      parseSingle("true") must beLike {
+        case BoolLit(_, true) => ok
+      }
+      parseSingle("false") must beLike {
+        case BoolLit(_, false) => ok
+      }
     }
 
     "accept an undefined literal" in {
-      parseSingle("undefined") must beLike { case UndefinedLit(_) => ok }
+      parseSingle("undefined") must beLike {
+        case UndefinedLit(_) => ok
+      }
     }
 
     "accept a null literal" in {
-      parseSingle("null") must beLike { case NullLit(_) => ok }
+      parseSingle("null") must beLike {
+        case NullLit(_) => ok
+      }
     }
 
     "accept an object definition with no properties" in {
-      parseSingle("{}") must beLike { case ObjectDef(_, Vector()) => ok }
+      parseSingle("{}") must beLike {
+        case ObjectDef(_, Vector()) => ok
+      }
     }
 
     "reject an object definition with a spurious delimiter" in {
@@ -709,7 +755,9 @@ object ParserSpecs
     }
 
     "accept an array definition with no actuals" in {
-      parseSingle("[]") must beLike { case ArrayDef(_, Vector()) => ok }
+      parseSingle("[]") must beLike {
+        case ArrayDef(_, Vector()) => ok
+      }
     }
 
     "reject an array definition with a spurious delimiter" in {
@@ -1180,15 +1228,21 @@ object ParserSpecs
     }
 
     "accept boolean complementation" in {
-      parseSingle("!1") must beLike { case Comp(_, NumLit(_, "1")) => ok }
+      parseSingle("!1") must beLike {
+        case Comp(_, NumLit(_, "1")) => ok
+      }
     }
 
     "accept numeric negation" in {
-      parseSingle("neg 1") must beLike { case Neg(_, NumLit(_, "1")) => ok }
+      parseSingle("neg 1") must beLike {
+        case Neg(_, NumLit(_, "1")) => ok
+      }
     }
 
     "accept parentheticals" in {
-      parseSingle("(1)") must beLike { case Paren(_, NumLit(_, "1")) => ok }
+      parseSingle("(1)") must beLike {
+        case Paren(_, NumLit(_, "1")) => ok
+      }
     }
 
     "reject unmatched parentheses" in {
@@ -2405,18 +2459,30 @@ object ParserSpecs
 
   "whitespace processing" should {
     "skip any amount of leading space characters" in {
-      parseSingle(" 1") must beLike { case NumLit(_, "1")       => ok }
-      parseSingle("     1") must beLike { case NumLit(_, "1")   => ok }
-      parseSingle("\t  \t 1") must beLike { case NumLit(_, "1") => ok }
+      parseSingle(" 1") must beLike {
+        case NumLit(_, "1") => ok
+      }
+      parseSingle("     1") must beLike {
+        case NumLit(_, "1") => ok
+      }
+      parseSingle("\t  \t 1") must beLike {
+        case NumLit(_, "1") => ok
+      }
       parseSingle("\n\r  ;\r\t  \t\n ;;1") must beLike {
         case NumLit(_, "1") => ok
       }
     }
 
     "skip any amount of trailing space characters" in {
-      parseSingle("1 ") must beLike { case NumLit(_, "1")       => ok }
-      parseSingle("1     ") must beLike { case NumLit(_, "1")   => ok }
-      parseSingle("1\t  \t ") must beLike { case NumLit(_, "1") => ok }
+      parseSingle("1 ") must beLike {
+        case NumLit(_, "1") => ok
+      }
+      parseSingle("1     ") must beLike {
+        case NumLit(_, "1") => ok
+      }
+      parseSingle("1\t  \t ") must beLike {
+        case NumLit(_, "1") => ok
+      }
       parseSingle("1\n\r  ;\r\t  \t\n ;;") must beLike {
         case NumLit(_, "1") => ok
       }

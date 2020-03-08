@@ -21,7 +21,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
 
   protected var ids = 0
 
-  protected def nextId() = { ids += 1; ids }
+  protected def nextId() = {
+    ids += 1; ids
+  }
 
   /** Used for deciding in the IDE whether we can interrupt the compiler */
   //protected var activeLocks = 0
@@ -36,7 +38,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     _recursionTable = value
 
   private var existentialIds = 0
-  protected def nextExistentialId() = { existentialIds += 1; existentialIds }
+  protected def nextExistentialId() = {
+    existentialIds += 1; existentialIds
+  }
   protected def freshExistentialName(suffix: String) =
     newTypeName("_" + nextExistentialId() + suffix)
 
@@ -262,9 +266,13 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       traceSymbols.recordNewSymbol(this)
 
     def validTo = _validTo
-    def validTo_=(x: Period) { _validTo = x }
+    def validTo_=(x: Period) {
+      _validTo = x
+    }
 
-    def setName(name: Name): this.type = { this.name = asNameType(name); this }
+    def setName(name: Name): this.type = {
+      this.name = asNameType(name); this
+    }
 
     // Update the surrounding scopes
     protected[this] def changeNameInOwners(name: Name) {
@@ -499,7 +507,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
 
     private def freshNamer: () => TermName = {
       var cnt = 0
-      () => { cnt += 1; nme.syntheticParamName(cnt) }
+      () => {
+        cnt += 1; nme.syntheticParamName(cnt)
+      }
     }
 
     /** Synthetic value parameters when parameter symbols are not available.
@@ -697,7 +707,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
               recursionTable += (this -> 1)
               true
           }
-        } else { handler; false }
+        } else {
+          handler; false
+        }
       } else {
         _rawflags |= LOCKED
         true
@@ -885,9 +897,15 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       (flags & mask) == mask
     }
 
-    def setFlag(mask: Long): this.type = { _rawflags |= mask; this }
-    def resetFlag(mask: Long): this.type = { _rawflags &= ~mask; this }
-    def resetFlags() { rawflags &= TopLevelCreationFlags }
+    def setFlag(mask: Long): this.type = {
+      _rawflags |= mask; this
+    }
+    def resetFlag(mask: Long): this.type = {
+      _rawflags &= ~mask; this
+    }
+    def resetFlags() {
+      rawflags &= TopLevelCreationFlags
+    }
 
     /** Default implementation calls the generic string function, which
       *  will print overloaded flags as <flag1/flag2/flag3>.  Subclasses
@@ -911,7 +929,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       (fs | ((fs & LateFlags) >>> LateShift)) & ~((fs & AntiFlags) >>> AntiShift)
     }
     def flags_=(fs: Long) = _rawflags = fs
-    def rawflags_=(x: Long) { _rawflags = x }
+    def rawflags_=(x: Long) {
+      _rawflags = x
+    }
 
     final def hasGetter = isTerm && nme.isLocalName(name)
 
@@ -1274,7 +1294,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       }
 
       rawInfo load this
-      rawInfo != NoType || { warnIfSourceLoader(); false }
+      rawInfo != NoType || {
+        warnIfSourceLoader(); false
+      }
     }
 
     final def isInitialized: Boolean =
@@ -1406,7 +1428,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     def ownersIterator: Iterator[Symbol] = new Iterator[Symbol] {
       private var current = Symbol.this
       def hasNext = current ne NoSymbol
-      def next = { val r = current; current = current.owner; r }
+      def next = {
+        val r = current; current = current.owner; r
+      }
     }
 
     /** Same as `ownerChain contains sym` but more efficient, and
@@ -1658,7 +1682,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       if (!isCompilerUniverse && !isThreadsafe(purpose = AllOps)) initialize
       _privateWithin
     }
-    def privateWithin_=(sym: Symbol) { _privateWithin = sym }
+    def privateWithin_=(sym: Symbol) {
+      _privateWithin = sym
+    }
     def setPrivateWithin(sym: Symbol): this.type = {
       privateWithin_=(sym); this
     }
@@ -1674,7 +1700,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       if (infos eq null) null
       else {
         var is = infos
-        while (is.prev ne null) { is = is.prev }
+        while (is.prev ne null) {
+          is = is.prev
+        }
         is.info
       }
     }
@@ -1788,7 +1816,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     }
 
     /** Set initial info. */
-    def setInfo(info: Type): this.type = { info_=(info); this }
+    def setInfo(info: Type): this.type = {
+      info_=(info); this
+    }
 
     /** Modifies this symbol's info in place. */
     def modifyInfo(f: Type => Type): this.type = setInfo(f(info))
@@ -1915,8 +1945,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       this
     }
     def maybeInitialize = {
-      try { initialize; true }
-      catch {
+      try {
+        initialize; true
+      } catch {
         case _: CyclicReference =>
           debuglog("Hit cycle in maybeInitialize of $this"); false
       }
@@ -3128,7 +3159,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     }
 
     def referenced: Symbol = _referenced
-    def referenced_=(x: Symbol) { _referenced = x }
+    def referenced_=(x: Symbol) {
+      _referenced = x
+    }
 
     def existentialBound = singletonBounds(this.tpe)
 
@@ -3642,7 +3675,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
         else _associatedFile
       }
     )
-    override def associatedFile_=(f: AbstractFile) { _associatedFile = f }
+    override def associatedFile_=(f: AbstractFile) {
+      _associatedFile = f
+    }
 
     override def reset(completer: Type): this.type = {
       super.reset(completer)
@@ -3700,7 +3735,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
 
     private[this] var childSet: Set[Symbol] = Set()
     override def children = childSet
-    override def addChild(sym: Symbol) { childSet = childSet + sym }
+    override def addChild(sym: Symbol) {
+      childSet = childSet + sym
+    }
 
     def anonOrRefinementString = {
       if (hasCompleteInfo) {
@@ -3764,7 +3801,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     }
     // The null check seems to be necessary for the reifier.
     override def sourceModule = if (module ne null) module else companionModule
-    override def sourceModule_=(module: Symbol) { this.module = module }
+    override def sourceModule_=(module: Symbol) {
+      this.module = module
+    }
   }
 
   class PackageObjectClassSymbol protected[Symbols] (

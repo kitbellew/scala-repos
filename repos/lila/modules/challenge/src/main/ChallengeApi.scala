@@ -25,7 +25,9 @@ final class ChallengeApi(
       userId) map (AllChallenges.apply _).tupled
 
   def create(c: Challenge): Funit = {
-    repo like c flatMap { _ ?? repo.cancel }
+    repo like c flatMap {
+      _ ?? repo.cancel
+    }
   } >> (repo insert c) >> uncacheAndNotify(c) >>- {
     lilaBus.publish(Event.Create(c), 'challenge)
   }
@@ -46,7 +48,9 @@ final class ChallengeApi(
     repo statusById id flatMap {
       case Some(Status.Created) => repo setSeen id
       case Some(Status.Offline) =>
-        (repo setSeenAgain id) >> byId(id).flatMap { _ ?? uncacheAndNotify }
+        (repo setSeenAgain id) >> byId(id).flatMap {
+          _ ?? uncacheAndNotify
+        }
       case _ => fuccess(socketReload(id))
     }
 

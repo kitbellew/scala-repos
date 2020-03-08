@@ -95,7 +95,9 @@ object M2 {
   def power(x: Double, exp: Int): Double = {
     var r = 1.0;
     var i = exp;
-    While(i > 0) { r = r * x; i = i - 1 }
+    While(i > 0) {
+      r = r * x; i = i - 1
+    }
     r
   }
 
@@ -115,7 +117,9 @@ object M3 {
   def power(x: Double, exp: Int): Double = {
     var r = 1.0;
     var i = exp;
-    while (i > 0) { r = r * x; i = i - 1 }
+    while (i > 0) {
+      r = r * x; i = i - 1
+    }
     r
   }
 
@@ -133,7 +137,9 @@ object M3 {
 object M4 {
 
   def test = {
-    for (i <- range(1, 4)) { Console.print(i + " ") };
+    for (i <- range(1, 4)) {
+      Console.print(i + " ")
+    };
     Console.println;
     Console.println(for (i <- range(1, 4)) yield i);
     Console.println;
@@ -187,8 +193,12 @@ object M5 {
     }
 
     def run: Unit = {
-      afterDelay(0) { () => Console.println("*** simulation started ***"); }
-      while (!agenda.isEmpty) { next }
+      afterDelay(0) { () =>
+        Console.println("*** simulation started ***");
+      }
+      while (!agenda.isEmpty) {
+        next
+      }
     }
   }
 
@@ -201,7 +211,9 @@ object M5 {
     def inverter(input: Wire, output: Wire): Unit = {
       def invertAction() = {
         val inputSig = input.getSignal;
-        afterDelay(InverterDelay) { () => output.setSignal(!inputSig) };
+        afterDelay(InverterDelay) { () =>
+          output.setSignal(!inputSig)
+        };
       }
       input addAction invertAction
     }
@@ -210,7 +222,9 @@ object M5 {
       def andAction() = {
         val a1Sig = a1.getSignal;
         val a2Sig = a2.getSignal;
-        afterDelay(AndGateDelay) { () => output.setSignal(a1Sig & a2Sig) };
+        afterDelay(AndGateDelay) { () =>
+          output.setSignal(a1Sig & a2Sig)
+        };
       }
       a1 addAction andAction;
       a2 addAction andAction;
@@ -220,7 +234,9 @@ object M5 {
       def orAction() = {
         val o1Sig = o1.getSignal;
         val o2Sig = o2.getSignal;
-        afterDelay(OrGateDelay) { () => output.setSignal(o1Sig | o2Sig) };
+        afterDelay(OrGateDelay) { () =>
+          output.setSignal(o1Sig | o2Sig)
+        };
       }
       o1 addAction orAction;
       o2 addAction orAction;
@@ -439,8 +455,12 @@ class Simulator() {
   protected def currentTime: Int = curtime;
 
   def run = {
-    afterDelay(0) { () => Console.println("*** simulation started ***"); }
-    while (!agenda.isEmpty) { next }
+    afterDelay(0) { () =>
+      Console.println("*** simulation started ***");
+    }
+    while (!agenda.isEmpty) {
+      next
+    }
   }
 }
 
@@ -475,7 +495,9 @@ abstract class BasicCircuitSimulator() extends Simulator() {
   def inverter(input: Wire, output: Wire) = {
     def invertAction() = {
       val inputSig = input.getSignal;
-      afterDelay(InverterDelay) { () => output.setSignal(!inputSig) };
+      afterDelay(InverterDelay) { () =>
+        output.setSignal(!inputSig)
+      };
     }
     input addAction invertAction
   }
@@ -484,7 +506,9 @@ abstract class BasicCircuitSimulator() extends Simulator() {
     def andAction() = {
       val a1Sig = a1.getSignal;
       val a2Sig = a2.getSignal;
-      afterDelay(AndGateDelay) { () => output.setSignal(a1Sig & a2Sig) };
+      afterDelay(AndGateDelay) { () =>
+        output.setSignal(a1Sig & a2Sig)
+      };
     }
     a1 addAction andAction;
     a2 addAction andAction
@@ -494,7 +518,9 @@ abstract class BasicCircuitSimulator() extends Simulator() {
     def orAction() = {
       val a1Sig = a1.getSignal;
       val a2Sig = a2.getSignal;
-      afterDelay(OrGateDelay) { () => output.setSignal(a1Sig | a2Sig) };
+      afterDelay(OrGateDelay) { () =>
+        output.setSignal(a1Sig | a2Sig)
+      };
     }
     a1 addAction orAction;
     a2 addAction orAction
@@ -513,7 +539,9 @@ abstract class BasicCircuitSimulator() extends Simulator() {
 
 abstract class CircuitSimulator() extends BasicCircuitSimulator() {
   def demux2(in: Wire, ctrl: List[Wire], out: List[Wire]): Unit = {
-    val ctrlN = ctrl.map(w => { val iw = new Wire(); inverter(w, iw); iw });
+    val ctrlN = ctrl.map(w => {
+      val iw = new Wire(); inverter(w, iw); iw
+    });
     val w0 = new Wire();
     val w1 = new Wire();
     val w2 = new Wire();
@@ -531,7 +559,9 @@ abstract class CircuitSimulator() extends BasicCircuitSimulator() {
   }
 
   def connect(in: Wire, out: Wire) = {
-    in addAction { () => out.setSignal(in.getSignal); }
+    in addAction { () =>
+      out.setSignal(in.getSignal);
+    }
   }
 
   def demux(in: Wire, ctrl: List[Wire], out: List[Wire]): Unit = ctrl match {
@@ -559,14 +589,22 @@ class Main() extends CircuitSimulator() {
     val outNum = 1 << n;
 
     val in = new Wire();
-    val ctrl = for (x <- range(0, n)) yield { new Wire() };
-    val out = for (x <- range(0, outNum)) yield { new Wire() };
+    val ctrl = for (x <- range(0, n)) yield {
+      new Wire()
+    };
+    val out = for (x <- range(0, outNum)) yield {
+      new Wire()
+    };
 
     demux(in, ctrl.reverse, out.reverse);
 
     probe("in", in);
-    for ((x, c) <- range(0, n) zip ctrl) { probe("ctrl" + x, c) }
-    for ((x, o) <- range(0, outNum) zip out) { probe("out" + x, o) }
+    for ((x, c) <- range(0, n) zip ctrl) {
+      probe("ctrl" + x, c)
+    }
+    for ((x, o) <- range(0, outNum) zip out) {
+      probe("out" + x, o)
+    }
 
     in.setSignal(true);
     run;

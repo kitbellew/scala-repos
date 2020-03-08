@@ -60,7 +60,9 @@ object Reloader {
     */
   def extractSystemProperties(
       javaOptions: Seq[String]): Seq[(String, String)] = {
-    javaOptions.collect { case SystemProperty(key, value) => key -> value }
+    javaOptions.collect {
+      case SystemProperty(key, value) => key -> value
+    }
   }
 
   def parsePort(portString: String): Int = {
@@ -246,7 +248,9 @@ object Reloader {
       Build.sharedClasses,
       buildLoader,
       new ApplicationClassLoaderProvider {
-        def get: ClassLoader = { reloader.getClassLoader.orNull }
+        def get: ClassLoader = {
+          reloader.getClassLoader.orNull
+        }
       })
 
     lazy val applicationLoader = dependencyClassLoader(
@@ -273,7 +277,9 @@ object Reloader {
       // within the play-docs JAR.
       val docsLoader =
         new URLClassLoader(urls(docsClasspath), applicationLoader)
-      val maybeDocsJarFile = docsJar map { f => new JarFile(f) }
+      val maybeDocsJarFile = docsJar map { f =>
+        new JarFile(f)
+      }
       val docHandlerFactoryClass =
         docsLoader.loadClass("play.docs.BuildDocHandlerFactory")
       val buildDocHandler = maybeDocsJarFile match {

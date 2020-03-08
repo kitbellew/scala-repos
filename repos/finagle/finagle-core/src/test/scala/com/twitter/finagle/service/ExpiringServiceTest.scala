@@ -36,7 +36,9 @@ class ExpiringServiceTest extends FunSuite with MockitoSugar {
         maxLifeTime,
         timer,
         stats) {
-    def onExpire() { self.close() }
+    def onExpire() {
+      self.close()
+    }
   }
 
   def newCtx() = new {

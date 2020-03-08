@@ -122,7 +122,9 @@ trait Infer extends Checkable {
 
   @inline final def falseIfNoInstance(body: => Boolean): Boolean =
     try body
-    catch { case _: NoInstance => false }
+    catch {
+      case _: NoInstance => false
+    }
 
   /** Is type fully defined, i.e. no embedded anytypes or wildcards in it?
     */
@@ -134,7 +136,10 @@ trait Infer extends Checkable {
     case SingleType(pre, _)                          => isFullyDefined(pre)
     case RefinedType(ts, _)                          => ts forall isFullyDefined
     case TypeVar(_, constr) if constr.inst == NoType => false
-    case _                                           => falseIfNoInstance({ instantiate(tp); true })
+    case _ =>
+      falseIfNoInstance({
+        instantiate(tp); true
+      })
   }
 
   /** Solve constraint collected in types `tvars`.
@@ -211,7 +216,9 @@ trait Infer extends Checkable {
         val sym = tree.symbol
         val nameStr =
           try sym.toString
-          catch { case _: CyclicReference => sym.nameString }
+          catch {
+            case _: CyclicReference => sym.nameString
+          }
         newTermName(s"<error: $nameStr>")
       }
       def errorClass =
@@ -450,7 +457,9 @@ trait Infer extends Checkable {
 
       if (conforms)
         try solve()
-        catch { case _: NoInstance => null }
+        catch {
+          case _: NoInstance => null
+        }
       else
         null
     }
@@ -513,7 +522,9 @@ trait Infer extends Checkable {
             pt))
         map2(tparams, tvars)((tparam, tvar) =>
           try instantiateToBound(tvar, varianceInTypes(formals)(tparam))
-          catch { case ex: NoInstance => WildcardType })
+          catch {
+            case ex: NoInstance => WildcardType
+          })
       else
         tvars map (_ => WildcardType)
     }
@@ -526,13 +537,17 @@ trait Infer extends Checkable {
       type Result = mutable.LinkedHashMap[Symbol, Option[Type]]
 
       def unapply(m: Result): Some[(List[Symbol], List[Type])] =
-        Some(toLists((m collect { case (p, Some(a)) => (p, a) }).unzip))
+        Some(toLists((m collect {
+          case (p, Some(a)) => (p, a)
+        }).unzip))
 
       object Undets {
         def unapply(m: Result): Some[(List[Symbol], List[Type], List[Symbol])] =
           Some(toLists {
             val (ok, nok) = m
-              .map { case (p, a) => (p, a.getOrElse(null)) }
+              .map {
+                case (p, a) => (p, a.getOrElse(null))
+              }
               .partition(_._2 ne null)
             val (okArgs, okTparams) = ok.unzip
             (okArgs, okTparams, nok.keys)
@@ -544,7 +559,9 @@ trait Infer extends Checkable {
             : Some[(List[Symbol], List[Type], List[Type], List[Symbol])] =
           Some(toLists {
             val (ok, nok) = m
-              .map { case (p, a) => (p, a.getOrElse(null)) }
+              .map {
+                case (p, a) => (p, a.getOrElse(null))
+              }
               .partition(_._2 ne null)
             val (okArgs, okTparams) = ok.unzip
             (okArgs, okTparams, m.values.map(_.getOrElse(NothingTpe)), nok.keys)
@@ -895,7 +912,10 @@ trait Infer extends Checkable {
         missingParams[Type](
           argtpes0,
           mt.params,
-          x => Some(x) collect { case NamedType(n, _) => n })
+          x =>
+            Some(x) collect {
+              case NamedType(n, _) => n
+            })
       def argsTupled = tupleIfNecessary(mt.paramTypes, argtpes0)
       def argsPlusDefaults = missingArgs match {
         case (args, _) if args forall (_.hasDefault) =>
@@ -1658,7 +1678,9 @@ trait Infer extends Checkable {
         case _ :: rest            => containsNamedType(rest)
       }
     private def namesOfNamedArguments(argtpes: List[Type]) =
-      argtpes collect { case NamedType(name, _) => name }
+      argtpes collect {
+        case NamedType(name, _) => name
+      }
 
     /** Given a list of argument types and eligible method overloads, whittle the
       *  list down to the methods which should be considered for specificity

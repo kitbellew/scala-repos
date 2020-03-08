@@ -68,7 +68,9 @@ trait Zip[F[_]] { self =>
   def zipLaw = new ZipLaw {}
 
   ////
-  val zipSyntax = new scalaz.syntax.ZipSyntax[F] { def F = Zip.this }
+  val zipSyntax = new scalaz.syntax.ZipSyntax[F] {
+    def F = Zip.this
+  }
 }
 
 object Zip {

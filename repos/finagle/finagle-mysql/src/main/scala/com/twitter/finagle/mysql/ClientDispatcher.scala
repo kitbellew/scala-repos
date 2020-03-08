@@ -101,7 +101,9 @@ object ClientDispatcher {
     * error (or corrupt data) between the client and server.
     */
   private def const[T](result: Try[T]): Future[T] =
-    Future.const(result rescue { case exc => Throw(LostSyncException(exc)) })
+    Future.const(result rescue {
+      case exc => Throw(LostSyncException(exc))
+    })
 }
 
 /**
@@ -119,7 +121,9 @@ class ClientDispatcher(
   import ClientDispatcher._
 
   override def apply(req: Request): Future[Result] =
-    connPhase flatMap { _ => super.apply(req) } onFailure {
+    connPhase flatMap { _ =>
+      super.apply(req)
+    } onFailure {
       // a LostSyncException represents a fatal state between
       // the client / server. The error is unrecoverable
       // so we close the service.
@@ -142,7 +146,9 @@ class ClientDispatcher(
           rep
         }
       }
-    } onFailure { _ => close() }
+    } onFailure { _ =>
+      close()
+    }
 
   /**
     * Returns a Future that represents the result of an exchange
@@ -192,8 +198,12 @@ class ClientDispatcher(
         ok <- const(PrepareOK(packet))
         (seq1, _) <- readTx(ok.numOfParams)
         (seq2, _) <- readTx(ok.numOfCols)
-        ps <- Future.collect(seq1 map { p => const(Field(p)) })
-        cs <- Future.collect(seq2 map { p => const(Field(p)) })
+        ps <- Future.collect(seq1 map { p =>
+          const(Field(p))
+        })
+        cs <- Future.collect(seq2 map { p =>
+          const(Field(p))
+        })
       } yield ok.copy(params = ps, columns = cs)
 
       result ensure signal.setDone()
@@ -255,7 +265,9 @@ class ClientDispatcher(
         trans.read() flatMap { packet =>
           packet.body.headOption match {
             case Some(Packet.EofByte) =>
-              const(EOF(packet)) map { eof => (xs.reverse, eof) }
+              const(EOF(packet)) map { eof =>
+                (xs.reverse, eof)
+              }
             case Some(Packet.ErrorByte) =>
               const(Error(packet)) flatMap { err =>
                 val Error(code, state, msg) = err

@@ -3,4 +3,6 @@ object Foo extends Foo {
 }
 class Foo
 
-object Test extends App { Foo }
+object Test extends App {
+  Foo
+}

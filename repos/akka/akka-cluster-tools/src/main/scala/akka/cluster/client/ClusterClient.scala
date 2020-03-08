@@ -311,7 +311,9 @@ final class ClusterClient(settings: ClusterClientSettings)
   val buffer = new java.util.LinkedList[(Any, ActorRef)]
 
   def scheduleRefreshContactsTick(interval: FiniteDuration): Unit = {
-    refreshContactsTask foreach { _.cancel() }
+    refreshContactsTask foreach {
+      _.cancel()
+    }
     refreshContactsTask = Some(
       context.system.scheduler
         .schedule(interval, interval, self, RefreshContactsTick))
@@ -320,7 +322,9 @@ final class ClusterClient(settings: ClusterClientSettings)
   override def postStop(): Unit = {
     super.postStop()
     heartbeatTask.cancel()
-    refreshContactsTask foreach { _.cancel() }
+    refreshContactsTask foreach {
+      _.cancel()
+    }
   }
 
   def receive = establishing
@@ -334,7 +338,9 @@ final class ClusterClient(settings: ClusterClientSettings)
       case Contacts(contactPoints) ⇒
         if (contactPoints.nonEmpty) {
           contacts = contactPoints.map(context.actorSelection)
-          contacts foreach { _ ! Identify(None) }
+          contacts foreach {
+            _ ! Identify(None)
+          }
         }
       case ActorIdentity(_, Some(receptionist)) ⇒
         log.info("Connected to [{}]", receptionist.path)
@@ -400,7 +406,9 @@ final class ClusterClient(settings: ClusterClientSettings)
       else contacts
     if (log.isDebugEnabled)
       log.debug(s"""Sending GetContacts to [${sendTo.mkString(",")}]""")
-    sendTo.foreach { _ ! GetContacts }
+    sendTo.foreach {
+      _ ! GetContacts
+    }
   }
 
   def buffer(msg: Any): Unit =

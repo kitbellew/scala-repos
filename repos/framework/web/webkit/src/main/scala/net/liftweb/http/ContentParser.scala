@@ -71,7 +71,9 @@ object ContentParser {
     * template being surrounded by `default.html` with the content located at `id=content`.
     */
   val defaultSurround: NodeSeq => NodeSeq = { elems =>
-    <lift:surround with="default" at="content">{elems}</lift:surround>
+    <lift:surround with="default" at="content">{
+      elems
+    }</lift:surround>
   }
 
   /**

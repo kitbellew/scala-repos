@@ -93,14 +93,18 @@ class SocksConnectHandler(
   private[this] val bytes = new Array[Byte](4)
   private[this] val connectFuture = new AtomicReference[ChannelFuture](null)
   private[this] val authenticationMap =
-    authenticationSettings.map { setting => setting.typeByte -> setting }.toMap
+    authenticationSettings.map { setting =>
+      setting.typeByte -> setting
+    }.toMap
   private[this] val supportedTypes = authenticationMap.keys.toArray.sorted
 
   // following Netty's ReplayingDecoderBuffer, we throw this when we run out of bytes
   object ReplayError extends scala.Error
 
   private[this] def fail(c: Channel, t: Throwable) {
-    Option(connectFuture.get) foreach { _.setFailure(t) }
+    Option(connectFuture.get) foreach {
+      _.setFailure(t)
+    }
     Channels.close(c)
   }
 

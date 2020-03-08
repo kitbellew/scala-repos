@@ -91,7 +91,11 @@ object ExpressionDagTests extends Properties("ExpressionDag") {
             case inc @ Inc(_, _) =>
               def makeLit[T1](i: Inc[T1]) = {
                 val (m1, f1) = recurse(memo, i.in)
-                val lit = UnaryLit(f1, { f: Formula[T1] => Inc(f, i.by) })
+                val lit = UnaryLit(
+                  f1,
+                  { f: Formula[T1] =>
+                    Inc(f, i.by)
+                  })
                 (m1 + (i -> lit), lit)
               }
               makeLit(inc)
@@ -102,7 +106,9 @@ object ExpressionDagTests extends Properties("ExpressionDag") {
                 val lit = BinaryLit(
                   fl,
                   fr,
-                  { (f: Formula[T1], g: Formula[T1]) => Sum(f, g) })
+                  { (f: Formula[T1], g: Formula[T1]) =>
+                    Sum(f, g)
+                  })
                 (m2 + (s -> lit), lit)
               }
               makeLit(sum)
@@ -113,7 +119,9 @@ object ExpressionDagTests extends Properties("ExpressionDag") {
                 val lit = BinaryLit(
                   fl,
                   fr,
-                  { (f: Formula[T1], g: Formula[T1]) => Product(f, g) })
+                  { (f: Formula[T1], g: Formula[T1]) =>
+                    Product(f, g)
+                  })
                 (m2 + (p -> lit), lit)
               }
               makeLit(prod)

@@ -439,7 +439,9 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
         .map(scalarTag.show(_))
         .foldLeft(0)(maxStrLen)
     val colIdx = util.grab(Range(0, numCols), halfc)
-    val lenSeq = colIdx.map { c => c -> maxColLen(col(c)) }
+    val lenSeq = colIdx.map { c =>
+      c -> maxColLen(col(c))
+    }
     val lenMap = lenSeq.toMap.withDefault(_ => 1)
 
     // function to build a row
@@ -447,8 +449,9 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
       val buf = new StringBuilder()
       val strFn = (col: Int) => {
         val l = lenMap(col)
-        "%" + { if (l > 0) l else 1 } + "s " format scalarTag.show(
-          apply(r, col))
+        "%" + {
+          if (l > 0) l else 1
+        } + "s " format scalarTag.show(apply(r, col))
       }
       buf.append(util.buildStr(ncols, numCols, strFn))
       buf.append("\n")

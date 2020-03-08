@@ -97,7 +97,9 @@ class HistoryServer(
       if (!loadAppUi(appId, None) && (!attemptId.isDefined || !loadAppUi(
             appId,
             attemptId))) {
-        val msg = <div class="row-fluid">Application {appId} not found.</div>
+        val msg = <div class="row-fluid">Application {
+          appId
+        } not found.</div>
         res.setStatus(HttpServletResponse.SC_NOT_FOUND)
         UIUtils.basicSparkPage(msg, "Not Found").foreach { n =>
           res.getWriter().write(n.toString)
@@ -294,10 +296,14 @@ object HistoryServer extends Logging {
     val server = new HistoryServer(conf, provider, securityManager, port)
     server.bind()
 
-    ShutdownHookManager.addShutdownHook { () => server.stop() }
+    ShutdownHookManager.addShutdownHook { () =>
+      server.stop()
+    }
 
     // Wait until the end of the world... or if the HistoryServer process is manually stopped
-    while (true) { Thread.sleep(Int.MaxValue) }
+    while (true) {
+      Thread.sleep(Int.MaxValue)
+    }
   }
 
   def initSecurity() {
@@ -316,7 +322,11 @@ object HistoryServer extends Logging {
   private[history] def getAttemptURI(
       appId: String,
       attemptId: Option[String]): String = {
-    val attemptSuffix = attemptId.map { id => s"/$id" }.getOrElse("")
+    val attemptSuffix = attemptId
+      .map { id =>
+        s"/$id"
+      }
+      .getOrElse("")
     s"${HistoryServer.UI_PATH_PREFIX}/${appId}${attemptSuffix}"
   }
 

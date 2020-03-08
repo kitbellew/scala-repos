@@ -777,15 +777,21 @@ private[akka] class ActorSystemImpl(
     } catch {
       case NonFatal(e) ⇒
         try terminate()
-        catch { case NonFatal(_) ⇒ Try(stopScheduler()) }
+        catch {
+          case NonFatal(_) ⇒ Try(stopScheduler())
+        }
         throw e
     }
 
   def start(): this.type = _start
   def registerOnTermination[T](code: ⇒ T) {
-    registerOnTermination(new Runnable { def run = code })
+    registerOnTermination(new Runnable {
+      def run = code
+    })
   }
-  def registerOnTermination(code: Runnable) { terminationCallbacks.add(code) }
+  def registerOnTermination(code: Runnable) {
+    terminationCallbacks.add(code)
+  }
   override def awaitTermination(timeout: Duration) {
     Await.ready(whenTerminated, timeout)
   }
@@ -870,11 +876,13 @@ private[akka] class ActorSystemImpl(
     findExtension(ext) match {
       case null ⇒ //Doesn't already exist, commence registration
         val inProcessOfRegistration = new CountDownLatch(1)
-        extensions
-          .putIfAbsent(ext, inProcessOfRegistration) match { // Signal that registration is in process
+        extensions.putIfAbsent(
+          ext,
+          inProcessOfRegistration) match { // Signal that registration is in process
           case null ⇒
             try { // Signal was successfully sent
-              ext.createExtension(this) match { // Create and initialize the extension
+              ext.createExtension(
+                this) match { // Create and initialize the extension
                 case null ⇒
                   throw new IllegalStateException(
                     "Extension instance created as 'null' for extension [" + ext + "]")
@@ -990,7 +998,9 @@ private[akka] class ActorSystemImpl(
     private[this] final val ref = new AtomicReference(done)
 
     // onComplete never fires twice so safe to avoid null check
-    upStreamTerminated onComplete { t ⇒ ref.getAndSet(null).complete(t) }
+    upStreamTerminated onComplete { t ⇒
+      ref.getAndSet(null).complete(t)
+    }
 
     /**
       * Adds a Runnable that will be executed on ActorSystem termination.
@@ -1004,7 +1014,9 @@ private[akka] class ActorSystemImpl(
           throw new RejectedExecutionException(
             "ActorSystem already terminated.")
         case some if ref.compareAndSet(some, p) ⇒
-          some.completeWith(p.future.andThen { case _ ⇒ r.run() })
+          some.completeWith(p.future.andThen {
+            case _ ⇒ r.run()
+          })
         case _ ⇒ addRec(r, p)
       }
       addRec(r, Promise[T]())

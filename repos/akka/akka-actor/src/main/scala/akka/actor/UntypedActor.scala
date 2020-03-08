@@ -163,7 +163,9 @@ abstract class UntypedActor extends Actor {
   @throws(classOf[Exception])
   override def postRestart(reason: Throwable): Unit = super.postRestart(reason)
 
-  final def receive = { case msg ⇒ onReceive(msg) }
+  final def receive = {
+    case msg ⇒ onReceive(msg)
+  }
 
   /**
     * Recommended convention is to call this method if the message

@@ -20,7 +20,9 @@ object Test extends Properties("IndexScript") {
   }
 
   val docFactory = {
-    val settings = new doc.Settings({ Console.err.println(_) })
+    val settings = new doc.Settings({
+      Console.err.println(_)
+    })
     settings.scaladocQuietRun = true
     settings.nowarn.value = true
     settings.classpath.value = getClasspath

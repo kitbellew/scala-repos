@@ -29,7 +29,9 @@ package object data {
     def fromReducible[F[_], A](fa: F[A])(
         implicit F: Reducible[F]): Eval[NonEmptyList[A]] =
       F.reduceRightTo(fa)(a => NonEmptyList(a, Nil)) { (a, lnel) =>
-        lnel.map { case OneAnd(h, t) => OneAnd(a, h :: t) }
+        lnel.map {
+          case OneAnd(h, t) => OneAnd(a, h :: t)
+        }
       }
 
     def fromList[A](la: List[A]): Option[NonEmptyList[A]] =

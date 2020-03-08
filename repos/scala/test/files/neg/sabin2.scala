@@ -9,8 +9,12 @@ object Test extends App {
     }
   }
 
-  object IntBase extends Base { type T = Int }
-  object StringBase extends Base { type T = String }
+  object IntBase extends Base {
+    type T = Int
+  }
+  object StringBase extends Base {
+    type T = String
+  }
 
   val a: Base#Inner = new IntBase.Inner
   val b: Base#Inner = new StringBase.Inner

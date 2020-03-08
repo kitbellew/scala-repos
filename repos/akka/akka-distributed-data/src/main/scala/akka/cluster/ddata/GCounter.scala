@@ -53,7 +53,9 @@ final class GCounter private[akka] (
   /**
     * Scala API: Current total value of the counter.
     */
-  def value: BigInt = state.values.foldLeft(Zero) { (acc, v) ⇒ acc + v }
+  def value: BigInt = state.values.foldLeft(Zero) { (acc, v) ⇒
+    acc + v
+  }
 
   /**
     * Java API: Current total value of the counter.

@@ -52,7 +52,9 @@ final class ShutupApi(
     UserRepo isTroll userId flatMap {
       case true => funit
       case false =>
-        toUserId ?? { follows(userId, _) } flatMap {
+        toUserId ?? {
+          follows(userId, _)
+        } flatMap {
           case true => funit
           case false =>
             val analysed = Analyser(text)

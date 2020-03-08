@@ -3,13 +3,17 @@ object Test {
 
   abstract class Grist { self =>
     type settingsType <: Settings
-    type moduleType <: Module { type settingsType = self.settingsType }
+    type moduleType <: Module {
+      type settingsType = self.settingsType
+    }
     val module: moduleType
   }
 
   abstract class Tool { self =>
     type settingsType <: Settings
-    type moduleType = Module { type settingsType = self.settingsType }
+    type moduleType = Module {
+      type settingsType = self.settingsType
+    }
     type gristType = Grist {
       type moduleType <: self.moduleType; type settingsType <: self.settingsType
     }
@@ -27,7 +31,9 @@ object Test {
     // BTW: if we use the commented out type decls, the code compiles successfully
     // type gristType = Grist {type settingsType <: self.settingsType; type moduleType <: commonModuleType }
 
-    val tools: List[Tool { type settingsType = self.settingsType }]
+    val tools: List[Tool {
+      type settingsType = self.settingsType
+    }]
 
     protected def f: List[commonModuleType] = {
       val inputGrists =

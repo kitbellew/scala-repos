@@ -59,7 +59,11 @@ trait ClusteringLibSpecs[M[+_]]
       points: Array[Array[Double]],
       centers: Array[Array[Double]]): Double = {
     points.foldLeft(0.0) { (cost, p) =>
-      cost + centers.map({ c => (p - c).norm }).qmin
+      cost + centers
+        .map({ c =>
+          (p - c).norm
+        })
+        .qmin
     }
   }
 
@@ -80,9 +84,15 @@ trait ClusteringLibSpecs[M[+_]]
 
     def getPoint(sval: SValue): List[Double] = sval match {
       case SArray(arr) =>
-        arr.collect({ case SDecimal(n) => n.toDouble }).toList
+        arr
+          .collect({
+            case SDecimal(n) => n.toDouble
+          })
+          .toList
       case SObject(obj) =>
-        obj.toList.sortBy(_._1) flatMap { case (_, v) => getPoint(v) }
+        obj.toList.sortBy(_._1) flatMap {
+          case (_, v) => getPoint(v)
+        }
       case _ => sys.error("not supported")
     }
 
@@ -169,7 +179,9 @@ trait ClusteringLibSpecs[M[+_]]
 
       result must haveSize(1)
 
-      val expected = resultNumbers collect { case (_, SDecimal(num)) => num }
+      val expected = resultNumbers collect {
+        case (_, SDecimal(num)) => num
+      }
 
       result must haveAllElementsLike {
         case (ids, SObject(obj)) if ids.size == 0 =>
@@ -203,7 +215,9 @@ trait ClusteringLibSpecs[M[+_]]
 
       result must haveSize(1)
 
-      val expected = resultData collect { case (_, SObject(obj)) => obj }
+      val expected = resultData collect {
+        case (_, SObject(obj)) => obj
+      }
 
       result must haveAllElementsLike {
         case (ids, SObject(obj)) if ids.size == 0 =>
@@ -231,8 +245,12 @@ trait ClusteringLibSpecs[M[+_]]
       val GeneratedPointSet(pointsA, centersA) = genPoints(5000, dimensionA, k)
       val GeneratedPointSet(pointsB, centersB) = genPoints(5000, dimensionB, k)
 
-      val jvalsA = pointsToJson(pointsA) map { v => RObject(Map("a" -> v)) }
-      val jvalsB = pointsToJson(pointsB) map { v => RObject(Map("b" -> v)) }
+      val jvalsA = pointsToJson(pointsA) map { v =>
+        RObject(Map("a" -> v))
+      }
+      val jvalsB = pointsToJson(pointsB) map { v =>
+        RObject(Map("b" -> v))
+      }
       val jvals = Random.shuffle(jvalsA ++ jvalsB)
 
       writeRValuesToDataset(jvals) { dataset =>
@@ -317,7 +335,9 @@ trait ClusteringLibSpecs[M[+_]]
       points: Array[Array[Double]],
       centers: Array[Array[Double]]): Map[RValue, String] = {
     points.map { p =>
-      val id = (0 until centers.length) minBy { i => (p - centers(i)).norm }
+      val id = (0 until centers.length) minBy { i =>
+        (p - centers(i)).norm
+      }
       pointToJson(p) -> ("cluster" + (id + 1))
     }.toMap
   }
@@ -362,13 +382,18 @@ trait ClusteringLibSpecs[M[+_]]
 
     model("clusterCenter") must beLike {
       case SArray(arr0) =>
-        val arr = arr0 collect { case SDecimal(d) => d }
+        val arr = arr0 collect {
+          case SDecimal(d) => d
+        }
 
         val rvalue = clusterMap((model("clusterId"): @unchecked) match {
           case SString(s) => s
         })
         val res = (rvalue: @unchecked) match {
-          case RArray(values) => values collect { case CNum(x) => x }
+          case RArray(values) =>
+            values collect {
+              case CNum(x) => x
+            }
         }
 
         arr must_== res
@@ -385,7 +410,9 @@ trait ClusteringLibSpecs[M[+_]]
 
       val clusters = makeClusters(centers)
 
-      val clusterMap = clusters match { case RObject(xs) => xs }
+      val clusterMap = clusters match {
+        case RObject(xs) => xs
+      }
 
       val model1 = RObject(Map("model1" -> clusters))
       val assignments = assign(points, centers)
@@ -427,8 +454,12 @@ trait ClusteringLibSpecs[M[+_]]
       val clustersA = makeClusters(centersA)
       val clustersB = makeClusters(centersB)
 
-      val clusterMapA = clustersA match { case RObject(xs) => xs }
-      val clusterMapB = clustersB match { case RObject(xs) => xs }
+      val clusterMapA = clustersA match {
+        case RObject(xs) => xs
+      }
+      val clusterMapB = clustersB match {
+        case RObject(xs) => xs
+      }
 
       val models = RObject(Map("model1" -> clustersA, "model2" -> clustersB))
 
@@ -493,7 +524,9 @@ trait ClusteringLibSpecs[M[+_]]
 
       val clusters = makeClusters(centers)
 
-      val clusterMap = clusters match { case RObject(xs) => xs }
+      val clusterMap = clusters match {
+        case RObject(xs) => xs
+      }
 
       val model = RObject(Map("model1" -> clusters))
 

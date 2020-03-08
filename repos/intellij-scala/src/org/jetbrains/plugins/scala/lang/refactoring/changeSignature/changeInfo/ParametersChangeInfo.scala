@@ -24,7 +24,9 @@ private[changeInfo] trait ParametersChangeInfo {
 
   val isParameterSetOrOrderChanged: Boolean = {
     oldParameters.map(_.length) != newParams.map(_.length) ||
-    newParameters.zipWithIndex.exists { case (p, i) => p.oldIndex != i }
+    newParameters.zipWithIndex.exists {
+      case (p, i) => p.oldIndex != i
+    }
   }
 
   val isParameterNamesChanged: Boolean = newParameters.zipWithIndex.exists {

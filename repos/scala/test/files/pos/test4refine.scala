@@ -21,8 +21,12 @@ abstract class O() {
     type Y;
     def foo(x: X, y: Y): E = e;
   }
-  val i: I { type Y = E } = null;
-  val j: I { type Y = X } = null;
+  val i: I {
+    type Y = E
+  } = null;
+  val j: I {
+    type Y = X
+  } = null;
 }
 
 object o extends O() {

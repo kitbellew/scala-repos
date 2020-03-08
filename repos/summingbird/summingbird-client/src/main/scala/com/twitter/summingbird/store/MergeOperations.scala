@@ -43,7 +43,9 @@ object MergeOperations {
   def collect[T, U](seq: Seq[(T, Future[U])])(
       implicit collect: FutureCollector[(T, U)]): Future[Seq[(T, U)]] =
     collect {
-      seq.map { case (t, futureU) => futureU.map(t -> _) }
+      seq.map {
+        case (t, futureU) => futureU.map(t -> _)
+      }
     }
 
   def mergeResults[K, V: Semigroup](
@@ -57,7 +59,9 @@ object MergeOperations {
 
   def dropBatches[K, V](
       m: Map[K, Future[Option[(BatchID, V)]]]): Map[K, Future[Option[V]]] =
-    m.map { case (k, v) => k -> v.map(_.map(_._2)) }
+    m.map {
+      case (k, v) => k -> v.map(_.map(_._2))
+    }
 
   /**
     * Pivots each BatchID out of the key and into the Value's future.
@@ -67,7 +71,9 @@ object MergeOperations {
     pivot.withValue(m).map {
       case (k, it) =>
         k -> collect(it.toSeq).map {
-          _.map { case (batchID, optV) => optV.map(batchID -> _) }
+          _.map {
+            case (batchID, optV) => optV.map(batchID -> _)
+          }
         }
     }
 
@@ -76,7 +82,9 @@ object MergeOperations {
     m.map {
       case (k, futureOptV) =>
         k -> futureOptV.map { optV =>
-          Seq(optV.map { case (batchID, v) => (batchID.prev, v) })
+          Seq(optV.map {
+            case (batchID, v) => (batchID.prev, v)
+          })
         }
     }
 
@@ -106,7 +114,9 @@ object MergeOperations {
     for {
       collected <- collect(
         ks.map { k =>
-          lookup(k).map { k -> expand(_, nowBatch, batchesToKeep) }
+          lookup(k).map {
+            k -> expand(_, nowBatch, batchesToKeep)
+          }
         }
       )
     } yield pivot.invert(collected.toMap).toSet

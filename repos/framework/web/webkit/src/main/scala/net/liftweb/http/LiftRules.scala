@@ -578,7 +578,11 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * For each unload hook registered, run them during destroy()
     */
   private[http] def runUnloadHooks() {
-    unloadHooks.toList.foreach { f => tryo { f() } }
+    unloadHooks.toList.foreach { f =>
+      tryo {
+        f()
+      }
+    }
   }
 
   /**
@@ -1269,7 +1273,9 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
           }{
             failure.exception match {
               case Full(e) =>
-                <pre>{e.getStackTrace.map(_.toString).mkString("\n")}</pre>
+                <pre>{
+                  e.getStackTrace.map(_.toString).mkString("\n")
+                }</pre>
               case _ => NodeSeq.Empty
             }
           }<i>note: this error is displayed in the browser because
@@ -1396,7 +1402,9 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   /**
     * Returns the HTTPContext
     */
-  def context: HTTPContext = synchronized { _context }
+  def context: HTTPContext = synchronized {
+    _context
+  }
 
   /**
     * Sets the HTTPContext
@@ -1452,9 +1460,14 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * Open a resource by name and process its contents using the supplied function.
     */
   def doWithResource[T](name: String)(f: InputStream => T): Box[T] =
-    getResource(name) map { _.openStream } map { is =>
-      try { f(is) }
-      finally { is.close }
+    getResource(name) map {
+      _.openStream
+    } map { is =>
+      try {
+        f(is)
+      } finally {
+        is.close
+      }
     }
 
   /**
@@ -1707,7 +1720,9 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
         "Exception being returned to browser when processing " + r.uri.toString,
         e)
       XhtmlResponse(
-        (<html> <body>Exception occured while processing {r.uri}<pre>{
+        (<html> <body>Exception occured while processing {
+          r.uri
+        }<pre>{
           showException(e)
         }</pre> </body> </html>),
         S.htmlProperties.docType,
@@ -2317,7 +2332,9 @@ private[http] case object DefaultBootstrap extends Bootable {
     val f = createInvoker(
       "boot",
       Class.forName("bootstrap.liftweb.Boot").newInstance.asInstanceOf[AnyRef])
-    f.map { f => f() }
+    f.map { f =>
+      f()
+    }
   }
 }
 

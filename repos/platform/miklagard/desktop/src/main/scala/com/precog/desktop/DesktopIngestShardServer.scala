@@ -169,7 +169,9 @@ object DesktopIngestShardServer
       _.onSuccess {
         case (runningState, stoppable) =>
           guiNotifier.foreach(_("Precog startup complete"))
-      }.map { _ => PrecogUnit }
+      }.map { _ =>
+        PrecogUnit
+      }
     }
   }
 
@@ -188,7 +190,9 @@ object DesktopIngestShardServer
 
     val stoppable = Stoppable.fromFuture {
       platform.shutdown
-        .onComplete { _ => logger.info("Platform shutdown complete") }
+        .onComplete { _ =>
+          logger.info("Platform shutdown complete")
+        }
         .onFailure {
           case t: Throwable =>
             logger.error("Failure during platform shutdown", t)
@@ -297,7 +301,9 @@ object LaunchLabcoat {
           DesktopIngestShardServer
             .runGUI(config)
             .map {
-              _.map { _ => launchBrowser(config); println("Launch complete") }
+              _.map { _ =>
+                launchBrowser(config); println("Launch complete")
+              }
             }
             .getOrElse {
               sys.error("Failed to start bifrost!")

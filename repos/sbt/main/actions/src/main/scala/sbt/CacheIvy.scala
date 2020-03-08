@@ -97,7 +97,9 @@ object CacheIvy {
   implicit def updateStatsFormat: Format[UpdateStats] =
     wrap[UpdateStats, (Long, Long, Long)](
       us => (us.resolveTime, us.downloadTime, us.downloadSize),
-      { case (rt, dt, ds) => new UpdateStats(rt, dt, ds, true) })
+      {
+        case (rt, dt, ds) => new UpdateStats(rt, dt, ds, true)
+      })
   implicit def confReportFormat(implicit
       m: Format[String],
       mr: Format[Seq[ModuleReport]],
@@ -107,7 +109,9 @@ object CacheIvy {
       ConfigurationReport,
       (String, Seq[ModuleReport], Seq[OrganizationArtifactReport])](
       r => (r.configuration, r.modules, r.details),
-      { case (c, m, d) => new ConfigurationReport(c, m, d) })
+      {
+        case (c, m, d) => new ConfigurationReport(c, m, d)
+      })
   implicit def moduleReportFormat(implicit
       cf: Format[Seq[Caller]],
       ff: Format[File]): Format[ModuleReport] = {
@@ -138,7 +142,9 @@ object CacheIvy {
           m.artifacts,
           m.missingArtifacts,
           m.status,
-          m.publicationDate map { _.getTime },
+          m.publicationDate map {
+            _.getTime
+          },
           m.resolver,
           m.artifactResolver,
           m.evicted,
@@ -159,7 +165,9 @@ object CacheIvy {
             as,
             ms,
             s,
-            pd map { new ju.Date(_) },
+            pd map {
+              new ju.Date(_)
+            },
             r,
             a,
             e,
@@ -198,7 +206,9 @@ object CacheIvy {
           a.configurations.toSeq,
           a.url,
           a.extraAttributes),
-      { case (n, t, x, c, cs, u, e) => Artifact(n, t, x, c, cs, u, e) }
+      {
+        case (n, t, x, c, cs, u, e) => Artifact(n, t, x, c, cs, u, e)
+      }
     )
   }
   implicit def organizationArtifactReportFormat(implicit
@@ -207,7 +217,9 @@ object CacheIvy {
       df: Format[Seq[ModuleReport]]): Format[OrganizationArtifactReport] =
     wrap[OrganizationArtifactReport, (String, String, Seq[ModuleReport])](
       m => (m.organization, m.name, m.modules),
-      { case (o, n, r) => OrganizationArtifactReport(o, n, r) })
+      {
+        case (o, n, r) => OrganizationArtifactReport(o, n, r)
+      })
   implicit def callerFormat: Format[Caller] =
     wrap[
       Caller,
@@ -237,7 +249,9 @@ object CacheIvy {
       implicit sf: Format[String]): Format[InclExclRule] =
     wrap[InclExclRule, (String, String, String, Seq[String])](
       e => (e.organization, e.name, e.artifact, e.configurations),
-      { case (o, n, a, cs) => InclExclRule(o, n, a, cs) })
+      {
+        case (o, n, a, cs) => InclExclRule(o, n, a, cs)
+      })
   implicit def crossVersionFormat: Format[CrossVersion] =
     wrap(crossToInt, crossFromInt)
   implicit def sourcePositionFormat: Format[SourcePosition] =

@@ -129,7 +129,9 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
 
     val result = for {
       // TODO: No idea how to work with EitherT[TestFuture, so sys.error it is]
-      executor <- executorFor(apiKey) valueOr { err => sys.error(err.toString) }
+      executor <- executorFor(apiKey) valueOr { err =>
+        sys.error(err.toString)
+      }
       result0 <- executor
         .execute(numTicks.toString, ctx, QueryOptions(timeout = timeout))
         .valueOr(err => sys.error(err.toString)) mapValue {
@@ -155,7 +157,9 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
     schedule(ticks) {
       jobManager
         .cancel(jobId, "Yarrrr", yggConfig.clock.now())
-        .map { _.fold(_ => false, _ => true) }
+        .map {
+          _.fold(_ => false, _ => true)
+        }
         .copoint
     }
   }
@@ -325,7 +329,9 @@ trait TestManagedQueryModule
                       }.liftM[JobQueryT]
 
                     case _ =>
-                      M0.point { None }
+                      M0.point {
+                        None
+                      }
                   }
 
                   (Tag(M0.jobId map (_ -> ticks)), completeJob(result))
@@ -338,6 +344,10 @@ trait TestManagedQueryModule
     }
   }
 
-  def startup = Applicative[TestFuture].point { true }
-  def shutdown = Applicative[TestFuture].point { true }
+  def startup = Applicative[TestFuture].point {
+    true
+  }
+  def shutdown = Applicative[TestFuture].point {
+    true
+  }
 }

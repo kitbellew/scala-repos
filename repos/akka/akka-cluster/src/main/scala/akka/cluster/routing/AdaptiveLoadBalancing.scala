@@ -508,7 +508,9 @@ abstract class CapacityMetricsSelector extends MetricsSelector {
   def weights(capacity: Map[Address, Double]): Map[Address, Int] = {
     if (capacity.isEmpty) Map.empty[Address, Int]
     else {
-      val (_, min) = capacity.minBy { case (_, c) ⇒ c }
+      val (_, min) = capacity.minBy {
+        case (_, c) ⇒ c
+      }
       // lowest usable capacity is 1% (>= 0.5% will be rounded to weight 1), also avoids div by zero
       val divisor = math.max(0.01, min)
       capacity map {

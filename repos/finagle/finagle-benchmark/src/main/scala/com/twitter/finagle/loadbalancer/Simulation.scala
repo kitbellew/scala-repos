@@ -22,7 +22,9 @@ private object LatencyProfile {
     }
     val size = latencies.size
     var i = rng.nextInt(size)
-    () => { i = i + 1; latencies(i % size) }
+    () => {
+      i = i + 1; latencies(i % size)
+    }
   }
 
   /**
@@ -74,7 +76,9 @@ private object LatencyProfile {
 private[finagle] class LatencyProfile(stopWatch: () => Duration) {
 
   /** Increase latency returned from `next` by `factor`. */
-  def slowBy(factor: Long)(next: () => Duration) = () => { next() * factor }
+  def slowBy(factor: Long)(next: () => Duration) = () => {
+    next() * factor
+  }
 
   /**
     * Increases the latency returned from `next` by `factor` while `stopWatch` is
@@ -117,8 +121,12 @@ private[finagle] class LatencyFactory(sr: StatsReceiver) {
       val load = new AtomicInteger(0)
       val maxload = new AtomicInteger(0)
       val gauges = Seq(
-        sr.scope("load").addGauge("" + name) { load.get() },
-        sr.scope("maxload").addGauge("" + name) { maxload.get() }
+        sr.scope("load").addGauge("" + name) {
+          load.get()
+        },
+        sr.scope("maxload").addGauge("" + name) {
+          maxload.get()
+        }
       )
       val count = sr.scope("count").counter("" + name)
 
@@ -165,7 +173,9 @@ private[finagle] object Simulation extends com.twitter.app.App {
 
     val underlying = Var(stable)
     val activity: Activity[Set[ServiceFactory[Unit, Unit]]] =
-      Activity(underlying.map { facs => Activity.Ok(facs) })
+      Activity(underlying.map { facs =>
+        Activity.Ok(facs)
+      })
 
     val factory = bal() match {
       case "p2c" =>
@@ -212,7 +222,9 @@ private[finagle] object Simulation extends com.twitter.app.App {
         n += 1
       }
 
-      if (Rem > 0 && ms % (1000 / Rem) == 0) { call() }
+      if (Rem > 0 && ms % (1000 / Rem) == 0) {
+        call()
+      }
 
       ms += 1
 

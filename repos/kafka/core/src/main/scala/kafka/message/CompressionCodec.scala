@@ -72,8 +72,12 @@ object BrokerCompressionCodec {
   }
 }
 
-sealed trait CompressionCodec { def codec: Int; def name: String }
-sealed trait BrokerCompressionCodec { def name: String }
+sealed trait CompressionCodec {
+  def codec: Int; def name: String
+}
+sealed trait BrokerCompressionCodec {
+  def name: String
+}
 
 case object DefaultCompressionCodec
     extends CompressionCodec

@@ -115,7 +115,9 @@ trait GameHelper {
           s"${u.titleName} ($r)"
         }
       }
-    ) { level => s"A.I. level $level" }
+    ) { level =>
+      s"A.I. level $level"
+    }
 
   val berserkIconSpan = """<span data-icon="`"></span>"""
   val berserkIconSpanHtml = Html(berserkIconSpan)
@@ -196,7 +198,9 @@ trait GameHelper {
   private def gameTitle(game: Game, color: Color): String = {
     val u1 = playerText(game player color, withRating = true)
     val u2 = playerText(game opponent color, withRating = true)
-    val clock = game.clock ?? { c => " • " + c.show }
+    val clock = game.clock ?? { c =>
+      " • " + c.show
+    }
     val variant = game.variant.exotic ?? s" • ${game.variant.name}"
     s"$u1 vs $u2$clock$variant"
   }

@@ -24,7 +24,9 @@ class CheckedTest
     if (value.isValidLong) {
       check should equal(value.toLong)
     } else {
-      an[ArithmeticException] should be thrownBy { check }
+      an[ArithmeticException] should be thrownBy {
+        check
+      }
     }
   }
 
@@ -32,17 +34,23 @@ class CheckedTest
     if (value.isValidInt) {
       check should equal(value.toInt)
     } else {
-      an[ArithmeticException] should be thrownBy { check }
+      an[ArithmeticException] should be thrownBy {
+        check
+      }
     }
   }
 
   test("Negate of Int.MinValue overflows") {
     val x = Int.MinValue
-    an[ArithmeticException] should be thrownBy { checked(-x) }
+    an[ArithmeticException] should be thrownBy {
+      checked(-x)
+    }
   }
 
   test("Int negate overflow throws arithmetic exception") {
-    forAll("x") { (x: Int) => checkForIntOverflow(-BigInt(x), checked(-x)) }
+    forAll("x") { (x: Int) =>
+      checkForIntOverflow(-BigInt(x), checked(-x))
+    }
   }
 
   test("Int addition overflow throws arithmetic exception") {
@@ -80,11 +88,15 @@ class CheckedTest
 
   test("Negate of Long.MinValue overflows") {
     val x = Long.MinValue
-    an[ArithmeticException] should be thrownBy { checked(-x) }
+    an[ArithmeticException] should be thrownBy {
+      checked(-x)
+    }
   }
 
   test("Long negate overflow throws arithmetic exception") {
-    forAll("x") { (x: Long) => checkForLongOverflow(-BigInt(x), checked(-x)) }
+    forAll("x") { (x: Long) =>
+      checkForLongOverflow(-BigInt(x), checked(-x))
+    }
   }
 
   test("Long addition overflow throws arithmetic exception") {

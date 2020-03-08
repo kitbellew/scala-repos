@@ -343,7 +343,9 @@ trait TraversableLike[+A, +Repr]
     var result = true
     breakable {
       for (x <- this)
-        if (!p(x)) { result = false; break }
+        if (!p(x)) {
+          result = false; break
+        }
     }
     result
   }
@@ -360,7 +362,9 @@ trait TraversableLike[+A, +Repr]
     var result = false
     breakable {
       for (x <- this)
-        if (p(x)) { result = true; break }
+        if (p(x)) {
+          result = true; break
+        }
     }
     result
   }
@@ -369,7 +373,9 @@ trait TraversableLike[+A, +Repr]
     var result: Option[A] = None
     breakable {
       for (x <- this)
-        if (p(x)) { result = Some(x); break }
+        if (p(x)) {
+          result = Some(x); break
+        }
     }
     result
   }
@@ -383,7 +389,9 @@ trait TraversableLike[+A, +Repr]
     b.sizeHint(this, 1)
     var acc = z
     b += acc
-    for (x <- this) { acc = op(acc, x); b += acc }
+    for (x <- this) {
+      acc = op(acc, x); b += acc
+    }
     b.result
   }
 

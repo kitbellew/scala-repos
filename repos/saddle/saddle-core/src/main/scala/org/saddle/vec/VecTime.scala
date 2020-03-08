@@ -174,7 +174,9 @@ object VecTime {
     }
 
     // calculate offset for each subsequent vec of bytes
-    val sz = vecs.foldLeft(0) { case (o, v) => o + v.length }
+    val sz = vecs.foldLeft(0) {
+      case (o, v) => o + v.length
+    }
 
     val databuf = Array.ofDim[Long](sz)
 
@@ -183,7 +185,9 @@ object VecTime {
       case (v, vidx) =>
         val vlen = v.length
         var i = 0
-        while (i < vlen) { databuf(c) = v.times(i); i += 1; c += 1 }
+        while (i < vlen) {
+          databuf(c) = v.times(i); i += 1; c += 1
+        }
     }
 
     new VecTime(Vec(databuf))

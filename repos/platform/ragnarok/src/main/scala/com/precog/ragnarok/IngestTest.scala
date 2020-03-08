@@ -119,7 +119,9 @@ object IngestTest {
     RunConfig.fromCommandLine(args.toList) match {
       case Failure(errors) =>
         System.err.println("Error parsing command lines:")
-        errors.list foreach { msg => System.err.println("\t" + msg) }
+        errors.list foreach { msg =>
+          System.err.println("\t" + msg)
+        }
         System.err.println()
 
       case Success(config) =>

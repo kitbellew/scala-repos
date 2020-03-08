@@ -1,5 +1,7 @@
 trait Derived extends Base[Container] {
-  protected def defect = { case c: Container => c.v.toString }
+  protected def defect = {
+    case c: Container => c.v.toString
+  }
 }
 
 // Erasure was ignoring the prefix `Derived#7001.this` when erasing

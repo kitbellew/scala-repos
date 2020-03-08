@@ -91,7 +91,9 @@ private[ui] class RDDPage(parent: StorageTab) extends WebUIPage("rdd") {
         _blockTable.table(page)
       } catch {
         case e @ (_: IllegalArgumentException | _: IndexOutOfBoundsException) =>
-          <div class="alert alert-error">{e.getMessage}</div>
+          <div class="alert alert-error">{
+            e.getMessage
+          }</div>
       }
 
     val jsForScrollingDownToBlockTable =
@@ -116,23 +118,33 @@ private[ui] class RDDPage(parent: StorageTab) extends WebUIPage("rdd") {
           <ul class="unstyled">
             <li>
               <strong>Storage Level:</strong>
-              {rddStorageInfo.storageLevel}
+              {
+        rddStorageInfo.storageLevel
+      }
             </li>
             <li>
               <strong>Cached Partitions:</strong>
-              {rddStorageInfo.numCachedPartitions}
+              {
+        rddStorageInfo.numCachedPartitions
+      }
             </li>
             <li>
               <strong>Total Partitions:</strong>
-              {rddStorageInfo.numPartitions}
+              {
+        rddStorageInfo.numPartitions
+      }
             </li>
             <li>
               <strong>Memory Size:</strong>
-              {Utils.bytesToString(rddStorageInfo.memoryUsed)}
+              {
+        Utils.bytesToString(rddStorageInfo.memoryUsed)
+      }
             </li>
             <li>
               <strong>Disk Size:</strong>
-              {Utils.bytesToString(rddStorageInfo.diskUsed)}
+              {
+        Utils.bytesToString(rddStorageInfo.diskUsed)
+      }
             </li>
           </ul>
         </div>
@@ -146,15 +158,21 @@ private[ui] class RDDPage(parent: StorageTab) extends WebUIPage("rdd") {
       }
             Executors
           </h4>
-          {workerTable}
+          {
+        workerTable
+      }
         </div>
       </div>
 
       <div>
         <h4 id="blocks-section">
-          {rddStorageInfo.partitions.map(_.size).getOrElse(0)} Partitions
+          {
+        rddStorageInfo.partitions.map(_.size).getOrElse(0)
+      } Partitions
         </h4>
-        {blockTableHTML ++ jsForScrollingDownToBlockTable}
+        {
+        blockTableHTML ++ jsForScrollingDownToBlockTable
+      }
       </div>;
 
     UIUtils.headerSparkPage(
@@ -169,12 +187,20 @@ private[ui] class RDDPage(parent: StorageTab) extends WebUIPage("rdd") {
   /** Render an HTML row representing a worker */
   private def workerRow(worker: RDDDataDistribution): Seq[Node] = {
     <tr>
-      <td>{worker.address}</td>
+      <td>{
+      worker.address
+    }</td>
       <td>
-        {Utils.bytesToString(worker.memoryUsed)}
-        ({Utils.bytesToString(worker.memoryRemaining)} Remaining)
+        {
+      Utils.bytesToString(worker.memoryUsed)
+    }
+        ({
+      Utils.bytesToString(worker.memoryRemaining)
+    } Remaining)
       </td>
-      <td>{Utils.bytesToString(worker.diskUsed)}</td>
+      <td>{
+      Utils.bytesToString(worker.diskUsed)
+    }</td>
     </tr>
   }
 }
@@ -322,9 +348,15 @@ private[ui] class BlockPagedTable(
               s"&block.pageSize=$pageSize")
           val arrow = if (desc) "&#x25BE;" else "&#x25B4;" // UP or DOWN
           <th>
-            <a href={headerLink}>
-              {header}
-              <span>&nbsp;{Unparsed(arrow)}</span>
+            <a href={
+            headerLink
+          }>
+              {
+            header
+          }
+              <span>&nbsp;{
+            Unparsed(arrow)
+          }</span>
             </a>
           </th>
         } else {
@@ -333,23 +365,39 @@ private[ui] class BlockPagedTable(
               s"&block.sort=${URLEncoder.encode(header, "UTF-8")}" +
               s"&block.pageSize=$pageSize")
           <th>
-            <a href={headerLink}>
-              {header}
+            <a href={
+            headerLink
+          }>
+              {
+            header
+          }
             </a>
           </th>
         }
       }
     }
-    <thead>{headerRow}</thead>
+    <thead>{
+      headerRow
+    }</thead>
   }
 
   override def row(block: BlockTableRowData): Seq[Node] = {
     <tr>
-      <td>{block.blockName}</td>
-      <td>{block.storageLevel}</td>
-      <td>{Utils.bytesToString(block.memoryUsed)}</td>
-      <td>{Utils.bytesToString(block.diskUsed)}</td>
-      <td>{block.executors}</td>
+      <td>{
+      block.blockName
+    }</td>
+      <td>{
+      block.storageLevel
+    }</td>
+      <td>{
+      Utils.bytesToString(block.memoryUsed)
+    }</td>
+      <td>{
+      Utils.bytesToString(block.diskUsed)
+    }</td>
+      <td>{
+      block.executors
+    }</td>
     </tr>
   }
 }

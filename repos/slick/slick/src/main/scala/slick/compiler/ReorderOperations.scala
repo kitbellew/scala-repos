@@ -12,7 +12,12 @@ class ReorderOperations extends Phase {
   def apply(state: CompilerState) = state.map(convert)
 
   def convert(tree: Node): Node =
-    tree.replace({ case n => convert1(n) }, keepType = true, bottomUp = true)
+    tree.replace(
+      {
+        case n => convert1(n)
+      },
+      keepType = true,
+      bottomUp = true)
 
   def convert1(tree: Node): Node = tree match {
     // Push Bind into Union
@@ -22,8 +27,18 @@ class ReorderOperations extends Phase {
         Ellipsis(n, List(0, 0), List(0, 1)))
       val s1l, s1r = new AnonSymbol
       val n2 = Union(
-        Bind(s1l, l1, sel.replace { case Ref(s) if s == s1 => Ref(s1l) }),
-        Bind(s1r, r1, sel.replace { case Ref(s) if s == s1 => Ref(s1r) }),
+        Bind(
+          s1l,
+          l1,
+          sel.replace {
+            case Ref(s) if s == s1 => Ref(s1l)
+          }),
+        Bind(
+          s1r,
+          r1,
+          sel.replace {
+            case Ref(s) if s == s1 => Ref(s1r)
+          }),
         all).infer()
       logger.debug(
         "Pushed Bind into both sides of a Union",
@@ -37,8 +52,18 @@ class ReorderOperations extends Phase {
         Ellipsis(n, List(0, 0), List(0, 1)))
       val s1l, s1r = new AnonSymbol
       val n2 = Union(
-        Filter(s1l, l1, pred.replace { case Ref(s) if s == s1 => Ref(s1l) }),
-        Filter(s1r, r1, pred.replace { case Ref(s) if s == s1 => Ref(s1r) }),
+        Filter(
+          s1l,
+          l1,
+          pred.replace {
+            case Ref(s) if s == s1 => Ref(s1l)
+          }),
+        Filter(
+          s1r,
+          r1,
+          pred.replace {
+            case Ref(s) if s == s1 => Ref(s1r)
+          }),
         all).infer()
       logger.debug(
         "Pushed Filter into both sides of a Union",

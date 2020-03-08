@@ -25,7 +25,9 @@ object product {
   object ProductLength {
     def apply[T](implicit length: ProductLength[T]): Aux[T, length.Out] = length
 
-    type Aux[T, Out0] = ProductLength[T] { type Out = Out0 }
+    type Aux[T, Out0] = ProductLength[T] {
+      type Out = Out0
+    }
 
     implicit def length[T, L <: HList](implicit
         gen: Generic.Aux[T, L],
@@ -41,7 +43,9 @@ object product {
   object ToTuple {
     def apply[P](implicit toTuple: ToTuple[P]): Aux[P, toTuple.Out] = toTuple
 
-    type Aux[P, Out0] = ToTuple[P] { type Out = Out0 }
+    type Aux[P, Out0] = ToTuple[P] {
+      type Out = Out0
+    }
 
     implicit def toTuple[P, L <: HList, T, Out0](implicit
         gen: Generic.Aux[P, L],
@@ -54,12 +58,16 @@ object product {
       }
   }
 
-  trait ToHList[P] extends DepFn1[P] { type Out <: HList }
+  trait ToHList[P] extends DepFn1[P] {
+    type Out <: HList
+  }
 
   object ToHList {
     def apply[P](implicit toHList: ToHList[P]): Aux[P, toHList.Out] = toHList
 
-    type Aux[P, Out0 <: HList] = ToHList[P] { type Out = Out0 }
+    type Aux[P, Out0 <: HList] = ToHList[P] {
+      type Out = Out0
+    }
 
     implicit def toHList[P, Out0 <: HList, L <: HList](implicit
         gen: Generic.Aux[P, L],
@@ -71,13 +79,17 @@ object product {
       }
   }
 
-  trait ToRecord[P] extends DepFn1[P] { type Out <: HList }
+  trait ToRecord[P] extends DepFn1[P] {
+    type Out <: HList
+  }
 
   object ToRecord {
     def apply[P](implicit toRecord: ToRecord[P]): Aux[P, toRecord.Out] =
       toRecord
 
-    type Aux[P, Out0 <: HList] = ToRecord[P] { type Out = Out0 }
+    type Aux[P, Out0 <: HList] = ToRecord[P] {
+      type Out = Out0
+    }
 
     implicit def toRecord[P, Out0 <: HList, R <: HList](implicit
         lgen: LabelledGeneric.Aux[P, R],
@@ -98,7 +110,9 @@ object product {
   object ToMap {
     def apply[P](implicit toMap: ToMap[P]): Aux[P, toMap.K, toMap.V] = toMap
 
-    type Aux[P, K0, V0] = ToMap[P] { type K = K0; type V = V0 }
+    type Aux[P, K0, V0] = ToMap[P] {
+      type K = K0; type V = V0
+    }
 
     implicit def productToMap[P, K0, V0, R <: HList](implicit
         lgen: LabelledGeneric.Aux[P, R],
@@ -126,7 +140,9 @@ object product {
         toTraversable: ToTraversable[P, M]): Aux[P, M, toTraversable.Lub] =
       toTraversable
 
-    type Aux[P, M[_], Lub0] = ToTraversable[P, M] { type Lub = Lub0 }
+    type Aux[P, M[_], Lub0] = ToTraversable[P, M] {
+      type Lub = Lub0
+    }
 
     implicit def productToTraversable[P, M[_], Lub0, L <: HList](implicit
         gen: Generic.Aux[P, L],

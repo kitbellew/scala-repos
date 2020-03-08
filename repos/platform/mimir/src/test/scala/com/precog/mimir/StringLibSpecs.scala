@@ -1060,7 +1060,9 @@ trait StringLibSpecs[M[+_]]
           case (Vector(n), SArray(elems)) => (n, elems)
         }
         .sorted(o)
-        .map(_._2.map { case SString(s) => s })
+        .map(_._2.map {
+          case SString(s) => s
+        })
 
     def mktree(f: Op2, path: String, sep: String) =
       Join(
@@ -1094,7 +1096,10 @@ trait StringLibSpecs[M[+_]]
         Const(CString("{"))(line))(line)
 
       testEval(input) collect {
-        case (_, SArray(vec)) => vec collect { case SString(str) => str }
+        case (_, SArray(vec)) =>
+          vec collect {
+            case SString(str) => str
+          }
       } mustEqual Set(Vector("foo", "bar"))
     }
 

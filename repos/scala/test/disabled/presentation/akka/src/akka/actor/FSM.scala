@@ -319,7 +319,9 @@ trait FSM[S, D] extends ListenerManagement {
   implicit protected final def total2pf(transitionHandler: (S, S) => Unit) =
     new PartialFunction[(S, S), Unit] {
       def isDefinedAt(in: (S, S)) = true
-      def apply(in: (S, S)) { transitionHandler(in._1, in._2) }
+      def apply(in: (S, S)) {
+        transitionHandler(in._1, in._2)
+      }
     }
 
   /**
@@ -402,7 +404,9 @@ trait FSM[S, D] extends ListenerManagement {
   private var transitionEvent: List[TransitionHandler] = Nil
   private def handleTransition(prev: S, next: S) {
     val tuple = (prev, next)
-    for (te ← transitionEvent) { if (te.isDefinedAt(tuple)) te(tuple) }
+    for (te ← transitionEvent) {
+      if (te.isDefinedAt(tuple)) te(tuple)
+    }
   }
 
   // ListenerManagement shall not start() or stop() listener actors

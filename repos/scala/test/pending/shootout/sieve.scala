@@ -20,7 +20,9 @@ object sieve {
       for (i <- Iterator.range(start, stop + 1)) {
         if (isPrime(i)) {
           var k = i + i;
-          while (k <= stop) { isPrime(k) = false; k = k + i; }
+          while (k <= stop) {
+            isPrime(k) = false; k = k + i;
+          }
           count = count + 1;
         }
       }
@@ -32,8 +34,11 @@ object sieve {
 
   private def toPositiveInt(s: Array[String]) = {
     val i =
-      try { Integer.parseInt(s(0)); }
-      catch { case _ => 1 }
+      try {
+        Integer.parseInt(s(0));
+      } catch {
+        case _ => 1
+      }
     if (i > 0) i; else 1;
   }
 }

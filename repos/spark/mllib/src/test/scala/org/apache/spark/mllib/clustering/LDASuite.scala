@@ -328,10 +328,14 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
 
     val docsSingleWord = sc.parallelize(
       Array(Vectors.sparse(6, Array(0), Array(1))).zipWithIndex
-        .map { case (wordCounts, docId) => (docId.toLong, wordCounts) })
+        .map {
+          case (wordCounts, docId) => (docId.toLong, wordCounts)
+        })
     val docsRepeatedWord = sc.parallelize(
       Array(Vectors.sparse(6, Array(0), Array(5))).zipWithIndex
-        .map { case (wordCounts, docId) => (docId.toLong, wordCounts) })
+        .map {
+          case (wordCounts, docId) => (docId.toLong, wordCounts)
+        })
 
     /* Verify results using gensim:
        import numpy as np
@@ -488,7 +492,9 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
           '0.167*0 + 0.167*1 + 0.167*2 + 0.167*4 + 0.167*3 + 0.167*5']
      */
     topics.foreach { topic =>
-      assert(topic.forall { case (_, p) => p ~= 0.167 absTol 0.05 })
+      assert(topic.forall {
+        case (_, p) => p ~= 0.167 absTol 0.05
+      })
     }
   }
 

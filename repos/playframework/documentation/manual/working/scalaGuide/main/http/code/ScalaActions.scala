@@ -17,7 +17,9 @@ package scalaguide.http.scalaactions {
     "A scala action" should {
       "allow writing a simple echo action" in {
         //#echo-action
-        def echo = Action { request => Ok("Got request [" + request + "]") }
+        def echo = Action { request =>
+          Ok("Got request [" + request + "]")
+        }
         //#echo-action
         testAction(echo)
       }
@@ -35,7 +37,9 @@ package scalaguide.http.scalaactions {
       "pass the request to the action" in {
         testAction(
           //#request-action
-          Action { request => Ok("Got request [" + request + "]") }
+          Action { request =>
+            Ok("Got request [" + request + "]")
+          }
           //#request-action
         )
       }
@@ -43,7 +47,9 @@ package scalaguide.http.scalaactions {
       "pass the request implicitly to the action" in {
         testAction(
           //#implicit-request-action
-          Action { implicit request => Ok("Got request [" + request + "]") }
+          Action { implicit request =>
+            Ok("Got request [" + request + "]")
+          }
           //#implicit-request-action
         )
       }
@@ -154,7 +160,9 @@ package scalaguide.http.scalaactions {
         action: Action[A],
         expectedResponse: Int = OK,
         request: Request[A] = FakeRequest()) = {
-      assertAction(action, expectedResponse, request) { result => success }
+      assertAction(action, expectedResponse, request) { result =>
+        success
+      }
     }
 
     def assertAction[A, T: AsResult](

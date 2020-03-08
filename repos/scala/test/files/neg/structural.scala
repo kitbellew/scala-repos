@@ -1,6 +1,8 @@
 object Test extends App {
 
-  def f(x: { type D; def m: D }): Null = null
+  def f(x: {
+    type D; def m: D
+  }): Null = null
 
   class Tata
 
@@ -70,16 +72,26 @@ object Test extends App {
   })
 
   /* Bug #1246 */
-  type Summable[T] = { def +(v: T): T }
+  type Summable[T] = {
+    def +(v: T): T
+  }
   def sum[T <: Summable[T]](xs: List[T]) = xs.reduceLeft[T](_ + _)
 
   /* Bug #1004 & #967 */
-  type S1 = { def f(p: this.type): Unit }
-  val s1 = new { def f(p: this.type): Unit = () }
+  type S1 = {
+    def f(p: this.type): Unit
+  }
+  val s1 = new {
+    def f(p: this.type): Unit = ()
+  }
 
-  type S2 = { type T; def f(p: T): Unit }
+  type S2 = {
+    type T; def f(p: T): Unit
+  }
   //val s2: S2 = new { type T = A; def f(p: T): Unit = () }
 
-  def s3[U >: Null <: Object](p: { def f(p: U): Unit; def u: U }) = ()
+  def s3[U >: Null <: Object](p: {
+    def f(p: U): Unit; def u: U
+  }) = ()
 
 }

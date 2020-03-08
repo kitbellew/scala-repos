@@ -140,7 +140,9 @@ abstract class CharArrayReader extends CharArrayReaderData { self =>
     def error(offset: Int, msg: String) = self.error(offset, msg)
 
     /** A mystery why CharArrayReader.nextChar() returns Unit */
-    def getc() = { nextChar(); ch }
+    def getc() = {
+      nextChar(); ch
+    }
     def getu() = {
       require(buf(charOffset) == '\\'); ch = '\\'; charOffset += 1;
       potentialUnicode(); ch

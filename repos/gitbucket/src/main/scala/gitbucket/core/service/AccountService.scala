@@ -156,7 +156,9 @@ trait AccountService {
 
   def updateAccount(account: Account)(implicit s: Session): Unit =
     Accounts
-      .filter { a => a.userName === account.userName.bind }
+      .filter { a =>
+        a.userName === account.userName.bind
+      }
       .map { a =>
         (
           a.password,

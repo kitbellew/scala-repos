@@ -447,7 +447,9 @@ private[akka] object LocalActorRefProvider {
         // termination hooks, they will reply with TerminationHookDone
         // and when all are done the systemGuardian is stopped
         context.become(terminating)
-        terminationHooks foreach { _ ! TerminationHook }
+        terminationHooks foreach {
+          _ ! TerminationHook
+        }
         stopWhenAllTerminationHooksDone()
       case Terminated(a) ⇒
         // a registered, and watched termination hook terminated before

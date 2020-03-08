@@ -125,7 +125,9 @@ class ZkAsyncSemaphore(
         zk onSessionEvent {
           case StateEvent.Expired => rejectWaitQueue()
           case StateEvent.Connected => {
-            permitNodes() map { nodes => checkWaiters(nodes) }
+            permitNodes() map { nodes =>
+              checkWaiters(nodes)
+            }
             monitorSemaphore(semaphoreNode)
           }
         }
@@ -141,7 +143,9 @@ class ZkAsyncSemaphore(
     * @return A Future ZNode that is satisfied when the full path exists.
     */
   private[this] def safeCreate(path: String): Future[ZNode] = {
-    val nodes = path.split(pathSeparator) filter { !_.isEmpty }
+    val nodes = path.split(pathSeparator) filter {
+      !_.isEmpty
+    }
     val head = Future.value(zk(pathSeparator + nodes.head))
     nodes.tail.foldLeft(head) { (futureParent, child) =>
       futureParent flatMap { parent =>
@@ -180,7 +184,9 @@ class ZkAsyncSemaphore(
   private[this] def monitorSemaphore(node: ZNode) = {
     val monitor = node.getChildren.monitor()
     monitor foreach { tryChildren =>
-      tryChildren map { zop => checkWaiters(zop.children) }
+      tryChildren map { zop =>
+        checkWaiters(zop.children)
+      }
     }
   }
 
@@ -203,7 +209,9 @@ class ZkAsyncSemaphore(
     val permits = nodes filter { child =>
       child.path.startsWith(permitNodePathPrefix)
     } sortBy (child => sequenceNumberOf(child.path))
-    val ids = permits map { child => sequenceNumberOf(child.path) }
+    val ids = permits map { child =>
+      sequenceNumberOf(child.path)
+    }
     val waitqIterator = waitq.iterator()
     while (waitqIterator.hasNext) {
       val (promise, permitNode) = waitqIterator.next()
@@ -251,15 +259,20 @@ class ZkAsyncSemaphore(
     Future.collect(permits map numPermitsOf) map { purportedNumPermits =>
       val groupedByNumPermits = purportedNumPermits filter { i =>
         0 < i
-      } groupBy { i => i }
+      } groupBy { i =>
+        i
+      }
       val permitsToBelievers = groupedByNumPermits map {
         case (permits, believers) => (permits, believers.size)
       }
       val (numPermitsInMax, numBelieversOfMax) = permitsToBelievers.maxBy {
         case (_, believers) => believers
       }
-      val cardinalityOfMax =
-        permitsToBelievers.values.filter({ _ == numBelieversOfMax }).size
+      val cardinalityOfMax = permitsToBelievers.values
+        .filter({
+          _ == numBelieversOfMax
+        })
+        .size
 
       if (cardinalityOfMax == 1) {
         // Consensus

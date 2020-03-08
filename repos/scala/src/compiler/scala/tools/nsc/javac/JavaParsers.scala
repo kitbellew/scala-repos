@@ -116,7 +116,9 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
     def blankExpr = Ident(nme.WILDCARD)
 
     def makePackaging(pkg: RefTree, stats: List[Tree]): PackageDef =
-      atPos(pkg.pos) { PackageDef(pkg, stats) }
+      atPos(pkg.pos) {
+        PackageDef(pkg, stats)
+      }
 
     def makeTemplate(parents: List[Tree], stats: List[Tree]) =
       Template(
@@ -172,9 +174,11 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
 
     def skipTo(tokens: Int*) {
       while (!(tokens contains in.token) && in.token != EOF) {
-        if (in.token == LBRACE) { skipAhead(); accept(RBRACE) }
-        else if (in.token == LPAREN) { skipAhead(); accept(RPAREN) }
-        else in.nextToken()
+        if (in.token == LBRACE) {
+          skipAhead(); accept(RBRACE)
+        } else if (in.token == LPAREN) {
+          skipAhead(); accept(RPAREN)
+        } else in.nextToken()
       }
     }
 
@@ -245,17 +249,23 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
     // -------------------- specific parsing routines ------------------
 
     def qualId(): RefTree = {
-      var t: RefTree = atPos(in.currentPos) { Ident(ident()) }
+      var t: RefTree = atPos(in.currentPos) {
+        Ident(ident())
+      }
       while (in.token == DOT) {
         in.nextToken()
-        t = atPos(in.currentPos) { Select(t, ident()) }
+        t = atPos(in.currentPos) {
+          Select(t, ident())
+        }
       }
       t
     }
 
     def optArrayBrackets(tpt: Tree): Tree =
       if (in.token == LBRACKET) {
-        val tpt1 = atPos(in.pos) { arrayOf(tpt) }
+        val tpt1 = atPos(in.pos) {
+          arrayOf(tpt)
+        }
         in.nextToken()
         accept(RBRACKET)
         optArrayBrackets(tpt1)
@@ -307,10 +317,12 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
         if (in.token == QMARK) {
           val pos = in.currentPos
           in.nextToken()
-          val hi = if (in.token == EXTENDS) { in.nextToken(); typ() }
-          else EmptyTree
-          val lo = if (in.token == SUPER) { in.nextToken(); typ() }
-          else EmptyTree
+          val hi = if (in.token == EXTENDS) {
+            in.nextToken(); typ()
+          } else EmptyTree
+          val lo = if (in.token == SUPER) {
+            in.nextToken(); typ()
+          } else EmptyTree
           val tdef = atPos(pos) {
             TypeDef(
               Modifiers(Flags.JAVA | Flags.DEFERRED),
@@ -319,7 +331,9 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
               TypeBoundsTree(lo, hi))
           }
           wildcards += tdef
-          atPos(pos) { Ident(tdef.name) }
+          atPos(pos) {
+            Ident(tdef.name)
+          }
         } else {
           typ()
         }
@@ -349,8 +363,11 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
       */
     def annotation() {
       qualId()
-      if (in.token == LPAREN) { skipAhead(); accept(RPAREN) }
-      else if (in.token == LBRACE) { skipAhead(); accept(RBRACE) }
+      if (in.token == LPAREN) {
+        skipAhead(); accept(RPAREN)
+      } else if (in.token == LBRACE) {
+        skipAhead(); accept(RBRACE)
+      }
     }
 
     def modifiers(inInterface: Boolean): Modifiers = {
@@ -420,8 +437,9 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
     def typeParam(): TypeDef =
       atPos(in.currentPos) {
         val name = identForType()
-        val hi = if (in.token == EXTENDS) { in.nextToken(); bound() }
-        else EmptyTree
+        val hi = if (in.token == EXTENDS) {
+          in.nextToken(); bound()
+        } else EmptyTree
         TypeDef(
           Modifiers(Flags.JAVA | Flags.DEFERRED | Flags.PARAM),
           name,

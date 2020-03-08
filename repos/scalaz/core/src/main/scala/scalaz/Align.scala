@@ -60,7 +60,9 @@ trait Align[F[_]] extends Functor[F] { self =>
   def alignLaw = new AlignLaw {}
 
   ////
-  val alignSyntax = new scalaz.syntax.AlignSyntax[F] { def F = Align.this }
+  val alignSyntax = new scalaz.syntax.AlignSyntax[F] {
+    def F = Align.this
+  }
 }
 
 object Align {

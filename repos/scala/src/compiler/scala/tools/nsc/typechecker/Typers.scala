@@ -2516,7 +2516,9 @@ trait Typers
       def resultType = meth.tpe_*.finalResultType
       def nthParamPos(n1: Int, n2: Int) =
         try ddef.vparamss(n1)(n2).pos
-        catch { case _: IndexOutOfBoundsException => meth.pos }
+        catch {
+          case _: IndexOutOfBoundsException => meth.pos
+        }
 
       def failStruct(
           pos: Position,
@@ -3687,8 +3689,8 @@ trait Typers
           def shouldAdd(sym: Symbol) =
             inBlock || !context.isInPackageObject(sym, context.owner)
           for (sym <- scope)
-            for (tree <- context.unit.synthetics get sym
-                 if shouldAdd(sym)) { // OPT: shouldAdd is usually true. Call it here, rather than in the outer loop
+            for (tree <- context.unit.synthetics get sym if shouldAdd(
+                   sym)) { // OPT: shouldAdd is usually true. Call it here, rather than in the outer loop
               newStats += typedStat(
                 tree
               ) // might add even more synthetics to the scope
@@ -3810,7 +3812,9 @@ trait Typers
         pt: Type): Tree = {
       // TODO_NMT: check the assumption that args nonEmpty
       def duplErrTree = setError(treeCopy.Apply(tree, fun0, args))
-      def duplErrorTree(err: AbsTypeError) = { context.issue(err); duplErrTree }
+      def duplErrorTree(err: AbsTypeError) = {
+        context.issue(err); duplErrTree
+      }
 
       def preSelectOverloaded(fun: Tree): Tree = {
         if (fun.hasSymbolField && fun.symbol.isOverloaded) {
@@ -4069,7 +4073,9 @@ trait Typers
                   params,
                   fun.pos.focus,
                   context)
-                val funSym = fun1 match { case Block(_, expr) => expr.symbol }
+                val funSym = fun1 match {
+                  case Block(_, expr) => expr.symbol
+                }
                 val lencmp2 = compareLengths(allArgs, formals)
 
                 if (!sameLength(allArgs, args) && callToCompanionConstr(
@@ -4101,7 +4107,8 @@ trait Typers
 
           if (!sameLength(formals, args) || // wrong nb of arguments
               (args exists isNamedArg) || // uses a named argument
-              isNamedApplyBlock(fun)) { // fun was transformed to a named apply block =>
+              isNamedApplyBlock(
+                fun)) { // fun was transformed to a named apply block =>
             // integrate this application into the block
             if (dyna.isApplyDynamicNamed(fun) && isDynamicRewrite(fun))
               dyna.typedNamedApply(tree, fun, args, mode, pt)
@@ -4175,7 +4182,9 @@ trait Typers
                 val strictTargs = map2(lenientTargs, tparams)((targ, tparam) =>
                   if (targ == WildcardType) tparam.tpeHK else targ)
                 var remainingParams = paramTypes
-                def typedArgToPoly(arg: Tree, formal: Type): Tree = { //TR TODO: cleanup
+                def typedArgToPoly(
+                    arg: Tree,
+                    formal: Type): Tree = { //TR TODO: cleanup
                   val lenientPt =
                     formal.instantiateTypeParams(tparams, lenientTargs)
                   val newmode =
@@ -4194,7 +4203,9 @@ trait Typers
                   } else arg1
                 }
                 val args1 = map2(args, formals)(typedArgToPoly)
-                if (args1 exists { _.isErrorTyped }) duplErrTree
+                if (args1 exists {
+                      _.isErrorTyped
+                    }) duplErrTree
                 else {
                   debuglog(
                     "infer method inst " + fun + ", tparams = " + tparams + ", args = " + args1
@@ -4295,8 +4306,9 @@ trait Typers
             else if (!annType.typeSymbol.isSubClass(ClassfileAnnotationClass))
               reportAnnotationError(NestedAnnotationError(ann, annType))
 
-            if (annInfo.atp.isErroneous) { hasError = true; None }
-            else Some(NestedAnnotArg(annInfo))
+            if (annInfo.atp.isErroneous) {
+              hasError = true; None
+            } else Some(NestedAnnotArg(annInfo))
 
           // use of Array.apply[T: ClassTag](xs: T*): Array[T]
           // and    Array.apply(x: Int, xs: Int*): Array[Int]       (and similar)
@@ -4408,8 +4420,9 @@ trait Typers
               AnnotationInfo(
                 annType,
                 List(),
-                nvPairs map { p => (p._1, p._2.get) })
-                .setOriginal(Apply(typedFun, args).setPos(ann.pos))
+                nvPairs map { p =>
+                  (p._1, p._2.get)
+                }).setOriginal(Apply(typedFun, args).setPos(ann.pos))
           }
         } else {
           val typedAnn: Tree = {
@@ -5119,7 +5132,12 @@ trait Typers
               tree,
               selector1,
               (cases map duplicateAndKeepPositions).asInstanceOf[List[CaseDef]])
-            typed1(atPos(tree.pos) { Function(params, body) }, mode, pt)
+            typed1(
+              atPos(tree.pos) {
+                Function(params, body)
+              },
+              mode,
+              pt)
           }
         } else
           virtualizedMatch(
@@ -5339,7 +5357,9 @@ trait Typers
             }
           }
           typeErrors foreach context.issue
-          warnings foreach { case (p, m) => context.warning(p, m) }
+          warnings foreach {
+            case (p, m) => context.warning(p, m)
+          }
           setError(treeCopy.Apply(tree, fun, args))
         }
 
@@ -5407,7 +5427,9 @@ trait Typers
           case err: SilentTypeError =>
             onError({
               err.reportableErrors foreach context.issue
-              err.warnings foreach { case (p, m) => context.warning(p, m) }
+              err.warnings foreach {
+                case (p, m) => context.warning(p, m)
+              }
               args foreach (arg => typed(arg, mode, ErrorType))
               setError(tree)
             })
@@ -6152,7 +6174,9 @@ trait Typers
 
       def typedReferenceToBoxed(tree: ReferenceToBoxed) = {
         val id = tree.ident
-        val id1 = typed1(id, mode, pt) match { case id: Ident => id }
+        val id1 = typed1(id, mode, pt) match {
+          case id: Ident => id
+        }
         // [Eugene] am I doing it right?
         val erasedTypes = phaseId(currentPeriod) >= currentRun.erasurePhase.id
         val tpe = capturedVariableType(id.symbol, erasedTypes = erasedTypes)

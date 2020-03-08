@@ -228,7 +228,9 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
   case class TestTable(name: String, commands: (() => Unit)*)
 
   protected[hive] implicit class SqlCmd(sql: String) {
-    def cmd: () => Unit = { () => new QueryExecution(sql).stringResult(): Unit }
+    def cmd: () => Unit = { () =>
+      new QueryExecution(sql).stringResult(): Unit
+    }
   }
 
   /**
@@ -471,7 +473,9 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
 
       FunctionRegistry.getFunctionNames.asScala
         .filterNot(originalUDFs.contains(_))
-        .foreach { udfName => FunctionRegistry.unregisterTemporaryUDF(udfName) }
+        .foreach { udfName =>
+          FunctionRegistry.unregisterTemporaryUDF(udfName)
+        }
 
       // Some tests corrupt this value on purpose, which breaks the RESET call below.
       hiveconf.set("fs.default.name", new File(".").toURI.toString)

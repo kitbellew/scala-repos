@@ -7,27 +7,51 @@ class TypeInferenceLocalTypeInferenceVarianceTest
   override def folderPath: String =
     super.folderPath + "localTypeInference/variance/"
 
-  def testSCL3513A() { doTest() }
+  def testSCL3513A() {
+    doTest()
+  }
 
-  def testVarianceA() { doTest() }
+  def testVarianceA() {
+    doTest()
+  }
 
-  def testVarianceB() { doTest() }
+  def testVarianceB() {
+    doTest()
+  }
 
-  def testVarianceC() { doTest() }
+  def testVarianceC() {
+    doTest()
+  }
 
-  def testVarianceD() { doTest() }
+  def testVarianceD() {
+    doTest()
+  }
 
-  def testVarianceE() { doTest() }
+  def testVarianceE() {
+    doTest()
+  }
 
-  def testVarianceH() { doTest() }
+  def testVarianceH() {
+    doTest()
+  }
 
-  def testVarianceI() { doTest() }
+  def testVarianceI() {
+    doTest()
+  }
 
-  def testVarianceJ() { doTest() }
+  def testVarianceJ() {
+    doTest()
+  }
 
-  def testVarianceK() { doTest() }
+  def testVarianceK() {
+    doTest()
+  }
 
-  def testVarianceL() { doTest() }
+  def testVarianceL() {
+    doTest()
+  }
 
-  def testVarianceM() { doTest() }
+  def testVarianceM() {
+    doTest()
+  }
 }

@@ -120,9 +120,12 @@ final class KafkaRelayAgent(
   private val stopPromise = Promise[PrecogUnit]()
   private implicit val M: Monad[Future] = new FutureMonad(executor)
 
-  def stop: Future[PrecogUnit] = Future({ runnable = false }) flatMap { _ =>
-    stopPromise
-  }
+  def stop: Future[PrecogUnit] =
+    Future({
+      runnable = false
+    }) flatMap { _ =>
+      stopPromise
+    }
 
   override def run() {
     if (runnable) {
@@ -216,12 +219,16 @@ final class KafkaRelayAgent(
     val outgoing: List[Validation[Error, Future[Authorized]]] = messages map {
       msg =>
         EventEncoding.read(msg.message.payload) map { ev =>
-          deriveAuthority(ev).map { Authorized(ev, msg.offset, _) }
+          deriveAuthority(ev).map {
+            Authorized(ev, msg.offset, _)
+          }
         }
     }
 
     outgoing.sequence[
-      ({ type λ[α] = Validation[Error, α] })#λ,
+      ({
+        type λ[α] = Validation[Error, α]
+      })#λ,
       Future[Authorized]] map { messageFutures =>
       Future.sequence(messageFutures) map { messages: List[Authorized] =>
         val identified: List[Message] = messages.flatMap {

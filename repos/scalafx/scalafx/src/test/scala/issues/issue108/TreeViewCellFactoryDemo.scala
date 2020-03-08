@@ -56,7 +56,9 @@ object TreeViewCellFactoryDemo extends JFXApp {
         showRoot = false
         root = new TreeItem[Person] {
           expanded = true
-          children = ObservableBuffer(characters.map { p => new TreeItem(p) })
+          children = ObservableBuffer(characters.map { p =>
+            new TreeItem(p)
+          })
         }
         // Following statement, if uncommented, fails during compilation with error:
         //   type mismatch;

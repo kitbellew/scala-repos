@@ -40,7 +40,10 @@ object Function {
     * returned function are synchronized with the given monitor `m`.
     */
   def synchronizeWith[T, R](m: Object)(f: T => R): T => R =
-    t => m.synchronized { f(t) }
+    t =>
+      m.synchronized {
+        f(t)
+      }
 
   /**
     * Creates `() => Unit` function from given `Runnable`.

@@ -329,7 +329,9 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
           if (infolog)
             log.info(
               s"[${title}] completed in [${aggregated.duration.toMillis}] ms\n${aggregated.clusterStats}\n${formatMetrics}\n\n${formatPhi}\n\n${formatStats}")
-          reportTo foreach { _ ! aggregated }
+          reportTo foreach {
+            _ ! aggregated
+          }
           context stop self
         }
       case _: CurrentClusterState ⇒
@@ -483,7 +485,9 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
           }
         }
         val phiSet = immutable.SortedSet.empty[PhiValue] ++ phiByNode.values
-        reportTo foreach { _ ! PhiResult(cluster.selfAddress, phiSet) }
+        reportTo foreach {
+          _ ! PhiResult(cluster.selfAddress, phiSet)
+        }
       case state: CurrentClusterState ⇒ nodes = state.members.map(_.address)
       case memberEvent: MemberEvent ⇒ nodes += memberEvent.member.address
       case ReportTo(ref) ⇒
@@ -516,13 +520,17 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
     def receive = {
       case CurrentInternalStats(gossipStats, vclockStats) ⇒
         val diff = startStats match {
-          case None ⇒ { startStats = Some(gossipStats); gossipStats }
+          case None ⇒ {
+            startStats = Some(gossipStats); gossipStats
+          }
           case Some(start) ⇒ gossipStats :- start
         }
         val res = StatsResult(
           cluster.selfAddress,
           CurrentInternalStats(diff, vclockStats))
-        reportTo foreach { _ ! res }
+        reportTo foreach {
+          _ ! res
+        }
       case ReportTo(ref) ⇒
         reportTo foreach context.unwatch
         reportTo = ref
@@ -619,7 +627,9 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
       }
 
     def sendJobs(): Unit = {
-      0 until settings.workBatchSize foreach { _ ⇒ send(createJob()) }
+      0 until settings.workBatchSize foreach { _ ⇒
+        send(createJob())
+      }
     }
 
     def createJob(): Job = {
@@ -721,7 +731,10 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
 
     def receive = {
       case props: Props ⇒ context.actorOf(props)
-      case e: Exception ⇒ context.children foreach { _ ! e }
+      case e: Exception ⇒
+        context.children foreach {
+          _ ! e
+        }
       case GetChildrenCount ⇒
         sender() ! ChildrenCount(context.children.size, restartCount)
       case Reset ⇒
@@ -763,7 +776,9 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
   final case class StatsResult(from: Address, stats: CurrentInternalStats)
 
   type JobId = Int
-  trait Job { def id: JobId }
+  trait Job {
+    def id: JobId
+  }
   final case class SimpleJob(id: JobId, payload: Any) extends Job
   final case class TreeJob(
       id: JobId,
@@ -823,7 +838,9 @@ abstract class StressSpec
   var step = 0
   var nbrUsedRoles = 0
 
-  override def beforeEach(): Unit = { step += 1 }
+  override def beforeEach(): Unit = {
+    step += 1
+  }
 
   override def expectedTestDuration = settings.expectedTestDuration
 
@@ -953,7 +970,9 @@ abstract class StressSpec
       clusterResultAggregator match {
         case Some(r) ⇒
           watch(r)
-          expectMsgPF() { case Terminated(a) if a.path == r.path ⇒ true }
+          expectMsgPF() {
+            case Terminated(a) if a.path == r.path ⇒ true
+          }
         case None ⇒ // ok, already terminated
       }
     }
@@ -1152,7 +1171,9 @@ abstract class StressSpec
           reportResult {
             val nextAS =
               if (activeRoles contains myself) {
-                previousAS foreach { as ⇒ TestKit.shutdownActorSystem(as) }
+                previousAS foreach { as ⇒
+                  TestKit.shutdownActorSystem(as)
+                }
                 val sys = ActorSystem(system.name, system.settings.config)
                 muteLog(sys)
                 Cluster(sys).joinSeedNodes(seedNodes.toIndexedSeq map address)
@@ -1182,7 +1203,9 @@ abstract class StressSpec
       }
     }
 
-    loop(1, None, Set.empty) foreach { as ⇒ TestKit.shutdownActorSystem(as) }
+    loop(1, None, Set.empty) foreach { as ⇒
+      TestKit.shutdownActorSystem(as)
+    }
     within(loopDuration) {
       runOn(usedRoles: _*) {
         awaitMembersUp(nbrUsedRoles, timeout = remainingOrDefault)

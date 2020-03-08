@@ -15,7 +15,9 @@ class GlobalRegistryTest extends RegistryTest {
   private[this] def find(
       haystack: Iterable[Entry],
       needle: Seq[String]): Option[Entry] =
-    haystack.find({ case Entry(key, value) => key == needle })
+    haystack.find({
+      case Entry(key, value) => key == needle
+    })
 
   test(s"$name can write, swap registry, and then read the old write") {
     val naive = new SimpleRegistry

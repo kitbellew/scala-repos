@@ -43,9 +43,15 @@ object Cors {
 
   /** A CORS policy that lets you do whatever you want.  Don't use this in production. */
   val UnsafePermissivePolicy: Policy = Policy(
-    allowsOrigin = { origin => Some(origin) },
-    allowsMethods = { method => Some(method :: Nil) },
-    allowsHeaders = { headers => Some(headers) },
+    allowsOrigin = { origin =>
+      Some(origin)
+    },
+    allowsMethods = { method =>
+      Some(method :: Nil)
+    },
+    allowsHeaders = { headers =>
+      Some(headers)
+    },
     supportsCredentials = true)
 
   /**
@@ -236,9 +242,14 @@ object Cors {
             // If preflight is not acceptable, just return a 200 without CORS headers
             handlePreflight(request) getOrElse request.response
           }
-        case _ => service(request) map { handleSimple(request, _) }
+        case _ =>
+          service(request) map {
+            handleSimple(request, _)
+          }
       }
-      response map { setVary(_) }
+      response map {
+        setVary(_)
+      }
     }
   }
 }
@@ -261,9 +272,15 @@ object CorsFilter {
     val exposeList = sep.split(exposes).toSeq
     new Cors.HttpFilter(
       Cors.Policy(
-        { _ => Some(origin) },
-        { _ => methodList },
-        { _ => headerList },
+        { _ =>
+          Some(origin)
+        },
+        { _ =>
+          methodList
+        },
+        { _ =>
+          headerList
+        },
         exposeList))
   }
 }

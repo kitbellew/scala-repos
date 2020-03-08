@@ -46,10 +46,14 @@ class DelayedFactory[Req, Rep](
   }
 
   def apply(conn: ClientConnection): Future[Service[Req, Rep]] =
-    wrapped flatMap { fac => fac(conn) }
+    wrapped flatMap { fac =>
+      fac(conn)
+    }
 
   override def close(deadline: Time): Future[Unit] = {
-    if (underlyingF.isDefined) wrapped flatMap { svc => svc.close(deadline) }
+    if (underlyingF.isDefined) wrapped flatMap { svc =>
+      svc.close(deadline)
+    }
     else {
       underlyingF.onSuccess(_.close(deadline))
       val exc = new ServiceClosedException

@@ -192,7 +192,9 @@ object Futures {
       executor: ExecutionContext): Future[JIterable[A]] = {
     implicit val d = executor
     in.asScala.foldLeft(Future(new JLinkedList[A]())) { (fr, fa) ⇒
-      for (r ← fr; a ← fa) yield { r add a; r }
+      for (r ← fr; a ← fa) yield {
+        r add a; r
+      }
     }
   }
 
@@ -208,7 +210,9 @@ object Futures {
     implicit val d = executor
     in.asScala.foldLeft(Future(new JLinkedList[B]())) { (fr, a) ⇒
       val fb = fn(a)
-      for (r ← fr; b ← fb) yield { r add b; r }
+      for (r ← fr; b ← fb) yield {
+        r add b; r
+      }
     }
   }
 }
@@ -255,7 +259,9 @@ object japi {
     final def apply$mcLD$sp(d: Double): BoxedUnit = {
       internal(d.asInstanceOf[T]); BoxedUnit.UNIT
     }
-    override final def apply(t: T): BoxedUnit = { internal(t); BoxedUnit.UNIT }
+    override final def apply(t: T): BoxedUnit = {
+      internal(t); BoxedUnit.UNIT
+    }
     protected def internal(result: T): Unit = ()
   }
 }

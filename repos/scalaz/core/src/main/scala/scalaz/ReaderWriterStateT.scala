@@ -24,7 +24,9 @@ sealed abstract class IndexedReaderWriterStateT[F[_], -R, W, -S1, S2, A] {
 
   /** Run, discard the final state, and return the final value in the context of `F` */
   def eval(r: R, s: S1)(implicit F: Monad[F]): F[(W, A)] =
-    F.map(run(r, s)) { case (w, a, s2) => (w, a) }
+    F.map(run(r, s)) {
+      case (w, a, s2) => (w, a)
+    }
 
   /** Calls `eval` using `Monoid[S].zero` as the initial state */
   def evalZero[S <: S1](r: R)(implicit F: Monad[F], S: Monoid[S]): F[(W, A)] =
@@ -32,7 +34,9 @@ sealed abstract class IndexedReaderWriterStateT[F[_], -R, W, -S1, S2, A] {
 
   /** Run, discard the final value, and return the final state in the context of `F` */
   def exec(r: R, s: S1)(implicit F: Monad[F]): F[(W, S2)] =
-    F.map(run(r, s)) { case (w, a, s2) => (w, s2) }
+    F.map(run(r, s)) {
+      case (w, a, s2) => (w, s2)
+    }
 
   /** Calls `exec` using `Monoid[S].zero` as the initial state */
   def execZero[S <: S1](r: R)(implicit F: Monad[F], S: Monoid[S]): F[(W, S2)] =
@@ -260,7 +264,9 @@ private trait ReaderWriterStateTMonad[F[_], R, W, S]
   def listen[A](ma: ReaderWriterStateT[F, R, W, S, A])
       : ReaderWriterStateT[F, R, W, S, (A, W)] =
     ReaderWriterStateT((r, s) =>
-      F.map(ma.run(r, s)) { case (w, a, s1) => (w, (a, w), s1) })
+      F.map(ma.run(r, s)) {
+        case (w, a, s1) => (w, (a, w), s1)
+      })
 }
 
 private trait ReaderWriterStateTHoist[R, W, S]

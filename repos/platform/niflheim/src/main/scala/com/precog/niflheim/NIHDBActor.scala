@@ -93,7 +93,9 @@ object NIHDB {
       cookThreshold,
       timeout,
       txLogScheduler) map {
-      _ map { actor => new NIHDBImpl(actor, timeout, authorities) }
+      _ map { actor =>
+        new NIHDBImpl(actor, timeout, authorities)
+      }
     }
   }
 
@@ -201,7 +203,9 @@ private[niflheim] class NIHDBImpl private[niflheim] (
     IO(actor ! Quiesce)
 
   def close(implicit actorSystem: ActorSystem): Future[PrecogUnit] =
-    gracefulStop(actor, timeout.duration)(actorSystem).map { _ => PrecogUnit }
+    gracefulStop(actor, timeout.duration)(actorSystem).map { _ =>
+      PrecogUnit
+    }
 }
 
 private[niflheim] object NIHDBActor extends Logging {
@@ -258,10 +262,14 @@ private[niflheim] object NIHDBActor extends Logging {
       baseDir: File): IO[Option[Validation[Error, ProjectionState]]] = {
     val descriptorFile = new File(baseDir, descriptorFilename)
     if (descriptorFile.exists) {
-      ProjectionState.fromFile(descriptorFile) map { Some(_) }
+      ProjectionState.fromFile(descriptorFile) map {
+        Some(_)
+      }
     } else {
       logger.warn("No projection found at " + baseDir)
-      IO { None }
+      IO {
+        None
+      }
     }
   }
 
@@ -417,9 +425,13 @@ private[niflheim] class NIHDBActor private (
     IO(logger.debug("Closing projection in " + baseDir)) >> quiesce
   } except {
     case t: Throwable =>
-      IO { logger.error("Error during close", t) }
+      IO {
+        logger.error("Error during close", t)
+      }
   } ensuring {
-    IO { workLock.release }
+    IO {
+      workLock.release
+    }
   }
 
   override def postStop() = {
@@ -433,7 +445,9 @@ private[niflheim] class NIHDBActor private (
   private def computeBlockMap(current: BlockState) = {
     val allBlocks: List[StorageReader] =
       (current.cooked ++ current.pending.values :+ current.rawLog)
-    SortedMap(allBlocks.map { r => r.id -> r }.toSeq: _*)
+    SortedMap(allBlocks.map { r =>
+      r.id -> r
+    }.toSeq: _*)
   }
 
   def updatedThresholds(
@@ -441,7 +455,9 @@ private[niflheim] class NIHDBActor private (
       ids: Seq[Long]): Map[Int, Int] = {
     (current.toSeq ++ ids.map { i =>
       val EventId(p, s) = EventId.fromLong(i); (p -> s)
-    }).groupBy(_._1).map { case (p, ids) => (p -> ids.map(_._2).max) }
+    }).groupBy(_._1).map {
+      case (p, ids) => (p -> ids.map(_._2).max)
+    }
   }
 
   override def receive = {

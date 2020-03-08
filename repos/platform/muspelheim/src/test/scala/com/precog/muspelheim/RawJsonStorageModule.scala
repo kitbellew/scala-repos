@@ -141,7 +141,9 @@ trait RawJsonStorageModule[M[+_]] { self =>
                 (ctype, 0L)
             }
             .groupBy(_._1)
-            .map { case (tpe, values) => (tpe, values.map(_._2).sum) }
+            .map {
+              case (tpe, values) => (tpe, values.map(_._2).sum)
+            }
 
           PathStructure(types, structs.map(_.selector))
         }

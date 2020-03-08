@@ -1376,7 +1376,9 @@ abstract class RefChecks
       try {
         enterSyms(stats)
         var index = -1
-        stats flatMap { stat => index += 1; transformStat(stat, index) }
+        stats flatMap { stat =>
+          index += 1; transformStat(stat, index)
+        }
       } finally popLevel()
     }
 

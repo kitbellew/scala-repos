@@ -18,7 +18,9 @@ class SparseArray[@specialized(Int) T: ClassTag]
     sys.error("impl doesn't matter")
   }
 
-  override def apply(i: Int): T = { sys.error("ignore") }
+  override def apply(i: Int): T = {
+    sys.error("ignore")
+  }
   override def update(i: Int, value: T) = sys.error("ignore")
   override def empty = new SparseArray[T]
   def -=(ind: Int) = sys.error("ignore")

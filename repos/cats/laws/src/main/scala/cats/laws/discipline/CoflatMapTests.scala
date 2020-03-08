@@ -25,5 +25,7 @@ trait CoflatMapTests[F[_]] extends Laws {
 
 object CoflatMapTests {
   def apply[F[_]: CoflatMap]: CoflatMapTests[F] =
-    new CoflatMapTests[F] { def laws: CoflatMapLaws[F] = CoflatMapLaws[F] }
+    new CoflatMapTests[F] {
+      def laws: CoflatMapLaws[F] = CoflatMapLaws[F]
+    }
 }

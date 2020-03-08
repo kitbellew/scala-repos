@@ -128,12 +128,16 @@ object OtherNode {
 /** The node for the current class */
 case class ThisNode(tpe: TypeEntity, tpl: Option[TemplateEntity])(
     val tooltip: Option[String] = None)
-    extends Node { override def isThisNode = true }
+    extends Node {
+  override def isThisNode = true
+}
 
 /** The usual node */
 case class NormalNode(tpe: TypeEntity, tpl: Option[TemplateEntity])(
     val tooltip: Option[String] = None)
-    extends Node { override def isNormalNode = true }
+    extends Node {
+  override def isNormalNode = true
+}
 
 /** A class or trait the thisnode can be converted to by an implicit conversion
   *  TODO: I think it makes more sense to use the tpe links to templates instead of the TemplateEntity for implicit nodes
@@ -141,13 +145,17 @@ case class NormalNode(tpe: TypeEntity, tpl: Option[TemplateEntity])(
   */
 case class ImplicitNode(tpe: TypeEntity, tpl: Option[TemplateEntity])(
     val tooltip: Option[String] = None)
-    extends Node { override def isImplicitNode = true }
+    extends Node {
+  override def isImplicitNode = true
+}
 
 /** An outside node is shown in packages when a class from a different package makes it to the package diagram due to
   * its relation to a class in the template (see @contentDiagram hideInheritedNodes annotation) */
 case class OutsideNode(tpe: TypeEntity, tpl: Option[TemplateEntity])(
     val tooltip: Option[String] = None)
-    extends Node { override def isOutsideNode = true }
+    extends Node {
+  override def isOutsideNode = true
+}
 
 // Computing and offering node depth information
 class ContentDiagramDepth(pack: ContentDiagram) extends DepthInfo {
@@ -160,7 +168,9 @@ class ContentDiagramDepth(pack: ContentDiagram) extends DepthInfo {
         case (node: Node, outgoing: List[Node]) => outgoing.map((_, node))
       })
       .groupBy(_._1)
-      .map({ case (k, values) => (k, values.map(_._2)) })
+      .map({
+        case (k, values) => (k, values.map(_._2))
+      })
       .withDefaultValue(Nil)
   private[this] val directEdges: Map[Node, List[Node]] =
     pack.edges.toMap.withDefaultValue(Nil)

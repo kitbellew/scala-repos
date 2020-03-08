@@ -39,7 +39,9 @@ trait RankSpecs extends EvalStackSpecs {
 
       val input2 = """count((//clicks).time)"""
       val results2 = evalE(input2)
-      val size = results2 collect { case (_, SDecimal(d)) => d.toInt }
+      val size = results2 collect {
+        case (_, SDecimal(d)) => d.toInt
+      }
 
       val result = evalE(input)
 
@@ -70,7 +72,9 @@ trait RankSpecs extends EvalStackSpecs {
 
       val input2 = """count(distinct((//clicks).time))"""
       val results2 = evalE(input2)
-      val size = results2 collect { case (_, SDecimal(d)) => d.toInt }
+      val size = results2 collect {
+        case (_, SDecimal(d)) => d.toInt
+      }
 
       val result = evalE(input)
 
@@ -140,7 +144,9 @@ trait RankSpecs extends EvalStackSpecs {
 
       val input2 = """count(distinct((//clicks).time))"""
       val results2 = evalE(input2)
-      val size = results2 collect { case (_, SDecimal(d)) => d.toInt }
+      val size = results2 collect {
+        case (_, SDecimal(d)) => d.toInt
+      }
 
       val result = evalE(input)
 
@@ -168,7 +174,9 @@ trait RankSpecs extends EvalStackSpecs {
 
       val input2 = """count((//clicks).time)"""
       val results2 = evalE(input2)
-      val size = results2 collect { case (_, SDecimal(d)) => d.toInt }
+      val size = results2 collect {
+        case (_, SDecimal(d)) => d.toInt
+      }
 
       val result = evalE(input)
 
@@ -198,7 +206,9 @@ trait RankSpecs extends EvalStackSpecs {
       val input2 =
         """count(//clicks where (//clicks).time = min((//clicks).time))"""
       val results2 = evalE(input2)
-      val size = results2 collect { case (_, SDecimal(d)) => d.toInt }
+      val size = results2 collect {
+        case (_, SDecimal(d)) => d.toInt
+      }
 
       val result = evalE(input)
 

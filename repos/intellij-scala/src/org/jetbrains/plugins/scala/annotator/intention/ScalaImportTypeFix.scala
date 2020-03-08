@@ -444,7 +444,9 @@ object ScalaImportTypeFix {
           if (parts.length > 1) parts.takeRight(2).head == ref.refName
           else false
       }
-      .map { case s => s.reverse.dropWhile(_ != '.').tail.reverse }
+      .map {
+        case s => s.reverse.dropWhile(_ != '.').tail.reverse
+      }
 
     for (packageQualifier <- packagesList) {
       val pack = ScPackageImpl.findPackage(myProject, packageQualifier)

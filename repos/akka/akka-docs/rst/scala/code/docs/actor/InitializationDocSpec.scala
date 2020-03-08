@@ -44,7 +44,10 @@ object InitializationDocSpec {
     }
 
     def initialized: Receive = {
-      case "U OK?" => initializeMe foreach { sender() ! _ }
+      case "U OK?" =>
+        initializeMe foreach {
+          sender() ! _
+        }
     }
     //#messageInit
 

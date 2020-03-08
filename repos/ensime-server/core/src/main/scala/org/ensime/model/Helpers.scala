@@ -16,8 +16,12 @@ trait Helpers { self: Global =>
         sym.tpe.members
       } else if (sym.isClass || sym.isPackageClass || sym.isPackageObjectClass) {
         sym.companionModule.tpe.members
-      } else { List.empty }
-    members.toList.filter { _.name.toString == "apply" }
+      } else {
+        List.empty
+      }
+    members.toList.filter {
+      _.name.toString == "apply"
+    }
   }
 
   def constructorSynonyms(sym: Symbol): List[Symbol] = {
@@ -26,8 +30,12 @@ trait Helpers { self: Global =>
         sym.tpe.members
       } else if (sym.isModule || sym.isModuleClass || sym.isPackageObject) {
         sym.companionClass.tpe.members
-      } else { List.empty }
-    members.toList.filter { _.isConstructor }
+      } else {
+        List.empty
+      }
+    members.toList.filter {
+      _.isConstructor
+    }
   }
 
   def isArrowType(tpe: Type): Boolean = {
@@ -58,10 +66,14 @@ trait Helpers { self: Global =>
     if (isArrowType(tpe)) {
       CompletionSignature(
         tpe.paramss.map { sect =>
-          sect.map { p => (p.name.toString, typeFullName(p.tpe, true)) }
+          sect.map { p =>
+            (p.name.toString, typeFullName(p.tpe, true))
+          }
         },
         typeFullName(tpe.finalResultType, true),
-        tpe.paramss.exists { sect => sect.exists(_.isImplicit) }
+        tpe.paramss.exists { sect =>
+          sect.exists(_.isImplicit)
+        }
       )
     } else CompletionSignature(List.empty, typeFullName(tpe, true), false)
   }
@@ -126,7 +138,9 @@ trait Helpers { self: Global =>
                            .map(typeFullName(_, true))
                            .mkString(", ") +
                          "]"
-                     } else { "" })
+                     } else {
+                       ""
+                     })
     } else withoutArgs
   }
 
@@ -240,7 +254,9 @@ trait Helpers { self: Global =>
     symbolByName(
       if (path.endsWith("$")) path else path + "$",
       RootPackage
-    ).find { s => s.hasPackageFlag }
+    ).find { s =>
+      s.hasPackageFlag
+    }
   }
 
   /*

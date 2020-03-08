@@ -71,7 +71,9 @@ private[akka] final class SerializedSuspendableExecutionContext(
           case null ⇒ ()
           case some ⇒
             try some.run()
-            catch { case NonFatal(t) ⇒ context reportFailure t }
+            catch {
+              case NonFatal(t) ⇒ context reportFailure t
+            }
             run(done + 1)
         }
       }

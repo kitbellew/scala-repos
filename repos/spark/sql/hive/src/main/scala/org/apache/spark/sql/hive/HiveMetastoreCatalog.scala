@@ -836,7 +836,9 @@ private[hive] class HiveMetastoreCatalog(
       } else if (childOutputDataTypes.size == tableOutputDataTypes.size &&
                  childOutputDataTypes
                    .zip(tableOutputDataTypes)
-                   .forall { case (left, right) => left.sameType(right) }) {
+                   .forall {
+                     case (left, right) => left.sameType(right)
+                   }) {
         // If both types ignoring nullability of ArrayType, MapType, StructType are the same,
         // use InsertIntoHiveTable instead of InsertIntoTable.
         InsertIntoHiveTable(
@@ -975,7 +977,9 @@ private[hive] case class MetastoreRelation(
 
     val tableParameters = new java.util.HashMap[String, String]()
     tTable.setParameters(tableParameters)
-    table.properties.foreach { case (k, v) => tableParameters.put(k, v) }
+    table.properties.foreach {
+      case (k, v) => tableParameters.put(k, v)
+    }
 
     tTable.setTableType(table.tableType match {
       case CatalogTableType.EXTERNAL_TABLE =>

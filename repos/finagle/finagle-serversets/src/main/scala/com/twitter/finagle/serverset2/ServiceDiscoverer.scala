@@ -21,7 +21,9 @@ private[serverset2] object ServiceDiscoverer {
       ents: Seq[Entry],
       vecs: Set[Vector]): Seq[(Entry, Double)] = {
     ents map { ent =>
-      val w = vecs.foldLeft(1.0) { case (w, vec) => w * vec.weightOf(ent) }
+      val w = vecs.foldLeft(1.0) {
+        case (w, vec) => w * vec.weightOf(ent)
+      }
       ent -> w
     }
   }
@@ -157,11 +159,16 @@ private[serverset2] class ServiceDiscoverer(
             Future
               .collectToTry(paths.map { path =>
                 // note if any failed
-                cache.get(path).onFailure { _ => seenFailures = true }
+                cache.get(path).onFailure { _ =>
+                  seenFailures = true
+                }
               })
               // We end up with a Seq[Seq[Entity]] here, b/c cache.get() returns a Seq[Entity]
               // flatten() to fix this (see the comment on ZkNodeDataCache for why we get a Seq[])
-              .map(tries => tries.collect { case Return(e) => e }.flatten)
+              .map(tries =>
+                tries.collect {
+                  case Return(e) => e
+                }.flatten)
               .map { seq =>
                 // if we have *any* results or no-failure, we consider it a success
                 if (seenFailures && seq.isEmpty)
@@ -172,7 +179,9 @@ private[serverset2] class ServiceDiscoverer(
                 if (seenFailures) {
                   log.warning(
                     s"Failed to read all data for $parentPath. Retrying in $retryJitter")
-                  timer.doLater(retryJitter) { loop() }
+                  timer.doLater(retryJitter) {
+                    loop()
+                  }
                 }
               }
           }
@@ -215,8 +224,9 @@ private[serverset2] class ServiceDiscoverer(
     val es = entriesOf(path)
     val vs = vectorsOf(path)
 
-    val raw =
-      es.join(vs).map { case (ents, vecs) => zipWithWeights(ents, vecs.toSet) }
+    val raw = es.join(vs).map {
+      case (ents, vecs) => zipWithWeights(ents, vecs.toSet)
+    }
 
     // Squash duplicate updates
     Activity(Var(Activity.Pending, raw.states.dedup))

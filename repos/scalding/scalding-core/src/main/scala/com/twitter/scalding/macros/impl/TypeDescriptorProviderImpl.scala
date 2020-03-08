@@ -55,7 +55,9 @@ object TypeDescriptorProviderImpl {
 
     def flattenOnce(t: Type): List[Type] =
       t.declarations
-        .collect { case m: MethodSymbol if m.isCaseAccessor => m }
+        .collect {
+          case m: MethodSymbol if m.isCaseAccessor => m
+        }
         .map(_.returnType.asSeenFrom(t, t.typeSymbol.asClass))
         .toList
 
@@ -86,7 +88,9 @@ object TypeDescriptorProviderImpl {
             }
 
           val nextPos = flattened.last._1
-          val ev = flattened.collectFirst { case (_, Some(col)) => col }
+          val ev = flattened.collectFirst {
+            case (_, Some(col)) => col
+          }
           (nextPos, ev)
         case _ if allowUnknown => thisColumn
         case t =>
@@ -315,7 +319,9 @@ object TypeDescriptorProviderImpl {
           Any,
           Any]]
     )
-    (tupleTypes.exists { _ =:= T.tpe.erasure })
+    (tupleTypes.exists {
+      _ =:= T.tpe.erasure
+    })
   }
 
   def caseClassTypeDescriptorCommonImpl[T](

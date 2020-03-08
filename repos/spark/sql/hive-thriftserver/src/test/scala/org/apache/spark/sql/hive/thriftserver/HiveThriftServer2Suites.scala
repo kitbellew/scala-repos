@@ -658,7 +658,9 @@ abstract class HiveThriftJdbcTest extends HiveThriftServer2Test {
     val statements = connections.map(_.createStatement())
 
     try {
-      statements.zip(fs).foreach { case (s, f) => f(s) }
+      statements.zip(fs).foreach {
+        case (s, f) => f(s)
+      }
     } finally {
       statements.foreach(_.close())
       connections.foreach(_.close())

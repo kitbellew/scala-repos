@@ -11,7 +11,9 @@ import akka.pattern.ask
 
 object BroadcastSpec {
   class TestActor extends Actor {
-    def receive = { case _ ⇒ }
+    def receive = {
+      case _ ⇒
+    }
   }
 }
 

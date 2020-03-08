@@ -814,7 +814,9 @@ object JGitUtil {
         .setURI(from.toURI.toString)
         .setDirectory(to)
         .setBare(true)
-        .call) { git => setReceivePack(git.getRepository) }
+        .call) { git =>
+      setReceivePack(git.getRepository)
+    }
 
   def isEmpty(git: Git): Boolean =
     git.getRepository.resolve(Constants.HEAD) == null
@@ -942,7 +944,9 @@ object JGitUtil {
       treeWalk.addTree(revTree)
       treeWalk.setRecursive(true)
       getPathObjectId(path, treeWalk)
-    } flatMap { objectId => getContentFromId(git, objectId, fetchLargeFile) }
+    } flatMap { objectId =>
+      getContentFromId(git, objectId, fetchLargeFile)
+    }
   }
 
   def getContentInfo(
@@ -1014,7 +1018,9 @@ object JGitUtil {
   def getObjectLoaderFromId[A](git: Git, id: ObjectId)(
       f: ObjectLoader => A): Option[A] =
     try {
-      using(git.getRepository.getObjectDatabase) { db => Some(f(db.open(id))) }
+      using(git.getRepository.getObjectDatabase) { db =>
+        Some(f(db.open(id)))
+      }
     } catch {
       case e: MissingObjectException => None
     }
@@ -1216,8 +1222,11 @@ object JGitUtil {
                   .iterator
                   .next)
                 .map(_.name),
-              if (blame.getSourcePath(i) == path) { None }
-              else { Some(blame.getSourcePath(i)) },
+              if (blame.getSourcePath(i) == path) {
+                None
+              } else {
+                Some(blame.getSourcePath(i))
+              },
               c.getCommitterIdent.getWhen,
               c.getShortMessage,
               Set.empty
@@ -1226,7 +1235,9 @@ object JGitUtil {
           idLine :+= (c.name, i)
         }
         val limeMap = idLine.groupBy(_._1).mapValues(_.map(_._2).toSet)
-        blameMap.values.map { b => b.copy(lines = limeMap(b.id)) }
+        blameMap.values.map { b =>
+          b.copy(lines = limeMap(b.id))
+        }
       }
       .getOrElse(Seq.empty)
   }

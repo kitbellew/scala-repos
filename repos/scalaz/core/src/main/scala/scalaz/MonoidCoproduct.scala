@@ -48,11 +48,15 @@ sealed class :+:[+M, +N](private val rep: Vector[M \/ N]) {
 
   /** Project out the value in the left monoid */
   def left[A >: M: Monoid]: A =
-    rep.foldLeft(mzero[A]) { (m, e) => m |+| e.fold(a => a, _ => mzero[A]) }
+    rep.foldLeft(mzero[A]) { (m, e) =>
+      m |+| e.fold(a => a, _ => mzero[A])
+    }
 
   /** Project out the value in the right monoid */
   def right[A >: N: Monoid]: A =
-    rep.foldLeft(mzero[A]) { (n, e) => n |+| e.fold(_ => mzero[A], a => a) }
+    rep.foldLeft(mzero[A]) { (n, e) =>
+      n |+| e.fold(_ => mzero[A], a => a)
+    }
 
   /** Project out both monoids individually */
   def both[A >: M: Monoid, B >: N: Monoid]: (A, B) =

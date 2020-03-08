@@ -46,7 +46,9 @@ object CValueGenerators {
     } else {
       val current = data.head.flattenWithPath flatMap {
         case (path, jv) =>
-          CType.forJValue(jv) map { ct => (path, ct) }
+          CType.forJValue(jv) map { ct =>
+            (path, ct)
+          }
       }
 
       (current ++ inferSchema(data.tail)).distinct
@@ -96,7 +98,9 @@ trait CValueGenerators extends ArbitraryBigDecimal {
     }
   }
 
-  def leafSchema: Gen[JSchema] = ctype map { t => (JPath.Identity -> t) :: Nil }
+  def leafSchema: Gen[JSchema] = ctype map { t =>
+    (JPath.Identity -> t) :: Nil
+  }
 
   def ctype: Gen[CType] = oneOf(
     CString,
@@ -114,10 +118,17 @@ trait CValueGenerators extends ArbitraryBigDecimal {
     case CString  => alphaStr map (JString(_))
     case CBoolean => arbitrary[Boolean] map (JBool(_))
     case CLong =>
-      arbitrary[Long] map { ln => JNum(BigDecimal(ln, MathContext.UNLIMITED)) }
+      arbitrary[Long] map { ln =>
+        JNum(BigDecimal(ln, MathContext.UNLIMITED))
+      }
     case CDouble =>
-      arbitrary[Double] map { d => JNum(BigDecimal(d, MathContext.UNLIMITED)) }
-    case CNum         => arbitrary[BigDecimal] map { bd => JNum(bd) }
+      arbitrary[Double] map { d =>
+        JNum(BigDecimal(d, MathContext.UNLIMITED))
+      }
+    case CNum =>
+      arbitrary[BigDecimal] map { bd =>
+        JNum(bd)
+      }
     case CNull        => JNull
     case CEmptyObject => JObject.empty
     case CEmptyArray  => JArray.empty
@@ -227,7 +238,9 @@ trait SValueGenerators extends ArbitraryBigDecimal {
   }
 
   def chunk(size: Int, idCount: Int, vdepth: Int): Gen[Vector[SEvent]] =
-    listOfN(size, sevent(idCount, vdepth)) map { l => Vector(l: _*) }
+    listOfN(size, sevent(idCount, vdepth)) map { l =>
+      Vector(l: _*)
+    }
 }
 
 case class LimitList[A](values: List[A])

@@ -33,7 +33,9 @@ sealed abstract class PostRepo(troll: Boolean) {
       selectTopic(topicId),
       "_id",
       _ sort $sort.createdAsc
-    )(_.asOpt[String]) map { _.??(postId ==) }
+    )(_.asOpt[String]) map {
+      _.??(postId ==)
+    }
 
   def countByTopics(topics: List[String]): Fu[Int] =
     $count(selectTopics(topics))

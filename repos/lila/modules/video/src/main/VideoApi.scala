@@ -27,11 +27,15 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
       videos: Seq[Video]): Fu[Seq[VideoView]] = userOption match {
     case None =>
       fuccess {
-        videos map { VideoView(_, false) }
+        videos map {
+          VideoView(_, false)
+        }
       }
     case Some(user) =>
       view.seenVideoIds(user, videos) map { ids =>
-        videos.map { v => VideoView(v, ids contains v.id) }
+        videos.map { v =>
+          VideoView(v, ids contains v.id)
+        }
       }
   }
 
@@ -46,7 +50,9 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
         user: Option[User],
         query: String,
         page: Int): Fu[Paginator[VideoView]] = {
-      val q = query.split(' ').map { word => s""""$word"""" } mkString " "
+      val q = query.split(' ').map { word =>
+        s""""$word""""
+      } mkString " "
       val textScore = BSONDocument(
         "score" -> BSONDocument("$meta" -> "textScore"))
       Paginator(
@@ -152,7 +158,9 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
         .cursor[Video]()
         .collect[List]()
         .map { videos =>
-          videos.sortBy { v => -v.similarity(video) } take max
+          videos.sortBy { v =>
+            -v.similarity(video)
+          } take max
         } flatMap videoViews(user)
 
     object count {
@@ -240,7 +248,9 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
             val tags = all map { t =>
               paths find (_._id == t._id) getOrElse TagNb(t._id, 0)
             } filterNot (_.empty) take max
-            val missing = filterTags filterNot { t => tags exists (_.tag == t) }
+            val missing = filterTags filterNot { t =>
+              tags exists (_.tag == t)
+            }
             val list = tags.take(max - missing.size) ::: missing.flatMap { t =>
               all find (_.tag == t)
             }

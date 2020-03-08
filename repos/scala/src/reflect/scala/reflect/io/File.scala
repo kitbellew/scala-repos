@@ -116,7 +116,9 @@ class File(jfile: JFile)(implicit constructorCodec: Codec)
 
   def safeSlurp(): Option[String] =
     try Some(slurp())
-    catch { case _: IOException => None }
+    catch {
+      case _: IOException => None
+    }
 
   /** Reflection since we're into the java 6+ API.
     */
@@ -127,12 +129,16 @@ class File(jfile: JFile)(implicit constructorCodec: Codec)
         "setExecutable",
         classOf[Boolean],
         classOf[Boolean])
-      catch { case _: NoSuchMethodException => return false }
+      catch {
+        case _: NoSuchMethodException => return false
+      }
 
     try method
       .invoke(jfile, executable: JBoolean, ownerOnly: JBoolean)
       .asInstanceOf[JBoolean]
       .booleanValue
-    catch { case _: Exception => false }
+    catch {
+      case _: Exception => false
+    }
   }
 }

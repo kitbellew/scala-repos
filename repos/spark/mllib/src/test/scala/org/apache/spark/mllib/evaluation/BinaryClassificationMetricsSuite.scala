@@ -102,8 +102,12 @@ class BinaryClassificationMetricsSuite
     val rocCurve = Seq((0.0, 0.0)) ++ fpr.zip(recalls) ++ Seq((1.0, 1.0))
     val pr = recalls.zip(precisions)
     val prCurve = Seq((0.0, 1.0)) ++ pr
-    val f1 = pr.map { case (r, p) => 2.0 * (p * r) / (p + r) }
-    val f2 = pr.map { case (r, p) => 5.0 * (p * r) / (4.0 * p + r) }
+    val f1 = pr.map {
+      case (r, p) => 2.0 * (p * r) / (p + r)
+    }
+    val f2 = pr.map {
+      case (r, p) => 5.0 * (p * r) / (4.0 * p + r)
+    }
 
     validateMetrics(
       metrics,
@@ -128,8 +132,12 @@ class BinaryClassificationMetricsSuite
     val rocCurve = Seq((0.0, 0.0)) ++ fpr.zip(recalls) ++ Seq((1.0, 1.0))
     val pr = recalls.zip(precisions)
     val prCurve = Seq((0.0, 1.0)) ++ pr
-    val f1 = pr.map { case (r, p) => 2.0 * (p * r) / (p + r) }
-    val f2 = pr.map { case (r, p) => 5.0 * (p * r) / (4.0 * p + r) }
+    val f1 = pr.map {
+      case (r, p) => 2.0 * (p * r) / (p + r)
+    }
+    val f2 = pr.map {
+      case (r, p) => 5.0 * (p * r) / (4.0 * p + r)
+    }
 
     validateMetrics(
       metrics,

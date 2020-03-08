@@ -44,7 +44,9 @@ object HttpExample {
 
     // instead of replying to the initial sender(), producer actors can implement custom
     // response processing by overriding the routeResponse method
-    override def routeResponse(msg: Any) { transformer forward msg }
+    override def routeResponse(msg: Any) {
+      transformer forward msg
+    }
   }
 
   class HttpTransformer extends Actor {

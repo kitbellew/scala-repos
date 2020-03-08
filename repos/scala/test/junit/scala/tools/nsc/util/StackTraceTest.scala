@@ -28,24 +28,34 @@ class StackTraceTest extends Expecting {
 
   // repackage with message
   def resample: String =
-    try { sample }
-    catch { case e: Throwable => throw new RuntimeException("resample", e) }
+    try {
+      sample
+    } catch {
+      case e: Throwable => throw new RuntimeException("resample", e)
+    }
   def resampler: String = resample
 
   // simple wrapper
   def wrapper: String =
-    try { sample }
-    catch { case e: Throwable => throw new RuntimeException(e) }
+    try {
+      sample
+    } catch {
+      case e: Throwable => throw new RuntimeException(e)
+    }
   // another onion skin
   def rewrapper: String =
-    try { wrapper }
-    catch { case e: Throwable => throw new RuntimeException(e) }
+    try {
+      wrapper
+    } catch {
+      case e: Throwable => throw new RuntimeException(e)
+    }
   def rewrapperer: String = rewrapper
 
   // only an insane wretch would do this
   def insane: String =
-    try { sample }
-    catch {
+    try {
+      sample
+    } catch {
       case e: Throwable =>
         val t = new RuntimeException(e)
         e initCause t
@@ -55,11 +65,14 @@ class StackTraceTest extends Expecting {
 
   /** Java 7 */
   val suppressable = isJavaAtLeast("1.7")
-  type Suppressing = { def addSuppressed(t: Throwable): Unit }
+  type Suppressing = {
+    def addSuppressed(t: Throwable): Unit
+  }
 
   def repressed: String =
-    try { sample }
-    catch {
+    try {
+      sample
+    } catch {
       case e: Throwable =>
         val t = new RuntimeException("My problem")
         if (suppressable) {
@@ -72,7 +85,9 @@ class StackTraceTest extends Expecting {
   // evaluating s should throw, p trims stack trace, t is the test of resulting trace string
   def probe(s: => String)(p: StackTraceElement => Boolean)(
       t: String => Unit): Unit = {
-    Try(s) recover { case e => e stackTracePrefixString p } match {
+    Try(s) recover {
+      case e => e stackTracePrefixString p
+    } match {
       case Success(s) => t(s)
       case Failure(e) => throw e
     }

@@ -109,7 +109,9 @@ object ParserUtils {
   def getClauseOption(
       clauseName: String,
       nodeList: Seq[ASTNode]): Option[ASTNode] = {
-    nodeList.filter { case ast: ASTNode => ast.text == clauseName } match {
+    nodeList.filter {
+      case ast: ASTNode => ast.text == clauseName
+    } match {
       case Seq(oneMatch) => Some(oneMatch)
       case Seq()         => None
       case _             => sys.error(s"Found multiple instances of clause $clauseName")

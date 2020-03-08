@@ -48,7 +48,9 @@ case class RankedPlayer(rank: Int, player: Player) {
 object RankedPlayer {
 
   def apply(ranking: Ranking)(player: Player): Option[RankedPlayer] =
-    ranking get player.userId map { rank => RankedPlayer(rank + 1, player) }
+    ranking get player.userId map { rank =>
+      RankedPlayer(rank + 1, player)
+    }
 }
 
 case class FeaturedGame(

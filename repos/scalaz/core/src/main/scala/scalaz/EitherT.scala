@@ -240,8 +240,12 @@ object EitherT extends EitherTInstances {
   }
 
   def eitherTU[FAB, AB, A0, B0](fab: FAB)(implicit
-      u1: Unapply[Functor, FAB] { type A = AB },
-      u2: Unapply2[Bifunctor, AB] { type A = A0; type B = B0 },
+      u1: Unapply[Functor, FAB] {
+        type A = AB
+      },
+      u2: Unapply2[Bifunctor, AB] {
+        type A = A0; type B = B0
+      },
       l: Leibniz.===[AB, A0 \/ B0]): EitherT[u1.M, A0, B0] =
     eitherT(l.subst[u1.M](u1(fab)))
 

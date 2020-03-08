@@ -35,7 +35,9 @@ class ApproxQuantileSuite extends SparkFunSuite {
       epsi: Double,
       threshold: Int): QuantileSummaries = {
     var summary = new QuantileSummaries(threshold, epsi)
-    data.foreach { x => summary = summary.insert(x) }
+    data.foreach { x =>
+      summary = summary.insert(x)
+    }
     summary.compress()
   }
 

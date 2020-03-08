@@ -317,10 +317,14 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
   }
 
   private def normalizedBucketColNames: Option[Seq[String]] =
-    bucketColumnNames.map { cols => cols.map(normalize(_, "Bucketing")) }
+    bucketColumnNames.map { cols =>
+      cols.map(normalize(_, "Bucketing"))
+    }
 
   private def normalizedSortColNames: Option[Seq[String]] =
-    sortColumnNames.map { cols => cols.map(normalize(_, "Sorting")) }
+    sortColumnNames.map { cols =>
+      cols.map(normalize(_, "Sorting"))
+    }
 
   private def getBucketSpec: Option[BucketSpec] = {
     if (sortColumnNames.isDefined) {

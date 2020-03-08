@@ -21,7 +21,9 @@ class ScIdListImpl private (
     node: ASTNode)
     extends ScalaStubBasedElementImpl(stub, nodeType, node)
     with ScIdList {
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
   def this(stub: ScIdListStub) = {
     this(stub, ScalaElementTypes.IDENTIFIER_LIST, null)
   }

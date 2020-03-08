@@ -172,7 +172,9 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       val current = history.index
       val count =
         try xs.head.toInt
-        catch { case _: Exception => defaultLines }
+        catch {
+          case _: Exception => defaultLines
+        }
       val lines = history.asStrings takeRight count
       val offset = current - lines.size + 1
 
@@ -380,7 +382,10 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   private def changeSettings(line: String): Result = {
     def showSettings() =
       for (s <- settings.userSetSettings.toSeq.sorted) echo(s.toString)
-    if (line.isEmpty) showSettings() else { updateSettings(line); () }
+    if (line.isEmpty) showSettings()
+    else {
+      updateSettings(line); ()
+    }
   }
   private def updateSettings(line: String) = {
     val (ok, rest) = settings.processArguments(words(line), processAll = false)
@@ -459,9 +464,12 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
         case _ =>
           def fn(): Boolean =
             try in.readYesOrNo(
-              explain + replayQuestionMessage,
-              { echo("\nYou must enter y or n."); fn() })
-            catch { case _: RuntimeException => false }
+              explain + replayQuestionMessage, {
+                echo("\nYou must enter y or n."); fn()
+              })
+            catch {
+              case _: RuntimeException => false
+            }
 
           if (fn()) replay()
           else echo("\nAbandoning crashed session.")
@@ -1020,8 +1028,10 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       val readerClasses = sys.props.get("scala.repl.reader").toStream ++ Stream(
         internalClass("jline"),
         internalClass("jline_embedded"))
-      val readers =
-        readerClasses map (cls => Try { mkReader(instantiater(cls)) })
+      val readers = readerClasses map (cls =>
+        Try {
+          mkReader(instantiater(cls))
+        })
 
       val reader = (readers collect {
         case Success(reader) => reader

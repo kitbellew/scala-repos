@@ -44,7 +44,9 @@ object EnumeratorPTest extends SpecLite {
 
       val cf = cogroupE[Int, Int, Id]
       val enumR = cf(
-        cf(enum, enum2) map { _.fold(identity[Int], _._1, identity[Int]) },
+        cf(enum, enum2) map {
+          _.fold(identity[Int], _._1, identity[Int])
+        },
         enum3)
 
       (consume[Either3[Int, (Int, Int), Int], Id, List] &= enumR

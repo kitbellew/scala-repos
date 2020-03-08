@@ -50,7 +50,9 @@ object LabelPropagation {
       maxSteps > 0,
       s"Maximum of steps must be greater than 0, but got ${maxSteps}")
 
-    val lpaGraph = graph.mapVertices { case (vid, _) => vid }
+    val lpaGraph = graph.mapVertices {
+      case (vid, _) => vid
+    }
     def sendMessage(e: EdgeTriplet[VertexId, ED])
         : Iterator[(VertexId, Map[VertexId, Long])] = {
       Iterator((e.srcId, Map(e.dstAttr -> 1L)), (e.dstId, Map(e.srcAttr -> 1L)))

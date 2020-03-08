@@ -4,9 +4,15 @@ class Unchecked[C] {
   } // warn (did not warn due to SI-8597)
 
   // These warned before.
-  def warn1[T] = (null: Any) match { case _: T         => } // warn
-  def warn2 = (null: Any) match { case _: Some[String] => } // warn
-  (null: Any) match { case _: Some[C] => } // warn
+  def warn1[T] = (null: Any) match {
+    case _: T =>
+  } // warn
+  def warn2 = (null: Any) match {
+    case _: Some[String] =>
+  } // warn
+  (null: Any) match {
+    case _: Some[C] =>
+  } // warn
 
   // These must remain without warnings. These are excerpts from
   // related tests that are more exhauative.
@@ -16,13 +22,19 @@ class Unchecked[C] {
   } // nowarn
   class B2[A, B]
   class A2[X] extends B2[X, String]
-  def okay2(x: A2[Int]) = x match { case _: B2[Int, _]       => true } // nowarn
-  def okay3(x: A2[Int]) = x match { case _: B2[Int, typeVar] => true } // nowarn
+  def okay2(x: A2[Int]) = x match {
+    case _: B2[Int, _] => true
+  } // nowarn
+  def okay3(x: A2[Int]) = x match {
+    case _: B2[Int, typeVar] => true
+  } // nowarn
 
   def warnArray[T] = (null: Any) match {
     case _: Array[T] =>
   } // warn (did not warn due to SI-8597)
-  def nowarnArrayC = (null: Any) match { case _: Array[C] => } // nowarn
+  def nowarnArrayC = (null: Any) match {
+    case _: Array[C] =>
+  } // nowarn
 
   def nowarnArrayTypeVar[T] = (null: Any) match {
     case _: Array[t] =>

@@ -53,7 +53,11 @@ object ExitGuard {
 
   def explainGuards(): String = {
     val snap = synchronized {
-      guards.collect { case ((_, gs)) => gs }.getOrElse(Nil)
+      guards
+        .collect {
+          case ((_, gs)) => gs
+        }
+        .getOrElse(Nil)
     }
 
     if (snap.isEmpty) {

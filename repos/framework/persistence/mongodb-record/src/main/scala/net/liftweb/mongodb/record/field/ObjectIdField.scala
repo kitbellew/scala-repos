@@ -73,9 +73,15 @@ class ObjectIdField[OwnerType <: BsonRecord[OwnerType]](rec: OwnerType)
   private def elem =
     S.fmapFunc(S.SFuncHolder(this.setFromAny(_))) { funcName =>
       <input type="text"
-        name={funcName}
-        value={valueBox.map(s => s.toString) openOr ""}
-        tabindex={tabIndex.toString}/>
+        name={
+        funcName
+      }
+        value={
+        valueBox.map(s => s.toString) openOr ""
+      }
+        tabindex={
+        tabIndex.toString
+      }/>
     }
 
   def toForm =

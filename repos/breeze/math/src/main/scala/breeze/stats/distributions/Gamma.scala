@@ -152,7 +152,9 @@ case class Gamma(shape: Double, scale: Double)(implicit rand: RandBasis = Rand)
 
   def mean = shape * scale
   def variance = mean * scale
-  def mode = { require(shape >= 1); mean - scale }
+  def mode = {
+    require(shape >= 1); mean - scale
+  }
   def entropy = logNormalizer - (shape - 1) * digamma(shape) + shape
 
   override def probability(x: Double, y: Double): Double = {

@@ -144,17 +144,23 @@ object Console extends DeprecatedConsole with AnsiColor {
     *  output (i.e. output not terminated by a newline character) has
     *  to be made visible on the terminal.
     */
-  def flush() { out.flush() }
+  def flush() {
+    out.flush()
+  }
 
   /** Prints a newline character on the default output.
     */
-  def println() { out.println() }
+  def println() {
+    out.println()
+  }
 
   /** Prints out an object to the default output, followed by a newline character.
     *
     *  @param x the object to print.
     */
-  def println(x: Any) { out.println(x) }
+  def println(x: Any) {
+    out.println(x)
+  }
 
   /** Prints its arguments as a formatted string to the default output,
     *  based on a string pattern (in a fashion similar to printf in C).
@@ -167,7 +173,9 @@ object Console extends DeprecatedConsole with AnsiColor {
     *  @param args the arguments used to instantiating the pattern.
     *  @throws java.lang.IllegalArgumentException if there was a problem with the format string or arguments
     */
-  def printf(text: String, args: Any*) { out.print(text format (args: _*)) }
+  def printf(text: String, args: Any*) {
+    out.print(text format (args: _*))
+  }
 }
 
 private[scala] abstract class DeprecatedConsole {

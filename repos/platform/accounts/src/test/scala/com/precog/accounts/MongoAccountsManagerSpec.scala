@@ -225,7 +225,9 @@ object MongoAccountManagerSpec extends Specification with RealMongoSpecSupport {
         "test@precog.com",
         origPassword,
         new DateTime,
-        AccountPlan.Free) { _ => M.point("testapikey") })
+        AccountPlan.Free) { _ =>
+        M.point("testapikey")
+      })
       .copoint
 
     def after = {

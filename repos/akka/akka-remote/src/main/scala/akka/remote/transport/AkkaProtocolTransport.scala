@@ -607,7 +607,9 @@ private[transport] class ProtocolStateActor(
     case Event(
         HandleListenerRegistered(listener),
         AssociatedWaitHandler(_, wrappedHandle, queue)) ⇒
-      queue.foreach { listener notify InboundPayload(_) }
+      queue.foreach {
+        listener notify InboundPayload(_)
+      }
       stay() using ListenerReady(listener, wrappedHandle)
   }
 
@@ -689,7 +691,9 @@ private[transport] class ProtocolStateActor(
         case FSM.Failure(info: DisassociateInfo) ⇒ Disassociated(info)
         case _ ⇒ Disassociated(Unknown)
       }
-      handlerFuture foreach { _ notify disassociateNotification }
+      handlerFuture foreach {
+        _ notify disassociateNotification
+      }
       wrappedHandle.disassociate()
 
     case StopEvent(reason, _, ListenerReady(handler, wrappedHandle)) ⇒
@@ -730,7 +734,9 @@ private[transport] class ProtocolStateActor(
 
   private def listenForListenerRegistration(
       readHandlerPromise: Promise[HandleEventListener]): Unit =
-    readHandlerPromise.future.map { HandleListenerRegistered(_) } pipeTo self
+    readHandlerPromise.future.map {
+      HandleListenerRegistered(_)
+    } pipeTo self
 
   private def notifyOutboundHandler(
       wrappedHandle: AssociationHandle,

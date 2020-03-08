@@ -91,7 +91,9 @@ private class BalancerTest
     @volatile var ncloses = 0
 
     def close(deadline: Time) = {
-      synchronized { ncloses += 1 }
+      synchronized {
+        ncloses += 1
+      }
       Future.Done
     }
   }
@@ -199,7 +201,9 @@ private class BalancerTest
         @volatile var updateThreads: Set[Long] = Set.empty
 
         override def rebuildDistributor() {
-          synchronized { updateThreads += Thread.currentThread.getId() }
+          synchronized {
+            updateThreads += Thread.currentThread.getId()
+          }
           waitForBeat(beat.getAndIncrement())
           waitForBeat(beat.getAndIncrement())
         }

@@ -77,7 +77,9 @@ object RemoveInternalClusterShardingData {
           journalPluginId,
           typeNames,
           terminateSystem = true,
-          remove2dot3Data).onComplete { _ ⇒ system.terminate() }
+          remove2dot3Data).onComplete { _ ⇒
+          system.terminate()
+        }
       }
     }
   }

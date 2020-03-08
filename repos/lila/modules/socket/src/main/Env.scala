@@ -29,8 +29,12 @@ final class Env(
   system.actorOf(Props[UserRegister], name = UserRegisterName)
 
   scheduler.once(10 seconds) {
-    scheduler.message(4 seconds) { socketHub -> actorApi.Broom }
-    scheduler.message(1 seconds) { population -> PopulationTell }
+    scheduler.message(4 seconds) {
+      socketHub -> actorApi.Broom
+    }
+    scheduler.message(1 seconds) {
+      population -> PopulationTell
+    }
   }
 }
 

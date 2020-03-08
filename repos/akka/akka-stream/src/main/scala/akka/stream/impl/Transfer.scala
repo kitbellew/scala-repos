@@ -213,7 +213,9 @@ private[akka] trait Pump {
   final def pump(): Unit = {
     try while (transferState.isExecutable) {
       currentAction()
-    } catch { case NonFatal(e) ⇒ pumpFailed(e) }
+    } catch {
+      case NonFatal(e) ⇒ pumpFailed(e)
+    }
 
     if (isPumpFinished) pumpFinished()
   }

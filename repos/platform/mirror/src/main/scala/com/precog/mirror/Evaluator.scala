@@ -54,7 +54,9 @@ trait EvaluatorModule
 
       val idOrder = leftIds zip rightIds map {
         case (li, ri) => Ordering.fromInt(li - ri)
-      } reduceOption { _ |+| _ } getOrElse Ordering.EQ
+      } reduceOption {
+        _ |+| _
+      } getOrElse Ordering.EQ
 
       idOrder |+| JValue.order.order(leftValue, rightValue)
     }
@@ -73,13 +75,19 @@ trait EvaluatorModule
         val init = IdGen.nextInt()
         inits += (path -> init)
 
-        0 until raw.length foreach { _ => IdGen.nextInt() } // ew....
+        0 until raw.length foreach { _ =>
+          IdGen.nextInt()
+        } // ew....
 
         init
       }
 
       // done in this order for eagerness reasons
-      raw zip (Stream from init map { Vector(_) }) map { case (a, b) => (b, a) }
+      raw zip (Stream from init map {
+        Vector(_)
+      }) map {
+        case (a, b) => (b, a)
+      }
     }
 
     def loop(
@@ -109,19 +117,25 @@ trait EvaluatorModule
         case Observe(_, _, _) => sys.error("todo")
 
         case expr @ New(_, child) => {
-          val raw = loop(env, restrict)(child) map { case (_, v) => v }
+          val raw = loop(env, restrict)(child) map {
+            case (_, v) => v
+          }
 
           val init = news get expr getOrElse {
             val init = IdGen.nextInt()
             news += (expr -> init)
 
-            0 until raw.length foreach { _ => IdGen.nextInt() } // ew....
+            0 until raw.length foreach { _ =>
+              IdGen.nextInt()
+            } // ew....
 
             init
           }
 
           // done in this order for eagerness reasons
-          raw zip (Stream from init map { Vector(_) }) map {
+          raw zip (Stream from init map {
+            Vector(_)
+          }) map {
             case (a, b) => (b, a)
           }
         }
@@ -130,8 +144,12 @@ trait EvaluatorModule
           val fromRes = loop(env, restrict)(from)
           val toRes = loop(env, restrict)(to)
 
-          val fromIdx = Set(fromRes map { case (ids, _) => ids }: _*)
-          val toIdx = Set(toRes map { case (ids, _)     => ids }: _*)
+          val fromIdx = Set(fromRes map {
+            case (ids, _) => ids
+          }: _*)
+          val toIdx = Set(toRes map {
+            case (ids, _) => ids
+          }: _*)
 
           loop(
             env,
@@ -185,7 +203,9 @@ trait EvaluatorModule
               }
             })
 
-          resultOpt map { case (data, _) => data } getOrElse {
+          resultOpt map {
+            case (data, _) => data
+          } getOrElse {
             (Vector(), JArray(Nil)) :: Nil
           }
         }
@@ -221,7 +241,9 @@ trait EvaluatorModule
               }
             })
 
-          resultOpt map { case (data, _) => data } getOrElse {
+          resultOpt map {
+            case (data, _) => data
+          } getOrElse {
             (Vector(), JArray(Nil)) :: Nil
           }
         }
@@ -294,7 +316,9 @@ trait EvaluatorModule
               val result =
                 values collect red.prepare reduceOption red orElse red.zero
 
-              result.toSeq map { v => (Vector(), v) }
+              result.toSeq map { v =>
+                (Vector(), v)
+              }
             }
 
             case _ => sys.error("todo")
@@ -580,7 +604,9 @@ trait EvaluatorModule
 
       val orderRight = orderFromIndices(indicesRight)
 
-      val leftMergeKey = 0 until linearLeft.length map { Left(_) } toList
+      val leftMergeKey = 0 until linearLeft.length map {
+        Left(_)
+      } toList
 
       val rightMergeKey = linearRight.zipWithIndex collect {
         case (p, i) if !posLeft(p) => Right(i)
@@ -606,7 +632,9 @@ trait EvaluatorModule
 
           zipped map {
             case (x, y) => Ordering.fromInt(x - y)
-          } reduce { _ |+| _ }
+          } reduce {
+            _ |+| _
+          }
         }
       }
 
@@ -674,7 +702,9 @@ trait EvaluatorModule
       def order(left: SEvent, right: SEvent) = {
         (indices map left._1) zip (indices map right._1) map {
           case (l, r) => Ordering.fromInt(l - r)
-        } reduce { _ |+| _ }
+        } reduce {
+          _ |+| _
+        }
       }
     }
   }

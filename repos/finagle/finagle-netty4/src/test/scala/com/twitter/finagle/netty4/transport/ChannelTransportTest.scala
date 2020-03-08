@@ -105,7 +105,9 @@ class ChannelTransportTest
       }
     })
 
-    forAll { s: String => assert(transport.write(s).poll == Some(Return.Unit)) }
+    forAll { s: String =>
+      assert(transport.write(s).poll == Some(Return.Unit))
+    }
   }
 
   test("write (interrupted by caller)") {

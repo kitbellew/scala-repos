@@ -40,7 +40,9 @@ class CookieMap(message: Message)
   private[this] def decodeCookies(header: String): Iterable[Cookie] = {
     val decoder = new NettyCookieDecoder
     try {
-      decoder.decode(header).asScala map { new Cookie(_) }
+      decoder.decode(header).asScala map {
+        new Cookie(_)
+      }
     } catch {
       case e: IllegalArgumentException =>
         _isValid = false
@@ -101,7 +103,9 @@ class CookieMap(message: Message)
     * @param name the cookie name
     * @return a value of the first cookie of the given ''name''
     */
-  def getValue(name: String): Option[String] = get(name) map { _.value }
+  def getValue(name: String): Option[String] = get(name) map {
+    _.value
+  }
 
   /**
     * Fetches all cookies with the given ''name'' from this map.

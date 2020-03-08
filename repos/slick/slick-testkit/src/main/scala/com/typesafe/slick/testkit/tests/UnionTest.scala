@@ -28,10 +28,12 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
   lazy val employees = TableQuery[Employees]
 
   def testBasicUnions = {
-    val q1 =
-      for (m <- managers filter { _.department === "IT" }) yield (m.id, m.name)
-    val q2 =
-      for (e <- employees filter { _.departmentIs("IT") }) yield (e.id, e.name)
+    val q1 = for (m <- managers filter {
+                    _.department === "IT"
+                  }) yield (m.id, m.name)
+    val q2 = for (e <- employees filter {
+                    _.departmentIs("IT")
+                  }) yield (e.id, e.name)
     val q3 = (q1 union q2).sortBy(_._2.asc)
     val q4 = managers.map(_.id)
     val q4b = q4 union q4
@@ -79,7 +81,9 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
   }
 
   def testUnionWithoutProjection = {
-    def f(s: String) = managers filter { _.name === s }
+    def f(s: String) = managers filter {
+      _.name === s
+    }
     val q = f("Peter") union f("Amy")
 
     seq(
@@ -168,7 +172,9 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
         d <- TableQuery[Deliveries]
         m <- TableQuery[Messages] if d.messageId === m.id
       } yield (d, m))
-        .filter { case (d, m) => d.sentAt >= 1400000000L }
+        .filter {
+          case (d, m) => d.sentAt >= 1400000000L
+        }
     }
 
     def rightSide = {
@@ -176,7 +182,9 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
         d <- TableQuery[Deliveries]
         m <- TableQuery[Messages] if d.messageId === m.id
       } yield (d, m))
-        .filter { case (d, m) => d.sentAt < 1400000000L }
+        .filter {
+          case (d, m) => d.sentAt < 1400000000L
+        }
     }
 
     val query =

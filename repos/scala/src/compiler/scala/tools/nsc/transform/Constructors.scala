@@ -284,7 +284,9 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
       // changeOwner needed because the `stats` contained in the DefDef were owned by the template, not long ago.
       val blk =
         Block(stats, gen.mkZero(UnitTpe)).changeOwner(impl.symbol -> methodSym)
-      val delayedDD = localTyper typed { DefDef(methodSym, Nil, blk) }
+      val delayedDD = localTyper typed {
+        DefDef(methodSym, Nil, blk)
+      }
 
       delayedDD.asInstanceOf[DefDef]
     }

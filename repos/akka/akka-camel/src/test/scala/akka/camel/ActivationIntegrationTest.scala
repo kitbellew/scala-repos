@@ -40,7 +40,9 @@ class ActivationIntegrationTest
     val actor = start(
       new Consumer {
         def endpointUri = "direct:a3"
-        def receive = { case _ ⇒ {} }
+        def receive = {
+          case _ ⇒ {}
+        }
 
         override def postStop() {
           super.postStop()

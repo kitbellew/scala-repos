@@ -92,7 +92,13 @@ trait StatefulSnippet extends DispatchSnippet {
       func: () => Any,
       body: NodeSeq,
       attrs: SHtml.ElemAttr*): Elem =
-    SHtml.link(to, () => { registerThisSnippet(); func() }, body, attrs: _*)
+    SHtml.link(
+      to,
+      () => {
+        registerThisSnippet(); func()
+      },
+      body,
+      attrs: _*)
 
   /**
     * Redirect to another page, but make sure this StatefulSnippet is registered

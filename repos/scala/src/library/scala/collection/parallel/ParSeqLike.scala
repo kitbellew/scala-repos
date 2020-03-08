@@ -186,7 +186,9 @@ trait ParSeqLike[
         new ReverseMap[S, That](
           f,
           () => bf(repr).asCombiner,
-          splitter) mapResult { _.resultWithTaskSupport }
+          splitter) mapResult {
+          _.resultWithTaskSupport
+        }
       )
     } else setTaskSupport(seq.reverseMap(f)(bf2seq(bf)), tasksupport)
   /*bf ifParallel { pbf =>
@@ -263,12 +265,13 @@ trait ParSeqLike[
         tasksupport.executeAndWaitResult(tsk)
       }
       val copyend = new Copy[U, That](cfactory, pits(2))
-      tasksupport.executeAndWaitResult(
-        ((copystart parallel copymiddle) { _ combine _ } parallel copyend) {
-          _ combine _
-        } mapResult {
-          _.resultWithTaskSupport
-        })
+      tasksupport.executeAndWaitResult(((copystart parallel copymiddle) {
+        _ combine _
+      } parallel copyend) {
+        _ combine _
+      } mapResult {
+        _.resultWithTaskSupport
+      })
     } else patch_sequential(from, patch.seq, replaced)
   }
 

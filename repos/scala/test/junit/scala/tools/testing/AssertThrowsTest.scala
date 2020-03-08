@@ -14,17 +14,23 @@ class AssertThrowsTest {
   class Bar extends Exception
 
   @Test
-  def catchFoo = assertThrows[Foo] { throw new Foo }
+  def catchFoo = assertThrows[Foo] {
+    throw new Foo
+  }
 
   @Test
-  def catchSubclass = assertThrows[Foo] { throw new SubFoo }
+  def catchSubclass = assertThrows[Foo] {
+    throw new SubFoo
+  }
 
   @Test
   def rethrowBar =
     assertTrue(
       "exception wasn't rethrown", {
         try {
-          assertThrows[Foo] { throw new Bar }
+          assertThrows[Foo] {
+            throw new Bar
+          }
           false
         } catch {
           case bar: Bar     => true
@@ -35,7 +41,9 @@ class AssertThrowsTest {
   @Test
   def errorIfNoThrow: Unit = {
     try {
-      assertThrows[Foo] { () }
+      assertThrows[Foo] {
+        ()
+      }
     } catch {
       case e: AssertionError => return
     }

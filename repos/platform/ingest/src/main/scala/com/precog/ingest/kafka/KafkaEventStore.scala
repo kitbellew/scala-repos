@@ -168,7 +168,9 @@ object LocalKafkaEventStore {
 
     val producer =
       new Producer[String, Message](new ProducerConfig(localProperties))
-    val stoppable = Stoppable.fromFuture(Future { producer.close })
+    val stoppable = Stoppable.fromFuture(Future {
+      producer.close
+    })
 
     Some(
       new LocalKafkaEventStore(

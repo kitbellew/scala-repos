@@ -76,7 +76,9 @@ class Statements(indent: Int) {
     val assign = P(testlist ~ ("=" ~ (yield_expr | testlist.map(tuplize))).rep)
 
     P(
-      aug.map { case (a, b, c) => Ast.stmt.AugAssign(tuplize(a), b, c) } |
+      aug.map {
+        case (a, b, c) => Ast.stmt.AugAssign(tuplize(a), b, c)
+      } |
         assign.map {
           case (a, Nil) => Ast.stmt.Expr(tuplize(a))
           case (a, b)   => Ast.stmt.Assign(Seq(tuplize(a)) ++ b.init, b.last)
@@ -240,7 +242,9 @@ class Statements(indent: Int) {
           .map(_.length) ~~ Lexical.comment.!.?)
       P(Lexical.nonewlinewscomment.? ~~ (endLine | commentLine).repX(1))
         .map {
-          _.collectFirst { case (s, None) => s }
+          _.collectFirst {
+            case (s, None) => s
+          }
         }
         .filter(_.isDefined)
         .map(_.get)

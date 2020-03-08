@@ -13,8 +13,12 @@ class CapabilityTest extends FunSuite {
     Capability.MultiResults)
 
   test("contain capability") {
-    assertResult(true) { c.has(Capability.SSL) }
-    assertResult(false) { c.has(Capability.Compress) }
+    assertResult(true) {
+      c.has(Capability.SSL)
+    }
+    assertResult(false) {
+      c.has(Capability.Compress)
+    }
   }
 
   test("contain all capabilities") {
@@ -33,7 +37,9 @@ class CapabilityTest extends FunSuite {
 
   test("subtract capability") {
     val c2 = c - Capability.SSL
-    assertResult(false) { c2.has(Capability.SSL) }
+    assertResult(false) {
+      c2.has(Capability.SSL)
+    }
   }
 
   test("add capability") {

@@ -3,7 +3,9 @@ import scala.language.experimental.macros
 
 // whitebox use case #1: return type refinement
 
-class ReturnTypeRefinementBundle(val c: Context { type PrefixType = Nothing }) {
+class ReturnTypeRefinementBundle(val c: Context {
+  type PrefixType = Nothing
+}) {
   import c.universe._
   def impl = {
     q"""
@@ -147,7 +149,9 @@ object ExtractorMacro {
   def unapply(x: Int): Any = macro ExtractorBundle.unapplyImpl
 }
 
-class ExtractorBundle(val c: Context { type PrefixType = Nothing }) {
+class ExtractorBundle(val c: Context {
+  type PrefixType = Nothing
+}) {
   import c.universe._
   def unapplyImpl(x: Tree) = {
     q"""

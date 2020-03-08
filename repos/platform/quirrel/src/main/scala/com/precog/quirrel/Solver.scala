@@ -34,7 +34,9 @@ trait Solver extends parser.AST with typer.Binder {
 
   def solve(tree: Expr, sigma: Sigma)(
       partialPred: PartialFunction[Node, Boolean]): Expr => Option[Expr] = {
-    val predicate = partialPred.lift andThen { _ getOrElse false }
+    val predicate = partialPred.lift andThen {
+      _ getOrElse false
+    }
 
     def sigmaFormal(d: Dispatch): Option[Expr] = d.binding match {
       case FormalBinding(let) => sigma get ((d.name, let))
@@ -55,10 +57,18 @@ trait Solver extends parser.AST with typer.Binder {
         case Div(loc, left, right) if left equalsIgnoreLoc right =>
           Set(NumLit(loc, "1"))
       },
-      { case Add(loc, left, right)         => Set(Add(loc, right, left)) },
-      { case Sub(loc, left, right)         => Set(Add(loc, Neg(loc, right), left)) },
-      { case Add(loc, Neg(_, left), right) => Set(Sub(loc, right, left)) },
-      { case Mul(loc, left, right)         => Set(Mul(loc, right, left)) },
+      {
+        case Add(loc, left, right) => Set(Add(loc, right, left))
+      },
+      {
+        case Sub(loc, left, right) => Set(Add(loc, Neg(loc, right), left))
+      },
+      {
+        case Add(loc, Neg(_, left), right) => Set(Sub(loc, right, left))
+      },
+      {
+        case Mul(loc, left, right) => Set(Mul(loc, right, left))
+      },
       {
         case Add(loc, Add(loc2, x, y), z) => Set(Add(loc, x, Add(loc2, y, z)))
       },
@@ -102,7 +112,9 @@ trait Solver extends parser.AST with typer.Binder {
         case Mul(loc, Div(loc2, w, x), Div(loc3, y, z)) =>
           Set(Div(loc2, Mul(loc, w, y), Mul(loc, x, z)))
       },
-      { case Div(_, Mul(_, x, y), z) if x equalsIgnoreLoc z => Set(y) },
+      {
+        case Div(_, Mul(_, x, y), z) if x equalsIgnoreLoc z => Set(y)
+      },
       {
         case Div(loc, Mul(_, w, x), Mul(_, y, z)) if w equalsIgnoreLoc y =>
           Set(Div(loc, x, z))
@@ -139,7 +151,9 @@ trait Solver extends parser.AST with typer.Binder {
         case Neg(loc, Div(loc2, x, y)) =>
           Set(Div(loc2, Neg(loc, x), y), Div(loc2, x, Neg(loc, y)))
       },
-      { case Neg(_, Neg(_, x)) => Set(x) },
+      {
+        case Neg(_, Neg(_, x)) => Set(x)
+      },
       {
         case Add(loc, left, right) =>
           for (left2 <- possibilities(left) + left;
@@ -164,8 +178,12 @@ trait Solver extends parser.AST with typer.Binder {
                right2 <- possibilities(right) + right)
             yield Div(loc, left2, right2)
       },
-      { case Neg(loc, child) => possibilities(child) map neg(loc) },
-      { case Paren(_, child) => Set(child) },
+      {
+        case Neg(loc, child) => possibilities(child) map neg(loc)
+      },
+      {
+        case Paren(_, child) => Set(child)
+      },
       {
         case d @ Dispatch(_, id, _) if sigmaFormal(d).isDefined =>
           sigmaFormal(d).toSet
@@ -178,14 +196,18 @@ trait Solver extends parser.AST with typer.Binder {
       case tree @ Dispatch(_, id, actuals) => {
         tree.binding match {
           case LetBinding(let) => {
-            val ids = let.params map { Identifier(Vector(), _) }
+            val ids = let.params map {
+              Identifier(Vector(), _)
+            }
             val sigma2 = sigma ++ (ids zip Stream.continually(let) zip actuals)
             solve(let.left, sigma2)(partialPred) // not inner!
           }
 
           case FormalBinding(let) => {
             val actualM = sigma get ((id, let))
-            val resultM = actualM map { solve(_, sigma)(partialPred) }
+            val resultM = actualM map {
+              solve(_, sigma)(partialPred)
+            }
             resultM getOrElse sys.error("er...?")
           }
 
@@ -198,12 +220,17 @@ trait Solver extends parser.AST with typer.Binder {
       case Sub(loc, left, right) =>
         solveBinary(tree, left, right)(
           add(loc),
-          sub(loc) andThen { _ andThen neg(loc) })
+          sub(loc) andThen {
+            _ andThen neg(loc)
+          })
       case Mul(loc, left, right) =>
         solveBinary(tree, left, right)(div(loc), div(loc))
       case Div(loc, left, right) =>
         solveBinary(tree, left, right)(mul(loc), flip(div(loc)))
-      case Neg(loc, child) => inner(child) andThen { _ map neg(loc) }
+      case Neg(loc, child) =>
+        inner(child) andThen {
+          _ map neg(loc)
+        }
       case Paren(_, child) => inner(child)
       case _               => const(None) _
     }
@@ -215,11 +242,16 @@ trait Solver extends parser.AST with typer.Binder {
       val inRight = isSubtree(right)
 
       if (inLeft && inRight) {
-        val results = simplify(tree) map { xs => (inner(xs.head), xs) }
+        val results = simplify(tree) map { xs =>
+          (inner(xs.head), xs)
+        }
 
         results.foldLeft(const[Option[Expr], Expr](None) _) {
           case (acc, (f, trace)) =>
-            e => acc(e) orElse (f(e) map { e2 => printTrace(trace); e2 })
+            e =>
+              acc(e) orElse (f(e) map { e2 =>
+                printTrace(trace); e2
+              })
         }
       } else if (inLeft && !inRight) {
         inner(left) compose flip(invertLeft)(right)
@@ -238,7 +270,9 @@ trait Solver extends parser.AST with typer.Binder {
         work: Set[List[Expr]],
         seen: Set[Expr],
         results: Set[List[Expr]]): Set[List[Expr]] = {
-      val filteredWork = work filterNot { xs => seen(xs.head) }
+      val filteredWork = work filterNot { xs =>
+        seen(xs.head)
+      }
       // println("Examining: " + (filteredWork map { _.head } map printInfix))
       if (filteredWork.isEmpty) {
         results
@@ -247,14 +281,18 @@ trait Solver extends parser.AST with typer.Binder {
           isSimplified(xs.head)
         }
         val newWorkLists = newWork flatMap { xs =>
-          possibilities(xs.head) map { _ :: xs }
+          possibilities(xs.head) map {
+            _ :: xs
+          }
         }
 
         // return just the first set of results we find
         if (results2.isEmpty)
           search(
             newWorkLists,
-            seen ++ (filteredWork map { _.head }),
+            seen ++ (filteredWork map {
+              _.head
+            }),
             results ++ results2)
         else
           results2
@@ -270,7 +308,11 @@ trait Solver extends parser.AST with typer.Binder {
     }
 
     def possibilities(expr: Expr): Set[Expr] =
-      Rules filter { _ isDefinedAt expr } flatMap { _(expr) }
+      Rules filter {
+        _ isDefinedAt expr
+      } flatMap {
+        _(expr)
+      }
 
     def isSubtree(tree: Node): Boolean = {
       def inner(tree: Node, sigma: Sigma): Boolean = tree match {
@@ -279,7 +321,9 @@ trait Solver extends parser.AST with typer.Binder {
         case tree @ Dispatch(_, id, actuals) => {
           tree.binding match {
             case LetBinding(let) => {
-              val ids = let.params map { Identifier(Vector(), _) }
+              val ids = let.params map {
+                Identifier(Vector(), _)
+              }
               val sigma2 =
                 sigma ++ (ids zip Stream.continually(let) zip actuals)
               inner(let.left, sigma2)
@@ -287,7 +331,9 @@ trait Solver extends parser.AST with typer.Binder {
 
             case FormalBinding(let) => {
               val actualM = sigma get ((id, let))
-              val resultM = actualM map { inner(_, sigma) }
+              val resultM = actualM map {
+                inner(_, sigma)
+              }
               resultM getOrElse sys.error("er...?")
             }
 
@@ -295,7 +341,10 @@ trait Solver extends parser.AST with typer.Binder {
           }
         }
 
-        case _ => tree.children map { inner(_, sigma) } exists identity
+        case _ =>
+          tree.children map {
+            inner(_, sigma)
+          } exists identity
       }
 
       inner(tree, sigma)
@@ -342,7 +391,9 @@ trait Solver extends parser.AST with typer.Binder {
     }
 
     // big assumption here!!!!  we're assuming that these phases only require locally-synthetic attributes
-    result foreach { e => bindRoot(e, e) }
+    result foreach { e =>
+      bindRoot(e, e)
+    }
 
     result
   }
@@ -365,7 +416,9 @@ trait Solver extends parser.AST with typer.Binder {
   private def printTrace(trace: List[Expr]) {
     if (enableTrace) {
       println("*** Solution Point!")
-      println(trace.reverse map { e => printSExp(e) } mkString "\n\n")
+      println(trace.reverse map { e =>
+        printSExp(e)
+      } mkString "\n\n")
     }
   }
 

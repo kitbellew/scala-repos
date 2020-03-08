@@ -18,7 +18,9 @@ object SetMaker {
   class Config[A] {
     private val mapMaker = new GoogleMapMaker
 
-    def weakValues = { mapMaker.weakKeys; mapMaker.weakValues; this }
+    def weakValues = {
+      mapMaker.weakKeys; mapMaker.weakValues; this
+    }
     def concurrencyLevel(level: Int) = {
       mapMaker.concurrencyLevel(level); this
     }

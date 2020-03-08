@@ -48,9 +48,15 @@ class LazyStrictTestsJVM {
   object TC3 extends TCImplicits[Strict, Strict, Strict]
 
   trait TCImplicits[
-      A[T] <: { def value: T },
-      B[T] <: { def value: T },
-      C[T] <: { def value: T }] {
+      A[T] <: {
+        def value: T
+      },
+      B[T] <: {
+        def value: T
+      },
+      C[T] <: {
+        def value: T
+      }] {
     implicit def listTC[T](implicit underlying: A[TC[T]]): TC[List[T]] =
       TC.instance(depth => s"List(${underlying.value.repr(depth - 1)})")
 
@@ -92,8 +98,11 @@ class LazyStrictTestsJVM {
     val (ccTC3SO, genTC3SO, listTC3SO) = {
       import TC3._
       def throwsStackOverflow[T](f: => T): Boolean =
-        try { f; false }
-        catch { case _: StackOverflowError => true }
+        try {
+          f; false
+        } catch {
+          case _: StackOverflowError => true
+        }
 
       (
         throwsStackOverflow(TC[CC]),

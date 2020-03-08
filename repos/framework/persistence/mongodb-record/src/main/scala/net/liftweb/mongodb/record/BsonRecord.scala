@@ -89,7 +89,9 @@ trait BsonMetaRecord[BaseRecord <: BsonRecord[BaseRecord]]
     for {
       field <- fields(inst)
       dbValue <- fieldDbValue(field)
-    } { dbo.add(field.name, dbValue) }
+    } {
+      dbo.add(field.name, dbValue)
+    }
 
     dbo.get
   }

@@ -114,7 +114,9 @@ class TestProbeSpec extends AkkaSpec with DefaultTimeout {
     }
 
     "be able to ignore primitive types" in {
-      ignoreMsg { case 42 ⇒ true }
+      ignoreMsg {
+        case 42 ⇒ true
+      }
       testActor ! 42
       testActor ! "pigdog"
       expectMsg("pigdog")

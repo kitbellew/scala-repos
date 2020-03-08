@@ -1,11 +1,21 @@
 class A
 trait B[T <: B[T]] extends A
 class B1[T <: B1[T]] extends B[T]
-class C extends B[C] { override def toString = "C" }
-class D extends B[D] { override def toString = "D" }
-class E extends B[E] { override def toString = "E" }
-class F extends B[F] { override def toString = "F" }
-class G extends B1[G] { override def toString = "G" }
+class C extends B[C] {
+  override def toString = "C"
+}
+class D extends B[D] {
+  override def toString = "D"
+}
+class E extends B[E] {
+  override def toString = "E"
+}
+class F extends B[F] {
+  override def toString = "F"
+}
+class G extends B1[G] {
+  override def toString = "G"
+}
 
 object Test {
   import scala.collection.{mutable, immutable}

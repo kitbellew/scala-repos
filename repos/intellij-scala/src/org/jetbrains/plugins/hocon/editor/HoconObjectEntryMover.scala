@@ -175,7 +175,9 @@ class HoconObjectEntryMover extends LineMover {
         field: HObjectField): Option[(HObjectField, List[String])] =
       for {
         adjacentField <- adjacentEntry(field)
-          .collect({ case f: HObjectField => f })
+          .collect({
+            case f: HObjectField => f
+          })
           .filter(canInsertInto)
         prefixToRemove <- {
           val prefix =

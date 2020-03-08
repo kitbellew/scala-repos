@@ -5,7 +5,9 @@ object SCL4324 {
 
   object Category {
     implicit def fCat: Category[Function1] = new Category[Function1] {
-      def identity[A]: A => A = { x => x }
+      def identity[A]: A => A = { x =>
+        x
+      }
     }
   }
 

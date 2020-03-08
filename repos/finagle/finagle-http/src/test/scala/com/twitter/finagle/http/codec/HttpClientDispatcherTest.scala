@@ -112,19 +112,25 @@ class HttpClientDispatcherTest extends FunSuite {
     val c = res.reader.read(Int.MaxValue)
     assert(!c.isDefined)
     req.writer.write(Buf.Utf8("a"))
-    out.read() flatMap { c => out.write(c) }
+    out.read() flatMap { c =>
+      out.write(c)
+    }
     assert(Await.result(c, timeout) === Some(Buf.Utf8("a")))
 
     val cc = res.reader.read(Int.MaxValue)
     assert(!cc.isDefined)
     req.writer.write(Buf.Utf8("some other thing"))
-    out.read() flatMap { c => out.write(c) }
+    out.read() flatMap { c =>
+      out.write(c)
+    }
     assert(Await.result(cc, timeout) === Some(Buf.Utf8("some other thing")))
 
     val last = res.reader.read(Int.MaxValue)
     assert(!last.isDefined)
     req.close()
-    out.read() flatMap { c => out.write(c) }
+    out.read() flatMap { c =>
+      out.write(c)
+    }
     assert(Await.result(last, timeout).isEmpty)
   }
 
@@ -132,7 +138,9 @@ class HttpClientDispatcherTest extends FunSuite {
     val (in, out) = mkPair[Any, Any]
     val disp = new HttpClientDispatcher(in)
     out.write("invalid message")
-    intercept[IllegalArgumentException] { Await.result(disp(Request())) }
+    intercept[IllegalArgumentException] {
+      Await.result(disp(Request()))
+    }
   }
 
   test("not chunked") {
@@ -186,7 +194,9 @@ class HttpClientDispatcherTest extends FunSuite {
 
     val cc = reader.read(Int.MaxValue)
     out.write("something else")
-    intercept[IllegalArgumentException] { Await.result(cc, timeout) }
+    intercept[IllegalArgumentException] {
+      Await.result(cc, timeout)
+    }
     verify(inSpy, times(1)).close()
   }
 
@@ -215,7 +225,9 @@ class HttpClientDispatcherTest extends FunSuite {
     writep.setException(new Exception)
 
     assert(g.isDefined)
-    intercept[Reader.ReaderDiscarded] { Await.result(g, timeout) }
+    intercept[Reader.ReaderDiscarded] {
+      Await.result(g, timeout)
+    }
   }
 
   test("upstream interrupt: during req stream (read)") {

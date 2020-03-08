@@ -18,7 +18,9 @@ object Test extends Properties("reflect.internal.util.Collections") {
     case (x, y) =>
       x.toLowerCase + y.toString
   }
-  val testid: (String, Int) => String = { case (x, y) => x }
+  val testid: (String, Int) => String = {
+    case (x, y) => x
+  }
 
   val prop1_map2Conserve = forAll { (xs: List[String], ys: List[Int]) =>
     val res = map2Conserve(xs, ys)(testid)
@@ -37,7 +39,9 @@ object Test extends Properties("reflect.internal.util.Collections") {
       xs = "X" :: xs
       ys = 1 :: ys
     }
-    map2Conserve(xs, ys) { case (x, y) => x.toLowerCase + y.toString }
+    map2Conserve(xs, ys) {
+      case (x, y) => x.toLowerCase + y.toString
+    }
   }
 
   val tests = List(

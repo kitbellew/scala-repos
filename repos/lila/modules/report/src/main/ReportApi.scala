@@ -30,7 +30,9 @@ private[report] final class ReportApi {
                 "$set" -> (reportTube
                   .toMongo(report)
                   .get - "processedBy" - "_id"))
-            ) flatMap { res => (res.n == 0) ?? $insert(report) }
+            ) flatMap { res =>
+              (res.n == 0) ?? $insert(report)
+            }
           else $insert(report)
         }
       } >>- monitorUnprocessed
@@ -181,7 +183,9 @@ private[report] final class ReportApi {
       val reports = all take nb
       UserRepo byIds reports.map(_.user).distinct map { users =>
         reports.flatMap { r =>
-          users.find(_.id == r.user) map { Report.WithUser(r, _) }
+          users.find(_.id == r.user) map {
+            Report.WithUser(r, _)
+          }
         }
       }
     }

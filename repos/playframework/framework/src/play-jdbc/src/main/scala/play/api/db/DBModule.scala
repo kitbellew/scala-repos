@@ -34,7 +34,9 @@ final class DBModule extends Module {
   }
 
   private def namedDatabaseBindings(dbs: Set[String]): Seq[Binding[_]] =
-    dbs.toSeq.map { db => bindNamed(db).to(new NamedDatabaseProvider(db)) }
+    dbs.toSeq.map { db =>
+      bindNamed(db).to(new NamedDatabaseProvider(db))
+    }
 
   private def defaultDatabaseBinding(
       default: String,
@@ -86,7 +88,9 @@ class DBApiProvider @Inject() (
         .mapValues(_.underlying)
     } else Map.empty[String, Config]
     val db = new DefaultDBApi(configs, pool, environment)
-    lifecycle.addStopHook { () => Future.successful(db.shutdown()) }
+    lifecycle.addStopHook { () =>
+      Future.successful(db.shutdown())
+    }
     db.connect(logConnection = environment.mode != Mode.Test)
     db
   }

@@ -33,7 +33,9 @@ object InlineWarningTest extends ClearAfterClass.Clearable {
   var compiler = newCompiler(extraArgs = args)
   var compilerWarnAll =
     newCompiler(extraArgs = argsNoWarn + " -Yopt-warnings:_")
-  def clear(): Unit = { compiler = null; compilerWarnAll = null }
+  def clear(): Unit = {
+    compiler = null; compilerWarnAll = null
+  }
 }
 
 @RunWith(classOf[JUnit4])
@@ -74,7 +76,9 @@ class InlineWarningTest extends ClearAfterClass {
     )
     compile(
       code,
-      allowMessage = i => { count += 1; warns.exists(i.msg contains _) })
+      allowMessage = i => {
+        count += 1; warns.exists(i.msg contains _)
+      })
     assert(count == 5, count) // TODO SD-85: 5th warning
   }
 
@@ -99,7 +103,9 @@ class InlineWarningTest extends ClearAfterClass {
       List(codeA, codeB),
       extraArgs = InlineWarningTest.args,
       afterEach = removeImpl,
-      allowMessage = i => { c += 1; i.msg contains warn })
+      allowMessage = i => {
+        c += 1; i.msg contains warn
+      })
     assert(c == 1, c)
 
     // only summary here
@@ -159,7 +165,9 @@ class InlineWarningTest extends ClearAfterClass {
     val List(b) = compile(
       scalaCode,
       List((javaCode, "A.java")),
-      allowMessage = i => { c += 1; warns.tail.exists(i.msg contains _) })
+      allowMessage = i => {
+        c += 1; warns.tail.exists(i.msg contains _)
+      })
     assert(c == 1, c)
 
     // no warnings here
@@ -175,7 +183,9 @@ class InlineWarningTest extends ClearAfterClass {
         InlineWarningTest.argsNoWarn + " -Yopt-warnings:no-inline-mixed"))(
       scalaCode,
       List((javaCode, "A.java")),
-      allowMessage = i => { c += 1; warns.exists(i.msg contains _) })
+      allowMessage = i => {
+        c += 1; warns.exists(i.msg contains _)
+      })
     assert(c == 2, c)
   }
 
@@ -202,7 +212,11 @@ class InlineWarningTest extends ClearAfterClass {
         |that would cause an IllegalAccessError when inlined into class N""".stripMargin
 
     var c = 0
-    compile(code, allowMessage = i => { c += 1; i.msg contains warn })
+    compile(
+      code,
+      allowMessage = i => {
+        c += 1; i.msg contains warn
+      })
     assert(c == 1, c)
   }
 
@@ -232,7 +246,9 @@ class InlineWarningTest extends ClearAfterClass {
     compile(
       code,
       compiler = compilerWarnAll,
-      allowMessage = i => { c += 1; i.msg contains warn })
+      allowMessage = i => {
+        c += 1; i.msg contains warn
+      })
     assert(c == 1, c)
   }
 
@@ -253,7 +269,11 @@ class InlineWarningTest extends ClearAfterClass {
         |does not have the same strictfp mode as the callee C::f()I.""".stripMargin
 
     var c = 0
-    compile(code, allowMessage = i => { c += 1; i.msg contains warn })
+    compile(
+      code,
+      allowMessage = i => {
+        c += 1; i.msg contains warn
+      })
     assert(c == 1, c)
   }
 }

@@ -28,7 +28,9 @@ class SliceVector[@spec(Int) K, @spec(Double, Int, Float, Long) V: ClassTag](
     extends Vector[V] {
   def apply(i: Int): V = tensor(slices(i))
 
-  def update(i: Int, v: V) { tensor(slices(i)) = v }
+  def update(i: Int, v: V) {
+    tensor(slices(i)) = v
+  }
 
   def copy: Vector[V] = DenseVector((slices map (tensor.apply _)): _*)
 

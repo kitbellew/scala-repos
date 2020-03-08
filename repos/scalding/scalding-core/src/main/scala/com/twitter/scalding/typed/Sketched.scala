@@ -46,7 +46,9 @@ case class Sketched[K, V](
   private lazy implicit val cms = CMS.monoid[Bytes](eps, delta, seed)
   lazy val sketch: TypedPipe[CMS[Bytes]] =
     pipe
-      .map { case (k, _) => cms.create(Bytes(serialization(k))) }
+      .map {
+        case (k, _) => cms.create(Bytes(serialization(k)))
+      }
       .groupAll
       .sum
       .values
@@ -97,20 +99,30 @@ case class SketchJoined[K: Ordering, V, V2, R](
         //if the frequency is 0, maxReplicas.ceil will be 0 so we will filter out this key entirely
         //if it's < maxPerReducer, the ceil will round maxReplicas up to 1 to ensure we still see it
         val replicas = fn(maxReplicas.ceil.toInt.min(numReducers))
-        replicas.map { i => (i, k) -> w }
+        replicas.map { i =>
+          (i, k) -> w
+        }
     }
 
   lazy val toTypedPipe: TypedPipe[(K, R)] = {
     lazy val rand = new scala.util.Random(left.seed)
-    val lhs = flatMapWithReplicas(left.pipe) { n => Some(rand.nextInt(n) + 1) }
-    val rhs = flatMapWithReplicas(right) { n => 1.to(n) }
+    val lhs = flatMapWithReplicas(left.pipe) { n =>
+      Some(rand.nextInt(n) + 1)
+    }
+    val rhs = flatMapWithReplicas(right) { n =>
+      1.to(n)
+    }
 
     lhs.group
       .cogroup(rhs.group) { (k, itv, itu) =>
-        itv.flatMap { v => joiner(k._2, v, itu) }
+        itv.flatMap { v =>
+          joiner(k._2, v, itu)
+        }
       }
       .withReducers(numReducers)
-      .map { case ((r, k), v) => (k, v) }
+      .map {
+        case ((r, k), v) => (k, v)
+      }
   }
 
   private implicit def intKeyOrd: Ordering[(Int, K)] = {

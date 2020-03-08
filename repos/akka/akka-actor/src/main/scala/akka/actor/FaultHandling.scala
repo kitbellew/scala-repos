@@ -235,7 +235,9 @@ object SupervisorStrategy extends SupervisorStrategyLowPriorityImplicits {
   /**
     * Converts a Java Decider into a Scala Decider
     */
-  def makeDecider(func: JDecider): Decider = { case x ⇒ func(x) }
+  def makeDecider(func: JDecider): Decider = {
+    case x ⇒ func(x)
+  }
 
   /**
     * Sort so that subtypes always precede their supertypes, but without
@@ -386,7 +388,9 @@ abstract class SupervisorStrategy {
   // logging is not the main purpose, and if it fails there’s nothing we can do
   private def publish(context: ActorContext, logEvent: LogEvent): Unit =
     try context.system.eventStream.publish(logEvent)
-    catch { case NonFatal(_) ⇒ }
+    catch {
+      case NonFatal(_) ⇒
+    }
 
   /**
     * Resume the previously failed child: <b>do never apply this to a child which

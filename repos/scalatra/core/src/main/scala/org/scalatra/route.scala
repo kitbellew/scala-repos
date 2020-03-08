@@ -30,7 +30,9 @@ case class Route(
           routeParams <- acc
           matcherParams <- routeMatcher(requestPath)
         } yield routeParams ++ matcherParams
-    } map { routeParams => MatchedRoute(action, routeParams) }
+    } map { routeParams =>
+      MatchedRoute(action, routeParams)
+    }
   }
 
   /**
@@ -58,7 +60,9 @@ object Route {
       action: Action,
       contextPath: HttpServletRequest => String): Route = {
     val route = Route(action = action, contextPath = contextPath)
-    transformers.foldLeft(route) { (route, transformer) => transformer(route) }
+    transformers.foldLeft(route) { (route, transformer) =>
+      transformer(route)
+    }
   }
 
   def appendMatcher(matcher: RouteMatcher): RouteTransformer = {

@@ -42,7 +42,9 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
 
   //# pathPrefixTest-, rawPathPrefix-, rawPathPrefixTest-, pathSuffix-, pathSuffixTest-
   val completeWithUnmatchedPath =
-    extractUnmatchedPath { p => complete(p.toString) }
+    extractUnmatchedPath { p =>
+      complete(p.toString)
+    }
 
   //#
 
@@ -159,8 +161,12 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
   "pathPrefixTest-" in {
     val route =
       pathPrefixTest("foo" | "bar") {
-        pathPrefix("foo") { completeWithUnmatchedPath } ~
-          pathPrefix("bar") { completeWithUnmatchedPath }
+        pathPrefix("foo") {
+          completeWithUnmatchedPath
+        } ~
+          pathPrefix("bar") {
+            completeWithUnmatchedPath
+          }
       }
 
     // tests:
@@ -245,8 +251,12 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
   "rawPathPrefix-" in {
     val route =
       pathPrefix("foo") {
-        rawPathPrefix("bar") { completeWithUnmatchedPath } ~
-          rawPathPrefix("doo") { completeWithUnmatchedPath }
+        rawPathPrefix("bar") {
+          completeWithUnmatchedPath
+        } ~
+          rawPathPrefix("doo") {
+            completeWithUnmatchedPath
+          }
       }
 
     // tests:

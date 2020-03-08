@@ -88,7 +88,9 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
   def specialPriority: Option[Int] = knownPriority
 
   protected var accessibility = true
-  def doNotCheckAccessibility() { accessibility = false }
+  def doNotCheckAccessibility() {
+    accessibility = false
+  }
 
   def rrcandidates: Array[ResolveResult] = {
     val set = candidatesS

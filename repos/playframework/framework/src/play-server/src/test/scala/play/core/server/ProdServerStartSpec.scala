@@ -54,7 +54,9 @@ object ProdServerStartSpec extends Specification {
     val classLoader: ClassLoader = getClass.getClassLoader
 
     val properties = new Properties()
-    for ((k, v) <- propertyMap) { properties.put(k, v) }
+    for ((k, v) <- propertyMap) {
+      properties.put(k, v)
+    }
 
     private var hooks = Seq.empty[() => Unit]
     def addShutdownHook(hook: => Unit) = {

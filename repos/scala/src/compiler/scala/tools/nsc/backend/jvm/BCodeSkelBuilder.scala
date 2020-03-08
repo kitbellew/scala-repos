@@ -78,7 +78,9 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
     def tpeTK(tree: Tree): BType = typeToBType(tree.tpe)
 
     def log(msg: => AnyRef) {
-      global synchronized { global.log(msg) }
+      global synchronized {
+        global.log(msg)
+      }
     }
 
     /* ---------------- helper utils for generating classes and fields ---------------- */
@@ -107,7 +109,9 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
       }
 
       val optSerial: Option[Long] = serialVUID(claszSymbol)
-      if (optSerial.isDefined) { addSerialVUID(optSerial.get, cnode) }
+      if (optSerial.isDefined) {
+        addSerialVUID(optSerial.get, cnode)
+      }
 
       addClassFields()
 
@@ -175,7 +179,9 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
 
       if (isCZStaticModule || isCZParcelable) {
 
-        if (isCZStaticModule) { addModuleInstanceField() }
+        if (isCZStaticModule) {
+          addModuleInstanceField()
+        }
 
       } else {
 
@@ -249,7 +255,9 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
           "()V",
           false)
       }
-      if (isCZParcelable) { legacyAddCreatorCode(clinit, cnode, thisName) }
+      if (isCZParcelable) {
+        legacyAddCreatorCode(clinit, cnode, thisName)
+      }
       clinit.visitInsn(asm.Opcodes.RETURN)
 
       clinit.visitMaxs(0, 0) // just to follow protocol, dummy arguments
@@ -355,7 +363,9 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
      */
     var cleanups: List[asm.Label] = Nil
     def registerCleanup(finCleanup: asm.Label) {
-      if (finCleanup != null) { cleanups = finCleanup :: cleanups }
+      if (finCleanup != null) {
+        cleanups = finCleanup :: cleanups
+      }
     }
     def unregisterCleanup(finCleanup: asm.Label) {
       if (finCleanup != null) {
@@ -395,9 +405,13 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
         nxtIdx = if (isStaticMethod) 0 else 1
       }
 
-      def contains(locSym: Symbol): Boolean = { slots.contains(locSym) }
+      def contains(locSym: Symbol): Boolean = {
+        slots.contains(locSym)
+      }
 
-      def apply(locSym: Symbol): Local = { slots.apply(locSym) }
+      def apply(locSym: Symbol): Local = {
+        slots.apply(locSym)
+      }
 
       /* Make a fresh local variable, ensuring a unique name.
        * The invoker must make sure inner classes are tracked for the sym's tpe.
@@ -489,7 +503,9 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
     }
     def markProgramPoint(lbl: asm.Label) {
       val skip = (lbl == null) || isAtProgramPoint(lbl)
-      if (!skip) { mnode visitLabel lbl }
+      if (!skip) {
+        mnode visitLabel lbl
+      }
     }
     def isAtProgramPoint(lbl: asm.Label): Boolean = {
       (lastInsn match {
@@ -590,7 +606,9 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
 
     def genDefDef(dd: DefDef) {
       // the only method whose implementation is not emitted: getClass()
-      if (definitions.isGetClass(dd.symbol)) { return }
+      if (definitions.isGetClass(dd.symbol)) {
+        return
+      }
       assert(mnode == null, "GenBCode detected nested method.")
 
       methSymbol = dd.symbol
@@ -606,7 +624,9 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
         vparamss.isEmpty || vparamss.tail.isEmpty,
         s"Malformed parameter list: $vparamss")
       val params = if (vparamss.isEmpty) Nil else vparamss.head
-      for (p <- params) { locals.makeLocal(p.symbol) }
+      for (p <- params) {
+        locals.makeLocal(p.symbol)
+      }
       // debug assert((params.map(p => locals(p.symbol).tk)) == asmMethodType(methSymbol).getArgumentTypes.toList, "debug")
 
       if (params.size > MaximumJvmParameters) {
@@ -689,7 +709,9 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
             }
           }
 
-          if (isMethSymStaticCtor) { appendToStaticCtor(dd) }
+          if (isMethSymStaticCtor) {
+            appendToStaticCtor(dd)
+          }
         } // end of emitNormalMethodBody()
 
         lineNumber(rhs)
@@ -726,9 +748,13 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
       // collect all return instructions
       var rets: List[asm.tree.AbstractInsnNode] = Nil
       mnode foreachInsn { i =>
-        if (i.getOpcode() == asm.Opcodes.RETURN) { rets ::= i }
+        if (i.getOpcode() == asm.Opcodes.RETURN) {
+          rets ::= i
+        }
       }
-      if (rets.isEmpty) { return }
+      if (rets.isEmpty) {
+        return
+      }
 
       var insnModA: asm.tree.AbstractInsnNode = null
       var insnModB: asm.tree.AbstractInsnNode = null

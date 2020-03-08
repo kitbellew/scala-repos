@@ -1,6 +1,8 @@
 import scala.reflect.runtime.universe._
 
-class A { lazy val x = 1 }
+class A {
+  lazy val x = 1
+}
 
 object Test {
   def main(args: Array[String]): Unit = {

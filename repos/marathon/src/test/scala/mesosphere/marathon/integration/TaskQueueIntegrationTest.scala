@@ -45,7 +45,9 @@ class TaskQueueIntegrationTest
     Then("the app shows up in the task queue")
     WaitTestSupport.waitUntil(
       "Deployment is put in the deployment queue",
-      30.seconds) { marathon.taskQueue().value.queue.size == 1 }
+      30.seconds) {
+      marathon.taskQueue().value.queue.size == 1
+    }
     val response = marathon.taskQueue()
     response.code should be(200)
 

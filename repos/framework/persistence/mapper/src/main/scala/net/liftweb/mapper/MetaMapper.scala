@@ -68,7 +68,10 @@ object MapperRules extends Factory {
     * will be used for all MetaMappers, unless they've been
     * explicitly changed.
     */
-  var displayNameToHeaderElement: String => NodeSeq = in => <th>{in}</th>
+  var displayNameToHeaderElement: String => NodeSeq = in =>
+    <th>{
+      in
+    }</th>
 
   /**
     * This function converts an element into the appropriate
@@ -78,7 +81,10 @@ object MapperRules extends Factory {
     * will be used for all MetaMappers, unless they've been
     * explicitly changed.
     */
-  var displayFieldAsLineElement: NodeSeq => NodeSeq = in => <td>{in}</td>
+  var displayFieldAsLineElement: NodeSeq => NodeSeq = in =>
+    <td>{
+      in
+    }</td>
 
   /**
     * This function is the global (for all MetaMappers that have
@@ -89,9 +95,14 @@ object MapperRules extends Factory {
     * you can change the function to display something else.
     */
   var formatFormElement: (NodeSeq, NodeSeq) => NodeSeq =
-    (name, form) => <xml:group><tr>
-      <td>{name}</td>
-      <td>{form}</td>
+    (name, form) =>
+      <xml:group><tr>
+      <td>{
+        name
+      }</td>
+      <td>{
+        form
+      }</td>
              </tr></xml:group>
 
   /**
@@ -242,7 +253,9 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
   def findAllByPreparedStatementDb[T](
       dbId: ConnectionIdentifier,
       stmt: PreparedStatement)(f: A => Box[T]): List[T] = {
-    DB.exec(stmt) { rs => createInstances(dbId, rs, Empty, Empty, f) }
+    DB.exec(stmt) { rs =>
+      createInstances(dbId, rs, Empty, Empty, f)
+    }
   }
 
   def findAllByInsecureSqlDb(
@@ -261,7 +274,9 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
       checkedBy: IHaveValidatedThisSQL)(f: A => Box[T]): List[T] = {
     DB.use(dbId) { conn =>
       DB.prepareStatement(query, conn) { st =>
-        DB.exec(st) { rs => createInstances(dbId, rs, Empty, Empty, f) }
+        DB.exec(st) { rs =>
+          createInstances(dbId, rs, Empty, Empty, f)
+        }
       }
     }
   }
@@ -328,7 +343,9 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
     }
     for (j <- precache) {
       type FT = j.field.FieldType
-      type MT = T forSome { type T <: KeyedMapper[FT, T] }
+      type MT = T forSome {
+        type T <: KeyedMapper[FT, T]
+      }
 
       val ol: List[MT] = if (!j.deterministic) {
         def filter(in: Seq[FT]): Seq[FT] =
@@ -491,7 +508,11 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
 
     var wav = whereAdded
 
-    def whereOrAnd = if (wav) " AND " else { wav = true; " WHERE " }
+    def whereOrAnd =
+      if (wav) " AND "
+      else {
+        wav = true; " WHERE "
+      }
 
     class DBFuncWrapper(dbFunc: Box[String]) {
       def apply(field: String) = dbFunc match {
@@ -701,10 +722,14 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
       conn: SuperConnection): (String, Box[Long], Box[Long]) = {
     val tmp = _addOrdering(in, params)
     val max = params.foldRight(Empty.asInstanceOf[Box[Long]]) { (a, b) =>
-      a match { case MaxRows(n) => Full(n); case _ => b }
+      a match {
+        case MaxRows(n) => Full(n); case _ => b
+      }
     }
     val start = params.foldRight(Empty.asInstanceOf[Box[Long]]) { (a, b) =>
-      a match { case StartAt(n) => Full(n); case _ => b }
+      a match {
+        case StartAt(n) => Full(n); case _ => b
+      }
     }
 
     if (conn.brokenLimit_?) (tmp, start, max)
@@ -753,7 +778,9 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
           .openOr(false)
     }
 
-  type AnyBound = T forSome { type T }
+  type AnyBound = T forSome {
+    type T
+  }
 
   private[mapper] def ??(meth: Method, inst: A) =
     meth.invoke(inst).asInstanceOf[MappedField[AnyBound, A]]
@@ -843,8 +870,12 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
 
   def whatToSet(toSave: A): String = {
     mappedColumns
-      .filter { c => ??(c._2, toSave).dirty_? }
-      .map { c => c._1 + " = ?" }
+      .filter { c =>
+        ??(c._2, toSave).dirty_?
+      }
+      .map { c =>
+        c._1 + " = ?"
+      }
       .toList
       .mkString("", ",", "")
   }
@@ -1274,7 +1305,10 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
       inst: AnyRef): Box[((A, AnyRef) => Unit)] = synchronized {
     val clz = inst match {
       case null => null
-      case _    => inst.getClass.asInstanceOf[Class[(C forSome { type C })]]
+      case _ =>
+        inst.getClass.asInstanceOf[Class[(C forSome {
+          type C
+        })]]
     }
     val look = (name.toLowerCase, if (clz ne null) Full(clz) else Empty)
     Box(mappedAppliers.get(look) orElse {
@@ -1362,7 +1396,11 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
   protected val rootClass = this.getClass.getSuperclass
 
   private val mappedAppliers = new HashMap[
-    (String, Box[Class[(C forSome { type C })]]),
+    (
+        String,
+        Box[Class[(C forSome {
+          type C
+        })]]),
     (A, AnyRef) => Unit];
 
   private val _mappedFields = new HashMap[String, Method];
@@ -1547,7 +1585,11 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
         mft <- mappedFieldList if mft.field.dbDisplay_?
         field = ??(mft.method, toLine)
       } yield {
-        <span>{field.displayName}={field.asHtml}&nbsp;</span>
+        <span>{
+          field.displayName
+        }={
+          field.asHtml
+        }&nbsp;</span>
       }) ::: List(Text(" }"))
 
   /**
@@ -1703,11 +1745,15 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
         case lccb: LifecycleCallbacks => f(lccb)
         case _                        =>
       })
-    toRun.foreach { tf => tf(what) }
+    toRun.foreach { tf =>
+      tf(what)
+    }
   }
   private def _beforeValidation(what: A) {
     setupInstanceForPostCommit(what);
-    eachField(what, beforeValidation) { field => field.beforeValidation }
+    eachField(what, beforeValidation) { field =>
+      field.beforeValidation
+    }
   }
   private def _beforeValidationOnCreate(what: A) {
     eachField(what, beforeValidationOnCreate) { field =>
@@ -1720,7 +1766,9 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
     }
   }
   private def _afterValidation(what: A) {
-    eachField(what, afterValidation) { field => field.afterValidation }
+    eachField(what, afterValidation) { field =>
+      field.afterValidation
+    }
   }
   private def _afterValidationOnCreate(what: A) {
     eachField(what, afterValidationOnCreate) { field =>
@@ -1735,31 +1783,47 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
 
   private def _beforeSave(what: A) {
     setupInstanceForPostCommit(what);
-    eachField(what, beforeSave) { field => field.beforeSave }
+    eachField(what, beforeSave) { field =>
+      field.beforeSave
+    }
   }
   private def _beforeCreate(what: A) {
-    eachField(what, beforeCreate) { field => field.beforeCreate }
+    eachField(what, beforeCreate) { field =>
+      field.beforeCreate
+    }
   }
   private def _beforeUpdate(what: A) {
-    eachField(what, beforeUpdate) { field => field.beforeUpdate }
+    eachField(what, beforeUpdate) { field =>
+      field.beforeUpdate
+    }
   }
 
   private def _afterSave(what: A) {
-    eachField(what, afterSave) { field => field.afterSave }
+    eachField(what, afterSave) { field =>
+      field.afterSave
+    }
   }
   private def _afterCreate(what: A) {
-    eachField(what, afterCreate) { field => field.afterCreate }
+    eachField(what, afterCreate) { field =>
+      field.afterCreate
+    }
   }
   private def _afterUpdate(what: A) {
-    eachField(what, afterUpdate) { field => field.afterUpdate }
+    eachField(what, afterUpdate) { field =>
+      field.afterUpdate
+    }
   }
 
   private def _beforeDelete(what: A) {
     setupInstanceForPostCommit(what);
-    eachField(what, beforeDelete) { field => field.beforeDelete }
+    eachField(what, beforeDelete) { field =>
+      field.beforeDelete
+    }
   }
   private def _afterDelete(what: A) {
-    eachField(what, afterDelete) { field => field.afterDelete }
+    eachField(what, afterDelete) { field =>
+      field.afterDelete
+    }
   }
 
   def beforeSchemifier {}
@@ -2001,7 +2065,9 @@ object NotIn {
       def notIn: Boolean = true
 
       val queryParams: List[QueryParam[InnerMapper]] =
-        qp.map { v => val r: QueryParam[InnerMapper] = v; r }.toList
+        qp.map { v =>
+          val r: QueryParam[InnerMapper] = v; r
+        }.toList
     }
   }
 
@@ -2025,7 +2091,9 @@ object NotIn {
       def notIn: Boolean = true
 
       val queryParams: List[QueryParam[InnerMapper]] = {
-        qp.map { v => val r: QueryParam[InnerMapper] = v; r }.toList
+        qp.map { v =>
+          val r: QueryParam[InnerMapper] = v; r
+        }.toList
       }
     }
   }
@@ -2051,7 +2119,9 @@ object In {
       def notIn: Boolean = false
 
       val queryParams: List[QueryParam[InnerMapper]] =
-        qp.map { v => val r: QueryParam[InnerMapper] = v; r }.toList
+        qp.map { v =>
+          val r: QueryParam[InnerMapper] = v; r
+        }.toList
     }
   }
 
@@ -2075,7 +2145,9 @@ object In {
       def notIn: Boolean = false
 
       val queryParams: List[QueryParam[InnerMapper]] = {
-        qp.map { v => val r: QueryParam[InnerMapper] = v; r }.toList
+        qp.map { v =>
+          val r: QueryParam[InnerMapper] = v; r
+        }.toList
       }
     }
   }
@@ -2223,7 +2295,8 @@ object NotNullRef {
 }
 
 trait LongKeyedMetaMapper[A <: LongKeyedMapper[A]]
-    extends KeyedMetaMapper[Long, A] { self: A => }
+    extends KeyedMetaMapper[Long, A] { self: A =>
+}
 
 trait KeyedMetaMapper[Type, A <: KeyedMapper[Type, A]]
     extends MetaMapper[A]
@@ -2558,7 +2631,9 @@ trait KeyedMetaMapper[Type, A <: KeyedMapper[Type, A]]
     *
     * @param obj mapped object of this metamapper's type
     */
-  def editSnippetCallback(obj: A) { obj.save }
+  def editSnippetCallback(obj: A) {
+    obj.save
+  }
 
   /**
     * Default callback behavior of the add snippet. Called when the user
@@ -2566,7 +2641,9 @@ trait KeyedMetaMapper[Type, A <: KeyedMapper[Type, A]]
     *
     * @param obj mapped object of this metamapper's type
     */
-  def addSnippetCallback(obj: A) { obj.save }
+  def addSnippetCallback(obj: A) {
+    obj.save
+  }
 }
 
 class KeyObfuscator {

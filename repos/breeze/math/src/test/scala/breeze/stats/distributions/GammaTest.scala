@@ -41,8 +41,9 @@ class GammaTest
     for (shape <- arbitrary[Double].map {
            _.abs % 200.0 + 0.2
          }; // Gamma pdf at 0 not defined when shape == 1
-         scale <- arbitrary[Double].map { _.abs % 8.0 + 1.0 })
-      yield (shape, scale);
+         scale <- arbitrary[Double].map {
+           _.abs % 8.0 + 1.0
+         }) yield (shape, scale);
   }
 
   def paramsClose(p: (Double, Double), b: (Double, Double)) = {
@@ -59,8 +60,9 @@ class GammaTest
     for (shape <- arbitrary[Double].map { x =>
            math.abs(x) % 1000.0 + 1.1
          }; // Gamma pdf at 0 not defined when shape == 1
-         scale <- arbitrary[Double].map { x => math.abs(x) % 8.0 + 1.0 })
-      yield new Gamma(shape, scale)(RandBasis.mt0)
+         scale <- arbitrary[Double].map { x =>
+           math.abs(x) % 8.0 + 1.0
+         }) yield new Gamma(shape, scale)(RandBasis.mt0)
   }
 
   test("Issue #11 on github") {

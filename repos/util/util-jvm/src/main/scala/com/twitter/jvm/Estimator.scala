@@ -64,7 +64,9 @@ class Kalman(N: Int) {
 
     val sum = samples.sum
     val mean = sum / samples.length
-    val diff = (samples map { x => (x - mean) * (x - mean) }).sum
+    val diff = (samples map { x =>
+      (x - mean) * (x - mean)
+    }).sum
     diff / (samples.length - 1)
   }
 
@@ -97,10 +99,16 @@ class KalmanGaussianError(N: Int, range: Double)
   */
 class WindowedMeans(N: Int, windows: Seq[(Int, Int)])
     extends Estimator[Double] {
-  require(windows forall { case (_, i) => i <= N })
+  require(windows forall {
+    case (_, i) => i <= N
+  })
   private[this] val normalized = {
-    val sum = (windows map { case (w, _) => w }).sum
-    windows map { case (w, i) => (w.toDouble / sum, i) }
+    val sum = (windows map {
+      case (w, _) => w
+    }).sum
+    windows map {
+      case (w, i) => (w.toDouble / sum, i)
+    }
   }
   private[this] val buf = new Array[Double](N)
   private[this] var n = 0L
@@ -130,7 +138,9 @@ class WindowedMeans(N: Int, windows: Seq[(Int, Int)])
 
   def estimate = {
     require(n > 0)
-    val weightedMeans = normalized map { case (w, i) => w * mean(n, i) }
+    val weightedMeans = normalized map {
+      case (w, i) => w * mean(n, i)
+    }
     weightedMeans.sum
   }
 }

@@ -99,7 +99,9 @@ class RestartStrategySpec
       val slave =
         Await.result((boss ? slaveProps).mapTo[ActorRef], timeout.duration)
 
-      (1 to 100) foreach { _ ⇒ slave ! Crash }
+      (1 to 100) foreach { _ ⇒
+        slave ! Crash
+      }
       Await.ready(countDownLatch, 2 minutes)
       assert(!slave.isTerminated)
     }

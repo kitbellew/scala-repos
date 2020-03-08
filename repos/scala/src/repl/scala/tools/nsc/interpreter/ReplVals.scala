@@ -29,8 +29,9 @@ class StdReplVals(final val r: ILoop) extends ReplVals {
   final lazy val phased = power.phased
   final lazy val analyzer = global.analyzer
 
-  object treedsl extends { val global: intp.global.type = intp.global }
-  with ast.TreeDSL {}
+  object treedsl extends {
+    val global: intp.global.type = intp.global
+  } with ast.TreeDSL {}
 
   final lazy val typer = analyzer.newTyper(
     analyzer.rootContext(

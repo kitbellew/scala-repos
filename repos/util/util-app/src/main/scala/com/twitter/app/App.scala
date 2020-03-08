@@ -174,12 +174,16 @@ trait App extends Closable with CloseAwaitably {
     // Get a main() if it's defined. It's possible to define traits that only use pre/post mains.
     val mainMethod =
       try Some(getClass.getMethod("main"))
-      catch { case _: NoSuchMethodException => None }
+      catch {
+        case _: NoSuchMethodException => None
+      }
 
     // Invoke main() if it exists.
     mainMethod foreach { method =>
       try method.invoke(this)
-      catch { case e: InvocationTargetException => throw e.getCause }
+      catch {
+        case e: InvocationTargetException => throw e.getCause
+      }
     }
 
     for (f <- postmains.asScala) f()

@@ -34,17 +34,25 @@ case class JarManifest(
     <intellij-compat>
       {
       for (PluginDescriptor(since, until, injtors) <- pluginDescriptors) {
-        <scala-plugin since-version={since.toString} until-version={
+        <scala-plugin since-version={
+          since.toString
+        } until-version={
           until.toString
         }>
         {
           for (InjectorDescriptor(version, iface, impl, srcs) <- injtors) {
-            <psi-injector version={version.toString} ifnterface={
+            <psi-injector version={
+              version.toString
+            } ifnterface={
               iface
-            } implementation={impl}>
+            } implementation={
+              impl
+            }>
           {
               for (src <- srcs) <source>
-          {src}
+          {
+                src
+              }
         </source>
             }
         </psi-injector>

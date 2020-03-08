@@ -53,7 +53,9 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
   test("Normal accumulator should do boxing") {
     // We need this test to make sure BoxingFinder works.
     val l = sparkContext.accumulator(0L)
-    val f = () => { l += 1L }
+    val f = () => {
+      l += 1L
+    }
     val cl = BoxingFinder.getClassReader(f.getClass)
     val boxingFinder = new BoxingFinder()
     cl.accept(boxingFinder, 0)
@@ -92,7 +94,9 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
       val metricValues = sqlContext.listener.getExecutionMetrics(executionId)
       val actualMetrics = SparkPlanGraph(
         SparkPlanInfo.fromSparkPlan(df.queryExecution.executedPlan)).allNodes
-        .filter { node => expectedMetrics.contains(node.id) }
+        .filter { node =>
+          expectedMetrics.contains(node.id)
+        }
         .map { node =>
           val nodeMetrics = node.metrics.map { metric =>
             val metricValue = metricValues(metric.accumulatorId)

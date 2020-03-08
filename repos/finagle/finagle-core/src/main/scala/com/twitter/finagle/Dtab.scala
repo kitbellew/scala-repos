@@ -32,7 +32,9 @@ case class Dtab(dentries0: IndexedSeq[Dentry]) extends IndexedSeq[Dentry] {
     val matches = dentries.collect {
       case Dentry(prefix, dst) if path.startsWith(prefix) =>
         val suff = path.drop(prefix.size)
-        dst.map { pfx => Name.Path(pfx ++ suff) }
+        dst.map { pfx =>
+          Name.Path(pfx ++ suff)
+        }
     }
 
     matches.size match {
@@ -163,7 +165,9 @@ object Dtab {
   implicit val equiv: Equiv[Dtab] = new Equiv[Dtab] {
     def equiv(d1: Dtab, d2: Dtab): Boolean = (
       d1.size == d2.size &&
-        d1.zip(d2).forall { case (de1, de2) => Equiv[Dentry].equiv(de1, de2) }
+        d1.zip(d2).forall {
+          case (de1, de2) => Equiv[Dentry].equiv(de1, de2)
+        }
     )
   }
 
@@ -187,7 +191,9 @@ object Dtab {
   /**
     * Java API for `base_=`
     */
-  def setBase(dtab: Dtab) { base = dtab }
+  def setBase(dtab: Dtab) {
+    base = dtab
+  }
 
   private[this] val l = new Local[Dtab]
 
@@ -210,12 +216,16 @@ object Dtab {
     case Some(dtab) => dtab
     case None       => Dtab.empty
   }
-  def local_=(dtab: Dtab) { l() = dtab }
+  def local_=(dtab: Dtab) {
+    l() = dtab
+  }
 
   /**
     * Java API for `local_=`
     */
-  def setLocal(dtab: Dtab) { local = dtab }
+  def setLocal(dtab: Dtab) {
+    local = dtab
+  }
 
   def unwind[T](f: => T): T = {
     val save = l()

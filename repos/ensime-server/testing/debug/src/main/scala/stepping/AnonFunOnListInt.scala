@@ -16,7 +16,9 @@ object AnonFunOnListInt {
 
     l.foldLeft(0)(_ + ret(_))
 
-    l foreach { i => noop(i) }
+    l foreach { i =>
+      noop(i)
+    }
 
   }
 

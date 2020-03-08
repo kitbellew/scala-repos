@@ -6,9 +6,13 @@ object E extends Z {
 
   def Y(a: Any) = 0
   object Y
-  implicit class Y(val i: String) { def yy = i }
+  implicit class Y(val i: String) {
+    def yy = i
+  }
 
-  implicit class Z(val i: Boolean) { def zz = i }
+  implicit class Z(val i: Boolean) {
+    def zz = i
+  }
 }
 
 trait Z {

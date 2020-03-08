@@ -47,7 +47,9 @@ class History[Evt, Pub]
   def iterator: Iterator[(Pub, Evt)] = log.iterator
   def events: Iterator[Evt] = log.iterator map (_._2)
 
-  def clear() { log.clear() }
+  def clear() {
+    log.clear()
+  }
 
   /** Checks if two history objects are structurally identical.
     *

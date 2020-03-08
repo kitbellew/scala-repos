@@ -5,7 +5,9 @@ object Test extends App {
   }
 
   object stub {
-    def apply = { println(".apply"); stubUpdate }
+    def apply = {
+      println(".apply"); stubUpdate
+    }
     def apply(as: Any*) = println(".apply" + as.toList.mkString("(", ", ", ")"))
     def update(as: Any*) =
       println(".update" + as.toList.mkString("(", ", ", ")"))

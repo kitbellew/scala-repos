@@ -48,7 +48,9 @@ class DefaultClientTest
 
   trait SourcedExceptionDispatcherHelper extends DispatcherHelper {
     val dispatcher: Transport[Int, Int] => Service[Int, Int] = { _ =>
-      Service.mk { _ => throw new SourcedException {} }
+      Service.mk { _ =>
+        throw new SourcedException {}
+      }
     }
   }
 
@@ -190,7 +192,9 @@ class DefaultClientTest
       val dest = Name.Bound.singleton(Var.value(Addr.Pending))
       val svc = client.newService(dest, "test")
       val f = svc.close()
-      eventually { assert(f.isDefined) }
+      eventually {
+        assert(f.isDefined)
+      }
       assert(Await.result(f.liftToTry) == Return.Unit)
     }
   }
@@ -210,7 +214,9 @@ class DefaultClientTest
       val svc = client.newService(dest, "test")
       assert(!closed, "client closed too early")
       val f = svc.close()
-      eventually { assert(f.poll == Some(Return.Unit)) }
+      eventually {
+        assert(f.poll == Some(Return.Unit))
+      }
       assert(closed, "client not closed")
     }
   }
@@ -251,7 +257,9 @@ class DefaultClientTest
 
   test("DefaultClient should handle failureAccrual default") {
     new DefaultFailureAccrualHelper {
-      0 until 10 foreach { service(_) }
+      0 until 10 foreach {
+        service(_)
+      }
       assert(statsReceiver.counters(Seq("failure_accrual", "removals")) == 1)
     }
   }
@@ -278,7 +286,9 @@ class DefaultClientTest
       )
 
       Time.withCurrentTimeFrozen { control =>
-        0 until 10 foreach { service(_) }
+        0 until 10 foreach {
+          service(_)
+        }
         assert(statsReceiver.counters(Seq("failure_accrual", "removals")) == 1)
         control.advance(4.seconds)
         timer.tick()

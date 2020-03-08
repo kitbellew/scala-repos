@@ -26,8 +26,12 @@ object LookupJoinedTest {
   def genList(maxTime: Int, maxKey: Int, sz: Int): List[(Int, Int, Int)] = {
     val rng = new java.util.Random
     (0 until sz).view
-      .map { _ => (rng.nextInt(maxTime), rng.nextInt(maxKey), rng.nextInt) }
-      .groupBy { case (t, k, v) => (t, k) }
+      .map { _ =>
+        (rng.nextInt(maxTime), rng.nextInt(maxKey), rng.nextInt)
+      }
+      .groupBy {
+        case (t, k, v) => (t, k)
+      }
       .mapValues(_.headOption.toList)
       .values
       .flatten
@@ -43,8 +47,12 @@ class LookupJoinerJob(args: Args) extends Job(args) {
   val in1 = TypedTsv[(Int, Int, Int)]("input1")
 
   LookupJoin(
-    TypedPipe.from(in0).map { case (t, k, v) => (t, (k, v)) },
-    TypedPipe.from(in1).map { case (t, k, v) => (t, (k, v)) })
+    TypedPipe.from(in0).map {
+      case (t, k, v) => (t, (k, v))
+    },
+    TypedPipe.from(in1).map {
+      case (t, k, v) => (t, (k, v))
+    })
     .map {
       case (t, (k, (v, opt))) =>
         (t.toString, k.toString, v.toString, opt.toString)
@@ -53,8 +61,12 @@ class LookupJoinerJob(args: Args) extends Job(args) {
 
   LookupJoin
     .rightSumming(
-      TypedPipe.from(in0).map { case (t, k, v) => (t, (k, v)) },
-      TypedPipe.from(in1).map { case (t, k, v) => (t, (k, v)) })
+      TypedPipe.from(in0).map {
+        case (t, k, v) => (t, (k, v))
+      },
+      TypedPipe.from(in1).map {
+        case (t, k, v) => (t, (k, v))
+      })
     .map {
       case (t, (k, (v, opt))) =>
         (t.toString, k.toString, v.toString, opt.toString)
@@ -72,10 +84,14 @@ class LookupJoinedTest extends WordSpec with Matchers {
       in1: Iterable[(T, K, W)]) = {
     val serv = in1.groupBy(_._2)
     def lookup(t: T, k: K): Option[W] = {
-      val ord = Ordering.by { tkw: (T, K, W) => tkw._1 }
+      val ord = Ordering.by { tkw: (T, K, W) =>
+        tkw._1
+      }
       serv.get(k).flatMap { in1s =>
         in1s
-          .filter { case (t1, _, _) => Ordering[T].lt(t1, t) }
+          .filter {
+            case (t1, _, _) => Ordering[T].lt(t1, t)
+          }
           .reduceOption(ord.max(_, _))
           .map {
             _._3
@@ -116,10 +132,14 @@ class LookupJoinedTest extends WordSpec with Matchers {
       .toMap // Force the map
 
     def lookup(t: T, k: K): Option[W] = {
-      val ord = Ordering.by { tkw: (T, K, W) => tkw._1 }
+      val ord = Ordering.by { tkw: (T, K, W) =>
+        tkw._1
+      }
       serv.get(k).flatMap { in1s =>
         in1s
-          .filter { case (t1, _, _) => Ordering[T].lt(t1, t) }
+          .filter {
+            case (t1, _, _) => Ordering[T].lt(t1, t)
+          }
           .reduceOption(ord.max(_, _))
           .map {
             _._3
@@ -171,8 +191,12 @@ class WindowLookupJoinerJob(args: Args) extends Job(args) {
 
   LookupJoin
     .withWindow(
-      TypedPipe.from(in0).map { case (t, k, v) => (t, (k, v)) },
-      TypedPipe.from(in1).map { case (t, k, v) => (t, (k, v)) })(gate _)
+      TypedPipe.from(in0).map {
+        case (t, k, v) => (t, (k, v))
+      },
+      TypedPipe.from(in1).map {
+        case (t, k, v) => (t, (k, v))
+      })(gate _)
     .map {
       case (t, (k, (v, opt))) =>
         (t.toString, k.toString, v.toString, opt.toString)
@@ -192,7 +216,9 @@ class WindowLookupJoinedTest extends WordSpec with Matchers {
     val serv = in1.groupBy(_._2)
     // super inefficient, but easy to verify:
     def lookup(t: Int, k: K): Option[W] = {
-      val ord = Ordering.by { tkw: (Int, K, W) => tkw._1 }
+      val ord = Ordering.by { tkw: (Int, K, W) =>
+        tkw._1
+      }
       serv.get(k).flatMap { in1s =>
         in1s
           .filter {

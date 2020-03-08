@@ -36,7 +36,9 @@ object BucketedHistogramBenchmark {
   class DataState {
     val datas: Array[Long] = {
       val rng = new Random(1010101)
-      Array.fill(N) { (rng.nextDouble() * 100000L).toLong }
+      Array.fill(N) {
+        (rng.nextDouble() * 100000L).toLong
+      }
     }
   }
 

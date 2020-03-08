@@ -567,7 +567,9 @@ object AkkaBuild extends Build {
     super.settings ++
       buildSettings ++
       Seq(
-        shellPrompt := { s => Project.extract(s).currentProject.id + " > " }
+        shellPrompt := { s =>
+          Project.extract(s).currentProject.id + " > "
+        }
       ) ++
       resolverSettings
 
@@ -701,7 +703,9 @@ object AkkaBuild extends Build {
     testListeners in (Test, test) := Seq(
       TestLogger(
         streams.value.log,
-        { _ => streams.value.log },
+        { _ =>
+          streams.value.log
+        },
         logBuffered.value)),
     // -v Log "test run started" / "test started" / "test run finished" events on log level "info" instead of "debug".
     // -a Show stack traces and exception class name for AssertionErrors.

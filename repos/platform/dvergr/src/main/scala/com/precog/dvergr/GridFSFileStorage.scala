@@ -100,7 +100,9 @@ trait GridFSFileStorage[M[+_]] extends FileStorage[M] {
           save(tail)
 
         case None =>
-          M.point { out.close() }
+          M.point {
+            out.close()
+          }
       }
 
       save(data.data)

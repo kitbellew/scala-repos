@@ -22,7 +22,9 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
   def toDense(implicit ring: Semiring[C], eq: Eq[C]): PolyDense[C] = lhs
 
   def foreach[U](f: (Int, C) => U): Unit = {
-    cfor(0)(_ < coeffs.length, _ + 1) { e => f(e, coeffs(e)) }
+    cfor(0)(_ < coeffs.length, _ + 1) { e =>
+      f(e, coeffs(e))
+    }
   }
 
   override def foreachNonZero[U](
@@ -82,15 +84,21 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
 
     var even = coeffs.length - 1
     var odd = coeffs.length - 2
-    if ((even & 1) == 1) { even = odd; odd = coeffs.length - 1 }
+    if ((even & 1) == 1) {
+      even = odd; odd = coeffs.length - 1
+    }
 
     var c0 = coeffs(even)
     val x2 = x.pow(2)
-    cfor(even - 2)(_ >= 0, _ - 2) { i => c0 = coeffs(i) + c0 * x2 }
+    cfor(even - 2)(_ >= 0, _ - 2) { i =>
+      c0 = coeffs(i) + c0 * x2
+    }
 
     if (odd >= 1) {
       var c1 = coeffs(odd)
-      cfor(odd - 2)(_ >= 1, _ - 2) { i => c1 = coeffs(i) + c1 * x2 }
+      cfor(odd - 2)(_ >= 1, _ - 2) { i =>
+        c1 = coeffs(i) + c1 * x2
+      }
       c0 + c1 * x
     } else {
       c0
@@ -119,7 +127,9 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
 
   def unary_-()(implicit ring: Rng[C]): Polynomial[C] = {
     val negArray = new Array[C](coeffs.length)
-    cfor(0)(_ < coeffs.length, _ + 1) { i => negArray(i) = -coeffs(i) }
+    cfor(0)(_ < coeffs.length, _ + 1) { i =>
+      negArray(i) = -coeffs(i)
+    }
     new PolyDense(negArray)
   }
 
@@ -136,7 +146,9 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
     val lcs = lhs.coeffsArray
     val rcs = rhs.coeffsArray
     val cs = new Array[C](lcs.length + rcs.length - 1)
-    cfor(0)(_ < cs.length, _ + 1) { i => cs(i) = ring.zero }
+    cfor(0)(_ < cs.length, _ + 1) { i =>
+      cs(i) = ring.zero
+    }
     cfor(0)(_ < lcs.length, _ + 1) { i =>
       val c = lcs(i)
       var k = i
@@ -194,7 +206,9 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
       Polynomial.dense(new Array[C](0))
     } else {
       val cs = new Array[C](coeffs.length)
-      cfor(0)(_ < cs.length, _ + 1) { i => cs(i) = k * coeffs(i) }
+      cfor(0)(_ < cs.length, _ + 1) { i =>
+        cs(i) = k * coeffs(i)
+      }
       Polynomial.dense(cs)
     }
 }

@@ -102,8 +102,12 @@ trait ProvenanceChecker extends parser.AST with Binder {
         loop(_, relations, constraints)
       } unzip
 
-      val errors = errorsVec reduceOption { _ ++ _ } getOrElse Set()
-      val constr = constrVec reduceOption { _ ++ _ } getOrElse Set()
+      val errors = errorsVec reduceOption {
+        _ ++ _
+      } getOrElse Set()
+      val constr = constrVec reduceOption {
+        _ ++ _
+      } getOrElse Set()
 
       if (values.isEmpty) {
         (ValueProvenance, (Set(), Set()))
@@ -461,8 +465,12 @@ trait ProvenanceChecker extends parser.AST with Binder {
             loop(_, relations, constraints)
           } unzip
 
-          val constrErrors = errorsVec reduce { _ ++ _ }
-          val constrConstr = constrVec reduce { _ ++ _ }
+          val constrErrors = errorsVec reduce {
+            _ ++ _
+          }
+          val constrConstr = constrVec reduce {
+            _ ++ _
+          }
 
           val (errors, constr) = loop(child, relations, constraints)
           val errorSet = constrErrors ++ errors
@@ -609,13 +617,19 @@ trait ProvenanceChecker extends parser.AST with Binder {
                 loop(_, relations, constraints)
               } unzip
 
-              val actualErrors = errorsVec.fold(Set[Error]()) { _ ++ _ }
+              val actualErrors = errorsVec.fold(Set[Error]()) {
+                _ ++ _
+              }
               val actualConstr = constrVec.fold(Set[ProvConstraint]()) {
                 _ ++ _
               }
 
-              val ids = let.params map { Identifier(Vector(), _) }
-              val zipped = ids zip (actuals map { _.provenance })
+              val ids = let.params map {
+                Identifier(Vector(), _)
+              }
+              val zipped = ids zip (actuals map {
+                _.provenance
+              })
 
               def sub(target: Provenance): Provenance = {
                 zipped.foldLeft(target) {
@@ -690,8 +704,12 @@ trait ProvenanceChecker extends parser.AST with Binder {
                 case constr => Some(Right(constr))
               }
 
-              val constrErrors = mapped collect { case Left(error)   => error }
-              val constraints3 = mapped collect { case Right(constr) => constr }
+              val constrErrors = mapped collect {
+                case Left(error) => error
+              }
+              val constraints3 = mapped collect {
+                case Right(constr) => constr
+              }
 
               expr.provenance =
                 resolveUnifications(relations)(sub(let.resultProvenance))
@@ -942,8 +960,12 @@ trait ProvenanceChecker extends parser.AST with Binder {
                 loop(_, relations, constraints)
               } unzip
 
-              val errors = errorsVec reduceOption { _ ++ _ } getOrElse Set()
-              val constr = constrVec reduceOption { _ ++ _ } getOrElse Set()
+              val errors = errorsVec reduceOption {
+                _ ++ _
+              } getOrElse Set()
+              val constr = constrVec reduceOption {
+                _ ++ _
+              } getOrElse Set()
 
               expr.provenance = NullProvenance
 
@@ -1045,8 +1067,12 @@ trait ProvenanceChecker extends parser.AST with Binder {
         case (p1, p2) => p1 & p2
       }
 
-      lazy val unionLeft = leftP map { ProductProvenance(_, right) }
-      lazy val unionRight = rightP map { ProductProvenance(left, _) }
+      lazy val unionLeft = leftP map {
+        ProductProvenance(_, right)
+      }
+      lazy val unionRight = rightP map {
+        ProductProvenance(left, _)
+      }
 
       unionP orElse unionLeft orElse unionRight
     }
@@ -1059,8 +1085,12 @@ trait ProvenanceChecker extends parser.AST with Binder {
         case (p1, p2) => p1 & p2
       }
 
-      lazy val unionLeft = leftP map { ProductProvenance(_, right) }
-      lazy val unionRight = rightP map { ProductProvenance(left, _) }
+      lazy val unionLeft = leftP map {
+        ProductProvenance(_, right)
+      }
+      lazy val unionRight = rightP map {
+        ProductProvenance(left, _)
+      }
 
       unionP orElse unionLeft orElse unionRight
     }

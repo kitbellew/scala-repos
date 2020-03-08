@@ -40,8 +40,12 @@ class StorageUnitTest extends FunSuite {
   }
 
   test("StorageUnit: should reject soulless robots") {
-    intercept[NumberFormatException] { StorageUnit.parse("100.bottles") }
-    intercept[NumberFormatException] { StorageUnit.parse("100 bytes") }
+    intercept[NumberFormatException] {
+      StorageUnit.parse("100.bottles")
+    }
+    intercept[NumberFormatException] {
+      StorageUnit.parse("100 bytes")
+    }
   }
 
   test("StorageUnit: should deal with negative values") {

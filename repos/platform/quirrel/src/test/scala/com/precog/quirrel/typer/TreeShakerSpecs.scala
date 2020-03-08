@@ -3943,7 +3943,9 @@ object TreeShakerSpecs
               LineStream(),
               Identifier(Vector(), "a"),
               Vector(NullLit(LineStream())))) =>
-          t.binding must beLike { case FormalBinding(`result`) => ok }
+          t.binding must beLike {
+            case FormalBinding(`result`) => ok
+          }
       }
     }
 
@@ -3962,7 +3964,9 @@ object TreeShakerSpecs
             LineStream(),
             Vector(TicVar(LineStream(), "'a")),
             t @ TicVar(LineStream(), "'a")) =>
-          t.binding must beLike { case SolveBinding(`result`) => ok }
+          t.binding must beLike {
+            case SolveBinding(`result`) => ok
+          }
       }
     }
 
@@ -3994,7 +3998,9 @@ object TreeShakerSpecs
               LineStream(),
               Identifier(Vector(), "a"),
               Vector(NullLit(LineStream())))) =>
-          d.binding must beLike { case LetBinding(`result`) => ok }
+          d.binding must beLike {
+            case LetBinding(`result`) => ok
+          }
       }
     }
   }

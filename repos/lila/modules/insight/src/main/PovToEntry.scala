@@ -66,10 +66,16 @@ object PovToEntry {
               initialFen = fen,
               analysis = an,
               division = chess.Divider(boards.list),
-              moveAccuracy = an.map { Accuracy.diffsList(pov, _) },
+              moveAccuracy = an.map {
+                Accuracy.diffsList(pov, _)
+              },
               boards = boards,
               movetimes = movetimes,
-              advices = an.?? { _.advices.map { a => a.info.ply -> a }.toMap }
+              advices = an.?? {
+                _.advices.map { a =>
+                  a.info.ply -> a
+                }.toMap
+              }
             )
         }
       }

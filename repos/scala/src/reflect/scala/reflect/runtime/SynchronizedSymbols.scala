@@ -26,7 +26,9 @@ private[reflect] trait SynchronizedSymbols extends internal.Symbols {
   override def connectModuleToClass(
       m: ModuleSymbol,
       moduleClass: ClassSymbol): ModuleSymbol =
-    gilSynchronized { super.connectModuleToClass(m, moduleClass) }
+    gilSynchronized {
+      super.connectModuleToClass(m, moduleClass)
+    }
 
   override def newFreeTermSymbol(
       name: TermName,
@@ -141,11 +143,17 @@ private[reflect] trait SynchronizedSymbols extends internal.Symbols {
       // TODO: debug and fix the race that doesn't allow us uncomment this optimization
       // if (isCompilerUniverse || isThreadsafe(purpose = AllOps)) body
       // else gilSynchronized { body }
-      gilSynchronized { body }
+      gilSynchronized {
+        body
+      }
     }
 
-    override def validTo = gilSynchronizedIfNotThreadsafe { super.validTo }
-    override def info = gilSynchronizedIfNotThreadsafe { super.info }
+    override def validTo = gilSynchronizedIfNotThreadsafe {
+      super.validTo
+    }
+    override def info = gilSynchronizedIfNotThreadsafe {
+      super.info
+    }
     override def rawInfo: Type = gilSynchronizedIfNotThreadsafe {
       super.rawInfo
     }
@@ -153,7 +161,9 @@ private[reflect] trait SynchronizedSymbols extends internal.Symbols {
       super.typeSignature
     }
     override def typeSignatureIn(site: Type): Type =
-      gilSynchronizedIfNotThreadsafe { super.typeSignatureIn(site) }
+      gilSynchronizedIfNotThreadsafe {
+        super.typeSignatureIn(site)
+      }
 
     override def typeParams: List[Symbol] = gilSynchronizedIfNotThreadsafe {
       if (isCompilerUniverse) super.typeParams
@@ -284,7 +294,9 @@ private[reflect] trait SynchronizedSymbols extends internal.Symbols {
     private lazy val typeAsMemberOfLock = new Object
     override def typeAsMemberOf(pre: Type): Type =
       gilSynchronizedIfNotThreadsafe {
-        typeAsMemberOfLock.synchronized { super.typeAsMemberOf(pre) }
+        typeAsMemberOfLock.synchronized {
+          super.typeAsMemberOf(pre)
+        }
       }
   }
 
@@ -297,7 +309,9 @@ private[reflect] trait SynchronizedSymbols extends internal.Symbols {
     // temporarily assigning NoType to tpeCache to detect cyclic reference errors
     private lazy val tpeLock = new Object
     override def tpe_* : Type = gilSynchronizedIfNotThreadsafe {
-      tpeLock.synchronized { super.tpe_* }
+      tpeLock.synchronized {
+        super.tpe_*
+      }
     }
   }
 

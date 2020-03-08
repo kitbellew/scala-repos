@@ -93,13 +93,18 @@ class FileStoreHandler(
         for {
           fn0 <- fileName.toSuccess("X-File-Name header must be provided.")
           // if the filename after URL encoding is the same as before, accept it.
-          _ <- (URLEncoder.encode(fn0, "UTF-8") == fn0)
-            .unlessM[({ type λ[α] = Validation[String, α] })#λ, Unit] {
-              Failure(
-                "\"%s\" is not a valid file name; please do not use characters which require URL encoding."
-                  .format(fn0))
-            }
-        } yield { (dir: Path) => dir / Path(fn0) }
+          _ <- (URLEncoder.encode(fn0, "UTF-8") == fn0).unlessM[
+            ({
+              type λ[α] = Validation[String, α]
+            })#λ,
+            Unit] {
+            Failure(
+              "\"%s\" is not a valid file name; please do not use characters which require URL encoding."
+                .format(fn0))
+          }
+        } yield { (dir: Path) =>
+          dir / Path(fn0)
+        }
 
       case AccessMode.Replace =>
         fileName

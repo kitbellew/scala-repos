@@ -76,7 +76,9 @@ object Dist {
       structure: Load.BuildStructure,
       exclude: Seq[String]): Task[Seq[T]] = {
     val projects = aggregatedProjects(projectRef, structure, exclude)
-    projects flatMap { task in LocalProject(_) get structure.data } join
+    projects flatMap {
+      task in LocalProject(_) get structure.data
+    } join
   }
 
   def aggregatedProjects(
@@ -138,7 +140,9 @@ object Dist {
       preserveLastModified: Boolean = false,
       setExecutable: Boolean = false): Set[File] = {
     IO.createDirectory(target)
-    val sources = files map { f => (f, target / f.name) }
+    val sources = files map { f =>
+      (f, target / f.name)
+    }
     copyMapped(sources, overwrite, preserveLastModified, setExecutable)
   }
 

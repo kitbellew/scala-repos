@@ -40,8 +40,9 @@ class BernoulliTest
     if (b == 0.0) p < 1e-4 else (p - b).abs / b.abs.max(1e-4) < 1e-1
 
   implicit def arbDistr = Arbitrary {
-    for (p <- arbitrary[Double].map { x => math.abs(x) % 1.0 + 1e-4 })
-      yield new Bernoulli(p)
+    for (p <- arbitrary[Double].map { x =>
+           math.abs(x) % 1.0 + 1e-4
+         }) yield new Bernoulli(p)
   }
 
   def asDouble(x: Boolean) = I(x)

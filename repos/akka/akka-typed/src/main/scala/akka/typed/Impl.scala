@@ -98,10 +98,18 @@ private[typed] class ActorContextAdapter[T](ctx: akka.actor.ActorContext)
             false // none of our business
         }
     }
-  def watch[U](other: ActorRef[U]) = { ctx.watch(other.untypedRef); other }
-  def watch(other: a.ActorRef) = { ctx.watch(other); other }
-  def unwatch[U](other: ActorRef[U]) = { ctx.unwatch(other.untypedRef); other }
-  def unwatch(other: a.ActorRef) = { ctx.unwatch(other); other }
+  def watch[U](other: ActorRef[U]) = {
+    ctx.watch(other.untypedRef); other
+  }
+  def watch(other: a.ActorRef) = {
+    ctx.watch(other); other
+  }
+  def unwatch[U](other: ActorRef[U]) = {
+    ctx.unwatch(other.untypedRef); other
+  }
+  def unwatch(other: a.ActorRef) = {
+    ctx.unwatch(other); other
+  }
   def setReceiveTimeout(d: Duration) = ctx.setReceiveTimeout(d)
   def executionContext: ExecutionContextExecutor = ctx.dispatcher
   def schedule[U](

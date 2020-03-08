@@ -70,9 +70,15 @@ private[ui] class ApplicationPage(parent: MasterWebUI)
       <div class="row-fluid">
         <div class="span12">
           <ul class="unstyled">
-            <li><strong>ID:</strong> {app.id}</li>
-            <li><strong>Name:</strong> {app.desc.name}</li>
-            <li><strong>User:</strong> {app.desc.user}</li>
+            <li><strong>ID:</strong> {
+        app.id
+      }</li>
+            <li><strong>Name:</strong> {
+        app.desc.name
+      }</li>
+            <li><strong>User:</strong> {
+        app.desc.user
+      }</li>
             <li><strong>Cores:</strong>
             {
         if (app.desc.maxCores.isEmpty) {
@@ -87,11 +93,19 @@ private[ui] class ApplicationPage(parent: MasterWebUI)
             </li>
             <li>
               <strong>Executor Memory:</strong>
-              {Utils.megabytesToString(app.desc.memoryPerExecutorMB)}
+              {
+        Utils.megabytesToString(app.desc.memoryPerExecutorMB)
+      }
             </li>
-            <li><strong>Submit Date:</strong> {app.submitDate}</li>
-            <li><strong>State:</strong> {app.state}</li>
-            <li><strong><a href={app.curAppUIUrl}>Application Detail UI</a></strong></li>
+            <li><strong>Submit Date:</strong> {
+        app.submitDate
+      }</li>
+            <li><strong>State:</strong> {
+        app.state
+      }</li>
+            <li><strong><a href={
+        app.curAppUIUrl
+      }>Application Detail UI</a></strong></li>
           </ul>
         </div>
       </div>
@@ -99,7 +113,9 @@ private[ui] class ApplicationPage(parent: MasterWebUI)
       <div class="row-fluid"> <!-- Executors -->
         <div class="span12">
           <h4> Executor Summary </h4>
-          {executorsTable}
+          {
+        executorsTable
+      }
           {
         if (removedExecutors.nonEmpty) {
           <h4> Removed Executors </h4> ++
@@ -113,13 +129,25 @@ private[ui] class ApplicationPage(parent: MasterWebUI)
 
   private def executorRow(executor: ExecutorDesc): Seq[Node] = {
     <tr>
-      <td>{executor.id}</td>
+      <td>{
+      executor.id
+    }</td>
       <td>
-        <a href={executor.worker.webUiAddress}>{executor.worker.id}</a>
+        <a href={
+      executor.worker.webUiAddress
+    }>{
+      executor.worker.id
+    }</a>
       </td>
-      <td>{executor.cores}</td>
-      <td>{executor.memory}</td>
-      <td>{executor.state}</td>
+      <td>{
+      executor.cores
+    }</td>
+      <td>{
+      executor.memory
+    }</td>
+      <td>{
+      executor.state
+    }</td>
       <td>
         <a href={
       "%s/logPage?appId=%s&executorId=%s&logType=stdout"

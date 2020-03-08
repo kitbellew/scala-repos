@@ -15,9 +15,9 @@ class Position
     with DeprecatedPosition {
   type Pos = Position
   def pos: Position = this
-  def withPos(
-      newPos: Position): macros.Attachments { type Pos = Position.this.Pos } =
-    newPos
+  def withPos(newPos: Position): macros.Attachments {
+    type Pos = Position.this.Pos
+  } = newPos
 
   protected def fail(what: String) =
     throw new UnsupportedOperationException(s"Position.$what on $this")

@@ -8,7 +8,9 @@ import org.scalatest.Matchers
 import org.scalactic.ConversionCheckedTripleEquals
 
 object TypedMultiMapSpec {
-  trait AbstractKey { type Type }
+  trait AbstractKey {
+    type Type
+  }
   final case class Key[T](t: T) extends AbstractKey {
     final override type Type = T
   }

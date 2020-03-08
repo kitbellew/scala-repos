@@ -1,3 +1,5 @@
 class Foo(s: String) {
-  def this() = { this("DEFAULT") }
+  def this() = {
+    this("DEFAULT")
+  }
 }

@@ -60,7 +60,9 @@ object StaticRoutesGenerator extends RoutesGenerator {
     val sourceInfo = RoutesSourceInfo(
       task.file.getCanonicalPath.replace(File.separator, "/"),
       new java.util.Date().toString)
-    val routes = rules.collect { case r: Route => r }
+    val routes = rules.collect {
+      case r: Route => r
+    }
 
     val forwardsRoutesFiles = if (task.forwardsRouter) {
       Seq(
@@ -187,19 +189,24 @@ object StaticRoutesGenerator extends RoutesGenerator {
       namespace: Option[String],
       rules: List[Rule],
       namespaceReverseRouter: Boolean) = {
-    rules.collect { case r: Route => r }.groupBy(_.call.packageName).map {
-      case (pn, routes) =>
-        val packageName = namespace
-          .filter(_ => namespaceReverseRouter)
-          .map(_ + "." + pn)
-          .getOrElse(pn)
-        val controllers = routes.groupBy(_.call.controller).keys.toSeq
+    rules
+      .collect {
+        case r: Route => r
+      }
+      .groupBy(_.call.packageName)
+      .map {
+        case (pn, routes) =>
+          val packageName = namespace
+            .filter(_ => namespaceReverseRouter)
+            .map(_ + "." + pn)
+            .getOrElse(pn)
+          val controllers = routes.groupBy(_.call.controller).keys.toSeq
 
-        (packageName.replace(".", "/") + "/" + JavaWrapperFile) ->
-          static.twirl
-            .javaWrappers(sourceInfo, namespace, packageName, controllers)
-            .body
-    }
+          (packageName.replace(".", "/") + "/" + JavaWrapperFile) ->
+            static.twirl
+              .javaWrappers(sourceInfo, namespace, packageName, controllers)
+              .body
+      }
   }
 }
 
@@ -224,7 +231,9 @@ object InjectedRoutesGenerator extends RoutesGenerator {
     val sourceInfo = RoutesSourceInfo(
       task.file.getCanonicalPath.replace(File.separator, "/"),
       new java.util.Date().toString)
-    val routes = rules.collect { case r: Route => r }
+    val routes = rules.collect {
+      case r: Route => r
+    }
 
     val forwardsRoutesFiles = if (task.forwardsRouter) {
       Seq(
@@ -290,7 +299,9 @@ object InjectedRoutesGenerator extends RoutesGenerator {
 
     // Generate dependency descriptors for all routes
     val routesDeps = rules
-      .collect { case route: Route => route }
+      .collect {
+        case route: Route => route
+      }
       .groupBy(r => (r.call.packageName, r.call.controller, r.call.instantiate))
       .zipWithIndex
       .map {
@@ -410,18 +421,23 @@ object InjectedRoutesGenerator extends RoutesGenerator {
       namespace: Option[String],
       rules: List[Rule],
       namespaceReverseRouter: Boolean) = {
-    rules.collect { case r: Route => r }.groupBy(_.call.packageName).map {
-      case (pn, routes) =>
-        val packageName = namespace
-          .filter(_ => namespaceReverseRouter)
-          .map(_ + "." + pn)
-          .getOrElse(pn)
-        val controllers = routes.groupBy(_.call.controller).keys.toSeq
+    rules
+      .collect {
+        case r: Route => r
+      }
+      .groupBy(_.call.packageName)
+      .map {
+        case (pn, routes) =>
+          val packageName = namespace
+            .filter(_ => namespaceReverseRouter)
+            .map(_ + "." + pn)
+            .getOrElse(pn)
+          val controllers = routes.groupBy(_.call.controller).keys.toSeq
 
-        (packageName.replace(".", "/") + "/" + JavaWrapperFile) ->
-          static.twirl
-            .javaWrappers(sourceInfo, namespace, packageName, controllers)
-            .body
-    }
+          (packageName.replace(".", "/") + "/" + JavaWrapperFile) ->
+            static.twirl
+              .javaWrappers(sourceInfo, namespace, packageName, controllers)
+              .body
+      }
   }
 }

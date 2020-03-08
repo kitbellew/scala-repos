@@ -1,4 +1,6 @@
-class Bippy { trait Foo[A] }
+class Bippy {
+  trait Foo[A]
+}
 
 final class RichBippy[C <: Bippy with Singleton](val c1: C) {
   def f: Int = 1

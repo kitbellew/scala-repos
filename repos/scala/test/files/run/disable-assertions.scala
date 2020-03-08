@@ -2,7 +2,9 @@ object Elided {
   import annotation._, elidable._
   @elidable(INFO) def info(): Boolean = true
   @elidable(10000) def f(): Boolean = true
-  def g(): Boolean = { assert(false); true }
+  def g(): Boolean = {
+    assert(false); true
+  }
 }
 
 object Test extends App {

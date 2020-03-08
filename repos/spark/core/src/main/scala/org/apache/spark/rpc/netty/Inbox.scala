@@ -140,7 +140,9 @@ private[netty] class Inbox(
             }
 
           case OnStop =>
-            val activeThreads = inbox.synchronized { inbox.numActiveThreads }
+            val activeThreads = inbox.synchronized {
+              inbox.numActiveThreads
+            }
             assert(
               activeThreads == 1,
               s"There should be only a single active thread but found $activeThreads threads.")
@@ -200,7 +202,9 @@ private[netty] class Inbox(
     }
   }
 
-  def isEmpty: Boolean = inbox.synchronized { messages.isEmpty }
+  def isEmpty: Boolean = inbox.synchronized {
+    messages.isEmpty
+  }
 
   /**
     * Called when we are dropping a message. Test cases override this to test message dropping.

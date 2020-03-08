@@ -95,7 +95,9 @@ object SwankProtocolCommon {
     "deprecated" -> DeprecatedSymbol
   )
   private val reverseSourceSymbolMap: Map[SourceSymbol, String] =
-    sourceSymbolMap.map { case (name, symbol) => symbol -> name }
+    sourceSymbolMap.map {
+      case (name, symbol) => symbol -> name
+    }
 
   private[swank] def symbolToSourceSymbol(
       stringRep: String): Option[SourceSymbol] = sourceSymbolMap.get(stringRep)

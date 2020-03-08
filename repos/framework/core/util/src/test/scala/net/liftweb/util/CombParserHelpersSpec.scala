@@ -45,7 +45,9 @@ object CombParserHelpersSpec extends Specification with ScalaCheck {
       notNum('0') must beFalse
     }
     "provide an wsc function returning true iff a char is a space character" in {
-      List(' ', '\t', '\r', '\n') foreach { wsc(_) must beTrue }
+      List(' ', '\t', '\r', '\n') foreach {
+        wsc(_) must beTrue
+      }
       wsc('a') must beFalse
     }
     "provide a whitespace parser: white. Alias: wsc" in {
@@ -95,11 +97,15 @@ object CombParserHelpersSpec extends Specification with ScalaCheck {
 
     "provide a slash parser" in {
       slash("/").get must_== '/'
-      slash("x") must beLike { case Failure(_, _) => 1 must_== 1 }
+      slash("x") must beLike {
+        case Failure(_, _) => 1 must_== 1
+      }
     }
     "provide a colon parser" in {
       colon(":").get must_== ':'
-      colon("x") must beLike { case Failure(_, _) => 1 must_== 1 }
+      colon("x") must beLike {
+        case Failure(_, _) => 1 must_== 1
+      }
     }
     "provide a EOL parser which parses the any and discards any end of line character" in {
       List("\n", "\r") map { s =>
@@ -154,7 +160,9 @@ object AbcdStringGen {
       yield string.mkString("")
 
   def pickN(n: Int, elems: List[String]) =
-    Arbitrary { for (string <- pick(n, elems)) yield string.mkString("") }
+    Arbitrary {
+      for (string <- pick(n, elems)) yield string.mkString("")
+    }
 }
 
 object WhiteStringGen {
@@ -169,7 +177,9 @@ object WhiteStringGen {
              (1, Gen.const("\n"))))) yield string.mkString("")
 
   implicit def genWhiteString: Arbitrary[String] =
-    Arbitrary { genWhite }
+    Arbitrary {
+      genWhite
+    }
 }
 
 object StringWithWhiteGen {
@@ -183,5 +193,7 @@ object StringWithWhiteGen {
       yield string.mkString("")
 
   implicit def genString: Arbitrary[String] =
-    Arbitrary { genStringWithWhite }
+    Arbitrary {
+      genStringWithWhite
+    }
 }

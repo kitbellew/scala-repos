@@ -31,7 +31,9 @@ class ScSelfTypeElementImpl private (
     node: ASTNode)
     extends ScalaStubBasedElementImpl(stub, nodeType, node)
     with ScSelfTypeElement {
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
 
   def this(stub: ScSelfTypeElementStub) = {
     this(stub, ScalaElementTypes.SELF_TYPE, null)

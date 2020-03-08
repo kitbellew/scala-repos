@@ -78,7 +78,9 @@ class TypeOperatorTests {
   }
 
   object Foo {
-    implicit def mkFoo: Foo { type T = Int } = new Foo {
+    implicit def mkFoo: Foo {
+      type T = Int
+    } = new Foo {
       type T = Int; val t = 23
     }
   }
@@ -89,7 +91,9 @@ class TypeOperatorTests {
   }
 
   object Foo2 {
-    implicit def mkFoo2: Foo2[Char] { type T = Int } = new Foo2[Char] {
+    implicit def mkFoo2: Foo2[Char] {
+      type T = Int
+    } = new Foo2[Char] {
       type T = Int; val t = 23
     }
   }
@@ -100,10 +104,14 @@ class TypeOperatorTests {
   }
 
   object Bar {
-    implicit def mkBar1: Bar[Boolean] { type U = Int } = new Bar[Boolean] {
+    implicit def mkBar1: Bar[Boolean] {
+      type U = Int
+    } = new Bar[Boolean] {
       type U = Int; val tu = Right(23)
     }
-    implicit def mkBar2: Bar[String] { type U = Double } = new Bar[String] {
+    implicit def mkBar2: Bar[String] {
+      type U = Double
+    } = new Bar[String] {
       type U = Double; val tu = Right(13.0)
     }
   }
@@ -137,20 +145,29 @@ class TypeOperatorTests {
 
   @Test
   def testTheQuantifiers {
-    def bar0[T, U0](
-        implicit b: Bar[T] { type U = U0 }): Bar[T] { type U = U0 } = {
+    def bar0[T, U0](implicit
+        b: Bar[T] {
+          type U = U0
+        }): Bar[T] {
+      type U = U0
+    } = {
       val res = the[Bar[T]]
       res
     }
 
     // Note: Slightly different method signature in TypeOperator211Tests
-    def bar1[T, U0](implicit b: Bar[T] { type U = U0 }): Option[U0] = {
+    def bar1[T, U0](implicit
+        b: Bar[T] {
+          type U = U0
+        }): Option[U0] = {
       val res: Option[the.`Bar[T]`.U] = None
       res
     }
 
     val b0 = bar0[Boolean, Int]
-    typed[Bar[Boolean] { type U = Int }](b0)
+    typed[Bar[Boolean] {
+      type U = Int
+    }](b0)
 
     val b1 = bar1[Boolean, Int]
     typed[Option[Int]](b1)

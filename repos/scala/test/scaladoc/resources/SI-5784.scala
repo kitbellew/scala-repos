@@ -4,7 +4,9 @@ package test.templates {
     /** @template */
     type String = java.lang.String
     val String = new StringCompanion
-    class StringCompanion { def boo = ??? }
+    class StringCompanion {
+      def boo = ???
+    }
   }
 
   /** @contentDiagram */
@@ -17,8 +19,12 @@ package test.templates {
       * @inheritanceDiagram */
     type T <: Foo
     val T: FooExtractor
-    trait Foo { def foo: Int }
-    trait FooExtractor { def apply(foo: Int); def unapply(t: Foo): Option[Int] }
+    trait Foo {
+      def foo: Int
+    }
+    trait FooExtractor {
+      def apply(foo: Int); def unapply(t: Foo): Option[Int]
+    }
   }
 
   /** @contentDiagram */
@@ -27,6 +33,8 @@ package test.templates {
     /** @documentable
       *  @inheritanceDiagram */
     override type T <: FooApi
-    trait FooApi extends Foo { def bar: String }
+    trait FooApi extends Foo {
+      def bar: String
+    }
   }
 }

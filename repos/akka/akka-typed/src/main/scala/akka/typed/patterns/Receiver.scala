@@ -57,7 +57,9 @@ object Receiver {
     ContextAware[Any] { ctx ⇒
       SynchronousSelf { syncself ⇒
         Or(
-          empty(ctx).widen { case c: Command[t] ⇒ c.asInstanceOf[Command[T]] },
+          empty(ctx).widen {
+            case c: Command[t] ⇒ c.asInstanceOf[Command[T]]
+          },
           Static[Any] {
             case msg ⇒ syncself ! Enqueue(msg)
           })
@@ -66,7 +68,9 @@ object Receiver {
 
   private def empty[T](ctx: ActorContext[Any]): Behavior[Command[T]] =
     Total {
-      case ExternalAddress(replyTo) ⇒ { replyTo ! ctx.self; Same }
+      case ExternalAddress(replyTo) ⇒ {
+        replyTo ! ctx.self; Same
+      }
       case g @ GetOne(d) if d <= Duration.Zero ⇒ {
         g.replyTo ! GetOneResult(ctx.self, None); Same
       }
@@ -120,7 +124,9 @@ object Receiver {
         } else asked(ctx, remaining)
       case Msg(_, msg) ⇒
         msg match {
-          case ExternalAddress(replyTo) ⇒ { replyTo ! ctx.self; Same }
+          case ExternalAddress(replyTo) ⇒ {
+            replyTo ! ctx.self; Same
+          }
           case g @ GetOne(d) if d <= Duration.Zero ⇒
             g.replyTo ! GetOneResult(ctx.self, None)
             asked(ctx, queue)

@@ -86,7 +86,9 @@ object CircuitBreakerProxy {
       callTimeout: Timeout,
       resetTimeout: Timeout,
       circuitEventListener: Option[ActorRef] = None,
-      failureDetector: Any ⇒ Boolean = { _ ⇒ false },
+      failureDetector: Any ⇒ Boolean = { _ ⇒
+        false
+      },
       openCircuitFailureConverter: CircuitOpenFailure ⇒ Any = identity) {
 
     def withMaxFailures(value: Int) = copy(maxFailures = value)
@@ -327,15 +329,21 @@ final class CircuitBreakerProxy(
   onTransition {
     case from -> Closed ⇒
       log.debug("Moving from state {} to state CLOSED", from)
-      circuitEventListener foreach { _ ! CircuitClosed(self) }
+      circuitEventListener foreach {
+        _ ! CircuitClosed(self)
+      }
 
     case from -> HalfOpen ⇒
       log.debug("Moving from state {} to state HALF OPEN", from)
-      circuitEventListener foreach { _ ! CircuitHalfOpen(self) }
+      circuitEventListener foreach {
+        _ ! CircuitHalfOpen(self)
+      }
 
     case from -> Open ⇒
       log.debug("Moving from state {} to state OPEN", from)
-      circuitEventListener foreach { _ ! CircuitOpen(self) }
+      circuitEventListener foreach {
+        _ ! CircuitOpen(self)
+      }
   }
 
 }

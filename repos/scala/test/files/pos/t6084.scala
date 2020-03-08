@@ -1,8 +1,12 @@
-package object foo { type X[T, U] = (T => U) }
+package object foo {
+  type X[T, U] = (T => U)
+}
 
 package foo {
   abstract class Foo[T, U](val d: T => U) extends (T => U) {
-    def f1(r: X[T, U]) = r match { case x: Foo[_, _] => x.d } // inferred ok
+    def f1(r: X[T, U]) = r match {
+      case x: Foo[_, _] => x.d
+    } // inferred ok
     def f2(r: X[T, U]): (T => U) = r match {
       case x: Foo[_, _] => x.d
     } // dealiased ok

@@ -125,14 +125,22 @@ abstract class GeneratedRouter extends Router {
       generator: Function2[A1, A2, Handler]): Handler = {
     (for (a1 <- pa1.value.right; a2 <- pa2.value.right)
       yield (a1, a2))
-      .fold(badRequest, { case (a1, a2) => generator(a1, a2) })
+      .fold(
+        badRequest,
+        {
+          case (a1, a2) => generator(a1, a2)
+        })
   }
 
   def call[A1, A2, A3](pa1: Param[A1], pa2: Param[A2], pa3: Param[A3])(
       generator: Function3[A1, A2, A3, Handler]): Handler = {
     (for (a1 <- pa1.value.right; a2 <- pa2.value.right; a3 <- pa3.value.right)
       yield (a1, a2, a3))
-      .fold(badRequest, { case (a1, a2, a3) => generator(a1, a2, a3) })
+      .fold(
+        badRequest,
+        {
+          case (a1, a2, a3) => generator(a1, a2, a3)
+        })
   }
 
   def call[A1, A2, A3, A4](
@@ -144,7 +152,11 @@ abstract class GeneratedRouter extends Router {
     (for (a1 <- pa1.value.right; a2 <- pa2.value.right; a3 <- pa3.value.right;
           a4 <- pa4.value.right)
       yield (a1, a2, a3, a4))
-      .fold(badRequest, { case (a1, a2, a3, a4) => generator(a1, a2, a3, a4) })
+      .fold(
+        badRequest,
+        {
+          case (a1, a2, a3, a4) => generator(a1, a2, a3, a4)
+        })
   }
 
   def call[A1, A2, A3, A4, A5](
@@ -159,7 +171,9 @@ abstract class GeneratedRouter extends Router {
       yield (a1, a2, a3, a4, a5))
       .fold(
         badRequest,
-        { case (a1, a2, a3, a4, a5) => generator(a1, a2, a3, a4, a5) })
+        {
+          case (a1, a2, a3, a4, a5) => generator(a1, a2, a3, a4, a5)
+        })
   }
 
   def call[A1, A2, A3, A4, A5, A6](
@@ -175,7 +189,9 @@ abstract class GeneratedRouter extends Router {
       yield (a1, a2, a3, a4, a5, a6))
       .fold(
         badRequest,
-        { case (a1, a2, a3, a4, a5, a6) => generator(a1, a2, a3, a4, a5, a6) })
+        {
+          case (a1, a2, a3, a4, a5, a6) => generator(a1, a2, a3, a4, a5, a6)
+        })
   }
 
   def call[A1, A2, A3, A4, A5, A6, A7](

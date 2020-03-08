@@ -160,7 +160,9 @@ object TestE {
   def f6(x: E6[String]) = {
     x.f("a", "b", "c"); x.g("a", "b", "c"); x.h("a", "b", "c")
   }
-  def f7(x: E7) = { x.f("a", "b", "c"); x.g("a", "b", "c"); x.h("a", "b", "c") }
+  def f7(x: E7) = {
+    x.f("a", "b", "c"); x.g("a", "b", "c"); x.h("a", "b", "c")
+  }
 
   def main(args: Array[String]): Unit = {
     val x = new EBag {}

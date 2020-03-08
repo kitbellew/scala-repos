@@ -20,7 +20,11 @@ private[process] trait ProcessImpl {
   private[process] object Spawn {
     def apply(f: => Unit): Thread = apply(f, daemon = false)
     def apply(f: => Unit, daemon: Boolean): Thread = {
-      val thread = new Thread() { override def run() = { f } }
+      val thread = new Thread() {
+        override def run() = {
+          f
+        }
+      }
       thread.setDaemon(daemon)
       thread.start()
       thread
@@ -31,7 +35,9 @@ private[process] trait ProcessImpl {
       val result = new SyncVar[Either[Throwable, T]]
       def run(): Unit =
         try result set Right(f)
-        catch { case e: Exception => result set Left(e) }
+        catch {
+          case e: Exception => result set Left(e)
+        }
 
       val t = Spawn(run())
 
@@ -100,7 +106,9 @@ private[process] trait ProcessImpl {
 
       (
         thread,
-        Future { thread.join(); code.get },
+        Future {
+          thread.join(); code.get
+        },
         () => thread.interrupt()
       )
     }
@@ -111,7 +119,9 @@ private[process] trait ProcessImpl {
     protected[this] def runInterruptible[T](action: => T)(
         destroyImpl: => Unit): Option[T] = {
       try Some(action)
-      catch onInterrupt { destroyImpl; None }
+      catch onInterrupt {
+        destroyImpl; None
+      }
     }
   }
 
@@ -274,6 +284,8 @@ private[process] trait ProcessImpl {
       thread.join()
       if (success.get) 0 else 1
     }
-    override def destroy() { thread.interrupt() }
+    override def destroy() {
+      thread.interrupt()
+    }
   }
 }

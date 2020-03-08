@@ -6,7 +6,9 @@ object SCL2820 {
   }
 
   trait TypingTrait {
-    trait Col { def name: Symbol }
+    trait Col {
+      def name: Symbol
+    }
     object Col {
       case class String(name: Symbol) extends Col
     }

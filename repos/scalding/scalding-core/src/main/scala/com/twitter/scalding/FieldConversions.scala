@@ -53,7 +53,9 @@ trait LowPriorityFieldConversions {
     * higher priority.
     */
   implicit def productToFields(f: Product) = {
-    val fields = new Fields(f.productIterator.map { anyToFieldArg }.toSeq: _*)
+    val fields = new Fields(f.productIterator.map {
+      anyToFieldArg
+    }.toSeq: _*)
     f.productIterator.foreach {
       _ match {
         case field: Field[_] => fields.setComparator(field.id, field.ord)
@@ -74,7 +76,9 @@ trait FieldConversions extends LowPriorityFieldConversions {
   def asSet(f: Fields): Set[Comparable[_]] = asList(f).toSet
 
   // TODO get the comparator also
-  def getField(f: Fields, idx: Int): Fields = { new Fields(f.get(idx)) }
+  def getField(f: Fields, idx: Int): Fields = {
+    new Fields(f.get(idx))
+  }
 
   def hasInts(f: Fields): Boolean = f.iterator.asScala.exists {
     _.isInstanceOf[java.lang.Integer]
@@ -166,9 +170,13 @@ trait FieldConversions extends LowPriorityFieldConversions {
       (right, rightPipe)
     } else {
       // Rename the collisions with random integer names:
-      val leftSetSyms = leftSet.map { f => Symbol(f.toString) }
+      val leftSetSyms = leftSet.map { f =>
+        Symbol(f.toString)
+      }
       val (_, reversedRename) = asList(right)
-        .map { f => Symbol(f.toString) }
+        .map { f =>
+          Symbol(f.toString)
+        }
         .foldLeft((leftSetSyms, List[Symbol]())) { (takenRename, name) =>
           val (taken, renames) = takenRename
           val newName = newSymbol(taken, name)
@@ -187,14 +195,18 @@ trait FieldConversions extends LowPriorityFieldConversions {
     * that List will not conflict with Product.
     */
   implicit def fromEnum[T <: Enumeration](enumeration: T): Fields =
-    new Fields(enumeration.values.toList.map { _.toString }: _*)
+    new Fields(enumeration.values.toList.map {
+      _.toString
+    }: _*)
 
   implicit def fields[T <: TraversableOnce[Symbol]](f: T) =
     new Fields(f.toSeq.map(_.name): _*)
   implicit def strFields[T <: TraversableOnce[String]](f: T) =
     new Fields(f.toSeq: _*)
   implicit def intFields[T <: TraversableOnce[Int]](f: T) = {
-    new Fields(f.toSeq.map { new java.lang.Integer(_) }: _*)
+    new Fields(f.toSeq.map {
+      new java.lang.Integer(_)
+    }: _*)
   }
   implicit def fieldFields[T <: TraversableOnce[Field[_]]](f: T) =
     RichFields(f.toSeq)
@@ -205,7 +217,9 @@ trait FieldConversions extends LowPriorityFieldConversions {
     * exception before scheduling the job, I guess this is okay.
     */
   implicit def parseAnySeqToFields[T <: TraversableOnce[Any]](anyf: T) = {
-    val fields = new Fields(anyf.toSeq.map { anyToFieldArg }: _*)
+    val fields = new Fields(anyf.toSeq.map {
+      anyToFieldArg
+    }: _*)
     anyf.foreach {
       _ match {
         case field: Field[_] => fields.setComparator(field.id, field.ord)
@@ -269,8 +283,12 @@ trait FieldConversions extends LowPriorityFieldConversions {
 // myFields.toFieldList
 
 case class RichFields(val toFieldList: List[Field[_]])
-    extends Fields(toFieldList.map { _.id }: _*) {
-  toFieldList.foreach { field: Field[_] => setComparator(field.id, field.ord) }
+    extends Fields(toFieldList.map {
+      _.id
+    }: _*) {
+  toFieldList.foreach { field: Field[_] =>
+    setComparator(field.id, field.ord)
+  }
 }
 
 object RichFields {

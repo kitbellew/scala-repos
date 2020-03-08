@@ -159,7 +159,9 @@ class LBatchView(
       .aggregateByEntityOrdered(
         init = None,
         op = ViewAggregators.getDataMapAggregator())
-      .filter { case (k, v) => (v != None) }
+      .filter {
+        case (k, v) => (v != None)
+      }
       .mapValues(_.get)
 
   }

@@ -33,5 +33,9 @@ object Test {
   }
 }
 
-class C { var w = 1; def ten = this.w = 10 }
-class D extends C { override var w = 2 }
+class C {
+  var w = 1; def ten = this.w = 10
+}
+class D extends C {
+  override var w = 2
+}

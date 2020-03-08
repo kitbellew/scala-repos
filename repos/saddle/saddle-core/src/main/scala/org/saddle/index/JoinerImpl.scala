@@ -225,8 +225,12 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
       var l: T = left.raw(i)
       var r: T = right.raw(j)
       while (i < ll && j < rl) {
-        while (i < ll && { l = left.raw(i); scalar.lt(l, r) }) i += 1
-        while (j < rl && { r = right.raw(j); scalar.lt(r, l) }) j += 1
+        while (i < ll && {
+                 l = left.raw(i); scalar.lt(l, r)
+               }) i += 1
+        while (j < rl && {
+                 r = right.raw(j); scalar.lt(r, l)
+               }) j += 1
         if (l == r) {
           c += 1
           i += 1
@@ -366,12 +370,16 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
     if (ll == 0) {
       val lft = Array.ofDim[Int](rl)
       var i = 0
-      while (i < rl) { lft(i) = -1; i += 1 }
+      while (i < rl) {
+        lft(i) = -1; i += 1
+      }
       ReIndexer(lft, None, right)
     } else if (rl == 0) {
       val rgt = Array.ofDim[Int](ll)
       var i = 0
-      while (i < ll) { rgt(i) = -1; i += 1 }
+      while (i < ll) {
+        rgt(i) = -1; i += 1
+      }
       ReIndexer(None, rgt, left)
     } else {
       // first count uniques
@@ -608,7 +616,11 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
       val l: T = left.raw(i)
       var r: T = l
 
-      while (j < rl && scalar.lt({ r = right.raw(j); r }, l)) {
+      while (j < rl && scalar.lt(
+               {
+                 r = right.raw(j); r
+               },
+               l)) {
         j += 1
       }
 

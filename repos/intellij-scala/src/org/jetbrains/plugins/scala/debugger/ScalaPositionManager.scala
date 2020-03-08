@@ -790,7 +790,9 @@ object ScalaPositionManager {
 
   def checkedLineNumber(location: Location): Int =
     try location.lineNumber() - 1
-    catch { case ie: InternalError => -1 }
+    catch {
+      case ie: InternalError => -1
+    }
 
   def cachedSourceName(refType: ReferenceType) = {
     ScalaPositionManager

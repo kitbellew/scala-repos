@@ -26,7 +26,9 @@ trait PackageObject extends Steroids with WithFuture {
 
   // from scalaz. We don't want to import all OptionTFunctions, because of the clash with `some`
   def optionT[M[_]] =
-    new (({ type λ[α] = M[Option[α]] })#λ ~> ({
+    new (({
+      type λ[α] = M[Option[α]]
+    })#λ ~> ({
       type λ[α] = OptionT[M, α]
     })#λ) {
       def apply[A](a: M[Option[A]]) = new OptionT[M, A](a)
@@ -34,7 +36,9 @@ trait PackageObject extends Steroids with WithFuture {
 
   implicit final class LilaPimpedString(s: String) {
 
-    def boot[A](v: => A): A = { lila.log.boot.info(s); v }
+    def boot[A](v: => A): A = {
+      lila.log.boot.info(s); v
+    }
   }
 
   implicit final class LilaPimpedValid[A](v: Valid[A]) {
@@ -161,15 +165,21 @@ trait WithPlay { self: PackageObject =>
     }
 
     def fold[B](fail: Exception => B, succ: A => B): Fu[B] =
-      fua map succ recover { case e: Exception => fail(e) }
+      fua map succ recover {
+        case e: Exception => fail(e)
+      }
 
     def flatFold[B](fail: Exception => Fu[B], succ: A => Fu[B]): Fu[B] =
-      fua flatMap succ recoverWith { case e: Exception => fail(e) }
+      fua flatMap succ recoverWith {
+        case e: Exception => fail(e)
+      }
 
     def logFailure(
         logger: => lila.log.Logger,
         msg: Exception => String): Fu[A] =
-      addFailureEffect { e => logger.warn(msg(e), e) }
+      addFailureEffect { e =>
+        logger.warn(msg(e), e)
+      }
     def logFailure(logger: => lila.log.Logger): Fu[A] =
       logFailure(logger, _.toString)
 
@@ -241,7 +251,9 @@ trait WithPlay { self: PackageObject =>
     }
 
     def orElse(other: => Fu[Option[A]]): Fu[Option[A]] = fua flatMap {
-      _.fold(other) { x => fuccess(x.some) }
+      _.fold(other) { x =>
+        fuccess(x.some)
+      }
     }
 
     def getOrElse(other: => Fu[A]): Fu[A] = fua flatMap {
@@ -251,16 +263,22 @@ trait WithPlay { self: PackageObject =>
 
   implicit final class LilaPimpedFutureValid[A](fua: Fu[Valid[A]]) {
 
-    def flatten: Fu[A] = fua flatMap { _.fold[Fu[A]](fufail(_), fuccess(_)) }
+    def flatten: Fu[A] = fua flatMap {
+      _.fold[Fu[A]](fufail(_), fuccess(_))
+    }
   }
 
   implicit final class LilaPimpedFutureBoolean(fua: Fu[Boolean]) {
 
     def >>&(fub: => Fu[Boolean]): Fu[Boolean] =
-      fua flatMap { _.fold(fub, fuccess(false)) }
+      fua flatMap {
+        _.fold(fub, fuccess(false))
+      }
 
     def >>|(fub: => Fu[Boolean]): Fu[Boolean] =
-      fua flatMap { _.fold(fuccess(true), fub) }
+      fua flatMap {
+        _.fold(fuccess(true), fub)
+      }
 
     def unary_! = fua map (!_)
   }

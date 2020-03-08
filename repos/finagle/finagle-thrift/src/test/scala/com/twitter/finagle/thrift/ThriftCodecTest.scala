@@ -19,7 +19,9 @@ class ThriftCodecTest extends FunSuite {
       method: String,
       `type`: Byte,
       seqId: Int,
-      message: { def write(p: TProtocol) }
+      message: {
+        def write(p: TProtocol)
+      }
   ): ChannelBuffer = {
     val buffer = ChannelBuffers.dynamicBuffer()
     val transport = new ChannelBufferToTransport(buffer)
@@ -295,8 +297,12 @@ object ThriftCodecTest {
     def isConnected = _isConnected
     def isBound = _isBound
 
-    def isConnected_=(yesno: Boolean) { _isConnected = yesno }
-    def isBound_=(yesno: Boolean) { _isBound = yesno }
+    def isConnected_=(yesno: Boolean) {
+      _isConnected = yesno
+    }
+    def isBound_=(yesno: Boolean) {
+      _isBound = yesno
+    }
 
     def getConfig = config
   }

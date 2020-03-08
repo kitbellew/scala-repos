@@ -178,8 +178,9 @@ final object HList {
 }
 // Separate object for macro impl to avoid dependency of companion class on scala.reflect, see https://github.com/xeno-by/sbt-example-paradise210/issues/1#issuecomment-21021396
 final object HListMacros {
-  def applyImpl(ctx: Context { type PrefixType = HList })(
-      n: ctx.Expr[Int]): ctx.Expr[Any] = {
+  def applyImpl(ctx: Context {
+    type PrefixType = HList
+  })(n: ctx.Expr[Int]): ctx.Expr[Any] = {
     import ctx.universe._
     val _Succ = typeOf[Succ[_]].typeSymbol
     val _Zero = reify(Zero).tree

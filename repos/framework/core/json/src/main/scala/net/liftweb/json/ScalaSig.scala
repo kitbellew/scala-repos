@@ -51,7 +51,9 @@ private[json] object ScalaSigReader {
 
   private def findClass(sig: ScalaSig, clazz: Class[_]): Option[ClassSymbol] = {
     sig.symbols
-      .collect { case c: ClassSymbol if !c.isModule => c }
+      .collect {
+        case c: ClassSymbol if !c.isModule => c
+      }
       .find(_.name == clazz.getSimpleName)
       .orElse {
         sig.topLevelClasses

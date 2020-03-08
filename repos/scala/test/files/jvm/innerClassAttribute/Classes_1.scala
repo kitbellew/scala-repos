@@ -108,8 +108,9 @@ class A18 {
       class A
       new A6 {}
       val y = {
-        if ((new Object).hashCode() == 1) { class B {}; new B }
-        else 2
+        if ((new Object).hashCode() == 1) {
+          class B {}; new B
+        } else 2
         if ((new Object).hashCode() == 1) new A6 {}
         else "haifish"
       }
@@ -120,29 +121,43 @@ class A18 {
 class A19 { ((x: String) =>
   x + "3")
 
-val x = { ((x: String) => x + "1") }
+val x = { ((x: String) =>
+  x + "1")
+}
 
-{ ((x: String) => x + "2") }
+{ ((x: String) =>
+  x + "2")
+}
 }
 
 class A20 { (s: String) =>
   {
-    { (s: String) => () }
-    { (s: String) => (s: String) => 1 }
+    { (s: String) =>
+      ()
+    }
+    { (s: String) => (s: String) =>
+      1
+    }
   }
 }
 
 class A21 {
   class I1
-  def f = { class J1 }
+  def f = {
+    class J1
+  }
 }
 object A21 {
   class I2
   object I3 {
     class J2 // static
   }
-  def g = { class J3 } // non-static
-  val x = { class J4 } // non-static
+  def g = {
+    class J3
+  } // non-static
+  val x = {
+    class J4
+  } // non-static
   {
     class J5 // non-static (!)
     new J5
@@ -190,27 +205,43 @@ class SI_9105 {
   //      outerClass       enclMeth
   val fun = (s: String) => {
     class A //        SI_9105           null
-    def m: Object = { class B; new B } //        SI_9105            m$1
-    val f: Object = { class C; new C } //        SI_9105           null
+    def m: Object = {
+      class B; new B
+    } //        SI_9105            m$1
+    val f: Object = {
+      class C; new C
+    } //        SI_9105           null
   }
   def met = (s: String) => {
     class D //        SI_9105            met
-    def m: Object = { class E; new E } //        SI_9105            m$1
-    val f: Object = { class F; new F } //        SI_9105            met
+    def m: Object = {
+      class E; new E
+    } //        SI_9105            m$1
+    val f: Object = {
+      class F; new F
+    } //        SI_9105            met
   }
 
   def byName(op: => Any) = 0
 
   val bnV = byName {
     class G //        SI_9105           null
-    def m: Object = { class H; new H } //        SI_9105            m$1
-    val f: Object = { class I; new I } //        SI_9105           null
+    def m: Object = {
+      class H; new H
+    } //        SI_9105            m$1
+    val f: Object = {
+      class I; new I
+    } //        SI_9105           null
     ""
   }
   def bnM = byName {
     class J //        SI_9105            bnM
-    def m: Object = { class K; new K } //        SI_9105            m$1
-    val f: Object = { class L; new L } //        SI_9105            bnM
+    def m: Object = {
+      class K; new K
+    } //        SI_9105            m$1
+    val f: Object = {
+      class L; new L
+    } //        SI_9105            bnM
     ""
   }
 }
@@ -218,32 +249,56 @@ class SI_9105 {
 trait SI_9124 {
   trait A // member class, no enclosing method attribute
 
-  new A { def f1 = 0 } // nested class, enclosing class SI_9124, no encl meth
+  new A {
+    def f1 = 0
+  } // nested class, enclosing class SI_9124, no encl meth
 
-  def f = new A { def f2 = 0 } // enclosing method is f in the interface SI_9124
+  def f = new A {
+    def f2 = 0
+  } // enclosing method is f in the interface SI_9124
 
   private def g: Object = new A {
     def f3 = 0
   } // only encl class (SI_9124), encl meth can be g in 2.12 because the interface SI_9124 now has the method g
 
   object O { // member, no encl meth attribute
-    new A { def f4 = 0 } // enclosing class is O$, no enclosing method
+    new A {
+      def f4 = 0
+    } // enclosing class is O$, no enclosing method
   }
 
-  val f1 = { new A { def f5 = 0 }; 1 } // encl class SI_9124, no encl meth
-  private val f2 = { new A { def f6 = 0 }; 1 } // like above
+  val f1 = {
+    new A {
+      def f5 = 0
+    }; 1
+  } // encl class SI_9124, no encl meth
+  private val f2 = {
+    new A {
+      def f6 = 0
+    }; 1
+  } // like above
 }
 
 trait ImplClassesAreTopLevel {
   // all impl classes are top-level, so they don't appear in any InnerClass entry, and none of them have an EnclosingMethod attr
-  trait B1 { def f = 1 }
-  { trait B2 { def f = 1 }; new B2 {} }
+  trait B1 {
+    def f = 1
+  }
+  {
+    trait B2 {
+      def f = 1
+    }; new B2 {}
+  }
   val m = {
-    trait B3 { def f = 1 }
+    trait B3 {
+      def f = 1
+    }
     new B3 {}
   }
   def n = {
-    trait B4 { def f = 1 }
+    trait B4 {
+      def f = 1
+    }
     new B4 {}
   }
 }
@@ -289,6 +344,8 @@ object NestedInValueClass {
   object A {
     // A$ has InnerClass entries for B, C, A, A$. Also for the closures above, because they are referenced in A$'s bytecode.
     class B // member class of A$
-    def f = { class C; new C } // outer class A$, outer method f
+    def f = {
+      class C; new C
+    } // outer class A$, outer method f
   }
 }

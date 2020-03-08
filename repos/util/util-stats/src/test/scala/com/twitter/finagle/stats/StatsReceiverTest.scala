@@ -30,7 +30,9 @@ class StatsReceiverTest extends FunSuite {
   test("Broadcast Counter/Stat") {
     class MemCounter extends Counter {
       var c = 0
-      def incr(delta: Int) { c += delta }
+      def incr(delta: Int) {
+        c += delta
+      }
     }
     val c1 = new MemCounter
     val c2 = new MemCounter
@@ -44,7 +46,9 @@ class StatsReceiverTest extends FunSuite {
 
     class MemStat extends Stat {
       var values: Seq[Float] = ArrayBuffer.empty[Float]
-      def add(f: Float) { values = values :+ f }
+      def add(f: Float) {
+        values = values :+ f
+      }
     }
     val s1 = new MemStat
     val s2 = new MemStat
@@ -60,16 +64,22 @@ class StatsReceiverTest extends FunSuite {
   test("StatsReceiver time") {
     val receiver = spy(new InMemoryStatsReceiver)
 
-    Stat.time(receiver.stat("er", "mah", "gerd")) { () }
+    Stat.time(receiver.stat("er", "mah", "gerd")) {
+      ()
+    }
     verify(receiver, times(1)).stat("er", "mah", "gerd")
 
-    Stat.time(receiver.stat("er", "mah", "gerd"), TimeUnit.NANOSECONDS) { () }
+    Stat.time(receiver.stat("er", "mah", "gerd"), TimeUnit.NANOSECONDS) {
+      ()
+    }
     verify(receiver, times(2)).stat("er", "mah", "gerd")
 
     val stat = receiver.stat("er", "mah", "gerd")
     verify(receiver, times(3)).stat("er", "mah", "gerd")
 
-    Stat.time(stat, TimeUnit.DAYS) { () }
+    Stat.time(stat, TimeUnit.DAYS) {
+      ()
+    }
     verify(receiver, times(3)).stat("er", "mah", "gerd")
   }
 
@@ -77,7 +87,9 @@ class StatsReceiverTest extends FunSuite {
     val receiver = spy(new InMemoryStatsReceiver)
 
     Await.ready(
-      Stat.timeFuture(receiver.stat("2", "chainz")) { Future.Unit },
+      Stat.timeFuture(receiver.stat("2", "chainz")) {
+        Future.Unit
+      },
       1.second)
     verify(receiver, times(1)).stat("2", "chainz")
 
@@ -92,7 +104,9 @@ class StatsReceiverTest extends FunSuite {
     verify(receiver, times(3)).stat("2", "chainz")
 
     Await.result(
-      Stat.timeFuture(stat, TimeUnit.HOURS) { Future.Unit },
+      Stat.timeFuture(stat, TimeUnit.HOURS) {
+        Future.Unit
+      },
       1.second)
     verify(receiver, times(3)).stat("2", "chainz")
   }
@@ -153,7 +167,11 @@ class StatsReceiverTest extends FunSuite {
 
     assert(
       "BlacklistStatsReceiver(NullStatsReceiver)" ==
-        new BlacklistStatsReceiver(NullStatsReceiver, { _ => false }).toString)
+        new BlacklistStatsReceiver(
+          NullStatsReceiver,
+          { _ =>
+            false
+          }).toString)
 
     val inMem = new InMemoryStatsReceiver()
     assert("InMemoryStatsReceiver" == inMem.toString)

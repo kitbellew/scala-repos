@@ -142,7 +142,9 @@ object Namer {
     * Resolve a path to an address set (taking [[Dtab.local]] into account).
     */
   def resolve(path: String): Var[Addr] =
-    Try { Path.read(path) } match {
+    Try {
+      Path.read(path)
+    } match {
       case Return(path) => resolve(path)
       case Throw(e)     => Var.value(Addr.Failed(e))
     }
@@ -168,7 +170,9 @@ object Namer {
       lookup: Path => Activity[NameTree[Name]],
       tree: NameTree[Path]
   ): Activity[NameTree[Name.Bound]] =
-    bind(lookup, 0, None)(tree map { path => Name.Path(path) })
+    bind(lookup, 0, None)(tree map { path =>
+      Name.Path(path)
+    })
 
   private[this] def bindUnion(
       lookup: Path => Activity[NameTree[Name]],

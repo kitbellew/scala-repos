@@ -1,8 +1,12 @@
 import java.util.Comparator
 
-trait Trait1[T] { def foo(arg: Comparator[T]): Unit }
+trait Trait1[T] {
+  def foo(arg: Comparator[T]): Unit
+}
 
-trait Trait2[T] extends Trait1[T] { def foo(arg: Comparator[String]): Int = 0 }
+trait Trait2[T] extends Trait1[T] {
+  def foo(arg: Comparator[String]): Int = 0
+}
 
 class Class1 extends Trait2[String] {}
 

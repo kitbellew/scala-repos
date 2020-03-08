@@ -36,7 +36,9 @@ class ScalaCompilerConfiguration(
           "Only directory-based IDEA projects are supported"))
 
     val file = new File(base, "scala_compiler.xml")
-    val componentElement = <project version="4"> {options} </project>
+    val componentElement = <project version="4"> {
+      options
+    } </project>
     Files.write(formatXml(componentElement).getBytes, file)
     file
   }
@@ -50,8 +52,12 @@ class ScalaCompilerConfiguration(
 
   private def createOptionsElement(): Elem = {
     <component name="ScalaCompilerConfiguration">
-      {defaultSettings.toXml}
-      {profiles.map(_.toXml)}
+      {
+      defaultSettings.toXml
+    }
+      {
+      profiles.map(_.toXml)
+    }
     </component>
   }
 }

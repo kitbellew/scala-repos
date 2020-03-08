@@ -1,9 +1,15 @@
 import scala.language.reflectiveCalls
 
 trait A {
-  trait Concrete { def conco: Int = 1 }
-  type Foo <: { def bippy: Int }
-  type Bar <: { def barry: Int }
+  trait Concrete {
+    def conco: Int = 1
+  }
+  type Foo <: {
+    def bippy: Int
+  }
+  type Bar <: {
+    def barry: Int
+  }
 
   implicit def barTag: scala.reflect.ClassTag[Bar]
 
@@ -31,8 +37,12 @@ trait A {
 }
 
 trait B extends A {
-  type Foo <: { def bippy: Int; def dingo: Int }
-  type Bar <: { def barry: Int; def bongo: Int }
+  type Foo <: {
+    def bippy: Int; def dingo: Int
+  }
+  type Bar <: {
+    def barry: Int; def bongo: Int
+  }
 
   override implicit def barTag: scala.reflect.ClassTag[Bar]
 
@@ -132,7 +142,9 @@ object Test {
 
   private def wrap(body: => Any) {
     try println(body)
-    catch { case ex: NoSuchMethodException => println(ex) }
+    catch {
+      case ex: NoSuchMethodException => println(ex)
+    }
   }
 
   def main(args: Array[String]) {

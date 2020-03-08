@@ -1,5 +1,7 @@
 trait Sequ[+A] {
-  def toArray: Array[T forSome { type T <: A }]
+  def toArray: Array[T forSome {
+    type T <: A
+  }]
 }
 
 class RichStr extends Sequ[Char] {

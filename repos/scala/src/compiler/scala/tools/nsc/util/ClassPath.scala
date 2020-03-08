@@ -45,7 +45,9 @@ object ClassPath {
         val regexp =
           ("^" + pattern.replaceAllLiterally("""\*""", """.*""") + "$").r
         lsDir(Directory(pattern).parent, regexp findFirstIn _ isDefined)
-      } catch { case _: PatternSyntaxException => List(pattern) }
+      } catch {
+        case _: PatternSyntaxException => List(pattern)
+      }
     } else List(pattern)
   }
 
@@ -89,7 +91,9 @@ object ClassPath {
 
   def specToURL(spec: String): Option[URL] =
     try Some(new URL(spec))
-    catch { case _: MalformedURLException => None }
+    catch {
+      case _: MalformedURLException => None
+    }
 
   /** A class modeling aspects of a ClassPath which should be
     *  propagated to any classpaths it creates.

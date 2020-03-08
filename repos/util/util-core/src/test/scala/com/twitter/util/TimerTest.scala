@@ -100,7 +100,9 @@ class TimerTest
     timer.schedule(100.millis, 200.millis) {
       counter.incrementAndGet()
     }
-    eventually { assert(counter.get() >= 2) }
+    eventually {
+      assert(counter.get() >= 2)
+    }
     timer.stop()
   }
 
@@ -110,7 +112,9 @@ class TimerTest
     timer.schedule(Time.now + 200.millis) {
       counter.incrementAndGet()
     }
-    eventually { assert(counter.get() == 1) }
+    eventually {
+      assert(counter.get() == 1)
+    }
     timer.stop()
   }
 
@@ -169,7 +173,9 @@ class TimerTest
       counter.incrementAndGet()
     }
     Thread.sleep(40.milliseconds.inMillis)
-    eventually { assert(counter.get() == 1) }
+    eventually {
+      assert(counter.get() == 1)
+    }
     timer.stop()
   }
 
@@ -179,7 +185,9 @@ class TimerTest
     timer.schedule(Time.Bottom) {
       counter.incrementAndGet()
     }
-    eventually { assert(counter.get() == 1) }
+    eventually {
+      assert(counter.get() == 1)
+    }
     timer.stop()
   }
 
@@ -222,7 +230,9 @@ class TimerTest
       ctl.advance(2.millis)
       timer.tick()
       assert(f.isDefined)
-      intercept[Throwable] { Await.result(f, 0.millis) }
+      intercept[Throwable] {
+        Await.result(f, 0.millis)
+      }
     }
   }
 
@@ -236,7 +246,9 @@ class TimerTest
       ctl.advance(2.millis)
       timer.tick()
       assert(f.isDefined)
-      intercept[CancellationException] { Await.result(f) }
+      intercept[CancellationException] {
+        Await.result(f)
+      }
     }
   }
 
@@ -343,7 +355,9 @@ class TimerTest
         true
     }
     Monitor.using(monitor) {
-      timer.schedule(Time.now + 10.millis) { throw new SomeEx }
+      timer.schedule(Time.now + 10.millis) {
+        throw new SomeEx
+      }
     }
 
     eventually {

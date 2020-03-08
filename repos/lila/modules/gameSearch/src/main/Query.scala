@@ -103,13 +103,17 @@ object Query {
 
   val winnerColors = List(1 -> "White", 2 -> "Black", 3 -> "None")
 
-  val perfs = lila.rating.PerfType.nonPuzzle map { v => v.id -> v.name }
+  val perfs = lila.rating.PerfType.nonPuzzle map { v =>
+    v.id -> v.name
+  }
 
   val sources = lila.game.Source.searchable map { v =>
     v.id -> v.name.capitalize
   }
 
-  val modes = Mode.all map { mode => mode.id -> mode.name.capitalize }
+  val modes = Mode.all map { mode =>
+    mode.id -> mode.name.capitalize
+  }
 
   val turns = options(
     (1 to 5) ++ (10 to 45 by 5) ++ (50 to 90 by 10) ++ (100 to 300 by 25),
@@ -121,7 +125,9 @@ object Query {
 
   val hasAis = List(0 -> "Human opponent", 1 -> "Computer opponent")
 
-  val aiLevels = (1 to 8) map { l => l -> ("level " + l) }
+  val aiLevels = (1 to 8) map { l =>
+    l -> ("level " + l)
+  }
 
   val dates = List("0d" -> "Now") ++
     options(List(1, 2, 6), "h", "%d hour{s} ago") ++

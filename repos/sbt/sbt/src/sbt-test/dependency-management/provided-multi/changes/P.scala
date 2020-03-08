@@ -8,7 +8,9 @@ object P extends Build {
   )
 
   def configIvyScala =
-    ivyScala ~= { _.map(_.copy(checkExplicit = false)) }
+    ivyScala ~= {
+      _.map(_.copy(checkExplicit = false))
+    }
 
   val declared = SettingKey[Boolean]("declared")
   lazy val a = Project("A", file("a")) settings (

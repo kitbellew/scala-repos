@@ -74,15 +74,21 @@ class ZkAnnouncerTest extends FunSuite with BeforeAndAfter {
 
       Await.ready(ann.announce(addr2.addr, "%s!0!addr2".format(hostPath)))
       va2 = res.bind("%s!addr2".format(hostPath))
-      eventually { assert(Var.sample(va2) != Addr.Pending) }
+      eventually {
+        assert(Var.sample(va2) != Addr.Pending)
+      }
       failedEventually += 1
       assert(Var.sample(va2) == Addr.Neg)
 
       Await.ready(ann.announce(addr1.addr, "%s!0".format(hostPath)))
       va1 = res.bind(hostPath)
-      eventually { assert(Var.sample(va2) == Addr.Bound(addr2)) }
+      eventually {
+        assert(Var.sample(va2) == Addr.Bound(addr2))
+      }
       failedEventually += 1
-      eventually { assert(Var.sample(va1) == Addr.Bound(addr1)) }
+      eventually {
+        assert(Var.sample(va1) == Addr.Bound(addr1))
+      }
     } catch {
       case e: TestFailedDueToTimeoutException =>
         var exceptionString =
@@ -125,12 +131,18 @@ class ZkAnnouncerTest extends FunSuite with BeforeAndAfter {
     val va1 = res.bind(hostPath)
     val va2 = res.bind("%s!addr2".format(hostPath))
 
-    eventually { assert(Var.sample(va1) == Addr.Bound(addr1)) }
-    eventually { assert(Var.sample(va2) == Addr.Bound(addr2)) }
+    eventually {
+      assert(Var.sample(va1) == Addr.Bound(addr1))
+    }
+    eventually {
+      assert(Var.sample(va2) == Addr.Bound(addr2))
+    }
 
     Await.result(anm2.unannounce())
 
-    eventually { assert(Var.sample(va2) == Addr.Neg) }
+    eventually {
+      assert(Var.sample(va2) == Addr.Neg)
+    }
     assert(Var.sample(va1) == Addr.Bound(addr1))
   }
 
@@ -146,13 +158,21 @@ class ZkAnnouncerTest extends FunSuite with BeforeAndAfter {
     val va1 = res.bind(hostPath)
     val va2 = res.bind("%s!addr2".format(hostPath))
 
-    eventually { assert(Var.sample(va1) == Addr.Bound(addr1)) }
-    eventually { assert(Var.sample(va2) == Addr.Bound(addr2)) }
+    eventually {
+      assert(Var.sample(va1) == Addr.Bound(addr1))
+    }
+    eventually {
+      assert(Var.sample(va2) == Addr.Bound(addr2))
+    }
 
     Await.ready(anm1.unannounce())
 
-    eventually { assert(Var.sample(va1) == Addr.Neg) }
-    eventually { assert(Var.sample(va2) == Addr.Neg) }
+    eventually {
+      assert(Var.sample(va1) == Addr.Neg)
+    }
+    eventually {
+      assert(Var.sample(va2) == Addr.Neg)
+    }
   }
 
   test("announces from the main announcer") {

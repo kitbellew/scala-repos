@@ -2,10 +2,14 @@ import language._
 
 object Test extends App {
 
-  case class R[+T](s: String) { def x() = println(s) }
+  case class R[+T](s: String) {
+    def x() = println(s)
+  }
 
   // Implicits in contention; StringR is nested to avoid ambiguity
-  object R { implicit val StringR = R[String]("A") }
+  object R {
+    implicit val StringR = R[String]("A")
+  }
   implicit val Default = R[Any]("B")
 
   class B() extends Dynamic {

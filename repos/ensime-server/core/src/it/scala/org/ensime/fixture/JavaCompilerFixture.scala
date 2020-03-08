@@ -67,7 +67,9 @@ object JavaCompilerFixture {
 class JavaStoreReporter extends ReportHandler {
   var notes = scala.collection.mutable.HashSet[Note]()
   override def messageUser(str: String): Unit = {}
-  override def clearAllJavaNotes(): Unit = { this.notes.clear() }
+  override def clearAllJavaNotes(): Unit = {
+    this.notes.clear()
+  }
   override def reportJavaNotes(notes: List[Note]): Unit = {
     this.notes ++= notes
   }

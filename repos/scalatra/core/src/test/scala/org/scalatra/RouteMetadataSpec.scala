@@ -7,19 +7,25 @@ class RouteMetadataSpec extends MutableScalatraSpec {
 
   "A route without metadata transformers" should {
     "not have any metadata" in {
-      get("/zero/size") { body must_== "0" }
+      get("/zero/size") {
+        body must_== "0"
+      }
     }
   }
 
   "A route with a metadata transformer" should {
     "record the metadata" in {
-      get("/one/foo") { body must_== "bar" }
+      get("/one/foo") {
+        body must_== "bar"
+      }
     }
   }
 
   "A route with two metadata transformers" should {
     "apply left to right" in {
-      get("/two/foo") { body must_== "baz" }
+      get("/two/foo") {
+        body must_== "baz"
+      }
     }
   }
 }

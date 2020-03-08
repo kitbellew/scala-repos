@@ -37,7 +37,9 @@ object BuildPaths {
 
   def getGlobalBase(state: State): File = {
     val default = defaultVersionedGlobalBase(binarySbtVersion(state))
-    def getDefault = { checkTransition(state, default); default }
+    def getDefault = {
+      checkTransition(state, default); default
+    }
     getFileSetting(globalBaseDirectory, GlobalBaseProperty, getDefault)(state)
   }
   private[this] def checkTransition(state: State, versioned: File): Unit = {

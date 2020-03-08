@@ -63,7 +63,9 @@ object CurrentOrigin {
     set(o)
     val ret =
       try f
-      finally { reset() }
+      finally {
+        reset()
+      }
     reset()
     ret
   }
@@ -452,7 +454,9 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
     treeString
       .split("\n")
       .zipWithIndex
-      .map { case (line, i) => f"$i%02d $line" }
+      .map {
+        case (line, i) => f"$i%02d $line"
+      }
       .mkString("\n")
 
   /**
@@ -655,7 +659,9 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
     case o: Option[_]   => o.map(parseToJson)
     case t: Seq[_]      => JArray(t.map(parseToJson).toList)
     case m: Map[_, _] =>
-      val fields = m.toList.map { case (k: String, v) => (k, parseToJson(v)) }
+      val fields = m.toList.map {
+        case (k: String, v) => (k, parseToJson(v))
+      }
       JObject(fields)
     case r: RDD[_] => JNothing
     // if it's a scala object, we can simply keep the full class path.

@@ -95,7 +95,9 @@ trait BaseInMemoryJobManager[M[+_]]
     }
   }
 
-  def findJob(id: JobId): M[Option[Job]] = M.point { jobs get id map (_.job) }
+  def findJob(id: JobId): M[Option[Job]] = M.point {
+    jobs get id map (_.job)
+  }
 
   def listJobs(apiKey: APIKey): M[Seq[Job]] = M.point {
     jobs.values.toList map (_.job) filter (_.apiKey == apiKey)

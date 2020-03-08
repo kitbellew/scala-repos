@@ -169,7 +169,9 @@ object FastEvalEngineWorkflow {
     // Model Train
     val algoModelsMap: Map[EX, Map[AX, Any]] =
       getPreparatorResult(workflow, new PreparatorPrefix(prefix))
-        .mapValues { pd => algoMap.mapValues(_.trainBase(workflow.sc, pd)) }
+        .mapValues { pd =>
+          algoMap.mapValues(_.trainBase(workflow.sc, pd))
+        }
 
     // Predict
     val dataSourceResult =
@@ -256,7 +258,9 @@ object FastEvalEngineWorkflow {
             val qasMap: RDD[(QX, (Q, A))] = evalQAsMap(ex)
             val qpsaMap: RDD[(QX, Q, Seq[P], A)] = psMap
               .join(qasMap)
-              .map { case (qx, t) => (qx, t._2._1, t._1, t._2._2) }
+              .map {
+                case (qx, t) => (qx, t._2._1, t._1, t._2._2)
+              }
 
             val qpaMap: RDD[(Q, P, A)] = qpsaMap.map {
               case (qx, q, ps, a) => (q, serving.serveBase(q, ps), a)

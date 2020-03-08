@@ -31,7 +31,9 @@ class ScMacroDefinitionImpl private (
     node: ASTNode)
     extends ScFunctionImpl(stub, nodeType, node)
     with ScMacroDefinition {
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
 
   def this(stub: ScFunctionStub) = {
     this(stub, ScalaElementTypes.MACRO_DEFINITION, null)

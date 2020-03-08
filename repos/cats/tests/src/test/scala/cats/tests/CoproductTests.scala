@@ -75,7 +75,9 @@ class CoproductTests extends CatsSuite {
     SerializableTests.serializable(Contravariant[Coproduct[Show, Show, ?]]))
 
   test("double swap is identity") {
-    forAll { (x: Coproduct[Option, Option, Int]) => x.swap.swap should ===(x) }
+    forAll { (x: Coproduct[Option, Option, Int]) =>
+      x.swap.swap should ===(x)
+    }
   }
 
   test("swap negates isLeft/isRight") {

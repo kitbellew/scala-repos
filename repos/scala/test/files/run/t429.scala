@@ -2,7 +2,9 @@ object Test {
   abstract class A {
     Console.print("A");
     val x: Int;
-    val y: Int = { Console.print("y"); x + 1 }
+    val y: Int = {
+      Console.print("y"); x + 1
+    }
   }
   class B extends A {
     Console.print("B");

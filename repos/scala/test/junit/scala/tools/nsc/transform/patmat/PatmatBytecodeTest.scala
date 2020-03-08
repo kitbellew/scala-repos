@@ -19,7 +19,9 @@ import scala.tools.testing.ClearAfterClass
 object PatmatBytecodeTest extends ClearAfterClass.Clearable {
   var compiler = newCompiler()
   var optCompiler = newCompiler(extraArgs = "-Yopt:l:project")
-  def clear(): Unit = { compiler = null; optCompiler = null }
+  def clear(): Unit = {
+    compiler = null; optCompiler = null
+  }
 }
 
 @RunWith(classOf[JUnit4])

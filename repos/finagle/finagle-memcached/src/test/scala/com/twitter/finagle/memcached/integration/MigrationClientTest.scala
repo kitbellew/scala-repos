@@ -112,7 +112,9 @@ class MigrationClientTest
     connectionFactory.shutdown()
 
     // shutdown memcached server
-    testServers foreach { _.stop() }
+    testServers foreach {
+      _.stop()
+    }
     testServers = List()
   }
 
@@ -128,7 +130,9 @@ class MigrationClientTest
       migrationClient
         .loadZKData() // force loading the config to fully set-up the client
 
-      eventually { Await.result(migrationClient.get("test")) }
+      eventually {
+        Await.result(migrationClient.get("test"))
+      }
 
       assert(Await.result(migrationClient.get("foo"), TIMEOUT) == None)
       Await.result(migrationClient.set("foo", Buf.Utf8("bar")), TIMEOUT)
@@ -137,7 +141,9 @@ class MigrationClientTest
 
       val Buf.Utf8(client1Res) = Await.result(client1.get("foo"), TIMEOUT).get
       assert(client1Res == "bar")
-      eventually { assert(Await.result(client2.get("foo")) == None) }
+      eventually {
+        assert(Await.result(client2.get("foo")) == None)
+      }
     }
 
   if (!sys.props.contains("SKIP_FLAKY")) {
@@ -158,7 +164,9 @@ class MigrationClientTest
       migrationClient
         .loadZKData() // force loading the config to fully set-up the client
 
-      eventually { Await.result(migrationClient.get("test")) }
+      eventually {
+        Await.result(migrationClient.get("test"))
+      }
 
       assert(Await.result(migrationClient.get("foo"), TIMEOUT) == None)
       Await.result(migrationClient.set("foo", Buf.Utf8("bar")), TIMEOUT)
@@ -194,7 +202,9 @@ class MigrationClientTest
       migrationClient
         .loadZKData() // force loading the config to fully set-up the client
 
-      eventually { Await.result(migrationClient.get("test")) }
+      eventually {
+        Await.result(migrationClient.get("test"))
+      }
 
       Await.result(client1.set("foo", Buf.Utf8("bar")), TIMEOUT)
       val Buf.Utf8(res) = Await.result(client1.get("foo"), TIMEOUT).get
@@ -232,7 +242,9 @@ class MigrationClientTest
       migrationClient
         .loadZKData() // force loading the config to fully set-up the client
 
-      eventually { Await.result(migrationClient.get("test")) }
+      eventually {
+        Await.result(migrationClient.get("test"))
+      }
 
       Await.result(client1.set("foo", Buf.Utf8("bar")), TIMEOUT)
       val Buf.Utf8(res) = Await.result(client1.get("foo"), TIMEOUT).get
@@ -244,7 +256,9 @@ class MigrationClientTest
 
       val Buf.Utf8(res3) = Await.result(client1.get("foo"), TIMEOUT).get
       assert(res3 == "bar")
-      eventually { assert(Await.result(client2.get("foo")) == None) }
+      eventually {
+        assert(Await.result(client2.get("foo")) == None)
+      }
     }
 
   if (!sys.props.contains("SKIP_FLAKY")) // CSL-1731
@@ -265,7 +279,9 @@ class MigrationClientTest
       migrationClient
         .loadZKData() // force loading the config to fully set-up the client
 
-      eventually { Await.result(migrationClient.get("test")) }
+      eventually {
+        Await.result(migrationClient.get("test"))
+      }
 
       Await.result(client1.set("foo", Buf.Utf8("bar")), TIMEOUT)
       val Buf.Utf8(res) = Await.result(client1.get("foo"), TIMEOUT).get

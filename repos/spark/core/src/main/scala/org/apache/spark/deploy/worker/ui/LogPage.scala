@@ -89,7 +89,11 @@ private[ui] class LogPage(parent: WorkerWebUI)
     val linkToMaster = <p><a href={
       worker.activeMasterWebUiUrl
     }>Back to Master</a></p>
-    val range = <span>Bytes {startByte.toString} - {endByte.toString} of {
+    val range = <span>Bytes {
+      startByte.toString
+    } - {
+      endByte.toString
+    } of {
       logLength
     }</span>
 
@@ -104,7 +108,9 @@ private[ui] class LogPage(parent: WorkerWebUI)
               byteLength)
         }>
           <button type="button" class="btn btn-default">
-            Previous {Utils.bytesToString(math.min(byteLength, startByte))}
+            Previous {
+          Utils.bytesToString(math.min(byteLength, startByte))
+        }
           </button>
         </a>
       } else {
@@ -137,15 +143,25 @@ private[ui] class LogPage(parent: WorkerWebUI)
     val content =
       <html>
         <body>
-          {linkToMaster}
+          {
+        linkToMaster
+      }
           <div>
-            <div style="float:left; margin-right:10px">{backButton}</div>
-            <div style="float:left;">{range}</div>
-            <div style="float:right; margin-left:10px">{nextButton}</div>
+            <div style="float:left; margin-right:10px">{
+        backButton
+      }</div>
+            <div style="float:left;">{
+        range
+      }</div>
+            <div style="float:right; margin-left:10px">{
+        nextButton
+      }</div>
           </div>
           <br />
           <div style="height:500px; overflow:auto; padding:5px;">
-            <pre>{logText}</pre>
+            <pre>{
+        logText
+      }</pre>
           </div>
         </body>
       </html>
@@ -181,7 +197,9 @@ private[ui] class LogPage(parent: WorkerWebUI)
       logDebug(
         s"Sorted log files of type $logType in $logDirectory:\n${files.mkString("\n")}")
 
-      val totalLength = files.map { _.length }.sum
+      val totalLength = files.map {
+        _.length
+      }.sum
       val offset = offsetOption.getOrElse(totalLength - byteLength)
       val startIndex = {
         if (offset < 0) {

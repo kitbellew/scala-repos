@@ -17,7 +17,9 @@ class ReadHandleTest extends FunSuite {
     (ack.recv, ReadMessage(Buf.Utf8(i.toString), ack.send(()), abort.send(())))
   }
 
-  def msg(i: Int) = { val (_, m) = msg_(i); m }
+  def msg(i: Int) = {
+    val (_, m) = msg_(i); m
+  }
 
   trait BufferedReadHandle {
     val N = 10
@@ -56,14 +58,18 @@ class ReadHandleTest extends FunSuite {
   test(
     "ReadHandle.buffered should not synchronize on send when buffer is full") {
     new BufferedReadHandle {
-      0 until N foreach { _ => assert((messages ! msg(0)).isDefined == true) }
+      0 until N foreach { _ =>
+        assert((messages ! msg(0)).isDefined == true)
+      }
       assert((messages ! msg(0)).isDefined == false)
     }
   }
 
   test("ReadHandle.buffered should keep the buffer full") {
     new BufferedReadHandle {
-      0 until N foreach { _ => messages ! msg(0) }
+      0 until N foreach { _ =>
+        messages ! msg(0)
+      }
       val sent = messages ! msg(0)
       assert(sent.isDefined == false)
       val recvd = (buffered.messages ?)
@@ -75,7 +81,9 @@ class ReadHandleTest extends FunSuite {
 
   test("ReadHandle.buffered should preserve FIFO order") {
     new BufferedReadHandle {
-      0 until N foreach { i => messages ! msg(i) }
+      0 until N foreach { i =>
+        messages ! msg(i)
+      }
 
       0 until N foreach { i =>
         val recvd = (buffered.messages ?)
@@ -131,7 +139,9 @@ class ReadHandleTest extends FunSuite {
   test("ReadHandle.merged should") {
     new MergedReadHandle {
       var count = 0
-      merged.messages.foreach { _ => count += 1 }
+      merged.messages.foreach { _ =>
+        count += 1
+      }
       assert(count == 0)
 
       messages0 ! msg(0)
@@ -146,7 +156,9 @@ class ReadHandleTest extends FunSuite {
     "ReadHandle.merged should provide a merged stream of errors provide a merged stream of messages") {
     new MergedReadHandle {
       var count = 0
-      merged.error.foreach { _ => count += 1 }
+      merged.error.foreach { _ =>
+        count += 1
+      }
       assert(count == 0)
 
       error0 ! new Exception("sad panda")

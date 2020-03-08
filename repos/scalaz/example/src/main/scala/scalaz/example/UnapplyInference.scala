@@ -61,7 +61,9 @@ object UnapplyInference extends App {
     val k: Kleisli[NumberFormatException \/ ?, String, Int] =
       Kleisli.kleisliU { s: String =>
         try \/-(s.toInt)
-        catch { case e: NumberFormatException => -\/(e) }
+        catch {
+          case e: NumberFormatException => -\/(e)
+        }
       }
   }
 

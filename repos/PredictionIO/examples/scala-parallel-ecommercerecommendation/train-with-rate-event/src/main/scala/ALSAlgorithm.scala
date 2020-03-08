@@ -236,7 +236,9 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val userFeature =
       model.userStringIntMap
         .get(query.user)
-        .map { userIndex => userFeatures.get(userIndex) }
+        .map { userIndex =>
+          userFeatures.get(userIndex)
+        }
         // flatten Option[Option[Array[Double]]] to Option[Array[Double]]
         .flatten
 
@@ -343,7 +345,12 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val recentFeatures: Vector[Array[Double]] = recentList.toVector
     // productFeatures may not contain the requested item
     .map { i =>
-      productFeatures.get(i).map { case (item, f) => f }.flatten
+      productFeatures
+        .get(i)
+        .map {
+          case (item, f) => f
+        }
+        .flatten
     }.flatten
 
     val indexScores: Map[Int, Double] = if (recentFeatures.isEmpty) {

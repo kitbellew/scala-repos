@@ -155,8 +155,9 @@ class BisectingKMeans private (
     // Compute and cache vector norms for fast distance computation.
     val norms =
       input.map(v => Vectors.norm(v, 2.0)).persist(StorageLevel.MEMORY_AND_DISK)
-    val vectors =
-      input.zip(norms).map { case (x, norm) => new VectorWithNorm(x, norm) }
+    val vectors = input.zip(norms).map {
+      case (x, norm) => new VectorWithNorm(x, norm)
+    }
     var assignments = vectors.map(v => (ROOT_INDEX, v))
     var activeClusters = summarize(d, assignments)
     val rootSummary = activeClusters(ROOT_INDEX)

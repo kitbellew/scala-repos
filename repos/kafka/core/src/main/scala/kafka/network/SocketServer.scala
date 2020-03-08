@@ -630,7 +630,9 @@ private[kafka] class Processor(
     * Close the selector and all open connections
     */
   private def closeAll() {
-    selector.channels.asScala.foreach { channel => close(selector, channel.id) }
+    selector.channels.asScala.foreach { channel =>
+      close(selector, channel.id)
+    }
     selector.close()
   }
 

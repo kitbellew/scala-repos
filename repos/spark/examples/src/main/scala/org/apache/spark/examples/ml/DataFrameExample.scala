@@ -49,12 +49,19 @@ object DataFrameExample {
       opt[String]("input")
         .text(s"input path to dataframe")
         .action((x, c) => c.copy(input = x))
-      checkConfig { params => success }
+      checkConfig { params =>
+        success
+      }
     }
 
-    parser.parse(args, defaultParams).map { params => run(params) }.getOrElse {
-      sys.exit(1)
-    }
+    parser
+      .parse(args, defaultParams)
+      .map { params =>
+        run(params)
+      }
+      .getOrElse {
+        sys.exit(1)
+      }
   }
 
   def run(params: Params) {
@@ -76,7 +83,9 @@ object DataFrameExample {
     labelSummary.show()
 
     // Convert features column to an RDD of vectors.
-    val features = df.select("features").rdd.map { case Row(v: Vector) => v }
+    val features = df.select("features").rdd.map {
+      case Row(v: Vector) => v
+    }
     val featureSummary = features.aggregate(new MultivariateOnlineSummarizer())(
       (summary, feat) => summary.add(feat),
       (sum1, sum2) => sum1.merge(sum2))

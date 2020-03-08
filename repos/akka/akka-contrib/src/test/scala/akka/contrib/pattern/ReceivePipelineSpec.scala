@@ -398,11 +398,17 @@ object InActorSample extends App {
   class PipelinedActor extends Actor with ReceivePipeline {
 
     // Increment
-    pipelineInner { case i: Int ⇒ Inner(i + 1) }
+    pipelineInner {
+      case i: Int ⇒ Inner(i + 1)
+    }
     // Double
-    pipelineInner { case i: Int ⇒ Inner(i * 2) }
+    pipelineInner {
+      case i: Int ⇒ Inner(i * 2)
+    }
 
-    def receive: Receive = { case any ⇒ println(any) }
+    def receive: Receive = {
+      case any ⇒ println(any)
+    }
   }
 
   actor ! 5 // prints 12 = (5 + 1) * 2
@@ -414,14 +420,20 @@ object InActorSample extends App {
 
     //#in-actor-outer
     // Increment
-    pipelineInner { case i: Int ⇒ Inner(i + 1) }
+    pipelineInner {
+      case i: Int ⇒ Inner(i + 1)
+    }
     // Double
-    pipelineOuter { case i: Int ⇒ Inner(i * 2) }
+    pipelineOuter {
+      case i: Int ⇒ Inner(i * 2)
+    }
 
     // prints 11 = (5 * 2) + 1
     //#in-actor-outer
 
-    def receive: Receive = { case any ⇒ println(any) }
+    def receive: Receive = {
+      case any ⇒ println(any)
+    }
   }
 
   withOuterActor ! 5

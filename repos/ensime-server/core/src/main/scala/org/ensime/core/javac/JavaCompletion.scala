@@ -309,7 +309,9 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
       CompletionSignature(
         List(
           e.getParameters()
-            .map { p => (p.getSimpleName.toString, p.asType.toString) }
+            .map { p =>
+              (p.getSimpleName.toString, p.asType.toString)
+            }
             .toList),
         e.getReturnType.toString,
         false
@@ -350,14 +352,17 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
     ElementFilter
       .constructorsIn(info.getElements().getAllMembers(e))
       .map(methodInfo(_, relavence))
-      .map { m => m.copy(name = s) }
+      .map { m =>
+        m.copy(name = s)
+      }
       .toList
   }
 
   private def localTypeName(tm: TypeMirror) = {
     val s = tm.toString
-    val (front, back) =
-      s.split("\\.").partition { s => s.forall(Character.isLowerCase) }
+    val (front, back) = s.split("\\.").partition { s =>
+      s.forall(Character.isLowerCase)
+    }
     if (back.isEmpty) s else back.mkString(".")
   }
 

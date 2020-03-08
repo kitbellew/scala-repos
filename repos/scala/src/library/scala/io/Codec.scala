@@ -85,7 +85,9 @@ class Codec(val charSet: Charset) {
 
   def wrap(body: => Int): Int =
     try body
-    catch { case e: CharacterCodingException => _onCodingException(e) }
+    catch {
+      case e: CharacterCodingException => _onCodingException(e)
+    }
 }
 
 trait LowPriorityCodecImplicits {
@@ -112,7 +114,9 @@ object Codec extends LowPriorityCodecImplicits {
   def apply(charSet: Charset): Codec = new Codec(charSet)
   def apply(decoder: CharsetDecoder): Codec = {
     val _decoder = decoder
-    new Codec(decoder.charset()) { override def decoder = _decoder }
+    new Codec(decoder.charset()) {
+      override def decoder = _decoder
+    }
   }
 
   @migration(

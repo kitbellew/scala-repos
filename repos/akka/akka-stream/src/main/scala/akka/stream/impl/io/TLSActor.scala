@@ -200,7 +200,9 @@ private[akka] class TLSActor(
       case _ ⇒ // do nothing
     }
     params.sslParameters foreach { p ⇒
-      hostInfo foreach { case (host, _) ⇒ applySNI(host, p) }
+      hostInfo foreach {
+        case (host, _) ⇒ applySNI(host, p)
+      }
       engine.setSSLParameters(p)
     }
 
@@ -288,7 +290,9 @@ private[akka] class TLSActor(
   val flushingOutbound = TransferPhase(outboundHalfClosed) { () ⇒
     if (tracing) log.debug("flushingOutbound")
     try doWrap()
-    catch { case ex: SSLException ⇒ nextPhase(completedPhase) }
+    catch {
+      case ex: SSLException ⇒ nextPhase(completedPhase)
+    }
   }
 
   val awaitingClose = TransferPhase(
@@ -296,7 +300,9 @@ private[akka] class TLSActor(
     if (tracing) log.debug("awaitingClose")
     transportInChoppingBlock.chopInto(transportInBuffer)
     try doUnwrap(ignoreOutput = true)
-    catch { case ex: SSLException ⇒ nextPhase(completedPhase) }
+    catch {
+      case ex: SSLException ⇒ nextPhase(completedPhase)
+    }
   }
 
   val outboundClosed = TransferPhase(outboundHalfClosed || inbound) { () ⇒
@@ -305,7 +311,9 @@ private[akka] class TLSActor(
     if (continue && outboundHalfClosed.isReady) {
       if (tracing) log.debug("outboundClosed continue")
       try doWrap()
-      catch { case ex: SSLException ⇒ nextPhase(completedPhase) }
+      catch {
+        case ex: SSLException ⇒ nextPhase(completedPhase)
+      }
     }
   }
 

@@ -212,7 +212,9 @@ object ArrayOps {
 
     def length: Int = repr.length
     def apply(index: Int): T = repr(index)
-    def update(index: Int, elem: T) { repr(index) = elem }
+    def update(index: Int, elem: T) {
+      repr(index) = elem
+    }
   }
 
   /** A class of `ArrayOps` for arrays containing `byte`s. */
@@ -229,7 +231,9 @@ object ArrayOps {
 
     def length: Int = repr.length
     def apply(index: Int): Byte = repr(index)
-    def update(index: Int, elem: Byte) { repr(index) = elem }
+    def update(index: Int, elem: Byte) {
+      repr(index) = elem
+    }
   }
 
   /** A class of `ArrayOps` for arrays containing `short`s. */
@@ -247,7 +251,9 @@ object ArrayOps {
 
     def length: Int = repr.length
     def apply(index: Int): Short = repr(index)
-    def update(index: Int, elem: Short) { repr(index) = elem }
+    def update(index: Int, elem: Short) {
+      repr(index) = elem
+    }
   }
 
   /** A class of `ArrayOps` for arrays containing `char`s. */
@@ -264,7 +270,9 @@ object ArrayOps {
 
     def length: Int = repr.length
     def apply(index: Int): Char = repr(index)
-    def update(index: Int, elem: Char) { repr(index) = elem }
+    def update(index: Int, elem: Char) {
+      repr(index) = elem
+    }
   }
 
   /** A class of `ArrayOps` for arrays containing `int`s. */
@@ -281,7 +289,9 @@ object ArrayOps {
 
     def length: Int = repr.length
     def apply(index: Int): Int = repr(index)
-    def update(index: Int, elem: Int) { repr(index) = elem }
+    def update(index: Int, elem: Int) {
+      repr(index) = elem
+    }
   }
 
   /** A class of `ArrayOps` for arrays containing `long`s. */
@@ -298,7 +308,9 @@ object ArrayOps {
 
     def length: Int = repr.length
     def apply(index: Int): Long = repr(index)
-    def update(index: Int, elem: Long) { repr(index) = elem }
+    def update(index: Int, elem: Long) {
+      repr(index) = elem
+    }
   }
 
   /** A class of `ArrayOps` for arrays containing `float`s. */
@@ -316,7 +328,9 @@ object ArrayOps {
 
     def length: Int = repr.length
     def apply(index: Int): Float = repr(index)
-    def update(index: Int, elem: Float) { repr(index) = elem }
+    def update(index: Int, elem: Float) {
+      repr(index) = elem
+    }
   }
 
   /** A class of `ArrayOps` for arrays containing `double`s. */
@@ -334,7 +348,9 @@ object ArrayOps {
 
     def length: Int = repr.length
     def apply(index: Int): Double = repr(index)
-    def update(index: Int, elem: Double) { repr(index) = elem }
+    def update(index: Int, elem: Double) {
+      repr(index) = elem
+    }
   }
 
   /** A class of `ArrayOps` for arrays containing `boolean`s. */
@@ -352,7 +368,9 @@ object ArrayOps {
 
     def length: Int = repr.length
     def apply(index: Int): Boolean = repr(index)
-    def update(index: Int, elem: Boolean) { repr(index) = elem }
+    def update(index: Int, elem: Boolean) {
+      repr(index) = elem
+    }
   }
 
   /** A class of `ArrayOps` for arrays of `Unit` types. */
@@ -369,6 +387,8 @@ object ArrayOps {
 
     def length: Int = repr.length
     def apply(index: Int): Unit = repr(index)
-    def update(index: Int, elem: Unit) { repr(index) = elem }
+    def update(index: Int, elem: Unit) {
+      repr(index) = elem
+    }
   }
 }

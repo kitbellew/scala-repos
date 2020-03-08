@@ -21,7 +21,9 @@ trait Proc[-T] extends Chan[T] {
   private[this] val nq = new AtomicInteger(0)
   @volatile private[this] var closed = false
 
-  def close() { closed = true }
+  def close() {
+    closed = true
+  }
 
   def !(elem: T) {
     q.offer(elem)
@@ -51,5 +53,7 @@ object Proc {
     def receive = iteratee
   }
 
-  val nil: Proc[Any] = new Proc[Any] { def receive = Function.const(()) }
+  val nil: Proc[Any] = new Proc[Any] {
+    def receive = Function.const(())
+  }
 }

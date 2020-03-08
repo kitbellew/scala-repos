@@ -141,8 +141,9 @@ class TestCodeRunner(tests: TestCodeRunner.AllTests) {
         val a = t.test
         val db = tdb.createDB()
         try Await.result(db.run(a.withPinnedSession), Duration.Inf)
-        catch { case e: ExecutionException => throw e.getCause }
-        finally db.close()
+        catch {
+          case e: ExecutionException => throw e.getCause
+        } finally db.close()
       } finally tdb.cleanUpAfter()
     } else println("- Test database is disabled")
   }

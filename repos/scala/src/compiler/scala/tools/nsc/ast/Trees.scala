@@ -17,7 +17,9 @@ trait Trees extends scala.reflect.internal.Trees { self: Global =>
   /** Documented definition, eliminated by analyzer */
   case class DocDef(comment: DocComment, definition: Tree) extends Tree {
     override def symbol: Symbol = definition.symbol
-    override def symbol_=(sym: Symbol) { definition.symbol = sym }
+    override def symbol_=(sym: Symbol) {
+      definition.symbol = sym
+    }
     override def isDef = definition.isDef
     override def isTerm = definition.isTerm
     override def isType = definition.isType
@@ -363,7 +365,9 @@ trait Trees extends scala.reflect.internal.Trees { self: Global =>
 
       if (debug) {
         assert(locals.size == orderedLocals.size)
-        val msg = orderedLocals.toList filter { _ != NoSymbol } map {
+        val msg = orderedLocals.toList filter {
+          _ != NoSymbol
+        } map {
           "  " + _
         } mkString EOL
         trace("locals (%d total): %n".format(orderedLocals.size))(msg)

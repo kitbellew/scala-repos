@@ -89,7 +89,9 @@ class PolyTests {
       at[Option[T]](t => 1 + (t map size).getOrElse(0))
     implicit def caseTuple[T, U](implicit
         st: Case.Aux[T, Int],
-        su: Case.Aux[U, Int]) = at[(T, U)] { case (t, u) => size(t) + size(u) }
+        su: Case.Aux[U, Int]) = at[(T, U)] {
+      case (t, u) => size(t) + size(u)
+    }
   }
 
   @Test

@@ -26,5 +26,7 @@ trait AlternativeLaws[F[_]] extends ApplicativeLaws[F] with MonoidKLaws[F] {
 
 object AlternativeLaws {
   def apply[F[_]](implicit ev: Alternative[F]): AlternativeLaws[F] =
-    new AlternativeLaws[F] { def F: Alternative[F] = ev }
+    new AlternativeLaws[F] {
+      def F: Alternative[F] = ev
+    }
 }

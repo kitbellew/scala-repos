@@ -41,7 +41,9 @@ abstract class MappedLongIndex[T <: Mapper[T]](theOwner: T)
 
   override def defaultValue = -1L
 
-  override def dbIndexFieldIndicatesSaved_? = { i_is_! != defaultValue }
+  override def dbIndexFieldIndicatesSaved_? = {
+    i_is_! != defaultValue
+  }
 
   def makeKeyJDBCFriendly(in: Long) = new java.lang.Long(in)
 
@@ -110,7 +112,9 @@ abstract class MappedEnumList[T <: Mapper[T], ENUM <: Enumeration](
     * Get the source field metadata for the field
     * @return the source field metadata for the field
     */
-  def sourceInfoMetadata(): SourceFieldMetadata { type ST = Seq[ENUM#Value] } =
+  def sourceInfoMetadata(): SourceFieldMetadata {
+    type ST = Seq[ENUM#Value]
+  } =
     SourceFieldMetadataRep(
       name,
       manifest,
@@ -259,7 +263,9 @@ abstract class MappedEnumList[T <: Mapper[T], ENUM <: Enumeration](
       doField(
         inst,
         accessor,
-        { case f: MappedEnumList[T, ENUM] => f.st(defaultValue) })
+        {
+          case f: MappedEnumList[T, ENUM] => f.st(defaultValue)
+        })
 
   /**
     * Given the driver type, return the string required to create the column in the database
@@ -304,7 +310,9 @@ abstract class MappedNullableLong[T <: Mapper[T]](val fieldOwner: T)
     * Get the source field metadata for the field
     * @return the source field metadata for the field
     */
-  def sourceInfoMetadata(): SourceFieldMetadata { type ST = Box[Long] } =
+  def sourceInfoMetadata(): SourceFieldMetadata {
+    type ST = Box[Long]
+  } =
     SourceFieldMetadataRep(
       name,
       manifest,
@@ -416,7 +424,9 @@ abstract class MappedNullableLong[T <: Mapper[T]](val fieldOwner: T)
       doField(
         inst,
         accessor,
-        { case f: MappedNullableLong[T] => f.st(asLong(v)) })
+        {
+          case f: MappedNullableLong[T] => f.st(asLong(v))
+        })
 
   def buildSetLongValue(
       accessor: Method,
@@ -436,7 +446,9 @@ abstract class MappedNullableLong[T <: Mapper[T]](val fieldOwner: T)
       doField(
         inst,
         accessor,
-        { case f: MappedNullableLong[T] => f.st(asLong(v)) })
+        {
+          case f: MappedNullableLong[T] => f.st(asLong(v))
+        })
 
   def buildSetDateValue(
       accessor: Method,
@@ -473,7 +485,9 @@ abstract class MappedLong[T <: Mapper[T]](val fieldOwner: T)
     * Get the source field metadata for the field
     * @return the source field metadata for the field
     */
-  def sourceInfoMetadata(): SourceFieldMetadata { type ST = Long } =
+  def sourceInfoMetadata(): SourceFieldMetadata {
+    type ST = Long
+  } =
     SourceFieldMetadataRep(
       name,
       manifest,
@@ -586,7 +600,12 @@ abstract class MappedLong[T <: Mapper[T]](val fieldOwner: T)
       data: AnyRef,
       columnName: String): (T, AnyRef) => Unit =
     (inst, v) =>
-      doField(inst, accessor, { case f: MappedLong[T] => f.st(toLong(v)) })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedLong[T] => f.st(toLong(v))
+        })
 
   def buildSetLongValue(
       accessor: Method,
@@ -595,13 +614,20 @@ abstract class MappedLong[T <: Mapper[T]](val fieldOwner: T)
       doField(
         inst,
         accessor,
-        { case f: MappedLong[T] => f.st(if (isNull) defaultValue else v) })
+        {
+          case f: MappedLong[T] => f.st(if (isNull) defaultValue else v)
+        })
 
   def buildSetStringValue(
       accessor: Method,
       columnName: String): (T, String) => Unit =
     (inst, v) =>
-      doField(inst, accessor, { case f: MappedLong[T] => f.st(toLong(v)) })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedLong[T] => f.st(toLong(v))
+        })
 
   def buildSetDateValue(
       accessor: Method,

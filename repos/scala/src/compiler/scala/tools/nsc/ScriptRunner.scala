@@ -144,7 +144,9 @@ class ScriptRunner extends HasCompileSocket {
                 true
               } else {
                 try io.Jar.create(jarFile, compiledPath, mainClass)
-                catch { case _: Exception => jarFile.delete() }
+                catch {
+                  case _: Exception => jarFile.delete()
+                }
 
                 if (jarOK) {
                   compiledPath.deleteRecursively()
@@ -206,7 +208,9 @@ class ScriptRunner extends HasCompileSocket {
       scriptFile: String,
       scriptArgs: List[String]): Either[Throwable, Boolean] = {
     try Right(runScript(settings, scriptFile, scriptArgs))
-    catch { case e: Throwable => Left(unwrap(e)) }
+    catch {
+      case e: Throwable => Left(unwrap(e))
+    }
   }
 
   /** Run a command

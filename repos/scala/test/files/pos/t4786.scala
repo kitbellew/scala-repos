@@ -1,4 +1,6 @@
-trait Matrix[@specialized A, Repr[C] <: Matrix[C, Repr]] { // crash goes away if @specialize is removed
+trait Matrix[
+    @specialized A,
+    Repr[C] <: Matrix[C, Repr]] { // crash goes away if @specialize is removed
   def duplicate(mb: MatrixBuilder[A, Repr]): Repr[A] = {
     mb.zeros
   }

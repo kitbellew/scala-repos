@@ -55,7 +55,9 @@ sealed trait MenuPath {
   *
   * @see Loc.Link
   */
-object ** extends MenuPath { def pathItem = "**" }
+object ** extends MenuPath {
+  def pathItem = "**"
+}
 
 /**
   * Defines a single path element for a Menu's Link URI. Typically users will

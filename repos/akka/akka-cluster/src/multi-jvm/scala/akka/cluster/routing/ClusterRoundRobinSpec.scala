@@ -231,7 +231,9 @@ abstract class ClusterRoundRobinSpec
 
         val replies = receiveReplies(PoolRoutee, iterationCount)
 
-        replies.values.foreach { _ should be > (0) }
+        replies.values.foreach {
+          _ should be > (0)
+        }
         replies.values.sum should ===(iterationCount)
       }
 
@@ -253,7 +255,9 @@ abstract class ClusterRoundRobinSpec
 
         val replies = receiveReplies(GroupRoutee, iterationCount)
 
-        replies.values.foreach { _ should be > (0) }
+        replies.values.foreach {
+          _ should be > (0)
+        }
         replies.values.sum should ===(iterationCount)
       }
 
@@ -368,9 +372,13 @@ abstract class ClusterRoundRobinSpec
       runOn(first) {
         def routees = currentRoutees(router2)
         def routeeAddresses =
-          (routees map { case ActorRefRoutee(ref) ⇒ fullAddress(ref) }).toSet
+          (routees map {
+            case ActorRefRoutee(ref) ⇒ fullAddress(ref)
+          }).toSet
 
-        routees foreach { case ActorRefRoutee(ref) ⇒ watch(ref) }
+        routees foreach {
+          case ActorRefRoutee(ref) ⇒ watch(ref)
+        }
         val notUsedAddress =
           ((roles map address).toSet diff routeeAddresses).head
         val downAddress = routeeAddresses.find(_ != address(first)).get

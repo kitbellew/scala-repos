@@ -34,7 +34,9 @@ object ActorPublisherTest {
 
     def loopDemand() {
       val loopUntil = math.min(100, totalDemand)
-      1 to loopUntil.toInt foreach { _ ⇒ self ! Produce }
+      1 to loopUntil.toInt foreach { _ ⇒
+        self ! Produce
+      }
       if (loopUntil > 100) self ! Loop
     }
   }

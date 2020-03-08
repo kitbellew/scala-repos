@@ -47,7 +47,9 @@ object STUsage extends App {
       size,
       (vs: List[A], v: A) => v :: vs,
       List(),
-      for { a <- as } yield (key(a), a))
+      for {
+        a <- as
+      } yield (key(a), a))
 
   assert(
     binSort(

@@ -90,7 +90,9 @@ class WeightedPageRankFromMatrix(args: Args) extends Job(args) {
     */
   def measureConvergenceAndStore() {
     (previousVector - nextVector)
-      .mapWithIndex { case (value, index) => math.abs(value) }
+      .mapWithIndex {
+        case (value, index) => math.abs(value)
+      }
       .sum
       .write(TypedTsv[Double](diffLoc))
   }

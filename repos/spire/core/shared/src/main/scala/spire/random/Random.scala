@@ -93,7 +93,9 @@ trait RandomCompanion[G <: Generator] { self =>
 
   def stringOfSize(n: Int): Random[String, G] =
     char
-      .foldLeftOfSize(n)(new StringBuilder) { (sb, c) => sb.append(c); sb }
+      .foldLeftOfSize(n)(new StringBuilder) { (sb, c) =>
+        sb.append(c); sb
+      }
       .map(_.toString)
 
   implicit class RandomOps[A](lhs: R[A]) {
@@ -103,7 +105,9 @@ trait RandomCompanion[G <: Generator] { self =>
 
     def collectionOfSize[CC[_]](n: Int)(
         implicit cbf: CanBuildFrom[CC[A], A, CC[A]]): Random[CC[A], G] =
-      foldLeftOfSize(n)(cbf()) { (b, a) => b += a; b }.map(_.result)
+      foldLeftOfSize(n)(cbf()) { (b, a) =>
+        b += a; b
+      }.map(_.result)
 
     def foldLeftOfSize[B](n: Int)(init: => B)(f: (B, A) => B): Random[B, G] = {
       def loop(n: Int, ma: Op[A]): Op[B] =
@@ -127,13 +131,17 @@ trait RandomCompanion[G <: Generator] { self =>
   def tuple2[A, B](r1: R[A], r2: R[B]): R[(A, B)] =
     r1 and r2
   def tuple3[A, B, C](r1: R[A], r2: R[B], r3: R[C]): R[(A, B, C)] =
-    for { a <- r1; b <- r2; c <- r3 } yield (a, b, c)
+    for {
+      a <- r1; b <- r2; c <- r3
+    } yield (a, b, c)
   def tuple4[A, B, C, D](
       r1: R[A],
       r2: R[B],
       r3: R[C],
       r4: R[D]): R[(A, B, C, D)] =
-    for { a <- r1; b <- r2; c <- r3; d <- r4 } yield (a, b, c, d)
+    for {
+      a <- r1; b <- r2; c <- r3; d <- r4
+    } yield (a, b, c, d)
 }
 
 abstract class Random[+A, G <: Generator](val op: Op[A]) { self =>
@@ -166,7 +174,9 @@ abstract class Random[+A, G <: Generator](val op: Op[A]) { self =>
     companion.boolean.flatMap(b => if (b) left else that.right)
 
   def and[B](that: Random[B, G]): Random[(A, B), G] =
-    for { a <- this; b <- that } yield (a, b)
+    for {
+      a <- this; b <- that
+    } yield (a, b)
 
   def recurse[B](body: => Random[B, G]): Random[B, G] =
     companion.spawn(More(() => body.op))

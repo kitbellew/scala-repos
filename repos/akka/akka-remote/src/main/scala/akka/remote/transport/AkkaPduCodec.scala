@@ -121,7 +121,9 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
   private def ackBuilder(ack: Ack): AcknowledgementInfo.Builder = {
     val ackBuilder = AcknowledgementInfo.newBuilder()
     ackBuilder.setCumulativeAck(ack.cumulativeAck.rawValue)
-    ack.nacks foreach { nack ⇒ ackBuilder.addNacks(nack.rawValue) }
+    ack.nacks foreach { nack ⇒
+      ackBuilder.addNacks(nack.rawValue)
+    }
     ackBuilder
   }
 
@@ -142,8 +144,12 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
     senderOption foreach { ref ⇒
       envelopeBuilder.setSender(serializeActorRef(localAddress, ref))
     }
-    seqOption foreach { seq ⇒ envelopeBuilder.setSeq(seq.rawValue) }
-    ackOption foreach { ack ⇒ ackAndEnvelopeBuilder.setAck(ackBuilder(ack)) }
+    seqOption foreach { seq ⇒
+      envelopeBuilder.setSeq(seq.rawValue)
+    }
+    ackOption foreach { ack ⇒
+      ackAndEnvelopeBuilder.setAck(ackBuilder(ack))
+    }
     envelopeBuilder.setMessage(serializedMessage)
     ackAndEnvelopeBuilder.setEnvelope(envelopeBuilder)
 

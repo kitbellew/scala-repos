@@ -95,8 +95,9 @@ trait Transactional {
       if (thisTrans.status == Transaction.Abortable) throw new AbortException
       val w = currentWriter()
       if (w != null)
-        if (thisTrans.id < w.id) { w.makeAbort(); rollBack(); writer = null }
-        else throw new AbortException
+        if (thisTrans.id < w.id) {
+          w.makeAbort(); rollBack(); writer = null
+        } else throw new AbortException
       readers =
         if (readers == null) thisTrans else new Transaction(thisTrans, readers)
     }
@@ -107,8 +108,9 @@ trait Transactional {
     synchronized {
       val w = currentWriter()
       if (w != null)
-        if (thisTrans.id < w.id) { w.makeAbort(); rollBack() }
-        else throw new AbortException
+        if (thisTrans.id < w.id) {
+          w.makeAbort(); rollBack()
+        } else throw new AbortException
       var r = readers
       while (r != null && r.head.status != Transaction.Running) {
         r = r.next; readers = r

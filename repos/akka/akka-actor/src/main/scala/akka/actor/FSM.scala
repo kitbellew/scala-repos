@@ -445,7 +445,9 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
 
   final class TransformHelper(func: StateFunction) {
     def using(andThen: PartialFunction[State, State]): StateFunction =
-      func andThen (andThen orElse { case x ⇒ x })
+      func andThen (andThen orElse {
+        case x ⇒ x
+      })
   }
 
   final def transform(func: StateFunction): TransformHelper =
@@ -545,7 +547,9 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
       transitionHandler: (S, S) ⇒ Unit): TransitionHandler =
     new TransitionHandler {
       def isDefinedAt(in: (S, S)) = true
-      def apply(in: (S, S)) { transitionHandler(in._1, in._2) }
+      def apply(in: (S, S)) {
+        transitionHandler(in._1, in._2)
+      }
     }
 
   /**
@@ -658,7 +662,9 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
   private var transitionEvent: List[TransitionHandler] = Nil
   private def handleTransition(prev: S, next: S) {
     val tuple = (prev, next)
-    for (te ← transitionEvent) { if (te.isDefinedAt(tuple)) te(tuple) }
+    for (te ← transitionEvent) {
+      if (te.isDefinedAt(tuple)) te(tuple)
+    }
   }
 
   /*
@@ -727,7 +733,9 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
     nextState.stopReason match {
       case None ⇒ makeTransition(nextState)
       case _ ⇒
-        nextState.replies.reverse foreach { r ⇒ sender() ! r }
+        nextState.replies.reverse foreach { r ⇒
+          sender() ! r
+        }
         terminate(nextState)
         context.stop(self)
     }
@@ -739,7 +747,9 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
         stay withStopReason Failure(
           "Next state %s does not exist".format(nextState.stateName)))
     } else {
-      nextState.replies.reverse foreach { r ⇒ sender() ! r }
+      nextState.replies.reverse foreach { r ⇒
+        sender() ! r
+      }
       if (currentState.stateName != nextState.stateName || nextState.notifies) {
         this.nextState = nextState
         handleTransition(currentState.stateName, nextState.stateName)
@@ -789,7 +799,9 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
       logTermination(reason)
       for (timer ← timers.values) timer.cancel()
       timers.clear()
-      timeoutFuture.foreach { _.cancel() }
+      timeoutFuture.foreach {
+        _.cancel()
+      }
       currentState = nextState
 
       val stopEvent =

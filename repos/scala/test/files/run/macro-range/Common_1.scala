@@ -4,7 +4,9 @@ abstract class RangeDefault {
   val from, to: Int
   def foreach(f: Int => Unit) = {
     var i = from
-    while (i < to) { f(i); i += 1 }
+    while (i < to) {
+      f(i); i += 1
+    }
   }
 }
 

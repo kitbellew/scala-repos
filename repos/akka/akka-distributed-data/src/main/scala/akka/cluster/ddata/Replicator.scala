@@ -1142,8 +1142,9 @@ final class Replicator(settings: ReplicatorSettings)
       ByteString.fromArray(MessageDigest.getInstance("SHA-1").digest(bytes))
     }
 
-  def getData(key: String): Option[DataEnvelope] =
-    dataEntries.get(key).map { case (envelope, _) ⇒ envelope }
+  def getData(key: String): Option[DataEnvelope] = dataEntries.get(key).map {
+    case (envelope, _) ⇒ envelope
+  }
 
   def receiveFlushChanges(): Unit = {
     def notify(keyId: String, subs: mutable.Set[ActorRef]): Unit = {
@@ -1153,7 +1154,9 @@ final class Replicator(settings: ReplicatorSettings)
           val msg =
             if (envelope.data == DeletedData) DataDeleted(key)
             else Changed(key)(envelope.data)
-          subs.foreach { _ ! msg }
+          subs.foreach {
+            _ ! msg
+          }
         case None ⇒
       }
     }
@@ -1169,7 +1172,9 @@ final class Replicator(settings: ReplicatorSettings)
     if (newSubscribers.nonEmpty) {
       for ((key, subs) ← newSubscribers) {
         notify(key, subs)
-        subs.foreach { subscribers.addBinding(key, _) }
+        subs.foreach {
+          subscribers.addBinding(key, _)
+        }
       }
       newSubscribers.clear()
     }
@@ -1184,7 +1189,9 @@ final class Replicator(settings: ReplicatorSettings)
     val to = replica(address)
     if (dataEntries.size <= maxDeltaElements) {
       val status = Status(
-        dataEntries.map { case (key, (_, _)) ⇒ (key, getDigest(key)) },
+        dataEntries.map {
+          case (key, (_, _)) ⇒ (key, getDigest(key))
+        },
         chunk = 0,
         totChunks = 1)
       to ! status
@@ -1311,14 +1318,26 @@ final class Replicator(settings: ReplicatorSettings)
   }
 
   def hasSubscriber(subscriber: ActorRef): Boolean =
-    (subscribers.exists { case (k, s) ⇒ s.contains(subscriber) }) ||
-      (newSubscribers.exists { case (k, s) ⇒ s.contains(subscriber) })
+    (subscribers.exists {
+      case (k, s) ⇒ s.contains(subscriber)
+    }) ||
+      (newSubscribers.exists {
+        case (k, s) ⇒ s.contains(subscriber)
+      })
 
   def receiveTerminated(ref: ActorRef): Unit = {
-    val keys1 = subscribers.collect { case (k, s) if s.contains(ref) ⇒ k }
-    keys1.foreach { key ⇒ subscribers.removeBinding(key, ref) }
-    val keys2 = newSubscribers.collect { case (k, s) if s.contains(ref) ⇒ k }
-    keys2.foreach { key ⇒ newSubscribers.removeBinding(key, ref) }
+    val keys1 = subscribers.collect {
+      case (k, s) if s.contains(ref) ⇒ k
+    }
+    keys1.foreach { key ⇒
+      subscribers.removeBinding(key, ref)
+    }
+    val keys2 = newSubscribers.collect {
+      case (k, s) if s.contains(ref) ⇒ k
+    }
+    keys2.foreach { key ⇒
+      newSubscribers.removeBinding(key, ref)
+    }
 
     (keys1 ++ keys2).foreach { key ⇒
       if (!subscribers.contains(key) && !newSubscribers.contains(key))
@@ -1598,7 +1617,9 @@ private[akka] class WriteAggregator(
   val writeMsg = Write(key.id, envelope)
 
   override def preStart(): Unit = {
-    primaryNodes.foreach { replica(_) ! writeMsg }
+    primaryNodes.foreach {
+      replica(_) ! writeMsg
+    }
 
     if (remaining.size == doneWhenRemainingSize)
       reply(ok = true)
@@ -1612,7 +1633,9 @@ private[akka] class WriteAggregator(
       if (remaining.size == doneWhenRemainingSize)
         reply(ok = true)
     case SendToSecondary ⇒
-      secondaryNodes.foreach { replica(_) ! writeMsg }
+      secondaryNodes.foreach {
+        replica(_) ! writeMsg
+      }
     case ReceiveTimeout ⇒ reply(ok = false)
   }
 
@@ -1681,7 +1704,9 @@ private[akka] class ReadAggregator(
   val readMsg = Read(key.id)
 
   override def preStart(): Unit = {
-    primaryNodes.foreach { replica(_) ! readMsg }
+    primaryNodes.foreach {
+      replica(_) ! readMsg
+    }
 
     if (remaining.size == doneWhenRemainingSize)
       reply(ok = true)
@@ -1701,7 +1726,9 @@ private[akka] class ReadAggregator(
       if (remaining.size == doneWhenRemainingSize)
         reply(ok = true)
     case SendToSecondary ⇒
-      secondaryNodes.foreach { replica(_) ! readMsg }
+      secondaryNodes.foreach {
+        replica(_) ! readMsg
+      }
     case ReceiveTimeout ⇒ reply(ok = false)
   }
 

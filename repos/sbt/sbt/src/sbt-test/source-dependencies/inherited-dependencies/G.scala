@@ -1,1 +1,3 @@
-object G { trait P extends J }
+object G {
+  trait P extends J
+}

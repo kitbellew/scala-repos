@@ -60,7 +60,9 @@ object MongoPlatformSpecEngine extends Logging {
   private[this] val scheduler = Executors.newScheduledThreadPool(1)
 
   Runtime.getRuntime.addShutdownHook(new Thread() {
-    override def run() { if (engine != null) engine.shutdown() }
+    override def run() {
+      if (engine != null) engine.shutdown()
+    }
   })
 
   def acquire = lock.synchronized {
@@ -152,7 +154,9 @@ object MongoPlatformSpecEngine extends Logging {
       }
     }
 
-    (new File(dataDirURL.toURI)).listFiles.foreach { f => loadFile("", f) }
+    (new File(dataDirURL.toURI)).listFiles.foreach { f =>
+      loadFile("", f)
+    }
   }
 }
 
@@ -240,7 +244,11 @@ trait MongoPlatformSpecs
   }
 
   override def map(fs: => Fragments): Fragments =
-    (Step { startup() }) ^ fs ^ (Step { shutdown() })
+    (Step {
+      startup()
+    }) ^ fs ^ (Step {
+      shutdown()
+    })
 
   def Evaluator[N[+_]](
       N0: Monad[N])(implicit mn: Future ~> N, nm: N ~> Future) =

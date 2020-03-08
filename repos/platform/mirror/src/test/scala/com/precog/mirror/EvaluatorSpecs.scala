@@ -304,8 +304,12 @@ object EvaluatorSpecs extends Specification with EvaluatorModule {
       val actual = doEval(q)
 
       "evaluates to [%s], not [%s]".format(
-        actual map { _.renderCompact } mkString ",",
-        expect map { _.renderCompact } mkString ",")
+        actual map {
+          _.renderCompact
+        } mkString ",",
+        expect map {
+          _.renderCompact
+        } mkString ",")
     }
 
     (inner _, message _)
@@ -320,7 +324,9 @@ object EvaluatorSpecs extends Specification with EvaluatorModule {
   }
 
   private def compileSingle(str: String): Expr = {
-    val forest = compile(str) filter { _.errors must beEmpty }
+    val forest = compile(str) filter {
+      _.errors must beEmpty
+    }
     forest must haveSize(1)
     forest.head
   }

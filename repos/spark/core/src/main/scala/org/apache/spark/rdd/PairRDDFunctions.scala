@@ -820,7 +820,9 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
     val data = self.collect()
     val map = new mutable.HashMap[K, V]
     map.sizeHint(data.length)
-    data.foreach { pair => map.put(pair._1, pair._2) }
+    data.foreach { pair =>
+      map.put(pair._1, pair._2)
+    }
     map
   }
 
@@ -832,7 +834,10 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
     val cleanF = self.context.clean(f)
     new MapPartitionsRDD[(K, U), (K, V)](
       self,
-      (context, pid, iter) => iter.map { case (k, v) => (k, cleanF(v)) },
+      (context, pid, iter) =>
+        iter.map {
+          case (k, v) => (k, cleanF(v))
+        },
       preservesPartitioning = true)
   }
 

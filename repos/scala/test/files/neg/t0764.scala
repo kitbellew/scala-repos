@@ -4,11 +4,16 @@ class Top[A] {
 
 trait Node { outer =>
   type T <: Node
-  def prepend = new Node { type T = outer.type }
+  def prepend = new Node {
+    type T = outer.type
+  }
 }
 
-class Main[NextType <: Node](value: Node { type T = NextType })
-    extends Top[Node { type T = NextType }] {
+class Main[NextType <: Node](value: Node {
+  type T = NextType
+}) extends Top[Node {
+      type T = NextType
+    }] {
 
   new Main[AType]((value: AType).prepend)
 }

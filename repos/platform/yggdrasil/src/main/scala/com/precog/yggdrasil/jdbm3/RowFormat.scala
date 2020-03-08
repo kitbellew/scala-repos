@@ -366,7 +366,9 @@ trait RowFormatSupport { self: StdCodecs =>
       filled += buffer
       val all = filled.toList
       val bytes = ByteBufferPool.getBytesFrom(filled.toList)
-      all foreach { pool.release(_) }
+      all foreach {
+        pool.release(_)
+      }
       bytes
 
     } else {

@@ -174,7 +174,9 @@ object MarathonBuild extends Build {
         "servlet-api-2.5.jar",
         "jsp-api-2.1.jar"
       )
-      cp filter { x => exclude(x.data.getName) }
+      cp filter { x =>
+        exclude(x.data.getName)
+      }
     }
   )
 

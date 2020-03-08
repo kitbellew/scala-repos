@@ -169,7 +169,9 @@ trait BodyParser[+A]
     implicit val pec = ec.prepare()
     new BodyParser[B] {
       def apply(request: RequestHeader) =
-        self(request).map { _.right.map(f) }(pec)
+        self(request).map {
+          _.right.map(f)
+        }(pec)
       override def toString = self.toString
     }
   }

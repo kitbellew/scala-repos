@@ -4,7 +4,9 @@ object F {
     try {
       f
     } catch {
-      case e if ignore == null || ignore.isEmpty => { false }
+      case e if ignore == null || ignore.isEmpty => {
+        false
+      }
     }
   }
 }

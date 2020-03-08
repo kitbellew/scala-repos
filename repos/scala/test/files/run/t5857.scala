@@ -12,20 +12,36 @@ object Test {
     val sz = 1000000000
 
     val range = 1 to sz
-    check { assert(range.min == 1, range.min) }
-    check { assert(range.max == sz, range.max) }
+    check {
+      assert(range.min == 1, range.min)
+    }
+    check {
+      assert(range.max == sz, range.max)
+    }
 
     val descending = sz to 1 by -1
-    check { assert(descending.min == 1) }
-    check { assert(descending.max == sz) }
+    check {
+      assert(descending.min == 1)
+    }
+    check {
+      assert(descending.max == sz)
+    }
 
     val numeric = 1.0 to sz.toDouble by 1
-    check { assert(numeric.min == 1.0) }
-    check { assert(numeric.max == sz.toDouble) }
+    check {
+      assert(numeric.min == 1.0)
+    }
+    check {
+      assert(numeric.max == sz.toDouble)
+    }
 
     val numdesc = sz.toDouble to 1.0 by -1
-    check { assert(numdesc.min == 1.0) }
-    check { assert(numdesc.max == sz.toDouble) }
+    check {
+      assert(numdesc.min == 1.0)
+    }
+    check {
+      assert(numdesc.max == sz.toDouble)
+    }
   }
 
   def check[U](b: => U) {

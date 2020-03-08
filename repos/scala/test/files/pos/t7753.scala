@@ -1,6 +1,8 @@
 import scala.language.{higherKinds, implicitConversions}
 
-trait Foo { type Out }
+trait Foo {
+  type Out
+}
 
 trait SI {
   val instance: Foo
@@ -11,8 +13,12 @@ object Test {
   def test {
     def indirect(si: SI)(v: si.instance.Out) = v
 
-    val foo: Foo { type Out = Int } = ???
-    def conv(i: Foo): SI { type Out = i.Out; val instance: i.type } = ???
+    val foo: Foo {
+      type Out = Int
+    } = ???
+    def conv(i: Foo): SI {
+      type Out = i.Out; val instance: i.type
+    } = ???
 
     val converted = conv(foo)
 

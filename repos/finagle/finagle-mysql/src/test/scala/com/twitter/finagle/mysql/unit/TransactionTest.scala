@@ -54,7 +54,9 @@ class TransactionTest extends FunSuite with MockitoSugar with MustMatchers {
             "first response object"
           }
           .flatMap { r2 =>
-            c.query(sqlQuery).map { r3 => "final response object" }
+            c.query(sqlQuery).map { r3 =>
+              "final response object"
+            }
           }
       }
     } catch {

@@ -4,9 +4,13 @@ import scala.reflect.macros.whitebox.{Context => WhiteboxContext}
 
 object Module {
   type BBC = BlackboxContext
-  type RBBC = BBC { type PrefixType = C }
+  type RBBC = BBC {
+    type PrefixType = C
+  }
   type WBC = WhiteboxContext
-  type RWBC = WBC { type PrefixType = C }
+  type RWBC = WBC {
+    type PrefixType = C
+  }
 
   class BlackboxBundle(val c: BBC) {
     import c.universe._

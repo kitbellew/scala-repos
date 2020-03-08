@@ -33,10 +33,14 @@ class SharedLeveldbStore extends {
         case Success(prep) ⇒
           // in case the asyncWriteMessages throws
           try asyncWriteMessages(prep)
-          catch { case NonFatal(e) ⇒ Future.failed(e) }
+          catch {
+            case NonFatal(e) ⇒ Future.failed(e)
+          }
         case f @ Failure(_) ⇒
           // exception from preparePersistentBatch => rejected
-          Future.successful(messages.collect { case a: AtomicWrite ⇒ f })
+          Future.successful(messages.collect {
+            case a: AtomicWrite ⇒ f
+          })
       }).map { results ⇒
         if (results.nonEmpty && results.size != atomicWriteCount)
           throw new IllegalStateException(
@@ -68,7 +72,9 @@ class SharedLeveldbStore extends {
             }.map(_ ⇒ highSeqNr)
           }
         }
-        .map { highSeqNr ⇒ ReplaySuccess(highSeqNr) }
+        .map { highSeqNr ⇒
+          ReplaySuccess(highSeqNr)
+        }
         .recover {
           case e ⇒ ReplayFailure(e)
         }

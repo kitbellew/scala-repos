@@ -49,7 +49,9 @@ final class MultiHandler[S, T](
   def applyNonRoots(info: S): List[(URI, T)] =
     nonRoots flatMap {
       case (definingURI, loader) =>
-        loader(info) map { unit => (definingURI, unit) }
+        loader(info) map { unit =>
+          (definingURI, unit)
+        }
     }
 
   private[this] def warn(

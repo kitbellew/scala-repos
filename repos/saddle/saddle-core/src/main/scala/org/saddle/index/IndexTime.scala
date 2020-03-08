@@ -65,7 +65,9 @@ class IndexTime(
     def size = _keys.length
 
     // these should not be accessible
-    def put(key: DateTime, value: Int) { throw new IllegalAccessError() }
+    def put(key: DateTime, value: Int) {
+      throw new IllegalAccessError()
+    }
     def inc(key: DateTime) = throw new IllegalAccessError()
   }
 

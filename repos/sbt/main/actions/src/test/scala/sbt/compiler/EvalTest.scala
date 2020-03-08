@@ -43,7 +43,11 @@ object EvalTest extends Properties("eval") {
     IO.withTemporaryDirectory { dir =>
       val eval = new Eval(_ => reporter, backing = Some(dir))
       val result = eval.eval(local(i))
-      val v = value(result).asInstanceOf[{ def i: Int }].i
+      val v = value(result)
+        .asInstanceOf[{
+          def i: Int
+        }]
+        .i
       (label("Value", v) |: (v == i)) &&
       (label("Type", result.tpe) |: (result.tpe == LocalType)) &&
       (label("Files", result.generated) |: result.generated.nonEmpty)

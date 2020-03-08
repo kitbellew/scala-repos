@@ -58,7 +58,9 @@ object LiterateExistentials {
 
 // Now to ask the compiler:
 
-  implicitly[Nothing <:< (A forSome { type A >: String <: Any })]
+  implicitly[Nothing <:< (A forSome {
+    type A >: String <: Any
+  })]
 
 //  Let's try another:
 //
@@ -88,7 +90,9 @@ object LiterateExistentials {
 //  Under our bindings, this is:
 //    Int :< (M forSome { type M >: String <: Any })
 
-  implicitly[Int <:< (M forSome { type M >: String <: Any })]
+  implicitly[Int <:< (M forSome {
+    type M >: String <: Any
+  })]
 
 //  Now, let's do a more complicated one:
 //
@@ -178,7 +182,11 @@ object LiterateExistentials {
 //  proposition is true.
 //
 
-  implicitly[Int <:< (M forSome { type M >: Nothing <: String })] // fails
+  implicitly[
+    Int <:< (M forSome {
+      type M >: Nothing <: String
+    })
+  ] // fails
 // The preceding line causes the compiler to generate an error message.
 
 //  Let's look at one final example, courtesy of paulp.
@@ -209,6 +217,8 @@ object LiterateExistentials {
 //  which means:
 //  String :< X forSome { type X >: Nothing <: String }
 
-  implicitly[String <:< (X forSome { type X >: Nothing <: String })]
+  implicitly[String <:< (X forSome {
+    type X >: Nothing <: String
+  })]
 
 }

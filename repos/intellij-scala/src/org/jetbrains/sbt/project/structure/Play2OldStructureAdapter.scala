@@ -22,7 +22,9 @@ object Play2OldStructureAdapter {
     }
     val oldData = projectKeyValueTriples
       .groupBy(_._2)
-      .mapValues(_.map({ case (id, _, v) => (id, v) }))
+      .mapValues(_.map({
+        case (id, _, v) => (id, v)
+      }))
 
     new Play2ProjectData(
       SbtProjectSystem.Id,
@@ -50,7 +52,9 @@ object Play2OldStructureAdapter {
         new StringParsedValue(baseDir.getCanonicalFile.toURI.toString))
     )
 
-    keyValues.map({ case (k, v) => (id, k.name, v) })
+    keyValues.map({
+      case (k, v) => (id, k.name, v)
+    })
   }
 
   @inline private def avoidSL7005Bug[K, V](m: Map[K, V]): Map[K, V] =

@@ -156,12 +156,16 @@ class LAFuture[T](val scheduler: LAScheduler) {
   /**
     * Has the future been satisfied
     */
-  def isSatisfied: Boolean = synchronized { satisfied }
+  def isSatisfied: Boolean = synchronized {
+    satisfied
+  }
 
   /**
     * Has the future been aborted
     */
-  def isAborted: Boolean = synchronized { aborted }
+  def isAborted: Boolean = synchronized {
+    aborted
+  }
 
   /**
     * Abort the future.  It can never be satified
@@ -177,8 +181,9 @@ class LAFuture[T](val scheduler: LAScheduler) {
     */
   def onSuccess(f: T => Unit) {
     synchronized {
-      if (satisfied) { LAFuture.executeWithObservers(scheduler, () => f(item)) }
-      else if (!aborted) {
+      if (satisfied) {
+        LAFuture.executeWithObservers(scheduler, () => f(item))
+      } else if (!aborted) {
         toDo ::= f
       }
     }
@@ -353,7 +358,9 @@ object LAFuture {
       val len = future.length
       val vals = new collection.mutable.ArrayBuffer[Box[T]](len)
       // pad array so inserts at random places are possible
-      for (i <- 0 to len) { vals.insert(i, Empty) }
+      for (i <- 0 to len) {
+        vals.insert(i, Empty)
+      }
       var gotCnt = 0
 
       future.toList.zipWithIndex.foreach {
@@ -389,7 +396,9 @@ object LAFuture {
       val len = future.length
       val vals = new collection.mutable.ArrayBuffer[Box[T]](len)
       // pad array so inserts at random places are possible
-      for (i <- 0 to len) { vals.insert(i, Empty) }
+      for (i <- 0 to len) {
+        vals.insert(i, Empty)
+      }
       var gotCnt = 0
 
       future.toList.zipWithIndex.foreach {

@@ -9,7 +9,9 @@ class StringBuffer(private var content: String)
   def this(csq: CharSequence) = this(csq.toString)
 
   def append(s: String): StringBuffer = {
-    content += { if (s == null) "null" else s }
+    content += {
+      if (s == null) "null" else s
+    }
     this
   }
 

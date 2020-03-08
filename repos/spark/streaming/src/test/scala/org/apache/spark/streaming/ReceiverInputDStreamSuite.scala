@@ -41,7 +41,9 @@ class ReceiverInputDStreamSuite extends TestSuiteBase with BeforeAndAfterAll {
 
   override def afterAll(): Unit = {
     try {
-      StreamingContext.getActive().map { _.stop() }
+      StreamingContext.getActive().map {
+        _.stop()
+      }
     } finally {
       super.afterAll()
     }
@@ -57,7 +59,9 @@ class ReceiverInputDStreamSuite extends TestSuiteBase with BeforeAndAfterAll {
 
   testWithoutWAL("createBlockRDD creates correct BlockRDD with block info") {
     receiverStream =>
-      val blockInfos = Seq.fill(5) { createBlockInfo(withWALInfo = false) }
+      val blockInfos = Seq.fill(5) {
+        createBlockInfo(withWALInfo = false)
+      }
       val blockIds = blockInfos.map(_.blockId)
 
       // Verify that there are some blocks that are present, and some that are not
@@ -90,7 +94,9 @@ class ReceiverInputDStreamSuite extends TestSuiteBase with BeforeAndAfterAll {
       val rdd = receiverStream.createBlockRDD(Time(0), blockInfos)
       assert(rdd.isInstanceOf[BlockRDD[_]])
       val blockRDD = rdd.asInstanceOf[BlockRDD[_]]
-      assert(blockRDD.blockIds.toSeq === presentBlockInfos.map { _.blockId })
+      assert(blockRDD.blockIds.toSeq === presentBlockInfos.map {
+        _.blockId
+      })
   }
 
   testWithWAL(
@@ -104,7 +110,9 @@ class ReceiverInputDStreamSuite extends TestSuiteBase with BeforeAndAfterAll {
   testWithWAL(
     "createBlockRDD creates correct WALBackedBlockRDD with all block info having WAL info") {
     receiverStream =>
-      val blockInfos = Seq.fill(5) { createBlockInfo(withWALInfo = true) }
+      val blockInfos = Seq.fill(5) {
+        createBlockInfo(withWALInfo = true)
+      }
       val blockIds = blockInfos.map(_.blockId)
       val rdd = receiverStream.createBlockRDD(Time(0), blockInfos)
       assert(rdd.isInstanceOf[WriteAheadLogBackedBlockRDD[_]])
@@ -118,8 +126,12 @@ class ReceiverInputDStreamSuite extends TestSuiteBase with BeforeAndAfterAll {
   testWithWAL(
     "createBlockRDD creates BlockRDD when some block info don't have WAL info") {
     receiverStream =>
-      val blockInfos1 = Seq.fill(2) { createBlockInfo(withWALInfo = true) }
-      val blockInfos2 = Seq.fill(3) { createBlockInfo(withWALInfo = false) }
+      val blockInfos1 = Seq.fill(2) {
+        createBlockInfo(withWALInfo = true)
+      }
+      val blockInfos2 = Seq.fill(3) {
+        createBlockInfo(withWALInfo = false)
+      }
       val blockInfos = blockInfos1 ++ blockInfos2
       val blockIds = blockInfos.map(_.blockId)
       val rdd = receiverStream.createBlockRDD(Time(0), blockInfos)
@@ -155,7 +167,9 @@ class ReceiverInputDStreamSuite extends TestSuiteBase with BeforeAndAfterAll {
     val receiverStream = new ReceiverInputDStream[Int](ssc) {
       override def getReceiver(): Receiver[Int] = null
     }
-    withStreamingContext(ssc) { ssc => body(receiverStream) }
+    withStreamingContext(ssc) { ssc =>
+      body(receiverStream)
+    }
   }
 
   /**

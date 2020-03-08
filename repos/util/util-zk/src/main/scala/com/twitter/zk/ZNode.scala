@@ -86,11 +86,15 @@ trait ZNode {
       acls: Seq[ACL] = zkClient.acl,
       mode: CreateMode = zkClient.mode,
       child: Option[String] = None): Future[ZNode] = {
-    val creatingPath = child map { "%s/%s".format(path, _) } getOrElse path
+    val creatingPath = child map {
+      "%s/%s".format(path, _)
+    } getOrElse path
     zkClient.retrying { zk =>
       val result = new StringCallbackPromise
       zk.create(creatingPath, data, acls.asJava, mode, result, null)
-      result map { newPath => zkClient(newPath) }
+      result map { newPath =>
+        zkClient(newPath)
+      }
     }
   }
 
@@ -98,7 +102,9 @@ trait ZNode {
   def delete(version: Int = 0): Future[ZNode] = zkClient.retrying { zk =>
     val result = new UnitCallbackPromise
     zk.delete(path, version, result, null)
-    result map { _ => this }
+    result map { _ =>
+      this
+    }
   }
 
   /** Returns a Future that is satisfied with this ZNode with its metadata and data */
@@ -106,14 +112,18 @@ trait ZNode {
     zkClient.retrying { zk =>
       val result = new ExistsCallbackPromise(this)
       zk.setData(path, data, version, result, null)
-      result map { _.apply(data) }
+      result map {
+        _.apply(data)
+      }
     }
 
   /** Returns a Future that is satisfied with a reference to this ZNode */
   def sync(): Future[ZNode] = zkClient.retrying { zk =>
     val result = new UnitCallbackPromise
     zk.sync(path, result, null)
-    result map { _ => this }
+    result map { _ =>
+      this
+    }
   }
 
   /** Provides access to this node's children. */
@@ -140,7 +150,9 @@ trait ZNode {
       val result = new ChildrenCallbackPromise(ZNode.this)
       val update = new EventPromise
       zk.getChildren(path, update, result, null)
-      result.liftNoNode map { ZNode.Watch(_, update) }
+      result.liftNoNode map {
+        ZNode.Watch(_, update)
+      }
     }
   }
 
@@ -168,7 +180,9 @@ trait ZNode {
       val result = new DataCallbackPromise(ZNode.this)
       val update = new EventPromise
       zk.getData(path, update, result, null)
-      result.liftNoNode map { ZNode.Watch(_, update) }
+      result.liftNoNode map {
+        ZNode.Watch(_, update)
+      }
     }
   }
 
@@ -188,7 +202,9 @@ trait ZNode {
       val result = new ExistsCallbackPromise(ZNode.this)
       val update = new EventPromise
       zk.exists(path, update, result, null)
-      result.liftNoNode.map { ZNode.Watch(_, update) }
+      result.liftNoNode.map {
+        ZNode.Watch(_, update)
+      }
     }
   }
 

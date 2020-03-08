@@ -61,7 +61,9 @@ class PrefixComparatorsSuite extends SparkFunSuite with PropertyChecks {
     forAll(regressionTests) { (s1: String, s2: String) =>
       testPrefixComparison(s1, s2)
     }
-    forAll { (s1: String, s2: String) => testPrefixComparison(s1, s2) }
+    forAll { (s1: String, s2: String) =>
+      testPrefixComparison(s1, s2)
+    }
   }
 
   test("Binary prefix comparator") {

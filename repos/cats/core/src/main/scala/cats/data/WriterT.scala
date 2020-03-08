@@ -19,7 +19,9 @@ final case class WriterT[F[_], L, V](run: F[(L, V)]) {
 
   def map[Z](fn: V => Z)(implicit functorF: Functor[F]): WriterT[F, L, Z] =
     WriterT {
-      functorF.map(run) { z => (z._1, fn(z._2)) }
+      functorF.map(run) { z =>
+        (z._1, fn(z._2))
+      }
     }
 
   def flatMap[U](f: V => WriterT[F, L, U])(implicit
@@ -35,7 +37,9 @@ final case class WriterT[F[_], L, V](run: F[(L, V)]) {
 
   def mapBoth[M, U](f: (L, V) => (M, U))(
       implicit functorF: Functor[F]): WriterT[F, M, U] =
-    WriterT { functorF.map(run)(f.tupled) }
+    WriterT {
+      functorF.map(run)(f.tupled)
+    }
 
   def bimap[M, U](f: L => M, g: V => U)(
       implicit functorF: Functor[F]): WriterT[F, M, U] =
@@ -77,8 +81,16 @@ private[data] sealed abstract class WriterTInstances extends WriterTInstances0 {
 
   implicit def writerTTransLift[M[_], W](implicit
       M: Functor[M],
-      W: Monoid[W]): TransLift[({ type λ[α[_], β] = WriterT[α, W, β] })#λ, M] =
-    new TransLift[({ type λ[α[_], β] = WriterT[α, W, β] })#λ, M] {
+      W: Monoid[W]): TransLift[
+    ({
+      type λ[α[_], β] = WriterT[α, W, β]
+    })#λ,
+    M] =
+    new TransLift[
+      ({
+        type λ[α[_], β] = WriterT[α, W, β]
+      })#λ,
+      M] {
       def liftT[A](ma: M[A]): WriterT[M, W, A] =
         WriterT(M.map(ma)((W.empty, _)))
     }

@@ -50,7 +50,9 @@ class HashMap[A, B] private[collection] (
   type Entry = DefaultEntry[A, B]
 
   override def empty: HashMap[A, B] = HashMap.empty[A, B]
-  override def clear() { clearTable() }
+  override def clear() {
+    clearTable()
+  }
   override def size: Int = tableSize
 
   def this() = this(null)
@@ -75,7 +77,9 @@ class HashMap[A, B] private[collection] (
   override def put(key: A, value: B): Option[B] = {
     val e = findOrAddEntry(key, value)
     if (e eq null) None
-    else { val v = e.value; e.value = value; Some(v) }
+    else {
+      val v = e.value; e.value = value; Some(v)
+    }
   }
 
   override def update(key: A, value: B): Unit = put(key, value)
@@ -92,7 +96,9 @@ class HashMap[A, B] private[collection] (
     this
   }
 
-  def -=(key: A): this.type = { removeEntry(key); this }
+  def -=(key: A): this.type = {
+    removeEntry(key); this
+  }
 
   def iterator = entriesIterator map (e => ((e.key, e.value)))
 

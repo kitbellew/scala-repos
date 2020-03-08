@@ -13,5 +13,7 @@ import scala.collection.convert.WrapAsJava._
 private[ws] object CollectionUtil {
   def convert(
       headers: Map[String, Seq[String]]): ju.Map[String, ju.List[String]] =
-    mapAsJavaMap(headers.map { case (k, v) => k -> seqAsJavaList(v) })
+    mapAsJavaMap(headers.map {
+      case (k, v) => k -> seqAsJavaList(v)
+    })
 }

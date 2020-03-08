@@ -337,7 +337,9 @@ trait Contexts { self: Analyzer =>
 
     /** Undetermined type parameters. See `Infer#{inferExprInstance, adjustTypeArgs}`. Not inherited to child contexts */
     def undetparams: List[Symbol] = _undetparams
-    def undetparams_=(ps: List[Symbol]) = { _undetparams = ps }
+    def undetparams_=(ps: List[Symbol]) = {
+      _undetparams = ps
+    }
 
     /** Return and clear the undetermined type parameters */
     def extractUndetparams(): List[Symbol] = {
@@ -1303,8 +1305,12 @@ trait Contexts { self: Analyzer =>
           // import check from being misled by symbol lookups which are not
           // actually used.
           val other = lookupImport(imp2, requireExplicit = !sameDepth)
-          def imp1wins() = { imports = imp1 :: imports.tail.tail }
-          def imp2wins() = { impSym = other; imports = imports.tail }
+          def imp1wins() = {
+            imports = imp1 :: imports.tail.tail
+          }
+          def imp2wins() = {
+            impSym = other; imports = imports.tail
+          }
 
           if (!other.exists) // imp1 wins; drop imp2 and continue.
             imp1wins()
@@ -1523,8 +1529,12 @@ trait Contexts { self: Analyzer =>
 
     // null references to buffers instead of clearing them,
     // as the buffers may be shared between different reporters
-    final def clearAll(): Unit = { _errorBuffer = null; _warningBuffer = null }
-    final def clearAllErrors(): Unit = { _errorBuffer = null }
+    final def clearAll(): Unit = {
+      _errorBuffer = null; _warningBuffer = null
+    }
+    final def clearAllErrors(): Unit = {
+      _errorBuffer = null
+    }
   }
 
   private[typechecker] class ImmediateReporter(

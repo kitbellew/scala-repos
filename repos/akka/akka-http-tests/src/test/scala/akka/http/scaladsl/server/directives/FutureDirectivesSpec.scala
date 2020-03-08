@@ -24,8 +24,12 @@ class FutureDirectivesSpec extends RoutingSpec {
   "The `onComplete` directive" should {
     "unwrap a Future in the success case" in {
       var i = 0
-      def nextNumber() = { i += 1; i }
-      val route = onComplete(Future.successful(nextNumber())) { echoComplete }
+      def nextNumber() = {
+        i += 1; i
+      }
+      val route = onComplete(Future.successful(nextNumber())) {
+        echoComplete
+      }
       Get() ~> route ~> check {
         responseAs[String] shouldEqual "Success(1)"
       }
@@ -60,7 +64,9 @@ class FutureDirectivesSpec extends RoutingSpec {
 
   "The `onSuccess` directive" should {
     "unwrap a Future in the success case" in {
-      Get() ~> onSuccess(Future.successful("yes")) { echoComplete } ~> check {
+      Get() ~> onSuccess(Future.successful("yes")) {
+        echoComplete
+      } ~> check {
         responseAs[String] shouldEqual "yes"
       }
     }

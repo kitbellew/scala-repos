@@ -78,7 +78,10 @@ object LowPriorityDerivationTests {
     implicit val cc1TC: TC0[CC1] = instance[CC1](_ => "CC1")
   }
 
-  trait SimpleDeriver[TC[_] <: { def msg(n: Int): String }] {
+  trait SimpleDeriver[
+      TC[_] <: {
+        def msg(n: Int): String
+      }] {
     def instance[T](msg0: Int => String): TC[T]
 
     trait MkHListTC[L <: HList] {
@@ -143,7 +146,10 @@ object LowPriorityDerivationTests {
     }
   }
 
-  trait ComposedDeriver[TC[_] <: { def msg(n: Int): String }] {
+  trait ComposedDeriver[
+      TC[_] <: {
+        def msg(n: Int): String
+      }] {
     def instance[T](msg0: Int => String): TC[T]
 
     trait MkTC[T] {

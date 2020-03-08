@@ -9,10 +9,14 @@ import Types._
 object $count {
 
   def apply[A: InColl](q: JsObject): Fu[Int] =
-    implicitly[InColl[A]].coll |> { _.count(JsObjectWriter.write(q).some) }
+    implicitly[InColl[A]].coll |> {
+      _.count(JsObjectWriter.write(q).some)
+    }
 
   def apply[A: InColl]: Fu[Int] =
-    implicitly[InColl[A]].coll |> { _.count(none) }
+    implicitly[InColl[A]].coll |> {
+      _.count(none)
+    }
 
   def exists[A: InColl](q: JsObject): Fu[Boolean] = apply(q) map (0 !=)
 

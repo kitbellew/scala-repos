@@ -158,14 +158,18 @@ class ArrayStack[T] private (
     *  @param xs The source of elements to push.
     *  @return   A reference to this stack.
     */
-  override def ++=(xs: TraversableOnce[T]): this.type = { xs foreach +=; this }
+  override def ++=(xs: TraversableOnce[T]): this.type = {
+    xs foreach +=; this
+  }
 
   /** Does the same as `push`, but returns the updated stack.
     *
     *  @param x  The element to push.
     *  @return   A reference to this stack.
     */
-  def +=(x: T): this.type = { push(x); this }
+  def +=(x: T): this.type = {
+    push(x); this
+  }
 
   def result = {
     reverseTable()

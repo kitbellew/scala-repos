@@ -113,10 +113,15 @@ object LDAExample {
         .action((x, c) => c.copy(input = c.input :+ x))
     }
 
-    parser.parse(args, defaultParams).map { params => run(params) }.getOrElse {
-      parser.showUsageAsError
-      sys.exit(1)
-    }
+    parser
+      .parse(args, defaultParams)
+      .map { params =>
+        run(params)
+      }
+      .getOrElse {
+        parser.showUsageAsError
+        sys.exit(1)
+      }
   }
 
   private def run(params: Params) {
@@ -247,7 +252,9 @@ object LDAExample {
       .transform(df)
       .select("features")
       .rdd
-      .map { case Row(features: Vector) => features }
+      .map {
+        case Row(features: Vector) => features
+      }
       .zipWithIndex()
       .map(_.swap)
 

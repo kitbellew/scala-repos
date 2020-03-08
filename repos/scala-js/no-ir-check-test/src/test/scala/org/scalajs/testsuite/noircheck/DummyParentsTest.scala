@@ -19,7 +19,9 @@ object DummyParentsTest extends JasmineTest {
 
       // scala.concurrent.forkjoin.ForkJoinWorkerThread is not defined
       class DummyFJWorkerThread extends ForkJoinWorkerThread(null) {
-        override def onStart(): Unit = { /* something */ }
+        override def onStart(): Unit = {
+          /* something */
+        }
       }
 
       val x = "1".toInt

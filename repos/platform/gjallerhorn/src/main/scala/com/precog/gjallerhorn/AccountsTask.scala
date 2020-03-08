@@ -39,7 +39,9 @@ class AccountsTask(settings: Settings)
       val body = """{ "email": "%s", "password": "%s" }""".format(user, pass)
       val json = getjson((accounts / "") << body)
 
-      (json \ "accountId") must beLike { case JString(_) => ok }
+      (json \ "accountId") must beLike {
+        case JString(_) => ok
+      }
     }
 
     "not create the same account twice" in {

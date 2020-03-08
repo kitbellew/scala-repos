@@ -49,8 +49,12 @@ object IngestProcessing {
   case object AllOrNothing extends ErrorHandling
   case object IngestAllPossible extends ErrorHandling
 
-  sealed trait Durability { def jobId: Option[JobId] }
-  case object LocalDurability extends Durability { val jobId = None }
+  sealed trait Durability {
+    def jobId: Option[JobId]
+  }
+  case object LocalDurability extends Durability {
+    val jobId = None
+  }
   case class GlobalDurability(jid: JobId) extends Durability {
     val jobId = Some(jid)
   }
@@ -76,7 +80,9 @@ object IngestProcessing {
       request: HttpRequest[_]): Option[IngestProcessing] = {
     from match {
       case hd :: tl =>
-        hd.select(partialData, request) match { // not using map so as to get tailrec
+        hd.select(
+          partialData,
+          request) match { // not using map so as to get tailrec
           case None => select(tl, partialData, request)
           case some => some
         }

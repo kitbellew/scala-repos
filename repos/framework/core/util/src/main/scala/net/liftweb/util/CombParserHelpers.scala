@@ -76,7 +76,11 @@ trait CombParserHelpers {
 
   /** @return a parser accepting a 'line' space, either ' ' or '\t' */
   def aSpace =
-    accept("whitespace", { case c if (c == ' ') || c == '\t' => true })
+    accept(
+      "whitespace",
+      {
+        case c if (c == ' ') || c == '\t' => true
+      })
 
   /** @return a unit parser for any repetition of 'line' spaces */
   def lineSpace = rep(aSpace)
@@ -168,11 +172,16 @@ trait CombParserHelpers {
       val right: Parser[List[T]] = success(Nil)
 
       p.toList match {
-        case Nil      => right
-        case x :: Nil => x ~ right ^^ { case ~(x, xs) => x :: xs }
+        case Nil => right
+        case x :: Nil =>
+          x ~ right ^^ {
+            case ~(x, xs) => x :: xs
+          }
         case xs =>
           func(xs)
-            .map(_.foldRight(right)(_ ~ _ ^^ { case ~(x, xs) => x :: xs }))
+            .map(_.foldRight(right)(_ ~ _ ^^ {
+              case ~(x, xs) => x :: xs
+            }))
             .reduceLeft((a: Parser[List[T]], b: Parser[List[T]]) => a | b)
       }
     }
@@ -181,7 +190,11 @@ trait CombParserHelpers {
     * @return a parser which parses the input using p a number of times
     */
   def repNN[T](n: Int, p: => Parser[T]): Parser[List[T]] =
-    if (n == 0) rep(p) else p ~ repNN(n - 1, p) ^^ { case ~(x, xs) => x :: xs }
+    if (n == 0) rep(p)
+    else
+      p ~ repNN(n - 1, p) ^^ {
+        case ~(x, xs) => x :: xs
+      }
 }
 
 trait SafeSeqParser extends Parsers {

@@ -200,9 +200,11 @@ sealed abstract class LongMap[+T]
     * Loops over the key, value pairs of the map in unsigned order of the keys.
     */
   override final def foreach[U](f: ((Long, T)) => U): Unit = this match {
-    case LongMap.Bin(_, _, left, right) => { left.foreach(f); right.foreach(f) }
-    case LongMap.Tip(key, value)        => f((key, value))
-    case LongMap.Nil                    =>
+    case LongMap.Bin(_, _, left, right) => {
+      left.foreach(f); right.foreach(f)
+    }
+    case LongMap.Tip(key, value) => f((key, value))
+    case LongMap.Nil             =>
   }
 
   override def keysIterator: Iterator[Long] = this match {

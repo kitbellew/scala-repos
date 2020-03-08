@@ -26,7 +26,9 @@ object SaddleBuild extends sbt.Build {
       id = "saddle",
       settings = Seq(
         /* 'console' in root acts as if in core. */
-        console <<= (console in core in Compile) { identity },
+        console <<= (console in core in Compile) {
+          identity
+        },
         assembleArtifact in packageScala := false,
         publishArtifact := false,
         mergeStrategy in assembly := {
@@ -129,7 +131,9 @@ object Shared {
     organization := "org.scala-saddle",
     publishMavenStyle := true,
     publishArtifact in Test := false,
-    pomIncludeRepository := { x => false },
+    pomIncludeRepository := { x =>
+      false
+    },
     pomExtra := (
       <url>http://saddle.github.io/</url>
       <licenses>

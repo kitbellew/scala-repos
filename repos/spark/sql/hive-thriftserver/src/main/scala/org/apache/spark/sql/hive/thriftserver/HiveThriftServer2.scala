@@ -185,9 +185,13 @@ object HiveThriftServer2 extends Logging {
       conf.getConf(SQLConf.THRIFTSERVER_UI_SESSION_LIMIT)
     private var totalRunning = 0
 
-    def getOnlineSessionNum: Int = synchronized { onlineSessionNum }
+    def getOnlineSessionNum: Int = synchronized {
+      onlineSessionNum
+    }
 
-    def getTotalRunning: Int = synchronized { totalRunning }
+    def getTotalRunning: Int = synchronized {
+      totalRunning
+    }
 
     def getSessionList: Seq[SessionInfo] = synchronized {
       sessionList.values.toSeq

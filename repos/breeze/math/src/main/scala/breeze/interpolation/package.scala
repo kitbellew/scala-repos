@@ -36,8 +36,12 @@ package object interpolation {
     private val nodes = x_coords.toArray zip y_coords.toArray sortBy { n =>
       n._1
     }
-    protected val X: Array[T] = nodes map { n => n._1 }
-    protected val Y: Array[T] = nodes map { n => n._2 }
+    protected val X: Array[T] = nodes map { n =>
+      n._1
+    }
+    protected val Y: Array[T] = nodes map { n =>
+      n._2
+    }
 
     private val ord = implicitly[Ordering[T]]
     import ord.mkOrderingOps

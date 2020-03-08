@@ -151,7 +151,11 @@ class DriverDataSource(
     throw new SQLFeatureNotSupportedException()
 
   def getParentLogger: Logger = {
-    try driver.asInstanceOf[{ def getParentLogger(): Logger }].getParentLogger
+    try driver
+      .asInstanceOf[{
+        def getParentLogger(): Logger
+      }]
+      .getParentLogger
     catch {
       case _: NoSuchMethodException =>
         throw new SQLFeatureNotSupportedException()

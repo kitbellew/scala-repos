@@ -14,11 +14,31 @@ trait Trait[-A, +B, C] {
     O
   }
 
-  def fail1() = { object O { def f0(x: A): A = ??? }; O } // fail
-  def fail2() = { object O { def f0(x: B): A = ??? }; O } // fail
-  def fail3() = { object O { def f0(x: B): B = ??? }; O } // fail
-  def fail4() = { object O { def f0(x: B): C = ??? }; O } // fail
-  def fail5() = { object O { def f0(x: C): A = ??? }; O } // fail
+  def fail1() = {
+    object O {
+      def f0(x: A): A = ???
+    }; O
+  } // fail
+  def fail2() = {
+    object O {
+      def f0(x: B): A = ???
+    }; O
+  } // fail
+  def fail3() = {
+    object O {
+      def f0(x: B): B = ???
+    }; O
+  } // fail
+  def fail4() = {
+    object O {
+      def f0(x: B): C = ???
+    }; O
+  } // fail
+  def fail5() = {
+    object O {
+      def f0(x: C): A = ???
+    }; O
+  } // fail
 
   def fail6() = { // fail
     trait O0 {

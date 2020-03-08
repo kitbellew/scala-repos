@@ -233,7 +233,9 @@ trait AtmosphereSupport
       block: => AtmosphereClient): Unit = {
     val newTransformers = transformers :+ Atmosphere
     get(newTransformers: _*)(block)
-    post(newTransformers: _*) { () }
+    post(newTransformers: _*) {
+      ()
+    }
   }
 
   /**

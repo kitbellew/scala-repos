@@ -100,7 +100,9 @@ class ControllerContext(val zkUtils: ZkUtils, val zkSessionTimeout: Int) {
       .filter {
         case (topicAndPartition, replicas) => replicas.contains(brokerId)
       }
-      .map { case (topicAndPartition, replicas) => topicAndPartition }
+      .map {
+        case (topicAndPartition, replicas) => topicAndPartition
+      }
       .toSet
   }
 

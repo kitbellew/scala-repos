@@ -219,7 +219,9 @@ object TypedActorSpec {
     }
   }
 
-  trait F { def f(pow: Boolean): Int }
+  trait F {
+    def f(pow: Boolean): Int
+  }
   class FI extends F {
     def f(pow: Boolean): Int =
       if (pow) throw new IllegalStateException("expected") else 1
@@ -428,8 +430,9 @@ class TypedActorSpec
         mustStop(t)
 
         val ta: F = TypedActor(system).typedActorOf(TypedProps[FI]())
-        intercept[IllegalStateException] { ta.f(true) }.getMessage should ===(
-          "expected")
+        intercept[IllegalStateException] {
+          ta.f(true)
+        }.getMessage should ===("expected")
         ta.f(false) should ===(1)
 
         mustStop(ta)

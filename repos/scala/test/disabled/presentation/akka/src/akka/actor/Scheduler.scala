@@ -44,7 +44,9 @@ object Scheduler {
     try {
       service
         .scheduleAtFixedRate(
-          new Runnable { def run = receiver ! message },
+          new Runnable {
+            def run = receiver ! message
+          },
           initialDelay,
           delay,
           timeUnit)
@@ -68,7 +70,13 @@ object Scheduler {
       initialDelay: Long,
       delay: Long,
       timeUnit: TimeUnit): ScheduledFuture[AnyRef] =
-    schedule(new Runnable { def run = f() }, initialDelay, delay, timeUnit)
+    schedule(
+      new Runnable {
+        def run = f()
+      },
+      initialDelay,
+      delay,
+      timeUnit)
 
   /**
     * Schedules to run specified runnable to the receiver after initialDelay and then repeated after delay,
@@ -102,7 +110,9 @@ object Scheduler {
     try {
       service
         .schedule(
-          new Runnable { def run = receiver ! message },
+          new Runnable {
+            def run = receiver ! message
+          },
           delay,
           timeUnit)
         .asInstanceOf[ScheduledFuture[AnyRef]]
@@ -124,7 +134,12 @@ object Scheduler {
       f: () => Unit,
       delay: Long,
       timeUnit: TimeUnit): ScheduledFuture[AnyRef] =
-    scheduleOnce(new Runnable { def run = f() }, delay, timeUnit)
+    scheduleOnce(
+      new Runnable {
+        def run = f()
+      },
+      delay,
+      timeUnit)
 
   /**
     * Schedules a runnable to be run after delay,

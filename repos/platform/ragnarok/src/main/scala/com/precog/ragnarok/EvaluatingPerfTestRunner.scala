@@ -99,10 +99,14 @@ trait EvaluatingPerfTestRunner[M[+_], T]
   def eval(query: String): M[Result] =
     try {
       val forest = Timing.time("Compiling query")(compile(query))
-      val valid = forest filter { _.errors forall isWarning }
+      val valid = forest filter {
+        _.errors forall isWarning
+      }
 
       if (valid.isEmpty) {
-        sys.error("Error parsing query:\n" + (forest flatMap { _.errors } map {
+        sys.error("Error parsing query:\n" + (forest flatMap {
+          _.errors
+        } map {
           _.toString
         } mkString "\n"))
       } else if (valid.size > 1) {
@@ -136,7 +140,11 @@ trait EvaluatingPerfTestRunner[M[+_], T]
   private def countStream[A](str: StreamT[M, A]): M[Int] = {
     for {
       optTail <- str.uncons
-      res = optTail map { _._2 } map { tail => countStream(tail) map (1 +) }
+      res = optTail map {
+        _._2
+      } map { tail =>
+        countStream(tail) map (1 +)
+      }
 
       back <- res getOrElse M.point(0)
     } yield back

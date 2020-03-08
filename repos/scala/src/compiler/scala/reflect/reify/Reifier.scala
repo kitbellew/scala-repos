@@ -26,8 +26,12 @@ abstract class Reifier extends States with Phases with Errors with Utils {
   val concrete: Boolean
 
   // needed to seamlessly integrate with standalone utils
-  override def getReifier: Reifier { val global: Reifier.this.global.type } =
-    this.asInstanceOf[Reifier { val global: Reifier.this.global.type }]
+  override def getReifier: Reifier {
+    val global: Reifier.this.global.type
+  } =
+    this.asInstanceOf[Reifier {
+      val global: Reifier.this.global.type
+    }]
   override def hasReifier = true
 
   /** For `reifee` and other reification parameters, generate a tree of the form

@@ -20,7 +20,13 @@ class ActorEndpointPathTest
 
   "findActorIn returns Some(actor ref) if actor exists" in {
     val path = system
-      .actorOf(Props(new Actor { def receive = { case _ ⇒ } }), "knownactor")
+      .actorOf(
+        Props(new Actor {
+          def receive = {
+            case _ ⇒
+          }
+        }),
+        "knownactor")
       .path
     find(path.toString) should be('defined)
   }

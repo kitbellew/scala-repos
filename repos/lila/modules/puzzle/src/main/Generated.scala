@@ -30,8 +30,11 @@ object Generated {
     (obj.fields.toList map {
       case (move, JsString("win"))   => Success(Win(move))
       case (move, JsString("retry")) => Success(Retry(move))
-      case (move, more: JsObject)    => readLines(more) map { Node(move, _) }
-      case (move, value)             => Failure(new Exception(s"Invalid line $move $value"))
+      case (move, more: JsObject) =>
+        readLines(more) map {
+          Node(move, _)
+        }
+      case (move, value) => Failure(new Exception(s"Invalid line $move $value"))
     }).sequence
 
   private[puzzle] def fenOf(moves: Seq[String]): Try[String] =

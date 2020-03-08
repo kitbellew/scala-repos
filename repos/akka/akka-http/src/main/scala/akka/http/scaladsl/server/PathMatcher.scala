@@ -45,7 +45,9 @@ abstract class PathMatcher[L](implicit val ev: Tuple[L])
     }
 
   def transform[R: Tuple](f: Matching[L] ⇒ Matching[R]): PathMatcher[R] =
-    new PathMatcher[R] { def apply(path: Path) = f(self(path)) }
+    new PathMatcher[R] {
+      def apply(path: Path) = f(self(path))
+    }
 
   def tmap[R: Tuple](f: L ⇒ R): PathMatcher[R] = transform(_.map(f))
 
@@ -135,7 +137,9 @@ object PathMatcher extends ImplicitPathMatcherConstruction {
     def andThen[R: Tuple](f: (Path, L) ⇒ Matching[R]) = f(pathRest, extractions)
     def orElse[R >: L](other: ⇒ Matching[R]) = this
   }
-  object Matched { val Empty = Matched(Path.Empty, ()) }
+  object Matched {
+    val Empty = Matched(Path.Empty, ())
+  }
   case object Unmatched extends Matching[Nothing] {
     def map[R: Tuple](f: Nothing ⇒ R) = this
     def flatMap[R: Tuple](f: Nothing ⇒ Option[R]) = this
@@ -173,7 +177,9 @@ object PathMatcher extends ImplicitPathMatcherConstruction {
       case Tuple1(e) ⇒ Tuple1(f(e))
     }
     def flatMap[R](f: T ⇒ Option[R]): PathMatcher1[R] =
-      matcher.tflatMap { case Tuple1(e) ⇒ f(e).map(x ⇒ Tuple1(x)) }
+      matcher.tflatMap {
+        case Tuple1(e) ⇒ f(e).map(x ⇒ Tuple1(x))
+      }
   }
 
   implicit class EnhancedPathMatcher[L](underlying: PathMatcher[L]) {
@@ -213,7 +219,9 @@ object PathMatcher extends ImplicitPathMatcherConstruction {
           def apply[T](value: T, more: List[T]): List[T] = value :: more
         }
     }
-    implicit def liftUnit[M[+_]]: Lift[Unit, M] { type Out = Unit } =
+    implicit def liftUnit[M[+_]]: Lift[Unit, M] {
+      type Out = Unit
+    } =
       new Lift[Unit, M] {
         type Out = Unit
         def OutIsTuple = implicitly[Tuple[Out]]
@@ -221,8 +229,10 @@ object PathMatcher extends ImplicitPathMatcherConstruction {
         def apply(value: Unit) = value
         def apply(value: Unit, more: Out) = value
       }
-    implicit def liftSingleElement[A, M[+_]](implicit
-        mops: MOps[M]): Lift[Tuple1[A], M] { type Out = Tuple1[M[A]] } =
+    implicit def liftSingleElement[A, M[+_]](
+        implicit mops: MOps[M]): Lift[Tuple1[A], M] {
+      type Out = Tuple1[M[A]]
+    } =
       new Lift[Tuple1[A], M] {
         type Out = Tuple1[M[A]]
         def OutIsTuple = implicitly[Tuple[Out]]
@@ -234,8 +244,9 @@ object PathMatcher extends ImplicitPathMatcherConstruction {
 
   trait LowLevelLiftImplicits {
     import Lift._
-    implicit def default[T, M[+_]](
-        implicit mops: MOps[M]): Lift[T, M] { type Out = Tuple1[M[T]] } =
+    implicit def default[T, M[+_]](implicit mops: MOps[M]): Lift[T, M] {
+      type Out = Tuple1[M[T]]
+    } =
       new Lift[T, M] {
         type Out = Tuple1[M[T]]
         def OutIsTuple = implicitly[Tuple[Out]]
@@ -472,7 +483,9 @@ trait PathMatchers {
   val DoubleNumber: PathMatcher1[Double] =
     PathMatcher("""[+-]?\d*\.?\d*""".r) flatMap { string ⇒
       try Some(java.lang.Double.parseDouble(string))
-      catch { case _: NumberFormatException ⇒ None }
+      catch {
+        case _: NumberFormatException ⇒ None
+      }
     }
 
   /**
@@ -483,7 +496,9 @@ trait PathMatchers {
       """[\da-fA-F]{8}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{12}""".r) flatMap {
       string ⇒
         try Some(UUID.fromString(string))
-        catch { case _: IllegalArgumentException ⇒ None }
+        catch {
+          case _: IllegalArgumentException ⇒ None
+        }
     }
 
   /**

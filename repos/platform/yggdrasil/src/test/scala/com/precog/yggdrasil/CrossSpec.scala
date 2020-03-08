@@ -42,8 +42,11 @@ trait CrossSpec[M[+_]]
         JObject(jfields collect {
           case JField(s, v) if v != JUndefined => JField(s, removeUndefined(v))
         })
-      case JArray(jvs) => JArray(jvs map { jv => removeUndefined(jv) })
-      case v           => v
+      case JArray(jvs) =>
+        JArray(jvs map { jv =>
+          removeUndefined(jv)
+        })
+      case v => v
     }
 
     val expected: Stream[JValue] = for {

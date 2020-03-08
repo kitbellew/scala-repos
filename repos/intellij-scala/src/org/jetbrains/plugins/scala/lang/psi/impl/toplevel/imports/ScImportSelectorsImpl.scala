@@ -24,7 +24,9 @@ class ScImportSelectorsImpl private (
     node: ASTNode)
     extends ScalaStubBasedElementImpl(stub, nodeType, node)
     with ScImportSelectors {
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
   def this(stub: ScImportSelectorsStub) = {
     this(stub, ScalaElementTypes.IMPORT_SELECTORS, null)
   }

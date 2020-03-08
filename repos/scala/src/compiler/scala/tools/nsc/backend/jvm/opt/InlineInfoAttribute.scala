@@ -108,9 +108,15 @@ case class InlineInfoAttribute(inlineInfo: InlineInfo)
       labels: Array[Label]): InlineInfoAttribute = {
     var next = off
 
-    def nextByte() = { val r = cr.readByte(next); next += 1; r }
-    def nextUTF8() = { val r = cr.readUTF8(next, buf); next += 2; r }
-    def nextShort() = { val r = cr.readShort(next); next += 2; r }
+    def nextByte() = {
+      val r = cr.readByte(next); next += 1; r
+    }
+    def nextUTF8() = {
+      val r = cr.readUTF8(next, buf); next += 2; r
+    }
+    def nextShort() = {
+      val r = cr.readShort(next); next += 2; r
+    }
 
     val version = nextByte()
     if (version == 1) {

@@ -15,4 +15,6 @@ trait Two extends One {
   // override type Alias = Op[Int]           // works with this
 }
 
-trait M[A] { def value: A = sys.error("") }
+trait M[A] {
+  def value: A = sys.error("")
+}

@@ -21,7 +21,9 @@ class SingletonFactory[Req, Rep](service: Service[Req, Rep])
     latch.incr()
     new Service[Req, Rep] {
       def apply(request: Req) = service(request)
-      override def close(deadline: Time) = { latch.decr(); Future.Done }
+      override def close(deadline: Time) = {
+        latch.decr(); Future.Done
+      }
     }
   }
 

@@ -116,7 +116,9 @@ private[channel] class LeftFoldHandlerToChannelHandler(
   private[this] var state = initial
 
   override def handleUpstream(ctx: ChannelHandlerContext, e: ChannelEvent) =
-    serialized { super.handleUpstream(ctx, e) }
+    serialized {
+      super.handleUpstream(ctx, e)
+    }
 
   override def channelBound(ctx: ChannelHandlerContext, e: ChannelStateEvent) {
     state = state.channelBound(ctx, e)

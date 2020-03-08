@@ -29,7 +29,9 @@ class ExpandTables extends Phase {
       case NominalType(tsym: TableIdentitySymbol, _)
           if expansions contains tsym =>
         val (sym, exp) = expansions(tsym)
-        exp.replace { case Ref(s) if s == sym => path }
+        exp.replace {
+          case Ref(s) if s == sym => path
+        }
       case tpe: NominalType =>
         createResult(expansions, path, tpe.structuralView)
       case m: MappedScalaType =>

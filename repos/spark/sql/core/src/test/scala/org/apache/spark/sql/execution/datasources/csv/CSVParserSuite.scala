@@ -73,9 +73,15 @@ class CSVParserSuite extends SparkFunSuite {
     val reader = new StringIteratorReader(List("").toIterator)
     assert(reader.ready === true)
     assert(reader.markSupported === false)
-    intercept[IllegalArgumentException] { reader.skip(1) }
-    intercept[IllegalArgumentException] { reader.mark(1) }
-    intercept[IllegalArgumentException] { reader.reset() }
+    intercept[IllegalArgumentException] {
+      reader.skip(1)
+    }
+    intercept[IllegalArgumentException] {
+      reader.mark(1)
+    }
+    intercept[IllegalArgumentException] {
+      reader.reset()
+    }
   }
 
   test("Regular case") {

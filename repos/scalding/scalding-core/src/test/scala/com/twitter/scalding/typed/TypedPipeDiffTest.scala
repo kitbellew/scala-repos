@@ -107,10 +107,14 @@ class TypedPipeDiffTest extends FunSuite {
   test(
     "diffArrayPipesWithoutOrdering works for arrays of objects with no ordering") {
     val pipe1 = TypedPipe.from(leftArr.map { arr =>
-      arr.map { b => new NoOrdering(b.toString) }
+      arr.map { b =>
+        new NoOrdering(b.toString)
+      }
     })
     val pipe2 = TypedPipe.from(rightArr.map { arr =>
-      arr.map { b => new NoOrdering(b.toString) }
+      arr.map { b =>
+        new NoOrdering(b.toString)
+      }
     })
     val diff = TypedPipeDiff.diffArrayPipes(pipe1, pipe2)
 
@@ -132,7 +136,9 @@ object TypedPipeDiffLaws {
     val expected = MapAlgebra
       .sumByKey(
         left.map((_, (1L, 0L))).iterator ++ right.map((_, (0L, 1L))).iterator)
-      .filter { case (t, (rCount, lCount)) => rCount != lCount }
+      .filter {
+        case (t, (rCount, lCount)) => rCount != lCount
+      }
 
     noDuplicates && expected == diff.toMap
   }
@@ -162,7 +168,9 @@ object TypedPipeDiffLaws {
         .from(left)
         .diffArrayPipes(TypedPipe.from(right))
         .inMemoryToList
-        .map { case (arr, counts) => (arr.toSeq, counts) }
+        .map {
+          case (arr, counts) => (arr.toSeq, counts)
+        }
       checkArrayDiff(left, right, diff)
   }
 
@@ -192,7 +200,9 @@ class TypedPipeDiffLaws extends PropSpec with PropertyChecks with Checkers {
       for {
         strs <- Arbitrary.arbitrary[Array[String]]
       } yield {
-        strs.map { new NoOrdering(_) }
+        strs.map {
+          new NoOrdering(_)
+        }
       }
     }
 
@@ -200,7 +210,9 @@ class TypedPipeDiffLaws extends PropSpec with PropertyChecks with Checkers {
       for {
         strs <- Arbitrary.arbitrary[Array[String]]
       } yield {
-        strs.map { new NoOrderingHashCollisions(_) }
+        strs.map {
+          new NoOrderingHashCollisions(_)
+        }
       }
     }
 

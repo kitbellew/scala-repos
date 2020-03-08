@@ -160,9 +160,13 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       }
 
       def extract(res: Result): Table =
-        res map { dt => Table.constDate(Set(dt)) } getOrElse Table.empty
+        res map { dt =>
+          Table.constDate(Set(dt))
+        } getOrElse Table.empty
 
-      def extractValue(res: Result) = res map { CDate(_) }
+      def extractValue(res: Result) = res map {
+        CDate(_)
+      }
     }
 
     object MinTime extends Reduction(ReductionNamespace, "minTime") {
@@ -209,9 +213,13 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       }
 
       def extract(res: Result): Table =
-        res map { dt => Table.constDate(Set(dt)) } getOrElse Table.empty
+        res map { dt =>
+          Table.constDate(Set(dt))
+        } getOrElse Table.empty
 
-      def extractValue(res: Result) = res map { CDate(_) }
+      def extractValue(res: Result) = res map {
+        CDate(_)
+      }
     }
 
     val MaxMonoid = implicitly[Monoid[Max.Result]]
@@ -270,9 +278,13 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       }
 
       def extract(res: Result): Table =
-        res map { v => Table.constDecimal(Set(v)) } getOrElse Table.empty
+        res map { v =>
+          Table.constDecimal(Set(v))
+        } getOrElse Table.empty
 
-      def extractValue(res: Result) = res map { CNum(_) }
+      def extractValue(res: Result) = res map {
+        CNum(_)
+      }
     }
 
     val MinMonoid = implicitly[Monoid[Min.Result]]
@@ -331,9 +343,13 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       }
 
       def extract(res: Result): Table =
-        res map { v => Table.constDecimal(Set(v)) } getOrElse Table.empty
+        res map { v =>
+          Table.constDecimal(Set(v))
+        } getOrElse Table.empty
 
-      def extractValue(res: Result) = res map { CNum(_) }
+      def extractValue(res: Result) = res map {
+        CNum(_)
+      }
     }
 
     val SumMonoid = implicitly[Monoid[Sum.Result]]
@@ -359,12 +375,16 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             // TODO: exactness + overflow
             case col: DoubleColumn =>
               var t = 0.0
-              var seen = RangeUtil.loopDefined(range, col) { i => t += col(i) }
+              var seen = RangeUtil.loopDefined(range, col) { i =>
+                t += col(i)
+              }
               if (seen) Some(BigDecimal(t)) else None
 
             case col: NumColumn =>
               var t = BigDecimal(0)
-              val seen = RangeUtil.loopDefined(range, col) { i => t += col(i) }
+              val seen = RangeUtil.loopDefined(range, col) { i =>
+                t += col(i)
+              }
               if (seen) Some(t) else None
 
             case _ => None
@@ -375,9 +395,13 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       }
 
       def extract(res: Result): Table =
-        res map { v => Table.constDecimal(Set(v)) } getOrElse Table.empty
+        res map { v =>
+          Table.constDecimal(Set(v))
+        } getOrElse Table.empty
 
-      def extractValue(res: Result) = res map { CNum(_) }
+      def extractValue(res: Result) = res map {
+        CNum(_)
+      }
     }
 
     val MeanMonoid = implicitly[Monoid[Mean.Result]]
@@ -436,7 +460,9 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           case v => Table.constDecimal(Set(v))
         } getOrElse Table.empty
 
-      def extractValue(res: Result) = perform(res) map { CNum(_) }
+      def extractValue(res: Result) = perform(res) map {
+        CNum(_)
+      }
     }
 
     object GeometricMean
@@ -499,7 +525,9 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         } filter (StdLib.doubleIsDefined)
 
       def extract(res: Result): Table =
-        perform(res) map { v => Table.constDouble(Set(v)) } getOrElse {
+        perform(res) map { v =>
+          Table.constDouble(Set(v))
+        } getOrElse {
           Table.empty
         }
 
@@ -547,9 +575,13 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       }
 
       def extract(res: Result): Table =
-        res map { v => Table.constDecimal(Set(v)) } getOrElse Table.empty
+        res map { v =>
+          Table.constDecimal(Set(v))
+        } getOrElse Table.empty
 
-      def extractValue(res: Result) = res map { CNum(_) }
+      def extractValue(res: Result) = res map {
+        CNum(_)
+      }
     }
 
     class CountSumSumSqReducer
@@ -630,7 +662,9 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           Table.constDecimal(Set(v))
         } getOrElse Table.empty
 
-      def extractValue(res: Result) = perform(res) map { CNum(_) }
+      def extractValue(res: Result) = perform(res) map {
+        CNum(_)
+      }
     }
 
     val StdDevMonoid = implicitly[Monoid[StdDev.Result]]
@@ -659,7 +693,9 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         } getOrElse Table.empty
 
       // todo using toDouble is BAD
-      def extractValue(res: Result) = perform(res) map { CNum(_) }
+      def extractValue(res: Result) = perform(res) map {
+        CNum(_)
+      }
     }
 
     object Forall extends Reduction(ReductionNamespace, "forall") {
@@ -688,7 +724,9 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               val bc = c.asInstanceOf[BoolColumn]
               var acc = back
 
-              val idef = RangeUtil.loopDefined(range, bc) { i => acc &&= bc(i) }
+              val idef = RangeUtil.loopDefined(range, bc) { i =>
+                acc &&= bc(i)
+              }
 
               back &&= acc
 
@@ -739,7 +777,9 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               val bc = c.asInstanceOf[BoolColumn]
               var acc = back
 
-              val idef = RangeUtil.loopDefined(range, bc) { i => acc ||= bc(i) }
+              val idef = RangeUtil.loopDefined(range, bc) { i =>
+                acc ||= bc(i)
+              }
 
               back ||= acc
 

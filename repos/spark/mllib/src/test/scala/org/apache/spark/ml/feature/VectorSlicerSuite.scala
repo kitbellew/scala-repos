@@ -88,8 +88,9 @@ class VectorSlicerSuite
     val resultAttrGroup =
       new AttributeGroup("expected", resultAttrs.asInstanceOf[Array[Attribute]])
 
-    val rdd =
-      sc.parallelize(data.zip(expected)).map { case (a, b) => Row(a, b) }
+    val rdd = sc.parallelize(data.zip(expected)).map {
+      case (a, b) => Row(a, b)
+    }
     val df = sqlContext.createDataFrame(
       rdd,
       StructType(

@@ -144,7 +144,9 @@ final class GetOrElseResultConverter[M <: ResultConverterDomain, T](
     super.getDumpInfo.copy(
       mainInfo =
         (try default().toString
-        catch { case e: Throwable => "[" + e.getClass.getName + "]" }),
+        catch {
+          case e: Throwable => "[" + e.getClass.getName + "]"
+        }),
       children = Vector(("child", child)))
 }
 

@@ -9,6 +9,8 @@ package scala {
 
     }
 
-    def bar(x: b.c): a.b.c = { b.foo(x); x }
+    def bar(x: b.c): a.b.c = {
+      b.foo(x); x
+    }
   }
 }

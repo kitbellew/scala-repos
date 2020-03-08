@@ -88,16 +88,22 @@ class Response[T] {
 
   /** Final data set was stored
     */
-  def isComplete = synchronized { complete }
+  def isComplete = synchronized {
+    complete
+  }
 
   /** Cancel action computing this response (Only the
     *  party that calls get on a response may cancel).
     */
-  def cancel() = synchronized { cancelled = true }
+  def cancel() = synchronized {
+    cancelled = true
+  }
 
   /** A cancel request for this response has been issued
     */
-  def isCancelled = synchronized { cancelled }
+  def isCancelled = synchronized {
+    cancelled
+  }
 
   def clear() = synchronized {
     data = None

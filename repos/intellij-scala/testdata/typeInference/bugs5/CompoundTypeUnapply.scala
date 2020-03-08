@@ -1,5 +1,7 @@
 object CompoundTypeUnapply {
-  val Length: { def unapply(s: String): Option[Int] } = new {
+  val Length: {
+    def unapply(s: String): Option[Int]
+  } = new {
     def unapply(s: String): Option[Int] = Some(s.length)
   }
 

@@ -201,7 +201,9 @@ object ResourceUtil {
       maxRanges: Int): String = {
     def rangesToString(ranges: Seq[MesosProtos.Value.Range]): String = {
       ranges
-        .map { range => s"${range.getBegin}->${range.getEnd}" }
+        .map { range =>
+          s"${range.getBegin}->${range.getEnd}"
+        }
         .mkString(",")
     }
 

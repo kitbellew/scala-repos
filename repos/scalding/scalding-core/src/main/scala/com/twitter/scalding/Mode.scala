@@ -177,7 +177,9 @@ trait HadoopMode extends Mode {
     val htap = tap.asInstanceOf[Tap[JobConf, _, _]]
     val conf = new JobConf(true) // initialize the default config
     // copy over Config
-    config.toMap.foreach { case (k, v) => conf.set(k, v) }
+    config.toMap.foreach {
+      case (k, v) => conf.set(k, v)
+    }
 
     val flowProcessClass = jobConf.get(
       Mode.CascadingFlowProcessClassKey,
@@ -209,7 +211,9 @@ trait CascadingLocal extends Mode {
   override def openForRead(config: Config, tap: Tap[_, _, _]) = {
     val ltap = tap.asInstanceOf[Tap[Properties, _, _]]
     val props = new java.util.Properties
-    config.toMap.foreach { case (k, v) => props.setProperty(k, v) }
+    config.toMap.foreach {
+      case (k, v) => props.setProperty(k, v)
+    }
     val fp = new LocalFlowProcess(props)
     ltap.retrieveSourceFields(fp)
     ltap.sourceConfInit(fp, props)

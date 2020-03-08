@@ -6,5 +6,7 @@ package com.twitter.finagle.stats
   */
 trait Counter {
   def incr(delta: Int)
-  def incr() { incr(1) }
+  def incr() {
+    incr(1)
+  }
 }

@@ -305,8 +305,12 @@ private[sql] object PartitioningUtils {
 
     def groupByKey[K, V](seq: Seq[(K, V)]): Map[K, Iterable[V]] =
       seq
-        .groupBy { case (key, _) => key }
-        .mapValues(_.map { case (_, value) => value })
+        .groupBy {
+          case (key, _) => key
+        }
+        .mapValues(_.map {
+          case (_, value) => value
+        })
 
     val partColNamesToPaths = groupByKey(pathWithPartitionValues.map {
       case (path, partValues) => partValues.columnNames -> path

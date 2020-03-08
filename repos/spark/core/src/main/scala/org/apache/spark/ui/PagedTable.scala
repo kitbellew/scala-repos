@@ -95,11 +95,21 @@ private[ui] trait PagedTable[T] {
     try {
       val PageData(totalPages, data) = _dataSource.pageData(page)
       <div>
-        {pageNavigation(page, _dataSource.pageSize, totalPages)}
-        <table class={tableCssClass} id={tableId}>
-          {headers}
+        {
+        pageNavigation(page, _dataSource.pageSize, totalPages)
+      }
+        <table class={
+        tableCssClass
+      } id={
+        tableId
+      }>
+          {
+        headers
+      }
           <tbody>
-            {data.map(row)}
+            {
+        data.map(row)
+      }
           </tbody>
         </table>
       </div>
@@ -107,11 +117,15 @@ private[ui] trait PagedTable[T] {
       case e: IndexOutOfBoundsException =>
         val PageData(totalPages, _) = _dataSource.pageData(1)
         <div>
-          {pageNavigation(1, _dataSource.pageSize, totalPages)}
+          {
+          pageNavigation(1, _dataSource.pageSize, totalPages)
+        }
           <div class="alert alert-error">
             <p>Error while rendering table:</p>
             <pre>
-              {Utils.exceptionString(e)}
+              {
+          Utils.exceptionString(e)
+        }
             </pre>
           </div>
         </div>
@@ -170,9 +184,15 @@ private[ui] trait PagedTable[T] {
       val pageTags = (startPage to endPage).map { p =>
         if (p == page) {
           // The current page should be disabled so that it cannot be clicked.
-          <li class="disabled"><a href="#">{p}</a></li>
+          <li class="disabled"><a href="#">{
+            p
+          }</a></li>
         } else {
-          <li><a href={Unparsed(pageLink(p))}>{p}</a></li>
+          <li><a href={
+            Unparsed(pageLink(p))
+          }>{
+            p
+          }</a></li>
         }
       }
 
@@ -191,7 +211,11 @@ private[ui] trait PagedTable[T] {
             .mapValues(URLDecoder.decode(_, "UTF-8"))
             .map {
               case (k, v) =>
-                <input type="hidden" name={k} value={v} />
+                <input type="hidden" name={
+                  k
+                } value={
+                  v
+                } />
             }
         } else {
           Seq.empty
@@ -200,26 +224,50 @@ private[ui] trait PagedTable[T] {
 
       <div>
         <div>
-          <form id={s"form-$tableId-page"}
+          <form id={
+        s"form-$tableId-page"
+      }
                 method="get"
-                action={Unparsed(goButtonFormPath)}
+                action={
+        Unparsed(goButtonFormPath)
+      }
                 class="form-inline pull-right"
                 style="margin-bottom: 0px;">
             <input type="hidden"
-                   name={prevPageSizeFormField}
-                   value={pageSize.toString} />
-            {hiddenFormFields}
-            <label>{totalPages} Pages. Jump to</label>
+                   name={
+        prevPageSizeFormField
+      }
+                   value={
+        pageSize.toString
+      } />
+            {
+        hiddenFormFields
+      }
+            <label>{
+        totalPages
+      } Pages. Jump to</label>
             <input type="text"
-                   name={pageNumberFormField}
-                   id={s"form-$tableId-page-no"}
-                   value={page.toString} class="span1" />
+                   name={
+        pageNumberFormField
+      }
+                   id={
+        s"form-$tableId-page-no"
+      }
+                   value={
+        page.toString
+      } class="span1" />
 
             <label>. Show </label>
             <input type="text"
-                   id={s"form-$tableId-page-size"}
-                   name={pageSizeFormField}
-                   value={pageSize.toString}
+                   id={
+        s"form-$tableId-page-size"
+      }
+                   name={
+        pageSizeFormField
+      }
+                   value={
+        pageSize.toString
+      }
                    class="span1" />
             <label>items in a page.</label>
 
@@ -232,7 +280,9 @@ private[ui] trait PagedTable[T] {
             {
         if (currentGroup > firstGroup) {
           <li>
-              <a href={Unparsed(pageLink(startPage - groupSize))} aria-label="Previous Group">
+              <a href={
+            Unparsed(pageLink(startPage - groupSize))
+          } aria-label="Previous Group">
                 <span aria-hidden="true">
                   &lt;&lt;
                 </span>
@@ -243,7 +293,9 @@ private[ui] trait PagedTable[T] {
             {
         if (page > 1) {
           <li>
-            <a href={Unparsed(pageLink(page - 1))} aria-label="Previous">
+            <a href={
+            Unparsed(pageLink(page - 1))
+          } aria-label="Previous">
               <span aria-hidden="true">
                 &lt;
               </span>
@@ -251,11 +303,15 @@ private[ui] trait PagedTable[T] {
             </li>
         }
       }
-            {pageTags}
+            {
+        pageTags
+      }
             {
         if (page < totalPages) {
           <li>
-              <a href={Unparsed(pageLink(page + 1))} aria-label="Next">
+              <a href={
+            Unparsed(pageLink(page + 1))
+          } aria-label="Next">
                 <span aria-hidden="true">&gt;</span>
               </a>
             </li>
@@ -264,7 +320,9 @@ private[ui] trait PagedTable[T] {
             {
         if (currentGroup < lastGroup) {
           <li>
-              <a href={Unparsed(pageLink(startPage + groupSize))} aria-label="Next Group">
+              <a href={
+            Unparsed(pageLink(startPage + groupSize))
+          } aria-label="Next Group">
                 <span aria-hidden="true">
                   &gt;&gt;
                 </span>

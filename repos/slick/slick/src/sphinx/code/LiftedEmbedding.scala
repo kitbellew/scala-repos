@@ -140,7 +140,9 @@ object LiftedEmbedding extends App {
   def usersForInsert =
     users.map(u =>
       (u.first, u.last).shaped <>
-        ({ t => User(None, t._1, t._2) }, { (u: User) =>
+        ({ t =>
+          User(None, t._1, t._2)
+        }, { (u: User) =>
           Some((u.first, u.last))
         }))
 //#insert2
@@ -219,7 +221,9 @@ object LiftedEmbedding extends App {
           criteriaRoast.map(
             coffee.name === _
           ) // not a condition as `criteriaRoast` evaluates to `None`
-        ).collect({ case Some(criteria) => criteria })
+        ).collect({
+            case Some(criteria) => criteria
+          })
           .reduceLeftOption(_ || _)
           .getOrElse(true: Rep[Boolean])
       }
@@ -298,7 +302,11 @@ object LiftedEmbedding extends App {
         val q = coffees filter { coffee =>
           // You can do any subquery here - this example uses the foreign key relation in coffees.
           coffee.supID in (
-            coffee.supplier filter { _.name === "Delete Me" } map { _.id }
+            coffee.supplier filter {
+              _.name === "Delete Me"
+            } map {
+              _.id
+            }
           )
         }
         val action = q.delete
@@ -409,7 +417,9 @@ object LiftedEmbedding extends App {
     };
     {
       //#update1
-      val q = for { c <- coffees if c.name === "Espresso" } yield c.price
+      val q = for {
+        c <- coffees if c.name === "Espresso"
+      } yield c.price
       val updateAction = q.update(10.49)
 
       // Get the statement without having to specify an updated value:
@@ -526,8 +536,12 @@ object LiftedEmbedding extends App {
 
       // And a ColumnType that maps it to Int values 1 and 0
       implicit val boolColumnType = MappedColumnType.base[Bool, Int](
-        { b => if (b == True) 1 else 0 }, // map Bool to Int
-        { i => if (i == 1) True else False } // map Int to Bool
+        { b =>
+          if (b == True) 1 else 0
+        }, // map Bool to Int
+        { i =>
+          if (i == 1) True else False
+        } // map Int to Bool
       )
 
       // You can now use Bool like any built-in column type (in tables, queries, etc.)
@@ -589,10 +603,18 @@ object LiftedEmbedding extends App {
 
       // Use it for returning data from a query
       val q2 = as
-        .map { case a => Pair(a.id, (a.s ++ a.s)) }
-        .filter { case Pair(id, _) => id =!= 1 }
-        .sortBy { case Pair(_, ss) => ss }
-        .map { case Pair(id, ss) => Pair(id, Pair(42, ss)) }
+        .map {
+          case a => Pair(a.id, (a.s ++ a.s))
+        }
+        .filter {
+          case Pair(id, _) => id =!= 1
+        }
+        .sortBy {
+          case Pair(_, ss) => ss
+        }
+        .map {
+          case Pair(id, ss) => Pair(id, Pair(42, ss))
+        }
       // returns: Vector(Pair(3,Pair(42,"bb")), Pair(2,Pair(42,"cc")))
       //#recordtype2
 
@@ -625,9 +647,15 @@ object LiftedEmbedding extends App {
       )
 
       val q3 = bs
-        .map { case b => LiftedB(b.id, (b.s ++ b.s)) }
-        .filter { case LiftedB(id, _) => id =!= 1 }
-        .sortBy { case LiftedB(_, ss) => ss }
+        .map {
+          case b => LiftedB(b.id, (b.s ++ b.s))
+        }
+        .filter {
+          case LiftedB(id, _) => id =!= 1
+        }
+        .sortBy {
+          case LiftedB(_, ss) => ss
+        }
 
       // returns: Vector(B(3,"bb"), B(2,"cc"))
       //#case-class-shape
@@ -664,9 +692,15 @@ object LiftedEmbedding extends App {
       )
 
       val q4 = cs
-        .map { case c => LiftedC(c.projection.p, LiftedB(c.id, (c.s ++ c.s))) }
-        .filter { case LiftedC(_, LiftedB(id, _)) => id =!= 1 }
-        .sortBy { case LiftedC(Pair(_, p2), LiftedB(_, ss)) => ss ++ p2 }
+        .map {
+          case c => LiftedC(c.projection.p, LiftedB(c.id, (c.s ++ c.s)))
+        }
+        .filter {
+          case LiftedC(_, LiftedB(id, _)) => id =!= 1
+        }
+        .sortBy {
+          case LiftedC(Pair(_, p2), LiftedB(_, ss)) => ss ++ p2
+        }
 
       // returns: Vector(C(Pair(9,"z"),B(3,"bb")), C(Pair(8,"y"),B(2,"cc")))
       //#combining-shapes

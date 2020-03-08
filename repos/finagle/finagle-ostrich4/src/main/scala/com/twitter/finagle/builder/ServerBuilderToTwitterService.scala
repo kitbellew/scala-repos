@@ -27,6 +27,8 @@ class ServerBuildertoTwitterService[Req, Rep](
   }
 
   def shutdown() {
-    server foreach { _.close(gracePeriod) }
+    server foreach {
+      _.close(gracePeriod)
+    }
   }
 }

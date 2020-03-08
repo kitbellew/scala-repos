@@ -77,7 +77,12 @@ trait Scheduler {
     */
   final def schedule(initialDelay: FiniteDuration, interval: FiniteDuration)(
       f: ⇒ Unit)(implicit executor: ExecutionContext): Cancellable =
-    schedule(initialDelay, interval, new Runnable { override def run = f })
+    schedule(
+      initialDelay,
+      interval,
+      new Runnable {
+        override def run = f
+      })
 
   /**
     * Schedules a `Runnable` to be run repeatedly with an initial delay and
@@ -126,7 +131,11 @@ trait Scheduler {
     */
   final def scheduleOnce(delay: FiniteDuration)(f: ⇒ Unit)(
       implicit executor: ExecutionContext): Cancellable =
-    scheduleOnce(delay, new Runnable { override def run = f })
+    scheduleOnce(
+      delay,
+      new Runnable {
+        override def run = f
+      })
 
   /**
     * Schedules a Runnable to be run once with a delay, i.e. a time period that

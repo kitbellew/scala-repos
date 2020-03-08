@@ -274,7 +274,9 @@ trait AccountManagementControllerBase extends ControllerBase {
         name: String,
         value: String,
         messages: Messages): Option[String] =
-      getAccountByUserName(value, true).map { _ => "User already exists." }
+      getAccountByUserName(value, true).map { _ =>
+        "User already exists."
+      }
   }
 
   protected def uniqueMailAddress(paramName: String = ""): Constraint =
@@ -289,7 +291,9 @@ trait AccountManagementControllerBase extends ControllerBase {
             if (paramName.isEmpty) true
             else Some(x.userName) != params.get(paramName)
           }
-          .map { _ => "Mail address is already registered." }
+          .map { _ =>
+            "Mail address is already registered."
+          }
     }
 
 }

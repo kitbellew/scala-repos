@@ -16,7 +16,9 @@ import scala.tools.testing.ClearAfterClass
 
 object StringConcatTest extends ClearAfterClass.Clearable {
   var compiler = newCompiler()
-  def clear(): Unit = { compiler = null }
+  def clear(): Unit = {
+    compiler = null
+  }
 }
 
 @RunWith(classOf[JUnit4])
@@ -114,7 +116,9 @@ class StringConcatTest extends ClearAfterClass {
 
   @Test
   def concatPrimitiveCorrectness(): Unit = {
-    val obj: Object = new { override def toString = "TTT" }
+    val obj: Object = new {
+      override def toString = "TTT"
+    }
     def t(
         v: Unit,
         z: Boolean,
@@ -135,7 +139,9 @@ class StringConcatTest extends ClearAfterClass {
         obj + str + v + z + c + b + s + i + f + l + d + sbuf + chsq + chrs
       s1 + "//" + s2
     }
-    def sbuf = { val r = new java.lang.StringBuffer(); r.append("sbuf"); r }
+    def sbuf = {
+      val r = new java.lang.StringBuffer(); r.append("sbuf"); r
+    }
     def chsq: java.lang.CharSequence = "chsq"
     val s = t(
       (),

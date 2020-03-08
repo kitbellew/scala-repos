@@ -136,7 +136,9 @@ trait ManagedExecution
             query: String,
             context: EvaluationContext,
             opts: QueryOptions) = {
-          queryExec.execute(query, context, opts) map { _._2 }
+          queryExec.execute(query, context, opts) map {
+            _._2
+          }
         }
       }
     }
@@ -193,7 +195,9 @@ trait ManagedExecution
       Future,
       EvaluationError,
       (Option[JobId], StreamT[Future, Slice])] = {
-      result map { stream => M.jobId -> completeJob(stream) }
+      result map { stream =>
+        M.jobId -> completeJob(stream)
+      }
     }
   }
 

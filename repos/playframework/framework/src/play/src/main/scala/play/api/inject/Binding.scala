@@ -210,7 +210,9 @@ final case class BindingKey[T](
     * Bind this binding key to the given instance.
     */
   def to[A <: T](instance: => A): Binding[T] =
-    to(new Provider[A] { def get = instance })
+    to(new Provider[A] {
+      def get = instance
+    })
 
   /**
     * Bind this binding key to another binding key.

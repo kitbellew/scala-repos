@@ -23,10 +23,14 @@ class SummarizingStatsReceiver extends StatsReceiverWithCumulativeGauges {
 
   // synchronized on `this`
   private[this] var _gauges = Map[Seq[String], () => Float]()
-  def gauges: Map[Seq[String], () => Float] = synchronized { _gauges }
+  def gauges: Map[Seq[String], () => Float] = synchronized {
+    _gauges
+  }
 
   def counter(name: String*) = new Counter {
-    def incr(delta: Int) { counters.addAndGet(name, delta) }
+    def incr(delta: Int) {
+      counters.addAndGet(name, delta)
+    }
   }
 
   def stat(name: String*) = new Stat {
@@ -66,8 +70,9 @@ class SummarizingStatsReceiver extends StatsReceiverWithCumulativeGauges {
         (k, xs)
     }
 
-    val counterLines =
-      (counterValues map { case (k, v) => (variableName(k), v.toString) }).toSeq
+    val counterLines = (counterValues map {
+      case (k, v) => (variableName(k), v.toString)
+    }).toSeq
     val statLines = (statValues map {
       case (k, xs) =>
         val n = xs.length
@@ -100,10 +105,18 @@ class SummarizingStatsReceiver extends StatsReceiverWithCumulativeGauges {
           "p999=%s, p9999=%s".format(slice(.999d), slice(.9999d)))
     }).toSeq
 
-    val sortedCounters = counterLines.sortBy { case (k, _) => k }
-    val sortedGauges = gaugeValues.sortBy { case (k, _)    => k }
-    val sortedStats = statLines.sortBy { case (k, _)       => k }
-    lazy val sortedTails = tailValues.sortBy { case (k, _) => k }
+    val sortedCounters = counterLines.sortBy {
+      case (k, _) => k
+    }
+    val sortedGauges = gaugeValues.sortBy {
+      case (k, _) => k
+    }
+    val sortedStats = statLines.sortBy {
+      case (k, _) => k
+    }
+    lazy val sortedTails = tailValues.sortBy {
+      case (k, _) => k
+    }
 
     val fmt = Function.tupled { (k: String, v: String) =>
       "%-30s %s".format(k, v)

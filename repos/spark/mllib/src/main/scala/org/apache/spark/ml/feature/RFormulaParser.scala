@@ -89,7 +89,11 @@ private[ml] case class ParsedRFormula(label: ColumnRef, terms: Seq[Term]) {
     val rest = expandInteraction(schema, terms.tail)
     val validInteractions = (terms.head match {
       case Dot =>
-        expandDot(schema).flatMap { t => rest.map { r => Seq(t) ++ r } }
+        expandDot(schema).flatMap { t =>
+          rest.map { r =>
+            Seq(t) ++ r
+          }
+        }
       case ColumnRef(value) =>
         rest.map(Seq(value) ++ _)
     }).map(_.distinct)
@@ -161,18 +165,26 @@ private[ml] case class Deletion(term: Term) extends Term
   */
 private[ml] object RFormulaParser extends RegexParsers {
   private val intercept: Parser[Intercept] =
-    "([01])".r ^^ { case a => Intercept(a == "1") }
+    "([01])".r ^^ {
+      case a => Intercept(a == "1")
+    }
 
   private val columnRef: Parser[ColumnRef] =
-    "([a-zA-Z]|\\.[a-zA-Z_])[a-zA-Z0-9._]*".r ^^ { case a => ColumnRef(a) }
+    "([a-zA-Z]|\\.[a-zA-Z_])[a-zA-Z0-9._]*".r ^^ {
+      case a => ColumnRef(a)
+    }
 
-  private val dot: Parser[InteractableTerm] = "\\.".r ^^ { case _ => Dot }
+  private val dot: Parser[InteractableTerm] = "\\.".r ^^ {
+    case _ => Dot
+  }
 
   private val interaction: Parser[List[InteractableTerm]] =
     rep1sep(columnRef | dot, ":")
 
   private val term: Parser[Term] = intercept |
-    interaction ^^ { case terms => ColumnInteraction(terms) } | dot | columnRef
+    interaction ^^ {
+      case terms => ColumnInteraction(terms)
+    } | dot | columnRef
 
   private val terms: Parser[List[Term]] =
     (term ~ rep("+" ~ term | "-" ~ term)) ^^ {
@@ -184,7 +196,9 @@ private[ml] object RFormulaParser extends RegexParsers {
     }
 
   private val formula: Parser[ParsedRFormula] =
-    (columnRef ~ "~" ~ terms) ^^ { case r ~ "~" ~ t => ParsedRFormula(r, t) }
+    (columnRef ~ "~" ~ terms) ^^ {
+      case r ~ "~" ~ t => ParsedRFormula(r, t)
+    }
 
   def parse(value: String): ParsedRFormula = parseAll(formula, value) match {
     case Success(result, _) => result

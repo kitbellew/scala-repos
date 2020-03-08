@@ -23,7 +23,9 @@ class LimitConcurrentRequestsFilterTest
     val request = mock[HttpServletRequest]
     val response = mock[HttpServletResponse]
     val chain = mock[FilterChain]
-    chain.doFilter(request, response) answers { args => latch.countDown() }
+    chain.doFilter(request, response) answers { args =>
+      latch.countDown()
+    }
     val rf = new LimitConcurrentRequestsFilter(Some(2))
 
     When("requests where made before the limit")
@@ -71,7 +73,9 @@ class LimitConcurrentRequestsFilterTest
     val request = mock[HttpServletRequest]
     val response = mock[HttpServletResponse]
     val chain = mock[FilterChain]
-    chain.doFilter(request, response) answers { args => latch.countDown() }
+    chain.doFilter(request, response) answers { args =>
+      latch.countDown()
+    }
     val rf = new LimitConcurrentRequestsFilter(None)
     rf.semaphore.availablePermits() should be(0)
 

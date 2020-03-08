@@ -1,1 +1,3 @@
-object S { new J(null) }
+object S {
+  new J(null)
+}

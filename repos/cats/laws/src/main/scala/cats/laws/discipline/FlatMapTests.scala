@@ -32,5 +32,7 @@ trait FlatMapTests[F[_]] extends ApplyTests[F] {
 
 object FlatMapTests {
   def apply[F[_]: FlatMap]: FlatMapTests[F] =
-    new FlatMapTests[F] { def laws: FlatMapLaws[F] = FlatMapLaws[F] }
+    new FlatMapTests[F] {
+      def laws: FlatMapLaws[F] = FlatMapLaws[F]
+    }
 }

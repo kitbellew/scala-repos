@@ -120,7 +120,11 @@ case class HandshakeResponse(
 
   def toPacket = {
     val fixedBodySize = 34
-    val dbStrSize = database.map { _.length + 1 }.getOrElse(0)
+    val dbStrSize = database
+      .map {
+        _.length + 1
+      }
+      .getOrElse(0)
     val packetBodySize =
       username
         .getOrElse("")
@@ -229,7 +233,9 @@ class ExecuteRequest(
     // convert parameters to binary representation.
     val sizeOfParams = sizeOfParameters(params)
     val values = BufferWriter(new Array[Byte](sizeOfParams))
-    params foreach { writeParam(_, values) }
+    params foreach {
+      writeParam(_, values)
+    }
 
     // encode null values in bitmap
     val nullBitmap = makeNullBitmap(params)
@@ -238,7 +244,9 @@ class ExecuteRequest(
     // only if the statement has new parameters.
     val composite = if (hasNewParams) {
       val types = BufferWriter(new Array[Byte](params.size * 2))
-      params foreach { writeTypeCode(_, types) }
+      params foreach {
+        writeTypeCode(_, types)
+      }
       Buffer(
         bw,
         Buffer(nullBitmap),

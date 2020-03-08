@@ -95,7 +95,9 @@ object Mod extends LilaController {
   }
 
   def log = Secure(_.SeeReport) { implicit ctx => me =>
-    modLogApi.recent map { html.mod.log(_) }
+    modLogApi.recent map {
+      html.mod.log(_)
+    }
   }
 
   def communication(username: String) = Secure(_.MarkTroll) {
@@ -150,7 +152,9 @@ object Mod extends LilaController {
     )
 
   def ipIntel(ip: String) = Secure(_.IpBan) { ctx => me =>
-    ipIntelCache(ip).map { Ok(_) }
+    ipIntelCache(ip).map {
+      Ok(_)
+    }
   }
 
   def redirect(username: String, mod: Boolean = true) =
@@ -179,6 +183,8 @@ object Mod extends LilaController {
 
   def search = Secure(_.UserSearch) { implicit ctx => me =>
     val query = (~get("q")).trim
-    Env.mod.search(query) map { users => html.mod.search(query, users) }
+    Env.mod.search(query) map { users =>
+      html.mod.search(query, users)
+    }
   }
 }

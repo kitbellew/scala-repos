@@ -202,7 +202,9 @@ class MongoAPIKeyManager(
       false)
     database(
       insert(apiKey.serialize.asInstanceOf[JObject])
-        .into(settings.apiKeys)) map { _ => apiKey }
+        .into(settings.apiKeys)) map { _ =>
+      apiKey
+    }
   }
 
   def createGrant(
@@ -266,7 +268,9 @@ class MongoAPIKeyManager(
 
   private def findAll[A](collection: String)(
       implicit extract: Extractor[A]): Future[Seq[A]] =
-    database { selectAll.from(collection) } map {
+    database {
+      selectAll.from(collection)
+    } map {
       _.map(_.deserialize[A]).toSeq
     }
 
@@ -274,7 +278,11 @@ class MongoAPIKeyManager(
   def listGrants() = findAll[Grant](settings.grants)
 
   def findAPIKey(apiKey: APIKey) =
-    ToPlusOps[({ type λ[α] = Future[Option[α]] })#λ, APIKeyRecord](
+    ToPlusOps[
+      ({
+        type λ[α] = Future[Option[α]]
+      })#λ,
+      APIKeyRecord](
       findOneMatching[APIKeyRecord]("apiKey", apiKey, settings.apiKeys)) <+>
       findOneMatching[APIKeyRecord]("tid", apiKey, settings.apiKeys)
 
@@ -282,8 +290,11 @@ class MongoAPIKeyManager(
     findAllMatching[APIKeyRecord]("issuerKey", apiKey, settings.apiKeys)
 
   def findGrant(gid: GrantId) =
-    ToPlusOps[({ type λ[α] = Future[Option[α]] })#λ, Grant](
-      findOneMatching[Grant]("grantId", gid, settings.grants)) <+>
+    ToPlusOps[
+      ({
+        type λ[α] = Future[Option[α]]
+      })#λ,
+      Grant](findOneMatching[Grant]("grantId", gid, settings.grants)) <+>
       findOneMatching[Grant]("gid", gid, settings.grants)
 
   def findGrantChildren(gid: GrantId) = findGrantChildren(gid, settings.grants)
@@ -292,7 +303,11 @@ class MongoAPIKeyManager(
   def listDeletedGrants() = findAll[Grant](settings.grants)
 
   def findDeletedAPIKey(apiKey: APIKey) =
-    ToPlusOps[({ type λ[α] = Future[Option[α]] })#λ, APIKeyRecord](
+    ToPlusOps[
+      ({
+        type λ[α] = Future[Option[α]]
+      })#λ,
+      APIKeyRecord](
       findOneMatching[APIKeyRecord](
         "apiKey",
         apiKey,
@@ -300,8 +315,11 @@ class MongoAPIKeyManager(
       findOneMatching[APIKeyRecord]("tid", apiKey, settings.deletedAPIKeys)
 
   def findDeletedGrant(gid: GrantId) =
-    ToPlusOps[({ type λ[α] = Future[Option[α]] })#λ, Grant](
-      findOneMatching[Grant]("grantId", gid, settings.deletedGrants)) <+>
+    ToPlusOps[
+      ({
+        type λ[α] = Future[Option[α]]
+      })#λ,
+      Grant](findOneMatching[Grant]("grantId", gid, settings.deletedGrants)) <+>
       findOneMatching[Grant]("gid", gid, settings.deletedGrants)
 
   def findDeletedGrantChildren(gid: GrantId) =
@@ -309,8 +327,11 @@ class MongoAPIKeyManager(
 
   // This has to account for structural changes between v0 and v1 grant documents
   private def findGrantChildren(gid: GrantId, collection: String) =
-    ToPlusOps[({ type λ[α] = Future[Set[α]] })#λ, Grant](
-      findAllIncluding[Grant]("parentIds", gid, collection)) <+>
+    ToPlusOps[
+      ({
+        type λ[α] = Future[Set[α]]
+      })#λ,
+      Grant](findAllIncluding[Grant]("parentIds", gid, collection)) <+>
       findAllMatching[Grant]("issuer", gid, collection)
 
   def addGrants(apiKey: APIKey, add: Set[GrantId]) = updateAPIKey(apiKey) { r =>
@@ -332,7 +353,9 @@ class MongoAPIKeyManager(
             database {
               val updateObj = nt.serialize.asInstanceOf[JObject]
               update(settings.apiKeys).set(updateObj).where("apiKey" === apiKey)
-            }.map { _ => Some(nt) }
+            }.map { _ =>
+              Some(nt)
+            }
           case _ => Future(Some(t))
         }
       case None => Future(None)
@@ -348,7 +371,9 @@ class MongoAPIKeyManager(
               .into(settings.deletedAPIKeys))
           _ <- database(
             remove.from(settings.apiKeys).where("apiKey" === apiKey))
-        } yield { ot }
+        } yield {
+          ot
+        }
       case None => Future(None)
     }
 
@@ -357,7 +382,9 @@ class MongoAPIKeyManager(
       children <- findGrantChildren(gid)
       deletedChildren <- Future.sequence(children map { g =>
         deleteGrant(g.grantId)
-      }) map { _.flatten }
+      }) map {
+        _.flatten
+      }
       leafOpt <- findGrant(gid)
       result <- leafOpt map { leafGrant =>
         for {
@@ -365,7 +392,9 @@ class MongoAPIKeyManager(
             insert(leafGrant.serialize.asInstanceOf[JObject])
               .into(settings.deletedGrants))
           _ <- database(remove.from(settings.grants).where("grantId" === gid))
-        } yield { deletedChildren + leafGrant }
+        } yield {
+          deletedChildren + leafGrant
+        }
       } getOrElse {
         Promise successful deletedChildren
       }

@@ -1,6 +1,10 @@
 object `package` {
-  trait Score { def toString: String }
-  trait Test[+T <: Score] { def apply(s: String): T }
+  trait Score {
+    def toString: String
+  }
+  trait Test[+T <: Score] {
+    def apply(s: String): T
+  }
 
   case class FT(f: Float) extends Score
   implicit object FT extends Test[FT] {

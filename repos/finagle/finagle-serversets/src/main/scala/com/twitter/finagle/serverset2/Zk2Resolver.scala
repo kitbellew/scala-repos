@@ -115,7 +115,9 @@ class Zk2Resolver(
     statsReceiver.addGauge("session_cache_size") {
       discoverers.snap.size.toFloat
     },
-    statsReceiver.addGauge("observed_serversets") { nsets.get() }
+    statsReceiver.addGauge("observed_serversets") {
+      nsets.get()
+    }
   )
 
   private[this] def mkDiscoverer(hosts: String) = {
@@ -155,8 +157,12 @@ class Zk2Resolver(
 
         // The lifetimes of these gauges need to be managed if we
         // ever de-memoize addrOf.
-        scoped.provideGauge("limbo") { nlimbo }
-        scoped.provideGauge("size") { size }
+        scoped.provideGauge("limbo") {
+          nlimbo
+        }
+        scoped.provideGauge("size") {
+          size
+        }
 
         // First, convert the Op-based serverset address to a
         // Var[Addr], filtering out only the endpoints we are
@@ -261,7 +267,9 @@ class Zk2Resolver(
           /*ignore*/
           ()
         }
-        Future.sleep(5.minutes) before { c.close() }
+        Future.sleep(5.minutes) before {
+          c.close()
+        }
 
         stabilizedVa
     }

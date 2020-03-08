@@ -39,7 +39,9 @@ object SbtOpts {
         Some(noShareOpts)
       else if (opt.startsWith("-no-global"))
         Some(noGlobalOpts)
-      else if (sbtToJdkOpts.exists { case (k, _) => opt.startsWith(k) })
+      else if (sbtToJdkOpts.exists {
+                 case (k, _) => opt.startsWith(k)
+               })
         processOptWithArg(opt)
       else if (opt.startsWith("-J"))
         Some(opt.substring(2))
@@ -51,10 +53,14 @@ object SbtOpts {
   }
 
   private def processOptWithArg(opt: String): Option[String] = {
-    sbtToJdkOpts.find { case (k, _) => opt.startsWith(k) }.flatMap {
-      case (k, x) =>
-        val v = opt.replace(k, "").trim
-        if (v.isEmpty) None else Some(x + v)
-    }
+    sbtToJdkOpts
+      .find {
+        case (k, _) => opt.startsWith(k)
+      }
+      .flatMap {
+        case (k, x) =>
+          val v = opt.replace(k, "").trim
+          if (v.isEmpty) None else Some(x + v)
+      }
   }
 }

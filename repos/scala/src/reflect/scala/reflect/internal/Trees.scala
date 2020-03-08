@@ -60,7 +60,9 @@ trait Trees extends api.Trees {
     @deprecated("Use setType", "2.11.0") def tpe_=(t: Type): Unit = setType(t)
 
     def clearType(): this.type = this setType null
-    def setType(tp: Type): this.type = { rawtpe = tp; this }
+    def setType(tp: Type): this.type = {
+      rawtpe = tp; this
+    }
     def defineType(tp: Type): this.type = setType(tp)
 
     def symbol: Symbol =
@@ -69,7 +71,9 @@ trait Trees extends api.Trees {
       throw new UnsupportedOperationException(
         "symbol_= inapplicable for " + this)
     }
-    def setSymbol(sym: Symbol): this.type = { symbol = sym; this }
+    def setSymbol(sym: Symbol): this.type = {
+      symbol = sym; this
+    }
     def hasSymbolField = false
     @deprecated("Use hasSymbolField", "2.11.0") def hasSymbol = hasSymbolField
 
@@ -559,7 +563,9 @@ trait Trees extends api.Trees {
     assert(fun.isTerm, fun)
 
     override def symbol: Symbol = fun.symbol
-    override def symbol_=(sym: Symbol) { fun.symbol = sym }
+    override def symbol_=(sym: Symbol) {
+      fun.symbol = sym
+    }
   }
   object TypeApply extends TypeApplyExtractor
 
@@ -567,7 +573,9 @@ trait Trees extends api.Trees {
       extends GenericApply
       with ApplyApi {
     override def symbol: Symbol = fun.symbol
-    override def symbol_=(sym: Symbol) { fun.symbol = sym }
+    override def symbol_=(sym: Symbol) {
+      fun.symbol = sym
+    }
   }
   object Apply extends ApplyExtractor
 
@@ -599,7 +607,9 @@ trait Trees extends api.Trees {
 
   case class Super(qual: Tree, mix: TypeName) extends TermTree with SuperApi {
     override def symbol: Symbol = qual.symbol
-    override def symbol_=(sym: Symbol) { qual.symbol = sym }
+    override def symbol_=(sym: Symbol) {
+      qual.symbol = sym
+    }
   }
   object Super extends SuperExtractor
 
@@ -625,7 +635,9 @@ trait Trees extends api.Trees {
       extends TermTree
       with ReferenceToBoxedApi {
     override def symbol: Symbol = ident.symbol
-    override def symbol_=(sym: Symbol) { ident.symbol = sym }
+    override def symbol_=(sym: Symbol) {
+      ident.symbol = sym
+    }
   }
   object ReferenceToBoxed extends ReferenceToBoxedExtractor
 
@@ -666,7 +678,9 @@ trait Trees extends api.Trees {
     assert(tpt.isType, tpt)
 
     override def symbol: Symbol = tpt.symbol
-    override def symbol_=(sym: Symbol) { tpt.symbol = sym }
+    override def symbol_=(sym: Symbol) {
+      tpt.symbol = sym
+    }
   }
   object AppliedTypeTree extends AppliedTypeTreeExtractor
 
@@ -1232,7 +1246,9 @@ trait Trees extends api.Trees {
       requireLegal(pos, NoPosition, "pos"); this
     }
     override def pos_=(pos: Position) = setPos(pos)
-    override def setType(t: Type) = { requireLegal(t, NoType, "tpe"); this }
+    override def setType(t: Type) = {
+      requireLegal(t, NoType, "tpe"); this
+    }
     override def tpe_=(t: Type) = setType(t)
 
     // We silently ignore attempts to add attachments to `EmptyTree`. See SI-8947 for an
@@ -1312,7 +1328,9 @@ trait Trees extends api.Trees {
   def Try(body: Tree, cases: (Tree, Tree)*): Try =
     Try(
       body,
-      cases.toList map { case (pat, rhs) => CaseDef(pat, EmptyTree, rhs) },
+      cases.toList map {
+        case (pat, rhs) => CaseDef(pat, EmptyTree, rhs)
+      },
       EmptyTree)
 
   def Throw(tpe: Type, args: Tree*): Throw =
@@ -1518,7 +1536,9 @@ trait Trees extends api.Trees {
         case md: ModuleDef => traverseMemberDef(md, mclass(tree.symbol))
         case md: MemberDef => traverseMemberDef(md, tree.symbol)
         case Function(vparams, body) =>
-          atOwner(tree.symbol) { traverseParams(vparams); traverse(body) }
+          atOwner(tree.symbol) {
+            traverseParams(vparams); traverse(body)
+          }
         case _ => traverseComponents()
       }
     }
@@ -1693,7 +1713,9 @@ trait Trees extends api.Trees {
       case ReferenceToBoxed(idt) =>
         treeCopy.ReferenceToBoxed(
           tree,
-          transform(idt) match { case idt1: Ident => idt1 })
+          transform(idt) match {
+            case idt1: Ident => idt1
+          })
       case _ =>
         xtransform(transformer, tree)
     }

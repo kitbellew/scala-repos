@@ -12,7 +12,9 @@ object Test extends App {
     def fail(i: Int) = s"Failed at $i"
     barrier.await()
     for (i <- 1 to attempts; p <- systemProperties)
-      p match { case (k, v) => assert(k != null && v != null, fail(i)) }
+      p match {
+        case (k, v) => assert(k != null && v != null, fail(i))
+      }
   }
   probe onComplete {
     case _ => done = true

@@ -36,7 +36,9 @@ class MutatedSourceJob(args: Args) extends Job(args) {
     TypedPipe.from(BijectedSourceSink(TypedTsv[Long]("input0")))
 
   in0
-    .map { tup: (Int, Int) => (tup._1 * 2, tup._2 * 2) }
+    .map { tup: (Int, Int) =>
+      (tup._1 * 2, tup._2 * 2)
+    }
     .write(BijectedSourceSink(TypedTsv[Long]("output")))
 }
 
@@ -71,7 +73,9 @@ class ContraMappedAndThenSourceJob(args: Args) extends Job(args) {
     .from(TypedTsv[Long]("input0").andThen { x =>
       (LongIntPacker.l(x), LongIntPacker.r(x))
     })
-    .map { case (l, r) => (l * 2, r * 2) }
+    .map {
+      case (l, r) => (l * 2, r * 2)
+    }
     .write(TypedTsv[Long]("output").contraMap {
       case (l, r) => LongIntPacker.lr(l, r)
     })

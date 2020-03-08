@@ -142,7 +142,9 @@ final case class SimpleCaseClass(x: Int, y: String)
 // Case 3 - varags
 final case class MultipleParamListCaseClass(x: Int)(val y: String)
 // Case 4 - Nested public var
-final case class NestedVarCaseClass(x: Int) { var y: Int = 0 }
+final case class NestedVarCaseClass(x: Int) {
+  var y: Int = 0
+}
 // Case 5 - Embedded in class
 final class NestedCaseClassHolder {
   final case class NestedCaseClass(x: Int)

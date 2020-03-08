@@ -128,30 +128,56 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
       <div class="row-fluid">
           <div class="span12">
             <ul class="unstyled">
-              <li><strong>URL:</strong> {state.uri}</li>
+              <li><strong>URL:</strong> {
+        state.uri
+      }</li>
               {
         state.restUri
           .map { uri =>
             <li>
-                    <strong>REST URL:</strong> {uri}
+                    <strong>REST URL:</strong> {
+              uri
+            }
                     <span class="rest-uri"> (cluster mode)</span>
                   </li>
           }
-          .getOrElse { Seq.empty }
+          .getOrElse {
+            Seq.empty
+          }
       }
-              <li><strong>Alive Workers:</strong> {aliveWorkers.length}</li>
-              <li><strong>Cores in use:</strong> {aliveWorkers.map(_.cores).sum} Total,
-                {aliveWorkers.map(_.coresUsed).sum} Used</li>
+              <li><strong>Alive Workers:</strong> {
+        aliveWorkers.length
+      }</li>
+              <li><strong>Cores in use:</strong> {
+        aliveWorkers.map(_.cores).sum
+      } Total,
+                {
+        aliveWorkers.map(_.coresUsed).sum
+      } Used</li>
               <li><strong>Memory in use:</strong>
-                {Utils.megabytesToString(aliveWorkers.map(_.memory).sum)} Total,
-                {Utils.megabytesToString(aliveWorkers.map(_.memoryUsed).sum)} Used</li>
+                {
+        Utils.megabytesToString(aliveWorkers.map(_.memory).sum)
+      } Total,
+                {
+        Utils.megabytesToString(aliveWorkers.map(_.memoryUsed).sum)
+      } Used</li>
               <li><strong>Applications:</strong>
-                {state.activeApps.length} Running,
-                {state.completedApps.length} Completed </li>
+                {
+        state.activeApps.length
+      } Running,
+                {
+        state.completedApps.length
+      } Completed </li>
               <li><strong>Drivers:</strong>
-                {state.activeDrivers.length} Running,
-                {state.completedDrivers.length} Completed </li>
-              <li><strong>Status:</strong> {state.status}</li>
+                {
+        state.activeDrivers.length
+      } Running,
+                {
+        state.completedDrivers.length
+      } Completed </li>
+              <li><strong>Status:</strong> {
+        state.status
+      }</li>
             </ul>
           </div>
         </div>
@@ -159,14 +185,18 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
         <div class="row-fluid">
           <div class="span12">
             <h4> Workers </h4>
-            {workerTable}
+            {
+        workerTable
+      }
           </div>
         </div>
 
         <div class="row-fluid">
           <div class="span12">
             <h4> Running Applications </h4>
-            {activeAppsTable}
+            {
+        activeAppsTable
+      }
           </div>
         </div>
 
@@ -176,7 +206,9 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
           <div class="row-fluid">
                <div class="span12">
                  <h4> Running Drivers </h4>
-                 {activeDriversTable}
+                 {
+            activeDriversTable
+          }
                </div>
              </div>
         }
@@ -186,7 +218,9 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
         <div class="row-fluid">
           <div class="span12">
             <h4> Completed Applications </h4>
-            {completedAppsTable}
+            {
+        completedAppsTable
+      }
           </div>
         </div>
 
@@ -196,7 +230,9 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
           <div class="row-fluid">
                 <div class="span12">
                   <h4> Completed Drivers </h4>
-                  {completedDriversTable}
+                  {
+            completedDriversTable
+          }
                 </div>
               </div>
         }
@@ -209,14 +245,34 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
   private def workerRow(worker: WorkerInfo): Seq[Node] = {
     <tr>
       <td>
-        <a href={worker.webUiAddress}>{worker.id}</a>
+        <a href={
+      worker.webUiAddress
+    }>{
+      worker.id
+    }</a>
       </td>
-      <td>{worker.host}:{worker.port}</td>
-      <td>{worker.state}</td>
-      <td>{worker.cores} ({worker.coresUsed} Used)</td>
-      <td sorttable_customkey={"%s.%s".format(worker.memory, worker.memoryUsed)}>
-        {Utils.megabytesToString(worker.memory)}
-        ({Utils.megabytesToString(worker.memoryUsed)} Used)
+      <td>{
+      worker.host
+    }:{
+      worker.port
+    }</td>
+      <td>{
+      worker.state
+    }</td>
+      <td>{
+      worker.cores
+    } ({
+      worker.coresUsed
+    } Used)</td>
+      <td sorttable_customkey={
+      "%s.%s".format(worker.memory, worker.memoryUsed)
+    }>
+        {
+      Utils.megabytesToString(worker.memory)
+    }
+        ({
+      Utils.megabytesToString(worker.memoryUsed)
+    } Used)
       </td>
     </tr>
   }
@@ -229,29 +285,57 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
           s"if (window.confirm('Are you sure you want to kill application ${app.id} ?')) " +
             "{ this.parentNode.submit(); return true; } else { return false; }"
         <form action="app/kill/" method="POST" style="display:inline">
-        <input type="hidden" name="id" value={app.id.toString}/>
+        <input type="hidden" name="id" value={
+          app.id.toString
+        }/>
         <input type="hidden" name="terminate" value="true"/>
-        <a href="#" onclick={confirm} class="kill-link">(kill)</a>
+        <a href="#" onclick={
+          confirm
+        } class="kill-link">(kill)</a>
       </form>
       }
     <tr>
       <td>
-        <a href={"app?appId=" + app.id}>{app.id}</a>
-        {killLink}
+        <a href={
+      "app?appId=" + app.id
+    }>{
+      app.id
+    }</a>
+        {
+      killLink
+    }
       </td>
       <td>
-        <a href={app.curAppUIUrl}>{app.desc.name}</a>
+        <a href={
+      app.curAppUIUrl
+    }>{
+      app.desc.name
+    }</a>
       </td>
       <td>
-        {app.coresGranted}
+        {
+      app.coresGranted
+    }
       </td>
-      <td sorttable_customkey={app.desc.memoryPerExecutorMB.toString}>
-        {Utils.megabytesToString(app.desc.memoryPerExecutorMB)}
+      <td sorttable_customkey={
+      app.desc.memoryPerExecutorMB.toString
+    }>
+        {
+      Utils.megabytesToString(app.desc.memoryPerExecutorMB)
+    }
       </td>
-      <td>{UIUtils.formatDate(app.submitDate)}</td>
-      <td>{app.desc.user}</td>
-      <td>{app.state.toString}</td>
-      <td>{UIUtils.formatDuration(app.duration)}</td>
+      <td>{
+      UIUtils.formatDate(app.submitDate)
+    }</td>
+      <td>{
+      app.desc.user
+    }</td>
+      <td>{
+      app.state.toString
+    }</td>
+      <td>{
+      UIUtils.formatDuration(app.duration)
+    }</td>
     </tr>
   }
 
@@ -265,24 +349,55 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
           s"if (window.confirm('Are you sure you want to kill driver ${driver.id} ?')) " +
             "{ this.parentNode.submit(); return true; } else { return false; }"
         <form action="driver/kill/" method="POST" style="display:inline">
-        <input type="hidden" name="id" value={driver.id.toString}/>
+        <input type="hidden" name="id" value={
+          driver.id.toString
+        }/>
         <input type="hidden" name="terminate" value="true"/>
-        <a href="#" onclick={confirm} class="kill-link">(kill)</a>
+        <a href="#" onclick={
+          confirm
+        } class="kill-link">(kill)</a>
       </form>
       }
     <tr>
-      <td>{driver.id} {killLink}</td>
-      <td>{driver.submitDate}</td>
-      <td>{driver.worker.map(w => <a href={w.webUiAddress}>{w.id.toString}</a>).getOrElse("None")}
+      <td>{
+      driver.id
+    } {
+      killLink
+    }</td>
+      <td>{
+      driver.submitDate
+    }</td>
+      <td>{
+      driver.worker
+        .map(w =>
+          <a href={
+            w.webUiAddress
+          }>{
+            w.id.toString
+          }</a>)
+        .getOrElse("None")
+    }
       </td>
-      <td>{driver.state}</td>
-      <td sorttable_customkey={driver.desc.cores.toString}>
-        {driver.desc.cores}
+      <td>{
+      driver.state
+    }</td>
+      <td sorttable_customkey={
+      driver.desc.cores.toString
+    }>
+        {
+      driver.desc.cores
+    }
       </td>
-      <td sorttable_customkey={driver.desc.mem.toString}>
-        {Utils.megabytesToString(driver.desc.mem.toLong)}
+      <td sorttable_customkey={
+      driver.desc.mem.toString
+    }>
+        {
+      Utils.megabytesToString(driver.desc.mem.toLong)
+    }
       </td>
-      <td>{driver.desc.command.arguments(2)}</td>
+      <td>{
+      driver.desc.command.arguments(2)
+    }</td>
     </tr>
   }
 }

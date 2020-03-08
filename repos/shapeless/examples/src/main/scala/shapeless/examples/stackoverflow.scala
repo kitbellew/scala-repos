@@ -22,10 +22,18 @@ object StackOverflow2 {
   import shapeless._
   import ops.function._
 
-  sealed abstract class A { def eval(): A }
-  case class A0() extends A { def eval() = this }
-  case class A1(a: A) extends A { def eval() = this }
-  case class A2(a: A, b: A) extends A { def eval() = this }
+  sealed abstract class A {
+    def eval(): A
+  }
+  case class A0() extends A {
+    def eval() = this
+  }
+  case class A1(a: A) extends A {
+    def eval() = this
+  }
+  case class A2(a: A, b: A) extends A {
+    def eval() = this
+  }
 
   case class ApplyA[C, L <: HList, HF](c: C, l: L)(implicit
       fntp: FnToProduct.Aux[C, HF],

@@ -58,7 +58,9 @@ object BasicAuthStrategy {
   class BasicAuthRequest(r: HttpServletRequest) {
 
     def parts =
-      authorizationKey map { r.getHeader(_).split(" ", 2).toList } getOrElse Nil
+      authorizationKey map {
+        r.getHeader(_).split(" ", 2).toList
+      } getOrElse Nil
     def scheme: Option[String] =
       parts.headOption.map(sch => sch.toLowerCase(Locale.ENGLISH))
     def params = parts.lastOption
@@ -66,7 +68,9 @@ object BasicAuthStrategy {
     private def authorizationKey =
       AUTHORIZATION_KEYS.find(r.getHeader(_) != null)
 
-    def isBasicAuth = (false /: scheme) { (_, sch) => sch == "basic" }
+    def isBasicAuth = (false /: scheme) { (_, sch) =>
+      sch == "basic"
+    }
     def providesAuth = authorizationKey.isDefined
 
     private[this] var _credentials: Option[(String, String)] = None
@@ -81,8 +85,14 @@ object BasicAuthStrategy {
         }
       _credentials
     }
-    def username = credentials map { _._1 } getOrElse null
-    def password = credentials map { _._2 } getOrElse null
+    def username =
+      credentials map {
+        _._1
+      } getOrElse null
+    def password =
+      credentials map {
+        _._2
+      } getOrElse null
   }
 }
 abstract class BasicAuthStrategy[UserType <: AnyRef](

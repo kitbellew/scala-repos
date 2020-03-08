@@ -50,7 +50,9 @@ private[lobby] object Member {
       mobile: Boolean): Member =
     Member(
       channel = channel,
-      user = user map { LobbyUser.make(_, blocking) },
+      user = user map {
+        LobbyUser.make(_, blocking)
+      },
       uid = uid,
       mobile = mobile)
 }

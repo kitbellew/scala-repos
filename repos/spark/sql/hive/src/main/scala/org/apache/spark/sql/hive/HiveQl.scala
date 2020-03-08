@@ -239,8 +239,11 @@ private[hive] class HiveQl(conf: ParserConf)
       case Token(
           "TOK_DROPTABLE",
           Token("TOK_TABNAME", tableNameParts) :: ifExists) =>
-        val tableName =
-          tableNameParts.map { case Token(p, Nil) => p }.mkString(".")
+        val tableName = tableNameParts
+          .map {
+            case Token(p, Nil) => p
+          }
+          .mkString(".")
         DropTable(tableName, ifExists.nonEmpty)
 
       // Support "ANALYZE TABLE tableName COMPUTE STATISTICS noscan"
@@ -260,8 +263,11 @@ private[hive] class HiveQl(conf: ParserConf)
           // If users do not specify "noscan", it will be treated as a Hive native command.
           NativePlaceholder
         } else {
-          val tableName =
-            tableNameParts.map { case Token(p, Nil) => p }.mkString(".")
+          val tableName = tableNameParts
+            .map {
+              case Token(p, Nil) => p
+            }
+            .mkString(".")
           AnalyzeTable(tableName)
         }
 

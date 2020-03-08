@@ -170,7 +170,9 @@ class ScalaMoveClassesOrPackagesHandler
       @Nullable panel: JComponent,
       elements: Iterable[PsiElement]): JComponent = {
     val companions = for {
-      elem <- elements.collect { case psiClass: PsiClass => psiClass }
+      elem <- elements.collect {
+        case psiClass: PsiClass => psiClass
+      }
       companion <- ScalaPsiUtil.getBaseCompanionModule(elem)
     } yield companion
     if (companions.nonEmpty) {

@@ -25,7 +25,9 @@ package object util {
   val HashSet = scala.reflect.internal.util.HashSet
 
   /** Apply a function and return the passed value */
-  def returning[T](x: T)(f: T => Unit): T = { f(x); x }
+  def returning[T](x: T)(f: T => Unit): T = {
+    f(x); x
+  }
 
   /** Execute code and then wait for all non-daemon Threads
     *  created and begun during its execution to complete.

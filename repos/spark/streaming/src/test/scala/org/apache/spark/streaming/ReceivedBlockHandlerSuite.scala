@@ -135,7 +135,9 @@ class ReceivedBlockHandlerSuite
   }
 
   test("BlockManagerBasedBlockHandler - handle errors in storing block") {
-    withBlockManagerBasedBlockHandler { handler => testErrorHandling(handler) }
+    withBlockManagerBasedBlockHandler { handler =>
+      testErrorHandling(handler)
+    }
   }
 
   test("WriteAheadLogBasedBlockHandler - store blocks") {
@@ -178,12 +180,16 @@ class ReceivedBlockHandlerSuite
   }
 
   test("WriteAheadLogBasedBlockHandler - handle errors in storing block") {
-    withWriteAheadLogBasedBlockHandler { handler => testErrorHandling(handler) }
+    withWriteAheadLogBasedBlockHandler { handler =>
+      testErrorHandling(handler)
+    }
   }
 
   test("WriteAheadLogBasedBlockHandler - clean old blocks") {
     withWriteAheadLogBasedBlockHandler { handler =>
-      val blocks = Seq.tabulate(10) { i => IteratorBlock(Iterator(1 to i)) }
+      val blocks = Seq.tabulate(10) { i =>
+        IteratorBlock(Iterator(1 to i))
+      }
       storeBlocks(handler, blocks)
 
       val preCleanupLogFiles = getWriteAheadLogFiles()
@@ -404,14 +410,18 @@ class ReceivedBlockHandlerSuite
           Seq[String],
           Seq[StreamBlockId],
           Seq[ReceivedBlockStoreResult]) => Unit) {
-    val data = Seq.tabulate(100) { _.toString }
+    val data = Seq.tabulate(100) {
+      _.toString
+    }
 
     def storeAndVerify(blocks: Seq[ReceivedBlock]) {
       blocks should not be empty
       val (blockIds, storeResults) = storeBlocks(receivedBlockHandler, blocks)
       withClue(s"Testing with ${blocks.head.getClass.getSimpleName}s:") {
         // Verify returns store results have correct block ids
-        (storeResults.map { _.blockId }) shouldEqual blockIds
+        (storeResults.map {
+          _.blockId
+        }) shouldEqual blockIds
 
         // Call handler-specific verification function
         verifyFunc(data, blockIds, storeResults)
@@ -423,8 +433,12 @@ class ReceivedBlockHandlerSuite
 
     val blocks = data.grouped(10).toSeq
 
-    storeAndVerify(blocks.map { b => IteratorBlock(b.toIterator) })
-    storeAndVerify(blocks.map { b => ArrayBufferBlock(new ArrayBuffer ++= b) })
+    storeAndVerify(blocks.map { b =>
+      IteratorBlock(b.toIterator)
+    })
+    storeAndVerify(blocks.map { b =>
+      ArrayBufferBlock(new ArrayBuffer ++= b)
+    })
     storeAndVerify(blocks.map { b =>
       ByteBufferBlock(dataToByteBuffer(b).toByteBuffer)
     })
@@ -434,7 +448,9 @@ class ReceivedBlockHandlerSuite
   private def testErrorHandling(receivedBlockHandler: ReceivedBlockHandler) {
     // Handle error in iterator (e.g. divide-by-zero error)
     intercept[Exception] {
-      val iterator = (10 to (-10, -1)).toIterator.map { _ / 0 }
+      val iterator = (10 to (-10, -1)).toIterator.map {
+        _ / 0
+      }
       receivedBlockHandler.storeBlock(
         StreamBlockId(1, 1),
         IteratorBlock(iterator))

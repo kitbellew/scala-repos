@@ -36,8 +36,11 @@ trait Monoid[F] extends Semigroup[F] { self =>
     eq.equal(a, zero)
 
   final def ifEmpty[B](a: F)(t: => B)(f: => B)(implicit eq: Equal[F]): B =
-    if (isMZero(a)) { t }
-    else { f }
+    if (isMZero(a)) {
+      t
+    } else {
+      f
+    }
 
   final def onNotEmpty[B](a: F)(
       v: => B)(implicit eq: Equal[F], mb: Monoid[B]): B =
@@ -82,7 +85,9 @@ trait Monoid[F] extends Semigroup[F] { self =>
   def monoidLaw = new MonoidLaw {}
 
   ////
-  val monoidSyntax = new scalaz.syntax.MonoidSyntax[F] { def F = Monoid.this }
+  val monoidSyntax = new scalaz.syntax.MonoidSyntax[F] {
+    def F = Monoid.this
+  }
 }
 
 object Monoid {

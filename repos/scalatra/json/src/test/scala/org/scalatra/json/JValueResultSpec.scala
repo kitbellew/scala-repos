@@ -117,7 +117,9 @@ class JValueResultSpec extends MutableScalatraSpec {
       }
     }
     "render a NamedThing result" in {
-      get("/namedthing") { parse(body) must_== jValue }
+      get("/namedthing") {
+        parse(body) must_== jValue
+      }
     }
     "render an empty not found" in {
       get("/empty-not-found") {

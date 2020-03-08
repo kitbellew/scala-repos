@@ -27,9 +27,13 @@ trait LazyCombiner[Elem, +To, Buff <: Growable[Elem] with Sizing]
 //self: scala.collection.parallel.EnvironmentPassingCombiner[Elem, To] =>
   val chain: ArrayBuffer[Buff]
   val lastbuff = chain.last
-  def +=(elem: Elem) = { lastbuff += elem; this }
+  def +=(elem: Elem) = {
+    lastbuff += elem; this
+  }
   def result: To = allocateAndCopy
-  def clear() = { chain.clear() }
+  def clear() = {
+    chain.clear()
+  }
   def combine[N <: Elem, NewTo >: To](
       other: Combiner[N, NewTo]): Combiner[N, NewTo] =
     if (this ne other) {

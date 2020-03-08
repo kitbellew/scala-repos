@@ -125,7 +125,9 @@ object FPGrowthModel extends Loader[FPGrowthModel[_]] {
         StructField("items", ArrayType(itemType)),
         StructField("freq", LongType))
       val schema = StructType(fields)
-      val rowDataRDD = model.freqItemsets.map { x => Row(x.items, x.freq) }
+      val rowDataRDD = model.freqItemsets.map { x =>
+        Row(x.items, x.freq)
+      }
       sqlContext
         .createDataFrame(rowDataRDD, schema)
         .write

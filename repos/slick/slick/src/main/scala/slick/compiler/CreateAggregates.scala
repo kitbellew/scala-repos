@@ -44,7 +44,9 @@ class CreateAggregates extends Phase {
                   case Pure(StructNode(ConstArray()), _) =>
                     Vector.empty[(TermSymbol, Node)]
                   case _ => Vector(s1 -> from1)
-                }) ++ temp.map { case (s, n) => (s, Pure(n)) }
+                }) ++ temp.map {
+                  case (s, n) => (s, Pure(n))
+                }
                 val from2 = sources.init
                   .foldRight(sources.last._2) {
                     case ((_, n), z) =>
@@ -77,7 +79,9 @@ class CreateAggregates extends Phase {
                   "Replacement path nodes: ",
                   StructNode(ConstArray.from(replNodes)))
                 val sel3 = sel2.replace(
-                  { case n @ Ref(s) => replNodes.getOrElse(s, n) },
+                  {
+                    case n @ Ref(s) => replNodes.getOrElse(s, n)
+                  },
                   keepType = true)
                 val n2 = Bind(s1, from2, Pure(sel3, ts1)).infer()
                 logger.debug("Lifted aggregates into join in:", n2)
@@ -98,7 +102,11 @@ class CreateAggregates extends Phase {
       val sel = a.select.replace(
         {
           case FwdPath(s :: f :: rest) if s == a.sym =>
-            rest.foldLeft(defs1M(f)) { case (n, s) => n.select(s) }.infer()
+            rest
+              .foldLeft(defs1M(f)) {
+                case (n, s) => n.select(s)
+              }
+              .infer()
         },
         keepType = true)
       val a2 = Aggregate(s1, f1, sel) :@ a.nodeType

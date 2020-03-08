@@ -46,7 +46,9 @@ object TupleConverterImpl {
 
     def membersOf(outerTpe: Type): Vector[Type] =
       outerTpe.declarations
-        .collect { case m: MethodSymbol if m.isCaseAccessor => m }
+        .collect {
+          case m: MethodSymbol if m.isCaseAccessor => m
+        }
         .map { accessorMethod =>
           accessorMethod.returnType.asSeenFrom(
             outerTpe,
@@ -82,7 +84,9 @@ object TupleConverterImpl {
               val nextOffset = o + cb.columns
               (nextOffset, Some(cb.applyTree(o)))
           }
-          .collect { case (_, Some(tree)) => tree }
+          .collect {
+            case (_, Some(tree)) => tree
+          }
 
         q"${tpe.typeSymbol.companionSymbol}(..$trees)"
       }

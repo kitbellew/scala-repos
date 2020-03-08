@@ -62,7 +62,9 @@ import simulacrum.typeclass
     * Fold implemented using the given Monoid[A] instance.
     */
   def fold[A](fa: F[A])(implicit A: Monoid[A]): A =
-    foldLeft(fa, A.empty) { (acc, a) => A.combine(acc, a) }
+    foldLeft(fa, A.empty) { (acc, a) =>
+      A.combine(acc, a)
+    }
 
   /**
     * Alias for [[fold]].
@@ -109,7 +111,11 @@ import simulacrum.typeclass
     */
   def traverse_[G[_], A, B](fa: F[A])(f: A => G[B])(
       implicit G: Applicative[G]): G[Unit] =
-    foldLeft(fa, G.pure(())) { (acc, a) => G.map2(acc, f(a)) { (_, _) => () } }
+    foldLeft(fa, G.pure(())) { (acc, a) =>
+      G.map2(acc, f(a)) { (_, _) =>
+        ()
+      }
+    }
 
   /**
     * Behaves like traverse_, but uses [[Unapply]] to find the
@@ -213,7 +219,9 @@ import simulacrum.typeclass
     * If there are no elements, the result is `false`.
     */
   def exists[A](fa: F[A])(p: A => Boolean): Boolean =
-    foldRight(fa, Eval.False) { (a, lb) => if (p(a)) Eval.True else lb }.value
+    foldRight(fa, Eval.False) { (a, lb) =>
+      if (p(a)) Eval.True else lb
+    }.value
 
   /**
     * Check whether all elements satisfy the predicate.
@@ -221,13 +229,17 @@ import simulacrum.typeclass
     * If there are no elements, the result is `true`.
     */
   def forall[A](fa: F[A])(p: A => Boolean): Boolean =
-    foldRight(fa, Eval.True) { (a, lb) => if (p(a)) lb else Eval.False }.value
+    foldRight(fa, Eval.True) { (a, lb) =>
+      if (p(a)) lb else Eval.False
+    }.value
 
   /**
     * Convert F[A] to a List[A].
     */
   def toList[A](fa: F[A]): List[A] =
-    foldLeft(fa, mutable.ListBuffer.empty[A]) { (buf, a) => buf += a }.toList
+    foldLeft(fa, mutable.ListBuffer.empty[A]) { (buf, a) =>
+      buf += a
+    }.toList
 
   /**
     * Convert F[A] to a List[A], only including elements which match `p`.

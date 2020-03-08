@@ -117,7 +117,8 @@ trait Base { this: Types =>
   implicit def mapJSONW[A: JSONW]: JSONW[Map[String, A]] =
     new JSONW[Map[String, A]] {
       def write(values: Map[String, A]) =
-        JObject(
-          values.map { case (k, v) => JField(k, toJSON(v)) }(breakOut): _*)
+        JObject(values.map {
+          case (k, v) => JField(k, toJSON(v))
+        }(breakOut): _*)
     }
 }

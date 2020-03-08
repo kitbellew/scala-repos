@@ -36,7 +36,9 @@ class ScFunctionDefinitionImpl protected (
     node: ASTNode)
     extends ScFunctionImpl(stub, nodeType, node)
     with ScFunctionDefinition {
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
 
   def this(stub: ScFunctionStub) = {
     this(stub, ScalaElementTypes.FUNCTION_DEFINITION, null)

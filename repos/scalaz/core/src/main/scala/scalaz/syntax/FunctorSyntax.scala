@@ -54,7 +54,9 @@ trait ToFunctorOps extends ToFunctorOps0 with ToInvariantFunctorOps {
     def lift(implicit F: Functor[F]) = F.lift(self)
   }
 
-  implicit def ToFunctorIdV[A](v: A) = new FunctorIdV[A] { def self = v }
+  implicit def ToFunctorIdV[A](v: A) = new FunctorIdV[A] {
+    def self = v
+  }
 
   trait FunctorIdV[A] extends Ops[A] {
     def mapply[F[_], B](f: F[A => B])(implicit F: Functor[F]): F[B] =

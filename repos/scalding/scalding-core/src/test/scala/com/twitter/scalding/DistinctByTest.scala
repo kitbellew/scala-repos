@@ -37,7 +37,9 @@ object DistinctByProps extends Properties("CoGrouped.DistinctBy") {
   property("distinctBy to different values never changes the list") = forAll {
     (l: List[Int]) =>
       var idx = 0
-      val fn = { (i: Int) => idx += 1; idx }
+      val fn = { (i: Int) =>
+        idx += 1; idx
+      }
       distinctBy(l)(fn) == l
   }
   property("distinctBy works like groupBy(fn).map(_._2.head).toSet") = forAll {

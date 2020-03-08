@@ -445,7 +445,9 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
 
   def location: Box[sitemap.Loc[_]] = CurrentLocation.is or {
     //try again in case CurrentLocation was accessed before the request was available
-    request flatMap { r => CurrentLocation(r.location) }
+    request flatMap { r =>
+      CurrentLocation(r.location)
+    }
   }
 
   /**
@@ -457,7 +459,9 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * An exception was thrown during the processing of this request.
     * This is tested to see if the transaction should be rolled back
     */
-  def assertExceptionThrown() { _exceptionThrown.set(true) }
+  def assertExceptionThrown() {
+    _exceptionThrown.set(true)
+  }
 
   /**
     * Was an exception thrown during the processing of the current request?
@@ -1703,7 +1707,9 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       .legacyNullTest(_responseHeaders.value)
       .map(rh =>
         rh.headers.iterator.toList :::
-          in.filter { case (n, v) => !rh.headers.contains(n) })
+          in.filter {
+            case (n, v) => !rh.headers.contains(n)
+          })
       .openOr(Nil)
   }
 
@@ -1788,7 +1794,9 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     *
     * @see # skipDocType
     */
-  def skipDocType_=(skip: Boolean) { _skipDocType.set(skip) }
+  def skipDocType_=(skip: Boolean) {
+    _skipDocType.set(skip)
+  }
 
   /**
     * Adds a cleanup function that will be executed at the end of the request pocessing.
@@ -2383,11 +2391,17 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     type Info = String
 
     protected def findAttr(key: String): Option[Info] =
-      currentAttrs.toList.find { _.key == key }.map(_.value.text)
+      currentAttrs.toList
+        .find {
+          _.key == key
+        }
+        .map(_.value.text)
 
     protected def findAttr(prefix: String, key: String): Option[Info] =
       currentAttrs.toList
-        .find { _.prefixedKey == (prefix + ":" + key) }
+        .find {
+          _.prefixedKey == (prefix + ":" + key)
+        }
         .map(_.value.text)
 
     protected def convert[T](in: Option[T]): Box[T] = Box(in)
@@ -3075,12 +3089,16 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   /**
     * Sets an ERROR notice as a plain text
     */
-  def error(n: String) { error(Text(n)) }
+  def error(n: String) {
+    error(Text(n))
+  }
 
   /**
     * Sets an ERROR notice as an XML sequence
     */
-  def error(n: NodeSeq) { p_notice.is += ((NoticeType.Error, n, Empty)) }
+  def error(n: NodeSeq) {
+    p_notice.is += ((NoticeType.Error, n, Empty))
+  }
 
   /**
     * Sets an ERROR notice as an XML sequence and associates it with an id
@@ -3092,17 +3110,23 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   /**
     * Sets an ERROR notice as plain text and associates it with an id
     */
-  def error(id: String, n: String) { error(id, Text(n)) }
+  def error(id: String, n: String) {
+    error(id, Text(n))
+  }
 
   /**
     * Sets a NOTICE notice as plain text
     */
-  def notice(n: String) { notice(Text(n)) }
+  def notice(n: String) {
+    notice(Text(n))
+  }
 
   /**
     * Sets a NOTICE notice as an XML sequence
     */
-  def notice(n: NodeSeq) { p_notice.is += ((NoticeType.Notice, n, Empty)) }
+  def notice(n: NodeSeq) {
+    p_notice.is += ((NoticeType.Notice, n, Empty))
+  }
 
   /**
     * Sets a NOTICE notice as and XML sequence and associates it with an id
@@ -3114,17 +3138,23 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   /**
     * Sets a NOTICE notice as plai text and associates it with an id
     */
-  def notice(id: String, n: String) { notice(id, Text(n)) }
+  def notice(id: String, n: String) {
+    notice(id, Text(n))
+  }
 
   /**
     * Sets a WARNING notice as plain text
     */
-  def warning(n: String) { warning(Text(n)) }
+  def warning(n: String) {
+    warning(Text(n))
+  }
 
   /**
     * Sets a WARNING notice as an XML sequence
     */
-  def warning(n: NodeSeq) { p_notice += ((NoticeType.Warning, n, Empty)) }
+  def warning(n: NodeSeq) {
+    p_notice += ((NoticeType.Warning, n, Empty))
+  }
 
   /**
     * Sets a WARNING notice as an XML sequence and associates it with an id
@@ -3136,7 +3166,9 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   /**
     * Sets a WARNING notice as plain text and associates it with an id
     */
-  def warning(id: String, n: String) { warning(id, Text(n)) }
+  def warning(id: String, n: String) {
+    warning(id, Text(n))
+  }
 
   /**
     * Sets an ERROR notices from a List[FieldError]
@@ -3198,7 +3230,9 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   /**
     * Clears up the notices
     */
-  def clearCurrentNotices { p_notice.is.clear }
+  def clearCurrentNotices {
+    p_notice.is.clear
+  }
 
   /**
     * Returns the messages provided by list function that are associated with id
@@ -3261,7 +3295,9 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     *
     */
   def respondAsync(f: => Box[LiftResponse]): () => Box[LiftResponse] = {
-    RestContinuation.async { reply => reply(f.openOr(EmptyResponse)) }
+    RestContinuation.async { reply =>
+      reply(f.openOr(EmptyResponse))
+    }
   }
 
   /**

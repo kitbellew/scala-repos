@@ -12,7 +12,9 @@ object Test {
     else println(s"!! ExecutionContext.global == $ec")
 
     val u = ExecutionContext.global
-      .asInstanceOf[{ def executor: Executor }]
+      .asInstanceOf[{
+        def executor: Executor
+      }]
       .executor
       .asInstanceOf[{
         def getUncaughtExceptionHandler: Thread.UncaughtExceptionHandler
@@ -29,6 +31,10 @@ object Test {
     print("should just print out on uncaught: ")
     u.uncaughtException(
       Thread.currentThread,
-      new Throwable { override def printStackTrace() { println("true") } })
+      new Throwable {
+        override def printStackTrace() {
+          println("true")
+        }
+      })
   }
 }

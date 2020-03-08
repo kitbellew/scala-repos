@@ -34,7 +34,9 @@ private[lobby] final class Lobby(
     case HooksFor(userOption) =>
       val replyTo = sender
       (userOption.map(_.id) ?? blocking) foreach { blocks =>
-        val lobbyUser = userOption map { LobbyUser.make(_, blocks) }
+        val lobbyUser = userOption map {
+          LobbyUser.make(_, blocks)
+        }
         replyTo ! HookRepo.vector.filter { hook =>
           ~(hook.userId |@| lobbyUser.map(_.id))
             .apply(_ == _) || Biter.canJoin(hook, lobbyUser)
@@ -44,7 +46,9 @@ private[lobby] final class Lobby(
     case msg @ AddHook(hook) => {
       lila.mon.lobby.hook.create()
       HookRepo byUid hook.uid foreach remove
-      hook.sid ?? { sid => HookRepo bySid sid foreach remove }
+      hook.sid ?? { sid =>
+        HookRepo bySid sid foreach remove
+      }
       findCompatible(hook) foreach {
         case Some(h) => self ! BiteHook(h.id, hook.uid, hook.user)
         case None    => self ! SaveHook(msg)
@@ -89,7 +93,9 @@ private[lobby] final class Lobby(
       NoPlayban(user.some) {
         lila.mon.lobby.seek.join()
         seekApi find seekId foreach {
-          _ foreach { seek => Biter(seek, user) pipeTo self }
+          _ foreach { seek =>
+            Biter(seek, user) pipeTo self
+          }
         }
       }
 
@@ -109,7 +115,9 @@ private[lobby] final class Lobby(
       HookRepo.truncateIfNeeded
       implicit val timeout = makeTimeout seconds 1
       (socket ? GetUids mapTo manifest[SocketUids]).chronometer
-        .logIfSlow(100, logger) { r => s"GetUids size=${r.uids.size}" }
+        .logIfSlow(100, logger) { r =>
+          s"GetUids size=${r.uids.size}"
+        }
         .mon(_.lobby.socket.getUids)
         .result
         .logFailure(logger, err => s"broom cannot get uids from socket: $err")
@@ -138,7 +146,9 @@ private[lobby] final class Lobby(
   }
 
   private def NoPlayban(user: Option[LobbyUser])(f: => Unit) {
-    user.?? { u => playban(u.id) } foreach {
+    user.?? { u =>
+      playban(u.id)
+    } foreach {
       case None => f
       case _    =>
     }

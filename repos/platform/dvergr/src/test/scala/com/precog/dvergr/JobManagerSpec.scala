@@ -64,7 +64,9 @@ class FileJobManagerSpec extends Specification {
   })
 
   override def map(fs: => Fragments) =
-    Step { IOUtils.recursiveDelete(tempDir).unsafePerformIO } ^ fs
+    Step {
+      IOUtils.recursiveDelete(tempDir).unsafePerformIO
+    } ^ fs
 }
 
 class WebJobManagerSpec extends TestJobService { self =>
@@ -248,7 +250,9 @@ trait JobManagerSpec[M[+_]] extends Specification {
             .copoint
           val status2x = jobs.getStatus(jobId).copoint
           status2x must_== status1
-          status2 must beLike { case Left(_) => ok }
+          status2 must beLike {
+            case Left(_) => ok
+          }
       }
     }
 
@@ -464,11 +468,15 @@ trait JobManagerSpec[M[+_]] extends Specification {
     "ensure jobs are only started once" in {
       val job = jobs.createJob(validAPIKey, "b", "c", None, None).copoint
       jobs.start(job.id).copoint
-      jobs.start(job.id).copoint must beLike { case Left(_) => ok }
+      jobs.start(job.id).copoint must beLike {
+        case Left(_) => ok
+      }
 
       val job2 =
         jobs.createJob(validAPIKey, "b", "c", None, Some(new DateTime)).copoint
-      jobs.start(job2.id).copoint must beLike { case Left(_) => ok }
+      jobs.start(job2.id).copoint must beLike {
+        case Left(_) => ok
+      }
     }
 
     "finish jobs and preserve result" in {

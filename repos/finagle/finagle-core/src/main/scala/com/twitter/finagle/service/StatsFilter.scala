@@ -141,7 +141,9 @@ class StatsFilter[Req, Rep](
     outstandingRequestCount.sum()
   }
   private[this] val outstandingRequestCountGauge =
-    statsReceiver.addGauge("pending") { outstandingRequestCount.sum() }
+    statsReceiver.addGauge("pending") {
+      outstandingRequestCount.sum()
+    }
 
   private[this] def isBlackholeResponse(rep: Try[Rep]): Boolean = rep match {
     case Throw(BackupRequestLost) | Throw(WriteException(BackupRequestLost)) =>

@@ -50,7 +50,9 @@ trait ScTypeAliasDefinition extends ScTypeAlias {
     if (ctx.visited.contains(this)) {
       new Failure(
         ScalaBundle.message("circular.dependency.detected", name),
-        Some(this)) { override def isCyclic = true }
+        Some(this)) {
+        override def isCyclic = true
+      }
     } else {
       aliasedTypeElement.getType(ctx(this))
     }

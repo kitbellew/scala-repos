@@ -374,20 +374,32 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
     */
   def calcFirstScreen: Box[Screen] = screens.headOption
 
-  def nextButton: Elem = <button>
-    {S.?("Next")}
+  def nextButton: Elem =
+    <button>
+    {
+      S.?("Next")
+    }
   </button>
 
-  def prevButton: Elem = <button>
-    {S.?("Previous")}
+  def prevButton: Elem =
+    <button>
+    {
+      S.?("Previous")
+    }
   </button>
 
-  def cancelButton: Elem = <button>
-    {S.?("Cancel")}
+  def cancelButton: Elem =
+    <button>
+    {
+      S.?("Cancel")
+    }
   </button>
 
-  def finishButton: Elem = <button>
-    {S.?("Finish")}
+  def finishButton: Elem =
+    <button>
+    {
+      S.?("Finish")
+    }
   </button>
 
   def currentScreen: Box[Screen] = CurrentScreen.is
@@ -426,9 +438,13 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
                 in match {
                   case Nil => {
                     WizardRules.deregisterWizardSession(CurrentSession.is)
-                    VisitedScreens.foreach { s => s.finish() }
+                    VisitedScreens.foreach { s =>
+                      s.finish()
+                    }
                     finish()
-                    VisitedScreens.foreach { s => s.postFinish() }
+                    VisitedScreens.foreach { s =>
+                      s.postFinish()
+                    }
                   }
 
                   case x :: xs =>

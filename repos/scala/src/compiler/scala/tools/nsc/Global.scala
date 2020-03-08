@@ -125,7 +125,9 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     val settings: Settings = Global.this.settings
   } with JavaPlatform
 
-  type ThisPlatform = JavaPlatform { val global: Global.this.type }
+  type ThisPlatform = JavaPlatform {
+    val global: Global.this.type
+  }
   lazy val platform: ThisPlatform = new GlobalPlatform
 
   type PlatformClassPath = ClassPath[AbstractFile]
@@ -152,12 +154,13 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   }
 
   /** A spare instance of TreeBuilder left for backwards compatibility. */
-  lazy val treeBuilder: TreeBuilder { val global: Global.this.type } =
-    new TreeBuilder {
-      val global: Global.this.type = Global.this;
-      def unit = currentUnit
-      def source = currentUnit.source
-    }
+  lazy val treeBuilder: TreeBuilder {
+    val global: Global.this.type
+  } = new TreeBuilder {
+    val global: Global.this.type = Global.this;
+    def unit = currentUnit
+    def source = currentUnit.source
+  }
 
   /** Fold constants */
   object constfold extends {
@@ -1165,7 +1168,9 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         "call site" -> (site.fullLocationString + " in " + site.enclosingPackage)
       )
       ("\n  " + errorMessage + "\n" + info1) :: info2 :: context_s :: Nil mkString "\n\n"
-    } catch { case _: Exception | _: TypeError => errorMessage }
+    } catch {
+      case _: Exception | _: TypeError => errorMessage
+    }
 
   /** The id of the currently active run
     */
@@ -1215,16 +1220,26 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
 
     private class SyncedCompilationBuffer { self =>
       private val underlying = new mutable.ArrayBuffer[CompilationUnit]
-      def size = synchronized { underlying.size }
-      def +=(cu: CompilationUnit): this.type = {
-        synchronized { underlying += cu }; this
+      def size = synchronized {
+        underlying.size
       }
-      def head: CompilationUnit = synchronized { underlying.head }
-      def apply(i: Int): CompilationUnit = synchronized { underlying(i) }
+      def +=(cu: CompilationUnit): this.type = {
+        synchronized {
+          underlying += cu
+        }; this
+      }
+      def head: CompilationUnit = synchronized {
+        underlying.head
+      }
+      def apply(i: Int): CompilationUnit = synchronized {
+        underlying(i)
+      }
       def iterator: Iterator[CompilationUnit] =
         new collection.AbstractIterator[CompilationUnit] {
           private var used = 0
-          def hasNext = self.synchronized { used < underlying.size }
+          def hasNext = self.synchronized {
+            used < underlying.size
+          }
           def next = self.synchronized {
             if (!hasNext)
               throw new NoSuchElementException("next on empty Iterator")
@@ -1232,7 +1247,9 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
             underlying(used - 1)
           }
         }
-      def toList: List[CompilationUnit] = synchronized { underlying.toList }
+      def toList: List[CompilationUnit] = synchronized {
+        underlying.toList
+      }
     }
 
     private val unitbuf = new SyncedCompilationBuffer
@@ -1312,7 +1329,9 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       val last =
         components.foldLeft(NoPhase: Phase)((prev, c) => c newPhase prev)
       // rewind (Iterator.iterate(last)(_.prev) dropWhile (_.prev ne NoPhase)).next
-      val first = { var p = last; while (p.prev ne NoPhase) p = p.prev; p }
+      val first = {
+        var p = last; while (p.prev ne NoPhase) p = p.prev; p
+      }
       val ss = settings
 
       // As a final courtesy, see if the settings make any sense at all.
@@ -1382,7 +1401,9 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     }
 
     // for sbt
-    def cancel() { reporter.cancelled = true }
+    def cancel() {
+      reporter.cancelled = true
+    }
 
     private def currentProgress = (phasec * size) + unitc
     private def totalProgress =
@@ -1643,7 +1664,9 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     /** Compile list of abstract files. */
     def compileFiles(files: List[AbstractFile]) {
       try compileSources(files map getSourceFile)
-      catch { case ex: IOException => globalError(ex.getMessage()) }
+      catch {
+        case ex: IOException => globalError(ex.getMessage())
+      }
     }
 
     /** Compile list of files given by their names */
@@ -1656,7 +1679,9 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
           else filenames map getSourceFile
 
         compileSources(sources)
-      } catch { case ex: IOException => globalError(ex.getMessage()) }
+      } catch {
+        case ex: IOException => globalError(ex.getMessage())
+      }
     }
 
     /** If this compilation is scripted, convert the source to a script source. */

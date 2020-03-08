@@ -43,7 +43,9 @@ object KestrelClient {
       val queueName = "queue"
       val timer = new JavaTimer(isDaemon = true)
       val retryBackoffs = Backoff.const(10.milliseconds)
-      clients map { _.readReliably(queueName, timer, retryBackoffs) }
+      clients map {
+        _.readReliably(queueName, timer, retryBackoffs)
+      }
     }
 
     val readHandle: ReadHandle = ReadHandle.merged(readHandles)
@@ -70,7 +72,9 @@ object KestrelClient {
 
     println("stopping")
     readHandle.close()
-    clients foreach { _.close() }
+    clients foreach {
+      _.close()
+    }
     println("done")
   }
 

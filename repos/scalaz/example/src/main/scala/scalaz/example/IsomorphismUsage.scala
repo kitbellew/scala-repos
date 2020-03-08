@@ -36,8 +36,12 @@ object IsomorphismUsage extends App {
 
   assert((Seq(1, 2) |+| Seq(3, 4)).toList === List(1, 2, 3, 4))
   assert {
-    val seq = Seq(1, 2, 3) >>= { x => Seq(x, x + 1) }
-    val lst = List(1, 2, 3) >>= { x => List(x, x + 1) }
+    val seq = Seq(1, 2, 3) >>= { x =>
+      Seq(x, x + 1)
+    }
+    val lst = List(1, 2, 3) >>= { x =>
+      List(x, x + 1)
+    }
     seq.toList === lst
   }
   assert(

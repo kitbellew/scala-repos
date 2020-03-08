@@ -20,7 +20,9 @@ abstract class BurtleRot32(_a: Int, _b: Int, _c: Int, _d: Int)
   protected var c = _c
   protected var d = _d
 
-  def nextInt: Int = { advance(); d }
+  def nextInt: Int = {
+    advance(); d
+  }
 
   protected def advance(): Unit
 

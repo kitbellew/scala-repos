@@ -68,7 +68,9 @@ trait JdbcBackend extends RelationalBackend {
 
     override protected[this] def createDatabaseActionContext[T](
         _useSameThread: Boolean): Context =
-      new JdbcActionContext { val useSameThread = _useSameThread }
+      new JdbcActionContext {
+        val useSameThread = _useSameThread
+      }
 
     override protected[this] def createStreamingDatabaseActionContext[T](
         s: Subscriber[_ >: T],
@@ -480,7 +482,9 @@ trait JdbcBackend extends RelationalBackend {
 
     def close(): Unit
 
-    def force() { conn }
+    def force() {
+      conn
+    }
 
     private[slick] final def internalForParameters(
         rsType: ResultSetType,
@@ -596,7 +600,9 @@ trait JdbcBackend extends RelationalBackend {
             else p.rsHoldability,
             if (p.statementInit eq null) curr.statementInit
             else if (curr.statementInit eq null) p.statementInit
-            else { s => curr.statementInit(s); p.statementInit(s) },
+            else { s =>
+              curr.statementInit(s); p.statementInit(s)
+            },
             p.fetchSize
           )
         } else p

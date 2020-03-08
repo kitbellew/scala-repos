@@ -78,7 +78,9 @@ object Path {
   implicit val PathDecomposer: Decomposer[Path] = StringDecomposer contramap {
     (_: Path).toString
   }
-  implicit val PathExtractor: Extractor[Path] = StringExtractor map { Path(_) }
+  implicit val PathExtractor: Extractor[Path] = StringExtractor map {
+    Path(_)
+  }
 
   val Root = new Path()
 

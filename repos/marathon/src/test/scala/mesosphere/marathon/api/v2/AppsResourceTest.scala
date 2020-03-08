@@ -576,7 +576,9 @@ class AppsResourceTest
     groupRepository.rootGroup returns Future.successful(Some(Group.empty))
 
     Then("A 404 is returned")
-    intercept[UnknownAppException] { appsResource.delete(false, "/foo", req) }
+    intercept[UnknownAppException] {
+      appsResource.delete(false, "/foo", req)
+    }
   }
 
   var clock: ConstantClock = _

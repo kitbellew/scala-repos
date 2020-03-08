@@ -41,7 +41,9 @@ trait Plugin {
 }
 
 object Build {
-  val defaultEmpty: Build = new Build { override def projects = Nil }
+  val defaultEmpty: Build = new Build {
+    override def projects = Nil
+  }
   val default: Build = new Build {
     override def projectDefinitions(base: File) =
       defaultProject(defaultID(base), base) :: Nil
@@ -86,5 +88,7 @@ object Build {
   @deprecated("Use Attributed.data", "0.13.0")
   def data[T](in: Seq[Attributed[T]]): Seq[T] = Attributed.data(in)
   def analyzed(in: Seq[Attributed[_]]): Seq[xsbti.compile.CompileAnalysis] =
-    in.flatMap { _.metadata.get(Keys.analysis) }
+    in.flatMap {
+      _.metadata.get(Keys.analysis)
+    }
 }

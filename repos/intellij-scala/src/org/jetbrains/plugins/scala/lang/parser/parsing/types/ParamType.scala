@@ -37,5 +37,7 @@ object ParamType {
   }
 
   def parse(builder: ScalaPsiBuilder) =
-    build(ScalaElementTypes.PARAM_TYPE, builder) { parseInner(builder) }
+    build(ScalaElementTypes.PARAM_TYPE, builder) {
+      parseInner(builder)
+    }
 }

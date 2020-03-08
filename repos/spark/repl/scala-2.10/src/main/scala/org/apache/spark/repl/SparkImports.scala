@@ -63,8 +63,12 @@ private[repl] trait SparkImports {
   def languageSymbols = languageWildcardSyms flatMap membersAtPickler
   def sessionImportedSymbols = importHandlers flatMap (_.importedSymbols)
   def importedSymbols = languageSymbols ++ sessionImportedSymbols
-  def importedTermSymbols = importedSymbols collect { case x: TermSymbol => x }
-  def importedTypeSymbols = importedSymbols collect { case x: TypeSymbol => x }
+  def importedTermSymbols = importedSymbols collect {
+    case x: TermSymbol => x
+  }
+  def importedTypeSymbols = importedSymbols collect {
+    case x: TypeSymbol => x
+  }
   def implicitSymbols = importedSymbols filter (_.isImplicit)
 
   def importedTermNamed(name: String): Symbol =
@@ -159,7 +163,9 @@ private[repl] trait SparkImports {
 
       /** Flatten the handlers out and pair each with the original request */
       select(
-        allReqAndHandlers reverseMap { case (r, h) => ReqAndHandler(r, h) },
+        allReqAndHandlers reverseMap {
+          case (r, h) => ReqAndHandler(r, h)
+        },
         wanted).reverse
     }
 
@@ -222,8 +228,8 @@ private[repl] trait SparkImports {
             val objName = req.lineRep.readPath
             val valName = "$VAL" + newValId()
 
-            if (!code.toString
-                  .endsWith(".`" + imv + "`;\n")) { // Which means already imported
+            if (!code.toString.endsWith(
+                  ".`" + imv + "`;\n")) { // Which means already imported
               code.append("val " + valName + " = " + objName + ".INSTANCE;\n")
               code.append(
                 "import " + valName + req.accessPath + ".`" + imv + "`;\n")

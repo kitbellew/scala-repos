@@ -95,7 +95,9 @@ object GraphGenerators extends Logging {
       maxVertexId: Int,
       seed: Long = -1): Array[Edge[Int]] = {
     val rand = if (seed == -1) new Random() else new Random(seed)
-    Array.fill(numEdges) { Edge[Int](src, rand.nextInt(maxVertexId), 1) }
+    Array.fill(numEdges) {
+      Edge[Int](src, rand.nextInt(maxVertexId), 1)
+    }
   }
 
   /**
@@ -168,9 +170,13 @@ object GraphGenerators extends Logging {
   private def outDegreeFromEdges[ED: ClassTag](
       edges: RDD[Edge[ED]]): Graph[Int, ED] = {
     val vertices = edges
-      .flatMap { edge => List((edge.srcId, 1)) }
+      .flatMap { edge =>
+        List((edge.srcId, 1))
+      }
       .reduceByKey(_ + _)
-      .map { case (vid, degree) => (vid, degree) }
+      .map {
+        case (vid, degree) => (vid, degree)
+      }
     Graph(vertices, edges, 0)
   }
 
@@ -277,12 +283,20 @@ object GraphGenerators extends Logging {
       vertices
         .flatMap {
           case (vid, (r, c)) =>
-            (if (r + 1 < rows) { Seq((sub2ind(r, c), sub2ind(r + 1, c))) }
-             else { Seq.empty }) ++
-              (if (c + 1 < cols) { Seq((sub2ind(r, c), sub2ind(r, c + 1))) }
-               else { Seq.empty })
+            (if (r + 1 < rows) {
+               Seq((sub2ind(r, c), sub2ind(r + 1, c)))
+             } else {
+               Seq.empty
+             }) ++
+              (if (c + 1 < cols) {
+                 Seq((sub2ind(r, c), sub2ind(r, c + 1)))
+               } else {
+                 Seq.empty
+               })
         }
-        .map { case (src, dst) => Edge(src, dst, 1.0) }
+        .map {
+          case (src, dst) => Edge(src, dst, 1.0)
+        }
     Graph(vertices, edges)
   } // end of gridGraph
 

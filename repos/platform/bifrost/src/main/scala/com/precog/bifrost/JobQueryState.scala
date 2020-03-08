@@ -39,8 +39,12 @@ sealed trait JobQueryState[+A] {
 }
 
 object JobQueryState {
-  case object Cancelled extends JobQueryState[Nothing] { def value = None }
-  case object Expired extends JobQueryState[Nothing] { def value = None }
+  case object Cancelled extends JobQueryState[Nothing] {
+    def value = None
+  }
+  case object Expired extends JobQueryState[Nothing] {
+    def value = None
+  }
   case class Running[A](resources: Set[QueryResource[_]], value0: A)
       extends JobQueryState[A] {
     def value = Some(value0)

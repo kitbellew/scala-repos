@@ -79,7 +79,9 @@ trait TraitResourceCursorAdapter[
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/widget/ResourceCursorAdapter.html#setViewResource(int) setViewResource(int)]]`
     */
-  @inline def viewResource_=(p: Int) = { basis.setViewResource(p); basis }
+  @inline def viewResource_=(p: Int) = {
+    basis.setViewResource(p); basis
+  }
 
 }
 

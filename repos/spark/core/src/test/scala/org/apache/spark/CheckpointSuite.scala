@@ -148,7 +148,9 @@ trait RDDCheckpointTester { self: SparkFunSuite =>
     val (rddSizeBeforeCheckpoint, partitionSizeBeforeCheckpoint) =
       getSerializedSizes(operatedRDD)
     // checkpoint the parent RDD, not the generated one
-    parentRDDs.foreach { rdd => checkpoint(rdd, reliableCheckpoint) }
+    parentRDDs.foreach { rdd =>
+      checkpoint(rdd, reliableCheckpoint)
+    }
     val result = collectFunc(operatedRDD) // force checkpointing
     operatedRDD
       .collect() // force re-initialization of post-checkpoint lazy variables
@@ -296,8 +298,12 @@ class CheckpointSuite
           partitioner: Partitioner,
           corruptPartitionerFile: Boolean = false
       ): Unit = {
-        val rddWithPartitioner =
-          sc.makeRDD(1 to 4).map { _ -> 1 }.partitionBy(partitioner)
+        val rddWithPartitioner = sc
+          .makeRDD(1 to 4)
+          .map {
+            _ -> 1
+          }
+          .partitionBy(partitioner)
         rddWithPartitioner.checkpoint()
         rddWithPartitioner.count()
         assert(
@@ -469,7 +475,11 @@ class CheckpointSuite
 
     // Collect the RDD as sequences instead of arrays to enable equality tests in testRDD
     val seqCollectFunc = (rdd: RDD[(Int, Array[Iterable[Int]])]) =>
-      rdd.map { case (p, a) => (p, a.toSeq) }.collect(): Any
+      rdd
+        .map {
+          case (p, a) => (p, a.toSeq)
+        }
+        .collect(): Any
 
     testRDD(
       rdd => {

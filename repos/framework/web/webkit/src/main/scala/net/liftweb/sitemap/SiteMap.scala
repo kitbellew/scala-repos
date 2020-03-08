@@ -243,7 +243,11 @@ sealed class SiteMapSingleton {
         case x if x.length > 0 => x
         case _                 => loc.linkText openOr Text(loc.name)
       }
-      <a href={link}>{linkText}</a>
+      <a href={
+        link
+      }>{
+        linkText
+      }</a>
     }
 
     options.headOption getOrElse NodeSeq.Empty

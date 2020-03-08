@@ -184,11 +184,15 @@ class SyslogFormatter(
 object SyslogFuture {
   private val executor = Executors.newSingleThreadExecutor(
     new NamedPoolThreadFactory("TWITTER-UTIL-SYSLOG", true /*daemon*/ ))
-  private val noop = new Runnable { def run() {} }
+  private val noop = new Runnable {
+    def run() {}
+  }
 
   def apply(action: => Unit) =
     executor.submit(new Runnable {
-      def run() { action }
+      def run() {
+        action
+      }
     })
 
   def sync() {

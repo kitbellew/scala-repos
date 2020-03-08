@@ -11,7 +11,9 @@ import scala.language.postfixOps
 object FSMTransitionSpec {
 
   class Supervisor extends Actor {
-    def receive = { case _ ⇒ }
+    def receive = {
+      case _ ⇒
+    }
   }
 
   class SendAnyTransitionFSM(target: ActorRef)
@@ -22,7 +24,9 @@ object FSMTransitionSpec {
       case Event("stay", _) ⇒ stay()
       case Event(_, _) ⇒ goto(0)
     }
-    onTransition { case from -> to ⇒ target ! (from -> to) }
+    onTransition {
+      case from -> to ⇒ target ! (from -> to)
+    }
 
     initialize()
   }
@@ -60,7 +64,9 @@ object FSMTransitionSpec {
   }
 
   class Forwarder(target: ActorRef) extends Actor {
-    def receive = { case x ⇒ target ! x }
+    def receive = {
+      case x ⇒ target ! x
+    }
   }
 
 }

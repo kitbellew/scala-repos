@@ -10,7 +10,9 @@ package object test1 {
 }
 package test1 {
   class A
-  class B { def b = "" }
+  class B {
+    def b = ""
+  }
 }
 
 // TEST2 - In enclosing package - doesn't seem to work even in scalac
@@ -21,32 +23,46 @@ package object test2 {
 package test2 {
   package classes {
     class A
-    class B { def b = "" }
-    object test { (new A).b }
+    class B {
+      def b = ""
+    }
+    object test {
+      (new A).b
+    }
   }
 }
 
 // TEST3 - In companion object
 package test3 {
   class A
-  object A { implicit def toB(a: A): B = null }
-  class B { def b = "" }
+  object A {
+    implicit def toB(a: A): B = null
+  }
+  class B {
+    def b = ""
+  }
 }
 
 // TEST4 - Nested type's companion object
 package test4 {
   class U[V]
   class S
-  object S { implicit def toB(a: A): B = null }
+  object S {
+    implicit def toB(a: A): B = null
+  }
   class A extends U[S]
-  class B { def b = "" }
+  class B {
+    def b = ""
+  }
 }
 
 // TEST5 - In scope
 package test5 {
   object scope {
     class A
-    class B { def b = "" }
+    class B {
+      def b = ""
+    }
     implicit def toB(a: A): B = null
   }
 }

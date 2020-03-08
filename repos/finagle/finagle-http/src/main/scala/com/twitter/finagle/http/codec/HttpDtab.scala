@@ -33,7 +33,9 @@ object HttpDtab {
     Base64.encode(v.getBytes(Utf8))
 
   private def b64Decode(v: String): Try[String] =
-    Try { Base64.decode(v) } map (new String(_, Utf8))
+    Try {
+      Base64.decode(v)
+    } map (new String(_, Utf8))
 
   private val unmatchedFailure =
     Failure("Unmatched X-Dtab headers")

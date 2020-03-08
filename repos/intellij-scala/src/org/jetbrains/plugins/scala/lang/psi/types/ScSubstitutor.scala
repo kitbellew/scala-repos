@@ -637,7 +637,9 @@ class ScUndefinedSubstitutor(
                     (
                       true,
                       ScSkolemizedType(
-                        s"_$$${ index += 1; index }",
+                        s"_$$${
+                          index += 1; index
+                        }",
                         Nil,
                         skoLower,
                         upper))
@@ -687,7 +689,9 @@ class ScUndefinedSubstitutor(
                       (
                         true,
                         ScSkolemizedType(
-                          s"_$$${ index += 1; index }",
+                          s"_$$${
+                            index += 1; index
+                          }",
                           Nil,
                           lower,
                           absUpper
@@ -702,7 +706,9 @@ class ScUndefinedSubstitutor(
                       (
                         true,
                         ScSkolemizedType(
-                          s"_$$${ index += 1; index }",
+                          s"_$$${
+                            index += 1; index
+                          }",
                           Nil,
                           lower,
                           skoUpper))

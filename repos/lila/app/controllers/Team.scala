@@ -29,7 +29,9 @@ object Team extends LilaController {
 
   def all(page: Int) = Open { implicit ctx =>
     NotForKids {
-      paginator popularTeams page map { html.team.all(_) }
+      paginator popularTeams page map {
+        html.team.all(_)
+      }
     }
   }
 
@@ -42,15 +44,21 @@ object Team extends LilaController {
 
   def show(id: String, page: Int) = Open { implicit ctx =>
     NotForKids {
-      OptionFuOk(api team id) { team => renderTeam(team, page) }
+      OptionFuOk(api team id) { team =>
+        renderTeam(team, page)
+      }
     }
   }
 
   def search(text: String, page: Int) = OpenBody { implicit ctx =>
     NotForKids {
       text.trim.isEmpty.fold(
-        paginator popularTeams page map { html.team.all(_) },
-        Env.teamSearch(text, page) map { html.team.search(text, _) }
+        paginator popularTeams page map {
+          html.team.all(_)
+        },
+        Env.teamSearch(text, page) map {
+          html.team.search(text, _)
+        }
       )
     }
   }
@@ -63,7 +71,9 @@ object Team extends LilaController {
 
   def edit(id: String) = Auth { implicit ctx => me =>
     OptionFuResult(api team id) { team =>
-      Owner(team) { fuccess(html.team.edit(team, forms edit team)) }
+      Owner(team) {
+        fuccess(html.team.edit(team, forms edit team))
+      }
     }
   }
 
@@ -133,14 +143,18 @@ object Team extends LilaController {
           },
         data =>
           api.create(data, me) ?? {
-            _ map { team => Redirect(routes.Team.show(team.id)): Result }
+            _ map { team =>
+              Redirect(routes.Team.show(team.id)): Result
+            }
           }
       )
     }
   }
 
   def mine = Auth { implicit ctx => me =>
-    api mine me map { html.team.mine(_) }
+    api mine me map {
+      html.team.mine(_)
+    }
   }
 
   def joinPage(id: String) = Auth { implicit ctx => me =>
@@ -164,12 +178,16 @@ object Team extends LilaController {
   }
 
   def requests = Auth { implicit ctx => me =>
-    api requestsWithUsers me map { html.team.allRequests(_) }
+    api requestsWithUsers me map {
+      html.team.allRequests(_)
+    }
   }
 
   def requestForm(id: String) = Auth { implicit ctx => me =>
     OptionFuOk(api.requestable(id, me)) { team =>
-      forms.anyCaptcha map { html.team.requestForm(team, forms.request, _) }
+      forms.anyCaptcha map {
+        html.team.requestForm(team, forms.request, _)
+      }
     }
   }
 
@@ -210,7 +228,9 @@ object Team extends LilaController {
   }
 
   def quit(id: String) = Auth { implicit ctx => implicit me =>
-    OptionResult(api quit id) { team => Redirect(routes.Team.show(team.id)) }
+    OptionResult(api quit id) { team =>
+      Redirect(routes.Team.show(team.id))
+    }
   }
 
   private def OnePerWeek[A <: Result](me: UserModel)(a: => Fu[A])(
@@ -224,5 +244,9 @@ object Team extends LilaController {
   private def Owner(team: TeamModel)(a: => Fu[Result])(
       implicit ctx: Context): Fu[Result] = {
     ctx.me.??(me => team.isCreator(me.id) || Granter.superAdmin(me))
-  }.fold(a, renderTeam(team) map { Forbidden(_) })
+  }.fold(
+    a,
+    renderTeam(team) map {
+      Forbidden(_)
+    })
 }

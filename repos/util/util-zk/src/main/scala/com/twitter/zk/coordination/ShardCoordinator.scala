@@ -58,9 +58,13 @@ class ShardCoordinator(zk: ZkClient, path: String, numShards: Int) {
   def acquire(): Future[ShardPermit] = {
     semaphore.acquire flatMap { permit =>
       shardNodes() map { nodes =>
-        nodes map { node => shardIdOf(node.path) }
+        nodes map { node =>
+          shardIdOf(node.path)
+        }
       } map { ids =>
-        (0 until numShards) filterNot { ids contains _ }
+        (0 until numShards) filterNot {
+          ids contains _
+        }
       } flatMap { availableIds =>
         // Iteratively (brute force) attempt to create a node for the next lowest available ID until
         // a Shard is successfully created (race resolution).
@@ -74,7 +78,9 @@ class ShardCoordinator(zk: ZkClient, path: String, numShards: Int) {
             }
         }
       } flatMap { shardOption =>
-        shardOption map { Future.value(_) } getOrElse {
+        shardOption map {
+          Future.value(_)
+        } getOrElse {
           Future.exception(new RejectedExecutionException(
             "Could not get a shard, polluted zk tree?"))
         }
@@ -84,7 +90,9 @@ class ShardCoordinator(zk: ZkClient, path: String, numShards: Int) {
         case err: PermitMismatchException =>
           Future.exception(SemaphoreError(err))
         case err: PermitNodeException => Future.exception(SemaphoreError(err))
-      } onFailure { err => permit.release() }
+      } onFailure { err =>
+        permit.release()
+      }
     }
   }
 
@@ -124,6 +132,8 @@ case class Shard(id: Int, private val node: ZNode, private val permit: Permit)
     extends ShardPermit {
 
   def release() = {
-    node.delete() ensure { permit.release() }
+    node.delete() ensure {
+      permit.release()
+    }
   }
 }

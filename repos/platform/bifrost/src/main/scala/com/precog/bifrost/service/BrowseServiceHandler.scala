@@ -57,7 +57,9 @@ class BrowseSupport[M[+_]: Bind](vfs: VFSMetadata[M]) {
         case otherError @ -\/(_)            => otherError
         case okValue @ \/-(_)               => okValue
       }
-    } map { JNum(_) }
+    } map {
+      JNum(_)
+    }
 
   def children(
       apiKey: APIKey,
@@ -139,12 +141,16 @@ class BrowseServiceHandler[A](
     success { (apiKey: APIKey, path: Path) =>
       request.parameters.get('type).map(_.toLowerCase) map {
         case "size" =>
-          size(apiKey, path) map { sz => JObject("size" -> sz) }
+          size(apiKey, path) map { sz =>
+            JObject("size" -> sz)
+          }
 
         case "children" =>
           val kids =
             if (legacy) children(apiKey, path) else browse(apiKey, path)
-          kids map { paths => JObject("children" -> paths) }
+          kids map { paths =>
+            JObject("children" -> paths)
+          }
 
         case "structure" =>
           val cpath = request.parameters

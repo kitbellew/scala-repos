@@ -59,7 +59,9 @@ object ScroogeUnionOrderedBuf {
         }
       }
       .zipWithIndex
-      .map { case ((tpe, tbuf), idx) => (idx, tpe, tbuf) }
+      .map {
+        case ((tpe, tbuf), idx) => (idx, tpe, tbuf)
+      }
       .toList
 
     require(subData.size > 0, "Must have some sub types on a union?")

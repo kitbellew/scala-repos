@@ -108,7 +108,9 @@ class PersistenceQuery(system: ExtendedActorSystem) extends Extension {
         case x: NoSuchMethodException ⇒
           instantiate((classOf[ExtendedActorSystem], system) :: Nil)
       }
-      .recoverWith { case x: NoSuchMethodException ⇒ instantiate(Nil) }
+      .recoverWith {
+        case x: NoSuchMethodException ⇒ instantiate(Nil)
+      }
       .recoverWith {
         case ex: Exception ⇒
           Failure.apply(new IllegalArgumentException(

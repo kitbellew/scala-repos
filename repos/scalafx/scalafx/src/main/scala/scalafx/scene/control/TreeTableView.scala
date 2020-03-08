@@ -335,7 +335,9 @@ object TreeTableView {
       */
     def modelItem(index: Int): TreeItem[S] = delegate.getModelItem(index)
 
-    def focus(row: Int): Unit = { delegate.focus(row) }
+    def focus(row: Int): Unit = {
+      delegate.focus(row)
+    }
 
     def focusedIndex: Int = delegate.getFocusedIndex
 
@@ -866,7 +868,9 @@ class TreeTableView[S](
     * @param index The index that should be made visible to the user, assuming of course that it is greater than, or
     *              equal to 0, and less than the number of the visible items in the TreeTableView.
     */
-  def scrollTo(index: Int): Unit = { delegate.scrollTo(index) }
+  def scrollTo(index: Int): Unit = {
+    delegate.scrollTo(index)
+  }
 
   /**
     * Called when there's a request to scroll an index into view using [[scrollTo(int)]]
@@ -995,7 +999,9 @@ class TreeTableView[S](
     * TreeTableColumn sort type properties change. In other words, this method should only be called directly when
     * something external changes and a sort is required.
     */
-  def sort(): Unit = { delegate.sort() }
+  def sort(): Unit = {
+    delegate.sort()
+  }
 
   /**
     * Returns the CssMetaData associated with this class, which may include the CssMetaData of its super classes.

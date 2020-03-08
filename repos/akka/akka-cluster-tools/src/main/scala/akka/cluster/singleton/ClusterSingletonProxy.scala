@@ -244,7 +244,9 @@ final class ClusterSingletonProxy(
     */
   def remove(m: Member): Unit = {
     if (matchingRole(m))
-      trackChange { () ⇒ membersByAge -= m }
+      trackChange { () ⇒
+        membersByAge -= m
+      }
   }
 
   def receive = {

@@ -8,9 +8,20 @@ object Test {
   def assertSpecialized() = assertApply(false)
   def assertUnspecialized() = assertApply(true)
   def main(args: Array[String]): Unit = {
-    ((i: String) => { assertUnspecialized(); i }).apply("")
-    (() => { assertSpecialized(); 0 }).apply()
-    ((i: Int) => { assertSpecialized(); i }).apply(0)
-    ((i: Int, j: Int) => { assertSpecialized(); i + j }).apply(0, 0)
+    ((i: String) => {
+      assertUnspecialized(); i
+    }).apply("")
+    (() => {
+      assertSpecialized(); 0
+    }).apply()
+    ((i: Int) => {
+      assertSpecialized(); i
+    }).apply(0)
+    (
+        (
+            i: Int,
+            j: Int) => {
+          assertSpecialized(); i + j
+        }).apply(0, 0)
   }
 }

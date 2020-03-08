@@ -22,7 +22,9 @@ object AtLeastOnceDeliveryCrashSpec {
     val crashingActor =
       context.actorOf(Props(new CrashingActor(testProbe)), "CrashingActor")
 
-    def receive: Receive = { case msg ⇒ crashingActor forward msg }
+    def receive: Receive = {
+      case msg ⇒ crashingActor forward msg
+    }
   }
 
   object CrashingActor {
@@ -50,11 +52,15 @@ object AtLeastOnceDeliveryCrashSpec {
 
     override def receiveCommand: Receive = {
       case Message ⇒ persist(Message)(_ ⇒ send())
-      case CrashMessage ⇒ persist(CrashMessage) { evt ⇒ }
+      case CrashMessage ⇒
+        persist(CrashMessage) { evt ⇒
+        }
     }
 
     def send() = {
-      deliver(testProbe.path) { id ⇒ SendingMessage(id, false) }
+      deliver(testProbe.path) { id ⇒
+        SendingMessage(id, false)
+      }
     }
   }
 

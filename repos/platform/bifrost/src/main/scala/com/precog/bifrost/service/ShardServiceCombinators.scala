@@ -115,7 +115,11 @@ object ShardServiceCombinators extends Logging {
         case Millis(n) => Validation.success(n)
         case _         => Validation.failure("Timeout must be a non-negative integer.")
       }
-      .sequence[({ type λ[α] = Validation[String, α] })#λ, Long]
+      .sequence[
+        ({
+          type λ[α] = Validation[String, α]
+        })#λ,
+        Long]
   }
 
   private def getSortOn(
@@ -174,7 +178,11 @@ object ShardServiceCombinators extends Logging {
           Validation.failure(
             "The limit query parameter must be a positive integer.")
       }
-      .sequence[({ type λ[α] = Validation[String, α] })#λ, Long]
+      .sequence[
+        ({
+          type λ[α] = Validation[String, α]
+        })#λ,
+        Long]
 
     val offset = request.parameters
       .get('skip)
@@ -188,7 +196,11 @@ object ShardServiceCombinators extends Logging {
           Validation.failure(
             "The offset query parameter must be a non-negative integer.")
       }
-      .sequence[({ type λ[α] = Validation[String, α] })#λ, Long]
+      .sequence[
+        ({
+          type λ[α] = Validation[String, α]
+        })#λ,
+        Long]
 
     (offset.toValidationNel |@| limit.toValidationNel) { (offset, limit) =>
       limit map ((offset getOrElse 0, _))
@@ -285,7 +297,9 @@ trait ShardServiceCombinators
                         .map(new String(_: Array[Byte], "UTF-8"))))
 
                   val result: Future[HttpResponse[B]] = query map { q =>
-                    q flatMap { f(apiKey, account, path, _: String, opts) }
+                    q flatMap {
+                      f(apiKey, account, path, _: String, opts)
+                    }
                   } getOrElse {
                     Promise.successful(HttpResponse(HttpStatus(
                       BadRequest,
@@ -324,7 +338,10 @@ trait ShardServiceCombinators
         delegate.service(
           request
             .copy(parameters = request.parameters + ('sync -> "async"))) map {
-          f => { (cred: (APIKey, AccountDetails)) => f(cred, Path(path)) }
+          f =>
+            { (cred: (APIKey, AccountDetails)) =>
+              f(cred, Path(path))
+            }
         }
       }
 

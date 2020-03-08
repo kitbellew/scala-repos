@@ -93,12 +93,18 @@ trait AbstractScreen extends Factory with Loggable {
 
   def screenTitle: NodeSeq = screenNameAsHtml
 
-  def cancelButton: Elem = <button>
-    {S.?("Cancel")}
+  def cancelButton: Elem =
+    <button>
+    {
+      S.?("Cancel")
+    }
   </button>
 
-  def finishButton: Elem = <button>
-    {S.?("Finish")}
+  def finishButton: Elem =
+    <button>
+    {
+      S.?("Finish")
+    }
   </button>
 
   implicit def boxOfScreen[T <: AbstractScreen](in: T): Box[T] = Box !! in
@@ -119,7 +125,9 @@ trait AbstractScreen extends Factory with Loggable {
   protected def vendAVar[T](dflt: => T): NonCleanAnyVar[T]
 
   object Field {
-    implicit def fToType[T](field: Field { type ValueType = T }): T = field.is
+    implicit def fToType[T](field: Field {
+      type ValueType = T
+    }): T = field.is
   }
 
   protected sealed trait OtherValueInitializer[T]
@@ -289,7 +297,9 @@ trait AbstractScreen extends Factory with Loggable {
     /**
       * Convert the field builder into a field
       */
-    def make: Field { type ValueType = T } = {
+    def make: Field {
+      type ValueType = T
+    } = {
       val paramFieldId: Box[String] = (stuff.collect {
         case FormFieldId(id) => id
       }).headOption
@@ -458,9 +468,12 @@ trait AbstractScreen extends Factory with Loggable {
       extends FilterOrValidate[Nothing]
 
   protected def field[T](
-      underlying: => BaseField { type ValueType = T },
-      stuff: FilterOrValidate[T]*)(
-      implicit man: Manifest[T]): Field { type ValueType = T } = {
+      underlying: => BaseField {
+        type ValueType = T
+      },
+      stuff: FilterOrValidate[T]*)(implicit man: Manifest[T]): Field {
+    type ValueType = T
+  } = {
     val paramFieldId: Box[String] = (stuff.collect {
       case FormFieldId(id) => id
     }).headOption
@@ -569,10 +582,14 @@ trait AbstractScreen extends Factory with Loggable {
   protected implicit object BoxMarkerObj extends BoxMarker
 
   protected def field[T](
-      underlying: => Box[BaseField { type ValueType = T }],
+      underlying: => Box[BaseField {
+        type ValueType = T
+      }],
       stuff: FilterOrValidate[T]*)(implicit
       man: Manifest[T],
-      marker: BoxMarker): Field { type ValueType = T } = {
+      marker: BoxMarker): Field {
+    type ValueType = T
+  } = {
     val paramFieldId: Box[String] = (stuff.collect {
       case FormFieldId(id) => id
     }).headOption
@@ -691,8 +708,9 @@ trait AbstractScreen extends Factory with Loggable {
   protected def field[T](
       name: => String,
       default: => T,
-      stuff: FilterOrValidate[T]*)(
-      implicit man: Manifest[T]): Field { type ValueType = T } =
+      stuff: FilterOrValidate[T]*)(implicit man: Manifest[T]): Field {
+    type ValueType = T
+  } =
     new FieldBuilder[T](
       name,
       default,
@@ -836,8 +854,9 @@ trait AbstractScreen extends Factory with Loggable {
         type ValueType = T
       } => Box[NodeSeq]),
       otherValue: OtherValueInitializer[OV],
-      stuff: FilterOrValidate[T]*)
-      : Field { type ValueType = T; type OtherValueType = OV } = {
+      stuff: FilterOrValidate[T]*): Field {
+    type ValueType = T; type OtherValueType = OV
+  } = {
     val newBinding: Box[FieldBinding] = (stuff.collect {
       case AFieldBinding(i) => i
     }).headOption
@@ -952,7 +971,9 @@ trait AbstractScreen extends Factory with Loggable {
   protected def password(
       name: => String,
       defaultValue: => String,
-      stuff: FilterOrValidate[String]*): Field { type ValueType = String } = {
+      stuff: FilterOrValidate[String]*): Field {
+    type ValueType = String
+  } = {
     val eAttr = grabParams(stuff)
 
     makeField[String, Nothing](
@@ -975,7 +996,9 @@ trait AbstractScreen extends Factory with Loggable {
   protected def text(
       name: => String,
       defaultValue: => String,
-      stuff: FilterOrValidate[String]*): Field { type ValueType = String } = {
+      stuff: FilterOrValidate[String]*): Field {
+    type ValueType = String
+  } = {
     val eAttr = grabParams(stuff)
 
     makeField[String, Nothing](
@@ -999,7 +1022,9 @@ trait AbstractScreen extends Factory with Loggable {
   protected def textarea(
       name: => String,
       defaultValue: => String,
-      stuff: FilterOrValidate[String]*): Field { type ValueType = String } =
+      stuff: FilterOrValidate[String]*): Field {
+    type ValueType = String
+  } =
     textarea(name, defaultValue, 5, 80, stuff: _*)
 
   /**
@@ -1019,7 +1044,9 @@ trait AbstractScreen extends Factory with Loggable {
       defaultValue: => String,
       rows: Int,
       cols: Int,
-      stuff: FilterOrValidate[String]*): Field { type ValueType = String } = {
+      stuff: FilterOrValidate[String]*): Field {
+    type ValueType = String
+  } = {
 
     val eAttr: List[SHtml.ElemAttr] =
       (("rows" -> rows.toString): SHtml.ElemAttr) ::
@@ -1049,8 +1076,10 @@ trait AbstractScreen extends Factory with Loggable {
       name: => String,
       default: => T,
       choices: => Seq[T],
-      stuff: FilterOrValidate[T]*)(implicit f: SHtml.PairStringPromoter[T])
-      : Field { type ValueType = T; type OtherValueType = Seq[T] } = {
+      stuff: FilterOrValidate[T]*)(
+      implicit f: SHtml.PairStringPromoter[T]): Field {
+    type ValueType = T; type OtherValueType = Seq[T]
+  } = {
     val eAttr = grabParams(stuff)
 
     makeField[T, Seq[T]](
@@ -1079,8 +1108,10 @@ trait AbstractScreen extends Factory with Loggable {
       name: => String,
       default: => Seq[T],
       choices: => Seq[T],
-      stuff: FilterOrValidate[Seq[T]]*)(implicit f: SHtml.PairStringPromoter[T])
-      : Field { type ValueType = Seq[T]; type OtherValueType = Seq[T] } = {
+      stuff: FilterOrValidate[Seq[T]]*)(
+      implicit f: SHtml.PairStringPromoter[T]): Field {
+    type ValueType = Seq[T]; type OtherValueType = Seq[T]
+  } = {
     val eAttr = grabParams(stuff)
 
     makeField[Seq[T], Seq[T]](
@@ -1123,8 +1154,9 @@ trait AbstractScreen extends Factory with Loggable {
       name: => String,
       default: => String,
       choices: => Seq[String],
-      stuff: FilterOrValidate[String]*)
-      : Field { type ValueType = String; type OtherValueType = Seq[String] } = {
+      stuff: FilterOrValidate[String]*): Field {
+    type ValueType = String; type OtherValueType = Seq[String]
+  } = {
     val eAttr = grabParams(stuff)
 
     makeField[String, Seq[String]](
@@ -1144,8 +1176,12 @@ trait AbstractScreen extends Factory with Loggable {
 
 trait ScreenWizardRendered extends Loggable {
   protected def wrapInDiv(in: NodeSeq): Elem =
-    <div style="display: inline" id={FormGUID.get}>
-      {in}
+    <div style="display: inline" id={
+      FormGUID.get
+    }>
+      {
+      in
+    }
     </div>
 
   def formName: String
@@ -1281,7 +1317,9 @@ trait ScreenWizardRendered extends Loggable {
       for {
         field <- fields
         bindingInfo <- field.binding
-        custom <- Some(bindingInfo.bindingStyle) collect { case c: Custom => c }
+        custom <- Some(bindingInfo.bindingStyle) collect {
+          case c: Custom => c
+        }
       } yield traceInline(
         "Binding custom field %s to %s"
           .format(bindingInfo.selector(formName), custom.template),
@@ -1340,11 +1378,12 @@ trait ScreenWizardRendered extends Loggable {
         myNotices match {
           case Nil => basicLabel
           case _ =>
-            val maxN =
-              myNotices
-                .map(_._1)
-                .sortWith { _.id > _.id }
-                .head // get the maximum type of notice (Error > Warning > Notice)
+            val maxN = myNotices
+              .map(_._1)
+              .sortWith {
+                _.id > _.id
+              }
+              .head // get the maximum type of notice (Error > Warning > Notice)
             val metaData: MetaData =
               noticeTypeToAttr(theScreen).map(_(maxN)) openOr Null
             basicLabel & update(_.label, metaData)
@@ -1411,11 +1450,17 @@ trait ScreenWizardRendered extends Loggable {
       val snapshot = createSnapshot
 
       val ret =
-        (<form id={nextId._1} action={url}
+        (<form id={
+          nextId._1
+        } action={
+          url
+        }
                method="post">{
           S.formGroup(-1)(SHtml.hidden(() =>
             snapshot.restore()) % liftScreenAttr("restoreAction"))
-        }{fields}{
+        }{
+          fields
+        }{
           S.formGroup(4)(SHtml.hidden(() => {
             val res = nextId._2();
             if (!ajax_?) {
@@ -1432,7 +1477,11 @@ trait ScreenWizardRendered extends Loggable {
           theScreen.additionalAttributes) ++
           prevId.toList.map {
             case (id, func) =>
-              <form id={id} action={url} method="post">{
+              <form id={
+                id
+              } action={
+                url
+              } method="post">{
                 SHtml.hidden(() => {
                   snapshot.restore();
                   val res = func();
@@ -1444,7 +1493,11 @@ trait ScreenWizardRendered extends Loggable {
                 }) % liftScreenAttr("restoreAction")
               }</form>
           } ++
-          <form id={cancelId._1} action={url} method="post">{
+          <form id={
+            cancelId._1
+          } action={
+            url
+          } method="post">{
             SHtml.hidden(() => {
               snapshot.restore();
               val res =

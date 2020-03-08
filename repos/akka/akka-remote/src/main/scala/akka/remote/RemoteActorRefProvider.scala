@@ -546,7 +546,9 @@ private[akka] class RemoteActorRefProvider(
       case _ if hasAddress(addr) ⇒ Some(local.rootPath.address)
       case Address(_, _, Some(_), Some(_)) ⇒
         try Some(transport.localAddressForRemote(addr))
-        catch { case NonFatal(_) ⇒ None }
+        catch {
+          case NonFatal(_) ⇒ None
+        }
       case _ ⇒ None
     }
   }

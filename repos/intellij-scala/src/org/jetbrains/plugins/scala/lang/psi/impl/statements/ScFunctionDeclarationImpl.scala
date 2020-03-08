@@ -36,7 +36,9 @@ class ScFunctionDeclarationImpl private (
     }
   }
 
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
   def this(stub: ScFunctionStub) = {
     this(stub, ScalaElementTypes.FUNCTION_DECLARATION, null)
   }

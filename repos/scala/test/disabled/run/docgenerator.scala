@@ -111,7 +111,9 @@ object Foo2 {
     import scala.tools.nsc._
     import scala.tools.nsc.doc.DefaultDocDriver
     import scala.tools.nsc.reporters.ConsoleReporter
-    def error(msg: String) { Console.err.println(msg) }
+    def error(msg: String) {
+      Console.err.println(msg)
+    }
     var reporter: ConsoleReporter = _
     def process(args: Array[String]) {
       val docSettings = new scala.tools.nsc.doc.Settings(error)

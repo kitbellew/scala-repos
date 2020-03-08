@@ -133,7 +133,9 @@ object MatrixProduct extends java.io.Serializable {
 
   def getCrosser(rightSize: SizeHint): MatrixCrosser =
     rightSize.total
-      .map { t => if (t < maxTinyJoin) AnyCrossTiny else AnyCrossSmall }
+      .map { t =>
+        if (t < maxTinyJoin) AnyCrossTiny else AnyCrossSmall
+      }
       .getOrElse(AnyCrossSmall)
 
   implicit def literalScalarRightProduct[Row, Col, ValT](
@@ -663,7 +665,9 @@ object MatrixProduct extends java.io.Serializable {
             .map(
               (left.valSym.append(getField(newRightFields, 2))) -> getField(
                 newRightFields,
-                2)) { pair: (ValT, ValT) => ring.times(pair._1, pair._2) }
+                2)) { pair: (ValT, ValT) =>
+              ring.times(pair._1, pair._2)
+            }
             // Keep the names from the right:
             .project(newRightFields)
             .rename(

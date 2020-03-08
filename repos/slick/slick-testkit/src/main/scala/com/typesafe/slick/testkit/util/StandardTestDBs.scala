@@ -94,7 +94,9 @@ object StandardTestDBs {
           profile.backend.Database
             .forURL(dropUrl, driver = jdbcDriver)
             .run(SimpleJdbcAction(_.connection)))
-      } catch { case e: SQLException => }
+      } catch {
+        case e: SQLException =>
+      }
     }
   }
 
@@ -110,7 +112,9 @@ object StandardTestDBs {
           profile.backend.Database
             .forURL(dropUrl, driver = jdbcDriver)
             .run(SimpleJdbcAction(_.connection)))
-      } catch { case e: SQLException => }
+      } catch {
+        case e: SQLException =>
+      }
       TestDB.deleteDBFiles(dbName)
     }
   }
@@ -347,7 +351,9 @@ abstract class DerbyDB(confName: String) extends InternalJdbcTestDB(confName) {
 }
 
 object DerbyDB {
-  val DEV_NULL = new java.io.OutputStream { def write(b: Int) {} };
+  val DEV_NULL = new java.io.OutputStream {
+    def write(b: Int) {}
+  };
 }
 
 abstract class HsqlDB(confName: String) extends InternalJdbcTestDB(confName) {

@@ -561,7 +561,9 @@ trait RestHelper extends LiftRules.DispatchPF {
     RestContinuation.async(reply => {
       asyncResolveProvider.resolveAsync(
         asyncContainer,
-        { resolved => reply(responseCreator(resolved)) }
+        { resolved =>
+          reply(responseCreator(resolved))
+        }
       )
     })
   }

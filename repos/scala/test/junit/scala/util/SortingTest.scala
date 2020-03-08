@@ -31,12 +31,16 @@ class SortingTest {
 
   def isSorted(a: Array[N]): Boolean = {
     var i = 1;
-    while (i < a.length) { if (a(i).i < a(i - 1).i) return false; i += 1 }; true
+    while (i < a.length) {
+      if (a(i).i < a(i - 1).i) return false; i += 1
+    }; true
   }
 
   def isAntisorted(a: Array[N]): Boolean = {
     var i = 1;
-    while (i < a.length) { if (a(i).i > a(i - 1).i) return false; i += 1 }; true
+    while (i < a.length) {
+      if (a(i).i > a(i - 1).i) return false; i += 1
+    }; true
   }
 
   val sizes = Seq.range(0, 65) ++ Seq(256, 1024, 9121, 65539)
@@ -53,12 +57,19 @@ class SortingTest {
       val temp = xs.clone;
       java.util.Arrays.sort(
         temp,
-        new java.util.Comparator[N] { def compare(a: N, b: N) = a.compare(b) });
-      temp
+        new java.util.Comparator[N] {
+          def compare(a: N, b: N) = a.compare(b)
+        }); temp
     }
-    val qxs = { val temp = xs.clone; Sorting.quickSort(temp); temp }
-    val pxs = { val temp = xs.clone; Sorting.quickSort(temp)(backwardsN); temp }
-    val sxs = { val temp = xs.clone; Sorting.stableSort(temp); temp }
+    val qxs = {
+      val temp = xs.clone; Sorting.quickSort(temp); temp
+    }
+    val pxs = {
+      val temp = xs.clone; Sorting.quickSort(temp)(backwardsN); temp
+    }
+    val sxs = {
+      val temp = xs.clone; Sorting.stableSort(temp); temp
+    }
     val rxs = {
       val temp = xs.clone;
       Sorting.stableSort(temp)(implicitly[ClassTag[N]], backwardsN); temp
@@ -76,19 +87,29 @@ class SortingTest {
       isStable(sys.map(i => xs(i))))
     assertTrue(
       "Quicksort should produce canonical ordering",
-      (qxs zip zs).forall { case (a, b) => a.i == b.i })
+      (qxs zip zs).forall {
+        case (a, b) => a.i == b.i
+      })
     assertTrue(
       "Reverse quicksort should produce canonical ordering",
-      (pxs.reverse zip zs).forall { case (a, b) => a.i == b.i })
+      (pxs.reverse zip zs).forall {
+        case (a, b) => a.i == b.i
+      })
     assertTrue(
       "Stable sort should produce exact ordering",
-      (sxs zip zs).forall { case (a, b) => a == b })
+      (sxs zip zs).forall {
+        case (a, b) => a == b
+      })
     assertTrue(
       "Reverse stable sort should produce canonical ordering",
-      (rxs.reverse zip zs).forall { case (a, b) => a.i == b.i })
+      (rxs.reverse zip zs).forall {
+        case (a, b) => a.i == b.i
+      })
     assertTrue(
       "Proxy sort and direct sort should produce exactly the same thing",
-      (sxs zip sys.map(i => xs(i))).forall { case (a, b) => a == b })
+      (sxs zip sys.map(i => xs(i))).forall {
+        case (a, b) => a == b
+      })
   }
 
   @Test def testSortConsistency: Unit = {

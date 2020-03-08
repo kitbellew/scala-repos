@@ -1,17 +1,29 @@
 import scala.reflect.runtime.universe._
 import scala.tools.reflect.Eval
 
-object B { override def toString = "object" }
-class C { override def toString = "class" }
+object B {
+  override def toString = "object"
+}
+class C {
+  override def toString = "class"
+}
 
 package foo1 {
-  object B { override def toString = "package > object" }
-  class C { override def toString = "package > class" }
+  object B {
+    override def toString = "package > object"
+  }
+  class C {
+    override def toString = "package > class"
+  }
 }
 
 object Foo2 {
-  object B { override def toString = "object > object" }
-  class C { override def toString = "object > class" }
+  object B {
+    override def toString = "object > object"
+  }
+  class C {
+    override def toString = "object > class"
+  }
 }
 
 object packageless {

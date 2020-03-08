@@ -161,42 +161,92 @@ private[spark] object UIUtils extends Logging {
 
   def commonHeaderNodes: Seq[Node] = {
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-    <link rel="stylesheet" href={prependBaseUri("/static/bootstrap.min.css")} type="text/css"/>
-    <link rel="stylesheet" href={prependBaseUri("/static/vis.min.css")} type="text/css"/>
-    <link rel="stylesheet" href={prependBaseUri("/static/webui.css")} type="text/css"/>
-    <link rel="stylesheet" href={prependBaseUri("/static/timeline-view.css")} type="text/css"/>
-    <script src={prependBaseUri("/static/sorttable.js")} ></script>
-    <script src={prependBaseUri("/static/jquery-1.11.1.min.js")}></script>
-    <script src={prependBaseUri("/static/vis.min.js")}></script>
-    <script src={prependBaseUri("/static/bootstrap-tooltip.js")}></script>
-    <script src={prependBaseUri("/static/initialize-tooltips.js")}></script>
-    <script src={prependBaseUri("/static/table.js")}></script>
-    <script src={prependBaseUri("/static/additional-metrics.js")}></script>
-    <script src={prependBaseUri("/static/timeline-view.js")}></script>
+    <link rel="stylesheet" href={
+      prependBaseUri("/static/bootstrap.min.css")
+    } type="text/css"/>
+    <link rel="stylesheet" href={
+      prependBaseUri("/static/vis.min.css")
+    } type="text/css"/>
+    <link rel="stylesheet" href={
+      prependBaseUri("/static/webui.css")
+    } type="text/css"/>
+    <link rel="stylesheet" href={
+      prependBaseUri("/static/timeline-view.css")
+    } type="text/css"/>
+    <script src={
+      prependBaseUri("/static/sorttable.js")
+    } ></script>
+    <script src={
+      prependBaseUri("/static/jquery-1.11.1.min.js")
+    }></script>
+    <script src={
+      prependBaseUri("/static/vis.min.js")
+    }></script>
+    <script src={
+      prependBaseUri("/static/bootstrap-tooltip.js")
+    }></script>
+    <script src={
+      prependBaseUri("/static/initialize-tooltips.js")
+    }></script>
+    <script src={
+      prependBaseUri("/static/table.js")
+    }></script>
+    <script src={
+      prependBaseUri("/static/additional-metrics.js")
+    }></script>
+    <script src={
+      prependBaseUri("/static/timeline-view.js")
+    }></script>
   }
 
   def vizHeaderNodes: Seq[Node] = {
-    <link rel="stylesheet" href={prependBaseUri("/static/spark-dag-viz.css")} type="text/css" />
-    <script src={prependBaseUri("/static/d3.min.js")}></script>
-    <script src={prependBaseUri("/static/dagre-d3.min.js")}></script>
-    <script src={prependBaseUri("/static/graphlib-dot.min.js")}></script>
-    <script src={prependBaseUri("/static/spark-dag-viz.js")}></script>
+    <link rel="stylesheet" href={
+      prependBaseUri("/static/spark-dag-viz.css")
+    } type="text/css" />
+    <script src={
+      prependBaseUri("/static/d3.min.js")
+    }></script>
+    <script src={
+      prependBaseUri("/static/dagre-d3.min.js")
+    }></script>
+    <script src={
+      prependBaseUri("/static/graphlib-dot.min.js")
+    }></script>
+    <script src={
+      prependBaseUri("/static/spark-dag-viz.js")
+    }></script>
   }
 
   def dataTablesHeaderNodes: Seq[Node] = {
     <link rel="stylesheet"
-          href={prependBaseUri("/static/jquery.dataTables.1.10.4.min.css")} type="text/css"/>
+          href={
+      prependBaseUri("/static/jquery.dataTables.1.10.4.min.css")
+    } type="text/css"/>
     <link rel="stylesheet"
-          href={prependBaseUri("/static/dataTables.bootstrap.css")} type="text/css"/>
+          href={
+      prependBaseUri("/static/dataTables.bootstrap.css")
+    } type="text/css"/>
     <link rel="stylesheet" href={
       prependBaseUri("/static/jsonFormatter.min.css")
     } type="text/css"/>
-    <script src={prependBaseUri("/static/jquery.dataTables.1.10.4.min.js")}></script>
-    <script src={prependBaseUri("/static/jquery.cookies.2.2.0.min.js")}></script>
-    <script src={prependBaseUri("/static/jquery.blockUI.min.js")}></script>
-    <script src={prependBaseUri("/static/dataTables.bootstrap.min.js")}></script>
-    <script src={prependBaseUri("/static/jsonFormatter.min.js")}></script>
-    <script src={prependBaseUri("/static/jquery.mustache.js")}></script>
+    <script src={
+      prependBaseUri("/static/jquery.dataTables.1.10.4.min.js")
+    }></script>
+    <script src={
+      prependBaseUri("/static/jquery.cookies.2.2.0.min.js")
+    }></script>
+    <script src={
+      prependBaseUri("/static/jquery.blockUI.min.js")
+    }></script>
+    <script src={
+      prependBaseUri("/static/dataTables.bootstrap.min.js")
+    }></script>
+    <script src={
+      prependBaseUri("/static/jsonFormatter.min.js")
+    }></script>
+    <script src={
+      prependBaseUri("/static/jquery.mustache.js")
+    }></script>
   }
 
   /** Returns a spark page with correctly formatted headers */
@@ -212,8 +262,12 @@ private[spark] object UIUtils extends Logging {
     val shortAppName =
       if (appName.length < 36) appName else appName.take(32) + "..."
     val header = activeTab.headerTabs.map { tab =>
-      <li class={if (tab == activeTab) "active" else ""}>
-        <a href={prependBaseUri(activeTab.basePath, "/" + tab.prefix + "/")}>{
+      <li class={
+        if (tab == activeTab) "active" else ""
+      }>
+        <a href={
+        prependBaseUri(activeTab.basePath, "/" + tab.prefix + "/")
+      }>{
         tab.name
       }</a>
       </li>
@@ -223,35 +277,61 @@ private[spark] object UIUtils extends Logging {
 
     <html>
       <head>
-        {commonHeaderNodes}
-        {if (showVisualization) vizHeaderNodes else Seq.empty}
-        <title>{appName} - {title}</title>
+        {
+      commonHeaderNodes
+    }
+        {
+      if (showVisualization) vizHeaderNodes else Seq.empty
+    }
+        <title>{
+      appName
+    } - {
+      title
+    }</title>
       </head>
       <body>
         <div class="navbar navbar-static-top">
           <div class="navbar-inner">
             <div class="brand">
-              <a href={prependBaseUri("/")} class="brand">
-                <img src={prependBaseUri("/static/spark-logo-77x50px-hd.png")} />
-                <span class="version">{org.apache.spark.SPARK_VERSION}</span>
+              <a href={
+      prependBaseUri("/")
+    } class="brand">
+                <img src={
+      prependBaseUri("/static/spark-logo-77x50px-hd.png")
+    } />
+                <span class="version">{
+      org.apache.spark.SPARK_VERSION
+    }</span>
               </a>
             </div>
             <p class="navbar-text pull-right">
-              <strong title={appName}>{shortAppName}</strong> application UI
+              <strong title={
+      appName
+    }>{
+      shortAppName
+    }</strong> application UI
             </p>
-            <ul class="nav">{header}</ul>
+            <ul class="nav">{
+      header
+    }</ul>
           </div>
         </div>
         <div class="container-fluid">
           <div class="row-fluid">
             <div class="span12">
               <h3 style="vertical-align: bottom; display: inline-block;">
-                {title}
-                {helpButton}
+                {
+      title
+    }
+                {
+      helpButton
+    }
               </h3>
             </div>
           </div>
-          {content}
+          {
+      content
+    }
         </div>
       </body>
     </html>
@@ -264,27 +344,41 @@ private[spark] object UIUtils extends Logging {
       useDataTables: Boolean = false): Seq[Node] = {
     <html>
       <head>
-        {commonHeaderNodes}
-        {if (useDataTables) dataTablesHeaderNodes else Seq.empty}
-        <title>{title}</title>
+        {
+      commonHeaderNodes
+    }
+        {
+      if (useDataTables) dataTablesHeaderNodes else Seq.empty
+    }
+        <title>{
+      title
+    }</title>
       </head>
       <body>
         <div class="container-fluid">
           <div class="row-fluid">
             <div class="span12">
               <h3 style="vertical-align: middle; display: inline-block;">
-                <a style="text-decoration: none" href={prependBaseUri("/")}>
-                  <img src={prependBaseUri("/static/spark-logo-77x50px-hd.png")} />
+                <a style="text-decoration: none" href={
+      prependBaseUri("/")
+    }>
+                  <img src={
+      prependBaseUri("/static/spark-logo-77x50px-hd.png")
+    } />
                   <span class="version"
                         style="margin-right: 15px;">{
       org.apache.spark.SPARK_VERSION
     }</span>
                 </a>
-                {title}
+                {
+      title
+    }
               </h3>
             </div>
           </div>
-          {content}
+          {
+      content
+    }
         </div>
       </body>
     </html>
@@ -325,7 +419,14 @@ private[spark] object UIUtils extends Logging {
     def getHeaderContent(header: String): Seq[Node] = {
       if (newlinesInHeader) {
         <ul class="unstyled">
-          {header.split("\n").map { case t => <li> {t} </li> }}
+          {
+          header.split("\n").map {
+            case t =>
+              <li> {
+                t
+              } </li>
+          }
+        }
         </ul>
       } else {
         Text(header)
@@ -334,15 +435,27 @@ private[spark] object UIUtils extends Logging {
 
     val headerRow: Seq[Node] = {
       headers.view.zipWithIndex.map { x =>
-        <th width={colWidthAttr} class={getClass(x._2)}>{
+        <th width={
+          colWidthAttr
+        } class={
+          getClass(x._2)
+        }>{
           getHeaderContent(x._1)
         }</th>
       }
     }
-    <table class={listingTableClass} id={id.map(Text.apply)}>
-      <thead>{headerRow}</thead>
+    <table class={
+      listingTableClass
+    } id={
+      id.map(Text.apply)
+    }>
+      <thead>{
+      headerRow
+    }</thead>
       <tbody>
-        {data.map(r => generateDataRow(r))}
+        {
+      data.map(r => generateDataRow(r))
+    }
       </tbody>
     </table>
   }
@@ -361,12 +474,24 @@ private[spark] object UIUtils extends Logging {
 
     <div class="progress">
       <span style="text-align:center; position:absolute; width:100%; left:0;">
-        {completed}/{total}
-        {if (failed > 0) s"($failed failed)"}
-        {if (skipped > 0) s"($skipped skipped)"}
+        {
+      completed
+    }/{
+      total
+    }
+        {
+      if (failed > 0) s"($failed failed)"
+    }
+        {
+      if (skipped > 0) s"($skipped skipped)"
+    }
       </span>
-      <div class="bar bar-completed" style={completeWidth}></div>
-      <div class="bar bar-running" style={startWidth}></div>
+      <div class="bar bar-completed" style={
+      completeWidth
+    }></div>
+      <div class="bar bar-running" style={
+      startWidth
+    }></div>
     </div>
   }
 
@@ -395,8 +520,12 @@ private[spark] object UIUtils extends Logging {
       graphs: Seq[RDDOperationGraph],
       forJob: Boolean): Seq[Node] = {
     <div>
-      <span id={if (forJob) "job-dag-viz" else "stage-dag-viz"}
-            class="expand-dag-viz" onclick={s"toggleDagViz($forJob);"}>
+      <span id={
+      if (forJob) "job-dag-viz" else "stage-dag-viz"
+    }
+            class="expand-dag-viz" onclick={
+      s"toggleDagViz($forJob);"
+    }>
         <span class="expand-dag-viz-arrow arrow-closed"></span>
         <a data-toggle="tooltip" title={
       if (forJob) ToolTips.JOB_DAG else ToolTips.STAGE_DAG
@@ -412,21 +541,37 @@ private[spark] object UIUtils extends Logging {
         val stageId = g.rootCluster.id
           .replaceAll(RDDOperationGraph.STAGE_CLUSTER_PREFIX, "")
         val skipped = g.rootCluster.name.contains("skipped").toString
-        <div class="stage-metadata" stage-id={stageId} skipped={skipped}>
-              <div class="dot-file">{RDDOperationGraph.makeDotFile(g)}</div>
+        <div class="stage-metadata" stage-id={
+          stageId
+        } skipped={
+          skipped
+        }>
+              <div class="dot-file">{
+          RDDOperationGraph.makeDotFile(g)
+        }</div>
               {
           g.incomingEdges.map { e =>
-            <div class="incoming-edge">{e.fromId},{e.toId}</div>
+            <div class="incoming-edge">{
+              e.fromId
+            },{
+              e.toId
+            }</div>
           }
         }
               {
           g.outgoingEdges.map { e =>
-            <div class="outgoing-edge">{e.fromId},{e.toId}</div>
+            <div class="outgoing-edge">{
+              e.fromId
+            },{
+              e.toId
+            }</div>
           }
         }
               {
           g.rootCluster.getCachedNodes.map { n =>
-            <div class="cached-rdd">{n.id}</div>
+            <div class="cached-rdd">{
+              n.id
+            }</div>
           }
         }
             </div>
@@ -438,7 +583,11 @@ private[spark] object UIUtils extends Logging {
 
   def tooltip(text: String, position: String): Seq[Node] = {
     <sup>
-      (<a data-toggle="tooltip" data-placement={position} title={text}>?</a>)
+      (<a data-toggle="tooltip" data-placement={
+      position
+    } title={
+      text
+    }>?</a>)
     </sup>
   }
 
@@ -470,15 +619,25 @@ private[spark] object UIUtils extends Logging {
       if (illegalNodes.nonEmpty) {
         throw new IllegalArgumentException(
           "Only HTML anchors allowed in job descriptions\n" +
-            illegalNodes.map { n => s"${n.label} in $n" }.mkString("\n\t"))
+            illegalNodes
+              .map { n =>
+                s"${n.label} in $n"
+              }
+              .mkString("\n\t"))
       }
 
       // Verify that all links are relative links starting with "/"
       val allLinks =
-        xml \\ "a" flatMap { _.attributes } filter { _.key == "href" } map {
+        xml \\ "a" flatMap {
+          _.attributes
+        } filter {
+          _.key == "href"
+        } map {
           _.value.toString
         }
-      if (allLinks.exists { !_.startsWith("/") }) {
+      if (allLinks.exists {
+            !_.startsWith("/")
+          }) {
         throw new IllegalArgumentException(
           "Links in job descriptions must be root-relative:\n" + allLinks
             .mkString("\n\t"))
@@ -500,7 +659,9 @@ private[spark] object UIUtils extends Logging {
       new RuleTransformer(rule).transform(xml)
     } catch {
       case NonFatal(e) =>
-        <span class="description-input">{desc}</span>
+        <span class="description-input">{
+          desc
+        }</span>
     }
   }
 

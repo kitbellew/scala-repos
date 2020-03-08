@@ -19,10 +19,14 @@ object Challenge extends LilaController {
   private def env = Env.challenge
 
   def all = Auth { implicit ctx => me =>
-    env.api allFor me.id map { all => Ok(env.jsonView(all)) as JSON }
+    env.api allFor me.id map { all =>
+      Ok(env.jsonView(all)) as JSON
+    }
   }
 
-  def show(id: String) = Open { implicit ctx => showId(id) }
+  def show(id: String) = Open { implicit ctx =>
+    showId(id)
+  }
 
   protected[controllers] def showId(id: String)(
       implicit ctx: Context): Fu[Result] =
@@ -65,7 +69,9 @@ object Challenge extends LilaController {
           negotiate(
             html = Redirect(routes.Round.watcher(pov.game.id, "white")).fuccess,
             api = apiVersion =>
-              Env.api.roundApi.player(pov, apiVersion) map { Ok(_) }
+              Env.api.roundApi.player(pov, apiVersion) map {
+                Ok(_)
+              }
           ) flatMap withChallengeAnonCookie(ctx.isAnon, c, false)
         case None =>
           negotiate(
@@ -90,7 +96,11 @@ object Challenge extends LilaController {
             httpOnly = false.some)
         }
       }
-    } map { cookieOption => cookieOption.fold(res) { res.withCookies(_) } }
+    } map { cookieOption =>
+      cookieOption.fold(res) {
+        res.withCookies(_)
+      }
+    }
 
   def decline(id: String) = Auth { implicit ctx => me =>
     OptionFuResult(env.api byId id) { c =>

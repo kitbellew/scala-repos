@@ -439,7 +439,9 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
       var hasCast = false
       analyzedPlan.collect {
         case p: Project =>
-          p.transformExpressionsUp { case c: Cast => hasCast = true; c }
+          p.transformExpressionsUp {
+            case c: Cast => hasCast = true; c
+          }
       }
       hasCast
     }
@@ -778,12 +780,16 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
 
   test("implement identity function using case statement") {
     val actual = sql("SELECT (CASE key WHEN key THEN key END) FROM src").rdd
-      .map { case Row(i: Int) => i }
+      .map {
+        case Row(i: Int) => i
+      }
       .collect()
       .toSet
 
     val expected = sql("SELECT key FROM src").rdd
-      .map { case Row(i: Int) => i }
+      .map {
+        case Row(i: Int) => i
+      }
       .collect()
       .toSet
 
@@ -818,8 +824,9 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   }
 
   def isExplanation(result: DataFrame): Boolean = {
-    val explanation =
-      result.select('plan).collect().map { case Row(plan: String) => plan }
+    val explanation = result.select('plan).collect().map {
+      case Row(plan: String) => plan
+    }
     explanation.contains("== Physical Plan ==")
   }
 

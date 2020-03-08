@@ -49,7 +49,9 @@ class UIUtilsSuite extends SparkFunSuite {
 
     verify(
       """test<a><img></img></a>""",
-      <span class="description-input">{"""test<a><img></img></a>"""}</span>,
+      <span class="description-input">{
+        """test<a><img></img></a>"""
+      }</span>,
       "Non-anchor elements should make the description be treated as a string instead of HTML"
     )
 

@@ -257,7 +257,9 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
 
   /** Sets the `destdir` attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value of `destination`. */
-  def setDestdir(input: File) { destination = Some(input) }
+  def setDestdir(input: File) {
+    destination = Some(input)
+  }
 
   /** Sets the `classpath` attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value of `classpath`. */
@@ -366,11 +368,15 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
 
   /** Sets the `force` attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value for `force`. */
-  def setForce(input: Boolean) { force = input }
+  def setForce(input: Boolean) {
+    force = input
+  }
 
   /** Sets the `fork` attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value for `fork`. */
-  def setFork(input: Boolean) { fork = input }
+  def setFork(input: Boolean) {
+    fork = input
+  }
 
   /**
     * Sets the `jvmargs` attribute.  Used by [[http://ant.apache.org Ant]].
@@ -402,11 +408,15 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
 
   /** Set the `debug` info attribute.
     *  @param input The value for `debug`. */
-  def setDebuginfo(input: String) { debugInfo = Some(input) }
+  def setDebuginfo(input: String) {
+    debugInfo = Some(input)
+  }
 
   /** Set the `addparams` info attribute.
     *  @param input The value for `addparams`. */
-  def setAddparams(input: String) { addParams = input }
+  def setAddparams(input: String) {
+    addParams = input
+  }
 
   /** Set the `explaintypes` info attribute.
     *  @param input One of the flags `yes/no` or `on/off`. */
@@ -459,13 +469,17 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
 
   /** Sets the `failonerror` attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value for `failonerror`. */
-  def setFailonerror(input: Boolean) { failonerror = input }
+  def setFailonerror(input: Boolean) {
+    failonerror = input
+  }
 
   /** Set the `scalacdebugging` info attribute. If set to
     *  `'''true'''`, the scalac ant task will print out the filenames
     *  being compiled.
     *  @param input The specified flag */
-  def setScalacdebugging(input: Boolean) { scalacDebugging = input }
+  def setScalacdebugging(input: Boolean) {
+    scalacDebugging = input
+  }
 
   /** Sets the `compilerarg` as a nested compilerarg Ant parameter.
     *  @return A compiler argument to be configured. */
@@ -700,7 +714,9 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
     val java = new Java(this)
     java setFork true
     // using 'setLine' creates multiple arguments out of a space-separated string
-    jvmArgs foreach { java.createJvmarg() setLine _ }
+    jvmArgs foreach {
+      java.createJvmarg() setLine _
+    }
 
     // use user-provided path or retrieve from classloader
     // TODO - Allow user to override the compiler classpath

@@ -56,12 +56,16 @@ class ComboBoxControls(target: ComboBox[String])
 
   val btnAddItem = new Button {
     text = "Add new Item"
-    onAction = handle { addNewTab() }
+    onAction = handle {
+      addNewTab()
+    }
   }
 
   val btnRemoveItem = new Button {
     text = "Remove Item"
-    onAction = handle { removeCurrentItem() }
+    onAction = handle {
+      removeCurrentItem()
+    }
   }
 
   super.addNode("Visible Rows", txfVisibleRowCount)

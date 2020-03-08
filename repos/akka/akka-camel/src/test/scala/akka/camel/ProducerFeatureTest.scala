@@ -45,7 +45,9 @@ class ProducerFeatureTest
     camelContext.addRoutes(new TestRoute(system))
   }
 
-  override protected def afterEach { mockEndpoint.reset() }
+  override protected def afterEach {
+    mockEndpoint.reset()
+  }
 
   "A Producer on a sync Camel route" must {
 
@@ -392,7 +394,9 @@ object ProducerFeatureTest {
 
     override protected def transformOutgoingMessage(msg: Any) = msg match {
       case msg: CamelMessage ⇒
-        if (upper) msg.mapBody { body: String ⇒ body.toUpperCase }
+        if (upper) msg.mapBody { body: String ⇒
+          body.toUpperCase
+        }
         else msg
     }
   }

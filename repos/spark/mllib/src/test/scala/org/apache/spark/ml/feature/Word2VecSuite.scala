@@ -65,7 +65,9 @@ class Word2VecSuite
         sentence
           .map(codes.apply)
           .reduce((word1, word2) =>
-            word1.zip(word2).map { case (v1, v2) => v1 + v2 })
+            word1.zip(word2).map {
+              case (v1, v2) => v1 + v2
+            })
           .map(_ / numOfWords))
     }
 
@@ -115,8 +117,9 @@ class Word2VecSuite
         0.5137411952018738,
         0.11731560528278351)
     )
-    val expectedVectors =
-      codes.toSeq.sortBy(_._1).map { case (w, v) => Vectors.dense(v) }
+    val expectedVectors = codes.toSeq.sortBy(_._1).map {
+      case (w, v) => Vectors.dense(v)
+    }
 
     val docDF = doc.zip(doc).toDF("text", "alsotext")
 

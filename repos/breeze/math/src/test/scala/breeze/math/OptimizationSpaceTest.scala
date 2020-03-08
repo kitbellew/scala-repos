@@ -245,7 +245,11 @@ trait OptimizationSpaceTest[M, V, S] extends TensorSpaceTestBase[V, Int, S] {
   test("zip map of + is the same as + - Matrix") {
     check(Prop.forAll { (trip: (M, M, M)) =>
       val (a, b, _) = trip
-      zipMapValuesM.map(a, b, { scalars.+(_: S, _: S) }) == (a + b)
+      zipMapValuesM.map(
+        a,
+        b, {
+          scalars.+(_: S, _: S)
+        }) == (a + b)
     })
 
   }
@@ -302,9 +306,15 @@ class DenseOptimizationSpaceTest_Double
     (DenseMatrix[Double], DenseMatrix[Double], DenseMatrix[Double])] = {
     Arbitrary {
       for {
-        x <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
-        y <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
-        z <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
+        x <- Arbitrary.arbitrary[Double].map {
+          _ % 1e100
+        }
+        y <- Arbitrary.arbitrary[Double].map {
+          _ % 1e100
+        }
+        z <- Arbitrary.arbitrary[Double].map {
+          _ % 1e100
+        }
       } yield {
         (
           DenseMatrix.fill(N, N)(math.random * x),
@@ -318,9 +328,15 @@ class DenseOptimizationSpaceTest_Double
     (DenseVector[Double], DenseVector[Double], DenseVector[Double])] = {
     Arbitrary {
       for {
-        x <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
-        y <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
-        z <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
+        x <- Arbitrary.arbitrary[Double].map {
+          _ % 1e100
+        }
+        y <- Arbitrary.arbitrary[Double].map {
+          _ % 1e100
+        }
+        z <- Arbitrary.arbitrary[Double].map {
+          _ % 1e100
+        }
       } yield {
         (
           DenseVector.fill(N)(math.random * x),
@@ -331,7 +347,9 @@ class DenseOptimizationSpaceTest_Double
   }
 
   def genScalar: Arbitrary[Double] =
-    Arbitrary(Arbitrary.arbitrary[Double].map { _ % 1e10 })
+    Arbitrary(Arbitrary.arbitrary[Double].map {
+      _ % 1e10
+    })
 }
 
 class SparseOptimizationSpaceTest_Double
@@ -350,7 +368,9 @@ class SparseOptimizationSpaceTest_Double
   val M = 30
 
   def genScalar: Arbitrary[Double] =
-    Arbitrary(Arbitrary.arbitrary[Double].map { _ % 1e10 })
+    Arbitrary(Arbitrary.arbitrary[Double].map {
+      _ % 1e10
+    })
 
   val arbColIndex = Arbitrary(Gen.choose[Int](0, N - 1))
   val arbRowIndex = Arbitrary(Gen.choose[Int](0, M - 1))

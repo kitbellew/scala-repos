@@ -23,10 +23,16 @@ trait HListable[T] {
 }
 
 object HListable extends LowerPriorityHListable {
-  implicit def fromUnit: HListable[Unit] { type Out = HNil } = `n/a`
-  implicit def fromHList[T <: HList]: HListable[T] { type Out = T } = `n/a`
+  implicit def fromUnit: HListable[Unit] {
+    type Out = HNil
+  } = `n/a`
+  implicit def fromHList[T <: HList]: HListable[T] {
+    type Out = T
+  } = `n/a`
 }
 
 abstract class LowerPriorityHListable {
-  implicit def fromAnyRef[T]: HListable[T] { type Out = T :: HNil } = `n/a`
+  implicit def fromAnyRef[T]: HListable[T] {
+    type Out = T :: HNil
+  } = `n/a`
 }

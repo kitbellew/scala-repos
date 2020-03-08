@@ -67,7 +67,9 @@ object FlatMapBoltProvider {
   def wrapTime[T, U](existingOp: FlatMapOperation[T, U])
       : FlatMapOperation[(Timestamp, T), (Timestamp, U)] = {
     FlatMapOperation.generic({ x: (Timestamp, T) =>
-      existingOp.apply(x._2).map { vals => vals.map((x._1, _)) }
+      existingOp.apply(x._2).map { vals =>
+        vals.map((x._1, _))
+      }
     })
   }
 }
@@ -110,7 +112,9 @@ case class FlatMapBoltProvider(
     type InnerValue = (Timestamp, V)
     type ExecutorValue = CMap[(K, BatchID), InnerValue]
     val summerProducer = summer.members
-      .collect { case s: Summer[_, _, _] => s }
+      .collect {
+        case s: Summer[_, _, _] => s
+      }
       .head
       .asInstanceOf[Summer[Storm, K, V]]
     // When emitting tuples between the Final Flat Map and the summer we encode the timestamp in the value
@@ -184,7 +188,9 @@ case class FlatMapBoltProvider(
   def apply: BaseBolt[Any, Any] = {
     val summerOpt: Option[SummerNode[Storm]] = stormDag
       .dependantsOf(node)
-      .collect { case s: SummerNode[Storm] => s }
+      .collect {
+        case s: SummerNode[Storm] => s
+      }
       .headOption
     summerOpt match {
       case Some(s) =>

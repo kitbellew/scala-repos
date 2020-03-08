@@ -241,10 +241,14 @@ object ProjectStructureMatcher {
     }
 
     def moduleEntries: Seq[roots.ModuleOrderEntry] =
-      entries.collect { case e: roots.ModuleOrderEntry => e }
+      entries.collect {
+        case e: roots.ModuleOrderEntry => e
+      }
 
     def libraryEntries: Seq[roots.LibraryOrderEntry] =
-      entries.collect { case e: roots.LibraryOrderEntry => e }
+      entries.collect {
+        case e: roots.LibraryOrderEntry => e
+      }
   }
 
   trait HasName[T] {

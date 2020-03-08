@@ -105,8 +105,9 @@ abstract class StatsSampleSingleMasterSpec
 
       Cluster(system) join firstAddress
 
-      receiveN(3).collect { case MemberUp(m) => m.address }.toSet should be(
-        Set(firstAddress, secondAddress, thirdAddress))
+      receiveN(3).collect {
+        case MemberUp(m) => m.address
+      }.toSet should be(Set(firstAddress, secondAddress, thirdAddress))
 
       Cluster(system).unsubscribe(testActor)
 

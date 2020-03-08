@@ -41,7 +41,9 @@ trait Product extends Any with Equals {
       private var c: Int = 0
       private val cmax = productArity
       def hasNext = c < cmax
-      def next() = { val result = productElement(c); c += 1; result }
+      def next() = {
+        val result = productElement(c); c += 1; result
+      }
     }
 
   /** A string used in the `toString` methods of derived classes.

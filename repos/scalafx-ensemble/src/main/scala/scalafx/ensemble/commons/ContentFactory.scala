@@ -113,17 +113,23 @@ object ContentFactory {
             .syntaxhighlighter {{
             overflow: visible;
             font: 12px
-            {codeFont}
+            {
+        codeFont
+      }
             !important; line-height: 150% !important;
             }}
             code {{ font: 12px
-            {codeFont}
+            {
+        codeFont
+      }
             !important; line-height: 150% !important; }}
           </style>
         </head>
         <body>
           <pre class="brush: scala;gutter: false;toolbar: false;">
-            {"\n" + exampleInfo.sourceCode}
+            {
+        "\n" + exampleInfo.sourceCode
+      }
           </pre>
           <script type="text/javascript">SyntaxHighlighter.all();</script>
         </body>

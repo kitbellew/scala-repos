@@ -127,7 +127,9 @@ object Future {
       return Future.Done
 
     val p = new Promise[Unit]
-    val task = timer.schedule(howlong.fromNow) { p.setDone() }
+    val task = timer.schedule(howlong.fromNow) {
+      p.setDone()
+    }
     p.setInterruptHandler {
       case e =>
         if (p.updateIfEmpty(Throw(e)))
@@ -270,7 +272,9 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
     * do.
     */
   def join[A, B](a: Future[A], b: Future[B]): Future[(A, B)] =
-    join(Seq(a, b)) map { _ => (Await.result(a), Await.result(b)) }
+    join(Seq(a, b)) map { _ =>
+      (Await.result(a), Await.result(b))
+    }
 
   /**
     * Join 3 futures. The returned future is complete when all
@@ -1222,7 +1226,9 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
     */
   def whileDo[A](p: => Boolean)(f: => Future[A]): Future[Unit] = {
     def loop(): Future[Unit] = {
-      if (p) f flatMap { _ => loop() }
+      if (p) f flatMap { _ =>
+        loop()
+      }
       else Future.Unit
     }
 
@@ -1239,7 +1245,9 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
     */
   def each[A](next: => Future[A])(body: A => Unit): Future[Nothing] = {
     def go(): Future[Nothing] =
-      try next flatMap { a => body(a); go() } catch {
+      try next flatMap { a =>
+        body(a); go()
+      } catch {
         case NonFatal(exc) =>
           Future.exception(NextThrewException(exc))
       }
@@ -1248,7 +1256,9 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
   }
 
   def parallel[A](n: Int)(f: => Future[A]): Seq[Future[A]] = {
-    (0 until n) map { i => f }
+    (0 until n) map { i =>
+      f
+    }
   }
 
   /**
@@ -1440,7 +1450,9 @@ abstract class Future[+A] extends Awaitable[A] {
     * @see [[respond]] if you need the result of the computation for
     *     usage in the side-effect.
     */
-  def ensure(f: => Unit): Future[A] = respond { _ => f }
+  def ensure(f: => Unit): Future[A] = respond { _ =>
+    f
+  }
 
   /**
     * Block indefinitely, wait for the result of the Future to be available.
@@ -1516,7 +1528,9 @@ abstract class Future[+A] extends Awaitable[A] {
   def raise(interrupt: Throwable): Unit
 
   @deprecated("Provided for API compatibility; use raise() instead.", "6.0.0")
-  def cancel() { raise(new FutureCancelledException) }
+  def cancel() {
+    raise(new FutureCancelledException)
+  }
 
   /**
     * Same as the other raiseWithin, but with an implicit timer. Sometimes this is more convenient.
@@ -1603,7 +1617,9 @@ abstract class Future[+A] extends Awaitable[A] {
       return this
 
     val p = Promise.interrupts[A](this)
-    timer.schedule(howlong.fromNow) { p.become(this) }
+    timer.schedule(howlong.fromNow) {
+      p.become(this)
+    }
     p
   }
 
@@ -1693,7 +1709,10 @@ abstract class Future[+A] extends Awaitable[A] {
     */
   def map[B](f: A => B): Future[B] =
     transform {
-      case Return(r)   => Future { f(r) }
+      case Return(r) =>
+        Future {
+          f(r)
+        }
       case t: Throw[_] => Future.const[B](t.cast[B])
     }
 
@@ -1806,8 +1825,12 @@ abstract class Future[+A] extends Awaitable[A] {
     val p = Promise.interrupts[U](other, this)
     val a = Promise.attached(other)
     val b = Promise.attached(this)
-    a respond { t => if (p.updateIfEmpty(t)) b.detach() }
-    b respond { t => if (p.updateIfEmpty(t)) a.detach() }
+    a respond { t =>
+      if (p.updateIfEmpty(t)) b.detach()
+    }
+    b respond { t =>
+      if (p.updateIfEmpty(t)) a.detach()
+    }
     p
   }
 
@@ -1863,7 +1886,9 @@ abstract class Future[+A] extends Awaitable[A] {
       throw new IllegalStateException(
         s"Cannot call proxyTo on an already satisfied Promise: ${Await.result(other.liftToTry)}")
     }
-    respond { other() = _ }
+    respond {
+      other() = _
+    }
   }
 
   /**
@@ -1921,7 +1946,9 @@ abstract class Future[+A] extends Awaitable[A] {
     * Converts a `Future[Future[B]]` into a `Future[B]`.
     */
   def flatten[B](implicit ev: A <:< Future[B]): Future[B] =
-    flatMap[B] { x => x }
+    flatMap[B] { x =>
+      x
+    }
 
   /**
     * Returns an identical future except that it ignores interrupts which match a predicate
@@ -1947,7 +1974,9 @@ abstract class Future[+A] extends Awaitable[A] {
     */
   def willEqual[B](that: Future[B]): Future[Boolean] = {
     this.transform { thisResult =>
-      that.transform { thatResult => Future.value(thisResult == thatResult) }
+      that.transform { thatResult =>
+        Future.value(thisResult == thatResult)
+      }
     }
   }
 
@@ -2093,7 +2122,9 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
     * do.
     */
   def join[A, B](a: Future[A], b: Future[B]): Future[(A, B)] =
-    Future.join(Seq(a, b)) map { _ => (Await.result(a), Await.result(b)) }
+    Future.join(Seq(a, b)) map { _ =>
+      (Await.result(a), Await.result(b))
+    }
 
   /**
     * Join 3 futures. The returned future is complete when all
@@ -2867,7 +2898,9 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
     * @return a `Future[java.util.List[A]]` containing the collected values from fs.
     */
   def collect[A](fs: JList[Future[A]]): Future[JList[A]] =
-    Future.collect(fs.asScala) map { _.asJava }
+    Future.collect(fs.asScala) map {
+      _.asJava
+    }
 
   /**
     * Collect the results from the given map `fs` of futures into a new future
@@ -2875,7 +2908,9 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
     * result will the first exception encountered.
     */
   def collect[A, B](fs: JMap[A, Future[B]]): Future[JMap[A, B]] =
-    Future.collect(fs.asScala.toMap) map { _.asJava }
+    Future.collect(fs.asScala.toMap) map {
+      _.asJava
+    }
 
   /**
     * Collect the results from the given futures into a new future of List[Try[A]]
@@ -2884,7 +2919,9 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
     * @return a `Future[java.util.List[Try[A]]]` containing the collected values from fs.
     */
   def collectToTry[A](fs: JList[Future[A]]): Future[JList[Try[A]]] =
-    Future.collectToTry(fs.asScala) map { _.asJava }
+    Future.collectToTry(fs.asScala) map {
+      _.asJava
+    }
 
   /**
     * Flattens a nested future.  Same as ffa.flatten, but easier to call from Java.

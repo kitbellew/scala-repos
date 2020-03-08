@@ -15,7 +15,11 @@ class PruneProjections extends Phase {
           case Select(_ :@ NominalType(s, _), f) => (s, f)
         }
         .toSet
-      val allTSyms = n.collect[TypeSymbol] { case p: Pure => p.identity }.toSet
+      val allTSyms = n
+        .collect[TypeSymbol] {
+          case p: Pure => p.identity
+        }
+        .toSet
       val unrefTSyms = allTSyms -- referenced.map(_._1)
       logger.debug(
         s"Unreferenced: ${unrefTSyms.mkString(", ")}; Field refs: ${referenced.mkString(", ")}")

@@ -42,7 +42,9 @@ private[simul] final class SimulApi(
         limit = setup.clockTime * 60,
         increment = setup.clockIncrement,
         hostExtraTime = setup.clockExtra * 60),
-      variants = setup.variants.flatMap { chess.variant.Variant(_) },
+      variants = setup.variants.flatMap {
+        chess.variant.Variant(_)
+      },
       host = me,
       color = setup.color
     )
@@ -66,13 +68,17 @@ private[simul] final class SimulApi(
   }
 
   def removeApplicant(simulId: Simul.ID, user: User) {
-    WithSimul(repo.findCreated, simulId) { _ removeApplicant user.id }
+    WithSimul(repo.findCreated, simulId) {
+      _ removeApplicant user.id
+    }
   }
 
   def accept(simulId: Simul.ID, userId: String, v: Boolean) {
     UserRepo byId userId foreach {
       _ foreach { user =>
-        WithSimul(repo.findCreated, simulId) { _.accept(user.id, v) }
+        WithSimul(repo.findCreated, simulId) {
+          _.accept(user.id, v)
+        }
       }
     }
   }
@@ -155,7 +161,9 @@ private[simul] final class SimulApi(
         Sequence(oldSimul.id) {
           repo.findCreated(oldSimul.id) flatMap {
             _ ?? { simul =>
-              (simul ejectCheater userId) ?? { simul2 => update(simul2).void }
+              (simul ejectCheater userId) ?? { simul2 =>
+                update(simul2).void
+              }
             }
           }
         }
@@ -208,7 +216,9 @@ private[simul] final class SimulApi(
       simulId: Simul.ID)(updating: Simul => Simul) {
     Sequence(simulId) {
       finding(simulId) flatMap {
-        _ ?? { simul => update(updating(simul)) }
+        _ ?? { simul =>
+          update(updating(simul))
+        }
       }
     }
   }
@@ -231,7 +241,9 @@ private[simul] final class SimulApi(
               } pipeToSelection lobby
             }
           })))
-    def apply() { debouncer ! Debouncer.Nothing }
+    def apply() {
+      debouncer ! Debouncer.Nothing
+    }
   }
 
   private def sendTo(simulId: Simul.ID, msg: Any) {

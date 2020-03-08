@@ -91,22 +91,42 @@ case class RRule private (
     rrule.setFreq(freq.toICal)
     rrule.setInterval(interval)
 
-    wkst.foreach { w => rrule.setWkSt(w.toICal) }
-    count.foreach { rrule.setCount(_) }
-    until.foreach { dt => rrule.setUntil(dt2dtv(dt)) }
-    bysetpos.headOption.foreach { _ => rrule.setBySetPos(bysetpos.toArray) }
-    bymonth.headOption.foreach { _ => rrule.setByMonth(bymonth.toArray) }
+    wkst.foreach { w =>
+      rrule.setWkSt(w.toICal)
+    }
+    count.foreach {
+      rrule.setCount(_)
+    }
+    until.foreach { dt =>
+      rrule.setUntil(dt2dtv(dt))
+    }
+    bysetpos.headOption.foreach { _ =>
+      rrule.setBySetPos(bysetpos.toArray)
+    }
+    bymonth.headOption.foreach { _ =>
+      rrule.setByMonth(bymonth.toArray)
+    }
     bymonthday.headOption.foreach { _ =>
       rrule.setByMonthDay(bymonthday.toArray)
     }
-    byyearday.headOption.foreach { _ => rrule.setByYearDay(byyearday.toArray) }
-    byweekno.headOption.foreach { _ => rrule.setByWeekNo(byweekno.toArray) }
+    byyearday.headOption.foreach { _ =>
+      rrule.setByYearDay(byyearday.toArray)
+    }
+    byweekno.headOption.foreach { _ =>
+      rrule.setByWeekNo(byweekno.toArray)
+    }
     byday.headOption.foreach { _ =>
       rrule.setByDay(seqAsJavaList(byday.map(v => v.toICal)))
     }
-    byhour.headOption.foreach { _ => rrule.setByHour(byhour.toArray) }
-    byminute.headOption.foreach { _ => rrule.setByMinute(byminute.toArray) }
-    bysecond.headOption.foreach { _ => rrule.setBySecond(bysecond.toArray) }
+    byhour.headOption.foreach { _ =>
+      rrule.setByHour(byhour.toArray)
+    }
+    byminute.headOption.foreach { _ =>
+      rrule.setByMinute(byminute.toArray)
+    }
+    bysecond.headOption.foreach { _ =>
+      rrule.setBySecond(bysecond.toArray)
+    }
 
     rrule
   }
@@ -225,10 +245,16 @@ case class RRule private (
 
           // heuristic: take 4 observations, find the largest daycount between subsequent
           // occurrences, with a day of padding, and with a minimum of 1 day
-          val dseq = { outer from dt take 4 }.toSeq
-          val ival = { dseq.tail zip dseq }.foldLeft(1) {
+          val dseq = {
+            outer from dt take 4
+          }.toSeq
+          val ival = {
+            dseq.tail zip dseq
+          }.foldLeft(1) {
             case (days, (d1, d2)) =>
-              days max { Days.daysBetween(d2, d1).getDays + 2 }
+              days max {
+                Days.daysBetween(d2, d1).getDays + 2
+              }
           }
 
           // use this daycount to estimate lower bound from which to start generating dates
@@ -269,7 +295,9 @@ case class RRule private (
 
     val iterWithJoins = joins.foldLeft(riter) {
       case (i1, (rrule, t)) =>
-        val tmpfrom = t.map { dt2dtv } getOrElse dt2dtv(dt)
+        val tmpfrom = t.map {
+          dt2dtv
+        } getOrElse dt2dtv(dt)
         val tmpiter = RecurrenceIteratorFactory.createRecurrenceIterator(
           rrule.toICal,
           tmpfrom,
@@ -279,7 +307,9 @@ case class RRule private (
 
     val iterWithJoinsWithExcepts = excepts.foldLeft(iterWithJoins) {
       case (i1, (rrule, t)) =>
-        val tmpfrom = t.map { dt2dtv } getOrElse dt2dtv(dt)
+        val tmpfrom = t.map {
+          dt2dtv
+        } getOrElse dt2dtv(dt)
         val tmpiter = RecurrenceIteratorFactory.createRecurrenceIterator(
           rrule.toICal,
           tmpfrom,
@@ -288,7 +318,9 @@ case class RRule private (
     }
 
     DateTimeIteratorFactory.createDateTimeIterator(
-      iterWithJoinsWithExcepts) map { dt => dt.withZone(inzone) }
+      iterWithJoinsWithExcepts) map { dt =>
+      dt.withZone(inzone)
+    }
   }
 
   override def toString = toICal.toIcal

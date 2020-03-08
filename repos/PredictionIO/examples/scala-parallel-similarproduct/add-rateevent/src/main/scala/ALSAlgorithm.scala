@@ -150,7 +150,9 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
     val queryFeatures: Vector[Array[Double]] = queryList.toVector
     // productFeatures may not contain the requested item
-    .map { item => productFeatures.get(item) }.flatten
+    .map { item =>
+      productFeatures.get(item)
+    }.flatten
 
     val whiteList: Option[Set[Int]] =
       query.whiteList.map(set => set.map(model.itemStringIntMap.get(_)).flatten)
@@ -165,7 +167,11 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     } else {
       productFeatures.par // convert to parallel collection
         .mapValues { f =>
-          queryFeatures.map { qf => cosine(qf, f) }.reduce(_ + _)
+          queryFeatures
+            .map { qf =>
+              cosine(qf, f)
+            }
+            .reduce(_ + _)
         }
         .filter(_._2 > 0) // keep items with score > 0
         .seq // convert back to sequential collection

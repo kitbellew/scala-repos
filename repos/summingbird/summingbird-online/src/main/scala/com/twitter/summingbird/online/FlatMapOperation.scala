@@ -69,7 +69,9 @@ trait FlatMapOperation[-T, +U] extends Serializable with Closeable {
           } yield ws ++ maybeSeq
         }
       }
-      override def close { self.close; fmo.close }
+      override def close {
+        self.close; fmo.close
+      }
     }
   }
 }
@@ -92,7 +94,9 @@ class FunctionKeyFlatMapOperation[K1, K2, V](
     extends FlatMapOperation[(K1, V), (K2, V)] {
   val boxed = Externalizer(fm)
   def apply(t: (K1, V)) = {
-    Future.value(boxed.get(t._1).map { newK => (newK, t._2) })
+    Future.value(boxed.get(t._1).map { newK =>
+      (newK, t._2)
+    })
   }
 }
 
@@ -129,7 +133,9 @@ object FlatMapOperation {
       override def apply(t: T) =
         fm.apply(t).flatMap { trav: TraversableOnce[(K, V)] =>
           val resultList = trav.toSeq // Can't go through this twice
-          val keySet: Set[K] = resultList.map { _._1 }.toSet
+          val keySet: Set[K] = resultList.map {
+            _._1
+          }.toSet
 
           if (keySet.isEmpty)
             Future.value(Map.empty)
@@ -137,7 +143,10 @@ object FlatMapOperation {
             // Do the lookup
             val mres: Map[K, Future[Option[JoinedV]]] = store.multiGet(keySet)
             val resultFutures = resultList.map {
-              case (k, v) => mres(k).map { k -> (v, _) }
+              case (k, v) =>
+                mres(k).map {
+                  k -> (v, _)
+                }
             }.toIndexedSeq
             Future.collect(resultFutures)
           }
@@ -156,5 +165,7 @@ object FlatMapOperation {
 class WriteOperation[T](sinkSupplier: () => (T => Future[Unit]))
     extends FlatMapOperation[T, T] {
   lazy val sink = sinkSupplier()
-  override def apply(t: T) = sink(t).map { _ => Some(t) }
+  override def apply(t: T) = sink(t).map { _ =>
+    Some(t)
+  }
 }

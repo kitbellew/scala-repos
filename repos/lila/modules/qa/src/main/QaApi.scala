@@ -230,7 +230,9 @@ final class QaApi(
     def zipWithQuestions(answers: List[Answer]): Fu[List[AnswerWithQuestion]] =
       question.findByIds(answers.map(_.questionId)) map { qs =>
         answers flatMap { a =>
-          qs find (_.id == a.questionId) map { AnswerWithQuestion(a, _) }
+          qs find (_.id == a.questionId) map {
+            AnswerWithQuestion(a, _)
+          }
         }
       }
 
@@ -254,7 +256,9 @@ final class QaApi(
       answerColl.remove(BSONDocument("_id" -> a.id)) >>
         (question recountAnswers a.questionId).void
 
-    def remove(id: AnswerId): Fu[Unit] = findById(id) flatMap { _ ?? remove }
+    def remove(id: AnswerId): Fu[Unit] = findById(id) flatMap {
+      _ ?? remove
+    }
 
     def removeByQuestion(id: QuestionId) =
       answerColl.remove(BSONDocument("questionId" -> id))
@@ -307,7 +311,9 @@ final class QaApi(
           case Left(q) => notifier.createQuestionComment(q, c, user)
           case Right(a) =>
             question findById a.questionId foreach {
-              _ foreach { q => notifier.createAnswerComment(q, a, c, user) }
+              _ foreach { q =>
+                notifier.createAnswerComment(q, a, c, user)
+              }
             }
         }
       } inject c

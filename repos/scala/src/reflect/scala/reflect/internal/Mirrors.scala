@@ -17,7 +17,9 @@ trait Mirrors extends api.Mirrors {
   // root symbols hold a strong reference to the enclosing mirror
   // this prevents the mirror from being collected
   // if there are any symbols created by that mirror
-  trait RootSymbol extends Symbol { def mirror: Mirror }
+  trait RootSymbol extends Symbol {
+    def mirror: Mirror
+  }
 
   abstract class RootsBase(rootOwner: Symbol)
       extends scala.reflect.api.Mirror[Mirrors.this.type] { thisMirror =>
@@ -52,7 +54,9 @@ trait Mirrors extends api.Mirrors {
       val result = if (path.isTermName) sym.suchThat(_ hasFlag MODULE) else sym
       if (result != NoSymbol) result
       else {
-        if (settings.debug) { log(sym.info); log(sym.info.members) } //debug
+        if (settings.debug) {
+          log(sym.info); log(sym.info.members)
+        } //debug
         thisMirror.missingHook(owner, name) orElse {
           MissingRequirementError.notFound(
             (if (path.isTermName) "object "
@@ -250,7 +254,9 @@ trait Mirrors extends api.Mirrors {
 
     @inline final def wrapMissing(body: => Symbol): Symbol =
       try body
-      catch { case _: MissingRequirementError => NoSymbol }
+      catch {
+        case _: MissingRequirementError => NoSymbol
+      }
 
     /** getModule2/getClass2 aren't needed at present but may be again,
       *  so for now they're mothballed.

@@ -115,7 +115,9 @@ private[streaming] class DirectKafkaInputDStream[
                      } else backpressureRate)
           }
         case None =>
-          offsets.map { case (tp, offset) => tp -> maxRateLimitPerPartition }
+          offsets.map {
+            case (tp, offset) => tp -> maxRateLimitPerPartition
+          }
       }
 
     if (effectiveRateLimitPerPartition.values.sum > 0) {

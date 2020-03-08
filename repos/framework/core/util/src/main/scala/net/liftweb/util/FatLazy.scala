@@ -91,12 +91,16 @@ class FatLazy[T](f: => T) {
     * Reset the value of this FatLazy to the default (which will be lazily determined
     * on retrieval.)
     */
-  def reset = synchronized { value = Empty }
+  def reset = synchronized {
+    value = Empty
+  }
 
   /**
     * Determine whether the value of this FatLazy has been determined.
     */
-  def calculated_? = synchronized { value.isDefined }
+  def calculated_? = synchronized {
+    value.isDefined
+  }
 
   // implicit def fromLazy[T](in: Lazy[T]): T = in.get
 }

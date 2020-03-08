@@ -90,7 +90,9 @@ trait CogroupSpec[M[+_]]
             val (rightSpan, rightRemain) = r.partition(ord.order(_, rh) == EQ)
 
             val cartesian = leftSpan.flatMap { lv =>
-              rightSpan.map { rv => middle3((lv, rv)) }
+              rightSpan.map { rv =>
+                middle3((lv, rv))
+              }
             }
 
             computeCogroup(leftRemain, rightRemain, acc ++ cartesian)
@@ -101,7 +103,9 @@ trait CogroupSpec[M[+_]]
             computeCogroup(
               leftRemain,
               r,
-              acc ++ leftRun.map { case v => left3(v) })
+              acc ++ leftRun.map {
+                case v => left3(v)
+              })
           }
           case GT => {
             val (rightRun, rightRemain) = r.partition(ord.order(lh, _) == GT)
@@ -109,11 +113,19 @@ trait CogroupSpec[M[+_]]
             computeCogroup(
               l,
               rightRemain,
-              acc ++ rightRun.map { case v => right3(v) })
+              acc ++ rightRun.map {
+                case v => right3(v)
+              })
           }
         }
-      case (Stream.Empty, _) => acc ++ r.map { case v => right3(v) }
-      case (_, Stream.Empty) => acc ++ l.map { case v => left3(v) }
+      case (Stream.Empty, _) =>
+        acc ++ r.map {
+          case v => right3(v)
+        }
+      case (_, Stream.Empty) =>
+        acc ++ l.map {
+          case v => left3(v)
+        }
     }
   }
 

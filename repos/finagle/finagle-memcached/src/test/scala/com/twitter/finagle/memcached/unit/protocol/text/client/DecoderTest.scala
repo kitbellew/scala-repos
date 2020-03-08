@@ -64,10 +64,14 @@ class DecoderTest extends FunSuite with MockitoSugar {
       decoder.decode(null, null, buffer) == ValueLines(
         Seq(
           TokensWithData(
-            Seq("VALUE", "foo", "0", "1") map { Buf.Utf8(_) },
+            Seq("VALUE", "foo", "0", "1") map {
+              Buf.Utf8(_)
+            },
             Buf.Utf8("1")),
           TokensWithData(
-            Seq("VALUE", "bar", "0", "2") map { Buf.Utf8(_) },
+            Seq("VALUE", "bar", "0", "2") map {
+              Buf.Utf8(_)
+            },
             Buf.Utf8("12")))))
   }
 
@@ -87,10 +91,14 @@ class DecoderTest extends FunSuite with MockitoSugar {
       decoder.decode(null, null, buffer) == ValueLines(
         Seq(
           TokensWithData(
-            Seq("VALUE", "foo", "20", "1") map { Buf.Utf8(_) },
+            Seq("VALUE", "foo", "20", "1") map {
+              Buf.Utf8(_)
+            },
             Buf.Utf8("1")),
           TokensWithData(
-            Seq("VALUE", "bar", "10", "2") map { Buf.Utf8(_) },
+            Seq("VALUE", "bar", "10", "2") map {
+              Buf.Utf8(_)
+            },
             Buf.Utf8("12")))))
   }
 
@@ -115,8 +123,12 @@ class DecoderTest extends FunSuite with MockitoSugar {
     val lines = decoder.decode(null, null, buffer)
     assert(
       lines == StatLines(Seq(
-        Tokens(Seq("STAT", "items:1:number", "1") map { Buf.Utf8(_) }),
-        Tokens(Seq("STAT", "items:1:age", "1468") map { Buf.Utf8(_) }),
+        Tokens(Seq("STAT", "items:1:number", "1") map {
+          Buf.Utf8(_)
+        }),
+        Tokens(Seq("STAT", "items:1:age", "1468") map {
+          Buf.Utf8(_)
+        }),
         Tokens(Seq("ITEM", "foo", "[5", "b;", "1322514067", "s]") map {
           Buf.Utf8(_)
         })

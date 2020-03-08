@@ -588,7 +588,8 @@ abstract class GraphStageLogic private[stream] (
       val result = new Array[AnyRef](n).asInstanceOf[Array[T]]
       var pos = 0
 
-      if (isAvailable(in)) { //If we already have data available, then shortcircuit and read the first
+      if (isAvailable(
+            in)) { //If we already have data available, then shortcircuit and read the first
         result(pos) = grab(in)
         pos += 1
       }
@@ -1277,7 +1278,9 @@ abstract class TimerGraphStageLogic(_shape: Shape)
   protected[stream] override def afterPostStop(): Unit = {
     super.afterPostStop()
     if (keyToTimers ne null) {
-      keyToTimers.foreach { case (_, Timer(_, task)) ⇒ task.cancel() }
+      keyToTimers.foreach {
+        case (_, Timer(_, task)) ⇒ task.cancel()
+      }
       keyToTimers.clear()
     }
   }

@@ -99,6 +99,8 @@ class ReaderUtilsTest extends FunSuite {
 
     streamChunks(failingT, rw)
 
-    intercept[ReaderDiscarded] { Await.result(rw.read(1), 2.seconds) }
+    intercept[ReaderDiscarded] {
+      Await.result(rw.read(1), 2.seconds)
+    }
   }
 }

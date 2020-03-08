@@ -104,7 +104,9 @@ trait JsObj extends JsExp {
 
   def toJsCmd =
     props
-      .map { case (n, v) => n.encJs + ": " + v.toJsCmd }
+      .map {
+        case (n, v) => n.encJs + ": " + v.toJsCmd
+      }
       .mkString("{", ", ", "}")
 
   override def toString(): String = toJsCmd
@@ -149,12 +151,18 @@ trait JsObj extends JsExp {
   def extend(other: JsObj) = {
     // existing, non-existing props
     val (ep, nep) = other.props.partition {
-      case (key, exp) => props.exists { case (k, e) => k == key }
+      case (key, exp) =>
+        props.exists {
+          case (k, e) => k == key
+        }
     }
     // replaced props
     val rp = props.map {
       case (key, exp) =>
-        ep.find { case (k, e) => k == key }.getOrElse(key -> exp)
+        ep.find {
+            case (k, e) => k == key
+          }
+          .getOrElse(key -> exp)
     }
 
     new JsObj {
@@ -357,7 +365,9 @@ object JE {
            else
              ", " +
                tables
-                 .map { case (l, r) => "[" + l.encJs + ", " + r.encJs + "]" }
+                 .map {
+                   case (l, r) => "[" + l.encJs + ", " + r.encJs + "]"
+                 }
                  .mkString(", ")) +
           ")"
     }
@@ -370,7 +380,9 @@ object JE {
              else
                ", " +
                  tables
-                   .map { case (l, r) => "[" + l.encJs + ", " + r.encJs + "]" }
+                   .map {
+                     case (l, r) => "[" + l.encJs + ", " + r.encJs + "]"
+                   }
                    .mkString(", ")) +
             ")"
       }
@@ -630,8 +642,9 @@ trait HtmlFixer {
     fixHtmlAndJs(uid, content) match {
       case (str, Nil) => f(str)
       case (str, cmds) =>
-        "((function() {" + cmds.reduceLeft { _ & _ }.toJsCmd + " return " + f(
-          str) + ";})())"
+        "((function() {" + cmds.reduceLeft {
+          _ & _
+        }.toJsCmd + " return " + f(str) + ";})())"
     }
 
   /**

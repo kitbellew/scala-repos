@@ -50,15 +50,21 @@ private[input] trait JMapWrapperLike[
       None
   }
 
-  def +=(kv: (A, B)): this.type = { underlying.put(kv._1, kv._2); this }
-  def -=(key: A): this.type = { underlying remove key; this }
+  def +=(kv: (A, B)): this.type = {
+    underlying.put(kv._1, kv._2); this
+  }
+  def -=(key: A): this.type = {
+    underlying remove key; this
+  }
 
   override def put(k: A, v: B): Option[B] = {
     val r = underlying.put(k, v)
     if (r != null) Some(r) else None
   }
 
-  override def update(k: A, v: B) { underlying.put(k, v) }
+  override def update(k: A, v: B) {
+    underlying.put(k, v)
+  }
 
   override def remove(k: A): Option[B] = {
     val r = underlying remove k
@@ -69,7 +75,9 @@ private[input] trait JMapWrapperLike[
   def iterator: Iterator[(A, B)] = new Iterator[(A, B)] {
     val ui = underlying.entrySet.iterator
     def hasNext = ui.hasNext
-    def next() = { val e = ui.next(); (e.getKey, e.getValue) }
+    def next() = {
+      val e = ui.next(); (e.getKey, e.getValue)
+    }
   }
 
   override def clear() = underlying.clear()

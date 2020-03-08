@@ -82,8 +82,11 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
 
   @expand
   implicit def canOpInto_V_V[@expand.args(OpAdd, OpSub) Op, T: Ring: ClassTag](
-      implicit @expand.sequence[Op]((x => x), { r.negate(_) }) op: Q)
-      : Op.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] = {
+      implicit
+      @expand.sequence[Op](
+        (x => x), {
+          r.negate(_)
+        }) op: Q): Op.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] = {
     new Op.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] {
       val r = implicitly[Ring[T]]
       def apply(a: VectorBuilder[T], b: VectorBuilder[T]) {
@@ -104,8 +107,11 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
 
   @expand
   implicit def canOpInto_V_S[@expand.args(OpAdd, OpSub) Op, T: Ring: ClassTag](
-      implicit @expand.sequence[Op]((x => x), { r.negate(_) }) op: Q)
-      : Op.InPlaceImpl2[VectorBuilder[T], T] = {
+      implicit
+      @expand.sequence[Op](
+        (x => x), {
+          r.negate(_)
+        }) op: Q): Op.InPlaceImpl2[VectorBuilder[T], T] = {
     new Op.InPlaceImpl2[VectorBuilder[T], T] {
       val r = implicitly[Ring[T]]
       def apply(a: VectorBuilder[T], b: T) {

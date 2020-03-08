@@ -158,7 +158,9 @@ class TestkitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
         case "hello" => throw new IllegalArgumentException("boom")
       }
     })
-    intercept[IllegalArgumentException] { actorRef.receive("hello") }
+    intercept[IllegalArgumentException] {
+      actorRef.receive("hello")
+    }
     //#test-expecting-exceptions
   }
 
@@ -302,7 +304,9 @@ class TestkitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
       val probe = TestProbe()
       probe.send(testActor, "hello")
       try expectMsg("hello")
-      catch { case NonFatal(e) => system.terminate(); throw e }
+      catch {
+        case NonFatal(e) => system.terminate(); throw e
+      }
       //#put-your-test-code-here
 
       shutdown(system)

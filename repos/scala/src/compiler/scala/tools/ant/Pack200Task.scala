@@ -64,18 +64,26 @@ class Pack200Task extends ScalaMatchingTask {
     * @param x
     *         `'''true'''` to retain file ordering.
     *         `'''false'''` to optimize directory structure (DEFAULT).  */
-  def setKeepFileOrder(x: Boolean) { keepFileOrder = x }
+  def setKeepFileOrder(x: Boolean) {
+    keepFileOrder = x
+  }
 
   /** If false, a single modification time is used for all contained files */
-  def setKeepModificationTime(x: Boolean) { keepModificationTime = x }
+  def setKeepModificationTime(x: Boolean) {
+    keepModificationTime = x
+  }
 
   /** A flag that tells the task to pack and then unpack the source JAR file
     * into another JAR file.  This resulting JAR file can then be signed,
     * packed again, compressed and distributed for securely distributed code.
     */
-  def setRepack(r: Boolean) { repack = r }
+  def setRepack(r: Boolean) {
+    repack = r
+  }
 
-  def setSegmentLimit(size: Int) { segmentLimit = size }
+  def setSegmentLimit(size: Int) {
+    segmentLimit = size
+  }
 
   /** Set the output directory */
   def setDestdir(file: File) {
@@ -85,7 +93,9 @@ class Pack200Task extends ScalaMatchingTask {
         "The destination directory is invalid: " + file.getAbsolutePath)
   }
 
-  def setSuffix(s: String) { packFileSuffix = s }
+  def setSuffix(s: String) {
+    packFileSuffix = s
+  }
 
   /*============================================================================*\
 **                             Properties getters                             **

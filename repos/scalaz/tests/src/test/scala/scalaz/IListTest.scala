@@ -147,12 +147,16 @@ object IListTest extends SpecLite {
   }
 
   "collect" ! forAll { (ns: IList[Int]) =>
-    val pf: PartialFunction[Int, Int] = { case n if n % 2 == 0 => n + 1 }
+    val pf: PartialFunction[Int, Int] = {
+      case n if n % 2 == 0 => n + 1
+    }
     ns.collect(pf).toList must_=== ns.toList.collect(pf)
   }
 
   "collectFirst" ! forAll { (ns: IList[Int]) =>
-    val pf: PartialFunction[Int, Int] = { case n if n % 2 == 0 => n + 1 }
+    val pf: PartialFunction[Int, Int] = {
+      case n if n % 2 == 0 => n + 1
+    }
     ns.collectFirst(pf) must_=== ns.toList.collectFirst(pf)
   }
 
@@ -243,7 +247,9 @@ object IListTest extends SpecLite {
 
   "initOption" ! forAll { ns: IList[Int] =>
     ns.initOption.map(_.toList) must_=== (try Some(ns.toList.init)
-    catch { case e: Exception => None })
+    catch {
+      case e: Exception => None
+    })
   }
 
   "inits" ! forAll { ns: IList[Int] =>
@@ -291,7 +297,9 @@ object IListTest extends SpecLite {
     ns.lastOption must_=== ns.toList.lastOption
   }
 
-  "length" ! forAll { ns: IList[Int] => ns.length must_=== ns.toList.length }
+  "length" ! forAll { ns: IList[Int] =>
+    ns.length must_=== ns.toList.length
+  }
 
   // map is tested by functor laws
 
@@ -313,12 +321,16 @@ object IListTest extends SpecLite {
 
   "reduceLeftOption" ! forAll { (ns: IList[Int], f: (Int, Int) => Int) =>
     ns.reduceLeftOption(f) must_=== (try Some(ns.toList.reduceLeft(f))
-    catch { case e: Exception => None })
+    catch {
+      case e: Exception => None
+    })
   }
 
   "reduceRightOption" ! forAll { (ns: IList[Int], f: (Int, Int) => Int) =>
     ns.reduceRightOption(f) must_=== (try Some(ns.toList.reduceRight(f))
-    catch { case e: Exception => None })
+    catch {
+      case e: Exception => None
+    })
   }
 
   "reverse" ! forAll { ns: IList[Int] =>
@@ -377,7 +389,9 @@ object IListTest extends SpecLite {
 
   "tailOption" ! forAll { ns: IList[Int] =>
     ns.tailOption.map(_.toList) must_=== (try Some(ns.toList.tail)
-    catch { case e: Exception => None })
+    catch {
+      case e: Exception => None
+    })
   }
 
   "take" ! forAll { (ns: IList[Int], n: Byte) =>
@@ -401,7 +415,9 @@ object IListTest extends SpecLite {
       ns: _*).toList
   }
 
-  "toList" ! forAll { ns: List[Int] => IList(ns: _*).toList must_=== ns }
+  "toList" ! forAll { ns: List[Int] =>
+    IList(ns: _*).toList must_=== ns
+  }
 
   "toMap" ! forAll { ps: List[(String, Int)] =>
     IList(ps: _*).toMap must_=== ==>>(ps: _*)
@@ -415,7 +431,9 @@ object IListTest extends SpecLite {
     IList(ns: _*).toStream must_=== ns.toStream
   }
 
-  "toVector" ! forAll { ns: Vector[Int] => IList(ns: _*).toVector must_=== ns }
+  "toVector" ! forAll { ns: Vector[Int] =>
+    IList(ns: _*).toVector must_=== ns
+  }
 
   "toZipper" ! forAll { ns: List[Int] =>
     IList(ns: _*).toZipper must_=== scalaz.std.stream.toZipper(ns.toStream)

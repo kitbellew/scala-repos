@@ -81,7 +81,9 @@ object ConfiguredLocalRoutingSpec {
 
   class SendRefAtStartup(testActor: ActorRef) extends Actor {
     testActor ! self
-    def receive = { case _ ⇒ }
+    def receive = {
+      case _ ⇒
+    }
   }
 
 }

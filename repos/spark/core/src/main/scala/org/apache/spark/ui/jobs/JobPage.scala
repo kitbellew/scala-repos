@@ -163,7 +163,9 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
 
     <span class="expand-job-timeline">
       <span class="expand-job-timeline-arrow arrow-closed"></span>
-      <a data-toggle="tooltip" title={ToolTips.STAGE_TIMELINE} data-placement="right">
+      <a data-toggle="tooltip" title={
+      ToolTips.STAGE_TIMELINE
+    } data-placement="right">
         Event Timeline
       </a>
     </span> ++
@@ -197,7 +199,9 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
       if (jobDataOption.isEmpty) {
         val content =
           <div id="no-info">
-            <p>No information to display for job {jobId}</p>
+            <p>No information to display for job {
+            jobId
+          }</p>
           </div>
         return UIUtils.headerSparkPage(
           s"Details for Job $jobId",
@@ -281,13 +285,17 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
           <ul class="unstyled">
             <li>
               <Strong>Status:</Strong>
-              {jobData.status}
+              {
+          jobData.status
+        }
             </li>
             {
           if (jobData.jobGroup.isDefined) {
             <li>
                   <strong>Job Group:</strong>
-                  {jobData.jobGroup.get}
+                  {
+              jobData.jobGroup.get
+            }
                 </li>
           }
         }
@@ -295,7 +303,9 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
           if (shouldShowActiveStages) {
             <li>
                   <a href="#active"><strong>Active Stages:</strong></a>
-                  {activeStages.size}
+                  {
+              activeStages.size
+            }
                 </li>
           }
         }
@@ -304,7 +314,9 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
             <li>
                   <a href="#pending">
                     <strong>Pending Stages:</strong>
-                  </a>{pendingOrSkippedStages.size}
+                  </a>{
+              pendingOrSkippedStages.size
+            }
                 </li>
           }
         }
@@ -312,7 +324,9 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
           if (shouldShowCompletedStages) {
             <li>
                   <a href="#completed"><strong>Completed Stages:</strong></a>
-                  {completedStages.size}
+                  {
+              completedStages.size
+            }
                 </li>
           }
         }
@@ -320,7 +334,9 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
           if (shouldShowSkippedStages) {
             <li>
                 <a href="#skipped"><strong>Skipped Stages:</strong></a>
-                {pendingOrSkippedStages.size}
+                {
+              pendingOrSkippedStages.size
+            }
               </li>
           }
         }
@@ -328,7 +344,9 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
           if (shouldShowFailedStages) {
             <li>
                   <a href="#failed"><strong>Failed Stages:</strong></a>
-                  {failedStages.size}
+                  {
+              failedStages.size
+            }
                 </li>
           }
         }
@@ -350,7 +368,9 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
         operationGraphListener.getOperationGraphForJob(jobId))
 
       if (shouldShowActiveStages) {
-        content ++= <h4 id="active">Active Stages ({activeStages.size})</h4> ++
+        content ++= <h4 id="active">Active Stages ({
+          activeStages.size
+        })</h4> ++
           activeStagesTable.toNodeSeq
       }
       if (shouldShowPendingStages) {
@@ -372,7 +392,9 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
           pendingOrSkippedStagesTable.toNodeSeq
       }
       if (shouldShowFailedStages) {
-        content ++= <h4 id ="failed">Failed Stages ({failedStages.size})</h4> ++
+        content ++= <h4 id ="failed">Failed Stages ({
+          failedStages.size
+        })</h4> ++
           failedStagesTable.toNodeSeq
       }
       UIUtils.headerSparkPage(

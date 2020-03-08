@@ -36,7 +36,10 @@ trait Unmarshaller[-A, B] {
     transform(implicit ec ⇒ mat ⇒ _.fast recover pf(ec)(mat))
 
   def withDefaultValue[BB >: B](defaultValue: BB): Unmarshaller[A, BB] =
-    recover(_ ⇒ _ ⇒ { case Unmarshaller.NoContentException ⇒ defaultValue })
+    recover(_ ⇒
+      _ ⇒ {
+        case Unmarshaller.NoContentException ⇒ defaultValue
+      })
 }
 
 object Unmarshaller

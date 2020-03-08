@@ -35,7 +35,9 @@ trait HeapBackend extends RelationalBackend with Logging {
       extends super.DatabaseDef {
     protected[this] def createDatabaseActionContext[T](
         _useSameThread: Boolean): Context =
-      new BasicActionContext { val useSameThread = _useSameThread }
+      new BasicActionContext {
+        val useSameThread = _useSameThread
+      }
 
     protected[this] def createStreamingDatabaseActionContext[T](
         s: Subscriber[_ >: T],
@@ -156,7 +158,9 @@ trait HeapBackend extends RelationalBackend with Logging {
       case PrimaryKey(name, columns) =>
         createUniquenessVerifier(
           name,
-          columns.map { case Select(_, f: FieldSymbol) => f })
+          columns.map {
+            case Select(_, f: FieldSymbol) => f
+          })
       case _ => Verifier.empty
     }
 
@@ -165,7 +169,9 @@ trait HeapBackend extends RelationalBackend with Logging {
       else
         createUniquenessVerifier(
           idx.name,
-          idx.on.map { case Select(_, f: FieldSymbol) => f })
+          idx.on.map {
+            case Select(_, f: FieldSymbol) => f
+          })
 
     protected def createUniquenessVerifier(
         name: String,
@@ -182,7 +188,9 @@ trait HeapBackend extends RelationalBackend with Logging {
             throw new SlickException(
               "Uniqueness constraint " + name + " violated. Duplicate data: " + e)
         }
-        def inserted(row: Row) { hash += extract(row) }
+        def inserted(row: Row) {
+          hash += extract(row)
+        }
       }
     }
   }
@@ -199,8 +207,12 @@ trait HeapBackend extends RelationalBackend with Logging {
       else if (other eq Verifier.empty) this
       else
         new Verifier {
-          def verify(row: Row) { self.verify(row); other.verify(row) }
-          def inserted(row: Row) { self.inserted(row); other.inserted(row) }
+          def verify(row: Row) {
+            self.verify(row); other.verify(row)
+          }
+          def inserted(row: Row) {
+            self.inserted(row); other.inserted(row)
+          }
         }
   }
 
@@ -221,7 +233,9 @@ object HeapBackend extends HeapBackend {
       case ColumnOption.AutoInc => new AtomicLong()
     }
     val isUnique = sym.options
-      .collectFirst { case ColumnOption.PrimaryKey => true }
+      .collectFirst {
+        case ColumnOption.PrimaryKey => true
+      }
       .getOrElse(false)
     def createDefault: Any = autoInc match {
       case Some(a) =>

@@ -279,8 +279,11 @@ trait CompilerControl { self: Global =>
   def askForResponse[A](op: () => A): Response[A] = {
     val r = new Response[A]
     if (self.onCompilerThread) {
-      try { r set op() }
-      catch { case exc: Throwable => r raise exc }
+      try {
+        r set op()
+      } catch {
+        case exc: Throwable => r raise exc
+      }
       r
     } else {
       val ir = scheduler askDoQuickly op
@@ -491,7 +494,9 @@ trait CompilerControl { self: Global =>
         new Exception("Posted a work item to a compiler that's shutting down"))
     }
 
-    override def askDoQuickly[A](op: () => A): InterruptReq { type R = A } = {
+    override def askDoQuickly[A](op: () => A): InterruptReq {
+      type R = A
+    } = {
       val ir = new InterruptReq {
         type R = A
         val todo = () => throw new MissingResponse

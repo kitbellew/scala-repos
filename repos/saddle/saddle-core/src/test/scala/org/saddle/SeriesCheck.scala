@@ -272,11 +272,15 @@ class SeriesCheck extends Specification with ScalaCheck {
 
     "pivot/melt are opposites" in {
       implicit val frame = Arbitrary(FrameArbitraries.frameDoubleWithNA)
-      forAll { (f: Frame[Int, Int, Double]) => f.melt.pivot must_== f }
+      forAll { (f: Frame[Int, Int, Double]) =>
+        f.melt.pivot must_== f
+      }
     }
 
     "serialization works" in {
-      forAll { s1: Series[Int, Double] => s1 must_== serializedCopy(s1) }
+      forAll { s1: Series[Int, Double] =>
+        s1 must_== serializedCopy(s1)
+      }
     }
 
   }
@@ -379,7 +383,9 @@ class SeriesCheck extends Specification with ScalaCheck {
 
       implicit val ser = Arbitrary(SeriesArbitraries.seriesDateTimeDoubleNoDup)
 
-      forAll { s: Series[DateTime, Double] => s must_== serializedCopy(s) }
+      forAll { s: Series[DateTime, Double] =>
+        s must_== serializedCopy(s)
+      }
     }
 
   }

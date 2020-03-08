@@ -65,11 +65,15 @@ private[finagle] class Cache[A](
 
   private[this] def scheduleTimer(): Unit = synchronized {
     require(!timerTask.isDefined)
-    timerTask = Some(timer.schedule(ttl.fromNow) { timeout() })
+    timerTask = Some(timer.schedule(ttl.fromNow) {
+      timeout()
+    })
   }
 
   private[this] def cancelTimer() = synchronized {
-    timerTask foreach { _.cancel() }
+    timerTask foreach {
+      _.cancel()
+    }
     timerTask = None
   }
 
@@ -80,10 +84,14 @@ private[finagle] class Cache[A](
       if (!deque.isEmpty) scheduleTimer()
       es
     }
-    evicted foreach { evict(_) }
+    evicted foreach {
+      evict(_)
+    }
   }
 
-  private[this] def evict(item: A) = evictor foreach { _(item) }
+  private[this] def evict(item: A) = evictor foreach {
+    _(item)
+  }
 
   /**
     * Retrieve an item from the cache.  Items are retrieved in LIFO
@@ -114,7 +122,9 @@ private[finagle] class Cache[A](
         None
       }
     }
-    evicted foreach { evict(_) }
+    evicted foreach {
+      evict(_)
+    }
   }
 
   /**
@@ -128,11 +138,15 @@ private[finagle] class Cache[A](
       oldDeque
     }
 
-    evicted.asScala foreach { case (_, item) => evict(item) }
+    evicted.asScala foreach {
+      case (_, item) => evict(item)
+    }
   }
 
   /**
     * The current size of the cache.
     */
-  def size = synchronized { deque.size }
+  def size = synchronized {
+    deque.size
+  }
 }

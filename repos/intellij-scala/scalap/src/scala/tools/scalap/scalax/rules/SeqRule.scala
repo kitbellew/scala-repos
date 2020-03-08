@@ -25,7 +25,9 @@ class InRule[In, +Out, +A, +X](rule: Rule[In, Out, A, X]) {
 
   def mapRule[Out2, B, Y](
       f: Result[Out, A, X] => In => Result[Out2, B, Y]): Rule[In, Out2, B, Y] =
-    rule.factory.rule { in: In => f(rule(in))(in) }
+    rule.factory.rule { in: In =>
+      f(rule(in))(in)
+    }
 
   /** Creates a rule that succeeds only if the original rule would fail on the given context. */
   def unary_! : Rule[In, In, Unit, Nothing] = mapRule {
@@ -52,7 +54,9 @@ class SeqRule[S, +A, +X](rule: Rule[S, S, A, X]) {
 
   /** Creates a rule that always succeeds with a Boolean value.
     *  Value is 'true' if this rule succeeds, 'false' otherwise */
-  def -? = ? map { _ isDefined }
+  def -? = ? map {
+    _ isDefined
+  }
 
   def * = from[S] {
     // tail-recursive function with reverse list accumulator
@@ -67,10 +71,14 @@ class SeqRule[S, +A, +X](rule: Rule[S, S, A, X]) {
   def + = rule ~++ *
 
   def ~>?[B >: A, X2 >: X](f: => Rule[S, S, B => B, X2]) =
-    for (a <- rule; fs <- f ?) yield fs.foldLeft[B](a) { (b, f) => f(b) }
+    for (a <- rule; fs <- f ?) yield fs.foldLeft[B](a) { (b, f) =>
+      f(b)
+    }
 
   def ~>*[B >: A, X2 >: X](f: => Rule[S, S, B => B, X2]) =
-    for (a <- rule; fs <- f *) yield fs.foldLeft[B](a) { (b, f) => f(b) }
+    for (a <- rule; fs <- f *) yield fs.foldLeft[B](a) { (b, f) =>
+      f(b)
+    }
 
   def ~*~[B >: A, X2 >: X](join: => Rule[S, S, (B, B) => B, X2]) = {
     this ~>* (for (f <- join; a <- rule) yield f(_: B, a))

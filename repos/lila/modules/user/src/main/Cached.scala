@@ -78,7 +78,9 @@ final class Cached(
   private val topWeekCache = mongoCache.single[List[User.LightPerf]](
     prefix = "user:top:week",
     f = PerfType.leaderboardable
-      .map { perf => rankingApi.topPerf(perf.id, 1) }
+      .map { perf =>
+        rankingApi.topPerf(perf.id, 1)
+      }
       .sequenceFu
       .map(_.flatten),
     timeToLive = 9 minutes)
@@ -87,7 +89,10 @@ final class Cached(
 
   val topNbGame = mongoCache[Int, List[User.LightCount]](
     prefix = "user:top:nbGame",
-    f = nb => UserRepo topNbGame nb map { _ map (_.lightCount) },
+    f = nb =>
+      UserRepo topNbGame nb map {
+        _ map (_.lightCount)
+      },
     timeToLive = 34 minutes)
 
   val top50Online = lila.memo.AsyncCache.single[List[User]](

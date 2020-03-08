@@ -124,12 +124,18 @@ trait PredictionLibModule[M[+_]]
                       }
 
                     val confidenceUpper = arraySum(resultArray, res.confidence)
-                    val confidenceLower =
-                      arraySum(resultArray, res.confidence map { -_ })
+                    val confidenceLower = arraySum(
+                      resultArray,
+                      res.confidence map {
+                        -_
+                      })
 
                     val predictionUpper = arraySum(resultArray, res.prediction)
-                    val predictionLower =
-                      arraySum(resultArray, res.prediction map { -_ })
+                    val predictionLower = arraySum(
+                      resultArray,
+                      res.prediction map {
+                        -_
+                      })
 
                     def makeCPath(field: String, index: Int) = {
                       CPath(
@@ -203,7 +209,9 @@ trait PredictionLibModule[M[+_]]
           }
           val tables: M[Seq[Table]] = (tables0.toList).sequence
 
-          tables.map(_.reduceOption { _ concat _ } getOrElse Table.empty)
+          tables.map(_.reduceOption {
+            _ concat _
+          } getOrElse Table.empty)
         }
       }
     }
@@ -267,7 +275,9 @@ trait PredictionLibModule[M[+_]]
           }
           val tables: M[Seq[Table]] = (tables0.toList).sequence
 
-          tables.map(_.reduceOption { _ concat _ } getOrElse Table.empty)
+          tables.map(_.reduceOption {
+            _ concat _
+          } getOrElse Table.empty)
         }
       }
     }

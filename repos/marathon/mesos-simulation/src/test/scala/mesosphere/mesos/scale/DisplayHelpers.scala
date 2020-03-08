@@ -43,7 +43,9 @@ object DisplayHelpers {
   def withUnderline(header: IndexedSeq[String]): Seq[IndexedSeq[String]] = {
     IndexedSeq(
       header,
-      header.map { str => "-" * str.length }
+      header.map { str =>
+        "-" * str.length
+      }
     )
   }
 }

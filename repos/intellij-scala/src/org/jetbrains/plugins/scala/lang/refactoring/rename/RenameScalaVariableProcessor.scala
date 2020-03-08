@@ -109,7 +109,9 @@ class RenameScalaVariableProcessor
       element: PsiElement,
       newName: String,
       allRenames: util.Map[_ <: PsiElement, String],
-      result: util.List[UsageInfo]) { /*todo*/ }
+      result: util.List[UsageInfo]) {
+    /*todo*/
+  }
 
   override def substituteElementToRename(
       element: PsiElement,

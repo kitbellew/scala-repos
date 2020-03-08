@@ -157,7 +157,11 @@ object Menu extends DispatchSnippet {
                   TopScope,
                   true,
                   // Is a placeholder useful if we don't display the kids? I say no (DCB, 20101108)
-                  <xml:group> <span>{text}</span>{buildUlLine(kids)}</xml:group>
+                  <xml:group> <span>{
+                    text
+                  }</span>{
+                    buildUlLine(kids)
+                  }</xml:group>
                 ) %
                   (if (m.path) S.prefixedAttrsToMetaData("li_path", liMap)
                    else Null) %
@@ -174,7 +178,11 @@ object Menu extends DispatchSnippet {
                   Null,
                   TopScope,
                   true,
-                  <xml:group> <a href={uri}>{text}</a>{
+                  <xml:group> <a href={
+                    uri
+                  }>{
+                    text
+                  }</a>{
                     ifExpandCurrent(buildUlLine(kids))
                   }</xml:group>) %
                   S.prefixedAttrsToMetaData("li_item", liMap)
@@ -189,7 +197,9 @@ object Menu extends DispatchSnippet {
                   Null,
                   TopScope,
                   true,
-                  <xml:group> <span>{text}</span>{
+                  <xml:group> <span>{
+                    text
+                  }</span>{
                     ifExpandCurrent(buildUlLine(kids))
                   }</xml:group>) %
                   S.prefixedAttrsToMetaData("li_item", liMap)
@@ -205,7 +215,11 @@ object Menu extends DispatchSnippet {
                   Null,
                   TopScope,
                   true,
-                  <xml:group> <a href={uri}>{text}</a>{
+                  <xml:group> <a href={
+                    uri
+                  }>{
+                    text
+                  }</a>{
                     buildUlLine(kids)
                   }</xml:group>) %
                   S.prefixedAttrsToMetaData("li_path", liMap)
@@ -220,7 +234,11 @@ object Menu extends DispatchSnippet {
                   Null,
                   TopScope,
                   true,
-                  <xml:group> <a href={uri}>{text}</a>{
+                  <xml:group> <a href={
+                    uri
+                  }>{
+                    text
+                  }</a>{
                     ifExpandAll(buildUlLine(kids))
                   }</xml:group>) % li)
           }
@@ -237,7 +255,9 @@ object Menu extends DispatchSnippet {
                 Null,
                 TopScope,
                 true,
-                <xml:group>{in.flatMap(buildANavItem)}</xml:group>) %
+                <xml:group>{
+                  in.flatMap(buildANavItem)
+                }</xml:group>) %
                 S.prefixedAttrsToMetaData("ul")
             } else {
               in.flatMap(buildANavItem)
@@ -346,7 +366,9 @@ object Menu extends DispatchSnippet {
               str + " " + rts
             }
 
-            <title>{bodyStr}</title> % attrs
+            <title>{
+              bodyStr
+            }</title> % attrs
           }
         } openOr text
       }
@@ -495,7 +517,9 @@ object Menu extends DispatchSnippet {
     for {
       name <- S.attr("name").toList
     } yield {
-      type T = Q forSome { type Q }
+      type T = Q forSome {
+        type Q
+      }
 
       // Builds a link for the given loc
       def buildLink[T](loc: Loc[T]) = {
@@ -521,7 +545,9 @@ object Menu extends DispatchSnippet {
           } yield {
             Helpers.addCssClass(
               typedLoc.cssClassForMenuItem,
-              <a href={link}></a> %
+              <a href={
+                link
+              }></a> %
                 S.prefixedAttrsToMetaData("a"))
           }) openOr {
             Text("")

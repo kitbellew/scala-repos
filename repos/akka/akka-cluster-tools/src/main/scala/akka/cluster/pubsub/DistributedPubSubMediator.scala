@@ -367,7 +367,9 @@ object DistributedPubSubMediator {
           else
             context.parent ! NewSubscriberArrived
         case msg ⇒
-          subscribers foreach { _ forward msg }
+          subscribers foreach {
+            _ forward msg
+          }
       }
 
       def business: Receive

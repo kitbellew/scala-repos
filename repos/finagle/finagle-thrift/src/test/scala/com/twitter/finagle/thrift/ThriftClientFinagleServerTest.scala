@@ -25,13 +25,17 @@ class ThriftClientFinagleServerTest
   val processor = new B.ServiceIface {
     def add(a: Int, b: Int) = Future.exception(new AnException)
     def add_one(a: Int, b: Int) = Future.Void
-    def multiply(a: Int, b: Int) = Future { a / b }
+    def multiply(a: Int, b: Int) = Future {
+      a / b
+    }
     def complex_return(someString: String) =
       someString match {
         case "throwAnException" =>
           throw new Exception("msg")
         case _ =>
-          Future { new SomeStruct(123, someString) }
+          Future {
+            new SomeStruct(123, someString)
+          }
       }
     def someway() = {
       somewayPromise() = Return.Unit
@@ -67,7 +71,9 @@ class ThriftClientFinagleServerTest
   }
 
   test("thrift client with finagle server should propagate exceptions") {
-    val exc = intercept[AnException] { client.add(1, 2) }
+    val exc = intercept[AnException] {
+      client.add(1, 2)
+    }
     assert(exc != null)
   }
 
@@ -108,7 +114,9 @@ class ThriftClientFinagleServerTest
     }
     transport.open()
 
-    val exc = intercept[TApplicationException] { client.another_method(123) }
+    val exc = intercept[TApplicationException] {
+      client.another_method(123)
+    }
     assert(exc.getMessage() == "Invalid method name: 'another_method'")
   }
 

@@ -93,13 +93,21 @@ class CSCMatrix[@spec(Double, Int, Float, Long) V: Zero](
       if (used > data.length) {
         // need to grow array
         val newLength = {
-          if (data.length == 0) { 4 }
-          else if (data.length < 0x0400) { data.length * 2 }
-          else if (data.length < 0x0800) { data.length + 0x0400 }
-          else if (data.length < 0x1000) { data.length + 0x0800 }
-          else if (data.length < 0x2000) { data.length + 0x1000 }
-          else if (data.length < 0x4000) { data.length + 0x2000 }
-          else { data.length + 0x4000 }
+          if (data.length == 0) {
+            4
+          } else if (data.length < 0x0400) {
+            data.length * 2
+          } else if (data.length < 0x0800) {
+            data.length + 0x0400
+          } else if (data.length < 0x1000) {
+            data.length + 0x0800
+          } else if (data.length < 0x2000) {
+            data.length + 0x1000
+          } else if (data.length < 0x4000) {
+            data.length + 0x2000
+          } else {
+            data.length + 0x4000
+          }
         }
 
         // allocate new arrays
@@ -428,7 +436,9 @@ object CSCMatrix
     new CanMapActiveValues[CSCMatrix[V], V, R, CSCMatrix[R]] {
       override def apply(from: CSCMatrix[V], fn: (V => R)) = {
         var zeroSeen = false
-        def ff(v: V) = { val r = fn(v); if (r == z) zeroSeen = true; r }
+        def ff(v: V) = {
+          val r = fn(v); if (r == z) zeroSeen = true; r
+        }
         val newData = from.data.map(ff)
         val r = new CSCMatrix[R](
           newData,
@@ -472,7 +482,9 @@ object CSCMatrix
         val zero = implicitly[Zero[V]].zero
         fn.zeros(
           from.size - from.activeSize,
-          from.iterator.collect { case (k, v) if v != zero => k },
+          from.iterator.collect {
+            case (k, v) if v != zero => k
+          },
           zero)
         // TODO: I can use visitArray if I want to be clever
         from.activeIterator.foreach((fn.visit _).tupled)

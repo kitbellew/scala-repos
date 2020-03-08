@@ -5,7 +5,9 @@ object A extends Dynamic {
 
   def selectDynamic(method: String): String = a
 
-  def updateDynamic(method: String)(v: String) { a = v }
+  def updateDynamic(method: String)(v: String) {
+    a = v
+  }
 }
 
 class B extends Dynamic {
@@ -13,7 +15,9 @@ class B extends Dynamic {
 
   def selectDynamic(method: String): String = b
 
-  def updateDynamic(method: String)(v: String) { b = v }
+  def updateDynamic(method: String)(v: String) {
+    b = v
+  }
 }
 
 object Test extends App {

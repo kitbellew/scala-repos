@@ -37,7 +37,9 @@ object tuple {
     def apply[P](implicit isComp: IsComposite[P]): Aux[P, isComp.H, isComp.T] =
       isComp
 
-    type Aux[P, H0, T0] = IsComposite[P] { type H = H0; type T = T0 }
+    type Aux[P, H0, T0] = IsComposite[P] {
+      type H = H0; type T = T0
+    }
 
     implicit def isComposite[P, L <: HList, H0, T <: HList](implicit
         gen: Generic.Aux[P, L],
@@ -62,7 +64,9 @@ object tuple {
     def apply[T, U](implicit prepend: Prepend[T, U]): Aux[T, U, prepend.Out] =
       prepend
 
-    type Aux[T, U, Out0] = Prepend[T, U] { type Out = Out0 }
+    type Aux[T, U, Out0] = Prepend[T, U] {
+      type Out = Out0
+    }
 
     implicit def prepend[T, L1 <: HList, U, L2 <: HList, L3 <: HList](implicit
         gent: Generic.Aux[T, L1],
@@ -87,7 +91,9 @@ object tuple {
         implicit prepend: ReversePrepend[T, U]): Aux[T, U, prepend.Out] =
       prepend
 
-    type Aux[T, U, Out0] = ReversePrepend[T, U] { type Out = Out0 }
+    type Aux[T, U, Out0] = ReversePrepend[T, U] {
+      type Out = Out0
+    }
 
     implicit def prepend[T, L1 <: HList, U, L2 <: HList, L3 <: HList](implicit
         gent: Generic.Aux[T, L1],
@@ -111,7 +117,9 @@ object tuple {
   object At {
     def apply[T, N <: Nat](implicit at: At[T, N]): Aux[T, N, at.Out] = at
 
-    type Aux[T, N <: Nat, Out0] = At[T, N] { type Out = Out0 }
+    type Aux[T, N <: Nat, Out0] = At[T, N] {
+      type Out = Out0
+    }
 
     implicit def at[T, L1 <: HList, N <: Nat](implicit
         gen: Generic.Aux[T, L1],
@@ -133,7 +141,9 @@ object tuple {
   object Last {
     def apply[T](implicit last: Last[T]): Aux[T, last.Out] = last
 
-    type Aux[T, Out0] = Last[T] { type Out = Out0 }
+    type Aux[T, Out0] = Last[T] {
+      type Out = Out0
+    }
 
     implicit def last[T, L <: HList](implicit
         gen: Generic.Aux[T, L],
@@ -155,7 +165,9 @@ object tuple {
   object Init {
     def apply[T](implicit init: Init[T]): Aux[T, init.Out] = init
 
-    type Aux[T, Out0] = Init[T] { type Out = Out0 }
+    type Aux[T, Out0] = Init[T] {
+      type Out = Out0
+    }
 
     implicit def init[T, L1 <: HList, L2 <: HList](implicit
         gen: Generic.Aux[T, L1],
@@ -173,7 +185,9 @@ object tuple {
     *
     * @author Miles Sabin
     */
-  trait Selector[T, U] extends DepFn1[T] with Serializable { type Out = U }
+  trait Selector[T, U] extends DepFn1[T] with Serializable {
+    type Out = U
+  }
 
   object Selector {
     def apply[T, U](implicit selector: Selector[T, U]): Aux[T, U] = selector
@@ -199,7 +213,9 @@ object tuple {
     def apply[T, U](implicit filter: Filter[T, U]): Aux[T, U, filter.Out] =
       filter
 
-    type Aux[T, U, Out0] = Filter[T, U] { type Out = Out0 }
+    type Aux[T, U, Out0] = Filter[T, U] {
+      type Out = Out0
+    }
 
     implicit def filterTuple[T, L1 <: HList, U, L2 <: HList](implicit
         gen: Generic.Aux[T, L1],
@@ -221,7 +237,9 @@ object tuple {
     def apply[T, U](implicit filter: FilterNot[T, U]): Aux[T, U, filter.Out] =
       filter
 
-    type Aux[T, U, Out0] = FilterNot[T, U] { type Out = Out0 }
+    type Aux[T, U, Out0] = FilterNot[T, U] {
+      type Out = Out0
+    }
 
     implicit def filterNotTuple[T, L1 <: HList, U, L2 <: HList](implicit
         gen: Generic.Aux[T, L1],
@@ -244,14 +262,18 @@ object tuple {
     def apply[T, E](implicit remove: Remove[T, E]): Aux[T, E, remove.Out] =
       remove
 
-    type Aux[T, U, Out0] = Remove[T, U] { type Out = Out0 }
+    type Aux[T, U, Out0] = Remove[T, U] {
+      type Out = Out0
+    }
 
     implicit def removeTuple[T, L1 <: HList, U, L2 <: HList](implicit
         gen: Generic.Aux[T, L1],
         remove: hl.Remove.Aux[L1, U, (U, L2)],
         tp: hl.Tupler[L2]): Aux[T, U, (U, tp.Out)] = new Remove[T, U] {
       type Out = (U, tp.Out)
-      def apply(t: T): Out = { val (u, rem) = remove(gen.to(t)); (u, tp(rem)) }
+      def apply(t: T): Out = {
+        val (u, rem) = remove(gen.to(t)); (u, tp(rem))
+      }
     }
   }
 
@@ -269,7 +291,9 @@ object tuple {
     def apply[T, S](implicit remove: RemoveAll[T, S]): Aux[T, S, remove.Out] =
       remove
 
-    type Aux[T, S, Out0] = RemoveAll[T, S] { type Out = Out0 }
+    type Aux[T, S, Out0] = RemoveAll[T, S] {
+      type Out = Out0
+    }
 
     implicit def removeAllTuple[T, ST, SL <: HList, L1 <: HList, L2 <: HList](
         implicit
@@ -298,7 +322,9 @@ object tuple {
         implicit replacer: Replacer[T, U, V]): Aux[T, U, V, replacer.Out] =
       replacer
 
-    type Aux[T, U, V, Out0] = Replacer[T, U, V] { type Out = Out0 }
+    type Aux[T, U, V, Out0] = Replacer[T, U, V] {
+      type Out = Out0
+    }
 
     implicit def replaceTuple[T, L1 <: HList, U, V, L2 <: HList](implicit
         gen: Generic.Aux[T, L1],
@@ -324,7 +350,9 @@ object tuple {
         implicit replacer: ReplaceAt[T, N, V]): Aux[T, N, V, replacer.Out] =
       replacer
 
-    type Aux[T, N <: Nat, U, Out0] = ReplaceAt[T, N, U] { type Out = Out0 }
+    type Aux[T, N <: Nat, U, Out0] = ReplaceAt[T, N, U] {
+      type Out = Out0
+    }
 
     implicit def replaceTuple[T, L1 <: HList, N <: Nat, U, V, L2 <: HList](
         implicit
@@ -352,7 +380,9 @@ object tuple {
         implicit modifier: Modifier[T, U, V]): Aux[T, U, V, modifier.Out] =
       modifier
 
-    type Aux[T, U, V, Out0] = Modifier[T, U, V] { type Out = Out0 }
+    type Aux[T, U, V, Out0] = Modifier[T, U, V] {
+      type Out = Out0
+    }
 
     implicit def modifyTuple[T, L1 <: HList, U, V, L2 <: HList](implicit
         gen: Generic.Aux[T, L1],
@@ -411,7 +441,9 @@ object tuple {
     def apply[T, N <: Nat](implicit take: Take[T, N]): Aux[T, N, take.Out] =
       take
 
-    type Aux[T, N <: Nat, Out0] = Take[T, N] { type Out = Out0 }
+    type Aux[T, N <: Nat, Out0] = Take[T, N] {
+      type Out = Out0
+    }
 
     implicit def tupleTake[T, L1 <: HList, N <: Nat, L2 <: HList](implicit
         gen: Generic.Aux[T, L1],
@@ -435,7 +467,9 @@ object tuple {
     def apply[T, N <: Nat](implicit drop: Drop[T, N]): Aux[T, N, drop.Out] =
       drop
 
-    type Aux[T, N <: Nat, Out0] = Drop[T, N] { type Out = Out0 }
+    type Aux[T, N <: Nat, Out0] = Drop[T, N] {
+      type Out = Out0
+    }
 
     implicit def tupleDrop[T, L1 <: HList, N <: Nat, L2 <: HList](implicit
         gen: Generic.Aux[T, L1],
@@ -459,7 +493,9 @@ object tuple {
     def apply[T, N <: Nat](implicit split: Split[T, N]): Aux[T, N, split.Out] =
       split
 
-    type Aux[T, N <: Nat, Out0] = Split[T, N] { type Out = Out0 }
+    type Aux[T, N <: Nat, Out0] = Split[T, N] {
+      type Out = Out0
+    }
 
     implicit def tupleSplit[T, L <: HList, N <: Nat, LP <: HList, LS <: HList](
         implicit
@@ -488,7 +524,9 @@ object tuple {
     def apply[T, N <: Nat](
         implicit split: ReverseSplit[T, N]): Aux[T, N, split.Out] = split
 
-    type Aux[T, N <: Nat, Out0] = ReverseSplit[T, N] { type Out = Out0 }
+    type Aux[T, N <: Nat, Out0] = ReverseSplit[T, N] {
+      type Out = Out0
+    }
 
     implicit def tupleReverseSplit[
         T,
@@ -521,7 +559,9 @@ object tuple {
     def apply[T, U](implicit split: SplitLeft[T, U]): Aux[T, U, split.Out] =
       split
 
-    type Aux[T, U, Out0] = SplitLeft[T, U] { type Out = Out0 }
+    type Aux[T, U, Out0] = SplitLeft[T, U] {
+      type Out = Out0
+    }
 
     implicit def tupleSplitLeft[T, L <: HList, U, LP <: HList, LS <: HList](
         implicit
@@ -550,7 +590,9 @@ object tuple {
     def apply[T, U](
         implicit split: ReverseSplitLeft[T, U]): Aux[T, U, split.Out] = split
 
-    type Aux[T, U, Out0] = ReverseSplitLeft[T, U] { type Out = Out0 }
+    type Aux[T, U, Out0] = ReverseSplitLeft[T, U] {
+      type Out = Out0
+    }
 
     implicit def tupleReverseSplitLeft[
         T,
@@ -583,7 +625,9 @@ object tuple {
     def apply[T, U](implicit split: SplitRight[T, U]): Aux[T, U, split.Out] =
       split
 
-    type Aux[T, U, Out0] = SplitRight[T, U] { type Out = Out0 }
+    type Aux[T, U, Out0] = SplitRight[T, U] {
+      type Out = Out0
+    }
 
     implicit def tupleSplitRight[T, L <: HList, U, LP <: HList, LS <: HList](
         implicit
@@ -612,7 +656,9 @@ object tuple {
     def apply[T, U](
         implicit split: ReverseSplitRight[T, U]): Aux[T, U, split.Out] = split
 
-    type Aux[T, U, Out0] = ReverseSplitRight[T, U] { type Out = Out0 }
+    type Aux[T, U, Out0] = ReverseSplitRight[T, U] {
+      type Out = Out0
+    }
 
     implicit def tupleReverseSplitRight[
         T,
@@ -643,7 +689,9 @@ object tuple {
   object Reverse {
     def apply[T](implicit reverse: Reverse[T]): Aux[T, reverse.Out] = reverse
 
-    type Aux[T, Out0] = Reverse[T] { type Out = Out0 }
+    type Aux[T, Out0] = Reverse[T] {
+      type Out = Out0
+    }
 
     implicit def tupleReverseAux[T, L1 <: HList, L2 <: HList, Out](implicit
         gen: Generic.Aux[T, L1],
@@ -666,7 +714,9 @@ object tuple {
     def apply[T, P](implicit mapper: Mapper[T, P]): Aux[T, P, mapper.Out] =
       mapper
 
-    type Aux[T, P, Out0] = Mapper[T, P] { type Out = Out0 }
+    type Aux[T, P, Out0] = Mapper[T, P] {
+      type Out = Out0
+    }
 
     implicit def mapper[T, P, L1 <: HList, L2 <: HList](implicit
         gen: Generic.Aux[T, L1],
@@ -691,7 +741,9 @@ object tuple {
 
     import poly.Compose
 
-    type Aux[T, P, Out0] = FlatMapper[T, P] { type Out = Out0 }
+    type Aux[T, P, Out0] = FlatMapper[T, P] {
+      type Out = Out0
+    }
 
     implicit def mapper[T, P, L1 <: HList, L2 <: HList](implicit
         gen: Generic.Aux[T, L1],
@@ -714,7 +766,9 @@ object tuple {
     def apply[T, C](implicit mapper: ConstMapper[T, C]): Aux[T, C, mapper.Out] =
       mapper
 
-    type Aux[T, C, Out0] = ConstMapper[T, C] { type Out = Out0 }
+    type Aux[T, C, Out0] = ConstMapper[T, C] {
+      type Out = Out0
+    }
 
     implicit def mapper[T, C, L1 <: HList, L2 <: HList](implicit
         gen: Generic.Aux[T, L1],
@@ -732,7 +786,8 @@ object tuple {
     *
     * @author Miles Sabin
     */
-  trait MapFolder[T, R, P] extends Serializable { // Nb. Not a dependent function signature
+  trait MapFolder[T, R, P]
+      extends Serializable { // Nb. Not a dependent function signature
     def apply(t: T, in: R, op: (R, R) => R): R
   }
 
@@ -758,7 +813,9 @@ object tuple {
     def apply[T, U, P](
         implicit folder: LeftFolder[T, U, P]): Aux[T, U, P, folder.Out] = folder
 
-    type Aux[T, U, P, Out0] = LeftFolder[T, U, P] { type Out = Out0 }
+    type Aux[T, U, P, Out0] = LeftFolder[T, U, P] {
+      type Out = Out0
+    }
 
     implicit def folder[T, L <: HList, U, P](implicit
         gen: Generic.Aux[T, L],
@@ -781,7 +838,9 @@ object tuple {
         implicit folder: RightFolder[T, U, P]): Aux[T, U, P, folder.Out] =
       folder
 
-    type Aux[T, U, P, Out0] = RightFolder[T, U, P] { type Out = Out0 }
+    type Aux[T, U, P, Out0] = RightFolder[T, U, P] {
+      type Out = Out0
+    }
 
     implicit def folder[T, L <: HList, U, P](implicit
         gen: Generic.Aux[T, L],
@@ -803,7 +862,9 @@ object tuple {
     def apply[T, P](
         implicit reducer: LeftReducer[T, P]): Aux[T, P, reducer.Out] = reducer
 
-    type Aux[T, P, Out0] = LeftReducer[T, P] { type Out = Out0 }
+    type Aux[T, P, Out0] = LeftReducer[T, P] {
+      type Out = Out0
+    }
 
     implicit def folder[T, L <: HList, P](implicit
         gen: Generic.Aux[T, L],
@@ -825,7 +886,9 @@ object tuple {
     def apply[T, P](
         implicit reducer: RightReducer[T, P]): Aux[T, P, reducer.Out] = reducer
 
-    type Aux[T, P, Out0] = RightReducer[T, P] { type Out = Out0 }
+    type Aux[T, P, Out0] = RightReducer[T, P] {
+      type Out = Out0
+    }
 
     implicit def folder[T, L <: HList, P](implicit
         gen: Generic.Aux[T, L],
@@ -847,7 +910,9 @@ object tuple {
     def apply[T](implicit transposer: Transposer[T]): Aux[T, transposer.Out] =
       transposer
 
-    type Aux[T, Out0] = Transposer[T] { type Out = Out0 }
+    type Aux[T, Out0] = Transposer[T] {
+      type Out = Out0
+    }
 
     implicit def transpose[
         T,
@@ -881,7 +946,9 @@ object tuple {
     def apply[FT, AT](implicit zip: ZipApply[FT, AT]): Aux[FT, AT, zip.Out] =
       zip
 
-    type Aux[FT, AT, Out0] = ZipApply[FT, AT] { type Out = Out0 }
+    type Aux[FT, AT, Out0] = ZipApply[FT, AT] {
+      type Out = Out0
+    }
 
     implicit def zipApply[FT, FL <: HList, AT, AL <: HList, RL <: HList](
         implicit
@@ -908,7 +975,9 @@ object tuple {
   object ZipOne {
     def apply[H, T](implicit zip: ZipOne[H, T]): Aux[H, T, zip.Out] = zip
 
-    type Aux[H, T, Out0] = ZipOne[H, T] { type Out = Out0 }
+    type Aux[H, T, Out0] = ZipOne[H, T] {
+      type Out = Out0
+    }
 
     implicit def zipOne[
         HT,
@@ -944,7 +1013,9 @@ object tuple {
   object ZipConst {
     def apply[T, C](implicit zip: ZipConst[T, C]): Aux[T, C, zip.Out] = zip
 
-    type Aux[T, C, Out0] = ZipConst[T, C] { type Out = Out0 }
+    type Aux[T, C, Out0] = ZipConst[T, C] {
+      type Out = Out0
+    }
 
     implicit def zipConst[T, C, L1 <: HList, L2 <: HList](implicit
         gen: Generic.Aux[T, L1],
@@ -967,7 +1038,9 @@ object tuple {
   object ZipWithIndex {
     def apply[T](implicit zip: ZipWithIndex[T]): Aux[T, zip.Out] = zip
 
-    type Aux[T, Out0] = ZipWithIndex[T] { type Out = Out0 }
+    type Aux[T, Out0] = ZipWithIndex[T] {
+      type Out = Out0
+    }
 
     implicit def zipConst[T, L1 <: HList, L2 <: HList](implicit
         gen: Generic.Aux[T, L1],
@@ -989,7 +1062,9 @@ object tuple {
   object Unifier {
     def apply[T](implicit unifier: Unifier[T]): Aux[T, unifier.Out] = unifier
 
-    type Aux[T, Out0] = Unifier[T] { type Out = Out0 }
+    type Aux[T, Out0] = Unifier[T] {
+      type Out = Out0
+    }
 
     implicit def unifier[T, L1 <: HList, L2 <: HList](implicit
         gen: Generic.Aux[T, L1],
@@ -1014,7 +1089,9 @@ object tuple {
         implicit unifier: SubtypeUnifier[T, B]): Aux[T, B, unifier.Out] =
       unifier
 
-    type Aux[T, B, Out0] = SubtypeUnifier[T, B] { type Out = Out0 }
+    type Aux[T, B, Out0] = SubtypeUnifier[T, B] {
+      type Out = Out0
+    }
 
     implicit def subtypeUnifier[T, B, L1 <: HList, L2 <: HList](implicit
         gen: Generic.Aux[T, L1],
@@ -1036,7 +1113,9 @@ object tuple {
   object Length {
     def apply[T](implicit length: Length[T]): Aux[T, length.Out] = length
 
-    type Aux[T, Out0] = Length[T] { type Out = Out0 }
+    type Aux[T, Out0] = Length[T] {
+      type Out = Out0
+    }
 
     implicit def length[T, L <: HList](implicit
         gen: Generic.Aux[T, L],
@@ -1063,7 +1142,9 @@ object tuple {
         toTraversable: ToTraversable[T, M]): Aux[T, M, toTraversable.Lub] =
       toTraversable
 
-    type Aux[T, M[_], Lub0] = ToTraversable[T, M] { type Lub = Lub0 }
+    type Aux[T, M[_], Lub0] = ToTraversable[T, M] {
+      type Lub = Lub0
+    }
 
     implicit def toTraversableNothing[M[_]](implicit
         tt: hl.ToTraversable.Aux[HNil, M, Nothing]): Aux[Unit, M, Nothing] =
@@ -1092,7 +1173,9 @@ object tuple {
   trait ToList[T, Lub] extends DepFn1[T] with Serializable
 
   object ToList {
-    type Aux[T, Lub, Out0] = ToList[T, Lub] { type Out = Out0 }
+    type Aux[T, Lub, Out0] = ToList[T, Lub] {
+      type Out = Out0
+    }
 
     def apply[T, Lub](
         implicit toList: ToList[T, Lub]): Aux[T, Lub, toList.Out] = toList
@@ -1122,7 +1205,9 @@ object tuple {
   trait ToArray[T, Lub] extends DepFn1[T]
 
   object ToArray {
-    type Aux[T, Lub, Out0] = ToArray[T, Lub] { type Out = Out0 }
+    type Aux[T, Lub, Out0] = ToArray[T, Lub] {
+      type Out = Out0
+    }
 
     def apply[T, Lub](
         implicit toArray: ToArray[T, Lub]): Aux[T, Lub, toArray.Out] = toArray
@@ -1153,7 +1238,9 @@ object tuple {
     def apply[T, M[_]](
         implicit toSized: ToSized[T, M]): Aux[T, M, toSized.Out] = toSized
 
-    type Aux[T, M[_], Out0] = ToSized[T, M] { type Out = Out0 }
+    type Aux[T, M[_], Out0] = ToSized[T, M] {
+      type Out = Out0
+    }
 
     implicit def toSized[T, L <: HList, M[_]](implicit
         gen: Generic.Aux[T, L],
@@ -1169,12 +1256,16 @@ object tuple {
     *
     * @author Andreas Koestler
     */
-  trait ToCoproduct[T] extends Serializable { type Out <: Coproduct }
+  trait ToCoproduct[T] extends Serializable {
+    type Out <: Coproduct
+  }
 
   object ToCoproduct {
     def apply[T](implicit tcp: ToCoproduct[T]): Aux[T, tcp.Out] = tcp
 
-    type Aux[T, Out0 <: Coproduct] = ToCoproduct[T] { type Out = Out0 }
+    type Aux[T, Out0 <: Coproduct] = ToCoproduct[T] {
+      type Out = Out0
+    }
 
     implicit val hnilToCoproduct: Aux[HNil, CNil] =
       new ToCoproduct[HNil] {
@@ -1195,12 +1286,16 @@ object tuple {
     *
     * @author Andreas Koestler
     */
-  trait ToSum[T] extends Serializable { type Out <: Coproduct }
+  trait ToSum[T] extends Serializable {
+    type Out <: Coproduct
+  }
 
   object ToSum {
     def apply[T](implicit tcp: ToSum[T]): Aux[T, tcp.Out] = tcp
 
-    type Aux[T, Out0 <: Coproduct] = ToSum[T] { type Out = Out0 }
+    type Aux[T, Out0 <: Coproduct] = ToSum[T] {
+      type Out = Out0
+    }
 
     implicit val hnilToSum: Aux[HNil, CNil] =
       new ToSum[HNil] {
@@ -1227,7 +1322,9 @@ object tuple {
     def apply[T, P <: Poly](
         implicit collect: Collect[T, P]): Aux[T, P, collect.Out] = collect
 
-    type Aux[T, P <: Poly, Out0] = Collect[T, P] { type Out = Out0 }
+    type Aux[T, P <: Poly, Out0] = Collect[T, P] {
+      type Out = Out0
+    }
 
     implicit def collect[T, L <: HList, L2 <: HList, P <: Poly](implicit
         gen: Generic.Aux[T, L],
@@ -1251,7 +1348,9 @@ object tuple {
         implicit permutations: Permutations[T]): Aux[T, permutations.Out] =
       permutations
 
-    type Aux[T, Out0] = Permutations[T] { type Out = Out0 }
+    type Aux[T, Out0] = Permutations[T] {
+      type Out = Out0
+    }
 
     implicit def permutations[T, L <: HList, L2 <: HList, L3 <: HList](implicit
         gen: Generic.Aux[T, L],
@@ -1276,7 +1375,9 @@ object tuple {
         implicit rotateLeft: RotateLeft[T, N]): Aux[T, N, rotateLeft.Out] =
       rotateLeft
 
-    type Aux[T, N <: Nat, Out0] = RotateLeft[T, N] { type Out = Out0 }
+    type Aux[T, N <: Nat, Out0] = RotateLeft[T, N] {
+      type Out = Out0
+    }
 
     implicit def tupleRotateLeft[T, N <: Nat, L <: HList, L2 <: HList](implicit
         gen: Generic.Aux[T, L],
@@ -1300,7 +1401,9 @@ object tuple {
         implicit rotateRight: RotateRight[T, N]): Aux[T, N, rotateRight.Out] =
       rotateRight
 
-    type Aux[T, N <: Nat, Out0] = RotateRight[T, N] { type Out = Out0 }
+    type Aux[T, N <: Nat, Out0] = RotateRight[T, N] {
+      type Out = Out0
+    }
 
     implicit def tupleRotateRight[T, N <: Nat, L <: HList, L2 <: HList](implicit
         gen: Generic.Aux[T, L],
@@ -1323,7 +1426,9 @@ object tuple {
     def apply[T, In, P <: Poly](
         implicit scanL: LeftScanner[T, In, P]): Aux[T, In, P, scanL.Out] = scanL
 
-    type Aux[T, In, P <: Poly, Out0] = LeftScanner[T, In, P] { type Out = Out0 }
+    type Aux[T, In, P <: Poly, Out0] = LeftScanner[T, In, P] {
+      type Out = Out0
+    }
 
     implicit def scanner[T, L <: HList, In, P <: Poly, R <: HList](implicit
         gen: Generic.Aux[T, L],
@@ -1373,7 +1478,9 @@ object tuple {
   object Fill {
     def apply[N, A](implicit fill: Fill[N, A]) = fill
 
-    type Aux[N, A, Out0] = Fill[N, A] { type Out = Out0 }
+    type Aux[N, A, Out0] = Fill[N, A] {
+      type Out = Out0
+    }
 
     implicit def fill1[N <: Nat, A, L <: HList, P](implicit
         fill: hlist.Fill.Aux[N, A, L],
@@ -1479,7 +1586,9 @@ object tuple {
     ): Aux[T, N, Step, Pad, grouper.Out] = grouper
 
     type Aux[T, N <: Nat, Step <: Nat, Pad, Out0] =
-      PaddedGrouper[T, N, Step, Pad] { type Out = Out0 }
+      PaddedGrouper[T, N, Step, Pad] {
+        type Out = Out0
+      }
 
     implicit def tuplePaddedGrouper[
         Pad,

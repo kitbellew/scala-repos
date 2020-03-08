@@ -16,7 +16,10 @@ object Resolve {
         resolveTask(mask) _ ::
         resolveConfig(index, key, mask) _ ::
         Nil
-    scope => (scope /: rs) { (s, f) => f(s) }
+    scope =>
+      (scope /: rs) { (s, f) =>
+        f(s)
+      }
   }
   def resolveTask(mask: ScopeMask)(scope: Scope): Scope =
     if (mask.task) scope else scope.copy(task = Global)

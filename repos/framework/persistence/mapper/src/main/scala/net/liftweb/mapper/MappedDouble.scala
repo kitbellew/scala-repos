@@ -55,7 +55,9 @@ abstract class MappedDouble[T <: Mapper[T]](val fieldOwner: T)
     * Get the source field metadata for the field
     * @return the source field metadata for the field
     */
-  def sourceInfoMetadata(): SourceFieldMetadata { type ST = Double } =
+  def sourceInfoMetadata(): SourceFieldMetadata {
+    type ST = Double
+  } =
     SourceFieldMetadataRep(
       name,
       manifest,
@@ -174,7 +176,12 @@ abstract class MappedDouble[T <: Mapper[T]](val fieldOwner: T)
       accessor: Method,
       columnName: String): (T, String) => Unit =
     (inst, v) =>
-      doField(inst, accessor, { case f: MappedDouble[T] => f.st(toDouble(v)) })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedDouble[T] => f.st(toDouble(v))
+        })
 
   def buildSetLongValue(
       accessor: Method,
@@ -183,14 +190,21 @@ abstract class MappedDouble[T <: Mapper[T]](val fieldOwner: T)
       doField(
         inst,
         accessor,
-        { case f: MappedDouble[T] => f.st(if (isNull) defaultValue else v) })
+        {
+          case f: MappedDouble[T] => f.st(if (isNull) defaultValue else v)
+        })
 
   def buildSetActualValue(
       accessor: Method,
       data: AnyRef,
       columnName: String): (T, AnyRef) => Unit =
     (inst, v) =>
-      doField(inst, accessor, { case f: MappedDouble[T] => f.st(toDouble(v)) })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedDouble[T] => f.st(toDouble(v))
+        })
 
   def fieldCreatorString(dbType: DriverType, colName: String): String =
     colName + " " + dbType.doubleColumnType + notNullAppender()

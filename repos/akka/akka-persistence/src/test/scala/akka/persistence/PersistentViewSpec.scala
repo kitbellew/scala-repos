@@ -15,7 +15,10 @@ object PersistentViewSpec {
   private class TestPersistentActor(name: String, probe: ActorRef)
       extends NamedPersistentActor(name) {
     def receiveCommand = {
-      case msg ⇒ persist(msg) { m ⇒ probe ! s"${m}-${lastSequenceNr}" }
+      case msg ⇒
+        persist(msg) { m ⇒
+          probe ! s"${m}-${lastSequenceNr}"
+        }
     }
 
     override def receiveRecover: Receive = {
@@ -63,7 +66,9 @@ object PersistentViewSpec {
     }
 
     def shouldFailOn(m: Any): Boolean =
-      failAt.foldLeft(false) { (a, f) ⇒ a || (m == f) }
+      failAt.foldLeft(false) { (a, f) ⇒
+        a || (m == f)
+      }
   }
 
   private class PassiveTestPersistentView(
@@ -95,7 +100,9 @@ object PersistentViewSpec {
     }
 
     def shouldFailOn(m: Any): Boolean =
-      failAt.foldLeft(false) { (a, f) ⇒ a || (m == f) }
+      failAt.foldLeft(false) { (a, f) ⇒
+        a || (m == f)
+      }
 
   }
 
@@ -333,9 +340,15 @@ abstract class PersistentViewSpec(config: Config)
       viewProbe.expectMsg("replicated-c-3")
       viewProbe.expectMsg("replicated-d-4")
 
-      replayProbe.expectMsgPF() { case ReplayMessages(1L, _, 2L, _, _) ⇒ }
-      replayProbe.expectMsgPF() { case ReplayMessages(3L, _, 2L, _, _) ⇒ }
-      replayProbe.expectMsgPF() { case ReplayMessages(5L, _, 2L, _, _) ⇒ }
+      replayProbe.expectMsgPF() {
+        case ReplayMessages(1L, _, 2L, _, _) ⇒
+      }
+      replayProbe.expectMsgPF() {
+        case ReplayMessages(3L, _, 2L, _, _) ⇒
+      }
+      replayProbe.expectMsgPF() {
+        case ReplayMessages(5L, _, 2L, _, _) ⇒
+      }
     }
     "support context.become" in {
       view = system.actorOf(

@@ -20,7 +20,9 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
     }))
 
   def this(contents: Map[String, String])(implicit m: Manifest[String]) =
-    this(contents mapValues { _.getBytes })
+    this(contents mapValues {
+      _.getBytes
+    })
 
   protected def _get(keys: Iterable[String]): GetResult = {
     val hits = mutable.Map[String, Value]()
@@ -54,7 +56,9 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
     * Note: expiry and flags are ignored.
     */
   def set(key: String, flags: Int, expiry: Time, value: Buf) = {
-    map.synchronized { map(key) = value }
+    map.synchronized {
+      map(key) = value
+    }
     Future.Unit
   }
 

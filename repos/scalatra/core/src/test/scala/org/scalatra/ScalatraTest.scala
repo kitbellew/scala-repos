@@ -15,7 +15,9 @@ class ScalatraTestServlet extends ScalatraServlet {
   }
 
   get("/xml/:must/:val") {
-    <h1>{params("must") + params("val")}</h1>
+    <h1>{
+      params("must") + params("val")
+    }</h1>
   }
 
   post("/post/test") {
@@ -132,7 +134,9 @@ class ScalatraTest extends ScalatraFunSuite {
   test("redirect halts") {
     session {
       get("/redirect") {}
-      get("/redirected") { body should equal("halted") }
+      get("/redirected") {
+        body should equal("halted")
+      }
     }
   }
 

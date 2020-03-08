@@ -18,7 +18,9 @@ class Foo {
 }
 
 object Test extends App {
-  object R { override def toString = "R" }
+  object R {
+    override def toString = "R"
+  }
   val foo = new Foo
   println(foo.foo)
 }

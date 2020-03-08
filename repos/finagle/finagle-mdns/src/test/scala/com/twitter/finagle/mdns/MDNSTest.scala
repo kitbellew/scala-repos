@@ -74,8 +74,12 @@ class MdnsTest extends FunSuite with Eventually with IntegrationPatience {
     val res = new MDNSResolver
     val ann = new MDNSAnnouncer
     val ia = new InetSocketAddress(loopback, 0)
-    intercept[MDNSAddressException] { ann.announce(ia, "invalidname") }
-    intercept[MDNSAddressException] { res.bind("invalidname") }
+    intercept[MDNSAddressException] {
+      ann.announce(ia, "invalidname")
+    }
+    intercept[MDNSAddressException] {
+      res.bind("invalidname")
+    }
   }
 
   test("name parser") {

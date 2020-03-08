@@ -145,7 +145,9 @@ final class PostApi(
     }
 
   def lastNumberOf(topic: Topic): Fu[Int] =
-    PostRepo lastByTopics List(topic) map { _ ?? (_.number) }
+    PostRepo lastByTopics List(topic) map {
+      _ ?? (_.number)
+    }
 
   def lastPageOf(topic: Topic) =
     math.ceil(topic.nbPosts / maxPerPage.toFloat).toInt

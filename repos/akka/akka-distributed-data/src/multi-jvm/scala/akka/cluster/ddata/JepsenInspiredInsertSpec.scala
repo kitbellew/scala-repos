@@ -64,7 +64,9 @@ class JepsenInspiredInsertSpec
   //  val totalCount = 2000
   val expectedData = (0 until totalCount).toSet
   val data: Map[RoleName, Seq[Int]] = {
-    val nodeIndex = nodes.zipWithIndex.map { case (n, i) ⇒ i -> n }.toMap
+    val nodeIndex = nodes.zipWithIndex.map {
+      case (n, i) ⇒ i -> n
+    }.toMap
     (0 until totalCount).groupBy(i ⇒ nodeIndex(i % nodeCount))
   }
   lazy val myData: Seq[Int] = data(myself)
@@ -94,7 +96,9 @@ class JepsenInspiredInsertSpec
 
     "setup cluster" in {
       runOn(nodes: _*) {
-        nodes.foreach { join(_, n1) }
+        nodes.foreach {
+          join(_, n1)
+        }
 
         within(10.seconds) {
           awaitAssert {
@@ -105,7 +109,9 @@ class JepsenInspiredInsertSpec
       }
 
       runOn(controller) {
-        nodes.foreach { n ⇒ enterBarrier(n.name + "-joined") }
+        nodes.foreach { n ⇒
+          enterBarrier(n.name + "-joined")
+        }
       }
 
       enterBarrier("after-setup")

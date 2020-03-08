@@ -40,8 +40,12 @@ class Beam[T](val maxSize: Int, xs: T*)(implicit o: Ordering[T])
 
   def best = queue.reduceOption(o.max(_, _))
 
-  def +(x: T) = { this += x; this }
-  def +=(x: T) = { cat(queue, x); this }
+  def +(x: T) = {
+    this += x; this
+  }
+  def +=(x: T) = {
+    cat(queue, x); this
+  }
 
   private def trim() {
     while (queue.size > maxSize) {
@@ -51,7 +55,9 @@ class Beam[T](val maxSize: Int, xs: T*)(implicit o: Ordering[T])
 
   private def cat(h: PriorityQueue[T], x: T) {
     if (h.size < maxSize) h += x
-    else if (o.compare(h.head, x) < 0) { h.dequeue(); h += x; }
+    else if (o.compare(h.head, x) < 0) {
+      h.dequeue(); h += x;
+    }
   }
 
   def iterator = queue.iterator

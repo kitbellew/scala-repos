@@ -46,14 +46,18 @@ trait IsSeqLike[Repr] {
 object IsSeqLike {
   import scala.language.higherKinds
 
-  implicit val stringRepr: IsSeqLike[String] { type A = Char } =
+  implicit val stringRepr: IsSeqLike[String] {
+    type A = Char
+  } =
     new IsSeqLike[String] {
       type A = Char
       val conversion = implicitly[String => SeqLike[Char, String]]
     }
 
-  implicit def seqLikeRepr[C[_], A0](implicit
-      conv: C[A0] => SeqLike[A0, C[A0]]): IsSeqLike[C[A0]] { type A = A0 } =
+  implicit def seqLikeRepr[C[_], A0](
+      implicit conv: C[A0] => SeqLike[A0, C[A0]]): IsSeqLike[C[A0]] {
+    type A = A0
+  } =
     new IsSeqLike[C[A0]] {
       type A = A0
       val conversion = conv

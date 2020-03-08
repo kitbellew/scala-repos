@@ -441,12 +441,18 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
     private val highValue = new Label()
     private val lowValue = new Label()
 
-    val open = new Label("OPEN:") { styleClass += "candlestick-tooltip-label" }
+    val open = new Label("OPEN:") {
+      styleClass += "candlestick-tooltip-label"
+    }
     val close = new Label("CLOSE:") {
       styleClass += "candlestick-tooltip-label"
     }
-    val high = new Label("HIGH:") { styleClass += "candlestick-tooltip-label" }
-    val low = new Label("LOW:") { styleClass += "candlestick-tooltip-label" }
+    val high = new Label("HIGH:") {
+      styleClass += "candlestick-tooltip-label"
+    }
+    val low = new Label("LOW:") {
+      styleClass += "candlestick-tooltip-label"
+    }
 
     GridPane.setConstraints(open, 0, 0)
     GridPane.setConstraints(openValue, 1, 0)

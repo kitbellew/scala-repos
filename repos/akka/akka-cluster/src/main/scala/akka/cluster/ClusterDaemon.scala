@@ -360,7 +360,9 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
     gossipTask.cancel()
     failureDetectorReaperTask.cancel()
     leaderActionsTask.cancel()
-    publishStatsTask foreach { _.cancel() }
+    publishStatsTask foreach {
+      _.cancel()
+    }
   }
 
   def uninitialized: Actor.Receive = {
@@ -1410,7 +1412,9 @@ private[cluster] final class JoinSeedNodeProcess(
       seedNodes.collect {
         case a if a != selfAddress ⇒
           context.actorSelection(context.parent.path.toStringWithAddress(a))
-      } foreach { _ ! InitJoin }
+      } foreach {
+        _ ! InitJoin
+      }
     case InitJoinAck(address) ⇒
       // first InitJoinAck reply
       context.parent ! JoinTo(address)

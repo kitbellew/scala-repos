@@ -203,7 +203,9 @@ trait StdStackServer[Req, Rep, This <: StdStackServer[Req, Rep, This]]
   protected def copy1(
       stack: Stack[ServiceFactory[Req, Rep]] = this.stack,
       params: Stack.Params = this.params
-  ): This { type In = self.In; type Out = self.Out }
+  ): This {
+    type In = self.In; type Out = self.Out
+  }
 
   def serve(
       addr: SocketAddress,

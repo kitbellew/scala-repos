@@ -578,7 +578,11 @@ private[akka] class ActorCell(
     become(behavior, discardOld = true)
 
   def become(behavior: Procedure[Any], discardOld: Boolean): Unit =
-    become({ case msg ⇒ behavior.apply(msg) }: Actor.Receive, discardOld)
+    become(
+      {
+        case msg ⇒ behavior.apply(msg)
+      }: Actor.Receive,
+      discardOld)
 
   def unbecome(): Unit = {
     val original = behaviorStack
@@ -626,7 +630,9 @@ private[akka] class ActorCell(
       }
     }
 
-    failure foreach { throw _ }
+    failure foreach {
+      throw _
+    }
 
     try {
       val created = newActor()
@@ -739,7 +745,9 @@ private[akka] class ActorCell(
   // logging is not the main purpose, and if it fails there’s nothing we can do
   protected final def publish(e: LogEvent): Unit =
     try system.eventStream.publish(e)
-    catch { case NonFatal(_) ⇒ }
+    catch {
+      case NonFatal(_) ⇒
+    }
 
   protected final def clazz(o: AnyRef): Class[_] =
     if (o eq null) this.getClass else o.getClass

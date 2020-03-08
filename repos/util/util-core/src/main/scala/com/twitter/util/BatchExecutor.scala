@@ -37,7 +37,9 @@ private[util] class BatchExecutor[In, Out](
 
   class ScheduledFlush(after: Duration, timer: Timer) {
     @volatile var cancelled = false
-    val task = timer.schedule(after.fromNow) { flush() }
+    val task = timer.schedule(after.fromNow) {
+      flush()
+    }
 
     def cancel() {
       cancelled = true
@@ -124,7 +126,9 @@ private[util] class BatchExecutor[In, Out](
     buf.copyToBuffer(prevBatch)
     buf.clear()
 
-    scheduled foreach { _.cancel() }
+    scheduled foreach {
+      _.cancel()
+    }
     scheduled = scala.None
     currentBufThreshold = newBufThreshold // set the next batch's size
 
@@ -153,11 +157,15 @@ private[util] class BatchExecutor[In, Out](
         }
     }
 
-    val ins = uncancelled map { case (in, _) => in }
+    val ins = uncancelled map {
+      case (in, _) => in
+    }
     // N.B. intentionally not linking cancellation of these promises to the execution of the batch
     // because it seems that in most cases you would be canceling mostly uncanceled work for an
     // outlier.
-    val promises = uncancelled map { case (_, promise) => promise }
+    val promises = uncancelled map {
+      case (_, promise) => promise
+    }
 
     f(ins) respond {
       case Return(outs) =>
@@ -168,7 +176,9 @@ private[util] class BatchExecutor[In, Out](
 
       case Throw(e) =>
         val t = Throw(e)
-        promises foreach { _() = t }
+        promises foreach {
+          _() = t
+        }
     }
   }
 }

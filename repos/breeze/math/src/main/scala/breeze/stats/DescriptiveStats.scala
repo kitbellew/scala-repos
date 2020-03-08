@@ -200,7 +200,9 @@ trait DescriptiveStats {
     implicit def reduceSeq[@expand.args(Int, Long, Double, Float) T]
         : Impl[Seq[T], T] =
       new Impl[Seq[T], T] {
-        def apply(v: Seq[T]): T = { median(DenseVector(v.toArray)) }
+        def apply(v: Seq[T]): T = {
+          median(DenseVector(v.toArray))
+        }
       }
 
     @expand
@@ -428,7 +430,9 @@ trait DescriptiveStats {
           require(min(x) >= 0)
           val result = new DenseVector[Int](max(x) + 1)
           class BincountVisitor extends ValuesVisitor[Int] {
-            def visit(a: Int): Unit = { result(a) = result(a) + 1 }
+            def visit(a: Int): Unit = {
+              result(a) = result(a) + 1
+            }
             def zeros(numZero: Int, zeroValue: Int) = {
               result(0) = result(0) + numZero
             }
@@ -477,7 +481,9 @@ trait DescriptiveStats {
             val counter = Counter[Int, Int]()
 
             class BincountVisitor extends ValuesVisitor[Int] {
-              def visit(a: Int): Unit = { counter.update(a, counter(a) + 1) }
+              def visit(a: Int): Unit = {
+                counter.update(a, counter(a) + 1)
+              }
               def zeros(numZero: Int, zeroValue: Int) = {
                 counter.update(zeroValue, counter(zeroValue) + numZero)
               }

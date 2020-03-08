@@ -34,7 +34,9 @@ object ReceivePipeline {
   case object HandledCompletely extends Delegation
 
   private def withDefault(interceptor: Interceptor): Interceptor =
-    interceptor.orElse({ case msg ⇒ Inner(msg) })
+    interceptor.orElse({
+      case msg ⇒ Inner(msg)
+    })
 
   type Interceptor = PartialFunction[Any, Delegation]
 

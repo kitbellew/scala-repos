@@ -212,7 +212,9 @@ private[finagle] class ClockedDrainer(
 
   // GC
   // loop until the gc is acknowledged
-  private[lease] def gc(generation: Long, init: () => Duration) { // private[lease] for testing
+  private[lease] def gc(
+      generation: Long,
+      init: () => Duration) { // private[lease] for testing
     val elapsedGc = Stopwatch.start()
 
     forcedGc = 0

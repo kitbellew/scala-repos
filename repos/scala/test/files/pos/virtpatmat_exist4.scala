@@ -1,6 +1,8 @@
 trait Global {
   trait Tree
-  trait Symbol { def foo: Boolean }
+  trait Symbol {
+    def foo: Boolean
+  }
 }
 
 trait IMain { self: MemberHandlers =>
@@ -30,6 +32,8 @@ object Test2 {
   type JClass = java.lang.Class[_]
 
   def tvarString(bounds: List[AnyRef]) = {
-    bounds collect { case x: JClass => x }
+    bounds collect {
+      case x: JClass => x
+    }
   }
 }

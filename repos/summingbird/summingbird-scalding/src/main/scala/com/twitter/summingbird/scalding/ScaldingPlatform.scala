@@ -93,7 +93,9 @@ object Scalding {
     }
 
   def emptyFlowProducer[T]: FlowProducer[TypedPipe[T]] =
-    Reader({ implicit fdm: (FlowDef, Mode) => TypedPipe.empty })
+    Reader({ implicit fdm: (FlowDef, Mode) =>
+      TypedPipe.empty
+    })
 
   def getCommutativity(
       names: List[String],
@@ -151,11 +153,15 @@ object Scalding {
         case _ => bisectingMinify(mode, desired)(factory)
       }
       available
-        .flatMap { intersect(desired, _) }
+        .flatMap {
+          intersect(desired, _)
+        }
         .map(Right(_))
         .getOrElse(
           Left(List("available: " + available + ", desired: " + desired)))
-    } catch { case NonFatal(e) => toTry(e) }
+    } catch {
+      case NonFatal(e) => toTry(e)
+    }
 
   private def bisectingMinify(mode: Mode, desired: DateRange)(
       factory: (DateRange) => SSource): Option[DateRange] = {
@@ -281,7 +287,9 @@ object Scalding {
   def toDateRange(timeSpan: Interval[Timestamp]): Try[DateRange] =
     timeSpan
       .as[Option[DateRange]]
-      .map { Right(_) }
+      .map {
+        Right(_)
+      }
       .getOrElse(Left(List(
         "only finite time ranges are supported by scalding: " + timeSpan.toString)))
 
@@ -292,7 +300,11 @@ object Scalding {
   def limitTimes[T](
       range: Interval[Timestamp],
       in: FlowToPipe[T]): FlowToPipe[T] =
-    in.map { pipe => pipe.filter { case (time, _) => range(time) } }
+    in.map { pipe =>
+      pipe.filter {
+        case (time, _) => range(time)
+      }
+    }
 
   private[scalding] def joinFP[T, U](
       left: FlowToPipe[T],
@@ -303,14 +315,18 @@ object Scalding {
     } yield ((t, u))
 
   def merge[T](left: FlowToPipe[T], right: FlowToPipe[T]): FlowToPipe[T] =
-    joinFP(left, right).map { case (l, r) => (l ++ r) }
+    joinFP(left, right).map {
+      case (l, r) => (l ++ r)
+    }
 
   /**
     * This does the AlsoProducer logic of making `ensure` a part of the
     * flow, but not this output.
     */
   def also[L, R](ensure: FlowToPipe[L], result: FlowToPipe[R]): FlowToPipe[R] =
-    joinFP(ensure, result).map { case (_, r) => r }
+    joinFP(ensure, result).map {
+      case (_, r) => r
+    }
 
   /**
     * Memoize the inner reader
@@ -324,7 +340,11 @@ object Scalding {
     */
   def memoize[T](pf: PipeFactory[T]): PipeFactory[T] = {
     val memo = new Memo[T]
-    pf.map { rdr => Reader({ i => memo.getOrElseUpdate(i, rdr) }) }
+    pf.map { rdr =>
+      Reader({ i =>
+        memo.getOrElseUpdate(i, rdr)
+      })
+    }
   }
 
   private def getOrElse[T <: AnyRef: ClassTag](
@@ -386,7 +406,11 @@ object Scalding {
       */
     def forceNode[U](p: PipeFactory[U]): PipeFactory[U] =
       if (forceFanOut || fanOuts(producer))
-        p.map { flowP => flowP.map { _.fork } }
+        p.map { flowP =>
+          flowP.map {
+            _.fork
+          }
+        }
       else
         p
 
@@ -567,7 +591,9 @@ object Scalding {
                 flowP.map { typedPipe =>
                   typedPipe.flatMap {
                     case (time, (k, v)) =>
-                      op(v).map { u => (time, (k, u)) }
+                      op(v).map { u =>
+                        (time, (k, u))
+                      }
                   }
                 }
               },
@@ -608,7 +634,9 @@ object Scalding {
                 flowP.map { typedPipe =>
                   typedPipe.flatMap {
                     case (time, (k, v)) =>
-                      op(k).map { newK => (time, (newK, v)) }
+                      op(k).map { newK =>
+                        (time, (newK, v))
+                      }
                   }
                 }
               },
@@ -831,7 +859,9 @@ class Scalding(
       .+("summingbird.jobname" -> jobName)
       .+("summingbird.submitted.timestamp" -> System.currentTimeMillis.toString)
 
-    postConfig.toMap.foreach { case (k, v) => hConf.set(k, v) }
+    postConfig.toMap.foreach {
+      case (k, v) => hConf.set(k, v)
+    }
     postConfig
   }
 

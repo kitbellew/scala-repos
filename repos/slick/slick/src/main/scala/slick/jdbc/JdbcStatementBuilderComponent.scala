@@ -178,8 +178,9 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
       def containsSymbolInSubquery(s: TermSymbol) =
         c.children.iterator
           .drop(1)
-          .flatMap(_.collect { case c: Comprehension => c }.toSeq
-            .flatMap(_.findNode(_ == Ref(s))))
+          .flatMap(_.collect {
+            case c: Comprehension => c
+          }.toSeq.flatMap(_.findNode(_ == Ref(s))))
           .nonEmpty
       currentUniqueFrom = from match {
         case Seq((s, _: TableNode)) if !containsSymbolInSubquery(s) => Some(s)
@@ -261,7 +262,9 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
       building(FromPart) {
         from match {
           case Nil | Seq((_, Pure(ProductNode(ConstArray()), _))) =>
-            scalarFrom.foreach { s => b"\nfrom $s" }
+            scalarFrom.foreach { s =>
+              b"\nfrom $s"
+            }
           case from =>
             b"\nfrom "
             b.sep(from, ", ") {
@@ -299,7 +302,9 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
       building(OtherPart) {
         if (!order.isEmpty) {
           b"\norder by "
-          b.sep(order, ", ") { case (n, o) => buildOrdering(n, o) }
+          b.sep(order, ", ") {
+            case (n, o) => buildOrdering(n, o)
+          }
         }
       }
 
@@ -328,7 +333,9 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
         n: Node,
         alias: Option[TermSymbol],
         skipParens: Boolean = false): Unit = building(FromPart) {
-      def addAlias = alias foreach { s => b += ' ' += symbolName(s) }
+      def addAlias = alias foreach { s =>
+        b += ' ' += symbolName(s)
+      }
       n match {
         case t: TableNode =>
           b += quoteTableName(t)
@@ -397,7 +404,9 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
             if (supportsTuples) b"$left = $right"
             else {
               val cols = left.children.zip(right.children).force
-              b.sep(cols, " and ") { case (l, r) => expr(l); b += "="; expr(r) }
+              b.sep(cols, " and ") {
+                case (l, r) => expr(l); b += "="; expr(r)
+              }
             }
             b"\)"
           case RewriteBooleans.ToFakeBoolean(ch) =>
@@ -487,7 +496,9 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
         }
       case c: IfThenElse =>
         b"(case"
-        c.ifThenClauses.foreach { case (l, r) => b" when $l then $r" }
+        c.ifThenClauses.foreach {
+          case (l, r) => b" when $l then $r"
+        }
         c.elseClause match {
           case LiteralNode(null) =>
           case n                 => b" else $n"
@@ -509,7 +520,10 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
       case RowNumber(by) =>
         b"row_number() over(order by "
         if (by.isEmpty) b"(select 1)"
-        else b.sep(by, ", ") { case (n, o) => buildOrdering(n, o) }
+        else
+          b.sep(by, ", ") {
+            case (n, o) => buildOrdering(n, o)
+          }
         b")"
       case c: Comprehension =>
         b"\{"
@@ -556,7 +570,13 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
                   case Select(Ref(struct), _) if struct == sym => true;
                   case _                                       => false
                 } =>
-              (sym, from, where, ch.map { case Select(Ref(_), field) => field })
+              (
+                sym,
+                from,
+                where,
+                ch.map {
+                  case Select(Ref(_), field) => field
+                })
             case _ =>
               throw new SlickException(
                 "A query for an UPDATE statement must select table columns only -- Unsupported shape: " + select)
@@ -680,7 +700,9 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
   class UpsertBuilder(ins: Insert) extends InsertBuilder(ins) {
     protected lazy val (pkSyms, softSyms) =
       syms.toSeq.partition(_.options.contains(ColumnOption.PrimaryKey))
-    protected lazy val pkNames = pkSyms.map { fs => quoteIdentifier(fs.name) }
+    protected lazy val pkNames = pkSyms.map { fs =>
+      quoteIdentifier(fs.name)
+    }
     protected lazy val softNames = softSyms.map { fs =>
       quoteIdentifier(fs.name)
     }
@@ -935,10 +957,18 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
       val b =
         new StringBuilder append "create sequence " append quoteIdentifier(
           seq.name)
-      seq._increment.foreach { b append " increment " append _ }
-      seq._minValue.foreach { b append " minvalue " append _ }
-      seq._maxValue.foreach { b append " maxvalue " append _ }
-      seq._start.foreach { b append " start " append _ }
+      seq._increment.foreach {
+        b append " increment " append _
+      }
+      seq._minValue.foreach {
+        b append " minvalue " append _
+      }
+      seq._maxValue.foreach {
+        b append " maxvalue " append _
+      }
+      seq._start.foreach {
+        b append " start " append _
+      }
       if (seq._cycle) b append " cycle"
       DDL(b.toString, "drop sequence " + quoteIdentifier(seq.name))
     }

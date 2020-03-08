@@ -38,7 +38,9 @@ private[cache] class LazilyEvictingCache[K, V](
 
   override def get(k: K): Option[Future[V]] = {
     val result = super.get(k)
-    result foreach { fut => invalidateLazily(k, fut) }
+    result foreach { fut =>
+      invalidateLazily(k, fut)
+    }
     result
   }
 

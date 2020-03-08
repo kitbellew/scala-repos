@@ -45,7 +45,9 @@ class ScVariableDefinitionImpl private (
     Option(findChildByClassScala(classOf[ScExpression]))
   }
 
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
 
   def this(stub: ScVariableStub) = {
     this(stub, ScalaElementTypes.VARIABLE_DEFINITION, null)

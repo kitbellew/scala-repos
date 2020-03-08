@@ -282,7 +282,9 @@ trait RepositorySettingsControllerBase extends ControllerBase {
     */
   ajaxPost("/:owner/:repository/settings/hooks/test")(ownerOnly { repository =>
     def _headers(h: Array[org.apache.http.Header]): Array[Array[String]] =
-      h.map { h => Array(h.getName, h.getValue) }
+      h.map { h =>
+        Array(h.getName, h.getValue)
+      }
 
     using(Git.open(getRepositoryDir(repository.owner, repository.name))) {
       git =>
@@ -551,7 +553,9 @@ trait RepositorySettingsControllerBase extends ControllerBase {
             params.get("repository").flatMap { repositoryName =>
               getRepositoryNamesOfUser(x.userName)
                 .find(_ == repositoryName)
-                .map { _ => "User already has same repository." }
+                .map { _ =>
+                  "User already has same repository."
+                }
             }
           }
       }

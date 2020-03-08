@@ -117,7 +117,9 @@ trait Helpers {
       val status = if (ok) Prop.Proof else Prop.False
       val labels =
         if (description != "") Set(description) else Set.empty[String]
-      Prop { new Prop.Result(status, Nil, Set.empty, labels) }
+      Prop {
+        new Prop.Result(status, Nil, Set.empty, labels)
+      }
     }
     try {
       compile(parse(s"""

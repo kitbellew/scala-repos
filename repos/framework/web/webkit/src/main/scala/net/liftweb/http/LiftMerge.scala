@@ -55,7 +55,9 @@ private[http] trait LiftMerge {
     val allJs =
       LiftRules.javaScriptSettings
         .vend()
-        .map { settingsFn => LiftJavaScript.initCmd(settingsFn(this)) }
+        .map { settingsFn =>
+          LiftJavaScript.initCmd(settingsFn(this))
+        }
         .toList ++
         S.jsToAppend() ++
         List(eventJs)
@@ -341,7 +343,11 @@ private[http] trait LiftMerge {
             val errors: NodeSeq = xs.map(e =>
               <div style="border: red solid 2px">XHTML Validation error:{
                 e.msg
-              }at line{e.line + 1}and column{e.col}</div>)
+              }at line{
+                e.line + 1
+              }and column{
+                e.col
+              }</div>)
 
             val rule = new RewriteRule {
               override def transform(n: Node) = n match {

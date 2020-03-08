@@ -28,11 +28,19 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
     "be lazy in its argument evaluation, independently of application style" in {
       var i = 0
       Put() ~> {
-        get { complete { i += 1; "get" } } ~
+        get {
+          complete {
+            i += 1; "get"
+          }
+        } ~
           put {
-            complete { i += 1; "put" }
+            complete {
+              i += 1; "put"
+            }
           } ~
-          (post & complete { i += 1; "post" })
+          (post & complete {
+            i += 1; "post"
+          })
       } ~> check {
         responseAs[String] shouldEqual "put"
         i shouldEqual 1
@@ -43,7 +51,9 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
         Get() ~> {
           get & complete(
             Promise.successful(HttpResponse(entity = "yup")).future)
-        } ~> check { responseAs[String] shouldEqual "yup" }
+        } ~> check {
+          responseAs[String] shouldEqual "yup"
+        }
       }
       "for successful futures and marshalling" in {
         Get() ~> complete(Promise.successful("yes").future) ~> check {
@@ -163,7 +173,12 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
     val jsonMarshaller: ToEntityMarshaller[Data] = jsonFormat2(Data.apply)
 
     val xmlMarshaller: ToEntityMarshaller[Data] = Marshaller.combined {
-      (data: Data) ⇒ <data><name>{data.name}</name><age>{data.age}</age></data>
+      (data: Data) ⇒
+        <data><name>{
+          data.name
+        }</name><age>{
+          data.age
+        }</age></data>
     }
 
     implicit val dataMarshaller: ToResponseMarshaller[Data] =

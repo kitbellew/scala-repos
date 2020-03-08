@@ -77,7 +77,9 @@ object AsyncMeter {
         if (last == 0) seqWithoutLast else seqWithoutLast :+ meter.await(last)
       val result = Future.join(seq)
       result.onFailure { exc =>
-        seq.foreach { f: Future[Unit] => f.raise(exc) }
+        seq.foreach { f: Future[Unit] =>
+          f.raise(exc)
+        }
       }
       result
     } else meter.await(permits)
@@ -206,7 +208,9 @@ class AsyncMeter private[concurrent] (
       p.setInterruptHandler {
         case t: Throwable =>
           // must synchronize on removals-see explanation by declaration of queue
-          val rem = synchronized { q.remove(tup) }
+          val rem = synchronized {
+            q.remove(tup)
+          }
           if (rem) {
             val e =
               new CancellationException("Request for permits was cancelled.")

@@ -72,8 +72,12 @@ object Test extends App {
       println(c9.copy(x = -42)(99)()()("flae"))
     }
 
-    class KA { override def toString = "ka" }
-    class KB extends KA { override def toString = "kb" }
+    class KA {
+      override def toString = "ka"
+    }
+    class KB extends KA {
+      override def toString = "kb"
+    }
     val c10 = C10(10)(3)(19)
     println(c10.copy()(298)(27))
     println(c10.copy("elkn")("en")("emn"))

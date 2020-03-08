@@ -71,8 +71,12 @@ sealed class TreeMap[A, B] private (tree: RB.Tree[A, B])(
   def rangeImpl(from: Option[A], until: Option[A]): TreeMap[A, B] =
     new TreeMapView(from, until)
 
-  def -=(key: A): this.type = { RB.delete(tree, key); this }
-  def +=(kv: (A, B)): this.type = { RB.insert(tree, kv._1, kv._2); this }
+  def -=(key: A): this.type = {
+    RB.delete(tree, key); this
+  }
+  def +=(kv: (A, B)): this.type = {
+    RB.insert(tree, kv._1, kv._2); this
+  }
 
   def get(key: A) = RB.get(tree, key)
 
@@ -94,7 +98,9 @@ sealed class TreeMap[A, B] private (tree: RB.Tree[A, B])(
   override def valuesIterator = RB.valuesIterator(tree)
 
   override def foreach[U](f: ((A, B)) => U): Unit = RB.foreach(tree, f)
-  override def transform(f: (A, B) => B) = { RB.transform(tree, f); this }
+  override def transform(f: (A, B) => B) = {
+    RB.transform(tree, f); this
+  }
   override def clear(): Unit = RB.clear(tree)
 
   override def stringPrefix = "TreeMap"
@@ -189,7 +195,9 @@ sealed class TreeMap[A, B] private (tree: RB.Tree[A, B])(
     // https://github.com/scala/scala/pull/4608#discussion_r34307985 for a discussion about this.
     override def foreach[U](f: ((A, B)) => U): Unit = iterator.foreach(f)
     override def transform(f: (A, B) => B) = {
-      iterator.foreach { case (key, value) => update(key, f(key, value)) }
+      iterator.foreach {
+        case (key, value) => update(key, f(key, value))
+      }
       this
     }
 

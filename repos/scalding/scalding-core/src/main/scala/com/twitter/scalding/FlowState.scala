@@ -62,10 +62,14 @@ object FlowStateMap {
     }
   }
   def get(fd: FlowDef): Option[FlowState] =
-    flowMap.synchronized { Option(flowMap.get(fd)) }
+    flowMap.synchronized {
+      Option(flowMap.get(fd))
+    }
 
   def clear(fd: FlowDef): Unit =
-    flowMap.synchronized { flowMap.remove(fd) }
+    flowMap.synchronized {
+      flowMap.remove(fd)
+    }
 
   def validateSources(flowDef: FlowDef, mode: Mode): Unit =
     /*

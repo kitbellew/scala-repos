@@ -3,6 +3,8 @@ trait A {
     protected[this] def f(t: T) {}
   }
   trait D[T] extends C[T] {
-    def g(t: T) { f(t) }
+    def g(t: T) {
+      f(t)
+    }
   }
 }

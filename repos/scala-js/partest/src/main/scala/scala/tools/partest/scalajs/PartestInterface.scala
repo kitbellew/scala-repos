@@ -131,7 +131,9 @@ case class PartestTask(taskDef: TaskDef, args: Array[String]) extends Task {
     Array()
   }
 
-  type SBTRunner = { def execute(kinds: Array[String]): String }
+  type SBTRunner = {
+    def execute(kinds: Array[String]): String
+  }
 
   // use reflection to instantiate scala.tools.partest.scalajs.ScalaJSSBTRunner,
   // casting to the structural type SBTRunner above so that method calls on the result will be invoked reflectively as well

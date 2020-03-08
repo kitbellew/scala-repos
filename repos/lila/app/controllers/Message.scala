@@ -22,12 +22,16 @@ object Message extends LilaController {
   def inbox(page: Int) = Auth { implicit ctx => me =>
     NotForKids {
       api updateUser me
-      api.inbox(me, page) map { html.message.inbox(me, _) }
+      api.inbox(me, page) map {
+        html.message.inbox(me, _)
+      }
     }
   }
 
   def preview = Auth { implicit ctx => me =>
-    api.preview(me.id) map { html.message.preview(me, _) }
+    api.preview(me.id) map {
+      html.message.preview(me, _)
+    }
   }
 
   def thread(id: String) = Auth { implicit ctx => implicit me =>
@@ -67,7 +71,9 @@ object Message extends LilaController {
 
   def form = Auth { implicit ctx => implicit me =>
     NotForKids {
-      renderForm(me, get("title"), identity) map { Ok(_) }
+      renderForm(me, get("title"), identity) map {
+        Ok(_)
+      }
     }
   }
 
@@ -78,7 +84,10 @@ object Message extends LilaController {
         .thread(me)
         .bindFromRequest
         .fold(
-          err => renderForm(me, none, _ => err) map { BadRequest(_) },
+          err =>
+            renderForm(me, none, _ => err) map {
+              BadRequest(_)
+            },
           data =>
             api.makeThread(data, me) map { thread =>
               Redirect(routes.Message.thread(thread.id))

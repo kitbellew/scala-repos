@@ -19,7 +19,9 @@ import sbt.internal.util.{~>, AList, AttributeKey, Settings, SourcePosition}
 import language.experimental.macros
 import reflect.internal.annotations.compileTimeOnly
 
-sealed trait Scoped { def scope: Scope; val key: AttributeKey[_] }
+sealed trait Scoped {
+  def scope: Scope; val key: AttributeKey[_]
+}
 
 /** A common type for SettingKey and TaskKey so that both can be used as inputs to tasks.*/
 sealed trait ScopedTaskable[T] extends Scoped {
@@ -130,7 +132,11 @@ sealed abstract class TaskKey[T]
 
   private[this] def make[S](other: Initialize[Task[S]], source: SourcePosition)(
       f: (T, S) => T): Setting[Task[T]] =
-    set((this, other) { (a, b) => (a, b) map f.tupled }, source)
+    set(
+      (this, other) { (a, b) =>
+        (a, b) map f.tupled
+      },
+      source)
 }
 
 /**
@@ -157,7 +163,11 @@ sealed trait InputKey[T]
   final def transform(
       f: T => T,
       source: SourcePosition): Setting[InputTask[T]] =
-    set(scopedKey(_ mapTask { _ map f }), source)
+    set(
+      scopedKey(_ mapTask {
+        _ map f
+      }),
+      source)
 }
 
 /** Methods and types related to constructing settings, including keys, scopes, and initializations. */
@@ -200,11 +210,17 @@ object Scoped {
   }
 
   def scopedSetting[T](s: Scope, k: AttributeKey[T]): SettingKey[T] =
-    new SettingKey[T] { val scope = s; val key = k }
+    new SettingKey[T] {
+      val scope = s; val key = k
+    }
   def scopedInput[T](s: Scope, k: AttributeKey[InputTask[T]]): InputKey[T] =
-    new InputKey[T] { val scope = s; val key = k }
+    new InputKey[T] {
+      val scope = s; val key = k
+    }
   def scopedTask[T](s: Scope, k: AttributeKey[Task[T]]): TaskKey[T] =
-    new TaskKey[T] { val scope = s; val key = k }
+    new TaskKey[T] {
+      val scope = s; val key = k
+    }
 
   /**
     * Mixin trait for adding convenience vocabulary associated with applying a setting to a configuration item.
@@ -291,12 +307,18 @@ object Scoped {
       settings.get(scope, key)
 
     def ? : Initialize[Task[Option[S]]] = Def.optional(scopedKey) {
-      case None => mktask { None }; case Some(t) => t map some.fn
+      case None =>
+        mktask {
+          None
+        }; case Some(t) => t map some.fn
     }
     def ??[T >: S](or: => T): Initialize[Task[T]] =
       Def.optional(scopedKey)(_ getOrElse mktask(or))
     def or[T >: S](i: Initialize[Task[T]]): Initialize[Task[T]] =
-      (this.? zipWith i)((x, y) => (x, y) map { case (a, b) => a getOrElse b })
+      (this.? zipWith i)((x, y) =>
+        (x, y) map {
+          case (a, b) => a getOrElse b
+        })
   }
   final class RichInitializeTask[S](i: Initialize[Task[S]])
       extends RichInitTaskBase[S, Task] {
@@ -373,7 +395,9 @@ object Scoped {
       mapR(f compose failM)
   }
 
-  type AnyInitTask = Initialize[Task[T]] forSome { type T }
+  type AnyInitTask = Initialize[Task[T]] forSome {
+    type T
+  }
 
   implicit def richTaskSeq[T](in: Seq[Initialize[Task[T]]]): RichTaskSeq[T] =
     new RichTaskSeq(in)
@@ -395,20 +419,28 @@ object Scoped {
 
   final class RichFileSetting(s: SettingKey[File]) extends RichFileBase {
     @deprecated("Use a standard setting definition.", "0.13.0")
-    def /(c: String): Initialize[File] = s { _ / c }
+    def /(c: String): Initialize[File] = s {
+      _ / c
+    }
     protected[this] def map0(f: PathFinder => PathFinder) =
       s(file => finder(f)(file :: Nil))
   }
   final class RichFilesSetting(s: SettingKey[Seq[File]]) extends RichFileBase {
     @deprecated("Use a standard setting definition.", "0.13.0")
-    def /(s: String): Initialize[Seq[File]] = map0 { _ / s }
+    def /(s: String): Initialize[Seq[File]] = map0 {
+      _ / s
+    }
     protected[this] def map0(f: PathFinder => PathFinder) = s(finder(f))
   }
   sealed abstract class RichFileBase {
     @deprecated("Use a standard setting definition.", "0.13.0")
-    def *(filter: FileFilter): Initialize[Seq[File]] = map0 { _ * filter }
+    def *(filter: FileFilter): Initialize[Seq[File]] = map0 {
+      _ * filter
+    }
     @deprecated("Use a standard setting definition.", "0.13.0")
-    def **(filter: FileFilter): Initialize[Seq[File]] = map0 { _ ** filter }
+    def **(filter: FileFilter): Initialize[Seq[File]] = map0 {
+      _ ** filter
+    }
     protected[this] def map0(f: PathFinder => PathFinder): Initialize[Seq[File]]
     protected[this] def finder(
         f: PathFinder => PathFinder): Seq[File] => Seq[File] =
@@ -521,8 +553,11 @@ object Scoped {
         def apply[T](in: ScopedTaskable[T]): App[T] = in.toTask
       })
     private[this] def onTasks[T](f: K[Task] => Task[T]): App[T] =
-      Def.app[({ type l[L[x]] = K[(L ∙ Task)#l] })#l, Task[T]](inputs)(f)(
-        AList.asplit[K, Task](a))
+      Def.app[
+        ({
+          type l[L[x]] = K[(L ∙ Task)#l]
+        })#l,
+        Task[T]](inputs)(f)(AList.asplit[K, Task](a))
 
     def flatMap[T](f: Fun[Id, Task[T]]): App[T] = onTasks(_.flatMap(convert(f)))
     def flatMapR[T](f: Fun[Result, Task[T]]): App[T] =
@@ -999,7 +1034,9 @@ object InputKey {
         rank))
 
   def apply[T](akey: AttributeKey[InputTask[T]]): InputKey[T] =
-    new InputKey[T] { val key = akey; def scope = Scope.ThisScope }
+    new InputKey[T] {
+      val key = akey; def scope = Scope.ThisScope
+    }
 }
 
 /** Constructs TaskKeys, which are associated with tasks to define a setting.*/
@@ -1032,7 +1069,9 @@ object TaskKey {
         rank))
 
   def apply[T](akey: AttributeKey[Task[T]]): TaskKey[T] =
-    new TaskKey[T] { val key = akey; def scope = Scope.ThisScope }
+    new TaskKey[T] {
+      val key = akey; def scope = Scope.ThisScope
+    }
 
   def local[T: Manifest]: TaskKey[T] = apply[T](AttributeKey.local[Task[T]])
 }
@@ -1062,7 +1101,9 @@ object SettingKey {
       AttributeKey[T](label, description, extendScoped(extend1, extendN), rank))
 
   def apply[T](akey: AttributeKey[T]): SettingKey[T] =
-    new SettingKey[T] { val key = akey; def scope = Scope.ThisScope }
+    new SettingKey[T] {
+      val key = akey; def scope = Scope.ThisScope
+    }
 
   def local[T: Manifest]: SettingKey[T] = apply[T](AttributeKey.local[T])
 }

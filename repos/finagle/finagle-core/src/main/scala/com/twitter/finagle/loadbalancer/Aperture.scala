@@ -105,7 +105,9 @@ private trait Aperture[Req, Rep] { self: Balancer[Req, Rep] =>
     node.status == Status.Open
   }
 
-  private[this] val gauge = statsReceiver.addGauge("aperture") { aperture }
+  private[this] val gauge = statsReceiver.addGauge("aperture") {
+    aperture
+  }
 
   protected class Distributor(val vector: Vector[Node], initAperture: Int)
       extends DistributorT[Node] {

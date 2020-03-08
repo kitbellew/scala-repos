@@ -27,5 +27,7 @@ object Test extends App {
   })
 
   // Prints '(x, x)'
-  "x" match { case Foo997(a) => println(a) }
+  "x" match {
+    case Foo997(a) => println(a)
+  }
 }

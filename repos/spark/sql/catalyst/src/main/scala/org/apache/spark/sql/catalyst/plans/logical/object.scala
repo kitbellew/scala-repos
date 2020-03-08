@@ -44,7 +44,11 @@ trait ObjectOperator extends LogicalPlan {
     * is the same whether or not the operator is output serialized data.
     */
   def outputObject: NamedExpression =
-    Alias(serializer.head.collect { case b: BoundReference => b }.head, "obj")()
+    Alias(
+      serializer.head.collect {
+        case b: BoundReference => b
+      }.head,
+      "obj")()
 
   /**
     * Returns a copy of this operator that will produce an object instead of an encoded row.

@@ -48,12 +48,17 @@ class ReflectiveDynamicAccess(val classLoader: ClassLoader)
   override def createInstanceFor[T: ClassTag](
       fqcn: String,
       args: immutable.Seq[(Class[_], AnyRef)]): Try[T] =
-    getClassFor(fqcn) flatMap { c ⇒ createInstanceFor(c, args) }
+    getClassFor(fqcn) flatMap { c ⇒
+      createInstanceFor(c, args)
+    }
 
   override def getObjectFor[T: ClassTag](fqcn: String): Try[T] = {
     val classTry =
       if (fqcn.endsWith("$")) getClassFor(fqcn)
-      else getClassFor(fqcn + "$") recoverWith { case _ ⇒ getClassFor(fqcn) }
+      else
+        getClassFor(fqcn + "$") recoverWith {
+          case _ ⇒ getClassFor(fqcn)
+        }
     classTry flatMap { c ⇒
       Try {
         val module = c.getDeclaredField("MODULE$")

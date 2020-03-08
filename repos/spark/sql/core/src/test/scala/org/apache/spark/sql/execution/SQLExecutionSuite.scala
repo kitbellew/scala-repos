@@ -56,7 +56,12 @@ class SQLExecutionSuite extends SparkFunSuite {
     try {
       // Should not throw IllegalArgumentException
       (1 to 100).par.foreach { _ =>
-        sc.parallelize(1 to 5).map { i => (i, i) }.toDF("a", "b").count()
+        sc.parallelize(1 to 5)
+          .map { i =>
+            (i, i)
+          }
+          .toDF("a", "b")
+          .count()
       }
     } finally {
       sc.stop()
@@ -80,7 +85,12 @@ class SQLExecutionSuite extends SparkFunSuite {
     val child = new Thread {
       override def run(): Unit = {
         try {
-          sc.parallelize(1 to 100).map { i => (i, i) }.toDF("a", "b").collect()
+          sc.parallelize(1 to 100)
+            .map { i =>
+              (i, i)
+            }
+            .toDF("a", "b")
+            .collect()
         } catch {
           case t: Throwable =>
             throwable = Some(t)

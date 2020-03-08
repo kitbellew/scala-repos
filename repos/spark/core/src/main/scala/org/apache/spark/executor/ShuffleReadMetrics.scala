@@ -70,7 +70,9 @@ class ShuffleReadMetrics private (
     this(
       InternalAccumulator
         .createShuffleReadAccums()
-        .map { a => (a.name.get, a) }
+        .map { a =>
+          (a.name.get, a)
+        }
         .toMap)
   }
 

@@ -13,14 +13,20 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
 
   /** An ADT to represent the results of symbol name lookups.
     */
-  sealed trait NameLookup { def symbol: Symbol; def isSuccess = false }
+  sealed trait NameLookup {
+    def symbol: Symbol; def isSuccess = false
+  }
   case class LookupSucceeded(qualifier: Tree, symbol: Symbol)
-      extends NameLookup { override def isSuccess = true }
+      extends NameLookup {
+    override def isSuccess = true
+  }
   case class LookupAmbiguous(msg: String) extends NameLookup {
     def symbol = NoSymbol
   }
   case class LookupInaccessible(symbol: Symbol, msg: String) extends NameLookup
-  case object LookupNotFound extends NameLookup { def symbol = NoSymbol }
+  case object LookupNotFound extends NameLookup {
+    def symbol = NoSymbol
+  }
 
   class ScopeEntry(val sym: Symbol, val owner: Scope) {
 
@@ -326,9 +332,13 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
     def lookupNextEntry(entry: ScopeEntry): ScopeEntry = {
       var e = entry
       if (hashtable ne null)
-        do { e = e.tail } while ((e ne null) && e.sym.name != entry.sym.name)
+        do {
+          e = e.tail
+        } while ((e ne null) && e.sym.name != entry.sym.name)
       else
-        do { e = e.next } while ((e ne null) && e.sym.name != entry.sym.name)
+        do {
+          e = e.next
+        } while ((e ne null) && e.sym.name != entry.sym.name)
       e
     }
 

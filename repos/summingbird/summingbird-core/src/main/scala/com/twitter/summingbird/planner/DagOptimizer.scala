@@ -217,7 +217,9 @@ trait DagOptimizer[P <: Platform[P]] {
     */
   def expressionDag[T](p: Producer[P, T]): (ExpressionDag[Prod], Id[T]) = {
     val prodToLit = new GenFunction[Prod, LitProd] {
-      def apply[T] = { p => toLiteral(p) }
+      def apply[T] = { p =>
+        toLiteral(p)
+      }
     }
     ExpressionDag[T, Prod](p, prodToLit)
   }
@@ -300,7 +302,9 @@ trait DagOptimizer[P <: Platform[P]] {
       case KeyFlatMappedProducer(in, fn) =>
         // we know that (K, V) <: T due to the case match, but scala can't see it
         def cast[K, V](p: Prod[(K, V)]): Prod[T] = p.asInstanceOf[Prod[T]]
-        cast(in.flatMap { case (k, v) => fn(k).map((_, v)) })
+        cast(in.flatMap {
+          case (k, v) => fn(k).map((_, v))
+        })
     }
   }
 
@@ -313,7 +317,9 @@ trait DagOptimizer[P <: Platform[P]] {
       case ValueFlatMappedProducer(in, fn) =>
         // we know that (K, V) <: T due to the case match, but scala can't see it
         def cast[K, V](p: Prod[(K, V)]): Prod[T] = p.asInstanceOf[Prod[T]]
-        cast(in.flatMap { case (k, v) => fn(v).map((k, _)) })
+        cast(in.flatMap {
+          case (k, v) => fn(v).map((k, _))
+        })
     }
   }
 

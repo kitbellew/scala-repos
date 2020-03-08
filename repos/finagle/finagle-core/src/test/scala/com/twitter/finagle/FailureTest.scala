@@ -99,7 +99,9 @@ class FailureTest
     val service = (new Failure.ProcessFailures) andThen echo
 
     def assertFail(exc: Throwable, expect: Throwable) = {
-      val exc1 = intercept[Throwable] { Await.result(service(exc)) }
+      val exc1 = intercept[Throwable] {
+        Await.result(service(exc))
+      }
       assert(exc1 == expect)
     }
 

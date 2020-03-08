@@ -31,7 +31,9 @@ object Boilerplate {
     def block(args: Any*): String = {
       val interpolated = sc.standardInterpolator(treatEscapes, args)
       val rawLines = interpolated split '\n'
-      val trimmedLines = rawLines map { _ dropWhile (_.isWhitespace) }
+      val trimmedLines = rawLines map {
+        _ dropWhile (_.isWhitespace)
+      }
       trimmedLines mkString "\n"
     }
   }
@@ -83,7 +85,9 @@ object Boilerplate {
   class TemplateVals(val arity: Int) {
     val synTypes = (0 until arity) map (n => (n + 'A').toChar)
     val synVals = (0 until arity) map (n => (n + 'a').toChar)
-    val synTypedVals = (synVals zip synTypes) map { case (v, t) => v + ":" + t }
+    val synTypedVals = (synVals zip synTypes) map {
+      case (v, t) => v + ":" + t
+    }
 
     val `A..N` = synTypes.mkString(", ")
     val `A..N,Res` = (synTypes :+ "Res") mkString ", "

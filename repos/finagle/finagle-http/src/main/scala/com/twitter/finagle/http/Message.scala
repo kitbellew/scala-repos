@@ -55,10 +55,14 @@ abstract class Message extends HttpMessageProxy {
 
   // XXX should we may be using the Shared variants here?
   def content: Buf = ChannelBufferBuf.Owned(getContent())
-  def content_=(content: Buf) { setContent(BufChannelBuffer(content)) }
+  def content_=(content: Buf) {
+    setContent(BufChannelBuffer(content))
+  }
 
   def version: Version = from(getProtocolVersion())
-  def version_=(version: Version) { setProtocolVersion(from(version)) }
+  def version_=(version: Version) {
+    setProtocolVersion(from(version))
+  }
 
   lazy val headerMap: HeaderMap = new MessageHeaderMap(this)
 
@@ -90,10 +94,14 @@ abstract class Message extends HttpMessageProxy {
     }
 
   /** Set Accept header */
-  def accept_=(value: String) { headers.set(Fields.Accept, value) }
+  def accept_=(value: String) {
+    headers.set(Fields.Accept, value)
+  }
 
   /** Set Accept header with list of values */
-  def accept_=(values: Iterable[String]) { accept = values.mkString(", ") }
+  def accept_=(values: Iterable[String]) {
+    accept = values.mkString(", ")
+  }
 
   /** Accept header media types (normalized, no parameters) */
   def acceptMediaTypes: Seq[String] =
@@ -107,7 +115,9 @@ abstract class Message extends HttpMessageProxy {
   def allow: Option[String] = Option(headers.get(Fields.Allow))
 
   /** Set Authorization header */
-  def allow_=(value: String) { headers.set(Fields.Allow, value) }
+  def allow_=(value: String) {
+    headers.set(Fields.Allow, value)
+  }
 
   /** Set Authorization header */
   def allow_=(values: Iterable[Method]) {
@@ -126,7 +136,9 @@ abstract class Message extends HttpMessageProxy {
   def cacheControl: Option[String] = Option(headers.get(Fields.CacheControl))
 
   /** Set Cache-Control header */
-  def cacheControl_=(value: String) { headers.set(Fields.CacheControl, value) }
+  def cacheControl_=(value: String) {
+    headers.set(Fields.CacheControl, value)
+  }
 
   /** Set Cache-Control header with a max-age (and must-revalidate). */
   def cacheControl_=(maxAge: Duration) {
@@ -159,7 +171,9 @@ abstract class Message extends HttpMessageProxy {
     }
 
     val builder = new StringBuilder(parts(0))
-    if (!(parts.exists { _.trim.startsWith("charset=") })) {
+    if (!(parts.exists {
+          _.trim.startsWith("charset=")
+        })) {
       // No charset parameter exist, add charset after media type
       builder.append(";charset=")
       builder.append(value)
@@ -186,7 +200,9 @@ abstract class Message extends HttpMessageProxy {
 
   /** Get Content-Length header.  Use length to get the length of actual content. */
   def contentLength: Option[Long] =
-    Option(headers.get(Fields.ContentLength)).map { _.toLong }
+    Option(headers.get(Fields.ContentLength)).map {
+      _.toLong
+    }
 
   /** Set Content-Length header.  Normally, this is automatically set by the
     * Codec, but this method allows you to override that. */
@@ -198,7 +214,9 @@ abstract class Message extends HttpMessageProxy {
   def contentType: Option[String] = Option(headers.get(Fields.ContentType))
 
   /** Set Content-Type header */
-  def contentType_=(value: String) { headers.set(Fields.ContentType, value) }
+  def contentType_=(value: String) {
+    headers.set(Fields.ContentType, value)
+  }
 
   /** Set Content-Type header by media-type and charset */
   def setContentType(mediaType: String, charset: String = "utf-8") {
@@ -214,31 +232,43 @@ abstract class Message extends HttpMessageProxy {
   def date: Option[String] = Option(headers.get(Fields.Date))
 
   /** Set Date header */
-  def date_=(value: String) { headers.set(Fields.Date, value) }
+  def date_=(value: String) {
+    headers.set(Fields.Date, value)
+  }
 
   /** Set Date header by Date */
-  def date_=(value: Date) { date = Message.httpDateFormat(value) }
+  def date_=(value: Date) {
+    date = Message.httpDateFormat(value)
+  }
 
   /** Get Expires header */
   def expires: Option[String] = Option(headers.get(Fields.Expires))
 
   /** Set Expires header */
-  def expires_=(value: String) { headers.set(Fields.Expires, value) }
+  def expires_=(value: String) {
+    headers.set(Fields.Expires, value)
+  }
 
   /** Set Expires header by Date */
-  def expires_=(value: Date) { expires = Message.httpDateFormat(value) }
+  def expires_=(value: Date) {
+    expires = Message.httpDateFormat(value)
+  }
 
   /** Get Host header */
   def host: Option[String] = Option(headers.get(Fields.Host))
 
   /** Set Host header */
-  def host_=(value: String) { headers.set(Fields.Host, value) }
+  def host_=(value: String) {
+    headers.set(Fields.Host, value)
+  }
 
   /** Get Last-Modified header */
   def lastModified: Option[String] = Option(headers.get(Fields.LastModified))
 
   /** Set Last-Modified header */
-  def lastModified_=(value: String) { headers.set(Fields.LastModified, value) }
+  def lastModified_=(value: String) {
+    headers.set(Fields.LastModified, value)
+  }
 
   /** Set Last-Modified header by Date */
   def lastModified_=(value: Date) {
@@ -249,7 +279,9 @@ abstract class Message extends HttpMessageProxy {
   def location: Option[String] = Option(headers.get(Fields.Location))
 
   /** Set Location header */
-  def location_=(value: String) { headers.set(Fields.Location, value) }
+  def location_=(value: String) {
+    headers.set(Fields.Location, value)
+  }
 
   /** Get media-type from Content-Type header */
   def mediaType: Option[String] =
@@ -288,28 +320,38 @@ abstract class Message extends HttpMessageProxy {
   def referer: Option[String] = Option(headers.get(Fields.Referer))
 
   /** Set Referer [sic] header */
-  def referer_=(value: String) { headers.set(Fields.Referer, value) }
+  def referer_=(value: String) {
+    headers.set(Fields.Referer, value)
+  }
 
   /** Get Retry-After header */
   def retryAfter: Option[String] = Option(headers.get(Fields.RetryAfter))
 
   /** Set Retry-After header */
-  def retryAfter_=(value: String) { headers.set(Fields.RetryAfter, value) }
+  def retryAfter_=(value: String) {
+    headers.set(Fields.RetryAfter, value)
+  }
 
   /** Set Retry-After header by seconds */
-  def retryAfter_=(value: Long) { retryAfter = value.toString }
+  def retryAfter_=(value: Long) {
+    retryAfter = value.toString
+  }
 
   /** Get Server header */
   def server: Option[String] = Option(headers.get(Fields.Server))
 
   /** Set Server header */
-  def server_=(value: String) { headers.set(Fields.Server, value) }
+  def server_=(value: String) {
+    headers.set(Fields.Server, value)
+  }
 
   /** Get User-Agent header */
   def userAgent: Option[String] = Option(headers.get(Fields.UserAgent))
 
   /** Set User-Agent header */
-  def userAgent_=(value: String) { headers.set(Fields.UserAgent, value) }
+  def userAgent_=(value: String) {
+    headers.set(Fields.UserAgent, value)
+  }
 
   /** Get WWW-Authenticate header */
   def wwwAuthenticate: Option[String] =
@@ -324,7 +366,9 @@ abstract class Message extends HttpMessageProxy {
   def xForwardedFor: Option[String] = Option(headers.get("X-Forwarded-For"))
 
   /** Set X-Forwarded-For header */
-  def xForwardedFor_=(value: String) { headers.set("X-Forwarded-For", value) }
+  def xForwardedFor_=(value: String) {
+    headers.set("X-Forwarded-For", value)
+  }
 
   /**
     * Check if X-Requested-With contains XMLHttpRequest, usually signalling a
@@ -362,7 +406,9 @@ abstract class Message extends HttpMessageProxy {
     else
       setContent(ChannelBuffers.EMPTY_BUFFER)
   }
-  def setContentString(value: String) { contentString = value }
+  def setContentString(value: String) {
+    contentString = value
+  }
 
   /**
     * Use content as InputStream.  The underlying channel buffer's reader

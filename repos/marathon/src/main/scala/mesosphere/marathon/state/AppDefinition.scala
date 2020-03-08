@@ -136,7 +136,9 @@ case class AppDefinition(
       .addAllStoreUrls(storeUrls.asJava)
       .addAllLabels(appLabels.asJava)
 
-    ipAddress.foreach { ip => builder.setIpAddress(ip.toProto) }
+    ipAddress.foreach { ip =>
+      builder.setIpAddress(ip.toProto)
+    }
 
     container.foreach { c =>
       builder.setContainer(ContainerSerializer.toProto(c))

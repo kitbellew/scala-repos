@@ -5,7 +5,9 @@ import scala.tools.reflect.ToolBox
 
 object Test extends App {
   reify {
-    class C { override def toString() = "C" }
+    class C {
+      override def toString() = "C"
+    }
     val ret = List((new C, new C))
     ret.asInstanceOf[List[_]]
   };

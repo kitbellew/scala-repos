@@ -263,13 +263,17 @@ object ScroogeGenerators {
       aListMap <- Gen
         .listOf(arb[(List[String], TestStruct)])
         .map(_.toMap
-          .map { case (k, v) => k.to[collection.Seq] -> v }
+          .map {
+            case (k, v) => k.to[collection.Seq] -> v
+          }
           .asInstanceOf[collection.Map[collection.Seq[String], TestStruct]])
       aSetMap <- Gen
         .listOf(arb[(Set[String], Set[String])])
         .map(
           _.toMap
-            .map { case (k, v) => k.to[collection.Set] -> v.to[collection.Set] }
+            .map {
+              case (k, v) => k.to[collection.Set] -> v.to[collection.Set]
+            }
             .asInstanceOf[collection.Map[
               collection.Set[String],
               collection.Set[String]]])

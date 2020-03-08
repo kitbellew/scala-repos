@@ -142,7 +142,9 @@ class DynamicTest {
 
     val y = obj(
       inner = obj(name = "inner obj"),
-      fun = { () => 42 }
+      fun = { () =>
+        42
+      }
     )
     val y_inner_name = y.inner.name
     assertEquals("inner obj", y_inner_name)
@@ -179,7 +181,9 @@ class DynamicTest {
     assertEquals(10, y_hello2)
 
     var count = 0
-    val z = obj({ count += 1; ("foo", "bar") })
+    val z = obj({
+      count += 1; ("foo", "bar")
+    })
     val z_foo = z.foo
     assertEquals("bar", z_foo)
     assertEquals(1, count)
@@ -276,7 +280,12 @@ class DynamicTest {
 
     // Side-effects of overwritten properties are kept
     var counter = 0
-    val b = obj(foo = { counter += 1; "foo" }, bar = "bar", foo = "foobar")
+    val b = obj(
+      foo = {
+        counter += 1; "foo"
+      },
+      bar = "bar",
+      foo = "foobar")
     assertEquals(1, counter)
     val b_foo = b.foo
     assertEquals("foobar", b_foo)

@@ -158,7 +158,9 @@ abstract class Source extends java.io.Serializable {
       !sources.containsKey(srcName),
       "Source %s had collision in uuid: %s".format(this, uuid))
     sources.put(srcName, createTap(Read)(mode))
-    FlowStateMap.mutate(flowDef) { st => (st.addSource(srcName, this), ()) }
+    FlowStateMap.mutate(flowDef) { st =>
+      (st.addSource(srcName, this), ())
+    }
     (mode, transformInTest) match {
       case (test: TestMode, false) => new Pipe(srcName)
       case _                       => transformForRead(new Pipe(srcName))
@@ -215,7 +217,9 @@ abstract class Source extends java.io.Serializable {
     mode
       .openForRead(Config.defaultFrom(mode), tap)
       .asScala
-      .map { conv(_) }
+      .map {
+        conv(_)
+      }
       .toStream
   }
 }

@@ -45,12 +45,16 @@ trait ScalatraContext
   }
 
   @deprecated("Use status_=(Int) instead", "2.1.0")
-  def status(code: Int): Unit = { status_=(code) }
+  def status(code: Int): Unit = {
+    status_=(code)
+  }
 
   /**
     * Sets the status code of the current response.
     */
-  def status_=(code: Int): Unit = { response.status = ResponseStatus(code) }
+  def status_=(code: Int): Unit = {
+    response.status = ResponseStatus(code)
+  }
 
   /**
     * Explicitly sets the request-scoped format.  This takes precedence over

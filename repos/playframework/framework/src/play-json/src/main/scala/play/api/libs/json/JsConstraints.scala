@@ -71,7 +71,9 @@ trait PathReads {
     Reads[JsObject](js =>
       path
         .asSingleJsResult(js)
-        .flatMap { jsv => reads.reads(jsv).repath(path) }
+        .flatMap { jsv =>
+          reads.reads(jsv).repath(path)
+        }
         .map(jsv => JsPath.createObj(path -> jsv)))
 
   def jsPut(path: JsPath, a: => JsValue) =
@@ -193,13 +195,17 @@ trait ConstraintReads {
       }
     }
 
-  def pure[A](a: => A) = Reads[A] { js => JsSuccess(a) }
+  def pure[A](a: => A) = Reads[A] { js =>
+    JsSuccess(a)
+  }
 
 }
 
 trait PathWrites {
   def at[A](path: JsPath)(implicit wrs: Writes[A]): OWrites[A] =
-    OWrites[A] { a => JsPath.createObj(path -> wrs.writes(a)) }
+    OWrites[A] { a =>
+      JsPath.createObj(path -> wrs.writes(a))
+    }
 
   /**
     * writes a optional field in given JsPath : if None, doesn't write field at all.
@@ -215,7 +221,9 @@ trait PathWrites {
     }
 
   def jsPick(path: JsPath): Writes[JsValue] =
-    Writes[JsValue] { obj => path(obj).headOption.getOrElse(JsNull) }
+    Writes[JsValue] { obj =>
+      path(obj).headOption.getOrElse(JsNull)
+    }
 
   def jsPickBranch(path: JsPath): OWrites[JsValue] =
     OWrites[JsValue] { obj =>
@@ -236,7 +244,9 @@ trait PathWrites {
 
   def pure[A](path: JsPath, fixed: => A)(
       implicit wrs: Writes[A]): OWrites[JsValue] =
-    OWrites[JsValue] { js => JsPath.createObj(path -> wrs.writes(fixed)) }
+    OWrites[JsValue] { js =>
+      JsPath.createObj(path -> wrs.writes(fixed))
+    }
 
 }
 
@@ -250,7 +260,9 @@ trait ConstraintWrites {
   //}}
 
   def pure[A](fixed: => A)(implicit wrs: Writes[A]): Writes[JsValue] =
-    Writes[JsValue] { js => wrs.writes(fixed) }
+    Writes[JsValue] { js =>
+      wrs.writes(fixed)
+    }
 
   def pruned[A](implicit w: Writes[A]): Writes[A] = new Writes[A] {
     def writes(a: A): JsValue = JsNull

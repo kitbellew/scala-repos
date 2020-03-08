@@ -25,11 +25,17 @@ object Test {
 
     assert(x.length == 1, "length C")
 
-    try { x(1); sys.error("no exception for removed element") }
-    catch { case i: IndexOutOfBoundsException => }
+    try {
+      x(1); sys.error("no exception for removed element")
+    } catch {
+      case i: IndexOutOfBoundsException =>
+    }
 
-    try { x.remove(1); sys.error("no exception for removed element") }
-    catch { case i: IndexOutOfBoundsException => }
+    try {
+      x.remove(1); sys.error("no exception for removed element")
+    } catch {
+      case i: IndexOutOfBoundsException =>
+    }
 
     x += "two2"
     assert(x.length == 2, "length D")

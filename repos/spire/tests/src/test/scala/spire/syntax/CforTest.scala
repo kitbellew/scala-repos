@@ -11,14 +11,18 @@ class CforTest extends SpireProperties {
 
   property("simple cfor") {
     val l = mutable.ListBuffer[Int]()
-    cfor(0)(_ < 5, _ + 1) { x => l.append(x) }
+    cfor(0)(_ < 5, _ + 1) { x =>
+      l.append(x)
+    }
     l.toList shouldBe List(0, 1, 2, 3, 4)
   }
 
   property("nested cfor") {
     val s = mutable.Set.empty[Int]
     cfor(0)(_ < 10, _ + 1) { x =>
-      cfor(10)(_ < 100, _ + 10) { y => s.add(x + y) }
+      cfor(10)(_ < 100, _ + 10) { y =>
+        s.add(x + y)
+      }
     }
     s shouldBe (10 to 99).toSet
   }
@@ -37,7 +41,12 @@ class CforTest extends SpireProperties {
   property("functions with side effects in cfor") {
     val b = mutable.ArrayBuffer.empty[Int]
     var v = 0
-    cfor(0)({ v += 1; _ < 3 }, { v += 10; _ + 1 })({
+    cfor(0)(
+      {
+        v += 1; _ < 3
+      }, {
+        v += 10; _ + 1
+      })({
       v += 100
       x => {
         b += x
@@ -50,8 +59,12 @@ class CforTest extends SpireProperties {
   property("functions with side effects function values in cfor") {
     val b = mutable.ArrayBuffer.empty[Int]
     var v = 0
-    def test: Int => Boolean = { v += 1; _ < 3 }
-    def incr: Int => Int = { v += 10; _ + 1 }
+    def test: Int => Boolean = {
+      v += 1; _ < 3
+    }
+    def incr: Int => Int = {
+      v += 10; _ + 1
+    }
     def body: Int => Unit = {
       v += 100
       x => {
@@ -73,8 +86,11 @@ class CforTest extends SpireProperties {
       cfor(0)(test, incr)(body)
     }
     run(
-      { v += 1; _ < 3 },
-      { v += 10; _ + 1 }, {
+      {
+        v += 1; _ < 3
+      }, {
+        v += 10; _ + 1
+      }, {
         v += 100
         x => {
           b += x
@@ -87,7 +103,9 @@ class CforTest extends SpireProperties {
 
   property("capture value in closure") {
     val b1 = collection.mutable.ArrayBuffer.empty[() => Int]
-    cfor(0)(_ < 3, _ + 1) { x => b1 += (() => x) }
+    cfor(0)(_ < 3, _ + 1) { x =>
+      b1 += (() => x)
+    }
     val b2 = collection.mutable.ArrayBuffer[() => Int]()
     var i = 0
     while (i < 3) {
@@ -101,7 +119,9 @@ class CforTest extends SpireProperties {
     val b = collection.mutable.ArrayBuffer[Int]()
     cfor(0)(_ < 3, _ + 1) { x =>
       {
-        class A { def f = x }
+        class A {
+          def f = x
+        }
         b += (new A().f)
       }
     }
@@ -129,25 +149,33 @@ class CforTest extends SpireProperties {
 
   property("cforRange(1 until 4)") {
     var t = 0
-    cforRange(1 until 4) { x => t += x }
+    cforRange(1 until 4) { x =>
+      t += x
+    }
     t shouldBe 6
   }
 
   property("cforRange(0 to 10 by 2)") {
     var t = 0
-    cforRange(0 to 10 by 2) { x => t += x }
+    cforRange(0 to 10 by 2) { x =>
+      t += x
+    }
     t shouldBe 30
   }
 
   property("cforRange(3 to 1 by -1)") {
     var t = 0
-    cforRange(3 to 1 by -1) { x => t += x }
+    cforRange(3 to 1 by -1) { x =>
+      t += x
+    }
     t shouldBe 6
   }
 
   property("cforRange(0 to 0 by -1)") {
     var t = 0
-    cforRange(0 to 0 by -1) { x => t += 1 }
+    cforRange(0 to 0 by -1) { x =>
+      t += 1
+    }
     t shouldBe 1
   }
 }

@@ -32,7 +32,9 @@ class ResponseToEncoding extends OneToOneEncoder {
     case Number(value) => Tokens(Seq(Buf.Utf8(value.toString)))
     case Error(cause) =>
       val formatted: Seq[Array[Byte]] = ExceptionHandler.format(cause)
-      Tokens(formatted.map { Buf.ByteArray.Owned(_) })
+      Tokens(formatted.map {
+        Buf.ByteArray.Owned(_)
+      })
     case InfoLines(lines) =>
       val statLines = lines map { line =>
         val key = line.key

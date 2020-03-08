@@ -113,7 +113,12 @@ abstract class DockerJDBCIntegrationSuite
         .builder()
         .image(db.imageName)
         .networkDisabled(false)
-        .env(db.env.map { case (k, v) => s"$k=$v" }.toSeq.asJava)
+        .env(db.env
+          .map {
+            case (k, v) => s"$k=$v"
+          }
+          .toSeq
+          .asJava)
         .hostConfig(hostConfig)
         .exposedPorts(s"${db.jdbcPort}/tcp")
         .build()

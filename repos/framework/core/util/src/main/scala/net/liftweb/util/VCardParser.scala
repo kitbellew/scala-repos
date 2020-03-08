@@ -50,18 +50,27 @@ object VCardParser extends Parsers {
   lazy val multiLineSep = opt(elem('\n') ~ elem(' '))
   lazy val value = (multiLineSep ~> elem(
     "value",
-    { c => !c.isControl && c != ';' }) <~ multiLineSep).* ^^ {
+    { c =>
+      !c.isControl && c != ';'
+    }) <~ multiLineSep).* ^^ {
     case l => l.mkString
   }
   lazy val spaces = (elem(' ') | elem('\t') | elem('\n') | elem('\r')) *
-  lazy val key =
-    elem("key", { c => c.isLetterOrDigit || c == '-' || c == '_' }).+ ^^ {
-      case list => list.mkString
-    }
+  lazy val key = elem(
+    "key",
+    { c =>
+      c.isLetterOrDigit || c == '-' || c == '_'
+    }).+ ^^ {
+    case list => list.mkString
+  }
   lazy val props = ((((elem(';') ~> key <~ elem('=')) ~ key) ^^ {
-    case a ~ b                         => (a, b)
-  }) | ((elem(';') ~> key) ^^ { case a => (a, "") })) *
-  lazy val left = (key ~ props) ^^ { case k ~ l => VCardKey(k, l) }
+    case a ~ b => (a, b)
+  }) | ((elem(';') ~> key) ^^ {
+    case a => (a, "")
+  })) *
+  lazy val left = (key ~ props) ^^ {
+    case k ~ l => VCardKey(k, l)
+  }
   lazy val expr = (((spaces ~> left ~! elem(':')) ~ repsep(value, ';')) ^^ {
     case a ~ _ ~ b => VCardEntry(a, b)
   }) +

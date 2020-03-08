@@ -46,7 +46,9 @@ object CompetitiveLinking extends BipartiteMatching {
       rightSet.add(pred.j);
       score += pred.v;
     }
-    matching foreach { a => assert(a >= 0) };
+    matching foreach { a =>
+      assert(a >= 0)
+    };
     (matching, score);
   }
 

@@ -157,8 +157,12 @@ sealed abstract class Future[+A] {
   def unsafeStart: Future[A] = {
     val latch = new java.util.concurrent.CountDownLatch(1)
     @volatile var result: Option[A] = None
-    unsafePerformAsync { a => result = Some(a); latch.countDown }
-    delay { latch.await; result.get }
+    unsafePerformAsync { a =>
+      result = Some(a); latch.countDown
+    }
+    delay {
+      latch.await; result.get
+    }
   }
 
   @deprecated("use unsafeStart", "7.2")
@@ -199,7 +203,9 @@ sealed abstract class Future[+A] {
     case _ => {
       val latch = new java.util.concurrent.CountDownLatch(1)
       @volatile var result: Option[A] = None
-      unsafePerformAsync { a => result = Some(a); latch.countDown }
+      unsafePerformAsync { a =>
+        result = Some(a); latch.countDown
+      }
       latch.await
       result.get
     }
@@ -353,7 +359,9 @@ object Future {
               val ref = new AtomicReference[A]
               val listener = new AtomicReference[A => Trampoline[Unit]](null)
               val residual = Async { (cb: A => Trampoline[Unit]) =>
-                if (used.compareAndSet(false, true)) { // get residual value from already running Future
+                if (used.compareAndSet(
+                      false,
+                      true)) { // get residual value from already running Future
                   if (listener.compareAndSet(null, cb)) {} // we've successfully registered ourself with running task
                   else
                     cb(ref.get).run // the running task has completed, use its result
@@ -373,7 +381,9 @@ object Future {
                     cb(
                       (
                         a,
-                        fs.collect { case (i, _, rf, _, _) if i != ind => rf }))
+                        fs.collect {
+                          case (i, _, rf, _, _) if i != ind => rf
+                        }))
                   else {
                     Trampoline.done(
                       ()
@@ -475,12 +485,21 @@ object Future {
     * exceptions.
     */
   def async[A](listen: (A => Unit) => Unit): Future[A] =
-    Async((cb: A => Trampoline[Unit]) => listen { a => cb(a).run })
+    Async((cb: A => Trampoline[Unit]) =>
+      listen { a =>
+        cb(a).run
+      })
 
   /** Create a `Future` that will evaluate `a` using the given `ExecutorService`. */
   def apply[A](a: => A)(implicit
       pool: ExecutorService = Strategy.DefaultExecutorService): Future[A] =
-    Async { cb => pool.submit { new Callable[Unit] { def call = cb(a).run } } }
+    Async { cb =>
+      pool.submit {
+        new Callable[Unit] {
+          def call = cb(a).run
+        }
+      }
+    }
 
   /** Create a `Future` that will evaluate `a` after at least the given delay. */
   def schedule[A](a: => A, delay: Duration)(implicit

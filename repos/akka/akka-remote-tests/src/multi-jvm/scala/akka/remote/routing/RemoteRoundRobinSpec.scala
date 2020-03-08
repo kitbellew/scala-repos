@@ -120,7 +120,9 @@ class RemoteRoundRobinSpec
         actor ! Broadcast(PoisonPill)
 
         enterBarrier("end")
-        replies.values foreach { _ should ===(iterationCount) }
+        replies.values foreach {
+          _ should ===(iterationCount)
+        }
         replies.get(node(fourth).address) should ===(None)
 
         // shut down the actor before we let the other node(s) shut down so we don't try to send
@@ -216,7 +218,9 @@ class RemoteRoundRobinSpec
         }
 
         enterBarrier("end")
-        replies.values foreach { _ should ===(iterationCount) }
+        replies.values foreach {
+          _ should ===(iterationCount)
+        }
         replies.get(node(fourth).address) should ===(None)
       }
 

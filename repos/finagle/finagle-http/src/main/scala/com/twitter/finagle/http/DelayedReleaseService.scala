@@ -58,7 +58,9 @@ private[finagle] class DelayedReleaseService[-Req <: Request](
 
   override final def close(deadline: Time): Future[Unit] = {
     val p = new Promise[Unit]
-    counter.await { p.become(service.close(deadline)) }
+    counter.await {
+      p.become(service.close(deadline))
+    }
     p
   }
 

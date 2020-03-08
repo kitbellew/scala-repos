@@ -40,7 +40,9 @@ final class Solver(n: Int) {
 
   val unplaced = new BitSet(pieces.length)
 
-  { unplaced ++= (0 until pieces.length) }
+  {
+    unplaced ++= (0 until pieces.length)
+  }
 
   def findSolutions(): Unit = {
     if (countdown == 0) return
@@ -77,8 +79,13 @@ final class Solver(n: Int) {
     if (first == null) {
       first = b; last = b
     } else {
-      if (b < first) { first = b }
-      else { if (b > last) { last = b } }
+      if (b < first) {
+        first = b
+      } else {
+        if (b > last) {
+          last = b
+        }
+      }
     }
     countdown = countdown - 1
   }
@@ -439,7 +446,9 @@ final class BoardCell(_number: Int) extends Cell {
           count = count + neighbour.contiguousEmptyCells
 
       count
-    } else { 0 }
+    } else {
+      0
+    }
   }
 }
 

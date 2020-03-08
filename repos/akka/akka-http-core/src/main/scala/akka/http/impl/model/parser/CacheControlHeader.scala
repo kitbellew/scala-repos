@@ -34,7 +34,9 @@ private[parser] trait CacheControlHeader {
         | "s-maxage=" ~ `delta-seconds` ~> (`s-maxage`(_))
         | token ~ optional(ws('=') ~ word) ~> (CacheDirective.custom(_, _)))
 
-  def `field-names` = rule { `quoted-tokens` | token ~> (Seq(_)) }
+  def `field-names` = rule {
+    `quoted-tokens` | token ~> (Seq(_))
+  }
 
   def `quoted-tokens` = rule {
     '"' ~ zeroOrMore(`quoted-tokens-elem`).separatedBy(listSep) ~ '"'

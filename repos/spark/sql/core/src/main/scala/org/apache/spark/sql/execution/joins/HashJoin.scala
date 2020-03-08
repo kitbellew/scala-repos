@@ -124,7 +124,9 @@ trait HashJoin {
     newPredicate(
       condition.getOrElse(Literal(true)),
       left.output ++ right.output)
-  } else { (r: InternalRow) => true }
+  } else { (r: InternalRow) =>
+    true
+  }
 
   protected def createResultProjection: (InternalRow) => InternalRow =
     UnsafeProjection.create(self.schema)

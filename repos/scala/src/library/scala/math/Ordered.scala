@@ -97,5 +97,7 @@ object Ordered {
   /** Lens from `Ordering[T]` to `Ordered[T]` */
   implicit def orderingToOrdered[T](x: T)(
       implicit ord: Ordering[T]): Ordered[T] =
-    new Ordered[T] { def compare(that: T): Int = ord.compare(x, that) }
+    new Ordered[T] {
+      def compare(that: T): Int = ord.compare(x, that)
+    }
 }

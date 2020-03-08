@@ -38,7 +38,9 @@ class ReachabilityPerfSpec extends WordSpec with Matchers {
     val subjects = Stream.continually(base.allObservers).flatten.iterator
     (base /: observers) {
       case (r, o) ⇒
-        (r /: (1 to 5)) { case (r, _) ⇒ r.unreachable(o, subjects.next()) }
+        (r /: (1 to 5)) {
+          case (r, _) ⇒ r.unreachable(o, subjects.next())
+        }
     }
   }
 
@@ -94,7 +96,9 @@ class ReachabilityPerfSpec extends WordSpec with Matchers {
   }
 
   private def recordsFrom(r1: Reachability): Unit = {
-    r1.allObservers.foreach { o ⇒ r1.recordsFrom(o) should not be be(null) }
+    r1.allObservers.foreach { o ⇒
+      r1.recordsFrom(o) should not be be(null)
+    }
   }
 
   s"Reachability of size $nodesSize" must {

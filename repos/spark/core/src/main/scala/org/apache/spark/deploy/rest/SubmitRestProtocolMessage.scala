@@ -100,7 +100,9 @@ private[rest] abstract class SubmitRestProtocolMessage {
     * If the assertion fails, throw a [[SubmitRestProtocolException]].
     */
   protected def assert(condition: Boolean, failMessage: String): Unit = {
-    if (!condition) { throw new SubmitRestProtocolException(failMessage) }
+    if (!condition) {
+      throw new SubmitRestProtocolException(failMessage)
+    }
   }
 }
 
@@ -121,9 +123,13 @@ private[spark] object SubmitRestProtocolMessage {
   def parseAction(json: String): String = {
     val value: Option[String] = parse(json) match {
       case JObject(fields) =>
-        fields.collectFirst { case ("action", v) => v }.collect {
-          case JString(s) => s
-        }
+        fields
+          .collectFirst {
+            case ("action", v) => v
+          }
+          .collect {
+            case JString(s) => s
+          }
       case _ => None
     }
     value.getOrElse {

@@ -91,7 +91,9 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
   override def configure(javaConfigs: util.Map[String, _]) {
     val configs = javaConfigs.asScala
     val props = new java.util.Properties()
-    configs.foreach { case (key, value) => props.put(key, value.toString) }
+    configs.foreach {
+      case (key, value) => props.put(key, value.toString)
+    }
 
     superUsers = configs
       .get(SimpleAclAuthorizer.SuperUsersProp)
@@ -224,7 +226,9 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
   override def addAcls(acls: Set[Acl], resource: Resource) {
     if (acls != null && acls.nonEmpty) {
       inWriteLock(lock) {
-        updateResourceAcls(resource) { currentAcls => currentAcls ++ acls }
+        updateResourceAcls(resource) { currentAcls =>
+          currentAcls ++ acls
+        }
       }
     }
   }

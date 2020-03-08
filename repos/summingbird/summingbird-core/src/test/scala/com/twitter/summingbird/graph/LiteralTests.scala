@@ -41,16 +41,18 @@ object LiteralTests extends Properties("Literal") {
   def genUnary: Gen[Literal[Int, Box]] =
     for {
       fn <- Arbitrary.arbitrary[(Int) => (Int)]
-      bfn = { case Box(b) => Box(fn(b)) }: Box[Int] => Box[Int]
+      bfn = {
+        case Box(b) => Box(fn(b))
+      }: Box[Int] => Box[Int]
       input <- genLiteral
     } yield UnaryLit(input, bfn)
 
   def genBinary: Gen[Literal[Int, Box]] =
     for {
       fn <- Arbitrary.arbitrary[(Int, Int) => (Int)]
-      bfn = { case (Box(l), Box(r)) => Box(fn(l, r)) }: (
-          Box[Int],
-          Box[Int]) => Box[Int]
+      bfn = {
+        case (Box(l), Box(r)) => Box(fn(l, r))
+      }: (Box[Int], Box[Int]) => Box[Int]
       left <- genLiteral
       // We have to make dags, so select from the closure of left sometimes
       right <- Gen.oneOf(

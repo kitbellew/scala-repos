@@ -43,7 +43,9 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
   )
 
   private def best4Of(u: User, perfTypes: List[PerfType]) =
-    perfTypes.sortBy { pt => -u.perfs(pt).nb } take 4
+    perfTypes.sortBy { pt =>
+      -u.perfs(pt).nb
+    } take 4
 
   def miniViewSortedPerfTypes(u: User): List[PerfType] =
     best4Of(
@@ -100,7 +102,9 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
 
   def showPerfRating(u: User, perfKey: String)(
       implicit ctx: Context): Option[Html] =
-    PerfType(perfKey) map { showPerfRating(u, _) }
+    PerfType(perfKey) map {
+      showPerfRating(u, _)
+    }
 
   def showBestPerf(u: User)(implicit ctx: Context): Option[Html] =
     u.perfs.bestPerf map {

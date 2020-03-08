@@ -1,7 +1,9 @@
 object Main {
   def doAction(p: String) {}
 
-  def doAction(action: => Unit) { action }
+  def doAction(action: => Unit) {
+    action
+  }
 
   def someAction {
     /* */

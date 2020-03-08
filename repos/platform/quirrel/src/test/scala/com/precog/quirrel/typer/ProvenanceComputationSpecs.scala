@@ -212,7 +212,9 @@ object ProvenanceComputationSpecs
 
       val tree = compileSingle(input)
 
-      tree.provenance must beLike { case DynamicProvenance(_) => ok }
+      tree.provenance must beLike {
+        case DynamicProvenance(_) => ok
+      }
       tree.errors must beEmpty
     }
 
@@ -248,8 +250,12 @@ object ProvenanceComputationSpecs
       val tree @ Let(_, _, _, _, Let(_, _, _, New(_, target), result)) =
         compileSingle(input)
 
-      target.provenance must beLike { case DynamicProvenance(_) => ok }
-      result.provenance must beLike { case DynamicProvenance(_) => ok }
+      target.provenance must beLike {
+        case DynamicProvenance(_) => ok
+      }
+      result.provenance must beLike {
+        case DynamicProvenance(_) => ok
+      }
       target.provenance mustNotEqual result.provenance
 
       tree.errors must beEmpty
@@ -536,7 +542,9 @@ object ProvenanceComputationSpecs
           | foo := //foo
           | solve 'a {bar: sum(foo where foo.a = 'a)}
           """.stripMargin)
-        tree.provenance must beLike { case DynamicProvenance(_) => ok }
+        tree.provenance must beLike {
+          case DynamicProvenance(_) => ok
+        }
         tree.errors must beEmpty
       }
       {
@@ -546,7 +554,9 @@ object ProvenanceComputationSpecs
           | obj := solve 'a {bar: sum(foo where foo.a = 'a)}
           | obj
           """.stripMargin)
-        tree.provenance must beLike { case DynamicProvenance(_) => ok }
+        tree.provenance must beLike {
+          case DynamicProvenance(_) => ok
+        }
         tree.errors must beEmpty
       }
       {
@@ -556,7 +566,9 @@ object ProvenanceComputationSpecs
           | solve 'a = bar.a
           |   count(foo where foo.a = 'a)
           """.stripMargin)
-        tree.provenance must beLike { case DynamicProvenance(_) => ok }
+        tree.provenance must beLike {
+          case DynamicProvenance(_) => ok
+        }
         tree.errors must beEmpty
       }
       {
@@ -566,7 +578,9 @@ object ProvenanceComputationSpecs
           | solve 'a = foo.a
           |   {count: count(foo where foo.a < 'a), value: 'a}
           """.stripMargin)
-        tree.provenance must beLike { case DynamicProvenance(_) => ok }
+        tree.provenance must beLike {
+          case DynamicProvenance(_) => ok
+        }
         tree.errors must beEmpty
       }
     }
@@ -602,7 +616,9 @@ object ProvenanceComputationSpecs
     "identify distinct dispatch" in {
       {
         val tree = compileSingle("distinct(//foo)")
-        tree.provenance must beLike { case DynamicProvenance(_) => ok }
+        tree.provenance must beLike {
+          case DynamicProvenance(_) => ok
+        }
         tree.errors must beEmpty
 
       }
@@ -1063,7 +1079,9 @@ object ProvenanceComputationSpecs
         |   {kay: k, jay: j}
         | a""".stripMargin)
 
-        tree.provenance must beLike { case DynamicProvenance(_) => ok }
+        tree.provenance must beLike {
+          case DynamicProvenance(_) => ok
+        }
         tree.errors must beEmpty
       }
     }
@@ -1075,7 +1093,9 @@ object ProvenanceComputationSpecs
         | histogram := solve 'a 
         |   'a + count(foo where foo = 'a) 
         | histogram""".stripMargin)
-        tree.provenance must beLike { case DynamicProvenance(_) => ok }
+        tree.provenance must beLike {
+          case DynamicProvenance(_) => ok
+        }
         tree.errors must beEmpty
       }
 
@@ -1090,7 +1110,9 @@ object ProvenanceComputationSpecs
           | histogram""".stripMargin
 
         val tree = compileSingle(input)
-        tree.provenance must beLike { case DynamicProvenance(_) => ok }
+        tree.provenance must beLike {
+          case DynamicProvenance(_) => ok
+        }
         tree.errors must beEmpty
       }
 
@@ -1145,7 +1167,9 @@ object ProvenanceComputationSpecs
         |   'a + count(foo where foo = 'a) 
         | histogram + histogram""".stripMargin
         ) // if not consistent, binary op will fail
-      tree.provenance must beLike { case DynamicProvenance(_) => ok }
+      tree.provenance must beLike {
+        case DynamicProvenance(_) => ok
+      }
       tree.errors must beEmpty
     }
 
@@ -1819,12 +1843,16 @@ object ProvenanceComputationSpecs
         }
         {
           val tree = compileSingle("(new //foo) difference (new //foo)")
-          tree.provenance must beLike { case DynamicProvenance(_) => ok }
+          tree.provenance must beLike {
+            case DynamicProvenance(_) => ok
+          }
           tree.errors must beEmpty
         }
         {
           val tree = compileSingle("(new //foo) difference (new //bar)")
-          tree.provenance must beLike { case DynamicProvenance(_) => ok }
+          tree.provenance must beLike {
+            case DynamicProvenance(_) => ok
+          }
           tree.errors must beEmpty
         }
         {
@@ -2106,7 +2134,9 @@ object ProvenanceComputationSpecs
       }
       {
         val tree = compileSingle("foo := //baz difference //baz foo")
-        tree.provenance must beLike { case StaticProvenance("/baz") => ok }
+        tree.provenance must beLike {
+          case StaticProvenance("/baz") => ok
+        }
         tree.errors must beEmpty
       }
     }
@@ -2119,7 +2149,9 @@ object ProvenanceComputationSpecs
               //clicks where (//clicks).baz = b
             bar(a)
           foo(2)""")
-        tree.provenance must beLike { case StaticProvenance("/clicks") => ok }
+        tree.provenance must beLike {
+          case StaticProvenance("/clicks") => ok
+        }
         tree.errors must beEmpty
       }
       {
@@ -2129,7 +2161,9 @@ object ProvenanceComputationSpecs
               //clicks where (//clicks).baz = 'b + a
             bar
           foo(2)""")
-        tree.provenance must beLike { case DynamicProvenance(_) => ok }
+        tree.provenance must beLike {
+          case DynamicProvenance(_) => ok
+        }
         tree.errors must beEmpty
       }
     }
@@ -2139,7 +2173,9 @@ object ProvenanceComputationSpecs
         foo := solve 'a
           //clicks where (//clicks).a = 'a
         foo""")
-      tree.provenance must beLike { case DynamicProvenance(_) => ok }
+      tree.provenance must beLike {
+        case DynamicProvenance(_) => ok
+      }
       tree.errors must beEmpty
     }
 
@@ -2165,7 +2201,9 @@ object ProvenanceComputationSpecs
 
       {
         val tree = compileSingle("new (1 intersect 2)")
-        tree.provenance must beLike { case DynamicProvenance(_) => ok }
+        tree.provenance must beLike {
+          case DynamicProvenance(_) => ok
+        }
         tree.errors must beEmpty
       }
 

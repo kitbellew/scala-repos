@@ -64,12 +64,16 @@ private[game] object GameDiff {
       clock,
       _.clock,
       (o: Option[Clock]) =>
-        o map { c => BSONHandlers.clockBSONWrite(a.createdAt, c) })
+        o map { c =>
+          BSONHandlers.clockBSONWrite(a.createdAt, c)
+        })
     dOpt(
       checkCount,
       _.checkCount,
       (o: CheckCount) =>
-        o.nonEmpty option { BSONHandlers.checkCountWriter write o })
+        o.nonEmpty option {
+          BSONHandlers.checkCountWriter write o
+        })
     if (a.variant == Crazyhouse)
       dOpt(
         crazyData,

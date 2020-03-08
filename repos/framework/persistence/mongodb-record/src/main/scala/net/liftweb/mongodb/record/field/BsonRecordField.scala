@@ -99,7 +99,9 @@ class BsonRecordListField[
 
   override def asDBObject: DBObject = {
     val dbl = new BasicDBList
-    value.foreach { v => dbl.add(v.asDBObject) }
+    value.foreach { v =>
+      dbl.add(v.asDBObject)
+    }
     dbl
   }
 

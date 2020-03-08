@@ -89,7 +89,9 @@ class ReplaceDoWhileWithWhileIntention extends PsiElementBaseIntentionAction {
                 .executeCommand(
                   project,
                   new Runnable() {
-                    def run() { doReplacement() }
+                    def run() {
+                      doReplacement()
+                    }
                   },
                   null,
                   null)

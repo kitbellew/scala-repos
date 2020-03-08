@@ -102,7 +102,9 @@ class SortedMapperPaginator[T <: Mapper[T]](
 
   val headers = _headers.toList
   sort = (
-    headers.indexWhere { case (_, `initialSort`) => true; case _ => false },
+    headers.indexWhere {
+      case (_, `initialSort`) => true; case _ => false
+    },
     true)
 
   override def page =
@@ -114,7 +116,9 @@ class SortedMapperPaginator[T <: Mapper[T]](
   private def mapperSort = sort match {
     case (fieldIndex, ascending) =>
       OrderBy(
-        headers(fieldIndex) match { case (_, f) => f },
+        headers(fieldIndex) match {
+          case (_, f) => f
+        },
         if (ascending) Ascending else Descending
       )
   }

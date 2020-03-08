@@ -20,7 +20,9 @@ object ScalatraBuild extends Build {
     mimaDefaultSettings ++ Seq(
       organization := "org.scalatra",
       crossScalaVersions := Seq("2.11.7", "2.10.6"),
-      scalaVersion <<= (crossScalaVersions) { versions => versions.head },
+      scalaVersion <<= (crossScalaVersions) { versions =>
+        versions.head
+      },
       scalacOptions ++= Seq(
         "-target:jvm-1.7",
         "-unchecked",

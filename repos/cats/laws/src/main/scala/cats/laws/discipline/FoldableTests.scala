@@ -34,5 +34,7 @@ trait FoldableTests[F[_]] extends Laws {
 
 object FoldableTests {
   def apply[F[_]: Foldable]: FoldableTests[F] =
-    new FoldableTests[F] { def laws: FoldableLaws[F] = FoldableLaws[F] }
+    new FoldableTests[F] {
+      def laws: FoldableLaws[F] = FoldableLaws[F]
+    }
 }

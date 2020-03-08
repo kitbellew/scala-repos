@@ -197,7 +197,10 @@ class TaskSetManagerSuite
     val taskSet = FakeTask.createTaskSet(3)
     val manager = new TaskSetManager(sched, taskSet, MAX_TASK_FAILURES)
     val accumUpdatesByTask: Array[Seq[AccumulableInfo]] = taskSet.tasks.map {
-      task => task.initialAccumulators.map { a => a.toInfo(Some(0L), None) }
+      task =>
+        task.initialAccumulators.map { a =>
+          a.toInfo(Some(0L), None)
+        }
     }
 
     // First three offers should all find tasks

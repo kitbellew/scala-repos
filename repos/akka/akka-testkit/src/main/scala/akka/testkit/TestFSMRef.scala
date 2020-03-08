@@ -78,7 +78,9 @@ class TestFSMRef[S, D, T <: Actor](
   /**
     * Proxy for [[akka.actor.FSM#cancelTimer]].
     */
-  def cancelTimer(name: String) { fsm.cancelTimer(name) }
+  def cancelTimer(name: String) {
+    fsm.cancelTimer(name)
+  }
 
   /**
     * Proxy for [[akka.actor.FSM#isStateTimerActive]].

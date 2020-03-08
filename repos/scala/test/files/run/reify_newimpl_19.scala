@@ -12,7 +12,9 @@ object Test extends App {
   }
 
   try {
-    new C { val T = Int }
+    new C {
+      val T = Int
+    }
   } catch {
     case ex: Throwable =>
       println(ex)

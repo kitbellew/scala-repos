@@ -1036,7 +1036,9 @@ abstract class GenJSCode
       }
 
       val ctorToChildren = secondaryCtors
-        .map { ctor => findCtorForwarderCall(ctor.body) -> ctor }
+        .map { ctor =>
+          findCtorForwarderCall(ctor.body) -> ctor
+        }
         .groupBy(_._1)
         .mapValues(_.map(_._2))
         .withDefaultValue(Nil)
@@ -1705,7 +1707,9 @@ abstract class GenJSCode
             "Trying to generate `this` inside the body")
         }
         js.This()(currentClassType)
-      } { thisLocalIdent => js.VarRef(thisLocalIdent)(currentClassType) }
+      } { thisLocalIdent =>
+        js.VarRef(thisLocalIdent)(currentClassType)
+      }
     }
 
     /** Gen JS code for LabelDef
@@ -4404,7 +4408,9 @@ abstract class GenJSCode
         currentClassSym := sym
       ) {
         val (functionMakerBase, arity) =
-          tryGenAndRecordAnonFunctionClassGeneric(cd) { msg => return false }
+          tryGenAndRecordAnonFunctionClassGeneric(cd) { msg =>
+            return false
+          }
         val functionMaker = { capturedArgs: List[js.Tree] =>
           JSFunctionToScala(functionMakerBase(capturedArgs), arity)
         }

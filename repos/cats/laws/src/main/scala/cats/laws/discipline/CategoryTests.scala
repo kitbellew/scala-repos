@@ -26,5 +26,7 @@ trait CategoryTests[F[_, _]] extends ComposeTests[F] {
 
 object CategoryTests {
   def apply[F[_, _]: Category]: CategoryTests[F] =
-    new CategoryTests[F] { def laws: CategoryLaws[F] = CategoryLaws[F] }
+    new CategoryTests[F] {
+      def laws: CategoryLaws[F] = CategoryLaws[F]
+    }
 }

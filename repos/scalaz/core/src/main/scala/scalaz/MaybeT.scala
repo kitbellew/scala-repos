@@ -49,7 +49,9 @@ final case class MaybeT[F[_], A](run: F[Maybe[A]]) {
   def isEmpty(implicit F: Functor[F]): F[Boolean] = mapO(_.isEmpty)
 
   def filter(f: A => Boolean)(implicit F: Functor[F]): MaybeT[F, A] =
-    MaybeT(F.map(self.run) { _ filter f })
+    MaybeT(F.map(self.run) {
+      _ filter f
+    })
 
   def cata[X](just: A => X, empty: => X)(implicit F: Functor[F]): F[X] =
     mapO(_.cata(just, empty))

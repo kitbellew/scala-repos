@@ -29,7 +29,9 @@ class Zip(args: Args) extends Job(args) {
   }
 
   val zipped = Tsv("line", ('line)).pipe
-    .using { createState }
+    .using {
+      createState
+    }
     .flatMap[String, (String, String)]('line -> ('l1, 'l2)) {
       case (accu, line) =>
         if (accu.lastLine == null) {
@@ -88,8 +90,9 @@ class ZipBuffer(args: Args) extends Job(args) {
       }
     }
     .groupBy('oddOrEven) {
-      _.using { createState }
-        .mapStream('line -> ('l1, 'l2)) { (accu, iter: Iterator[String]) =>
+      _.using {
+        createState
+      }.mapStream('line -> ('l1, 'l2)) { (accu, iter: Iterator[String]) =>
           {
             accu.lastLine = iter.next()
             for (line <- iter) yield {

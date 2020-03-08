@@ -1,5 +1,7 @@
 trait T {
-  trait Default { def foo = this }
+  trait Default {
+    def foo = this
+  }
   object Default extends Default
 }
 

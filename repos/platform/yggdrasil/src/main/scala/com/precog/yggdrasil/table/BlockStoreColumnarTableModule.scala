@@ -230,7 +230,9 @@ trait BlockStoreColumnarTableModule[M[+_]]
           // remains in the priority queue
           (idx, Nil)
         } else {
-          val (continuing, expired) = cellBlock partition { _.advance(idx) }
+          val (continuing, expired) = cellBlock partition {
+            _.advance(idx)
+          }
           queue.enqueue(continuing: _*)
 
           if (expired.isEmpty)
@@ -290,7 +292,9 @@ trait BlockStoreColumnarTableModule[M[+_]]
           val successorStatesM = expired
             .map(_.succ)
             .sequence
-            .map(_.toStream.collect({ case Some(cs) => cs }))
+            .map(_.toStream.collect({
+              case Some(cs) => cs
+            }))
 
           successorStatesM map { successorStates =>
             Some((emission, successorStates ++ suffixes))
@@ -352,7 +356,9 @@ trait BlockStoreColumnarTableModule[M[+_]]
         fdb: Option[(File, DB)],
         indices: IndexMap,
         insertCount: Long) {
-      def commit() = fdb foreach { _._2.commit() }
+      def commit() = fdb foreach {
+        _._2.commit()
+      }
 
       def closed(): JDBMState = fdb match {
         case Some((f, db)) =>
@@ -733,7 +739,9 @@ trait BlockStoreColumnarTableModule[M[+_]]
                           rbs,
                           "alignRight",
                           SortAscending)
-                      } getOrElse rbs.point[M]) map { (lbs, _) }
+                      } getOrElse rbs.point[M]) map {
+                        (lbs, _)
+                      }
                   }
 
                 //println("Requested more left; emitting left based on bitset " + leq.toList.mkString("[", ",", "]"))
@@ -796,7 +804,9 @@ trait BlockStoreColumnarTableModule[M[+_]]
                               lbs,
                               "alignLeft",
                               SortAscending)
-                          } getOrElse lbs.point[M]) map { (_, rbs) }
+                          } getOrElse lbs.point[M]) map {
+                            (_, rbs)
+                          }
 
                         case RightSpan =>
                           //println("No more data on right, but in a span so continuing on left.")
@@ -1040,7 +1050,9 @@ trait BlockStoreColumnarTableModule[M[+_]]
           state: WriteState): M[(List[String], IndexMap)] = {
         slices.uncons flatMap {
           case Some((slice, tail)) =>
-            writeSlice(slice, state, sortOrder) flatMap { write0(tail, _) }
+            writeSlice(slice, state, sortOrder) flatMap {
+              write0(tail, _)
+            }
 
           case None =>
             M.point {
@@ -1699,11 +1711,15 @@ trait BlockStoreColumnarTableModule[M[+_]]
           groupKeys map { kt =>
             OuterObjectConcat(
               WrapObject(
-                deepMap(kt) { case Leaf(_) => TransSpec1.DerefArray0 },
+                deepMap(kt) {
+                  case Leaf(_) => TransSpec1.DerefArray0
+                },
                 "0"),
               WrapObject(TransSpec1.DerefArray1, "1"))
           },
-          deepMap(valueSpec) { case Leaf(_) => TransSpec1.DerefArray0 }
+          deepMap(valueSpec) {
+            case Leaf(_) => TransSpec1.DerefArray0
+          }
         )
       } else {
         (Leaf(Source), groupKeys, valueSpec)

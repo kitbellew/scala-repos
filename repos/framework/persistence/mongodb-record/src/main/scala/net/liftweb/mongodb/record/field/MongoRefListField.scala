@@ -60,7 +60,9 @@ abstract class MongoRefListField[
     _objs
   }
 
-  def cached_? : Boolean = synchronized { _calcedObjs }
+  def cached_? : Boolean = synchronized {
+    _calcedObjs
+  }
 
   def primeObjs(objs: List[RefType]) = synchronized {
     _objs = objs

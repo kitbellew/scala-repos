@@ -8,6 +8,8 @@ class B extends Specification {
 
 object A extends Specification {
   "this" should {
-    "work" in { 1 must_== 1 }
+    "work" in {
+      1 must_== 1
+    }
   }
 }

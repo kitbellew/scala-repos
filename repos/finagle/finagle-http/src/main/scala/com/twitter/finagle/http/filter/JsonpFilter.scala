@@ -36,7 +36,9 @@ class JsonpFilter[Req <: Request] extends SimpleFilter[Req, Response] {
           JsonpFilter.LeftParen,
           response.content,
           JsonpFilter.RightParenSemicolon
-        ).foldLeft(Buf.Empty) { (acc, buf) => acc.concat(buf) }
+        ).foldLeft(Buf.Empty) { (acc, buf) =>
+          acc.concat(buf)
+        }
         response.mediaType = MediaType.Javascript
       }
       response

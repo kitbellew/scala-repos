@@ -1,7 +1,9 @@
 package a {
   // method before classes
   trait Foo {
-    def crash(x: Dingus[_]): Unit = x match { case m: Bippy[tv] => () }
+    def crash(x: Dingus[_]): Unit = x match {
+      case m: Bippy[tv] => ()
+    }
 
     class Dingus[T]
     class Bippy[CC[X] <: Seq[X]]() extends Dingus[CC[Int]]
@@ -14,7 +16,9 @@ package b {
     class Dingus[T]
     class Bippy[CC[X] <: Seq[X]]() extends Dingus[CC[Int]]
 
-    def crash(x: Dingus[_]): Unit = x match { case m: Bippy[tv] => () }
+    def crash(x: Dingus[_]): Unit = x match {
+      case m: Bippy[tv] => ()
+    }
   }
 }
 /*

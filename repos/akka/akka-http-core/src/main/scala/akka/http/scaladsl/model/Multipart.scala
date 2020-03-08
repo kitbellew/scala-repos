@@ -155,7 +155,9 @@ object Multipart {
       * The potentially present [[`Content-Disposition`]] header.
       */
     def contentDispositionHeader: Option[`Content-Disposition`] =
-      headers.collectFirst { case x: `Content-Disposition` ⇒ x }
+      headers.collectFirst {
+        case x: `Content-Disposition` ⇒ x
+      }
 
     /**
       * The parameters of the potentially present [[`Content-Disposition`]] header.
@@ -338,7 +340,9 @@ object Multipart {
       }
       private[BodyPart] def tryCreateByteRangesBodyPart[T](
           f: (ContentRange, RangeUnit, immutable.Seq[HttpHeader]) ⇒ T): Try[T] =
-        headers.collectFirst { case x: `Content-Range` ⇒ x } match {
+        headers.collectFirst {
+          case x: `Content-Range` ⇒ x
+        } match {
           case Some(`Content-Range`(unit, range)) ⇒
             Success(f(range, unit, headers.filterNot(_ is "content-range")))
           case None ⇒

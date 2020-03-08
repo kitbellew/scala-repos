@@ -146,18 +146,42 @@ trait Printers { self: Universe =>
     protected var printKinds = false
     protected var printMirrors = false
     protected var printPositions = false
-    def withTypes: this.type = { printTypes = true; this }
-    def withoutTypes: this.type = { printTypes = false; this }
-    def withIds: this.type = { printIds = true; this }
-    def withoutIds: this.type = { printIds = false; this }
-    def withOwners: this.type = { printOwners = true; this }
-    def withoutOwners: this.type = { printOwners = false; this }
-    def withKinds: this.type = { printKinds = true; this }
-    def withoutKinds: this.type = { printKinds = false; this }
-    def withMirrors: this.type = { printMirrors = true; this }
-    def withoutMirrors: this.type = { printMirrors = false; this }
-    def withPositions: this.type = { printPositions = true; this }
-    def withoutPositions: this.type = { printPositions = false; this }
+    def withTypes: this.type = {
+      printTypes = true; this
+    }
+    def withoutTypes: this.type = {
+      printTypes = false; this
+    }
+    def withIds: this.type = {
+      printIds = true; this
+    }
+    def withoutIds: this.type = {
+      printIds = false; this
+    }
+    def withOwners: this.type = {
+      printOwners = true; this
+    }
+    def withoutOwners: this.type = {
+      printOwners = false; this
+    }
+    def withKinds: this.type = {
+      printKinds = true; this
+    }
+    def withoutKinds: this.type = {
+      printKinds = false; this
+    }
+    def withMirrors: this.type = {
+      printMirrors = true; this
+    }
+    def withoutMirrors: this.type = {
+      printMirrors = false; this
+    }
+    def withPositions: this.type = {
+      printPositions = true; this
+    }
+    def withoutPositions: this.type = {
+      printPositions = false; this
+    }
   }
 
   /** @group Printers */

@@ -90,7 +90,9 @@ class SupervisorMiscSpec
     "be able to create named children in its constructor" in {
       val a = system.actorOf(Props(new Actor {
         context.actorOf(Props.empty, "bob")
-        def receive = { case x: Exception ⇒ throw x }
+        def receive = {
+          case x: Exception ⇒ throw x
+        }
         override def preStart(): Unit = testActor ! "preStart"
       }))
       val m = "weird message"

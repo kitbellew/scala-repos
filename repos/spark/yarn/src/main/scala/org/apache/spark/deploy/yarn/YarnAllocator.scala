@@ -295,7 +295,9 @@ private[yarn] class YarnAllocator(
           pendingAllocate)
 
       // cancel "stale" requests for locations that are no longer needed
-      staleRequests.foreach { stale => amClient.removeContainerRequest(stale) }
+      staleRequests.foreach { stale =>
+        amClient.removeContainerRequest(stale)
+      }
       val cancelledContainers = staleRequests.size
       logInfo(
         s"Canceled $cancelledContainers container requests (locality no longer needed)")

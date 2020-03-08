@@ -38,7 +38,9 @@ object build extends Build {
       val pom = xml.XML.loadFile(file)
       val actual = pom \\ "dependencies"
       val expected = <d>
-			{expectedDep}
+			{
+        expectedDep
+      }
 		</d>
       def dropTopElem(s: String): String =
         s.split("""\n""").drop(1).dropRight(1).mkString("\n")

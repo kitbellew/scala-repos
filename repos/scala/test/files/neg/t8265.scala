@@ -1,1 +1,3 @@
-class Foo[+CC[X]] { type Coll = CC[_] }
+class Foo[+CC[X]] {
+  type Coll = CC[_]
+}

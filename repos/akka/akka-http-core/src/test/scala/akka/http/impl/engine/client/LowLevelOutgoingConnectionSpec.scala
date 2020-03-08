@@ -182,7 +182,9 @@ class LowLevelOutgoingConnectionSpec
     }
 
     "proceed to next response once previous response's entity has been drained" in new TestSetup {
-      def twice(action: => Unit): Unit = { action; action }
+      def twice(action: => Unit): Unit = {
+        action; action
+      }
 
       twice {
         requestsSub.sendNext(HttpRequest())

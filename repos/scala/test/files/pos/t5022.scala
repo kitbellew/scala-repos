@@ -19,4 +19,6 @@ class ForSomeVsUnapply {
 
 class X[e]
 
-case class Wrap(rep: (e, X[e]) forSome { type e })
+case class Wrap(rep: (e, X[e]) forSome {
+  type e
+})

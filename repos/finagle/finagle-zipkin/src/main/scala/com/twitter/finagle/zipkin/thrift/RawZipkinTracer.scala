@@ -178,7 +178,9 @@ private[thrift] class RawZipkinTracer(
 
   private[this] val bufferPool =
     new ArrayBlockingQueue[ReusableTransport](poolSize)
-  (0 until poolSize) foreach { _ => bufferPool.add(new ReusableTransport) }
+  (0 until poolSize) foreach { _ =>
+    bufferPool.add(new ReusableTransport)
+  }
 
   /**
     * Serialize the span, base64 encode and shove it all in a list.

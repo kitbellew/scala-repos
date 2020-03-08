@@ -25,7 +25,9 @@ trait MatchCodeGen extends Interface {
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   trait CodegenCore extends MatchMonadInterface {
     private var ctr = 0
-    def freshName(prefix: String) = { ctr += 1; vpmName.counted(prefix, ctr) }
+    def freshName(prefix: String) = {
+      ctr += 1; vpmName.counted(prefix, ctr)
+    }
 
     // assert(owner ne null); assert(owner ne NoSymbol)
     def freshSym(pos: Position, tp: Type = NoType, prefix: String = "x") =

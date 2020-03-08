@@ -55,7 +55,9 @@ object PersistentActorStashingSpec {
       extends UserStashPersistentActor(name: String) {
     override def unstashBehavior: Receive = {
       case Cmd("c") ⇒
-        persist(Evt("c")) { evt ⇒ sender() ! evt.data; unstashAll() }
+        persist(Evt("c")) { evt ⇒
+          sender() ! evt.data; unstashAll()
+        }
     }
   }
 
@@ -77,7 +79,9 @@ object PersistentActorStashingSpec {
 
     def unstashBehavior: Receive = {
       case Cmd("c") ⇒
-        persist(Evt("c")) { evt ⇒ updateState(evt); context.unbecome() }
+        persist(Evt("c")) { evt ⇒
+          updateState(evt); context.unbecome()
+        }
         unstashAll()
     }
   }
@@ -148,7 +152,9 @@ object PersistentActorStashingSpec {
       extends AsyncStashingPersistentActor(name) {
     override def unstashBehavior: Receive = {
       case Cmd("c") ⇒
-        persistAsync(Evt("c")) { evt ⇒ updateState(evt); unstashAll() }
+        persistAsync(Evt("c")) { evt ⇒
+          updateState(evt); unstashAll()
+        }
     }
   }
 

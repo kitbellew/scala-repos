@@ -23,7 +23,9 @@ final class Bus(system: ActorSystem) extends Extension with EventBus {
   }
 
   def subscribe(subscriber: Subscriber, to: Classifier*): Boolean = {
-    to foreach { subscribe(subscriber, _) }
+    to foreach {
+      subscribe(subscriber, _)
+    }
     true
   }
 

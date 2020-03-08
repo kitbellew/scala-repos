@@ -196,10 +196,18 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
       assert(blockInfoManager.lockNewBlockForWriting("block", newBlockInfo()))
       blockInfoManager.unlock("block")
     }
-    withTaskId(1) { assert(blockInfoManager.lockForReading("block").isDefined) }
-    withTaskId(2) { assert(blockInfoManager.lockForReading("block").isDefined) }
-    withTaskId(3) { assert(blockInfoManager.lockForReading("block").isDefined) }
-    withTaskId(4) { assert(blockInfoManager.lockForReading("block").isDefined) }
+    withTaskId(1) {
+      assert(blockInfoManager.lockForReading("block").isDefined)
+    }
+    withTaskId(2) {
+      assert(blockInfoManager.lockForReading("block").isDefined)
+    }
+    withTaskId(3) {
+      assert(blockInfoManager.lockForReading("block").isDefined)
+    }
+    withTaskId(4) {
+      assert(blockInfoManager.lockForReading("block").isDefined)
+    }
     assert(blockInfoManager.get("block").get.readerCount === 4)
   }
 

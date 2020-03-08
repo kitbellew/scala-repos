@@ -29,7 +29,9 @@ package play.api.libs.iteratee {
       */
     def eagerFuture[A](body: => A): Future[A] =
       try Future.successful(body)
-      catch { case NonFatal(e) => Future.failed(e) }
+      catch {
+        case NonFatal(e) => Future.failed(e)
+      }
 
     /**
       * Executes code in the given ExecutionContext, flattening the resulting Future.

@@ -112,8 +112,9 @@ object CSRFConfig {
     val checkMethod: String => Boolean = if (methodWhiteList.nonEmpty) {
       !methodWhiteList.contains(_)
     } else {
-      if (methodBlackList.isEmpty) { _ => true }
-      else {
+      if (methodBlackList.isEmpty) { _ =>
+        true
+      } else {
         methodBlackList.contains
       }
     }
@@ -127,8 +128,9 @@ object CSRFConfig {
       if (contentTypeWhiteList.nonEmpty) {
         _.forall(!contentTypeWhiteList.contains(_))
       } else {
-        if (contentTypeBlackList.isEmpty) { _ => true }
-        else {
+        if (contentTypeBlackList.isEmpty) { _ =>
+          true
+        } else {
           _.exists(contentTypeBlackList.contains)
         }
       }

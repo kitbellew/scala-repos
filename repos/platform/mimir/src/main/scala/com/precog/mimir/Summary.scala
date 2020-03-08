@@ -50,7 +50,9 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
           trans.DerefArrayStatic(TransSpec1.Id, CPathIndex(idx)),
           red.name)
     }
-    val reductionSpec = reductionSpecs reduce { trans.OuterObjectConcat(_, _) }
+    val reductionSpec = reductionSpecs reduce {
+      trans.OuterObjectConcat(_, _)
+    }
 
     object SingleSummary extends Reduction(Vector(), "singleSummary") {
       val tpe = coalesced.tpe
@@ -96,9 +98,13 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
         }
 
         val functions: List[Option[JType => JType]] =
-          jtypes.distinct map (_ map { Schema.replaceLeaf })
+          jtypes.distinct map (_ map {
+            Schema.replaceLeaf
+          })
 
-        coalesce(functions map { SingleSummary -> _ })
+        coalesce(functions map {
+          SingleSummary -> _
+        })
       }
 
       def reduceTable(
@@ -120,7 +126,9 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
           reduction.extract(result).transform(spec)
         }
 
-        values map { extract(_, jtype) }
+        values map {
+          extract(_, jtype)
+        }
       }
 
       def apply(table: Table, ctx: MorphContext) = {
@@ -145,7 +153,9 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
         })
 
         val specs: M[Seq[TransSpec1]] = jtypes map {
-          _ map { trans.Typed(TransSpec1.Id, _) }
+          _ map {
+            trans.Typed(TransSpec1.Id, _)
+          }
         }
 
         // one table per schema
@@ -186,7 +196,9 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
           } getOrElse Table.empty
         }
 
-        res map { _.transform(buildConstantWrapSpec(TransSpec1.Id)) }
+        res map {
+          _.transform(buildConstantWrapSpec(TransSpec1.Id))
+        }
       }
     }
   }

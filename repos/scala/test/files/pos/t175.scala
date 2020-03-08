@@ -1,3 +1,5 @@
 abstract class C {
-  def this(x: Unit) = { this() }
+  def this(x: Unit) = {
+    this()
+  }
 }

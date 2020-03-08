@@ -63,7 +63,11 @@ package object atmosphere {
     if (maybeTimeout.exists(_.isOverdue())) javaFuture.cancel(true)
 
     if (javaFuture.isDone || javaFuture.isCancelled) {
-      promise.complete(allCatch withTry { javaFuture.get }).future
+      promise
+        .complete(allCatch withTry {
+          javaFuture.get
+        })
+        .future
     } else {
       system.scheduler.scheduleOnce(10 milliseconds) {
         pollJavaFutureUntilDoneOrCancelled(javaFuture, promise, maybeTimeout)

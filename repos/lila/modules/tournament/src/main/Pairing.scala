@@ -54,7 +54,9 @@ case class Pairing(
     notSoQuickFinish ?? berserkOf(userId)
 
   def povRef(userId: String): Option[PovRef] =
-    colorOf(userId) map { PovRef(gameId, _) }
+    colorOf(userId) map {
+      PovRef(gameId, _)
+    }
 
   def similar(other: Pairing) = other.contains(user1, user2)
 }

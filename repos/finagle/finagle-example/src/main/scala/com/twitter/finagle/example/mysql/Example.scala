@@ -89,7 +89,9 @@ object Example extends App {
       r <- selectQuery(client)
     } yield r
 
-    resultFuture onSuccess { seq => seq foreach println } onFailure { e =>
+    resultFuture onSuccess { seq =>
+      seq foreach println
+    } onFailure { e =>
       println(e)
     } ensure {
       client.query("DROP TABLE IF EXISTS `finagle-mysql-example`") ensure {

@@ -68,7 +68,9 @@ class CustomReceiver(host: String, port: Int)
   def onStart() {
     // Start the thread that receives data over a connection
     new Thread("Socket Receiver") {
-      override def run() { receive() }
+      override def run() {
+        receive()
+      }
     }.start()
   }
 

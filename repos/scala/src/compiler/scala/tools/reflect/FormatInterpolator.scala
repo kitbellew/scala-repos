@@ -16,8 +16,12 @@ abstract class FormatInterpolator {
   import definitions._
   import treeInfo.Applied
 
-  @inline private def truly(body: => Unit): Boolean = { body; true }
-  @inline private def falsely(body: => Unit): Boolean = { body; false }
+  @inline private def truly(body: => Unit): Boolean = {
+    body; true
+  }
+  @inline private def falsely(body: => Unit): Boolean = {
+    body; false
+  }
 
   private def fail(msg: String) = c.abort(c.enclosingPosition, msg)
   private def bail(msg: String) = global.abort(msg)
@@ -112,7 +116,11 @@ abstract class FormatInterpolator {
               val r = "([0-7]{1,3}).*".r
               (s0 drop e.index + 1) match {
                 case r(n) =>
-                  altOf { (0 /: n) { case (a, o) => (8 * a) + (o - '0') } }
+                  altOf {
+                    (0 /: n) {
+                      case (a, o) => (8 * a) + (o - '0')
+                    }
+                  }
                 case _ => ""
               }
             }
@@ -231,7 +239,9 @@ abstract class FormatInterpolator {
     val Spec, Index, Flags, Width, Precision, CC = Value
   }
 
-  val stdContextTags = new { val tc: c.type = c } with StdContextTags
+  val stdContextTags = new {
+    val tc: c.type = c
+  } with StdContextTags
   import stdContextTags._
   val tagOfFormattable = typeTag[Formattable]
 
@@ -392,7 +402,9 @@ abstract class FormatInterpolator {
     override def verify = {
       def d_# =
         (cc == 'd' && hasFlag('#') &&
-          truly { badFlag('#', "# not allowed for d conversion") })
+          truly {
+            badFlag('#', "# not allowed for d conversion")
+          })
       def x_comma =
         (cc != 'd' && hasFlag(',') &&
           truly {

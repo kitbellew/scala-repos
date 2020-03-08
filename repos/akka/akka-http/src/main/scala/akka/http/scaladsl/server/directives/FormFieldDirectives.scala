@@ -111,15 +111,18 @@ object FormFieldDirectives extends FormFieldDirectives {
     def apply(): Out
   }
   object FieldMagnet {
-    implicit def apply[T](value: T)(
-        implicit fdef: FieldDef[T]): FieldMagnet { type Out = fdef.Out } =
+    implicit def apply[T](value: T)(implicit fdef: FieldDef[T]): FieldMagnet {
+      type Out = fdef.Out
+    } =
       new FieldMagnet {
         type Out = fdef.Out
         def apply() = fdef(value)
       }
   }
 
-  type FieldDefAux[A, B] = FieldDef[A] { type Out = B }
+  type FieldDefAux[A, B] = FieldDef[A] {
+    type Out = B
+  }
   sealed trait FieldDef[T] {
     type Out
     def apply(value: T): Out
@@ -175,15 +178,21 @@ object FormFieldDirectives extends FormFieldDirectives {
     implicit def forString(implicit
         sfu: SFU,
         fu: FSFFU[String]): FieldDefAux[String, Directive1[String]] =
-      extractField[String, String] { fieldName ⇒ filter(fieldName, fu) }
+      extractField[String, String] { fieldName ⇒
+        filter(fieldName, fu)
+      }
     implicit def forSymbol(implicit
         sfu: SFU,
         fu: FSFFU[String]): FieldDefAux[Symbol, Directive1[String]] =
-      extractField[Symbol, String] { symbol ⇒ filter(symbol.name, fu) }
+      extractField[Symbol, String] { symbol ⇒
+        filter(symbol.name, fu)
+      }
     implicit def forNR[T](implicit
         sfu: SFU,
         fu: FSFFU[T]): FieldDefAux[NameReceptacle[T], Directive1[T]] =
-      extractField[NameReceptacle[T], T] { nr ⇒ filter(nr.name, fu) }
+      extractField[NameReceptacle[T], T] { nr ⇒
+        filter(nr.name, fu)
+      }
     implicit def forNUR[T](implicit
         sfu: SFU): FieldDefAux[NameUnmarshallerReceptacle[T], Directive1[T]] =
       extractField[NameUnmarshallerReceptacle[T], T] { nr ⇒
@@ -254,7 +263,9 @@ object FormFieldDirectives extends FormFieldDirectives {
           Future.sequence(form.fields.collect {
             case (`fieldName`, value) ⇒ fu(value)
           }))
-      }.flatMap { result ⇒ handleFieldResult(fieldName, result) }
+      }.flatMap { result ⇒
+        handleFieldResult(fieldName, result)
+      }
     implicit def forRepVR[T](implicit sfu: SFU, fu: FSFFU[T])
         : FieldDefAux[RepeatedValueReceptacle[T], Directive1[Iterable[T]]] =
       extractField[RepeatedValueReceptacle[T], Iterable[T]] { rvr ⇒
@@ -283,8 +294,12 @@ object FormFieldDirectives extends FormFieldDirectives {
           ev: Join[TA, TB]): BinaryPolyFunc.Case[
         Directive[TA],
         P,
-        ConvertFieldDefAndConcatenate.type] { type Out = Directive[ev.Out] } =
-        at[Directive[TA], P] { (a, t) ⇒ a & fdef(t) }
+        ConvertFieldDefAndConcatenate.type] {
+        type Out = Directive[ev.Out]
+      } =
+        at[Directive[TA], P] { (a, t) ⇒
+          a & fdef(t)
+        }
     }
   }
 }

@@ -8,5 +8,7 @@ class A extends Product1[Int] {
 object d {
   def unapply(a: Any) = new A
   val p: Any = ???
-  val f = p match { case d(1) => true; case _ => false }
+  val f = p match {
+    case d(1) => true; case _ => false
+  }
 }

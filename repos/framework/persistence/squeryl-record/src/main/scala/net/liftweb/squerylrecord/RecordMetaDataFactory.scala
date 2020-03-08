@@ -29,7 +29,9 @@ import net.liftweb.record.OptionalTypedField
 
 /** FieldMetaDataFactory that allows Squeryl to use Records as model objects. */
 class RecordMetaDataFactory extends FieldMetaDataFactory {
-  private val rec: { type R0 <: Record[R0] } = null
+  private val rec: {
+    type R0 <: Record[R0]
+  } = null
   private type Rec = rec.R0
 
   /** Cache MetaRecords by the model object class (Record class) */

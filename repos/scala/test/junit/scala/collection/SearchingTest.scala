@@ -19,7 +19,9 @@ class SearchingTest {
       def seq = list
       def iterator = list.iterator
       def length = list.length
-      def apply(idx: Int) = { elementsAccessed += idx; list(idx) }
+      def apply(idx: Int) = {
+        elementsAccessed += idx; list(idx)
+      }
     }
 
     val coll = new TestSeq((0 to 6).toList)
@@ -41,7 +43,9 @@ class SearchingTest {
       protected[this] def newBuilder = ??? // not needed for this test
       def seq = vec
       def length = vec.length
-      def apply(idx: Int) = { elementsAccessed += idx; vec(idx) }
+      def apply(idx: Int) = {
+        elementsAccessed += idx; vec(idx)
+      }
     }
 
     val coll = new TestIndexedSeq((0 to 6).toVector)

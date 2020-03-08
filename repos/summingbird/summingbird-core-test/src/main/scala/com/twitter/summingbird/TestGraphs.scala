@@ -178,7 +178,9 @@ object TestGraphs {
       fnA: T => TraversableOnce[(K1, V)],
       fnB: K1 => TraversableOnce[K2]): Map[K2, V] =
     MapAlgebra.sumByKey(
-      source.flatMap(fnA).flatMap { x => fnB(x._1).map((_, x._2)) }
+      source.flatMap(fnA).flatMap { x =>
+        fnB(x._1).map((_, x._2))
+      }
     )
 
   def singleStepMapKeysJob[P <: Platform[P], T, K1, K2, V: Monoid](
@@ -199,8 +201,12 @@ object TestGraphs {
     MapAlgebra.sumByKey(
       source
         .flatMap(preJoinFn)
-        .flatMap { case (k, v) => List((k, v), (k, v)) }
-        .map { case (k, v) => (k, (v, service(k))) }
+        .flatMap {
+          case (k, v) => List((k, v), (k, v))
+        }
+        .map {
+          case (k, v) => (k, (v, service(k)))
+        }
         .flatMap(postJoinFn)
     )
 
@@ -213,7 +219,9 @@ object TestGraphs {
     source
       .name("My named source")
       .flatMap(preJoinFn)
-      .flatMap { case (k, v) => List((k, v), (k, v)) }
+      .flatMap {
+        case (k, v) => List((k, v), (k, v))
+      }
       .leftJoin(service)
       .name("My named flatmap")
       .flatMap(postJoinFn)
@@ -226,7 +234,9 @@ object TestGraphs {
     MapAlgebra.sumByKey(
       source
         .flatMap(preJoinFn)
-        .map { case (k, v) => (k, (v, service(k))) }
+        .map {
+          case (k, v) => (k, (v, service(k)))
+        }
         .flatMap(postJoinFn)
     )
 
@@ -251,8 +261,15 @@ object TestGraphs {
     MapAlgebra.sumByKey(
       source
         .flatMap(preJoinFn)
-        .map { case (k, v) => (k, (v, service(k))) }
-        .flatMap { case (k, v) => postJoinFn(v).map { v => (k, v) } }
+        .map {
+          case (k, v) => (k, (v, service(k)))
+        }
+        .flatMap {
+          case (k, v) =>
+            postJoinFn(v).map { v =>
+              (k, v)
+            }
+        }
     )
 
   def leftJoinJobWithFlatMapValues[
@@ -303,18 +320,26 @@ object TestGraphs {
         .toList
         .groupBy(_._1)
         .mapValues {
-          _.map { case (time, (k, joinedu)) => (k, joinedu) }
-            .groupBy(_._1)
-            .mapValues { l => scanSum(l.iterator.map(_._2)).toList }
+          _.map {
+            case (time, (k, joinedu)) => (k, joinedu)
+          }.groupBy(_._1)
+            .mapValues { l =>
+              scanSum(l.iterator.map(_._2)).toList
+            }
             .toIterable
             .flatMap {
-              case (k, lv) => lv.map { case (optju, ju) => (k, (optju, ju)) }
+              case (k, lv) =>
+                lv.map {
+                  case (optju, ju) => (k, (optju, ju))
+                }
             }
         }
         .toIterable
         .flatMap {
           case (time, lv) =>
-            lv.map { case (k, (optju, ju)) => (time, (k, (optju, ju))) }
+            lv.map {
+              case (k, (optju, ju)) => (time, (k, (optju, ju)))
+            }
         }
 
     // zip the left and right streams
@@ -322,7 +347,9 @@ object TestGraphs {
       source2
         .flatMap(simpleFM2)
         .toList
-        .map { case (time, (k, u)) => (k, (time, Left(u))) }
+        .map {
+          case (time, (k, u)) => (k, (time, Left(u)))
+        }
         .++(sumStream.map {
           case (time, (k, (optju, ju))) => (k, (time, Right(ju)))
         })
@@ -357,18 +384,25 @@ object TestGraphs {
         }
         .toList
         .flatMap {
-          case (k, lv) => lv.map { case ((_, optuju)) => (k, optuju) }
+          case (k, lv) =>
+            lv.map {
+              case ((_, optuju)) => (k, optuju)
+            }
         }
         .flatMap {
           case (k, opt) =>
-            opt.map { case (time, u, optju) => (time, (k, (u, optju))) }
+            opt.map {
+              case (time, u, optju) => (time, (k, (u, optju)))
+            }
         }
 
     // compute the final store result after join
     val finalStore = MapAlgebra.sumByKey(
       resultStream
         .flatMap(postJoinFn)
-        .map { case (time, (k, v)) => (k, v) } // drop the time
+        .map {
+          case (time, (k, v)) => (k, v)
+        } // drop the time
     )
     (firstStore, finalStore)
   }
@@ -415,7 +449,9 @@ object TestGraphs {
       source
         .flatMap(simpleFM)
         .toList
-        .map { case (time, (k, u)) => (k, (time, Left(u))) }
+        .map {
+          case (time, (k, u)) => (k, (time, Left(u)))
+        }
 
     // scan left to join the left values and the right summing result stream
     val resultStream = loopJoinInScala(leftAndRight, flatMapValuesFn)
@@ -423,14 +459,20 @@ object TestGraphs {
     // compute the final store result after join
     val rightStream = resultStream
       .flatMap {
-        case (k, lopts) => lopts.map { case ((_, optoptv)) => (k, optoptv) }
+        case (k, lopts) =>
+          lopts.map {
+            case ((_, optoptv)) => (k, optoptv)
+          }
       }
 
     // compute the final store result after join
     MapAlgebra.sumByKey(
       rightStream
         .flatMap {
-          case (k, opt) => opt.map { case (time, (optv, v)) => (k, v) }
+          case (k, opt) =>
+            opt.map {
+              case (time, (optv, v)) => (k, v)
+            }
         } // drop time and opt[v]
     )
   }
@@ -468,19 +510,27 @@ object TestGraphs {
       source
         .flatMap(simpleFM)
         .toList
-        .map { case (time, (k, u)) => (k, (time, Left(u))) }
+        .map {
+          case (time, (k, u)) => (k, (time, Left(u)))
+        }
 
     // scan left to join the left values and the right summing result stream
     val resultStream = loopJoinInScala(leftAndRight, flatMapValuesFn)
 
     val leftStream = resultStream
       .flatMap {
-        case (k, lopts) => lopts.map { case ((optuoptv, _)) => (k, optuoptv) }
+        case (k, lopts) =>
+          lopts.map {
+            case ((optuoptv, _)) => (k, optuoptv)
+          }
       }
 
     val rightStream = resultStream
       .flatMap {
-        case (k, lopts) => lopts.map { case ((_, optoptv)) => (k, optoptv) }
+        case (k, lopts) =>
+          lopts.map {
+            case ((_, optoptv)) => (k, optoptv)
+          }
       }
 
     // compute the first store using the join stream as input
@@ -488,17 +538,24 @@ object TestGraphs {
       leftStream
         .flatMap {
           case (k, opt) =>
-            opt.map { case (time, (u, optv)) => (time, (k, (u, optv))) }
+            opt.map {
+              case (time, (u, optv)) => (time, (k, (u, optv)))
+            }
         }
         .flatMap(flatMapFn(_))
-        .map { case (time, (k, v)) => (k, v) } // drop the time
+        .map {
+          case (time, (k, v)) => (k, v)
+        } // drop the time
     )
 
     // compute the final store result after join
     val storeAfterJoin = MapAlgebra.sumByKey(
       rightStream
         .flatMap {
-          case (k, opt) => opt.map { case (time, (optv, v)) => (k, v) }
+          case (k, opt) =>
+            opt.map {
+              case (time, (optv, v)) => (k, v)
+            }
         } // drop time and opt[v]
     )
 
@@ -605,7 +662,9 @@ object TestGraphs {
     val data3 = source3.flatMap(simpleFM3)
     val data4 = source4
       .map(preJoin)
-      .map { case (k, v) => (k, (v, service(k))) }
+      .map {
+        case (k, v) => (k, (v, service(k)))
+      }
       .flatMap(postJoin)
     MapAlgebra.sumByKey(data1 ::: data2 ::: data3 ::: data4)
   }
@@ -651,10 +710,20 @@ object TestGraphs {
       source: Producer[P, T],
       srv: P#Service[T, U],
       sink: P#Sink[(T, U)]): TailProducer[P, (T, U)] =
-    source.lookup(srv).collectValues { case Some(v) => v }.write(sink)
+    source
+      .lookup(srv)
+      .collectValues {
+        case Some(v) => v
+      }
+      .write(sink)
 
   def lookupJobInScala[T, U](in: List[T], srv: (T) => Option[U]): List[(T, U)] =
-    in.map { t => (t, srv(t)) }.collect { case (t, Some(u)) => (t, u) }
+    in.map { t =>
+        (t, srv(t))
+      }
+      .collect {
+        case (t, Some(u)) => (t, u)
+      }
 
   def twoSumByKey[P <: Platform[P], K, V: Monoid, K2](
       source: Producer[P, (K, V)],
@@ -673,10 +742,19 @@ object TestGraphs {
     val sum1 = MapAlgebra.sumByKey(in)
     val sumStream = in
       .groupBy(_._1)
-      .mapValues { l => scanSum(l.iterator.map(_._2)).toList }
+      .mapValues { l =>
+        scanSum(l.iterator.map(_._2)).toList
+      }
       .toIterable
-      .flatMap { case (k, lv) => lv.map((k, _)) }
-    val v2 = sumStream.map { case (k, (_, v)) => fn(k).map { (_, v) } }.flatten
+      .flatMap {
+        case (k, lv) => lv.map((k, _))
+      }
+    val v2 = sumStream.map {
+      case (k, (_, v)) =>
+        fn(k).map {
+          (_, v)
+        }
+    }.flatten
     val sum2 = MapAlgebra.sumByKey(v2)
     (sum1, sum2)
   }
@@ -691,10 +769,16 @@ object TestGraphs {
     val fmCounter = Counter(Group("counter.test"), Name("fm_counter"))
     val fltrCounter = Counter(Group("counter.test"), Name("fltr_counter"))
     source
-      .flatMap { x => origCounter.incr; fn(x) }
+      .flatMap { x =>
+        origCounter.incr; fn(x)
+      }
       .name("FM")
-      .filter { x => fmCounter.incrBy(2); true }
-      .map { x => fltrCounter.incr; x }
+      .filter { x =>
+        fmCounter.incrBy(2); true
+      }
+      .map { x =>
+        fltrCounter.incr; x
+      }
       .sumByKey(store)
   }
 }
@@ -794,7 +878,9 @@ class TestGraphs[
       .sumByKey(
         items
           .flatMap(preJoinFn)
-          .map { case (k, u) => (k, (u, serviceFn(k))) }
+          .map {
+            case (k, u) => (k, (u, serviceFn(k)))
+          }
           .flatMap(postJoinFn)
       )
       .forall {

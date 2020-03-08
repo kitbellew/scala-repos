@@ -264,7 +264,9 @@ object Index {
     * Loads a String index, one line per item with line
     * numbers (starting at 0) as the indices.
     */
-  def load(source: { def getLines: Iterator[String] }): Index[String] = {
+  def load(source: {
+    def getLines: Iterator[String]
+  }): Index[String] = {
     apply(source.getLines.map(_.stripLineEnd))
   }
 
@@ -297,11 +299,18 @@ class EitherIndex[L, R](left: Index[L], right: Index[R])
   }
 
   def pairs =
-    left.pairs.map { case (l, i) => Left(l) -> i } ++ right.pairs.map {
-      case (r, i)                => Right(r) -> (i + left.size)
+    left.pairs.map {
+      case (l, i) => Left(l) -> i
+    } ++ right.pairs.map {
+      case (r, i) => Right(r) -> (i + left.size)
     }
 
-  def iterator = left.iterator.map { Left(_) } ++ right.map { Right(_) }
+  def iterator =
+    left.iterator.map {
+      Left(_)
+    } ++ right.map {
+      Right(_)
+    }
 
   override def size: Int = left.size + right.size
 }
@@ -330,10 +339,14 @@ class OptionIndex[T](inner: Index[T]) extends Index[Option[T]] {
   }
 
   def pairs =
-    inner.pairs.map { case (l, i) => Some(l) -> i } ++ Iterator(
-      None -> inner.size)
+    inner.pairs.map {
+      case (l, i) => Some(l) -> i
+    } ++ Iterator(None -> inner.size)
 
-  def iterator = inner.iterator.map { Some(_) } ++ Iterator(None)
+  def iterator =
+    inner.iterator.map {
+      Some(_)
+    } ++ Iterator(None)
 
   override def size: Int = inner.size + 1
 }
@@ -344,8 +357,11 @@ class OptionIndex[T](inner: Index[T]) extends Index[Option[T]] {
   * @author dlwh
   */
 final class CompositeIndex[U](indices: Index[_ <: U]*) extends Index[(Int, U)] {
-  private val offsets: Array[Int] =
-    indices.unfold(0) { (n, i) => n + i.size }.toArray
+  private val offsets: Array[Int] = indices
+    .unfold(0) { (n, i) =>
+      n + i.size
+    }
+    .toArray
 
   /** If you know which component, and which index in that component,
     * you can quickly get its mapped value with this function.
@@ -378,11 +394,17 @@ final class CompositeIndex[U](indices: Index[_ <: U]*) extends Index[(Int, U)] {
 
   def pairs =
     indices.iterator.zipWithIndex.flatMap {
-      case (index, i) => index.iterator.map { t => (i, t: U) }
+      case (index, i) =>
+        index.iterator.map { t =>
+          (i, t: U)
+        }
     }.zipWithIndex
 
   def iterator = indices.iterator.zipWithIndex.flatMap {
-    case (index, i) => index.iterator.map { t => (i -> t) }
+    case (index, i) =>
+      index.iterator.map { t =>
+        (i -> t)
+      }
   }
 
   override def size: Int = offsets(offsets.length - 1)

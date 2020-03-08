@@ -222,7 +222,9 @@ class AccountServiceSpec extends TestAccountService with Tags {
     "create accounts" in {
       createAccount("test0001@email.com", "12345").copoint must beLike {
         case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) =>
-          jvalue \ "accountId" must beLike { case JString(id) => ok }
+          jvalue \ "accountId" must beLike {
+            case JString(id) => ok
+          }
       }
     }
 

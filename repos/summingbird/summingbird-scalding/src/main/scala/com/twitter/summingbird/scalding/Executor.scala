@@ -111,7 +111,9 @@ object Executor {
           throw f
         } else {
           logger.info("[ERROR]: ========== FlowPlanException =========")
-          errs.foreach { logger.info(_) }
+          errs.foreach {
+            logger.info(_)
+          }
           logger.info("========== FlowPlanException =========")
         }
     }

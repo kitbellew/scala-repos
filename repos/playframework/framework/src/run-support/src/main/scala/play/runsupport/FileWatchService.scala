@@ -39,7 +39,11 @@ trait FileWatchService {
     * @return A watcher
     */
   def watch(filesToWatch: List[File], onChange: Callable[Void]): FileWatcher = {
-    watch(JavaConversions.asScalaBuffer(filesToWatch), () => { onChange.call })
+    watch(
+      JavaConversions.asScalaBuffer(filesToWatch),
+      () => {
+        onChange.call
+      })
   }
 
 }

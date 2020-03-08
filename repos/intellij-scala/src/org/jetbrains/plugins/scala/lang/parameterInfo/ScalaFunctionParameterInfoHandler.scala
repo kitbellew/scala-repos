@@ -636,7 +636,9 @@ class ScalaFunctionParameterInfoHandler
                         for (typez <- call.getEffectiveInvokedExpr.getType(
                                TypingContext.empty
                              )) //todo: implicit conversions
-                          { collectForType(typez) }
+                          {
+                            collectForType(typez)
+                          }
                     }
                   } else {
                     val variants: Array[ResolveResult] = ref.getSameNameVariants

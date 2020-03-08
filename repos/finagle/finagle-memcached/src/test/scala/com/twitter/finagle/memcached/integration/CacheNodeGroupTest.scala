@@ -76,7 +76,9 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
     shutdownRegistry.execute()
 
     // shutdown memcached server
-    testServers foreach { case (s, _) => s.stop() }
+    testServers foreach {
+      case (s, _) => s.stop()
+    }
     testServers = List()
   }
 

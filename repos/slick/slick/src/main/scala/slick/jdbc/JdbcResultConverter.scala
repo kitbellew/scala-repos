@@ -81,7 +81,9 @@ class DefaultingResultConverter[
     super.getDumpInfo.copy(
       mainInfo = s"idx=$idx, default=" + {
         try default()
-        catch { case e: Throwable => "[" + e.getClass.getName + "]" }
+        catch {
+          case e: Throwable => "[" + e.getClass.getName + "]"
+        }
       },
       attrInfo = ": " + ti)
   def width = 1

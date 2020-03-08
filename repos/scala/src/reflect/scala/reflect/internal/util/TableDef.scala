@@ -25,7 +25,9 @@ class TableDef[T](_cols: Column[T]*) {
   def colNames = cols map (_.name)
   def colFunctions = cols map (_.f)
   def colApply(el: T) = colFunctions map (f => f(el))
-  def retThis(body: => Unit): this.type = { body; this }
+  def retThis(body: => Unit): this.type = {
+    body; this
+  }
 
   class Table(val rows: Seq[T]) extends Seq[T] {
     def iterator = rows.iterator
@@ -48,7 +50,9 @@ class TableDef[T](_cols: Column[T]*) {
     )
 
     def mkFormatString(sepf: Int => String): String =
-      specs.zipWithIndex map { case (c, i) => c + sepf(i) } mkString
+      specs.zipWithIndex map {
+        case (c, i) => c + sepf(i)
+      } mkString
 
     def toFormattedSeq = argLists map (xs => rowFormat.format(xs: _*))
     def allToSeq = headers ++ toFormattedSeq

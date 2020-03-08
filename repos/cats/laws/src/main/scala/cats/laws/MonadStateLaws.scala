@@ -20,5 +20,7 @@ trait MonadStateLaws[F[_], S] extends MonadLaws[F] {
 
 object MonadStateLaws {
   def apply[F[_], S](implicit FS: MonadState[F, S]): MonadStateLaws[F, S] =
-    new MonadStateLaws[F, S] { def F: MonadState[F, S] = FS }
+    new MonadStateLaws[F, S] {
+      def F: MonadState[F, S] = FS
+    }
 }

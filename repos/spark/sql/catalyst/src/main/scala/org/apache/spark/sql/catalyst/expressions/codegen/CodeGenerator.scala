@@ -164,7 +164,11 @@ class CodegenContext {
   val subexprFunctions = mutable.ArrayBuffer.empty[String]
 
   def declareAddedFunctions(): String = {
-    addedFunctions.map { case (funcName, funcCode) => funcCode }.mkString("\n")
+    addedFunctions
+      .map {
+        case (funcName, funcCode) => funcCode
+      }
+      .mkString("\n")
   }
 
   final val JAVA_BOOLEAN = "boolean"

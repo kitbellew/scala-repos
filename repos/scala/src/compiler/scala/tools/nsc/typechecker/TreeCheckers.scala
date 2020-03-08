@@ -181,7 +181,9 @@ abstract class TreeCheckers extends Analyzer {
     if (p eq null) ""
     else {
       try p.source.path + ":" + p.line
-      catch { case _: UnsupportedOperationException => p.toString }
+      catch {
+        case _: UnsupportedOperationException => p.toString
+      }
     }
   )
 
@@ -485,7 +487,9 @@ abstract class TreeCheckers extends Analyzer {
       private def checkReturnReferencesDirectlyEnclosingDef(tree: Tree): Unit =
         tree match {
           case _: Return =>
-            path collectFirst { case dd: DefDef => dd } match {
+            path collectFirst {
+              case dd: DefDef => dd
+            } match {
               case None =>
                 errorFn(s"Return node ($tree) must be enclosed in a DefDef")
               case Some(dd) if tree.symbol != dd.symbol =>

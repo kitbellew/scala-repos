@@ -6,7 +6,9 @@ private[tests] trait Reporter {
 
 /** Reporter that simply prints all messages in the standard output.*/
 private[tests] object ConsoleReporter extends Reporter {
-  def println(msg: Any) { Console.println(msg) }
+  def println(msg: Any) {
+    Console.println(msg)
+  }
 }
 
 /** Reporter that swallows all passed message. */

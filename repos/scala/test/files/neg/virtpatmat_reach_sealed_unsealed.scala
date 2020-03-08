@@ -13,8 +13,12 @@ object Test extends App {
     case A(_) =>
   }
 
-  (true: Boolean) match { case true => } // not exhaustive, but reachable
-  (true: Boolean) match { case true => case false => } // exhaustive, reachable
+  (true: Boolean) match {
+    case true =>
+  } // not exhaustive, but reachable
+  (true: Boolean) match {
+    case true => case false =>
+  } // exhaustive, reachable
   (true: Boolean) match {
     case true => case false => case _ =>
   } // exhaustive, last case is unreachable

@@ -126,7 +126,9 @@ class PromiseTest extends FunSuite {
     val exc = new NoSuchMethodException
 
     Monitor.using(m) {
-      p ensure { throw exc }
+      p ensure {
+        throw exc
+      }
     }
 
     assert(m.handled == null)
@@ -140,7 +142,9 @@ class PromiseTest extends FunSuite {
     val p = new Promise[Int]
 
     Monitor.using(m) {
-      p transform { case _ => throw exc }
+      p transform {
+        case _ => throw exc
+      }
     }
 
     assert(m.handled == null)

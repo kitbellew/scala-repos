@@ -182,7 +182,9 @@ private[finagle] class TrafficDistributor[Req, Rep](
                 val closeGate = new Promise[Unit]
                 val endpoint = new ServiceFactoryProxy(newEndpoint(addr)) {
                   override def close(when: Time) =
-                    (closeGate or outerClose).before { super.close(when) }
+                    (closeGate or outerClose).before {
+                      super.close(when)
+                    }
                 }
                 cache.updated(
                   addr,
@@ -285,7 +287,13 @@ private[finagle] class TrafficDistributor[Req, Rep](
       classes: Iterable[WeightClass[Req, Rep]]): Unit = {
     val size = classes.map(_.size).sum
     meanWeight =
-      if (size != 0) classes.map { c => c.weight * c.size }.sum.toFloat / size
+      if (size != 0)
+        classes
+          .map { c =>
+            c.weight * c.size
+          }
+          .sum
+          .toFloat / size
       else 0.0f
   }
 

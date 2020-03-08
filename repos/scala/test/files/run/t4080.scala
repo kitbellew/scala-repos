@@ -8,6 +8,8 @@ object Test {
     println(ll)
     val ll2 = LinkedList[Int]()
     try println("Empty head? " + ll2.head)
-    catch { case _: NoSuchElementException => () }
+    catch {
+      case _: NoSuchElementException => ()
+    }
   }
 }

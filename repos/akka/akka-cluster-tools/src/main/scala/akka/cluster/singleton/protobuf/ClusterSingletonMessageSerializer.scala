@@ -33,10 +33,18 @@ private[akka] class ClusterSingletonMessageSerializer(
 
   private val fromBinaryMap =
     collection.immutable.HashMap[String, Array[Byte] ⇒ AnyRef](
-      HandOverToMeManifest -> { _ ⇒ HandOverToMe },
-      HandOverInProgressManifest -> { _ ⇒ HandOverInProgress },
-      HandOverDoneManifest -> { _ ⇒ HandOverDone },
-      TakeOverFromMeManifest -> { _ ⇒ TakeOverFromMe }
+      HandOverToMeManifest -> { _ ⇒
+        HandOverToMe
+      },
+      HandOverInProgressManifest -> { _ ⇒
+        HandOverInProgress
+      },
+      HandOverDoneManifest -> { _ ⇒
+        HandOverDone
+      },
+      TakeOverFromMeManifest -> { _ ⇒
+        TakeOverFromMe
+      }
     )
 
   override def manifest(obj: AnyRef): String = obj match {

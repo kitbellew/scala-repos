@@ -42,7 +42,11 @@ trait ClusteringTestSupport {
     def genPoint(x: => Double): Array[Double] = Array.fill(dimension)(x)
 
     val s = math.pow(2 * k, 1.0 / dimension)
-    val centers = (1 to k).map({ _ => genPoint(nextDouble * s) }).toArray
+    val centers = (1 to k)
+      .map({ _ =>
+        genPoint(nextDouble * s)
+      })
+      .toArray
     val points = (1 to n)
       .map({ _ =>
         val c = nextInt(k)
@@ -66,7 +70,9 @@ trait ClusteringTestSupport {
   }
 
   def writeRValuesToDataset[A](jvals: List[RValue])(f: String => A): A = {
-    val lines = jvals map { _.toJValue.renderCompact }
+    val lines = jvals map {
+      _.toJValue.renderCompact
+    }
     val tmpFile = File.createTempFile("values", ".json")
     IOUtils.writeSeqToFile(lines, tmpFile).unsafePerformIO
     val pointsString0 = "filesystem" + tmpFile.toString

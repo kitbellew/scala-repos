@@ -46,7 +46,9 @@ final object Aggregation {
   type Values[T] = Seq[KeyValue[T]]
   type AnyKeys = Values[_]
   def seqParser[T](ps: Values[Parser[T]]): Parser[Seq[KeyValue[T]]] =
-    seq(ps.map { case KeyValue(k, p) => p.map(v => KeyValue(k, v)) })
+    seq(ps.map {
+      case KeyValue(k, p) => p.map(v => KeyValue(k, v))
+    })
 
   def applyTasks[T](
       s: State,
@@ -77,7 +79,9 @@ final object Aggregation {
     import complete._
     val log = state.log
     val extracted = Project extract state
-    val success = results match { case Value(_) => true; case Inc(_) => false }
+    val success = results match {
+      case Value(_) => true; case Inc(_) => false
+    }
     results.toEither.right.foreach { r =>
       if (show.taskValues) printSettings(r, show.print)
     }
@@ -95,7 +99,9 @@ final object Aggregation {
     val toRun = ts map {
       case KeyValue(k, t) => t.map(v => KeyValue(k, v))
     } join;
-    val roots = ts map { case KeyValue(k, _) => k }
+    val roots = ts map {
+      case KeyValue(k, _) => k
+    }
     val config = extractedTaskConfig(extracted, structure, s)
 
     val start = System.currentTimeMillis
@@ -238,7 +244,9 @@ final object Aggregation {
   private[this] def castToAny[T[_]](t: T[_]): T[Any] = t.asInstanceOf[T[Any]]
 
   private[this] def maps[T, S](vs: Values[T])(f: T => S): Values[S] =
-    vs map { case KeyValue(k, v) => KeyValue(k, f(v)) }
+    vs map {
+      case KeyValue(k, v) => KeyValue(k, f(v))
+    }
 
   def projectAggregates[Proj](
       proj: Option[Reference],

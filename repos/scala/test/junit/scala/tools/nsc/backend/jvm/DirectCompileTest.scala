@@ -11,7 +11,9 @@ import scala.tools.testing.ClearAfterClass
 
 object DirectCompileTest extends ClearAfterClass.Clearable {
   var compiler = newCompiler(extraArgs = "-Yopt:l:method")
-  def clear(): Unit = { compiler = null }
+  def clear(): Unit = {
+    compiler = null
+  }
 }
 
 @RunWith(classOf[JUnit4])

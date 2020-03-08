@@ -55,7 +55,9 @@ object NameSuggester {
     expr.getTypeIgnoreBaseType(TypingContext.empty).foreach(types += _)
     if (typez != null && typez == Unit) types += typez
 
-    for (tpe <- types.reverse) { generateNamesByType(tpe)(names, validator) }
+    for (tpe <- types.reverse) {
+      generateNamesByType(tpe)(names, validator)
+    }
     generateNamesByExpr(expr)(names, validator)
 
     val result =

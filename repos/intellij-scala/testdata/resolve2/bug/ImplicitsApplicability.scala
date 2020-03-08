@@ -5,9 +5,13 @@ object ImplicitsApplicability {
     implicit def v2t(v: V): T = error("")
   }
 
-  class U { def u = 0 }
+  class U {
+    def u = 0
+  }
 
-  class T { def t = 0 }
+  class T {
+    def t = 0
+  }
   object T {
     implicit def t2u(t: T): U = error("")
     implicit def u2t(u: U): T = error("")

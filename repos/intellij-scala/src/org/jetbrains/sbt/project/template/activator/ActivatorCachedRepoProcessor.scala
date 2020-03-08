@@ -104,7 +104,9 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
             error("Can't process templates list", io);
             Map.empty[String, ActivatorRepoProcessor.DocData]
         },
-        { case io: IOException => }) { extracted =>
+        {
+          case io: IOException =>
+        }) { extracted =>
         ZipUtil.extract(location, extracted, null)
 
         import org.apache.lucene
@@ -122,7 +124,9 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
         val searcher = new IndexSearcher(reader)
         val docs =
           searcher.search(new lucene.search.MatchAllDocsQuery, reader.maxDoc())
-        val data = docs.scoreDocs.map { case doc => reader document doc.doc }
+        val data = docs.scoreDocs.map {
+          case doc => reader document doc.doc
+        }
 
         data.map {
           case docData => Keys.from(docData)

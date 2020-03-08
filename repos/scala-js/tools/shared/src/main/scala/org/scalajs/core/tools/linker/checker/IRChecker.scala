@@ -453,7 +453,9 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
         env
 
       case Block(stats) =>
-        (env /: stats) { (prevEnv, stat) => typecheckStat(stat, prevEnv) }
+        (env /: stats) { (prevEnv, stat) =>
+          typecheckStat(stat, prevEnv)
+        }
         env
 
       case Labeled(label, NoType, body) =>
@@ -583,7 +585,9 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
           .fold[Unit] {
             reportError(s"Cannot return to label $label.")
             typecheckExpr(expr, env)
-          } { returnType => typecheckExpect(expr, env, returnType) }
+          } { returnType =>
+            typecheckExpect(expr, env, returnType)
+          }
 
       case If(cond, thenp, elsep) =>
         val tpe = tree.tpe
@@ -922,7 +926,9 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
     val resultType = resultRefType.fold[Type] {
       if (isConstructorName(encodedName)) NoType
       else AnyType // reflective proxy
-    } { refType => refTypeToType(refType) }
+    } { refType =>
+      refTypeToType(refType)
+    }
 
     (paramTypes, resultType)
   }
@@ -1014,7 +1020,9 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
         val parents = info.superClass ++: info.interfaces
         parents.exists(_ == rhs) || parents.exists(isSubclass(_, rhs))
       },
-      { lhsClass => lhsClass.ancestors.contains(rhs) }
+      { lhsClass =>
+        lhsClass.ancestors.contains(rhs)
+      }
     )
   }
 

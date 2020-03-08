@@ -47,8 +47,12 @@ object HttpRequest {
       if (line == "") {
         // end of headers
         val contentLength = headers
-          .find { _.name == "content-length" }
-          .map { _.value.toInt }
+          .find {
+            _.name == "content-length"
+          }
+          .map {
+            _.value.toInt
+          }
           .getOrElse(0)
         readBytes(contentLength) { data =>
           emit(HttpRequest(requestLine, headers.reverse, data))

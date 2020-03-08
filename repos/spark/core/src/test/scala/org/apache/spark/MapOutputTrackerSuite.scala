@@ -141,7 +141,9 @@ class MapOutputTrackerSuite extends SparkFunSuite {
     // The remaining reduce task might try to grab the output despite the shuffle failure;
     // this should cause it to fail, and the scheduler will ignore the failure due to the
     // stage already being aborted.
-    intercept[FetchFailedException] { tracker.getMapSizesByExecutorId(10, 1) }
+    intercept[FetchFailedException] {
+      tracker.getMapSizesByExecutorId(10, 1)
+    }
 
     tracker.stop()
     rpcEnv.shutdown()

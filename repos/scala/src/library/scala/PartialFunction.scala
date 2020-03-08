@@ -139,8 +139,9 @@ trait PartialFunction[-A, +B] extends (A => B) { self =>
     */
   def runWith[U](action: B => U): A => Boolean = { x =>
     val z = applyOrElse(x, checkFallback[B])
-    if (!fallbackOccurred(z)) { action(z); true }
-    else false
+    if (!fallbackOccurred(z)) {
+      action(z); true
+    } else false
   }
 }
 
@@ -260,9 +261,13 @@ object PartialFunction {
   /** Converts ordinary function to partial one
     *  @since   2.10
     */
-  def apply[A, B](f: A => B): PartialFunction[A, B] = { case x => f(x) }
+  def apply[A, B](f: A => B): PartialFunction[A, B] = {
+    case x => f(x)
+  }
 
-  private[this] val constFalse: Any => Boolean = { _ => false }
+  private[this] val constFalse: Any => Boolean = { _ =>
+    false
+  }
 
   private[this] val empty_pf: PartialFunction[Any, Nothing] =
     new PartialFunction[Any, Nothing] with Serializable {

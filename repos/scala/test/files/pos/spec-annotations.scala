@@ -12,10 +12,14 @@ object Test {
   // bug #1028
   val x = 1
   @ann(x) val a = ()
-  @ann({ val y = 2; y }) val b = ()
+  @ann({
+    val y = 2; y
+  }) val b = ()
 
   def c: Int @ann(x) = 1
-  def d: String @ann({ val z = 0; z - 1 }) = "2"
+  def d: String @ann({
+    val z = 0; z - 1
+  }) = "2"
   def e[@deprecated T, U](x: T) = x
 
   //bug #1214
@@ -24,9 +28,15 @@ object Test {
   import scala.beans.BeanProperty
 
   // bug #637
-  trait S { def getField(): Int }
-  class O extends S { @BeanProperty val field = 0 }
+  trait S {
+    def getField(): Int
+  }
+  class O extends S {
+    @BeanProperty val field = 0
+  }
 
   // bug #1070
-  trait T { @BeanProperty var field = 1 }
+  trait T {
+    @BeanProperty var field = 1
+  }
 }

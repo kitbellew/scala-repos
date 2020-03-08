@@ -216,7 +216,9 @@ trait Future[+T] extends Awaitable[T] {
     *               the return value of `f` will be discarded.
     */
   def foreach[U](f: T => U)(implicit executor: ExecutionContext): Unit =
-    onComplete { _ foreach f }
+    onComplete {
+      _ foreach f
+    }
 
   /** Creates a new future by applying the 's' function to the successful result of
     *  this future, or the 'f' function to the failed result. If there is any non-fatal
@@ -390,7 +392,9 @@ trait Future[+T] extends Awaitable[T] {
     */
   def recover[U >: T](pf: PartialFunction[Throwable, U])(
       implicit executor: ExecutionContext): Future[U] =
-    transform { _ recover pf }
+    transform {
+      _ recover pf
+    }
 
   /** Creates a new future that will handle any matching throwable that this
     *  future might contain by assigning it a value of another future.
@@ -430,7 +434,9 @@ trait Future[+T] extends Awaitable[T] {
     */
   def zip[U](that: Future[U]): Future[(T, U)] = {
     implicit val ec = internalExecutor
-    flatMap { r1 => that.map(r2 => (r1, r2)) }
+    flatMap { r1 =>
+      that.map(r2 => (r1, r2))
+    }
   }
 
   /** Zips the values of `this` and `that` future using a function `f`,
@@ -475,7 +481,11 @@ trait Future[+T] extends Awaitable[T] {
     if (this eq that) this
     else {
       implicit val ec = internalExecutor
-      recoverWith { case _ => that } recoverWith { case _ => this }
+      recoverWith {
+        case _ => that
+      } recoverWith {
+        case _ => this
+      }
     }
 
   /** Creates a new `Future[S]` which is completed with this `Future`'s result if
@@ -526,7 +536,9 @@ trait Future[+T] extends Awaitable[T] {
       implicit executor: ExecutionContext): Future[T] =
     transform { result =>
       try pf.applyOrElse[Try[T], Any](result, Predef.conforms[Try[T]])
-      catch { case NonFatal(t) => executor reportFailure t }
+      catch {
+        case NonFatal(t) => executor reportFailure t
+      }
 
       result
     }
@@ -691,7 +703,9 @@ object Future {
       implicit executor: ExecutionContext): Future[T] = {
     val p = Promise[T]()
     val completeFirst: Try[T] => Unit = p tryComplete _
-    futures foreach { _ onComplete completeFirst }
+    futures foreach {
+      _ onComplete completeFirst
+    }
     p.future
   }
 
@@ -783,7 +797,10 @@ object Future {
       prevValue: R,
       op: (R, T) => R)(implicit executor: ExecutionContext): Future[R] =
     if (!i.hasNext) successful(prevValue)
-    else i.next().flatMap { value => foldNext(i, op(prevValue, value), op) }
+    else
+      i.next().flatMap { value =>
+        foldNext(i, op(prevValue, value), op)
+      }
 
   /** A non-blocking, asynchronous fold over the specified futures, with the start value of the given zero.
     *  The fold is performed on the thread where the last future is completed,
@@ -851,7 +868,10 @@ object Future {
     if (!i.hasNext)
       failed(
         new NoSuchElementException("reduceLeft attempted on empty collection"))
-    else i.next() flatMap { v => foldNext(i, v, op) }
+    else
+      i.next() flatMap { v =>
+        foldNext(i, v, op)
+      }
   }
 
   /** Asynchronously and non-blockingly transforms a `TraversableOnce[A]` into a `Future[TraversableOnce[B]]`
@@ -915,4 +935,6 @@ object Future {
   * All callbacks provided to a `Future` end up going through `onComplete`, so this allows an
   * `ExecutionContext` to special-case callbacks that were executed by `Future` if desired.
   */
-trait OnCompleteRunnable { self: Runnable => }
+trait OnCompleteRunnable {
+  self: Runnable =>
+}

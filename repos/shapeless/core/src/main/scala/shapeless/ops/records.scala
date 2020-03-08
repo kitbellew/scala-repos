@@ -41,7 +41,9 @@ package record {
   }
 
   object Selector {
-    type Aux[L <: HList, K, Out0] = Selector[L, K] { type Out = Out0 }
+    type Aux[L <: HList, K, Out0] = Selector[L, K] {
+      type Out = Out0
+    }
 
     def apply[L <: HList, K](
         implicit selector: Selector[L, K]): Aux[L, K, selector.Out] = selector
@@ -129,7 +131,9 @@ package record {
   }
 
   object Updater {
-    type Aux[L <: HList, F, Out0 <: HList] = Updater[L, F] { type Out = Out0 }
+    type Aux[L <: HList, F, Out0 <: HList] = Updater[L, F] {
+      type Out = Out0
+    }
 
     def apply[L <: HList, F](
         implicit updater: Updater[L, F]): Aux[L, F, updater.Out] = updater
@@ -263,7 +267,9 @@ package record {
   trait Remover[L <: HList, K] extends DepFn1[L] with Serializable
 
   trait LowPriorityRemover {
-    type Aux[L <: HList, K, Out0] = Remover[L, K] { type Out = Out0 }
+    type Aux[L <: HList, K, Out0] = Remover[L, K] {
+      type Out = Out0
+    }
 
     implicit def hlistRemove[H, T <: HList, K, V, OutT <: HList](
         implicit rt: Aux[T, K, (V, OutT)]): Aux[H :: T, K, (V, H :: OutT)] =
@@ -300,7 +306,9 @@ package record {
   }
 
   trait LowPriorityRemove {
-    type Aux[L <: HList, E, Out0] = Remove[L, E] { type Out = Out0 }
+    type Aux[L <: HList, E, Out0] = Remove[L, E] {
+      type Out = Out0
+    }
 
     implicit def hconsRemove[H, T <: HList, E, OutT <: HList](
         implicit rt: Aux[T, E, (E, OutT)]): Aux[H :: T, E, (E, H :: OutT)] =
@@ -353,7 +361,9 @@ package record {
   }
 
   object RemoveAll {
-    type Aux[L <: HList, A <: HList, Out0] = RemoveAll[L, A] { type Out = Out0 }
+    type Aux[L <: HList, A <: HList, Out0] = RemoveAll[L, A] {
+      type Out = Out0
+    }
 
     def apply[L <: HList, A <: HList](
         implicit removeAll: RemoveAll[L, A]): Aux[L, A, removeAll.Out] =
@@ -433,12 +443,16 @@ package record {
     *
     * @author Miles Sabin
     */
-  trait Keys[L <: HList] extends DepFn0 with Serializable { type Out <: HList }
+  trait Keys[L <: HList] extends DepFn0 with Serializable {
+    type Out <: HList
+  }
 
   object Keys {
     def apply[L <: HList](implicit keys: Keys[L]): Aux[L, keys.Out] = keys
 
-    type Aux[L <: HList, Out0 <: HList] = Keys[L] { type Out = Out0 }
+    type Aux[L <: HList, Out0 <: HList] = Keys[L] {
+      type Out = Out0
+    }
 
     implicit def hnilKeys[L <: HNil]: Aux[L, HNil] =
       new Keys[L] {
@@ -468,7 +482,9 @@ package record {
     def apply[L <: HList](implicit values: Values[L]): Aux[L, values.Out] =
       values
 
-    type Aux[L <: HList, Out0 <: HList] = Values[L] { type Out = Out0 }
+    type Aux[L <: HList, Out0 <: HList] = Values[L] {
+      type Out = Out0
+    }
 
     implicit def hnilValues[L <: HNil]: Aux[L, HNil] =
       new Values[L] {
@@ -496,7 +512,9 @@ package record {
   object SwapRecord {
     def apply[L <: HList](implicit sr: SwapRecord[L]): Aux[L, sr.Out] = sr
 
-    type Aux[L <: HList, Out0 <: HList] = SwapRecord[L] { type Out = Out0 }
+    type Aux[L <: HList, Out0 <: HList] = SwapRecord[L] {
+      type Out = Out0
+    }
 
     implicit def hnilSwapRecord[L <: HNil]: Aux[L, HNil] =
       new SwapRecord[L] {
@@ -527,7 +545,9 @@ package record {
     def apply[L <: HList](implicit fields: Fields[L]): Aux[L, fields.Out] =
       fields
 
-    type Aux[L <: HList, Out0 <: HList] = Fields[L] { type Out = Out0 }
+    type Aux[L <: HList, Out0 <: HList] = Fields[L] {
+      type Out = Out0
+    }
 
     implicit def hnilFields[L <: HNil]: Aux[L, L] =
       new Fields[L] {

@@ -55,7 +55,9 @@ final private[streaming] class DStreamGraph extends Serializable with Logging {
   }
 
   def restart(time: Time) {
-    this.synchronized { startTime = time }
+    this.synchronized {
+      startTime = time
+    }
   }
 
   def stop() {

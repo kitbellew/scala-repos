@@ -224,7 +224,9 @@ object Pickler {
     }
     def unpickle(rd: Lexer) =
       for (x <- p.unpickle(rd);
-           y <- { rd.accept(','); qq.unpickle(rd).requireSuccess })
+           y <- {
+             rd.accept(','); qq.unpickle(rd).requireSuccess
+           })
         yield x ~ y
   }
 
@@ -250,7 +252,11 @@ object Pickler {
     */
   def singletonPickler[T <: AnyRef](x: T): CondPickler[T] =
     unitPickler
-      .wrapped { _ => x } { x => () }
+      .wrapped { _ =>
+        x
+      } { x =>
+        ()
+      }
       .labelled(x.getClass.getName)
       .cond(x eq _.asInstanceOf[AnyRef])
 
@@ -261,7 +267,9 @@ object Pickler {
     */
   def javaInstancePickler[T <: AnyRef]: Pickler[T] =
     (stringPickler labelled "$new")
-      .wrapped { name => Class.forName(name).newInstance().asInstanceOf[T] } {
+      .wrapped { name =>
+        Class.forName(name).newInstance().asInstanceOf[T]
+      } {
         _.getClass.getName
       }
 
@@ -318,20 +326,30 @@ object Pickler {
 
   /** A pickler for values of type `Long`, represented as integer literals */
   implicit val longPickler: Pickler[Long] =
-    tokenPickler("integer literal") { case IntLit(s) => s.toLong }
+    tokenPickler("integer literal") {
+      case IntLit(s) => s.toLong
+    }
 
   /** A pickler for values of type `Int`, represented as integer literals */
-  implicit val intPickler: Pickler[Int] = longPickler.wrapped { _.toInt } {
+  implicit val intPickler: Pickler[Int] = longPickler.wrapped {
+    _.toInt
+  } {
     _.toLong
   }
 
   /** A conditional pickler for the boolean value `true` */
   private val truePickler =
-    tokenPickler("boolean literal") { case TrueLit => true } cond { _ == true }
+    tokenPickler("boolean literal") {
+      case TrueLit => true
+    } cond {
+      _ == true
+    }
 
   /** A conditional pickler for the boolean value `false` */
   private val falsePickler =
-    tokenPickler("boolean literal") { case FalseLit => false } cond {
+    tokenPickler("boolean literal") {
+      case FalseLit => false
+    } cond {
       _ == false
     }
 
@@ -358,7 +376,11 @@ object Pickler {
   /** A pickler for pairs, represented as `~`-pairs */
   implicit def tuple2Pickler[T1: Pickler, T2: Pickler]: Pickler[(T1, T2)] =
     (pkl[T1] ~ pkl[T2])
-      .wrapped { case x1 ~ x2 => (x1, x2) } { case (x1, x2) => x1 ~ x2 }
+      .wrapped {
+        case x1 ~ x2 => (x1, x2)
+      } {
+        case (x1, x2) => x1 ~ x2
+      }
       .labelled("tuple2")
 
   /** A pickler for 3-tuples, represented as `~`-tuples */
@@ -367,14 +389,22 @@ object Pickler {
       p2: Pickler[T2],
       p3: Pickler[T3]): Pickler[(T1, T2, T3)] =
     (p1 ~ p2 ~ p3)
-      .wrapped { case x1 ~ x2 ~ x3 => (x1, x2, x3) } {
+      .wrapped {
+        case x1 ~ x2 ~ x3 => (x1, x2, x3)
+      } {
         case (x1, x2, x3) => x1 ~ x2 ~ x3
       }
       .labelled("tuple3")
 
   /** A pickler for list values */
   implicit def listPickler[T: Pickler]: Pickler[List[T]] =
-    iterPickler[T].wrapped { _.toList } { _.iterator }.labelled("scala.List")
+    iterPickler[T]
+      .wrapped {
+        _.toList
+      } {
+        _.iterator
+      }
+      .labelled("scala.List")
 }
 
 /** A subclass of Pickler can indicate whether a particular value can be pickled by instances

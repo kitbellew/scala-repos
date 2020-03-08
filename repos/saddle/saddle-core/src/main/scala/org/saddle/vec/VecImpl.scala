@@ -117,7 +117,9 @@ private[saddle] object VecImpl {
     val b = implicitly[ST[B]].makeBuf(vec.length)
     while (i < vec.length) {
       val v: A = vec(i)
-      for { u <- f(v) } b.add(u)
+      for {
+        u <- f(v)
+      } b.add(u)
       i += 1
     }
     Vec(b.toArray)

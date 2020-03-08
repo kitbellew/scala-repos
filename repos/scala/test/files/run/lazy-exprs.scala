@@ -1,7 +1,9 @@
 object TestExpressions {
 
   def patmatchScrut {
-    lazy val z1: Option[String] = { println("forced <z1>"); Some("lazy z1") }
+    lazy val z1: Option[String] = {
+      println("forced <z1>"); Some("lazy z1")
+    }
 
     val res = z1 match {
       case Some(msg) => msg
@@ -18,7 +20,9 @@ object TestExpressions {
     val t: Option[String] = Some("test")
     val res = t match {
       case Some(msg) =>
-        lazy val z1 = { println("forced <z1>"); "lazy z1" }
+        lazy val z1 = {
+          println("forced <z1>"); "lazy z1"
+        }
         z1
 
       case None => "failed"
@@ -31,7 +35,9 @@ object TestExpressions {
   }
 
   def patmatchPat {
-    lazy val Z1 = { println("forced <z1>"); "lazy Z1" }
+    lazy val Z1 = {
+      println("forced <z1>"); "lazy Z1"
+    }
     print("lazy val in case: ")
     val t: Option[String] = Some("lazy Z1")
     t match {
@@ -44,7 +50,9 @@ object TestExpressions {
   }
 
   def ifcond {
-    lazy val z1 = { println("forced <z1>"); "lazy z1" }
+    lazy val z1 = {
+      println("forced <z1>"); "lazy z1"
+    }
     print("lazy val in if condition: ")
     if (z1 == "lazy z1")
       println("ok")
@@ -52,7 +60,9 @@ object TestExpressions {
       println("failed")
   }
 
-  lazy val LazyField = { println("forced LazyField"); "LazyField" }
+  lazy val LazyField = {
+    println("forced LazyField"); "LazyField"
+  }
 
   def testPatMatchField {
     print("lazy val in pattern: ")
@@ -66,12 +76,22 @@ object TestExpressions {
     }
   }
 
-  lazy val (x, y) = ({ print("x"); "x" }, { print("y"); "y" })
+  lazy val (x, y) = (
+    {
+      print("x"); "x"
+    }, {
+      print("y"); "y"
+    })
   def testPatLazyVal {
     println("lazy val with patterns:")
     print("x and y: ")
     println("(" + x + ", " + y + ")")
-    lazy val (x1, y1) = ({ print("x1"); "x1" }, { print("y1"); "y1" })
+    lazy val (x1, y1) = (
+      {
+        print("x1"); "x1"
+      }, {
+        print("y1"); "y1"
+      })
     print("x1 and y1: ")
     println("(" + x1 + ", " + y1 + ")")
   }

@@ -128,7 +128,9 @@ object RelativeActorPath extends PathUtils {
 object AddressFromURIString {
   def unapply(addr: String): Option[Address] =
     try unapply(new URI(addr))
-    catch { case _: URISyntaxException ⇒ None }
+    catch {
+      case _: URISyntaxException ⇒ None
+    }
 
   def unapply(uri: URI): Option[Address] =
     if (uri eq null) None

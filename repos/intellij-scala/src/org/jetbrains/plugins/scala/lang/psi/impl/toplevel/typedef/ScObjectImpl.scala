@@ -84,7 +84,9 @@ class ScObjectImpl protected (
     }
   }
 
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
 
   def this(stub: ScTemplateDefinitionStub) = {
     this(stub, ScalaElementTypes.OBJECT_DEF, null)

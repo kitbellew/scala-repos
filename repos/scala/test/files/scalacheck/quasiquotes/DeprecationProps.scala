@@ -45,7 +45,9 @@ object DeprecationProps extends QuasiquoteProperties("deprecation") {
 
   property("try body cases") = test {
     val cases = (pq"a", q"b") :: (pq"c", q"d") :: Nil
-    val newcases = cases.map { case (pat, body) => cq"$pat => $body" }
+    val newcases = cases.map {
+      case (pat, body) => cq"$pat => $body"
+    }
     val body = q"foo"
     assert(q"try $body catch { case ..$newcases }" ≈ Try(body, cases: _*))
   }

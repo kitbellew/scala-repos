@@ -60,7 +60,9 @@ trait BlockLoadSpec[M[+_]]
 
     val M = self.M
     val Some((idCount, schema)) = sampleData.schema
-    val actualSchema = inferSchema(sampleData.data map { _ \ "value" })
+    val actualSchema = inferSchema(sampleData.data map {
+      _ \ "value"
+    })
 
     val projections = List(actualSchema).map { subschema =>
       val stream = sampleData.data flatMap { jv =>
@@ -125,7 +127,9 @@ trait BlockLoadSpec[M[+_]]
 
   def checkLoadDense = {
     implicit val gen = sample(objectSchema(_, 3))
-    check { (sample: SampleData) => testLoadDense(sample) }
+    check { (sample: SampleData) =>
+      testLoadDense(sample)
+    }
   }
 
   def testLoadSample1 = {

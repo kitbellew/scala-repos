@@ -244,11 +244,17 @@ class HashVectorOps_DoubleTest
     (HashVector[Double], HashVector[Double], HashVector[Double])] = {
     Arbitrary {
       for {
-        x <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
+        x <- Arbitrary.arbitrary[Double].map {
+          _ % 1e100
+        }
         xl <- Arbitrary.arbitrary[List[Int]]
-        y <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
+        y <- Arbitrary.arbitrary[Double].map {
+          _ % 1e100
+        }
         yl <- Arbitrary.arbitrary[List[Int]]
-        z <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
+        z <- Arbitrary.arbitrary[Double].map {
+          _ % 1e100
+        }
         zl <- Arbitrary.arbitrary[List[Int]]
       } yield {
         (
@@ -260,7 +266,9 @@ class HashVectorOps_DoubleTest
   }
 
   def genScalar: Arbitrary[Double] =
-    Arbitrary(Arbitrary.arbitrary[Double].map { _ % 1e10 })
+    Arbitrary(Arbitrary.arbitrary[Double].map {
+      _ % 1e10
+    })
 }
 
 /**
@@ -278,11 +286,17 @@ class HashVectorOps_FloatTest
       : Arbitrary[(HashVector[Float], HashVector[Float], HashVector[Float])] = {
     Arbitrary {
       for {
-        x <- Arbitrary.arbitrary[Float].map { _ % 100 }
+        x <- Arbitrary.arbitrary[Float].map {
+          _ % 100
+        }
         xl <- Arbitrary.arbitrary[List[Int]]
-        y <- Arbitrary.arbitrary[Float].map { _ % 100 }
+        y <- Arbitrary.arbitrary[Float].map {
+          _ % 100
+        }
         yl <- Arbitrary.arbitrary[List[Int]]
-        z <- Arbitrary.arbitrary[Float].map { _ % 100 }
+        z <- Arbitrary.arbitrary[Float].map {
+          _ % 100
+        }
         zl <- Arbitrary.arbitrary[List[Int]]
       } yield {
         (
@@ -297,7 +311,9 @@ class HashVectorOps_FloatTest
   }
 
   def genScalar: Arbitrary[Float] =
-    Arbitrary(Arbitrary.arbitrary[Float].map { _ % 1000 })
+    Arbitrary(Arbitrary.arbitrary[Float].map {
+      _ % 1000
+    })
 }
 
 /**
@@ -314,11 +330,17 @@ class HashVectorOps_IntTest
       : Arbitrary[(HashVector[Int], HashVector[Int], HashVector[Int])] = {
     Arbitrary {
       for {
-        x <- Arbitrary.arbitrary[Int].map { _ % 100 }
+        x <- Arbitrary.arbitrary[Int].map {
+          _ % 100
+        }
         xl <- Arbitrary.arbitrary[List[Int]]
-        y <- Arbitrary.arbitrary[Int].map { _ % 100 }
+        y <- Arbitrary.arbitrary[Int].map {
+          _ % 100
+        }
         yl <- Arbitrary.arbitrary[List[Int]]
-        z <- Arbitrary.arbitrary[Int].map { _ % 100 }
+        z <- Arbitrary.arbitrary[Int].map {
+          _ % 100
+        }
         zl <- Arbitrary.arbitrary[List[Int]]
       } yield {
         (
@@ -333,7 +355,9 @@ class HashVectorOps_IntTest
   }
 
   def genScalar: Arbitrary[Int] =
-    Arbitrary(Arbitrary.arbitrary[Int].map { _ % 1000 })
+    Arbitrary(Arbitrary.arbitrary[Int].map {
+      _ % 1000
+    })
 }
 
 @RunWith(classOf[JUnitRunner])

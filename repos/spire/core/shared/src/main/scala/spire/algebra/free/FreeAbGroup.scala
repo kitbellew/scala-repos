@@ -89,7 +89,9 @@ final class FreeAbGroup[A] private (val terms: Map[A, Int]) extends AnyVal {
     */
   def splitSemigroup[B](f: A => B)(
       implicit B: CSemigroup[B]): (Option[B], Option[B]) =
-    split[Option[B]] { a => Some(f(a)) }
+    split[Option[B]] { a =>
+      Some(f(a))
+    }
 
   def |+|(rhs: FreeAbGroup[A]): FreeAbGroup[A] =
     new FreeAbGroup(lhs.terms + rhs.terms)

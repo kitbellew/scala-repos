@@ -1,6 +1,10 @@
 // exercise coevolveSym
-trait Thing { type A; var p: A = _ }
-class AA[T](final val x: Thing { type A = T }) {
+trait Thing {
+  type A; var p: A = _
+}
+class AA[T](final val x: Thing {
+  type A = T
+}) {
   def foo: x.A = ???
 }
 

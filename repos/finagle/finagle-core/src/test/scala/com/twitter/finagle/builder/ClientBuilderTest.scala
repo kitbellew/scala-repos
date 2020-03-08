@@ -159,7 +159,9 @@ class ClientBuilderTest
 
   private val retryMyExceptionOnce = RetryPolicy.tries[Try[Nothing]](
     2, // 2 tries == 1 attempt + 1 retry
-    { case Throw(_: MyException) => true })
+    {
+      case Throw(_: MyException) => true
+    })
 
   test("ClientBuilder should collect stats on 'tries' for retrypolicy") {
     new ClientBuilderHelper {
@@ -181,7 +183,9 @@ class ClientBuilderTest
 
       val f = client("123")
 
-      eventually { assert(f.isDefined) }
+      eventually {
+        assert(f.isDefined)
+      }
       assert(inMemory.counters(Seq("test", "tries", "requests")) == 1)
       assert(
         // 1 request and 1 retry
@@ -242,7 +246,9 @@ class ClientBuilderTest
 
       val f = client("123")
 
-      eventually { assert(f.isDefined) }
+      eventually {
+        assert(f.isDefined)
+      }
       assert(inMemory.counters(Seq("test", "tries", "requests")) == 1)
 
       // 1 request + 1 retry

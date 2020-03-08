@@ -41,7 +41,9 @@ object LocalKMeans {
 
   def generateData: Array[DenseVector[Double]] = {
     def generatePoint(i: Int): DenseVector[Double] = {
-      DenseVector.fill(D) { rand.nextDouble * R }
+      DenseVector.fill(D) {
+        rand.nextDouble * R
+      }
     }
     Array.tabulate(N)(generatePoint)
   }

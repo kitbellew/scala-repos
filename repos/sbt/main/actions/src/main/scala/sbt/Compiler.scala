@@ -207,7 +207,12 @@ object Compiler {
   //   }
 
   private[sbt] def foldMappers[A](mappers: Seq[A => Option[A]]) =
-    mappers.foldRight({ p: A => p }) {
-      (mapper, mappers) => { p: A => mapper(p).getOrElse(mappers(p)) }
+    mappers.foldRight({ p: A =>
+      p
+    }) {
+      (mapper, mappers) =>
+        { p: A =>
+          mapper(p).getOrElse(mappers(p))
+        }
     }
 }

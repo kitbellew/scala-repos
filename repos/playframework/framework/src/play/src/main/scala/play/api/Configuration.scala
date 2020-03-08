@@ -498,7 +498,9 @@ case class Configuration(underlying: Config) {
     */
   def getConfigList(path: String): Option[java.util.List[Configuration]] =
     readValue[java.util.List[_ <: Config]](path, underlying.getConfigList(path))
-      .map { configs => configs.asScala.map(Configuration(_)).asJava }
+      .map { configs =>
+        configs.asScala.map(Configuration(_)).asJava
+      }
 
   /**
     * Retrieves a Seq of sub-configurations, i.e. a configuration instance for each key that matches the path.
@@ -971,7 +973,9 @@ case class Configuration(underlying: Config) {
         value
       }
       .orElse(getNanoseconds(key))
-      .map { value => new FiniteDuration(value, TimeUnit.NANOSECONDS) }
+      .map { value =>
+        new FiniteDuration(value, TimeUnit.NANOSECONDS)
+      }
   }
 
 }
@@ -1220,7 +1224,9 @@ private[play] object ConfigLoader {
         obj
           .keySet()
           .asScala
-          .map { key => key -> valueLoader.load(conf, key) }
+          .map { key =>
+            key -> valueLoader.load(conf, key)
+          }
           .toMap
       }
     }

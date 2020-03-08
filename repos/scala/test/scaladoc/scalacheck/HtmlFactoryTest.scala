@@ -11,7 +11,9 @@ object XMLUtil {
   def stripGroup(seq: Node): Node = {
     seq match {
       case group: Group => {
-        <div class="group">{group.nodes.map(stripGroup _)}</div>
+        <div class="group">{
+          group.nodes.map(stripGroup _)
+        }</div>
       }
       case e: Elem => {
         val child = e.child.map(stripGroup _)
@@ -43,7 +45,9 @@ object Test extends Properties("HtmlFactory") {
   }
 
   def createFactory = {
-    val settings = new Settings({ Console.err.println(_) })
+    val settings = new Settings({
+      Console.err.println(_)
+    })
     settings.scaladocQuietRun = true
     settings.nowarn.value = true
     settings.classpath.value = getClasspath
@@ -153,8 +157,12 @@ object Test extends Properties("HtmlFactory") {
       case node: scala.xml.Node => {
         val comments = shortComments(node)
 
-        comments.exists { _.toString.contains(">A lazy String\n</p>") } &&
-        comments.exists { _.toString.contains(">A non-lazy String\n</p>") }
+        comments.exists {
+          _.toString.contains(">A lazy String\n</p>")
+        } &&
+        comments.exists {
+          _.toString.contains(">A non-lazy String\n</p>")
+        }
       }
       case _ => false
     }
@@ -801,7 +809,9 @@ object Test extends Properties("HtmlFactory") {
         node \ ("@" + attrName) text
 
       def \@(attrName: String, attrValue: String): NodeSeq =
-        node filter { _ \ ("@" + attrName) exists (_.text == attrValue) }
+        node filter {
+          _ \ ("@" + attrName) exists (_.text == attrValue)
+        }
     }
 
     implicit class AssertionAwareNode(node: scala.xml.NodeSeq) {

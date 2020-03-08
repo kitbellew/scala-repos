@@ -112,8 +112,9 @@ trait DB extends Loggable {
     )
 
     first(toTry)(f =>
-      tryo { t: Throwable => logger.trace("JNDI Lookup failed: " + t) }(
-        f())) or {
+      tryo { t: Throwable =>
+        logger.trace("JNDI Lookup failed: " + t)
+      }(f())) or {
       logger.trace(
         "Unable to obtain Connection for JNDI name %s".format(name.jndiName))
       Empty
@@ -302,7 +303,10 @@ trait DB extends Loggable {
                     clearThread(success)
                   }
 
-                case x :: xs => DB.use(x) { ignore => recurseMe(xs) }
+                case x :: xs =>
+                  DB.use(x) { ignore =>
+                    recurseMe(xs)
+                  }
               }
               recurseMe(in)
             } else {
@@ -445,7 +449,9 @@ trait DB extends Loggable {
   }
 
   def exec[T](db: SuperConnection, query: String)(f: (ResultSet) => T): T =
-    statement(db) { st => f(st.executeQuery(query)) }
+    statement(db) { st =>
+      f(st.executeQuery(query))
+    }
 
   private def asString(
       pos: Int,
@@ -1233,7 +1239,9 @@ class StandardDBVendor(
   protected def createOne: Box[Connection] = {
     tryo { t: Throwable =>
       logger.error("Cannot load database driver: %s".format(driverName), t)
-    } { Class.forName(driverName); () }
+    } {
+      Class.forName(driverName); ()
+    }
 
     (dbUser, dbPassword) match {
       case (Full(user), Full(pwd)) =>
@@ -1345,7 +1353,9 @@ trait ProtoDBVendor extends ConnectionManager {
 
   def releaseConnection(conn: Connection): Unit = synchronized {
     if (tempMaxSize > maxPoolSize) {
-      tryo { conn.close() }
+      tryo {
+        conn.close()
+      }
       tempMaxSize -= 1
       poolSize -= 1
     } else {
@@ -1361,7 +1371,9 @@ trait ProtoDBVendor extends ConnectionManager {
     logger.info("Closing all connections")
     if (poolSize <= 0 || cnt > 10) ()
     else {
-      pool.foreach { c => tryo(c.close); poolSize -= 1 }
+      pool.foreach { c =>
+        tryo(c.close); poolSize -= 1
+      }
       pool = Nil
 
       if (poolSize > 0) wait(250)

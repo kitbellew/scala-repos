@@ -156,7 +156,9 @@ object IndexMaker extends IndexMakerLowPriority {
 }
 
 trait IndexMakerLowPriority {
-  type SeqLike[K] = { def length: Int; def apply(i: Int): K }
+  type SeqLike[K] = {
+    def length: Int; def apply(i: Int): K
+  }
 
   implicit def make1V[T[K] <: SeqLike[K], A: ST: ORD] =
     new IndexMaker[T[A], A] {

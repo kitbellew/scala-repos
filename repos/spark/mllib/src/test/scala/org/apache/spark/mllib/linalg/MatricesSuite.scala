@@ -91,10 +91,18 @@ class MatricesSuite extends SparkFunSuite {
       Array(0.0, 1.0, 2.0))
     val dm = Matrices.dense(3, 2, Array(0.0, 2.3, 1.4, 3.2, 1.0, 9.1))
     Array(sm, dm).foreach { mat =>
-      intercept[IllegalArgumentException] { mat.index(4, 1) }
-      intercept[IllegalArgumentException] { mat.index(1, 4) }
-      intercept[IllegalArgumentException] { mat.index(-1, 2) }
-      intercept[IllegalArgumentException] { mat.index(1, -2) }
+      intercept[IllegalArgumentException] {
+        mat.index(4, 1)
+      }
+      intercept[IllegalArgumentException] {
+        mat.index(1, 4)
+      }
+      intercept[IllegalArgumentException] {
+        mat.index(-1, 2)
+      }
+      intercept[IllegalArgumentException] {
+        mat.index(1, -2)
+      }
     }
   }
 
@@ -261,7 +269,9 @@ class MatricesSuite extends SparkFunSuite {
     val dn = new DenseMatrix(m, n, allValues)
 
     val dnMap = MutableMap[(Int, Int), Double]()
-    dn.foreachActive { (i, j, value) => dnMap.put((i, j), value) }
+    dn.foreachActive { (i, j, value) =>
+      dnMap.put((i, j), value)
+    }
     assert(dnMap.size === 6)
     assert(dnMap(0, 0) === 1.0)
     assert(dnMap(1, 0) === 2.0)
@@ -271,7 +281,9 @@ class MatricesSuite extends SparkFunSuite {
     assert(dnMap(2, 1) === 5.0)
 
     val spMap = MutableMap[(Int, Int), Double]()
-    sp.foreachActive { (i, j, value) => spMap.put((i, j), value) }
+    sp.foreachActive { (i, j, value) =>
+      spMap.put((i, j), value)
+    }
     assert(spMap.size === 4)
     assert(spMap(0, 0) === 1.0)
     assert(spMap(1, 0) === 2.0)

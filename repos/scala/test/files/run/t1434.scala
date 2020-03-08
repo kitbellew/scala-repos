@@ -1,5 +1,7 @@
 object Test {
-  class A[T] { val op = null }
+  class A[T] {
+    val op = null
+  }
   class B extends A[Any]
   class C extends B
 

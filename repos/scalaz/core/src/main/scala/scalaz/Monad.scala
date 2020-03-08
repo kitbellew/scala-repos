@@ -90,7 +90,9 @@ trait Monad[F[_]] extends Applicative[F] with Bind[F] { self =>
   }
   def monadLaw = new MonadLaw {}
   ////
-  val monadSyntax = new scalaz.syntax.MonadSyntax[F] { def F = Monad.this }
+  val monadSyntax = new scalaz.syntax.MonadSyntax[F] {
+    def F = Monad.this
+  }
 }
 
 object Monad {

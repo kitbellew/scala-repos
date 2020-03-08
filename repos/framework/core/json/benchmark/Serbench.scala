@@ -62,14 +62,26 @@ object Serbench extends Benchmark {
   }
 
   class Bench(implicit formats: Formats) {
-    benchmark("Java serialization (full)") { deserialize(serialize(project)) }
-    benchmark("lift-json (full)") { read[Project](write(project)) }
-    benchmark("Java serialization (ser)") { serialize(project) }
-    benchmark("lift-json (ser)") { write(project) }
+    benchmark("Java serialization (full)") {
+      deserialize(serialize(project))
+    }
+    benchmark("lift-json (full)") {
+      read[Project](write(project))
+    }
+    benchmark("Java serialization (ser)") {
+      serialize(project)
+    }
+    benchmark("lift-json (ser)") {
+      write(project)
+    }
     val ser1 = serialize(project)
     val ser2 = write(project)
-    benchmark("Java serialization (deser)") { deserialize(ser1) }
-    benchmark("lift-json (deser)") { read[Project](ser2) }
+    benchmark("Java serialization (deser)") {
+      deserialize(ser1)
+    }
+    benchmark("lift-json (deser)") {
+      read[Project](ser2)
+    }
   }
 
   class JValueBench {

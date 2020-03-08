@@ -330,14 +330,18 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
     */
   def toForm(inst: BaseRecord, template: NodeSeq): NodeSeq = {
     template match {
-      case e @ <lift:field_label>{_*}</lift:field_label> =>
+      case e @ <lift:field_label>{
+            _*
+          }</lift:field_label> =>
         e.attribute("name") match {
           case Some(name) =>
             fieldByName(name.toString, inst).map(_.label).openOr(NodeSeq.Empty)
           case _ => NodeSeq.Empty
         }
 
-      case e @ <lift:field>{_*}</lift:field> =>
+      case e @ <lift:field>{
+            _*
+          }</lift:field> =>
         e.attribute("name") match {
           case Some(name) =>
             fieldByName(name.toString, inst)
@@ -346,13 +350,17 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
           case _ => NodeSeq.Empty
         }
 
-      case e @ <lift:field_msg>{_*}</lift:field_msg> =>
+      case e @ <lift:field_msg>{
+            _*
+          }</lift:field_msg> =>
         e.attribute("name") match {
           case Some(name) =>
             fieldByName(name.toString, inst)
               .map(_.uniqueFieldId match {
                 case Full(id) =>
-                  <lift:msg id={id}/>
+                  <lift:msg id={
+                    id
+                  }/>
                 case _ => NodeSeq.Empty
               })
               .openOr(NodeSeq.Empty)

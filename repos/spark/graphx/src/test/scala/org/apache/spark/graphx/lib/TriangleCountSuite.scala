@@ -29,7 +29,9 @@ class TriangleCountSuite extends SparkFunSuite with LocalSparkContext {
       val graph = Graph.fromEdgeTuples(rawEdges, true).cache()
       val triangleCount = graph.triangleCount()
       val verts = triangleCount.vertices
-      verts.collect.foreach { case (vid, count) => assert(count === 1) }
+      verts.collect.foreach {
+        case (vid, count) => assert(count === 1)
+      }
     }
   }
 
@@ -57,7 +59,9 @@ class TriangleCountSuite extends SparkFunSuite with LocalSparkContext {
       val triangles =
         Array(0L -> 1L, 1L -> 2L, 2L -> 0L) ++
           Array(0L -> -1L, -1L -> -2L, -2L -> 0L)
-      val revTriangles = triangles.map { case (a, b) => (b, a) }
+      val revTriangles = triangles.map {
+        case (a, b) => (b, a)
+      }
       val rawEdges = sc.parallelize(triangles ++ revTriangles, 2)
       val graph = Graph.fromEdgeTuples(rawEdges, true).cache()
       val triangleCount = graph.triangleCount()
@@ -85,7 +89,9 @@ class TriangleCountSuite extends SparkFunSuite with LocalSparkContext {
         .cache()
       val triangleCount = graph.triangleCount()
       val verts = triangleCount.vertices
-      verts.collect.foreach { case (vid, count) => assert(count === 1) }
+      verts.collect.foreach {
+        case (vid, count) => assert(count === 1)
+      }
     }
   }
 

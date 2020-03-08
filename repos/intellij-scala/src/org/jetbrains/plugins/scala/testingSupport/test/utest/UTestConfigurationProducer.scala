@@ -135,7 +135,9 @@ with AbstractTestConfigurationProducer {
             if (patterns.size == 1 && patterns.head
                   .isInstanceOf[ScTuplePattern]) {
               val index = tuple.exprs.zipWithIndex
-                .find { case (expr, _) => expr == testSuite }
+                .find {
+                  case (expr, _) => expr == testSuite
+                }
                 .map(_._2)
                 .get
               val bindings = patternDef.bindings

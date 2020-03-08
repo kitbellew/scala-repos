@@ -29,7 +29,9 @@ import scala.tools.testing.ClearAfterClass
 
 object ClosureOptimizerTest extends ClearAfterClass.Clearable {
   var compiler = newCompiler(extraArgs = "-Yopt:l:classpath -Yopt-warnings:_")
-  def clear(): Unit = { compiler = null }
+  def clear(): Unit = {
+    compiler = null
+  }
 }
 
 @RunWith(classOf[JUnit4])

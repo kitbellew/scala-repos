@@ -139,25 +139,33 @@ class StackClientTest
       var stack = ctx.client
         .configured(param.Label(name))
         .withStack(stk)
-      failFastOn.foreach { ffOn => stack = stack.configured(FailFast(ffOn)) }
+      failFastOn.foreach { ffOn =>
+        stack = stack.configured(FailFast(ffOn))
+      }
       val client = stack.newClient("/$/inet/localhost/0")
       new FactoryToService[String, String](client)
     }
 
     def testClient(name: String, failFastOn: Option[Boolean]): Unit = {
       val svc = newClient(name, failFastOn)
-      val e = intercept[RuntimeException] { Await.result(svc("hi")) }
+      val e = intercept[RuntimeException] {
+        Await.result(svc("hi"))
+      }
       assert(e == ex)
       failFastOn match {
         case Some(on) if !on =>
           assert(
             ctx.sr.counters.get(Seq(name, "failfast", "marked_dead")) == None)
-          intercept[RuntimeException] { Await.result(svc("hi2")) }
+          intercept[RuntimeException] {
+            Await.result(svc("hi2"))
+          }
         case _ =>
           eventually {
             assert(ctx.sr.counters(Seq(name, "failfast", "marked_dead")) == 1)
           }
-          intercept[FailedFastException] { Await.result(svc("hi2")) }
+          intercept[FailedFastException] {
+            Await.result(svc("hi2"))
+          }
       }
     }
 
@@ -340,7 +348,9 @@ class StackClientTest
         def close(deadline: Time) = Future.Done
       }
 
-      intercept[Failure] { Await.result(cl(), 5.seconds) }
+      intercept[Failure] {
+        Await.result(cl(), 5.seconds)
+      }
       assert(requeues.isDefined)
       assert(budget > 0)
     })
@@ -354,7 +364,9 @@ class StackClientTest
         def close(deadline: Time) = Future.Done
       }
 
-      intercept[Failure] { Await.result(cl(), 5.seconds) }
+      intercept[Failure] {
+        Await.result(cl(), 5.seconds)
+      }
 
       assert(requeues.isEmpty)
       assert(budget > 0)
@@ -474,7 +486,9 @@ class StackClientTest
   }
 
   test("StackClient binds to a local service via exp.Address.ServiceFactory") {
-    val reverser = Service.mk[String, String] { in => Future.value(in.reverse) }
+    val reverser = Service.mk[String, String] { in =>
+      Future.value(in.reverse)
+    }
     val sf = ServiceFactory(() => Future.value(reverser))
     val addr = exp.Address(sf)
     val name = Name.bound(addr)
@@ -485,7 +499,9 @@ class StackClientTest
   }
 
   test("filtered composes filters atop the stack") {
-    val echoServer = Service.mk[String, String] { in => Future.value(in) }
+    val echoServer = Service.mk[String, String] { in =>
+      Future.value(in)
+    }
     val sf = ServiceFactory(() => Future.value(echoServer))
     val addr = exp.Address(sf)
     val name = Name.bound(addr)
@@ -505,7 +521,9 @@ class StackClientTest
 
     val key = new Contexts.local.Key[String]
     Contexts.local.let(key, "SomeCoolContext") {
-      val echoSvc = Service.mk[String, String] { Future.value }
+      val echoSvc = Service.mk[String, String] {
+        Future.value
+      }
       val server = stringServer.serve(
         new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
         echoSvc)
@@ -577,7 +595,9 @@ class StackClientTest
     // rejected
     val e1r3 = session1(())
 
-    val e1rejected = intercept[Failure] { Await.result(e1r3, 3.seconds) }
+    val e1rejected = intercept[Failure] {
+      Await.result(e1r3, 3.seconds)
+    }
 
     val session2 = Await.result(svcFac(), 3.seconds)
     // pending
@@ -587,7 +607,9 @@ class StackClientTest
     // rejected
     val e2r3 = session2(())
 
-    val e2rejected = intercept[Failure] { Await.result(e2r3, 3.seconds) }
+    val e2rejected = intercept[Failure] {
+      Await.result(e2r3, 3.seconds)
+    }
 
     // endpoint1 and endpoint2 both only see the first two requests,
     // meaning they get distinct pending request limits
@@ -597,8 +619,12 @@ class StackClientTest
     assert(endpoint2.satisfied.get() == 0)
     assert(!e1r1.isDefined)
     assert(!e1r2.isDefined)
-    intercept[RejectedExecutionException] { throw e1rejected.cause.get }
-    intercept[RejectedExecutionException] { throw e2rejected.cause.get }
+    intercept[RejectedExecutionException] {
+      throw e1rejected.cause.get
+    }
+    intercept[RejectedExecutionException] {
+      throw e2rejected.cause.get
+    }
 
     // pending requests are satisfied
     p1.setDone()

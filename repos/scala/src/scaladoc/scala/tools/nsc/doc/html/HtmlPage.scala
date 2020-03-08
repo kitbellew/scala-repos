@@ -56,15 +56,25 @@ abstract class HtmlPage extends Page { thisPage =>
         <head>
           <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title>{title}</title>
-          <meta name="description" content={description}/>
-          <meta name="keywords" content={keywords}/>
+          <title>{
+        title
+      }</title>
+          <meta name="description" content={
+        description
+      }/>
+          <meta name="keywords" content={
+        keywords
+      }/>
           <meta http-equiv="content-type" content={
         "text/html; charset=" + site.encoding
       }/>
-          {headers}
+          {
+        headers
+      }
         </head>
-        {body}
+        {
+        body
+      }
       </html>
 
     writeFile(site) { (w: Writer) =>
@@ -93,21 +103,49 @@ abstract class HtmlPage extends Page { thisPage =>
     body.blocks flatMap (blockToHtml(_))
 
   def blockToHtml(block: Block): NodeSeq = block match {
-    case Title(in, 1)  => <h3>{inlineToHtml(in)}</h3>
-    case Title(in, 2)  => <h4>{inlineToHtml(in)}</h4>
-    case Title(in, 3)  => <h5>{inlineToHtml(in)}</h5>
-    case Title(in, _)  => <h6>{inlineToHtml(in)}</h6>
-    case Paragraph(in) => <p>{inlineToHtml(in)}</p>
+    case Title(in, 1) =>
+      <h3>{
+        inlineToHtml(in)
+      }</h3>
+    case Title(in, 2) =>
+      <h4>{
+        inlineToHtml(in)
+      }</h4>
+    case Title(in, 3) =>
+      <h5>{
+        inlineToHtml(in)
+      }</h5>
+    case Title(in, _) =>
+      <h6>{
+        inlineToHtml(in)
+      }</h6>
+    case Paragraph(in) =>
+      <p>{
+        inlineToHtml(in)
+      }</p>
     case Code(data) =>
-      <pre>{SyntaxHigh(data)}</pre> //<pre>{ scala.xml.Text(data) }</pre>
+      <pre>{
+        SyntaxHigh(data)
+      }</pre> //<pre>{ scala.xml.Text(data) }</pre>
     case UnorderedList(items) =>
-      <ul>{listItemsToHtml(items)}</ul>
+      <ul>{
+        listItemsToHtml(items)
+      }</ul>
     case OrderedList(items, listStyle) =>
-      <ol class={listStyle}>{listItemsToHtml(items)}</ol>
+      <ol class={
+        listStyle
+      }>{
+        listItemsToHtml(items)
+      }</ol>
     case DefinitionList(items) =>
       <dl>{
         items map {
-          case (t, d) => <dt>{inlineToHtml(t)}</dt><dd>{blockToHtml(d)}</dd>
+          case (t, d) =>
+            <dt>{
+              inlineToHtml(t)
+            }</dt><dd>{
+              blockToHtml(d)
+            }</dd>
         }
       }</dl>
     case HorizontalRule() =>
@@ -120,26 +158,52 @@ abstract class HtmlPage extends Page { thisPage =>
         case OrderedList(_, _) | UnorderedList(
               _
             ) => // html requires sub ULs to be put into the last LI
-          xmlList.init ++ <li>{xmlList.last.child ++ blockToHtml(item)}</li>
+          xmlList.init ++ <li>{
+            xmlList.last.child ++ blockToHtml(item)
+          }</li>
         case Paragraph(inline) =>
           xmlList :+ <li>{
             inlineToHtml(inline)
           }</li> // LIs are blocks, no need to use Ps
         case block =>
-          xmlList :+ <li>{blockToHtml(block)}</li>
+          xmlList :+ <li>{
+            blockToHtml(block)
+          }</li>
       }
     }
 
   def inlineToHtml(inl: Inline): NodeSeq = inl match {
-    case Chain(items)    => items flatMap (inlineToHtml(_))
-    case Italic(in)      => <i>{inlineToHtml(in)}</i>
-    case Bold(in)        => <b>{inlineToHtml(in)}</b>
-    case Underline(in)   => <u>{inlineToHtml(in)}</u>
-    case Superscript(in) => <sup>{inlineToHtml(in)}</sup>
-    case Subscript(in)   => <sub>{inlineToHtml(in)}</sub>
+    case Chain(items) => items flatMap (inlineToHtml(_))
+    case Italic(in) =>
+      <i>{
+        inlineToHtml(in)
+      }</i>
+    case Bold(in) =>
+      <b>{
+        inlineToHtml(in)
+      }</b>
+    case Underline(in) =>
+      <u>{
+        inlineToHtml(in)
+      }</u>
+    case Superscript(in) =>
+      <sup>{
+        inlineToHtml(in)
+      }</sup>
+    case Subscript(in) =>
+      <sub>{
+        inlineToHtml(in)
+      }</sub>
     case Link(raw, title) =>
-      <a href={raw} target="_blank">{inlineToHtml(title)}</a>
-    case Monospace(in)            => <code>{inlineToHtml(in)}</code>
+      <a href={
+        raw
+      } target="_blank">{
+        inlineToHtml(title)
+      }</a>
+    case Monospace(in) =>
+      <code>{
+        inlineToHtml(in)
+      }</code>
     case Text(text)               => scala.xml.Text(text)
     case Summary(in)              => inlineToHtml(in)
     case HtmlTag(tag)             => scala.xml.Unparsed(tag)
@@ -149,26 +213,46 @@ abstract class HtmlPage extends Page { thisPage =>
   def linkToHtml(text: Inline, link: LinkTo, hasLinks: Boolean) = link match {
     case LinkToTpl(dtpl: TemplateEntity) =>
       if (hasLinks)
-        <a href={relativeLinkTo(dtpl)} class="extype" name={
+        <a href={
+          relativeLinkTo(dtpl)
+        } class="extype" name={
           dtpl.qualifiedName
-        }>{inlineToHtml(text)}</a>
+        }>{
+          inlineToHtml(text)
+        }</a>
       else
-        <span class="extype" name={dtpl.qualifiedName}>{
+        <span class="extype" name={
+          dtpl.qualifiedName
+        }>{
           inlineToHtml(text)
         }</span>
     case LinkToMember(mbr: MemberEntity, inTpl: TemplateEntity) =>
       if (hasLinks)
         <a href={
           relativeLinkTo(inTpl) + "#" + mbr.signature
-        } class="extmbr" name={mbr.qualifiedName}>{inlineToHtml(text)}</a>
+        } class="extmbr" name={
+          mbr.qualifiedName
+        }>{
+          inlineToHtml(text)
+        }</a>
       else
-        <span class="extmbr" name={mbr.qualifiedName}>{
+        <span class="extmbr" name={
+          mbr.qualifiedName
+        }>{
           inlineToHtml(text)
         }</span>
     case Tooltip(tooltip) =>
-      <span class="extype" name={tooltip}>{inlineToHtml(text)}</span>
+      <span class="extype" name={
+        tooltip
+      }>{
+        inlineToHtml(text)
+      }</span>
     case LinkToExternal(name, url) =>
-      <a href={url} class="extype" target="_top">{inlineToHtml(text)}</a>
+      <a href={
+        url
+      } class="extype" target="_top">{
+        inlineToHtml(text)
+      }</a>
     case _ =>
       inlineToHtml(text)
   }
@@ -229,9 +313,13 @@ abstract class HtmlPage extends Page { thisPage =>
   def templateToHtml(tpl: TemplateEntity, name: String = null) = tpl match {
     case dTpl: DocTemplateEntity =>
       if (hasPage(dTpl)) {
-        <a href={relativeLinkTo(dTpl)} class="extype" name={
+        <a href={
+          relativeLinkTo(dTpl)
+        } class="extype" name={
           dTpl.qualifiedName
-        }>{if (name eq null) dTpl.name else name}</a>
+        }>{
+          if (name eq null) dTpl.name else name
+        }</a>
       } else {
         scala.xml.Text(if (name eq null) dTpl.name else name)
       }
@@ -270,7 +358,9 @@ abstract class HtmlPage extends Page { thisPage =>
     val image = entityToImage(ety)
     val companionImage = ety.companion filter { e =>
       e.visibility.isPublic && !e.inSource.isEmpty
-    } map { entityToImage }
+    } map {
+      entityToImage
+    }
 
     (image, companionImage) match {
       case (from, Some(to)) =>
@@ -282,7 +372,9 @@ abstract class HtmlPage extends Page { thisPage =>
 
   def permalink(template: Entity, isSelf: Boolean = true): Elem =
     <span class="permalink">
-      <a href={memberToUrl(template, isSelf)} title="Permalink">
+      <a href={
+      memberToUrl(template, isSelf)
+    } title="Permalink">
         <i class="material-icons">&#xE157;</i>
       </a>
     </span>
@@ -308,9 +400,13 @@ abstract class HtmlPage extends Page { thisPage =>
             else if (companionTpl.isTrait) s"trait ${companionTpl.name}"
             else s"class ${companionTpl.name}"
           <div>
-            Companion <a href={relativeLinkTo(companionTpl)} title={
+            Companion <a href={
+            relativeLinkTo(companionTpl)
+          } title={
             docEntityKindToCompanionTitle(tpl)
-          }>{objClassTrait}</a>
+          }>{
+            objClassTrait
+          }</a>
           </div>
         case None => NodeSeq.Empty
       }

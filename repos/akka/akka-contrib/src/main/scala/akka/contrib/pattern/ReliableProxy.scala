@@ -338,7 +338,9 @@ class ReliableProxy(
       else stay using q
     case Event(Tick, queue) ⇒
       logResend(queue.size)
-      queue foreach { tunnel ! _ }
+      queue foreach {
+        tunnel ! _
+      }
       scheduleTick()
       stay()
     case Event(Unsent(msgs), queue) ⇒
@@ -396,7 +398,9 @@ class ReliableProxy(
 
   def resend(q: Vector[Message]): Vector[Message] = {
     logResend(q.size)
-    q foreach { tunnel ! _ }
+    q foreach {
+      tunnel ! _
+    }
     q
   }
 

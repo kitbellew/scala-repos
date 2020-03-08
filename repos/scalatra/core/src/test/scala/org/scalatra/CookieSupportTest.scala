@@ -18,7 +18,9 @@ class CookieSupportServlet extends ScalatraServlet {
 
   post("/setcookie") {
     cookies.update("somecookie", params("cookieval"))
-    params.get("anothercookieval") foreach { cookies("anothercookie") = _ }
+    params.get("anothercookieval") foreach {
+      cookies("anothercookie") = _
+    }
     "OK"
   }
 

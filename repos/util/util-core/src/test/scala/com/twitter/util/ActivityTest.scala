@@ -32,7 +32,11 @@ class ActivityTest extends FunSuite {
     val (a, w) = Activity[Int]()
 
     val ref = new AtomicReference[Activity.State[Int]]
-    a.handle { case E(x) => x }.states.register(Witness(ref))
+    a.handle {
+        case E(x) => x
+      }
+      .states
+      .register(Witness(ref))
 
     assert(ref.get == Activity.Pending)
     w.notify(Return(1))
@@ -67,7 +71,11 @@ class ActivityTest extends FunSuite {
   }
 
   test("Activity.collect") {
-    val (acts, wits) = Seq.fill(10) { Activity[Int]() }.unzip
+    val (acts, wits) = Seq
+      .fill(10) {
+        Activity[Int]()
+      }
+      .unzip
     val ref = new AtomicReference(Seq.empty: Seq[Try[Seq[Int]]])
     Activity.collect(acts).values.build.register(Witness(ref))
 
@@ -174,12 +182,16 @@ class ActivityTest extends FunSuite {
   test("Activity.sample") {
     val (a, w) = Activity[Int]()
 
-    val exc = intercept[IllegalStateException] { a.sample() }
+    val exc = intercept[IllegalStateException] {
+      a.sample()
+    }
     assert(exc.getMessage == "Still pending")
 
     val exc1 = new Exception
     w.notify(Throw(exc1))
-    assert(intercept[Exception] { a.sample() } == exc1)
+    assert(intercept[Exception] {
+      a.sample()
+    } == exc1)
 
     w.notify(Return(123))
     assert(a.sample() == 123)

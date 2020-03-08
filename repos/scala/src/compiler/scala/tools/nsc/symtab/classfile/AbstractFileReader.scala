@@ -81,6 +81,8 @@ class AbstractFileReader(val file: AbstractFile) {
 
   /** skip next 'n' bytes
     */
-  def skip(n: Int) { bp += n }
+  def skip(n: Int) {
+    bp += n
+  }
 
 }

@@ -22,6 +22,8 @@ object ExpiringServerDispatcher {
         timer,
         statsReceiver) {
         private[this] val dispatcher = newDispatcher(transport, this)
-        protected def onExpire() { dispatcher.close(Time.now) }
+        protected def onExpire() {
+          dispatcher.close(Time.now)
+        }
       }
 }

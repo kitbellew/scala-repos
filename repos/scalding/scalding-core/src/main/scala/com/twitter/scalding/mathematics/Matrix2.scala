@@ -140,8 +140,12 @@ sealed trait Matrix2[R, C, V] extends Serializable {
       }
       .group // TODO we could be lazy with this group and combine with a sum
       .sum
-      .filter { kv => mon.isNonZero(kv._2) }
-      .map { case ((r, c2), v) => (r, c2, v) }
+      .filter { kv =>
+        mon.isNonZero(kv._2)
+      }
+      .map {
+        case ((r, c2), v) => (r, c2, v)
+      }
     MatrixLiteral(resultPipe, this.sizeHint)
   }
 
@@ -163,10 +167,15 @@ sealed trait Matrix2[R, C, V] extends Serializable {
           (
             r,
             c,
-            if (mon.isNonZero(x)) { ring.one }
-            else { ring.zero })
+            if (mon.isNonZero(x)) {
+              ring.one
+            } else {
+              ring.zero
+            })
       }
-      .filter { kv => ring.isNonZero(kv._3) }
+      .filter { kv =>
+        ring.isNonZero(kv._3)
+      }
     MatrixLiteral(newPipe, this.sizeHint)
   }
 
@@ -178,7 +187,9 @@ sealed trait Matrix2[R, C, V] extends Serializable {
       num: Numeric[V],
       mj: MatrixJoiner2): Matrix2[R, C, Double] = {
     val matD = MatrixLiteral(
-      this.toTypedPipe.map { case (r, c, x) => (r, c, num.toDouble(x)) },
+      this.toTypedPipe.map {
+        case (r, c, x) => (r, c, num.toDouble(x))
+      },
       this.sizeHint)
     lazy val result = MatrixLiteral(
       this.toTypedPipe.map {
@@ -201,10 +212,14 @@ sealed trait Matrix2[R, C, V] extends Serializable {
       num: Numeric[V],
       mj: MatrixJoiner2): Matrix2[R, C, Double] = {
     val matD = MatrixLiteral(
-      this.toTypedPipe.map { case (r, c, x) => (r, c, num.toDouble(x).abs) },
+      this.toTypedPipe.map {
+        case (r, c, x) => (r, c, num.toDouble(x).abs)
+      },
       this.sizeHint)
     lazy val result = matD.sumColVectors.toTypedPipe
-      .map { case (r, c, x) => (r, r, 1 / x) } // diagonal + inverse
+      .map {
+        case (r, c, x) => (r, r, 1 / x)
+      } // diagonal + inverse
     MatrixLiteral(
       result,
       SizeHint.asDiagonal(this.sizeHint.setRowsToCols)) * matD
@@ -213,15 +228,23 @@ sealed trait Matrix2[R, C, V] extends Serializable {
   def getRow(index: R): Matrix2[Unit, C, V] =
     MatrixLiteral(
       toTypedPipe
-        .filter { case (r, c, v) => Ordering[R].equiv(r, index) }
-        .map { case (r, c, v) => ((), c, v) },
+        .filter {
+          case (r, c, v) => Ordering[R].equiv(r, index)
+        }
+        .map {
+          case (r, c, v) => ((), c, v)
+        },
       this.sizeHint.setRows(1L))
 
   def getColumn(index: C): Matrix2[R, Unit, V] =
     MatrixLiteral(
       toTypedPipe
-        .filter { case (r, c, v) => Ordering[C].equiv(c, index) }
-        .map { case (r, c, v) => (r, (), v) },
+        .filter {
+          case (r, c, v) => Ordering[C].equiv(c, index)
+        }
+        .map {
+          case (r, c, v) => (r, (), v)
+        },
       this.sizeHint.setCols(1L))
 
   /**
@@ -232,14 +255,18 @@ sealed trait Matrix2[R, C, V] extends Serializable {
       ev: R =:= Unit,
       rowOrd: Ordering[R2]): Matrix2[R2, C, V] =
     MatrixLiteral(
-      toTypedPipe.map { case (r, c, v) => (r2, c, v) },
+      toTypedPipe.map {
+        case (r, c, v) => (r2, c, v)
+      },
       this.sizeHint)
 
   def asCol[C2](c2: C2)(implicit
       ev: C =:= Unit,
       colOrd: Ordering[C2]): Matrix2[R, C2, V] =
     MatrixLiteral(
-      toTypedPipe.map { case (r, c, v) => (r, c2, v) },
+      toTypedPipe.map {
+        case (r, c, v) => (r, c2, v)
+      },
       this.sizeHint)
 
   // Compute the sum of the main diagonal.  Only makes sense cases where the row and col type are
@@ -248,8 +275,12 @@ sealed trait Matrix2[R, C, V] extends Serializable {
     Scalar2(
       toTypedPipe
         .asInstanceOf[TypedPipe[(R, R, V)]]
-        .filter { case (r1, r2, _) => Ordering[R].equiv(r1, r2) }
-        .map { case (_, _, x) => x }
+        .filter {
+          case (r1, r2, _) => Ordering[R].equiv(r1, r2)
+        }
+        .map {
+          case (_, _, x) => x
+        }
         .sum(mon))
 
   def write(sink: TypedSink[(R, C, V)])(implicit
@@ -289,13 +320,19 @@ class DefaultMatrixJoiner(sizeRatioThreshold: Long) extends MatrixJoiner2 {
       left: Matrix2[R, C, V],
       right: Matrix2[C, C2, V2]): TypedPipe[(C, ((R, V), (C2, V2)))] = {
     implicit val cOrd: Ordering[C] = left.colOrd
-    val one = left.toTypedPipe.map { case (r, c, v)    => (c, (r, v)) }.group
-    val two = right.toTypedPipe.map { case (c, c2, v2) => (c, (c2, v2)) }.group
+    val one = left.toTypedPipe.map {
+      case (r, c, v) => (c, (r, v))
+    }.group
+    val two = right.toTypedPipe.map {
+      case (c, c2, v2) => (c, (c2, v2))
+    }.group
     val sizeOne = left.sizeHint.total.getOrElse(BigInt(1L))
     val sizeTwo = right.sizeHint.total.getOrElse(BigInt(1L))
 
     def swapInner[M, N](t: TypedPipe[(C, (M, N))]): TypedPipe[(C, (N, M))] =
-      t.mapValues { t: (M, N) => t.swap }
+      t.mapValues { t: (M, N) =>
+        t.swap
+      }
     // TODO:
     // use block join on tall skinny times skinny tall (or skewed): the result really big,
     // but the direct approach can't get much parallelism.
@@ -381,17 +418,25 @@ case class Product[R, C, C2, V](
                     val ord: Ordering[C] = right.rowOrd
                     right.toTypedPipe.groupBy(x => x._1)(ord)
                   })
-      .mapValues { _._3 }
+      .mapValues {
+        _._3
+      }
       .sum(localRing)
-      .filter { kv => localRing.isNonZero(kv._2) }
+      .filter { kv =>
+        localRing.isNonZero(kv._2)
+      }
 
     if (leftMatrix) {
       joined
-        .map { case (r, v) => (r, (), v) }
+        .map {
+          case (r, v) => (r, (), v)
+        }
         .asInstanceOf[TypedPipe[(R, C2, V)]] // we know C2 is Unit
     } else {
       joined
-        .map { case (c, v) => ((), c, v) }
+        .map {
+          case (c, v) => ((), c, v)
+        }
         .asInstanceOf[TypedPipe[(R, C2, V)]] // we know R is Unit
     }
   }
@@ -426,10 +471,16 @@ case class Product[R, C, C2, V](
       val localRing = ring
       joined
         .groupBy(w => (w._1, w._2))
-        .mapValues { _._3 }
+        .mapValues {
+          _._3
+        }
         .sum(localRing)
-        .filter { kv => localRing.isNonZero(kv._2) }
-        .map { case ((r, c), v) => (r, c, v) }
+        .filter { kv =>
+          localRing.isNonZero(kv._2)
+        }
+        .map {
+          case ((r, c), v) => (r, c, v)
+        }
     }
   }
 
@@ -487,7 +538,12 @@ case class Product[R, C, C2, V](
         case (c1, c2, _) => ord.equiv(c1, c2)
       }
       Scalar2(
-        product2.computePipe(filtered).map { case (_, _, x) => x }.sum(mon))
+        product2
+          .computePipe(filtered)
+          .map {
+            case (_, _, x) => x
+          }
+          .sum(mon))
     } else {
       val product1 = plan1.asInstanceOf[Product[R, C, R, V]]
       val ord = left.rowOrd
@@ -495,7 +551,12 @@ case class Product[R, C, C2, V](
         case (r1, r2, _) => ord.equiv(r1, r2)
       }
       Scalar2(
-        product1.computePipe(filtered).map { case (_, _, x) => x }.sum(mon))
+        product1
+          .computePipe(filtered)
+          .map {
+            case (_, _, x) => x
+          }
+          .sum(mon))
     }
 
   }
@@ -540,10 +601,16 @@ case class Sum[R, C, V](
       collectAddends(this)
         .reduce((x, y) => x ++ y)
         .groupBy(x => (x._1, x._2))
-        .mapValues { _._3 }
+        .mapValues {
+          _._3
+        }
         .sum(mon)
-        .filter { kv => mon.isNonZero(kv._2) }
-        .map { case ((r, c), v) => (r, c, v) }
+        .filter { kv =>
+          mon.isNonZero(kv._2)
+        }
+        .map {
+          case ((r, c), v) => (r, c, v)
+        }
     }
   }
 
@@ -569,8 +636,12 @@ case class Sum[R, C, V](
         .map { pipe =>
           pipe
             .asInstanceOf[TypedPipe[(R, R, V)]]
-            .filter { case (r, c, v) => Ordering[R].equiv(r, c) }
-            .map { _._3 }
+            .filter {
+              case (r, c, v) => Ordering[R].equiv(r, c)
+            }
+            .map {
+              _._3
+            }
         }
         .reduce(_ ++ _)
         .sum)
@@ -596,10 +667,16 @@ case class HadamardProduct[R, C, V](
           case (r, c, v) => (r, c, (v, false))
         })
         .groupBy(x => (x._1, x._2))
-        .mapValues { _._3 }
+        .mapValues {
+          _._3
+        }
         .reduce((x, y) => (ring.times(x._1, y._1), true))
-        .filter { kv => kv._2._2 && ring.isNonZero(kv._2._1) }
-        .map { case ((r, c), v) => (r, c, v._1) }
+        .filter { kv =>
+          kv._2._2 && ring.isNonZero(kv._2._1)
+        }
+        .map {
+          case ((r, c), v) => (r, c, v._1)
+        }
     }
   }
 
@@ -829,7 +906,9 @@ object Matrix2 {
   def optimize[V](mf: Matrix2[Any, Any, V]): (BigInt, Matrix2[Any, Any, V]) = {
 
     def pair[X, Y](x: Option[X], y: Option[Y]): Option[(X, Y)] =
-      for { xi <- x; yi <- y } yield (xi, yi)
+      for {
+        xi <- x; yi <- y
+      } yield (xi, yi)
 
     /**
       * Recursive function - returns a flatten product chain and optimizes product chains under sums

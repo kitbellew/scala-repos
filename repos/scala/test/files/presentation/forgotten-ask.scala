@@ -6,7 +6,9 @@ object Test extends InteractiveTest {
   import compiler._
 
   def askItem(): Response[Unit] = {
-    compiler.askForResponse { () => Thread.sleep(100) }
+    compiler.askForResponse { () =>
+      Thread.sleep(100)
+    }
   }
 
   final val Timeout = 5000 //ms

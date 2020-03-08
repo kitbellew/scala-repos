@@ -15,7 +15,9 @@ object Test {
     as push 6
     println(as.reverse)
 
-    println(as map { x => x })
+    println(as map { x =>
+      x
+    })
 
     for (i <- 0 until 100) {
       as push i

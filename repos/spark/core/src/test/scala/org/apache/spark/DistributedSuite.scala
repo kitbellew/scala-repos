@@ -129,7 +129,9 @@ class DistributedSuite
     failAfter(Span(100000, Millis)) {
       val thrown = intercept[SparkException] {
         // One of the tasks always fails.
-        sc.parallelize(1 to 10, 2).foreach { x => if (x == 1) System.exit(42) }
+        sc.parallelize(1 to 10, 2).foreach { x =>
+          if (x == 1) System.exit(42)
+        }
       }
       assert(thrown.getClass === classOf[SparkException])
       assert(thrown.getMessage.contains("failed 4 times"))
@@ -346,7 +348,9 @@ class DistributedSuite
           Thread.sleep(200)
         }
       } catch {
-        case _: Throwable => { Thread.sleep(10) }
+        case _: Throwable => {
+          Thread.sleep(10)
+        }
         // Do nothing. We might see exceptions because block manager
         // is racing this thread to remove entries from the driver.
       }

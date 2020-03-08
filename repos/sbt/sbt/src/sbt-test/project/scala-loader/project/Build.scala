@@ -9,7 +9,9 @@ object Build extends Build {
   def checkTask =
     subs.map(sub => scalaInstance in LocalProject(sub.id)).join.map { sis =>
       assert(
-        sis.sliding(2).forall { case Seq(x, y) => x.loader == y.loader },
+        sis.sliding(2).forall {
+          case Seq(x, y) => x.loader == y.loader
+        },
         "Not all ScalaInstances had the same class loader.")
     }
 

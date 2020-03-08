@@ -57,8 +57,12 @@ class SerializabilitySpec extends WordSpec with Matchers {
 
   "Header values" should {
     "be serializable" when {
-      "Cache" in { CacheDirectives.`no-store` should beSerializable }
-      "DateTime" in { DateTime.now should beSerializable }
+      "Cache" in {
+        CacheDirectives.`no-store` should beSerializable
+      }
+      "DateTime" in {
+        DateTime.now should beSerializable
+      }
       "Charsets" in {
         tryToSerialize(
           HttpCharsets.`UTF-16`).nioCharset shouldEqual HttpCharsets.`UTF-16`.nioCharset
@@ -67,7 +71,9 @@ class SerializabilitySpec extends WordSpec with Matchers {
         Language("a", "b") should beSerializable
         LanguageRange.`*` should beSerializable
       }
-      "MediaRange" in { MediaRanges.`application/*` should beSerializable }
+      "MediaRange" in {
+        MediaRanges.`application/*` should beSerializable
+      }
     }
   }
 

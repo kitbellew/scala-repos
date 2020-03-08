@@ -64,7 +64,9 @@ abstract class MappedTime[T <: Mapper[T]](val fieldOwner: T)
     * Get the source field metadata for the field
     * @return the source field metadata for the field
     */
-  def sourceInfoMetadata(): SourceFieldMetadata { type ST = Date } =
+  def sourceInfoMetadata(): SourceFieldMetadata {
+    type ST = Date
+  } =
     SourceFieldMetadataRep(
       name,
       manifest,
@@ -142,7 +144,9 @@ abstract class MappedTime[T <: Mapper[T]](val fieldOwner: T)
 
   protected def i_is_! = data.get
   protected def i_was_! = orgData.get
-  protected[mapper] def doneWithSave() { orgData.setFrom(data) }
+  protected[mapper] def doneWithSave() {
+    orgData.setFrom(data)
+  }
 
   protected def i_obscure_!(in: Date): Date = {
     new Date(0L)
@@ -152,9 +156,15 @@ abstract class MappedTime[T <: Mapper[T]](val fieldOwner: T)
     * Create an input field for the item
     */
   override def _toForm: Box[NodeSeq] =
-    S.fmapFunc({ s: List[String] => this.setFromAny(s) }) { funcName =>
-      Full(appendFieldId(<input type={formInputType}
-                     name={funcName}
+    S.fmapFunc({ s: List[String] =>
+      this.setFromAny(s)
+    }) { funcName =>
+      Full(appendFieldId(<input type={
+        formInputType
+      }
+                     name={
+        funcName
+      }
                      value={
         get match {
           case null => ""
@@ -195,7 +205,12 @@ abstract class MappedTime[T <: Mapper[T]](val fieldOwner: T)
       v: AnyRef,
       columnName: String): (T, AnyRef) => Unit =
     (inst, v) =>
-      doField(inst, accessor, { case f: MappedTime[T] => f.st(toDate(v)) })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedTime[T] => f.st(toDate(v))
+        })
 
   def buildSetLongValue(
       accessor: Method,
@@ -213,19 +228,34 @@ abstract class MappedTime[T <: Mapper[T]](val fieldOwner: T)
       accessor: Method,
       columnName: String): (T, String) => Unit =
     (inst, v) =>
-      doField(inst, accessor, { case f: MappedTime[T] => f.st(toDate(v)) })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedTime[T] => f.st(toDate(v))
+        })
 
   def buildSetDateValue(
       accessor: Method,
       columnName: String): (T, Date) => Unit =
     (inst, v) =>
-      doField(inst, accessor, { case f: MappedTime[T] => f.st(Full(v)) })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedTime[T] => f.st(Full(v))
+        })
 
   def buildSetBooleanValue(
       accessor: Method,
       columnName: String): (T, Boolean, Boolean) => Unit =
     (inst, v, isNull) =>
-      doField(inst, accessor, { case f: MappedTime[T] => f.st(Empty) })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedTime[T] => f.st(Empty)
+        })
 
   /**
     * Given the driver type, return the string required to create the column in the database

@@ -1,4 +1,6 @@
-trait Foo { def i: Int }
+trait Foo {
+  def i: Int
+}
 trait Bar
 
 case class Spam(i: Int) extends Foo with Bar

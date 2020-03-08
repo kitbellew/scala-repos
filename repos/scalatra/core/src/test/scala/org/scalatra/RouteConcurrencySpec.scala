@@ -10,12 +10,20 @@ import org.scalatest.concurrent.Eventually._
 class RouteConcurrencyServlet extends ScalatraServlet {
   for {
     i <- 0 until 250
-    x = Future { get(false) { "/" } }
+    x = Future {
+      get(false) {
+        "/"
+      }
+    }
   } x
 
   val postRoutes = for {
     i <- 0 until 250
-    x = Future { post(false) { "/" } }
+    x = Future {
+      post(false) {
+        "/"
+      }
+    }
   } yield x
 
   val b = for {
@@ -23,7 +31,11 @@ class RouteConcurrencyServlet extends ScalatraServlet {
     x = Future {
       post(false) {}; post(false) {}
     } // add some more routes while we're removing
-    y = Future { route.foreach { route => removeRoute("POST", route) } }
+    y = Future {
+      route.foreach { route =>
+        removeRoute("POST", route)
+      }
+    }
   } yield (x, y)
   Await.result(
     Future.sequence(b map (kv => kv._1.flatMap(_ => kv._2))),
@@ -48,7 +60,9 @@ class RouteConcurrencySpec extends ScalatraWordSpec {
 
     "support removing routes concurrently with adding routes" in {
       eventually {
-        get("/count/post") { body should equal("500") }
+        get("/count/post") {
+          body should equal("500")
+        }
       }
     }
   }

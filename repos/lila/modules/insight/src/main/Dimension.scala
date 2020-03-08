@@ -161,7 +161,9 @@ object Dimension {
     PieceRole,
     MyCastling,
     OpCastling)
-  val byKey = all map { p => (p.key, p) } toMap
+  val byKey = all map { p =>
+    (p.key, p)
+  } toMap
 
   def requiresStableRating(d: Dimension[_]) = d match {
     case OpponentStrength => true

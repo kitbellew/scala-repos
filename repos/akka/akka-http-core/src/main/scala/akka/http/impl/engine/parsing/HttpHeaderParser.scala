@@ -73,7 +73,8 @@ private[engine] final class HttpHeaderParser private (
     private[this] var values: Array[AnyRef] =
       new Array(255), // fixed size of 255
     private[this] var valueCount: Int = 0,
-    private[this] var trieIsPrivate: Boolean = false) { // signals the trie data can be mutated w/o having to copy first
+    private[this] var trieIsPrivate: Boolean =
+      false) { // signals the trie data can be mutated w/o having to copy first
 
   // TODO: evaluate whether switching to a value-class-based approach allows us to improve code readability without sacrificing performance
 

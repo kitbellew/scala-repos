@@ -35,20 +35,28 @@ object ParallelTest {
 
 class Test1 {
   @Test
-  def slow(): Unit = ParallelTest.execute { Thread.sleep(1000) }
+  def slow(): Unit = ParallelTest.execute {
+    Thread.sleep(1000)
+  }
 }
 
 class Test2 {
   @Test
-  def slow(): Unit = ParallelTest.execute { Thread.sleep(1000) }
+  def slow(): Unit = ParallelTest.execute {
+    Thread.sleep(1000)
+  }
 }
 
 class Test3 {
   @Test
-  def slow(): Unit = ParallelTest.execute { Thread.sleep(1000) }
+  def slow(): Unit = ParallelTest.execute {
+    Thread.sleep(1000)
+  }
 }
 
 class Test4 {
   @Test
-  def slow(): Unit = ParallelTest.execute { Thread.sleep(1000) }
+  def slow(): Unit = ParallelTest.execute {
+    Thread.sleep(1000)
+  }
 }

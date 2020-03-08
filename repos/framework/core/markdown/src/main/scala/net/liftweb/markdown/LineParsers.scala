@@ -179,15 +179,21 @@ trait LineParsers extends InlineParsers {
   /** The link url in a link definition.
     */
   def linkDefinitionUrl: Parser[String] =
-    (elem('<') ~> markdownText(Set('>'), true) <~ '>' ^^ { _.mkString.trim }) |
-      (markdownText(Set(' ', '\t'), true) ^^ { _.mkString })
+    (elem('<') ~> markdownText(Set('>'), true) <~ '>' ^^ {
+      _.mkString.trim
+    }) |
+      (markdownText(Set(' ', '\t'), true) ^^ {
+        _.mkString
+      })
 
   /** The title in a link definition.
     */
   def linkDefinitionTitle: Parser[String] =
     ows ~> ("""\"[^\n]*["]""".r |
       """\'[^\n]*\'""".r |
-      """\([^\n]*\)""".r) <~ ows ^^ { s => s.substring(1, s.length - 1) }
+      """\([^\n]*\)""".r) <~ ows ^^ { s =>
+      s.substring(1, s.length - 1)
+    }
 
   /** A link definition that later gets stripped from the output.
     * Either a link definition on one line or the first line of a two line link definition.
@@ -238,7 +244,9 @@ trait LineParsers extends InlineParsers {
   /** Parses a horizontal rule.
     */
   val ruler: Parser[MarkdownLine] =
-    """ {0,3}(((-[ \t]*){3,})|((\*[ \t]*){3,}))$""".r ^^ { new RulerLine(_) }
+    """ {0,3}(((-[ \t]*){3,})|((\*[ \t]*){3,}))$""".r ^^ {
+      new RulerLine(_)
+    }
 
   /** Matches a line starting with up to three spaces, a '>' and an optional whitespace.
     * (i.e.: the start or continuation of a block quote.)
@@ -295,7 +303,9 @@ trait LineParsers extends InlineParsers {
   /** Matches any line. Only called when all other line parsers have failed.
     * Makes sure line tokenizing does not fail and we do not loose any lines on the way.
     */
-  val otherLine: Parser[OtherLine] = rest ^^ { new OtherLine(_) }
+  val otherLine: Parser[OtherLine] = rest ^^ {
+    new OtherLine(_)
+  }
 
   ///////////////////////////////////////////////////////////////
   // combined parsers for faster tokenizing based on lookahead //

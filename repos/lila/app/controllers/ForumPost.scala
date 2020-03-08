@@ -64,7 +64,9 @@ object ForumPost extends LilaController with ForumController {
 
   def delete(categSlug: String, id: String) = Auth { implicit ctx => me =>
     CategGrantMod(categSlug) {
-      postApi.delete(categSlug, id, me) map { Ok(_) }
+      postApi.delete(categSlug, id, me) map {
+        Ok(_)
+      }
     }
   }
 

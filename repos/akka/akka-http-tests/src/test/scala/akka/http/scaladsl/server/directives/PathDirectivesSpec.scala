@@ -9,12 +9,16 @@ import akka.http.scaladsl.server._
 import org.scalatest.Inside
 
 class PathDirectivesSpec extends RoutingSpec with Inside {
-  val echoUnmatchedPath = extractUnmatchedPath { echoComplete }
+  val echoUnmatchedPath = extractUnmatchedPath {
+    echoComplete
+  }
   def echoCaptureAndUnmatchedPath[T]: T ⇒ Route =
     capture ⇒ ctx ⇒ ctx.complete(capture.toString + ":" + ctx.unmatchedPath)
 
   """path("foo")""" should {
-    val test = testFor(path("foo") { echoUnmatchedPath })
+    val test = testFor(path("foo") {
+      echoUnmatchedPath
+    })
     "reject [/bar]" in test()
     "reject [/foobar]" in test()
     "reject [/foo/bar]" in test()
@@ -23,19 +27,25 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
   }
 
   """path("foo" /)""" should {
-    val test = testFor(path("foo" /) { echoUnmatchedPath })
+    val test = testFor(path("foo" /) {
+      echoUnmatchedPath
+    })
     "reject [/foo]" in test()
     "accept [/foo/] and clear the unmatchedPath" in test("")
   }
 
   """path("")""" should {
-    val test = testFor(path("") { echoUnmatchedPath })
+    val test = testFor(path("") {
+      echoUnmatchedPath
+    })
     "reject [/foo]" in test()
     "accept [/] and clear the unmatchedPath" in test("")
   }
 
   """pathPrefix("foo")""" should {
-    val test = testFor(pathPrefix("foo") { echoUnmatchedPath })
+    val test = testFor(pathPrefix("foo") {
+      echoUnmatchedPath
+    })
     "reject [/bar]" in test()
     "accept [/foobar]" in test("bar")
     "accept [/foo/bar]" in test("/bar")
@@ -44,14 +54,18 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
   }
 
   """pathPrefix("foo" / "bar")""" should {
-    val test = testFor(pathPrefix("foo" / "bar") { echoUnmatchedPath })
+    val test = testFor(pathPrefix("foo" / "bar") {
+      echoUnmatchedPath
+    })
     "reject [/bar]" in test()
     "accept [/foo/bar]" in test("")
     "accept [/foo/bar/baz]" in test("/baz")
   }
 
   """pathPrefix("ab[cd]+".r)""" should {
-    val test = testFor(pathPrefix("ab[cd]+".r) { echoCaptureAndUnmatchedPath })
+    val test = testFor(pathPrefix("ab[cd]+".r) {
+      echoCaptureAndUnmatchedPath
+    })
     "reject [/bar]" in test()
     "reject [/ab/cd]" in test()
     "accept [/abcdef]" in test("abcd:ef")
@@ -59,7 +73,9 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
   }
 
   """pathPrefix("ab(cd)".r)""" should {
-    val test = testFor(pathPrefix("ab(cd)+".r) { echoCaptureAndUnmatchedPath })
+    val test = testFor(pathPrefix("ab(cd)+".r) {
+      echoCaptureAndUnmatchedPath
+    })
     "reject [/bar]" in test()
     "reject [/ab/cd]" in test()
     "accept [/abcdef]" in test("cd:ef")
@@ -75,7 +91,9 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
   }
 
   "pathPrefix(IntNumber)" should {
-    val test = testFor(pathPrefix(IntNumber) { echoCaptureAndUnmatchedPath })
+    val test = testFor(pathPrefix(IntNumber) {
+      echoCaptureAndUnmatchedPath
+    })
     "accept [/23]" in test("23:")
     "accept [/12345yes]" in test("12345:yes")
     "reject [/]" in test()
@@ -99,7 +117,9 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
   }
 
   "pathPrefix(JavaUUID)" should {
-    val test = testFor(pathPrefix(JavaUUID) { echoCaptureAndUnmatchedPath })
+    val test = testFor(pathPrefix(JavaUUID) {
+      echoCaptureAndUnmatchedPath
+    })
     "accept [/bdea8652-f26c-40ca-8157-0b96a2a8389d]" in test(
       "bdea8652-f26c-40ca-8157-0b96a2a8389d:")
     "accept [/bdea8652-f26c-40ca-8157-0b96a2a8389dyes]" in test(
@@ -125,7 +145,9 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
   }
 
   "pathPrefix(Segment)" should {
-    val test = testFor(pathPrefix(Segment) { echoCaptureAndUnmatchedPath })
+    val test = testFor(pathPrefix(Segment) {
+      echoCaptureAndUnmatchedPath
+    })
     "accept [/abc]" in test("abc:")
     "accept [/abc/]" in test("abc:/")
     "accept [/abc/def]" in test("abc:/def")
@@ -133,7 +155,9 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
   }
 
   "pathPrefix(Segments)" should {
-    val test = testFor(pathPrefix(Segments) { echoCaptureAndUnmatchedPath })
+    val test = testFor(pathPrefix(Segments) {
+      echoCaptureAndUnmatchedPath
+    })
     "accept [/]" in test("List():")
     "accept [/a/b/c]" in test("List(a, b, c):")
     "accept [/a/b/c/]" in test("List(a, b, c):/")
@@ -175,20 +199,26 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
   }
 
   """pathSuffix("foo" / "bar" ~ "baz")""" should {
-    val test = testFor(pathSuffix("foo" / "bar" ~ "baz") { echoUnmatchedPath })
+    val test = testFor(pathSuffix("foo" / "bar" ~ "baz") {
+      echoUnmatchedPath
+    })
     "accept [/orders/barbaz/foo]" in test("/orders/")
     "reject [/orders/bazbar/foo]" in test()
   }
 
   "pathSuffixTest(Slash)" should {
-    val test = testFor(pathSuffixTest(Slash) { echoUnmatchedPath })
+    val test = testFor(pathSuffixTest(Slash) {
+      echoUnmatchedPath
+    })
     "accept [/]" in test("/")
     "accept [/foo/]" in test("/foo/")
     "reject [/foo]" in test()
   }
 
   """pathPrefix("foo" | "bar")""" should {
-    val test = testFor(pathPrefix("foo" | "bar") { echoUnmatchedPath })
+    val test = testFor(pathPrefix("foo" | "bar") {
+      echoUnmatchedPath
+    })
     "accept [/foo]" in test("")
     "accept [/foops]" in test("ps")
     "accept [/bar]" in test("")
@@ -196,27 +226,35 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
   }
 
   """pathSuffix(!"foo")""" should {
-    val test = testFor(pathSuffix(!"foo") { echoUnmatchedPath })
+    val test = testFor(pathSuffix(!"foo") {
+      echoUnmatchedPath
+    })
     "accept [/bar]" in test("/bar")
     "reject [/foo]" in test()
   }
 
   "pathPrefix(IntNumber?)" should {
-    val test = testFor(pathPrefix(IntNumber ?) { echoCaptureAndUnmatchedPath })
+    val test = testFor(pathPrefix(IntNumber ?) {
+      echoCaptureAndUnmatchedPath
+    })
     "accept [/12]" in test("Some(12):")
     "accept [/12a]" in test("Some(12):a")
     "accept [/foo]" in test("None:foo")
   }
 
   """pathPrefix("foo"?)""" should {
-    val test = testFor(pathPrefix("foo" ?) { echoUnmatchedPath })
+    val test = testFor(pathPrefix("foo" ?) {
+      echoUnmatchedPath
+    })
     "accept [/foo]" in test("")
     "accept [/fool]" in test("l")
     "accept [/bar]" in test("bar")
   }
 
   """pathPrefix("foo") & pathEnd""" should {
-    val test = testFor((pathPrefix("foo") & pathEnd) { echoUnmatchedPath })
+    val test = testFor((pathPrefix("foo") & pathEnd) {
+      echoUnmatchedPath
+    })
     "reject [/foobar]" in test()
     "reject [/foo/bar]" in test()
     "accept [/foo] and clear the unmatchedPath" in test("")
@@ -290,17 +328,23 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
     {
       val test = testFor(path(Rest.tmap {
         case Tuple1(s) ⇒ Tuple1(s.split('-').toList)
-      }) { echoComplete })
+      }) {
+        echoComplete
+      })
       "support the hmap modifier in accept [/yes-no]" in test("List(yes, no)")
     }
     {
-      val test = testFor(path(Rest.map(_.split('-').toList)) { echoComplete })
+      val test = testFor(path(Rest.map(_.split('-').toList)) {
+        echoComplete
+      })
       "support the map modifier in accept [/yes-no]" in test("List(yes, no)")
     }
     {
       val test = testFor(path(Rest.tflatMap {
         case Tuple1(s) ⇒ Some(s).filter("yes" ==).map(x ⇒ Tuple1(x))
-      }) { echoComplete })
+      }) {
+        echoComplete
+      })
       "support the hflatMap modifier in accept [/yes]" in test("yes")
       "support the hflatMap modifier in reject [/blub]" in test()
     }
@@ -347,10 +391,14 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
   import akka.http.scaladsl.model.StatusCodes._
 
   "the `redirectToTrailingSlashIfMissing` directive" should {
-    val route = redirectToTrailingSlashIfMissing(Found) { completeOk }
+    val route = redirectToTrailingSlashIfMissing(Found) {
+      completeOk
+    }
 
     "pass if the request path already has a trailing slash" in {
-      Get("/foo/bar/") ~> route ~> check { response shouldEqual Ok }
+      Get("/foo/bar/") ~> route ~> check {
+        response shouldEqual Ok
+      }
     }
 
     "redirect if the request path doesn't have a trailing slash" in {
@@ -364,20 +412,32 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
 
     "redirect with the given redirection status code" in {
       Get("/foo/bar") ~>
-        redirectToTrailingSlashIfMissing(MovedPermanently) { completeOk } ~>
-        check { status shouldEqual MovedPermanently }
+        redirectToTrailingSlashIfMissing(MovedPermanently) {
+          completeOk
+        } ~>
+        check {
+          status shouldEqual MovedPermanently
+        }
 
       Get("/foo/bar/") ~>
-        redirectToTrailingSlashIfMissing(MovedPermanently) { completeOk } ~>
-        check { status shouldEqual StatusCodes.OK }
+        redirectToTrailingSlashIfMissing(MovedPermanently) {
+          completeOk
+        } ~>
+        check {
+          status shouldEqual StatusCodes.OK
+        }
     }
   }
 
   "the `redirectToNoTrailingSlashIfPresent` directive" should {
-    val route = redirectToNoTrailingSlashIfPresent(Found) { completeOk }
+    val route = redirectToNoTrailingSlashIfPresent(Found) {
+      completeOk
+    }
 
     "pass if the request path already doesn't have a trailing slash" in {
-      Get("/foo/bar") ~> route ~> check { response shouldEqual Ok }
+      Get("/foo/bar") ~> route ~> check {
+        response shouldEqual Ok
+      }
     }
 
     "redirect if the request path has a trailing slash" in {
@@ -391,8 +451,12 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
 
     "redirect with the given redirection status code" in {
       Get("/foo/bar/") ~>
-        redirectToNoTrailingSlashIfPresent(MovedPermanently) { completeOk } ~>
-        check { status shouldEqual MovedPermanently }
+        redirectToNoTrailingSlashIfPresent(MovedPermanently) {
+          completeOk
+        } ~>
+        check {
+          status shouldEqual MovedPermanently
+        }
     }
   }
 

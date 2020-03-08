@@ -38,7 +38,9 @@ private[concurrent] trait Promise[T]
     onComplete { result =>
       p.complete(
         try f(result)
-        catch { case NonFatal(t) => Failure(t) })
+        catch {
+          case NonFatal(t) => Failure(t)
+        })
     }
     p.future
   }
@@ -53,7 +55,9 @@ private[concurrent] trait Promise[T]
         case dp: DefaultPromise[_] =>
           dp.asInstanceOf[DefaultPromise[S]].linkRootOf(p)
         case fut => p completeWith fut
-      } catch { case NonFatal(t) => p failure t }
+      } catch {
+        case NonFatal(t) => p failure t
+      }
     }
     p.future
   }
@@ -77,7 +81,9 @@ private final class CallbackRunnable[T](
   override def run() = {
     require(value ne null) // must set value to non-null before running!
     try onComplete(value)
-    catch { case NonFatal(e) => executor reportFailure e }
+    catch {
+      case NonFatal(e) => executor reportFailure e
+    }
   }
 
   def executeWithValue(v: Try[T]): Unit = {
@@ -86,7 +92,9 @@ private final class CallbackRunnable[T](
     // Note that we cannot prepare the ExecutionContext at this point, since we might
     // already be running on a different thread!
     try executor.execute(this)
-    catch { case NonFatal(t) => executor reportFailure t }
+    catch {
+      case NonFatal(t) => executor reportFailure t
+    }
   }
 }
 
@@ -460,7 +468,10 @@ private[concurrent] object Promise {
           implicit executor: ExecutionContext): Future[R] = thisAs[R]
       override def fallbackTo[U >: T](that: Future[U]): Future[U] =
         if (this eq that) this
-        else that.recoverWith({ case _ => this })(InternalCallbackExecutor)
+        else
+          that.recoverWith({
+            case _ => this
+          })(InternalCallbackExecutor)
       override def mapTo[S](implicit tag: ClassTag[S]): Future[S] = thisAs[S]
     }
 

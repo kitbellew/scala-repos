@@ -19,14 +19,18 @@ object Test extends App {
 
   type mType = Module
 
-  type tType = T { type moduleType <: mType }
+  type tType = T {
+    type moduleType <: mType
+  }
   // type tType = T { type moduleType <: Module } // runs successfully
   // type tType = T // runs successfully
 
   def f(ts: List[tType]): Unit = {
 
     for (t <- ts; m = t.module) {}
-    ts.map(t => t.module).foreach { _ => () }
+    ts.map(t => t.module).foreach { _ =>
+      ()
+    }
     // ts.map(t => (t : T).module).foreach { _ => () } // runs successfully
   }
 

@@ -229,11 +229,18 @@ class ThrottlerTransportAdapter(
   override def managementCommand(cmd: Any): Future[Boolean] = {
     import ActorTransportAdapter.AskTimeout
     cmd match {
-      case s: SetThrottle ⇒ manager ? s map { case SetThrottleAck ⇒ true }
+      case s: SetThrottle ⇒
+        manager ? s map {
+          case SetThrottleAck ⇒ true
+        }
       case f: ForceDisassociate ⇒
-        manager ? f map { case ForceDisassociateAck ⇒ true }
+        manager ? f map {
+          case ForceDisassociateAck ⇒ true
+        }
       case f: ForceDisassociateExplicitly ⇒
-        manager ? f map { case ForceDisassociateAck ⇒ true }
+        manager ? f map {
+          case ForceDisassociateAck ⇒ true
+        }
       case _ ⇒ wrappedTransport.managementCommand(cmd)
     }
   }
@@ -390,7 +397,9 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
             SetThrottleAck
           }
         },
-        t ⇒ { internalTarget.sendSystemMessage(Unwatch(target, ref)); t }
+        t ⇒ {
+          internalTarget.sendSystemMessage(Unwatch(target, ref)); t
+        }
       )(ref.internalCallingThreadExecutionContext)
     }
   }

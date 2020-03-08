@@ -15,7 +15,13 @@ trait UnifiedProtocolCodec {
     argCount match {
       case n if n < 0 =>
         throw new ProtocolError("Invalid argument count specified")
-      case n => decodeRequestLines(n, Nil, { lines => doneFn(lines) })
+      case n =>
+        decodeRequestLines(
+          n,
+          Nil,
+          { lines =>
+            doneFn(lines)
+          })
     }
 
   def decodeRequestLines[T <: AnyRef](

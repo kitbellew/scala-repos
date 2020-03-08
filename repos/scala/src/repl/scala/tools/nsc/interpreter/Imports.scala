@@ -52,7 +52,9 @@ trait Imports {
   def languageSymbols = languageWildcardSyms flatMap membersAtPickler
   def sessionImportedSymbols = importHandlers flatMap (_.importedSymbols)
   def importedSymbols = languageSymbols ++ sessionImportedSymbols
-  def importedTermSymbols = importedSymbols collect { case x: TermSymbol => x }
+  def importedTermSymbols = importedSymbols collect {
+    case x: TermSymbol => x
+  }
 
   /** Tuples of (source, imported symbols) in the order they were imported.
     */
@@ -152,7 +154,9 @@ trait Imports {
 
       /** Flatten the handlers out and pair each with the original request */
       select(
-        allReqAndHandlers reverseMap { case (r, h) => ReqAndHandler(r, h) },
+        allReqAndHandlers reverseMap {
+          case (r, h) => ReqAndHandler(r, h)
+        },
         wanted).reverse
     }
 

@@ -44,8 +44,12 @@ object SummingbirdRuntimeStats {
     def nonEmpty: Boolean = innerContainer.synchronized {
       innerContainer.nonEmpty
     }
-    def toSeq: Seq[T] = innerContainer.synchronized { innerContainer.toSeq }
-    def add(e: T): Unit = innerContainer.synchronized { innerContainer += e }
+    def toSeq: Seq[T] = innerContainer.synchronized {
+      innerContainer.toSeq
+    }
+    def add(e: T): Unit = innerContainer.synchronized {
+      innerContainer += e
+    }
   }
 
   // A global set of PlatformStatProviders, ParHashSet in scala seemed to trigger a deadlock
@@ -62,7 +66,11 @@ object SummingbirdRuntimeStats {
 
   // invoke the ScaldingRuntimeStatsProvider object initializer on remote node
   private[this] lazy val platformsInit =
-    platformObjects.foreach { s: String => Try[Unit] { Class.forName(s) } }
+    platformObjects.foreach { s: String =>
+      Try[Unit] {
+        Class.forName(s)
+      }
+    }
 
   def hasStatProviders: Boolean = platformStatProviders.nonEmpty
 

@@ -31,7 +31,9 @@ private[memcached] object InternalMemcached {
       Some(new TestMemcachedServer {
         val address =
           server.start().boundAddress.asInstanceOf[InetSocketAddress]
-        def stop() { server.stop(true) }
+        def stop() {
+          server.stop(true)
+        }
       })
     } catch {
       case NonFatal(_) => None

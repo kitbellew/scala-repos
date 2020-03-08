@@ -344,7 +344,9 @@ abstract class RemoteNodeDeathWatchSpec
         enterBarrier("stopped-5")
 
         p1.receiveN(2, 5 seconds)
-          .collect { case WrappedTerminated(t) ⇒ t.actor }
+          .collect {
+            case WrappedTerminated(t) ⇒ t.actor
+          }
           .toSet should ===(Set(a1, a2))
         p3.expectMsgType[WrappedTerminated](5 seconds).t.actor should ===(a3)
         p2.expectNoMsg(2 seconds)

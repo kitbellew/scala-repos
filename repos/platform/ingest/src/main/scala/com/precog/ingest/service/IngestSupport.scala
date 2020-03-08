@@ -67,7 +67,9 @@ trait IngestSupport extends Logging {
         authorities,
         apiKey,
         path,
-        timestamp.toInstant) map { _.option(authorities) }
+        timestamp.toInstant) map {
+        _.option(authorities)
+      }
     } getOrElse {
       permissionsFinder.inferWriteAuthorities(
         apiKey,

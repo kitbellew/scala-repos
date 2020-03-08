@@ -29,7 +29,9 @@ trait SourceInfo {
 case class SourceFieldMetadataRep[A](
     name: String,
     manifest: TypeTag[A],
-    converter: FieldConverter { type T = A })
+    converter: FieldConverter {
+      type T = A
+    })
     extends SourceFieldMetadata {
   type ST = A
 }
@@ -60,7 +62,9 @@ trait SourceFieldMetadata {
     * Something that will convert the field into known types like String and NodeSeq
     * @return
     */
-  def converter: FieldConverter { type T = ST }
+  def converter: FieldConverter {
+    type T = ST
+  }
 }
 
 /**
@@ -72,7 +76,9 @@ trait SourceFieldMetadata {
   */
 case class SourceFieldInfoRep[A](
     value: A,
-    metaData: SourceFieldMetadata { type ST = A })
+    metaData: SourceFieldMetadata {
+      type ST = A
+    })
     extends SourceFieldInfo {
   type T = A
 }
@@ -97,7 +103,9 @@ trait SourceFieldInfo {
     * Metadata about the field
     * @return
     */
-  def metaData: SourceFieldMetadata { type ST = T }
+  def metaData: SourceFieldMetadata {
+    type ST = T
+  }
 }
 
 /**

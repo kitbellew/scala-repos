@@ -238,7 +238,9 @@ class FlowDocSpec extends AkkaSpec {
     val fused = Fusing.aggressive(flow)
 
     Source
-      .fromIterator { () => Iterator from 0 }
+      .fromIterator { () =>
+        Iterator from 0
+      }
       .via(fused)
       .take(1000)
     //#explicit-fusing

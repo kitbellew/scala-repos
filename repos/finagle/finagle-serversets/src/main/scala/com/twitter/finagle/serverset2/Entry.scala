@@ -112,7 +112,9 @@ object Endpoint {
   def parseJson(json: String): Seq[Endpoint] = {
     val d = JsonDict(json)
 
-    val shard = for { IntObj(s) <- d("shard") } yield s
+    val shard = for {
+      IntObj(s) <- d("shard")
+    } yield s
     val status = {
       for {
         StringObj(s) <- d("status")
@@ -133,7 +135,9 @@ object Endpoint {
       map <- d("additionalEndpoints") collect {
         case m: java.util.Map[_, _] => m
       }
-      key <- map.keySet().asScala collect { case k: String => k }
+      key <- map.keySet().asScala collect {
+        case k: String => k
+      }
       if key.isInstanceOf[String]
       hostport <- parseEndpoint(map.get(key))
     } namesByHostPort(hostport) += key

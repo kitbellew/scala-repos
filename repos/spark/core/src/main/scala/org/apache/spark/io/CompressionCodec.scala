@@ -95,7 +95,9 @@ private[spark] object CompressionCodec {
       codecName
     } else {
       shortCompressionCodecNames
-        .collectFirst { case (k, v) if v == codecName => k }
+        .collectFirst {
+          case (k, v) if v == codecName => k
+        }
         .getOrElse {
           throw new IllegalArgumentException(
             s"No short name for codec $codecName.")

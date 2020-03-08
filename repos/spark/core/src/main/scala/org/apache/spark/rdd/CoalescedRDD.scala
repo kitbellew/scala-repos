@@ -79,7 +79,9 @@ private[spark] class CoalescedRDD[T: ClassTag](
     @transient var prev: RDD[T],
     maxPartitions: Int,
     balanceSlack: Double = 0.10)
-    extends RDD[T](prev.context, Nil) { // Nil since we implement getDependencies
+    extends RDD[T](
+      prev.context,
+      Nil) { // Nil since we implement getDependencies
 
   require(
     maxPartitions > 0 || maxPartitions == prev.partitions.length,
@@ -208,7 +210,9 @@ private class PartitionCoalescer(
     }
 
     // hasNext() is false iff there are no preferredLocations for any of the partitions of the RDD
-    override def hasNext: Boolean = { !isEmpty }
+    override def hasNext: Boolean = {
+      !isEmpty
+    }
 
     // return the next preferredLocation of some partition of the RDD
     override def next(): (String, Partition) = {
@@ -237,7 +241,9 @@ private class PartitionCoalescer(
       pgroup.arr += part // already assign this element
       initialHash += part // needed to avoid assigning partitions to multiple buckets
       true
-    } else { false }
+    } else {
+      false
+    }
   }
 
   /**
@@ -287,7 +293,9 @@ private class PartitionCoalescer(
       groupArr += pgroup
       groupHash.getOrElseUpdate(nxt_replica, ArrayBuffer()) += pgroup
       var tries = 0
-      while (!addPartToPGroup(nxt_part, pgroup) && tries < targetLen) { // ensure at least one part
+      while (!addPartToPGroup(
+               nxt_part,
+               pgroup) && tries < targetLen) { // ensure at least one part
         nxt_part = rotIt.next()._2
         tries += 1
       }

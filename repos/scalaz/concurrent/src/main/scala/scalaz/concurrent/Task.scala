@@ -44,7 +44,11 @@ class Task[+A](val get: Future[Throwable \/ A]) {
     })
 
   def map[B](f: A => B): Task[B] =
-    new Task(get map { _ flatMap { a => Task.Try(f(a)) } })
+    new Task(get map {
+      _ flatMap { a =>
+        Task.Try(f(a))
+      }
+    })
 
   /** 'Catches' exceptions in the given task and returns them as values. */
   def attempt: Task[Throwable \/ A] =
@@ -115,7 +119,9 @@ class Task[+A](val get: Future[Throwable \/ A]) {
   /** Like `run`, but returns exceptions as values. */
   def unsafePerformSyncAttempt: Throwable \/ A =
     try get.unsafePerformSync
-    catch { case t: Throwable => -\/(t) }
+    catch {
+      case t: Throwable => -\/(t)
+    }
 
   @deprecated("use unsafePerformSyncAttempt", "7.2")
   def attemptRun: Throwable \/ A =
@@ -166,7 +172,9 @@ class Task[+A](val get: Future[Throwable \/ A]) {
     })(Strategy.Sequential)
 
     get.unsafePerformAsyncInterruptibly(r => a ! Some(r), completed)
-    () => { a ! None }
+    () => {
+      a ! None
+    }
   }
 
   @deprecated("use unsafePerformAsyncInterruptibly", "7.2")
@@ -304,7 +312,9 @@ class Task[+A](val get: Future[Throwable \/ A]) {
           }
       }
     }
-    Task.async { help(delays, Stream()).unsafePerformAsync }
+    Task.async {
+      help(delays, Stream()).unsafePerformAsync
+    }
   }
 
   /** Ensures that the result of this Task satisfies the given predicate, or fails with the given value. */
@@ -347,7 +357,9 @@ object Task {
         Task.tailrecM(f)(a)
       def raiseError[A](e: Throwable): Task[A] = fail(e)
       def handleError[A](fa: Task[A])(f: Throwable => Task[A]): Task[A] =
-        fa.handleWith { case t => f(t) }
+        fa.handleWith {
+          case t => f(t)
+        }
     }
 
   /** signals task was interrupted **/
@@ -484,7 +496,9 @@ object Task {
                       // food for thought - might be safe to set the interrupt first
                       // but, this may also kill `cb(e)`
                       // could have separate AtomicBooleans for each task
-                      cb(e) *> Trampoline.delay { interrupt.set(true); () }
+                      cb(e) *> Trampoline.delay {
+                        interrupt.set(true); ()
+                      }
                     else
                       Trampoline.done(())
                 }
@@ -496,7 +510,9 @@ object Task {
   /** Utility function - evaluate `a` and catch and return any exceptions. */
   def Try[A](a: => A): Throwable \/ A =
     try \/-(a)
-    catch { case e: Throwable => -\/(e) }
+    catch {
+      case e: Throwable => -\/(e)
+    }
 
   def fromMaybe[A](ma: Maybe[A])(t: => Throwable): Task[A] =
     ma.cata(Task.now, Task.fail(t))

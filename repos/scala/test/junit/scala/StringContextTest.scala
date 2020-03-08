@@ -84,7 +84,9 @@ class StringContextTest {
   // verifying that the standard interpolators can be supplanted
   @Test def antiHijack_?() = {
     object AllYourStringsAreBelongToMe {
-      case class StringContext(args: Any*) { def s(args: Any) = "!!!!" }
+      case class StringContext(args: Any*) {
+        def s(args: Any) = "!!!!"
+      }
     }
     import AllYourStringsAreBelongToMe._
     //assertEquals("????", s"????")
@@ -210,8 +212,9 @@ class StringContextTest {
       f"Just want to say ${"hello, world"}%#s..." -> "Just want to say hello, world...", {
         implicit val strToShort = (s: String) => java.lang.Short.parseShort(s);
         f"${"120"}%d"
-      } -> "120",
-      { implicit val strToInt = (s: String) => 42; f"${"120"}%d" } -> "42",
+      } -> "120", {
+        implicit val strToInt = (s: String) => 42; f"${"120"}%d"
+      } -> "42",
       // 'e' | 'E' | 'g' | 'G' | 'f' | 'a' | 'A' (category: floating point)
       // ------------------------------------------------------------------
       f"${3.4f}%e" -> locally"3.400000e+00",

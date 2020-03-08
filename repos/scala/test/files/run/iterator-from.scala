@@ -117,7 +117,9 @@ object Test extends App {
     testSet(immutable.BitSet(keys: _*), keys)
     testSet(immutable.TreeSet(keys: _*), keys)
     testSet(mutable.TreeSet(keys: _*), keys)
-    val days = keys map { n => Weekday(n % Weekday.values.size) }
+    val days = keys map { n =>
+      Weekday(n % Weekday.values.size)
+    }
     testSet(Weekday.ValueSet(days: _*), days)
 
     val treeMap = immutable.TreeMap(keyValues: _*)
@@ -125,6 +127,8 @@ object Test extends App {
     testMap(treeMap.filterKeys(_ % 2 == 0), keyValues filter (_._1 % 2 == 0))
     testMap(
       treeMap mapValues (_ + 1),
-      keyValues map { case (k, v) => (k, v + 1) })
+      keyValues map {
+        case (k, v) => (k, v + 1)
+      })
   }
 }

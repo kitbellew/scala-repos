@@ -152,10 +152,14 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
   implicit def csc_csc_BadOps[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpPow, OpDiv, OpMod) Op <: OpType](implicit
-      @expand.sequence[Op]({ _ pow _ }, { _ / _ }, { _ % _ }) op: Op.Impl2[
-        T,
-        T,
-        T],
+      @expand.sequence[Op](
+        {
+          _ pow _
+        }, {
+          _ / _
+        }, {
+          _ % _
+        }) op: Op.Impl2[T, T, T],
       @expand.sequence[T](0, 0.0, 0.0f, 0L) zero: T)
       : Op.Impl2[CSCMatrix[T], CSCMatrix[T], CSCMatrix[T]] = {
     val mZero = implicitly[T](zero)
@@ -1553,10 +1557,13 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
       @expand.args(OpDiv, OpMod, OpPow) Op <: OpType,
       T: Field: ClassTag](implicit
       @expand.sequence[Op](
-        { f./(_, _) },
-        { f.%(_, _) },
-        { f.pow(_, _) }) op: Op.Impl2[T, T, T])
-      : Op.Impl2[CSCMatrix[T], T, CSCMatrix[T]] = {
+        {
+          f./(_, _)
+        }, {
+          f.%(_, _)
+        }, {
+          f.pow(_, _)
+        }) op: Op.Impl2[T, T, T]): Op.Impl2[CSCMatrix[T], T, CSCMatrix[T]] = {
     val f = implicitly[Field[T]]
     new Op.Impl2[CSCMatrix[T], T, CSCMatrix[T]] {
       def apply(a: CSCMatrix[T], b: T): CSCMatrix[T] = {
@@ -1608,9 +1615,13 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
       @expand.args(OpDiv, OpMod, OpPow) Op <: OpType,
       T: Field: ClassTag](implicit
       @expand.sequence[Op](
-        { f./(_, _) },
-        { f.%(_, _) },
-        { f.pow(_, _) }) op: Op.Impl2[T, T, T])
+        {
+          f./(_, _)
+        }, {
+          f.%(_, _)
+        }, {
+          f.pow(_, _)
+        }) op: Op.Impl2[T, T, T])
       : Op.Impl2[CSCMatrix[T], CSCMatrix[T], CSCMatrix[T]] = {
     val f = implicitly[Field[T]]
     def computeZeroOpOnRange(arr: Array[T], start: Int, end: Int) {

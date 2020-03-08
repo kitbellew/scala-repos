@@ -186,7 +186,9 @@ object ColumnDefinitionProviderImpl {
           }
 
       outerTpe.declarations
-        .collect { case m: MethodSymbol if m.isCaseAccessor => m }
+        .collect {
+          case m: MethodSymbol if m.isCaseAccessor => m
+        }
         .map { m =>
           val fieldName = m.name.toTermName.toString.trim
           val defaultVal = defaultArgs.get(fieldName)

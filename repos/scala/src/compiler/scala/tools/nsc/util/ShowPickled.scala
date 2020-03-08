@@ -208,7 +208,9 @@ object ShowPickled extends Names {
           if (tag == CLASSsym && (buf.readIndex < end)) printTypeRef()
         case EXTref | EXTMODCLASSref =>
           printNameRef()
-          if (buf.readIndex < end) { printSymbolRef() }
+          if (buf.readIndex < end) {
+            printSymbolRef()
+          }
         case THIStpe =>
           printSymbolRef()
         case SINGLEtpe =>
@@ -283,7 +285,9 @@ object ShowPickled extends Names {
   def fromFile(path: String) = fromBytes(io.File(path).toByteArray())
   def fromBytes(data: => Array[Byte]): Option[PickleBuffer] =
     try Some(new PickleBuffer(data, 0, data.length))
-    catch { case _: Exception => None }
+    catch {
+      case _: Exception => None
+    }
 
   def show(what: String, pickle: PickleBuffer) = {
     Console.println(what)

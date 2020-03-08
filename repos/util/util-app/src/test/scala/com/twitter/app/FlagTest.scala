@@ -18,8 +18,12 @@ class FlagTest extends FunSuite {
     assert(Flaggable.ofBoolean.parse("true"))
     assert(!Flaggable.ofBoolean.parse("false"))
 
-    intercept[Throwable] { Flaggable.ofBoolean.parse("") }
-    intercept[Throwable] { Flaggable.ofBoolean.parse("gibberish") }
+    intercept[Throwable] {
+      Flaggable.ofBoolean.parse("")
+    }
+    intercept[Throwable] {
+      Flaggable.ofBoolean.parse("gibberish")
+    }
   }
 
   test("Flaggable: parse strings") {
@@ -418,7 +422,11 @@ class FlagTest extends FunSuite {
       )
 
       // make sure every line in localAndGlobal exists in the flagString
-      localAndGlobal map { flagString.contains } reduce { _ && _ }
+      localAndGlobal map {
+        flagString.contains
+      } reduce {
+        _ && _
+      }
     }
 
     assert(matchesGlobal(flagWithGlobal.formattedFlagValuesString(WithGlobal)))

@@ -49,6 +49,10 @@ object TestSource {
         src
       }
     }
-    (Map(src -> iter.map { tset(_) }.toBuffer), prod)
+    (
+      Map(src -> iter.map {
+        tset(_)
+      }.toBuffer),
+      prod)
   }
 }

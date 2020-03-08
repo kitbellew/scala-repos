@@ -249,7 +249,9 @@ abstract class SymbolLoaders {
       if (!root.isPackageClass) initRoot(root.companionSymbol)
     }
 
-    override def load(root: Symbol) { complete(root) }
+    override def load(root: Symbol) {
+      complete(root)
+    }
 
     private def markAbsent(sym: Symbol): Unit = {
       val tpe: Type = if (ok) NoType else ErrorType
@@ -423,7 +425,9 @@ abstract class SymbolLoaders {
 
   object moduleClassLoader extends SymbolLoader with FlagAssigningCompleter {
     protected def description = "module class loader"
-    protected def doComplete(root: Symbol) { root.sourceModule.initialize }
+    protected def doComplete(root: Symbol) {
+      root.sourceModule.initialize
+    }
   }
 
   /** used from classfile parser to avoid cycles */

@@ -19,7 +19,9 @@ class Logger(wr0: Writer) extends LogReplay {
 
   def logreplay(event: String, x: => Boolean) = {
     val xx = x
-    if (xx) { insertComma(); pkl[Unit].labelled(event).pickle(wr, ()) }
+    if (xx) {
+      insertComma(); pkl[Unit].labelled(event).pickle(wr, ())
+    }
     xx
   }
   def logreplay[T: Pickler](event: String, x: => Option[T]) = {
@@ -30,8 +32,12 @@ class Logger(wr0: Writer) extends LogReplay {
     }
     xx
   }
-  def close() { wr.close() }
-  def flush() { wr.flush() }
+  def close() {
+    wr.close()
+  }
+  def flush() {
+    wr.flush()
+  }
 }
 
 object NullLogger extends LogReplay {
@@ -46,7 +52,9 @@ class Replayer(raw: Reader) extends LogReplay {
   private var nextComma = false
 
   private def eatComma() =
-    if (nextComma) { rd.accept(','); nextComma = false }
+    if (nextComma) {
+      rd.accept(','); nextComma = false
+    }
 
   def logreplay(event: String, x: => Boolean) =
     if (rd.token == EOF) NullLogger.logreplay(event, x)
@@ -68,6 +76,8 @@ class Replayer(raw: Reader) extends LogReplay {
       }
     }
 
-  def close() { raw.close() }
+  def close() {
+    raw.close()
+  }
   def flush() {}
 }

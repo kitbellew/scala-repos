@@ -73,20 +73,28 @@ class UnsavedFileTest
 
           val unsaved = SourceFileInfo(unsavedEmpty, None, None)
           project ! TypecheckFileReq(unsaved)
-          expectMsgPF() { case EnsimeServerError(e) => }
+          expectMsgPF() {
+            case EnsimeServerError(e) =>
+          }
 
           project ! SymbolDesignationsReq(
             Right(unsaved),
             0,
             0,
             SourceSymbol.allSymbols)
-          expectMsgPF() { case EnsimeServerError(e) => }
+          expectMsgPF() {
+            case EnsimeServerError(e) =>
+          }
 
           project ! CompletionsReq(unsaved, 0, 0, false, false)
-          expectMsgPF() { case EnsimeServerError(e) => }
+          expectMsgPF() {
+            case EnsimeServerError(e) =>
+          }
 
           project ! UsesOfSymbolAtPointReq(Left(unsavedEmpty), 0)
-          expectMsgPF() { case EnsimeServerError(e) => }
+          expectMsgPF() {
+            case EnsimeServerError(e) =>
+          }
 
         }
       }

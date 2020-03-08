@@ -50,8 +50,11 @@ class HealthCheckWorkerActorTest
       task.launched.get,
       HealthCheck(protocol = Protocol.TCP, portIndex = Some(0)))
 
-    try { Await.result(res, 1.seconds) }
-    finally { socket.close() }
+    try {
+      Await.result(res, 1.seconds)
+    } finally {
+      socket.close()
+    }
 
     expectMsgPF(1.seconds) {
       case Healthy(taskId, _, _) => ()
@@ -82,8 +85,11 @@ class HealthCheckWorkerActorTest
       task.launched.get,
       HealthCheck(protocol = Protocol.TCP, portIndex = Some(0)))
 
-    try { Await.result(res, 1.seconds) }
-    finally { socket.close() }
+    try {
+      Await.result(res, 1.seconds)
+    } finally {
+      socket.close()
+    }
 
     expectMsgPF(1.seconds) {
       case _: HealthResult => ()

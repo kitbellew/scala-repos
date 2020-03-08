@@ -27,7 +27,9 @@ object Client {
 // See: https://groups.google.com/d/msg/scala-sips/wP6dL8nIAQs/ogjoPE-MSVAJ
 trait Before extends DelayedInit {
   def before()
-  override def delayedInit(x: => Unit): Unit = { before; x }
+  override def delayedInit(x: => Unit): Unit = {
+    before; x
+  }
 }
 object Spec {
   trait UserContext extends Before {

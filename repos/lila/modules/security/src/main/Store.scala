@@ -39,7 +39,9 @@ object Store {
         BSONDocument("_id" -> sessionId, "up" -> true),
         BSONDocument("user" -> true, "_id" -> false)
       )
-      .one[BSONDocument] map { _ flatMap (_.getAs[String]("user")) }
+      .one[BSONDocument] map {
+      _ flatMap (_.getAs[String]("user"))
+    }
 
   case class UserIdAndFingerprint(user: String, fp: Option[String])
   private implicit val UserIdAndFingerprintBSONReader =

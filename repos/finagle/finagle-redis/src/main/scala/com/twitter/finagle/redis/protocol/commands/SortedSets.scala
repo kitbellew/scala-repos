@@ -207,8 +207,12 @@ object ZRemRangeByRank {
     val list = BytesToString.fromList(
       trimList(args, 3, "ZREMRANGEBYRANK requires 3 arguments"))
     val key = ChannelBuffers.wrappedBuffer(args(0))
-    val start = RequireClientProtocol.safe { NumberFormat.toInt(list(1)) }
-    val stop = RequireClientProtocol.safe { NumberFormat.toInt(list(2)) }
+    val start = RequireClientProtocol.safe {
+      NumberFormat.toInt(list(1))
+    }
+    val stop = RequireClientProtocol.safe {
+      NumberFormat.toInt(list(2))
+    }
     new ZRemRangeByRank(key, start, stop)
   }
 }
@@ -347,7 +351,9 @@ object ZUnionStore extends ZStoreCompanion {
   */
 case class ZRangeResults(entries: Array[ChannelBuffer], scores: Array[Double]) {
   def asTuples(): Seq[(ChannelBuffer, Double)] =
-    (entries, scores).zipped.map { (entry, score) => (entry, score) }.toSeq
+    (entries, scores).zipped.map { (entry, score) =>
+      (entry, score)
+    }.toSeq
 }
 object ZRangeResults {
   def apply(tuples: Seq[(ChannelBuffer, ChannelBuffer)]): ZRangeResults = {
@@ -526,7 +532,9 @@ trait ZStoreCompanion {
 
   def apply(args: Seq[Array[Byte]]) = BytesToString.fromList(args) match {
     case destination :: nk :: tail =>
-      val numkeys = RequireClientProtocol.safe { NumberFormat.toInt(nk) }
+      val numkeys = RequireClientProtocol.safe {
+        NumberFormat.toInt(nk)
+      }
       tail.size match {
         case done if done == numkeys =>
           get(destination, numkeys, tail, None, None)

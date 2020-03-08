@@ -115,7 +115,9 @@ class FileJobManager[M[+_]] private[FileJobManager] (
         JParser
           .parseFromFile(jobFile(jobId))
           .bimap(Extractor.Thrown(_), j => j)
-          .flatMap { jobV => jobV.validated[FileJobState] }
+          .flatMap { jobV =>
+            jobV.validated[FileJobState]
+          }
           .bimap(
             { error =>
               logger.error(
@@ -267,7 +269,9 @@ class FileJobManager[M[+_]] private[FileJobManager] (
     }
 
   // Results handling
-  def exists(file: String): M[Boolean] = M.point { resultFile(file).exists }
+  def exists(file: String): M[Boolean] = M.point {
+    resultFile(file).exists
+  }
 
   def save(file: String, data: FileData[M]): M[Unit] = {
     // TODO: Make this more efficient
@@ -278,7 +282,9 @@ class FileJobManager[M[+_]] private[FileJobManager] (
         output.writeUTF(data.mimeType.map(_.toString).getOrElse(""))
         val length = chunks.foldLeft(0)(_ + _.length)
         output.writeInt(length)
-        chunks.foreach { bytes => output.write(bytes) }
+        chunks.foreach { bytes =>
+          output.write(bytes)
+        }
       } finally {
         output.close()
       }

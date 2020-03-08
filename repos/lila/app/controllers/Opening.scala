@@ -58,7 +58,9 @@ object Opening extends LilaController {
       }
     else
       env.selector(ctx.me) flatMap { opening =>
-        renderShow(opening) map { Ok(_) }
+        renderShow(opening) map {
+          Ok(_)
+        }
       }
   }
 
@@ -68,7 +70,9 @@ object Opening extends LilaController {
 
   def history = Auth { implicit ctx => me =>
     XhrOnly {
-      env userInfos me map { ui => Ok(views.html.opening.history(ui)) }
+      env userInfos me map { ui =>
+        Ok(views.html.opening.history(ui))
+      }
     }
   }
 

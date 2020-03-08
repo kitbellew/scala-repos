@@ -59,7 +59,9 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
     AsResult(t)
   }
   protected def around[T <% org.specs2.execute.Result](t: => T) =
-    S.initIfUninitted(session) { t }
+    S.initIfUninitted(session) {
+      t
+    }
 
   def passBasicTests[A](
       example: A,
@@ -90,8 +92,9 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
       }
 
       "which correctly clear back to the default" in {
-        { field.clear; field.valueBox } must be_==(field.defaultValueBox)
-          .when(canCheckDefaultValues)
+        {
+          field.clear; field.valueBox
+        } must be_==(field.defaultValueBox).when(canCheckDefaultValues)
       }
 
       "which capture error conditions set in" in {
@@ -731,7 +734,9 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
       val recFromJson = rec.mandatoryJObjectField.setFromJValue(json)
 
       recFromJson.isDefined must_== true
-      recFromJson foreach { r => r must_== json }
+      recFromJson foreach { r =>
+        r must_== json
+      }
       success
     }
     "get set from JValue after BSON roundtrip" in {

@@ -50,7 +50,9 @@ private[ui] class PoolTable(pools: Seq[Schedulable], parent: StagesTab) {
         <th>SchedulingMode</th>
       </thead>
       <tbody>
-        {rows.map(r => makeRow(r, listener.poolToActiveStages))}
+        {
+      rows.map(r => makeRow(r, listener.poolToActiveStages))
+    }
       </tbody>
     </table>
   }
@@ -69,13 +71,27 @@ private[ui] class PoolTable(pools: Seq[Schedulable], parent: StagesTab) {
         URLEncoder.encode(p.name, "UTF-8"))
     <tr>
       <td>
-        <a href={href}>{p.name}</a>
+        <a href={
+      href
+    }>{
+      p.name
+    }</a>
       </td>
-      <td>{p.minShare}</td>
-      <td>{p.weight}</td>
-      <td>{activeStages}</td>
-      <td>{p.runningTasks}</td>
-      <td>{p.schedulingMode}</td>
+      <td>{
+      p.minShare
+    }</td>
+      <td>{
+      p.weight
+    }</td>
+      <td>{
+      activeStages
+    }</td>
+      <td>{
+      p.runningTasks
+    }</td>
+      <td>{
+      p.schedulingMode
+    }</td>
     </tr>
   }
 }

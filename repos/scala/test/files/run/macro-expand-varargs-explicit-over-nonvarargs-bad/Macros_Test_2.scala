@@ -16,5 +16,7 @@ object Test extends App {
         Ident(typeNames.WILDCARD_STAR)))
   )
   try cm.mkToolBox().eval(tree)
-  catch { case ex: Throwable => println(ex.getMessage) }
+  catch {
+    case ex: Throwable => println(ex.getMessage)
+  }
 }

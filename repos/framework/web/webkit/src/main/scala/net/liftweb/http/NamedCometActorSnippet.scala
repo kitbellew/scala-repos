@@ -55,6 +55,12 @@ trait NamedCometActorSnippet {
         Full(name),
         CometName(name)
       )
-    <lift:comet type={cometClass} name={name}>{xhtml}</lift:comet>
+    <lift:comet type={
+      cometClass
+    } name={
+      name
+    }>{
+      xhtml
+    }</lift:comet>
   }
 }

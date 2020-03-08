@@ -48,7 +48,9 @@ class PolynomialBenchmarks extends MyBenchmark {
     var total: Polynomial[Rational] = null
     var i = 0
     val len = data.length
-    while (i < len) { total = data(0) + data(i); i += 1 }
+    while (i < len) {
+      total = data(0) + data(i); i += 1
+    }
     total
   }
 
@@ -57,7 +59,9 @@ class PolynomialBenchmarks extends MyBenchmark {
     var total: Polynomial[Double] = null
     var i = 0
     val len = data.length
-    while (i < len) { total = data(0) + data(i); i += 1 }
+    while (i < len) {
+      total = data(0) + data(i); i += 1
+    }
     total
   }
 
@@ -66,7 +70,9 @@ class PolynomialBenchmarks extends MyBenchmark {
     var total: PolynomialFunction = null
     var i = 0
     val len = data.length
-    while (i < len) { total = data(0).add(data(i)); i += 1 }
+    while (i < len) {
+      total = data(0).add(data(i)); i += 1
+    }
     total
   }
 
@@ -75,7 +81,9 @@ class PolynomialBenchmarks extends MyBenchmark {
     var total: Polynomial[Rational] = null
     var i = 0
     val len = data.length
-    while (i < len) { total = data(0) * data(i); i += 1 }
+    while (i < len) {
+      total = data(0) * data(i); i += 1
+    }
     total
   }
 
@@ -84,7 +92,9 @@ class PolynomialBenchmarks extends MyBenchmark {
     var total: Polynomial[Double] = null
     var i = 0
     val len = data.length
-    while (i < len) { total = data(0) * data(i); i += 1 }
+    while (i < len) {
+      total = data(0) * data(i); i += 1
+    }
     total
   }
 
@@ -93,7 +103,9 @@ class PolynomialBenchmarks extends MyBenchmark {
     var total: PolynomialFunction = null
     var i = 0
     val len = data.length
-    while (i < len) { total = data(0).multiply(data(i)); i += 1 }
+    while (i < len) {
+      total = data(0).multiply(data(i)); i += 1
+    }
     total
   }
 
@@ -102,7 +114,9 @@ class PolynomialBenchmarks extends MyBenchmark {
     var total: Polynomial[Rational] = null
     var i = 0
     val len = data.length
-    while (i < len) { total = data(i).derivative; i += 1 }
+    while (i < len) {
+      total = data(i).derivative; i += 1
+    }
     total
   }
 
@@ -111,7 +125,9 @@ class PolynomialBenchmarks extends MyBenchmark {
     var total: Polynomial[Double] = null
     var i = 0
     val len = data.length
-    while (i < len) { total = data(i).derivative; i += 1 }
+    while (i < len) {
+      total = data(i).derivative; i += 1
+    }
     total
   }
 
@@ -120,7 +136,9 @@ class PolynomialBenchmarks extends MyBenchmark {
     var total: PolynomialFunction = null
     var i = 0
     val len = data.length
-    while (i < len) { total = data(i).polynomialDerivative; i += 1 }
+    while (i < len) {
+      total = data(i).polynomialDerivative; i += 1
+    }
     total
   }
 
@@ -130,7 +148,9 @@ class PolynomialBenchmarks extends MyBenchmark {
     var total: Rational = Rational(1, 1)
     var i = 0
     val len = data.length
-    while (i < len) { total = data(i).apply(testVariable); i += 1 }
+    while (i < len) {
+      total = data(i).apply(testVariable); i += 1
+    }
     total
   }
 
@@ -140,7 +160,9 @@ class PolynomialBenchmarks extends MyBenchmark {
     var total: Double = 0.0
     var i = 0
     val len = data.length
-    while (i < len) { total = data(i).apply(testVariable); i += 1 }
+    while (i < len) {
+      total = data(i).apply(testVariable); i += 1
+    }
     total
   }
 
@@ -150,7 +172,9 @@ class PolynomialBenchmarks extends MyBenchmark {
     var total: Double = 0.0
     var i = 0
     val len = data.length
-    while (i < len) { total = data(i).value(testVariable); i += 1 }
+    while (i < len) {
+      total = data(i).value(testVariable); i += 1
+    }
     total
   }
 
@@ -159,7 +183,9 @@ class PolynomialBenchmarks extends MyBenchmark {
     var total: (Polynomial[Rational], Polynomial[Rational]) = null
     var i = 0
     val len = data.length
-    while (i < len) { total = data(0) /% data(i); i += 1 }
+    while (i < len) {
+      total = data(0) /% data(i); i += 1
+    }
     total
   }
 
@@ -168,7 +194,9 @@ class PolynomialBenchmarks extends MyBenchmark {
     var total: (Polynomial[Double], Polynomial[Double]) = null
     var i = 0
     val len = data.length
-    while (i < len) { total = data(0) /% data(i); i += 1 }
+    while (i < len) {
+      total = data(0) /% data(i); i += 1
+    }
     total
   }
 

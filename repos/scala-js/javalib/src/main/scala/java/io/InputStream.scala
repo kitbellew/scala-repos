@@ -19,7 +19,9 @@ abstract class InputStream extends Closeable {
           if (bytesWritten == 0) read()
           else {
             try read()
-            catch { case _: IOException => -1 }
+            catch {
+              case _: IOException => -1
+            }
           }
         if (next != -1) {
           b(off + bytesWritten) = next.toByte

@@ -151,7 +151,9 @@ class Lexer(rd: Reader) {
     if (bp == nread) {
       nread = rd.read(buf)
       bp = 0
-      if (nread <= 0) { ch = 0; atEOF = true; return }
+      if (nread <= 0) {
+        ch = 0; atEOF = true; return
+      }
     }
     ch = buf(bp)
     bp += 1
@@ -255,7 +257,9 @@ class Lexer(rd: Reader) {
       if ('0' <= ch && ch <= '9') putChar()
       else error("<digit> expected")
     def digits() =
-      do { digit() } while ('0' <= ch && ch <= '9')
+      do {
+        digit()
+      } while ('0' <= ch && ch <= '9')
     var isFloating = false
     if (ch == '-') putChar()
     if (ch == '0') digit()

@@ -285,7 +285,9 @@ object Codec {
 
   implicit case object ByteCodec extends FixedWidthCodec[Byte] {
     val size = 1
-    def writeUnsafe(x: Byte, sink: ByteBuffer) { sink.put(x) }
+    def writeUnsafe(x: Byte, sink: ByteBuffer) {
+      sink.put(x)
+    }
     def read(src: ByteBuffer): Byte = src.get()
   }
 
@@ -305,7 +307,9 @@ object Codec {
 
   case object LongCodec extends FixedWidthCodec[Long] {
     val size = 8
-    def writeUnsafe(n: Long, sink: ByteBuffer) { sink.putLong(n) }
+    def writeUnsafe(n: Long, sink: ByteBuffer) {
+      sink.putLong(n)
+    }
     def read(src: ByteBuffer): Long = src.getLong()
   }
 
@@ -387,7 +391,9 @@ object Codec {
 
   implicit case object DoubleCodec extends FixedWidthCodec[Double] {
     val size = 8
-    def writeUnsafe(n: Double, sink: ByteBuffer) { sink.putDouble(n) }
+    def writeUnsafe(n: Double, sink: ByteBuffer) {
+      sink.putDouble(n)
+    }
     def read(src: ByteBuffer): Double = src.getDouble()
   }
 
@@ -508,16 +514,22 @@ object Codec {
 
     override def minSize(as: IndexedSeq[A]): Int = 5
     override def maxSize(as: IndexedSeq[A]): Int =
-      as.foldLeft(0) { (acc, a) => acc + elemCodec.maxSize(a) } + 5
+      as.foldLeft(0) { (acc, a) =>
+        acc + elemCodec.maxSize(a)
+      } + 5
 
     def encodedSize(as: IndexedSeq[A]): Int = {
-      val size = as.foldLeft(0) { (acc, a) => acc + elemCodec.encodedSize(a) }
+      val size = as.foldLeft(0) { (acc, a) =>
+        acc + elemCodec.encodedSize(a)
+      }
       size + sizePackedInt(as.size)
     }
 
     def writeUnsafe(as: IndexedSeq[A], sink: ByteBuffer) {
       writePackedInt(as.length, sink)
-      as foreach { elemCodec.writeUnsafe(_, sink) }
+      as foreach {
+        elemCodec.writeUnsafe(_, sink)
+      }
     }
 
     @tailrec
@@ -551,7 +563,9 @@ object Codec {
       ((0 until readPackedInt(src)) map (_ => elemCodec.read(src))).toIndexedSeq
 
     override def skip(buf: ByteBuffer) {
-      (0 until readPackedInt(buf)) foreach { _ => elemCodec.skip(buf) }
+      (0 until readPackedInt(buf)) foreach { _ =>
+        elemCodec.skip(buf)
+      }
     }
   }
 
@@ -636,7 +650,9 @@ object Codec {
     override def skip(buf: ByteBuffer) {
       val length = readPackedInt(buf)
       var i = 0
-      while (i < length) { elemCodec.skip(buf); i += 1 }
+      while (i < length) {
+        elemCodec.skip(buf); i += 1
+      }
     }
   }
 

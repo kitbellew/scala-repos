@@ -68,19 +68,27 @@ class IorTests extends CatsSuite {
   }
 
   test("pad") {
-    forAll { (i: Int Ior String) => i.pad should ===((i.left, i.right)) }
+    forAll { (i: Int Ior String) =>
+      i.pad should ===((i.left, i.right))
+    }
   }
 
   test("unwrap consistent with isBoth") {
-    forAll { (i: Int Ior String) => i.unwrap.isRight should ===(i.isBoth) }
+    forAll { (i: Int Ior String) =>
+      i.unwrap.isRight should ===(i.isBoth)
+    }
   }
 
   test("isLeft consistent with toOption") {
-    forAll { (i: Int Ior String) => i.isLeft should ===(i.toOption.isEmpty) }
+    forAll { (i: Int Ior String) =>
+      i.isLeft should ===(i.toOption.isEmpty)
+    }
   }
 
   test("isLeft consistent with toList") {
-    forAll { (i: Int Ior String) => i.isLeft should ===(i.toList.isEmpty) }
+    forAll { (i: Int Ior String) =>
+      i.isLeft should ===(i.toList.isEmpty)
+    }
   }
 
   test("isLeft consistent with forall and exists") {
@@ -99,14 +107,18 @@ class IorTests extends CatsSuite {
 
   test("foreach is noop for left") {
     forAll { (i: Int) =>
-      Ior.left[Int, String](i).foreach { _ => fail("should not be called") }
+      Ior.left[Int, String](i).foreach { _ =>
+        fail("should not be called")
+      }
     }
   }
 
   test("foreach runs for right and both") {
     forAll { (i: Int Ior String) =>
       var count = 0
-      i.foreach { _ => count += 1 }
+      i.foreach { _ =>
+        count += 1
+      }
       if (i.isRight || i.isBoth) count should ===(1)
       else count should ===(0)
     }
@@ -115,7 +127,9 @@ class IorTests extends CatsSuite {
   test("show isn't empty") {
     val iorShow = implicitly[Show[Int Ior String]]
 
-    forAll { (i: Int Ior String) => iorShow.show(i).nonEmpty should ===(true) }
+    forAll { (i: Int Ior String) =>
+      iorShow.show(i).nonEmpty should ===(true)
+    }
   }
 
   test("append left") {
@@ -148,7 +162,9 @@ class IorTests extends CatsSuite {
   }
 
   test("to consistent with toList") {
-    forAll { (x: Int Ior String) => x.to[List, String] should ===(x.toList) }
+    forAll { (x: Int Ior String) =>
+      x.to[List, String] should ===(x.toList)
+    }
   }
 
   test("to consistent with toOption") {
@@ -158,11 +174,15 @@ class IorTests extends CatsSuite {
   }
 
   test("toXor consistent with right") {
-    forAll { (x: Int Ior String) => x.toXor.toOption should ===(x.right) }
+    forAll { (x: Int Ior String) =>
+      x.toXor.toOption should ===(x.right)
+    }
   }
 
   test("toXor consistent with toEither") {
-    forAll { (x: Int Ior String) => x.toEither should ===(x.toXor.toEither) }
+    forAll { (x: Int Ior String) =>
+      x.toEither should ===(x.toXor.toEither)
+    }
   }
 
   test("getOrElse consistent with Option getOrElse") {

@@ -28,7 +28,9 @@ object Test {
 
   def main(args: Array[String]): Unit = {
     try f1
-    catch { case x: Throwable => println(shortName(x) + " slipped by.") }
+    catch {
+      case x: Throwable => println(shortName(x) + " slipped by.")
+    }
 
     f2
   }

@@ -189,7 +189,9 @@ class ReceiverSchedulingPolicySuite extends SparkFunSuite {
     // Make sure we schedule the receivers to their preferredLocations
     val executorsForReceiversWithPreferredLocation =
       scheduledLocations
-        .filter { case (receiverId, executors) => receiverId >= 3 }
+        .filter {
+          case (receiverId, executors) => receiverId >= 3
+        }
         .flatMap(_._2)
     // We can simply check the executor set because we only know each receiver only has 1 executor
     assert(

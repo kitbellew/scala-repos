@@ -10,8 +10,9 @@ object Try {
   case class PredicateDoesNotObtain() extends Exception()
 
   def apply[R](r: => R): Try[R] = {
-    try { Return(r) }
-    catch {
+    try {
+      Return(r)
+    } catch {
       case NonFatal(e) => Throw(e)
     }
   }
@@ -31,7 +32,13 @@ object Try {
     * the argument Trys are Throws. The first Throw in the Seq is the one which is surfaced.
     */
   def collect[A](ts: Seq[Try[A]]): Try[Seq[A]] = {
-    if (ts.isEmpty) Return(Seq.empty[A]) else Try { ts map { t => t() } }
+    if (ts.isEmpty) Return(Seq.empty[A])
+    else
+      Try {
+        ts map { t =>
+          t()
+        }
+      }
   }
 
   /**
@@ -111,7 +118,9 @@ sealed abstract class Try[+R] {
   /**
     * Applies the given function f if this is a Result.
     */
-  def foreach(f: R => Unit) { onSuccess(f) }
+  def foreach(f: R => Unit) {
+    onSuccess(f)
+  }
 
   /**
     * Returns the given function applied to the value from this Return or returns this if this is a Throw.
@@ -175,7 +184,9 @@ sealed abstract class Try[+R] {
     * chained `this` as in `respond`.
     */
   def ensure(f: => Unit): Try[R] =
-    respond { _ => f }
+    respond { _ =>
+      f
+    }
 
   /**
     * Returns None if this is a Throw or a Some containing the value if this is a Return
@@ -187,7 +198,9 @@ sealed abstract class Try[+R] {
     * another 'This[R]' that is guaranteed to be available only *after*
     * 'k' has run.  This enables the enforcement of invocation ordering.
     */
-  def respond(k: Try[R] => Unit): Try[R] = { k(this); this }
+  def respond(k: Try[R] => Unit): Try[R] = {
+    k(this); this
+  }
 
   /**
     * Invokes the given transformation when the value is available,
@@ -272,13 +285,17 @@ final case class Return[+R](r: R) extends Try[R] {
 
   def flatMap[R2](f: R => Try[R2]): Try[R2] =
     try f(r)
-    catch { case NonFatal(e) => Throw(e) }
+    catch {
+      case NonFatal(e) => Throw(e)
+    }
 
   def flatten[T](implicit ev: R <:< Try[T]): Try[T] = r
 
   def map[X](f: R => X): Try[X] =
     try Return(f(r))
-    catch { case NonFatal(e) => Throw(e) }
+    catch {
+      case NonFatal(e) => Throw(e)
+    }
 
   def exists(p: R => Boolean): Boolean = p(r)
 
@@ -289,7 +306,9 @@ final case class Return[+R](r: R) extends Try[R] {
 
   def onFailure(rescueException: Throwable => Unit): Try[R] = this
 
-  def onSuccess(f: R => Unit): Try[R] = { f(r); this }
+  def onSuccess(f: R => Unit): Try[R] = {
+    f(r); this
+  }
 
   def handle[R2 >: R](
       rescueException: PartialFunction[Throwable, R2]): Try[R2] = this

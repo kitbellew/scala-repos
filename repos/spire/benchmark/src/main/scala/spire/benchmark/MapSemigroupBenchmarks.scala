@@ -27,8 +27,11 @@ class MapSemigroupBenchmarks extends MyBenchmark with BenchmarkData {
   def algebirdAdd[K, V](x: Map[K, V], y: Map[K, V])(implicit
       semigroup: Semigroup[V],
       eq: Eq[V]): Map[K, V] = {
-    val (big, small, bigOnLeft) = if (x.size > y.size) { (x, y, true) }
-    else { (y, x, false) }
+    val (big, small, bigOnLeft) = if (x.size > y.size) {
+      (x, y, true)
+    } else {
+      (y, x, false)
+    }
     small.foldLeft(big) { (oldMap, kv) =>
       val newV = big
         .get(kv._1)
@@ -80,17 +83,25 @@ class MapSemigroupBenchmarks extends MyBenchmark with BenchmarkData {
   def genMaps(gen: Int => (Int, Int)): Array[Map[Int, Int]] = {
     val arr = new Array[Map[Int, Int]](numMaps)
     var i = 0
-    (0 until numMaps) foreach { i => arr(i) = Map((1 to mapSize) map gen: _*) }
+    (0 until numMaps) foreach { i =>
+      arr(i) = Map((1 to mapSize) map gen: _*)
+    }
     arr
   }
 
   override protected def setUp(): Unit = {
     if (mapType == "random") {
-      maps = genMaps { i => (nextInt, nextInt) }
+      maps = genMaps { i =>
+        (nextInt, nextInt)
+      }
     } else if (mapType == "sparse") {
-      maps = genMaps { i => (nextInt(mapSize), nextInt) }
+      maps = genMaps { i =>
+        (nextInt(mapSize), nextInt)
+      }
     } else if (mapType == "dense") {
-      maps = genMaps { i => (i, nextInt) }
+      maps = genMaps { i =>
+        (i, nextInt)
+      }
     } else {
       sys.error("What are you doing to me!")
     }

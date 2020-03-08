@@ -12,7 +12,9 @@ import scala.io.Source
 
 object JettyServerSpec {
   class HelloServlet extends ScalatraServlet {
-    get("/") { "hello" }
+    get("/") {
+      "hello"
+    }
   }
 
   class ScalatraBootstrap extends LifeCycle {

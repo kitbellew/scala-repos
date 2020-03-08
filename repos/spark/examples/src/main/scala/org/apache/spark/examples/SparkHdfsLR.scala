@@ -78,13 +78,17 @@ object SparkHdfsLR {
     val ITERATIONS = args(1).toInt
 
     // Initialize w to a random value
-    var w = DenseVector.fill(D) { 2 * rand.nextDouble - 1 }
+    var w = DenseVector.fill(D) {
+      2 * rand.nextDouble - 1
+    }
     println("Initial w: " + w)
 
     for (i <- 1 to ITERATIONS) {
       println("On iteration " + i)
       val gradient = points
-        .map { p => p.x * (1 / (1 + exp(-p.y * (w.dot(p.x)))) - 1) * p.y }
+        .map { p =>
+          p.x * (1 / (1 + exp(-p.y * (w.dot(p.x)))) - 1) * p.y
+        }
         .reduce(_ + _)
       w -= gradient
     }

@@ -10,18 +10,25 @@ import Execute._
 
 object Test extends std.TaskExtra {
   def t2[A, B](a: Task[A], b: Task[B]) =
-    multInputTask[({ type l[L[x]] = (L[A], L[B]) })#l]((a, b))(AList.tuple2)
+    multInputTask[({
+      type l[L[x]] = (L[A], L[B])
+    })#l]((a, b))(AList.tuple2)
   def t3[A, B, C](a: Task[A], b: Task[B], c: Task[C]) =
-    multInputTask[({ type l[L[x]] = (L[A], L[B], L[C]) })#l]((a, b, c))(
-      AList.tuple3)
+    multInputTask[({
+      type l[L[x]] = (L[A], L[B], L[C])
+    })#l]((a, b, c))(AList.tuple3)
 
   val a = task(3)
   val b = task[Boolean](sys.error("test"))
   val b2 = task(true)
   val c = task("asdf")
 
-  val h1 = t3(a, b, c).map { case (aa, bb, cc)  => aa + " " + bb + " " + cc }
-  val h2 = t3(a, b2, c).map { case (aa, bb, cc) => aa + " " + bb + " " + cc }
+  val h1 = t3(a, b, c).map {
+    case (aa, bb, cc) => aa + " " + bb + " " + cc
+  }
+  val h2 = t3(a, b2, c).map {
+    case (aa, bb, cc) => aa + " " + bb + " " + cc
+  }
 
   type Values = (Result[Int], Result[Boolean], Result[String])
 

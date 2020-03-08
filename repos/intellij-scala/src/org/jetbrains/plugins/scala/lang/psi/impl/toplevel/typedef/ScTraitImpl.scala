@@ -50,7 +50,9 @@ class ScTraitImpl private (
     }
   }
 
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
   def this(stub: ScTemplateDefinitionStub) = {
     this(stub, ScalaElementTypes.TRAIT_DEF, null)
   }

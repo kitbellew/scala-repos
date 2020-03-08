@@ -33,38 +33,66 @@ object RuntimeJsonSpec extends Properties("runtime-json") {
     obj.asInstanceOf[G].a.mkString(",") == up.asInstanceOf[G].a.mkString(",")
   }
 
-  property("Int") = Prop forAll { (i: Int) => roundTrip(i) }
+  property("Int") = Prop forAll { (i: Int) =>
+    roundTrip(i)
+  }
 
-  property("Double") = Prop forAll { (d: Double) => roundTrip(d) }
+  property("Double") = Prop forAll { (d: Double) =>
+    roundTrip(d)
+  }
 
-  property("Long") = Prop forAll { (l: Long) => roundTrip(l) }
+  property("Long") = Prop forAll { (l: Long) =>
+    roundTrip(l)
+  }
 
-  property("Char") = Prop forAll { (c: Char) => roundTrip(c) }
+  property("Char") = Prop forAll { (c: Char) =>
+    roundTrip(c)
+  }
 
-  property("Float") = Prop forAll { (f: Float) => roundTrip(f) }
+  property("Float") = Prop forAll { (f: Float) =>
+    roundTrip(f)
+  }
 
-  property("Boolean") = Prop forAll { (b: Boolean) => roundTrip(b) }
+  property("Boolean") = Prop forAll { (b: Boolean) =>
+    roundTrip(b)
+  }
 
-  property("Short") = Prop forAll { (s: Short) => roundTrip(s) }
+  property("Short") = Prop forAll { (s: Short) =>
+    roundTrip(s)
+  }
 
-  property("Byte") = Prop forAll { (b: Byte) => roundTrip(b) }
+  property("Byte") = Prop forAll { (b: Byte) =>
+    roundTrip(b)
+  }
 
   // It seems like Unit doesn't make sense to send to forAll?
   // property("Unit") = Prop forAll { (u: Unit) =>
   //   roundTrip(u)
   // }
 
-  property("(Int, String)") = Prop forAll { (p: (Int, String)) => roundTrip(p) }
+  property("(Int, String)") = Prop forAll { (p: (Int, String)) =>
+    roundTrip(p)
+  }
 
-  property("C") = Prop forAll { (i: Int) => roundTrip(C(i)) }
+  property("C") = Prop forAll { (i: Int) =>
+    roundTrip(C(i))
+  }
 
-  property("D") = Prop forAll { (p: (Int, Double)) => roundTrip(D(p._1, p._2)) }
+  property("D") = Prop forAll { (p: (Int, Double)) =>
+    roundTrip(D(p._1, p._2))
+  }
 
-  property("E") = Prop forAll { (p: (Int, String)) => roundTrip(E(p._1, p._2)) }
+  property("E") = Prop forAll { (p: (Int, String)) =>
+    roundTrip(E(p._1, p._2))
+  }
 
-  property("F") = Prop forAll { (p: (Int, Int)) => roundTrip(F(p._1, C(p._2))) }
+  property("F") = Prop forAll { (p: (Int, Int)) =>
+    roundTrip(F(p._1, C(p._2)))
+  }
 
-  property("G") = Prop forAll { (arr: Array[Int]) => roundTripG(G(arr)) }
+  property("G") = Prop forAll { (arr: Array[Int]) =>
+    roundTripG(G(arr))
+  }
 
   property("(Int, Array[Double])") = Prop forAll { (t: (Int, Array[Double])) =>
     val obj: Any = t
@@ -98,38 +126,66 @@ object RuntimeBinarySpec extends Properties("runtime-binary") {
     obj.asInstanceOf[G].a.mkString(",") == up.asInstanceOf[G].a.mkString(",")
   }
 
-  property("Int") = Prop forAll { (i: Int) => roundTrip(i) }
+  property("Int") = Prop forAll { (i: Int) =>
+    roundTrip(i)
+  }
 
-  property("Double") = Prop forAll { (d: Double) => roundTrip(d) }
+  property("Double") = Prop forAll { (d: Double) =>
+    roundTrip(d)
+  }
 
-  property("Long") = Prop forAll { (l: Long) => roundTrip(l) }
+  property("Long") = Prop forAll { (l: Long) =>
+    roundTrip(l)
+  }
 
-  property("Char") = Prop forAll { (c: Char) => roundTrip(c) }
+  property("Char") = Prop forAll { (c: Char) =>
+    roundTrip(c)
+  }
 
-  property("Float") = Prop forAll { (f: Float) => roundTrip(f) }
+  property("Float") = Prop forAll { (f: Float) =>
+    roundTrip(f)
+  }
 
-  property("Boolean") = Prop forAll { (b: Boolean) => roundTrip(b) }
+  property("Boolean") = Prop forAll { (b: Boolean) =>
+    roundTrip(b)
+  }
 
-  property("Short") = Prop forAll { (s: Short) => roundTrip(s) }
+  property("Short") = Prop forAll { (s: Short) =>
+    roundTrip(s)
+  }
 
-  property("Byte") = Prop forAll { (b: Byte) => roundTrip(b) }
+  property("Byte") = Prop forAll { (b: Byte) =>
+    roundTrip(b)
+  }
 
   // It seems like Unit doesn't make sense to send to forAll?
   // property("Unit") = Prop forAll { (u: Unit) =>
   //   roundTrip(u)
   // }
 
-  property("(Int, String)") = Prop forAll { (p: (Int, String)) => roundTrip(p) }
+  property("(Int, String)") = Prop forAll { (p: (Int, String)) =>
+    roundTrip(p)
+  }
 
-  property("C") = Prop forAll { (i: Int) => roundTrip(C(i)) }
+  property("C") = Prop forAll { (i: Int) =>
+    roundTrip(C(i))
+  }
 
-  property("D") = Prop forAll { (p: (Int, Double)) => roundTrip(D(p._1, p._2)) }
+  property("D") = Prop forAll { (p: (Int, Double)) =>
+    roundTrip(D(p._1, p._2))
+  }
 
-  property("E") = Prop forAll { (p: (Int, String)) => roundTrip(E(p._1, p._2)) }
+  property("E") = Prop forAll { (p: (Int, String)) =>
+    roundTrip(E(p._1, p._2))
+  }
 
-  property("F") = Prop forAll { (p: (Int, Int)) => roundTrip(F(p._1, C(p._2))) }
+  property("F") = Prop forAll { (p: (Int, Int)) =>
+    roundTrip(F(p._1, C(p._2)))
+  }
 
-  property("G") = Prop forAll { (arr: Array[Int]) => roundTripG(G(arr)) }
+  property("G") = Prop forAll { (arr: Array[Int]) =>
+    roundTripG(G(arr))
+  }
 
   property("(Int, Array[Double])") = Prop forAll { (t: (Int, Array[Double])) =>
     val obj: Any = t

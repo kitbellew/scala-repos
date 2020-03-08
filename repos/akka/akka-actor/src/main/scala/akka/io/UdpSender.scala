@@ -28,7 +28,9 @@ private[io] class UdpSender(
     val datagramChannel = DatagramChannel.open
     datagramChannel.configureBlocking(false)
     val socket = datagramChannel.socket
-    options foreach { _.beforeDatagramBind(socket) }
+    options foreach {
+      _.beforeDatagramBind(socket)
+    }
 
     datagramChannel
   }

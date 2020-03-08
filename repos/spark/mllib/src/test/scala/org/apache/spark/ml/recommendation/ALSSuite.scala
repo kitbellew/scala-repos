@@ -563,7 +563,11 @@ class ALSSuite
     val (userFactors, itemFactors) =
       ALS.train(ratings, rank = 2, maxIter = 4, nonnegative = true, seed = 0)
     def isNonnegative(factors: RDD[(Int, Array[Float])]): Boolean = {
-      factors.values.map { _.forall(_ >= 0.0) }.reduce(_ && _)
+      factors.values
+        .map {
+          _.forall(_ >= 0.0)
+        }
+        .reduce(_ && _)
     }
     assert(isNonnegative(userFactors))
     assert(isNonnegative(itemFactors))

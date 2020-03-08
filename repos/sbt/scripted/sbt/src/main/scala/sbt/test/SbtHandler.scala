@@ -49,7 +49,9 @@ final class SbtHandler(
     val server = IPC.unmanagedServer
     val p =
       try newRemote(server)
-      catch { case e: Throwable => server.close(); throw e }
+      catch {
+        case e: Throwable => server.close(); throw e
+      }
     val ai = Some(SbtInstance(p, server))
     try f(p, server)
     catch {
@@ -87,11 +89,14 @@ final class SbtHandler(
     val io = BasicIO(false, log).withInput(_.close())
     val p = Process(args, directory) run (io)
     val thread = new Thread() {
-      override def run() = { p.exitValue(); server.close() }
+      override def run() = {
+        p.exitValue(); server.close()
+      }
     }
     thread.start()
-    try { receive("Remote sbt initialization failed", server) }
-    catch {
+    try {
+      receive("Remote sbt initialization failed", server)
+    } catch {
       case e: java.net.SocketException =>
         throw new TestFailed("Remote sbt initialization failed")
     }

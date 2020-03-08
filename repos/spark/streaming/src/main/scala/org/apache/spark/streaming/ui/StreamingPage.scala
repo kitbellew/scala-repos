@@ -77,7 +77,9 @@ private[ui] class GraphUIData(
         s"drawTimeline('#$timelineDivId', $dataJavaScriptName, $minX, $maxX, $minY, $maxY," +
           s" '$unitY');")
     }
-    <div id={timelineDivId}></div>
+    <div id={
+      timelineDivId
+    }></div>
   }
 
   def generateHistogramHtml(jsCollector: JsCollector): Seq[Node] = {
@@ -92,7 +94,9 @@ private[ui] class GraphUIData(
       jsCollector.addStatement(
         s"drawHistogram('#$histogramDivId', $histogramData, $minY, $maxY, '$unitY');")
     }
-    <div id={histogramDivId}></div>
+    <div id={
+      histogramDivId
+    }></div>
   }
 }
 
@@ -172,7 +176,9 @@ private[ui] class StreamingPage(parent: StreamingTab)
     */
   private def generateLoadResources(): Seq[Node] = {
     // scalastyle:off
-    <script src={SparkUIUtils.prependBaseUri("/static/d3.min.js")}></script>
+    <script src={
+      SparkUIUtils.prependBaseUri("/static/d3.min.js")
+    }></script>
       <link rel="stylesheet" href={
       SparkUIUtils.prependBaseUri("/static/streaming/streaming-page.css")
     } type="text/css"/>
@@ -187,18 +193,28 @@ private[ui] class StreamingPage(parent: StreamingTab)
     val timeSinceStart = System.currentTimeMillis() - startTime
     <div>Running batches of
       <strong>
-        {SparkUIUtils.formatDurationVerbose(listener.batchDuration)}
+        {
+      SparkUIUtils.formatDurationVerbose(listener.batchDuration)
+    }
       </strong>
       for
       <strong>
-        {SparkUIUtils.formatDurationVerbose(timeSinceStart)}
+        {
+      SparkUIUtils.formatDurationVerbose(timeSinceStart)
+    }
       </strong>
       since
       <strong>
-        {SparkUIUtils.formatDate(startTime)}
+        {
+      SparkUIUtils.formatDate(startTime)
+    }
       </strong>
-      (<strong>{listener.numTotalCompletedBatches}</strong>
-      completed batches, <strong>{listener.numTotalReceivedRecords}</strong> records)
+      (<strong>{
+      listener.numTotalCompletedBatches
+    }</strong>
+      completed batches, <strong>{
+      listener.numTotalReceivedRecords
+    }</strong> records)
     </div>
     <br />
   }
@@ -223,7 +239,9 @@ private[ui] class StreamingPage(parent: StreamingTab)
       }
       .mkString("\n")
 
-    <script>{Unparsed(js)}</script>
+    <script>{
+      Unparsed(js)
+    }</script>
   }
 
   private def generateStatTable(): Seq[Node] = {
@@ -336,7 +354,11 @@ private[ui] class StreamingPage(parent: StreamingTab)
           <th style="width: 160px;"></th>
           <th style="width: 492px;">Timelines (Last {
         batchTimes.length
-      } batches, {numActiveBatches} active, {numCompletedBatches} completed)</th>
+      } batches, {
+        numActiveBatches
+      } active, {
+        numCompletedBatches
+      } completed)</th>
           <th style="width: 350px;">Histograms</th></tr>
       </thead>
       <tbody>
@@ -359,12 +381,16 @@ private[ui] class StreamingPage(parent: StreamingTab)
               </div>
               {
         if (numReceivers > 0) {
-          <div>Receivers: {listener.numActiveReceivers} / {
+          <div>Receivers: {
+            listener.numActiveReceivers
+          } / {
             numReceivers
           } active</div>
         }
       }
-              <div>Avg: {eventRateForAllStreams.formattedAvg} events/sec</div>
+              <div>Avg: {
+        eventRateForAllStreams.formattedAvg
+      } events/sec</div>
             </div>
           </td>
           <td class="timeline">{
@@ -398,7 +424,9 @@ private[ui] class StreamingPage(parent: StreamingTab)
           "Time taken by Streaming scheduler to submit jobs of a batch",
           "right")
       }</strong></div>
-              <div>Avg: {schedulingDelay.formattedAvg}</div>
+              <div>Avg: {
+        schedulingDelay.formattedAvg
+      }</div>
             </div>
           </td>
           <td class="timeline">{
@@ -416,7 +444,9 @@ private[ui] class StreamingPage(parent: StreamingTab)
           "Time taken to process all jobs of a batch",
           "right")
       }</strong></div>
-              <div>Avg: {processingTime.formattedAvg}</div>
+              <div>Avg: {
+        processingTime.formattedAvg
+      }</div>
             </div>
           </td>
           <td class="timeline">{
@@ -432,7 +462,9 @@ private[ui] class StreamingPage(parent: StreamingTab)
               <div><strong>Total Delay {
         SparkUIUtils.tooltip("Total time taken to handle a batch", "right")
       }</strong></div>
-              <div>Avg: {totalDelay.formattedAvg}</div>
+              <div>Avg: {
+        totalDelay.formattedAvg
+      }</div>
             </div>
           </td>
           <td class="timeline">{
@@ -458,7 +490,9 @@ private[ui] class StreamingPage(parent: StreamingTab)
     val maxYCalculated = listener.receivedEventRateWithBatchTime.values
       .flatMap {
         case streamAndRates =>
-          streamAndRates.map { case (_, eventRate) => eventRate }
+          streamAndRates.map {
+            case (_, eventRate) => eventRate
+          }
       }
       .reduceOption[Double](math.max)
       .map(_.ceil.toLong)
@@ -491,7 +525,9 @@ private[ui] class StreamingPage(parent: StreamingTab)
         </tr>
       </thead>
       <tbody>
-        {content}
+        {
+      content
+    }
       </tbody>
     </table>
     // scalastyle:on
@@ -513,7 +549,9 @@ private[ui] class StreamingPage(parent: StreamingTab)
       .orElse(listener.streamName(streamId))
       .getOrElse(s"Stream-$streamId")
     val receiverActive = receiverInfo
-      .map { info => if (info.active) "ACTIVE" else "INACTIVE" }
+      .map { info =>
+        if (info.active) "ACTIVE" else "INACTIVE"
+      }
       .getOrElse(emptyCell)
     val receiverLocation = receiverInfo
       .map { info =>
@@ -552,18 +590,32 @@ private[ui] class StreamingPage(parent: StreamingTab)
     <tr>
       <td rowspan="2" style="vertical-align: middle; width: 151px;">
         <div style="width: 151px;">
-          <div style="word-wrap: break-word;"><strong>{receiverName}</strong></div>
-          <div>Avg: {receivedRecords.formattedAvg} events/sec</div>
+          <div style="word-wrap: break-word;"><strong>{
+      receiverName
+    }</strong></div>
+          <div>Avg: {
+      receivedRecords.formattedAvg
+    } events/sec</div>
         </div>
       </td>
-      <td>{receiverActive}</td>
-      <td>{receiverLocation}</td>
-      <td>{receiverLastErrorTime}</td>
-      <td><div style="width: 342px;">{receiverLastError}</div></td>
+      <td>{
+      receiverActive
+    }</td>
+      <td>{
+      receiverLocation
+    }</td>
+      <td>{
+      receiverLastErrorTime
+    }</td>
+      <td><div style="width: 342px;">{
+      receiverLastError
+    }</div></td>
     </tr>
     <tr>
       <td colspan="3" class="timeline">
-        {graphUIDataForEventRate.generateTimelineHtml(jsCollector)}
+        {
+      graphUIDataForEventRate.generateTimelineHtml(jsCollector)
+    }
       </td>
       <td class="histogram">{
       graphUIDataForEventRate.generateHistogramHtml(jsCollector)
@@ -591,7 +643,9 @@ private[ui] class StreamingPage(parent: StreamingTab)
 
     val completedBatchesContent = {
       <h4 id="completed">
-        Completed Batches (last {completedBatches.size} out of {
+        Completed Batches (last {
+        completedBatches.size
+      } out of {
         listener.numTotalCompletedBatches
       })
       </h4> ++
@@ -664,6 +718,8 @@ private[ui] class JsCollector {
          |    ${statements.mkString("\n")}
          |});""".stripMargin
 
-    <script>{Unparsed(js)}</script>
+    <script>{
+      Unparsed(js)
+    }</script>
   }
 }

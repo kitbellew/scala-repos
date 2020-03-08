@@ -341,7 +341,9 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
             .filter(_.name == col)
             .head
             .options
-            .collect { case SqlProfile.ColumnOption.SqlType(tpe) => tpe }
+            .collect {
+              case SqlProfile.ColumnOption.SqlType(tpe) => tpe
+            }
             .head
         assert(
           Seq(
@@ -504,8 +506,8 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
         assertEquals(true, column("Option_Int").nullable)
         assertEquals(false, column("Long").nullable)
         assertEquals(true, column("Option_Long").nullable)
-        if (!tdb.profile.toString
-              .contains("OracleProfile")) { // FIXME: we should probably solve this somewhat cleaner
+        if (!tdb.profile.toString.contains(
+              "OracleProfile")) { // FIXME: we should probably solve this somewhat cleaner
           assertEquals("Int", column("Int").tpe)
           assertEquals("Int", column("Option_Int").tpe)
           ifCapU(jcap.defaultValueMetaData) {
@@ -544,8 +546,8 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
         assertEquals(false, column("java_sql_Timestamp").nullable)
         assertEquals(true, column("Option_java_sql_Timestamp").nullable)
 
-        if (!tdb.profile.toString
-              .contains("OracleProfile")) { // FIXME: we should probably solve this somewhat cleaner
+        if (!tdb.profile.toString.contains(
+              "OracleProfile")) { // FIXME: we should probably solve this somewhat cleaner
           assertEquals("java.sql.Date", column("java_sql_Date").tpe)
           assertEquals("java.sql.Date", column("Option_java_sql_Date").tpe)
           assertEquals("java.sql.Time", column("java_sql_Time").tpe)

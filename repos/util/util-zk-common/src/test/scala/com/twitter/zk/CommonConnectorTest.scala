@@ -39,26 +39,25 @@ class CommonConnectorTest extends WordSpec with BeforeAndAfter {
   }
 
   // A simple live test
-  Option { System.getProperty("com.twitter.zk.TEST_CONNECT") } foreach {
-    connectString =>
-      val address = InetSocketAddressHelper.parse(connectString)
+  Option {
+    System.getProperty("com.twitter.zk.TEST_CONNECT")
+  } foreach { connectString =>
+    val address = InetSocketAddressHelper.parse(connectString)
 
-      "A live server @ %s".format(connectString) should {
-        val commonClient: ZooKeeperClient =
-          new ZooKeeperClient(timeout.toIntAmount, address)
-        val zkClient =
-          commonClient.toZkClient(timeout)(FuturePool.immediatePool)
+    "A live server @ %s".format(connectString) should {
+      val commonClient: ZooKeeperClient =
+        new ZooKeeperClient(timeout.toIntAmount, address)
+      val zkClient = commonClient.toZkClient(timeout)(FuturePool.immediatePool)
 
-        after {
-          Await.ready(zkClient.release())
-        }
-
-        "have 'zookeeper' in '/'" in {
-          assert(
-            Await.result(zkClient("/").getChildren(), timeout).children map {
-              _.name
-            } contains ("zookeeper"))
-        }
+      after {
+        Await.ready(zkClient.release())
       }
+
+      "have 'zookeeper' in '/'" in {
+        assert(Await.result(zkClient("/").getChildren(), timeout).children map {
+          _.name
+        } contains ("zookeeper"))
+      }
+    }
   }
 }

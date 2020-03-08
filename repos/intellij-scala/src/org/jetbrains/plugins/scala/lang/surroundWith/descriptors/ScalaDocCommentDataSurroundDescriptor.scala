@@ -47,7 +47,8 @@ class ScalaDocCommentDataSurroundDescriptor extends SurroundDescriptor {
       return PsiElement.EMPTY_ARRAY
 
     val isFirstElementMarked =
-      if (checkBoundElement(startElement)) { //cannot extract function because of return
+      if (checkBoundElement(
+            startElement)) { //cannot extract function because of return
         false
       } else {
         if (checkSyntaxBoundElement(startElement, true)) true

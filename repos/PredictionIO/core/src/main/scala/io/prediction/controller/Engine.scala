@@ -780,7 +780,9 @@ object Engine {
     val evalInfoMap: Map[EX, EI] = evalTupleMap.mapValues(_._2)
     val evalQAsMap: Map[EX, RDD[(QX, (Q, A))]] = evalTupleMap
       .mapValues(_._3)
-      .mapValues { _.zipWithUniqueId().map(_.swap) }
+      .mapValues {
+        _.zipWithUniqueId().map(_.swap)
+      }
 
     val preparedMap: Map[EX, PD] = evalTrainMap.mapValues { td =>
       {
@@ -795,7 +797,9 @@ object Engine {
     }
 
     val suppQAsMap: Map[EX, RDD[(QX, (Q, A))]] = evalQAsMap.mapValues { qas =>
-      qas.map { case (qx, (q, a)) => (qx, (serving.supplementBase(q), a)) }
+      qas.map {
+        case (qx, (q, a)) => (qx, (serving.supplementBase(q), a))
+      }
     }
 
     val algoPredictsMap: Map[EX, RDD[(QX, Seq[P])]] = (0 until evalCount).map {
@@ -846,7 +850,9 @@ object Engine {
           val qasMap: RDD[(QX, (Q, A))] = evalQAsMap(ex)
           val qpsaMap: RDD[(QX, Q, Seq[P], A)] = psMap
             .join(qasMap)
-            .map { case (qx, t) => (qx, t._2._1, t._1, t._2._2) }
+            .map {
+              case (qx, t) => (qx, t._2._1, t._1, t._2._2)
+            }
 
           val qpaMap: RDD[(Q, P, A)] = qpsaMap.map {
             case (qx, q, ps, a) => (q, serving.serveBase(q, ps), a)

@@ -70,7 +70,9 @@ private[streaming] class MapWithStateDStreamImpl[
 
   override def compute(validTime: Time): Option[RDD[MappedType]] = {
     internalStream.getOrCompute(validTime).map {
-      _.flatMap[MappedType] { _.mappedData }
+      _.flatMap[MappedType] {
+        _.mappedData
+      }
     }
   }
 
@@ -86,7 +88,12 @@ private[streaming] class MapWithStateDStreamImpl[
   /** Return a pair DStream where each RDD is the snapshot of the state of all the keys. */
   def stateSnapshots(): DStream[(KeyType, StateType)] = {
     internalStream.flatMap {
-      _.stateMap.getAll().map { case (k, s, _) => (k, s) }.toTraversable
+      _.stateMap
+        .getAll()
+        .map {
+          case (k, s, _) => (k, s)
+        }
+        .toTraversable
     }
   }
 
@@ -153,7 +160,9 @@ private[streaming] class InternalMapWithStateDStream[
           // partition index as the key. This is to ensure that state RDD is always partitioned
           // before creating another state RDD using it
           MapWithStateRDD.createFromRDD[K, V, S, E](
-            rdd.flatMap { _.stateMap.getAll() },
+            rdd.flatMap {
+              _.stateMap.getAll()
+            },
             partitioner,
             validTime)
         } else {

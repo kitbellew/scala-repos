@@ -28,7 +28,11 @@ class ConnectedComponentsSuite extends SparkFunSuite with LocalSparkContext {
     withSpark { sc =>
       val gridGraph = GraphGenerators.gridGraph(sc, 10, 10)
       val ccGraph = gridGraph.connectedComponents()
-      val maxCCid = ccGraph.vertices.map { case (vid, ccId) => ccId }.sum()
+      val maxCCid = ccGraph.vertices
+        .map {
+          case (vid, ccId) => ccId
+        }
+        .sum()
       assert(maxCCid === 0)
     }
   } // end of Grid connected components
@@ -37,7 +41,11 @@ class ConnectedComponentsSuite extends SparkFunSuite with LocalSparkContext {
     withSpark { sc =>
       val gridGraph = GraphGenerators.gridGraph(sc, 10, 10).reverse
       val ccGraph = gridGraph.connectedComponents()
-      val maxCCid = ccGraph.vertices.map { case (vid, ccId) => ccId }.sum()
+      val maxCCid = ccGraph.vertices
+        .map {
+          case (vid, ccId) => ccId
+        }
+        .sum()
       assert(maxCCid === 0)
     }
   } // end of Grid connected components

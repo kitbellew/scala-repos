@@ -62,13 +62,27 @@ class InteractionSuite
     assert(
       encode(Array(2, 1, 1), Vectors.dense(0, 2.2, 0)) === Vectors
         .dense(1, 0, 2.2, 0))
-    intercept[SparkException] { encode(Array(1), "foo") }
-    intercept[SparkException] { encode(Array(1), null) }
-    intercept[AssertionError] { encode(Array(2), 2.2) }
-    intercept[AssertionError] { encode(Array(3), Vectors.dense(2.2)) }
-    intercept[AssertionError] { encode(Array(1), Vectors.dense(1.0, 2.0, 3.0)) }
-    intercept[AssertionError] { encode(Array(3), Vectors.dense(-1)) }
-    intercept[AssertionError] { encode(Array(3), Vectors.dense(3)) }
+    intercept[SparkException] {
+      encode(Array(1), "foo")
+    }
+    intercept[SparkException] {
+      encode(Array(1), null)
+    }
+    intercept[AssertionError] {
+      encode(Array(2), 2.2)
+    }
+    intercept[AssertionError] {
+      encode(Array(3), Vectors.dense(2.2))
+    }
+    intercept[AssertionError] {
+      encode(Array(1), Vectors.dense(1.0, 2.0, 3.0))
+    }
+    intercept[AssertionError] {
+      encode(Array(3), Vectors.dense(-1))
+    }
+    intercept[AssertionError] {
+      encode(Array(3), Vectors.dense(3))
+    }
   }
 
   test("numeric interaction") {

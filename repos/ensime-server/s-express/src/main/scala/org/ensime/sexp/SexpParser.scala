@@ -79,7 +79,10 @@ class SexpParser(val input: ParserInput) extends Parser with StringBuilding {
 
   private def SexpListP: Rule1[Sexp] = rule {
     LeftBrace ~ SexpP ~ zeroOrMore(Whitespace ~ SexpP) ~ RightBrace ~> {
-      (head: Sexp, tail: Seq[Sexp]) => { SexpList(head :: tail.toList) }
+      (head: Sexp, tail: Seq[Sexp]) =>
+        {
+          SexpList(head :: tail.toList)
+        }
     }
   }
 
@@ -88,16 +91,22 @@ class SexpParser(val input: ParserInput) extends Parser with StringBuilding {
   }
 
   private def SexpCharP: Rule1[SexpChar] = rule {
-    '?' ~ NormalChar ~> { SexpChar }
+    '?' ~ NormalChar ~> {
+      SexpChar
+    }
   }
 
   def SexpStringP = rule {
     '"' ~ clearSB() ~ CharactersSB ~ '"' ~ push(SexpString(sb.toString))
   }
 
-  def CharactersSB = rule { zeroOrMore(NormalCharSB | '\\' ~ EscapedCharSB) }
+  def CharactersSB = rule {
+    zeroOrMore(NormalCharSB | '\\' ~ EscapedCharSB)
+  }
 
-  def NormalCharSB = rule { NCCharPredicate ~ appendSB() }
+  def NormalCharSB = rule {
+    NCCharPredicate ~ appendSB()
+  }
 
   def EscapedCharSB = rule(
     QuoteSlashBackSlash ~ appendSB()
@@ -149,7 +158,9 @@ class SexpParser(val input: ParserInput) extends Parser with StringBuilding {
   }
 
   private def SexpQuotedP: Rule1[Sexp] = rule {
-    '\'' ~ SexpP ~> { v: Sexp => SexpCons(SexpQuote, v) }
+    '\'' ~ SexpP ~> { v: Sexp =>
+      SexpCons(SexpQuote, v)
+    }
   }
 
   private def SexpSymbolP: Rule1[SexpAtom] = rule {

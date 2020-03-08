@@ -59,7 +59,9 @@ trait DefaultActorPool extends ActorPool { this: Actor =>
   override def postStop() = _delegates foreach { delegate =>
     try {
       delegate ! PoisonPill
-    } catch { case e: Exception => } //Ignore any exceptions here
+    } catch {
+      case e: Exception =>
+    } //Ignore any exceptions here
   }
 
   protected def _route(): Receive = {
@@ -67,7 +69,9 @@ trait DefaultActorPool extends ActorPool { this: Actor =>
     case Stat =>
       self reply_? Stats(_delegates length)
     case max: MaximumNumberOfRestartsWithinTimeRangeReached =>
-      _delegates = _delegates filterNot { _.uuid == max.victim.uuid }
+      _delegates = _delegates filterNot {
+        _.uuid == max.victim.uuid
+      }
     case msg =>
       resizeIfAppropriate()
 
@@ -94,7 +98,9 @@ trait DefaultActorPool extends ActorPool { this: Actor =>
       case qty if qty < 0 =>
         _delegates.splitAt(_delegates.length + requestedCapacity) match {
           case (keep, abandon) =>
-            abandon foreach { _ ! PoisonPill }
+            abandon foreach {
+              _ ! PoisonPill
+            }
             keep
         }
       case _ => _delegates //No change
@@ -196,7 +202,9 @@ trait BoundedCapacitor {
 trait MailboxPressureCapacitor {
   def pressureThreshold: Int
   def pressure(delegates: Seq[ActorRef]): Int =
-    delegates count { _.mailboxSize > pressureThreshold }
+    delegates count {
+      _.mailboxSize > pressureThreshold
+    }
 }
 
 /**
@@ -204,7 +212,9 @@ trait MailboxPressureCapacitor {
   */
 trait ActiveFuturesPressureCapacitor {
   def pressure(delegates: Seq[ActorRef]): Int =
-    delegates count { _.senderFuture.isDefined }
+    delegates count {
+      _.senderFuture.isDefined
+    }
 }
 
 /**

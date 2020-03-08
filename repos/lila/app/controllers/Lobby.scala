@@ -24,7 +24,9 @@ object Lobby extends LilaController {
   }
 
   def handleStatus(req: RequestHeader, status: Results.Status): Fu[Result] = {
-    reqToCtx(req) flatMap { ctx => renderHome(status)(ctx) }
+    reqToCtx(req) flatMap { ctx =>
+      renderHome(status)(ctx)
+    }
   }
 
   def renderHome(status: Results.Status)(implicit ctx: Context): Fu[Result] = {
@@ -61,6 +63,8 @@ object Lobby extends LilaController {
     }
 
   def timeline = Auth { implicit ctx => me =>
-    Env.timeline.entryRepo.userEntries(me.id) map { html.timeline.entries(_) }
+    Env.timeline.entryRepo.userEntries(me.id) map {
+      html.timeline.entries(_)
+    }
   }
 }

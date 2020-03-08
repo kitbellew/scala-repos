@@ -3,7 +3,13 @@ class B extends A
 
 class Crash(b1: Seq[B], b2: Seq[B]) {
   def this(a: Seq[A]) =
-    this(a.collect { case b: B => b }, a.collect { case b: B => b })
+    this(
+      a.collect {
+        case b: B => b
+      },
+      a.collect {
+        case b: B => b
+      })
 }
 
 object Main extends App {

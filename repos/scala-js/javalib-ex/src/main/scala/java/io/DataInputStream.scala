@@ -58,7 +58,9 @@ class DataInputStream(in: InputStream)
 
   // General Helpers
   private def eof() = throw new EOFException()
-  private def pushBack(v: Int) = { pushedBack = v }
+  private def pushBack(v: Int) = {
+    pushedBack = v
+  }
 
   // Methods on DataInput
   def readBoolean(): Boolean = readByte() != 0

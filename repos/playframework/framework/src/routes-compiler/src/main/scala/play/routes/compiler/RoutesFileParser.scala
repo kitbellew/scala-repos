@@ -42,7 +42,11 @@ object RoutesFileParser {
 
     parser.parse(routesContent) match {
       case parser.Success(parsed: List[Rule], _) =>
-        validate(routesFile, parsed.collect { case r: Route => r }) match {
+        validate(
+          routesFile,
+          parsed.collect {
+            case r: Route => r
+          }) match {
           case Nil    => Right(parsed)
           case errors => Left(errors)
         }
@@ -210,7 +214,9 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
   def newLine: Parser[String] =
     namedError((("\r" ?) ~> "\n"), "End of line expected")
 
-  def blankLine: Parser[Unit] = ignoreWhiteSpace ~> newLine ^^ { case _ => () }
+  def blankLine: Parser[Unit] = ignoreWhiteSpace ~> newLine ^^ {
+    case _ => ()
+  }
 
   def parentheses: Parser[String] = {
     "(" ~ (several((parentheses | not(")") ~> """.""".r))) ~ commit(")") ^^ {

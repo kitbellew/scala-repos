@@ -1,5 +1,9 @@
-trait Inv[A] { def head: A }
-trait Cov[+A] { def head: A }
+trait Inv[A] {
+  def head: A
+}
+trait Cov[+A] {
+  def head: A
+}
 
 class Test {
   def inv(i: Inv[Inv[String]]) = i match {

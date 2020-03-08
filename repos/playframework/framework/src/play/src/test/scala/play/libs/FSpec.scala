@@ -88,7 +88,9 @@ object FSpec extends Specification with ExecutionSpecification {
       val fp = F.Promise.wrap(p.future)
       val invocations = new LinkedBlockingQueue[Int]()
       fp.onRedeem(new Consumer[Int] {
-        def accept(x: Int) { invocations.offer(x) }
+        def accept(x: Int) {
+          invocations.offer(x)
+        }
       })
       p.success(99)
       invocations.poll(5, SECONDS) must equalTo(99)
@@ -101,7 +103,9 @@ object FSpec extends Specification with ExecutionSpecification {
         val invocations = new LinkedBlockingQueue[Int]()
         fp.onRedeem(
           new Consumer[Int] {
-            def accept(x: Int) { invocations.offer(x) }
+            def accept(x: Int) {
+              invocations.offer(x)
+            }
           },
           ec)
         p.success(99)

@@ -4,19 +4,29 @@
 // Class hierarchy
 trait Term[a]
 
-object Var { def unapply[a](x: Var[a]) = Some(x.name) }
+object Var {
+  def unapply[a](x: Var[a]) = Some(x.name)
+}
 class Var[a](val name: String) extends Term[a]
 
-object Num { def unapply(x: Num) = Some(x.value) }
+object Num {
+  def unapply(x: Num) = Some(x.value)
+}
 class Num(val value: Int) extends Term[Int]
 
-object Lam { def unapply[b, c](l: Lam[b, c]) = Some(l.x, l.e) }
+object Lam {
+  def unapply[b, c](l: Lam[b, c]) = Some(l.x, l.e)
+}
 class Lam[b, c](val x: Var[b], val e: Term[c]) extends Term[b => c]
 
-object App { def unapply[b, c](a: App[b, c]) = Some(a.f, a.e) }
+object App {
+  def unapply[b, c](a: App[b, c]) = Some(a.f, a.e)
+}
 class App[b, c](val f: Term[b => c], val e: Term[b]) extends Term[c]
 
-object Suc { def unapply(a: Suc) = true }
+object Suc {
+  def unapply(a: Suc) = true
+}
 class Suc() extends Term[Int => Int]
 
 // Environments :
@@ -54,7 +64,9 @@ object Test {
     //
     // found   : (Int) => Int
     // required: a
-    case i @ Suc() => { (y: Int) => y + 1 } // a = Int => Int
+    case i @ Suc() => { (y: Int) =>
+      y + 1
+    } // a = Int => Int
 
     // Next one fails like:
     //

@@ -128,14 +128,18 @@ abstract class AbstractTable[T](
 
   final def foreignKeys: Iterable[ForeignKey] =
     tableConstraints
-      .collect { case q: ForeignKeyQuery[_, _] => q.fks }
+      .collect {
+        case q: ForeignKeyQuery[_, _] => q.fks
+      }
       .flatten
       .toIndexedSeq
       .sortBy(_.name)
 
   final def primaryKeys: Iterable[PrimaryKey] =
     tableConstraints
-      .collect { case k: PrimaryKey => k }
+      .collect {
+        case k: PrimaryKey => k
+      }
       .toIndexedSeq
       .sortBy(_.name)
 

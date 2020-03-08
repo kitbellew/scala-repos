@@ -55,7 +55,11 @@ object LinearRegressionWithSGDExample {
       val prediction = model.predict(point.features)
       (point.label, prediction)
     }
-    val MSE = valuesAndPreds.map { case (v, p) => math.pow((v - p), 2) }.mean()
+    val MSE = valuesAndPreds
+      .map {
+        case (v, p) => math.pow((v - p), 2)
+      }
+      .mean()
     println("training Mean Squared Error = " + MSE)
 
     // Save and load model

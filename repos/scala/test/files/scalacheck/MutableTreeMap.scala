@@ -17,9 +17,13 @@ package scala.collection.mutable {
     def genRedBlackTree[A: Arbitrary: Ordering, B: Arbitrary]
         : Gen[RB.Tree[A, B]] = {
       import org.scalacheck.Gen._
-      for { entries <- listOf(arbitrary[(A, B)]) } yield {
+      for {
+        entries <- listOf(arbitrary[(A, B)])
+      } yield {
         val tree = RB.Tree.empty[A, B]
-        entries.foreach { case (k, v) => RB.insert(tree, k, v) }
+        entries.foreach {
+          case (k, v) => RB.insert(tree, k, v)
+        }
         tree
       }
     }
@@ -52,15 +56,21 @@ package scala.collection.mutable {
     }
 
     property("insert") = forAll { (tree: RB.Tree[K, V], entries: Seq[(K, V)]) =>
-      entries.foreach { case (k, v) => RB.insert(tree, k, v) }
+      entries.foreach {
+        case (k, v) => RB.insert(tree, k, v)
+      }
       RB.isValid(tree) && entries.toMap.forall {
         case (k, v) => RB.get(tree, k) == Some(v)
       }
     }
 
     property("delete") = forAll { (tree: RB.Tree[K, V], ks: Seq[K]) =>
-      ks.foreach { k => RB.delete(tree, k) }
-      RB.isValid(tree) && ks.toSet.forall { k => RB.get(tree, k) == None }
+      ks.foreach { k =>
+        RB.delete(tree, k)
+      }
+      RB.isValid(tree) && ks.toSet.forall { k =>
+        RB.get(tree, k) == None
+      }
     }
 
     property("insert & delete") = forAll {
@@ -74,13 +84,17 @@ package scala.collection.mutable {
 
     property("min") = forAll { (entries: Seq[(K, V)]) =>
       val tree = RB.Tree.empty[K, V]
-      entries.foreach { case (k, v) => RB.insert(tree, k, v) }
+      entries.foreach {
+        case (k, v) => RB.insert(tree, k, v)
+      }
       RB.min(tree) == (if (entries.isEmpty) None else Some(entries.toMap.min))
     }
 
     property("max") = forAll { (entries: Seq[(K, V)]) =>
       val tree = RB.Tree.empty[K, V]
-      entries.foreach { case (k, v) => RB.insert(tree, k, v) }
+      entries.foreach {
+        case (k, v) => RB.insert(tree, k, v)
+      }
       RB.max(tree) == (if (entries.isEmpty) None else Some(entries.toMap.max))
     }
   }
@@ -123,7 +137,9 @@ package scala.collection.mutable {
       (map: mutable.TreeMap[K, V], entries: Seq[(K, V)]) =>
         val oldEntries = map.toMap
         map ++= entries
-        (oldEntries ++ entries).forall { case (k, v) => map.get(k) == Some(v) }
+        (oldEntries ++ entries).forall {
+          case (k, v) => map.get(k) == Some(v)
+        }
     }
 
     property("-=") = forAll { (map: mutable.TreeMap[K, V], k: K) =>
@@ -258,7 +274,9 @@ package scala.collection.mutable {
 
         val mapView = map.rangeImpl(from, until)
         mapView.size == entriesInView(entries, from, until).size &&
-        mapView.isEmpty == !entries.exists { kv => in(kv._1, from, until) }
+        mapView.isEmpty == !entries.exists { kv =>
+          in(kv._1, from, until)
+        }
     }
 
     property("+=") = forAll {
@@ -319,7 +337,9 @@ package scala.collection.mutable {
           until: Option[K]) =>
         val mapView = map.rangeImpl(from, until)
         mapView --= ks
-        ks.toSet.forall { k => map.get(k) == None && mapView.get(k) == None }
+        ks.toSet.forall { k =>
+          map.get(k) == None && mapView.get(k) == None
+        }
     }
 
     property("iterator") = forAll {

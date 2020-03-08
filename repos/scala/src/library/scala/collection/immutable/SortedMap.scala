@@ -103,7 +103,9 @@ trait SortedMap[A, +B]
       override def keysIteratorFrom(start: A) =
         self keysIteratorFrom start filter p
       override def valuesIteratorFrom(start: A) =
-        self iteratorFrom start collect { case (k, v) if p(k) => v }
+        self iteratorFrom start collect {
+          case (k, v) if p(k) => v
+        }
     }
 
   override def mapValues[C](f: B => C): SortedMap[A, C] =

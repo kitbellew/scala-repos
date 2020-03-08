@@ -84,7 +84,9 @@ private[spark] class HiveCatalog(client: HiveClient)
   }
 
   private def requireTableExists(db: String, table: String): Unit = {
-    withClient { getTable(db, table) }
+    withClient {
+      getTable(db, table)
+    }
   }
 
   // --------------------------------------------------------------------------

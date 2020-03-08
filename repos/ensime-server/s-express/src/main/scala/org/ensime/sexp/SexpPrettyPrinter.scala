@@ -60,14 +60,19 @@ trait SexpPrettyPrinter extends SexpPrinter {
     if (els.isEmpty) print(SexpNil, sb)
     else {
       sb.append('(')
-      printSeq(els, { sb.append("\n"); printIndent(sb, indent + Indent) }) {
+      printSeq(
+        els, {
+          sb.append("\n"); printIndent(sb, indent + Indent)
+        }) {
         print(_, sb, indent + Indent)
       }
       sb.append(')')
     }
 
   protected def printIndent(sb: StringBuilder, indent: Int): Unit =
-    (0 until indent) foreach { _ => sb.append(' ') }
+    (0 until indent) foreach { _ =>
+      sb.append(' ')
+    }
 
 }
 

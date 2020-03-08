@@ -1,6 +1,8 @@
 package a {
   class C1(val v0: String)
-  class C2(v1: String) extends a.C1(v1) { def foo = v1 }
+  class C2(v1: String) extends a.C1(v1) {
+    def foo = v1
+  }
 }
 
 object Test extends App {

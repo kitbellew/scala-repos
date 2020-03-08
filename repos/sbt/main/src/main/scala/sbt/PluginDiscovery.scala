@@ -182,7 +182,9 @@ object PluginDiscovery {
     val evictedModules = evicted map { id =>
       (id.organization, id.name)
     } distinct;
-    val evictedStrings = evictedModules map { case (o, n) => o + ":" + n }
+    val evictedStrings = evictedModules map {
+      case (o, n) => o + ":" + n
+    }
     val msgBase = "Binary incompatibility in plugins detected."
     val msgExtra =
       if (evictedStrings.isEmpty) ""

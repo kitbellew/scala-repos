@@ -76,7 +76,9 @@ trait BatchedWindowService[K, V] extends batch.BatchedService[K, V] {
       .withWindow(incoming, servStream, reducers) {
         (l: Timestamp, r: Timestamp) => (l - r) < win
       }
-      .map { case (t, (k, (w, optoptv))) => (t, (k, (w, flatOpt(optoptv)))) }
+      .map {
+        case (t, (k, (w, optoptv))) => (t, (k, (w, flatOpt(optoptv))))
+      }
   }
 
 }

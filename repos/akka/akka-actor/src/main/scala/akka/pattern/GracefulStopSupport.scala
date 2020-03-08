@@ -62,7 +62,9 @@ trait GracefulStopSupport {
           internalTarget.sendSystemMessage(Unwatch(target, ref)); false
         }
       },
-      t ⇒ { internalTarget.sendSystemMessage(Unwatch(target, ref)); t }
+      t ⇒ {
+        internalTarget.sendSystemMessage(Unwatch(target, ref)); t
+      }
     )(ref.internalCallingThreadExecutionContext)
   }
 }

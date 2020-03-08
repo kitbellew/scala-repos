@@ -149,22 +149,50 @@ object Test extends App {
     val dur = Duration(x, unit)
     val mdur = Duration(-x, unit)
     -mdur mustBe (dur)
-    intercept[IllegalArgumentException] { Duration(x + 10000000d, unit) }
-    intercept[IllegalArgumentException] { Duration(-x - 10000000d, unit) }
-    if (unit != NANOSECONDS) {
-      intercept[IllegalArgumentException] { Duration(x + 1, unit) }
-      intercept[IllegalArgumentException] { Duration(-x - 1, unit) }
+    intercept[IllegalArgumentException] {
+      Duration(x + 10000000d, unit)
     }
-    intercept[IllegalArgumentException] { dur + 1.day }
-    intercept[IllegalArgumentException] { mdur - 1.day }
-    intercept[IllegalArgumentException] { dur * 1.1 }
-    intercept[IllegalArgumentException] { mdur * 1.1 }
-    intercept[IllegalArgumentException] { dur * 2.1 }
-    intercept[IllegalArgumentException] { mdur * 2.1 }
-    intercept[IllegalArgumentException] { dur / 0.9 }
-    intercept[IllegalArgumentException] { mdur / 0.9 }
-    intercept[IllegalArgumentException] { dur / 0.4 }
-    intercept[IllegalArgumentException] { mdur / 0.4 }
+    intercept[IllegalArgumentException] {
+      Duration(-x - 10000000d, unit)
+    }
+    if (unit != NANOSECONDS) {
+      intercept[IllegalArgumentException] {
+        Duration(x + 1, unit)
+      }
+      intercept[IllegalArgumentException] {
+        Duration(-x - 1, unit)
+      }
+    }
+    intercept[IllegalArgumentException] {
+      dur + 1.day
+    }
+    intercept[IllegalArgumentException] {
+      mdur - 1.day
+    }
+    intercept[IllegalArgumentException] {
+      dur * 1.1
+    }
+    intercept[IllegalArgumentException] {
+      mdur * 1.1
+    }
+    intercept[IllegalArgumentException] {
+      dur * 2.1
+    }
+    intercept[IllegalArgumentException] {
+      mdur * 2.1
+    }
+    intercept[IllegalArgumentException] {
+      dur / 0.9
+    }
+    intercept[IllegalArgumentException] {
+      mdur / 0.9
+    }
+    intercept[IllegalArgumentException] {
+      dur / 0.4
+    }
+    intercept[IllegalArgumentException] {
+      mdur / 0.4
+    }
     Duration(x + unit.toString.toLowerCase)
     Duration("-" + x + unit.toString.toLowerCase)
     intercept[IllegalArgumentException] {
@@ -174,8 +202,12 @@ object Test extends App {
       Duration("-%.0f".format(x + 10000000d) + unit.toString.toLowerCase)
     }
   }
-  intercept[IllegalArgumentException] { Duration.fromNanos(1e20) }
-  intercept[IllegalArgumentException] { Duration.fromNanos(-1e20) }
+  intercept[IllegalArgumentException] {
+    Duration.fromNanos(1e20)
+  }
+  intercept[IllegalArgumentException] {
+    Duration.fromNanos(-1e20)
+  }
 
   // test precision
   1.second + 1.millisecond mustBe 1001.milliseconds
@@ -193,14 +225,22 @@ object Test extends App {
   val dead = 2.seconds.fromNow
   val dead2 = 2 seconds fromNow
 
-  { val l = dead.timeLeft; assert(l > 1.second, s"$l <= 1.second") }
-  { val l = dead2.timeLeft; assert(l > 1.second, s"$l <= 1.second") }
+  {
+    val l = dead.timeLeft; assert(l > 1.second, s"$l <= 1.second")
+  }
+  {
+    val l = dead2.timeLeft; assert(l > 1.second, s"$l <= 1.second")
+  }
 
   Thread.sleep(1.second.toMillis)
 
   // unfortunately it can happen that the sleep() returns early without throwing
-  { val l = dead.timeLeft; assert(l <= 1100.millis, s"$l > 1100.millis") }
-  { val l = dead2.timeLeft; assert(l <= 1100.millis, s"$l > 1100.millis") }
+  {
+    val l = dead.timeLeft; assert(l <= 1100.millis, s"$l > 1100.millis")
+  }
+  {
+    val l = dead2.timeLeft; assert(l <= 1100.millis, s"$l > 1100.millis")
+  }
 
   // test integer mul/div
   500.millis * 2 mustBe 1.second

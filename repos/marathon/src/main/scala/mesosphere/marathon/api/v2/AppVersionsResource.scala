@@ -54,6 +54,8 @@ class AppVersionsResource(
       withAuthorization(
         ViewApp,
         service.getApp(id, timestamp),
-        unknownApp(id, Some(timestamp))) { app => ok(jsonString(app)) }
+        unknownApp(id, Some(timestamp))) { app =>
+        ok(jsonString(app))
+      }
   }
 }

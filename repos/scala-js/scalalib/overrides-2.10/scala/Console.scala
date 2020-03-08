@@ -113,7 +113,9 @@ object Console {
     *
     *  @param out the new output stream.
     */
-  def setOut(out: PrintStream) { outVar.value = out }
+  def setOut(out: PrintStream) {
+    outVar.value = out
+  }
 
   /** Sets the default output stream for the duration
     *  of execution of one thunk.
@@ -154,7 +156,9 @@ object Console {
     *
     *  @param err the new error stream.
     */
-  def setErr(err: PrintStream) { errVar.value = err }
+  def setErr(err: PrintStream) {
+    errVar.value = err
+  }
 
   /** Set the default error stream for the duration
     *  of execution of one thunk.
@@ -250,17 +254,23 @@ object Console {
     *  output (i.e. output not terminated by a newline character) has
     *  to be made visible on the terminal.
     */
-  def flush() { out.flush() }
+  def flush() {
+    out.flush()
+  }
 
   /** Prints a newline character on the default output.
     */
-  def println() { out.println() }
+  def println() {
+    out.println()
+  }
 
   /** Prints out an object to the default output, followed by a newline character.
     *
     *  @param x the object to print.
     */
-  def println(x: Any) { out.println(x) }
+  def println(x: Any) {
+    out.println(x)
+  }
 
   /** Prints its arguments as a formatted string to the default output,
     *  based on a string pattern (in a fashion similar to printf in C).
@@ -273,7 +283,9 @@ object Console {
     *  @param args the arguments used to instantiating the pattern.
     *  @throws java.lang.IllegalArgumentException if there was a problem with the format string or arguments
     */
-  def printf(text: String, args: Any*) { out.print(text format (args: _*)) }
+  def printf(text: String, args: Any*) {
+    out.print(text format (args: _*))
+  }
 
   /** Read a full line from the default input.  Returns `null` if the end of the
     * input stream has been reached.

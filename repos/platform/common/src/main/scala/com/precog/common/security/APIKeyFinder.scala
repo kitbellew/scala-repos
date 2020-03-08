@@ -96,7 +96,9 @@ class DirectAPIKeyFinder[M[+_]](underlying: APIKeyManager[M])(
             ) // The first element of ancestors is the key itself, so we drop it
         grantIds.map(underlying.findGrant).toList.sequence map { grants =>
           val divulgedIssuers = rootKey
-            .map { rk => ancestorKeys.reverse.dropWhile(_ != rk).reverse }
+            .map { rk =>
+              ancestorKeys.reverse.dropWhile(_ != rk).reverse
+            }
             .getOrElse(Nil)
           logger.debug(
             "Divulging issuers %s for key %s based on root key %s and ancestors %s"
@@ -150,6 +152,8 @@ class DirectAPIKeyFinder[M[+_]](underlying: APIKeyManager[M])(
   }
 
   def addGrant(accountKey: APIKey, grantId: GrantId): M[Boolean] = {
-    underlying.addGrants(accountKey, Set(grantId)) map { _.isDefined }
+    underlying.addGrants(accountKey, Set(grantId)) map {
+      _.isDefined
+    }
   }
 }

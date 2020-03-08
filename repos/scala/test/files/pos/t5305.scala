@@ -8,6 +8,8 @@ object t5305 {
 
   in {
     import O.{F, v}
-    type x = { type l = (F, v.type) } // not found: type F
+    type x = {
+      type l = (F, v.type)
+    } // not found: type F
   }
 }

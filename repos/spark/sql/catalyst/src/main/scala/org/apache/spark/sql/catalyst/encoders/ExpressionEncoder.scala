@@ -391,7 +391,9 @@ case class ExpressionEncoder[T](
   protected val schemaString =
     schema
       .zip(attrs)
-      .map { case (f, a) => s"${f.name}$a: ${f.dataType.simpleString}" }
+      .map {
+        case (f, a) => s"${f.name}$a: ${f.dataType.simpleString}"
+      }
       .mkString(", ")
 
   override def toString: String = s"class[$schemaString]"

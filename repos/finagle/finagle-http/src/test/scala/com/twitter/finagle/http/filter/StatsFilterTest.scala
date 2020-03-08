@@ -24,7 +24,9 @@ class StatsFilterTest extends FunSuite {
         }
       }
 
-    Time.withCurrentTimeFrozen { _ => Await.result(filter(Request())) }
+    Time.withCurrentTimeFrozen { _ =>
+      Await.result(filter(Request()))
+    }
 
     assert(receiver.counters(Seq("status", "404")) == 1)
     assert(receiver.counters(Seq("status", "4XX")) == 1)

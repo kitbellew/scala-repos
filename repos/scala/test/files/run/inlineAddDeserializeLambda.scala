@@ -1,4 +1,6 @@
-class C { @inline final def f: Int => Int = (x: Int) => x + 1 }
+class C {
+  @inline final def f: Int => Int = (x: Int) => x + 1
+}
 
 object Test extends App {
   import java.io._

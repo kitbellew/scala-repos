@@ -1174,7 +1174,9 @@ trait LoggingAdapter {
     * Log message at info level.
     * @see [[LoggingAdapter]]
     */
-  def info(message: String) { if (isInfoEnabled) notifyInfo(message) }
+  def info(message: String) {
+    if (isInfoEnabled) notifyInfo(message)
+  }
 
   /**
     * Message template with 1 replacement argument.
@@ -1217,7 +1219,9 @@ trait LoggingAdapter {
     * Log message at debug level.
     * @see [[LoggingAdapter]]
     */
-  def debug(message: String) { if (isDebugEnabled) notifyDebug(message) }
+  def debug(message: String) {
+    if (isDebugEnabled) notifyDebug(message)
+  }
 
   /**
     * Message template with 1 replacement argument.

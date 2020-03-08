@@ -268,7 +268,9 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     val stacked = (1 to 100).flatMap(i => (1 to i).map(j => (i, j)))
     val rdd1 = sc.parallelize(stacked)
     val counted1 = rdd1.countApproxDistinctByKey(p, sp).collect()
-    counted1.foreach { case (k, count) => assert(error(count, k) < relativeSD) }
+    counted1.foreach {
+      case (k, count) => assert(error(count, k) < relativeSD)
+    }
 
     val rnd = new Random(42)
 
@@ -685,7 +687,9 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
 
     assert(shuffled.partitioner === Some(p))
     assert(shuffled.lookup(1) === Seq(2))
-    intercept[IllegalArgumentException] { shuffled.lookup(-1) }
+    intercept[IllegalArgumentException] {
+      shuffled.lookup(-1)
+    }
   }
 
   private object StratifiedAuxiliary {

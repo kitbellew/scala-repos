@@ -92,7 +92,9 @@ private[finagle] class ServiceFactoryCache[Key, Req, Rep](
   private[this] val nevict = statsReceiver.counter("evicts")
   private[this] val noneshot = statsReceiver.counter("oneshots")
   private[this] val nidle = statsReceiver.addGauge("idle") {
-    cache count { case (_, f) => f.idleFor > Duration.Zero }
+    cache count {
+      case (_, f) => f.idleFor > Duration.Zero
+    }
   }
 
   /*

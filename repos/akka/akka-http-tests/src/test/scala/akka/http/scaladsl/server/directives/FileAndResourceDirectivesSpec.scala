@@ -30,7 +30,9 @@ class FileAndResourceDirectivesSpec
 
   "getFromFile" should {
     "reject non-GET requests" in {
-      Put() ~> getFromFile("some") ~> check { handled shouldEqual false }
+      Put() ~> getFromFile("some") ~> check {
+        handled shouldEqual false
+      }
     }
     "reject requests to non-existing files" in {
       Get() ~> getFromFile("nonExistentFile") ~> check {
@@ -141,7 +143,9 @@ class FileAndResourceDirectivesSpec
 
   "getFromResource" should {
     "reject non-GET requests" in {
-      Put() ~> getFromResource("some") ~> check { handled shouldEqual false }
+      Put() ~> getFromResource("some") ~> check {
+        handled shouldEqual false
+      }
     }
     "reject requests to non-existing resources" in {
       Get() ~> getFromResource("nonExistingResource") ~> check {
@@ -149,7 +153,9 @@ class FileAndResourceDirectivesSpec
       }
     }
     "reject requests to directory resources" in {
-      Get() ~> getFromResource("someDir") ~> check { handled shouldEqual false }
+      Get() ~> getFromResource("someDir") ~> check {
+        handled shouldEqual false
+      }
     }
     "reject requests to directory resources with trailing slash" in {
       Get() ~> getFromResource("someDir/") ~> check {
@@ -465,5 +471,7 @@ class FileAndResourceDirectivesSpec
 
   def evaluateTo[T](t: T, atMost: Duration = 100.millis)(
       implicit ec: ExecutionContext): Matcher[Future[T]] =
-    be(t).compose[Future[T]] { fut ⇒ fut.awaitResult(atMost) }
+    be(t).compose[Future[T]] { fut ⇒
+      fut.awaitResult(atMost)
+    }
 }

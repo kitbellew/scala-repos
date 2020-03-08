@@ -93,7 +93,9 @@ trait Var[+T] { self =>
   }
 
   def join[U](other: Var[U]): Var[(T, U)] =
-    for { t <- self; u <- other } yield (t, u)
+    for {
+      t <- self; u <- other
+    } yield (t, u)
 
   /**
     * An Event where changes in Var are emitted. The current value
@@ -104,7 +106,9 @@ trait Var[+T] { self =>
     */
   lazy val changes: Event[T] = new Event[T] {
     def register(s: Witness[T]) =
-      self.observe { newv => s.notify(newv) }
+      self.observe { newv =>
+        s.notify(newv)
+      }
   }
 
   /**

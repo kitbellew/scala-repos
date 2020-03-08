@@ -148,7 +148,9 @@ private object QuantileDiscretizerSuite extends SparkFunSuite {
     val transformedFeatures = result
       .select("result")
       .collect()
-      .map { case Row(transformedFeature: Double) => transformedFeature }
+      .map {
+        case Row(transformedFeature: Double) => transformedFeature
+      }
     val transformedAttrs = Attribute
       .fromStructField(result.schema("result"))
       .asInstanceOf[NominalAttribute]

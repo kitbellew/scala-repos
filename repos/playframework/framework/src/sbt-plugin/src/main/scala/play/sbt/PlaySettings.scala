@@ -57,7 +57,9 @@ object PlaySettings {
     libraryDependencies += "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test",
     ivyConfigurations += DocsApplication,
     playOmnidoc := !play.core.PlayVersion.current.endsWith("-SNAPSHOT"),
-    playDocsName := { if (playOmnidoc.value) "play-omnidoc" else "play-docs" },
+    playDocsName := {
+      if (playOmnidoc.value) "play-omnidoc" else "play-docs"
+    },
     playDocsModule := Some(
       "com.typesafe.play" %% playDocsName.value % play.core.PlayVersion.current % DocsApplication.name),
     libraryDependencies ++= playDocsModule.value.toSeq,

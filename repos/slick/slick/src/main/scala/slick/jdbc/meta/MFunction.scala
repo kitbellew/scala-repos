@@ -20,7 +20,9 @@ object MFunction {
         namePattern.catalog_?,
         namePattern.schema_?,
         namePattern.name)
-      catch { case _: AbstractMethodError => null }
+      catch {
+        case _: AbstractMethodError => null
+      }
     } { r =>
       MFunction(
         MQName.from(r),

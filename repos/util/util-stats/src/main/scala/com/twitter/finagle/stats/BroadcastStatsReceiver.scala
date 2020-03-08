@@ -60,14 +60,22 @@ object BroadcastStatsReceiver {
     val repr = this
 
     def counter(names: String*): Counter =
-      BroadcastCounter(srs.map { _.counter(names: _*) })
+      BroadcastCounter(srs.map {
+        _.counter(names: _*)
+      })
 
     def stat(names: String*): Stat =
-      BroadcastStat(srs.map { _.stat(names: _*) })
+      BroadcastStat(srs.map {
+        _.stat(names: _*)
+      })
 
     def addGauge(names: String*)(f: => Float): Gauge = new Gauge {
-      val gauges = srs.map { _.addGauge(names: _*)(f) }
-      def remove(): Unit = gauges.foreach { _.remove() }
+      val gauges = srs.map {
+        _.addGauge(names: _*)(f)
+      }
+      def remove(): Unit = gauges.foreach {
+        _.remove()
+      }
     }
 
     def statsReceivers: Seq[StatsReceiver] = srs
@@ -122,7 +130,9 @@ object BroadcastCounter {
   }
 
   private class N(counters: Seq[Counter]) extends Counter {
-    def incr(delta: Int): Unit = { counters.foreach(_.incr(delta)) }
+    def incr(delta: Int): Unit = {
+      counters.foreach(_.incr(delta))
+    }
   }
 }
 
@@ -170,6 +180,8 @@ object BroadcastStat {
   }
 
   private class N(stats: Seq[Stat]) extends Stat {
-    def add(value: Float): Unit = { stats.foreach(_.add(value)) }
+    def add(value: Float): Unit = {
+      stats.foreach(_.add(value))
+    }
   }
 }

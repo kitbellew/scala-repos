@@ -192,9 +192,13 @@ class DirectKafkaStreamSuite
     )
 
     val collectedData = new ConcurrentLinkedQueue[String]()
-    stream.map { _._2 }.foreachRDD { rdd =>
-      collectedData.addAll(Arrays.asList(rdd.collect(): _*))
-    }
+    stream
+      .map {
+        _._2
+      }
+      .foreachRDD { rdd =>
+        collectedData.addAll(Arrays.asList(rdd.collect(): _*))
+      }
     ssc.start()
     val newData = Map("b" -> 10)
     kafkaTestUtils.sendMessages(topic, newData)
@@ -275,10 +279,18 @@ class DirectKafkaStreamSuite
 
     // Send data to Kafka and wait for it to be received
     def sendDataAndWaitForReceive(data: Seq[Int]) {
-      val strings = data.map { _.toString }
-      kafkaTestUtils.sendMessages(topic, strings.map { _ -> 1 }.toMap)
+      val strings = data.map {
+        _.toString
+      }
+      kafkaTestUtils.sendMessages(
+        topic,
+        strings.map {
+          _ -> 1
+        }.toMap)
       eventually(timeout(10 seconds), interval(50 milliseconds)) {
-        assert(strings.forall { DirectKafkaStreamSuite.collectedData.contains })
+        assert(strings.forall {
+          DirectKafkaStreamSuite.collectedData.contains
+        })
       }
     }
 
@@ -291,7 +303,9 @@ class DirectKafkaStreamSuite
           kafkaParams,
           Set(topic))
     }
-    val keyedStream = kafkaStream.map { v => "key" -> v._2.toInt }
+    val keyedStream = kafkaStream.map { v =>
+      "key" -> v._2.toInt
+    }
     val stateStream = keyedStream.updateStateByKey {
       (values: Seq[Int], state: Option[Int]) =>
         Some(values.sum + state.getOrElse(0))
@@ -300,7 +314,11 @@ class DirectKafkaStreamSuite
 
     // This is to collect the raw data received from Kafka
     kafkaStream.foreachRDD { (rdd: RDD[(String, String)], time: Time) =>
-      val data = rdd.map { _._2 }.collect()
+      val data = rdd
+        .map {
+          _._2
+        }
+        .collect()
       DirectKafkaStreamSuite.collectedData.addAll(Arrays.asList(data: _*))
     }
 
@@ -321,7 +339,9 @@ class DirectKafkaStreamSuite
     val offsetRangesBeforeStop = getOffsetRanges(kafkaStream)
     assert(offsetRangesBeforeStop.size >= 1, "No offset ranges generated")
     assert(
-      offsetRangesBeforeStop.head._2.forall { _.fromOffset === 0 },
+      offsetRangesBeforeStop.head._2.forall {
+        _.fromOffset === 0
+      },
       "starting offset not zero"
     )
     ssc.stop()
@@ -497,7 +517,11 @@ class DirectKafkaStreamSuite
 
     // This is to collect the raw data received from Kafka
     kafkaStream.foreachRDD { (rdd: RDD[(String, String)], time: Time) =>
-      val data = rdd.map { _._2 }.collect()
+      val data = rdd
+        .map {
+          _._2
+        }
+        .collect()
       collectedData.add(data)
     }
 
@@ -532,7 +556,9 @@ class DirectKafkaStreamSuite
         rdd.asInstanceOf[KafkaRDD[K, V, _, _, (K, V)]].offsetRanges
       }
       .toSeq
-      .sortBy { _._1 }
+      .sortBy {
+        _._1
+      }
   }
 
   private def getDirectKafkaStream(

@@ -29,14 +29,16 @@ class MessageTest extends FunSuite with AssertionsForJUnit {
   }
   val goodDentries =
     Seq("/a=>/b", "/foo=>/$/inet/twitter.com/80") map (Dentry.read)
-  val goodDtabs = goodDentries.permutations map { ds => Dtab(ds.toIndexedSeq) }
+  val goodDtabs = goodDentries.permutations map { ds =>
+    Dtab(ds.toIndexedSeq)
+  }
   val goodDests = Seq("/", "/okay", "/foo/bar/baz") map (Path.read)
   val goodDurationLeases = Seq(Message.Tlease.MinLease, Message.Tlease.MaxLease)
   val goodTimeLeases = Seq(Time.epoch, Time.now, Time.now + 5.minutes)
   val goodContexts =
-    Seq() ++ (for { k <- goodKeys; v <- goodBufs } yield (k, v))
-      .combinations(2)
-      .toSeq
+    Seq() ++ (for {
+      k <- goodKeys; v <- goodBufs
+    } yield (k, v)).combinations(2).toSeq
 
   test("d(e(m)) == m") {
     val ms = mutable.Buffer[Message]()

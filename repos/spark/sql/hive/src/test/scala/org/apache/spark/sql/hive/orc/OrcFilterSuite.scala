@@ -41,7 +41,9 @@ class OrcFilterSuite extends QueryTest with OrcTest {
       df: DataFrame,
       predicate: Predicate,
       checker: (SearchArgument) => Unit): Unit = {
-    val output = predicate.collect { case a: Attribute => a }.distinct
+    val output = predicate.collect {
+      case a: Attribute => a
+    }.distinct
     val query = df
       .select(output.map(e => Column(e)): _*)
       .where(Column(predicate))

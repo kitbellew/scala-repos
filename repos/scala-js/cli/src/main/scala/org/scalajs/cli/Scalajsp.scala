@@ -31,17 +31,25 @@ object Scalajsp {
       head("scalajsp", ScalaJSVersions.current)
       arg[String]("<file> ...")
         .unbounded()
-        .action { (x, c) => c.copy(fileNames = c.fileNames :+ x) }
+        .action { (x, c) =>
+          c.copy(fileNames = c.fileNames :+ x)
+        }
         .text("*.sjsir file to display content of")
       opt[File]('j', "jar")
         .valueName("<jar>")
-        .action { (x, c) => c.copy(jar = Some(x)) }
+        .action { (x, c) =>
+          c.copy(jar = Some(x))
+        }
         .text("Read *.sjsir file(s) from the given JAR.")
       opt[Unit]('i', "infos")
-        .action { (_, c) => c.copy(infos = true) }
+        .action { (_, c) =>
+          c.copy(infos = true)
+        }
         .text("Show DCE infos instead of trees")
       opt[Unit]('s', "supported")
-        .action { (_, _) => printSupported(); sys.exit() }
+        .action { (_, _) =>
+          printSupported(); sys.exit()
+        }
         .text("Show supported Scala.js IR versions")
       version("version")
         .abbr("v")
@@ -103,8 +111,11 @@ object Scalajsp {
 
   private def readFromJar(jar: File, name: String) = {
     val jarFile =
-      try { new ZipFile(jar) }
-      catch { case _: FileNotFoundException => fail(s"No such JAR: $jar") }
+      try {
+        new ZipFile(jar)
+      } catch {
+        case _: FileNotFoundException => fail(s"No such JAR: $jar")
+      }
     try {
       val entry = jarFile.getEntry(name)
       if (entry == null)

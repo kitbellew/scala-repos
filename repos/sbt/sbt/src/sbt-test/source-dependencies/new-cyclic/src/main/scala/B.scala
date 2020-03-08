@@ -1,1 +1,3 @@
-class B extends A { val y = x }
+class B extends A {
+  val y = x
+}

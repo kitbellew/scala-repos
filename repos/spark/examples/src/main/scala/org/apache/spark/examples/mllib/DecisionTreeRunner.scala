@@ -158,9 +158,14 @@ object DecisionTreeRunner {
       }
     }
 
-    parser.parse(args, defaultParams).map { params => run(params) }.getOrElse {
-      sys.exit(1)
-    }
+    parser
+      .parse(args, defaultParams)
+      .map { params =>
+        run(params)
+      }
+      .getOrElse {
+        sys.exit(1)
+      }
   }
 
   /**
@@ -383,7 +388,9 @@ object DecisionTreeRunner {
     */
   // scalastyle:off structural.type
   private[mllib] def meanSquaredError(
-      model: { def predict(features: Vector): Double },
+      model: {
+        def predict(features: Vector): Double
+      },
       data: RDD[LabeledPoint]): Double = {
     data
       .map { y =>

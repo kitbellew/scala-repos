@@ -59,12 +59,16 @@ class LinkedHashSet[A]
   @deprecatedOverriding(
     "+= should not be overridden so it stays consistent with add.",
     "2.11.0")
-  def +=(elem: A): this.type = { add(elem); this }
+  def +=(elem: A): this.type = {
+    add(elem); this
+  }
 
   @deprecatedOverriding(
     "-= should not be overridden so it stays consistent with remove.",
     "2.11.0")
-  def -=(elem: A): this.type = { remove(elem); this }
+  def -=(elem: A): this.type = {
+    remove(elem); this
+  }
 
   override def add(elem: A): Boolean = findOrAddEntry(elem, null) eq null
 
@@ -84,8 +88,9 @@ class LinkedHashSet[A]
     private var cur = firstEntry
     def hasNext = cur ne null
     def next =
-      if (hasNext) { val res = cur.key; cur = cur.later; res }
-      else Iterator.empty.next()
+      if (hasNext) {
+        val res = cur.key; cur = cur.later; res
+      } else Iterator.empty.next()
   }
 
   override def foreach[U](f: A => U) {
@@ -107,7 +112,9 @@ class LinkedHashSet[A]
   protected def createNewEntry[B](key: A, dummy: B): Entry = {
     val e = new Entry(key)
     if (firstEntry eq null) firstEntry = e
-    else { lastEntry.later = e; e.earlier = lastEntry }
+    else {
+      lastEntry.later = e; e.earlier = lastEntry
+    }
     lastEntry = e
     e
   }
@@ -119,7 +126,11 @@ class LinkedHashSet[A]
   }
 
   private def writeObject(out: java.io.ObjectOutputStream) {
-    serializeTo(out, { e => out.writeObject(e.key) })
+    serializeTo(
+      out,
+      { e =>
+        out.writeObject(e.key)
+      })
   }
 
   private def readObject(in: java.io.ObjectInputStream) {

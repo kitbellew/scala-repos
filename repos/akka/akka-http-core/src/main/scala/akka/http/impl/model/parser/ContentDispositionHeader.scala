@@ -27,7 +27,9 @@ private[parser] trait ContentDispositionHeader {
           ContentDispositionTypes.`form-data`)
         | `disp-ext-type` ~> (ContentDispositionTypes.Ext(_)))
 
-  def `disp-ext-type` = rule { token }
+  def `disp-ext-type` = rule {
+    token
+  }
 
   def `disposition-parm` = rule {
     (`filename-parm` | `disp-ext-parm`) ~> (_ -> _)

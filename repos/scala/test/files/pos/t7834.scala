@@ -1,4 +1,6 @@
-class S { val q = "" }
+class S {
+  val q = ""
+}
 
 class B extends S {
   val x1: B.super.q.type = q

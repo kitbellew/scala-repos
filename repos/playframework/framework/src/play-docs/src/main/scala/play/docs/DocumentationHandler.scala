@@ -26,7 +26,12 @@ class DocumentationHandler(
 
   def this(repo: FileRepository, toClose: Closeable) = this(repo, repo, toClose)
   def this(repo: FileRepository, apiRepo: FileRepository) =
-    this(repo, apiRepo, new Closeable() { def close() = () })
+    this(
+      repo,
+      apiRepo,
+      new Closeable() {
+        def close() = ()
+      })
   def this(repo: FileRepository) = this(repo, repo)
 
   /**
@@ -120,5 +125,7 @@ class DocumentationHandler(
   */
 class Memoise[-T, +R](f: T => R) extends (T => R) {
   private[this] val cache = scala.collection.mutable.Map.empty[T, R]
-  def apply(v: T): R = synchronized { cache.getOrElseUpdate(v, f(v)) }
+  def apply(v: T): R = synchronized {
+    cache.getOrElseUpdate(v, f(v))
+  }
 }

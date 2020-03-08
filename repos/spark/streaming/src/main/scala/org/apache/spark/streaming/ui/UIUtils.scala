@@ -174,7 +174,9 @@ private[streaming] object UIUtils {
         +details
       </span> ++
         <div class="stacktrace-details collapsed">
-          <pre>{failureDetails}</pre>
+          <pre>{
+          failureDetails
+        }</pre>
         </div>
       // scalastyle:on
     } else {
@@ -182,12 +184,20 @@ private[streaming] object UIUtils {
     }
 
     if (rowspan == 1) {
-      <td valign="middle" style="max-width: 300px">{failureReasonSummary}{
+      <td valign="middle" style="max-width: 300px">{
+        failureReasonSummary
+      }{
         details
       }</td>
     } else {
-      <td valign="middle" style="max-width: 300px" rowspan={rowspan.toString}>
-        {failureReasonSummary}{details}
+      <td valign="middle" style="max-width: 300px" rowspan={
+        rowspan.toString
+      }>
+        {
+        failureReasonSummary
+      }{
+        details
+      }
       </td>
     }
   }

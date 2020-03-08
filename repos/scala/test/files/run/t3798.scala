@@ -5,6 +5,10 @@ object Test {
   }
 }
 
-sealed trait Undefined { type ArrayType <: Array[_] }
-sealed trait Floats extends Undefined { type ArrayType = Array[Float] }
+sealed trait Undefined {
+  type ArrayType <: Array[_]
+}
+sealed trait Floats extends Undefined {
+  type ArrayType = Array[Float]
+}
 class MySeq[+T <: Undefined](val array: T#ArrayType)

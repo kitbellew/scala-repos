@@ -56,7 +56,9 @@ class ConcurrentMemoryLaws extends WordSpec {
     val leftMap = left.groupBy(identity).mapValues(_.size)
     val rightMap = right.groupBy(identity).mapValues(_.size)
     val eqv = leftMap == rightMap
-    if (!eqv) { println(s"from Queue: $leftMap\nfrom scala: $rightMap") }
+    if (!eqv) {
+      println(s"from Queue: $leftMap\nfrom scala: $rightMap")
+    }
     eqv
   }
 
@@ -66,8 +68,10 @@ class ConcurrentMemoryLaws extends WordSpec {
       V: Monoid: Arbitrary: Equiv] =
     new TestGraphs[ConcurrentMemory, T, K, V](new ConcurrentMemory)(() =>
       new ConcurrentHashMap[K, V]())(() => new LinkedBlockingQueue[T]())(
-      Producer.source[ConcurrentMemory, T](_))(s => { k => Option(s.get(k)) })({
-      (f, items) => unorderedEq(empty(f), items)
+      Producer.source[ConcurrentMemory, T](_))(s => {
+      k => Option(s.get(k))
+    })({ (f, items) =>
+      unorderedEq(empty(f), items)
     })({ (p: ConcurrentMemory, plan: ConcurrentMemoryPlan) =>
       Await.result(plan.run, Duration.Inf)
     })
@@ -134,7 +138,9 @@ class ConcurrentMemoryLaws extends WordSpec {
         currentStore)(fnA, fnB)
     }
     Await.result(plan.run, Duration.Inf)
-    val lookupFn = { k: K2 => Option(currentStore.get(k)) };
+    val lookupFn = { k: K2 =>
+      Option(currentStore.get(k))
+    };
     TestGraphs.singleStepMapKeysInScala(original)(fnA, fnB).forall {
       case (k, v) =>
         val lv = lookupFn(k).getOrElse(Monoid.zero)
@@ -242,7 +248,9 @@ class ConcurrentMemoryLaws extends WordSpec {
       val sink: ConcurrentMemory#Sink[Int] = new LinkedBlockingQueue[Int]()
 
       val summed = source
-        .map { v => (v, v) }
+        .map { v =>
+          (v, v)
+        }
         .sumByKey(store)
         .map {
           case (_, (None, currentEvent))      => currentEvent

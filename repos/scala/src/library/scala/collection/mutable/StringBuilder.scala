@@ -76,7 +76,9 @@ final class StringBuilder(private val underlying: JavaStringBuilder)
   }
 
   override def length: Int = underlying.length()
-  def length_=(n: Int) { underlying.setLength(n) }
+  def length_=(n: Int) {
+    underlying.setLength(n)
+  }
 
   /** Clears the builder contents.
     */
@@ -89,7 +91,9 @@ final class StringBuilder(private val underlying: JavaStringBuilder)
     *  @param  len  the new length
     *  @throws IndexOutOfBoundsException if the argument is negative.
     */
-  def setLength(len: Int) { underlying setLength len }
+  def setLength(len: Int) {
+    underlying setLength len
+  }
 
   /** Returns the current capacity, which is the size of the underlying array.
     *  A new array will be allocated if the current capacity is exceeded.
@@ -105,7 +109,9 @@ final class StringBuilder(private val underlying: JavaStringBuilder)
     *
     *  @param newCapacity    the minimum desired capacity.
     */
-  def ensureCapacity(newCapacity: Int) { underlying ensureCapacity newCapacity }
+  def ensureCapacity(newCapacity: Int) {
+    underlying ensureCapacity newCapacity
+  }
 
   /** Returns the Char at the specified index, counting from 0 as in Arrays.
     *
@@ -175,7 +181,9 @@ final class StringBuilder(private val underlying: JavaStringBuilder)
 
   /** Appends the given Char to the end of the sequence.
     */
-  def +=(x: Char): this.type = { append(x); this }
+  def +=(x: Char): this.type = {
+    append(x); this
+  }
 
   /** Optimization.
     */
@@ -191,7 +199,9 @@ final class StringBuilder(private val underlying: JavaStringBuilder)
 
   /** !!! This should create a new sequence.
     */
-  def +(x: Char): this.type = { +=(x); this }
+  def +(x: Char): this.type = {
+    +=(x); this
+  }
 
   /** Appends the string representation of the given argument,
     *  which is converted to a String with `String.valueOf`.
@@ -261,14 +271,26 @@ final class StringBuilder(private val underlying: JavaStringBuilder)
     *  @param   x  a primitive value
     *  @return     This StringBuilder.
     */
-  def append(x: Boolean): StringBuilder = { underlying append x; this }
+  def append(x: Boolean): StringBuilder = {
+    underlying append x; this
+  }
   def append(x: Byte): StringBuilder = append(x.toInt)
   def append(x: Short): StringBuilder = append(x.toInt)
-  def append(x: Int): StringBuilder = { underlying append x; this }
-  def append(x: Long): StringBuilder = { underlying append x; this }
-  def append(x: Float): StringBuilder = { underlying append x; this }
-  def append(x: Double): StringBuilder = { underlying append x; this }
-  def append(x: Char): StringBuilder = { underlying append x; this }
+  def append(x: Int): StringBuilder = {
+    underlying append x; this
+  }
+  def append(x: Long): StringBuilder = {
+    underlying append x; this
+  }
+  def append(x: Float): StringBuilder = {
+    underlying append x; this
+  }
+  def append(x: Double): StringBuilder = {
+    underlying append x; this
+  }
+  def append(x: Char): StringBuilder = {
+    underlying append x; this
+  }
 
   /** Remove a subsequence of Chars from this sequence, starting at the
     *  given start index (inclusive) and extending to the end index (exclusive)

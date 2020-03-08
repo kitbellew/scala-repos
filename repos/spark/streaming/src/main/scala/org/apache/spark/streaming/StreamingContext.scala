@@ -816,7 +816,9 @@ object StreamingContext extends Logging {
   def getActiveOrCreate(
       creatingFunc: () => StreamingContext): StreamingContext = {
     ACTIVATION_LOCK.synchronized {
-      getActive().getOrElse { creatingFunc() }
+      getActive().getOrElse {
+        creatingFunc()
+      }
     }
   }
 

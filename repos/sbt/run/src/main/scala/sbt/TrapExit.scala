@@ -61,8 +61,9 @@ object TrapExit {
 
   private[this] def runUnmanaged(execute: => Unit, log: Logger): Int = {
     log.warn("Managed execution not possible: security manager not installed.")
-    try { execute; 0 }
-    catch {
+    try {
+      execute; 0
+    } catch {
       case e: Exception =>
         log.error("Error during execution: " + e.toString)
         log.trace(e)
@@ -106,7 +107,9 @@ object TrapExit {
       originalHandler: Thread.UncaughtExceptionHandler)
       extends Thread.UncaughtExceptionHandler {
     def uncaughtException(thread: Thread, e: Throwable): Unit = {
-      withCause[InterruptedException, Unit](e) { interrupted => () } { other =>
+      withCause[InterruptedException, Unit](e) { interrupted =>
+        ()
+      } { other =>
         originalHandler.uncaughtException(thread, e)
       }
       thread.setUncaughtExceptionHandler(originalHandler)
@@ -532,8 +535,12 @@ private final class TrapExit(delegateManager: SecurityManager)
 /** A thread-safe, write-once, optional cell for tracking an application's exit code.*/
 private final class ExitCode {
   private var code: Option[Int] = None
-  def set(c: Int): Unit = synchronized { code = code orElse Some(c) }
-  def value: Option[Int] = synchronized { code }
+  def set(c: Int): Unit = synchronized {
+    code = code orElse Some(c)
+  }
+  def value: Option[Int] = synchronized {
+    code
+  }
 }
 
 /**

@@ -81,9 +81,13 @@ object FieldSpec extends Specification {
       if (!in.optional_?) {
         "which fail when set with an empty string when not optional" in {
           in.setFromString(null)
-          in.valueBox must beLike { case f: Failure => ok }
+          in.valueBox must beLike {
+            case f: Failure => ok
+          }
           in.setFromString("")
-          in.valueBox must beLike { case f: Failure => ok }
+          in.valueBox must beLike {
+            case f: Failure => ok
+          }
         }
       } else {
         "which don't fail when set with an empty string when optional" in {
@@ -745,7 +749,9 @@ object FieldSpec extends Specification {
       "which receive the value" in {
         var received: String = null
         field.set("foobar")
-        field.validationHarness = s => { received = s; Nil }
+        field.validationHarness = s => {
+          received = s; Nil
+        }
         rec.validate must_== Nil
         received must_== "foobar"
       }

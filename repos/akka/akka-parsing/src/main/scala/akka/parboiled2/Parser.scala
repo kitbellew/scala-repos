@@ -734,7 +734,9 @@ object ParserMacros {
   /**
     * THIS IS NOT PUBLIC API and might become hidden in future. Use only if you know what you are doing!
     */
-  type ParserContext = Context { type PrefixType = Parser }
+  type ParserContext = Context {
+    type PrefixType = Parser
+  }
 
   def ruleImpl[I <: HList: ctx.WeakTypeTag, O <: HList: ctx.WeakTypeTag](
       ctx: ParserContext)(r: ctx.Expr[Rule[I, O]]): ctx.Expr[Rule[I, O]] = {
@@ -751,7 +753,9 @@ object ParserMacros {
   def namedRuleImpl[I <: HList: ctx.WeakTypeTag, O <: HList: ctx.WeakTypeTag](
       ctx: ParserContext)(name: ctx.Expr[String])(
       r: ctx.Expr[Rule[I, O]]): ctx.Expr[Rule[I, O]] = {
-    val opTreeCtx = new OpTreeContext[ctx.type] { val c: ctx.type = ctx }
+    val opTreeCtx = new OpTreeContext[ctx.type] {
+      val c: ctx.type = ctx
+    }
     val opTree = opTreeCtx.RuleCall(Left(opTreeCtx.OpTree(r.tree)), name.tree)
     import ctx.universe._
     val ruleTree = q"""
@@ -761,6 +765,8 @@ object ParserMacros {
         else ${opTree.render(wrapped = false)}
       if (matched) akka.parboiled2.Rule else null""" // we encode the "matched" boolean as 'ruleResult ne null'
 
-    reify { ctx.Expr[RuleX](ruleTree).splice.asInstanceOf[Rule[I, O]] }
+    reify {
+      ctx.Expr[RuleX](ruleTree).splice.asInstanceOf[Rule[I, O]]
+    }
   }
 }

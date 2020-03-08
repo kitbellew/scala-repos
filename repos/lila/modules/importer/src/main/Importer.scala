@@ -24,7 +24,9 @@ final class Importer(
       forceId: Option[String] = None): Fu[Game] = {
 
     def gameExists(processing: => Fu[Game]): Fu[Game] =
-      GameRepo.findPgnImport(data.pgn) flatMap { _.fold(processing)(fuccess) }
+      GameRepo.findPgnImport(data.pgn) flatMap {
+        _.fold(processing)(fuccess)
+      }
 
     def applyResult(
         game: Game,

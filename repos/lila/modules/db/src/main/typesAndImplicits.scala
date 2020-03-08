@@ -14,7 +14,9 @@ trait Types {
 
   type QueryBuilder = GenericQueryBuilder[BSONSerializationPack.type]
 
-  type Identified[ID] = { def id: ID }
+  type Identified[ID] = {
+    def id: ID
+  }
 
   type Sort = Seq[(String, api.SortOrder)]
 

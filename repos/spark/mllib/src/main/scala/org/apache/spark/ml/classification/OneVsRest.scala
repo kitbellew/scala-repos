@@ -98,7 +98,9 @@ final class OneVsRestModel private[ml] (
 
     // add an accumulator column to store predictions of all the models
     val accColName = "mbc$acc" + UUID.randomUUID().toString
-    val initUDF = udf { () => Map[Int, Double]() }
+    val initUDF = udf { () =>
+      Map[Int, Double]()
+    }
     val newDataset = dataset.withColumn(accColName, initUDF())
 
     // persist if underlying dataset is not persistent.

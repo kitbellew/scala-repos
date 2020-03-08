@@ -62,7 +62,9 @@ class DatasetCacheSuite extends QueryTest with SharedSQLContext {
   test("persist and then groupBy columns asKey, map") {
     val ds = Seq(("a", 10), ("a", 20), ("b", 1), ("b", 2), ("c", 1)).toDS()
     val grouped = ds.groupByKey($"_1").keyAs[String]
-    val agged = grouped.mapGroups { case (g, iter) => (g, iter.map(_._2).sum) }
+    val agged = grouped.mapGroups {
+      case (g, iter) => (g, iter.map(_._2).sum)
+    }
     agged.persist()
 
     checkDataset(agged.filter(_._1 == "b"), ("b", 3))

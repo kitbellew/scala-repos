@@ -6,7 +6,11 @@ import scala.tools.reflect.ToolBox
 object Test extends App {
   val code = reify {
     val x = 2
-    val inner = reify { reify { x } }
+    val inner = reify {
+      reify {
+        x
+      }
+    }
     inner.splice.splice
   };
 

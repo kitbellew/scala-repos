@@ -60,7 +60,9 @@ private[controllers] trait LilaController
 
   protected def SocketEither[A: FrameFormatter](
       f: Context => Fu[Either[Result, (Iteratee[A, _], Enumerator[A])]]) =
-    WebSocket.tryAccept[A] { req => reqToCtx(req) flatMap f }
+    WebSocket.tryAccept[A] { req =>
+      reqToCtx(req) flatMap f
+    }
 
   protected def SocketOption[A: FrameFormatter](
       f: Context => Fu[Option[(Iteratee[A, _], Enumerator[A])]]) =
@@ -154,7 +156,9 @@ private[controllers] trait LilaController
       implicit ctx: Context): Fu[Result] =
     Env.security.firewall.accepts(ctx.req) flatMap {
       _ fold (a, {
-        fuccess { Redirect(routes.Lobby.home()) }
+        fuccess {
+          Redirect(routes.Lobby.home())
+        }
       })
     }
 
@@ -219,11 +223,16 @@ private[controllers] trait LilaController
   protected def JsonOptionFuOk[A, B: Writes](fua: Fu[Option[A]])(
       op: A => Fu[B])(implicit ctx: Context) =
     fua flatMap {
-      _.fold(notFound(ctx))(a => op(a) map { b => Ok(Json toJson b) as JSON })
+      _.fold(notFound(ctx))(a =>
+        op(a) map { b =>
+          Ok(Json toJson b) as JSON
+        })
     }
 
   protected def JsOk(fua: Fu[String], headers: (String, String)*) =
-    fua map { a => Ok(a) as JAVASCRIPT withHeaders (headers: _*) }
+    fua map { a =>
+      Ok(a) as JAVASCRIPT withHeaders (headers: _*)
+    }
 
   protected def FormResult[A](form: Form[A])(op: A => Fu[Result])(
       implicit req: Request[_]): Fu[Result] =
@@ -233,39 +242,61 @@ private[controllers] trait LilaController
   protected def FormFuResult[A, B: Writeable: ContentTypeOf](form: Form[A])(
       err: Form[A] => Fu[B])(op: A => Fu[Result])(implicit req: Request[_]) =
     form.bindFromRequest.fold(
-      form => err(form) map { BadRequest(_) },
+      form =>
+        err(form) map {
+          BadRequest(_)
+        },
       data => op(data)
     )
 
-  protected def FuRedirect(fua: Fu[Call]) = fua map { Redirect(_) }
+  protected def FuRedirect(fua: Fu[Call]) = fua map {
+    Redirect(_)
+  }
 
   protected def OptionOk[A, B: Writeable: ContentTypeOf](fua: Fu[Option[A]])(
       op: A => B)(implicit ctx: Context): Fu[Result] =
-    OptionFuOk(fua) { a => fuccess(op(a)) }
+    OptionFuOk(fua) { a =>
+      fuccess(op(a))
+    }
 
   protected def OptionFuOk[A, B: Writeable: ContentTypeOf](fua: Fu[Option[A]])(
       op: A => Fu[B])(implicit ctx: Context) =
-    fua flatMap { _.fold(notFound(ctx))(a => op(a) map { Ok(_) }) }
+    fua flatMap {
+      _.fold(notFound(ctx))(a =>
+        op(a) map {
+          Ok(_)
+        })
+    }
 
   protected def OptionFuRedirect[A](fua: Fu[Option[A]])(op: A => Fu[Call])(
       implicit ctx: Context) =
     fua flatMap {
-      _.fold(notFound(ctx))(a => op(a) map { b => Redirect(b) })
+      _.fold(notFound(ctx))(a =>
+        op(a) map { b =>
+          Redirect(b)
+        })
     }
 
   protected def OptionFuRedirectUrl[A](fua: Fu[Option[A]])(op: A => Fu[String])(
       implicit ctx: Context) =
     fua flatMap {
-      _.fold(notFound(ctx))(a => op(a) map { b => Redirect(b) })
+      _.fold(notFound(ctx))(a =>
+        op(a) map { b =>
+          Redirect(b)
+        })
     }
 
   protected def OptionResult[A](fua: Fu[Option[A]])(op: A => Result)(
       implicit ctx: Context) =
-    OptionFuResult(fua) { a => fuccess(op(a)) }
+    OptionFuResult(fua) { a =>
+      fuccess(op(a))
+    }
 
   protected def OptionFuResult[A](fua: Fu[Option[A]])(op: A => Fu[Result])(
       implicit ctx: Context) =
-    fua flatMap { _.fold(notFound(ctx))(a => op(a)) }
+    fua flatMap {
+      _.fold(notFound(ctx))(a => op(a))
+    }
 
   def notFound(implicit ctx: Context): Fu[Result] = negotiate(
     html =
@@ -327,13 +358,17 @@ private[controllers] trait LilaController
   protected def reqToCtx(req: RequestHeader): Fu[HeaderContext] =
     restoreUser(req) flatMap { d =>
       val ctx = UserContext(req, d.map(_.user))
-      pageDataBuilder(ctx, d.??(_.hasFingerprint)) map { Context(ctx, _) }
+      pageDataBuilder(ctx, d.??(_.hasFingerprint)) map {
+        Context(ctx, _)
+      }
     }
 
   protected def reqToCtx[A](req: Request[A]): Fu[BodyContext[A]] =
     restoreUser(req) flatMap { d =>
       val ctx = UserContext(req, d.map(_.user))
-      pageDataBuilder(ctx, d.??(_.hasFingerprint)) map { Context(ctx, _) }
+      pageDataBuilder(ctx, d.??(_.hasFingerprint)) map {
+        Context(ctx, _)
+      }
     }
 
   private def pageDataBuilder(
@@ -348,7 +383,9 @@ private[controllers] trait LilaController
           import makeTimeout.short
           (Env.hub.actor.relation ? GetOnlineFriends(me.id) map {
             case OnlineFriends(users) => users
-          } recover { case _          => Nil }) zip
+          } recover {
+            case _ => Nil
+          }) zip
             Env.team.api.nbRequests(me.id) zip
             Env.message.api.unreadIds(me.id) zip
             Env.challenge.api.countInFor(me.id)

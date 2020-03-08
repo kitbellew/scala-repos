@@ -63,7 +63,9 @@ trait Phased {
   }
   def parse(str: String): PhaseName =
     try parseInternal(str)
-    catch { case _: Exception => NoPhaseName }
+    catch {
+      case _: Exception => NoPhaseName
+    }
 
   def atCurrent[T](body: => T): T = enteringPhase(get)(body)
   def multi[T](body: => T): Seq[T] = multi map (ph => at(ph)(body))

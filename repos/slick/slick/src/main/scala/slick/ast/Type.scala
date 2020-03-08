@@ -40,7 +40,9 @@ trait Type extends Dumpable {
       DumpInfo.simpleNameFor(getClass),
       toString,
       "",
-      children.zipWithIndex.map { case (ch, i) => (i.toString, ch) }.toSeq)
+      children.zipWithIndex.map {
+        case (ch, i) => (i.toString, ch)
+      }.toSeq)
 }
 
 object Type {
@@ -65,16 +67,23 @@ final case class StructType(elements: ConstArray[(TermSymbol, Type)])
     extends Type {
   override def toString =
     "{" + elements.iterator
-      .map { case (s, t) => s + ": " + t }
+      .map {
+        case (s, t) => s + ": " + t
+      }
       .mkString(", ") + "}"
   lazy val symbolToIndex: Map[TermSymbol, Int] =
-    elements.zipWithIndex.map { case ((sym, _), idx) => (sym, idx) }.toMap
+    elements.zipWithIndex.map {
+      case ((sym, _), idx) => (sym, idx)
+    }.toMap
   def children: ConstArray[Type] = elements.map(_._2)
   def mapChildren(f: Type => Type): StructType = {
     val ch = elements.map(_._2)
     val ch2 = ch.endoMap(f)
     if (ch2 eq ch) this
-    else StructType(elements.zip(ch2).map { case (e, t) => (e._1, t) })
+    else
+      StructType(elements.zip(ch2).map {
+        case (e, t) => (e._1, t)
+      })
   }
   override def select(sym: TermSymbol) = sym match {
     case ElementSymbol(idx) => elements(idx - 1)._2
@@ -352,9 +361,9 @@ class TypeUtil(val tpe: Type) extends AnyVal {
   def replace(f: PartialFunction[Type, Type]): Type =
     f.applyOrElse(
       tpe,
-      { case t: Type => t.mapChildren(_.replace(f)) }: PartialFunction[
-        Type,
-        Type])
+      {
+        case t: Type => t.mapChildren(_.replace(f))
+      }: PartialFunction[Type, Type])
 
   def collect[T](pf: PartialFunction[Type, T]): ConstArray[T] = {
     val retNull: (Type => T) = (_ => null.asInstanceOf[T])

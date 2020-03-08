@@ -376,7 +376,9 @@ object LightArrayRevolverScheduler {
             case _: InterruptedException ⇒ {
               Thread.currentThread.interrupt(); false
             }
-            case NonFatal(e) ⇒ { executionContext.reportFailure(e); false }
+            case NonFatal(e) ⇒ {
+              executionContext.reportFailure(e); false
+            }
           }
       }
 
@@ -391,8 +393,12 @@ object LightArrayRevolverScheduler {
     override def isCancelled: Boolean = task eq CancelledTask
   }
 
-  private[this] val CancelledTask = new Runnable { def run = () }
-  private[this] val ExecutedTask = new Runnable { def run = () }
+  private[this] val CancelledTask = new Runnable {
+    def run = ()
+  }
+  private[this] val ExecutedTask = new Runnable {
+    def run = ()
+  }
 
   private val NotCancellable: TimerTask = new TimerTask {
     def cancel(): Boolean = false

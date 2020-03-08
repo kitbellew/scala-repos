@@ -29,7 +29,9 @@ private[streaming] class RecurringTimer(
 
   private val thread = new Thread("RecurringTimer - " + name) {
     setDaemon(true)
-    override def run() { loop }
+    override def run() {
+      loop
+    }
   }
 
   @volatile private var prevTime = -1L

@@ -125,7 +125,13 @@ trait ShardService
       service: HttpService[ByteChunk, F[Future[HttpResponse[QueryResult]]]])(
       implicit F: Functor[F])
       : HttpService[ByteChunk, F[Future[HttpResponse[ByteChunk]]]] = {
-    service map { _ map { _ map { _ map queryResultToByteChunk } } }
+    service map {
+      _ map {
+        _ map {
+          _ map queryResultToByteChunk
+        }
+      }
+    }
   }
 
   private def asyncHandler(state: ShardState) = {
@@ -167,8 +173,12 @@ trait ShardService
             })#λ] {
               query[QueryResult] {
                 {
-                  get { queryService } ~
-                    post { queryService }
+                  get {
+                    queryService
+                  } ~
+                    post {
+                      queryService
+                    }
                 }
               }
             } ~
@@ -182,11 +192,19 @@ trait ShardService
             get {
               produce(application / json)(
                 new BrowseServiceHandler[ByteChunk](state.platform.vfs) map {
-                  _ map { _ map { _ map { jvalueToChunk } } }
+                  _ map {
+                    _ map {
+                      _ map {
+                        jvalueToChunk
+                      }
+                    }
+                  }
                 }
               )(
                 ResponseModifier.responseFG[
-                  ({ type λ[α] = (APIKey, Path) => α })#λ,
+                  ({
+                    type λ[α] = (APIKey, Path) => α
+                  })#λ,
                   Future,
                   ByteChunk])
             } ~
@@ -201,11 +219,19 @@ trait ShardService
                 new BrowseServiceHandler[ByteChunk](
                   state.platform.vfs,
                   legacy = true) map {
-                  _ map { _ map { _ map { jvalueToChunk } } }
+                  _ map {
+                    _ map {
+                      _ map {
+                        jvalueToChunk
+                      }
+                    }
+                  }
                 }
               )(
                 ResponseModifier.responseFG[
-                  ({ type λ[α] = (APIKey, Path) => α })#λ,
+                  ({
+                    type λ[α] = (APIKey, Path) => α
+                  })#λ,
                   Future,
                   ByteChunk])
             } ~
@@ -293,7 +319,9 @@ trait ShardService
                 }
             }
           } ->
-          stop { state: ShardState => state.stoppable }
+          stop { state: ShardState =>
+            state.stoppable
+          }
       }
     }
   }

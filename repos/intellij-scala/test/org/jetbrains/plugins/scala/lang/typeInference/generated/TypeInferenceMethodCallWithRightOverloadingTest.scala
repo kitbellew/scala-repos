@@ -7,15 +7,27 @@ class TypeInferenceMethodCallWithRightOverloadingTest
   override def folderPath: String =
     super.folderPath + "methodCall/withRightOverloading/"
 
-  def testFifth() { doTest() }
+  def testFifth() {
+    doTest()
+  }
 
-  def testFirst() { doTest() }
+  def testFirst() {
+    doTest()
+  }
 
-  def testFourth() { doTest() }
+  def testFourth() {
+    doTest()
+  }
 
-  def testSecond() { doTest() }
+  def testSecond() {
+    doTest()
+  }
 
-  def testSixth() { doTest() }
+  def testSixth() {
+    doTest()
+  }
 
-  def testThird() { doTest() }
+  def testThird() {
+    doTest()
+  }
 }

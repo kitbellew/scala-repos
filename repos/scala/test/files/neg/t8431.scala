@@ -43,7 +43,9 @@ class TestExplicit {
   convert2(s).combined
 
   // Breaking this expression down doesn't make it work.
-  { val c1 = convert2(s); c1.combined }
+  {
+    val c1 = convert2(s); c1.combined
+  }
 }
 
 // These ones work before and after; inferring G=Null doesn't need to contribute an undetermined type param.

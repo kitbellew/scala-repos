@@ -190,7 +190,9 @@ trait SubchannelClassification { this: EventBus ⇒
   private[akka] def hasSubscriptions(subscriber: Subscriber): Boolean =
     // FIXME binary incompatible, but I think it is safe to filter out this problem,
     //       since it is only called from new functionality in EventStreamUnsubscriber
-    cache.values exists { _ contains subscriber }
+    cache.values exists {
+      _ contains subscriber
+    }
 
   private def removeFromCache(
       changes: immutable.Seq[(Classifier, Set[Subscriber])]): Unit =
@@ -376,8 +378,11 @@ trait ManagedActorClassification { this: ActorEventBus with ActorClassifier ⇒
       }
     }
 
-    try { dissociateAsMonitored(actor) }
-    finally { dissociateAsMonitor(actor) }
+    try {
+      dissociateAsMonitored(actor)
+    } finally {
+      dissociateAsMonitor(actor)
+    }
   }
 
   @tailrec
@@ -415,7 +420,10 @@ trait ManagedActorClassification { this: ActorEventBus with ActorClassifier ⇒
   def publish(event: Event): Unit = {
     mappings.get.backing.get(classify(event)) match {
       case None ⇒ ()
-      case Some(refs) ⇒ refs.foreach { _ ! event }
+      case Some(refs) ⇒
+        refs.foreach {
+          _ ! event
+        }
     }
   }
 
@@ -528,8 +536,11 @@ trait ActorClassification { this: ActorEventBus with ActorClassifier ⇒
       }
     }
 
-    try { dissociateAsMonitored(monitored) }
-    finally { dissociateAsMonitor(monitored) }
+    try {
+      dissociateAsMonitored(monitored)
+    } finally {
+      dissociateAsMonitor(monitored)
+    }
   }
 
   @tailrec
@@ -566,7 +577,10 @@ trait ActorClassification { this: ActorEventBus with ActorClassifier ⇒
 
   def publish(event: Event): Unit = mappings.get(classify(event)) match {
     case null ⇒ ()
-    case some ⇒ some foreach { _ ! event }
+    case some ⇒
+      some foreach {
+        _ ! event
+      }
   }
 
   def subscribe(subscriber: Subscriber, to: Classifier): Boolean =

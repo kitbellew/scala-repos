@@ -38,7 +38,9 @@ trait Rule[-In, +Out, +A, +X] extends (In => Result[Out, A, X]) {
       case err @ Error(_)  => err
     }
 
-  def map[B](fa2b: A => B) = flatMap { a => out => Success(out, fa2b(a)) }
+  def map[B](fa2b: A => B) = flatMap { a => out =>
+    Success(out, fa2b(a))
+  }
 
   def filter(f: A => Boolean) = flatMap { a => out =>
     if (f(a)) Success(out, a) else Failure
@@ -66,7 +68,9 @@ trait Rule[-In, +Out, +A, +X] extends (In => Result[Out, A, X]) {
 
   def ??(pf: PartialFunction[A, Any]) = filter(pf.isDefinedAt(_))
 
-  def -^[B](b: B) = map { any => b }
+  def -^[B](b: B) = map { any =>
+    b
+  }
 
   /** Maps an Error */
   def !^[Y](fx2y: X => Y) = mapResult {
@@ -86,7 +90,10 @@ trait Rule[-In, +Out, +A, +X] extends (In => Result[Out, A, X]) {
     filter(pf isDefinedAt _) flatMap pf
 
   def >>&[B, X2 >: X](fa2ruleb: A => Out => Result[Any, B, X2]) = flatMap {
-    a => out => fa2ruleb(a)(out) mapOut { any => out }
+    a => out =>
+      fa2ruleb(a)(out) mapOut { any =>
+        out
+      }
   }
 
   def ~[Out2, B, X2 >: X](next: => Rule[Out, Out2, B, X2]) =
@@ -123,20 +130,27 @@ trait Rule[-In, +Out, +A, +X] extends (In => Result[Out, A, X]) {
   /** ^~^(f) is equivalent to ^^ { case b1 ~ b2 => f(b1, b2) }
     */
   def ^~^[B1, B2, B >: A <% B1 ~ B2, C](f: (B1, B2) => C) = map { a =>
-    (a: B1 ~ B2) match { case b1 ~ b2 => f(b1, b2) }
+    (a: B1 ~ B2) match {
+      case b1 ~ b2 => f(b1, b2)
+    }
   }
 
   /** ^~~^(f) is equivalent to ^^ { case b1 ~ b2 ~ b3 => f(b1, b2, b3) }
     */
   def ^~~^[B1, B2, B3, B >: A <% B1 ~ B2 ~ B3, C](f: (B1, B2, B3) => C) = map {
-    a => (a: B1 ~ B2 ~ B3) match { case b1 ~ b2 ~ b3 => f(b1, b2, b3) }
+    a =>
+      (a: B1 ~ B2 ~ B3) match {
+        case b1 ~ b2 ~ b3 => f(b1, b2, b3)
+      }
   }
 
   /** ^~~~^(f) is equivalent to ^^ { case b1 ~ b2 ~ b3 ~ b4 => f(b1, b2, b3, b4) }
     */
   def ^~~~^[B1, B2, B3, B4, B >: A <% B1 ~ B2 ~ B3 ~ B4, C](
       f: (B1, B2, B3, B4) => C) = map { a =>
-    (a: B1 ~ B2 ~ B3 ~ B4) match { case b1 ~ b2 ~ b3 ~ b4 => f(b1, b2, b3, b4) }
+    (a: B1 ~ B2 ~ B3 ~ B4) match {
+      case b1 ~ b2 ~ b3 ~ b4 => f(b1, b2, b3, b4)
+    }
   }
 
   /** ^~~~~^(f) is equivalent to ^^ { case b1 ~ b2 ~ b3 ~ b4 ~ b5 => f(b1, b2, b3, b4, b5) }
@@ -178,7 +192,9 @@ trait Rule[-In, +Out, +A, +X] extends (In => Result[Out, A, X]) {
     */
   def >~>[Out2, B1, B2, B >: A <% B1 ~ B2, C, X2 >: X](
       f: (B1, B2) => Out => Result[Out2, C, X2]) = flatMap { a =>
-    (a: B1 ~ B2) match { case b1 ~ b2 => f(b1, b2) }
+    (a: B1 ~ B2) match {
+      case b1 ~ b2 => f(b1, b2)
+    }
   }
 
   /** ^-^(f) is equivalent to ^^ { b2 => b1 => f(b1, b2) }
@@ -190,7 +206,9 @@ trait Rule[-In, +Out, +A, +X] extends (In => Result[Out, A, X]) {
   /** ^~>~^(f) is equivalent to ^^ { case b2 ~ b3 => b1 => f(b1, b2, b3) }
     */
   def ^~>~^[B1, B2, B3, B >: A <% B2 ~ B3, C](f: (B1, B2, B3) => C) = map { a =>
-    (a: B2 ~ B3) match { case b2 ~ b3 => b1: B1 => f(b1, b2, b3) }
+    (a: B2 ~ B3) match {
+      case b2 ~ b3 => b1: B1 => f(b1, b2, b3)
+    }
   }
 }
 

@@ -79,7 +79,9 @@ trait SequentialProvider extends Actor {
             futureTimeout,
             LilaException(s"Sequential provider timeout: $futureTimeout"))(
             context.system)
-          .pipeTo(replyTo) andThenAnyway { self ! Done }
+          .pipeTo(replyTo) andThenAnyway {
+          self ! Done
+        }
       case x =>
         logger
           .branch("SequentialProvider")

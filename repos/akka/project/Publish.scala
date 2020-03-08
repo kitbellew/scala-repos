@@ -21,7 +21,9 @@ object Publish extends AutoPlugin {
     organizationName := "Lightbend Inc.",
     organizationHomepage := Some(url("http://www.lightbend.com")),
     publishMavenStyle := true,
-    pomIncludeRepository := { x => false },
+    pomIncludeRepository := { x =>
+      false
+    },
     defaultPublishTo := crossTarget.value / "repository"
   )
 

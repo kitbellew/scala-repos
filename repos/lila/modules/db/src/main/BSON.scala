@@ -52,7 +52,9 @@ object BSON {
         vw: BSONDocumentWriter[V]): BSONDocumentWriter[Map[String, V]] =
       new BSONDocumentWriter[Map[String, V]] {
         def write(map: Map[String, V]): BSONDocument = BSONDocument {
-          map.toStream.map { tuple => tuple._1 -> vw.write(tuple._2) }
+          map.toStream.map { tuple =>
+            tuple._1 -> vw.write(tuple._2)
+          }
         }
       }
 
@@ -86,7 +88,9 @@ object BSON {
         vw: BSONWriter[V, _ <: BSONValue]): BSONDocumentWriter[Map[String, V]] =
       new BSONDocumentWriter[Map[String, V]] {
         def write(map: Map[String, V]): BSONDocument = BSONDocument {
-          map.toStream.map { tuple => tuple._1 -> vw.write(tuple._2) }
+          map.toStream.map { tuple =>
+            tuple._1 -> vw.write(tuple._2)
+          }
         }
       }
 
@@ -105,7 +109,9 @@ object BSON {
   private def readStream[T](
       array: BSONArray,
       reader: BSONReader[BSONValue, T]): Stream[T] = {
-    array.stream.filter(_.isSuccess).map { v => reader.read(v.get) }
+    array.stream.filter(_.isSuccess).map { v =>
+      reader.read(v.get)
+    }
   }
 
   implicit def bsonArrayToListHandler[T](implicit

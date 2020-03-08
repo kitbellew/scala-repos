@@ -82,7 +82,9 @@ object TestServer {
     }
     Play.start(application)
     val server = serverProvider.createServer(config, application)
-    process.addShutdownHook { server.stop() }
+    process.addShutdownHook {
+      server.stop()
+    }
     process
   }
 

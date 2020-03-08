@@ -174,7 +174,9 @@ class ReplicatorSpec
         GSet.empty[String] + "c") // normal usage would be `_ + "c"`
       expectMsg(UpdateSuccess(KeyJ, None))
       replicator ! Get(KeyJ, ReadLocal)
-      val s = expectMsgPF() { case g @ GetSuccess(KeyJ, _) ⇒ g.get(KeyJ) }
+      val s = expectMsgPF() {
+        case g @ GetSuccess(KeyJ, _) ⇒ g.get(KeyJ)
+      }
       s should ===(GSet.empty[String] + "a" + "b" + "c")
     }
     enterBarrierAfterTestStep()
@@ -207,7 +209,9 @@ class ReplicatorSpec
       within(5.seconds) {
         awaitAssert {
           replicator ! Get(KeyA, ReadLocal)
-          val c = expectMsgPF() { case g @ GetSuccess(KeyA, _) ⇒ g.get(KeyA) }
+          val c = expectMsgPF() {
+            case g @ GetSuccess(KeyA, _) ⇒ g.get(KeyA)
+          }
           c.value should be(6)
         }
       }
@@ -234,7 +238,9 @@ class ReplicatorSpec
       // the total, after replication should be 42
       awaitAssert {
         replicator ! Get(KeyB, readTwo)
-        val c = expectMsgPF() { case g @ GetSuccess(KeyB, _) ⇒ g.get(KeyB) }
+        val c = expectMsgPF() {
+          case g @ GetSuccess(KeyB, _) ⇒ g.get(KeyB)
+        }
         c.value should be(42)
       }
     }
@@ -248,7 +254,9 @@ class ReplicatorSpec
       // the total, after replication should be 44
       awaitAssert {
         replicator ! Get(KeyB, readAll)
-        val c = expectMsgPF() { case g @ GetSuccess(KeyB, _) ⇒ g.get(KeyB) }
+        val c = expectMsgPF() {
+          case g @ GetSuccess(KeyB, _) ⇒ g.get(KeyB)
+        }
         c.value should be(44)
       }
     }
@@ -262,7 +270,9 @@ class ReplicatorSpec
       // the total, after replication should be 46
       awaitAssert {
         replicator ! Get(KeyB, readMajority)
-        val c = expectMsgPF() { case g @ GetSuccess(KeyB, _) ⇒ g.get(KeyB) }
+        val c = expectMsgPF() {
+          case g @ GetSuccess(KeyB, _) ⇒ g.get(KeyB)
+        }
         c.value should be(46)
       }
     }
@@ -293,7 +303,9 @@ class ReplicatorSpec
 
     runOn(second) {
       replicator ! Get(KeyC, ReadLocal)
-      val c30 = expectMsgPF() { case g @ GetSuccess(KeyC, _) ⇒ g.get(KeyC) }
+      val c30 = expectMsgPF() {
+        case g @ GetSuccess(KeyC, _) ⇒ g.get(KeyC)
+      }
       c30.value should be(30)
       changedProbe.expectMsgPF() {
         case c @ Changed(KeyC) ⇒ c.get(KeyC).value
@@ -321,7 +333,9 @@ class ReplicatorSpec
       within(5.seconds) {
         awaitAssert {
           replicator ! Get(KeyC, ReadLocal)
-          val c = expectMsgPF() { case g @ GetSuccess(KeyC, _) ⇒ g.get(KeyC) }
+          val c = expectMsgPF() {
+            case g @ GetSuccess(KeyC, _) ⇒ g.get(KeyC)
+          }
           c.value should be(31)
 
           replicator ! Get(KeyY, ReadLocal)
@@ -337,7 +351,9 @@ class ReplicatorSpec
     // and also for concurrent updates
     runOn(first, second) {
       replicator ! Get(KeyC, ReadLocal)
-      val c31 = expectMsgPF() { case g @ GetSuccess(KeyC, _) ⇒ g.get(KeyC) }
+      val c31 = expectMsgPF() {
+        case g @ GetSuccess(KeyC, _) ⇒ g.get(KeyC)
+      }
       c31.value should be(31)
 
       replicator ! Update(KeyC, GCounter(), WriteLocal)(_ + 1)
@@ -346,7 +362,9 @@ class ReplicatorSpec
       within(5.seconds) {
         awaitAssert {
           replicator ! Get(KeyC, ReadLocal)
-          val c = expectMsgPF() { case g @ GetSuccess(KeyC, _) ⇒ g.get(KeyC) }
+          val c = expectMsgPF() {
+            case g @ GetSuccess(KeyC, _) ⇒ g.get(KeyC)
+          }
           c.value should be(33)
         }
       }
@@ -366,7 +384,9 @@ class ReplicatorSpec
 
     runOn(first, second) {
       replicator ! Get(KeyD, ReadLocal)
-      val c40 = expectMsgPF() { case g @ GetSuccess(KeyD, _) ⇒ g.get(KeyD) }
+      val c40 = expectMsgPF() {
+        case g @ GetSuccess(KeyD, _) ⇒ g.get(KeyD)
+      }
       c40.value should be(40)
       replicator ! Update(KeyD, GCounter() + 1, writeTwo)(_ + 1)
       expectMsg(UpdateTimeout(KeyD, None))
@@ -389,7 +409,9 @@ class ReplicatorSpec
 
     runOn(first, second) {
       replicator ! Get(KeyD, readTwo)
-      val c44 = expectMsgPF() { case g @ GetSuccess(KeyD, _) ⇒ g.get(KeyD) }
+      val c44 = expectMsgPF() {
+        case g @ GetSuccess(KeyD, _) ⇒ g.get(KeyD)
+      }
       c44.value should be(44)
 
       within(10.seconds) {
@@ -429,7 +451,9 @@ class ReplicatorSpec
 
     runOn(first, second, third) {
       replicator ! Get(KeyE, readMajority)
-      val c150 = expectMsgPF() { case g @ GetSuccess(KeyE, _) ⇒ g.get(KeyE) }
+      val c150 = expectMsgPF() {
+        case g @ GetSuccess(KeyE, _) ⇒ g.get(KeyE)
+      }
       c150.value should be(150)
     }
     enterBarrier("read-inital-majority")
@@ -516,7 +540,9 @@ class ReplicatorSpec
 
     runOn(third) {
       replicator ! Get(KeyE, readMajority)
-      val c155 = expectMsgPF() { case g @ GetSuccess(KeyE, _) ⇒ g.get(KeyE) }
+      val c155 = expectMsgPF() {
+        case g @ GetSuccess(KeyE, _) ⇒ g.get(KeyE)
+      }
       c155.value should be(155)
     }
 
@@ -536,7 +562,9 @@ class ReplicatorSpec
     enterBarrier("100-updates-done")
     runOn(first, second, third) {
       replicator ! Get(KeyF, readTwo)
-      val c = expectMsgPF() { case g @ GetSuccess(KeyF, _) ⇒ g.get(KeyF) }
+      val c = expectMsgPF() {
+        case g @ GetSuccess(KeyF, _) ⇒ g.get(KeyF)
+      }
       c.value should be(3 * 100)
     }
     enterBarrierAfterTestStep()

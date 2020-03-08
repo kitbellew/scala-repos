@@ -32,7 +32,9 @@ case class Edge[+N, +E](from: N, to: N, data: E) {
   def reverse: Edge[N, E] = Edge(to, from, data)
 }
 
-abstract sealed trait Degree { val degree: Int }
+abstract sealed trait Degree {
+  val degree: Int
+}
 case class InDegree(override val degree: Int) extends Degree
 case class OutDegree(override val degree: Int) extends Degree
 case class Weight(weight: Double)
@@ -49,24 +51,38 @@ object GraphOperations extends Serializable {
       .cogroup(grouped) {
         (to: N, left: Iterator[Edge[N, E]], right: Iterable[Edge[N, E]]) =>
           val newState = agfn(right)
-          left.map { _.mapData { e: E => (e, newState) } }
+          left.map {
+            _.mapData { e: E =>
+              (e, newState)
+            }
+          }
       }
       .values
 
   // Returns all Vertices with non-zero in-degree
   def withInDegree[N, E](g: TypedPipe[Edge[N, E]])(
       implicit ord: Ordering[N]): TypedPipe[Edge[N, (E, InDegree)]] =
-    joinAggregate(g.groupBy { _.to }) { it => InDegree(it.size) }
+    joinAggregate(g.groupBy {
+      _.to
+    }) { it =>
+      InDegree(it.size)
+    }
 
   // Returns all Vertices with non-zero out-degree
   def withOutDegree[N, E](g: TypedPipe[Edge[N, E]])(
       implicit ord: Ordering[N]): TypedPipe[Edge[N, (E, OutDegree)]] =
-    joinAggregate(g.groupBy { _.from }) { it => OutDegree(it.size) }
+    joinAggregate(g.groupBy {
+      _.from
+    }) { it =>
+      OutDegree(it.size)
+    }
 
   // Returns all Vertices with weights and non-zero norms
   def withInNorm[N, E](g: TypedPipe[Edge[N, Weight]])(
       implicit ord: Ordering[N]): TypedPipe[Edge[N, (Weight, L2Norm)]] =
-    joinAggregate(g.groupBy { _.to }) { it =>
+    joinAggregate(g.groupBy {
+      _.to
+    }) { it =>
       val norm = scala.math.sqrt(it.iterator.map { a =>
         val x = a.data.weight
         x * x
@@ -105,7 +121,9 @@ trait TypedSimilarity[N, E, S] extends Serializable {
       bigpred: N => Boolean): TypedPipe[Edge[N, S]]
   // Do similarity on all the nodes
   def apply(g: TypedPipe[Edge[N, E]]): TypedPipe[Edge[N, S]] = {
-    val always = { n: N => true }
+    val always = { n: N =>
+      true
+    }
     apply(g, always, always)
   }
 }
@@ -194,7 +212,9 @@ object TypedSimilarity extends Serializable {
         .group,
       smallG.reducers
     ).forceToReducers.sum
-      .map { case ((node1, node2), sim) => Edge(node1, node2, sim) }
+      .map {
+        case ((node1, node2), sim) => Edge(node1, node2, sim)
+      }
   }
 
   /*
@@ -238,7 +258,9 @@ object TypedSimilarity extends Serializable {
         .group,
       smallG.reducers
     ).forceToReducers.sum
-      .map { case ((node1, node2), sim) => Edge(node1, node2, sim) }
+      .map {
+        case ((node1, node2), sim) => Edge(node1, node2, sim)
+      }
   }
 }
 
@@ -255,13 +277,23 @@ class ExactInCosine[N](reducers: Int = -1)(
       smallpred: N => Boolean,
       bigpred: N => Boolean): TypedPipe[Edge[N, Double]] = {
     val groupedOnSrc = graph
-      .filter { e => smallpred(e.to) || bigpred(e.to) }
-      .map { e => (e.from, (e.to, e.data.degree)) }
+      .filter { e =>
+        smallpred(e.to) || bigpred(e.to)
+      }
+      .map { e =>
+        (e.from, (e.to, e.data.degree))
+      }
       .group
       .withReducers(reducers)
     TypedSimilarity
       .exactSetSimilarity(groupedOnSrc, smallpred, bigpred)
-      .flatMap { e => e.data.cosine.map { c => e.mapData { s => c } } }
+      .flatMap { e =>
+        e.data.cosine.map { c =>
+          e.mapData { s =>
+            c
+          }
+        }
+      }
   }
 }
 
@@ -289,13 +321,21 @@ class DiscoInCosine[N](
       smallpred: N => Boolean,
       bigpred: N => Boolean): TypedPipe[Edge[N, Double]] = {
     val bigGroupedOnSrc = graph
-      .filter { e => bigpred(e.to) }
-      .map { e => (e.from, (e.to, e.data.degree)) }
+      .filter { e =>
+        bigpred(e.to)
+      }
+      .map { e =>
+        (e.from, (e.to, e.data.degree))
+      }
       .group
       .withReducers(reducers)
     val smallGroupedOnSrc = graph
-      .filter { e => smallpred(e.to) }
-      .map { e => (e.from, (e.to, e.data.degree)) }
+      .filter { e =>
+        smallpred(e.to)
+      }
+      .map { e =>
+        (e.from, (e.to, e.data.degree))
+      }
       .group
       .withReducers(reducers)
 
@@ -324,13 +364,21 @@ class DimsumInCosine[N](
       smallpred: N => Boolean,
       bigpred: N => Boolean): TypedPipe[Edge[N, Double]] = {
     val bigGroupedOnSrc = graph
-      .filter { e => bigpred(e.to) }
-      .map { e => (e.from, (e.to, e.data._1.weight, e.data._2.norm)) }
+      .filter { e =>
+        bigpred(e.to)
+      }
+      .map { e =>
+        (e.from, (e.to, e.data._1.weight, e.data._2.norm))
+      }
       .group
       .withReducers(reducers)
     val smallGroupedOnSrc = graph
-      .filter { e => smallpred(e.to) }
-      .map { e => (e.from, (e.to, e.data._1.weight, e.data._2.norm)) }
+      .filter { e =>
+        smallpred(e.to)
+      }
+      .map { e =>
+        (e.from, (e.to, e.data._1.weight, e.data._2.norm))
+      }
       .group
       .withReducers(reducers)
 

@@ -27,7 +27,9 @@ object StreamsStressTest extends App {
               run1
               if (j % 100 == 0) println(s"Thread $i: Stream $j successful")
             }
-          } catch { case t: Throwable => env.flop(t, t.toString) }
+          } catch {
+            case t: Throwable => env.flop(t, t.toString)
+          }
         }
       })
     }

@@ -79,7 +79,9 @@ object Termination {
   case object Checkmate extends Termination(6, "Checkmate")
 
   val all = List(ClockFlag, Disconnect, Resignation, Draw, Stalemate, Checkmate)
-  val byId = all map { p => (p.id, p) } toMap
+  val byId = all map { p =>
+    (p.id, p)
+  } toMap
 
   import chess.{Status => S}
 
@@ -103,7 +105,9 @@ object Result {
   case object Draw extends Result(2, "Draw")
   case object Loss extends Result(3, "Defeat")
   val all = List(Win, Draw, Loss)
-  val byId = all map { p => (p.id, p) } toMap
+  val byId = all map { p =>
+    (p.id, p)
+  } toMap
   val idList = all.map(_.id)
 }
 
@@ -113,7 +117,9 @@ object Phase {
   case object Middle extends Phase(2, "Middlegame")
   case object End extends Phase(3, "Endgame")
   val all = List(Opening, Middle, End)
-  val byId = all map { p => (p.id, p) } toMap
+  val byId = all map { p =>
+    (p.id, p)
+  } toMap
   def of(div: chess.Division, ply: Int): Phase =
     div.middle.fold[Phase](Opening) {
       case m if m > ply => Opening
@@ -131,7 +137,9 @@ object Castling {
   object Queenside extends Castling(2, "Queenside castling")
   object None extends Castling(3, "No castling")
   val all = List(Kingside, Queenside, None)
-  val byId = all map { p => (p.id, p) } toMap
+  val byId = all map { p =>
+    (p.id, p)
+  } toMap
   def fromMoves(moves: List[String]) = moves.find(_ startsWith "O") match {
     case Some("O-O")   => Kingside
     case Some("O-O-O") => Queenside
@@ -155,7 +163,9 @@ object RelativeStrength {
   case object Stronger extends RelativeStrength(40, "Stronger")
   case object MuchStronger extends RelativeStrength(50, "Much stronger")
   val all = List(MuchWeaker, Weaker, Similar, Stronger, MuchStronger)
-  val byId = all map { p => (p.id, p) } toMap
+  val byId = all map { p =>
+    (p.id, p)
+  } toMap
   def apply(diff: Int) = diff match {
     case d if d < -200 => MuchWeaker
     case d if d < -100 => Weaker
@@ -184,7 +194,9 @@ object MovetimeRange {
       extends MovetimeRange(60, "More than 30 seconds", NonEmptyList(400, 600))
   val all = List(MTR1, MTR3, MTR5, MTR10, MTR30, MTRInf)
   def reversedNoInf = all.reverse drop 1
-  val byId = all map { p => (p.id, p) } toMap
+  val byId = all map { p =>
+    (p.id, p)
+  } toMap
 }
 
 sealed abstract class MaterialRange(
@@ -205,5 +217,7 @@ object MaterialRange {
   case object Up4 extends MaterialRange(9, "More than +6", Int.MaxValue)
   val all = List(Down4, Down3, Down2, Down1, Equal, Up1, Up2, Up3, Up4)
   def reversedButEqualAndLast = all.diff(List(Equal, Up4)).reverse
-  val byId = all map { p => (p.id, p) } toMap
+  val byId = all map { p =>
+    (p.id, p)
+  } toMap
 }

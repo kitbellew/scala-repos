@@ -418,7 +418,9 @@ case class Game(
   }
 
   private def outoftimeCorrespondence: Boolean =
-    playableCorrespondenceClock ?? { _ outoftime player.color }
+    playableCorrespondenceClock ?? {
+      _ outoftime player.color
+    }
 
   def isCorrespondence = speed == chess.Speed.Correspondence
 
@@ -636,7 +638,9 @@ case class CastleLastMoveTime(
     lastMoveTime: Option[Int], // tenths of seconds since game creation
     check: Option[Pos]) {
 
-  def lastMoveString = lastMove map { case (a, b) => s"$a$b" }
+  def lastMoveString = lastMove map {
+    case (a, b) => s"$a$b"
+  }
 }
 
 object CastleLastMoveTime {

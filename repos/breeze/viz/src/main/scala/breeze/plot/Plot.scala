@@ -34,9 +34,15 @@ class Plot() {
 
   def +=(pl: Series) = {
     val (d, r) = pl.getChartStuff(
-      { i => "Series " + (series + i) },
-      { i => Plot.fillPaint(series + i) },
-      { i => Plot.stroke(series + i) })
+      { i =>
+        "Series " + (series + i)
+      },
+      { i =>
+        Plot.fillPaint(series + i)
+      },
+      { i =>
+        Plot.stroke(series + i)
+      })
     datasets += d
     renderers += r
     series += d.getSeriesCount
@@ -58,7 +64,9 @@ class Plot() {
       series += 1
     }
 
-    listeners foreach { _._1.refresh(this) }
+    listeners foreach {
+      _._1.refresh(this)
+    }
   }
 
   // Sigh, I hate the listener pattern
@@ -312,7 +320,9 @@ object Plot {
 
     def getItemCount(series: Int): Int = delegate(series)(_ getItemCount _)
 
-    def getX(p1: Int, p2: Int): Number = { delegate(p1)(_.getX(_, p2)) }
+    def getX(p1: Int, p2: Int): Number = {
+      delegate(p1)(_.getX(_, p2))
+    }
     def getY(p1: Int, p2: Int): Number = delegate(p1)(_.getY(_, p2))
     def getZ(p1: Int, p2: Int): Number =
       delegate(p1)(_.asInstanceOf[xy.XYZDataset].getZ(_, p2))

@@ -136,7 +136,11 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
     "not allow Actors to be created outside of an actorOf" in {
       import system.actorOf
       intercept[akka.actor.ActorInitializationException] {
-        new Actor { def receive = { case _ ⇒ } }
+        new Actor {
+          def receive = {
+            case _ ⇒
+          }
+        }
       }
 
       def contextStackMustBeEmpty(): Unit =
@@ -147,9 +151,13 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
           wrap(result ⇒
             actorOf(Props(new Actor {
               val nested = promiseIntercept(new Actor {
-                def receive = { case _ ⇒ }
+                def receive = {
+                  case _ ⇒
+                }
               })(result)
-              def receive = { case _ ⇒ }
+              def receive = {
+                case _ ⇒
+              }
             })))
         }
 
@@ -365,9 +373,13 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
     "support nested actorOfs" in {
       val a = system.actorOf(Props(new Actor {
         val nested = system.actorOf(Props(new Actor {
-          def receive = { case _ ⇒ }
+          def receive = {
+            case _ ⇒
+          }
         }))
-        def receive = { case _ ⇒ sender() ! nested }
+        def receive = {
+          case _ ⇒ sender() ! nested
+        }
       }))
 
       val nested = Await.result((a ? "any").mapTo[ActorRef], timeout.duration)
@@ -451,13 +463,17 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
               List(classOf[Throwable]))
 
           val ref = context.actorOf(Props(new Actor {
-            def receive = { case _ ⇒ }
+            def receive = {
+              case _ ⇒
+            }
             override def preRestart(reason: Throwable, msg: Option[Any]) =
               latch.countDown()
             override def postRestart(reason: Throwable) = latch.countDown()
           }))
 
-          def receive = { case "sendKill" ⇒ ref ! Kill }
+          def receive = {
+            case "sendKill" ⇒ ref ! Kill
+          }
         }))
 
         boss ! "sendKill"
@@ -471,7 +487,9 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
 
           val child = context.actorOf(
             Props(new Actor {
-              def receive = { case _ ⇒ }
+              def receive = {
+                case _ ⇒
+              }
             }),
             "child")
 

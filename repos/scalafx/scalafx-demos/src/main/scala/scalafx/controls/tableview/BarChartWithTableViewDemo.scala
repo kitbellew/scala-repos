@@ -87,7 +87,9 @@ object BarChartWithTableViewDemo extends JFXApp {
       data = XYChart.Series(
         chartData.map(d => XYChart.Data[String, Number](d.name(), d.value())))
       legendVisible = false
-      onMouseClicked = handle { showAsTable(title(), chartData) }
+      onMouseClicked = handle {
+        showAsTable(title(), chartData)
+      }
     }
 
   private def showAsTable(name: String, data: ObservableBuffer[Position]) {
@@ -96,12 +98,16 @@ object BarChartWithTableViewDemo extends JFXApp {
       columns ++= List(
         new TableColumn[Position, String] {
           text = "Position"
-          cellValueFactory = { _.value.name }
+          cellValueFactory = {
+            _.value.name
+          }
           prefWidth = 180
         },
         new TableColumn[Position, Int] {
           text = "Value"
-          cellValueFactory = { _.value.value }
+          cellValueFactory = {
+            _.value.value
+          }
           prefWidth = 180
         }
       )

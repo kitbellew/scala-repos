@@ -10,7 +10,9 @@ class DistributionTester[A](distributor: Distributor[A]) {
     */
   def distributionDeviation(keys: Seq[Long]): Double = {
     val keysPerNode = mutable.Map[A, Int]()
-    keys map { distributor.nodeForHash(_) } foreach { key =>
+    keys map {
+      distributor.nodeForHash(_)
+    } foreach { key =>
       if (!keysPerNode.contains(key)) keysPerNode(key) = 0
       keysPerNode(key) += 1
     }
@@ -19,7 +21,9 @@ class DistributionTester[A](distributor: Distributor[A]) {
       _ => 0
     }
     val average = frequencies.sum.toDouble / frequencies.size
-    val diffs = frequencies.map { v => math.pow((v - average), 2) }
+    val diffs = frequencies.map { v =>
+      math.pow((v - average), 2)
+    }
     val sd = math.sqrt(diffs.sum / (frequencies.size - 1))
     sd / average
   }

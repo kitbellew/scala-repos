@@ -241,7 +241,12 @@ class ScaldingLaws extends WordSpec {
         .multipleSummerJob[Scalding, (Long, Int), Int, Int, Int, Int, Int](
           source,
           testStoreA,
-          testStoreB)({ t => fnA(t._2) }, fnB, fnC)
+          testStoreB)(
+          { t =>
+            fnA(t._2)
+          },
+          fnB,
+          fnC)
 
       val scald = Scalding("scalaCheckMultipleSumJob")
       val ws = new LoopState(intr)
@@ -292,13 +297,17 @@ class ScaldingLaws extends WordSpec {
           inner.next
         }
       }
-      val srvWithTime = { (key: Int) => service(fakeTime, key) }
+      val srvWithTime = { (key: Int) =>
+        service(fakeTime, key)
+      }
 
       val inMemory =
         TestGraphs.leftJoinInScala(timeIncIt)(srvWithTime)(prejoinMap)(postJoin)
 
       // Add a time:
-      val allKeys = original.flatMap(prejoinMap).map { _._1 }
+      val allKeys = original.flatMap(prejoinMap).map {
+        _._1
+      }
       val allTimes = (0 until original.size)
       val stream = for {
         time <- allTimes; key <- allKeys; v = service(time, key)
@@ -311,8 +320,11 @@ class ScaldingLaws extends WordSpec {
       /**
         * Create the batched service
         */
-      val batchedService =
-        stream.map { case (time, v) => (Timestamp(time), v) }.groupBy {
+      val batchedService = stream
+        .map {
+          case (time, v) => (Timestamp(time), v)
+        }
+        .groupBy {
           case (ts, _) => batcher.batchOf(ts)
         }
       val testService = new TestService[Int, Int](
@@ -327,7 +339,9 @@ class ScaldingLaws extends WordSpec {
         TestGraphs.leftJoinJob[Scalding, (Long, Int), Int, Int, Int, Int](
           source,
           testService,
-          testStore) { tup => prejoinMap(tup._2) }(postJoin)
+          testStore) { tup =>
+          prejoinMap(tup._2)
+        }(postJoin)
 
       val scald = Scalding("scalaCheckleftJoinJob")
       val ws = new LoopState(intr)
@@ -373,12 +387,16 @@ class ScaldingLaws extends WordSpec {
           inner.next
         }
       }
-      val srvWithTime = { (key: Int) => service(fakeTime, key) }
+      val srvWithTime = { (key: Int) =>
+        service(fakeTime, key)
+      }
       val inMemory = TestGraphs.repeatedTupleLeftJoinInScala(timeIncIt)(
         srvWithTime)(prejoinMap)(postJoin)
 
       // Add a time:
-      val allKeys = original.flatMap(prejoinMap).map { _._1 }
+      val allKeys = original.flatMap(prejoinMap).map {
+        _._1
+      }
       val allTimes = (0 until original.size)
       val stream = for {
         time <- allTimes; key <- allKeys; v = service(time, key)
@@ -391,8 +409,11 @@ class ScaldingLaws extends WordSpec {
       /**
         * Create the batched service
         */
-      val batchedService =
-        stream.map { case (time, v) => (Timestamp(time), v) }.groupBy {
+      val batchedService = stream
+        .map {
+          case (time, v) => (Timestamp(time), v)
+        }
+        .groupBy {
           case (ts, _) => batcher.batchOf(ts)
         }
       val testService = new TestService[Int, Int](
@@ -408,7 +429,9 @@ class ScaldingLaws extends WordSpec {
           .repeatedTupleLeftJoinJob[Scalding, (Long, Int), Int, Int, Int, Int](
             source,
             testService,
-            testStore) { tup => prejoinMap(tup._2) }(postJoin)
+            testStore) { tup =>
+            prejoinMap(tup._2)
+          }(postJoin)
 
       val scald = Scalding("scalaCheckleftJoinJob")
       val ws = new LoopState(intr)
@@ -430,7 +453,9 @@ class ScaldingLaws extends WordSpec {
       // TODO: what if the two sources are of different sizes here?
       val original1 = sample[List[Int]]
       val original2Fn = sample[(Int) => Int]
-      val original2 = original1.map { v => original2Fn(v) }
+      val original2 = original1.map { v =>
+        original2Fn(v)
+      }
 
       val fnA = sample[(Int) => List[(Int, Int)]]
       val fnB = sample[(Int) => List[(Int, Int)]]
@@ -538,7 +563,11 @@ class ScaldingLaws extends WordSpec {
 
       val valuesFlatMap =
         (e: ((Int, Option[Int]))) =>
-          valuesFlatMap1(e).flatMap { x => { valuesFlatMap2(x) } }
+          valuesFlatMap1(e).flatMap { x =>
+            {
+              valuesFlatMap2(x)
+            }
+          }
 
       def toTime[T, U](fn: T => TraversableOnce[U])
           : ((Long, T)) => TraversableOnce[(Long, U)] =
@@ -734,7 +763,9 @@ class ScaldingLaws extends WordSpec {
           original,
           Monoid.plus(initStore, inMemory),
           testStore) == true)
-      val wrongSink = sinkOut.map { _._2 }.toList != inWithTime
+      val wrongSink = sinkOut.map {
+        _._2
+      }.toList != inWithTime
       assert(wrongSink == false)
       if (wrongSink) {
         println("input: " + inWithTime)
@@ -836,7 +867,13 @@ class ScaldingLaws extends WordSpec {
         HadoopTest(conf, t => (testStore.sourceToBuffer ++ buffer).get(t))
 
       var flow: Flow[_] = null
-      scald.run(ws, mode, scald.plan(summer), { f: Flow[_] => flow = f })
+      scald.run(
+        ws,
+        mode,
+        scald.plan(summer),
+        { f: Flow[_] =>
+          flow = f
+        })
 
       val flowStats: FlowStats = flow.getFlowStats()
       val origCounter: Long =
@@ -853,7 +890,9 @@ class ScaldingLaws extends WordSpec {
 
     "contain and be able to init a ScaldingRuntimeStatsProvider object" in {
       val s = SummingbirdRuntimeStats.SCALDING_STATS_MODULE
-      assert(ScalaTry[Unit] { Class.forName(s) }.toOption.isDefined)
+      assert(ScalaTry[Unit] {
+        Class.forName(s)
+      }.toOption.isDefined)
     }
   }
 }

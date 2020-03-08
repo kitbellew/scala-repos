@@ -311,7 +311,9 @@ private[remote] class ReliableDeliverySupervisor(
   }
 
   var writer: ActorRef = createWriter()
-  var uid: Option[Int] = handleOrActive map { _.handshakeInfo.uid }
+  var uid: Option[Int] = handleOrActive map {
+    _.handshakeInfo.uid
+  }
   var bailoutAt: Option[Deadline] = None
   var maxSilenceTimer: Option[Cancellable] = None
   // Processing of Acks has to be delayed until the UID after a reconnect is discovered. Depending whether the
@@ -498,11 +500,15 @@ private[remote] class ReliableDeliverySupervisor(
         writer ! sequencedSend
     } else writer ! send
 
-  private def resendNacked(): Unit = resendBuffer.nacked foreach { writer ! _ }
+  private def resendNacked(): Unit = resendBuffer.nacked foreach {
+    writer ! _
+  }
 
   private def resendAll(): Unit = {
     resendNacked()
-    resendBuffer.nonAcked.take(settings.SysResendLimit) foreach { writer ! _ }
+    resendBuffer.nonAcked.take(settings.SysResendLimit) foreach {
+      writer ! _
+    }
   }
 
   private def tryBuffer(s: Send): Unit =
@@ -725,7 +731,9 @@ private[remote] class EndpointWriter(
       extendedSystem.deadLetters ! prioBuffer.poll
     while (!buffer.isEmpty)
       extendedSystem.deadLetters ! buffer.poll
-    handle foreach { _.disassociate(stopReason) }
+    handle foreach {
+      _.disassociate(stopReason)
+    }
     eventPublisher.notifyListeners(
       DisassociatedEvent(localAddress, remoteAddress, inbound))
   }
@@ -1000,7 +1008,9 @@ private[remote] class EndpointWriter(
       }
     case TakeOver(newHandle, replyTo) ⇒
       // Shutdown old reader
-      handle foreach { _.disassociate() }
+      handle foreach {
+        _.disassociate()
+      }
       handle = Some(newHandle)
       replyTo ! TookOver(self, newHandle)
       context.become(handoff)

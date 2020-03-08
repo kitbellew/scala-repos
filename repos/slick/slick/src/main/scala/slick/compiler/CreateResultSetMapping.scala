@@ -62,7 +62,9 @@ class CreateResultSetMapping extends Phase {
         case ProductType(ch) =>
           ProductNode(ch.map(f))
         case StructType(ch) =>
-          ProductNode(ch.map { case (_, t) => f(t) })
+          ProductNode(ch.map {
+            case (_, t) => f(t)
+          })
         case t: MappedScalaType =>
           TypeMapping(f(t.baseType), t.mapper, t.classTag)
         case o @ OptionType(Type.Structural(el))

@@ -49,7 +49,9 @@ class ArrayBufferInputStream(
   private[this] var _pos: Int = 0
 
   override def available(): Int = length - pos
-  override def mark(readlimit: Int): Unit = { mark = pos }
+  override def mark(readlimit: Int): Unit = {
+    mark = pos
+  }
   override def markSupported(): Boolean = true
   def read(): Int = {
     if (pos < length) {
@@ -80,7 +82,9 @@ class ArrayBufferInputStream(
     }
   }
 
-  override def reset(): Unit = { pos = mark }
+  override def reset(): Unit = {
+    pos = mark
+  }
 
   /** Skips a given number of bytes. Always skips the maximum number possible */
   override def skip(n: Long): Long = {

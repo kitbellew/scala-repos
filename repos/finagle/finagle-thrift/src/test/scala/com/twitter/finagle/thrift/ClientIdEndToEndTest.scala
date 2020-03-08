@@ -16,10 +16,14 @@ class ClientIdEndToEndTest extends FunSuite with ThriftTest {
   val processor = new B.ServiceIface {
     def add(a: Int, b: Int) = Future.exception(new AnException)
     def add_one(a: Int, b: Int) = Future.Void
-    def multiply(a: Int, b: Int) = Future { a * b }
+    def multiply(a: Int, b: Int) = Future {
+      a * b
+    }
     // Re-purpose `complex_return` to return the serversize ClientId.
     def complex_return(someString: String) = Future {
-      val clientIdStr = ClientId.current map { _.name } getOrElse ("")
+      val clientIdStr = ClientId.current map {
+        _.name
+      } getOrElse ("")
       new SomeStruct(123, clientIdStr)
     }
     def someway() = Future.Void

@@ -49,7 +49,9 @@ trait BaseScaldingShell extends MainGenericRunner {
 
   protected def replState: BaseReplState = ReplState
 
-  protected def scaldingREPLProvider: () => ILoop = { () => new ScaldingILoop }
+  protected def scaldingREPLProvider: () => ILoop = { () =>
+    new ScaldingILoop
+  }
 
   /**
     * The main entry point for executing the REPL.

@@ -485,7 +485,9 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     */
   def reindexCol(cix: Index[CX]): Frame[RX, CX, T] = {
     val ixer = colIx.getIndexer(cix)
-    ixer.map { i => Frame(values.take(i), rowIx, cix) } getOrElse this
+    ixer.map { i =>
+      Frame(values.take(i), rowIx, cix)
+    } getOrElse this
   }
 
   // -----------------------------------------
@@ -547,7 +549,9 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
       implicit ordT: ORD[T]): Frame[(T, T), CX, T] = {
     val newIx: Index[(T, T)] =
       Index.make(this.colAt(col1).toVec, this.colAt(col2).toVec)
-    this.setRowIndex(newIx).filterAt { case c => !Set(col1, col2).contains(c) }
+    this.setRowIndex(newIx).filterAt {
+      case c => !Set(col1, col2).contains(c)
+    }
   }
 
   /**
@@ -583,7 +587,9 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
       implicit ordT: ORD[T]): Frame[RX, (T, T), T] = {
     val newIx: Index[(T, T)] =
       Index.make(this.rowAt(row1).toVec, this.rowAt(row2).toVec)
-    this.setColIndex(newIx).rfilterAt { case r => !Set(row1, row2).contains(r) }
+    this.setColIndex(newIx).rfilterAt {
+      case r => !Set(row1, row2).contains(r)
+    }
   }
 
   /**
@@ -784,7 +790,9 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     */
   def map[SX: ST: ORD, DX: ST: ORD, U: ST](
       f: ((RX, CX, T)) => (SX, DX, U)): Frame[SX, DX, U] = {
-    Series(toSeq.map(f).map { case (sx, dx, u) => ((sx, dx) -> u) }: _*).pivot
+    Series(toSeq.map(f).map {
+      case (sx, dx, u) => ((sx, dx) -> u)
+    }: _*).pivot
   }
 
   /**
@@ -793,8 +801,9 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     */
   def flatMap[SX: ST: ORD, DX: ST: ORD, U: ST](
       f: ((RX, CX, T)) => Traversable[(SX, DX, U)]): Frame[SX, DX, U] = {
-    Series(
-      toSeq.flatMap(f).map { case (sx, dx, u) => ((sx, dx) -> u) }: _*).pivot
+    Series(toSeq.flatMap(f).map {
+      case (sx, dx, u) => ((sx, dx) -> u)
+    }: _*).pivot
   }
 
   /**
@@ -838,8 +847,9 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
       rhow: JoinType = LeftJoin,
       chow: JoinType = RightJoin)(f: (T, U) => V): Frame[RX, CX, V] = {
     val (l, r) = align(other, rhow, chow)
-    val result =
-      l.values.zip(r.values).map { case (v1, v2) => VecImpl.zipMap(v1, v2)(f) }
+    val result = l.values.zip(r.values).map {
+      case (v1, v2) => VecImpl.zipMap(v1, v2)(f)
+    }
     Frame(result, l.rowIx, l.colIx)
   }
 
@@ -929,7 +939,9 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
 
     val mfn = (v: Vec[T], u: Vec[U]) => v concat u
     val zpp = lft zip rgt
-    val dat = zpp.map { case (top, bot) => mfn(top, bot) }
+    val dat = zpp.map {
+      case (top, bot) => mfn(top, bot)
+    }
     val idx = rowIx concat other.rowIx
 
     Frame(dat, idx, ixc.index)
@@ -1002,7 +1014,9 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     * @tparam B Result type of function
     */
   def rolling[B: ST](winSz: Int, f: Series[RX, T] => B): Frame[RX, CX, B] = {
-    val tmp = values.map { v => Series(v, rowIx).rolling(winSz, f).values }
+    val tmp = values.map { v =>
+      Series(v, rowIx).rolling(winSz, f).values
+    }
     Frame(tmp, rowIx.slice(winSz - 1, values.numRows), colIx)
   }
 
@@ -1370,7 +1384,9 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
           result(loc) = v //   and save vec in array.
 
           loc += len // Increment offset into result array
-          if (loc >= cix.length) { off += 1; loc = off }
+          if (loc >= cix.length) {
+            off += 1; loc = off
+          }
         }
       }
 

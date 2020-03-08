@@ -27,7 +27,9 @@ class ScTypeParamClauseImpl private (
     node: ASTNode)
     extends ScalaStubBasedElementImpl(stub, nodeType, node)
     with ScTypeParamClause {
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
   def this(stub: ScTypeParamClauseStub) = {
     this(stub, ScalaElementTypes.TYPE_PARAM_CLAUSE, null)
   }

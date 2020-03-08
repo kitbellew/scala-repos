@@ -133,7 +133,9 @@ backslash.dummy=\a\b\c\e\f
     "parse file" in {
 
       val parser = new Messages.MessagesParser(
-        new MessageSource { def read = testMessageFile },
+        new MessageSource {
+          def read = testMessageFile
+        },
         "messages")
 
       val messages =

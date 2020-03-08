@@ -68,7 +68,9 @@ abstract class NodePrinters {
           List(
             showSymbol(tree),
             showType(tree)) filterNot (_ == "") mkString ", " trim
-        } catch { case ex: Throwable => "sym= <error> " + ex.getMessage }
+        } catch {
+          case ex: Throwable => "sym= <error> " + ex.getMessage
+        }
       }
     }
   }

@@ -60,7 +60,9 @@ class SbtResolverIndex private (
     else
       new SbtIvyCacheIndexer(new File(root)).artifacts.foreach(processArtifact)
 
-    progressIndicator foreach { _.checkCanceled() }
+    progressIndicator foreach {
+      _.checkCanceled()
+    }
     progressIndicator foreach {
       _.setText2(SbtBundle("sbt.resolverIndexer.progress.saving"))
     }

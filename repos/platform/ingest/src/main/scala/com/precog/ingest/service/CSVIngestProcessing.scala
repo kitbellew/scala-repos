@@ -99,7 +99,9 @@ class CSVIngestProcessing(
           writeChannel(chan, tail, written + written0)
 
         case None =>
-          M.point { chan.close(); written }
+          M.point {
+            chan.close(); written
+          }
       }
     }
 
@@ -254,7 +256,9 @@ class CSVIngestProcessing(
           file.delete()
           result
         }
-      } valueOr { errors => M.point(NotIngested(errors.list.mkString("; "))) }
+      } valueOr { errors =>
+        M.point(NotIngested(errors.list.mkString("; ")))
+      }
     }
   }
 }

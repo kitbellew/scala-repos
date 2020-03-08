@@ -152,8 +152,9 @@ trait TestEventService
         stored += action; \/-(PrecogUnit)
       }
     }
-    val jobManager =
-      new InMemoryJobManager[({ type l[+a] = EitherT[Future, String, a] })#l]
+    val jobManager = new InMemoryJobManager[({
+      type l[+a] = EitherT[Future, String, a]
+    })#l]
     val shardClient =
       new HttpClient.EchoClient((_: HttpRequest[ByteChunk]).content)
     val localhost = ServiceLocation("http", "localhost", 80, None)
@@ -209,7 +210,9 @@ trait TestEventService
     } yield {
       (
         response.copy(content = content),
-        stored.toList collect { case in: Ingest => in }
+        stored.toList collect {
+          case in: Ingest => in
+        }
       )
     }
   }

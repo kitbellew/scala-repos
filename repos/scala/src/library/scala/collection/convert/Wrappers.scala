@@ -98,7 +98,9 @@ private[collection] trait Wrappers {
     override def set(i: Int, elem: A) = {
       val p = underlying(i); underlying(i) = elem; p
     }
-    override def add(elem: A) = { underlying append elem; true }
+    override def add(elem: A) = {
+      underlying append elem; true
+    }
     override def remove(i: Int) = underlying remove i
   }
 
@@ -110,8 +112,12 @@ private[collection] trait Wrappers {
     override def iterator: Iterator[A] = underlying.iterator
     def apply(i: Int) = underlying.get(i)
     def update(i: Int, elem: A) = underlying.set(i, elem)
-    def +=:(elem: A) = { underlying.subList(0, 0) add elem; this }
-    def +=(elem: A): this.type = { underlying add elem; this }
+    def +=:(elem: A) = {
+      underlying.subList(0, 0) add elem; this
+    }
+    def +=(elem: A): this.type = {
+      underlying add elem; this
+    }
     def insertAll(i: Int, elems: Traversable[A]) = {
       val ins = underlying.subList(0, i)
       elems.seq.foreach(ins.add(_))
@@ -131,8 +137,11 @@ private[collection] trait Wrappers {
       with Serializable { self =>
     // Note various overrides to avoid performance gotchas.
     override def contains(o: Object): Boolean = {
-      try { underlying.contains(o.asInstanceOf[A]) }
-      catch { case cce: ClassCastException => false }
+      try {
+        underlying.contains(o.asInstanceOf[A])
+      } catch {
+        case cce: ClassCastException => false
+      }
     }
     override def isEmpty = underlying.isEmpty
     def size = underlying.size
@@ -140,7 +149,9 @@ private[collection] trait Wrappers {
       val ui = underlying.iterator
       var prev: Option[A] = None
       def hasNext = ui.hasNext
-      def next = { val e = ui.next(); prev = Some(e); e }
+      def next = {
+        val e = ui.next(); prev = Some(e); e
+      }
       def remove = prev match {
         case Some(e) =>
           underlying match {
@@ -166,7 +177,9 @@ private[collection] trait Wrappers {
     }
     override def remove(elem: AnyRef) =
       try underlying remove elem.asInstanceOf[A]
-      catch { case ex: ClassCastException => false }
+      catch {
+        case ex: ClassCastException => false
+      }
     override def clear() = underlying.clear()
   }
 
@@ -181,8 +194,12 @@ private[collection] trait Wrappers {
 
     def contains(elem: A): Boolean = underlying.contains(elem)
 
-    def +=(elem: A): this.type = { underlying add elem; this }
-    def -=(elem: A): this.type = { underlying remove elem; this }
+    def +=(elem: A): this.type = {
+      underlying add elem; this
+    }
+    def -=(elem: A): this.type = {
+      underlying remove elem; this
+    }
 
     override def add(elem: A): Boolean = underlying add elem
     override def remove(elem: A): Boolean = underlying remove elem
@@ -305,19 +322,27 @@ private[collection] trait Wrappers {
         None
     }
 
-    def +=(kv: (A, B)): this.type = { underlying.put(kv._1, kv._2); this }
-    def -=(key: A): this.type = { underlying remove key; this }
+    def +=(kv: (A, B)): this.type = {
+      underlying.put(kv._1, kv._2); this
+    }
+    def -=(key: A): this.type = {
+      underlying remove key; this
+    }
 
     override def put(k: A, v: B): Option[B] = Option(underlying.put(k, v))
 
-    override def update(k: A, v: B) { underlying.put(k, v) }
+    override def update(k: A, v: B) {
+      underlying.put(k, v)
+    }
 
     override def remove(k: A): Option[B] = Option(underlying remove k)
 
     def iterator: Iterator[(A, B)] = new AbstractIterator[(A, B)] {
       val ui = underlying.entrySet.iterator
       def hasNext = ui.hasNext
-      def next() = { val e = ui.next(); (e.getKey, e.getValue) }
+      def next() = {
+        val e = ui.next(); (e.getKey, e.getValue)
+      }
     }
 
     override def clear() = underlying.clear()
@@ -427,12 +452,18 @@ private[collection] trait Wrappers {
 
     def get(k: A) = Option(underlying get k)
 
-    def +=(kv: (A, B)): this.type = { underlying.put(kv._1, kv._2); this }
-    def -=(key: A): this.type = { underlying remove key; this }
+    def +=(kv: (A, B)): this.type = {
+      underlying.put(kv._1, kv._2); this
+    }
+    def -=(key: A): this.type = {
+      underlying remove key; this
+    }
 
     override def put(k: A, v: B): Option[B] = Option(underlying.put(k, v))
 
-    override def update(k: A, v: B) { underlying.put(k, v) }
+    override def update(k: A, v: B) {
+      underlying.put(k, v)
+    }
 
     override def remove(k: A): Option[B] = Option(underlying remove k)
 
@@ -458,14 +489,18 @@ private[collection] trait Wrappers {
     def +=(kv: (String, String)): this.type = {
       underlying.put(kv._1, kv._2); this
     }
-    def -=(key: String): this.type = { underlying remove key; this }
+    def -=(key: String): this.type = {
+      underlying remove key; this
+    }
 
     override def put(k: String, v: String): Option[String] = {
       val r = underlying.put(k, v)
       if (r != null) Some(r.asInstanceOf[String]) else None
     }
 
-    override def update(k: String, v: String) { underlying.put(k, v) }
+    override def update(k: String, v: String) {
+      underlying.put(k, v)
+    }
 
     override def remove(k: String): Option[String] = {
       val r = underlying remove k

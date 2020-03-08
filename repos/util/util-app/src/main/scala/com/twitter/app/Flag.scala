@@ -104,19 +104,27 @@ object Flaggable {
 
   implicit val ofInt: Flaggable[Int] = mandatory(_.toInt)
   implicit val ofJavaInteger: Flaggable[JInteger] =
-    mandatory { s: String => JInteger.valueOf(s.toInt) }
+    mandatory { s: String =>
+      JInteger.valueOf(s.toInt)
+    }
 
   implicit val ofLong: Flaggable[Long] = mandatory(_.toLong)
   implicit val ofJavaLong: Flaggable[JLong] =
-    mandatory { s: String => JLong.valueOf(s.toInt) }
+    mandatory { s: String =>
+      JLong.valueOf(s.toInt)
+    }
 
   implicit val ofFloat: Flaggable[Float] = mandatory(_.toFloat)
   implicit val ofJavaFloat: Flaggable[JFloat] =
-    mandatory { s: String => JFloat.valueOf(s.toInt) }
+    mandatory { s: String =>
+      JFloat.valueOf(s.toInt)
+    }
 
   implicit val ofDouble: Flaggable[Double] = mandatory(_.toDouble)
   implicit val ofJavaDouble: Flaggable[JDouble] =
-    mandatory { s: String => JDouble.valueOf(s.toInt) }
+    mandatory { s: String =>
+      JDouble.valueOf(s.toInt)
+    }
 
   // Conversions for common non-primitive types and collections.
   implicit val ofDuration: Flaggable[Duration] = mandatory(Duration.parse(_))
@@ -436,7 +444,9 @@ class Flag[T: Flaggable] private[app] (
   /** String representation of this flag's default value */
   def defaultString(): String = {
     try {
-      flaggable.show(default getOrElse { throw flagNotFound })
+      flaggable.show(default getOrElse {
+        throw flagNotFound
+      })
     } catch {
       case e: Throwable =>
         log.log(Level.SEVERE, s"Flag $name default cannot be read", e)
@@ -566,18 +576,24 @@ class Flags(
   private[this] val helpFlag = this("help", false, "Show this help")
 
   def reset() = synchronized {
-    flags foreach { case (_, f) => f.reset() }
+    flags foreach {
+      case (_, f) => f.reset()
+    }
   }
 
   private[app] def finishParsing(): Unit = {
-    flags.values.foreach { _.finishParsing() }
+    flags.values.foreach {
+      _.finishParsing()
+    }
   }
 
   private[this] def resolveGlobalFlag(f: String) =
     if (includeGlobal) GlobalFlag.get(f) else None
 
   private[this] def resolveFlag(f: String): Option[Flag[_]] =
-    synchronized { flags.get(f) orElse resolveGlobalFlag(f) }
+    synchronized {
+      flags.get(f) orElse resolveGlobalFlag(f)
+    }
 
   private[this] def hasFlag(f: String) = resolveFlag(f).isDefined
   private[this] def flag(f: String) = resolveFlag(f).get
@@ -870,7 +886,13 @@ class Flags(
       _.get.isDefined
     }
 
-    (set.map { _ + " \\" }, unset.map { _ + " \\" })
+    (
+      set.map {
+        _ + " \\"
+      },
+      unset.map {
+        _ + " \\"
+      })
   }
 
   /**

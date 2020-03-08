@@ -10,7 +10,9 @@ trait Counter2Ops {
   implicit def canCopy[K1, K2, V: Zero: Semiring]
       : CanCopy[Counter2[K1, K2, V]] = new CanCopy[Counter2[K1, K2, V]] {
     def apply(t: Counter2[K1, K2, V]): Counter2[K1, K2, V] = {
-      Counter2(t.iterator.map { case ((k1, k2), v) => (k1, k2, v) })
+      Counter2(t.iterator.map {
+        case ((k1, k2), v) => (k1, k2, v)
+      })
     }
   }
 

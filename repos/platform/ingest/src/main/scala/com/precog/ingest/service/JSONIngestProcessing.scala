@@ -297,12 +297,16 @@ final class JSONIngestProcessing(
           ingestUnbuffered(
             JSONParseState.empty(true),
             stream,
-            StreamRef.forWriteMode(storeMode, false)) map { _.report }
+            StreamRef.forWriteMode(storeMode, false)) map {
+            _.report
+          }
         case IngestAllPossible =>
           ingestUnbuffered(
             JSONParseState.empty(false),
             stream,
-            StreamRef.forWriteMode(storeMode, false)) map { _.report }
+            StreamRef.forWriteMode(storeMode, false)) map {
+            _.report
+          }
         case AllOrNothing =>
           ingestAllOrNothing(
             JSONParseState.empty(true),

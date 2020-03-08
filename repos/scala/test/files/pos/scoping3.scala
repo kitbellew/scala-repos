@@ -17,6 +17,8 @@ object CI {
   }
   abstract class SimpleTreeDisplay extends TreeDisplay {
     self: TreeDisplayFinal =>
-    def display() { this.getRoot().display() }
+    def display() {
+      this.getRoot().display()
+    }
   }
 }

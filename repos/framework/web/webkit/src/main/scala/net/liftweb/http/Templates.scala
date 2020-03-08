@@ -119,7 +119,9 @@ object Templates {
         case e: Elem if e.label == "html" => df(e.attributes)
         case _                            => None
       }
-      .flatMap { md => Helpers.findId(in, md.value.text) }
+      .flatMap { md =>
+        Helpers.findId(in, md.value.text)
+      }
       .headOption orElse
       in.flatMap {
           case e: Elem if e.label == "html" =>
@@ -146,7 +148,9 @@ object Templates {
             }
           case _ => None
         }
-        .flatMap { id => Helpers.findId(in, id) }
+        .flatMap { id =>
+          Helpers.findId(in, id)
+        }
         .headOption getOrElse in
   }
 
@@ -226,9 +230,13 @@ object Templates {
                       return Helpers.errorDiv(<div>Error locating template: <b>{
                         name
                       }</b><br/>
-                      Message: <b>{e.getMessage}</b><br/>
+                      Message: <b>{
+                        e.getMessage
+                      }</b><br/>
                       {
-                        <pre>{e.toString}{
+                        <pre>{
+                          e.toString
+                        }{
                           e.getStackTrace.map(_.toString).mkString("\n")
                         }</pre>
                       }
@@ -249,11 +257,15 @@ object Templates {
                   val e = xmlb.asInstanceOf[Failure].exception
                   return Helpers.errorDiv(<div>Error locating template: <b>{
                     name
-                  }</b><br/>Message: <b>{msg}</b><br/>{
+                  }</b><br/>Message: <b>{
+                    msg
+                  }</b><br/>{
                     {
                       e match {
                         case Full(e) =>
-                          <pre>{e.toString}{
+                          <pre>{
+                            e.toString
+                          }{
                             e.getStackTrace.map(_.toString).mkString("\n")
                           }</pre>
                         case _ => NodeSeq.Empty
@@ -354,7 +366,11 @@ abstract class SnippetFailureException(msg: String)
       }
       .take(10)
       .toList
-      .map { e => <code><span><br/>{e.toString}</span></code> }
+      .map { e =>
+        <code><span><br/>{
+          e.toString
+        }</span></code>
+      }
 }
 
 class StateInStatelessException(msg: String)

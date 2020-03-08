@@ -187,7 +187,9 @@ object Name {
         case _ => Addr.Pending
       }
 
-      val id = names map { case bound @ Name.Bound(_) => bound.id }
+      val id = names map {
+        case bound @ Name.Bound(_) => bound.id
+      }
       Name.Bound(va, id)
     }
 }

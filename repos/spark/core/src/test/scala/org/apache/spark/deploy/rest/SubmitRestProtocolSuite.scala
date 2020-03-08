@@ -43,7 +43,9 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
       request.validate()
     } // missing only age
     request.age = 2
-    intercept[SubmitRestProtocolException] { request.validate() } // age too low
+    intercept[SubmitRestProtocolException] {
+      request.validate()
+    } // age too low
     request.age = 10
     request.validate() // everything is set properly
     request.clientSparkVersion = null
@@ -98,7 +100,9 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
 
   test("CreateSubmissionRequest") {
     val message = new CreateSubmissionRequest
-    intercept[SubmitRestProtocolException] { message.validate() }
+    intercept[SubmitRestProtocolException] {
+      message.validate()
+    }
     message.clientSparkVersion = "1.2.3"
     message.appResource = "honey-walnut-cherry.jar"
     message.mainClass = "org.apache.spark.examples.SparkPie"
@@ -124,13 +128,19 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
     // bad fields
     var badConf = conf.clone().set("spark.driver.cores", "one hundred feet")
     message.sparkProperties = badConf.getAll.toMap
-    intercept[SubmitRestProtocolException] { message.validate() }
+    intercept[SubmitRestProtocolException] {
+      message.validate()
+    }
     badConf = conf.clone().set("spark.driver.supervise", "nope, never")
     message.sparkProperties = badConf.getAll.toMap
-    intercept[SubmitRestProtocolException] { message.validate() }
+    intercept[SubmitRestProtocolException] {
+      message.validate()
+    }
     badConf = conf.clone().set("spark.cores.max", "two men")
     message.sparkProperties = badConf.getAll.toMap
-    intercept[SubmitRestProtocolException] { message.validate() }
+    intercept[SubmitRestProtocolException] {
+      message.validate()
+    }
     message.sparkProperties = conf.getAll.toMap
     // test JSON
     val json = message.toJson
@@ -167,7 +177,9 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
 
   test("CreateSubmissionResponse") {
     val message = new CreateSubmissionResponse
-    intercept[SubmitRestProtocolException] { message.validate() }
+    intercept[SubmitRestProtocolException] {
+      message.validate()
+    }
     message.serverSparkVersion = "1.2.3"
     message.submissionId = "driver_123"
     message.success = true
@@ -185,7 +197,9 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
 
   test("KillSubmissionResponse") {
     val message = new KillSubmissionResponse
-    intercept[SubmitRestProtocolException] { message.validate() }
+    intercept[SubmitRestProtocolException] {
+      message.validate()
+    }
     message.serverSparkVersion = "1.2.3"
     message.submissionId = "driver_123"
     message.success = true
@@ -202,7 +216,9 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
 
   test("SubmissionStatusResponse") {
     val message = new SubmissionStatusResponse
-    intercept[SubmitRestProtocolException] { message.validate() }
+    intercept[SubmitRestProtocolException] {
+      message.validate()
+    }
     message.serverSparkVersion = "1.2.3"
     message.submissionId = "driver_123"
     message.success = true
@@ -227,7 +243,9 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
 
   test("ErrorResponse") {
     val message = new ErrorResponse
-    intercept[SubmitRestProtocolException] { message.validate() }
+    intercept[SubmitRestProtocolException] {
+      message.validate()
+    }
     message.serverSparkVersion = "1.2.3"
     message.message = "Field not found in submit request: X"
     message.validate()

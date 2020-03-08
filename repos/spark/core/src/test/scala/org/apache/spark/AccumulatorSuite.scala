@@ -65,12 +65,16 @@ class AccumulatorSuite
     val acc: Accumulator[Int] = sc.accumulator(0)
 
     val d = sc.parallelize(1 to 20)
-    d.foreach { x => acc += x }
+    d.foreach { x =>
+      acc += x
+    }
     acc.value should be(210)
 
     val longAcc = sc.accumulator(0L)
     val maxInt = Integer.MAX_VALUE.toLong
-    d.foreach { x => longAcc += maxInt + x }
+    d.foreach { x =>
+      longAcc += maxInt + x
+    }
     longAcc.value should be(210L + maxInt * 20)
   }
 
@@ -79,7 +83,11 @@ class AccumulatorSuite
     val acc: Accumulator[Int] = sc.accumulator(0)
 
     val d = sc.parallelize(1 to 20)
-    an[Exception] should be thrownBy { d.foreach { x => acc.value = x } }
+    an[Exception] should be thrownBy {
+      d.foreach { x =>
+        acc.value = x
+      }
+    }
   }
 
   test("add value to collection accumulators") {
@@ -89,7 +97,9 @@ class AccumulatorSuite
       val acc: Accumulable[mutable.Set[Any], Any] =
         sc.accumulable(new mutable.HashSet[Any]())
       val d = sc.parallelize(1 to maxI)
-      d.foreach { x => acc += x }
+      d.foreach { x =>
+        acc += x
+      }
       val v = acc.value.asInstanceOf[mutable.Set[Int]]
       for (i <- 1 to maxI) {
         v should contain(i)
@@ -106,7 +116,9 @@ class AccumulatorSuite
         sc.accumulable(new mutable.HashSet[Any]())
       val d = sc.parallelize(1 to maxI)
       an[SparkException] should be thrownBy {
-        d.foreach { x => acc.value += x }
+        d.foreach { x =>
+          acc.value += x
+        }
       }
       resetSparkContext()
     }
@@ -122,7 +134,9 @@ class AccumulatorSuite
       val mapAcc = sc.accumulableCollection(mutable.HashMap[Int, String]())
       val d = sc.parallelize((1 to maxI) ++ (1 to maxI))
       d.foreach { x =>
-        { setAcc += x; bufferAcc += x; mapAcc += (x -> x.toString) }
+        {
+          setAcc += x; bufferAcc += x; mapAcc += (x -> x.toString)
+        }
       }
 
       // Note that this is typed correctly -- no casts necessary
@@ -148,7 +162,9 @@ class AccumulatorSuite
         (20 * (x - 1) to 20 * x).toSet
       }
       val d = sc.parallelize(groupedInts)
-      d.foreach { x => acc.localValue ++= x }
+      d.foreach { x =>
+        acc.localValue ++= x
+      }
       acc.value should be((0 to maxI).toSet)
       resetSparkContext()
     }
@@ -324,8 +340,12 @@ class AccumulatorSuite
       taskBytes,
       Thread.currentThread.getContextClassLoader)
     // Assert that executors see only zeros
-    taskDeser.externalAccums.foreach { a => assert(a.localValue == a.zero) }
-    taskDeser.internalAccums.foreach { a => assert(a.localValue == a.zero) }
+    taskDeser.externalAccums.foreach { a =>
+      assert(a.localValue == a.zero)
+    }
+    taskDeser.internalAccums.foreach { a =>
+      assert(a.localValue == a.zero)
+    }
   }
 
 }

@@ -72,7 +72,9 @@ object RootIsolator {
       if (r.signVariations < p.signVariations) {
         var l = p.reciprocal.compose(x + one)
         while (l(0) == 0)
-          l = l.mapTerms { case Term(coeff, exp) => Term(coeff, exp - 1) }
+          l = l.mapTerms {
+            case Term(coeff, exp) => Term(coeff, exp - 1)
+          }
         val lRoots = TransformedPoly(l, b, a + b, d, c + d)
         lRoots :: rRoots :: Nil
       } else {
@@ -87,7 +89,9 @@ object RootIsolator {
         : Vector[Interval[Rational]] = polys match {
       case TransformedPoly(p, a, b, c, d) :: rest =>
         if (p(BigInt(0)) == BigInt(0)) {
-          val p0 = p.mapTerms { case Term(coeff, exp) => Term(coeff, exp - 1) }
+          val p0 = p.mapTerms {
+            case Term(coeff, exp) => Term(coeff, exp - 1)
+          }
           rec(
             TransformedPoly(p0, a, b, c, d) :: rest,
             acc :+ Interval.point(Rational(b, d)))

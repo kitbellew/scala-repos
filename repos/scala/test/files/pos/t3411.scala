@@ -3,6 +3,8 @@ object A {
 
   def f {
     lazy val x = 0
-    g { case `x` => }
+    g {
+      case `x` =>
+    }
   }
 }

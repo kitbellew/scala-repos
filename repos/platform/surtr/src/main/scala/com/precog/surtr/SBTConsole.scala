@@ -112,7 +112,9 @@ object SBTConsole {
       val config = Configuration parse {
         Option(System.getProperty("precog.storage.root")) map {
           "precog.storage.root = " + _
-        } getOrElse { "" }
+        } getOrElse {
+          ""
+        }
       }
 
       val sortWorkDir = scratchDir
@@ -211,7 +213,9 @@ object SBTConsole {
 
     def produceDAG(str: String) = {
       val forest = compile(str)
-      val validForest = forest filter { _.errors.isEmpty }
+      val validForest = forest filter {
+        _.errors.isEmpty
+      }
 
       if (validForest.isEmpty) {
         val strs = forest map { tree =>

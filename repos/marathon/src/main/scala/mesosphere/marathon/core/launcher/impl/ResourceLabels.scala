@@ -16,7 +16,11 @@ case class ResourceLabels(labels: Map[String, String]) {
   def get(key: String): Option[String] = labels.get(key)
 
   override def toString: String =
-    labels.map { case (k, v) => s"$k: $v" }.mkString(", ")
+    labels
+      .map {
+        case (k, v) => s"$k: $v"
+      }
+      .mkString(", ")
 }
 
 object ResourceLabels {

@@ -485,10 +485,14 @@ object KinesisUtils {
   }
 
   private def validateRegion(regionName: String): String = {
-    Option(RegionUtils.getRegion(regionName)).map { _.getName }.getOrElse {
-      throw new IllegalArgumentException(
-        s"Region name '$regionName' is not valid")
-    }
+    Option(RegionUtils.getRegion(regionName))
+      .map {
+        _.getName
+      }
+      .getOrElse {
+        throw new IllegalArgumentException(
+          s"Region name '$regionName' is not valid")
+      }
   }
 
   private[kinesis] def defaultMessageHandler(record: Record): Array[Byte] = {

@@ -49,7 +49,9 @@ class IteratorInterpreterSpec extends AkkaSpec {
         Seq(Map((x: Int) ⇒ x, stoppingDecider))).iterator
 
       itr.next() should be(1)
-      a[NoSuchElementException] should be thrownBy { itr.next() }
+      a[NoSuchElementException] should be thrownBy {
+        itr.next()
+      }
     }
 
     "throw exceptions when chain fails" in {
@@ -64,7 +66,9 @@ class IteratorInterpreterSpec extends AkkaSpec {
 
       itr.next() should be(1)
       itr.hasNext should be(true)
-      a[ArithmeticException] should be thrownBy { itr.next() }
+      a[ArithmeticException] should be thrownBy {
+        itr.next()
+      }
       itr.hasNext should be(false)
     }
 
@@ -80,7 +84,9 @@ class IteratorInterpreterSpec extends AkkaSpec {
 
       itr.next() should be(1)
       itr.hasNext should be(true)
-      a[ArithmeticException] should be thrownBy { itr.next() }
+      a[ArithmeticException] should be thrownBy {
+        itr.next()
+      }
       itr.hasNext should be(false)
     }
 
@@ -90,7 +96,9 @@ class IteratorInterpreterSpec extends AkkaSpec {
         Seq(Map((x: Int) ⇒ x + 1, stoppingDecider))).iterator
 
       itr.hasNext should be(false)
-      a[NoSuchElementException] should be thrownBy { itr.next() }
+      a[NoSuchElementException] should be thrownBy {
+        itr.next()
+      }
     }
 
     "able to implement a ByteStringBatcher" in {

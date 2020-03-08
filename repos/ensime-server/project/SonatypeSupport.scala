@@ -17,7 +17,9 @@ object SonatypeSupport {
   ) = Seq(
     publishMavenStyle := true,
     publishArtifact in Test := false,
-    pomIncludeRepository := { _ => false },
+    pomIncludeRepository := { _ =>
+      false
+    },
     homepage := Some(url(s"http://github.com/$ghUser/$ghRepo")),
     licenses := Seq(license),
     publishTo <<= version { v: String =>
@@ -38,8 +40,16 @@ object SonatypeSupport {
     }.toSeq,
     pomExtra := (
       <scm>
-        <url>git@github.com:${ghUser}/${ghRepo}.git</url>
-        <connection>scm:git:git@github.com:${ghUser}/${ghRepo}.git</connection>
+        <url>git@github.com:${
+        ghUser
+      }/${
+        ghRepo
+      }.git</url>
+        <connection>scm:git:git@github.com:${
+        ghUser
+      }/${
+        ghRepo
+      }.git</connection>
       </scm>
       <developers>
         <developer>

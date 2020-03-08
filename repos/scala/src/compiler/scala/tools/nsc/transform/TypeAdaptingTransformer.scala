@@ -9,7 +9,9 @@ import scala.tools.nsc.ast.TreeDSL
 trait TypeAdaptingTransformer {
   self: TreeDSL =>
 
-  val analyzer: typechecker.Analyzer { val global: self.global.type }
+  val analyzer: typechecker.Analyzer {
+    val global: self.global.type
+  }
 
   trait TypeAdapter {
     val typer: analyzer.Typer

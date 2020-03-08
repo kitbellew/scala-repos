@@ -85,7 +85,9 @@ final class IDF(override val uid: String)
 
   override def fit(dataset: DataFrame): IDFModel = {
     transformSchema(dataset.schema, logging = true)
-    val input = dataset.select($(inputCol)).rdd.map { case Row(v: Vector) => v }
+    val input = dataset.select($(inputCol)).rdd.map {
+      case Row(v: Vector) => v
+    }
     val idf = new feature.IDF($(minDocFreq)).fit(input)
     copyValues(new IDFModel(uid, idf).setParent(this))
   }
@@ -126,7 +128,9 @@ class IDFModel private[ml] (
 
   override def transform(dataset: DataFrame): DataFrame = {
     transformSchema(dataset.schema, logging = true)
-    val idf = udf { vec: Vector => idfModel.transform(vec) }
+    val idf = udf { vec: Vector =>
+      idfModel.transform(vec)
+    }
     dataset.withColumn($(outputCol), idf(col($(inputCol))))
   }
 

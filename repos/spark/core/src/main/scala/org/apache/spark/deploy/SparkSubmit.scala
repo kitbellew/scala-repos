@@ -645,8 +645,12 @@ object SparkSubmit {
       if (isUserJar(args.primaryResource)) {
         childClasspath += args.primaryResource
       }
-      if (args.jars != null) { childClasspath ++= args.jars.split(",") }
-      if (args.childArgs != null) { childArgs ++= args.childArgs }
+      if (args.jars != null) {
+        childClasspath ++= args.jars.split(",")
+      }
+      if (args.childArgs != null) {
+        childArgs ++= args.childArgs
+      }
     }
 
     // Map all arguments to command-line options or system properties for our chosen mode
@@ -654,8 +658,12 @@ object SparkSubmit {
       if (opt.value != null &&
           (deployMode & opt.deployMode) != 0 &&
           (clusterManager & opt.clusterManager) != 0) {
-        if (opt.clOption != null) { childArgs += (opt.clOption, opt.value) }
-        if (opt.sysProp != null) { sysProps.put(opt.sysProp, opt.value) }
+        if (opt.clOption != null) {
+          childArgs += (opt.clOption, opt.value)
+        }
+        if (opt.sysProp != null) {
+          sysProps.put(opt.sysProp, opt.value)
+        }
       }
     }
 
@@ -682,9 +690,15 @@ object SparkSubmit {
       } else {
         // In legacy standalone cluster mode, use Client as a wrapper around the user class
         childMainClass = "org.apache.spark.deploy.Client"
-        if (args.supervise) { childArgs += "--supervise" }
-        Option(args.driverMemory).foreach { m => childArgs += ("--memory", m) }
-        Option(args.driverCores).foreach { c => childArgs += ("--cores", c) }
+        if (args.supervise) {
+          childArgs += "--supervise"
+        }
+        Option(args.driverMemory).foreach { m =>
+          childArgs += ("--memory", m)
+        }
+        Option(args.driverCores).foreach { c =>
+          childArgs += ("--cores", c)
+        }
         childArgs += "launch"
         childArgs += (args.master, args.primaryResource, args.mainClass)
       }
@@ -742,7 +756,9 @@ object SparkSubmit {
         childArgs += ("--class", args.mainClass)
       }
       if (args.childArgs != null) {
-        args.childArgs.foreach { arg => childArgs += ("--arg", arg) }
+        args.childArgs.foreach { arg =>
+          childArgs += ("--arg", arg)
+        }
       }
     }
 

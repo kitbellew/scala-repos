@@ -19,7 +19,8 @@ import java.lang.reflect.InvocationTargetException
 sealed trait LifeCycleMessage extends Serializable
 
 /* Marker trait to show which Messages are automatically handled by Akka */
-sealed trait AutoReceivedMessage { self: LifeCycleMessage => }
+sealed trait AutoReceivedMessage { self: LifeCycleMessage =>
+}
 
 case class HotSwap(code: ActorRef => Actor.Receive, discardOld: Boolean = true)
     extends AutoReceivedMessage
@@ -33,7 +34,9 @@ case class HotSwap(code: ActorRef => Actor.Receive, discardOld: Boolean = true)
     this(
       (self: ActorRef) => {
         val behavior = code(self)
-        val result: Actor.Receive = { case msg => behavior(msg) }
+        val result: Actor.Receive = {
+          case msg => behavior(msg)
+        }
         result
       },
       discardOld)
@@ -129,7 +132,9 @@ object Actor extends ListenerManagement {
         val tf = classOf[java.lang.Thread].getDeclaredField("subclassAudits")
         tf.setAccessible(true)
         val subclassAudits = tf.get(null).asInstanceOf[java.util.Map[_, _]]
-        subclassAudits synchronized { subclassAudits.clear }
+        subclassAudits synchronized {
+          subclassAudits.clear
+        }
       }
     }
     Runtime.getRuntime.addShutdownHook(new Thread(hook))
@@ -265,8 +270,11 @@ object Actor extends ListenerManagement {
       self.dispatcher = dispatcher
       def receive = {
         case Spawn =>
-          try { body }
-          finally { self.stop() }
+          try {
+            body
+          } finally {
+            self.stop()
+          }
       }
     }).start() ! Spawn
   }
@@ -286,8 +294,11 @@ object Actor extends ListenerManagement {
     */
   implicit def futureToAnyOptionAsTypedOption(anyFuture: Future[_]) =
     new AnyOptionAsTypedOption({
-      try { anyFuture.await }
-      catch { case t: FutureTimeoutException => }
+      try {
+        anyFuture.await
+      } catch {
+        case t: FutureTimeoutException =>
+      }
       anyFuture.resultOrException
     })
 }

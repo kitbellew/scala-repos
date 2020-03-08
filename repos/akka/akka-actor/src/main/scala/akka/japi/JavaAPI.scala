@@ -130,16 +130,23 @@ abstract class JavaPartialFunction[A, B] extends AbstractPartialFunction[A, B] {
   def apply(x: A, isCheck: Boolean): B
 
   final def isDefinedAt(x: A): Boolean =
-    try { apply(x, true); true }
-    catch { case NoMatch ⇒ false }
+    try {
+      apply(x, true); true
+    } catch {
+      case NoMatch ⇒ false
+    }
   final override def apply(x: A): B =
     try apply(x, false)
-    catch { case NoMatch ⇒ throw new MatchError(x) }
+    catch {
+      case NoMatch ⇒ throw new MatchError(x)
+    }
   final override def applyOrElse[A1 <: A, B1 >: B](
       x: A1,
       default: A1 ⇒ B1): B1 =
     try apply(x, false)
-    catch { case NoMatch ⇒ default(x) }
+    catch {
+      case NoMatch ⇒ default(x)
+    }
 }
 
 /**
@@ -249,7 +256,9 @@ object Util {
         if (i.hasNext) {
           val builder = new immutable.VectorBuilder[T]
 
-          do { builder += i.next() } while (i.hasNext)
+          do {
+            builder += i.next()
+          } while (i.hasNext)
 
           builder.result()
         } else EmptyImmutableSeq

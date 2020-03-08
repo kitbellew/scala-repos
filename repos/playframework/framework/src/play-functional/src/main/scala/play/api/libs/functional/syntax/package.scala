@@ -38,7 +38,9 @@ object `package` {
       implicit fu: InvariantFunctor[M]): InvariantFunctorOps[M, A] =
     new InvariantFunctorOps(ma)
 
-  def unapply[B, A](f: B => Option[A]): B => A = { b: B => f(b).get }
+  def unapply[B, A](f: B => Option[A]): B => A = { b: B =>
+    f(b).get
+  }
 
   def unlift[A, B](f: A => Option[B]): A => B = Function.unlift(f)
 

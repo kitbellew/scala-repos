@@ -113,7 +113,9 @@ private[prediction] case class EventOp(
     setProp.flatMap { set =>
       val unsetKeys: Set[String] = unsetProp
         .map(unset =>
-          unset.fields.filter { case (k, v) => (v >= set.fields(k).t) }.keySet)
+          unset.fields.filter {
+            case (k, v) => (v >= set.fields(k).t)
+          }.keySet)
         .getOrElse(Set())
 
       val combinedFields = deleteEntity
@@ -199,13 +201,21 @@ private[prediction] object PEventAggregator {
       .map(e => (e.entityId, EventOp(e)))
       .aggregateByKey[EventOp](EventOp())(
         // within same partition
-        seqOp = { case (u, v) => u ++ v },
+        seqOp = {
+          case (u, v) => u ++ v
+        },
         // across partition
-        combOp = { case (accu, u) => accu ++ u }
+        combOp = {
+          case (accu, u) => accu ++ u
+        }
       )
       .mapValues(_.toPropertyMap)
-      .filter { case (k, v) => v.isDefined }
-      .map { case (k, v) => (k, v.get) }
+      .filter {
+        case (k, v) => v.isDefined
+      }
+      .map {
+        case (k, v) => (k, v.get)
+      }
   }
 
 }

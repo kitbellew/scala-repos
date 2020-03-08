@@ -31,7 +31,9 @@ class NextIteratorSuite extends SparkFunSuite with Matchers {
     i.hasNext should be(true)
     i.next should be(1)
     i.hasNext should be(false)
-    intercept[NoSuchElementException] { i.next() }
+    intercept[NoSuchElementException] {
+      i.next()
+    }
   }
 
   test("two iterations") {
@@ -41,13 +43,17 @@ class NextIteratorSuite extends SparkFunSuite with Matchers {
     i.hasNext should be(true)
     i.next should be(2)
     i.hasNext should be(false)
-    intercept[NoSuchElementException] { i.next() }
+    intercept[NoSuchElementException] {
+      i.next()
+    }
   }
 
   test("empty iteration") {
     val i = new StubIterator(Buffer())
     i.hasNext should be(false)
-    intercept[NoSuchElementException] { i.next() }
+    intercept[NoSuchElementException] {
+      i.next()
+    }
   }
 
   test("close is called once for empty iterations") {

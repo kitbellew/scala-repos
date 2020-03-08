@@ -537,8 +537,10 @@ object MB {
     private def vars: List[String] = this match {
       case Var(n)    => List(n)
       case Mul(l, r) => l.vars ::: r.vars
-      case Pow(l, n) => { val vs = l.vars; List.range(0, n).flatMap(i => vs) }
-      case _         => List()
+      case Pow(l, n) => {
+        val vs = l.vars; List.range(0, n).flatMap(i => vs)
+      }
+      case _ => List()
     }
 
     private def +<(that: Expr): Boolean = (this +<? that) < 0;

@@ -43,7 +43,9 @@ class ProxyTest extends WordSpec {
     "generate a factory for an interface" in {
       var called = 0
 
-      val f1 = new ProxyFactory[TestInterface]({ m => called += 1; m() })
+      val f1 = new ProxyFactory[TestInterface]({ m =>
+        called += 1; m()
+      })
       val obj = new TestImpl
 
       val proxied = f1(obj)
@@ -57,7 +59,9 @@ class ProxyTest extends WordSpec {
     "generate a factory for a class with a default constructor" in {
       var called = 0
 
-      val f2 = new ProxyFactory[TestClass]({ m => called += 1; m() })
+      val f2 = new ProxyFactory[TestClass]({ m =>
+        called += 1; m()
+      })
       val obj = new TestClass
 
       val proxied = f2(obj)
@@ -126,7 +130,9 @@ class ProxyTest extends WordSpec {
     }
 
     "MethodCall can be invoked with alternate target" in {
-      val alt = new TestImpl { override def foo = "alt foo" }
+      val alt = new TestImpl {
+        override def foo = "alt foo"
+      }
       val pf = new ProxyFactory[TestImpl](m => m(alt))
       val targetless = pf()
 
@@ -142,7 +148,9 @@ class ProxyTest extends WordSpec {
     }
 
     "MethodCall can be invoked with alternate target and arguments" in {
-      val alt = new TestImpl { override def bar(i: Int) = Some(i.toLong * 10) }
+      val alt = new TestImpl {
+        override def bar(i: Int) = Some(i.toLong * 10)
+      }
       val pf =
         new ProxyFactory[TestImpl](m => m(alt, Array(3.asInstanceOf[AnyRef])))
       val targetless = pf()
@@ -170,7 +178,9 @@ class ProxyTest extends WordSpec {
     val reflectConstructor = { () =>
       new ReferenceProxyFactory[TestInterface](_())
     }
-    val cglibConstructor = { () => new ProxyFactory[TestInterface](_()) }
+    val cglibConstructor = { () =>
+      new ProxyFactory[TestInterface](_())
+    }
     /*
     "maintains proxy creation speed" in {
       val repTimes = 40000
@@ -197,12 +207,20 @@ class ProxyTest extends WordSpec {
       val proxy2 = cglibConstructor()(obj)
 
       val t1 = benchmark {
-        for (i <- 1 to repTimes) { proxy1.foo; proxy1.bar(2) }
+        for (i <- 1 to repTimes) {
+          proxy1.foo; proxy1.bar(2)
+        }
       }
       val t2 = benchmark {
-        for (i <- 1 to repTimes) { proxy2.foo; proxy2.bar(2) }
+        for (i <- 1 to repTimes) {
+          proxy2.foo; proxy2.bar(2)
+        }
       }
-      val t3 = benchmark { for (i <- 1 to repTimes) { obj.foo; obj.bar(2) } }
+      val t3 = benchmark {
+        for (i <- 1 to repTimes) {
+          obj.foo; obj.bar(2)
+        }
+      }
 
       // println("proxy invocation")
       // println(t1)

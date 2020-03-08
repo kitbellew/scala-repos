@@ -34,5 +34,7 @@ trait BitraverseLaws[F[_, _]] extends BifoldableLaws[F] with BifunctorLaws[F] {
 
 object BitraverseLaws {
   def apply[F[_, _]](implicit ev: Bitraverse[F]): BitraverseLaws[F] =
-    new BitraverseLaws[F] { def F: Bitraverse[F] = ev }
+    new BitraverseLaws[F] {
+      def F: Bitraverse[F] = ev
+    }
 }

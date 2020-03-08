@@ -132,7 +132,9 @@ class AccountServiceHandlers(
       f: Account => Future[HttpResponse[JValue]])(
       implicit executor: ExecutionContext): Future[HttpResponse[JValue]] = {
     request.parameters.get('accountId).map { accountId =>
-      withAccountAdmin(accountId, auth, request) { f }
+      withAccountAdmin(accountId, auth, request) {
+        f
+      }
     } getOrElse {
       Future(
         HttpResponse[JValue](
@@ -158,7 +160,9 @@ class AccountServiceHandlers(
                       JArray(
                         JObject("accountId" -> account.accountId.serialize))
                     }
-                    .orElse { Some(JArray()) })
+                    .orElse {
+                      Some(JArray())
+                    })
               }
 
             case None =>

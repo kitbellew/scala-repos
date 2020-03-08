@@ -29,7 +29,9 @@ case class Activity[+T](run: Var[Activity.State[T]]) {
   /**
     * Map a T-typed activity to a U-typed one.
     */
-  def map[U](f: T => U): Activity[U] = collect { case x => f(x) }
+  def map[U](f: T => U): Activity[U] = collect {
+    case x => f(x)
+  }
 
   /**
     * Build a new activity by applying `f` to each value. When

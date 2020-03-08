@@ -70,7 +70,9 @@ object ContravariantCoyoneda extends ContravariantCoyonedaInstances {
   /** Lift the `I` type member to a parameter.  It is usually more
     * convenient to use `Aux` than a structural type.
     */
-  type Aux[F[_], A, B] = ContravariantCoyoneda[F, A] { type I = B }
+  type Aux[F[_], A, B] = ContravariantCoyoneda[F, A] {
+    type I = B
+  }
 
   /** See `by` method. */
   final class By[F[_]] {

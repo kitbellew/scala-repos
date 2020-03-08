@@ -3,7 +3,9 @@ import scala.language.implicitConversions
 object Test {
   abstract class Unit
   object NoUnit extends Unit
-  object Hour extends Unit { override def toString = "Hour" }
+  object Hour extends Unit {
+    override def toString = "Hour"
+  }
 
   case class Measure(scalar: Double, unit: Unit) {
     def *(newUnit: Unit) = Measure(scalar, newUnit)

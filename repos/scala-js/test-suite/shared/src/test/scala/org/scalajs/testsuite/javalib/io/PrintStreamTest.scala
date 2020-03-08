@@ -131,11 +131,15 @@ class PrintStreamTest {
     test(_.print("b\ud83d\udca9c"), Array('b', 0xf0, 0x9f, 0x92, 0xa9, 'c'))
 
     test(
-      { osw => osw.print("ab\ud83d"); osw.print('\udca9') },
+      { osw =>
+        osw.print("ab\ud83d"); osw.print('\udca9')
+      },
       Array('a', 'b', 0xf0, 0x9f, 0x92, 0xa9))
 
     test(
-      { osw => osw.print("ab\ud83d"); osw.print("\udca9cd") },
+      { osw =>
+        osw.print("ab\ud83d"); osw.print("\udca9cd")
+      },
       Array('a', 'b', 0xf0, 0x9f, 0x92, 0xa9, 'c', 'd'))
 
     // Start of malformed sequences
@@ -143,19 +147,35 @@ class PrintStreamTest {
     test(_.print("\ud83da"), Array('?', 'a'))
     test(_.print("\udca9"), Array('?'))
 
-    test({ osw => osw.print('\ud83d'); osw.print('a') }, Array('?', 'a'))
+    test(
+      { osw =>
+        osw.print('\ud83d'); osw.print('a')
+      },
+      Array('?', 'a'))
 
     test(
-      { osw => osw.print("ab\ud83d"); osw.print("\ud83d") },
+      { osw =>
+        osw.print("ab\ud83d"); osw.print("\ud83d")
+      },
       Array('a', 'b', '?'))
 
     test(
-      { osw => osw.print("ab\ud83d"); osw.print("\ud83dc") },
+      { osw =>
+        osw.print("ab\ud83d"); osw.print("\ud83dc")
+      },
       Array('a', 'b', '?', '?', 'c'))
 
-    test({ osw => osw.print('\ud83d'); osw.close() }, Array('?'))
+    test(
+      { osw =>
+        osw.print('\ud83d'); osw.close()
+      },
+      Array('?'))
 
-    test({ osw => osw.print("ab\ud83d"); osw.close() }, Array('a', 'b', '?'))
+    test(
+      { osw =>
+        osw.print("ab\ud83d"); osw.close()
+      },
+      Array('a', 'b', '?'))
   }
 
   @Test def println_forwards_and_flushes_when_autoFlush_is_true(): Unit = {

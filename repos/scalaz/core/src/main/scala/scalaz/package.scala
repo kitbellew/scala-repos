@@ -105,7 +105,9 @@ package object scalaz {
     with Cozip[Id]
     with Optional[Id] = Id.id
 
-  private[scalaz] type Tagged[A, T] = { type Tag = T; type Self = A }
+  private[scalaz] type Tagged[A, T] = {
+    type Tag = T; type Self = A
+  }
 
   /**
     * Tag a type `T` with `Tag`.
@@ -198,7 +200,9 @@ package object scalaz {
       with ReaderWriterStateTFunctions {
     def apply[F[_], R, W, S, A](
         f: (R, S) => F[(W, A, S)]): ReaderWriterStateT[F, R, W, S, A] =
-      IndexedReaderWriterStateT[F, R, W, S, S, A] { (r: R, s: S) => f(r, s) }
+      IndexedReaderWriterStateT[F, R, W, S, S, A] { (r: R, s: S) =>
+        f(r, s)
+      }
   }
   type IndexedReaderWriterState[-R, W, -S1, S2, A] =
     IndexedReaderWriterStateT[Id, R, W, S1, S2, A]
@@ -217,7 +221,9 @@ package object scalaz {
       with ReaderWriterStateTFunctions {
     def apply[R, W, S, A](
         f: (R, S) => (W, A, S)): ReaderWriterState[R, W, S, A] =
-      IndexedReaderWriterStateT[Id, R, W, S, S, A] { (r: R, s: S) => f(r, s) }
+      IndexedReaderWriterStateT[Id, R, W, S, S, A] { (r: R, s: S) =>
+        f(r, s)
+      }
   }
   type IRWST[F[_], -R, W, -S1, S2, A] =
     IndexedReaderWriterStateT[F, R, W, S1, S2, A]

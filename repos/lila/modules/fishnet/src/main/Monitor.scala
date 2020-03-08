@@ -34,8 +34,12 @@ private final class Monitor(
 
     val monitor = lila.mon.fishnet.analysis by client.userId.value
 
-    result.engine.options.hashInt foreach { monitor.hash(_) }
-    result.engine.options.threadsInt foreach { monitor.threads(_) }
+    result.engine.options.hashInt foreach {
+      monitor.hash(_)
+    }
+    result.engine.options.threadsInt foreach {
+      monitor.threads(_)
+    }
 
     monitor.totalSecond(sumOf(result.analysis)(_.time) / 1000)
     monitor.totalMeganode(sumOf(result.analysis) { eval =>
@@ -48,15 +52,27 @@ private final class Monitor(
     def avgOf(f: JsonApi.Request.Evaluation => Option[Int]): Option[Int] = {
       val (sum, nb) = metaMovesSample.foldLeft(0 -> 0) {
         case ((sum, nb), move) =>
-          f(move).fold(sum -> nb) { v => (sum + v, nb + 1) }
+          f(move).fold(sum -> nb) { v =>
+            (sum + v, nb + 1)
+          }
       }
       (nb > 0) option (sum / nb)
     }
-    avgOf(_.time) foreach { monitor.movetime(_) }
-    avgOf(_.nodes) foreach { monitor.node(_) }
-    avgOf(_.cappedNps) foreach { monitor.nps(_) }
-    avgOf(_.depth) foreach { monitor.depth(_) }
-    avgOf(_.pvList.size.some) foreach { monitor.pvSize(_) }
+    avgOf(_.time) foreach {
+      monitor.movetime(_)
+    }
+    avgOf(_.nodes) foreach {
+      monitor.node(_)
+    }
+    avgOf(_.cappedNps) foreach {
+      monitor.nps(_)
+    }
+    avgOf(_.depth) foreach {
+      monitor.depth(_)
+    }
+    avgOf(_.pvList.size.some) foreach {
+      monitor.pvSize(_)
+    }
   }
 
   private[fishnet] def move(work: Work.Move, client: Client) = {
@@ -150,8 +166,12 @@ private final class Monitor(
     queued(Move.key)(moveDb.count(_.nonAcquired))
     acquired(Move.key)(moveDb.count(_.isAcquired))
 
-    repo.countAnalysis(acquired = false).map { queued(Analysis.key)(_) } >>
-      repo.countAnalysis(acquired = true).map { acquired(Analysis.key)(_) }
+    repo.countAnalysis(acquired = false).map {
+      queued(Analysis.key)(_)
+    } >>
+      repo.countAnalysis(acquired = true).map {
+        acquired(Analysis.key)(_)
+      }
 
   } andThenAnyway scheduleWork
 

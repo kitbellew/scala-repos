@@ -38,6 +38,8 @@ object PlayTime {
             val isTv = doc.get(tvField).isDefined
             User.PlayTime(pt.total + t, pt.tv + isTv.fold(t, 0))
         })
-      }.addEffect { UserRepo.setPlayTime(user, _) }
+      }.addEffect {
+        UserRepo.setPlayTime(user, _)
+      }
   }
 }

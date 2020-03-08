@@ -297,7 +297,9 @@ private[twitter] class ServerDispatcher(
       val save = Local.save()
       process(msg)
       Local.restore(save)
-    } ensure { hangup(Time.now) }
+    } ensure {
+      hangup(Time.now)
+    }
 
   Local.letClear {
     Trace.letTracer(tracer) {

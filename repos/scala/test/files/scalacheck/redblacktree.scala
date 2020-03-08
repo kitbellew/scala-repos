@@ -113,7 +113,9 @@ package scala.collection.immutable.redblacktree {
     }
 
     def orderIsPreserved[A](t: Tree[String, A]): Boolean =
-      iterator(t) zip iterator(t).drop(1) forall { case (x, y) => x._1 < y._1 }
+      iterator(t) zip iterator(t).drop(1) forall {
+        case (x, y) => x._1 < y._1
+      }
 
     def heightIsBounded(t: Tree[_, _]): Boolean =
       height(t) <= (2 * (32 - Integer.numberOfLeadingZeros(count(t) + 2)) - 2)

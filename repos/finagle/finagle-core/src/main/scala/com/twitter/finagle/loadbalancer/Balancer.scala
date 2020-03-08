@@ -37,7 +37,9 @@ private trait Balancer[Req, Rep] extends ServiceFactory[Req, Rep] { self =>
   /**
     * The type of Node. Mixed in.
     */
-  protected type Node <: AnyRef with NodeT[Req, Rep] { type This = Node }
+  protected type Node <: AnyRef with NodeT[Req, Rep] {
+    type This = Node
+  }
 
   /**
     * Create a new node representing the given factory, with the given
@@ -57,7 +59,9 @@ private trait Balancer[Req, Rep] extends ServiceFactory[Req, Rep] { self =>
   /**
     * The type of Distributor. Mixed in.
     */
-  protected type Distributor <: DistributorT[Node] { type This = Distributor }
+  protected type Distributor <: DistributorT[Node] {
+    type This = Distributor
+  }
 
   /**
     * Create an initial distributor.
@@ -95,7 +99,9 @@ private trait Balancer[Req, Rep] extends ServiceFactory[Req, Rep] { self =>
     statsReceiver.addGauge("load") {
       dist.vector.map(_.pending).sum
     },
-    statsReceiver.addGauge("size") { dist.vector.size }
+    statsReceiver.addGauge("size") {
+      dist.vector.size
+    }
   )
 
   private[this] val adds = statsReceiver.counter("adds")

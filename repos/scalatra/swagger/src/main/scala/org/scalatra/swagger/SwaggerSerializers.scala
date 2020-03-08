@@ -363,7 +363,9 @@ object SwaggerSerializers {
                 ("discriminator" -> x.discriminator) ~
                 ("properties" -> (x.properties.sortBy {
                   case (_, p) ⇒ p.position
-                } map { case (k, v) => k -> Extraction.decompose(v) }))
+                } map {
+                  case (k, v) => k -> Extraction.decompose(v)
+                }))
           }))
 
   class ResponseMessageSerializer

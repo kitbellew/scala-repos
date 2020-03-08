@@ -26,7 +26,9 @@ sealed trait RunResult[T] {
 
 object RunResult {
   implicit def fromAux[T, Out0 <: RuleX](
-      implicit aux: Aux[T, Out0]): RunResult[T] { type Out = Out0 } = `n/a`
+      implicit aux: Aux[T, Out0]): RunResult[T] {
+    type Out = Out0
+  } = `n/a`
 
   sealed trait Aux[T, Out]
   object Aux extends Aux1 {

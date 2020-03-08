@@ -381,7 +381,9 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
       "This filter calls next and throws an exception afterwords"
 
     def apply(next: EssentialAction) = EssentialAction { request =>
-      next(request).map { _ => throw new RuntimeException(expectedText) }(ec)
+      next(request).map { _ =>
+        throw new RuntimeException(expectedText)
+      }(ec)
     }
   }
 
@@ -390,19 +392,31 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
 
   import play.api.routing.sird._
   val testRouter = Router.from {
-    case GET(p"/")   => Action { request => Results.Ok(expectedOkText) }
-    case GET(p"/ok") => Action { request => Results.Ok(expectedOkText) }
+    case GET(p"/") =>
+      Action { request =>
+        Results.Ok(expectedOkText)
+      }
+    case GET(p"/ok") =>
+      Action { request =>
+        Results.Ok(expectedOkText)
+      }
     case POST(p"/ok") =>
-      Action { request => Results.Ok(request.body.asText.getOrElse("")) }
+      Action { request =>
+        Results.Ok(request.body.asText.getOrElse(""))
+      }
     case GET(p"/error") =>
-      Action { request => throw new RuntimeException(expectedErrorText) }
+      Action { request =>
+        throw new RuntimeException(expectedErrorText)
+      }
     case POST(p"/error") =>
       Action { request =>
         throw new RuntimeException(request.body.asText.getOrElse(""))
       }
     case GET(p"/error-async") =>
       Action.async { request =>
-        Future { throw new RuntimeException(expectedErrorText) }(ec)
+        Future {
+          throw new RuntimeException(expectedErrorText)
+        }(ec)
       }
     case POST(p"/error-async") =>
       Action.async { request =>

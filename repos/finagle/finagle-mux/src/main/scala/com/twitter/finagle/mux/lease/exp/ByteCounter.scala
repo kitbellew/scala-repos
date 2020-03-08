@@ -59,7 +59,9 @@ private[lease] class WindowedByteCounter private[lease] (
 
   // Allocation observations with periodicity P; these aren't
   // necessarily contiguous observations, only the last N.
-  private[this] val allocs = Array.fill(N) { StorageUnit.zero }
+  private[this] val allocs = Array.fill(N) {
+    StorageUnit.zero
+  }
 
   private[this] def sum(): StorageUnit = {
     val _ = idx // barrier

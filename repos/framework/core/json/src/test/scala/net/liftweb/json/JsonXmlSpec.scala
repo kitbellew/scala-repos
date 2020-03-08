@@ -36,7 +36,9 @@ object JsonXmlSpec
   import scala.xml.Node
 
   "Valid XML can be converted to JSON and back (symmetric op)" in {
-    val conversion = (xml: Node) => { toXml(toJson(xml)).head == xml }
+    val conversion = (xml: Node) => {
+      toXml(toJson(xml)).head == xml
+    }
     forAll(conversion)
   }
 

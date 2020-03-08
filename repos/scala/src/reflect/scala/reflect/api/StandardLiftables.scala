@@ -9,7 +9,9 @@ trait StandardLiftables { self: Universe =>
     private def lift[T: Liftable](value: T): Tree =
       implicitly[Liftable[T]].apply(value)
     private def selectScala(names: Name*) =
-      names.tail.foldLeft(ScalaDot(names.head)) { Select(_, _) }
+      names.tail.foldLeft(ScalaDot(names.head)) {
+        Select(_, _)
+      }
     private def callScala(names: Name*)(args: List[Tree]) =
       Apply(selectScala(names: _*), args)
     private def callCollection(name: Name)(args: List[Tree]) =
@@ -33,7 +35,9 @@ trait StandardLiftables { self: Universe =>
       callScala(stdnme.Symbol)(Literal(Constant(v.name)) :: Nil)
     }
 
-    implicit def liftTree[T <: Tree]: Liftable[T] = Liftable { identity }
+    implicit def liftTree[T <: Tree]: Liftable[T] = Liftable {
+      identity
+    }
     implicit def liftName[T <: Name]: Liftable[T] = Liftable { name =>
       Ident(name)
     }
@@ -63,7 +67,9 @@ trait StandardLiftables { self: Universe =>
       selectScala(stdnme.collection, stdnme.immutable, stdnme.Nil)
     }
     implicit def liftMap[K: Liftable, V: Liftable]: Liftable[Map[K, V]] =
-      Liftable { m => callCollection(stdnme.Map)(m.toList.map(lift(_))) }
+      Liftable { m =>
+        callCollection(stdnme.Map)(m.toList.map(lift(_)))
+      }
     implicit def liftSet[T: Liftable]: Liftable[Set[T]] = Liftable { s =>
       callCollection(stdnme.Set)(s.toList.map(lift(_)))
     }

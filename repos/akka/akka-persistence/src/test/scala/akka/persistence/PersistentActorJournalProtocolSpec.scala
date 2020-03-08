@@ -63,14 +63,20 @@ akka.persistence.snapshot-store.plugin = "akka.persistence.no-snapshot-store"
     def P(p: Persist): Unit = {
       var sub = 0
       persistAll(p.msgs.toList) { e ⇒
-        sender() ! Done(p.id, { sub += 1; sub })
+        sender() ! Done(
+          p.id, {
+            sub += 1; sub
+          })
         behavior.applyOrElse(e, doNothing)
       }
     }
     def PA(p: PersistAsync): Unit = {
       var sub = 0
       persistAllAsync(p.msgs.toList) { e ⇒
-        sender() ! Done(p.id, { sub += 1; sub })
+        sender() ! Done(
+          p.id, {
+            sub += 1; sub
+          })
         behavior.applyOrElse(e, doNothing)
       }
     }

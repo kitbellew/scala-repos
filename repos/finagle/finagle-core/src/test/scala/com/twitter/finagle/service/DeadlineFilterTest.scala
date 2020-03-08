@@ -321,8 +321,9 @@ class DeadlineFilterTest extends FunSuite with MockitoSugar {
 
     val ps: Stack.Params = Stack.Params.empty + p
     assert(ps.contains[Param])
-    assert(
-      (ps[Param] match { case Param(t, d) => (t, d) }) == ((1.second, 0.5)))
+    assert((ps[Param] match {
+      case Param(t, d) => (t, d)
+    }) == ((1.second, 0.5)))
   }
 
   test("module configured correctly using stack params") {

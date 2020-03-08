@@ -55,7 +55,9 @@ private[sql] class ExecutionPage(parent: SQLTab)
             }
             </li>
             <li>
-              <strong>Duration: </strong>{UIUtils.formatDuration(duration)}
+              <strong>Duration: </strong>{
+              UIUtils.formatDuration(duration)
+            }
             </li>
             {
               if (executionUIData.runningJobs.nonEmpty) {
@@ -63,7 +65,9 @@ private[sql] class ExecutionPage(parent: SQLTab)
                 <strong>Running Jobs: </strong>
                 {
                   executionUIData.runningJobs.sorted.map { jobId =>
-                    <a href={jobURL(jobId)}>{
+                    <a href={
+                      jobURL(jobId)
+                    }>{
                       jobId.toString
                     }</a><span>&nbsp;</span>
                   }
@@ -77,7 +81,9 @@ private[sql] class ExecutionPage(parent: SQLTab)
                 <strong>Succeeded Jobs: </strong>
                 {
                   executionUIData.succeededJobs.sorted.map { jobId =>
-                    <a href={jobURL(jobId)}>{
+                    <a href={
+                      jobURL(jobId)
+                    }>{
                       jobId.toString
                     }</a><span>&nbsp;</span>
                   }
@@ -91,7 +97,9 @@ private[sql] class ExecutionPage(parent: SQLTab)
                 <strong>Failed Jobs: </strong>
                 {
                   executionUIData.failedJobs.sorted.map { jobId =>
-                    <a href={jobURL(jobId)}>{
+                    <a href={
+                      jobURL(jobId)
+                    }>{
                       jobId.toString
                     }</a><span>&nbsp;</span>
                   }
@@ -109,7 +117,9 @@ private[sql] class ExecutionPage(parent: SQLTab)
             physicalPlanDescription(executionUIData.physicalPlanDescription)
         }
         .getOrElse {
-          <div>No information to display for Plan {executionId}</div>
+          <div>No information to display for Plan {
+            executionId
+          }</div>
         }
 
       UIUtils.headerSparkPage(
@@ -124,9 +134,15 @@ private[sql] class ExecutionPage(parent: SQLTab)
     <link rel="stylesheet" href={
       UIUtils.prependBaseUri("/static/sql/spark-sql-viz.css")
     } type="text/css"/>
-    <script src={UIUtils.prependBaseUri("/static/d3.min.js")}></script>
-    <script src={UIUtils.prependBaseUri("/static/dagre-d3.min.js")}></script>
-    <script src={UIUtils.prependBaseUri("/static/graphlib-dot.min.js")}></script>
+    <script src={
+      UIUtils.prependBaseUri("/static/d3.min.js")
+    }></script>
+    <script src={
+      UIUtils.prependBaseUri("/static/dagre-d3.min.js")
+    }></script>
+    <script src={
+      UIUtils.prependBaseUri("/static/graphlib-dot.min.js")
+    }></script>
     <script src={
       UIUtils.prependBaseUri("/static/sql/spark-sql-viz.js")
     }></script>
@@ -138,19 +154,31 @@ private[sql] class ExecutionPage(parent: SQLTab)
       graph: SparkPlanGraph): Seq[Node] = {
     val metadata = graph.allNodes.flatMap { node =>
       val nodeId = s"plan-meta-data-${node.id}"
-      <div id={nodeId}>{node.desc}</div>
+      <div id={
+        nodeId
+      }>{
+        node.desc
+      }</div>
     }
 
     <div>
       <div id="plan-viz-graph"></div>
       <div id="plan-viz-metadata" style="display:none">
         <div class="dot-file">
-          {graph.makeDotFile(metrics)}
+          {
+      graph.makeDotFile(metrics)
+    }
         </div>
-        <div id="plan-viz-metadata-size">{graph.allNodes.size.toString}</div>
-        {metadata}
+        <div id="plan-viz-metadata-size">{
+      graph.allNodes.size.toString
+    }</div>
+        {
+      metadata
+    }
       </div>
-      {planVisualizationResources}
+      {
+      planVisualizationResources
+    }
       <script>$(function() {{ renderPlanViz(); }})</script>
     </div>
   }
@@ -167,7 +195,9 @@ private[sql] class ExecutionPage(parent: SQLTab)
       </span>
     </div>
     <div id="physical-plan-details" style="display: none;">
-      <pre>{physicalPlanDescription}</pre>
+      <pre>{
+      physicalPlanDescription
+    }</pre>
     </div>
     <script>
       function clickPhysicalPlanDetails() {{

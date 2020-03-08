@@ -9,7 +9,9 @@ object SCL5840 {
 
   object Macros {
     def impl(c: Context)(args: c.Expr[Any]*): c.Expr[SC] = {
-      c.universe.reify { new SC }
+      c.universe.reify {
+        new SC
+      }
     }
   }
 

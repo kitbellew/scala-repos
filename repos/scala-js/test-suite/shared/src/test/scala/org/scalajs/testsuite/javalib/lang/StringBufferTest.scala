@@ -124,8 +124,14 @@ class StringBufferTest {
 
     expectThrows(classOf[IndexOutOfBoundsException], buf.setLength(-3))
 
-    assertEquals("foo", { buf.setLength(3); buf.toString })
-    assertEquals("foo\u0000\u0000\u0000", { buf.setLength(6); buf.toString })
+    assertEquals(
+      "foo", {
+        buf.setLength(3); buf.toString
+      })
+    assertEquals(
+      "foo\u0000\u0000\u0000", {
+        buf.setLength(6); buf.toString
+      })
   }
 
   @Test def appendCodePoint(): Unit = {
@@ -266,8 +272,14 @@ class StringBuilderTest {
 
     expectThrows(classOf[IndexOutOfBoundsException], b.setLength(-3))
 
-    assertEquals("foo", { b.setLength(3); b.toString })
-    assertEquals("foo\u0000\u0000\u0000", { b.setLength(6); b.toString })
+    assertEquals(
+      "foo", {
+        b.setLength(3); b.toString
+      })
+    assertEquals(
+      "foo\u0000\u0000\u0000", {
+        b.setLength(6); b.toString
+      })
   }
 
   @Test def appendCodePoint(): Unit = {

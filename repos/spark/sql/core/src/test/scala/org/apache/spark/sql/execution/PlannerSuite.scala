@@ -283,7 +283,9 @@ class PlannerSuite extends SharedSQLContext {
     val doubleRepartitioned =
       testData.repartition(10).repartition(20).coalesce(5)
     def countRepartitions(plan: LogicalPlan): Int =
-      plan.collect { case r: Repartition => r }.length
+      plan.collect {
+        case r: Repartition => r
+      }.length
     assert(countRepartitions(doubleRepartitioned.queryExecution.logical) === 3)
     assert(
       countRepartitions(doubleRepartitioned.queryExecution.optimizedPlan) === 1)
@@ -346,7 +348,9 @@ class PlannerSuite extends SharedSQLContext {
     val outputPlan =
       EnsureRequirements(sqlContext.sessionState.conf).apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
-    if (outputPlan.collect { case e: ShuffleExchange => true }.isEmpty) {
+    if (outputPlan.collect {
+          case e: ShuffleExchange => true
+        }.isEmpty) {
       fail(s"Exchange should have been added:\n$outputPlan")
     }
   }
@@ -388,7 +392,9 @@ class PlannerSuite extends SharedSQLContext {
     val outputPlan =
       EnsureRequirements(sqlContext.sessionState.conf).apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
-    if (outputPlan.collect { case e: ShuffleExchange => true }.isEmpty) {
+    if (outputPlan.collect {
+          case e: ShuffleExchange => true
+        }.isEmpty) {
       fail(s"Exchange should have been added:\n$outputPlan")
     }
   }
@@ -410,7 +416,9 @@ class PlannerSuite extends SharedSQLContext {
     val outputPlan =
       EnsureRequirements(sqlContext.sessionState.conf).apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
-    if (outputPlan.collect { case e: ShuffleExchange => true }.nonEmpty) {
+    if (outputPlan.collect {
+          case e: ShuffleExchange => true
+        }.nonEmpty) {
       fail(s"Exchange should not have been added:\n$outputPlan")
     }
   }
@@ -435,7 +443,9 @@ class PlannerSuite extends SharedSQLContext {
     val outputPlan =
       EnsureRequirements(sqlContext.sessionState.conf).apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
-    if (outputPlan.collect { case e: ShuffleExchange => true }.nonEmpty) {
+    if (outputPlan.collect {
+          case e: ShuffleExchange => true
+        }.nonEmpty) {
       fail(s"No Exchanges should have been added:\n$outputPlan")
     }
   }
@@ -452,7 +462,9 @@ class PlannerSuite extends SharedSQLContext {
     val outputPlan =
       EnsureRequirements(sqlContext.sessionState.conf).apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
-    if (outputPlan.collect { case s: Sort => true }.isEmpty) {
+    if (outputPlan.collect {
+          case s: Sort => true
+        }.isEmpty) {
       fail(s"Sort should have been added:\n$outputPlan")
     }
   }
@@ -471,7 +483,9 @@ class PlannerSuite extends SharedSQLContext {
     val outputPlan =
       EnsureRequirements(sqlContext.sessionState.conf).apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
-    if (outputPlan.collect { case s: Sort => true }.nonEmpty) {
+    if (outputPlan.collect {
+          case s: Sort => true
+        }.nonEmpty) {
       fail(s"No sorts should have been added:\n$outputPlan")
     }
   }
@@ -490,7 +504,9 @@ class PlannerSuite extends SharedSQLContext {
     val outputPlan =
       EnsureRequirements(sqlContext.sessionState.conf).apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
-    if (outputPlan.collect { case s: Sort => true }.isEmpty) {
+    if (outputPlan.collect {
+          case s: Sort => true
+        }.isEmpty) {
       fail(s"Sort should have been added:\n$outputPlan")
     }
   }
@@ -514,7 +530,9 @@ class PlannerSuite extends SharedSQLContext {
     val outputPlan =
       EnsureRequirements(sqlContext.sessionState.conf).apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
-    if (outputPlan.collect { case e: ShuffleExchange => true }.size == 2) {
+    if (outputPlan.collect {
+          case e: ShuffleExchange => true
+        }.size == 2) {
       fail(s"Topmost Exchange should have been eliminated:\n$outputPlan")
     }
   }
@@ -539,7 +557,9 @@ class PlannerSuite extends SharedSQLContext {
     val outputPlan =
       EnsureRequirements(sqlContext.sessionState.conf).apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
-    if (outputPlan.collect { case e: ShuffleExchange => true }.size == 1) {
+    if (outputPlan.collect {
+          case e: ShuffleExchange => true
+        }.size == 1) {
       fail(s"Topmost Exchange should not have been eliminated:\n$outputPlan")
     }
   }
@@ -571,10 +591,14 @@ class PlannerSuite extends SharedSQLContext {
 
     val outputPlan =
       ReuseExchange(sqlContext.sessionState.conf).apply(inputPlan)
-    if (outputPlan.collect { case e: ReusedExchange => true }.size != 1) {
+    if (outputPlan.collect {
+          case e: ReusedExchange => true
+        }.size != 1) {
       fail(s"Should re-use the shuffle:\n$outputPlan")
     }
-    if (outputPlan.collect { case e: ShuffleExchange => true }.size != 1) {
+    if (outputPlan.collect {
+          case e: ShuffleExchange => true
+        }.size != 1) {
       fail(s"Should have only one shuffle:\n$outputPlan")
     }
 
@@ -589,10 +613,14 @@ class PlannerSuite extends SharedSQLContext {
 
     val outputPlan2 =
       ReuseExchange(sqlContext.sessionState.conf).apply(inputPlan2)
-    if (outputPlan2.collect { case e: ReusedExchange => true }.size != 2) {
+    if (outputPlan2.collect {
+          case e: ReusedExchange => true
+        }.size != 2) {
       fail(s"Should re-use the two shuffles:\n$outputPlan2")
     }
-    if (outputPlan2.collect { case e: ShuffleExchange => true }.size != 2) {
+    if (outputPlan2.collect {
+          case e: ShuffleExchange => true
+        }.size != 2) {
       fail(s"Should have only two shuffles:\n$outputPlan")
     }
   }

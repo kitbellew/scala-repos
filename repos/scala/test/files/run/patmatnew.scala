@@ -39,8 +39,12 @@ object Test {
     Ticket44.run()
   }
 
-  def assertEquals(a: Any, b: Any) { assert(a == b) }
-  def assertEquals(msg: String, a: Any, b: Any) { assert(a == b, msg) }
+  def assertEquals(a: Any, b: Any) {
+    assert(a == b)
+  }
+  def assertEquals(msg: String, a: Any, b: Any) {
+    assert(a == b, msg)
+  }
 
   object SimpleUnapply {
     def run() { // from sortedmap, old version
@@ -267,10 +271,13 @@ object Test {
         case _ => Nil
       }
       assertEquals(
-        "res instance" + res
-          .isInstanceOf[Seq[Con] forSome { type Con }] + " res(0)=" + res(0),
+        "res instance" + res.isInstanceOf[Seq[Con] forSome {
+          type Con
+        }] + " res(0)=" + res(0),
         true,
-        res.isInstanceOf[Seq[Foo] forSome { type Foo }] && res(0) == Foo())
+        res.isInstanceOf[Seq[Foo] forSome {
+          type Foo
+        }] && res(0) == Foo())
     }
   }
 
@@ -340,7 +347,9 @@ object Test {
 
     val str: Stream[Int] = List(1, 2, 3).iterator.toStream
 
-    def run() { assertEquals(sum(str), 6) }
+    def run() {
+      assertEquals(sum(str), 6)
+    }
   }
 
   // bug#1163 order of temps must be preserved
@@ -362,7 +371,9 @@ object Test {
       case n :: ls => flips((l take n reverse) ::: (l drop n)) + 1
     }
 
-    def run() { assertEquals("both", (Var("x"), Var("y")), f) }
+    def run() {
+      assertEquals("both", (Var("x"), Var("y")), f)
+    }
   }
 
   object TestUnbox {
@@ -502,15 +513,21 @@ object Test {
 
   object ClassDefInGuard {
     val z: PartialFunction[Any, Any] = {
-      case x :: xs if xs.forall { y => y.hashCode() > 0 } => 1
+      case x :: xs if xs.forall { y =>
+            y.hashCode() > 0
+          } =>
+        1
     }
 
     def run() {
       val s: PartialFunction[Any, Any] = {
-        case List(4 :: xs)                                                  => 1
-        case List(5 :: xs)                                                  => 1
-        case _ if false                                                     =>
-        case List(3 :: xs) if List(3: Any).forall { g => g.hashCode() > 0 } => 1
+        case List(4 :: xs) => 1
+        case List(5 :: xs) => 1
+        case _ if false    =>
+        case List(3 :: xs) if List(3: Any).forall { g =>
+              g.hashCode() > 0
+            } =>
+          1
       }
       z.isDefinedAt(42)
       s.isDefinedAt(42)
@@ -528,7 +545,10 @@ object Test {
     def method1() = {
       val x = "Hello, world"; val y = 100;
       y match {
-        case _: Int if (x match { case t => t.trim().length() > 0 }) => false;
+        case _: Int if (x match {
+              case t => t.trim().length() > 0
+            }) =>
+          false;
         case _ => true;
       }
     }
@@ -584,9 +604,13 @@ object Test {
 
     trait Impl
 
-    trait SizeImpl extends Impl { def size = 42 }
+    trait SizeImpl extends Impl {
+      def size = 42
+    }
 
-    trait ColorImpl extends Impl { def color = "red" }
+    trait ColorImpl extends Impl {
+      def color = "red"
+    }
 
     type Both = SizeImpl with ColorImpl
 
@@ -621,7 +645,9 @@ object Test {
       case a: AnyRef if runtime.ScalaRunTime.isArray(a) => "Array"
       case _                                            => v.toString
     }
-    def run() { assertEquals("Array", foo(Array(0))) }
+    def run() {
+      assertEquals("Array", foo(Array(0)))
+    }
   }
 
   // bug#1093 (contribution #460)
@@ -644,7 +670,9 @@ object Test {
       X("a", "b") match {
         case X(p, ps @ _*) => foo(ps: _*)
       }
-    def run() { assertEquals("Foo", bar) }
+    def run() {
+      assertEquals("Foo", bar)
+    }
   }
 
   // #2
@@ -706,8 +734,12 @@ object Test {
 
   object Ticket37 {
     def foo() {}
-    val (a, b) = { foo(); (2, 3) }
-    def run() { assertEquals(this.a, 2) }
+    val (a, b) = {
+      foo(); (2, 3)
+    }
+    def run() {
+      assertEquals(this.a, 2)
+    }
   }
 
   // #44
@@ -726,7 +758,9 @@ object Test {
     }
   }
   object Ticket44 {
-    def run() { assert(Y.toString ne null) /*instantiate Y*/ }
+    def run() {
+      assert(Y.toString ne null) /*instantiate Y*/
+    }
   }
 
   object Ticket211 {
@@ -765,8 +799,9 @@ object Test {
     object C {
 
       def unapply(xs: L): Option[(Int, L)] = {
-        if (xs.isEmpty) { println("xs is empty"); None }
-        else
+        if (xs.isEmpty) {
+          println("xs is empty"); None
+        } else
           Some((xs.head, new L(xs.tail)))
       }
 

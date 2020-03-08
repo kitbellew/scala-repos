@@ -14,7 +14,9 @@ class OstrichStatsReceiver(
   override def toString: String = "OstrichStatsReceiver"
 
   override protected[this] def registerGauge(name: Seq[String], f: => Float) {
-    repr.addGauge(variableName(name)) { f.toDouble }
+    repr.addGauge(variableName(name)) {
+      f.toDouble
+    }
   }
 
   override protected[this] def deregisterGauge(name: Seq[String]) {
@@ -24,7 +26,9 @@ class OstrichStatsReceiver(
   override def counter(name: String*) = new Counter {
     private[this] val counter = repr.getCounter(variableName(name))
 
-    override def incr(delta: Int) { counter.incr(delta) }
+    override def incr(delta: Int) {
+      counter.incr(delta)
+    }
   }
 
   override def stat(name: String*) = new Stat {

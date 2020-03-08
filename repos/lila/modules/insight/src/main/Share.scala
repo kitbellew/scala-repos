@@ -18,7 +18,9 @@ final class Share(
           case _ if to.contains(insighted) => fuccess(true)
           case Pref.InsightShare.EVERYBODY => fuccess(true)
           case Pref.InsightShare.FRIENDS =>
-            to ?? { t => areFriends(insighted.id, t.id) }
+            to ?? { t =>
+              areFriends(insighted.id, t.id)
+            }
           case Pref.InsightShare.NOBODY => fuccess(false)
         }
       }

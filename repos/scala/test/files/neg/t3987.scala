@@ -4,7 +4,9 @@ class Gox {
 }
 
 object Test {
-  type GoxZed = t#Zed forSome { type t <: Gox }
+  type GoxZed = t#Zed forSome {
+    type t <: Gox
+  }
 
   def main(args: Array[String]): Unit = {
     val x = new Gox

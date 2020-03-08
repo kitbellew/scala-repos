@@ -55,7 +55,11 @@ private[sbt] final class Execute[A[_] <: AnyRef](
   private[this] val reverse = idMap[A[_], Iterable[A[_]]]
   private[this] val callers = pMap[A, Compose[IDSet, A]#Apply]
   private[this] val state = idMap[A[_], State]
-  private[this] val viewCache = pMap[A, ({ type l[t] = Node[A, t] })#l]
+  private[this] val viewCache = pMap[
+    A,
+    ({
+      type l[t] = Node[A, t]
+    })#l]
   private[this] val results = pMap[A, Result]
 
   private[this] val getResult: A ~> Result = new (A ~> Result) {
@@ -76,8 +80,11 @@ private[sbt] final class Execute[A[_] <: AnyRef](
     "State: " + state.toString + "\n\nResults: " + results + "\n\nCalls: " + callers + "\n\n"
 
   def run[T](root: A[T])(implicit strategy: Strategy): Result[T] =
-    try { runKeep(root)(strategy)(root) }
-    catch { case i: Incomplete => Inc(i) }
+    try {
+      runKeep(root)(strategy)(root)
+    } catch {
+      case i: Incomplete => Inc(i)
+    }
   def runKeep[T](root: A[T])(implicit strategy: Strategy): RMap[A, Result] = {
     assert(state.isEmpty, "Execute already running/ran.")
 
@@ -150,11 +157,15 @@ private[sbt] final class Execute[A[_] <: AnyRef](
     results(node) = result
     state(node) = Done
     progressState = progress.completed(progressState, node, result)
-    remove(reverse, node) foreach { dep => notifyDone(node, dep) }
+    remove(reverse, node) foreach { dep =>
+      notifyDone(node, dep)
+    }
     callers.remove(node).toList.flatten.foreach { c =>
       retire(c, callerResult(c, result))
     }
-    triggeredBy(node) foreach { t => addChecked(t) }
+    triggeredBy(node) foreach { t =>
+      addChecked(t)
+    }
 
     post {
       assert(done(node))
@@ -189,7 +200,9 @@ private[sbt] final class Execute[A[_] <: AnyRef](
   def addChecked[T](node: A[T])(implicit strategy: Strategy): Unit = {
     if (!added(node)) addNew(node)
 
-    post { addedInv(node) }
+    post {
+      addedInv(node)
+    }
   }
 
   /**
@@ -198,7 +211,9 @@ private[sbt] final class Execute[A[_] <: AnyRef](
     * The node's dependencies will be added (transitively) if they are not already registered.
     */
   def addNew[T](node: A[T])(implicit strategy: Strategy): Unit = {
-    pre { newPre(node) }
+    pre {
+      newPre(node)
+    }
 
     val v = register(node)
     val deps = dependencies(v) ++ runBefore(node)
@@ -319,8 +334,12 @@ private[sbt] final class Execute[A[_] <: AnyRef](
       def onOpt[T](o: Option[T])(f: T => Boolean) = o match {
         case None => false; case Some(x) => f(x)
       }
-      def checkForward = onOpt(forward.get(node)) { _ contains dep }
-      def checkReverse = onOpt(reverse.get(dep)) { _.exists(_ == node) }
+      def checkForward = onOpt(forward.get(node)) {
+        _ contains dep
+      }
+      def checkReverse = onOpt(reverse.get(dep)) {
+        _.exists(_ == node)
+      }
       assert(done(dep) ^ (checkForward && checkReverse))
     }
   }

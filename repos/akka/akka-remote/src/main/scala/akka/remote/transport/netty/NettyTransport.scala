@@ -55,8 +55,12 @@ import org.jboss.netty.util.HashedWheelTimer
 
 object NettyTransportSettings {
   sealed trait Mode
-  case object Tcp extends Mode { override def toString = "tcp" }
-  case object Udp extends Mode { override def toString = "udp" }
+  case object Tcp extends Mode {
+    override def toString = "tcp"
+  }
+  case object Udp extends Mode {
+    override def toString = "udp"
+  }
 }
 
 object NettyFutureBridge {
@@ -315,7 +319,9 @@ private[transport] object NettyTransport {
       _ ← always {
         channel.write(ChannelBuffers.buffer(0))
       } // Force flush by waiting on a final dummy write
-      _ ← always { channel.disconnect() }
+      _ ← always {
+        channel.disconnect()
+      }
     } channel.close()
   }
 
@@ -564,7 +570,9 @@ class NettyTransport(
     addr match {
       case Address(_, _, Some(host), Some(port)) ⇒
         Future {
-          blocking { new InetSocketAddress(InetAddress.getByName(host), port) }
+          blocking {
+            new InetSocketAddress(InetAddress.getByName(host), port)
+          }
         }
       case _ ⇒
         Future.failed(
@@ -622,8 +630,9 @@ class NettyTransport(
           log.error(
             "failed to bind to {}, shutting down Netty transport",
             address)
-          try { shutdown() }
-          catch {
+          try {
+            shutdown()
+          } catch {
             case NonFatal(e) ⇒
           } // ignore possible exception during shutdown
           throw e
@@ -688,7 +697,9 @@ class NettyTransport(
 
   override def shutdown(): Future[Boolean] = {
     def always(c: ChannelGroupFuture) =
-      NettyFutureBridge(c).map(_ ⇒ true) recover { case _ ⇒ false }
+      NettyFutureBridge(c).map(_ ⇒ true) recover {
+        case _ ⇒ false
+      }
     for {
       // Force flush by trying to write an empty buffer and wait for success
       unbindStatus ← always(channelGroup.unbind())

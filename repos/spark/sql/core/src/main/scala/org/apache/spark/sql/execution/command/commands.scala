@@ -191,7 +191,9 @@ case class SetCommand(kv: Option[(String, Option[String])])
       // Queries all key-value pairs that are set in the SQLConf of the sqlContext.
       case None =>
         val runFunc = (sqlContext: SQLContext) => {
-          sqlContext.getAllConfs.map { case (k, v) => Row(k, v) }.toSeq
+          sqlContext.getAllConfs.map {
+            case (k, v) => Row(k, v)
+          }.toSeq
         }
         (keyValueOutput, runFunc)
 

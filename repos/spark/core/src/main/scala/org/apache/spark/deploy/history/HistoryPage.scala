@@ -43,7 +43,14 @@ private[history] class HistoryPage(parent: HistoryServer)
           <div class="span12">
             <ul class="unstyled">
               {
-        providerConfig.map { case (k, v) => <li><strong>{k}:</strong> {v}</li> }
+        providerConfig.map {
+          case (k, v) =>
+            <li><strong>{
+              k
+            }:</strong> {
+              v
+            }</li>
+        }
       }
             </ul>
             {
@@ -68,7 +75,9 @@ private[history] class HistoryPage(parent: HistoryServer)
         }
       }
 
-            <a href={makePageLink(!requestedIncomplete)}>
+            <a href={
+        makePageLink(!requestedIncomplete)
+      }>
               {
         if (requestedIncomplete) {
           "Back to completed applications"

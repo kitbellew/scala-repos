@@ -24,7 +24,9 @@ trait ZOp[T <: ZNode.Exists] {
       watch() onSuccess {
         case ZNode.Watch(result, update) =>
           broker ! result onSuccess { _ =>
-            update onSuccess { _ => setWatch() }
+            update onSuccess { _ =>
+              setWatch()
+            }
           }
       }
     }

@@ -141,10 +141,14 @@ abstract class QueryServiceHandler[A](implicit M: Monad[Future])
           httpResponse <- EitherT.right(
             extractResponse(request, result, opts.output))
         } yield {
-          appendHeaders(opts) { httpResponse }
+          appendHeaders(opts) {
+            httpResponse
+          }
         }
 
-        responseEither valueOr { handleErrors(query, _) }
+        responseEither valueOr {
+          handleErrors(query, _)
+        }
     }
   }
 

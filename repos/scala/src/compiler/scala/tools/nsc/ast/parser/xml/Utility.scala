@@ -53,10 +53,18 @@ object Utility {
         if (c == '#') {
           c = it.next()
           val theChar = parseCharRef(
-            { () => c },
-            { () => c = it.next() },
-            { s => throw new RuntimeException(s) },
-            { s => throw new RuntimeException(s) })
+            { () =>
+              c
+            },
+            { () =>
+              c = it.next()
+            },
+            { s =>
+              throw new RuntimeException(s)
+            },
+            { s =>
+              throw new RuntimeException(s)
+            })
           sb.append(theChar)
         } else {
           if (rfb eq null) rfb = new StringBuilder()
@@ -99,7 +107,9 @@ object Utility {
       nextch: () => Unit,
       reportSyntaxError: String => Unit,
       reportTruncatedError: String => Unit): String = {
-    val hex = (ch() == 'x') && { nextch(); true }
+    val hex = (ch() == 'x') && {
+      nextch(); true
+    }
     val base = if (hex) 16 else 10
     var i = 0
     while (ch() != ';') {

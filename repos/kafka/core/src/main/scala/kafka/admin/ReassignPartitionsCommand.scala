@@ -143,7 +143,9 @@ object ReassignPartitionsCommand extends Logging {
     val currentAssignment =
       zkUtils.getReplicaAssignmentForTopics(topicsToReassign)
 
-    val groupedByTopic = currentAssignment.groupBy { case (tp, _) => tp.topic }
+    val groupedByTopic = currentAssignment.groupBy {
+      case (tp, _) => tp.topic
+    }
     val rackAwareMode =
       if (disableRackAware) RackAwareMode.Disabled else RackAwareMode.Enforced
     val brokerMetadatas = AdminUtils.getBrokerMetadatas(
@@ -193,8 +195,12 @@ object ReassignPartitionsCommand extends Logging {
         "Partition reassignment contains duplicate topic partitions: %s".format(
           duplicateReassignedPartitions.mkString(",")))
     val duplicateEntries = partitionsToBeReassigned
-      .map { case (tp, replicas) => (tp, CoreUtils.duplicates(replicas)) }
-      .filter { case (tp, duplicatedReplicas) => duplicatedReplicas.nonEmpty }
+      .map {
+        case (tp, replicas) => (tp, CoreUtils.duplicates(replicas))
+      }
+      .filter {
+        case (tp, duplicatedReplicas) => duplicatedReplicas.nonEmpty
+      }
     if (duplicateEntries.nonEmpty) {
       val duplicatesMsg = duplicateEntries
         .map {
@@ -394,7 +400,15 @@ class ReassignPartitionsCommand(
   }
 }
 
-sealed trait ReassignmentStatus { def status: Int }
-case object ReassignmentCompleted extends ReassignmentStatus { val status = 1 }
-case object ReassignmentInProgress extends ReassignmentStatus { val status = 0 }
-case object ReassignmentFailed extends ReassignmentStatus { val status = -1 }
+sealed trait ReassignmentStatus {
+  def status: Int
+}
+case object ReassignmentCompleted extends ReassignmentStatus {
+  val status = 1
+}
+case object ReassignmentInProgress extends ReassignmentStatus {
+  val status = 0
+}
+case object ReassignmentFailed extends ReassignmentStatus {
+  val status = -1
+}

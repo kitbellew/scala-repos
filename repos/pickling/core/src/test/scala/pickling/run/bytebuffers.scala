@@ -23,15 +23,33 @@ object Primitives extends Properties("bytebuffer primitive tests") {
     }
   }
 
-  property("Int") = Prop forAll { (i: Int) => roundTrip[Int](i) }
-  property("Double") = Prop forAll { (d: Double) => roundTrip[Double](d) }
-  property("Long") = Prop forAll { (l: Long) => roundTrip[Long](l) }
-  property("Char") = Prop forAll { (c: Char) => roundTrip[Char](c) }
-  property("Float") = Prop forAll { (f: Float) => roundTrip[Float](f) }
-  property("Boolean") = Prop forAll { (b: Boolean) => roundTrip[Boolean](b) }
-  property("Short") = Prop forAll { (s: Short) => roundTrip[Short](s) }
-  property("Byte") = Prop forAll { (b: Byte) => roundTrip[Byte](b) }
-  property("String") = Prop forAll { (s: String) => roundTrip[String](s) }
+  property("Int") = Prop forAll { (i: Int) =>
+    roundTrip[Int](i)
+  }
+  property("Double") = Prop forAll { (d: Double) =>
+    roundTrip[Double](d)
+  }
+  property("Long") = Prop forAll { (l: Long) =>
+    roundTrip[Long](l)
+  }
+  property("Char") = Prop forAll { (c: Char) =>
+    roundTrip[Char](c)
+  }
+  property("Float") = Prop forAll { (f: Float) =>
+    roundTrip[Float](f)
+  }
+  property("Boolean") = Prop forAll { (b: Boolean) =>
+    roundTrip[Boolean](b)
+  }
+  property("Short") = Prop forAll { (s: Short) =>
+    roundTrip[Short](s)
+  }
+  property("Byte") = Prop forAll { (b: Byte) =>
+    roundTrip[Byte](b)
+  }
+  property("String") = Prop forAll { (s: String) =>
+    roundTrip[String](s)
+  }
   property("(Int, String)") = Prop forAll { (p: (Int, String)) =>
     roundTrip[(Int, String)](p)
   }

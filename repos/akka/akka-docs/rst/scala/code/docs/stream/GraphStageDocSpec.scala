@@ -311,19 +311,25 @@ class GraphStageDocSpec extends AkkaSpec {
         new GraphStageLogic(shape) {
 
           override def preStart(): Unit = {
-            val callback = getAsyncCallback[Unit] { (_) => completeStage() }
+            val callback = getAsyncCallback[Unit] { (_) =>
+              completeStage()
+            }
             switch.foreach(callback.invoke)
           }
 
           setHandler(
             in,
             new InHandler {
-              override def onPush(): Unit = { push(out, grab(in)) }
+              override def onPush(): Unit = {
+                push(out, grab(in))
+              }
             })
           setHandler(
             out,
             new OutHandler {
-              override def onPull(): Unit = { pull(in) }
+              override def onPull(): Unit = {
+                pull(in)
+              }
             })
         }
     }
@@ -392,7 +398,9 @@ class GraphStageDocSpec extends AkkaSpec {
           setHandler(
             out,
             new OutHandler {
-              override def onPull(): Unit = { pull(in) }
+              override def onPull(): Unit = {
+                pull(in)
+              }
             })
 
           override protected def onTimer(timerKey: Any): Unit = {

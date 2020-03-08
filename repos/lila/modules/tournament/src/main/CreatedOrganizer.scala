@@ -54,6 +54,8 @@ private[tournament] final class CreatedOrganizer(
 
   private def ejectLeavers(tour: Tournament) =
     PlayerRepo userIds tour.id foreach {
-      _ filterNot isOnline foreach { api.withdraw(tour.id, _) }
+      _ filterNot isOnline foreach {
+        api.withdraw(tour.id, _)
+      }
     }
 }

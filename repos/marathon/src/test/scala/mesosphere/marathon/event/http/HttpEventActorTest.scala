@@ -60,7 +60,9 @@ class HttpEventActorTest
   test("If a message is send to a slow subscriber") {
     Given("A HttpEventActor with 1 subscriber")
     val aut = TestActorRef(new NoHttpEventActor(Set("host1")))
-    responseAction = () => { clock += 15.seconds; response }
+    responseAction = () => {
+      clock += 15.seconds; response
+    }
 
     When("An event is send to the actor")
     aut ! EventStreamAttached("remote")

@@ -251,7 +251,9 @@ trait LEvents {
       entityType = Some(entityType),
       entityId = Some(entityId),
       eventNames = Some(LEventAggregator.eventNames)
-    ).map { eventIt => LEventAggregator.aggregatePropertiesSingle(eventIt) }
+    ).map { eventIt =>
+      LEventAggregator.aggregatePropertiesSingle(eventIt)
+    }
   }
 
   // following is blocking

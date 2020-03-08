@@ -21,7 +21,10 @@ private final class UserRegister extends Actor {
 
     case SendTo(userId, msg) => sendTo(userId, msg)
 
-    case SendTos(userIds, msg) => userIds foreach { sendTo(_, msg) }
+    case SendTos(userIds, msg) =>
+      userIds foreach {
+        sendTo(_, msg)
+      }
 
     case WithUserIds(f) => f(users.keys)
 
@@ -43,6 +46,8 @@ private final class UserRegister extends Actor {
   }
 
   private def sendTo(userId: String, msg: JsObject) {
-    users get userId foreach { members => members.values foreach (_ push msg) }
+    users get userId foreach { members =>
+      members.values foreach (_ push msg)
+    }
   }
 }

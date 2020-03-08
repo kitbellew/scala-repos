@@ -411,7 +411,9 @@ private[metrics] final case class MetricsGossip(nodes: Set[NodeMetrics]) {
     * Only the nodes that are in the `includeNodes` Set.
     */
   def filter(includeNodes: Set[Address]): MetricsGossip =
-    copy(nodes = nodes filter { includeNodes contains _.address })
+    copy(nodes = nodes filter {
+      includeNodes contains _.address
+    })
 
   /**
     * Adds new remote [[NodeMetrics]] and merges existing from a remote gossip.

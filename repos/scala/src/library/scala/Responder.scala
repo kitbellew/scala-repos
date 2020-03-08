@@ -29,7 +29,9 @@ object Responder {
   /** Executes `x` and returns `'''true'''`, useful as syntactic
     *  convenience in for comprehensions.
     */
-  def exec[A](x: => Unit): Boolean = { x; true }
+  def exec[A](x: => Unit): Boolean = {
+    x; true
+  }
 
   /** Runs a responder, returning an optional result.
     */
@@ -63,7 +65,9 @@ abstract class Responder[+A] extends Serializable {
 
   def respond(k: A => Unit): Unit
 
-  def foreach(k: A => Unit) { respond(k) }
+  def foreach(k: A => Unit) {
+    respond(k)
+  }
 
   def map[B](f: A => B) = new Responder[B] {
     def respond(k: B => Unit) {

@@ -42,11 +42,15 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         classSym: Symbol,
         decldExports: List[Symbol]): List[js.Tree] = {
 
-      val newlyDecldExports = decldExports.filterNot { isOverridingExport _ }
+      val newlyDecldExports = decldExports.filterNot {
+        isOverridingExport _
+      }
       val newlyDecldExportNames =
         newlyDecldExports.map(_.name.toTermName).toList.distinct
 
-      newlyDecldExportNames map { genMemberExport(classSym, _) }
+      newlyDecldExportNames map {
+        genMemberExport(classSym, _)
+      }
     }
 
     def genJSClassDispatchers(
@@ -331,7 +335,9 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         case ExportedSymbol(sym) =>
           val params = sym.tpe.params
           // Find default param
-          val dParam = params.indexWhere { _.hasFlag(Flags.DEFAULTPARAM) }
+          val dParam = params.indexWhere {
+            _.hasFlag(Flags.DEFAULTPARAM)
+          }
           if (dParam == -1) Seq(params.size)
           else dParam to params.size
         case ex: ExportedBody =>

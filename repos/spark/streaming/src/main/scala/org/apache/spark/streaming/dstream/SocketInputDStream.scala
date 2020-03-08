@@ -68,7 +68,9 @@ private[streaming] class SocketReceiver[T: ClassTag](
     // Start the thread that receives data over a connection
     new Thread("Socket Receiver") {
       setDaemon(true)
-      override def run() { receive() }
+      override def run() {
+        receive()
+      }
     }.start()
   }
 

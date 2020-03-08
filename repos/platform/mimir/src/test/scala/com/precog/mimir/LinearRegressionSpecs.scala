@@ -120,7 +120,9 @@ trait LinearRegressionSpecs[M[+_]]
       : (Set[SEvent], Seq[(Array[Double], Double)]) = {
     val samples = createLinearSamplePoints(num, numPoints, actualThetas)
 
-    val points = jvalues(samples, cpaths) map { _.renderCompact }
+    val points = jvalues(samples, cpaths) map {
+      _.renderCompact
+    }
 
     val suffix = ".json"
     val tmpFile = File.createTempFile("values", suffix)
@@ -143,11 +145,15 @@ trait LinearRegressionSpecs[M[+_]]
   }
 
   def computeRSquared(ys: List[Seq[Double]]) = {
-    val yMeans = ys map { seq => seq.sum / seq.size }
+    val yMeans = ys map { seq =>
+      seq.sum / seq.size
+    }
 
     val ssTotals = ys.zip(yMeans) map {
       case (ys, yMean) =>
-        val diffs = ys map { y => math.pow(y - yMean, 2d) }
+        val diffs = ys map { y =>
+          math.pow(y - yMean, 2d)
+        }
         diffs.sum
     }
     val ssTotal = ssTotals.sum / ssTotals.size
@@ -216,18 +222,28 @@ trait LinearRegressionSpecs[M[+_]]
     val combinedErrors = combineResults(num, errors)
 
     val allThetas = actualThetas zip combinedThetas
-    val okThetas = allThetas map { case (t, ts) => isOk(t, ts) }
+    val okThetas = allThetas map {
+      case (t, ts) => isOk(t, ts)
+    }
 
-    val actualErrors = combinedThetas map { t => madMedian(t)._1 }
+    val actualErrors = combinedThetas map { t =>
+      madMedian(t)._1
+    }
 
     val allErrors = actualErrors zip combinedErrors
 
-    val okErrors = allErrors map { case (e, es) => isOk(e, es) } toArray
+    val okErrors = allErrors map {
+      case (e, es) => isOk(e, es)
+    } toArray
 
     okThetas mustEqual Array.fill(num)(true)
     okErrors mustEqual Array.fill(num)(true)
 
-    val ys = sampleValues map { _.map { _._2 } }
+    val ys = sampleValues map {
+      _.map {
+        _._2
+      }
+    }
     val expectedRSquared = computeRSquared(ys)
 
     isOk(expectedRSquared, rSquareds) mustEqual true
@@ -324,17 +340,27 @@ trait LinearRegressionSpecs[M[+_]]
     val combinedErrors = combineResults(num, errors)
 
     val allThetas = actualThetas zip combineResults(num, thetas)
-    val okThetas = allThetas map { case (t, ts) => isOk(t, ts) }
+    val okThetas = allThetas map {
+      case (t, ts) => isOk(t, ts)
+    }
 
-    val actualErrors = combinedThetas map { t => madMedian(t)._1 }
+    val actualErrors = combinedThetas map { t =>
+      madMedian(t)._1
+    }
 
     val allErrors = actualErrors zip combinedErrors
-    val okErrors = allErrors map { case (e, es) => isOk(e, es) } toArray
+    val okErrors = allErrors map {
+      case (e, es) => isOk(e, es)
+    } toArray
 
     okThetas mustEqual Array.fill(num)(true)
     okErrors mustEqual Array.fill(num)(true)
 
-    val ys = sampleValues map { _.map { _._2 } }
+    val ys = sampleValues map {
+      _.map {
+        _._2
+      }
+    }
     val expectedRSquared = computeRSquared(ys)
 
     isOk(expectedRSquared, rSquareds) mustEqual true
@@ -382,7 +408,9 @@ trait LinearRegressionSpecs[M[+_]]
           case (xs, y) => (Random.nextGaussian +: Random.nextGaussian +: xs, y)
         }
       }
-      val points = jvalues(samples, cpaths, num) map { _.renderCompact }
+      val points = jvalues(samples, cpaths, num) map {
+        _.renderCompact
+      }
 
       val suffix = ".json"
       val tmpFile = File.createTempFile("values", suffix)
@@ -462,7 +490,9 @@ trait LinearRegressionSpecs[M[+_]]
         actuals: List[Double],
         values: List[List[Double]]): Array[Boolean] = {
       val zipped = actuals zip combineResults(num, values)
-      zipped map { case (t, ts) => isOk(t, ts) } toArray
+      zipped map {
+        case (t, ts) => isOk(t, ts)
+      } toArray
     }
 
     val thetas = List(thetasSchema1, thetasSchema2, thetasSchema3)
@@ -473,7 +503,9 @@ trait LinearRegressionSpecs[M[+_]]
     }
 
     val actualErrors: List[Seq[Double]] = thetas map { ts =>
-      combineResults(num, ts) map { arr => madMedian(arr)._1 }
+      combineResults(num, ts) map { arr =>
+        madMedian(arr)._1
+      }
     }
 
     val zipped = actualErrors zip errors
@@ -481,7 +513,9 @@ trait LinearRegressionSpecs[M[+_]]
     val resultErrors = zipped map {
       case (actual, err) =>
         val z = actual zip combineResults(num, err)
-        z map { case (e, es) => isOk(e, es) }
+        z map {
+          case (e, es) => isOk(e, es)
+        }
     }
 
     val expected = Array.fill(num)(true)
@@ -494,7 +528,11 @@ trait LinearRegressionSpecs[M[+_]]
     resultErrors(1).toArray mustEqual expected
     resultErrors(2).toArray mustEqual expected
 
-    val ys = sampleValues map { _.map { _._2 } }
+    val ys = sampleValues map {
+      _.map {
+        _._2
+      }
+    }
     val expectedRSquared = computeRSquared(ys)
 
     isOk(expectedRSquared, rSquaredsSchema1) mustEqual true

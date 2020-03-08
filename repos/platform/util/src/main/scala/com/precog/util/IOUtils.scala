@@ -133,7 +133,9 @@ object IOUtils extends Logging {
         }
         newTmpDir
       }
-      .getOrElse { sys.error("Error on tmpdir creation: no parent dir found") }
+      .getOrElse {
+        sys.error("Error on tmpdir creation: no parent dir found")
+      }
   }
 
   def copyFile(src: File, dest: File): IO[PrecogUnit] = IO {

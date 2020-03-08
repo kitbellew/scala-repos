@@ -403,7 +403,9 @@ trait SyntheticMethods extends ast.TreeDSL {
       }
 
       try impls ++ extras
-      catch { case _: TypeError if reporter.hasErrors => Nil }
+      catch {
+        case _: TypeError if reporter.hasErrors => Nil
+      }
     }
 
     /* If this case class has any less than public accessors,

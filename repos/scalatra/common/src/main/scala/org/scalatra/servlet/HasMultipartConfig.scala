@@ -8,7 +8,9 @@ object HasMultipartConfig {
   val MultipartConfigKey = "org.scalatra.MultipartConfigKey"
 }
 trait HasMultipartConfig extends Initializable {
-  self: { def servletContext: ServletContext } =>
+  self: {
+    def servletContext: ServletContext
+  } =>
 
   import org.scalatra.servlet.HasMultipartConfig._
 
@@ -43,7 +45,9 @@ trait HasMultipartConfig extends Initializable {
   abstract override def initialize(config: ConfigT) {
     super.initialize(config)
 
-    providedConfig foreach { _ apply config.context }
+    providedConfig foreach {
+      _ apply config.context
+    }
   }
 
   def configureMultipartHandling(config: MultipartConfig) {

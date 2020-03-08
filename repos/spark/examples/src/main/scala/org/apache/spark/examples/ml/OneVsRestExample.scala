@@ -107,9 +107,14 @@ object OneVsRestExample {
         }
       }
     }
-    parser.parse(args, defaultParams).map { params => run(params) }.getOrElse {
-      sys.exit(1)
-    }
+    parser
+      .parse(args, defaultParams)
+      .map { params =>
+        run(params)
+      }
+      .getOrElse {
+        sys.exit(1)
+      }
   }
 
   private def run(params: Params) {
@@ -182,7 +187,12 @@ object OneVsRestExample {
 
     println("label\tfpr")
 
-    println(fprs.map { case (label, fpr) => label + "\t" + fpr }.mkString("\n"))
+    println(
+      fprs
+        .map {
+          case (label, fpr) => label + "\t" + fpr
+        }
+        .mkString("\n"))
     // $example off$
 
     sc.stop()

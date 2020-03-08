@@ -4,6 +4,8 @@ object Example {
 
   val x =
     reset {
-      shift { k: (Int => Int) => k(k(k(7))) } + 1
+      shift { k: (Int => Int) =>
+        k(k(k(7)))
+      } + 1
     } * 2
 }

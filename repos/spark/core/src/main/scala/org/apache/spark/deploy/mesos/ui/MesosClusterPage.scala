@@ -46,17 +46,27 @@ private[mesos] class MesosClusterPage(parent: MesosClusterUI)
     val retryTable =
       UIUtils.listingTable(retryHeaders, retryRow, state.pendingRetryDrivers)
     val content =
-      <p>Mesos Framework ID: {state.frameworkId}</p>
+      <p>Mesos Framework ID: {
+        state.frameworkId
+      }</p>
       <div class="row-fluid">
         <div class="span12">
           <h4>Queued Drivers:</h4>
-          {queuedTable}
+          {
+        queuedTable
+      }
           <h4>Launched Drivers:</h4>
-          {launchedTable}
+          {
+        launchedTable
+      }
           <h4>Finished Drivers:</h4>
-          {finishedTable}
+          {
+        finishedTable
+      }
           <h4>Supervise drivers waiting for retry:</h4>
-          {retryTable}
+          {
+        retryTable
+      }
         </div>
       </div>;
     UIUtils.basicSparkPage(content, "Spark Drivers for Mesos cluster")
@@ -65,37 +75,79 @@ private[mesos] class MesosClusterPage(parent: MesosClusterUI)
   private def queuedRow(submission: MesosDriverDescription): Seq[Node] = {
     val id = submission.submissionId
     <tr>
-      <td><a href={s"driver?id=$id"}>{id}</a></td>
-      <td>{submission.submissionDate}</td>
-      <td>{submission.command.mainClass}</td>
-      <td>cpus: {submission.cores}, mem: {submission.mem}</td>
+      <td><a href={
+      s"driver?id=$id"
+    }>{
+      id
+    }</a></td>
+      <td>{
+      submission.submissionDate
+    }</td>
+      <td>{
+      submission.command.mainClass
+    }</td>
+      <td>cpus: {
+      submission.cores
+    }, mem: {
+      submission.mem
+    }</td>
     </tr>
   }
 
   private def driverRow(state: MesosClusterSubmissionState): Seq[Node] = {
     val id = state.driverDescription.submissionId
     <tr>
-      <td><a href={s"driver?id=$id"}>{id}</a></td>
-      <td>{state.driverDescription.submissionDate}</td>
-      <td>{state.driverDescription.command.mainClass}</td>
-      <td>cpus: {state.driverDescription.cores}, mem: {
+      <td><a href={
+      s"driver?id=$id"
+    }>{
+      id
+    }</a></td>
+      <td>{
+      state.driverDescription.submissionDate
+    }</td>
+      <td>{
+      state.driverDescription.command.mainClass
+    }</td>
+      <td>cpus: {
+      state.driverDescription.cores
+    }, mem: {
       state.driverDescription.mem
     }</td>
-      <td>{state.startDate}</td>
-      <td>{state.slaveId.getValue}</td>
-      <td>{stateString(state.mesosTaskStatus)}</td>
+      <td>{
+      state.startDate
+    }</td>
+      <td>{
+      state.slaveId.getValue
+    }</td>
+      <td>{
+      stateString(state.mesosTaskStatus)
+    }</td>
     </tr>
   }
 
   private def retryRow(submission: MesosDriverDescription): Seq[Node] = {
     val id = submission.submissionId
     <tr>
-      <td><a href={s"driver?id=$id"}>{id}</a></td>
-      <td>{submission.submissionDate}</td>
-      <td>{submission.command.mainClass}</td>
-      <td>{submission.retryState.get.lastFailureStatus}</td>
-      <td>{submission.retryState.get.nextRetry}</td>
-      <td>{submission.retryState.get.retries}</td>
+      <td><a href={
+      s"driver?id=$id"
+    }>{
+      id
+    }</a></td>
+      <td>{
+      submission.submissionDate
+    }</td>
+      <td>{
+      submission.command.mainClass
+    }</td>
+      <td>{
+      submission.retryState.get.lastFailureStatus
+    }</td>
+      <td>{
+      submission.retryState.get.nextRetry
+    }</td>
+      <td>{
+      submission.retryState.get.retries
+    }</td>
     </tr>
   }
 

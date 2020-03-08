@@ -1,8 +1,12 @@
 package test {
 
   class J {
-    def f1(): Int = { return 5; }
-    protected def f2(): Int = { return 5; }
+    def f1(): Int = {
+      return 5;
+    }
+    protected def f2(): Int = {
+      return 5;
+    }
   }
 
 }

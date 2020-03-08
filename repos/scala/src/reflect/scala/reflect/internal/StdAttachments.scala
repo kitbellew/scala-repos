@@ -9,12 +9,15 @@ trait StdAttachments {
     * Common code between reflect-internal Symbol and Tree related to Attachments.
     */
   trait Attachable {
-    protected var rawatt
-        : scala.reflect.macros.Attachments { type Pos = Position } = NoPosition
+    protected var rawatt: scala.reflect.macros.Attachments {
+      type Pos = Position
+    } = NoPosition
     def attachments = rawatt
     def setAttachments(attachments: scala.reflect.macros.Attachments {
       type Pos = Position
-    }): this.type = { rawatt = attachments; this }
+    }): this.type = {
+      rawatt = attachments; this
+    }
     def updateAttachment[T: ClassTag](attachment: T): this.type = {
       rawatt = rawatt.update(attachment); this
     }
@@ -26,7 +29,9 @@ trait StdAttachments {
     // cannot be final due to SynchronizedSymbols
     def pos: Position = rawatt.pos
     def pos_=(pos: Position): Unit = rawatt = (rawatt withPos pos)
-    def setPos(newpos: Position): this.type = { pos = newpos; this }
+    def setPos(newpos: Position): this.type = {
+      pos = newpos; this
+    }
   }
 
   /** Attachment that knows how to import itself into another universe. */

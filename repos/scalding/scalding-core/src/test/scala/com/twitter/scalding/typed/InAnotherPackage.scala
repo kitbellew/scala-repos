@@ -9,7 +9,9 @@ object InAnotherPackage {
     Future {
       TypedPipe
         .from(List(1, 2, 3, 4, 555, 3))
-        .map { case x => (x, x) }
+        .map {
+          case x => (x, x)
+        }
     }
   }
 }

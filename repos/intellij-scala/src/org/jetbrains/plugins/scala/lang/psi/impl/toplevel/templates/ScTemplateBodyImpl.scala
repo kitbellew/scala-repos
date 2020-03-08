@@ -39,7 +39,9 @@ class ScTemplateBodyImpl private (
     extends ScalaStubBasedElementImpl(stub, nodeType, node)
     with ScTemplateBody
     with ScImportsHolder {
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
   def this(stub: ScTemplateBodyStub) = {
     this(stub, ScalaElementTypes.TEMPLATE_BODY, null)
   }

@@ -47,8 +47,12 @@ class LoggerConfig extends Config[Logger] {
 
   def apply(): Logger = {
     val logger = Logger.get(node)
-    level.foreach { x => logger.setLevel(x) }
-    handlers.foreach { h => logger.addHandler(h()) }
+    level.foreach { x =>
+      logger.setLevel(x)
+    }
+    handlers.foreach { h =>
+      logger.addHandler(h())
+    }
     logger.setUseParentHandlers(useParents)
     logger
   }
@@ -135,7 +139,9 @@ class SyslogFormatterConfig extends FormatterConfig {
     */
   var priority: Int = SyslogHandler.PRIORITY_USER
 
-  def serverName_=(name: String) { serverName = Some(name) }
+  def serverName_=(name: String) {
+    serverName = Some(name)
+  }
 
   override def apply() =
     new SyslogFormatter(

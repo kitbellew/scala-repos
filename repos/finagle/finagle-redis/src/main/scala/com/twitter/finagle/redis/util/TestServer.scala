@@ -41,7 +41,9 @@ object RedisCluster { self =>
     instanceStack.pop().stop()
   }
   def stopAll() {
-    instanceStack.foreach { i => i.stop() }
+    instanceStack.foreach { i =>
+      i.stop()
+    }
     instanceStack.clear
   }
 
@@ -50,7 +52,9 @@ object RedisCluster { self =>
     .getRuntime()
     .addShutdownHook(new Thread {
       override def run() {
-        self.instanceStack.foreach { instance => instance.stop() }
+        self.instanceStack.foreach { instance =>
+          instance.stop()
+        }
       }
     });
 }

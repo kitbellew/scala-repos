@@ -44,8 +44,12 @@ class RequestMeterFilterTest extends FunSuite with MockitoSugar {
 
       val f3 = svc(3)
       assert(f3.isDefined)
-      val failure = intercept[Failure] { Await.result(f3, 5.seconds) }
-      intercept[RejectedExecutionException] { throw failure.getCause }
+      val failure = intercept[Failure] {
+        Await.result(f3, 5.seconds)
+      }
+      intercept[RejectedExecutionException] {
+        throw failure.getCause
+      }
 
       ctl.advance(1.second)
       timer.tick()
@@ -64,7 +68,9 @@ class RequestMeterFilterTest extends FunSuite with MockitoSugar {
 
       val f1 = svc(3)
       assert(f1.isDefined)
-      val e = intercept[RuntimeException] { Await.result(f1, 5.seconds) }
+      val e = intercept[RuntimeException] {
+        Await.result(f1, 5.seconds)
+      }
       assert(e.getMessage == "Error!")
     }
   }
@@ -78,7 +84,9 @@ class RequestMeterFilterTest extends FunSuite with MockitoSugar {
     Time.withCurrentTimeFrozen { ctl =>
       val meter = AsyncMeter.perSecond(1, 1)(timer)
       val svc = new RequestMeterFilter(meter) andThen excSvc
-      val e = intercept[Exception] { Await.result(svc(1)) }
+      val e = intercept[Exception] {
+        Await.result(svc(1))
+      }
       assert(e == exc)
     }
 

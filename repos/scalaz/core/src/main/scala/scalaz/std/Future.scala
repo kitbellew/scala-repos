@@ -48,12 +48,18 @@ private class FutureInstance(implicit ec: ExecutionContext)
 
     fs foreach {
       case (fa, i) =>
-        fa.onComplete { t => attemptComplete(t.map(_ -> i)) }
+        fa.onComplete { t =>
+          attemptComplete(t.map(_ -> i))
+        }
     }
 
     result.future.map {
       case (a, i) =>
-        (a, fs.collect { case (fa, j) if j != i => fa })
+        (
+          a,
+          fs.collect {
+            case (fa, j) if j != i => fa
+          })
     }
   }
 
@@ -69,10 +75,14 @@ private class FutureInstance(implicit ec: ExecutionContext)
 
   // override for actual parallel execution
   override def ap[A, B](fa: => Future[A])(fab: => Future[A => B]) =
-    fab zip fa map { case (fa, a) => fa(a) }
+    fab zip fa map {
+      case (fa, a) => fa(a)
+    }
 
   def attempt[A](f: Future[A]): Future[Throwable \/ A] =
-    f.map(\/.right).recover { case e => -\/(e) }
+    f.map(\/.right).recover {
+      case e => -\/(e)
+    }
 
   def fail[A](e: Throwable): Future[A] =
     Future.failed(e)

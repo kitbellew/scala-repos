@@ -42,7 +42,9 @@ class EndToEndTest
   // turn off failure detector since we don't need it for these tests.
   override def test(testName: String, testTags: Tag*)(f: => Unit) {
     super.test(testName, testTags: _*) {
-      mux.sessionFailureDetector.let("none") { f }
+      mux.sessionFailureDetector.let("none") {
+        f
+      }
     }
   }
 
@@ -72,7 +74,9 @@ class EndToEndTest
     assert(!f.isDefined)
     assert(!p.isDefined)
     f.raise(new Exception())
-    eventually { assert(handled) }
+    eventually {
+      assert(handled)
+    }
   }
 
   test("Dtab propagation") {
@@ -213,7 +217,9 @@ class EndToEndTest
     val client = Mux.newService(server)
 
     // This will try until it exhausts its budget. That's o.k.
-    val failure = intercept[Failure] { Await.result(client(Request.empty)) }
+    val failure = intercept[Failure] {
+      Await.result(client(Request.empty))
+    }
 
     // Failure.Restartable is stripped.
     assert(!failure.isFlagged(Failure.Restartable))
@@ -287,11 +293,15 @@ EOF
       Await.result(server.close(), 30.seconds)
 
       // Thus the next request should fail at session establishment.
-      intercept[Throwable] { Await.result(client(req)) }
+      intercept[Throwable] {
+        Await.result(client(req))
+      }
 
       // And eventually we recover.
       server = Mux.serve(s"localhost:$port", echo)
-      eventually { Await.result(client(req)) }
+      eventually {
+        Await.result(client(req))
+      }
 
       Await.result(server.close(), 30.seconds)
     }
@@ -325,7 +335,9 @@ EOF
 
       val factory = Mux.client.configured(param.Stats(sr)).newClient(server)
       val fclient = factory()
-      eventually { assert(fclient.isDefined) }
+      eventually {
+        assert(fclient.isDefined)
+      }
 
       val Some((_, available)) = sr.gauges.find {
         case (_ +: Seq("loadbalancer", "available"), value) => true
@@ -346,19 +358,33 @@ EOF
       }
       def format(duration: Duration): Float = duration.inMilliseconds.toFloat
 
-      eventually { assert(leaseDuration() == format(Time.Top - Time.now)) }
-      eventually { assert(available() == 1) }
+      eventually {
+        assert(leaseDuration() == format(Time.Top - Time.now))
+      }
+      eventually {
+        assert(available() == 1)
+      }
       lessor.list.foreach(_.issue(Message.Tlease.MinLease))
-      eventually { assert(leaseCtr() == 1) }
+      eventually {
+        assert(leaseCtr() == 1)
+      }
       ctl.advance(2.seconds) // must advance time to re-lease and expire
       eventually {
         assert(leaseDuration() == format(Message.Tlease.MinLease - 2.seconds))
       }
-      eventually { assert(available() == 0) }
+      eventually {
+        assert(available() == 0)
+      }
       lessor.list.foreach(_.issue(Message.Tlease.MaxLease))
-      eventually { assert(leaseCtr() == 2) }
-      eventually { assert(leaseDuration() == format(Message.Tlease.MaxLease)) }
-      eventually { assert(available() == 1) }
+      eventually {
+        assert(leaseCtr() == 2)
+      }
+      eventually {
+        assert(leaseDuration() == format(Message.Tlease.MaxLease))
+      }
+      eventually {
+        assert(available() == 1)
+      }
 
       Closable.sequence(Await.result(fclient), server, factory).close()
     }

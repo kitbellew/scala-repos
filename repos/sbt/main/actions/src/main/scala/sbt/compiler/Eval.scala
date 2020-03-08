@@ -122,7 +122,9 @@ final class Eval(
         augment(parser, importTrees, tree, tpt, moduleName)
       }
       def extra(run: Run, unit: CompilationUnit) =
-        atPhase(run.typerPhase.next) { (new TypeExtractor).getType(unit.body) }
+        atPhase(run.typerPhase.next) {
+          (new TypeExtractor).getType(unit.body)
+        }
       def read(file: File) = IO.read(file)
       def write(value: String, f: File) = IO.write(f, value)
       def extraHash = ""
@@ -204,8 +206,11 @@ final class Eval(
         val extra = ev.read(cacheFile(back, moduleName))
         (extra, loader)
       case _ =>
-        try { compileAndLoad(run, unit, imports, backing, moduleName, ev) }
-        finally { unlinkAll() }
+        try {
+          compileAndLoad(run, unit, imports, backing, moduleName, ev)
+        } finally {
+          unlinkAll()
+        }
     }
 
     val generatedFiles = getGeneratedFiles(backing, moduleName)
@@ -234,7 +239,9 @@ final class Eval(
       if (phase == null || phase == phase.next || reporter.hasErrors)
         ()
       else {
-        atPhase(phase) { phase.run }
+        atPhase(phase) {
+          phase.run
+        }
         compile(phase.next)
       }
     }
@@ -286,7 +293,9 @@ final class Eval(
       definitions: List[Tree],
       objectName: String): Tree = {
     val emptyTypeName = nme.EMPTY.toTypeName
-    def emptyPkg = parser.atPos(0, 0, 0) { Ident(nme.EMPTY_PACKAGE_NAME) }
+    def emptyPkg = parser.atPos(0, 0, 0) {
+      Ident(nme.EMPTY_PACKAGE_NAME)
+    }
     def emptyInit = DefDef(
       NoMods,
       nme.CONSTRUCTOR,
@@ -312,7 +321,9 @@ final class Eval(
 
   private[this] final class TypeExtractor extends Traverser {
     private[this] var result = ""
-    def getType(t: Tree) = { result = ""; traverse(t); result }
+    def getType(t: Tree) = {
+      result = ""; traverse(t); result
+    }
     override def traverse(tree: Tree): Unit = tree match {
       case d: DefDef if d.symbol.nameString == WrapValName =>
         result = d.symbol.tpe.finalResultType.toString
@@ -323,9 +334,13 @@ final class Eval(
   /** Tree traverser that obtains the names of vals in a top-level module whose type is a subtype of one of `types`.*/
   private[this] final class ValExtractor(tpes: Set[String]) extends Traverser {
     private[this] var vals = List[String]()
-    def getVals(t: Tree): List[String] = { vals = Nil; traverse(t); vals }
+    def getVals(t: Tree): List[String] = {
+      vals = Nil; traverse(t); vals
+    }
     def isAcceptableType(tpe: Type): Boolean = {
-      tpe.baseClasses.exists { sym => tpes.contains(sym.fullName) }
+      tpe.baseClasses.exists { sym =>
+        tpes.contains(sym.fullName)
+      }
     }
     override def traverse(tree: Tree): Unit = tree match {
       case ValDef(_, n, actualTpe, _)

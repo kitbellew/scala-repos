@@ -151,9 +151,13 @@ private class BufChannelBuffer(val buf: Buf, endianness: ByteOrder)
 
   def arrayOffset(): Int = throw new ReadOnlyBufferException()
 
-  override def discardReadBytes() { throw new ReadOnlyBufferException() }
+  override def discardReadBytes() {
+    throw new ReadOnlyBufferException()
+  }
 
-  def setByte(index: Int, value: Int) { throw new ReadOnlyBufferException() }
+  def setByte(index: Int, value: Int) {
+    throw new ReadOnlyBufferException()
+  }
 
   def setBytes(index: Int, src: ChannelBuffer, srcIndex: Int, length: Int) {
     throw new ReadOnlyBufferException()

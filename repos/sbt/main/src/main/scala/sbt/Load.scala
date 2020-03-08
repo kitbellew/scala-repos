@@ -128,8 +128,11 @@ object Load {
       log)
   }
   private def bootIvyHome(app: xsbti.AppConfiguration): Option[File] =
-    try { Option(app.provider.scalaProvider.launcher.ivyHome) }
-    catch { case _: NoSuchMethodError => None }
+    try {
+      Option(app.provider.scalaProvider.launcher.ivyHome)
+    } catch {
+      case _: NoSuchMethodError => None
+    }
   def injectGlobal(state: State): Seq[Setting[_]] =
     (appConfiguration in GlobalScope :== state.configuration) +:
       LogManager.settingsLogger(state) +:
@@ -393,7 +396,9 @@ object Load {
   def pluginGlobalSettings(loaded: sbt.LoadedBuild): Seq[Setting[_]] =
     loaded.units.toSeq flatMap {
       case (_, build) =>
-        build.unit.plugins.detected.plugins.values flatMap { _.globalSettings }
+        build.unit.plugins.detected.plugins.values flatMap {
+          _.globalSettings
+        }
     }
 
   @deprecated("No longer used.", "0.13.0")
@@ -521,7 +526,9 @@ object Load {
       case Nil => loaders
       case x :: xs =>
         import Alternatives._
-        val resolver = (x /: xs) { _ | _ }
+        val resolver = (x /: xs) {
+          _ | _
+        }
         if (isRoot) loaders.setRoot(resolver)
         else loaders.addNonRoot(unit.uri, resolver)
     }
@@ -871,7 +878,9 @@ object Load {
       discoverProjects(auto, base, plugins, eval, memoSettings)
     // Step two, Finalize a project with all its settings/configuration.
     def finalizeProject(p: Project, configFiles: Seq[File]): Project = {
-      val loadedFiles = configFiles flatMap { f => memoSettings.get(f) }
+      val loadedFiles = configFiles flatMap { f =>
+        memoSettings.get(f)
+      }
       resolveProject(p, loadedFiles, plugins, injectSettings, memoSettings, log)
     }
     // Discover any new project definition for the base directory of this project, and load all settings.
@@ -1112,7 +1121,9 @@ object Load {
         0)(loader)
     // How to merge SbtFiles we read into one thing
     def merge(ls: Seq[LoadedSbtFile]): LoadedSbtFile =
-      (LoadedSbtFile.empty /: ls) { _ merge _ }
+      (LoadedSbtFile.empty /: ls) {
+        _ merge _
+      }
     // Loads a given file, or pulls from the cache.
 
     def memoLoadSettingsFile(src: File): LoadedSbtFile =
@@ -1189,7 +1200,9 @@ object Load {
       cp: Seq[Attributed[File]],
       remove: Seq[Attributed[File]]): Seq[Attributed[File]] = {
     val files = data(remove).toSet
-    cp filter { f => !files.contains(f.data) }
+    cp filter { f =>
+      !files.contains(f.data)
+    }
   }
 
   def enableSbtPlugin(
@@ -1269,7 +1282,10 @@ object Load {
     def addToLoader() = pm.loader add Path.toURLs(data(depcp))
 
     val parentLoader =
-      if (depcp.isEmpty) pm.initialLoader else { addToLoader(); pm.loader }
+      if (depcp.isEmpty) pm.initialLoader
+      else {
+        addToLoader(); pm.loader
+      }
     val pluginLoader =
       if (defcp.isEmpty)
         parentLoader
@@ -1291,7 +1307,9 @@ object Load {
 
   @deprecated("Use ModuleUtilities.getCheckedObjects[Build].", "0.13.2")
   def loadDefinitions(loader: ClassLoader, defs: Seq[String]): Seq[Build] =
-    defs map { definition => loadDefinition(loader, definition) }
+    defs map { definition =>
+      loadDefinition(loader, definition)
+    }
 
   @deprecated("Use ModuleUtilities.getCheckedObject[Build].", "0.13.2")
   def loadDefinition(loader: ClassLoader, definition: String): Build =

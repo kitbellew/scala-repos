@@ -360,7 +360,9 @@ class ClientSuite
   def withAppConf(m: Map[String, String] = Map())(
       testCode: (Configuration) => Any) {
     val conf = new Configuration
-    m.foreach { case (k, v) => conf.set(k, v, "ClientSpec") }
+    m.foreach {
+      case (k, v) => conf.set(k, v, "ClientSpec")
+    }
     testCode(conf)
   }
 

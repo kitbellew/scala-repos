@@ -231,7 +231,9 @@ object TimeHelpersSpec
       List(null, Nil, None, Failure("", Empty, Empty)) forall {
         toDate(_) must_== Empty
       }
-      List(Full(d), Some(d), List(d)) forall { toDate(_) must_== Full(d) }
+      List(Full(d), Some(d), List(d)) forall {
+        toDate(_) must_== Full(d)
+      }
 
       toDate(internetDateFormatter.format(d)) must beLike {
         case Full(converted) =>

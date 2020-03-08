@@ -229,7 +229,9 @@ object MutablizingAdaptor {
 
         implicit def scaleAddVV: scaleAdd.InPlaceImpl3[Wrapper, S, Wrapper] = {
           new scaleAdd.InPlaceImpl3[Wrapper, S, Wrapper] {
-            def apply(y: Wrapper, a: S, x: Wrapper) { y += x * a }
+            def apply(y: Wrapper, a: S, x: Wrapper) {
+              y += x * a
+            }
           }
         }
 
@@ -370,7 +372,9 @@ object MutablizingAdaptor {
 
         implicit def scaleAddVV: scaleAdd.InPlaceImpl3[Wrapper, S, Wrapper] = {
           new scaleAdd.InPlaceImpl3[Wrapper, S, Wrapper] {
-            def apply(y: Wrapper, a: S, x: Wrapper) { y += x * a }
+            def apply(y: Wrapper, a: S, x: Wrapper) {
+              y += x * a
+            }
           }
         }
 
@@ -553,7 +557,9 @@ object MutablizingAdaptor {
 
         implicit def scaleAddVV: scaleAdd.InPlaceImpl3[Wrapper, S, Wrapper] = {
           new scaleAdd.InPlaceImpl3[Wrapper, S, Wrapper] {
-            def apply(y: Wrapper, a: S, x: Wrapper) { y += x * a }
+            def apply(y: Wrapper, a: S, x: Wrapper) {
+              y += x * a
+            }
           }
         }
 
@@ -724,7 +730,9 @@ object MutablizingAdaptor {
 
         implicit def scaleAddVV: scaleAdd.InPlaceImpl3[Wrapper, S, Wrapper] = {
           new scaleAdd.InPlaceImpl3[Wrapper, S, Wrapper] {
-            def apply(y: Wrapper, a: S, x: Wrapper) { y += x * a }
+            def apply(y: Wrapper, a: S, x: Wrapper) {
+              y += x * a
+            }
           }
         }
 
@@ -885,7 +893,9 @@ object MutablizingAdaptor {
 
         implicit def scaleAddVV: scaleAdd.InPlaceImpl3[Wrapper, S, Wrapper] = {
           new scaleAdd.InPlaceImpl3[Wrapper, S, Wrapper] {
-            def apply(y: Wrapper, a: S, x: Wrapper) { y += x * a }
+            def apply(y: Wrapper, a: S, x: Wrapper) {
+              y += x * a
+            }
           }
         }
 

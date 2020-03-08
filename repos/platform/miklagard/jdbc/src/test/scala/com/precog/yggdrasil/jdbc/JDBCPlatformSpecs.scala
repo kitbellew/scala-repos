@@ -151,12 +151,18 @@ object JDBCPlatformSpecEngine extends Logging {
                 // Two passes: first one constructs a schema for the table, second inserts data
                 val schema = rows.foldLeft(Set[(String, String)]()) {
                   case (acc, properties) =>
-                    acc ++ (properties.map { case (p, (t, _)) => (p, t) }).toSet
+                    acc ++ (properties.map {
+                      case (p, (t, _)) => (p, t)
+                    }).toSet
                 }
 
                 val ddlCreate = "CREATE TABLE %s (%s);".format(
                   tableName,
-                  schema.map { case (p, t) => p + " " + t }.mkString(", "))
+                  schema
+                    .map {
+                      case (p, t) => p + " " + t
+                    }
+                    .mkString(", "))
 
                 logger.debug("Create = " + ddlCreate)
 
@@ -211,7 +217,9 @@ object JDBCPlatformSpecEngine extends Logging {
       }
     }
 
-    (new File(dataDirURL.toURI)).listFiles.foreach { f => loadFile("", f) }
+    (new File(dataDirURL.toURI)).listFiles.foreach { f =>
+      loadFile("", f)
+    }
   }
 }
 
@@ -294,7 +302,11 @@ trait JDBCPlatformSpecs
   }
 
   override def map(fs: => Fragments): Fragments =
-    Step { startup() } ^ fs ^ Step { shutdown() }
+    Step {
+      startup()
+    } ^ fs ^ Step {
+      shutdown()
+    }
 
   def Evaluator[N[+_]](
       N0: Monad[N])(implicit mn: Future ~> N, nm: N ~> Future) =

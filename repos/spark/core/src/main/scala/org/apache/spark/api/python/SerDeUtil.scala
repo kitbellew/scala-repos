@@ -162,7 +162,9 @@ private[spark] object SerDeUtil extends Logging {
     * PySpark.
     */
   private[spark] def javaToPython(jRDD: JavaRDD[_]): JavaRDD[Array[Byte]] = {
-    jRDD.rdd.mapPartitions { iter => new AutoBatchedPickler(iter) }
+    jRDD.rdd.mapPartitions { iter =>
+      new AutoBatchedPickler(iter)
+    }
   }
 
   /**

@@ -31,10 +31,14 @@ object adjoin {
   trait Adjoin[A] extends DepFn1[A] with Serializable
 
   trait LowPriorityAdjoin {
-    type Aux[A, Out0] = Adjoin[A] { type Out = Out0 }
+    type Aux[A, Out0] = Adjoin[A] {
+      type Out = Out0
+    }
 
     implicit def hlistAdjoin0[H, T <: HList](implicit
-        adjoinT: Adjoin[T] { type Out <: HList }
+        adjoinT: Adjoin[T] {
+          type Out <: HList
+        }
     ): Aux[H :: T, H :: adjoinT.Out] =
       new Adjoin[H :: T] {
         type Out = H :: adjoinT.Out
@@ -43,7 +47,9 @@ object adjoin {
       }
 
     implicit def coproductAdjoin0[H, T <: Coproduct](implicit
-        adjoinT: Adjoin[T] { type Out <: Coproduct }
+        adjoinT: Adjoin[T] {
+          type Out <: Coproduct
+        }
     ): Aux[H :+: T, H :+: adjoinT.Out] =
       new Adjoin[H :+: T] {
         type Out = H :+: adjoinT.Out

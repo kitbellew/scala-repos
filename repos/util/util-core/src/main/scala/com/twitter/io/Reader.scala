@@ -354,7 +354,9 @@ object Reader {
     // We have to do this because discarding the writer doesn't interrupt read
     // operations, it only fails the next write operation.
     loop() proxyTo p
-    p setInterruptHandler { case exc => r.discard() }
+    p setInterruptHandler {
+      case exc => r.discard()
+    }
     p
   }
 

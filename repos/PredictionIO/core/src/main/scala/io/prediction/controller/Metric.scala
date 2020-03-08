@@ -63,7 +63,9 @@ private[prediction] trait StatsMetricHelper[EI, Q, P, A] {
     val doubleRDD = sc.union(
       evalDataSet.map {
         case (_, qpaRDD) =>
-          qpaRDD.map { case (q, p, a) => calculate(q, p, a) }
+          qpaRDD.map {
+            case (q, p, a) => calculate(q, p, a)
+          }
       }
     )
 
@@ -80,7 +82,9 @@ private[prediction] trait StatsOptionMetricHelper[EI, Q, P, A] {
     val doubleRDD = sc.union(
       evalDataSet.map {
         case (_, qpaRDD) =>
-          qpaRDD.flatMap { case (q, p, a) => calculate(q, p, a) }
+          qpaRDD.flatMap {
+            case (q, p, a) => calculate(q, p, a)
+          }
       }
     )
 
@@ -224,7 +228,9 @@ abstract class SumMetric[EI, Q, P, A, R: ClassTag](implicit num: Numeric[R])
     val union: RDD[R] = sc.union(
       evalDataSet.map {
         case (_, qpaRDD) =>
-          qpaRDD.map { case (q, p, a) => calculate(q, p, a) }
+          qpaRDD.map {
+            case (q, p, a) => calculate(q, p, a)
+          }
       }
     )
 

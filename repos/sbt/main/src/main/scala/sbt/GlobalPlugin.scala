@@ -25,9 +25,13 @@ object GlobalPlugin {
   //  static here meaning that the relevant tasks for the global plugin have already been evaluated
   def inject(gp: GlobalPluginData): Seq[Setting[_]] =
     Seq[Setting[_]](
-      projectDescriptors ~= { _ ++ gp.descriptors },
+      projectDescriptors ~= {
+        _ ++ gp.descriptors
+      },
       projectDependencies ++= gp.projectID +: gp.dependencies,
-      resolvers <<= resolvers { rs => (rs ++ gp.resolvers).distinct },
+      resolvers <<= resolvers { rs =>
+        (rs ++ gp.resolvers).distinct
+      },
       globalPluginUpdate := gp.updateReport,
       // TODO: these shouldn't be required (but are): the project* settings above should take care of this
       injectInternalClasspath(Runtime, gp.internalClasspath),
@@ -36,7 +40,9 @@ object GlobalPlugin {
   private[this] def injectInternalClasspath(
       config: Configuration,
       cp: Seq[Attributed[File]]): Setting[_] =
-    internalDependencyClasspath in config ~= { prev => (prev ++ cp).distinct }
+    internalDependencyClasspath in config ~= { prev =>
+      (prev ++ cp).distinct
+    }
 
   def build(
       base: File,
@@ -72,7 +78,11 @@ object GlobalPlugin {
       val depMap =
         projectDescriptors.value + ivyModule.value.dependencyMapping(state.log)
       // If we reference it directly (if it's an executionRoot) then it forces an update, which is not what we want.
-      val updateReport = Def.taskDyn { Def.task { update.value } }.value
+      val updateReport = Def.taskDyn {
+        Def.task {
+          update.value
+        }
+      }.value
 
       GlobalPluginData(
         projectID.value,

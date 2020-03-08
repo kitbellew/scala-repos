@@ -82,12 +82,24 @@ object CubeSampleDemo extends JFXApp {
     animation = new Timeline {
       cycleCount = Timeline.Indefinite
       keyFrames = Seq(
-        at(0 s) { c.ry.angle -> 0d },
-        at(0 s) { c2.rx.angle -> 0d },
-        at(0 s) { c3.rz.angle -> 0d },
-        at(1 s) { c.ry.angle -> 360d },
-        at(1 s) { c2.rx.angle -> 360d },
-        at(1 s) { c3.rz.angle -> 360d }
+        at(0 s) {
+          c.ry.angle -> 0d
+        },
+        at(0 s) {
+          c2.rx.angle -> 0d
+        },
+        at(0 s) {
+          c3.rz.angle -> 0d
+        },
+        at(1 s) {
+          c.ry.angle -> 360d
+        },
+        at(1 s) {
+          c2.rx.angle -> 360d
+        },
+        at(1 s) {
+          c3.rz.angle -> 360d
+        }
       )
     }
 

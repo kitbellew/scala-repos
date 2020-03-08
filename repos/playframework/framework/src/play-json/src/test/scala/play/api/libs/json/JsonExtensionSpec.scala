@@ -488,7 +488,9 @@ object JsonExtensionSpec extends Specification {
       import play.api.libs.functional.syntax._
 
       implicit def idReads[A](implicit rds: Reads[A]): Reads[Id[A]] =
-        Reads[Id[A]] { js => rds.reads(js).map(Id[A](_)) }
+        Reads[Id[A]] { js =>
+          rds.reads(js).map(Id[A](_))
+        }
 
       //val c2Reads1 = Json.reads[C2]
 

@@ -64,7 +64,9 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
 
   case class TypeFlags(printRep: Boolean)
 
-  def printSymbol(symbol: Symbol) { printSymbol(0, symbol) }
+  def printSymbol(symbol: Symbol) {
+    printSymbol(0, symbol)
+  }
 
   def printSymbolAttributes(s: Symbol, onNewLine: Boolean, indent: => Unit) =
     s match {
@@ -93,7 +95,9 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
       accessibilityOk && !symbol.isCaseAccessor && !paramAccessor
     }
     if (shouldPrint) {
-      def indent() { for (i <- 1 to level) print("  ") }
+      def indent() {
+        for (i <- 1 to level) print("  ")
+      }
 
       printSymbolAttributes(symbol, onNewLine = true, indent())
       symbol match {
@@ -169,7 +173,9 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
   }
 
   def printWithIndent(level: Int, s: String) {
-    def indent() { for (i <- 1 to level) print("  ") }
+    def indent() {
+      for (i <- 1 to level) print("  ")
+    }
     indent()
     print(s)
   }

@@ -188,7 +188,9 @@ private[cluster] final case class Gossip(
   }
 
   lazy val reachabilityExcludingDownedObservers: Reachability = {
-    val downed = members.collect { case m if m.status == Down ⇒ m }
+    val downed = members.collect {
+      case m if m.status == Down ⇒ m
+    }
     overview.reachability.removeObservers(downed.map(_.uniqueAddress))
   }
 

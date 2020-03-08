@@ -56,7 +56,9 @@ private[camel] class DefaultCamel(val system: ExtendedActorSystem)
   def start(): this.type = {
     context.start()
     try template.start()
-    catch { case NonFatal(e) ⇒ context.stop(); throw e }
+    catch {
+      case NonFatal(e) ⇒ context.stop(); throw e
+    }
     log.debug(
       "Started CamelContext[{}] for ActorSystem[{}]",
       context.getName,

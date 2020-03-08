@@ -82,7 +82,9 @@ private[http] object HttpServerBluePrint {
     NotUsed] =
     BidiFlow.fromFlows(
       Flow[ByteString].map(SendBytes),
-      Flow[SslTlsInbound].collect { case x: SessionBytes ⇒ x })
+      Flow[SslTlsInbound].collect {
+        case x: SessionBytes ⇒ x
+      })
 
   def websocketSupport(settings: ServerSettings, log: LoggingAdapter): BidiFlow[
     ResponseRenderingOutput,
@@ -478,7 +480,9 @@ private[http] object HttpServerBluePrint {
         handler: HttpRequest ⇒ HttpResponse): Cancellable =
       materializer.scheduleOnce(
         delay,
-        new Runnable { def run() = trigger.invoke((self, handler(request))) })
+        new Runnable {
+          def run() = trigger.invoke((self, handler(request)))
+        })
 
     import akka.http.impl.util.JavaMapping.Implicits._
 

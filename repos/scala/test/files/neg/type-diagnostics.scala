@@ -10,7 +10,9 @@ object TParamConfusion {
   def f1[a <% Ordered[a]](x: List[a]) = {
     def f2[b >: List[a] <% Ordered[b]](x: List[a], y: b): Int = {
       def f3(xs: List[a], ys: List[a]) = -1
-      y match { case y1: List[a] => f3(x, y1) }
+      y match {
+        case y1: List[a] => f3(x, y1)
+      }
     }
   }
 
@@ -18,5 +20,7 @@ object TParamConfusion {
 }
 
 object PartialInfer {
-  val f = { case 5 => 10 }
+  val f = {
+    case 5 => 10
+  }
 }

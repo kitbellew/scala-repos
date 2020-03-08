@@ -81,8 +81,11 @@ object SampleData extends CValueGenerators {
             // cause RuntimeExceptions in JValue.unsafeInsert. It's easier to filter these
             // out here than prevent it from happening in the first place.
             case (ids, jv) =>
-              try { Some(toRecord(ids, assemble(jv))) }
-              catch { case _: RuntimeException => None }
+              try {
+                Some(toRecord(ids, assemble(jv)))
+              } catch {
+                case _: RuntimeException => None
+              }
           },
           Some((idCount, jschema))
         )

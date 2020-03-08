@@ -102,7 +102,9 @@ final class LongMap[V] private[collection] (
   private def seekEmpty(k: Long): Int = {
     var e = toIndex(k)
     var x = 0
-    while (_keys(e) != 0) { x += 1; e = (e + 2 * (x + 1) * x - 3) & mask }
+    while (_keys(e) != 0) {
+      x += 1; e = (e + 2 * (x + 1) * x - 3) & mask
+    }
     e
   }
 
@@ -110,7 +112,9 @@ final class LongMap[V] private[collection] (
     var e = toIndex(k)
     var x = 0
     var q = 0L
-    while ({ q = _keys(e); if (q == k) return e; q != 0 }) {
+    while ({
+      q = _keys(e); if (q == k) return e; q != 0
+    }) {
       x += 1; e = (e + 2 * (x + 1) * x - 3) & mask
     }
     e | MissingBit
@@ -120,13 +124,17 @@ final class LongMap[V] private[collection] (
     var e = toIndex(k)
     var x = 0
     var q = 0L
-    while ({ q = _keys(e); if (q == k) return e; q + q != 0 }) {
+    while ({
+      q = _keys(e); if (q == k) return e; q + q != 0
+    }) {
       x += 1
       e = (e + 2 * (x + 1) * x - 3) & mask
     }
     if (q == 0) return e | MissingBit
     val o = e | MissVacant
-    while ({ q = _keys(e); if (q == k) return e; q != 0 }) {
+    while ({
+      q = _keys(e); if (q == k) return e; q != 0
+    }) {
       x += 1
       e = (e + 2 * (x + 1) * x - 3) & mask
     }
@@ -334,9 +342,13 @@ final class LongMap[V] private[collection] (
   }
 
   /** Adds a new key/value pair to this map and returns the map. */
-  def +=(key: Long, value: V): this.type = { update(key, value); this }
+  def +=(key: Long, value: V): this.type = {
+    update(key, value); this
+  }
 
-  def +=(kv: (Long, V)): this.type = { update(kv._1, kv._2); this }
+  def +=(kv: (Long, V)): this.type = {
+    update(kv._1, kv._2); this
+  }
 
   def -=(key: Long): this.type = {
     if (key == -key) {
@@ -550,7 +562,9 @@ object LongMap {
       elems += entry
       this
     }
-    def clear() { elems = new LongMap[V] }
+    def clear() {
+      elems = new LongMap[V]
+    }
     def result(): LongMap[V] = elems
   }
 
@@ -558,7 +572,9 @@ object LongMap {
   def apply[V](elems: (Long, V)*): LongMap[V] = {
     val sz = if (elems.hasDefiniteSize) elems.size else 4
     val lm = new LongMap[V](sz * 2)
-    elems.foreach { case (k, v) => lm(k) = v }
+    elems.foreach {
+      case (k, v) => lm(k) = v
+    }
     if (lm.size < (sz >> 3)) lm.repack()
     lm
   }
@@ -576,7 +592,9 @@ object LongMap {
     val sz = math.min(keys.length, values.length)
     val lm = new LongMap[V](sz * 2)
     var i = 0
-    while (i < sz) { lm(keys(i)) = values(i); i += 1 }
+    while (i < sz) {
+      lm(keys(i)) = values(i); i += 1
+    }
     if (lm.size < (sz >> 3)) lm.repack()
     lm
   }

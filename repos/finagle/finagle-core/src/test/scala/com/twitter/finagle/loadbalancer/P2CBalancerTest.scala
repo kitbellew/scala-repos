@@ -28,7 +28,9 @@ private[loadbalancer] trait P2CSuite {
 
   class Clock extends (() => Long) {
     var time: Long = 0L
-    def advance(tick: Long): Unit = { time += tick }
+    def advance(tick: Long): Unit = {
+      time += tick
+    }
     def apply(): Long = time
   }
 
@@ -107,7 +109,9 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
   }
 
   test("Balances evenly") {
-    val init = Vector.tabulate(N) { i => new LoadedFactory(i) }
+    val init = Vector.tabulate(N) { i =>
+      new LoadedFactory(i)
+    }
     val bal = newBal(Var.value(init))
     for (_ <- 0 until R) bal()
     assertEven(init)
@@ -115,7 +119,9 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
 
   test("Balance evenly when load varies") {
     val rng = Rng(12345L)
-    val init = Vector.tabulate(N) { i => LoadedFactory(i) }
+    val init = Vector.tabulate(N) { i =>
+      LoadedFactory(i)
+    }
     var pending = Set[Service[Unit, Int]]()
     val bal = newBal(Var.value(init))
 
@@ -137,7 +143,9 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
   }
 
   test("Dynamically incorporates updates") {
-    val init = Vector.tabulate(N) { i => LoadedFactory(i) }
+    val init = Vector.tabulate(N) { i =>
+      LoadedFactory(i)
+    }
     val vec = Var(init)
     val bal = newBal(vec)
 
@@ -161,7 +169,9 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
   }
 
   test("Skip downed nodes; revive them") {
-    val init = Vector.tabulate(N) { i => new LoadedFactory(i) }
+    val init = Vector.tabulate(N) { i =>
+      new LoadedFactory(i)
+    }
     val bal = newBal(Var.value(init))
 
     var byIndex = new mutable.HashMap[Int, mutable.Set[Closable]]
@@ -203,7 +213,9 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
   test("Handle empty vectors") {
     val vec = Var(Vector.empty[LoadedFactory])
     val bal = newBal(vec)
-    val exc = intercept[NoBrokersAvailableException] { Await.result(bal()) }
+    val exc = intercept[NoBrokersAvailableException] {
+      Await.result(bal())
+    }
     assert(exc eq noBrokers)
 
     vec() :+= new LoadedFactory(0)
@@ -211,11 +223,15 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
     assert(vec().head.load == R)
 
     vec() = Vector.empty
-    intercept[NoBrokersAvailableException] { Await.result(bal()) }
+    intercept[NoBrokersAvailableException] {
+      Await.result(bal())
+    }
   }
 
   test("Balance all-downed nodes.") {
-    val init = Vector.tabulate(N) { i => new LoadedFactory(i) }
+    val init = Vector.tabulate(N) { i =>
+      new LoadedFactory(i)
+    }
     val bal = newBal(Var.value(init))
 
     for (_ <- 0 until R) bal()
@@ -268,7 +284,9 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
     vec()(0).stat = Status.Closed
     assert(stats.available == 1)
 
-    val svcs = Seq.fill(R) { Await.result(bal()) }
+    val svcs = Seq.fill(R) {
+      Await.result(bal())
+    }
     assert(stats.load == R)
     assert(vec()(0).load == 0)
     assert(vec()(1).load == R)
@@ -278,7 +296,9 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
   }
 
   test("Closes") {
-    val init = Vector.tabulate(N) { i => new LoadedFactory(i) }
+    val init = Vector.tabulate(N) { i =>
+      new LoadedFactory(i)
+    }
     val bal = newBal(Var.value(init))
     // Give it some traffic.
     for (_ <- 0 until R) bal()
@@ -348,13 +368,17 @@ class P2CBalancerEwmaTest extends FunSuite with App with P2CSuite {
   }
 
   test("Balances evenly across identical nodes") {
-    val init = Vector.tabulate(N) { i => LatentFactory(i, Function.const(5)) }
+    val init = Vector.tabulate(N) { i =>
+      LatentFactory(i, Function.const(5))
+    }
     run(init, R)
     assertEven(init)
   }
 
   test("Probe a node without latency history at most once") {
-    val init = Vector.tabulate(N) { i => LatentFactory(i, Function.const(1)) }
+    val init = Vector.tabulate(N) { i =>
+      LatentFactory(i, Function.const(1))
+    }
     val vec = init :+ LatentFactory(N + 1, Function.const(R * 2))
     run(vec, R)
     assertEven(vec.init)

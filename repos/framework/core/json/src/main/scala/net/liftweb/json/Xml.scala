@@ -85,7 +85,10 @@ object Xml {
     def leaf_?(node: Node) = {
       def descendant(n: Node): List[Node] = n match {
         case g: Group => g.nodes.toList.flatMap(x => x :: descendant(x))
-        case _        => n.child.toList.flatMap { x => x :: descendant(x) }
+        case _ =>
+          n.child.toList.flatMap { x =>
+            x :: descendant(x)
+          }
       }
 
       !descendant(node).find(_.isInstanceOf[Elem]).isDefined
@@ -185,8 +188,15 @@ object Xml {
   def toXml(json: JValue): NodeSeq = {
     def toXml(name: String, json: JValue): NodeSeq = json match {
       case JObject(fields) =>
-        new XmlNode(name, fields flatMap { case JField(n, v) => toXml(n, v) })
-      case JArray(xs) => xs flatMap { v => toXml(name, v) }
+        new XmlNode(
+          name,
+          fields flatMap {
+            case JField(n, v) => toXml(n, v)
+          })
+      case JArray(xs) =>
+        xs flatMap { v =>
+          toXml(name, v)
+        }
       case JInt(x)    => new XmlElem(name, x.toString)
       case JDouble(x) => new XmlElem(name, x.toString)
       case JString(x) => new XmlElem(name, x)
@@ -197,7 +207,9 @@ object Xml {
 
     json match {
       case JObject(fields) =>
-        fields flatMap { case JField(name, value) => toXml(name, value) }
+        fields flatMap {
+          case JField(name, value) => toXml(name, value)
+        }
       case x => toXml("root", x)
     }
   }

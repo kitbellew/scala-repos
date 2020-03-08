@@ -51,7 +51,9 @@ object Decompiler {
                 seq.collect {
                   case ConstValueIndex(index) => constantWrapped(index)
                 }
-            }).collect { case x: StringBytesPair => x.bytes }
+            }).collect {
+              case x: StringBytesPair => x.bytes
+            }
 
             val bytes = parts.reduceLeft(Array.concat(_, _))
 

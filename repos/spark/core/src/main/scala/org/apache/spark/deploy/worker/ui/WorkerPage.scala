@@ -71,40 +71,60 @@ private[ui] class WorkerPage(parent: WorkerWebUI) extends WebUIPage("") {
       <div class="row-fluid"> <!-- Worker Details -->
         <div class="span12">
           <ul class="unstyled">
-            <li><strong>ID:</strong> {workerState.workerId}</li>
+            <li><strong>ID:</strong> {
+        workerState.workerId
+      }</li>
             <li><strong>
-              Master URL:</strong> {workerState.masterUrl}
+              Master URL:</strong> {
+        workerState.masterUrl
+      }
             </li>
-            <li><strong>Cores:</strong> {workerState.cores} ({
+            <li><strong>Cores:</strong> {
+        workerState.cores
+      } ({
         workerState.coresUsed
       } Used)</li>
             <li><strong>Memory:</strong> {
         Utils.megabytesToString(workerState.memory)
       }
-              ({Utils.megabytesToString(workerState.memoryUsed)} Used)</li>
+              ({
+        Utils.megabytesToString(workerState.memoryUsed)
+      } Used)</li>
           </ul>
-          <p><a href={workerState.masterWebUiUrl}>Back to Master</a></p>
+          <p><a href={
+        workerState.masterWebUiUrl
+      }>Back to Master</a></p>
         </div>
       </div>
       <div class="row-fluid"> <!-- Executors and Drivers -->
         <div class="span12">
-          <h4> Running Executors ({runningExecutors.size}) </h4>
-          {runningExecutorTable}
+          <h4> Running Executors ({
+        runningExecutors.size
+      }) </h4>
+          {
+        runningExecutorTable
+      }
           {
         if (runningDrivers.nonEmpty) {
-          <h4> Running Drivers ({runningDrivers.size}) </h4> ++
+          <h4> Running Drivers ({
+            runningDrivers.size
+          }) </h4> ++
             runningDriverTable
         }
       }
           {
         if (finishedExecutors.nonEmpty) {
-          <h4>Finished Executors ({finishedExecutors.size}) </h4> ++
+          <h4>Finished Executors ({
+            finishedExecutors.size
+          }) </h4> ++
             finishedExecutorTable
         }
       }
           {
         if (finishedDrivers.nonEmpty) {
-          <h4> Finished Drivers ({finishedDrivers.size}) </h4> ++
+          <h4> Finished Drivers ({
+            finishedDrivers.size
+          }) </h4> ++
             finishedDriverTable
         }
       }
@@ -117,17 +137,33 @@ private[ui] class WorkerPage(parent: WorkerWebUI) extends WebUIPage("") {
 
   def executorRow(executor: ExecutorRunner): Seq[Node] = {
     <tr>
-      <td>{executor.execId}</td>
-      <td>{executor.cores}</td>
-      <td>{executor.state}</td>
-      <td sorttable_customkey={executor.memory.toString}>
-        {Utils.megabytesToString(executor.memory)}
+      <td>{
+      executor.execId
+    }</td>
+      <td>{
+      executor.cores
+    }</td>
+      <td>{
+      executor.state
+    }</td>
+      <td sorttable_customkey={
+      executor.memory.toString
+    }>
+        {
+      Utils.megabytesToString(executor.memory)
+    }
       </td>
       <td>
         <ul class="unstyled">
-          <li><strong>ID:</strong> {executor.appId}</li>
-          <li><strong>Name:</strong> {executor.appDesc.name}</li>
-          <li><strong>User:</strong> {executor.appDesc.user}</li>
+          <li><strong>ID:</strong> {
+      executor.appId
+    }</li>
+          <li><strong>Name:</strong> {
+      executor.appDesc.name
+    }</li>
+          <li><strong>User:</strong> {
+      executor.appDesc.user
+    }</li>
         </ul>
       </td>
       <td>
@@ -146,21 +182,41 @@ private[ui] class WorkerPage(parent: WorkerWebUI) extends WebUIPage("") {
 
   def driverRow(driver: DriverRunner): Seq[Node] = {
     <tr>
-      <td>{driver.driverId}</td>
-      <td>{driver.driverDesc.command.arguments(2)}</td>
-      <td>{driver.finalState.getOrElse(DriverState.RUNNING)}</td>
-      <td sorttable_customkey={driver.driverDesc.cores.toString}>
-        {driver.driverDesc.cores.toString}
+      <td>{
+      driver.driverId
+    }</td>
+      <td>{
+      driver.driverDesc.command.arguments(2)
+    }</td>
+      <td>{
+      driver.finalState.getOrElse(DriverState.RUNNING)
+    }</td>
+      <td sorttable_customkey={
+      driver.driverDesc.cores.toString
+    }>
+        {
+      driver.driverDesc.cores.toString
+    }
       </td>
-      <td sorttable_customkey={driver.driverDesc.mem.toString}>
-        {Utils.megabytesToString(driver.driverDesc.mem)}
+      <td sorttable_customkey={
+      driver.driverDesc.mem.toString
+    }>
+        {
+      Utils.megabytesToString(driver.driverDesc.mem)
+    }
       </td>
       <td>
-        <a href={s"logPage?driverId=${driver.driverId}&logType=stdout"}>stdout</a>
-        <a href={s"logPage?driverId=${driver.driverId}&logType=stderr"}>stderr</a>
+        <a href={
+      s"logPage?driverId=${driver.driverId}&logType=stdout"
+    }>stdout</a>
+        <a href={
+      s"logPage?driverId=${driver.driverId}&logType=stderr"
+    }>stderr</a>
       </td>
       <td>
-        {driver.finalException.getOrElse("")}
+        {
+      driver.finalException.getOrElse("")
+    }
       </td>
     </tr>
   }

@@ -185,6 +185,8 @@ object WebSocketClientBlueprint {
   def simpleTls
       : BidiFlow[SslTlsInbound, ByteString, ByteString, SendBytes, NotUsed] =
     BidiFlow.fromFlowsMat(
-      Flow[SslTlsInbound].collect { case SessionBytes(_, bytes) ⇒ bytes },
+      Flow[SslTlsInbound].collect {
+        case SessionBytes(_, bytes) ⇒ bytes
+      },
       Flow[ByteString].map(SendBytes))(Keep.none)
 }

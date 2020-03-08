@@ -150,7 +150,9 @@ trait LogisticRegressionSpecs[M[+_]]
         Seq(CPath(CPathIndex(0), CPathIndex(0)), CPath(CPathIndex(1))) sorted
 
       val samples = createLogisticSamplePoints(num, 100, actualThetas)
-      val points = jvalues(samples, cpaths) map { _.renderCompact }
+      val points = jvalues(samples, cpaths) map {
+        _.renderCompact
+      }
 
       val tmpFile = File.createTempFile("values", ".json")
       IOUtils.writeSeqToFile(points, tmpFile).unsafePerformIO
@@ -192,7 +194,9 @@ trait LogisticRegressionSpecs[M[+_]]
 
     val allThetas = actualThetas zip combineResults(num, thetas)
 
-    val ok = allThetas map { case (t, ts) => isOk(t, ts) }
+    val ok = allThetas map {
+      case (t, ts) => isOk(t, ts)
+    }
 
     ok mustEqual Array.fill(num)(true)
   }
@@ -217,7 +221,9 @@ trait LogisticRegressionSpecs[M[+_]]
         CPath(CPathIndex(1))) sorted
 
       val samples = createLogisticSamplePoints(num, 100, actualThetas)
-      val points = jvalues(samples, cpaths) map { _.renderCompact }
+      val points = jvalues(samples, cpaths) map {
+        _.renderCompact
+      }
 
       val tmpFile = File.createTempFile("values", ".json")
       IOUtils.writeSeqToFile(points, tmpFile).unsafePerformIO
@@ -277,7 +283,9 @@ trait LogisticRegressionSpecs[M[+_]]
 
     val allThetas = actualThetas zip combineResults(num, thetas)
 
-    val ok = allThetas map { case (t, ts) => isOk(t, ts) }
+    val ok = allThetas map {
+      case (t, ts) => isOk(t, ts)
+    }
 
     ok mustEqual Array.fill(num)(true)
   }
@@ -316,7 +324,9 @@ trait LogisticRegressionSpecs[M[+_]]
           case (xs, y) => (Random.nextGaussian +: Random.nextGaussian +: xs, y)
         }
       }
-      val points = jvalues(samples, cpaths, num) map { _.renderCompact }
+      val points = jvalues(samples, cpaths, num) map {
+        _.renderCompact
+      }
 
       val suffix = ".json"
       val tmpFile = File.createTempFile("values", suffix)
@@ -380,12 +390,16 @@ trait LogisticRegressionSpecs[M[+_]]
 
     def getBooleans(thetas: List[List[Double]]): Array[Boolean] = {
       val zipped = actualThetas zip combineResults(num, thetas)
-      zipped map { case (t, ts) => isOk(t, ts) }
+      zipped map {
+        case (t, ts) => isOk(t, ts)
+      }
     }
 
     val allThetas = List(thetasSchema1, thetasSchema2, thetasSchema3)
 
-    val result = allThetas map { getBooleans }
+    val result = allThetas map {
+      getBooleans
+    }
 
     val expected = Array.fill(num)(true)
 

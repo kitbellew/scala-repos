@@ -176,7 +176,9 @@ class NonlinearMinimizer(
             false)
         }
       }
-      .takeUpToWhere { _.converged }
+      .takeUpToWhere {
+        _.converged
+      }
 
   def minimize(primal: DiffFunction[BDV], init: BDV): BDV = {
     minimizeAndReturnState(primal, init).z

@@ -416,7 +416,9 @@ class SquerylRecordSpec extends Specification with AroundExample {
     "Properly reset the dirty_? flag after loading entities" >> inTransaction {
       val company =
         from(companies)(company => select(company)).page(0, 1).single
-      company.allFields map { f => f.dirty_? must_== false }
+      company.allFields map { f =>
+        f.dirty_? must_== false
+      }
       success
     }
   }
@@ -484,7 +486,9 @@ class SquerylRecordSpec extends Specification with AroundExample {
         p2 must beSome[Array[Byte]]
         p2.get.size must_== p.size
 
-        (0 until p.size) map { i => p2.get(i) must_== p(i) }
+        (0 until p.size) map { i =>
+          p2.get(i) must_== p(i)
+        }
       }
       case None => e2.photo.get must beNone
     }

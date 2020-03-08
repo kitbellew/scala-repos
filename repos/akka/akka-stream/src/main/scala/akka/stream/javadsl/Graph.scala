@@ -403,8 +403,12 @@ object GraphDSL extends GraphCreate {
       new ReverseOps(j.in)
 
     final class ForwardOps[T](out: Outlet[T]) {
-      def toInlet(in: Inlet[_ >: T]): Builder[Mat] = { out ~> in; self }
-      def to(dst: SinkShape[_ >: T]): Builder[Mat] = { out ~> dst; self }
+      def toInlet(in: Inlet[_ >: T]): Builder[Mat] = {
+        out ~> in; self
+      }
+      def to(dst: SinkShape[_ >: T]): Builder[Mat] = {
+        out ~> dst; self
+      }
       def toFanIn[U](j: UniformFanInShape[_ >: T, U]): Builder[Mat] = {
         out ~> j; self
       }
@@ -421,8 +425,12 @@ object GraphDSL extends GraphCreate {
     }
 
     final class ReverseOps[T](out: Inlet[T]) {
-      def fromOutlet(dst: Outlet[_ <: T]): Builder[Mat] = { out <~ dst; self }
-      def from(dst: SourceShape[_ <: T]): Builder[Mat] = { out <~ dst; self }
+      def fromOutlet(dst: Outlet[_ <: T]): Builder[Mat] = {
+        out <~ dst; self
+      }
+      def from(dst: SourceShape[_ <: T]): Builder[Mat] = {
+        out <~ dst; self
+      }
       def fromFanIn[U](j: UniformFanInShape[U, _ <: T]): Builder[Mat] = {
         out <~ j; self
       }

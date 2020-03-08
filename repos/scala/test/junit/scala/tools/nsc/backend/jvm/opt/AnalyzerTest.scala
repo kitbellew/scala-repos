@@ -23,7 +23,9 @@ import scala.tools.testing.ClearAfterClass
 
 object AnalyzerTest extends ClearAfterClass.Clearable {
   var noOptCompiler = newCompiler(extraArgs = "-Yopt:l:none")
-  def clear(): Unit = { noOptCompiler = null }
+  def clear(): Unit = {
+    noOptCompiler = null
+  }
 }
 
 @RunWith(classOf[JUnit4])

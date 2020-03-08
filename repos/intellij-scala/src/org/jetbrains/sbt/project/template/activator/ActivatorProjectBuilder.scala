@@ -160,7 +160,9 @@ class ActivatorProjectBuilder
 
   private def downloadTemplateList() {
     doWithProgress(
-      { allTemplates = repoProcessor.extractRepoData() },
+      {
+        allTemplates = repoProcessor.extractRepoData()
+      },
       "Downloading list of templates...")
   }
 

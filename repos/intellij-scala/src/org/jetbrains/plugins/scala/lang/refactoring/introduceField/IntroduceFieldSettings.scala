@@ -34,8 +34,12 @@ class IntroduceFieldSettings[T <: PsiElement](ifc: IntroduceFieldContext[T]) {
 
   var name: String = ifc.possibleNames(0)
   var scType: ScType = ifc.types(0)
-  def setName(s: String) { name = s }
-  def setType(t: ScType) { scType = t }
+  def setName(s: String) {
+    name = s
+  }
+  def setType(t: ScType) {
+    scType = t
+  }
 
   if (!canBeInitLocally) {
     initLocallyEnabled = false
@@ -55,8 +59,12 @@ class IntroduceFieldSettings[T <: PsiElement](ifc: IntroduceFieldContext[T]) {
     initInDeclaration = scalaSettings.INTRODUCE_FIELD_INITIALIZE_IN_DECLARATION
 
   def defineVar = isVar
-  def defineVar_=(value: Boolean) { isVar = value }
-  def setDefineVar(value: Boolean) { defineVar = value }
+  def defineVar_=(value: Boolean) {
+    isVar = value
+  }
+  def setDefineVar(value: Boolean) {
+    defineVar = value
+  }
 
   def replaceAll = replAll
   def replaceAll_=(value: Boolean) {
@@ -64,7 +72,9 @@ class IntroduceFieldSettings[T <: PsiElement](ifc: IntroduceFieldContext[T]) {
     initLocallyEnabled =
       replaceAll && canBeInitLocalIfReplaceAll || !replaceAll && canBeInitLocalOneOccurrence
   }
-  def setReplaceAll(value: Boolean) { replaceAll = value }
+  def setReplaceAll(value: Boolean) {
+    replaceAll = value
+  }
 
   def visibilityLevel = visLevel
   def visibilityLevel_=(value: ScalaApplicationSettings.VisibilityLevel) {
@@ -75,8 +85,12 @@ class IntroduceFieldSettings[T <: PsiElement](ifc: IntroduceFieldContext[T]) {
   }
 
   def explicitType = explType
-  def explicitType_=(value: Boolean) { explType = value }
-  def setExplicitType(value: Boolean) { explicitType = value }
+  def explicitType_=(value: Boolean) {
+    explType = value
+  }
+  def setExplicitType(value: Boolean) {
+    explicitType = value
+  }
 
   def initInDeclaration = initInDecl
   def initInDeclaration_=(value: Boolean) {
@@ -90,7 +104,9 @@ class IntroduceFieldSettings[T <: PsiElement](ifc: IntroduceFieldContext[T]) {
       explicitTypeChbEnabled = value
     }
   }
-  def setInitInDeclaration(value: Boolean) { initInDeclaration = value }
+  def setInitInDeclaration(value: Boolean) {
+    initInDeclaration = value
+  }
 
   def initInDeclarationEnabled = initInDeclEn
   def initInDeclarationEnabled_=(value: Boolean) {

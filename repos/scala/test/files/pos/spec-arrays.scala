@@ -61,7 +61,9 @@ class ScalaSpecTest extends Test {
   def sum(): Int = {
     var acc = 0
     var i = 0
-    while (i < arr.length) { acc = acc + arr.applyInt(i); i += 1 }
+    while (i < arr.length) {
+      acc = acc + arr.applyInt(i); i += 1
+    }
     acc
   }
 
@@ -81,7 +83,9 @@ class ScalaSpec2Test extends Test {
   def sum(): Int = {
     var acc = 0
     var i = 0
-    while (i < arr.length) { acc = acc + arr.applyInt(i); i += 1 }
+    while (i < arr.length) {
+      acc = acc + arr.applyInt(i); i += 1
+    }
     acc
   }
 
@@ -101,7 +105,9 @@ class ScalaWrapTest extends Test {
   def sum(): Int = {
     var acc = 0
     var i = 0
-    while (i < arr.length) { acc = acc + arr.applyInt(i); i += 1 }
+    while (i < arr.length) {
+      acc = acc + arr.applyInt(i); i += 1
+    }
     acc
   }
 
@@ -122,7 +128,9 @@ class ScalaGenTest extends Test {
   def sum(): Int = {
     var acc = 0
     var i = 0
-    while (i < arr.length) { acc = acc + arr.apply(i).intValue; i += 1 }
+    while (i < arr.length) {
+      acc = acc + arr.apply(i).intValue; i += 1
+    }
     acc
   }
 
@@ -142,7 +150,9 @@ class JavaTest extends Test {
   def sum(): Int = {
     var acc = 0
     var i = 0
-    while (i < arr.length) { acc = acc + arr(i); i += 1 }
+    while (i < arr.length) {
+      acc = acc + arr(i); i += 1
+    }
     acc
   }
 
@@ -163,7 +173,9 @@ class ScalaSpec3Test extends Test {
   def sum(): Int = {
     var acc = 0
     var i = 0
-    while (i < arr.length) { acc = acc + arr(i); i += 1 }
+    while (i < arr.length) {
+      acc = acc + arr(i); i += 1
+    }
     acc
   }
 

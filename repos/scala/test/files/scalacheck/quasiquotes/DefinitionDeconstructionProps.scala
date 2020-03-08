@@ -68,7 +68,9 @@ trait ClassDeconstruction { self: QuasiquoteProperties =>
 
   property("class tparams") = test {
     val q"class $name[..$tparams]" = q"class Foo[A, B]"
-    assert(tparams.map { _.name } == List(TypeName("A"), TypeName("B")))
+    assert(tparams.map {
+      _.name
+    } == List(TypeName("A"), TypeName("B")))
   }
 
   property("deconstruct bare case class") = test {
@@ -194,7 +196,9 @@ trait ValVarDeconstruction { self: QuasiquoteProperties =>
     matches("val x: Int = 1")
     matches("lazy val x: Int = 1")
     matches("implicit val x = 1")
-    assertThrows[MatchError] { matches("var x = 1") }
+    assertThrows[MatchError] {
+      matches("var x = 1")
+    }
   }
 
   property("exhaustive var matcher") = test {
@@ -204,13 +208,17 @@ trait ValVarDeconstruction { self: QuasiquoteProperties =>
     matches("var x: Int")
     matches("var x: Int = 1")
     matches("var x = 1")
-    assertThrows[MatchError] { matches("val x = 1") }
+    assertThrows[MatchError] {
+      matches("val x = 1")
+    }
   }
 }
 
 trait PackageDeconstruction { self: QuasiquoteProperties =>
   property("exhaustive package matcher") = test {
-    def matches(line: String) { val q"package $name { ..$body }" = parse(line) }
+    def matches(line: String) {
+      val q"package $name { ..$body }" = parse(line)
+    }
     matches("package foo { }")
     matches("package foo { class C }")
     matches("package foo.bar { }")
@@ -228,7 +236,9 @@ trait PackageDeconstruction { self: QuasiquoteProperties =>
     matches("package object foo { self => }")
     matches("package object foo extends mammy with daddy { def baz }")
     matches("package object foo extends { val early = 1 } with daddy")
-    assertThrows[MatchError] { matches("object foo") }
+    assertThrows[MatchError] {
+      matches("object foo")
+    }
   }
 }
 

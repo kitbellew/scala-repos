@@ -233,7 +233,9 @@ trait Emitter
       val optState =
         for (const <- expr.constrainingExpr if !(const equalsIgnoreLoc expr))
           yield {
-            if (expr.children exists { _.constrainingExpr == Some(const) })
+            if (expr.children exists {
+                  _.constrainingExpr == Some(const)
+                })
               None
             else {
               Some(
@@ -374,7 +376,9 @@ trait Emitter
             prepareContext(context, dispatches) { dispatches =>
               emitExpr(target, dispatches)
             } >>
-            (origin map { labelGroup(_, id) } getOrElse mzero[EmitterState]) >>
+            (origin map {
+              labelGroup(_, id)
+            } getOrElse mzero[EmitterState]) >>
             emitInstr(Group(id))
         }
       }
@@ -431,9 +435,15 @@ trait Emitter
       val candidates: Set[List[ast.Dispatch]] = contextualDispatches(target)
       val dtracePrefix = dtrace.reverse
 
-      if (!(candidates forall { _.isEmpty })) {
-        candidates map { _.reverse } find { c =>
-          (c zip dtracePrefix takeWhile { case (a, b) => a == b } map {
+      if (!(candidates forall {
+            _.isEmpty
+          })) {
+        candidates map {
+          _.reverse
+        } find { c =>
+          (c zip dtracePrefix takeWhile {
+            case (a, b) => a == b
+          } map {
             _._2
           }) == dtracePrefix
         } getOrElse Nil
@@ -496,8 +506,12 @@ trait Emitter
       val ast.Dispatch(_, name, actuals) = expr
       val ast.Let(_, _, params, left, right) = let
 
-      val ids = let.params map { Identifier(Vector(), _) }
-      val zipped = ids zip (actuals map { _.provenance })
+      val ids = let.params map {
+        Identifier(Vector(), _)
+      }
+      val zipped = ids zip (actuals map {
+        _.provenance
+      })
 
       def sub(target: Provenance): Provenance = {
         zipped.foldLeft(target) {
@@ -547,16 +561,19 @@ trait Emitter
               btraces map {
                 case (key, pairPaths) => {
                   val paths: List[List[Expr]] = pairPaths map { pairs =>
-                    pairs map { _._2 }
+                    pairs map {
+                      _._2
+                    }
                   }
 
-                  val innerDispatches = paths filter { _ contains expr } map {
-                    btrace =>
-                      btrace takeWhile (expr !=) collect {
-                        case d: ast.Dispatch
-                            if d.binding.isInstanceOf[LetBinding] =>
-                          d
-                      }
+                  val innerDispatches = paths filter {
+                    _ contains expr
+                  } map { btrace =>
+                    btrace takeWhile (expr !=) collect {
+                      case d: ast.Dispatch
+                          if d.binding.isInstanceOf[LetBinding] =>
+                        d
+                    }
                   } toSet
 
                   key -> innerDispatches
@@ -633,8 +650,12 @@ trait Emitter
             val provToField = props
               .groupBy(_._2.provenance)
               .toList
-              .sortBy { case (p, _) => p }(Provenance.order.toScalaOrdering)
-            val provs = provToField map { case (p, _) => p } reverse
+              .sortBy {
+                case (p, _) => p
+              }(Provenance.order.toScalaOrdering)
+            val provs = provToField map {
+              case (p, _) => p
+            } reverse
 
             val groups = provToField.foldLeft(Vector.empty[EmitterState]) {
               case (stateAcc, (provenance, fields)) =>
@@ -667,8 +688,12 @@ trait Emitter
             val provToElements = indexedValues
               .groupBy(_._1.provenance)
               .toList
-              .sortBy { case (p, _) => p }(Provenance.order.toScalaOrdering)
-            val provs = provToElements map { case (p, _) => p } reverse
+              .sortBy {
+                case (p, _) => p
+              }(Provenance.order.toScalaOrdering)
+            val provs = provToElements map {
+              case (p, _) => p
+            } reverse
 
             val (groups, indices) = provToElements.foldLeft(
               (Vector.empty[EmitterState], Vector.empty[Int])) {
@@ -721,7 +746,9 @@ trait Emitter
                     swps map { idx =>
                       emitInstr(PushNum(idx.toString)) >> emitInstr(
                         Map2Cross(ArraySwap))
-                    } reduce { _ >> _ }
+                    } reduce {
+                      _ >> _
+                    }
                   }
                 }
 

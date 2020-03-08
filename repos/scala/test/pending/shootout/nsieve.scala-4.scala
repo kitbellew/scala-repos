@@ -12,7 +12,9 @@ object nsieve {
     for (i <- List.range(2, m)) {
       if (isPrime(i)) {
         var k = i + i
-        while (k < m) { isPrime(k) = false; k = k + i }
+        while (k < m) {
+          isPrime(k) = false; k = k + i
+        }
         count = count + 1
       }
     }

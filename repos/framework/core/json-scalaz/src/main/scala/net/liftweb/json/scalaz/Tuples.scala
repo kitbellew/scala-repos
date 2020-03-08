@@ -24,7 +24,9 @@ trait Tuples { this: Types =>
   implicit def Tuple2JSON[A: JSON, B: JSON]: JSON[(A, B)] = new JSON[(A, B)] {
     def read(json: JValue) = json match {
       case JArray(a :: b :: _) =>
-        (fromJSON[A](a) |@| fromJSON[B](b)) { (a, b) => (a, b) }
+        (fromJSON[A](a) |@| fromJSON[B](b)) { (a, b) =>
+          (a, b)
+        }
       case x => UnexpectedJSONError(x, classOf[JArray]).fail.liftFailNel
     }
 
@@ -51,7 +53,9 @@ trait Tuples { this: Types =>
     def read(json: JValue) = json match {
       case JArray(a :: b :: c :: d :: _) =>
         (fromJSON[A](a) |@| fromJSON[B](b) |@| fromJSON[C](c) |@| fromJSON[D](
-          d)) { (a, b, c, d) => (a, b, c, d) }
+          d)) { (a, b, c, d) =>
+          (a, b, c, d)
+        }
       case x => UnexpectedJSONError(x, classOf[JArray]).fail.liftFailNel
     }
 
@@ -66,7 +70,9 @@ trait Tuples { this: Types =>
     def read(json: JValue) = json match {
       case JArray(a :: b :: c :: d :: e :: _) =>
         (fromJSON[A](a) |@| fromJSON[B](b) |@| fromJSON[C](c) |@| fromJSON[D](
-          d) |@| fromJSON[E](e)) { (a, b, c, d, e) => (a, b, c, d, e) }
+          d) |@| fromJSON[E](e)) { (a, b, c, d, e) =>
+          (a, b, c, d, e)
+        }
       case x => UnexpectedJSONError(x, classOf[JArray]).fail.liftFailNel
     }
 

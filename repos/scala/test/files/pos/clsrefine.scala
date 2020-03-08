@@ -20,11 +20,15 @@ package scalac.util {
   }
 
   object test {
-    val b: B { type Y = Int } = new B {
+    val b: B {
+      type Y = Int
+    } = new B {
       type Y = Int;
       val y1, y2 = 1;
     }
-    val a: A { type X1 = Int; type X2 = Int } = b;
+    val a: A {
+      type X1 = Int; type X2 = Int
+    } = b;
     val a1 = new A {
       type X1 = Int;
       type X2 = String;

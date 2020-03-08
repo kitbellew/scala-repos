@@ -35,7 +35,9 @@ final class Firewall(
     if (enabled) {
       cookieName.fold(blocksIp(req.remoteAddress)) { cn =>
         blocksIp(req.remoteAddress) map (_ || blocksCookies(req.cookies, cn))
-      } addEffect { v => if (v) lila.mon.security.firewall.block() }
+      } addEffect { v =>
+        if (v) lila.mon.security.firewall.block()
+      }
     } else fuccess(false)
 
   def accepts(req: RequestHeader): Fu[Boolean] = blocks(req) map (!_)
@@ -85,11 +87,15 @@ final class Firewall(
     private def strToIp(ip: String) =
       InetAddress.getByName(ip).getAddress.toVector
     def apply: Fu[Set[IP]] = cache(true)(fetch)
-    def clear { cache.clear }
+    def clear {
+      cache.clear
+    }
     def contains(ip: String) = apply map (_ contains strToIp(ip))
     def fetch: Fu[Set[IP]] =
       firewallTube.coll.distinct("_id") map { res =>
         lila.db.BSON.asStringSet(res) map strToIp
-      } addEffect { ips => lila.mon.security.firewall.ip(ips.size) }
+      } addEffect { ips =>
+        lila.mon.security.firewall.ip(ips.size)
+      }
   }
 }

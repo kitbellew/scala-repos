@@ -36,7 +36,13 @@ class WrappedTSInMergeable[K, V](self: Mergeable[K, V])
       kvs: Map[K1, (Timestamp, V)]): Map[K1, Future[Option[(Timestamp, V)]]] =
     self.multiMerge(kvs.mapValues(_._2)).map {
       case (k, futOpt) =>
-        (k, futOpt.map { opt => opt.map { v => (kvs(k)._1, v) } })
+        (
+          k,
+          futOpt.map { opt =>
+            opt.map { v =>
+              (kvs(k)._1, v)
+            }
+          })
     }
 }
 
@@ -53,7 +59,9 @@ object MergeableStoreFactoryAlgebra {
   def wrapOnlineFactory[K, V](supplier: MergeableStoreFactory[K, V])
       : MergeableStoreFactory[K, (Timestamp, V)] = {
     val mergeable: () => Mergeable[K, (Timestamp, V)] =
-      () => { new WrappedTSInMergeable(supplier.mergeableStore()) }
+      () => {
+        new WrappedTSInMergeable(supplier.mergeableStore())
+      }
 
     MergeableStoreFactory[K, (Timestamp, V)](
       mergeable,

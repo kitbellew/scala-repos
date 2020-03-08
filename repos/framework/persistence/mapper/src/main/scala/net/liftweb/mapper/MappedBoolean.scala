@@ -50,7 +50,9 @@ abstract class MappedBoolean[T <: Mapper[T]](val fieldOwner: T)
     * Get the source field metadata for the field
     * @return the source field metadata for the field
     */
-  def sourceInfoMetadata(): SourceFieldMetadata { type ST = Boolean } =
+  def sourceInfoMetadata(): SourceFieldMetadata {
+    type ST = Boolean
+  } =
     SourceFieldMetadataRep(
       name,
       manifest,
@@ -94,7 +96,9 @@ abstract class MappedBoolean[T <: Mapper[T]](val fieldOwner: T)
 
   protected def i_is_! = data openOr false
   protected def i_was_! = orgData openOr false
-  protected[mapper] def doneWithSave() { orgData = data }
+  protected[mapper] def doneWithSave() {
+    orgData = data
+  }
 
   protected def real_i_set_!(value: Boolean): Boolean = {
     val boxed = Full(value)

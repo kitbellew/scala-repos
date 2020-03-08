@@ -13,7 +13,9 @@ class MapMonoid[K, V](implicit val scalar: Semigroup[V])
     var xx = x
     var yy = y
     var f = scalar.op _
-    if (x.size < y.size) { xx = y; yy = x; f = (x: V, y: V) => scalar.op(y, x) }
+    if (x.size < y.size) {
+      xx = y; yy = x; f = (x: V, y: V) => scalar.op(y, x)
+    }
     yy.foldLeft(xx) { (z, kv) =>
       z.updated(kv._1, (xx get kv._1).map(u => f(u, kv._2)).getOrElse(kv._2))
     }
@@ -38,7 +40,9 @@ class MapSemiring[K, V](implicit val scalar: Semiring[V])
   def plus(x: Map[K, V], y: Map[K, V]): Map[K, V] = {
     var xx = x
     var yy = y
-    if (x.size < y.size) { xx = y; yy = x }
+    if (x.size < y.size) {
+      xx = y; yy = x
+    }
     yy.foldLeft(xx) { (z, kv) =>
       z.updated(
         kv._1,
@@ -78,7 +82,9 @@ class MapVectorSpace[K, V](override implicit val scalar: Field[V])
     var xx = x
     var yy = y
     var f = scalar.times _
-    if (x.size < y.size) { xx = y; yy = x }
+    if (x.size < y.size) {
+      xx = y; yy = x
+    }
     yy.foldLeft(zero) { (z, kv) =>
       (xx get kv._1)
         .map(u => z.updated(kv._1, scalar.times(u, kv._2)))
@@ -93,7 +99,9 @@ class MapInnerProductSpace[K, V: Field]
     with InnerProductSpace[Map[K, V], V]
     with Serializable {
   def dot(x: Map[K, V], y: Map[K, V]): V =
-    times(x, y).foldLeft(scalar.zero) { (a, b) => scalar.plus(a, b._2) }
+    times(x, y).foldLeft(scalar.zero) { (a, b) =>
+      scalar.plus(a, b._2)
+    }
 }
 
 @SerialVersionUID(0L)
@@ -130,7 +138,9 @@ class MapVectorEq[K, V](implicit V: Eq[V], scalar: AdditiveMonoid[V])
             false
         }
       } else {
-        acc forall { case (_, v) => V.eqv(v, scalar.zero) }
+        acc forall {
+          case (_, v) => V.eqv(v, scalar.zero)
+        }
       }
     }
 

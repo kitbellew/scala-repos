@@ -50,7 +50,9 @@ trait JoinOptimizerModule[M[+_]]
           graph: DepGraph,
           eq: DepGraph,
           lifted: DepGraph): DepGraph =
-        transformBottomUp(graph) { g => if (g == eq) lifted else g }
+        transformBottomUp(graph) { g =>
+          if (g == eq) lifted else g
+        }
 
       def rewrite(
           filter: dag.Filter,

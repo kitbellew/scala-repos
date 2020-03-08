@@ -141,7 +141,11 @@ object TestLogger {
       val per = perTest(tdef)
       val blog = new BufferedLogger(FullLogger(per.log))
       if (per.buffered) blog.record()
-      new ContentLogger(wrap(blog), () => { blog.stopQuietly(); per.flush() })
+      new ContentLogger(
+        wrap(blog),
+        () => {
+          blog.stopQuietly(); per.flush()
+        })
     }
     val config = new TestLogging(wrap(global), makePerTest)
     new TestLogger(config)

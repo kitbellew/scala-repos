@@ -22,5 +22,7 @@ trait ChoiceLaws[F[_, _]] extends CategoryLaws[F] {
 
 object ChoiceLaws {
   def apply[F[_, _]](implicit ev: Choice[F]): ChoiceLaws[F] =
-    new ChoiceLaws[F] { def F: Choice[F] = ev }
+    new ChoiceLaws[F] {
+      def F: Choice[F] = ev
+    }
 }

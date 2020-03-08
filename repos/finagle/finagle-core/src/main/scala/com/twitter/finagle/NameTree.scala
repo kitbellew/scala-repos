@@ -138,7 +138,9 @@ object NameTree {
   def map[T, U](f: T => U)(tree: NameTree[T]): NameTree[U] =
     tree match {
       case Union(trees @ _*) =>
-        val trees1 = trees map { case Weighted(w, t) => Weighted(w, t.map(f)) }
+        val trees1 = trees map {
+          case Weighted(w, t) => Weighted(w, t.map(f))
+        }
         Union(trees1: _*)
 
       case Alt(trees @ _*) =>

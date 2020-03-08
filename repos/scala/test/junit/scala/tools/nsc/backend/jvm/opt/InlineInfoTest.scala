@@ -20,7 +20,9 @@ import scala.collection.convert.decorateAsScala._
 
 object InlineInfoTest extends ClearAfterClass.Clearable {
   var compiler = newCompiler(extraArgs = "-Yopt:l:classpath")
-  def clear(): Unit = { compiler = null }
+  def clear(): Unit = {
+    compiler = null
+  }
 
   def notPerRun: List[Clearable] =
     List(

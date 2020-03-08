@@ -111,7 +111,9 @@ class MutableSettings(val errorFn: String => Unit)
   /** A list of settings which act based on prefix rather than an exact
     *  match.  This is basically -D and -J.
     */
-  lazy val prefixSettings = allSettings collect { case x: PrefixSetting => x }
+  lazy val prefixSettings = allSettings collect {
+    case x: PrefixSetting => x
+  }
 
   /** Split the given line into parameters.
     */
@@ -208,8 +210,12 @@ class MutableSettings(val errorFn: String => Unit)
   def embeddedDefaults(loader: ClassLoader) {
     explicitParentLoader =
       Option(loader) // for the Interpreter parentClassLoader
-    getClasspath("app", loader) foreach { classpath.value = _ }
-    getClasspath("boot", loader) foreach { bootclasspath append _ }
+    getClasspath("app", loader) foreach {
+      classpath.value = _
+    }
+    getClasspath("boot", loader) foreach {
+      bootclasspath append _
+    }
   }
 
   /** The parent loader to use for the interpreter.*/
@@ -220,7 +226,9 @@ class MutableSettings(val errorFn: String => Unit)
   private def getClasspath(id: String, loader: ClassLoader): Option[String] =
     Option(loader)
       .flatMap(ld => Option(ld.getResource(id + ".class.path")))
-      .map { cp => Source.fromURL(cp).mkString }
+      .map { cp =>
+        Source.fromURL(cp).mkString
+      }
 
   // a wrapper for all Setting creators to keep our list up to date
   private def add[T <: Setting](s: T): T = {
@@ -430,7 +438,9 @@ class MutableSettings(val errorFn: String => Unit)
     /** The syntax defining this setting in a help string */
     private var _helpSyntax = name
     override def helpSyntax: String = _helpSyntax
-    def withHelpSyntax(s: String): this.type = { _helpSyntax = s; this }
+    def withHelpSyntax(s: String): this.type = {
+      _helpSyntax = s; this
+    }
 
     /** Abbreviations for this setting */
     private var _abbreviations: List[String] = Nil
@@ -493,8 +503,11 @@ class MutableSettings(val errorFn: String => Unit)
 
     def parseArgument(x: String): Option[Int] = {
       parser(x) orElse {
-        try { Some(x.toInt) }
-        catch { case _: NumberFormatException => None }
+        try {
+          Some(x.toInt)
+        } catch {
+          case _: NumberFormatException => None
+        }
       }
     }
 
@@ -523,7 +536,9 @@ class MutableSettings(val errorFn: String => Unit)
     protected var v: Boolean = false
     override def value: Boolean = v
 
-    def tryToSet(args: List[String]) = { value = true; Some(args) }
+    def tryToSet(args: List[String]) = {
+      value = true; Some(args)
+    }
     def unparse: List[String] = if (value) List(name) else Nil
     override def tryToSetFromPropertyValue(s: String) { // used from ide
       value = s.equalsIgnoreCase("true")
@@ -647,7 +662,9 @@ class MutableSettings(val errorFn: String => Unit)
     override def value_=(str: String) {
       super.value_=(str)
       try outputDirs.setSingleOutput(str)
-      catch { case FatalError(msg) => errorFn(msg) }
+      catch {
+        case FatalError(msg) => errorFn(msg)
+      }
     }
   }
 
@@ -875,7 +892,9 @@ class MutableSettings(val errorFn: String => Unit)
       def loop(args: List[String]): List[String] = args match {
         case arg :: rest =>
           if (halting && (arg startsWith "-")) args
-          else { appendToValue(arg); loop(rest) }
+          else {
+            appendToValue(arg); loop(rest)
+          }
         case Nil => Nil
       }
       Some(loop(args))
@@ -994,7 +1013,9 @@ class MutableSettings(val errorFn: String => Unit)
             else tryToSetColon(List(default))
           case xs => value = (value ++ xs).distinct.sorted; Some(Nil)
         }
-      } catch { case _: NumberFormatException => None }
+      } catch {
+        case _: NumberFormatException => None
+      }
 
     def clear(): Unit = (v = Nil)
 

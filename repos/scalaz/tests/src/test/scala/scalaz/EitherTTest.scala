@@ -23,9 +23,18 @@ object EitherTTest extends SpecLite {
 
   "rightU" should {
     val a: String \/ Int = \/-(1)
-    val b: EitherT[({ type l[a] = String \/ a })#l, Boolean, Int] =
-      EitherT.rightU[Boolean](a)
-    b must_== EitherT.right[({ type l[a] = String \/ a })#l, Boolean, Int](a)
+    val b: EitherT[
+      ({
+        type l[a] = String \/ a
+      })#l,
+      Boolean,
+      Int] = EitherT.rightU[Boolean](a)
+    b must_== EitherT.right[
+      ({
+        type l[a] = String \/ a
+      })#l,
+      Boolean,
+      Int](a)
   }
 
   "consistent Bifoldable" ! forAll { a: EitherTList[Int, Int] =>

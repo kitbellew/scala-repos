@@ -119,7 +119,9 @@ class WorksheetCompiler {
               }
             }
           },
-          new Runnable { override def run() {} }
+          new Runnable {
+            override def run() {}
+          }
         )
       case Right(errorMessage: PsiErrorElement) =>
         if (auto) return

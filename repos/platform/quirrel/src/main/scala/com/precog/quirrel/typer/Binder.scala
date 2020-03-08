@@ -47,9 +47,13 @@ trait Binder extends parser.AST {
         }
 
         if (!dups.isEmpty) {
-          dups map { id => Error(b, MultiplyDefinedTicVariable(id)) }
+          dups map { id =>
+            Error(b, MultiplyDefinedTicVariable(id))
+          }
         } else {
-          val ids = formals map { Identifier(Vector(), _) }
+          val ids = formals map {
+            Identifier(Vector(), _)
+          }
           val names2 = ids.foldLeft(env.names) { (m, s) =>
             m + (s -> FormalBinding(b))
           }
@@ -63,22 +67,31 @@ trait Binder extends parser.AST {
       case b @ Solve(_, constraints, child) => {
         val varVector = constraints map listFreeVars(env)
 
-        val errors =
-          if (varVector exists { _.isEmpty })
-            Set(Error(b, SolveLackingFreeVariables))
-          else
-            Set[Error]()
+        val errors = if (varVector exists {
+                           _.isEmpty
+                         })
+          Set(Error(b, SolveLackingFreeVariables))
+        else
+          Set[Error]()
 
-        val ids = varVector reduce { _ ++ _ }
+        val ids = varVector reduce {
+          _ ++ _
+        }
         b.vars = ids
 
-        val freeBindings = ids map { _ -> FreeBinding(b) }
+        val freeBindings = ids map {
+          _ -> FreeBinding(b)
+        }
         val constEnv = env.copy(vars = env.vars ++ freeBindings)
-        val constErrors = constraints map { loop(_, constEnv) } reduce {
+        val constErrors = constraints map {
+          loop(_, constEnv)
+        } reduce {
           _ ++ _
         }
 
-        val bindings = ids map { id => id -> SolveBinding(b) }
+        val bindings = ids map { id =>
+          id -> SolveBinding(b)
+        }
         loop(
           child,
           env.copy(vars = env.vars ++ bindings)) ++ constErrors ++ errors
@@ -90,12 +103,16 @@ trait Binder extends parser.AST {
             env.names flatMap {
               case (Identifier(ns, name), b) => {
                 if (ns.length >= prefix.length) {
-                  if (ns zip prefix forall { case (a, b) => a == b })
+                  if (ns zip prefix forall {
+                        case (a, b) => a == b
+                      })
                     Some(Identifier(ns drop (prefix.length - 1), name) -> b)
                   else
                     None
                 } else if (ns.length == prefix.length - 1) {
-                  if (ns zip prefix forall { case (a, b) => a == b }) {
+                  if (ns zip prefix forall {
+                        case (a, b) => a == b
+                      }) {
                     if (name == prefix.last)
                       Some(Identifier(Vector(), name) -> b)
                     else
@@ -116,12 +133,16 @@ trait Binder extends parser.AST {
             env.names flatMap {
               case (Identifier(ns, name), b) => {
                 if (ns.length >= prefix.length + 1) {
-                  if (ns zip prefix forall { case (a, b) => a == b })
+                  if (ns zip prefix forall {
+                        case (a, b) => a == b
+                      })
                     Some(Identifier(ns drop prefix.length, name) -> b)
                   else
                     None
                 } else if (ns.length == prefix.length) {
-                  if (ns zip prefix forall { case (a, b) => a == b })
+                  if (ns zip prefix forall {
+                        case (a, b) => a == b
+                      })
                     Some(Identifier(Vector(), name) -> b)
                   else
                     None
@@ -161,7 +182,11 @@ trait Binder extends parser.AST {
       }
 
       case d @ Dispatch(_, name, actuals) => {
-        val recursive = (actuals map { loop(_, env) }).fold(Set()) { _ ++ _ }
+        val recursive = (actuals map {
+          loop(_, env)
+        }).fold(Set()) {
+          _ ++ _
+        }
         if (env.names contains name) {
           val binding = env.names(name)
 
@@ -223,7 +248,11 @@ trait Binder extends parser.AST {
       }
 
       case NaryOp(_, values) =>
-        (values map { loop(_, env) }).fold(Set()) { _ ++ _ }
+        (values map {
+          loop(_, env)
+        }).fold(Set()) {
+          _ ++ _
+        }
     }
 
     // Need to make sure none of the primitives in the bottom Set are
@@ -240,8 +269,11 @@ trait Binder extends parser.AST {
       libMorphism2.map(Morphism2Binding) ++
       Set(LoadBinding, RelLoadBinding, DistinctBinding, ExpandGlobBinding)
 
-    val env =
-      Env(Map(), builtIns.map({ b => b.name -> b })(collection.breakOut))
+    val env = Env(
+      Map(),
+      builtIns.map({ b =>
+        b.name -> b
+      })(collection.breakOut))
 
     loop(tree, env)
   }
@@ -256,7 +288,9 @@ trait Binder extends parser.AST {
     case TicVar(_, name) if env.vars contains name    => Set()
     case TicVar(_, name) if !(env.vars contains name) => Set(name)
     case NaryOp(_, values) =>
-      values map listFreeVars(env) reduceOption { _ ++ _ } getOrElse Set()
+      values map listFreeVars(env) reduceOption {
+        _ ++ _
+      } getOrElse Set()
   }
 
   private case class Env(

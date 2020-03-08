@@ -38,7 +38,9 @@ trait Granter {
     categSlug match {
       case _ if (ctx.me ?? Master(Permission.ModerateForum)) => fuccess(true)
       case TeamSlugPattern(teamId) =>
-        ctx.me ?? { me => userOwnsTeam(teamId, me.id) }
+        ctx.me ?? { me =>
+          userOwnsTeam(teamId, me.id)
+        }
       case _ => fuccess(false)
     }
 }

@@ -196,8 +196,9 @@ trait EventService
           } ->
             request { (state: State) =>
               import CORSHeaderHandler.allowOrigin
-              implicit val FR =
-                M.compose[({ type l[a] = Function2[APIKey, Path, a] })#l]
+              implicit val FR = M.compose[({
+                type l[a] = Function2[APIKey, Path, a]
+              })#l]
 
               allowOrigin("*", executionContext) {
                 encode[
@@ -214,7 +215,9 @@ trait EventService
                   shardProxy(state.shardClient)
               }
             } ->
-            stop { state => state.stop }
+            stop { state =>
+              state.stop
+            }
         }
       }
     }
@@ -242,12 +245,22 @@ trait EventService
       path("/data") {
         dataPath("/fs") {
           accept(ApplicationJson, XJsonStream) {
-            post { state.dataHandler } ~
-              put { state.dataHandler } ~
-              patch { state.dataHandler }
+            post {
+              state.dataHandler
+            } ~
+              put {
+                state.dataHandler
+              } ~
+              patch {
+                state.dataHandler
+              }
           } ~ {
-            post { state.fileCreateHandler } ~
-              put { state.fileCreateHandler }
+            post {
+              state.fileCreateHandler
+            } ~
+              put {
+                state.fileCreateHandler
+              }
           }
         }
       }
@@ -259,7 +272,9 @@ trait EventService
     path("/data/fs/'path") {
       get {
         accept(FileContent.XQuirrelScript) {
-          proxy(shardClient) { _ => true }
+          proxy(shardClient) { _ =>
+            true
+          }
         }
       }
     }

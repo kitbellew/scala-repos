@@ -31,7 +31,9 @@ class StringTemplateSupport(
     val maybeSTG =
       Option(new File(templateFile.absolutePath + ".stg"))
         .filter(_.exists)
-        .map { cf => new STGroupFile(cf.absolutePath, '$', '$') }
+        .map { cf =>
+          new STGroupFile(cf.absolutePath, '$', '$')
+        }
     new STCompanionTemplate(maybeSTG)
   }
 
@@ -83,16 +85,21 @@ class StringTemplateSupport(
         level: Int = 0): Map[String, Any] = {
       lmap
         .groupBy(_._1.head)
-        .mapValues(_.map { case (k, v) => k.tail -> v })
+        .mapValues(_.map {
+          case (k, v) => k.tail -> v
+        })
         .mapValues { m: Map[List[String], Any] =>
           val (leaves, branches) = m.partition(_._1.length == 1)
-          leaves
-            .map { case (k, v) => k.head -> v } ++ expand(branches, level + 1)
+          leaves.map {
+            case (k, v) => k.head -> v
+          } ++ expand(branches, level + 1)
         }
         .map(identity)
     }
 
-    val listKeyMap = pkg.map { case (k, v) => k.split('.').toList -> v }
+    val listKeyMap = pkg.map {
+      case (k, v) => k.split('.').toList -> v
+    }
     expand(listKeyMap)
   }
 

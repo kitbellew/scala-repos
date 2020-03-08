@@ -75,7 +75,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       }
     }
 
-    if (isInDocComment(element)) { //we don't have to check offset >= 3 because "/**" is already has 3 characters
+    if (isInDocComment(
+          element)) { //we don't have to check offset >= 3 because "/**" is already has 3 characters
       myTask = getScaladocTask(text, offset)
     } else if (c == ' ' && offset >= 6 && offset < text.length && text
                  .substring(offset - 6, offset) == " case ") {

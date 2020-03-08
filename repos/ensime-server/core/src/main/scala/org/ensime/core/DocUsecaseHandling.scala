@@ -40,7 +40,9 @@ trait DocUsecaseHandling { self: DocResolver =>
                 }
                 .getOrElse(sig)
             } finally jarFile.close()
-          } catch { case e: IOException => sig }
+          } catch {
+            case e: IOException => sig
+          }
         case _ => sig
       }
     } else sig

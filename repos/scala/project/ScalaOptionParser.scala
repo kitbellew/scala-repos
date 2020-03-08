@@ -91,7 +91,9 @@ object ScalaOptionParser {
     val ScalacOpt = sourceFile | UniversalOpt
 
     val ScalaExtraSettings = oneOf(
-      scalaChoiceSettingNames.map { case (k, v) => ChoiceSetting(k, v) }.toList
+      scalaChoiceSettingNames.map {
+        case (k, v) => ChoiceSetting(k, v)
+      }.toList
         ++ scalaStringSettingNames.map(StringSetting)
         ++ scalaBooleanSettingNames.map(BooleanSetting))
     val ScalaOpt = UniversalOpt | ScalaExtraSettings
@@ -99,7 +101,9 @@ object ScalaOptionParser {
     val ScalaDocExtraSettings = oneOf(
       scalaDocBooleanSettingNames.map(BooleanSetting)
         ++ scalaDocIntSettingNames.map(IntSetting)
-        ++ scalaDocChoiceSettingNames.map { case (k, v) => ChoiceSetting(k, v) }
+        ++ scalaDocChoiceSettingNames.map {
+          case (k, v) => ChoiceSetting(k, v)
+        }
         ++ scaladocStringSettingNames.map(StringSetting)
         ++ scaladocPathSettingNames.map(PathSetting)
         ++ scaladocMultiStringSettingNames.map(MultiStringSetting)

@@ -23,7 +23,9 @@ package support
 class TensorKeys[K, V, +This](
     private val tensor: This,
     active: Boolean = false,
-    f: K => Boolean = { (k: K) => true })(implicit ev: This <:< Tensor[K, V]) {
+    f: K => Boolean = { (k: K) =>
+      true
+    })(implicit ev: This <:< Tensor[K, V]) {
   def size = tensor.size
   def iterator = {
     if (active) tensor.activeKeysIterator else tensor.keysIterator
@@ -32,7 +34,12 @@ class TensorKeys[K, V, +This](
   def foreach[U](fn: K => U) = iterator foreach fn
   def filter(p: K => Boolean): TensorKeys[K, V, This] = withFilter(p)
   def withFilter(p: K => Boolean): TensorKeys[K, V, This] =
-    new TensorKeys[K, V, This](tensor, active, { (a: K) => f(a) && p(a) })(ev)
+    new TensorKeys[K, V, This](
+      tensor,
+      active,
+      { (a: K) =>
+        f(a) && p(a)
+      })(ev)
 
   override def toString = iterator.mkString("TensorKeys(", ",", ")")
 

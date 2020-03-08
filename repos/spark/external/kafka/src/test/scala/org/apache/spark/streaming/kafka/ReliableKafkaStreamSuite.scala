@@ -103,13 +103,17 @@ class ReliableKafkaStreamSuite
         Map(topic -> 1),
         StorageLevel.MEMORY_ONLY)
     val result = new mutable.HashMap[String, Long]()
-    stream.map { case (k, v) => v }.foreachRDD { r =>
-      val ret = r.collect()
-      ret.foreach { v =>
-        val count = result.getOrElseUpdate(v, 0) + 1
-        result.put(v, count)
+    stream
+      .map {
+        case (k, v) => v
       }
-    }
+      .foreachRDD { r =>
+        val ret = r.collect()
+        ret.foreach { v =>
+          val count = result.getOrElseUpdate(v, 0) + 1
+          result.put(v, count)
+        }
+      }
     ssc.start()
 
     eventually(timeout(20000 milliseconds), interval(200 milliseconds)) {
@@ -117,7 +121,9 @@ class ReliableKafkaStreamSuite
       // Verify whether received message number is equal to the sent message number.
       assert(data.size === result.size)
       // Verify whether each message is the same as the data to be verified.
-      data.keys.foreach { k => assert(data(k) === result(k).toInt) }
+      data.keys.foreach { k =>
+        assert(data(k) === result(k).toInt)
+      }
       // Verify the offset number whether it is equal to the total message number.
       assert(getCommitOffset(groupId, topic, 0) === Some(29L))
     }

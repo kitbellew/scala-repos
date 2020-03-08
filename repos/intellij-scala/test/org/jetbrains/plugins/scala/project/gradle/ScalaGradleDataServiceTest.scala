@@ -51,7 +51,9 @@ class ScalaGradleDataServiceTest
       linkedProjectPath := getProject.getBasePath
 
       val scalaLibrary = scalaVersion.map { version =>
-        new library { name := "org.scala-lang:scala-library:" + version }
+        new library {
+          name := "org.scala-lang:scala-library:" + version
+        }
       }
 
       scalaLibrary.foreach(libraries += _)

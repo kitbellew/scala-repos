@@ -52,14 +52,18 @@ class ExecutionKMeansTest extends WordSpec with Matchers {
 
       def clusterOf(v: Vector[Double]): Int = v.indexWhere(_ > 0.0)
 
-      val byCluster = labels.groupBy { case (id, v) => clusterOf(v) }
+      val byCluster = labels.groupBy {
+        case (id, v) => clusterOf(v)
+      }
 
       // The rule is this: if two vectors share the same prefix,
       // the should be in the same cluster
       byCluster.foreach {
         case (clusterId, vs) =>
           val id = vs.head._1
-          vs.foreach { case (thisId, _) => id shouldBe thisId }
+          vs.foreach {
+            case (thisId, _) => id shouldBe thisId
+          }
       }
     }
   }

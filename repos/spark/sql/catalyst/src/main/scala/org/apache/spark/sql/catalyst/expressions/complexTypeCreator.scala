@@ -148,7 +148,9 @@ case class CreateNamedStruct(children: Seq[Expression]) extends Expression {
   private lazy val (nameExprs, valExprs) =
     children
       .grouped(2)
-      .map { case Seq(name, value) => (name, value) }
+      .map {
+        case Seq(name, value) => (name, value)
+      }
       .toList
       .unzip
 
@@ -276,7 +278,9 @@ case class CreateNamedStructUnsafe(children: Seq[Expression])
   private lazy val (nameExprs, valExprs) =
     children
       .grouped(2)
-      .map { case Seq(name, value) => (name, value) }
+      .map {
+        case Seq(name, value) => (name, value)
+      }
       .toList
       .unzip
 

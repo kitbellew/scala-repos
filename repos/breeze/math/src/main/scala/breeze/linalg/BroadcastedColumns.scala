@@ -38,7 +38,9 @@ case class BroadcastedColumns[T, ColType](underlying: T)
   def foldLeft[B](z: B)(f: (B, ColType) => B)(implicit
       canTraverseAxis: CanTraverseAxis[T, Axis._0.type, ColType]): B = {
     var acc = z
-    canTraverseAxis(underlying, Axis._0) { c => acc = f(acc, c) }
+    canTraverseAxis(underlying, Axis._0) { c =>
+      acc = f(acc, c)
+    }
     acc
   }
 
@@ -67,7 +69,9 @@ object BroadcastedColumns {
       def apply(
           from: BroadcastedColumns[T, ColumnType],
           fn: (ColumnType) => ResultColumn): Result = {
-        cc(from.underlying, Axis._0) { fn }
+        cc(from.underlying, Axis._0) {
+          fn
+        }
       }
     }
   }
@@ -82,7 +86,9 @@ object BroadcastedColumns {
       : UImpl[Op, BroadcastedColumns[T, ColumnType], Result] = {
     new UImpl[Op, BroadcastedColumns[T, ColumnType], Result] {
       def apply(v: BroadcastedColumns[T, ColumnType]): Result = {
-        cc(v.underlying, Axis._0) { op(_) }
+        cc(v.underlying, Axis._0) {
+          op(_)
+        }
       }
     }
   }
@@ -94,7 +100,9 @@ object BroadcastedColumns {
       : InPlaceImpl[Op, BroadcastedColumns[T, ColumnType]] = {
     new InPlaceImpl[Op, BroadcastedColumns[T, ColumnType]] {
       def apply(v: BroadcastedColumns[T, ColumnType]) {
-        cc(v.underlying, Axis._0) { op(_) }
+        cc(v.underlying, Axis._0) {
+          op(_)
+        }
       }
     }
   }
@@ -106,7 +114,9 @@ object BroadcastedColumns {
       : UImpl2[Op, BroadcastedColumns[T, ColumnType], RHS, Result] = {
     new UImpl2[Op, BroadcastedColumns[T, ColumnType], RHS, Result] {
       def apply(v: BroadcastedColumns[T, ColumnType], v2: RHS): Result = {
-        cc(v.underlying, Axis._0) { op(_, v2) }
+        cc(v.underlying, Axis._0) {
+          op(_, v2)
+        }
       }
     }
   }
@@ -118,7 +128,9 @@ object BroadcastedColumns {
       : InPlaceImpl2[Op, BroadcastedColumns[T, ColumnType], RHS] = {
     new InPlaceImpl2[Op, BroadcastedColumns[T, ColumnType], RHS] {
       def apply(v: BroadcastedColumns[T, ColumnType], v2: RHS) {
-        cc(v.underlying, Axis._0) { op(_, v2) }
+        cc(v.underlying, Axis._0) {
+          op(_, v2)
+        }
       }
     }
   }

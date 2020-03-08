@@ -30,12 +30,20 @@ class RealCheck
   val sqrtTwo200 =
     "1.41421356237309504880168872420969807856967187537694807317667973799073247846210703885038753432764157273501384623091229702492483605585073721264412149709993583141322266592750559275579995050115278206057147"
 
-  property("pi") { Real.pi.getString(200) shouldBe pi200 }
-  property("e") { Real.e.getString(200) shouldBe e200 }
-  property("sqrt(2)") { Real(2).sqrt.getString(200) shouldBe sqrtTwo200 }
+  property("pi") {
+    Real.pi.getString(200) shouldBe pi200
+  }
+  property("e") {
+    Real.e.getString(200) shouldBe e200
+  }
+  property("sqrt(2)") {
+    Real(2).sqrt.getString(200) shouldBe sqrtTwo200
+  }
 
   property("Rational(n) = Real(n).toRational") {
-    forAll { (n: BigInt) => Rational(n) shouldBe Real(n).toRational }
+    forAll { (n: BigInt) =>
+      Rational(n) shouldBe Real(n).toRational
+    }
   }
 
   property("Real(n)/Real(d) = Real(n/d)") {
@@ -45,47 +53,69 @@ class RealCheck
   }
 
   property("x + 0 = x") {
-    forAll { (x: Real) => x + Real.zero shouldBe x }
+    forAll { (x: Real) =>
+      x + Real.zero shouldBe x
+    }
   }
 
   property("x * 0 = 0") {
-    forAll { (x: Real) => x * Real.zero shouldBe Real.zero }
+    forAll { (x: Real) =>
+      x * Real.zero shouldBe Real.zero
+    }
   }
 
   property("x * 1 = x") {
-    forAll { (x: Real) => x + Real.zero shouldBe x }
+    forAll { (x: Real) =>
+      x + Real.zero shouldBe x
+    }
   }
 
   property("x + y = y + x") {
-    forAll { (x: Real, y: Real) => x + y shouldBe y + x }
+    forAll { (x: Real, y: Real) =>
+      x + y shouldBe y + x
+    }
   }
 
   property("x + (-x) = 0") {
-    forAll { (x: Real) => x + (-x) shouldBe Real.zero }
+    forAll { (x: Real) =>
+      x + (-x) shouldBe Real.zero
+    }
   }
 
   property("x / x = 1") {
-    forAll { (x: Real) => if (x != 0) x / x shouldBe Real.one }
+    forAll { (x: Real) =>
+      if (x != 0) x / x shouldBe Real.one
+    }
   }
 
   property("x * y = y * x") {
-    forAll { (x: Real, y: Real) => x * y shouldBe y * x }
+    forAll { (x: Real, y: Real) =>
+      x * y shouldBe y * x
+    }
   }
 
   property("x + x = 2x") {
-    forAll { (x: Real) => x + x shouldBe x * Real(2) }
+    forAll { (x: Real) =>
+      x + x shouldBe x * Real(2)
+    }
   }
 
   property("x * (y + z) = xy + xz") {
-    forAll { (x: Real, y: Real, z: Real) => x * (y + z) shouldBe x * y + x * z }
+    forAll { (x: Real, y: Real, z: Real) =>
+      x * (y + z) shouldBe x * y + x * z
+    }
   }
 
   property("x.pow(2) = x * x") {
-    forAll { (x: Real) => x.pow(2) shouldBe x * x }
+    forAll { (x: Real) =>
+      x.pow(2) shouldBe x * x
+    }
   }
 
   property("x.pow(3) = x * x * x") {
-    forAll { (x: Real) => x.pow(2) shouldBe x * x }
+    forAll { (x: Real) =>
+      x.pow(2) shouldBe x * x
+    }
   }
 
   property("x.pow(k).nroot(k) = x") {

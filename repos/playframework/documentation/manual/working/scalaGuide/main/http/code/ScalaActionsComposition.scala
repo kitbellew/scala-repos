@@ -263,7 +263,9 @@ package scalaguide.http.scalaactionscomposition {
         action: EssentialAction,
         request: => Request[A] = FakeRequest(),
         expectedResponse: Int = OK) = {
-      assertAction(action, request, expectedResponse) { result => success }
+      assertAction(action, request, expectedResponse) { result =>
+        success
+      }
     }
 
     def assertAction[A, T: AsResult](

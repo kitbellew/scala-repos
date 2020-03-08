@@ -173,10 +173,14 @@ class GenericTests {
   @Test
   def testTuples {
     val gen1 = Generic[Tuple1[Int]]
-    typed[Generic[Tuple1[Int]] { type Repr = Int :: HNil }](gen1)
+    typed[Generic[Tuple1[Int]] {
+      type Repr = Int :: HNil
+    }](gen1)
 
     val gen2 = Generic[(Int, String)]
-    typed[Generic[(Int, String)] { type Repr = Int :: String :: HNil }](gen2)
+    typed[Generic[(Int, String)] {
+      type Repr = Int :: String :: HNil
+    }](gen2)
 
     val gen3 = Generic[(Int, String, Boolean)]
     typed[Generic[(Int, String, Boolean)] {
@@ -848,23 +852,41 @@ object MixedCCNonCCNested {
 
 object EnumDefns0 {
   sealed trait EnumVal
-  val BarA = new EnumVal { val name = "A" }
-  val BarB = new EnumVal { val name = "B" }
-  val BarC = new EnumVal { val name = "C" }
+  val BarA = new EnumVal {
+    val name = "A"
+  }
+  val BarB = new EnumVal {
+    val name = "B"
+  }
+  val BarC = new EnumVal {
+    val name = "C"
+  }
 }
 
 object EnumDefns1 {
   sealed trait EnumVal
-  object BarA extends EnumVal { val name = "A" }
-  object BarB extends EnumVal { val name = "B" }
-  object BarC extends EnumVal { val name = "C" }
+  object BarA extends EnumVal {
+    val name = "A"
+  }
+  object BarB extends EnumVal {
+    val name = "B"
+  }
+  object BarC extends EnumVal {
+    val name = "C"
+  }
 }
 
 object EnumDefns2 {
   sealed trait EnumVal
-  case object BarA extends EnumVal { val name = "A" }
-  case object BarB extends EnumVal { val name = "B" }
-  case object BarC extends EnumVal { val name = "C" }
+  case object BarA extends EnumVal {
+    val name = "A"
+  }
+  case object BarB extends EnumVal {
+    val name = "B"
+  }
+  case object BarC extends EnumVal {
+    val name = "C"
+  }
 }
 
 object EnumDefns3 {
@@ -875,27 +897,45 @@ object EnumDefns3 {
 object EnumDefns4 {
   sealed trait EnumVal
   object EnumVal {
-    val BarA = new EnumVal { val name = "A" }
-    val BarB = new EnumVal { val name = "B" }
-    val BarC = new EnumVal { val name = "C" }
+    val BarA = new EnumVal {
+      val name = "A"
+    }
+    val BarB = new EnumVal {
+      val name = "B"
+    }
+    val BarC = new EnumVal {
+      val name = "C"
+    }
   }
 }
 
 object EnumDefns5 {
   sealed trait EnumVal
   object EnumVal {
-    object BarA extends EnumVal { val name = "A" }
-    object BarB extends EnumVal { val name = "B" }
-    object BarC extends EnumVal { val name = "C" }
+    object BarA extends EnumVal {
+      val name = "A"
+    }
+    object BarB extends EnumVal {
+      val name = "B"
+    }
+    object BarC extends EnumVal {
+      val name = "C"
+    }
   }
 }
 
 object EnumDefns6 {
   sealed trait EnumVal
   object EnumVal {
-    case object BarA extends EnumVal { val name = "A" }
-    case object BarB extends EnumVal { val name = "B" }
-    case object BarC extends EnumVal { val name = "C" }
+    case object BarA extends EnumVal {
+      val name = "A"
+    }
+    case object BarB extends EnumVal {
+      val name = "B"
+    }
+    case object BarC extends EnumVal {
+      val name = "C"
+    }
   }
 }
 

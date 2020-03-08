@@ -16,23 +16,35 @@
 
 package p1 {
   object t0764 {
-    type NodeAlias[A] = Node { type T = A }
+    type NodeAlias[A] = Node {
+      type T = A
+    }
     trait Node { outer =>
       type T <: Node
-      def prepend: Node { type T = outer.type } = ???
+      def prepend: Node {
+        type T = outer.type
+      } = ???
     }
 
     class Main1[A <: Node](v: NodeAlias[A]) {
       private[this] def f1 = new Main1(v.prepend) // fail
       private[this] def f2 = new Main1[NodeAlias[A]](v.prepend) // fail
-      private[this] def f3 = new Main1[Node { type T = A }](v.prepend) // fail
+      private[this] def f3 =
+        new Main1[Node {
+          type T = A
+        }](v.prepend) // fail
       private[this] def f4 = new Main1[v.type](v.prepend) // ok
     }
 
-    class Main2[A <: Node](v: Node { type T = A }) {
+    class Main2[A <: Node](v: Node {
+      type T = A
+    }) {
       private[this] def f1 = new Main2(v.prepend) // fail
       private[this] def f2 = new Main2[NodeAlias[A]](v.prepend) // fail
-      private[this] def f3 = new Main2[Node { type T = A }](v.prepend) // fail
+      private[this] def f3 =
+        new Main2[Node {
+          type T = A
+        }](v.prepend) // fail
       private[this] def f4 = new Main2[v.type](v.prepend) // ok
     }
   }
@@ -40,7 +52,9 @@ package p1 {
 
 package p2 {
   object t0764 {
-    type NodeAlias[A] = Node { type T = A }
+    type NodeAlias[A] = Node {
+      type T = A
+    }
     trait Node { outer =>
       type T <: Node
       def prepend: NodeAlias[outer.type] = ???
@@ -49,14 +63,22 @@ package p2 {
     class Main1[A <: Node](v: NodeAlias[A]) {
       private[this] def f1 = new Main1(v.prepend) // ok!  <<========== WOT
       private[this] def f2 = new Main1[NodeAlias[A]](v.prepend) // fail
-      private[this] def f3 = new Main1[Node { type T = A }](v.prepend) // fail
+      private[this] def f3 =
+        new Main1[Node {
+          type T = A
+        }](v.prepend) // fail
       private[this] def f4 = new Main1[v.type](v.prepend) // ok
     }
 
-    class Main2[A <: Node](v: Node { type T = A }) {
+    class Main2[A <: Node](v: Node {
+      type T = A
+    }) {
       private[this] def f1 = new Main2(v.prepend) // fail
       private[this] def f2 = new Main2[NodeAlias[A]](v.prepend) // fail
-      private[this] def f3 = new Main2[Node { type T = A }](v.prepend) // fail
+      private[this] def f3 =
+        new Main2[Node {
+          type T = A
+        }](v.prepend) // fail
       private[this] def f4 = new Main2[v.type](v.prepend) // ok
     }
   }

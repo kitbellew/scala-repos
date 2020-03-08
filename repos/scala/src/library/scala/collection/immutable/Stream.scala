@@ -278,7 +278,9 @@ abstract class Stream[+A]
   }
 
   /** Prints elements of this stream one by one, separated by commas. */
-  def print() { print(", ") }
+  def print() {
+    print(", ")
+  }
 
   /** Prints elements of this stream one by one, separated by `sep`.
     *  @param sep   The separator string printed between consecutive elements.

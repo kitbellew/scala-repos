@@ -29,9 +29,13 @@ class LazyStrictTests {
   def testEffectOrder {
     val effects = ListBuffer[Int]()
 
-    implicit def lazyInt: Lazy[Int] = Lazy[Int] { effects += 3; 23 }
+    implicit def lazyInt: Lazy[Int] = Lazy[Int] {
+      effects += 3; 23
+    }
 
-    implicit def strictInt: Strict[Int] = Strict[Int] { effects += 6; 23 }
+    implicit def strictInt: Strict[Int] = Strict[Int] {
+      effects += 6; 23
+    }
 
     def summonLazyInt(implicit li: Lazy[Int]): Int = {
       effects += 2
@@ -62,7 +66,9 @@ class LazyStrictTests {
   def testDefConversion {
     val effects = ListBuffer[Int]()
 
-    def effectfulLazyInt: Int = { effects += 3; 23 }
+    def effectfulLazyInt: Int = {
+      effects += 3; 23
+    }
 
     def useEffectfulLazyInt(li: Lazy[Int]): Int = {
       effects += 2
@@ -71,7 +77,9 @@ class LazyStrictTests {
       i
     }
 
-    def effectfulStrictInt: Int = { effects += 6; 23 }
+    def effectfulStrictInt: Int = {
+      effects += 6; 23
+    }
 
     def useEffectfulStrictInt(li: Strict[Int]): Int = {
       effects += 7
@@ -95,8 +103,12 @@ class LazyStrictTests {
   def testLazyConversion {
     val effects = ListBuffer[Int]()
 
-    lazy val effectfulLazyInt: Int = { effects += 3; 23 }
-    lazy val effectfulStrictInt: Int = { effects += 6; 23 }
+    lazy val effectfulLazyInt: Int = {
+      effects += 3; 23
+    }
+    lazy val effectfulStrictInt: Int = {
+      effects += 6; 23
+    }
 
     def useEffectfulLazyInt(li: Lazy[Int]): Int = {
       effects += 2
@@ -142,9 +154,13 @@ class LazyStrictTests {
     }
 
     effects += 1
-    val il = useEffectfulLazyInt({ effects += 2; 23 })
+    val il = useEffectfulLazyInt({
+      effects += 2; 23
+    })
     effects += 5
-    val is = useEffectfulStrictInt({ effects += 6; 23 })
+    val is = useEffectfulStrictInt({
+      effects += 6; 23
+    })
     effects += 9
 
     assertEquals(23, il)
@@ -250,9 +266,13 @@ class LazyStrictTests {
     assertTrue(z1 eq z)
   }
 
-  trait Bar[A] { def foo(a: A): Unit }
+  trait Bar[A] {
+    def foo(a: A): Unit
+  }
   object Bar {
-    implicit val intBar = new Bar[Int] { def foo(x: Int) = () }
+    implicit val intBar = new Bar[Int] {
+      def foo(x: Int) = ()
+    }
   }
 
   @Test
@@ -270,9 +290,13 @@ class LazyStrictTests {
     def strictBaz[T, U](t: T)(implicit bt: Strict[Aux[T, U]]): Aux[T, U] =
       bt.value
 
-    type Aux[T, U0] = Baz[T] { type U = U0 }
+    type Aux[T, U0] = Baz[T] {
+      type U = U0
+    }
 
-    implicit val bazIS: Aux[Int, String] = new Baz[Int] { type U = String }
+    implicit val bazIS: Aux[Int, String] = new Baz[Int] {
+      type U = String
+    }
     implicit val bazBD: Aux[Boolean, Double] = new Baz[Boolean] {
       type U = Double
     }

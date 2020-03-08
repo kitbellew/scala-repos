@@ -73,8 +73,12 @@ trait ZookeeperConf extends ScallopConf {
 
   def zkURL: String = zooKeeperUrl.get.get
 
-  lazy val zkHosts = zkURL match { case zkURLPattern(server, _) => server }
-  lazy val zkPath = zkURL match { case zkURLPattern(_, path)    => path }
+  lazy val zkHosts = zkURL match {
+    case zkURLPattern(server, _) => server
+  }
+  lazy val zkPath = zkURL match {
+    case zkURLPattern(_, path) => path
+  }
   lazy val zkTimeoutDuration = Duration(zooKeeperTimeout(), MILLISECONDS)
   lazy val zkSessionTimeoutDuration =
     Duration(zooKeeperSessionTimeout(), MILLISECONDS)

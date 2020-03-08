@@ -50,10 +50,18 @@ private[ui] class EnvironmentPage(parent: EnvironmentTab)
       fixedWidth = true)
     val content =
       <span>
-        <h4>Runtime Information</h4> {runtimeInformationTable}
-        <h4>Spark Properties</h4> {sparkPropertiesTable}
-        <h4>System Properties</h4> {systemPropertiesTable}
-        <h4>Classpath Entries</h4> {classpathEntriesTable}
+        <h4>Runtime Information</h4> {
+        runtimeInformationTable
+      }
+        <h4>Spark Properties</h4> {
+        sparkPropertiesTable
+      }
+        <h4>System Properties</h4> {
+        systemPropertiesTable
+      }
+        <h4>Classpath Entries</h4> {
+        classpathEntriesTable
+      }
       </span>
 
     UIUtils.headerSparkPage("Environment", content, parent)
@@ -62,9 +70,21 @@ private[ui] class EnvironmentPage(parent: EnvironmentTab)
   private def propertyHeader = Seq("Name", "Value")
   private def classPathHeaders = Seq("Resource", "Source")
   private def jvmRow(kv: (String, String)) =
-    <tr><td>{kv._1}</td><td>{kv._2}</td></tr>
+    <tr><td>{
+      kv._1
+    }</td><td>{
+      kv._2
+    }</td></tr>
   private def propertyRow(kv: (String, String)) =
-    <tr><td>{kv._1}</td><td>{kv._2}</td></tr>
+    <tr><td>{
+      kv._1
+    }</td><td>{
+      kv._2
+    }</td></tr>
   private def classPathRow(data: (String, String)) =
-    <tr><td>{data._1}</td><td>{data._2}</td></tr>
+    <tr><td>{
+      data._1
+    }</td><td>{
+      data._2
+    }</td></tr>
 }

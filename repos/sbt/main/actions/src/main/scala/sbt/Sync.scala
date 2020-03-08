@@ -92,16 +92,23 @@ object Sync {
       file: File,
       relation: Relation[File, File],
       info: Map[File, F])(implicit infoFormat: Format[F]): Unit =
-    IO.gzipFileOut(file) { out => write(out, (relation, info)) }
+    IO.gzipFileOut(file) { out =>
+      write(out, (relation, info))
+    }
 
   type RelationInfo[F] = (Relation[File, File], Map[File, F])
 
   def readInfo[F <: FileInfo](file: File)(
       implicit infoFormat: Format[F]): RelationInfo[F] =
-    try { readUncaught(file)(infoFormat) }
-    catch { case e: IOException => (Relation.empty, Map.empty) }
+    try {
+      readUncaught(file)(infoFormat)
+    } catch {
+      case e: IOException => (Relation.empty, Map.empty)
+    }
 
   def readUncaught[F <: FileInfo](file: File)(
       implicit infoFormat: Format[F]): RelationInfo[F] =
-    IO.gzipFileIn(file) { in => read[RelationInfo[F]](in) }
+    IO.gzipFileIn(file) { in =>
+      read[RelationInfo[F]](in)
+    }
 }

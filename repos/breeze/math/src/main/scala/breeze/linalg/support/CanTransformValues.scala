@@ -47,11 +47,15 @@ object CanTransformValues {
     /**Transforms all values from the given collection. */
     def transform(from: Array[A], fn: (A) => A) {
       import spire.syntax.cfor._
-      cforRange(0 until from.length) { i => from(i) = fn(from(i)) }
+      cforRange(0 until from.length) { i =>
+        from(i) = fn(from(i))
+      }
     }
 
     /**Transforms all active key-value pairs from the given collection. */
-    def transformActive(from: Array[A], fn: (A) => A) { transform(from, fn) }
+    def transformActive(from: Array[A], fn: (A) => A) {
+      transform(from, fn)
+    }
   }
 
   implicit def opArray[@specialized A] =

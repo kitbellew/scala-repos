@@ -1062,8 +1062,12 @@ class LinearAlgebraTest
       "range inclusive, negative start/end/step")
 
     assert(xInt(rangeExcl) == DenseVector(0, 1, 2, 3, 4), "range exclusive")
-    intercept[IllegalArgumentException] { xInt(rangeExclN1) }
-    intercept[IllegalArgumentException] { xInt(rangeExclN2) }
+    intercept[IllegalArgumentException] {
+      xInt(rangeExclN1)
+    }
+    intercept[IllegalArgumentException] {
+      xInt(rangeExclN2)
+    }
   }
 
   test("#356 symmetric matrix sensitivity") {

@@ -8,12 +8,16 @@ class Tokenizer(s: String, delimiters: String) extends Iterator[String] {
 
   def isDelimiter(ch: Char) = {
     var i = 0;
-    while (i < delimiters.length() && delimiters.charAt(i) != ch) { i = i + 1 }
+    while (i < delimiters.length() && delimiters.charAt(i) != ch) {
+      i = i + 1
+    }
     i < delimiters.length()
   }
 
   def hasNext: Boolean = {
-    while (i < s.length() && s.charAt(i) <= ' ') { i = i + 1 }
+    while (i < s.length() && s.charAt(i) <= ' ') {
+      i = i + 1
+    }
     i < s.length()
   }
 
@@ -25,7 +29,9 @@ class Tokenizer(s: String, delimiters: String) extends Iterator[String] {
       else {
         while (i < s.length() &&
                s.charAt(i) > ' ' &&
-               !isDelimiter(s.charAt(i))) { i = i + 1 }
+               !isDelimiter(s.charAt(i))) {
+          i = i + 1
+        }
         s.substring(start, i)
       }
     } else "";
@@ -73,7 +79,9 @@ object Terms {
   }
 
   private var count = 0;
-  def newVar(prefix: String) = { count = count + 1; Var(prefix + count) }
+  def newVar(prefix: String) = {
+    count = count + 1; Var(prefix + count)
+  }
 
   val NoTerm = Con("<none>", List());
 
@@ -122,7 +130,9 @@ object Programs {
       (lhs.tyvars ::: (rhs flatMap (t => t.tyvars))).distinct;
     def newInstance = {
       var s: Subst = List();
-      for (a <- tyvars) { s = Binding(a, newVar(a)) :: s }
+      for (a <- tyvars) {
+        s = Binding(a, newVar(a)) :: s
+      }
       Clause(lhs map s, rhs map (t => t map s))
     }
     override def toString() =
@@ -180,8 +190,9 @@ class Parser(s: String) {
 
   def rep[a](p: => a): List[a] = {
     val t = p;
-    if (token == ",") { token = it.next; t :: rep(p) }
-    else List(t)
+    if (token == ",") {
+      token = it.next; t :: rep(p)
+    } else List(t)
   }
 
   def constructor: Term = {
@@ -200,9 +211,11 @@ class Parser(s: String) {
 
   def term: Term = {
     val ch = token.charAt(0);
-    if ('A' <= ch && ch <= 'Z') { val a = token; token = it.next; Var(a) }
-    else if (it.isDelimiter(ch)) { syntaxError("term expected"); null }
-    else constructor
+    if ('A' <= ch && ch <= 'Z') {
+      val a = token; token = it.next; Var(a)
+    } else if (it.isDelimiter(ch)) {
+      syntaxError("term expected"); null
+    } else constructor
   }
 
   def line: Clause = {
@@ -213,8 +226,9 @@ class Parser(s: String) {
       } else {
         Clause(
           constructor,
-          if (token equals ":-") { token = it.next; rep(constructor) }
-          else List())
+          if (token equals ":-") {
+            token = it.next; rep(constructor)
+          } else List())
       }
     if (token equals ".") token = it.next else syntaxError("`.' expected");
     result

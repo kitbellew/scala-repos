@@ -19,7 +19,10 @@ package webapptest
 package snippet
 
 class HelloWorld {
-  def howdy = <span>Welcome to webtest1 at {new java.util.Date}</span>
+  def howdy =
+    <span>Welcome to webtest1 at {
+      new java.util.Date
+    }</span>
 }
 
 import scala.xml._

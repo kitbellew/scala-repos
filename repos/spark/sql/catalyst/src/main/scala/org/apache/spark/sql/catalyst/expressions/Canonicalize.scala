@@ -61,9 +61,17 @@ object Canonicalize extends {
   /** Rearrange expressions that are commutative or associative. */
   private def expressionReorder(e: Expression): Expression = e match {
     case a: Add =>
-      orderCommutative(a, { case Add(l, r) => Seq(l, r) }).reduce(Add)
+      orderCommutative(
+        a,
+        {
+          case Add(l, r) => Seq(l, r)
+        }).reduce(Add)
     case m: Multiply =>
-      orderCommutative(m, { case Multiply(l, r) => Seq(l, r) }).reduce(Multiply)
+      orderCommutative(
+        m,
+        {
+          case Multiply(l, r) => Seq(l, r)
+        }).reduce(Multiply)
 
     case EqualTo(l, r) if l.hashCode() > r.hashCode() => EqualTo(r, l)
     case EqualNullSafe(l, r) if l.hashCode() > r.hashCode() =>

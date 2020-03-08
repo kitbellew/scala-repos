@@ -12,7 +12,9 @@ trait Split[=>:[_, _]] extends Compose[=>:] { self =>
   // derived functions
 
   ////
-  val splitSyntax = new scalaz.syntax.SplitSyntax[=>:] { def F = Split.this }
+  val splitSyntax = new scalaz.syntax.SplitSyntax[=>:] {
+    def F = Split.this
+  }
 }
 
 object Split {

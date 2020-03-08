@@ -18,7 +18,9 @@ class MemoizeTest extends FunSuite {
     }
 
     val adder = spy(new Adder)
-    val memoizer = Memoize { adder(_: Int) }
+    val memoizer = Memoize {
+      adder(_: Int)
+    }
 
     assert(2 == memoizer(1))
     assert(2 == memoizer(1))
@@ -84,7 +86,9 @@ class MemoizeTest extends FunSuite {
     val ConcurrencyLevel = 5
     val computation =
       Future.collect(1 to ConcurrencyLevel map { _ =>
-        FuturePool.unboundedPool(memo(5)) transform { Future.value _ }
+        FuturePool.unboundedPool(memo(5)) transform {
+          Future.value _
+        }
       })
 
     startUpLatch.countDown()
@@ -105,7 +109,9 @@ class MemoizeTest extends FunSuite {
   }
 
   test("Memoize.snappable: produce map of memoized computations") {
-    val memoizer = Memoize.snappable[Int, Int] { _ + 1 }
+    val memoizer = Memoize.snappable[Int, Int] {
+      _ + 1
+    }
     assert(memoizer.snap.isEmpty)
 
     assert(2 == memoizer(1))

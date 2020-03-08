@@ -26,8 +26,12 @@ object Test extends ScaladocModelTest {
         .filter(_.inDefinitionTemplates.head == Base)
         .length + " == 5")
     assert(
-      Base.members.collect { case d: DocTemplateEntity => d }.length == 4,
-      Base.members.collect { case d: DocTemplateEntity => d }.length == 4)
+      Base.members.collect {
+        case d: DocTemplateEntity => d
+      }.length == 4,
+      Base.members.collect {
+        case d: DocTemplateEntity => d
+      }.length == 4)
     testDiagram(Base, Base.contentDiagram, 2, 1)
 
     val BaseT = Base._absTypeTpl("T")
@@ -53,8 +57,12 @@ object Test extends ScaladocModelTest {
       Api.members.filter(_.inDefinitionTemplates.head == Api).length + " == 2"
     ) // FooApi and override type T
     assert(
-      Api.members.collect { case d: DocTemplateEntity => d }.length == 5,
-      Api.members.collect { case d: DocTemplateEntity => d }.length == 5)
+      Api.members.collect {
+        case d: DocTemplateEntity => d
+      }.length == 5,
+      Api.members.collect {
+        case d: DocTemplateEntity => d
+      }.length == 5)
     testDiagram(Api, Api.contentDiagram, 3, 2)
 
     val ApiT = Api._absTypeTpl("T")

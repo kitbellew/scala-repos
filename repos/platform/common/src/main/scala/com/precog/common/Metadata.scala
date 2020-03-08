@@ -95,7 +95,9 @@ object Metadata {
               case DoubleValueStats     => value.validated[DoubleValueStats]
               case BigDecimalValueStats => value.validated[BigDecimalValueStats]
               case StringValueStats     => value.validated[StringValueStats]
-            } getOrElse { Failure(Invalid("Unknown metadata type: " + key)) }
+            } getOrElse {
+              Failure(Invalid("Unknown metadata type: " + key))
+            }
           }
 
           case _ => Failure(Invalid("Invalid metadata entry: " + obj))

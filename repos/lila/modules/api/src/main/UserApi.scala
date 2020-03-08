@@ -46,9 +46,15 @@ private[api] final class UserApi(
           }) zip
           relationApi.countFollowing(u.id) zip
           relationApi.countFollowers(u.id) zip
-          ctx.isAuth.?? { prefApi followable u.id } zip
-          ctx.userId.?? { relationApi.fetchRelation(_, u.id) } zip
-          ctx.userId.?? { relationApi.fetchFollows(u.id, _) } map {
+          ctx.isAuth.?? {
+            prefApi followable u.id
+          } zip
+          ctx.userId.?? {
+            relationApi.fetchRelation(_, u.id)
+          } zip
+          ctx.userId.?? {
+            relationApi.fetchFollows(u.id, _)
+          } map {
           case (
               (
                 (

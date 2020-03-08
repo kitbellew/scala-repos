@@ -226,7 +226,9 @@ abstract class ArraySetColumn[T <: Column](
     protected val backing: Array[T]) { this: T =>
   protected def firstDefinedIndexAt(row: Int): Int = {
     var i = 0
-    while (i < backing.length && !backing(i).isDefinedAt(row)) { i += 1 }
+    while (i < backing.length && !backing(i).isDefinedAt(row)) {
+      i += 1
+    }
     if (i != backing.length) i else -1
   }
   def isDefinedAt(row: Int) = firstDefinedIndexAt(row) != -1

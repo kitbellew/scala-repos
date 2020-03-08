@@ -1,4 +1,6 @@
-case object A { override def toString = ??? }
+case object A {
+  override def toString = ???
+}
 
 object Test {
   def foo: Int = (A: Any) match {

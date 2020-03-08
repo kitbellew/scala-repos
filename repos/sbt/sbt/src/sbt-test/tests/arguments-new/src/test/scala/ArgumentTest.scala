@@ -6,8 +6,16 @@ class ArgumentTest extends FunSuite {
   override def withFixture(test: OneArgTest) = {
     test(test.configMap)
   }
-  test("1", Tag("test1")) { conf => sys.error("error #1") }
-  test("2", Tag("test2")) { conf => () }
-  test("3", Tag("test3")) { conf => () }
-  test("4", Tag("test4")) { conf => sys.error("error #4") }
+  test("1", Tag("test1")) { conf =>
+    sys.error("error #1")
+  }
+  test("2", Tag("test2")) { conf =>
+    ()
+  }
+  test("3", Tag("test3")) { conf =>
+    ()
+  }
+  test("4", Tag("test4")) { conf =>
+    sys.error("error #4")
+  }
 }

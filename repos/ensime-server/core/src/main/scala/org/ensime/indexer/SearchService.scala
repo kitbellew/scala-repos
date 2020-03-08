@@ -161,10 +161,14 @@ class SearchService(
       symbols: List[FqnSymbol],
       commitIndex: Boolean): Future[Option[Int]] = {
     val iwork = Future {
-      blocking { index.persist(check, symbols, commitIndex) }
+      blocking {
+        index.persist(check, symbols, commitIndex)
+      }
     }
     val dwork = db.persist(check, symbols)
-    iwork.flatMap { _ => dwork }
+    iwork.flatMap { _ =>
+      dwork
+    }
   }
 
   def extractSymbolsFromClassOrJar(file: FileObject): Future[List[FqnSymbol]] =
@@ -300,7 +304,11 @@ class SearchService(
   def delete(files: List[FileObject]): Future[Int] = {
     // this doesn't speed up Lucene deletes, but it means that we
     // don't wait for Lucene before starting the H2 deletions.
-    val iwork = Future { blocking { index.remove(files) } }
+    val iwork = Future {
+      blocking {
+        index.remove(files)
+      }
+    }
     val dwork = db.removeFiles(files)
     iwork.flatMap(_ => dwork)
   }

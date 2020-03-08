@@ -13,5 +13,7 @@ object Test extends App {
     println(code.eval)
   }
 
-  new C { type T = String } // this "mistake" is made for a reason!
+  new C {
+    type T = String
+  } // this "mistake" is made for a reason!
 }

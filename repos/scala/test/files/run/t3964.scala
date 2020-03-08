@@ -3,8 +3,12 @@ import scala.language.implicitConversions
 object Test {
   class Base
   object Bob extends Base
-  class Foo { def bippy = 42 }
-  class Oof { def bippy = -21 }
+  class Foo {
+    def bippy = 42
+  }
+  class Oof {
+    def bippy = -21
+  }
 
   // I am more specific than you
   implicit def f1(x: Bob.type): Foo = new Foo

@@ -132,7 +132,9 @@ trait SerializationSupport {
     // but when serializing for digests it must be set here.
     if (Serialization.currentTransportInformation.value == null)
       Serialization.currentTransportInformation.withValue(
-        transportInformation) { buildOther() }
+        transportInformation) {
+        buildOther()
+      }
     else
       buildOther()
   }

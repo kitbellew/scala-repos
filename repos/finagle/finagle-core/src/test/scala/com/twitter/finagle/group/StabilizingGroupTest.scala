@@ -12,8 +12,12 @@ import StabilizingGroup.State._
 
 class MockHealth {
   val pulse = new Broker[Health]()
-  def mkHealthy() { pulse ! Healthy }
-  def mkUnhealthy() { pulse ! Unhealthy }
+  def mkHealthy() {
+    pulse ! Healthy
+  }
+  def mkUnhealthy() {
+    pulse ! Unhealthy
+  }
 }
 
 class Context {

@@ -77,7 +77,9 @@ trait SchedulerSpec
 
     "stop continuous scheduling if the receiving actor has been terminated" taggedAs TimingTest in {
       val actor = system.actorOf(Props(new Actor {
-        def receive = { case x ⇒ sender() ! x }
+        def receive = {
+          case x ⇒ sender() ! x
+        }
       }))
 
       // run immediately and then every 100 milliseconds
@@ -109,7 +111,9 @@ trait SchedulerSpec
       case object Tick
       val countDownLatch = new CountDownLatch(3)
       val tickActor = system.actorOf(Props(new Actor {
-        def receive = { case Tick ⇒ countDownLatch.countDown() }
+        def receive = {
+          case Tick ⇒ countDownLatch.countDown()
+        }
       }))
 
       // run after 300 millisec
@@ -262,7 +266,9 @@ trait SchedulerSpec
       case object Msg
 
       val actor = system.actorOf(Props(new Actor {
-        def receive = { case Msg ⇒ ticks.countDown() }
+        def receive = {
+          case Msg ⇒ ticks.countDown()
+        }
       }))
 
       val startTime = System.nanoTime()
@@ -280,7 +286,9 @@ trait SchedulerSpec
       val startTime = System.nanoTime
       val n = 200
       val latch = new TestLatch(n)
-      system.scheduler.schedule(25.millis, 25.millis) { latch.countDown() }
+      system.scheduler.schedule(25.millis, 25.millis) {
+        latch.countDown()
+      }
       Await.ready(latch, 6.seconds)
       // Rate
       n * 1000.0 / (System.nanoTime - startTime).nanos.toMillis should ===(
@@ -545,7 +553,9 @@ class LightArrayRevolverSchedulerSpec
       withScheduler() { (sched, driver) ⇒
         import system.dispatcher
         val counter = new AtomicInteger
-        future { Thread.sleep(5); driver.close(); sched.close() }
+        future {
+          Thread.sleep(5); driver.close(); sched.close()
+        }
         val headroom = 200
         var overrun = headroom
         val cap = 1000000
@@ -553,7 +563,9 @@ class LightArrayRevolverSchedulerSpec
           .continually(
             Try(sched.scheduleOnce(100.millis)(counter.incrementAndGet())))
           .take(cap)
-          .takeWhile(_.isSuccess || { overrun -= 1; overrun >= 0 })
+          .takeWhile(_.isSuccess || {
+            overrun -= 1; overrun >= 0
+          })
           .partition(_.isSuccess)
         val s = success.size
         s should be < cap
@@ -566,15 +578,21 @@ class LightArrayRevolverSchedulerSpec
   trait Driver {
     def wakeUp(d: FiniteDuration): Unit
     def expectWait(): FiniteDuration
-    def expectWait(d: FiniteDuration) { expectWait() should ===(d) }
+    def expectWait(d: FiniteDuration) {
+      expectWait() should ===(d)
+    }
     def probe: TestProbe
     def step: FiniteDuration
     def close(): Unit
   }
 
   val localEC = new ExecutionContext {
-    def execute(runnable: Runnable) { runnable.run() }
-    def reportFailure(t: Throwable) { t.printStackTrace() }
+    def execute(runnable: Runnable) {
+      runnable.run()
+    }
+    def reportFailure(t: Throwable) {
+      t.printStackTrace()
+    }
   }
 
   def withScheduler(start: Long = 0L, config: Config = ConfigFactory.empty)(
@@ -585,8 +603,9 @@ class LightArrayRevolverSchedulerSpec
     val prb = TestProbe()
     val tf = system.asInstanceOf[ActorSystemImpl].threadFactory
     val sched =
-      new { @volatile var time = start }
-      with LARS(config.withFallback(system.settings.config), log, tf) {
+      new {
+        @volatile var time = start
+      } with LARS(config.withFallback(system.settings.config), log, tf) {
         override protected def clock(): Long = {
           // println(s"clock=$time")
           time
@@ -627,7 +646,9 @@ class LightArrayRevolverSchedulerSpec
         try {
           driver.close()
           sched.close()
-        } catch { case _: Exception ⇒ }
+        } catch {
+          case _: Exception ⇒
+        }
         throw ex
     }
     driver.close()

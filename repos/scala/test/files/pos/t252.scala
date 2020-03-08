@@ -7,7 +7,9 @@ abstract class T {
 
 abstract class Base {
   type mType = Module
-  type tType = T { type moduleType <: mType }
+  type tType = T {
+    type moduleType <: mType
+  }
 }
 
 abstract class Derived extends Base {

@@ -67,7 +67,9 @@ class TimeoutFactory[Req, Rep](
     res.within(timer, timeout) rescue {
       case exc: java.util.concurrent.TimeoutException =>
         res.raise(exc)
-        res onSuccess { _.close() }
+        res onSuccess {
+          _.close()
+        }
         failure
     }
   }

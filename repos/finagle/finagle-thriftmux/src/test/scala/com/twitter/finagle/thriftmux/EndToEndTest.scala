@@ -52,7 +52,9 @@ class EndToEndTest
   // turn off failure detector since we don't need it for these tests.
   override def test(testName: String, testTags: Tag*)(f: => Unit) {
     super.test(testName, testTags: _*) {
-      mux.sessionFailureDetector.let("none") { f }
+      mux.sessionFailureDetector.let("none") {
+        f
+      }
     }
   }
 
@@ -373,7 +375,9 @@ class EndToEndTest
       new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
       new TestService.FutureIface {
         def query(x: String) =
-          Future.value(ClientId.current map { _.name } getOrElse (""))
+          Future.value(ClientId.current map {
+            _.name
+          } getOrElse (""))
       }
     )
 
@@ -396,7 +400,9 @@ class EndToEndTest
       new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
       new TestService.FutureIface {
         def query(x: String) =
-          Future.value(ClientId.current map { _.name } getOrElse (""))
+          Future.value(ClientId.current map {
+            _.name
+          } getOrElse (""))
       }
     )
 
@@ -447,7 +453,9 @@ class EndToEndTest
       new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
       new TestService.FutureIface {
         def query(x: String) =
-          Future.value(ClientId.current map { _.name } getOrElse (""))
+          Future.value(ClientId.current map {
+            _.name
+          } getOrElse (""))
       }
     )
 
@@ -730,7 +738,9 @@ class EndToEndTest
       Await.result(OldPlainPipeliningThriftClient.newClient(server)())
     val client =
       new TestService.FinagledClient(service, Protocols.binaryFactory())
-    val reqs = 1 to nreqs map { i => client.query("ok" + i) }
+    val reqs = 1 to nreqs map { i =>
+      client.query("ok" + i)
+    }
     // Although the requests are pipelined in the client, they must be
     // received by the service serially.
     1 to nreqs foreach { i =>
@@ -962,10 +972,14 @@ class EndToEndTest
         "client")
 
     val f = client.query("ok")
-    intercept[Exception] { Await.result(f, 1.second) }
+    intercept[Exception] {
+      Await.result(f, 1.second)
+    }
 
     val close = server.close(1.minute) // up to a minute
-    intercept[Exception] { Await.result(close, 1.second) }
+    intercept[Exception] {
+      Await.result(close, 1.second)
+    }
 
     response.setValue("done")
 

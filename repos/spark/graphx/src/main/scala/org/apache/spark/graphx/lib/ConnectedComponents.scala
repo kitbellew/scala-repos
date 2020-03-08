@@ -43,7 +43,9 @@ object ConnectedComponents {
       s"Maximum of iterations must be greater than 0," +
         s" but got ${maxIterations}")
 
-    val ccGraph = graph.mapVertices { case (vid, _) => vid }
+    val ccGraph = graph.mapVertices {
+      case (vid, _) => vid
+    }
     def sendMessage(
         edge: EdgeTriplet[VertexId, ED]): Iterator[(VertexId, VertexId)] = {
       if (edge.srcAttr < edge.dstAttr) {

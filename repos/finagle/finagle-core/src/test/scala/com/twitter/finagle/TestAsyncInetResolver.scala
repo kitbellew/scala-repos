@@ -14,7 +14,9 @@ class TestAsyncInetResolver extends Resolver {
     val range = 1 to 65535
     def unapply(str: String): Option[Int] = {
       try Some(Integer.parseInt(str)) filter (range contains _)
-      catch { case _: NumberFormatException => None }
+      catch {
+        case _: NumberFormatException => None
+      }
     }
   }
 

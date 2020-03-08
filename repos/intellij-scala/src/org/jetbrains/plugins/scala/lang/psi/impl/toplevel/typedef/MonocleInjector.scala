@@ -30,7 +30,9 @@ class MonocleInjector extends SyntheticMembersInjector {
     val buffer = new ArrayBuffer[String]
     val clazz = obj.fakeCompanionClassOrCompanionClass.asInstanceOf[ScClass]
     val fields = clazz.allVals
-      .collect({ case (f: ScClassParameterImpl, _) => f })
+      .collect({
+        case (f: ScClassParameterImpl, _) => f
+      })
       .filter(_.isCaseClassVal)
     val prefix = Option(
       clazz

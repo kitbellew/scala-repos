@@ -14,7 +14,9 @@ final class Scheduler(
     batch.zipWithIndex foreach {
       case (a, i) =>
         try {
-          scheduler.scheduleOnce((1 + i) * delay) { op(a) }
+          scheduler.scheduleOnce((1 + i) * delay) {
+            op(a)
+          }
         } catch {
           case e: java.lang.IllegalStateException =>
           // the actor system is being stopped, can't schedule

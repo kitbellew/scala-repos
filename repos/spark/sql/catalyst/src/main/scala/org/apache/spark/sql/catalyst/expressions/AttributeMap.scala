@@ -33,7 +33,9 @@ object AttributeMap {
 
   /** Given a schema, constructs a map from ordinal to Attribute. */
   def toIndex(schema: Seq[Attribute]): Map[Int, Attribute] =
-    schema.zipWithIndex.map { case (a, i) => i -> a }.toMap
+    schema.zipWithIndex.map {
+      case (a, i) => i -> a
+    }.toMap
 }
 
 class AttributeMap[A](baseMap: Map[ExprId, (Attribute, A)])

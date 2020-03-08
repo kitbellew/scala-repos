@@ -1,4 +1,6 @@
-trait RepeatedSink { def accept(a: Any*): Unit }
+trait RepeatedSink {
+  def accept(a: Any*): Unit
+}
 
 object Test {
   def main(args: Array[String]): Unit = {

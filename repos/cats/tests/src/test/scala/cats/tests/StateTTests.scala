@@ -47,7 +47,9 @@ class StateTTests extends CatsSuite {
   }
 
   test("modify identity is a noop") {
-    forAll { (f: StateT[List, Long, Int]) => f.modify(identity) should ===(f) }
+    forAll { (f: StateT[List, Long, Int]) =>
+      f.modify(identity) should ===(f)
+    }
   }
 
   test("modify modifies state") {
@@ -101,7 +103,9 @@ class StateTTests extends CatsSuite {
     val input = 5
 
     val got = x.run(input)
-    val expected = xx.run(Env(input, "hello")).map { case (e, i) => (e.int, i) }
+    val expected = xx.run(Env(input, "hello")).map {
+      case (e, i) => (e.int, i)
+    }
     got should ===(expected)
   }
 

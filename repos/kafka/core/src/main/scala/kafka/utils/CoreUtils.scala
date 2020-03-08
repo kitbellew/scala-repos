@@ -301,8 +301,12 @@ object CoreUtils extends Logging {
     */
   def duplicates[T](s: Traversable[T]): Iterable[T] = {
     s.groupBy(identity)
-      .map { case (k, l) => (k, l.size) }
-      .filter { case (k, l) => (l > 1) }
+      .map {
+        case (k, l) => (k, l.size)
+      }
+      .filter {
+        case (k, l) => (l > 1)
+      }
       .keys
   }
 

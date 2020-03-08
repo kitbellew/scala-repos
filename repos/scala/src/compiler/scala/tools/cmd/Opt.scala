@@ -59,10 +59,18 @@ object Opt {
       extends Implicit {
     import options._
 
-    def --? = { addUnary(opt); false }
-    def -->(body: => Unit) = { addUnary(opt); false }
-    def --| = { addBinary(opt); None }
-    def --^[T: FromString] = { addBinary(opt); None }
+    def --? = {
+      addUnary(opt); false
+    }
+    def -->(body: => Unit) = {
+      addUnary(opt); false
+    }
+    def --| = {
+      addBinary(opt); None
+    }
+    def --^[T: FromString] = {
+      addBinary(opt); None
+    }
 
     def defaultTo[T: FromString](default: T) = {
       addBinary(opt); addHelpDefault(() => default.toString); default
@@ -70,7 +78,9 @@ object Opt {
     def defaultToEnv(envVar: String) = {
       addBinary(opt); addHelpEnvDefault(envVar); ""
     }
-    def choiceOf[T: FromString](choices: T*) = { addBinary(opt); None }
+    def choiceOf[T: FromString](choices: T*) = {
+      addBinary(opt); None
+    }
     def expandTo(args: String*) = {
       addExpand(name, args.toList); addHelpAlias(() => args mkString " ")
     }

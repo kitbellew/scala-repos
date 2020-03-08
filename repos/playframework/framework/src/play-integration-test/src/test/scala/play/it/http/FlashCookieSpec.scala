@@ -48,7 +48,9 @@ trait FlashCookieSpec
   def withClientAndServer[T](block: WSClient => T) = {
     val app = appWithRedirect
     import app.materializer
-    Server.withApplication(app) { implicit port => withClient(block) }
+    Server.withApplication(app) { implicit port =>
+      withClient(block)
+    }
   }
 
   def readFlashCookie(response: WSResponse): Option[WSCookie] =

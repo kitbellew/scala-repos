@@ -14,8 +14,12 @@ trait Foo {
     if (x == name) Some(()) else None
   }
 }
-object Bar extends Foo { def name = "bar" }
-object Baz extends Foo { def name = "baz" }
+object Bar extends Foo {
+  def name = "bar"
+}
+object Baz extends Foo {
+  def name = "baz"
+}
 
 object Test_ {
   def matcher(s: String) = s match {

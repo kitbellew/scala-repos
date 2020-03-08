@@ -56,7 +56,9 @@ object JsonTransSpec extends Specification {
     "copy input JSON and update a branch (merge the updated branch with input JSON)" in {
       js.transform(
           (__ \ 'field3).json.update(
-            __.read[JsObject].map { o => o ++ Json.obj("field33" -> false) }
+            __.read[JsObject].map { o =>
+              o ++ Json.obj("field33" -> false)
+            }
           )
         )
         .get must beEqualTo(
@@ -81,7 +83,9 @@ object JsonTransSpec extends Specification {
       js.transform(
           (__ \ 'field3).json.pickBranch(
             (__ \ 'field32).json.update(
-              Reads.of[JsNumber].map { case JsNumber(nb) => JsNumber(nb + 12) }
+              Reads.of[JsNumber].map {
+                case JsNumber(nb) => JsNumber(nb + 12)
+              }
             ) andThen
               (__ \ 'field31).json.update(
                 Reads.of[JsString].map {
@@ -155,7 +159,9 @@ object JsonTransSpec extends Specification {
     "copy the full json and update a 2nd-level path and then prune a subbranch" in {
       js.validate(
           (__ \ 'field3 \ 'field32).json.update(
-            Reads.of[JsNumber].map { case JsNumber(nb) => JsNumber(nb + 5) }
+            Reads.of[JsNumber].map {
+              case JsNumber(nb) => JsNumber(nb + 5)
+            }
           ) andThen (__ \ 'field4).json.prune
         )
         .get must beEqualTo(

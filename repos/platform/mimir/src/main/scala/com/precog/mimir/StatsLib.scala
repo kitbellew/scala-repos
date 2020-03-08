@@ -87,7 +87,9 @@ trait StatsLibModule[M[+_]]
 
       val tpe = UnaryOperationType(JNumberT, JNumberT)
 
-      def apply(table: Table, ctx: MorphContext) = { //TODO write tests for the empty table case
+      def apply(
+          table: Table,
+          ctx: MorphContext) = { //TODO write tests for the empty table case
         val compactedTable = table.compact(
           WrapObject(
             Typed(DerefObjectStatic(Leaf(Source), paths.Value), JNumberT),
@@ -146,7 +148,9 @@ trait StatsLibModule[M[+_]]
           def reduce(schema: CSchema, range: Range): Result = {
             schema.columns(JNumberT) flatMap {
               case col: LongColumn =>
-                val mapped = range filter col.isDefinedAt map { x => col(x) }
+                val mapped = range filter col.isDefinedAt map { x =>
+                  col(x)
+                }
                 if (mapped.isEmpty) {
                   Set.empty[BigDecimal]
                 } else {
@@ -523,7 +527,9 @@ trait StatsLibModule[M[+_]]
             case (c1: LongColumn, c2: LongColumn) =>
               val mapped = range filter { r =>
                 c1.isDefinedAt(r) && c2.isDefinedAt(r)
-              } map { i => (c1(i), c2(i)) }
+              } map { i =>
+                (c1(i), c2(i))
+              }
               if (mapped.isEmpty) {
                 None
               } else {
@@ -552,7 +558,9 @@ trait StatsLibModule[M[+_]]
             case (c1: NumColumn, c2: NumColumn) =>
               val mapped = range filter { r =>
                 c1.isDefinedAt(r) && c2.isDefinedAt(r)
-              } map { i => (c1(i), c2(i)) }
+              } map { i =>
+                (c1(i), c2(i))
+              }
               if (mapped.isEmpty) {
                 None
               } else {
@@ -581,7 +589,9 @@ trait StatsLibModule[M[+_]]
             case (c1: DoubleColumn, c2: DoubleColumn) =>
               val mapped = range filter { r =>
                 c1.isDefinedAt(r) && c2.isDefinedAt(r)
-              } map { i => (c1(i), c2(i)) }
+              } map { i =>
+                (c1(i), c2(i))
+              }
               if (mapped.isEmpty) {
                 None
               } else {
@@ -610,7 +620,9 @@ trait StatsLibModule[M[+_]]
             case (c1: LongColumn, c2: NumColumn) =>
               val mapped = range filter { r =>
                 c1.isDefinedAt(r) && c2.isDefinedAt(r)
-              } map { i => (c1(i), c2(i)) }
+              } map { i =>
+                (c1(i), c2(i))
+              }
               if (mapped.isEmpty) {
                 None
               } else {
@@ -639,7 +651,9 @@ trait StatsLibModule[M[+_]]
             case (c1: LongColumn, c2: DoubleColumn) =>
               val mapped = range filter { r =>
                 c1.isDefinedAt(r) && c2.isDefinedAt(r)
-              } map { i => (c1(i), c2(i)) }
+              } map { i =>
+                (c1(i), c2(i))
+              }
               if (mapped.isEmpty) {
                 None
               } else {
@@ -668,7 +682,9 @@ trait StatsLibModule[M[+_]]
             case (c1: NumColumn, c2: LongColumn) =>
               val mapped = range filter { r =>
                 c1.isDefinedAt(r) && c2.isDefinedAt(r)
-              } map { i => (c1(i), c2(i)) }
+              } map { i =>
+                (c1(i), c2(i))
+              }
               if (mapped.isEmpty) {
                 None
               } else {
@@ -697,7 +713,9 @@ trait StatsLibModule[M[+_]]
             case (c1: NumColumn, c2: DoubleColumn) =>
               val mapped = range filter { r =>
                 c1.isDefinedAt(r) && c2.isDefinedAt(r)
-              } map { i => (c1(i), c2(i)) }
+              } map { i =>
+                (c1(i), c2(i))
+              }
               if (mapped.isEmpty) {
                 None
               } else {
@@ -726,7 +744,9 @@ trait StatsLibModule[M[+_]]
             case (c1: DoubleColumn, c2: LongColumn) =>
               val mapped = range filter { r =>
                 c1.isDefinedAt(r) && c2.isDefinedAt(r)
-              } map { i => (c1(i), c2(i)) }
+              } map { i =>
+                (c1(i), c2(i))
+              }
               if (mapped.isEmpty) {
                 None
               } else {
@@ -755,7 +775,9 @@ trait StatsLibModule[M[+_]]
             case (c1: DoubleColumn, c2: NumColumn) =>
               val mapped = range filter { r =>
                 c1.isDefinedAt(r) && c2.isDefinedAt(r)
-              } map { i => (c1(i), c2(i)) }
+              } map { i =>
+                (c1(i), c2(i))
+              }
               if (mapped.isEmpty) {
                 None
               } else {
@@ -1814,7 +1836,9 @@ trait StatsLibModule[M[+_]]
         val ncols = cols.length
         val arr = new Array[BitSet](ncols)
         var i = 0
-        while (i < ncols) { arr(i) = cols(i).definedAt(start, end); i += 1 }
+        while (i < ncols) {
+          arr(i) = cols(i).definedAt(start, end); i += 1
+        }
         arr
       }
 
@@ -1828,7 +1852,9 @@ trait StatsLibModule[M[+_]]
         if (ncols == 0) return new BitSet()
         val arr = definedCols(0).copy()
         var i = 1
-        while (i < ncols) { arr.or(definedCols(i)); i += 1 }
+        while (i < ncols) {
+          arr.or(definedCols(i)); i += 1
+        }
         arr
       }
 
@@ -1999,7 +2025,9 @@ trait StatsLibModule[M[+_]]
           cols: Array[Column],
           row: Int): Boolean = {
         val m = mutable.Map.empty[ColumnRef, CValue]
-        ctxt.items.foreach { case (ref, cvalue) => m(ref) = cvalue }
+        ctxt.items.foreach {
+          case (ref, cvalue) => m(ref) = cvalue
+        }
         var i = 0
         while (i < cols.length) {
           val col = cols(i)

@@ -6,7 +6,9 @@
 // Bug 98
 
 object Bug98Test {
-  object MyCase { def name = "mycase" }
+  object MyCase {
+    def name = "mycase"
+  }
   def test(args: Array[String]) {
     println(MyCase.name)
   }
@@ -53,25 +55,43 @@ object Bug135Test {
 //############################################################################
 // Bug 142
 
-abstract class Bug142Foo1 { class Inner; def foo: Inner; foo; }
-abstract class Bug142Foo2 {
-  class Inner; def foo: Inner = { Console.println("ok"); null };
+abstract class Bug142Foo1 {
+  class Inner; def foo: Inner; foo;
 }
-abstract class Bug142Foo3 { type Inner; def foo: Inner; foo; }
+abstract class Bug142Foo2 {
+  class Inner;
+  def foo: Inner = {
+    Console.println("ok"); null
+  };
+}
+abstract class Bug142Foo3 {
+  type Inner; def foo: Inner; foo;
+}
 abstract class Bug142Foo4 {
   type Inner;
-  def foo: Inner = { Console.println("ok"); null.asInstanceOf[Inner] };
+  def foo: Inner = {
+    Console.println("ok"); null.asInstanceOf[Inner]
+  };
 }
 
 trait Bug142Bar1 {
   type Inner;
-  def foo: Inner = { Console.println("ok"); null.asInstanceOf[Inner] };
+  def foo: Inner = {
+    Console.println("ok"); null.asInstanceOf[Inner]
+  };
 }
-trait Bug142Bar2 { type Inner; def foo: Inner; foo; }
+trait Bug142Bar2 {
+  type Inner; def foo: Inner; foo;
+}
 trait Bug142Bar3 {
-  class Inner; def foo: Inner = { Console.println("ok"); null };
+  class Inner;
+  def foo: Inner = {
+    Console.println("ok"); null
+  };
 }
-trait Bug142Bar4 { class Inner; def foo: Inner; foo; }
+trait Bug142Bar4 {
+  class Inner; def foo: Inner; foo;
+}
 
 object Bug142Test1 extends Bug142Foo1 with Bug142Bar1 {
   def test(args: Array[String]) {}
@@ -211,7 +231,9 @@ object Bug176Test {
 //############################################################################
 // Bug 199
 
-class Bug199C { object o; }
+class Bug199C {
+  object o;
+}
 object Bug199Test {
   def test(args: Array[String]) = {
     (new Bug199C).o; ()
@@ -295,7 +317,9 @@ object Bug226Test {
 
   def test(args: Array[String]) {
     var xs = new Array[Int](1);
-    class X { xs };
+    class X {
+      xs
+    };
     xs = id(xs);
     id(xs);
     ()
@@ -326,8 +350,12 @@ object Bug250Test {
 // Bug 257
 
 object Bug257Test {
-  def sayhello(): Unit = { Console.println("I should come 1st and 2nd"); };
-  def sayhi(): Unit = { Console.println("I should come last"); };
+  def sayhello(): Unit = {
+    Console.println("I should come 1st and 2nd");
+  };
+  def sayhi(): Unit = {
+    Console.println("I should come last");
+  };
 
   def f1(x: Unit): Unit = ();
   def f2(x: Unit)(y: Unit): Unit = ();
@@ -349,13 +377,21 @@ object Bug257Test {
 
 abstract class Bug266AFoo {
   type T >: Null <: AnyRef;
-  abstract class I0 { def f(x: T): Unit; f(null); }
+  abstract class I0 {
+    def f(x: T): Unit; f(null);
+  }
 }
 
 object Bug266ATest extends Bug266AFoo {
   type T = String;
-  class I1 extends I0 { def f(x: String) { Console.println("hello") } }
-  def test(args: Array[String]): Unit = { new I1; () }
+  class I1 extends I0 {
+    def f(x: String) {
+      Console.println("hello")
+    }
+  }
+  def test(args: Array[String]): Unit = {
+    new I1; ()
+  }
 }
 
 // version - B
@@ -375,7 +411,9 @@ abstract class Bug266BA1 extends Bug266BA {
 trait Bug266BB extends Bug266BA {
   type t = Int;
   class P1 extends Bug266BB.this.P {
-    def f(x: Int) { Console.println(x + 1) }
+    def f(x: Int) {
+      Console.println(x + 1)
+    }
   }
   def mkP = new P1;
   val in = 3;
@@ -405,7 +443,9 @@ class Bug316MyIterator extends Iterator[Int] {
 
 object Bug316Test {
   def test(args: Array[String]): Unit =
-    (new Bug316MyIterator) filter { x: Int => x == 1 };
+    (new Bug316MyIterator) filter { x: Int =>
+      x == 1
+    };
 }
 
 //############################################################################
@@ -426,12 +466,16 @@ trait Bug396A {
 }
 trait Bug396B extends Bug396A {
   class I extends super.I {
-    override def run = { super.run; Console.println("B"); }
+    override def run = {
+      super.run; Console.println("B");
+    }
   }
 }
 trait Bug396C extends Bug396A {
   trait I extends super.I {
-    override def run = { super.run; Console.println("C"); }
+    override def run = {
+      super.run; Console.println("C");
+    }
   }
 }
 object Bug396Test extends Bug396B with Bug396C {
@@ -444,7 +488,9 @@ object Bug396Test extends Bug396B with Bug396C {
 
 object Bug399Test {
   def f(x: String): String = {
-    trait C { def f: String = x; }
+    trait C {
+      def f: String = x;
+    }
     class D extends C;
     trait F extends C;
     class G extends D with F;

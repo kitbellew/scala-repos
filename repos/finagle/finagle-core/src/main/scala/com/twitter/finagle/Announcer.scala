@@ -76,13 +76,17 @@ object Announcer {
   }
 
   def get[T <: Announcer](clazz: Class[T]): Option[T] =
-    announcers find { _.getClass isAssignableFrom clazz } map {
+    announcers find {
+      _.getClass isAssignableFrom clazz
+    } map {
       _.asInstanceOf[T]
     }
 
   private[this] val _announcements =
     mutable.Set[(InetSocketAddress, List[String])]()
-  def announcements = synchronized { _announcements.toSet }
+  def announcements = synchronized {
+    _announcements.toSet
+  }
 
   def announce(addr: InetSocketAddress, forum: String): Future[Announcement] = {
     val announcement = forum.split("!", 2) match {

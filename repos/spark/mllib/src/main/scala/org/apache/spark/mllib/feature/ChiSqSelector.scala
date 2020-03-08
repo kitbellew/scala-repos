@@ -204,9 +204,13 @@ class ChiSqSelector @Since("1.3.0") (@Since("1.3.0") val numTopFeatures: Int)
     val indices = Statistics
       .chiSqTest(data)
       .zipWithIndex
-      .sortBy { case (res, _) => -res.statistic }
+      .sortBy {
+        case (res, _) => -res.statistic
+      }
       .take(numTopFeatures)
-      .map { case (_, indices) => indices }
+      .map {
+        case (_, indices) => indices
+      }
       .sorted
     new ChiSqSelectorModel(indices)
   }

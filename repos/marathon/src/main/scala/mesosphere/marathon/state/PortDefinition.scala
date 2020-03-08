@@ -34,6 +34,8 @@ object PortDefinitions {
       portDefinitions is elementsAreUniqueBy(
         _.port,
         "Ports must be unique.",
-        filter = { port: Int => port != AppDefinition.RandomPortValue })
+        filter = { port: Int =>
+          port != AppDefinition.RandomPortValue
+        })
     }
 }

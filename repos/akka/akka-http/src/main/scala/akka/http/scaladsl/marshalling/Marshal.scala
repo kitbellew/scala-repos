@@ -69,7 +69,9 @@ class Marshal[A](val value: A) {
           }
         } else None
       } orElse {
-        marshallings collectFirst { case Marshalling.Opaque(marshal) ⇒ marshal }
+        marshallings collectFirst {
+          case Marshalling.Opaque(marshal) ⇒ marshal
+        }
       } getOrElse {
         throw UnacceptableResponseContentTypeException(
           supportedAlternatives.toSet)

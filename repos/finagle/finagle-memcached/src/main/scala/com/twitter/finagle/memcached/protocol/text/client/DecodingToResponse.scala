@@ -79,6 +79,11 @@ class DecodingToResponse extends AbstractDecodingToResponse[Response] {
   }
 
   private[this] def parseErrorMessage(tokens: Seq[Buf]) =
-    tokens.drop(1).map { case Buf.Utf8(s) => s }.mkString(" ")
+    tokens
+      .drop(1)
+      .map {
+        case Buf.Utf8(s) => s
+      }
+      .mkString(" ")
 
 }

@@ -144,22 +144,30 @@ trait BufferLike[A, +This <: BufferLike[A, This] with Buffer[A]]
     *
     *  @param elems  the elements to append.
     */
-  def append(elems: A*) { appendAll(elems) }
+  def append(elems: A*) {
+    appendAll(elems)
+  }
 
   /** Appends the elements contained in a traversable object to this buffer.
     *  @param xs  the traversable object containing the elements to append.
     */
-  def appendAll(xs: TraversableOnce[A]) { this ++= xs }
+  def appendAll(xs: TraversableOnce[A]) {
+    this ++= xs
+  }
 
   /** Prepends given elements to this buffer.
     *  @param elems  the elements to prepend.
     */
-  def prepend(elems: A*) { prependAll(elems) }
+  def prepend(elems: A*) {
+    prependAll(elems)
+  }
 
   /** Prepends the elements contained in a traversable object to this buffer.
     *  @param xs  the collection containing the elements to prepend.
     */
-  def prependAll(xs: TraversableOnce[A]) { xs ++=: this }
+  def prependAll(xs: TraversableOnce[A]) {
+    xs ++=: this
+  }
 
   /** Inserts new elements at a given index into this buffer.
     *
@@ -168,21 +176,27 @@ trait BufferLike[A, +This <: BufferLike[A, This] with Buffer[A]]
     *  @throws   IndexOutOfBoundsException if the index `n` is not in the valid range
     *            `0 <= n <= length`.
     */
-  def insert(n: Int, elems: A*) { insertAll(n, elems) }
+  def insert(n: Int, elems: A*) {
+    insertAll(n, elems)
+  }
 
   /** Removes the first ''n'' elements of this buffer.
     *
     *  @param n  the number of elements to remove from the beginning
     *            of this buffer.
     */
-  def trimStart(n: Int) { remove(0, n) }
+  def trimStart(n: Int) {
+    remove(0, n)
+  }
 
   /** Removes the last ''n'' elements of this buffer.
     *
     *  @param n  the number of elements to remove from the end
     *            of this buffer.
     */
-  def trimEnd(n: Int) { remove(length - n max 0, n) }
+  def trimEnd(n: Int) {
+    remove(length - n max 0, n)
+  }
 
   /** Send a message to this scriptable object.
     *

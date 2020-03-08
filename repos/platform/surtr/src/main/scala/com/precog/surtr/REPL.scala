@@ -90,7 +90,9 @@ class REPLConfig(dataDir: Option[String])
     Configuration.loadResource("/default_ingest.conf", BlockFormat)
   val config = dataDir map {
     defaultConfig.set("precog.storage.root", _)
-  } getOrElse { defaultConfig }
+  } getOrElse {
+    defaultConfig
+  }
 
   val sortWorkDir = scratchDir
   val memoizationBufferSize = sortBufferSize
@@ -214,8 +216,12 @@ trait REPL
 
     def loop() {
       val results = prompt(readNext(reader, color))
-      val successes = results collect { case Success(tree, _) => tree }
-      val failures = results collect { case f: Failure        => f }
+      val successes = results collect {
+        case Success(tree, _) => tree
+      }
+      val failures = results collect {
+        case f: Failure => f
+      }
 
       if (successes.isEmpty) {
         try {
@@ -286,8 +292,12 @@ trait REPL
   // %%
 
   lazy val prompt: Parser[Command] = (
-    expr ^^ { t => Eval(t) }
-      | ":tree" ~ expr ^^ { (_, t) => PrintTree(t) }
+    expr ^^ { t =>
+      Eval(t)
+    }
+      | ":tree" ~ expr ^^ { (_, t) =>
+        PrintTree(t)
+      }
       | ":help" ^^^ Help
       | ":quit" ^^^ Quit
   )
@@ -377,7 +387,9 @@ object Console extends App {
               def freshIdScanner = self.freshIdScanner
             }
 
-          def startup = IO { PrecogUnit }
+          def startup = IO {
+            PrecogUnit
+          }
 
           def shutdown = IO {
             Await.result(

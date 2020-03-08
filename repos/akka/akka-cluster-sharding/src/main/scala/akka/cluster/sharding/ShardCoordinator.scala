@@ -186,7 +186,9 @@ object ShardCoordinator {
         rebalanceInProgress: Set[ShardId]): Future[Set[ShardId]] = {
       if (rebalanceInProgress.size < maxSimultaneousRebalance) {
         val (regionWithLeastShards, leastShards) =
-          currentShardAllocations.minBy { case (_, v) ⇒ v.size }
+          currentShardAllocations.minBy {
+            case (_, v) ⇒ v.size
+          }
         val mostShards = currentShardAllocations
           .collect {
             case (_, v) ⇒ v.filterNot(s ⇒ rebalanceInProgress(s))
@@ -654,7 +656,9 @@ abstract class ShardCoordinator(
             case _ ⇒
               // continue when future is completed
               shardsFuture
-                .map { shards ⇒ RebalanceResult(shards) }
+                .map { shards ⇒
+                  RebalanceResult(shards)
+                }
                 .recover {
                   case _ ⇒ RebalanceResult(Set.empty)
                 }
@@ -791,14 +795,18 @@ abstract class ShardCoordinator(
   }
 
   def stateInitialized(): Unit = {
-    state.shards.foreach { case (a, r) ⇒ sendHostShardMsg(a, r) }
+    state.shards.foreach {
+      case (a, r) ⇒ sendHostShardMsg(a, r)
+    }
     allocateShardHomes()
   }
 
   def regionTerminated(ref: ActorRef): Unit =
     if (state.regions.contains(ref)) {
       log.debug("ShardRegion terminated: [{}]", ref)
-      state.regions(ref).foreach { s ⇒ self ! GetShardHome(s) }
+      state.regions(ref).foreach { s ⇒
+        self ! GetShardHome(s)
+      }
 
       update(ShardRegionTerminated(ref)) { evt ⇒
         state = state.updated(evt)
@@ -830,7 +838,9 @@ abstract class ShardCoordinator(
 
   def allocateShardHomes(): Unit = {
     if (settings.rememberEntities)
-      state.unallocatedShards.foreach { self ! GetShardHome(_) }
+      state.unallocatedShards.foreach {
+        self ! GetShardHome(_)
+      }
   }
 
   def continueGetShardHome(
@@ -1102,7 +1112,9 @@ class DDataShardCoordinator(
       CoordinatorStateKey,
       LWWRegister(initEmptyState),
       WriteMajority(updatingStateTimeout),
-      Some(evt)) { reg ⇒ reg.withValue(s) }
+      Some(evt)) { reg ⇒
+      reg.withValue(s)
+    }
   }
 
 }

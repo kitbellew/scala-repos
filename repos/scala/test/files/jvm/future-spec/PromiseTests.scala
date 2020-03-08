@@ -146,7 +146,9 @@ class PromiseTests extends MinimalScalaTest {
 
   def futureWithResult(f: ((Future[Any], Any) => Unit) => Unit) {
 
-    "be completed" in { f((future, _) => future.isCompleted mustBe (true)) }
+    "be completed" in {
+      f((future, _) => future.isCompleted mustBe (true))
+    }
 
     "contain a value" in {
       f((future, result) => future.value mustBe (Some(Success(result))))
@@ -162,7 +164,9 @@ class PromiseTests extends MinimalScalaTest {
         Await.result(future, defaultTimeout) mustBe (result))
     }
 
-    "not timeout" in { f((future, _) => Await.ready(future, 0 millis)) }
+    "not timeout" in {
+      f((future, _) => Await.ready(future, 0 millis))
+    }
 
     "filter result" in {
       f { (future, result) =>
@@ -215,14 +219,18 @@ class PromiseTests extends MinimalScalaTest {
     "not recover from exception" in {
       f((future, result) =>
         Await.result(
-          future.recover({ case _ => "pigdog" }),
+          future.recover({
+            case _ => "pigdog"
+          }),
           defaultTimeout) mustBe (result))
     }
 
     "perform action on result" in {
       f { (future, result) =>
         val p = Promise[Any]()
-        future.onSuccess { case x => p.success(x) }
+        future.onSuccess {
+          case x => p.success(x)
+        }
         Await.result(p.future, defaultTimeout) mustBe (result)
       }
     }
@@ -238,7 +246,11 @@ class PromiseTests extends MinimalScalaTest {
     "cast using mapTo" in {
       f { (future, result) =>
         Await.result(
-          future.mapTo[Boolean].recover({ case _: ClassCastException ⇒ false }),
+          future
+            .mapTo[Boolean]
+            .recover({
+              case _: ClassCastException ⇒ false
+            }),
           defaultTimeout) mustBe (false)
       }
     }
@@ -314,7 +326,9 @@ class PromiseTests extends MinimalScalaTest {
     "recover from exception" in {
       f { (future, message) =>
         Await.result(
-          future.recover({ case e if e.getMessage == message ⇒ "pigdog" }),
+          future.recover({
+            case e if e.getMessage == message ⇒ "pigdog"
+          }),
           defaultTimeout) mustBe ("pigdog")
       }
     }
@@ -327,7 +341,9 @@ class PromiseTests extends MinimalScalaTest {
     "perform action on exception" in {
       f { (future, message) =>
         val p = Promise[Any]()
-        future.onFailure { case _ => p.success(message) }
+        future.onFailure {
+          case _ => p.success(message)
+        }
         Await.result(p.future, defaultTimeout) mustBe (message)
       }
     }

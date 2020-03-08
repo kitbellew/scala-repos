@@ -677,21 +677,38 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
         OpMod,
         OpPow) Op <: OpType](implicit
       @expand.sequence[Op](
-        { _ + _ },
-        { _ - _ },
-        { _ * _ },
-        { _ / _ },
-        { (a, b) => b },
-        { _ % _ },
-        { _ pow _ }) op: Op.Impl2[T, T, T],
+        {
+          _ + _
+        }, {
+          _ - _
+        }, {
+          _ * _
+        }, {
+          _ / _
+        },
+        { (a, b) =>
+          b
+        }, {
+          _ % _
+        }, {
+          _ pow _
+        }) op: Op.Impl2[T, T, T],
       @expand.sequence[Op](
-        { _ += _ },
-        { _ -= _ },
-        { _ :*= _ },
-        { _ :/= _ },
-        { _ := _ },
-        { _ %= _ },
-        { _ :^= _ }) vecOp: Op.Impl2[T, T, T])
+        {
+          _ += _
+        }, {
+          _ -= _
+        }, {
+          _ :*= _
+        }, {
+          _ :/= _
+        }, {
+          _ := _
+        }, {
+          _ %= _
+        }, {
+          _ :^= _
+        }) vecOp: Op.Impl2[T, T, T])
       : Op.InPlaceImpl2[DenseMatrix[T], DenseMatrix[T]] = {
 
     new Op.InPlaceImpl2[DenseMatrix[T], DenseMatrix[T]] {
@@ -744,12 +761,19 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
       @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpMod, OpPow) Op <: OpType,
       T: Field: Zero: ClassTag](implicit
       @expand.sequence[Op](
-        { f.+(_, _) },
-        { f.-(_, _) },
-        { f.*(_, _) },
-        { f./(_, _) },
-        { f.%(_, _) },
-        { f.pow(_, _) }) op: Op.Impl2[T, T, T])
+        {
+          f.+(_, _)
+        }, {
+          f.-(_, _)
+        }, {
+          f.*(_, _)
+        }, {
+          f./(_, _)
+        }, {
+          f.%(_, _)
+        }, {
+          f.pow(_, _)
+        }) op: Op.Impl2[T, T, T])
       : Op.InPlaceImpl2[DenseMatrix[T], DenseMatrix[T]] = {
     val f = implicitly[Field[T]]
     new Op.InPlaceImpl2[DenseMatrix[T], DenseMatrix[T]] {
@@ -798,15 +822,24 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
         OpMod,
         OpPow) Op <: OpType](implicit
       @expand.sequence[Op](
-        { _ + _ },
-        { _ - _ },
-        { _ * _ },
-        { _ * _ },
-        { _ / _ },
-        { (a, b) => b },
-        { _ % _ },
-        { _ pow _ }) op: Op.Impl2[T, T, T])
-      : Op.InPlaceImpl2[DenseMatrix[T], T] =
+        {
+          _ + _
+        }, {
+          _ - _
+        }, {
+          _ * _
+        }, {
+          _ * _
+        }, {
+          _ / _
+        },
+        { (a, b) =>
+          b
+        }, {
+          _ % _
+        }, {
+          _ pow _
+        }) op: Op.Impl2[T, T, T]): Op.InPlaceImpl2[DenseMatrix[T], T] =
     new Op.InPlaceImpl2[DenseMatrix[T], T] {
       def apply(a: DenseMatrix[T], b: T): Unit = {
 
@@ -853,14 +886,21 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
         OpPow) Op <: OpType,
       T: Field: Zero: ClassTag](implicit
       @expand.sequence[Op](
-        { f.+(_, _) },
-        { f.-(_, _) },
-        { f.*(_, _) },
-        { f.*(_, _) },
-        { f./(_, _) },
-        { f.%(_, _) },
-        { f.pow(_, _) }) op: Op.Impl2[T, T, T])
-      : Op.InPlaceImpl2[DenseMatrix[T], T] = {
+        {
+          f.+(_, _)
+        }, {
+          f.-(_, _)
+        }, {
+          f.*(_, _)
+        }, {
+          f.*(_, _)
+        }, {
+          f./(_, _)
+        }, {
+          f.%(_, _)
+        }, {
+          f.pow(_, _)
+        }) op: Op.Impl2[T, T, T]): Op.InPlaceImpl2[DenseMatrix[T], T] = {
     val f = implicitly[Field[T]]
     new Op.InPlaceImpl2[DenseMatrix[T], T] {
       override def apply(a: DenseMatrix[T], b: T) = {
@@ -949,14 +989,21 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
         OpMod,
         OpPow) Op <: OpType](implicit
       @expand.sequence[Op](
-        { _ + _ },
-        { _ - _ },
-        { _ * _ },
-        { _ * _ },
-        { _ / _ },
-        { _ % _ },
-        { _ pow _ }) op: Op.Impl2[T, T, T])
-      : Op.Impl2[T, DenseMatrix[T], DenseMatrix[T]] =
+        {
+          _ + _
+        }, {
+          _ - _
+        }, {
+          _ * _
+        }, {
+          _ * _
+        }, {
+          _ / _
+        }, {
+          _ % _
+        }, {
+          _ pow _
+        }) op: Op.Impl2[T, T, T]): Op.Impl2[T, DenseMatrix[T], DenseMatrix[T]] =
     new Op.Impl2[T, DenseMatrix[T], DenseMatrix[T]] {
       def apply(b: T, a: DenseMatrix[T]): DenseMatrix[T] = {
         val res: DenseMatrix[T] = DenseMatrix.zeros[T](a.rows, a.cols)
@@ -1439,7 +1486,9 @@ trait LowPriorityDenseMatrix1 {
       def apply(from: DenseMatrix[V], axis: Axis._0.type)(
           f: (DenseVector[V]) => R): Transpose[DenseVector[R]] = {
         val result = DenseVector.zeros[R](from.cols)
-        cforRange(0 until from.cols) { c => result(c) = f(from(::, c)) }
+        cforRange(0 until from.cols) { c =>
+          result(c) = f(from(::, c))
+        }
         result.t
       }
     }
@@ -1533,12 +1582,19 @@ trait DenseMatrix_OrderingOps extends DenseMatrixOps { this: DenseMatrix.type =>
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpGT, OpGTE, OpLTE, OpLT, OpEq, OpNe) Op <: OpType](implicit
       @expand.sequence[Op](
-        { _ > _ },
-        { _ >= _ },
-        { _ <= _ },
-        { _ < _ },
-        { _ == _ },
-        { _ != _ })
+        {
+          _ > _
+        }, {
+          _ >= _
+        }, {
+          _ <= _
+        }, {
+          _ < _
+        }, {
+          _ == _
+        }, {
+          _ != _
+        })
       op: Op.Impl2[T, T, T])
       : Op.Impl2[DenseMatrix[T], DenseMatrix[T], DenseMatrix[Boolean]] =
     new Op.Impl2[DenseMatrix[T], DenseMatrix[T], DenseMatrix[Boolean]] {
@@ -1568,12 +1624,19 @@ trait DenseMatrix_OrderingOps extends DenseMatrixOps { this: DenseMatrix.type =>
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpGT, OpGTE, OpLTE, OpLT, OpEq, OpNe) Op <: OpType](implicit
       @expand.sequence[Op](
-        { _ > _ },
-        { _ >= _ },
-        { _ <= _ },
-        { _ < _ },
-        { _ == _ },
-        { _ != _ })
+        {
+          _ > _
+        }, {
+          _ >= _
+        }, {
+          _ <= _
+        }, {
+          _ < _
+        }, {
+          _ == _
+        }, {
+          _ != _
+        })
       op: Op.Impl2[T, T, Boolean])
       : Op.Impl2[DenseMatrix[T], Matrix[T], DenseMatrix[Boolean]] =
     new Op.Impl2[DenseMatrix[T], Matrix[T], DenseMatrix[Boolean]] {
@@ -1598,12 +1661,19 @@ trait DenseMatrix_OrderingOps extends DenseMatrixOps { this: DenseMatrix.type =>
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpGT, OpGTE, OpLTE, OpLT, OpEq, OpNe) Op <: OpType](implicit
       @expand.sequence[Op](
-        { _ > _ },
-        { _ >= _ },
-        { _ <= _ },
-        { _ < _ },
-        { _ == _ },
-        { _ != _ })
+        {
+          _ > _
+        }, {
+          _ >= _
+        }, {
+          _ <= _
+        }, {
+          _ < _
+        }, {
+          _ == _
+        }, {
+          _ != _
+        })
       op: Op.Impl2[T, T, Boolean])
       : Op.Impl2[DenseMatrix[T], T, DenseMatrix[Boolean]] =
     new Op.Impl2[DenseMatrix[T], T, DenseMatrix[Boolean]] {

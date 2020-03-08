@@ -1,3 +1,5 @@
 class A {
-  object B { def eq(lvl: Int) = ??? }
+  object B {
+    def eq(lvl: Int) = ???
+  }
 }

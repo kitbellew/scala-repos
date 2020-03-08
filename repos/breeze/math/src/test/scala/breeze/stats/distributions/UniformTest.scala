@@ -36,8 +36,12 @@ class UniformTest
   def fromDouble(x: Double) = x
 
   implicit def arbDistr = Arbitrary {
-    for (a <- arbitrary[Double].map { _.abs % 10000.0 };
-         b <- arbitrary[Double].map { _.abs % 10000.0 }
+    for (a <- arbitrary[Double].map {
+           _.abs % 10000.0
+         };
+         b <- arbitrary[Double].map {
+           _.abs % 10000.0
+         }
          if a != b) yield new Uniform(a min b, a max b)
   }
 

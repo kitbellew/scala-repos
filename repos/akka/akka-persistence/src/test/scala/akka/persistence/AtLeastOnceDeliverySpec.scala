@@ -109,9 +109,13 @@ object AtLeastOnceDeliverySpec {
         log.debug("Sender got ack {}", id)
         if (confirmDelivery(id))
           if (async)
-            persistAsync(ReqDone(id)) { evt ⇒ updateState(evt) }
+            persistAsync(ReqDone(id)) { evt ⇒
+              updateState(evt)
+            }
           else
-            persist(ReqDone(id)) { evt ⇒ updateState(evt) }
+            persist(ReqDone(id)) { evt ⇒
+              updateState(evt)
+            }
 
       case Boom ⇒
         log.debug("Boom!")
@@ -188,7 +192,9 @@ object AtLeastOnceDeliverySpec {
       case any ⇒
         // this is not supported currently, so expecting exception
         try deliver(context.actorSelection("*"))(id ⇒ s"$any$id")
-        catch { case ex: Exception ⇒ sender() ! Failure(ex) }
+        catch {
+          case ex: Exception ⇒ sender() ! Failure(ex)
+        }
     }
 
     override def receiveRecover = Actor.emptyBehavior
@@ -476,15 +482,21 @@ abstract class AtLeastOnceDeliverySpec(config: Config)
       val deliverWithin = 20.seconds
       probeA
         .receiveN(N, deliverWithin)
-        .map { case a: Action ⇒ a.payload }
+        .map {
+          case a: Action ⇒ a.payload
+        }
         .toSet should ===((1 to N).map(n ⇒ "a-" + n).toSet)
       probeB
         .receiveN(N, deliverWithin)
-        .map { case a: Action ⇒ a.payload }
+        .map {
+          case a: Action ⇒ a.payload
+        }
         .toSet should ===((1 to N).map(n ⇒ "b-" + n).toSet)
       probeC
         .receiveN(N, deliverWithin)
-        .map { case a: Action ⇒ a.payload }
+        .map {
+          case a: Action ⇒ a.payload
+        }
         .toSet should ===((1 to N).map(n ⇒ "c-" + n).toSet)
     }
 

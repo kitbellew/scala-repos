@@ -111,8 +111,12 @@ import scala.reflect.macros.whitebox
 trait Lazy[+T] extends Serializable {
   val value: T
 
-  def map[U](f: T => U): Lazy[U] = Lazy { f(value) }
-  def flatMap[U](f: T => Lazy[U]): Lazy[U] = Lazy { f(value).value }
+  def map[U](f: T => U): Lazy[U] = Lazy {
+    f(value)
+  }
+  def flatMap[U](f: T => Lazy[U]): Lazy[U] = Lazy {
+    f(value).value
+  }
 }
 
 object Lazy {
@@ -152,8 +156,12 @@ object lazily {
 trait Strict[+T] extends Serializable {
   val value: T
 
-  def map[U](f: T => U): Strict[U] = Strict { f(value) }
-  def flatMap[U](f: T => Strict[U]): Strict[U] = Strict { f(value).value }
+  def map[U](f: T => U): Strict[U] = Strict {
+    f(value)
+  }
+  def flatMap[U](f: T => Strict[U]): Strict[U] = Strict {
+    f(value).value
+  }
 }
 
 object Strict {
@@ -447,7 +455,9 @@ class LazyMacros(val c: whitebox.Context)
 
     def resolve(state: State)(inst: Instance): Option[(State, Instance)] =
       resolve0(state)(inst.instTpe)
-        .filter { case (_, tree, _) => !tree.equalsStructure(inst.ident) }
+        .filter {
+          case (_, tree, _) => !tree.equalsStructure(inst.ident)
+        }
         .map {
           case (state0, extInst, actualTpe) =>
             state0.closeInst(inst.instTpe, extInst, actualTpe)
@@ -486,7 +496,9 @@ class LazyMacros(val c: whitebox.Context)
           derive(tmpState)(innerTpe).right.toOption.flatMap {
             case (state2, inst) =>
               if (inst.inst.isEmpty)
-                resolve0(state2)(innerTpe).map { case (_, tree, _) => tree }
+                resolve0(state2)(innerTpe).map {
+                  case (_, tree, _) => tree
+                }
               else
                 Some(inst.inst.get)
           }
@@ -571,7 +583,9 @@ class LazyMacros(val c: whitebox.Context)
 
     def mkInstances(state: State)(primaryTpe: Type): (Tree, Type) = {
       val instances = state.dict.values.toList
-      val (from, to) = instances.map { d => (d.symbol, NoSymbol) }.unzip
+      val (from, to) = instances.map { d =>
+        (d.symbol, NoSymbol)
+      }.unzip
 
       def clean(inst: Tree) = {
         val cleanInst =

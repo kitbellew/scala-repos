@@ -54,7 +54,9 @@ abstract class Universe extends scala.reflect.api.Universe {
     val gen: TreeGen
 
     /** The attachment of the symbol. */
-    def attachments(symbol: Symbol): Attachments { type Pos = Position }
+    def attachments(symbol: Symbol): Attachments {
+      type Pos = Position
+    }
 
     /** Updates the attachment with the payload slot of T added/updated with the provided value.
       *  Replaces an existing payload of the same type, if exists.
@@ -91,7 +93,9 @@ abstract class Universe extends scala.reflect.api.Universe {
     def resetFlag(symbol: Symbol, flags: FlagSet): symbol.type
 
     /** The attachment of the tree. */
-    def attachments(tree: Tree): Attachments { type Pos = Position }
+    def attachments(tree: Tree): Attachments {
+      type Pos = Position
+    }
 
     /** Updates the attachment with the payload slot of T added/updated with the provided value.
       *  Replaces an existing payload of the same type, if exists.
@@ -191,8 +195,9 @@ abstract class Universe extends scala.reflect.api.Universe {
           internal.changeOwner(tree, prev, next)
 
         /** @see [[internal.attachments]] */
-        def attachments: Attachments { type Pos = Position } =
-          internal.attachments(tree)
+        def attachments: Attachments {
+          type Pos = Position
+        } = internal.attachments(tree)
 
         /** @see [[internal.updateAttachment]] */
         def updateAttachment[A: ClassTag](attachment: A): tree.type =
@@ -236,8 +241,9 @@ abstract class Universe extends scala.reflect.api.Universe {
           extends SymbolDecoratorApi[T](symbol) {
 
         /** @see [[internal.attachments]] */
-        def attachments: Attachments { type Pos = Position } =
-          internal.attachments(symbol)
+        def attachments: Attachments {
+          type Pos = Position
+        } = internal.attachments(symbol)
 
         /** @see [[internal.updateAttachment]] */
         def updateAttachment[A: ClassTag](attachment: A): T =
@@ -377,8 +383,9 @@ abstract class Universe extends scala.reflect.api.Universe {
       @deprecated(
         "Use `internal.attachments` instead or import `internal.decorators._` for infix syntax",
         "2.11.0")
-      def attachments: Attachments { type Pos = Position } =
-        internal.attachments(symbol)
+      def attachments: Attachments {
+        type Pos = Position
+      } = internal.attachments(symbol)
 
       /** @see [[InternalMacroApi.updateAttachment]] */
       @deprecated(
@@ -428,8 +435,9 @@ abstract class Universe extends scala.reflect.api.Universe {
       @deprecated(
         "Use `internal.attachments` instead or import `internal.decorators._` for infix syntax",
         "2.11.0")
-      def attachments: Attachments { type Pos = Position } =
-        internal.attachments(tree)
+      def attachments: Attachments {
+        type Pos = Position
+      } = internal.attachments(tree)
 
       /** @see [[InternalMacroApi.updateAttachment]] */
       @deprecated(

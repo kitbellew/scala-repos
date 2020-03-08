@@ -1,4 +1,6 @@
-trait Comparinator[T] { def compare(a: T, b: T): Int }
+trait Comparinator[T] {
+  def compare(a: T, b: T): Int
+}
 
 object TestOkay {
   def sort(x: Comparinator[_ >: String]) = ()

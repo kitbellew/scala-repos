@@ -45,7 +45,9 @@ object Default {
       def apply() = defaults
     }
 
-  type Aux[T, Out0 <: HList] = Default[T] { type Out = Out0 }
+  type Aux[T, Out0 <: HList] = Default[T] {
+    type Out = Out0
+  }
 
   implicit def materialize[T, L <: HList]: Aux[T, L] =
     macro DefaultMacros.materialize[T, L]
@@ -78,7 +80,9 @@ object Default {
   object AsRecord {
     def apply[T](implicit default: AsRecord[T]): Aux[T, default.Out] = default
 
-    type Aux[T, Out0 <: HList] = AsRecord[T] { type Out = Out0 }
+    type Aux[T, Out0 <: HList] = AsRecord[T] {
+      type Out = Out0
+    }
 
     trait Helper[L <: HList, Labels <: HList]
         extends DepFn1[L]
@@ -171,7 +175,9 @@ object Default {
   object AsOptions {
     def apply[T](implicit default: AsOptions[T]): Aux[T, default.Out] = default
 
-    type Aux[T, Out0 <: HList] = AsOptions[T] { type Out = Out0 }
+    type Aux[T, Out0 <: HList] = AsOptions[T] {
+      type Out = Out0
+    }
 
     trait Helper[L <: HList, Repr <: HList]
         extends DepFn1[L]

@@ -75,7 +75,9 @@ abstract class VersionedBatchStoreBase[K, V](val rootPath: String)
     mode match {
       case hdfs: HdfsMode =>
         lastBatch(exclusiveUB, hdfs)
-          .map { Right(_) }
+          .map {
+            Right(_)
+          }
           .getOrElse {
             Left(
               List("No last batch available < %s for VersionedBatchStore(%s)"
@@ -108,9 +110,15 @@ abstract class VersionedBatchStoreBase[K, V](val rootPath: String)
       mode: HdfsMode): Option[(BatchID, FlowProducer[TypedPipe[(K, V)]])] = {
     val meta = HDFSMetadata(mode.conf, rootPath)
     meta.versions
-      .map { ver => (versionToBatchID(ver), readVersion(ver)) }
-      .filter { _._1 < exclusiveUB }
-      .reduceOption { (a, b) => if (a._1 > b._1) a else b }
+      .map { ver =>
+        (versionToBatchID(ver), readVersion(ver))
+      }
+      .filter {
+        _._1 < exclusiveUB
+      }
+      .reduceOption { (a, b) =>
+        if (a._1 > b._1) a else b
+      }
   }
 
   protected def readVersion(v: Long): FlowProducer[TypedPipe[(K, V)]]

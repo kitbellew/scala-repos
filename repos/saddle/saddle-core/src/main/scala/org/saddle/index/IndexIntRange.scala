@@ -57,7 +57,9 @@ class IndexIntRange(val length: Int, val from: Int = 0) extends Index[Int] {
     def get(key: Int) = if (contains(key)) key - from else -1
     def count(key: Int) = if (contains(key)) 1 else 0
 
-    def put(key: Int, value: Int) { sys.error("Not supported") }
+    def put(key: Int, value: Int) {
+      sys.error("Not supported")
+    }
     def inc(key: Int) = sys.error("Not supported")
     def keys() = asArr
     def counts() = cts

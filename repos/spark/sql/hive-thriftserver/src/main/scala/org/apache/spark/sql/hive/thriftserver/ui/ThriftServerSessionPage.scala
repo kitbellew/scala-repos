@@ -54,10 +54,18 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
         generateBasicStats() ++
           <br/> ++
           <h4>
-        User {sessionStat.userName},
-        IP {sessionStat.ip},
-        Session created at {formatDate(sessionStat.startTimestamp)},
-        Total run {sessionStat.totalExecution} SQL
+        User {
+            sessionStat.userName
+          },
+        IP {
+            sessionStat.ip
+          },
+        Session created at {
+            formatDate(sessionStat.startTimestamp)
+          },
+        Total run {
+            sessionStat.totalExecution
+          } SQL
         </h4> ++
           generateSQLStatsTable(sessionStat.sessionId)
       }
@@ -69,7 +77,9 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
     val timeSinceStart = System.currentTimeMillis() - startTime.getTime
     <ul class ="unstyled">
       <li>
-        <strong>Started at: </strong> {startTime.toString}
+        <strong>Started at: </strong> {
+      startTime.toString
+    }
       </li>
       <li>
         <strong>Time since start: </strong>{
@@ -104,24 +114,44 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
               UIUtils.prependBaseUri(parent.basePath),
               id)
           }>
-            [{id}]
+            [{
+            id
+          }]
           </a>
         }
         val detail =
           if (info.state == ExecutionState.FAILED) info.detail
           else info.executePlan
         <tr>
-          <td>{info.userName}</td>
+          <td>{
+          info.userName
+        }</td>
           <td>
-            {jobLink}
+            {
+          jobLink
+        }
           </td>
-          <td>{info.groupId}</td>
-          <td>{formatDate(info.startTimestamp)}</td>
-          <td>{formatDate(info.finishTimestamp)}</td>
-          <td>{formatDurationOption(Some(info.totalTime))}</td>
-          <td>{info.statement}</td>
-          <td>{info.state}</td>
-          {errorMessageCell(detail)}
+          <td>{
+          info.groupId
+        }</td>
+          <td>{
+          formatDate(info.startTimestamp)
+        }</td>
+          <td>{
+          formatDate(info.finishTimestamp)
+        }</td>
+          <td>{
+          formatDurationOption(Some(info.totalTime))
+        }</td>
+          <td>{
+          info.statement
+        }</td>
+          <td>{
+          info.state
+        }</td>
+          {
+          errorMessageCell(detail)
+        }
         </tr>
       }
 
@@ -142,7 +172,9 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
       <h5>SQL Statistics</h5> ++
         <div>
           <ul class="unstyled">
-            {table.getOrElse("No statistics have been generated yet.")}
+            {
+          table.getOrElse("No statistics have been generated yet.")
+        }
           </ul>
         </div>
 
@@ -163,13 +195,19 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
         + details
       </span> ++
         <div class="stacktrace-details collapsed">
-        <pre>{errorMessage}</pre>
+        <pre>{
+          errorMessage
+        }</pre>
       </div>
       // scalastyle:on
     } else {
       ""
     }
-    <td>{errorSummary}{details}</td>
+    <td>{
+      errorSummary
+    }{
+      details
+    }</td>
   }
 
   /** Generate stats of batch sessions of the thrift server program */
@@ -209,7 +247,9 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
       <h5>Session Statistics</h5> ++
         <div>
         <ul class="unstyled">
-          {table.getOrElse("No statistics have been generated yet.")}
+          {
+          table.getOrElse("No statistics have been generated yet.")
+        }
         </ul>
       </div>
 
@@ -226,7 +266,12 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
   /** Generate HTML table from string data */
   private def listingTable(headers: Seq[String], data: Seq[Seq[String]]) = {
     def generateDataRow(data: Seq[String]): Seq[Node] = {
-      <tr> {data.map(d => <td>{d}</td>)} </tr>
+      <tr> {
+        data.map(d =>
+          <td>{
+            d
+          }</td>)
+      } </tr>
     }
     UIUtils.listingTable(headers, generateDataRow, data, fixedWidth = true)
   }

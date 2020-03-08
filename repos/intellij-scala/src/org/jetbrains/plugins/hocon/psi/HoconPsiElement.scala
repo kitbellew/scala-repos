@@ -51,7 +51,9 @@ sealed abstract class HoconPsiElement(ast: ASTNode)
     Option(getChild[T])
 
   def findLastChild[T >: Null: ClassTag] =
-    allChildrenReverse.collectFirst({ case t: T => t })
+    allChildrenReverse.collectFirst({
+      case t: T => t
+    })
 
   def allChildren =
     Iterator.iterate(getFirstChild)(_.getNextSibling).takeWhile(_ != null)
@@ -115,9 +117,15 @@ final class HObjectEntries(ast: ASTNode)
 sealed trait HObjectEntry extends HoconPsiElement with HInnerElement {
   type Parent = HObjectEntries
 
-  def previousEntry = prevSiblings.collectFirst({ case e: HObjectEntry => e })
+  def previousEntry =
+    prevSiblings.collectFirst({
+      case e: HObjectEntry => e
+    })
 
-  def nextEntry = nextSiblings.collectFirst({ case e: HObjectEntry => e })
+  def nextEntry =
+    nextSiblings.collectFirst({
+      case e: HObjectEntry => e
+    })
 }
 
 final class HObjectField(ast: ASTNode)

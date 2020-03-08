@@ -34,8 +34,9 @@ object HtmlHelpersSpec extends Specification with HtmlHelpers with XmlMatchers {
     "find an id" in {
       val xml = <foo><bar/>Dog<b><woof id="3"/></b></foo>
 
-      findBox(xml) { e => e.attribute("id").filter(_.text == "3").map(i => e) }
-        .openOrThrowException("Test") must ==/(<woof id="3"/>)
+      findBox(xml) { e =>
+        e.attribute("id").filter(_.text == "3").map(i => e)
+      }.openOrThrowException("Test") must ==/(<woof id="3"/>)
     }
 
     "not find an ide" in {
@@ -159,7 +160,9 @@ object HtmlHelpersSpec extends Specification with HtmlHelpers with XmlMatchers {
           <bye id="third-thing" />
         </boom>
 
-      val uniqued = <wrapper>{ensureUniqueId(xml).head}</wrapper>
+      val uniqued = <wrapper>{
+        ensureUniqueId(xml).head
+      }</wrapper>
 
       (uniqued must \("boom", "id" -> "thing")) and
         (uniqued must \\("hello", "id" -> "other-thing")) and
@@ -190,7 +193,9 @@ object HtmlHelpersSpec extends Specification with HtmlHelpers with XmlMatchers {
           <bye id="thing" />
         </boom>
 
-      val uniqued = <wrapper>{ensureUniqueId(xml).head}</wrapper>
+      val uniqued = <wrapper>{
+        ensureUniqueId(xml).head
+      }</wrapper>
 
       (uniqued must \\("hello", "id" -> "thing")) and
         (uniqued must \\("bye", "id" -> "thing"))
@@ -205,7 +210,9 @@ object HtmlHelpersSpec extends Specification with HtmlHelpers with XmlMatchers {
           <bye id="third-thing" />
         </boom>
 
-      val uniqued = <wrapper>{deepEnsureUniqueId(xml).head}</wrapper>
+      val uniqued = <wrapper>{
+        deepEnsureUniqueId(xml).head
+      }</wrapper>
 
       (uniqued must \("boom", "id" -> "thing")) and
         (uniqued must \\("hello", "id" -> "other-thing")) and
@@ -239,7 +246,9 @@ object HtmlHelpersSpec extends Specification with HtmlHelpers with XmlMatchers {
           </bye>
         </boom>
 
-      val uniqued = <wrapper>{deepEnsureUniqueId(xml).head}</wrapper>
+      val uniqued = <wrapper>{
+        deepEnsureUniqueId(xml).head
+      }</wrapper>
 
       uniqued must ==/(
         <wrapper>
@@ -266,7 +275,9 @@ object HtmlHelpersSpec extends Specification with HtmlHelpers with XmlMatchers {
           </bye>
         </boom>
 
-      val uniqued = <wrapper>{ensureId(xml, "other-thinger").head}</wrapper>
+      val uniqued = <wrapper>{
+        ensureId(xml, "other-thinger").head
+      }</wrapper>
 
       uniqued must \("boom", "id" -> "other-thinger")
     }
@@ -281,7 +292,9 @@ object HtmlHelpersSpec extends Specification with HtmlHelpers with XmlMatchers {
           </bye>
         </boom>
 
-      val uniqued = <wrapper>{ensureId(xml, "other-thinger").head}</wrapper>
+      val uniqued = <wrapper>{
+        ensureId(xml, "other-thinger").head
+      }</wrapper>
 
       uniqued must \("boom", "id" -> "other-thinger")
     }

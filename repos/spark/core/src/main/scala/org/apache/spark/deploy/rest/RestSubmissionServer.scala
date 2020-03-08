@@ -142,14 +142,21 @@ private[rest] abstract class RestServlet extends HttpServlet with Logging {
     val serverSideJson = parse(requestMessage.toJson)
     val Diff(_, _, unknown) = clientSideJson.diff(serverSideJson)
     unknown match {
-      case j: JObject => j.obj.map { case (k, _) => k }.toArray
-      case _          => Array.empty[String] // No difference
+      case j: JObject =>
+        j.obj.map {
+          case (k, _) => k
+        }.toArray
+      case _ => Array.empty[String] // No difference
     }
   }
 
   /** Return a human readable String representation of the exception. */
   protected def formatException(e: Throwable): String = {
-    val stackTraceString = e.getStackTrace.map { "\t" + _ }.mkString("\n")
+    val stackTraceString = e.getStackTrace
+      .map {
+        "\t" + _
+      }
+      .mkString("\n")
     s"$e\n$stackTraceString"
   }
 

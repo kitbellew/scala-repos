@@ -62,7 +62,9 @@ class RawReader private[niflheim] (val id: Long, val log: File, rs: Seq[JValue])
   def isStable: Boolean = true
 
   def structure: Iterable[ColumnRef] =
-    snapshot(None).segments.map { seg => ColumnRef(seg.cpath, seg.ctype) }
+    snapshot(None).segments.map { seg =>
+      ColumnRef(seg.cpath, seg.ctype)
+    }
 
   def length: Int = count
 
@@ -82,7 +84,11 @@ class RawReader private[niflheim] (val id: Long, val log: File, rs: Seq[JValue])
     handleNonempty
 
     val segs = pathConstraint
-      .map { cpaths => segments.a.filter { seg => cpaths(seg.cpath) } }
+      .map { cpaths =>
+        segments.a.filter { seg =>
+          cpaths(seg.cpath)
+        }
+      }
       .getOrElse(segments.a.clone)
 
     Block(id, segs, isStable)
@@ -93,7 +99,9 @@ class RawReader private[niflheim] (val id: Long, val log: File, rs: Seq[JValue])
 
     val segs = refConstraints
       .map { refs =>
-        segments.a.filter { seg => refs(ColumnRef(seg.cpath, seg.ctype)) }
+        segments.a.filter { seg =>
+          refs(ColumnRef(seg.cpath, seg.ctype))
+        }
       }
       .getOrElse(segments.a.clone)
 

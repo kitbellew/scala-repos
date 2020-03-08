@@ -1,7 +1,11 @@
 // exercise coevolveSym
-trait HasElem { type A }
+trait HasElem {
+  type A
+}
 trait View[AIn] {
-  val tc: HasElem { type A = AIn }
+  val tc: HasElem {
+    type A = AIn
+  }
   def f2(p: tc.A): tc.A = p
 }
 

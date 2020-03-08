@@ -106,7 +106,9 @@ private[internal] trait TypeMaps {
     private[this] var _variance: Variance =
       if (trackVariance) Covariant else Invariant
 
-    def variance_=(x: Variance) = { assert(trackVariance, this); _variance = x }
+    def variance_=(x: Variance) = {
+      assert(trackVariance, this); _variance = x
+    }
     def variance = _variance
 
     /** Map this function over given type */
@@ -313,7 +315,9 @@ private[internal] trait TypeMaps {
 
   abstract class TypeTraverser extends TypeMap {
     def traverse(tp: Type): Unit
-    def apply(tp: Type): Type = { traverse(tp); tp }
+    def apply(tp: Type): Type = {
+      traverse(tp); tp
+    }
   }
 
   abstract class TypeTraverserWithResult[T] extends TypeTraverser {

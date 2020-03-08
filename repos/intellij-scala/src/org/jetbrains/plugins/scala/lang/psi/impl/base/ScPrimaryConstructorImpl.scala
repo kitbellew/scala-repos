@@ -32,7 +32,9 @@ class ScPrimaryConstructorImpl private (
     node: ASTNode)
     extends ScalaStubBasedElementImpl(stub, nodeType, node)
     with ScPrimaryConstructor {
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
   def this(stub: ScPrimaryConstructorStub) = {
     this(stub, ScalaElementTypes.PRIMARY_CONSTRUCTOR, null)
   }

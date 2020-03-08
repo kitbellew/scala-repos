@@ -47,7 +47,9 @@ class HivePlanTest extends QueryTest with TestHiveSingleton {
     )
     val plan = query.queryExecution.analyzed
     assert(
-      plan.collect { case w: logical.Window => w }.size === 1,
+      plan.collect {
+        case w: logical.Window => w
+      }.size === 1,
       "Should have only 1 Window operator.")
   }
 }

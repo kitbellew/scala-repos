@@ -13,7 +13,10 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
       def * = (a, b)
     }
     val ts = TableQuery[T]
-    def q1(i: Int) = for { t <- ts if t.a === i } yield t
+    def q1(i: Int) =
+      for {
+        t <- ts if t.a === i
+      } yield t
     def q2(i: Int) =
       (
         q1(i).length,
@@ -68,7 +71,9 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
               (3, 2, Some(6), Some(10)))
         }
       }
-      .flatMap { _ => db.run(us.schema.create >> (us ++= Seq(1, 2, 3))) }
+      .flatMap { _ =>
+        db.run(us.schema.create >> (us ++= Seq(1, 2, 3)))
+      }
       .flatMap { _ =>
         val q2 = (for {
           u <- us
@@ -116,12 +121,16 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
           .map(t => (t.a, t.b))
           .sortBy(_._2)
           .groupBy(x => (x._1, x._2))
-          .map { case (a, _) => (a._1, a._2) }
+          .map {
+            case (a, _) => (a._1, a._2)
+          }
           .to[Set]
         db.run(mark("q5", q5.result))
           .map(_ shouldBe Set((1, Some(1)), (1, Some(2)), (1, Some(3))))
       }
-      .flatMap { _ => db.run(us += 4) }
+      .flatMap { _ =>
+        db.run(us += 4)
+      }
       .flatMap { _ =>
         val q6 = ((for {
           (u, t) <- us joinLeft ts on (_.id === _.a)
@@ -261,7 +270,9 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
       def * = id
     }
     val as = TableQuery[A]
-    val q1 = as.groupBy(_.id).map { case (_, q) => (q.map(_.id).min, q.length) }
+    val q1 = as.groupBy(_.id).map {
+      case (_, q) => (q.map(_.id).min, q.length)
+    }
     DBIO.seq(
       as.schema.create,
       as += 1,
@@ -371,7 +382,9 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
       _ <- q2.result.map(_ shouldBe Nil)
       q4 = as
         .flatMap { t1 =>
-          bs.withFilter { t2 => t1.fkId === t2.id && t2.d === "" }
+          bs.withFilter { t2 =>
+              t1.fkId === t2.id && t2.d === ""
+            }
             .map(t2 => (t1, t2))
         }
         .groupBy { prop =>

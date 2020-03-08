@@ -80,7 +80,9 @@ private[io] object SelectionHandler {
       extends NoSerializationVerificationNeeded
 
   final case class Retry(command: WorkerForCommand, retriesLeft: Int)
-      extends NoSerializationVerificationNeeded { require(retriesLeft >= 0) }
+      extends NoSerializationVerificationNeeded {
+    require(retriesLeft >= 0)
+  }
 
   case object ChannelConnectable
   case object ChannelAcceptable
@@ -125,7 +127,9 @@ private[io] object SelectionHandler {
               child.path.toString,
               getClass,
               "Closed after handler termination")
-          } catch { case NonFatal(_) ⇒ }
+          } catch {
+            case NonFatal(_) ⇒
+          }
         } else super.logFailure(context, child, cause, decision)
     }
 
@@ -324,7 +328,9 @@ private[io] class SelectionHandler(settings: SelectionHandlerSettings)
           }
           context.system.eventStream.publish(Logging
             .Debug(child.path.toString, classOf[SelectionHandler], logMessage))
-        } catch { case NonFatal(_) ⇒ }
+        } catch {
+          case NonFatal(_) ⇒
+        }
     }
   }
 

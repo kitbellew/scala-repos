@@ -1,2 +1,6 @@
-trait A { def f = super.asInstanceOf[AnyRef] }
-trait B { def g = super.isInstanceOf[AnyRef] }
+trait A {
+  def f = super.asInstanceOf[AnyRef]
+}
+trait B {
+  def g = super.isInstanceOf[AnyRef]
+}

@@ -75,7 +75,9 @@ trait Formats
   }
 
   implicit lazy val networkInfoProtocolWrites =
-    Writes[mesos.NetworkInfo.Protocol] { protocol => JsString(protocol.name) }
+    Writes[mesos.NetworkInfo.Protocol] { protocol =>
+      JsString(protocol.name)
+    }
 
   private[this] val allowedProtocolString =
     mesos.NetworkInfo.Protocol
@@ -180,17 +182,23 @@ trait Formats
 
   implicit lazy val PathIdFormat: Format[PathId] = Format(
     Reads.of[String](Reads.minLength[String](1)).map(PathId(_)),
-    Writes[PathId] { id => JsString(id.toString) }
+    Writes[PathId] { id =>
+      JsString(id.toString)
+    }
   )
 
   implicit lazy val TaskIdFormat: Format[Task.Id] = Format(
     Reads.of[String](Reads.minLength[String](3)).map(Task.Id(_)),
-    Writes[Task.Id] { id => JsString(id.idString) }
+    Writes[Task.Id] { id =>
+      JsString(id.idString)
+    }
   )
 
   implicit lazy val TimestampFormat: Format[Timestamp] = Format(
     Reads.of[String].map(Timestamp(_)),
-    Writes[Timestamp] { t => JsString(t.toString) }
+    Writes[Timestamp] { t =>
+      JsString(t.toString)
+    }
   )
 
   implicit lazy val CommandFormat: Format[Command] = Json.format[Command]
@@ -229,7 +237,9 @@ trait Formats
       case x: JsValue => JsError(s"expected string, got $x")
     }
 
-    val writes = Writes[A] { a: A => JsString(a.name) }
+    val writes = Writes[A] { a: A =>
+      JsString(a.name)
+    }
 
     Format(reads, writes)
   }
@@ -358,7 +368,9 @@ trait DeploymentFormats {
   implicit lazy val ByteArrayFormat: Format[Array[Byte]] =
     Format(
       Reads.of[Seq[Int]].map(_.map(_.toByte).toArray),
-      Writes { xs => JsArray(xs.to[Seq].map(b => JsNumber(b.toInt))) }
+      Writes { xs =>
+        JsArray(xs.to[Seq].map(b => JsNumber(b.toInt)))
+      }
     )
 
   implicit lazy val GroupUpdateFormat: Format[GroupUpdate] = (
@@ -375,9 +387,13 @@ trait DeploymentFormats {
       Reads
         .of[Map[String, String]]
         .map(
-          _.map { case (k, v) => new java.net.URL(k) -> v }
+          _.map {
+            case (k, v) => new java.net.URL(k) -> v
+          }
         ),
-      Writes[Map[java.net.URL, String]] { m => Json.toJson(m) }
+      Writes[Map[java.net.URL, String]] { m =>
+        Json.toJson(m)
+      }
     )
 
   implicit lazy val DeploymentActionWrites: Writes[DeploymentAction] = Writes {
@@ -792,7 +808,9 @@ trait AppAndGroupFormats {
           case None =>
             extra.maybePortDefinitions.getOrElse {
               extra.maybePorts
-                .map { ports => PortDefinitions.apply(ports: _*) }
+                .map { ports =>
+                  PortDefinitions.apply(ports: _*)
+                }
                 .getOrElse(AppDefinition.DefaultPortDefinitions)
             }
         }
@@ -1139,7 +1157,9 @@ trait AppAndGroupFormats {
             }),
             residency = extra.residency,
             portDefinitions = extra.portDefinitions.orElse {
-              extra.ports.map { ports => PortDefinitions.apply(ports: _*) }
+              extra.ports.map { ports =>
+                PortDefinitions.apply(ports: _*)
+              }
             }
           )
         }

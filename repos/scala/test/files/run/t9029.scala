@@ -1,6 +1,8 @@
 class Y(val _2: Int, val _1: String)
 
-object X { def unapply(u: Unit): Option[Y] = Some(new Y(42, "!")) }
+object X {
+  def unapply(u: Unit): Option[Y] = Some(new Y(42, "!"))
+}
 
 object Test {
   def test1 = {

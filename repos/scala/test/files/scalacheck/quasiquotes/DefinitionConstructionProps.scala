@@ -34,8 +34,12 @@ object DefinitionConstructionProps
   property("SI-6842 b1") = test {
     assertEqAst(q"def f[$t] = 0", "def f[T] = 0")
   }
-  property("SI-6842 b2") = test { assertEqAst(q"class C[$t]", "class C[T]") }
-  property("SI-6842 b3") = test { assertEqAst(q"trait B[$t]", "trait B[T]") }
+  property("SI-6842 b2") = test {
+    assertEqAst(q"class C[$t]", "class C[T]")
+  }
+  property("SI-6842 b3") = test {
+    assertEqAst(q"trait B[$t]", "trait B[T]")
+  }
 }
 
 trait ClassConstruction { self: QuasiquoteProperties =>
@@ -390,14 +394,22 @@ trait MethodConstruction { self: QuasiquoteProperties =>
     assert(q"def foo[..$tparams]" ≈ parse("def foo[A, B <: Bippy]"))
   }
 
-  def assertSameAnnots(tree: { def mods: Modifiers }, annots: List[Tree]) =
+  def assertSameAnnots(
+      tree: {
+        def mods: Modifiers
+      },
+      annots: List[Tree]) =
     assert(
       tree.mods.annotations ≈ annots,
       s"${tree.mods.annotations} =/= ${annots}")
 
   def assertSameAnnots(
-      tree1: { def mods: Modifiers },
-      tree2: { def mods: Modifiers }) =
+      tree1: {
+        def mods: Modifiers
+      },
+      tree2: {
+        def mods: Modifiers
+      }) =
     assert(
       tree1.mods.annotations ≈ tree2.mods.annotations,
       s"${tree1.mods.annotations} =/= ${tree2.mods.annotations}")
@@ -501,11 +513,17 @@ trait PackageConstruction { self: QuasiquoteProperties =>
 
   property("unquote illegal members into package body") = test {
     val f = q"def f"
-    assertThrows[IllegalArgumentException] { q"package foo { $f }" }
+    assertThrows[IllegalArgumentException] {
+      q"package foo { $f }"
+    }
     val v = q"val v = 0"
-    assertThrows[IllegalArgumentException] { q"package foo { $v }" }
+    assertThrows[IllegalArgumentException] {
+      q"package foo { $v }"
+    }
     val expr = q"x + 1"
-    assertThrows[IllegalArgumentException] { q"package foo { $expr }" }
+    assertThrows[IllegalArgumentException] {
+      q"package foo { $expr }"
+    }
   }
 
   property("unquote name into package object") = test {

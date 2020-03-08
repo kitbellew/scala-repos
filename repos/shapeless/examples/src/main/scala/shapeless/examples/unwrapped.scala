@@ -43,7 +43,11 @@ object UnwrappedExamples {
   // codecs. For example:
   trait Encode[-T] {
     def toJson(t: T): String =
-      fields(t).map { case (k, v) => s""""$k":$v""" }.mkString("{", ",", "}")
+      fields(t)
+        .map {
+          case (k, v) => s""""$k":$v"""
+        }
+        .mkString("{", ",", "}")
     def fields(t: T): Map[String, String]
   }
   object Encode {
@@ -104,7 +108,11 @@ object UnwrappedExamples {
 
   trait Encode2[-T] {
     def toJson(t: T): String =
-      fields(t).map { case (k, v) => s""""$k":$v""" }.mkString("{", ",", "}")
+      fields(t)
+        .map {
+          case (k, v) => s""""$k":$v"""
+        }
+        .mkString("{", ",", "}")
     def fields(t: T): Map[String, String]
   }
   object Encode2 {

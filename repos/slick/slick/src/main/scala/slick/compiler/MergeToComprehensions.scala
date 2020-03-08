@@ -31,7 +31,9 @@ class MergeToComprehensions extends Phase {
         .mapResultSetMapping(n, keepType = false) { rsm =>
           rsm.copy(
             from = convert(rsm.from),
-            map = rsm.map.replace { case r: Ref => r.untyped })
+            map = rsm.map.replace {
+              case r: Ref => r.untyped
+            })
         }
         .infer())
 
@@ -185,7 +187,11 @@ class MergeToComprehensions extends Phase {
                   }))(tpe)
             }
           case FwdPath(s :: ElementSymbol(1) :: rest) if s == s1 =>
-            rest.foldLeft(b2a) { case (n, s) => n.select(s) }.infer()
+            rest
+              .foldLeft(b2a) {
+                case (n, s) => n.select(s)
+              }
+              .infer()
         }
         val c2 = c1a
           .copy(
@@ -209,7 +215,9 @@ class MergeToComprehensions extends Phase {
         val c2 = c1.copy(select = Pure(str2, ts)).infer()
         logger.debug("Merged Aggregate source into Comprehension:", c2)
         val StructNode(defs) = str2
-        val repl = defs.iterator.map { case (f, _) => ((ts, f), f) }.toMap
+        val repl = defs.iterator.map {
+          case (f, _) => ((ts, f), f)
+        }.toMap
         logger.debug("Replacements are: " + repl)
         (c2, repl)
 
@@ -251,7 +259,9 @@ class MergeToComprehensions extends Phase {
         Some((t, mappings))
       case p @ Pure(StructNode(defs), ts) =>
         logger.debug("Creating source from Pure:", p)
-        val mappings = defs.map { case (f, _) => ((ts, f), f :: Nil) }
+        val mappings = defs.map {
+          case (f, _) => ((ts, f), f :: Nil)
+        }
         logger.debug("Mappings are: " + mappings)
         Some((p, mappings))
       case j @ Join(ls, rs, l1, r1, jt, on1) =>
@@ -278,8 +288,12 @@ class MergeToComprehensions extends Phase {
           Some((l2, lmap))
         } else {
           val mappings =
-            lmap.map { case (key, ss)   => (key, ElementSymbol(1) :: ss) } ++
-              rmap.map { case (key, ss) => (key, ElementSymbol(2) :: ss) }
+            lmap.map {
+              case (key, ss) => (key, ElementSymbol(1) :: ss)
+            } ++
+              rmap.map {
+                case (key, ss) => (key, ElementSymbol(2) :: ss)
+              }
           val mappingsM = mappings.iterator.toMap
           logger.debug(
             s"Mappings for `on` clause in Join $ls/$rs: " + mappingsM)
@@ -514,8 +528,11 @@ class MergeToComprehensions extends Phase {
   object FwdPathOnTypeSymbol {
     def unapply(n: Node): Option[(TypeSymbol, List[TermSymbol])] = n match {
       case (n: PathElement) :@ NominalType(ts, _) => Some((ts, List(n.sym)))
-      case Select(in, s)                          => unapply(in).map { case (ts, l) => (ts, l :+ s) }
-      case _                                      => None
+      case Select(in, s) =>
+        unapply(in).map {
+          case (ts, l) => (ts, l :+ s)
+        }
+      case _ => None
     }
   }
 }

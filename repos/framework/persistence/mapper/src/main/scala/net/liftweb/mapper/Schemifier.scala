@@ -318,15 +318,19 @@ object Schemifier extends Loggable {
       }
       if (!connection.driverType.pkDefinedByIndexColumn_?) {
         // Add primary key only when it has not been created by the index field itself.
-        table.mappedFields.filter { f => f.dbPrimaryKey_? }.foreach { pkField =>
-          connection.driverType.primaryKeySetup(
-            table._dbTableNameLC,
-            pkField._dbColumnNameLC) foreach { command =>
-            cmds += maybeWrite(performWrite, logFunc, connection) { () =>
-              command
+        table.mappedFields
+          .filter { f =>
+            f.dbPrimaryKey_?
+          }
+          .foreach { pkField =>
+            connection.driverType.primaryKeySetup(
+              table._dbTableNameLC,
+              pkField._dbColumnNameLC) foreach { command =>
+              cmds += maybeWrite(performWrite, logFunc, connection) { () =>
+                command
+              }
             }
           }
-        }
       }
       hasTable_?(table, connection, actualTableNames)
       Collector(table.dbAddTable.toList, cmds.toList)
@@ -450,8 +454,12 @@ object Schemifier extends Loggable {
     }.toList
     //rs.close
 
-    val single =
-      table.mappedFields.filter { f => f.dbIndexed_? }.toList.flatMap { field =>
+    val single = table.mappedFields
+      .filter { f =>
+        f.dbIndexed_?
+      }
+      .toList
+      .flatMap { field =>
         if (!indexedFields.contains(List(field._dbColumnNameLC.toLowerCase))) {
           cmds += maybeWrite(performWrite, logFunc, connection) { () =>
             "CREATE INDEX " + (table._dbTableNameLC + "_" + field._dbColumnNameLC) + " ON " + table._dbTableNameLC + " ( " + field._dbColumnNameLC + " )"

@@ -32,5 +32,7 @@ class OverloadingTest extends ResolveTestBase {
   def testSimple() = doTest()
   def testTooMuchImplicits() = doTest()
   def testWeakResolve() = doTest()
-  def testWrong() { doTest() }
+  def testWrong() {
+    doTest()
+  }
 }

@@ -143,7 +143,9 @@ object KleeneDemo {
       val n = dim.n
       val arr = new Array[A](n * n)
       cfor(0)(_ < n, _ + 1) { y =>
-        cfor(0)(_ < n, _ + 1) { x => arr(y * n + x) = f(x, y) }
+        cfor(0)(_ < n, _ + 1) { x =>
+          arr(y * n + x) = f(x, y)
+        }
       }
       new ArrayMatrix(arr)
     }
@@ -248,7 +250,9 @@ object KleeneDemo {
   object Graph {
     def apply(edges: Edge*)(implicit dim: Dim): Matrix[Boolean] = {
       val m = ArrayMatrix(Array.fill[Boolean](dim.n * dim.n)(false))
-      edges.foreach { case Edge(from, to) => m(to, from) = true }
+      edges.foreach {
+        case Edge(from, to) => m(to, from) = true
+      }
       m
     }
   }

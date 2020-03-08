@@ -156,7 +156,9 @@ object BasicIO {
   /** Closes a `Closeable` without throwing an exception */
   def close(c: Closeable) =
     try c.close()
-    catch { case _: IOException => () }
+    catch {
+      case _: IOException => ()
+    }
 
   /** Returns a function `InputStream => Unit` that appends all data read to the
     * provided `Appendable`. This function can be used to create a
@@ -192,7 +194,9 @@ object BasicIO {
     */
   def processLinesFully(processLine: String => Unit)(readLine: () => String) {
     def working = (Thread.currentThread.isInterrupted == false)
-    def halting = { Thread.currentThread.interrupt(); null }
+    def halting = {
+      Thread.currentThread.interrupt(); null
+    }
     def readFully(): Unit =
       if (working) {
         val line =
@@ -259,8 +263,11 @@ object BasicIO {
         out.write(buffer, 0, byteCount)
         // flush() will throw an exception once the process has terminated
         val available =
-          try { out.flush(); true }
-          catch { case _: IOException => false }
+          try {
+            out.flush(); true
+          } catch {
+            case _: IOException => false
+          }
         if (available) loop()
       }
     }

@@ -98,7 +98,9 @@ P <: Product2[K, V]: ClassTag] @DeveloperApi() (self: RDD[P])
       case _ =>
         self
     }
-    rddToFilter.filter { case (k, v) => inRange(k) }
+    rddToFilter.filter {
+      case (k, v) => inRange(k)
+    }
   }
 
 }

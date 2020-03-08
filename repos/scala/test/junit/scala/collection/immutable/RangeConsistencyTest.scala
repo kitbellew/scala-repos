@@ -68,8 +68,11 @@ class RangeConsistencyTest {
           if (rn.nextBoolean) Range.inclusive(start, end, step)
           else Range(start, end, step)
 
-        try { r.length }
-        catch { case iae: IllegalArgumentException => control.Breaks.break }
+        try {
+          r.length
+        } catch {
+          case iae: IllegalArgumentException => control.Breaks.break
+        }
 
         val lpuff = rn.nextInt(4) match {
           case 0 => 1L
@@ -87,7 +90,9 @@ class RangeConsistencyTest {
           r,
           lpuff,
           lstride,
-          (a, b) => { val x = BigInt(a) * BigInt(b); x.isValidLong },
+          (a, b) => {
+            val x = BigInt(a) * BigInt(b); x.isValidLong
+          },
           x => BigInt(x)
         )
 
@@ -184,8 +189,12 @@ class RangeConsistencyTest {
     }
     val r = (Int.MinValue to Int.MaxValue by (1 << 23))
     val nr = NumericRange(Int.MinValue, Int.MaxValue, 1 << 23)
-    assert({ var i = 0; r.foreach(_ => i += 1); i } == 512)
-    assert({ var i = 0; nr.foreach(_ => i += 1); i } == 512)
+    assert({
+      var i = 0; r.foreach(_ => i += 1); i
+    } == 512)
+    assert({
+      var i = 0; nr.foreach(_ => i += 1); i
+    } == 512)
     assert(r.sum == Int.MinValue)
     assert(nr.sum == Int.MinValue)
     assert(r.sum(possiblyNotDefaultNumeric) == Int.MinValue)

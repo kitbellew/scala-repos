@@ -32,8 +32,12 @@ import scala.collection.JavaConverters._
 import scala.collection.mutable.Map
 
 class SimpleCache[K, V](private val backing: GCache[K, V]) extends Map[K, V] {
-  def +=(kv: (K, V)) = { backing.put(kv._1, kv._2); this }
-  def -=(key: K) = { backing.invalidate(key); this }
+  def +=(kv: (K, V)) = {
+    backing.put(kv._1, kv._2); this
+  }
+  def -=(key: K) = {
+    backing.invalidate(key); this
+  }
   def get(key: K): Option[V] = Option(backing.getIfPresent(key))
   def iterator: Iterator[(K, V)] = backing.asMap.entrySet.iterator.asScala.map {
     kv => (kv.getKey, kv.getValue)
@@ -43,8 +47,12 @@ class SimpleCache[K, V](private val backing: GCache[K, V]) extends Map[K, V] {
 
 class AutoCache[K, V](private val backing: LoadingCache[K, V])
     extends Map[K, V] {
-  def +=(kv: (K, V)) = { backing.put(kv._1, kv._2); this }
-  def -=(key: K) = { backing.invalidate(key); this }
+  def +=(kv: (K, V)) = {
+    backing.put(kv._1, kv._2); this
+  }
+  def -=(key: K) = {
+    backing.invalidate(key); this
+  }
   def get(key: K): Option[V] = getFull(key).toOption
   def iterator: Iterator[(K, V)] = backing.asMap.entrySet.iterator.asScala.map {
     kv => (kv.getKey, kv.getValue)

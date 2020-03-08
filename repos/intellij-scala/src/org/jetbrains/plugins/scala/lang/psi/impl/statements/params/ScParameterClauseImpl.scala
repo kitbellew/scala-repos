@@ -30,7 +30,9 @@ class ScParameterClauseImpl private (
     extends ScalaStubBasedElementImpl(stub, nodeType, node)
     with ScParameterClause {
 
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
 
   def this(stub: ScParamClauseStub) = {
     this(stub, ScalaElementTypes.PARAM_CLAUSE, null)

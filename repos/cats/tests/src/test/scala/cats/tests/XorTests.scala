@@ -93,23 +93,33 @@ class XorTests extends CatsSuite {
   test("catchOnly catches matching exceptions") {
     assert(
       Xor
-        .catchOnly[NumberFormatException] { "foo".toInt }
+        .catchOnly[NumberFormatException] {
+          "foo".toInt
+        }
         .isInstanceOf[Xor.Left[NumberFormatException]])
   }
 
   test("catchOnly lets non-matching exceptions escape") {
     val _ = intercept[NumberFormatException] {
-      Xor.catchOnly[IndexOutOfBoundsException] { "foo".toInt }
+      Xor.catchOnly[IndexOutOfBoundsException] {
+        "foo".toInt
+      }
     }
   }
 
   test("catchNonFatal catches non-fatal exceptions") {
-    assert(Xor.catchNonFatal { "foo".toInt }.isLeft)
-    assert(Xor.catchNonFatal { throw new Throwable("blargh") }.isLeft)
+    assert(Xor.catchNonFatal {
+      "foo".toInt
+    }.isLeft)
+    assert(Xor.catchNonFatal {
+      throw new Throwable("blargh")
+    }.isLeft)
   }
 
   test("fromTry is left for failed Try") {
-    forAll { t: Try[Int] => t.isFailure should ===(Xor.fromTry(t).isLeft) }
+    forAll { t: Try[Int] =>
+      t.isFailure should ===(Xor.fromTry(t).isLeft)
+    }
   }
 
   test("fromEither isRight consistent with Either.isRight") {
@@ -125,7 +135,9 @@ class XorTests extends CatsSuite {
   }
 
   test("double swap is identity") {
-    forAll { (x: Int Xor String) => x.swap.swap should ===(x) }
+    forAll { (x: Int Xor String) =>
+      x.swap.swap should ===(x)
+    }
   }
 
   test("swap negates isLeft/isRight") {
@@ -136,13 +148,17 @@ class XorTests extends CatsSuite {
   }
 
   test("isLeft consistent with isRight") {
-    forAll { (x: Int Xor String) => x.isLeft should !==(x.isRight) }
+    forAll { (x: Int Xor String) =>
+      x.isLeft should !==(x.isRight)
+    }
   }
 
   test("foreach is noop for left") {
     forAll { (x: Int Xor String) =>
       var count = 0
-      x.foreach { _ => count += 1 }
+      x.foreach { _ =>
+        count += 1
+      }
       (count == 0) should ===(x.isLeft)
     }
   }
@@ -164,17 +180,23 @@ class XorTests extends CatsSuite {
 
   test("recover recovers handled values") {
     val xor = Xor.left[String, Int]("xor")
-    xor.recover { case "xor" => 5 }.isRight should ===(true)
+    xor.recover {
+      case "xor" => 5
+    }.isRight should ===(true)
   }
 
   test("recover ignores unhandled values") {
     val xor = Xor.left[String, Int]("xor")
-    xor.recover { case "notxor" => 5 } should ===(xor)
+    xor.recover {
+      case "notxor" => 5
+    } should ===(xor)
   }
 
   test("recover ignores the right side") {
     val xor = Xor.right[String, Int](10)
-    xor.recover { case "xor" => 5 } should ===(xor)
+    xor.recover {
+      case "xor" => 5
+    } should ===(xor)
   }
 
   test("recoverWith recovers handled values") {
@@ -186,13 +208,16 @@ class XorTests extends CatsSuite {
 
   test("recoverWith ignores unhandled values") {
     val xor = Xor.left[String, Int]("xor")
-    xor.recoverWith { case "notxor" => Xor.right[String, Int](5) } should ===(
-      xor)
+    xor.recoverWith {
+      case "notxor" => Xor.right[String, Int](5)
+    } should ===(xor)
   }
 
   test("recoverWith ignores the right side") {
     val xor = Xor.right[String, Int](10)
-    xor.recoverWith { case "xor" => Xor.right[String, Int](5) } should ===(xor)
+    xor.recoverWith {
+      case "xor" => Xor.right[String, Int](5)
+    } should ===(xor)
   }
 
   test("valueOr consistent with swap then map then merge") {
@@ -226,7 +251,9 @@ class XorTests extends CatsSuite {
   }
 
   test("toIor then toXor is identity") {
-    forAll { (x: Int Xor String) => x.toIor.toXor should ===(x) }
+    forAll { (x: Int Xor String) =>
+      x.toIor.toXor should ===(x)
+    }
   }
 
   test("isLeft consistency") {
@@ -251,7 +278,9 @@ class XorTests extends CatsSuite {
   }
 
   test("to consistent with toList") {
-    forAll { (x: Int Xor String) => x.to[List, String] should ===(x.toList) }
+    forAll { (x: Int Xor String) =>
+      x.to[List, String] should ===(x.toList)
+    }
   }
 
   test("to consistent with toOption") {

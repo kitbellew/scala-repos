@@ -35,8 +35,9 @@ final class DataForm(
       case (key, Some(value)) => key -> value
     }
     messages.nonEmpty ?? TranslationRepo.nextId flatMap { id =>
-      val sorted =
-        (keys.keys map { key => messages find (_._1 == key.key) }).flatten
+      val sorted = (keys.keys map { key =>
+        messages find (_._1 == key.key)
+      }).flatten
       val translation = Translation(
         id = id,
         code = code,
@@ -55,7 +56,9 @@ final class DataForm(
       case body: play.api.mvc.AnyContent if body.asFormUrlEncoded.isDefined =>
         (body.asFormUrlEncoded.get collect {
           case (key, msgs) if key startsWith "key_" =>
-            msgs.headOption map { key.drop(4) -> _ }
+            msgs.headOption map {
+              key.drop(4) -> _
+            }
         }).flatten.toMap
       case body => {
         logger.warn("Can't parse translation request body: " + body)

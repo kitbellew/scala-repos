@@ -144,8 +144,9 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
     */
   case class ScalaSigBytes(bytes: Array[Byte]) extends ClassfileAnnotArg {
     override def toString =
-      (bytes map { byte => (byte & 0xff).toHexString })
-        .mkString("[ ", " ", " ]")
+      (bytes map { byte =>
+        (byte & 0xff).toHexString
+      }).mkString("[ ", " ", " ]")
     lazy val sevenBitsMayBeZero: Array[Byte] = {
       mapToNextModSevenBits(
         scala.reflect.internal.pickling.ByteCodecs.encode8to7(bytes))
@@ -159,7 +160,9 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
      */
     def fitsInOneString: Boolean = {
       // due to escaping, a zero byte in a classfile-annotation of string-type takes actually two characters.
-      val numZeros = (sevenBitsMayBeZero count { b => b == 0 })
+      val numZeros = (sevenBitsMayBeZero count { b =>
+        b == 0
+      })
 
       (sevenBitsMayBeZero.length + numZeros) <= 65535
     }
@@ -265,7 +268,9 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
     def args: List[Tree] = forcedInfo.args
     def assocs: List[(Name, ClassfileAnnotArg)] = forcedInfo.assocs
     def original: Tree = forcedInfo.original
-    def setOriginal(t: Tree): this.type = { forcedInfo.setOriginal(t); this }
+    def setOriginal(t: Tree): this.type = {
+      forcedInfo.setOriginal(t); this
+    }
 
     // We should always be able to print things without forcing them.
     override def toString = if (forced) forcedInfo.toString else "@<?>"
@@ -309,7 +314,9 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
 
     private var rawpos: Position = NoPosition
     def pos = rawpos
-    def setPos(pos: Position): this.type = { // Syncnote: Setpos inaccessible to reflection, so no sync in rawpos necessary.
+    def setPos(
+        pos: Position)
+        : this.type = { // Syncnote: Setpos inaccessible to reflection, so no sync in rawpos necessary.
       rawpos = pos
       this
     }
@@ -377,7 +384,9 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
     // expression, there is a fair chance they will turn up here not as
     // Literal(const) but some arbitrary AST.
     def constantAtIndex(index: Int): Option[Constant] =
-      argAtIndex(index) collect { case Literal(x) => x }
+      argAtIndex(index) collect {
+        case Literal(x) => x
+      }
 
     def argAtIndex(index: Int): Option[Tree] =
       if (index < args.size) Some(args(index)) else None

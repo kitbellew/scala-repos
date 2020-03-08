@@ -13,5 +13,7 @@ private[finagle] trait HttpRequestProxy extends HttpMessageProxy {
     httpRequest.setMethod(method)
   }
   protected[finagle] def getUri(): String = httpRequest.getUri()
-  protected[finagle] def setUri(uri: String) { httpRequest.setUri(uri) }
+  protected[finagle] def setUri(uri: String) {
+    httpRequest.setUri(uri)
+  }
 }

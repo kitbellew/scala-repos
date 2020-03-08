@@ -78,13 +78,18 @@ trait BatchedSink[T] extends Sink[T] {
       // This object combines some common scalding batching operations:
       val batchOps = new BatchedOperations(batcher)
 
-      val batchStreams =
-        batchOps.coverIt(timeSpan).map { b => (b, readStream(b, mode)) }
+      val batchStreams = batchOps.coverIt(timeSpan).map { b =>
+        (b, readStream(b, mode))
+      }
 
       // Maybe an inclusive interval of batches to pull from incoming
       val batchesToWrite: Option[(BatchID, BatchID)] = batchStreams
-        .dropWhile { _._2.isDefined }
-        .map { _._1 }
+        .dropWhile {
+          _._2.isDefined
+        }
+        .map {
+          _._1
+        }
         .toList match {
         case Nil  => None
         case list => Some((list.min, list.max))
@@ -104,16 +109,24 @@ trait BatchedSink[T] extends Sink[T] {
       }
       // This data is already on disk and will not be recomputed
       val existing = batchStreams
-        .takeWhile { _._2.isDefined }
-        .collect { case (batch, Some(flow)) => (batch, flow) }
+        .takeWhile {
+          _._2.isDefined
+        }
+        .collect {
+          case (batch, Some(flow)) => (batch, flow)
+        }
 
       def mergeExistingAndBuilt(
           optBuilt: Option[(Interval[BatchID], FlowToPipe[T])])
           : Try[((Interval[Timestamp], Mode), FlowToPipe[T])] = {
         val (aBatches, aFlows) = existing.unzip
-        val flows = aFlows ++ (optBuilt.map { _._2 })
+        val flows = aFlows ++ (optBuilt.map {
+          _._2
+        })
         val batches = aBatches ++ (optBuilt
-          .map { pair => BatchID.toIterable(pair._1) }
+          .map { pair =>
+            BatchID.toIterable(pair._1)
+          }
           .getOrElse(Iterable.empty))
 
         if (flows.isEmpty)

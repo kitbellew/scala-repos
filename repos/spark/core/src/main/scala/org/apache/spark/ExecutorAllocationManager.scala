@@ -409,7 +409,9 @@ private[spark] class ExecutorAllocationManager(
         localityAwareTasks,
         hostToLocalTaskCount)
     if (addRequestAcknowledged) {
-      val executorsString = "executor" + { if (delta > 1) "s" else "" }
+      val executorsString = "executor" + {
+        if (delta > 1) "s" else ""
+      }
       logInfo(
         s"Requesting $delta new $executorsString because tasks are backlogged" +
           s" (new desired total will be $numExecutorsTarget)")
@@ -709,7 +711,9 @@ private[spark] class ExecutorAllocationManager(
           if (totalPendingTasks() == 0) {
             allocationManager.onSchedulerBacklogged()
           }
-          stageIdToTaskIndices.get(stageId).foreach { _.remove(taskIndex) }
+          stageIdToTaskIndices.get(stageId).foreach {
+            _.remove(taskIndex)
+          }
         }
       }
     }

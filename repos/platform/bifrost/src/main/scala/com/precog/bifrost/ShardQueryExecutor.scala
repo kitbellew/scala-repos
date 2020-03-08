@@ -180,9 +180,13 @@ trait ShardQueryExecutorPlatform[M[+_]]
               EitherT.right {
                 faults.toStream traverse {
                   case Fault.Error(pos, msg) =>
-                    queryReport.error(pos, msg) map { _ => true }
+                    queryReport.error(pos, msg) map { _ =>
+                      true
+                    }
                   case Fault.Warning(pos, msg) =>
-                    queryReport.warn(pos, msg) map { _ => false }
+                    queryReport.warn(pos, msg) map { _ =>
+                      false
+                    }
                 } map { errors =>
                   faults -> (if (errors.exists(_ == true)) Table.empty
                              else table)
@@ -217,7 +221,9 @@ trait ShardQueryExecutorPlatform[M[+_]]
               })
           }: _*)
 
-          table flatMap { tbl => mn(tbl.sort(sortKey, opts.sortOrder)) }
+          table flatMap { tbl =>
+            mn(tbl.sort(sortKey, opts.sortOrder))
+          }
         } else {
           table
         }
@@ -225,7 +231,9 @@ trait ShardQueryExecutorPlatform[M[+_]]
       def page(table: N[Table]): N[Table] =
         opts.page map {
           case (offset, limit) =>
-            table map { _.takeRange(offset, limit) }
+            table map {
+              _.takeRange(offset, limit)
+            }
         } getOrElse table
 
       page(sort(table map (_.compact(constants.SourceValue.Single))))
@@ -247,7 +255,9 @@ trait ShardQueryExecutorPlatform[M[+_]]
 
       try {
         val forest = compile(query)
-        val validForest = forest filter { tree => tree.errors forall isWarning }
+        val validForest = forest filter { tree =>
+          tree.errors forall isWarning
+        }
 
         if (validForest.size == 1) {
           val tree = validForest.head

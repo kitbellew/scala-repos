@@ -30,7 +30,9 @@ object Opts {
       if (mappings.isEmpty) Nil
       else
         mappings
-          .map { case (f, u) => s"${f.getAbsolutePath}#${u.toExternalForm}" }
+          .map {
+            case (f, u) => s"${f.getAbsolutePath}#${u.toExternalForm}"
+          }
           .mkString("-doc-external-doc:", ",", "") :: Nil
   }
   object resolver {

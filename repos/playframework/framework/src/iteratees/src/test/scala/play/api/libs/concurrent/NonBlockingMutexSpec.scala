@@ -55,7 +55,9 @@ object NonBlockingMutexSpec extends Specification {
     "run a single operation" in {
       val p = Promise[Int]()
       val mutex = new NonBlockingMutex()
-      mutex.exclusive { p.success(1) }
+      mutex.exclusive {
+        p.success(1)
+      }
       Await.result(p.future, waitTime) must_== (1)
     }
 
@@ -63,8 +65,12 @@ object NonBlockingMutexSpec extends Specification {
       val p1 = Promise[Unit]()
       val p2 = Promise[Unit]()
       val mutex = new NonBlockingMutex()
-      mutex.exclusive { p1.success(()) }
-      mutex.exclusive { p2.success(()) }
+      mutex.exclusive {
+        p1.success(())
+      }
+      mutex.exclusive {
+        p2.success(())
+      }
       Await.result(p1.future, waitTime) must_== (())
       Await.result(p2.future, waitTime) must_== (())
     }

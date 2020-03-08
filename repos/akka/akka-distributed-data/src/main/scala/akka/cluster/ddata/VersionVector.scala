@@ -415,6 +415,8 @@ final case class ManyVersionVector(versions: TreeMap[UniqueAddress, Long])
 
   override def toString: String =
     versions
-      .map { case ((n, v)) ⇒ n + " -> " + v }
+      .map {
+        case ((n, v)) ⇒ n + " -> " + v
+      }
       .mkString("VersionVector(", ", ", ")")
 }

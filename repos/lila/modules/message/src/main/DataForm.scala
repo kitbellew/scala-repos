@@ -14,7 +14,10 @@ private[message] final class DataForm(security: MessageSecurity) {
     Form(
       mapping(
         "username" -> nonEmptyText(maxLength = 20)
-          .verifying("Unknown username", { fetchUser(_).isDefined })
+          .verifying(
+            "Unknown username", {
+              fetchUser(_).isDefined
+            })
           .verifying(
             "Sorry, this player doesn't accept new messages",
             { name =>

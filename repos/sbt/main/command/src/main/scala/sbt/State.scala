@@ -276,8 +276,11 @@ object State {
       s.copy(exitHooks = Set.empty)
     }
     def locked[T](file: File)(t: => T): T =
-      s.configuration.provider.scalaProvider.launcher.globalLock
-        .apply(file, new Callable[T] { def call = t })
+      s.configuration.provider.scalaProvider.launcher.globalLock.apply(
+        file,
+        new Callable[T] {
+          def call = t
+        })
 
     def interactive = getBoolean(s, BasicKeys.interactive, false)
     def setInteractive(i: Boolean) = s.put(BasicKeys.interactive, i)

@@ -54,7 +54,11 @@ class EvalTests extends CatsSuite {
   // has the semantics of lazy val: 0 or 1 evaluations
   def memoized[A](value: A): (Spooky, Eval[A]) = {
     val spooky = new Spooky
-    (spooky, Eval.later { spooky.increment(); value })
+    (
+      spooky,
+      Eval.later {
+        spooky.increment(); value
+      })
   }
 
   test("memoized: Eval.later(_)") {
@@ -64,7 +68,11 @@ class EvalTests extends CatsSuite {
   // has the semantics of val: 1 evaluation
   def eager[A](value: A): (Spooky, Eval[A]) = {
     val spooky = new Spooky
-    (spooky, Eval.now { spooky.increment(); value })
+    (
+      spooky,
+      Eval.now {
+        spooky.increment(); value
+      })
   }
 
   test("eager: Eval.now(_)") {
@@ -74,7 +82,11 @@ class EvalTests extends CatsSuite {
   // has the semantics of def: N evaluations
   def always[A](value: A): (Spooky, Eval[A]) = {
     val spooky = new Spooky
-    (spooky, Eval.always { spooky.increment(); value })
+    (
+      spooky,
+      Eval.always {
+        spooky.increment(); value
+      })
   }
 
   test("by-name: Eval.always(_)") {

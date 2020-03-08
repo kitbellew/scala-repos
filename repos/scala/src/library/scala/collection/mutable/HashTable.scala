@@ -172,7 +172,10 @@ trait HashTable[A, Entry >: Null <: HashEntry[A, Entry]]
   protected def findOrAddEntry[B](key: A, value: B): Entry = {
     val h = index(elemHashCode(key))
     val e = findEntry0(key, h)
-    if (e ne null) e else { addEntry0(createNewEntry(key, value), h); null }
+    if (e ne null) e
+    else {
+      addEntry0(createNewEntry(key, value), h); null
+    }
   }
 
   /** Creates new entry to be immediately inserted into the hashtable.
@@ -252,7 +255,9 @@ trait HashTable[A, Entry >: Null <: HashEntry[A, Entry]]
     */
   protected def clearTable() {
     var i = table.length - 1
-    while (i >= 0) { table(i) = null; i = i - 1 }
+    while (i >= 0) {
+      table(i) = null; i = i - 1
+    }
     tableSize = 0
     nnSizeMapReset(0)
   }

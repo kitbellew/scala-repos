@@ -75,8 +75,9 @@ class ReflectionTupleConverter[T](fields: Fields)(implicit m: Manifest[T])
   def validate {
     //We can't touch setters because that shouldn't be accessed until map/reduce side, not
     //on submitter.
-    val missing =
-      Dsl.asList(fields).find { f => !getSetters.contains(f.toString) }
+    val missing = Dsl.asList(fields).find { f =>
+      !getSetters.contains(f.toString)
+    }
 
     assert(
       missing.isEmpty,
@@ -86,9 +87,15 @@ class ReflectionTupleConverter[T](fields: Fields)(implicit m: Manifest[T])
 
   def getSetters =
     m.runtimeClass.getDeclaredMethods
-      .filter { _.getName.startsWith("set") }
-      .groupBy { setterToFieldName(_) }
-      .mapValues { _.head }
+      .filter {
+        _.getName.startsWith("set")
+      }
+      .groupBy {
+        setterToFieldName(_)
+      }
+      .mapValues {
+        _.head
+      }
 
   // Do all the reflection for the setters we need:
   // This needs to be lazy because Method is not serializable
@@ -122,7 +129,9 @@ class OrderedConstructorConverter[T](fields: Fields)(implicit mf: Manifest[T])
   // below
   def getConstructor =
     mf.runtimeClass.getConstructors
-      .filter { _.getParameterTypes.size == fields.size }
+      .filter {
+        _.getParameterTypes.size == fields.size
+      }
       .head
       .asInstanceOf[Constructor[T]]
 
@@ -133,7 +142,9 @@ class OrderedConstructorConverter[T](fields: Fields)(implicit mf: Manifest[T])
 
   override def apply(input: TupleEntry): T = {
     val tup = input.getTuple
-    val args = (0 until tup.size).map { tup.getObject(_) }
+    val args = (0 until tup.size).map {
+      tup.getObject(_)
+    }
     cons.newInstance(args: _*)
   }
 }

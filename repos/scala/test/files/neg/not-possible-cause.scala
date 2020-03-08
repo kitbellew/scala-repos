@@ -1,3 +1,5 @@
 object Foo {
-  def foo[A <: Product](a: A) { type X = a.type }
+  def foo[A <: Product](a: A) {
+    type X = a.type
+  }
 }

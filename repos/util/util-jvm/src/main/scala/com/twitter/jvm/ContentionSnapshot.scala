@@ -33,7 +33,9 @@ class ContentionSnapshot {
     val blocked = bean
       .getThreadInfo(bean.getAllThreadIds, true, true)
       .filter(_ != null)
-      .collect { case Blocked(info) => info }
+      .collect {
+        case Blocked(info) => info
+      }
 
     val ownerIds = blocked map (_.getLockOwnerId) filter (_ != -1)
     val owners =
@@ -46,7 +48,9 @@ class ContentionSnapshot {
       if (deadlockThreadIds == null) Array.empty[ThreadInfo]
       else
         deadlockThreadIds.flatMap { id =>
-          blocked.find { threadInfo => threadInfo.getThreadId() == id }
+          blocked.find { threadInfo =>
+            threadInfo.getThreadId() == id
+          }
         }
 
     Snapshot(

@@ -28,13 +28,19 @@ class FutureTests extends CatsSuite {
   val timeout = 3.seconds
 
   def futureXor[A](f: Future[A]): Future[Xor[Throwable, A]] =
-    f.map(Xor.right[Throwable, A]).recover { case t => Xor.left(t) }
+    f.map(Xor.right[Throwable, A]).recover {
+      case t => Xor.left(t)
+    }
 
   implicit def eqfa[A: Eq]: Eq[Future[A]] =
     new Eq[Future[A]] {
       def eqv(fx: Future[A], fy: Future[A]): Boolean = {
         val fz = futureXor(fx) zip futureXor(fy)
-        Await.result(fz.map { case (tx, ty) => tx === ty }, timeout)
+        Await.result(
+          fz.map {
+            case (tx, ty) => tx === ty
+          },
+          timeout)
       }
     }
 

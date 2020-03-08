@@ -32,7 +32,9 @@ private object AnalysisBuilder {
               replay =>
                 UciToPgn(replay, uciAnalysis) match {
                   case (analysis, errors) =>
-                    errors foreach { e => logger.warn(s"[UciToPgn] $debug $e") }
+                    errors foreach { e =>
+                      logger.warn(s"[UciToPgn] $debug $e")
+                    }
                     if (analysis.valid) {
                       if (analysis.emptyRatio >= 1d / 10)
                         fufail(

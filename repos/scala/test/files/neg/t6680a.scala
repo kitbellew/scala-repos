@@ -20,6 +20,8 @@ object Test {
 
 // The tweetable variation
 object Tweet {
-  case class C[A](f: A => A); def f(x: Any) = x match { case C(f) => f("") };
-  f(C[Int](x => x))
+  case class C[A](f: A => A);
+  def f(x: Any) = x match {
+    case C(f) => f("")
+  }; f(C[Int](x => x))
 }

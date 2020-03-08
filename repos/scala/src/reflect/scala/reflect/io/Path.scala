@@ -76,7 +76,9 @@ object Path {
       if (isFile) new File(jfile)
       else if (isDirectory) new Directory(jfile)
       else new Path(jfile)
-    } catch { case ex: SecurityException => new Path(jfile) }
+    } catch {
+      case ex: SecurityException => new Path(jfile)
+    }
 
   /** Avoiding any shell/path issues by only using alphanumerics. */
   private[io] def randomPrefix = alphanumeric take 6 mkString ""
@@ -218,19 +220,25 @@ class Path private[io] (val jfile: JFile) {
   def exists = {
     if (Statistics.canEnable) Statistics.incCounter(IOStats.fileExistsCount)
     try jfile.exists()
-    catch { case ex: SecurityException => false }
+    catch {
+      case ex: SecurityException => false
+    }
   }
 
   def isFile = {
     if (Statistics.canEnable) Statistics.incCounter(IOStats.fileIsFileCount)
     try jfile.isFile()
-    catch { case ex: SecurityException => false }
+    catch {
+      case ex: SecurityException => false
+    }
   }
   def isDirectory = {
     if (Statistics.canEnable)
       Statistics.incCounter(IOStats.fileIsDirectoryCount)
     try jfile.isDirectory()
-    catch { case ex: SecurityException => jfile.getPath == "." }
+    catch {
+      case ex: SecurityException => jfile.getPath == "."
+    }
   }
   def isAbsolute = jfile.isAbsolute()
   def isEmpty = path.length == 0

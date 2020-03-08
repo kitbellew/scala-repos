@@ -19,7 +19,9 @@ class SliceMatrix[
 
   def apply(i: Int, j: Int): V = tensor(slice1(i) -> slice2(j))
 
-  def update(i: Int, j: Int, e: V) { tensor(slice1(i) -> slice2(j)) = e }
+  def update(i: Int, j: Int, e: V) {
+    tensor(slice1(i) -> slice2(j)) = e
+  }
 
   def rows: Int = slice1.length
 

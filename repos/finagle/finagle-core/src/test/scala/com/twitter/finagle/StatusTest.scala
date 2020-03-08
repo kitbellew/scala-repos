@@ -68,7 +68,9 @@ class StatusTest
     assert(!open.isDone)
 
     status = Status.Open
-    eventually { assert(open.isDone) }
+    eventually {
+      assert(open.isDone)
+    }
     Await.result(open) // no exceptions
   }
 
@@ -79,8 +81,12 @@ class StatusTest
     assert(!open.isDone)
 
     status = Status.Closed
-    eventually { assert(open.isDefined) }
-    intercept[Status.ClosedException] { Await.result(open) }
+    eventually {
+      assert(open.isDefined)
+    }
+    intercept[Status.ClosedException] {
+      Await.result(open)
+    }
   }
 
   test("Ordering spot check") {

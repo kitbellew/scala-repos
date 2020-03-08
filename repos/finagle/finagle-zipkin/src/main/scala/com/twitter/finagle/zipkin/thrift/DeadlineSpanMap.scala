@@ -21,7 +21,9 @@ private class DeadlineSpanMap(
 
   private[this] val spanMap = new ConcurrentHashMap[TraceId, MutableSpan](64)
 
-  private[this] val timerTask = timer.schedule(ttl / 2) { flush(ttl.ago) }
+  private[this] val timerTask = timer.schedule(ttl / 2) {
+    flush(ttl.ago)
+  }
 
   /**
     * Update the mutable span.
@@ -93,7 +95,9 @@ private final class MutableSpan(val traceId: TraceId, val started: Time) {
   private[this] val annotations = ArrayBuffer.empty[ZipkinAnnotation]
   private[this] val binaryAnnotations = ArrayBuffer.empty[BinaryAnnotation]
 
-  def endpoint: Endpoint = synchronized { _endpoint }
+  def endpoint: Endpoint = synchronized {
+    _endpoint
+  }
 
   def setName(n: String): MutableSpan = synchronized {
     _name = Some(n)
@@ -137,5 +141,7 @@ private final class MutableSpan(val traceId: TraceId, val started: Time) {
     Span(traceId, _service, _name, annotations, binaryAnnotations, _endpoint)
   }
 
-  def isComplete: Boolean = synchronized { _isComplete }
+  def isComplete: Boolean = synchronized {
+    _isComplete
+  }
 }

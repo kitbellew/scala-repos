@@ -910,7 +910,9 @@ final class ParamMap private[ml] (private val map: mutable.Map[Param[Any], Any])
   @varargs
   @Since("1.2.0")
   def put(paramPairs: ParamPair[_]*): this.type = {
-    paramPairs.foreach { p => map(p.param.asInstanceOf[Param[Any]]) = p.value }
+    paramPairs.foreach { p =>
+      map(p.param.asInstanceOf[Param[Any]]) = p.value
+    }
     this
   }
 
@@ -966,7 +968,9 @@ final class ParamMap private[ml] (private val map: mutable.Map[Param[Any], Any])
     // returns the instance of collections.Map, not mutable.Map.
     // Otherwise, we get ClassCastException.
     // Not using filterKeys also avoid SI-6654
-    val filtered = map.filter { case (k, _) => k.parent == parent.uid }
+    val filtered = map.filter {
+      case (k, _) => k.parent == parent.uid
+    }
     new ParamMap(filtered)
   }
 

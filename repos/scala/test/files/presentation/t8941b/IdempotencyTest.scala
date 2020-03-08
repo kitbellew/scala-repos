@@ -68,5 +68,7 @@ abstract class IdempotencyTest { self =>
     assertNoProblems()
   }
 
-  def main(args: Array[String]) { show() }
+  def main(args: Array[String]) {
+    show()
+  }
 }

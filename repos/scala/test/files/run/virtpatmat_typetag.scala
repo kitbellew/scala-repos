@@ -24,7 +24,9 @@ object Test extends App {
 
   // the same match as typeMatch, but using an extractor
   def extractorMatch[S: ClassTag](a: Any) =
-    (new Extractors { type T = S; val tTag = classTag[T] })(a)
+    (new Extractors {
+      type T = S; val tTag = classTag[T]
+    })(a)
 
   typeMatch[Int](1)
   typeMatch[Integer](1)

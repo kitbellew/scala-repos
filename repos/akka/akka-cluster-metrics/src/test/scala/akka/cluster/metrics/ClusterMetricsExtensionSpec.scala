@@ -57,7 +57,9 @@ class MetricsExtensionSpec
 
     "verify sigar mock data matches expected ewma data" in {
 
-      val history = metricsView.metricsHistory.reverse.map { _.head }
+      val history = metricsView.metricsHistory.reverse.map {
+        _.head
+      }
 
       val expected = List(
         (0.700, 0.000, 0.000),
@@ -112,7 +114,9 @@ class MetricsExtensionSpec
 
       }
 
-      (1 to 3) foreach { step ⇒ cycle() }
+      (1 to 3) foreach { step ⇒
+        cycle()
+      }
 
     }
 

@@ -90,7 +90,9 @@ class StreamTcpDocSpec extends AkkaSpec {
             allowTruncation = true))
         .map(_.utf8String)
         //#welcome-banner-chat-server
-        .map { command ⇒ serverProbe.ref ! command; command }
+        .map { command ⇒
+          serverProbe.ref ! command; command
+        }
         //#welcome-banner-chat-server
         .via(commandParser)
         // merge in the initial banner after parser

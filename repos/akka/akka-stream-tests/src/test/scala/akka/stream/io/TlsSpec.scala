@@ -410,7 +410,9 @@ class TlsSpec
                 }
               })
             .via(debug)
-            .collect { case SessionBytes(_, b) ⇒ b }
+            .collect {
+              case SessionBytes(_, b) ⇒ b
+            }
             .scan(ByteString.empty)(_ ++ _)
             .via(new Timeout(6.seconds))
             .dropWhile(_.size < scenario.output.size)
@@ -432,8 +434,12 @@ class TlsSpec
     "emit an error if the TLS handshake fails certificate checks" in assertAllStagesStopped {
       val getError = Flow[SslTlsInbound]
         .map[Either[SslTlsInbound, SSLException]](i ⇒ Left(i))
-        .recover { case e: SSLException ⇒ Right(e) }
-        .collect { case Right(e) ⇒ e }
+        .recover {
+          case e: SSLException ⇒ Right(e)
+        }
+        .collect {
+          case Right(e) ⇒ e
+        }
         .toMat(Sink.head)(Keep.right)
 
       val simple =

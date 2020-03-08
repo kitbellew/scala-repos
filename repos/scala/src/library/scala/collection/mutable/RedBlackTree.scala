@@ -76,7 +76,9 @@ private[collection] object RedBlackTree {
     if (node eq null) 0 else 1 + size(node.left) + size(node.right)
   def size(tree: Tree[_, _]): Int = tree.size
   def isEmpty(tree: Tree[_, _]) = tree.root eq null
-  def clear(tree: Tree[_, _]): Unit = { tree.root = null; tree.size = 0 }
+  def clear(tree: Tree[_, _]): Unit = {
+    tree.root = null; tree.size = 0
+  }
 
   // ---- search ----
 

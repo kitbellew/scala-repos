@@ -133,7 +133,9 @@ object PageRank extends Logging {
         if (!(id != src && personalized)) resetProb else 0.0
       }
 
-    def delta(u: VertexId, v: VertexId): Double = { if (u == v) 1.0 else 0.0 }
+    def delta(u: VertexId, v: VertexId): Double = {
+      if (u == v) 1.0 else 0.0
+    }
 
     var iteration = 0
     var prevRankGraph: Graph[Double, Double] = null
@@ -153,7 +155,9 @@ object PageRank extends Logging {
       prevRankGraph = rankGraph
       val rPrb = if (personalized) { (src: VertexId, id: VertexId) =>
         resetProb * delta(src, id)
-      } else { (src: VertexId, id: VertexId) => resetProb }
+      } else { (src: VertexId, id: VertexId) =>
+        resetProb
+      }
 
       rankGraph = rankGraph
         .joinVertices(rankUpdates) { (id, oldRank, msgSum) =>

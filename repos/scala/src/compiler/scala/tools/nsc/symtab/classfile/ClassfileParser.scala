@@ -451,7 +451,9 @@ abstract class ClassfileParser {
       innerClasses innerSymbol name
     else
       try lookupClass(name)
-      catch { case _: FatalError => loadClassSymbol(name) }
+      catch {
+        case _: FatalError => loadClassSymbol(name)
+      }
   }
 
   def parseClass() {
@@ -472,8 +474,9 @@ abstract class ClassfileParser {
         ) // dummy superclass, will be replaced by pickled information
       } else
         raiseLoaderLevel {
-          val superType = if (jflags.isAnnotation) { u2; AnnotationClass.tpe }
-          else pool.getSuperClass(u2).tpe_*
+          val superType = if (jflags.isAnnotation) {
+            u2; AnnotationClass.tpe
+          } else pool.getSuperClass(u2).tpe_*
           val ifaceCount = u2
           var ifaces =
             for (i <- List.range(0, ifaceCount))
@@ -670,7 +673,9 @@ abstract class ClassfileParser {
     }
     def subName(isDelimiter: Char => Boolean): Name = {
       val start = index
-      while (!isDelimiter(sig.charAt(index))) { index += 1 }
+      while (!isDelimiter(sig.charAt(index))) {
+        index += 1
+      }
       sig.subName(start, index)
     }
     def sig2type(
@@ -934,7 +939,9 @@ abstract class ClassfileParser {
                 case Some(san: AnnotationInfo) =>
                   val bytes =
                     san.assocs
-                      .find({ _._1 == nme.bytes })
+                      .find({
+                        _._1 == nme.bytes
+                      })
                       .get
                       ._2
                       .asInstanceOf[ScalaSigBytes]

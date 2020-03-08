@@ -90,16 +90,24 @@ object PlayForkProcess {
       }
       // now join our logging threads (process is supposed to be gone, so nothing to log)
       try process.getInputStream.close()
-      catch { case _: Exception => }
+      catch {
+        case _: Exception =>
+      }
       try process.getErrorStream.close()
-      catch { case _: Exception => }
+      catch {
+        case _: Exception =>
+      }
       outputThread.join()
       errorThread.join()
     }
-    val shutdownHook = newThread { stop() }
+    val shutdownHook = newThread {
+      stop()
+    }
     JRuntime.getRuntime.addShutdownHook(shutdownHook)
     try process.waitFor()
-    catch { case _: InterruptedException => stop() }
+    catch {
+      case _: InterruptedException => stop()
+    }
     try JRuntime.getRuntime.removeShutdownHook(shutdownHook)
     catch {
       case _: IllegalStateException =>
@@ -165,5 +173,7 @@ object PlayForkProcess {
   }
 
   def newThread(f: => Unit): Thread =
-    new Thread(new Runnable { def run(): Unit = f })
+    new Thread(new Runnable {
+      def run(): Unit = f
+    })
 }

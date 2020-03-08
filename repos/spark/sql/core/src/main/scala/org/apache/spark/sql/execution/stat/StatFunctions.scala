@@ -93,12 +93,16 @@ private[sql] object StatFunctions extends Logging {
     def merge(
         sum1: Array[QuantileSummaries],
         sum2: Array[QuantileSummaries]): Array[QuantileSummaries] = {
-      sum1.zip(sum2).map { case (s1, s2) => s1.compress().merge(s2.compress()) }
+      sum1.zip(sum2).map {
+        case (s1, s2) => s1.compress().merge(s2.compress())
+      }
     }
     val summaries =
       df.select(columns: _*).rdd.aggregate(emptySummaries)(apply, merge)
 
-    summaries.map { summary => probabilities.map(summary.query) }
+    summaries.map { summary =>
+      probabilities.map(summary.query)
+    }
   }
 
   /**

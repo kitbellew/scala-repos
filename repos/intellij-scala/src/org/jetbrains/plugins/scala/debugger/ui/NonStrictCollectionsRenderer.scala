@@ -57,7 +57,9 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
 
   override def getName = "Scala streams as collections"
 
-  override def setName(text: String) { /*do nothing*/ }
+  override def setName(text: String) {
+    /*do nothing*/
+  }
 
   override def isEnabled: Boolean = !mustNotExpandStreams
 

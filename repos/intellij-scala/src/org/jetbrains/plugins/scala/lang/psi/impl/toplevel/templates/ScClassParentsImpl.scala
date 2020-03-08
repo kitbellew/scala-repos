@@ -24,7 +24,9 @@ class ScClassParentsImpl private (
     node: ASTNode)
     extends ScalaStubBasedElementImpl(stub, nodeType, node)
     with ScClassParents {
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
 
   def this(stub: ScTemplateParentsStub) = {
     this(stub, ScalaElementTypes.CLASS_PARENTS, null)

@@ -102,9 +102,15 @@ object Test5 {
 }
 
 object SerializationTest {
-  object Types extends Enumeration { val X, Y = Value }
-  class A extends java.io.Serializable { val types = Types.values }
-  class B extends java.io.Serializable { val types = Set(Types.X, Types.Y) }
+  object Types extends Enumeration {
+    val X, Y = Value
+  }
+  class A extends java.io.Serializable {
+    val types = Types.values
+  }
+  class B extends java.io.Serializable {
+    val types = Set(Types.X, Types.Y)
+  }
 
   def serialize(obj: AnyRef) = {
     val baos = new java.io.ByteArrayOutputStream()

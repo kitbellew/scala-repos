@@ -38,7 +38,9 @@ object Test1_scala {
 
   private def arrayEquals[A, B](a1: Array[A], a2: Array[B]): Boolean =
     (a1.length == a2.length) &&
-      (Iterator.range(0, a1.length) forall { i => a1(i) == a2(i) })
+      (Iterator.range(0, a1.length) forall { i =>
+        a1(i) == a2(i)
+      })
 
   object WeekDay extends Enumeration {
     type WeekDay = Value
@@ -112,7 +114,9 @@ object Test1_scala {
     println()
 
     // Function
-    val f1 = { x: Int => 2 * x }
+    val f1 = { x: Int =>
+      2 * x
+    }
     val _f1: Function[Int, Int] = read(write(f1))
     println("f1 = <na>")
     println("_f1 = <na>")

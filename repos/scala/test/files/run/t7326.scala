@@ -5,7 +5,9 @@ object Test extends App {
 
   def testCorrectness() {
     // a key that has many hashCode collisions
-    case class Collision(i: Int) { override def hashCode = i / 5 }
+    case class Collision(i: Int) {
+      override def hashCode = i / 5
+    }
 
     def subsetTest[T](emptyA: Set[T], emptyB: Set[T], mkKey: Int => T, n: Int) {
       val outside = mkKey(n + 1)

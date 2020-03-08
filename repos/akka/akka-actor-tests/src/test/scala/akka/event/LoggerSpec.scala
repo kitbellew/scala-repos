@@ -102,10 +102,14 @@ object LoggerSpec {
         ref ! ("OK")
       case event: LogEvent if !event.mdc.isEmpty ⇒
         print(event)
-        target foreach { _ ! event }
+        target foreach {
+          _ ! event
+        }
       case event: LogEvent ⇒
         print(event)
-        target foreach { _ ! event.message }
+        target foreach {
+          _ ! event.message
+        }
     }
   }
 

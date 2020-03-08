@@ -1,4 +1,8 @@
-class A[U] { def f[T] = { class X extends A[T] } }
+class A[U] {
+  def f[T] = {
+    class X extends A[T]
+  }
+}
 /*
 $ scalac a.scala
 $ javac -cp .:$SCALA_HOME/lib/scala-library.jar  -Xprint 'A$X$1'

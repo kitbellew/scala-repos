@@ -133,13 +133,17 @@ trait ShardSystemActorModule extends YggConfigComponent with Logging {
           actorStop(yggConfig, _, "ingestActor")(
             ingestActorSystem,
             ingestActorSystem.dispatcher)
-        } getOrElse { Future(())(ingestActorSystem.dispatcher) }
+        } getOrElse {
+          Future(())(ingestActorSystem.dispatcher)
+        }
       } yield {
         ingestActorSystem.shutdown()
         logger.info("Shard system stopped.")
       }
     })
 
-    ingestActor map { IngestSystem(_, stoppable) }
+    ingestActor map {
+      IngestSystem(_, stoppable)
+    }
   }
 }

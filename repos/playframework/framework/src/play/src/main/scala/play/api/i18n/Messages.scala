@@ -177,8 +177,9 @@ class DefaultLangs @Inject() (configuration: Configuration) extends Langs {
     }
 
     langs.map { lang =>
-      try { Lang(lang) }
-      catch {
+      try {
+        Lang(lang)
+      } catch {
         case NonFatal(e) =>
           throw configuration.reportError(
             "play.i18n.langs",
@@ -264,7 +265,9 @@ object Messages {
   def parse(messageSource: MessageSource, messageSourceName: String)
       : Either[PlayException.ExceptionSource, Map[String, String]] = {
     new Messages.MessagesParser(messageSource, "").parse.right.map { messages =>
-      messages.map { message => message.key -> message.pattern }.toMap
+      messages.map { message =>
+        message.key -> message.pattern
+      }.toMap
     }
   }
 
@@ -313,9 +316,13 @@ object Messages {
     val end = """^\s*""".r
     val newLine = namedError((("\r" ?) ~> "\n"), "End of line expected")
     val ignoreWhiteSpace = opt(whiteSpace)
-    val blankLine = ignoreWhiteSpace <~ newLine ^^ { case _ => Comment("") }
+    val blankLine = ignoreWhiteSpace <~ newLine ^^ {
+      case _ => Comment("")
+    }
 
-    val comment = """^#.*""".r ^^ { case s => Comment(s) }
+    val comment = """^#.*""".r ^^ {
+      case s => Comment(s)
+    }
 
     val messageKey =
       namedError("""^[a-zA-Z0-9_.-]+""".r, "Message key expected")
@@ -328,7 +335,9 @@ object Messages {
           """\""" | // Handle escaped \\
           "^.".r ^^ ("""\""" + _)) |
           "^.".r // Or any character
-      ) ^^ { case chars => chars.mkString },
+      ) ^^ {
+        case chars => chars.mkString
+      },
       "Message pattern expected"
     )
 
@@ -607,13 +616,17 @@ class DefaultMessagesApi @Inject() (
           .parse(Messages.UrlMessageSource(messageFile), messageFile.toString)
           .fold(e => throw e, identity)
       }
-      .foldLeft(Map.empty[String, String]) { _ ++ _ }
+      .foldLeft(Map.empty[String, String]) {
+        _ ++ _
+      }
   }
 
   protected def loadAllMessages: Map[String, Map[String, String]] = {
     langs.availables
       .map(_.code)
-      .map { lang => (lang, loadMessages("messages." + lang)) }
+      .map { lang =>
+        (lang, loadMessages("messages." + lang))
+      }
       .toMap
       .+("default" -> loadMessages("messages"))
       .+("default.play" -> loadMessages("messages.default"))

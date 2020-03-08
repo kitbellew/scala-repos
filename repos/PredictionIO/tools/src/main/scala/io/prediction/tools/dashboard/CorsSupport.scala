@@ -65,7 +65,9 @@ trait CORSSupport {
           }
         }
       }
-      .withHttpResponseHeadersMapped { headers => allowOriginHeader :: headers }
+      .withHttpResponseHeadersMapped { headers =>
+        allowOriginHeader :: headers
+      }
   }
 
   override def timeoutRoute: StandardRoute = complete {

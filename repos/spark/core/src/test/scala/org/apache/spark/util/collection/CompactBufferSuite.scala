@@ -26,10 +26,18 @@ class CompactBufferSuite extends SparkFunSuite {
     assert(b.iterator.toList === Nil)
     assert(b.size === 0)
     assert(b.iterator.toList === Nil)
-    intercept[IndexOutOfBoundsException] { b(0) }
-    intercept[IndexOutOfBoundsException] { b(1) }
-    intercept[IndexOutOfBoundsException] { b(2) }
-    intercept[IndexOutOfBoundsException] { b(-1) }
+    intercept[IndexOutOfBoundsException] {
+      b(0)
+    }
+    intercept[IndexOutOfBoundsException] {
+      b(1)
+    }
+    intercept[IndexOutOfBoundsException] {
+      b(2)
+    }
+    intercept[IndexOutOfBoundsException] {
+      b(-1)
+    }
   }
 
   test("basic inserts") {

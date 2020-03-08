@@ -5,7 +5,9 @@ object Scl4169 {
   }
 
   val b: Array[Any] = {
-    (List[Any]().toArray).map { case item => "" }
+    (List[Any]().toArray).map {
+      case item => ""
+    }
   }
 }
 //Array[Any]

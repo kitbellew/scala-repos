@@ -43,7 +43,10 @@ private[tournament] final class SocketHandler(
       tourId: String,
       uid: String,
       member: Member): Handler.Controller = {
-    case ("p", o) => o int "v" foreach { v => socket ! PingVersion(uid, v) }
+    case ("p", o) =>
+      o int "v" foreach { v =>
+        socket ! PingVersion(uid, v)
+      }
     case ("talk", o) =>
       o str "d" foreach { text =>
         member.userId foreach { userId =>

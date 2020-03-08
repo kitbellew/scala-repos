@@ -160,7 +160,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         storageTimeout,
         txLogScheduler)(actorSystem) map {
         _ map {
-          _.disjunction map { NIHDBResource(_) } leftMap {
+          _.disjunction map {
+            NIHDBResource(_)
+          } leftMap {
             ResourceError.fromExtractorError(
               "Failed to open NIHDB from %s".format(descriptorDir.toString))
           }
@@ -231,7 +233,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
       }
 
       for {
-        _ <- IOT { IOUtils.makeDirectory(versionDir) }
+        _ <- IOT {
+          IOUtils.makeDirectory(versionDir)
+        }
         file = (new File(versionDir, "data"))
         _ = logger.debug("Creating new blob at " + file)
         writeResult <- write(new FileOutputStream(file), 0L, data)
@@ -367,7 +371,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
       extends VFS {
 
     def writeAll(data: Seq[(Long, EventMessage)]): IO[PrecogUnit] = {
-      IO { projectionsActor ! IngestData(data) }
+      IO {
+        projectionsActor ! IngestData(data)
+      }
     }
 
     def writeAllSync(data: Seq[(Long, EventMessage)])
@@ -423,7 +429,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         (projectionsActor ? FindPathMetadata(path)).mapTo[MetadataResult] map {
           case PathChildren(_, children) =>
             children.headOption flatMap { pm =>
-              (pm.path - path) map { p0 => pm.copy(path = p0) }
+              (pm.path - path) map { p0 =>
+                pm.copy(path = p0)
+              }
             } toRightDisjunction {
               ResourceError.notFound(
                 "Cannot return metadata for path %s".format(path.path))
@@ -492,7 +500,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
                   quiescenceTimeout,
                   clock,
                   self))) tap { newActor =>
-              IO { pathActors += (path -> newActor); pathLRU += (path -> ()) }
+              IO {
+                pathActors += (path -> newActor); pathLRU += (path -> ())
+              }
             }
           }
         } yield {
@@ -513,7 +523,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         } except {
           case t: Throwable =>
             logger.error("Error obtaining path children for " + path, t)
-            IO { sender ! PathOpFailure(path, IOError(t)) }
+            IO {
+              sender ! PathOpFailure(path, IOError(t))
+            }
         } unsafePerformIO
 
       case FindPathMetadata(path) =>
@@ -522,16 +534,22 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         val requestor = sender
         val eio = VFSPathUtils.currentPathMetadata(baseDir, path) map {
           pathMetadata => requestor ! PathChildren(path, Set(pathMetadata))
-        } leftMap { error => requestor ! PathOpFailure(path, error) }
+        } leftMap { error =>
+          requestor ! PathOpFailure(path, error)
+        }
 
         eio.run.unsafePerformIO
 
       case op: PathOp =>
         val requestor = sender
-        val io = targetActor(op.path) map { _.tell(op, requestor) } except {
+        val io = targetActor(op.path) map {
+          _.tell(op, requestor)
+        } except {
           case t: Throwable =>
             logger.error("Error obtaining path actor for " + op.path, t)
-            IO { requestor ! PathOpFailure(op.path, IOError(t)) }
+            IO {
+              requestor ! PathOpFailure(op.path, IOError(t))
+            }
         }
 
         io.unsafePerformIO
@@ -540,7 +558,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         logger.debug("Received %d messages for ingest".format(messages.size))
         val requestor = sender
         val groupedAndPermissioned = messages
-          .groupBy({ case (_, event) => event.path })
+          .groupBy({
+            case (_, event) => event.path
+          })
           .toStream traverse {
           case (path, pathMessages) =>
             targetActor(path) map { pathActor =>
@@ -549,7 +569,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
                   permissionsFinder.writePermissions(
                     apiKey,
                     path,
-                    clock.instant()) map { apiKey -> _ }
+                    clock.instant()) map {
+                    apiKey -> _
+                  }
               } map { perms =>
                 val allPerms: Map[APIKey, Set[WritePermission]] =
                   perms.map(Map(_)).suml
@@ -627,7 +649,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
       logger.trace(
         "Checking write permission for " + path + " as " + authorities + " among " + permissions)
       PermissionsFinder.canWriteAs(
-        permissions filter { _.path.isEqualOrParentOf(path) },
+        permissions filter {
+          _.path.isEqualOrParentOf(path)
+        },
         authorities)
     }
 
@@ -652,13 +676,17 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
             val dir = versionDir(v)
             val openf = if (NIHDB.hasProjection(dir)) {
               resourceBuilder.openNIHDB _
-            } else { resourceBuilder.openBlob _ }
+            } else {
+              resourceBuilder.openBlob _
+            }
 
             for {
               resource <- EitherT {
                 openf(dir) flatMap {
                   _ tap { resourceV =>
-                    IO(resourceV foreach { r => versions += (version -> r) })
+                    IO(resourceV foreach { r =>
+                      versions += (version -> r)
+                    })
                   }
                 }
               }
@@ -691,12 +719,18 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
           case NIHDBData(data) =>
             resourceBuilder.createNIHDB(versionDir(version), writeAs) flatMap {
-              _ traverse { nihdbr => nihdbr tap { _.db.insert(data) } }
+              _ traverse { nihdbr =>
+                nihdbr tap {
+                  _.db.insert(data)
+                }
+              }
             }
         }
         _ <- created traverse { resource =>
           for {
-            _ <- IO { versions += (version -> resource) }
+            _ <- IO {
+              versions += (version -> resource)
+            }
             _ <- complete.whenM(
               versionLog.completeVersion(version) >> versionLog.setHead(
                 version) >> maybeExpireCache(apiKey, resource))
@@ -740,7 +774,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
       //TODO: Add job progress updates
       (response == UpdateSuccess(msg.path) && terminal)
         .option(msg.jobId)
-        .join traverse { jobManager.finish(_, clock.now()) } map { _ =>
+        .join traverse {
+        jobManager.finish(_, clock.now())
+      } map { _ =>
         response
       }
     }
@@ -936,7 +972,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
         case (offset, ArchiveMessage(apiKey, path, jobId, _, timestamp)) =>
           versionLog.clearHead >> IO(requestor ! UpdateSuccess(path))
-      } map { _ => PrecogUnit }
+      } map { _ =>
+        PrecogUnit
+      }
     }
 
     def versionOpt(version: Version) = version match {

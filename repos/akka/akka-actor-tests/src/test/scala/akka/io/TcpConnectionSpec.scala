@@ -898,7 +898,9 @@ class TcpConnectionSpec extends AkkaSpec("""
       connectionActor ! PoisonPill
       watch(connectionActor)
       expectTerminated(connectionActor)
-      an[IOException] should be thrownBy { socket.getInputStream.read() }
+      an[IOException] should be thrownBy {
+        socket.getInputStream.read()
+      }
     }
   }
 

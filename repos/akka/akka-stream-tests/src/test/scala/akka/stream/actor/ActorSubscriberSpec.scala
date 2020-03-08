@@ -31,7 +31,9 @@ object ActorSubscriberSpec {
       case err @ OnError(cause) ⇒ probe ! err
       case "ready" ⇒ request(elements = 2)
       case "boom" ⇒ throw new RuntimeException("boom") with NoStackTrace
-      case "requestAndCancel" ⇒ { request(1); cancel() }
+      case "requestAndCancel" ⇒ {
+        request(1); cancel()
+      }
       case "cancel" ⇒ cancel()
     }
   }
@@ -154,7 +156,9 @@ class ActorSubscriberSpec extends AkkaSpec with ImplicitSender {
       ref ! "ready"
       ref ! "ready"
       ref ! "boom"
-      (3 to 6) foreach { n ⇒ expectMsg(OnNext(n)) }
+      (3 to 6) foreach { n ⇒
+        expectMsg(OnNext(n))
+      }
       expectNoMsg(200.millis)
       ref ! "ready"
       expectMsg(OnNext(7))
@@ -260,7 +264,9 @@ class ActorSubscriberSpec extends AkkaSpec with ImplicitSender {
       queue += "b"
       queue += "c"
       strat.requestDemand(5) should be(2)
-      ('d' to 'j') foreach { queue += _.toString }
+      ('d' to 'j') foreach {
+        queue += _.toString
+      }
       queue.size should be(10)
       strat.requestDemand(0) should be(0)
       strat.requestDemand(1) should be(0)

@@ -30,10 +30,13 @@ trait ScalaClassLoader extends JClassLoader {
   /** Executing an action with this classloader as context classloader */
   def asContext[T](action: => T): T = {
     val saved = contextLoader
-    try { setContext(this); action }
-    finally setContext(saved)
+    try {
+      setContext(this); action
+    } finally setContext(saved)
   }
-  def setAsContext() { setContext(this) }
+  def setAsContext() {
+    setContext(this)
+  }
 
   /** Load and link a class with this classloader */
   def tryToLoadClass[T <: AnyRef](path: String): Option[Class[T]] =
@@ -57,7 +60,9 @@ trait ScalaClassLoader extends JClassLoader {
   def create[T <: AnyRef: ClassTag](path: String, errorFn: String => Unit)(
       args: AnyRef*): T = {
     def fail(msg: String) = error(msg, new IllegalArgumentException(msg))
-    def error(msg: String, e: Throwable) = { errorFn(msg); throw e }
+    def error(msg: String, e: Throwable) = {
+      errorFn(msg); throw e
+    }
     try {
       val clazz = Class.forName(path, /*initialize =*/ true, /*loader =*/ this)
       if (classTag[T].runtimeClass isAssignableFrom clazz) {
@@ -113,7 +118,9 @@ trait ScalaClassLoader extends JClassLoader {
     try asContext(
       method.invoke(null, Array(arguments.toArray: AnyRef): _*)
     ) // !!! : AnyRef shouldn't be necessary
-    catch unwrapHandler({ case ex => throw ex })
+    catch unwrapHandler({
+      case ex => throw ex
+    })
   }
 }
 

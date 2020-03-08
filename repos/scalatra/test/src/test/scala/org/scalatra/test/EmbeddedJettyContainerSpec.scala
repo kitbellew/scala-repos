@@ -27,11 +27,15 @@ class EmbeddedJettyContainerSpec
 
   "An embedded jetty container" should {
     "respond to a hello world servlet" in {
-      get("/") { body must_== "Hello, world" }
+      get("/") {
+        body must_== "Hello, world"
+      }
     }
 
     "have a default servlet" in {
-      get("/") { response.header("X-Has-Default-Servlet") must_== "true" }
+      get("/") {
+        response.header("X-Has-Default-Servlet") must_== "true"
+      }
     }
   }
 }

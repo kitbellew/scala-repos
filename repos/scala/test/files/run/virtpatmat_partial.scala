@@ -3,7 +3,9 @@ object Test extends App {
   println(a)
 
 // inferred type should be Map[String, Int]
-  val res = a collect { case (p, Some(a)) => (p, a) }
+  val res = a collect {
+    case (p, Some(a)) => (p, a)
+  }
 
 // variations: const target -> switch, non-const -> normal match, char target --> scrut needs toInt,
 // eta-expanded --> work is done by typedFunction, non-eta-expanded --> typedMatch
@@ -129,7 +131,9 @@ object Test extends App {
 
     def acceptClosingAngle(in: Int) {
       val closers: PartialFunction[Int, Int] = x =>
-        { println("hai!"); (x + 1) } match {
+        {
+          println("hai!"); (x + 1)
+        } match {
           case GTGTGTEQ => GTGTEQ
           case GTGTGT   => GTGT
           case GTGTEQ   => GTEQ

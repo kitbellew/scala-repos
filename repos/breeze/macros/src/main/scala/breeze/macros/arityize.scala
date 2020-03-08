@@ -130,9 +130,13 @@ object arityize {
           case q"new arityize.repeat()" =>
             tree match {
               case Ident(nme) if nme.isTypeName =>
-                List.fill(order) { tree }
+                List.fill(order) {
+                  tree
+                }
               case Ident(nme) if nme.isTermName =>
-                List.fill(order) { tree }
+                List.fill(order) {
+                  tree
+                }
               case _ => ???
             }
           case _ =>

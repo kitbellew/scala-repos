@@ -132,7 +132,9 @@ trait SeqLike[+A, +Repr]
   def lastIndexWhere(p: A => Boolean, end: Int): Int = {
     var i = length - 1
     val it = reverseIterator
-    while (it.hasNext && { val elem = it.next(); (i > end || !p(elem)) }) i -= 1
+    while (it.hasNext && {
+             val elem = it.next(); (i > end || !p(elem))
+           }) i -= 1
     i
   }
 
@@ -514,7 +516,9 @@ trait SeqLike[+A, +Repr]
   }
 
   private def occCounts[B](sq: Seq[B]): mutable.Map[B, Int] = {
-    val occ = new mutable.HashMap[B, Int] { override def default(k: B) = 0 }
+    val occ = new mutable.HashMap[B, Int] {
+      override def default(k: B) = 0
+    }
     for (y <- sq) occ(y) += 1
     occ
   }

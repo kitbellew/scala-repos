@@ -62,8 +62,11 @@ object SessionVar {
   def read[T](key: ScopedKey[Task[T]], state: State)(
       implicit f: Format[T]): Option[T] =
     Project.structure(state).streams(state).use(key) { s =>
-      try { Some(Operations.read(s.readBinary(key, DefaultDataID))) }
-      catch { case e: Exception => None }
+      try {
+        Some(Operations.read(s.readBinary(key, DefaultDataID)))
+      } catch {
+        case e: Exception => None
+      }
     }
 
   def load[T](key: ScopedKey[Task[T]], state: State)(

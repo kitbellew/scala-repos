@@ -61,9 +61,15 @@ class ArrayOrderBenchmarks extends MyBenchmark {
   def directAdd(x: Array[Int], y: Array[Int]): Array[Int] = {
     val z = new Array[Int](spire.math.max(x.length, y.length))
     var i = 0
-    while (i < x.length && i < y.length) { z(i) = x(i) + y(i); i += 1 }
-    while (i < x.length) { z(i) = x(i); i += 1 }
-    while (i < y.length) { z(i) = y(i); i += 1 }
+    while (i < x.length && i < y.length) {
+      z(i) = x(i) + y(i); i += 1
+    }
+    while (i < x.length) {
+      z(i) = x(i); i += 1
+    }
+    while (i < y.length) {
+      z(i) = y(i); i += 1
+    }
     z
   }
 
@@ -73,7 +79,13 @@ class ArrayOrderBenchmarks extends MyBenchmark {
   // def timeCompareGeneric(reps: Int) = run(reps) { a compare b }
   // def timeCompareDirect(reps: Int) = run(reps) { directCompare(a, b) }
 
-  def timeAddGeneric(reps: Int) = run(reps) { a + b }
-  def timeAddIndirect(reps: Int) = run(reps) { indirectAdd(a, b) }
-  def timeAddDirect(reps: Int) = run(reps) { directAdd(a, b) }
+  def timeAddGeneric(reps: Int) = run(reps) {
+    a + b
+  }
+  def timeAddIndirect(reps: Int) = run(reps) {
+    indirectAdd(a, b)
+  }
+  def timeAddDirect(reps: Int) = run(reps) {
+    directAdd(a, b)
+  }
 }

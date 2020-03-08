@@ -29,5 +29,7 @@ trait UtilGenerators {
     Arbitrary(genVector[A])
 
   private def genVector[A: Arbitrary]: Gen[Vector[A]] =
-    listOf(implicitly[Arbitrary[A]].arbitrary) map { xs => Vector(xs: _*) }
+    listOf(implicitly[Arbitrary[A]].arbitrary) map { xs =>
+      Vector(xs: _*)
+    }
 }

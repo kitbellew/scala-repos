@@ -96,7 +96,9 @@ object MovieLensALS {
         """.stripMargin)
     }
 
-    parser.parse(args, defaultParams).map { params => run(params) } getOrElse {
+    parser.parse(args, defaultParams).map { params =>
+      run(params)
+    } getOrElse {
       System.exit(1)
     }
   }
@@ -198,7 +200,9 @@ object MovieLensALS {
     val predictions: RDD[Rating] =
       model.predict(data.map(x => (x.user, x.product)))
     val predictionsAndRatings = predictions
-      .map { x => ((x.user, x.product), mapPredictedRating(x.rating)) }
+      .map { x =>
+        ((x.user, x.product), mapPredictedRating(x.rating))
+      }
       .join(data.map(x => ((x.user, x.product), x.rating)))
       .values
     math.sqrt(

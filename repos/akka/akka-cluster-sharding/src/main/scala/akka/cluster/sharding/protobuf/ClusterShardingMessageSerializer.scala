@@ -112,15 +112,21 @@ private[akka] class ClusterShardingMessageSerializer(
       BeginHandOffAckManifest -> { bytes ⇒
         BeginHandOffAck(shardIdMessageFromBinary(bytes))
       },
-      HandOffManifest -> { bytes ⇒ HandOff(shardIdMessageFromBinary(bytes)) },
+      HandOffManifest -> { bytes ⇒
+        HandOff(shardIdMessageFromBinary(bytes))
+      },
       ShardStoppedManifest -> { bytes ⇒
         ShardStopped(shardIdMessageFromBinary(bytes))
       },
       GracefulShutdownReqManifest -> { bytes ⇒
         GracefulShutdownReq(actorRefMessageFromBinary(bytes))
       },
-      GetShardStatsManifest -> { bytes ⇒ GetShardStats },
-      ShardStatsManifest -> { bytes ⇒ shardStatsFromBinary(bytes) }
+      GetShardStatsManifest -> { bytes ⇒
+        GetShardStats
+      },
+      ShardStatsManifest -> { bytes ⇒
+        shardStatsFromBinary(bytes)
+      }
     )
 
   override def manifest(obj: AnyRef): String = obj match {
@@ -227,7 +233,9 @@ private[akka] class ClusterShardingMessageSerializer(
     state.regionProxies.foreach { ref ⇒
       builder.addRegionProxies(Serialization.serializedActorPath(ref))
     }
-    state.unallocatedShards.foreach { builder.addUnallocatedShards }
+    state.unallocatedShards.foreach {
+      builder.addUnallocatedShards
+    }
 
     builder.build()
   }

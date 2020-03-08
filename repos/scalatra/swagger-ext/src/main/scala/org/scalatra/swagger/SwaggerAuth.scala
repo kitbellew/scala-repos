@@ -34,7 +34,9 @@ class SwaggerWithAuth(
       protocols: List[String],
       authorizations: List[String]) {
     val endpoints: List[AuthEndpoint[AnyRef]] =
-      s.endpoints(resourcePath) collect { case m: AuthEndpoint[AnyRef] => m }
+      s.endpoints(resourcePath) collect {
+        case m: AuthEndpoint[AnyRef] => m
+      }
     _docs += listingPath -> AuthApi(
       apiVersion,
       swaggerVersion,
@@ -280,7 +282,9 @@ object AuthApi {
     def allows(guard: Option[T] => Boolean): this.type = {
       _allows = guard; this
     }
-    def allowAll: this.type = { _allows = (u: Option[T]) => true; this }
+    def allowAll: this.type = {
+      _allows = (u: Option[T]) => true; this
+    }
   }
 
   class AuthOperationBuilder[T <: AnyRef](val resultClass: DataType)

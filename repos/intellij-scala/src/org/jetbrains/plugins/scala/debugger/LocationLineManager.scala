@@ -171,7 +171,9 @@ trait LocationLineManager {
           caseLineLocations: Seq[Location]): Unit = {
         val bytecodes =
           try method.bytecodes()
-          catch { case t: Throwable => return }
+          catch {
+            case t: Throwable => return
+          }
 
         def cacheCorrespondingIloadLocations(iconst_0Loc: Location): Unit = {
           val codeIndex = iconst_0Loc.codeIndex().toInt
@@ -205,7 +207,9 @@ trait LocationLineManager {
           caseLinesLocations: Seq[Seq[Location]]): Unit = {
         val bytecodes =
           try method.bytecodes()
-          catch { case t: Throwable => return }
+          catch {
+            case t: Throwable => return
+          }
 
         def storeCode(location: Location): Option[Seq[Byte]] = {
           val codeIndex = location.codeIndex().toInt

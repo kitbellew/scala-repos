@@ -91,7 +91,9 @@ private[v1] class OneStageResource(ui: SparkUI) {
       : Seq[TaskData] = {
     withStageAttempt(stageId, stageAttemptId) { stage =>
       val tasks = stage.ui.taskData.values
-        .map { AllStagesResource.convertTaskData }
+        .map {
+          AllStagesResource.convertTaskData
+        }
         .toIndexedSeq
         .sorted(OneStageResource.ordering(sortBy))
       tasks.slice(offset, offset + length)
@@ -119,15 +121,19 @@ private[v1] class OneStageResource(ui: SparkUI) {
       def getStatusInfoUi(
           status: StageStatus,
           infos: Seq[StageInfo]): Seq[StageStatusInfoUi] = {
-        infos.filter { _.stageId == stageId }.map { info =>
-          val ui = listener.stageIdToData.getOrElse(
-            (info.stageId, info.attemptId),
-            // this is an internal error -- we should always have uiData
-            throw new SparkException(
-              s"no stage ui data found for stage: ${info.stageId}:${info.attemptId}")
-          )
-          StageStatusInfoUi(status, info, ui)
-        }
+        infos
+          .filter {
+            _.stageId == stageId
+          }
+          .map { info =>
+            val ui = listener.stageIdToData.getOrElse(
+              (info.stageId, info.attemptId),
+              // this is an internal error -- we should always have uiData
+              throw new SparkException(
+                s"no stage ui data found for stage: ${info.stageId}:${info.attemptId}")
+            )
+            StageStatusInfoUi(status, info, ui)
+          }
       }
       getStatusInfoUi(ACTIVE, listener.activeStages.values.toSeq) ++
         getStatusInfoUi(COMPLETE, listener.completedStages) ++
@@ -146,7 +152,9 @@ private[v1] class OneStageResource(ui: SparkUI) {
         case Some(stage) =>
           f(stage)
         case None =>
-          val stageAttempts = attempts.map { _.info.attemptId }
+          val stageAttempts = attempts.map {
+            _.info.attemptId
+          }
           throw new NotFoundException(
             s"unknown attempt for stage $stageId.  " +
               s"Found attempts: ${stageAttempts.mkString("[", ",", "]")}")
@@ -161,9 +169,17 @@ object OneStageResource {
       taskSorting match {
         case ID => td.taskId
         case INCREASING_RUNTIME =>
-          td.taskMetrics.map { _.executorRunTime }.getOrElse(-1L)
+          td.taskMetrics
+            .map {
+              _.executorRunTime
+            }
+            .getOrElse(-1L)
         case DECREASING_RUNTIME =>
-          -td.taskMetrics.map { _.executorRunTime }.getOrElse(-1L)
+          -td.taskMetrics
+            .map {
+              _.executorRunTime
+            }
+            .getOrElse(-1L)
       }
     Ordering.by(extractor)
   }

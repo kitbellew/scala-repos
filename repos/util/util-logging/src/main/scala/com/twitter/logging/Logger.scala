@@ -229,7 +229,9 @@ class Logger protected (val name: String, private val wrapped: javalog.Logger) {
       for (handler <- handlers) {
         try {
           handler.close()
-        } catch { case _: Throwable => () }
+        } catch {
+          case _: Throwable => ()
+        }
         removeHandler(handler)
       }
     }
@@ -248,10 +250,14 @@ object NullLogger
 object Logger extends Iterable[Logger] {
 
   private[this] val levelNamesMap: Map[String, Level] =
-    Level.AllLevels.map { level => level.name -> level }.toMap
+    Level.AllLevels.map { level =>
+      level.name -> level
+    }.toMap
 
   private[this] val levelsMap: Map[Int, Level] =
-    Level.AllLevels.map { level => level.value -> level }.toMap
+    Level.AllLevels.map { level =>
+      level.value -> level
+    }.toMap
 
   // A cache of scala Logger objects by name.
   // Using a low concurrencyLevel (2), with the assumption that we aren't ever creating too
@@ -352,7 +358,9 @@ object Logger extends Iterable[Logger] {
 
     reset()
     loggerFactoryCache = localLoggerFactoryCache
-    loggerFactoryCache.foreach { _() }
+    loggerFactoryCache.foreach {
+      _()
+    }
   }
 
   /**
@@ -420,6 +428,8 @@ object Logger extends Iterable[Logger] {
     loggerFactoryCache = loggerFactories
 
     clearHandlers()
-    loggerFactories.foreach { _() }
+    loggerFactories.foreach {
+      _()
+    }
   }
 }

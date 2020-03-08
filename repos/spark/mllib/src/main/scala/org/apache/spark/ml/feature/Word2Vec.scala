@@ -255,7 +255,9 @@ class Word2VecModel private[ml] (
       } else {
         val sum = Vectors.zeros(d)
         sentence.foreach { word =>
-          bVectors.value.get(word).foreach { v => BLAS.axpy(1.0, v, sum) }
+          bVectors.value.get(word).foreach { v =>
+            BLAS.axpy(1.0, v, sum)
+          }
         }
         BLAS.scal(1.0 / sentence.size, sum)
         sum

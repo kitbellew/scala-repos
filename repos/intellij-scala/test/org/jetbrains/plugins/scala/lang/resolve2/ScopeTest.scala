@@ -19,5 +19,7 @@ class ScopeTest extends ResolveTestBase {
 //  def testPackageObjectParent = doTest
   def testTwoBlocks() = doTest()
 
-  def testDefaultParameterInNextClause() { doTest() }
+  def testDefaultParameterInNextClause() {
+    doTest()
+  }
 }

@@ -51,7 +51,9 @@ class BehaviorSpec extends TypedSpec {
   case object Pong extends Event
   case object Swapped extends Event
 
-  trait State { def next: State }
+  trait State {
+    def next: State
+  }
   val StateA: State = new State {
     override def toString = "StateA"; override def next = StateB
   }
@@ -395,7 +397,11 @@ class BehaviorSpec extends TypedSpec {
       with BecomeWithLifecycle
       with Stoppable {
     override def behavior(monitor: ActorRef[Event]): Behavior[Command] =
-      ScalaDSL.Widened(mkFull(monitor), { case x ⇒ x })
+      ScalaDSL.Widened(
+        mkFull(monitor),
+        {
+          case x ⇒ x
+        })
   }
 
   object `A ContextAware Behavior`
@@ -419,7 +425,11 @@ class BehaviorSpec extends TypedSpec {
       with BecomeWithLifecycle
       with Stoppable {
     override def behavior(monitor: ActorRef[Event]): Behavior[Command] =
-      ScalaDSL.Tap({ case null ⇒ }, mkFull(monitor))
+      ScalaDSL.Tap(
+        {
+          case null ⇒
+        },
+        mkFull(monitor))
   }
 
   object `A matching Tap Behavior`
@@ -427,7 +437,11 @@ class BehaviorSpec extends TypedSpec {
       with BecomeWithLifecycle
       with Stoppable {
     override def behavior(monitor: ActorRef[Event]): Behavior[Command] =
-      ScalaDSL.Tap({ case _ ⇒ }, mkFull(monitor))
+      ScalaDSL.Tap(
+        {
+          case _ ⇒
+        },
+        mkFull(monitor))
   }
 
   object `A SynchronousSelf Behavior`
@@ -446,16 +460,28 @@ class BehaviorSpec extends TypedSpec {
         Tap.monitor(
           inbox.ref,
           Partial[Command] {
-            case AuxPing(id) ⇒ { self ! AuxPing(0); second(self) }
+            case AuxPing(id) ⇒ {
+              self ! AuxPing(0); second(self)
+            }
           })
       def second(self: ActorRef[Command]) = Partial[Command] {
-        case AuxPing(0) ⇒ { self ! AuxPing(1); Same }
-        case AuxPing(1) ⇒ { self ! AuxPing(2); third(self) }
+        case AuxPing(0) ⇒ {
+          self ! AuxPing(1); Same
+        }
+        case AuxPing(1) ⇒ {
+          self ! AuxPing(2); third(self)
+        }
       }
       def third(self: ActorRef[Command]) = Partial[Command] {
-        case AuxPing(2) ⇒ { self ! AuxPing(3); Unhandled }
-        case AuxPing(3) ⇒ { self ! Ping; Same }
-        case AuxPing(4) ⇒ { self ! Stop; Stopped }
+        case AuxPing(2) ⇒ {
+          self ! AuxPing(3); Unhandled
+        }
+        case AuxPing(3) ⇒ {
+          self ! Ping; Same
+        }
+        case AuxPing(4) ⇒ {
+          self ! Stop; Stopped
+        }
       }
       SynchronousSelf(self ⇒ Or(mkFull(monitor), first(self)))
     }

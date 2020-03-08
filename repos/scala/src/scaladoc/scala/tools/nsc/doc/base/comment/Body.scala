@@ -36,7 +36,9 @@ final case class Body(blocks: Seq[Block]) {
       case Link(_, title)    => summaryInInline(title)
       case _                 => Nil
     }
-    (blocks flatMap { summaryInBlock(_) }).toList match {
+    (blocks flatMap {
+      summaryInBlock(_)
+    }).toList match {
       case Nil           => None
       case inline :: Nil => Some(inline)
       case inlines       => Some(Chain(inlines))
@@ -67,7 +69,9 @@ final case class Subscript(text: Inline) extends Inline
 final case class Link(target: String, title: Inline) extends Inline
 final case class Monospace(text: Inline) extends Inline
 final case class Text(text: String) extends Inline
-abstract class EntityLink(val title: Inline) extends Inline { def link: LinkTo }
+abstract class EntityLink(val title: Inline) extends Inline {
+  def link: LinkTo
+}
 object EntityLink {
   def apply(title: Inline, linkTo: LinkTo) = new EntityLink(title) {
     def link: LinkTo = linkTo

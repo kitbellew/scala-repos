@@ -2,9 +2,13 @@ object main { // don't do this at home
 
   trait Impl
 
-  trait SizeImpl extends Impl { def size = 42 }
+  trait SizeImpl extends Impl {
+    def size = 42
+  }
 
-  trait ColorImpl extends Impl { def color = "red" }
+  trait ColorImpl extends Impl {
+    def color = "red"
+  }
 
   type Both = SizeImpl with ColorImpl
 

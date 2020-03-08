@@ -37,7 +37,9 @@ trait JSEnv {
     *  }}}
     */
   def loadLibs(libs: Seq[ResolvedJSDependency]): JSEnv =
-    new LoadedLibs { val loadedLibs = libs }
+    new LoadedLibs {
+      val loadedLibs = libs
+    }
 
   private[jsenv] trait LoadedLibs extends JSEnv {
     val loadedLibs: Seq[ResolvedJSDependency]

@@ -38,25 +38,36 @@ object Puzzle extends LilaController {
         html = (ctx.me ?? {
           env.api.attempt.hasPlayed(_, puzzle) map (!_)
         }) flatMap { asPlay =>
-          renderShow(puzzle, asPlay.fold("play", "try")) map { Ok(_) }
+          renderShow(puzzle, asPlay.fold("play", "try")) map {
+            Ok(_)
+          }
         },
-        api = _ => puzzleJson(puzzle) map { Ok(_) }
-      ) map { NoCache(_) }
+        api = _ =>
+          puzzleJson(puzzle) map {
+            Ok(_)
+          }
+      ) map {
+        NoCache(_)
+      }
     }
   }
 
   def home = Open { implicit ctx =>
     selectPuzzle(ctx.me) flatMap {
       case Some(puzzle) =>
-        renderShow(puzzle, ctx.isAuth.fold("play", "try")) map { Ok(_) }
+        renderShow(puzzle, ctx.isAuth.fold("play", "try")) map {
+          Ok(_)
+        }
       case None => fuccess(Ok(html.puzzle.noMore()))
     }
   }
 
   def show(id: PuzzleId) = Open { implicit ctx =>
     OptionFuOk(env.api.puzzle find id) { puzzle =>
-      (ctx.me ?? { env.api.attempt.hasPlayed(_, puzzle) map (!_) }) flatMap {
-        asPlay => renderShow(puzzle, asPlay.fold("play", "try"))
+      (ctx.me ?? {
+        env.api.attempt.hasPlayed(_, puzzle) map (!_)
+      }) flatMap { asPlay =>
+        renderShow(puzzle, asPlay.fold("play", "try"))
       }
     }
   }
@@ -69,7 +80,9 @@ object Puzzle extends LilaController {
 
   private def puzzleJson(puzzle: PuzzleModel)(implicit ctx: Context) =
     (env userInfos ctx.me) zip
-      (ctx.me ?? { env.api.attempt.hasPlayed(_, puzzle) map (!_) }) map {
+      (ctx.me ?? {
+        env.api.attempt.hasPlayed(_, puzzle) map (!_)
+      }) map {
       case (infos, asPlay) =>
         JsData(
           puzzle,
@@ -82,7 +95,9 @@ object Puzzle extends LilaController {
     env userInfos me flatMap { ui =>
       negotiate(
         html = XhrOnly {
-          fuccess { Ok(views.html.puzzle.history(ui)) }
+          fuccess {
+            Ok(views.html.puzzle.history(ui))
+          }
         },
         api = _ =>
           fuccess {

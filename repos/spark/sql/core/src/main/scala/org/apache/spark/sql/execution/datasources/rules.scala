@@ -119,7 +119,9 @@ private[sql] object PreInsertCastAndRename extends Rule[LogicalPlan] {
   */
 private[sql] case class PreWriteCheck(catalog: Catalog)
     extends (LogicalPlan => Unit) {
-  def failAnalysis(msg: String): Unit = { throw new AnalysisException(msg) }
+  def failAnalysis(msg: String): Unit = {
+    throw new AnalysisException(msg)
+  }
 
   def apply(plan: LogicalPlan): Unit = {
     plan.foreach {

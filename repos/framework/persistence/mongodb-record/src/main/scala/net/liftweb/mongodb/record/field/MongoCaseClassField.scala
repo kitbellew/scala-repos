@@ -55,7 +55,10 @@ class MongoCaseClassField[OwnerType <: Record[OwnerType], CaseType](
 
   def setFromJValue(jvalue: JValue): Box[CaseType] = jvalue match {
     case JNothing | JNull => setBox(Empty)
-    case s                => setBox(Helpers.tryo[CaseType] { s.extract[CaseType] })
+    case s =>
+      setBox(Helpers.tryo[CaseType] {
+        s.extract[CaseType]
+      })
   }
 
   def asDBObject: DBObject = {
@@ -68,7 +71,9 @@ class MongoCaseClassField[OwnerType <: Record[OwnerType], CaseType](
   }
 
   override def setFromString(in: String): Box[CaseType] = {
-    Helpers.tryo { JsonParser.parse(in).extract[CaseType] }
+    Helpers.tryo {
+      JsonParser.parse(in).extract[CaseType]
+    }
   }
 
   def setFromAny(in: Any): Box[CaseType] = in match {
@@ -109,7 +114,9 @@ class MongoCaseClassListField[OwnerType <: Record[OwnerType], CaseType](
   def setFromJValue(jvalue: JValue): Box[MyType] = jvalue match {
     case JArray(contents) =>
       setBox(Full(contents.flatMap(s =>
-        Helpers.tryo[CaseType] { s.extract[CaseType] })))
+        Helpers.tryo[CaseType] {
+          s.extract[CaseType]
+        })))
     case _ => setBox(Empty)
   }
 

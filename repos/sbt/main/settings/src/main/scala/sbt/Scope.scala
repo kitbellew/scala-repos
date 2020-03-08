@@ -185,7 +185,9 @@ object Scope {
       _,
       inTaskOrNull,
       key) = command
-    val uriOpt = Option(uriOrNull) map { new URI(_) }
+    val uriOpt = Option(uriOrNull) map {
+      new URI(_)
+    }
     val projectIdOpt = Option(projectIdOrNull)
     val configOpt = Option(configOrNull)
     val inTaskOpt = Option(inTaskOrNull)
@@ -310,7 +312,9 @@ object Scope {
       : ProjectDelegates = {
     val refDelegates = withRawBuilds(
       linearize(Select(ref), false)(projectInherit))
-    val configs = confs map { c => axisDelegates(configInherit, ref, c) }
+    val configs = confs map { c =>
+      axisDelegates(configInherit, ref, c)
+    }
     new ProjectDelegates(ref, refDelegates, configs.toMap)
   }
   def axisDelegates[T](

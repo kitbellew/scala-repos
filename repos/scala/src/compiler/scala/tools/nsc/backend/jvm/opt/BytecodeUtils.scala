@@ -263,13 +263,17 @@ object BytecodeUtils {
       method.localVariables
         .iterator()
         .asScala
-        .foreach(l => { add(l.start, l); add(l.end, l) })
+        .foreach(l => {
+          add(l.start, l); add(l.end, l)
+        })
     }
     if (method.tryCatchBlocks != null) {
       method.tryCatchBlocks
         .iterator()
         .asScala
-        .foreach(l => { add(l.start, l); add(l.handler, l); add(l.end, l) })
+        .foreach(l => {
+          add(l.start, l); add(l.handler, l); add(l.end, l)
+        })
     }
 
     res.toMap

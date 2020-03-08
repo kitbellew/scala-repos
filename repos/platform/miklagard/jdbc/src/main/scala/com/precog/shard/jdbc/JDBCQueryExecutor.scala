@@ -166,7 +166,9 @@ class JDBCQueryExecutor(
           case Nil =>
             Success(
               yggConfig.dbMap.keys.toList
-                .map { d => d + "/" }
+                .map { d =>
+                  d + "/"
+                }
                 .serialize
                 .asInstanceOf[JArray])
 

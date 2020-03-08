@@ -142,7 +142,9 @@ class DefaultPromiseTest {
         case Left(handlers)    => (HandlersFired(r, handlers), Right(r))
         case Right(completion) => (IllegalThrown, chain.state)
       }
-      checkEffect(completionEffect) { promises(p).complete(r) }
+      checkEffect(completionEffect) {
+        promises(p).complete(r)
+      }
       chains = chains.updated(cid, chain.copy(state = newState))
       assertPromiseValues()
     }
@@ -181,7 +183,9 @@ class DefaultPromiseTest {
 
       // Perform the linking and merge the chains, if appropriate
 
-      checkEffect(linkEffect) { promiseA.linkRootOf(promiseB) }
+      checkEffect(linkEffect) {
+        promiseA.linkRootOf(promiseB)
+      }
 
       val (newCidA, newCidB) = mergeOp match {
         case NoMerge => (cidA, cidB)
@@ -214,8 +218,12 @@ class DefaultPromiseTest {
           (HandlersFired(result, Set(hid)), Right(result))
       }
       implicit val ec = new ExecutionContext {
-        def execute(r: Runnable) { r.run() }
-        def reportFailure(t: Throwable) { t.printStackTrace() }
+        def execute(r: Runnable) {
+          r.run()
+        }
+        def reportFailure(t: Throwable) {
+          t.printStackTrace()
+        }
       }
 
       checkEffect(attachEffect) {
@@ -345,10 +353,14 @@ class DefaultPromiseTest {
       @tailrec
       def flatMapTimes(count: Int, p1: DefaultPromise[Int]) {
         if (count == 0) {
-          execute { p1.success(1) }
+          execute {
+            p1.success(1)
+          }
         } else {
           val p2 = new DefaultPromise[Int]()
-          execute { p2.linkRootOf(p1) }
+          execute {
+            p2.linkRootOf(p1)
+          }
           flatMapTimes(count - 1, p2)
         }
       }

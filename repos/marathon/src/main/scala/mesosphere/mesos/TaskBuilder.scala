@@ -404,7 +404,9 @@ object TaskBuilder {
       env: Map[String, String]): Map[String, String] = {
     envVarsPrefix match {
       case Some(prefix) =>
-        env.map { case (key: String, value: String) => (prefix + key, value) }
+        env.map {
+          case (key: String, value: String) => (prefix + key, value)
+        }
       case None => env
     }
   }

@@ -18,7 +18,9 @@ package net.liftweb
 package mapper
 
 private[mapper] object RecursiveType {
-  val rec: { type R0 <: Mapper[R0] } = null
+  val rec: {
+    type R0 <: Mapper[R0]
+  } = null
   type Rec = rec.R0
 }
 import RecursiveType._
@@ -159,7 +161,9 @@ trait OneToMany[K, T <: KeyedMapper[K, T]] extends KeyedMapper[K, T] {
     protected def unown(e: O) = {
       val f = foreign(e)
       f.set(f.defaultValue)
-      unlinked = unlinked filter { e.ne }
+      unlinked = unlinked filter {
+        e.ne
+      }
       e
     }
 
@@ -276,7 +280,9 @@ trait OneToMany[K, T <: KeyedMapper[K, T]] extends KeyedMapper[K, T] {
       super.unown(e)
     }
     override def own(e: O) = {
-      removed = removed filter { e.ne }
+      removed = removed filter {
+        e.ne
+      }
       super.own(e)
     }
     override def save = {
@@ -284,7 +290,9 @@ trait OneToMany[K, T <: KeyedMapper[K, T]] extends KeyedMapper[K, T] {
         val f = foreign(e)
         f.get == f.defaultValue
       }
-      unowned foreach { _.delete_! }
+      unowned foreach {
+        _.delete_!
+      }
       super.save
     }
   }

@@ -94,7 +94,9 @@ class StandardScaler(override val uid: String)
 
   override def fit(dataset: DataFrame): StandardScalerModel = {
     transformSchema(dataset.schema, logging = true)
-    val input = dataset.select($(inputCol)).rdd.map { case Row(v: Vector) => v }
+    val input = dataset.select($(inputCol)).rdd.map {
+      case Row(v: Vector) => v
+    }
     val scaler =
       new feature.StandardScaler(withMean = $(withMean), withStd = $(withStd))
     val scalerModel = scaler.fit(input)
@@ -154,7 +156,9 @@ class StandardScalerModel private[ml] (
     transformSchema(dataset.schema, logging = true)
     val scaler =
       new feature.StandardScalerModel(std, mean, $(withStd), $(withMean))
-    val scale = udf { scaler.transform _ }
+    val scale = udf {
+      scaler.transform _
+    }
     dataset.withColumn($(outputCol), scale(col($(inputCol))))
   }
 

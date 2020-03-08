@@ -419,8 +419,12 @@ class ActorSelectionSpec
 
       val probe = TestProbe()
       system.actorSelection("/user/a/*").tell(Identify(1), probe.ref)
-      probe.receiveN(2).map { case ActorIdentity(1, r) ⇒ r }.toSet should ===(
-        Set[Option[ActorRef]](Some(b1), Some(b2)))
+      probe
+        .receiveN(2)
+        .map {
+          case ActorIdentity(1, r) ⇒ r
+        }
+        .toSet should ===(Set[Option[ActorRef]](Some(b1), Some(b2)))
       probe.expectNoMsg(200.millis)
 
       system.actorSelection("/user/a/b1/*").tell(Identify(2), probe.ref)

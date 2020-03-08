@@ -21,5 +21,7 @@ abstract class JavapTest extends ReplTest {
       val res = eval().toSeq
       val unsupported = res exists (s => baddies exists (s contains _))
       assert((unsupported || yah(res)), res.mkString("", "\n", "\n"))
-    } catch { case ae: AssertionError => ae.printStackTrace(sysout) }
+    } catch {
+      case ae: AssertionError => ae.printStackTrace(sysout)
+    }
 }

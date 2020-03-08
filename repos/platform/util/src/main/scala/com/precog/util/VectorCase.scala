@@ -435,7 +435,9 @@ private[precog] case class VectorN[+A](vector: Vector[A])
   // note: this actually defeats a HotSpot optimization in trivial micro-benchmarks
   override def iterator = vector.iterator
 
-  override def foreach[U](f: A => U) { vector.foreach(f) }
+  override def foreach[U](f: A => U) {
+    vector.foreach(f)
+  }
 
   def toVector = vector
 }

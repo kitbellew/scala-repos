@@ -25,7 +25,9 @@ object ValuePipe extends java.io.Serializable {
 
   def fold[T, U, V](l: ValuePipe[T], r: ValuePipe[U])(
       f: (T, U) => V): ValuePipe[V] =
-    l.leftCross(r).collect { case (t, Some(u)) => f(t, u) }
+    l.leftCross(r).collect {
+      case (t, Some(u)) => f(t, u)
+    }
 
   def apply[T](t: T): ValuePipe[T] = LiteralValue(t)
   def empty: ValuePipe[Nothing] = EmptyValue

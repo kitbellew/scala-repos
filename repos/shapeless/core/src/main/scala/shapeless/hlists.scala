@@ -125,7 +125,9 @@ object HList extends Dynamic {
       }
 
     val (prefix, suffix) = loop(l, i, Nil)
-    prefix.foldLeft(suffix) { (tl, hd) => hd :: tl }
+    prefix.foldLeft(suffix) { (tl, hd) =>
+      hd :: tl
+    }
   }
 }
 

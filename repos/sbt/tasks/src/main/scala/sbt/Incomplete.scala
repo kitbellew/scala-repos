@@ -59,14 +59,18 @@ object Incomplete extends Enumeration {
   }
   def linearize(i: Incomplete): Seq[Incomplete] = {
     var ordered = List[Incomplete]()
-    visitAll(i) { ordered ::= _ }
+    visitAll(i) {
+      ordered ::= _
+    }
     ordered
   }
   def allExceptions(is: Seq[Incomplete]): Iterable[Throwable] =
     allExceptions(new Incomplete(None, causes = is))
   def allExceptions(i: Incomplete): Iterable[Throwable] = {
     val exceptions = IDSet.create[Throwable]
-    visitAll(i) { exceptions ++= _.directCause.toList }
+    visitAll(i) {
+      exceptions ++= _.directCause.toList
+    }
     exceptions.all
   }
   def show(tpe: Value) = tpe match {

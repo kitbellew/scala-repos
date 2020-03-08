@@ -611,7 +611,9 @@ abstract class Delambdafy
     override def traverse(tree: Tree) = {
       tree match {
         case Function(args, _) =>
-          args foreach { arg => declared += arg.symbol }
+          args foreach { arg =>
+            declared += arg.symbol
+          }
         case ValDef(_, _, _, _) =>
           declared += tree.symbol
         case _: Bind =>

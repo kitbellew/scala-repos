@@ -50,7 +50,9 @@ trait DBLog {
   or a function that can use the result of the operation to construct a description.
    */
   protected def logStatement[T](description: String)(f: => T): T =
-    logStatement({ ignore: T => description })(f)
+    logStatement({ ignore: T =>
+      description
+    })(f)
 
   protected def logStatement[T](description: T => String)(f: => T): T =
     Helpers.calcTime(f) match {
@@ -60,7 +62,9 @@ trait DBLog {
     }
 
   protected def logMeta[T](description: String)(f: => T): T =
-    logMeta({ ignore: T => description })(f)
+    logMeta({ ignore: T =>
+      description
+    })(f)
 
   protected def logMeta[T](description: T => String)(f: => T): T =
     Helpers.calcTime(f) match {
@@ -265,27 +269,37 @@ object DBLog {
           }
         }
         case "getFetchSize" => {
-          logMeta({ size: Object => "Get fetch size : " + size }) {
+          logMeta({ size: Object =>
+            "Get fetch size : " + size
+          }) {
             chain(method, Array())
           }
         }
         case "getGeneratedKeys" => {
-          logMeta({ rs: Object => "Get generated keys : rs = " + rs }) {
+          logMeta({ rs: Object =>
+            "Get generated keys : rs = " + rs
+          }) {
             chain(method, Array())
           }
         }
         case "getMaxFieldSize" => {
-          logMeta({ size: Object => "Get max field size : " + size }) {
+          logMeta({ size: Object =>
+            "Get max field size : " + size
+          }) {
             chain(method, Array())
           }
         }
         case "getMaxRows" => {
-          logMeta({ maxRows: Object => "Get max rows : " + maxRows }) {
+          logMeta({ maxRows: Object =>
+            "Get max rows : " + maxRows
+          }) {
             chain(method, Array())
           }
         }
         case "getMoreResults" if args.length == 0 => {
-          logMeta({ hasMore: Object => "Get more results : " + hasMore }) {
+          logMeta({ hasMore: Object =>
+            "Get more results : " + hasMore
+          }) {
             chain(method, Array())
           }
         }
@@ -307,7 +321,9 @@ object DBLog {
           }
         }
         case "getResultSet" => {
-          logMeta({ rs: Object => "Get result set : " + rs }) {
+          logMeta({ rs: Object =>
+            "Get result set : " + rs
+          }) {
             chain(method, Array())
           }
         }
@@ -336,7 +352,9 @@ object DBLog {
           }
         }
         case "getUpdateCount" => {
-          logMeta({ count: Object => "Get update count : " + count }) {
+          logMeta({ count: Object =>
+            "Get update count : " + count
+          }) {
             chain(method, Array())
           }
         }
@@ -348,12 +366,16 @@ object DBLog {
           }
         }
         case "isClosed" => {
-          logMeta({ ret: Object => "Check isClosed : " + ret }) {
+          logMeta({ ret: Object =>
+            "Check isClosed : " + ret
+          }) {
             chain(method, Array())
           }
         }
         case "isPoolable" => {
-          logMeta({ ret: Object => "Check isPoolable : " + ret }) {
+          logMeta({ ret: Object =>
+            "Check isPoolable : " + ret
+          }) {
             chain(method, Array())
           }
         }
@@ -530,13 +552,17 @@ object DBLog {
         }
 
         case "getMetaData" => {
-          logMeta({ ret: Object => "Get metadata : " + ret }) {
+          logMeta({ ret: Object =>
+            "Get metadata : " + ret
+          }) {
             chain(method, Array())
           }
         }
 
         case "getParameterMetaData" => {
-          logMeta({ ret: Object => "Get param metadata : " + ret }) {
+          logMeta({ ret: Object =>
+            "Get param metadata : " + ret
+          }) {
             chain(method, Array())
           }
         }

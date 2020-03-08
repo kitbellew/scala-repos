@@ -356,7 +356,9 @@ trait Row extends Serializable {
     * @throws ClassCastException when data type does not match.
     */
   def getValuesMap[T](fieldNames: Seq[String]): Map[String, T] = {
-    fieldNames.map { name => name -> getAs[T](name) }.toMap
+    fieldNames.map { name =>
+      name -> getAs[T](name)
+    }.toMap
   }
 
   override def toString(): String = s"[${this.mkString(",")}]"
@@ -371,7 +373,9 @@ trait Row extends Serializable {
     val len = length
     var i = 0
     while (i < len) {
-      if (isNullAt(i)) { return true }
+      if (isNullAt(i)) {
+        return true
+      }
       i += 1
     }
     false

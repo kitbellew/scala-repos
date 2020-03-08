@@ -13,7 +13,9 @@ object Test {
   def expectFailure[T](body: => T): Boolean = {
     try {
       val res = body; failed = true; println(res + " failed to fail."); false
-    } catch { case _: AssertionError => true }
+    } catch {
+      case _: AssertionError => true
+    }
   }
 
   /** Attempt to use a method type as a type argument - expect failure. */

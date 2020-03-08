@@ -305,7 +305,9 @@ object HttpRequest {
       headers: immutable.Seq[HttpHeader],
       securedConnection: Boolean,
       defaultHostHeader: Host): Uri = {
-    val hostHeader = headers.collectFirst { case x: Host ⇒ x }
+    val hostHeader = headers.collectFirst {
+      case x: Host ⇒ x
+    }
     if (uri.isRelative) {
       def fail(detail: String) =
         throw IllegalUriException(

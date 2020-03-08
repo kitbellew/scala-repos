@@ -24,7 +24,9 @@ object ApiCombinedCommitStatus {
       state = CommitState.combine(statuses.map(_._1.state).toSet).name,
       sha = sha,
       total_count = statuses.size,
-      statuses = statuses.map { case (s, a) => ApiCommitStatus(s, ApiUser(a)) },
+      statuses = statuses.map {
+        case (s, a) => ApiCommitStatus(s, ApiUser(a))
+      },
       repository = repository
     )
 }

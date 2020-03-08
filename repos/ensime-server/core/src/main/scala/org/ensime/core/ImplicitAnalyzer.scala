@@ -37,7 +37,9 @@ class ImplicitAnalyzer(val global: RichPresentationCompiler) {
                   treeP.startOrCursor,
                   treeP.endOrCursor,
                   SymbolInfo(t.fun.symbol),
-                  t.args.map { a => SymbolInfo(a.symbol) },
+                  t.args.map { a =>
+                    SymbolInfo(a.symbol)
+                  },
                   funIsImplicit
                 ))
             case _ =>

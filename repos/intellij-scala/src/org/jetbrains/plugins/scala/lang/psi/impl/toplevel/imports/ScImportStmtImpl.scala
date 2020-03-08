@@ -58,7 +58,9 @@ class ScImportStmtImpl private (
     node: ASTNode)
     extends ScalaStubBasedElementImpl(stub, nodeType, node)
     with ScImportStmt {
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
   def this(stub: ScImportStmtStub) = {
     this(stub, ScalaElementTypes.IMPORT_STMT, null)
   }

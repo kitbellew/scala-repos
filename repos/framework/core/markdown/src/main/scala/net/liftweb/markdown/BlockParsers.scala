@@ -75,7 +75,9 @@ trait BlockParsers extends Parsers {
     * Represents a block of verbatim xml
     */
   class VerbatimXml(line: XmlChunk) extends MarkdownBlock {
-    def addResult(level: Int, out: StringBuilder) { out.append(line.content) }
+    def addResult(level: Int, out: StringBuilder) {
+      out.append(line.content)
+    }
   }
 
   /**
@@ -334,7 +336,9 @@ trait BlockParsers extends Parsers {
   /** parses a horizontal ruler
     */
   def ruler: Parser[MarkdownBlock] =
-    (line(classOf[RulerLine]) | line(classOf[SetExtHeaderLine])) ^^^ { Ruler }
+    (line(classOf[RulerLine]) | line(classOf[SetExtHeaderLine])) ^^^ {
+      Ruler
+    }
 
   /** parses a verbatim xml block
     */
@@ -347,7 +351,12 @@ trait BlockParsers extends Parsers {
   def codeBlock: Parser[CodeBlock] =
     line(classOf[CodeLine]) ~ ((optEmptyLines ~ line(classOf[CodeLine])) *) ^^ {
       case l ~ pairs =>
-        new CodeBlock(l :: pairs.map({ case (a ~ b) => a ++ List(b) }).flatten)
+        new CodeBlock(
+          l :: pairs
+            .map({
+              case (a ~ b) => a ++ List(b)
+            })
+            .flatten)
     }
 
   /**
@@ -435,11 +444,15 @@ trait BlockParsers extends Parsers {
 
   /** parses an unordered list
     */
-  def uList: Parser[UList] = (uItem +) ^^ { new UList(_) }
+  def uList: Parser[UList] = (uItem +) ^^ {
+    new UList(_)
+  }
 
   /** parses an ordered list
     */
-  def oList: Parser[OList] = (oItem +) ^^ { new OList(_) }
+  def oList: Parser[OList] = (oItem +) ^^ {
+    new OList(_)
+  }
 
   ///////////////////////////////////////////////////////////////
   /////////////////// high level processing /////////////////////

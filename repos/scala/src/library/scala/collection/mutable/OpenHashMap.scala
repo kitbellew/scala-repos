@@ -75,7 +75,9 @@ class OpenHashMap[Key, Value](initialSize: Int)
   private[this] var modCount = 0
 
   override def size = _size
-  private[this] def size_=(s: Int) { _size = s }
+  private[this] def size_=(s: Int) {
+    _size = s
+  }
 
   /** Returns a mangled hash code of the provided key. */
   protected def hashOf(key: Key) = {
@@ -135,12 +137,16 @@ class OpenHashMap[Key, Value](initialSize: Int)
   @deprecatedOverriding(
     "+= should not be overridden in order to maintain consistency with put.",
     "2.11.0")
-  def +=(kv: (Key, Value)): this.type = { put(kv._1, kv._2); this }
+  def +=(kv: (Key, Value)): this.type = {
+    put(kv._1, kv._2); this
+  }
 
   @deprecatedOverriding(
     "-= should not be overridden in order to maintain consistency with remove.",
     "2.11.0")
-  def -=(key: Key): this.type = { remove(key); this }
+  def -=(key: Key): this.type = {
+    remove(key); this
+  }
 
   override def put(key: Key, value: Value): Option[Value] =
     put(key, hashOf(key), value)
@@ -213,7 +219,9 @@ class OpenHashMap[Key, Value](initialSize: Int)
                index).value == None)) index += 1
     }
 
-    def hasNext = { advance(); index <= mask }
+    def hasNext = {
+      advance(); index <= mask
+    }
 
     def next = {
       advance()

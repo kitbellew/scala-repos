@@ -40,8 +40,9 @@ class SourceReader(decoder: CharsetDecoder, reporter: Reporter) {
     val c = new FileInputStream(file).getChannel
 
     try read(c)
-    catch { case e: Exception => reportEncodingError("" + file); Array() }
-    finally c.close()
+    catch {
+      case e: Exception => reportEncodingError("" + file); Array()
+    } finally c.close()
   }
 
   /** Reads the specified file.

@@ -51,10 +51,14 @@ abstract class RuleExecutor[TreeType <: TreeNode[_]] extends Logging {
     * An execution strategy for rules that indicates the maximum number of executions. If the
     * execution reaches fix point (i.e. converge) before maxIterations, it will stop.
     */
-  abstract class Strategy { def maxIterations: Int }
+  abstract class Strategy {
+    def maxIterations: Int
+  }
 
   /** A strategy that only runs once. */
-  case object Once extends Strategy { val maxIterations = 1 }
+  case object Once extends Strategy {
+    val maxIterations = 1
+  }
 
   /** A strategy that runs until fix point or maxIterations times, whichever comes first. */
   case class FixedPoint(maxIterations: Int) extends Strategy

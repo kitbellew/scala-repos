@@ -94,7 +94,9 @@ trait AST extends Phases {
 
     val back = e match {
       case e @ Let(loc, id, params, left, right) => {
-        val paramStr = params map { indent + "  - " + _ } mkString "\n"
+        val paramStr = params map {
+          indent + "  - " + _
+        } mkString "\n"
 
         indent + "type: let\n" +
           indent + "id: " + id + "\n" +
@@ -656,7 +658,9 @@ trait AST extends Phases {
         id.hashCode + params.hashCode + left.hashCodeIgnoreLoc + right.hashCodeIgnoreLoc
 
       case Solve(_, constraints, child) =>
-        (constraints map { _.hashCodeIgnoreLoc } sum) + child.hashCodeIgnoreLoc
+        (constraints map {
+          _.hashCodeIgnoreLoc
+        } sum) + child.hashCodeIgnoreLoc
 
       case Import(_, spec, child) =>
         spec.hashCode + child.hashCodeIgnoreLoc
@@ -691,7 +695,9 @@ trait AST extends Phases {
       }
 
       case ArrayDef(_, values) =>
-        values map { _.hashCodeIgnoreLoc } sum
+        values map {
+          _.hashCodeIgnoreLoc
+        } sum
 
       case Descent(_, child, property) =>
         child.hashCodeIgnoreLoc + property.hashCode
@@ -911,7 +917,9 @@ trait AST extends Phases {
       val sym = 'solve
 
       def form =
-        'solve ~ (constraints.init map { _ ~ 'comma } reduceOption {
+        'solve ~ (constraints.init map {
+          _ ~ 'comma
+        } reduceOption {
           _ ~ _
         } map {
           _ ~ constraints.last ~ child
@@ -1018,13 +1026,20 @@ trait AST extends Phases {
         with NaryOp {
       val sym = 'object
 
-      def values = props map { _._2 }
+      def values = props map {
+        _._2
+      }
 
       def form = {
-        val opt =
-          (props map { case (_, e) => 'name ~ e } reduceOption { _ ~ _ })
+        val opt = (props map {
+          case (_, e) => 'name ~ e
+        } reduceOption {
+          _ ~ _
+        })
 
-        opt map { 'leftCurl ~ _ ~ 'rightCurl } getOrElse sym
+        opt map {
+          'leftCurl ~ _ ~ 'rightCurl
+        } getOrElse sym
       }
 
       def children = values.toList
@@ -1036,9 +1051,15 @@ trait AST extends Phases {
       val sym = 'array
 
       def form = {
-        val opt = (values map { _ ~ 'comma } reduceOption { _ ~ _ })
+        val opt = (values map {
+          _ ~ 'comma
+        } reduceOption {
+          _ ~ _
+        })
 
-        opt map { 'leftBracket ~ _ ~ 'rightBracket } getOrElse sym
+        opt map {
+          'leftBracket ~ _ ~ 'rightBracket
+        } getOrElse sym
       }
 
       def children = values.toList
@@ -1087,9 +1108,15 @@ trait AST extends Phases {
       private[quirrel] def binding_=(b: NameBinding) = _binding() = b
 
       def form = {
-        val opt = (actuals map { _ ~ 'comma } reduceOption { _ ~ _ })
+        val opt = (actuals map {
+          _ ~ 'comma
+        } reduceOption {
+          _ ~ _
+        })
 
-        opt map { sym ~ 'leftParen ~ _ ~ 'rightParen } getOrElse sym
+        opt map {
+          sym ~ 'leftParen ~ _ ~ 'rightParen
+        } getOrElse sym
       }
 
       def children = actuals.toList

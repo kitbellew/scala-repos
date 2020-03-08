@@ -17,9 +17,15 @@ object Relation extends LilaController {
 
   private def renderActions(userId: String, mini: Boolean)(
       implicit ctx: Context) =
-    (ctx.userId ?? { env.api.fetchRelation(_, userId) }) zip
-      (ctx.isAuth ?? { Env.pref.api followable userId }) zip
-      (ctx.userId ?? { env.api.fetchBlocks(userId, _) }) flatMap {
+    (ctx.userId ?? {
+      env.api.fetchRelation(_, userId)
+    }) zip
+      (ctx.isAuth ?? {
+        Env.pref.api followable userId
+      }) zip
+      (ctx.userId ?? {
+        env.api.fetchBlocks(userId, _)
+      }) flatMap {
       case ((relation, followable), blocked) =>
         negotiate(
           html = fuccess(
@@ -133,13 +139,16 @@ object Relation extends LilaController {
   private def followship(userIds: Seq[String])(
       implicit ctx: Context): Fu[List[Related]] =
     UserRepo byIds userIds flatMap { users =>
-      (ctx.isAuth ?? { Env.pref.api.followableIds(users map (_.id)) }) flatMap {
-        followables =>
-          users.map { u =>
-            ctx.userId ?? { env.api.fetchRelation(_, u.id) } map { rel =>
-              lila.relation.Related(u, none, followables(u.id), rel)
-            }
-          }.sequenceFu
+      (ctx.isAuth ?? {
+        Env.pref.api.followableIds(users map (_.id))
+      }) flatMap { followables =>
+        users.map { u =>
+          ctx.userId ?? {
+            env.api.fetchRelation(_, u.id)
+          } map { rel =>
+            lila.relation.Related(u, none, followables(u.id), rel)
+          }
+        }.sequenceFu
       }
     }
 }

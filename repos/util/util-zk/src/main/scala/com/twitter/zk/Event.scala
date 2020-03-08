@@ -16,7 +16,13 @@ object Event {
 
   def unapply(
       event: WatchedEvent): Option[(EventType, KeeperState, Option[String])] = {
-    Some((event.getType, event.getState, Option { event.getPath }))
+    Some(
+      (
+        event.getType,
+        event.getState,
+        Option {
+          event.getPath
+        }))
   }
 }
 
@@ -102,9 +108,13 @@ object NodeEvent {
 }
 
 class EventPromise extends Promise[WatchedEvent] with Watcher {
-  def process(event: WatchedEvent) { updateIfEmpty(Return(event)) }
+  def process(event: WatchedEvent) {
+    updateIfEmpty(Return(event))
+  }
 }
 
 class EventBroker extends Broker[WatchedEvent] with Watcher {
-  def process(event: WatchedEvent) { send(event).sync() }
+  def process(event: WatchedEvent) {
+    send(event).sync()
+  }
 }

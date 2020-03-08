@@ -50,7 +50,9 @@ private[api] final class RoundApiBalancer(
                   logger.error(pov.toString, e)
                 }
               }.chronometer
-                .logIfSlow(500, logger) { _ => s"inner player $pov" }
+                .logIfSlow(500, logger) { _ =>
+                  s"inner player $pov"
+                }
                 .result
             case Watcher(
                 pov,
@@ -81,10 +83,14 @@ private[api] final class RoundApiBalancer(
 
   def player(pov: Pov, apiVersion: Int)(implicit ctx: Context): Fu[JsObject] = {
     router ? Player(pov, apiVersion, ctx) mapTo manifest[
-      JsObject] addFailureEffect { e => logger.error(pov.toString, e) }
+      JsObject] addFailureEffect { e =>
+      logger.error(pov.toString, e)
+    }
   }.chronometer
     .mon(_.round.api.player)
-    .logIfSlow(500, logger) { _ => s"outer player $pov" }
+    .logIfSlow(500, logger) { _ =>
+      s"outer player $pov"
+    }
     .result
 
   def watcher(

@@ -135,7 +135,11 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
           "Job created in %d ms".format(System.currentTimeMillis - start))
       }
     for {
-      job <- futureJob map { job => Some(job) } recover { case _ => None }
+      job <- futureJob map { job =>
+        Some(job)
+      } recover {
+        case _ => None
+      }
       queryStateManager = job map { job =>
         val mgr = JobQueryStateManager(
           job.id,
@@ -213,7 +217,9 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
   private final case class FakeJobQueryStateManager(expiresAt: DateTime)
       extends JobQueryStateMonad {
     private val cancelled: AtomicBoolean = new AtomicBoolean()
-    def abort(): Boolean = { cancelled.set(true); true }
+    def abort(): Boolean = {
+      cancelled.set(true); true
+    }
     def isCancelled() = cancelled.get()
     def hasExpired() = yggConfig.clock.now() isAfter expiresAt
   }

@@ -210,7 +210,9 @@ case class CaseWhen(
   }
 
   override def toString: String = {
-    val cases = branches.map { case (c, v) => s" WHEN $c THEN $v" }.mkString
+    val cases = branches.map {
+      case (c, v) => s" WHEN $c THEN $v"
+    }.mkString
     val elseCase = elseValue.map(" ELSE " + _).getOrElse("")
     "CASE" + cases + elseCase + " END"
   }

@@ -157,7 +157,9 @@ class TaskContextSuite
     // Check that attemptIds are 0 for all tasks' initial attempts
     val attemptIds = sc
       .parallelize(Seq(1, 2), 2)
-      .mapPartitions { iter => Seq(TaskContext.get().attemptNumber).iterator }
+      .mapPartitions { iter =>
+        Seq(TaskContext.get().attemptNumber).iterator
+      }
       .collect()
     assert(attemptIds.toSet === Set(0))
 

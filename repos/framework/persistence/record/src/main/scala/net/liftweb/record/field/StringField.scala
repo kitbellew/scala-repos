@@ -46,10 +46,20 @@ trait StringTypedField extends TypedField[String] with StringValidators {
   }
 
   private def elem = S.fmapFunc(SFuncHolder(this.setFromAny(_))) { funcName =>
-    <input type={formInputType} maxlength={maxLength.toString}
-      name={funcName}
-      value={valueBox openOr ""}
-      tabindex={tabIndex.toString}/>
+    <input type={
+      formInputType
+    } maxlength={
+      maxLength.toString
+    }
+      name={
+      funcName
+    }
+      value={
+      valueBox openOr ""
+    }
+      tabindex={
+      tabIndex.toString
+    }/>
   }
 
   def toForm: Box[NodeSeq] =

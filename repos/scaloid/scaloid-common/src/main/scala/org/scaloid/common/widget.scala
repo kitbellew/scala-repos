@@ -70,7 +70,9 @@ trait TraitPopupWindow[This <: android.widget.PopupWindow] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/PopupWindow.html#setAnimationStyle(int) setAnimationStyle(int)]]`
     */
-  @inline def animationStyle_=(p: Int) = { basis.setAnimationStyle(p); basis }
+  @inline def animationStyle_=(p: Int) = {
+    basis.setAnimationStyle(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/PopupWindow.html#getBackground() getBackground()]]`
@@ -112,8 +114,12 @@ trait TraitPopupWindow[This <: android.widget.PopupWindow] {
     basis.setClippingEnabled(p); basis
   }
 
-  @inline def enableClipping() = { basis.setClippingEnabled(true); basis }
-  @inline def disableClipping() = { basis.setClippingEnabled(false); basis }
+  @inline def enableClipping() = {
+    basis.setClippingEnabled(true); basis
+  }
+  @inline def disableClipping() = {
+    basis.setClippingEnabled(false); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/PopupWindow.html#getContentView() getContentView()]]`
@@ -145,7 +151,9 @@ trait TraitPopupWindow[This <: android.widget.PopupWindow] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/PopupWindow.html#setFocusable(boolean) setFocusable(boolean)]]`
     */
-  @inline def focusable_=(p: Boolean) = { basis.setFocusable(p); basis }
+  @inline def focusable_=(p: Boolean) = {
+    basis.setFocusable(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/PopupWindow.html#getHeight() getHeight()]]`
@@ -160,7 +168,9 @@ trait TraitPopupWindow[This <: android.widget.PopupWindow] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/PopupWindow.html#setHeight(int) setHeight(int)]]`
     */
-  @inline def height_=(p: Int) = { basis.setHeight(p); basis }
+  @inline def height_=(p: Int) = {
+    basis.setHeight(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/PopupWindow.html#getInputMethodMode() getInputMethodMode()]]`
@@ -175,7 +185,9 @@ trait TraitPopupWindow[This <: android.widget.PopupWindow] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/PopupWindow.html#setInputMethodMode(int) setInputMethodMode(int)]]`
     */
-  @inline def inputMethodMode_=(p: Int) = { basis.setInputMethodMode(p); basis }
+  @inline def inputMethodMode_=(p: Int) = {
+    basis.setInputMethodMode(p); basis
+  }
 
   @inline def onDismissListener(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error(
@@ -225,7 +237,9 @@ trait TraitPopupWindow[This <: android.widget.PopupWindow] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/PopupWindow.html#setSoftInputMode(int) setSoftInputMode(int)]]`
     */
-  @inline def softInputMode_=(p: Int) = { basis.setSoftInputMode(p); basis }
+  @inline def softInputMode_=(p: Int) = {
+    basis.setSoftInputMode(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/PopupWindow.html#isSplitTouchEnabled() isSplitTouchEnabled()]]`
@@ -244,8 +258,12 @@ trait TraitPopupWindow[This <: android.widget.PopupWindow] {
     basis.setSplitTouchEnabled(p); basis
   }
 
-  @inline def enableSplitTouch() = { basis.setSplitTouchEnabled(true); basis }
-  @inline def disableSplitTouch() = { basis.setSplitTouchEnabled(false); basis }
+  @inline def enableSplitTouch() = {
+    basis.setSplitTouchEnabled(true); basis
+  }
+  @inline def disableSplitTouch() = {
+    basis.setSplitTouchEnabled(false); basis
+  }
 
   @inline def touchInterceptor(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error(
@@ -277,7 +295,9 @@ trait TraitPopupWindow[This <: android.widget.PopupWindow] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/PopupWindow.html#setTouchable(boolean) setTouchable(boolean)]]`
     */
-  @inline def touchable_=(p: Boolean) = { basis.setTouchable(p); basis }
+  @inline def touchable_=(p: Boolean) = {
+    basis.setTouchable(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/PopupWindow.html#getWidth() getWidth()]]`
@@ -292,12 +312,16 @@ trait TraitPopupWindow[This <: android.widget.PopupWindow] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/PopupWindow.html#setWidth(int) setWidth(int)]]`
     */
-  @inline def width_=(p: Int) = { basis.setWidth(p); basis }
+  @inline def width_=(p: Int) = {
+    basis.setWidth(p); basis
+  }
 
   @inline def onDismiss[U](f: => U): This = {
     basis.setOnDismissListener(
       new android.widget.PopupWindow.OnDismissListener {
-        def onDismiss(): Unit = { f }
+        def onDismiss(): Unit = {
+          f
+        }
       })
     basis
   }
@@ -644,7 +668,9 @@ trait TraitListView[This <: android.widget.ListView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ListView.html#setDividerHeight(int) setDividerHeight(int)]]`
     */
-  @inline def dividerHeight_=(p: Int) = { basis.setDividerHeight(p); basis }
+  @inline def dividerHeight_=(p: Int) = {
+    basis.setDividerHeight(p); basis
+  }
 
   @inline def footerDividersEnabled(
       implicit no: NoGetterForThisProperty): Nothing =
@@ -717,7 +743,9 @@ trait TraitListView[This <: android.widget.ListView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ListView.html#setItemsCanFocus(boolean) setItemsCanFocus(boolean)]]`
     */
-  @inline def itemsCanFocus_=(p: Boolean) = { basis.setItemsCanFocus(p); basis }
+  @inline def itemsCanFocus_=(p: Boolean) = {
+    basis.setItemsCanFocus(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ListView.html#getMaxScrollAmount() getMaxScrollAmount()]]`
@@ -810,7 +838,9 @@ trait TraitEditText[This <: android.widget.EditText]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/EditText.html#setSelection(int) setSelection(int)]]`
     */
-  @inline def selection_=(p: Int) = { basis.setSelection(p); basis }
+  @inline def selection_=(p: Int) = {
+    basis.setSelection(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/EditText.html#getText() getText()]]`
@@ -904,7 +934,9 @@ trait TraitImageView[This <: android.widget.ImageView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ImageView.html#setAlpha(int) setAlpha(int)]]`
     */
-  @deprecated("", "") @inline def alpha_=(p: Int) = { basis.setAlpha(p); basis }
+  @deprecated("", "") @inline def alpha_=(p: Int) = {
+    basis.setAlpha(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ImageView.html#setBaseline(int) setBaseline(int)]]`
@@ -914,7 +946,9 @@ trait TraitImageView[This <: android.widget.ImageView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ImageView.html#setBaseline(int) setBaseline(int)]]`
     */
-  @inline def baseline_=(p: Int) = { basis.setBaseline(p); basis }
+  @inline def baseline_=(p: Int) = {
+    basis.setBaseline(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ImageView.html#getBaselineAlignBottom() getBaselineAlignBottom()]]`
@@ -946,7 +980,9 @@ trait TraitImageView[This <: android.widget.ImageView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ImageView.html#setColorFilter(int) setColorFilter(int)]]`
     */
-  @inline def colorFilter_=(p: Int) = { basis.setColorFilter(p); basis }
+  @inline def colorFilter_=(p: Int) = {
+    basis.setColorFilter(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ImageView.html#setColorFilter(android.graphics.ColorFilter) setColorFilter(android.graphics.ColorFilter)]]`
@@ -973,7 +1009,9 @@ trait TraitImageView[This <: android.widget.ImageView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ImageView.html#setCropToPadding(boolean) setCropToPadding(boolean)]]`
     */
-  @inline def cropToPadding_=(p: Boolean) = { basis.setCropToPadding(p); basis }
+  @inline def cropToPadding_=(p: Boolean) = {
+    basis.setCropToPadding(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ImageView.html#getDrawable() getDrawable()]]`
@@ -993,7 +1031,9 @@ trait TraitImageView[This <: android.widget.ImageView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ImageView.html#setImageAlpha(int) setImageAlpha(int)]]`
     */
-  @inline def imageAlpha_=(p: Int) = { basis.setImageAlpha(p); basis }
+  @inline def imageAlpha_=(p: Int) = {
+    basis.setImageAlpha(p); basis
+  }
 
   @inline def imageBitmap(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'imageBitmap'")
@@ -1037,7 +1077,9 @@ trait TraitImageView[This <: android.widget.ImageView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ImageView.html#setImageLevel(int) setImageLevel(int)]]`
     */
-  @inline def imageLevel_=(p: Int) = { basis.setImageLevel(p); basis }
+  @inline def imageLevel_=(p: Int) = {
+    basis.setImageLevel(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ImageView.html#getImageMatrix() getImageMatrix()]]`
@@ -1067,7 +1109,9 @@ trait TraitImageView[This <: android.widget.ImageView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ImageView.html#setImageResource(int) setImageResource(int)]]`
     */
-  @inline def imageResource_=(p: Int) = { basis.setImageResource(p); basis }
+  @inline def imageResource_=(p: Int) = {
+    basis.setImageResource(p); basis
+  }
 
   @inline def imageURI(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'imageURI'")
@@ -1080,7 +1124,9 @@ trait TraitImageView[This <: android.widget.ImageView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ImageView.html#setImageURI(android.net.Uri) setImageURI(android.net.Uri)]]`
     */
-  @inline def imageURI_=(p: android.net.Uri) = { basis.setImageURI(p); basis }
+  @inline def imageURI_=(p: android.net.Uri) = {
+    basis.setImageURI(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ImageView.html#getMaxHeight() getMaxHeight()]]`
@@ -1095,7 +1141,9 @@ trait TraitImageView[This <: android.widget.ImageView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ImageView.html#setMaxHeight(int) setMaxHeight(int)]]`
     */
-  @inline def maxHeight_=(p: Int) = { basis.setMaxHeight(p); basis }
+  @inline def maxHeight_=(p: Int) = {
+    basis.setMaxHeight(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ImageView.html#getMaxWidth() getMaxWidth()]]`
@@ -1110,7 +1158,9 @@ trait TraitImageView[This <: android.widget.ImageView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ImageView.html#setMaxWidth(int) setMaxWidth(int)]]`
     */
-  @inline def maxWidth_=(p: Int) = { basis.setMaxWidth(p); basis }
+  @inline def maxWidth_=(p: Int) = {
+    basis.setMaxWidth(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ImageView.html#getScaleType() getScaleType()]]`
@@ -1360,7 +1410,9 @@ trait TraitDatePicker[This <: android.widget.DatePicker]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/DatePicker.html#setMaxDate(long) setMaxDate(long)]]`
     */
-  @inline def maxDate_=(p: Long) = { basis.setMaxDate(p); basis }
+  @inline def maxDate_=(p: Long) = {
+    basis.setMaxDate(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/DatePicker.html#getMinDate() getMinDate()]]`
@@ -1375,7 +1427,9 @@ trait TraitDatePicker[This <: android.widget.DatePicker]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/DatePicker.html#setMinDate(long) setMinDate(long)]]`
     */
-  @inline def minDate_=(p: Long) = { basis.setMinDate(p); basis }
+  @inline def minDate_=(p: Long) = {
+    basis.setMinDate(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/DatePicker.html#getMonth() getMonth()]]`
@@ -1395,7 +1449,9 @@ trait TraitDatePicker[This <: android.widget.DatePicker]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/DatePicker.html#setSpinnersShown(boolean) setSpinnersShown(boolean)]]`
     */
-  @inline def spinnersShown_=(p: Boolean) = { basis.setSpinnersShown(p); basis }
+  @inline def spinnersShown_=(p: Boolean) = {
+    basis.setSpinnersShown(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/DatePicker.html#getYear() getYear()]]`
@@ -1488,7 +1544,9 @@ trait TraitAbsSeekBar[This <: android.widget.AbsSeekBar]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AbsSeekBar.html#setThumbOffset(int) setThumbOffset(int)]]`
     */
-  @inline def thumbOffset_=(p: Int) = { basis.setThumbOffset(p); basis }
+  @inline def thumbOffset_=(p: Int) = {
+    basis.setThumbOffset(p); basis
+  }
 
 }
 
@@ -1702,7 +1760,9 @@ trait TraitTabHost[This <: android.widget.TabHost]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TabHost.html#setCurrentTab(int) setCurrentTab(int)]]`
     */
-  @inline def currentTab_=(p: Int) = { basis.setCurrentTab(p); basis }
+  @inline def currentTab_=(p: Int) = {
+    basis.setCurrentTab(p); basis
+  }
 
   @inline def currentTabByTag(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'currentTabByTag'")
@@ -1766,7 +1826,9 @@ trait TraitTabHost[This <: android.widget.TabHost]
   @inline def onTabChanged[U](f: java.lang.String => U): This = {
     basis.setOnTabChangedListener(
       new android.widget.TabHost.OnTabChangeListener {
-        def onTabChanged(p: java.lang.String): Unit = { f(p) }
+        def onTabChanged(p: java.lang.String): Unit = {
+          f(p)
+        }
       })
     basis
   }
@@ -1774,7 +1836,9 @@ trait TraitTabHost[This <: android.widget.TabHost]
   @inline def onTabChanged[U](f: => U): This = {
     basis.setOnTabChangedListener(
       new android.widget.TabHost.OnTabChangeListener {
-        def onTabChanged(p: java.lang.String): Unit = { f }
+        def onTabChanged(p: java.lang.String): Unit = {
+          f
+        }
       })
     basis
   }
@@ -1831,7 +1895,9 @@ trait TraitGridLayout[This <: android.widget.GridLayout]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/GridLayout.html#setAlignmentMode(int) setAlignmentMode(int)]]`
     */
-  @inline def alignmentMode_=(p: Int) = { basis.setAlignmentMode(p); basis }
+  @inline def alignmentMode_=(p: Int) = {
+    basis.setAlignmentMode(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/GridLayout.html#getColumnCount() getColumnCount()]]`
@@ -1846,7 +1912,9 @@ trait TraitGridLayout[This <: android.widget.GridLayout]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/GridLayout.html#setColumnCount(int) setColumnCount(int)]]`
     */
-  @inline def columnCount_=(p: Int) = { basis.setColumnCount(p); basis }
+  @inline def columnCount_=(p: Int) = {
+    basis.setColumnCount(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/GridLayout.html#isColumnOrderPreserved() isColumnOrderPreserved()]]`
@@ -1878,7 +1946,9 @@ trait TraitGridLayout[This <: android.widget.GridLayout]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/GridLayout.html#setOrientation(int) setOrientation(int)]]`
     */
-  @inline def orientation_=(p: Int) = { basis.setOrientation(p); basis }
+  @inline def orientation_=(p: Int) = {
+    basis.setOrientation(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/GridLayout.html#getRowCount() getRowCount()]]`
@@ -1893,7 +1963,9 @@ trait TraitGridLayout[This <: android.widget.GridLayout]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/GridLayout.html#setRowCount(int) setRowCount(int)]]`
     */
-  @inline def rowCount_=(p: Int) = { basis.setRowCount(p); basis }
+  @inline def rowCount_=(p: Int) = {
+    basis.setRowCount(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/GridLayout.html#isRowOrderPreserved() isRowOrderPreserved()]]`
@@ -2109,7 +2181,9 @@ trait TraitRatingBar[This <: android.widget.RatingBar]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/RatingBar.html#setIsIndicator(boolean) setIsIndicator(boolean)]]`
     */
-  @inline def isIndicator_=(p: Boolean) = { basis.setIsIndicator(p); basis }
+  @inline def isIndicator_=(p: Boolean) = {
+    basis.setIsIndicator(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/RatingBar.html#getNumStars() getNumStars()]]`
@@ -2124,7 +2198,9 @@ trait TraitRatingBar[This <: android.widget.RatingBar]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/RatingBar.html#setNumStars(int) setNumStars(int)]]`
     */
-  @inline def numStars_=(p: Int) = { basis.setNumStars(p); basis }
+  @inline def numStars_=(p: Int) = {
+    basis.setNumStars(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/RatingBar.html#getOnRatingBarChangeListener() getOnRatingBarChangeListener()]]`
@@ -2159,7 +2235,9 @@ trait TraitRatingBar[This <: android.widget.RatingBar]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/RatingBar.html#setRating(float) setRating(float)]]`
     */
-  @inline def rating_=(p: Float) = { basis.setRating(p); basis }
+  @inline def rating_=(p: Float) = {
+    basis.setRating(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/RatingBar.html#getStepSize() getStepSize()]]`
@@ -2174,7 +2252,9 @@ trait TraitRatingBar[This <: android.widget.RatingBar]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/RatingBar.html#setStepSize(float) setStepSize(float)]]`
     */
-  @inline def stepSize_=(p: Float) = { basis.setStepSize(p); basis }
+  @inline def stepSize_=(p: Float) = {
+    basis.setStepSize(p); basis
+  }
 
   @inline def onRatingChanged[U](
       f: (android.widget.RatingBar, Float, Boolean) => U): This = {
@@ -2183,7 +2263,9 @@ trait TraitRatingBar[This <: android.widget.RatingBar]
         def onRatingChanged(
             p1: android.widget.RatingBar,
             p2: Float,
-            p3: Boolean): Unit = { f(p1, p2, p3) }
+            p3: Boolean): Unit = {
+          f(p1, p2, p3)
+        }
       })
     basis
   }
@@ -2194,7 +2276,9 @@ trait TraitRatingBar[This <: android.widget.RatingBar]
         def onRatingChanged(
             p1: android.widget.RatingBar,
             p2: Float,
-            p3: Boolean): Unit = { f }
+            p3: Boolean): Unit = {
+          f
+        }
       })
     basis
   }
@@ -2320,7 +2404,9 @@ trait TraitSpinner[This <: android.widget.Spinner]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Spinner.html#setDropDownWidth(int) setDropDownWidth(int)]]`
     */
-  @inline def dropDownWidth_=(p: Int) = { basis.setDropDownWidth(p); basis }
+  @inline def dropDownWidth_=(p: Int) = {
+    basis.setDropDownWidth(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Spinner.html#getGravity() getGravity()]]`
@@ -2335,7 +2421,9 @@ trait TraitSpinner[This <: android.widget.Spinner]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Spinner.html#setGravity(int) setGravity(int)]]`
     */
-  @inline def gravity_=(p: Int) = { basis.setGravity(p); basis }
+  @inline def gravity_=(p: Int) = {
+    basis.setGravity(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Spinner.html#getPopupBackground() getPopupBackground()]]`
@@ -2406,7 +2494,9 @@ trait TraitSpinner[This <: android.widget.Spinner]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Spinner.html#setPromptId(int) setPromptId(int)]]`
     */
-  @inline def promptId_=(p: Int) = { basis.setPromptId(p); basis }
+  @inline def promptId_=(p: Int) = {
+    basis.setPromptId(p); basis
+  }
 
 }
 
@@ -2500,7 +2590,9 @@ trait TraitGridView[This <: android.widget.GridView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/GridView.html#setColumnWidth(int) setColumnWidth(int)]]`
     */
-  @inline def columnWidth_=(p: Int) = { basis.setColumnWidth(p); basis }
+  @inline def columnWidth_=(p: Int) = {
+    basis.setColumnWidth(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/GridView.html#getGravity() getGravity()]]`
@@ -2515,7 +2607,9 @@ trait TraitGridView[This <: android.widget.GridView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/GridView.html#setGravity(int) setGravity(int)]]`
     */
-  @inline def gravity_=(p: Int) = { basis.setGravity(p); basis }
+  @inline def gravity_=(p: Int) = {
+    basis.setGravity(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/GridView.html#getHorizontalSpacing() getHorizontalSpacing()]]`
@@ -2547,7 +2641,9 @@ trait TraitGridView[This <: android.widget.GridView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/GridView.html#setNumColumns(int) setNumColumns(int)]]`
     */
-  @inline def numColumns_=(p: Int) = { basis.setNumColumns(p); basis }
+  @inline def numColumns_=(p: Int) = {
+    basis.setNumColumns(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/GridView.html#getRequestedColumnWidth() getRequestedColumnWidth()]]`
@@ -2572,7 +2668,9 @@ trait TraitGridView[This <: android.widget.GridView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/GridView.html#setStretchMode(int) setStretchMode(int)]]`
     */
-  @inline def stretchMode_=(p: Int) = { basis.setStretchMode(p); basis }
+  @inline def stretchMode_=(p: Int) = {
+    basis.setStretchMode(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/GridView.html#getVerticalSpacing() getVerticalSpacing()]]`
@@ -2587,7 +2685,9 @@ trait TraitGridView[This <: android.widget.GridView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/GridView.html#setVerticalSpacing(int) setVerticalSpacing(int)]]`
     */
-  @inline def verticalSpacing_=(p: Int) = { basis.setVerticalSpacing(p); basis }
+  @inline def verticalSpacing_=(p: Int) = {
+    basis.setVerticalSpacing(p); basis
+  }
 
 }
 
@@ -2641,7 +2741,9 @@ trait TraitRelativeLayout[This <: android.widget.RelativeLayout]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/RelativeLayout.html#setGravity(int) setGravity(int)]]`
     */
-  @inline def gravity_=(p: Int) = { basis.setGravity(p); basis }
+  @inline def gravity_=(p: Int) = {
+    basis.setGravity(p); basis
+  }
 
   @inline def horizontalGravity(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error(
@@ -2670,7 +2772,9 @@ trait TraitRelativeLayout[This <: android.widget.RelativeLayout]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/RelativeLayout.html#setIgnoreGravity(int) setIgnoreGravity(int)]]`
     */
-  @inline def ignoreGravity_=(p: Int) = { basis.setIgnoreGravity(p); basis }
+  @inline def ignoreGravity_=(p: Int) = {
+    basis.setIgnoreGravity(p); basis
+  }
 
   @inline def verticalGravity(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'verticalGravity'")
@@ -2683,7 +2787,9 @@ trait TraitRelativeLayout[This <: android.widget.RelativeLayout]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/RelativeLayout.html#setVerticalGravity(int) setVerticalGravity(int)]]`
     */
-  @inline def verticalGravity_=(p: Int) = { basis.setVerticalGravity(p); basis }
+  @inline def verticalGravity_=(p: Int) = {
+    basis.setVerticalGravity(p); basis
+  }
 
 }
 
@@ -2896,7 +3002,9 @@ trait TraitNumberPicker[This <: android.widget.NumberPicker]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/NumberPicker.html#setMaxValue(int) setMaxValue(int)]]`
     */
-  @inline def maxValue_=(p: Int) = { basis.setMaxValue(p); basis }
+  @inline def maxValue_=(p: Int) = {
+    basis.setMaxValue(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/NumberPicker.html#getMinValue() getMinValue()]]`
@@ -2911,7 +3019,9 @@ trait TraitNumberPicker[This <: android.widget.NumberPicker]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/NumberPicker.html#setMinValue(int) setMinValue(int)]]`
     */
-  @inline def minValue_=(p: Int) = { basis.setMinValue(p); basis }
+  @inline def minValue_=(p: Int) = {
+    basis.setMinValue(p); basis
+  }
 
   @inline def onLongPressUpdateInterval(
       implicit no: NoGetterForThisProperty): Nothing =
@@ -2982,7 +3092,9 @@ trait TraitNumberPicker[This <: android.widget.NumberPicker]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/NumberPicker.html#setValue(int) setValue(int)]]`
     */
-  @inline def value_=(p: Int) = { basis.setValue(p); basis }
+  @inline def value_=(p: Int) = {
+    basis.setValue(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/NumberPicker.html#getWrapSelectorWheel() getWrapSelectorWheel()]]`
@@ -3006,7 +3118,9 @@ trait TraitNumberPicker[This <: android.widget.NumberPicker]
     basis.setOnScrollListener(new android.widget.NumberPicker.OnScrollListener {
       def onScrollStateChange(
           p1: android.widget.NumberPicker,
-          p2: Int): Unit = { f(p1, p2) }
+          p2: Int): Unit = {
+        f(p1, p2)
+      }
     })
     basis
   }
@@ -3015,7 +3129,9 @@ trait TraitNumberPicker[This <: android.widget.NumberPicker]
     basis.setOnScrollListener(new android.widget.NumberPicker.OnScrollListener {
       def onScrollStateChange(
           p1: android.widget.NumberPicker,
-          p2: Int): Unit = { f }
+          p2: Int): Unit = {
+        f
+      }
     })
     basis
   }
@@ -3027,7 +3143,9 @@ trait TraitNumberPicker[This <: android.widget.NumberPicker]
         def onValueChange(
             p1: android.widget.NumberPicker,
             p2: Int,
-            p3: Int): Unit = { f(p1, p2, p3) }
+            p3: Int): Unit = {
+          f(p1, p2, p3)
+        }
       })
     basis
   }
@@ -3038,7 +3156,9 @@ trait TraitNumberPicker[This <: android.widget.NumberPicker]
         def onValueChange(
             p1: android.widget.NumberPicker,
             p2: Int,
-            p3: Int): Unit = { f }
+            p3: Int): Unit = {
+          f
+        }
       })
     basis
   }
@@ -3095,7 +3215,9 @@ trait TraitChronometer[This <: android.widget.Chronometer]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Chronometer.html#setBase(long) setBase(long)]]`
     */
-  @inline def base_=(p: Long) = { basis.setBase(p); basis }
+  @inline def base_=(p: Long) = {
+    basis.setBase(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Chronometer.html#getFormat() getFormat()]]`
@@ -3110,7 +3232,9 @@ trait TraitChronometer[This <: android.widget.Chronometer]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Chronometer.html#setFormat(java.lang.String) setFormat(java.lang.String)]]`
     */
-  @inline def format_=(p: java.lang.String) = { basis.setFormat(p); basis }
+  @inline def format_=(p: java.lang.String) = {
+    basis.setFormat(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Chronometer.html#getOnChronometerTickListener() getOnChronometerTickListener()]]`
@@ -3135,7 +3259,9 @@ trait TraitChronometer[This <: android.widget.Chronometer]
   @inline def onChronometerTick[U](f: android.widget.Chronometer => U): This = {
     basis.setOnChronometerTickListener(
       new android.widget.Chronometer.OnChronometerTickListener {
-        def onChronometerTick(p: android.widget.Chronometer): Unit = { f(p) }
+        def onChronometerTick(p: android.widget.Chronometer): Unit = {
+          f(p)
+        }
       })
     basis
   }
@@ -3143,7 +3269,9 @@ trait TraitChronometer[This <: android.widget.Chronometer]
   @inline def onChronometerTick[U](f: => U): This = {
     basis.setOnChronometerTickListener(
       new android.widget.Chronometer.OnChronometerTickListener {
-        def onChronometerTick(p: android.widget.Chronometer): Unit = { f }
+        def onChronometerTick(p: android.widget.Chronometer): Unit = {
+          f
+        }
       })
     basis
   }
@@ -3275,7 +3403,9 @@ trait TraitCheckedTextView[This <: android.widget.CheckedTextView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/CheckedTextView.html#setChecked(boolean) setChecked(boolean)]]`
     */
-  @inline def checked_=(p: Boolean) = { basis.setChecked(p); basis }
+  @inline def checked_=(p: Boolean) = {
+    basis.setChecked(p); basis
+  }
 
 }
 
@@ -3518,7 +3648,9 @@ trait TraitShareActionProvider[This <: android.widget.ShareActionProvider]
       new android.widget.ShareActionProvider.OnShareTargetSelectedListener {
         def onShareTargetSelected(
             p1: android.widget.ShareActionProvider,
-            p2: android.content.Intent): Boolean = { f(p1, p2) }
+            p2: android.content.Intent): Boolean = {
+          f(p1, p2)
+        }
       })
     basis
   }
@@ -3528,7 +3660,9 @@ trait TraitShareActionProvider[This <: android.widget.ShareActionProvider]
       new android.widget.ShareActionProvider.OnShareTargetSelectedListener {
         def onShareTargetSelected(
             p1: android.widget.ShareActionProvider,
-            p2: android.content.Intent): Boolean = { f }
+            p2: android.content.Intent): Boolean = {
+          f
+        }
       })
     basis
   }
@@ -3596,7 +3730,9 @@ trait TraitImageSwitcher[This <: android.widget.ImageSwitcher]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ImageSwitcher.html#setImageResource(int) setImageResource(int)]]`
     */
-  @inline def imageResource_=(p: Int) = { basis.setImageResource(p); basis }
+  @inline def imageResource_=(p: Int) = {
+    basis.setImageResource(p); basis
+  }
 
   @inline def imageURI(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'imageURI'")
@@ -3609,7 +3745,9 @@ trait TraitImageSwitcher[This <: android.widget.ImageSwitcher]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ImageSwitcher.html#setImageURI(android.net.Uri) setImageURI(android.net.Uri)]]`
     */
-  @inline def imageURI_=(p: android.net.Uri) = { basis.setImageURI(p); basis }
+  @inline def imageURI_=(p: android.net.Uri) = {
+    basis.setImageURI(p); basis
+  }
 
 }
 
@@ -3723,7 +3861,9 @@ trait TraitTimePicker[This <: android.widget.TimePicker]
         def onTimeChanged(
             p1: android.widget.TimePicker,
             p2: Int,
-            p3: Int): Unit = { f(p1, p2, p3) }
+            p3: Int): Unit = {
+          f(p1, p2, p3)
+        }
       })
     basis
   }
@@ -3734,7 +3874,9 @@ trait TraitTimePicker[This <: android.widget.TimePicker]
         def onTimeChanged(
             p1: android.widget.TimePicker,
             p2: Int,
-            p3: Int): Unit = { f }
+            p3: Int): Unit = {
+          f
+        }
       })
     basis
   }
@@ -3935,7 +4077,9 @@ trait TraitExpandableListView[This <: android.widget.ExpandableListView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ExpandableListView.html#setSelectedGroup(int) setSelectedGroup(int)]]`
     */
-  @inline def selectedGroup_=(p: Int) = { basis.setSelectedGroup(p); basis }
+  @inline def selectedGroup_=(p: Int) = {
+    basis.setSelectedGroup(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ExpandableListView.html#getSelectedId() getSelectedId()]]`
@@ -3961,7 +4105,9 @@ trait TraitExpandableListView[This <: android.widget.ExpandableListView]
             p2: android.view.View,
             p3: Int,
             p4: Int,
-            p5: Long): Boolean = { f(p1, p2, p3, p4, p5) }
+            p5: Long): Boolean = {
+          f(p1, p2, p3, p4, p5)
+        }
       })
     basis
   }
@@ -3974,7 +4120,9 @@ trait TraitExpandableListView[This <: android.widget.ExpandableListView]
             p2: android.view.View,
             p3: Int,
             p4: Int,
-            p5: Long): Boolean = { f }
+            p5: Long): Boolean = {
+          f
+        }
       })
     basis
   }
@@ -3991,7 +4139,9 @@ trait TraitExpandableListView[This <: android.widget.ExpandableListView]
             p1: android.widget.ExpandableListView,
             p2: android.view.View,
             p3: Int,
-            p4: Long): Boolean = { f(p1, p2, p3, p4) }
+            p4: Long): Boolean = {
+          f(p1, p2, p3, p4)
+        }
       })
     basis
   }
@@ -4003,7 +4153,9 @@ trait TraitExpandableListView[This <: android.widget.ExpandableListView]
             p1: android.widget.ExpandableListView,
             p2: android.view.View,
             p3: Int,
-            p4: Long): Boolean = { f }
+            p4: Long): Boolean = {
+          f
+        }
       })
     basis
   }
@@ -4011,7 +4163,9 @@ trait TraitExpandableListView[This <: android.widget.ExpandableListView]
   @inline def onGroupCollapse[U](f: Int => U): This = {
     basis.setOnGroupCollapseListener(
       new android.widget.ExpandableListView.OnGroupCollapseListener {
-        def onGroupCollapse(p: Int): Unit = { f(p) }
+        def onGroupCollapse(p: Int): Unit = {
+          f(p)
+        }
       })
     basis
   }
@@ -4019,7 +4173,9 @@ trait TraitExpandableListView[This <: android.widget.ExpandableListView]
   @inline def onGroupCollapse[U](f: => U): This = {
     basis.setOnGroupCollapseListener(
       new android.widget.ExpandableListView.OnGroupCollapseListener {
-        def onGroupCollapse(p: Int): Unit = { f }
+        def onGroupCollapse(p: Int): Unit = {
+          f
+        }
       })
     basis
   }
@@ -4027,7 +4183,9 @@ trait TraitExpandableListView[This <: android.widget.ExpandableListView]
   @inline def onGroupExpand[U](f: Int => U): This = {
     basis.setOnGroupExpandListener(
       new android.widget.ExpandableListView.OnGroupExpandListener {
-        def onGroupExpand(p: Int): Unit = { f(p) }
+        def onGroupExpand(p: Int): Unit = {
+          f(p)
+        }
       })
     basis
   }
@@ -4035,7 +4193,9 @@ trait TraitExpandableListView[This <: android.widget.ExpandableListView]
   @inline def onGroupExpand[U](f: => U): This = {
     basis.setOnGroupExpandListener(
       new android.widget.ExpandableListView.OnGroupExpandListener {
-        def onGroupExpand(p: Int): Unit = { f }
+        def onGroupExpand(p: Int): Unit = {
+          f
+        }
       })
     basis
   }
@@ -4104,7 +4264,9 @@ trait TraitAbsListView[This <: android.widget.AbsListView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AbsListView.html#setCacheColorHint(int) setCacheColorHint(int)]]`
     */
-  @inline def cacheColorHint_=(p: Int) = { basis.setCacheColorHint(p); basis }
+  @inline def cacheColorHint_=(p: Int) = {
+    basis.setCacheColorHint(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AbsListView.html#getCheckedItemCount() getCheckedItemCount()]]`
@@ -4139,7 +4301,9 @@ trait TraitAbsListView[This <: android.widget.AbsListView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AbsListView.html#setChoiceMode(int) setChoiceMode(int)]]`
     */
-  @inline def choiceMode_=(p: Int) = { basis.setChoiceMode(p); basis }
+  @inline def choiceMode_=(p: Int) = {
+    basis.setChoiceMode(p); basis
+  }
 
   @inline def drawSelectorOnTop(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error(
@@ -4191,8 +4355,12 @@ trait TraitAbsListView[This <: android.widget.AbsListView]
     basis.setFastScrollEnabled(p); basis
   }
 
-  @inline def enableFastScroll() = { basis.setFastScrollEnabled(true); basis }
-  @inline def disableFastScroll() = { basis.setFastScrollEnabled(false); basis }
+  @inline def enableFastScroll() = {
+    basis.setFastScrollEnabled(true); basis
+  }
+  @inline def disableFastScroll() = {
+    basis.setFastScrollEnabled(false); basis
+  }
 
   @inline def filterText(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'filterText'")
@@ -4220,7 +4388,9 @@ trait TraitAbsListView[This <: android.widget.AbsListView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AbsListView.html#setFriction(float) setFriction(float)]]`
     */
-  @inline def friction_=(p: Float) = { basis.setFriction(p); basis }
+  @inline def friction_=(p: Float) = {
+    basis.setFriction(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AbsListView.html#getListPaddingBottom() getListPaddingBottom()]]`
@@ -4353,7 +4523,9 @@ trait TraitAbsListView[This <: android.widget.AbsListView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AbsListView.html#setSelector(int) setSelector(int)]]`
     */
-  @inline def selector_=(p: Int) = { basis.setSelector(p); basis }
+  @inline def selector_=(p: Int) = {
+    basis.setSelector(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AbsListView.html#setSelector(android.graphics.drawable.Drawable) setSelector(android.graphics.drawable.Drawable)]]`
@@ -4430,8 +4602,12 @@ trait TraitAbsListView[This <: android.widget.AbsListView]
     basis.setTextFilterEnabled(p); basis
   }
 
-  @inline def enableTextFilter() = { basis.setTextFilterEnabled(true); basis }
-  @inline def disableTextFilter() = { basis.setTextFilterEnabled(false); basis }
+  @inline def enableTextFilter() = {
+    basis.setTextFilterEnabled(true); basis
+  }
+  @inline def disableTextFilter() = {
+    basis.setTextFilterEnabled(false); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AbsListView.html#getTranscriptMode() getTranscriptMode()]]`
@@ -4446,7 +4622,9 @@ trait TraitAbsListView[This <: android.widget.AbsListView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AbsListView.html#setTranscriptMode(int) setTranscriptMode(int)]]`
     */
-  @inline def transcriptMode_=(p: Int) = { basis.setTranscriptMode(p); basis }
+  @inline def transcriptMode_=(p: Int) = {
+    basis.setTranscriptMode(p); basis
+  }
 
   @inline def velocityScale(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'velocityScale'")
@@ -4459,18 +4637,24 @@ trait TraitAbsListView[This <: android.widget.AbsListView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AbsListView.html#setVelocityScale(float) setVelocityScale(float)]]`
     */
-  @inline def velocityScale_=(p: Float) = { basis.setVelocityScale(p); basis }
+  @inline def velocityScale_=(p: Float) = {
+    basis.setVelocityScale(p); basis
+  }
 
   @inline def onMovedToScrapHeap[U](f: android.view.View => U): This = {
     basis.setRecyclerListener(new android.widget.AbsListView.RecyclerListener {
-      def onMovedToScrapHeap(p: android.view.View): Unit = { f(p) }
+      def onMovedToScrapHeap(p: android.view.View): Unit = {
+        f(p)
+      }
     })
     basis
   }
 
   @inline def onMovedToScrapHeap[U](f: => U): This = {
     basis.setRecyclerListener(new android.widget.AbsListView.RecyclerListener {
-      def onMovedToScrapHeap(p: android.view.View): Unit = { f }
+      def onMovedToScrapHeap(p: android.view.View): Unit = {
+        f
+      }
     })
     basis
   }
@@ -4482,7 +4666,9 @@ trait TraitAbsListView[This <: android.widget.AbsListView]
           p1: android.widget.AbsListView,
           p2: Int,
           p3: Int,
-          p4: Int): Unit = { f(p1, p2, p3, p4) }
+          p4: Int): Unit = {
+        f(p1, p2, p3, p4)
+      }
       def onScrollStateChanged(
           p1: android.widget.AbsListView,
           p2: Int): Unit = {}
@@ -4496,7 +4682,9 @@ trait TraitAbsListView[This <: android.widget.AbsListView]
           p1: android.widget.AbsListView,
           p2: Int,
           p3: Int,
-          p4: Int): Unit = { f }
+          p4: Int): Unit = {
+        f
+      }
       def onScrollStateChanged(
           p1: android.widget.AbsListView,
           p2: Int): Unit = {}
@@ -4514,7 +4702,9 @@ trait TraitAbsListView[This <: android.widget.AbsListView]
           p4: Int): Unit = {}
       def onScrollStateChanged(
           p1: android.widget.AbsListView,
-          p2: Int): Unit = { f(p1, p2) }
+          p2: Int): Unit = {
+        f(p1, p2)
+      }
     })
     basis
   }
@@ -4528,7 +4718,9 @@ trait TraitAbsListView[This <: android.widget.AbsListView]
           p4: Int): Unit = {}
       def onScrollStateChanged(
           p1: android.widget.AbsListView,
-          p2: Int): Unit = { f }
+          p2: Int): Unit = {
+        f
+      }
     })
     basis
   }
@@ -4606,7 +4798,9 @@ trait TraitSeekBar[This <: android.widget.SeekBar]
         def onProgressChanged(
             p1: android.widget.SeekBar,
             p2: Int,
-            p3: Boolean): Unit = { f(p1, p2, p3) }
+            p3: Boolean): Unit = {
+          f(p1, p2, p3)
+        }
         def onStartTrackingTouch(p: android.widget.SeekBar): Unit = {}
         def onStopTrackingTouch(p: android.widget.SeekBar): Unit = {}
       })
@@ -4619,7 +4813,9 @@ trait TraitSeekBar[This <: android.widget.SeekBar]
         def onProgressChanged(
             p1: android.widget.SeekBar,
             p2: Int,
-            p3: Boolean): Unit = { f }
+            p3: Boolean): Unit = {
+          f
+        }
         def onStartTrackingTouch(p: android.widget.SeekBar): Unit = {}
         def onStopTrackingTouch(p: android.widget.SeekBar): Unit = {}
       })
@@ -4633,7 +4829,9 @@ trait TraitSeekBar[This <: android.widget.SeekBar]
             p1: android.widget.SeekBar,
             p2: Int,
             p3: Boolean): Unit = {}
-        def onStartTrackingTouch(p: android.widget.SeekBar): Unit = { f(p) }
+        def onStartTrackingTouch(p: android.widget.SeekBar): Unit = {
+          f(p)
+        }
         def onStopTrackingTouch(p: android.widget.SeekBar): Unit = {}
       })
     basis
@@ -4646,7 +4844,9 @@ trait TraitSeekBar[This <: android.widget.SeekBar]
             p1: android.widget.SeekBar,
             p2: Int,
             p3: Boolean): Unit = {}
-        def onStartTrackingTouch(p: android.widget.SeekBar): Unit = { f }
+        def onStartTrackingTouch(p: android.widget.SeekBar): Unit = {
+          f
+        }
         def onStopTrackingTouch(p: android.widget.SeekBar): Unit = {}
       })
     basis
@@ -4660,7 +4860,9 @@ trait TraitSeekBar[This <: android.widget.SeekBar]
             p2: Int,
             p3: Boolean): Unit = {}
         def onStartTrackingTouch(p: android.widget.SeekBar): Unit = {}
-        def onStopTrackingTouch(p: android.widget.SeekBar): Unit = { f(p) }
+        def onStopTrackingTouch(p: android.widget.SeekBar): Unit = {
+          f(p)
+        }
       })
     basis
   }
@@ -4673,7 +4875,9 @@ trait TraitSeekBar[This <: android.widget.SeekBar]
             p2: Int,
             p3: Boolean): Unit = {}
         def onStartTrackingTouch(p: android.widget.SeekBar): Unit = {}
-        def onStopTrackingTouch(p: android.widget.SeekBar): Unit = { f }
+        def onStopTrackingTouch(p: android.widget.SeekBar): Unit = {
+          f
+        }
       })
     basis
   }
@@ -4731,7 +4935,9 @@ trait TraitToast[This <: android.widget.Toast] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Toast.html#setDuration(int) setDuration(int)]]`
     */
-  @inline def duration_=(p: Int) = { basis.setDuration(p); basis }
+  @inline def duration_=(p: Int) = {
+    basis.setDuration(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Toast.html#getGravity() getGravity()]]`
@@ -4754,7 +4960,9 @@ trait TraitToast[This <: android.widget.Toast] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Toast.html#setText(int) setText(int)]]`
     */
-  @inline def text_=(p: Int) = { basis.setText(p); basis }
+  @inline def text_=(p: Int) = {
+    basis.setText(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Toast.html#setText(java.lang.CharSequence) setText(java.lang.CharSequence)]]`
@@ -4764,7 +4972,9 @@ trait TraitToast[This <: android.widget.Toast] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Toast.html#setText(java.lang.CharSequence) setText(java.lang.CharSequence)]]`
     */
-  @inline def text_=(p: java.lang.CharSequence) = { basis.setText(p); basis }
+  @inline def text_=(p: java.lang.CharSequence) = {
+    basis.setText(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Toast.html#getVerticalMargin() getVerticalMargin()]]`
@@ -4784,7 +4994,9 @@ trait TraitToast[This <: android.widget.Toast] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Toast.html#setView(android.view.View) setView(android.view.View)]]`
     */
-  @inline def view_=(p: android.view.View) = { basis.setView(p); basis }
+  @inline def view_=(p: android.view.View) = {
+    basis.setView(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Toast.html#getXOffset() getXOffset()]]`
@@ -4912,7 +5124,9 @@ trait TraitZoomButtonsController[This <: android.widget.ZoomButtonsController] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ZoomButtonsController.html#setAutoDismissed(boolean) setAutoDismissed(boolean)]]`
     */
-  @inline def autoDismissed_=(p: Boolean) = { basis.setAutoDismissed(p); basis }
+  @inline def autoDismissed_=(p: Boolean) = {
+    basis.setAutoDismissed(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ZoomButtonsController.html#getContainer() getContainer()]]`
@@ -4930,7 +5144,9 @@ trait TraitZoomButtonsController[This <: android.widget.ZoomButtonsController] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ZoomButtonsController.html#setFocusable(boolean) setFocusable(boolean)]]`
     */
-  @inline def focusable_=(p: Boolean) = { basis.setFocusable(p); basis }
+  @inline def focusable_=(p: Boolean) = {
+    basis.setFocusable(p); basis
+  }
 
   @inline def onZoomListener(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'onZoomListener'")
@@ -4963,7 +5179,9 @@ trait TraitZoomButtonsController[This <: android.widget.ZoomButtonsController] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ZoomButtonsController.html#setVisible(boolean) setVisible(boolean)]]`
     */
-  @inline def visible_=(p: Boolean) = { basis.setVisible(p); basis }
+  @inline def visible_=(p: Boolean) = {
+    basis.setVisible(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ZoomButtonsController.html#getZoomControls() getZoomControls()]]`
@@ -4981,10 +5199,16 @@ trait TraitZoomButtonsController[This <: android.widget.ZoomButtonsController] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ZoomButtonsController.html#setZoomInEnabled(boolean) setZoomInEnabled(boolean)]]`
     */
-  @inline def zoomInEnabled_=(p: Boolean) = { basis.setZoomInEnabled(p); basis }
+  @inline def zoomInEnabled_=(p: Boolean) = {
+    basis.setZoomInEnabled(p); basis
+  }
 
-  @inline def enableZoomIn() = { basis.setZoomInEnabled(true); basis }
-  @inline def disableZoomIn() = { basis.setZoomInEnabled(false); basis }
+  @inline def enableZoomIn() = {
+    basis.setZoomInEnabled(true); basis
+  }
+  @inline def disableZoomIn() = {
+    basis.setZoomInEnabled(false); basis
+  }
 
   @inline def zoomOutEnabled(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'zoomOutEnabled'")
@@ -5001,8 +5225,12 @@ trait TraitZoomButtonsController[This <: android.widget.ZoomButtonsController] {
     basis.setZoomOutEnabled(p); basis
   }
 
-  @inline def enableZoomOut() = { basis.setZoomOutEnabled(true); basis }
-  @inline def disableZoomOut() = { basis.setZoomOutEnabled(false); basis }
+  @inline def enableZoomOut() = {
+    basis.setZoomOutEnabled(true); basis
+  }
+  @inline def disableZoomOut() = {
+    basis.setZoomOutEnabled(false); basis
+  }
 
   @inline def zoomSpeed(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'zoomSpeed'")
@@ -5015,12 +5243,16 @@ trait TraitZoomButtonsController[This <: android.widget.ZoomButtonsController] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ZoomButtonsController.html#setZoomSpeed(long) setZoomSpeed(long)]]`
     */
-  @inline def zoomSpeed_=(p: Long) = { basis.setZoomSpeed(p); basis }
+  @inline def zoomSpeed_=(p: Long) = {
+    basis.setZoomSpeed(p); basis
+  }
 
   @inline def onVisibilityChanged[U](f: Boolean => U): This = {
     basis.setOnZoomListener(
       new android.widget.ZoomButtonsController.OnZoomListener {
-        def onVisibilityChanged(p: Boolean): Unit = { f(p) }
+        def onVisibilityChanged(p: Boolean): Unit = {
+          f(p)
+        }
         def onZoom(p: Boolean): Unit = {}
       })
     basis
@@ -5029,7 +5261,9 @@ trait TraitZoomButtonsController[This <: android.widget.ZoomButtonsController] {
   @inline def onVisibilityChanged[U](f: => U): This = {
     basis.setOnZoomListener(
       new android.widget.ZoomButtonsController.OnZoomListener {
-        def onVisibilityChanged(p: Boolean): Unit = { f }
+        def onVisibilityChanged(p: Boolean): Unit = {
+          f
+        }
         def onZoom(p: Boolean): Unit = {}
       })
     basis
@@ -5039,7 +5273,9 @@ trait TraitZoomButtonsController[This <: android.widget.ZoomButtonsController] {
     basis.setOnZoomListener(
       new android.widget.ZoomButtonsController.OnZoomListener {
         def onVisibilityChanged(p: Boolean): Unit = {}
-        def onZoom(p: Boolean): Unit = { f(p) }
+        def onZoom(p: Boolean): Unit = {
+          f(p)
+        }
       })
     basis
   }
@@ -5048,7 +5284,9 @@ trait TraitZoomButtonsController[This <: android.widget.ZoomButtonsController] {
     basis.setOnZoomListener(
       new android.widget.ZoomButtonsController.OnZoomListener {
         def onVisibilityChanged(p: Boolean): Unit = {}
-        def onZoom(p: Boolean): Unit = { f }
+        def onZoom(p: Boolean): Unit = {
+          f
+        }
       })
     basis
   }
@@ -5096,7 +5334,9 @@ trait TraitResourceCursorAdapter[This <: android.widget.ResourceCursorAdapter]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ResourceCursorAdapter.html#setViewResource(int) setViewResource(int)]]`
     */
-  @inline def viewResource_=(p: Int) = { basis.setViewResource(p); basis }
+  @inline def viewResource_=(p: Int) = {
+    basis.setViewResource(p); basis
+  }
 
 }
 
@@ -5146,7 +5386,9 @@ trait TraitViewAnimator[This <: android.widget.ViewAnimator]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ViewAnimator.html#setDisplayedChild(int) setDisplayedChild(int)]]`
     */
-  @inline def displayedChild_=(p: Int) = { basis.setDisplayedChild(p); basis }
+  @inline def displayedChild_=(p: Int) = {
+    basis.setDisplayedChild(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ViewAnimator.html#getInAnimation() getInAnimation()]]`
@@ -5236,7 +5478,9 @@ trait TraitCalendarView[This <: android.widget.CalendarView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/CalendarView.html#setDate(long) setDate(long)]]`
     */
-  @inline def date_=(p: Long) = { basis.setDate(p); basis }
+  @inline def date_=(p: Long) = {
+    basis.setDate(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/CalendarView.html#getDateTextAppearance() getDateTextAppearance()]]`
@@ -5268,7 +5512,9 @@ trait TraitCalendarView[This <: android.widget.CalendarView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/CalendarView.html#setFirstDayOfWeek(int) setFirstDayOfWeek(int)]]`
     */
-  @inline def firstDayOfWeek_=(p: Int) = { basis.setFirstDayOfWeek(p); basis }
+  @inline def firstDayOfWeek_=(p: Int) = {
+    basis.setFirstDayOfWeek(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/CalendarView.html#getFocusedMonthDateColor() getFocusedMonthDateColor()]]`
@@ -5300,7 +5546,9 @@ trait TraitCalendarView[This <: android.widget.CalendarView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/CalendarView.html#setMaxDate(long) setMaxDate(long)]]`
     */
-  @inline def maxDate_=(p: Long) = { basis.setMaxDate(p); basis }
+  @inline def maxDate_=(p: Long) = {
+    basis.setMaxDate(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/CalendarView.html#getMinDate() getMinDate()]]`
@@ -5315,7 +5563,9 @@ trait TraitCalendarView[This <: android.widget.CalendarView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/CalendarView.html#setMinDate(long) setMinDate(long)]]`
     */
-  @inline def minDate_=(p: Long) = { basis.setMinDate(p); basis }
+  @inline def minDate_=(p: Long) = {
+    basis.setMinDate(p); basis
+  }
 
   @inline def onDateChangeListener(
       implicit no: NoGetterForThisProperty): Nothing =
@@ -5416,7 +5666,9 @@ trait TraitCalendarView[This <: android.widget.CalendarView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/CalendarView.html#setShownWeekCount(int) setShownWeekCount(int)]]`
     */
-  @inline def shownWeekCount_=(p: Int) = { basis.setShownWeekCount(p); basis }
+  @inline def shownWeekCount_=(p: Int) = {
+    basis.setShownWeekCount(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/CalendarView.html#getUnfocusedMonthDateColor() getUnfocusedMonthDateColor()]]`
@@ -5465,7 +5717,9 @@ trait TraitCalendarView[This <: android.widget.CalendarView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/CalendarView.html#setWeekNumberColor(int) setWeekNumberColor(int)]]`
     */
-  @inline def weekNumberColor_=(p: Int) = { basis.setWeekNumberColor(p); basis }
+  @inline def weekNumberColor_=(p: Int) = {
+    basis.setWeekNumberColor(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/CalendarView.html#getWeekSeparatorLineColor() getWeekSeparatorLineColor()]]`
@@ -5492,7 +5746,9 @@ trait TraitCalendarView[This <: android.widget.CalendarView]
             p1: android.widget.CalendarView,
             p2: Int,
             p3: Int,
-            p4: Int): Unit = { f(p1, p2, p3, p4) }
+            p4: Int): Unit = {
+          f(p1, p2, p3, p4)
+        }
       })
     basis
   }
@@ -5504,7 +5760,9 @@ trait TraitCalendarView[This <: android.widget.CalendarView]
             p1: android.widget.CalendarView,
             p2: Int,
             p3: Int,
-            p4: Int): Unit = { f }
+            p4: Int): Unit = {
+          f
+        }
       })
     basis
   }
@@ -5621,7 +5879,9 @@ trait TraitSlidingDrawer[This <: android.widget.SlidingDrawer]
   @inline def onDrawerClosed[U](f: => U): This = {
     basis.setOnDrawerCloseListener(
       new android.widget.SlidingDrawer.OnDrawerCloseListener {
-        def onDrawerClosed(): Unit = { f }
+        def onDrawerClosed(): Unit = {
+          f
+        }
       })
     basis
   }
@@ -5629,7 +5889,9 @@ trait TraitSlidingDrawer[This <: android.widget.SlidingDrawer]
   @inline def onDrawerOpened[U](f: => U): This = {
     basis.setOnDrawerOpenListener(
       new android.widget.SlidingDrawer.OnDrawerOpenListener {
-        def onDrawerOpened(): Unit = { f }
+        def onDrawerOpened(): Unit = {
+          f
+        }
       })
     basis
   }
@@ -5637,7 +5899,9 @@ trait TraitSlidingDrawer[This <: android.widget.SlidingDrawer]
   @inline def onScrollEnded[U](f: => U): This = {
     basis.setOnDrawerScrollListener(
       new android.widget.SlidingDrawer.OnDrawerScrollListener {
-        def onScrollEnded(): Unit = { f }
+        def onScrollEnded(): Unit = {
+          f
+        }
         def onScrollStarted(): Unit = {}
       })
     basis
@@ -5647,7 +5911,9 @@ trait TraitSlidingDrawer[This <: android.widget.SlidingDrawer]
     basis.setOnDrawerScrollListener(
       new android.widget.SlidingDrawer.OnDrawerScrollListener {
         def onScrollEnded(): Unit = {}
-        def onScrollStarted(): Unit = { f }
+        def onScrollStarted(): Unit = {
+          f
+        }
       })
     basis
   }
@@ -5713,7 +5979,9 @@ trait TraitListPopupWindow[This <: android.widget.ListPopupWindow] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ListPopupWindow.html#setAnimationStyle(int) setAnimationStyle(int)]]`
     */
-  @inline def animationStyle_=(p: Int) = { basis.setAnimationStyle(p); basis }
+  @inline def animationStyle_=(p: Int) = {
+    basis.setAnimationStyle(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ListPopupWindow.html#getBackground() getBackground()]]`
@@ -5749,7 +6017,9 @@ trait TraitListPopupWindow[This <: android.widget.ListPopupWindow] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ListPopupWindow.html#setContentWidth(int) setContentWidth(int)]]`
     */
-  @inline def contentWidth_=(p: Int) = { basis.setContentWidth(p); basis }
+  @inline def contentWidth_=(p: Int) = {
+    basis.setContentWidth(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ListPopupWindow.html#getHeight() getHeight()]]`
@@ -5764,7 +6034,9 @@ trait TraitListPopupWindow[This <: android.widget.ListPopupWindow] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ListPopupWindow.html#setHeight(int) setHeight(int)]]`
     */
-  @inline def height_=(p: Int) = { basis.setHeight(p); basis }
+  @inline def height_=(p: Int) = {
+    basis.setHeight(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ListPopupWindow.html#getHorizontalOffset() getHorizontalOffset()]]`
@@ -5796,7 +6068,9 @@ trait TraitListPopupWindow[This <: android.widget.ListPopupWindow] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ListPopupWindow.html#setInputMethodMode(int) setInputMethodMode(int)]]`
     */
-  @inline def inputMethodMode_=(p: Int) = { basis.setInputMethodMode(p); basis }
+  @inline def inputMethodMode_=(p: Int) = {
+    basis.setInputMethodMode(p); basis
+  }
 
   @inline def listSelector(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'listSelector'")
@@ -5832,7 +6106,9 @@ trait TraitListPopupWindow[This <: android.widget.ListPopupWindow] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ListPopupWindow.html#setModal(boolean) setModal(boolean)]]`
     */
-  @inline def modal_=(p: Boolean) = { basis.setModal(p); basis }
+  @inline def modal_=(p: Boolean) = {
+    basis.setModal(p); basis
+  }
 
   @inline def onDismissListener(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error(
@@ -5905,7 +6181,9 @@ trait TraitListPopupWindow[This <: android.widget.ListPopupWindow] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ListPopupWindow.html#setPromptPosition(int) setPromptPosition(int)]]`
     */
-  @inline def promptPosition_=(p: Int) = { basis.setPromptPosition(p); basis }
+  @inline def promptPosition_=(p: Int) = {
+    basis.setPromptPosition(p); basis
+  }
 
   @inline def promptView(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'promptView'")
@@ -5953,7 +6231,9 @@ trait TraitListPopupWindow[This <: android.widget.ListPopupWindow] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ListPopupWindow.html#setSelection(int) setSelection(int)]]`
     */
-  @inline def selection_=(p: Int) = { basis.setSelection(p); basis }
+  @inline def selection_=(p: Int) = {
+    basis.setSelection(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ListPopupWindow.html#getSoftInputMode() getSoftInputMode()]]`
@@ -5968,7 +6248,9 @@ trait TraitListPopupWindow[This <: android.widget.ListPopupWindow] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ListPopupWindow.html#setSoftInputMode(int) setSoftInputMode(int)]]`
     */
-  @inline def softInputMode_=(p: Int) = { basis.setSoftInputMode(p); basis }
+  @inline def softInputMode_=(p: Int) = {
+    basis.setSoftInputMode(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ListPopupWindow.html#getVerticalOffset() getVerticalOffset()]]`
@@ -5983,7 +6265,9 @@ trait TraitListPopupWindow[This <: android.widget.ListPopupWindow] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ListPopupWindow.html#setVerticalOffset(int) setVerticalOffset(int)]]`
     */
-  @inline def verticalOffset_=(p: Int) = { basis.setVerticalOffset(p); basis }
+  @inline def verticalOffset_=(p: Int) = {
+    basis.setVerticalOffset(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ListPopupWindow.html#getWidth() getWidth()]]`
@@ -5998,12 +6282,16 @@ trait TraitListPopupWindow[This <: android.widget.ListPopupWindow] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ListPopupWindow.html#setWidth(int) setWidth(int)]]`
     */
-  @inline def width_=(p: Int) = { basis.setWidth(p); basis }
+  @inline def width_=(p: Int) = {
+    basis.setWidth(p); basis
+  }
 
   @inline def onDismiss[U](f: => U): This = {
     basis.setOnDismissListener(
       new android.widget.PopupWindow.OnDismissListener {
-        def onDismiss(): Unit = { f }
+        def onDismiss(): Unit = {
+          f
+        }
       })
     basis
   }
@@ -6017,7 +6305,9 @@ trait TraitListPopupWindow[This <: android.widget.ListPopupWindow] {
             p1: android.widget.AdapterView[_],
             p2: android.view.View,
             p3: Int,
-            p4: Long): Unit = { f(p1, p2, p3, p4) }
+            p4: Long): Unit = {
+          f(p1, p2, p3, p4)
+        }
       })
     basis
   }
@@ -6029,7 +6319,9 @@ trait TraitListPopupWindow[This <: android.widget.ListPopupWindow] {
             p1: android.widget.AdapterView[_],
             p2: android.view.View,
             p3: Int,
-            p4: Long): Unit = { f }
+            p4: Long): Unit = {
+          f
+        }
       })
     basis
   }
@@ -6043,7 +6335,9 @@ trait TraitListPopupWindow[This <: android.widget.ListPopupWindow] {
             p1: android.widget.AdapterView[_],
             p2: android.view.View,
             p3: Int,
-            p4: Long): Unit = { f(p1, p2, p3, p4) }
+            p4: Long): Unit = {
+          f(p1, p2, p3, p4)
+        }
         def onNothingSelected(p: android.widget.AdapterView[_]): Unit = {}
       })
     basis
@@ -6056,7 +6350,9 @@ trait TraitListPopupWindow[This <: android.widget.ListPopupWindow] {
             p1: android.widget.AdapterView[_],
             p2: android.view.View,
             p3: Int,
-            p4: Long): Unit = { f }
+            p4: Long): Unit = {
+          f
+        }
         def onNothingSelected(p: android.widget.AdapterView[_]): Unit = {}
       })
     basis
@@ -6071,7 +6367,9 @@ trait TraitListPopupWindow[This <: android.widget.ListPopupWindow] {
             p2: android.view.View,
             p3: Int,
             p4: Long): Unit = {}
-        def onNothingSelected(p: android.widget.AdapterView[_]): Unit = { f(p) }
+        def onNothingSelected(p: android.widget.AdapterView[_]): Unit = {
+          f(p)
+        }
       })
     basis
   }
@@ -6084,7 +6382,9 @@ trait TraitListPopupWindow[This <: android.widget.ListPopupWindow] {
             p2: android.view.View,
             p3: Int,
             p4: Long): Unit = {}
-        def onNothingSelected(p: android.widget.AdapterView[_]): Unit = { f }
+        def onNothingSelected(p: android.widget.AdapterView[_]): Unit = {
+          f
+        }
       })
     basis
   }
@@ -6149,7 +6449,9 @@ trait TraitTextSwitcher[This <: android.widget.TextSwitcher]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextSwitcher.html#setText(java.lang.CharSequence) setText(java.lang.CharSequence)]]`
     */
-  @inline def text_=(p: java.lang.CharSequence) = { basis.setText(p); basis }
+  @inline def text_=(p: java.lang.CharSequence) = {
+    basis.setText(p); basis
+  }
 
 }
 
@@ -6255,7 +6557,9 @@ trait TraitLinearLayout[This <: android.widget.LinearLayout]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/LinearLayout.html#setDividerPadding(int) setDividerPadding(int)]]`
     */
-  @inline def dividerPadding_=(p: Int) = { basis.setDividerPadding(p); basis }
+  @inline def dividerPadding_=(p: Int) = {
+    basis.setDividerPadding(p); basis
+  }
 
   @inline def gravity(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'gravity'")
@@ -6268,7 +6572,9 @@ trait TraitLinearLayout[This <: android.widget.LinearLayout]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/LinearLayout.html#setGravity(int) setGravity(int)]]`
     */
-  @inline def gravity_=(p: Int) = { basis.setGravity(p); basis }
+  @inline def gravity_=(p: Int) = {
+    basis.setGravity(p); basis
+  }
 
   @inline def horizontalGravity(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error(
@@ -6325,7 +6631,9 @@ trait TraitLinearLayout[This <: android.widget.LinearLayout]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/LinearLayout.html#setOrientation(int) setOrientation(int)]]`
     */
-  @inline def orientation_=(p: Int) = { basis.setOrientation(p); basis }
+  @inline def orientation_=(p: Int) = {
+    basis.setOrientation(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/LinearLayout.html#getShowDividers() getShowDividers()]]`
@@ -6340,7 +6648,9 @@ trait TraitLinearLayout[This <: android.widget.LinearLayout]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/LinearLayout.html#setShowDividers(int) setShowDividers(int)]]`
     */
-  @inline def showDividers_=(p: Int) = { basis.setShowDividers(p); basis }
+  @inline def showDividers_=(p: Int) = {
+    basis.setShowDividers(p); basis
+  }
 
   @inline def verticalGravity(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'verticalGravity'")
@@ -6353,7 +6663,9 @@ trait TraitLinearLayout[This <: android.widget.LinearLayout]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/LinearLayout.html#setVerticalGravity(int) setVerticalGravity(int)]]`
     */
-  @inline def verticalGravity_=(p: Int) = { basis.setVerticalGravity(p); basis }
+  @inline def verticalGravity_=(p: Int) = {
+    basis.setVerticalGravity(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/LinearLayout.html#getWeightSum() getWeightSum()]]`
@@ -6368,7 +6680,9 @@ trait TraitLinearLayout[This <: android.widget.LinearLayout]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/LinearLayout.html#setWeightSum(float) setWeightSum(float)]]`
     */
-  @inline def weightSum_=(p: Float) = { basis.setWeightSum(p); basis }
+  @inline def weightSum_=(p: Float) = {
+    basis.setWeightSum(p); basis
+  }
 
 }
 
@@ -6459,8 +6773,12 @@ trait TraitZoomControls[This <: android.widget.ZoomControls]
     basis.setIsZoomInEnabled(p); basis
   }
 
-  @inline def enableIsZoomIn() = { basis.setIsZoomInEnabled(true); basis }
-  @inline def disableIsZoomIn() = { basis.setIsZoomInEnabled(false); basis }
+  @inline def enableIsZoomIn() = {
+    basis.setIsZoomInEnabled(true); basis
+  }
+  @inline def disableIsZoomIn() = {
+    basis.setIsZoomInEnabled(false); basis
+  }
 
   @inline def isZoomOutEnabled(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error(
@@ -6478,8 +6796,12 @@ trait TraitZoomControls[This <: android.widget.ZoomControls]
     basis.setIsZoomOutEnabled(p); basis
   }
 
-  @inline def enableIsZoomOut() = { basis.setIsZoomOutEnabled(true); basis }
-  @inline def disableIsZoomOut() = { basis.setIsZoomOutEnabled(false); basis }
+  @inline def enableIsZoomOut() = {
+    basis.setIsZoomOutEnabled(true); basis
+  }
+  @inline def disableIsZoomOut() = {
+    basis.setIsZoomOutEnabled(false); basis
+  }
 
   @inline def onZoomInClickListener(
       implicit no: NoGetterForThisProperty): Nothing =
@@ -6528,32 +6850,42 @@ trait TraitZoomControls[This <: android.widget.ZoomControls]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ZoomControls.html#setZoomSpeed(long) setZoomSpeed(long)]]`
     */
-  @inline def zoomSpeed_=(p: Long) = { basis.setZoomSpeed(p); basis }
+  @inline def zoomSpeed_=(p: Long) = {
+    basis.setZoomSpeed(p); basis
+  }
 
   @inline def onZoomInClick[U](f: android.view.View => U): This = {
     basis.setOnZoomInClickListener(new android.view.View.OnClickListener {
-      def onClick(p: android.view.View): Unit = { f(p) }
+      def onClick(p: android.view.View): Unit = {
+        f(p)
+      }
     })
     basis
   }
 
   @inline def onZoomInClick[U](f: => U): This = {
     basis.setOnZoomInClickListener(new android.view.View.OnClickListener {
-      def onClick(p: android.view.View): Unit = { f }
+      def onClick(p: android.view.View): Unit = {
+        f
+      }
     })
     basis
   }
 
   @inline def onZoomOutClick[U](f: android.view.View => U): This = {
     basis.setOnZoomOutClickListener(new android.view.View.OnClickListener {
-      def onClick(p: android.view.View): Unit = { f(p) }
+      def onClick(p: android.view.View): Unit = {
+        f(p)
+      }
     })
     basis
   }
 
   @inline def onZoomOutClick[U](f: => U): This = {
     basis.setOnZoomOutClickListener(new android.view.View.OnClickListener {
-      def onClick(p: android.view.View): Unit = { f }
+      def onClick(p: android.view.View): Unit = {
+        f
+      }
     })
     basis
   }
@@ -6670,7 +7002,9 @@ trait TraitDialerFilter[This <: android.widget.DialerFilter]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/DialerFilter.html#setMode(int) setMode(int)]]`
     */
-  @inline def mode_=(p: Int) = { basis.setMode(p); basis }
+  @inline def mode_=(p: Int) = {
+    basis.setMode(p); basis
+  }
 
 }
 
@@ -6799,7 +7133,9 @@ trait TraitQuickContactBadge[This <: android.widget.QuickContactBadge]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/QuickContactBadge.html#setMode(int) setMode(int)]]`
     */
-  @inline def mode_=(p: Int) = { basis.setMode(p); basis }
+  @inline def mode_=(p: Int) = {
+    basis.setMode(p); basis
+  }
 
 }
 
@@ -6892,7 +7228,9 @@ trait TraitSearchView[This <: android.widget.SearchView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/SearchView.html#setIconified(boolean) setIconified(boolean)]]`
     */
-  @inline def iconified_=(p: Boolean) = { basis.setIconified(p); basis }
+  @inline def iconified_=(p: Boolean) = {
+    basis.setIconified(p); basis
+  }
 
   @inline def iconifiedByDefault(
       implicit no: NoGetterForThisProperty): Nothing =
@@ -6924,7 +7262,9 @@ trait TraitSearchView[This <: android.widget.SearchView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/SearchView.html#setImeOptions(int) setImeOptions(int)]]`
     */
-  @inline def imeOptions_=(p: Int) = { basis.setImeOptions(p); basis }
+  @inline def imeOptions_=(p: Int) = {
+    basis.setImeOptions(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/SearchView.html#getInputType() getInputType()]]`
@@ -6939,7 +7279,9 @@ trait TraitSearchView[This <: android.widget.SearchView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/SearchView.html#setInputType(int) setInputType(int)]]`
     */
-  @inline def inputType_=(p: Int) = { basis.setInputType(p); basis }
+  @inline def inputType_=(p: Int) = {
+    basis.setInputType(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/SearchView.html#getMaxWidth() getMaxWidth()]]`
@@ -6954,7 +7296,9 @@ trait TraitSearchView[This <: android.widget.SearchView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/SearchView.html#setMaxWidth(int) setMaxWidth(int)]]`
     */
-  @inline def maxWidth_=(p: Int) = { basis.setMaxWidth(p); basis }
+  @inline def maxWidth_=(p: Int) = {
+    basis.setMaxWidth(p); basis
+  }
 
   @inline def onCloseListener(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'onCloseListener'")
@@ -7157,7 +7501,9 @@ trait TraitSearchView[This <: android.widget.SearchView]
 
   @inline def onClose(f: => Boolean): This = {
     basis.setOnCloseListener(new android.widget.SearchView.OnCloseListener {
-      def onClose(): Boolean = { f }
+      def onClose(): Boolean = {
+        f
+      }
     })
     basis
   }
@@ -7176,21 +7522,27 @@ trait TraitSearchView[This <: android.widget.SearchView]
   @inline def onQueryTextFocusChange[U](f: => U): This = {
     basis.setOnQueryTextFocusChangeListener(
       new android.view.View.OnFocusChangeListener {
-        def onFocusChange(p1: android.view.View, p2: Boolean): Unit = { f }
+        def onFocusChange(p1: android.view.View, p2: Boolean): Unit = {
+          f
+        }
       })
     basis
   }
 
   @inline def onSearchClick[U](f: android.view.View => U): This = {
     basis.setOnSearchClickListener(new android.view.View.OnClickListener {
-      def onClick(p: android.view.View): Unit = { f(p) }
+      def onClick(p: android.view.View): Unit = {
+        f(p)
+      }
     })
     basis
   }
 
   @inline def onSearchClick[U](f: => U): This = {
     basis.setOnSearchClickListener(new android.view.View.OnClickListener {
-      def onClick(p: android.view.View): Unit = { f }
+      def onClick(p: android.view.View): Unit = {
+        f
+      }
     })
     basis
   }
@@ -7661,7 +8013,9 @@ trait TraitTabWidget[This <: android.widget.TabWidget]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TabWidget.html#setCurrentTab(int) setCurrentTab(int)]]`
     */
-  @inline def currentTab_=(p: Int) = { basis.setCurrentTab(p); basis }
+  @inline def currentTab_=(p: Int) = {
+    basis.setCurrentTab(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TabWidget.html#setDividerDrawable(int) setDividerDrawable(int)]]`
@@ -7671,7 +8025,9 @@ trait TraitTabWidget[This <: android.widget.TabWidget]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TabWidget.html#setDividerDrawable(int) setDividerDrawable(int)]]`
     */
-  @inline def dividerDrawable_=(p: Int) = { basis.setDividerDrawable(p); basis }
+  @inline def dividerDrawable_=(p: Int) = {
+    basis.setDividerDrawable(p); basis
+  }
 
   @inline def leftStripDrawable(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error(
@@ -7745,10 +8101,16 @@ trait TraitTabWidget[This <: android.widget.TabWidget]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TabWidget.html#setStripEnabled(boolean) setStripEnabled(boolean)]]`
     */
-  @inline def stripEnabled_=(p: Boolean) = { basis.setStripEnabled(p); basis }
+  @inline def stripEnabled_=(p: Boolean) = {
+    basis.setStripEnabled(p); basis
+  }
 
-  @inline def enableStrip() = { basis.setStripEnabled(true); basis }
-  @inline def disableStrip() = { basis.setStripEnabled(false); basis }
+  @inline def enableStrip() = {
+    basis.setStripEnabled(true); basis
+  }
+  @inline def disableStrip() = {
+    basis.setStripEnabled(false); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TabWidget.html#getTabCount() getTabCount()]]`
@@ -7907,12 +8269,16 @@ trait TraitVideoView[This <: android.widget.VideoView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/VideoView.html#setVideoURI(android.net.Uri) setVideoURI(android.net.Uri)]]`
     */
-  @inline def videoURI_=(p: android.net.Uri) = { basis.setVideoURI(p); basis }
+  @inline def videoURI_=(p: android.net.Uri) = {
+    basis.setVideoURI(p); basis
+  }
 
   @inline def onCompletion[U](f: android.media.MediaPlayer => U): This = {
     basis.setOnCompletionListener(
       new android.media.MediaPlayer.OnCompletionListener {
-        def onCompletion(p: android.media.MediaPlayer): Unit = { f(p) }
+        def onCompletion(p: android.media.MediaPlayer): Unit = {
+          f(p)
+        }
       })
     basis
   }
@@ -7920,7 +8286,9 @@ trait TraitVideoView[This <: android.widget.VideoView]
   @inline def onCompletion[U](f: => U): This = {
     basis.setOnCompletionListener(
       new android.media.MediaPlayer.OnCompletionListener {
-        def onCompletion(p: android.media.MediaPlayer): Unit = { f }
+        def onCompletion(p: android.media.MediaPlayer): Unit = {
+          f
+        }
       })
     basis
   }
@@ -7947,7 +8315,9 @@ trait TraitVideoView[This <: android.widget.VideoView]
   @inline def onPrepared[U](f: android.media.MediaPlayer => U): This = {
     basis.setOnPreparedListener(
       new android.media.MediaPlayer.OnPreparedListener {
-        def onPrepared(p: android.media.MediaPlayer): Unit = { f(p) }
+        def onPrepared(p: android.media.MediaPlayer): Unit = {
+          f(p)
+        }
       })
     basis
   }
@@ -7955,7 +8325,9 @@ trait TraitVideoView[This <: android.widget.VideoView]
   @inline def onPrepared[U](f: => U): This = {
     basis.setOnPreparedListener(
       new android.media.MediaPlayer.OnPreparedListener {
-        def onPrepared(p: android.media.MediaPlayer): Unit = { f }
+        def onPrepared(p: android.media.MediaPlayer): Unit = {
+          f
+        }
       })
     basis
   }
@@ -8127,7 +8499,9 @@ trait TraitAdapterView[This <: android.widget.AdapterView[_]]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AdapterView.html#setSelection(int) setSelection(int)]]`
     */
-  @inline def selection_=(p: Int) = { basis.setSelection(p); basis }
+  @inline def selection_=(p: Int) = {
+    basis.setSelection(p); basis
+  }
 
   @inline def onItemClick[U](
       f: (android.widget.AdapterView[_], android.view.View, Int, Long) => U)
@@ -8138,7 +8512,9 @@ trait TraitAdapterView[This <: android.widget.AdapterView[_]]
             p1: android.widget.AdapterView[_],
             p2: android.view.View,
             p3: Int,
-            p4: Long): Unit = { f(p1, p2, p3, p4) }
+            p4: Long): Unit = {
+          f(p1, p2, p3, p4)
+        }
       })
     basis
   }
@@ -8150,7 +8526,9 @@ trait TraitAdapterView[This <: android.widget.AdapterView[_]]
             p1: android.widget.AdapterView[_],
             p2: android.view.View,
             p3: Int,
-            p4: Long): Unit = { f }
+            p4: Long): Unit = {
+          f
+        }
       })
     basis
   }
@@ -8167,7 +8545,9 @@ trait TraitAdapterView[This <: android.widget.AdapterView[_]]
             p1: android.widget.AdapterView[_],
             p2: android.view.View,
             p3: Int,
-            p4: Long): Boolean = { f(p1, p2, p3, p4) }
+            p4: Long): Boolean = {
+          f(p1, p2, p3, p4)
+        }
       })
     basis
   }
@@ -8179,7 +8559,9 @@ trait TraitAdapterView[This <: android.widget.AdapterView[_]]
             p1: android.widget.AdapterView[_],
             p2: android.view.View,
             p3: Int,
-            p4: Long): Boolean = { f }
+            p4: Long): Boolean = {
+          f
+        }
       })
     basis
   }
@@ -8193,7 +8575,9 @@ trait TraitAdapterView[This <: android.widget.AdapterView[_]]
             p1: android.widget.AdapterView[_],
             p2: android.view.View,
             p3: Int,
-            p4: Long): Unit = { f(p1, p2, p3, p4) }
+            p4: Long): Unit = {
+          f(p1, p2, p3, p4)
+        }
         def onNothingSelected(p: android.widget.AdapterView[_]): Unit = {}
       })
     basis
@@ -8206,7 +8590,9 @@ trait TraitAdapterView[This <: android.widget.AdapterView[_]]
             p1: android.widget.AdapterView[_],
             p2: android.view.View,
             p3: Int,
-            p4: Long): Unit = { f }
+            p4: Long): Unit = {
+          f
+        }
         def onNothingSelected(p: android.widget.AdapterView[_]): Unit = {}
       })
     basis
@@ -8221,7 +8607,9 @@ trait TraitAdapterView[This <: android.widget.AdapterView[_]]
             p2: android.view.View,
             p3: Int,
             p4: Long): Unit = {}
-        def onNothingSelected(p: android.widget.AdapterView[_]): Unit = { f(p) }
+        def onNothingSelected(p: android.widget.AdapterView[_]): Unit = {
+          f(p)
+        }
       })
     basis
   }
@@ -8234,7 +8622,9 @@ trait TraitAdapterView[This <: android.widget.AdapterView[_]]
             p2: android.view.View,
             p3: Int,
             p4: Long): Unit = {}
-        def onNothingSelected(p: android.widget.AdapterView[_]): Unit = { f }
+        def onNothingSelected(p: android.widget.AdapterView[_]): Unit = {
+          f
+        }
       })
     basis
   }
@@ -8267,7 +8657,9 @@ trait TraitCheckable[This <: android.widget.Checkable] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Checkable.html#setChecked(boolean) setChecked(boolean)]]`
     */
-  @inline def checked_=(p: Boolean) = { basis.setChecked(p); basis }
+  @inline def checked_=(p: Boolean) = {
+    basis.setChecked(p); basis
+  }
 
 }
 
@@ -8297,7 +8689,9 @@ trait TraitHorizontalScrollView[This <: android.widget.HorizontalScrollView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/HorizontalScrollView.html#setFillViewport(boolean) setFillViewport(boolean)]]`
     */
-  @inline def fillViewport_=(p: Boolean) = { basis.setFillViewport(p); basis }
+  @inline def fillViewport_=(p: Boolean) = {
+    basis.setFillViewport(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/HorizontalScrollView.html#getMaxScrollAmount() getMaxScrollAmount()]]`
@@ -8381,7 +8775,9 @@ trait TraitProgressBar[This <: android.widget.ProgressBar]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ProgressBar.html#setIndeterminate(boolean) setIndeterminate(boolean)]]`
     */
-  @inline def indeterminate_=(p: Boolean) = { basis.setIndeterminate(p); basis }
+  @inline def indeterminate_=(p: Boolean) = {
+    basis.setIndeterminate(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ProgressBar.html#getIndeterminateDrawable() getIndeterminateDrawable()]]`
@@ -8432,7 +8828,9 @@ trait TraitProgressBar[This <: android.widget.ProgressBar]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ProgressBar.html#setMax(int) setMax(int)]]`
     */
-  @inline def max_=(p: Int) = { basis.setMax(p); basis }
+  @inline def max_=(p: Int) = {
+    basis.setMax(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ProgressBar.html#getProgress() getProgress()]]`
@@ -8447,7 +8845,9 @@ trait TraitProgressBar[This <: android.widget.ProgressBar]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ProgressBar.html#setProgress(int) setProgress(int)]]`
     */
-  @inline def progress_=(p: Int) = { basis.setProgress(p); basis }
+  @inline def progress_=(p: Int) = {
+    basis.setProgress(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ProgressBar.html#getProgressDrawable() getProgressDrawable()]]`
@@ -8536,7 +8936,9 @@ trait TraitScrollView[This <: android.widget.ScrollView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ScrollView.html#setFillViewport(boolean) setFillViewport(boolean)]]`
     */
-  @inline def fillViewport_=(p: Boolean) = { basis.setFillViewport(p); basis }
+  @inline def fillViewport_=(p: Boolean) = {
+    basis.setFillViewport(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ScrollView.html#getMaxScrollAmount() getMaxScrollAmount()]]`
@@ -8620,7 +9022,9 @@ trait TraitAdapterViewFlipper[This <: android.widget.AdapterViewFlipper]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AdapterViewFlipper.html#setAutoStart(boolean) setAutoStart(boolean)]]`
     */
-  @inline def autoStart_=(p: Boolean) = { basis.setAutoStart(p); basis }
+  @inline def autoStart_=(p: Boolean) = {
+    basis.setAutoStart(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AdapterViewFlipper.html#getFlipInterval() getFlipInterval()]]`
@@ -8635,7 +9039,9 @@ trait TraitAdapterViewFlipper[This <: android.widget.AdapterViewFlipper]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AdapterViewFlipper.html#setFlipInterval(int) setFlipInterval(int)]]`
     */
-  @inline def flipInterval_=(p: Int) = { basis.setFlipInterval(p); basis }
+  @inline def flipInterval_=(p: Int) = {
+    basis.setFlipInterval(p); basis
+  }
 
 }
 
@@ -8941,7 +9347,9 @@ trait TraitZoomButton[This <: android.widget.ZoomButton]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ZoomButton.html#setZoomSpeed(long) setZoomSpeed(long)]]`
     */
-  @inline def zoomSpeed_=(p: Long) = { basis.setZoomSpeed(p); basis }
+  @inline def zoomSpeed_=(p: Long) = {
+    basis.setZoomSpeed(p); basis
+  }
 
 }
 
@@ -9055,7 +9463,9 @@ object SZoomButton extends ImageViewCompanion[SZoomButton] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Gallery.html#setGravity(int) setGravity(int)]]`
     */
-  @inline def gravity_=(p: Int) = { basis.setGravity(p); basis }
+  @inline def gravity_=(p: Int) = {
+    basis.setGravity(p); basis
+  }
 
   @inline def spacing(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'spacing'")
@@ -9068,7 +9478,9 @@ object SZoomButton extends ImageViewCompanion[SZoomButton] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Gallery.html#setSpacing(int) setSpacing(int)]]`
     */
-  @inline def spacing_=(p: Int) = { basis.setSpacing(p); basis }
+  @inline def spacing_=(p: Int) = {
+    basis.setSpacing(p); basis
+  }
 
   @inline def unselectedAlpha(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'unselectedAlpha'")
@@ -9191,14 +9603,18 @@ trait TraitPopupMenu[This <: android.widget.PopupMenu] {
 
   @inline def onDismiss[U](f: android.widget.PopupMenu => U): This = {
     basis.setOnDismissListener(new android.widget.PopupMenu.OnDismissListener {
-      def onDismiss(p: android.widget.PopupMenu): Unit = { f(p) }
+      def onDismiss(p: android.widget.PopupMenu): Unit = {
+        f(p)
+      }
     })
     basis
   }
 
   @inline def onDismiss[U](f: => U): This = {
     basis.setOnDismissListener(new android.widget.PopupMenu.OnDismissListener {
-      def onDismiss(p: android.widget.PopupMenu): Unit = { f }
+      def onDismiss(p: android.widget.PopupMenu): Unit = {
+        f
+      }
     })
     basis
   }
@@ -9206,7 +9622,9 @@ trait TraitPopupMenu[This <: android.widget.PopupMenu] {
   @inline def onMenuItemClick(f: android.view.MenuItem => Boolean): This = {
     basis.setOnMenuItemClickListener(
       new android.widget.PopupMenu.OnMenuItemClickListener {
-        def onMenuItemClick(p: android.view.MenuItem): Boolean = { f(p) }
+        def onMenuItemClick(p: android.view.MenuItem): Boolean = {
+          f(p)
+        }
       })
     basis
   }
@@ -9214,7 +9632,9 @@ trait TraitPopupMenu[This <: android.widget.PopupMenu] {
   @inline def onMenuItemClick(f: => Boolean): This = {
     basis.setOnMenuItemClickListener(
       new android.widget.PopupMenu.OnMenuItemClickListener {
-        def onMenuItemClick(p: android.view.MenuItem): Boolean = { f }
+        def onMenuItemClick(p: android.view.MenuItem): Boolean = {
+          f
+        }
       })
     basis
   }
@@ -9244,7 +9664,9 @@ trait TraitCompoundButton[This <: android.widget.CompoundButton]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/CompoundButton.html#setButtonDrawable(int) setButtonDrawable(int)]]`
     */
-  @inline def buttonDrawable_=(p: Int) = { basis.setButtonDrawable(p); basis }
+  @inline def buttonDrawable_=(p: Int) = {
+    basis.setButtonDrawable(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/CompoundButton.html#setButtonDrawable(android.graphics.drawable.Drawable) setButtonDrawable(android.graphics.drawable.Drawable)]]`
@@ -9272,7 +9694,9 @@ trait TraitCompoundButton[This <: android.widget.CompoundButton]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/CompoundButton.html#setChecked(boolean) setChecked(boolean)]]`
     */
-  @inline def checked_=(p: Boolean) = { basis.setChecked(p); basis }
+  @inline def checked_=(p: Boolean) = {
+    basis.setChecked(p); basis
+  }
 
   @inline def onCheckedChangeListener(
       implicit no: NoGetterForThisProperty): Nothing =
@@ -9300,7 +9724,9 @@ trait TraitCompoundButton[This <: android.widget.CompoundButton]
       new android.widget.CompoundButton.OnCheckedChangeListener {
         def onCheckedChanged(
             p1: android.widget.CompoundButton,
-            p2: Boolean): Unit = { f(p1, p2) }
+            p2: Boolean): Unit = {
+          f(p1, p2)
+        }
       })
     basis
   }
@@ -9310,7 +9736,9 @@ trait TraitCompoundButton[This <: android.widget.CompoundButton]
       new android.widget.CompoundButton.OnCheckedChangeListener {
         def onCheckedChanged(
             p1: android.widget.CompoundButton,
-            p2: Boolean): Unit = { f }
+            p2: Boolean): Unit = {
+          f
+        }
       })
     basis
   }
@@ -9364,7 +9792,9 @@ trait TraitAdapterViewAnimator[This <: android.widget.AdapterViewAnimator]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AdapterViewAnimator.html#setDisplayedChild(int) setDisplayedChild(int)]]`
     */
-  @inline def displayedChild_=(p: Int) = { basis.setDisplayedChild(p); basis }
+  @inline def displayedChild_=(p: Int) = {
+    basis.setDisplayedChild(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AdapterViewAnimator.html#getInAnimation() getInAnimation()]]`
@@ -9660,7 +10090,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setAllCaps(boolean) setAllCaps(boolean)]]`
     */
-  @inline def allCaps_=(p: Boolean) = { basis.setAllCaps(p); basis }
+  @inline def allCaps_=(p: Boolean) = {
+    basis.setAllCaps(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#getAutoLinkMask() getAutoLinkMask()]]`
@@ -9675,7 +10107,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setAutoLinkMask(int) setAutoLinkMask(int)]]`
     */
-  @inline def autoLinkMask_=(p: Int) = { basis.setAutoLinkMask(p); basis }
+  @inline def autoLinkMask_=(p: Int) = {
+    basis.setAutoLinkMask(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#getCompoundDrawablePadding() getCompoundDrawablePadding()]]`
@@ -9742,7 +10176,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setCursorVisible(boolean) setCursorVisible(boolean)]]`
     */
-  @inline def cursorVisible_=(p: Boolean) = { basis.setCursorVisible(p); basis }
+  @inline def cursorVisible_=(p: Boolean) = {
+    basis.setCursorVisible(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#getCustomSelectionActionModeCallback() getCustomSelectionActionModeCallback()]]`
@@ -9814,7 +10250,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setEms(int) setEms(int)]]`
     */
-  @inline def ems_=(p: Int) = { basis.setEms(p); basis }
+  @inline def ems_=(p: Int) = {
+    basis.setEms(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#getError() getError()]]`
@@ -9829,7 +10267,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setError(java.lang.CharSequence) setError(java.lang.CharSequence)]]`
     */
-  @inline def error_=(p: java.lang.CharSequence) = { basis.setError(p); basis }
+  @inline def error_=(p: java.lang.CharSequence) = {
+    basis.setError(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#getExtendedPaddingBottom() getExtendedPaddingBottom()]]`
@@ -9887,7 +10327,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setFreezesText(boolean) setFreezesText(boolean)]]`
     */
-  @inline def freezesText_=(p: Boolean) = { basis.setFreezesText(p); basis }
+  @inline def freezesText_=(p: Boolean) = {
+    basis.setFreezesText(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#getGravity() getGravity()]]`
@@ -9902,7 +10344,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setGravity(int) setGravity(int)]]`
     */
-  @inline def gravity_=(p: Int) = { basis.setGravity(p); basis }
+  @inline def gravity_=(p: Int) = {
+    basis.setGravity(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setHeight(int) setHeight(int)]]`
@@ -9912,7 +10356,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setHeight(int) setHeight(int)]]`
     */
-  @inline def height_=(p: Int) = { basis.setHeight(p); basis }
+  @inline def height_=(p: Int) = {
+    basis.setHeight(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#getHighlightColor() getHighlightColor()]]`
@@ -9927,7 +10373,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setHighlightColor(int) setHighlightColor(int)]]`
     */
-  @inline def highlightColor_=(p: Int) = { basis.setHighlightColor(p); basis }
+  @inline def highlightColor_=(p: Int) = {
+    basis.setHighlightColor(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#getHint() getHint()]]`
@@ -9942,7 +10390,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setHint(int) setHint(int)]]`
     */
-  @inline def hint_=(p: Int) = { basis.setHint(p); basis }
+  @inline def hint_=(p: Int) = {
+    basis.setHint(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setHint(java.lang.CharSequence) setHint(java.lang.CharSequence)]]`
@@ -9952,7 +10402,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setHint(java.lang.CharSequence) setHint(java.lang.CharSequence)]]`
     */
-  @inline def hint_=(p: java.lang.CharSequence) = { basis.setHint(p); basis }
+  @inline def hint_=(p: java.lang.CharSequence) = {
+    basis.setHint(p); basis
+  }
 
   @inline def hintTextColor(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'hintTextColor'")
@@ -9965,7 +10417,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setHintTextColor(int) setHintTextColor(int)]]`
     */
-  @inline def hintTextColor_=(p: Int) = { basis.setHintTextColor(p); basis }
+  @inline def hintTextColor_=(p: Int) = {
+    basis.setHintTextColor(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setHintTextColor(android.content.res.ColorStateList) setHintTextColor(android.content.res.ColorStateList)]]`
@@ -10025,7 +10479,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setImeOptions(int) setImeOptions(int)]]`
     */
-  @inline def imeOptions_=(p: Int) = { basis.setImeOptions(p); basis }
+  @inline def imeOptions_=(p: Int) = {
+    basis.setImeOptions(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#getIncludeFontPadding() getIncludeFontPadding()]]`
@@ -10055,7 +10511,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setInputExtras(int) setInputExtras(int)]]`
     */
-  @inline def inputExtras_=(p: Int) = { basis.setInputExtras(p); basis }
+  @inline def inputExtras_=(p: Int) = {
+    basis.setInputExtras(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#getInputType() getInputType()]]`
@@ -10070,7 +10528,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setInputType(int) setInputType(int)]]`
     */
-  @inline def inputType_=(p: Int) = { basis.setInputType(p); basis }
+  @inline def inputType_=(p: Int) = {
+    basis.setInputType(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#getKeyListener() getKeyListener()]]`
@@ -10125,7 +10585,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setLines(int) setLines(int)]]`
     */
-  @inline def lines_=(p: Int) = { basis.setLines(p); basis }
+  @inline def lines_=(p: Int) = {
+    basis.setLines(p); basis
+  }
 
   @inline def linkTextColor(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'linkTextColor'")
@@ -10138,7 +10600,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setLinkTextColor(int) setLinkTextColor(int)]]`
     */
-  @inline def linkTextColor_=(p: Int) = { basis.setLinkTextColor(p); basis }
+  @inline def linkTextColor_=(p: Int) = {
+    basis.setLinkTextColor(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setLinkTextColor(android.content.res.ColorStateList) setLinkTextColor(android.content.res.ColorStateList)]]`
@@ -10205,7 +10669,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setMaxEms(int) setMaxEms(int)]]`
     */
-  @inline def maxEms_=(p: Int) = { basis.setMaxEms(p); basis }
+  @inline def maxEms_=(p: Int) = {
+    basis.setMaxEms(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#getMaxHeight() getMaxHeight()]]`
@@ -10220,7 +10686,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setMaxHeight(int) setMaxHeight(int)]]`
     */
-  @inline def maxHeight_=(p: Int) = { basis.setMaxHeight(p); basis }
+  @inline def maxHeight_=(p: Int) = {
+    basis.setMaxHeight(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#getMaxLines() getMaxLines()]]`
@@ -10235,7 +10703,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setMaxLines(int) setMaxLines(int)]]`
     */
-  @inline def maxLines_=(p: Int) = { basis.setMaxLines(p); basis }
+  @inline def maxLines_=(p: Int) = {
+    basis.setMaxLines(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#getMaxWidth() getMaxWidth()]]`
@@ -10250,7 +10720,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setMaxWidth(int) setMaxWidth(int)]]`
     */
-  @inline def maxWidth_=(p: Int) = { basis.setMaxWidth(p); basis }
+  @inline def maxWidth_=(p: Int) = {
+    basis.setMaxWidth(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#getMinEms() getMinEms()]]`
@@ -10265,7 +10737,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setMinEms(int) setMinEms(int)]]`
     */
-  @inline def minEms_=(p: Int) = { basis.setMinEms(p); basis }
+  @inline def minEms_=(p: Int) = {
+    basis.setMinEms(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#getMinHeight() getMinHeight()]]`
@@ -10280,7 +10754,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setMinHeight(int) setMinHeight(int)]]`
     */
-  @inline def minHeight_=(p: Int) = { basis.setMinHeight(p); basis }
+  @inline def minHeight_=(p: Int) = {
+    basis.setMinHeight(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#getMinLines() getMinLines()]]`
@@ -10295,7 +10771,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setMinLines(int) setMinLines(int)]]`
     */
-  @inline def minLines_=(p: Int) = { basis.setMinLines(p); basis }
+  @inline def minLines_=(p: Int) = {
+    basis.setMinLines(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#getMinWidth() getMinWidth()]]`
@@ -10310,7 +10788,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setMinWidth(int) setMinWidth(int)]]`
     */
-  @inline def minWidth_=(p: Int) = { basis.setMinWidth(p); basis }
+  @inline def minWidth_=(p: Int) = {
+    basis.setMinWidth(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#getMovementMethod() getMovementMethod()]]`
@@ -10368,7 +10848,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setPaintFlags(int) setPaintFlags(int)]]`
     */
-  @inline def paintFlags_=(p: Int) = { basis.setPaintFlags(p); basis }
+  @inline def paintFlags_=(p: Int) = {
+    basis.setPaintFlags(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#getPrivateImeOptions() getPrivateImeOptions()]]`
@@ -10398,7 +10880,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setRawInputType(int) setRawInputType(int)]]`
     */
-  @inline def rawInputType_=(p: Int) = { basis.setRawInputType(p); basis }
+  @inline def rawInputType_=(p: Int) = {
+    basis.setRawInputType(p); basis
+  }
 
   @inline def scroller(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'scroller'")
@@ -10472,7 +10956,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setSingleLine(boolean) setSingleLine(boolean)]]`
     */
-  @inline def singleLine_=(p: Boolean) = { basis.setSingleLine(p); basis }
+  @inline def singleLine_=(p: Boolean) = {
+    basis.setSingleLine(p); basis
+  }
 
   @inline def spannableFactory(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error(
@@ -10504,7 +10990,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setText(int) setText(int)]]`
     */
-  @inline def text_=(p: Int) = { basis.setText(p); basis }
+  @inline def text_=(p: Int) = {
+    basis.setText(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setText(java.lang.CharSequence) setText(java.lang.CharSequence)]]`
@@ -10514,7 +11002,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setText(java.lang.CharSequence) setText(java.lang.CharSequence)]]`
     */
-  @inline def text_=(p: java.lang.CharSequence) = { basis.setText(p); basis }
+  @inline def text_=(p: java.lang.CharSequence) = {
+    basis.setText(p); basis
+  }
 
   @inline def textColor(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'textColor'")
@@ -10527,7 +11017,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setTextColor(int) setTextColor(int)]]`
     */
-  @inline def textColor_=(p: Int) = { basis.setTextColor(p); basis }
+  @inline def textColor_=(p: Int) = {
+    basis.setTextColor(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setTextColor(android.content.res.ColorStateList) setTextColor(android.content.res.ColorStateList)]]`
@@ -10590,7 +11082,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setTextScaleX(float) setTextScaleX(float)]]`
     */
-  @inline def textScaleX_=(p: Float) = { basis.setTextScaleX(p); basis }
+  @inline def textScaleX_=(p: Float) = {
+    basis.setTextScaleX(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#getTextSize() getTextSize()]]`
@@ -10605,7 +11099,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setTextSize(float) setTextSize(float)]]`
     */
-  @inline def textSize_=(p: Float) = { basis.setTextSize(p); basis }
+  @inline def textSize_=(p: Float) = {
+    basis.setTextSize(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#getTotalPaddingBottom() getTotalPaddingBottom()]]`
@@ -10676,11 +11172,15 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setWidth(int) setWidth(int)]]`
     */
-  @inline def width_=(p: Int) = { basis.setWidth(p); basis }
+  @inline def width_=(p: Int) = {
+    basis.setWidth(p); basis
+  }
 
   @inline def afterTextChanged[U](f: android.text.Editable => U): This = {
     basis.addTextChangedListener(new android.text.TextWatcher {
-      def afterTextChanged(p: android.text.Editable): Unit = { f(p) }
+      def afterTextChanged(p: android.text.Editable): Unit = {
+        f(p)
+      }
       def beforeTextChanged(
           p1: java.lang.CharSequence,
           p2: Int,
@@ -10697,7 +11197,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
 
   @inline def afterTextChanged[U](f: => U): This = {
     basis.addTextChangedListener(new android.text.TextWatcher {
-      def afterTextChanged(p: android.text.Editable): Unit = { f }
+      def afterTextChanged(p: android.text.Editable): Unit = {
+        f
+      }
       def beforeTextChanged(
           p1: java.lang.CharSequence,
           p2: Int,
@@ -10720,7 +11222,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
           p1: java.lang.CharSequence,
           p2: Int,
           p3: Int,
-          p4: Int): Unit = { f(p1, p2, p3, p4) }
+          p4: Int): Unit = {
+        f(p1, p2, p3, p4)
+      }
       def onTextChanged(
           p1: java.lang.CharSequence,
           p2: Int,
@@ -10737,7 +11241,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
           p1: java.lang.CharSequence,
           p2: Int,
           p3: Int,
-          p4: Int): Unit = { f }
+          p4: Int): Unit = {
+        f
+      }
       def onTextChanged(
           p1: java.lang.CharSequence,
           p2: Int,
@@ -10755,7 +11261,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
         def onEditorAction(
             p1: android.widget.TextView,
             p2: Int,
-            p3: android.view.KeyEvent): Boolean = { f(p1, p2, p3) }
+            p3: android.view.KeyEvent): Boolean = {
+          f(p1, p2, p3)
+        }
       })
     basis
   }
@@ -10766,7 +11274,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
         def onEditorAction(
             p1: android.widget.TextView,
             p2: Int,
-            p3: android.view.KeyEvent): Boolean = { f }
+            p3: android.view.KeyEvent): Boolean = {
+          f
+        }
       })
     basis
   }
@@ -10784,7 +11294,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
           p1: java.lang.CharSequence,
           p2: Int,
           p3: Int,
-          p4: Int): Unit = { f(p1, p2, p3, p4) }
+          p4: Int): Unit = {
+        f(p1, p2, p3, p4)
+      }
     })
     basis
   }
@@ -10801,7 +11313,9 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
           p1: java.lang.CharSequence,
           p2: Int,
           p3: Int,
-          p4: Int): Unit = { f }
+          p4: Int): Unit = {
+        f
+      }
     })
     basis
   }
@@ -10906,7 +11420,9 @@ trait TraitOverScroller[This <: android.widget.OverScroller] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/OverScroller.html#setFriction(float) setFriction(float)]]`
     */
-  @inline def friction_=(p: Float) = { basis.setFriction(p); basis }
+  @inline def friction_=(p: Float) = {
+    basis.setFriction(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/OverScroller.html#getStartX() getStartX()]]`
@@ -10965,7 +11481,9 @@ trait TraitViewFlipper[This <: android.widget.ViewFlipper]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ViewFlipper.html#setAutoStart(boolean) setAutoStart(boolean)]]`
     */
-  @inline def autoStart_=(p: Boolean) = { basis.setAutoStart(p); basis }
+  @inline def autoStart_=(p: Boolean) = {
+    basis.setAutoStart(p); basis
+  }
 
   @inline def flipInterval(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'flipInterval'")
@@ -10978,7 +11496,9 @@ trait TraitViewFlipper[This <: android.widget.ViewFlipper]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ViewFlipper.html#setFlipInterval(int) setFlipInterval(int)]]`
     */
-  @inline def flipInterval_=(p: Int) = { basis.setFlipInterval(p); basis }
+  @inline def flipInterval_=(p: Int) = {
+    basis.setFlipInterval(p); basis
+  }
 
 }
 
@@ -11053,7 +11573,9 @@ trait TraitScroller[This <: android.widget.Scroller] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Scroller.html#setFinalX(int) setFinalX(int)]]`
     */
-  @inline def finalX_=(p: Int) = { basis.setFinalX(p); basis }
+  @inline def finalX_=(p: Int) = {
+    basis.setFinalX(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Scroller.html#getFinalY() getFinalY()]]`
@@ -11068,7 +11590,9 @@ trait TraitScroller[This <: android.widget.Scroller] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Scroller.html#setFinalY(int) setFinalY(int)]]`
     */
-  @inline def finalY_=(p: Int) = { basis.setFinalY(p); basis }
+  @inline def finalY_=(p: Int) = {
+    basis.setFinalY(p); basis
+  }
 
   @inline def friction(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'friction'")
@@ -11081,7 +11605,9 @@ trait TraitScroller[This <: android.widget.Scroller] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Scroller.html#setFriction(float) setFriction(float)]]`
     */
-  @inline def friction_=(p: Float) = { basis.setFriction(p); basis }
+  @inline def friction_=(p: Float) = {
+    basis.setFriction(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Scroller.html#getStartX() getStartX()]]`
@@ -11232,7 +11758,9 @@ trait TraitAutoCompleteTextView[This <: android.widget.AutoCompleteTextView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AutoCompleteTextView.html#setDropDownAnchor(int) setDropDownAnchor(int)]]`
     */
-  @inline def dropDownAnchor_=(p: Int) = { basis.setDropDownAnchor(p); basis }
+  @inline def dropDownAnchor_=(p: Int) = {
+    basis.setDropDownAnchor(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AutoCompleteTextView.html#getDropDownBackground() getDropDownBackground()]]`
@@ -11289,7 +11817,9 @@ trait TraitAutoCompleteTextView[This <: android.widget.AutoCompleteTextView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AutoCompleteTextView.html#setDropDownHeight(int) setDropDownHeight(int)]]`
     */
-  @inline def dropDownHeight_=(p: Int) = { basis.setDropDownHeight(p); basis }
+  @inline def dropDownHeight_=(p: Int) = {
+    basis.setDropDownHeight(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AutoCompleteTextView.html#getDropDownHorizontalOffset() getDropDownHorizontalOffset()]]`
@@ -11338,7 +11868,9 @@ trait TraitAutoCompleteTextView[This <: android.widget.AutoCompleteTextView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AutoCompleteTextView.html#setDropDownWidth(int) setDropDownWidth(int)]]`
     */
-  @inline def dropDownWidth_=(p: Int) = { basis.setDropDownWidth(p); basis }
+  @inline def dropDownWidth_=(p: Int) = {
+    basis.setDropDownWidth(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AutoCompleteTextView.html#getItemClickListener() getItemClickListener()]]`
@@ -11364,7 +11896,9 @@ trait TraitAutoCompleteTextView[This <: android.widget.AutoCompleteTextView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AutoCompleteTextView.html#setListSelection(int) setListSelection(int)]]`
     */
-  @inline def listSelection_=(p: Int) = { basis.setListSelection(p); basis }
+  @inline def listSelection_=(p: Int) = {
+    basis.setListSelection(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AutoCompleteTextView.html#getOnItemClickListener() getOnItemClickListener()]]`
@@ -11419,7 +11953,9 @@ trait TraitAutoCompleteTextView[This <: android.widget.AutoCompleteTextView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AutoCompleteTextView.html#setThreshold(int) setThreshold(int)]]`
     */
-  @inline def threshold_=(p: Int) = { basis.setThreshold(p); basis }
+  @inline def threshold_=(p: Int) = {
+    basis.setThreshold(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AutoCompleteTextView.html#getValidator() getValidator()]]`
@@ -11448,7 +11984,9 @@ trait TraitAutoCompleteTextView[This <: android.widget.AutoCompleteTextView]
             p1: android.widget.AdapterView[_],
             p2: android.view.View,
             p3: Int,
-            p4: Long): Unit = { f(p1, p2, p3, p4) }
+            p4: Long): Unit = {
+          f(p1, p2, p3, p4)
+        }
       })
     basis
   }
@@ -11460,7 +11998,9 @@ trait TraitAutoCompleteTextView[This <: android.widget.AutoCompleteTextView]
             p1: android.widget.AdapterView[_],
             p2: android.view.View,
             p3: Int,
-            p4: Long): Unit = { f }
+            p4: Long): Unit = {
+          f
+        }
       })
     basis
   }
@@ -11474,7 +12014,9 @@ trait TraitAutoCompleteTextView[This <: android.widget.AutoCompleteTextView]
             p1: android.widget.AdapterView[_],
             p2: android.view.View,
             p3: Int,
-            p4: Long): Unit = { f(p1, p2, p3, p4) }
+            p4: Long): Unit = {
+          f(p1, p2, p3, p4)
+        }
         def onNothingSelected(p: android.widget.AdapterView[_]): Unit = {}
       })
     basis
@@ -11487,7 +12029,9 @@ trait TraitAutoCompleteTextView[This <: android.widget.AutoCompleteTextView]
             p1: android.widget.AdapterView[_],
             p2: android.view.View,
             p3: Int,
-            p4: Long): Unit = { f }
+            p4: Long): Unit = {
+          f
+        }
         def onNothingSelected(p: android.widget.AdapterView[_]): Unit = {}
       })
     basis
@@ -11502,7 +12046,9 @@ trait TraitAutoCompleteTextView[This <: android.widget.AutoCompleteTextView]
             p2: android.view.View,
             p3: Int,
             p4: Long): Unit = {}
-        def onNothingSelected(p: android.widget.AdapterView[_]): Unit = { f(p) }
+        def onNothingSelected(p: android.widget.AdapterView[_]): Unit = {
+          f(p)
+        }
       })
     basis
   }
@@ -11515,7 +12061,9 @@ trait TraitAutoCompleteTextView[This <: android.widget.AutoCompleteTextView]
             p2: android.view.View,
             p3: Int,
             p4: Long): Unit = {}
-        def onNothingSelected(p: android.widget.AdapterView[_]): Unit = { f }
+        def onNothingSelected(p: android.widget.AdapterView[_]): Unit = {
+          f
+        }
       })
     basis
   }
@@ -11623,7 +12171,9 @@ trait TraitSwitch[This <: android.widget.Switch]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Switch.html#setSwitchMinWidth(int) setSwitchMinWidth(int)]]`
     */
-  @inline def switchMinWidth_=(p: Int) = { basis.setSwitchMinWidth(p); basis }
+  @inline def switchMinWidth_=(p: Int) = {
+    basis.setSwitchMinWidth(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Switch.html#getSwitchPadding() getSwitchPadding()]]`
@@ -11638,7 +12188,9 @@ trait TraitSwitch[This <: android.widget.Switch]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Switch.html#setSwitchPadding(int) setSwitchPadding(int)]]`
     */
-  @inline def switchPadding_=(p: Int) = { basis.setSwitchPadding(p); basis }
+  @inline def switchPadding_=(p: Int) = {
+    basis.setSwitchPadding(p); basis
+  }
 
   @inline def switchTypeface(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'switchTypeface'")
@@ -11718,7 +12270,9 @@ trait TraitSwitch[This <: android.widget.Switch]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Switch.html#setThumbResource(int) setThumbResource(int)]]`
     */
-  @inline def thumbResource_=(p: Int) = { basis.setThumbResource(p); basis }
+  @inline def thumbResource_=(p: Int) = {
+    basis.setThumbResource(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Switch.html#getThumbTextPadding() getThumbTextPadding()]]`
@@ -11766,7 +12320,9 @@ trait TraitSwitch[This <: android.widget.Switch]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Switch.html#setTrackResource(int) setTrackResource(int)]]`
     */
-  @inline def trackResource_=(p: Int) = { basis.setTrackResource(p); basis }
+  @inline def trackResource_=(p: Int) = {
+    basis.setTrackResource(p); basis
+  }
 
 }
 
@@ -12096,8 +12652,12 @@ trait TraitKeyboardView[This <: android.inputmethodservice.KeyboardView]
     basis.setPreviewEnabled(p); basis
   }
 
-  @inline def enablePreview() = { basis.setPreviewEnabled(true); basis }
-  @inline def disablePreview() = { basis.setPreviewEnabled(false); basis }
+  @inline def enablePreview() = {
+    basis.setPreviewEnabled(true); basis
+  }
+  @inline def disablePreview() = {
+    basis.setPreviewEnabled(false); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/inputmethodservice/KeyboardView.html#isProximityCorrectionEnabled() isProximityCorrectionEnabled()]]`
@@ -12137,7 +12697,9 @@ trait TraitKeyboardView[This <: android.inputmethodservice.KeyboardView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/inputmethodservice/KeyboardView.html#setShifted(boolean) setShifted(boolean)]]`
     */
-  @inline def shifted_=(p: Boolean) = { basis.setShifted(p); basis }
+  @inline def shifted_=(p: Boolean) = {
+    basis.setShifted(p); basis
+  }
 
   @inline def verticalCorrection(
       implicit no: NoGetterForThisProperty): Nothing =
@@ -12159,7 +12721,9 @@ trait TraitKeyboardView[This <: android.inputmethodservice.KeyboardView]
   @inline def onKey[U](f: (Int, Array[Int]) => U): This = {
     basis.setOnKeyboardActionListener(
       new android.inputmethodservice.KeyboardView.OnKeyboardActionListener {
-        def onKey(p1: Int, p2: Array[Int]): Unit = { f(p1, p2) }
+        def onKey(p1: Int, p2: Array[Int]): Unit = {
+          f(p1, p2)
+        }
         def onPress(p: Int): Unit = {}
         def onRelease(p: Int): Unit = {}
         def onText(p: java.lang.CharSequence): Unit = {}
@@ -12174,7 +12738,9 @@ trait TraitKeyboardView[This <: android.inputmethodservice.KeyboardView]
   @inline def onKey[U](f: => U): This = {
     basis.setOnKeyboardActionListener(
       new android.inputmethodservice.KeyboardView.OnKeyboardActionListener {
-        def onKey(p1: Int, p2: Array[Int]): Unit = { f }
+        def onKey(p1: Int, p2: Array[Int]): Unit = {
+          f
+        }
         def onPress(p: Int): Unit = {}
         def onRelease(p: Int): Unit = {}
         def onText(p: java.lang.CharSequence): Unit = {}
@@ -12190,7 +12756,9 @@ trait TraitKeyboardView[This <: android.inputmethodservice.KeyboardView]
     basis.setOnKeyboardActionListener(
       new android.inputmethodservice.KeyboardView.OnKeyboardActionListener {
         def onKey(p1: Int, p2: Array[Int]): Unit = {}
-        def onPress(p: Int): Unit = { f(p) }
+        def onPress(p: Int): Unit = {
+          f(p)
+        }
         def onRelease(p: Int): Unit = {}
         def onText(p: java.lang.CharSequence): Unit = {}
         def swipeDown(): Unit = {}
@@ -12205,7 +12773,9 @@ trait TraitKeyboardView[This <: android.inputmethodservice.KeyboardView]
     basis.setOnKeyboardActionListener(
       new android.inputmethodservice.KeyboardView.OnKeyboardActionListener {
         def onKey(p1: Int, p2: Array[Int]): Unit = {}
-        def onPress(p: Int): Unit = { f }
+        def onPress(p: Int): Unit = {
+          f
+        }
         def onRelease(p: Int): Unit = {}
         def onText(p: java.lang.CharSequence): Unit = {}
         def swipeDown(): Unit = {}
@@ -12221,7 +12791,9 @@ trait TraitKeyboardView[This <: android.inputmethodservice.KeyboardView]
       new android.inputmethodservice.KeyboardView.OnKeyboardActionListener {
         def onKey(p1: Int, p2: Array[Int]): Unit = {}
         def onPress(p: Int): Unit = {}
-        def onRelease(p: Int): Unit = { f(p) }
+        def onRelease(p: Int): Unit = {
+          f(p)
+        }
         def onText(p: java.lang.CharSequence): Unit = {}
         def swipeDown(): Unit = {}
         def swipeLeft(): Unit = {}
@@ -12236,7 +12808,9 @@ trait TraitKeyboardView[This <: android.inputmethodservice.KeyboardView]
       new android.inputmethodservice.KeyboardView.OnKeyboardActionListener {
         def onKey(p1: Int, p2: Array[Int]): Unit = {}
         def onPress(p: Int): Unit = {}
-        def onRelease(p: Int): Unit = { f }
+        def onRelease(p: Int): Unit = {
+          f
+        }
         def onText(p: java.lang.CharSequence): Unit = {}
         def swipeDown(): Unit = {}
         def swipeLeft(): Unit = {}
@@ -12252,7 +12826,9 @@ trait TraitKeyboardView[This <: android.inputmethodservice.KeyboardView]
         def onKey(p1: Int, p2: Array[Int]): Unit = {}
         def onPress(p: Int): Unit = {}
         def onRelease(p: Int): Unit = {}
-        def onText(p: java.lang.CharSequence): Unit = { f(p) }
+        def onText(p: java.lang.CharSequence): Unit = {
+          f(p)
+        }
         def swipeDown(): Unit = {}
         def swipeLeft(): Unit = {}
         def swipeRight(): Unit = {}
@@ -12267,7 +12843,9 @@ trait TraitKeyboardView[This <: android.inputmethodservice.KeyboardView]
         def onKey(p1: Int, p2: Array[Int]): Unit = {}
         def onPress(p: Int): Unit = {}
         def onRelease(p: Int): Unit = {}
-        def onText(p: java.lang.CharSequence): Unit = { f }
+        def onText(p: java.lang.CharSequence): Unit = {
+          f
+        }
         def swipeDown(): Unit = {}
         def swipeLeft(): Unit = {}
         def swipeRight(): Unit = {}
@@ -12283,7 +12861,9 @@ trait TraitKeyboardView[This <: android.inputmethodservice.KeyboardView]
         def onPress(p: Int): Unit = {}
         def onRelease(p: Int): Unit = {}
         def onText(p: java.lang.CharSequence): Unit = {}
-        def swipeDown(): Unit = { f }
+        def swipeDown(): Unit = {
+          f
+        }
         def swipeLeft(): Unit = {}
         def swipeRight(): Unit = {}
         def swipeUp(): Unit = {}
@@ -12299,7 +12879,9 @@ trait TraitKeyboardView[This <: android.inputmethodservice.KeyboardView]
         def onRelease(p: Int): Unit = {}
         def onText(p: java.lang.CharSequence): Unit = {}
         def swipeDown(): Unit = {}
-        def swipeLeft(): Unit = { f }
+        def swipeLeft(): Unit = {
+          f
+        }
         def swipeRight(): Unit = {}
         def swipeUp(): Unit = {}
       })
@@ -12315,7 +12897,9 @@ trait TraitKeyboardView[This <: android.inputmethodservice.KeyboardView]
         def onText(p: java.lang.CharSequence): Unit = {}
         def swipeDown(): Unit = {}
         def swipeLeft(): Unit = {}
-        def swipeRight(): Unit = { f }
+        def swipeRight(): Unit = {
+          f
+        }
         def swipeUp(): Unit = {}
       })
     basis
@@ -12331,7 +12915,9 @@ trait TraitKeyboardView[This <: android.inputmethodservice.KeyboardView]
         def swipeDown(): Unit = {}
         def swipeLeft(): Unit = {}
         def swipeRight(): Unit = {}
-        def swipeUp(): Unit = { f }
+        def swipeUp(): Unit = {
+          f
+        }
       })
     basis
   }
@@ -12465,7 +13051,9 @@ trait TraitGLSurfaceView[This <: android.opengl.GLSurfaceView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/opengl/GLSurfaceView.html#setDebugFlags(int) setDebugFlags(int)]]`
     */
-  @inline def debugFlags_=(p: Int) = { basis.setDebugFlags(p); basis }
+  @inline def debugFlags_=(p: Int) = {
+    basis.setDebugFlags(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/opengl/GLSurfaceView.html#getPreserveEGLContextOnPause() getPreserveEGLContextOnPause()]]`
@@ -12498,7 +13086,9 @@ trait TraitGLSurfaceView[This <: android.opengl.GLSurfaceView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/opengl/GLSurfaceView.html#setRenderMode(int) setRenderMode(int)]]`
     */
-  @inline def renderMode_=(p: Int) = { basis.setRenderMode(p); basis }
+  @inline def renderMode_=(p: Int) = {
+    basis.setRenderMode(p); basis
+  }
 
   @inline def renderer(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'renderer'")
@@ -12648,10 +13238,16 @@ trait TraitGestureOverlayView[This <: android.gesture.GestureOverlayView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/gesture/GestureOverlayView.html#setFadeEnabled(boolean) setFadeEnabled(boolean)]]`
     */
-  @inline def fadeEnabled_=(p: Boolean) = { basis.setFadeEnabled(p); basis }
+  @inline def fadeEnabled_=(p: Boolean) = {
+    basis.setFadeEnabled(p); basis
+  }
 
-  @inline def enableFade() = { basis.setFadeEnabled(true); basis }
-  @inline def disableFade() = { basis.setFadeEnabled(false); basis }
+  @inline def enableFade() = {
+    basis.setFadeEnabled(true); basis
+  }
+  @inline def disableFade() = {
+    basis.setFadeEnabled(false); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/gesture/GestureOverlayView.html#getFadeOffset() getFadeOffset()]]`
@@ -12666,7 +13262,9 @@ trait TraitGestureOverlayView[This <: android.gesture.GestureOverlayView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/gesture/GestureOverlayView.html#setFadeOffset(long) setFadeOffset(long)]]`
     */
-  @inline def fadeOffset_=(p: Long) = { basis.setFadeOffset(p); basis }
+  @inline def fadeOffset_=(p: Long) = {
+    basis.setFadeOffset(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/gesture/GestureOverlayView.html#getGesture() getGesture()]]`
@@ -12698,7 +13296,9 @@ trait TraitGestureOverlayView[This <: android.gesture.GestureOverlayView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/gesture/GestureOverlayView.html#setGestureColor(int) setGestureColor(int)]]`
     */
-  @inline def gestureColor_=(p: Int) = { basis.setGestureColor(p); basis }
+  @inline def gestureColor_=(p: Int) = {
+    basis.setGestureColor(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/gesture/GestureOverlayView.html#getGesturePath() getGesturePath()]]`
@@ -12825,7 +13425,9 @@ trait TraitGestureOverlayView[This <: android.gesture.GestureOverlayView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/gesture/GestureOverlayView.html#setOrientation(int) setOrientation(int)]]`
     */
-  @inline def orientation_=(p: Int) = { basis.setOrientation(p); basis }
+  @inline def orientation_=(p: Int) = {
+    basis.setOrientation(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/gesture/GestureOverlayView.html#getUncertainGestureColor() getUncertainGestureColor()]]`
@@ -12851,7 +13453,9 @@ trait TraitGestureOverlayView[This <: android.gesture.GestureOverlayView]
       new android.gesture.GestureOverlayView.OnGestureListener {
         def onGesture(
             p1: android.gesture.GestureOverlayView,
-            p2: android.view.MotionEvent): Unit = { f(p1, p2) }
+            p2: android.view.MotionEvent): Unit = {
+          f(p1, p2)
+        }
         def onGestureCancelled(
             p1: android.gesture.GestureOverlayView,
             p2: android.view.MotionEvent): Unit = {}
@@ -12870,7 +13474,9 @@ trait TraitGestureOverlayView[This <: android.gesture.GestureOverlayView]
       new android.gesture.GestureOverlayView.OnGestureListener {
         def onGesture(
             p1: android.gesture.GestureOverlayView,
-            p2: android.view.MotionEvent): Unit = { f }
+            p2: android.view.MotionEvent): Unit = {
+          f
+        }
         def onGestureCancelled(
             p1: android.gesture.GestureOverlayView,
             p2: android.view.MotionEvent): Unit = {}
@@ -12894,7 +13500,9 @@ trait TraitGestureOverlayView[This <: android.gesture.GestureOverlayView]
             p2: android.view.MotionEvent): Unit = {}
         def onGestureCancelled(
             p1: android.gesture.GestureOverlayView,
-            p2: android.view.MotionEvent): Unit = { f(p1, p2) }
+            p2: android.view.MotionEvent): Unit = {
+          f(p1, p2)
+        }
         def onGestureEnded(
             p1: android.gesture.GestureOverlayView,
             p2: android.view.MotionEvent): Unit = {}
@@ -12913,7 +13521,9 @@ trait TraitGestureOverlayView[This <: android.gesture.GestureOverlayView]
             p2: android.view.MotionEvent): Unit = {}
         def onGestureCancelled(
             p1: android.gesture.GestureOverlayView,
-            p2: android.view.MotionEvent): Unit = { f }
+            p2: android.view.MotionEvent): Unit = {
+          f
+        }
         def onGestureEnded(
             p1: android.gesture.GestureOverlayView,
             p2: android.view.MotionEvent): Unit = {}
@@ -12937,7 +13547,9 @@ trait TraitGestureOverlayView[This <: android.gesture.GestureOverlayView]
             p2: android.view.MotionEvent): Unit = {}
         def onGestureEnded(
             p1: android.gesture.GestureOverlayView,
-            p2: android.view.MotionEvent): Unit = { f(p1, p2) }
+            p2: android.view.MotionEvent): Unit = {
+          f(p1, p2)
+        }
         def onGestureStarted(
             p1: android.gesture.GestureOverlayView,
             p2: android.view.MotionEvent): Unit = {}
@@ -12956,7 +13568,9 @@ trait TraitGestureOverlayView[This <: android.gesture.GestureOverlayView]
             p2: android.view.MotionEvent): Unit = {}
         def onGestureEnded(
             p1: android.gesture.GestureOverlayView,
-            p2: android.view.MotionEvent): Unit = { f }
+            p2: android.view.MotionEvent): Unit = {
+          f
+        }
         def onGestureStarted(
             p1: android.gesture.GestureOverlayView,
             p2: android.view.MotionEvent): Unit = {}
@@ -12971,7 +13585,9 @@ trait TraitGestureOverlayView[This <: android.gesture.GestureOverlayView]
       new android.gesture.GestureOverlayView.OnGesturePerformedListener {
         def onGesturePerformed(
             p1: android.gesture.GestureOverlayView,
-            p2: android.gesture.Gesture): Unit = { f(p1, p2) }
+            p2: android.gesture.Gesture): Unit = {
+          f(p1, p2)
+        }
       })
     basis
   }
@@ -12981,7 +13597,9 @@ trait TraitGestureOverlayView[This <: android.gesture.GestureOverlayView]
       new android.gesture.GestureOverlayView.OnGesturePerformedListener {
         def onGesturePerformed(
             p1: android.gesture.GestureOverlayView,
-            p2: android.gesture.Gesture): Unit = { f }
+            p2: android.gesture.Gesture): Unit = {
+          f
+        }
       })
     basis
   }
@@ -13002,7 +13620,9 @@ trait TraitGestureOverlayView[This <: android.gesture.GestureOverlayView]
             p2: android.view.MotionEvent): Unit = {}
         def onGestureStarted(
             p1: android.gesture.GestureOverlayView,
-            p2: android.view.MotionEvent): Unit = { f(p1, p2) }
+            p2: android.view.MotionEvent): Unit = {
+          f(p1, p2)
+        }
       })
     basis
   }
@@ -13021,7 +13641,9 @@ trait TraitGestureOverlayView[This <: android.gesture.GestureOverlayView]
             p2: android.view.MotionEvent): Unit = {}
         def onGestureStarted(
             p1: android.gesture.GestureOverlayView,
-            p2: android.view.MotionEvent): Unit = { f }
+            p2: android.view.MotionEvent): Unit = {
+          f
+        }
       })
     basis
   }
@@ -13221,7 +13843,9 @@ trait TraitWebView[This <: android.webkit.WebView]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/webkit/WebView.html#setInitialScale(int) setInitialScale(int)]]`
     */
-  @inline def initialScale_=(p: Int) = { basis.setInitialScale(p); basis }
+  @inline def initialScale_=(p: Int) = {
+    basis.setInitialScale(p); basis
+  }
 
   @inline def mapTrackballToArrowKeys(
       implicit no: NoGetterForThisProperty): Nothing =
@@ -13372,7 +13996,9 @@ trait TraitWebView[This <: android.webkit.WebView]
           p2: java.lang.String,
           p3: java.lang.String,
           p4: java.lang.String,
-          p5: Long): Unit = { f(p1, p2, p3, p4, p5) }
+          p5: Long): Unit = {
+        f(p1, p2, p3, p4, p5)
+      }
     })
     basis
   }
@@ -13384,7 +14010,9 @@ trait TraitWebView[This <: android.webkit.WebView]
           p2: java.lang.String,
           p3: java.lang.String,
           p4: java.lang.String,
-          p5: Long): Unit = { f }
+          p5: Long): Unit = {
+        f
+      }
     })
     basis
   }
@@ -13400,7 +14028,9 @@ trait TraitWebView[This <: android.webkit.WebView]
 
   @inline def onFindResultReceived[U](f: => U): This = {
     basis.setFindListener(new android.webkit.WebView.FindListener {
-      def onFindResultReceived(p1: Int, p2: Int, p3: Boolean): Unit = { f }
+      def onFindResultReceived(p1: Int, p2: Int, p3: Boolean): Unit = {
+        f
+      }
     })
     basis
   }
@@ -13410,7 +14040,9 @@ trait TraitWebView[This <: android.webkit.WebView]
     basis.setPictureListener(new android.webkit.WebView.PictureListener {
       def onNewPicture(
           p1: android.webkit.WebView,
-          p2: android.graphics.Picture): Unit = { f(p1, p2) }
+          p2: android.graphics.Picture): Unit = {
+        f(p1, p2)
+      }
     })
     basis
   }
@@ -13419,7 +14051,9 @@ trait TraitWebView[This <: android.webkit.WebView]
     basis.setPictureListener(new android.webkit.WebView.PictureListener {
       def onNewPicture(
           p1: android.webkit.WebView,
-          p2: android.graphics.Picture): Unit = { f }
+          p2: android.graphics.Picture): Unit = {
+        f
+      }
     })
     basis
   }
@@ -13477,7 +14111,9 @@ trait TraitPaint[This <: android.graphics.Paint] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#setAlpha(int) setAlpha(int)]]`
     */
-  @inline def alpha_=(p: Int) = { basis.setAlpha(p); basis }
+  @inline def alpha_=(p: Int) = {
+    basis.setAlpha(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#isAntiAlias() isAntiAlias()]]`
@@ -13492,7 +14128,9 @@ trait TraitPaint[This <: android.graphics.Paint] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#setAntiAlias(boolean) setAntiAlias(boolean)]]`
     */
-  @inline def antiAlias_=(p: Boolean) = { basis.setAntiAlias(p); basis }
+  @inline def antiAlias_=(p: Boolean) = {
+    basis.setAntiAlias(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#getColor() getColor()]]`
@@ -13507,7 +14145,9 @@ trait TraitPaint[This <: android.graphics.Paint] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#setColor(int) setColor(int)]]`
     */
-  @inline def color_=(p: Int) = { basis.setColor(p); basis }
+  @inline def color_=(p: Int) = {
+    basis.setColor(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#getColorFilter() getColorFilter()]]`
@@ -13539,7 +14179,9 @@ trait TraitPaint[This <: android.graphics.Paint] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#setDither(boolean) setDither(boolean)]]`
     */
-  @inline def dither_=(p: Boolean) = { basis.setDither(p); basis }
+  @inline def dither_=(p: Boolean) = {
+    basis.setDither(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#isFakeBoldText() isFakeBoldText()]]`
@@ -13554,7 +14196,9 @@ trait TraitPaint[This <: android.graphics.Paint] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#setFakeBoldText(boolean) setFakeBoldText(boolean)]]`
     */
-  @inline def fakeBoldText_=(p: Boolean) = { basis.setFakeBoldText(p); basis }
+  @inline def fakeBoldText_=(p: Boolean) = {
+    basis.setFakeBoldText(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#isFilterBitmap() isFilterBitmap()]]`
@@ -13569,7 +14213,9 @@ trait TraitPaint[This <: android.graphics.Paint] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#setFilterBitmap(boolean) setFilterBitmap(boolean)]]`
     */
-  @inline def filterBitmap_=(p: Boolean) = { basis.setFilterBitmap(p); basis }
+  @inline def filterBitmap_=(p: Boolean) = {
+    basis.setFilterBitmap(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#getFlags() getFlags()]]`
@@ -13584,7 +14230,9 @@ trait TraitPaint[This <: android.graphics.Paint] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#setFlags(int) setFlags(int)]]`
     */
-  @inline def flags_=(p: Int) = { basis.setFlags(p); basis }
+  @inline def flags_=(p: Int) = {
+    basis.setFlags(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#getFontMetrics() getFontMetrics()]]`
@@ -13614,7 +14262,9 @@ trait TraitPaint[This <: android.graphics.Paint] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#setHinting(int) setHinting(int)]]`
     */
-  @inline def hinting_=(p: Int) = { basis.setHinting(p); basis }
+  @inline def hinting_=(p: Int) = {
+    basis.setHinting(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#isLinearText() isLinearText()]]`
@@ -13765,7 +14415,9 @@ trait TraitPaint[This <: android.graphics.Paint] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#setStrokeMiter(float) setStrokeMiter(float)]]`
     */
-  @inline def strokeMiter_=(p: Float) = { basis.setStrokeMiter(p); basis }
+  @inline def strokeMiter_=(p: Float) = {
+    basis.setStrokeMiter(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#getStrokeWidth() getStrokeWidth()]]`
@@ -13780,7 +14432,9 @@ trait TraitPaint[This <: android.graphics.Paint] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#setStrokeWidth(float) setStrokeWidth(float)]]`
     */
-  @inline def strokeWidth_=(p: Float) = { basis.setStrokeWidth(p); basis }
+  @inline def strokeWidth_=(p: Float) = {
+    basis.setStrokeWidth(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#getStyle() getStyle()]]`
@@ -13812,7 +14466,9 @@ trait TraitPaint[This <: android.graphics.Paint] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#setSubpixelText(boolean) setSubpixelText(boolean)]]`
     */
-  @inline def subpixelText_=(p: Boolean) = { basis.setSubpixelText(p); basis }
+  @inline def subpixelText_=(p: Boolean) = {
+    basis.setSubpixelText(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#getTextAlign() getTextAlign()]]`
@@ -13844,7 +14500,9 @@ trait TraitPaint[This <: android.graphics.Paint] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#setTextScaleX(float) setTextScaleX(float)]]`
     */
-  @inline def textScaleX_=(p: Float) = { basis.setTextScaleX(p); basis }
+  @inline def textScaleX_=(p: Float) = {
+    basis.setTextScaleX(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#getTextSize() getTextSize()]]`
@@ -13859,7 +14517,9 @@ trait TraitPaint[This <: android.graphics.Paint] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#setTextSize(float) setTextSize(float)]]`
     */
-  @inline def textSize_=(p: Float) = { basis.setTextSize(p); basis }
+  @inline def textSize_=(p: Float) = {
+    basis.setTextSize(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#getTextSkewX() getTextSkewX()]]`
@@ -13874,7 +14534,9 @@ trait TraitPaint[This <: android.graphics.Paint] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#setTextSkewX(float) setTextSkewX(float)]]`
     */
-  @inline def textSkewX_=(p: Float) = { basis.setTextSkewX(p); basis }
+  @inline def textSkewX_=(p: Float) = {
+    basis.setTextSkewX(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#getTypeface() getTypeface()]]`
@@ -13906,7 +14568,9 @@ trait TraitPaint[This <: android.graphics.Paint] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#setUnderlineText(boolean) setUnderlineText(boolean)]]`
     */
-  @inline def underlineText_=(p: Boolean) = { basis.setUnderlineText(p); basis }
+  @inline def underlineText_=(p: Boolean) = {
+    basis.setUnderlineText(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/graphics/Paint.html#getXfermode() getXfermode()]]`

@@ -143,7 +143,9 @@ trait DriverBasedJdbcDataSource extends JdbcDataSource {
     if (driverName ne null) {
       val oldDriver =
         try DriverManager.getDriver(url)
-        catch { case ex: SQLException if "08001" == ex.getSQLState => null }
+        catch {
+          case ex: SQLException if "08001" == ex.getSQLState => null
+        }
       if (oldDriver eq null) {
         Class.forName(driverName)
         registeredDriver = DriverManager.getDriver(url)

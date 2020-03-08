@@ -96,12 +96,16 @@ private[spark] class TimeStampedHashMap[A, B](
   }
 
   override def apply(key: A): B = {
-    get(key).getOrElse { throw new NoSuchElementException() }
+    get(key).getOrElse {
+      throw new NoSuchElementException()
+    }
   }
 
   override def filter(p: ((A, B)) => Boolean): mutable.Map[A, B] = {
     internalMap.asScala
-      .map { case (k, TimeStampedValue(v, t)) => (k, v) }
+      .map {
+        case (k, TimeStampedValue(v, t)) => (k, v)
+      }
       .filter(p)
   }
 
@@ -125,7 +129,9 @@ private[spark] class TimeStampedHashMap[A, B](
   }
 
   def putAll(map: Map[A, B]) {
-    map.foreach { case (k, v) => update(k, v) }
+    map.foreach {
+      case (k, v) => update(k, v)
+    }
   }
 
   def toMap: Map[A, B] = iterator.toMap

@@ -11,7 +11,9 @@ final class Serial(seed0: Long) extends LongBasedGenerator {
   def setSeed(n: Long): Unit = seed = n
   def getSeedBytes: Array[Byte] = Pack.longToBytes(seed)
   def setSeedBytes(bytes: Array[Byte]): Unit = seed = Pack.longFromBytes(bytes)
-  def nextLong(): Long = { seed += 1; seed }
+  def nextLong(): Long = {
+    seed += 1; seed
+  }
 }
 
 object Serial extends GeneratorCompanion[Serial, Long] {

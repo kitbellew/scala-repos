@@ -133,7 +133,9 @@ trait Inbox { this: ActorDSL.type ⇒
           else {
             currentMsg = msg
             clients.dequeueFirst(clientPredicate) match {
-              case Some(q) ⇒ { clientsByTimeout -= q; q.client ! msg }
+              case Some(q) ⇒ {
+                clientsByTimeout -= q; q.client ! msg
+              }
               case None ⇒ enqueueMessage(msg)
             }
             currentMsg = null

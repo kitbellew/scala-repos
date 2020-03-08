@@ -80,7 +80,11 @@ abstract class UntypedActor extends Actor {
    * Java API for become with optional discardOld
    */
   def become(behavior: Procedure[Any], discardOld: Boolean): Unit =
-    super.become({ case msg => behavior.apply(msg) }, discardOld)
+    super.become(
+      {
+        case msg => behavior.apply(msg)
+      },
+      discardOld)
 
   /**
     * User overridable callback.

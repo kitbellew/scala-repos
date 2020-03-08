@@ -49,31 +49,41 @@ class FastScalac extends Scalac {
     *
     *  @param input The value for `reset`.
     */
-  def setReset(input: Boolean) { resetCaches = input }
+  def setReset(input: Boolean) {
+    resetCaches = input
+  }
 
   /** Sets the `server` attribute. Used by [[http://ant.apache.org Ant]].
     *
     *  @param input The value for `server`.
     */
-  def setServer(input: String) { serverAddr = Some(input) }
+  def setServer(input: String) {
+    serverAddr = Some(input)
+  }
 
   /** Sets the `shutdown` attribute. Used by [[http://ant.apache.org Ant]].
     *
     *  @param input The value for `shutdown`.
     */
-  def setShutdown(input: Boolean) { shutdownServer = input }
+  def setShutdown(input: Boolean) {
+    shutdownServer = input
+  }
 
   /** Sets the `ipv4` attribute. Used by [[http://ant.apache.org Ant]].
     *
     *  @param input The value for `ipv4`.
     */
-  def setIPv4(input: Boolean) { useIPv4 = input }
+  def setIPv4(input: Boolean) {
+    useIPv4 = input
+  }
 
   /** Sets the `maxIdle` attribute. Used by [[http://ant.apache.org Ant]].
     *
     *  @param input The value for `maxIdle`.
     */
-  def setMaxIdle(input: Int) { if (0 <= input) idleMinutes = Some(input) }
+  def setMaxIdle(input: Int) {
+    if (0 <= input) idleMinutes = Some(input)
+  }
 
   /*============================================================================*\
 **                             The execute method                             **

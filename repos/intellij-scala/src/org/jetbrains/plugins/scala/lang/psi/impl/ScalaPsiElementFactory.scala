@@ -754,7 +754,9 @@ object ScalaPsiElementFactory {
         val elements = p.typeElements
         (elements.head
           .asInstanceOf[ScSimpleTypeElement]
-          .reference: @unchecked) match { case Some(r) => r }
+          .reference: @unchecked) match {
+          case Some(r) => r
+        }
       case _ => throw new com.intellij.util.IncorrectOperationException()
     }
   }
@@ -1041,7 +1043,9 @@ object ScalaPsiElementFactory {
         text)
       .asInstanceOf[ScalaFile]
     val classDef = dummyFile.typeDefinitions(0)
-    classDef.members(0) match { case member: ScMember => member }
+    classDef.members(0) match {
+      case member: ScMember => member
+    }
   }
 
   def createSemicolon(manager: PsiManager): PsiElement = {

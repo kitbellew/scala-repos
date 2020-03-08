@@ -55,7 +55,12 @@ class ClusterClientTest
   val pool = FuturePool.unboundedPool
 
   val TimeOut = 15.seconds
-  def boundedWait[T](body: => T): T = Await.result(pool { body }, TimeOut)
+  def boundedWait[T](body: => T): T =
+    Await.result(
+      pool {
+        body
+      },
+      TimeOut)
 
   before {
     // start zookeeper server and create zookeeper client
@@ -85,7 +90,9 @@ class ClusterClientTest
           TestMemcachedServer.start() match {
             case Some(server) =>
               testServers :+= server
-              pool { zkServerSetCluster.join(server.address) }
+              pool {
+                zkServerSetCluster.join(server.address)
+              }
             case None =>
               fail("could not start TestMemcachedServer")
           }
@@ -118,7 +125,9 @@ class ClusterClientTest
 
     if (!testServers.isEmpty) {
       // shutdown memcached server
-      testServers foreach { _.stop() }
+      testServers foreach {
+        _.stop()
+      }
       testServers = List()
     }
   }
@@ -209,7 +218,9 @@ class ClusterClientTest
           expectedRem = 0) {
           updateCachePoolConfigData(10)
         }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      } catch {
+        case _: Exception => fail("it shouldn't trown an exception")
+      }
 
       /***** remove 2 servers from the zk serverset ******/
       // cache pool should remain the same size at this moment
@@ -236,7 +247,9 @@ class ClusterClientTest
           expectedRem = 2) {
           updateCachePoolConfigData(8)
         }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      } catch {
+        case _: Exception => fail("it shouldn't trown an exception")
+      }
 
       /***** remove 2 more then add 3 ******/
       // cache pool should remain the same size at this moment
@@ -264,7 +277,9 @@ class ClusterClientTest
           expectedRem = 2) {
           updateCachePoolConfigData(9)
         }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      } catch {
+        case _: Exception => fail("it shouldn't trown an exception")
+      }
     }
 
   if (!Option(System.getProperty("SKIP_FLAKY")).isDefined)
@@ -313,7 +328,9 @@ class ClusterClientTest
           addMoreServers(5)
           updateCachePoolConfigData(10)
         }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      } catch {
+        case _: Exception => fail("it shouldn't trown an exception")
+      }
     }
 
   if (!Option(System.getProperty("SKIP_FLAKY")).isDefined)
@@ -341,7 +358,9 @@ class ClusterClientTest
           expectedRem = 2) {
           zookeeperServer.startNetwork
         }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      } catch {
+        case _: Exception => fail("it shouldn't trown an exception")
+      }
 
       /***** start 5 more memcached servers and join the cluster ******/
       // update config data node, which triggers the pool update
@@ -356,7 +375,9 @@ class ClusterClientTest
           addMoreServers(5)
           updateCachePoolConfigData(10)
         }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      } catch {
+        case _: Exception => fail("it shouldn't trown an exception")
+      }
     }
 
   if (!Option(System.getProperty("SKIP_FLAKY")).isDefined) {
@@ -473,9 +494,13 @@ class ClusterClientTest
           additionalServers = addMoreServers(4)
           updateCachePoolConfigData(9)
         }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      } catch {
+        case _: Exception => fail("it shouldn't trown an exception")
+      }
 
-      eventually { assert(trackCacheShards(client).size == 9) }
+      eventually {
+        assert(trackCacheShards(client).size == 9)
+      }
 
       // remove 2 cache servers and update cache pool config data, now there should be 7 shards
       try {
@@ -489,9 +514,13 @@ class ClusterClientTest
           additionalServers(1).leave()
           updateCachePoolConfigData(7)
         }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      } catch {
+        case _: Exception => fail("it shouldn't trown an exception")
+      }
 
-      eventually { assert(trackCacheShards(client).size == 7) }
+      eventually {
+        assert(trackCacheShards(client).size == 7)
+      }
 
       // remove another 2 cache servers and update cache pool config data, now there should be 5 shards
       try {
@@ -505,9 +534,13 @@ class ClusterClientTest
           additionalServers(3).leave()
           updateCachePoolConfigData(5)
         }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      } catch {
+        case _: Exception => fail("it shouldn't trown an exception")
+      }
 
-      eventually { assert(trackCacheShards(client).size == 5) }
+      eventually {
+        assert(trackCacheShards(client).size == 5)
+      }
 
       // add 2 more cache servers and update cache pool config data, now there should be 7 shards
       try {
@@ -520,9 +553,13 @@ class ClusterClientTest
           additionalServers = addMoreServers(2)
           updateCachePoolConfigData(7)
         }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      } catch {
+        case _: Exception => fail("it shouldn't trown an exception")
+      }
 
-      eventually { assert(trackCacheShards(client).size == 7) }
+      eventually {
+        assert(trackCacheShards(client).size == 7)
+      }
 
       // add another 2 more cache servers and update cache pool config data, now there should be 9 shards
       try {
@@ -535,9 +572,13 @@ class ClusterClientTest
           additionalServers = addMoreServers(2)
           updateCachePoolConfigData(9)
         }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      } catch {
+        case _: Exception => fail("it shouldn't trown an exception")
+      }
 
-      eventually { assert(trackCacheShards(client).size == 9) }
+      eventually {
+        assert(trackCacheShards(client).size == 9)
+      }
 
       // remove 2 and add 2, now there should be still 9 shards
       try {
@@ -552,9 +593,13 @@ class ClusterClientTest
           addMoreServers(2)
           updateCachePoolConfigData(9)
         }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      } catch {
+        case _: Exception => fail("it shouldn't trown an exception")
+      }
 
-      eventually { assert(trackCacheShards(client).size == 9) }
+      eventually {
+        assert(trackCacheShards(client).size == 9)
+      }
     }
 
   if (!Option(System.getProperty("SKIP_FLAKY")).isDefined)
@@ -588,9 +633,13 @@ class ClusterClientTest
           expectedRem = 0) {
           additionalServers = addMoreServers(4)
         }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      } catch {
+        case _: Exception => fail("it shouldn't trown an exception")
+      }
 
-      eventually { assert(trackCacheShards(client).size == 9) }
+      eventually {
+        assert(trackCacheShards(client).size == 9)
+      }
 
       // remove 2 cache servers and update cache pool config data, now there should be 7 shards
       try {
@@ -603,9 +652,13 @@ class ClusterClientTest
           additionalServers(0).leave()
           additionalServers(1).leave()
         }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      } catch {
+        case _: Exception => fail("it shouldn't trown an exception")
+      }
 
-      eventually { assert(trackCacheShards(client).size == 7) }
+      eventually {
+        assert(trackCacheShards(client).size == 7)
+      }
     }
 
   def updateCachePoolConfigData(size: Int) {
@@ -699,5 +752,7 @@ class ClusterClientTest
 
   def trackCacheShards(client: PartitionedClient) =
     mutable.Set.empty[Client] ++
-      ((0 until 100).map { n => client.clientOf("foo" + n) })
+      ((0 until 100).map { n =>
+        client.clientOf("foo" + n)
+      })
 }

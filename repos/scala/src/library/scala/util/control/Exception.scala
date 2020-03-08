@@ -77,8 +77,13 @@ object Exception {
   class Finally private[Exception] (body: => Unit) extends Described {
     protected val name = "Finally"
 
-    def and(other: => Unit): Finally = new Finally({ body; other })
-    def invoke() { body }
+    def and(other: => Unit): Finally =
+      new Finally({
+        body; other
+      })
+    def invoke() {
+      body
+    }
   }
 
   /** A container class for catch/finally logic.
@@ -149,7 +154,11 @@ object Exception {
   final val nothingCatcher: Catcher[Nothing] =
     mkThrowableCatcher(_ => false, throw _)
   final def nonFatalCatcher[T]: Catcher[T] =
-    mkThrowableCatcher({ case NonFatal(_) => true; case _ => false }, throw _)
+    mkThrowableCatcher(
+      {
+        case NonFatal(_) => true; case _ => false
+      },
+      throw _)
   final def allCatcher[T]: Catcher[T] = mkThrowableCatcher(_ => true, throw _)
 
   /** The empty `Catch` object. */

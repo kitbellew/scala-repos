@@ -108,7 +108,9 @@ final class TestRunner(
       // here we get the results! here is where we'd pass in the event listener
       val results = new scala.collection.mutable.ListBuffer[Event]
       val handler = new EventHandler {
-        def handle(e: Event): Unit = { results += e }
+        def handle(e: Event): Unit = {
+          results += e
+        }
       }
       val loggers = listeners.flatMap(_.contentLogger(testDefinition))
       val nestedTasks =
@@ -147,7 +149,9 @@ object TestFramework {
       f: T => Unit): Unit =
     it.foreach(i =>
       try f(i)
-      catch { case e: Exception => log.trace(e); log.error(e.toString) })
+      catch {
+        case e: Exception => log.trace(e); log.error(e.toString)
+      })
 
   private[sbt] def hashCode(f: Fingerprint): Int = f match {
     case s: SubclassFingerprint  => (s.isModule, s.superclassName).hashCode
@@ -208,7 +212,9 @@ object TestFramework {
     val map = new HashMap[Framework, Set[TestDefinition]]
     def assignTest(test: TestDefinition): Unit = {
       def isTestForFramework(framework: Framework) =
-        getFingerprints(framework).exists { t => matches(t, test.fingerprint) }
+        getFingerprints(framework).exists { t =>
+          matches(t, test.fingerprint)
+        }
       for (framework <- frameworks.find(isTestForFramework))
         map.getOrElseUpdate(framework, new HashSet[TestDefinition]) += test
     }
@@ -224,7 +230,9 @@ object TestFramework {
       ordered: Seq[TestDefinition],
       log: Logger,
       listeners: Seq[TestReportListener]) = {
-    val testsListeners = listeners collect { case tl: TestsListener => tl }
+    val testsListeners = listeners collect {
+      case tl: TestsListener => tl
+    }
 
     def foreachListenerSafe(f: TestsListener => Unit): () => Unit =
       () => safeForeach(testsListeners, log)(f)
@@ -254,8 +262,11 @@ object TestFramework {
   private[this] def withContextLoader[T](loader: ClassLoader)(eval: => T): T = {
     val oldLoader = Thread.currentThread.getContextClassLoader
     Thread.currentThread.setContextClassLoader(loader)
-    try { eval }
-    finally { Thread.currentThread.setContextClassLoader(oldLoader) }
+    try {
+      eval
+    } finally {
+      Thread.currentThread.setContextClassLoader(oldLoader)
+    }
   }
   def createTestLoader(
       classpath: Seq[File],
@@ -291,7 +302,9 @@ object TestFramework {
       taskDef,
       runner,
       (r: TestRunner) =>
-        withContextLoader(loader) { r.run(taskDef, testTask) }) {
+        withContextLoader(loader) {
+          r.run(taskDef, testTask)
+        }) {
       def tags = testTask.tags
     }
 }

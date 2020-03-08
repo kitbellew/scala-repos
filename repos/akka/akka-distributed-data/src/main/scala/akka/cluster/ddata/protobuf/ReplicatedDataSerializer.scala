@@ -283,14 +283,18 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
 
   def gcounterToProto(gcounter: GCounter): rd.GCounter = {
     val b = rd.GCounter.newBuilder()
-    gcounter.state.toVector.sortBy { case (address, _) ⇒ address }.foreach {
-      case (address, value) ⇒
-        b.addEntries(
-          rd.GCounter.Entry
-            .newBuilder()
-            .setNode(uniqueAddressToProto(address))
-            .setValue(ByteString.copyFrom(value.toByteArray)))
-    }
+    gcounter.state.toVector
+      .sortBy {
+        case (address, _) ⇒ address
+      }
+      .foreach {
+        case (address, value) ⇒
+          b.addEntries(
+            rd.GCounter.Entry
+              .newBuilder()
+              .setNode(uniqueAddressToProto(address))
+              .setValue(ByteString.copyFrom(value.toByteArray)))
+      }
     b.build()
   }
 
@@ -354,14 +358,18 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
 
   def ormapToProto(ormap: ORMap[_]): rd.ORMap = {
     val b = rd.ORMap.newBuilder().setKeys(orsetToProto(ormap.keys))
-    ormap.entries.toVector.sortBy { case (key, _) ⇒ key }.foreach {
-      case (key, value) ⇒
-        b.addEntries(
-          rd.ORMap.Entry
-            .newBuilder()
-            .setKey(key)
-            .setValue(otherMessageToProto(value)))
-    }
+    ormap.entries.toVector
+      .sortBy {
+        case (key, _) ⇒ key
+      }
+      .foreach {
+        case (key, value) ⇒
+          b.addEntries(
+            rd.ORMap.Entry
+              .newBuilder()
+              .setKey(key)
+              .setValue(otherMessageToProto(value)))
+      }
     b.build()
   }
 
@@ -381,14 +389,18 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
 
   def lwwmapToProto(lwwmap: LWWMap[_]): rd.LWWMap = {
     val b = rd.LWWMap.newBuilder().setKeys(orsetToProto(lwwmap.underlying.keys))
-    lwwmap.underlying.entries.toVector.sortBy { case (key, _) ⇒ key }.foreach {
-      case (key, value) ⇒
-        b.addEntries(
-          rd.LWWMap.Entry
-            .newBuilder()
-            .setKey(key)
-            .setValue(lwwRegisterToProto(value)))
-    }
+    lwwmap.underlying.entries.toVector
+      .sortBy {
+        case (key, _) ⇒ key
+      }
+      .foreach {
+        case (key, value) ⇒
+          b.addEntries(
+            rd.LWWMap.Entry
+              .newBuilder()
+              .setKey(key)
+              .setValue(lwwRegisterToProto(value)))
+      }
     b.build()
   }
 
@@ -410,7 +422,9 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
       .newBuilder()
       .setKeys(orsetToProto(pncountermap.underlying.keys))
     pncountermap.underlying.entries.toVector
-      .sortBy { case (key, _) ⇒ key }
+      .sortBy {
+        case (key, _) ⇒ key
+      }
       .foreach {
         case (key, value: PNCounter) ⇒
           b.addEntries(
@@ -439,7 +453,9 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
     val b =
       rd.ORMultiMap.newBuilder().setKeys(orsetToProto(multimap.underlying.keys))
     multimap.underlying.entries.toVector
-      .sortBy { case (key, _) ⇒ key }
+      .sortBy {
+        case (key, _) ⇒ key
+      }
       .foreach {
         case (key, value) ⇒
           b.addEntries(

@@ -169,7 +169,9 @@ class Extra(val activity: SActivity) extends AnyVal with Dynamic {
       }
     }
 
-  def remove(name: String) = activity.intent.foreach { _.removeExtra(name) }
+  def remove(name: String) = activity.intent.foreach {
+    _.removeExtra(name)
+  }
 }
 
 object Extra {
@@ -205,7 +207,9 @@ trait TraitPreference[This <: android.preference.Preference] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/Preference.html#setDefaultValue(java.lang.Object) setDefaultValue(java.lang.Object)]]`
     */
-  @inline def defaultValue_=(p: Any) = { basis.setDefaultValue(p); basis }
+  @inline def defaultValue_=(p: Any) = {
+    basis.setDefaultValue(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/Preference.html#getDependency() getDependency()]]`
@@ -242,10 +246,16 @@ trait TraitPreference[This <: android.preference.Preference] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/Preference.html#setEnabled(boolean) setEnabled(boolean)]]`
     */
-  @inline def enabled_=(p: Boolean) = { basis.setEnabled(p); basis }
+  @inline def enabled_=(p: Boolean) = {
+    basis.setEnabled(p); basis
+  }
 
-  @inline def enable() = { basis.setEnabled(true); basis }
-  @inline def disable() = { basis.setEnabled(false); basis }
+  @inline def enable() = {
+    basis.setEnabled(true); basis
+  }
+  @inline def disable() = {
+    basis.setEnabled(false); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/Preference.html#getExtras() getExtras()]]`
@@ -265,7 +275,9 @@ trait TraitPreference[This <: android.preference.Preference] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/Preference.html#setFragment(java.lang.String) setFragment(java.lang.String)]]`
     */
-  @inline def fragment_=(p: java.lang.String) = { basis.setFragment(p); basis }
+  @inline def fragment_=(p: java.lang.String) = {
+    basis.setFragment(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/Preference.html#getIcon() getIcon()]]`
@@ -280,7 +292,9 @@ trait TraitPreference[This <: android.preference.Preference] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/Preference.html#setIcon(int) setIcon(int)]]`
     */
-  @inline def icon_=(p: Int) = { basis.setIcon(p); basis }
+  @inline def icon_=(p: Int) = {
+    basis.setIcon(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/Preference.html#setIcon(android.graphics.drawable.Drawable) setIcon(android.graphics.drawable.Drawable)]]`
@@ -324,7 +338,9 @@ trait TraitPreference[This <: android.preference.Preference] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/Preference.html#setKey(java.lang.String) setKey(java.lang.String)]]`
     */
-  @inline def key_=(p: java.lang.String) = { basis.setKey(p); basis }
+  @inline def key_=(p: java.lang.String) = {
+    basis.setKey(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/Preference.html#getLayoutResource() getLayoutResource()]]`
@@ -339,7 +355,9 @@ trait TraitPreference[This <: android.preference.Preference] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/Preference.html#setLayoutResource(int) setLayoutResource(int)]]`
     */
-  @inline def layoutResource_=(p: Int) = { basis.setLayoutResource(p); basis }
+  @inline def layoutResource_=(p: Int) = {
+    basis.setLayoutResource(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/Preference.html#getOnPreferenceChangeListener() getOnPreferenceChangeListener()]]`
@@ -394,7 +412,9 @@ trait TraitPreference[This <: android.preference.Preference] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/Preference.html#setOrder(int) setOrder(int)]]`
     */
-  @inline def order_=(p: Int) = { basis.setOrder(p); basis }
+  @inline def order_=(p: Int) = {
+    basis.setOrder(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/Preference.html#isPersistent() isPersistent()]]`
@@ -409,7 +429,9 @@ trait TraitPreference[This <: android.preference.Preference] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/Preference.html#setPersistent(boolean) setPersistent(boolean)]]`
     */
-  @inline def persistent_=(p: Boolean) = { basis.setPersistent(p); basis }
+  @inline def persistent_=(p: Boolean) = {
+    basis.setPersistent(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/Preference.html#getPreferenceManager() getPreferenceManager()]]`
@@ -429,7 +451,9 @@ trait TraitPreference[This <: android.preference.Preference] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/Preference.html#setSelectable(boolean) setSelectable(boolean)]]`
     */
-  @inline def selectable_=(p: Boolean) = { basis.setSelectable(p); basis }
+  @inline def selectable_=(p: Boolean) = {
+    basis.setSelectable(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/Preference.html#getSharedPreferences() getSharedPreferences()]]`
@@ -466,7 +490,9 @@ trait TraitPreference[This <: android.preference.Preference] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/Preference.html#setSummary(int) setSummary(int)]]`
     */
-  @inline def summary_=(p: Int) = { basis.setSummary(p); basis }
+  @inline def summary_=(p: Int) = {
+    basis.setSummary(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/Preference.html#setSummary(java.lang.CharSequence) setSummary(java.lang.CharSequence)]]`
@@ -493,7 +519,9 @@ trait TraitPreference[This <: android.preference.Preference] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/Preference.html#setTitle(int) setTitle(int)]]`
     */
-  @inline def title_=(p: Int) = { basis.setTitle(p); basis }
+  @inline def title_=(p: Int) = {
+    basis.setTitle(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/Preference.html#setTitle(java.lang.CharSequence) setTitle(java.lang.CharSequence)]]`
@@ -503,7 +531,9 @@ trait TraitPreference[This <: android.preference.Preference] {
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/Preference.html#setTitle(java.lang.CharSequence) setTitle(java.lang.CharSequence)]]`
     */
-  @inline def title_=(p: java.lang.CharSequence) = { basis.setTitle(p); basis }
+  @inline def title_=(p: java.lang.CharSequence) = {
+    basis.setTitle(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/Preference.html#getTitleRes() getTitleRes()]]`
@@ -533,7 +563,9 @@ trait TraitPreference[This <: android.preference.Preference] {
       new android.preference.Preference.OnPreferenceChangeListener {
         def onPreferenceChange(
             p1: android.preference.Preference,
-            p2: Any): Boolean = { f(p1, p2) }
+            p2: Any): Boolean = {
+          f(p1, p2)
+        }
       })
     basis
   }
@@ -543,7 +575,9 @@ trait TraitPreference[This <: android.preference.Preference] {
       new android.preference.Preference.OnPreferenceChangeListener {
         def onPreferenceChange(
             p1: android.preference.Preference,
-            p2: Any): Boolean = { f }
+            p2: Any): Boolean = {
+          f
+        }
       })
     basis
   }
@@ -562,7 +596,9 @@ trait TraitPreference[This <: android.preference.Preference] {
   @inline def onPreferenceClick(f: => Boolean): This = {
     basis.setOnPreferenceClickListener(
       new android.preference.Preference.OnPreferenceClickListener {
-        def onPreferenceClick(p: android.preference.Preference): Boolean = { f }
+        def onPreferenceClick(p: android.preference.Preference): Boolean = {
+          f
+        }
       })
     basis
   }
@@ -621,7 +657,9 @@ trait TraitDialogPreference[This <: android.preference.DialogPreference]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/DialogPreference.html#setDialogIcon(int) setDialogIcon(int)]]`
     */
-  @inline def dialogIcon_=(p: Int) = { basis.setDialogIcon(p); basis }
+  @inline def dialogIcon_=(p: Int) = {
+    basis.setDialogIcon(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/DialogPreference.html#setDialogIcon(android.graphics.drawable.Drawable) setDialogIcon(android.graphics.drawable.Drawable)]]`
@@ -666,7 +704,9 @@ trait TraitDialogPreference[This <: android.preference.DialogPreference]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/DialogPreference.html#setDialogMessage(int) setDialogMessage(int)]]`
     */
-  @inline def dialogMessage_=(p: Int) = { basis.setDialogMessage(p); basis }
+  @inline def dialogMessage_=(p: Int) = {
+    basis.setDialogMessage(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/DialogPreference.html#setDialogMessage(java.lang.CharSequence) setDialogMessage(java.lang.CharSequence)]]`
@@ -693,7 +733,9 @@ trait TraitDialogPreference[This <: android.preference.DialogPreference]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/DialogPreference.html#setDialogTitle(int) setDialogTitle(int)]]`
     */
-  @inline def dialogTitle_=(p: Int) = { basis.setDialogTitle(p); basis }
+  @inline def dialogTitle_=(p: Int) = {
+    basis.setDialogTitle(p); basis
+  }
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/DialogPreference.html#setDialogTitle(java.lang.CharSequence) setDialogTitle(java.lang.CharSequence)]]`
@@ -800,7 +842,9 @@ trait TraitEditTextPreference[This <: android.preference.EditTextPreference]
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/preference/EditTextPreference.html#setText(java.lang.String) setText(java.lang.String)]]`
     */
-  @inline def text_=(p: java.lang.String) = { basis.setText(p); basis }
+  @inline def text_=(p: java.lang.String) = {
+    basis.setText(p); basis
+  }
 
 }
 

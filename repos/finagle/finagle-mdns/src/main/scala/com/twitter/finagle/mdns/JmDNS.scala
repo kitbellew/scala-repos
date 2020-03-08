@@ -19,16 +19,22 @@ private object DNS {
   private[this] val pool = FuturePool.unboundedPool
 
   def registerService(info: ServiceInfo) =
-    pool { dns.registerService(info) }
+    pool {
+      dns.registerService(info)
+    }
 
   def unregisterService(info: ServiceInfo) =
-    pool { dns.unregisterService(info) }
+    pool {
+      dns.unregisterService(info)
+    }
 
   def addServiceListener(regType: String, listener: ServiceListener) =
     dns.addServiceListener(regType, listener)
 
   def getServiceInfo(regType: String, name: String) =
-    pool { dns.getServiceInfo(regType, name) }
+    pool {
+      dns.getServiceInfo(regType, name)
+    }
 }
 
 private class JmDNSAnnouncer extends MDNSAnnouncerIface {
@@ -44,7 +50,9 @@ private class JmDNSAnnouncer extends MDNSAnnouncerIface {
       ServiceInfo.create(regType + "." + domain, name, addr.getPort, "")
     DNS.registerService(info) map { _ =>
       new Announcement {
-        def unannounce() = DNS.unregisterService(info) map { _ => () }
+        def unannounce() = DNS.unregisterService(info) map { _ =>
+          ()
+        }
       }
     }
   }

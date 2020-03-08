@@ -117,7 +117,9 @@ object ArrayBuilder {
           super.++=(xs)
       }
 
-    def clear() { size = 0 }
+    def clear() {
+      size = 0
+    }
 
     def result() = {
       if (capacity != 0 && capacity == size) {
@@ -184,7 +186,9 @@ object ArrayBuilder {
         super.++=(xs)
     }
 
-    def clear() { size = 0 }
+    def clear() {
+      size = 0
+    }
 
     def result() = {
       if (capacity != 0 && capacity == size) {
@@ -251,7 +255,9 @@ object ArrayBuilder {
         super.++=(xs)
     }
 
-    def clear() { size = 0 }
+    def clear() {
+      size = 0
+    }
 
     def result() = {
       if (capacity != 0 && capacity == size) {
@@ -318,7 +324,9 @@ object ArrayBuilder {
         super.++=(xs)
     }
 
-    def clear() { size = 0 }
+    def clear() {
+      size = 0
+    }
 
     def result() = {
       if (capacity != 0 && capacity == size) {
@@ -385,7 +393,9 @@ object ArrayBuilder {
         super.++=(xs)
     }
 
-    def clear() { size = 0 }
+    def clear() {
+      size = 0
+    }
 
     def result() = {
       if (capacity != 0 && capacity == size) {
@@ -452,7 +462,9 @@ object ArrayBuilder {
         super.++=(xs)
     }
 
-    def clear() { size = 0 }
+    def clear() {
+      size = 0
+    }
 
     def result() = {
       if (capacity != 0 && capacity == size) {
@@ -519,7 +531,9 @@ object ArrayBuilder {
         super.++=(xs)
     }
 
-    def clear() { size = 0 }
+    def clear() {
+      size = 0
+    }
 
     def result() = {
       if (capacity != 0 && capacity == size) {
@@ -586,7 +600,9 @@ object ArrayBuilder {
         super.++=(xs)
     }
 
-    def clear() { size = 0 }
+    def clear() {
+      size = 0
+    }
 
     def result() = {
       if (capacity != 0 && capacity == size) {
@@ -650,7 +666,9 @@ object ArrayBuilder {
         super.++=(xs)
     }
 
-    def clear() { size = 0 }
+    def clear() {
+      size = 0
+    }
 
     def result() = {
       if (capacity != 0 && capacity == size) {
@@ -685,12 +703,16 @@ object ArrayBuilder {
       this
     }
 
-    def clear() { size = 0 }
+    def clear() {
+      size = 0
+    }
 
     def result() = {
       val ans = new Array[Unit](size)
       var i = 0
-      while (i < size) { ans(i) = (); i += 1 }
+      while (i < size) {
+        ans(i) = (); i += 1
+      }
       ans
     }
 

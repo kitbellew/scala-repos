@@ -6,5 +6,7 @@ object Test extends App {
     Select(Ident(TermName("Macros")), TermName("foo")),
     List(Literal(Constant(40))))
   try cm.mkToolBox().eval(tree)
-  catch { case ex: Throwable => println(ex.getMessage) }
+  catch {
+    case ex: Throwable => println(ex.getMessage)
+  }
 }

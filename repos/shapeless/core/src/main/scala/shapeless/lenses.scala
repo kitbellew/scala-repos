@@ -232,7 +232,9 @@ trait OpticComposer[L, R] {
 }
 
 object OpticComposer {
-  type Aux[L, R, Out0] = OpticComposer[L, R] { type Out = Out0 }
+  type Aux[L, R, Out0] = OpticComposer[L, R] {
+    type Out = Out0
+  }
 
   implicit def composeLL[S, A, T]: Aux[Lens[S, A], Lens[T, S], Lens[T, A]] =
     new OpticComposer[Lens[S, A], Lens[T, S]] {
@@ -265,7 +267,9 @@ trait MkFieldLens[A, K] {
 }
 
 object MkFieldLens {
-  type Aux[A, K, Elem0] = MkFieldLens[A, K] { type Elem = Elem0 }
+  type Aux[A, K, Elem0] = MkFieldLens[A, K] {
+    type Elem = Elem0
+  }
 
   implicit def mkFieldLens[A, K, R <: HList, B](implicit
       mkGen: MkLabelledGenericLens.Aux[A, R],
@@ -282,7 +286,9 @@ trait MkNthFieldLens[A, N <: Nat] {
 }
 
 object MkNthFieldLens {
-  type Aux[A, N <: Nat, Elem0] = MkNthFieldLens[A, N] { type Elem = Elem0 }
+  type Aux[A, N <: Nat, Elem0] = MkNthFieldLens[A, N] {
+    type Elem = Elem0
+  }
 
   implicit def mkGenPNth[A, N <: Nat, R <: HList, B](implicit
       mkGen: MkGenericLens.Aux[A, R],
@@ -311,7 +317,9 @@ trait InferProduct[C <: Coproduct, K] {
 }
 
 object InferProduct {
-  type Aux[C <: Coproduct, K, P] = InferProduct[C, K] { type Prod = P }
+  type Aux[C <: Coproduct, K, P] = InferProduct[C, K] {
+    type Prod = P
+  }
 
   implicit def inferProduct1[P, R <: HList, T <: Coproduct, K](implicit
       gen: LabelledGeneric.Aux[P, R],
@@ -386,7 +394,9 @@ trait MkGenericLens[T] extends Serializable {
 }
 
 object MkGenericLens {
-  type Aux[T, Repr0] = MkGenericLens[T] { type Repr = Repr0 }
+  type Aux[T, Repr0] = MkGenericLens[T] {
+    type Repr = Repr0
+  }
 
   implicit def mkGenericLens[T](implicit gen: Generic[T]): Aux[T, gen.Repr] =
     new MkGenericLens[T] {
@@ -405,7 +415,9 @@ trait MkLabelledGenericLens[T] extends Serializable {
 }
 
 object MkLabelledGenericLens {
-  type Aux[T, Repr0] = MkLabelledGenericLens[T] { type Repr = Repr0 }
+  type Aux[T, Repr0] = MkLabelledGenericLens[T] {
+    type Repr = Repr0
+  }
 
   implicit def mkLabelledGenericLens[T](
       implicit gen: LabelledGeneric[T]): Aux[T, gen.Repr] =
@@ -510,7 +522,9 @@ trait LowPriorityMkPathOptic {
     type Out = Out0; type Elem = E0
   }
 
-  type Aux1[S, P <: HList, Out0] = MkPathOptic[S, P] { type Out = Out0 }
+  type Aux1[S, P <: HList, Out0] = MkPathOptic[S, P] {
+    type Out = Out0
+  }
 
   implicit def mkCoselSelPathOptic[
       S,

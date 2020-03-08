@@ -89,7 +89,9 @@ class ParallelCollectionSplitSuite extends SparkFunSuite with Checkers {
 
   test("zero slices") {
     val data = Array(1, 2, 3)
-    intercept[IllegalArgumentException] { ParallelCollectionRDD.slice(data, 0) }
+    intercept[IllegalArgumentException] {
+      ParallelCollectionRDD.slice(data, 0)
+    }
   }
 
   test("negative number of slices") {

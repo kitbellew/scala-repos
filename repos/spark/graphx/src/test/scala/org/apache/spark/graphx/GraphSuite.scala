@@ -52,8 +52,9 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
 
   test("Graph.fromEdges") {
     withSpark { sc =>
-      val ring =
-        (0L to 100L).zip((1L to 99L) :+ 0L).map { case (a, b) => Edge(a, b, 1) }
+      val ring = (0L to 100L).zip((1L to 99L) :+ 0L).map {
+        case (a, b) => Edge(a, b, 1)
+      }
       val graph = Graph.fromEdges(sc.parallelize(ring), 1.0f)
       assert(graph.edges.count() === ring.size)
     }
@@ -62,8 +63,9 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
   test("Graph.apply") {
     withSpark { sc =>
       val rawEdges = (0L to 98L).zip((1L to 99L) :+ 0L)
-      val edges: RDD[Edge[Int]] =
-        sc.parallelize(rawEdges).map { case (s, t) => Edge(s, t, 1) }
+      val edges: RDD[Edge[Int]] = sc.parallelize(rawEdges).map {
+        case (s, t) => Edge(s, t, 1)
+      }
       val vertices: RDD[(VertexId, Boolean)] =
         sc.parallelize((0L until 10L).map(id => (id, true)))
       val graph = Graph(vertices, edges, false)
@@ -97,7 +99,9 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
       }
       def nonemptyParts(graph: Graph[Int, Int]): RDD[List[Edge[Int]]] = {
         graph.edges.partitionsRDD
-          .mapPartitions { iter => Iterator(iter.next()._2.iterator.toList) }
+          .mapPartitions { iter =>
+            Iterator(iter.next()._2.iterator.toList)
+          }
           .filter(_.nonEmpty)
       }
       val identicalEdges = List((0L, 1L), (0L, 1L))
@@ -350,7 +354,9 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
             List((0: VertexId, x: VertexId), (0: VertexId, x: VertexId))),
           1),
         "v")
-      val star2 = doubleStar.groupEdges { (a, b) => a }
+      val star2 = doubleStar.groupEdges { (a, b) =>
+        a
+      }
       assert(
         star2.edges
           .collect()
@@ -434,8 +440,9 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
     val checkpointDir = Utils.createTempDir()
     withSpark { sc =>
       sc.setCheckpointDir(checkpointDir.getAbsolutePath)
-      val ring =
-        (0L to 100L).zip((1L to 99L) :+ 0L).map { case (a, b) => Edge(a, b, 1) }
+      val ring = (0L to 100L).zip((1L to 99L) :+ 0L).map {
+        case (a, b) => Edge(a, b, 1)
+      }
       val rdd = sc.parallelize(ring)
       val graph = Graph.fromEdges(rdd, 1.0f)
       assert(!graph.isCheckpointed)

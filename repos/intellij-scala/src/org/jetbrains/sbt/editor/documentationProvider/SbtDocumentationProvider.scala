@@ -29,7 +29,9 @@ class SbtDocumentationProvider extends AbstractDocumentationProvider {
       originalElement: PsiElement): String = {
     val scalaDoc = Option(
       scalaDocProvider.getQuickNavigateInfo(element, originalElement))
-    scalaDoc.map { doc => appendToScalaDoc(doc, extractDoc(element)) }.orNull
+    scalaDoc.map { doc =>
+      appendToScalaDoc(doc, extractDoc(element))
+    }.orNull
   }
 
   override def generateDoc(
@@ -37,7 +39,9 @@ class SbtDocumentationProvider extends AbstractDocumentationProvider {
       originalElement: PsiElement): String = {
     val scalaDoc = Option(
       scalaDocProvider.generateDoc(element, originalElement))
-    scalaDoc.map { doc => appendToScalaDoc(doc, extractDoc(element)) }.orNull
+    scalaDoc.map { doc =>
+      appendToScalaDoc(doc, extractDoc(element))
+    }.orNull
   }
 
   private def appendToScalaDoc(scalaDoc: String, sbtDoc: String): String =
@@ -76,7 +80,9 @@ class SbtDocumentationProvider extends AbstractDocumentationProvider {
     Option(settingKey.getNavigationElement)
       .safeMap(_.getParent)
       .safeMap(_.getParent)
-      .collect { case s: ScPatternDefinition => s }
+      .collect {
+        case s: ScPatternDefinition => s
+      }
 
   private def getKeyDefinitionArgs(
       keyDefinition: ScPatternDefinition): Seq[ScExpression] =

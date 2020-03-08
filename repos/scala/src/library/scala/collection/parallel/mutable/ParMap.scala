@@ -76,8 +76,12 @@ object ParMap extends ParMapFactory[ParMap] {
   class WithDefault[K, V](underlying: ParMap[K, V], d: K => V)
       extends scala.collection.parallel.ParMap.WithDefault(underlying, d)
       with ParMap[K, V] {
-    override def +=(kv: (K, V)) = { underlying += kv; this }
-    def -=(key: K) = { underlying -= key; this }
+    override def +=(kv: (K, V)) = {
+      underlying += kv; this
+    }
+    def -=(key: K) = {
+      underlying -= key; this
+    }
     override def empty = new WithDefault(underlying.empty, d)
     override def updated[U >: V](key: K, value: U): WithDefault[K, U] =
       new WithDefault[K, U](underlying.updated[U](key, value), d)

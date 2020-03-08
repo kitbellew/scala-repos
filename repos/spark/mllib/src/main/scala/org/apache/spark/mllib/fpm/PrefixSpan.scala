@@ -145,7 +145,11 @@ class PrefixSpan private (
     val freqItemAndCounts = data
       .flatMap { itemsets =>
         val uniqItems = mutable.Set.empty[Item]
-        itemsets.foreach { _.foreach { item => uniqItems += item } }
+        itemsets.foreach {
+          _.foreach { item =>
+            uniqItems += item
+          }
+        }
         uniqItems.toIterator.map((_, 1L))
       }
       .reduceByKey(_ + _)
@@ -298,7 +302,9 @@ object PrefixSpan extends Logging {
           case ((c0, s0), (c1, s1)) =>
             (c0 + c1, s0 + s1)
         }
-        .filter { case (_, (c, _)) => c >= minCount }
+        .filter {
+          case (_, (c, _)) => c >= minCount
+        }
         .collect()
       val newLargePrefixes = mutable.Map.empty[Int, Prefix]
       freqPrefixes.foreach {
@@ -326,7 +332,9 @@ object PrefixSpan extends Logging {
       val distributedFreqPattern = postfixes
         .flatMap { postfix =>
           bcSmallPrefixes.value.values
-            .map { prefix => (prefix.id, postfix.project(prefix).compressed) }
+            .map { prefix =>
+              (prefix.id, postfix.project(prefix).compressed)
+            }
             .filter(_._2.nonEmpty)
         }
         .groupByKey()

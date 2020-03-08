@@ -485,7 +485,9 @@ private[cluster] final class ClusterDomainEventPublisher
         sendCurrentClusterState(subscriber)
     }
 
-    to foreach { eventStream.subscribe(subscriber, _) }
+    to foreach {
+      eventStream.subscribe(subscriber, _)
+    }
   }
 
   def unsubscribe(subscriber: ActorRef, to: Option[Class[_]]): Unit = to match {

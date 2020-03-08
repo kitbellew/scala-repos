@@ -77,7 +77,9 @@ object Connector {
     }
 
     connectors foreach {
-      _ onSessionEvent { case event => sessionBroker.send(event()).sync() }
+      _ onSessionEvent {
+        case event => sessionBroker.send(event()).sync()
+      }
     }
 
     def apply(): Future[ZooKeeper] = nextConnector().apply()
@@ -85,7 +87,9 @@ object Connector {
     /** Disconnect from all ZooKeeper servers. */
     def release(): Future[Unit] = Future.join {
       log.trace("release")
-      connectors map { _.release() }
+      connectors map {
+        _.release()
+      }
     }
   }
 }

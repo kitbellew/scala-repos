@@ -25,7 +25,9 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
 
   case class TypeFlags(printRep: Boolean)
 
-  def printSymbol(symbol: Symbol) { printSymbol(0, symbol) }
+  def printSymbol(symbol: Symbol) {
+    printSymbol(0, symbol)
+  }
 
   def printSymbolAttributes(s: Symbol, onNewLine: Boolean, indent: => Unit) =
     s match {
@@ -41,7 +43,9 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
   def printSymbol(level: Int, symbol: Symbol) {
     if (!symbol.isLocal &&
         !(symbol.isPrivate && !printPrivates)) {
-      def indent() { for (i <- 1 to level) print("  ") }
+      def indent() {
+        for (i <- 1 to level) print("  ")
+      }
 
       printSymbolAttributes(symbol, true, indent)
       symbol match {
@@ -90,7 +94,9 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
   }
 
   def printWithIndent(level: Int, s: String) {
-    def indent() { for (i <- 1 to level) print("  ") }
+    def indent() {
+      for (i <- 1 to level) print("  ")
+    }
     indent
     print(s)
   }
@@ -224,7 +230,9 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
 
     t match {
       case NullaryMethodType(resType) =>
-        if (printResult) { print(": "); printType(resType) }
+        if (printResult) {
+          print(": "); printType(resType)
+        }
       case mt @ MethodType(resType, paramSymbols) => _pmt(mt)
       case pt @ PolyType(mt, typeParams) => {
         print(typeParamString(typeParams))

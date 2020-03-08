@@ -76,9 +76,13 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
       M point {
         id match {
           case Some(i) =>
-            slices.lift(i + 1) map { s => BlockProjectionData(i + 1, i + 1, s) }
+            slices.lift(i + 1) map { s =>
+              BlockProjectionData(i + 1, i + 1, s)
+            }
           case None =>
-            slices.headOption map { s => BlockProjectionData(0, 0, s) }
+            slices.headOption map { s =>
+              BlockProjectionData(0, 0, s)
+            }
         }
       }
   }
@@ -93,8 +97,12 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
       proj.append(Slice.fromJValues(data.values.toStream))
     }
 
-    def recordCount(implicit M: Monad[M]): M[Long] = M point { proj.length }
-    def projection(implicit M: Monad[M]): M[Projection] = M point { proj }
+    def recordCount(implicit M: Monad[M]): M[Long] = M point {
+      proj.length
+    }
+    def projection(implicit M: Monad[M]): M[Projection] = M point {
+      proj
+    }
     def asByteStream(mimeType: MimeType)(implicit M: Monad[M]) = OptionT {
       M.point {
         table.ColumnarTableModule
@@ -140,7 +148,9 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
                   (ctype, 0L)
               }
               .groupBy(_._1)
-              .map { case (tpe, values) => (tpe, values.map(_._2).sum) }
+              .map {
+                case (tpe, values) => (tpe, values.map(_._2).sum)
+              }
 
             PathStructure(types, columnRefs.map(_.selector))
           }
@@ -201,7 +211,9 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
         )
     }
 
-    def toResource(record: Record): M[Resource] = M point { record.resource }
+    def toResource(record: Record): M[Resource] = M point {
+      record.resource
+    }
 
     def writeAll(events: Seq[(Long, EventMessage)]): IO[PrecogUnit] = {
       def updated(
@@ -232,120 +244,121 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
       }
 
       IO {
-        data =
-          (events groupBy { case (offset, msg) => msg.path }).foldLeft(data) {
-            case (acc, (path, messages)) =>
-              val currentKey = (path, Version.Current)
-              // We can discard the event IDs for the purposes of this class
-              messages.map(_._2).foldLeft(acc) {
-                case (
-                    acc,
-                    IngestMessage(
-                      _,
-                      _,
-                      writeAs,
-                      records,
-                      _,
-                      _,
-                      StreamRef.Append)) =>
-                  updated(
-                    acc,
-                    acc.get(currentKey),
-                    currentKey,
+        data = (events groupBy {
+          case (offset, msg) => msg.path
+        }).foldLeft(data) {
+          case (acc, (path, messages)) =>
+            val currentKey = (path, Version.Current)
+            // We can discard the event IDs for the purposes of this class
+            messages.map(_._2).foldLeft(acc) {
+              case (
+                  acc,
+                  IngestMessage(
+                    _,
+                    _,
                     writeAs,
-                    records.map(_.value))
+                    records,
+                    _,
+                    _,
+                    StreamRef.Append)) =>
+                updated(
+                  acc,
+                  acc.get(currentKey),
+                  currentKey,
+                  writeAs,
+                  records.map(_.value))
 
-                case (
-                    acc,
-                    IngestMessage(
-                      _,
-                      _,
-                      writeAs,
-                      records,
-                      _,
-                      _,
-                      StreamRef.Create(id, _))) =>
-                  val archiveKey = (path, Version.Archived(id))
-                  val appendTo = acc
-                    .get(archiveKey)
-                    .orElse(acc.get(currentKey).filter(_.versionId == id))
-                  updated(
-                    acc,
-                    appendTo,
-                    if (acc.contains(currentKey)) currentKey else archiveKey,
+              case (
+                  acc,
+                  IngestMessage(
+                    _,
+                    _,
                     writeAs,
-                    records.map(_.value))
+                    records,
+                    _,
+                    _,
+                    StreamRef.Create(id, _))) =>
+                val archiveKey = (path, Version.Archived(id))
+                val appendTo = acc
+                  .get(archiveKey)
+                  .orElse(acc.get(currentKey).filter(_.versionId == id))
+                updated(
+                  acc,
+                  appendTo,
+                  if (acc.contains(currentKey)) currentKey else archiveKey,
+                  writeAs,
+                  records.map(_.value))
 
-                case (
-                    acc,
-                    IngestMessage(
-                      _,
-                      _,
-                      writeAs,
-                      records,
-                      _,
-                      _,
-                      StreamRef.Replace(id, _))) =>
-                  val archiveKey = (path, Version.Archived(id))
-                  acc.get(archiveKey).orElse(acc.get(currentKey)) map {
-                    case rec @ JsonRecord(resource, `id`) =>
-                      // append when it is the same id
-                      rec.resource
-                        .append(NIHDB.Batch(0, records.map(_.value)))
-                        .unsafePerformIO
-                      acc + ((if (acc.contains(currentKey)) currentKey
-                              else archiveKey) -> rec)
+              case (
+                  acc,
+                  IngestMessage(
+                    _,
+                    _,
+                    writeAs,
+                    records,
+                    _,
+                    _,
+                    StreamRef.Replace(id, _))) =>
+                val archiveKey = (path, Version.Archived(id))
+                acc.get(archiveKey).orElse(acc.get(currentKey)) map {
+                  case rec @ JsonRecord(resource, `id`) =>
+                    // append when it is the same id
+                    rec.resource
+                      .append(NIHDB.Batch(0, records.map(_.value)))
+                      .unsafePerformIO
+                    acc + ((if (acc.contains(currentKey)) currentKey
+                            else archiveKey) -> rec)
 
-                    case record =>
-                      // replace when id is not recognized, or when record is binary
-                      acc + ((
-                        path,
-                        Version.Archived(
-                          record.versionId)) -> record) + (currentKey -> JsonRecord(
-                        Vector(records.map(_.value): _*),
-                        writeAs,
-                        id))
-                  } getOrElse {
-                    // start a new current version
-                    acc + (currentKey -> JsonRecord(
+                  case record =>
+                    // replace when id is not recognized, or when record is binary
+                    acc + ((
+                      path,
+                      Version.Archived(
+                        record.versionId)) -> record) + (currentKey -> JsonRecord(
                       Vector(records.map(_.value): _*),
                       writeAs,
                       id))
-                  }
+                } getOrElse {
+                  // start a new current version
+                  acc + (currentKey -> JsonRecord(
+                    Vector(records.map(_.value): _*),
+                    writeAs,
+                    id))
+                }
 
-                case (
-                    acc,
-                    StoreFileMessage(
-                      _,
-                      _,
-                      writeAs,
-                      _,
-                      _,
-                      content,
-                      _,
-                      StreamRef.Create(id, _))) =>
-                  sys.error("todo")
+              case (
+                  acc,
+                  StoreFileMessage(
+                    _,
+                    _,
+                    writeAs,
+                    _,
+                    _,
+                    content,
+                    _,
+                    StreamRef.Create(id, _))) =>
+                sys.error("todo")
 
-                case (
-                    acc,
-                    StoreFileMessage(
-                      _,
-                      _,
-                      writeAs,
-                      _,
-                      _,
-                      content,
-                      _,
-                      StreamRef.Replace(id, _))) =>
-                  sys.error("todo")
+              case (
+                  acc,
+                  StoreFileMessage(
+                    _,
+                    _,
+                    writeAs,
+                    _,
+                    _,
+                    content,
+                    _,
+                    StreamRef.Replace(id, _))) =>
+                sys.error("todo")
 
-                case (acc, _: ArchiveMessage) =>
-                  acc ++ acc
-                    .get(currentKey)
-                    .map(record =>
-                      (path, Version.Archived(record.versionId)) -> record)
-              }
-          }
+              case (acc, _: ArchiveMessage) =>
+                acc ++ acc
+                  .get(currentKey)
+                  .map(record =>
+                    (path, Version.Archived(record.versionId)) -> record)
+            }
+        }
       }
     }
 
@@ -361,12 +374,16 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
         data
           .get((path, version))
           .toRightDisjunction(NotFound("No data found for path %s version %s"
-            .format(path.path, version))) traverse { toResource }
+            .format(path.path, version))) traverse {
+          toResource
+        }
       }
     }
 
     private def childMetadata(path: Path): Set[PathMetadata] = {
-      data.keySet.map(_._1) flatMap { _ - path } flatMap { p0 =>
+      data.keySet.map(_._1) flatMap {
+        _ - path
+      } flatMap { p0 =>
         val childPath = path / Path(p0.elements.headOption.toList)
         val isDir = p0.length > 1
         data.get((childPath, Version.Current)) map { record =>
@@ -386,7 +403,9 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
     def findDirectChildren(
         path: Path): EitherT[M, ResourceError, Set[PathMetadata]] = {
       EitherT.right {
-        M point { childMetadata(path) }
+        M point {
+          childMetadata(path)
+        }
       }
     }
 

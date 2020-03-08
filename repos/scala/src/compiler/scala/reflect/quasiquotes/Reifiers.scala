@@ -125,7 +125,9 @@ trait Reifiers { self: Quasiquotes =>
                   // q"$l && $r"
                   Apply(Select(l, nme.ZAND), List(r))
                 }
-                .getOrElse { EmptyTree }
+                .getOrElse {
+                  EmptyTree
+                }
             // cq"$tree if $guard => $succ" :: cq"_ => $fail" :: Nil
             CaseDef(tree, guard, succ) :: CaseDef(
               Ident(nme.WILDCARD),
@@ -361,12 +363,22 @@ trait Reifiers { self: Quasiquotes =>
       case Placeholder(hole: UnapplyHole) => hole.treeNoUnlift
       case FreshName(prefix) if prefix != nme.QUASIQUOTE_NAME_PREFIX =>
         def fresh() = c.freshName(TermName(nme.QUASIQUOTE_NAME_PREFIX))
-        def introduceName() = { val n = fresh(); nameMap(name) += n; n }
+        def introduceName() = {
+          val n = fresh(); nameMap(name) += n; n
+        }
         def result(n: Name) =
           if (isReifyingExpressions) Ident(n) else Bind(n, Ident(nme.WILDCARD))
         if (isReifyingPatterns) result(introduceName())
         else
-          result(nameMap.get(name).map { _.head }.getOrElse { introduceName() })
+          result(
+            nameMap
+              .get(name)
+              .map {
+                _.head
+              }
+              .getOrElse {
+                introduceName()
+              })
       case _ =>
         super.reifyName(name)
     }

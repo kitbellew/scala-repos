@@ -203,7 +203,9 @@ class TypedActorDocSpec extends AkkaSpec(Map("akka.loglevel" -> "INFO")) {
       TypedActor(system).typedActorOf(TypedProps[Named]())
 
     // prepare routees
-    val routees: List[HasName] = List.fill(5) { namedActor() }
+    val routees: List[HasName] = List.fill(5) {
+      namedActor()
+    }
     val routeePaths = routees map { r =>
       TypedActor(system).getActorRefFor(r).path.toStringWithoutAddress
     }
@@ -221,7 +223,9 @@ class TypedActorDocSpec extends AkkaSpec(Map("akka.loglevel" -> "INFO")) {
     println("actor was: " + typedRouter.name()) // name-164
     //#typed-router
 
-    routees foreach { TypedActor(system).poisonPill(_) }
+    routees foreach {
+      TypedActor(system).poisonPill(_)
+    }
     TypedActor(system).poisonPill(router)
   }
 }

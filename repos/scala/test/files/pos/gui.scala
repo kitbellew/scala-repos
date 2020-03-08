@@ -39,13 +39,17 @@ object GUI {
   trait Glyph {
     def getRect: Geom.Rectangle
     def setLoc(p: Geom.Point): Unit
-    def draw() { Console.println("draw " + this) }
+    def draw() {
+      Console.println("draw " + this)
+    }
   }
 
   class Label(scr: Screen, p: Geom.Point, name: String) extends Glyph {
     private var origin = p
     def getRect = Geom.Rectangle(origin, origin).inset(10);
-    def setLoc(p: Geom.Point) = { origin = p }
+    def setLoc(p: Geom.Point) = {
+      origin = p
+    }
   }
 
   trait Ctl {
@@ -73,7 +77,9 @@ object GUI {
     def getRect = label.getRect.inset(-2);
 
     /* Ctl methods */
-    def enable(b: Boolean): this.type = { enabled = b; draw(); this }
+    def enable(b: Boolean): this.type = {
+      enabled = b; draw(); this
+    }
     def getGlyph = label
     final def mouseDown(p: Geom.Point) {
       if (enabled) doit() else Console.println("button is disabled");
@@ -86,12 +92,16 @@ object GUI {
 object GUIClient {
 
   class App {
-    def quit() { Console.println("application exited") }
+    def quit() {
+      Console.println("application exited")
+    }
   }
 
   class QuitButton(scr: Screen, p: Geom.Point, name: String, a: App)
       extends GUI.Button(scr, p, name) {
-    def doit() { a.quit() }
+    def doit() {
+      a.quit()
+    }
   }
 
   def main(args: Array[String]) {

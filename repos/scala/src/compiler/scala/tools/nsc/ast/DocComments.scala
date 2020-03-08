@@ -429,15 +429,23 @@ trait DocComments { self: Global =>
     lazy val (template, defines, useCases) = {
       val sections = tagIndex(raw)
 
-      val defines = sections filter { startsWithTag(raw, _, "@define") }
-      val usecases = sections filter { startsWithTag(raw, _, "@usecase") }
+      val defines = sections filter {
+        startsWithTag(raw, _, "@define")
+      }
+      val usecases = sections filter {
+        startsWithTag(raw, _, "@usecase")
+      }
 
       val end = startTag(raw, (defines ::: usecases).sortBy(_._1))
 
       (
         if (end == raw.length - 2) raw else raw.substring(0, end) + "*/",
-        defines map { case (start, end)  => raw.substring(start, end) },
-        usecases map { case (start, end) => decomposeUseCase(start, end) })
+        defines map {
+          case (start, end) => raw.substring(start, end)
+        },
+        usecases map {
+          case (start, end) => decomposeUseCase(start, end)
+        })
     }
 
     private def decomposeUseCase(start: Int, end: Int): UseCase = {

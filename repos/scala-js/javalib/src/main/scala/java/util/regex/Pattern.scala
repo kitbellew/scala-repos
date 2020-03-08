@@ -147,10 +147,14 @@ object Pattern {
     if (m != null) {
       val newPat = pat.substring(m(0).get.length) // cut off the flag specifiers
       val flags1 = m(1).fold(flags0) { chars =>
-        chars.foldLeft(flags0) { (f, c) => f | charToFlag(c) }
+        chars.foldLeft(flags0) { (f, c) =>
+          f | charToFlag(c)
+        }
       }
       val flags2 = m(2).fold(flags1) { chars =>
-        chars.foldLeft(flags1) { (f, c) => f & ~charToFlag(c) }
+        chars.foldLeft(flags1) { (f, c) =>
+          f & ~charToFlag(c)
+        }
       }
       Some((newPat, flags2))
     } else

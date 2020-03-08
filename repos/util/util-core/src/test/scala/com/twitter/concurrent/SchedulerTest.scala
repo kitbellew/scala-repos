@@ -72,10 +72,14 @@ class ThreadPoolSchedulerTest
     val p = new Promise[Unit]
     val scheduler = new ThreadPoolScheduler("test")
     scheduler.submit(new Runnable {
-      def run() { p.setDone() }
+      def run() {
+        p.setDone()
+      }
     })
 
-    eventually { p.isDone }
+    eventually {
+      p.isDone
+    }
 
     scheduler.shutdown()
   }

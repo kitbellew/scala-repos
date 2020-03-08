@@ -490,7 +490,9 @@ private[io] abstract class TcpConnection(
         if (next ne EmptyPendingWrite)
           info.registration.enableInterest(OP_WRITE)
         next
-      } catch { case e: IOException ⇒ handleError(info.handler, e); this }
+      } catch {
+        case e: IOException ⇒ handleError(info.handler, e); this
+      }
     }
 
     def release(): Unit = bufferPool.release(buffer)

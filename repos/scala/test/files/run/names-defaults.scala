@@ -1,7 +1,9 @@
 import scala.language.{higherKinds, existentials}
 
 object Test extends App {
-  def get[T](x: T) = { println("get: " + x); x }
+  def get[T](x: T) = {
+    println("get: " + x); x
+  }
 
   // TESTS
 
@@ -24,7 +26,9 @@ object Test extends App {
 
   // anonymous functions
   {
-    def doMod(f: Int => Unit) { f(20) }
+    def doMod(f: Int => Unit) {
+      f(20)
+    }
     var var1 = 0
     doMod(var1 = _)
     println(var1)
@@ -33,7 +37,9 @@ object Test extends App {
     println(var1)
 
     var var2 = 0
-    def delay(var2: => Int) = { var2 }
+    def delay(var2: => Int) = {
+      var2
+    }
     println(delay(var2 = 40))
   }
   val f1: (Int, String) => Unit = test1(_, _); f1(6, "~")
@@ -44,7 +50,9 @@ object Test extends App {
   val b = new Base
   b.test1(b = "nix")(982)(f = 0)
   val s = new Sub1
-  s.test1(a = new { override def toString = "bla" })(m = 0)()
+  s.test1(a = new {
+    override def toString = "bla"
+  })(m = 0)()
 
   // defaults are chosen dynamically
   val b2: Base = new Sub1
@@ -130,7 +138,9 @@ object Test extends App {
   println(bn2(b = get(2), a = get(1))()) // should get: 1, 2, 2
 
   def bn3(a: => Int = get(10)) = 0
-  def bn4(a: => Int = get(20)) = { a; a }
+  def bn4(a: => Int = get(20)) = {
+    a; a
+  }
   println(bn3())
   println(bn4())
   println(bn4(a = 0))
@@ -147,8 +157,11 @@ object Test extends App {
   println(a2.print)
   val b1 = new B("dklfj")(e = "nixda")
   println(b1.printB)
-  val c1 = new C(a = "dlkf", c = new { override def toString() = "struct" })(
-    e = "???")
+  val c1 = new C(
+    a = "dlkf",
+    c = new {
+      override def toString() = "struct"
+    })(e = "???")
   println(c1.print)
   val c2 = C("dflkj", c = Some(209): Option[Int])(None, "!!")
   println(c2.print)
@@ -180,11 +193,15 @@ object Test extends App {
   var argName = 1
   test5(argName = (argName = 2))
   println(argName) // should be 2
-  test5({ argName = 3 })
+  test5({
+    argName = 3
+  })
   println(argName) // should be 3
   test5((argName = 4))
   println(argName) // should be 4
-  test5 { argName = 5 }
+  test5 {
+    argName = 5
+  }
   println(argName) // should be 5
   val a: Unit =
     test1(
@@ -198,8 +215,12 @@ object Test extends App {
   println(b11.copy()(2))
 
   // bug #2057
-  class O { class I(val x: Int = 1) }
-  class U extends O { val f = new I() }
+  class O {
+    class I(val x: Int = 1)
+  }
+  class U extends O {
+    val f = new I()
+  }
   val u1 = new U
   println(u1.f.x)
 
@@ -246,28 +267,46 @@ object Test extends App {
   println(test10())
 
   // some complicated type which mentions T
-  def test11[T[P]](x: T[T[List[T[X forSome { type X }]]]] = List(1, 2)) = x
+  def test11[T[P]](x: T[T[List[T[X forSome {
+    type X
+  }]]]] = List(1, 2)) = x
   // (cannot call f using the default, List(1,2) doesn't match the param type)
 
   def multinest = {
-    def bar(x: Int = 1) = { def bar(x: Int = 2) = x; bar() + x }; bar()
+    def bar(x: Int = 1) = {
+      def bar(x: Int = 2) = x; bar() + x
+    }; bar()
   }
   println(multinest)
 
   // #2290
-  def spawn(a: Int, b: => Unit) = { () }
+  def spawn(a: Int, b: => Unit) = {
+    ()
+  }
   def t {
-    spawn(b = { val ttt = 1; ttt }, a = 0)
+    spawn(
+      b = {
+        val ttt = 1; ttt
+      },
+      a = 0)
   }
 
   // #2382
-  class A2382[+T](x: T => Int) { def foo(a: T => Int = x) = 0 }
+  class A2382[+T](x: T => Int) {
+    def foo(a: T => Int = x) = 0
+  }
 
   // #2390
-  case class A2390[T](x: Int) { def copy(a: Int)(b: Int = 0) = 0 }
+  case class A2390[T](x: Int) {
+    def copy(a: Int)(b: Int = 0) = 0
+  }
 
   // #2489
-  class A2489 { def foo { def bar(a: Int = 1) = a; bar(); val u = 0 } }
+  class A2489 {
+    def foo {
+      def bar(a: Int = 1) = a; bar(); val u = 0
+    }
+  }
   class A2489x2 {
     def foo {
       val v = 10; def bar(a: Int = 1, b: Int = 2) = a; bar(); val u = 0
@@ -285,7 +324,9 @@ object Test extends App {
 
   // #2784
   class Test2784 {
-    object t { def f(x: Int) = x }
+    object t {
+      def f(x: Int) = x
+    }
     val one = t f (x = 1)
   }
 
@@ -323,9 +364,13 @@ object Test extends App {
   }
 
   // #3344
-  def m3344_1 = { case class C(x: Int); C(1).copy(2).x }
+  def m3344_1 = {
+    case class C(x: Int); C(1).copy(2).x
+  }
   m3344_1
-  def m3344_2 = { class C(val x: Int = 1); new C().x }
+  def m3344_2 = {
+    class C(val x: Int = 1); new C().x
+  }
   m3344_2
 
   // #3338
@@ -409,7 +454,9 @@ object Test extends App {
     inner(c = "/")
   }
   def test5(argName: Unit) = println("test5")
-  def test6(x: Int) = { () => x }
+  def test6(x: Int) = { () =>
+    x
+  }
   def test7(s: String) = List(1).foreach(_ => println(s))
 
   def test8(x: Int = 1)(implicit y: Int, z: String = "kldfj") = z + x + y
@@ -434,7 +481,9 @@ class A[T <: String, U](a: Int = 0, b: T)(c: String = b, d: Int) {
   def print = c + a + b + d
 }
 class B[T](a: T, b: Int = 1)(c: T = a, e: String = "dklsf")
-    extends A(5, e)("dlkd", 10) { def printB = super.print + e + a + b + c }
+    extends A(5, e)("dlkd", 10) {
+  def printB = super.print + e + a + b + c
+}
 
 case class C[U](a: String, b: Int = 234, c: U)(d: U = c, e: String = "dlkfj") {
   def print = toString + d + e
@@ -498,5 +547,9 @@ class B5 extends A5(y = 20, x = 2)() {
 }
 
 // overriding default can be less specific (but has to conform to argument type!)
-class A6 { def foo(a: Object = "dlkf") = 0 }
-class B6 extends A6 { override def foo(a: Object = new Object) = 1 }
+class A6 {
+  def foo(a: Object = "dlkf") = 0
+}
+class B6 extends A6 {
+  override def foo(a: Object = new Object) = 1
+}

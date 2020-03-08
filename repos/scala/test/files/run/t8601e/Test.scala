@@ -1,5 +1,7 @@
 class C {
-  def foo: Unit = { StaticInit.fld }
+  def foo: Unit = {
+    StaticInit.fld
+  }
 }
 
 object Test extends App {

@@ -18,5 +18,7 @@ object Test extends App {
       List(Literal(Constant("5")))))
   val tree = Apply(Select(q, TermName("map")), List(fn))
   try cm.mkToolBox().eval(tree)
-  catch { case ex: Throwable => println(ex.getMessage) }
+  catch {
+    case ex: Throwable => println(ex.getMessage)
+  }
 }

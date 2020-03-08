@@ -32,7 +32,9 @@ class ServerDestTracingProxy[Req, Rep](self: ServiceFactory[Req, Rep])
       }
     }
 
-    self(conn) map { filter andThen _ }
+    self(conn) map {
+      filter andThen _
+    }
   }
 }
 

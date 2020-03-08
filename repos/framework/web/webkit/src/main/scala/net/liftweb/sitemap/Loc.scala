@@ -117,10 +117,14 @@ trait Loc[T] {
     Helpers.appendQueryParameters(in, queryParameters(what))
 
   private lazy val addlQueryParams: List[() => List[(String, String)]] =
-    params.collect { case lp: Loc.QueryParameters => lp.f }
+    params.collect {
+      case lp: Loc.QueryParameters => lp.f
+    }
 
   private lazy val calcQueryParams: List[Box[T] => List[(String, String)]] =
-    params.collect { case lp: Loc.LocQueryParameters[T] => lp.f }
+    params.collect {
+      case lp: Loc.LocQueryParameters[T] => lp.f
+    }
 
   /**
     * The current value of the cell: overrideValue or requestValue.is or defaultValue oe paramValue
@@ -273,7 +277,9 @@ trait Loc[T] {
     */
   lazy val calcSnippets: SnippetTest =
     allParams
-      .collect { case v: Loc.ValueSnippets[T] => v.snippets }
+      .collect {
+        case v: Loc.ValueSnippets[T] => v.snippets
+      }
       .reduceLeftOption(_ orElse _)
       .getOrElse(Map.empty)
 
@@ -751,7 +757,9 @@ object Loc {
       */
     def func: NodeSeq => NodeSeq = _func
 
-    def snippets = { case (`name`, _) => func }
+    def snippets = {
+      case (`name`, _) => func
+    }
   }
 
   object Snippet {

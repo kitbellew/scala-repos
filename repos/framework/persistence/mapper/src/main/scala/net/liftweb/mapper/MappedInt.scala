@@ -62,7 +62,9 @@ abstract class MappedEnum[T <: Mapper[T], ENUM <: Enumeration](
     * Get the source field metadata for the field
     * @return the source field metadata for the field
     */
-  def sourceInfoMetadata(): SourceFieldMetadata { type ST = ENUM#Value } =
+  def sourceInfoMetadata(): SourceFieldMetadata {
+    type ST = ENUM#Value
+  } =
     SourceFieldMetadataRep(
       name,
       manifest,
@@ -211,7 +213,9 @@ abstract class MappedEnum[T <: Mapper[T], ENUM <: Enumeration](
       doField(
         inst,
         accessor,
-        { case f: MappedEnum[T, ENUM] => f.st(defaultValue) })
+        {
+          case f: MappedEnum[T, ENUM] => f.st(defaultValue)
+        })
 
   /**
     * Given the driver type, return the string required to create the column in the database
@@ -262,7 +266,9 @@ abstract class MappedIntIndex[T <: Mapper[T]](owner: T)
 
   def defined_? = i_is_! != defaultValue
 
-  override def dbIndexFieldIndicatesSaved_? = { i_is_! != defaultValue }
+  override def dbIndexFieldIndicatesSaved_? = {
+    i_is_! != defaultValue
+  }
 
   def makeKeyJDBCFriendly(in: Int) = new java.lang.Integer(in)
 
@@ -323,7 +329,9 @@ abstract class MappedInt[T <: Mapper[T]](val fieldOwner: T)
     * Get the source field metadata for the field
     * @return the source field metadata for the field
     */
-  def sourceInfoMetadata(): SourceFieldMetadata { type ST = Int } =
+  def sourceInfoMetadata(): SourceFieldMetadata {
+    type ST = Int
+  } =
     SourceFieldMetadataRep(
       name,
       manifest,
@@ -424,7 +432,12 @@ abstract class MappedInt[T <: Mapper[T]](val fieldOwner: T)
       v: AnyRef,
       columnName: String): (T, AnyRef) => Unit =
     (inst, v) =>
-      doField(inst, accessor, { case f: MappedInt[T] => f.st(toInt(v)) })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedInt[T] => f.st(toInt(v))
+        })
 
   def buildSetLongValue(
       accessor: Method,
@@ -433,19 +446,31 @@ abstract class MappedInt[T <: Mapper[T]](val fieldOwner: T)
       doField(
         inst,
         accessor,
-        { case f: MappedInt[T] => f.st(if (isNull) 0 else v.toInt) })
+        {
+          case f: MappedInt[T] => f.st(if (isNull) 0 else v.toInt)
+        })
 
   def buildSetStringValue(
       accessor: Method,
       columnName: String): (T, String) => Unit =
     (inst, v) =>
-      doField(inst, accessor, { case f: MappedInt[T] => f.st(toInt(v)) })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedInt[T] => f.st(toInt(v))
+        })
 
   def buildSetDateValue(
       accessor: Method,
       columnName: String): (T, Date) => Unit =
     (inst, v) =>
-      doField(inst, accessor, { case f: MappedInt[T] => f.st(toInt(v)) })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedInt[T] => f.st(toInt(v))
+        })
 
   def buildSetBooleanValue(
       accessor: Method,
@@ -454,7 +479,9 @@ abstract class MappedInt[T <: Mapper[T]](val fieldOwner: T)
       doField(
         inst,
         accessor,
-        { case f: MappedInt[T] => f.st(if (isNull || !v) 0 else 1) })
+        {
+          case f: MappedInt[T] => f.st(if (isNull || !v) 0 else 1)
+        })
 
   /**
     * Given the driver type, return the string required to create the column in the database

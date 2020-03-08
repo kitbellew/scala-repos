@@ -45,6 +45,8 @@ class SchedulerActor(scheduler: Scheduler) extends Actor with Stash {
     }
 
   override def postStop(): Unit = {
-    driverOpt.foreach { driver => scheduler.disconnected(driver) }
+    driverOpt.foreach { driver =>
+      scheduler.disconnected(driver)
+    }
   }
 }

@@ -24,7 +24,9 @@ private final class Socket(
 
     case Socket.Reload =>
       getChallenge(challengeId) foreach {
-        _ foreach { challenge => notifyVersion("reload", JsNull, ()) }
+        _ foreach { challenge =>
+          notifyVersion("reload", JsNull, ())
+        }
       }
 
     case PingVersion(uid, v) => {

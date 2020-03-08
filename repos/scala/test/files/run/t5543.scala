@@ -33,7 +33,9 @@ object T {
   override def toString = "T"
 
   // `this` refers to T
-  class C(val x: Any = { println(this); this }) { // prints T
+  class C(val x: Any = {
+    println(this); this
+  }) { // prints T
     println(this) // prints C
     override def toString() = "C"
   }
@@ -41,7 +43,12 @@ object T {
   class D(val x: Any) {
     override def toString() = "D"
     // `this` refers again to T
-    def this(a: Int, b: Int, c: Any = { println(this); this }) {
+    def this(
+        a: Int,
+        b: Int,
+        c: Any = {
+          println(this); this
+        }) {
       this(c); println(this)
     } // prints T, then prints D
   }

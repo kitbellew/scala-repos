@@ -19,7 +19,12 @@ object HoconPsiElementFactory {
         HoconFileType,
         text)
       .findElementAt(offset)
-    Iterator.iterate(element)(_.getParent).collectFirst({ case t: T => t }).get
+    Iterator
+      .iterate(element)(_.getParent)
+      .collectFirst({
+        case t: T => t
+      })
+      .get
   }
 
   def createStringValue(contents: String, manager: PsiManager): HStringValue =

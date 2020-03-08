@@ -97,7 +97,9 @@ final class FastaOutputStream(in: OutputStream)
     val iub: Array[Byte] = new Array('z'.toByte)
 
     for (indexValue <- code zip comp)
-      indexValue match { case (i, v) => iub(i) = v }
+      indexValue match {
+        case (i, v) => iub(i) = v
+      }
 
     iub
   }
@@ -132,12 +134,15 @@ final class FastaOutputStream(in: OutputStream)
           inplaceComplementReverse(line)
 
           if (isSplitLine) {
-            if (isFirstLine) { write(line); isFirstLine = false }
-            else {
+            if (isFirstLine) {
+              write(line); isFirstLine = false
+            } else {
               write(line, 0, LineLength - k); write(nl);
               write(line, LineLength - k, k)
             }
-          } else { write(line); write(nl) }
+          } else {
+            write(line); write(nl)
+          }
         }
 
         if (isSplitLine && !isFirstLine) write(nl)

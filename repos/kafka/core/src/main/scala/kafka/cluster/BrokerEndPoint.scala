@@ -34,7 +34,9 @@ object BrokerEndPoint {
     connectionString match {
       case uriParseExp(host, port) =>
         try Some(host, port.toInt)
-        catch { case e: NumberFormatException => None }
+        catch {
+          case e: NumberFormatException => None
+        }
       case _ => None
     }
   }
@@ -47,7 +49,9 @@ object BrokerEndPoint {
       brokerId: Int,
       connectionString: String): BrokerEndPoint = {
     parseHostPort(connectionString)
-      .map { case (host, port) => new BrokerEndPoint(brokerId, host, port) }
+      .map {
+        case (host, port) => new BrokerEndPoint(brokerId, host, port)
+      }
       .getOrElse {
         throw new KafkaException(
           "Unable to parse " + connectionString + " to a broker endpoint")

@@ -1,12 +1,24 @@
 trait C {}
 
 class A {
-  def foo: AnyRef { def bar: String } = new AnyRef { def bar = 42 }
-  def foo2: AnyRef { def bar: String } = new AnyRef { def bar = "abc" }
-  def foo3: AnyRef { def bar(x: Int): Int } = new AnyRef {
+  def foo: AnyRef {
+    def bar: String
+  } = new AnyRef {
+    def bar = 42
+  }
+  def foo2: AnyRef {
+    def bar: String
+  } = new AnyRef {
+    def bar = "abc"
+  }
+  def foo3: AnyRef {
+    def bar(x: Int): Int
+  } = new AnyRef {
     def bar(x: Int) = "abc"
   }
-  def foo4: C { def bar(x: Int): Int; def quux(x: Int): Int } = new C {
+  def foo4: C {
+    def bar(x: Int): Int; def quux(x: Int): Int
+  } = new C {
     def bar(x: Int) = 5
   }
 }

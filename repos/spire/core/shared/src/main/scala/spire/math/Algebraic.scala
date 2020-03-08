@@ -665,7 +665,9 @@ object Algebraic extends AlgebraicInstances {
       }
       if (cachedDegreeBound == 0L) {
         cachedDegreeBound = radicals.foldLeft(1L) { (acc, kroot) =>
-          checked { acc * kroot.k }
+          checked {
+            acc * kroot.k
+          }
         }
       }
       radicals

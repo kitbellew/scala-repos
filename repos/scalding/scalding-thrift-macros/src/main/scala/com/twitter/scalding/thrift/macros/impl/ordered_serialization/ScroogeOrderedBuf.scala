@@ -56,7 +56,9 @@ object ScroogeOrderedBuf {
     val fieldNames: List[String] =
       companionSymbol.asModule.moduleClass.asType.toType.declarations
         .filter(_.name.decoded.endsWith("Field "))
-        .collect { case s: TermSymbol => s }
+        .collect {
+          case s: TermSymbol => s
+        }
         .filter(_.isStatic)
         .filter(_.isVal)
         .map { t =>
@@ -69,7 +71,9 @@ object ScroogeOrderedBuf {
 
     val elementData: List[(c.universe.Type, TermName, TreeOrderedBuf[c.type])] =
       outerType.declarations
-        .collect { case m: MethodSymbol => m }
+        .collect {
+          case m: MethodSymbol => m
+        }
         .filter(m =>
           fieldNames.contains(m.name.toTermName.toString.toLowerCase))
         .map { accessorMethod =>

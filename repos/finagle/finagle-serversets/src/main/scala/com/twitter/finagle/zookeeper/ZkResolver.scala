@@ -114,7 +114,9 @@ class ZkResolver(factory: ZkClientFactory) extends Resolver {
         case Some(id) => {
           case inst if inst.isSetShard && inst.shard == id => inst
         }
-        case None => { case x => x }
+        case None => {
+          case x => x
+        }
       }
 
     val toAddress: Endpoint => Address = (ep: Endpoint) =>
@@ -144,7 +146,9 @@ class ZkResolver(factory: ZkClientFactory) extends Resolver {
       DefaultStatsReceiver.scope("zkGroup"))
 
     val v = Var[Addr](Addr.Pending)
-    stable foreach { newAddr => v() = newAddr }
+    stable foreach { newAddr =>
+      v() = newAddr
+    }
 
     v
   }

@@ -5,7 +5,9 @@ object r {
   class A
   class B
   class List[+A]
-  object List { def apply[A](xs: A*): List[A] = new List[A] }
+  object List {
+    def apply[A](xs: A*): List[A] = new List[A]
+  }
   object Nil extends List[Nothing]
 
   trait OuterP[A] {
@@ -16,8 +18,12 @@ object r {
     trait Inner
     trait InnerP[B]
   }
-  object Un { def unapply(x: Any) = Some(5) }
-  object UnSeq { def unapplySeq(x: Any) = Some(Seq(5)) }
+  object Un {
+    def unapply(x: Any) = Some(5)
+  }
+  object UnSeq {
+    def unapplySeq(x: Any) = Some(Seq(5))
+  }
   class C[T]
   class D
   trait E
@@ -33,44 +39,124 @@ object s {
   trait NN extends SN {
     def act[T](expr: Expr[T]): Unit
 
-    act(reify { s /* Ident */ })
-    act(reify { r.List /* Select */ })
-    act(reify { List() /* Apply */ })
-    act(reify { List(1) /* Literal */ })
-    act(reify { List[Int]() /* TypeApply */ })
-    act(reify { 1: Int /* Typed */ })
-    act(reify { null: List[Int] /* AppliedTypeTree */ })
-    act(reify { (); () /* Block */ })
-    act(reify { val x: Int = 0 /* ValDef */ })
-    act(reify { val x = 0 /* TypeTree */ })
-    act(reify { if (true) () /* If */ })
-    act(reify { def f {} /* DefDef */ })
-    act(reify { def m = super.q /* Super */ })
-    act(reify { trait A /* ClassDef Template */ })
-    act(reify { def f(x: Any) {} /* EmptyTree */ })
-    act(reify { null: D with E /* CompoundTypeTree */ })
-    act(reify { type T = Int /* TypeDef */ })
-    act(reify { type CC[T <: D] = C[T] /* TypeBoundsTree */ })
+    act(reify {
+      s /* Ident */
+    })
+    act(reify {
+      r.List /* Select */
+    })
+    act(reify {
+      List() /* Apply */
+    })
+    act(reify {
+      List(1) /* Literal */
+    })
+    act(reify {
+      List[Int]() /* TypeApply */
+    })
+    act(reify {
+      1: Int /* Typed */
+    })
+    act(reify {
+      null: List[Int] /* AppliedTypeTree */
+    })
+    act(reify {
+      (); () /* Block */
+    })
+    act(reify {
+      val x: Int = 0 /* ValDef */
+    })
+    act(reify {
+      val x = 0 /* TypeTree */
+    })
+    act(reify {
+      if (true) () /* If */
+    })
+    act(reify {
+      def f {} /* DefDef */
+    })
+    act(reify {
+      def m = super.q /* Super */
+    })
+    act(reify {
+      trait A /* ClassDef Template */
+    })
+    act(reify {
+      def f(x: Any) {} /* EmptyTree */
+    })
+    act(reify {
+      null: D with E /* CompoundTypeTree */
+    })
+    act(reify {
+      type T = Int /* TypeDef */
+    })
+    act(reify {
+      type CC[T <: D] = C[T] /* TypeBoundsTree */
+    })
     act(reify {
       try 0
       finally println("") /* Try */
     })
-    act(reify { (x: Int) => x /* Function */ })
-    act(reify { var v = 1; v = 2 /* Assign */ })
-    act(reify { class A() { def this(x: A) = this() } /* This */ })
-    act(reify { new List[Int] /* New */ })
-    act(reify { 0: @unchecked /* Annotated */ })
-    act(reify { null: Outer#Inner /* SelectFromTypeTree */ })
-    act(reify { null: Nil.type /* SingletonTypeTree */ })
-    act(reify { null: (T forSome { type T }) /* ExistentialTypeTree */ })
-    act(reify { import r.{A, B => C}; /* Import */ })
-    act(reify { def f: Int = return 0 /* Return */ })
-    act(reify { object x /* ModuleDef */ })
-    act(reify { throw new java.lang.Exception /* Throw */ })
-    act(reify { 0 match { case _            => 0 } /* Match CaseDef */ })
-    act(reify { 0 match { case 1 | 2        => 0 } /* Alternative */ })
-    act(reify { q match { case x @ List     => 0 } /* Bind */ })
-    act(reify { q match { case UnSeq(1, _*) => 0 } /* Star */ })
+    act(reify { (x: Int) =>
+      x /* Function */
+    })
+    act(reify {
+      var v = 1; v = 2 /* Assign */
+    })
+    act(reify {
+      class A() {
+        def this(x: A) = this()
+      } /* This */
+    })
+    act(reify {
+      new List[Int] /* New */
+    })
+    act(reify {
+      0: @unchecked /* Annotated */
+    })
+    act(reify {
+      null: Outer#Inner /* SelectFromTypeTree */
+    })
+    act(reify {
+      null: Nil.type /* SingletonTypeTree */
+    })
+    act(reify {
+      null: (T forSome {
+        type T
+      }) /* ExistentialTypeTree */
+    })
+    act(reify {
+      import r.{A, B => C}; /* Import */
+    })
+    act(reify {
+      def f: Int = return 0 /* Return */
+    })
+    act(reify {
+      object x /* ModuleDef */
+    })
+    act(reify {
+      throw new java.lang.Exception /* Throw */
+    })
+    act(reify {
+      0 match {
+        case _ => 0
+      } /* Match CaseDef */
+    })
+    act(reify {
+      0 match {
+        case 1 | 2 => 0
+      } /* Alternative */
+    })
+    act(reify {
+      q match {
+        case x @ List => 0
+      } /* Bind */
+    })
+    act(reify {
+      q match {
+        case UnSeq(1, _*) => 0
+      } /* Star */
+    })
 
     // ``unexpected: bound type that doesn't have a tpe: Ident(newTypeName("Int"))''
     // act(reify { r.List[T forSome { type T <: Int }]() })    // Was crashing , no longer

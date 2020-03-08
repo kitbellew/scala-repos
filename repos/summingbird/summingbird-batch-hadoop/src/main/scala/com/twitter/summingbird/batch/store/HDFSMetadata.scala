@@ -65,7 +65,9 @@ private[summingbird] object HDFSMetadata {
   /** Get from the most recent version */
   def get[T: JsonNodeInjection](conf: Configuration, path: String): Option[T] =
     apply(conf, path).mostRecentVersion
-      .flatMap { _.get[T].toOption }
+      .flatMap {
+        _.get[T].toOption
+      }
 
   /** Put to the most recent version */
   def put[T: JsonNodeInjection](
@@ -124,7 +126,9 @@ class HDFSMetadata(conf: Configuration, rootPath: String) {
     */
   def versions: Iterable[Long] =
     versionedStore.getAllVersions.asScala.toList.sorted.reverse
-      .map { _.longValue }
+      .map {
+        _.longValue
+      }
 
   /** Refer to a specific version, even if it does not exist on disk */
   def apply(version: Long): HDFSVersionMetadata =
@@ -132,7 +136,13 @@ class HDFSMetadata(conf: Configuration, rootPath: String) {
 
   /** Get a version's metadata IF it exists on disk */
   def get(version: Long): Option[HDFSVersionMetadata] =
-    versions.find { _ == version }.map { apply(_) }
+    versions
+      .find {
+        _ == version
+      }
+      .map {
+        apply(_)
+      }
 }
 
 /**
@@ -155,7 +165,9 @@ private[summingbird] class HDFSVersionMetadata private[store] (
     * get an item from the metadata file. If there is any failure, you get None.
     */
   def get[T: JsonNodeInjection]: Try[T] =
-    getString.flatMap { JsonInjection.fromString[T](_) }
+    getString.flatMap {
+      JsonInjection.fromString[T](_)
+    }
 
   private def putString(str: String) {
     val os = new DataOutputStream(getFS.create(path))
@@ -166,7 +178,9 @@ private[summingbird] class HDFSVersionMetadata private[store] (
   /** Put a new meta-data file, or overwrite on HDFS */
   def put[T: JsonNodeInjection](obj: Option[T]) = putString {
     obj
-      .map { JsonInjection.toString[T].apply(_) }
+      .map {
+        JsonInjection.toString[T].apply(_)
+      }
       .getOrElse("")
   }
 }

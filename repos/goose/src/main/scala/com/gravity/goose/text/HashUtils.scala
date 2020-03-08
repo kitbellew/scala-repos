@@ -32,7 +32,13 @@ object HashUtils {
     md5.reset()
     md5.update(s.getBytes)
 
-    val result = md5.digest().map(0xFF & _).map { "%02x".format(_) }.mkString
+    val result = md5
+      .digest()
+      .map(0xFF & _)
+      .map {
+        "%02x".format(_)
+      }
+      .mkString
 
     result
   }

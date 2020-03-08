@@ -101,7 +101,9 @@ private[scala] trait JavaMirrors
     // the same thing is done by the `missingHook` below
     override def staticPackage(fullname: String): ModuleSymbol =
       try super.staticPackage(fullname)
-      catch { case _: ScalaReflectionException => makeScalaPackage(fullname) }
+      catch {
+        case _: ScalaReflectionException => makeScalaPackage(fullname)
+      }
 
 // ----------- Caching ------------------------------------------------------------------
 
@@ -181,10 +183,18 @@ private[scala] trait JavaMirrors
     private object toAnnotArg {
       val StringClass = classOf[String]
       val ClassClass = classOf[jClass[_]]
-      object PrimitiveClass { def unapply(x: jClass[_]) = x.isPrimitive }
-      object EnumClass { def unapply(x: jClass[_]) = x.isEnum }
-      object ArrayClass { def unapply(x: jClass[_]) = x.isArray }
-      object AnnotationClass { def unapply(x: jClass[_]) = x.isAnnotation }
+      object PrimitiveClass {
+        def unapply(x: jClass[_]) = x.isPrimitive
+      }
+      object EnumClass {
+        def unapply(x: jClass[_]) = x.isEnum
+      }
+      object ArrayClass {
+        def unapply(x: jClass[_]) = x.isArray
+      }
+      object AnnotationClass {
+        def unapply(x: jClass[_]) = x.isAnnotation
+      }
 
       object ConstantArg {
         def enumToSymbol(enum: Enum[_]): Symbol = {

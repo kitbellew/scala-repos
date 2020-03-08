@@ -58,13 +58,27 @@ class ZipEntry(private[this] val _name: String) extends Cloneable {
 
   def isDirectory(): Boolean = _name.endsWith("/")
 
-  def setComment(comment: String): Unit = { _comment = comment }
-  def setCompressedSize(csize: Long): Unit = { _csize = csize }
-  def setCrc(crc: Long): Unit = { _crc = crc }
-  def setExtra(extra: Array[Byte]): Unit = { _extra = extra }
-  def setMethod(method: Int): Unit = { _method = method }
-  def setSize(size: Long): Unit = { _size = size }
-  def setTime(time: Long): Unit = { _time = time }
+  def setComment(comment: String): Unit = {
+    _comment = comment
+  }
+  def setCompressedSize(csize: Long): Unit = {
+    _csize = csize
+  }
+  def setCrc(crc: Long): Unit = {
+    _crc = crc
+  }
+  def setExtra(extra: Array[Byte]): Unit = {
+    _extra = extra
+  }
+  def setMethod(method: Int): Unit = {
+    _method = method
+  }
+  def setSize(size: Long): Unit = {
+    _size = size
+  }
+  def setTime(time: Long): Unit = {
+    _time = time
+  }
   override def toString(): String = _name
 
 }

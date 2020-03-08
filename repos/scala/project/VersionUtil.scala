@@ -132,7 +132,9 @@ object VersionUtil {
 
   private def writeProps(m: Map[String, String], propFile: File): File = {
     val props = new Properties
-    m.foreach { case (k, v) => props.put(k, v) }
+    m.foreach {
+      case (k, v) => props.put(k, v)
+    }
     // unfortunately, this will write properties in arbitrary order
     // this makes it harder to test for stability of generated artifacts
     // consider using https://github.com/etiennestuder/java-ordered-properties

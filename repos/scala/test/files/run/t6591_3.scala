@@ -2,7 +2,9 @@ import scala.reflect.runtime.universe._
 import scala.tools.reflect.ToolBox
 import scala.tools.reflect.Eval
 
-class O { class I }
+class O {
+  class I
+}
 
 object A extends O {
   val code = reify {

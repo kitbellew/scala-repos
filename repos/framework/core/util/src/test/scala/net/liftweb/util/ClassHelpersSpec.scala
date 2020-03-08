@@ -187,7 +187,9 @@ object ClassHelpersSpec extends Specification {
     }
     "throw an exception if the method throws an exception" in {
       class SpecificException extends Exception
-      class TestSnippet { def throwException = throw new SpecificException }
+      class TestSnippet {
+        def throwException = throw new SpecificException
+      }
       val testSnippet = new TestSnippet
       invokeMethod(
         testSnippet.getClass,

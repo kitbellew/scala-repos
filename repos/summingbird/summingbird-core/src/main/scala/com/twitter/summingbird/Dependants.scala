@@ -59,5 +59,7 @@ case class Dependants[P <: Platform[P]](tail: Producer[P, Any])
     }
 
   def namesOf(inp: Producer[P, Any]): List[NamedProducer[P, Any]] =
-    transitiveDependantsOf(inp).collect { case n @ NamedProducer(_, _) => n }
+    transitiveDependantsOf(inp).collect {
+      case n @ NamedProducer(_, _) => n
+    }
 }

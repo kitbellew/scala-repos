@@ -77,7 +77,9 @@ class BinarySerializer[T](buf: Serialization[T]) extends Serializer[T] {
   def open(os: OutputStream): Unit = {
     out = os
   }
-  def close(): Unit = { out = null }
+  def close(): Unit = {
+    out = null
+  }
   def serialize(t: T): Unit = {
     if (out == null) throw new NullPointerException("OutputStream is null")
     buf.write(out, t).get
@@ -86,8 +88,12 @@ class BinarySerializer[T](buf: Serialization[T]) extends Serializer[T] {
 
 class BinaryDeserializer[T](buf: Serialization[T]) extends Deserializer[T] {
   private var is: InputStream = _
-  def open(i: InputStream): Unit = { is = i }
-  def close(): Unit = { is = null }
+  def open(i: InputStream): Unit = {
+    is = i
+  }
+  def close(): Unit = {
+    is = null
+  }
   def deserialize(t: T): T = {
     if (is == null) throw new NullPointerException("InputStream is null")
     buf.read(is).get
@@ -117,17 +123,25 @@ object WrappedSerialization {
     fn(
       confKey,
       bufs
-        .map { case (cls, buf) => s"${cls.getName}:${serialize(buf)}" }
+        .map {
+          case (cls, buf) => s"${cls.getName}:${serialize(buf)}"
+        }
         .mkString(","))
   }
   def setBinary(
       conf: Configuration,
       bufs: Iterable[ClassSerialization[_]]): Unit =
-    rawSetBinary(bufs, { case (k, v) => conf.set(k, v) })
+    rawSetBinary(
+      bufs,
+      {
+        case (k, v) => conf.set(k, v)
+      })
 
   def getBinary(conf: Configuration): Map[Class[_], Serialization[_]] =
     conf.iterator.asScala
-      .map { it => (it.getKey, it.getValue) }
+      .map { it =>
+        (it.getKey, it.getValue)
+      }
       .filter(_._1.startsWith(confKey))
       .map {
         case (_, clsbuf) =>

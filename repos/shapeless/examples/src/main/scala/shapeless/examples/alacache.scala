@@ -109,8 +109,12 @@ trait CachedFacet extends ProductISOFacet {
         c
       }
     }
-    def alive(): Long = cache.synchronized { cache.size() }
-    def aliveExtracted(): Long = uncache.synchronized { uncache.size() }
+    def alive(): Long = cache.synchronized {
+      cache.size()
+    }
+    def aliveExtracted(): Long = uncache.synchronized {
+      uncache.size()
+    }
   }
 
   val ops: CachedOps
@@ -151,7 +155,8 @@ trait CachedCaseClassDefns
       with ProductMethods
       with PolymorphicEqualityMethods
       with CopyMethods
-      with ToStringMethods { self: C => }
+      with ToStringMethods { self: C =>
+  }
 
   val ops: CaseClassOps
 

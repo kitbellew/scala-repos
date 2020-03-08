@@ -126,7 +126,9 @@ class ReplTest extends WordSpec {
 
         val grp = linesByWord
           .join(wordScores)
-          .mapValues { case (text, score) => score }
+          .mapValues {
+            case (text, score) => score
+          }
           .sum
 
         val correct = Map("hello" -> 1.0, "goodbye" -> 3.0, "world" -> 4.0)

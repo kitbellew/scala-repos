@@ -177,7 +177,9 @@ object ScalaRunTime {
   def ensureAccessible(m: JMethod): JMethod = {
     if (!m.isAccessible) {
       try m setAccessible true
-      catch { case _: SecurityException => () }
+      catch {
+        case _: SecurityException => ()
+      }
     }
     m
   }

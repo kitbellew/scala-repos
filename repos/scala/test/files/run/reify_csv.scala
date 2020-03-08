@@ -15,11 +15,18 @@ object Test extends App {
     |  selectiveanf;   8;
     |      liftcode;   9;  reify trees""".stripMargin
       .split("\n")
-      .map { _.trim() }
+      .map {
+        _.trim()
+      }
       .drop(1)
       .toList
 
-  val fields = csv.head.split(";").map { _.trim() }.toList
+  val fields = csv.head
+    .split(";")
+    .map {
+      _.trim()
+    }
+    .toList
   println(fields)
 
   reify({

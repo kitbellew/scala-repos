@@ -129,7 +129,9 @@ class Dispatcher(
       mbox: Mailbox,
       hasMessageHint: Boolean,
       hasSystemMessageHint: Boolean): Boolean = {
-    if (mbox.canBeScheduledForExecution(hasMessageHint, hasSystemMessageHint)) { //This needs to be here to ensure thread safety and no races
+    if (mbox.canBeScheduledForExecution(
+          hasMessageHint,
+          hasSystemMessageHint)) { //This needs to be here to ensure thread safety and no races
       if (mbox.setAsScheduled()) {
         try {
           executorService execute mbox

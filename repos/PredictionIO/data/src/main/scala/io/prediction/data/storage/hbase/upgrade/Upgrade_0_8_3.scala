@@ -50,7 +50,9 @@ object CheckDistribution {
 
     entityType(eventClient, appId).toSeq
       .sortBy(-_._2)
-      .foreach { println }
+      .foreach {
+        println
+      }
 
   }
 
@@ -105,7 +107,9 @@ object Upgrade_0_8_3 {
     val fromDist = CheckDistribution.entityType(eventClient, fromAppId)
 
     logger.info("FromAppId Distribution")
-    fromDist.toSeq.sortBy(-_._2).foreach { e => logger.info(e) }
+    fromDist.toSeq.sortBy(-_._2).foreach { e =>
+      logger.info(e)
+    }
 
     val events = eventClient
       .find(appId = fromAppId)
@@ -122,7 +126,9 @@ object Upgrade_0_8_3 {
 
           val fromTargetEntityType = fromEvent.targetEntityType
           val toTargetEntityType = fromTargetEntityType
-            .map { et => NameMap.getOrElse(et, et) }
+            .map { et =>
+              NameMap.getOrElse(et, et)
+            }
 
           val toProperties = DataMap(fromEvent.properties.fields.map {
             case (k, v) =>
@@ -146,10 +152,14 @@ object Upgrade_0_8_3 {
     val toDist = CheckDistribution.entityType(eventClient, toAppId)
 
     logger.info("Recap fromAppId Distribution")
-    fromDist.toSeq.sortBy(-_._2).foreach { e => logger.info(e) }
+    fromDist.toSeq.sortBy(-_._2).foreach { e =>
+      logger.info(e)
+    }
 
     logger.info("ToAppId Distribution")
-    toDist.toSeq.sortBy(-_._2).foreach { e => logger.info(e) }
+    toDist.toSeq.sortBy(-_._2).foreach { e =>
+      logger.info(e)
+    }
 
     val fromGood = fromDist.toSeq
       .forall {

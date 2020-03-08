@@ -137,13 +137,17 @@ class Accumulable[R, T] private (
     * Add more data to this accumulator / accumulable
     * @param term the data to add
     */
-  def +=(term: T) { value_ = param.addAccumulator(value_, term) }
+  def +=(term: T) {
+    value_ = param.addAccumulator(value_, term)
+  }
 
   /**
     * Add more data to this accumulator / accumulable
     * @param term the data to add
     */
-  def add(term: T) { value_ = param.addAccumulator(value_, term) }
+  def add(term: T) {
+    value_ = param.addAccumulator(value_, term)
+  }
 
   /**
     * Merge two accumulable objects together
@@ -151,7 +155,9 @@ class Accumulable[R, T] private (
     * Normally, a user will not want to use this version, but will instead call `+=`.
     * @param term the other `R` that will get merged with this
     */
-  def ++=(term: R) { value_ = param.addInPlace(value_, term) }
+  def ++=(term: R) {
+    value_ = param.addInPlace(value_, term)
+  }
 
   /**
     * Merge two accumulable objects together
@@ -159,7 +165,9 @@ class Accumulable[R, T] private (
     * Normally, a user will not want to use this version, but will instead call `add`.
     * @param term the other `R` that will get merged with this
     */
-  def merge(term: R) { value_ = param.addInPlace(value_, term) }
+  def merge(term: R) {
+    value_ = param.addInPlace(value_, term)
+  }
 
   /**
     * Access the accumulator's current value; only allowed on driver.
@@ -199,7 +207,9 @@ class Accumulable[R, T] private (
   /**
     * Set the accumulator's value. For internal use only.
     */
-  def setValue(newValue: R): Unit = { value_ = newValue }
+  def setValue(newValue: R): Unit = {
+    value_ = newValue
+  }
 
   /**
     * Set the accumulator's value. For internal use only.

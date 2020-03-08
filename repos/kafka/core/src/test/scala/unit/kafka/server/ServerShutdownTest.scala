@@ -187,7 +187,9 @@ class ServerShutdownTest extends ZooKeeperTestHarness {
       Thread.getAllStackTraces
         .keySet()
         .toArray
-        .map { _.asInstanceOf[Thread] }
+        .map {
+          _.asInstanceOf[Thread]
+        }
         .count(isNonDaemonKafkaThread))
   }
 

@@ -99,7 +99,9 @@ case class GetResult private[memcached] (
     misses: immutable.Set[String] = immutable.Set.empty,
     failures: Map[String, Throwable] = Map.empty
 ) {
-  lazy val values: Map[String, Buf] = hits.mapValues { _.value }
+  lazy val values: Map[String, Buf] = hits.mapValues {
+    _.value
+  }
 
   def ++(o: GetResult): GetResult =
     GetResult(hits ++ o.hits, misses ++ o.misses, failures ++ o.failures)
@@ -110,7 +112,9 @@ case class GetsResult(getResult: GetResult) {
   def misses = getResult.misses
   def failures = getResult.failures
   def values = getResult.values
-  lazy val valuesWithTokens = hits.mapValues { v => (v.value, v.casUnique.get) }
+  lazy val valuesWithTokens = hits.mapValues { v =>
+    (v.value, v.casUnique.get)
+  }
   def ++(o: GetsResult) = GetsResult(getResult ++ o.getResult)
 }
 
@@ -142,7 +146,9 @@ object GetResult {
   }
 
   private[memcached] def merged(results: Seq[GetsResult]): GetsResult = {
-    val unwrapped = results.map { _.getResult }
+    val unwrapped = results.map {
+      _.getResult
+    }
     GetsResult(merged(unwrapped))
   }
 }
@@ -274,7 +280,9 @@ trait BaseClient[T] {
     * string-encoded u64.
     */
   def gets(key: String): Future[Option[(T, Buf)]] =
-    gets(Seq(key)).map { _.values.headOption }
+    gets(Seq(key)).map {
+      _.values.headOption
+    }
 
   /**
     * Get a set of keys from the server.
@@ -285,7 +293,9 @@ trait BaseClient[T] {
       if (result.failures.nonEmpty) {
         Future.exception(result.failures.values.head)
       } else {
-        Future.value(result.values.mapValues { bufferToType(_) })
+        Future.value(result.values.mapValues {
+          bufferToType(_)
+        })
       }
     }
   }
@@ -411,7 +421,9 @@ trait Client extends BaseClient[Buf] {
   /** Adaptor to use String as values */
   def withStrings: BaseClient[String] = adapt(
     new Bijection[Buf, String] {
-      def apply(a: Buf): String = a match { case Buf.Utf8(s) => s }
+      def apply(a: Buf): String = a match {
+        case Buf.Utf8(s) => s
+      }
       def invert(b: String): Buf = Buf.Utf8(b)
     }
   )
@@ -463,7 +475,9 @@ trait ProxyClient extends Client {
 
   def stats(args: Option[String]) = proxyClient.stats(args)
 
-  def release() { proxyClient.release() }
+  def release() {
+    proxyClient.release()
+  }
 }
 
 private[memcached] object ClientConstants {
@@ -514,11 +528,17 @@ protected class ConnectedClient(
         )
     } handle {
       case t: RequestException =>
-        GetResult(failures = (keys.map { (_, t) }).toMap)
+        GetResult(failures = (keys.map {
+          (_, t)
+        }).toMap)
       case t: ChannelException =>
-        GetResult(failures = (keys.map { (_, t) }).toMap)
+        GetResult(failures = (keys.map {
+          (_, t)
+        }).toMap)
       case t: ServiceException =>
-        GetResult(failures = (keys.map { (_, t) }).toMap)
+        GetResult(failures = (keys.map {
+          (_, t)
+        }).toMap)
     }
   }
 
@@ -536,7 +556,9 @@ protected class ConnectedClient(
     try {
       if (keys == null)
         throw new IllegalArgumentException("Invalid keys: keys cannot be null")
-      rawGet(Gets(keys)).map { GetsResult(_) }
+      rawGet(Gets(keys)).map {
+        GetsResult(_)
+      }
     } catch {
       case t: IllegalArgumentException =>
         Future.exception(new ClientError(t.getMessage))
@@ -704,7 +726,9 @@ protected class ConnectedClient(
             val Buf.Utf8(keyStr) = key
             "%s %s".format(
               keyStr,
-              values.map { case Buf.Utf8(str) => str } mkString (" "))
+              values.map {
+                case Buf.Utf8(str) => str
+              } mkString (" "))
           }
         }
       case Error(e)     => Future.exception(e)
@@ -736,7 +760,9 @@ trait PartitionedClient extends Client {
     if (keys.nonEmpty) {
       withKeysGroupedByClient(keys) {
         _.getResult(_)
-      }.map { GetResult.merged(_) }
+      }.map {
+        GetResult.merged(_)
+      }
     } else {
       Future.value(GetResult.Empty)
     }
@@ -746,7 +772,9 @@ trait PartitionedClient extends Client {
     if (keys.nonEmpty) {
       withKeysGroupedByClient(keys) {
         _.getsResult(_)
-      }.map { GetResult.merged(_) }
+      }.map {
+        GetResult.merged(_)
+      }
     } else {
       Future.value(GetsResult(GetResult.Empty))
     }
@@ -1037,12 +1065,16 @@ private[finagle] class KetamaPartitionedClient(
 
   private[this] val liveNodeGauge = statsReceiver.addGauge("live_nodes") {
     synchronized {
-      nodes count { case (_, Node(_, state)) => state == NodeState.Live }
+      nodes count {
+        case (_, Node(_, state)) => state == NodeState.Live
+      }
     }
   }
   private[this] val deadNodeGauge = statsReceiver.addGauge("dead_nodes") {
     synchronized {
-      nodes count { case (_, Node(_, state)) => state == NodeState.Ejected }
+      nodes count {
+        case (_, Node(_, state)) => state == NodeState.Ejected
+      }
     }
   }
   private[this] val ejectionCount = statsReceiver.counter("ejections")
@@ -1352,7 +1384,9 @@ class RubyMemCacheClient(clients: Seq[Client]) extends PartitionedClient {
   }
 
   def release() {
-    clients foreach { _.release() }
+    clients foreach {
+      _.release()
+    }
   }
 }
 
@@ -1407,7 +1441,9 @@ class PHPMemCacheClient(clients: Array[Client], keyHasher: KeyHasher)
   }
 
   def release() {
-    clients foreach { _.release() }
+    clients foreach {
+      _.release()
+    }
   }
 }
 

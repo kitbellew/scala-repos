@@ -442,7 +442,9 @@ trait IterableSplitter[+T]
 
   def splitWithSignalling: Seq[IterableSplitter[T]] = {
     val pits = split
-    pits foreach { _.signalDelegate = signalDelegate }
+    pits foreach {
+      _.signalDelegate = signalDelegate
+    }
     pits
   }
 
@@ -486,7 +488,9 @@ trait IterableSplitter[+T]
   class Taken(taken: Int) extends IterableSplitter[T] {
     var remaining = taken min self.remaining
     def hasNext = remaining > 0
-    def next = { remaining -= 1; self.next() }
+    def next = {
+      remaining -= 1; self.next()
+    }
     def dup: IterableSplitter[T] = self.dup.take(taken)
     def split: Seq[IterableSplitter[T]] = takeSeq(self.split) { (p, n) =>
       p.take(n)
@@ -497,7 +501,9 @@ trait IterableSplitter[+T]
       val shortened =
         for ((it, (from, until)) <- sq zip (sizes.init zip sizes.tail))
           yield if (until < remaining) it else taker(it, remaining - from)
-      shortened filter { _.remaining > 0 }
+      shortened filter {
+        _.remaining > 0
+      }
     }
   }
 
@@ -533,7 +539,9 @@ trait IterableSplitter[+T]
     def next = f(self.next())
     def remaining = self.remaining
     def dup: IterableSplitter[S] = self.dup map f
-    def split: Seq[IterableSplitter[S]] = self.split.map { _ map f }
+    def split: Seq[IterableSplitter[S]] = self.split.map {
+      _ map f
+    }
   }
 
   override def map[S](f: T => S) = new Mapped(f)
@@ -575,7 +583,9 @@ trait IterableSplitter[+T]
       val selfs = self.split
       val sizes = selfs.map(_.remaining)
       val thats = that.psplit(sizes: _*)
-      (selfs zip thats) map { p => p._1 zipParSeq p._2 }
+      (selfs zip thats) map { p =>
+        p._1 zipParSeq p._2
+      }
     }
   }
 
@@ -635,13 +645,17 @@ trait SeqSplitter[+T]
 
   override def splitWithSignalling: Seq[SeqSplitter[T]] = {
     val pits = split
-    pits foreach { _.signalDelegate = signalDelegate }
+    pits foreach {
+      _.signalDelegate = signalDelegate
+    }
     pits
   }
 
   def psplitWithSignalling(sizes: Int*): Seq[SeqSplitter[T]] = {
     val pits = psplit(sizes: _*)
-    pits foreach { _.signalDelegate = signalDelegate }
+    pits foreach {
+      _.signalDelegate = signalDelegate
+    }
     pits
   }
 
@@ -661,7 +675,9 @@ trait SeqSplitter[+T]
     override def split: Seq[SeqSplitter[T]] =
       super.split.asInstanceOf[Seq[SeqSplitter[T]]]
     def psplit(sizes: Int*): Seq[SeqSplitter[T]] =
-      takeSeq(self.psplit(sizes: _*)) { (p, n) => p.take(n) }
+      takeSeq(self.psplit(sizes: _*)) { (p, n) =>
+        p.take(n)
+      }
   }
   override private[collection] def newTaken(until: Int): Taken =
     new Taken(until)
@@ -673,8 +689,9 @@ trait SeqSplitter[+T]
     override def dup = super.dup.asInstanceOf[SeqSplitter[S]]
     override def split: Seq[SeqSplitter[S]] =
       super.split.asInstanceOf[Seq[SeqSplitter[S]]]
-    def psplit(sizes: Int*): Seq[SeqSplitter[S]] =
-      self.psplit(sizes: _*).map { _ map f }
+    def psplit(sizes: Int*): Seq[SeqSplitter[S]] = self.psplit(sizes: _*).map {
+      _ map f
+    }
   }
 
   override def map[S](f: T => S) = new Mapped(f)
@@ -701,8 +718,13 @@ trait SeqSplitter[+T]
         }
         val (selfszfrom, thatszfrom) =
           splitsizes.zip(szcum.init).span(_._2 < selfrem)
-        val (selfsizes, thatsizes) =
-          (selfszfrom map { _._1 }, thatszfrom map { _._1 })
+        val (selfsizes, thatsizes) = (
+          selfszfrom map {
+            _._1
+          },
+          thatszfrom map {
+            _._1
+          })
 
         // split iterators
         val selfs = self.psplit(selfsizes: _*)

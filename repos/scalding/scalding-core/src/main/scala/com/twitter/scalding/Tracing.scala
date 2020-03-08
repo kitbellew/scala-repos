@@ -52,7 +52,9 @@ object Tracing {
     * the one time registration of "com.twitter.scalding" as a
     * tracing boundary in Cascading
     */
-  def init() { /* do nothing */ }
+  def init() {
+    /* do nothing */
+  }
 
   /**
     * Explicitly registers "com.twitter.scalding" as a Cascading

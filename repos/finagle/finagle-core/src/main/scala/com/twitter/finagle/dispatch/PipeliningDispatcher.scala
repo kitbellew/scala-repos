@@ -48,7 +48,9 @@ class PipeliningDispatcher[Req, Rep](
   loop()
 
   protected def dispatch(req: Req, p: Promise[Rep]): Future[Unit] =
-    trans.write(req).onSuccess { _ => q.offer(p) }
+    trans.write(req).onSuccess { _ =>
+      q.offer(p)
+    }
 
   override def apply(req: Req): Future[Rep] = super.apply(req).masked
 }

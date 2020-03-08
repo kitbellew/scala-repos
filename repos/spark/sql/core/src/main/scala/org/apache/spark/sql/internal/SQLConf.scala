@@ -802,7 +802,9 @@ class SQLConf
   /** ********************** SQLConf functionality methods ************ */
   /** Set Spark SQL configuration properties. */
   def setConf(props: Properties): Unit = settings.synchronized {
-    props.asScala.foreach { case (k, v) => setConfString(k, v) }
+    props.asScala.foreach {
+      case (k, v) => setConfString(k, v)
+    }
   }
 
   /** Set the given Spark SQL configuration property using a `string` value. */
@@ -878,7 +880,9 @@ class SQLConf
     * This creates a new copy of the config properties in the form of a Map.
     */
   def getAllConfs: immutable.Map[String, String] =
-    settings.synchronized { settings.asScala.toMap }
+    settings.synchronized {
+      settings.asScala.toMap
+    }
 
   /**
     * Return all the configuration definitions that have been defined in [[SQLConf]]. Each
@@ -888,7 +892,9 @@ class SQLConf
     sqlConfEntries.synchronized {
       sqlConfEntries.values.asScala
         .filter(_.isPublic)
-        .map { entry => (entry.key, entry.defaultValueString, entry.doc) }
+        .map { entry =>
+          (entry.key, entry.defaultValueString, entry.doc)
+        }
         .toSeq
     }
 

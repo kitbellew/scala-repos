@@ -165,7 +165,9 @@ trait LogisticRegressionLibModule[M[+_]]
       }
 
       def reduceDouble(seq0: Seq[ColumnValues]): Result = {
-        val seq = seq0 filter { arr => arr.last == 0 || arr.last == 1 }
+        val seq = seq0 filter { arr =>
+          arr.last == 0 || arr.last == 1
+        }
 
         if (seq.isEmpty) None
         else Some(seq)
@@ -178,7 +180,9 @@ trait LogisticRegressionLibModule[M[+_]]
           val result: Set[Result] = features map {
             case c: HomogeneousArrayColumn[_]
                 if c.tpe.manifest.erasure == classOf[Array[Double]] =>
-              val mapped = range filter { r => c.isDefinedAt(r) } map { i =>
+              val mapped = range filter { r =>
+                c.isDefinedAt(r)
+              } map { i =>
                 1.0 +: c.asInstanceOf[HomogeneousArrayColumn[Double]](i)
               }
               reduceDouble(mapped)
@@ -197,7 +201,9 @@ trait LogisticRegressionLibModule[M[+_]]
           alpha: Double): Theta = {
         val theta = gradient(seq, theta0, alpha)
 
-        val diffs = theta0.zip(theta) map { case (t0, t) => math.abs(t0 - t) }
+        val diffs = theta0.zip(theta) map {
+          case (t0, t) => math.abs(t0 - t)
+        }
         val sum = diffs.sum
 
         if (sum / theta.length < 0.01) {
@@ -218,9 +224,9 @@ trait LogisticRegressionLibModule[M[+_]]
         res map {
           case seq => {
             val initialTheta: Theta = {
-              val thetaLength =
-                seq.headOption map { _.length } getOrElse sys.error(
-                  "unreachable: `res` would have been None")
+              val thetaLength = seq.headOption map {
+                _.length
+              } getOrElse sys.error("unreachable: `res` would have been None")
               val thetas = Seq.fill(100)(
                 Array.fill(thetaLength - 1)(Random.nextGaussian * 10))
 
@@ -284,7 +290,9 @@ trait LogisticRegressionLibModule[M[+_]]
           val valueSpec = DerefObjectStatic(TransSpec1.Id, paths.Value)
           val table = table0.transform(valueSpec).transform(arraySpec)
 
-          val schemas: M[Seq[JType]] = table.schemas map { _.toSeq }
+          val schemas: M[Seq[JType]] = table.schemas map {
+            _.toSeq
+          }
 
           val specs: M[Seq[TransSpec1]] = schemas map {
             _ map { jtype =>

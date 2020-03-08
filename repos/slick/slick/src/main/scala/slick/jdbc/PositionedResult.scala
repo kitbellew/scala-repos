@@ -18,9 +18,15 @@ abstract class PositionedResult(val rs: ResultSet) extends Closeable { outer =>
   final def currentPos = pos
   final def hasMoreColumns = pos < numColumns
 
-  final def skip = { pos += 1; this }
-  final def restart = { pos = startPos; this }
-  final def rewind = { pos = Int.MinValue; this }
+  final def skip = {
+    pos += 1; this
+  }
+  final def restart = {
+    pos = startPos; this
+  }
+  final def rewind = {
+    pos = Int.MinValue; this
+  }
 
   def nextRow = {
     val ret = (pos == Int.MinValue) || rs.next
@@ -298,7 +304,9 @@ abstract class PositionedResult(val rs: ResultSet) extends Closeable { outer =>
     }; pos = npos
   }
 
-  final def updateNull() { val npos = pos + 1; rs.updateNull(npos); pos = npos }
+  final def updateNull() {
+    val npos = pos + 1; rs.updateNull(npos); pos = npos
+  }
 
   /**
     * Close the ResultSet and the statement which created it.
@@ -346,7 +354,12 @@ abstract class PositionedResult(val rs: ResultSet) extends Closeable { outer =>
   def view1: PositionedResult = {
     val discPos = pos
     val disc = nextObject
-    view(discPos, discPos + 1, { r => disc != null && disc == r.nextObject })
+    view(
+      discPos,
+      discPos + 1,
+      { r =>
+        disc != null && disc == r.nextObject
+      })
   }
 
   final def build[C[_], R](gr: GetResult[R])(

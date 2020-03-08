@@ -32,10 +32,14 @@ object Agent {
     def get(): T = ref.single.get
 
     def send(newValue: T): Unit =
-      withinTransaction(new Runnable { def run = ref.single.update(newValue) })
+      withinTransaction(new Runnable {
+        def run = ref.single.update(newValue)
+      })
 
     def send(f: T ⇒ T): Unit =
-      withinTransaction(new Runnable { def run = ref.single.transform(f) })
+      withinTransaction(new Runnable {
+        def run = ref.single.transform(f)
+      })
 
     def sendOff(f: T ⇒ T)(implicit ec: ExecutionContext): Unit =
       withinTransaction(new Runnable {
@@ -49,7 +53,9 @@ object Agent {
       })
 
     def alter(newValue: T): Future[T] =
-      doAlter({ ref.single.update(newValue); newValue })
+      doAlter({
+        ref.single.update(newValue); newValue
+      })
 
     def alter(f: T ⇒ T): Future[T] = doAlter(ref.single.transformAndGet(f))
 

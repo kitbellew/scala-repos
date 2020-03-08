@@ -92,14 +92,21 @@ trait PerfTestRunner[M[+_], T] {
 
       case Tree.Node((RunSequential, a), tests) =>
         tests.foldLeft(List[RunResult[A]]().pure[M]) { (acc, test) =>
-          acc flatMap { rs => runM(test) map (_ :: rs) }
+          acc flatMap { rs =>
+            runM(test) map (_ :: rs)
+          }
         } map { children =>
           Tree.node((RunSequential, a, None), children.reverse.toStream)
         }
 
       case Tree.Node((RunConcurrent, a), tests) =>
         (tests map (runM(_))).foldLeft(List[RunResult[A]]().pure[M]) {
-          (acc, run) => acc flatMap { rs => run map { _ :: rs } }
+          (acc, run) =>
+            acc flatMap { rs =>
+              run map {
+                _ :: rs
+              }
+            }
         } map { children =>
           Tree.node((RunConcurrent, a, None), children.reverse.toStream)
         }

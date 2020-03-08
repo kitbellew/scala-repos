@@ -9,25 +9,35 @@ object ShapeTest extends App {
   }
 
   class Line(s: Point, e: Point) extends Shape {
-    def draw() { Console.println("draw line " + s + "," + e) }
+    def draw() {
+      Console.println("draw line " + s + "," + e)
+    }
   }
 
   abstract class Foo {
     type T <: Object
 
     def show(o: T): Unit
-    def print() { Console.println("in Foo") }
+    def print() {
+      Console.println("in Foo")
+    }
   }
 
   abstract class ShapeFoo extends Foo {
     type T <: Shape
-    def show(o: T) { o.draw() }
-    override def print() { Console.println("in ShapeFoo") }
+    def show(o: T) {
+      o.draw()
+    }
+    override def print() {
+      Console.println("in ShapeFoo")
+    }
   }
 
   class LineFoo extends ShapeFoo {
     type T = Line
-    override def print() { Console.println("in LineFoo") }
+    override def print() {
+      Console.println("in LineFoo")
+    }
   }
 
   val p1 = new Point(1, 4)
@@ -37,7 +47,9 @@ object ShapeTest extends App {
 
   val l = new ShapeFoo { // ** //
     type T = Line // ** //
-    override def print() { Console.println("in LineFoo") } // ** //
+    override def print() {
+      Console.println("in LineFoo")
+    } // ** //
   }
   l.show(l1) // ** //
 }

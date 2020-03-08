@@ -22,7 +22,9 @@ class FuturePoolTest extends FunSuite with Eventually {
     val pool = FuturePool(executor)
 
     val source = new Promise[Int]
-    val result = pool { Await.result(source) } // simulate blocking call
+    val result = pool {
+      Await.result(source)
+    } // simulate blocking call
 
     source.setValue(1)
     assert(Await.result(result) == 1)
@@ -57,8 +59,12 @@ class FuturePoolTest extends FunSuite with Eventually {
     val source1 = new Promise[Int]
     val source2 = new Promise[Int]
 
-    val result1 = pool { runCount.incrementAndGet(); Await.result(source1) }
-    val result2 = pool { runCount.incrementAndGet(); Await.result(source2) }
+    val result1 = pool {
+      runCount.incrementAndGet(); Await.result(source1)
+    }
+    val result2 = pool {
+      runCount.incrementAndGet(); Await.result(source2)
+    }
 
     result2.raise(new Exception)
     source1.setValue(1)
@@ -67,11 +73,15 @@ class FuturePoolTest extends FunSuite with Eventually {
     // in FuturePool will throw away the work if the future
     // representing the outcome has already been interrupted,
     // and will set the result to a CancellationException
-    eventually { assert(executor.getCompletedTaskCount == 2) }
+    eventually {
+      assert(executor.getCompletedTaskCount == 2)
+    }
 
     assert(runCount.get() == 1)
     assert(Await.result(result1) == 1)
-    intercept[CancellationException] { Await.result(result2) }
+    intercept[CancellationException] {
+      Await.result(result2)
+    }
   }
 
   test("continue to run a task if it's interrupted while running") {
@@ -100,10 +110,14 @@ class FuturePoolTest extends FunSuite with Eventually {
     result.raise(new Exception)
     cancelledLatch.countDown()
 
-    eventually { assert(executor.getCompletedTaskCount == 1) }
+    eventually {
+      assert(executor.getCompletedTaskCount == 1)
+    }
 
     assert(runCount.get() == 2)
-    intercept[RuntimeException] { Await.result(result) }
+    intercept[RuntimeException] {
+      Await.result(result)
+    }
   }
 
   test("returns exceptions that result from submitting a task to the pool") {
@@ -116,13 +130,21 @@ class FuturePoolTest extends FunSuite with Eventually {
     val pool = FuturePool(executor)
 
     val source = new Promise[Int]
-    pool { Await.result(source) } // occupy the thread
-    pool { Await.result(source) } // fill the queue
+    pool {
+      Await.result(source)
+    } // occupy the thread
+    pool {
+      Await.result(source)
+    } // fill the queue
 
-    val rv = pool { "yay!" }
+    val rv = pool {
+      "yay!"
+    }
 
     assert(rv.isDefined == true)
-    intercept[RejectedExecutionException] { Await.result(rv) }
+    intercept[RejectedExecutionException] {
+      Await.result(rv)
+    }
 
     source.setValue(1)
   }
@@ -147,7 +169,9 @@ class FuturePoolTest extends FunSuite with Eventually {
 
     Await.result(started)
     f.raise(new RuntimeException("foo"))
-    intercept[RuntimeException] { Await.result(f) }
+    intercept[RuntimeException] {
+      Await.result(f)
+    }
     assert(Await.result(interrupted.liftToTry) == Return(()))
   }
 
@@ -174,9 +198,13 @@ class FuturePoolTest extends FunSuite with Eventually {
     val pool = FuturePool(executor)
     val fatal = new LinkageError
     assert(!NonFatal.isNonFatal(fatal))
-    val rv = pool { throw fatal }
+    val rv = pool {
+      throw fatal
+    }
 
-    val ex = intercept[ExecutionException] { Await.result(rv) }
+    val ex = intercept[ExecutionException] {
+      Await.result(rv)
+    }
     assert(ex.getCause == fatal)
   }
 
@@ -193,10 +221,16 @@ class FuturePoolTest extends FunSuite with Eventually {
 
     def fake(): String = {
       pools foreach { pool =>
-        val rv = pool { return "OK" }
+        val rv = pool {
+          return "OK"
+        }
 
-        val e = intercept[FutureNonLocalReturnControl] { Await.result(rv) }
-        val f = intercept[NonLocalReturnControl[String]] { throw e.getCause }
+        val e = intercept[FutureNonLocalReturnControl] {
+          Await.result(rv)
+        }
+        val f = intercept[NonLocalReturnControl[String]] {
+          throw e.getCause
+        }
         assert(f.value == "OK")
       }
       "FINISHED"

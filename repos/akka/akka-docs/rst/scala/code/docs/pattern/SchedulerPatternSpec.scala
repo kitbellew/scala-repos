@@ -19,7 +19,9 @@ object SchedulerPatternSpec {
     //#schedule-constructor
     // this var and constructor is declared here to not show up in the docs
     var target: ActorRef = null
-    def this(target: ActorRef) = { this(); this.target = target }
+    def this(target: ActorRef) = {
+      this(); this.target = target
+    }
     //#schedule-constructor
 
     override def postStop() = tick.cancel()
@@ -42,7 +44,9 @@ object SchedulerPatternSpec {
     //#schedule-receive
     // this var and constructor is declared here to not show up in the docs
     var target: ActorRef = null
-    def this(target: ActorRef) = { this(); this.target = target }
+    def this(target: ActorRef) = {
+      this(); this.target = target
+    }
     //#schedule-receive
 
     override def preStart() =

@@ -34,6 +34,10 @@ class FooBarImpl extends FooImpl with FooBar[Int] {
 }
 
 class FooBarPlusImpl extends FooBarImpl with FooBarPlus[Int] {
-  def foo_=(x: Int) { f = x }
-  def bar_=(x: Int) { b = x }
+  def foo_=(x: Int) {
+    f = x
+  }
+  def bar_=(x: Int) {
+    b = x
+  }
 }

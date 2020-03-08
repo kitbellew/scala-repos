@@ -1342,7 +1342,9 @@ object TestUtils extends Logging {
       certAlias)
 
     val sslProps = new Properties()
-    sslConfigs.foreach { case (k, v) => sslProps.put(k, v) }
+    sslConfigs.foreach {
+      case (k, v) => sslProps.put(k, v)
+    }
     sslProps
   }
 

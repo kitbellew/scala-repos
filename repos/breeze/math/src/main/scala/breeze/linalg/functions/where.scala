@@ -49,7 +49,11 @@ object where extends UFunc {
     new Impl3[T, Q, Q, U] {
 
       override def apply(from: T, v2: Q, v3: Q): U = {
-        trav.map(from, { (k, v) => if (v != semi.zero) v2(k) else v3(k) })
+        trav.map(
+          from,
+          { (k, v) =>
+            if (v != semi.zero) v2(k) else v3(k)
+          })
       }
     }
   }

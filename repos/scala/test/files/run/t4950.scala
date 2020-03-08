@@ -10,7 +10,9 @@ object Test extends SessionTest {
 
   // Filter out the abbreviated stacktrace "... X elided"
   // because the number seems to differ between versions/platforms/...
-  def elided(s: String) = when(s) { case elideMsg() => true }
+  def elided(s: String) = when(s) {
+    case elideMsg() => true
+  }
   override def eval() = super.eval() filterNot elided
   def session =
     """

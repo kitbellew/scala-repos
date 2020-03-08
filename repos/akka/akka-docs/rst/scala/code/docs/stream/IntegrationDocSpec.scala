@@ -145,7 +145,9 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     val emailAddresses: Source[String, NotUsed] =
       authors
         .mapAsync(4)(author => addressSystem.lookupEmail(author.handle))
-        .collect { case Some(emailAddress) => emailAddress }
+        .collect {
+          case Some(emailAddress) => emailAddress
+        }
     //#email-addresses-mapAsync
 
     //#send-emails
@@ -199,7 +201,9 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
       authors
         .mapAsyncUnordered(4)(author =>
           addressSystem.lookupEmail(author.handle))
-        .collect { case Some(emailAddress) => emailAddress }
+        .collect {
+          case Some(emailAddress) => emailAddress
+        }
 
     val sendEmails: RunnableGraph[NotUsed] =
       emailAddresses
@@ -234,7 +238,9 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     val phoneNumbers =
       authors
         .mapAsync(4)(author => addressSystem.lookupPhoneNumber(author.handle))
-        .collect { case Some(phoneNo) => phoneNo }
+        .collect {
+          case Some(phoneNo) => phoneNo
+        }
 
     //#blocking-mapAsync
     val blockingExecutionContext =
@@ -275,7 +281,9 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     val phoneNumbers =
       authors
         .mapAsync(4)(author => addressSystem.lookupPhoneNumber(author.handle))
-        .collect { case Some(phoneNo) => phoneNo }
+        .collect {
+          case Some(phoneNo) => phoneNo
+        }
 
     //#blocking-map
     val send = Flow[String]
@@ -342,7 +350,9 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
         .withInputBuffer(initialSize = 4, maxSize = 4))
 
     Source(List("a", "B", "C", "D", "e", "F", "g", "H", "i", "J"))
-      .map(elem => { println(s"before: $elem"); elem })
+      .map(elem => {
+        println(s"before: $elem"); elem
+      })
       .mapAsync(4)(service.convert)
       .runForeach(elem => println(s"after: $elem"))
     //#sometimes-slow-mapAsync
@@ -376,7 +386,9 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
         .withInputBuffer(initialSize = 4, maxSize = 4))
 
     Source(List("a", "B", "C", "D", "e", "F", "g", "H", "i", "J"))
-      .map(elem => { println(s"before: $elem"); elem })
+      .map(elem => {
+        println(s"before: $elem"); elem
+      })
       .mapAsyncUnordered(4)(service.convert)
       .runForeach(elem => println(s"after: $elem"))
     //#sometimes-slow-mapAsyncUnordered

@@ -101,7 +101,9 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
     "allow external triggering of empty completion" in Utils
       .assertAllStagesStopped {
         val neverSource = Source.maybe[Int].filter(_ ⇒ false)
-        val counterSink = Sink.fold[Int, Int](0) { (acc, _) ⇒ acc + 1 }
+        val counterSink = Sink.fold[Int, Int](0) { (acc, _) ⇒
+          acc + 1
+        }
 
         val (neverPromise, counterFuture) =
           neverSource.toMat(counterSink)(Keep.both).run()
@@ -128,7 +130,9 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
 
     "allow external triggering of onError" in Utils.assertAllStagesStopped {
       val neverSource = Source.maybe[Int]
-      val counterSink = Sink.fold[Int, Int](0) { (acc, _) ⇒ acc + 1 }
+      val counterSink = Sink.fold[Int, Int](0) { (acc, _) ⇒
+        acc + 1
+      }
 
       val (neverPromise, counterFuture) =
         neverSource.toMat(counterSink)(Keep.both).run()
@@ -253,7 +257,9 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
           case (a, _) if a > 10000000 ⇒ None
           case (a, b) ⇒ Some((b, a + b) → a)
         }
-        .runFold(List.empty[Int]) { case (xs, x) ⇒ x :: xs }
+        .runFold(List.empty[Int]) {
+          case (xs, x) ⇒ x :: xs
+        }
         .futureValue should ===(expected)
     }
 
@@ -268,7 +274,9 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
               case (a, _) if a > 10000000 ⇒ throw t
               case (a, b) ⇒ Some((b, a + b) → a)
             }
-            .runFold(List.empty[Int]) { case (xs, x) ⇒ x :: xs }
+            .runFold(List.empty[Int]) {
+              case (xs, x) ⇒ x :: xs
+            }
             .failed) {
           _ should be theSameInstanceAs (t)
         }
@@ -280,15 +288,21 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
           case (a, _) if a > 10000000 ⇒ Future.successful(None)
           case (a, b) ⇒ Future(Some((b, a + b) → a))(system.dispatcher)
         }
-        .runFold(List.empty[Int]) { case (xs, x) ⇒ x :: xs }
+        .runFold(List.empty[Int]) {
+          case (xs, x) ⇒ x :: xs
+        }
         .futureValue should ===(expected)
     }
 
     "generate an unbounded fibonacci sequence" in {
       Source
-        .unfold((0, 1))({ case (a, b) ⇒ Some((b, a + b) → a) })
+        .unfold((0, 1))({
+          case (a, b) ⇒ Some((b, a + b) → a)
+        })
         .take(36)
-        .runFold(List.empty[Int]) { case (xs, x) ⇒ x :: xs }
+        .runFold(List.empty[Int]) {
+          case (xs, x) ⇒ x :: xs
+        }
         .futureValue should ===(expected)
     }
   }

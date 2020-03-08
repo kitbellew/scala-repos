@@ -56,12 +56,22 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
 
       legendPairs.zipWithIndex.map {
         case ((classAttr, name), index) =>
-          <rect x={5 + (index / 3) * 210 + "px"} y={
+          <rect x={
+            5 + (index / 3) * 210 + "px"
+          } y={
             10 + (index % 3) * 15 + "px"
           }
-                width="10px" height="10px" class={classAttr}></rect>
-                <text x={25 + (index / 3) * 210 + "px"}
-                  y={20 + (index % 3) * 15 + "px"}>{name}</text>
+                width="10px" height="10px" class={
+            classAttr
+          }></rect>
+                <text x={
+            25 + (index / 3) * 210 + "px"
+          }
+                  y={
+            20 + (index % 3) * 15 + "px"
+          }>{
+            name
+          }</text>
       }
     }
       </svg>
@@ -112,7 +122,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
 
       val taskPage = Option(parameterTaskPage).map(_.toInt).getOrElse(1)
       val taskSortColumn = Option(parameterTaskSortColumn)
-        .map { sortColumn => UIUtils.decodeURLParameter(sortColumn) }
+        .map { sortColumn =>
+          UIUtils.decodeURLParameter(sortColumn)
+        }
         .getOrElse("Index")
       val taskSortDesc =
         Option(parameterTaskSortDesc).map(_.toBoolean).getOrElse(false)
@@ -130,7 +142,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
       if (stageDataOption.isEmpty) {
         val content =
           <div id="no-info">
-            <p>No information to display for Stage {stageId} (Attempt {
+            <p>No information to display for Stage {
+            stageId
+          } (Attempt {
             stageAttemptId
           })</p>
           </div>
@@ -162,11 +176,15 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           <ul class="unstyled">
             <li>
               <strong>Total Time Across All Tasks: </strong>
-              {UIUtils.formatDuration(stageData.executorRunTime)}
+              {
+          UIUtils.formatDuration(stageData.executorRunTime)
+        }
             </li>
             <li>
               <strong>Locality Level Summary: </strong>
-              {getLocalitySummaryString(stageData)}
+              {
+          getLocalitySummaryString(stageData)
+        }
             </li>
             {
           if (stageData.hasInput) {
@@ -214,11 +232,15 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           if (stageData.hasBytesSpilled) {
             <li>
                 <strong>Shuffle Spill (Memory): </strong>
-                {Utils.bytesToString(stageData.memoryBytesSpilled)}
+                {
+              Utils.bytesToString(stageData.memoryBytesSpilled)
+            }
               </li>
               <li>
                 <strong>Shuffle Spill (Disk): </strong>
-                {Utils.bytesToString(stageData.diskBytesSpilled)}
+                {
+              Utils.bytesToString(stageData.diskBytesSpilled)
+            }
               </li>
           }
         }
@@ -239,7 +261,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
               </li>
               <li>
                 <span data-toggle="tooltip"
-                      title={ToolTips.SCHEDULER_DELAY} data-placement="right">
+                      title={
+          ToolTips.SCHEDULER_DELAY
+        } data-placement="right">
                   <input type="checkbox" name={
           TaskDetailsClassNames.SCHEDULER_DELAY
         }/>
@@ -248,7 +272,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
               </li>
               <li>
                 <span data-toggle="tooltip"
-                      title={ToolTips.TASK_DESERIALIZATION_TIME} data-placement="right">
+                      title={
+          ToolTips.TASK_DESERIALIZATION_TIME
+        } data-placement="right">
                   <input type="checkbox" name={
           TaskDetailsClassNames.TASK_DESERIALIZATION_TIME
         }/>
@@ -259,7 +285,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           if (stageData.hasShuffleRead) {
             <li>
                   <span data-toggle="tooltip"
-                        title={ToolTips.SHUFFLE_READ_BLOCKED_TIME} data-placement="right">
+                        title={
+              ToolTips.SHUFFLE_READ_BLOCKED_TIME
+            } data-placement="right">
                     <input type="checkbox" name={
               TaskDetailsClassNames.SHUFFLE_READ_BLOCKED_TIME
             }/>
@@ -268,7 +296,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
                 </li>
                 <li>
                   <span data-toggle="tooltip"
-                        title={ToolTips.SHUFFLE_READ_REMOTE_SIZE} data-placement="right">
+                        title={
+              ToolTips.SHUFFLE_READ_REMOTE_SIZE
+            } data-placement="right">
                     <input type="checkbox" name={
               TaskDetailsClassNames.SHUFFLE_READ_REMOTE_SIZE
             }/>
@@ -279,7 +309,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
         }
               <li>
                 <span data-toggle="tooltip"
-                      title={ToolTips.RESULT_SERIALIZATION_TIME} data-placement="right">
+                      title={
+          ToolTips.RESULT_SERIALIZATION_TIME
+        } data-placement="right">
                   <input type="checkbox" name={
           TaskDetailsClassNames.RESULT_SERIALIZATION_TIME
         }/>
@@ -288,7 +320,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
               </li>
               <li>
                 <span data-toggle="tooltip"
-                      title={ToolTips.GETTING_RESULT_TIME} data-placement="right">
+                      title={
+          ToolTips.GETTING_RESULT_TIME
+        } data-placement="right">
                   <input type="checkbox" name={
           TaskDetailsClassNames.GETTING_RESULT_TIME
         }/>
@@ -299,7 +333,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           if (displayPeakExecutionMemory) {
             <li>
                   <span data-toggle="tooltip"
-                        title={ToolTips.PEAK_EXECUTION_MEMORY} data-placement="right">
+                        title={
+              ToolTips.PEAK_EXECUTION_MEMORY
+            } data-placement="right">
                     <input type="checkbox" name={
               TaskDetailsClassNames.PEAK_EXECUTION_MEMORY
             }/>
@@ -320,7 +356,11 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
       def accumulableRow(acc: AccumulableInfo): Seq[Node] = {
         (acc.name, acc.value) match {
           case (Some(name), Some(value)) =>
-            <tr><td>{name}</td><td>{value}</td></tr>
+            <tr><td>{
+              name
+            }</td><td>{
+              value
+            }</td></tr>
           case _ => Seq.empty[Node]
         }
       }
@@ -365,7 +405,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
               <div class="alert alert-error">
               <p>Error while rendering stage table:</p>
               <pre>
-                {Utils.exceptionString(e)}
+                {
+                Utils.exceptionString(e)
+              }
               </pre>
             </div>
             (null, errorMessage)
@@ -403,12 +445,16 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
             Distribution(data).get.getQuantiles()
           def getFormattedTimeQuantiles(times: Seq[Double]): Seq[Node] = {
             getDistributionQuantiles(times).map { millis =>
-              <td>{UIUtils.formatDuration(millis.toLong)}</td>
+              <td>{
+                UIUtils.formatDuration(millis.toLong)
+              }</td>
             }
           }
           def getFormattedSizeQuantiles(data: Seq[Double]): Seq[Elem] = {
             getDistributionQuantiles(data).map(d =>
-              <td>{Utils.bytesToString(d.toLong)}</td>)
+              <td>{
+                Utils.bytesToString(d.toLong)
+              }</td>)
           }
 
           val deserializationTimes = validTasks.map {
@@ -439,7 +485,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           val gcQuantiles =
             <td>
               <span data-toggle="tooltip"
-                  title={ToolTips.GC_TIME} data-placement="right">GC Time
+                  title={
+              ToolTips.GC_TIME
+            } data-placement="right">GC Time
               </span>
             </td> +: getFormattedTimeQuantiles(gcTimes)
 
@@ -450,7 +498,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           val serializationQuantiles =
             <td>
               <span data-toggle="tooltip"
-                    title={ToolTips.RESULT_SERIALIZATION_TIME} data-placement="right">
+                    title={
+              ToolTips.RESULT_SERIALIZATION_TIME
+            } data-placement="right">
                 Result Serialization Time
               </span>
             </td> +: getFormattedTimeQuantiles(serializationTimes)
@@ -462,7 +512,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           val gettingResultQuantiles =
             <td>
               <span data-toggle="tooltip"
-                  title={ToolTips.GETTING_RESULT_TIME} data-placement="right">
+                  title={
+              ToolTips.GETTING_RESULT_TIME
+            } data-placement="right">
                 Getting Result Time
               </span>
             </td> +:
@@ -475,7 +527,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           val peakExecutionMemoryQuantiles = {
             <td>
               <span data-toggle="tooltip"
-                    title={ToolTips.PEAK_EXECUTION_MEMORY} data-placement="right">
+                    title={
+              ToolTips.PEAK_EXECUTION_MEMORY
+            } data-placement="right">
                 Peak Execution Memory
               </span>
             </td> +: getFormattedSizeQuantiles(peakExecutionMemory)
@@ -546,7 +600,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           val shuffleReadBlockedQuantiles =
             <td>
               <span data-toggle="tooltip"
-                    title={ToolTips.SHUFFLE_READ_BLOCKED_TIME} data-placement="right">
+                    title={
+              ToolTips.SHUFFLE_READ_BLOCKED_TIME
+            } data-placement="right">
                 Shuffle Read Blocked Time
               </span>
             </td> +:
@@ -569,7 +625,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           val shuffleReadTotalQuantiles =
             <td>
               <span data-toggle="tooltip"
-                    title={ToolTips.SHUFFLE_READ} data-placement="right">
+                    title={
+              ToolTips.SHUFFLE_READ
+            } data-placement="right">
                 Shuffle Read Size / Records
               </span>
             </td> +:
@@ -587,7 +645,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           val shuffleReadRemoteQuantiles =
             <td>
               <span data-toggle="tooltip"
-                    title={ToolTips.SHUFFLE_READ_REMOTE_SIZE} data-placement="right">
+                    title={
+              ToolTips.SHUFFLE_READ_REMOTE_SIZE
+            } data-placement="right">
                 Shuffle Remote Reads
               </span>
             </td> +:
@@ -629,47 +689,87 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
             getFormattedSizeQuantiles(diskBytesSpilledSizes)
 
           val listings: Seq[Seq[Node]] = Seq(
-            <tr>{serviceQuantiles}</tr>,
-            <tr class={TaskDetailsClassNames.SCHEDULER_DELAY}>{
+            <tr>{
+              serviceQuantiles
+            }</tr>,
+            <tr class={
+              TaskDetailsClassNames.SCHEDULER_DELAY
+            }>{
               schedulerDelayQuantiles
             }</tr>,
-            <tr class={TaskDetailsClassNames.TASK_DESERIALIZATION_TIME}>
-              {deserializationQuantiles}
+            <tr class={
+              TaskDetailsClassNames.TASK_DESERIALIZATION_TIME
+            }>
+              {
+              deserializationQuantiles
+            }
             </tr>
-            <tr>{gcQuantiles}</tr>,
-            <tr class={TaskDetailsClassNames.RESULT_SERIALIZATION_TIME}>
-              {serializationQuantiles}
+            <tr>{
+              gcQuantiles
+            }</tr>,
+            <tr class={
+              TaskDetailsClassNames.RESULT_SERIALIZATION_TIME
+            }>
+              {
+              serializationQuantiles
+            }
             </tr>,
-            <tr class={TaskDetailsClassNames.GETTING_RESULT_TIME}>{
+            <tr class={
+              TaskDetailsClassNames.GETTING_RESULT_TIME
+            }>{
               gettingResultQuantiles
             }</tr>,
             if (displayPeakExecutionMemory) {
-              <tr class={TaskDetailsClassNames.PEAK_EXECUTION_MEMORY}>
-                {peakExecutionMemoryQuantiles}
+              <tr class={
+                TaskDetailsClassNames.PEAK_EXECUTION_MEMORY
+              }>
+                {
+                peakExecutionMemoryQuantiles
+              }
               </tr>
             } else {
               Nil
             },
-            if (stageData.hasInput) <tr>{inputQuantiles}</tr> else Nil,
-            if (stageData.hasOutput) <tr>{outputQuantiles}</tr> else Nil,
+            if (stageData.hasInput) <tr>{
+              inputQuantiles
+            }</tr>
+            else Nil,
+            if (stageData.hasOutput) <tr>{
+              outputQuantiles
+            }</tr>
+            else Nil,
             if (stageData.hasShuffleRead) {
-              <tr class={TaskDetailsClassNames.SHUFFLE_READ_BLOCKED_TIME}>
-                {shuffleReadBlockedQuantiles}
+              <tr class={
+                TaskDetailsClassNames.SHUFFLE_READ_BLOCKED_TIME
+              }>
+                {
+                shuffleReadBlockedQuantiles
+              }
               </tr>
-              <tr>{shuffleReadTotalQuantiles}</tr>
-              <tr class={TaskDetailsClassNames.SHUFFLE_READ_REMOTE_SIZE}>
-                {shuffleReadRemoteQuantiles}
+              <tr>{
+                shuffleReadTotalQuantiles
+              }</tr>
+              <tr class={
+                TaskDetailsClassNames.SHUFFLE_READ_REMOTE_SIZE
+              }>
+                {
+                shuffleReadRemoteQuantiles
+              }
               </tr>
             } else {
               Nil
             },
-            if (stageData.hasShuffleWrite) <tr>{shuffleWriteQuantiles}</tr>
+            if (stageData.hasShuffleWrite) <tr>{
+              shuffleWriteQuantiles
+            }</tr>
             else Nil,
             if (stageData.hasBytesSpilled) <tr>{
               memoryBytesSpilledQuantiles
             }</tr>
             else Nil,
-            if (stageData.hasBytesSpilled) <tr>{diskBytesSpilledQuantiles}</tr>
+            if (stageData.hasBytesSpilled) <tr>{
+              diskBytesSpilledQuantiles
+            }</tr>
             else Nil
           )
 
@@ -695,8 +795,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
       val executorTable = new ExecutorTable(stageId, stageAttemptId, parent)
 
       val maybeAccumulableTable: Seq[Node] =
-        if (hasAccumulators) { <h4>Accumulators</h4> ++ accumulableTable }
-        else Seq()
+        if (hasAccumulators) {
+          <h4>Accumulators</h4> ++ accumulableTable
+        } else Seq()
 
       val content =
         summary ++
@@ -707,7 +808,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
             stageData.taskData.values.toSeq.filter(t =>
               taskIdsInPage.contains(t.taskInfo.taskId)),
             currentTime) ++
-          <h4>Summary Metrics for {numCompleted} Completed Tasks</h4> ++
+          <h4>Summary Metrics for {
+            numCompleted
+          } Completed Tasks</h4> ++
           <div>{
             summaryTable.getOrElse("No tasks have reported metrics yet.")
           }</div> ++
@@ -896,8 +999,12 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
         if (MAX_TIMELINE_TASKS < tasks.size) {
           <strong>
             This stage has more than the maximum number of tasks that can be shown in the
-            visualization! Only the most recent {MAX_TIMELINE_TASKS} tasks
-            (of {tasks.size} total) are shown.
+            visualization! Only the most recent {
+            MAX_TIMELINE_TASKS
+          } tasks
+            (of {
+            tasks.size
+          } total) are shown.
           </strong>
         } else {
           Seq.empty
@@ -909,7 +1016,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           <span>Enable zooming</span>
         </div>
       </div>
-      {TIMELINE_LEGEND}
+      {
+        TIMELINE_LEGEND
+      }
     </div> ++
       <script type="text/javascript">
       {
@@ -1124,7 +1233,9 @@ private[ui] class TaskDataSource(
     val writeTimeSortable = maybeWriteTime.getOrElse(0L)
     val writeTimeReadable = maybeWriteTime
       .map(t => t / (1000 * 1000))
-      .map { ms => if (ms == 0) "" else UIUtils.formatDuration(ms) }
+      .map { ms =>
+        if (ms == 0) "" else UIUtils.formatDuration(ms)
+      }
       .getOrElse("")
 
     val maybeMemoryBytesSpilled = metrics.map(_.memoryBytesSpilled)
@@ -1548,9 +1659,13 @@ private[ui] class TaskPagedTable(
         } else {
           Nil
         }
-      } ++ { if (hasAccumulators) Seq(("Accumulators", "")) else Nil } ++ {
+      } ++ {
+        if (hasAccumulators) Seq(("Accumulators", "")) else Nil
+      } ++ {
         if (hasInput) Seq(("Input Size / Records", "")) else Nil
-      } ++ { if (hasOutput) Seq(("Output Size / Records", "")) else Nil } ++ {
+      } ++ {
+        if (hasOutput) Seq(("Output Size / Records", "")) else Nil
+      } ++ {
         if (hasShuffleRead) {
           Seq(
             (
@@ -1593,10 +1708,18 @@ private[ui] class TaskPagedTable(
                 s"&task.desc=${!desc}" +
                 s"&task.pageSize=$pageSize")
             val arrow = if (desc) "&#x25BE;" else "&#x25B4;" // UP or DOWN
-            <th class={cssClass}>
-            <a href={headerLink}>
-              {header}
-              <span>&nbsp;{Unparsed(arrow)}</span>
+            <th class={
+              cssClass
+            }>
+            <a href={
+              headerLink
+            }>
+              {
+              header
+            }
+              <span>&nbsp;{
+              Unparsed(arrow)
+            }</span>
             </a>
           </th>
           } else {
@@ -1604,91 +1727,161 @@ private[ui] class TaskPagedTable(
               basePath +
                 s"&task.sort=${URLEncoder.encode(header, "UTF-8")}" +
                 s"&task.pageSize=$pageSize")
-            <th class={cssClass}>
-            <a href={headerLink}>
-              {header}
+            <th class={
+              cssClass
+            }>
+            <a href={
+              headerLink
+            }>
+              {
+              header
+            }
             </a>
           </th>
           }
       }
     }
-    <thead>{headerRow}</thead>
+    <thead>{
+      headerRow
+    }</thead>
   }
 
   def row(task: TaskTableRowData): Seq[Node] = {
     <tr>
-      <td>{task.index}</td>
-      <td>{task.taskId}</td>
+      <td>{
+      task.index
+    }</td>
+      <td>{
+      task.taskId
+    }</td>
       <td>{
       if (task.speculative) s"${task.attempt} (speculative)"
       else task.attempt.toString
     }</td>
-      <td>{task.status}</td>
-      <td>{task.taskLocality}</td>
-      <td>{task.executorIdAndHost}</td>
-      <td>{UIUtils.formatDate(new Date(task.launchTime))}</td>
-      <td>{task.formatDuration}</td>
-      <td class={TaskDetailsClassNames.SCHEDULER_DELAY}>
-        {UIUtils.formatDuration(task.schedulerDelay)}
+      <td>{
+      task.status
+    }</td>
+      <td>{
+      task.taskLocality
+    }</td>
+      <td>{
+      task.executorIdAndHost
+    }</td>
+      <td>{
+      UIUtils.formatDate(new Date(task.launchTime))
+    }</td>
+      <td>{
+      task.formatDuration
+    }</td>
+      <td class={
+      TaskDetailsClassNames.SCHEDULER_DELAY
+    }>
+        {
+      UIUtils.formatDuration(task.schedulerDelay)
+    }
       </td>
-      <td class={TaskDetailsClassNames.TASK_DESERIALIZATION_TIME}>
-        {UIUtils.formatDuration(task.taskDeserializationTime)}
+      <td class={
+      TaskDetailsClassNames.TASK_DESERIALIZATION_TIME
+    }>
+        {
+      UIUtils.formatDuration(task.taskDeserializationTime)
+    }
       </td>
       <td>
-        {if (task.gcTime > 0) UIUtils.formatDuration(task.gcTime) else ""}
+        {
+      if (task.gcTime > 0) UIUtils.formatDuration(task.gcTime) else ""
+    }
       </td>
-      <td class={TaskDetailsClassNames.RESULT_SERIALIZATION_TIME}>
-        {UIUtils.formatDuration(task.serializationTime)}
+      <td class={
+      TaskDetailsClassNames.RESULT_SERIALIZATION_TIME
+    }>
+        {
+      UIUtils.formatDuration(task.serializationTime)
+    }
       </td>
-      <td class={TaskDetailsClassNames.GETTING_RESULT_TIME}>
-        {UIUtils.formatDuration(task.gettingResultTime)}
+      <td class={
+      TaskDetailsClassNames.GETTING_RESULT_TIME
+    }>
+        {
+      UIUtils.formatDuration(task.gettingResultTime)
+    }
       </td>
       {
       if (displayPeakExecutionMemory) {
-        <td class={TaskDetailsClassNames.PEAK_EXECUTION_MEMORY}>
-          {Utils.bytesToString(task.peakExecutionMemoryUsed)}
+        <td class={
+          TaskDetailsClassNames.PEAK_EXECUTION_MEMORY
+        }>
+          {
+          Utils.bytesToString(task.peakExecutionMemoryUsed)
+        }
         </td>
       }
     }
       {
       if (task.accumulators.nonEmpty) {
-        <td>{Unparsed(task.accumulators.get)}</td>
+        <td>{
+          Unparsed(task.accumulators.get)
+        }</td>
       }
     }
       {
       if (task.input.nonEmpty) {
-        <td>{task.input.get.inputReadable}</td>
+        <td>{
+          task.input.get.inputReadable
+        }</td>
       }
     }
       {
       if (task.output.nonEmpty) {
-        <td>{task.output.get.outputReadable}</td>
+        <td>{
+          task.output.get.outputReadable
+        }</td>
       }
     }
       {
       if (task.shuffleRead.nonEmpty) {
-        <td class={TaskDetailsClassNames.SHUFFLE_READ_BLOCKED_TIME}>
-          {task.shuffleRead.get.shuffleReadBlockedTimeReadable}
+        <td class={
+          TaskDetailsClassNames.SHUFFLE_READ_BLOCKED_TIME
+        }>
+          {
+          task.shuffleRead.get.shuffleReadBlockedTimeReadable
+        }
         </td>
-        <td>{task.shuffleRead.get.shuffleReadReadable}</td>
-        <td class={TaskDetailsClassNames.SHUFFLE_READ_REMOTE_SIZE}>
-          {task.shuffleRead.get.shuffleReadRemoteReadable}
+        <td>{
+          task.shuffleRead.get.shuffleReadReadable
+        }</td>
+        <td class={
+          TaskDetailsClassNames.SHUFFLE_READ_REMOTE_SIZE
+        }>
+          {
+          task.shuffleRead.get.shuffleReadRemoteReadable
+        }
         </td>
       }
     }
       {
       if (task.shuffleWrite.nonEmpty) {
-        <td>{task.shuffleWrite.get.writeTimeReadable}</td>
-        <td>{task.shuffleWrite.get.shuffleWriteReadable}</td>
+        <td>{
+          task.shuffleWrite.get.writeTimeReadable
+        }</td>
+        <td>{
+          task.shuffleWrite.get.shuffleWriteReadable
+        }</td>
       }
     }
       {
       if (task.bytesSpilled.nonEmpty) {
-        <td>{task.bytesSpilled.get.memoryBytesSpilledReadable}</td>
-        <td>{task.bytesSpilled.get.diskBytesSpilledReadable}</td>
+        <td>{
+          task.bytesSpilled.get.memoryBytesSpilledReadable
+        }</td>
+        <td>{
+          task.bytesSpilled.get.diskBytesSpilledReadable
+        }</td>
       }
     }
-      {errorMessageCell(task.error)}
+      {
+      errorMessageCell(task.error)
+    }
     </tr>
   }
 
@@ -1707,12 +1900,18 @@ private[ui] class TaskPagedTable(
         +details
       </span> ++
         <div class="stacktrace-details collapsed">
-          <pre>{error}</pre>
+          <pre>{
+          error
+        }</pre>
         </div>
       // scalastyle:on
     } else {
       ""
     }
-    <td>{errorSummary}{details}</td>
+    <td>{
+      errorSummary
+    }{
+      details
+    }</td>
   }
 }

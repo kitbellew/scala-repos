@@ -2094,7 +2094,9 @@ trait StatsLibSpecs[M[+_]]
 
       result must haveSize(22)
 
-      val values = result collect { case (_, SDecimal(x)) => x }
+      val values = result collect {
+        case (_, SDecimal(x)) => x
+      }
       values must contain(BigDecimal(88), BigDecimal(104), BigDecimal(131.5))
     }
 
@@ -2137,7 +2139,9 @@ trait StatsLibSpecs[M[+_]]
 
       result must haveSize(22)
 
-      val values = result collect { case (_, SDecimal(x)) => x }
+      val values = result collect {
+        case (_, SDecimal(x)) => x
+      }
       values must contain(BigDecimal(88), BigDecimal(120), BigDecimal(156.9))
     }
   }
@@ -2620,7 +2624,9 @@ trait StatsLibSpecs[M[+_]]
         case _        => ko
       }
 
-      val values = result collect { case (_, SDecimal(x)) => x }
+      val values = result collect {
+        case (_, SDecimal(x)) => x
+      }
       values must contain(
         BigDecimal(131),
         BigDecimal("40.0777"),
@@ -2666,7 +2672,9 @@ trait StatsLibSpecs[M[+_]]
         case _        => ko
       }
 
-      val values = result collect { case (_, SDecimal(x)) => x }
+      val values = result collect {
+        case (_, SDecimal(x)) => x
+      }
       values must contain(
         BigDecimal(131),
         BigDecimal("1.111"),

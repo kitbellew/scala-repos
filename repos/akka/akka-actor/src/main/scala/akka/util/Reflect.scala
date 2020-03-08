@@ -95,7 +95,9 @@ private[akka] object Reflect {
     }
 
     val constructor: Constructor[T] =
-      if (args.isEmpty) Try { clazz.getDeclaredConstructor() } getOrElse (null)
+      if (args.isEmpty) Try {
+        clazz.getDeclaredConstructor()
+      } getOrElse (null)
       else {
         val length = args.length
         val candidates =

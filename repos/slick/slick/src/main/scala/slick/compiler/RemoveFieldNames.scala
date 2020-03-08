@@ -47,8 +47,11 @@ class RemoveFieldNames(val alwaysKeepSubqueryNames: Boolean = false)
                 s
             }
             .toSet
-          val allTSyms =
-            n.collect[TypeSymbol] { case p: Pure => p.identity }.toSet
+          val allTSyms = n
+            .collect[TypeSymbol] {
+              case p: Pure => p.identity
+            }
+            .toSet
           val unrefTSyms = allTSyms -- refTSyms
           n.replaceInvalidate {
               case Pure(StructNode(ConstArray.empty), pts) =>

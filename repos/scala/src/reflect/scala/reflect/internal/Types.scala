@@ -213,7 +213,9 @@ trait Types
     override def prefixString = underlying.prefixString
     override def isComplete = underlying.isComplete
     override def complete(sym: Symbol) = underlying.complete(sym)
-    override def load(sym: Symbol) { underlying.load(sym) }
+    override def load(sym: Symbol) {
+      underlying.load(sym)
+    }
     override def withAnnotations(annots: List[AnnotationInfo]) =
       maybeRewrap(underlying.withAnnotations(annots))
     override def withoutAnnotations = maybeRewrap(underlying.withoutAnnotations)
@@ -802,7 +804,9 @@ trait Types
       new FindTypeCollector(p).collect(this)
 
     /** Apply `f` to each part of this type */
-    def foreach(f: Type => Unit) { new ForEachTypeTraverser(f).traverse(this) }
+    def foreach(f: Type => Unit) {
+      new ForEachTypeTraverser(f).traverse(this)
+    }
 
     /** Apply `pf` to each part of this type on which the function is defined */
     def collect[T](pf: PartialFunction[Type, T]): List[T] =
@@ -1916,7 +1920,9 @@ trait Types
     private def computeRefs() {
       refs = Array(Map(), Map())
       typeSymbol.typeParams foreach { tparam =>
-        parents foreach { p => enterRefs.enter(tparam, p) }
+        parents foreach { p =>
+          enterRefs.enter(tparam, p)
+        }
       }
       state = Initializing
     }
@@ -2366,7 +2372,9 @@ trait Types
     private def baseTypeOfNonClassTypeRefLogged(clazz: Symbol) =
       if (pendingBaseTypes add this)
         try relativeInfo.baseType(clazz)
-        finally { pendingBaseTypes remove this }
+        finally {
+          pendingBaseTypes remove this
+        }
       // TODO: is this optimization for AnyClass worth it? (or is it playing last-ditch cycle defense?)
       // NOTE: for correctness, it only applies for non-class types
       // (e.g., a package class should not get AnyTpe as its supertype, ever)
@@ -2874,7 +2882,9 @@ trait Types
 
     // Is this existential of the form: T[Q1, ..., QN] forSome { type Q1 >: L1 <: U1, ..., QN >: LN <: UN}
     private def isStraightApplication =
-      (quantified corresponds underlying.typeArgs) { (q, a) => q.tpe =:= a }
+      (quantified corresponds underlying.typeArgs) { (q, a) =>
+        q.tpe =:= a
+      }
 
     /** [SI-6169, SI-8197 -- companion to SI-1786]
       *
@@ -3538,7 +3548,9 @@ trait Types
     }
     // side-effects encounteredHigherLevel
     private def containsSkolemAboveLevel(tp: Type) =
-      (tp exists isSkolemAboveLevel) && { encounteredHigherLevel = true; true }
+      (tp exists isSkolemAboveLevel) && {
+        encounteredHigherLevel = true; true
+      }
 
     /** Can this variable be related in a constraint to type `tp`?
       *  This is not the case if `tp` contains type skolems whose
@@ -4079,7 +4091,9 @@ trait Types
       while (tparams1 != tparams0) {
         tparams0 = tparams1
         tparams1 = tparams filter { p =>
-          tparams1 exists { p1 => p1 == p || (p1.info contains p) }
+          tparams1 exists { p1 =>
+            p1 == p || (p1.info contains p)
+          }
         }
       }
       newExistentialType(tparams1, tpe1)
@@ -4395,8 +4409,9 @@ trait Types
   final def sameLength(xs1: List[_], xs2: List[_]) =
     compareLengths(xs1, xs2) == 0
   @tailrec final def compareLengths(xs1: List[_], xs2: List[_]): Int =
-    if (xs1.isEmpty) { if (xs2.isEmpty) 0 else -1 }
-    else if (xs2.isEmpty) 1
+    if (xs1.isEmpty) {
+      if (xs2.isEmpty) 0 else -1
+    } else if (xs2.isEmpty) 1
     else compareLengths(xs1.tail, xs2.tail)
 
   /** Again avoiding calling length, but the lengthCompare interface is clunky.
@@ -4938,7 +4953,9 @@ trait Types
       val pres = tps map (_.prefix)
       val pre = if (variance.isPositive) lub(pres, depth) else glb(pres, depth)
       try singleType(pre, sym)
-      catch { case ex: MalformedType => NoType }
+      catch {
+        case ex: MalformedType => NoType
+      }
     case ExistentialType(tparams, quantified) :: rest =>
       mergePrefixAndArgs(quantified :: rest, variance, depth) match {
         case NoType => NoType
@@ -5032,8 +5049,11 @@ trait Types
   /** Execute `op` while printing a trace of the operations on types executed. */
   def withTypesExplained[A](op: => A): A = {
     val s = explainSwitch
-    try { explainSwitch = true; op }
-    finally { explainSwitch = s }
+    try {
+      explainSwitch = true; op
+    } finally {
+      explainSwitch = s
+    }
   }
 
   def isUnboundedGeneric(tp: Type) = tp match {

@@ -49,7 +49,9 @@ private[sbt] class PluginsDebug(
       val possibleString =
         if (explained.size > 1)
           explained.zipWithIndex
-            .map { case (s, i) => s"$i. $s" }
+            .map {
+              case (s, i) => s"$i. $s"
+            }
             .mkString(
               "Multiple plugins are available that can provide $notFoundKey:\n",
               "\n",
@@ -142,7 +144,9 @@ private[sbt] object PluginsDebug {
   }
   private[this] def availableAutoPlugins(
       build: LoadedBuildUnit): Seq[AutoPlugin] =
-    build.unit.plugins.detected.autoPlugins map { _.value }
+    build.unit.plugins.detected.autoPlugins map {
+      _.value
+    }
 
   def help(plugin: AutoPlugin, s: State): String = {
     val extracted = Project.extract(s)
@@ -366,9 +370,13 @@ private[sbt] object PluginsDebug {
     And(plugins map (p => Exclude(p)) toList)
 
   private[this] def excludes(bs: Seq[Basic]): Set[AutoPlugin] =
-    bs.collect { case Exclude(b) => b }.toSet
+    bs.collect {
+      case Exclude(b) => b
+    }.toSet
   private[this] def plugins(bs: Seq[Basic]): Set[AutoPlugin] =
-    bs.collect { case n: AutoPlugin => n }.toSet
+    bs.collect {
+      case n: AutoPlugin => n
+    }.toSet
 
   // If there is a model that includes `plugin`, it includes at least what is returned by this method.
   // This is the list of plugins that must be included as well as list of plugins that must not be present.

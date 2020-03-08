@@ -35,7 +35,9 @@ class ScImportExprImpl private (
     }
   }
 
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
   def this(stub: ScImportExprStub) = {
     this(stub, ScalaElementTypes.IMPORT_EXPR, null)
   }

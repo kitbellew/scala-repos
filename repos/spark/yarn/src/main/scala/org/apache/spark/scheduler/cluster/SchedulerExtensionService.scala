@@ -136,7 +136,9 @@ private[spark] class SchedulerExtensionServices
   override def stop(): Unit = {
     if (started.getAndSet(false)) {
       logInfo(s"Stopping $this")
-      services.foreach { s => Utils.tryLogNonFatalError(s.stop()) }
+      services.foreach { s =>
+        Utils.tryLogNonFatalError(s.stop())
+      }
     }
   }
 

@@ -322,7 +322,11 @@ trait CometListener extends BaseCometActor {
   protected def registerWith: SimpleActor[Any]
 
   abstract override protected def localSetup() {
-    registerWith ! AddAListener(this, { case _ => true })
+    registerWith ! AddAListener(
+      this,
+      {
+        case _ => true
+      })
     super.localSetup()
   }
 

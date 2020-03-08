@@ -275,7 +275,9 @@ class LocalLDAModel private[spark] (
   @Since("1.5.0")
   def logPerplexity(documents: RDD[(Long, Vector)]): Double = {
     val corpusTokenCount = documents
-      .map { case (_, termCounts) => termCounts.toArray.sum }
+      .map {
+        case (_, termCounts) => termCounts.toArray.sum
+      }
       .sum()
     -logLikelihood(documents) / corpusTokenCount
   }
@@ -667,7 +669,9 @@ class DistributedLDAModel private[clustering] (
           Iterator(queues)
         }
         .reduce { (q1, q2) =>
-          q1.zip(q2).foreach { case (a, b) => a ++= b }
+          q1.zip(q2).foreach {
+            case (a, b) => a ++= b
+          }
           q1
         }
     topicsInQueues.map { q =>
@@ -706,7 +710,9 @@ class DistributedLDAModel private[clustering] (
           Iterator(queues)
         }
         .treeReduce { (q1, q2) =>
-          q1.zip(q2).foreach { case (a, b) => a ++= b }
+          q1.zip(q2).foreach {
+            case (a, b) => a ++= b
+          }
           q1
         }
     topicsInQueues.map { q =>

@@ -391,7 +391,9 @@ class TraceTest
     // TODO: Consider using scalacheck here. (CSL-595)
     def longs(seed: Long) = {
       val rng = new Random(seed)
-      Seq.fill(10) { rng.nextLong() }
+      Seq.fill(10) {
+        rng.nextLong()
+      }
     }
 
     def spanIds(seed: Long): Seq[Option[SpanId]] =

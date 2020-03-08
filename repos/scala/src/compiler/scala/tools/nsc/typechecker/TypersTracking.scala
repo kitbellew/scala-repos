@@ -95,7 +95,9 @@ trait TypersTracking {
       trees = trees.tail
       depth -= 1
     }
-    def show(s: String) { if (s != "") out.println(s) }
+    def show(s: String) {
+      if (s != "") out.println(s)
+    }
 
     def showPush(tree: Tree, context: Context) {
       showPush(tree, NOmode, WildcardType, context)
@@ -149,7 +151,9 @@ trait TypersTracking {
       if (noPrintTyping(tree))
         body
       else
-        runWith(tree) { pushFn; showPop(body) }
+        runWith(tree) {
+          pushFn; showPop(body)
+        }
     )
 
     @inline final def printTyping(tree: Tree, s: => String) = {

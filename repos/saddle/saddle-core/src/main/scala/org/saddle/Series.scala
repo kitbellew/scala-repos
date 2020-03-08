@@ -889,13 +889,17 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
 
       val isca = index.scalarTag
       val vidx = index.toVec
-      val idxHf = { vidx.head(half) concat vidx.tail(half) }
+      val idxHf = {
+        vidx.head(half) concat vidx.tail(half)
+      }
       val ilens = idxHf
         .map(isca.strList(_))
         .foldLeft(isca.strList(vidx(0)).map(_.length))(maxf)
 
       val vsca = values.scalarTag
-      val vlHf = { values.head(half) concat values.tail(half) }
+      val vlHf = {
+        values.head(half) concat values.tail(half)
+      }
       val vlen =
         vlHf.map(vsca.show(_)).foldLeft(2)((a, b) => math.max(a, b.length))
 

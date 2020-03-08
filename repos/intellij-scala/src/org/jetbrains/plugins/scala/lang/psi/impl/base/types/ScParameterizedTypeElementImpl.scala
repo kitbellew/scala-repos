@@ -104,7 +104,8 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
     }
 
     def kindProjectorInlineSyntax(e: PsiElement): Option[ScTypeElement] = {
-      def generateName(i: Int): String = { //kind projector generates names the same way
+      def generateName(
+          i: Int): String = { //kind projector generates names the same way
         val res = ('α' + (i % 25)).toChar.toString
         if (i < 25) res
         else res + (i / 25)
@@ -243,8 +244,12 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
 
     val args: scala.Seq[ScTypeElement] = typeArgList.typeArgs
     if (args.isEmpty) return tr
-    val argTypesWrapped = args.map { _.getType(ctx) }
-    val argTypesgetOrElseped = argTypesWrapped.map { _.getOrAny }
+    val argTypesWrapped = args.map {
+      _.getType(ctx)
+    }
+    val argTypesgetOrElseped = argTypesWrapped.map {
+      _.getOrAny
+    }
     def fails(t: ScType) =
       (for (f @ Failure(_, _) <- argTypesWrapped)
         yield f).foldLeft(Success(t, Some(this)))(_.apply(_))

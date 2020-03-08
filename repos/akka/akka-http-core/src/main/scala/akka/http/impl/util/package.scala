@@ -204,7 +204,9 @@ package util {
   }
 
   private[http] class EventStreamLogger extends Actor with ActorLogging {
-    def receive = { case x ⇒ log.warning(x.toString) }
+    def receive = {
+      case x ⇒ log.warning(x.toString)
+    }
   }
 
   private[http] trait LogMessages extends ActorLogging { this: Actor ⇒

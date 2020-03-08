@@ -13,7 +13,9 @@ object Logger {
 
 private object LoggerMacros {
 
-  type LoggerContext = Context { type PrefixType = Logger.type }
+  type LoggerContext = Context {
+    type PrefixType = Logger.type
+  }
 
   def error(c: LoggerContext)(message: c.Expr[String]): c.Expr[Unit] =
     log(c)(c.universe.reify(Level.Error), message)

@@ -181,7 +181,9 @@ package object prime {
       } else if (n % 2 == 0) {
         var x = n / 2
         var e = 1
-        while (x % 2 == 0) { x /= 2; e += 1 }
+        while (x % 2 == 0) {
+          x /= 2; e += 1
+        }
         Factors(Map(SafeLong(2) -> e), Positive) * factor(x)
       } else {
         var divisor = rho(n, rand(n))
@@ -209,7 +211,9 @@ package object prime {
   private def findPowers(x0: SafeLong, b: SafeLong): (SafeLong, Int) = {
     var x = x0
     var e = 0
-    while (x > 1 && x % b == 0) { e += 1; x = x / b }
+    while (x > 1 && x % b == 0) {
+      e += 1; x = x / b
+    }
     (x, e)
   }
 

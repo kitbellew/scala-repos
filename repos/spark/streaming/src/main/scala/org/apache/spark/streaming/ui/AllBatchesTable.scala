@@ -76,30 +76,56 @@ private[ui] abstract class BatchTableBase(
       processingTime.map(SparkUIUtils.formatDuration).getOrElse("-")
     val batchTimeId = s"batch-$batchTime"
 
-    <td id={batchTimeId} sorttable_customkey={batchTime.toString}
-        isFailed={batch.isFailed.toString}>
-      <a href={s"batch?id=$batchTime"}>
-        {formattedBatchTime}
+    <td id={
+      batchTimeId
+    } sorttable_customkey={
+      batchTime.toString
+    }
+        isFailed={
+      batch.isFailed.toString
+    }>
+      <a href={
+      s"batch?id=$batchTime"
+    }>
+        {
+      formattedBatchTime
+    }
       </a>
     </td>
-      <td sorttable_customkey={eventCount.toString}>{eventCount.toString} events</td>
+      <td sorttable_customkey={
+      eventCount.toString
+    }>{
+      eventCount.toString
+    } events</td>
       <td sorttable_customkey={
       schedulingDelay.getOrElse(Long.MaxValue).toString
     }>
-        {formattedSchedulingDelay}
+        {
+      formattedSchedulingDelay
+    }
       </td>
-      <td sorttable_customkey={processingTime.getOrElse(Long.MaxValue).toString}>
-        {formattedProcessingTime}
+      <td sorttable_customkey={
+      processingTime.getOrElse(Long.MaxValue).toString
+    }>
+        {
+      formattedProcessingTime
+    }
       </td>
   }
 
   private def batchTable: Seq[Node] = {
-    <table id={tableId} class="table table-bordered table-striped table-condensed sortable">
+    <table id={
+      tableId
+    } class="table table-bordered table-striped table-condensed sortable">
       <thead>
-        {columns}
+        {
+      columns
+    }
       </thead>
       <tbody>
-        {renderRows}
+        {
+      renderRows
+    }
       </tbody>
     </table>
   }
@@ -150,8 +176,14 @@ private[ui] class ActiveBatchTable(
   override protected def renderRows: Seq[Node] = {
     // The "batchTime"s of "waitingBatches" must be greater than "runningBatches"'s, so display
     // waiting batches before running batches
-    waitingBatches.flatMap(batch => <tr>{waitingBatchRow(batch)}</tr>) ++
-      runningBatches.flatMap(batch => <tr>{runningBatchRow(batch)}</tr>)
+    waitingBatches.flatMap(batch =>
+      <tr>{
+        waitingBatchRow(batch)
+      }</tr>) ++
+      runningBatches.flatMap(batch =>
+        <tr>{
+          runningBatchRow(batch)
+        }</tr>)
   }
 
   private def runningBatchRow(batch: BatchUIData): Seq[Node] = {
@@ -199,7 +231,10 @@ private[ui] class CompletedBatchTable(
   }
 
   override protected def renderRows: Seq[Node] = {
-    batches.flatMap(batch => <tr>{completedBatchRow(batch)}</tr>)
+    batches.flatMap(batch =>
+      <tr>{
+        completedBatchRow(batch)
+      }</tr>)
   }
 
   private def completedBatchRow(batch: BatchUIData): Seq[Node] = {
@@ -208,8 +243,12 @@ private[ui] class CompletedBatchTable(
       totalDelay.map(SparkUIUtils.formatDuration).getOrElse("-")
 
     baseRow(batch) ++ {
-      <td sorttable_customkey={totalDelay.getOrElse(Long.MaxValue).toString}>
-        {formattedTotalDelay}
+      <td sorttable_customkey={
+        totalDelay.getOrElse(Long.MaxValue).toString
+      }>
+        {
+        formattedTotalDelay
+      }
       </td>
     } ++ createOutputOperationProgressBar(batch) ++ {
       if (firstFailureReason.nonEmpty) {

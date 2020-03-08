@@ -10,7 +10,9 @@ import static.StaticOnly
  */
 import scala.pickling.Defaults._
 
-sealed trait F { val fld: Int }
+sealed trait F {
+  val fld: Int
+}
 
 final case class G(fld: Int) extends F
 final case class H(fld: Int) extends F

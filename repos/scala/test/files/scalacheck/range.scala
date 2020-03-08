@@ -318,7 +318,9 @@ object TooLargeRange extends Properties("Too Large Range") {
         val l = r.length
         println("how here? length = " + l + ", r = " + r.toString)
         false
-      } catch { case _: IllegalArgumentException => true }
+      } catch {
+        case _: IllegalArgumentException => true
+      }
   }
 }
 

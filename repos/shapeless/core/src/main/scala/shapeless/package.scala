@@ -56,8 +56,12 @@ package object shapeless {
   }
 
   // Quantifiers
-  type ∃[P[_]] = P[T] forSome { type T }
-  type ∀[P[_]] = ¬[∃[({ type λ[X] = ¬[P[X]] })#λ]]
+  type ∃[P[_]] = P[T] forSome {
+    type T
+  }
+  type ∀[P[_]] = ¬[∃[({
+    type λ[X] = ¬[P[X]]
+  })#λ]]
 
   /** `Optic` definitions */
   val optic = OpticDefns

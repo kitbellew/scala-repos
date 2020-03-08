@@ -45,16 +45,26 @@ private[http] class HeaderParser(
     rule {
       zeroOrMore(`field-value-chunk`)
         .separatedBy { // zeroOrMore because we need to also accept empty values
-          run { fwsStart = cursor } ~ FWS ~ &(`field-value-char`) ~ run {
+          run {
+            fwsStart = cursor
+          } ~ FWS ~ &(`field-value-char`) ~ run {
             if (cursor > fwsStart) sb.append(' ')
           }
         }
     }
   }
-  def `field-value-chunk` = rule { oneOrMore(`field-value-char` ~ appendSB()) }
-  def `field-value-char` = rule { VCHAR | `obs-text` }
-  def FWS = rule { zeroOrMore(WSP) ~ zeroOrMore(`obs-fold`) }
-  def `obs-fold` = rule { CRLF ~ oneOrMore(WSP) }
+  def `field-value-chunk` = rule {
+    oneOrMore(`field-value-char` ~ appendSB())
+  }
+  def `field-value-char` = rule {
+    VCHAR | `obs-text`
+  }
+  def FWS = rule {
+    zeroOrMore(WSP) ~ zeroOrMore(`obs-fold`)
+  }
+  def `obs-fold` = rule {
+    CRLF ~ oneOrMore(WSP)
+  }
 
   ///////////////// DynamicRuleHandler //////////////
 
@@ -80,8 +90,14 @@ private[http] class HeaderParser(
 
   def `cookie-value`: Rule1[String] =
     settings.cookieParsingMode match {
-      case CookieParsingMode.RFC6265 ⇒ rule { `cookie-value-rfc-6265` }
-      case CookieParsingMode.Raw ⇒ rule { `cookie-value-raw` }
+      case CookieParsingMode.RFC6265 ⇒
+        rule {
+          `cookie-value-rfc-6265`
+        }
+      case CookieParsingMode.Raw ⇒
+        rule {
+          `cookie-value-raw`
+        }
     }
 
   def createCookiePair(name: String, value: String): HttpCookiePair =

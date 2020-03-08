@@ -205,12 +205,16 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
     // values for the same metric should not be mixed up across stages
     val rdd = sc
       .parallelize(1 to 100, numPartitions)
-      .map { i => (i, i) }
+      .map { i =>
+        (i, i)
+      }
       .mapPartitions { iter =>
         TaskContext.get().taskMetrics().getAccum(TEST_ACCUM) += 1
         iter
       }
-      .reduceByKey { case (x, y) => x + y }
+      .reduceByKey {
+        case (x, y) => x + y
+      }
       .mapPartitions { iter =>
         TaskContext.get().taskMetrics().getAccum(TEST_ACCUM) += 10
         iter
@@ -322,7 +326,14 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
       override def cleaner: Option[ContextCleaner] = Some(myCleaner)
     }
     assert(Accumulators.originals.isEmpty)
-    sc.parallelize(1 to 100).map { i => (i, i) }.reduceByKey { _ + _ }.count()
+    sc.parallelize(1 to 100)
+      .map { i =>
+        (i, i)
+      }
+      .reduceByKey {
+        _ + _
+      }
+      .count()
     val internalAccums = InternalAccumulator.createAll()
     // We ran 2 stages, so we should have 2 sets of internal accumulators, 1 for each stage
     assert(Accumulators.originals.size === internalAccums.size * 2)
@@ -341,9 +352,13 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
     */
   private def findTestAccum(
       accums: Iterable[AccumulableInfo]): AccumulableInfo = {
-    accums.find { a => a.name == Some(TEST_ACCUM) }.getOrElse {
-      fail(s"unable to find internal accumulator called $TEST_ACCUM")
-    }
+    accums
+      .find { a =>
+        a.name == Some(TEST_ACCUM)
+      }
+      .getOrElse {
+        fail(s"unable to find internal accumulator called $TEST_ACCUM")
+      }
   }
 
   /**

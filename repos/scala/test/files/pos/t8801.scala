@@ -1,6 +1,10 @@
 sealed trait Nat {
-  type Prev <: Nat { type Succ = Nat.this.type }
-  type Succ <: Nat { type Prev = Nat.this.type }
+  type Prev <: Nat {
+    type Succ = Nat.this.type
+  }
+  type Succ <: Nat {
+    type Prev = Nat.this.type
+  }
 }
 
 object Nat {

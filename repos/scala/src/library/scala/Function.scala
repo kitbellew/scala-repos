@@ -20,7 +20,9 @@ object Function {
     *
     *  @param fs The given sequence of functions
     */
-  def chain[a](fs: Seq[a => a]): a => a = { x => (x /: fs)((x, f) => f(x)) }
+  def chain[a](fs: Seq[a => a]): a => a = { x =>
+    (x /: fs)((x, f) => f(x))
+  }
 
   /** The constant function */
   def const[T, U](x: T)(y: U): T = x

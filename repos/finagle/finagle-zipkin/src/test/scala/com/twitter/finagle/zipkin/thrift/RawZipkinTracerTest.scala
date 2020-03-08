@@ -74,8 +74,12 @@ class RawZipkinTracerTest extends FunSuite {
     val scribe = new ScribeClient
     val tracer = new RawZipkinTracer(scribe, NullStatsReceiver)
 
-    val localAddress = InetAddress.getByAddress(Array.fill(4) { 1 })
-    val remoteAddress = InetAddress.getByAddress(Array.fill(4) { 10 })
+    val localAddress = InetAddress.getByAddress(Array.fill(4) {
+      1
+    })
+    val remoteAddress = InetAddress.getByAddress(Array.fill(4) {
+      10
+    })
     val port1 = 80 // never bound
     val port2 = 53 // ditto
     tracer.record(

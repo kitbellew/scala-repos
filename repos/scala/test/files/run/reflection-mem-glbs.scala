@@ -1,7 +1,11 @@
 import scala.tools.partest.MemoryTest
 
-trait A { type T <: A }
-trait B { type T <: B }
+trait A {
+  type T <: A
+}
+trait B {
+  type T <: B
+}
 
 object Test extends MemoryTest {
   override def maxDelta = 10

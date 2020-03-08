@@ -259,7 +259,9 @@ sealed abstract class Validation[+E, +A] extends Product with Serializable {
 
   /** Ensures that the success value of this validation satisfies the given predicate, or fails with the given value. */
   def ensure[EE >: E](onFailure: => EE)(f: A => Boolean): Validation[EE, A] =
-    excepting({ case a if !f(a) => onFailure })
+    excepting({
+      case a if !f(a) => onFailure
+    })
 
   /** Compare two validations values for equality. */
   def ===[EE >: E, AA >: A](

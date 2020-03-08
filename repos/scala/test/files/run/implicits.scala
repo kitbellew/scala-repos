@@ -27,9 +27,13 @@ object Test extends App {
 
 object TestPriority {
 
-  class C(x: Int) { def foo: Int = x + 1 }
+  class C(x: Int) {
+    def foo: Int = x + 1
+  }
 
-  class D(x: Int) { def foo: Int = x + 2 }
+  class D(x: Int) {
+    def foo: Int = x + 2
+  }
 
   class IMPL {
     implicit def Int2C(x: Int): C = new C(x)

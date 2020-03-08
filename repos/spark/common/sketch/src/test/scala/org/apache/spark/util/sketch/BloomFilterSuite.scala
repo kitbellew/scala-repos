@@ -107,15 +107,25 @@ class BloomFilterSuite extends FunSuite { // scalastyle:ignore funsuite
     testMergeInPlace[T](typeName, numItems)(itemGen)
   }
 
-  testItemType[Byte]("Byte", 160) { _.nextInt().toByte }
+  testItemType[Byte]("Byte", 160) {
+    _.nextInt().toByte
+  }
 
-  testItemType[Short]("Short", 1000) { _.nextInt().toShort }
+  testItemType[Short]("Short", 1000) {
+    _.nextInt().toShort
+  }
 
-  testItemType[Int]("Int", 100000) { _.nextInt() }
+  testItemType[Int]("Int", 100000) {
+    _.nextInt()
+  }
 
-  testItemType[Long]("Long", 100000) { _.nextLong() }
+  testItemType[Long]("Long", 100000) {
+    _.nextLong()
+  }
 
-  testItemType[String]("String", 100000) { r => r.nextString(r.nextInt(512)) }
+  testItemType[String]("String", 100000) { r =>
+    r.nextString(r.nextInt(512))
+  }
 
   test("incompatible merge") {
     intercept[IncompatibleMergeException] {

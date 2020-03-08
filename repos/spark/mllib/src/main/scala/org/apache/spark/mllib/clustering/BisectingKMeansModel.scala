@@ -61,7 +61,9 @@ class BisectingKMeansModel private[clustering] (
     */
   @Since("1.6.0")
   def predict(points: RDD[Vector]): RDD[Int] = {
-    points.map { p => root.predict(p) }
+    points.map { p =>
+      root.predict(p)
+    }
   }
 
   /**

@@ -234,12 +234,16 @@ trait Mapper[A <: Mapper[A]]
   def toForm(button: Box[String], f: A => Any): NodeSeq =
     getSingleton.toForm(this) ++
       S.fmapFunc((ignore: List[String]) => f(this)) { (name: String) =>
-        (<input type='hidden' name={name} value="n/a" />)
+        (<input type='hidden' name={
+          name
+        } value="n/a" />)
       } ++
       (button.map(b =>
         getSingleton.formatFormElement(
           <xml:group>&nbsp;</xml:group>,
-          <input type="submit" value={b}/>)) openOr scala.xml.Text(""))
+          <input type="submit" value={
+            b
+          }/>)) openOr scala.xml.Text(""))
 
   def toForm(
       button: Box[String],
@@ -257,11 +261,15 @@ trait Mapper[A <: Mapper[A]]
 
     getSingleton.toForm(this) ++
       S.fmapFunc((ignore: List[String]) => doSubmit())(name =>
-        <input type='hidden' name={name} value="n/a" />) ++
+        <input type='hidden' name={
+          name
+        } value="n/a" />) ++
       (button.map(b =>
         getSingleton.formatFormElement(
           <xml:group>&nbsp;</xml:group>,
-          <input type="submit" value={b}/>)) openOr scala.xml.Text(""))
+          <input type="submit" value={
+            b
+          }/>)) openOr scala.xml.Text(""))
   }
 
   def saved_? : Boolean = getSingleton.saved_?(this)
@@ -353,7 +361,9 @@ trait Mapper[A <: Mapper[A]]
 
 trait LongKeyedMapper[OwnerType <: LongKeyedMapper[OwnerType]]
     extends KeyedMapper[Long, OwnerType]
-    with BaseLongKeyedMapper { self: OwnerType => }
+    with BaseLongKeyedMapper {
+  self: OwnerType =>
+}
 
 trait BaseKeyedMapper extends BaseMapper {
   type TheKeyType
@@ -439,7 +449,9 @@ trait UpdatedTrait {
   protected class MyUpdatedAt(obj: self.type)
       extends MappedDateTime(obj.asInstanceOf[MapperType])
       with LifecycleCallbacks {
-    override def beforeSave() { super.beforeSave; this.set(Helpers.now) }
+    override def beforeSave() {
+      super.beforeSave; this.set(Helpers.now)
+    }
     override def defaultValue = Helpers.now
     override def dbIndexed_? = updatedAtIndexed_?
   }

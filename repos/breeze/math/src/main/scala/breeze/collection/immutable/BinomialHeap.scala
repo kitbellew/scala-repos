@@ -65,7 +65,9 @@ class BinomialHeap[T <% Ordered[T]]
 
     def clear() = heap = BinomialHeap.empty[T]
 
-    def +=(elem: T) = { heap += elem; this }
+    def +=(elem: T) = {
+      heap += elem; this
+    }
   }
 
   lazy val get = if (trees.isEmpty) None else Some(findMin(trees))
@@ -97,7 +99,9 @@ class BinomialHeap[T <% Ordered[T]]
     }
   }
 
-  private val comp = { (x: T, y: T) => x compare y }
+  private val comp = { (x: T, y: T) =>
+    x compare y
+  }
   def iterator: Iterator[T] =
     Iterators.merge((trees map treeIterator): _*)(comp)
 

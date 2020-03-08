@@ -65,8 +65,9 @@ object CloseableIterator {
     private var more = true
     def hasNext = more
     def next() =
-      if (more) { more = false; item }
-      else noNext
+      if (more) {
+        more = false; item
+      } else noNext
     def close {}
   }
 

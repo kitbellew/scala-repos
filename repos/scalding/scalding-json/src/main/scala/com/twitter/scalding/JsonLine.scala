@@ -76,7 +76,9 @@ case class JsonLine(
     pipe.collectTo[String, Tuple]('line -> fields) {
       case line: String if failOnEmptyLines || line.trim.nonEmpty =>
         val fs: Map[String, AnyRef] = mapper.readValue(line, mapTypeReference)
-        val values = splitFields.map { nestedRetrieval(Option(fs), _) }
+        val values = splitFields.map {
+          nestedRetrieval(Option(fs), _)
+        }
         new cascading.tuple.Tuple(values: _*)
     }
   }
@@ -106,8 +108,9 @@ object JsonLine
   }
 
   private[this] def typeFromManifest(m: Manifest[_]): Type = {
-    if (m.typeArguments.isEmpty) { m.runtimeClass }
-    else
+    if (m.typeArguments.isEmpty) {
+      m.runtimeClass
+    } else
       new ParameterizedType {
         def getRawType = m.runtimeClass
 

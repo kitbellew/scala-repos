@@ -260,7 +260,9 @@ trait MatchApproximation
         // reusedBy += later
         later.reuses = Some(this)
       }
-      val id = { Test.currId += 1; Test.currId }
+      val id = {
+        Test.currId += 1; Test.currId
+      }
       override def toString = s"T${id}C($prop)"
     }
 
@@ -393,7 +395,9 @@ trait MatchApproximation
                 def and(a: Result, b: Result) = And(a, b)
                 def withOuterTest(testedBinder: Symbol, expectedTp: Type) =
                   True // TODO OuterEqProp(testedBinder, expectedType)
-                def typeTest(b: Symbol, pt: Type) = { // a type test implies the tested path is non-null (null.isInstanceOf[T] is false for all T)
+                def typeTest(
+                    b: Symbol,
+                    pt: Type) = { // a type test implies the tested path is non-null (null.isInstanceOf[T] is false for all T)
                   val p = binderToUniqueTree(b);
                   And(uniqueNonNullProp(p), uniqueTypeProp(p, uniqueTp(pt)))
                 }
@@ -464,7 +468,9 @@ trait MatchApproximation
       final def approximateMatch(
           cases: List[List[TreeMaker]],
           treeMakerToProp: TreeMakerToProp = conservative) = {
-        val testss = cases.map { _ map (tm => Test(treeMakerToProp(tm), tm)) }
+        val testss = cases.map {
+          _ map (tm => Test(treeMakerToProp(tm), tm))
+        }
         substitutionComputed =
           true // a second call to approximateMatch should not re-compute the substitution (would be wrong)
         testss
@@ -732,7 +738,9 @@ trait MatchAnalysis extends MatchApproximation {
         other match {
           case other @ ListExample(_) =>
             this == other || ((elems.length == other.elems.length) && (elems zip other.elems)
-              .forall { case (a, b) => a coveredBy b })
+              .forall {
+                case (a, b) => a coveredBy b
+              })
           case _ => super.coveredBy(other)
         }
 
@@ -746,7 +754,9 @@ trait MatchAnalysis extends MatchApproximation {
         other match {
           case TupleExample(otherArgs) =>
             this == other || ((ctorArgs.length == otherArgs.length) && (ctorArgs zip otherArgs)
-              .forall { case (a, b) => a coveredBy b })
+              .forall {
+                case (a, b) => a coveredBy b
+              })
           case _ => super.coveredBy(other)
         }
     }
@@ -768,7 +778,11 @@ trait MatchAnalysis extends MatchApproximation {
     // equal and notEqual symbols
     def modelToVarAssignment(model: Model): Map[Var, (Seq[Const], Seq[Const])] =
       model.toSeq
-        .groupBy { f => f match { case (sym, value) => sym.variable } }
+        .groupBy { f =>
+          f match {
+            case (sym, value) => sym.variable
+          }
+        }
         .mapValues { xs =>
           val (trues, falses) = xs.partition(_._2)
           (trues map (_._1.const), falses map (_._1.const))
@@ -913,7 +927,11 @@ trait MatchAnalysis extends MatchApproximation {
         private def findVar(path: List[Symbol]) = path match {
           case List(root) if root == scrutVar.path.symbol => Some(scrutVar)
           case _ =>
-            varAssignment.find { case (v, a) => chop(v.path) == path }.map(_._1)
+            varAssignment
+              .find {
+                case (v, a) => chop(v.path) == path
+              }
+              .map(_._1)
         }
 
         private val uniques = new mutable.HashMap[Var, VariableAssignment]

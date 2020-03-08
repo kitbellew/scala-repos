@@ -74,7 +74,9 @@ object TestIfOpt { //compile-only "test EqualsPatternClass in combination with M
 }
 
 object Go { // bug #1277 compile-only
-  trait Core { def next: Position = null }
+  trait Core {
+    def next: Position = null
+  }
   trait Dir
   val NEXT = new Dir {}
 
@@ -142,15 +144,20 @@ object Ticket522 {
     def apply[Y, Z](fun: Y => Z, arg: Y): Term[Z] =
       new InternalApply[Y, Z](fun, arg)
 
-    def unapply[X](
-        arg: Term[X]): Option[(Y => Z, Y)] forSome { type Y; type Z } =
+    def unapply[X](arg: Term[X]): Option[(Y => Z, Y)] forSome {
+      type Y; type Z
+    } =
       arg match {
         case i: InternalApply[y, z] => Some(i.fun, i.arg)
         case _                      => None
       }
   }
 
-  App({ x: Int => x }, 5) match {
+  App(
+    { x: Int =>
+      x
+    },
+    5) match {
     case App(arg, a) =>
   }
 }

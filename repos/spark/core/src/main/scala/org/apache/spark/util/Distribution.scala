@@ -47,7 +47,9 @@ private[spark] class Distribution(
     */
   def getQuantiles(probabilities: Traversable[Double] = defaultProbabilities)
       : IndexedSeq[Double] = {
-    probabilities.toIndexedSeq.map { p: Double => data(closestIndex(p)) }
+    probabilities.toIndexedSeq.map { p: Double =>
+      data(closestIndex(p))
+    }
   }
 
   private def closestIndex(p: Double) = {
@@ -57,7 +59,9 @@ private[spark] class Distribution(
   def showQuantiles(out: PrintStream = System.out): Unit = {
     // scalastyle:off println
     out.println("min\t25%\t50%\t75%\tmax")
-    getQuantiles(defaultProbabilities).foreach { q => out.print(q + "\t") }
+    getQuantiles(defaultProbabilities).foreach { q =>
+      out.print(q + "\t")
+    }
     out.println
     // scalastyle:on println
   }
@@ -91,7 +95,9 @@ private[spark] object Distribution {
       quantiles: Traversable[Double]) {
     // scalastyle:off println
     out.println("min\t25%\t50%\t75%\tmax")
-    quantiles.foreach { q => out.print(q + "\t") }
+    quantiles.foreach { q =>
+      out.print(q + "\t")
+    }
     out.println
     // scalastyle:on println
   }

@@ -115,7 +115,9 @@ sealed class Fork(val commandName: String, val runnerClass: Option[String]) {
     outputStrategy.getOrElse(StdoutOutput) match {
       case StdoutOutput => Process(builder).run(connectInput)
       case BufferedOutput(logger) =>
-        logger.buffer { Process(builder).run(logger, connectInput) }
+        logger.buffer {
+          Process(builder).run(logger, connectInput)
+        }
       case LoggedOutput(logger) => Process(builder).run(logger, connectInput)
       case CustomOutput(output) =>
         (Process(builder) #> output).run(connectInput)
@@ -243,7 +245,9 @@ object Fork {
       outputStrategy match {
         case StdoutOutput => Process(builder).run(connectInput)
         case BufferedOutput(logger) =>
-          logger.buffer { Process(builder).run(logger, connectInput) }
+          logger.buffer {
+            Process(builder).run(logger, connectInput)
+          }
         case LoggedOutput(logger) => Process(builder).run(logger, connectInput)
         case CustomOutput(output) =>
           (Process(builder) #> output).run(connectInput)

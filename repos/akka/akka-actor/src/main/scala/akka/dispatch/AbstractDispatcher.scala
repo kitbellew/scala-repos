@@ -435,7 +435,9 @@ class ThreadPoolExecutorConfigurator(
               case x ⇒
                 throw new IllegalArgumentException(
                   "[%s] is not a valid task-queue-type [array|linked]!" format x)
-            } map { qf ⇒ (q: ThreadPoolConfigBuilder) ⇒ q.setQueueFactory(qf) }
+            } map { qf ⇒ (q: ThreadPoolConfigBuilder) ⇒
+              q.setQueueFactory(qf)
+            }
           case _ ⇒ None
         })
 
@@ -505,8 +507,9 @@ object ForkJoinExecutorConfigurator {
     override def getRawResult(): Unit = ()
     override def setRawResult(unit: Unit): Unit = ()
     final override def exec(): Boolean =
-      try { runnable.run(); true }
-      catch {
+      try {
+        runnable.run(); true
+      } catch {
         case ie: InterruptedException ⇒
           Thread.currentThread.interrupt()
           false

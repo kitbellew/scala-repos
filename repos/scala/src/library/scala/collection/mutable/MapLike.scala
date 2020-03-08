@@ -94,7 +94,9 @@ trait MapLike[A, B, +This <: MapLike[A, B, This] with Map[A, B]]
     *  @param key    The key to update
     *  @param value  The new value
     */
-  def update(key: A, value: B) { this += ((key, value)) }
+  def update(key: A, value: B) {
+    this += ((key, value))
+  }
 
   /** Adds a new key/value pair to this map.
     *  If the map already contains a
@@ -194,7 +196,9 @@ trait MapLike[A, B, +This <: MapLike[A, B, This] with Map[A, B]]
   /** Removes all bindings from the map. After this operation has completed,
     *  the map will be empty.
     */
-  def clear() { keysIterator foreach -= }
+  def clear() {
+    keysIterator foreach -=
+  }
 
   /** If given key is already in this map, returns associated value.
     *

@@ -116,7 +116,9 @@ trait ExecutionApp extends java.io.Serializable {
      * code that accesses the jobConf is the Hdfs class, we keep
      * it in sync.
      */
-    config.toMap.foreach { case (k, v) => hconf.set(k, v) }
+    config.toMap.foreach {
+      case (k, v) => hconf.set(k, v)
+    }
 
     (config, mode)
   }

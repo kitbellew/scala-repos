@@ -125,7 +125,9 @@ object Ratatoskr {
     if (args.length > 0) {
       commandMap
         .get(args(0))
-        .map { c => c.run(args.slice(1, args.length)) }
+        .map { c =>
+          c.run(args.slice(1, args.length))
+        }
         .getOrElse {
           die(usage("Unknown command: [%s]".format(args(0))))
         }
@@ -178,43 +180,53 @@ object KafkaTools extends Command {
         "i",
         "trackInterval",
         "When running a usage report, stats will be emitted every <interval> messages. Default = 50000",
-        { (i: Int) => config.trackInterval = i })
+        { (i: Int) =>
+          config.trackInterval = i
+        })
       opt(
         "l",
         "local",
-        "dump local kafka file(s)",
-        { config.operation = Some(DumpLocal) })
+        "dump local kafka file(s)", {
+          config.operation = Some(DumpLocal)
+        })
       opt(
         "c",
         "central",
-        "dump central kafka file(s)",
-        { config.operation = Some(DumpCentral) })
+        "dump central kafka file(s)", {
+          config.operation = Some(DumpCentral)
+        })
       opt(
         "u",
         "unparsed",
-        "dump raw JSON from kafka file(s)",
-        { config.operation = Some(DumpRaw) })
+        "dump raw JSON from kafka file(s)", {
+          config.operation = Some(DumpRaw)
+        })
       opt(
         "z",
         "usageReport",
-        "Run a usage report on the given file(s)",
-        { config.operation = Some(UsageReport) })
+        "Run a usage report on the given file(s)", {
+          config.operation = Some(UsageReport)
+        })
       opt(
         "a",
         "trackArchives",
-        "For the usage report, reset size for a given account when archive messages are encountered",
-        { config.cumulative = false })
+        "For the usage report, reset size for a given account when archive messages are encountered", {
+          config.cumulative = false
+        })
       opt(
         "k",
         "lookupDatabase",
         "accounts database name",
         "Use this database for email lookups in usage reports",
-        { (s: String) => config.lookupDatabase = Some(s) })
+        { (s: String) =>
+          config.lookupDatabase = Some(s)
+        })
       opt(
         "v2",
         "centralToLocal",
-        "convert central kafka file(s) to local kafka format (.local is appended to the new filenames)",
-        { config.operation = Some(ConvertCentral) }
+        "convert central kafka file(s) to local kafka format (.local is appended to the new filenames)", {
+          config.operation = Some(ConvertCentral)
+        }
       )
       opt(
         "f",
@@ -230,7 +242,9 @@ object KafkaTools extends Command {
       arglist(
         "<files>",
         "The files to process",
-        { (s: String) => config.files = config.files :+ (new File(s)) })
+        { (s: String) =>
+          config.files = config.files :+ (new File(s))
+        })
     }
     if (parser.parse(args)) {
       process(config)
@@ -240,9 +254,13 @@ object KafkaTools extends Command {
   }
 
   def process(config: Config) {
-    config.operation.map { _.process(config, config.range) }.getOrElse {
-      println("No operation specified!")
-    }
+    config.operation
+      .map {
+        _.process(config, config.range)
+      }
+      .getOrElse {
+        println("No operation specified!")
+      }
   }
 
   def dump(file: File, range: MessageRange, format: Format) {
@@ -294,17 +312,23 @@ object KafkaTools extends Command {
 
   object DumpLocal extends KafkaAction {
     def process(config: Config, range: MessageRange) =
-      config.files.foreach { dump(_, range, LocalFormat) }
+      config.files.foreach {
+        dump(_, range, LocalFormat)
+      }
   }
 
   object DumpCentral extends KafkaAction {
     def process(config: Config, range: MessageRange) =
-      config.files.foreach { dump(_, range, CentralFormat) }
+      config.files.foreach {
+        dump(_, range, CentralFormat)
+      }
   }
 
   object DumpRaw extends KafkaAction {
     def process(config: Config, range: MessageRange) =
-      config.files.foreach { dump(_, range, RawFormat) }
+      config.files.foreach {
+        dump(_, range, RawFormat)
+      }
   }
 
   object UsageReport extends KafkaAction {
@@ -364,7 +388,9 @@ object KafkaTools extends Command {
              case JString(date) =>
                // Dirty hack for trying variations of ISO8601 in use by customers
                List(date, date.replaceFirst(":", "-").replaceFirst(":", "-"))
-                 .flatMap { date => List(date, date + ".000Z") }
+                 .flatMap { date =>
+                   List(date, date + ".000Z")
+                 }
              case _ => None
            }
            .flatMap { date =>
@@ -412,7 +438,9 @@ object KafkaTools extends Command {
       }
 
       import msg._
-      if (state.index % trackInterval == 0) { trackState(state) }
+      if (state.index % trackInterval == 0) {
+        trackState(state)
+      }
 
       if (path.length > 0) {
         val size = data.map(_.value.renderCompact.length).sum
@@ -457,7 +485,9 @@ object KafkaTools extends Command {
 
           ms.iterator
             .grouped(1000)
-            .flatMap { _.toSeq.par.map(parseEventMessage) }
+            .flatMap {
+              _.toSeq.par.map(parseEventMessage)
+            }
             .foldLeft(state) {
               case (state @ ReportState(index, currentPathSize), parsed) =>
                 parsed match {
@@ -473,7 +503,9 @@ object KafkaTools extends Command {
                       if (path.length > 0) {
                         //println("Deleting from path " + path)
                         ReportState(index + 1, currentPathSize + (path -> 0L))
-                          .unsafeTap { newState => trackState(newState) }
+                          .unsafeTap { newState =>
+                            trackState(newState)
+                          }
                       } else {
                         state.inc
                       }
@@ -554,10 +586,21 @@ object KafkaTools extends Command {
 
   case class MessageRange(start: Option[Int], finish: Option[Int]) {
 
-    def done(i: Int): Boolean = finish.map { i >= _ }.getOrElse(false)
+    def done(i: Int): Boolean =
+      finish
+        .map {
+          i >= _
+        }
+        .getOrElse(false)
 
     def contains(i: Int): Boolean =
-      (start.map { _ <= i }, finish.map { i < _ }) match {
+      (
+        start.map {
+          _ <= i
+        },
+        finish.map {
+          i < _
+        }) match {
         case (Some(s), Some(f)) => s && f
         case (Some(s), None)    => s
         case (None, Some(f))    => f
@@ -685,27 +728,37 @@ object ZookeeperTools extends Command {
         "z",
         "zookeeper",
         "The zookeeper host:port",
-        { s: String => config.zkConn = s })
+        { s: String =>
+          config.zkConn = s
+        })
       opt(
         "c",
         "checkpoints",
         "Show bifrost checkpoint state with prefix",
-        { s: String => config.showCheckpoints = Some(s) })
+        { s: String =>
+          config.showCheckpoints = Some(s)
+        })
       opt(
         "a",
         "agents",
         "Show ingest agent state with prefix",
-        { s: String => config.showAgents = Some(s) })
+        { s: String =>
+          config.showAgents = Some(s)
+        })
       opt(
         "uc",
         "update_checkpoints",
         "Update agent state. Format = path:json",
-        { s: String => config.updateCheckpoint = Some(s) })
+        { s: String =>
+          config.updateCheckpoint = Some(s)
+        })
       opt(
         "ua",
         "update_agents",
         "Update agent state. Format = path:json",
-        { s: String => config.updateAgent = Some(s) })
+        { s: String =>
+          config.updateAgent = Some(s)
+        })
     }
     if (parser.parse(args)) {
       val conn: ZkConnection = new ZkConnection(config.zkConn)
@@ -841,28 +894,38 @@ object IngestTools extends Command {
         "limit",
         "<sync-limit-messages>",
         "if sync is greater than the specified limit an error will occur",
-        { s: Int => config.limit = s })
+        { s: Int =>
+          config.limit = s
+        })
       intOpt(
         "l",
         "lag",
         "<time-lag-minutes>",
         "if update lag is greater than the specified value an error will occur",
-        { l: Int => config.lag = l })
+        { l: Int =>
+          config.lag = l
+        })
       opt(
         "z",
         "zookeeper",
         "The zookeeper host:port",
-        { s: String => config.zkConn = s })
+        { s: String =>
+          config.zkConn = s
+        })
       opt(
         "c",
         "shardpath",
         "The bifrost's ZK path",
-        { s: String => config.shardZkPath = s })
+        { s: String =>
+          config.shardZkPath = s
+        })
       opt(
         "r",
         "relaypath",
         "The relay's ZK path",
-        { s: String => config.relayZkPath = s })
+        { s: String =>
+          config.relayZkPath = s
+        })
     }
     if (parser.parse(args)) {
       val conn = new ZkConnection(config.zkConn)
@@ -892,7 +955,14 @@ object IngestTools extends Command {
 
     val shardValues = shardState.messageClock.map
     val pid = relayState.idSequenceBlock.producerId
-    val shardSID = shardValues.get(pid).map { _.toString }.getOrElse { "NA" }
+    val shardSID = shardValues
+      .get(pid)
+      .map {
+        _.toString
+      }
+      .getOrElse {
+        "NA"
+      }
     val relaySID = (relayState.nextSequenceId - 1).toString
 
     println("Messaging State")
@@ -980,25 +1050,33 @@ object ImportTools extends Command with Logging {
         "token",
         "<api key>",
         "authorizing API key",
-        { s: String => config.apiKey = s })
+        { s: String =>
+          config.apiKey = s
+        })
       opt(
         "o",
         "owner",
         "<account id>",
         "Owner account ID to insert data under",
-        { s: String => config.accountId = s })
+        { s: String =>
+          config.accountId = s
+        })
       opt(
         "s",
         "storage",
         "<storage root>",
         "directory containing data files",
-        { s: String => config.storageRoot = new File(s) })
+        { s: String =>
+          config.storageRoot = new File(s)
+        })
       opt(
         "a",
         "archive",
         "<archive root>",
         "directory containing archived data files",
-        { s: String => config.archiveRoot = new File(s) })
+        { s: String =>
+          config.archiveRoot = new File(s)
+        })
       arglist(
         "<json input> ...",
         "json input file mappings {db}={input}",
@@ -1147,7 +1225,9 @@ object ImportTools extends Command with Logging {
           } else if (results.size > 0) {
             val eventidobj = EventId(pid, sid.getAndIncrement)
             logger.info("Sending %d events".format(results.size))
-            val records = results map { IngestRecord(eventidobj, _) }
+            val records = results map {
+              IngestRecord(eventidobj, _)
+            }
             val update = IngestData(
               Seq(
                 (
@@ -1217,17 +1297,21 @@ object CSVTools extends Command {
       opt(
         "t",
         "mapTimestamps",
-        "Map timestamps to expected format.",
-        { config.teaseTimestamps = true })
+        "Map timestamps to expected format.", {
+          config.teaseTimestamps = true
+        })
       opt(
         "v",
         "verbose",
-        "Map timestamps to expected format.",
-        { config.verbose = true })
+        "Map timestamps to expected format.", {
+          config.verbose = true
+        })
       arg(
         "<csv_file>",
         "csv file to convert (headers required)",
-        { s: String => config.input = s })
+        { s: String =>
+          config.input = s
+        })
     }
     if (parser.parse(args)) {
       process(config)
@@ -1262,49 +1346,74 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
   def run(args: Array[String]) {
     val config = new Config
     val parser = new OptionParser("yggutils csv") {
-      opt("l", "list", "List API keys", { config.list = true })
+      opt(
+        "l",
+        "list",
+        "List API keys", {
+          config.list = true
+        })
 //      opt("c","children","List children of API key", { s: String => config.listChildren = Some(s) })
       opt(
         "n",
         "new",
         "New customer account at path",
-        { s: String => config.accountId = Some(s) })
-      opt("r", "root", "Show root API key", { config.showRoot = true })
+        { s: String =>
+          config.accountId = Some(s)
+        })
+      opt(
+        "r",
+        "root",
+        "Show root API key", {
+          config.showRoot = true
+        })
       opt(
         "c",
         "create",
-        "Create root API key",
-        { config.createRoot = true; config.showRoot = true })
+        "Create root API key", {
+          config.createRoot = true; config.showRoot = true
+        })
       opt(
         "a",
         "name",
         "Human-readable name for new API key",
-        { s: String => config.newAPIKeyName = s })
+        { s: String =>
+          config.newAPIKeyName = s
+        })
       opt(
         "x",
         "delete",
         "Delete API key",
-        { s: String => config.delete = Some(s) })
+        { s: String =>
+          config.delete = Some(s)
+        })
       opt(
         "d",
         "database",
         "APIKey database name (ie: beta_auth_v1)",
-        { s: String => config.database = s })
+        { s: String =>
+          config.database = s
+        })
       opt(
         "t",
         "tokens",
         "APIKeys collection name",
-        { s: String => config.collection = s })
+        { s: String =>
+          config.collection = s
+        })
       opt(
         "a",
         "archive",
         "Collection for deleted API keys",
-        { s: String => config.deleted = Some(s) })
+        { s: String =>
+          config.deleted = Some(s)
+        })
       opt(
         "s",
         "servers",
         "Mongo server config",
-        { s: String => config.servers = s })
+        { s: String =>
+          config.servers = s
+        })
     }
     if (parser.parse(args)) {
       process(config)

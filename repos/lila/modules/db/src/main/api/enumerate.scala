@@ -44,5 +44,7 @@ object $enumerate {
 
   def foldMonoid[A: BSONDocumentReader, B: Monoid](query: QueryBuilder)(
       f: A => B): Fu[B] =
-    fold[A, B](query)(Monoid[B].zero) { case (b, a) => f(a) |+| b }
+    fold[A, B](query)(Monoid[B].zero) {
+      case (b, a) => f(a) |+| b
+    }
 }

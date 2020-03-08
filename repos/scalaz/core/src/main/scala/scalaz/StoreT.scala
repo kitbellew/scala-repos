@@ -79,7 +79,9 @@ final case class IndexedStoreT[F[_], +I, A, B](run: (F[A => B], I)) {
       implicit M: Bind[F]): IndexedStoreT[F, (I, J), (A, C), (B, D)] =
     IndexedStoreT(
       M.bind(set) { s =>
-        M.map(that.set)(t => { (ac: (A, C)) => (s(ac._1), t(ac._2)) })
+        M.map(that.set)(t => {
+          (ac: (A, C)) => (s(ac._1), t(ac._2))
+        })
       },
       (pos, that.pos))
 

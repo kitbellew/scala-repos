@@ -98,7 +98,9 @@ trait Tracer extends parser.AST with typer.Binder {
       case expr @ Dispatch(_, name, actuals) => {
         expr.binding match {
           case LetBinding(let) => {
-            val ids = let.params map { Identifier(Vector(), _) }
+            val ids = let.params map {
+              Identifier(Vector(), _)
+            }
             val sigma2 = sigma ++ (ids zip Stream.continually(let) zip actuals)
 
             if (actuals.length > 0) {
@@ -151,6 +153,8 @@ trait Tracer extends parser.AST with typer.Binder {
       else result.toList
     }
 
-    targetLocations map { loop(Nil) } toList
+    targetLocations map {
+      loop(Nil)
+    } toList
   }
 }

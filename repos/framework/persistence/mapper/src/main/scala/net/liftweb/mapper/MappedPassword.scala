@@ -64,7 +64,9 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
     * Get the source field metadata for the field
     * @return the source field metadata for the field
     */
-  def sourceInfoMetadata(): SourceFieldMetadata { type ST = String } =
+  def sourceInfoMetadata(): SourceFieldMetadata {
+    type ST = String
+  } =
     SourceFieldMetadataRep(
       name,
       manifest,
@@ -205,13 +207,29 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
     * Create an input field for the item
     */
   override def _toForm: Box[NodeSeq] = {
-    S.fmapFunc({ s: List[String] => this.setFromAny(s) }) { funcName =>
+    S.fmapFunc({ s: List[String] =>
+      this.setFromAny(s)
+    }) { funcName =>
       Full(<span>{
-        appendFieldId(<input type={formInputType} name={funcName}
-            value={get.toString}/>)
-      }&nbsp;{S.?("repeat")}&nbsp;<input
-            type={formInputType} name={funcName}
-            value={get.toString}/></span>)
+        appendFieldId(<input type={
+          formInputType
+        } name={
+          funcName
+        }
+            value={
+          get.toString
+        }/>)
+      }&nbsp;{
+        S.?("repeat")
+      }&nbsp;<input
+            type={
+        formInputType
+      } name={
+        funcName
+      }
+            value={
+        get.toString
+      }/></span>)
     }
   }
 
@@ -290,7 +308,9 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
       columnName: String): (T, AnyRef) => Unit = {
     if (columnName.endsWith("_slt")) {
       inst match {
-        case null => { (inst: T, v: AnyRef) => {} }
+        case null => { (inst: T, v: AnyRef) =>
+          {}
+        }
         case _ => { (inst: T, v: AnyRef) =>
           {
             val tv = getField(inst, accessor).asInstanceOf[MappedPassword[T]];
@@ -300,7 +320,9 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
       }
     } else if (columnName.endsWith("_pw")) {
       inst match {
-        case null => { (inst: T, v: AnyRef) => {} }
+        case null => { (inst: T, v: AnyRef) =>
+          {}
+        }
         case _ => { (inst: T, v: AnyRef) =>
           {
             val tv = getField(inst, accessor).asInstanceOf[MappedPassword[T]];

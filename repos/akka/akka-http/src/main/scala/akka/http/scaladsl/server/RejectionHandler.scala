@@ -278,8 +278,12 @@ object RejectionHandler {
           headers = `Sec-WebSocket-Protocol`(supported) :: Nil
         ))
       }
-      .handle { case ValidationRejection(msg, _) ⇒ complete((BadRequest, msg)) }
-      .handle { case x ⇒ sys.error("Unhandled rejection: " + x) }
+      .handle {
+        case ValidationRejection(msg, _) ⇒ complete((BadRequest, msg))
+      }
+      .handle {
+        case x ⇒ sys.error("Unhandled rejection: " + x)
+      }
       .handleNotFound {
         complete((NotFound, "The requested resource could not be found."))
       }

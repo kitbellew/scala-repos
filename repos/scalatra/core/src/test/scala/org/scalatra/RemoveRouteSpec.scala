@@ -3,7 +3,9 @@ package org.scalatra
 import org.scalatra.test.scalatest.ScalatraWordSpec
 
 class RemoveRouteServlet extends ScalatraServlet {
-  val foo = get("/foo") { "foo" }
+  val foo = get("/foo") {
+    "foo"
+  }
 
   post("/remove") {
     removeRoute("GET", foo)

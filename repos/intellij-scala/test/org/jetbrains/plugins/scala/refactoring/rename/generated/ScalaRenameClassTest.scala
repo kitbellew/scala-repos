@@ -13,7 +13,9 @@ class ScalaRenameClassTest extends ScalaRenameTestBase {
 
   def testConstructor2() = doTest()
 
-  def testInnerCompanionTraitRename() { doTest() }
+  def testInnerCompanionTraitRename() {
+    doTest()
+  }
 
   def testObjectApply() = doTest()
 

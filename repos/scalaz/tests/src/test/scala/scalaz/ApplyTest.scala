@@ -54,6 +54,8 @@ object ApplyTest extends SpecLite {
   }
 
   "<*>" in {
-    some(9) <*> some({ (_: Int) + 3 }) must_=== (some(12))
+    some(9) <*> some({
+      (_: Int) + 3
+    }) must_=== (some(12))
   }
 }

@@ -514,7 +514,9 @@ private[akka] trait ClusterRouterActor { this: RouterActor ⇒
   def clusterReceive: Receive = {
     case s: CurrentClusterState ⇒
       import akka.cluster.Member.addressOrdering
-      nodes = s.members.collect { case m if isAvailable(m) ⇒ m.address }
+      nodes = s.members.collect {
+        case m if isAvailable(m) ⇒ m.address
+      }
       addRoutees()
 
     case m: MemberEvent if isAvailable(m.member) ⇒

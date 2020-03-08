@@ -189,7 +189,9 @@ class ClientStore[K, V: Semigroup](
      * Mapping from K1 to the first online batch we need to read
      */
     val keyToBatch: K1 => FOpt[BatchID] = offlineResult.andThen(_.map {
-      _.map { _._1 }
+      _.map {
+        _._1
+      }
     })
 
     val fOnlineKeys: Future[Set[(K1, BatchID)]] =

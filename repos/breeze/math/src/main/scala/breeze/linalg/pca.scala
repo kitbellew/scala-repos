@@ -49,7 +49,12 @@ class PCA(val x: DenseMatrix[Double], val covmat: DenseMatrix[Double]) {
     * The cumulative proportion of variance explained by the first n
     * principal components.
     */
-  lazy val cumuvar = propvar.map { var c = 0.0; d => { c += d; c } }
+  lazy val cumuvar = propvar.map {
+    var c = 0.0;
+    d => {
+      c += d; c
+    }
+  }
 
   /**
     * Translate the original data points to the PC axes.

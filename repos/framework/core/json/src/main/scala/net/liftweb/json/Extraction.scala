@@ -62,8 +62,11 @@ object Extraction {
     */
   def extractOpt[A](
       json: JValue)(implicit formats: Formats, mf: Manifest[A]): Option[A] =
-    try { Some(extract(json)(formats, mf)) }
-    catch { case _: MappingException => None }
+    try {
+      Some(extract(json)(formats, mf))
+    } catch {
+      case _: MappingException => None
+    }
 
   /** Decompose a case class into JSON.
     * <p>
@@ -96,13 +99,17 @@ object Extraction {
         case x: JValue                    => x
         case x if primitive_?(x.getClass) => primitive2jvalue(x)(formats)
         case x: Map[_, _] =>
-          JObject(
-            (x map { case (k: String, v) => JField(k, decompose(v)) }).toList)
+          JObject((x map {
+            case (k: String, v) => JField(k, decompose(v))
+          }).toList)
         case x: Iterable[_] => JArray(x.toList map decompose)
         case x if (x.getClass.isArray) =>
           JArray(x.asInstanceOf[Array[_]].toList map decompose)
         case x: Option[_] =>
-          x.flatMap[JValue] { y => Some(decompose(y)) }.getOrElse(JNothing)
+          x.flatMap[JValue] { y =>
+              Some(decompose(y))
+            }
+            .getOrElse(JNothing)
         case x =>
           val fields = getDeclaredFields(x.getClass)
           val constructorArgs = primaryConstructorArgs(x.getClass).map {

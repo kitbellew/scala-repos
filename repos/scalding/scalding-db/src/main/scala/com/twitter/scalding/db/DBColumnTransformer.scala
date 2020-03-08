@@ -44,9 +44,15 @@ object DBColumnTransformer {
       columnMutator: PartialFunction[DBColumnDefinition, DBColumnDefinition])
       : Definition = {
     val preparedCol = columnMutator(DBColumnDefinition(col))
-    val sizeStr = preparedCol.sizeOpt.map { siz => s"($siz)" }.getOrElse("")
+    val sizeStr = preparedCol.sizeOpt
+      .map { siz =>
+        s"($siz)"
+      }
+      .getOrElse("")
     val defStr = preparedCol.defaultValue
-      .map { default => s" DEFAULT '${default}' " }
+      .map { default =>
+        s" DEFAULT '${default}' "
+      }
       .getOrElse(" ")
     val sqlType = preparedCol.sqlType.toStr
 

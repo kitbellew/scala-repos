@@ -91,7 +91,9 @@ trait AbsSettings extends scala.reflect.internal.settings.AbsSettings {
     }
 
     /** Issue error and return */
-    def errorAndValue[T](msg: String, x: T): T = { errorFn(msg); x }
+    def errorAndValue[T](msg: String, x: T): T = {
+      errorFn(msg); x
+    }
 
     /** After correct Setting has been selected, tryToSet is called with the
       *  remainder of the command line.  It consumes any applicable arguments and

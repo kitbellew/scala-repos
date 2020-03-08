@@ -116,7 +116,9 @@ object TermDeconstructionProps
   }
 
   property("exhaustive function matcher") = test {
-    def matches(line: String) { val q"(..$args) => $body" = parse(line) }
+    def matches(line: String) {
+      val q"(..$args) => $body" = parse(line)
+    }
     matches("() => bippy")
     matches("(y: Y) => y oh y")
     matches("(x: X, y: Y) => x and y")
@@ -141,7 +143,9 @@ object TermDeconstructionProps
   }
 
   property("exhaustive assign pattern") = test {
-    def matches(tree: Tree) { val q"$rhs = $lhs" = tree }
+    def matches(tree: Tree) {
+      val q"$rhs = $lhs" = tree
+    }
     matches(parse("left = right"))
     matches(parse("arr(1) = 2"))
     matches(AssignOrNamedArg(EmptyTree, EmptyTree))

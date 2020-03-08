@@ -524,7 +524,9 @@ abstract class ResourceEvolutionsReader extends EvolutionsReader {
             .reverse
             .drop(1)
             .groupBy(i => i._1)
-            .mapValues { _.map(_._2).mkString("\n").trim }
+            .mapValues {
+              _.map(_._2).mkString("\n").trim
+            }
 
           Evolution(
             revision,
@@ -665,7 +667,9 @@ case class InconsistentDatabase(
     <span>An evolution has not been applied properly. Please check the problem and resolve it manually{
       sentenceEnd
     } -</span>
-    <input name="evolution-button" type="button" value={buttonLabel} onclick={
+    <input name="evolution-button" type="button" value={
+      buttonLabel
+    } onclick={
       redirectJavascript
     }/>
 

@@ -24,13 +24,17 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] {
   self =>
 
   override /*IterableLike*/
-  def isEmpty: Boolean = { length == 0 }
+  def isEmpty: Boolean = {
+    length == 0
+  }
 
   override /*IterableLike*/
   def foreach[U](f: A => U): Unit = {
     var i = 0
     val len = length
-    while (i < len) { f(this(i)); i += 1 }
+    while (i < len) {
+      f(this(i)); i += 1
+    }
   }
 
   private def prefixLengthImpl(p: A => Boolean, expectTrue: Boolean): Int = {

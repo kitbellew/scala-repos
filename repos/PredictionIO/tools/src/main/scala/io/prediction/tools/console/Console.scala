@@ -180,13 +180,17 @@ object Console extends Logging {
       note("")
       cmd("version")
         .text("Displays the version of this command line console.")
-        .action { (_, c) => c.copy(commands = c.commands :+ "version") }
+        .action { (_, c) =>
+          c.copy(commands = c.commands :+ "version")
+        }
       note("")
       cmd("help").action { (_, c) =>
         c.copy(commands = c.commands :+ "help")
       } children (
         arg[String]("<command>") optional ()
-          action { (x, c) => c.copy(commands = c.commands :+ x) }
+          action { (x, c) =>
+            c.copy(commands = c.commands :+ x)
+          }
       )
       note("")
       cmd("build").text("Build an engine at the current directory.").action {
@@ -211,7 +215,9 @@ object Console extends Logging {
       note("")
       cmd("unregister")
         .text("Unregister an engine at the current directory.")
-        .action { (_, c) => c.copy(commands = c.commands :+ "unregister") }
+        .action { (_, c) =>
+          c.copy(commands = c.commands :+ "unregister")
+        }
       note("")
       cmd("train")
         .text(
@@ -270,7 +276,9 @@ object Console extends Logging {
           "Kick off an evaluation using an engine. This will produce an\n" +
             "engine instance. This command will pass all pass-through\n" +
             "arguments to its underlying spark-submit command.")
-        .action { (_, c) => c.copy(commands = c.commands :+ "eval") } children (
+        .action { (_, c) =>
+          c.copy(commands = c.commands :+ "eval")
+        } children (
         arg[String]("<evaluation-class>") action { (x, c) =>
           c.copy(common = c.common.copy(evaluation = Some(x)))
         },
@@ -416,7 +424,9 @@ object Console extends Logging {
             "In addition, it also supports a second level of pass-through\n" +
             "arguments to the driver program, e.g.\n" +
             "pio run -- --master spark://localhost:7077 -- --driver-arg foo")
-        .action { (_, c) => c.copy(commands = c.commands :+ "run") } children (
+        .action { (_, c) =>
+          c.copy(commands = c.commands :+ "run")
+        } children (
         arg[String]("<main class>") action { (x, c) =>
           c.copy(mainClass = Some(x))
         } text ("Main class name of the driver program."),
@@ -433,7 +443,9 @@ object Console extends Logging {
       note("")
       cmd("status")
         .text("Displays status information about the PredictionIO system.")
-        .action { (_, c) => c.copy(commands = c.commands :+ "status") }
+        .action { (_, c) =>
+          c.copy(commands = c.commands :+ "status")
+        }
       note("")
       cmd("upgrade").text("Upgrade tool").action { (_, c) =>
         c.copy(commands = c.commands :+ "upgrade")
@@ -597,7 +609,9 @@ object Console extends Logging {
             c.copy(template = c.template.copy(email = Some(x)))
           }
         ),
-        cmd("list").action { (_, c) => c.copy(commands = c.commands :+ "list") }
+        cmd("list").action { (_, c) =>
+          c.copy(commands = c.commands :+ "list")
+        }
       )
       cmd("export").action { (_, c) =>
         c.copy(commands = c.commands :+ "export")
@@ -776,7 +790,9 @@ object Console extends Logging {
       error("No engine found. Your build might have failed. Aborting.")
       return 1
     }
-    jarFiles foreach { f => info(s"Found ${f.getName}") }
+    jarFiles foreach { f =>
+      info(s"Found ${f.getName}")
+    }
     RegisterEngine.registerEngine(ca.common.manifestJson, jarFiles, false)
     info("Your engine is ready for training.")
     0
@@ -791,7 +807,9 @@ object Console extends Logging {
     withRegisteredManifest(
       ca.common.manifestJson,
       ca.common.engineId,
-      ca.common.engineVersion) { em => RunWorkflow.newRunWorkflow(ca, em) }
+      ca.common.engineVersion) { em =>
+      RunWorkflow.newRunWorkflow(ca, em)
+    }
   }
 
   def deploy(ca: ConsoleArgs): Int = {
@@ -962,7 +980,9 @@ object Console extends Logging {
   }
 
   private def outputSbtError(line: String): Unit = {
-    """\[.*error.*\]""".r findFirstIn line foreach { _ => error(line) }
+    """\[.*error.*\]""".r findFirstIn line foreach { _ =>
+      error(line)
+    }
   }
 
   def run(ca: ConsoleArgs): Int = {
@@ -971,7 +991,9 @@ object Console extends Logging {
     val extraFiles = WorkflowUtils.thirdPartyConfFiles
 
     val jarFiles = jarFilesForScala
-    jarFiles foreach { f => info(s"Found JAR: ${f.getName}") }
+    jarFiles foreach { f =>
+      info(s"Found JAR: ${f.getName}")
+    }
     val allJarFiles = jarFiles.map(_.getCanonicalPath)
     val cmd = s"${getSparkHome(ca.common.sparkHome)}/bin/spark-submit --jars " +
       s"${allJarFiles.mkString(",")} " +

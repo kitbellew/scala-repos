@@ -5,12 +5,16 @@ object Test extends App {
   }
 
   def g: Boolean = {
-    val xs = Nil collect { case _ => return false }
+    val xs = Nil collect {
+      case _ => return false
+    }
     true
   }
 
   def h: Boolean = {
-    val xs = Nil flatMap { _ => return false }
+    val xs = Nil flatMap { _ =>
+      return false
+    }
     true
   }
   assert(f && g && h)

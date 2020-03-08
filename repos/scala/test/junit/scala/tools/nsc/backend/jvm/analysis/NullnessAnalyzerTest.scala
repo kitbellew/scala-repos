@@ -70,7 +70,9 @@ class NullnessAnalyzerTest extends ClearAfterClass {
             .map(f.getValue(_).toString)
             .map(s => "%8s".format(s))
             .zipWithIndex
-            .map({ case (s, i) => s"$i: $s" })
+            .map({
+              case (s, i) => s"$i: $s"
+            })
             .mkString(", ")
       }
       ("%" + instrLength + "s: %s").format(textify(i), frameString)

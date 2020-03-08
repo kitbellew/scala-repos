@@ -65,7 +65,9 @@ trait TestJobService
   def authService(config: Configuration): AuthService[Future] =
     TestAuthService[Future](Set(validAPIKey))
 
-  def close(u: Unit): Future[Unit] = Future { u }
+  def close(u: Unit): Future[Unit] = Future {
+    u
+  }
 }
 
 class JobServiceSpec extends TestJobService {
@@ -97,7 +99,9 @@ class JobServiceSpec extends TestJobService {
 
   def startJob(ts: Option[DateTime] = None): JValue = JObject(
     JField("state", JString("started")) ::
-      (ts map { dt => JField("timestamp", dt.serialize) :: Nil } getOrElse Nil)
+      (ts map { dt =>
+        JField("timestamp", dt.serialize) :: Nil
+      } getOrElse Nil)
   )
 
   def postJob(job: JValue, apiKey: String = validAPIKey) =

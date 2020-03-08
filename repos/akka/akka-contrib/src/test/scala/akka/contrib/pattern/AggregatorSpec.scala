@@ -337,10 +337,14 @@ class WorkListSpec extends FunSuiteLike {
 
   test("Append two lists") {
     workList.removeAll()
-    0 to 4 foreach { id ⇒ workList.add(TestEntry(id), permanent = false) }
+    0 to 4 foreach { id ⇒
+      workList.add(TestEntry(id), permanent = false)
+    }
 
     val l2 = new WorkList[TestEntry]
-    5 to 9 foreach { id ⇒ l2.add(TestEntry(id), permanent = true) }
+    5 to 9 foreach { id ⇒
+      l2.add(TestEntry(id), permanent = true)
+    }
 
     workList addAll l2
 

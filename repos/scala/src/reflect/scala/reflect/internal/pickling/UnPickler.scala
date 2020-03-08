@@ -607,7 +607,9 @@ abstract class UnPickler {
         case APPLYtree  => fixApply(Apply(ref, all(ref)), tpe) // !!!
         case BINDtree   => Bind(nameRef, ref)
         case BLOCKtree =>
-          all(ref) match { case stats :+ expr => Block(stats, expr) }
+          all(ref) match {
+            case stats :+ expr => Block(stats, expr)
+          }
         case IFtree           => If(ref, ref, ref)
         case LITERALtree      => Literal(constRef)
         case TYPEAPPLYtree    => TypeApply(ref, all(ref))
@@ -822,7 +824,9 @@ abstract class UnPickler {
         completeInternal(sym)
         if (!isCompilerUniverse) markAllCompleted(sym)
       }
-      override def load(sym: Symbol) { complete(sym) }
+      override def load(sym: Symbol) {
+        complete(sym)
+      }
     }
 
     /** A lazy type which when completed returns type at index `i` and sets alias

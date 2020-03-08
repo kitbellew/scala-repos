@@ -277,7 +277,9 @@ abstract class BTypes {
       if (classNode.attrs == null) None
       else
         classNode.attrs.asScala
-          .collect({ case a: InlineInfoAttribute => a })
+          .collect({
+            case a: InlineInfoAttribute => a
+          })
           .headOption
           .map(_.inlineInfo)
     }

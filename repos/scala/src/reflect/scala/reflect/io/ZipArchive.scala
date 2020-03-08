@@ -39,8 +39,11 @@ object ZipArchive {
     */
   def fromFile(file: File): FileZipArchive = fromFile(file.jfile)
   def fromFile(file: JFile): FileZipArchive =
-    try { new FileZipArchive(file) }
-    catch { case _: IOException => null }
+    try {
+      new FileZipArchive(file)
+    } catch {
+      case _: IOException => null
+    }
 
   /**
     * @param   url  the url of a zip file
@@ -246,7 +249,9 @@ final class URLZipArchive(val url: URL) extends ZipArchive(null) {
   def input = url.openStream()
   def lastModified =
     try url.openConnection().getLastModified()
-    catch { case _: IOException => 0 }
+    catch {
+      case _: IOException => 0
+    }
 
   override def canEqual(other: Any) = other.isInstanceOf[URLZipArchive]
   override def hashCode() = url.hashCode
@@ -294,7 +299,9 @@ final class ManifestResources(val url: URL) extends ZipArchive(null) {
   def input = url.openStream()
   def lastModified =
     try url.openConnection().getLastModified()
-    catch { case _: IOException => 0 }
+    catch {
+      case _: IOException => 0
+    }
 
   override def canEqual(other: Any) = other.isInstanceOf[ManifestResources]
   override def hashCode() = url.hashCode

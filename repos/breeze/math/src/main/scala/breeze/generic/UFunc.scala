@@ -69,7 +69,9 @@ trait UFunc {
     impl(v); v
   }
   final def inPlace[V, V2](v: V, v2: V2)(
-      implicit impl: UFunc.InPlaceImpl2[this.type, V, V2]) = { impl(v, v2); v }
+      implicit impl: UFunc.InPlaceImpl2[this.type, V, V2]) = {
+    impl(v, v2); v
+  }
   final def inPlace[V, V2, V3](v: V, v2: V2, v3: V3)(
       implicit impl: UFunc.InPlaceImpl3[this.type, V, V2, V3]) = {
     impl(v, v2, v3); v
@@ -242,7 +244,9 @@ object UFunc {
       canTransform: CanTransformValues[T, V],
       impl: UImpl[Tag, V, V]): InPlaceImpl[Tag, T] = {
     new InPlaceImpl[Tag, T] {
-      def apply(v: T) = { canTransform.transform(v, impl.apply) }
+      def apply(v: T) = {
+        canTransform.transform(v, impl.apply)
+      }
     }
   }
 
@@ -250,7 +254,9 @@ object UFunc {
       canTransform: CanTransformValues[T, V],
       impl: UImpl2[Tag, V, V2, V]): InPlaceImpl2[Tag, T, V2] = {
     new InPlaceImpl2[Tag, T, V2] {
-      def apply(v: T, v2: V2) = { canTransform.transform(v, impl.apply(_, v2)) }
+      def apply(v: T, v2: V2) = {
+        canTransform.transform(v, impl.apply(_, v2))
+      }
     }
   }
 

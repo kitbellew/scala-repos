@@ -493,7 +493,11 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
       ("#foo" #> "hello" &
         "#baz" #> "bye")(
         <b><div id="baz">Hello</div><span id="foo"/></b>) must be_==(
-        NodeSeq fromSeq <b>{Text("bye")}{Text("hello")}</b>)
+        NodeSeq fromSeq <b>{
+          Text("bye")
+        }{
+          Text("hello")
+        }</b>)
     }
 
     "bind href and None content" in {
@@ -681,7 +685,11 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
       (("#foo" replaceWith "hello") &
         ("#baz" replaceWith "bye"))(
         <b><div id="baz">Hello</div><span id="foo"/></b>
-      ) must_== (NodeSeq fromSeq <b>{Text("bye")}{Text("hello")}</b>)
+      ) must_== (NodeSeq fromSeq <b>{
+        Text("bye")
+      }{
+        Text("hello")
+      }</b>)
     }
 
     "substitute multiple Strings with a List by id" in {
@@ -689,7 +697,11 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
         "#baz" #> List("bye", "bye"))(
         <b><div id="baz">Hello</div><span id="foo"/></b>) must_== (NodeSeq fromSeq <b>{
         Text("bye")
-      }{Text("bye")}{Text("hello")}</b>)
+      }{
+        Text("bye")
+      }{
+        Text("hello")
+      }</b>)
     }
 
     "substitute multiple Strings with a List by id" in {
@@ -697,7 +709,11 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
         ("#baz" replaceWith List("bye", "bye")))(
         <b><div id="baz">Hello</div><span id="foo"/></b>) must_== (NodeSeq fromSeq <b>{
         Text("bye")
-      }{Text("bye")}{Text("hello")}</b>)
+      }{
+        Text("bye")
+      }{
+        Text("hello")
+      }</b>)
     }
 
     "substitute multiple Strings with a List of XML by id" in {

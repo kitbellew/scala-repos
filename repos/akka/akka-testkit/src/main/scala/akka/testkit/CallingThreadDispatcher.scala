@@ -203,7 +203,9 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
 
   protected[akka] override def suspend(actor: ActorCell) {
     actor.mailbox match {
-      case m: CallingThreadMailbox ⇒ { m.suspendSwitch.switchOn; m.suspend() }
+      case m: CallingThreadMailbox ⇒ {
+        m.suspendSwitch.switchOn; m.suspend()
+      }
       case m ⇒ m.systemEnqueue(actor.self, Suspend())
     }
   }

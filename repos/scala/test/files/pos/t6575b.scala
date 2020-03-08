@@ -3,13 +3,19 @@
 // until after the typer.
 //
 // So this test is just confirmation.
-trait X { def foo: Function1[Int, Int] }
+trait X {
+  def foo: Function1[Int, Int]
+}
 
 trait Y extends X {
-  abstract override def foo = { case i => super.foo(i) * 2 }
+  abstract override def foo = {
+    case i => super.foo(i) * 2
+  }
 }
 trait Z extends X {
-  abstract override def foo = { case i => super.foo(i) + 3 }
+  abstract override def foo = {
+    case i => super.foo(i) + 3
+  }
 }
 
 trait Comb extends Y with Z {

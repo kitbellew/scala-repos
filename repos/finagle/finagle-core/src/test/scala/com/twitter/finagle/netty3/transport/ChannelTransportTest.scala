@@ -26,7 +26,9 @@ class ChannelTransportTest
   def when[T](o: T) =
     Mockito
       .when(o)
-      .asInstanceOf[{ def thenReturn[T](s: T): OngoingStubbing[T] }]
+      .asInstanceOf[{
+        def thenReturn[T](s: T): OngoingStubbing[T]
+      }]
 
   val ch = mock[Channel]
   val closeFuture = mock[ChannelFuture]
@@ -80,7 +82,9 @@ class ChannelTransportTest
 
     val exc = new Exception("wtf")
     dsme.getFuture.setFailure(exc)
-    val exc1 = intercept[ChannelException] { Await.result(f) }
+    val exc1 = intercept[ChannelException] {
+      Await.result(f)
+    }
     assert(exc1 == ChannelException(exc, remoteAddress))
   }
 
@@ -189,11 +193,14 @@ class ChannelTransportTest
       e
     })
 
-    val exc1 = intercept[ChannelException] { Await.result(trans.read()) }
+    val exc1 = intercept[ChannelException] {
+      Await.result(trans.read())
+    }
     assert(exc1 == ChannelException(exc, remoteAddress))
   }
 
-  test("handle exceptions on pending reads") { // writes are taken care of by netty
+  test(
+    "handle exceptions on pending reads") { // writes are taken care of by netty
     val f = trans.read()
     assert(!f.isDefined)
     sendUpstream({
@@ -202,7 +209,9 @@ class ChannelTransportTest
       e
     })
 
-    val exc1 = intercept[ChannelException] { Await.result(f) }
+    val exc1 = intercept[ChannelException] {
+      Await.result(f)
+    }
     assert(exc1 == ChannelException(exc, remoteAddress))
   }
 

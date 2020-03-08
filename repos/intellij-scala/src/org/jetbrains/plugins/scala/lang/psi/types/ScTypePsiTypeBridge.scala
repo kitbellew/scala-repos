@@ -103,7 +103,9 @@ trait ScTypePsiTypeBridge {
                       val arrayOfTypes: Array[PsiClassType] =
                         tp.getExtendsListTypes ++ tp.getImplementsListTypes
                       ScSkolemizedType(
-                        s"_$$${ index += 1; index }",
+                        s"_$$${
+                          index += 1; index
+                        }",
                         Nil,
                         types.Nothing,
                         arrayOfTypes.length match {
@@ -139,7 +141,9 @@ trait ScTypePsiTypeBridge {
                       psiType match {
                         case wild: PsiWildcardType =>
                           ScSkolemizedType(
-                            s"_$$${ index += 1; index }",
+                            s"_$$${
+                              index += 1; index
+                            }",
                             Nil,
                             if (wild.isSuper)
                               create(
@@ -159,7 +163,9 @@ trait ScTypePsiTypeBridge {
                         case capture: PsiCapturedWildcardType =>
                           val wild = capture.getWildcard
                           ScSkolemizedType(
-                            s"_$$${ index += 1; index }",
+                            s"_$$${
+                              index += 1; index
+                            }",
                             Nil,
                             if (wild.isSuper)
                               create(

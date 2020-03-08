@@ -85,7 +85,9 @@ object SwaggerSupportSyntax {
         }
 
       private def named: Parser[Builder => Builder] =
-        ":" ~> """\w+""".r ^^ { str => builder => builder addNamed str }
+        ":" ~> """\w+""".r ^^ { str => builder =>
+          builder addNamed str
+        }
 
       private def literal: Parser[Builder => Builder] =
         ("""[\.\+\(\)\$]""".r | ".".r) ^^ { str => builder =>
@@ -107,7 +109,9 @@ object SwaggerSupportSyntax {
 
       def optional(builder: Builder => Builder): Builder =
         try builder(this)
-        catch { case e: Exception => this }
+        catch {
+          case e: Exception => this
+        }
 
       // appends additional params as a query string
       def get: String = path
@@ -127,10 +131,14 @@ object SwaggerSupportSyntax {
         param | glob | optional | static
 
       private def param: Parser[Builder => Builder] =
-        ":" ~> identifier ^^ { str => builder => builder addParam str }
+        ":" ~> identifier ^^ { str => builder =>
+          builder addParam str
+        }
 
       private def glob: Parser[Builder => Builder] =
-        "*" ~> identifier ^^ { str => builder => builder addParam str }
+        "*" ~> identifier ^^ { str => builder =>
+          builder addParam str
+        }
 
       private def optional: Parser[Builder => Builder] =
         "(" ~> tokens <~ ")" ^^ { subBuilder => builder =>
@@ -138,7 +146,9 @@ object SwaggerSupportSyntax {
         }
 
       private def static: Parser[Builder => Builder] =
-        (escaped | char) ^^ { str => builder => builder addStatic str }
+        (escaped | char) ^^ { str => builder =>
+          builder addStatic str
+        }
 
       private def identifier = """[a-zA-Z_]\w*""".r
 
@@ -168,8 +178,12 @@ object SwaggerSupportSyntax {
     private[this] var _paramAccess: Option[String] = None
 
     def dataType: DataType = _dataType
-    def dataType(dataType: DataType): this.type = { _dataType = dataType; this }
-    def name(name: String): this.type = { _name = name; this }
+    def dataType(dataType: DataType): this.type = {
+      _dataType = dataType; this
+    }
+    def name(name: String): this.type = {
+      _name = name; this
+    }
     def description(description: String): this.type = {
       _description = description.blankOption; this
     }
@@ -177,7 +191,9 @@ object SwaggerSupportSyntax {
       _description = description.flatMap(_.blankOption); this
     }
 
-    def notes(notes: String): this.type = { _notes = notes.blankOption; this }
+    def notes(notes: String): this.type = {
+      _notes = notes.blankOption; this
+    }
     def paramType(name: ParamType.ParamType): this.type = {
       _paramType = name; this
     }
@@ -200,12 +216,18 @@ object SwaggerSupportSyntax {
       this
     }
 
-    def accessibleBy(value: String) = { _paramAccess = value.blankOption; this }
+    def accessibleBy(value: String) = {
+      _paramAccess = value.blankOption; this
+    }
     def allowableValues(values: Range): this.type = {
       _allowableValues = AllowableValues(values); this
     }
-    def required: this.type = { _required = Some(true); this }
-    def optional: this.type = { _required = Some(false); this }
+    def required: this.type = {
+      _required = Some(true); this
+    }
+    def optional: this.type = {
+      _required = Some(false); this
+    }
 
     def defaultValue: Option[String] = None
 
@@ -296,8 +318,12 @@ object SwaggerSupportSyntax {
       this
     }
     def deprecated: Boolean = _deprecated
-    def deprecate: this.type = { _deprecated = true; this }
-    def nickname(value: String): this.type = { _nickname = value; this }
+    def deprecate: this.type = {
+      _deprecated = true; this
+    }
+    def nickname(value: String): this.type = {
+      _nickname = value; this
+    }
     def nickName(value: String): this.type = nickname(value)
     def nickname: Option[String] = _nickname.blankOption
     def parameters(params: Parameter*): this.type = {
@@ -327,7 +353,9 @@ object SwaggerSupportSyntax {
     def authorizations(values: String*): this.type = {
       _authorizations :::= values.toList; this
     }
-    def position(value: Int): this.type = { _position = value; this }
+    def position(value: Int): this.type = {
+      _position = value; this
+    }
     def position: Int = _position
 
     @deprecated("Swagger spec 1.2 defines errors as responseMessages", "2.2.2")
@@ -552,7 +580,9 @@ trait SwaggerSupportSyntax extends Initializable with CorsSupport {
     if (st.isOption) b.optional
     if (st.isCollection) b.multiValued
 
-    Swagger.modelToSwagger[T] foreach { m => b.description(m.description) }
+    Swagger.modelToSwagger[T] foreach { m =>
+      b.description(m.description)
+    }
     b
   }
   private[this] def swaggerParam(

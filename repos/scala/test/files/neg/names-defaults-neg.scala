@@ -14,8 +14,12 @@ object Test extends App {
   test2(y = 1)
   test1(c = 0, b = "joke")
   test7((m = 1)) // named arguments must be top-level assignments
-  test7({ m = 1 })
-  test7 { m = 1 } // no named arguments in argument block
+  test7({
+    m = 1
+  })
+  test7 {
+    m = 1
+  } // no named arguments in argument block
   test8(x = 1)
 
   // argument specified twice
@@ -62,12 +66,16 @@ object Test extends App {
   val facc = fac.copy(b = "dlkfj")()
 
   // no defaults in patterns
-  A1() match { case A1(_) => () }
+  A1() match {
+    case A1(_) => ()
+  }
 
   // return types of default getters
 
   // definition compiles, but default cannot  be used, it doesn't conform
-  def test4[T[P]](x: T[T[List[T[X forSome { type X }]]]] = List(1, 2)) = x
+  def test4[T[P]](x: T[T[List[T[X forSome {
+    type X
+  }]]]] = List(1, 2)) = x
   test4()
 
   // doesn't compile
@@ -125,7 +133,9 @@ class A2[T](a: T = 1)
 // anonymous functions
 object anfun {
   var var2 = 0
-  def delay(var2: => Unit) { var2 }
+  def delay(var2: => Unit) {
+    var2
+  }
   delay(var2 = 40)
 
   def testAnnFun(a: Int, b: String) = println(a + ": " + b)
@@ -135,47 +145,123 @@ object anfun {
 }
 
 object t3685 {
-  object t { def f(x: Int) = x }
+  object t {
+    def f(x: Int) = x
+  }
 
-  def t1 { def x = t.f(x = 1) }
-  def t2 { val x = t.f(x = 1) }
-  def t3 { var x = t.f(x = 1) }
-  object t4 { def x = t.f(x = 1) }
-  object t5 { val x = t.f(x = 1) }
-  object t6 { var x = t.f(x = 1) }
-  class t7 { def x = t.f(x = 1) }
-  class t8 { val x = t.f(x = 1) }
-  class t9 { var x = t.f(x = 1) }
+  def t1 {
+    def x = t.f(x = 1)
+  }
+  def t2 {
+    val x = t.f(x = 1)
+  }
+  def t3 {
+    var x = t.f(x = 1)
+  }
+  object t4 {
+    def x = t.f(x = 1)
+  }
+  object t5 {
+    val x = t.f(x = 1)
+  }
+  object t6 {
+    var x = t.f(x = 1)
+  }
+  class t7 {
+    def x = t.f(x = 1)
+  }
+  class t8 {
+    val x = t.f(x = 1)
+  }
+  class t9 {
+    var x = t.f(x = 1)
+  }
 
-  def t10 { def x: Int = t.f(x = 1) }
-  def t11 { val x: Int = t.f(x = 1) }
-  def t12 { var x: Int = t.f(x = 1) }
-  class t13 { def x: Int = t.f(x = 1) }
-  class t14 { val x: Int = t.f(x = 1) }
-  class t15 { var x: Int = t.f(x = 1) }
+  def t10 {
+    def x: Int = t.f(x = 1)
+  }
+  def t11 {
+    val x: Int = t.f(x = 1)
+  }
+  def t12 {
+    var x: Int = t.f(x = 1)
+  }
+  class t13 {
+    def x: Int = t.f(x = 1)
+  }
+  class t14 {
+    val x: Int = t.f(x = 1)
+  }
+  class t15 {
+    var x: Int = t.f(x = 1)
+  }
 
-  object u { def f[T](x: T) = 100 }
+  object u {
+    def f[T](x: T) = 100
+  }
 
-  def u1 { def x = u.f(x = 1) }
-  def u2 { val x = u.f(x = 1) }
-  def u3 { var x = u.f(x = 1) }
-  def u4 { def x = u.f(x = "23") }
-  def u5 { val x = u.f(x = "32") }
-  def u6 { var x = u.f(x = "32") }
-  def u7 { def x: Int = u.f(x = 1) }
-  def u8 { val x: Int = u.f(x = 1) }
-  def u9 { var x: Int = u.f(x = 1) }
-  def u10 { def x: Int = u.f(x = "32") }
-  def u11 { val x: Int = u.f(x = "32") }
-  def u12 { var x: Int = u.f(x = "32") }
+  def u1 {
+    def x = u.f(x = 1)
+  }
+  def u2 {
+    val x = u.f(x = 1)
+  }
+  def u3 {
+    var x = u.f(x = 1)
+  }
+  def u4 {
+    def x = u.f(x = "23")
+  }
+  def u5 {
+    val x = u.f(x = "32")
+  }
+  def u6 {
+    var x = u.f(x = "32")
+  }
+  def u7 {
+    def x: Int = u.f(x = 1)
+  }
+  def u8 {
+    val x: Int = u.f(x = 1)
+  }
+  def u9 {
+    var x: Int = u.f(x = 1)
+  }
+  def u10 {
+    def x: Int = u.f(x = "32")
+  }
+  def u11 {
+    val x: Int = u.f(x = "32")
+  }
+  def u12 {
+    var x: Int = u.f(x = "32")
+  }
 
-  class u13 { def x = u.f(x = 1) }
-  class u14 { val x = u.f(x = 1) }
-  class u15 { var x = u.f(x = 1) }
-  class u16 { def x: Int = u.f(x = 1) }
-  class u17 { val x: Int = u.f(x = 1) }
-  class u18 { var x: Int = u.f(x = 1) }
-  class u19 { def x: Int = u.f(x = "32") }
-  class u20 { val x: Int = u.f(x = "32") }
-  class u21 { var x: Int = u.f(x = "32") }
+  class u13 {
+    def x = u.f(x = 1)
+  }
+  class u14 {
+    val x = u.f(x = 1)
+  }
+  class u15 {
+    var x = u.f(x = 1)
+  }
+  class u16 {
+    def x: Int = u.f(x = 1)
+  }
+  class u17 {
+    val x: Int = u.f(x = 1)
+  }
+  class u18 {
+    var x: Int = u.f(x = 1)
+  }
+  class u19 {
+    def x: Int = u.f(x = "32")
+  }
+  class u20 {
+    val x: Int = u.f(x = "32")
+  }
+  class u21 {
+    var x: Int = u.f(x = "32")
+  }
 }

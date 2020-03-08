@@ -63,12 +63,16 @@ class AdaptorsTest extends FunSuite with GeneratorDrivenPropertyChecks {
   } yield {
     if (chunked) {
       val res = Response(version, Status(code), Reader.fromBuf(Buf.Utf8(body)))
-      headers foreach { case (k, v) => res.headerMap.add(k, v) }
+      headers foreach {
+        case (k, v) => res.headerMap.add(k, v)
+      }
       res.headerMap.set(Fields.TransferEncoding, "chunked")
       (res, body)
     } else {
       val res = Response(version, Status(code))
-      headers foreach { case (k, v) => res.headerMap.add(k, v) }
+      headers foreach {
+        case (k, v) => res.headerMap.add(k, v)
+      }
       res.contentString = body
       (res, body)
     }
@@ -83,7 +87,9 @@ class AdaptorsTest extends FunSuite with GeneratorDrivenPropertyChecks {
     body <- arbitrary[String]
   } yield {
     val reqIn = Request(version, method, uri)
-    headers foreach { case (k, v) => reqIn.headers.add(k, v) }
+    headers foreach {
+      case (k, v) => reqIn.headers.add(k, v)
+    }
     val req = Request(
       reqIn.httpRequest,
       BufReader(Buf.Utf8(body)),
@@ -124,7 +130,9 @@ class AdaptorsTest extends FunSuite with GeneratorDrivenPropertyChecks {
     forAll(arbRequest) {
       case (in: Request, body: String) =>
         if (in.isChunked) {
-          val exc = intercept[Exception] { Await.result(NettyAdaptor.in(in)) }
+          val exc = intercept[Exception] {
+            Await.result(NettyAdaptor.in(in))
+          }
           assert(NettyAdaptor.NoStreaming == exc)
         } else {
           val out = Await.result(NettyAdaptor.in(in))
@@ -142,7 +150,9 @@ class AdaptorsTest extends FunSuite with GeneratorDrivenPropertyChecks {
     forAll(arbNettyResponse) {
       case (in: HttpResponse, body: String) =>
         if (in.isChunked) {
-          val exc = intercept[Exception] { Await.result(NettyAdaptor.out(in)) }
+          val exc = intercept[Exception] {
+            Await.result(NettyAdaptor.out(in))
+          }
           assert(NettyAdaptor.NoStreaming == exc)
         } else {
           val out = Await.result(NettyAdaptor.out(in))

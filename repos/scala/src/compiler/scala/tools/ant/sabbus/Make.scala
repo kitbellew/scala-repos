@@ -25,7 +25,9 @@ class Make extends Task with TaskArgs {
     settings.extraParams = extraArgsFlat
     Compilers.make(
       id.get,
-      (compilerPath.get.list.map { path => new File(path).toURI.toURL }),
+      (compilerPath.get.list.map { path =>
+        new File(path).toURI.toURL
+      }),
       settings)
   }
 }

@@ -30,9 +30,15 @@ class SinkSpec extends AkkaSpec {
       Source(List(0, 1, 2)).runWith(sink)
 
       val subscriptions = probes.map(_.expectSubscription())
-      subscriptions.foreach { s ⇒ s.request(3) }
-      probes.zipWithIndex.foreach { case (p, i) ⇒ p.expectNext(i) }
-      probes.foreach { case p ⇒ p.expectComplete() }
+      subscriptions.foreach { s ⇒
+        s.request(3)
+      }
+      probes.zipWithIndex.foreach {
+        case (p, i) ⇒ p.expectNext(i)
+      }
+      probes.foreach {
+        case p ⇒ p.expectComplete()
+      }
     }
 
     "be composable with importing 1 module" in {
@@ -49,9 +55,15 @@ class SinkSpec extends AkkaSpec {
       Source(List(0, 1, 2)).runWith(sink)
 
       val subscriptions = probes.map(_.expectSubscription())
-      subscriptions.foreach { s ⇒ s.request(3) }
-      probes.zipWithIndex.foreach { case (p, i) ⇒ p.expectNext(i) }
-      probes.foreach { case p ⇒ p.expectComplete() }
+      subscriptions.foreach { s ⇒
+        s.request(3)
+      }
+      probes.zipWithIndex.foreach {
+        case (p, i) ⇒ p.expectNext(i)
+      }
+      probes.foreach {
+        case p ⇒ p.expectComplete()
+      }
     }
 
     "be composable with importing 2 modules" in {
@@ -69,9 +81,15 @@ class SinkSpec extends AkkaSpec {
       Source(List(0, 1, 2)).runWith(sink)
 
       val subscriptions = probes.map(_.expectSubscription())
-      subscriptions.foreach { s ⇒ s.request(3) }
-      probes.zipWithIndex.foreach { case (p, i) ⇒ p.expectNext(i) }
-      probes.foreach { case p ⇒ p.expectComplete() }
+      subscriptions.foreach { s ⇒
+        s.request(3)
+      }
+      probes.zipWithIndex.foreach {
+        case (p, i) ⇒ p.expectNext(i)
+      }
+      probes.foreach {
+        case p ⇒ p.expectComplete()
+      }
     }
 
     "be composable with importing 3 modules" in {
@@ -91,9 +109,15 @@ class SinkSpec extends AkkaSpec {
       Source(List(0, 1, 2)).runWith(sink)
 
       val subscriptions = probes.map(_.expectSubscription())
-      subscriptions.foreach { s ⇒ s.request(3) }
-      probes.zipWithIndex.foreach { case (p, i) ⇒ p.expectNext(i) }
-      probes.foreach { case p ⇒ p.expectComplete() }
+      subscriptions.foreach { s ⇒
+        s.request(3)
+      }
+      probes.zipWithIndex.foreach {
+        case (p, i) ⇒ p.expectNext(i)
+      }
+      probes.foreach {
+        case p ⇒ p.expectComplete()
+      }
     }
 
     "combine to many outputs with simplified API" in {
@@ -107,10 +131,16 @@ class SinkSpec extends AkkaSpec {
 
       val subscriptions = probes.map(_.expectSubscription())
 
-      subscriptions.foreach { s ⇒ s.request(1) }
-      probes.foreach { p ⇒ p.expectNext(0) }
+      subscriptions.foreach { s ⇒
+        s.request(1)
+      }
+      probes.foreach { p ⇒
+        p.expectNext(0)
+      }
 
-      subscriptions.foreach { s ⇒ s.request(2) }
+      subscriptions.foreach { s ⇒
+        s.request(2)
+      }
       probes.foreach { p ⇒
         p.expectNextN(List(1, 2))
         p.expectComplete
@@ -127,10 +157,16 @@ class SinkSpec extends AkkaSpec {
 
       val subscriptions = probes.map(_.expectSubscription())
 
-      subscriptions.foreach { s ⇒ s.request(1) }
-      probes.foreach { p ⇒ p.expectNext(0) }
+      subscriptions.foreach { s ⇒
+        s.request(1)
+      }
+      probes.foreach { p ⇒
+        p.expectNext(0)
+      }
 
-      subscriptions.foreach { s ⇒ s.request(2) }
+      subscriptions.foreach { s ⇒
+        s.request(2)
+      }
       probes.foreach { p ⇒
         p.expectNextN(List(1, 2))
         p.expectComplete

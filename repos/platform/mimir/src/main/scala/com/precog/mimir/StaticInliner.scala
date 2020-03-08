@@ -184,7 +184,11 @@ trait StdLibStaticInlinerModule[M[+_]]
 
             val graphM = for {
               op2 <- op2ForBinOp(op)
-              op2F2 <- op2.fold(op2 = const(None), op2F2 = { Some(_) })
+              op2F2 <- op2.fold(
+                op2 = const(None),
+                op2F2 = {
+                  Some(_)
+                })
               result <- (left2, right2) match {
                 case (left2 @ Const(CUndefined), _) =>
                   Some(Const(CUndefined)(left2.loc))

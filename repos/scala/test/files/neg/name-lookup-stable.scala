@@ -12,7 +12,9 @@ class A {
   {
     import ColumnOption._
 
-    (null: Any) match { case PrimaryKey => }
+    (null: Any) match {
+      case PrimaryKey =>
+    }
 
     PrimaryKey // was already ambiguous in 2.10.3
   }

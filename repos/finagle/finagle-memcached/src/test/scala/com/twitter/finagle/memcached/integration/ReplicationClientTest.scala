@@ -95,8 +95,12 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
     shutdownRegistry.execute()
 
     // shutdown memcached server
-    firstTestServerPool foreach { _.stop() }
-    secondTestServerPool foreach { _.stop() }
+    firstTestServerPool foreach {
+      _.stop()
+    }
+    secondTestServerPool foreach {
+      _.stop()
+    }
     firstTestServerPool = List()
     secondTestServerPool = List()
   }

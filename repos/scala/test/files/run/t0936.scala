@@ -1,7 +1,9 @@
 object Test extends App {
   def foo = {
 
-    abstract class MouseEventType { def x: String }
+    abstract class MouseEventType {
+      def x: String
+    }
     case object Clicked extends MouseEventType {
       def x = "Clicked"
     }

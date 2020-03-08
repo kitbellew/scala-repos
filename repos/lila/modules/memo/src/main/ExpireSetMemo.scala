@@ -9,13 +9,19 @@ final class ExpireSetMemo(ttl: Duration) {
 
   def get(key: String): Boolean = Option(cache getIfPresent key) getOrElse false
 
-  def put(key: String) { cache.put(key, true) }
-
-  def putAll(keys: Iterable[String]) {
-    keys.toList.distinct foreach { cache.put(_, true) }
+  def put(key: String) {
+    cache.put(key, true)
   }
 
-  def remove(key: String) { cache invalidate key }
+  def putAll(keys: Iterable[String]) {
+    keys.toList.distinct foreach {
+      cache.put(_, true)
+    }
+  }
+
+  def remove(key: String) {
+    cache invalidate key
+  }
 
   def keys: Iterable[String] = cache.asMap.keys
 

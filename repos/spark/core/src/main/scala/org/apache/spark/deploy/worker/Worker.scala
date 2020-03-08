@@ -447,7 +447,9 @@ private[deploy] class Worker(
 
   override def receive: PartialFunction[Any, Unit] = synchronized {
     case SendHeartbeat =>
-      if (connected) { sendToMaster(Heartbeat(workerId, self)) }
+      if (connected) {
+        sendToMaster(Heartbeat(workerId, self))
+      }
 
     case WorkDirCleanup =>
       // Spin up a separate thread (in a future) to do the dir cleanup; don't tie up worker
@@ -680,7 +682,9 @@ private[deploy] class Worker(
       finishedApps -= id
       appDirectories.remove(id).foreach { dirList =>
         logInfo(s"Cleaning up local directories for application $id")
-        dirList.foreach { dir => Utils.deleteRecursively(new File(dir)) }
+        dirList.foreach { dir =>
+          Utils.deleteRecursively(new File(dir))
+        }
       }
       shuffleService.applicationRemoved(id)
     }

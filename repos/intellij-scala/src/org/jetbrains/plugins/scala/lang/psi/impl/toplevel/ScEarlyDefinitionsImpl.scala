@@ -28,7 +28,9 @@ class ScEarlyDefinitionsImpl private (
     node: ASTNode)
     extends ScalaStubBasedElementImpl(stub, nodeType, node)
     with ScEarlyDefinitions {
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
   def this(stub: ScEarlyDefinitionsStub) = {
     this(stub, ScalaElementTypes.EARLY_DEFINITIONS, null)
   }

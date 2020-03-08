@@ -51,10 +51,18 @@ trait DateTimeTypedField extends TypedField[Calendar] {
 
   private def elem =
     S.fmapFunc(SFuncHolder(this.setFromAny(_))) { funcName =>
-      <input type={formInputType}
-        name={funcName}
-        value={valueBox.map(s => toInternetDate(s.getTime)) openOr ""}
-        tabindex={tabIndex.toString}/>
+      <input type={
+        formInputType
+      }
+        name={
+        funcName
+      }
+        value={
+        valueBox.map(s => toInternetDate(s.getTime)) openOr ""
+      }
+        tabindex={
+        tabIndex.toString
+      }/>
     }
 
   def toForm: Box[NodeSeq] =

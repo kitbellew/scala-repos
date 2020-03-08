@@ -41,7 +41,9 @@ private[finagle] object Bufs {
       */
     def split(delimiter: Char): Seq[Buf] = {
       val Buf.Utf8(decoded) = buffer
-      decoded.split(delimiter).map { Buf.Utf8(_) }
+      decoded.split(delimiter).map {
+        Buf.Utf8(_)
+      }
     }
 
     /**
@@ -53,12 +55,16 @@ private[finagle] object Bufs {
     /**
       * @return the decimal UTF-8 String (Long) decoding of the Buf
       */
-    def toLong: Long = buffer match { case Buf.Utf8(s) => s.toLong }
+    def toLong: Long = buffer match {
+      case Buf.Utf8(s) => s.toLong
+    }
 
     /**
       * @return the decimal UTF-8 String (Int) decoding of the Buf
       */
-    def toInt: Int = buffer match { case Buf.Utf8(s) => s.toInt }
+    def toInt: Int = buffer match {
+      case Buf.Utf8(s) => s.toInt
+    }
 
     /**
       * Seq[Byte] impl

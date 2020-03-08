@@ -24,7 +24,9 @@ import scala.annotation.migration
 object Stack extends SeqFactory[Stack] {
   class StackBuilder[A] extends Builder[A, Stack[A]] {
     val lbuff = new ListBuffer[A]
-    def +=(elem: A) = { lbuff += elem; this }
+    def +=(elem: A) = {
+      lbuff += elem; this
+    }
     def clear() = lbuff.clear()
     def result = new Stack(lbuff.result)
   }
@@ -100,7 +102,9 @@ class Stack[A] private (var elems: List[A])
     *  @param   elem       the element to push on the stack.
     *  @return the stack with the new element on top.
     */
-  def push(elem: A): this.type = { elems = elem :: elems; this }
+  def push(elem: A): this.type = {
+    elems = elem :: elems; this
+  }
 
   /** Push two or more elements onto the stack. The last element
     *  of the sequence will be on top of the new stack.
@@ -117,7 +121,9 @@ class Stack[A] private (var elems: List[A])
     *  @param xs the traversable object.
     *  @return the stack with the new elements on top.
     */
-  def pushAll(xs: TraversableOnce[A]): this.type = { xs foreach push; this }
+  def pushAll(xs: TraversableOnce[A]): this.type = {
+    xs foreach push; this
+  }
 
   /** Returns the top element of the stack. This method will not remove
     *  the element from the stack. An error is signaled if there is no

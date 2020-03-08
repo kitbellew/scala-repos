@@ -22,7 +22,9 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
       def baseProjection = first ~ last
       def forUpdate =
         baseProjection.shaped <>
-          ({ case (f, l) => User(None, f, l) }, { u: User =>
+          ({
+            case (f, l) => User(None, f, l)
+          }, { u: User =>
             Some((u.first, u.last))
           })
       def asFoo =
@@ -384,10 +386,18 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
 
     // Use it for returning data from a query
     val q2 = as
-      .map { case a => Pair(a.id, (a.s ++ a.s)) }
-      .filter { case Pair(id, _) => id =!= 1 }
-      .sortBy { case Pair(_, ss) => ss }
-      .map { case Pair(id, ss) => Pair(id, Pair(42, ss)) }
+      .map {
+        case a => Pair(a.id, (a.s ++ a.s))
+      }
+      .filter {
+        case Pair(id, _) => id =!= 1
+      }
+      .sortBy {
+        case Pair(_, ss) => ss
+      }
+      .map {
+        case Pair(id, ss) => Pair(id, Pair(42, ss))
+      }
 
     seq(
       as.schema.create,
@@ -417,16 +427,25 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
     val bs = TableQuery[B]
 
     val q1 = (for {
-      id :: b :: s :: HNil <- (for { b <- bs } yield b.id :: b.b :: b.s :: HNil)
-      if !b
+      id :: b :: s :: HNil <- (for {
+        b <- bs
+      } yield b.id :: b.b :: b.s :: HNil) if !b
     } yield id :: b :: (s ++ s) :: HNil).sortBy(h => h(2)).map {
       case id :: b :: ss :: HNil => id :: ss :: (42 :: HNil) :: HNil
     }
     val q2 = bs
-      .map { case b => b.id :: b.b :: (b.s ++ b.s) :: HNil }
-      .filter { h => !h(1) }
-      .sortBy { case _ :: _ :: ss :: HNil => ss }
-      .map { case id :: b :: ss :: HNil => id :: ss :: (42 :: HNil) :: HNil }
+      .map {
+        case b => b.id :: b.b :: (b.s ++ b.s) :: HNil
+      }
+      .filter { h =>
+        !h(1)
+      }
+      .sortBy {
+        case _ :: _ :: ss :: HNil => ss
+      }
+      .map {
+        case id :: b :: ss :: HNil => id :: ss :: (42 :: HNil) :: HNil
+      }
 
     seq(
       bs.schema.create,

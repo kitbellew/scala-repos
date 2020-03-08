@@ -165,7 +165,9 @@ private[impl] class OfferMatcherManagerActor private (
       .filter(r =>
         r.hasDisk && r.getDisk.hasPersistence && r.getDisk.getPersistence.hasId)
       .map(_.getDisk.getPersistence.getId)
-      .collect { case LocalVolumeId(volumeId) => volumeId.appId }
+      .collect {
+        case LocalVolumeId(volumeId) => volumeId.appId
+      }
       .toSet
     val (reserved, normal) =
       matchers.toSeq.partition(_.precedenceFor.exists(appReservations))

@@ -28,7 +28,9 @@ trait LinkingUnitJSEnv extends JSEnv {
       code: VirtualJSFile): JSRunner
 
   override def loadLibs(libs: Seq[ResolvedJSDependency]): LinkingUnitJSEnv =
-    new LinkingUnitLoadedLibs { val loadedLibs = libs }
+    new LinkingUnitLoadedLibs {
+      val loadedLibs = libs
+    }
 
   /** Returns a [[JSEnv]] with the given
     *  [[org.scalajs.core.tools.linker.LinkingUnit LinkingUnit]] already loaded.
@@ -50,7 +52,9 @@ trait LinkingUnitJSEnv extends JSEnv {
     *  }}}
     */
   def loadLinkingUnit(linkingUnit: LinkingUnit): JSEnv =
-    new LoadedUnit { val loadedUnit = linkingUnit }
+    new LoadedUnit {
+      val loadedUnit = linkingUnit
+    }
 
   private[jsenv] trait LinkingUnitLoadedLibs
       extends LoadedLibs

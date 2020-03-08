@@ -743,7 +743,9 @@ class ShardRegion(
           "Deliver [{}] buffered messages for shard [{}]",
           buf.size,
           shardId)
-        buf.foreach { case (msg, snd) ⇒ receiver.tell(msg, snd) }
+        buf.foreach {
+          case (msg, snd) ⇒ receiver.tell(msg, snd)
+        }
         shardBuffers -= shardId
       case None ⇒
     }

@@ -127,7 +127,9 @@ case class RichRequest(r: HttpServletRequest) extends AttributesMap {
     }
 
     def iterator: Iterator[(String, String)] = {
-      r.getHeaderNames.asScala map { name => (name, r.getHeader(name)) }
+      r.getHeaderNames.asScala map { name =>
+        (name, r.getHeader(name))
+      }
     }
 
   }
@@ -212,7 +214,9 @@ case class RichRequest(r: HttpServletRequest) extends AttributesMap {
       val body: String =
         try {
           Source.fromInputStream(r.getInputStream, enc).mkString
-        } catch { case e: java.io.IOException => "" }
+        } catch {
+          case e: java.io.IOException => ""
+        }
       update(cachedBodyKey, body)
       body
     }
@@ -239,8 +243,15 @@ case class RichRequest(r: HttpServletRequest) extends AttributesMap {
     val rr = Option(r.getCookies)
       .getOrElse(Array())
       .toSeq
-      .groupBy { _.getName }
-      .transform { case (k, v) => v map { _.getValue } }
+      .groupBy {
+        _.getName
+      }
+      .transform {
+        case (k, v) =>
+          v map {
+            _.getValue
+          }
+      }
       .withDefaultValue(Seq.empty)
     MultiMap(rr)
   }

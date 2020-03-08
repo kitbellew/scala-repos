@@ -16,7 +16,9 @@ object Test extends App {
 
   def test2() {
     // class that always causes hash collisions
-    case class Collision(value: Int) { override def hashCode = 0 }
+    case class Collision(value: Int) {
+      override def hashCode = 0
+    }
 
     // create a set that should have a collison
     val x = HashMap.empty + (Collision(0) -> 0) + (Collision(1) -> 0)

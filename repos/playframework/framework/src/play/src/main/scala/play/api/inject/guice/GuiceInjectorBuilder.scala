@@ -346,7 +346,9 @@ object GuiceableModule extends GuiceableModuleConversions {
       conf: Configuration,
       binderOptions: Set[BinderOption])(
       builders: Seq[GuiceableModule]): Seq[GuiceModule] =
-    builders flatMap { module => module.guiced(env, conf, binderOptions) }
+    builders flatMap { module =>
+      module.guiced(env, conf, binderOptions)
+    }
 
 }
 

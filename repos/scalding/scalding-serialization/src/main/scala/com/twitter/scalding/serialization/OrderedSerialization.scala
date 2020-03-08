@@ -178,8 +178,9 @@ object OrderedSerialization {
     Law3(
       "transitivity",
       { (a: T, b: T, c: T) =>
-        if (ordb.lteq(a, b) && ordb.lteq(b, c)) { ordb.lteq(a, c) }
-        else true
+        if (ordb.lteq(a, b) && ordb.lteq(b, c)) {
+          ordb.lteq(a, c)
+        } else true
       })
 
   /**
@@ -190,8 +191,9 @@ object OrderedSerialization {
     Law2(
       "antisymmetry",
       { (a: T, b: T) =>
-        if (ordb.lteq(a, b) && ordb.lteq(b, a)) { ordb.equiv(a, b) }
-        else true
+        if (ordb.lteq(a, b) && ordb.lteq(b, a)) {
+          ordb.equiv(a, b)
+        } else true
       })
 
   /**
@@ -199,7 +201,11 @@ object OrderedSerialization {
     * will be broken
     */
   def orderingTotality[T](implicit ordb: OrderedSerialization[T]): Law2[T] =
-    Law2("totality", { (a: T, b: T) => (ordb.lteq(a, b) || ordb.lteq(b, a)) })
+    Law2(
+      "totality",
+      { (a: T, b: T) =>
+        (ordb.lteq(a, b) || ordb.lteq(b, a))
+      })
 
   def allLaws[T: OrderedSerialization]: Iterable[Law[T]] =
     Serialization.allLaws ++ List(

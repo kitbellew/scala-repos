@@ -501,13 +501,17 @@ trait ParIterableLike[
 
   def min[U >: T](implicit ord: Ordering[U]): T = {
     tasksupport
-      .executeAndWaitResult(new Min(ord, splitter) mapResult { _.get })
+      .executeAndWaitResult(new Min(ord, splitter) mapResult {
+        _.get
+      })
       .asInstanceOf[T]
   }
 
   def max[U >: T](implicit ord: Ordering[U]): T = {
     tasksupport
-      .executeAndWaitResult(new Max(ord, splitter) mapResult { _.get })
+      .executeAndWaitResult(new Max(ord, splitter) mapResult {
+        _.get
+      })
       .asInstanceOf[T]
   }
 
@@ -529,7 +533,9 @@ trait ParIterableLike[
         new Map[S, That](
           f,
           combinerFactory(() => bf(repr).asCombiner),
-          splitter) mapResult { _.resultWithTaskSupport })
+          splitter) mapResult {
+          _.resultWithTaskSupport
+        })
     } else setTaskSupport(seq.map(f)(bf2seq(bf)), tasksupport)
   /*bf ifParallel { pbf =>
     tasksupport.executeAndWaitResult(new Map[S, That](f, pbf, splitter) mapResult { _.result })
@@ -542,7 +548,9 @@ trait ParIterableLike[
         new Collect[S, That](
           pf,
           combinerFactory(() => bf(repr).asCombiner),
-          splitter) mapResult { _.resultWithTaskSupport })
+          splitter) mapResult {
+          _.resultWithTaskSupport
+        })
     } else setTaskSupport(seq.collect(pf)(bf2seq(bf)), tasksupport)
   /*bf ifParallel { pbf =>
     tasksupport.executeAndWaitResult(new Collect[S, That](pf, pbf, splitter) mapResult { _.result })
@@ -555,7 +563,9 @@ trait ParIterableLike[
         new FlatMap[S, That](
           f,
           combinerFactory(() => bf(repr).asCombiner),
-          splitter) mapResult { _.resultWithTaskSupport })
+          splitter) mapResult {
+          _.resultWithTaskSupport
+        })
     } else setTaskSupport(seq.flatMap(f)(bf2seq(bf)), tasksupport)
   /*bf ifParallel { pbf =>
     tasksupport.executeAndWaitResult(new FlatMap[S, That](f, pbf, splitter) mapResult { _.result })
@@ -670,7 +680,9 @@ trait ParIterableLike[
         val othtask = new other.Copy(cfactory, other.splitter)
         tasksupport.executeAndWaitResult(othtask)
       }
-      val task = (copythis parallel copythat) { _ combine _ } mapResult {
+      val task = (copythis parallel copythat) {
+        _ combine _
+      } mapResult {
         _.resultWithTaskSupport
       }
       tasksupport.executeAndWaitResult(task)
@@ -685,7 +697,9 @@ trait ParIterableLike[
       }
       tasksupport.executeAndWaitResult((copythis parallel copythat) {
         _ combine _
-      } mapResult { _.resultWithTaskSupport })
+      } mapResult {
+        _.resultWithTaskSupport
+      })
     } else {
       // println("case not a parallel builder")
       val b = bf(repr)
@@ -878,7 +892,9 @@ trait ParIterableLike[
       val copyys = new Copy(combinerFactory, ys.splitter) mapResult {
         _.resultWithTaskSupport
       }
-      val copyall = (copyxs parallel copyys) { (xr, yr) => (xr, yr) }
+      val copyall = (copyxs parallel copyys) { (xr, yr) =>
+        (xr, yr)
+      }
       tasksupport.executeAndWaitResult(copyall)
     } else {
       val cntx = new DefaultSignalling with AtomicIndexFlag
@@ -939,7 +955,9 @@ trait ParIterableLike[
         new Zip(
           combinerFactory(() => bf(repr).asCombiner),
           splitter,
-          thatseq.splitter) mapResult { _.resultWithTaskSupport })
+          thatseq.splitter) mapResult {
+          _.resultWithTaskSupport
+        })
     } else setTaskSupport(seq.zip(that)(bf2seq(bf)), tasksupport)
 
   def zipWithIndex[U >: T, That](
@@ -1610,7 +1628,9 @@ trait ParIterableLike[
       val pits = pit.splitWithSignalling
       val sizes = pits.map(_.remaining)
       val opits = othpit.psplitWithSignalling(sizes: _*)
-      (pits zip opits) map { p => new Zip(pbf, p._1, p._2) }
+      (pits zip opits) map { p =>
+        new Zip(pbf, p._1, p._2)
+      }
     }
     override def merge(that: Zip[U, S, That]) =
       result = result combine that.result

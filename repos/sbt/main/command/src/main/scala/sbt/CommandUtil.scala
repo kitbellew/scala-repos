@@ -23,8 +23,11 @@ object CommandUtil {
 
   // slightly better fallback in case of older launcher
   def bootDirectory(state: State): File =
-    try { state.configuration.provider.scalaProvider.launcher.bootDirectory }
-    catch { case e: NoSuchMethodError => new File(".").getAbsoluteFile }
+    try {
+      state.configuration.provider.scalaProvider.launcher.bootDirectory
+    } catch {
+      case e: NoSuchMethodError => new File(".").getAbsoluteFile
+    }
 
   def aligned(
       pre: String,
@@ -33,7 +36,9 @@ object CommandUtil {
     if (in.isEmpty) Nil
     else {
       val width = in.map(_._1.length).max
-      in.map { case (a, b) => (pre + fill(a, width) + sep + b) }
+      in.map {
+        case (a, b) => (pre + fill(a, width) + sep + b)
+      }
     }
   def fill(s: String, size: Int) = s + " " * math.max(size - s.length, 0)
 
@@ -46,7 +51,9 @@ object CommandUtil {
     }
 
   def singleArgument(exampleStrings: Set[String]): Parser[String] = {
-    val arg = (NotSpaceClass ~ any.*) map { case (ns, s) => (ns +: s).mkString }
+    val arg = (NotSpaceClass ~ any.*) map {
+      case (ns, s) => (ns +: s).mkString
+    }
     token(Space) ~> token(arg examples exampleStrings)
   }
   def detail(selected: String, detailMap: Map[String, String]): String =

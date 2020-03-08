@@ -39,7 +39,9 @@ class ScPackagingImpl private (
     with ScPackaging
     with ScImportsHolder
     with ScDeclarationSequenceHolder {
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
 
   def this(stub: ScPackageContainerStub) = {
     this(stub, ScalaElementTypes.PACKAGING, null)

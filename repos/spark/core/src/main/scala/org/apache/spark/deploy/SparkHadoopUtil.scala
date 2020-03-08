@@ -119,15 +119,21 @@ class SparkHadoopUtil extends Logging {
     */
   def addCredentials(conf: JobConf) {}
 
-  def isYarnMode(): Boolean = { false }
+  def isYarnMode(): Boolean = {
+    false
+  }
 
-  def getCurrentUserCredentials(): Credentials = { null }
+  def getCurrentUserCredentials(): Credentials = {
+    null
+  }
 
   def addCurrentUserCredentials(creds: Credentials) {}
 
   def addSecretKeyToUserCredentials(key: String, secret: String) {}
 
-  def getSecretKeyFromUserCredentials(key: String): Array[Byte] = { null }
+  def getSecretKeyFromUserCredentials(key: String): Array[Byte] = {
+    null
+  }
 
   def loginUserFromKeytab(principalName: String, keytabFilename: String) {
     UserGroupInformation.loginUserFromKeytab(principalName, keytabFilename)

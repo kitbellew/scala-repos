@@ -11,7 +11,9 @@ import java.util.logging.Level
 private[twitter] object ClientRegistry extends StackRegistry {
 
   private[this] val sr = FinagleStatsReceiver.scope("clientregistry")
-  private[this] val clientRegistrySize = sr.addGauge("size") { size }
+  private[this] val clientRegistrySize = sr.addGauge("size") {
+    size
+  }
   private[this] val initialResolutionTime = sr.counter("initialresolution_ms")
 
   def registryName: String = "client"

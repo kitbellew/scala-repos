@@ -67,7 +67,9 @@ trait RenderStackSpecs extends EvalStackSpecs with Logging {
 
       val evaluator = Evaluator[Future](M)
 
-      val forest = compile(str) filter { _.errors.isEmpty }
+      val forest = compile(str) filter {
+        _.errors.isEmpty
+      }
       forest must haveSize(1)
 
       val tree = forest.head
@@ -82,8 +84,12 @@ trait RenderStackSpecs extends EvalStackSpecs with Logging {
     "render a set of numbers interleaved by delimiters" in {
       val stream =
         evalTable("(//tutorial/transactions).quantity").renderJson("", ",", "")
-      val strings = stream map { _.toString }
-      val str = strings.foldLeft("") { _ + _ } copoint
+      val strings = stream map {
+        _.toString
+      }
+      val str = strings.foldLeft("") {
+        _ + _
+      } copoint
 
       str must contain(",")
     }

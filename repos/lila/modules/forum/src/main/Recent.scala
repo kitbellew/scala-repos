@@ -16,7 +16,9 @@ private[forum] final class Recent(
   private type GetTeams = String => Set[String]
 
   def apply(user: Option[User], getTeams: GetTeams): Fu[List[MiniForumPost]] =
-    userCacheKey(user, getTeams) |> { key => cache(key)(fetch(key)) }
+    userCacheKey(user, getTeams) |> { key =>
+      cache(key)(fetch(key))
+    }
 
   def team(teamId: String): Fu[List[MiniForumPost]] = {
     // prepend empty language list

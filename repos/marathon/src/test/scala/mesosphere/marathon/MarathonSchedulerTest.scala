@@ -43,7 +43,9 @@ class MarathonSchedulerTest
   var eventBus: EventStream = _
   var offerProcessor: OfferProcessor = _
   var taskStatusProcessor: TaskStatusUpdateProcessor = _
-  var suicideFn: (Boolean) => Unit = { _ => () }
+  var suicideFn: (Boolean) => Unit = { _ =>
+    ()
+  }
 
   before {
     repo = mock[AppRepository]
@@ -150,7 +152,9 @@ class MarathonSchedulerTest
     Given("A suicide call trap")
     val driver = mock[SchedulerDriver]
     var suicideCall: Option[Boolean] = None
-    suicideFn = remove => { suicideCall = Some(remove) }
+    suicideFn = remove => {
+      suicideCall = Some(remove)
+    }
 
     When("An error is reported")
     scheduler.error(driver, "some weird mesos message")
@@ -164,7 +168,9 @@ class MarathonSchedulerTest
     Given("A suicide call trap")
     val driver = mock[SchedulerDriver]
     var suicideCall: Option[Boolean] = None
-    suicideFn = remove => { suicideCall = Some(remove) }
+    suicideFn = remove => {
+      suicideCall = Some(remove)
+    }
 
     When("An error is reported")
     scheduler.error(driver, "Framework has been removed")

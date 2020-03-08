@@ -42,7 +42,9 @@ object LatencyCompensation {
       new AtomicReference[Option[Compensator]](None)
 
     // unit-test hook
-    private[client] def reset() = { setting.set(None) }
+    private[client] def reset() = {
+      setting.set(None)
+    }
 
     /**
       * Set an override to use for un-configured clients.

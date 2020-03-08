@@ -173,7 +173,9 @@ abstract class MixinNodes {
       override def makeSet = new mutable.LinkedHashSet[Node]
     }
 
-    private object MultiMap { def empty = new MultiMap }
+    private object MultiMap {
+      def empty = new MultiMap
+    }
 
     private def mergeSupers(maps: List[NodesMap]): MultiMap = {
       val res = MultiMap.empty
@@ -194,7 +196,9 @@ abstract class MixinNodes {
         supersMerged: MultiMap): NodesMap = {
       val primarySupers = new NodesMap
       for ((key, nodes) <- supersMerged) {
-        val primarySuper = nodes.find { n => !isAbstract(n.info) } match {
+        val primarySuper = nodes.find { n =>
+          !isAbstract(n.info)
+        } match {
           case None           => nodes.toList(0)
           case Some(concrete) => concrete
         }

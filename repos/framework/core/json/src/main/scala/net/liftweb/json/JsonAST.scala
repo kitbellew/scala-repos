@@ -344,7 +344,9 @@ object JsonAST {
               case (a, JField(name, value)) => value.fold(a)(f)
             }
           case JArray(l) =>
-            l.foldLeft(newAcc) { (a, e) => e.fold(a)(f) }
+            l.foldLeft(newAcc) { (a, e) =>
+              e.fold(a)(f)
+            }
           case _ => newAcc
         }
       }
@@ -393,7 +395,9 @@ object JsonAST {
     def map(f: JValue => JValue): JValue = {
       def rec(v: JValue): JValue = v match {
         case JObject(l) =>
-          f(JObject(l.map { field => field.copy(value = rec(field.value)) }))
+          f(JObject(l.map { field =>
+            field.copy(value = rec(field.value))
+          }))
         case JArray(l) => f(JArray(l.map(rec)))
         case x         => f(x)
       }
@@ -418,7 +422,9 @@ object JsonAST {
     def mapField(f: JField => JField): JValue = {
       def rec(v: JValue): JValue = v match {
         case JObject(l) =>
-          JObject(l.map { field => f(field.copy(value = rec(field.value))) })
+          JObject(l.map { field =>
+            f(field.copy(value = rec(field.value)))
+          })
         case JArray(l) => JArray(l.map(rec))
         case x         => x
       }
@@ -543,7 +549,9 @@ object JsonAST {
       def find(json: JValue): Option[JField] = json match {
         case JObject(fs) if (fs find p).isDefined => return fs find p
         case JObject(fs) =>
-          fs.flatMap { case JField(n, v) => find(v) }.headOption
+          fs.flatMap {
+            case JField(n, v) => find(v)
+          }.headOption
         case JArray(l) => l.flatMap(find _).headOption
         case _         => None
       }
@@ -565,7 +573,9 @@ object JsonAST {
         json match {
           case _ if p(json) => Some(json)
           case JObject(fs) =>
-            fs.flatMap { case JField(n, v) => find(v) }.headOption
+            fs.flatMap {
+              case JField(n, v) => find(v)
+            }.headOption
           case JArray(l) => l.flatMap(find _).headOption
           case _         => None
         }
@@ -1132,10 +1142,14 @@ trait Implicits {
 object JsonDSL extends JsonDSL
 trait JsonDSL extends Implicits {
   implicit def seq2jvalue[A <% JValue](s: Traversable[A]) =
-    JArray(s.toList.map { a => val v: JValue = a; v })
+    JArray(s.toList.map { a =>
+      val v: JValue = a; v
+    })
 
   implicit def map2jvalue[A <% JValue](m: Map[String, A]) =
-    JObject(m.toList.map { case (k, v) => JField(k, v) })
+    JObject(m.toList.map {
+      case (k, v) => JField(k, v)
+    })
 
   implicit def option2jvalue[A <% JValue](opt: Option[A]): JValue = opt match {
     case Some(x) => x

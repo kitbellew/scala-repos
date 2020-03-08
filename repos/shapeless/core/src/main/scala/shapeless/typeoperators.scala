@@ -48,7 +48,9 @@ object newtype {
     * values of the representation type to conform to Any. In practice this means that value
     * types will receive their standard Scala AnyVal boxing and reference types will be unboxed.
     */
-  type Newtype[Repr, Ops] = { type Tag = NewtypeTag[Repr, Ops] }
+  type Newtype[Repr, Ops] = {
+    type Tag = NewtypeTag[Repr, Ops]
+  }
   trait NewtypeTag[Repr, Ops]
 
   /**

@@ -76,8 +76,12 @@ object Test extends App {
   locally(ConstantType(const): ConstantType)
   locally(sym.asFreeTerm: FreeTermSymbol)
   locally(sym.asFreeType: FreeTypeSymbol)
-  locally(sym.attachments: Attachments { type Pos = Position })
-  locally(tree.attachments: Attachments { type Pos = Position })
+  locally(sym.attachments: Attachments {
+    type Pos = Position
+  })
+  locally(tree.attachments: Attachments {
+    type Pos = Position
+  })
   locally(captureVariable(sym): Unit)
   locally(capturedVariableType(sym): Type)
   locally(sym.deSkolemize: Symbol)

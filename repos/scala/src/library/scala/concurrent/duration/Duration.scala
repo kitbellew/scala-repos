@@ -105,7 +105,9 @@ object Duration {
     */
   def unapply(s: String): Option[(Long, TimeUnit)] =
     (try Some(apply(s))
-    catch { case _: RuntimeException => None }) flatMap unapply
+    catch {
+      case _: RuntimeException => None
+    }) flatMap unapply
 
   /**
     * Extract length and time unit out of a duration, if it is finite.

@@ -7,7 +7,9 @@ package scala
 package tools
 
 package object cmd {
-  def returning[T](x: T)(f: T => Unit): T = { f(x); x }
+  def returning[T](x: T)(f: T => Unit): T = {
+    f(x); x
+  }
 
   // make some language features in this package compile without warning
   implicit def implicitConversions = scala.language.implicitConversions

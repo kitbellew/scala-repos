@@ -55,7 +55,9 @@ object JsError {
     toJson(errors, false)
   //def toJsonErrorsOnly: JsValue = original // TODO
   def toFlatForm(e: JsError): Seq[(String, Seq[ValidationError])] =
-    e.errors.map { case (path, seq) => path.toJsonString -> seq }
+    e.errors.map {
+      case (path, seq) => path.toJsonString -> seq
+    }
 
   @deprecated("Use toJson which include alternative message keys", "2.3")
   def toFlatJson(e: JsError): JsObject = toJson(e.errors, true)
@@ -97,16 +99,24 @@ sealed trait JsResult[+A] { self =>
   }
 
   def filterNot(error: JsError)(p: A => Boolean): JsResult[A] =
-    this.flatMap { a => if (p(a)) error else JsSuccess(a) }
+    this.flatMap { a =>
+      if (p(a)) error else JsSuccess(a)
+    }
 
   def filterNot(p: A => Boolean): JsResult[A] =
-    this.flatMap { a => if (p(a)) JsError() else JsSuccess(a) }
+    this.flatMap { a =>
+      if (p(a)) JsError() else JsSuccess(a)
+    }
 
   def filter(p: A => Boolean): JsResult[A] =
-    this.flatMap { a => if (p(a)) JsSuccess(a) else JsError() }
+    this.flatMap { a =>
+      if (p(a)) JsSuccess(a) else JsError()
+    }
 
   def filter(otherwise: JsError)(p: A => Boolean): JsResult[A] =
-    this.flatMap { a => if (p(a)) JsSuccess(a) else otherwise }
+    this.flatMap { a =>
+      if (p(a)) JsSuccess(a) else otherwise
+    }
 
   def collect[B](otherwise: ValidationError)(
       p: PartialFunction[A, B]): JsResult[B] = flatMap {
@@ -149,7 +159,10 @@ sealed trait JsResult[+A] { self =>
   //def rebase(json: JsValue): JsResult[A] = fold(valid = JsSuccess(_), invalid = (_, e, g) => JsError(json, e, g))
   def repath(path: JsPath): JsResult[A] = this match {
     case JsSuccess(a, p) => JsSuccess(a, path ++ p)
-    case JsError(es)     => JsError(es.map { case (p, s) => path ++ p -> s })
+    case JsError(es) =>
+      JsError(es.map {
+        case (p, s) => path ++ p -> s
+      })
   }
 
   def get: A

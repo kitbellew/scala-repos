@@ -691,7 +691,9 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
     *
     */
   def translate(p: Polynomial[A])(implicit ev: Field[A]): Interval[A] = {
-    val terms2 = p.terms.map { case Term(c, e) => Term(Interval.point(c), e) }
+    val terms2 = p.terms.map {
+      case Term(c, e) => Term(Interval.point(c), e)
+    }
     val p2 = Polynomial(terms2)
     p2(this)
   }
@@ -789,8 +791,11 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
         def next: A = {
           val r = x
           val next = x + step
-          if (test(x, next)) { x = next }
-          else { ok = false }
+          if (test(x, next)) {
+            x = next
+          } else {
+            ok = false
+          }
           r
         }
       }

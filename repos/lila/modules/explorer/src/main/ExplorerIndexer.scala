@@ -56,10 +56,14 @@ private final class ExplorerIndexer(
         .enumerate(maxGames, stopOnError = true) &>
         Enumeratee.mapM[Game].apply[Option[GamePGN]] { game =>
           makeFastPgn(game) map {
-            _ map { game -> _ }
+            _ map {
+              game -> _
+            }
           }
         } &>
-        Enumeratee.collect { case Some(el) => el } &>
+        Enumeratee.collect {
+          case Some(el) => el
+        } &>
         Enumeratee.grouped(Iteratee takeUpTo batchSize) |>>>
         Iteratee.foldM[Seq[GamePGN], Long](nowMillis) {
           case (millis, pairs) =>
@@ -164,7 +168,9 @@ private final class ExplorerIndexer(
           game.player(color).userId flatMap { id =>
             usernames.find(_.toLowerCase == id)
           } orElse game.player(color).userId getOrElse "?"
-        val fenTags = initialFen.?? { fen => List(s"[FEN $fen]") }
+        val fenTags = initialFen.?? { fen =>
+          List(s"[FEN $fen]")
+        }
         val timeControl = game.clock.fold("-") { c =>
           s"${c.limit}+${c.increment}"
         }

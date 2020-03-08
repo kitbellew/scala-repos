@@ -52,7 +52,9 @@ package p {
         trait Node {
           def s: String = "";
         }
-        protected def tie(x: Node): Unit = { x.s; () }
+        protected def tie(x: Node): Unit = {
+          x.s; ()
+        }
       }
     }
 

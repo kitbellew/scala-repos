@@ -44,7 +44,9 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
   class BServiceImpl extends B.ServiceIface {
     def add(a: Int, b: Int) = Future.exception(new AnException)
     def add_one(a: Int, b: Int) = Future.Void
-    def multiply(a: Int, b: Int) = Future { a * b }
+    def multiply(a: Int, b: Int) = Future {
+      a * b
+    }
     def complex_return(someString: String) = Future {
       Trace.record("hey it's me!")
       new SomeStruct(123, Trace.id.parentId.toString)
@@ -108,7 +110,9 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
     val dest = s"localhost:$port"
 
     var clientStack = Thrift.client.withProtocolFactory(pf)
-    clientId.foreach { cId => clientStack = clientStack.withClientId(cId) }
+    clientId.foreach { cId =>
+      clientStack = clientStack.withClientId(cId)
+    }
 
     val builder = ClientBuilder()
       .stack(clientStack)
@@ -145,7 +149,9 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
           case Some(cId) =>
             assert(cId.name == Await.result(resp))
           case None =>
-            val ex = intercept[TApplicationException] { Await.result(resp) }
+            val ex = intercept[TApplicationException] {
+              Await.result(resp)
+            }
             assert(ex.getMessage.contains(missingClientIdEx.toString))
         }
         clientClosable.close()
@@ -182,13 +188,17 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
 
   testThrift("unique trace ID") { (client, tracer) =>
     val f1 = client.add(1, 2)
-    intercept[AnException] { Await.result(f1, Duration.fromSeconds(15)) }
+    intercept[AnException] {
+      Await.result(f1, Duration.fromSeconds(15))
+    }
     val idSet1 = (tracer map (_.traceId.traceId)).toSet
 
     tracer.clear()
 
     val f2 = client.add(2, 3)
-    intercept[AnException] { Await.result(f2, Duration.fromSeconds(15)) }
+    intercept[AnException] {
+      Await.result(f2, Duration.fromSeconds(15))
+    }
     val idSet2 = (tracer map (_.traceId.traceId)).toSet
 
     assert(idSet1.nonEmpty)
@@ -307,7 +317,9 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
         Await.result(client.complex_return("a string")).arg_two
           == "%s".format(Trace.id.spanId.toString))
 
-      intercept[AnException] { Await.result(client.add(1, 2)) }
+      intercept[AnException] {
+        Await.result(client.add(1, 2))
+      }
       Await.result(client.add_one(1, 2)) // don't block!
 
       assert(Await.result(client.someway()) == null) // don't block!

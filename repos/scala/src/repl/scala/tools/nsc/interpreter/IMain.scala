@@ -145,7 +145,9 @@ class IMain(
   import reporter.{printMessage, printUntruncatedMessage}
 
   // This exists mostly because using the reporter too early leads to deadlock.
-  private def echo(msg: String) { Console println msg }
+  private def echo(msg: String) {
+    Console println msg
+  }
   private def _initSources =
     List(new BatchSourceFile("<init>", "class $repl_$init { }"))
   private def _initialize() = {
@@ -191,7 +193,9 @@ class IMain(
 
   private def noFatal(body: => Symbol): Symbol =
     try body
-    catch { case _: FatalError => NoSymbol }
+    catch {
+      case _: FatalError => NoSymbol
+    }
 
   def getClassIfDefined(path: String) = (
     noFatal(runtimeMirror staticClass path)
@@ -507,13 +511,17 @@ class IMain(
 
   private def safePos(t: Tree, alt: Int): Int =
     try t.pos.start
-    catch { case _: UnsupportedOperationException => alt }
+    catch {
+      case _: UnsupportedOperationException => alt
+    }
 
   // Given an expression like 10 * 10 * 10 we receive the parent tree positioned
   // at a '*'.  So look at each subtree and find the earliest of all positions.
   private def earliestPosition(tree: Tree): Int = {
     var pos = Int.MaxValue
-    tree foreach { t => pos = math.min(pos, safePos(t, Int.MaxValue)) }
+    tree foreach { t =>
+      pos = math.min(pos, safePos(t, Int.MaxValue))
+    }
     pos
   }
 
@@ -534,7 +542,9 @@ class IMain(
         // however Martin and I have removed the conversion
         // (it was conflicting with the new reflection API),
         // so I had to rewrite this a bit
-        val subs = t collect { case sub => sub }
+        val subs = t collect {
+          case sub => sub
+        }
         subs map (t0 =>
           "  " + safePos(t0, -1) + ": " + t0.shortClass + "\n") mkString ""
       }) mkString "\n"
@@ -860,7 +870,9 @@ class IMain(
 
     def callEither(name: String, args: Any*): Either[Throwable, AnyRef] =
       try Right(call(name, args: _*))
-      catch { case ex: Throwable => Left(ex) }
+      catch {
+        case ex: Throwable => Left(ex)
+      }
 
     class EvalException(msg: String, cause: Throwable)
         extends RuntimeException(msg, cause) {}
@@ -872,7 +884,9 @@ class IMain(
 
     private def load(path: String): Class[_] = {
       try Class.forName(path, true, classLoader)
-      catch { case ex: Throwable => evalError(path, unwrap(ex)) }
+      catch {
+        case ex: Throwable => evalError(path, unwrap(ex))
+      }
     }
 
     lazy val evalClass = load(evalPath)
@@ -956,7 +970,9 @@ class IMain(
     val lineRep = new ReadEvalPrint()
 
     private var _originalLine: String = null
-    def withOriginalLine(s: String): this.type = { _originalLine = s; this }
+    def withOriginalLine(s: String): this.type = {
+      _originalLine = s; this
+    }
     def originalLine = if (_originalLine == null) line else _originalLine
 
     /** handlers for each tree in this request */
@@ -967,7 +983,9 @@ class IMain(
       case _               => false
     }
 
-    def defHandlers = handlers collect { case x: MemberDefHandler => x }
+    def defHandlers = handlers collect {
+      case x: MemberDefHandler => x
+    }
 
     /** list of names used by this expression */
     val referencedNames: List[Name] = handlers flatMap (_.referencedNames)
@@ -1157,8 +1175,11 @@ class IMain(
 
     /** load and run the code using reflection */
     def loadAndRun: (String, Boolean) = {
-      try { ("" + (lineRep call sessionNames.print), true) }
-      catch { case ex: Throwable => (lineRep.bindError(ex), false) }
+      try {
+        ("" + (lineRep call sessionNames.print), true)
+      } catch {
+        case ex: Throwable => (lineRep.bindError(ex), false)
+      }
     }
 
     override def toString =
@@ -1248,7 +1269,9 @@ class IMain(
     }
 
     try Some(value())
-    catch { case _: Exception => None }
+    catch {
+      case _: Exception => None
+    }
   }
 
   /** It's a bit of a shotgun approach, but for now we will gain in
@@ -1276,7 +1299,9 @@ class IMain(
 
   def runtimeTypeOfTerm(id: String): Type = {
     typeOfTerm(id) andAlso { tpe =>
-      val clazz = classOfTerm(id) getOrElse { return NoType }
+      val clazz = classOfTerm(id) getOrElse {
+        return NoType
+      }
       val staticSym = tpe.typeSymbol
       val runtimeSym = getClassIfDefined(clazz.getName)
 
@@ -1304,7 +1329,9 @@ class IMain(
 
   /** Parse a line into and return parsing result (error, incomplete or success with list of trees) */
   object parse {
-    abstract sealed class Result { def trees: List[Tree] }
+    abstract sealed class Result {
+      def trees: List[Tree]
+    }
     case class Error(trees: List[Tree]) extends Result
     case class Incomplete(trees: List[Tree]) extends Result
     case class Success(trees: List[Tree]) extends Result
@@ -1366,7 +1393,9 @@ class IMain(
   def allHandlers = prevRequestList flatMap (_.handlers)
   def lastRequest = if (prevRequests.isEmpty) null else prevRequests.last
   def prevRequestList = prevRequests.toList
-  def importHandlers = allHandlers collect { case x: ImportHandler => x }
+  def importHandlers = allHandlers collect {
+    case x: ImportHandler => x
+  }
 
   def withoutUnwrapping(op: => Unit): Unit = {
     val saved = isettings.unwrapStrings
@@ -1394,7 +1423,9 @@ class IMain(
     if (isReplDebug || isShow) {
       beSilentDuring(parse(code)) match {
         case parse.Success(ts) =>
-          ts foreach { t => withoutUnwrapping(echo(asCompactString(t))) }
+          ts foreach { t =>
+            withoutUnwrapping(echo(asCompactString(t)))
+          }
         case _ =>
       }
     }

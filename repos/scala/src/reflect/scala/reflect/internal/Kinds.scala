@@ -47,7 +47,9 @@ trait Kinds {
         if ((a0 eq b0) || (a0.owner eq b0.owner)) ""
         else {
           var a = a0; var b = b0
-          while (a.owner.name == b.owner.name) { a = a.owner; b = b.owner }
+          while (a.owner.name == b.owner.name) {
+            a = a.owner; b = b.owner
+          }
           if (a.locationString ne "") " (" + a.locationString.trim + ")" else ""
         }
       }

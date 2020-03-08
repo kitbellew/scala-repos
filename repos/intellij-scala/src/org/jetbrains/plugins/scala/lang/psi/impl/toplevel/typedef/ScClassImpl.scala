@@ -70,7 +70,9 @@ class ScClassImpl private (
     else Array.empty
   }
 
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
   def this(stub: ScTemplateDefinitionStub) = {
     this(stub, ScalaElementTypes.CLASS_DEF, null)
   }
@@ -125,7 +127,8 @@ class ScClassImpl private (
       case _ =>
         for (p <- parameters) {
           ProgressManager.checkCanceled()
-          if (processor.isInstanceOf[BaseProcessor]) { // don't expose class parameters to Java.
+          if (processor.isInstanceOf[
+                BaseProcessor]) { // don't expose class parameters to Java.
             if (!processor.execute(p, state)) return false
           }
         }

@@ -89,7 +89,9 @@ object Platform {
     * @throws java.lang.NullPointerException If `arr` is `null`.
     */
   @inline
-  def arrayclear(arr: Array[Int]) { java.util.Arrays.fill(arr, 0) }
+  def arrayclear(arr: Array[Int]) {
+    java.util.Arrays.fill(arr, 0)
+  }
 
   /** Returns the `Class` object associated with the class or interface with the given string name using the current `ClassLoader`.
     *  On the JVM, invoking this method is equivalent to: `java.lang.Class.forName(name)`

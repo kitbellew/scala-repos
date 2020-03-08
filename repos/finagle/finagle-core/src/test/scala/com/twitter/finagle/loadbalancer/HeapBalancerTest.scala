@@ -21,13 +21,17 @@ class HeapBalancerTest
     var _status: Status = Status.Open
     var _closed = false
 
-    def setStatus(x: Status) { _status = x }
+    def setStatus(x: Status) {
+      _status = x
+    }
 
     def apply(conn: ClientConnection) = Future.value {
       load += 1
       new Service[Unit, LoadedFactory] {
         def apply(req: Unit) = Future.value(LoadedFactory.this)
-        override def close(deadline: Time) = { load -= 1; Future.Done }
+        override def close(deadline: Time) = {
+          load -= 1; Future.Done
+        }
       }
     }
 
@@ -43,7 +47,9 @@ class HeapBalancerTest
   class Ctx {
     val N = 10
     val statsReceiver = new InMemoryStatsReceiver
-    val half1, half2 = 0 until N / 2 map { i => new LoadedFactory(i.toString) }
+    val half1, half2 = 0 until N / 2 map { i =>
+      new LoadedFactory(i.toString)
+    }
     val factories = half1 ++ half2
     val group =
       Group.mutable[ServiceFactory[Unit, LoadedFactory]](factories: _*)
@@ -99,9 +105,13 @@ class HeapBalancerTest
     val ctx = new Ctx
     import ctx._
 
-    val made = Seq.fill(N) { Await.result(b()) }
+    val made = Seq.fill(N) {
+      Await.result(b())
+    }
     for (f <- factories) assert(f.load == 1)
-    val made2 = Seq.fill(N) { Await.result(b()) }
+    val made2 = Seq.fill(N) {
+      Await.result(b())
+    }
     for (f <- factories) assert(f.load == 2)
 
     val s = made(0)
@@ -136,7 +146,9 @@ class HeapBalancerTest
     import ctx._
 
     // initially N factories, load them twice
-    val made = Seq.fill(N * 2) { Await.result(b()) }
+    val made = Seq.fill(N * 2) {
+      Await.result(b())
+    }
     for (f <- factories) assert(f.load == 2)
 
     // add newFactory to the heap balancer. Initially it has
@@ -152,7 +164,9 @@ class HeapBalancerTest
     // Further calls to make()() should not affect the
     // load on newFactory
     group() -= newFactory
-    val made2 = Seq.fill(N) { Await.result(b()) }
+    val made2 = Seq.fill(N) {
+      Await.result(b())
+    }
     for (f <- factories) assert(f.load == 3)
     assert(newFactory.load == 2)
   }
@@ -161,7 +175,9 @@ class HeapBalancerTest
     val ctx = new Ctx
     import ctx._
 
-    val made = Seq.fill(N) { Await.result(b()) }
+    val made = Seq.fill(N) {
+      Await.result(b())
+    }
     group() += newFactory
     val made2 = Await.result(b())
     for (f <- factories :+ newFactory) assert(f.load == 1)
@@ -175,7 +191,9 @@ class HeapBalancerTest
     val ctx = new Ctx
     import ctx._
 
-    val made = Seq.fill(N) { Await.result(b()) }
+    val made = Seq.fill(N) {
+      Await.result(b())
+    }
     group() --= half1
     Await.result(b()).close()
     for (f <- half1) assert(f.isClosed)
@@ -223,7 +241,9 @@ class HeapBalancerTest
       new NoBrokersAvailableException(heapBalancerEmptyGroup),
       new Random
     )
-    val exc = intercept[NoBrokersAvailableException] { Await.result(b()) }
+    val exc = intercept[NoBrokersAvailableException] {
+      Await.result(b())
+    }
     assert(exc.getMessage.contains(heapBalancerEmptyGroup))
   }
 

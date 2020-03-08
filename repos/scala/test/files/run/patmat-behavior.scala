@@ -8,26 +8,62 @@ package s {
   case class C11[+A](x: A, ys: A*) extends C[A]
   case class C21[+A](x: A, y: A, zs: A*) extends C[A]
 
-  object E00 { def unapply[A](x: Any): Boolean = ??? }
-  object E10 { def unapply[A](x: Any): Option[A] = ??? }
-  object E20 { def unapply[A](x: Any): Option[(A, A)] = ??? }
-  object E01 { def unapplySeq[A](x: Any): Option[Seq[A]] = ??? }
-  object E11 { def unapplySeq[A](x: Any): Option[(A, Seq[A])] = ??? }
-  object E21 { def unapplySeq[A](x: Any): Option[(A, A, Seq[A])] = ??? }
+  object E00 {
+    def unapply[A](x: Any): Boolean = ???
+  }
+  object E10 {
+    def unapply[A](x: Any): Option[A] = ???
+  }
+  object E20 {
+    def unapply[A](x: Any): Option[(A, A)] = ???
+  }
+  object E01 {
+    def unapplySeq[A](x: Any): Option[Seq[A]] = ???
+  }
+  object E11 {
+    def unapplySeq[A](x: Any): Option[(A, Seq[A])] = ???
+  }
+  object E21 {
+    def unapplySeq[A](x: Any): Option[(A, A, Seq[A])] = ???
+  }
 
-  object F00 { def unapply[A](x: C[A]): Boolean = ??? }
-  object F10 { def unapply[A](x: C[A]): Option[A] = ??? }
-  object F20 { def unapply[A](x: C[A]): Option[(A, A)] = ??? }
-  object F01 { def unapplySeq[A](x: C[A]): Option[Seq[A]] = ??? }
-  object F11 { def unapplySeq[A](x: C[A]): Option[(A, Seq[A])] = ??? }
-  object F21 { def unapplySeq[A](x: C[A]): Option[(A, A, Seq[A])] = ??? }
+  object F00 {
+    def unapply[A](x: C[A]): Boolean = ???
+  }
+  object F10 {
+    def unapply[A](x: C[A]): Option[A] = ???
+  }
+  object F20 {
+    def unapply[A](x: C[A]): Option[(A, A)] = ???
+  }
+  object F01 {
+    def unapplySeq[A](x: C[A]): Option[Seq[A]] = ???
+  }
+  object F11 {
+    def unapplySeq[A](x: C[A]): Option[(A, Seq[A])] = ???
+  }
+  object F21 {
+    def unapplySeq[A](x: C[A]): Option[(A, A, Seq[A])] = ???
+  }
 
-  object G00 { def unapply[A](x: C00[A]): Boolean = ??? }
-  object G10 { def unapply[A](x: C10[A]): Option[A] = ??? }
-  object G20 { def unapply[A](x: C20[A]): Option[(A, A)] = ??? }
-  object G01 { def unapplySeq[A](x: C01[A]): Option[Seq[A]] = ??? }
-  object G11 { def unapplySeq[A](x: C11[A]): Option[(A, Seq[A])] = ??? }
-  object G21 { def unapplySeq[A](x: C21[A]): Option[(A, A, Seq[A])] = ??? }
+  object G00 {
+    def unapply[A](x: C00[A]): Boolean = ???
+  }
+  object G10 {
+    def unapply[A](x: C10[A]): Option[A] = ???
+  }
+  object G20 {
+    def unapply[A](x: C20[A]): Option[(A, A)] = ???
+  }
+  object G01 {
+    def unapplySeq[A](x: C01[A]): Option[Seq[A]] = ???
+  }
+  object G11 {
+    def unapplySeq[A](x: C11[A]): Option[(A, Seq[A])] = ???
+  }
+  object G21 {
+    def unapplySeq[A](x: C21[A]): Option[(A, A, Seq[A])] = ???
+  }
 }
 import s._
 

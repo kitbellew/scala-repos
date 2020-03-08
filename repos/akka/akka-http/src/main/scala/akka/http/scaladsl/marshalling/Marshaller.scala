@@ -108,14 +108,18 @@ object Marshaller
     new Marshaller[A, B] {
       def apply(value: A)(implicit ec: ExecutionContext) =
         try f(ec)(value)
-        catch { case NonFatal(e) ⇒ FastFuture.failed(e) }
+        catch {
+          case NonFatal(e) ⇒ FastFuture.failed(e)
+        }
     }
 
   /**
     * Helper for creating a [[Marshaller]] using the given function.
     */
   def strict[A, B](f: A ⇒ Marshalling[B]): Marshaller[A, B] =
-    Marshaller { _ ⇒ a ⇒ FastFuture.successful(f(a) :: Nil) }
+    Marshaller { _ ⇒ a ⇒
+      FastFuture.successful(f(a) :: Nil)
+    }
 
   /**
     * Helper for creating a "super-marshaller" from a number of "sub-marshallers".
@@ -155,7 +159,9 @@ object Marshaller
     * Helper for creating a synchronous [[Marshaller]] to non-negotiable content from the given function.
     */
   def opaque[A, B](marshal: A ⇒ B): Marshaller[A, B] =
-    strict { value ⇒ Marshalling.Opaque(() ⇒ marshal(value)) }
+    strict { value ⇒
+      Marshalling.Opaque(() ⇒ marshal(value))
+    }
 
   /**
     * Helper for creating a [[Marshaller]] combined of the provided `marshal` function
@@ -163,7 +169,9 @@ object Marshaller
     */
   def combined[A, B, C](marshal: A ⇒ B)(
       implicit m2: Marshaller[B, C]): Marshaller[A, C] =
-    Marshaller[A, C] { ec ⇒ a ⇒ m2.compose(marshal).apply(a)(ec) }
+    Marshaller[A, C] { ec ⇒ a ⇒
+      m2.compose(marshal).apply(a)(ec)
+    }
 }
 //#
 

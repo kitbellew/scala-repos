@@ -533,7 +533,9 @@ class CleanerTest extends JUnitSuite {
       scheduler = time.scheduler,
       time = time)
 
-  def noOpCheckDone(topicAndPartition: TopicAndPartition) { /* do nothing */ }
+  def noOpCheckDone(topicAndPartition: TopicAndPartition) {
+    /* do nothing */
+  }
 
   def makeCleaner(
       capacity: Int,

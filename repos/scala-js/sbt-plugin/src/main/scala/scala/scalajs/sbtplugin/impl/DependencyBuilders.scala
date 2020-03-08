@@ -81,8 +81,9 @@ object ScalaJSGroupID {
     new CrossGroupArtifactID(groupID.groupID, artifactID, cross)
   }
 
-  def auto_impl(c: Context { type PrefixType = ScalaJSGroupID })(
-      artifactID: c.Expr[String]): c.Expr[CrossGroupArtifactID] = {
+  def auto_impl(c: Context {
+    type PrefixType = ScalaJSGroupID
+  })(artifactID: c.Expr[String]): c.Expr[CrossGroupArtifactID] = {
     import c.universe._
 
     // Hack to work around bug in sbt macros (wrong way of collecting local

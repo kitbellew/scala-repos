@@ -257,7 +257,9 @@ object JqJE {
     */
   case class JqAppend(content: NodeSeq) extends JsExp with JsMember {
     override val toJsCmd =
-      "append(" + fixHtmlFunc("inline", content) { a => a } + ")"
+      "append(" + fixHtmlFunc("inline", content) { a =>
+        a
+      } + ")"
   }
 
   /**
@@ -280,7 +282,9 @@ object JqJE {
     */
   case class JqAppendTo(content: NodeSeq) extends JsExp with JsMember {
     override val toJsCmd =
-      "appendTo(" + fixHtmlFunc("inline", content) { str => str } + ")"
+      "appendTo(" + fixHtmlFunc("inline", content) { str =>
+        str
+      } + ")"
   }
 
   /**
@@ -292,7 +296,9 @@ object JqJE {
     */
   case class JqPrepend(content: NodeSeq) extends JsExp with JsMember {
     override val toJsCmd =
-      "prepend(" + fixHtmlFunc("inline", content) { str => str } + ")"
+      "prepend(" + fixHtmlFunc("inline", content) { str =>
+        str
+      } + ")"
   }
 
   /**
@@ -304,7 +310,9 @@ object JqJE {
     */
   case class JqPrependTo(content: NodeSeq) extends JsExp with JsMember {
     override val toJsCmd =
-      "prependTo(" + fixHtmlFunc("inline", content) { str => str } + ")"
+      "prependTo(" + fixHtmlFunc("inline", content) { str =>
+        str
+      } + ")"
   }
 
   /**
@@ -329,7 +337,9 @@ object JqJE {
     */
   case class JqEmptyAfter(content: NodeSeq) extends JsExp with JsMember {
     override val toJsCmd =
-      "empty().after(" + fixHtmlFunc("inline", content) { str => str } + ")"
+      "empty().after(" + fixHtmlFunc("inline", content) { str =>
+        str
+      } + ")"
   }
 
   /**
@@ -366,7 +376,9 @@ object JqJE {
       * See http://api.jquery.com/html/ .
       */
     def apply(content: NodeSeq): JsExp with JsMember = new JsExp with JsMember {
-      val toJsCmd = fixHtmlCmdFunc("inline", content) { "html(" + _ + ")" }
+      val toJsCmd = fixHtmlCmdFunc("inline", content) {
+        "html(" + _ + ")"
+      }
     }
   }
 

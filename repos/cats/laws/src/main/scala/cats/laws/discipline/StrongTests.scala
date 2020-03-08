@@ -37,5 +37,7 @@ trait StrongTests[F[_, _]] extends ProfunctorTests[F] {
 
 object StrongTests {
   def apply[F[_, _]: Strong]: StrongTests[F] =
-    new StrongTests[F] { def laws: StrongLaws[F] = StrongLaws[F] }
+    new StrongTests[F] {
+      def laws: StrongLaws[F] = StrongLaws[F]
+    }
 }

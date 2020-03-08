@@ -60,7 +60,9 @@ trait Phases {
   def buildTrace(sigma: Sigma)(expr: Expr): Trace
 
   private[quirrel] def runPhasesInSequence(tree: Expr): Set[Error] =
-    Phases.foldLeft(Set[Error]()) { _ ++ _(tree) }
+    Phases.foldLeft(Set[Error]()) {
+      _ ++ _(tree)
+    }
 
   val Error: ErrorCompanion
 

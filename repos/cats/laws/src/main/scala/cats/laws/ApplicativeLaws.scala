@@ -36,7 +36,9 @@ trait ApplicativeLaws[F[_]] extends ApplyLaws[F] {
   }
 
   def apProductConsistent[A, B](fa: F[A], f: F[A => B]): IsEq[F[B]] =
-    F.ap(f)(fa) <-> F.map(F.product(f, fa)) { case (f, a) => f(a) }
+    F.ap(f)(fa) <-> F.map(F.product(f, fa)) {
+      case (f, a) => f(a)
+    }
 
   // The following are the lax monoidal functor identity laws - the associativity law is covered by
   // Cartesian's associativity law.
@@ -50,5 +52,7 @@ trait ApplicativeLaws[F[_]] extends ApplyLaws[F] {
 
 object ApplicativeLaws {
   def apply[F[_]](implicit ev: Applicative[F]): ApplicativeLaws[F] =
-    new ApplicativeLaws[F] { def F: Applicative[F] = ev }
+    new ApplicativeLaws[F] {
+      def F: Applicative[F] = ev
+    }
 }

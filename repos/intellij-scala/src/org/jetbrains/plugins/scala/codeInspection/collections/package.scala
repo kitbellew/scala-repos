@@ -394,7 +394,8 @@ package object collections {
       case _ => false
     }
 
-  private def checkScalaVersion(elem: PsiElement): Boolean = { //there is no Option.fold in Scala 2.9
+  private def checkScalaVersion(
+      elem: PsiElement): Boolean = { //there is no Option.fold in Scala 2.9
     elem.scalaLanguageLevel.map(_ > Scala_2_9).getOrElse(true)
   }
 

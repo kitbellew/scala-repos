@@ -409,8 +409,12 @@ case class SetBit(key: ChannelBuffer, offset: Int, value: Int)
 object SetBit {
   def apply(args: Seq[Array[Byte]]) = {
     val list = BytesToString.fromList(trimList(args, 3, "SETBIT"))
-    val offset = RequireClientProtocol.safe { NumberFormat.toInt(list(1)) }
-    val value = RequireClientProtocol.safe { NumberFormat.toInt(list(2)) }
+    val offset = RequireClientProtocol.safe {
+      NumberFormat.toInt(list(1))
+    }
+    val value = RequireClientProtocol.safe {
+      NumberFormat.toInt(list(2))
+    }
     new SetBit(ChannelBuffers.wrappedBuffer(args(0)), offset, value)
   }
 }

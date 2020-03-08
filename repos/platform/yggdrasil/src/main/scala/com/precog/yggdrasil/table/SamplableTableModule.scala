@@ -113,14 +113,18 @@ trait SamplableColumnarTableModule[M[+_]] extends SamplableTableModule[M] {
                 }
             }
 
-            Traverse[List].sequence(nextStates) flatMap { build(_, tail) }
+            Traverse[List].sequence(nextStates) flatMap {
+              build(_, tail)
+            }
 
           case None =>
             M.point {
               states map {
                 case SampleState(inserter, length, _) =>
                   val len = length min sampleSize
-                  inserter map { _.toSlice(len) } map { slice =>
+                  inserter map {
+                    _.toSlice(len)
+                  } map { slice =>
                     Table(slice :: StreamT.empty[M, Slice], ExactSize(len))
                       .paged(yggConfig.maxSliceSize)
                   } getOrElse {
@@ -131,7 +135,9 @@ trait SamplableColumnarTableModule[M[+_]] extends SamplableTableModule[M] {
         }
       }
 
-      val transforms = specs map { SliceTransform.composeSliceTransform }
+      val transforms = specs map {
+        SliceTransform.composeSliceTransform
+      }
       val states = transforms map { transform =>
         SampleState(None, 0, transform)
       }

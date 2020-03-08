@@ -144,7 +144,9 @@ final class VectorSlicer(override val uid: String)
       s" names: " +
       nameFeatures
         .zip($(names))
-        .map { case (i, n) => s"$i:$n" }
+        .map {
+          case (i, n) => s"$i:$n"
+        }
         .mkString("[", ",", "]")
     require(
       nameFeatures.length + indFeatures.length == numDistinctFeatures,

@@ -233,7 +233,9 @@ class TrafficDistributorTest extends FunSuite {
     val expected = newAddrs.map {
       case WeightedAddress(addr, _) => AddressFactory(addr)
     } + AddressFactory(Address(existingWeight.toInt))
-    assert(balancers.count { _.endpoints.sample() == expected } == 1)
+    assert(balancers.count {
+      _.endpoints.sample() == expected
+    } == 1)
 
     // change weight class for an existing endpoint
     resetCounters()
@@ -335,7 +337,9 @@ class TrafficDistributorTest extends FunSuite {
 
     // Failure is only allowed as an initial state
     dest() = Activity.Failed(new Exception)
-    intercept[Exception] { Await.result(dist()) }
+    intercept[Exception] {
+      Await.result(dist())
+    }
 
     // now give it a good value and then make sure that
     // failed never comes back.
@@ -417,8 +421,11 @@ class TrafficDistributorTest extends FunSuite {
   }
 
   test("increment weights on a shard")(new StringClient with StringServer {
-    val server = stringServer
-      .serve(":*", Service.mk { r: String => Future.value(r.reverse) })
+    val server = stringServer.serve(
+      ":*",
+      Service.mk { r: String =>
+        Future.value(r.reverse)
+      })
     val sr = new CumulativeGaugeInMemoryStatsReceiver()
     val addr = Address(server.boundAddress.asInstanceOf[InetSocketAddress])
     val va = Var[Addr](Addr.Bound(addr))
@@ -457,8 +464,11 @@ class TrafficDistributorTest extends FunSuite {
   })
 
   test("close a client")(new StringClient with StringServer {
-    val server = stringServer
-      .serve(":*", Service.mk { r: String => Future.value(r.reverse) })
+    val server = stringServer.serve(
+      ":*",
+      Service.mk { r: String =>
+        Future.value(r.reverse)
+      })
     val sr = new InMemoryStatsReceiver
     val addr = Address(server.boundAddress.asInstanceOf[InetSocketAddress])
     val va = Var[Addr](Addr.Bound(addr))
@@ -469,6 +479,8 @@ class TrafficDistributorTest extends FunSuite {
 
     assert(Await.result(client("hello")) == "hello".reverse)
     Await.ready(client.close())
-    intercept[ServiceClosedException] { Await.result(client("x")) }
+    intercept[ServiceClosedException] {
+      Await.result(client("x"))
+    }
   })
 }

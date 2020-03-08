@@ -29,7 +29,9 @@ import org.apache.spark.util.Utils
   * An exception thrown if RpcTimeout modifies a [[TimeoutException]].
   */
 private[rpc] class RpcTimeoutException(message: String, cause: TimeoutException)
-    extends TimeoutException(message) { initCause(cause) }
+    extends TimeoutException(message) {
+  initCause(cause)
+}
 
 /**
   * Associates a timeout with a description so that a when a TimeoutException occurs, additional
@@ -90,7 +92,9 @@ private[spark] object RpcTimeout {
     * @throws NoSuchElementException if property is not set
     */
   def apply(conf: SparkConf, timeoutProp: String): RpcTimeout = {
-    val timeout = { conf.getTimeAsSeconds(timeoutProp).seconds }
+    val timeout = {
+      conf.getTimeAsSeconds(timeoutProp).seconds
+    }
     new RpcTimeout(timeout, timeoutProp)
   }
 
@@ -106,7 +110,9 @@ private[spark] object RpcTimeout {
       conf: SparkConf,
       timeoutProp: String,
       defaultValue: String): RpcTimeout = {
-    val timeout = { conf.getTimeAsSeconds(timeoutProp, defaultValue).seconds }
+    val timeout = {
+      conf.getTimeAsSeconds(timeoutProp, defaultValue).seconds
+    }
     new RpcTimeout(timeout, timeoutProp)
   }
 
@@ -135,7 +141,9 @@ private[spark] object RpcTimeout {
       }
     }
     val finalProp = foundProp.getOrElse(timeoutPropList.head, defaultValue)
-    val timeout = { Utils.timeStringAsSeconds(finalProp._2).seconds }
+    val timeout = {
+      Utils.timeStringAsSeconds(finalProp._2).seconds
+    }
     new RpcTimeout(timeout, finalProp._1)
   }
 }

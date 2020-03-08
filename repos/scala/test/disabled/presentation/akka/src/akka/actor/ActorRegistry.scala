@@ -190,7 +190,9 @@ final class ActorRegistry private[actor] () extends ListenerManagement {
       actorRef.isDefined && classTag.erasure.isAssignableFrom(
         actorRef.get.actor.getClass)
     }
-    findTypedActor({ case a: Some[AnyRef] if predicate(a.get) => a })
+    findTypedActor({
+      case a: Some[AnyRef] if predicate(a.get) => a
+    })
   }
 
   /**
@@ -367,7 +369,9 @@ class Index[K <: AnyRef, V <: AnyRef: ArrayTag] {
     */
   def foreach(fun: (K, V) => Unit) {
     import scala.collection.JavaConversions._
-    container.entrySet foreach { (e) => e.getValue.foreach(fun(e.getKey, _)) }
+    container.entrySet foreach { (e) =>
+      e.getValue.foreach(fun(e.getKey, _))
+    }
   }
 
   /**
@@ -400,5 +404,7 @@ class Index[K <: AnyRef, V <: AnyRef: ArrayTag] {
   /**
     *  Removes all keys and all values
     */
-  def clear = foreach { case (k, v) => remove(k, v) }
+  def clear = foreach {
+    case (k, v) => remove(k, v)
+  }
 }

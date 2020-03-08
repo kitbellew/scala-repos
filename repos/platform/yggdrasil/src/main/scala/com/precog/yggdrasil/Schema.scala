@@ -32,9 +32,13 @@ object Schema {
     case JArrayFixedT(indices) if indices.isEmpty => Set(CEmptyArray)
     case JObjectFixedT(fields) if fields.isEmpty  => Set(CEmptyObject)
     case JArrayFixedT(indices) =>
-      indices.values.toSet.flatMap { tpe: JType => ctypes(tpe) }
+      indices.values.toSet.flatMap { tpe: JType =>
+        ctypes(tpe)
+      }
     case JObjectFixedT(fields) =>
-      fields.values.toSet.flatMap { tpe: JType => ctypes(tpe) }
+      fields.values.toSet.flatMap { tpe: JType =>
+        ctypes(tpe)
+      }
     case JArrayHomogeneousT(elemType) =>
       ctypes(elemType) collect {
         case cType: CValueType[_] => CArrayType(cType)
@@ -67,9 +71,13 @@ object Schema {
   }
 
   def sample(jtype: JType, size: Int): Option[JType] = {
-    val paths = flatten(jtype, Nil) groupBy { _.selector } toSeq
+    val paths = flatten(jtype, Nil) groupBy {
+      _.selector
+    } toSeq
     val sampledPaths: Seq[ColumnRef] =
-      scala.util.Random.shuffle(paths).take(size) flatMap { _._2 }
+      scala.util.Random.shuffle(paths).take(size) flatMap {
+        _._2
+      }
 
     mkType(sampledPaths)
   }
@@ -201,7 +209,9 @@ object Schema {
       }
       val bits = filteredCols.values map {
         _.definedAt(0, size)
-      } reduceOption { _ | _ } getOrElse new BitSet
+      } reduceOption {
+        _ | _
+      } getOrElse new BitSet
 
       (row: Int) => bits(row)
     }
@@ -229,7 +239,9 @@ object Schema {
       }
       val objBits = objCols.values map {
         _.definedAt(0, size)
-      } reduceOption { _ | _ } getOrElse new BitSet
+      } reduceOption {
+        _ | _
+      } getOrElse new BitSet
 
       (row: Int) => objBits(row)
     }
@@ -241,14 +253,18 @@ object Schema {
       }
       val emptyBits = emptyCols.values map {
         _.definedAt(0, size)
-      } reduceOption { _ | _ } getOrElse new BitSet
+      } reduceOption {
+        _ | _
+      } getOrElse new BitSet
 
       (row: Int) => emptyBits(row)
     }
 
     def combineFixedResults(results: Seq[Int => Boolean]): Int => Boolean = {
       (row: Int) =>
-        results.foldLeft(true) { case (bool, fcn) => bool && fcn(row) }
+        results.foldLeft(true) {
+          case (bool, fcn) => bool && fcn(row)
+        }
     }
 
     jtpe match {

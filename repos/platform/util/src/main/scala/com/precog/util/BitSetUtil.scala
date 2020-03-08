@@ -28,12 +28,24 @@ object BitSetUtil {
     def toUnboxedArray(): Array[Long] = bitSetToArray(bs)
     def toList(): List[Int] = bitSetToList(bs)
 
-    def +(elem: Int) = { val b = bs.copy; b.set(elem); b }
-    def -(elem: Int) = { val b = bs.copy; b.clear(elem); b }
-    def &(other: BitSet) = { val b = bs.copy; b.and(other); b }
-    def &~(other: BitSet) = { val b = bs.copy; b.andNot(other); b }
-    def |(other: BitSet) = { val b = bs.copy; b.or(other); b }
-    def ++(other: BitSet) = { val b = bs.copy; b.or(other); b }
+    def +(elem: Int) = {
+      val b = bs.copy; b.set(elem); b
+    }
+    def -(elem: Int) = {
+      val b = bs.copy; b.clear(elem); b
+    }
+    def &(other: BitSet) = {
+      val b = bs.copy; b.and(other); b
+    }
+    def &~(other: BitSet) = {
+      val b = bs.copy; b.andNot(other); b
+    }
+    def |(other: BitSet) = {
+      val b = bs.copy; b.or(other); b
+    }
+    def ++(other: BitSet) = {
+      val b = bs.copy; b.or(other); b
+    }
 
     def +=(elem: Int) = bs.set(elem)
     def -=(elem: Int) = bs.clear(elem)

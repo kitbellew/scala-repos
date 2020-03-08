@@ -27,7 +27,9 @@ object Main extends Logging {
 
   def interp = _interp
 
-  def interp_=(i: SparkILoop) { _interp = i }
+  def interp_=(i: SparkILoop) {
+    _interp = i
+  }
 
   def main(args: Array[String]) {
     _interp = new SparkILoop

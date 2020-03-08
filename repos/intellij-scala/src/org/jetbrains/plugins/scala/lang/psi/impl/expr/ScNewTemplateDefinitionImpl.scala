@@ -45,7 +45,9 @@ class ScNewTemplateDefinitionImpl private (
     extends ScalaStubBasedElementImpl(stub, nodeType, node)
     with ScNewTemplateDefinition
     with PsiClassFake {
-  def this(node: ASTNode) = { this(null, null, node) }
+  def this(node: ASTNode) = {
+    this(null, null, node)
+  }
   def this(stub: ScTemplateDefinitionStub) = {
     this(stub, ScalaElementTypes.NEW_TEMPLATE, null)
   }

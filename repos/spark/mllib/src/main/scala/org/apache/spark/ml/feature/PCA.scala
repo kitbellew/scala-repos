@@ -76,7 +76,9 @@ class PCA(override val uid: String)
     */
   override def fit(dataset: DataFrame): PCAModel = {
     transformSchema(dataset.schema, logging = true)
-    val input = dataset.select($(inputCol)).rdd.map { case Row(v: Vector) => v }
+    val input = dataset.select($(inputCol)).rdd.map {
+      case Row(v: Vector) => v
+    }
     val pca = new feature.PCA(k = $(k))
     val pcaModel = pca.fit(input)
     copyValues(
@@ -140,7 +142,9 @@ class PCAModel private[ml] (
   override def transform(dataset: DataFrame): DataFrame = {
     transformSchema(dataset.schema, logging = true)
     val pcaModel = new feature.PCAModel($(k), pc, explainedVariance)
-    val pcaOp = udf { pcaModel.transform _ }
+    val pcaOp = udf {
+      pcaModel.transform _
+    }
     dataset.withColumn($(outputCol), pcaOp(col($(inputCol))))
   }
 

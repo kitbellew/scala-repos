@@ -1,14 +1,20 @@
 import scala.language.higherKinds
 
-trait Base[A] { type B = A; }
+trait Base[A] {
+  type B = A;
+}
 class C extends Base[String] {
   class D {
     def foo[B1 <: B](b: B1) = 0
   }
 }
 
-trait BaseHK[M[_], A] { type B = M[A]; }
-object BaseHK { type Id[X] = X }
+trait BaseHK[M[_], A] {
+  type B = M[A];
+}
+object BaseHK {
+  type Id[X] = X
+}
 class CHK extends BaseHK[BaseHK.Id, String] {
   class D {
     def foo[B1 <: B](b: B1) = 0

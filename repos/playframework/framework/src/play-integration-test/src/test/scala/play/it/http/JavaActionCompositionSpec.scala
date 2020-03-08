@@ -78,7 +78,9 @@ object JavaActionCompositionSpec extends PlaySpecification with WsTestClient {
       new ComposedController {
         @ActionAnnotation
         override def action: Result = Results.ok()
-      }) { response => response.body must beEqualTo("actioncontroller") }
+      }) { response =>
+      response.body must beEqualTo("actioncontroller")
+    }
   }
 
   "Java action composition" should {
@@ -86,7 +88,9 @@ object JavaActionCompositionSpec extends PlaySpecification with WsTestClient {
       new MockController {
         @WithUsername("foo")
         def action = Results.ok(request.username())
-      }) { response => response.body must_== "foo" }
+      }) { response =>
+      response.body must_== "foo"
+    }
   }
 
   "When action composition is configured to invoke request handler action first" should {
@@ -125,7 +129,9 @@ object JavaActionCompositionSpec extends PlaySpecification with WsTestClient {
       Map(
         "play.http.actionComposition.executeActionCreatorActionFirst" -> "true",
         "play.http.actionCreator" -> "play.it.http.ActionCompositionActionCreator")
-    ) { response => response.body must beEqualTo("actioncreatorcontroller") }
+    ) { response =>
+      response.body must beEqualTo("actioncreatorcontroller")
+    }
 
     "execute request handler action first with only action composition" in makeRequest(
       new MockController {
@@ -135,7 +141,9 @@ object JavaActionCompositionSpec extends PlaySpecification with WsTestClient {
       Map(
         "play.http.actionComposition.executeActionCreatorActionFirst" -> "true",
         "play.http.actionCreator" -> "play.it.http.ActionCompositionActionCreator")
-    ) { response => response.body must beEqualTo("actioncreatoraction") }
+    ) { response =>
+      response.body must beEqualTo("actioncreatoraction")
+    }
   }
 
   "When action composition is configured to invoke request handler action last" should {
@@ -174,7 +182,9 @@ object JavaActionCompositionSpec extends PlaySpecification with WsTestClient {
       Map(
         "play.http.actionComposition.executeActionCreatorActionFirst" -> "false",
         "play.http.actionCreator" -> "play.it.http.ActionCompositionActionCreator")
-    ) { response => response.body must beEqualTo("controlleractioncreator") }
+    ) { response =>
+      response.body must beEqualTo("controlleractioncreator")
+    }
 
     "execute request handler action last with only action composition" in makeRequest(
       new MockController {
@@ -184,7 +194,9 @@ object JavaActionCompositionSpec extends PlaySpecification with WsTestClient {
       Map(
         "play.http.actionComposition.executeActionCreatorActionFirst" -> "false",
         "play.http.actionCreator" -> "play.it.http.ActionCompositionActionCreator")
-    ) { response => response.body must beEqualTo("actionactioncreator") }
+    ) { response =>
+      response.body must beEqualTo("actionactioncreator")
+    }
 
     "execute request handler action last is the default and controller composition before action composition" in makeRequest(
       new ComposedController {
@@ -219,7 +231,9 @@ object JavaActionCompositionSpec extends PlaySpecification with WsTestClient {
       Map(
         "play.http.actionComposition.executeActionCreatorActionFirst" -> "false",
         "play.http.actionCreator" -> "play.it.http.ActionCompositionActionCreator")
-    ) { response => response.body must beEqualTo("actioncreator") }
+    ) { response =>
+      response.body must beEqualTo("actioncreator")
+    }
 
     "execute request handler action first without action composition" in makeRequest(
       new MockController {
@@ -228,7 +242,9 @@ object JavaActionCompositionSpec extends PlaySpecification with WsTestClient {
       Map(
         "play.http.actionComposition.executeActionCreatorActionFirst" -> "true",
         "play.http.actionCreator" -> "play.it.http.ActionCompositionActionCreator")
-    ) { response => response.body must beEqualTo("actioncreator") }
+    ) { response =>
+      response.body must beEqualTo("actioncreator")
+    }
   }
 
 }

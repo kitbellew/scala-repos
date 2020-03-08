@@ -208,11 +208,15 @@ object EvaluateConfigurations {
       : ClassLoader => Seq[Setting[_]] =
     loader => mksettings.flatMap(_ apply loader)
   def addOffset(offset: Int, lines: Seq[(String, Int)]): Seq[(String, Int)] =
-    lines.map { case (s, i) => (s, i + offset) }
+    lines.map {
+      case (s, i) => (s, i + offset)
+    }
   def addOffsetToRange(
       offset: Int,
       ranges: Seq[(String, LineRange)]): Seq[(String, LineRange)] =
-    ranges.map { case (s, r) => (s, r shift offset) }
+    ranges.map {
+      case (s, r) => (s, r shift offset)
+    }
 
   /**
     * The name of the class we cast DSL "setting" (vs. definition) lines to.
@@ -349,7 +353,9 @@ object EvaluateConfigurations {
       if (lines.isEmpty) accum.reverse
       else {
         val start = lines dropWhile fstS(skipInitial)
-        val (next, tail) = start.span { case (s, _) => !delimiter(s) }
+        val (next, tail) = start.span {
+          case (s, _) => !delimiter(s)
+        }
         val grouped =
           if (next.isEmpty) accum
           else
@@ -363,7 +369,9 @@ object EvaluateConfigurations {
 
   private[this] def splitSettingsDefinitions(lines: Seq[(String, LineRange)])
       : (Seq[(String, LineRange)], Seq[(String, LineRange)]) =
-    lines partition { case (line, range) => isDefinition(line) }
+    lines partition {
+      case (line, range) => isDefinition(line)
+    }
   private[this] def isDefinition(line: String): Boolean = {
     val trimmed = line.trim
     DefinitionKeywords.exists(trimmed startsWith _)
@@ -419,10 +427,14 @@ object Index {
       label: AttributeKey[_] => String): Map[String, AttributeKey[_]] = {
     val multiMap = settings.groupBy(label)
     val duplicates = multiMap collect {
-      case (k, xs) if xs.size > 1           => (k, xs.map(_.manifest))
-    } collect { case (k, xs) if xs.size > 1 => (k, xs) }
+      case (k, xs) if xs.size > 1 => (k, xs.map(_.manifest))
+    } collect {
+      case (k, xs) if xs.size > 1 => (k, xs)
+    }
     if (duplicates.isEmpty)
-      multiMap.collect { case (k, v) if validID(k) => (k, v.head) } toMap
+      multiMap.collect {
+        case (k, v) if validID(k) => (k, v.head)
+      } toMap
     else
       sys.error(duplicates map {
         case (k, tps) => "'" + k + "' (" + tps.mkString(", ") + ")"
@@ -442,7 +454,12 @@ object Index {
     val onComplete = Keys.onComplete in GlobalScope get ss getOrElse { () =>
       ()
     }
-    new Triggers[Task](runBefore, triggeredBy, map => { onComplete(); map })
+    new Triggers[Task](
+      runBefore,
+      triggeredBy,
+      map => {
+        onComplete(); map
+      })
   }
   private[this] def update(
       map: TriggerMap,

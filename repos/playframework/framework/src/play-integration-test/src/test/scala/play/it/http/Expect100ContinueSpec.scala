@@ -27,7 +27,11 @@ trait Expect100ContinueSpec
       running(
         TestServer(
           port,
-          GuiceApplicationBuilder().routes { case _ => action }.build())) {
+          GuiceApplicationBuilder()
+            .routes {
+              case _ => action
+            }
+            .build())) {
         block(port)
       }
     }
