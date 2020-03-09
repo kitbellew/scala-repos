@@ -208,7 +208,9 @@ object ColumnarTableModule extends Logging {
         var i = 1
         val len = n
         while (i < len) {
-          sb.append(','); sb.append(a(i)); i += 1
+          sb.append(',');
+          sb.append(a(i));
+          i += 1
         }
         sb.append("\r\n")
       }
@@ -224,7 +226,8 @@ object ColumnarTableModule extends Logging {
         var i = 0
         val len = paths.length
         while (i < len) {
-          m(paths(i)) = i; i += 1
+          m(paths(i)) = i;
+          i += 1
         }
         new Indices(len, m, paths)
       }
@@ -824,7 +827,8 @@ trait ColumnarTableModule[M[+_]]
         .Skip({
           readStarts.getAndIncrement
           slices0.map(s => {
-            blockReads.getAndIncrement; s
+            blockReads.getAndIncrement;
+            s
           })
         })
         .point[M]
@@ -2250,7 +2254,8 @@ trait ColumnarTableModule[M[+_]]
             .Skip({
               println(prelude);
               slices map { s =>
-                println(f(s)); s
+                println(f(s));
+                s
               }
             })
             .point[M]),
@@ -2265,17 +2270,20 @@ trait ColumnarTableModule[M[+_]]
       val preludeEffect = StreamT(
         StreamT
           .Skip({
-            logger.debug(logPrefix + " " + prelude); StreamT.empty[M, Slice]
+            logger.debug(logPrefix + " " + prelude);
+            StreamT.empty[M, Slice]
           })
           .point[M])
       val appendixEffect = StreamT(
         StreamT
           .Skip({
-            logger.debug(logPrefix + " " + appendix); StreamT.empty[M, Slice]
+            logger.debug(logPrefix + " " + appendix);
+            StreamT.empty[M, Slice]
           })
           .point[M])
       val sliceEffect = if (logger.isTraceEnabled) slices map { s =>
-        logger.trace(logPrefix + " " + f(s)); s
+        logger.trace(logPrefix + " " + f(s));
+        s
       }
       else slices
       Table(preludeEffect ++ sliceEffect ++ appendixEffect, size)
@@ -2298,7 +2306,9 @@ trait ColumnarTableModule[M[+_]]
 
     private def toEvents[A](f: (Slice, RowId) => Option[A]): M[Iterable[A]] = {
       for (stream <- self.compact(Leaf(Source)).slices.toStream) yield {
-        for (slice <- stream; i <- 0 until slice.size; a <- f(slice, i)) yield a
+        for (slice <- stream;
+             i <- 0 until slice.size;
+             a <- f(slice, i)) yield a
       }
     }
 

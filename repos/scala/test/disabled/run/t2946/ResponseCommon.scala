@@ -1,7 +1,8 @@
 trait ResponseCommon extends Parser {
   private[this] var paramsParser: Parser = null
   def withParamsParser(parser: Parser) = {
-    paramsParser = parser; this
+    paramsParser = parser;
+    this
   }
 
   class Foo {

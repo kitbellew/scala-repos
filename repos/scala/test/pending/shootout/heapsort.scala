@@ -17,7 +17,10 @@ object heapsort {
   }
 
   def heapsort(n: Int, ra: Array[Double]): Unit = {
-    var l = 0; var j = 0; var ir = 0; var i = 0;
+    var l = 0;
+    var j = 0;
+    var ir = 0;
+    var i = 0;
     var rra = 0.0d;
 
     if (n < 2) return;
@@ -25,7 +28,8 @@ object heapsort {
     ir = n;
     while (true) {
       if (l > 1) {
-        l = l - 1; rra = ra(l);
+        l = l - 1;
+        rra = ra(l);
       } else {
         rra = ra(ir);
         ra(ir) = ra(1);

@@ -4,7 +4,8 @@ class UnitReturn {
     /*start*/
 
     {
-      1; ()
+      1;
+      ()
     }
     /*end*/
     val j = i

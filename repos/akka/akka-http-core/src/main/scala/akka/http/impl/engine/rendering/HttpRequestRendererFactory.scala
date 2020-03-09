@@ -38,7 +38,8 @@ private[http] class HttpRequestRendererFactory(
       r ~~ method ~~ ' '
       val rawRequestUriRendered = headers.exists {
         case `Raw-Request-URI`(rawUri) ⇒
-          r ~~ rawUri; true
+          r ~~ rawUri;
+          true
         case _ ⇒ false
       }
       if (!rawRequestUriRendered)

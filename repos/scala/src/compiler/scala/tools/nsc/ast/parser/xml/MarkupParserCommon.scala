@@ -165,7 +165,9 @@ private[scala] trait MarkupParserCommon {
 
   /** scan [S] '=' [S]*/
   def xEQ() = {
-    xSpaceOpt(); xToken('='); xSpaceOpt()
+    xSpaceOpt();
+    xToken('=');
+    xSpaceOpt()
   }
 
   /** skip optional space S? */
@@ -174,12 +176,14 @@ private[scala] trait MarkupParserCommon {
   /** scan [3] S ::= (#x20 | #x9 | #xD | #xA)+ */
   def xSpace() =
     if (isSpace(ch)) {
-      nextch(); xSpaceOpt()
+      nextch();
+      xSpaceOpt()
     } else xHandleError(ch, "whitespace expected")
 
   /** Apply a function and return the passed value */
   def returning[T](x: T)(f: T => Unit): T = {
-    f(x); x
+    f(x);
+    x
   }
 
   /** Execute body with a variable saved and restored after execution */

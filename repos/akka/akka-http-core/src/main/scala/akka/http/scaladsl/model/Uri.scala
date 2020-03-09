@@ -559,7 +559,8 @@ object Uri {
     def length: Int
     def charCount: Int // count of decoded (!) chars, i.e. the ones contained directly in this high-level model
     def ::(c: Char): Path = {
-      require(c == '/'); Path.Slash(this)
+      require(c == '/');
+      Path.Slash(this)
     }
     def ::(segment: String): Path
     def +(pathString: String): Path = this ++ Path(pathString)
@@ -749,7 +750,8 @@ object Uri {
       new mutable.Builder[(String, String), Query] {
         val b = mutable.ArrayBuffer.newBuilder[(String, String)]
         def +=(elem: (String, String)): this.type = {
-          b += elem; this
+          b += elem;
+          this
         }
         def clear() = b.clear()
         def result() = apply(b.result(): _*)
@@ -907,7 +909,8 @@ object Uri {
               charset)) {
           @tailrec def appendBytes(i: Int = 0): Unit =
             if (i < bytesCount) {
-              sb.append(bytes(i).toChar); appendBytes(i + 1)
+              sb.append(bytes(i).toChar);
+              appendBytes(i + 1)
             }
           appendBytes()
         } else sb.append(new String(bytes, charset))
@@ -1147,20 +1150,25 @@ object UriRendering {
       if (ix < string.length) {
         val charSize = string.charAt(ix) match {
           case c if keep(c) ⇒ {
-            r ~~ c; 1
+            r ~~ c;
+            1
           }
           case ' ' if replaceSpaces ⇒ {
-            r ~~ '+'; 1
+            r ~~ '+';
+            1
           }
           case c if c <= 127 && asciiCompatible ⇒ {
-            appendEncoded(c.toByte); 1
+            appendEncoded(c.toByte);
+            1
           }
           case c ⇒
             def append(s: String) = s.getBytes(charset).foreach(appendEncoded)
             if (Character.isHighSurrogate(c)) {
-              append(new String(Array(string codePointAt ix), 0, 1)); 2
+              append(new String(Array(string codePointAt ix), 0, 1));
+              2
             } else {
-              append(c.toString); 1
+              append(c.toString);
+              1
             }
         }
         rec(ix + charSize)

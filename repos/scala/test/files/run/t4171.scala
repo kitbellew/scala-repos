@@ -10,10 +10,14 @@ object Test {
   val a = {
     class B {
       def bar = 5
-    }; class C extends B; new C
+    };
+    class C extends B;
+    new C
   }
   val e = {
-    class A; class B extends A; classOf[B]
+    class A;
+    class B extends A;
+    classOf[B]
   }
 
   def main(args: Array[String]): Unit = {

@@ -33,8 +33,10 @@ class AssertThrowsTest {
           }
           false
         } catch {
-          case bar: Bar     => true
-          case e: Throwable => fail(s"expected Bar but got $e"); false
+          case bar: Bar => true
+          case e: Throwable =>
+            fail(s"expected Bar but got $e");
+            false
         }
       })
 

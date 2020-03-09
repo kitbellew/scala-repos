@@ -50,14 +50,17 @@ final class SbtHandler(
     val p =
       try newRemote(server)
       catch {
-        case e: Throwable => server.close(); throw e
+        case e: Throwable =>
+          server.close();
+          throw e
       }
     val ai = Some(SbtInstance(p, server))
     try f(p, server)
     catch {
       case e: Throwable =>
         // TODO: closing is necessary only because StatementHandler uses exceptions for signaling errors
-        finish(ai); throw e
+        finish(ai);
+        throw e
     }
     ai
   }
@@ -90,7 +93,8 @@ final class SbtHandler(
     val p = Process(args, directory) run (io)
     val thread = new Thread() {
       override def run() = {
-        p.exitValue(); server.close()
+        p.exitValue();
+        server.close()
       }
     }
     thread.start()

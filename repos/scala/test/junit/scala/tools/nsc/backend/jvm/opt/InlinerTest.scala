@@ -38,7 +38,8 @@ object InlinerTest extends ClearAfterClass.Clearable {
   notPerRun foreach compiler.perRunCaches.unrecordCache
 
   def clear(): Unit = {
-    compiler = null; inlineOnlyCompiler = null
+    compiler = null;
+    inlineOnlyCompiler = null
   }
 }
 
@@ -519,7 +520,8 @@ class InlinerTest extends ClearAfterClass {
       scalaCode,
       List((javaCode, "A.java")),
       allowMessage = i => {
-        c += 1; i.msg contains warn
+        c += 1;
+        i.msg contains warn
       })
     assert(c == 1, c)
     val ins = getSingleMethod(b, "g").instructions
@@ -597,7 +599,8 @@ class InlinerTest extends ClearAfterClass {
     val List(c, t) = compile(
       code,
       allowMessage = i => {
-        count += 1; warns.exists(i.msg contains _)
+        count += 1;
+        warns.exists(i.msg contains _)
       })
     // 3rd warnings because of mixin-method, see SD-86
     assert(count == 3, count)
@@ -646,7 +649,8 @@ class InlinerTest extends ClearAfterClass {
     val List(c, oMirror, oModule, t) = compile(
       code,
       allowMessage = i => {
-        count += 1; warns.exists(i.msg contains _)
+        count += 1;
+        warns.exists(i.msg contains _)
       })
     assert(count == 3, count) // SD-86
 
@@ -762,7 +766,8 @@ class InlinerTest extends ClearAfterClass {
     val List(ca, cb, t1, t2a, t2b) = compile(
       code,
       allowMessage = i => {
-        count += 1; warnings.exists(i.msg contains _)
+        count += 1;
+        warnings.exists(i.msg contains _)
       })
     assert(
       count == 8,
@@ -852,7 +857,8 @@ class InlinerTest extends ClearAfterClass {
     compile(
       code,
       allowMessage = i => {
-        c += 1; i.msg contains warn
+        c += 1;
+        i.msg contains warn
       })
     assert(c == 1, c)
   }
@@ -872,7 +878,8 @@ class InlinerTest extends ClearAfterClass {
     compile(
       code,
       allowMessage = info => {
-        i += 1; info.msg contains err
+        i += 1;
+        info.msg contains err
       })
     assert(i == 2, i)
   }
@@ -988,7 +995,8 @@ class InlinerTest extends ClearAfterClass {
       scalaCode,
       List((javaCode, "A.java")),
       allowMessage = i => {
-        c += 1; i.msg contains warn
+        c += 1;
+        i.msg contains warn
       })
     assert(c == 1, c)
   }
@@ -1030,7 +1038,8 @@ class InlinerTest extends ClearAfterClass {
     val List(a, b, t) = compile(
       code,
       allowMessage = i => {
-        c += 1; i.msg contains warn
+        c += 1;
+        i.msg contains warn
       })
     assert(c == 1, c)
 

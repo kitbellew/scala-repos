@@ -93,7 +93,8 @@ sealed abstract class EphemeralStream[A] {
     else {
       val hh = head()
       Monad[M].bind(f(hh)) {
-        case Some(b) => Monad[M].point(Some(b)); case None => tail() findMapM f
+        case Some(b) => Monad[M].point(Some(b));
+        case None    => tail() findMapM f
       }
     }
   }

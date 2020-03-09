@@ -42,15 +42,23 @@ class E {
     protected[this] def protT = 4
 
     // 1a
-    prot; protE; protT
+    prot;
+    protE;
+    protT
     def foo = {
-      prot; protE; protT
+      prot;
+      protE;
+      protT
     }
     new {
-      prot; protE
+      prot;
+      protE
     }
     def this(a: Any) = {
-      this(); prot; protE; protT
+      this();
+      prot;
+      protE;
+      protT
     }
     object B extends A {
       A.this.prot
@@ -68,8 +76,10 @@ class E {
 
   class B extends A {
     // 1b
-    this.prot; this.protE;
-    super.prot; super.protE;
+    this.prot;
+    this.protE;
+    super.prot;
+    super.protE;
 
     // 4
     this.protT

@@ -96,7 +96,11 @@ trait DB2Profile extends JdbcProfile {
         b += ")"
       case Library.IfNull(l, r) =>
         /* DB2 does not support IFNULL so we use COALESCE instead */
-        b += "coalesce("; expr(l, true); b += ","; expr(r, true); b += ")"
+        b += "coalesce(";
+        expr(l, true);
+        b += ",";
+        expr(r, true);
+        b += ")"
       case Library.NextValue(SequenceNode(name)) =>
         b += "(next value for " += quoteIdentifier(name) += ")"
       case Library.CurrentValue(SequenceNode(name)) =>

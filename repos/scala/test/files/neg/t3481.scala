@@ -9,7 +9,8 @@ object t3481 {
 
   object ex2 {
     trait A {
-      type T; def m(t: T) = t.toString
+      type T;
+      def m(t: T) = t.toString
     }
     class B[T2] extends A {
       type T = T2
@@ -20,7 +21,8 @@ object t3481 {
 
   object ex3 {
     class B[T] {
-      type T2 = T; def m(t: T2) = t.toString
+      type T2 = T;
+      def m(t: T2) = t.toString
     }
     val b: B[_] = new B[Int]
     b.m("Hello")
@@ -28,7 +30,8 @@ object t3481 {
 
   object ex4 {
     abstract class B[T] {
-      type T2 = T; def m(t: T2): Any
+      type T2 = T;
+      def m(t: T2): Any
     }
     object Test {
       val b: B[_] = sys.error("")

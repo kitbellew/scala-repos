@@ -271,7 +271,8 @@ object ASMConverters {
       else if (m.valuesIterator contains v2)
         false // v2 is already associated with some different value v1
       else {
-        m(v1) = v2; true
+        m(v1) = v2;
+        true
       }
     }
     def sameVar(v1: Int, v2: Int) = same(v1, v2, varMap)

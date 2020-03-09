@@ -193,7 +193,8 @@ private[sbt] object SettingCompletions {
     }
     val keyID: Parser[AttributeKey[_]] = scalaID(keyMap, "key")
     val keyParser = token(keyID, keyCompletions)
-    for (key <- keyParser; scope <- scopeParser(key, settings, context))
+    for (key <- keyParser;
+         scope <- scopeParser(key, settings, context))
       yield ScopedKey(scope, key)
   }
 

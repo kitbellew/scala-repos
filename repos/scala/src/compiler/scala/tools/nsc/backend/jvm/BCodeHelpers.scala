@@ -989,7 +989,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
 
       def wrap(op: => Unit) = {
         try {
-          op; true
+          op;
+          true
         } catch {
           case _: Throwable => false
         }

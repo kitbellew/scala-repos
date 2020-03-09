@@ -266,7 +266,8 @@ object Schemifier extends Loggable {
           else
             rs.getString(3) match {
               case s if s.toLowerCase == table._dbTableNameLC.toLowerCase =>
-                actualTableNames(table._dbTableNameLC) = s; true
+                actualTableNames(table._dbTableNameLC) = s;
+                true
               case _ => hasTable(rs)
             }
 
@@ -484,7 +485,9 @@ object Schemifier extends Loggable {
           "CREATE UNIQUE INDEX " + standardCreationStatement
         case GenericIndex(createFunc, _, _) =>
           createFunc(table._dbTableNameLC, columns.map(_.field._dbColumnNameLC))
-        case _ => logger.error("Invalid index: " + index); ""
+        case _ =>
+          logger.error("Invalid index: " + index);
+          ""
       }
 
       val fn = columns.map(_.field._dbColumnNameLC.toLowerCase).sortWith(_ < _)

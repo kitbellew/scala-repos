@@ -13,7 +13,8 @@ import java.util.concurrent.{CountDownLatch, TimeUnit}
 class CountDownFunction[A](num: Int = 1) extends Function1[A, A] {
   val latch = new CountDownLatch(num)
   def apply(a: A) = {
-    latch.countDown(); a
+    latch.countDown();
+    a
   }
   def await(timeout: Duration) = latch.await(timeout.length, timeout.unit)
 }
@@ -42,7 +43,9 @@ class AgentSpec extends AkkaSpec {
       val agent = Agent("a")
       agent send (_ + "b")
       agent.sendOff((s: String) ⇒ {
-        l1.countDown; Await.ready(l2, timeout.duration); s + "c"
+        l1.countDown;
+        Await.ready(l2, timeout.duration);
+        s + "c"
       })
       Await.ready(l1, timeout.duration)
       agent send (_ + "d")
@@ -58,7 +61,9 @@ class AgentSpec extends AkkaSpec {
 
       val r1 = agent.alter(_ + "b")
       val r2 = agent.alterOff(s ⇒ {
-        l1.countDown; Await.ready(l2, timeout.duration); s + "c"
+        l1.countDown;
+        Await.ready(l2, timeout.duration);
+        s + "c"
       })
       Await.ready(l1, timeout.duration)
       val r3 = agent.alter(_ + "d")

@@ -36,10 +36,12 @@ object Delegates extends Properties("delegates") {
     allDelegates(keys) { (scope, ds) =>
       val projectAxes = ds.map(_.project)
       val nonProject = projectAxes.dropWhile {
-        case Select(_: ProjectRef) => true; case _ => false
+        case Select(_: ProjectRef) => true;
+        case _                     => false
       }
       val global = nonProject.dropWhile {
-        case Select(_: BuildRef) => true; case _ => false
+        case Select(_: BuildRef) => true;
+        case _                   => false
       }
       global forall {
         _ == Global

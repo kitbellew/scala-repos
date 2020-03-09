@@ -1,7 +1,8 @@
 object Test extends App {
   val a: Any = {
     class A private () {
-      private def x = 0; A.y
+      private def x = 0;
+      A.y
     };
     object A {
       def a = new A().x
@@ -15,7 +16,8 @@ object Test extends App {
       private def y = 0
     }
     class A private () {
-      private def x = 0; A.y
+      private def x = 0;
+      A.y
     };
     A.a
   }

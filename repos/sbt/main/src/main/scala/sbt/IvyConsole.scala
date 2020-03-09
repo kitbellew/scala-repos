@@ -84,6 +84,8 @@ object IvyConsole {
           name.trim,
           version.trim,
           crossVersion = crossV) :: Nil
-      case _ => log.warn("Ignoring invalid argument '" + arg + "'"); Nil
+      case _ =>
+        log.warn("Ignoring invalid argument '" + arg + "'");
+        Nil
     }
 }

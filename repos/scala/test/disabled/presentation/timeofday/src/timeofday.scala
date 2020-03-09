@@ -29,7 +29,9 @@ object timeofday {
 
   def main(args: Array[String]) {
     val d = new TimeOfDayVar
-    d.hours = 8; d. /*!*/ minutes = 30; d.seconds = 0
+    d.hours = 8;
+    d. /*!*/ minutes = 30;
+    d.seconds = 0
     d.hours /*#*/ = 25 // throws a DateError exception
   }
 }

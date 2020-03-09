@@ -17,27 +17,32 @@ trait Trait[-A, +B, C] {
   def fail1() = {
     object O {
       def f0(x: A): A = ???
-    }; O
+    };
+    O
   } // fail
   def fail2() = {
     object O {
       def f0(x: B): A = ???
-    }; O
+    };
+    O
   } // fail
   def fail3() = {
     object O {
       def f0(x: B): B = ???
-    }; O
+    };
+    O
   } // fail
   def fail4() = {
     object O {
       def f0(x: B): C = ???
-    }; O
+    };
+    O
   } // fail
   def fail5() = {
     object O {
       def f0(x: C): A = ???
-    }; O
+    };
+    O
   } // fail
 
   def fail6() = { // fail

@@ -110,7 +110,8 @@ object Command {
   private[this] def separateCommands(
       cmds: Seq[Command]): (Seq[SimpleCommand], Seq[ArbitraryCommand]) =
     Util.separate(cmds) {
-      case s: SimpleCommand => Left(s); case a: ArbitraryCommand => Right(a)
+      case s: SimpleCommand    => Left(s);
+      case a: ArbitraryCommand => Right(a)
     }
   private[this] def apply1[A, B, C](f: (A, B) => C, a: A): B => () => C =
     b => () => f(a, b)

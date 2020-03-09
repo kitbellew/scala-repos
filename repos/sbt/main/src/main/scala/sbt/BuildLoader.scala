@@ -39,7 +39,8 @@ final class MultiHandler[S, T](
     }
 
   def baseLoader: S => Option[T] = root match {
-    case Some(rl) => rl | builtIn; case None => builtIn
+    case Some(rl) => rl | builtIn;
+    case None     => builtIn
   }
 
   def addNonRoot(uri: URI, loader: S => Option[T]) =

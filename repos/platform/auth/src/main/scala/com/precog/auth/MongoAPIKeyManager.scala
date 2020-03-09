@@ -226,7 +226,9 @@ class MongoAPIKeyManager(
     logger.debug("Adding grant: " + ng)
     database(
       insert(ng.serialize.asInstanceOf[JObject]).into(settings.grants)) map {
-      _ => logger.debug("Add complete for " + ng); ng
+      _ =>
+        logger.debug("Add complete for " + ng);
+        ng
     }
   }
 

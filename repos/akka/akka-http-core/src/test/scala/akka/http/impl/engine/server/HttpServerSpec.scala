@@ -368,7 +368,8 @@ class HttpServerSpec
 
     "proceed to next request once previous request's entity has beed drained" in new TestSetup {
       def twice(action: => Unit): Unit = {
-        action; action
+        action;
+        action
       }
 
       twice {

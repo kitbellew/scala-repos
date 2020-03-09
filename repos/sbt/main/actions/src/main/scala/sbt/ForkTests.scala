@@ -102,7 +102,9 @@ private[sbt] object ForkTests {
 
             new React(is, os, log, opts.testListeners, resultsAcc).react()
           } finally {
-            is.close(); os.close(); socket.close()
+            is.close();
+            os.close();
+            socket.close()
           }
         }
       }
@@ -160,17 +162,23 @@ private final class React(
   @annotation.tailrec
   def react(): Unit = is.readObject match {
     case `Done` =>
-      os.writeObject(Done); os.flush()
+      os.writeObject(Done);
+      os.flush()
     case Array(`Error`, s: String) =>
-      log.error(s); react()
+      log.error(s);
+      react()
     case Array(`Warn`, s: String) =>
-      log.warn(s); react()
+      log.warn(s);
+      react()
     case Array(`Info`, s: String) =>
-      log.info(s); react()
+      log.info(s);
+      react()
     case Array(`Debug`, s: String) =>
-      log.debug(s); react()
+      log.debug(s);
+      react()
     case t: Throwable =>
-      log.trace(t); react()
+      log.trace(t);
+      react()
     case Array(group: String, tEvents: Array[Event]) =>
       listeners.foreach(_ startGroup group)
       val event = TestEvent(tEvents)

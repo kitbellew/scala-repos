@@ -289,7 +289,8 @@ private[http] object StreamUtils {
       def onPull(ctx: Context[B]): SyncDirective = recovery match {
         case None ⇒ ctx.pull()
         case Some(x) ⇒ {
-          recovery = null; ctx.push(x)
+          recovery = null;
+          ctx.push(x)
         }
         case null ⇒ ctx.finish()
       }

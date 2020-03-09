@@ -96,10 +96,8 @@ class BindingSpec extends Specification {
           manifest[String],
           builder.valueManifest)
       container(
-        Right(
-          Some(
-            "joske"
-              .asInstanceOf[container.S]))).validation must_== "joske".success
+        Right(Some("joske"
+          .asInstanceOf[container.S]))).validation must_== "joske".success
     }
 
   }

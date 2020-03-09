@@ -2658,7 +2658,8 @@ trait Trees { self: Universe =>
     /** Leave apply available in the generic traverser to do something else.
       */
     def apply[T <: Tree](tree: T): T = {
-      traverse(tree); tree
+      traverse(tree);
+      tree
     }
   }
 

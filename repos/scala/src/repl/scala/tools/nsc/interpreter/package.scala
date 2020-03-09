@@ -219,7 +219,8 @@ package object interpreter extends ReplConfig with ReplStrings {
   } debug assist */
   private[nsc] implicit class `try lastly`[A](val t: Try[A]) extends AnyVal {
     private def effect[X](last: => Unit)(a: X): Try[A] = {
-      last; t
+      last;
+      t
     }
     def lastly(last: => Unit): Try[A] =
       t transform (effect(last) _, effect(last) _)

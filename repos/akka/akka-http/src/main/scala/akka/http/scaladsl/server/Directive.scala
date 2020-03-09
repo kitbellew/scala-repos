@@ -108,7 +108,8 @@ abstract class Directive[L](implicit val ev: Tuple[L]) {
       import ctx.executionContext
       @volatile var rejectedFromInnerRoute = false
       tapply({ list ⇒ c ⇒
-        rejectedFromInnerRoute = true; inner(list)(c)
+        rejectedFromInnerRoute = true;
+        inner(list)(c)
       })(ctx).fast.flatMap {
         case RouteResult.Rejected(rejections) if !rejectedFromInnerRoute ⇒
           recovery(rejections).tapply(inner)(ctx)

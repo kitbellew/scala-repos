@@ -25,7 +25,8 @@ object Test extends App {
     case Mean(b) =>
       // BUG: b is assumed to be a stable identifier, but it can actually be mutated
       println(b.size({
-        mutate(); b.x
+        mutate();
+        b.x
       }))
   }
 

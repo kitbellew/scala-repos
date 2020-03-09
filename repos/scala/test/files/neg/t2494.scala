@@ -1,5 +1,6 @@
 object A {
   val a = {
-    println("a = " + a); a = 1
+    println("a = " + a);
+    a = 1
   }
 }

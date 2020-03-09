@@ -20,7 +20,8 @@ class Tester(ntests: Int, inputs: Array[SourceFile], settings: Settings) {
     op(arg, res)
     while (!res.isComplete && !res.isCancelled) {
       if (System.currentTimeMillis() > limit) {
-        print("c"); res. /*!*/ cancel()
+        print("c");
+        res. /*!*/ cancel()
       } else
         res.get(TIMEOUT) match {
           case Some(Left(t)) =>

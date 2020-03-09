@@ -34,7 +34,8 @@ object Test {
     prop.set("DingusInt")
 
     try {
-      println(prop.value); assert(false, "should not get here")
+      println(prop.value);
+      assert(false, "should not get here")
     } catch {
       case _: Exception => ()
     }

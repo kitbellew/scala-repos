@@ -907,7 +907,8 @@ object Matrix2 {
 
     def pair[X, Y](x: Option[X], y: Option[Y]): Option[(X, Y)] =
       for {
-        xi <- x; yi <- y
+        xi <- x;
+        yi <- y
       } yield (xi, yi)
 
     /**

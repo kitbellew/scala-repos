@@ -79,13 +79,16 @@ object ArraySupport {
     val z = new Array[A](spire.math.max(x.length, y.length))
     var i = 0
     while (i < x.length && i < y.length) {
-      z(i) = x(i) + y(i); i += 1
+      z(i) = x(i) + y(i);
+      i += 1
     }
     while (i < x.length) {
-      z(i) = x(i); i += 1
+      z(i) = x(i);
+      i += 1
     }
     while (i < y.length) {
-      z(i) = y(i); i += 1
+      z(i) = y(i);
+      i += 1
     }
     z
   }
@@ -96,13 +99,16 @@ object ArraySupport {
     val z = new Array[A](spire.math.max(x.length, y.length))
     var i = 0
     while (i < x.length && i < y.length) {
-      z(i) = x(i) - y(i); i += 1
+      z(i) = x(i) - y(i);
+      i += 1
     }
     while (i < x.length) {
-      z(i) = x(i); i += 1
+      z(i) = x(i);
+      i += 1
     }
     while (i < y.length) {
-      z(i) = -y(i); i += 1
+      z(i) = -y(i);
+      i += 1
     }
     z
   }
@@ -117,7 +123,8 @@ object ArraySupport {
     val y = new Array[A](x.length)
     var i = 0
     while (i < y.length) {
-      y(i) = r * x(i); i += 1
+      y(i) = r * x(i);
+      i += 1
     }
     y
   }
@@ -127,7 +134,8 @@ object ArraySupport {
     var z = sc.zero
     var i = 0
     while (i < x.length && i < y.length) {
-      z += x(i) * y(i); i += 1
+      z += x(i) * y(i);
+      i += 1
     }
     z
   }
@@ -138,7 +146,8 @@ object ArraySupport {
     val v = new Array[A](dimensions)
     var j = 0
     while (j < v.length) {
-      v(j) = sc.zero; j += 1
+      v(j) = sc.zero;
+      j += 1
     }
     if (i < dimensions) v(i) = sc.one
     v

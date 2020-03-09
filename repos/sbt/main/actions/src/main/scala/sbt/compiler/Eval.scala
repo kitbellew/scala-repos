@@ -322,7 +322,9 @@ final class Eval(
   private[this] final class TypeExtractor extends Traverser {
     private[this] var result = ""
     def getType(t: Tree) = {
-      result = ""; traverse(t); result
+      result = "";
+      traverse(t);
+      result
     }
     override def traverse(tree: Tree): Unit = tree match {
       case d: DefDef if d.symbol.nameString == WrapValName =>
@@ -335,7 +337,9 @@ final class Eval(
   private[this] final class ValExtractor(tpes: Set[String]) extends Traverser {
     private[this] var vals = List[String]()
     def getVals(t: Tree): List[String] = {
-      vals = Nil; traverse(t); vals
+      vals = Nil;
+      traverse(t);
+      vals
     }
     def isAcceptableType(tpe: Type): Boolean = {
       tpe.baseClasses.exists { sym =>

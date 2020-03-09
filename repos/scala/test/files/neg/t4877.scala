@@ -17,7 +17,8 @@ class A {
     def bar(x: Int) = "abc"
   }
   def foo4: C {
-    def bar(x: Int): Int; def quux(x: Int): Int
+    def bar(x: Int): Int;
+    def quux(x: Int): Int
   } = new C {
     def bar(x: Int) = 5
   }

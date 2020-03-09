@@ -44,7 +44,8 @@ class TestExplicit {
 
   // Breaking this expression down doesn't make it work.
   {
-    val c1 = convert2(s); c1.combined
+    val c1 = convert2(s);
+    c1.combined
   }
 }
 

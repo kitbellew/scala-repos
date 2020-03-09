@@ -4,7 +4,8 @@ object Test extends App {
   def foo[T](x: T) = weakTypeOf(List(x))
   println(foo(2))
   locally {
-    class C; println(weakTypeOf(new C))
+    class C;
+    println(weakTypeOf(new C))
   }
 
   println(typeOf(2))

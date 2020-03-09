@@ -41,13 +41,17 @@ object PersistentActorStashingSpec {
     var stashed = false
 
     val receiveCommand: Receive = unstashBehavior orElse {
-      case Cmd("a") if !stashed ⇒ stash(); stashed = true
+      case Cmd("a") if !stashed ⇒
+        stash();
+        stashed = true
       case Cmd("a") ⇒ sender() ! "a"
       case Cmd("b") ⇒ persist(Evt("b"))(evt ⇒ sender() ! evt.data)
     }
 
     def unstashBehavior: Receive = {
-      case Cmd("c") ⇒ unstashAll(); sender() ! "c"
+      case Cmd("c") ⇒
+        unstashAll();
+        sender() ! "c"
     }
   }
 
@@ -56,7 +60,8 @@ object PersistentActorStashingSpec {
     override def unstashBehavior: Receive = {
       case Cmd("c") ⇒
         persist(Evt("c")) { evt ⇒
-          sender() ! evt.data; unstashAll()
+          sender() ! evt.data;
+          unstashAll()
         }
     }
   }
@@ -80,7 +85,8 @@ object PersistentActorStashingSpec {
     def unstashBehavior: Receive = {
       case Cmd("c") ⇒
         persist(Evt("c")) { evt ⇒
-          updateState(evt); context.unbecome()
+          updateState(evt);
+          context.unbecome()
         }
         unstashAll()
     }
@@ -91,7 +97,9 @@ object PersistentActorStashingSpec {
     override def unstashBehavior: Receive = {
       case Cmd("c") ⇒
         persist(Evt("c")) { evt ⇒
-          updateState(evt); context.unbecome(); unstashAll()
+          updateState(evt);
+          context.unbecome();
+          unstashAll()
         }
     }
   }
@@ -139,12 +147,16 @@ object PersistentActorStashingSpec {
 
     val receiveCommand: Receive = commonBehavior orElse unstashBehavior orElse {
       case Cmd("a") ⇒ persistAsync(Evt("a"))(updateState)
-      case Cmd("b") if !stashed ⇒ stash(); stashed = true
+      case Cmd("b") if !stashed ⇒
+        stash();
+        stashed = true
       case Cmd("b") ⇒ persistAsync(Evt("b"))(updateState)
     }
 
     override def unstashBehavior: Receive = {
-      case Cmd("c") ⇒ persistAsync(Evt("c"))(updateState); unstashAll()
+      case Cmd("c") ⇒
+        persistAsync(Evt("c"))(updateState);
+        unstashAll()
     }
   }
 
@@ -153,7 +165,8 @@ object PersistentActorStashingSpec {
     override def unstashBehavior: Receive = {
       case Cmd("c") ⇒
         persistAsync(Evt("c")) { evt ⇒
-          updateState(evt); unstashAll()
+          updateState(evt);
+          unstashAll()
         }
     }
   }

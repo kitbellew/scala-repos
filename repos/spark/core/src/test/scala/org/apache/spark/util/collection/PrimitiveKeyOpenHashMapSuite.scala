@@ -97,7 +97,8 @@ class PrimitiveKeyOpenHashMapSuite extends SparkFunSuite with Matchers {
     for (i <- 1 to 100) {
       val res = map.changeValue(
         i.toLong, {
-          assert(false); ""
+          assert(false);
+          ""
         },
         v => {
           assert(v === i.toString)
@@ -113,7 +114,8 @@ class PrimitiveKeyOpenHashMapSuite extends SparkFunSuite with Matchers {
           i + "!"
         },
         v => {
-          assert(false); v
+          assert(false);
+          v
         })
       assert(res === i + "!")
     }

@@ -216,7 +216,8 @@ trait TraitContext[This <: android.content.Context] {
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#setTheme(int) setTheme(int)]]`
     */
   @inline def theme_=(p: Int) = {
-    basis.setTheme(p); basis
+    basis.setTheme(p);
+    basis
   }
 
   /**
@@ -234,7 +235,8 @@ trait TraitContext[This <: android.content.Context] {
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#setWallpaper(android.graphics.Bitmap) setWallpaper(android.graphics.Bitmap)]]`
     */
   @deprecated("", "") @inline def wallpaper_=(p: android.graphics.Bitmap) = {
-    basis.setWallpaper(p); basis
+    basis.setWallpaper(p);
+    basis
   }
 
   /**
@@ -247,7 +249,8 @@ trait TraitContext[This <: android.content.Context] {
     * Shortcut for `[[https://developer.android.com/reference/android/content/Context.html#setWallpaper(java.io.InputStream) setWallpaper(java.io.InputStream)]]`
     */
   @deprecated("", "") @inline def wallpaper_=(p: java.io.InputStream) = {
-    basis.setWallpaper(p); basis
+    basis.setWallpaper(p);
+    basis
   }
 
   /**

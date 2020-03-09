@@ -329,7 +329,9 @@ private[http] object HttpServerBluePrint {
         log.debug(
           s"Closing HttpConnection due to timeout: ${timeout.getMessage}");
         timeout
-      case t ⇒ log.error(t, "Outgoing response stream error"); t
+      case t ⇒
+        log.error(t, "Outgoing response stream error");
+        t
     }
 
     Flow[ResponseRenderingContext]

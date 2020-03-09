@@ -521,7 +521,9 @@ trait StatsLibModule[M[+_]]
           val left = schema.columns(JArrayFixedT(Map(0 -> JNumberT)))
           val right = schema.columns(JArrayFixedT(Map(1 -> JNumberT)))
 
-          val cross = for (l <- left; r <- right) yield (l, r)
+          val cross =
+            for (l <- left;
+                 r <- right) yield (l, r)
 
           val result: Set[Result] = cross map {
             case (c1: LongColumn, c2: LongColumn) =>
@@ -868,7 +870,9 @@ trait StatsLibModule[M[+_]]
           val left = schema.columns(JArrayFixedT(Map(0 -> JNumberT)))
           val right = schema.columns(JArrayFixedT(Map(1 -> JNumberT)))
 
-          val cross = for (l <- left; r <- right) yield (l, r)
+          val cross =
+            for (l <- left;
+                 r <- right) yield (l, r)
 
           val result = cross map {
             case (c1: LongColumn, c2: LongColumn) =>
@@ -1111,7 +1115,9 @@ trait StatsLibModule[M[+_]]
           val left = schema.columns(JArrayFixedT(Map(0 -> JNumberT)))
           val right = schema.columns(JArrayFixedT(Map(1 -> JNumberT)))
 
-          val cross = for (l <- left; r <- right) yield (l, r)
+          val cross =
+            for (l <- left;
+                 r <- right) yield (l, r)
 
           val result = cross map {
             case (c1: LongColumn, c2: LongColumn) =>
@@ -1418,7 +1424,9 @@ trait StatsLibModule[M[+_]]
           val left = schema.columns(JArrayFixedT(Map(0 -> JNumberT)))
           val right = schema.columns(JArrayFixedT(Map(1 -> JNumberT)))
 
-          val cross = for (l <- left; r <- right) yield (l, r)
+          val cross =
+            for (l <- left;
+                 r <- right) yield (l, r)
 
           val result = cross map {
             case (c1: LongColumn, c2: LongColumn) =>
@@ -1837,7 +1845,8 @@ trait StatsLibModule[M[+_]]
         val arr = new Array[BitSet](ncols)
         var i = 0
         while (i < ncols) {
-          arr(i) = cols(i).definedAt(start, end); i += 1
+          arr(i) = cols(i).definedAt(start, end);
+          i += 1
         }
         arr
       }
@@ -1853,7 +1862,8 @@ trait StatsLibModule[M[+_]]
         val arr = definedCols(0).copy()
         var i = 1
         while (i < ncols) {
-          arr.or(definedCols(i)); i += 1
+          arr.or(definedCols(i));
+          i += 1
         }
         arr
       }

@@ -11,7 +11,8 @@ object Test extends App {
   }
 
   Console.println((bar {
-    Console.println("g called"); 42
+    Console.println("g called");
+    42
   })())
   Console.println(foo()())
 }

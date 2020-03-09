@@ -81,7 +81,8 @@ class LSMRTest extends FunSuite {
   }
 
   test("a few lsmr tests") {
-    for (m <- 1 until 10; n <- 1 until 10) {
+    for (m <- 1 until 10;
+         n <- 1 until 10) {
       lsmrTest(m, n)
     }
 

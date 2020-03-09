@@ -43,10 +43,12 @@ object PomTest extends Build {
           "Invalid 'optional' section '" + (dep \\ "optional") + "' for " + id + ", expected optional=" + opt)
 
         val actualScope = (dep \\ "scope") match {
-          case Seq() => None; case x => Some(x.text)
+          case Seq() => None;
+          case x     => Some(x.text)
         }
         val actualClassifier = (dep \\ "classifier") match {
-          case Seq() => None; case x => Some(x.text)
+          case Seq() => None;
+          case x     => Some(x.text)
         }
         assert(
           actualScope == scope,

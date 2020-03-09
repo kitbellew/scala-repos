@@ -428,7 +428,8 @@ object EvaluateTask {
   }
   def logIncResult(result: Result[_], state: State, streams: Streams) =
     result match {
-      case Inc(i) => logIncomplete(i, state, streams); case _ => ()
+      case Inc(i) => logIncomplete(i, state, streams);
+      case _      => ()
     }
   def logIncomplete(
       result: Incomplete,
@@ -647,7 +648,8 @@ object EvaluateTask {
       log: Logger,
       show: Boolean = false): T =
     onResult(result, log) { v =>
-      if (show) println("Result: " + v); v
+      if (show) println("Result: " + v);
+      v
     }
   def onResult[T, S](result: Result[T], log: Logger)(f: T => S): S =
     result match {

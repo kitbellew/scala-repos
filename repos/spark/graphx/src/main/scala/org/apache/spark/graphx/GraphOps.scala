@@ -74,7 +74,8 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
     } else { // EdgeDirection.Either
       graph.aggregateMessages(
         ctx => {
-          ctx.sendToSrc(1); ctx.sendToDst(1)
+          ctx.sendToSrc(1);
+          ctx.sendToDst(1)
         },
         _ + _,
         TripletFields.None)
@@ -95,7 +96,8 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
       if (edgeDirection == EdgeDirection.Either) {
         graph.aggregateMessages[Array[VertexId]](
           ctx => {
-            ctx.sendToSrc(Array(ctx.dstId)); ctx.sendToDst(Array(ctx.srcId))
+            ctx.sendToSrc(Array(ctx.dstId));
+            ctx.sendToDst(Array(ctx.srcId))
           },
           _ ++ _,
           TripletFields.None)

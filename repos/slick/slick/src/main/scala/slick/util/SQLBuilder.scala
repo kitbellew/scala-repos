@@ -11,15 +11,19 @@ final class SQLBuilder { self =>
   private var currentIndentLevel: Int = 0
 
   def +=(s: String) = {
-    sb append s; this
+    sb append s;
+    this
   }
 
   def +=(c: Char) = {
-    sb append c; this
+    sb append c;
+    this
   }
 
   def +?=(f: Setter) = {
-    setters append f; sb append '?'; this
+    setters append f;
+    sb append '?';
+    this
   }
 
   def sep[T](sequence: Traversable[T], separator: String)(f: T => Unit) {

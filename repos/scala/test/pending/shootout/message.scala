@@ -35,7 +35,8 @@ object message {
       }
 
       def pid() = {
-        this.start; this.self
+        this.start;
+        this.self
       }
     }
 
@@ -45,7 +46,8 @@ object message {
     val firstActor = actorChain(nActors, null)
     var i = n;
     while (i > 0) {
-      firstActor ! Message(0); i = i - 1
+      firstActor ! Message(0);
+      i = i - 1
     }
   }
 }

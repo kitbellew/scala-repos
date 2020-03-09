@@ -41,7 +41,9 @@ object LevenshteinDistance extends MetricSpace[String, Int] with Serializable {
         }
       }
 
-      var tmp = row0; row0 = row1; row1 = tmp
+      var tmp = row0;
+      row0 = row1;
+      row1 = tmp
     }
 
     row0(b.length)

@@ -346,7 +346,8 @@ private[spark] class TaskSchedulerImpl(
       // of locality levels so that it gets a chance to launch local tasks on all of them.
       // NOTE: the preferredLocality order: PROCESS_LOCAL, NODE_LOCAL, NO_PREF, RACK_LOCAL, ANY
       var launchedTask = false
-      for (taskSet <- sortedTaskSets; maxLocality <- taskSet.myLocalityLevels) {
+      for (taskSet <- sortedTaskSets;
+           maxLocality <- taskSet.myLocalityLevels) {
         do {
           launchedTask = resourceOfferSingleTaskSet(
             taskSet,
@@ -585,7 +586,8 @@ private[spark] class TaskSchedulerImpl(
     execs -= executorId
     if (execs.isEmpty) {
       executorsByHost -= host
-      for (rack <- getRackForHost(host); hosts <- hostsByRack.get(rack)) {
+      for (rack <- getRackForHost(host);
+           hosts <- hostsByRack.get(rack)) {
         hosts -= host
         if (hosts.isEmpty) {
           hostsByRack -= rack

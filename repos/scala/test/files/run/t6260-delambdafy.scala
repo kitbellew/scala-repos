@@ -2,7 +2,8 @@ class C[A](private val a: Any) extends AnyVal
 
 object Test {
   val f = (x: C[Any]) => {
-    println(s"f($x)"); x
+    println(s"f($x)");
+    x
   }
   def main(args: Array[String]) {
     f(new C("."))

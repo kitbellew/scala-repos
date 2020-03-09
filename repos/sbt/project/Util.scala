@@ -42,7 +42,8 @@ object Util {
 
   def projectComponent = projectID <<= (projectID, componentID) { (pid, cid) =>
     cid match {
-      case Some(id) => pid extra ("e:component" -> id); case None => pid
+      case Some(id) => pid extra ("e:component" -> id);
+      case None     => pid
     }
   }
 
@@ -211,6 +212,8 @@ object Licensed {
       try {
         seePaths(base, IO.read(note))
       } catch {
-        case e: Exception => s.log.warn("Could not read NOTICE"); Nil
+        case e: Exception =>
+          s.log.warn("Could not read NOTICE");
+          Nil
       }
 }

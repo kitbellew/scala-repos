@@ -24,6 +24,7 @@ object test {
     val j = 2
   }
   def main(args: Array[String]) {
-    ok(); nope()
+    ok();
+    nope()
   }
 }

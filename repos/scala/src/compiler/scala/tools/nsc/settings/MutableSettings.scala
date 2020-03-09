@@ -79,7 +79,8 @@ class MutableSettings(val errorFn: String => Unit)
         if (x startsWith "-") {
           parseParams(args) match {
             case newArgs if newArgs eq args =>
-              errorFn(s"bad option: '$x'"); (false, args)
+              errorFn(s"bad option: '$x'");
+              (false, args)
             case newArgs => loop(newArgs, residualArgs)
           }
         } else if (processAll)
@@ -137,9 +138,11 @@ class MutableSettings(val errorFn: String => Unit)
     // -Xfoo: clears Clearables
     def clearIfExists(cmd: String): Option[List[String]] =
       lookupSetting(cmd) match {
-        case Some(c: Clearable) => c.clear(); Some(Nil)
-        case Some(s)            => s.errorAndValue(s"Missing argument to $cmd", None)
-        case None               => None
+        case Some(c: Clearable) =>
+          c.clear();
+          Some(Nil)
+        case Some(s) => s.errorAndValue(s"Missing argument to $cmd", None)
+        case None    => None
       }
 
     // if arg is of form -Xfoo:bar,baz,quux
@@ -432,34 +435,39 @@ class MutableSettings(val errorFn: String => Unit)
     private var _postSetHook: this.type => Unit = (x: this.type) => ()
     override def postSetHook(): Unit = _postSetHook(this)
     def withPostSetHook(f: this.type => Unit): this.type = {
-      _postSetHook = f; this
+      _postSetHook = f;
+      this
     }
 
     /** The syntax defining this setting in a help string */
     private var _helpSyntax = name
     override def helpSyntax: String = _helpSyntax
     def withHelpSyntax(s: String): this.type = {
-      _helpSyntax = s; this
+      _helpSyntax = s;
+      this
     }
 
     /** Abbreviations for this setting */
     private var _abbreviations: List[String] = Nil
     override def abbreviations = _abbreviations
     def withAbbreviation(s: String): this.type = {
-      _abbreviations ++= List(s); this
+      _abbreviations ++= List(s);
+      this
     }
 
     /** Optional dependency on another setting */
     private var dependency: Option[(Setting, String)] = None
     override def dependencies = dependency.toList
     def dependsOn(s: Setting, value: String): this.type = {
-      dependency = Some((s, value)); this
+      dependency = Some((s, value));
+      this
     }
 
     private var _deprecationMessage: Option[String] = None
     override def deprecationMessage = _deprecationMessage
     def withDeprecationMessage(msg: String): this.type = {
-      _deprecationMessage = Some(msg); this
+      _deprecationMessage = Some(msg);
+      this
     }
   }
 
@@ -518,8 +526,12 @@ class MutableSettings(val errorFn: String => Unit)
       if (args.isEmpty) errorAndValue("missing argument", None)
       else
         parseArgument(args.head) match {
-          case Some(i) => value = i; Some(args.tail)
-          case None    => errorMsg(); None
+          case Some(i) =>
+            value = i;
+            Some(args.tail)
+          case None =>
+            errorMsg();
+            None
         }
 
     def unparse: List[String] =
@@ -537,7 +549,8 @@ class MutableSettings(val errorFn: String => Unit)
     override def value: Boolean = v
 
     def tryToSet(args: List[String]) = {
-      value = true; Some(args)
+      value = true;
+      Some(args)
     }
     def unparse: List[String] = if (value) List(name) else Nil
     override def tryToSetFromPropertyValue(s: String) { // used from ide
@@ -585,8 +598,10 @@ class MutableSettings(val errorFn: String => Unit)
     protected var v: T = default
 
     def tryToSet(args: List[String]) = args match {
-      case Nil     => errorAndValue("missing argument", None)
-      case x :: xs => value = x; Some(xs)
+      case Nil => errorAndValue("missing argument", None)
+      case x :: xs =>
+        value = x;
+        Some(xs)
     }
     def unparse: List[String] = if (value == default) Nil else List(name, value)
 
@@ -619,8 +634,10 @@ class MutableSettings(val errorFn: String => Unit)
     }
 
     override def tryToSetColon(args: List[String]) = args match {
-      case x :: xs => value = ScalaVersion(x, errorFn); Some(xs)
-      case nil     => Some(nil)
+      case x :: xs =>
+        value = ScalaVersion(x, errorFn);
+        Some(xs)
+      case nil => Some(nil)
     }
 
     def unparse: List[String] =
@@ -833,8 +850,10 @@ class MutableSettings(val errorFn: String => Unit)
       }
       def loop(args: List[String]): List[String] = args match {
         case arg :: _ if halting && (!isPos(arg) || !isChoice(arg)) => args
-        case arg :: rest                                            => tryArg(arg); loop(rest)
-        case Nil                                                    => Nil
+        case arg :: rest =>
+          tryArg(arg);
+          loop(rest)
+        case Nil => Nil
       }
       val rest = loop(args)
 
@@ -893,7 +912,8 @@ class MutableSettings(val errorFn: String => Unit)
         case arg :: rest =>
           if (halting && (arg startsWith "-")) args
           else {
-            appendToValue(arg); loop(rest)
+            appendToValue(arg);
+            loop(rest)
           }
         case Nil => Nil
       }
@@ -934,8 +954,10 @@ class MutableSettings(val errorFn: String => Unit)
     def tryToSet(args: List[String]) = errorAndValue(usageErrorMessage, None)
 
     override def tryToSetColon(args: List[String]) = args match {
-      case Nil                           => errorAndValue(usageErrorMessage, None)
-      case List(x) if choices contains x => value = x; Some(Nil)
+      case Nil => errorAndValue(usageErrorMessage, None)
+      case List(x) if choices contains x =>
+        value = x;
+        Some(Nil)
       case List(x) =>
         errorAndValue(
           "'" + x + "' is not a valid choice for '" + name + "'",
@@ -1011,7 +1033,9 @@ class MutableSettings(val errorFn: String => Unit)
           case Nil =>
             if (default == "") errorAndValue("missing phase", None)
             else tryToSetColon(List(default))
-          case xs => value = (value ++ xs).distinct.sorted; Some(Nil)
+          case xs =>
+            value = (value ++ xs).distinct.sorted;
+            Some(Nil)
         }
       } catch {
         case _: NumberFormatException => None

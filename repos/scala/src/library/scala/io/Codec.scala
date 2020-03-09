@@ -50,19 +50,24 @@ class Codec(val charSet: Charset) {
 
   // these methods can be chained to configure the variables above
   def onMalformedInput(newAction: Action): this.type = {
-    _onMalformedInput = newAction; this
+    _onMalformedInput = newAction;
+    this
   }
   def onUnmappableCharacter(newAction: Action): this.type = {
-    _onUnmappableCharacter = newAction; this
+    _onUnmappableCharacter = newAction;
+    this
   }
   def decodingReplaceWith(newReplacement: String): this.type = {
-    _decodingReplacement = newReplacement; this
+    _decodingReplacement = newReplacement;
+    this
   }
   def encodingReplaceWith(newReplacement: Array[Byte]): this.type = {
-    _encodingReplacement = newReplacement; this
+    _encodingReplacement = newReplacement;
+    this
   }
   def onCodingException(handler: Handler): this.type = {
-    _onCodingException = handler; this
+    _onCodingException = handler;
+    this
   }
 
   def name = charSet.name

@@ -76,7 +76,8 @@ class HttpEventStreamHandleActorTest
     val latch = new CountDownLatch(1)
     var events = List.empty[String]
     handle.sendEvent(any[String], any[String]) answers { args =>
-      events ::= args(0).asInstanceOf[String]; latch.await()
+      events ::= args(0).asInstanceOf[String];
+      latch.await()
     }
     handleActor = TestActorRef(
       Props(

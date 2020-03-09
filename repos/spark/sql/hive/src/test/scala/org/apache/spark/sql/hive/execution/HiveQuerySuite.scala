@@ -440,7 +440,9 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
       analyzedPlan.collect {
         case p: Project =>
           p.transformExpressionsUp {
-            case c: Cast => hasCast = true; c
+            case c: Cast =>
+              hasCast = true;
+              c
           }
       }
       hasCast

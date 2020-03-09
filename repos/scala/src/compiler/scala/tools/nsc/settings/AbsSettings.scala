@@ -92,7 +92,8 @@ trait AbsSettings extends scala.reflect.internal.settings.AbsSettings {
 
     /** Issue error and return */
     def errorAndValue[T](msg: String, x: T): T = {
-      errorFn(msg); x
+      errorFn(msg);
+      x
     }
 
     /** After correct Setting has been selected, tryToSet is called with the
@@ -120,10 +121,13 @@ trait AbsSettings extends scala.reflect.internal.settings.AbsSettings {
       *  the standard options and -Y among the advanced options.
       */
     def isAdvanced = name match {
-      case "-Y" => true; case "-X" => false; case _ => name startsWith "-X"
+      case "-Y" => true;
+      case "-X" => false;
+      case _    => name startsWith "-X"
     }
     def isPrivate = name match {
-      case "-Y" => false; case _ => name startsWith "-Y"
+      case "-Y" => false;
+      case _    => name startsWith "-Y"
     }
     def isStandard = !isAdvanced && !isPrivate
     def isForDebug = name endsWith "-debug" // by convention, i.e. -Ytyper-debug

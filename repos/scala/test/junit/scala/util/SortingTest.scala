@@ -17,30 +17,38 @@ class SortingTest {
     var i = 1;
     while (i < a.length) {
       if (a(i).i < a(i - 1).i || (a(i).i == a(i - 1).i && a(i).j < a(i - 1).j))
-        return false; i += 1
-    }; true
+        return false;
+      i += 1
+    };
+    true
   }
 
   def isAntistable(a: Array[N]): Boolean = {
     var i = 1;
     while (i < a.length) {
       if (a(i).i > a(i - 1).i || (a(i).i == a(i - 1).i && a(i).j < a(i - 1).j))
-        return false; i += 1
-    }; true
+        return false;
+      i += 1
+    };
+    true
   }
 
   def isSorted(a: Array[N]): Boolean = {
     var i = 1;
     while (i < a.length) {
-      if (a(i).i < a(i - 1).i) return false; i += 1
-    }; true
+      if (a(i).i < a(i - 1).i) return false;
+      i += 1
+    };
+    true
   }
 
   def isAntisorted(a: Array[N]): Boolean = {
     var i = 1;
     while (i < a.length) {
-      if (a(i).i > a(i - 1).i) return false; i += 1
-    }; true
+      if (a(i).i > a(i - 1).i) return false;
+      i += 1
+    };
+    true
   }
 
   val sizes = Seq.range(0, 65) ++ Seq(256, 1024, 9121, 65539)
@@ -59,20 +67,28 @@ class SortingTest {
         temp,
         new java.util.Comparator[N] {
           def compare(a: N, b: N) = a.compare(b)
-        }); temp
+        });
+      temp
     }
     val qxs = {
-      val temp = xs.clone; Sorting.quickSort(temp); temp
+      val temp = xs.clone;
+      Sorting.quickSort(temp);
+      temp
     }
     val pxs = {
-      val temp = xs.clone; Sorting.quickSort(temp)(backwardsN); temp
+      val temp = xs.clone;
+      Sorting.quickSort(temp)(backwardsN);
+      temp
     }
     val sxs = {
-      val temp = xs.clone; Sorting.stableSort(temp); temp
+      val temp = xs.clone;
+      Sorting.stableSort(temp);
+      temp
     }
     val rxs = {
       val temp = xs.clone;
-      Sorting.stableSort(temp)(implicitly[ClassTag[N]], backwardsN); temp
+      Sorting.stableSort(temp)(implicitly[ClassTag[N]], backwardsN);
+      temp
     }
     val sys = Sorting.stableSort(ys.clone: Seq[Int], (i: Int) => xs(i))
 

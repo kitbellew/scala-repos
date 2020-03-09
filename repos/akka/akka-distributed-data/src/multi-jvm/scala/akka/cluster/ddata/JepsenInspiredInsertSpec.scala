@@ -205,10 +205,12 @@ class JepsenInspiredInsertSpec
     val key = ORSetKey[Int]("C")
     runOn(controller) {
       sleepBeforePartition()
-      for (a ← List(n1, n4, n5); b ← List(n2, n3))
+      for (a ← List(n1, n4, n5);
+           b ← List(n2, n3))
         testConductor.blackhole(a, b, Direction.Both).await
       sleepDuringPartition()
-      for (a ← List(n1, n4, n5); b ← List(n2, n3))
+      for (a ← List(n1, n4, n5);
+           b ← List(n2, n3))
         testConductor.passThrough(a, b, Direction.Both).await
       enterBarrier("partition-healed-3")
     }
@@ -258,10 +260,12 @@ class JepsenInspiredInsertSpec
     val writeMajority = WriteMajority(timeout)
     runOn(controller) {
       sleepBeforePartition()
-      for (a ← List(n1, n4, n5); b ← List(n2, n3))
+      for (a ← List(n1, n4, n5);
+           b ← List(n2, n3))
         testConductor.blackhole(a, b, Direction.Both).await
       sleepDuringPartition()
-      for (a ← List(n1, n4, n5); b ← List(n2, n3))
+      for (a ← List(n1, n4, n5);
+           b ← List(n2, n3))
         testConductor.passThrough(a, b, Direction.Both).await
       enterBarrier("partition-healed-4")
     }

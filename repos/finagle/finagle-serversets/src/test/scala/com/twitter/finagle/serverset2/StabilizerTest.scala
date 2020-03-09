@@ -108,7 +108,9 @@ class StabilizerTest extends FunSuite {
     pulse()
     assertStabilized(Addr.Bound(addr1, addr2))
 
-    pulse(); pulse(); pulse()
+    pulse();
+    pulse();
+    pulse()
     assertStabilized(Addr.Bound(addr1, addr2))
 
     setVa(Addr.Bound(addr1))
@@ -133,7 +135,9 @@ class StabilizerTest extends FunSuite {
       pulse()
       assertStabilized(Addr.Neg)
 
-      pulse(); pulse(); pulse()
+      pulse();
+      pulse();
+      pulse()
       assertStabilized(Addr.Neg)
 
       setVa(Addr.Bound(addr1))

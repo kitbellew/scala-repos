@@ -9,6 +9,7 @@ class A {
 
   // a perverse piece of code from a perverse coder
   ({
-    "ab".reverse; "ba".equals
+    "ab".reverse;
+    "ba".equals
   })(0): String
 }

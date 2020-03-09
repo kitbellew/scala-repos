@@ -10,14 +10,16 @@ object SpecializationAbstractOverride {
   }
   trait M extends B {
     abstract override def foo(t: Int) {
-      super.foo(t); println("M.foo")
+      super.foo(t);
+      println("M.foo")
     }
   }
   object C extends B with M
 
   object D extends B {
     override def foo(t: Int) {
-      super.foo(t); println("M.foo")
+      super.foo(t);
+      println("M.foo")
     }
   }
 

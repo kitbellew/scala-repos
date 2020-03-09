@@ -1,20 +1,24 @@
 abstract class NoAbstract
 
 abstract class TwoAbstract {
-  def ap(a: Int): Int; def pa(a: Int): Int
+  def ap(a: Int): Int;
+  def pa(a: Int): Int
 }
 
 abstract class Base // check that the super class constructor isn't considered.
 abstract class NoEmptyConstructor(a: Int) extends Base {
-  def this(a: String) = this(0); def ap(a: Int): Int
+  def this(a: String) = this(0);
+  def ap(a: Int): Int
 }
 
 abstract class OneEmptyConstructor() {
-  def this(a: Int) = this(); def ap(a: Int): Int
+  def this(a: Int) = this();
+  def ap(a: Int): Int
 }
 
 abstract class OneEmptySecondaryConstructor(a: Int) {
-  def this() = this(0); def ap(a: Int): Int
+  def this() = this(0);
+  def ap(a: Int): Int
 }
 
 abstract class MultipleConstructorLists()() {

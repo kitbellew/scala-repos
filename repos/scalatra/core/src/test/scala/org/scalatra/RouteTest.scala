@@ -103,7 +103,8 @@ class RouteTestServlet extends ScalatraServlet {
     false,
     new RouteMatcher {
       def apply(requestPath: String) = {
-        throw new RuntimeException("shouldn't execute"); None
+        throw new RuntimeException("shouldn't execute");
+        None
       }
     }) {
     "shouldn't return"

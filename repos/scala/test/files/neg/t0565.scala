@@ -14,7 +14,8 @@ object Test extends App {
         def z(w: String) = w + "bar"
       }
     lazy val u = {
-      println("u evaluated"); x
+      println("u evaluated");
+      x
     }
     def foo(v: => u.type#T): u.type#T = {
       x = new {

@@ -4,7 +4,8 @@ object Test {
 
   def check(x: => Any) =
     try {
-      x; sys.error("failed to throw NPE!")
+      x;
+      sys.error("failed to throw NPE!")
     } catch {
       case _: NullPointerException =>
     }

@@ -313,7 +313,8 @@ trait PatternTypers {
         pt: Type): Tree = {
       def duplErrTree = setError(treeCopy.Apply(tree, fun0, args))
       def duplErrorTree(err: AbsTypeError) = {
-        context.issue(err); duplErrTree
+        context.issue(err);
+        duplErrTree
       }
 
       if (args.length > MaxTupleArity)
@@ -323,8 +324,12 @@ trait PatternTypers {
         case MethodType(param :: _, _) => param.tpe
         case PolyType(tparams, restpe) =>
           createFromClonedSymbols(tparams, freshArgType(restpe))(genPolyType)
-        case OverloadedType(_, _) => OverloadedUnapplyError(fun); ErrorType
-        case _                    => UnapplyWithSingleArgError(fun); ErrorType
+        case OverloadedType(_, _) =>
+          OverloadedUnapplyError(fun);
+          ErrorType
+        case _ =>
+          UnapplyWithSingleArgError(fun);
+          ErrorType
       }
       val unapplyMethod = unapplyMember(fun.tpe)
       val unapplyType = fun.tpe memberType unapplyMethod
@@ -457,7 +462,8 @@ trait PatternTypers {
           resolveClassTag(pos, pt1) match {
             case tree if unapplyMember(tree.tpe).exists => tree
             case _ =>
-              devWarning(s"Cannot create runtime type test for $pt1"); EmptyTree
+              devWarning(s"Cannot create runtime type test for $pt1");
+              EmptyTree
           }
       }
     }

@@ -152,7 +152,8 @@ trait TypersTracking {
         body
       else
         runWith(tree) {
-          pushFn; showPop(body)
+          pushFn;
+          showPop(body)
         }
     )
 

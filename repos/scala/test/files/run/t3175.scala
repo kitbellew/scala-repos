@@ -97,7 +97,8 @@ object Test {
     f13(
       new {
         def update(x: Int, y: String): List[Int] = {
-          println("hi mom"); Nil
+          println("hi mom");
+          Nil
         }
       },
       "irrelevant")

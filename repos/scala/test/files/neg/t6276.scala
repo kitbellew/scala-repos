@@ -25,10 +25,12 @@ object Test {
     // no warnings below
     new {
       def a: Any = {
-        println(""); a
+        println("");
+        a
       }
       val b: Any = {
-        println(""); b
+        println("");
+        b
       }
       def c(i: Int): Any = c(i - 0)
     }

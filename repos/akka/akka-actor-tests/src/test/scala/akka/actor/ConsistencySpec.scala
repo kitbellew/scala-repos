@@ -54,7 +54,9 @@ object ConsistencySpec {
         }
 
         lastStep = step
-      case "done" ⇒ sender() ! "done"; context.stop(self)
+      case "done" ⇒
+        sender() ! "done";
+        context.stop(self)
     }
   }
 }

@@ -3,7 +3,8 @@ class DeepNamingParam {
 
   foo(
     x = {
-      2; x => /*start*/ x /*end*/
+      2;
+      x => /*start*/ x /*end*/
     },
     y = 34)
 }

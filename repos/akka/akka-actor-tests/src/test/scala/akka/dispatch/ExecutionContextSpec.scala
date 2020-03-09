@@ -216,7 +216,8 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
       }
       perform(_ + 1)
       perform(x ⇒ {
-        sec.suspend(); x * 2
+        sec.suspend();
+        x * 2
       })
       awaitCond(counter.get == 2)
       perform(_ + 4)
@@ -237,7 +238,8 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
       val counter = new AtomicInteger(0)
       val underlying = new ExecutionContext {
         override def execute(r: Runnable) {
-          submissions.incrementAndGet(); ExecutionContext.global.execute(r)
+          submissions.incrementAndGet();
+          ExecutionContext.global.execute(r)
         }
         override def reportFailure(t: Throwable) {
           ExecutionContext.global.reportFailure(t)
@@ -282,7 +284,8 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
       val counter = new AtomicInteger(0)
       val underlying = new ExecutionContext {
         override def execute(r: Runnable) {
-          submissions.incrementAndGet(); ExecutionContext.global.execute(r)
+          submissions.incrementAndGet();
+          ExecutionContext.global.execute(r)
         }
         override def reportFailure(t: Throwable) {
           ExecutionContext.global.reportFailure(t)
@@ -299,7 +302,8 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
         perform(identity)
       }
       perform(x ⇒ {
-        sec.suspend(); x * 2
+        sec.suspend();
+        x * 2
       })
       perform(_ + 8)
       sec.size should ===(13)

@@ -149,7 +149,8 @@ class OpenHashMapSuite extends SparkFunSuite with Matchers {
     for (i <- 1 to 100) {
       val res = map.changeValue(
         i.toString, {
-          assert(false); ""
+          assert(false);
+          ""
         },
         v => {
           assert(v === i.toString)
@@ -165,7 +166,8 @@ class OpenHashMapSuite extends SparkFunSuite with Matchers {
           i + "!"
         },
         v => {
-          assert(false); v
+          assert(false);
+          v
         })
       assert(res === i + "!")
     }
@@ -176,12 +178,14 @@ class OpenHashMapSuite extends SparkFunSuite with Matchers {
         "null!"
       },
       v => {
-        assert(false); v
+        assert(false);
+        v
       })
     assert(map.size === 401)
     map.changeValue(
       null, {
-        assert(false); ""
+        assert(false);
+        ""
       },
       v => {
         assert(v === "null!")

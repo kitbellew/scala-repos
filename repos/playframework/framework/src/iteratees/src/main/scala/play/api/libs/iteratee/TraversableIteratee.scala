@@ -94,7 +94,8 @@ object Traversable {
                 case (toPush, left) =>
                   Done(
                     inner.pureFlatFold {
-                      case Step.Cont(k) => k(Input.El(toPush)); case _ => inner
+                      case Step.Cont(k) => k(Input.El(toPush));
+                      case _            => inner
                     },
                     Input.El(left))
               }

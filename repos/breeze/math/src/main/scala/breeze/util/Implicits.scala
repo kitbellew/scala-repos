@@ -14,7 +14,9 @@ object Implicits extends DoubleImplicits with IteratorImplicits {
         cbf: CanBuildFrom[Coll, B, Result]): Map[A, Result] = {
       var result = collection.mutable.Map[A, mutable.Builder[B, Result]]()
       result = result.withDefault { a =>
-        val r = cbf(__this); result.update(a, r); r
+        val r = cbf(__this);
+        result.update(a, r);
+        r
       }
 
       for ((a, b) <- view(__this)) {
@@ -30,7 +32,9 @@ object Implicits extends DoubleImplicits with IteratorImplicits {
         cbf: CanBuildFrom[Array[(A, B)], B, Result]): Map[A, Result] = {
       var result = collection.mutable.Map[A, mutable.Builder[B, Result]]()
       result = result.withDefault { a =>
-        val r = cbf(__this); result.update(a, r); r
+        val r = cbf(__this);
+        result.update(a, r);
+        r
       }
 
       for ((a, b) <- __this) {

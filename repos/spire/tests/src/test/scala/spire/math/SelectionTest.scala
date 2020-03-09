@@ -29,12 +29,18 @@ trait SelectTest extends FunSuite /* with Checkers */ {
 
   test("select from multiple equal elements") {
     val as = Array(0, 0, 1, 1, 2, 2)
-    select(as, 0); assert(as(0) === 0)
-    select(as, 1); assert(as(1) === 0)
-    select(as, 2); assert(as(2) === 1)
-    select(as, 3); assert(as(3) === 1)
-    select(as, 4); assert(as(4) === 2)
-    select(as, 5); assert(as(5) === 2)
+    select(as, 0);
+    assert(as(0) === 0)
+    select(as, 1);
+    assert(as(1) === 0)
+    select(as, 2);
+    assert(as(2) === 1)
+    select(as, 3);
+    assert(as(3) === 1)
+    select(as, 4);
+    assert(as(4) === 2)
+    select(as, 5);
+    assert(as(5) === 2)
   }
 
   test("arbitrary selection") {

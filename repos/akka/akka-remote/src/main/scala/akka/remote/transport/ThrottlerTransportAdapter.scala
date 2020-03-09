@@ -398,7 +398,8 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
           }
         },
         t ⇒ {
-          internalTarget.sendSystemMessage(Unwatch(target, ref)); t
+          internalTarget.sendSystemMessage(Unwatch(target, ref));
+          t
         }
       )(ref.internalCallingThreadExecutionContext)
     }

@@ -51,10 +51,12 @@ private[input] trait JMapWrapperLike[
   }
 
   def +=(kv: (A, B)): this.type = {
-    underlying.put(kv._1, kv._2); this
+    underlying.put(kv._1, kv._2);
+    this
   }
   def -=(key: A): this.type = {
-    underlying remove key; this
+    underlying remove key;
+    this
   }
 
   override def put(k: A, v: B): Option[B] = {
@@ -76,7 +78,8 @@ private[input] trait JMapWrapperLike[
     val ui = underlying.entrySet.iterator
     def hasNext = ui.hasNext
     def next() = {
-      val e = ui.next(); (e.getKey, e.getValue)
+      val e = ui.next();
+      (e.getKey, e.getValue)
     }
   }
 

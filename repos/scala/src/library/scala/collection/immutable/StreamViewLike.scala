@@ -103,7 +103,9 @@ trait StreamViewLike[
       _thisElem: A1,
       _thatElem: B): Transformed[(A1, B)] = {
     new {
-      val other = that; val thisElem = _thisElem; val thatElem = _thatElem
+      val other = that;
+      val thisElem = _thisElem;
+      val thatElem = _thatElem
     } with AbstractTransformed[(A1, B)] with ZippedAll[A1, B]
   }
   protected override def newReversed: Transformed[A] = new Reversed {}
@@ -112,7 +114,9 @@ trait StreamViewLike[
       _patch: scala.collection.GenSeq[B],
       _replaced: Int): Transformed[B] = {
     new {
-      val from = _from; val patch = _patch; val replaced = _replaced
+      val from = _from;
+      val patch = _patch;
+      val replaced = _replaced
     } with AbstractTransformed[B] with Patched[B]
   }
 

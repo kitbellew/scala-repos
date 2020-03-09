@@ -30,7 +30,8 @@ object SettingGraph {
         display(ScopedKey(sc, key))
       }
       val depends = cMap.get(scoped) match {
-        case Some(c) => c.dependencies.toSet; case None => Set.empty
+        case Some(c) => c.dependencies.toSet;
+        case None    => Set.empty
       }
       // val related = cMap.keys.filter(k => k.key == key && k.scope != scope)
       // val reverse = reverseDependencies(cMap, scoped)

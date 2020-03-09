@@ -138,14 +138,16 @@ class OpenHashMap[Key, Value](initialSize: Int)
     "+= should not be overridden in order to maintain consistency with put.",
     "2.11.0")
   def +=(kv: (Key, Value)): this.type = {
-    put(kv._1, kv._2); this
+    put(kv._1, kv._2);
+    this
   }
 
   @deprecatedOverriding(
     "-= should not be overridden in order to maintain consistency with remove.",
     "2.11.0")
   def -=(key: Key): this.type = {
-    remove(key); this
+    remove(key);
+    this
   }
 
   override def put(key: Key, value: Value): Option[Value] =
@@ -220,7 +222,8 @@ class OpenHashMap[Key, Value](initialSize: Int)
     }
 
     def hasNext = {
-      advance(); index <= mask
+      advance();
+      index <= mask
     }
 
     def next = {
@@ -269,7 +272,9 @@ class OpenHashMap[Key, Value](initialSize: Int)
   override def retain(f: (Key, Value) => Boolean) = {
     foreachUndeletedEntry(entry =>
       if (!f(entry.key, entry.value.get)) {
-        entry.value = None; size -= 1; deleted += 1
+        entry.value = None;
+        size -= 1;
+        deleted += 1
       })
     this
   }

@@ -6,7 +6,8 @@ object SudokuSolver extends App {
 
   // For printing m, a method print is defined
   def print = {
-    println(""); m map (carr => println(new String(carr)))
+    println("");
+    m map (carr => println(new String(carr)))
   }
 
   // The test for validity is performed by looping over i=0..8 and
@@ -53,7 +54,8 @@ object SudokuSolver extends App {
       0,
       0,
       i => {
-        print; i + 1
+        print;
+        i + 1
       },
       0) + " solution(s)")
 }

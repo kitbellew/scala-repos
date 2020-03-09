@@ -442,7 +442,8 @@ object Tests {
       Discovery(firsts(subclasses), firsts(annotations))(definitions)
     // TODO: To pass in correct explicitlySpecified and selectors
     val tests =
-      for ((df, di) <- discovered; fingerprint <- toFingerprints(di))
+      for ((df, di) <- discovered;
+           fingerprint <- toFingerprints(di))
         yield new TestDefinition(
           df.name,
           fingerprint,

@@ -52,7 +52,8 @@ trait StackProxy[A] extends Stack[A] with Proxy {
   }
 
   override def pushAll(xs: TraversableOnce[A]): this.type = {
-    self pushAll xs; this
+    self pushAll xs;
+    this
   }
 
   override def push(elem1: A, elem2: A, elems: A*): this.type = {

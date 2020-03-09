@@ -73,7 +73,8 @@ object DateTimeUtil {
 
   def isValidISO(str: String): Boolean =
     try {
-      parseDateTime(str, true); true
+      parseDateTime(str, true);
+      true
     } catch {
       case e: IllegalArgumentException => {
         false
@@ -82,7 +83,8 @@ object DateTimeUtil {
 
   def isValidTimeZone(str: String): Boolean =
     try {
-      DateTimeZone.forID(str); true
+      DateTimeZone.forID(str);
+      true
     } catch {
       case e: IllegalArgumentException => {
         false
@@ -101,7 +103,8 @@ object DateTimeUtil {
 
   def isValidPeriod(period: String): Boolean =
     try {
-      new Period(period); true
+      new Period(period);
+      true
     } catch {
       case e: IllegalArgumentException => {
         false

@@ -38,7 +38,8 @@ trait Printers extends scala.reflect.internal.Printers { this: Global =>
         print("// Scala source: " + unit.source + "\n")
         if (unit.body == null) print("<null>")
         else {
-          print(unit.body); println()
+          print(unit.body);
+          println()
         }
         println()
         out.flush()
@@ -167,11 +168,16 @@ trait Printers extends scala.reflect.internal.Printers { this: Global =>
         // If thenp or elsep has only one statement, it doesn't need more than one line.
         case If(cond, thenp, elsep) =>
           def ifIndented(x: Tree) = {
-            indent(); println(); printTree(x); undent()
+            indent();
+            println();
+            printTree(x);
+            undent()
           }
 
           val List(thenStmts, elseStmts) = List(thenp, elsep) map allStatements
-          print("if ("); print(cond); print(") ")
+          print("if (");
+          print(cond);
+          print(") ")
 
           thenStmts match {
             case List(x: If) => ifIndented(x)
@@ -181,12 +187,14 @@ trait Printers extends scala.reflect.internal.Printers { this: Global =>
 
           if (elseStmts.nonEmpty) {
             print(" else")
-            indent(); println()
+            indent();
+            println()
             elseStmts match {
               case List(x) => printTree(x)
               case _       => printTree(elsep)
             }
-            undent(); println()
+            undent();
+            println()
           }
         case _ => s()
       }

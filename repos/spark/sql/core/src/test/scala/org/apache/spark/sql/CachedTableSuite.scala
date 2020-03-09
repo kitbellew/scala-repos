@@ -58,7 +58,8 @@ class CachedTableSuite
   test("withColumn doesn't invalidate cached dataframe") {
     var evalCount = 0
     val myUDF = udf((x: String) => {
-      evalCount += 1; "result"
+      evalCount += 1;
+      "result"
     })
     val df = Seq(("test", 1)).toDF("s", "i").select(myUDF($"s"))
     df.cache()

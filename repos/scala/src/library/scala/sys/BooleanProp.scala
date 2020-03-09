@@ -38,8 +38,11 @@ object BooleanProp {
       with BooleanProp {
     override def setValue[T1 >: Boolean](newValue: T1): Boolean =
       newValue match {
-        case x: Boolean if !x => val old = value; clear(); old
-        case x                => super.setValue(newValue)
+        case x: Boolean if !x =>
+          val old = value;
+          clear();
+          old
+        case x => super.setValue(newValue)
       }
     def enable() = this setValue true
     def disable() = this.clear()

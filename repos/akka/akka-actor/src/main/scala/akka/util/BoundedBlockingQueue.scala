@@ -198,7 +198,9 @@ class BoundedBlockingQueue[E <: AnyRef](
           if (n < maxElements) {
             backing.poll() match {
               case null ⇒ n
-              case e ⇒ c add e; drainOne(n + 1)
+              case e ⇒
+                c add e;
+                drainOne(n + 1)
             }
           } else n
         }

@@ -82,7 +82,9 @@ final class IPC private (s: Socket) extends NotNull {
     new OutputStreamWriter(s.getOutputStream))
 
   def send(s: String) = {
-    out.write(s); out.newLine(); out.flush()
+    out.write(s);
+    out.newLine();
+    out.flush()
   }
   def receive: String = in.readLine()
 }

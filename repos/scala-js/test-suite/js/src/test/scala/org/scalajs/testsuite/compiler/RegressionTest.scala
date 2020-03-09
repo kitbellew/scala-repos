@@ -271,7 +271,8 @@ class RegressionTest {
   @Test def x_synchronized_should_preserve_side_effects_of_x(): Unit = {
     var c = 0
     def x: RegressionTest.this.type = {
-      c += 1; this
+      c += 1;
+      this
     }
     assertEquals(5, x.synchronized(5))
     assertEquals(1, c)

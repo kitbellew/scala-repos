@@ -929,7 +929,8 @@ class FutureTest
             val inner1 = new Promise[String]
             val inner2 = new Promise[String]
             val f = Future.monitored {
-              inner2.ensure(()); inner1
+              inner2.ensure(());
+              inner1
             }
             val s = "." * 1024
             val sSize = ObjectSizeCalculator.getObjectSize(s)
@@ -1292,7 +1293,9 @@ class FutureTest
 
           "when the error handler errors" in {
             val g = Future[Int](throw e) rescue {
-              case e => throw e; Future(2)
+              case e =>
+                throw e;
+                Future(2)
             }
             val actual = intercept[Exception] {
               Await.result(g)
@@ -2021,7 +2024,8 @@ class FutureTest
       var i = 0
       def next() =
         Future.value({
-          i += 1; i
+          i += 1;
+          i
         })
       val done = Future.each(next()) {
         case 10 => throw exc

@@ -149,7 +149,8 @@ trait TestEventService
       new Instant(1363327426906L))
     val eventStore = new EventStore[Future] {
       def save(action: Event, timeout: Timeout) = M.point {
-        stored += action; \/-(PrecogUnit)
+        stored += action;
+        \/-(PrecogUnit)
       }
     }
     val jobManager = new InMemoryJobManager[({

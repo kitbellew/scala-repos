@@ -226,20 +226,24 @@ object Test extends App {
   val dead2 = 2 seconds fromNow
 
   {
-    val l = dead.timeLeft; assert(l > 1.second, s"$l <= 1.second")
+    val l = dead.timeLeft;
+    assert(l > 1.second, s"$l <= 1.second")
   }
   {
-    val l = dead2.timeLeft; assert(l > 1.second, s"$l <= 1.second")
+    val l = dead2.timeLeft;
+    assert(l > 1.second, s"$l <= 1.second")
   }
 
   Thread.sleep(1.second.toMillis)
 
   // unfortunately it can happen that the sleep() returns early without throwing
   {
-    val l = dead.timeLeft; assert(l <= 1100.millis, s"$l > 1100.millis")
+    val l = dead.timeLeft;
+    assert(l <= 1100.millis, s"$l > 1100.millis")
   }
   {
-    val l = dead2.timeLeft; assert(l <= 1100.millis, s"$l > 1100.millis")
+    val l = dead2.timeLeft;
+    assert(l <= 1100.millis, s"$l > 1100.millis")
   }
 
   // test integer mul/div

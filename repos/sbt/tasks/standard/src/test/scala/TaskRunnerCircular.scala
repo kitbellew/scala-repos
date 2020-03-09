@@ -39,7 +39,8 @@ object TaskRunnerCircularTest extends Properties("TaskRunner Circular") {
           iterate(task(t - 1).named((t - 1).toString), i - 1)
       }
     try {
-      tryRun(top, true, workers); false
+      tryRun(top, true, workers);
+      false
     } catch {
       case i: Incomplete => cyclic(i)
     }

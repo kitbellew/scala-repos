@@ -102,7 +102,8 @@ class SetMapConsistencyTest {
         case 1 => m(a)
         case 2 => m.getOrElse(a, -1)
         case 3 =>
-          val x = arm.getOrNull(a); if (x == 0 && !(arm contains a)) -1 else x
+          val x = arm.getOrNull(a);
+          if (x == 0 && !(arm contains a)) -1 else x
         case _ => oor("get", n)
       }
       override def fiddlers = 2
@@ -128,7 +129,8 @@ class SetMapConsistencyTest {
         case 1 => m(a)
         case 2 => m.getOrElse(a, -1)
         case 3 =>
-          val x = lm.getOrNull(a); if (x == 0 && !(lm contains a)) -1 else x
+          val x = lm.getOrNull(a);
+          if (x == 0 && !(lm contains a)) -1 else x
         case _ => oor("get", n)
       }
       override def fiddlers = 2
@@ -544,10 +546,14 @@ class SetMapConsistencyTest {
     lm = LongMap(8L -> 22L, -5L -> 5L, Long.MinValue -> 0L)
 
     assert {
-      var s = 0L; lm.foreachKey(s += _); s == Long.MinValue + 3
+      var s = 0L;
+      lm.foreachKey(s += _);
+      s == Long.MinValue + 3
     }
     assert {
-      var s = 0L; lm.foreachValue(s += _); s == 27L
+      var s = 0L;
+      lm.foreachValue(s += _);
+      s == 27L
     }
     assert {
       val m2 = lm.mapValuesNow(_ + 2)
@@ -602,7 +608,9 @@ class SetMapConsistencyTest {
     }
 
     assert {
-      var s = 0L; arm.foreachValue(s += _); s == 27L
+      var s = 0L;
+      arm.foreachValue(s += _);
+      s == 27L
     }
 
     assert {
@@ -633,10 +641,14 @@ class SetMapConsistencyTest {
       (0 to 1000).map(i => i * i * i).map(x => x -> ((x * x * x) < 0))
     val rn = new scala.util.Random(42)
     def mhm: M = {
-      val m = new cm.HashMap[Int, Boolean]; m ++= manyKVs; m
+      val m = new cm.HashMap[Int, Boolean];
+      m ++= manyKVs;
+      m
     }
     def mohm: M = {
-      val m = new cm.OpenHashMap[Int, Boolean]; m ++= manyKVs; m
+      val m = new cm.OpenHashMap[Int, Boolean];
+      m ++= manyKVs;
+      m
     }
     def ihm: M = ci.HashMap.empty[Int, Boolean] ++ manyKVs
     val densities = List(0, 0.05, 0.2, 0.5, 0.8, 0.95, 1)
@@ -664,14 +676,16 @@ class SetMapConsistencyTest {
     for (i <- 0 until 1024) am += i.toString -> i
     am.getOrElseUpdate(
       "1024", {
-        am.clear; -1
+        am.clear;
+        -1
       })
     assert(am == scala.collection.mutable.AnyRefMap("1024" -> -1))
     val lm = new scala.collection.mutable.LongMap[Int]
     for (i <- 0 until 1024) lm += i.toLong -> i
     lm.getOrElseUpdate(
       1024, {
-        lm.clear; -1
+        lm.clear;
+        -1
       })
     assert(lm == scala.collection.mutable.LongMap(1024L -> -1))
   }

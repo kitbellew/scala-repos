@@ -630,7 +630,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     def isUseCase = useCaseOf.isDefined
     override def byConversion: Option[ImplicitConversionImpl] = conversion
     override def isImplicitlyInherited = {
-      assert(modelFinished); conversion.isDefined
+      assert(modelFinished);
+      conversion.isDefined
     }
     override def isShadowedImplicit =
       isImplicitlyInherited && inTpl.implicitsShadowing

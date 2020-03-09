@@ -22,7 +22,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
   protected var ids = 0
 
   protected def nextId() = {
-    ids += 1; ids
+    ids += 1;
+    ids
   }
 
   /** Used for deciding in the IDE whether we can interrupt the compiler */
@@ -39,7 +40,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
 
   private var existentialIds = 0
   protected def nextExistentialId() = {
-    existentialIds += 1; existentialIds
+    existentialIds += 1;
+    existentialIds
   }
   protected def freshExistentialName(suffix: String) =
     newTypeName("_" + nextExistentialId() + suffix)
@@ -184,7 +186,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     def toTypeIn(site: Type): Type = site.memberType(this)
     def toTypeConstructor: Type = typeConstructor
     def setAnnotations(annots: AnnotationInfo*): this.type = {
-      setAnnotations(annots.toList); this
+      setAnnotations(annots.toList);
+      this
     }
 
     def getter: Symbol = getterIn(owner)
@@ -271,7 +274,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     }
 
     def setName(name: Name): this.type = {
-      this.name = asNameType(name); this
+      this.name = asNameType(name);
+      this
     }
 
     // Update the surrounding scopes
@@ -508,7 +512,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     private def freshNamer: () => TermName = {
       var cnt = 0
       () => {
-        cnt += 1; nme.syntheticParamName(cnt)
+        cnt += 1;
+        nme.syntheticParamName(cnt)
       }
     }
 
@@ -708,7 +713,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
               true
           }
         } else {
-          handler; false
+          handler;
+          false
         }
       } else {
         _rawflags |= LOCKED
@@ -898,10 +904,12 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     }
 
     def setFlag(mask: Long): this.type = {
-      _rawflags |= mask; this
+      _rawflags |= mask;
+      this
     }
     def resetFlag(mask: Long): this.type = {
-      _rawflags &= ~mask; this
+      _rawflags &= ~mask;
+      this
     }
     def resetFlags() {
       rawflags &= TopLevelCreationFlags
@@ -1295,7 +1303,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
 
       rawInfo load this
       rawInfo != NoType || {
-        warnIfSourceLoader(); false
+        warnIfSourceLoader();
+        false
       }
     }
 
@@ -1429,7 +1438,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       private var current = Symbol.this
       def hasNext = current ne NoSymbol
       def next = {
-        val r = current; current = current.owner; r
+        val r = current;
+        current = current.owner;
+        r
       }
     }
 
@@ -1686,7 +1697,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       _privateWithin = sym
     }
     def setPrivateWithin(sym: Symbol): this.type = {
-      privateWithin_=(sym); this
+      privateWithin_=(sym);
+      this
     }
 
     /** Does symbol have a private or protected qualifier set? */
@@ -1817,7 +1829,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
 
     /** Set initial info. */
     def setInfo(info: Type): this.type = {
-      info_=(info); this
+      info_=(info);
+      this
     }
 
     /** Modifies this symbol's info in place. */
@@ -1946,10 +1959,12 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     }
     def maybeInitialize = {
       try {
-        initialize; true
+        initialize;
+        true
       } catch {
         case _: CyclicReference =>
-          debuglog("Hit cycle in maybeInitialize of $this"); false
+          debuglog("Hit cycle in maybeInitialize of $this");
+          false
       }
     }
 
@@ -2490,7 +2505,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       if (isLocalDummy) enclClass.primaryConstructor
       else if (isMethod || isClass || this == NoSymbol) this
       else if (this == NoSymbol) {
-        devWarningDumpStack("NoSymbol.logicallyEnclosingMember", 15); this
+        devWarningDumpStack("NoSymbol.logicallyEnclosingMember", 15);
+        this
       } else owner.logicallyEnclosingMember
 
     /** The top-level class containing this symbol. */
@@ -2840,7 +2856,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     @inline final def orElse(alt: => Symbol): Symbol =
       if (this ne NoSymbol) this else alt
     @inline final def andAlso(f: Symbol => Unit): Symbol = {
-      if (this ne NoSymbol) f(this); this
+      if (this ne NoSymbol) f(this);
+      this
     }
     @inline final def fold[T](none: => T)(f: Symbol => T): T =
       if (this ne NoSymbol) f(this) else none

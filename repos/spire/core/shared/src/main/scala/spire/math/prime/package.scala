@@ -182,7 +182,8 @@ package object prime {
         var x = n / 2
         var e = 1
         while (x % 2 == 0) {
-          x /= 2; e += 1
+          x /= 2;
+          e += 1
         }
         Factors(Map(SafeLong(2) -> e), Positive) * factor(x)
       } else {
@@ -212,7 +213,8 @@ package object prime {
     var x = x0
     var e = 0
     while (x > 1 && x % b == 0) {
-      e += 1; x = x / b
+      e += 1;
+      x = x / b
     }
     (x, e)
   }

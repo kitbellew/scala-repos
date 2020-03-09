@@ -126,7 +126,8 @@ trait DocComments { self: Global =>
   def useCases(sym: Symbol, site: Symbol): List[(Symbol, String, Position)] = {
     def getUseCases(dc: DocComment) = {
       val fullSigComment = cookedDocComment(sym)
-      for (uc <- dc.useCases; defn <- uc.expandedDefs(sym, site)) yield {
+      for (uc <- dc.useCases;
+           defn <- uc.expandedDefs(sym, site)) yield {
         // use cases comments go through a series of transformations:
         // 1 - filling in missing sections from the full signature
         // 2 - expanding explicit inheritance @inheritdoc tags
@@ -206,7 +207,8 @@ trait DocComments { self: Global =>
           }
       }
 
-    for (params <- sym.paramss; param <- params)
+    for (params <- sym.paramss;
+         param <- params)
       mergeSection(
         srcParams get param.name.toString,
         dstParams get param.name.toString)

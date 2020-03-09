@@ -205,7 +205,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
         getDeclIfDefined(BoxesRunTimeClass, methodName) match {
           case NoSymbol => None
           case sym =>
-            assert(!sym.isOverloaded, sym); Some((sym, testForName(name)))
+            assert(!sym.isOverloaded, sym);
+            Some((sym, testForName(name)))
         }
       }
 

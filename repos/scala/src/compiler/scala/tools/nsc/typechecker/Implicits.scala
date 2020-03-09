@@ -485,7 +485,8 @@ trait Implicits {
           improvesCache get ((info1, info2)) match {
             case Some(b) =>
               if (Statistics.canEnable)
-                Statistics.incCounter(improvesCachedCount); b
+                Statistics.incCounter(improvesCachedCount);
+              b
             case None =>
               val result = isStrictlyMoreSpecific(
                 info1.tpe,
@@ -1054,7 +1055,8 @@ trait Implicits {
       /** Tests for validity and updates invalidImplicits by side effect when false.
         */
       private def checkValid(sym: Symbol) = isValid(sym) || {
-        invalidImplicits += sym; false
+        invalidImplicits += sym;
+        false
       }
 
       /** Preventing a divergent implicit from terminating implicit search,

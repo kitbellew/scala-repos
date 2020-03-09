@@ -273,7 +273,8 @@ private[data] abstract class XorTInstances1 extends XorTInstances2 {
     implicit val F0 = F
     implicit val L0 = L
     new MonoidK[XorT[F, L, ?]] with XorTSemigroupK[F, L] {
-      implicit val F = F0; implicit val L = L0
+      implicit val F = F0;
+      implicit val L = L0
       def empty[A]: XorT[F, L, A] = XorT.left(F.pure(L.empty))(F)
     }
   }
@@ -306,7 +307,8 @@ private[data] abstract class XorTInstances2 extends XorTInstances3 {
     implicit val F0 = F
     implicit val L0 = L
     new XorTSemigroupK[F, L] {
-      implicit val F = F0; implicit val L = L0
+      implicit val F = F0;
+      implicit val L = L0
     }
   }
 

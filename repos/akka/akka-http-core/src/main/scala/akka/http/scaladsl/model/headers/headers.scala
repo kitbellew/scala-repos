@@ -701,7 +701,8 @@ final case class Location(uri: Uri)
     extends jm.headers.Location
     with ResponseHeader {
   def renderValue[R <: Rendering](r: R): r.type = {
-    import UriRendering.UriRenderer; r ~~ uri
+    import UriRendering.UriRenderer;
+    r ~~ uri
   }
   protected def companion = Location
 
@@ -814,7 +815,8 @@ final case class Referer(uri: Uri)
     "Referer header URI must not contain a userinfo component")
 
   def renderValue[R <: Rendering](r: R): r.type = {
-    import UriRendering.UriRenderer; r ~~ uri
+    import UriRendering.UriRenderer;
+    r ~~ uri
   }
   protected def companion = Referer
 

@@ -24,7 +24,10 @@ class ScalaRefCountHolder private () {
   private final val myState: AtomicReference[Integer] =
     new AtomicReference[Integer](State.VIRGIN)
   private object State {
-    val VIRGIN = 0; val WRITE = 1; val READY = 2; val READ = 3;
+    val VIRGIN = 0;
+    val WRITE = 1;
+    val READY = 2;
+    val READ = 3;
   }
   private val myImportUsed = ContainerUtil.newConcurrentSet[ImportUsed]()
   private val myValueUsed = ContainerUtil.newConcurrentSet[ValueUsed]()

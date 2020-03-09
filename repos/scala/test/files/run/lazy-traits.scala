@@ -41,100 +41,132 @@ class ClsB extends Object with B {
 /** Class with 32 lazy fields mixes in one more. */
 class OverflownLazyFields extends Object with A {
   lazy val zc00 = {
-    println("<forced zc00>"); "lazy zc00"
+    println("<forced zc00>");
+    "lazy zc00"
   }
   lazy val zc01 = {
-    println("<forced zc01>"); "lazy zc01"
+    println("<forced zc01>");
+    "lazy zc01"
   }
   lazy val zc02 = {
-    println("<forced zc02>"); "lazy zc02"
+    println("<forced zc02>");
+    "lazy zc02"
   }
   lazy val zc03 = {
-    println("<forced zc03>"); "lazy zc03"
+    println("<forced zc03>");
+    "lazy zc03"
   }
   lazy val zc04 = {
-    println("<forced zc04>"); "lazy zc04"
+    println("<forced zc04>");
+    "lazy zc04"
   }
   lazy val zc05 = {
-    println("<forced zc05>"); "lazy zc05"
+    println("<forced zc05>");
+    "lazy zc05"
   }
   lazy val zc06 = {
-    println("<forced zc06>"); "lazy zc06"
+    println("<forced zc06>");
+    "lazy zc06"
   }
   lazy val zc07 = {
-    println("<forced zc07>"); "lazy zc07"
+    println("<forced zc07>");
+    "lazy zc07"
   }
   lazy val zc08 = {
-    println("<forced zc08>"); "lazy zc08"
+    println("<forced zc08>");
+    "lazy zc08"
   }
   lazy val zc09 = {
-    println("<forced zc09>"); "lazy zc09"
+    println("<forced zc09>");
+    "lazy zc09"
   }
   lazy val zc10 = {
-    println("<forced zc10>"); "lazy zc10"
+    println("<forced zc10>");
+    "lazy zc10"
   }
   lazy val zc11 = {
-    println("<forced zc11>"); "lazy zc11"
+    println("<forced zc11>");
+    "lazy zc11"
   }
   lazy val zc12 = {
-    println("<forced zc12>"); "lazy zc12"
+    println("<forced zc12>");
+    "lazy zc12"
   }
   lazy val zc13 = {
-    println("<forced zc13>"); "lazy zc13"
+    println("<forced zc13>");
+    "lazy zc13"
   }
   lazy val zc14 = {
-    println("<forced zc14>"); "lazy zc14"
+    println("<forced zc14>");
+    "lazy zc14"
   }
   lazy val zc15 = {
-    println("<forced zc15>"); "lazy zc15"
+    println("<forced zc15>");
+    "lazy zc15"
   }
   lazy val zc16 = {
-    println("<forced zc16>"); "lazy zc16"
+    println("<forced zc16>");
+    "lazy zc16"
   }
   lazy val zc17 = {
-    println("<forced zc17>"); "lazy zc17"
+    println("<forced zc17>");
+    "lazy zc17"
   }
   lazy val zc18 = {
-    println("<forced zc18>"); "lazy zc18"
+    println("<forced zc18>");
+    "lazy zc18"
   }
   lazy val zc19 = {
-    println("<forced zc19>"); "lazy zc19"
+    println("<forced zc19>");
+    "lazy zc19"
   }
   lazy val zc20 = {
-    println("<forced zc20>"); "lazy zc20"
+    println("<forced zc20>");
+    "lazy zc20"
   }
   lazy val zc21 = {
-    println("<forced zc21>"); "lazy zc21"
+    println("<forced zc21>");
+    "lazy zc21"
   }
   lazy val zc22 = {
-    println("<forced zc22>"); "lazy zc22"
+    println("<forced zc22>");
+    "lazy zc22"
   }
   lazy val zc23 = {
-    println("<forced zc23>"); "lazy zc23"
+    println("<forced zc23>");
+    "lazy zc23"
   }
   lazy val zc24 = {
-    println("<forced zc24>"); "lazy zc24"
+    println("<forced zc24>");
+    "lazy zc24"
   }
   lazy val zc25 = {
-    println("<forced zc25>"); "lazy zc25"
+    println("<forced zc25>");
+    "lazy zc25"
   }
   lazy val zc26 = {
-    println("<forced zc26>"); "lazy zc26"
+    println("<forced zc26>");
+    "lazy zc26"
   }
   lazy val zc27 = {
-    println("<forced zc27>"); "lazy zc27"
+    println("<forced zc27>");
+    "lazy zc27"
   }
   lazy val zc28 = {
-    println("<forced zc28>"); "lazy zc28"
+    println("<forced zc28>");
+    "lazy zc28"
   }
   lazy val zc29 = {
-    println("<forced zc29>"); "lazy zc29"
+    println("<forced zc29>");
+    "lazy zc29"
   }
   lazy val zc30 = {
-    println("<forced zc30>"); "lazy zc30"
+    println("<forced zc30>");
+    "lazy zc30"
   }
   lazy val zc31 = {
-    println("<forced zc31>"); "lazy zc31"
+    println("<forced zc31>");
+    "lazy zc31"
   }
 
   override def toString =

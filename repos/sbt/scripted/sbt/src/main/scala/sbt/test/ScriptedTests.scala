@@ -66,7 +66,8 @@ final class ScriptedTests(
             None
           } else {
             try {
-              scriptedTest(str, testDirectory, prescripted, log); None
+              scriptedTest(str, testDirectory, prescripted, log);
+              None
             } catch {
               case _: TestException | _: PendingTestSuccessException =>
                 Some(str)
@@ -198,7 +199,8 @@ class ScriptedRunner {
       bootProperties,
       launchOpts,
       { f: File =>
-        prescripted.add(f); ()
+        prescripted.add(f);
+        ()
       }
     ) //new FullLogger(Logger.xlog2Log(log)))
 
@@ -256,7 +258,9 @@ class ScriptedRunner {
     runAll(allTests)
   }
   def runAll(tests: Seq[() => Option[String]]): Unit = {
-    val errors = for (test <- tests; err <- test()) yield err
+    val errors =
+      for (test <- tests;
+           err <- test()) yield err
     if (errors.nonEmpty)
       sys.error(errors.mkString("Failed tests:\n\t", "\n\t", "\n"))
   }

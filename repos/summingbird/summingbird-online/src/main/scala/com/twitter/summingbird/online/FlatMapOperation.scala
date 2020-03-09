@@ -70,7 +70,8 @@ trait FlatMapOperation[-T, +U] extends Serializable with Closeable {
         }
       }
       override def close {
-        self.close; fmo.close
+        self.close;
+        fmo.close
       }
     }
   }

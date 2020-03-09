@@ -107,7 +107,8 @@ object Menu extends DispatchSnippet {
     val expandAny: Boolean = S.attr("expand").map(Helpers.toBoolean) openOr true
 
     val level: Box[Int] =
-      for (lvs <- S.attr("level"); i <- Helpers.asInt(lvs)) yield i
+      for (lvs <- S.attr("level");
+           i <- Helpers.asInt(lvs)) yield i
 
     val toRender: Seq[MenuItem] = (S.attr("item"), S.attr("group")) match {
       case (Full(item), _) =>
@@ -295,7 +296,8 @@ object Menu extends DispatchSnippet {
 
   private def renderWhat(expandAll: Boolean): Seq[MenuItem] =
     (if (expandAll) for {
-       sm <- LiftRules.siteMap; req <- S.request
+       sm <- LiftRules.siteMap;
+       req <- S.request
      } yield sm.buildMenu(req.location).lines
      else S.request.map(_.buildMenu.lines)) openOr Nil
 

@@ -46,8 +46,10 @@ object Test {
     println("boo:and:foo".split(':') equals "boo:and:foo".split(':'))
     println("boo:and:foo".split(':').deep == "boo:and:foo".split(':').deep)
 
-    val xs = new java.util.ArrayList[String](); xs.add("a")
-    val ys = new java.util.ArrayList[String](); ys.add("a")
+    val xs = new java.util.ArrayList[String]();
+    xs.add("a")
+    val ys = new java.util.ArrayList[String]();
+    ys.add("a")
     println(xs.toArray == ys.toArray)
     println(xs.toArray equals ys.toArray)
     println(xs.toArray.deep == ys.toArray.deep)
@@ -102,15 +104,20 @@ object Test {
   def testToString3 {
     println("boo:and:foo".split(':').deep.toString)
 
-    val xs = new java.util.ArrayList[String](); xs.add("a")
+    val xs = new java.util.ArrayList[String]();
+    xs.add("a")
     println(xs.toArray.deep.toString)
   }
 
   def main(args: Array[String]): Unit = {
-    println("testEquals1"); testEquals1
-    println("testEquals2"); testEquals2
-    println("testEquals3"); testEquals3
-    println("testEquals4"); testEquals4
+    println("testEquals1");
+    testEquals1
+    println("testEquals2");
+    testEquals2
+    println("testEquals3");
+    testEquals3
+    println("testEquals4");
+    testEquals4
     testToString1
     testToString2
     testToString3

@@ -166,7 +166,8 @@ class Scentry[UserType <: AnyRef](
         user
     }
     if (names.isEmpty) r orElse {
-      defaultUnauthenticated foreach (_.apply()); None
+      defaultUnauthenticated foreach (_.apply());
+      None
     }
     else r
   }

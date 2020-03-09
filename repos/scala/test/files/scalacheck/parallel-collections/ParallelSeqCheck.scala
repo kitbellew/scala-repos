@@ -33,13 +33,16 @@ abstract class ParallelSeqCheck[T](collName: String)
     for (inst <- instances(values)) yield (inst, fromSeq(inst))
 
   override def collectionPairsWithLengths: Gen[(Seq[T], CollType, Int)] =
-    for (inst <- instances(values); s <- choose(0, inst.size))
+    for (inst <- instances(values);
+         s <- choose(0, inst.size))
       yield (inst, fromSeq(inst), s);
 
   def collectionPairsWithModifiedWithLengths
       : Gen[(Seq[T], CollType, ParSeq[T], Int)] =
-    for (inst <- instances(values); s <- choose(0, inst.size);
-         updateStart <- choose(0, inst.size); howMany <- choose(0, inst.size))
+    for (inst <- instances(values);
+         s <- choose(0, inst.size);
+         updateStart <- choose(0, inst.size);
+         howMany <- choose(0, inst.size))
       yield {
         val parcoll = fromSeq(inst)
         val parcollmodif = fromSeq(modifySlightly(inst, updateStart, howMany))
@@ -47,7 +50,8 @@ abstract class ParallelSeqCheck[T](collName: String)
       }
 
   def collectionPairsWithModified: Gen[(Seq[T], CollType, ParSeq[T])] =
-    for (inst <- instances(values); updateStart <- choose(0, inst.size);
+    for (inst <- instances(values);
+         updateStart <- choose(0, inst.size);
          howMany <- choose(0, inst.size)) yield {
       val parcoll = fromSeq(inst)
       val parcollmodif = fromSeq(modifySlightly(inst, updateStart, howMany))
@@ -55,7 +59,8 @@ abstract class ParallelSeqCheck[T](collName: String)
     }
 
   def collectionPairsWithSliced: Gen[(Seq[T], CollType, ParSeq[T])] =
-    for (inst <- instances(values); sliceStart <- choose(0, inst.size);
+    for (inst <- instances(values);
+         sliceStart <- choose(0, inst.size);
          howMany <- choose(0, inst.size)) yield {
       val parcoll = fromSeq(inst)
       val parcollsliced = fromSeq(inst.slice(sliceStart, sliceStart + howMany))
@@ -64,9 +69,11 @@ abstract class ParallelSeqCheck[T](collName: String)
 
   def collectionTripletsWith2Indices
       : Gen[(Seq[T], CollType, Seq[T], Int, Int)] =
-    for (inst <- instances(values); f <- choose(0, inst.size);
+    for (inst <- instances(values);
+         f <- choose(0, inst.size);
          s <- choose(0, inst.size - f);
-         third <- instances(values); sliceStart <- choose(0, inst.size);
+         third <- instances(values);
+         sliceStart <- choose(0, inst.size);
          howMany <- choose(0, inst.size)) yield {
       (inst, fromSeq(inst), inst.slice(sliceStart, sliceStart + howMany), f, s)
     }

@@ -160,8 +160,10 @@ trait Logic extends Debugging {
         (uniques findEntryOrUpdate newSym)
       }
       def nextSymId = {
-        _symId += 1; _symId
-      }; private var _symId = 0
+        _symId += 1;
+        _symId
+      };
+      private var _symId = 0
       implicit val SymOrdering: Ordering[Sym] = Ordering.by(_.id)
     }
 
@@ -264,10 +266,12 @@ trait Logic extends Debugging {
 
     trait PropTraverser {
       def apply(x: Prop): Unit = x match {
-        case And(ops)       => ops foreach apply
-        case Or(ops)        => ops foreach apply
-        case Not(a)         => apply(a)
-        case Eq(a, b)       => applyVar(a); applyConst(b)
+        case And(ops) => ops foreach apply
+        case Or(ops)  => ops foreach apply
+        case Not(a)   => apply(a)
+        case Eq(a, b) =>
+          applyVar(a);
+          applyConst(b)
         case s: Sym         => applySymbol(s)
         case AtMostOne(ops) => ops.foreach(applySymbol)
         case _              =>
@@ -462,17 +466,20 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
 
     // resets hash consing -- only supposed to be called by TreeMakersToProps
     def prepareNewAnalysis(): Unit = {
-      Var.resetUniques(); Const.resetUniques()
+      Var.resetUniques();
+      Const.resetUniques()
     }
 
     object Var extends VarExtractor {
       private var _nextId = 0
       def nextId = {
-        _nextId += 1; _nextId
+        _nextId += 1;
+        _nextId
       }
 
       def resetUniques() = {
-        _nextId = 0; uniques.clear()
+        _nextId = 0;
+        uniques.clear()
       }
       private val uniques = new mutable.HashMap[Tree, Var]
       def apply(x: Tree): Var = uniques getOrElseUpdate (x, new Var(x, x.tpe))
@@ -521,7 +528,8 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
           } else
             subConsts
 
-        observed(); allConsts
+        observed();
+        allConsts
       }
 
       lazy val groupedDomains: List[Set[Sym]] = {
@@ -538,13 +546,15 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
       // populate equalitySyms
       // don't care about the result, but want only one fresh symbol per distinct constant c
       def registerEquality(c: Const): Unit = {
-        ensureCanModify(); symForEqualsTo getOrElseUpdate (c, Sym(this, c))
+        ensureCanModify();
+        symForEqualsTo getOrElseUpdate (c, Sym(this, c))
       }
 
       // return the symbol that represents this variable being equal to the constant `c`, if it exists, otherwise False (for robustness)
       // (registerEquality(c) must have been called prior, either when constructing the domain or from outside)
       def propForEqualsTo(c: Const): Prop = {
-        observed(); symForEqualsTo.getOrElse(c, False)
+        observed();
+        symForEqualsTo.getOrElse(c, False)
       }
 
       // [implementation NOTE: don't access until all potential equalities have been registered using registerEquality]p
@@ -681,7 +691,8 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
 
       // don't access until all potential equalities have been registered using registerEquality
       private lazy val equalitySyms = {
-        observed(); symForEqualsTo.values.toList
+        observed();
+        symForEqualsTo.values.toList
       }
 
       // don't call until all equalities have been registered and registerNull has been called (if needed)
@@ -712,17 +723,22 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
     // equality between variables: SingleType(x) (note that pattern variables cannot relate to each other -- it's always patternVar == nonPatternVar)
     object Const {
       def resetUniques() = {
-        _nextTypeId = 0; _nextValueId = 0; uniques.clear(); trees.clear()
+        _nextTypeId = 0;
+        _nextValueId = 0;
+        uniques.clear();
+        trees.clear()
       }
 
       private var _nextTypeId = 0
       def nextTypeId = {
-        _nextTypeId += 1; _nextTypeId
+        _nextTypeId += 1;
+        _nextTypeId
       }
 
       private var _nextValueId = 0
       def nextValueId = {
-        _nextValueId += 1; _nextValueId
+        _nextValueId += 1;
+        _nextValueId
       }
 
       private val uniques = new mutable.HashMap[Type, Const]

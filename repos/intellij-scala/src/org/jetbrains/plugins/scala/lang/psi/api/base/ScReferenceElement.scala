@@ -268,7 +268,8 @@ trait ScReferenceElement
       val usedNames = new mutable.HashSet[String]()
       val res = resolve.forall {
         case r: ScalaResolveResult if r.importsUsed.isEmpty =>
-          usedNames += r.name; true
+          usedNames += r.name;
+          true
         case _ => false
       }
       if (!res) return false

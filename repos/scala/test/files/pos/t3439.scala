@@ -3,7 +3,8 @@ class Base[M](i: Int)
 // was "implicit modifier not allowed on top level objects"
 class D1()(implicit i: Int)
     extends Base({
-      println(i); 0
+      println(i);
+      0
     })
 
 // what "no implicit value of type Int found"
@@ -21,7 +22,8 @@ class Wrap {
   // was "implicit modifier not allowed on top level objects"
   class D1()(implicit i: Int)
       extends Base({
-        println(i); 0
+        println(i);
+        0
       })
 
   // what "no implicit value of type Int found"

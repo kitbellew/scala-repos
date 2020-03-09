@@ -521,7 +521,8 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
       case CurrentInternalStats(gossipStats, vclockStats) ⇒
         val diff = startStats match {
           case None ⇒ {
-            startStats = Some(gossipStats); gossipStats
+            startStats = Some(gossipStats);
+            gossipStats
           }
           case Some(start) ⇒ gossipStats :- start
         }

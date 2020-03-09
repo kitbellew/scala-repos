@@ -1246,7 +1246,8 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
   def each[A](next: => Future[A])(body: A => Unit): Future[Nothing] = {
     def go(): Future[Nothing] =
       try next flatMap { a =>
-        body(a); go()
+        body(a);
+        go()
       } catch {
         case NonFatal(exc) =>
           Future.exception(NextThrewException(exc))

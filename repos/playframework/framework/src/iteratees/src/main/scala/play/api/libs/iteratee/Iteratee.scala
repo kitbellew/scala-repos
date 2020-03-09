@@ -33,7 +33,8 @@ object Iteratee {
 
   def isDoneOrError[E, A](it: Iteratee[E, A]): Future[Boolean] =
     it.pureFoldNoEC {
-      case Step.Cont(_) => false; case _ => true
+      case Step.Cont(_) => false;
+      case _            => true
     }
 
   /**

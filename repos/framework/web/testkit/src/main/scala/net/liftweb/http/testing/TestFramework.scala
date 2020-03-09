@@ -157,7 +157,8 @@ trait BaseGetPoster {
     val fullUrl = url + (params
       .map(v => urlEncode(v._1) + "=" + urlEncode(v._2))
       .mkString("&") match {
-      case s if s.length == 0 => ""; case s => "?" + s
+      case s if s.length == 0 => "";
+      case s                  => "?" + s
     })
     val getter = new GetMethod(baseUrl + fullUrl)
     getter.getParams().setCookiePolicy(CookiePolicy.RFC_2965)
@@ -184,7 +185,8 @@ trait BaseGetPoster {
     val fullUrl = url + (params
       .map(v => urlEncode(v._1) + "=" + urlEncode(v._2))
       .mkString("&") match {
-      case s if s.length == 0 => ""; case s => "?" + s
+      case s if s.length == 0 => "";
+      case s                  => "?" + s
     })
     val getter = new DeleteMethod(baseUrl + fullUrl)
     getter.getParams().setCookiePolicy(CookiePolicy.RFC_2965)
@@ -488,7 +490,8 @@ trait TestKit extends ClientBuilder with GetPoster with GetPosterHelper {
     def then(f: TestResponse => TestResponse): TestResponse = f(res)
 
     def also(f: TestResponse => Any): TestResponse = {
-      f(res); res
+      f(res);
+      res
     }
   }
   implicit def reqToHander(in: TestResponse): TestHandler = new TestHandler(in)
@@ -566,8 +569,10 @@ trait TestFramework extends TestKit {
 
     def waitAll(in: List[Thread]) {
       in match {
-        case Nil     =>
-        case x :: xs => x.join; waitAll(xs)
+        case Nil =>
+        case x :: xs =>
+          x.join;
+          waitAll(xs)
       }
     }
 
@@ -641,7 +646,8 @@ object TestHelpers {
       respHeaders: Map[String, List[String]]): Box[String] = {
     val ret = (headers
       .filter {
-        case ("Cookie", _) => true; case _ => false
+        case ("Cookie", _) => true;
+        case _             => false
       }
       .map(_._2) :::
       respHeaders.get("Set-Cookie").toList.flatMap(x => x)) match {

@@ -32,7 +32,8 @@ abstract class RecordedTest {
       val w = new BufferedWriter(masked)
       var line: String = null
       while ({
-        line = r.readLine(); line != null
+        line = r.readLine();
+        line != null
       }) w.write(mask(line) + "\n")
       w.flush()
       masked.getBuffer.toString
@@ -71,7 +72,8 @@ abstract class RecordedTest {
       val r = new InputStreamReader(in, "UTF-8")
       var num: Int = 0
       while ({
-        num = r.read(a); num > 0
+        num = r.read(a);
+        num > 0
       }) buf.append(new String(a, 0, num))
       buf.toString()
     } finally in.close

@@ -150,7 +150,9 @@ object TestFramework {
     it.foreach(i =>
       try f(i)
       catch {
-        case e: Exception => log.trace(e); log.error(e.toString)
+        case e: Exception =>
+          log.trace(e);
+          log.error(e.toString)
       })
 
   private[sbt] def hashCode(f: Fingerprint): Int = f match {
@@ -203,7 +205,8 @@ object TestFramework {
   private[this] def order(
       mapped: Map[String, TestFunction],
       inputs: Seq[TestDefinition]): Seq[(String, TestFunction)] =
-    for (d <- inputs; act <- mapped.get(d.name)) yield (d.name, act)
+    for (d <- inputs;
+         act <- mapped.get(d.name)) yield (d.name, act)
 
   private[this] def testMap(
       frameworks: Seq[Framework],

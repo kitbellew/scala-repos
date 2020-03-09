@@ -50,13 +50,15 @@ object Test {
 
     {
       val foo = new Other.Foo {
-        type R1 = Bippy; type R2 = Bippy
+        type R1 = Bippy;
+        type R2 = Bippy
       }
       println(foo.f(new Bippy))
     }
     {
       val bar = new Other.Bar {
-        type R1 = Bippy with R0; type R2 = R1
+        type R1 = Bippy with R0;
+        type R2 = R1
       }
       println(bar.f(new Bippy with bar.R0))
     }

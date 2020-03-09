@@ -19,13 +19,17 @@ object SetMaker {
     private val mapMaker = new GoogleMapMaker
 
     def weakValues = {
-      mapMaker.weakKeys; mapMaker.weakValues; this
+      mapMaker.weakKeys;
+      mapMaker.weakValues;
+      this
     }
     def concurrencyLevel(level: Int) = {
-      mapMaker.concurrencyLevel(level); this
+      mapMaker.concurrencyLevel(level);
+      this
     }
     def initialCapacity(capacity: Int) = {
-      mapMaker.initialCapacity(capacity); this
+      mapMaker.initialCapacity(capacity);
+      this
     }
 
     def apply() = new MapToSetAdapter[A](mapMaker.makeMap[A, A]().asScala)

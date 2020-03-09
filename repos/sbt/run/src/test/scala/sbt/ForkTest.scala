@@ -48,7 +48,9 @@ object ForkTest extends Properties("Fork") {
             val exitCode =
               try Fork.java(config, args)
               catch {
-                case e: Exception => e.printStackTrace; 1
+                case e: Exception =>
+                  e.printStackTrace;
+                  1
               }
             val expectedCode = if (optionName.isEmpty) 1 else 0
             s"temporary directory: ${dir.getAbsolutePath}" |:

@@ -4,7 +4,8 @@ object test {
     type T;
     val u = x;
     def this(y: Int)(z: Int)(t: this.T) = {
-      this(this.u + y + z); Console.println(x)
+      this(this.u + y + z);
+      Console.println(x)
     }
   }
 

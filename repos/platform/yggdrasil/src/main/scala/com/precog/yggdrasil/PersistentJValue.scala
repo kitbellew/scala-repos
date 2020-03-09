@@ -78,7 +78,8 @@ final case class PersistentJValue(baseDir: File, fileName: String)
 
   /** Updates and persists (blocking) the `JValue`. */
   def json_=(value: JValue) {
-    jv = value; flush()
+    jv = value;
+    flush()
   }
 
   def close() = log.close()

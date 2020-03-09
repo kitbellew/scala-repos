@@ -59,7 +59,9 @@ private[repl] class SparkJLineReader(_completion: => Completion)
     }
     def eraseLine() = consoleReader.resetPromptLine("", "", 0)
     def redrawLineAndFlush(): Unit = {
-      flush(); drawLine(); flush()
+      flush();
+      drawLine();
+      flush()
     }
     // override def readLine(prompt: String): String
 

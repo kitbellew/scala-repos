@@ -45,7 +45,8 @@ object O3
 object O6
     extends C({
       val x = "".toString
-      F.byname(x); F.hof(() => x);
+      F.byname(x);
+      F.hof(() => x);
       (new {
         val xx = x
       }.xx)
@@ -79,7 +80,8 @@ class C4
 class C6
     extends C({
       val x = "".toString
-      F.byname(x); F.hof(() => x);
+      F.byname(x);
+      F.hof(() => x);
       (new {
         val xx = x
       }.xx)

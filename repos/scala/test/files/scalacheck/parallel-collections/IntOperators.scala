@@ -33,7 +33,8 @@ trait IntOperators extends Operators[Int] {
         case x => -x
       },
       {
-        case 0 => -1; case x if x > 0 => x + 1
+        case 0          => -1;
+        case x if x > 0 => x + 1
       },
       {
         case x if x % 3 == 0 => x / 3

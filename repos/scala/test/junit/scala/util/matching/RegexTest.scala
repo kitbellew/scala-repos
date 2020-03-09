@@ -31,7 +31,8 @@ class RegexTest {
     val r = """\d+""".r
     val s: String = null
     val x = s match {
-      case r() => 1; case _ => 2
+      case r() => 1;
+      case _   => 2
     }
     assertEquals(2, x)
   }

@@ -3,7 +3,8 @@ object Test {
     Console.print("A");
     val x: Int;
     val y: Int = {
-      Console.print("y"); x + 1
+      Console.print("y");
+      x + 1
     }
   }
   class B extends A {

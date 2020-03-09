@@ -63,7 +63,8 @@ object EU extends CurrencyZone {
   type Currency = EUR
   var locale = Locale.GERMANY // guess this is why its a var
   def make(x: BigDecimal) = new Currency {
-    def amount = x; override val _locale = locale
+    def amount = x;
+    override val _locale = locale
   }
   abstract class EUR extends AbstractCurrency("EUR") with TwoFractionDigits {
     def currencySymbol = "€"

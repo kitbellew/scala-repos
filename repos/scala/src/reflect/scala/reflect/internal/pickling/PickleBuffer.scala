@@ -94,7 +94,9 @@ class PickleBuffer(data: Array[Byte], from: Int, to: Int) {
 
   /** Read a byte */
   def readByte(): Int = {
-    val x = bytes(readIndex).toInt; readIndex += 1; x
+    val x = bytes(readIndex).toInt;
+    readIndex += 1;
+    x
   }
 
   /** Read a natural number in big endian format, base 128.
@@ -129,7 +131,8 @@ class PickleBuffer(data: Array[Byte], from: Int, to: Int) {
   def toIndexedSeq: IndexedSeq[(Int, Array[Byte])] = {
     val saved = readIndex
     readIndex = 0
-    readNat(); readNat() // discarding version
+    readNat();
+    readNat() // discarding version
     val result = new Array[(Int, Array[Byte])](readNat())
 
     result.indices foreach { index =>

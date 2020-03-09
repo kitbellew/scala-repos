@@ -99,9 +99,15 @@ object TerminateJson {
         val c = buf.get()
 
         def anyValue(): Boolean = c match {
-          case '"'                  => stack.push(CloseString); true
-          case '['                  => stack.push(CloseArray); true
-          case '{'                  => stack.push(CloseObject); true
+          case '"' =>
+            stack.push(CloseString);
+            true
+          case '[' =>
+            stack.push(CloseArray);
+            true
+          case '{' =>
+            stack.push(CloseObject);
+            true
           case s if isWhitespace(s) => false
           case c                    => true
         }

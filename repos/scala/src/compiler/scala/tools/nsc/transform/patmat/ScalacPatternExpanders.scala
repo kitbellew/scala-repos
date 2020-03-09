@@ -100,7 +100,9 @@ trait ScalacPatternExpanders {
           )
         }
         val expanded = getResult match {
-          case global.NoType                   => noGetError(); Nil
+          case global.NoType =>
+            noGetError();
+            Nil
           case rawGet if !hasSelectors(rawGet) => rawGet :: Nil
           case rawGet                          => typesOfSelectors(rawGet)
         }

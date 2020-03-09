@@ -197,8 +197,12 @@ abstract class MappedDate[T <: Mapper[T]](val fieldOwner: T)
 
   private def st(in: Box[Date]): Unit =
     in match {
-      case Full(d) => data.set(d); orgData.set(d)
-      case _       => data.set(null); orgData.set(null)
+      case Full(d) =>
+        data.set(d);
+        orgData.set(d)
+      case _ =>
+        data.set(null);
+        orgData.set(null)
     }
 
   def buildSetActualValue(

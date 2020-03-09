@@ -31,7 +31,8 @@ trait NeedsEarly {
 object Early extends {
   // Drops to this.getClass and is not ok...
   val x = {
-    object EarlyOk extends A[String]; EarlyOk
+    object EarlyOk extends A[String];
+    EarlyOk
   }
 } with NeedsEarly
 
@@ -48,8 +49,10 @@ object DoubleOk
 object Test extends App {
   B
   C.D
-  val e = new E {}; e.F
-  val g = new G; g.H
+  val e = new E {};
+  e.F
+  val g = new G;
+  g.H
 
   locally(HasX.x)
   // locally(Early.x) TODO sort out VerifyError in Early$.<init>

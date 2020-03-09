@@ -28,6 +28,7 @@ object Test extends App {
   // Owner stays the same and life is good again.
   //
   println(q"do ${
-    val x = 1; x
+    val x = 1;
+    x
   } while(true)")
 }

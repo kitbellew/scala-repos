@@ -182,7 +182,8 @@ final class StringBuilder(private val underlying: JavaStringBuilder)
   /** Appends the given Char to the end of the sequence.
     */
   def +=(x: Char): this.type = {
-    append(x); this
+    append(x);
+    this
   }
 
   /** Optimization.
@@ -200,7 +201,8 @@ final class StringBuilder(private val underlying: JavaStringBuilder)
   /** !!! This should create a new sequence.
     */
   def +(x: Char): this.type = {
-    +=(x); this
+    +=(x);
+    this
   }
 
   /** Appends the string representation of the given argument,
@@ -272,24 +274,30 @@ final class StringBuilder(private val underlying: JavaStringBuilder)
     *  @return     This StringBuilder.
     */
   def append(x: Boolean): StringBuilder = {
-    underlying append x; this
+    underlying append x;
+    this
   }
   def append(x: Byte): StringBuilder = append(x.toInt)
   def append(x: Short): StringBuilder = append(x.toInt)
   def append(x: Int): StringBuilder = {
-    underlying append x; this
+    underlying append x;
+    this
   }
   def append(x: Long): StringBuilder = {
-    underlying append x; this
+    underlying append x;
+    this
   }
   def append(x: Float): StringBuilder = {
-    underlying append x; this
+    underlying append x;
+    this
   }
   def append(x: Double): StringBuilder = {
-    underlying append x; this
+    underlying append x;
+    this
   }
   def append(x: Char): StringBuilder = {
-    underlying append x; this
+    underlying append x;
+    this
   }
 
   /** Remove a subsequence of Chars from this sequence, starting at the

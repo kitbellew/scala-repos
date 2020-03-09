@@ -218,7 +218,8 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
       extends JobQueryStateMonad {
     private val cancelled: AtomicBoolean = new AtomicBoolean()
     def abort(): Boolean = {
-      cancelled.set(true); true
+      cancelled.set(true);
+      true
     }
     def isCancelled() = cancelled.get()
     def hasExpired() = yggConfig.clock.now() isAfter expiresAt

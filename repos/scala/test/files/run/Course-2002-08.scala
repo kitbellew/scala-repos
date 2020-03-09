@@ -76,10 +76,14 @@ object M1 {
   }
 
   def test = {
-    test0; Console.println;
-    test1; Console.println;
-    test2; Console.println;
-    test3; Console.println;
+    test0;
+    Console.println;
+    test1;
+    Console.println;
+    test2;
+    Console.println;
+    test3;
+    Console.println;
   }
 }
 
@@ -89,14 +93,16 @@ object M2 {
 
   def While(condition: => Boolean)(command: => Unit): Unit =
     if (condition) {
-      command; While(condition)(command)
+      command;
+      While(condition)(command)
     } else {}
 
   def power(x: Double, exp: Int): Double = {
     var r = 1.0;
     var i = exp;
     While(i > 0) {
-      r = r * x; i = i - 1
+      r = r * x;
+      i = i - 1
     }
     r
   }
@@ -118,7 +124,8 @@ object M3 {
     var r = 1.0;
     var i = exp;
     while (i > 0) {
-      r = r * x; i = i - 1
+      r = r * x;
+      i = i - 1
     }
     r
   }
@@ -162,7 +169,8 @@ object M5 {
         actions.foreach(action => action());
       }
     def addAction(a: Action) = {
-      actions = a :: actions; a()
+      actions = a :: actions;
+      a()
     }
   }
 
@@ -540,7 +548,9 @@ abstract class BasicCircuitSimulator() extends Simulator() {
 abstract class CircuitSimulator() extends BasicCircuitSimulator() {
   def demux2(in: Wire, ctrl: List[Wire], out: List[Wire]): Unit = {
     val ctrlN = ctrl.map(w => {
-      val iw = new Wire(); inverter(w, iw); iw
+      val iw = new Wire();
+      inverter(w, iw);
+      iw
     });
     val w0 = new Wire();
     val w1 = new Wire();

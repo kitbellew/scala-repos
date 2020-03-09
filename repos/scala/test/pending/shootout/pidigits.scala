@@ -7,7 +7,8 @@
 
 object pidigits {
   def main(args: Array[String]): Unit = {
-    val N: Int = Integer.parseInt(args(0)); var i: Int = 10
+    val N: Int = Integer.parseInt(args(0));
+    var i: Int = 10
 
     while (i <= N) {
       System.out.println(pi_digits(10) + "\t:" + i)
@@ -34,13 +35,15 @@ object pidigits {
   }
 
   def pi_digits(c: Int): String = {
-    val r: StringBuffer = new StringBuffer(); var i: Int = 0
+    val r: StringBuffer = new StringBuffer();
+    var i: Int = 0
 
     while (i < c) {
       var y: BigInt = extract(Z, 3)
 
       while (y != extract(Z, 4)) {
-        K = K + 1; Z = compose(Z, Array(K, 4 * K + 2, 0, 2 * K + 1))
+        K = K + 1;
+        Z = compose(Z, Array(K, 4 * K + 2, 0, 2 * K + 1))
         y = extract(Z, 3)
       }
 
@@ -48,7 +51,8 @@ object pidigits {
 
       Z = compose(Array(10, y * (-10), 0, 1), Z)
 
-      r.append(y); i = i + 1;
+      r.append(y);
+      i = i + 1;
     }
 
     return r.toString()

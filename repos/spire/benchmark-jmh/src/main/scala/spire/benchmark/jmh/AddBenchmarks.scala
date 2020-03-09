@@ -18,7 +18,8 @@ class AddBenchmarks {
     var i = 0
     val len = data.length
     while (i < len) {
-      total = Ring[A].plus(total, data(i)); i += 1
+      total = Ring[A].plus(total, data(i));
+      i += 1
     }
     total
   }
@@ -28,7 +29,8 @@ class AddBenchmarks {
     var i = 0
     val len = data.length
     while (i < len) {
-      total = FastComplex.add(total, data(i)); i += 1
+      total = FastComplex.add(total, data(i));
+      i += 1
     }
     total
   }
@@ -40,7 +42,8 @@ class AddBenchmarks {
     var i = 0
     val len = data.length
     while (i < len) {
-      total += data(i); i += 1
+      total += data(i);
+      i += 1
     }
     total
   }
@@ -55,7 +58,8 @@ class AddBenchmarks {
     var i = 0
     val len = data.length
     while (i < len) {
-      total += data(i); i += 1
+      total += data(i);
+      i += 1
     }
     total
 
@@ -71,7 +75,8 @@ class AddBenchmarks {
     var i = 0
     val len = data.length
     while (i < len) {
-      total += data(i); i += 1
+      total += data(i);
+      i += 1
     }
     total
 
@@ -87,7 +92,8 @@ class AddBenchmarks {
     var i = 0
     val len = data.length
     while (i < len) {
-      total += data(i); i += 1
+      total += data(i);
+      i += 1
     }
     total
   }
@@ -102,7 +108,8 @@ class AddBenchmarks {
     var i = 0
     val len = data.length
     while (i < len) {
-      total += data(i); i += 1
+      total += data(i);
+      i += 1
     }
     total
   }
@@ -118,7 +125,8 @@ class AddBenchmarks {
     var i = 0
     val len = data.length
     while (i < len) {
-      total = FastComplex.add(total, data(i)); i += 1
+      total = FastComplex.add(total, data(i));
+      i += 1
     }
     total
   }

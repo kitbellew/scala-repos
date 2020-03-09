@@ -62,36 +62,45 @@ object Test1Test {
   def test(args: Array[String]): Unit = {
     {
       Console.print(10)
-    }; Console.println;
+    };
+    Console.println;
     // {System.out.print(11); java}.lang.System.out.println();
     // {System.out.print(12); java.lang}.System.out.println();
     // {System.out.print(13); java.lang.System}.out.println();
     {
-      Console.print(14); Console
+      Console.print(14);
+      Console
     }.println;
     {
-      Console.print(15); (() => Console.println): (() => Unit)
+      Console.print(15);
+      (() => Console.println): (() => Unit)
     } apply ();
     {
-      Console.print(16); Console.println
+      Console.print(16);
+      Console.println
     };
 
     {
       Console.print(20)
-    }; test1.bar.System.out.println();
+    };
+    test1.bar.System.out.println();
     // {System.out.print(21); test1}.bar.System.out.println();
     // {System.out.print(22); test1.bar}.System.out.println();
     {
-      Console.print(23); test1.bar.System
+      Console.print(23);
+      test1.bar.System
     }.out.println();
     {
-      Console.print(24); test1.bar.System.out
+      Console.print(24);
+      test1.bar.System.out
     }.println();
     {
-      Console.print(25); test1.bar.System.out.println: (() => Unit)
+      Console.print(25);
+      test1.bar.System.out.println: (() => Unit)
     } apply ();
     {
-      Console.print(26); test1.bar.System.out.println()
+      Console.print(26);
+      test1.bar.System.out.println()
     };
   }
 
@@ -108,25 +117,29 @@ package test2 {
 
   trait M0 extends A {
     override def run = {
-      super.run; Console.println("M0");
+      super.run;
+      Console.println("M0");
     }
   }
 
   class M1 extends M0 {
     override def run = {
-      super.run; Console.println("M1");
+      super.run;
+      Console.println("M1");
     }
   }
 
   trait N0 extends A {
     override def run = {
-      super.run; Console.println("N0");
+      super.run;
+      Console.println("N0");
     }
   }
 
   class N1 extends N0 {
     override def run = {
-      super.run; Console.println("N1");
+      super.run;
+      Console.println("N1");
     }
   }
 
@@ -139,10 +152,14 @@ package test2 {
 
 object Test2Test {
   def test(args: Array[String]): Unit = {
-    test2.M0N0.run; Console.println;
-    test2.N0M0.run; Console.println;
-    test2.M1N0.run; Console.println;
-    test2.N1M0.run; Console.println;
+    test2.M0N0.run;
+    Console.println;
+    test2.N0M0.run;
+    Console.println;
+    test2.M1N0.run;
+    Console.println;
+    test2.N1M0.run;
+    Console.println;
   }
 }
 

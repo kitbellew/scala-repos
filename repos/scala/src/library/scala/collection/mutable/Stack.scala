@@ -25,7 +25,8 @@ object Stack extends SeqFactory[Stack] {
   class StackBuilder[A] extends Builder[A, Stack[A]] {
     val lbuff = new ListBuffer[A]
     def +=(elem: A) = {
-      lbuff += elem; this
+      lbuff += elem;
+      this
     }
     def clear() = lbuff.clear()
     def result = new Stack(lbuff.result)
@@ -103,7 +104,8 @@ class Stack[A] private (var elems: List[A])
     *  @return the stack with the new element on top.
     */
   def push(elem: A): this.type = {
-    elems = elem :: elems; this
+    elems = elem :: elems;
+    this
   }
 
   /** Push two or more elements onto the stack. The last element
@@ -122,7 +124,8 @@ class Stack[A] private (var elems: List[A])
     *  @return the stack with the new elements on top.
     */
   def pushAll(xs: TraversableOnce[A]): this.type = {
-    xs foreach push; this
+    xs foreach push;
+    this
   }
 
   /** Returns the top element of the stack. This method will not remove

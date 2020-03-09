@@ -28,7 +28,8 @@ object StreamTest extends SpecLite {
   "Order[Stream[Int]] is lazy" ! {
     var evaluated = false
     val a = 1 #:: {
-      evaluated = true; 2
+      evaluated = true;
+      2
     } #:: Stream.empty[Int]
     val b = 0 #:: Stream.empty[Int]
     Order[Stream[Int]].order(a, b) must_=== Ordering.GT

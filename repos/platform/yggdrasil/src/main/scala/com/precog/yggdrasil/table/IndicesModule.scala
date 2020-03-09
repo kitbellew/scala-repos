@@ -153,7 +153,8 @@ trait IndicesModule[M[+_]]
         stream.uncons flatMap {
           case None => M.point(new TableIndex(buf.toList))
           case Some((si, tail)) => {
-            buf += si; accumulate(buf, tail)
+            buf += si;
+            accumulate(buf, tail)
           }
         }
 

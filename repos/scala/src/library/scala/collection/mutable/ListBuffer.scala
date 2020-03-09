@@ -71,7 +71,8 @@ final class ListBuffer[A]
     // write start
     var xs: List[A] = start
     while (!xs.isEmpty) {
-      out.writeObject(xs.head); xs = xs.tail
+      out.writeObject(xs.head);
+      xs = xs.tail
     }
     out.writeObject(ListSerializeEnd)
 

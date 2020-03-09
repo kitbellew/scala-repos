@@ -282,7 +282,8 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
         this.prevScreen
       })), // prevId: Box[(String, () => Unit)],
       cancelId -> (() => {
-        WizardRules.deregisterWizardSession(CurrentSession.is); redirectBack()
+        WizardRules.deregisterWizardSession(CurrentSession.is);
+        redirectBack()
       }), //cancelId: (String, () => Unit),
       theScreen,
       ajaxForms_?

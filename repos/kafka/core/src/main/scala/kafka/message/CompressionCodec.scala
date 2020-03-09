@@ -73,7 +73,8 @@ object BrokerCompressionCodec {
 }
 
 sealed trait CompressionCodec {
-  def codec: Int; def name: String
+  def codec: Int;
+  def name: String
 }
 sealed trait BrokerCompressionCodec {
   def name: String

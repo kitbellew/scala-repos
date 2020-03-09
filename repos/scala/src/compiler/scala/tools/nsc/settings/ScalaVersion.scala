@@ -110,7 +110,9 @@ object ScalaVersion {
           toInt(minorS),
           toInt(revS),
           toBuild(buildS))
-      case _ => error(); AnyScalaVersion
+      case _ =>
+        error();
+        AnyScalaVersion
     }
   }
 

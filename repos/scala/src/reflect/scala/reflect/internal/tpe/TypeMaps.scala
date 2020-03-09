@@ -107,7 +107,8 @@ private[internal] trait TypeMaps {
       if (trackVariance) Covariant else Invariant
 
     def variance_=(x: Variance) = {
-      assert(trackVariance, this); _variance = x
+      assert(trackVariance, this);
+      _variance = x
     }
     def variance = _variance
 
@@ -316,7 +317,8 @@ private[internal] trait TypeMaps {
   abstract class TypeTraverser extends TypeMap {
     def traverse(tp: Type): Unit
     def apply(tp: Type): Type = {
-      traverse(tp); tp
+      traverse(tp);
+      tp
     }
   }
 
@@ -655,7 +657,8 @@ private[internal] trait TypeMaps {
             case applied @ TypeRef(_, _, _) =>
               correspondingTypeArgument(classParam, applied)
             case ExistentialType(eparams, qtpe) =>
-              captureSkolems(eparams); loop(qtpe, clazz)
+              captureSkolems(eparams);
+              loop(qtpe, clazz)
             case t =>
               abort(
                 s"$tparam in ${tparam.owner} cannot be instantiated from ${seenFromPrefix.widen}")

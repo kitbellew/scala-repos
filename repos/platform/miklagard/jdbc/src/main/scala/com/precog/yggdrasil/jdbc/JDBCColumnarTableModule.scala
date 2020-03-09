@@ -256,7 +256,8 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                       .split(",|=>")
                       .toList
                       .map { v =>
-                        val t = v.trim; t.substring(1, t.length - 1)
+                        val t = v.trim;
+                        t.substring(1, t.length - 1)
                       }
                       .grouped(2)
                       .foreach {

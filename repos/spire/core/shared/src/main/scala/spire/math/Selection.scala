@@ -99,10 +99,15 @@ trait SelectLike extends Any with Select {
     while (i < right) {
       val cmp = o.compare(data(i), m)
       if (cmp < 0) {
-        t = data(i); data(i) = data(j); data(j) = t
+        t = data(i);
+        data(i) = data(j);
+        data(j) = t
         j += stride
       } else if (cmp == 0) {
-        t = data(i); data(i) = data(j); data(j) = data(k); data(k) = t
+        t = data(i);
+        data(i) = data(j);
+        data(j) = data(k);
+        data(k) = t
         k += stride
         j += stride
       }
@@ -133,15 +138,21 @@ trait MutatingMedianOf5 {
     var t = i0
 
     if (o.gt(data(i3), data(i4))) {
-      t = i3; i3 = i4; i4 = t
+      t = i3;
+      i3 = i4;
+      i4 = t
     }
     if (o.gt(data(i1), data(i2))) {
-      t = i1; i1 = i2; i2 = t
+      t = i1;
+      i1 = i2;
+      i2 = t
     }
     val i = if (o.lt(data(i4), data(i2))) {
       // Ignore 2. 3 < 4.
       if (o.lt(data(i1), data(i0))) {
-        t = i0; i0 = i1; i1 = t
+        t = i0;
+        i0 = i1;
+        i1 = t
       }
       if (o.lt(data(i4), data(i1))) {
         // Ignore 1. 3 < 4
@@ -153,7 +164,9 @@ trait MutatingMedianOf5 {
     } else {
       // Ignore 4. 1 < 2.
       if (o.lt(data(i3), data(i0))) {
-        t = i0; i0 = i3; i3 = t
+        t = i0;
+        i0 = i3;
+        i3 = t
       }
       if (o.lt(data(i3), data(i2))) {
         // Ignore 2. 0 < 3

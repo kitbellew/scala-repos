@@ -332,7 +332,9 @@ abstract class ScTypeDefinitionImpl protected (
           })
       case p: ScPackaging =>
         _packageName(p, ".", (s) => k(s + p.getPackageName + "."))
-      case f: ScalaFile              => val pn = ""; k(if (pn.length > 0) pn + "." else "")
+      case f: ScalaFile =>
+        val pn = "";
+        k(if (pn.length > 0) pn + "." else "")
       case _: PsiFile | null         => k("")
       case _: ScBlock                => k("")
       case parent: ScTemplateBody    => _packageName(parent, sep, k)

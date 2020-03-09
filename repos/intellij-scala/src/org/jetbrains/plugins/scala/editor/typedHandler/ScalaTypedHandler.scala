@@ -93,7 +93,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
                  case i: PsiElement
                      if !ScalaNamesUtil.isOperatorName(
                        i.getText) && i.getText != "=" =>
-                   c == '>' || c == '/'; case _       => false
+                   c == '>' || c == '/';
+                 case _ => false
                }) {
       chooseXmlTask(withAttr = false)
     } else if (element.getPrevSibling != null && element.getPrevSibling.getNode.getElementType == ScalaElementTypes.CASE_CLAUSES) {

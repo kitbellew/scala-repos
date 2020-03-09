@@ -8,7 +8,8 @@ class Test {
     // okay
     byNameFunc(z => z.apply())
     byNameFunc(z => {
-      val f = z; f()
+      val f = z;
+      f()
     })
   }
 }

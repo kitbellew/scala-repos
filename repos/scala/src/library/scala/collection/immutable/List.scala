@@ -215,7 +215,8 @@ sealed abstract class List[+A]
       var rest = tail
       var i = 1
       while ({
-        if (rest.isEmpty) return this; i < n
+        if (rest.isEmpty) return this;
+        i < n
       }) {
         i += 1
         val nx = new ::(rest.head, Nil)

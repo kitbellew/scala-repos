@@ -17,9 +17,21 @@ abstract class C() {
   def fz(a: z.t): Unit;
   def fu(a: u.t): Unit;
 
-  fx(xt); fx(yt); fx(zt); fx(ut);
-  fy(xt); fy(yt); fy(zt); fy(ut);
-  fz(xt); fz(yt); fz(zt); fz(ut);
-  fu(xt); fu(yt); fu(zt); fu(ut);
+  fx(xt);
+  fx(yt);
+  fx(zt);
+  fx(ut);
+  fy(xt);
+  fy(yt);
+  fy(zt);
+  fy(ut);
+  fz(xt);
+  fz(yt);
+  fz(zt);
+  fz(ut);
+  fu(xt);
+  fu(yt);
+  fu(zt);
+  fu(ut);
 
 }

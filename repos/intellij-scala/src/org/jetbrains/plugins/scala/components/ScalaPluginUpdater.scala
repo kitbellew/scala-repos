@@ -234,7 +234,9 @@ object ScalaPluginUpdater {
                     .loadDocument(request.getInputStream)
                     .detachRootElement))
             } catch {
-              case e: JDOMException => LOG.info(e); None
+              case e: JDOMException =>
+                LOG.info(e);
+                None
             }
           }
         })

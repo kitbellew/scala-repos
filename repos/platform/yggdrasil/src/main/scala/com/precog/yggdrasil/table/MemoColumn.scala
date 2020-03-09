@@ -28,7 +28,8 @@ class MemoBoolColumn(c: BoolColumn) extends BoolColumn {
   def isDefinedAt(row: Int) = c.isDefinedAt(row)
   def apply(row: Int) = {
     if (row != row0) {
-      row0 = row; memo = c(row)
+      row0 = row;
+      memo = c(row)
     }
     memo
   }
@@ -40,7 +41,8 @@ class MemoLongColumn(c: LongColumn) extends LongColumn {
   def isDefinedAt(row: Int) = c.isDefinedAt(row)
   def apply(row: Int) = {
     if (row != row0) {
-      row0 = row; memo = c(row)
+      row0 = row;
+      memo = c(row)
     }
     memo
   }
@@ -52,7 +54,8 @@ class MemoDoubleColumn(c: DoubleColumn) extends DoubleColumn {
   def isDefinedAt(row: Int) = c.isDefinedAt(row)
   def apply(row: Int) = {
     if (row != row0) {
-      row0 = row; memo = c(row)
+      row0 = row;
+      memo = c(row)
     }
     memo
   }
@@ -64,7 +67,8 @@ class MemoNumColumn(c: NumColumn) extends NumColumn {
   def isDefinedAt(row: Int) = c.isDefinedAt(row)
   def apply(row: Int) = {
     if (row != row0) {
-      row0 = row; memo = c(row)
+      row0 = row;
+      memo = c(row)
     }
     memo
   }
@@ -76,7 +80,8 @@ class MemoStrColumn(c: StrColumn) extends StrColumn {
   def isDefinedAt(row: Int) = c.isDefinedAt(row)
   def apply(row: Int) = {
     if (row != row0) {
-      row0 = row; memo = c(row)
+      row0 = row;
+      memo = c(row)
     }
     memo
   }
@@ -88,7 +93,8 @@ class MemoDateColumn(c: DateColumn) extends DateColumn {
   def isDefinedAt(row: Int) = c.isDefinedAt(row)
   def apply(row: Int) = {
     if (row != row0) {
-      row0 = row; memo = c(row)
+      row0 = row;
+      memo = c(row)
     }
     memo
   }

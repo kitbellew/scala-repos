@@ -511,7 +511,8 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
     def whereOrAnd =
       if (wav) " AND "
       else {
-        wav = true; " WHERE "
+        wav = true;
+        " WHERE "
       }
 
     class DBFuncWrapper(dbFunc: Box[String]) {
@@ -723,12 +724,14 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
     val tmp = _addOrdering(in, params)
     val max = params.foldRight(Empty.asInstanceOf[Box[Long]]) { (a, b) =>
       a match {
-        case MaxRows(n) => Full(n); case _ => b
+        case MaxRows(n) => Full(n);
+        case _          => b
       }
     }
     val start = params.foldRight(Empty.asInstanceOf[Box[Long]]) { (a, b) =>
       a match {
-        case StartAt(n) => Full(n); case _ => b
+        case StartAt(n) => Full(n);
+        case _          => b
       }
     }
 
@@ -2066,7 +2069,8 @@ object NotIn {
 
       val queryParams: List[QueryParam[InnerMapper]] =
         qp.map { v =>
-          val r: QueryParam[InnerMapper] = v; r
+          val r: QueryParam[InnerMapper] = v;
+          r
         }.toList
     }
   }
@@ -2092,7 +2096,8 @@ object NotIn {
 
       val queryParams: List[QueryParam[InnerMapper]] = {
         qp.map { v =>
-          val r: QueryParam[InnerMapper] = v; r
+          val r: QueryParam[InnerMapper] = v;
+          r
         }.toList
       }
     }
@@ -2120,7 +2125,8 @@ object In {
 
       val queryParams: List[QueryParam[InnerMapper]] =
         qp.map { v =>
-          val r: QueryParam[InnerMapper] = v; r
+          val r: QueryParam[InnerMapper] = v;
+          r
         }.toList
     }
   }
@@ -2146,7 +2152,8 @@ object In {
 
       val queryParams: List[QueryParam[InnerMapper]] = {
         qp.map { v =>
-          val r: QueryParam[InnerMapper] = v; r
+          val r: QueryParam[InnerMapper] = v;
+          r
         }.toList
       }
     }

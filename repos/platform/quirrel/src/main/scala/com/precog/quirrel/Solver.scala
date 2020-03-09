@@ -250,7 +250,8 @@ trait Solver extends parser.AST with typer.Binder {
           case (acc, (f, trace)) =>
             e =>
               acc(e) orElse (f(e) map { e2 =>
-                printTrace(trace); e2
+                printTrace(trace);
+                e2
               })
         }
       } else if (inLeft && !inRight) {

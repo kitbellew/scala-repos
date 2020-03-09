@@ -163,7 +163,8 @@ class AsyncRDDActionsSuite
     val f = sc
       .parallelize(1 to 10, 2)
       .map { i =>
-        throw new Exception("intentional"); i
+        throw new Exception("intentional");
+        i
       }
       .countAsync()
 
@@ -218,7 +219,8 @@ class AsyncRDDActionsSuite
     val f = sc
       .parallelize(1 to 100, 4)
       .mapPartitions(itr => {
-        Thread.sleep(20); itr
+        Thread.sleep(20);
+        itr
       })
       .countAsync()
     intercept[TimeoutException] {
@@ -237,7 +239,8 @@ class AsyncRDDActionsSuite
     val starter = Smuggle(new Semaphore(0))
     starter.drainPermits()
     val rdd = sc.parallelize(1 to 100, 4).mapPartitions { itr =>
-      starter.acquire(1); itr
+      starter.acquire(1);
+      itr
     }
     val f = action(rdd)
     f.onComplete(_ => ())(fakeExecutionContext)

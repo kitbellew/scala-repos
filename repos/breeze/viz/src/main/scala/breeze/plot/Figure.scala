@@ -122,7 +122,8 @@ class Figure(
         contents.setLayout(new java.awt.GridLayout(rows, cols))
         for (plot <- plots) {
           contents.add(plot match {
-            case Some(plot) => plot.panel; case None => new JPanel()
+            case Some(plot) => plot.panel;
+            case None       => new JPanel()
           })
         }
         frame.setSize(width_, height_)
@@ -136,7 +137,8 @@ class Figure(
   def drawPlots(g2d: Graphics2D) {
     val plotWidth = contents.getWidth / cols
     val plotHeight = contents.getHeight / rows
-    var px = 0; var py = 0
+    var px = 0;
+    var py = 0
     for (opt <- plots) {
       opt match {
         case Some(plot) =>

@@ -24,7 +24,11 @@ class TestMacroHygiene {
   // TODO - We should also make sure we can compile List's w/ hygiene, which I think is broken right now.
   def hygiene(): Any = {
     val scala, Any, String, FastTypeTag, Unit = ()
-    trait scala; trait Any; trait String; trait FastTypeTag; trait Unit;
+    trait scala;
+    trait Any;
+    trait String;
+    trait FastTypeTag;
+    trait Unit;
     implicit val hgt = PicklerUnpickler.generate[HygieneTester]
     HygieneTester(Option(false), Seq("hi")).pickle.unpickle[HygieneTester]
   }

@@ -187,7 +187,8 @@ private object PoolSlot {
 
       case FromConnection(Cancel) ⇒
         if (!isActive) {
-          cancel(); shutdown()
+          cancel();
+          shutdown()
         } // else ignore and wait for accompanying OnComplete or OnError
       case FromConnection(OnComplete) ⇒
         handleDisconnect(sender(), None, Some(firstRequest))
@@ -207,7 +208,8 @@ private object PoolSlot {
       case FromConnection(Request(n)) ⇒ request(n)
       case FromConnection(Cancel) ⇒
         if (!isActive) {
-          cancel(); shutdown()
+          cancel();
+          shutdown()
         } // else ignore and wait for accompanying OnComplete or OnError
 
       case FromConnection(OnNext(response: HttpResponse)) ⇒

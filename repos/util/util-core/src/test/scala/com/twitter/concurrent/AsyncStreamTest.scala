@@ -29,7 +29,8 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("lazy tail") {
     var forced = false
     val s = () +:: {
-      forced = true; AsyncStream.empty[Unit]
+      forced = true;
+      AsyncStream.empty[Unit]
     }
     assert(await(s.head) == Some(()))
     assert(!forced)
@@ -39,7 +40,8 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
     var forced1 = false
     val t = mk(
       (), {
-        forced1 = true; AsyncStream.empty[Unit]
+        forced1 = true;
+        AsyncStream.empty[Unit]
       })
     assert(await(t.head) == Some(()))
     assert(!forced1)
@@ -60,7 +62,8 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
     def isForced(f: AsyncStream[_] => Future[_]): Unit = {
       var forced = false
       Await.ready(f(() +:: {
-        forced = true; AsyncStream.empty
+        forced = true;
+        AsyncStream.empty
       }))
       assert(forced)
     }
@@ -98,10 +101,12 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
     val y = new Promise[Unit]
 
     def f() = {
-      x.setDone(); ()
+      x.setDone();
+      ()
     }
     def g() = {
-      y.setDone(); ()
+      y.setDone();
+      ()
     }
 
     val s = () +:: f() +:: g() +:: AsyncStream.empty[Unit]
@@ -414,11 +419,13 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
       case (items, n) =>
         var forced1 = false
         val stream1 = fromSeq(items) ++ {
-          forced1 = true; AsyncStream.empty[Char]
+          forced1 = true;
+          AsyncStream.empty[Char]
         }
         var forced2 = false
         val stream2 = fromSeq(items) ++ {
-          forced2 = true; AsyncStream.empty[Char]
+          forced2 = true;
+          AsyncStream.empty[Char]
         }
 
         val takeResult = toSeq(stream2.take(n))
@@ -486,7 +493,8 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
       case (items, groupSize) =>
         var forced = false
         val stream: AsyncStream[Char] = fromSeq(items) ++ {
-          forced = true; AsyncStream.empty
+          forced = true;
+          AsyncStream.empty
         }
 
         val expected = items.grouped(groupSize).toSeq.headOption
@@ -669,7 +677,8 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
       val p = new Promise[Unit]
       // The promise will be defined iff the tail is forced.
       val s = AsyncStream.fromSeq(xs) ++ {
-        p.setDone(); AsyncStream.empty
+        p.setDone();
+        AsyncStream.empty
       }
 
       // If the input is empty, then the tail will be forced right away.

@@ -5,7 +5,8 @@ object Test extends App {
   class C {
     type D
     trait E {
-      type T >: B <: A; val x: T
+      type T >: B <: A;
+      val x: T
     }
     // This is currently correctly disallowed
     // val y : (D with E)#T = y

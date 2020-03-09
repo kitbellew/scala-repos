@@ -98,7 +98,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
       val reused = new mutable.HashMap[TreeMaker, ReusedCondTreeMaker]
       var okToCall = false
       val reusedOrOrig = (tm: TreeMaker) => {
-        assert(okToCall); reused.getOrElse(tm, tm)
+        assert(okToCall);
+        reused.getOrElse(tm, tm)
       }
 
       // maybe collapse: replace shared prefix of tree makers by a ReusingCondTreeMaker
@@ -119,7 +120,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
         val collapsedTreeMakers =
           if (sharedPrefix.isEmpty) None
           else { // even sharing prefixes of length 1 brings some benefit (overhead-percentage for compiler: 26->24%, lib: 19->16%)
-            for (test <- sharedPrefix; reusedTest <- test.reuses)
+            for (test <- sharedPrefix;
+                 reusedTest <- test.reuses)
               reusedTest.treeMaker match {
                 case reusedCTM: CondTreeMaker =>
                   reused(reusedCTM) = ReusedCondTreeMaker(reusedCTM)

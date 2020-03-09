@@ -63,9 +63,7 @@ class ConstraintPropagationSuite extends SparkFunSuite {
         .isEmpty)
 
     verifyConstraints(
-      tr.where('a.attr > 10)
-        .analyze
-        .constraints,
+      tr.where('a.attr > 10).analyze.constraints,
       ExpressionSet(
         Seq(resolveColumn(tr, "a") > 10, IsNotNull(resolveColumn(tr, "a")))))
 
@@ -299,9 +297,7 @@ class ConstraintPropagationSuite extends SparkFunSuite {
     val tr = LocalRelation('a.int, 'b.int, 'c.int)
 
     verifyConstraints(
-      tr.where('a.attr > 10 && 'a.attr === 'b.attr)
-        .analyze
-        .constraints,
+      tr.where('a.attr > 10 && 'a.attr === 'b.attr).analyze.constraints,
       ExpressionSet(
         Seq(
           resolveColumn(tr, "a") > 10,

@@ -59,7 +59,8 @@ private[internal] trait GlbLubs {
     else {
       val sym = ts.head.typeSymbol
       require(ts.tail forall (_.typeSymbol == sym), ts)
-      for (p <- sym.typeParams; in <- sym.typeParams;
+      for (p <- sym.typeParams;
+           in <- sym.typeParams;
            if in.info.bounds contains p) yield p -> in
     }
   }
@@ -77,7 +78,8 @@ private[internal] trait GlbLubs {
     isRecursive && (transposeSafe(tsElimSub map (_.normalize.typeArgs)) match {
       case Some(arggsTransposed) =>
         val mergedTypeArgs = (tp match {
-          case et: ExistentialType => et.underlying; case _ => tp
+          case et: ExistentialType => et.underlying;
+          case _                   => tp
         }).typeArgs
         exists3(typeSym.typeParams, mergedTypeArgs, arggsTransposed) {
           (param, arg, lubbedArgs) =>
@@ -587,7 +589,8 @@ private[internal] trait GlbLubs {
               try {
                 globalGlbDepth = globalGlbDepth.incr
                 val dss = ts flatMap refinedToDecls
-                for (ds <- dss; sym <- ds.iterator)
+                for (ds <- dss;
+                     sym <- ds.iterator)
                   if (globalGlbDepth < globalGlbLimit && !specializesSym(
                         glbThisType,
                         sym,

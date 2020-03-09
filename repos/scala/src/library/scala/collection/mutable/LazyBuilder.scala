@@ -25,10 +25,12 @@ abstract class LazyBuilder[Elem, +To] extends ReusableBuilder[Elem, To] {
   /** The different segments of elements to be added to the builder, represented as iterators */
   protected var parts = new ListBuffer[TraversableOnce[Elem]]
   def +=(x: Elem): this.type = {
-    parts += List(x); this
+    parts += List(x);
+    this
   }
   override def ++=(xs: TraversableOnce[Elem]): this.type = {
-    parts += xs; this
+    parts += xs;
+    this
   }
   def result(): To
   def clear() {

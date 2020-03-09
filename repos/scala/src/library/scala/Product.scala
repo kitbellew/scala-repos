@@ -42,7 +42,9 @@ trait Product extends Any with Equals {
       private val cmax = productArity
       def hasNext = c < cmax
       def next() = {
-        val result = productElement(c); c += 1; result
+        val result = productElement(c);
+        c += 1;
+        result
       }
     }
 

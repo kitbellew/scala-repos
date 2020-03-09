@@ -267,7 +267,8 @@ abstract class SymbolPairs {
         if (nextEntry ne null) {
           val high = nextEntry.sym
           val isMatch = matches(lowSymbol, high) && {
-            visited addEntry nextEntry; true
+            visited addEntry nextEntry;
+            true
           } // side-effect visited on all matches
 
           // skip nextEntry if a class in `parents` is a subclass of the

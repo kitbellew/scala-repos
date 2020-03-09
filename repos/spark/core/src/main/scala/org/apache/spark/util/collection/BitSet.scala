@@ -50,7 +50,8 @@ class BitSet(numBits: Int) extends Serializable {
     val wordIndex = bitIndex >> 6 // divide by 64
     var i = 0
     while (i < wordIndex) {
-      words(i) = -1; i += 1
+      words(i) = -1;
+      i += 1
     }
     if (wordIndex < words.length) {
       // Set the remaining bits (note that the mask could still be zero)

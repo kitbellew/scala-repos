@@ -14,7 +14,8 @@ object Test extends MemoryTest {
     import scala.reflect.runtime.universe._
     def foo = {
       class A {
-        def x = 2; def y: A = new A
+        def x = 2;
+        def y: A = new A
       }
       weakTypeOf[A {
         def z: Int

@@ -145,7 +145,8 @@ object Ticket522 {
       new InternalApply[Y, Z](fun, arg)
 
     def unapply[X](arg: Term[X]): Option[(Y => Z, Y)] forSome {
-      type Y; type Z
+      type Y;
+      type Z
     } =
       arg match {
         case i: InternalApply[y, z] => Some(i.fun, i.arg)

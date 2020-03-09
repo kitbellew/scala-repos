@@ -72,10 +72,12 @@ sealed class TreeMap[A, B] private (tree: RB.Tree[A, B])(
     new TreeMapView(from, until)
 
   def -=(key: A): this.type = {
-    RB.delete(tree, key); this
+    RB.delete(tree, key);
+    this
   }
   def +=(kv: (A, B)): this.type = {
-    RB.insert(tree, kv._1, kv._2); this
+    RB.insert(tree, kv._1, kv._2);
+    this
   }
 
   def get(key: A) = RB.get(tree, key)
@@ -99,7 +101,8 @@ sealed class TreeMap[A, B] private (tree: RB.Tree[A, B])(
 
   override def foreach[U](f: ((A, B)) => U): Unit = RB.foreach(tree, f)
   override def transform(f: (A, B) => B) = {
-    RB.transform(tree, f); this
+    RB.transform(tree, f);
+    this
   }
   override def clear(): Unit = RB.clear(tree)
 

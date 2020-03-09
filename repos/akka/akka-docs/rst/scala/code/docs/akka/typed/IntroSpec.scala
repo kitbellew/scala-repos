@@ -96,7 +96,8 @@ class IntroSpec extends TypedSpec {
         case ex => ex.getMessage
       }
       done <- {
-        println(s"result: $greeting"); system.terminate()
+        println(s"result: $greeting");
+        system.terminate()
       }
     } println("system terminated")
     //#hello-world

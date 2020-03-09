@@ -22,7 +22,8 @@ object SCL4662 {
           Some(lookAtMe.reflectMethod(e))
         } catch {
           case e: Throwable =>
-            e.printStackTrace(); None
+            e.printStackTrace();
+            None
         }) /*end*/
     }
   }

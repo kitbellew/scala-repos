@@ -34,7 +34,8 @@ object Test extends Properties("reflection extractors") {
     DEFAULTINIT
   )
   val genModifiers =
-    for (flag <- genFlag; privateWithin <- genName)
+    for (flag <- genFlag;
+         privateWithin <- genName)
       yield Modifiers(flag, privateWithin, Nil)
   val genTermName = for (name <- arbitrary[String]) yield TermName(name)
   val genTypeName = for (name <- arbitrary[String]) yield TypeName(name)

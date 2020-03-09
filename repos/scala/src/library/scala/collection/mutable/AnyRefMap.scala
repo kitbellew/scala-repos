@@ -82,7 +82,12 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
       kz: Array[AnyRef],
       vz: Array[AnyRef]
   ) {
-    mask = m; _size = sz; _vacant = vc; _hashes = hz; _keys = kz; _values = vz
+    mask = m;
+    _size = sz;
+    _vacant = vc;
+    _hashes = hz;
+    _keys = kz;
+    _values = vz
   }
 
   override def size: Int = _size
@@ -107,10 +112,12 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
     var x = 0
     var g = 0
     while ({
-      g = _hashes(e); g != 0
+      g = _hashes(e);
+      g != 0
     }) {
       if (g == h && {
-            val q = _keys(e); (q eq k) || ((q ne null) && (q equals k))
+            val q = _keys(e);
+            (q eq k) || ((q ne null) && (q equals k))
           }) return e
       x += 1
       e = (e + 2 * (x + 1) * x - 3) & mask
@@ -124,10 +131,12 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
     var g = 0
     var o = -1
     while ({
-      g = _hashes(e); g != 0
+      g = _hashes(e);
+      g != 0
     }) {
       if (g == h && {
-            val q = _keys(e); (q eq k) || ((q ne null) && (q equals k))
+            val q = _keys(e);
+            (q eq k) || ((q ne null) && (q equals k))
           }) return e
       else if (o == -1 && g + g == 0) o = e
       x += 1
@@ -218,7 +227,8 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
         var e = h & mask
         var x = 0
         while (_hashes(e) != 0) {
-          x += 1; e = (e + 2 * (x + 1) * x - 3) & mask
+          x += 1;
+          e = (e + 2 * (x + 1) * x - 3) & mask
         }
         _hashes(e) = h
         _keys(e) = ok(i)
@@ -291,11 +301,13 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
 
   /** Adds a new key/value pair to this map and returns the map. */
   def +=(key: K, value: V): this.type = {
-    update(key, value); this
+    update(key, value);
+    this
   }
 
   def +=(kv: (K, V)): this.type = {
-    update(kv._1, kv._2); this
+    update(kv._1, kv._2);
+    this
   }
 
   def -=(key: K): this.type = {
@@ -341,7 +353,8 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
     var e = _size
     while (e > 0) {
       while (i < _hashes.length && {
-               val h = _hashes(i); h + h == 0 && i < _hashes.length
+               val h = _hashes(i);
+               h + h == 0 && i < _hashes.length
              }) i += 1
       if (i < _hashes.length) {
         f((_keys(i).asInstanceOf[K], _values(i).asInstanceOf[V]))
@@ -502,7 +515,8 @@ object AnyRefMap {
     val arm = new AnyRefMap[K, V](sz * 2)
     var i = 0
     while (i < sz) {
-      arm(keys(i)) = values(i); i += 1
+      arm(keys(i)) = values(i);
+      i += 1
     }
     if (arm.size < (sz >> 3)) arm.repack()
     arm

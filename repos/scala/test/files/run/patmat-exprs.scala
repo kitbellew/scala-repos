@@ -202,7 +202,8 @@ trait Pattern {
     private def reduceComponents(components: List[Expr[T]])(
         implicit num: NumericOps[T]): List[Expr[T]] = {
       val pairs =
-        for (a <- components; b <- components if Neg(a) == b || a == Neg(b))
+        for (a <- components;
+             b <- components if Neg(a) == b || a == Neg(b))
           yield (a, b)
       pairs.foldLeft(components) { (c, pair) =>
         if (c.contains(pair._1) && c.contains(pair._2))
@@ -229,7 +230,8 @@ trait Pattern {
         case Add(x) => {
           val noZeros = x.filter(_ != Zero[T])
           val noOnes = noZeros.map {
-            case y: One[_] => Const(num.one); case y => y
+            case y: One[_] => Const(num.one);
+            case y         => y
           }
           val constant = num.sum(noOnes.collect {
             case c: Const[T] => c.value

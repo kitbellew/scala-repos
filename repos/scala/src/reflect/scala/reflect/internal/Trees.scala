@@ -61,7 +61,8 @@ trait Trees extends api.Trees {
 
     def clearType(): this.type = this setType null
     def setType(tp: Type): this.type = {
-      rawtpe = tp; this
+      rawtpe = tp;
+      this
     }
     def defineType(tp: Type): this.type = setType(tp)
 
@@ -72,7 +73,8 @@ trait Trees extends api.Trees {
         "symbol_= inapplicable for " + this)
     }
     def setSymbol(sym: Symbol): this.type = {
-      symbol = sym; this
+      symbol = sym;
+      this
     }
     def hasSymbolField = false
     @deprecated("Use hasSymbolField", "2.11.0") def hasSymbol = hasSymbolField
@@ -714,7 +716,8 @@ trait Trees extends api.Trees {
         case t            => t
       }
 
-      orig = followOriginal(tree); setPos(tree.pos)
+      orig = followOriginal(tree);
+      setPos(tree.pos)
       this
     }
 
@@ -1163,7 +1166,8 @@ trait Trees extends api.Trees {
     var positions: Map[Long, Position] = Map()
 
     def setPositions(poss: Map[Long, Position]): this.type = {
-      positions = poss; this
+      positions = poss;
+      this
     }
 
     /* Abstract types from HasFlags. */
@@ -1243,11 +1247,13 @@ trait Trees extends api.Trees {
 
     override def canHaveAttrs = false
     override def setPos(pos: Position) = {
-      requireLegal(pos, NoPosition, "pos"); this
+      requireLegal(pos, NoPosition, "pos");
+      this
     }
     override def pos_=(pos: Position) = setPos(pos)
     override def setType(t: Type) = {
-      requireLegal(t, NoType, "tpe"); this
+      requireLegal(t, NoType, "tpe");
+      this
     }
     override def tpe_=(t: Type) = setType(t)
 
@@ -1260,7 +1266,8 @@ trait Trees extends api.Trees {
       attachmentWarning()
     override def removeAttachment[T: ClassTag]: this.type = attachmentWarning()
     private def attachmentWarning(): this.type = {
-      devWarning(s"Attempt to mutate attachments on $self ignored"); this
+      devWarning(s"Attempt to mutate attachments on $self ignored");
+      this
     }
 
     private def requireLegal(value: Any, allowed: Any, what: String) = (
@@ -1273,7 +1280,8 @@ trait Trees extends api.Trees {
   }
 
   case object EmptyTree extends TermTree with CannotHaveAttrs {
-    override def isEmpty = true; val asList = List(this)
+    override def isEmpty = true;
+    val asList = List(this)
   }
   object noSelfType
       extends ValDef(
@@ -1410,12 +1418,15 @@ trait Trees extends api.Trees {
       traverseName(md.name)
       md match {
         case ClassDef(_, _, tparams, impl) =>
-          traverseParams(tparams); traverse(impl)
+          traverseParams(tparams);
+          traverse(impl)
         case ModuleDef(_, _, impl) => traverse(impl)
         case ValDef(_, _, tpt, rhs) =>
-          traverseTypeAscription(tpt); traverse(rhs)
+          traverseTypeAscription(tpt);
+          traverse(rhs)
         case TypeDef(_, _, tparams, rhs) =>
-          traverseParams(tparams); traverse(rhs)
+          traverseParams(tparams);
+          traverse(rhs)
         case DefDef(_, _, tparams, vparamss, tpt, rhs) =>
           traverseParams(tparams)
           traverseParamss(vparamss)
@@ -1532,12 +1543,14 @@ trait Trees extends api.Trees {
     if (tree.canHaveAttrs) {
       tree match {
         case PackageDef(pid, stats) =>
-          traverse(pid); traverseStats(stats, mclass(tree.symbol))
+          traverse(pid);
+          traverseStats(stats, mclass(tree.symbol))
         case md: ModuleDef => traverseMemberDef(md, mclass(tree.symbol))
         case md: MemberDef => traverseMemberDef(md, tree.symbol)
         case Function(vparams, body) =>
           atOwner(tree.symbol) {
-            traverseParams(vparams); traverse(body)
+            traverseParams(vparams);
+            traverse(body)
           }
         case _ => traverseComponents()
       }

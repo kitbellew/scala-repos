@@ -20,7 +20,9 @@ class Adder(a1: Quantity, a2: Quantity, sum: Quantity) extends Constraint {
     case _                       =>
   }
   def dropValue: Unit = {
-    a1.forgetValue(this); a2.forgetValue(this); sum.forgetValue(this);
+    a1.forgetValue(this);
+    a2.forgetValue(this);
+    sum.forgetValue(this);
   }
   a1 connect this;
   a2 connect this;
@@ -38,7 +40,9 @@ class Multiplier(m1: Quantity, m2: Quantity, prod: Quantity)
     case _                       =>
   }
   def dropValue: Unit = {
-    m1.forgetValue(this); m2.forgetValue(this); prod.forgetValue(this);
+    m1.forgetValue(this);
+    m2.forgetValue(this);
+    prod.forgetValue(this);
   }
   m1 connect this;
   m2 connect this;
@@ -53,7 +57,8 @@ class Squarer(square: Quantity, root: Quantity) extends Constraint {
     case _                       =>
   }
   def dropValue: Unit = {
-    square.forgetValue(this); root.forgetValue(this);
+    square.forgetValue(this);
+    root.forgetValue(this);
   }
   square connect this;
   root connect this;
@@ -65,7 +70,8 @@ class Eq(a: Quantity, b: Quantity) extends Constraint {
     case (_, Some(y)) => a.setValue(y, this);
   }
   def dropValue {
-    a.forgetValue(this); b.forgetValue(this);
+    a.forgetValue(this);
+    b.forgetValue(this);
   }
   a connect this;
   b connect this;
@@ -102,7 +108,8 @@ class Quantity() {
     case Some(v1) =>
       if (v != v1) sys.error("Error! contradiction: " + v + " and " + v1);
     case None =>
-      informant = setter; value = Some(v);
+      informant = setter;
+      value = Some(v);
       for (c <- constraints; if !(c == informant)) {
         c.newValue;
       }
@@ -180,8 +187,10 @@ object M0 {
   }
 
   def test = {
-    val c = new Quantity(); new Probe("c", c);
-    val f = new Quantity(); new Probe("f", f);
+    val c = new Quantity();
+    new Probe("c", c);
+    val f = new Quantity();
+    new Probe("f", f);
     CFconverter(c, f);
 
     c.setValue(0);
@@ -253,8 +262,10 @@ object M2 {
 
   def set(q: Quantity, o: Option[Int]): String = {
     o match {
-      case None    => "?"
-      case Some(v) => q.setValue(v); v.toString()
+      case None => "?"
+      case Some(v) =>
+        q.setValue(v);
+        v.toString()
     };
   }
 
@@ -262,7 +273,9 @@ object M2 {
     Console.print(
       "a = " + set(a, x) + ", b = " + set(b, y) + ", c = " + set(c, z));
     Console.println(" => " + a.str + " * " + b.str + " = " + c.str);
-    a.forgetValue; b.forgetValue; c.forgetValue;
+    a.forgetValue;
+    b.forgetValue;
+    c.forgetValue;
   }
 
   def test = {
@@ -301,17 +314,23 @@ object M3 {
     val c = new Quantity();
     c === (a.square + b.square).sqrt;
 
-    a.setValue(3); b.setValue(4);
+    a.setValue(3);
+    b.setValue(4);
     Console.println("a = 3, b = 4 => c = " + c.str);
-    a.forgetValue; b.forgetValue;
+    a.forgetValue;
+    b.forgetValue;
 
-    a.setValue(3); c.setValue(5);
+    a.setValue(3);
+    c.setValue(5);
     Console.println("a = 3, c = 5 => b = " + b.str);
-    a.forgetValue; c.forgetValue;
+    a.forgetValue;
+    c.forgetValue;
 
-    b.setValue(4); c.setValue(5);
+    b.setValue(4);
+    c.setValue(5);
     Console.println("b = 4, c = 5 => a = " + a.str);
-    b.forgetValue; c.forgetValue;
+    b.forgetValue;
+    c.forgetValue;
 
     Console.println;
   }

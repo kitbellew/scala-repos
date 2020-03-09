@@ -201,7 +201,8 @@ sealed abstract class LongMap[+T]
     */
   override final def foreach[U](f: ((Long, T)) => U): Unit = this match {
     case LongMap.Bin(_, _, left, right) => {
-      left.foreach(f); right.foreach(f)
+      left.foreach(f);
+      right.foreach(f)
     }
     case LongMap.Tip(key, value) => f((key, value))
     case LongMap.Nil             =>
@@ -220,7 +221,8 @@ sealed abstract class LongMap[+T]
     */
   final def foreachKey(f: Long => Unit): Unit = this match {
     case LongMap.Bin(_, _, left, right) => {
-      left.foreachKey(f); right.foreachKey(f)
+      left.foreachKey(f);
+      right.foreachKey(f)
     }
     case LongMap.Tip(key, _) => f(key)
     case LongMap.Nil         =>
@@ -239,7 +241,8 @@ sealed abstract class LongMap[+T]
     */
   final def foreachValue(f: T => Unit): Unit = this match {
     case LongMap.Bin(_, _, left, right) => {
-      left.foreachValue(f); right.foreachValue(f)
+      left.foreachValue(f);
+      right.foreachValue(f)
     }
     case LongMap.Tip(_, value) => f(value)
     case LongMap.Nil           =>

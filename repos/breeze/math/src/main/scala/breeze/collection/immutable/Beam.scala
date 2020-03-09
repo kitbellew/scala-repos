@@ -56,7 +56,8 @@ class Beam[T](val maxSize: Int, xs: T*)(implicit o: Ordering[T])
     def clear() = beam = new Beam(maxSize)
 
     def +=(elem: T) = {
-      beam += elem; this
+      beam += elem;
+      this
     }
   }
 

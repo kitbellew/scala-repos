@@ -61,7 +61,8 @@ class HttpEventActorTest
     Given("A HttpEventActor with 1 subscriber")
     val aut = TestActorRef(new NoHttpEventActor(Set("host1")))
     responseAction = () => {
-      clock += 15.seconds; response
+      clock += 15.seconds;
+      response
     }
 
     When("An event is send to the actor")

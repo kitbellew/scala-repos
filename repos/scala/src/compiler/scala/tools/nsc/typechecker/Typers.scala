@@ -182,7 +182,8 @@ trait Typers
             paramTp = paramTp.subst(ar.subst.from, ar.subst.to)
 
           val res = if (paramFailed || (paramTp.isErroneous && {
-                          paramFailed = true; true
+                          paramFailed = true;
+                          true
                         })) SearchFailure
           else
             inferImplicit(
@@ -318,10 +319,12 @@ trait Typers
     }
 
     private def errorNotClass(tpt: Tree, found: Type) = {
-      ClassTypeRequiredError(tpt, found); false
+      ClassTypeRequiredError(tpt, found);
+      false
     }
     private def errorNotStable(tpt: Tree, found: Type) = {
-      TypeNotAStablePrefixError(tpt, found); false
+      TypeNotAStablePrefixError(tpt, found);
+      false
     }
 
     /** Check that `tpt` refers to a non-refinement class type */
@@ -357,7 +360,8 @@ trait Typers
     def checkNonCyclic(pos: Position, tp: Type): Boolean = {
       def checkNotLocked(sym: Symbol) = {
         sym.initialize.lockOK || {
-          CyclicAliasingOrSubtypingError(pos, sym); false
+          CyclicAliasingOrSubtypingError(pos, sym);
+          false
         }
       }
       tp match {
@@ -519,7 +523,9 @@ trait Typers
       context.enclClass.owner.ownerChain.find(o =>
         qual.isEmpty || o.isClass && o.name == qual) match {
         case Some(c) if packageOK || !c.isPackageClass => c
-        case _                                         => QualifyingClassError(tree, qual); NoSymbol
+        case _ =>
+          QualifyingClassError(tree, qual);
+          NoSymbol
       }
 
     /** The typer for an expression, depending on where we are. If we are before a superclass
@@ -1163,7 +1169,9 @@ trait Typers
           if (canIgnoreMismatch) bound ++ pt.skolemsExceptMethodTypeParams
           else Nil
         boundOrSkolems match {
-          case Nil => AdaptTypeError(tree, tree.tpe, pt); setError(tree)
+          case Nil =>
+            AdaptTypeError(tree, tree.tpe, pt);
+            setError(tree)
           case _ =>
             logResult(msg)(
               adapt(tree, mode, deriveTypeWithWildcards(boundOrSkolems)(pt)))
@@ -1775,7 +1783,8 @@ trait Typers
             atPos(supertpt.pos.focus)(supercall)
           } match {
             case EmptyTree =>
-              MissingTypeArgumentsParentTpeError(supertpt); supertpt
+              MissingTypeArgumentsParentTpeError(supertpt);
+              supertpt
             case tpt =>
               TypeTree(
                 tpt.tpe) setPos supertpt.pos // SI-7224: don't .focus positions of the TypeTree of a parent that exists in source
@@ -2275,7 +2284,8 @@ trait Typers
           case _ => primaryCtor
         }
         body2 mapConserve {
-          case `primaryCtor` => primaryCtor1; case stat => stat
+          case `primaryCtor` => primaryCtor1;
+          case stat          => stat
         }
       }
 
@@ -2575,7 +2585,8 @@ trait Typers
 
       // for `val` and `var` parameter, look at `target` meta-annotation
       if (!isPastTyper && meth.isPrimaryConstructor) {
-        for (vparams <- ddef.vparamss; vd <- vparams) {
+        for (vparams <- ddef.vparamss;
+             vd <- vparams) {
           if (vd.mods.isParamAccessor) {
             namer.validateParam(vd)
           }
@@ -2589,7 +2600,8 @@ trait Typers
 
       meth.annotations.map(_.completeInfo())
 
-      for (vparams1 <- vparamss1; vparam1 <- vparams1 dropRight 1)
+      for (vparams1 <- vparamss1;
+           vparam1 <- vparams1 dropRight 1)
         if (isRepeatedParamType(vparam1.symbol.tpe))
           StarParamNotLastError(vparam1)
 
@@ -2827,7 +2839,8 @@ trait Typers
 
     def typedCase(cdef: CaseDef, pattpe: Type, pt: Type): CaseDef = {
       // verify no _* except in last position
-      for (Apply(_, xs) <- cdef.pat; x <- xs dropRight 1; if treeInfo isStar x)
+      for (Apply(_, xs) <- cdef.pat;
+           x <- xs dropRight 1; if treeInfo isStar x)
         StarPositionInPatternError(x)
 
       // withoutAnnotations - see continuations-run/z1673.scala
@@ -3348,8 +3361,10 @@ trait Typers
             val samClassTpMoreDefined = appliedType(
               samTyCon,
               (samClassTp.typeArgs, tparams, tvars).zipped map {
-                case (a, _, tv) if isFullyDefined(a) => tv =:= a; a
-                case (_, p, _)                       => p.typeConstructor
+                case (a, _, tv) if isFullyDefined(a) =>
+                  tv =:= a;
+                  a
+                case (_, p, _) => p.typeConstructor
               })
 
             // the method type we're expecting the synthesized sam to have, based on the expected sam type,
@@ -3587,7 +3602,9 @@ trait Typers
 
     def typedImport(imp: Import): Import = (transformed remove imp) match {
       case Some(imp1: Import) => imp1
-      case _                  => log("unhandled import: " + imp + " in " + unit); imp
+      case _ =>
+        log("unhandled import: " + imp + " in " + unit);
+        imp
     }
 
     def typedStats(stats: List[Tree], exprOwner: Symbol): List[Tree] = {
@@ -3813,7 +3830,8 @@ trait Typers
       // TODO_NMT: check the assumption that args nonEmpty
       def duplErrTree = setError(treeCopy.Apply(tree, fun0, args))
       def duplErrorTree(err: AbsTypeError) = {
-        context.issue(err); duplErrTree
+        context.issue(err);
+        duplErrTree
       }
 
       def preSelectOverloaded(fun: Tree): Tree = {
@@ -3972,7 +3990,8 @@ trait Typers
                 )
                 if (keepTree) t else EmptyTree
               } orElse { _ =>
-                context.undetparams = savedUndetparams; EmptyTree
+                context.undetparams = savedUndetparams;
+                EmptyTree
               }
             } else EmptyTree
           }
@@ -4280,9 +4299,11 @@ trait Typers
         }
 
         if (const == null) {
-          reportAnnotationError(AnnotationNotAConstantError(ttree)); None
+          reportAnnotationError(AnnotationNotAConstantError(ttree));
+          None
         } else if (const.value == null) {
-          reportAnnotationError(AnnotationArgNullError(tr)); None
+          reportAnnotationError(AnnotationArgNullError(tr));
+          None
         } else
           Some(LiteralAnnotArg(const))
       }
@@ -4294,7 +4315,8 @@ trait Typers
         tree match {
           case Apply(Select(New(tpt), nme.CONSTRUCTOR), args)
               if (pt.typeSymbol == ArrayClass) =>
-            reportAnnotationError(ArrayConstantsError(tree)); None
+            reportAnnotationError(ArrayConstantsError(tree));
+            None
 
           case ann @ Apply(Select(New(tpt), nme.CONSTRUCTOR), args) =>
             val annInfo = typedAnnotation(ann, mode)
@@ -4307,7 +4329,8 @@ trait Typers
               reportAnnotationError(NestedAnnotationError(ann, annType))
 
             if (annInfo.atp.isErroneous) {
-              hasError = true; None
+              hasError = true;
+              None
             } else Some(NestedAnnotArg(annInfo))
 
           // use of Array.apply[T: ClassTag](xs: T*): Array[T]
@@ -4575,7 +4598,8 @@ trait Typers
             case ExistentialType(tparams, _) =>
               boundSyms ++= tparams
             case AnnotatedType(annots, _) =>
-              for (annot <- annots; arg <- annot.args) {
+              for (annot <- annots;
+                   arg <- annot.args) {
                 arg match {
                   case Ident(_) =>
                     // Check the symbol of an Ident, unless the
@@ -4609,7 +4633,8 @@ trait Typers
         mode: Mode): Tree = {
       for (wc <- tree.whereClauses)
         if (wc.symbol == NoSymbol) {
-          namer enterSym wc; wc.symbol setFlag EXISTENTIAL
+          namer enterSym wc;
+          wc.symbol setFlag EXISTENTIAL
         } else context.scope enter wc.symbol
       val whereClauses1 = typedStats(tree.whereClauses, context.owner)
       for (vd @ ValDef(_, _, _, _) <- whereClauses1)
@@ -4826,7 +4851,8 @@ trait Typers
            */
           def findSelection(t: Tree): Option[(TermName, Tree)] = t match {
             case Apply(fn, args) if hasStar(args) =>
-              DynamicVarArgUnsupported(tree, applyOp(args)); None
+              DynamicVarArgUnsupported(tree, applyOp(args));
+              None
             case Apply(fn, args) if matches(fn) => Some((applyOp(args), fn))
             case Assign(lhs, _) if matches(lhs) =>
               Some((nme.updateDynamic, lhs))
@@ -5699,7 +5725,8 @@ trait Typers
               treeCopy.SelectFromTypeTree(
                 result,
                 (TypeTreeWithDeferredRefCheck() { () =>
-                  val tp = qual.tpe; val sym = tp.typeSymbolDirect
+                  val tp = qual.tpe;
+                  val sym = tp.typeSymbolDirect
                   // will execute during refchecks -- TODO: make private checkTypeRef in refchecks public and call that one?
                   checkBounds(
                     qual,
@@ -5748,8 +5775,10 @@ trait Typers
         silent(_ => typedSelect(tree, qual, nme.withFilter)) orElse { _ =>
           silent(_ =>
             typed1(Select(qual, nme.filter) setPos tree.pos, mode, pt)) match {
-            case SilentResultValue(res) => warn(res.symbol); res
-            case SilentTypeError(err)   => WithFilterError(tree, err)
+            case SilentResultValue(res) =>
+              warn(res.symbol);
+              res
+            case SilentTypeError(err) => WithFilterError(tree, err)
           }
         }
       }
@@ -5929,7 +5958,8 @@ trait Typers
               // if symbol hasn't been fully loaded, can't check kind-arity except when we're in a pattern,
               // where we can (we can't take part in F-Bounds) and must (SI-8023)
               val pt = if (mode.typingPatternOrTypePat) {
-                tparam.initialize; ptParams
+                tparam.initialize;
+                ptParams
               } else if (isComplete) ptParams
               else Kind.Wildcard
 
@@ -6681,8 +6711,12 @@ trait Typers
         computeMacroDefTypeFromMacroImplRef(ddef, rhs1) match {
           case ErrorType  => ErrorType
           case NothingTpe => NothingTpe
-          case NoType     => reportFailure(); AnyTpe
-          case tpe        => reportWarning(tpe); tpe
+          case NoType =>
+            reportFailure();
+            AnyTpe
+          case tpe =>
+            reportWarning(tpe);
+            tpe
         }
       } else AnyTpe
     }

@@ -125,7 +125,8 @@ object Streams {
 
       def close(): Unit =
         synchronized {
-          streams.values.foreach(_.close()); streams.clear()
+          streams.values.foreach(_.close());
+          streams.clear()
         }
     }
 

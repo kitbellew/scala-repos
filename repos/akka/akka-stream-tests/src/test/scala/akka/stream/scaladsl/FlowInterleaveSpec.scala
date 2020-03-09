@@ -131,7 +131,8 @@ class FlowInterleaveSpec extends BaseTwoStreamsSetup {
       subscription2.request(4)
       subscriber2.expectNextOrError(1, TestException).isLeft ||
       subscriber2.expectNextOrError(2, TestException).isLeft || {
-        subscriber2.expectError(TestException); true
+        subscriber2.expectError(TestException);
+        true
       }
     }
 

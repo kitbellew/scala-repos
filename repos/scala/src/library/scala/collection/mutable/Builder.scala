@@ -128,11 +128,13 @@ trait Builder[-Elem, +To] extends Growable[Elem] {
     new Builder[Elem, NewTo] with Proxy {
       val self = Builder.this
       def +=(x: Elem): this.type = {
-        self += x; this
+        self += x;
+        this
       }
       def clear() = self.clear()
       override def ++=(xs: TraversableOnce[Elem]): this.type = {
-        self ++= xs; this
+        self ++= xs;
+        this
       }
       override def sizeHint(size: Int) = self.sizeHint(size)
       override def sizeHintBounded(

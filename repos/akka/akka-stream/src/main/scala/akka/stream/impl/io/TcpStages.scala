@@ -71,7 +71,8 @@ private[stream] class ConnectionSourceStage(
             if (isAvailable(out)) listener ! ResumeAccepting(1)
             val target = self
             bindingPromise.success(ServerBinding(localAddress)(() ⇒ {
-              target ! Unbind; unbindPromise.future
+              target ! Unbind;
+              unbindPromise.future
             }))
           case f: CommandFailed ⇒
             val ex = BindFailedException

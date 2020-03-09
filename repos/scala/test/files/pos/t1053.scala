@@ -1,6 +1,7 @@
 trait T[A] {
   trait U {
-    type W = A; val x = 3
+    type W = A;
+    val x = 3
   }
 }
 

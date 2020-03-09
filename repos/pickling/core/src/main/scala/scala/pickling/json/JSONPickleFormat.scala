@@ -179,7 +179,8 @@ package json {
       unindent()
       if (primitives.contains(tags.pop().key)) () // do nothing
       else {
-        appendLine(); append("}")
+        appendLine();
+        append("}")
       }
       // Always undo this state.
       isIgnoringFields = false

@@ -47,7 +47,10 @@ object LruMapSpec extends Specification {
         10,
         Empty,
         (k, v) => {
-          expCnt += 1; k must_== v; k must be > 0; v must be < 11
+          expCnt += 1;
+          k must_== v;
+          k must be > 0;
+          v must be < 11
         })
       for (i <- 1 to 20) lru(i) = i
 
@@ -62,7 +65,9 @@ object LruMapSpec extends Specification {
         10,
         Empty,
         (k, v) => {
-          expCnt += 1; k must_== v; k must be > 0
+          expCnt += 1;
+          k must_== v;
+          k must be > 0
         })
       for (i <- 1 to 20) {
         for (q <- 1 to 10) lru.get(q)

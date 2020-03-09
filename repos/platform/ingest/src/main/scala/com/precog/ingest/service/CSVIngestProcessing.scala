@@ -100,7 +100,8 @@ class CSVIngestProcessing(
 
         case None =>
           M.point {
-            chan.close(); written
+            chan.close();
+            written
           }
       }
     }

@@ -14,7 +14,8 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
   /** An ADT to represent the results of symbol name lookups.
     */
   sealed trait NameLookup {
-    def symbol: Symbol; def isSuccess = false
+    def symbol: Symbol;
+    def isSuccess = false
   }
   case class LookupSucceeded(qualifier: Tree, symbol: Symbol)
       extends NameLookup {

@@ -53,7 +53,8 @@ package p {
           def s: String = "";
         }
         protected def tie(x: Node): Unit = {
-          x.s; ()
+          x.s;
+          ()
         }
       }
     }

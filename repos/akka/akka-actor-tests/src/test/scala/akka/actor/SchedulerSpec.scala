@@ -554,7 +554,9 @@ class LightArrayRevolverSchedulerSpec
         import system.dispatcher
         val counter = new AtomicInteger
         future {
-          Thread.sleep(5); driver.close(); sched.close()
+          Thread.sleep(5);
+          driver.close();
+          sched.close()
         }
         val headroom = 200
         var overrun = headroom
@@ -564,7 +566,8 @@ class LightArrayRevolverSchedulerSpec
             Try(sched.scheduleOnce(100.millis)(counter.incrementAndGet())))
           .take(cap)
           .takeWhile(_.isSuccess || {
-            overrun -= 1; overrun >= 0
+            overrun -= 1;
+            overrun >= 0
           })
           .partition(_.isSuccess)
         val s = success.size

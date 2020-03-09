@@ -61,7 +61,9 @@ class PerAccountThreadPooling(accountFinder: AccountFinder[Future]) {
       // FIXME: Dummy pool for now
       executorCache.putIfAbsent(accountId, ec) match {
         case null => ec
-        case ec0  => executor.shutdown(); ec0
+        case ec0 =>
+          executor.shutdown();
+          ec0
       }
     }
   }

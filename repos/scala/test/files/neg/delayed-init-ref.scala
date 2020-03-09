@@ -28,7 +28,8 @@ object Client {
 trait Before extends DelayedInit {
   def before()
   override def delayedInit(x: => Unit): Unit = {
-    before; x
+    before;
+    x
   }
 }
 object Spec {
@@ -40,7 +41,8 @@ object Spec {
     println(foo) // no warn
     println(this.foo) // no warn
     println({
-      locally(()); this
+      locally(());
+      this
     }.foo) // warn (spurious, but we can't discriminate)
   }
 }

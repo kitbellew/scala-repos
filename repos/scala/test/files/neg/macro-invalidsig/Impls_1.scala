@@ -3,7 +3,8 @@ import scala.reflect.macros.blackbox.Context
 
 object Impls1 {
   def foo[U: c.WeakTypeTag: Numeric](c: Context) = {
-    import c.universe._; q"42"
+    import c.universe._;
+    q"42"
   }
 }
 

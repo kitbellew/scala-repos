@@ -34,7 +34,9 @@ trait AjaxEditableField[FieldType, OwnerType <: Mapper[OwnerType]]
             super.asHtml,
             form,
             () => {
-              fieldOwner.save; onSave; net.liftweb.http.js.JsCmds.Noop
+              fieldOwner.save;
+              onSave;
+              net.liftweb.http.js.JsCmds.Noop
             })
         } openOr super.asHtml
       }</xml:group>

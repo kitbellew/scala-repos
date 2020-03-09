@@ -100,7 +100,8 @@ object IOUtils extends Logging {
   def recursiveDeleteEmptyDirs(startDir: File, upTo: File): IO[PrecogUnit] = {
     if (startDir == upTo) {
       IO {
-        logger.debug("Stopping recursive clean at root: " + upTo); PrecogUnit
+        logger.debug("Stopping recursive clean at root: " + upTo);
+        PrecogUnit
       }
     } else if (startDir.isDirectory) {
       if (Option(startDir.list).exists(_.length == 0)) {
@@ -118,7 +119,8 @@ object IOUtils extends Logging {
       }
     } else {
       IO {
-        logger.warn("Asked to clean a non-directory: " + startDir); PrecogUnit
+        logger.warn("Asked to clean a non-directory: " + startDir);
+        PrecogUnit
       }
     }
   }

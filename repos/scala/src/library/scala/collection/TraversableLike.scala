@@ -344,7 +344,8 @@ trait TraversableLike[+A, +Repr]
     breakable {
       for (x <- this)
         if (!p(x)) {
-          result = false; break
+          result = false;
+          break
         }
     }
     result
@@ -363,7 +364,8 @@ trait TraversableLike[+A, +Repr]
     breakable {
       for (x <- this)
         if (p(x)) {
-          result = true; break
+          result = true;
+          break
         }
     }
     result
@@ -374,7 +376,8 @@ trait TraversableLike[+A, +Repr]
     breakable {
       for (x <- this)
         if (p(x)) {
-          result = Some(x); break
+          result = Some(x);
+          break
         }
     }
     result
@@ -390,7 +393,8 @@ trait TraversableLike[+A, +Repr]
     var acc = z
     b += acc
     for (x <- this) {
-      acc = op(acc, x); b += acc
+      acc = op(acc, x);
+      b += acc
     }
     b.result
   }

@@ -146,7 +146,8 @@ class JDBCQueryExecutor(
                   }
                   .bimap(
                     { t =>
-                      logger.error("Error enumerating tables", t); t.getMessage
+                      logger.error("Error enumerating tables", t);
+                      t.getMessage
                     },
                     x => x)
             }
@@ -203,7 +204,8 @@ class JDBCQueryExecutor(
                   }
                   .bimap(
                     { t =>
-                      logger.error("Error enumerating tables", t); t.getMessage
+                      logger.error("Error enumerating tables", t);
+                      t.getMessage
                     },
                     x => x)
             }

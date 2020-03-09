@@ -423,12 +423,18 @@ class TypeableTests {
       val `List[(String, T)]` = TypeCase[List[(String, T)]]
 
       t match {
-        case T(t)                             => Some(t)
-        case `List[T]`(lt)                    => lt.headOption
-        case `(String, T)`(s, t)              => typed[String](s); Some(t)
-        case `List[(String, T)]`((s, t) :: _) => typed[String](s); Some(t)
-        case `List[(String, T)]`(lst)         => assertTrue(lst.isEmpty); None
-        case _                                => None
+        case T(t)          => Some(t)
+        case `List[T]`(lt) => lt.headOption
+        case `(String, T)`(s, t) =>
+          typed[String](s);
+          Some(t)
+        case `List[(String, T)]`((s, t) :: _) =>
+          typed[String](s);
+          Some(t)
+        case `List[(String, T)]`(lst) =>
+          assertTrue(lst.isEmpty);
+          None
+        case _ => None
       }
     }
 

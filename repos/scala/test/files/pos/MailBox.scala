@@ -30,10 +30,13 @@ class MailBox {
     var r = receivers;
     var r1 = r.next;
     while (r1 != null && !r1.elem.isDefined(msg)) {
-      r = r1; r1 = r1.next;
+      r = r1;
+      r1 = r1.next;
     }
     if (r1 != null) {
-      r.next = r1.next; r1.elem.msg = msg; r1.elem.notify();
+      r.next = r1.next;
+      r1.elem.msg = msg;
+      r1.elem.notify();
     } else {
       lastSent = insert(lastSent, msg);
     }
@@ -44,10 +47,12 @@ class MailBox {
       var s = sent;
       var s1 = s.next;
       while (s1 != null && !f.isDefinedAt(s1.elem)) {
-        s = s1; s1 = s1.next
+        s = s1;
+        s1 = s1.next
       }
       if (s1 != null) {
-        s.next = s1.next; s1.elem
+        s.next = s1.next;
+        s1.elem
       } else {
         val r = insert(
           lastReceiver,
@@ -67,10 +72,12 @@ class MailBox {
       var s = sent;
       var s1 = s.next;
       while (s1 != null && !f.isDefinedAt(s1.elem)) {
-        s = s1; s1 = s1.next;
+        s = s1;
+        s1 = s1.next;
       }
       if (s1 != null) {
-        s.next = s1.next; s1.elem
+        s.next = s1.next;
+        s1.elem
       } else {
         val r = insert(
           lastReceiver,

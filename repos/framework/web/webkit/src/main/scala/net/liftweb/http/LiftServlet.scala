@@ -139,8 +139,10 @@ class LiftServlet extends Loggable {
       runFunction(answer => future.satisfy(answer))
 
       future.get(cometTimeout) match {
-        case Full(answer) => sendResponse(answer, resp, req); true
-        case _            => false
+        case Full(answer) =>
+          sendResponse(answer, resp, req);
+          true
+        case _ => false
       }
     }
   }
@@ -177,7 +179,8 @@ class LiftServlet extends Loggable {
         case None           => doIt
         case r if r eq null => doIt
         case Some((or: Req, r: LiftResponse)) if (req.path == or.path) =>
-          sendResponse(r, resp, req); true
+          sendResponse(r, resp, req);
+          true
         case _ => doIt
       }
     } catch {
@@ -189,7 +192,8 @@ class LiftServlet extends Loggable {
       case e: Throwable =>
         logger.info(
           "Request for " + req.request.uri + " failed " + e.getMessage,
-          e); throw e
+          e);
+        throw e
     }
   }
 

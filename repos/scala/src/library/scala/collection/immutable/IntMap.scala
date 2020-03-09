@@ -205,7 +205,8 @@ sealed abstract class IntMap[+T]
     */
   override final def foreach[U](f: ((Int, T)) => U): Unit = this match {
     case IntMap.Bin(_, _, left, right) => {
-      left.foreach(f); right.foreach(f)
+      left.foreach(f);
+      right.foreach(f)
     }
     case IntMap.Tip(key, value) => f((key, value))
     case IntMap.Nil             =>
@@ -224,7 +225,8 @@ sealed abstract class IntMap[+T]
     */
   final def foreachKey(f: Int => Unit): Unit = this match {
     case IntMap.Bin(_, _, left, right) => {
-      left.foreachKey(f); right.foreachKey(f)
+      left.foreachKey(f);
+      right.foreachKey(f)
     }
     case IntMap.Tip(key, _) => f(key)
     case IntMap.Nil         =>
@@ -243,7 +245,8 @@ sealed abstract class IntMap[+T]
     */
   final def foreachValue(f: T => Unit): Unit = this match {
     case IntMap.Bin(_, _, left, right) => {
-      left.foreachValue(f); right.foreachValue(f)
+      left.foreachValue(f);
+      right.foreachValue(f)
     }
     case IntMap.Tip(_, value) => f(value)
     case IntMap.Nil           =>

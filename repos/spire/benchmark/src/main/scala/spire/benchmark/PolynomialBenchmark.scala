@@ -49,7 +49,8 @@ class PolynomialBenchmarks extends MyBenchmark {
     var i = 0
     val len = data.length
     while (i < len) {
-      total = data(0) + data(i); i += 1
+      total = data(0) + data(i);
+      i += 1
     }
     total
   }
@@ -60,7 +61,8 @@ class PolynomialBenchmarks extends MyBenchmark {
     var i = 0
     val len = data.length
     while (i < len) {
-      total = data(0) + data(i); i += 1
+      total = data(0) + data(i);
+      i += 1
     }
     total
   }
@@ -71,7 +73,8 @@ class PolynomialBenchmarks extends MyBenchmark {
     var i = 0
     val len = data.length
     while (i < len) {
-      total = data(0).add(data(i)); i += 1
+      total = data(0).add(data(i));
+      i += 1
     }
     total
   }
@@ -82,7 +85,8 @@ class PolynomialBenchmarks extends MyBenchmark {
     var i = 0
     val len = data.length
     while (i < len) {
-      total = data(0) * data(i); i += 1
+      total = data(0) * data(i);
+      i += 1
     }
     total
   }
@@ -93,7 +97,8 @@ class PolynomialBenchmarks extends MyBenchmark {
     var i = 0
     val len = data.length
     while (i < len) {
-      total = data(0) * data(i); i += 1
+      total = data(0) * data(i);
+      i += 1
     }
     total
   }
@@ -104,7 +109,8 @@ class PolynomialBenchmarks extends MyBenchmark {
     var i = 0
     val len = data.length
     while (i < len) {
-      total = data(0).multiply(data(i)); i += 1
+      total = data(0).multiply(data(i));
+      i += 1
     }
     total
   }
@@ -115,7 +121,8 @@ class PolynomialBenchmarks extends MyBenchmark {
     var i = 0
     val len = data.length
     while (i < len) {
-      total = data(i).derivative; i += 1
+      total = data(i).derivative;
+      i += 1
     }
     total
   }
@@ -126,7 +133,8 @@ class PolynomialBenchmarks extends MyBenchmark {
     var i = 0
     val len = data.length
     while (i < len) {
-      total = data(i).derivative; i += 1
+      total = data(i).derivative;
+      i += 1
     }
     total
   }
@@ -137,7 +145,8 @@ class PolynomialBenchmarks extends MyBenchmark {
     var i = 0
     val len = data.length
     while (i < len) {
-      total = data(i).polynomialDerivative; i += 1
+      total = data(i).polynomialDerivative;
+      i += 1
     }
     total
   }
@@ -149,7 +158,8 @@ class PolynomialBenchmarks extends MyBenchmark {
     var i = 0
     val len = data.length
     while (i < len) {
-      total = data(i).apply(testVariable); i += 1
+      total = data(i).apply(testVariable);
+      i += 1
     }
     total
   }
@@ -161,7 +171,8 @@ class PolynomialBenchmarks extends MyBenchmark {
     var i = 0
     val len = data.length
     while (i < len) {
-      total = data(i).apply(testVariable); i += 1
+      total = data(i).apply(testVariable);
+      i += 1
     }
     total
   }
@@ -173,7 +184,8 @@ class PolynomialBenchmarks extends MyBenchmark {
     var i = 0
     val len = data.length
     while (i < len) {
-      total = data(i).value(testVariable); i += 1
+      total = data(i).value(testVariable);
+      i += 1
     }
     total
   }
@@ -184,7 +196,8 @@ class PolynomialBenchmarks extends MyBenchmark {
     var i = 0
     val len = data.length
     while (i < len) {
-      total = data(0) /% data(i); i += 1
+      total = data(0) /% data(i);
+      i += 1
     }
     total
   }
@@ -195,7 +208,8 @@ class PolynomialBenchmarks extends MyBenchmark {
     var i = 0
     val len = data.length
     while (i < len) {
-      total = data(0) /% data(i); i += 1
+      total = data(0) /% data(i);
+      i += 1
     }
     total
   }

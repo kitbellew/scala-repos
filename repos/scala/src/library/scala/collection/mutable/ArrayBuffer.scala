@@ -126,7 +126,8 @@ class ArrayBuffer[A](override protected val initialSize: Int)
     *  @return      the updated buffer.
     */
   override def ++=:(xs: TraversableOnce[A]): this.type = {
-    insertAll(0, xs.toTraversable); this
+    insertAll(0, xs.toTraversable);
+    this
   }
 
   /** Inserts new elements at the index `n`. Opposed to method

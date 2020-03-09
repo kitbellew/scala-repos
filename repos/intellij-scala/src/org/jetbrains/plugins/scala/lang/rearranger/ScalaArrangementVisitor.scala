@@ -264,7 +264,8 @@ class ScalaArrangementVisitor(
     if (modifiers != null) {
       for (modName <- modifiers.getModifiersStrings) {
         getModifierByName(modName).flatMap((mod: ArrangementSettingsToken) => {
-          entry.addModifier(mod); None
+          entry.addModifier(mod);
+          None
         })
       }
     }
@@ -361,7 +362,8 @@ class ScalaArrangementVisitor(
     range = node.nextSibling match {
       case Some(semicolon: PsiElement)
           if semicolon.getNode.getElementType == ScalaTokenTypes.tSEMICOLON =>
-        currentNode = semicolon; range.union(semicolon.getTextRange)
+        currentNode = semicolon;
+        range.union(semicolon.getTextRange)
       case _ => range
     }
     val res = currentNode.getNextSibling match {

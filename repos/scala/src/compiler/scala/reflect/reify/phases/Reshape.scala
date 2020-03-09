@@ -314,7 +314,8 @@ trait Reshape {
             def uncapitalize(s: String) =
               if (s.length == 0) ""
               else {
-                val chars = s.toCharArray; chars(0) = chars(0).toLower;
+                val chars = s.toCharArray;
+                chars(0) = chars(0).toLower;
                 new String(chars)
               }
             def findValDef(name: String) = symdefs.values collectFirst {

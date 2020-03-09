@@ -199,7 +199,8 @@ private[niocharset] object UTF_8
                 @inline
                 def getOr0(): Int =
                   if (in.hasRemaining) {
-                    bytesRead += 1; in.get()
+                    bytesRead += 1;
+                    in.get()
                   } else 0 // 0 is not a valid next byte
 
                 if (length == 2) decode2(leading, getOr0())

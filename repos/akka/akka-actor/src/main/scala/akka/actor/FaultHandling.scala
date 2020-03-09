@@ -43,7 +43,8 @@ final case class ChildRestartStats(
     retriesWindow match {
       case (Some(retries), _) if retries < 1 ⇒ false
       case (Some(retries), None) ⇒ {
-        maxNrOfRetriesCount += 1; maxNrOfRetriesCount <= retries
+        maxNrOfRetriesCount += 1;
+        maxNrOfRetriesCount <= retries
       }
       case (x, Some(window)) ⇒
         retriesInWindowOkay(if (x.isDefined) x.get else 1, window)

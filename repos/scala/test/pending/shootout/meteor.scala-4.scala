@@ -84,7 +84,8 @@ final class Solver(n: Int) {
   private def puzzleSolved() = {
     val b = board.asString
     if (first == null) {
-      first = b; last = b
+      first = b;
+      last = b
     } else {
       if (b < first) {
         first = b
@@ -116,7 +117,8 @@ final class Solver(n: Int) {
         if (indent) Console.print(' ')
         var j = 0
         while (j < Board.cols) {
-          Console.print(s.charAt(i)); Console.print(' ')
+          Console.print(s.charAt(i));
+          Console.print(' ')
           j = j + 1
           i = i + 1
         }
@@ -496,9 +498,12 @@ final class Piece(_number: Int) {
 // Cell.scala
 
 object Cell {
-  val NW = 0; val NE = 1
-  val W = 2; val E = 3
-  val SW = 4; val SE = 5
+  val NW = 0;
+  val NE = 1
+  val W = 2;
+  val E = 3
+  val SW = 4;
+  val SE = 5
 
   val sides = 6
 }

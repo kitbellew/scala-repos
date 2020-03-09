@@ -757,7 +757,8 @@ object Execution {
         implicit cec: ConcurrentExecutionContext): Future[ExecutionCounters] = {
       for {
         flowDef <- toFuture(Try {
-          val fd = new FlowDef; (head :: tail).foreach(_.write(conf, fd, mode));
+          val fd = new FlowDef;
+          (head :: tail).foreach(_.write(conf, fd, mode));
           fd
         })
         _ = FlowStateMap.validateSources(flowDef, mode)

@@ -17,7 +17,8 @@ object Test {
       type Out = Int
     } = ???
     def conv(i: Foo): SI {
-      type Out = i.Out; val instance: i.type
+      type Out = i.Out;
+      val instance: i.type
     } = ???
 
     val converted = conv(foo)

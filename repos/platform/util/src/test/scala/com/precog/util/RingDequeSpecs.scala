@@ -86,6 +86,7 @@ object RingDequeSpecs extends Specification with ScalaCheck {
 
   private def fromList(xs: List[Int], bound: Int): RingDeque[Int] =
     xs.foldLeft(new RingDeque[Int](bound)) { (deque, x) =>
-      deque pushBack x; deque
+      deque pushBack x;
+      deque
     }
 }

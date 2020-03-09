@@ -169,9 +169,11 @@ abstract class Delambdafy
         var neededAdaptation = false
         def boxedType(tpe: Type): Type = {
           if (isPrimitiveValueClass(tpe.typeSymbol)) {
-            neededAdaptation = true; ObjectTpe
+            neededAdaptation = true;
+            ObjectTpe
           } else if (enteringErasure(tpe.typeSymbol.isDerivedValueClass)) {
-            neededAdaptation = true; ObjectTpe
+            neededAdaptation = true;
+            ObjectTpe
           } else tpe
         }
         val targetParams: List[Symbol] = target.paramss.head

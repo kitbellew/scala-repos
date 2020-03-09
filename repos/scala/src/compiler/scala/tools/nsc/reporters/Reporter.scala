@@ -48,7 +48,8 @@ abstract class Reporter extends scala.reflect.internal.Reporter {
   // TODO: rework partest to use the scala.reflect.internal interface,
   //       remove duplication here, and consolidate reflect.internal.{ReporterImpl & ReporterImpl}
   class Severity(val id: Int)(name: String) {
-    var count: Int = 0; override def toString = name
+    var count: Int = 0;
+    override def toString = name
   }
   object INFO extends Severity(0)("INFO")
   object WARNING extends Severity(1)("WARNING")

@@ -277,7 +277,8 @@ object SparkSubmit {
       case "client" | null => CLIENT
       case "cluster"       => CLUSTER
       case _ =>
-        printErrorAndExit("Deploy mode must be either client or cluster"); -1
+        printErrorAndExit("Deploy mode must be either client or cluster");
+        -1
     }
 
     // Because the deprecated way of specifying "yarn-cluster" and "yarn-client" encapsulate both

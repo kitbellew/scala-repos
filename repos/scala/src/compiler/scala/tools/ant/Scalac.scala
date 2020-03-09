@@ -217,8 +217,10 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
   /** Helpers */
   private def setOrAppend(old: Option[Path], arg: Path): Option[Path] =
     old match {
-      case Some(x) => x append arg; Some(x)
-      case None    => Some(arg)
+      case Some(x) =>
+        x append arg;
+        Some(x)
+      case None => Some(arg)
     }
   private def pathAsList(p: Option[Path], name: String): List[File] = p match {
     case None    => buildError("Member '" + name + "' is empty.")
@@ -638,7 +640,8 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
     // If force is false, only files were the .class file in destination is
     // older than the .scala file will be used.
     val sourceFiles: List[File] =
-      for (originDir <- getOrigin; originFile <- getOriginFiles(originDir))
+      for (originDir <- getOrigin;
+           originFile <- getOriginFiles(originDir))
         yield {
           log(originFile, Project.MSG_DEBUG)
           nameToFile(originDir)(originFile)
@@ -746,7 +749,8 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
       val out = new PrintWriter(new BufferedWriter(new FileWriter(file)))
 
       try {
-        for (setting <- settings.visibleSettings; arg <- setting.unparse)
+        for (setting <- settings.visibleSettings;
+             arg <- setting.unparse)
           out println escapeArgument(arg)
         for (file <- sourceFiles)
           out println escapeArgument(file.getAbsolutePath)

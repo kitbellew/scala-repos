@@ -11,7 +11,8 @@ import syntax.equal._
 
 object ChanUsage extends App {
   def forkIO(f: => IO[Unit])(implicit s: Strategy): IO[Unit] = IO {
-    s(f.unsafePerformIO); ()
+    s(f.unsafePerformIO);
+    ()
   }
 
   def calc(chan: Chan[Int], a: Int) =

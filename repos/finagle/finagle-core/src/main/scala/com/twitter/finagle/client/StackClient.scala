@@ -509,7 +509,8 @@ trait StdStackClient[Req, Rep, This <: StdStackClient[Req, Rep, This]]
   protected def copy1(
       stack: Stack[ServiceFactory[Req, Rep]] = this.stack,
       params: Stack.Params = this.params): This {
-    type In = self.In; type Out = self.Out
+    type In = self.In;
+    type Out = self.Out
   }
 
   /**

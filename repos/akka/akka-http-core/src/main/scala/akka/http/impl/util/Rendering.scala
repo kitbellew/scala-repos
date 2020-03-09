@@ -53,7 +53,8 @@ private[http] trait LazyValueBytesRenderable extends Renderable {
   private def valueBytes =
     if (_valueBytes != null) _valueBytes
     else {
-      _valueBytes = value.asciiBytes; _valueBytes
+      _valueBytes = value.asciiBytes;
+      _valueBytes
     }
 
   def value: String
@@ -184,7 +185,8 @@ private[http] trait Rendering {
   def ~~(string: String): this.type = {
     @tailrec def rec(ix: Int = 0): this.type =
       if (ix < string.length) {
-        this ~~ string.charAt(ix); rec(ix + 1)
+        this ~~ string.charAt(ix);
+        rec(ix + 1)
       } else this
     rec()
   }
@@ -192,7 +194,8 @@ private[http] trait Rendering {
   def ~~(chars: Array[Char]): this.type = {
     @tailrec def rec(ix: Int = 0): this.type =
       if (ix < chars.length) {
-        this ~~ chars(ix); rec(ix + 1)
+        this ~~ chars(ix);
+        rec(ix + 1)
       } else this
     rec()
   }
@@ -248,12 +251,14 @@ private[http] object Rendering {
 private[http] class StringRendering extends Rendering {
   private[this] val sb = new java.lang.StringBuilder
   def ~~(ch: Char): this.type = {
-    sb.append(ch); this
+    sb.append(ch);
+    this
   }
   def ~~(bytes: Array[Byte]): this.type = {
     @tailrec def rec(ix: Int = 0): this.type =
       if (ix < bytes.length) {
-        this ~~ bytes(ix).asInstanceOf[Char]; rec(ix + 1)
+        this ~~ bytes(ix).asInstanceOf[Char];
+        rec(ix + 1)
       } else this
     rec()
   }

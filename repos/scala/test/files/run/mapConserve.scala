@@ -32,7 +32,8 @@ object Test {
 
   var callCount = 0
   val lastHexDigit: Function1[BigInt, AnyRef] = { x: BigInt =>
-    callCount += 1; if (x < 16) x else x % 16
+    callCount += 1;
+    if (x < 16) x else x % 16
   }
 
   def main(args: Array[String]) {

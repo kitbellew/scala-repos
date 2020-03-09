@@ -400,7 +400,8 @@ ItemId](underlying: CommandExecutorFactory[CommandExecutor])
                   Offer
                     .prioritize(
                       close.recv { t =>
-                        service.close(); error ! ReadClosedException
+                        service.close();
+                        error ! ReadClosedException
                       },
                       ack.recv { id =>
                         recv(service, closeAndOpenCommand(id))

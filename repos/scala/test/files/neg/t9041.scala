@@ -1,7 +1,8 @@
 // False negative test, requires overloading in Cell.
 
 trait Cell {
-  def setCellValue(i: Int) = (); def setCellValue(d: Double) = ()
+  def setCellValue(i: Int) = ();
+  def setCellValue(d: Double) = ()
 }
 
 trait Nope {

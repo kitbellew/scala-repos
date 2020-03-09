@@ -67,7 +67,8 @@ object PlayForkProcess {
     val process = builder.start()
     val stopLatch = new CountDownLatch(1)
     val inputThread = spawn {
-      stopLatch.await(); process.getOutputStream.close()
+      stopLatch.await();
+      process.getOutputStream.close()
     }
     val outputThread = spawn {
       BasicIO.processFully(logLine(log, Level.Info))(process.getInputStream)

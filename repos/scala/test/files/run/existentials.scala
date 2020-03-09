@@ -14,7 +14,8 @@ class Foo {
       type T
     } = new Cell(1)
     println({
-      x = new Cell("abc"); x
+      x = new Cell("abc");
+      x
     })
   }
 }
@@ -28,7 +29,8 @@ class FooW {
 
     var x: Cell[_] = new Cell(1)
     println({
-      x = new Cell("abc"); x
+      x = new Cell("abc");
+      x
     })
   }
 }
@@ -74,10 +76,13 @@ object Bug1189 {
 object Test extends App {
 
   val x = {
-    class I; class J; (new C(new I), new C(new J))
+    class I;
+    class J;
+    (new C(new I), new C(new J))
   }
   val y: (C[X], C[Y]) forSome {
-    type X; type Y
+    type X;
+    type Y
   } = x
 
   def foo(x: Counter[T] {

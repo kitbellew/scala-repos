@@ -222,8 +222,12 @@ package scala.collection.mutable {
         val mmap = mutable.TreeMap[K, V]()
 
         ops.foreach {
-          case Left((k, v)) => imap += k -> v; mmap += k -> v
-          case Right(k)     => imap -= k; mmap -= k
+          case Left((k, v)) =>
+            imap += k -> v;
+            mmap += k -> v
+          case Right(k) =>
+            imap -= k;
+            mmap -= k
         }
 
         imap.toList == mmap.toList

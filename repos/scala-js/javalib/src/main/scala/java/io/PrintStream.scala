@@ -167,31 +167,40 @@ class PrintStream private (
   }
 
   def println(b: Boolean): Unit = {
-    print(b); println()
+    print(b);
+    println()
   }
   def println(c: Char): Unit = {
-    print(c); println()
+    print(c);
+    println()
   }
   def println(i: Int): Unit = {
-    print(i); println()
+    print(i);
+    println()
   }
   def println(l: Long): Unit = {
-    print(l); println()
+    print(l);
+    println()
   }
   def println(f: Float): Unit = {
-    print(f); println()
+    print(f);
+    println()
   }
   def println(d: Double): Unit = {
-    print(d); println()
+    print(d);
+    println()
   }
   def println(s: Array[Char]): Unit = {
-    print(s); println()
+    print(s);
+    println()
   }
   def println(s: String): Unit = {
-    print(s); println()
+    print(s);
+    println()
   }
   def println(obj: AnyRef): Unit = {
-    print(obj); println()
+    print(obj);
+    println()
   }
 
   def printf(fmt: String, args: Array[Object]): PrintStream =

@@ -66,7 +66,8 @@ trait CompilerControl { self: Global =>
     *  from consideration for recompilation.
     */
   def removeUnitOf(s: SourceFile): Option[RichCompilationUnit] = {
-    toBeRemoved += s.file; unitOfFile get s.file
+    toBeRemoved += s.file;
+    unitOfFile get s.file
   }
 
   /** Returns the top level classes and objects that were deleted
@@ -88,7 +89,8 @@ trait CompilerControl { self: Global =>
   /** Locates smallest context that encloses position as an optional value.
     */
   def locateContext(pos: Position): Option[Context] =
-    for (unit <- getUnit(pos.source); cx <- locateContext(unit.contexts, pos))
+    for (unit <- getUnit(pos.source);
+         cx <- locateContext(unit.contexts, pos))
       yield cx
 
   /** Returns the smallest context that contains given `pos`, throws FatalError if none exists.

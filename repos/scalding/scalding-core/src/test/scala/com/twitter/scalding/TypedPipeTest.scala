@@ -31,7 +31,9 @@ object TUtil {
     try {
       fn
     } catch {
-      case e: Throwable => e.printStackTrace; throw e
+      case e: Throwable =>
+        e.printStackTrace;
+        throw e
     }
   }
 }
@@ -1560,7 +1562,8 @@ class NullSinkJob(args: Args, m: scala.collection.mutable.Buffer[Int])
   TypedPipe
     .from(0 to 100)
     .map { i =>
-      m += i; i
+      m += i;
+      i
     } // side effect
     .write(source.NullSink)
 }

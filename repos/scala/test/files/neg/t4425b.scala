@@ -5,22 +5,28 @@ object Test1 {
 
   def f1() {
     println("" match {
-      case _ X _ => "ok"; case _ => "fail"
+      case _ X _ => "ok";
+      case _     => "fail"
     })
     println((X: Any) match {
-      case _ X _ => "ok"; case _ => "fail"
+      case _ X _ => "ok";
+      case _     => "fail"
     })
     println("" match {
-      case X(_) => "ok"; case _ => "fail"
+      case X(_) => "ok";
+      case _    => "fail"
     })
     println((X: Any) match {
-      case X(_) => "ok"; case _ => "fail"
+      case X(_) => "ok";
+      case _    => "fail"
     })
     println("" match {
-      case X(_, _) => "ok"; case _ => "fail"
+      case X(_, _) => "ok";
+      case _       => "fail"
     })
     println((X: Any) match {
-      case X(_, _) => "ok"; case _ => "fail"
+      case X(_, _) => "ok";
+      case _       => "fail"
     })
   }
 }
@@ -32,22 +38,28 @@ object Test2 {
 
   def f1() {
     println("" match {
-      case _ X _ => "ok"; case _ => "fail"
+      case _ X _ => "ok";
+      case _     => "fail"
     })
     println((X: Any) match {
-      case _ X _ => "ok"; case _ => "fail"
+      case _ X _ => "ok";
+      case _     => "fail"
     })
     println("" match {
-      case X(_) => "ok"; case _ => "fail"
+      case X(_) => "ok";
+      case _    => "fail"
     })
     println((X: Any) match {
-      case X(_) => "ok"; case _ => "fail"
+      case X(_) => "ok";
+      case _    => "fail"
     })
     println("" match {
-      case X(_, _) => "ok"; case _ => "fail"
+      case X(_, _) => "ok";
+      case _       => "fail"
     })
     println((X: Any) match {
-      case X(_, _) => "ok"; case _ => "fail"
+      case X(_, _) => "ok";
+      case _       => "fail"
     })
   }
 }
@@ -59,22 +71,28 @@ object Test3 {
 
   def f1() {
     println("" match {
-      case _ X _ => "ok"; case _ => "fail"
+      case _ X _ => "ok";
+      case _     => "fail"
     })
     println((X: Any) match {
-      case _ X _ => "ok"; case _ => "fail"
+      case _ X _ => "ok";
+      case _     => "fail"
     })
     println("" match {
-      case X(_) => "ok"; case _ => "fail"
+      case X(_) => "ok";
+      case _    => "fail"
     })
     println((X: Any) match {
-      case X(_) => "ok"; case _ => "fail"
+      case X(_) => "ok";
+      case _    => "fail"
     })
     println("" match {
-      case X(_, _) => "ok"; case _ => "fail"
+      case X(_, _) => "ok";
+      case _       => "fail"
     })
     println((X: Any) match {
-      case X(_, _) => "ok"; case _ => "fail"
+      case X(_, _) => "ok";
+      case _       => "fail"
     })
   }
 }

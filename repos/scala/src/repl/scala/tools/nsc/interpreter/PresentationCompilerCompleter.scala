@@ -19,7 +19,8 @@ class PresentationCompilerCompleter(intp: IMain) extends Completion {
   private var lastCommonPrefixCompletion: Option[String] = None
 
   def resetVerbosity(): Unit = {
-    tabCount = 0; lastRequest = NoRequest
+    tabCount = 0;
+    lastRequest = NoRequest
   }
 
   // A convenience for testing

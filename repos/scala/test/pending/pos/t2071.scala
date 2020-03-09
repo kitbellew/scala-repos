@@ -8,13 +8,15 @@ trait Box[U]
 
 trait A {
   type T <: Iterable[S] forSome {
-    type S <: Box[U]; type U
+    type S <: Box[U];
+    type U
   }
 }
 
 trait B extends A {
   type T <: Iterable[S] forSome {
-    type S <: Box[U]; type U
+    type S <: Box[U];
+    type U
   }
 }
 /*

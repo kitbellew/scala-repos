@@ -369,7 +369,8 @@ object JsonParser {
     private[this] var curSegmentIdx = 0 // Pointer which points current segment
 
     def mark = {
-      curMark = cur; curMarkSegment = curSegmentIdx
+      curMark = cur;
+      curMarkSegment = curSegmentIdx
     }
     def back = cur = cur - 1
 

@@ -111,7 +111,8 @@ object product {
     def apply[P](implicit toMap: ToMap[P]): Aux[P, toMap.K, toMap.V] = toMap
 
     type Aux[P, K0, V0] = ToMap[P] {
-      type K = K0; type V = V0
+      type K = K0;
+      type V = V0
     }
 
     implicit def productToMap[P, K0, V0, R <: HList](implicit
@@ -171,7 +172,8 @@ object product {
       toSized
 
     type Aux[P, M[_], Lub0, N0 <: Nat] = ToSized[P, M] {
-      type Lub = Lub0; type N = N0
+      type Lub = Lub0;
+      type N = N0
     }
 
     implicit def productToSized[P, M[_], Lub0, N0 <: Nat, L <: HList](implicit

@@ -638,7 +638,8 @@ class ScUndefinedSubstitutor(
                       true,
                       ScSkolemizedType(
                         s"_$$${
-                          index += 1; index
+                          index += 1;
+                          index
                         }",
                         Nil,
                         skoLower,
@@ -690,7 +691,8 @@ class ScUndefinedSubstitutor(
                         true,
                         ScSkolemizedType(
                           s"_$$${
-                            index += 1; index
+                            index += 1;
+                            index
                           }",
                           Nil,
                           lower,
@@ -707,7 +709,8 @@ class ScUndefinedSubstitutor(
                         true,
                         ScSkolemizedType(
                           s"_$$${
-                            index += 1; index
+                            index += 1;
+                            index
                           }",
                           Nil,
                           lower,

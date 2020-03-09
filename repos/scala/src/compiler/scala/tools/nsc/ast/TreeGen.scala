@@ -233,7 +233,8 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
       within(() =>
         if (used) expr.duplicate
         else {
-          used = true; expr
+          used = true;
+          expr
         })
     } else {
       val (valDef, identFn) =
@@ -257,7 +258,8 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
           () =>
             if (used(idx)) expr.duplicate
             else {
-              used(idx) = true; expr
+              used(idx) = true;
+              expr
             }
         }
       } else {

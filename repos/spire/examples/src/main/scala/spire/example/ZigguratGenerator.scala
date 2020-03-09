@@ -44,7 +44,8 @@ object ZigguratGenerator {
 
     fnor.print("rnor = [")
     for (i <- rnor) {
-      fnor.print(i); fnor.print(", ")
+      fnor.print(i);
+      fnor.print(", ")
     }
     fnor.println("]")
     fnor.println("x = -5:0.05:5")
@@ -54,7 +55,8 @@ object ZigguratGenerator {
 
     fexp.print("rexp = [")
     for (i <- rexp) {
-      fexp.print(i); fexp.print(", ")
+      fexp.print(i);
+      fexp.print(", ")
     }
     fexp.println("]")
     fexp.println("x = -1:0.05:10")

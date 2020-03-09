@@ -70,7 +70,8 @@ class KryoSerializer {
       val asArray = new Array[AnyRef](size)
       var idx = 0
       while (idx < size) {
-        asArray(idx) = kser.readClassAndObject(in); idx += 1
+        asArray(idx) = kser.readClassAndObject(in);
+        idx += 1
       }
       // the builder is shared, so only one Serializer at a time should use it:
       // That the array of T is materialized, build:

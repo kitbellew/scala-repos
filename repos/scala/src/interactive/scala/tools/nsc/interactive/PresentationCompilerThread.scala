@@ -20,7 +20,8 @@ final class PresentationCompilerThread(var compiler: Global, name: String = "")
       compiler.checkNoResponsesOutstanding()
       compiler.log.logreplay(
         "wait for more work", {
-          compiler.scheduler.waitForMoreWork(); true
+          compiler.scheduler.waitForMoreWork();
+          true
         })
       compiler.pollForWork(compiler.NoPosition)
       while (compiler.isOutOfDate) {
@@ -51,7 +52,8 @@ final class PresentationCompilerThread(var compiler: Global, name: String = "")
             compiler.debugLog(
               "validate exception caught outside presentation compiler loop; ignored")
           case _ =>
-            ex.printStackTrace(); compiler.informIDE("Fatal Error: " + ex)
+            ex.printStackTrace();
+            compiler.informIDE("Fatal Error: " + ex)
         }
     }
   }

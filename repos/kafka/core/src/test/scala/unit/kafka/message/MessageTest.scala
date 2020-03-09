@@ -50,7 +50,10 @@ class MessageTest extends JUnitSuite {
       LZ4CompressionCodec)
     val timestamps = Array(Message.NoTimestamp, 0L, 1L)
     val magicValues = Array(Message.MagicValue_V0, Message.MagicValue_V1)
-    for (k <- keys; v <- vals; codec <- codecs; t <- timestamps;
+    for (k <- keys;
+         v <- vals;
+         codec <- codecs;
+         t <- timestamps;
          mv <- magicValues) {
       val timestamp = ensureValid(mv, t)
       messages += new MessageTestVal(

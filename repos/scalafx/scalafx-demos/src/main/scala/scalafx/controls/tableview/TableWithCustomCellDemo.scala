@@ -74,7 +74,8 @@ object TableWithCustomCellDemo extends JFXApp {
               new TableCell[Person, Color] {
                 item.onChange { (_, _, newColor) =>
                   graphic = new Circle {
-                    fill = newColor; radius = 8
+                    fill = newColor;
+                    radius = 8
                   }
                 }
               }

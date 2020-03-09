@@ -87,9 +87,12 @@ class Run(instance: ScalaInstance, trapExit: Boolean, nativeTmp: File)
       }
     def directExecute() =
       try {
-        execute(); None
+        execute();
+        None
       } catch {
-        case e: Exception => log.trace(e); Some(e.toString)
+        case e: Exception =>
+          log.trace(e);
+          Some(e.toString)
       }
 
     if (trapExit) Run.executeTrapExit(execute(), log) else directExecute()

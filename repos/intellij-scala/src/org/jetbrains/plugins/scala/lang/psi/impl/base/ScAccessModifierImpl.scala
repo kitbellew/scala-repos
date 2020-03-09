@@ -165,9 +165,11 @@ class ScAccessModifierImpl private (
           }
           def append(e: PsiElement) {
             e match {
-              case null                 =>
-              case td: ScTypeDefinition => buff += td; append(td.getParent)
-              case file: ScalaFile      => processPackages("")
+              case null =>
+              case td: ScTypeDefinition =>
+                buff += td;
+                append(td.getParent)
+              case file: ScalaFile => processPackages("")
               case container: ScPackageContainer =>
                 processPackages(container.fqn)
               case _ => append(e.getParent)

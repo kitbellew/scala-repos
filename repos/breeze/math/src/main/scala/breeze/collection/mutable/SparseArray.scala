@@ -143,7 +143,8 @@ final class SparseArray[@specialized(Double, Int, Float, Long) V](
   def filter(f: V => Boolean): SparseArray[V] = {
     val newIndex = new Array[Int](used)
     val newData = ArrayUtil.copyOf(data, used)
-    var i = 0; var o = 0
+    var i = 0;
+    var o = 0
     while (i < used) {
       if (f(data(i))) {
         newIndex(o) = index(i) - (i - o)

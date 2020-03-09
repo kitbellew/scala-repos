@@ -47,6 +47,7 @@ trait Shrinkable[-A] {
     *  @return the $coll itself
     */
   def --=(xs: TraversableOnce[A]): this.type = {
-    xs foreach -=; this
+    xs foreach -=;
+    this
   }
 }

@@ -69,17 +69,21 @@ object Receiver {
   private def empty[T](ctx: ActorContext[Any]): Behavior[Command[T]] =
     Total {
       case ExternalAddress(replyTo) ⇒ {
-        replyTo ! ctx.self; Same
+        replyTo ! ctx.self;
+        Same
       }
       case g @ GetOne(d) if d <= Duration.Zero ⇒ {
-        g.replyTo ! GetOneResult(ctx.self, None); Same
+        g.replyTo ! GetOneResult(ctx.self, None);
+        Same
       }
       case g @ GetOne(d) ⇒ asked(ctx, Queue(Asked(g.replyTo, Deadline.now + d)))
       case g @ GetAll(d) if d <= Duration.Zero ⇒ {
-        g.replyTo ! GetAllResult(ctx.self, Nil); Same
+        g.replyTo ! GetAllResult(ctx.self, Nil);
+        Same
       }
       case g @ GetAll(d) ⇒ {
-        ctx.schedule(d, ctx.self, GetAll(Duration.Zero)(g.replyTo)); Same
+        ctx.schedule(d, ctx.self, GetAll(Duration.Zero)(g.replyTo));
+        Same
       }
       case Enqueue(msg) ⇒ queued(ctx, msg)
     }
@@ -125,7 +129,8 @@ object Receiver {
       case Msg(_, msg) ⇒
         msg match {
           case ExternalAddress(replyTo) ⇒ {
-            replyTo ! ctx.self; Same
+            replyTo ! ctx.self;
+            Same
           }
           case g @ GetOne(d) if d <= Duration.Zero ⇒
             g.replyTo ! GetOneResult(ctx.self, None)

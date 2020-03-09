@@ -55,10 +55,12 @@ class BehaviorSpec extends TypedSpec {
     def next: State
   }
   val StateA: State = new State {
-    override def toString = "StateA"; override def next = StateB
+    override def toString = "StateA";
+    override def next = StateB
   }
   val StateB: State = new State {
-    override def toString = "StateB"; override def next = StateA
+    override def toString = "StateB";
+    override def next = StateA
   }
 
   trait Common {
@@ -461,26 +463,32 @@ class BehaviorSpec extends TypedSpec {
           inbox.ref,
           Partial[Command] {
             case AuxPing(id) ⇒ {
-              self ! AuxPing(0); second(self)
+              self ! AuxPing(0);
+              second(self)
             }
           })
       def second(self: ActorRef[Command]) = Partial[Command] {
         case AuxPing(0) ⇒ {
-          self ! AuxPing(1); Same
+          self ! AuxPing(1);
+          Same
         }
         case AuxPing(1) ⇒ {
-          self ! AuxPing(2); third(self)
+          self ! AuxPing(2);
+          third(self)
         }
       }
       def third(self: ActorRef[Command]) = Partial[Command] {
         case AuxPing(2) ⇒ {
-          self ! AuxPing(3); Unhandled
+          self ! AuxPing(3);
+          Unhandled
         }
         case AuxPing(3) ⇒ {
-          self ! Ping; Same
+          self ! Ping;
+          Same
         }
         case AuxPing(4) ⇒ {
-          self ! Stop; Stopped
+          self ! Stop;
+          Stopped
         }
       }
       SynchronousSelf(self ⇒ Or(mkFull(monitor), first(self)))

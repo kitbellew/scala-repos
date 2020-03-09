@@ -504,7 +504,8 @@ trait JavaScanners extends ast.parser.ScannersCommon {
                 token = DOT
                 in.next()
                 if ('0' <= in.ch && in.ch <= '9') {
-                  putChar('.'); getFraction()
+                  putChar('.');
+                  getFraction()
                 } else if (in.ch == '.') {
                   in.next()
                   if (in.ch == '.') {
@@ -580,17 +581,29 @@ trait JavaScanners extends ast.parser.ScannersCommon {
     protected def skipComment(): Boolean = {
       @tailrec def skipLineComment(): Unit = in.ch match {
         case CR | LF | SU =>
-        case _            => in.next; skipLineComment()
+        case _ =>
+          in.next;
+          skipLineComment()
       }
       @tailrec def skipJavaComment(): Unit = in.ch match {
-        case SU  => incompleteInputError("unclosed comment")
-        case '*' => in.next; if (in.ch == '/') in.next else skipJavaComment()
-        case _   => in.next; skipJavaComment()
+        case SU => incompleteInputError("unclosed comment")
+        case '*' =>
+          in.next;
+          if (in.ch == '/') in.next else skipJavaComment()
+        case _ =>
+          in.next;
+          skipJavaComment()
       }
       in.ch match {
-        case '/' => in.next; skipLineComment(); true
-        case '*' => in.next; skipJavaComment(); true
-        case _   => false
+        case '/' =>
+          in.next;
+          skipLineComment();
+          true
+        case '*' =>
+          in.next;
+          skipJavaComment();
+          true
+        case _ => false
       }
     }
 

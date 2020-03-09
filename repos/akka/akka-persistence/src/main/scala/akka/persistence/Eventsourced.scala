@@ -219,7 +219,8 @@ private[persistence] trait Eventsourced
   /** INTERNAL API. */
   override protected[akka] def aroundPreStart(): Unit = {
     // Fail fast on missing plugins.
-    val j = journal; val s = snapshotStore
+    val j = journal;
+    val s = snapshotStore
     startRecovery(recovery)
     super.aroundPreStart()
   }
@@ -658,7 +659,9 @@ private[persistence] trait Eventsourced
             peekApplyHandler(p.payload)
             onWriteMessageComplete(err = false)
           } catch {
-            case NonFatal(e) ⇒ onWriteMessageComplete(err = true); throw e
+            case NonFatal(e) ⇒
+              onWriteMessageComplete(err = true);
+              throw e
           }
         }
       case WriteMessageRejected(p, cause, id) ⇒
@@ -685,7 +688,9 @@ private[persistence] trait Eventsourced
             peekApplyHandler(l)
             onWriteMessageComplete(err = false)
           } catch {
-            case NonFatal(e) ⇒ onWriteMessageComplete(err = true); throw e
+            case NonFatal(e) ⇒
+              onWriteMessageComplete(err = true);
+              throw e
           }
         }
       case WriteMessagesSuccessful ⇒
@@ -714,7 +719,9 @@ private[persistence] trait Eventsourced
           Eventsourced.super.aroundReceive(receive, message)
           aroundReceiveComplete(err = false)
         } catch {
-          case NonFatal(e) ⇒ aroundReceiveComplete(err = true); throw e
+          case NonFatal(e) ⇒
+            aroundReceiveComplete(err = true);
+            throw e
         }
 
     private def aroundReceiveComplete(err: Boolean): Unit = {

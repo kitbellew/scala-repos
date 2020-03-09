@@ -126,11 +126,13 @@ class StringBufferTest {
 
     assertEquals(
       "foo", {
-        buf.setLength(3); buf.toString
+        buf.setLength(3);
+        buf.toString
       })
     assertEquals(
       "foo\u0000\u0000\u0000", {
-        buf.setLength(6); buf.toString
+        buf.setLength(6);
+        buf.toString
       })
   }
 
@@ -274,11 +276,13 @@ class StringBuilderTest {
 
     assertEquals(
       "foo", {
-        b.setLength(3); b.toString
+        b.setLength(3);
+        b.toString
       })
     assertEquals(
       "foo\u0000\u0000\u0000", {
-        b.setLength(6); b.toString
+        b.setLength(6);
+        b.toString
       })
   }
 

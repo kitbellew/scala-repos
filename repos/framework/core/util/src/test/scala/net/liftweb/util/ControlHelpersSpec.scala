@@ -36,7 +36,8 @@ object ControlHelpersSpec extends Specification {
     }
     val exception = new RuntimeException("ko")
     def failureBlock = {
-      throw exception; ()
+      throw exception;
+      ()
     }
 
     "return a Failure if the tested block throws an exception" in {
@@ -56,7 +57,8 @@ object ControlHelpersSpec extends Specification {
     }
     "trigger a callback function with the exception if the tested block throws an exception" in {
       val callback = (e: Throwable) => {
-        e must_== exception; ()
+        e must_== exception;
+        ()
       }
       tryo(callback) {
         failureBlock
@@ -65,7 +67,8 @@ object ControlHelpersSpec extends Specification {
     }
     "trigger a callback function with the exception if the tested block throws an exception even if it is ignored" in {
       val callback = (e: Throwable) => {
-        e must_== exception; ()
+        e must_== exception;
+        ()
       }
       tryo(List(classOf[RuntimeException]), Full(callback)) {
         failureBlock

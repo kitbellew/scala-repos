@@ -46,7 +46,8 @@ object M1 {
 
     def While(c: => Boolean)(b: => Unit): Unit =
       if (c) {
-        b; While(c)(b)
+        b;
+        While(c)(b)
       } else ();
 
     def swap(i: Int, j: Int): Unit = {

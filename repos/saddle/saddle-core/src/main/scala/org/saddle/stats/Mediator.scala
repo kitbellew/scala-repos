@@ -258,7 +258,8 @@ class Mediator(winSz: Int) {
           if (minCt < (winSz - 1) / 2) {
             minCt += 1
           } else if (v > old) {
-            minSortDown(p); reSort = false
+            minSortDown(p);
+            reSort = false
           }
           if (reSort && minSortUp(p) && cas(0, -1)) {
             maxSortDown(-1)
@@ -268,7 +269,8 @@ class Mediator(winSz: Int) {
           if (maxCt < winSz / 2) {
             maxCt += 1
           } else if (v < old) {
-            maxSortDown(p); reSort = false
+            maxSortDown(p);
+            reSort = false
           }
           if (reSort && maxSortUp(p) && (minCt != 0) && cas(1, 0)) {
             minSortDown(1)
@@ -323,9 +325,11 @@ class Mediator(winSz: Int) {
     println("+H:  %6d" format maxCt)
     println("-H:  %6d" format minCt)
     println("-------------------- DATA LAYOUT --------------------")
-    print("Max: "); printMaxHeap()
+    print("Max: ");
+    printMaxHeap()
     println("Mid: %6.2f" format data(heap(hMid)))
-    print("Min: "); printMinHeap()
+    print("Min: ");
+    printMinHeap()
     println("---------------------- ARRAYS -----------------------")
     println("  i |       DATA |       HEAP |         LOC | sawNA |")
     println("-----------------------------------------------------")

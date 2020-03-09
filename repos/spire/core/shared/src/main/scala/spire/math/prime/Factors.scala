@@ -74,7 +74,8 @@ case class Factors(factors: Map[SafeLong, Int], sign: Sign)
         var t = SafeLong.one
         val it = iterator
         while (it.hasNext && t <= rhs) {
-          val (p, e) = it.next(); t *= (p ** e)
+          val (p, e) = it.next();
+          t *= (p ** e)
         }
         t compare rhs
       case Zero =>
@@ -83,7 +84,8 @@ case class Factors(factors: Map[SafeLong, Int], sign: Sign)
         var t = -SafeLong.one
         val it = iterator
         while (it.hasNext && t >= rhs) {
-          val (p, e) = it.next(); t *= (p ** e)
+          val (p, e) = it.next();
+          t *= (p ** e)
         }
         t compare rhs
     }

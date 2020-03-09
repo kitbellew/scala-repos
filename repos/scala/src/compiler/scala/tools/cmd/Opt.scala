@@ -60,29 +60,39 @@ object Opt {
     import options._
 
     def --? = {
-      addUnary(opt); false
+      addUnary(opt);
+      false
     }
     def -->(body: => Unit) = {
-      addUnary(opt); false
+      addUnary(opt);
+      false
     }
     def --| = {
-      addBinary(opt); None
+      addBinary(opt);
+      None
     }
     def --^[T: FromString] = {
-      addBinary(opt); None
+      addBinary(opt);
+      None
     }
 
     def defaultTo[T: FromString](default: T) = {
-      addBinary(opt); addHelpDefault(() => default.toString); default
+      addBinary(opt);
+      addHelpDefault(() => default.toString);
+      default
     }
     def defaultToEnv(envVar: String) = {
-      addBinary(opt); addHelpEnvDefault(envVar); ""
+      addBinary(opt);
+      addHelpEnvDefault(envVar);
+      ""
     }
     def choiceOf[T: FromString](choices: T*) = {
-      addBinary(opt); None
+      addBinary(opt);
+      None
     }
     def expandTo(args: String*) = {
-      addExpand(name, args.toList); addHelpAlias(() => args mkString " ")
+      addExpand(name, args.toList);
+      addHelpAlias(() => args mkString " ")
     }
 
     def /(descr: String) =
@@ -97,7 +107,9 @@ object Opt {
       with Error {
     def --? = parsed isSet opt
     def -->(body: => Unit) = {
-      val isSet = parsed isSet opt; if (isSet) body; isSet
+      val isSet = parsed isSet opt;
+      if (isSet) body;
+      isSet
     }
     def --| = parsed get opt
     def --^[T: FromString] = {

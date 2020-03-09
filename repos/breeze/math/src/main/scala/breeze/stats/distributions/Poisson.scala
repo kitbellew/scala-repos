@@ -60,7 +60,8 @@ case class Poisson(mean: Double)(implicit rand: RandBasis = Rand)
         var s = t1
         while (true) {
           k1 += 1
-          t1 *= mean / k1; s += t1
+          t1 *= mean / k1;
+          s += t1
           if (s > u) return k1
           if (k2 > 0) {
             t2 *= k2 / mean

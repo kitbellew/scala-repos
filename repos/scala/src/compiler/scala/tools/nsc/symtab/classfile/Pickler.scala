@@ -470,28 +470,44 @@ abstract class Pickler extends SubComponent {
       // ugliness and thrift aside, this should make this somewhat more backward compatible
       // (I'm not sure how old scalac's would deal with nested PolyTypes, as these used to be folded into one)
       def writeTypeBody(tpe: Type): Unit = tpe match {
-        case NoType | NoPrefix    =>
-        case ThisType(sym)        => writeRef(sym)
-        case SingleType(pre, sym) => writeRef(pre); writeRef(sym)
+        case NoType | NoPrefix =>
+        case ThisType(sym)     => writeRef(sym)
+        case SingleType(pre, sym) =>
+          writeRef(pre);
+          writeRef(sym)
         case SuperType(thistpe, supertpe) =>
-          writeRef(thistpe); writeRef(supertpe)
+          writeRef(thistpe);
+          writeRef(supertpe)
         case ConstantType(value) => writeRef(value)
-        case TypeBounds(lo, hi)  => writeRef(lo); writeRef(hi)
+        case TypeBounds(lo, hi) =>
+          writeRef(lo);
+          writeRef(hi)
         case TypeRef(pre, sym, args) =>
-          writeRef(pre); writeRef(sym); writeRefs(args)
-        case MethodType(formals, restpe) => writeRef(restpe); writeRefs(formals)
-        case NullaryMethodType(restpe)   => writeRef(restpe); writeRefs(Nil)
-        case PolyType(tparams, restpe)   => writeRef(restpe); writeRefs(tparams)
+          writeRef(pre);
+          writeRef(sym);
+          writeRefs(args)
+        case MethodType(formals, restpe) =>
+          writeRef(restpe);
+          writeRefs(formals)
+        case NullaryMethodType(restpe) =>
+          writeRef(restpe);
+          writeRefs(Nil)
+        case PolyType(tparams, restpe) =>
+          writeRef(restpe);
+          writeRefs(tparams)
         case ExistentialType(tparams, restpe) =>
-          writeRef(restpe); writeRefs(tparams)
+          writeRef(restpe);
+          writeRefs(tparams)
         case StaticallyAnnotatedType(annots, tp) =>
-          writeRef(tp); writeRefs(annots)
+          writeRef(tp);
+          writeRefs(annots)
         case AnnotatedType(_, tp) =>
           writeTypeBody(
             tp
           ) // write the underlying type if there are no static annotations
         case CompoundType(parents, _, clazz) =>
-          writeRef(clazz); writeRefs(parents)
+          writeRef(clazz);
+          writeRefs(parents)
       }
 
       def writeTreeBody(tree: Tree) {

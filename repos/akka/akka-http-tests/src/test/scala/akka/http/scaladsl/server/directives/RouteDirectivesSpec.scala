@@ -30,16 +30,19 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
       Put() ~> {
         get {
           complete {
-            i += 1; "get"
+            i += 1;
+            "get"
           }
         } ~
           put {
             complete {
-              i += 1; "put"
+              i += 1;
+              "put"
             }
           } ~
           (post & complete {
-            i += 1; "post"
+            i += 1;
+            "post"
           })
       } ~> check {
         responseAs[String] shouldEqual "put"

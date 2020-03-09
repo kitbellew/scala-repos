@@ -369,7 +369,9 @@ class ReassignPartitionsCommand(
           "Partition reassignment currently in " +
             "progress for %s. Aborting operation".format(
               partitionsBeingReassigned))
-      case e: Throwable => error("Admin command failed", e); false
+      case e: Throwable =>
+        error("Admin command failed", e);
+        false
     }
   }
 

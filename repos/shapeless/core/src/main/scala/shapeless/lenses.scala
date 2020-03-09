@@ -519,7 +519,8 @@ trait MkPathOptic[S, P <: HList] {
 
 trait LowPriorityMkPathOptic {
   type Aux[S, P <: HList, Out0, E0] = MkPathOptic[S, P] {
-    type Out = Out0; type Elem = E0
+    type Out = Out0;
+    type Elem = E0
   }
 
   type Aux1[S, P <: HList, Out0] = MkPathOptic[S, P] {

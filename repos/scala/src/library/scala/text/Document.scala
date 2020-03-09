@@ -68,16 +68,20 @@ abstract class Document {
     def spaces(n: Int) {
       var rem = n
       while (rem >= 16) {
-        writer write "                "; rem -= 16
+        writer write "                ";
+        rem -= 16
       }
       if (rem >= 8) {
-        writer write "        "; rem -= 8
+        writer write "        ";
+        rem -= 8
       }
       if (rem >= 4) {
-        writer write "    "; rem -= 4
+        writer write "    ";
+        rem -= 4
       }
       if (rem >= 2) {
-        writer write "  "; rem -= 2
+        writer write "  ";
+        rem -= 2
       }
       if (rem == 1) {
         writer write " "

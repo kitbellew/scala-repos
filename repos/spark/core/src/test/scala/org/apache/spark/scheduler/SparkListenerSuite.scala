@@ -407,7 +407,8 @@ class SparkListenerSuite
     val f = sc
       .parallelize(1 to 10000, numTasks)
       .map { i =>
-        Thread.sleep(10); i
+        Thread.sleep(10);
+        i
       }
       .countAsync()
     // Wait until one task has started (because we want to make sure that any tasks that are started

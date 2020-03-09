@@ -755,7 +755,8 @@ private[math] object Logical {
         val limit = Math.min(positive.numberLength, negative.numberLength)
         i += 1
         while (i < limit && {
-                 digit = positive.digits(i) ^ ~negative.digits(i); digit
+                 digit = positive.digits(i) ^ ~negative.digits(i);
+                 digit
                } == 0) {
           i += 1
         }

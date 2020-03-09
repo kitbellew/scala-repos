@@ -810,19 +810,22 @@ object DenseVector
         } else if (n == 2) {
           var sum = 0.0
           foreach(v => {
-            val nn = v.abs.toDouble; sum += nn * nn
+            val nn = v.abs.toDouble;
+            sum += nn * nn
           })
           math.sqrt(sum)
         } else if (n == Double.PositiveInfinity) {
           var max = 0.0
           foreach(v => {
-            val nn = v.abs.toDouble; if (nn > max) max = nn
+            val nn = v.abs.toDouble;
+            if (nn > max) max = nn
           })
           max
         } else {
           var sum = 0.0
           foreach(v => {
-            val nn = v.abs.toDouble; sum += math.pow(nn, n)
+            val nn = v.abs.toDouble;
+            sum += math.pow(nn, n)
           })
           math.pow(sum, 1.0 / n)
         }
@@ -900,7 +903,8 @@ object DenseVector
         extends Isomorphism[Double, DenseVector[Double]] {
       def forward(t: Double) = DenseVector(t)
       def backward(t: DenseVector[Double]) = {
-        assert(t.size == 1); t(0)
+        assert(t.size == 1);
+        t(0)
       }
     }
 
@@ -908,7 +912,8 @@ object DenseVector
         extends Isomorphism[(Double, Double), DenseVector[Double]] {
       def forward(t: (Double, Double)) = DenseVector(t._1, t._2)
       def backward(t: DenseVector[Double]) = {
-        assert(t.size == 2); (t(0), t(1))
+        assert(t.size == 2);
+        (t(0), t(1))
       }
     }
   }

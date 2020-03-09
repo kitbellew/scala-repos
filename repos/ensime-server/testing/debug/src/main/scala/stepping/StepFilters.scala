@@ -16,7 +16,8 @@ class StepFilters {
 
     foo(mutableVar, immutableVal)
 
-    fors(); bridges()
+    fors();
+    bridges()
   }
 
   def fors() {

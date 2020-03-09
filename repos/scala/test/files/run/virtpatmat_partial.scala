@@ -132,7 +132,8 @@ object Test extends App {
     def acceptClosingAngle(in: Int) {
       val closers: PartialFunction[Int, Int] = x =>
         {
-          println("hai!"); (x + 1)
+          println("hai!");
+          (x + 1)
         } match {
           case GTGTGTEQ => GTGTEQ
           case GTGTGT   => GTGT

@@ -170,7 +170,9 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
               myChildren add newNode
               currentTail = newTail
               indexCount += 1
-            case _ => returnChildren(); return
+            case _ =>
+              returnChildren();
+              return
           }
         }
 

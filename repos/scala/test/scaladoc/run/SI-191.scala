@@ -49,7 +49,8 @@ object Test extends ScaladocModelTest {
     def check(memberDef: Def, expected: Int) {
       val externals = memberDef.valueParams(0)(0).resultType.refEntity collect {
         case (_, (LinkToExternal(name, url), _)) =>
-          assert(url.contains(scalaURL)); name
+          assert(url.contains(scalaURL));
+          name
       }
       assert(externals.size == expected)
     }
@@ -74,7 +75,8 @@ object Test extends ScaladocModelTest {
 
     def isExpectedExternalLink(l: EntityLink) = l.link match {
       case LinkToExternal(name, url) =>
-        assert(expectedUrls contains url, url); true
+        assert(expectedUrls contains url, url);
+        true
       case _ => false
     }
 

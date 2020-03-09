@@ -182,12 +182,16 @@ object ImageUtils extends Logging {
           trace("Got entity for " + imageSrc)
           writeEntityContentsToDisk(entity, linkhash, imageSrc, config) match {
             case Some(locallyStoredImage) =>
-              trace("Img Write successfull to disk"); Some(locallyStoredImage)
+              trace("Img Write successfull to disk");
+              Some(locallyStoredImage)
             case None =>
-              trace("Unable to write contents to disk: " + imageSrc); None
+              trace("Unable to write contents to disk: " + imageSrc);
+              None
           }
         }
-        case None => trace("Unable to fetch entity for: " + imageSrc); None
+        case None =>
+          trace("Unable to fetch entity for: " + imageSrc);
+          None
       }
     } catch {
       case e: Exception => {
@@ -314,7 +318,10 @@ object ImageUtils extends Logging {
           try {
             Option(response.getEntity)
           } catch {
-            case e: Exception => warn(e, e.toString); httpget.abort(); None
+            case e: Exception =>
+              warn(e, e.toString);
+              httpget.abort();
+              None
           }
         }
 

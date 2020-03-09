@@ -124,7 +124,8 @@ object TracedT extends TracedTInstances {
         type A = AB
       },
       U2: Unapply2[Profunctor, AB] {
-        type A = A0; type B = B0
+        type A = A0;
+        type B = B0
       },
       L: Leibniz.===[AB, A0 => B0]
   ): TracedT[U1.M, A0, B0] = TracedT(L.subst[U1.M](U1(wab)))

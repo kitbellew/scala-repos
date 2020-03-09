@@ -508,7 +508,8 @@ class Regex private[matching] (val pattern: Pattern, groupNames: String*)
       target: CharSequence,
       replacer: Match => Option[String]): String = {
     val it = new Regex.MatchIterator(target, this, groupNames).replacementData
-    for (matchdata <- it; replacement <- replacer(matchdata))
+    for (matchdata <- it;
+         replacement <- replacer(matchdata))
       it replace replacement
 
     it.replaced
@@ -712,7 +713,9 @@ object Regex {
       *  so that match is valid even once matcher is advanced.
       */
     def force: this.type = {
-      starts; ends; this
+      starts;
+      ends;
+      this
     }
   }
 
@@ -802,7 +805,8 @@ object Regex {
     def matchData: Iterator[Match] = new AbstractIterator[Match] {
       def hasNext = self.hasNext
       def next = {
-        self.next(); new Match(source, matcher, groupNames).force
+        self.next();
+        new Match(source, matcher, groupNames).force
       }
     }
 
@@ -812,7 +816,8 @@ object Regex {
         def matcher = self.matcher
         def hasNext = self.hasNext
         def next = {
-          self.next(); new Match(source, matcher, groupNames).force
+          self.next();
+          new Match(source, matcher, groupNames).force
         }
       }
   }

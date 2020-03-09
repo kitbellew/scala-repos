@@ -23,7 +23,8 @@ abstract class StatisticsInfo {
     retainedCount.value = 0
     for (c <- retainedByType.keys)
       retainedByType(c).value = 0
-    for (u <- currentRun.units; t <- u.body) {
+    for (u <- currentRun.units;
+         t <- u.body) {
       retainedCount.value += 1
       retainedByType(t.getClass).value += 1
     }

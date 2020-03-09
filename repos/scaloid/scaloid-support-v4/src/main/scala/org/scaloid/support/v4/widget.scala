@@ -65,7 +65,8 @@ trait TraitResourceCursorAdapter[
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/widget/ResourceCursorAdapter.html#setDropDownViewResource(int) setDropDownViewResource(int)]]`
     */
   @inline def dropDownViewResource_=(p: Int) = {
-    basis.setDropDownViewResource(p); basis
+    basis.setDropDownViewResource(p);
+    basis
   }
 
   @inline def viewResource(implicit no: NoGetterForThisProperty): Nothing =
@@ -80,7 +81,8 @@ trait TraitResourceCursorAdapter[
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/widget/ResourceCursorAdapter.html#setViewResource(int) setViewResource(int)]]`
     */
   @inline def viewResource_=(p: Int) = {
-    basis.setViewResource(p); basis
+    basis.setViewResource(p);
+    basis
   }
 
 }
@@ -123,7 +125,8 @@ trait TraitCursorAdapter[This <: android.support.v4.widget.CursorAdapter]
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/widget/CursorAdapter.html#setFilterQueryProvider(android.widget.FilterQueryProvider) setFilterQueryProvider(android.widget.FilterQueryProvider)]]`
     */
   @inline def filterQueryProvider_=(p: android.widget.FilterQueryProvider) = {
-    basis.setFilterQueryProvider(p); basis
+    basis.setFilterQueryProvider(p);
+    basis
   }
 
 }
@@ -159,7 +162,8 @@ trait TraitSimpleCursorAdapter[
     */
   @inline def cursorToStringConverter_=(
       p: android.support.v4.widget.SimpleCursorAdapter.CursorToStringConverter) = {
-    basis.setCursorToStringConverter(p); basis
+    basis.setCursorToStringConverter(p);
+    basis
   }
 
   /**
@@ -176,7 +180,8 @@ trait TraitSimpleCursorAdapter[
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/widget/SimpleCursorAdapter.html#setStringConversionColumn(int) setStringConversionColumn(int)]]`
     */
   @inline def stringConversionColumn_=(p: Int) = {
-    basis.setStringConversionColumn(p); basis
+    basis.setStringConversionColumn(p);
+    basis
   }
 
   /**
@@ -196,7 +201,8 @@ trait TraitSimpleCursorAdapter[
     */
   @inline def viewBinder_=(
       p: android.support.v4.widget.SimpleCursorAdapter.ViewBinder) = {
-    basis.setViewBinder(p); basis
+    basis.setViewBinder(p);
+    basis
   }
 
 }

@@ -149,7 +149,9 @@ class ErrorFormatter(
         case Nil ⇒ sb.append("???")
         case head :: Nil ⇒ sb.append(head)
         case head :: last :: Nil ⇒ sb.append(head).append(" or ").append(last)
-        case head :: tail ⇒ sb.append(head).append(", "); rec(tail)
+        case head :: tail ⇒
+          sb.append(head).append(", ");
+          rec(tail)
       }
     rec(formatExpectedAsList(error))
   }

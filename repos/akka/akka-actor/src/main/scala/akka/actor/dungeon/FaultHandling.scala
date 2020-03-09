@@ -208,10 +208,12 @@ private[akka] trait FaultHandling { this: ActorCell ⇒
       // suspend children
       val skip: Set[ActorRef] = currentMessage match {
         case Envelope(Failed(_, _, _), child) ⇒ {
-          setFailed(child); Set(child)
+          setFailed(child);
+          Set(child)
         }
         case _ ⇒ {
-          setFailed(self); Set.empty
+          setFailed(self);
+          Set.empty
         }
       }
       suspendChildren(exceptFor = skip ++ childrenNotToSuspend)

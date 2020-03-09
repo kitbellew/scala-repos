@@ -37,7 +37,8 @@ trait PackageObject extends Steroids with WithFuture {
   implicit final class LilaPimpedString(s: String) {
 
     def boot[A](v: => A): A = {
-      lila.log.boot.info(s); v
+      lila.log.boot.info(s);
+      v
     }
   }
 

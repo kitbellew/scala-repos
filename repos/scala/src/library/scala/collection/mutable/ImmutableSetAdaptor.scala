@@ -45,11 +45,13 @@ class ImmutableSetAdaptor[A](protected var set: immutable.Set[A])
   def iterator: Iterator[A] = set.iterator
 
   def +=(elem: A): this.type = {
-    set = set + elem; this
+    set = set + elem;
+    this
   }
 
   def -=(elem: A): this.type = {
-    set = set - elem; this
+    set = set - elem;
+    this
   }
 
   override def clear(): Unit = {

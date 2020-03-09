@@ -74,6 +74,7 @@ object Incomplete extends Enumeration {
     exceptions.all
   }
   def show(tpe: Value) = tpe match {
-    case Skipped => "skipped"; case Error => "error"
+    case Skipped => "skipped";
+    case Error   => "error"
   }
 }

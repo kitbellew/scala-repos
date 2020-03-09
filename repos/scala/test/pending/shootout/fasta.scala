@@ -66,7 +66,8 @@ object fasta {
     a map (frequency =>
       frequency match {
         case (code, percent) =>
-          cp = cp + percent; new Frequency(code.toByte, cp)
+          cp = cp + percent;
+          new Frequency(code.toByte, cp)
       })
   }
 
@@ -76,7 +77,8 @@ object fasta {
 // make the code more readable than index numbers
 
 class Frequency(_code: Byte, _percent: Double) {
-  var code = _code; var percent = _percent;
+  var code = _code;
+  var percent = _percent;
 }
 
 // extend the Java BufferedOutputStream class
@@ -92,7 +94,9 @@ class FastaOutputStream(out: OutputStream) extends BufferedOutputStream(out) {
 
   def writeRepeatingSequence(_alu: String, length: Int) = {
     val alu = _alu.getBytes
-    var n = length; var k = 0; val kn = alu.length;
+    var n = length;
+    var k = 0;
+    val kn = alu.length;
 
     while (n > 0) {
       val m = if (n < LineLength) n else LineLength
@@ -102,7 +106,8 @@ class FastaOutputStream(out: OutputStream) extends BufferedOutputStream(out) {
         if (k == kn) k = 0
         val b = alu(k)
         if (count < buf.length) {
-          buf(count) = b; count = count + 1
+          buf(count) = b;
+          count = count + 1
         } else {
           write(b)
         } // flush buffer
@@ -125,7 +130,8 @@ class FastaOutputStream(out: OutputStream) extends BufferedOutputStream(out) {
       while (i < m) {
         val b = selectRandom(distribution)
         if (count < buf.length) {
-          buf(count) = b; count = count + 1
+          buf(count) = b;
+          count = count + 1
         } else {
           write(b)
         } // flush buffer
@@ -133,7 +139,8 @@ class FastaOutputStream(out: OutputStream) extends BufferedOutputStream(out) {
       }
 
       if (count < buf.length) {
-        buf(count) = nl; count = count + 1
+        buf(count) = nl;
+        count = count + 1
       } else {
         write(nl)
       } // flush buffer

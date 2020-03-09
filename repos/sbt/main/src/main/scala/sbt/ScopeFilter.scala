@@ -96,7 +96,8 @@ object ScopeFilter {
     /** Selects all scopes that apply to a single project.  Global and build-level scopes are excluded. */
     def inAnyProject: ProjectFilter =
       selectAxis(const {
-        case p: ProjectRef => true; case _ => false
+        case p: ProjectRef => true;
+        case _             => false
       })
 
     /** Accepts all values for the task axis except Global. */

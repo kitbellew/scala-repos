@@ -345,7 +345,8 @@ trait EvalSemigroup[A] extends Semigroup[Eval[A]] {
   implicit def algebra: Semigroup[A]
   def combine(lx: Eval[A], ly: Eval[A]): Eval[A] =
     for {
-      x <- lx; y <- ly
+      x <- lx;
+      y <- ly
     } yield x |+| y
 }
 
@@ -360,6 +361,7 @@ trait EvalGroup[A] extends Group[Eval[A]] with EvalMonoid[A] {
     lx.map(_.inverse)
   override def remove(lx: Eval[A], ly: Eval[A]): Eval[A] =
     for {
-      x <- lx; y <- ly
+      x <- lx;
+      y <- ly
     } yield x |-| y
 }

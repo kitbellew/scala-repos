@@ -170,12 +170,14 @@ trait StringHelpers {
     else {
       in.charAt(pos) match {
         case c if Character.isDigit(c) =>
-          out.append(c); capify(in, pos + 1, max, false, false, out)
+          out.append(c);
+          capify(in, pos + 1, max, false, false, out)
         case c if Character.isLetter(c) =>
           out.append(if (lastLetter) c else Character.toUpperCase(c));
           capify(in, pos + 1, max, true, false, out)
         case c if (c == ' ' || c == '_') && !lastSymbol =>
-          out.append(c); capify(in, pos + 1, max, false, true, out)
+          out.append(c);
+          capify(in, pos + 1, max, false, true, out)
         case _ => capify(in, pos + 1, max, false, true, out)
       }
     }

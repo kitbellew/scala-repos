@@ -462,7 +462,8 @@ class StreamingContextSuite
     val inputStream = addInputStream(ssc)
     inputStream
       .map { x =>
-        throw new TestException("error in map task"); x
+        throw new TestException("error in map task");
+        x
       }
       .foreachRDD(_.count())
 
@@ -480,7 +481,8 @@ class StreamingContextSuite
     val inputStream = addInputStream(ssc)
     inputStream
       .transform { rdd =>
-        throw new TestException("error in transform"); rdd
+        throw new TestException("error in transform");
+        rdd
       }
       .register()
     val exception = intercept[TestException] {

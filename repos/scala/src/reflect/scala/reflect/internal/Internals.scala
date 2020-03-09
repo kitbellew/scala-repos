@@ -26,10 +26,12 @@ trait Internals extends api.Internals {
 
     def newScopeWith(elems: Symbol*): Scope = self.newScopeWith(elems: _*)
     def enter(scope: Scope, sym: Symbol): scope.type = {
-      scope.enter(sym); scope
+      scope.enter(sym);
+      scope
     }
     def unlink(scope: Scope, sym: Symbol): scope.type = {
-      scope.unlink(sym); scope
+      scope.unlink(sym);
+      scope
     }
 
     def freeTerms(tree: Tree): List[FreeTermSymbol] = tree.freeTerms
@@ -85,7 +87,8 @@ trait Internals extends api.Internals {
       self.LabelDef(sym, params, rhs)
 
     def changeOwner(tree: Tree, prev: Symbol, next: Symbol): tree.type = {
-      new ChangeOwnerTraverser(prev, next).traverse(tree); tree
+      new ChangeOwnerTraverser(prev, next).traverse(tree);
+      tree
     }
 
     lazy val gen = self.treeBuild
@@ -155,7 +158,8 @@ trait Internals extends api.Internals {
     def removeAttachment[T: ClassTag](symbol: Symbol): symbol.type =
       symbol.removeAttachment[T]
     def setOwner(symbol: Symbol, newowner: Symbol): symbol.type = {
-      symbol.owner = newowner; symbol
+      symbol.owner = newowner;
+      symbol
     }
     def setInfo(symbol: Symbol, tpe: Type): symbol.type = symbol.setInfo(tpe)
     def setAnnotations(symbol: Symbol, annots: Annotation*): symbol.type =

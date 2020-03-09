@@ -5,13 +5,15 @@ object Test {
 
   def check(x: => Any) =
     try {
-      x; sys.error("failed to throw NPE!")
+      x;
+      sys.error("failed to throw NPE!")
     } catch {
       case _: NullPointerException =>
     }
   def checkNegSize(x: => Any) =
     try {
-      x; sys.error("failed to throw NegativeArraySizeException!")
+      x;
+      sys.error("failed to throw NegativeArraySizeException!")
     } catch {
       case _: NegativeArraySizeException =>
     }

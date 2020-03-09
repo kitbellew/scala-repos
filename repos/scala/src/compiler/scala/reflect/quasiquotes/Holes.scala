@@ -6,7 +6,8 @@ import scala.reflect.macros.TypecheckException
 
 class Rank private[Rank] (val value: Int) extends AnyVal {
   def pred = {
-    assert(value - 1 >= 0); new Rank(value - 1)
+    assert(value - 1 >= 0);
+    new Rank(value - 1)
   }
   def succ = new Rank(value + 1)
   override def toString = if (value == 0) "no dots" else "." * (value + 1)
@@ -275,7 +276,8 @@ trait Holes { self: Quasiquotes =>
         val resIdx =
           if (idx != -1) idx
           else {
-            records +:= ((tpe, rank)); records.length - 1
+            records +:= ((tpe, rank));
+            records.length - 1
           }
         Some(Ident(TermName(nme.QUASIQUOTE_UNLIFT_HELPER + resIdx)))
       }

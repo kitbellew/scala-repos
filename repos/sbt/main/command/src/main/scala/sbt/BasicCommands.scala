@@ -248,7 +248,8 @@ object BasicCommands {
     val history =
       (s get historyPath) getOrElse Some(new File(s.baseDir, ".history"))
     val prompt = (s get shellPrompt) match {
-      case Some(pf) => pf(s); case None => "> "
+      case Some(pf) => pf(s);
+      case None     => "> "
     }
     val reader = new FullReader(history, s.combinedParser)
     val line = reader.readLine(prompt)
@@ -327,9 +328,11 @@ object BasicCommands {
       args: Option[(String, Option[Option[String]])]): State =
     args match {
       case None =>
-        printAliases(s); s
+        printAliases(s);
+        s
       case Some(x ~ None) if !x.isEmpty =>
-        printAlias(s, x.trim); s
+        printAlias(s, x.trim);
+        s
       case Some(name ~ Some(None))        => removeAlias(s, name.trim)
       case Some(name ~ Some(Some(value))) => addAlias(s, name.trim, value.trim)
     }
@@ -358,7 +361,8 @@ object BasicCommands {
     isNamed(name, getAlias(c))
   def isNamed(name: String, alias: Option[(String, String)]): Boolean =
     alias match {
-      case None => false; case Some((n, _)) => name == n
+      case None         => false;
+      case Some((n, _)) => name == n
     }
 
   def getAlias(c: Command): Option[(String, String)] =

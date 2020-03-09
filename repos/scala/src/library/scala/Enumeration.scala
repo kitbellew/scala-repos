@@ -192,7 +192,8 @@ abstract class Enumeration(initial: Int) extends Serializable {
   private def nameOf(i: Int): String = synchronized {
     nmap.getOrElse(
       i, {
-        populateNameMap(); nmap(i)
+        populateNameMap();
+        nmap(i)
       })
   }
 
@@ -311,7 +312,8 @@ abstract class Enumeration(initial: Int) extends Serializable {
       new mutable.Builder[Value, ValueSet] {
         private[this] val b = new mutable.BitSet
         def +=(x: Value) = {
-          b += (x.id - bottomId); this
+          b += (x.id - bottomId);
+          this
         }
         def clear() = b.clear()
         def result() = new ValueSet(b.toImmutable)

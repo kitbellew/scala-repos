@@ -217,7 +217,10 @@ trait MapLike[A, B, +This <: MapLike[A, B, This] with Map[A, B]]
   def getOrElseUpdate(key: A, op: => B): B =
     get(key) match {
       case Some(v) => v
-      case None    => val d = op; this(key) = d; d
+      case None =>
+        val d = op;
+        this(key) = d;
+        d
     }
 
   /** Applies a transformation function to all values contained in this map.

@@ -7,7 +7,8 @@ object Test extends App {
     def foo() = reify {
       val y = x;
       reify {
-        val z = y * x; reify(z * x)
+        val z = y * x;
+        reify(z * x)
       }
     };
     {

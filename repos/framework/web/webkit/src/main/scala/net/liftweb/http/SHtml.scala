@@ -392,8 +392,10 @@ trait SHtml extends Loggable {
 
       private def fixElem(e: Elem): Elem = {
         e.attribute("id") match {
-          case Some(id) => latestId = id.text; e
-          case None     => e % ("id" -> latestId)
+          case Some(id) =>
+            latestId = id.text;
+            e
+          case None => e % ("id" -> latestId)
         }
       }
 
@@ -401,7 +403,8 @@ trait SHtml extends Loggable {
         Helpers
           .findBox(ns) { e =>
             latestElem = fixElem(e);
-            latestKids = e.child; Full(e)
+            latestKids = e.child;
+            Full(e)
           }
           .map(ignore => applyAgain())
           .openOr(NodeSeq.Empty)
@@ -811,7 +814,8 @@ trait SHtml extends Loggable {
     ajaxText(
       settable.get,
       (b: String) => {
-        settable.set(b); Noop
+        settable.set(b);
+        Noop
       },
       attrs: _*)
 
@@ -1032,7 +1036,8 @@ trait SHtml extends Loggable {
     ajaxCheckbox(
       settable.get,
       (b: Boolean) => {
-        settable.set(b); Noop
+        settable.set(b);
+        Noop
       },
       attrs: _*)
 
@@ -1395,7 +1400,8 @@ trait SHtml extends Loggable {
       body: NodeSeq,
       attrs: ElemAttr*): Elem = {
     fmapFunc((a: List[String]) => {
-      func(); true
+      func();
+      true
     })(key =>
       attrs.foldLeft(<a href={
         Helpers.appendFuncToURL(to, key + "=_")

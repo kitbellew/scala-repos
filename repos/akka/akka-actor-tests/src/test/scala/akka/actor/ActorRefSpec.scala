@@ -266,7 +266,8 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
         intercept[akka.actor.ActorInitializationException] {
           wrap(result ⇒
             actorOf(Props(new OuterActor(actorOf(Props(promiseIntercept({
-              new InnerActor; new InnerActor
+              new InnerActor;
+              new InnerActor
             })(result)))))))
         }
 

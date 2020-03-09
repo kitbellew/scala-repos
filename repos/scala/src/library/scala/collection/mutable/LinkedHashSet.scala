@@ -60,14 +60,16 @@ class LinkedHashSet[A]
     "+= should not be overridden so it stays consistent with add.",
     "2.11.0")
   def +=(elem: A): this.type = {
-    add(elem); this
+    add(elem);
+    this
   }
 
   @deprecatedOverriding(
     "-= should not be overridden so it stays consistent with remove.",
     "2.11.0")
   def -=(elem: A): this.type = {
-    remove(elem); this
+    remove(elem);
+    this
   }
 
   override def add(elem: A): Boolean = findOrAddEntry(elem, null) eq null
@@ -89,7 +91,9 @@ class LinkedHashSet[A]
     def hasNext = cur ne null
     def next =
       if (hasNext) {
-        val res = cur.key; cur = cur.later; res
+        val res = cur.key;
+        cur = cur.later;
+        res
       } else Iterator.empty.next()
   }
 
@@ -113,7 +117,8 @@ class LinkedHashSet[A]
     val e = new Entry(key)
     if (firstEntry eq null) firstEntry = e
     else {
-      lastEntry.later = e; e.earlier = lastEntry
+      lastEntry.later = e;
+      e.earlier = lastEntry
     }
     lastEntry = e
     e

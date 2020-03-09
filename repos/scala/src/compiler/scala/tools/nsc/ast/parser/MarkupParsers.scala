@@ -79,7 +79,9 @@ trait MarkupParsers {
     }
 
     protected def ch_returning_nextch: Char = {
-      val result = ch; input.nextChar(); result
+      val result = ch;
+      input.nextChar();
+      result
     }
 
     def mkProcInstr(
@@ -109,7 +111,8 @@ trait MarkupParsers {
     def xCheckEmbeddedBlock: Boolean = {
       // attentions, side-effect, used in xText
       xEmbeddedBlock = (ch == '{') && {
-        nextch(); (ch != '{')
+        nextch();
+        (ch != '{')
       }
       xEmbeddedBlock
     }
@@ -245,9 +248,12 @@ trait MarkupParsers {
       (ch == '/') || {
         val toAppend = ch match {
           case '!' =>
-            nextch(); if (ch == '[') xCharData else xComment // CDATA or Comment
-          case '?' => nextch(); xProcInstr // PI
-          case _   => element // child node
+            nextch();
+            if (ch == '[') xCharData else xComment // CDATA or Comment
+          case '?' =>
+            nextch();
+            xProcInstr // PI
+          case _ => element // child node
         }
         ts append toAppend
         false
@@ -396,10 +402,9 @@ trait MarkupParsers {
 
         val ts = new ArrayBuffer[Tree]
         val start = curOffset
-        tmppos =
-          o2p(
-            curOffset
-          ) // Iuli: added this line, as it seems content_LT uses tmppos when creating trees
+        tmppos = o2p(
+          curOffset
+        ) // Iuli: added this line, as it seems content_LT uses tmppos when creating trees
         content_LT(ts)
 
         // parse more XML?
@@ -471,7 +476,8 @@ trait MarkupParsers {
 
       val ts = new ArrayBuffer[Tree]
       val isEmptyTag = (ch == '/') && {
-        nextch(); true
+        nextch();
+        true
       }
       xToken('>')
 

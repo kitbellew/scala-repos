@@ -368,7 +368,9 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
       assertEquals(new Message("test".getBytes), messageSet1.next.message)
     } catch {
       case e: Throwable =>
-      case e: Exception => producer.close; fail("Not expected", e)
+      case e: Exception =>
+        producer.close;
+        fail("Not expected", e)
     }
 
     // stop IO threads and request handling, but leave networking operational

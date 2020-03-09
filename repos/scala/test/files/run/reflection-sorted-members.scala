@@ -1,10 +1,12 @@
 object Test {
   def main(args: Array[String]) {
     trait T1 {
-      def a: Int; def c: Int
+      def a: Int;
+      def c: Int
     }
     trait T2 {
-      def a: Int; def b: Int
+      def a: Int;
+      def b: Int
     }
     class Bar(val x: Int)
     class Foo(val a: Int, val b: Int, val c: Int)

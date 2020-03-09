@@ -48,7 +48,8 @@ class SelectionBenchmarks extends MyBenchmark {
     val data = Array.ofDim[A](size)
     var i = 0
     while (i < size) {
-      data(i) = init; i += 1
+      data(i) = init;
+      i += 1
     }
     if (layout == "random") return data
     spire.math.Sorting.sort(data)
@@ -70,19 +71,24 @@ class SelectionBenchmarks extends MyBenchmark {
 
   def timeSpireQuickSelect(reps: Int) = run(reps) {
     if (typ == "int") {
-      val arr = is.clone; spire.math.Selection.quickSelect(arr, arr.length / 2);
+      val arr = is.clone;
+      spire.math.Selection.quickSelect(arr, arr.length / 2);
       arr.length
     } else if (typ == "long") {
-      val arr = js.clone; spire.math.Selection.quickSelect(arr, arr.length / 2);
+      val arr = js.clone;
+      spire.math.Selection.quickSelect(arr, arr.length / 2);
       arr.length
     } else if (typ == "float") {
-      val arr = fs.clone; spire.math.Selection.quickSelect(arr, arr.length / 2);
+      val arr = fs.clone;
+      spire.math.Selection.quickSelect(arr, arr.length / 2);
       arr.length
     } else if (typ == "double") {
-      val arr = ds.clone; spire.math.Selection.quickSelect(arr, arr.length / 2);
+      val arr = ds.clone;
+      spire.math.Selection.quickSelect(arr, arr.length / 2);
       arr.length
     } else if (typ == "complex") {
-      val arr = cs.clone; spire.math.Selection.quickSelect(arr, arr.length / 2);
+      val arr = cs.clone;
+      spire.math.Selection.quickSelect(arr, arr.length / 2);
       arr.length
     }
   }
@@ -90,19 +96,24 @@ class SelectionBenchmarks extends MyBenchmark {
   def timeSpireLinearSelect(reps: Int) = run(reps) {
     if (typ == "int") {
       val arr = is.clone;
-      spire.math.Selection.linearSelect(arr, arr.length / 2); arr.length
+      spire.math.Selection.linearSelect(arr, arr.length / 2);
+      arr.length
     } else if (typ == "long") {
       val arr = js.clone;
-      spire.math.Selection.linearSelect(arr, arr.length / 2); arr.length
+      spire.math.Selection.linearSelect(arr, arr.length / 2);
+      arr.length
     } else if (typ == "float") {
       val arr = fs.clone;
-      spire.math.Selection.linearSelect(arr, arr.length / 2); arr.length
+      spire.math.Selection.linearSelect(arr, arr.length / 2);
+      arr.length
     } else if (typ == "double") {
       val arr = ds.clone;
-      spire.math.Selection.linearSelect(arr, arr.length / 2); arr.length
+      spire.math.Selection.linearSelect(arr, arr.length / 2);
+      arr.length
     } else if (typ == "complex") {
       val arr = cs.clone;
-      spire.math.Selection.linearSelect(arr, arr.length / 2); arr.length
+      spire.math.Selection.linearSelect(arr, arr.length / 2);
+      arr.length
     }
   }
 }

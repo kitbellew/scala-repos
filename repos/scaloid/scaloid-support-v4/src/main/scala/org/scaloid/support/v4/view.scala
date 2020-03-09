@@ -63,7 +63,8 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#setAdapter(android.support.v4.view.PagerAdapter) setAdapter(android.support.v4.view.PagerAdapter)]]`
     */
   @inline def adapter_=(p: android.support.v4.view.PagerAdapter) = {
-    basis.setAdapter(p); basis
+    basis.setAdapter(p);
+    basis
   }
 
   /**
@@ -80,7 +81,8 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#setCurrentItem(int) setCurrentItem(int)]]`
     */
   @inline def currentItem_=(p: Int) = {
-    basis.setCurrentItem(p); basis
+    basis.setCurrentItem(p);
+    basis
   }
 
   /**
@@ -97,7 +99,8 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#setOffscreenPageLimit(int) setOffscreenPageLimit(int)]]`
     */
   @inline def offscreenPageLimit_=(p: Int) = {
-    basis.setOffscreenPageLimit(p); basis
+    basis.setOffscreenPageLimit(p);
+    basis
   }
 
   @inline def onPageChangeListener(
@@ -117,7 +120,8 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
     */
   @inline def onPageChangeListener_=(
       p: android.support.v4.view.ViewPager.OnPageChangeListener) = {
-    basis.setOnPageChangeListener(p); basis
+    basis.setOnPageChangeListener(p);
+    basis
   }
 
   /**
@@ -134,7 +138,8 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#setPageMargin(int) setPageMargin(int)]]`
     */
   @inline def pageMargin_=(p: Int) = {
-    basis.setPageMargin(p); basis
+    basis.setPageMargin(p);
+    basis
   }
 
   @inline def pageMarginDrawable(
@@ -151,7 +156,8 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#setPageMarginDrawable(int) setPageMarginDrawable(int)]]`
     */
   @inline def pageMarginDrawable_=(p: Int) = {
-    basis.setPageMarginDrawable(p); basis
+    basis.setPageMarginDrawable(p);
+    basis
   }
 
   /**
@@ -164,7 +170,8 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html#setPageMarginDrawable(android.graphics.drawable.Drawable) setPageMarginDrawable(android.graphics.drawable.Drawable)]]`
     */
   @inline def pageMarginDrawable_=(p: android.graphics.drawable.Drawable) = {
-    basis.setPageMarginDrawable(p); basis
+    basis.setPageMarginDrawable(p);
+    basis
   }
 
   @inline def onPageScrollStateChanged[U](f: Int => U): This = {

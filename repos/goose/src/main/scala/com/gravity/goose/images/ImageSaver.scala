@@ -99,7 +99,9 @@ object ImageSaver extends Logging {
       try {
         Some(response.getEntity)
       } catch {
-        case e: Exception => warn(e, e.toString); None
+        case e: Exception =>
+          warn(e, e.toString);
+          None
       } finally {
         httpget.abort()
       }
@@ -175,12 +177,15 @@ object ImageSaver extends Logging {
               throw e
             }
             case e: Exception => {
-              logger.error(e.getMessage); null
+              logger.error(e.getMessage);
+              null
             }
           }
 
         }
-        case None => trace("Unable to get entity for: " + imageSrc); null
+        case None =>
+          trace("Unable to get entity for: " + imageSrc);
+          null
       }
 
     } catch {

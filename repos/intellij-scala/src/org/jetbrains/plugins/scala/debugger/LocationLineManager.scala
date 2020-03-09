@@ -222,7 +222,8 @@ trait LocationLineManager {
         val repeating = notCustomizedYet.filter(_.size > 1)
         val lastLocations = repeating.map(_.last)
         val withStoreCode =
-          for (loc <- lastLocations; code <- storeCode(loc)) yield (loc, code)
+          for (loc <- lastLocations;
+               code <- storeCode(loc)) yield (loc, code)
         val (locationsToSkip, codes) = withStoreCode.unzip
         if (codes.distinct.size != 1) return
 

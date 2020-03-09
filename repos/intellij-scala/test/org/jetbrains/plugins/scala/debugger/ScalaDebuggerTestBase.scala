@@ -233,7 +233,8 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
         val obj = ois.readObject()
         obj match {
           case map: mutable.HashMap[String, Array[Byte]] @unchecked =>
-            checksums = map; true
+            checksums = map;
+            true
           case _ => false
         }
       } finally ois.close()

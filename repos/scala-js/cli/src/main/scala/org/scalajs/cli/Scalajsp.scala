@@ -48,7 +48,8 @@ object Scalajsp {
         .text("Show DCE infos instead of trees")
       opt[Unit]('s', "supported")
         .action { (_, _) =>
-          printSupported(); sys.exit()
+          printSupported();
+          sys.exit()
         }
         .text("Show supported Scala.js IR versions")
       version("version")

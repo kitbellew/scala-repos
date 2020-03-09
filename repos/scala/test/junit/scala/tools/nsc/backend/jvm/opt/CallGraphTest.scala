@@ -85,7 +85,9 @@ class CallGraphTest extends ClearAfterClass {
       assert(callee.annotatedNoInline == atNoInline)
       assert(callsite.argInfos == argInfos)
     } catch {
-      case e: Throwable => println(callsite); throw e
+      case e: Throwable =>
+        println(callsite);
+        throw e
     }
   }
 

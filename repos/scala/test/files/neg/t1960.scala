@@ -3,7 +3,8 @@ object ClassFormatErrorExample extends App {
 }
 
 trait TBase {
-  var p: Int = 0; def f(p1: Int) {}
+  var p: Int = 0;
+  def f(p1: Int) {}
 }
 
 class Aclass(p: Int) extends TBase {

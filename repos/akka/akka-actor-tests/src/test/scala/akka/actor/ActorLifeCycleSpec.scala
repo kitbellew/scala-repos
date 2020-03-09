@@ -164,7 +164,8 @@ class ActorLifeCycleSpec
       val a = system.actorOf(Props(new Actor {
         def receive = {
           case Become(beh) ⇒ {
-            context.become(beh(context), discardOld = false); sender() ! "ok"
+            context.become(beh(context), discardOld = false);
+            sender() ! "ok"
           }
           case x ⇒ sender() ! 42
         }

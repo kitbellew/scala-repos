@@ -451,11 +451,14 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
       while (iter.hasNext) iter.next() match {
         case ti: TypeInsnNode => visitInternalNameOrArrayReference(ti.desc)
         case fi: FieldInsnNode =>
-          visitInternalNameOrArrayReference(fi.owner); visitDescriptor(fi.desc)
+          visitInternalNameOrArrayReference(fi.owner);
+          visitDescriptor(fi.desc)
         case mi: MethodInsnNode =>
-          visitInternalNameOrArrayReference(mi.owner); visitDescriptor(mi.desc)
+          visitInternalNameOrArrayReference(mi.owner);
+          visitDescriptor(mi.desc)
         case id: InvokeDynamicInsnNode =>
-          visitDescriptor(id.desc); visitHandle(id.bsm);
+          visitDescriptor(id.desc);
+          visitHandle(id.bsm);
           id.bsmArgs foreach visitConstant
         case ci: LdcInsnNode            => visitConstant(ci.cst)
         case ma: MultiANewArrayInsnNode => visitDescriptor(ma.desc)
@@ -551,11 +554,10 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
           insn match {
             case v: VarInsnNode =>
               val longSize = if (isSize2LoadOrStore(v.getOpcode)) 1 else 0
-              maxLocals =
-                math.max(
-                  maxLocals,
-                  v.`var` + longSize + 1
-                ) // + 1 because local numbers are 0-based
+              maxLocals = math.max(
+                maxLocals,
+                v.`var` + longSize + 1
+              ) // + 1 because local numbers are 0-based
 
             case i: IincInsnNode =>
               maxLocals = math.max(maxLocals, i.`var` + 1)
@@ -583,14 +585,16 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
             case l: LookupSwitchInsnNode =>
               var j = 0
               while (j < l.labels.size) {
-                enqInsn(l.labels.get(j), heightAfter); j += 1
+                enqInsn(l.labels.get(j), heightAfter);
+                j += 1
               }
               enqInsn(l.dflt, heightAfter)
 
             case t: TableSwitchInsnNode =>
               var j = 0
               while (j < t.labels.size) {
-                enqInsn(t.labels.get(j), heightAfter); j += 1
+                enqInsn(t.labels.get(j), heightAfter);
+                j += 1
               }
               enqInsn(t.dflt, heightAfter)
 

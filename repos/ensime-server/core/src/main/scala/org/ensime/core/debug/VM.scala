@@ -637,7 +637,8 @@ class VM(
       val localVar: LocalVariable = stackFrame.visibleVariables.get(offset)
       mirrorFromString(localVar.`type`(), newValue) match {
         case Some(v) =>
-          stackFrame.setValue(localVar, v); true
+          stackFrame.setValue(localVar, v);
+          true
         case None => false
       }
     } else false

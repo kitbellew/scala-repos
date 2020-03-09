@@ -287,7 +287,9 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
     */
   private val serializerMap: ConcurrentHashMap[Class[_], Serializer] =
     (new ConcurrentHashMap[Class[_], Serializer] /: bindings) {
-      case (map, (c, s)) ⇒ map.put(c, s); map
+      case (map, (c, s)) ⇒
+        map.put(c, s);
+        map
     }
 
   /**

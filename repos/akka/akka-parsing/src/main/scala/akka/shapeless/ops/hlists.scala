@@ -37,7 +37,8 @@ object hlist {
         implicit isHCons: IsHCons[L]): Aux[L, isHCons.H, isHCons.T] = isHCons
 
     type Aux[L <: HList, H0, T0 <: HList] = IsHCons[L] {
-      type H = H0; type T = T0
+      type H = H0;
+      type T = T0
     }
     implicit def hlistIsHCons[H0, T0 <: HList]: Aux[H0 :: T0, H0, T0] =
       new IsHCons[H0 :: T0] {

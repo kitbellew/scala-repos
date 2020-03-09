@@ -51,7 +51,8 @@ object arbitrary extends ArbitraryInstances0 {
         A.arbitrary.map(Ior.left),
         B.arbitrary.map(Ior.right),
         for {
-          a <- A.arbitrary; b <- B.arbitrary
+          a <- A.arbitrary;
+          b <- B.arbitrary
         } yield Ior.both(a, b)))
 
   implicit def kleisliArbitrary[F[_], A, B](

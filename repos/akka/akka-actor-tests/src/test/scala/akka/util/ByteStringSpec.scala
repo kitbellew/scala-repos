@@ -377,7 +377,8 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
     "be equal to the original" when {
       "compacting" in {
         check { xs: ByteString ⇒
-          val ys = xs.compact; (xs == ys) && ys.isCompact
+          val ys = xs.compact;
+          (xs == ys) && ys.isCompact
         }
       }
       "recombining" in {
@@ -531,7 +532,8 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
             var acc = 0;
             it foreach {
               acc += _
-            }; acc
+            };
+            acc
           }
         }
       }
@@ -714,7 +716,8 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
             var acc = 0;
             it foreach {
               acc += _
-            }; acc
+            };
+            acc
           }
         }
       }

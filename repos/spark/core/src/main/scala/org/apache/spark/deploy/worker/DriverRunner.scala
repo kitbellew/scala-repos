@@ -70,7 +70,8 @@ private[deploy] class DriverRunner(
   private var sleeper = new Sleeper {
     def sleep(seconds: Int): Unit =
       (0 until seconds).takeWhile(f => {
-        Thread.sleep(1000); !killed
+        Thread.sleep(1000);
+        !killed
       })
   }
 

@@ -286,7 +286,8 @@ abstract class Enumeration(initial: Int) extends Serializable {
       new mutable.Builder[Value, ValueSet] {
         private[this] val b = new mutable.BitSet
         def +=(x: Value) = {
-          b += (x.id - bottomId); this
+          b += (x.id - bottomId);
+          this
         }
         def clear() = b.clear()
         def result() = new ValueSet(b.toImmutable)

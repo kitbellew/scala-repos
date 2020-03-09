@@ -35,7 +35,9 @@ trait MetaProtoTag[ModelType <: ProtoTag[ModelType]]
     if (tagCache.contains(tag)) tagCache(tag)
     else {
       find(By(name, tag)) match {
-        case Full(t) => tagCache(tag) = t; t
+        case Full(t) =>
+          tagCache(tag) = t;
+          t
         case _ =>
           val ret: ModelType = (createInstance).name(tag).saveMe
           tagCache(tag) = ret

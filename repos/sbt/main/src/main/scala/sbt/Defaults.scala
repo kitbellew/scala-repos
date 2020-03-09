@@ -135,7 +135,8 @@ object Defaults extends BuildCommon {
     (a.data, a.metadata get Keys.analysis getOrElse Analysis.Empty)
 
   def analysisMap[T](cp: Seq[Attributed[T]]): T => Option[CompileAnalysis] = {
-    val m = (for (a <- cp; an <- a.metadata get Keys.analysis)
+    val m = (for (a <- cp;
+                  an <- a.metadata get Keys.analysis)
       yield (a.data, an)).toMap
     m.get _
   }
@@ -243,12 +244,15 @@ object Defaults extends BuildCommon {
       watchSources :== Nil,
       skip :== false,
       taskTemporaryDirectory := {
-        val dir = IO.createTemporaryDirectory; dir.deleteOnExit(); dir
+        val dir = IO.createTemporaryDirectory;
+        dir.deleteOnExit();
+        dir
       },
       onComplete := {
         val dir = taskTemporaryDirectory.value;
         () => {
-          IO.delete(dir); IO.createDirectory(dir)
+          IO.delete(dir);
+          IO.createDirectory(dir)
         }
       },
       Previous.cache <<= Previous.cacheSetting,
@@ -671,7 +675,8 @@ object Defaults extends BuildCommon {
       tdef: TestDefinition): Logger = {
     val scope = baseKey.scope
     val extra = scope.extra match {
-      case Select(x) => x; case _ => AttributeMap.empty
+      case Select(x) => x;
+      case _         => AttributeMap.empty
     }
     val key =
       ScopedKey(scope.copy(extra = Select(testExtra(extra, tdef))), baseKey.key)
@@ -683,7 +688,8 @@ object Defaults extends BuildCommon {
       buffered: Boolean)(tdef: TestDefinition): TestLogger.PerTest = {
     val scope = baseKey.scope
     val extra = scope.extra match {
-      case Select(x) => x; case _ => AttributeMap.empty
+      case Select(x) => x;
+      case _         => AttributeMap.empty
     }
     val key =
       ScopedKey(scope.copy(extra = Select(testExtra(extra, tdef))), baseKey.key)
@@ -694,7 +700,8 @@ object Defaults extends BuildCommon {
   def testExtra(extra: AttributeMap, tdef: TestDefinition): AttributeMap = {
     val mod = tdef.fingerprint match {
       case f: SubclassFingerprint  => f.isModule;
-      case f: AnnotatedFingerprint => f.isModule; case _ => false
+      case f: AnnotatedFingerprint => f.isModule;
+      case _                       => false
     }
     extra.put(name.key, tdef.name).put(isModule, mod)
   }
@@ -744,7 +751,8 @@ object Defaults extends BuildCommon {
       val stamps = collection.mutable.Map.empty[File, Long]
       def stamp(dep: String): Long = {
         val stamps =
-          for (a <- ans; f <- a.relations.definesClass(dep))
+          for (a <- ans;
+               f <- a.relations.definesClass(dep))
             yield intlStamp(f, a, Set.empty)
         if (stamps.isEmpty) Long.MinValue else stamps.max
       }
@@ -1267,7 +1275,9 @@ object Defaults extends BuildCommon {
 
   def consoleProjectTask =
     (state, streams, initialCommands in consoleProject) map {
-      (state, s, extra) => ConsoleProject(state, extra)(s.log); println()
+      (state, s, extra) =>
+        ConsoleProject(state, extra)(s.log);
+        println()
     }
   def consoleTask: Initialize[Task[Unit]] = consoleTask(fullClasspath, console)
   def consoleQuickTask = consoleTask(externalDependencyClasspath, consoleQuick)
@@ -1668,7 +1678,8 @@ object Classpaths {
 
   def defaultPackageKeys = Seq(packageBin, packageSrc, packageDoc)
   lazy val defaultPackages: Seq[TaskKey[File]] =
-    for (task <- defaultPackageKeys; conf <- Seq(Compile, Test))
+    for (task <- defaultPackageKeys;
+         conf <- Seq(Compile, Test))
       yield (task in conf)
   lazy val defaultArtifactTasks: Seq[TaskKey[File]] = makePom +: defaultPackages
 
@@ -1960,7 +1971,8 @@ object Classpaths {
       ),
       ivySbt <<= ivySbt0,
       ivyModule := {
-        val is = ivySbt.value; new is.Module(moduleSettings.value)
+        val is = ivySbt.value;
+        new is.Module(moduleSettings.value)
       },
       transitiveUpdate <<= transitiveUpdateTask,
       updateCacheName := "update_cache" + (if (crossPaths.value)
@@ -2670,7 +2682,8 @@ object Classpaths {
           "compile",
           "*->compile")
         // map master configuration 'c' and all extended configurations to the appropriate dependency configuration
-        for (ac <- applicableConfigs; depConfName <- mapping(ac.name)) {
+        for (ac <- applicableConfigs;
+             depConfName <- mapping(ac.name)) {
           for (depConf <- confOpt(configurations, depConfName))
             if (!visited((dep, depConfName)))
               visit(dep, depConf)

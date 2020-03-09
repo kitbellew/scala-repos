@@ -103,7 +103,8 @@ object Endpoint {
           case host: String => host
         }
 
-        for (h <- h; p <- p)
+        for (h <- h;
+             p <- p)
           yield (h, p.toInt)
 
       case _ => None
@@ -129,7 +130,8 @@ object Endpoint {
         case (host, port) =>
           new ArrayBuffer[String]
       }
-    for (map <- d("serviceEndpoint"); hostport <- parseEndpoint(map))
+    for (map <- d("serviceEndpoint");
+         hostport <- parseEndpoint(map))
       namesByHostPort(hostport) += null
     for {
       map <- d("additionalEndpoints") collect {

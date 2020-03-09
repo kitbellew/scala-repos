@@ -193,7 +193,8 @@ trait TypeDiagnostics {
     case Nil => Nil
     case s :: ss =>
       s :: (ss map {
-        case `s` => "(some other)" + s; case x => x
+        case `s` => "(some other)" + s;
+        case x   => x
       })
   }
 
@@ -364,7 +365,8 @@ trait TypeDiagnostics {
     // functions to manipulate the name
     def preQualify() = modifyName(trueOwner.fullName + "." + _)
     def postQualify() = if (!(postQualifiedWith contains trueOwner)) {
-      postQualifiedWith ::= trueOwner; modifyName(_ + "(in " + trueOwner + ")")
+      postQualifiedWith ::= trueOwner;
+      modifyName(_ + "(in " + trueOwner + ")")
     }
     def typeQualify() = if (sym.isTypeParameterOrSkolem) postQualify()
     def nameQualify() =
@@ -424,7 +426,8 @@ trait TypeDiagnostics {
         names(sym.name) += diag
       }
     }
-    for (tpe <- types; t <- tpe) {
+    for (tpe <- types;
+         t <- tpe) {
       t match {
         case ConstantType(_)    => record(t, t.underlying.typeSymbol)
         case TypeRef(_, sym, _) => record(t, sym)
@@ -438,7 +441,8 @@ trait TypeDiagnostics {
 
   /** The distinct pairs from an ordered list. */
   private def pairs[T <: Ordered[T]](xs: Seq[T]): Seq[(T, T)] = {
-    for (el1 <- xs; el2 <- xs; if el1 < el2) yield ((el1, el2))
+    for (el1 <- xs;
+         el2 <- xs; if el1 < el2) yield ((el1, el2))
   }
 
   /** Given any number of types, alters the name information in the symbols
@@ -636,7 +640,8 @@ trait TypeDiagnostics {
 
       private def treeOK(tree: Tree) = {
         val isLabelDef = tree match {
-          case _: LabelDef => true; case _ => false
+          case _: LabelDef => true;
+          case _           => false
         }
         tree.tpe != null && tree.tpe.typeSymbol == NothingClass && !isLabelDef
       }

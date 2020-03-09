@@ -91,27 +91,33 @@ object ByteCodecs {
     }
     if (i < srclen) {
       var in: Int = src(i) & 0xff
-      dst(j) = (in & 0x7f).toByte; j += 1
+      dst(j) = (in & 0x7f).toByte;
+      j += 1
       var out: Int = in >>> 7
       if (i + 1 < srclen) {
         in = src(i + 1) & 0xff
-        dst(j) = (out | (in << 1) & 0x7f).toByte; j += 1
+        dst(j) = (out | (in << 1) & 0x7f).toByte;
+        j += 1
         out = in >>> 6
         if (i + 2 < srclen) {
           in = src(i + 2) & 0xff
-          dst(j) = (out | (in << 2) & 0x7f).toByte; j += 1
+          dst(j) = (out | (in << 2) & 0x7f).toByte;
+          j += 1
           out = in >>> 5
           if (i + 3 < srclen) {
             in = src(i + 3) & 0xff
-            dst(j) = (out | (in << 3) & 0x7f).toByte; j += 1
+            dst(j) = (out | (in << 3) & 0x7f).toByte;
+            j += 1
             out = in >>> 4
             if (i + 4 < srclen) {
               in = src(i + 4) & 0xff
-              dst(j) = (out | (in << 4) & 0x7f).toByte; j += 1
+              dst(j) = (out | (in << 4) & 0x7f).toByte;
+              j += 1
               out = in >>> 3
               if (i + 5 < srclen) {
                 in = src(i + 5) & 0xff
-                dst(j) = (out | (in << 5) & 0x7f).toByte; j += 1
+                dst(j) = (out | (in << 5) & 0x7f).toByte;
+                j += 1
                 out = in >>> 2
               }
             }
@@ -156,27 +162,33 @@ object ByteCodecs {
       var out: Int = src(i).toInt
       if (i + 1 < srclen) {
         var in: Byte = src(i + 1)
-        src(j) = (out | (in & 0x01) << 7).toByte; j += 1
+        src(j) = (out | (in & 0x01) << 7).toByte;
+        j += 1
         out = in >>> 1
         if (i + 2 < srclen) {
           in = src(i + 2)
-          src(j) = (out | (in & 0x03) << 6).toByte; j += 1
+          src(j) = (out | (in & 0x03) << 6).toByte;
+          j += 1
           out = in >>> 2
           if (i + 3 < srclen) {
             in = src(i + 3)
-            src(j) = (out | (in & 0x07) << 5).toByte; j += 1
+            src(j) = (out | (in & 0x07) << 5).toByte;
+            j += 1
             out = in >>> 3
             if (i + 4 < srclen) {
               in = src(i + 4)
-              src(j) = (out | (in & 0x0f) << 4).toByte; j += 1
+              src(j) = (out | (in & 0x0f) << 4).toByte;
+              j += 1
               out = in >>> 4
               if (i + 5 < srclen) {
                 in = src(i + 5)
-                src(j) = (out | (in & 0x1f) << 3).toByte; j += 1
+                src(j) = (out | (in & 0x1f) << 3).toByte;
+                j += 1
                 out = in >>> 5
                 if (i + 6 < srclen) {
                   in = src(i + 6)
-                  src(j) = (out | (in & 0x3f) << 2).toByte; j += 1
+                  src(j) = (out | (in & 0x3f) << 2).toByte;
+                  j += 1
                   out = in >>> 6
                 }
               }

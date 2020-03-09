@@ -104,7 +104,8 @@ class StreamTest {
 
     def trackEffectsOnNaturals: Stream[Int] = {
       def loop(i: Int): Stream[Int] = {
-        evaluated ++= List(i); i #:: loop(i + 1)
+        evaluated ++= List(i);
+        i #:: loop(i + 1)
       }
       loop(1)
     }

@@ -78,7 +78,8 @@ class StripNameTest extends FunSuite {
       Some((k % 2, k * k))
     }
     val fn1 = { kstr: String =>
-      val k = kstr.toInt; Some((k % 2, k * k))
+      val k = kstr.toInt;
+      Some((k % 2, k * k))
     }
 
     val src0 = Producer.source[Memory, Int](input0)

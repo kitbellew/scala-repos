@@ -189,7 +189,9 @@ class MongoAPIKeyManagerSpec
       try {
         mongo.database(dbName)
       } catch {
-        case t => logger.error("Error during DB setup: " + t); throw t
+        case t =>
+          logger.error("Error during DB setup: " + t);
+          throw t
       }
 
     val to = Duration(30, "seconds")

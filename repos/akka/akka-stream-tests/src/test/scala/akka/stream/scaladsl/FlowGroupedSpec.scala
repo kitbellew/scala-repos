@@ -19,7 +19,8 @@ class FlowGroupedSpec extends AkkaSpec with ScriptedTest {
 
     def randomSeq(n: Int) = immutable.Seq.fill(n)(random.nextInt())
     def randomTest(n: Int) = {
-      val s = randomSeq(n); s -> immutable.Seq(s)
+      val s = randomSeq(n);
+      s -> immutable.Seq(s)
     }
 
     "group evenly" in {

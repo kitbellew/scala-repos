@@ -106,7 +106,8 @@ class Pipeline @Since("1.4.0") (@Since("1.4.0") override val uid: String)
   /** @group setParam */
   @Since("1.2.0")
   def setStages(value: Array[PipelineStage]): this.type = {
-    set(stages, value); this
+    set(stages, value);
+    this
   }
 
   // Below, we clone stages so that modifications to the list of stages will not change

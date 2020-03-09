@@ -93,7 +93,8 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
 
       "which correctly clear back to the default" in {
         {
-          field.clear; field.valueBox
+          field.clear;
+          field.valueBox
         } must be_==(field.defaultValueBox).when(canCheckDefaultValues)
       }
 

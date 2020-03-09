@@ -78,7 +78,9 @@ object GUI {
 
     /* Ctl methods */
     def enable(b: Boolean): this.type = {
-      enabled = b; draw(); this
+      enabled = b;
+      draw();
+      this
     }
     def getGlyph = label
     final def mouseDown(p: Geom.Point) {

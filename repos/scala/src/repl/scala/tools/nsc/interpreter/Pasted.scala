@@ -31,7 +31,8 @@ abstract class Pasted(prompt: String) {
 
   def isPrompted(line: String) = matchesPrompt(line)
   def isPromptOnly(line: String) = line match {
-    case anyPrompt() => true; case _ => false
+    case anyPrompt() => true;
+    case _           => false
   }
 
   private val testBoth = PromptString != AltPromptString

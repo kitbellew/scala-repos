@@ -140,7 +140,8 @@ private[akka] object NettySSLSupport {
           trustManagerFactory.getTrustManagers
         }
         Option(SSLContext.getInstance(protocol)) map { ctx ⇒
-          ctx.init(null, trustManagers, rng); ctx
+          ctx.init(null, trustManagers, rng);
+          ctx
         }
       } catch {
         case e: FileNotFoundException ⇒
@@ -231,7 +232,8 @@ private[akka] object NettySSLSupport {
             trustManagerFactory.getTrustManagers
           }
         Option(SSLContext.getInstance(protocol)) map { ctx ⇒
-          ctx.init(factory.getKeyManagers, trustManagers.orNull, rng); ctx
+          ctx.init(factory.getKeyManagers, trustManagers.orNull, rng);
+          ctx
         }
       } catch {
         case e: FileNotFoundException ⇒

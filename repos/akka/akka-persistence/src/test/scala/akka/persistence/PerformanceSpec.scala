@@ -100,7 +100,9 @@ object PerformanceSpec {
       extends PerformanceTestPersistentActor(name) {
 
     val printProgress: PartialFunction[Any, Any] = {
-      case m ⇒ if (lastSequenceNr % 1000 == 0) print("."); m
+      case m ⇒
+        if (lastSequenceNr % 1000 == 0) print(".");
+        m
     }
 
     val receiveCommand: Receive =

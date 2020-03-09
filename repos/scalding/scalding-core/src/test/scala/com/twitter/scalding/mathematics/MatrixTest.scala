@@ -25,7 +25,9 @@ object TUtil {
     try {
       fn
     } catch {
-      case e: Throwable => e.printStackTrace; throw e
+      case e: Throwable =>
+        e.printStackTrace;
+        throw e
     }
   }
 }

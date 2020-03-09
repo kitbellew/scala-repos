@@ -3,12 +3,14 @@
 //
 object Test {
   def f(i: Int) = {
-    println("f(" + i + ")"); true
+    println("f(" + i + ")");
+    true
   }
   class Counter {
     var count = 0
     def apply(i: Int) = synchronized {
-      count += 1; true
+      count += 1;
+      true
     }
   }
 

@@ -86,7 +86,8 @@ object JavaStreamEnrichmentsProperties
   property("Can (read/write)Array[Byte]") = writeRead(
     // Use list because Array has a shitty toString
     { (b: List[Byte], os) =>
-      os.writePosVarInt(b.size); os.writeBytes(b.toArray)
+      os.writePosVarInt(b.size);
+      os.writeBytes(b.toArray)
     },
     { is =>
       val bytes = new Array[Byte](is.readPosVarInt)

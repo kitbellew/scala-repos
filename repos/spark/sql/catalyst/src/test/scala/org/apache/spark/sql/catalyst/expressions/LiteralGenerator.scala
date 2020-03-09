@@ -132,7 +132,8 @@ object LiteralGenerator {
 
   lazy val calendarIntervalLiterGen: Gen[Literal] =
     for {
-      m <- Arbitrary.arbInt.arbitrary; s <- Arbitrary.arbLong.arbitrary
+      m <- Arbitrary.arbInt.arbitrary;
+      s <- Arbitrary.arbLong.arbitrary
     } yield Literal.create(new CalendarInterval(m, s), CalendarIntervalType)
 
   // Sometimes, it would be quite expensive when unlimited value is used,

@@ -893,23 +893,28 @@ object HashSet extends ImmutableSetFactory[HashSet] {
               offset += 1
             }
             // clear lowest remaining one bit in abm and increase the a index
-            abm &= ~alsb; ai += 1
+            abm &= ~alsb;
+            ai += 1
             // clear lowest remaining one bit in bbm and increase the b index
-            bbm &= ~blsb; bi += 1
+            bbm &= ~blsb;
+            bi += 1
           } else if (unsignedCompare(alsb - 1, blsb - 1)) {
             // alsb is smaller than blsb, or alsb is set and blsb is 0
             // in any case, alsb is guaranteed to be set here!
             val sub1 = a(ai)
             rs += sub1.size
             rbm |= alsb
-            buffer(offset) = sub1; offset += 1
+            buffer(offset) = sub1;
+            offset += 1
             // clear lowest remaining one bit in abm and increase the a index
-            abm &= ~alsb; ai += 1
+            abm &= ~alsb;
+            ai += 1
           } else {
             // blsb is smaller than alsb, or blsb is set and alsb is 0
             // in any case, blsb is guaranteed to be set here!
             // clear lowest remaining one bit in bbm and increase the b index
-            bbm &= ~blsb; bi += 1
+            bbm &= ~blsb;
+            bi += 1
           }
         }
         if (rbm == 0) {
@@ -1010,11 +1015,13 @@ object HashSet extends ImmutableSetFactory[HashSet] {
                   if (!a(ai).subsetOf0(b(bi), level + 5))
                     return false
                   // clear lowest remaining one bit in abm and increase the a index
-                  abm &= ~alsb; ai += 1
+                  abm &= ~alsb;
+                  ai += 1
                 }
                 // clear lowermost remaining one bit in bbm and increase the b index
                 // we must do this in any case
-                bbm &= ~blsb; bi += 1
+                bbm &= ~blsb;
+                bi += 1
               }
               true
             } else {

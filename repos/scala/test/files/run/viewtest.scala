@@ -4,7 +4,8 @@ object Test extends App {
   println(xs)
 
   val ys = List(1, 2, 3).view map { x =>
-    println("mapping " + x); x + 1
+    println("mapping " + x);
+    x + 1
   }
   println("ys defined")
   println(ys.head)

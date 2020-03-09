@@ -137,7 +137,8 @@ trait BufferLike[A, +This <: BufferLike[A, This] with Buffer[A]]
     *  @return the buffer itself.
     */
   def ++=:(xs: TraversableOnce[A]): this.type = {
-    insertAll(0, xs.toTraversable); this
+    insertAll(0, xs.toTraversable);
+    this
   }
 
   /** Appends the given elements to this buffer.

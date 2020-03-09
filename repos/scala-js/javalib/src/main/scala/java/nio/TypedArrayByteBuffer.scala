@@ -73,13 +73,15 @@ private[nio] final class TypedArrayByteBuffer private (
     _dataView.getUint16(getPosAndAdvanceRead(2), !isBigEndian).toChar
   @noinline def putChar(value: Char): ByteBuffer = {
     ensureNotReadOnly();
-    _dataView.setUint16(getPosAndAdvanceWrite(2), value, !isBigEndian); this
+    _dataView.setUint16(getPosAndAdvanceWrite(2), value, !isBigEndian);
+    this
   }
   @noinline def getChar(index: Int): Char =
     _dataView.getUint16(validateIndex(index, 2), !isBigEndian).toChar
   @noinline def putChar(index: Int, value: Char): ByteBuffer = {
     ensureNotReadOnly();
-    _dataView.setUint16(validateIndex(index, 2), value, !isBigEndian); this
+    _dataView.setUint16(validateIndex(index, 2), value, !isBigEndian);
+    this
   }
 
   def asCharBuffer(): CharBuffer = {
@@ -93,13 +95,15 @@ private[nio] final class TypedArrayByteBuffer private (
     _dataView.getInt16(getPosAndAdvanceRead(2), !isBigEndian)
   @noinline def putShort(value: Short): ByteBuffer = {
     ensureNotReadOnly();
-    _dataView.setInt16(getPosAndAdvanceWrite(2), value, !isBigEndian); this
+    _dataView.setInt16(getPosAndAdvanceWrite(2), value, !isBigEndian);
+    this
   }
   @noinline def getShort(index: Int): Short =
     _dataView.getInt16(validateIndex(index, 2), !isBigEndian)
   @noinline def putShort(index: Int, value: Short): ByteBuffer = {
     ensureNotReadOnly();
-    _dataView.setInt16(validateIndex(index, 2), value, !isBigEndian); this
+    _dataView.setInt16(validateIndex(index, 2), value, !isBigEndian);
+    this
   }
 
   def asShortBuffer(): ShortBuffer = {
@@ -113,13 +117,15 @@ private[nio] final class TypedArrayByteBuffer private (
     _dataView.getInt32(getPosAndAdvanceRead(4), !isBigEndian)
   @noinline def putInt(value: Int): ByteBuffer = {
     ensureNotReadOnly();
-    _dataView.setInt32(getPosAndAdvanceWrite(4), value, !isBigEndian); this
+    _dataView.setInt32(getPosAndAdvanceWrite(4), value, !isBigEndian);
+    this
   }
   @noinline def getInt(index: Int): Int =
     _dataView.getInt32(validateIndex(index, 4), !isBigEndian)
   @noinline def putInt(index: Int, value: Int): ByteBuffer = {
     ensureNotReadOnly();
-    _dataView.setInt32(validateIndex(index, 4), value, !isBigEndian); this
+    _dataView.setInt32(validateIndex(index, 4), value, !isBigEndian);
+    this
   }
 
   def asIntBuffer(): IntBuffer = {
@@ -133,13 +139,15 @@ private[nio] final class TypedArrayByteBuffer private (
     _dataView.getInt64(getPosAndAdvanceRead(8), !isBigEndian)
   @noinline def putLong(value: Long): ByteBuffer = {
     ensureNotReadOnly();
-    _dataView.setInt64(getPosAndAdvanceWrite(8), value, !isBigEndian); this
+    _dataView.setInt64(getPosAndAdvanceWrite(8), value, !isBigEndian);
+    this
   }
   @noinline def getLong(index: Int): Long =
     _dataView.getInt64(validateIndex(index, 8), !isBigEndian)
   @noinline def putLong(index: Int, value: Long): ByteBuffer = {
     ensureNotReadOnly();
-    _dataView.setInt64(validateIndex(index, 8), value, !isBigEndian); this
+    _dataView.setInt64(validateIndex(index, 8), value, !isBigEndian);
+    this
   }
 
   def asLongBuffer(): LongBuffer =
@@ -149,13 +157,15 @@ private[nio] final class TypedArrayByteBuffer private (
     _dataView.getFloat32(getPosAndAdvanceRead(4), !isBigEndian)
   @noinline def putFloat(value: Float): ByteBuffer = {
     ensureNotReadOnly();
-    _dataView.setFloat32(getPosAndAdvanceWrite(4), value, !isBigEndian); this
+    _dataView.setFloat32(getPosAndAdvanceWrite(4), value, !isBigEndian);
+    this
   }
   @noinline def getFloat(index: Int): Float =
     _dataView.getFloat32(validateIndex(index, 4), !isBigEndian)
   @noinline def putFloat(index: Int, value: Float): ByteBuffer = {
     ensureNotReadOnly();
-    _dataView.setFloat32(validateIndex(index, 4), value, !isBigEndian); this
+    _dataView.setFloat32(validateIndex(index, 4), value, !isBigEndian);
+    this
   }
 
   def asFloatBuffer(): FloatBuffer = {
@@ -169,13 +179,15 @@ private[nio] final class TypedArrayByteBuffer private (
     _dataView.getFloat64(getPosAndAdvanceRead(8), !isBigEndian)
   @noinline def putDouble(value: Double): ByteBuffer = {
     ensureNotReadOnly();
-    _dataView.setFloat64(getPosAndAdvanceWrite(8), value, !isBigEndian); this
+    _dataView.setFloat64(getPosAndAdvanceWrite(8), value, !isBigEndian);
+    this
   }
   @noinline def getDouble(index: Int): Double =
     _dataView.getFloat64(validateIndex(index, 8), !isBigEndian)
   @noinline def putDouble(index: Int, value: Double): ByteBuffer = {
     ensureNotReadOnly();
-    _dataView.setFloat64(validateIndex(index, 8), value, !isBigEndian); this
+    _dataView.setFloat64(validateIndex(index, 8), value, !isBigEndian);
+    this
   }
 
   def asDoubleBuffer(): DoubleBuffer = {

@@ -20,7 +20,8 @@ object SchedulerPatternSpec {
     // this var and constructor is declared here to not show up in the docs
     var target: ActorRef = null
     def this(target: ActorRef) = {
-      this(); this.target = target
+      this();
+      this.target = target
     }
     //#schedule-constructor
 
@@ -45,7 +46,8 @@ object SchedulerPatternSpec {
     // this var and constructor is declared here to not show up in the docs
     var target: ActorRef = null
     def this(target: ActorRef) = {
-      this(); this.target = target
+      this();
+      this.target = target
     }
     //#schedule-receive
 

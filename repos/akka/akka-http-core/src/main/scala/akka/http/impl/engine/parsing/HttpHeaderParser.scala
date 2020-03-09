@@ -143,7 +143,9 @@ private[engine] final class HttpHeaderParser private (
           case branch: ValueBranch ⇒ parseHeaderValue(input, cursor, branch)()
           case valueParser: HeaderValueParser ⇒
             startValueBranch(valueIx, valueParser) // no header yet of this type
-          case EmptyHeader ⇒ resultHeader = EmptyHeader; cursor
+          case EmptyHeader ⇒
+            resultHeader = EmptyHeader;
+            cursor
         }
       case nodeChar ⇒
         val char = CharUtils.toLowerCase(byteChar(input, cursor))

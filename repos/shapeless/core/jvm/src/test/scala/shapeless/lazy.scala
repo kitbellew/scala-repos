@@ -99,7 +99,8 @@ class LazyStrictTestsJVM {
       import TC3._
       def throwsStackOverflow[T](f: => T): Boolean =
         try {
-          f; false
+          f;
+          false
         } catch {
           case _: StackOverflowError => true
         }

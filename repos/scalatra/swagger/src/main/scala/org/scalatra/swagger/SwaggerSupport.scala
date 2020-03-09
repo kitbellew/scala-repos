@@ -179,23 +179,29 @@ object SwaggerSupportSyntax {
 
     def dataType: DataType = _dataType
     def dataType(dataType: DataType): this.type = {
-      _dataType = dataType; this
+      _dataType = dataType;
+      this
     }
     def name(name: String): this.type = {
-      _name = name; this
+      _name = name;
+      this
     }
     def description(description: String): this.type = {
-      _description = description.blankOption; this
+      _description = description.blankOption;
+      this
     }
     def description(description: Option[String]): this.type = {
-      _description = description.flatMap(_.blankOption); this
+      _description = description.flatMap(_.blankOption);
+      this
     }
 
     def notes(notes: String): this.type = {
-      _notes = notes.blankOption; this
+      _notes = notes.blankOption;
+      this
     }
     def paramType(name: ParamType.ParamType): this.type = {
-      _paramType = name; this
+      _paramType = name;
+      this
     }
 
     def fromBody: this.type = paramType(ParamType.Body)
@@ -217,16 +223,20 @@ object SwaggerSupportSyntax {
     }
 
     def accessibleBy(value: String) = {
-      _paramAccess = value.blankOption; this
+      _paramAccess = value.blankOption;
+      this
     }
     def allowableValues(values: Range): this.type = {
-      _allowableValues = AllowableValues(values); this
+      _allowableValues = AllowableValues(values);
+      this
     }
     def required: this.type = {
-      _required = Some(true); this
+      _required = Some(true);
+      this
     }
     def optional: this.type = {
-      _required = Some(false); this
+      _required = Some(false);
+      this
     }
 
     def defaultValue: Option[String] = None
@@ -319,42 +329,51 @@ object SwaggerSupportSyntax {
     }
     def deprecated: Boolean = _deprecated
     def deprecate: this.type = {
-      _deprecated = true; this
+      _deprecated = true;
+      this
     }
     def nickname(value: String): this.type = {
-      _nickname = value; this
+      _nickname = value;
+      this
     }
     def nickName(value: String): this.type = nickname(value)
     def nickname: Option[String] = _nickname.blankOption
     def parameters(params: Parameter*): this.type = {
-      _parameters :::= params.toList; this
+      _parameters :::= params.toList;
+      this
     }
     def parameter(param: Parameter): this.type = parameters(param)
     def parameters: List[Parameter] = _parameters
     def responseMessages: List[ResponseMessage[_]] = _responseMessages
     def responseMessages(errs: ResponseMessage[_]*): this.type = {
-      _responseMessages :::= errs.toList; this
+      _responseMessages :::= errs.toList;
+      this
     }
     def responseMessage(err: ResponseMessage[_]): this.type =
       responseMessages(err)
     def produces(values: String*): this.type = {
-      _produces :::= values.toList; this
+      _produces :::= values.toList;
+      this
     }
     def produces: List[String] = _produces
     def consumes: List[String] = _consumes
     def consumes(values: String*): this.type = {
-      _consumes :::= values.toList; this
+      _consumes :::= values.toList;
+      this
     }
     def protocols: List[String] = _protocols
     def protocols(values: String*): this.type = {
-      _protocols :::= values.toList; this
+      _protocols :::= values.toList;
+      this
     }
     def authorizations: List[String] = _authorizations
     def authorizations(values: String*): this.type = {
-      _authorizations :::= values.toList; this
+      _authorizations :::= values.toList;
+      this
     }
     def position(value: Int): this.type = {
-      _position = value; this
+      _position = value;
+      this
     }
     def position: Int = _position
 

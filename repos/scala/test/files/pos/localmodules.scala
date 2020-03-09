@@ -8,13 +8,15 @@ object main {
 
       trait c {}
       def foo(x: c): c = {
-        Console.println("foo(" + x + ")"); x
+        Console.println("foo(" + x + ")");
+        x
       }
 
     }
 
     def bar(x: b.c): a.this.b.c = {
-      b.foo(x); x
+      b.foo(x);
+      x
     }
   }
 

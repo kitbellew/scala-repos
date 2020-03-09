@@ -51,10 +51,12 @@ class SystemProperties
     wrapAccess(super.contains(key)) exists (x => x)
 
   def -=(key: String): this.type = {
-    wrapAccess(System.clearProperty(key)); this
+    wrapAccess(System.clearProperty(key));
+    this
   }
   def +=(kv: (String, String)): this.type = {
-    wrapAccess(System.setProperty(kv._1, kv._2)); this
+    wrapAccess(System.setProperty(kv._1, kv._2));
+    this
   }
 
   def wrapAccess[T](body: => T): Option[T] =

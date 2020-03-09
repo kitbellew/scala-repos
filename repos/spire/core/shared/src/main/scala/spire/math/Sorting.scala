@@ -59,7 +59,8 @@ object MergeSort extends Sort {
     var i = 0
     var limit = len - startWidth
     while (i < limit) {
-      InsertionSort.sort(data, i, i + startWidth); i += startWidth
+      InsertionSort.sort(data, i, i + startWidth);
+      i += startWidth
     }
     if (i < len) InsertionSort.sort(data, i, len)
     var width = startWidth
@@ -68,10 +69,12 @@ object MergeSort extends Sort {
       i = 0
       limit = len - step
       while (i < limit) {
-        merge(buf1, buf2, i, i + width, i + step); i += step
+        merge(buf1, buf2, i, i + width, i + step);
+        i += step
       }
       while (i < len) {
-        merge(buf1, buf2, i, min(i + width, len), len); i += step
+        merge(buf1, buf2, i, min(i + width, len), len);
+        i += step
       }
       tmp = buf2
       buf2 = buf1
@@ -102,9 +105,11 @@ object MergeSort extends Sort {
     var kk = start
     while (kk < end) {
       if (ii < mid && (jj >= end || o.lteqv(in(ii), in(jj)))) {
-        out(kk) = in(ii); ii += 1
+        out(kk) = in(ii);
+        ii += 1
       } else {
-        out(kk) = in(jj); jj += 1
+        out(kk) = in(jj);
+        jj += 1
       }
       kk += 1
     }
@@ -142,20 +147,26 @@ object QuickSort {
     val value = data(pivot)
 
     //swap(pivot, right)
-    var tmp = data(pivot); data(pivot) = data(right); data(right) = tmp
+    var tmp = data(pivot);
+    data(pivot) = data(right);
+    data(right) = tmp
 
     var store = left
     var i = left
     while (i < right) {
       if (o.lt(data(i), value)) {
         //swap(i, store)
-        tmp = data(i); data(i) = data(store); data(store) = tmp
+        tmp = data(i);
+        data(i) = data(store);
+        data(store) = tmp
         store += 1
       }
       i += 1
     }
     //swap(store, right)
-    tmp = data(store); data(store) = data(right); data(right) = tmp
+    tmp = data(store);
+    data(store) = data(right);
+    data(right) = tmp
     store
   }
 }

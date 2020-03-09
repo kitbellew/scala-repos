@@ -38,7 +38,8 @@ object tuple {
       isComp
 
     type Aux[P, H0, T0] = IsComposite[P] {
-      type H = H0; type T = T0
+      type H = H0;
+      type T = T0
     }
 
     implicit def isComposite[P, L <: HList, H0, T <: HList](implicit
@@ -272,7 +273,8 @@ object tuple {
         tp: hl.Tupler[L2]): Aux[T, U, (U, tp.Out)] = new Remove[T, U] {
       type Out = (U, tp.Out)
       def apply(t: T): Out = {
-        val (u, rem) = remove(gen.to(t)); (u, tp(rem))
+        val (u, rem) = remove(gen.to(t));
+        (u, tp(rem))
       }
     }
   }
@@ -304,7 +306,8 @@ object tuple {
       new RemoveAll[T, ST] {
         type Out = (ST, tp.Out)
         def apply(t: T): Out = {
-          val (e, rem) = removeAll(gent.to(t)); (gens.from(e), tp(rem))
+          val (e, rem) = removeAll(gent.to(t));
+          (gens.from(e), tp(rem))
         }
       }
   }
@@ -332,7 +335,8 @@ object tuple {
         tp: hl.Tupler[L2]): Aux[T, U, V, (V, tp.Out)] = new Replacer[T, U, V] {
       type Out = (V, tp.Out)
       def apply(t: T, u: U): Out = {
-        val (v, rep) = replace(gen.to(t), u); (v, tp(rep))
+        val (v, rep) = replace(gen.to(t), u);
+        (v, tp(rep))
       }
     }
   }
@@ -361,7 +365,8 @@ object tuple {
         tp: hl.Tupler[L2]): Aux[T, N, U, (V, tp.Out)] = new ReplaceAt[T, N, U] {
       type Out = (V, tp.Out)
       def apply(t: T, u: U): Out = {
-        val (v, rep) = replaceAt(gen.to(t), u); (v, tp(rep))
+        val (v, rep) = replaceAt(gen.to(t), u);
+        (v, tp(rep))
       }
     }
   }
@@ -390,7 +395,8 @@ object tuple {
         tp: hl.Tupler[L2]): Aux[T, U, V, (U, tp.Out)] = new Modifier[T, U, V] {
       type Out = (U, tp.Out)
       def apply(t: T, f: U => V): Out = {
-        val (u, rep) = modify(gen.to(t), f); (u, tp(rep))
+        val (u, rep) = modify(gen.to(t), f);
+        (u, tp(rep))
       }
     }
   }
@@ -507,7 +513,8 @@ object tuple {
       new Split[T, N] {
         type Out = (tpp.Out, tps.Out)
         def apply(t: T): Out = {
-          val p :: s :: HNil = split.product(gen.to(t)); (tpp(p), tps(s))
+          val p :: s :: HNil = split.product(gen.to(t));
+          (tpp(p), tps(s))
         }
       }
   }
@@ -542,7 +549,8 @@ object tuple {
       new ReverseSplit[T, N] {
         type Out = (tpp.Out, tps.Out)
         def apply(t: T): Out = {
-          val p :: s :: HNil = split.product(gen.to(t)); (tpp(p), tps(s))
+          val p :: s :: HNil = split.product(gen.to(t));
+          (tpp(p), tps(s))
         }
       }
   }
@@ -573,7 +581,8 @@ object tuple {
       new SplitLeft[T, U] {
         type Out = (tpp.Out, tps.Out)
         def apply(t: T): Out = {
-          val p :: s :: HNil = split.product(gen.to(t)); (tpp(p), tps(s))
+          val p :: s :: HNil = split.product(gen.to(t));
+          (tpp(p), tps(s))
         }
       }
   }
@@ -608,7 +617,8 @@ object tuple {
       new ReverseSplitLeft[T, U] {
         type Out = (tpp.Out, tps.Out)
         def apply(t: T): Out = {
-          val p :: s :: HNil = split.product(gen.to(t)); (tpp(p), tps(s))
+          val p :: s :: HNil = split.product(gen.to(t));
+          (tpp(p), tps(s))
         }
       }
   }
@@ -639,7 +649,8 @@ object tuple {
       new SplitRight[T, U] {
         type Out = (tpp.Out, tps.Out)
         def apply(t: T): Out = {
-          val p :: s :: HNil = split.product(gen.to(t)); (tpp(p), tps(s))
+          val p :: s :: HNil = split.product(gen.to(t));
+          (tpp(p), tps(s))
         }
       }
   }
@@ -674,7 +685,8 @@ object tuple {
       new ReverseSplitRight[T, U] {
         type Out = (tpp.Out, tps.Out)
         def apply(t: T): Out = {
-          val p :: s :: HNil = split.product(gen.to(t)); (tpp(p), tps(s))
+          val p :: s :: HNil = split.product(gen.to(t));
+          (tpp(p), tps(s))
         }
       }
   }

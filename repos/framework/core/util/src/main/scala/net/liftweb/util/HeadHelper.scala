@@ -59,14 +59,16 @@ object HeadHelper {
           NodeSeq.Empty
         case e: Elem
             if (e.label == "script") && (src != null) && (!(jsSources contains src)) =>
-          jsSources += src; e
+          jsSources += src;
+          e
 
         case e: Elem
             if (e.label == "link") && (href != null) && (hrefs contains href) =>
           NodeSeq.Empty
         case e: Elem
             if (e.label == "link") && (href != null) && !(hrefs contains href) =>
-          hrefs += href; e
+          hrefs += href;
+          e
 
         case e: Text if (e.text.trim.length == 0) => NodeSeq.Empty
 

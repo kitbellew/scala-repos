@@ -12,7 +12,8 @@ class Blerg(x: AnyRef) {
         new {
           println(Bar.this)
         }
-      }; new Bar
+      };
+      new Bar
     }) // okay
   }
 }
@@ -26,7 +27,8 @@ class Outer {
           new {
             println(Bar.this)
           }
-        }; new Bar
+        };
+        new Bar
       }) // okay
     }
 

@@ -271,7 +271,8 @@ object Plugins extends PluginsFunctions {
   }
   private[this] def literalsString(lits: Seq[Literal]): String =
     lits map {
-      case Atom(l) => l; case Negated(Atom(l)) => l
+      case Atom(l)          => l;
+      case Negated(Atom(l)) => l
     } mkString (", ")
 
   private[this] def duplicateProvidesError(

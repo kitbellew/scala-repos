@@ -44,9 +44,11 @@ trait MapProxy[A, B] extends Map[A, B] with MapProxyLike[A, B, Map[A, B]] {
   override def -(key: A) = newProxy(self - key)
 
   override def +=(kv: (A, B)) = {
-    self += kv; this
+    self += kv;
+    this
   }
   override def -=(key: A) = {
-    self -= key; this
+    self -= key;
+    this
   }
 }

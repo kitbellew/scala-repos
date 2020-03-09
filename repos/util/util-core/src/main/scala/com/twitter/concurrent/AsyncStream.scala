@@ -98,7 +98,8 @@ sealed abstract class AsyncStream[+A] {
     */
   def withEffect(f: A => Unit): AsyncStream[A] =
     map { a =>
-      f(a); a
+      f(a);
+      a
     }
 
   /**
@@ -188,7 +189,8 @@ sealed abstract class AsyncStream[+A] {
           Future.value(
             mk(
               a, {
-                cellForced.setValue(None); embed(rest)
+                cellForced.setValue(None);
+                embed(rest)
               }))
       }
     }

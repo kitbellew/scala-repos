@@ -26,15 +26,23 @@ object Test {
     }
     def loop(t: Type) {
       t match {
-        case TypeRef(pre, sym, args) => loop(pre); check(sym); args foreach loop
+        case TypeRef(pre, sym, args) =>
+          loop(pre);
+          check(sym);
+          args foreach loop
         case PolyType(tparams, restpe) =>
           tparams foreach { tp =>
-            check(tp); check(tp.owner); loop(tp.info)
-          }; loop(restpe)
+            check(tp);
+            check(tp.owner);
+            loop(tp.info)
+          };
+          loop(restpe)
         case MethodType(params, restpe) =>
           params foreach { p =>
-            check(p); loop(p.info)
-          }; loop(restpe)
+            check(p);
+            loop(p.info)
+          };
+          loop(restpe)
         case _ =>
       }
     }

@@ -411,7 +411,8 @@ class LogManager(
             topicAndPartition.topic,
             topicAndPartition.partition,
             dataDir.getAbsolutePath, {
-              import JavaConversions._; config.originals.mkString(", ")
+              import JavaConversions._;
+              config.originals.mkString(", ")
             }))
       log
     }

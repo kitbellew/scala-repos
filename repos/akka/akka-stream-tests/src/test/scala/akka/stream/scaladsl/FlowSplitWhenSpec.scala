@@ -289,7 +289,8 @@ class FlowSplitWhenSpec extends AkkaSpec {
             .splitWhen(_ ⇒ true)
             .lift
             .mapAsync(1) { src ⇒
-              src.runWith(Sink.ignore); src.runWith(Sink.ignore)
+              src.runWith(Sink.ignore);
+              src.runWith(Sink.ignore)
             } // Sink.ignore+mapAsync pipes error back
             .runWith(Sink.ignore),
           3.seconds

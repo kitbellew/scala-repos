@@ -152,7 +152,9 @@ class Lexer(rd: Reader) {
       nread = rd.read(buf)
       bp = 0
       if (nread <= 0) {
-        ch = 0; atEOF = true; return
+        ch = 0;
+        atEOF = true;
+        return
       }
     }
     ch = buf(bp)
@@ -171,7 +173,8 @@ class Lexer(rd: Reader) {
   private val sb = new StringBuilder
 
   private def putChar() {
-    sb += ch; nextChar()
+    sb += ch;
+    nextChar()
   }
 
   private def putAcceptString(str: String) {
@@ -189,17 +192,39 @@ class Lexer(rd: Reader) {
     if (atEOF) token = EOF
     else
       ch match {
-        case '(' => putChar(); token = LParen
-        case ')' => putChar(); token = RParen
-        case '{' => putChar(); token = LBrace
-        case '}' => putChar(); token = RBrace
-        case '[' => putChar(); token = LBracket
-        case ']' => putChar(); token = RBracket
-        case ',' => putChar(); token = Comma
-        case ':' => putChar(); token = Colon
-        case 't' => putAcceptString("true"); token = TrueLit
-        case 'f' => putAcceptString("false"); token = FalseLit
-        case 'n' => putAcceptString("null"); token = NullLit
+        case '(' =>
+          putChar();
+          token = LParen
+        case ')' =>
+          putChar();
+          token = RParen
+        case '{' =>
+          putChar();
+          token = LBrace
+        case '}' =>
+          putChar();
+          token = RBrace
+        case '[' =>
+          putChar();
+          token = LBracket
+        case ']' =>
+          putChar();
+          token = RBracket
+        case ',' =>
+          putChar();
+          token = Comma
+        case ':' =>
+          putChar();
+          token = Colon
+        case 't' =>
+          putAcceptString("true");
+          token = TrueLit
+        case 'f' =>
+          putAcceptString("false");
+          token = FalseLit
+        case 'n' =>
+          putAcceptString("null");
+          token = NullLit
         case '"' => getString()
         case '-' | '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' =>
           getNumber()

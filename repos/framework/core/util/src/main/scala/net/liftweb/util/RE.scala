@@ -143,13 +143,15 @@ class REMatcher(val str: String, val compiled: Pattern) {
       def runIt(pos: Int) {
         if (pos >= cnt) return
         else {
-          ab += f(matcher.group(pos + 1)); runIt(pos + 1)
+          ab += f(matcher.group(pos + 1));
+          runIt(pos + 1)
         }
       }
 
       if (!matcher.find) return
       else {
-        runIt(0); doIt
+        runIt(0);
+        doIt
       }
     }
 

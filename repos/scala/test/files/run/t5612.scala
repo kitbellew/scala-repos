@@ -9,9 +9,13 @@ class Foo {
     breakable {
       for (x <- xs) {
         x match {
-          case L.One   => println("ONE"); return
-          case L.Two   => println("TWO")
-          case L.Three => println("THREE"); break
+          case L.One =>
+            println("ONE");
+            return
+          case L.Two => println("TWO")
+          case L.Three =>
+            println("THREE");
+            break
         }
       }
     }

@@ -374,9 +374,11 @@ object PlayDocsPlugin extends AutoPlugin {
       consoleReader.readCharacter() match {
         case 4 => // STOP
         case 11 =>
-          consoleReader.clearScreen(); waitEOF()
+          consoleReader.clearScreen();
+          waitEOF()
         case 10 =>
-          println(); waitEOF()
+          println();
+          waitEOF()
         case _ => waitEOF()
       }
 

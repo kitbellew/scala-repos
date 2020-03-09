@@ -479,7 +479,9 @@ class RewriteJoins extends Phase {
   def splitConjunctions(n: Node): IndexedSeq[Node] = {
     val b = new ArrayBuffer[Node]
     def f(n: Node): Unit = n match {
-      case Library.And(l, r)           => f(l); f(r)
+      case Library.And(l, r) =>
+        f(l);
+        f(r)
       case LiteralNode(t) if t == true =>
       case n                           => b += n
     }

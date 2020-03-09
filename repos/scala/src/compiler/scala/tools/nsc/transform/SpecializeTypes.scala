@@ -431,9 +431,11 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
     val keys: List[Symbol] = tps filter (_.isSpecialized)
     // creating each permutation of concrete types
     def loop(ctypes: List[List[Type]]): List[List[Type]] = ctypes match {
-      case Nil         => Nil
-      case set :: Nil  => set map (_ :: Nil)
-      case set :: sets => for (x <- set; xs <- loop(sets)) yield x :: xs
+      case Nil        => Nil
+      case set :: Nil => set map (_ :: Nil)
+      case set :: sets =>
+        for (x <- set;
+             xs <- loop(sets)) yield x :: xs
     }
     // zip the keys with each permutation to create a TypeEnv.
     // If we don't exclude the "all AnyRef" specialization, we will
@@ -1193,10 +1195,9 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
             clazz.info.decls.enter(om)
             foreachWithIndex(om.paramss) { (params, i) =>
               foreachWithIndex(params) { (param, j) =>
-                param.name =
-                  overriding
-                    .paramss(i)(j)
-                    .name // SI-6555 Retain the parameter names from the subclass.
+                param.name = overriding
+                  .paramss(i)(j)
+                  .name // SI-6555 Retain the parameter names from the subclass.
               }
             }
             debuglog(
@@ -1472,7 +1473,9 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
         val loconstraints = matches(tvar.info.bounds.lo, tpe)
         val hiconstraints = matches(tpe, tvar.info.bounds.hi)
         val allconstraints =
-          for (c <- constraints; l <- loconstraints; h <- hiconstraints)
+          for (c <- constraints;
+               l <- loconstraints;
+               h <- hiconstraints)
             yield c ++ l ++ h
         allconstraints
     }
@@ -2329,10 +2332,11 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
     if (currentRun.compiles(m)) concreteSpecMethods += m
   }
 
-  private def makeArguments(fun: Symbol, vparams: List[Symbol]): List[Tree] = (
-    //! TODO: make sure the param types are seen from the right prefix
-    map2(fun.info.paramTypes, vparams)((tp, arg) =>
-      gen.maybeMkAsInstanceOf(Ident(arg), tp, arg.tpe)))
+  private def makeArguments(fun: Symbol, vparams: List[Symbol]): List[Tree] =
+    (
+      //! TODO: make sure the param types are seen from the right prefix
+      map2(fun.info.paramTypes, vparams)((tp, arg) =>
+        gen.maybeMkAsInstanceOf(Ident(arg), tp, arg.tpe)))
 
   class SpecializationTransformer(unit: CompilationUnit) extends Transformer {
     informProgress("specializing " + unit)

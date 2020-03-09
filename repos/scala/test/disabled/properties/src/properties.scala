@@ -19,12 +19,14 @@ object properties {
 
     /** Change the getter. */
     def get(newGetter: T => T) /*?*/ = {
-      getter = newGetter; this
+      getter = newGetter;
+      this
     }
 
     /** Change the setter */
     def set(newSetter: T => T) = {
-      setter = newSetter; this
+      setter = newSetter;
+      this
     }
   }
 

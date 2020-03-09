@@ -19,7 +19,8 @@ object Test {
 
   // The type it should figure out, come on scalac
   type F = Factory[CC] forSome {
-    type X; type CC[X] >: Bar[X] with Foo[X] <: Bip[X]
+    type X;
+    type CC[X] >: Bar[X] with Foo[X] <: Bip[X]
   }
 
   // No problem

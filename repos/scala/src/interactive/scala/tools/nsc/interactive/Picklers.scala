@@ -59,7 +59,8 @@ trait Picklers { self: Global =>
     var end = bs.length
     var end2 = cs.length
     while (end > start && end2 > start && bs(end - 1) == cs(end2 - 1)) {
-      end -= 1; end2 -= 1
+      end -= 1;
+      end2 -= 1
     }
     sourceFilesSeen(f) = cs
     (start, end, cs.slice(start, end2).mkString(""))
@@ -168,7 +169,8 @@ trait Picklers { self: Global =>
 
   implicit def interruptReq: Pickler[InterruptReq] = {
     val emptyIR: InterruptReq = new InterruptReq {
-      type R = Unit; val todo = () => ()
+      type R = Unit;
+      val todo = () => ()
     }
     pkl[Unit].wrapped { _ =>
       emptyIR

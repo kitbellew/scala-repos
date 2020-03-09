@@ -55,7 +55,9 @@ class LPMaxFlow[N](val g: FlowGraph[N]) {
       }
     }
 
-    for (n <- visited; inc <- incoming.get(n); out <- outgoing.get(n)) {
+    for (n <- visited;
+         inc <- incoming.get(n);
+         out <- outgoing.get(n)) {
       constraints += (inc.reduceLeft(_ + _) <= out.reduceLeft(_ + _))
       constraints += (out.reduceLeft(_ + _) <= inc.reduceLeft(_ + _))
     }
@@ -120,7 +122,9 @@ class LPMaxFlow[N](val g: FlowGraph[N]) {
       }
     }
 
-    for (n <- visited; inc <- incoming.get(n); out <- outgoing.get(n)) {
+    for (n <- visited;
+         inc <- incoming.get(n);
+         out <- outgoing.get(n)) {
       constraints += (inc.reduceLeft(_ + _) <= out.reduceLeft(_ + _))
       constraints += (out.reduceLeft(_ + _) <= inc.reduceLeft(_ + _))
     }

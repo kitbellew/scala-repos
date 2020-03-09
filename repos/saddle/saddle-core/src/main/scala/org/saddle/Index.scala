@@ -248,7 +248,8 @@ trait Index[@spec(Boolean, Int, Long, Double) T] extends Serializable {
     if (firstLoc == -1)
       Array[Int]()
     else if (isUnique || {
-               count = locator.count(key); 1 == count
+               count = locator.count(key);
+               1 == count
              }) {
       Array(locator.get(key))
     } else if (isContiguous) {

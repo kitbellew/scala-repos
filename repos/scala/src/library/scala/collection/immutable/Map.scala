@@ -169,7 +169,8 @@ object Map extends ImmutableMapFactory[Map] {
       else if (key == key2) new Map1(key1, value1)
       else this
     override def foreach[U](f: ((A, B)) => U): Unit = {
-      f((key1, value1)); f((key2, value2))
+      f((key1, value1));
+      f((key2, value2))
     }
   }
 
@@ -203,7 +204,9 @@ object Map extends ImmutableMapFactory[Map] {
       else if (key == key3) new Map2(key1, value1, key2, value2)
       else this
     override def foreach[U](f: ((A, B)) => U): Unit = {
-      f((key1, value1)); f((key2, value2)); f((key3, value3))
+      f((key1, value1));
+      f((key2, value2));
+      f((key3, value3))
     }
   }
 
@@ -257,7 +260,10 @@ object Map extends ImmutableMapFactory[Map] {
       else if (key == key4) new Map3(key1, value1, key2, value2, key3, value3)
       else this
     override def foreach[U](f: ((A, B)) => U): Unit = {
-      f((key1, value1)); f((key2, value2)); f((key3, value3)); f((key4, value4))
+      f((key1, value1));
+      f((key2, value2));
+      f((key3, value3));
+      f((key4, value4))
     }
   }
 }

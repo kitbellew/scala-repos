@@ -262,7 +262,8 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
       () => {
         runSqlHive(
           "CREATE TABLE srcpart (key INT, value STRING) PARTITIONED BY (ds STRING, hr STRING)")
-        for (ds <- Seq("2008-04-08", "2008-04-09"); hr <- Seq("11", "12")) {
+        for (ds <- Seq("2008-04-08", "2008-04-09");
+             hr <- Seq("11", "12")) {
           runSqlHive(
             s"""LOAD DATA LOCAL INPATH '${getHiveFile("data/files/kv1.txt")}'
              |OVERWRITE INTO TABLE srcpart PARTITION (ds='$ds',hr='$hr')
@@ -275,7 +276,8 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
       () => {
         runSqlHive(
           "CREATE TABLE srcpart1 (key INT, value STRING) PARTITIONED BY (ds STRING, hr INT)")
-        for (ds <- Seq("2008-04-08", "2008-04-09"); hr <- 11 to 12) {
+        for (ds <- Seq("2008-04-08", "2008-04-09");
+             hr <- 11 to 12) {
           runSqlHive(
             s"""LOAD DATA LOCAL INPATH '${getHiveFile("data/files/kv1.txt")}'
              |OVERWRITE INTO TABLE srcpart1 PARTITION (ds='$ds',hr='$hr')

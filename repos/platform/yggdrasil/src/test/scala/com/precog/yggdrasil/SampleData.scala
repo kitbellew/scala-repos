@@ -90,7 +90,9 @@ object SampleData extends CValueGenerators {
           Some((idCount, jschema))
         )
       } catch {
-        case ex => println("depth: " + depth); throw ex
+        case ex =>
+          println("depth: " + depth);
+          throw ex
       }
     }
   )

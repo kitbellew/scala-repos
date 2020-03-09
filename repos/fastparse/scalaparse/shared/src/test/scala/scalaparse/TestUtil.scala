@@ -31,7 +31,8 @@ object TestUtil {
         )
       case s: Parsed.Success[_] =>
         assert {
-          implicitly(input); false
+          implicitly(input);
+          false
         }
     }
   }

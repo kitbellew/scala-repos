@@ -44,5 +44,7 @@ case class OutputOperationInfo(
   /**
     * Return the duration of this output operation.
     */
-  def duration: Option[Long] = for (s <- startTime; e <- endTime) yield e - s
+  def duration: Option[Long] =
+    for (s <- startTime;
+         e <- endTime) yield e - s
 }

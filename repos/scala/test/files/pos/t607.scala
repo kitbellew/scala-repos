@@ -3,7 +3,8 @@ object Test {
     type T
   }
   object FooX extends Foo {
-    type T = X; trait X
+    type T = X;
+    trait X
   }
 
   def test(x: Foo {

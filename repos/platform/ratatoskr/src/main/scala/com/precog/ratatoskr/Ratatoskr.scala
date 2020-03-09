@@ -1370,7 +1370,8 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
         "c",
         "create",
         "Create root API key", {
-          config.createRoot = true; config.showRoot = true
+          config.createRoot = true;
+          config.showRoot = true
         })
       opt(
         "a",

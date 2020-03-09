@@ -257,7 +257,8 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
     val x = sc
       .parallelize(1 to 100, numPartitions)
       .mapPartitions { iter =>
-        TaskContext.get().taskMetrics().getAccum(TEST_ACCUM) += 1; iter
+        TaskContext.get().taskMetrics().getAccum(TEST_ACCUM) += 1;
+        iter
       }
       .groupBy(identity)
     val sid = x.dependencies.head

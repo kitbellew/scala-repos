@@ -16,7 +16,9 @@ class ChanTest extends FunSuite {
     val b = new CyclicBarrier(2)
 
     val p = Proc[Thread] { t =>
-      threads += t; l.countDown(); b.await()
+      threads += t;
+      l.countDown();
+      b.await()
     }
 
     val t0 = new Thread {

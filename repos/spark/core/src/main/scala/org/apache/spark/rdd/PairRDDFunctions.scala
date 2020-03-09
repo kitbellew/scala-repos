@@ -609,7 +609,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       this
         .cogroup(other, partitioner)
         .flatMapValues(pair =>
-          for (v <- pair._1.iterator; w <- pair._2.iterator) yield (v, w))
+          for (v <- pair._1.iterator;
+               w <- pair._2.iterator) yield (v, w))
     }
 
   /**
@@ -625,7 +626,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       if (pair._2.isEmpty) {
         pair._1.iterator.map(v => (v, None))
       } else {
-        for (v <- pair._1.iterator; w <- pair._2.iterator) yield (v, Some(w))
+        for (v <- pair._1.iterator;
+             w <- pair._2.iterator) yield (v, Some(w))
       }
     }
   }
@@ -643,7 +645,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       if (pair._1.isEmpty) {
         pair._2.iterator.map(w => (None, w))
       } else {
-        for (v <- pair._1.iterator; w <- pair._2.iterator) yield (Some(v), w)
+        for (v <- pair._1.iterator;
+             w <- pair._2.iterator) yield (Some(v), w)
       }
     }
   }
@@ -664,7 +667,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
         case (vs, Seq()) => vs.iterator.map(v => (Some(v), None))
         case (Seq(), ws) => ws.iterator.map(w => (None, Some(w)))
         case (vs, ws) =>
-          for (v <- vs.iterator; w <- ws.iterator) yield (Some(v), Some(w))
+          for (v <- vs.iterator;
+               w <- ws.iterator) yield (Some(v), Some(w))
       }
     }
 

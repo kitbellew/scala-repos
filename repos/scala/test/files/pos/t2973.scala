@@ -1,1 +1,3 @@
-package foo {}; package bar {}; package baz {}
+package foo {};
+package bar {};
+package baz {}

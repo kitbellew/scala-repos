@@ -144,7 +144,8 @@ object TestLogger {
       new ContentLogger(
         wrap(blog),
         () => {
-          blog.stopQuietly(); per.flush()
+          blog.stopQuietly();
+          per.flush()
         })
     }
     val config = new TestLogging(wrap(global), makePerTest)

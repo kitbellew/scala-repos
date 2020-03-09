@@ -193,7 +193,8 @@ abstract class MongoAccountManager(
       update(settings.resetTokens)
         .set("usedAt" set (new DateTime).serialize)
         .where("tokenId" === tokenId)).map { _ =>
-      logger.debug("Reset token %s marked as used".format(tokenId)); PrecogUnit
+      logger.debug("Reset token %s marked as used".format(tokenId));
+      PrecogUnit
     }
   }
 

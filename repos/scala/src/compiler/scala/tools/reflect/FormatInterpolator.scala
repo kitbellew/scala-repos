@@ -17,10 +17,12 @@ abstract class FormatInterpolator {
   import treeInfo.Applied
 
   @inline private def truly(body: => Unit): Boolean = {
-    body; true
+    body;
+    true
   }
   @inline private def falsely(body: => Unit): Boolean = {
-    body; false
+    body;
+    false
   }
 
   private def fail(msg: String) = c.abort(c.enclosingPosition, msg)
@@ -306,7 +308,8 @@ abstract class FormatInterpolator {
     protected def okFlags: String = allFlags
     def goodFlags = {
       val badFlags = flags map (_ filterNot (okFlags contains _))
-      for (bf <- badFlags; f <- bf) badFlag(f, s"Illegal flag '$f'")
+      for (bf <- badFlags;
+           f <- bf) badFlag(f, s"Illegal flag '$f'")
       badFlags.getOrElse("").isEmpty
     }
     def goodIndex = {

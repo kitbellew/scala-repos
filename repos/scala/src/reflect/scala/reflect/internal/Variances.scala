@@ -142,11 +142,13 @@ trait Variances {
           case _ if resultTypeOnly(tp)               => this(tp.resultType)
           case TypeRef(_, sym, _) if sym.isAliasType => this(tp.normalize)
           case TypeRef(_, sym, _) if !sym.variance.isInvariant =>
-            checkVarianceOfSymbol(sym); mapOver(tp)
+            checkVarianceOfSymbol(sym);
+            mapOver(tp)
           case RefinedType(_, _)            => withinRefinement(mapOver(tp))
           case ClassInfoType(parents, _, _) => parents foreach this
           case mt @ MethodType(_, result) =>
-            flipped(mt.paramTypes foreach this); this(result)
+            flipped(mt.paramTypes foreach this);
+            this(result)
           case _ => mapOver(tp)
         }
         // We're using TypeMap here for type traversal only. To avoid wasteful symbol

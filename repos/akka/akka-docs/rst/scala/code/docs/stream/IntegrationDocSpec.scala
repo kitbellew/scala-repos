@@ -351,7 +351,8 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
 
     Source(List("a", "B", "C", "D", "e", "F", "g", "H", "i", "J"))
       .map(elem => {
-        println(s"before: $elem"); elem
+        println(s"before: $elem");
+        elem
       })
       .mapAsync(4)(service.convert)
       .runForeach(elem => println(s"after: $elem"))
@@ -387,7 +388,8 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
 
     Source(List("a", "B", "C", "D", "e", "F", "g", "H", "i", "J"))
       .map(elem => {
-        println(s"before: $elem"); elem
+        println(s"before: $elem");
+        elem
       })
       .mapAsyncUnordered(4)(service.convert)
       .runForeach(elem => println(s"after: $elem"))

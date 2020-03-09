@@ -47,7 +47,8 @@ object RangeUtil {
     @tailrec def unseen(i: Int, limit: Int): Boolean =
       if (i < limit) {
         if (col.isDefinedAt(i)) {
-          f(i); seen(i + 1, limit)
+          f(i);
+          seen(i + 1, limit)
         } else unseen(i + 1, limit)
       } else {
         false

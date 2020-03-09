@@ -364,7 +364,8 @@ class MergedClassPath[T](
     val indices = mutable.HashMap[String, Int]()
     val cls = new mutable.ArrayBuffer[ClassRepresentation[T]](1024)
 
-    for (e <- entries; c <- e.classes) {
+    for (e <- entries;
+         c <- e.classes) {
       val name = c.name
       if (indices contains name) {
         val idx = indices(name)
@@ -388,7 +389,8 @@ class MergedClassPath[T](
     val indices = mutable.HashMap[String, Int]()
     val pkg = new mutable.ArrayBuffer[ClassPath[T]](256)
 
-    for (e <- entries; p <- e.packages) {
+    for (e <- entries;
+         p <- e.packages) {
       val name = p.name
       if (indices contains name) {
         val idx = indices(name)

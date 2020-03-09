@@ -44,7 +44,8 @@ class ProxyTest extends WordSpec {
       var called = 0
 
       val f1 = new ProxyFactory[TestInterface]({ m =>
-        called += 1; m()
+        called += 1;
+        m()
       })
       val obj = new TestImpl
 
@@ -60,7 +61,8 @@ class ProxyTest extends WordSpec {
       var called = 0
 
       val f2 = new ProxyFactory[TestClass]({ m =>
-        called += 1; m()
+        called += 1;
+        m()
       })
       val obj = new TestClass
 
@@ -161,7 +163,9 @@ class ProxyTest extends WordSpec {
     // Sigh. Benchmarking has no place in unit tests.
 
     def time(f: => Unit) = {
-      val elapsed = Stopwatch.start(); f; elapsed().inMilliseconds
+      val elapsed = Stopwatch.start();
+      f;
+      elapsed().inMilliseconds
     }
     def benchmark(f: => Unit) = {
       // warm up
@@ -208,17 +212,20 @@ class ProxyTest extends WordSpec {
 
       val t1 = benchmark {
         for (i <- 1 to repTimes) {
-          proxy1.foo; proxy1.bar(2)
+          proxy1.foo;
+          proxy1.bar(2)
         }
       }
       val t2 = benchmark {
         for (i <- 1 to repTimes) {
-          proxy2.foo; proxy2.bar(2)
+          proxy2.foo;
+          proxy2.bar(2)
         }
       }
       val t3 = benchmark {
         for (i <- 1 to repTimes) {
-          obj.foo; obj.bar(2)
+          obj.foo;
+          obj.bar(2)
         }
       }
 

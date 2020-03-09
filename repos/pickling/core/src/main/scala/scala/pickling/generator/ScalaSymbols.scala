@@ -205,7 +205,8 @@ private[pickling] class IrScalaSymbols[
       //System.err.println(s"baseSymTpe: ${baseSymTpe.toString}")
 
       val rawSymTpe = baseSymTpe match {
-        case NullaryMethodType(ntpe) => ntpe; case ntpe => ntpe
+        case NullaryMethodType(ntpe) => ntpe;
+        case ntpe                    => ntpe
       }
       val result = existentialAbstraction(quantified, rawSymTpe)
       //System.err.println(s"result = ${result.toString}")

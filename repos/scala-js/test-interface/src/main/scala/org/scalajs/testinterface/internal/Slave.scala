@@ -117,7 +117,8 @@ final class Slave(
   private def stopSlave(): Try[Unit] = {
     ensureRunnerExists()
     val res = Try {
-      runner.done(); ()
+      runner.done();
+      ()
     }
     runner = null
     res
@@ -126,7 +127,8 @@ final class Slave(
   private def incomingRunnerMessage(msg: String): Try[Unit] = {
     ensureRunnerExists()
     Try {
-      runner.receiveMessage(msg); ()
+      runner.receiveMessage(msg);
+      ()
     }
   }
 

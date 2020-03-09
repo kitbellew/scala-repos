@@ -505,7 +505,8 @@ class ActorDocSpec extends AkkaSpec("""
 
         def receive = {
           case "kill" =>
-            context.stop(child); lastSender = sender()
+            context.stop(child);
+            lastSender = sender()
           case Terminated(`child`) => lastSender ! "finished"
         }
       }
@@ -640,10 +641,18 @@ class ActorDocSpec extends AkkaSpec("""
     import akka.actor.ActorDSL._
     actor(new Act {
       superviseWith(OneForOneStrategy() {
-        case _ => Stop; Restart; Resume; Escalate
+        case _ =>
+          Stop;
+          Restart;
+          Resume;
+          Escalate
       })
       superviseWith(AllForOneStrategy() {
-        case _ => Stop; Restart; Resume; Escalate
+        case _ =>
+          Stop;
+          Restart;
+          Resume;
+          Escalate
       })
     })
   }

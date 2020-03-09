@@ -35,7 +35,9 @@ object RemotingSpec {
       case ex: Exception ⇒ throw ex
       case ActorForReq(s) ⇒ sender() ! context.actorFor(s)
       case ActorSelReq(s) ⇒ sender() ! context.actorSelection(s)
-      case x ⇒ target = sender(); sender() ! x
+      case x ⇒
+        target = sender();
+        sender() ! x
     }
 
     override def preStart() {}

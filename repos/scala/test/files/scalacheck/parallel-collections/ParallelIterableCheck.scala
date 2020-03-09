@@ -51,7 +51,8 @@ abstract class ParallelIterableCheck[T](collName: String)
     for (inst <- instances(values)) yield (inst, fromTraversable(inst))
 
   def collectionPairsWithLengths =
-    for (inst <- instances(values); s <- choose(0, inst.size))
+    for (inst <- instances(values);
+         s <- choose(0, inst.size))
       yield (inst, fromTraversable(inst), s)
 
   def collectionPairsWith2Indices =
@@ -62,7 +63,8 @@ abstract class ParallelIterableCheck[T](collName: String)
 
   def collectionTriplets =
     for (inst <- instances(values);
-         updStart <- choose(0, inst.size); howMany <- choose(0, inst.size))
+         updStart <- choose(0, inst.size);
+         howMany <- choose(0, inst.size))
       yield {
         val modif = inst.toSeq.patch(updStart, inst.toSeq, howMany)
         (inst, fromTraversable(inst), modif)

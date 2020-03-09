@@ -62,7 +62,8 @@ trait ParsersCommon extends ScannersCommon { self =>
     @inline final def inParensOrError[T](body: => T, alt: T): T =
       if (in.token == LPAREN) inParens(body)
       else {
-        accept(LPAREN); alt
+        accept(LPAREN);
+        alt
       }
 
     @inline final def inParensOrUnit[T](body: => Tree): Tree =
@@ -79,7 +80,8 @@ trait ParsersCommon extends ScannersCommon { self =>
     @inline final def inBracesOrError[T](body: => T, alt: T): T =
       if (in.token == LBRACE) inBraces(body)
       else {
-        accept(LBRACE); alt
+        accept(LBRACE);
+        alt
       }
 
     @inline final def inBracesOrNil[T](body: => List[T]): List[T] =
@@ -267,7 +269,9 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
       if (syntaxErrors.isEmpty) firstTry
       else
         in.healBraces() match {
-          case Nil     => showSyntaxErrors(); firstTry
+          case Nil =>
+            showSyntaxErrors();
+            firstTry
           case patches => (this withPatches patches).parse()
         }
     }
@@ -326,7 +330,9 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
       val res =
         try tree
         catch {
-          case e: Exception => pushback(); throw e
+          case e: Exception =>
+            pushback();
+            throw e
         }
       if (res.isEmpty) pushback()
       res
@@ -804,7 +810,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         case build.SyntacticTuple(as) =>
           val arity = as.length
           val example = analyzer.exampleTuplePattern(as map {
-            case Ident(name) => name; case _ => nme.EMPTY
+            case Ident(name) => name;
+            case _           => nme.EMPTY
           })
           val msg =
             sm"""|not a legal formal parameter.
@@ -1080,7 +1087,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
               syntaxError(
                 t.pos,
                 "not a legal existential clause",
-                skipIt = false); None
+                skipIt = false);
+              None
           }
         )
       }
@@ -1490,8 +1498,10 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
                 case IDENTIFIER => atPos(in.offset)(Ident(ident()))
                 //case USCORE   => freshPlaceholder()  // ifonly etapolation
                 case LBRACE => expr() // dropAnyBraces(expr0(Local))
-                case THIS   => in.nextToken(); atPos(in.offset)(This(tpnme.EMPTY))
-                case _      => errpolation()
+                case THIS =>
+                  in.nextToken();
+                  atPos(in.offset)(This(tpnme.EMPTY))
+                case _ => errpolation()
               }
           )
         }
@@ -1548,7 +1558,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
       */
     def typedOpt(): Tree =
       if (in.token == COLON) {
-        in.nextToken(); typ()
+        in.nextToken();
+        typ()
       } else TypeTree()
 
     def typeOrInfixType(location: Location): Tree =
@@ -1629,7 +1640,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
             newLinesOpt()
             val thenp = expr()
             val elsep = if (in.token == ELSE) {
-              in.nextToken(); expr()
+              in.nextToken();
+              expr()
             } else literalUnit
             If(cond, thenp, elsep)
           }
@@ -1654,8 +1666,10 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
                   }
               }
             val finalizer = in.token match {
-              case FINALLY => in.nextToken(); expr()
-              case _       => EmptyTree
+              case FINALLY =>
+                in.nextToken();
+                expr()
+              case _ => EmptyTree
             }
             Try(body, catches, finalizer)
           }
@@ -1800,7 +1814,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         atPos(in.offset) {
           Ident(ident()) match {
             case expr if in.token == COLON =>
-              in.nextToken(); Typed(expr, typeOrInfixType(location))
+              in.nextToken();
+              Typed(expr, typeOrInfixType(location))
             case expr => expr
           }
         }
@@ -2012,7 +2027,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
       */
     def guard(): Tree =
       if (in.token == IF) {
-        in.nextToken(); stripParens(postfixExpr())
+        in.nextToken();
+        stripParens(postfixExpr())
       } else EmptyTree
 
     /** {{{
@@ -2136,7 +2152,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         val start = in.offset
         def loop(): List[Tree] = pattern1() :: {
           if (isRawBar) {
-            in.nextToken(); loop()
+            in.nextToken();
+            loop()
           } else Nil
         }
         loop() match {
@@ -2217,7 +2234,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         }
         def loop(top: Tree): Tree = reducePatternStack(base, top) match {
           case next if isIdentExcept(raw.BAR) =>
-            pushOpInfo(next); loop(simplePattern(badPattern3))
+            pushOpInfo(next);
+            loop(simplePattern(badPattern3))
           case next => next
         }
         checkWildStar orElse stripParens(loop(top))
@@ -2269,12 +2287,13 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         *
         * XXX: Hook for IDE
         */
-      def simplePattern(): Tree = (
-        // simple diagnostics for this entry point
-        simplePattern(() =>
-          syntaxErrorOrIncompleteAnd(
-            "illegal start of simple pattern",
-            skipIt = true)(errorPatternTree)))
+      def simplePattern(): Tree =
+        (
+          // simple diagnostics for this entry point
+          simplePattern(() =>
+            syntaxErrorOrIncompleteAnd(
+              "illegal start of simple pattern",
+              skipIt = true)(errorPatternTree)))
       def simplePattern(onError: () => Tree): Tree = {
         val start = in.offset
         in.token match {
@@ -2399,7 +2418,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         if (mods.hasAccessBoundary)
           syntaxError("duplicate private/protected qualifier", skipIt = false)
         result = if (in.token == THIS) {
-          in.nextToken(); mods | Flags.LOCAL
+          in.nextToken();
+          mods | Flags.LOCAL
         } else Modifiers(mods.flags, identForType())
         accept(RBRACKET)
       }
@@ -2424,7 +2444,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
     def accessModifierOpt(): Modifiers = normalizeModifiers {
       in.token match {
         case m @ (PRIVATE | PROTECTED) =>
-          in.nextToken(); accessQualifierOpt(Modifiers(flagTokens(m)))
+          in.nextToken();
+          accessQualifierOpt(Modifiers(flagTokens(m)))
         case _ => NoMods
       }
     }
@@ -2712,7 +2733,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
 
     def bound(tok: Token): Tree =
       if (in.token == tok) {
-        in.nextToken(); typ()
+        in.nextToken();
+        typ()
       } else EmptyTree
 
     /* -------- DEFS ------------------------------------------- */
@@ -2798,7 +2820,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
 
     def wildcardOrIdent() = {
       if (in.token == USCORE) {
-        in.nextToken(); nme.WILDCARD
+        in.nextToken();
+        nme.WILDCARD
       } else ident()
     }
 
@@ -3077,7 +3100,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
       atPos(in.skipToken()) {
         val stats = selfInvocation(vparamss) :: {
           if (isStatSep) {
-            in.nextToken(); blockStatSeq()
+            in.nextToken();
+            blockStatSeq()
           } else Nil
         }
         accept(RBRACE)
@@ -3291,7 +3315,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
       }
       readAppliedParent()
       while (in.token == WITH) {
-        in.nextToken(); readAppliedParent()
+        in.nextToken();
+        readAppliedParent()
       }
       parents.toList
     }

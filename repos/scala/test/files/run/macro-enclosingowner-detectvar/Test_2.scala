@@ -13,11 +13,17 @@ object Test extends App {
   def c2 = Predef.identity(Predef.identity(Macros.foo))
   def c3: Int = Macros.foo
   def c4: Int = Predef.identity(Predef.identity(Macros.foo))
-  c1; c2; c3; c4;
+  c1;
+  c2;
+  c3;
+  c4;
 
   lazy val d1 = Macros.foo
   lazy val d2 = Predef.identity(Predef.identity(Macros.foo))
   lazy val d3: Int = Macros.foo
   lazy val d4: Int = Predef.identity(Predef.identity(Macros.foo))
-  d1; d2; d3; d4
+  d1;
+  d2;
+  d3;
+  d4
 }

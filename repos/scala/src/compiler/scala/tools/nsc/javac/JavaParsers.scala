@@ -175,9 +175,11 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
     def skipTo(tokens: Int*) {
       while (!(tokens contains in.token) && in.token != EOF) {
         if (in.token == LBRACE) {
-          skipAhead(); accept(RBRACE)
+          skipAhead();
+          accept(RBRACE)
         } else if (in.token == LPAREN) {
-          skipAhead(); accept(RPAREN)
+          skipAhead();
+          accept(RPAREN)
         } else in.nextToken()
       }
     }
@@ -274,16 +276,33 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
     def basicType(): Tree =
       atPos(in.pos) {
         in.token match {
-          case BYTE    => in.nextToken(); TypeTree(ByteTpe)
-          case SHORT   => in.nextToken(); TypeTree(ShortTpe)
-          case CHAR    => in.nextToken(); TypeTree(CharTpe)
-          case INT     => in.nextToken(); TypeTree(IntTpe)
-          case LONG    => in.nextToken(); TypeTree(LongTpe)
-          case FLOAT   => in.nextToken(); TypeTree(FloatTpe)
-          case DOUBLE  => in.nextToken(); TypeTree(DoubleTpe)
-          case BOOLEAN => in.nextToken(); TypeTree(BooleanTpe)
+          case BYTE =>
+            in.nextToken();
+            TypeTree(ByteTpe)
+          case SHORT =>
+            in.nextToken();
+            TypeTree(ShortTpe)
+          case CHAR =>
+            in.nextToken();
+            TypeTree(CharTpe)
+          case INT =>
+            in.nextToken();
+            TypeTree(IntTpe)
+          case LONG =>
+            in.nextToken();
+            TypeTree(LongTpe)
+          case FLOAT =>
+            in.nextToken();
+            TypeTree(FloatTpe)
+          case DOUBLE =>
+            in.nextToken();
+            TypeTree(DoubleTpe)
+          case BOOLEAN =>
+            in.nextToken();
+            TypeTree(BooleanTpe)
           case _ =>
-            syntaxError("illegal start of type", skipIt = true); errorTypeTree
+            syntaxError("illegal start of type", skipIt = true);
+            errorTypeTree
         }
       }
 
@@ -318,10 +337,12 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
           val pos = in.currentPos
           in.nextToken()
           val hi = if (in.token == EXTENDS) {
-            in.nextToken(); typ()
+            in.nextToken();
+            typ()
           } else EmptyTree
           val lo = if (in.token == SUPER) {
-            in.nextToken(); typ()
+            in.nextToken();
+            typ()
           } else EmptyTree
           val tdef = atPos(pos) {
             TypeDef(
@@ -364,9 +385,11 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
     def annotation() {
       qualId()
       if (in.token == LPAREN) {
-        skipAhead(); accept(RPAREN)
+        skipAhead();
+        accept(RPAREN)
       } else if (in.token == LBRACE) {
-        skipAhead(); accept(RBRACE)
+        skipAhead();
+        accept(RBRACE)
       }
     }
 
@@ -438,7 +461,8 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
       atPos(in.currentPos) {
         val name = identForType()
         val hi = if (in.token == EXTENDS) {
-          in.nextToken(); bound()
+          in.nextToken();
+          bound()
         } else EmptyTree
         TypeDef(
           Modifiers(Flags.JAVA | Flags.DEFERRED | Flags.PARAM),

@@ -42,7 +42,8 @@ object CSSHelpers extends ControlHelpers {
     var line: String = null;
     try {
       while ({
-        line = reader.readLine(); line != null
+        line = reader.readLine();
+        line != null
       }) {
         res append line + "\n"
       }

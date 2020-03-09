@@ -61,7 +61,8 @@ object s {
       null: List[Int] /* AppliedTypeTree */
     })
     act(reify {
-      (); () /* Block */
+      ();
+      () /* Block */
     })
     act(reify {
       val x: Int = 0 /* ValDef */
@@ -101,7 +102,8 @@ object s {
       x /* Function */
     })
     act(reify {
-      var v = 1; v = 2 /* Assign */
+      var v = 1;
+      v = 2 /* Assign */
     })
     act(reify {
       class A() {

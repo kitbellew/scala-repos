@@ -186,7 +186,9 @@ object VecTime {
         val vlen = v.length
         var i = 0
         while (i < vlen) {
-          databuf(c) = v.times(i); i += 1; c += 1
+          databuf(c) = v.times(i);
+          i += 1;
+          c += 1
         }
     }
 

@@ -107,7 +107,8 @@ private[process] trait ProcessImpl {
       (
         thread,
         Future {
-          thread.join(); code.get
+          thread.join();
+          code.get
         },
         () => thread.interrupt()
       )
@@ -120,7 +121,8 @@ private[process] trait ProcessImpl {
         destroyImpl: => Unit): Option[T] = {
       try Some(action)
       catch onInterrupt {
-        destroyImpl; None
+        destroyImpl;
+        None
       }
     }
   }

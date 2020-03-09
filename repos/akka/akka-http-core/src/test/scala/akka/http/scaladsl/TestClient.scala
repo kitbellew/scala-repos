@@ -57,7 +57,8 @@ object TestClient extends App {
       case Success(res) ⇒
         println(s"$host is running ${res mkString ", "}")
         Http().shutdownAllConnectionPools().onComplete { _ ⇒
-          system.log.info("STOPPED"); shutdown()
+          system.log.info("STOPPED");
+          shutdown()
         }
 
       case Failure(error) ⇒

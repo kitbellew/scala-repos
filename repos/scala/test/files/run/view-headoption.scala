@@ -1,9 +1,11 @@
 object Test {
   val failer = () => {
-    println("fail"); None
+    println("fail");
+    None
   }
   val succeeder = () => {
-    println("success"); Some(5)
+    println("success");
+    Some(5)
   }
   val fs = List(
     failer,

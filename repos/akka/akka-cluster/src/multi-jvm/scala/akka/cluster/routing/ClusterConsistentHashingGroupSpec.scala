@@ -99,7 +99,8 @@ abstract class ClusterConsistentHashingGroupSpec
         currentRoutees(router).size should ===(3)
       }
       val keys = List("A", "B", "C", "D", "E", "F", "G")
-      for (_ ← 1 to 10; k ← keys) {
+      for (_ ← 1 to 10;
+           k ← keys) {
         router ! k
       }
       enterBarrier("messages-sent")

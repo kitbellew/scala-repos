@@ -95,7 +95,8 @@ trait StatefulSnippet extends DispatchSnippet {
     SHtml.link(
       to,
       () => {
-        registerThisSnippet(); func()
+        registerThisSnippet();
+        func()
       },
       body,
       attrs: _*)

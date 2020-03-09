@@ -68,7 +68,8 @@ sealed trait CPathTraversal { self =>
         val rCols = makeCols(right)
 
         val comparators: Array[CPathComparator] =
-          (for ((lPath, lCol) <- lCols; (rPath, rCol) <- rCols) yield {
+          (for ((lPath, lCol) <- lCols;
+                (rPath, rCol) <- rCols) yield {
             CPathComparator(lPath, lCol, rPath, rCol)
           })(collection.breakOut)
 

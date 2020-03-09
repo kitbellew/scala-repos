@@ -17,5 +17,6 @@ case class Bippy5(val x: Int) extends AnyVal {
   override def productPrefix = "Dingo"
 } // nothing
 case class Bippy6(val x: Int) extends AnyVal {
-  override def productPrefix = "Dingo"; override def equals(x: Any) = false
+  override def productPrefix = "Dingo";
+  override def equals(x: Any) = false
 } // error

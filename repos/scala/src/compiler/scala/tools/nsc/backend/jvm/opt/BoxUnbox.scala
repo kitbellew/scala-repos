@@ -445,7 +445,8 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
         case _                  =>
       }
 
-      for ((location, ops) <- toInsertBefore; op <- ops)
+      for ((location, ops) <- toInsertBefore;
+           op <- ops)
         method.instructions.insertBefore(location, op)
 
       for ((oldOp, newOps) <- toReplace) {
@@ -914,7 +915,8 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
         // no need to check for TupleN.apply: the compiler transforms case companion apply calls to constructor invocations
         case ti: TypeInsnNode if ti.getOpcode == NEW =>
           for ((dupOp, initCall) <- BoxKind.checkInstanceCreation(ti, prodCons)
-               if isTupleConstructor(initCall); kind <- checkKind(initCall))
+               if isTupleConstructor(initCall);
+               kind <- checkKind(initCall))
             yield (InstanceCreation(ti, dupOp, initCall), kind)
 
         case _ => None

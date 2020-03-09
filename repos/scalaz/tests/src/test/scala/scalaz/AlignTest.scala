@@ -10,7 +10,8 @@ object AlignTest extends SpecLite {
   "pad" ! forAll { (xs: List[Int], ys: List[Int]) =>
     val xys = F.pad(xs, ys)
     xys.foreach(_.mustMatch {
-      case (None, None) => false; case _ => true
+      case (None, None) => false;
+      case _            => true
     })
     val max = xs.size max ys.size
     val min = xs.size min ys.size

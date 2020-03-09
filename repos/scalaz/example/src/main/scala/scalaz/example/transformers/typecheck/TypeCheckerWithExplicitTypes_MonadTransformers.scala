@@ -34,7 +34,8 @@ object TypeCheckerWithExplicitTypes_MonadTransformers {
     case Lit(v) => liftK(success(litToTy(v)))
     case Id(x) =>
       for {
-        env <- ask[V, TypeEnv]; res <- liftK(find(x, env))
+        env <- ask[V, TypeEnv];
+        res <- liftK(find(x, env))
       } yield res
     // make sure the first branch is a boolean and then
     // make sure the second and third branches have the same type

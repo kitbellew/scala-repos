@@ -233,20 +233,25 @@ class SupervisorSpec
         var preStarts = 0
         var postStops = 0
         override def preRestart(reason: Throwable, message: Option[Any]) {
-          preRestarts += 1; testActor ! ("preRestart" + preRestarts)
+          preRestarts += 1;
+          testActor ! ("preRestart" + preRestarts)
         }
         override def postRestart(reason: Throwable) {
-          postRestarts += 1; testActor ! ("postRestart" + postRestarts)
+          postRestarts += 1;
+          testActor ! ("postRestart" + postRestarts)
         }
         override def preStart() {
-          preStarts += 1; testActor ! ("preStart" + preStarts)
+          preStarts += 1;
+          testActor ! ("preStart" + preStarts)
         }
         override def postStop() {
-          postStops += 1; testActor ! ("postStop" + postStops)
+          postStops += 1;
+          testActor ! ("postStop" + postStops)
         }
         def receive = {
           case "crash" ⇒ {
-            testActor ! "crashed"; throw new RuntimeException("Expected")
+            testActor ! "crashed";
+            throw new RuntimeException("Expected")
           }
           case "ping" ⇒ sender() ! "pong"
         }
@@ -496,7 +501,9 @@ class SupervisorSpec
           case l: TestLatch ⇒ child ! l
           case "test" ⇒ sender() ! "green"
           case "testchild" ⇒ child forward "test"
-          case "testchildAndAck" ⇒ child forward "test"; sender() ! "ack"
+          case "testchildAndAck" ⇒
+            child forward "test";
+            sender() ! "ack"
         }
       }))
 

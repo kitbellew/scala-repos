@@ -24,7 +24,8 @@ class Tokenizer(s: String, delimiters: String) extends Iterator[String] {
   def next: String =
     if (hasNext) {
       val start = i;
-      var ch = s.charAt(i); i = i + 1;
+      var ch = s.charAt(i);
+      i = i + 1;
       if (isDelimiter(ch)) ch.toString()
       else {
         while (i < s.length() &&
@@ -80,7 +81,8 @@ object Terms {
 
   private var count = 0;
   def newVar(prefix: String) = {
-    count = count + 1; Var(prefix + count)
+    count = count + 1;
+    Var(prefix + count)
   }
 
   val NoTerm = Con("<none>", List());
@@ -170,7 +172,8 @@ object Programs {
 
     def tryClause(c: Clause, q: Term, s: Subst): Stream[Subst] = {
       if (debug) Console.println("trying " + c);
-      for (s1 <- option2stream(unify(q, c.lhs, s)); s2 <- solve1(c.rhs, s1))
+      for (s1 <- option2stream(unify(q, c.lhs, s));
+           s2 <- solve1(c.rhs, s1))
         yield s2;
     }
 
@@ -191,7 +194,8 @@ class Parser(s: String) {
   def rep[a](p: => a): List[a] = {
     val t = p;
     if (token == ",") {
-      token = it.next; t :: rep(p)
+      token = it.next;
+      t :: rep(p)
     } else List(t)
   }
 
@@ -212,9 +216,12 @@ class Parser(s: String) {
   def term: Term = {
     val ch = token.charAt(0);
     if ('A' <= ch && ch <= 'Z') {
-      val a = token; token = it.next; Var(a)
+      val a = token;
+      token = it.next;
+      Var(a)
     } else if (it.isDelimiter(ch)) {
-      syntaxError("term expected"); null
+      syntaxError("term expected");
+      null
     } else constructor
   }
 
@@ -227,7 +234,8 @@ class Parser(s: String) {
         Clause(
           constructor,
           if (token equals ":-") {
-            token = it.next; rep(constructor)
+            token = it.next;
+            rep(constructor)
           } else List())
       }
     if (token equals ".") token = it.next else syntaxError("`.' expected");

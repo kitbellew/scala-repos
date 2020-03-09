@@ -350,7 +350,8 @@ object Load {
   }
 
   def isProjectThis(s: Setting[_]) = s.key.scope.project match {
-    case This | Select(ThisProject) => true; case _ => false
+    case This | Select(ThisProject) => true;
+    case _                          => false
   }
   def buildConfigurations(
       loaded: sbt.LoadedBuild,
@@ -625,7 +626,8 @@ object Load {
       referenced: Map[URI, List[ProjectReference]],
       builds: Map[URI, sbt.PartBuildUnit]): Unit = {
     val rootProject = getRootProject(builds)
-    for ((uri, refs) <- referenced; ref <- refs) {
+    for ((uri, refs) <- referenced;
+         ref <- refs) {
       val ProjectRef(refURI, refID) =
         Scope.resolveProjectRef(uri, rootProject, ref)
       val loadedUnit = builds(refURI)
@@ -1284,7 +1286,8 @@ object Load {
     val parentLoader =
       if (depcp.isEmpty) pm.initialLoader
       else {
-        addToLoader(); pm.loader
+        addToLoader();
+        pm.loader
       }
     val pluginLoader =
       if (defcp.isEmpty)

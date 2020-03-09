@@ -109,13 +109,16 @@ class SparseVectorTest extends FunSuite {
     // Test zero
     assert(b.asCscRow === c)
     // Test middle
-    b(2) = 2.0; c(0, 2) = 2.0
+    b(2) = 2.0;
+    c(0, 2) = 2.0
     assert(b.asCscRow === c)
     // Test end
-    b(4) = 4.0; c(0, 4) = 4.0
+    b(4) = 4.0;
+    c(0, 4) = 4.0
     assert(b.asCscRow === c)
     // Test beginning
-    b(0) = 0.1; c(0, 0) = 0.1
+    b(0) = 0.1;
+    c(0, 0) = 0.1
     assert(b.asCscRow === c)
   }
 

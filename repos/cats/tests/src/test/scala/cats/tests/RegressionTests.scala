@@ -12,11 +12,13 @@ class RegressionTests extends CatsSuite {
   case class State[S, A](run: S => (A, S)) { self =>
     def map[B](f: A => B): State[S, B] =
       State({ s =>
-        val (a, s2) = self.run(s); (f(a), s2)
+        val (a, s2) = self.run(s);
+        (f(a), s2)
       })
     def flatMap[B](f: A => State[S, B]): State[S, B] =
       State({ s =>
-        val (a, s2) = self.run(s); f(a).run(s2)
+        val (a, s2) = self.run(s);
+        f(a).run(s2)
       })
   }
 

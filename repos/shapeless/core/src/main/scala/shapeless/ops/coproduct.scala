@@ -578,7 +578,8 @@ object coproduct {
     * @author Andreas Koestler
     */
   trait ZipWithIndex[C <: Coproduct] extends DepFn1[C] with Serializable {
-    type Out <: Coproduct; type Idx <: Nat
+    type Out <: Coproduct;
+    type Idx <: Nat
   }
 
   object ZipWithIndex {
@@ -1035,7 +1036,8 @@ object coproduct {
         implicit isCCons: IsCCons[C]): Aux[C, isCCons.H, isCCons.T] = isCCons
 
     type Aux[C <: Coproduct, H0, T0 <: Coproduct] = IsCCons[C] {
-      type H = H0; type T = T0
+      type H = H0;
+      type T = T0
     }
 
     implicit def coproductCCons[H0, T0 <: Coproduct]: Aux[H0 :+: T0, H0, T0] =
@@ -1079,7 +1081,8 @@ object coproduct {
 
     type Aux[C <: Coproduct, N <: Nat, L <: Coproduct, R <: Coproduct] =
       Split[C, N] {
-        type Left = L; type Right = R
+        type Left = L;
+        type Right = R
       }
 
     implicit def splitZero[C <: Coproduct]: Aux[C, Nat._0, CNil, C] =
@@ -1350,7 +1353,8 @@ object coproduct {
       initLast
 
     type Aux[C <: Coproduct, I0 <: Coproduct, L0] = InitLast[C] {
-      type I = I0; type L = L0
+      type I = I0;
+      type L = L0
     }
 
     implicit def initLastCoproduct[

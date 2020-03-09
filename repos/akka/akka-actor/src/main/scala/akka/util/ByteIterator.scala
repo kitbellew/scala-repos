@@ -42,16 +42,22 @@ object ByteIterator {
     final def next(): Byte = {
       if (!hasNext) Iterator.empty.next
       else {
-        val i = from; from = from + 1; array(i)
+        val i = from;
+        from = from + 1;
+        array(i)
       }
     }
 
     def clear(): Unit = {
-      this.array = ByteArrayIterator.emptyArray; from = 0; until = from
+      this.array = ByteArrayIterator.emptyArray;
+      from = 0;
+      until = from
     }
 
     final override def length: Int = {
-      val l = len; clear(); l
+      val l = len;
+      clear();
+      l
     }
 
     final override def ++(that: TraversableOnce[Byte]): ByteIterator =
@@ -96,7 +102,8 @@ object ByteIterator {
     final override def takeWhile(p: Byte ⇒ Boolean): this.type = {
       val prev = from
       dropWhile(p)
-      until = from; from = prev
+      until = from;
+      from = prev
       this
     }
 

@@ -29,10 +29,14 @@ class ArrayOrderBenchmarks extends MyBenchmark {
 
     a = init(size)(nextInt)
     b = a.clone
-    c = a.clone; c(1) += 1
-    d = a.clone; d(size / 3) += 1
-    e = a.clone; e(size - 7) += 1
-    f = init(size + 10)(nextInt); System.arraycopy(a, 0, f, 0, a.length)
+    c = a.clone;
+    c(1) += 1
+    d = a.clone;
+    d(size / 3) += 1
+    e = a.clone;
+    e(size - 7) += 1
+    f = init(size + 10)(nextInt);
+    System.arraycopy(a, 0, f, 0, a.length)
   }
 
   def directEq(x: Array[Int], y: Array[Int]): Boolean = {
@@ -62,13 +66,16 @@ class ArrayOrderBenchmarks extends MyBenchmark {
     val z = new Array[Int](spire.math.max(x.length, y.length))
     var i = 0
     while (i < x.length && i < y.length) {
-      z(i) = x(i) + y(i); i += 1
+      z(i) = x(i) + y(i);
+      i += 1
     }
     while (i < x.length) {
-      z(i) = x(i); i += 1
+      z(i) = x(i);
+      i += 1
     }
     while (i < y.length) {
-      z(i) = y(i); i += 1
+      z(i) = y(i);
+      i += 1
     }
     z
   }

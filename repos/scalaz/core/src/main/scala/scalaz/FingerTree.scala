@@ -304,10 +304,13 @@ sealed abstract class Node[V, A](implicit r: Reducer[A, V]) {
   def foreach(f: A => Unit) {
     fold(
       (_, a1, a2) => {
-        f(a1); f(a2)
+        f(a1);
+        f(a2)
       },
       (_, a1, a2, a3) => {
-        f(a1); f(a2); f(a3)
+        f(a1);
+        f(a2);
+        f(a3)
       }
     )
   }
@@ -1070,7 +1073,9 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
         f(x)
       },
       (_, pr, m, sf) => {
-        pr.foreach(f); m.foreach(_.foreach(f)); sf.foreach(f)
+        pr.foreach(f);
+        m.foreach(_.foreach(f));
+        sf.foreach(f)
       }
     )
   }

@@ -1,6 +1,7 @@
 // isEmpty returns non-boolean
 class Casey(a: Int) {
-  def isEmpty = this; def get = this
+  def isEmpty = this;
+  def get = this
 }
 object Casey {
   def unapply(a: Casey) = a

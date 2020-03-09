@@ -489,7 +489,8 @@ trait IterableSplitter[+T]
     var remaining = taken min self.remaining
     def hasNext = remaining > 0
     def next = {
-      remaining -= 1; self.next()
+      remaining -= 1;
+      self.next()
     }
     def dup: IterableSplitter[T] = self.dup.take(taken)
     def split: Seq[IterableSplitter[T]] = takeSeq(self.split) { (p, n) =>

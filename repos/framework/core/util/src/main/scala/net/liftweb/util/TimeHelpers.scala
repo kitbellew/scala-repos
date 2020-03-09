@@ -413,27 +413,32 @@ trait TimeHelpers { self: ControlHelpers =>
 
     /** set the day of the month (1 based) and return the calendar */
     def setDay(d: Int) = {
-      c.set(Calendar.DAY_OF_MONTH, d); c
+      c.set(Calendar.DAY_OF_MONTH, d);
+      c
     }
 
     /** set the month (0 based) and return the calendar */
     def setMonth(m: Int) = {
-      c.set(Calendar.MONTH, m); c
+      c.set(Calendar.MONTH, m);
+      c
     }
 
     /** set the year and return the calendar */
     def setYear(y: Int) = {
-      c.set(Calendar.YEAR, y); c
+      c.set(Calendar.YEAR, y);
+      c
     }
 
     /** set the TimeZone and return the calendar */
     def setTimezone(tz: TimeZone) = {
-      c.setTimeZone(tz); c
+      c.setTimeZone(tz);
+      c
     }
 
     /** set the time to 00:00:00.000 and return the calendar */
     def noTime = {
-      c.setTime(c.getTime.noTime); c
+      c.setTime(c.getTime.noTime);
+      c
     }
   }
 

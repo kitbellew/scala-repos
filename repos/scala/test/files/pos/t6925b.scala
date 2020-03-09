@@ -15,10 +15,12 @@ class Derived extends Base[PartialFunction] {
 
 object Test {
   lazy val lx = {
-    println("hello"); 3
+    println("hello");
+    3
   }
   def test1(x: Int = lx) = ???
   def test2(x: Int = lx match {
-    case 0 => 1; case 3 => 4
+    case 0 => 1;
+    case 3 => 4
   }) = ???
 }

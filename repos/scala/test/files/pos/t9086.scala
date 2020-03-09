@@ -4,7 +4,8 @@ object Test {
   def local = {
     implicit object X
         extends X({
-          implicitly[Boolean]; ""
+          implicitly[Boolean];
+          ""
         })
     implicitly[X[String]] // failed in 2.11.5
   }

@@ -140,7 +140,9 @@ class StringConcatTest extends ClearAfterClass {
       s1 + "//" + s2
     }
     def sbuf = {
-      val r = new java.lang.StringBuffer(); r.append("sbuf"); r
+      val r = new java.lang.StringBuffer();
+      r.append("sbuf");
+      r
     }
     def chsq: java.lang.CharSequence = "chsq"
     val s = t(

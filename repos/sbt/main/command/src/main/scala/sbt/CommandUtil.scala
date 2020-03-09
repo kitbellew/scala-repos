@@ -13,7 +13,8 @@ object CommandUtil {
   def readLines(files: Seq[File]): Seq[String] =
     files flatMap (line => IO.readLines(line)) flatMap processLine
   def processLine(s: String) = {
-    val trimmed = s.trim; if (ignoreLine(trimmed)) None else Some(trimmed)
+    val trimmed = s.trim;
+    if (ignoreLine(trimmed)) None else Some(trimmed)
   }
   def ignoreLine(s: String) = s.isEmpty || s.startsWith("#")
 
@@ -46,7 +47,8 @@ object CommandUtil {
       f: T => State): State =
     (s get key) match {
       case None =>
-        s.log.error(ifMissing); s.fail
+        s.log.error(ifMissing);
+        s.fail
       case Some(nav) => f(nav)
     }
 

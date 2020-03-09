@@ -21,7 +21,8 @@ object sieve {
         if (isPrime(i)) {
           var k = i + i;
           while (k <= stop) {
-            isPrime(k) = false; k = k + i;
+            isPrime(k) = false;
+            k = k + i;
           }
           count = count + 1;
         }

@@ -3,7 +3,8 @@
   */
 class A {
   def f() = {
-    case class Bob(); Bob
+    case class Bob();
+    Bob
   }
 
   val quux0 = f()

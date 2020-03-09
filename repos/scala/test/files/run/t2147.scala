@@ -4,9 +4,11 @@ object Test extends App {
   val res1 = Stream.from(1).flatMap(a => List(1)).head
 
   println((for {
-    a <- Stream.from(1); b <- 1 to 5; if a > 10
+    a <- Stream.from(1);
+    b <- 1 to 5; if a > 10
   } yield a).head)
   println((for {
-    a <- Stream.from(1); b <- 1 to a; if a > 10
+    a <- Stream.from(1);
+    b <- 1 to a; if a > 10
   } yield a).head)
 }

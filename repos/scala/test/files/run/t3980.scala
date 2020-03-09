@@ -1,7 +1,8 @@
 object A {
   def run1 {
     lazy val x: Unit = {
-      (); println("once")
+      ();
+      println("once")
     }
     x
     x

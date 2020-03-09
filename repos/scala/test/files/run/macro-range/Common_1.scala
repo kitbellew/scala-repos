@@ -5,7 +5,8 @@ abstract class RangeDefault {
   def foreach(f: Int => Unit) = {
     var i = from
     while (i < to) {
-      f(i); i += 1
+      f(i);
+      i += 1
     }
   }
 }

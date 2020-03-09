@@ -30,7 +30,8 @@ object Responder {
     *  convenience in for comprehensions.
     */
   def exec[A](x: => Unit): Boolean = {
-    x; true
+    x;
+    true
   }
 
   /** Runs a responder, returning an optional result.
@@ -42,10 +43,13 @@ object Responder {
   }
 
   def loop[A](r: Responder[Unit]): Responder[Nothing] =
-    for (_ <- r; y <- loop(r)) yield y
+    for (_ <- r;
+         y <- loop(r)) yield y
 
   def loopWhile[A](cond: => Boolean)(r: Responder[Unit]): Responder[Unit] =
-    if (cond) for (_ <- r; y <- loopWhile(cond)(r)) yield y
+    if (cond)
+      for (_ <- r;
+           y <- loopWhile(cond)(r)) yield y
     else constant(())
 }
 

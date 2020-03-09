@@ -750,7 +750,8 @@ object FieldSpec extends Specification {
         var received: String = null
         field.set("foobar")
         field.validationHarness = s => {
-          received = s; Nil
+          received = s;
+          Nil
         }
         rec.validate must_== Nil
         received must_== "foobar"

@@ -26,7 +26,9 @@ object Test {
     try {
       throw new RuntimeException
     } catch {
-      case _: Throwable => boz; ???
+      case _: Throwable =>
+        boz;
+        ???
     }
   }
 

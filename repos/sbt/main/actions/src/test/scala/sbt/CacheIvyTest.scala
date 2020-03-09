@@ -45,7 +45,8 @@ class CacheIvyTest extends Properties("CacheIvy") {
       o <- Gen.identifier
       n <- Gen.identifier
       r <- for {
-        n <- Gen.numChar; ns <- Gen.numStr
+        n <- Gen.numChar;
+        ns <- Gen.numStr
       } yield n + ns
       cs <- arbitrary[Option[String]]
       branch <- arbitrary[Option[String]]

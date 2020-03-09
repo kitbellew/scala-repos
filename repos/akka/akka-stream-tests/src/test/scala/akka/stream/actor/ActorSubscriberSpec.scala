@@ -32,7 +32,8 @@ object ActorSubscriberSpec {
       case "ready" ⇒ request(elements = 2)
       case "boom" ⇒ throw new RuntimeException("boom") with NoStackTrace
       case "requestAndCancel" ⇒ {
-        request(1); cancel()
+        request(1);
+        cancel()
       }
       case "cancel" ⇒ cancel()
     }

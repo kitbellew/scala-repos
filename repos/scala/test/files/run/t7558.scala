@@ -6,7 +6,8 @@ object Test extends App {
   val t = {
     var x = "ab".toList;
     u.reify {
-      x = x.reverse; x
+      x = x.reverse;
+      x
     }.tree
   }
   val evaluated = tb.eval(t)

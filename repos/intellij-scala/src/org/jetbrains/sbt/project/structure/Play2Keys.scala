@@ -38,7 +38,8 @@ object Play2Keys {
         elem.child.filterNot(_.text.forall(c => c == '\n' || c == ' '))
 
       if (children.forall(_.child.forall {
-            case _: Text => true; case _ => false
+            case _: Text => true;
+            case _       => false
           })) {
         Some(
           new StringXmlKey(

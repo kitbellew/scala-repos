@@ -19,13 +19,16 @@ package buffer {
   }
 
   trait ElemType {
-    type Element; type Component <: ElemType
+    type Element;
+    type Component <: ElemType
   }
   trait Float1 extends ElemType {
-    type Element = Float; type Component = Float1
+    type Element = Float;
+    type Component = Float1
   }
   class Vec2 extends ElemType {
-    type Element = Vec2; type Component = Float1
+    type Element = Vec2;
+    type Component = Float1
   }
 
   abstract class BaseSeq[T <: ElemType, E]

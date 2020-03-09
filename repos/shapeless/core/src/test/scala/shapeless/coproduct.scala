@@ -159,7 +159,10 @@ class CoproductTests {
 
   @Test
   def testFlatMap {
-    type S = String; type I = Int; type D = Double; type C = Char
+    type S = String;
+    type I = Int;
+    type D = Double;
+    type C = Char
     val in1 = Coproduct[I :+: CNil](1)
     val is = Coproduct[I :+: S :+: CNil](1)
     val isd = Coproduct[I :+: S :+: D :+: CNil](1)
@@ -441,7 +444,10 @@ class CoproductTests {
 
   @Test
   def testExtendRight {
-    type S = String; type I = Int; type D = Double; type C = Char
+    type S = String;
+    type I = Int;
+    type D = Double;
+    type C = Char
     type CoI = I :+: CNil
     type CoIS = I :+: S :+: CNil
     type CoISD = I :+: S :+: D :+: CNil
@@ -459,7 +465,10 @@ class CoproductTests {
 
   @Test
   def testExtendLeft {
-    type S = String; type I = Int; type D = Double; type C = Char
+    type S = String;
+    type I = Int;
+    type D = Double;
+    type C = Char
     type CoI = I :+: CNil
     type CoSI = S :+: I :+: CNil
     type CoDSI = D :+: S :+: I :+: CNil
@@ -477,7 +486,10 @@ class CoproductTests {
 
   @Test
   def testExtendLeftBy {
-    type S = String; type I = Int; type D = Double; type C = Char
+    type S = String;
+    type I = Int;
+    type D = Double;
+    type C = Char
     type CoI = I :+: CNil
     type CoSI = S :+: I :+: CNil
     type CoDSI = D :+: S :+: I :+: CNil
@@ -499,7 +511,10 @@ class CoproductTests {
 
   @Test
   def testExtendRightBy {
-    type S = String; type I = Int; type D = Double; type C = Char
+    type S = String;
+    type I = Int;
+    type D = Double;
+    type C = Char
     type CoI = I :+: CNil
     type CoIS = I :+: S :+: CNil
     type CoISD = I :+: S :+: D :+: CNil
@@ -522,7 +537,10 @@ class CoproductTests {
   @Test
   def testRotateLeft {
     import Nat._
-    type S = String; type I = Int; type D = Double; type C = Char
+    type S = String;
+    type I = Int;
+    type D = Double;
+    type C = Char
     val in1 = Coproduct[I :+: CNil](1)
     val in2 = Coproduct[I :+: S :+: CNil](1)
     val in3 = Coproduct[I :+: S :+: D :+: CNil](1)
@@ -694,7 +712,10 @@ class CoproductTests {
   @Test
   def testRotateRight {
     import Nat._
-    type S = String; type I = Int; type D = Double; type C = Char
+    type S = String;
+    type I = Int;
+    type D = Double;
+    type C = Char
     val in1 = Coproduct[I :+: CNil](1)
     val in2 = Coproduct[I :+: S :+: CNil](1)
     val in3 = Coproduct[I :+: S :+: D :+: CNil](1)
@@ -891,7 +912,10 @@ class CoproductTests {
 
   @Test
   def testPrepend: Unit = {
-    type S = String; type I = Int; type D = Double; type C = Char
+    type S = String;
+    type I = Int;
+    type D = Double;
+    type C = Char
     val in1 = Coproduct[I :+: CNil](1)
     val in2 = Coproduct[I :+: S :+: CNil](1)
     val in3 = Coproduct[I :+: S :+: D :+: CNil](1)
@@ -1103,8 +1127,12 @@ class CoproductTests {
   @Test
   def testReverse {
     {
-      type S = String; type I = Int; type D = Double; type C = Char
-      type SI = S :+: I :+: CNil; type IS = I :+: S :+: CNil
+      type S = String;
+      type I = Int;
+      type D = Double;
+      type C = Char
+      type SI = S :+: I :+: CNil;
+      type IS = I :+: S :+: CNil
 
       val r1 = Coproduct[I :+: CNil](1).reverse
       assertTypedEquals[I :+: CNil](Coproduct[I :+: CNil](1), r1)
@@ -1162,7 +1190,10 @@ class CoproductTests {
   @Test
   def testAt {
     import Nat._
-    type S = String; type I = Int; type D = Double; type C = Char
+    type S = String;
+    type I = Int;
+    type D = Double;
+    type C = Char
     val in1 = Coproduct[I :+: CNil](1)
     val in2 = Coproduct[I :+: S :+: CNil](1)
     val in3 = Coproduct[I :+: S :+: D :+: CNil](1)
@@ -1210,7 +1241,10 @@ class CoproductTests {
 
   @Test
   def testPartition {
-    type S = String; type I = Int; type D = Double; type C = Char
+    type S = String;
+    type I = Int;
+    type D = Double;
+    type C = Char
     val i = Coproduct[I :+: CNil](1)
     val is = Coproduct[I :+: S :+: CNil](1)
 
@@ -1240,7 +1274,10 @@ class CoproductTests {
 
   @Test
   def testPartitionC {
-    type S = String; type I = Int; type D = Double; type C = Char
+    type S = String;
+    type I = Int;
+    type D = Double;
+    type C = Char
     val i = Coproduct[I :+: CNil](1)
     val is = Coproduct[I :+: S :+: CNil](1)
 
@@ -1270,7 +1307,10 @@ class CoproductTests {
 
   @Test
   def testFilter {
-    type S = String; type I = Int; type D = Double; type C = Char
+    type S = String;
+    type I = Int;
+    type D = Double;
+    type C = Char
     val i = Coproduct[I :+: CNil](1)
     val is = Coproduct[I :+: S :+: CNil](1)
 
@@ -1300,7 +1340,10 @@ class CoproductTests {
 
   @Test
   def testFilterNot {
-    type S = String; type I = Int; type D = Double; type C = Char
+    type S = String;
+    type I = Int;
+    type D = Double;
+    type C = Char
     val i = Coproduct[I :+: CNil](1)
     val is = Coproduct[I :+: S :+: CNil](1)
 
@@ -1329,7 +1372,10 @@ class CoproductTests {
   @Test
   def testSplit {
     import Nat._
-    type S = String; type I = Int; type D = Double; type C = Char
+    type S = String;
+    type I = Int;
+    type D = Double;
+    type C = Char
     val in1 = Coproduct[I :+: CNil](1)
     val is = Coproduct[I :+: S :+: CNil](1)
     val dc = Coproduct[D :+: C :+: CNil](2.0)
@@ -1402,7 +1448,10 @@ class CoproductTests {
   @Test
   def testSplitC {
     import Nat._
-    type S = String; type I = Int; type D = Double; type C = Char
+    type S = String;
+    type I = Int;
+    type D = Double;
+    type C = Char
     val in1 = Coproduct[I :+: CNil](1)
     val is = Coproduct[I :+: S :+: CNil](1)
     val dc = Coproduct[D :+: C :+: CNil](2.0)
@@ -1503,7 +1552,10 @@ class CoproductTests {
   @Test
   def testTake {
     import Nat._
-    type S = String; type I = Int; type D = Double; type C = Char
+    type S = String;
+    type I = Int;
+    type D = Double;
+    type C = Char
     val in1 = Coproduct[I :+: CNil](1)
     val is = Coproduct[I :+: S :+: CNil](1)
     val dc = Coproduct[D :+: C :+: CNil](2.0)
@@ -1572,7 +1624,10 @@ class CoproductTests {
   @Test
   def testDrop {
     import Nat._
-    type S = String; type I = Int; type D = Double; type C = Char
+    type S = String;
+    type I = Int;
+    type D = Double;
+    type C = Char
     val in1 = Coproduct[I :+: CNil](1)
     val is = Coproduct[I :+: S :+: CNil](1)
     val dc = Coproduct[D :+: C :+: CNil](2.0)
@@ -1640,7 +1695,10 @@ class CoproductTests {
 
   @Test
   def testRemoveElem {
-    type S = String; type I = Int; type D = Double; type C = Char
+    type S = String;
+    type I = Int;
+    type D = Double;
+    type C = Char
     val i = Coproduct[I :+: CNil](1)
     val is = Coproduct[I :+: S :+: CNil](1)
     val ii = Coproduct[I :+: I :+: CNil](1)
@@ -1673,7 +1731,10 @@ class CoproductTests {
 
   @Test
   def testRemoveInverse = {
-    type S = String; type I = Int; type D = Double; type C = Char
+    type S = String;
+    type I = Int;
+    type D = Double;
+    type C = Char
     val i = Coproduct[I :+: CNil](1)
     val is = Coproduct[I :+: S :+: CNil](1)
     val is0 = Coproduct[I :+: S :+: CNil]("a")
@@ -1701,7 +1762,10 @@ class CoproductTests {
 
   @Test
   def testRemoveLastInverse = {
-    type S = String; type I = Int; type D = Double; type C = Char
+    type S = String;
+    type I = Int;
+    type D = Double;
+    type C = Char
     val i = Coproduct[I :+: CNil](1)
     val is = Coproduct[I :+: S :+: CNil](1)
     val is0 = Coproduct[I :+: S :+: CNil]("a")

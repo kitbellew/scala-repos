@@ -86,7 +86,8 @@ class IRs[U <: Universe with Singleton](val uni: U) {
     goodAccessorsNotParamsVars.map { symSetter: MethodSymbol =>
       val sym = symSetter.getter.asMethod
       val rawSymTpe = sym.typeSignatureIn(rawTpe) match {
-        case NullaryMethodType(ntpe) => ntpe; case ntpe => ntpe
+        case NullaryMethodType(ntpe) => ntpe;
+        case ntpe                    => ntpe
       }
       val symTpe = existentialAbstraction(quantified, rawSymTpe)
       FieldIR(sym.name.toString, symTpe, None, Some(sym))
@@ -140,7 +141,8 @@ class IRs[U <: Universe with Singleton](val uni: U) {
           if !sym.isParamAccessor && sym.isSetter && sym.accessed != NoSymbol =>
         val rawSymTpe =
           sym.getter.typeSignatureIn(rawTpeOfOwner) match {
-            case NullaryMethodType(ntpe) => ntpe; case ntpe => ntpe
+            case NullaryMethodType(ntpe) => ntpe;
+            case ntpe                    => ntpe
           }
         val symTpe =
           existentialAbstraction(quantified, rawSymTpe)
@@ -224,7 +226,8 @@ class IRs[U <: Universe with Singleton](val uni: U) {
         // println(s"baseSymTpe: ${baseSymTpe.toString}")
 
         val rawSymTpe = baseSymTpe match {
-          case NullaryMethodType(ntpe) => ntpe; case ntpe => ntpe
+          case NullaryMethodType(ntpe) => ntpe;
+          case ntpe                    => ntpe
         }
         val symTpe = existentialAbstraction(quantified, rawSymTpe)
 
@@ -261,7 +264,8 @@ class IRs[U <: Universe with Singleton](val uni: U) {
 
         allGetters.map { getter =>
           val rawSymTpe = getter.typeSignatureIn(rawTpe) match {
-            case NullaryMethodType(ntpe) => ntpe; case ntpe => ntpe
+            case NullaryMethodType(ntpe) => ntpe;
+            case ntpe                    => ntpe
           }
           val symTpe = existentialAbstraction(quantified, rawSymTpe)
 
@@ -282,7 +286,8 @@ class IRs[U <: Universe with Singleton](val uni: U) {
 
         reflectionGetters.map { sym =>
           val rawSymTpe = sym.typeSignatureIn(rawTpe) match {
-            case NullaryMethodType(ntpe) => ntpe; case ntpe => ntpe
+            case NullaryMethodType(ntpe) => ntpe;
+            case ntpe                    => ntpe
           }
           val symTpe = existentialAbstraction(quantified, rawSymTpe)
 
@@ -375,7 +380,8 @@ class IRs[U <: Universe with Singleton](val uni: U) {
         case tpe                              => (Nil, tpe)
       }
       val rawSymTp = accessor.getOrElse(sym).typeSignatureIn(rawTp) match {
-        case NullaryMethodType(tpe) => tpe; case tpe => tpe
+        case NullaryMethodType(tpe) => tpe;
+        case tpe                    => tpe
       }
       val symTp = existentialAbstraction(quantified, rawSymTp)
       FieldIR(sym.name.toString.trim, symTp, param, accessor)

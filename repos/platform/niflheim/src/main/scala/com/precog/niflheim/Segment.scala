@@ -93,7 +93,8 @@ case class ArraySegment[@spec(Boolean, Long, Double) A](
     var i = 0
     val len = values.length
     while (i < len) {
-      arr(i) = values(i); i += 1
+      arr(i) = values(i);
+      i += 1
     }
     ArraySegment(blockid, cpath, ctype, defined.copy, arr)
   }

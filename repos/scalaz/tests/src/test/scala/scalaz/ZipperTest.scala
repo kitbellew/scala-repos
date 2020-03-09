@@ -21,7 +21,8 @@ object ZipperTest extends SpecLite {
       val fun: Int => Int = _ + a
 
       (
-        for (z <- xs.toZipper; zM <- (xs map fun).toZipper)
+        for (z <- xs.toZipper;
+             zM <- (xs map fun).toZipper)
           yield z.map(fun) must_=== (zM)
       ) getOrElse {
         xs.length must_=== (0)
@@ -35,7 +36,8 @@ object ZipperTest extends SpecLite {
 
   "Next Affects Lengths" ! forAll { (xs: Stream[Int]) =>
     (
-      for (z <- xs.toZipper; zn <- z.next)
+      for (z <- xs.toZipper;
+           zn <- z.next)
         yield {
           (zn.lefts.length must_=== (z.lefts.length + 1));
           (zn.rights.length must_=== (z.rights.length - 1))
@@ -83,7 +85,8 @@ object ZipperTest extends SpecLite {
 
   "Previous Affects Lengths" ! forAll { (xs: Stream[Int]) =>
     (
-      for (z <- xs.zipperEnd; zn <- z.previous)
+      for (z <- xs.zipperEnd;
+           zn <- z.previous)
         yield zn.lefts.length must_=== (z.lefts.length - 1) and (zn.rights.length must_=== (z.rights.length + 1))
     ) getOrElse {
       xs.length mustBe_< (2)
@@ -180,7 +183,8 @@ object ZipperTest extends SpecLite {
 
   "DeleteRight Affects Lengths" ! forAll { (xs: Stream[Int]) =>
     (
-      for (z <- xs.toZipper; zn <- z.deleteRight)
+      for (z <- xs.toZipper;
+           zn <- z.deleteRight)
         yield zn.rights.length must_=== (z.rights.length - 1)
     ) getOrElse {
       xs.length mustBe_< (2)
@@ -189,7 +193,8 @@ object ZipperTest extends SpecLite {
 
   "DeleteRightC Affects Lengths" ! forAll { (xs: Stream[Int]) =>
     (
-      for (z <- xs.toZipper; zn <- z.deleteRightC)
+      for (z <- xs.toZipper;
+           zn <- z.deleteRightC)
         yield zn.rights.length must_=== (z.rights.length - 1)
     ) getOrElse {
       xs.length mustBe_< (2)
@@ -220,7 +225,8 @@ object ZipperTest extends SpecLite {
   "DeleteRight Affects Lengths and Moves Left if at end" ! forAll {
     (xs: Stream[Int]) =>
       (
-        for (z <- xs.zipperEnd; zn <- z.deleteRight)
+        for (z <- xs.zipperEnd;
+             zn <- z.deleteRight)
           yield zn.lefts.length must_=== (z.lefts.length - 1)
       ) getOrElse (xs.length mustBe_< (2))
   }
@@ -252,7 +258,8 @@ object ZipperTest extends SpecLite {
 
   "DeleteLeft Affects Lengths" ! forAll { (xs: Stream[Int]) =>
     (
-      for (z <- xs.zipperEnd; zn <- z.deleteLeft)
+      for (z <- xs.zipperEnd;
+           zn <- z.deleteLeft)
         yield zn.lefts.length must_=== (z.lefts.length - 1)
     ) getOrElse (xs.length mustBe_< (2))
   }
@@ -271,7 +278,8 @@ object ZipperTest extends SpecLite {
 
   "DeleteLeftC Affects Lengths" ! forAll { (xs: Stream[Int]) =>
     (
-      for (z <- xs.zipperEnd; zn <- z.deleteLeftC)
+      for (z <- xs.zipperEnd;
+           zn <- z.deleteLeftC)
         yield zn.lefts.length must_=== (z.lefts.length - 1)
     ) getOrElse (xs.length mustBe_< (2))
   }
@@ -311,7 +319,8 @@ object ZipperTest extends SpecLite {
   "DeleteLeft Affects Lengths and Moves Right if at start" ! forAll {
     (xs: Stream[Int]) =>
       (
-        for (z <- xs.toZipper; zn <- z.deleteLeft)
+        for (z <- xs.toZipper;
+             zn <- z.deleteLeft)
           yield zn.rights.length must_=== (z.rights.length - 1)
       ) getOrElse (xs.length mustBe_< (2))
   }
@@ -335,7 +344,8 @@ object ZipperTest extends SpecLite {
   "DeleteRightC Affects Lengths and Cycles to Start if at end" ! forAll {
     (xs: Stream[Int]) =>
       (
-        for (z <- xs.zipperEnd; zn <- z.deleteRightC)
+        for (z <- xs.zipperEnd;
+             zn <- z.deleteRightC)
           yield zn.rights.length must_=== (z.lefts.length - 1)
       ) getOrElse (xs.length mustBe_< (2))
   }
@@ -343,7 +353,8 @@ object ZipperTest extends SpecLite {
   "DeleteLeftC Affects Lengths and Cycles to end if at start" ! forAll {
     (xs: Stream[Int]) =>
       (
-        for (z <- xs.toZipper; zn <- z.deleteLeftC)
+        for (z <- xs.toZipper;
+             zn <- z.deleteLeftC)
           yield zn.lefts.length must_=== (z.rights.length - 1)
       ) getOrElse (xs.length mustBe_< (2))
   }
@@ -489,7 +500,8 @@ object ZipperTest extends SpecLite {
     var limit = 10 * 1000
     z.findBy(z =>
       if (limit > 0) {
-        limit -= 1; some(z.nextC)
+        limit -= 1;
+        some(z.nextC)
       } else none)(x => false)
     true
   }
@@ -511,7 +523,8 @@ object ZipperTest extends SpecLite {
     z =>
       var limit = 10 * 1000
       z.start.findNext { x =>
-        limit -= 1; limit > 0
+        limit -= 1;
+        limit > 0
       }
       true
   }
@@ -520,7 +533,8 @@ object ZipperTest extends SpecLite {
     minSizeIntZipper(10 * 1000)) { z =>
     var limit = 10 * 1000
     z.end.findPrevious { x =>
-      limit -= 1; limit > 0
+      limit -= 1;
+      limit > 0
     }
     true
   }

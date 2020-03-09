@@ -13,7 +13,8 @@ object nsieve {
       if (isPrime(i)) {
         var k = i + i
         while (k < m) {
-          isPrime(k) = false; k = k + i
+          isPrime(k) = false;
+          k = k + i
         }
         count = count + 1
       }

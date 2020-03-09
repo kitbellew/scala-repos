@@ -26,13 +26,15 @@ object Test {
     assert(x.length == 1, "length C")
 
     try {
-      x(1); sys.error("no exception for removed element")
+      x(1);
+      sys.error("no exception for removed element")
     } catch {
       case i: IndexOutOfBoundsException =>
     }
 
     try {
-      x.remove(1); sys.error("no exception for removed element")
+      x.remove(1);
+      sys.error("no exception for removed element")
     } catch {
       case i: IndexOutOfBoundsException =>
     }

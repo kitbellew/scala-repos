@@ -211,8 +211,10 @@ trait Mapper[A <: Mapper[A]]
       button,
       (what: A) => {
         what.validate match {
-          case Nil => what.save; S.redirectTo(onSuccess)
-          case xs  => S.error(xs)
+          case Nil =>
+            what.save;
+            S.redirectTo(onSuccess)
+          case xs => S.error(xs)
         }
       })
 
@@ -450,7 +452,8 @@ trait UpdatedTrait {
       extends MappedDateTime(obj.asInstanceOf[MapperType])
       with LifecycleCallbacks {
     override def beforeSave() {
-      super.beforeSave; this.set(Helpers.now)
+      super.beforeSave;
+      this.set(Helpers.now)
     }
     override def defaultValue = Helpers.now
     override def dbIndexed_? = updatedAtIndexed_?

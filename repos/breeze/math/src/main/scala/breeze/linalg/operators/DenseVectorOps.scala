@@ -1190,19 +1190,22 @@ trait DenseVector_GenericOps { this: DenseVector.type =>
         } else if (n == 2) {
           var sum = 0.0
           foreach(v => {
-            val nn = f.sNorm(v); sum += nn * nn
+            val nn = f.sNorm(v);
+            sum += nn * nn
           })
           math.sqrt(sum)
         } else if (n == Double.PositiveInfinity) {
           var max = 0.0
           foreach(v => {
-            val nn = f.sNorm(v); if (nn > max) max = nn
+            val nn = f.sNorm(v);
+            if (nn > max) max = nn
           })
           max
         } else {
           var sum = 0.0
           foreach(v => {
-            val nn = f.sNorm(v); sum += math.pow(nn, n)
+            val nn = f.sNorm(v);
+            sum += math.pow(nn, n)
           })
           math.pow(sum, 1.0 / n)
         }
@@ -1217,7 +1220,8 @@ trait DenseVector_GenericOps { this: DenseVector.type =>
         import v._
         var sum = 0.0
         foreach(v => {
-          val nn = f.sNorm(v); sum += nn * nn
+          val nn = f.sNorm(v);
+          sum += nn * nn
         })
         math.sqrt(sum)
       }

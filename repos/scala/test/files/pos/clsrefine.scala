@@ -27,7 +27,8 @@ package scalac.util {
       val y1, y2 = 1;
     }
     val a: A {
-      type X1 = Int; type X2 = Int
+      type X1 = Int;
+      type X2 = Int
     } = b;
     val a1 = new A {
       type X1 = Int;

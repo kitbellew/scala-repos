@@ -27,14 +27,17 @@ object BooleanInduction extends App {
   type False = wFalse.T
 
   trait If[C <: Boolean, A, B] {
-    type T; def apply(a: A, b: B): T
+    type T;
+    def apply(a: A, b: B): T
   }
   object If {
     implicit def ifTrue[A, B] = new If[True, A, B] {
-      type T = A; def apply(a: A, b: B) = a
+      type T = A;
+      def apply(a: A, b: B) = a
     }
     implicit def ifFalse[A, B] = new If[False, A, B] {
-      type T = B; def apply(a: A, b: B) = b
+      type T = B;
+      def apply(a: A, b: B) = b
     }
   }
 

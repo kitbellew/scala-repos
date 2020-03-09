@@ -10,7 +10,9 @@ class Basic {
     try {
       assertTrue(foo.eval("3") == 3)
     } catch {
-      case e => e.printStackTrace; throw e
+      case e =>
+        e.printStackTrace;
+        throw e
     }
   }
 }

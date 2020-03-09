@@ -3,13 +3,15 @@ class A1 {
     def g = 1;
     class A {
       def a = g
-    }; new A().a
+    };
+    new A().a
   }
   def f2 = {
     def g = 2;
     class A {
       def a = g
-    }; new A().a
+    };
+    new A().a
   }
 }
 

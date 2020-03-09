@@ -220,8 +220,10 @@ abstract class LambdaLift extends InfoTransform {
 
       do {
         changedFreeVars = false
-        for ((caller, callees) <- called; callee <- callees;
-             fvs <- free get callee; fv <- fvs)
+        for ((caller, callees) <- called;
+             callee <- callees;
+             fvs <- free get callee;
+             fv <- fvs)
           markFree(fv, caller)
       } while (changedFreeVars)
 
@@ -545,7 +547,9 @@ abstract class LambdaLift extends InfoTransform {
         case ClassDef(_, _, _, _) =>
           val lifted = liftedDefs remove stat.symbol match {
             case Some(xs) => xs reverseMap addLifted
-            case _        => log("unexpectedly no lifted defs for " + stat.symbol); Nil
+            case _ =>
+              log("unexpectedly no lifted defs for " + stat.symbol);
+              Nil
           }
           deriveClassDef(stat)(impl => deriveTemplate(impl)(_ ::: lifted))
 

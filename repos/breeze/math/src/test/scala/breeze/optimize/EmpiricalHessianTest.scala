@@ -32,7 +32,8 @@ class EmpiricalHessianTest
     val H = EmpiricalHessian.hessian(f, x)
 
     assert(H.size === A.size)
-    for (i <- 0 until A.rows; j <- 0 until A.cols) {
+    for (i <- 0 until A.rows;
+         j <- 0 until A.cols) {
       assert(H(i, j).closeTo(A(i, j)))
     }
   }
@@ -58,7 +59,8 @@ class EmpiricalHessianTest
     val H = EmpiricalHessian.hessian(f, x)
 
     assert(H.size === A.size)
-    for (i <- 0 until A.rows; j <- 0 until A.cols) {
+    for (i <- 0 until A.rows;
+         j <- 0 until A.cols) {
       assert(H(i, j).closeTo(A(i, j)))
     }
   }

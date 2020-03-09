@@ -47,7 +47,8 @@ trait QueueProxy[A] extends Queue[A] with Proxy {
     *  @param  elem        the element to insert
     */
   override def +=(elem: A): this.type = {
-    self += elem; this
+    self += elem;
+    this
   }
 
   /** Adds all elements provided by an iterator at the end of the queue. The

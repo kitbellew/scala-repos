@@ -97,7 +97,8 @@ trait Group[T] { outer =>
 
   def +(other: Group[T]): Group[T] = new Group[T] {
     protected[finagle] val set = for {
-      a <- outer.set; b <- other.set
+      a <- outer.set;
+      b <- other.set
     } yield a ++ b
   }
 

@@ -605,12 +605,17 @@ object JsonExtensionSpec extends Specification {
 
     "test hygiene" in {
       val play = ""
-      type LazyHelper = Any; val LazyHelper = ()
+      type LazyHelper = Any;
+      val LazyHelper = ()
       val scala = ""
-      type String = Any; val String = ""
-      type Unit = Any; val Unit = ""
-      type Any = Nothing; val Any = ""
-      type Int = String; val Int = ""
+      type String = Any;
+      val String = ""
+      type Unit = Any;
+      val Unit = ""
+      type Any = Nothing;
+      val Any = ""
+      type Int = String;
+      val Int = ""
 
       implicit val toto2Reads = Json.reads[Toto2]
       implicit val toto2Writes = Json.writes[Toto2]

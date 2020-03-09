@@ -1,5 +1,7 @@
 object SCL3470 {
-  class A; class B; class C
+  class A;
+  class B;
+  class C
   implicit def c2a(c: C): A = new A
   implicit def b2a(b: B): A = new A
 

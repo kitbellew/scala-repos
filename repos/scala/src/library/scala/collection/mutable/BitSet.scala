@@ -106,14 +106,16 @@ class BitSet(protected final var elems: Array[Long])
     "Override add to prevent += and add from exhibiting different behavior.",
     "2.11.0")
   def +=(elem: Int): this.type = {
-    add(elem); this
+    add(elem);
+    this
   }
 
   @deprecatedOverriding(
     "Override add to prevent += and add from exhibiting different behavior.",
     "2.11.0")
   def -=(elem: Int): this.type = {
-    remove(elem); this
+    remove(elem);
+    this
   }
 
   /** Updates this bitset to the union with another bitset by performing a bitwise "or".

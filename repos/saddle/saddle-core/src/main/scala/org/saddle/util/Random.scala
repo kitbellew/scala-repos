@@ -141,7 +141,10 @@ object XorShift {
     var seedL = seed
     val (a, b, c) = tup
     () =>
-      seedL ^= (seedL << a); seedL ^= (seedL >> b); seedL ^= (seedL << c); seedL
+      seedL ^= (seedL << a);
+      seedL ^= (seedL >> b);
+      seedL ^= (seedL << c);
+      seedL
   }
 }
 
@@ -220,7 +223,11 @@ case class RandomStream(rng: () => Long) extends InputStream {
       case 5 => r >>> 32
       case 6 => r >>> 40
       case 7 => r >>> 48
-      case 8 => c = 0; val tmp = (r >>> 56); r = rng(); tmp
+      case 8 =>
+        c = 0;
+        val tmp = (r >>> 56);
+        r = rng();
+        tmp
     }
     (byte & 0xFF).asInstanceOf[Int]
   }

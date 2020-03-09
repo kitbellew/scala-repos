@@ -456,7 +456,8 @@ abstract class AsyncTest[TDB >: Null <: TestDB](
     def shouldFail(f: T => Unit): Unit = {
       var ok = false
       try {
-        f(v); ok = true
+        f(v);
+        ok = true
       } catch {
         case t: Throwable =>
       }

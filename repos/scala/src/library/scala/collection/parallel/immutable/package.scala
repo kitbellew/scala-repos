@@ -35,7 +35,8 @@ package immutable {
       def remaining = until - i
       def hasNext = i < until
       def next = {
-        i += 1; elem
+        i += 1;
+        elem
       }
       def dup = new ParIterator(i, until, elem)
       def psplit(sizes: Int*) = {

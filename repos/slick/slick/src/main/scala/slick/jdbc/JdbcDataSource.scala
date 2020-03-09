@@ -156,7 +156,8 @@ trait DriverBasedJdbcDataSource extends JdbcDataSource {
     * Returns true if an attempt was made to deregister a driver. */
   def deregisterDriver(): Boolean =
     if (registeredDriver ne null) {
-      DriverManager.deregisterDriver(registeredDriver); true
+      DriverManager.deregisterDriver(registeredDriver);
+      true
     } else false
 }
 

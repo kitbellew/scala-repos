@@ -57,7 +57,8 @@ class EvalTests extends CatsSuite {
     (
       spooky,
       Eval.later {
-        spooky.increment(); value
+        spooky.increment();
+        value
       })
   }
 
@@ -71,7 +72,8 @@ class EvalTests extends CatsSuite {
     (
       spooky,
       Eval.now {
-        spooky.increment(); value
+        spooky.increment();
+        value
       })
   }
 
@@ -85,7 +87,8 @@ class EvalTests extends CatsSuite {
     (
       spooky,
       Eval.always {
-        spooky.increment(); value
+        spooky.increment();
+        value
       })
   }
 

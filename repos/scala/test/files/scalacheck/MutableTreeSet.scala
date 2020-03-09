@@ -98,8 +98,12 @@ package scala.collection.mutable {
         val mset = mutable.TreeSet[K]()
 
         ops.foreach {
-          case Left(k)  => iset += k; mset += k
-          case Right(k) => iset -= k; mset -= k
+          case Left(k) =>
+            iset += k;
+            mset += k
+          case Right(k) =>
+            iset -= k;
+            mset -= k
         }
 
         iset.toList == mset.toList

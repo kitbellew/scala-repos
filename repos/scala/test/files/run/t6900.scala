@@ -7,7 +7,8 @@ trait Universe {
 final class Bug {
   var i = 1
   def stop() = {
-    i -= 1; i < 0
+    i -= 1;
+    i < 0
   }
   // the alias bypasses the fast path in erasures InfoTransformer
   // predicated on `TypeMap.noChangeToSymbols`

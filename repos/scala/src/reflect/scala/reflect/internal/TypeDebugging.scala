@@ -110,7 +110,8 @@ trait TypeDebugging {
           case (_, v) => v == ""
         }
         map {
-          case ("", v) => v; case (k, v) => s"$k=$v"
+          case ("", v) => v;
+          case (k, v)  => s"$k=$v"
         }
         mkString ", "
     )

@@ -197,7 +197,8 @@ import scala.language.implicitConversions"""
         "%s\n  def unary_%s : %s".format(x.doc, x.op, this opType I))
     def mkStringOps = List("def +(x: String): String")
     def mkShiftOps = (
-      for (op <- shiftOps; arg <- List(I, L))
+      for (op <- shiftOps;
+           arg <- List(I, L))
         yield "%s\n  def %s(x: %s): %s"
           .format(op.doc, op.op, arg, this opType I)
     )

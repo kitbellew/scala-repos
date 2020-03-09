@@ -195,7 +195,8 @@ object BasicIO {
   def processLinesFully(processLine: String => Unit)(readLine: () => String) {
     def working = (Thread.currentThread.isInterrupted == false)
     def halting = {
-      Thread.currentThread.interrupt(); null
+      Thread.currentThread.interrupt();
+      null
     }
     def readFully(): Unit =
       if (working) {
@@ -264,7 +265,8 @@ object BasicIO {
         // flush() will throw an exception once the process has terminated
         val available =
           try {
-            out.flush(); true
+            out.flush();
+            true
           } catch {
             case _: IOException => false
           }

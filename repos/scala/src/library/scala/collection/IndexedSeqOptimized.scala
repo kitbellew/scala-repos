@@ -33,7 +33,8 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] {
     var i = 0
     val len = length
     while (i < len) {
-      f(this(i)); i += 1
+      f(this(i));
+      i += 1
     }
   }
 

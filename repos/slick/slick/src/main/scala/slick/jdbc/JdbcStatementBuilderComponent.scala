@@ -405,7 +405,10 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
             else {
               val cols = left.children.zip(right.children).force
               b.sep(cols, " and ") {
-                case (l, r) => expr(l); b += "="; expr(r)
+                case (l, r) =>
+                  expr(l);
+                  b += "=";
+                  expr(r)
               }
             }
             b"\)"

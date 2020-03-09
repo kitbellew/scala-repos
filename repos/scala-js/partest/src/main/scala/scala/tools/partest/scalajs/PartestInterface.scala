@@ -21,7 +21,8 @@ import java.io.File
 object Framework {
   // as partest is not driven by test classes discovered by sbt, need to add this marker fingerprint to definedTests
   val fingerprint = new AnnotatedFingerprint {
-    def isModule = true; def annotationName = "partest"
+    def isModule = true;
+    def annotationName = "partest"
   }
 
   // TODO how can we export `fingerprint` so that a user can just add this to their build.sbt

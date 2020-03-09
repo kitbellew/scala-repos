@@ -651,7 +651,8 @@ object Codec {
       val length = readPackedInt(buf)
       var i = 0
       while (i < length) {
-        elemCodec.skip(buf); i += 1
+        elemCodec.skip(buf);
+        i += 1
       }
     }
   }

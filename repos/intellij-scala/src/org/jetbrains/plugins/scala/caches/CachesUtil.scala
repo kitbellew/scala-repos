@@ -431,7 +431,8 @@ object CachesUtil {
 
     doQueueWithLock(queue => {
       if (!queue.exists(_._1 == fun)) {
-        queue.enqueue((fun, project)); needToCheckFuns = true
+        queue.enqueue((fun, project));
+        needToCheckFuns = true
       }
     })
   }

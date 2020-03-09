@@ -119,7 +119,8 @@ trait ScType {
                   true,
                   ScSkolemizedType(
                     s"_$$${
-                      index += 1; index
+                      index += 1;
+                      index
                     }",
                     Nil,
                     lower,

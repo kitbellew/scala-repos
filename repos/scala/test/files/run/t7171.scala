@@ -6,7 +6,8 @@ trait T {
   // found   : T.this.A
   // required: T#A
   def foo(a: T#A) = a match {
-    case _: A => true; case _ => false
+    case _: A => true;
+    case _    => false
   }
 }
 

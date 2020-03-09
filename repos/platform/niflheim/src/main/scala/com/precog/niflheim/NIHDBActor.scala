@@ -454,7 +454,8 @@ private[niflheim] class NIHDBActor private (
       current: Map[Int, Int],
       ids: Seq[Long]): Map[Int, Int] = {
     (current.toSeq ++ ids.map { i =>
-      val EventId(p, s) = EventId.fromLong(i); (p -> s)
+      val EventId(p, s) = EventId.fromLong(i);
+      (p -> s)
     }).groupBy(_._1).map {
       case (p, ids) => (p -> ids.map(_._2).max)
     }

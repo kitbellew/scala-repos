@@ -20,7 +20,8 @@ object PatmatBytecodeTest extends ClearAfterClass.Clearable {
   var compiler = newCompiler()
   var optCompiler = newCompiler(extraArgs = "-Yopt:l:project")
   def clear(): Unit = {
-    compiler = null; optCompiler = null
+    compiler = null;
+    optCompiler = null
   }
 }
 

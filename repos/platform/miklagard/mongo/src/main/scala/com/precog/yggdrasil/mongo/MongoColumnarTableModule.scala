@@ -137,13 +137,15 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
     def safeOp[A](nullMessage: String)(v: => A): Option[A] =
       try {
         Option(v) orElse {
-          logger.error(nullMessage); None
+          logger.error(nullMessage);
+          None
         }
       } catch {
         case t: Throwable =>
           logger.error(
             "Failure during Mongo query: %s(%s)"
-              .format(t.getClass, t.getMessage)); None
+              .format(t.getClass, t.getMessage));
+          None
       }
 
     def load(table: Table, apiKey: APIKey, tpe: JType): Future[Table] = {

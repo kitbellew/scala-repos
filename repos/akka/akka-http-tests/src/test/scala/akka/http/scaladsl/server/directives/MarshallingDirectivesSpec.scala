@@ -27,7 +27,9 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
       `text/html`) map {
       case NodeSeq.Empty ⇒ throw Unmarshaller.NoContentException
       case x ⇒ {
-        val i = x.text.toInt; require(i >= 0); i
+        val i = x.text.toInt;
+        require(i >= 0);
+        i
       }
     }
 

@@ -1,6 +1,7 @@
 object Test {
   M.noop(List(1) match {
-    case Nil => 0; case (x :: xs) => x
+    case Nil       => 0;
+    case (x :: xs) => x
   })
 
   case class Foo(a: Int)

@@ -381,8 +381,12 @@ object Test {
       val xyz: (Int, String, Boolean) = (1, "abc", true)
       xyz._1 match {
         case 1 => "OK"
-        case 2 => assert(false); "KO"
-        case 3 => assert(false); "KO"
+        case 2 =>
+          assert(false);
+          "KO"
+        case 3 =>
+          assert(false);
+          "KO"
       }
     }
   }
@@ -543,7 +547,8 @@ object Test {
 
   object Bug457 {
     def method1() = {
-      val x = "Hello, world"; val y = 100;
+      val x = "Hello, world";
+      val y = 100;
       y match {
         case _: Int if (x match {
               case t => t.trim().length() > 0
@@ -554,7 +559,8 @@ object Test {
     }
 
     def method2(): scala.Boolean = {
-      val x: String = "Hello, world"; val y: scala.Int = 100;
+      val x: String = "Hello, world";
+      val y: scala.Int = 100;
       {
         var temp1: scala.Int = y
         var result: scala.Boolean = false
@@ -688,7 +694,9 @@ object Test {
 
   object Ticket2 {
     def run() {
-      val o1 = new Outer_2; val o2 = new Outer_2; val x: Any = o1.Foo(1, 2);
+      val o1 = new Outer_2;
+      val o2 = new Outer_2;
+      val x: Any = o1.Foo(1, 2);
       val y: Any = o2.Foo(1, 2)
       assert(x != y, "equals test returns true (but should not)")
       assert(
@@ -735,7 +743,8 @@ object Test {
   object Ticket37 {
     def foo() {}
     val (a, b) = {
-      foo(); (2, 3)
+      foo();
+      (2, 3)
     }
     def run() {
       assertEquals(this.a, 2)
@@ -800,7 +809,8 @@ object Test {
 
       def unapply(xs: L): Option[(Int, L)] = {
         if (xs.isEmpty) {
-          println("xs is empty"); None
+          println("xs is empty");
+          None
         } else
           Some((xs.head, new L(xs.tail)))
       }

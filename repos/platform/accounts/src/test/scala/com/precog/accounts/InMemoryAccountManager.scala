@@ -42,8 +42,10 @@ class InMemoryAccountManager[M[+_]](resetExpiration: Int = 1)(
 
   def updateAccount(account: Account): M[Boolean] = {
     findAccountById(account.accountId).map {
-      case Some(acct) => accounts.put(account.accountId, account); true
-      case _          => false
+      case Some(acct) =>
+        accounts.put(account.accountId, account);
+        true
+      case _ => false
     }
   }
 

@@ -257,7 +257,8 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
     "throw an exception if opened" in {
       {
         Empty.openOrThrowException(
-          "See what happens?, at least we expect it in this case :)"); ()
+          "See what happens?, at least we expect it in this case :)");
+        ()
       } must throwA[NullPointerException]
     }
     "return a default value if opened with openOr" in {

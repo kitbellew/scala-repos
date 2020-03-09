@@ -1,5 +1,6 @@
 object test {
-  class A; object A extends A
+  class A;
+  object A extends A
 
   trait AA {
     def a_=(x: A) {};

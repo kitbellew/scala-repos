@@ -182,7 +182,8 @@ class CompileSocket extends CompileOutputCommon {
 
     def getsock(attempts: Int): Option[Socket] = attempts match {
       case 0 =>
-        warn("Unable to establish connection to compilation daemon"); None
+        warn("Unable to establish connection to compilation daemon");
+        None
       case num =>
         val port = if (create) getPort(vmArgs) else pollPort()
         if (port < 0) return None
@@ -219,7 +220,8 @@ class CompileSocket extends CompileOutputCommon {
       for ((name, portStr) <- splitWhere(
              serverAdr,
              _ == ':',
-             doDropIndex = true); port <- parseInt(portStr))
+             doDropIndex = true);
+           port <- parseInt(portStr))
         yield getSocket(name, port)
     ) getOrElse fatal("Malformed server address: %s; exiting" format serverAdr)
 

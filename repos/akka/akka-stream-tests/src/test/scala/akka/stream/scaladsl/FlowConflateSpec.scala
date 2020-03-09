@@ -108,7 +108,8 @@ class FlowConflateSpec extends AkkaSpec {
       val future = Source(1 to 1000)
         .conflateWithSeed(seed = i ⇒ i)(aggregate = (sum, i) ⇒ sum + i)
         .map { i ⇒
-          if (ThreadLocalRandom.current().nextBoolean()) Thread.sleep(10); i
+          if (ThreadLocalRandom.current().nextBoolean()) Thread.sleep(10);
+          i
         }
         .runFold(0)(_ + _)
       Await.result(future, 10.seconds) should be(500500)
@@ -118,7 +119,8 @@ class FlowConflateSpec extends AkkaSpec {
       val future = Source(1 to 1000)
         .conflate(_ + _)
         .map { i ⇒
-          if (ThreadLocalRandom.current().nextBoolean()) Thread.sleep(10); i
+          if (ThreadLocalRandom.current().nextBoolean()) Thread.sleep(10);
+          i
         }
         .runFold(0)(_ + _)
       Await.result(future, 10.seconds) should be(500500)

@@ -8,7 +8,8 @@ class A {
   val abc = "A.abc"
 
   protected class B(x: Int, y: String) {
-    println(abc); println(x)
+    println(abc);
+    println(x)
     println(y)
   }
 

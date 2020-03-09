@@ -13,16 +13,20 @@ trait Foo {
 
 trait Bar1 extends Foo {
   implicit val v1 = {
-    implicitly[Int]; ()
+    implicitly[Int];
+    ()
   } // failed due to cycle in Context#implicits being broken with Nil.
   def d1 = {
-    implicitly[Int]; ()
+    implicitly[Int];
+    ()
   } // okay
   implicit val v2 = {
-    implicitly[Int]; ()
+    implicitly[Int];
+    ()
   } // okay
   implicit val v3: Any = {
-    implicitly[Int]; ()
+    implicitly[Int];
+    ()
   } // okay
 
 }

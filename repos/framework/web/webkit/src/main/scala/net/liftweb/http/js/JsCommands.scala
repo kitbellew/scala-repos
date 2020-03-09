@@ -890,7 +890,9 @@ object JsCmds {
         case Nil                   =>
         case CmdPair(l, r) :: rest => appendDo(acc, l :: r :: rest)
         case `_Noop` :: rest       => appendDo(acc, rest)
-        case a :: rest             => acc.append(a); appendDo(acc, rest)
+        case a :: rest =>
+          acc.append(a);
+          appendDo(acc, rest)
       }
     }
   }

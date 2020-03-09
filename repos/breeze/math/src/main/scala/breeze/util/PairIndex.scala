@@ -6,7 +6,9 @@ package breeze.util
   */
 class PairIndex[T, U](tIndex: Index[T], uIndex: Index[U])
     extends Index[(T, U)] {
-  def iterator = for (t <- tIndex iterator; u <- uIndex iterator) yield (t, u);
+  def iterator =
+    for (t <- tIndex iterator;
+         u <- uIndex iterator) yield (t, u);
 
   def pairs = iterator.zipWithIndex;
 
@@ -19,7 +21,8 @@ class PairIndex[T, U](tIndex: Index[T], uIndex: Index[U])
     if (i >= 0) {
       val ti = i / uIndex.size;
       val ui = i % uIndex.size;
-      for (t <- tIndex.unapply(ti); u <- uIndex.unapply(ui)) yield t -> u;
+      for (t <- tIndex.unapply(ti);
+           u <- uIndex.unapply(ui)) yield t -> u;
     } else {
       None
     }

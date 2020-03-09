@@ -213,7 +213,8 @@ class StringContextTest {
         implicit val strToShort = (s: String) => java.lang.Short.parseShort(s);
         f"${"120"}%d"
       } -> "120", {
-        implicit val strToInt = (s: String) => 42; f"${"120"}%d"
+        implicit val strToInt = (s: String) => 42;
+        f"${"120"}%d"
       } -> "42",
       // 'e' | 'E' | 'g' | 'G' | 'f' | 'a' | 'A' (category: floating point)
       // ------------------------------------------------------------------

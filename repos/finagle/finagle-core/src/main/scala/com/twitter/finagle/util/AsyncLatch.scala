@@ -42,7 +42,8 @@ class AsyncLatch(initialCount: Int = 0) {
     * @return the latch's count after being incremented
     */
   def incr(): Int = synchronized {
-    count += 1; count
+    count += 1;
+    count
   }
 
   /**
@@ -68,7 +69,8 @@ class AsyncLatch(initialCount: Int = 0) {
       case Left(tasks) =>
         tasks foreach {
           _()
-        }; 0
+        };
+        0
       case Right(count) =>
         count
     }

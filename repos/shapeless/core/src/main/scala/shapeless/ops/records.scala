@@ -583,7 +583,8 @@ package record {
         implicit toMap: ToMap[L]): Aux[L, toMap.Key, toMap.Value] = toMap
 
     type Aux[L <: HList, Key0, Value0] = ToMap[L] {
-      type Key = Key0; type Value = Value0
+      type Key = Key0;
+      type Value = Value0
     }
 
     implicit def hnilToMap[K, V, L <: HNil]: Aux[L, K, V] =

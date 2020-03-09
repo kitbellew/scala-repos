@@ -13,11 +13,13 @@ object ForProps extends QuasiquoteProperties("for") {
       yield fq"if $cond"
 
   def genForFrom: Gen[Tree] =
-    for (lhs <- genSimpleBind; rhs <- genIdent(genTermName))
+    for (lhs <- genSimpleBind;
+         rhs <- genIdent(genTermName))
       yield fq"$lhs <- $rhs"
 
   def genForEq: Gen[Tree] =
-    for (lhs <- genSimpleBind; rhs <- genIdent(genTermName))
+    for (lhs <- genSimpleBind;
+         rhs <- genIdent(genTermName))
       yield fq"$lhs = $rhs"
 
   def genForEnums(size: Int): Gen[ForEnums] =

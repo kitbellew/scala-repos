@@ -48,7 +48,8 @@ object Arguments {
     def parseBinding(str: String, separator: Char): (String, String) =
       (str indexOf separator) match {
         case -1 =>
-          argumentError(s"missing '$separator' in binding '$str'"); ("", "")
+          argumentError(s"missing '$separator' in binding '$str'");
+          ("", "")
         case idx => ((str take idx).trim, (str drop (idx + 1)).trim)
       }
 

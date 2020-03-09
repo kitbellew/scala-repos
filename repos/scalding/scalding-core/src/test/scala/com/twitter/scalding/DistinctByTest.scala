@@ -38,7 +38,8 @@ object DistinctByProps extends Properties("CoGrouped.DistinctBy") {
     (l: List[Int]) =>
       var idx = 0
       val fn = { (i: Int) =>
-        idx += 1; idx
+        idx += 1;
+        idx
       }
       distinctBy(l)(fn) == l
   }

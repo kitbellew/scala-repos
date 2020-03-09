@@ -120,7 +120,8 @@ object Writer {
         def go(p: Int): Unit =
           if (p == size) ()
           else {
-            writerT.write(os, a(p)); go(p + 1)
+            writerT.write(os, a(p));
+            go(p + 1)
           }
 
         go(0)

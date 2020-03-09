@@ -26,7 +26,8 @@ trait HOSeq {
       val buf = accumulator[t]
       val elems = iterator
       while (elems.hasNext) {
-        val x = elems.next; if (p(x)) buf += x
+        val x = elems.next;
+        if (p(x)) buf += x
       }
       buf.result
     }
@@ -123,7 +124,9 @@ trait HOSeq {
         if (!hasNext)
           throw new NoSuchElementException("next on empty Iterator")
         else {
-          val result = these.head; these = these.tail; result
+          val result = these.head;
+          these = these.tail;
+          result
         }
     }
     // construct an empty accumulator that will produce the same structure as this iterable, with elements of type t

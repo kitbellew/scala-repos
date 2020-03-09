@@ -105,7 +105,8 @@ object FakesSpec extends PlaySpecification {
       implicit mat: Materializer): String = {
     var testContentType: Option[String] = None
     val action = Action { request =>
-      testContentType = request.headers.get(CONTENT_TYPE); Ok
+      testContentType = request.headers.get(CONTENT_TYPE);
+      Ok
     }
     val headers = new WrappedRequest(request)
     val execution = (new TestActionCaller).call(action, headers, request.body)

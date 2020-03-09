@@ -374,10 +374,12 @@ object LightArrayRevolverScheduler {
             true
           } catch {
             case _: InterruptedException ⇒ {
-              Thread.currentThread.interrupt(); false
+              Thread.currentThread.interrupt();
+              false
             }
             case NonFatal(e) ⇒ {
-              executionContext.reportFailure(e); false
+              executionContext.reportFailure(e);
+              false
             }
           }
       }

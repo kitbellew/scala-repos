@@ -41,10 +41,12 @@ class ClosableTest extends FunSuite with Eventually with IntegrationPatience {
     val p1, p2 = new Promise[Unit]
     var n1, n2 = 0
     val c1 = Closable.make(_ => {
-      n1 += 1; p1
+      n1 += 1;
+      p1
     })
     val c2 = Closable.make(_ => {
-      n2 += 1; p2
+      n2 += 1;
+      p2
     })
 
     val c = Closable.all(c1, c2)
@@ -66,10 +68,12 @@ class ClosableTest extends FunSuite with Eventually with IntegrationPatience {
     val p1, p2 = new Promise[Unit]
     var n1, n2 = 0
     val c1 = Closable.make(_ => {
-      n1 += 1; p1
+      n1 += 1;
+      p1
     })
     val c2 = Closable.make(_ => {
-      n2 += 1; p2
+      n2 += 1;
+      p2
     })
 
     val c = Closable.sequence(c1, c2)

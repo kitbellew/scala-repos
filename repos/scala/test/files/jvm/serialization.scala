@@ -218,7 +218,8 @@ object Test2_immutable {
 
     val bs2 = {
       val bs = new collection.mutable.BitSet()
-      bs += 2; bs += 3
+      bs += 2;
+      bs += 3
       bs.toImmutable
     }
     val _bs2: BitSet = read(write(bs2))
@@ -657,7 +658,8 @@ object Test10_util {
   import scala.util.Random
   def rep[A](n: Int)(f: => A) {
     if (n > 0) {
-      f; rep(n - 1)(f)
+      f;
+      rep(n - 1)(f)
     }
   }
 

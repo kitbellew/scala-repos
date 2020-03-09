@@ -31,12 +31,14 @@ class TypeOperator211Tests {
     implicit def mkBar1: Bar[Boolean] {
       type U = Int
     } = new Bar[Boolean] {
-      type U = Int; val tu = Right(23)
+      type U = Int;
+      val tu = Right(23)
     }
     implicit def mkBar2: Bar[String] {
       type U = Double
     } = new Bar[String] {
-      type U = Double; val tu = Right(13.0)
+      type U = Double;
+      val tu = Right(13.0)
     }
   }
 

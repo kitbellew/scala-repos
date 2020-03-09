@@ -212,7 +212,8 @@ class UISeleniumSuite
     def runSlowJob(sc: SparkContext) {
       sc.parallelize(1 to 10)
         .map { x =>
-          Thread.sleep(10000); x
+          Thread.sleep(10000);
+          x
         }
         .countAsync()
     }
@@ -521,7 +522,8 @@ class UISeleniumSuite
     withSpark(newSparkContext(killEnabled = true)) { sc =>
       sc.parallelize(1 to 10)
         .map { x =>
-          Thread.sleep(10000); x
+          Thread.sleep(10000);
+          x
         }
         .countAsync()
       eventually(timeout(5 seconds), interval(50 milliseconds)) {

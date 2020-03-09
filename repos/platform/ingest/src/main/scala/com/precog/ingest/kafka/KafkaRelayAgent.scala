@@ -87,7 +87,8 @@ object KafkaRelayAgent extends Logging {
       centralTopic,
       maxMessageSize)
     val stoppable = Stoppable.fromFuture(relayAgent.stop map { _ =>
-      consumer.close; producer.close
+      consumer.close;
+      producer.close
     })
 
     new Thread(relayAgent).start()

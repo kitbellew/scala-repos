@@ -357,7 +357,8 @@ trait PatDefConstruction { self: QuasiquoteProperties =>
   }
 
   property("unquote patterns into pat def within other pattern (2)") = test {
-    val pat1 = pq"(a, b)"; val pat2 = pq"(c, d)"
+    val pat1 = pq"(a, b)";
+    val pat2 = pq"(c, d)"
     assertEqAst(
       q"val ($pat1, $pat2) = ((1, 2), (3, 4))",
       "val ((a, b), (c, d)) = ((1, 2), (3, 4))")

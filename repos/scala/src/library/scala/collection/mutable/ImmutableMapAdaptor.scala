@@ -64,11 +64,13 @@ class ImmutableMapAdaptor[A, B](protected var imap: immutable.Map[A, B])
   }
 
   def -=(key: A): this.type = {
-    imap = imap - key; this
+    imap = imap - key;
+    this
   }
 
   def +=(kv: (A, B)): this.type = {
-    imap = imap + kv; this
+    imap = imap + kv;
+    this
   }
 
   override def clear(): Unit = {
@@ -76,7 +78,8 @@ class ImmutableMapAdaptor[A, B](protected var imap: immutable.Map[A, B])
   }
 
   override def transform(f: (A, B) => B): this.type = {
-    imap = imap.transform(f); this
+    imap = imap.transform(f);
+    this
   }
 
   override def retain(p: (A, B) => Boolean): this.type = {

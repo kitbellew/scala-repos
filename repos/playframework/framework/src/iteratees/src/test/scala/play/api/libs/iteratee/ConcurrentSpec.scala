@@ -105,7 +105,8 @@ object ConcurrentSpec
         val foldCount = new AtomicInteger()
         val p = Promise[List[Long]]()
         val stuckIteratee = Iteratee.foldM(List[Long]()) { (s, e: Long) =>
-          foldCount.incrementAndGet(); p.future
+          foldCount.incrementAndGet();
+          p.future
         }(foldEC)
         val fastEnumerator = Enumerator[Long](1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
         val result =

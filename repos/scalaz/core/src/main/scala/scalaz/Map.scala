@@ -1025,7 +1025,8 @@ sealed abstract class MapInstances extends MapInstances0 {
 
   implicit def mapEqual[A: Equal, B: Equal]: Equal[A ==>> B] =
     new MapEqual[A, B] {
-      def A = implicitly; def B = implicitly
+      def A = implicitly;
+      def B = implicitly
     }
 
   implicit def mapOrder[A: Order, B: Order]: Order[A ==>> B] =

@@ -258,7 +258,8 @@ class OfferTest extends WordSpec with MockitoSugar {
     "evaluate argument for each prepare()" in {
       var i = 0
       val offer = Offer.const {
-        i = i + 1; i
+        i = i + 1;
+        i
       }
       assert(offer.sync().poll == Some(Return(1)))
       assert(offer.sync().poll == Some(Return(2)))

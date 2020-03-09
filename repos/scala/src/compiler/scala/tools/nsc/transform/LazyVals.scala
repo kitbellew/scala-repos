@@ -27,10 +27,14 @@ abstract class LazyVals
     var result: Boolean = _
 
     def find(t: Tree) = {
-      result = false; traverse(t); result
+      result = false;
+      traverse(t);
+      result
     }
     def find(ts: List[Tree]) = {
-      result = false; traverseTrees(ts); result
+      result = false;
+      traverseTrees(ts);
+      result
     }
 
     override def traverse(t: Tree) {

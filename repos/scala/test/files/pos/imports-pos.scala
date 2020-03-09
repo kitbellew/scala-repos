@@ -7,7 +7,9 @@ object test {
 
   val foo = 1;
 
-  p("hello"); print("world"); S.out.println("!");
+  p("hello");
+  print("world");
+  S.out.println("!");
   S.out.flush();
 }
 object test1 {

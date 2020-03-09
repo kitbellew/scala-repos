@@ -19,21 +19,24 @@ trait PipeOperationsConversions {
 
   class OnePipeOperation(op: RichPipe => Pipe) extends PipeOperation {
     def apply(pipes: List[RichPipe]): Pipe = {
-      assertPipeSize(pipes, 1); op(pipes(0))
+      assertPipeSize(pipes, 1);
+      op(pipes(0))
     }
   }
 
   class TwoPipesOperation(op: (RichPipe, Pipe) => RichPipe)
       extends PipeOperation {
     def apply(pipes: List[RichPipe]): Pipe = {
-      assertPipeSize(pipes, 2); op(pipes(0), pipes(1))
+      assertPipeSize(pipes, 2);
+      op(pipes(0), pipes(1))
     }
   }
 
   class ThreePipesOperation(op: (RichPipe, RichPipe, RichPipe) => Pipe)
       extends PipeOperation {
     def apply(pipes: List[RichPipe]): Pipe = {
-      assertPipeSize(pipes, 3); op(pipes(0), pipes(1), pipes(2))
+      assertPipeSize(pipes, 3);
+      op(pipes(0), pipes(1), pipes(2))
     }
   }
 

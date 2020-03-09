@@ -58,7 +58,8 @@ class RenameScalaMethodProcessor
       editor: Editor,
       renameCallback: Pass[PsiElement]) {
     val named = element match {
-      case named: ScNamedElement => named; case _ => return
+      case named: ScNamedElement => named;
+      case _                     => return
     }
     val guess = ScalaRenameUtil.findSubstituteElement(element)
     if (guess != element) renameCallback.pass(guess)

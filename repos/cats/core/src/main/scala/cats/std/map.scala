@@ -69,7 +69,8 @@ trait MapInstances extends algebra.std.MapInstances {
         f.flatMap {
           case (k, f) =>
             for {
-              a <- fa.get(k); b <- fb.get(k)
+              a <- fa.get(k);
+              b <- fb.get(k)
             } yield (k, f(a, b))
         }
 

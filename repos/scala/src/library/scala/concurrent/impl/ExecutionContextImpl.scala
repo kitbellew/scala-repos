@@ -192,7 +192,8 @@ private[concurrent] object ExecutionContextImpl {
     final override def getRawResult(): Unit = ()
     final override def exec(): Boolean =
       try {
-        runnable.run(); true
+        runnable.run();
+        true
       } catch {
         case anything: Throwable =>
           val t = Thread.currentThread

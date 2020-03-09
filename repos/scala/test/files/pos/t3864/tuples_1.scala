@@ -14,7 +14,8 @@ trait Tuples {
     def toIndexedSeq[Z](implicit
         ev: value.type <:< Tuple15[Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z])
         : IndexedSeq[Z] = {
-      val zs = ev(value); import zs._;
+      val zs = ev(value);
+      import zs._;
       IndexedSeq(
         _1,
         _2,
@@ -85,7 +86,8 @@ trait Tuples {
     def toIndexedSeq[Z](implicit
     ev: value.type <:< Tuple16[Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z])
         : IndexedSeq[Z] = {
-      val zs = ev(value); import zs._;
+      val zs = ev(value);
+      import zs._;
       IndexedSeq(
         _1,
         _2,
@@ -208,7 +210,8 @@ trait Tuples {
           Z,
           Z,
           Z]): IndexedSeq[Z] = {
-      val zs = ev(value); import zs._;
+      val zs = ev(value);
+      import zs._;
       IndexedSeq(
         _1,
         _2,
@@ -338,7 +341,8 @@ trait Tuples {
           Z,
           Z,
           Z]): IndexedSeq[Z] = {
-      val zs = ev(value); import zs._;
+      val zs = ev(value);
+      import zs._;
       IndexedSeq(
         _1,
         _2,
@@ -491,7 +495,8 @@ trait Tuples {
           Z,
           Z,
           Z]): IndexedSeq[Z] = {
-      val zs = ev(value); import zs._;
+      val zs = ev(value);
+      import zs._;
       IndexedSeq(
         _1,
         _2,
@@ -669,7 +674,8 @@ trait Tuples {
           Z,
           Z,
           Z]): IndexedSeq[Z] = {
-      val zs = ev(value); import zs._;
+      val zs = ev(value);
+      import zs._;
       IndexedSeq(
         _1,
         _2,
@@ -895,7 +901,8 @@ trait Tuples {
           Z,
           Z,
           Z]): IndexedSeq[Z] = {
-      val zs = ev(value); import zs._;
+      val zs = ev(value);
+      import zs._;
       IndexedSeq(
         _1,
         _2,
@@ -1154,7 +1161,8 @@ trait Tuples {
           Z,
           Z,
           Z]): IndexedSeq[Z] = {
-      val zs = ev(value); import zs._;
+      val zs = ev(value);
+      import zs._;
       IndexedSeq(
         _1,
         _2,

@@ -208,10 +208,12 @@ trait HeapBackend extends RelationalBackend with Logging {
       else
         new Verifier {
           def verify(row: Row) {
-            self.verify(row); other.verify(row)
+            self.verify(row);
+            other.verify(row)
           }
           def inserted(row: Row) {
-            self.inserted(row); other.inserted(row)
+            self.inserted(row);
+            other.inserted(row)
           }
         }
   }

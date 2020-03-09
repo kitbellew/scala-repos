@@ -124,7 +124,8 @@ private[io] class TcpListener(
         try channel.accept()
         catch {
           case NonFatal(e) ⇒ {
-            log.error(e, "Accept error: could not accept new connection"); null
+            log.error(e, "Accept error: could not accept new connection");
+            null
           }
         }
       } else null

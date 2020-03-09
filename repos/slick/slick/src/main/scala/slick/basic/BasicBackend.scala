@@ -141,7 +141,8 @@ trait BasicBackend { self =>
           streamLogger.debug(s"Signaling onSubscribe($ctx)")
         val subscribed =
           try {
-            s.onSubscribe(ctx.subscription); true
+            s.onSubscribe(ctx.subscription);
+            true
           } catch {
             case NonFatal(ex) =>
               streamLogger

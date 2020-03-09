@@ -79,7 +79,8 @@ object Exception {
 
     def and(other: => Unit): Finally =
       new Finally({
-        body; other
+        body;
+        other
       })
     def invoke() {
       body
@@ -156,7 +157,8 @@ object Exception {
   final def nonFatalCatcher[T]: Catcher[T] =
     mkThrowableCatcher(
       {
-        case NonFatal(_) => true; case _ => false
+        case NonFatal(_) => true;
+        case _           => false
       },
       throw _)
   final def allCatcher[T]: Catcher[T] = mkThrowableCatcher(_ => true, throw _)

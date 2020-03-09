@@ -609,7 +609,9 @@ class BarrierSpec extends AkkaSpec(BarrierSpec.config) with ImplicitSender {
           new InetSocketAddress(InetAddress.getLocalHost, 0)))
       controller ! GetSockAddr
       override def supervisorStrategy = OneForOneStrategy() {
-        case x ⇒ testActor ! Failed(controller, x); SupervisorStrategy.Restart
+        case x ⇒
+          testActor ! Failed(controller, x);
+          SupervisorStrategy.Restart
       }
       def receive = {
         case x: InetSocketAddress ⇒ testActor ! controller
@@ -628,7 +630,9 @@ class BarrierSpec extends AkkaSpec(BarrierSpec.config) with ImplicitSender {
     system.actorOf(Props(new Actor {
       val barrier = context.actorOf(Props[BarrierCoordinator])
       override def supervisorStrategy = OneForOneStrategy() {
-        case x ⇒ testActor ! Failed(barrier, x); SupervisorStrategy.Restart
+        case x ⇒
+          testActor ! Failed(barrier, x);
+          SupervisorStrategy.Restart
       }
       def receive = {
         case _ ⇒ sender() ! barrier

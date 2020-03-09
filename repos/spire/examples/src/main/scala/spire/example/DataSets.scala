@@ -233,7 +233,8 @@ object Variable {
         this
       }
       def clear(): Unit = {
-        values.clear(); defaultBuilder.clear()
+        values.clear();
+        defaultBuilder.clear()
       }
       def result() = {
         val real = defaultBuilder.result()

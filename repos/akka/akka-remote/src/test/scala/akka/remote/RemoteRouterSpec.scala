@@ -254,7 +254,9 @@ class RemoteRouterSpec
     "set supplied supervisorStrategy" in {
       val probe = TestProbe()(masterSystem)
       val escalator = OneForOneStrategy() {
-        case e ⇒ probe.ref ! e; SupervisorStrategy.Escalate
+        case e ⇒
+          probe.ref ! e;
+          SupervisorStrategy.Escalate
       }
       val router = masterSystem.actorOf(
         new RemoteRouterConfig(

@@ -66,10 +66,12 @@ object Map extends MutableMapFactory[Map] {
       extends scala.collection.Map.WithDefault(underlying, d)
       with Map[A, B] {
     override def +=(kv: (A, B)) = {
-      underlying += kv; this
+      underlying += kv;
+      this
     }
     def -=(key: A) = {
-      underlying -= key; this
+      underlying -= key;
+      this
     }
     override def empty = new WithDefault(underlying.empty, d)
     override def updated[B1 >: B](key: A, value: B1): WithDefault[A, B1] =

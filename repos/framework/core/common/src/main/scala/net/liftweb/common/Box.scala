@@ -674,7 +674,8 @@ sealed abstract class Box[+A] extends Product with Serializable {
     * @return This box.
     */
   def pass(f: Box[A] => Unit): Box[A] = {
-    f(this); this
+    f(this);
+    this
   }
 
   /**

@@ -62,7 +62,8 @@ object DotGraph {
       valueToString: Value => String) {
     import scala.collection.mutable.{HashMap, HashSet}
     val mappedGraph = new HashMap[String, HashSet[String]]
-    for ((key, values) <- relation.forwardMap; keyString = keyToString(key);
+    for ((key, values) <- relation.forwardMap;
+         keyString = keyToString(key);
          value <- values)
       mappedGraph.getOrElseUpdate(
         keyString,

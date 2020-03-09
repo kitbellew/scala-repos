@@ -52,7 +52,9 @@ object TrapExit {
   def installManager(): SecurityManager =
     System.getSecurityManager match {
       case m: TrapExit => m
-      case m           => System.setSecurityManager(new TrapExit(m)); m
+      case m =>
+        System.setSecurityManager(new TrapExit(m));
+        m
     }
 
   /** Uninstalls the isolation SecurityManager and restores the old security manager. */
@@ -62,7 +64,8 @@ object TrapExit {
   private[this] def runUnmanaged(execute: => Unit, log: Logger): Int = {
     log.warn("Managed execution not possible: security manager not installed.")
     try {
-      execute; 0
+      execute;
+      0
     } catch {
       case e: Exception =>
         log.error("Error during execution: " + e.toString)

@@ -78,7 +78,8 @@ abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](
     locked {
       if (count == items.length || !accept(e, count)) false
       else {
-        insert(e); true
+        insert(e);
+        true
       }
     }
   }
@@ -254,9 +255,11 @@ abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](
           lastItem = null
         } else lastItem = x
         while ({
-          remaining -= 1; remaining > 0
+          remaining -= 1;
+          remaining > 0
         } && {
-          nextIndex = inc(nextIndex); nextItem = itemAt(nextIndex);
+          nextIndex = inc(nextIndex);
+          nextItem = itemAt(nextIndex);
           nextItem == null
         }) ()
         x

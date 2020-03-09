@@ -15,7 +15,8 @@ object Test {
       type settingsType = self.settingsType
     }
     type gristType = Grist {
-      type moduleType <: self.moduleType; type settingsType <: self.settingsType
+      type moduleType <: self.moduleType;
+      type settingsType <: self.settingsType
     }
 
     def inputGrist: List[gristType]

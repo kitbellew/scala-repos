@@ -895,7 +895,8 @@ class LocalActorRef private[akka] (
   def mailbox: AnyRef = _mailbox
 
   protected[akka] def mailbox_=(value: AnyRef): AnyRef = {
-    _mailbox = value; value
+    _mailbox = value;
+    value
   }
 
   /**

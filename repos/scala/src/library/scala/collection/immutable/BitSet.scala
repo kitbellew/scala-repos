@@ -73,7 +73,8 @@ object BitSet extends BitSetFactory[BitSet] {
   def newBuilder: Builder[Int, BitSet] = new Builder[Int, BitSet] {
     private[this] val b = new mutable.BitSet
     def +=(x: Int) = {
-      b += x; this
+      b += x;
+      this
     }
     def clear() = b.clear()
     def result() = b.toImmutable

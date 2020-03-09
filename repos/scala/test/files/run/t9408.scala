@@ -16,7 +16,8 @@ class Outer {
     class D
     assertNoFields(classOf[D])
     (() => {
-      class E; assertNoFields(classOf[E])
+      class E;
+      assertNoFields(classOf[E])
     }).apply()
 
     // The outer reference elision currently runs on a class-by-class basis. If it cannot rule out that a class has

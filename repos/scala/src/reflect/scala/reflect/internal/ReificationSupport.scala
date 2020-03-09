@@ -137,11 +137,13 @@ trait ReificationSupport { self: SymbolTable =>
     def thisPrefix(sym: Symbol): Type = sym.thisPrefix
 
     def setType[T <: Tree](tree: T, tpe: Type): T = {
-      tree.setType(tpe); tree
+      tree.setType(tpe);
+      tree
     }
 
     def setSymbol[T <: Tree](tree: T, sym: Symbol): T = {
-      tree.setSymbol(sym); tree
+      tree.setSymbol(sym);
+      tree
     }
 
     def toStats(tree: Tree): List[Tree] = tree match {
@@ -396,7 +398,8 @@ trait ReificationSupport { self: SymbolTable =>
           Some((parents, selfType, ctorMods, vparamss, edefs, body))
         def indexOfCtor(trees: List[Tree]) =
           trees.indexWhere {
-            case UnCtor(_, _, _) => true; case _ => false
+            case UnCtor(_, _, _) => true;
+            case _               => false
           }
 
         if (tbody forall treeInfo.isInterfaceMember)

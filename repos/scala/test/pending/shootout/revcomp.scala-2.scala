@@ -71,7 +71,8 @@ object revcomp {
     }
 
     val nl = '\n'.toByte
-    w.write(desc.getBytes); w.write(nl)
+    w.write(desc.getBytes);
+    w.write(nl)
 
     val n = 60
     val k = if (lines.isEmpty) 0 else lines.top.length
@@ -84,12 +85,16 @@ object revcomp {
 
       if (isSplitLine) {
         if (isFirstLine) {
-          w.write(line); isFirstLine = false
+          w.write(line);
+          isFirstLine = false
         } else {
-          w.write(line, 0, n - k); w.write(nl); w.write(line, n - k, k)
+          w.write(line, 0, n - k);
+          w.write(nl);
+          w.write(line, n - k, k)
         }
       } else {
-        w.write(line); w.write(nl)
+        w.write(line);
+        w.write(nl)
       }
     }
     if (isSplitLine && !isFirstLine) w.write(nl)

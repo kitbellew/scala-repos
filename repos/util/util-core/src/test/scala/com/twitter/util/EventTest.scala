@@ -73,7 +73,8 @@ class EventTest extends FunSuite {
     assert(ref.get == Seq.empty)
     e.notify(2)
     assert(ref.get == Seq(4))
-    e.notify(3); e.notify(4)
+    e.notify(3);
+    e.notify(4)
     assert(ref.get == Seq(4, 8))
   }
 
@@ -141,7 +142,8 @@ class EventTest extends FunSuite {
         n += 1
         w.notify(1)
         Closable.make { _ =>
-          n -= 1; Future.Done
+          n -= 1;
+          Future.Done
         }
       }
     }

@@ -274,13 +274,15 @@ object CacheIvy {
   import CrossVersion.{Binary, Disabled, Full}
   private[this] val crossFromInt = (i: Int) =>
     i match {
-      case BinaryValue => new Binary(idFun); case FullValue => new Full(idFun);
+      case BinaryValue => new Binary(idFun);
+      case FullValue   => new Full(idFun);
       case _           => Disabled
     }
   private[this] val crossToInt = (c: CrossVersion) =>
     c match {
-      case Disabled => 0; case b: Binary => BinaryValue;
-      case f: Full  => FullValue
+      case Disabled  => 0;
+      case b: Binary => BinaryValue;
+      case f: Full   => FullValue
     }
 
   implicit def moduleIDFormat(implicit

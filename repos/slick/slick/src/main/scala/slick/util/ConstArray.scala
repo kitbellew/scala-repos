@@ -536,15 +536,19 @@ final class ConstArrayBuilder[T](
   }
 
   def +(v: T): this.type = {
-    this += v; this
+    this += v;
+    this
   }
   def ++(vs: ConstArray[T]): this.type = {
-    this ++= vs; this
+    this ++= vs;
+    this
   }
   def ++(vs: TraversableOnce[T]): this.type = {
-    this ++= vs; this
+    this ++= vs;
+    this
   }
   def ++(vs: Option[T]): this.type = {
-    this ++= vs; this
+    this ++= vs;
+    this
   }
 }

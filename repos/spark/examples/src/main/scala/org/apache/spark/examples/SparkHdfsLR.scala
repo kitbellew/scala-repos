@@ -46,7 +46,8 @@ object SparkHdfsLR {
     var x = new Array[Double](D)
     var i = 0
     while (i < D) {
-      x(i) = tok.nextToken.toDouble; i += 1
+      x(i) = tok.nextToken.toDouble;
+      i += 1
     }
     DataPoint(new DenseVector(x), y)
   }

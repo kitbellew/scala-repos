@@ -17,7 +17,8 @@ class RecipeLoggingElements extends RecipeSpec {
 
       //#println-debug
       val loggedSource = mySource.map { elem =>
-        println(elem); elem
+        println(elem);
+        elem
       }
       //#println-debug
 

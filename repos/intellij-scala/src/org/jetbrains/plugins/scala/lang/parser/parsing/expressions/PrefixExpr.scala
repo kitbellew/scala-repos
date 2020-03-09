@@ -23,9 +23,11 @@ object PrefixExpr {
         builder.advanceLexer()
         refExpr.done(ScalaElementTypes.REFERENCE_EXPRESSION)
         if (!SimpleExpr.parse(builder)) {
-          prefixMarker.rollbackTo(); false
+          prefixMarker.rollbackTo();
+          false
         } else {
-          prefixMarker.done(ScalaElementTypes.PREFIX_EXPR); true
+          prefixMarker.done(ScalaElementTypes.PREFIX_EXPR);
+          true
         }
       case _ => SimpleExpr.parse(builder)
     }

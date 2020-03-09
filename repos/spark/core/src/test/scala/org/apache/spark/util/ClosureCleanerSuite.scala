@@ -263,7 +263,8 @@ object TestObjectWithBogusReturns {
       val nums = sc.parallelize(Array(1, 2, 3, 4))
       // this return is invalid since it will transfer control outside the closure
       nums.map { x =>
-        return 1; x * 2
+        return 1;
+        x * 2
       }
       1
     }
@@ -277,7 +278,8 @@ object TestObjectWithNestedReturns {
       nums.map { x =>
         // this return is fine since it will not transfer control outside the closure
         def foo(): Int = {
-          return 5; 1
+          return 5;
+          1
         }
         foo()
       }
@@ -333,77 +335,91 @@ private object TestUserClosuresActuallyCleaned {
   def testMap(rdd: RDD[Int]): Unit = {
     rdd
       .map { _ =>
-        return; 0
+        return;
+        0
       }
       .count()
   }
   def testFlatMap(rdd: RDD[Int]): Unit = {
     rdd
       .flatMap { _ =>
-        return; Seq()
+        return;
+        Seq()
       }
       .count()
   }
   def testFilter(rdd: RDD[Int]): Unit = {
     rdd
       .filter { _ =>
-        return; true
+        return;
+        true
       }
       .count()
   }
   def testSortBy(rdd: RDD[Int]): Unit = {
     rdd
       .sortBy { _ =>
-        return; 1
+        return;
+        1
       }
       .count()
   }
   def testKeyBy(rdd: RDD[Int]): Unit = {
     rdd
       .keyBy { _ =>
-        return; 1
+        return;
+        1
       }
       .count()
   }
   def testGroupBy(rdd: RDD[Int]): Unit = {
     rdd
       .groupBy { _ =>
-        return; 1
+        return;
+        1
       }
       .count()
   }
   def testMapPartitions(rdd: RDD[Int]): Unit = {
     rdd
       .mapPartitions { it =>
-        return; it
+        return;
+        it
       }
       .count()
   }
   def testMapPartitionsWithIndex(rdd: RDD[Int]): Unit = {
     rdd
       .mapPartitionsWithIndex { (_, it) =>
-        return; it
+        return;
+        it
       }
       .count()
   }
   def testZipPartitions2(rdd: RDD[Int]): Unit = {
     rdd
       .zipPartitions(rdd) {
-        case (it1, it2) => return; it1
+        case (it1, it2) =>
+          return;
+          it1
       }
       .count()
   }
   def testZipPartitions3(rdd: RDD[Int]): Unit = {
     rdd
       .zipPartitions(rdd, rdd) {
-        case (it1, it2, it3) => return; it1
+        case (it1, it2, it3) =>
+          return;
+          it1
       }
       .count()
   }
   def testZipPartitions4(rdd: RDD[Int]): Unit = {
     rdd
       .zipPartitions(rdd, rdd, rdd) {
-        case (it1, it2, it3, it4) => return; it1
+        case (it1, it2, it3, it4) =>
+          return;
+          it1
       }
       .count()
   }
@@ -419,35 +435,49 @@ private object TestUserClosuresActuallyCleaned {
   }
   def testReduce(rdd: RDD[Int]): Unit = {
     rdd.reduce {
-      case (_, _) => return; 1
+      case (_, _) =>
+        return;
+        1
     }
   }
   def testTreeReduce(rdd: RDD[Int]): Unit = {
     rdd.treeReduce {
-      case (_, _) => return; 1
+      case (_, _) =>
+        return;
+        1
     }
   }
   def testFold(rdd: RDD[Int]): Unit = {
     rdd.fold(0) {
-      case (_, _) => return; 1
+      case (_, _) =>
+        return;
+        1
     }
   }
   def testAggregate(rdd: RDD[Int]): Unit = {
     rdd.aggregate(0)(
       {
-        case (_, _) => return; 1
+        case (_, _) =>
+          return;
+          1
       },
       {
-        case (_, _) => return; 1
+        case (_, _) =>
+          return;
+          1
       })
   }
   def testTreeAggregate(rdd: RDD[Int]): Unit = {
     rdd.treeAggregate(0)(
       {
-        case (_, _) => return; 1
+        case (_, _) =>
+          return;
+          1
       },
       {
-        case (_, _) => return; 1
+        case (_, _) =>
+          return;
+          1
       })
   }
 
@@ -456,13 +486,18 @@ private object TestUserClosuresActuallyCleaned {
     rdd
       .combineByKey(
         { _ =>
-          return; 1
+          return;
+          1
         }: Int => Int,
         {
-          case (_, _) => return; 1
+          case (_, _) =>
+            return;
+            1
         }: (Int, Int) => Int,
         {
-          case (_, _) => return; 1
+          case (_, _) =>
+            return;
+            1
         }: (Int, Int) => Int
       )
       .count()
@@ -471,36 +506,48 @@ private object TestUserClosuresActuallyCleaned {
     rdd
       .aggregateByKey(0)(
         {
-          case (_, _) => return; 1
+          case (_, _) =>
+            return;
+            1
         },
         {
-          case (_, _) => return; 1
+          case (_, _) =>
+            return;
+            1
         })
       .count()
   }
   def testFoldByKey(rdd: RDD[(Int, Int)]): Unit = {
     rdd.foldByKey(0) {
-      case (_, _) => return; 1
+      case (_, _) =>
+        return;
+        1
     }
   }
   def testReduceByKey(rdd: RDD[(Int, Int)]): Unit = {
     rdd.reduceByKey {
-      case (_, _) => return; 1
+      case (_, _) =>
+        return;
+        1
     }
   }
   def testReduceByKeyLocally(rdd: RDD[(Int, Int)]): Unit = {
     rdd.reduceByKeyLocally {
-      case (_, _) => return; 1
+      case (_, _) =>
+        return;
+        1
     }
   }
   def testMapValues(rdd: RDD[(Int, Int)]): Unit = {
     rdd.mapValues { _ =>
-      return; 1
+      return;
+      1
     }
   }
   def testFlatMapValues(rdd: RDD[(Int, Int)]): Unit = {
     rdd.flatMapValues { _ =>
-      return; Seq()
+      return;
+      Seq()
     }
   }
 
@@ -522,7 +569,8 @@ private object TestUserClosuresActuallyCleaned {
     sc.runJob(
       rdd,
       { (ctx: TaskContext, iter: Iterator[Int]) =>
-        return; 1
+        return;
+        1
       })
   }
   def testRunJob2(sc: SparkContext): Unit = {
@@ -530,7 +578,8 @@ private object TestUserClosuresActuallyCleaned {
     sc.runJob(
       rdd,
       { iter: Iterator[Int] =>
-        return; 1
+        return;
+        1
       })
   }
   def testRunApproximateJob(sc: SparkContext): Unit = {
@@ -539,7 +588,8 @@ private object TestUserClosuresActuallyCleaned {
     sc.runApproximateJob(
       rdd,
       { (ctx: TaskContext, iter: Iterator[Int]) =>
-        return; 1L
+        return;
+        1L
       },
       evaluator,
       1000)
@@ -549,7 +599,8 @@ private object TestUserClosuresActuallyCleaned {
     sc.submitJob(
       rdd,
       { _ =>
-        return; 1
+        return;
+        1
       }: Iterator[Int] => Int,
       Seq.empty,
       {

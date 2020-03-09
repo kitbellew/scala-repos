@@ -471,7 +471,8 @@ object Concurrent {
                             Done(Error(msg, e), Input.Empty)
                         }(dec)
                         .map(i => {
-                          busy.single() = false; Left(i)
+                          busy.single() = false;
+                          Left(i)
                         })(dec),
                       timeoutFuture(Right(()), duration, unit)
                     )
@@ -521,7 +522,9 @@ object Concurrent {
       val iteratee: Ref[Future[Option[Input[E] => Iteratee[E, A]]]] = Ref(
         it.pureFold {
           case Step.Cont(k) => Some(k);
-          case other        => promise.success(other.it); None
+          case other =>
+            promise.success(other.it);
+            None
         }(dec))
 
       val pushee = new Channel[E] {

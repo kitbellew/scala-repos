@@ -144,7 +144,8 @@ object CanConvolve extends SerializableLogging {
             )
           }
           case oc =>
-            require(false, "cannot handle OptOverhang value " + oc); data
+            require(false, "cannot handle OptOverhang value " + oc);
+            data
         }
 
         val fullOptRangeLength = paddedData.length - kernel.length + 1

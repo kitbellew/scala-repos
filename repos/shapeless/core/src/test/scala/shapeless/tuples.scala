@@ -1593,7 +1593,10 @@ class TupleTests {
     val in2 = (1, "foo")
     val in3 = (1, "foo", 2.0)
     val in4 = (1, "foo", 2.0, 'a')
-    type S = String; type I = Int; type D = Double; type C = Char
+    type S = String;
+    type I = Int;
+    type D = Double;
+    type C = Char
 
     // rotateLeft(0)
     val r1 = in2.rotateLeft(0)
@@ -1639,7 +1642,10 @@ class TupleTests {
     val in2 = (1, "foo")
     val in3 = (1, "foo", 2.0)
     val in4 = (1, "foo", 2.0, 'a')
-    type S = String; type I = Int; type D = Double; type C = Char
+    type S = String;
+    type I = Int;
+    type D = Double;
+    type C = Char
 
     // rotateRight(0)
     val r1 = in2.rotateRight(0)

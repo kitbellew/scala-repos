@@ -132,7 +132,8 @@ class Queue[+A] protected (
     */
   def dequeue: (A, Queue[A]) = out match {
     case Nil if !in.isEmpty =>
-      val rev = in.reverse; (rev.head, new Queue(Nil, rev.tail))
+      val rev = in.reverse;
+      (rev.head, new Queue(Nil, rev.tail))
     case x :: xs => (x, new Queue(in, xs))
     case _       => throw new NoSuchElementException("dequeue on empty queue")
   }

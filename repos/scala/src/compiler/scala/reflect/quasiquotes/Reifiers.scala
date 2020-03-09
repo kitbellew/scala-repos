@@ -364,7 +364,9 @@ trait Reifiers { self: Quasiquotes =>
       case FreshName(prefix) if prefix != nme.QUASIQUOTE_NAME_PREFIX =>
         def fresh() = c.freshName(TermName(nme.QUASIQUOTE_NAME_PREFIX))
         def introduceName() = {
-          val n = fresh(); nameMap(name) += n; n
+          val n = fresh();
+          nameMap(name) += n;
+          n
         }
         def result(n: Name) =
           if (isReifyingExpressions) Ident(n) else Bind(n, Ident(nme.WILDCARD))

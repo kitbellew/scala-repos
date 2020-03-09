@@ -63,7 +63,8 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
     var i = 0
     val len = as.length
     while (i < len) {
-      cs(i) = as(i) + bs(i); i += 1
+      cs(i) = as(i) + bs(i);
+      i += 1
     }
   }
 
@@ -75,7 +76,8 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
     var i = 0
     val len = as.length
     while (i < len) {
-      cs(i) = as(i) + bs(i); i += 1
+      cs(i) = as(i) + bs(i);
+      i += 1
     }
   }
 
@@ -87,7 +89,8 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
     var i = 0
     val len = as.length
     while (i < len) {
-      cs(i) = as(i) + bs(i); i += 1
+      cs(i) = as(i) + bs(i);
+      i += 1
     }
   }
 
@@ -98,7 +101,8 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
     var t = start
     var i = 0
     while (i < n) {
-      t += 1; i += 1
+      t += 1;
+      i += 1
     }
     t
   }
@@ -110,7 +114,8 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
     var t = start
     var i = ev.zero
     while (i < n) {
-      t += ev.one; i += ev.one
+      t += ev.one;
+      i += ev.one
     }
     t
   }
@@ -121,7 +126,8 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
     var t = start
     var i = ev.zero
     while (i < n) {
-      t += ev.one; i += ev.one
+      t += ev.one;
+      i += ev.one
     }
     t
   }
@@ -186,7 +192,8 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
     var i = 0
     val len = as.length
     while (i < len) {
-      cs(i) = gcdDirect(as(i), bs(i)); i += 1
+      cs(i) = gcdDirect(as(i), bs(i));
+      i += 1
     }
   }
 
@@ -200,7 +207,8 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
     var i = 0
     val len = as.length
     while (i < len) {
-      cs(i) = gcdGeneric(as(i), bs(i)); i += 1
+      cs(i) = gcdGeneric(as(i), bs(i));
+      i += 1
     }
   }
 
@@ -218,7 +226,8 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
     var i = 0
     val len = as.length
     while (i < len) {
-      cs(i) = gcdSpire(as(i), bs(i)); i += 1
+      cs(i) = gcdSpire(as(i), bs(i));
+      i += 1
     }
   }
 
@@ -229,7 +238,8 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
     var i = 0
     val len = as.length
     while (i < len) {
-      cs(i) = as(i) * n / d; i += 1
+      cs(i) = as(i) * n / d;
+      i += 1
     }
   }
 
@@ -238,7 +248,8 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
     var i = 0
     val len = as.length
     while (i < len) {
-      cs(i) = as(i) * n / d; i += 1
+      cs(i) = as(i) * n / d;
+      i += 1
     }
   }
 
@@ -251,7 +262,8 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
     var i = 0
     val len = as.length
     while (i < len) {
-      cs(i) = as(i) * n /~ d; i += 1
+      cs(i) = as(i) * n /~ d;
+      i += 1
     }
   }
 }

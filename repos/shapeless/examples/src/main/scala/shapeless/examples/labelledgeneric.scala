@@ -85,7 +85,8 @@ trait Field {
 
 object Field {
   def apply[K0, V0](sample: FieldType[K0, V0]) = new Field {
-    type K = K0; type V = V0
+    type K = K0;
+    type V = V0
   }
 }
 

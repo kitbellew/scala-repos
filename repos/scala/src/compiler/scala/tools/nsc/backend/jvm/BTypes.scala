@@ -170,7 +170,8 @@ abstract class BTypes {
         val res = ClassBType(internalName)
         byteCodeRepository.classNode(internalName) match {
           case Left(msg) =>
-            res.info = Left(NoClassBTypeInfoMissingBytecode(msg)); res
+            res.info = Left(NoClassBTypeInfoMissingBytecode(msg));
+            res
           case Right(c) => setClassInfoFromClassNode(c, res)
         }
       }

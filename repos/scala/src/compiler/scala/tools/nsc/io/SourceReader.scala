@@ -41,7 +41,9 @@ class SourceReader(decoder: CharsetDecoder, reporter: Reporter) {
 
     try read(c)
     catch {
-      case e: Exception => reportEncodingError("" + file); Array()
+      case e: Exception =>
+        reportEncodingError("" + file);
+        Array()
     } finally c.close()
   }
 
@@ -53,15 +55,19 @@ class SourceReader(decoder: CharsetDecoder, reporter: Reporter) {
       case z: ZipArchive#Entry => read(Channels.newChannel(z.input))
       case _                   => read(ByteBuffer.wrap(file.toByteArray))
     } catch {
-      case e: Exception => reportEncodingError("" + file); Array()
+      case e: Exception =>
+        reportEncodingError("" + file);
+        Array()
     }
   }
 
   /** Reads the specified byte channel. */
   protected def read(input: ReadableByteChannel): Array[Char] = {
     val decoder: CharsetDecoder = this.decoder.reset()
-    val bytes: ByteBuffer = this.bytes; bytes.clear()
-    var chars: CharBuffer = this.chars; chars.clear()
+    val bytes: ByteBuffer = this.bytes;
+    bytes.clear()
+    var chars: CharBuffer = this.chars;
+    chars.clear()
     var endOfInput = false
 
     while (!endOfInput) {
@@ -75,7 +81,8 @@ class SourceReader(decoder: CharsetDecoder, reporter: Reporter) {
   /** Reads the specified byte buffer. */
   protected def read(bytes: ByteBuffer): Array[Char] = {
     val decoder: CharsetDecoder = this.decoder.reset()
-    val chars: CharBuffer = this.chars; chars.clear()
+    val chars: CharBuffer = this.chars;
+    chars.clear()
     terminate(flush(decoder, decode(decoder, bytes, chars, endOfInput = true)))
   }
 

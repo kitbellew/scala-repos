@@ -66,15 +66,18 @@ trait UFunc {
       implicit impl: Impl4[V1, V2, V3, V4, VR]): VR = impl(v1, v2, v3, v4)
 
   final def inPlace[V](v: V)(implicit impl: UFunc.InPlaceImpl[this.type, V]) = {
-    impl(v); v
+    impl(v);
+    v
   }
   final def inPlace[V, V2](v: V, v2: V2)(
       implicit impl: UFunc.InPlaceImpl2[this.type, V, V2]) = {
-    impl(v, v2); v
+    impl(v, v2);
+    v
   }
   final def inPlace[V, V2, V3](v: V, v2: V2, v3: V3)(
       implicit impl: UFunc.InPlaceImpl3[this.type, V, V2, V3]) = {
-    impl(v, v2, v3); v
+    impl(v, v2, v3);
+    v
   }
 
   final def withSink[S](s: S) = new UFunc.WithSinkHelp[this.type, S](s)
@@ -284,15 +287,18 @@ object UFunc {
 
   final class WithSinkHelp[Tag, S](val __s: S) extends AnyVal {
     def apply[V](v: V)(implicit impl: UFunc.SinkImpl[Tag, S, V]) = {
-      impl(__s, v); __s
+      impl(__s, v);
+      __s
     }
     def apply[V, V2](v: V, v2: V2)(
         implicit impl: UFunc.SinkImpl2[Tag, S, V, V2]) = {
-      impl(__s, v, v2); __s
+      impl(__s, v, v2);
+      __s
     }
     def apply[V, V2, V3](v: V, v2: V2, v3: V3)(
         implicit impl: UFunc.SinkImpl3[Tag, S, V, V2, V3]) = {
-      impl(__s, v, v2, v3); __s
+      impl(__s, v, v2, v3);
+      __s
     }
   }
 

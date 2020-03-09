@@ -1385,7 +1385,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
 
           loc += len // Increment offset into result array
           if (loc >= cix.length) {
-            off += 1; loc = off
+            off += 1;
+            loc = off
           }
         }
       }

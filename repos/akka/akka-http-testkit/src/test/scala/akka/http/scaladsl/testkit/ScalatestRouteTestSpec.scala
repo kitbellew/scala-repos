@@ -26,7 +26,8 @@ class ScalatestRouteTestSpec
 
     "the most simple and direct route test" in {
       Get() ~> complete(HttpResponse()) ~> { rr ⇒
-        rr.awaitResult; rr.response
+        rr.awaitResult;
+        rr.response
       } shouldEqual HttpResponse()
     }
 

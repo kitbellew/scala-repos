@@ -325,8 +325,12 @@ class MockHttpServletRequest(
       processUrl(new URL(url))
     } else if (url.startsWith("/")) {
       computeRealPath(url).split('?') match {
-        case Array(path, query) => this.path = path; queryString = query
-        case Array(path)        => this.path = path; queryString = null
+        case Array(path, query) =>
+          this.path = path;
+          queryString = query
+        case Array(path) =>
+          this.path = path;
+          queryString = null
         case _ =>
           throw new IllegalArgumentException("too many '?' in URL : " + url)
       }
@@ -352,8 +356,12 @@ class MockHttpServletRequest(
   def processUrl(url: URL) {
     // Deconstruct the URL to set values
     url.getProtocol match {
-      case "http"  => scheme = "http"; secure = false
-      case "https" => scheme = "https"; secure = true
+      case "http" =>
+        scheme = "http";
+        secure = false
+      case "https" =>
+        scheme = "https";
+        secure = true
       case other =>
         throw new IllegalArgumentException("Unsupported protocol: " + other)
     }

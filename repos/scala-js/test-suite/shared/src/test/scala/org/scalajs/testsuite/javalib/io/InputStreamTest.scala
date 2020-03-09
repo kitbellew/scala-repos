@@ -22,7 +22,8 @@ class InputStreamTest extends CommonStreamsTests {
     private var i: Int = 0
     def read(): Int =
       if (i < length) {
-        i += 1; i
+        i += 1;
+        i
       } else -1
   }
 

@@ -51,7 +51,8 @@ object ListSet extends ImmutableSetFactory[ListSet] {
       this
     }
     def clear() = {
-      elems.clear(); seen.clear()
+      elems.clear();
+      seen.clear()
     }
     def result() = elems.foldLeft(empty[Elem])(_ unchecked_+ _)
   }
@@ -188,7 +189,8 @@ class ListSet[A]
     override def -(e: A): ListSet[A] =
       if (e == head) self
       else {
-        val tail = self - e; new tail.Node(head)
+        val tail = self - e;
+        new tail.Node(head)
       }
 
     override def tail: ListSet[A] = self

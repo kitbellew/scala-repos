@@ -2,10 +2,12 @@
 // and expanded with package object variants
 
 trait Foo {
-  type T; def apply(): T
+  type T;
+  def apply(): T
 }
 object e extends Foo {
-  type T = Int; def apply() = 42
+  type T = Int;
+  def apply() = 42
 }
 
 package p {
@@ -30,12 +32,14 @@ package p {
 object Test {
 
   val f = new Foo {
-    type T = Int; def apply() = 42
+    type T = Int;
+    def apply() = 42
   }
 
   def main(args: Array[String]): Unit = {
     val g = new Foo {
-      type T = Int; def apply() = 42
+      type T = Int;
+      def apply() = 42
     }
 
     (e: Foo)()

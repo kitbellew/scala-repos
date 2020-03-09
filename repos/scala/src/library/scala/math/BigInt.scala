@@ -35,7 +35,8 @@ object BigInt {
       val offset = i - minCached
       var n = cache(offset)
       if (n eq null) {
-        n = new BigInt(BigInteger.valueOf(i.toLong)); cache(offset) = n
+        n = new BigInt(BigInteger.valueOf(i.toLong));
+        cache(offset) = n
       }
       n
     } else new BigInt(BigInteger.valueOf(i.toLong))

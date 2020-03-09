@@ -34,7 +34,8 @@ object P extends Build {
     println("Checking " + label)
     val err =
       try {
-        Class.forName("org.example.ProvidedTest", false, loader); None
+        Class.forName("org.example.ProvidedTest", false, loader);
+        None
       } catch {
         case e: Exception => Some(e)
       }

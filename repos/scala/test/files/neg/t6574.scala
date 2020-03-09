@@ -8,7 +8,8 @@ class Bad[X, Y](val v: Int) extends AnyVal {
   @annotation.tailrec
   final def differentTypeArgs {
     {
-      (); new Bad[String, Unit](0)
+      ();
+      new Bad[String, Unit](0)
     }.differentTypeArgs
   }
 }

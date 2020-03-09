@@ -34,7 +34,8 @@ object InlineWarningTest extends ClearAfterClass.Clearable {
   var compilerWarnAll =
     newCompiler(extraArgs = argsNoWarn + " -Yopt-warnings:_")
   def clear(): Unit = {
-    compiler = null; compilerWarnAll = null
+    compiler = null;
+    compilerWarnAll = null
   }
 }
 
@@ -77,7 +78,8 @@ class InlineWarningTest extends ClearAfterClass {
     compile(
       code,
       allowMessage = i => {
-        count += 1; warns.exists(i.msg contains _)
+        count += 1;
+        warns.exists(i.msg contains _)
       })
     assert(count == 5, count) // TODO SD-85: 5th warning
   }
@@ -104,7 +106,8 @@ class InlineWarningTest extends ClearAfterClass {
       extraArgs = InlineWarningTest.args,
       afterEach = removeImpl,
       allowMessage = i => {
-        c += 1; i.msg contains warn
+        c += 1;
+        i.msg contains warn
       })
     assert(c == 1, c)
 
@@ -166,7 +169,8 @@ class InlineWarningTest extends ClearAfterClass {
       scalaCode,
       List((javaCode, "A.java")),
       allowMessage = i => {
-        c += 1; warns.tail.exists(i.msg contains _)
+        c += 1;
+        warns.tail.exists(i.msg contains _)
       })
     assert(c == 1, c)
 
@@ -184,7 +188,8 @@ class InlineWarningTest extends ClearAfterClass {
       scalaCode,
       List((javaCode, "A.java")),
       allowMessage = i => {
-        c += 1; warns.exists(i.msg contains _)
+        c += 1;
+        warns.exists(i.msg contains _)
       })
     assert(c == 2, c)
   }
@@ -215,7 +220,8 @@ class InlineWarningTest extends ClearAfterClass {
     compile(
       code,
       allowMessage = i => {
-        c += 1; i.msg contains warn
+        c += 1;
+        i.msg contains warn
       })
     assert(c == 1, c)
   }
@@ -247,7 +253,8 @@ class InlineWarningTest extends ClearAfterClass {
       code,
       compiler = compilerWarnAll,
       allowMessage = i => {
-        c += 1; i.msg contains warn
+        c += 1;
+        i.msg contains warn
       })
     assert(c == 1, c)
   }
@@ -272,7 +279,8 @@ class InlineWarningTest extends ClearAfterClass {
     compile(
       code,
       allowMessage = i => {
-        c += 1; i.msg contains warn
+        c += 1;
+        i.msg contains warn
       })
     assert(c == 1, c)
   }

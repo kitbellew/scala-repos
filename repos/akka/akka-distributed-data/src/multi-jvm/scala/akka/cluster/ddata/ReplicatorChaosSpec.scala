@@ -174,7 +174,8 @@ class ReplicatorChaosSpec
       val side1 = Seq(first, second)
       val side2 = Seq(third, fourth, fifth)
       runOn(first) {
-        for (a ← side1; b ← side2)
+        for (a ← side1;
+             b ← side2)
           testConductor.blackhole(a, b, Direction.Both).await
       }
       enterBarrier("split")
@@ -227,7 +228,8 @@ class ReplicatorChaosSpec
       val side1 = Seq(first, second)
       val side2 = Seq(third, fifth) // fourth was shutdown
       runOn(first) {
-        for (a ← side1; b ← side2)
+        for (a ← side1;
+             b ← side2)
           testConductor.passThrough(a, b, Direction.Both).await
       }
       enterBarrier("split-repaired")

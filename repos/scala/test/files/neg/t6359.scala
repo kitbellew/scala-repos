@@ -4,7 +4,8 @@ class M(val t: Int) extends AnyVal {
     class Y
 
     () => {
-      X; new Y
+      X;
+      new Y
     }
   }
 }

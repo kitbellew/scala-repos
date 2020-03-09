@@ -101,7 +101,8 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
     private def isValidInt(num: BigDecimal): Boolean = {
       try {
-        num.toIntExact; true
+        num.toIntExact;
+        true
       } catch {
         case e: java.lang.ArithmeticException => {
           false

@@ -287,7 +287,8 @@ object DBIOAction {
             mutable.Builder[R, M[R]],
             NoStream,
             E]) { (ar, g) =>
-          for (r <- ar; ge <- sequenceGroupAsSeq(g)) yield r ++= ge
+          for (r <- ar;
+               ge <- sequenceGroupAsSeq(g)) yield r ++= ge
         } map (_.result)
     }
   }

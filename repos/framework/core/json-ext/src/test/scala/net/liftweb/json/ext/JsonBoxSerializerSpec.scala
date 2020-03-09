@@ -47,7 +47,9 @@ object JsonBoxSerializerSpec extends Specification {
     val p = parse(json).extract[Person]
     p mustEqual Person("joe", Full(12), Full(Person("ann", Full(53), Empty)))
     (for {
-      a1 <- p.age; m <- p.mother; a2 <- m.age
+      a1 <- p.age;
+      m <- p.mother;
+      a2 <- m.age
     } yield a1 + a2) mustEqual Full(65)
   }
 

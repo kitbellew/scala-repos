@@ -41,7 +41,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
     def findHostClass(selector: Type, sym: Symbol) =
       selector member sym.name match {
         case NoSymbol =>
-          debuglog(s"Rejecting $selector as host class for $sym"); sym.owner
+          debuglog(s"Rejecting $selector as host class for $sym");
+          sym.owner
         case _ => selector.typeSymbol
       }
 
@@ -422,12 +423,17 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
         case Literal(value) =>
           if (value.tag != UnitTag) (value.tag, expectedType) match {
             case (IntTag, LONG) =>
-              bc.lconst(value.longValue); generatedType = LONG
+              bc.lconst(value.longValue);
+              generatedType = LONG
             case (FloatTag, DOUBLE) =>
-              bc.dconst(value.doubleValue); generatedType = DOUBLE
+              bc.dconst(value.doubleValue);
+              generatedType = DOUBLE
             case (NullTag, _) =>
-              bc.emit(asm.Opcodes.ACONST_NULL); generatedType = srNullRef
-            case _ => genConstant(value); generatedType = tpeTK(tree)
+              bc.emit(asm.Opcodes.ACONST_NULL);
+              generatedType = srNullRef
+            case _ =>
+              genConstant(value);
+              generatedType = tpeTK(tree)
           }
 
         case blck: Block => genBlock(blck, expectedType)
@@ -758,10 +764,9 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
             mname,
             methodType.descriptor,
             app.pos)
-          generatedType =
-            boxResultType(
-              fun.symbol
-            ) // was typeToBType(fun.symbol.tpe.resultType)
+          generatedType = boxResultType(
+            fun.symbol
+          ) // was typeToBType(fun.symbol.tpe.resultType)
 
         case Apply(fun @ _, List(expr))
             if currentRun.runDefinitions.isUnbox(fun.symbol) =>
@@ -1208,7 +1213,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
       val hostSymbol = if (hostClass0 == null) method.owner else hostClass0
       val methodOwner = method.owner
       // info calls so that types are up to date; erasure may add lateINTERFACE to traits
-      hostSymbol.info; methodOwner.info
+      hostSymbol.info;
+      methodOwner.info
 
       def needsInterfaceCall(sym: Symbol) = (
         sym.isTraitOrInterface

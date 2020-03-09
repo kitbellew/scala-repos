@@ -26,14 +26,17 @@ class BytecodeUtilsSuite extends SparkFunSuite {
 
   test("closure invokes a method") {
     val c1 = { e: TestClass =>
-      println(e.foo); println(e.bar); println(e.baz);
+      println(e.foo);
+      println(e.bar);
+      println(e.baz);
     }
     assert(BytecodeUtils.invokedMethod(c1, classOf[TestClass], "foo"))
     assert(BytecodeUtils.invokedMethod(c1, classOf[TestClass], "bar"))
     assert(BytecodeUtils.invokedMethod(c1, classOf[TestClass], "baz"))
 
     val c2 = { e: TestClass =>
-      println(e.foo); println(e.bar);
+      println(e.foo);
+      println(e.bar);
     }
     assert(BytecodeUtils.invokedMethod(c2, classOf[TestClass], "foo"))
     assert(BytecodeUtils.invokedMethod(c2, classOf[TestClass], "bar"))
@@ -49,10 +52,13 @@ class BytecodeUtilsSuite extends SparkFunSuite {
 
   test("closure inside a closure invokes a method") {
     val c1 = { e: TestClass =>
-      println(e.foo); println(e.bar); println(e.baz);
+      println(e.foo);
+      println(e.bar);
+      println(e.baz);
     }
     val c2 = { e: TestClass =>
-      c1(e); println(e.foo);
+      c1(e);
+      println(e.foo);
     }
     assert(BytecodeUtils.invokedMethod(c2, classOf[TestClass], "foo"))
     assert(BytecodeUtils.invokedMethod(c2, classOf[TestClass], "bar"))
@@ -64,7 +70,8 @@ class BytecodeUtilsSuite extends SparkFunSuite {
       println(e.baz);
     }
     val c2 = { e: TestClass =>
-      c1(e); println(e.foo);
+      c1(e);
+      println(e.foo);
     }
     val c3 = { e: TestClass =>
       c2(e)

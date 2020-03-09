@@ -37,7 +37,8 @@ class EnsembleRectangle extends EnsembleExample {
   def getContent = {
     // function literal to get Rectangle object
     val rectObj = (rect: Rectangle) => {
-      rect.setStroke(Color.Burlywood); rect
+      rect.setStroke(Color.Burlywood);
+      rect
     }
     val rectArcObj = (height: Int, width: Int) => {
       val rect = Rectangle(100, 100, Color.White)

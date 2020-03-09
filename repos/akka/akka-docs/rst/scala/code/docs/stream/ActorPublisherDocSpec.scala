@@ -81,7 +81,8 @@ class ActorPublisherDocSpec extends AkkaSpec {
     val ref = Flow[JobManager.Job]
       .map(_.payload.toUpperCase)
       .map { elem =>
-        println(elem); elem
+        println(elem);
+        elem
       }
       .to(Sink.ignore)
       .runWith(jobManagerSource)

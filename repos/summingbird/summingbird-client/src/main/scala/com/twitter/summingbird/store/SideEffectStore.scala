@@ -35,7 +35,8 @@ class SideEffectStore[K, V](store: MergeableStore[K, V])(
   override def multiGet[K1 <: K](ks: Set[K1]) = store.multiGet(ks)
 
   def after[T](t: Future[T])(fn: T => Unit): Future[T] = {
-    t.foreach(fn); t
+    t.foreach(fn);
+    t
   }
 
   override def put(pair: (K, Option[V])) =

@@ -91,7 +91,8 @@ class StreamTcpDocSpec extends AkkaSpec {
         .map(_.utf8String)
         //#welcome-banner-chat-server
         .map { command ⇒
-          serverProbe.ref ! command; command
+          serverProbe.ref ! command;
+          command
         }
         //#welcome-banner-chat-server
         .via(commandParser)

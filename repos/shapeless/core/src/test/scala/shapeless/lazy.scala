@@ -30,11 +30,13 @@ class LazyStrictTests {
     val effects = ListBuffer[Int]()
 
     implicit def lazyInt: Lazy[Int] = Lazy[Int] {
-      effects += 3; 23
+      effects += 3;
+      23
     }
 
     implicit def strictInt: Strict[Int] = Strict[Int] {
-      effects += 6; 23
+      effects += 6;
+      23
     }
 
     def summonLazyInt(implicit li: Lazy[Int]): Int = {
@@ -67,7 +69,8 @@ class LazyStrictTests {
     val effects = ListBuffer[Int]()
 
     def effectfulLazyInt: Int = {
-      effects += 3; 23
+      effects += 3;
+      23
     }
 
     def useEffectfulLazyInt(li: Lazy[Int]): Int = {
@@ -78,7 +81,8 @@ class LazyStrictTests {
     }
 
     def effectfulStrictInt: Int = {
-      effects += 6; 23
+      effects += 6;
+      23
     }
 
     def useEffectfulStrictInt(li: Strict[Int]): Int = {
@@ -104,10 +108,12 @@ class LazyStrictTests {
     val effects = ListBuffer[Int]()
 
     lazy val effectfulLazyInt: Int = {
-      effects += 3; 23
+      effects += 3;
+      23
     }
     lazy val effectfulStrictInt: Int = {
-      effects += 6; 23
+      effects += 6;
+      23
     }
 
     def useEffectfulLazyInt(li: Lazy[Int]): Int = {
@@ -155,11 +161,13 @@ class LazyStrictTests {
 
     effects += 1
     val il = useEffectfulLazyInt({
-      effects += 2; 23
+      effects += 2;
+      23
     })
     effects += 5
     val is = useEffectfulStrictInt({
-      effects += 6; 23
+      effects += 6;
+      23
     })
     effects += 9
 

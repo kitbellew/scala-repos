@@ -76,7 +76,8 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
   def this(rows: Int, data: Array[V], offset: Int) =
     this(
       rows, {
-        assert(data.length % rows == 0); data.length / rows
+        assert(data.length % rows == 0);
+        data.length / rows
       },
       data,
       offset)

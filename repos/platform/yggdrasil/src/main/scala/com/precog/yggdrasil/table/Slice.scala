@@ -835,8 +835,10 @@ trait Slice { source =>
 
         (lastDefined, firstDefined) match {
           case (Some((prev, i)), Some(j)) => findStraddlingDistinct(prev, i, j)
-          case (_, Some(j))               => acc.add(j); findSelfDistinct(j, j + 1)
-          case _                          => acc
+          case (_, Some(j)) =>
+            acc.add(j);
+            findSelfDistinct(j, j + 1)
+          case _ => acc
         }
       }
 

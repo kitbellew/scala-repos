@@ -80,7 +80,8 @@ private[akka] class TestConductorPipelineFactory(
     val msg = List(new MsgEncoder, new MsgDecoder)
     (encap ::: proto ::: msg ::: handler :: Nil)
       .foldLeft(new DefaultChannelPipeline) { (pipe, handler) ⇒
-        pipe.addLast(Logging.simpleName(handler.getClass), handler); pipe
+        pipe.addLast(Logging.simpleName(handler.getClass), handler);
+        pipe
       }
   }
 }

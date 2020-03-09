@@ -770,14 +770,17 @@ object TestGraphs {
     val fltrCounter = Counter(Group("counter.test"), Name("fltr_counter"))
     source
       .flatMap { x =>
-        origCounter.incr; fn(x)
+        origCounter.incr;
+        fn(x)
       }
       .name("FM")
       .filter { x =>
-        fmCounter.incrBy(2); true
+        fmCounter.incrBy(2);
+        true
       }
       .map { x =>
-        fltrCounter.incr; x
+        fltrCounter.incr;
+        x
       }
       .sumByKey(store)
   }

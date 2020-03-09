@@ -199,7 +199,8 @@ sealed abstract class Try[+R] {
     * 'k' has run.  This enables the enforcement of invocation ordering.
     */
   def respond(k: Try[R] => Unit): Try[R] = {
-    k(this); this
+    k(this);
+    this
   }
 
   /**
@@ -248,7 +249,8 @@ final case class Throw[+R](e: Throwable) extends Try[R] {
   def filter(p: R => Boolean) = this
   def withFilter(p: R => Boolean) = this
   def onFailure(rescueException: Throwable => Unit) = {
-    rescueException(e); this
+    rescueException(e);
+    this
   }
   def onSuccess(f: R => Unit) = this
   def handle[R2 >: R](rescueException: PartialFunction[Throwable, R2]) =
@@ -307,7 +309,8 @@ final case class Return[+R](r: R) extends Try[R] {
   def onFailure(rescueException: Throwable => Unit): Try[R] = this
 
   def onSuccess(f: R => Unit): Try[R] = {
-    f(r); this
+    f(r);
+    this
   }
 
   def handle[R2 >: R](

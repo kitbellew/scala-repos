@@ -203,7 +203,8 @@ object BigDecimal {
       val offset = i - minCached
       var n = cache(offset)
       if (n eq null) {
-        n = new BigDecimal(BigDec.valueOf(i.toLong), mc); cache(offset) = n
+        n = new BigDecimal(BigDec.valueOf(i.toLong), mc);
+        cache(offset) = n
       }
       n
     } else apply(i.toLong, mc)
@@ -551,7 +552,8 @@ final class BigDecimal(val bigDecimal: BigDec, val mc: MathContext)
 
   private def noArithmeticException(body: => Unit): Boolean = {
     try {
-      body; true
+      body;
+      true
     } catch {
       case _: ArithmeticException => false
     }

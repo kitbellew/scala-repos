@@ -40,7 +40,8 @@ object Test extends Properties("TreeMap") {
       val subject = TreeMap(values zip values: _*)
       val it = subject.iterator
       try {
-        while (it.hasNext) it.next; true
+        while (it.hasNext) it.next;
+        true
       } catch {
         case _ => false
       }

@@ -72,13 +72,15 @@ class BigDecimalTest {
   def refusesNullTest() {
     def isIAE[A](a: => A) =
       try {
-        a; false
+        a;
+        false
       } catch {
         case iae: IllegalArgumentException => true
       }
     def isNPE[A](a: => A) =
       try {
-        a; false
+        a;
+        false
       } catch {
         case npe: NullPointerException => true
       }
@@ -123,7 +125,8 @@ class BigDecimalTest {
       BigDecimal(1) / BigDecimal(10),
       BigDecimal(10).pow(-1)
     )
-    for (a <- tenths; b <- tenths)
+    for (a <- tenths;
+         b <- tenths)
       assert(a == b, s"$a != $b but both should be 0.1")
   }
 
@@ -168,7 +171,8 @@ class BigDecimalTest {
     )
     sameRounding.map(_.zipWithIndex).foreach {
       case xs =>
-        for ((a, i) <- xs; (b, j) <- xs) {
+        for ((a, i) <- xs;
+             (b, j) <- xs) {
           assert(a == b, s"$a != $b (#$i != #$j) but should be the same")
           assert(
             a.## == b.##,
@@ -176,7 +180,8 @@ class BigDecimalTest {
         }
     }
     val List(xs, ys) = sameRounding.map(_.zipWithIndex)
-    for ((a, i) <- xs; (b, j) <- ys)
+    for ((a, i) <- xs;
+         (b, j) <- ys)
       assert(a != b, s"$a == $b (#$i == #$j) but should be different")
   }
 
@@ -190,7 +195,8 @@ class BigDecimalTest {
       BigDecimal(text),
       BigDecimal(new BD(text))
     )
-    for (a <- same; b <- same)
+    for (a <- same;
+         b <- same)
       assert(a == b, s"$a != $b but should be the same")
   }
 
@@ -248,7 +254,8 @@ class BigDecimalTest {
       BigDecimal.exact(0.1f),
       BigDecimal.decimal((0.1f).toDouble)
     )
-    for (a <- different; b <- different if (a ne b))
+    for (a <- different;
+         b <- different if (a ne b))
       assert(
         a != b,
         "BigDecimal representations of Double mistakenly conflated")

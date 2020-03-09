@@ -152,7 +152,8 @@ package object util {
     * prints a and returns it.
     */
   def trace[T](a: T) = {
-    println(a); a
+    println(a);
+    a
   }
 
   // this should be a separate trait but Scala is freaking out

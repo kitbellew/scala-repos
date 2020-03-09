@@ -7,9 +7,11 @@ object Test extends App {
   def foo(f: (=> Int, => Int) => Unit) =
     f(
       {
-        println("a"); 0
+        println("a");
+        0
       }, {
-        println("b"); 1
+        println("b");
+        1
       })
   println("no calls")
   foo((a, b) => ())
@@ -17,6 +19,7 @@ object Test extends App {
   foo((a, b) => a)
   println("call B twice")
   foo((a, b) => {
-    b; b
+    b;
+    b
   })
 }

@@ -44,7 +44,8 @@ object JsonXmlSpec
 
   "JSON can be converted to XML, and back to valid JSON (non symmetric op)" in {
     val conversion = (json: JValue) => {
-      parse(compactRender(toJson(toXml(json)))); true
+      parse(compactRender(toJson(toXml(json))));
+      true
     }
     forAll(conversion)
   }

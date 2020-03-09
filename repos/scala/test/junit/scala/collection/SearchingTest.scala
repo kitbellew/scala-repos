@@ -20,7 +20,8 @@ class SearchingTest {
       def iterator = list.iterator
       def length = list.length
       def apply(idx: Int) = {
-        elementsAccessed += idx; list(idx)
+        elementsAccessed += idx;
+        list(idx)
       }
     }
 
@@ -44,7 +45,8 @@ class SearchingTest {
       def seq = vec
       def length = vec.length
       def apply(idx: Int) = {
-        elementsAccessed += idx; vec(idx)
+        elementsAccessed += idx;
+        vec(idx)
       }
     }
 

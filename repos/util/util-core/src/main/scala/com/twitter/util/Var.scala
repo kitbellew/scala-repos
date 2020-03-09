@@ -94,7 +94,8 @@ trait Var[+T] { self =>
 
   def join[U](other: Var[U]): Var[(T, U)] =
     for {
-      t <- self; u <- other
+      t <- self;
+      u <- other
     } yield (t, u)
 
   /**

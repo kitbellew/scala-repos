@@ -162,19 +162,26 @@ class InlinerIllegalAccessTest extends ClearAfterClass {
     }
 
     checkAccess(a, ACC_PUBLIC)
-    b.access &= ~ACC_PUBLIC; checkAccess(b, 0) // make it default access
-    c.access &= ~ACC_PUBLIC; c.access |= ACC_PROTECTED;
+    b.access &= ~ACC_PUBLIC;
+    checkAccess(b, 0) // make it default access
+    c.access &= ~ACC_PUBLIC;
+    c.access |= ACC_PROTECTED;
     checkAccess(
       c,
       ACC_PROTECTED
     ) // make it protected - scalac actually never emits PROTECTED in bytecode, see javaFlags in BTypesFromSymbols
     checkAccess(d, ACC_PRIVATE)
 
-    e.access |= ACC_STATIC; checkAccess(e, ACC_STATIC | ACC_PUBLIC)
-    f.access &= ~ACC_PUBLIC; f.access |= ACC_STATIC; checkAccess(f, ACC_STATIC)
-    g.access &= ~ACC_PUBLIC; g.access |= (ACC_STATIC | ACC_PROTECTED);
+    e.access |= ACC_STATIC;
+    checkAccess(e, ACC_STATIC | ACC_PUBLIC)
+    f.access &= ~ACC_PUBLIC;
+    f.access |= ACC_STATIC;
+    checkAccess(f, ACC_STATIC)
+    g.access &= ~ACC_PUBLIC;
+    g.access |= (ACC_STATIC | ACC_PROTECTED);
     checkAccess(g, ACC_STATIC | ACC_PROTECTED)
-    h.access |= ACC_STATIC; checkAccess(h, ACC_STATIC | ACC_PRIVATE)
+    h.access |= ACC_STATIC;
+    checkAccess(h, ACC_STATIC | ACC_PRIVATE)
 
     val List(raC, rbC, rcC, rdC, reC, rfC, rgC, rhC) =
       cCl.methods.asScala.toList.filter(_.name(0) == 'r').sortBy(_.name)
@@ -204,7 +211,8 @@ class InlinerIllegalAccessTest extends ClearAfterClass {
     // PUBLIC
 
     // public methods allowed everywhere
-    for (m <- Set(raC, reC); c <- allClasses) check(m, cCl, c, assertEmpty)
+    for (m <- Set(raC, reC);
+         c <- allClasses) check(m, cCl, c, assertEmpty)
 
     // DEFAULT ACCESS
 
@@ -240,6 +248,7 @@ class InlinerIllegalAccessTest extends ClearAfterClass {
 
     // privated method accesses can only be inlined in the same class
     for (m <- Set(rdC, rhC)) check(m, cCl, cCl, assertEmpty)
-    for (m <- Set(rdC, rhC); c <- allClasses.tail) check(m, cCl, c, cOrDOwner)
+    for (m <- Set(rdC, rhC);
+         c <- allClasses.tail) check(m, cCl, c, cOrDOwner)
   }
 }

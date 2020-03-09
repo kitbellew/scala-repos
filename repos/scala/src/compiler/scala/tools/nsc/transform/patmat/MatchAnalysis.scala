@@ -261,7 +261,8 @@ trait MatchApproximation
         later.reuses = Some(this)
       }
       val id = {
-        Test.currId += 1; Test.currId
+        Test.currId += 1;
+        Test.currId
       }
       override def toString = s"T${id}C($prop)"
     }

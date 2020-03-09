@@ -54,7 +54,8 @@ object DependantsTest extends Properties("Dependants") {
       val deps = Producer.dependenciesOf(prod)
       (Producer.transitiveDependenciesOf(prod) == deps) ==> {
         deps.forall {
-          case s @ Source(_) => true; case _ => false
+          case s @ Source(_) => true;
+          case _             => false
         }
       }
     }

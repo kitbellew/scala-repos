@@ -23,7 +23,8 @@ private object LatencyProfile {
     val size = latencies.size
     var i = rng.nextInt(size)
     () => {
-      i = i + 1; latencies(i % size)
+      i = i + 1;
+      latencies(i % size)
     }
   }
 

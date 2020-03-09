@@ -14,7 +14,8 @@ import org.scalatest.junit.JUnitRunner
 import scala.collection.immutable
 
 sealed private trait ZkOp {
-  type Res; val res = new Promise[Res]
+  type Res;
+  val res = new Promise[Res]
 }
 private object ZkOp {
   case class Exists(path: String) extends ZkOp {

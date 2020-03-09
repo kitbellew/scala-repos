@@ -236,7 +236,8 @@ trait Foldable[F[_]] { self =>
     foldLeft(fa, none[B]) {
       case (None, a) => some(f(a))
       case (Some(b), aa) =>
-        val bb = f(aa); some(if (Order[B].order(b, bb) == GT) b else bb)
+        val bb = f(aa);
+        some(if (Order[B].order(b, bb) == GT) b else bb)
     }
 
   /** The element `a` of `fa` which yields the greatest value of `f(a)`, or None if `fa` is empty. */
@@ -244,7 +245,8 @@ trait Foldable[F[_]] { self =>
     foldLeft(fa, none[(A, B)]) {
       case (None, a) => some(a -> f(a))
       case (Some(x @ (a, b)), aa) =>
-        val bb = f(aa); some(if (Order[B].order(b, bb) == GT) x else aa -> bb)
+        val bb = f(aa);
+        some(if (Order[B].order(b, bb) == GT) x else aa -> bb)
     } map (_._1)
 
   /** The smallest element of `fa`, or None if `fa` is empty. */
@@ -259,7 +261,8 @@ trait Foldable[F[_]] { self =>
     foldLeft(fa, none[B]) {
       case (None, a) => some(f(a))
       case (Some(b), aa) =>
-        val bb = f(aa); some(if (Order[B].order(b, bb) == LT) b else bb)
+        val bb = f(aa);
+        some(if (Order[B].order(b, bb) == LT) b else bb)
     }
 
   /** The element `a` of `fa` which yields the smallest value of `f(a)`, or None if `fa` is empty. */
@@ -267,7 +270,8 @@ trait Foldable[F[_]] { self =>
     foldLeft(fa, none[(A, B)]) {
       case (None, a) => some(a -> f(a))
       case (Some(x @ (a, b)), aa) =>
-        val bb = f(aa); some(if (Order[B].order(b, bb) == LT) x else aa -> bb)
+        val bb = f(aa);
+        some(if (Order[B].order(b, bb) == LT) x else aa -> bb)
     } map (_._1)
 
   def sumr[A](fa: F[A])(implicit A: Monoid[A]): A =

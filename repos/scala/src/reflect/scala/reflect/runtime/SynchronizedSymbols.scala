@@ -133,10 +133,13 @@ private[reflect] trait SynchronizedSymbols extends internal.Symbols {
     @volatile private[this] var _initialized = false
     @volatile private[this] var _initializationMask = TopLevelPickledFlags
     override def markFlagsCompleted(mask: Long): this.type = {
-      _initializationMask = _initializationMask & ~mask; this
+      _initializationMask = _initializationMask & ~mask;
+      this
     }
     override def markAllCompleted(): this.type = {
-      _initializationMask = 0L; _initialized = true; this
+      _initializationMask = 0L;
+      _initialized = true;
+      this
     }
 
     def gilSynchronizedIfNotThreadsafe[T](body: => T): T = {

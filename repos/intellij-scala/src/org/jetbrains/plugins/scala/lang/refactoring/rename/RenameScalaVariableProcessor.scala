@@ -129,7 +129,8 @@ class RenameScalaVariableProcessor
       editor: Editor,
       renameCallback: Pass[PsiElement]) {
     val named = element match {
-      case named: ScNamedElement => named; case _ => return
+      case named: ScNamedElement => named;
+      case _                     => return
     }
     RenameSuperMembersUtil.chooseAndProcessSuper(
       named,

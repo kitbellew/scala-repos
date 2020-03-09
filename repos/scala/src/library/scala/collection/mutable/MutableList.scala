@@ -75,7 +75,8 @@ class MutableList[A]
     *  @return   this $coll.
     */
   def +=:(elem: A): this.type = {
-    prependElem(elem); this
+    prependElem(elem);
+    this
   }
 
   /** Returns the length of this list.
@@ -154,7 +155,8 @@ class MutableList[A]
     *  @param elem  the element to append.
     */
   def +=(elem: A): this.type = {
-    appendElem(elem); this
+    appendElem(elem);
+    this
   }
 
   def clear() {

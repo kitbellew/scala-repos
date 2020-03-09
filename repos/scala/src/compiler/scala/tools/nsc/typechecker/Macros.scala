@@ -389,10 +389,12 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
     } else {
       def fail() = {
         if (macroDef != null) macroDef setFlag IS_ERROR;
-        macroDdef setType ErrorType; EmptyTree
+        macroDdef setType ErrorType;
+        EmptyTree
       }
       def success(macroImplRef: Tree) = {
-        bindMacroImpl(macroDef, macroImplRef); macroImplRef
+        bindMacroImpl(macroDef, macroImplRef);
+        macroImplRef
       }
 
       if (!typer.checkFeature(
@@ -452,7 +454,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
     val paramss = macroDef.paramss
     val treeInfo.Applied(core, targs, argss) = expandee
     val prefix = core match {
-      case Select(qual, _) => qual; case _ => EmptyTree
+      case Select(qual, _) => qual;
+      case _               => EmptyTree
     }
     val context = expandee.attachments
       .get[MacroRuntimeAttachment]
@@ -634,7 +637,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
     def onDelayed(expanded: Tree): Tree = expanded
     def onSkipped(expanded: Tree): Tree = expanded
     def onFailure(expanded: Tree): Tree = {
-      typer.infer.setError(expandee); expandee
+      typer.infer.setError(expandee);
+      expandee
     }
 
     def apply(desugared: Tree): Tree = {
@@ -891,7 +895,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
           val numErrors = reporter.ERROR.count
           def hasNewErrors = reporter.ERROR.count > numErrors
           val expanded = {
-            pushMacroContext(args.c); runtime(args)
+            pushMacroContext(args.c);
+            runtime(args)
           }
           if (hasNewErrors) MacroGeneratedTypeError(expandee)
           def validateResultingTree(expanded: Tree) = {
@@ -1068,7 +1073,8 @@ object MacrosStats {
 
 class Fingerprint private[Fingerprint] (val value: Int) extends AnyVal {
   def paramPos = {
-    assert(isTag, this); value
+    assert(isTag, this);
+    value
   }
   def isTag = value >= 0
   override def toString = this match {

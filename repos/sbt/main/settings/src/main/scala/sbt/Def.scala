@@ -84,7 +84,8 @@ object Def extends Init[Scope] with TaskMacroExtra {
     s"derived setting ${s.key.key.label}${positionString(s)}"
   private[this] def positionString(s: Setting[_]): String =
     s.positionString match {
-      case None => ""; case Some(pos) => s" defined at $pos"
+      case None      => "";
+      case Some(pos) => s" defined at $pos"
     }
 
   /**

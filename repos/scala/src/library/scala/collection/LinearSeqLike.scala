@@ -48,7 +48,9 @@ trait LinearSeqLike[+A, +Repr <: LinearSeqLike[A, Repr]]
     def hasNext: Boolean = !these.isEmpty
     def next(): A =
       if (hasNext) {
-        val result = these.head; these = these.tail; result
+        val result = these.head;
+        these = these.tail;
+        result
       } else Iterator.empty.next()
 
     override def toList: List[A] = {

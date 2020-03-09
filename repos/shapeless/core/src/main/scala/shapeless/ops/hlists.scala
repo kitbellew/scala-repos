@@ -46,7 +46,8 @@ object hlist {
         implicit isHCons: IsHCons[L]): Aux[L, isHCons.H, isHCons.T] = isHCons
 
     type Aux[L <: HList, H0, T0 <: HList] = IsHCons[L] {
-      type H = H0; type T = T0
+      type H = H0;
+      type T = T0
     }
     implicit def hlistIsHCons[H0, T0 <: HList]: Aux[H0 :: T0, H0, T0] =
       new IsHCons[H0 :: T0] {
@@ -881,7 +882,8 @@ object hlist {
       toSized
 
     type Aux[L <: HList, M[_], Lub0, N0 <: Nat] = ToSized[L, M] {
-      type Lub = Lub0; type N = N0
+      type Lub = Lub0;
+      type N = N0
     }
 
     implicit def hnilToSized[L <: HNil, M[_], T](implicit
@@ -1725,7 +1727,8 @@ object hlist {
       new Modifier[U :: T, U, V] {
         type Out = (U, V :: T)
         def apply(l: U :: T, f: U => V): Out = {
-          val u = l.head; (u, f(u) :: l.tail)
+          val u = l.head;
+          (u, f(u) :: l.tail)
         }
       }
 

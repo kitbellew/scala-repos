@@ -642,7 +642,9 @@ class SparkILoop(
         case "clear" :: Nil =>
           intp.executionWrapper match {
             case "" => "No execution wrapper is set."
-            case s  => intp.clearExecutionWrapper(); "Cleared execution wrapper."
+            case s =>
+              intp.clearExecutionWrapper();
+              "Cleared execution wrapper."
           }
         case wrapper :: Nil =>
           intp.typeOfExpression(wrapper) match {
@@ -712,7 +714,8 @@ class SparkILoop(
         def fn(): Boolean =
           try in.readYesOrNo(
             replayQuestionMessage, {
-              echo("\nYou must enter y or n."); fn()
+              echo("\nYou must enter y or n.");
+              fn()
             })
           catch {
             case _: RuntimeException => false
@@ -742,9 +745,11 @@ class SparkILoop(
       if (line eq null) false // assume null means EOF
       else
         command(line) match {
-          case Result(false, _)           => false
-          case Result(_, Some(finalLine)) => addReplay(finalLine); true
-          case _                          => true
+          case Result(false, _) => false
+          case Result(_, Some(finalLine)) =>
+            addReplay(finalLine);
+            true
+          case _ => true
         }
     }
     def innerLoop() {
@@ -1061,8 +1066,10 @@ class SparkILoop(
       case None         =>
         // some post-initialization
         chooseReader(settings) match {
-          case x: SparkJLineReader => addThunk(x.consoleReader.postInit); x
-          case x                   => x
+          case x: SparkJLineReader =>
+            addThunk(x.consoleReader.postInit);
+            x
+          case x => x
         }
     }
     lazy val tagOfSparkIMain =
@@ -1176,8 +1183,10 @@ class SparkILoop(
 
     // if they asked for no help and command is valid, we call the real main
     neededHelp() match {
-      case ""   => command.ok && process(command.settings)
-      case help => echoNoNL(help); true
+      case "" => command.ok && process(command.settings)
+      case help =>
+        echoNoNL(help);
+        true
     }
   }
 

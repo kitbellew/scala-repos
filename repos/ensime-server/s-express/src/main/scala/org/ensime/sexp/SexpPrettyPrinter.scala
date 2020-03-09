@@ -62,7 +62,8 @@ trait SexpPrettyPrinter extends SexpPrinter {
       sb.append('(')
       printSeq(
         els, {
-          sb.append("\n"); printIndent(sb, indent + Indent)
+          sb.append("\n");
+          printIndent(sb, indent + Indent)
         }) {
         print(_, sb, indent + Indent)
       }

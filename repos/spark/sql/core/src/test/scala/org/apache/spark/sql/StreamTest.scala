@@ -166,13 +166,15 @@ trait StreamTest extends QueryTest with Timeouts {
     def apply(message: String)(body: => Unit): Assert =
       new Assert(
         {
-          body; true
+          body;
+          true
         },
         message)
     def apply(body: => Unit): Assert =
       new Assert(
         {
-          body; true
+          body;
+          true
         },
         "")
   }
@@ -410,7 +412,8 @@ trait StreamTest extends QueryTest with Timeouts {
             val streamToAssert = Option(currentStream).getOrElse(lastStream)
             verify(
               {
-                a.run(); true
+                a.run();
+                true
               },
               s"Assert failed: ${a.message}")
 

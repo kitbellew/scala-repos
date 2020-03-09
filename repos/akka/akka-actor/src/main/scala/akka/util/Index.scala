@@ -203,7 +203,8 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
       val set = e.getValue()
       if (set ne null) {
         set.synchronized {
-          set.clear(); container.remove(e.getKey, emptySet)
+          set.clear();
+          container.remove(e.getKey, emptySet)
         }
       }
     }

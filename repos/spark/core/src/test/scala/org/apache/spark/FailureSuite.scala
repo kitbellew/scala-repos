@@ -94,7 +94,8 @@ class FailureSuite extends SparkFunSuite with LocalSparkContext {
     val data = sc
       .makeRDD(1 to 3)
       .map(x => {
-        throw new Exception; (x, x)
+        throw new Exception;
+        (x, x)
       })
       .groupByKey(3)
     intercept[SparkException] {

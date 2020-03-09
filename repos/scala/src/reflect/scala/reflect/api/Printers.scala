@@ -147,40 +147,52 @@ trait Printers { self: Universe =>
     protected var printMirrors = false
     protected var printPositions = false
     def withTypes: this.type = {
-      printTypes = true; this
+      printTypes = true;
+      this
     }
     def withoutTypes: this.type = {
-      printTypes = false; this
+      printTypes = false;
+      this
     }
     def withIds: this.type = {
-      printIds = true; this
+      printIds = true;
+      this
     }
     def withoutIds: this.type = {
-      printIds = false; this
+      printIds = false;
+      this
     }
     def withOwners: this.type = {
-      printOwners = true; this
+      printOwners = true;
+      this
     }
     def withoutOwners: this.type = {
-      printOwners = false; this
+      printOwners = false;
+      this
     }
     def withKinds: this.type = {
-      printKinds = true; this
+      printKinds = true;
+      this
     }
     def withoutKinds: this.type = {
-      printKinds = false; this
+      printKinds = false;
+      this
     }
     def withMirrors: this.type = {
-      printMirrors = true; this
+      printMirrors = true;
+      this
     }
     def withoutMirrors: this.type = {
-      printMirrors = false; this
+      printMirrors = false;
+      this
     }
     def withPositions: this.type = {
-      printPositions = true; this
+      printPositions = true;
+      this
     }
     def withoutPositions: this.type = {
-      printPositions = false; this
+      printPositions = false;
+      this
     }
   }
 

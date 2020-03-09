@@ -180,7 +180,8 @@ class DenseVectorTest extends FunSuite with Checkers {
 
     assert(x(0 until 5) === x)
     assert(try {
-      x(0 to 5); false
+      x(0 to 5);
+      false
     } catch {
       case _: Throwable => true
     })
@@ -648,7 +649,8 @@ class DenseVectorOps_ComplexTest
   }
 
   implicit def genScalar: Arbitrary[Complex] = Arbitrary {
-    for (r <- Arbitrary.arbitrary[Double]; i <- Arbitrary.arbitrary[Double])
+    for (r <- Arbitrary.arbitrary[Double];
+         i <- Arbitrary.arbitrary[Double])
       yield Complex(r % 100, i % 100)
   }
 }

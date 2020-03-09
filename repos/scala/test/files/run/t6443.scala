@@ -10,9 +10,11 @@ trait A {
 }
 object B extends A {
   def foo(d: String)(d2: d.type): D forSome {
-    type D <: S; type S <: Derived
+    type D <: S;
+    type S <: Derived
   } = {
-    d2.isEmpty; null
+    d2.isEmpty;
+    null
   } // Bridge method required here!
 }
 

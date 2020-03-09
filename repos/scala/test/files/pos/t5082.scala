@@ -14,5 +14,6 @@ object Wrap {
     class A
   }
   case class Test(a: Int, b: Int)(c: String) extends Something[Test.A]
-  val Test(x, y) = Test(1, 2)(""); (x + y).toString
+  val Test(x, y) = Test(1, 2)("");
+  (x + y).toString
 }

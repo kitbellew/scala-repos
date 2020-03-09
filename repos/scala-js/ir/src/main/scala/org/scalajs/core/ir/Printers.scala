@@ -64,7 +64,9 @@ object Printers {
         start: String,
         sep: String,
         end: String): Unit = {
-      print(start); indent(); println()
+      print(start);
+      indent();
+      println()
       var rest = ts
       while (rest.nonEmpty) {
         print(rest.head)
@@ -74,7 +76,9 @@ object Printers {
           println()
         }
       }
-      undent(); println(); print(end)
+      undent();
+      println();
+      print(end)
     }
 
     protected final def printRow(
@@ -99,9 +103,13 @@ object Printers {
           printColumn(trees, "{", ";", "}")
 
         case _ =>
-          print('{'); indent(); println()
+          print('{');
+          indent();
+          println()
           print(tree)
-          undent(); println(); print('}')
+          undent();
+          println();
+          print('}')
       }
     }
 
@@ -258,22 +266,29 @@ object Printers {
         case Match(selector, cases, default) =>
           print("match (")
           print(selector)
-          print(") {"); indent
+          print(") {");
+          indent
           for ((values, body) <- cases) {
             println()
-            printRow(values, "case ", " | ", ":"); indent; println()
+            printRow(values, "case ", " | ", ":");
+            indent;
+            println()
             print(body)
             print(";")
             undent
           }
           if (default != EmptyTree) {
             println()
-            print("default:"); indent; println()
+            print("default:");
+            indent;
+            println()
             print(default)
             print(";")
             undent
           }
-          undent; println(); print('}')
+          undent;
+          println();
+          print('}')
 
         case Debugger() =>
           print("debugger")
@@ -655,7 +670,9 @@ object Printers {
           print("{}")
 
         case JSObjectConstr(fields) =>
-          print('{'); indent; println()
+          print('{');
+          indent;
+          println()
           var rest = fields
           while (rest.nonEmpty) {
             print(rest.head._1)
@@ -667,7 +684,9 @@ object Printers {
               println()
             }
           }
-          undent; println(); print('}')
+          undent;
+          println();
+          print('}')
 
         case JSLinkingInfo() =>
           print("<linkinginfo>")
@@ -943,16 +962,19 @@ object Printers {
       printClassInfoHeader(classInfo)
 
       print("methods:")
-      indent(); println()
+      indent();
+      println()
       methods.foreach((mi: MethodInfo) => print(mi))
-      undent(); println()
+      undent();
+      println()
     }
 
     def print(methodInfo: MethodInfo): Unit = {
       import methodInfo._
       printEscapeJS(encodedName, out)
       print(":")
-      indent(); println()
+      indent();
+      println()
 
       if (isStatic) {
         print("isStatic: ")
@@ -971,7 +993,8 @@ object Printers {
       }
       if (methodsCalled.nonEmpty) {
         print("methodsCalled:")
-        indent(); println()
+        indent();
+        println()
         val iter = methodsCalled.iterator
         while (iter.hasNext) {
           val (cls, callers) = iter.next()
@@ -980,11 +1003,13 @@ object Printers {
           if (iter.hasNext)
             println()
         }
-        undent(); println()
+        undent();
+        println()
       }
       if (methodsCalledStatically.nonEmpty) {
         print("methodsCalledStatically:")
-        indent(); println()
+        indent();
+        println()
         val iter = methodsCalledStatically.iterator
         while (iter.hasNext) {
           val (cls, callers) = iter.next
@@ -993,11 +1018,13 @@ object Printers {
           if (iter.hasNext)
             println()
         }
-        undent(); println()
+        undent();
+        println()
       }
       if (staticMethodsCalled.nonEmpty) {
         print("staticMethodsCalled:")
-        indent(); println()
+        indent();
+        println()
         val iter = staticMethodsCalled.iterator
         while (iter.hasNext) {
           val (cls, callers) = iter.next()
@@ -1006,7 +1033,8 @@ object Printers {
           if (iter.hasNext)
             println()
         }
-        undent(); println()
+        undent();
+        println()
       }
       if (instantiatedClasses.nonEmpty)
         printRow(instantiatedClasses, "instantiatedClasses: [", ", ", "]")
@@ -1017,7 +1045,8 @@ object Printers {
       if (accessedClassData.nonEmpty)
         printRow(accessedClassData, "accessedClassData: [", ", ", "]")
 
-      undent(); println()
+      undent();
+      println()
     }
 
     protected def printRow(

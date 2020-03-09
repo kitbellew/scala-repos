@@ -1,6 +1,7 @@
 object Test extends App {
   def foo(bar: String = {
-    def foo: String = macro Impls.foo; foo
+    def foo: String = macro Impls.foo;
+    foo
   }) = println(bar)
 
   foo()

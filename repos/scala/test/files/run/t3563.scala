@@ -6,7 +6,8 @@ object Test {
     val setseq = Set(1, 2, 3, 4).toSeq
     setseq
       .map(n => {
-        sum += n; n * n
+        sum += n;
+        n * n
       })
       .head
     assert(sum == 10)
@@ -15,7 +16,8 @@ object Test {
     val mapseq = Map(1 -> 1, 2 -> 2, 3 -> 3, 4 -> 4).toSeq
     mapseq
       .map(n => {
-        sum += n._1; (n._1 + n._1, n._2 * n._2)
+        sum += n._1;
+        (n._1 + n._1, n._2 * n._2)
       })
       .head
     assert(sum == 10)

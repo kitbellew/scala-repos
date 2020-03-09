@@ -4,7 +4,8 @@ object Test {
     class Parent(f: Foo)
     class Child
         extends Parent({
-          val x = new Foo {}; x
+          val x = new Foo {};
+          x
         })
     new Child
   }

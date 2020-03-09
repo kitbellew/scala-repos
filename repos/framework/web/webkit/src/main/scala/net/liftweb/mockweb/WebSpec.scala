@@ -185,7 +185,9 @@ abstract class WebSpec(boot: () => Any = () => {})
       * prior to initialization.
       */
     def withMods(f: MockHttpServletRequest => Unit): T = req match {
-      case r: MockHttpServletRequest => f(r); this
+      case r: MockHttpServletRequest =>
+        f(r);
+        this
       case _ =>
         throw new IllegalArgumentException(
           "We can only mutate MockHttpServletRequest instances")

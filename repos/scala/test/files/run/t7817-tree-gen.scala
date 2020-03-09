@@ -10,7 +10,8 @@ package testSep {
 }
 package testSep2 {
   object `package` {
-    object PO; def bar = 0
+    object PO;
+    def bar = 0
   }
 }
 class DSep {

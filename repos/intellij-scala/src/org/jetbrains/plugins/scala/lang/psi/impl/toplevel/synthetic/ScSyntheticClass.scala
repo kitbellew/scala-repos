@@ -150,7 +150,8 @@ class ScSyntheticClass(
       case _: ImplicitProcessor => //do nothing, there is no implicit synthetic methods
       case _: BaseProcessor     =>
         //method toString and hashCode exists in java.lang.Object
-        for (p <- methods; method <- p._2) {
+        for (p <- methods;
+             method <- p._2) {
           if (!processor.execute(method, state)) return false
         }
       case _ => //do not execute synthetic methods to not Scala processors.
@@ -344,10 +345,12 @@ class SyntheticClasses(project: Project)
     registerNumericClass(registerClass(Double, "Double"))
 
     for (nc <- numeric) {
-      for (nc1 <- numeric; op <- numeric_comp_ops)
+      for (nc1 <- numeric;
+           op <- numeric_comp_ops)
         nc.addMethod(
           new ScSyntheticFunction(manager, op, Boolean, Seq(Seq(nc1.t))))
-      for (nc1 <- numeric; op <- numeric_arith_ops)
+      for (nc1 <- numeric;
+           op <- numeric_arith_ops)
         nc.addMethod(
           new ScSyntheticFunction(
             manager,
@@ -374,7 +377,8 @@ class SyntheticClasses(project: Project)
     }
 
     for (ic <- integer) {
-      for (ic1 <- integer; op <- bitwise_bin_ops)
+      for (ic1 <- integer;
+           op <- bitwise_bin_ops)
         ic.addMethod(
           new ScSyntheticFunction(
             manager,
@@ -580,14 +584,17 @@ object Unit
       override def getQualifiedName = "scala." + name
     }
 
-    all += ((name, clazz)); clazz
+    all += ((name, clazz));
+    clazz
   }
 
   def registerIntegerClass(clazz: ScSyntheticClass) = {
-    integer += clazz; clazz
+    integer += clazz;
+    clazz
   }
   def registerNumericClass(clazz: ScSyntheticClass) = {
-    numeric += clazz; clazz
+    numeric += clazz;
+    clazz
   }
 
   def getAll: Iterable[ScSyntheticClass] = all.values

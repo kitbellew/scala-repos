@@ -494,7 +494,8 @@ trait Names extends api.Names {
     def isOperatorName: Boolean = decode != toString // used by ide
     def longString: String = nameKind + " " + decode
     def debugString = {
-      val s = decode; if (isTypeName) s + "!" else s
+      val s = decode;
+      if (isTypeName) s + "!" else s
     }
   }
 

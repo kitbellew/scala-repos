@@ -13,7 +13,8 @@ class AutoUpdater[M, K, V](val theMap: M, default: => V)(
   override def update(k: K, v: V) = theMap.update(k, v);
 
   def +=(kv: (K, V)): this.type = {
-    theMap += kv; this
+    theMap += kv;
+    this
   };
 
   def get(key: K) = theMap.get(key);
@@ -21,7 +22,8 @@ class AutoUpdater[M, K, V](val theMap: M, default: => V)(
   def iterator = theMap.iterator
 
   def -=(key: K): this.type = {
-    theMap -= key; this
+    theMap -= key;
+    this
   }
 
   override def size = theMap.size;

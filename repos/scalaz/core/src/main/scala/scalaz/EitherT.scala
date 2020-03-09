@@ -244,7 +244,8 @@ object EitherT extends EitherTInstances {
         type A = AB
       },
       u2: Unapply2[Bifunctor, AB] {
-        type A = A0; type B = B0
+        type A = A0;
+        type B = B0
       },
       l: Leibniz.===[AB, A0 \/ B0]): EitherT[u1.M, A0, B0] =
     eitherT(l.subst[u1.M](u1(fab)))

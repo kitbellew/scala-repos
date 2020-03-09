@@ -220,7 +220,8 @@ final case class PreRestartException private[akka] (
       "exception in preRestart(" +
         (if (originalCause == null) "null" else originalCause.getClass) + ", " +
         (messageOption match {
-          case Some(m: AnyRef) ⇒ m.getClass; case _ ⇒ "None"
+          case Some(m: AnyRef) ⇒ m.getClass;
+          case _ ⇒ "None"
         }) +
         ")",
       cause)

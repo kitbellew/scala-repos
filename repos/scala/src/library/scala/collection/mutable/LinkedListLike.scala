@@ -127,7 +127,8 @@ trait LinkedListLike[A, This <: Seq[A] with LinkedListLike[A, This]]
     }
     if (isEmpty) that
     else {
-      loop(repr); repr
+      loop(repr);
+      repr
     }
   }
 

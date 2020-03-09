@@ -8,7 +8,8 @@ package tools
 
 package object cmd {
   def returning[T](x: T)(f: T => Unit): T = {
-    f(x); x
+    f(x);
+    x
   }
 
   // make some language features in this package compile without warning

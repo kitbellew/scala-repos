@@ -64,8 +64,16 @@ class Performance(
 
     def attemptGC() = {
       import System.gc
-      gc; gc; gc; gc; gc;
-      gc; gc; gc; gc; gc;
+      gc;
+      gc;
+      gc;
+      gc;
+      gc;
+      gc;
+      gc;
+      gc;
+      gc;
+      gc;
       gc
     }
 

@@ -69,7 +69,8 @@ object PackExamples extends App {
 
     object IsPCons {
       type Aux[F[_], L <: HList, H0, T0 <: HList] = IsPCons[F, L] {
-        type H = H0; type T = T0
+        type H = H0;
+        type T = T0
       }
       implicit def hlistIsPCons[F[_], H0, T0 <: HList]
           : Aux[F, H0 :: T0, H0, T0] =

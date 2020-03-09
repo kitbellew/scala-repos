@@ -191,7 +191,8 @@ private[util] class SparkShutdownHookManager {
     while ({
       nextHook = hooks.synchronized {
         hooks.poll()
-      }; nextHook != null
+      };
+      nextHook != null
     }) {
       Try(Utils.logUncaughtExceptions(nextHook.run()))
     }

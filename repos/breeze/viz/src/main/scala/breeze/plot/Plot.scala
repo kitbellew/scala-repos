@@ -58,7 +58,8 @@ class Plot() {
 
   def refresh() {
     var series = 0
-    for ((d, r) <- datasets zip renderers; s <- 0 until d.getSeriesCount) {
+    for ((d, r) <- datasets zip renderers;
+         s <- 0 until d.getSeriesCount) {
       plot.setDataset(series, d)
       plot.setRenderer(series, r)
       series += 1
@@ -236,7 +237,8 @@ object Plot {
   val integerTickUnits = {
     val units = new TickUnits()
     val df = new java.text.DecimalFormat("0")
-    for (b <- List(1, 2, 5); e <- List(0, 1, 2, 3, 4, 5, 6, 7, 8)) {
+    for (b <- List(1, 2, 5);
+         e <- List(0, 1, 2, 3, 4, 5, 6, 7, 8)) {
       units.add(new NumberTickUnit(b * math.pow(10, e).toInt, df))
     }
     units

@@ -117,7 +117,8 @@ class Tools[C <: Context](val c: C) {
     // but what we can probably do is to additionally look up custom picklers/unpicklers of for specific `D[X]`
     val baseSym = tpe.typeSymbol.asType
     val baseTargs = tpe match {
-      case TypeRef(_, _, args) => args; case _ => Nil
+      case TypeRef(_, _, args) => args;
+      case _                   => Nil
     }
 
     def sourcepathScan(): List[Symbol] = {

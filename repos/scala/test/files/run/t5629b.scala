@@ -27,9 +27,11 @@ object Test extends App {
     override def applyOrElse[A1 <: T](x: A1, default: A1 => Unit): Unit = {
       println("newPF.applyOrElse entered...")
       if (x != test) {
-        println("ok"); ()
+        println("ok");
+        ()
       } else {
-        println("default"); default(x)
+        println("default");
+        default(x)
       }
     }
   }

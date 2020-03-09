@@ -3,7 +3,8 @@ object Test extends App {
     1,
     Stream.cons(
       {
-        println("ouch"); 2
+        println("ouch");
+        2
       },
       Stream.empty))
   println(res0.take(1).force)

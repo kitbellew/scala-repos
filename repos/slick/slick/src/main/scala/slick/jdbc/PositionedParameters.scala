@@ -14,88 +14,122 @@ class PositionedParameters(val ps: PreparedStatement) {
 
   /** Set the next parameter to SQL NULL with the specified SQL type code. */
   def setNull(sqlType: Int) {
-    val npos = pos + 1; ps.setNull(npos, sqlType); pos = npos
+    val npos = pos + 1;
+    ps.setNull(npos, sqlType);
+    pos = npos
   }
 
   /** Set the next parameter */
   def setBoolean(value: Boolean) {
-    val npos = pos + 1; ps.setBoolean(npos, value); pos = npos
+    val npos = pos + 1;
+    ps.setBoolean(npos, value);
+    pos = npos
   }
 
   /** Set the next parameter */
   def setBlob(value: Blob) {
-    val npos = pos + 1; ps.setBlob(npos, value); pos = npos
+    val npos = pos + 1;
+    ps.setBlob(npos, value);
+    pos = npos
   }
 
   /** Set the next parameter */
   def setByte(value: Byte) {
-    val npos = pos + 1; ps.setByte(npos, value); pos = npos
+    val npos = pos + 1;
+    ps.setByte(npos, value);
+    pos = npos
   }
 
   /** Set the next parameter */
   def setBytes(value: Array[Byte]) {
-    val npos = pos + 1; ps.setBytes(npos, value); pos = npos
+    val npos = pos + 1;
+    ps.setBytes(npos, value);
+    pos = npos
   }
 
   /** Set the next parameter */
   def setClob(value: Clob) {
-    val npos = pos + 1; ps.setClob(npos, value); pos = npos
+    val npos = pos + 1;
+    ps.setClob(npos, value);
+    pos = npos
   }
 
   /** Set the next parameter */
   def setDate(value: Date) {
-    val npos = pos + 1; ps.setDate(npos, value); pos = npos
+    val npos = pos + 1;
+    ps.setDate(npos, value);
+    pos = npos
   }
 
   /** Set the next parameter */
   def setDouble(value: Double) {
-    val npos = pos + 1; ps.setDouble(npos, value); pos = npos
+    val npos = pos + 1;
+    ps.setDouble(npos, value);
+    pos = npos
   }
 
   /** Set the next parameter */
   def setFloat(value: Float) {
-    val npos = pos + 1; ps.setFloat(npos, value); pos = npos
+    val npos = pos + 1;
+    ps.setFloat(npos, value);
+    pos = npos
   }
 
   /** Set the next parameter */
   def setInt(value: Int) {
-    val npos = pos + 1; ps.setInt(npos, value); pos = npos
+    val npos = pos + 1;
+    ps.setInt(npos, value);
+    pos = npos
   }
 
   /** Set the next parameter */
   def setLong(value: Long) {
-    val npos = pos + 1; ps.setLong(npos, value); pos = npos
+    val npos = pos + 1;
+    ps.setLong(npos, value);
+    pos = npos
   }
 
   /** Set the next parameter */
   def setShort(value: Short) {
-    val npos = pos + 1; ps.setShort(npos, value); pos = npos
+    val npos = pos + 1;
+    ps.setShort(npos, value);
+    pos = npos
   }
 
   /** Set the next parameter */
   def setString(value: String) {
-    val npos = pos + 1; ps.setString(npos, value); pos = npos
+    val npos = pos + 1;
+    ps.setString(npos, value);
+    pos = npos
   }
 
   /** Set the next parameter */
   def setTime(value: Time) {
-    val npos = pos + 1; ps.setTime(npos, value); pos = npos
+    val npos = pos + 1;
+    ps.setTime(npos, value);
+    pos = npos
   }
 
   /** Set the next parameter */
   def setTimestamp(value: Timestamp) {
-    val npos = pos + 1; ps.setTimestamp(npos, value); pos = npos
+    val npos = pos + 1;
+    ps.setTimestamp(npos, value);
+    pos = npos
   }
 
   /** Set the next parameter */
   def setBigDecimal(value: BigDecimal) {
-    val npos = pos + 1; ps.setBigDecimal(npos, value.bigDecimal); pos = npos
+    val npos = pos + 1;
+    ps.setBigDecimal(npos, value.bigDecimal);
+    pos = npos
   }
 
   /** Set the next parameter to an object of a driver-specific type that
     * corresponds to the specified SQL type code. */
   def setObject(value: AnyRef, sqlType: Int) {
-    val npos = pos + 1; ps.setObject(npos, value, sqlType); pos = npos
+    val npos = pos + 1;
+    ps.setObject(npos, value, sqlType);
+    pos = npos
   }
 
   /** Set the next parameter to the specified value or a properly typed SQL NULL */

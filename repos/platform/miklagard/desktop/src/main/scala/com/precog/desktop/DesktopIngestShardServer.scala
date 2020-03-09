@@ -302,7 +302,8 @@ object LaunchLabcoat {
             .runGUI(config)
             .map {
               _.map { _ =>
-                launchBrowser(config); println("Launch complete")
+                launchBrowser(config);
+                println("Launch complete")
               }
             }
             .getOrElse {

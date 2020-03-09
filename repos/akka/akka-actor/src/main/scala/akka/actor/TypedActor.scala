@@ -49,7 +49,9 @@ trait TypedActorFactory {
     */
   def stop(proxy: AnyRef): Boolean = getActorRefFor(proxy) match {
     case null ⇒ false
-    case ref ⇒ ref.asInstanceOf[InternalActorRef].stop; true
+    case ref ⇒
+      ref.asInstanceOf[InternalActorRef].stop;
+      true
   }
 
   /**
@@ -58,7 +60,9 @@ trait TypedActorFactory {
     */
   def poisonPill(proxy: AnyRef): Boolean = getActorRefFor(proxy) match {
     case null ⇒ false
-    case ref ⇒ ref ! PoisonPill; true
+    case ref ⇒
+      ref ! PoisonPill;
+      true
   }
 
   /**
@@ -503,7 +507,8 @@ object TypedActor
           import akka.pattern.ask
           MethodCall(method, args) match {
             case m if m.isOneWay ⇒
-              actor ! m; null //Null return value
+              actor ! m;
+              null //Null return value
             case m if m.returnsFuture ⇒
               ask(actor, m)(timeout) map {
                 case NullResponse ⇒ null

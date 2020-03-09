@@ -23,7 +23,8 @@ Coll <: scala.collection.Set[A] with scala.collection.SetLike[A, Coll]](
     extends ReusableBuilder[A, Coll] {
   protected var elems: Coll = empty
   def +=(x: A): this.type = {
-    elems = elems + x; this
+    elems = elems + x;
+    this
   }
   def clear() {
     elems = empty

@@ -60,10 +60,12 @@ class FuturePoolTest extends FunSuite with Eventually {
     val source2 = new Promise[Int]
 
     val result1 = pool {
-      runCount.incrementAndGet(); Await.result(source1)
+      runCount.incrementAndGet();
+      Await.result(source1)
     }
     val result2 = pool {
-      runCount.incrementAndGet(); Await.result(source2)
+      runCount.incrementAndGet();
+      Await.result(source2)
     }
 
     result2.raise(new Exception)

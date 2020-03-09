@@ -7,7 +7,8 @@ object Test {
 
   class Foo(val name: String, val n: Int) {
     override def equals(obj: Any): Boolean = obj match {
-      case other: Foo => name == other.name; case _ => false
+      case other: Foo => name == other.name;
+      case _          => false
     }
     override def hashCode = name.##
     override def toString = "Foo(" + name + ", " + n + ")"

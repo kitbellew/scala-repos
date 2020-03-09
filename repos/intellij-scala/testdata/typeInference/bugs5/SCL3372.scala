@@ -3,7 +3,8 @@ object A {
   def qux[S <: CharSequence] {}
 
   def bar[T](f: {
-    def foo[S <: T]; def qux[S <: T]
+    def foo[S <: T];
+    def qux[S <: T]
   }): T = {
     /*start*/
     bar(A).toLowerCase /*end*/

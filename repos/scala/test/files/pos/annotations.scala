@@ -14,15 +14,18 @@ object Test {
   val x = 1
   @ann(x) val a = ()
   @ann({
-    val yy = 2; yy
+    val yy = 2;
+    yy
   }) val b = ()
   val bb: Int @ann({
-    val yy = 2; yy
+    val yy = 2;
+    yy
   }) = 10
 
   def c: Int @ann(x) = 1
   def d: String @ann({
-    val z = 0; z - 1
+    val z = 0;
+    z - 1
   }) = "2"
   def e[@deprecated T, U](x: T) = x
 

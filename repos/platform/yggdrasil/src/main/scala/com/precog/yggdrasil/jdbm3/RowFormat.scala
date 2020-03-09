@@ -469,9 +469,11 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
 
       @inline @tailrec
       def rec(i: Int, xs: List[CValue]): Unit = xs match {
-        case CUndefined :: xs => RawBitSet.set(bits, i); rec(i + 1, xs)
-        case _ :: xs          => rec(i + 1, xs)
-        case Nil              =>
+        case CUndefined :: xs =>
+          RawBitSet.set(bits, i);
+          rec(i + 1, xs)
+        case _ :: xs => rec(i + 1, xs)
+        case Nil     =>
       }
       rec(0, xs)
 

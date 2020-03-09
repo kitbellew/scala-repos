@@ -4,7 +4,8 @@ abstract class BulkSearch {
   type Corr <: Correspondence[R]
 
   def searchFor(input: Rel): Mapping[Corr] = {
-    println("BulkSearch.searchFor called."); null
+    println("BulkSearch.searchFor called.");
+    null
   }
 }
 

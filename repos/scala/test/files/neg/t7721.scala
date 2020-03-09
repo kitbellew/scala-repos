@@ -38,10 +38,12 @@ trait A {
 
 trait B extends A {
   type Foo <: {
-    def bippy: Int; def dingo: Int
+    def bippy: Int;
+    def dingo: Int
   }
   type Bar <: {
-    def barry: Int; def bongo: Int
+    def barry: Int;
+    def bongo: Int
   }
 
   override implicit def barTag: scala.reflect.ClassTag[Bar]

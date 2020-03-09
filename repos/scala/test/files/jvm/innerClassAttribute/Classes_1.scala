@@ -109,7 +109,8 @@ class A18 {
       new A6 {}
       val y = {
         if ((new Object).hashCode() == 1) {
-          class B {}; new B
+          class B {};
+          new B
         } else 2
         if ((new Object).hashCode() == 1) new A6 {}
         else "haifish"
@@ -206,19 +207,23 @@ class SI_9105 {
   val fun = (s: String) => {
     class A //        SI_9105           null
     def m: Object = {
-      class B; new B
+      class B;
+      new B
     } //        SI_9105            m$1
     val f: Object = {
-      class C; new C
+      class C;
+      new C
     } //        SI_9105           null
   }
   def met = (s: String) => {
     class D //        SI_9105            met
     def m: Object = {
-      class E; new E
+      class E;
+      new E
     } //        SI_9105            m$1
     val f: Object = {
-      class F; new F
+      class F;
+      new F
     } //        SI_9105            met
   }
 
@@ -227,20 +232,24 @@ class SI_9105 {
   val bnV = byName {
     class G //        SI_9105           null
     def m: Object = {
-      class H; new H
+      class H;
+      new H
     } //        SI_9105            m$1
     val f: Object = {
-      class I; new I
+      class I;
+      new I
     } //        SI_9105           null
     ""
   }
   def bnM = byName {
     class J //        SI_9105            bnM
     def m: Object = {
-      class K; new K
+      class K;
+      new K
     } //        SI_9105            m$1
     val f: Object = {
-      class L; new L
+      class L;
+      new L
     } //        SI_9105            bnM
     ""
   }
@@ -270,12 +279,14 @@ trait SI_9124 {
   val f1 = {
     new A {
       def f5 = 0
-    }; 1
+    };
+    1
   } // encl class SI_9124, no encl meth
   private val f2 = {
     new A {
       def f6 = 0
-    }; 1
+    };
+    1
   } // like above
 }
 
@@ -287,7 +298,8 @@ trait ImplClassesAreTopLevel {
   {
     trait B2 {
       def f = 1
-    }; new B2 {}
+    };
+    new B2 {}
   }
   val m = {
     trait B3 {
@@ -305,10 +317,12 @@ trait ImplClassesAreTopLevel {
 
 class SpecializedClassesAreTopLevel {
   // all specialized classes are top-level
-  class A[@specialized(Int) T]; new A[Int]
+  class A[@specialized(Int) T];
+  new A[Int]
 
   object T {
-    class B[@specialized(Int) T]; new B[Int]
+    class B[@specialized(Int) T];
+    new B[Int]
   }
 
   // these crash the compiler, SI-7625
@@ -345,7 +359,8 @@ object NestedInValueClass {
     // A$ has InnerClass entries for B, C, A, A$. Also for the closures above, because they are referenced in A$'s bytecode.
     class B // member class of A$
     def f = {
-      class C; new C
+      class C;
+      new C
     } // outer class A$, outer method f
   }
 }

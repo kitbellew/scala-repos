@@ -322,9 +322,11 @@ class KMeans private (
             }
           }
 
-          val contribs = for (i <- 0 until runs; j <- 0 until k) yield {
-            ((i, j), (sums(i)(j), counts(i)(j)))
-          }
+          val contribs =
+            for (i <- 0 until runs;
+                 j <- 0 until k) yield {
+              ((i, j), (sums(i)(j), counts(i)(j)))
+            }
           contribs.iterator
         }
         .reduceByKey(mergeContribs)

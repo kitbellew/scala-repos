@@ -80,7 +80,8 @@ private[akka] class RoutedActorCell(
       stopChild: Boolean): Unit = {
     val r = _router
     val newRoutees = routees.foldLeft(r.routees) { (xs, x) ⇒
-      unwatch(x); xs.filterNot(_ == x)
+      unwatch(x);
+      xs.filterNot(_ == x)
     }
     _router = r.withRoutees(newRoutees)
     if (stopChild) routees foreach stopIfChild

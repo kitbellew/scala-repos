@@ -350,7 +350,8 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
 
   def unit(code: String) = newCompilationUnit(code)
   def trees(code: String) = parse(code) match {
-    case parse.Success(trees) => trees; case _ => Nil
+    case parse.Success(trees) => trees;
+    case _                    => Nil
   }
 
   override def toString = s"""

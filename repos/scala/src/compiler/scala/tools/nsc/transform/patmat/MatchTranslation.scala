@@ -176,7 +176,9 @@ trait MatchTranslation {
         case Literal(Constant(_)) | Ident(_) | Select(_, _) | This(_) =>
           equalityTestStep()
         case Alternative(alts) => alternativesStep(alts)
-        case _                 => reporter.error(pos, unsupportedPatternMsg); noStep()
+        case _ =>
+          reporter.error(pos, unsupportedPatternMsg);
+          noStep()
       }
       def translate(): List[TreeMaker] = nextStep() merge (_.translate())
 

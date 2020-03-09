@@ -1143,7 +1143,9 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
             "\n",
             "")
         } catch {
-          case t: Exception => devWarning("" + t); "<Cannot read source file>"
+          case t: Exception =>
+            devWarning("" + t);
+            "<Cannot read source file>"
         }
 
       val info1 = formatExplain(
@@ -1226,7 +1228,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       def +=(cu: CompilationUnit): this.type = {
         synchronized {
           underlying += cu
-        }; this
+        };
+        this
       }
       def head: CompilationUnit = synchronized {
         underlying.head
@@ -1330,7 +1333,9 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         components.foldLeft(NoPhase: Phase)((prev, c) => c newPhase prev)
       // rewind (Iterator.iterate(last)(_.prev) dropWhile (_.prev ne NoPhase)).next
       val first = {
-        var p = last; while (p.prev ne NoPhase) p = p.prev; p
+        var p = last;
+        while (p.prev ne NoPhase) p = p.prev;
+        p
       }
       val ss = settings
 

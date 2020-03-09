@@ -237,7 +237,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
   }
 
   private def checkNoOutstanding(rmap: ResponseMap): Unit =
-    for ((_, rs) <- rmap.toList; r <- rs) {
+    for ((_, rs) <- rmap.toList;
+         r <- rs) {
       debugLog("ERROR: missing response, request will be discarded")
       r raise new MissingResponse
     }
@@ -256,7 +257,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
     unitOfFile.getOrElse(
       source.file, {
         println("precondition violated: " + source + " is not loaded");
-        new Exception().printStackTrace(); new RichCompilationUnit(source)
+        new Exception().printStackTrace();
+        new RichCompilationUnit(source)
       })
 
   /** Work through toBeRemoved list to remove any units.
@@ -470,7 +472,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
                 debugLog("ask finished" + timeStep)
                 interruptsEnabled = true
               }
-              loop = true; break
+              loop = true;
+              break
             case _ =>
           }
 
@@ -510,8 +513,10 @@ with ContextTrees with RichCompilationUnits with Picklers {
                   throw ShutdownReq
                 }
 
-            case Some(ex: Throwable) => log.flush(); throw ex
-            case _                   =>
+            case Some(ex: Throwable) =>
+              log.flush();
+              throw ex
+            case _ =>
           }
 
           lastWasReload = false
@@ -583,7 +588,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
     allSources = allSources filter (s => unitOfFile contains (s.file))
 
     // ensure all loaded units are parsed
-    for (s <- allSources; unit <- getUnit(s)) {
+    for (s <- allSources;
+         unit <- getUnit(s)) {
       // checkForMoreWork(NoPosition)  // disabled, as any work done here would be in an inconsistent state
       ensureUpToDate(unit)
       parseAndEnter(unit)
@@ -600,7 +606,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
     }
 
     // ensure all loaded units are typechecked
-    for (s <- allSources; if !ignoredFiles(s.file); unit <- getUnit(s)) {
+    for (s <- allSources; if !ignoredFiles(s.file);
+         unit <- getUnit(s)) {
       try {
         if (!unit.isUpToDate)
           if (unit.problems.isEmpty || !settings.YpresentationStrict)
@@ -659,9 +666,11 @@ with ContextTrees with RichCompilationUnits with Picklers {
     */
   private def serviceParsedEntered() {
     var atOldRun = true
-    for ((source, rs) <- getParsedEnteredResponses; r <- rs) {
+    for ((source, rs) <- getParsedEnteredResponses;
+         r <- rs) {
       if (atOldRun) {
-        newTyperRun(); atOldRun = false
+        newTyperRun();
+        atOldRun = false
       }
       getParsedEnteredNow(source, r)
     }
@@ -1315,7 +1324,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
     private val CamelRegex = "([A-Z][^A-Z]*)".r
     private def camelComponents(s: String): List[String] = {
       CamelRegex.findAllIn("X" + s).toList match {
-        case head :: tail => head.drop(1) :: tail; case Nil => Nil
+        case head :: tail => head.drop(1) :: tail;
+        case Nil          => Nil
       }
     }
     def camelMatch(entered: Name): Name => Boolean = {

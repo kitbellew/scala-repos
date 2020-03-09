@@ -249,7 +249,8 @@ class VecCheck extends Specification with ScalaCheck {
         var c = 0
         val exp = v.contents.takeWhile { (v: Double) =>
           v.isNaN || {
-            c += 1; c <= 3
+            c += 1;
+            c <= 3
           }
         }
         res must_== Vec(exp).count

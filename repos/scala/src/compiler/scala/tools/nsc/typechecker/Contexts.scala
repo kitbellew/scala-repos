@@ -1309,7 +1309,8 @@ trait Contexts { self: Analyzer =>
             imports = imp1 :: imports.tail.tail
           }
           def imp2wins() = {
-            impSym = other; imports = imports.tail
+            impSym = other;
+            imports = imports.tail
           }
 
           if (!other.exists) // imp1 wins; drop imp2 and continue.
@@ -1513,10 +1514,12 @@ trait Contexts { self: Analyzer =>
       mutable.LinkedHashSet
         .empty[A] // Important to use LinkedHS for stable results.
     final protected def errorBuffer = {
-      if (_errorBuffer == null) _errorBuffer = newBuffer; _errorBuffer
+      if (_errorBuffer == null) _errorBuffer = newBuffer;
+      _errorBuffer
     }
     final protected def warningBuffer = {
-      if (_warningBuffer == null) _warningBuffer = newBuffer; _warningBuffer
+      if (_warningBuffer == null) _warningBuffer = newBuffer;
+      _warningBuffer
     }
 
     final def errors: immutable.Seq[Error] = errorBuffer.toVector
@@ -1530,7 +1533,8 @@ trait Contexts { self: Analyzer =>
     // null references to buffers instead of clearing them,
     // as the buffers may be shared between different reporters
     final def clearAll(): Unit = {
-      _errorBuffer = null; _warningBuffer = null
+      _errorBuffer = null;
+      _warningBuffer = null
     }
     final def clearAllErrors(): Unit = {
       _errorBuffer = null

@@ -680,6 +680,7 @@ trait TestPlatform extends ManagedPlatform { self =>
 
   def startup = Promise.successful(true)
   def shutdown = Future {
-    actorSystem.shutdown; true
+    actorSystem.shutdown;
+    true
   }
 }

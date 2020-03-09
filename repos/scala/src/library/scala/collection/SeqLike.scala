@@ -133,7 +133,8 @@ trait SeqLike[+A, +Repr]
     var i = length - 1
     val it = reverseIterator
     while (it.hasNext && {
-             val elem = it.next(); (i > end || !p(elem))
+             val elem = it.next();
+             (i > end || !p(elem))
            }) i -= 1
     i
   }
@@ -228,7 +229,8 @@ trait SeqLike[+A, +Repr]
 
       /* Calculate this result. */
       val buf = self.newBuilder
-      for (k <- 0 until nums.length; j <- 0 until nums(k))
+      for (k <- 0 until nums.length;
+           j <- 0 until nums(k))
         buf += elms(offs(k) + j)
       val res = buf.result()
 

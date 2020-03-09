@@ -170,7 +170,8 @@ object Name {
     else {
       val va = Var.collect(names map (_.addr)) map {
         case addrs if addrs.exists({
-              case Addr.Bound(_, _) => true; case _ => false
+              case Addr.Bound(_, _) => true;
+              case _                => false
             }) =>
           val endpointAddrs = addrs.flatMap {
             case Addr.Bound(as, _) => as
@@ -180,7 +181,8 @@ object Name {
 
         case addrs if addrs.forall(_ == Addr.Neg) => Addr.Neg
         case addrs if addrs.forall({
-              case Addr.Failed(_) => true; case _ => false
+              case Addr.Failed(_) => true;
+              case _              => false
             }) =>
           Addr.Failed(new Exception)
 

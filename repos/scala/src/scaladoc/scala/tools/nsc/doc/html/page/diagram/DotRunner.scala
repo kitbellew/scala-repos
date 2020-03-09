@@ -215,7 +215,8 @@ class DotProcess(settings: doc.Settings) {
           buffer.setLength(0)
         }
         if (error) {
-          stdOut.close(); return
+          stdOut.close();
+          return
         }
         line = reader.readLine
       }

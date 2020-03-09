@@ -2782,7 +2782,9 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
                     future.satisfy(ret)
                     ret
                   } catch {
-                    case e: Exception => future.satisfy(e); throw e
+                    case e: Exception =>
+                      future.satisfy(e);
+                      throw e
                   }
                 }
               }
@@ -2799,7 +2801,9 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
                     future.satisfy(ret)
                     ret
                   } catch {
-                    case e: Exception => future.satisfy(e); throw e
+                    case e: Exception =>
+                      future.satisfy(e);
+                      throw e
                   }
                 }
               }

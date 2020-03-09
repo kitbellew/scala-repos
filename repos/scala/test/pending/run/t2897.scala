@@ -11,7 +11,8 @@ class A {
     var t1 = 5
     trait T {
       def xs = {
-        t1 = 10; t
+        t1 = 10;
+        t
       }
     }
   }

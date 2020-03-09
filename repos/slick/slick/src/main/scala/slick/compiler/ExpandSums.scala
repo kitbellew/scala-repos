@@ -443,7 +443,8 @@ class ExpandSums extends Phase {
       // Fix Untyped nulls in else clauses
       case cond @ IfThenElse(clauses) if (clauses.last match {
             case LiteralNode(None) :@ OptionType(ScalaBaseType.nullType) =>
-              true; case _                                               => false
+              true;
+            case _ => false
           }) =>
         cond.copy(clauses.init :+ LiteralNode(cond.nodeType, None))
 

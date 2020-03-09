@@ -35,7 +35,8 @@ object TimerTest extends SpecLite {
       withTimer { timer =>
         val future = timer.withTimeout(
           Future {
-            Thread.sleep(500); "Test"
+            Thread.sleep(500);
+            "Test"
           },
           100)
         withTimeout(5000) {
@@ -47,7 +48,8 @@ object TimerTest extends SpecLite {
       withTimer { timer =>
         val future = timer.withTimeout(
           Future {
-            Thread.sleep(50); "Test"
+            Thread.sleep(50);
+            "Test"
           },
           200)
         withTimeout(5000) {

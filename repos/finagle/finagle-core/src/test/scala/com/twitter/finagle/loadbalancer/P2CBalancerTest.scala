@@ -342,7 +342,8 @@ class P2CBalancerEwmaTest extends FunSuite with App with P2CSuite {
             Nil) :+ svc))
           schedule + work
         }
-      for (seq <- next.get(step); c <- seq) c.close()
+      for (seq <- next.get(step);
+           c <- seq) c.close()
       clock.advance(1)
       go(step + 1, next - step)
     }

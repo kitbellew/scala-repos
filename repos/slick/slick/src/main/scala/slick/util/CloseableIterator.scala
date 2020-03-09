@@ -66,7 +66,8 @@ object CloseableIterator {
     def hasNext = more
     def next() =
       if (more) {
-        more = false; item
+        more = false;
+        item
       } else noNext
     def close {}
   }

@@ -1,3 +1,4 @@
 trait B[S] {
-  type T = S; val c = new Array[T](1)
+  type T = S;
+  val c = new Array[T](1)
 }

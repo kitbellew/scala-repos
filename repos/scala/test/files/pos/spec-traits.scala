@@ -67,7 +67,8 @@ object AA {
   }
 
   def foo[T](x: T) = {
-    object A; false
+    object A;
+    false
   }
 }
 

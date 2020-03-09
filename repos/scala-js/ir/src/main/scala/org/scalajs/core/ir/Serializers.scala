@@ -115,12 +115,16 @@ object Serializers {
 
         case VarDef(ident, vtpe, mutable, rhs) =>
           writeByte(TagVarDef)
-          writeIdent(ident); writeType(vtpe); writeBoolean(mutable);
+          writeIdent(ident);
+          writeType(vtpe);
+          writeBoolean(mutable);
           writeTree(rhs)
 
         case ParamDef(ident, ptpe, mutable, rest) =>
           writeByte(TagParamDef)
-          writeIdent(ident); writeType(ptpe); writeBoolean(mutable);
+          writeIdent(ident);
+          writeType(ptpe);
+          writeBoolean(mutable);
           writeBoolean(rest)
 
         case Skip() =>
@@ -132,32 +136,44 @@ object Serializers {
 
         case Labeled(label, tpe, body) =>
           writeByte(TagLabeled)
-          writeIdent(label); writeType(tpe); writeTree(body)
+          writeIdent(label);
+          writeType(tpe);
+          writeTree(body)
 
         case Assign(lhs, rhs) =>
           writeByte(TagAssign)
-          writeTree(lhs); writeTree(rhs)
+          writeTree(lhs);
+          writeTree(rhs)
 
         case Return(expr, label) =>
           writeByte(TagReturn)
-          writeTree(expr); writeOptIdent(label)
+          writeTree(expr);
+          writeOptIdent(label)
 
         case If(cond, thenp, elsep) =>
           writeByte(TagIf)
-          writeTree(cond); writeTree(thenp); writeTree(elsep)
+          writeTree(cond);
+          writeTree(thenp);
+          writeTree(elsep)
           writeType(tree.tpe)
 
         case While(cond, body, label) =>
           writeByte(TagWhile)
-          writeTree(cond); writeTree(body); writeOptIdent(label)
+          writeTree(cond);
+          writeTree(body);
+          writeOptIdent(label)
 
         case DoWhile(body, cond, label) =>
           writeByte(TagDoWhile)
-          writeTree(body); writeTree(cond); writeOptIdent(label)
+          writeTree(body);
+          writeTree(cond);
+          writeOptIdent(label)
 
         case Try(block, errVar, handler, finalizer) =>
           writeByte(TagTry)
-          writeTree(block); writeIdent(errVar); writeTree(handler);
+          writeTree(block);
+          writeIdent(errVar);
+          writeTree(handler);
           writeTree(finalizer)
           writeType(tree.tpe)
 
@@ -174,7 +190,8 @@ object Serializers {
           writeTree(selector)
           writeInt(cases.size)
           cases foreach { caze =>
-            writeTrees(caze._1); writeTree(caze._2)
+            writeTrees(caze._1);
+            writeTree(caze._2)
           }
           writeTree(default)
           writeType(tree.tpe)
@@ -184,7 +201,9 @@ object Serializers {
 
         case New(cls, ctor, args) =>
           writeByte(TagNew)
-          writeClassType(cls); writeIdent(ctor); writeTrees(args)
+          writeClassType(cls);
+          writeIdent(ctor);
+          writeTrees(args)
 
         case LoadModule(cls) =>
           writeByte(TagLoadModule)
@@ -192,44 +211,57 @@ object Serializers {
 
         case StoreModule(cls, value) =>
           writeByte(TagStoreModule)
-          writeClassType(cls); writeTree(value)
+          writeClassType(cls);
+          writeTree(value)
 
         case Select(qualifier, item) =>
           writeByte(TagSelect)
-          writeTree(qualifier); writeIdent(item)
+          writeTree(qualifier);
+          writeIdent(item)
           writeType(tree.tpe)
 
         case Apply(receiver, method, args) =>
           writeByte(TagApply)
-          writeTree(receiver); writeIdent(method); writeTrees(args)
+          writeTree(receiver);
+          writeIdent(method);
+          writeTrees(args)
           writeType(tree.tpe)
 
         case ApplyStatically(receiver, cls, method, args) =>
           writeByte(TagApplyStatically)
-          writeTree(receiver); writeClassType(cls); writeIdent(method);
+          writeTree(receiver);
+          writeClassType(cls);
+          writeIdent(method);
           writeTrees(args)
           writeType(tree.tpe)
 
         case ApplyStatic(cls, method, args) =>
           writeByte(TagApplyStatic)
-          writeClassType(cls); writeIdent(method); writeTrees(args)
+          writeClassType(cls);
+          writeIdent(method);
+          writeTrees(args)
           writeType(tree.tpe)
 
         case UnaryOp(op, lhs) =>
           writeByte(TagUnaryOp)
-          writeByte(op); writeTree(lhs)
+          writeByte(op);
+          writeTree(lhs)
 
         case BinaryOp(op, lhs, rhs) =>
           writeByte(TagBinaryOp)
-          writeByte(op); writeTree(lhs); writeTree(rhs)
+          writeByte(op);
+          writeTree(lhs);
+          writeTree(rhs)
 
         case NewArray(tpe, lengths) =>
           writeByte(TagNewArray)
-          writeArrayType(tpe); writeTrees(lengths)
+          writeArrayType(tpe);
+          writeTrees(lengths)
 
         case ArrayValue(tpe, elems) =>
           writeByte(TagArrayValue)
-          writeArrayType(tpe); writeTrees(elems)
+          writeArrayType(tpe);
+          writeTrees(elems)
 
         case ArrayLength(array) =>
           writeByte(TagArrayLength)
@@ -237,24 +269,29 @@ object Serializers {
 
         case ArraySelect(array, index) =>
           writeByte(TagArraySelect)
-          writeTree(array); writeTree(index)
+          writeTree(array);
+          writeTree(index)
           writeType(tree.tpe)
 
         case RecordValue(tpe, elems) =>
           writeByte(TagRecordValue)
-          writeType(tpe); writeTrees(elems)
+          writeType(tpe);
+          writeTrees(elems)
 
         case IsInstanceOf(expr, cls) =>
           writeByte(TagIsInstanceOf)
-          writeTree(expr); writeReferenceType(cls)
+          writeTree(expr);
+          writeReferenceType(cls)
 
         case AsInstanceOf(expr, cls) =>
           writeByte(TagAsInstanceOf)
-          writeTree(expr); writeReferenceType(cls)
+          writeTree(expr);
+          writeReferenceType(cls)
 
         case Unbox(expr, charCode) =>
           writeByte(TagUnbox)
-          writeTree(expr); writeByte(charCode.toByte)
+          writeTree(expr);
+          writeByte(charCode.toByte)
 
         case GetClass(expr) =>
           writeByte(TagGetClass)
@@ -262,40 +299,53 @@ object Serializers {
 
         case CallHelper(helper, args) =>
           writeByte(TagCallHelper)
-          writeString(helper); writeTrees(args)
+          writeString(helper);
+          writeTrees(args)
           writeType(tree.tpe)
 
         case JSNew(ctor, args) =>
           writeByte(TagJSNew)
-          writeTree(ctor); writeTrees(args)
+          writeTree(ctor);
+          writeTrees(args)
 
         case JSDotSelect(qualifier, item) =>
           writeByte(TagJSDotSelect)
-          writeTree(qualifier); writeIdent(item)
+          writeTree(qualifier);
+          writeIdent(item)
 
         case JSBracketSelect(qualifier, item) =>
           writeByte(TagJSBracketSelect)
-          writeTree(qualifier); writeTree(item)
+          writeTree(qualifier);
+          writeTree(item)
 
         case JSFunctionApply(fun, args) =>
           writeByte(TagJSFunctionApply)
-          writeTree(fun); writeTrees(args)
+          writeTree(fun);
+          writeTrees(args)
 
         case JSDotMethodApply(receiver, method, args) =>
           writeByte(TagJSDotMethodApply)
-          writeTree(receiver); writeIdent(method); writeTrees(args)
+          writeTree(receiver);
+          writeIdent(method);
+          writeTrees(args)
 
         case JSBracketMethodApply(receiver, method, args) =>
           writeByte(TagJSBracketMethodApply)
-          writeTree(receiver); writeTree(method); writeTrees(args)
+          writeTree(receiver);
+          writeTree(method);
+          writeTrees(args)
 
         case JSSuperBracketSelect(cls, qualifier, item) =>
           writeByte(TagJSSuperBracketSelect)
-          writeClassType(cls); writeTree(qualifier); writeTree(item)
+          writeClassType(cls);
+          writeTree(qualifier);
+          writeTree(item)
 
         case JSSuperBracketCall(cls, receiver, method, args) =>
           writeByte(TagJSSuperBracketCall)
-          writeClassType(cls); writeTree(receiver); writeTree(method);
+          writeClassType(cls);
+          writeTree(receiver);
+          writeTree(method);
           writeTrees(args)
 
         case JSSuperConstructorCall(args) =>
@@ -320,11 +370,14 @@ object Serializers {
 
         case JSUnaryOp(op, lhs) =>
           writeByte(TagJSUnaryOp)
-          writeInt(op); writeTree(lhs)
+          writeInt(op);
+          writeTree(lhs)
 
         case JSBinaryOp(op, lhs, rhs) =>
           writeByte(TagJSBinaryOp)
-          writeInt(op); writeTree(lhs); writeTree(rhs)
+          writeInt(op);
+          writeTree(lhs);
+          writeTree(rhs)
 
         case JSArrayConstr(items) =>
           writeByte(TagJSArrayConstr)
@@ -334,7 +387,8 @@ object Serializers {
           writeByte(TagJSObjectConstr)
           writeInt(fields.size)
           fields foreach { field =>
-            writePropertyName(field._1); writeTree(field._2)
+            writePropertyName(field._1);
+            writeTree(field._2)
           }
 
         case JSLinkingInfo() =>
@@ -417,7 +471,8 @@ object Serializers {
               writeByte(TagStringLitFieldDef)
               writeTree(name)
           }
-          writeType(ftpe); writeBoolean(mutable)
+          writeType(ftpe);
+          writeBoolean(mutable)
 
         case methodDef: MethodDef =>
           val MethodDef(static, name, args, resultType, body) = methodDef
@@ -430,8 +485,11 @@ object Serializers {
           writeInt(-1)
 
           // Write out method def
-          writeBoolean(static); writePropertyName(name)
-          writeTrees(args); writeType(resultType); writeTree(body)
+          writeBoolean(static);
+          writePropertyName(name)
+          writeTrees(args);
+          writeType(resultType);
+          writeTree(body)
           writeInt(methodDef.optimizerHints.bits)
 
           // Jump back and write true length
@@ -441,12 +499,16 @@ object Serializers {
 
         case PropertyDef(name, getter, arg, setter) =>
           writeByte(TagPropertyDef)
-          writePropertyName(name); writeTree(getter); writeTree(arg);
+          writePropertyName(name);
+          writeTree(getter);
+          writeTree(arg);
           writeTree(setter)
 
         case ConstructorExportDef(fullName, args, body) =>
           writeByte(TagConstructorExportDef)
-          writeString(fullName); writeTrees(args); writeTree(body)
+          writeString(fullName);
+          writeTrees(args);
+          writeTree(body)
 
         case JSClassExportDef(fullName) =>
           writeByte(TagJSClassExportDef)
@@ -467,7 +529,8 @@ object Serializers {
 
     def writeIdent(ident: Ident): Unit = {
       writePosition(ident.pos)
-      writeString(ident.name); writeString(ident.originalName.getOrElse(""))
+      writeString(ident.name);
+      writeString(ident.originalName.getOrElse(""))
     }
 
     def writeIdents(idents: List[Ident]): Unit = {
@@ -527,8 +590,12 @@ object Serializers {
 
     def writePropertyName(name: PropertyName): Unit = {
       name match {
-        case name: Ident         => buffer.writeBoolean(true); writeIdent(name)
-        case name: StringLiteral => buffer.writeBoolean(false); writeTree(name)
+        case name: Ident =>
+          buffer.writeBoolean(true);
+          writeIdent(name)
+        case name: StringLiteral =>
+          buffer.writeBoolean(false);
+          writeTree(name)
       }
     }
 

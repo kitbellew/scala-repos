@@ -397,7 +397,8 @@ trait SyntheticMethods extends ast.TreeDSL {
           // it is name mangled afterward.  (Wonder why that is.) So it's only protected.
           // For sure special methods like "readResolve" should not be mangled.
           List(createMethod(nme.readResolve, Nil, ObjectTpe)(m => {
-            m setFlag PRIVATE; REF(clazz.sourceModule)
+            m setFlag PRIVATE;
+            REF(clazz.sourceModule)
           }))
         } else Nil
       }

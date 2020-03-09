@@ -236,7 +236,8 @@ class SecurityServiceHandlers(
           contentV <- request.content
             .toSuccess(badRequest("Missing body content for grant creation."))
             .sequence[Future, JValue]
-          response <- (for (apiKey <- apiKeyV; content <- contentV)
+          response <- (for (apiKey <- apiKeyV;
+                            content <- contentV)
             yield create(apiKey, content)).sequence[Future, R]
         } yield response.toEither.merge
       }
@@ -393,7 +394,8 @@ class SecurityServiceHandlers(
           contentV <- request.content
             .toSuccess(badRequest("Missing body content for grant creation."))
             .sequence[Future, JValue]
-          response <- (for (parentId <- parentIdV; content <- contentV)
+          response <- (for (parentId <- parentIdV;
+                            content <- contentV)
             yield create(authAPIKey, parentId, content)).sequence[Future, R]
         } yield response.toEither.merge
       }

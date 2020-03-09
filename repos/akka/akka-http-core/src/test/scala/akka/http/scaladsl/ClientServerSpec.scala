@@ -633,7 +633,9 @@ class ClientServerSpec
       val cbuf = new Array[Char](256)
       @tailrec def drain(): (String, BufferedReader) = reader.read(cbuf) match {
         case -1 ⇒ sb.toString -> reader
-        case n ⇒ sb.append(cbuf, 0, n); drain()
+        case n ⇒
+          sb.append(cbuf, 0, n);
+          drain()
       }
       drain()
     }

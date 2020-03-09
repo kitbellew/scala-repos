@@ -94,7 +94,8 @@ class LocalSbtWatcherExec extends SbtWatcherExec {
     def getProcess = process
 
     def startListening() = {
-      listener.startMain(); this
+      listener.startMain();
+      this
     }
 
     def stopListening() = listener.stopMain()

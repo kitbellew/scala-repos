@@ -3,7 +3,8 @@ object Test {
 
   def expectMatchError[T](msg: String)(body: => T) {
     try {
-      body; assert(false, "Should not succeed.")
+      body;
+      assert(false, "Should not succeed.")
     } catch {
       case _: MatchError => println(msg)
     }

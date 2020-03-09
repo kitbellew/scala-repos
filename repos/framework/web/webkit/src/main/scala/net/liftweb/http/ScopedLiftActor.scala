@@ -110,9 +110,11 @@ trait ScopedLiftActor extends LiftActor with LazyLoggable {
                 what.isDefinedAt(in)
               } catch {
                 case e if exceptionHandler.isDefinedAt(e) =>
-                  exceptionHandler(e); false
+                  exceptionHandler(e);
+                  false
                 case e: Exception =>
-                  reportError("Message test for " + in, e); false
+                  reportError("Message test for " + in, e);
+                  false
               }
             }
           }

@@ -35,7 +35,8 @@ trait Matcher extends PrecedenceParser {
   implicit def convertMatchable(m: MatchableImpl) = m.asInstanceOf[Matchable];
   trait MatchableImpl extends NodeImpl {
     override def chop: Node = {
-      Console.println("passed"); super.chop;
+      Console.println("passed");
+      super.chop;
     }
   }
 }

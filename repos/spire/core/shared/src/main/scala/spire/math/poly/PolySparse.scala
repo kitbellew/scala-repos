@@ -454,7 +454,9 @@ object PolySparse {
         cs: Array[C]): PolySparse[C] =
       ts match {
         case Term(c, e) :: ts0 =>
-          es(i) = e; cs(i) = c; inflate(ts0, i + 1, es, cs)
+          es(i) = e;
+          cs(i) = c;
+          inflate(ts0, i + 1, es, cs)
         case Nil => new PolySparse(es, cs)
       }
 

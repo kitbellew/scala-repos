@@ -295,7 +295,8 @@ class CSCMatrixTest extends FunSuite with Checkers {
   test("flatten") {
     val a = CSCMatrix((1.0, 2.0, 3.0), (4.0, 5.0, 6.0))
     val b = CSCMatrix.zeros[Double](3, 2)
-    b(0, 1) = 1.0; b(2, 1) = 3.0
+    b(0, 1) = 1.0;
+    b(2, 1) = 3.0
     val z = CSCMatrix.zeros[Double](5, 3)
     assert(a.flatten() === SparseVector(1.0, 2.0, 3.0, 4.0, 5.0, 6.0))
     assert(z.flatten() === SparseVector.zeros[Double](15))

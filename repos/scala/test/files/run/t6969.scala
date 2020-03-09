@@ -19,7 +19,8 @@ object Test {
       try f(map)
       catch {
         case t: NullPointerException =>
-          println(s"Failed at $id/$iteration"); throw t
+          println(s"Failed at $id/$iteration");
+          throw t
       }
       choke()
     }

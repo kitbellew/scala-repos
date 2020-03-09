@@ -34,7 +34,8 @@ class ComplexAddBenchmarks extends MyBenchmark {
     var i = 0
     val len = data.length
     while (i < len) {
-      total = Ring[A].plus(total, data(i)); i += 1
+      total = Ring[A].plus(total, data(i));
+      i += 1
     }
     total
   }
@@ -44,7 +45,8 @@ class ComplexAddBenchmarks extends MyBenchmark {
     var i = 0
     val len = data.length
     while (i < len) {
-      total += data(i); i += 1
+      total += data(i);
+      i += 1
     }
     total
   }
@@ -54,7 +56,8 @@ class ComplexAddBenchmarks extends MyBenchmark {
     var i = 0
     val len = data.length
     while (i < len) {
-      total = FastComplex.add(total, data(i)); i += 1
+      total = FastComplex.add(total, data(i));
+      i += 1
     }
     total
   }
@@ -64,7 +67,8 @@ class ComplexAddBenchmarks extends MyBenchmark {
     var i = 0
     val len = fcs.length
     while (i < len) {
-      total += fcs(i); i += 1
+      total += fcs(i);
+      i += 1
     }
     total
   }
@@ -74,7 +78,8 @@ class ComplexAddBenchmarks extends MyBenchmark {
     var i = 0
     val len = fcs.length
     while (i < len) {
-      total += new FloatComplex(longs(i)); i += 1
+      total += new FloatComplex(longs(i));
+      i += 1
     }
     total
   }

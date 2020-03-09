@@ -16,9 +16,11 @@ trait ReplStrings {
   def string2code(str: String): String = {
     val res = new StringBuilder
     for (c <- str) c match {
-      case '"' | '\'' | '\\' => res += '\\'; res += c
-      case _ if c.isControl  => res ++= Chars.char2uescape(c)
-      case _                 => res += c
+      case '"' | '\'' | '\\' =>
+        res += '\\';
+        res += c
+      case _ if c.isControl => res ++= Chars.char2uescape(c)
+      case _                => res += c
     }
     res.toString
   }
@@ -32,7 +34,8 @@ trait ReplStrings {
   // no escaped or nested quotes
   private[this] val inquotes = """(['"])(.*?)\1""".r
   def unquoted(s: String) = s match {
-    case inquotes(_, w) => w; case _ => s
+    case inquotes(_, w) => w;
+    case _              => s
   }
   def words(s: String) =
     (s.trim split "\\s+" filterNot (_ == "") map unquoted).toList

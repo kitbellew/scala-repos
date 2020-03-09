@@ -7,7 +7,8 @@ class C {
 }
 
 object Test2 {
-  trait T; trait U
+  trait T;
+  trait U
   new T {
     implicit def conversion(m: Int)(implicit nada: Nothing): String = ???
 

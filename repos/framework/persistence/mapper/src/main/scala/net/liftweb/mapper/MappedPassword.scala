@@ -116,7 +116,8 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
   protected def real_i_set_!(value: String): String = {
     value match {
       case "*" | null | MappedPassword.blankPw if (value.length < 3) =>
-        invalidPw = true; invalidMsg = S.?("password.must.be.set");
+        invalidPw = true;
+        invalidMsg = S.?("password.must.be.set");
         password.set("*")
       case MappedPassword.blankPw => return "*"
       case _ if (value.length > 4) =>
@@ -128,7 +129,8 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
         password.set("b;" + bcrypted.substring(0, 44))
         salt_i.set(bcrypted.substring(44))
       case _ =>
-        invalidPw = true; invalidMsg = S.?("password.too.short");
+        invalidPw = true;
+        invalidMsg = S.?("password.too.short");
         password.set("*")
     }
     this.dirty_?(true)
@@ -137,9 +139,13 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
 
   def setList(in: List[String]): Boolean =
     in match {
-      case x1 :: x2 :: Nil if x1 == x2 => this.set(x1); true
+      case x1 :: x2 :: Nil if x1 == x2 =>
+        this.set(x1);
+        true
       case _ =>
-        invalidPw = true; invalidMsg = S.?("passwords.do.not.match"); false
+        invalidPw = true;
+        invalidMsg = S.?("passwords.do.not.match");
+        false
     }
 
   override def setFromAny(f: Any): String = {
@@ -314,7 +320,8 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
         case _ => { (inst: T, v: AnyRef) =>
           {
             val tv = getField(inst, accessor).asInstanceOf[MappedPassword[T]];
-            tv.salt_i() = (if (v == null) null else v.toString); tv.resetDirty
+            tv.salt_i() = (if (v == null) null else v.toString);
+            tv.resetDirty
           }
         }
       }
@@ -326,7 +333,8 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
         case _ => { (inst: T, v: AnyRef) =>
           {
             val tv = getField(inst, accessor).asInstanceOf[MappedPassword[T]];
-            tv.password() = (if (v == null) null else v.toString); tv.resetDirty
+            tv.password() = (if (v == null) null else v.toString);
+            tv.resetDirty
           }
         }
       }

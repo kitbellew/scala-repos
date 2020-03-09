@@ -172,7 +172,8 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
   @tailrec
   final def resume(): Boolean = currentStatus match {
     case Closed ⇒
-      setStatus(Closed); false
+      setStatus(Closed);
+      false
     case s ⇒
       val next = if (s < suspendUnit) s else s - suspendUnit
       if (updateStatus(s, next)) next < suspendUnit
@@ -188,7 +189,8 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
   @tailrec
   final def suspend(): Boolean = currentStatus match {
     case Closed ⇒
-      setStatus(Closed); false
+      setStatus(Closed);
+      false
     case s ⇒
       if (updateStatus(s, s + suspendUnit)) s < suspendUnit
       else suspend()
@@ -201,7 +203,8 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
   @tailrec
   final def becomeClosed(): Boolean = currentStatus match {
     case Closed ⇒
-      setStatus(Closed); false
+      setStatus(Closed);
+      false
     case s ⇒ updateStatus(s, Closed) || becomeClosed()
   }
 
@@ -275,7 +278,8 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
   override final def setRawResult(unit: Unit): Unit = ()
   final override def exec(): Boolean =
     try {
-      run(); false
+      run();
+      false
     } catch {
       case ie: InterruptedException ⇒
         Thread.currentThread.interrupt()

@@ -188,7 +188,9 @@ class BinaryPickleReader(in: BinaryInput, format: BinaryPickleFormat)
           case UNIT_TAG => FastTypeTag.Unit
           case NULL_TAG => FastTypeTag.Null
           case REF_TAG  => FastTypeTag.Ref
-          case _        => in.setLookahead(lookahead); hints.elidedType.get
+          case _ =>
+            in.setLookahead(lookahead);
+            hints.elidedType.get
         }
       } else if (hints.isElidedType && primitives.contains(
                    hints.elidedType.get.key)) {

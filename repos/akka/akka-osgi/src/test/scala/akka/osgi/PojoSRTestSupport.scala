@@ -60,7 +60,8 @@ trait PojoSRTestSupport extends Suite with BeforeAndAfterAll {
         .getBundleContext
     } catch {
       case e: Throwable ⇒
-        oldErr.write(bufferedLoadingErrors.toByteArray); throw e
+        oldErr.write(bufferedLoadingErrors.toByteArray);
+        throw e
     } finally {
       System.setErr(oldErr)
     }
@@ -117,7 +118,8 @@ trait PojoSRTestSupport extends Suite with BeforeAndAfterAll {
     try block
     catch {
       case e: Throwable ⇒
-        System.err.write(bufferedLoadingErrors.toByteArray); throw e
+        System.err.write(bufferedLoadingErrors.toByteArray);
+        throw e
     }
 }
 

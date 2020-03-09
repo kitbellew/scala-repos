@@ -310,7 +310,9 @@ class ScaldingLaws extends WordSpec {
       }
       val allTimes = (0 until original.size)
       val stream = for {
-        time <- allTimes; key <- allKeys; v = service(time, key)
+        time <- allTimes;
+        key <- allKeys;
+        v = service(time, key)
       } yield (time.toLong, (key, v))
 
       val initStore = sample[Map[Int, Int]]
@@ -399,7 +401,9 @@ class ScaldingLaws extends WordSpec {
       }
       val allTimes = (0 until original.size)
       val stream = for {
-        time <- allTimes; key <- allKeys; v = service(time, key)
+        time <- allTimes;
+        key <- allKeys;
+        v = service(time, key)
       } yield (time.toLong, (key, v))
 
       val initStore = sample[Map[Int, Int]]

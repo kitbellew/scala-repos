@@ -32,7 +32,8 @@ object Main extends nsc.MainClass {
     }
     super.processSettingsHook() && (
       if (this.settings.Yidedebug) {
-        run(); false
+        run();
+        false
       } else true
     )
   }

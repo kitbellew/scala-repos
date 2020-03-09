@@ -78,7 +78,9 @@ class HashMap[A, B] private[collection] (
     val e = findOrAddEntry(key, value)
     if (e eq null) None
     else {
-      val v = e.value; e.value = value; Some(v)
+      val v = e.value;
+      e.value = value;
+      Some(v)
     }
   }
 
@@ -97,7 +99,8 @@ class HashMap[A, B] private[collection] (
   }
 
   def -=(key: A): this.type = {
-    removeEntry(key); this
+    removeEntry(key);
+    this
   }
 
   def iterator = entriesIterator map (e => ((e.key, e.value)))

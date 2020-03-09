@@ -9,7 +9,8 @@ object random {
     var result: Double = 0
 
     while (n > 0) {
-      result = generate(100.0); n = n - 1;
+      result = generate(100.0);
+      n = n - 1;
     }
 
     Console.printf("{0,number,#.000000000}\n", result)

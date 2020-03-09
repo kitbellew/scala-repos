@@ -50,8 +50,10 @@ class BidiFlowSpec extends AkkaSpec {
             implicit b ⇒ (st, sb) ⇒
               val s = b.add(bidi)
 
-              Source.single(1) ~> s.in1; s.out1 ~> st
-              sb <~ s.out2; s.in2 <~ Source.single(bytes)
+              Source.single(1) ~> s.in1;
+              s.out1 ~> st
+              sb <~ s.out2;
+              s.in2 <~ Source.single(bytes)
               ClosedShape
           })
         .run()

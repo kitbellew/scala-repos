@@ -349,7 +349,8 @@ object JsonValidSpec extends Specification {
       val bobby = User("bobby", 54)
 
       implicit val userFormats = {
-        import Format.path._; import Format.constraints._
+        import Format.path._;
+        import Format.constraints._
         (
           at(JsPath \ "name")(Format(Reads.minLength[String](5), of[String]))
             and
@@ -366,7 +367,8 @@ object JsonValidSpec extends Specification {
       val bobby = User("bobby", 54)
 
       implicit val userFormats = {
-        import Format.path._; import Format.constraints._
+        import Format.path._;
+        import Format.constraints._
         (
           (__ \ "name").rw(Reads.minLength[String](5), of[String])
             and

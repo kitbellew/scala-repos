@@ -43,7 +43,8 @@ object InfoTest extends Build {
       <dependency org="org.scala-tools.testing" name="scalacheck_2.9.1" rev="1.9"/>
 
   def checkDownload = (dependencyClasspath in Compile) map { cp =>
-    if (cp.isEmpty) sys.error("Dependency not downloaded"); ()
+    if (cp.isEmpty) sys.error("Dependency not downloaded");
+    ()
   }
   def checkInfo = (customInfo, delivered) map { (addInfo, d) =>
     if ((d \ "info").isEmpty)

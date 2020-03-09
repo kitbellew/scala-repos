@@ -48,7 +48,9 @@ trait ArbitraryJValue {
   def genFieldList(listSize: Int) =
     Gen.containerOfN[List, JField](listSize, genField)
   def genField =
-    for (name <- alphaStr; value <- genJValue; id <- choose(0, 1000000))
+    for (name <- alphaStr;
+         value <- genJValue;
+         id <- choose(0, 1000000))
       yield JField(name + id, value)
 
   def genJValueClass: Gen[Class[_ <: JValue]] = oneOf(

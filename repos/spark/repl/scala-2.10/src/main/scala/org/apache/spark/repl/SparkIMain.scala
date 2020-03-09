@@ -154,7 +154,8 @@ class SparkIMain(
   private val nextReqId = {
     var counter = 0
     () => {
-      counter += 1; counter
+      counter += 1;
+      counter
     }
   }
 
@@ -626,7 +627,8 @@ class SparkIMain(
       name: TypeName,
       old: Request,
       req: Request) = {
-    for (t1 <- old.simpleNameOfType(name); t2 <- req.simpleNameOfType(name)) {
+    for (t1 <- old.simpleNameOfType(name);
+         t2 <- req.simpleNameOfType(name)) {
       logDebug("Redefining type '%s'\n  %s -> %s".format(name, t1, t2))
     }
   }
@@ -635,7 +637,8 @@ class SparkIMain(
       name: TermName,
       old: Request,
       req: Request) = {
-    for (t1 <- old.compilerTypeOf get name; t2 <- req.compilerTypeOf get name) {
+    for (t1 <- old.compilerTypeOf get name;
+         t2 <- req.compilerTypeOf get name) {
       //    Printing the types here has a tendency to cause assertion errors, like
       //   assertion failed: fatal: <refinement> has owner value x, but a class owner is required
       // so DBG is by-name now to keep it in the family.  (It also traps the assertion error,
@@ -1147,7 +1150,9 @@ class SparkIMain(
     def callOpt(name: String, args: Any*): Option[AnyRef] =
       try Some(call(name, args: _*))
       catch {
-        case ex: Throwable => bindError(ex); None
+        case ex: Throwable =>
+          bindError(ex);
+          None
       }
 
     class EvalException(msg: String, cause: Throwable)
@@ -1169,7 +1174,9 @@ class SparkIMain(
 
     lazy val evalClass = load(evalPath)
     lazy val evalValue = callEither(resultName) match {
-      case Left(ex)      => evalCaught = Some(ex); None
+      case Left(ex) =>
+        evalCaught = Some(ex);
+        None
       case Right(result) => Some(result)
     }
 
@@ -1244,7 +1251,8 @@ class SparkIMain(
 
     private var _originalLine: String = null
     def withOriginalLine(s: String): this.type = {
-      _originalLine = s; this
+      _originalLine = s;
+      this
     }
     def originalLine = if (_originalLine == null) line else _originalLine
 

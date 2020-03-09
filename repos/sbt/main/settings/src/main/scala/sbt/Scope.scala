@@ -122,7 +122,8 @@ object Scope {
       case LocalRootProject => ProjectRef(current, rootProject(current))
       case LocalProject(id) => ProjectRef(current, id)
       case RootProject(uri) =>
-        val res = resolveBuild(current, uri); ProjectRef(res, rootProject(res))
+        val res = resolveBuild(current, uri);
+        ProjectRef(res, rootProject(res))
       case ProjectRef(uri, id) => ProjectRef(resolveBuild(current, uri), id)
     }
   def resolveBuildRef(current: URI, ref: BuildReference): BuildRef =
@@ -263,7 +264,9 @@ object Scope {
         case _                => withGlobalAxis(scope.task)
       }
       val eLin = withGlobalAxis(scope.extra)
-      for (c <- cLin; t <- tLin; e <- eLin) yield Scope(px, c, t, e)
+      for (c <- cLin;
+           t <- tLin;
+           e <- eLin) yield Scope(px, c, t, e)
     }
     scope.project match {
       case Global | This => globalProjectDelegates(scope)
@@ -287,7 +290,8 @@ object Scope {
     ps ++ (ps flatMap rawBuild).distinct :+ Global
 
   def rawBuild(ps: ScopeAxis[ProjectRef]): Seq[ScopeAxis[BuildRef]] = ps match {
-    case Select(ref) => Select(BuildRef(ref.build)) :: Nil; case _ => Nil
+    case Select(ref) => Select(BuildRef(ref.build)) :: Nil;
+    case _           => Nil
   }
 
   def delegates[Proj](
@@ -339,6 +343,7 @@ object Scope {
     if (scope == GlobalScope)
       GlobalScope :: Nil
     else
-      for (c <- withGlobalAxis(scope.config); t <- withGlobalAxis(scope.task);
+      for (c <- withGlobalAxis(scope.config);
+           t <- withGlobalAxis(scope.task);
            e <- withGlobalAxis(scope.extra)) yield Scope(Global, c, t, e)
 }

@@ -189,7 +189,8 @@ abstract class CoderSpec
 
   def streamEncode(bytes: ByteString): ByteString = {
     val output = new ByteArrayOutputStream()
-    val gos = newEncodedOutputStream(output); gos.write(bytes.toArray);
+    val gos = newEncodedOutputStream(output);
+    gos.write(bytes.toArray);
     gos.close()
     ByteString(output.toByteArray)
   }

@@ -182,7 +182,8 @@ class DynamicTest {
 
     var count = 0
     val z = obj({
-      count += 1; ("foo", "bar")
+      count += 1;
+      ("foo", "bar")
     })
     val z_foo = z.foo
     assertEquals("bar", z_foo)
@@ -282,7 +283,8 @@ class DynamicTest {
     var counter = 0
     val b = obj(
       foo = {
-        counter += 1; "foo"
+        counter += 1;
+        "foo"
       },
       bar = "bar",
       foo = "foobar")

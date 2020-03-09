@@ -519,7 +519,8 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
 
       // A spool where only the head is valid.
       def spool: Spool[Int] = 0 *:: {
-        tail.setException(new Exception); tail
+        tail.setException(new Exception);
+        tail
       }
 
       // create, apply, poll

@@ -68,7 +68,8 @@ class ConsumerIntegrationTest
           def endpointUri = "direct:a3"
           def receive = {
             case _ ⇒ {
-              Thread.sleep(LONG_WAIT.toMillis); sender() ! "done"
+              Thread.sleep(LONG_WAIT.toMillis);
+              sender() ! "done"
             }
           }
         },

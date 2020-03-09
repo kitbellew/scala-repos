@@ -104,7 +104,8 @@ trait ScTypePsiTypeBridge {
                         tp.getExtendsListTypes ++ tp.getImplementsListTypes
                       ScSkolemizedType(
                         s"_$$${
-                          index += 1; index
+                          index += 1;
+                          index
                         }",
                         Nil,
                         types.Nothing,
@@ -142,7 +143,8 @@ trait ScTypePsiTypeBridge {
                         case wild: PsiWildcardType =>
                           ScSkolemizedType(
                             s"_$$${
-                              index += 1; index
+                              index += 1;
+                              index
                             }",
                             Nil,
                             if (wild.isSuper)
@@ -164,7 +166,8 @@ trait ScTypePsiTypeBridge {
                           val wild = capture.getWildcard
                           ScSkolemizedType(
                             s"_$$${
-                              index += 1; index
+                              index += 1;
+                              index
                             }",
                             Nil,
                             if (wild.isSuper)

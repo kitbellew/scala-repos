@@ -2,7 +2,8 @@ object Test {
   def main(args: Array[String]): Unit = {
     try {
       {
-        throw T; Symbol
+        throw T;
+        Symbol
       }.apply("a")
       assert(false, "exception not thrown")
     } catch {

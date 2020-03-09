@@ -234,8 +234,10 @@ trait MVCHelper extends LiftRules.DispatchPF {
       },
       where: String) = () => {
     what.validate match {
-      case Nil => what.save(); S.redirectTo(where)
-      case xs  => S.error(xs)
+      case Nil =>
+        what.save();
+        S.redirectTo(where)
+      case xs => S.error(xs)
     }
   }
 }

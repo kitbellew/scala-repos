@@ -86,7 +86,8 @@ trait IsHCons1[L[_], FH[_[_]], FT[_[_]]] extends Serializable {
 object IsHCons1 extends IsHCons10 {
   type Aux[L[_], FH[_[_]], FT[_[_]], H0[_], T0[_] <: HList] =
     IsHCons1[L, FH, FT] {
-      type H[t] = H0[t]; type T[t] = T0[t]
+      type H[t] = H0[t];
+      type T[t] = T0[t]
     }
 
   implicit def apply[L[_], FH[_[_]], FT[_[_]]]: IsHCons1[L, FH, FT] =
@@ -164,7 +165,8 @@ trait IsCCons1[L[_], FH[_[_]], FT[_[_]]] extends Serializable {
 object IsCCons1 extends IsCCons10 {
   type Aux[L[_], FH[_[_]], FT[_[_]], H0[_], T0[_] <: Coproduct] =
     IsCCons1[L, FH, FT] {
-      type H[t] = H0[t]; type T[t] = T0[t]
+      type H[t] = H0[t];
+      type T[t] = T0[t]
     }
 
   implicit def apply[L[_], FH[_[_]], FT[_[_]]]: IsCCons1[L, FH, FT] =
@@ -241,7 +243,8 @@ trait Split1[L[_], FO[_[_]], FI[_[_]]] extends Serializable {
 
 object Split1 extends Split10 {
   type Aux[L[_], FO[_[_]], FI[_[_]], O0[_], I0[_]] = Split1[L, FO, FI] {
-    type O[T] = O0[T]; type I[T] = I0[T]
+    type O[T] = O0[T];
+    type I[T] = I0[T]
   }
 
   implicit def apply[L[_], FO[_[_]], FI[_[_]]]: Split1[L, FO, FI] =

@@ -37,7 +37,8 @@ object SerializationLaws extends Properties("SerializationLaws") {
   def round[T](ser: KSerializer[T], t: T): T = {
     val kinst = (new ScalaKryoInstantiator)
       .withRegistrar({ (k: Kryo) =>
-        k.register(t.getClass, ser); ()
+        k.register(t.getClass, ser);
+        ()
       })
     KryoPool.withBuffer(1, kinst, 100, 10000).deepCopy(t)
   }

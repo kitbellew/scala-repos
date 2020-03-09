@@ -491,7 +491,9 @@ private[io] abstract class TcpConnection(
           info.registration.enableInterest(OP_WRITE)
         next
       } catch {
-        case e: IOException ⇒ handleError(info.handler, e); this
+        case e: IOException ⇒
+          handleError(info.handler, e);
+          this
       }
     }
 

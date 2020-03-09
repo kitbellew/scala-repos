@@ -49,7 +49,8 @@ object FutureSpec {
   class TestDelayActor(await: TestLatch) extends Actor {
     def receive = {
       case "Hello" ⇒
-        FutureSpec.ready(await, TestLatch.DefaultTimeout); sender() ! "World"
+        FutureSpec.ready(await, TestLatch.DefaultTimeout);
+        sender() ! "World"
       case "NoReply" ⇒ FutureSpec.ready(await, TestLatch.DefaultTimeout)
       case "Failure" ⇒
         FutureSpec.ready(await, TestLatch.DefaultTimeout)
@@ -485,7 +486,8 @@ class FutureSpec
         for (i ← 1 to 1000) {
           Await.result(
             Future {
-              q.add(1); 3
+              q.add(1);
+              3
             } andThen {
               case _ ⇒ q.add(2)
             } andThen {
@@ -566,7 +568,8 @@ class FutureSpec
         }
         Await.result(
           futures.foldLeft(Future(0))((fr, fa) ⇒
-            for (r ← fr; a ← fa) yield (r + a)),
+            for (r ← fr;
+                 a ← fa) yield (r + a)),
           timeout.duration) should ===(55)
       }
 
@@ -691,7 +694,8 @@ class FutureSpec
 
           val latch = new TestLatch
           val f2 = Future {
-            FutureSpec.ready(latch, 5 seconds); "success"
+            FutureSpec.ready(latch, 5 seconds);
+            "success"
           }
           f2 foreach (_ ⇒ throw new ThrowableTest("dispatcher foreach"))
           f2 onSuccess {
@@ -712,7 +716,8 @@ class FutureSpec
         val latch = new TestLatch
 
         val f = Future {
-          FutureSpec.ready(latch, 5 seconds); 5
+          FutureSpec.ready(latch, 5 seconds);
+          5
         }
         val f2 = Future {
           Await.result(f, timeout.duration) + 5
@@ -734,11 +739,13 @@ class FutureSpec
         val latch = Vector.fill(10)(new TestLatch)
 
         val f1 = Future {
-          latch(0).open(); FutureSpec.ready(latch(1), TestLatch.DefaultTimeout);
+          latch(0).open();
+          FutureSpec.ready(latch(1), TestLatch.DefaultTimeout);
           "Hello"
         }
         val f2 = f1 map { s ⇒
-          latch(2).open(); FutureSpec.ready(latch(3), TestLatch.DefaultTimeout);
+          latch(2).open();
+          FutureSpec.ready(latch(3), TestLatch.DefaultTimeout);
           s.length
         }
         f2 foreach (_ ⇒ latch(4).open())
@@ -755,7 +762,8 @@ class FutureSpec
         f2 should not be ('completed)
 
         val f3 = f1 map { s ⇒
-          latch(5).open(); FutureSpec.ready(latch(6), TestLatch.DefaultTimeout);
+          latch(5).open();
+          FutureSpec.ready(latch(6), TestLatch.DefaultTimeout);
           s.length * 2
         }
         f3 foreach (_ ⇒ latch(3).open())
@@ -772,7 +780,8 @@ class FutureSpec
 
         val p1 = Promise[String]()
         val f4 = p1.future map { s ⇒
-          latch(7).open(); FutureSpec.ready(latch(8), TestLatch.DefaultTimeout);
+          latch(7).open();
+          FutureSpec.ready(latch(8), TestLatch.DefaultTimeout);
           s.length
         }
         f4 foreach (_ ⇒ latch(9).open())
@@ -883,7 +892,8 @@ class FutureSpec
     "compose result with flatMap" in {
       f { (future, result) ⇒
         val r =
-          for (r ← future; p ← Promise.successful("foo").future)
+          for (r ← future;
+               p ← Promise.successful("foo").future)
             yield r.toString + p
         Await.result(r, timeout.duration) should ===(result.toString + "foo")
       }

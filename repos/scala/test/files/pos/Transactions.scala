@@ -5,7 +5,8 @@ class AbortException extends RuntimeException
 object Transaction {
   private var cnt = 0L
   def nextId: Long = synchronized {
-    cnt += 1; cnt
+    cnt += 1;
+    cnt
   }
 
   // Transaction status constants
@@ -28,7 +29,9 @@ class Transaction {
   var next: Transaction = null
 
   def this(hd: Transaction, tl: Transaction) = {
-    this(); this.head = head; this.next = next
+    this();
+    this.head = head;
+    this.next = next
   }
 
   def makeAbort() = synchronized {
@@ -38,10 +41,12 @@ class Transaction {
     }
   }
   private def abort() = synchronized {
-    status = Transaction.Aborted; notifyAll()
+    status = Transaction.Aborted;
+    notifyAll()
   }
   private def commit() = synchronized {
-    status = Transaction.Committed; notifyAll()
+    status = Transaction.Committed;
+    notifyAll()
   }
   def run[T](b: Transaction => T): Option[T] =
     try {
@@ -51,8 +56,12 @@ class Transaction {
       commit()
       result
     } catch {
-      case ex: AbortException => abort(); None
-      case ex: Throwable      => abort(); throw ex
+      case ex: AbortException =>
+        abort();
+        None
+      case ex: Throwable =>
+        abort();
+        throw ex
     }
 
 }
@@ -81,14 +90,16 @@ trait Transactional {
     if (writer == thisTrans) return
     var r = readers
     while (r != null && r.head.status != Transaction.Running) {
-      r = r.next; readers = r
+      r = r.next;
+      readers = r
     }
     while (r != null) {
       if (r.head == thisTrans) return
       val last = r
       r = r.next
       while (r != null && r.head.status != Transaction.Running) {
-        r = r.next; last.next = r
+        r = r.next;
+        last.next = r
       }
     }
     synchronized {
@@ -96,7 +107,9 @@ trait Transactional {
       val w = currentWriter()
       if (w != null)
         if (thisTrans.id < w.id) {
-          w.makeAbort(); rollBack(); writer = null
+          w.makeAbort();
+          rollBack();
+          writer = null
         } else throw new AbortException
       readers =
         if (readers == null) thisTrans else new Transaction(thisTrans, readers)
@@ -109,11 +122,13 @@ trait Transactional {
       val w = currentWriter()
       if (w != null)
         if (thisTrans.id < w.id) {
-          w.makeAbort(); rollBack()
+          w.makeAbort();
+          rollBack()
         } else throw new AbortException
       var r = readers
       while (r != null && r.head.status != Transaction.Running) {
-        r = r.next; readers = r
+        r = r.next;
+        readers = r
       }
       while (r != null) {
         if (r.id < thisTrans.id) throw new AbortException
@@ -121,7 +136,8 @@ trait Transactional {
         val last = r
         r = r.next
         while (r != null && r.head.status != Transaction.Running) {
-          r = r.next; last.next = r
+          r = r.next;
+          last.next = r
         }
       }
       checkPoint()

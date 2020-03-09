@@ -54,7 +54,8 @@ object Test {
   def testBigInts() {
     def biExp2(e: Int) = BigInt(1) << e
     def checkBigInt2(bi: BigInt) {
-      checkBigInt(-bi); checkBigInt(bi)
+      checkBigInt(-bi);
+      checkBigInt(bi)
     }
 
     val pf = 24

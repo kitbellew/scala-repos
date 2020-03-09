@@ -32,19 +32,23 @@ object Test {
 
     val p2: Foo2 = new {
       def update(x: Int, value: String) = {
-        p1(1) = "o"; 1
+        p1(1) = "o";
+        1
       }
     }
     def a2 = p2(0) = "c"
 
     val p3: Foo3 = new {
       def update(x: Int, value: String) = {
-        p1(2) = "b"; Array(1)
+        p1(2) = "b";
+        Array(1)
       }
     }
     def a3 = p3(10) = "hi mom"
 
-    a1; a2; a3;
+    a1;
+    a2;
+    a3;
 
     assert(arr.mkString == "bob")
     assert(alen() == 3)

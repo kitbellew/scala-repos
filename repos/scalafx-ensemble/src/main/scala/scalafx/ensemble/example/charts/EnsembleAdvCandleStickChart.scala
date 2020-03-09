@@ -317,14 +317,16 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
 
       if (xAxis.isAutoRanging) {
         val xData =
-          for (series <- data; seriesData <- series.data())
+          for (series <- data;
+               seriesData <- series.data())
             yield seriesData.XValue()
         xAxis.invalidateRange(xData)
       }
 
       if (yAxis.isAutoRanging) {
         val yData = mutable.ListBuffer.empty[Number]
-        for (series <- data; seriesData <- series.data()) {
+        for (series <- data;
+             seriesData <- series.data()) {
           seriesData.extraValue() match {
             case extras: CandleStick =>
               yData += extras.high

@@ -444,7 +444,9 @@ trait DB extends Loggable {
         st.close
       }
     } match {
-      case (time, (query, res)) => runLogger(query, time); res
+      case (time, (query, res)) =>
+        runLogger(query, time);
+        res
     }
   }
 
@@ -782,7 +784,9 @@ trait DB extends Loggable {
         st.close
       }
     } match {
-      case (time, (query, res)) => runLogger(query, time); res
+      case (time, (query, res)) =>
+        runLogger(query, time);
+        res
     }
   }
 
@@ -1240,7 +1244,8 @@ class StandardDBVendor(
     tryo { t: Throwable =>
       logger.error("Cannot load database driver: %s".format(driverName), t)
     } {
-      Class.forName(driverName); ()
+      Class.forName(driverName);
+      ()
     }
 
     (dbUser, dbPassword) match {
@@ -1372,7 +1377,8 @@ trait ProtoDBVendor extends ConnectionManager {
     if (poolSize <= 0 || cnt > 10) ()
     else {
       pool.foreach { c =>
-        tryo(c.close); poolSize -= 1
+        tryo(c.close);
+        poolSize -= 1
       }
       pool = Nil
 

@@ -40,7 +40,8 @@ object ActorWithBoundedStashSpec {
       case msg: String if msg.startsWith("hello") ⇒
         numStashed += 1
         try {
-          stash(); sender() ! "ok"
+          stash();
+          sender() ! "ok"
         } catch {
           case _: StashOverflowException ⇒
             if (numStashed == 21) {

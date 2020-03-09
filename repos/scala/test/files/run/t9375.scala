@@ -91,7 +91,8 @@ class A extends S {
   }
 
   trait GetObj {
-    def O: SE; def P: SE
+    def O: SE;
+    def P: SE
   }
   val a: GetObj = new GetObj with S {
     def anonThis = this
@@ -167,7 +168,8 @@ trait T extends S {
   }
 
   trait GetObj {
-    def O: SE; def P: SE
+    def O: SE;
+    def P: SE
   }
   val a: GetObj = new GetObj with S {
     def anonThis = this

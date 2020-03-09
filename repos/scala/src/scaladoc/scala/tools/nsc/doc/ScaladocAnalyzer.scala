@@ -95,7 +95,8 @@ trait ScaladocAnalyzer extends Analyzer {
         }
       )
 
-      for (tree <- trees; t <- tree)
+      for (tree <- trees;
+           t <- tree)
         t match {
           case Ident(name) if name startsWith '$' => defineAlias(name)
           case _                                  =>
@@ -152,11 +153,13 @@ abstract class ScaladocSyntaxAnalyzer[G <: Global](val global: G)
         do {
           do {
             if (in.ch != '*' && in.ch != SU) {
-              in.next; putDocChar(in.ch)
+              in.next;
+              putDocChar(in.ch)
             }
           } while (in.ch != '*' && in.ch != SU)
           while (in.ch == '*') {
-            in.next; putDocChar(in.ch)
+            in.next;
+            putDocChar(in.ch)
           }
         } while (in.ch != '/' && in.ch != SU)
         if (in.ch == '/') in.next

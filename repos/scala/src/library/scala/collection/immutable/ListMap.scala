@@ -140,7 +140,9 @@ class ListMap[A, +B]
       def next(): (A, B) =
         if (!hasNext) throw new NoSuchElementException("next on empty iterator")
         else {
-          val res = (self.key, self.value); self = self.next; res
+          val res = (self.key, self.value);
+          self = self.next;
+          res
         }
     }.toList.reverseIterator
 
@@ -231,7 +233,9 @@ class ListMap[A, +B]
         acc.last
       else if (k == cur.key)
         (cur.next /: acc) {
-          case (t, h) => val tt = t; new tt.Node(h.key, h.value) // SI-7459
+          case (t, h) =>
+            val tt = t;
+            new tt.Node(h.key, h.value) // SI-7459
         }
       else
         remove0(k, cur.next, cur :: acc)

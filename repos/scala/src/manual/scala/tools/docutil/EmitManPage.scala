@@ -73,7 +73,8 @@ object EmitManPage {
             out.println
             emitText(d.description)
             if (n > 1) {
-              out.println; n -= 1
+              out.println;
+              n -= 1
             }
           }
 

@@ -18,7 +18,8 @@ class ReadHandleTest extends FunSuite {
   }
 
   def msg(i: Int) = {
-    val (_, m) = msg_(i); m
+    val (_, m) = msg_(i);
+    m
   }
 
   trait BufferedReadHandle {

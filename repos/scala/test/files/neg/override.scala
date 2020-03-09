@@ -11,7 +11,8 @@ trait Y extends X {
     type T >: String <: String
   }
   lazy val x: A with B = {
-    println(""); x
+    println("");
+    x
   }
   n = "foo"
 }

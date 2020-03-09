@@ -292,7 +292,8 @@ trait Mailer extends SimpleInjector {
     }
 
     val bodyTypes = info.flatMap {
-      case x: MailBodyType => Some[MailBodyType](x); case _ => None
+      case x: MailBodyType => Some[MailBodyType](x);
+      case _               => None
     }
     bodyTypes match {
       case PlainMailBodyType(txt) :: Nil =>

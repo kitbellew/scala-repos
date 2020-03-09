@@ -41,8 +41,10 @@ object mandelbrot {
         val cr = 2.0 * x / side - 1.5
         val ci = 2.0 * y / side - 1.0
 
-        var zr = 0.0; var zi = 0.0
-        var tr = 0.0; var ti = 0.0
+        var zr = 0.0;
+        var zi = 0.0
+        var tr = 0.0;
+        var ti = 0.0
 
         var j = max
         do {

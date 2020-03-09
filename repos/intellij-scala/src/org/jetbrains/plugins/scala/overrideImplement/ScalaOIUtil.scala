@@ -240,7 +240,8 @@ object ScalaOIUtil {
               case x: ScFunction => x.parameters.length == 0
               case _             => method.getParameterList.getParametersCount == 0
             }) {
-          for (pair <- clazz.allVals; v = pair._1) if (v.name == method.name) {
+          for (pair <- clazz.allVals;
+               v = pair._1) if (v.name == method.name) {
             ScalaPsiUtil.nameContext(v) match {
               case x: ScValue if x.containingClass == clazz    => flag = true
               case x: ScVariable if x.containingClass == clazz => flag = true
@@ -313,7 +314,8 @@ object ScalaOIUtil {
             case _ => //todo: ScPrimaryConstructor?
           }
         }
-        for (pair <- clazz.allVals; v = pair._1) if (v.name == named.name) {
+        for (pair <- clazz.allVals;
+             v = pair._1) if (v.name == named.name) {
           ScalaPsiUtil.nameContext(v) match {
             case x: ScValue if x.containingClass == clazz    => flag = true
             case x: ScVariable if x.containingClass == clazz => flag = true

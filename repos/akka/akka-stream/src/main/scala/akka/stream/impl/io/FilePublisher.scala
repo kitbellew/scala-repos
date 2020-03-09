@@ -112,7 +112,9 @@ private[akka] final class FilePublisher(
     if (chunks.size <= maxChunks && isActive && !eofEncountered) {
       (try chan.read(buf)
       catch {
-        case NonFatal(ex) ⇒ onErrorThenStop(ex); Int.MinValue
+        case NonFatal(ex) ⇒
+          onErrorThenStop(ex);
+          Int.MinValue
       }) match {
         case -1 ⇒ // EOF
           eofReachedAtOffset = chan.position

@@ -33,7 +33,8 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
     s match {
       case t: SymbolInfoSymbol => {
         for (a <- t.attributes) {
-          indent; print(toString(a))
+          indent;
+          print(toString(a))
           if (onNewLine) print("\n") else print(" ")
         }
       }
@@ -150,7 +151,8 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
       //Print class selftype
       c.selfType match {
         case Some(t: Type) =>
-          print("\n"); print(" this: " + toString(t) + " =>")
+          print("\n");
+          print(" this: " + toString(t) + " =>")
         case None =>
       }
       print("\n")
@@ -231,7 +233,8 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
     t match {
       case NullaryMethodType(resType) =>
         if (printResult) {
-          print(": "); printType(resType)
+          print(": ");
+          printType(resType)
         }
       case mt @ MethodType(resType, paramSymbols) => _pmt(mt)
       case pt @ PolyType(mt, typeParams) => {
@@ -239,7 +242,9 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
         printMethodType(mt, printResult)({})
       }
       //todo consider another method types
-      case x => print(": "); printType(x)
+      case x =>
+        print(": ");
+        printType(x)
     }
 
     // Print rest of the symbol output

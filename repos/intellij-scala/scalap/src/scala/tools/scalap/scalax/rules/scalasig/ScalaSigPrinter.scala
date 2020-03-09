@@ -72,7 +72,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
     s match {
       case t: SymbolInfoSymbol =>
         for (a <- t.attributes) {
-          indent; print(toString(a))
+          indent;
+          print(toString(a))
           if (onNewLine) print("\n") else print(" ")
         }
       case _ =>
@@ -246,7 +247,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         //Print class selftype
         c.selfType match {
           case Some(t: Type) =>
-            print("\n"); print(" this : " + toString(t) + " =>")
+            print("\n");
+            print(" this : " + toString(t) + " =>")
           case None =>
         }
         print("\n")
@@ -403,7 +405,9 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
           for (param <- typeParams) removeTypeParameter(param)
         }
       //todo consider another method types
-      case x => print(" : "); printType(x)
+      case x =>
+        print(" : ");
+        printType(x)
     }
 
     // Print rest of the symbol output

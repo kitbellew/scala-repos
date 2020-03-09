@@ -133,7 +133,8 @@ object ListHelpersSpec extends Specification with ListHelpers {
     "not evaluate the default valueif list is not empty" in {
       head(
         List(1), {
-          sys.error("stop"); 2
+          sys.error("stop");
+          2
         }) must_== 1
     }
   }
@@ -147,7 +148,8 @@ object ListHelpersSpec extends Specification with ListHelpers {
     }
     "not evaluate its argument if the predicate is false" in {
       listIf(false)({
-        sys.error("stop"); 1
+        sys.error("stop");
+        1
       }) must_== Nil
     }
   }

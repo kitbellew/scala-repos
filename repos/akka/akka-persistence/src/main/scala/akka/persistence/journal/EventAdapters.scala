@@ -111,7 +111,9 @@ private[akka] object EventAdapters {
     }
 
     val backing = (new ConcurrentHashMap[Class[_], EventAdapter] /: bindings) {
-      case (map, (c, s)) ⇒ map.put(c, s); map
+      case (map, (c, s)) ⇒
+        map.put(c, s);
+        map
     }
 
     new EventAdapters(backing, bindings, system.log)

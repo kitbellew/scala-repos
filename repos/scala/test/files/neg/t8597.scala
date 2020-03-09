@@ -16,7 +16,8 @@ class Unchecked[C] {
 
   // These must remain without warnings. These are excerpts from
   // related tests that are more exhauative.
-  class C; class D extends C
+  class C;
+  class D extends C
   def okay = (List(new D): Seq[D]) match {
     case _: List[C] => case _ =>
   } // nowarn

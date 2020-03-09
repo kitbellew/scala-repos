@@ -48,7 +48,8 @@ object EventStreamSpec {
         bus.subscribe(context.self, classOf[UnhandledMessage])
         sender() ! Logging.LoggerInitialized
       case SetTarget(ref) ⇒ {
-        dst = ref; dst ! "OK"
+        dst = ref;
+        dst ! "OK"
       }
       case e: Logging.LogEvent ⇒ dst ! e
       case u: UnhandledMessage ⇒ dst ! u

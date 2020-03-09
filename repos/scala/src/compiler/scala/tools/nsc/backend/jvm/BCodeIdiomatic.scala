@@ -52,21 +52,27 @@ abstract class BCodeIdiomatic extends SubComponent {
     if (xs.isEmpty) {
       return EMPTY_BTYPE_ARRAY
     }
-    val a = new Array[BType](xs.size); xs.copyToArray(a); a
+    val a = new Array[BType](xs.size);
+    xs.copyToArray(a);
+    a
   }
   /* can-multi-thread */
   final def mkArray(xs: List[String]): Array[String] = {
     if (xs.isEmpty) {
       return EMPTY_STRING_ARRAY
     }
-    val a = new Array[String](xs.size); xs.copyToArray(a); a
+    val a = new Array[String](xs.size);
+    xs.copyToArray(a);
+    a
   }
   /* can-multi-thread */
   final def mkArray(xs: List[asm.Label]): Array[asm.Label] = {
     if (xs.isEmpty) {
       return EMPTY_LABEL_ARRAY
     }
-    val a = new Array[asm.Label](xs.size); xs.copyToArray(a); a
+    val a = new Array[asm.Label](xs.size);
+    xs.copyToArray(a);
+    a
   }
 
   /*
@@ -295,7 +301,9 @@ abstract class BCodeIdiomatic extends SubComponent {
           to match {
             case LONG   => emit(F2L)
             case DOUBLE => emit(F2D)
-            case _      => emit(F2I); emitT2T(INT, to)
+            case _ =>
+              emit(F2I);
+              emitT2T(INT, to)
           }
 
         case LONG =>
@@ -303,7 +311,9 @@ abstract class BCodeIdiomatic extends SubComponent {
           to match {
             case FLOAT  => emit(L2F)
             case DOUBLE => emit(L2D)
-            case _      => emit(L2I); emitT2T(INT, to)
+            case _ =>
+              emit(L2I);
+              emitT2T(INT, to)
           }
 
         case DOUBLE =>
@@ -311,7 +321,9 @@ abstract class BCodeIdiomatic extends SubComponent {
           to match {
             case FLOAT => emit(D2F)
             case LONG  => emit(D2L)
-            case _     => emit(D2I); emitT2T(INT, to)
+            case _ =>
+              emit(D2I);
+              emitT2T(INT, to)
           }
       }
     } // end of emitT2T()

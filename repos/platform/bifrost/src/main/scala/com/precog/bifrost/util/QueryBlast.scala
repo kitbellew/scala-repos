@@ -121,7 +121,8 @@ object QueryBlast extends AkkaDefaults {
 
     maxCount.foreach { mc =>
       if (count >= mc) {
-        println("Shutdown"); sys.exit()
+        println("Shutdown");
+        sys.exit()
       }
     }
   }

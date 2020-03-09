@@ -19,7 +19,8 @@ class A {
 
   // def g1[A, T](x: Flooz[A, T]) = { x.value = null ; x.value.intValue }
   def g2(x: Flooz[_, _]) = {
-    x.value = null; x.value.intValue
+    x.value = null;
+    x.value.intValue
   }
 
   class MyClass2(x: MyClass[_]) {

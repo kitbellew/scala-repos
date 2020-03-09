@@ -3,7 +3,8 @@ object Elided {
   @elidable(INFO) def info(): Boolean = true
   @elidable(10000) def f(): Boolean = true
   def g(): Boolean = {
-    assert(false); true
+    assert(false);
+    true
   }
 }
 

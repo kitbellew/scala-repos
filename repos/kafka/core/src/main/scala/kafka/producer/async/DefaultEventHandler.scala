@@ -487,7 +487,9 @@ class DefaultEventHandler[K, V](
       }
       Some(messagesPerTopicPartition)
     } catch {
-      case t: Throwable => error("Failed to group messages", t); None
+      case t: Throwable =>
+        error("Failed to group messages", t);
+        None
     }
   }
 

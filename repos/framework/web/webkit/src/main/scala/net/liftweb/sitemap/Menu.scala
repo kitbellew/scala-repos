@@ -550,7 +550,9 @@ object Menu extends MenuSingleton {
             headMatch || !gotStar
           }
 
-          case (op, Nil)                                     => retParams ++= op; headMatch
+          case (op, Nil) =>
+            retParams ++= op;
+            headMatch
           case (Nil, _)                                      => false
           case (o :: _, NormalLocPath(str) :: _) if o != str => false
           case (o :: os, * :: ms) => {
@@ -858,11 +860,16 @@ final class ParamLocLink[T](
     @tailrec
     def merge(path: List[LocPath], params: List[String]) {
       (path, params) match {
-        case (Nil, p)           => ret ++= p
-        case (* :: ps, Nil)     => ret += "?"; merge(ps, Nil)
-        case (* :: ps, r :: rs) => ret += r; merge(ps, rs)
+        case (Nil, p) => ret ++= p
+        case (* :: ps, Nil) =>
+          ret += "?";
+          merge(ps, Nil)
+        case (* :: ps, r :: rs) =>
+          ret += r;
+          merge(ps, rs)
         case (NormalLocPath(p) :: ps, rs) =>
-          ret += p; merge(ps, rs)
+          ret += p;
+          merge(ps, rs)
       }
     }
 

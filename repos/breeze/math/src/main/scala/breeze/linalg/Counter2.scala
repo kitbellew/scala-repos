@@ -79,13 +79,16 @@ trait Counter2Like[
   }
 
   override def keysIterator =
-    for ((k1, m) <- data.iterator; k2 <- m.keysIterator) yield (k1, k2)
+    for ((k1, m) <- data.iterator;
+         k2 <- m.keysIterator) yield (k1, k2)
 
   override def valuesIterator =
-    for (m <- data.valuesIterator; v <- m.valuesIterator) yield v
+    for (m <- data.valuesIterator;
+         v <- m.valuesIterator) yield v
 
   override def iterator =
-    for ((k1, m) <- data.iterator; (k2, v) <- m.iterator) yield (k1, k2) -> v
+    for ((k1, m) <- data.iterator;
+         (k2, v) <- m.iterator) yield (k1, k2) -> v
 
   def activeSize = size
 
@@ -139,7 +142,8 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
       def -(elem: (K1, K2)): Set[(K1, K2)] = Set.empty ++ iterator - elem
 
       def iterator: Iterator[(K1, K2)] =
-        for ((k1, m) <- data.iterator; k2 <- m.keysIterator) yield (k1, k2)
+        for ((k1, m) <- data.iterator;
+             k2 <- m.keysIterator) yield (k1, k2)
     }
   }
 
@@ -269,7 +273,8 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
             }
 
             override def iterator =
-              for ((k1, map) <- from.data.iterator; v <- map.get(col))
+              for ((k1, map) <- from.data.iterator;
+                   v <- map.get(col))
                 yield (k1, v)
 
             override def get(k1: K1) =

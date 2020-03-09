@@ -201,10 +201,14 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
                 height.keys mustEqual Set("estimate", "standardError")
 
                 height("estimate") must beLike {
-                  case SDecimal(d) => resValues(0) = d; ok
+                  case SDecimal(d) =>
+                    resValues(0) = d;
+                    ok
                 }
                 height("standardError") must beLike {
-                  case SDecimal(d) => resValues(1) = d; ok
+                  case SDecimal(d) =>
+                    resValues(1) = d;
+                    ok
                 }
             }
             if (constant) {
@@ -225,28 +229,40 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
             obj.keys mustEqual Set("estimate", "standardError")
 
             obj("estimate") must beLike {
-              case SDecimal(d) => resValues(2) = d; ok
+              case SDecimal(d) =>
+                resValues(2) = d;
+                ok
             }
             obj("standardError") must beLike {
-              case SDecimal(d) => resValues(3) = d; ok
+              case SDecimal(d) =>
+                resValues(3) = d;
+                ok
             }
         }
 
         rSquared must beLike {
-          case SDecimal(d) => resValues(4) = d; ok
+          case SDecimal(d) =>
+            resValues(4) = d;
+            ok
         }
         resStdErr must beLike {
           case SObject(obj) =>
             obj.keySet mustEqual Set("estimate", "degreesOfFreedom")
             obj("estimate") must beLike {
-              case SDecimal(d) => resValues(5) = d; ok
+              case SDecimal(d) =>
+                resValues(5) = d;
+                ok
             }
             obj("degreesOfFreedom") must beLike {
-              case SDecimal(d) => resValues(6) = d; ok
+              case SDecimal(d) =>
+                resValues(6) = d;
+                ok
             }
         }
         varCovar must beLike {
-          case SArray(arr) => resVarCovar(0) = arr; ok
+          case SArray(arr) =>
+            resVarCovar(0) = arr;
+            ok
         }
       }
 

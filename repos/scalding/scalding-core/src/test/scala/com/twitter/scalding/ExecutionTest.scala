@@ -298,14 +298,16 @@ class ExecutionTest extends WordSpec with Matchers {
       var second = 0
       var third = 0
       val e1 = Execution.from({
-        first += 1; 42
+        first += 1;
+        42
       })
       val e2 = e1.flatMap { x =>
         second += 1
         Execution.from(2 * x)
       }
       val e3 = e1.map { x =>
-        third += 1; x * 3
+        third += 1;
+        x * 3
       }
 
       /**
@@ -517,7 +519,8 @@ class ExecutionTest extends WordSpec with Matchers {
           Execution
             .from[Int](i)
             .map { i =>
-              Thread.sleep(10 - i); i
+              Thread.sleep(10 - i);
+              i
             }
             .onComplete(t => updateSeen(t.get))
         }

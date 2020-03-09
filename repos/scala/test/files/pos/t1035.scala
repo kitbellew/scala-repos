@@ -7,7 +7,8 @@ class A {
   var name: String = _
   def getName() = name
   def this(name: String, age: Int) {
-    this(); this.name = name
+    this();
+    this.name = name
   }
 
 }

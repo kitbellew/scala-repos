@@ -135,7 +135,9 @@ class AccumulatorSuite
       val d = sc.parallelize((1 to maxI) ++ (1 to maxI))
       d.foreach { x =>
         {
-          setAcc += x; bufferAcc += x; mapAcc += (x -> x.toString)
+          setAcc += x;
+          bufferAcc += x;
+          mapAcc += (x -> x.toString)
         }
       }
 

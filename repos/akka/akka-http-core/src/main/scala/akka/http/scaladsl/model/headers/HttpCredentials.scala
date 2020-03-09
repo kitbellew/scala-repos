@@ -67,7 +67,8 @@ final case class GenericHttpCredentials(
         def apply(kvp: (String, String)): Unit = {
           val (k, v) = kvp
           if (first) {
-            r ~~ ' '; first = false
+            r ~~ ' ';
+            first = false
           } else r ~~ ','
           if (!k.isEmpty) r ~~ k ~~ '='
           r ~~# v

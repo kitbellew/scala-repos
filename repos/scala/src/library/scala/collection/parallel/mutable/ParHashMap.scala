@@ -81,7 +81,9 @@ class ParHashMap[K, V] private[collection] (
     val e = findOrAddEntry(key, value)
     if (e eq null) None
     else {
-      val v = e.value; e.value = value; Some(v)
+      val v = e.value;
+      e.value = value;
+      Some(v)
     }
   }
 
@@ -100,7 +102,8 @@ class ParHashMap[K, V] private[collection] (
   }
 
   def -=(key: K): this.type = {
-    removeEntry(key); this
+    removeEntry(key);
+    this
   }
 
   override def stringPrefix = "ParHashMap"

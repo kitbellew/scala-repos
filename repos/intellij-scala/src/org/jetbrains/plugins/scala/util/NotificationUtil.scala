@@ -25,19 +25,24 @@ object NotificationUtil {
     private var handler: Handler = IdHandler
 
     def setGroup(group: String) = {
-      this.group = group; this
+      this.group = group;
+      this
     }
     def setTitle(title: String) = {
-      this.title = title; this
+      this.title = title;
+      this
     }
     def setNotificationType(notificationType: NotificationType) = {
-      this.notificationType = notificationType; this
+      this.notificationType = notificationType;
+      this
     }
     def setDisplayType(displayType: NotificationDisplayType) = {
-      this.displayType = displayType; this
+      this.displayType = displayType;
+      this
     }
     def setHandler(handler: Handler) = {
-      this.handler = handler; this
+      this.handler = handler;
+      this
     }
 
     def notification =

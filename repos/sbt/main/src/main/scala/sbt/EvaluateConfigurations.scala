@@ -458,13 +458,15 @@ object Index {
       runBefore,
       triggeredBy,
       map => {
-        onComplete(); map
+        onComplete();
+        map
       })
   }
   private[this] def update(
       map: TriggerMap,
       base: Task[_],
       tasksOpt: Option[Seq[Task[_]]]): Unit =
-    for (tasks <- tasksOpt; task <- tasks)
+    for (tasks <- tasksOpt;
+         task <- tasks)
       map(task) = base +: map.getOrElse(task, Nil)
 }

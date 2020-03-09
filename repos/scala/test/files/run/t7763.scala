@@ -1,5 +1,6 @@
 object Test {
-  class A; class B
+  class A;
+  class B
   def main(args: Array[String]) {
     def noExpectedType() {
       a().asInstanceOf[B] // cast elided!

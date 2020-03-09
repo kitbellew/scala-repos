@@ -20,7 +20,8 @@ class RecipeSimpleDrop extends RecipeSpec {
       val latch = TestLatch(2)
       val realDroppyStream =
         Flow[Message].conflate((lastMessage, newMessage) => {
-          latch.countDown(); newMessage
+          latch.countDown();
+          newMessage
         })
 
       val pub = TestPublisher.probe[Message]()

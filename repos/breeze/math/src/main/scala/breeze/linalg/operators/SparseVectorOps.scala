@@ -1385,19 +1385,22 @@ trait SparseVectorOps { this: SparseVector.type =>
         } else if (n == 2) {
           var sum: Double = 0.0
           activeValuesIterator foreach (v => {
-            val nn = f.sNorm(v); sum += nn * nn
+            val nn = f.sNorm(v);
+            sum += nn * nn
           })
           math.sqrt(sum)
         } else if (n == Double.PositiveInfinity) {
           var max: Double = 0.0
           activeValuesIterator foreach (v => {
-            val nn = f.sNorm(v); if (nn > max) max = nn
+            val nn = f.sNorm(v);
+            if (nn > max) max = nn
           })
           max
         } else {
           var sum: Double = 0.0
           activeValuesIterator foreach (v => {
-            val nn = f.sNorm(v); sum += math.pow(nn, n)
+            val nn = f.sNorm(v);
+            sum += math.pow(nn, n)
           })
           math.pow(sum, 1.0 / n)
         }
@@ -1418,19 +1421,22 @@ trait SparseVectorOps { this: SparseVector.type =>
         } else if (n == 2) {
           var sum: Double = 0.0
           activeValuesIterator foreach (v => {
-            val nn = v.abs.toDouble; sum += nn * nn
+            val nn = v.abs.toDouble;
+            sum += nn * nn
           })
           math.sqrt(sum)
         } else if (n == Double.PositiveInfinity) {
           var max: Double = 0.0
           activeValuesIterator foreach (v => {
-            val nn = v.abs.toDouble; if (nn > max) max = nn
+            val nn = v.abs.toDouble;
+            if (nn > max) max = nn
           })
           max
         } else {
           var sum: Double = 0.0
           activeValuesIterator foreach (v => {
-            val nn = v.abs.toDouble; sum += math.pow(nn, n)
+            val nn = v.abs.toDouble;
+            sum += math.pow(nn, n)
           })
           math.pow(sum, 1.0 / n)
         }

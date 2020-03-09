@@ -103,7 +103,8 @@ class SortedMapperPaginator[T <: Mapper[T]](
   val headers = _headers.toList
   sort = (
     headers.indexWhere {
-      case (_, `initialSort`) => true; case _ => false
+      case (_, `initialSort`) => true;
+      case _                  => false
     },
     true)
 

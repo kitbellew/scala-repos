@@ -84,7 +84,8 @@ trait AbstractExamples extends Specification {
       (print((json \ "children")(0) \ "name") mustEqual "\"Mary\"") and
       (print((json \ "children")(1) \ "name") mustEqual "\"Mazy\"") and
       ((for {
-        JObject(o) <- json; JField("name", JString(y)) <- o
+        JObject(o) <- json;
+        JField("name", JString(y)) <- o
       } yield y) mustEqual List("joe", "Mary", "Mazy"))
   }
 

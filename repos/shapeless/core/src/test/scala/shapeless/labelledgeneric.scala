@@ -107,7 +107,8 @@ object ScalazTaggedAux {
   import labelled.FieldType
 
   type Tagged[A, T] = {
-    type Tag = T; type Self = A
+    type Tag = T;
+    type Self = A
   }
   type @@[T, Tag] = Tagged[T, Tag]
 

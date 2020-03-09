@@ -31,7 +31,8 @@ final class RichFloat(val self: Float)
   override def isValidShort = self.toShort.toFloat == self
   override def isValidChar = self.toChar.toFloat == self
   override def isValidInt = {
-    val i = self.toInt; i.toFloat == self && i != Int.MaxValue
+    val i = self.toInt;
+    i.toFloat == self && i != Int.MaxValue
   }
   // override def isValidLong = { val l = self.toLong; l.toFloat == self && l != Long.MaxValue }
   // override def isValidFloat = !java.lang.Float.isNaN(self)

@@ -30,7 +30,8 @@ class HeapBalancerTest
       new Service[Unit, LoadedFactory] {
         def apply(req: Unit) = Future.value(LoadedFactory.this)
         override def close(deadline: Time) = {
-          load -= 1; Future.Done
+          load -= 1;
+          Future.Done
         }
       }
     }
@@ -356,7 +357,10 @@ class HeapBalancerTest
       new Random
     )
 
-    b(); b(); b(); b()
+    b();
+    b();
+    b();
+    b()
 
     factories(0).setStatus(Status.Closed)
     factories(1).setStatus(Status.Closed)

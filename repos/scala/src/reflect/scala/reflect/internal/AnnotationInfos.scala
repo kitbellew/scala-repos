@@ -269,7 +269,8 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
     def assocs: List[(Name, ClassfileAnnotArg)] = forcedInfo.assocs
     def original: Tree = forcedInfo.original
     def setOriginal(t: Tree): this.type = {
-      forcedInfo.setOriginal(t); this
+      forcedInfo.setOriginal(t);
+      this
     }
 
     // We should always be able to print things without forcing them.

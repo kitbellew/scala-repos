@@ -108,7 +108,9 @@ class SinkForeachParallelSpec extends AkkaSpec {
           })
           .withAttributes(supervisionStrategy(stoppingDecider)))
       p.onFailure {
-        case e ⇒ assert(e.getMessage.equals("err2")); Unit
+        case e ⇒
+          assert(e.getMessage.equals("err2"));
+          Unit
       }
       p.onSuccess {
         case _ ⇒ fail()

@@ -72,7 +72,8 @@ class MainTest extends AsyncTest[JdbcTestDB] { mainTest =>
         ("Carl", Some("Carlson")),
         ("Lenny", Some("Leonard")))
       ins3 <- users.map(_.first) ++= Seq("Santa's Little Helper", "Snowball")
-      total = for (i2 <- ins2; i3 <- ins3) yield ins1 + i2 + i3
+      total = for (i2 <- ins2;
+                   i3 <- ins3) yield ins1 + i2 + i3
       /* All test DBs seem to report the actual number of rows. None would also be acceptable: */
       _ = total.map(_ shouldBe 7)
       r1 <- q1.result

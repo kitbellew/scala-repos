@@ -31,7 +31,9 @@ object Test {
   def main(args: Array[String]): Unit = {
     // warmup
     {
-      val r = new Runner(1000000, 10); r.straightSlice; r.iteratorSlice;
+      val r = new Runner(1000000, 10);
+      r.straightSlice;
+      r.iteratorSlice;
       r.viewSlice
     }
 

@@ -997,10 +997,12 @@ private[stream] abstract class MaterializerSession(
         // (This is an attempt to clean up after an exception during materialization)
         val errorPublisher =
           new ErrorPublisher(new MaterializationPanic(cause), "")
-        for (subMap ← subscribersStack; sub ← subMap.asScala.valuesIterator)
+        for (subMap ← subscribersStack;
+             sub ← subMap.asScala.valuesIterator)
           doSubscribe(errorPublisher, sub)
 
-        for (pubMap ← publishersStack; pub ← pubMap.asScala.valuesIterator)
+        for (pubMap ← publishersStack;
+             pub ← pubMap.asScala.valuesIterator)
           pub.subscribe(new CancellingSubscriber)
 
         throw cause

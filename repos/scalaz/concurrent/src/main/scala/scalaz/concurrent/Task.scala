@@ -497,7 +497,8 @@ object Task {
                       // but, this may also kill `cb(e)`
                       // could have separate AtomicBooleans for each task
                       cb(e) *> Trampoline.delay {
-                        interrupt.set(true); ()
+                        interrupt.set(true);
+                        ()
                       }
                     else
                       Trampoline.done(())

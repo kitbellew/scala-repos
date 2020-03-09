@@ -21,7 +21,9 @@ trait Phased {
   def get = active
   def set(phase: PhaseName): Boolean = phase match {
     case NoPhaseName => false
-    case name        => active = name; true
+    case name =>
+      active = name;
+      true
   }
   def setMulti(phases: Seq[PhaseName]): Boolean = {
     if (phases contains NoPhaseName) false

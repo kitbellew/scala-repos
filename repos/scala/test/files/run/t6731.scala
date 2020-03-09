@@ -3,11 +3,13 @@ import scala.reflect.{ClassTag, classTag}
 
 object Util {
   def show[T](x: T): T = {
-    println(x); x
+    println(x);
+    x
   }
   def mkArgs(xs: Any*) =
     xs map {
-      case ((k, v)) => k + "=" + v; case x => "" + x
+      case ((k, v)) => k + "=" + v;
+      case x        => "" + x
     } mkString ("(", ", ", ")")
 }
 import Util._
@@ -126,21 +128,35 @@ object Test {
   def main(args: Array[String]): Unit = {
     {
       import Mono._
-      f1; f2; f3; f4; f5
+      f1;
+      f2;
+      f3;
+      f4;
+      f5
       f6
     }
     {
       import Poly._
-      f1; f2; f3; f4; f5
-      f6; f7; f8; f9; f10
+      f1;
+      f2;
+      f3;
+      f4;
+      f5
+      f6;
+      f7;
+      f8;
+      f9;
+      f10
     }
     {
       import Updating._
-      f1; f2
+      f1;
+      f2
     }
     {
       import Nest1._
-      f1; f2
+      f1;
+      f2
     }
     {
       import Named._
@@ -148,8 +164,15 @@ object Test {
     }
     {
       import Named2._
-      f1; f2; f3; f4; f5
-      f6; f7; f8; f9
+      f1;
+      f2;
+      f3;
+      f4;
+      f5
+      f6;
+      f7;
+      f8;
+      f9
     }
   }
 }

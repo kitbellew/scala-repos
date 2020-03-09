@@ -34,7 +34,8 @@ object T {
 
   // `this` refers to T
   class C(val x: Any = {
-    println(this); this
+    println(this);
+    this
   }) { // prints T
     println(this) // prints C
     override def toString() = "C"
@@ -47,9 +48,11 @@ object T {
         a: Int,
         b: Int,
         c: Any = {
-          println(this); this
+          println(this);
+          this
         }) {
-      this(c); println(this)
+      this(c);
+      println(this)
     } // prints T, then prints D
   }
 }

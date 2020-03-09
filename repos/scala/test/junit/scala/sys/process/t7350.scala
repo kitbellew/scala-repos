@@ -216,7 +216,8 @@ class PipedProcessTest {
 class PipeSourceSinkTest {
   def throwsIOException(f: => Unit) = {
     try {
-      f; false
+      f;
+      false
     } catch {
       case _: IOException => true
     }

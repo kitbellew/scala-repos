@@ -181,7 +181,8 @@ class FinagleClientThriftServerTest extends FunSuite {
 
         val addrs = 0 until NumParties map { _ =>
           makeServer(transportFactory, somewayPromise) { (a, b) =>
-            barrier.await(); a + b
+            barrier.await();
+            a + b
           }
         }
 

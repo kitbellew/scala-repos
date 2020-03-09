@@ -78,8 +78,10 @@ object GraphReader extends RegexParsers {
 
   def tokenize(line: String, onError: String => Unit): List[String] =
     parse(edgeline, line.trim) match {
-      case Success(args, _)     => args
-      case NoSuccess(msg, rest) => onError(msg); List()
+      case Success(args, _) => args
+      case NoSuccess(msg, rest) =>
+        onError(msg);
+        List()
     }
 
   def readChunk(

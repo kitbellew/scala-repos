@@ -19,7 +19,8 @@ trait Transforms { self: SymbolTable =>
     def isDefined = _isDefined
     def force: T = {
       if (!isDefined) {
-        value = op; _isDefined = true
+        value = op;
+        _isDefined = true
       }
       value
     }

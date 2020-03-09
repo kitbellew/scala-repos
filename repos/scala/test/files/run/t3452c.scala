@@ -140,28 +140,44 @@ object Test {
 
 object TestE {
   def f0(x: Base[String, String, String]) = {
-    x.f("a", "b", "c"); x.g("a", "b", "c"); x.h("a", "b", "c")
+    x.f("a", "b", "c");
+    x.g("a", "b", "c");
+    x.h("a", "b", "c")
   }
   def f1(x: E1[String, String]) = {
-    x.f("a", "b", "c"); x.g("a", "b", "c"); x.h("a", "b", "c")
+    x.f("a", "b", "c");
+    x.g("a", "b", "c");
+    x.h("a", "b", "c")
   }
   def f2(x: E2[String, String]) = {
-    x.f("a", "b", "c"); x.g("a", "b", "c"); x.h("a", "b", "c")
+    x.f("a", "b", "c");
+    x.g("a", "b", "c");
+    x.h("a", "b", "c")
   }
   def f3(x: E3[String, String]) = {
-    x.f("a", "b", "c"); x.g("a", "b", "c"); x.h("a", "b", "c")
+    x.f("a", "b", "c");
+    x.g("a", "b", "c");
+    x.h("a", "b", "c")
   }
   def f4(x: E4[String]) = {
-    x.f("a", "b", "c"); x.g("a", "b", "c"); x.h("a", "b", "c")
+    x.f("a", "b", "c");
+    x.g("a", "b", "c");
+    x.h("a", "b", "c")
   }
   def f5(x: E5[String]) = {
-    x.f("a", "b", "c"); x.g("a", "b", "c"); x.h("a", "b", "c")
+    x.f("a", "b", "c");
+    x.g("a", "b", "c");
+    x.h("a", "b", "c")
   }
   def f6(x: E6[String]) = {
-    x.f("a", "b", "c"); x.g("a", "b", "c"); x.h("a", "b", "c")
+    x.f("a", "b", "c");
+    x.g("a", "b", "c");
+    x.h("a", "b", "c")
   }
   def f7(x: E7) = {
-    x.f("a", "b", "c"); x.g("a", "b", "c"); x.h("a", "b", "c")
+    x.f("a", "b", "c");
+    x.g("a", "b", "c");
+    x.h("a", "b", "c")
   }
 
   def main(args: Array[String]): Unit = {
@@ -179,16 +195,24 @@ object TestE {
 
 object TestG {
   def f0(x: Base[String, String, String]) = {
-    x.f("a", "b", "c"); x.g("a", "b", "c"); x.h("a", "b", "c")
+    x.f("a", "b", "c");
+    x.g("a", "b", "c");
+    x.h("a", "b", "c")
   }
   def f1(x: GBag1[String, String]) = {
-    x.f("a", "b", "c"); x.g("a", "b", "c"); x.h("a", "b", "c")
+    x.f("a", "b", "c");
+    x.g("a", "b", "c");
+    x.h("a", "b", "c")
   }
   def f2(x: GBag2[String]) = {
-    x.f("a", "b", "c"); x.g("a", "b", "c"); x.h("a", "b", "c")
+    x.f("a", "b", "c");
+    x.g("a", "b", "c");
+    x.h("a", "b", "c")
   }
   def f3(x: GBag3) = {
-    x.f("a", "b", "c"); x.g("a", "b", "c"); x.h("a", "b", "c")
+    x.f("a", "b", "c");
+    x.g("a", "b", "c");
+    x.h("a", "b", "c")
   }
 
   def main(args: Array[String]): Unit = {

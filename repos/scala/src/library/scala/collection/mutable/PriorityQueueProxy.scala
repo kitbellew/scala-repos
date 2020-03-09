@@ -48,7 +48,8 @@ abstract class PriorityQueueProxy[A](implicit ord: Ordering[A])
     *  @param  elem        the element to insert
     */
   override def +=(elem: A): this.type = {
-    self += elem; this
+    self += elem;
+    this
   }
 
   /** Adds all elements provided by an iterator into the priority queue.

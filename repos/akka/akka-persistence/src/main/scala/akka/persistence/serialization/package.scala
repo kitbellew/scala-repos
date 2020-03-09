@@ -19,7 +19,8 @@ package object serialization {
     def copy(): Array[Byte] = {
       val n = inputStream.read(buf, 0, len)
       if (n != -1) {
-        out.write(buf, 0, n); copy()
+        out.write(buf, 0, n);
+        copy()
       } else out.toByteArray
     }
 

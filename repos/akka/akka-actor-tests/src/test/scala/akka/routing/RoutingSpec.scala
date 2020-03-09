@@ -150,7 +150,9 @@ class RoutingSpec
       //#supervision
       val escalator = OneForOneStrategy() {
         //#custom-strategy
-        case e ⇒ testActor ! e; SupervisorStrategy.Escalate
+        case e ⇒
+          testActor ! e;
+          SupervisorStrategy.Escalate
         //#custom-strategy
       }
       val router = system.actorOf(
@@ -176,7 +178,9 @@ class RoutingSpec
 
     "set supplied supervisorStrategy for FromConfig" in {
       val escalator = OneForOneStrategy() {
-        case e ⇒ testActor ! e; SupervisorStrategy.Escalate
+        case e ⇒
+          testActor ! e;
+          SupervisorStrategy.Escalate
       }
       val router = system.actorOf(
         FromConfig
@@ -192,7 +196,9 @@ class RoutingSpec
 
     "default to all-for-one-always-escalate strategy" in {
       val restarter = OneForOneStrategy() {
-        case e ⇒ testActor ! e; SupervisorStrategy.Restart
+        case e ⇒
+          testActor ! e;
+          SupervisorStrategy.Restart
       }
       val supervisor = system.actorOf(Props(new Supervisor(restarter)))
       supervisor ! RoundRobinPool(3).props(routeeProps = Props(new Actor {

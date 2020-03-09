@@ -92,7 +92,8 @@ class FakeTaskScheduler(
     addExecutor(execId, host)
   }
 
-  for ((execId, host) <- liveExecutors; rack <- getRackForHost(host)) {
+  for ((execId, host) <- liveExecutors;
+       rack <- getRackForHost(host)) {
     hostsByRack.getOrElseUpdate(rack, new mutable.HashSet[String]()) += host
   }
 
@@ -105,7 +106,8 @@ class FakeTaskScheduler(
     val hostId = host.get
     val executorsOnHost = executorsByHost(hostId)
     executorsOnHost -= execId
-    for (rack <- getRackForHost(hostId); hosts <- hostsByRack.get(rack)) {
+    for (rack <- getRackForHost(hostId);
+         hosts <- hostsByRack.get(rack)) {
       hosts -= hostId
       if (hosts.isEmpty) {
         hostsByRack -= rack

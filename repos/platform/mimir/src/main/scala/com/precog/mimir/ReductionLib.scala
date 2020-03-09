@@ -229,7 +229,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       implicit val monoid = new Monoid[Result] {
         def zero = None
         def append(left: Result, right: => Result): Result = {
-          (for (l <- left; r <- right) yield l max r) orElse left orElse right
+          (for (l <- left;
+                r <- right) yield l max r) orElse left orElse right
         }
       }
 
@@ -294,7 +295,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       implicit val monoid = new Monoid[Result] {
         def zero = None
         def append(left: Result, right: => Result): Result = {
-          (for (l <- left; r <- right) yield l min r) orElse left orElse right
+          (for (l <- left;
+                r <- right) yield l min r) orElse left orElse right
         }
       }
 
@@ -474,7 +476,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         def zero = None
         def append(left: Result, right: => Result) = {
           val both =
-            for ((l1, l2) <- left; (r1, r2) <- right) yield (l1 * r1, l2 + r2)
+            for ((l1, l2) <- left;
+                 (r1, r2) <- right) yield (l1 * r1, l2 + r2)
           both orElse left orElse right
         }
       }
@@ -707,7 +710,9 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         def zero = None
 
         def append(left: Option[Boolean], right: => Option[Boolean]) = {
-          val both = for (l <- left; r <- right) yield l && r
+          val both =
+            for (l <- left;
+                 r <- right) yield l && r
           both orElse left orElse right
         }
       }
@@ -760,7 +765,9 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         def zero = None
 
         def append(left: Option[Boolean], right: => Option[Boolean]) = {
-          val both = for (l <- left; r <- right) yield l || r
+          val both =
+            for (l <- left;
+                 r <- right) yield l || r
           both orElse left orElse right
         }
       }

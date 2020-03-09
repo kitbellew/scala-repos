@@ -332,7 +332,8 @@ private[sbt] final class Execute[A[_] <: AnyRef](
   def dependencyCheck(node: A[_]): Unit = {
     dependencies(node) foreach { dep =>
       def onOpt[T](o: Option[T])(f: T => Boolean) = o match {
-        case None => false; case Some(x) => f(x)
+        case None    => false;
+        case Some(x) => f(x)
       }
       def checkForward = onOpt(forward.get(node)) {
         _ contains dep
@@ -380,7 +381,8 @@ private[sbt] final class Execute[A[_] <: AnyRef](
   // cyclic reference checking
 
   def snapshotCycleCheck(): Unit =
-    for ((called: A[c], callers) <- callers.toSeq; caller <- callers)
+    for ((called: A[c], callers) <- callers.toSeq;
+         caller <- callers)
       cycleCheck(caller.asInstanceOf[A[c]], called)
 
   def cycleCheck[T](node: A[T], target: A[T]): Unit = {

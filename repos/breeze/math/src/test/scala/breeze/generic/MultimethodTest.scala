@@ -47,7 +47,8 @@ class MultimethodTest extends FunSuite with Checkers {
 
   test("exceptions for things not present") {
     val mm = new MM
-    for (a <- all; b <- all) {
+    for (a <- all;
+         b <- all) {
       intercept[UnsupportedOperationException] {
         mm(a, b)
         assert(false, "Shouldn't be here!")
@@ -57,7 +58,8 @@ class MultimethodTest extends FunSuite with Checkers {
     mm.register({ (a: DV, b: DV) =>
       'Woo
     })
-    for (a <- all; b <- all if (a, b) != (dv, dv)) {
+    for (a <- all;
+         b <- all if (a, b) != (dv, dv)) {
       intercept[UnsupportedOperationException] {
         mm(a, b)
         assert(false, "Shouldn't be here!")

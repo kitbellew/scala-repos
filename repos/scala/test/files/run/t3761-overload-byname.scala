@@ -7,7 +7,8 @@ class OverTheTop {
   def info1(m: => String, args: Any*) = m + " " + args.mkString(", ")
 
   // @lrytz
-  def m[A](x: => Int) = 0; def m[A](x: => Int, xs: Int*) = 1
+  def m[A](x: => Int) = 0;
+  def m[A](x: => Int, xs: Int*) = 1
 
   def m1(x: => Int, s: String) = 0
   def m1(x: => Int, s: Object) = 1

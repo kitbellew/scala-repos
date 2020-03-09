@@ -89,7 +89,8 @@ trait TraitFragment[This <: android.support.v4.app.Fragment] {
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/Fragment.html#setArguments(android.os.Bundle) setArguments(android.os.Bundle)]]`
     */
   @inline def arguments_=(p: android.os.Bundle) = {
-    basis.setArguments(p); basis
+    basis.setArguments(p);
+    basis
   }
 
   /**
@@ -109,7 +110,8 @@ trait TraitFragment[This <: android.support.v4.app.Fragment] {
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/Fragment.html#setHasOptionsMenu(boolean) setHasOptionsMenu(boolean)]]`
     */
   @inline def hasOptionsMenu_=(p: Boolean) = {
-    basis.setHasOptionsMenu(p); basis
+    basis.setHasOptionsMenu(p);
+    basis
   }
 
   /**
@@ -132,7 +134,8 @@ trait TraitFragment[This <: android.support.v4.app.Fragment] {
     */
   @inline def initialSavedState_=(
       p: android.support.v4.app.Fragment.SavedState) = {
-    basis.setInitialSavedState(p); basis
+    basis.setInitialSavedState(p);
+    basis
   }
 
   /**
@@ -152,7 +155,8 @@ trait TraitFragment[This <: android.support.v4.app.Fragment] {
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/Fragment.html#setMenuVisibility(boolean) setMenuVisibility(boolean)]]`
     */
   @inline def menuVisibility_=(p: Boolean) = {
-    basis.setMenuVisibility(p); basis
+    basis.setMenuVisibility(p);
+    basis
   }
 
   /**
@@ -174,7 +178,8 @@ trait TraitFragment[This <: android.support.v4.app.Fragment] {
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/Fragment.html#setRetainInstance(boolean) setRetainInstance(boolean)]]`
     */
   @inline def retainInstance_=(p: Boolean) = {
-    basis.setRetainInstance(p); basis
+    basis.setRetainInstance(p);
+    basis
   }
 
   /**
@@ -206,7 +211,8 @@ trait TraitFragment[This <: android.support.v4.app.Fragment] {
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/Fragment.html#setUserVisibleHint(boolean) setUserVisibleHint(boolean)]]`
     */
   @inline def userVisibleHint_=(p: Boolean) = {
-    basis.setUserVisibleHint(p); basis
+    basis.setUserVisibleHint(p);
+    basis
   }
 
   /**
@@ -355,7 +361,8 @@ trait TraitFragmentTransaction[
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/FragmentTransaction.html#setBreadCrumbShortTitle(int) setBreadCrumbShortTitle(int)]]`
     */
   @inline def breadCrumbShortTitle_=(p: Int) = {
-    basis.setBreadCrumbShortTitle(p); basis
+    basis.setBreadCrumbShortTitle(p);
+    basis
   }
 
   /**
@@ -368,7 +375,8 @@ trait TraitFragmentTransaction[
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/FragmentTransaction.html#setBreadCrumbShortTitle(java.lang.CharSequence) setBreadCrumbShortTitle(java.lang.CharSequence)]]`
     */
   @inline def breadCrumbShortTitle_=(p: java.lang.CharSequence) = {
-    basis.setBreadCrumbShortTitle(p); basis
+    basis.setBreadCrumbShortTitle(p);
+    basis
   }
 
   @inline def breadCrumbTitle(implicit no: NoGetterForThisProperty): Nothing =
@@ -383,7 +391,8 @@ trait TraitFragmentTransaction[
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/FragmentTransaction.html#setBreadCrumbTitle(int) setBreadCrumbTitle(int)]]`
     */
   @inline def breadCrumbTitle_=(p: Int) = {
-    basis.setBreadCrumbTitle(p); basis
+    basis.setBreadCrumbTitle(p);
+    basis
   }
 
   /**
@@ -395,7 +404,8 @@ trait TraitFragmentTransaction[
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/FragmentTransaction.html#setBreadCrumbTitle(java.lang.CharSequence) setBreadCrumbTitle(java.lang.CharSequence)]]`
     */
   @inline def breadCrumbTitle_=(p: java.lang.CharSequence) = {
-    basis.setBreadCrumbTitle(p); basis
+    basis.setBreadCrumbTitle(p);
+    basis
   }
 
   @inline def transition(implicit no: NoGetterForThisProperty): Nothing =
@@ -410,7 +420,8 @@ trait TraitFragmentTransaction[
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/FragmentTransaction.html#setTransition(int) setTransition(int)]]`
     */
   @inline def transition_=(p: Int) = {
-    basis.setTransition(p); basis
+    basis.setTransition(p);
+    basis
   }
 
   @inline def transitionStyle(implicit no: NoGetterForThisProperty): Nothing =
@@ -425,7 +436,8 @@ trait TraitFragmentTransaction[
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/FragmentTransaction.html#setTransitionStyle(int) setTransitionStyle(int)]]`
     */
   @inline def transitionStyle_=(p: Int) = {
-    basis.setTransitionStyle(p); basis
+    basis.setTransitionStyle(p);
+    basis
   }
 
 }
@@ -455,7 +467,8 @@ trait TraitListFragment[This <: android.support.v4.app.ListFragment]
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/ListFragment.html#setEmptyText(java.lang.CharSequence) setEmptyText(java.lang.CharSequence)]]`
     */
   @inline def emptyText_=(p: java.lang.CharSequence) = {
-    basis.setEmptyText(p); basis
+    basis.setEmptyText(p);
+    basis
   }
 
   /**
@@ -472,7 +485,8 @@ trait TraitListFragment[This <: android.support.v4.app.ListFragment]
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/ListFragment.html#setListAdapter(android.widget.ListAdapter) setListAdapter(android.widget.ListAdapter)]]`
     */
   @inline def listAdapter_=(p: android.widget.ListAdapter) = {
-    basis.setListAdapter(p); basis
+    basis.setListAdapter(p);
+    basis
   }
 
   @inline def listShown(implicit no: NoGetterForThisProperty): Nothing =
@@ -487,7 +501,8 @@ trait TraitListFragment[This <: android.support.v4.app.ListFragment]
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/ListFragment.html#setListShown(boolean) setListShown(boolean)]]`
     */
   @inline def listShown_=(p: Boolean) = {
-    basis.setListShown(p); basis
+    basis.setListShown(p);
+    basis
   }
 
   @inline def listShownNoAnimation(
@@ -504,7 +519,8 @@ trait TraitListFragment[This <: android.support.v4.app.ListFragment]
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/ListFragment.html#setListShownNoAnimation(boolean) setListShownNoAnimation(boolean)]]`
     */
   @inline def listShownNoAnimation_=(p: Boolean) = {
-    basis.setListShownNoAnimation(p); basis
+    basis.setListShownNoAnimation(p);
+    basis
   }
 
   /**
@@ -534,7 +550,8 @@ trait TraitListFragment[This <: android.support.v4.app.ListFragment]
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/ListFragment.html#setSelection(int) setSelection(int)]]`
     */
   @inline def selection_=(p: Int) = {
-    basis.setSelection(p); basis
+    basis.setSelection(p);
+    basis
   }
 
 }
@@ -586,7 +603,8 @@ trait TraitDialogFragment[This <: android.support.v4.app.DialogFragment]
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/DialogFragment.html#setCancelable(boolean) setCancelable(boolean)]]`
     */
   @inline def cancelable_=(p: Boolean) = {
-    basis.setCancelable(p); basis
+    basis.setCancelable(p);
+    basis
   }
 
   /**
@@ -608,7 +626,8 @@ trait TraitDialogFragment[This <: android.support.v4.app.DialogFragment]
     * Shortcut for `[[https://developer.android.com/reference/android/support/v4/app/DialogFragment.html#setShowsDialog(boolean) setShowsDialog(boolean)]]`
     */
   @inline def showsDialog_=(p: Boolean) = {
-    basis.setShowsDialog(p); basis
+    basis.setShowsDialog(p);
+    basis
   }
 
   /**

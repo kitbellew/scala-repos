@@ -172,7 +172,8 @@ object BuiltinCommands {
   def boot = Command.make(BootCommand)(bootParser)
 
   def about = Command.command(AboutCommand, aboutBrief, aboutDetailed) { s =>
-    s.log.info(aboutString(s)); s
+    s.log.info(aboutString(s));
+    s
   }
 
   def setLogLevel =
@@ -195,7 +196,8 @@ object BuiltinCommands {
     if (Project.isProjectLoaded(s)) {
       val e = Project.extract(s)
       val version = e.getOpt(Keys.version) match {
-        case None => ""; case Some(v) => " " + v
+        case None    => "";
+        case Some(v) => " " + v
       }
       val current = "The current project is " + Reference.display(
         e.currentRef) + version + "\n"
@@ -244,7 +246,8 @@ object BuiltinCommands {
   private[this] def selectScalaVersion(
       sv: Option[String],
       si: ScalaInstance): String = sv match {
-    case Some(si.version) => si.version; case _ => si.actualVersion
+    case Some(si.version) => si.version;
+    case _                => si.actualVersion
   }
   private[this] def quiet[T](t: => T): Option[T] =
     try {
@@ -617,7 +620,9 @@ object BuiltinCommands {
       (ProjectsCommand, projectsBrief),
       projectsDetailed)(s => projectsParser(s).?) {
       case (s, Some(modifyBuilds)) => transformExtraBuilds(s, modifyBuilds)
-      case (s, None)               => showProjects(s); s
+      case (s, None) =>
+        showProjects(s);
+        s
     }
   def showProjects(s: State): Unit = {
     val extracted = Project extract s

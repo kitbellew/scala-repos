@@ -25,7 +25,8 @@ class FutureDirectivesSpec extends RoutingSpec {
     "unwrap a Future in the success case" in {
       var i = 0
       def nextNumber() = {
-        i += 1; i
+        i += 1;
+        i
       }
       val route = onComplete(Future.successful(nextNumber())) {
         echoComplete

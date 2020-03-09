@@ -217,7 +217,8 @@ trait PersistentView
   /** INTERNAL API. */
   override protected[akka] def aroundPreStart(): Unit = {
     // Fail fast on missing plugins.
-    val j = journal; val s = snapshotStore
+    val j = journal;
+    val s = snapshotStore
     super.aroundPreStart()
   }
 

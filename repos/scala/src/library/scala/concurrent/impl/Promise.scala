@@ -322,7 +322,9 @@ private[concurrent] object Promise {
       tryCompleteAndGetListeners(resolved) match {
         case null             => false
         case rs if rs.isEmpty => true
-        case rs               => rs.foreach(r => r.executeWithValue(resolved)); true
+        case rs =>
+          rs.foreach(r => r.executeWithValue(resolved));
+          true
       }
     }
 

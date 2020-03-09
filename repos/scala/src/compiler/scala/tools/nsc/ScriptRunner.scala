@@ -178,8 +178,10 @@ class ScriptRunner extends HasCompileSocket {
       scriptArgs: List[String]): Boolean = {
     val cp = File(compiledLocation).toURL +: settings.classpathURLs
     ObjectRunner.runAndCatch(cp, scriptMain(settings), scriptArgs) match {
-      case Left(ex) => ex.printStackTrace(); false
-      case _        => true
+      case Left(ex) =>
+        ex.printStackTrace();
+        false
+      case _ => true
     }
   }
 

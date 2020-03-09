@@ -3,7 +3,9 @@ class A2 extends A1 with T1 {
     def g = 5;
     class A {
       def a = g
-    }; g; new A().a
+    };
+    g;
+    new A().a
   }
 }
 

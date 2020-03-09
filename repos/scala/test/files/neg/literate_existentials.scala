@@ -154,7 +154,8 @@ object LiterateExistentials {
 
   implicitly[
     (Nothing, List[String]) <:< ((A, B) forSome {
-      type A >: String <: AnyRef; type B >: Null <: List[A]
+      type A >: String <: AnyRef;
+      type B >: Null <: List[A]
     })
   ]
 

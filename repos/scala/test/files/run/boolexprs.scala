@@ -11,7 +11,9 @@ class Counter {
 object Test1 {
   var flag = false;
   def flip: Boolean = {
-    val tmp = flag; flag = !flag; tmp
+    val tmp = flag;
+    flag = !flag;
+    tmp
   }
   def run: Int = {
     val c = new Counter;

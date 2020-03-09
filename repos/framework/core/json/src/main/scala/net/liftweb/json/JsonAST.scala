@@ -909,9 +909,9 @@ object JsonAST {
         ('\ufeff', '\ufeff'),
         ('\ufff0', '\uffff')
       ).foldLeft(Set[Char]()) {
-          case (set, (start, end)) =>
-            set ++ (start to end).toSet
-        }
+        case (set, (start, end)) =>
+          set ++ (start to end).toSet
+      }
 
     /**
       * Pretty-print JSON with 2-space indentation and escape all JS-sensitive
@@ -1143,7 +1143,8 @@ object JsonDSL extends JsonDSL
 trait JsonDSL extends Implicits {
   implicit def seq2jvalue[A <% JValue](s: Traversable[A]) =
     JArray(s.toList.map { a =>
-      val v: JValue = a; v
+      val v: JValue = a;
+      v
     })
 
   implicit def map2jvalue[A <% JValue](m: Map[String, A]) =

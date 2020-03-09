@@ -17,10 +17,12 @@ class IteratorTest {
     val it = new Iterator[Int] {
       var i = 0;
       def hasNext = {
-        counter = i; true
+        counter = i;
+        true
       };
       def next = {
-        i += 1; i
+        i += 1;
+        i
       }
     }
     val slidingIt = it sliding 2
@@ -36,10 +38,12 @@ class IteratorTest {
     def it = new Iterator[Int] {
       var i = 0;
       def hasNext = {
-        counter = i; true
+        counter = i;
+        true
       };
       def next = {
-        i += 1; i
+        i += 1;
+        i
       }
     }
     val slidingIt = it sliding 2 withPadding -1
@@ -52,7 +56,8 @@ class IteratorTest {
 
   @Test def dropDoesNotGrowStack(): Unit = {
     def it = new Iterator[Throwable] {
-      def hasNext = true; def next = new Throwable
+      def hasNext = true;
+      def next = new Throwable
     }
 
     assertEquals(
@@ -201,10 +206,12 @@ class IteratorTest {
     val results = collection.mutable.ListBuffer.empty[Int]
     def mkIterator =
       (1 to 5).iterator map (x => {
-        results += x; x
+        results += x;
+        x
       })
     def mkInfinite = Iterator continually {
-      results += 1; 1
+      results += 1;
+      1
     }
 
     // Stream is strict in its head so we should see 1 from each of them.
@@ -245,7 +252,8 @@ class IteratorTest {
       val parent = List(1, 2, 3).iterator
       def next(): Int = parent.next
       def hasNext: Boolean = {
-        counter += 1; parent.hasNext
+        counter += 1;
+        parent.hasNext
       }
     }
     // Iterate separately

@@ -852,7 +852,9 @@ trait ProtoUser {
         case Nil =>
           actionsAfterSignup(theUser, () => S.redirectTo(homePage))
 
-        case xs => S.error(xs); signupFunc(Full(innerSignup _))
+        case xs =>
+          S.error(xs);
+          signupFunc(Full(innerSignup _))
       }
     }
 
@@ -889,7 +891,9 @@ trait ProtoUser {
           S.redirectTo(homePage)
         })
 
-    case _ => S.error(S.?("invalid.validation.link")); S.redirectTo(homePage)
+    case _ =>
+      S.error(S.?("invalid.validation.link"));
+      S.redirectTo(homePage)
   }
 
   /**
@@ -1160,7 +1164,9 @@ trait ProtoUser {
         }
 
         bind(passwordResetXhtml)
-      case _ => S.error(S.?("password.link.invalid")); S.redirectTo(homePage)
+      case _ =>
+        S.error(S.?("password.link.invalid"));
+        S.redirectTo(homePage)
     }
 
   def resetPasswordSubmitButton(
@@ -1203,7 +1209,9 @@ trait ProtoUser {
         user.setPasswordFromListString(newPassword)
         user.validate match {
           case Nil =>
-            user.save; S.notice(S.?("password.changed")); S.redirectTo(homePage)
+            user.save;
+            S.notice(S.?("password.changed"));
+            S.redirectTo(homePage)
           case xs => S.error(xs)
         }
       }
@@ -1272,7 +1280,9 @@ trait ProtoUser {
           S.notice(S.?("profile.updated"))
           S.redirectTo(homePage)
 
-        case xs => S.error(xs); editFunc(Full(innerEdit _))
+        case xs =>
+          S.error(xs);
+          editFunc(Full(innerEdit _))
       }
     }
 

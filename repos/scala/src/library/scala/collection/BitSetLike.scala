@@ -111,7 +111,9 @@ trait BitSetLike[+This <: BitSetLike[This] with SortedSet[Int]]
     }
     def next(): Int =
       if (hasNext) {
-        val r = current; current += 1; r
+        val r = current;
+        current += 1;
+        r
       } else Iterator.empty.next()
   }
 

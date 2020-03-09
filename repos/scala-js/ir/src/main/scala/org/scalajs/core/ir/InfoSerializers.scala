@@ -66,13 +66,19 @@ object InfoSerializers {
         s.writeBoolean(isAbstract)
         s.writeBoolean(isExported)
         writeSeq(methodsCalled.toSeq) {
-          case (cls, callees) => s.writeUTF(cls); writeStrings(callees)
+          case (cls, callees) =>
+            s.writeUTF(cls);
+            writeStrings(callees)
         }
         writeSeq(methodsCalledStatically.toSeq) {
-          case (cls, callees) => s.writeUTF(cls); writeStrings(callees)
+          case (cls, callees) =>
+            s.writeUTF(cls);
+            writeStrings(callees)
         }
         writeSeq(staticMethodsCalled.toSeq) {
-          case (cls, callees) => s.writeUTF(cls); writeStrings(callees)
+          case (cls, callees) =>
+            s.writeUTF(cls);
+            writeStrings(callees)
         }
         writeStrings(instantiatedClasses)
         writeStrings(accessedModules)

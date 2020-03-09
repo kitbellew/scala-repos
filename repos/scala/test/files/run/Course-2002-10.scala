@@ -17,7 +17,8 @@ object M0 {
     fib
       .take(20)
       .foreach(n => {
-        Console.println("fib(" + i + ") = " + n); i = i + 1
+        Console.println("fib(" + i + ") = " + n);
+        i = i + 1
       });
     Console.println;
   }
@@ -80,7 +81,8 @@ object M1 {
     if (n <= 0) s.substring(0, s.length() + n)
     else pad(s + " ", n - 1);
   def str(d: Double) = {
-    val s = d.toString(); pad(s, 18 - s.length())
+    val s = d.toString();
+    pad(s, 18 - s.length())
   };
 
   def test = {
@@ -121,7 +123,8 @@ object M2 {
     var current: Int = start;
     def hasNext = true;
     def next = {
-      current = current + 1; current - 1
+      current = current + 1;
+      current - 1
     };
   }
 

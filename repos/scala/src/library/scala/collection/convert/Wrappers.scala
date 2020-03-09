@@ -96,10 +96,13 @@ private[collection] trait Wrappers {
       with IterableWrapperTrait[A] {
     def get(i: Int) = underlying(i)
     override def set(i: Int, elem: A) = {
-      val p = underlying(i); underlying(i) = elem; p
+      val p = underlying(i);
+      underlying(i) = elem;
+      p
     }
     override def add(elem: A) = {
-      underlying append elem; true
+      underlying append elem;
+      true
     }
     override def remove(i: Int) = underlying remove i
   }
@@ -113,10 +116,12 @@ private[collection] trait Wrappers {
     def apply(i: Int) = underlying.get(i)
     def update(i: Int, elem: A) = underlying.set(i, elem)
     def +=:(elem: A) = {
-      underlying.subList(0, 0) add elem; this
+      underlying.subList(0, 0) add elem;
+      this
     }
     def +=(elem: A): this.type = {
-      underlying add elem; this
+      underlying add elem;
+      this
     }
     def insertAll(i: Int, elems: Traversable[A]) = {
       val ins = underlying.subList(0, i)
@@ -150,7 +155,9 @@ private[collection] trait Wrappers {
       var prev: Option[A] = None
       def hasNext = ui.hasNext
       def next = {
-        val e = ui.next(); prev = Some(e); e
+        val e = ui.next();
+        prev = Some(e);
+        e
       }
       def remove = prev match {
         case Some(e) =>
@@ -195,10 +202,12 @@ private[collection] trait Wrappers {
     def contains(elem: A): Boolean = underlying.contains(elem)
 
     def +=(elem: A): this.type = {
-      underlying add elem; this
+      underlying add elem;
+      this
     }
     def -=(elem: A): this.type = {
-      underlying remove elem; this
+      underlying remove elem;
+      this
     }
 
     override def add(elem: A): Boolean = underlying add elem
@@ -323,10 +332,12 @@ private[collection] trait Wrappers {
     }
 
     def +=(kv: (A, B)): this.type = {
-      underlying.put(kv._1, kv._2); this
+      underlying.put(kv._1, kv._2);
+      this
     }
     def -=(key: A): this.type = {
-      underlying remove key; this
+      underlying remove key;
+      this
     }
 
     override def put(k: A, v: B): Option[B] = Option(underlying.put(k, v))
@@ -341,7 +352,8 @@ private[collection] trait Wrappers {
       val ui = underlying.entrySet.iterator
       def hasNext = ui.hasNext
       def next() = {
-        val e = ui.next(); (e.getKey, e.getValue)
+        val e = ui.next();
+        (e.getKey, e.getValue)
       }
     }
 
@@ -453,10 +465,12 @@ private[collection] trait Wrappers {
     def get(k: A) = Option(underlying get k)
 
     def +=(kv: (A, B)): this.type = {
-      underlying.put(kv._1, kv._2); this
+      underlying.put(kv._1, kv._2);
+      this
     }
     def -=(key: A): this.type = {
-      underlying remove key; this
+      underlying remove key;
+      this
     }
 
     override def put(k: A, v: B): Option[B] = Option(underlying.put(k, v))
@@ -487,10 +501,12 @@ private[collection] trait Wrappers {
     }
 
     def +=(kv: (String, String)): this.type = {
-      underlying.put(kv._1, kv._2); this
+      underlying.put(kv._1, kv._2);
+      this
     }
     def -=(key: String): this.type = {
-      underlying remove key; this
+      underlying remove key;
+      this
     }
 
     override def put(k: String, v: String): Option[String] = {

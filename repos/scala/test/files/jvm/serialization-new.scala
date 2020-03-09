@@ -218,7 +218,8 @@ object Test2_immutable {
 
     val bs2 = {
       val bs = new collection.mutable.BitSet()
-      bs += 2; bs += 3
+      bs += 2;
+      bs += 3
       bs.toImmutable
     }
     val _bs2: BitSet = read(write(bs2))

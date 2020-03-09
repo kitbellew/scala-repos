@@ -71,7 +71,9 @@ class LinkedHashMap[A, B]
     val e = findOrAddEntry(key, value)
     if (e eq null) None
     else {
-      val v = e.value; e.value = value; Some(v)
+      val v = e.value;
+      e.value = value;
+      Some(v)
     }
   }
 
@@ -91,14 +93,16 @@ class LinkedHashMap[A, B]
     "+= should not be overridden so it stays consistent with put.",
     "2.11.0")
   def +=(kv: (A, B)): this.type = {
-    put(kv._1, kv._2); this
+    put(kv._1, kv._2);
+    this
   }
 
   @deprecatedOverriding(
     "-= should not be overridden so it stays consistent with remove.",
     "2.11.0")
   def -=(key: A): this.type = {
-    remove(key); this
+    remove(key);
+    this
   }
 
   def iterator: Iterator[(A, B)] = new AbstractIterator[(A, B)] {
@@ -106,7 +110,9 @@ class LinkedHashMap[A, B]
     def hasNext = cur ne null
     def next =
       if (hasNext) {
-        val res = (cur.key, cur.value); cur = cur.later; res
+        val res = (cur.key, cur.value);
+        cur = cur.later;
+        res
       } else Iterator.empty.next()
   }
 
@@ -135,7 +141,9 @@ class LinkedHashMap[A, B]
     def hasNext = cur ne null
     def next =
       if (hasNext) {
-        val res = cur.key; cur = cur.later; res
+        val res = cur.key;
+        cur = cur.later;
+        res
       } else Iterator.empty.next()
   }
 
@@ -144,7 +152,9 @@ class LinkedHashMap[A, B]
     def hasNext = cur ne null
     def next =
       if (hasNext) {
-        val res = cur.value; cur = cur.later; res
+        val res = cur.value;
+        cur = cur.later;
+        res
       } else Iterator.empty.next()
   }
 
@@ -168,7 +178,8 @@ class LinkedHashMap[A, B]
     val e = new Entry(key, value.asInstanceOf[B])
     if (firstEntry eq null) firstEntry = e
     else {
-      lastEntry.later = e; e.earlier = lastEntry
+      lastEntry.later = e;
+      e.earlier = lastEntry
     }
     lastEntry = e
     e

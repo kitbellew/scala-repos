@@ -124,7 +124,8 @@ object test1 {
   }
 
   def m2[T](r: Object {
-    def e(x: Tata): T; val x: Tata
+    def e(x: Tata): T;
+    val x: Tata
   }) {
     println("33. " + r.e(r.x)) // and this too
   }

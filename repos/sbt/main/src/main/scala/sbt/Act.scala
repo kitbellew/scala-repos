@@ -172,7 +172,8 @@ object Act {
     }
   def toAxis[T](opt: Option[T], ifNone: ScopeAxis[T]): ScopeAxis[T] =
     opt match {
-      case Some(t) => Select(t); case None => ifNone
+      case Some(t) => Select(t);
+      case None    => ifNone
     }
 
   def config(confs: Set[String]): Parser[ParsedAxis[String]] = {

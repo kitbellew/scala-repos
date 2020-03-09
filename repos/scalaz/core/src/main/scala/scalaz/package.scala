@@ -106,7 +106,8 @@ package object scalaz {
     with Optional[Id] = Id.id
 
   private[scalaz] type Tagged[A, T] = {
-    type Tag = T; type Self = A
+    type Tag = T;
+    type Self = A
   }
 
   /**

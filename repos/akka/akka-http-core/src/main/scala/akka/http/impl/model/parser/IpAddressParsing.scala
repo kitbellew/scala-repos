@@ -29,7 +29,8 @@ private[parser] trait IpAddressParsing { this: Parser ⇒
     }
     def zero2(ix: Int) = rule {
       run {
-        a(ix) = 0.toByte; a(ix + 1) = 0.toByte;
+        a(ix) = 0.toByte;
+        a(ix + 1) = 0.toByte;
       }
     }
     def h4(ix: Int) = rule {
@@ -72,7 +73,8 @@ private[parser] trait IpAddressParsing { this: Parser ⇒
     }
     rule {
       !(':' ~ HEXDIG) ~ push {
-        a = new Array[Byte](16); a
+        a = new Array[Byte](16);
+        a
       } ~ (h16c(0) ~ tail2
         | cc(0) ~ tail2
         | ch16o(0) ~ (cc(2) ~ tail4

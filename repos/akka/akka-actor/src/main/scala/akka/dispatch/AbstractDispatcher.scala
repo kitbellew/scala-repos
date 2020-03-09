@@ -75,7 +75,8 @@ private[akka] object MessageDispatcher {
       for {
         d ← actors.keys
         a ← {
-          println(d + " inhabitants: " + d.inhabitants); actors.valueIterator(d)
+          println(d + " inhabitants: " + d.inhabitants);
+          actors.valueIterator(d)
         }
       } {
         val status = if (a.isTerminated) " (terminated)" else " (alive)"
@@ -508,7 +509,8 @@ object ForkJoinExecutorConfigurator {
     override def setRawResult(unit: Unit): Unit = ()
     final override def exec(): Boolean =
       try {
-        runnable.run(); true
+        runnable.run();
+        true
       } catch {
         case ie: InterruptedException ⇒
           Thread.currentThread.interrupt()

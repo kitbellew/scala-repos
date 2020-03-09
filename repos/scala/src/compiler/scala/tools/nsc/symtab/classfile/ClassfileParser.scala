@@ -201,9 +201,11 @@ abstract class ClassfileParser {
             in skip 4
           case CONSTANT_NAMEANDTYPE | CONSTANT_INTEGER | CONSTANT_FLOAT =>
             in skip 4
-          case CONSTANT_INVOKEDYNAMIC          => in skip 4
-          case CONSTANT_LONG | CONSTANT_DOUBLE => in skip 8; i += 1
-          case _                               => errorBadTag(in.bp - 1)
+          case CONSTANT_INVOKEDYNAMIC => in skip 4
+          case CONSTANT_LONG | CONSTANT_DOUBLE =>
+            in skip 8;
+            i += 1
+          case _ => errorBadTag(in.bp - 1)
         }
       }
     }
@@ -475,7 +477,8 @@ abstract class ClassfileParser {
       } else
         raiseLoaderLevel {
           val superType = if (jflags.isAnnotation) {
-            u2; AnnotationClass.tpe
+            u2;
+            AnnotationClass.tpe
           } else pool.getSuperClass(u2).tpe_*
           val ifaceCount = u2
           var ifaces =
@@ -569,7 +572,8 @@ abstract class ClassfileParser {
     val sflags = jflags.toScalaFlags
 
     if ((sflags & PRIVATE) != 0L && !optimized) {
-      in.skip(4); skipAttributes()
+      in.skip(4);
+      skipAttributes()
     } else {
       val name = readName()
       val info = readType()
@@ -611,10 +615,12 @@ abstract class ClassfileParser {
       val name = readName()
       if (name == nme.CONSTRUCTOR)
         sawPrivateConstructor = true
-      in.skip(2); skipAttributes()
+      in.skip(2);
+      skipAttributes()
     } else {
       if ((sflags & PRIVATE) != 0L && optimized) { // TODO this should be !optimized, no? See c4181f656d.
-        in.skip(4); skipAttributes()
+        in.skip(4);
+        skipAttributes()
       } else {
         val name = readName()
         val sym =
@@ -681,7 +687,8 @@ abstract class ClassfileParser {
     def sig2type(
         tparams: immutable.Map[Name, Symbol],
         skiptvs: Boolean): Type = {
-      val tag = sig.charAt(index); index += 1
+      val tag = sig.charAt(index);
+      index += 1
       tag match {
         case BYTE_TAG   => ByteTpe
         case CHAR_TAG   => CharTpe
@@ -1212,7 +1219,8 @@ abstract class ClassfileParser {
         case tpnme.ScalaSignatureATTR =>
           isScala = true
           val pbuf = new PickleBuffer(in.buf, in.bp, in.bp + attrLen)
-          pbuf.readNat(); pbuf.readNat()
+          pbuf.readNat();
+          pbuf.readNat()
           if (pbuf.readNat == 0) // a scala signature attribute with no entries means that the actual scala signature
             isScalaAnnot = true // is in a ScalaSignature annotation.
           in.skip(attrLen)

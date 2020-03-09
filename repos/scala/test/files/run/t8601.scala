@@ -6,7 +6,8 @@ object Test {
 
   def check(x: => Any) =
     try {
-      x; sys.error("failed to throw divide by zero!")
+      x;
+      sys.error("failed to throw divide by zero!")
     } catch {
       case _: ArithmeticException =>
     }

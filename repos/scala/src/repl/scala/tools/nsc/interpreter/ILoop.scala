@@ -384,7 +384,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       for (s <- settings.userSetSettings.toSeq.sorted) echo(s.toString)
     if (line.isEmpty) showSettings()
     else {
-      updateSettings(line); ()
+      updateSettings(line);
+      ()
     }
   }
   private def updateSettings(line: String) = {
@@ -465,7 +466,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
           def fn(): Boolean =
             try in.readYesOrNo(
               explain + replayQuestionMessage, {
-                echo("\nYou must enter y or n."); fn()
+                echo("\nYou must enter y or n.");
+                fn()
               })
             catch {
               case _: RuntimeException => false
@@ -493,9 +495,11 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
     ) // Long timeout here to avoid test failures under heavy load.
 
     command(line) match {
-      case Result(false, _)      => false
-      case Result(_, Some(line)) => addReplay(line); true
-      case _                     => true
+      case Result(false, _) => false
+      case Result(_, Some(line)) =>
+        addReplay(line);
+        true
+      case _ => true
     }
   }
 
@@ -661,10 +665,15 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
           } else {
             (s indexOf '-') match {
               case -1 => (s.toInt, 1)
-              case 0  => val n = s.drop(1).toInt; (history.index - n, n)
+              case 0 =>
+                val n = s.drop(1).toInt;
+                (history.index - n, n)
               case _ if s.last == '-' =>
-                val n = s.init.toInt; (n, history.index - n)
-              case i => val n = s.take(i).toInt; (n, s.drop(i + 1).toInt - n)
+                val n = s.init.toInt;
+                (n, history.index - n)
+              case i =>
+                val n = s.take(i).toInt;
+                (n, s.drop(i + 1).toInt - n)
             }
           }
         val index = (start - 1) max 0
@@ -709,7 +718,9 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
     words(arg) match {
       case "-v" :: file :: Nil => run(file, verbose = true)
       case file :: Nil         => run(file, verbose = false)
-      case _                   => echo("usage: :load -v file"); Result.default
+      case _ =>
+        echo("usage: :load -v file");
+        Result.default
     }
   }
 
@@ -866,7 +877,9 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
         val file0 = ss1 match {
           case Nil      => null
           case x :: Nil => x
-          case _        => echo("usage: :paste [-raw] file | < EOF"); return result
+          case _ =>
+            echo("usage: :paste [-raw] file | < EOF");
+            return result
         }
         (raw0, Option(file0), Option(margin0))
       }

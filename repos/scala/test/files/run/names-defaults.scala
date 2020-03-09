@@ -2,7 +2,8 @@ import scala.language.{higherKinds, existentials}
 
 object Test extends App {
   def get[T](x: T) = {
-    println("get: " + x); x
+    println("get: " + x);
+    x
   }
 
   // TESTS
@@ -42,7 +43,8 @@ object Test extends App {
     }
     println(delay(var2 = 40))
   }
-  val f1: (Int, String) => Unit = test1(_, _); f1(6, "~")
+  val f1: (Int, String) => Unit = test1(_, _);
+  f1(6, "~")
 
   test4(14)
 
@@ -139,7 +141,8 @@ object Test extends App {
 
   def bn3(a: => Int = get(10)) = 0
   def bn4(a: => Int = get(20)) = {
-    a; a
+    a;
+    a
   }
   println(bn3())
   println(bn4())
@@ -274,8 +277,10 @@ object Test extends App {
 
   def multinest = {
     def bar(x: Int = 1) = {
-      def bar(x: Int = 2) = x; bar() + x
-    }; bar()
+      def bar(x: Int = 2) = x;
+      bar() + x
+    };
+    bar()
   }
   println(multinest)
 
@@ -286,7 +291,8 @@ object Test extends App {
   def t {
     spawn(
       b = {
-        val ttt = 1; ttt
+        val ttt = 1;
+        ttt
       },
       a = 0)
   }
@@ -304,12 +310,17 @@ object Test extends App {
   // #2489
   class A2489 {
     def foo {
-      def bar(a: Int = 1) = a; bar(); val u = 0
+      def bar(a: Int = 1) = a;
+      bar();
+      val u = 0
     }
   }
   class A2489x2 {
     def foo {
-      val v = 10; def bar(a: Int = 1, b: Int = 2) = a; bar(); val u = 0
+      val v = 10;
+      def bar(a: Int = 1, b: Int = 2) = a;
+      bar();
+      val u = 0
     }
   }
 
@@ -365,11 +376,13 @@ object Test extends App {
 
   // #3344
   def m3344_1 = {
-    case class C(x: Int); C(1).copy(2).x
+    case class C(x: Int);
+    C(1).copy(2).x
   }
   m3344_1
   def m3344_2 = {
-    class C(val x: Int = 1); new C().x
+    class C(val x: Int = 1);
+    new C().x
   }
   m3344_2
 

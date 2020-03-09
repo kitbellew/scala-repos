@@ -538,9 +538,11 @@ trait Actor {
       case Exit(dead, reason)        => self.handleTrapExit(dead, reason)
       case Link(child)               => self.link(child)
       case Unlink(child)             => self.unlink(child)
-      case UnlinkAndStop(child)      => self.unlink(child); child.stop()
-      case Restart(reason)           => throw reason
-      case Kill                      => throw new ActorKilledException("Kill")
+      case UnlinkAndStop(child) =>
+        self.unlink(child);
+        child.stop()
+      case Restart(reason) => throw reason
+      case Kill            => throw new ActorKilledException("Kill")
       case PoisonPill =>
         val f = self.senderFuture
         self.stop()

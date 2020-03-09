@@ -379,7 +379,8 @@ trait BodyParsers {
           Accumulator {
             val buffer = RawBuffer(memoryThreshold)
             val sink = Sink.fold[RawBuffer, ByteString](buffer) { (bf, bs) =>
-              bf.push(bs); bf
+              bf.push(bs);
+              bf
             }
             sink.mapMaterializedValue { future =>
               future andThen {

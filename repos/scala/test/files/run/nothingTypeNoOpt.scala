@@ -30,7 +30,8 @@ class C {
     // type Nothing$, need to drop or throw it.
     println(
       if (x) {
-        ???; 10
+        ???;
+        10
       } else 20
     )
   }
@@ -38,7 +39,8 @@ class C {
   def f6(x: Boolean) = {
     println(
       if (x) {
-        throw new Error(""); 10
+        throw new Error("");
+        10
       } else 20
     )
   }

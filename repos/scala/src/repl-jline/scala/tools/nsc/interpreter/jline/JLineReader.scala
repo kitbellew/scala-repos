@@ -116,7 +116,9 @@ private class JLineConsoleReader
   def eraseLine() = resetPromptLine("", "", 0)
 
   def redrawLineAndFlush(): Unit = {
-    flush(); drawLine(); flush()
+    flush();
+    drawLine();
+    flush()
   }
 
   // A hook for running code after the repl is done initializing.

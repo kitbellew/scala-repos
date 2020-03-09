@@ -10,7 +10,8 @@ package scala {
     }
 
     def bar(x: b.c): a.b.c = {
-      b.foo(x); x
+      b.foo(x);
+      x
     }
   }
 }

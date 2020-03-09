@@ -38,7 +38,9 @@ trait JValueGen {
   def genList = Gen.containerOfN[List, JValue](listSize, genJValue)
   def genFieldList = Gen.containerOfN[List, JField](listSize, genField)
   def genField =
-    for (name <- identifier; value <- genJValue; id <- choose(0, 1000000))
+    for (name <- identifier;
+         value <- genJValue;
+         id <- choose(0, 1000000))
       yield JField(name + id, value)
 
   def genJValueClass: Gen[Class[_ <: JValue]] =

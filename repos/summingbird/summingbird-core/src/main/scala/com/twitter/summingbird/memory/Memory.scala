@@ -104,7 +104,8 @@ class Memory(implicit jobID: JobId = JobId("default.memory.jobId"))
             val (s, m) = toStream(producer, jamfs)
             (
               s.map { i =>
-                fn(i); i
+                fn(i);
+                i
               },
               m)
 

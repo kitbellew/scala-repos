@@ -1,6 +1,7 @@
 class A(a: Any) {
   def this() = {
-    this(b); def b = new {}
+    this(b);
+    def b = new {}
   }
 }
 

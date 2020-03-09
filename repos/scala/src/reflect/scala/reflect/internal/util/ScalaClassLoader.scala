@@ -31,7 +31,8 @@ trait ScalaClassLoader extends JClassLoader {
   def asContext[T](action: => T): T = {
     val saved = contextLoader
     try {
-      setContext(this); action
+      setContext(this);
+      action
     } finally setContext(saved)
   }
   def setAsContext() {
@@ -61,7 +62,8 @@ trait ScalaClassLoader extends JClassLoader {
       args: AnyRef*): T = {
     def fail(msg: String) = error(msg, new IllegalArgumentException(msg))
     def error(msg: String, e: Throwable) = {
-      errorFn(msg); throw e
+      errorFn(msg);
+      throw e
     }
     try {
       val clazz = Class.forName(path, /*initialize =*/ true, /*loader =*/ this)

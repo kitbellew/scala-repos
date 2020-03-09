@@ -34,7 +34,9 @@ object Test extends App {
   check(3, mutableStack(1, 2, 3).pop())
   check(
     "2-1", {
-      val s = mutableStack(1, 2, 3); s.pop(); s.toList.mkString("-")
+      val s = mutableStack(1, 2, 3);
+      s.pop();
+      s.toList.mkString("-")
     })
 }
 

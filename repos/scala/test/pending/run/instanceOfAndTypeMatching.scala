@@ -5,7 +5,8 @@ object Summary {
   class Outer {
     class Inner {}
     def f() = {
-      class MethodInner; new MethodInner
+      class MethodInner;
+      new MethodInner
     }
   }
 
@@ -127,10 +128,12 @@ object Test {
       inner1.isInstanceOf[outer1.Inner],
       inner1.isInstanceOf[Outer#Inner],
       (inner1: Any) match {
-        case _: Outer#Inner => true; case _ => false
+        case _: Outer#Inner => true;
+        case _              => false
       },
       (inner1: Any) match {
-        case _: outer1.Inner => true; case _ => false
+        case _: outer1.Inner => true;
+        case _               => false
       },
       inner1.compareSharpWithTypeMatch(inner2),
       inner1.compareSharpWithInstanceOf(inner2)
@@ -154,7 +157,8 @@ object Test {
     List(
       "These are doing the wrong thing under current proposal",
       (inner1: Any) match {
-        case _: outer2.Inner => true; case _ => false
+        case _: outer2.Inner => true;
+        case _               => false
       } // should be false
     ) foreach println
   }

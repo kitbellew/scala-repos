@@ -8,7 +8,8 @@ object Test extends App {
     implicit def arrayWrapper[A: ClassTag](x: Array[A]) =
       new {
         def sort(p: (A, A) => Boolean) = {
-          util.Sorting.stableSort(x, p); x
+          util.Sorting.stableSort(x, p);
+          x
         }
       }
     val x = Array(2, 3, 1, 4)

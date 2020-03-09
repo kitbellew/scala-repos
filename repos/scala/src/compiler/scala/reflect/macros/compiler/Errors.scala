@@ -118,7 +118,8 @@ trait Errors extends Traces {
 
       def check(rtpe: Type, atpe: Type): Boolean = {
         def success() = {
-          if (verbose) println(rtpe + " <: " + atpe + "?" + EOL + "true"); true
+          if (verbose) println(rtpe + " <: " + atpe + "?" + EOL + "true");
+          true
         }
         (rtpe, atpe) match {
           case _ if rtpe eq atpe => success()

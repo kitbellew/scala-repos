@@ -1,5 +1,6 @@
 trait A {
-  type T; type M >: T
+  type T;
+  type M >: T
 }
 trait B extends A {
   val x: String;

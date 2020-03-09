@@ -37,8 +37,10 @@ sealed trait IntList
 
   override def foreach[@specialized B](f: Int => B): Unit = {
     @tailrec def loop(xs: IntList): Unit = xs match {
-      case IntCons(h, t) => f(h); loop(t)
-      case _             =>
+      case IntCons(h, t) =>
+        f(h);
+        loop(t)
+      case _ =>
     }
     loop(this)
   }
@@ -96,7 +98,8 @@ final case object IntNil extends IntList {
 final class IntListBuilder extends Builder[Int, IntList] {
   private var xs: IntList = IntNil
   def +=(x: Int) = {
-    xs = x :: xs; this
+    xs = x :: xs;
+    this
   }
   def clear() {
     xs = IntNil

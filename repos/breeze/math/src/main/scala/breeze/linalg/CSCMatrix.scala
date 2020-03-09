@@ -359,7 +359,8 @@ object CSCMatrix
       ClassTag[V](data.getClass.getComponentType.asInstanceOf[Class[V]])
     val res = zeros(rows, cols, data.length)
     var i = 0
-    for (c <- 0 until cols; r <- 0 until rows) {
+    for (c <- 0 until cols;
+         r <- 0 until rows) {
       val v = data(i)
       i += 1
       if (v != z) {
@@ -437,7 +438,9 @@ object CSCMatrix
       override def apply(from: CSCMatrix[V], fn: (V => R)) = {
         var zeroSeen = false
         def ff(v: V) = {
-          val r = fn(v); if (r == z) zeroSeen = true; r
+          val r = fn(v);
+          if (r == z) zeroSeen = true;
+          r
         }
         val newData = from.data.map(ff)
         val r = new CSCMatrix[R](

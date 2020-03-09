@@ -1249,10 +1249,12 @@ class LiftSession(
 
     def appendAll(in: NodeSeq, lb: ListBuffer[Elem]) {
       in.foreach {
-        case Group(ns)       => appendAll(ns, lb)
-        case e: Elem if f(e) => lb += e; appendAll(e.child, lb)
-        case e: Elem         => appendAll(e.child, lb)
-        case _               =>
+        case Group(ns) => appendAll(ns, lb)
+        case e: Elem if f(e) =>
+          lb += e;
+          appendAll(e.child, lb)
+        case e: Elem => appendAll(e.child, lb)
+        case _       =>
       }
     }
     appendAll(in, lb)
@@ -1570,7 +1572,9 @@ class LiftSession(
           .flatMap(c =>
             instantiateOrRedirect(c) or findSnippetObject(cls))) match {
       case Full(inst: StatefulSnippet) =>
-        inst.addName(cls); S.overrideSnippetForClass(cls, inst); Full(inst)
+        inst.addName(cls);
+        S.overrideSnippetForClass(cls, inst);
+        Full(inst)
       case Full(ret)     => Full(ret)
       case fail: Failure => fail
       case _             => Empty
@@ -2322,7 +2326,8 @@ class LiftSession(
               in.!(xlate(p) match {
                 case Full(v) => v
                 case Empty =>
-                  logger.error("Failed to deserialize JSON message " + p); p
+                  logger.error("Failed to deserialize JSON message " + p);
+                  p
                 case Failure(msg, _, _) =>
                   logger.error(
                     "Failed to deserialize JSON message " + p + ". Error " + msg);

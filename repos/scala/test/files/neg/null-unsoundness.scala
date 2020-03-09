@@ -11,7 +11,8 @@ class A {
 }
 object Test extends A with App {
   class C {
-    type T = Int; val x = 1
+    type T = Int;
+    val x = 1
   }
   type A = C
   y = 42

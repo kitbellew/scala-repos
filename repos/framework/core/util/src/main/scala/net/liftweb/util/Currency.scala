@@ -83,7 +83,8 @@ object Currency {
     */
   def apply(s: String): Box[Currency] = s.roboSplit("&") match {
     case List(cur, a, d) =>
-      for (av <- asLong(a); dv <- asInt(d))
+      for (av <- asLong(a);
+           dv <- asInt(d))
         yield new Currency(av, urlDecode(cur), dv)
     case _ => Empty
   }

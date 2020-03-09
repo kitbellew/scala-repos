@@ -44,7 +44,8 @@ trait BufferProxy[A] extends Buffer[A] with Proxy {
     *  @param elem  the element to append.
     */
   def +=(elem: A): this.type = {
-    self.+=(elem); this
+    self.+=(elem);
+    this
   }
 
   /** Appends a number of elements provided by a traversable object.
@@ -53,7 +54,8 @@ trait BufferProxy[A] extends Buffer[A] with Proxy {
     *  @return     a reference to this $coll.
     */
   override def ++=(xs: TraversableOnce[A]): this.type = {
-    self.++=(xs); this
+    self.++=(xs);
+    this
   }
 
   /** Appends a sequence of elements to this buffer.
@@ -79,11 +81,13 @@ trait BufferProxy[A] extends Buffer[A] with Proxy {
     *  @return      a reference to this $coll.
     */
   def +=:(elem: A): this.type = {
-    self.+=:(elem); this
+    self.+=:(elem);
+    this
   }
 
   override def ++=:(xs: TraversableOnce[A]): this.type = {
-    self.++=:(xs); this
+    self.++=:(xs);
+    this
   }
 
   /** Prepend an element to this list.

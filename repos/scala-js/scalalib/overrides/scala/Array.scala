@@ -140,7 +140,8 @@ object Array extends FallbackArrayBuilding {
     val array = new Array[T](xs.length)
     var i = 0
     for (x <- xs.iterator) {
-      array(i) = x; i += 1
+      array(i) = x;
+      i += 1
     }
     array
   }
@@ -152,7 +153,8 @@ object Array extends FallbackArrayBuilding {
     array(0) = x
     var i = 1
     for (x <- xs.iterator) {
-      array(i) = x; i += 1
+      array(i) = x;
+      i += 1
     }
     array
   }
@@ -164,7 +166,8 @@ object Array extends FallbackArrayBuilding {
     array(0) = x
     var i = 1
     for (x <- xs.iterator) {
-      array(i) = x; i += 1
+      array(i) = x;
+      i += 1
     }
     array
   }
@@ -176,7 +179,8 @@ object Array extends FallbackArrayBuilding {
     array(0) = x
     var i = 1
     for (x <- xs.iterator) {
-      array(i) = x; i += 1
+      array(i) = x;
+      i += 1
     }
     array
   }
@@ -188,7 +192,8 @@ object Array extends FallbackArrayBuilding {
     array(0) = x
     var i = 1
     for (x <- xs.iterator) {
-      array(i) = x; i += 1
+      array(i) = x;
+      i += 1
     }
     array
   }
@@ -200,7 +205,8 @@ object Array extends FallbackArrayBuilding {
     array(0) = x
     var i = 1
     for (x <- xs.iterator) {
-      array(i) = x; i += 1
+      array(i) = x;
+      i += 1
     }
     array
   }
@@ -212,7 +218,8 @@ object Array extends FallbackArrayBuilding {
     array(0) = x
     var i = 1
     for (x <- xs.iterator) {
-      array(i) = x; i += 1
+      array(i) = x;
+      i += 1
     }
     array
   }
@@ -224,7 +231,8 @@ object Array extends FallbackArrayBuilding {
     array(0) = x
     var i = 1
     for (x <- xs.iterator) {
-      array(i) = x; i += 1
+      array(i) = x;
+      i += 1
     }
     array
   }
@@ -236,7 +244,8 @@ object Array extends FallbackArrayBuilding {
     array(0) = x
     var i = 1
     for (x <- xs.iterator) {
-      array(i) = x; i += 1
+      array(i) = x;
+      i += 1
     }
     array
   }
@@ -247,7 +256,8 @@ object Array extends FallbackArrayBuilding {
     array(0) = x
     var i = 1
     for (x <- xs.iterator) {
-      array(i) = x; i += 1
+      array(i) = x;
+      i += 1
     }
     array
   }

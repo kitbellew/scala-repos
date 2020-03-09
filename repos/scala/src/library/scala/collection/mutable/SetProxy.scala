@@ -27,16 +27,20 @@ trait SetProxy[A] extends Set[A] with SetProxyLike[A, Set[A]] {
     val self = SetProxy.this.self.empty
   }
   override def +(elem: A) = {
-    self += elem; this
+    self += elem;
+    this
   }
   override def -(elem: A) = {
-    self -= elem; this
+    self -= elem;
+    this
   }
 
   def +=(elem: A) = {
-    self += elem; this
+    self += elem;
+    this
   }
   def -=(elem: A) = {
-    self -= elem; this
+    self -= elem;
+    this
   }
 }

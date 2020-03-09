@@ -26,7 +26,8 @@ class TableDef[T](_cols: Column[T]*) {
   def colFunctions = cols map (_.f)
   def colApply(el: T) = colFunctions map (f => f(el))
   def retThis(body: => Unit): this.type = {
-    body; this
+    body;
+    this
   }
 
   class Table(val rows: Seq[T]) extends Seq[T] {

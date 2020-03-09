@@ -42,7 +42,9 @@ object Test {
   }
 
   def resetCnt() = {
-    val r = cnt; cnt = 0; r
+    val r = cnt;
+    cnt = 0;
+    r
   }
 
   val pf: PartialFunction[Int, Int] = {
@@ -77,7 +79,8 @@ object Test {
         println("0:apply")
       }
       def isDefinedAt(u: Unit) = {
-        println("0:isDefinedAt"); false
+        println("0:isDefinedAt");
+        false
       }
     }
     val pf1 = new PartialFunction[Unit, Unit] {
@@ -85,7 +88,8 @@ object Test {
         println("1:apply")
       }
       def isDefinedAt(u: Unit) = {
-        println("1:isDefinedAt"); false
+        println("1:isDefinedAt");
+        false
       }
     }
     val pf2 = new PartialFunction[Unit, Unit] {
@@ -93,7 +97,8 @@ object Test {
         println("2:apply")
       }
       def isDefinedAt(u: Unit) = {
-        println("2:isDefinedAt"); true
+        println("2:isDefinedAt");
+        true
       }
     }
 

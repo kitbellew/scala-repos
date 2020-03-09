@@ -55,7 +55,8 @@ trait Mirrors extends api.Mirrors {
       if (result != NoSymbol) result
       else {
         if (settings.debug) {
-          log(sym.info); log(sym.info.members)
+          log(sym.info);
+          log(sym.info.members)
         } //debug
         thisMirror.missingHook(owner, name) orElse {
           MissingRequirementError.notFound(

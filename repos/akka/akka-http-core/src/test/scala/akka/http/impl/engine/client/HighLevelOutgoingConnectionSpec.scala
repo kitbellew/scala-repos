@@ -42,7 +42,9 @@ class HighLevelOutgoingConnectionSpec extends AkkaSpec {
           .via(Http().outgoingConnection(serverHostName, serverPort))
           .mapAsync(4)(_.entity.toStrict(1.second))
           .map { r ⇒
-            val s = r.data.utf8String; log.debug(s); s.toInt
+            val s = r.data.utf8String;
+            log.debug(s);
+            s.toInt
           }
           .runFold(0)(_ + _)
 
@@ -85,7 +87,9 @@ class HighLevelOutgoingConnectionSpec extends AkkaSpec {
           .via(doubleConnection)
           .mapAsync(4)(_.entity.toStrict(1.second))
           .map { r ⇒
-            val s = r.data.utf8String; log.debug(s); s.toInt
+            val s = r.data.utf8String;
+            log.debug(s);
+            s.toInt
           }
           .runFold(0)(_ + _)
 

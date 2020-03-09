@@ -566,8 +566,11 @@ abstract class Erasure
           || (checkBridgeOverrides(member, other, bridge) match {
             case Nil => true
             case es if member.owner.isAnonymousClass =>
-              resolveAnonymousBridgeClash(member, bridge); true
-            case es => for ((pos, msg) <- es) reporter.error(pos, msg); false
+              resolveAnonymousBridgeClash(member, bridge);
+              true
+            case es =>
+              for ((pos, msg) <- es) reporter.error(pos, msg);
+              false
           })
       )
 

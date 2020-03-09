@@ -80,7 +80,8 @@ final object Aggregation {
     val log = state.log
     val extracted = Project extract state
     val success = results match {
-      case Value(_) => true; case Inc(_) => false
+      case Value(_) => true;
+      case Inc(_)   => false
     }
     results.toEither.right.foreach { r =>
       if (show.taskValues) printSettings(r, show.print)

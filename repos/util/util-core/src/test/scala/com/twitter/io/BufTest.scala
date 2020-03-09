@@ -29,7 +29,8 @@ class BufTest
   test("Buf.ByteArray.slice") {
     val arr = Array.range(0, 16).map(_.toByte)
     val buf = Buf.ByteArray.Owned(arr)
-    for (i <- 0 until arr.length; j <- i until arr.length) {
+    for (i <- 0 until arr.length;
+         j <- i until arr.length) {
       val w = new Array[Byte](j - i)
       buf.slice(i, j).write(w, 0)
       assert(w.toSeq == arr.slice(i, j).toSeq)
@@ -91,7 +92,8 @@ class BufTest
     val buf = Buf.ByteArray.Owned(a1) concat Buf.ByteArray.Owned(
       a2) concat Buf.ByteArray.Owned(a3)
 
-    for (i <- 0 until arr.length; j <- i until arr.length) {
+    for (i <- 0 until arr.length;
+         j <- i until arr.length) {
       val w = new Array[Byte](j - i)
       buf.slice(i, j).write(w, 0)
       assert(w.toSeq == arr.slice(i, j).toSeq)
@@ -410,7 +412,8 @@ class BufTest
     val cbuf2 = Buf.ByteArray.Owned(a3) concat Buf.ByteArray.Owned(a4)
     val cbuf = cbuf1 concat cbuf2
 
-    for (i <- 0 until arr.length; j <- i until arr.length) {
+    for (i <- 0 until arr.length;
+         j <- i until arr.length) {
       val w = new Array[Byte](j - i)
       cbuf.slice(i, j).write(w, 0)
       assert(w.toSeq == arr.slice(i, j).toSeq)

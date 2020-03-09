@@ -192,7 +192,8 @@ abstract class TransitionSpec
 
       val leader12 = leader(first, second)
       val (other1, other2) = {
-        val tmp = roles.filterNot(_ == leader12); (tmp.head, tmp.tail.head)
+        val tmp = roles.filterNot(_ == leader12);
+        (tmp.head, tmp.tail.head)
       }
       runOn(leader12) {
         leaderActions()

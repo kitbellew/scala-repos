@@ -40,7 +40,8 @@ object JsonParserSpec extends Specification with JValueGen with ScalaCheck {
 
   "Any valid json can be parsed" in {
     val parsing = (json: JValue) => {
-      parse(prettyRender(json)); true
+      parse(prettyRender(json));
+      true
     }
     forAll(genJValue)(parsing)
   }

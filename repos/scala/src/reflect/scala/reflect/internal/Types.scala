@@ -3458,7 +3458,8 @@ trait Types
             // This is a higher-kinded type var with same arity as tp.
             // If so (see SI-7517), side effect: adds the type constructor itself as a bound.
             isSubArgs(lhs, rhs, params, AnyDepth) && {
-              addBound(tp.typeConstructor); true
+              addBound(tp.typeConstructor);
+              true
             }
           }
         }
@@ -3549,7 +3550,8 @@ trait Types
     // side-effects encounteredHigherLevel
     private def containsSkolemAboveLevel(tp: Type) =
       (tp exists isSkolemAboveLevel) && {
-        encounteredHigherLevel = true; true
+        encounteredHigherLevel = true;
+        true
       }
 
     /** Can this variable be related in a constraint to type `tp`?
@@ -5050,7 +5052,8 @@ trait Types
   def withTypesExplained[A](op: => A): A = {
     val s = explainSwitch
     try {
-      explainSwitch = true; op
+      explainSwitch = true;
+      op
     } finally {
       explainSwitch = s
     }

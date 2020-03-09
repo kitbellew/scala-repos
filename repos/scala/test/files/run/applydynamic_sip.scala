@@ -6,7 +6,8 @@ object Test extends App {
 
   object stub {
     def apply = {
-      println(".apply"); stubUpdate
+      println(".apply");
+      stubUpdate
     }
     def apply(as: Any*) = println(".apply" + as.toList.mkString("(", ", ", ")"))
     def update(as: Any*) =
@@ -21,10 +22,12 @@ object Test extends App {
     def applyDynamicNamed[T](n: String)(as: (String, Any)*) = {
       println(
         "qual.applyDynamicNamed(" + n + ")" + as.toList
-          .mkString("(", ", ", ")")); stub
+          .mkString("(", ", ", ")"));
+      stub
     }
     def selectDynamic[T](n: String) = {
-      println("qual.selectDynamic(" + n + ")"); stub
+      println("qual.selectDynamic(" + n + ")");
+      stub
     }
     def updateDynamic(n: String)(x: Any): Unit = {
       println("qual.updateDynamic(" + n + ")(" + x + ")")

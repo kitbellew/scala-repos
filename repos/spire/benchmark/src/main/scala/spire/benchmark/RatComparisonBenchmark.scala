@@ -137,7 +137,8 @@ class RatComparisonBenchmarks extends MyBenchmark {
     var total = Rational(0, 1)
     var i = 0
     while (i < len) {
-      total += spires(i); i += 1
+      total += spires(i);
+      i += 1
     }
     total
   }
@@ -147,7 +148,8 @@ class RatComparisonBenchmarks extends MyBenchmark {
     var total = new Aprational(new Apint(0), new Apint(1))
     var i = 0
     while (i < len) {
-      total = total.add(aps(i)); i += 1
+      total = total.add(aps(i));
+      i += 1
     }
     total
   }
@@ -157,7 +159,8 @@ class RatComparisonBenchmarks extends MyBenchmark {
     var total = number.Rational.ZERO
     var i = 0
     while (i < len) {
-      total = total.plus(jscis(i)); i += 1
+      total = total.plus(jscis(i));
+      i += 1
     }
     total
   }

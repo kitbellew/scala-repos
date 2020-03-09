@@ -88,7 +88,8 @@ class RateTransformationDocSpec extends AkkaSpec {
     val latch = TestLatch(2)
     val realDriftFlow = Flow[Double]
       .expand(d => {
-        latch.countDown(); Iterator.from(0).map(d -> _)
+        latch.countDown();
+        Iterator.from(0).map(d -> _)
       })
 
     val (pub, sub) = TestSource

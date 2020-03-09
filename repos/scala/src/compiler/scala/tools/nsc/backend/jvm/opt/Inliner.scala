@@ -84,7 +84,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     // Collect callsites to rewrite before actually rewriting anything. This prevents changing the
     // `callsties` map while iterating it.
     val toRewrite = mutable.ArrayBuffer.empty[Callsite]
-    for (css <- callsites.valuesIterator; cs <- css.valuesIterator
+    for (css <- callsites.valuesIterator;
+         cs <- css.valuesIterator
          if doRewriteTraitCallsite(cs)) toRewrite += cs
     toRewrite foreach rewriteFinalTraitMethodInvocation
   }

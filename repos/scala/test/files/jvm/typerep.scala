@@ -36,7 +36,8 @@ object serialize {
 
 object testPrimitives {
   println(getType(true))
-  val b = false; val bt = getType(b)
+  val b = false;
+  val bt = getType(b)
   println(bt)
   val bt1: TypeRep[Boolean] = serialize.read(serialize.write(bt))
   println(bt1 == bt)

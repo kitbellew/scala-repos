@@ -39,7 +39,8 @@ trait BitVectorOps {
           _ xor _
         },
         { (a, b) =>
-          a.clear(); a.or(b)
+          a.clear();
+          a.or(b)
         })
       op: Op.InPlaceImpl2[java.util.BitSet, java.util.BitSet])
       : Op.InPlaceImpl2[BitVector, BitVector] =

@@ -6,7 +6,9 @@ import scala.tools.reflect.ToolBox
 object Test extends App {
   class C[T[_] >: Null] {
     val code = reify {
-      val x: T[String] = null; println("ima worx"); x
+      val x: T[String] = null;
+      println("ima worx");
+      x
     }.tree
     println(code.freeTypes)
     val T = code.freeTypes(0)

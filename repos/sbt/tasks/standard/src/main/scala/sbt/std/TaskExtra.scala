@@ -168,7 +168,8 @@ trait TaskExtra {
       def andFinally(fin: => Unit): Task[S] =
         mapR(x =>
           Result.tryValue[S]({
-            fin; x
+            fin;
+            x
           }))
       def doFinally(t: Task[Unit]): Task[S] =
         flatMapR(x =>
@@ -176,7 +177,8 @@ trait TaskExtra {
             Result.tryValues[S](tx :: Nil, x)
           })
       def ||[T >: S](alt: Task[T]): Task[T] = flatMapR {
-        case Value(v) => task(v); case Inc(i) => alt
+        case Value(v) => task(v);
+        case Inc(i)   => alt
       }
       def &&[T](alt: Task[T]): Task[T] = flatMap(_ => alt)
     }
@@ -198,7 +200,8 @@ trait TaskExtra {
         val pio = TaskExtra
           .processIO(s)
           .withInput(out => {
-            BasicIO.transferFully(in, out); out.close()
+            BasicIO.transferFully(in, out);
+            out.close()
           })
         (p run pio).exitValue
       }
@@ -279,14 +282,16 @@ object TaskExtra extends TaskExtra {
       if (incs.isEmpty) expectedFailure else incs
     }
   def failM[T]: Result[T] => Incomplete = {
-    case Inc(i) => i; case x => expectedFailure
+    case Inc(i) => i;
+    case x      => expectedFailure
   }
 
   def expectedFailure =
     throw Incomplete(None, message = Some("Expected dependency to fail."))
 
   def successM[T]: Result[T] => T = {
-    case Inc(i) => throw i; case Value(t) => t
+    case Inc(i)   => throw i;
+    case Value(t) => t
   }
   def allM[K[L[x]]](implicit a: AList[K]): K[Result] => K[Id] = in => {
     val incs = failuresM(a)(in)

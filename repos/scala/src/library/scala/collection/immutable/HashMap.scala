@@ -280,7 +280,8 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
     private[HashMap] def ensurePair: (A, B) =
       if (kv ne null) kv
       else {
-        kv = (key, value); kv
+        kv = (key, value);
+        kv
       }
     protected override def merge0[B1 >: B](
         that: HashMap[A, B1],

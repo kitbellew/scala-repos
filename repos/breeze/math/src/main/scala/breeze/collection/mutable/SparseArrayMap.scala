@@ -41,11 +41,13 @@ class SparseArrayMap[@specialized T: ClassTag: Zero](
   override def empty = new SparseArrayMap[T](length, default)
 
   def +=(kv: (Int, T)): this.type = {
-    update(kv._1, kv._2); this
+    update(kv._1, kv._2);
+    this
   }
 
   def -=(key: Int) = {
-    update(key, default); this
+    update(key, default);
+    this
   }
 
   def get(key: Int) = array.get(key)

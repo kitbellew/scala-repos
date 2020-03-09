@@ -66,7 +66,8 @@ class BinomialHeap[T <% Ordered[T]]
     def clear() = heap = BinomialHeap.empty[T]
 
     def +=(elem: T) = {
-      heap += elem; this
+      heap += elem;
+      this
     }
   }
 

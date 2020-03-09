@@ -484,7 +484,8 @@ private[akka] class Controller(
     case FailedBarrier(data) ⇒ failBarrier(data)
     case BarrierEmpty(data, msg) ⇒ SupervisorStrategy.Resume
     case WrongBarrier(name, client, data) ⇒ {
-      client ! ToClient(BarrierResult(name, false)); failBarrier(data)
+      client ! ToClient(BarrierResult(name, false));
+      failBarrier(data)
     }
     case ClientLost(data, node) ⇒ failBarrier(data)
     case DuplicateNode(data, node) ⇒ failBarrier(data)

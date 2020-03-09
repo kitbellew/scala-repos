@@ -251,7 +251,8 @@ trait FlexMenuBuilder {
   def render: NodeSeq = {
 
     val level: Box[Int] =
-      for (lvs <- S.attr("level"); i <- Helpers.asInt(lvs)) yield i
+      for (lvs <- S.attr("level");
+           i <- Helpers.asInt(lvs)) yield i
 
     val toRender: Seq[MenuItem] = this.toRender
 

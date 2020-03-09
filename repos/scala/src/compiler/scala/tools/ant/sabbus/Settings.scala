@@ -17,61 +17,71 @@ class Settings {
   private var gBf: Option[String] = None
   def g = gBf.get
   def g_=(s: String): this.type = {
-    gBf = Some(s); this
+    gBf = Some(s);
+    this
   }
 
   private var uncheckedBf: Boolean = false
   def unchecked = uncheckedBf
   def unchecked_=(b: Boolean): this.type = {
-    uncheckedBf = b; this
+    uncheckedBf = b;
+    this
   }
 
   private var classpathBf: Option[Path] = None
   def classpath = classpathBf.get
   def classpath_=(p: Path): this.type = {
-    classpathBf = Some(p); this
+    classpathBf = Some(p);
+    this
   }
 
   private var sourcepathBf: Option[Path] = None
   def sourcepath = sourcepathBf.get
   def sourcepath_=(p: Path): this.type = {
-    sourcepathBf = Some(p); this
+    sourcepathBf = Some(p);
+    this
   }
 
   private var sourcedirBf: Option[File] = None
   def sourcedir = sourcedirBf.get
   def sourcedir_=(p: File): this.type = {
-    sourcedirBf = Some(p); this
+    sourcedirBf = Some(p);
+    this
   }
 
   private var bootclasspathBf: Option[Path] = None
   def bootclasspath = bootclasspathBf.get
   def bootclasspath_=(p: Path): this.type = {
-    bootclasspathBf = Some(p); this
+    bootclasspathBf = Some(p);
+    this
   }
 
   private var extdirsBf: Option[Path] = None
   def extdirs = extdirsBf.get
   def extdirs_=(p: Path): this.type = {
-    extdirsBf = Some(p); this
+    extdirsBf = Some(p);
+    this
   }
 
   private var dBf: Option[File] = None
   def d = dBf.get
   def d_=(f: File): this.type = {
-    dBf = Some(f); this
+    dBf = Some(f);
+    this
   }
 
   private var encodingBf: Option[String] = None
   def encoding = encodingBf.get
   def encoding_=(s: String): this.type = {
-    encodingBf = Some(s); this
+    encodingBf = Some(s);
+    this
   }
 
   private var targetBf: Option[String] = None
   def target = targetBf.get
   def target_=(s: String): this.type = {
-    targetBf = Some(s); this
+    targetBf = Some(s);
+    this
   }
 
   private var optimiseBf: Boolean = false
@@ -83,7 +93,8 @@ class Settings {
   private var extraParamsBf: Seq[String] = Seq()
   def extraParams = extraParamsBf
   def extraParams_=(s: Seq[String]): this.type = {
-    extraParamsBf = s; this
+    extraParamsBf = s;
+    this
   }
 
   def toArgs: List[String] =

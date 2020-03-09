@@ -158,10 +158,12 @@ sealed abstract class Future[+A] {
     val latch = new java.util.concurrent.CountDownLatch(1)
     @volatile var result: Option[A] = None
     unsafePerformAsync { a =>
-      result = Some(a); latch.countDown
+      result = Some(a);
+      latch.countDown
     }
     delay {
-      latch.await; result.get
+      latch.await;
+      result.get
     }
   }
 
@@ -204,7 +206,8 @@ sealed abstract class Future[+A] {
       val latch = new java.util.concurrent.CountDownLatch(1)
       @volatile var result: Option[A] = None
       unsafePerformAsync { a =>
-        result = Some(a); latch.countDown
+        result = Some(a);
+        latch.countDown
       }
       latch.await
       result.get

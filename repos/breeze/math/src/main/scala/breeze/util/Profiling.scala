@@ -66,7 +66,8 @@ object Profiling {
       var sum = 0;
       var i = 0;
       while (i < n) {
-        sum += i; i += 1;
+        sum += i;
+        i += 1;
       }
       sum;
     }

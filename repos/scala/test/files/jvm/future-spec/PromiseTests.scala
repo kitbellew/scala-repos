@@ -189,7 +189,8 @@ class PromiseTests extends MinimalScalaTest {
     "compose result with flatMap" in {
       f { (future, result) =>
         val r =
-          for (r <- future; p <- Promise.successful("foo").future)
+          for (r <- future;
+               p <- Promise.successful("foo").future)
             yield r.toString + p
         Await.result(r, defaultTimeout) mustBe (result.toString + "foo")
       }

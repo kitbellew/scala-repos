@@ -11,7 +11,9 @@ object Test extends App {
     def sort(a: Array[Int]) {
 
       def swap(i: Int, j: Int) {
-        val t = a(i); a(i) = a(j); a(j) = t
+        val t = a(i);
+        a(i) = a(j);
+        a(j) = t
       }
 
       def sort1(l: Int, r: Int) {

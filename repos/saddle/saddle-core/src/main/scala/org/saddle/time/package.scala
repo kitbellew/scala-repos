@@ -181,7 +181,8 @@ package object time {
     val (times, chrono: Chronology) = vec match {
       case tv: VecTime => (tv.times, tv.chrono)
       case _ => {
-        val tmp = new VecTime(vec.map(_.getMillis)); (tmp.times, tmp.chrono)
+        val tmp = new VecTime(vec.map(_.getMillis));
+        (tmp.times, tmp.chrono)
       }
     }
     new TimeAccessors(times, chrono, identity)

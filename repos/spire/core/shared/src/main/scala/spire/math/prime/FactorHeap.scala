@@ -51,7 +51,8 @@ class FactorHeap {
       val j = i >>> 1
       val fj = arr(j)
       if (factor.next >= fj.next) {
-        arr(i) = factor; return ()
+        arr(i) = factor;
+        return ()
       }
       arr(i) = fj
       i = j
@@ -71,7 +72,8 @@ class FactorHeap {
       if (j < len && arr(j).next > arr(j + 1).next) j += 1
       val cv = arr(j)
       if (last.next <= cv.next) {
-        arr(i) = last; return result
+        arr(i) = last;
+        return result
       }
       arr(i) = cv
       i = j

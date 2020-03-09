@@ -52,10 +52,11 @@ trait SymbolTrackers {
       else
         unit.body filter containsSymbol groupBy (_.symbol) mapValues (_.toSet) toMap
     }
-    def apply(unit: CompilationUnit) = new SymbolTracker(() =>
-      symbolSnapshot(unit) filterNot {
-        case (k, _) => dropSymbol(k)
-      })
+    def apply(unit: CompilationUnit) =
+      new SymbolTracker(() =>
+        symbolSnapshot(unit) filterNot {
+          case (k, _) => dropSymbol(k)
+        })
   }
 
   class SymbolTracker(snapshotFn: () => Map[Symbol, Set[Tree]]) {
@@ -168,10 +169,12 @@ trait SymbolTrackers {
         prevFlags get sym filter (_ != (sym.flags & flagsMask))
 
       val owners = ({
-        for (sym <- steady; old <- changedOwner(sym)) yield (sym, old)
+        for (sym <- steady;
+             old <- changedOwner(sym)) yield (sym, old)
       }).toMap
       val flags = ({
-        for (sym <- steady; old <- changedFlags(sym)) yield (sym, old)
+        for (sym <- steady;
+             old <- changedFlags(sym)) yield (sym, old)
       }).toMap
 
       val change = Change(added, removed, prevMap, owners, flags)

@@ -421,7 +421,8 @@ object AliasingFrame {
   val timer3 = newTimer("t3", "jvm")
   val timers = List(timer1, timer2, timer3)
   def reset(): Unit = for (t <- timers) {
-    t.nanos = 0; t.timings = 0
+    t.nanos = 0;
+    t.timings = 0
   }
 }
 
@@ -465,18 +466,23 @@ class AliasSet(var set: Object /*SmallBitSet | Array[Long]*/, var size: Int) {
   def +=(value: Int): Unit = this.set match {
     case s: SmallBitSet =>
       (size: @switch) match {
-        case 0 => s.a = value; size = 1
+        case 0 =>
+          s.a = value;
+          size = 1
         case 1 =>
           if (value != s.a) {
-            s.b = value; size = 2
+            s.b = value;
+            size = 2
           }
         case 2 =>
           if (value != s.a && value != s.b) {
-            s.c = value; size = 3
+            s.c = value;
+            size = 3
           }
         case 3 =>
           if (value != s.a && value != s.b && value != s.c) {
-            s.d = value; size = 4
+            s.d = value;
+            size = 4
           }
         case 4 =>
           if (value != s.a && value != s.b && value != s.c && value != s.d) {
@@ -499,31 +505,51 @@ class AliasSet(var set: Object /*SmallBitSet | Array[Long]*/, var size: Int) {
         case 0 =>
         case 1 =>
           if (value == s.a) {
-            s.a = -1; size = 0
+            s.a = -1;
+            size = 0
           }
         case 2 =>
           if (value == s.a) {
-            s.a = s.b; s.b = -1; size = 1
+            s.a = s.b;
+            s.b = -1;
+            size = 1
           } else if (value == s.b) {
-            s.b = -1; size = 1
+            s.b = -1;
+            size = 1
           }
         case 3 =>
           if (value == s.a) {
-            s.a = s.b; s.b = s.c; s.c = -1; size = 2
+            s.a = s.b;
+            s.b = s.c;
+            s.c = -1;
+            size = 2
           } else if (value == s.b) {
-            s.b = s.c; s.c = -1; size = 2
+            s.b = s.c;
+            s.c = -1;
+            size = 2
           } else if (value == s.c) {
-            s.c = -1; size = 2
+            s.c = -1;
+            size = 2
           }
         case 4 =>
           if (value == s.a) {
-            s.a = s.b; s.b = s.c; s.c = s.d; s.d = -1; size = 3
+            s.a = s.b;
+            s.b = s.c;
+            s.c = s.d;
+            s.d = -1;
+            size = 3
           } else if (value == s.b) {
-            s.b = s.c; s.c = s.d; s.d = -1; size = 3
+            s.b = s.c;
+            s.c = s.d;
+            s.d = -1;
+            size = 3
           } else if (value == s.c) {
-            s.c = s.d; s.d = -1; size = 3
+            s.c = s.d;
+            s.d = -1;
+            size = 3
           } else if (value == s.d) {
-            s.d = -1; size = 3
+            s.d = -1;
+            size = 3
           }
       }
     case bits: Array[Long] =>
@@ -640,12 +666,20 @@ object AliasSet {
     private var iValid = false
 
     setA.set match {
-      case s: SmallBitSet    => a = s.a; b = s.b; c = s.c; d = s.d
+      case s: SmallBitSet =>
+        a = s.a;
+        b = s.b;
+        c = s.c;
+        d = s.d
       case bits: Array[Long] => xs = bits
     }
 
     setB.set match {
-      case s: SmallBitSet    => notA = s.a; notB = s.b; notC = s.c; notD = s.d
+      case s: SmallBitSet =>
+        notA = s.a;
+        notB = s.b;
+        notC = s.c;
+        notD = s.d
       case bits: Array[Long] => notXs = bits
     }
 
@@ -713,9 +747,14 @@ object AliasSet {
     def next(): Int = {
       if (hasNext) {
         if (abcdNext != -1) {
-          val r = abcdNext; abcdNext = -1; r
+          val r = abcdNext;
+          abcdNext = -1;
+          r
         } else {
-          val r = i; i += 1; iValid = false; r
+          val r = i;
+          i += 1;
+          iValid = false;
+          r
         }
       } else Iterator.empty.next()
     }

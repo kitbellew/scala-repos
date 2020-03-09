@@ -482,8 +482,10 @@ class TlsSpec
               Sink.head[ByteString],
               Sink.head[SslTlsInbound])((_, _, _)) { implicit b ⇒ (s, o1, o2) ⇒
               val tls = b.add(clientTls(EagerClose))
-              s ~> tls.in1; tls.out1 ~> o1
-              o2 <~ tls.out2; tls.in2 <~ Source.failed(ex)
+              s ~> tls.in1;
+              tls.out1 ~> o1
+              o2 <~ tls.out2;
+              tls.in2 <~ Source.failed(ex)
               ClosedShape
             })
           .run()
@@ -505,8 +507,10 @@ class TlsSpec
               Sink.head[ByteString],
               Sink.head[SslTlsInbound])((_, _, _)) { implicit b ⇒ (s, o1, o2) ⇒
               val tls = b.add(clientTls(EagerClose))
-              Source.failed[SslTlsOutbound](ex) ~> tls.in1; tls.out1 ~> o1
-              o2 <~ tls.out2; tls.in2 <~ s
+              Source.failed[SslTlsOutbound](ex) ~> tls.in1;
+              tls.out1 ~> o1
+              o2 <~ tls.out2;
+              tls.in2 <~ s
               ClosedShape
             })
           .run()

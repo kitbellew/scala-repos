@@ -192,7 +192,8 @@ class ResizerSpec
           .props(Props(new Actor {
             def receive = {
               case d: FiniteDuration ⇒
-                Thread.sleep(d.dilated.toMillis); sender() ! "done"
+                Thread.sleep(d.dilated.toMillis);
+                sender() ! "done"
               case "echo" ⇒ sender() ! "reply"
             }
           })))

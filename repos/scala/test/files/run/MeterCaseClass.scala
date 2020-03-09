@@ -13,7 +13,9 @@ package a {
     def <(other: Meter): Boolean = this.underlying < other.underlying
     def toFoot: Foot = new Foot(this.underlying * 0.3048)
     override def print = {
-      Console.print(">>>"); super.print; proprint
+      Console.print(">>>");
+      super.print;
+      proprint
     }
   }
 
@@ -82,7 +84,8 @@ object Test extends App {
     println(arr.deep)
     def foo[T <: Printable](x: Array[T]) {
       for (i <- 0 until x.length) {
-        x(i).print; println(" " + x(i))
+        x(i).print;
+        println(" " + x(i))
       }
     }
     val m = arr(0)

@@ -82,8 +82,14 @@ final class LongMap[V] private[collection] (
       kz: Array[Long],
       vz: Array[AnyRef]
   ) {
-    mask = m; extraKeys = ek; zeroValue = zv; minValue = mv; _size = sz;
-    _vacant = vc; _keys = kz; _values = vz
+    mask = m;
+    extraKeys = ek;
+    zeroValue = zv;
+    minValue = mv;
+    _size = sz;
+    _vacant = vc;
+    _keys = kz;
+    _values = vz
   }
 
   override def size: Int = _size + (extraKeys + 1) / 2
@@ -103,7 +109,8 @@ final class LongMap[V] private[collection] (
     var e = toIndex(k)
     var x = 0
     while (_keys(e) != 0) {
-      x += 1; e = (e + 2 * (x + 1) * x - 3) & mask
+      x += 1;
+      e = (e + 2 * (x + 1) * x - 3) & mask
     }
     e
   }
@@ -113,9 +120,12 @@ final class LongMap[V] private[collection] (
     var x = 0
     var q = 0L
     while ({
-      q = _keys(e); if (q == k) return e; q != 0
+      q = _keys(e);
+      if (q == k) return e;
+      q != 0
     }) {
-      x += 1; e = (e + 2 * (x + 1) * x - 3) & mask
+      x += 1;
+      e = (e + 2 * (x + 1) * x - 3) & mask
     }
     e | MissingBit
   }
@@ -125,7 +135,9 @@ final class LongMap[V] private[collection] (
     var x = 0
     var q = 0L
     while ({
-      q = _keys(e); if (q == k) return e; q + q != 0
+      q = _keys(e);
+      if (q == k) return e;
+      q + q != 0
     }) {
       x += 1
       e = (e + 2 * (x + 1) * x - 3) & mask
@@ -133,7 +145,9 @@ final class LongMap[V] private[collection] (
     if (q == 0) return e | MissingBit
     val o = e | MissVacant
     while ({
-      q = _keys(e); if (q == k) return e; q != 0
+      q = _keys(e);
+      if (q == k) return e;
+      q != 0
     }) {
       x += 1
       e = (e + 2 * (x + 1) * x - 3) & mask
@@ -343,11 +357,13 @@ final class LongMap[V] private[collection] (
 
   /** Adds a new key/value pair to this map and returns the map. */
   def +=(key: Long, value: V): this.type = {
-    update(key, value); this
+    update(key, value);
+    this
   }
 
   def +=(kv: (Long, V)): this.type = {
-    update(kv._1, kv._2); this
+    update(kv._1, kv._2);
+    this
   }
 
   def -=(key: Long): this.type = {
@@ -593,7 +609,8 @@ object LongMap {
     val lm = new LongMap[V](sz * 2)
     var i = 0
     while (i < sz) {
-      lm(keys(i)) = values(i); i += 1
+      lm(keys(i)) = values(i);
+      i += 1
     }
     if (lm.size < (sz >> 3)) lm.repack()
     lm

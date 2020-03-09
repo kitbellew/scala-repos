@@ -46,13 +46,15 @@ trait TimeLikeSpec[T <: TimeLike[T]]
     "complementary diff" in {
       // Note that this doesn't always hold because of two's
       // complement arithmetic.
-      for (a <- easyVs; b <- easyVs)
+      for (a <- easyVs;
+           b <- easyVs)
         assert((a diff b) == -(b diff a))
 
     }
 
     "complementary compare" in {
-      for (a <- vs; b <- vs) {
+      for (a <- vs;
+           b <- vs) {
         val x = a compare b
         val y = b compare a
         assert(((x == 0 && y == 0) || (x < 0 != y < 0)) == true)
@@ -60,12 +62,14 @@ trait TimeLikeSpec[T <: TimeLike[T]]
     }
 
     "commutative max" in {
-      for (a <- vs; b <- vs)
+      for (a <- vs;
+           b <- vs)
         assert((a max b) == (b max a))
     }
 
     "commutative min" in {
-      for (a <- vs; b <- vs)
+      for (a <- vs;
+           b <- vs)
         assert((a min b) == (b min a))
     }
 
@@ -319,7 +323,8 @@ trait TimeLikeSpec[T <: TimeLike[T]]
     }
 
     "round to itself" in {
-      for (s <- Seq(Long.MinValue, -1, 1, Long.MaxValue); t = s.nanoseconds)
+      for (s <- Seq(Long.MinValue, -1, 1, Long.MaxValue);
+           t = s.nanoseconds)
         assert(t.floor(t.inNanoseconds.nanoseconds) == t)
     }
   }

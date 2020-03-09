@@ -3,7 +3,8 @@ object Test {
 
   def f(): Option[Int] = {
     wrap({
-      return Some(1); None
+      return Some(1);
+      None
     })
   }
 

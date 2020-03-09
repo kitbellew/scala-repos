@@ -1,24 +1,30 @@
 class A {
   lazy val x: Int = {
-    print("/*A.x*/"); 2
+    print("/*A.x*/");
+    2
   }
   lazy val y: Int = {
-    print("/*A.y*/"); 2
+    print("/*A.y*/");
+    2
   }
   lazy val z: Int = {
-    print("/*A.z*/"); 2
+    print("/*A.z*/");
+    2
   }
 }
 
 class B extends A {
   override lazy val x: Int = {
-    print("/*B.x*/"); 3
+    print("/*B.x*/");
+    3
   }
   override lazy val y: Int = {
-    print("/*B.y*/"); 3
+    print("/*B.y*/");
+    3
   }
   override lazy val z: Int = {
-    print("/*B.z/"); 3
+    print("/*B.z/");
+    3
   }
 }
 

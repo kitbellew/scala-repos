@@ -2,7 +2,8 @@ object Test {
 
   class Ctl {
     def enable: this.type = {
-      Console.println("enable"); this
+      Console.println("enable");
+      this
     }
   }
 

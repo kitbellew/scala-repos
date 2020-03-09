@@ -66,11 +66,13 @@ object LayoutDemo extends JFXApp {
   }
 
   val charm = new Text("charm") {
-    font = new Font(24); alignmentInParent = Pos.BaselineLeft;
+    font = new Font(24);
+    alignmentInParent = Pos.BaselineLeft;
     textOrigin = VPos.Baseline
   }
   val strange = new Text("strange") {
-    font = new Font(12); alignmentInParent = Pos.BaselineLeft;
+    font = new Font(12);
+    alignmentInParent = Pos.BaselineLeft;
     textOrigin = VPos.Baseline
   }
 

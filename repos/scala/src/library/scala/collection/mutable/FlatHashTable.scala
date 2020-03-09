@@ -214,7 +214,8 @@ trait FlatHashTable[A] extends FlatHashTable.HashUtils[A] {
     }
     def next(): A =
       if (hasNext) {
-        i += 1; entryToElem(table(i - 1))
+        i += 1;
+        entryToElem(table(i - 1))
       } else Iterator.empty.next()
   }
 
@@ -362,7 +363,8 @@ trait FlatHashTable[A] extends FlatHashTable.HashUtils[A] {
   protected def clearTable() {
     var i = table.length - 1
     while (i >= 0) {
-      table(i) = null; i -= 1
+      table(i) = null;
+      i -= 1
     }
     tableSize = 0
     nnSizeMapReset(table.length)

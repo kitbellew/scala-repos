@@ -47,7 +47,9 @@ object TestUtils { // FIXME: remove once going back to project dependencies
       serverSocket.bind(new InetSocketAddress(hostname, 0))
       (serverSocket, new InetSocketAddress(hostname, serverSocket.getLocalPort))
     } collect {
-      case (socket, address) ⇒ socket.close(); address
+      case (socket, address) ⇒
+        socket.close();
+        address
     }
   }
 }

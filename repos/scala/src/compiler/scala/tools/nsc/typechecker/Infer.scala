@@ -138,7 +138,8 @@ trait Infer extends Checkable {
     case TypeVar(_, constr) if constr.inst == NoType => false
     case _ =>
       falseIfNoInstance({
-        instantiate(tp); true
+        instantiate(tp);
+        true
       })
   }
 
@@ -1150,10 +1151,12 @@ trait Infer extends Checkable {
         targs: List[Type],
         prefix: String): Boolean = {
       def issueBoundsError() = {
-        NotWithinBounds(tree, prefix, targs, tparams, Nil); false
+        NotWithinBounds(tree, prefix, targs, tparams, Nil);
+        false
       }
       def issueKindBoundErrors(errs: List[String]) = {
-        KindBoundErrors(tree, prefix, targs, tparams, errs); false
+        KindBoundErrors(tree, prefix, targs, tparams, errs);
+        false
       }
       //@M validate variances & bounds of targs wrt variances & bounds of tparams
       //@M TODO: better place to check this?
@@ -1326,7 +1329,8 @@ trait Infer extends Checkable {
             }
           } else Nil
         } catch ifNoInstance { msg =>
-          NoMethodInstanceError(fn, args, msg); List()
+          NoMethodInstanceError(fn, args, msg);
+          List()
         }
     }
 
@@ -1662,7 +1666,8 @@ trait Infer extends Checkable {
       }
       tree.tpe match {
         case OverloadedType(pre, alts) =>
-          (new InferTwice(pre, alts)).apply(); tree
+          (new InferTwice(pre, alts)).apply();
+          tree
         case _ => tree
       }
     }
@@ -1767,8 +1772,10 @@ trait Infer extends Checkable {
         private[this] val OverloadedType(pre, alts) = tree.tpe
         private[this] var varargsStar = false
         private[this] val argtpes = argtpes0 mapConserve {
-          case RepeatedType(tp) => varargsStar = true; tp
-          case tp               => tp
+          case RepeatedType(tp) =>
+            varargsStar = true;
+            tp
+          case tp => tp
         }
 
         private def followType(sym: Symbol) = followApply(pre memberType sym)

@@ -773,9 +773,11 @@ trait BaseCometActor
                   what.isDefinedAt(in)
                 } catch {
                   case e if exceptionHandler.isDefinedAt(e) =>
-                    exceptionHandler(e); false
+                    exceptionHandler(e);
+                    false
                   case e: Exception =>
-                    reportError("Message test for " + in, e); false
+                    reportError("Message test for " + in, e);
+                    false
                 }
               }
             }
@@ -984,8 +986,11 @@ trait BaseCometActor
               List(f())
             } catch {
               case e if exceptionHandler.isDefinedAt(e) =>
-                exceptionHandler(e); Nil
-              case e: Exception => reportError("Ajax function dispatch", e); Nil
+                exceptionHandler(e);
+                Nil
+              case e: Exception =>
+                reportError("Ajax function dispatch", e);
+                Nil
             }
           }
 

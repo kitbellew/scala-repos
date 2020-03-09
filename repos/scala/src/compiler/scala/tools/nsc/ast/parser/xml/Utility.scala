@@ -108,7 +108,8 @@ object Utility {
       reportSyntaxError: String => Unit,
       reportTruncatedError: String => Unit): String = {
     val hex = (ch() == 'x') && {
-      nextch(); true
+      nextch();
+      true
     }
     val base = if (hex) 16 else 10
     var i = 0

@@ -37,7 +37,8 @@ class CommandLine(val spec: Reference, val originalArgs: List[String])
 
     def loop(args: List[String]): Map[String, String] = {
       def residual(xs: List[String]) = {
-        residualBuffer ++= xs; Map[String, String]()
+        residualBuffer ++= xs;
+        Map[String, String]()
       }
 
       /*  Returns Some(List(args)) if this option expands to an

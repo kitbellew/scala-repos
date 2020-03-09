@@ -69,7 +69,9 @@ final class FastaInputStream(in: InputStream)
       while (i < count && buf(i) != nl) i = i + 1
 
       if (i >= count) { // line extends past end of buffer
-        pos = i; read(); i = pos; // fill buffer again
+        pos = i;
+        read();
+        i = pos; // fill buffer again
         while (i < count && buf(i) != nl) i = i + 1
       }
 
@@ -122,7 +124,8 @@ final class FastaOutputStream(in: OutputStream)
     sequence match {
       case (header, lines) => {
 
-        write(header); write(nl)
+        write(header);
+        write(nl)
 
         val k = if (lines.isEmpty) 0 else lines.top.length
         val LineLength = 60
@@ -135,13 +138,16 @@ final class FastaOutputStream(in: OutputStream)
 
           if (isSplitLine) {
             if (isFirstLine) {
-              write(line); isFirstLine = false
+              write(line);
+              isFirstLine = false
             } else {
-              write(line, 0, LineLength - k); write(nl);
+              write(line, 0, LineLength - k);
+              write(nl);
               write(line, LineLength - k, k)
             }
           } else {
-            write(line); write(nl)
+            write(line);
+            write(nl)
           }
         }
 

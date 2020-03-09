@@ -112,7 +112,8 @@ trait EntityPage extends HtmlPage {
       <script type="text/javascript">
         /* this variable can be used by the JS to determine the path to the root document */
         var toRoot = '{
-      val p = templateToPath(tpl); "../" * (p.size - 1)
+      val p = templateToPath(tpl);
+      "../" * (p.size - 1)
     }';
       </script>
     </xml:group>
@@ -844,7 +845,8 @@ trait EntityPage extends HtmlPage {
                 var index = 0
                 constraints map { constraint =>
                   scala.xml.Text({
-                    index += 1; index
+                    index += 1;
+                    index
                   } + ". ") ++ constraintToHtml(constraint) ++ <br/>
                 }
               }

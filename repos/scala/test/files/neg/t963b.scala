@@ -16,12 +16,14 @@ object B {
   def y: A = {
     if (b) {
       a = new A {
-        type T = Int; var v = 1
+        type T = Int;
+        var v = 1
       }
       a
     } else {
       a = new A {
-        type T = String; var v = ""
+        type T = String;
+        var v = ""
       }
       b = true
       a

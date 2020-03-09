@@ -109,7 +109,8 @@ object CsvParser {
     var str: String = null
     var nln: Int = 0
     while ({
-      str = source.readLine; str != null
+      str = source.readLine;
+      str != null
     }) {
       extractFields(str, addToBuffer, locs, params)
       nln += 1

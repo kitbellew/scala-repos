@@ -1,5 +1,6 @@
 class Attr {
-  type V; class Val
+  type V;
+  class Val
 }
 class StrAttr extends Attr {
   type V = String

@@ -601,7 +601,8 @@ trait JdbcBackend extends RelationalBackend {
             if (p.statementInit eq null) curr.statementInit
             else if (curr.statementInit eq null) p.statementInit
             else { s =>
-              curr.statementInit(s); p.statementInit(s)
+              curr.statementInit(s);
+              p.statementInit(s)
             },
             p.fetchSize
           )

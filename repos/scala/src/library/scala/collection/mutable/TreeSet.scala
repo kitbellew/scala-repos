@@ -89,10 +89,12 @@ sealed class TreeSet[A] private (tree: RB.Tree[A, Null])(
     new TreeSetView(from, until)
 
   def -=(key: A): this.type = {
-    RB.delete(tree, key); this
+    RB.delete(tree, key);
+    this
   }
   def +=(elem: A): this.type = {
-    RB.insert(tree, elem, null); this
+    RB.insert(tree, elem, null);
+    this
   }
 
   def contains(elem: A) = RB.contains(tree, elem)

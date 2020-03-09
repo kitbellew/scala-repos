@@ -276,9 +276,12 @@ class ActorDSLSpec extends AkkaSpec {
         become {
           case 1 ⇒ stash()
           case 2 ⇒
-            testActor ! 2; unstashAll();
+            testActor ! 2;
+            unstashAll();
             becomeStacked {
-              case 1 ⇒ testActor ! 1; unbecome()
+              case 1 ⇒
+                testActor ! 1;
+                unbecome()
             }
         }
       })

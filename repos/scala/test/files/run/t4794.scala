@@ -1,5 +1,6 @@
 trait Mutable[@specialized A] {
-  def a: A; def a_=(a0: A): Unit
+  def a: A;
+  def a_=(a0: A): Unit
 }
 trait NotSpecialized {}
 class Arr[@specialized A](val arr: Array[A]) {

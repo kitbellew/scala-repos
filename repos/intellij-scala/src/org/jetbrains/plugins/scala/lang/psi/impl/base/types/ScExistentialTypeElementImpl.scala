@@ -43,7 +43,8 @@ class ScExistentialTypeElementImpl(node: ASTNode)
           case alias: ScTypeAliasDeclaration =>
             val lb = alias.lowerBound
             val ub = alias.upperBound
-            problems += lb; problems += ub
+            problems += lb;
+            problems += ub
             buff += new ScExistentialArgument(
               alias.name,
               alias.typeParameters.map { tp =>

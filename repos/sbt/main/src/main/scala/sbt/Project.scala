@@ -294,7 +294,8 @@ sealed trait ResolvedProject extends ProjectDefinition[ProjectRef] {
 }
 
 sealed trait ClasspathDep[PR <: ProjectReference] {
-  def project: PR; def configuration: Option[String]
+  def project: PR;
+  def configuration: Option[String]
 }
 final case class ResolvedClasspathDependency(
     project: ProjectRef,
@@ -536,7 +537,8 @@ object Project extends ProjectExtra {
       ref: Reference,
       structure: BuildStructure): Option[ResolvedProject] =
     ref match {
-      case pr: ProjectRef => getProject(pr, structure); case _ => None
+      case pr: ProjectRef => getProject(pr, structure);
+      case _              => None
     }
   def getProject(
       ref: ProjectRef,
@@ -699,7 +701,8 @@ object Project extends ProjectExtra {
       "No entry for key."
     }
     val description = key.description match {
-      case Some(desc) => "Description:\n\t" + desc + "\n"; case None => ""
+      case Some(desc) => "Description:\n\t" + desc + "\n";
+      case None       => ""
     }
 
     val definingScope = structure.data.definingScope(scope, key)
@@ -708,7 +711,8 @@ object Project extends ProjectExtra {
       case None     => ""
     }
     val definingScoped = definingScope match {
-      case Some(sc) => ScopedKey(sc, key); case None => scoped
+      case Some(sc) => ScopedKey(sc, key);
+      case None     => scoped
     }
     val comp = Def.compiled(structure.settings, actual)(
       structure.delegates,
@@ -728,7 +732,8 @@ object Project extends ProjectExtra {
         .flatten
 
     val depends = cMap.get(scoped) match {
-      case Some(c) => c.dependencies.toSet; case None => Set.empty
+      case Some(c) => c.dependencies.toSet;
+      case None    => Set.empty
     }
     val derivedDepends: Set[ScopedKey[_]] = derivedDependencies(
       definingScoped).toSet
@@ -845,7 +850,8 @@ object Project extends ProjectExtra {
   def reverseDependencies(
       cMap: Map[ScopedKey[_], Flattened],
       scoped: ScopedKey[_]): Iterable[ScopedKey[_]] =
-    for ((key, compiled) <- cMap; dep <- compiled.dependencies if dep == scoped)
+    for ((key, compiled) <- cMap;
+         dep <- compiled.dependencies if dep == scoped)
       yield key
 
   //@deprecated("Use SettingCompletions.setAll when available.", "0.13.0")

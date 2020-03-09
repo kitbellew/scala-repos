@@ -5,7 +5,8 @@ trait T[A] {
 
 object Test { (x: C[Any]) =>
   {
-    println(s"f($x)"); x
+    println(s"f($x)");
+    x
   } // okay
 new T[C[Any]] {
   def apply(a: C[Any]) = a

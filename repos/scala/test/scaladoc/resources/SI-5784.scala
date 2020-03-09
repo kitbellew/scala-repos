@@ -23,7 +23,8 @@ package test.templates {
       def foo: Int
     }
     trait FooExtractor {
-      def apply(foo: Int); def unapply(t: Foo): Option[Int]
+      def apply(foo: Int);
+      def unapply(t: Foo): Option[Int]
     }
   }
 

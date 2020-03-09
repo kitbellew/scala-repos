@@ -20,7 +20,8 @@ import language.experimental.macros
 import reflect.internal.annotations.compileTimeOnly
 
 sealed trait Scoped {
-  def scope: Scope; val key: AttributeKey[_]
+  def scope: Scope;
+  val key: AttributeKey[_]
 }
 
 /** A common type for SettingKey and TaskKey so that both can be used as inputs to tasks.*/
@@ -211,15 +212,18 @@ object Scoped {
 
   def scopedSetting[T](s: Scope, k: AttributeKey[T]): SettingKey[T] =
     new SettingKey[T] {
-      val scope = s; val key = k
+      val scope = s;
+      val key = k
     }
   def scopedInput[T](s: Scope, k: AttributeKey[InputTask[T]]): InputKey[T] =
     new InputKey[T] {
-      val scope = s; val key = k
+      val scope = s;
+      val key = k
     }
   def scopedTask[T](s: Scope, k: AttributeKey[Task[T]]): TaskKey[T] =
     new TaskKey[T] {
-      val scope = s; val key = k
+      val scope = s;
+      val key = k
     }
 
   /**
@@ -310,7 +314,8 @@ object Scoped {
       case None =>
         mktask {
           None
-        }; case Some(t) => t map some.fn
+        };
+      case Some(t) => t map some.fn
     }
     def ??[T >: S](or: => T): Initialize[Task[T]] =
       Def.optional(scopedKey)(_ getOrElse mktask(or))
@@ -1035,7 +1040,8 @@ object InputKey {
 
   def apply[T](akey: AttributeKey[InputTask[T]]): InputKey[T] =
     new InputKey[T] {
-      val key = akey; def scope = Scope.ThisScope
+      val key = akey;
+      def scope = Scope.ThisScope
     }
 }
 
@@ -1070,7 +1076,8 @@ object TaskKey {
 
   def apply[T](akey: AttributeKey[Task[T]]): TaskKey[T] =
     new TaskKey[T] {
-      val key = akey; def scope = Scope.ThisScope
+      val key = akey;
+      def scope = Scope.ThisScope
     }
 
   def local[T: Manifest]: TaskKey[T] = apply[T](AttributeKey.local[Task[T]])
@@ -1102,7 +1109,8 @@ object SettingKey {
 
   def apply[T](akey: AttributeKey[T]): SettingKey[T] =
     new SettingKey[T] {
-      val key = akey; def scope = Scope.ThisScope
+      val key = akey;
+      def scope = Scope.ThisScope
     }
 
   def local[T: Manifest]: SettingKey[T] = apply[T](AttributeKey.local[T])

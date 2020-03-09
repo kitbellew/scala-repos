@@ -61,7 +61,8 @@ object Test extends Properties("Division of Duration by Long") {
   property("with overflow") = forAll(genTwoLarge) {
     case (a, b) =>
       try {
-        mul(a, b); false
+        mul(a, b);
+        false
       } catch {
         case _: IllegalArgumentException => true
       }
@@ -77,7 +78,8 @@ object Test extends Properties("Division of Duration by Long") {
             abs(a)
           )) // check the rest against the “safe” division method
       try {
-        mul(a, b); shouldFit
+        mul(a, b);
+        shouldFit
       } catch {
         case _: IllegalArgumentException => !shouldFit
       }

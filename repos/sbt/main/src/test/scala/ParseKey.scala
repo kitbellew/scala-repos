@@ -87,7 +87,9 @@ object ParseKey extends Properties("Key parser test") {
   def structureKeyMask(genKey: Structure => Gen[ScopedKey[_]])(implicit
       maskGen: Gen[ScopeMask],
       structureGen: Gen[Structure]): Gen[StructureKeyMask] =
-    for (mask <- maskGen; structure <- structureGen; key <- genKey(structure))
+    for (mask <- maskGen;
+         structure <- structureGen;
+         key <- genKey(structure))
       yield new StructureKeyMask(structure, key, mask)
   final class StructureKeyMask(
       val structure: Structure,

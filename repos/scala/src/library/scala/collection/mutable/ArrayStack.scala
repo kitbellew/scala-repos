@@ -159,7 +159,8 @@ class ArrayStack[T] private (
     *  @return   A reference to this stack.
     */
   override def ++=(xs: TraversableOnce[T]): this.type = {
-    xs foreach +=; this
+    xs foreach +=;
+    this
   }
 
   /** Does the same as `push`, but returns the updated stack.
@@ -168,7 +169,8 @@ class ArrayStack[T] private (
     *  @return   A reference to this stack.
     */
   def +=(x: T): this.type = {
-    push(x); this
+    push(x);
+    this
   }
 
   def result = {

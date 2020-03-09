@@ -515,14 +515,16 @@ final class Vector[+A] private[immutable] (
   private def zeroLeft(array: Array[AnyRef], index: Int): Unit = {
     var i = 0;
     while (i < index) {
-      array(i) = null; i += 1
+      array(i) = null;
+      i += 1
     }
   }
 
   private def zeroRight(array: Array[AnyRef], index: Int): Unit = {
     var i = index;
     while (i < array.length) {
-      array(i) = null; i += 1
+      array(i) = null;
+      i += 1
     }
   }
 
@@ -954,13 +956,17 @@ private[immutable] trait VectorPointer[T] {
       xor: Int): Unit = { // goto block start pos
     if (xor < (1 << 10)) { // level = 1
       if (depth == 1) {
-        display1 = new Array(32); display1(0) = display0; depth += 1
+        display1 = new Array(32);
+        display1(0) = display0;
+        depth += 1
       }
       display0 = new Array(32)
       display1((index >> 5) & 31) = display0
     } else if (xor < (1 << 15)) { // level = 2
       if (depth == 2) {
-        display2 = new Array(32); display2(0) = display1; depth += 1
+        display2 = new Array(32);
+        display2(0) = display1;
+        depth += 1
       }
       display0 = new Array(32)
       display1 = new Array(32)
@@ -968,7 +974,9 @@ private[immutable] trait VectorPointer[T] {
       display2((index >> 10) & 31) = display1
     } else if (xor < (1 << 20)) { // level = 3
       if (depth == 3) {
-        display3 = new Array(32); display3(0) = display2; depth += 1
+        display3 = new Array(32);
+        display3(0) = display2;
+        depth += 1
       }
       display0 = new Array(32)
       display1 = new Array(32)
@@ -978,7 +986,9 @@ private[immutable] trait VectorPointer[T] {
       display3((index >> 15) & 31) = display2
     } else if (xor < (1 << 25)) { // level = 4
       if (depth == 4) {
-        display4 = new Array(32); display4(0) = display3; depth += 1
+        display4 = new Array(32);
+        display4(0) = display3;
+        depth += 1
       }
       display0 = new Array(32)
       display1 = new Array(32)
@@ -990,7 +1000,9 @@ private[immutable] trait VectorPointer[T] {
       display4((index >> 20) & 31) = display3
     } else if (xor < (1 << 30)) { // level = 5
       if (depth == 5) {
-        display5 = new Array(32); display5(0) = display4; depth += 1
+        display5 = new Array(32);
+        display5(0) = display4;
+        depth += 1
       }
       display0 = new Array(32)
       display1 = new Array(32)

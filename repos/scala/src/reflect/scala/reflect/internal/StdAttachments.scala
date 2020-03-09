@@ -16,13 +16,16 @@ trait StdAttachments {
     def setAttachments(attachments: scala.reflect.macros.Attachments {
       type Pos = Position
     }): this.type = {
-      rawatt = attachments; this
+      rawatt = attachments;
+      this
     }
     def updateAttachment[T: ClassTag](attachment: T): this.type = {
-      rawatt = rawatt.update(attachment); this
+      rawatt = rawatt.update(attachment);
+      this
     }
     def removeAttachment[T: ClassTag]: this.type = {
-      rawatt = rawatt.remove[T]; this
+      rawatt = rawatt.remove[T];
+      this
     }
     def hasAttachment[T: ClassTag]: Boolean = rawatt.contains[T]
 
@@ -30,7 +33,8 @@ trait StdAttachments {
     def pos: Position = rawatt.pos
     def pos_=(pos: Position): Unit = rawatt = (rawatt withPos pos)
     def setPos(newpos: Position): this.type = {
-      pos = newpos; this
+      pos = newpos;
+      this
     }
   }
 

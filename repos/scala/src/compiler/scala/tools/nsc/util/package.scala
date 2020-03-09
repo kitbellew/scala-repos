@@ -26,7 +26,8 @@ package object util {
 
   /** Apply a function and return the passed value */
   def returning[T](x: T)(f: T => Unit): T = {
-    f(x); x
+    f(x);
+    x
   }
 
   /** Execute code and then wait for all non-daemon Threads
@@ -92,7 +93,8 @@ package object util {
     val frame = ex.getStackTrace.dropWhile(
       _.getClassName contains "Predef") take 1 mkString ""
     val msg = ex.getMessage match {
-      case null | "" => ""; case s => s"""("$s")"""
+      case null | "" => "";
+      case s         => s"""("$s")"""
     }
     val clazz = ex.getClass.getName.split('.').last
 

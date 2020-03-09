@@ -185,7 +185,8 @@ object union {
         implicit toMap: ToMap[U]): Aux[U, toMap.Key, toMap.Value] = toMap
 
     type Aux[U <: Coproduct, Key0, Value0] = ToMap[U] {
-      type Key = Key0; type Value = Value0
+      type Key = Key0;
+      type Value = Value0
     }
 
     implicit def cnilToMap[K, V]: Aux[CNil, K, V] =

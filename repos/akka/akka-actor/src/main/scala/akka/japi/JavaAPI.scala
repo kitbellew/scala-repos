@@ -131,7 +131,8 @@ abstract class JavaPartialFunction[A, B] extends AbstractPartialFunction[A, B] {
 
   final def isDefinedAt(x: A): Boolean =
     try {
-      apply(x, true); true
+      apply(x, true);
+      true
     } catch {
       case NoMatch ⇒ false
     }

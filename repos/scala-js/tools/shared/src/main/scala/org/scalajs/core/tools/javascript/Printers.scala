@@ -70,7 +70,9 @@ object Printers {
     }
 
     protected def printBlock(tree: Tree): Unit = {
-      print('{'); indent(); println()
+      print('{');
+      indent();
+      println()
       tree match {
         case tree: Block =>
           var rest = tree.stats
@@ -88,7 +90,9 @@ object Printers {
         case _ =>
           printStat(tree)
       }
-      undent(); println(); print('}')
+      undent();
+      println();
+      print('}')
     }
 
     protected def printSig(args: List[ParamDef]): Unit = {
@@ -496,7 +500,8 @@ object Printers {
             print(" extends ")
             print(optParentClass.get)
           }
-          print(" {"); indent()
+          print(" {");
+          indent()
           var rest = members
           while (rest.nonEmpty) {
             println()
@@ -504,7 +509,9 @@ object Printers {
             print(';')
             rest = rest.tail
           }
-          undent(); println(); print('}')
+          undent();
+          println();
+          print('}')
 
         case MethodDef(static, name, params, body) =>
           if (static)

@@ -141,7 +141,8 @@ object Test {
 
     if (depth == 0) {
       if (p(nested)) {
-        bodies += body; triggers += trigger
+        bodies += body;
+        triggers += trigger
       }
     } else {
       for (ctx <- enums) {

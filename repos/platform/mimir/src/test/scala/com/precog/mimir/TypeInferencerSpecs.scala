@@ -60,11 +60,13 @@ trait TypeInferencerSpecs[M[+_]]
         Schema.ctypes(p).map(tpe => (JPath.Identity, Some(tpe)))
 
       case JArrayFixedT(elems) =>
-        for ((i, jtpe) <- elems.toSet; (path, ctpes) <- flattenAux(jtpe))
+        for ((i, jtpe) <- elems.toSet;
+             (path, ctpes) <- flattenAux(jtpe))
           yield (JPathIndex(i) \ path, ctpes)
 
       case JObjectFixedT(fields) =>
-        for ((field, jtpe) <- fields.toSet; (path, ctpes) <- flattenAux(jtpe))
+        for ((field, jtpe) <- fields.toSet;
+             (path, ctpes) <- flattenAux(jtpe))
           yield (JPathField(field) \ path, ctpes)
 
       case JUnionT(left, right) => flattenAux(left) ++ flattenAux(right)

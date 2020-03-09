@@ -97,7 +97,8 @@ object Test extends App {
           x = 41
         } catch {
           case _: Exception => x = 42
-        }; x = 43
+        };
+        x = 43
     }
     x
   }

@@ -27,7 +27,8 @@ object Test {
 
   def main(args: Array[String]) = {
     val s: Susp[Int] = delay {
-      Console.println("evaluating..."); 3
+      Console.println("evaluating...");
+      3
     }
     Console.println("s = " + s)
     Console.println("s() = " + s())

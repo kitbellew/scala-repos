@@ -153,9 +153,12 @@ object ScalaMacroDebuggingUtil {
         if (oldCount == markersCount) {
           false
         } else {
-          MARKERS_CACHE += (fileName -> markersCount); true
+          MARKERS_CACHE += (fileName -> markersCount);
+          true
         }
-      case None => MARKERS_CACHE += (fileName -> markersCount); true
+      case None =>
+        MARKERS_CACHE += (fileName -> markersCount);
+        true
     }
 
   def isMacroCall(element: PsiElement) = element match {

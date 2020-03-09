@@ -228,7 +228,8 @@ object State {
     def baseDir: File = s.configuration.baseDirectory
     def setNext(n: Next) = s.copy(next = n)
     def setResult(ro: Option[xsbti.MainResult]) = ro match {
-      case None => continue; case Some(r) => setNext(new Return(r))
+      case None    => continue;
+      case Some(r) => setNext(new Return(r))
     }
     def continue = setNext(Continue)
     def reboot(full: Boolean) = {

@@ -253,11 +253,13 @@ trait TypeComparers {
     def sameTypeAndSameCaseClass = tp1 match {
       case tp1: TypeRef =>
         tp2 match {
-          case tp2: TypeRef => isSameTypeRef(tp1, tp2); case _ => false
+          case tp2: TypeRef => isSameTypeRef(tp1, tp2);
+          case _            => false
         }
       case tp1: MethodType =>
         tp2 match {
-          case tp2: MethodType => isSameMethodType(tp1, tp2); case _ => false
+          case tp2: MethodType => isSameMethodType(tp1, tp2);
+          case _               => false
         }
       case RefinedType(ps1, decls1) =>
         tp2 match {
@@ -267,30 +269,36 @@ trait TypeComparers {
         }
       case SingleType(pre1, sym1) =>
         tp2 match {
-          case SingleType(pre2, sym2)                            =>
-            equalSymsAndPrefixes(sym1, pre1, sym2, pre2); case _ => false
+          case SingleType(pre2, sym2) =>
+            equalSymsAndPrefixes(sym1, pre1, sym2, pre2);
+          case _ => false
         }
       case PolyType(ps1, res1) =>
         tp2 match {
-          case PolyType(ps2, res2)                                 =>
-            equalTypeParamsAndResult(ps1, res1, ps2, res2); case _ => false
+          case PolyType(ps2, res2) =>
+            equalTypeParamsAndResult(ps1, res1, ps2, res2);
+          case _ => false
         }
       case ExistentialType(qs1, res1) =>
         tp2 match {
-          case ExistentialType(qs2, res2)                          =>
-            equalTypeParamsAndResult(qs1, res1, qs2, res2); case _ => false
+          case ExistentialType(qs2, res2) =>
+            equalTypeParamsAndResult(qs1, res1, qs2, res2);
+          case _ => false
         }
       case ThisType(sym1) =>
         tp2 match {
-          case ThisType(sym2) => sym1 eq sym2; case _ => false
+          case ThisType(sym2) => sym1 eq sym2;
+          case _              => false
         }
       case ConstantType(c1) =>
         tp2 match {
-          case ConstantType(c2) => c1 == c2; case _ => false
+          case ConstantType(c2) => c1 == c2;
+          case _                => false
         }
       case NullaryMethodType(res1) =>
         tp2 match {
-          case NullaryMethodType(res2) => res1 =:= res2; case _ => false
+          case NullaryMethodType(res2) => res1 =:= res2;
+          case _                       => false
         }
       case TypeBounds(lo1, hi1) =>
         tp2 match {

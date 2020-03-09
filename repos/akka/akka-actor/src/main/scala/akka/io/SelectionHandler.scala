@@ -161,7 +161,8 @@ private[io] object SelectionHandler {
                   case OP_READ ⇒ connection ! ChannelReadable
                   case OP_WRITE ⇒ connection ! ChannelWritable
                   case OP_READ_AND_WRITE ⇒ {
-                    connection ! ChannelWritable; connection ! ChannelReadable
+                    connection ! ChannelWritable;
+                    connection ! ChannelReadable
                   }
                   case x if (x & OP_ACCEPT) > 0 ⇒ connection ! ChannelAcceptable
                   case x if (x & OP_CONNECT) > 0 ⇒

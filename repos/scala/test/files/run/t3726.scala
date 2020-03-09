@@ -5,6 +5,7 @@ object Test extends App {
   }
 
   println(test(() => {
-    println("hi there"); 0
+    println("hi there");
+    0
   }))
 }

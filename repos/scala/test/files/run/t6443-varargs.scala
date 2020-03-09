@@ -2,7 +2,8 @@ object Test {
 
   def main(args: Array[String]) {
     def foo = {
-      println("foo"); 0
+      println("foo");
+      0
     }
     lazyDep(X)(foo)
   }

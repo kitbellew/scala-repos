@@ -280,10 +280,12 @@ object AuthApi {
     private[this] var _allows: Option[T] => Boolean = (u: Option[T]) => true
     def allows: Option[T] => Boolean = _allows
     def allows(guard: Option[T] => Boolean): this.type = {
-      _allows = guard; this
+      _allows = guard;
+      this
     }
     def allowAll: this.type = {
-      _allows = (u: Option[T]) => true; this
+      _allows = (u: Option[T]) => true;
+      this
     }
   }
 

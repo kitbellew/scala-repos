@@ -28,7 +28,8 @@ trait LazyCombiner[Elem, +To, Buff <: Growable[Elem] with Sizing]
   val chain: ArrayBuffer[Buff]
   val lastbuff = chain.last
   def +=(elem: Elem) = {
-    lastbuff += elem; this
+    lastbuff += elem;
+    this
   }
   def result: To = allocateAndCopy
   def clear() = {

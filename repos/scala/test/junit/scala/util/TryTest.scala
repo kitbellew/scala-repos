@@ -23,7 +23,8 @@ class TryTest {
   @Test
   def withFilterFlatMap(): Unit = {
     val successFlatMap =
-      for (x <- util.Try(1) if x >= 1; y <- util.Try(2) if x < y) yield x
+      for (x <- util.Try(1) if x >= 1;
+           y <- util.Try(2) if x < y) yield x
     assertEquals(successFlatMap, util.Success(1))
   }
 

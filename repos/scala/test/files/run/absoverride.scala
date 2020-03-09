@@ -15,7 +15,10 @@ class StringIterator(s: String) extends AbsIterator {
   private var i = 0
   def hasNext = i < s.length()
   def next = {
-    val x = s.charAt(i); i += 1; println("next: " + x); x
+    val x = s.charAt(i);
+    i += 1;
+    println("next: " + x);
+    x
   }
 }
 
@@ -24,12 +27,17 @@ trait SyncIterator extends AbsIterator {
     synchronized(super.hasNext)
   abstract override def next: T =
     synchronized {
-      println("<sync>"); val x = super.next; println("</sync>"); x
+      println("<sync>");
+      val x = super.next;
+      println("</sync>");
+      x
     }
 }
 trait LoggedIterator extends AbsIterator {
   abstract override def next: T = {
-    val x = super.next; println("log: " + x); x
+    val x = super.next;
+    println("log: " + x);
+    x
   }
 }
 class Iter2(s: String)

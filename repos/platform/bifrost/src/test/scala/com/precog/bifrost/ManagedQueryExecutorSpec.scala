@@ -271,6 +271,7 @@ trait TestManagedPlatform
     true
   }
   def shutdown = Future {
-    actorSystem.shutdown; true
+    actorSystem.shutdown;
+    true
   }
 }

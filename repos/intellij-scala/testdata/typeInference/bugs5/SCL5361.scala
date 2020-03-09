@@ -11,7 +11,8 @@ object Test {
       val Box(value) = box; /*start*/
       value.isEmpty /*end*/ // good code red
     }
-    val Box(value) = box; value.isEmpty // okay
+    val Box(value) = box;
+    value.isEmpty // okay
   }
 }
 //Boolean

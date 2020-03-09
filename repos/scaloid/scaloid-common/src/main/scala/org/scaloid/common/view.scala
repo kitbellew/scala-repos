@@ -227,7 +227,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setBackground(android.graphics.drawable.Drawable) setBackground(android.graphics.drawable.Drawable)]]`
     */
   @inline def background_=(p: android.graphics.drawable.Drawable) = {
-    basis.setBackgroundDrawable(p); basis
+    basis.setBackgroundDrawable(p);
+    basis
   } // to avoid compatibility issue on API Level < 16, calls setBackgroundDrawable() although it is deprecated.
 
   @inline def accessibilityDelegate(
@@ -246,7 +247,8 @@ trait TraitView[This <: android.view.View]
     */
   @inline def accessibilityDelegate_=(
       p: android.view.View.AccessibilityDelegate) = {
-    basis.setAccessibilityDelegate(p); basis
+    basis.setAccessibilityDelegate(p);
+    basis
   }
 
   /**
@@ -268,7 +270,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setActivated(boolean) setActivated(boolean)]]`
     */
   @inline def activated_=(p: Boolean) = {
-    basis.setActivated(p); basis
+    basis.setActivated(p);
+    basis
   }
 
   /**
@@ -285,7 +288,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setAlpha(float) setAlpha(float)]]`
     */
   @inline def alpha_=(p: Float) = {
-    basis.setAlpha(p); basis
+    basis.setAlpha(p);
+    basis
   }
 
   /**
@@ -302,7 +306,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setAnimation(android.view.animation.Animation) setAnimation(android.view.animation.Animation)]]`
     */
   @inline def animation_=(p: android.view.animation.Animation) = {
-    basis.setAnimation(p); basis
+    basis.setAnimation(p);
+    basis
   }
 
   /**
@@ -327,7 +332,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setBackgroundColor(int) setBackgroundColor(int)]]`
     */
   @inline def backgroundColor_=(p: Int) = {
-    basis.setBackgroundColor(p); basis
+    basis.setBackgroundColor(p);
+    basis
   }
 
   @inline def backgroundDrawable(
@@ -346,7 +352,8 @@ trait TraitView[This <: android.view.View]
     */
   @deprecated("", "") @inline def backgroundDrawable_=(
       p: android.graphics.drawable.Drawable) = {
-    basis.setBackgroundDrawable(p); basis
+    basis.setBackgroundDrawable(p);
+    basis
   }
 
   @inline def backgroundResource(
@@ -363,7 +370,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setBackgroundResource(int) setBackgroundResource(int)]]`
     */
   @inline def backgroundResource_=(p: Int) = {
-    basis.setBackgroundResource(p); basis
+    basis.setBackgroundResource(p);
+    basis
   }
 
   /**
@@ -385,7 +393,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setBottom(int) setBottom(int)]]`
     */
   @inline def bottom_=(p: Int) = {
-    basis.setBottom(p); basis
+    basis.setBottom(p);
+    basis
   }
 
   /**
@@ -402,7 +411,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setCameraDistance(float) setCameraDistance(float)]]`
     */
   @inline def cameraDistance_=(p: Float) = {
-    basis.setCameraDistance(p); basis
+    basis.setCameraDistance(p);
+    basis
   }
 
   /**
@@ -419,7 +429,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setClickable(boolean) setClickable(boolean)]]`
     */
   @inline def clickable_=(p: Boolean) = {
-    basis.setClickable(p); basis
+    basis.setClickable(p);
+    basis
   }
 
   /**
@@ -437,7 +448,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setContentDescription(java.lang.CharSequence) setContentDescription(java.lang.CharSequence)]]`
     */
   @inline def contentDescription_=(p: java.lang.CharSequence) = {
-    basis.setContentDescription(p); basis
+    basis.setContentDescription(p);
+    basis
   }
 
   /**
@@ -470,7 +482,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setDrawingCacheBackgroundColor(int) setDrawingCacheBackgroundColor(int)]]`
     */
   @inline def drawingCacheBackgroundColor_=(p: Int) = {
-    basis.setDrawingCacheBackgroundColor(p); basis
+    basis.setDrawingCacheBackgroundColor(p);
+    basis
   }
 
   /**
@@ -487,14 +500,17 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setDrawingCacheEnabled(boolean) setDrawingCacheEnabled(boolean)]]`
     */
   @inline def drawingCacheEnabled_=(p: Boolean) = {
-    basis.setDrawingCacheEnabled(p); basis
+    basis.setDrawingCacheEnabled(p);
+    basis
   }
 
   @inline def enableDrawingCache() = {
-    basis.setDrawingCacheEnabled(true); basis
+    basis.setDrawingCacheEnabled(true);
+    basis
   }
   @inline def disableDrawingCache() = {
-    basis.setDrawingCacheEnabled(false); basis
+    basis.setDrawingCacheEnabled(false);
+    basis
   }
 
   /**
@@ -511,7 +527,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setDrawingCacheQuality(int) setDrawingCacheQuality(int)]]`
     */
   @inline def drawingCacheQuality_=(p: Int) = {
-    basis.setDrawingCacheQuality(p); basis
+    basis.setDrawingCacheQuality(p);
+    basis
   }
 
   /**
@@ -534,14 +551,17 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setDuplicateParentStateEnabled(boolean) setDuplicateParentStateEnabled(boolean)]]`
     */
   @inline def duplicateParentStateEnabled_=(p: Boolean) = {
-    basis.setDuplicateParentStateEnabled(p); basis
+    basis.setDuplicateParentStateEnabled(p);
+    basis
   }
 
   @inline def enableDuplicateParentState() = {
-    basis.setDuplicateParentStateEnabled(true); basis
+    basis.setDuplicateParentStateEnabled(true);
+    basis
   }
   @inline def disableDuplicateParentState() = {
-    basis.setDuplicateParentStateEnabled(false); basis
+    basis.setDuplicateParentStateEnabled(false);
+    basis
   }
 
   /**
@@ -558,14 +578,17 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setEnabled(boolean) setEnabled(boolean)]]`
     */
   @inline def enabled_=(p: Boolean) = {
-    basis.setEnabled(p); basis
+    basis.setEnabled(p);
+    basis
   }
 
   @inline def enable() = {
-    basis.setEnabled(true); basis
+    basis.setEnabled(true);
+    basis
   }
   @inline def disable() = {
-    basis.setEnabled(false); basis
+    basis.setEnabled(false);
+    basis
   }
 
   @inline def fadingEdgeLength(implicit no: NoGetterForThisProperty): Nothing =
@@ -581,7 +604,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setFadingEdgeLength(int) setFadingEdgeLength(int)]]`
     */
   @inline def fadingEdgeLength_=(p: Int) = {
-    basis.setFadingEdgeLength(p); basis
+    basis.setFadingEdgeLength(p);
+    basis
   }
 
   /**
@@ -599,7 +623,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setFilterTouchesWhenObscured(boolean) setFilterTouchesWhenObscured(boolean)]]`
     */
   @inline def filterTouchesWhenObscured_=(p: Boolean) = {
-    basis.setFilterTouchesWhenObscured(p); basis
+    basis.setFilterTouchesWhenObscured(p);
+    basis
   }
 
   /**
@@ -616,7 +641,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setFitsSystemWindows(boolean) setFitsSystemWindows(boolean)]]`
     */
   @inline def fitsSystemWindows_=(p: Boolean) = {
-    basis.setFitsSystemWindows(p); basis
+    basis.setFitsSystemWindows(p);
+    basis
   }
 
   /**
@@ -633,7 +659,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setFocusable(boolean) setFocusable(boolean)]]`
     */
   @inline def focusable_=(p: Boolean) = {
-    basis.setFocusable(p); basis
+    basis.setFocusable(p);
+    basis
   }
 
   /**
@@ -650,7 +677,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setFocusableInTouchMode(boolean) setFocusableInTouchMode(boolean)]]`
     */
   @inline def focusableInTouchMode_=(p: Boolean) = {
-    basis.setFocusableInTouchMode(p); basis
+    basis.setFocusableInTouchMode(p);
+    basis
   }
 
   /**
@@ -672,14 +700,17 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setHapticFeedbackEnabled(boolean) setHapticFeedbackEnabled(boolean)]]`
     */
   @inline def hapticFeedbackEnabled_=(p: Boolean) = {
-    basis.setHapticFeedbackEnabled(p); basis
+    basis.setHapticFeedbackEnabled(p);
+    basis
   }
 
   @inline def enableHapticFeedback() = {
-    basis.setHapticFeedbackEnabled(true); basis
+    basis.setHapticFeedbackEnabled(true);
+    basis
   }
   @inline def disableHapticFeedback() = {
-    basis.setHapticFeedbackEnabled(false); basis
+    basis.setHapticFeedbackEnabled(false);
+    basis
   }
 
   /**
@@ -691,7 +722,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setHasTransientState(boolean) setHasTransientState(boolean)]]`
     */
   @inline def hasTransientState_=(p: Boolean) = {
-    basis.setHasTransientState(p); basis
+    basis.setHasTransientState(p);
+    basis
   }
 
   /**
@@ -714,14 +746,17 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setHorizontalFadingEdgeEnabled(boolean) setHorizontalFadingEdgeEnabled(boolean)]]`
     */
   @inline def horizontalFadingEdgeEnabled_=(p: Boolean) = {
-    basis.setHorizontalFadingEdgeEnabled(p); basis
+    basis.setHorizontalFadingEdgeEnabled(p);
+    basis
   }
 
   @inline def enableHorizontalFadingEdge() = {
-    basis.setHorizontalFadingEdgeEnabled(true); basis
+    basis.setHorizontalFadingEdgeEnabled(true);
+    basis
   }
   @inline def disableHorizontalFadingEdge() = {
-    basis.setHorizontalFadingEdgeEnabled(false); basis
+    basis.setHorizontalFadingEdgeEnabled(false);
+    basis
   }
 
   /**
@@ -744,14 +779,17 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setHorizontalScrollBarEnabled(boolean) setHorizontalScrollBarEnabled(boolean)]]`
     */
   @inline def horizontalScrollBarEnabled_=(p: Boolean) = {
-    basis.setHorizontalScrollBarEnabled(p); basis
+    basis.setHorizontalScrollBarEnabled(p);
+    basis
   }
 
   @inline def enableHorizontalScrollBar() = {
-    basis.setHorizontalScrollBarEnabled(true); basis
+    basis.setHorizontalScrollBarEnabled(true);
+    basis
   }
   @inline def disableHorizontalScrollBar() = {
-    basis.setHorizontalScrollBarEnabled(false); basis
+    basis.setHorizontalScrollBarEnabled(false);
+    basis
   }
 
   /**
@@ -768,7 +806,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setHovered(boolean) setHovered(boolean)]]`
     */
   @inline def hovered_=(p: Boolean) = {
-    basis.setHovered(p); basis
+    basis.setHovered(p);
+    basis
   }
 
   /**
@@ -785,7 +824,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setId(int) setId(int)]]`
     */
   @inline def id_=(p: Int) = {
-    basis.setId(p); basis
+    basis.setId(p);
+    basis
   }
 
   /**
@@ -802,7 +842,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setImportantForAccessibility(int) setImportantForAccessibility(int)]]`
     */
   @inline def importantForAccessibility_=(p: Int) = {
-    basis.setImportantForAccessibility(p); basis
+    basis.setImportantForAccessibility(p);
+    basis
   }
 
   /**
@@ -819,7 +860,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setKeepScreenOn(boolean) setKeepScreenOn(boolean)]]`
     */
   @inline def keepScreenOn_=(p: Boolean) = {
-    basis.setKeepScreenOn(p); basis
+    basis.setKeepScreenOn(p);
+    basis
   }
 
   /**
@@ -847,7 +889,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setLayoutParams(android.view.ViewGroup.LayoutParams) setLayoutParams(android.view.ViewGroup.LayoutParams)]]`
     */
   @inline def layoutParams_=(p: android.view.ViewGroup.LayoutParams) = {
-    basis.setLayoutParams(p); basis
+    basis.setLayoutParams(p);
+    basis
   }
 
   /**
@@ -864,7 +907,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setLeft(int) setLeft(int)]]`
     */
   @inline def left_=(p: Int) = {
-    basis.setLeft(p); basis
+    basis.setLeft(p);
+    basis
   }
 
   /**
@@ -881,7 +925,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setLongClickable(boolean) setLongClickable(boolean)]]`
     */
   @inline def longClickable_=(p: Boolean) = {
-    basis.setLongClickable(p); basis
+    basis.setLongClickable(p);
+    basis
   }
 
   /**
@@ -928,7 +973,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setMinimumHeight(int) setMinimumHeight(int)]]`
     */
   @inline def minimumHeight_=(p: Int) = {
-    basis.setMinimumHeight(p); basis
+    basis.setMinimumHeight(p);
+    basis
   }
 
   /**
@@ -945,7 +991,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setMinimumWidth(int) setMinimumWidth(int)]]`
     */
   @inline def minimumWidth_=(p: Int) = {
-    basis.setMinimumWidth(p); basis
+    basis.setMinimumWidth(p);
+    basis
   }
 
   /**
@@ -962,7 +1009,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setNextFocusDownId(int) setNextFocusDownId(int)]]`
     */
   @inline def nextFocusDownId_=(p: Int) = {
-    basis.setNextFocusDownId(p); basis
+    basis.setNextFocusDownId(p);
+    basis
   }
 
   /**
@@ -979,7 +1027,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setNextFocusForwardId(int) setNextFocusForwardId(int)]]`
     */
   @inline def nextFocusForwardId_=(p: Int) = {
-    basis.setNextFocusForwardId(p); basis
+    basis.setNextFocusForwardId(p);
+    basis
   }
 
   /**
@@ -996,7 +1045,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setNextFocusLeftId(int) setNextFocusLeftId(int)]]`
     */
   @inline def nextFocusLeftId_=(p: Int) = {
-    basis.setNextFocusLeftId(p); basis
+    basis.setNextFocusLeftId(p);
+    basis
   }
 
   /**
@@ -1013,7 +1063,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setNextFocusRightId(int) setNextFocusRightId(int)]]`
     */
   @inline def nextFocusRightId_=(p: Int) = {
-    basis.setNextFocusRightId(p); basis
+    basis.setNextFocusRightId(p);
+    basis
   }
 
   /**
@@ -1030,7 +1081,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setNextFocusUpId(int) setNextFocusUpId(int)]]`
     */
   @inline def nextFocusUpId_=(p: Int) = {
-    basis.setNextFocusUpId(p); basis
+    basis.setNextFocusUpId(p);
+    basis
   }
 
   @inline def onClickListener(implicit no: NoGetterForThisProperty): Nothing =
@@ -1046,7 +1098,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setOnClickListener(android.view.View.OnClickListener) setOnClickListener(android.view.View.OnClickListener)]]`
     */
   @inline def onClickListener_=(p: android.view.View.OnClickListener) = {
-    basis.setOnClickListener(p); basis
+    basis.setOnClickListener(p);
+    basis
   }
 
   @inline def onCreateContextMenuListener(
@@ -1066,7 +1119,8 @@ trait TraitView[This <: android.view.View]
     */
   @inline def onCreateContextMenuListener_=(
       p: android.view.View.OnCreateContextMenuListener) = {
-    basis.setOnCreateContextMenuListener(p); basis
+    basis.setOnCreateContextMenuListener(p);
+    basis
   }
 
   @inline def onDragListener(implicit no: NoGetterForThisProperty): Nothing =
@@ -1082,7 +1136,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setOnDragListener(android.view.View.OnDragListener) setOnDragListener(android.view.View.OnDragListener)]]`
     */
   @inline def onDragListener_=(p: android.view.View.OnDragListener) = {
-    basis.setOnDragListener(p); basis
+    basis.setOnDragListener(p);
+    basis
   }
 
   /**
@@ -1101,7 +1156,8 @@ trait TraitView[This <: android.view.View]
     */
   @inline def onFocusChangeListener_=(
       p: android.view.View.OnFocusChangeListener) = {
-    basis.setOnFocusChangeListener(p); basis
+    basis.setOnFocusChangeListener(p);
+    basis
   }
 
   @inline def onGenericMotionListener(
@@ -1121,7 +1177,8 @@ trait TraitView[This <: android.view.View]
     */
   @inline def onGenericMotionListener_=(
       p: android.view.View.OnGenericMotionListener) = {
-    basis.setOnGenericMotionListener(p); basis
+    basis.setOnGenericMotionListener(p);
+    basis
   }
 
   @inline def onHoverListener(implicit no: NoGetterForThisProperty): Nothing =
@@ -1137,7 +1194,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setOnHoverListener(android.view.View.OnHoverListener) setOnHoverListener(android.view.View.OnHoverListener)]]`
     */
   @inline def onHoverListener_=(p: android.view.View.OnHoverListener) = {
-    basis.setOnHoverListener(p); basis
+    basis.setOnHoverListener(p);
+    basis
   }
 
   @inline def onKeyListener(implicit no: NoGetterForThisProperty): Nothing =
@@ -1153,7 +1211,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setOnKeyListener(android.view.View.OnKeyListener) setOnKeyListener(android.view.View.OnKeyListener)]]`
     */
   @inline def onKeyListener_=(p: android.view.View.OnKeyListener) = {
-    basis.setOnKeyListener(p); basis
+    basis.setOnKeyListener(p);
+    basis
   }
 
   @inline def onLongClickListener(
@@ -1172,7 +1231,8 @@ trait TraitView[This <: android.view.View]
     */
   @inline def onLongClickListener_=(
       p: android.view.View.OnLongClickListener) = {
-    basis.setOnLongClickListener(p); basis
+    basis.setOnLongClickListener(p);
+    basis
   }
 
   @inline def onSystemUiVisibilityChangeListener(
@@ -1192,7 +1252,8 @@ trait TraitView[This <: android.view.View]
     */
   @inline def onSystemUiVisibilityChangeListener_=(
       p: android.view.View.OnSystemUiVisibilityChangeListener) = {
-    basis.setOnSystemUiVisibilityChangeListener(p); basis
+    basis.setOnSystemUiVisibilityChangeListener(p);
+    basis
   }
 
   @inline def onTouchListener(implicit no: NoGetterForThisProperty): Nothing =
@@ -1208,7 +1269,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setOnTouchListener(android.view.View.OnTouchListener) setOnTouchListener(android.view.View.OnTouchListener)]]`
     */
   @inline def onTouchListener_=(p: android.view.View.OnTouchListener) = {
-    basis.setOnTouchListener(p); basis
+    basis.setOnTouchListener(p);
+    basis
   }
 
   /**
@@ -1225,7 +1287,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setOverScrollMode(int) setOverScrollMode(int)]]`
     */
   @inline def overScrollMode_=(p: Int) = {
-    basis.setOverScrollMode(p); basis
+    basis.setOverScrollMode(p);
+    basis
   }
 
   /**
@@ -1272,7 +1335,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setPivotX(float) setPivotX(float)]]`
     */
   @inline def pivotX_=(p: Float) = {
-    basis.setPivotX(p); basis
+    basis.setPivotX(p);
+    basis
   }
 
   /**
@@ -1289,7 +1353,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setPivotY(float) setPivotY(float)]]`
     */
   @inline def pivotY_=(p: Float) = {
-    basis.setPivotY(p); basis
+    basis.setPivotY(p);
+    basis
   }
 
   /**
@@ -1306,7 +1371,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setPressed(boolean) setPressed(boolean)]]`
     */
   @inline def pressed_=(p: Boolean) = {
-    basis.setPressed(p); basis
+    basis.setPressed(p);
+    basis
   }
 
   /**
@@ -1328,7 +1394,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setRight(int) setRight(int)]]`
     */
   @inline def right_=(p: Int) = {
-    basis.setRight(p); basis
+    basis.setRight(p);
+    basis
   }
 
   /**
@@ -1350,7 +1417,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setRotation(float) setRotation(float)]]`
     */
   @inline def rotation_=(p: Float) = {
-    basis.setRotation(p); basis
+    basis.setRotation(p);
+    basis
   }
 
   /**
@@ -1367,7 +1435,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setRotationX(float) setRotationX(float)]]`
     */
   @inline def rotationX_=(p: Float) = {
-    basis.setRotationX(p); basis
+    basis.setRotationX(p);
+    basis
   }
 
   /**
@@ -1384,7 +1453,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setRotationY(float) setRotationY(float)]]`
     */
   @inline def rotationY_=(p: Float) = {
-    basis.setRotationY(p); basis
+    basis.setRotationY(p);
+    basis
   }
 
   /**
@@ -1401,14 +1471,17 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setSaveEnabled(boolean) setSaveEnabled(boolean)]]`
     */
   @inline def saveEnabled_=(p: Boolean) = {
-    basis.setSaveEnabled(p); basis
+    basis.setSaveEnabled(p);
+    basis
   }
 
   @inline def enableSave() = {
-    basis.setSaveEnabled(true); basis
+    basis.setSaveEnabled(true);
+    basis
   }
   @inline def disableSave() = {
-    basis.setSaveEnabled(false); basis
+    basis.setSaveEnabled(false);
+    basis
   }
 
   /**
@@ -1425,14 +1498,17 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setSaveFromParentEnabled(boolean) setSaveFromParentEnabled(boolean)]]`
     */
   @inline def saveFromParentEnabled_=(p: Boolean) = {
-    basis.setSaveFromParentEnabled(p); basis
+    basis.setSaveFromParentEnabled(p);
+    basis
   }
 
   @inline def enableSaveFromParent() = {
-    basis.setSaveFromParentEnabled(true); basis
+    basis.setSaveFromParentEnabled(true);
+    basis
   }
   @inline def disableSaveFromParent() = {
-    basis.setSaveFromParentEnabled(false); basis
+    basis.setSaveFromParentEnabled(false);
+    basis
   }
 
   /**
@@ -1449,7 +1525,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setScaleX(float) setScaleX(float)]]`
     */
   @inline def scaleX_=(p: Float) = {
-    basis.setScaleX(p); basis
+    basis.setScaleX(p);
+    basis
   }
 
   /**
@@ -1466,7 +1543,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setScaleY(float) setScaleY(float)]]`
     */
   @inline def scaleY_=(p: Float) = {
-    basis.setScaleY(p); basis
+    basis.setScaleY(p);
+    basis
   }
 
   /**
@@ -1485,7 +1563,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setScrollBarDefaultDelayBeforeFade(int) setScrollBarDefaultDelayBeforeFade(int)]]`
     */
   @inline def scrollBarDefaultDelayBeforeFade_=(p: Int) = {
-    basis.setScrollBarDefaultDelayBeforeFade(p); basis
+    basis.setScrollBarDefaultDelayBeforeFade(p);
+    basis
   }
 
   /**
@@ -1502,7 +1581,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setScrollBarFadeDuration(int) setScrollBarFadeDuration(int)]]`
     */
   @inline def scrollBarFadeDuration_=(p: Int) = {
-    basis.setScrollBarFadeDuration(p); basis
+    basis.setScrollBarFadeDuration(p);
+    basis
   }
 
   /**
@@ -1519,7 +1599,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setScrollBarSize(int) setScrollBarSize(int)]]`
     */
   @inline def scrollBarSize_=(p: Int) = {
-    basis.setScrollBarSize(p); basis
+    basis.setScrollBarSize(p);
+    basis
   }
 
   /**
@@ -1536,7 +1617,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setScrollBarStyle(int) setScrollBarStyle(int)]]`
     */
   @inline def scrollBarStyle_=(p: Int) = {
-    basis.setScrollBarStyle(p); basis
+    basis.setScrollBarStyle(p);
+    basis
   }
 
   /**
@@ -1553,7 +1635,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setScrollContainer(boolean) setScrollContainer(boolean)]]`
     */
   @inline def scrollContainer_=(p: Boolean) = {
-    basis.setScrollContainer(p); basis
+    basis.setScrollContainer(p);
+    basis
   }
 
   /**
@@ -1570,7 +1653,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setScrollX(int) setScrollX(int)]]`
     */
   @inline def scrollX_=(p: Int) = {
-    basis.setScrollX(p); basis
+    basis.setScrollX(p);
+    basis
   }
 
   /**
@@ -1587,7 +1671,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setScrollY(int) setScrollY(int)]]`
     */
   @inline def scrollY_=(p: Int) = {
-    basis.setScrollY(p); basis
+    basis.setScrollY(p);
+    basis
   }
 
   /**
@@ -1604,14 +1689,17 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setScrollbarFadingEnabled(boolean) setScrollbarFadingEnabled(boolean)]]`
     */
   @inline def scrollbarFadingEnabled_=(p: Boolean) = {
-    basis.setScrollbarFadingEnabled(p); basis
+    basis.setScrollbarFadingEnabled(p);
+    basis
   }
 
   @inline def enableScrollbarFading() = {
-    basis.setScrollbarFadingEnabled(true); basis
+    basis.setScrollbarFadingEnabled(true);
+    basis
   }
   @inline def disableScrollbarFading() = {
-    basis.setScrollbarFadingEnabled(false); basis
+    basis.setScrollbarFadingEnabled(false);
+    basis
   }
 
   /**
@@ -1628,7 +1716,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setSelected(boolean) setSelected(boolean)]]`
     */
   @inline def selected_=(p: Boolean) = {
-    basis.setSelected(p); basis
+    basis.setSelected(p);
+    basis
   }
 
   /**
@@ -1650,14 +1739,17 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setSoundEffectsEnabled(boolean) setSoundEffectsEnabled(boolean)]]`
     */
   @inline def soundEffectsEnabled_=(p: Boolean) = {
-    basis.setSoundEffectsEnabled(p); basis
+    basis.setSoundEffectsEnabled(p);
+    basis
   }
 
   @inline def enableSoundEffects() = {
-    basis.setSoundEffectsEnabled(true); basis
+    basis.setSoundEffectsEnabled(true);
+    basis
   }
   @inline def disableSoundEffects() = {
-    basis.setSoundEffectsEnabled(false); basis
+    basis.setSoundEffectsEnabled(false);
+    basis
   }
 
   /**
@@ -1674,7 +1766,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setSystemUiVisibility(int) setSystemUiVisibility(int)]]`
     */
   @inline def systemUiVisibility_=(p: Int) = {
-    basis.setSystemUiVisibility(p); basis
+    basis.setSystemUiVisibility(p);
+    basis
   }
 
   /**
@@ -1691,7 +1784,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setTag(java.lang.Object) setTag(java.lang.Object)]]`
     */
   @inline def tag_=(p: Any) = {
-    basis.setTag(p); basis
+    basis.setTag(p);
+    basis
   }
 
   /**
@@ -1708,7 +1802,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setTop(int) setTop(int)]]`
     */
   @inline def top_=(p: Int) = {
-    basis.setTop(p); basis
+    basis.setTop(p);
+    basis
   }
 
   /**
@@ -1725,7 +1820,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setTouchDelegate(android.view.TouchDelegate) setTouchDelegate(android.view.TouchDelegate)]]`
     */
   @inline def touchDelegate_=(p: android.view.TouchDelegate) = {
-    basis.setTouchDelegate(p); basis
+    basis.setTouchDelegate(p);
+    basis
   }
 
   /**
@@ -1747,7 +1843,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setTranslationX(float) setTranslationX(float)]]`
     */
   @inline def translationX_=(p: Float) = {
-    basis.setTranslationX(p); basis
+    basis.setTranslationX(p);
+    basis
   }
 
   /**
@@ -1764,7 +1861,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setTranslationY(float) setTranslationY(float)]]`
     */
   @inline def translationY_=(p: Float) = {
-    basis.setTranslationY(p); basis
+    basis.setTranslationY(p);
+    basis
   }
 
   /**
@@ -1782,14 +1880,17 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setVerticalFadingEdgeEnabled(boolean) setVerticalFadingEdgeEnabled(boolean)]]`
     */
   @inline def verticalFadingEdgeEnabled_=(p: Boolean) = {
-    basis.setVerticalFadingEdgeEnabled(p); basis
+    basis.setVerticalFadingEdgeEnabled(p);
+    basis
   }
 
   @inline def enableVerticalFadingEdge() = {
-    basis.setVerticalFadingEdgeEnabled(true); basis
+    basis.setVerticalFadingEdgeEnabled(true);
+    basis
   }
   @inline def disableVerticalFadingEdge() = {
-    basis.setVerticalFadingEdgeEnabled(false); basis
+    basis.setVerticalFadingEdgeEnabled(false);
+    basis
   }
 
   /**
@@ -1812,14 +1913,17 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setVerticalScrollBarEnabled(boolean) setVerticalScrollBarEnabled(boolean)]]`
     */
   @inline def verticalScrollBarEnabled_=(p: Boolean) = {
-    basis.setVerticalScrollBarEnabled(p); basis
+    basis.setVerticalScrollBarEnabled(p);
+    basis
   }
 
   @inline def enableVerticalScrollBar() = {
-    basis.setVerticalScrollBarEnabled(true); basis
+    basis.setVerticalScrollBarEnabled(true);
+    basis
   }
   @inline def disableVerticalScrollBar() = {
-    basis.setVerticalScrollBarEnabled(false); basis
+    basis.setVerticalScrollBarEnabled(false);
+    basis
   }
 
   /**
@@ -1836,7 +1940,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setVerticalScrollbarPosition(int) setVerticalScrollbarPosition(int)]]`
     */
   @inline def verticalScrollbarPosition_=(p: Int) = {
-    basis.setVerticalScrollbarPosition(p); basis
+    basis.setVerticalScrollbarPosition(p);
+    basis
   }
 
   /**
@@ -1863,7 +1968,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setVisibility(int) setVisibility(int)]]`
     */
   @inline def visibility_=(p: Int) = {
-    basis.setVisibility(p); basis
+    basis.setVisibility(p);
+    basis
   }
 
   /**
@@ -1880,7 +1986,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setWillNotCacheDrawing(boolean) setWillNotCacheDrawing(boolean)]]`
     */
   @inline def willNotCacheDrawing_=(p: Boolean) = {
-    basis.setWillNotCacheDrawing(p); basis
+    basis.setWillNotCacheDrawing(p);
+    basis
   }
 
   /**
@@ -1892,7 +1999,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setWillNotDraw(boolean) setWillNotDraw(boolean)]]`
     */
   @inline def willNotDraw_=(p: Boolean) = {
-    basis.setWillNotDraw(p); basis
+    basis.setWillNotDraw(p);
+    basis
   }
 
   /**
@@ -1924,7 +2032,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setX(float) setX(float)]]`
     */
   @inline def x_=(p: Float) = {
-    basis.setX(p); basis
+    basis.setX(p);
+    basis
   }
 
   /**
@@ -1941,7 +2050,8 @@ trait TraitView[This <: android.view.View]
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setY(float) setY(float)]]`
     */
   @inline def y_=(p: Float) = {
-    basis.setY(p); basis
+    basis.setY(p);
+    basis
   }
 
   @inline def onClick[U](f: android.view.View => U): This = {
@@ -2323,7 +2433,8 @@ trait TraitViewGroup[This <: android.view.ViewGroup] extends TraitView[This] {
     * Shortcut for `[[https://developer.android.com/reference/android/view/ViewGroup.html#setAddStatesFromChildren(boolean) setAddStatesFromChildren(boolean)]]`
     */
   @inline def addStatesFromChildren_=(p: Boolean) = {
-    basis.setAddStatesFromChildren(p); basis
+    basis.setAddStatesFromChildren(p);
+    basis
   }
 
   /**
@@ -2341,14 +2452,17 @@ trait TraitViewGroup[This <: android.view.ViewGroup] extends TraitView[This] {
     * Shortcut for `[[https://developer.android.com/reference/android/view/ViewGroup.html#setAlwaysDrawnWithCacheEnabled(boolean) setAlwaysDrawnWithCacheEnabled(boolean)]]`
     */
   @inline def alwaysDrawnWithCacheEnabled_=(p: Boolean) = {
-    basis.setAlwaysDrawnWithCacheEnabled(p); basis
+    basis.setAlwaysDrawnWithCacheEnabled(p);
+    basis
   }
 
   @inline def enableAlwaysDrawnWithCache() = {
-    basis.setAlwaysDrawnWithCacheEnabled(true); basis
+    basis.setAlwaysDrawnWithCacheEnabled(true);
+    basis
   }
   @inline def disableAlwaysDrawnWithCache() = {
-    basis.setAlwaysDrawnWithCacheEnabled(false); basis
+    basis.setAlwaysDrawnWithCacheEnabled(false);
+    basis
   }
 
   /**
@@ -2365,14 +2479,17 @@ trait TraitViewGroup[This <: android.view.ViewGroup] extends TraitView[This] {
     * Shortcut for `[[https://developer.android.com/reference/android/view/ViewGroup.html#setAnimationCacheEnabled(boolean) setAnimationCacheEnabled(boolean)]]`
     */
   @inline def animationCacheEnabled_=(p: Boolean) = {
-    basis.setAnimationCacheEnabled(p); basis
+    basis.setAnimationCacheEnabled(p);
+    basis
   }
 
   @inline def enableAnimationCache() = {
-    basis.setAnimationCacheEnabled(true); basis
+    basis.setAnimationCacheEnabled(true);
+    basis
   }
   @inline def disableAnimationCache() = {
-    basis.setAnimationCacheEnabled(false); basis
+    basis.setAnimationCacheEnabled(false);
+    basis
   }
 
   /**
@@ -2392,7 +2509,8 @@ trait TraitViewGroup[This <: android.view.ViewGroup] extends TraitView[This] {
     * Shortcut for `[[https://developer.android.com/reference/android/view/ViewGroup.html#setClipChildren(boolean) setClipChildren(boolean)]]`
     */
   @inline def clipChildren_=(p: Boolean) = {
-    basis.setClipChildren(p); basis
+    basis.setClipChildren(p);
+    basis
   }
 
   @inline def clipToPadding(implicit no: NoGetterForThisProperty): Nothing =
@@ -2407,7 +2525,8 @@ trait TraitViewGroup[This <: android.view.ViewGroup] extends TraitView[This] {
     * Shortcut for `[[https://developer.android.com/reference/android/view/ViewGroup.html#setClipToPadding(boolean) setClipToPadding(boolean)]]`
     */
   @inline def clipToPadding_=(p: Boolean) = {
-    basis.setClipToPadding(p); basis
+    basis.setClipToPadding(p);
+    basis
   }
 
   /**
@@ -2424,7 +2543,8 @@ trait TraitViewGroup[This <: android.view.ViewGroup] extends TraitView[This] {
     * Shortcut for `[[https://developer.android.com/reference/android/view/ViewGroup.html#setDescendantFocusability(int) setDescendantFocusability(int)]]`
     */
   @inline def descendantFocusability_=(p: Int) = {
-    basis.setDescendantFocusability(p); basis
+    basis.setDescendantFocusability(p);
+    basis
   }
 
   /**
@@ -2449,7 +2569,8 @@ trait TraitViewGroup[This <: android.view.ViewGroup] extends TraitView[This] {
     */
   @inline def layoutAnimation_=(
       p: android.view.animation.LayoutAnimationController) = {
-    basis.setLayoutAnimation(p); basis
+    basis.setLayoutAnimation(p);
+    basis
   }
 
   /**
@@ -2469,7 +2590,8 @@ trait TraitViewGroup[This <: android.view.ViewGroup] extends TraitView[This] {
     */
   @inline def layoutAnimationListener_=(
       p: android.view.animation.Animation.AnimationListener) = {
-    basis.setLayoutAnimationListener(p); basis
+    basis.setLayoutAnimationListener(p);
+    basis
   }
 
   /**
@@ -2487,7 +2609,8 @@ trait TraitViewGroup[This <: android.view.ViewGroup] extends TraitView[This] {
     * Shortcut for `[[https://developer.android.com/reference/android/view/ViewGroup.html#setLayoutTransition(android.animation.LayoutTransition) setLayoutTransition(android.animation.LayoutTransition)]]`
     */
   @inline def layoutTransition_=(p: android.animation.LayoutTransition) = {
-    basis.setLayoutTransition(p); basis
+    basis.setLayoutTransition(p);
+    basis
   }
 
   /**
@@ -2505,14 +2628,17 @@ trait TraitViewGroup[This <: android.view.ViewGroup] extends TraitView[This] {
     * Shortcut for `[[https://developer.android.com/reference/android/view/ViewGroup.html#setMotionEventSplittingEnabled(boolean) setMotionEventSplittingEnabled(boolean)]]`
     */
   @inline def motionEventSplittingEnabled_=(p: Boolean) = {
-    basis.setMotionEventSplittingEnabled(p); basis
+    basis.setMotionEventSplittingEnabled(p);
+    basis
   }
 
   @inline def enableMotionEventSplitting() = {
-    basis.setMotionEventSplittingEnabled(true); basis
+    basis.setMotionEventSplittingEnabled(true);
+    basis
   }
   @inline def disableMotionEventSplitting() = {
-    basis.setMotionEventSplittingEnabled(false); basis
+    basis.setMotionEventSplittingEnabled(false);
+    basis
   }
 
   @inline def onHierarchyChangeListener(
@@ -2532,7 +2658,8 @@ trait TraitViewGroup[This <: android.view.ViewGroup] extends TraitView[This] {
     */
   @inline def onHierarchyChangeListener_=(
       p: android.view.ViewGroup.OnHierarchyChangeListener) = {
-    basis.setOnHierarchyChangeListener(p); basis
+    basis.setOnHierarchyChangeListener(p);
+    basis
   }
 
   /**
@@ -2549,7 +2676,8 @@ trait TraitViewGroup[This <: android.view.ViewGroup] extends TraitView[This] {
     * Shortcut for `[[https://developer.android.com/reference/android/view/ViewGroup.html#setPersistentDrawingCache(int) setPersistentDrawingCache(int)]]`
     */
   @inline def persistentDrawingCache_=(p: Int) = {
-    basis.setPersistentDrawingCache(p); basis
+    basis.setPersistentDrawingCache(p);
+    basis
   }
 
   @inline def onAnimationEnd[U](
@@ -2811,7 +2939,8 @@ trait TraitMenu[This <: android.view.Menu] {
     * Shortcut for `[[https://developer.android.com/reference/android/view/Menu.html#setQwertyMode(boolean) setQwertyMode(boolean)]]`
     */
   @inline def qwertyMode_=(p: Boolean) = {
-    basis.setQwertyMode(p); basis
+    basis.setQwertyMode(p);
+    basis
   }
 
 }
@@ -2841,7 +2970,8 @@ trait TraitContextMenu[This <: android.view.ContextMenu] {
     * Shortcut for `[[https://developer.android.com/reference/android/view/ContextMenu.html#setHeaderIcon(int) setHeaderIcon(int)]]`
     */
   @inline def headerIcon_=(p: Int) = {
-    basis.setHeaderIcon(p); basis
+    basis.setHeaderIcon(p);
+    basis
   }
 
   /**
@@ -2854,7 +2984,8 @@ trait TraitContextMenu[This <: android.view.ContextMenu] {
     * Shortcut for `[[https://developer.android.com/reference/android/view/ContextMenu.html#setHeaderIcon(android.graphics.drawable.Drawable) setHeaderIcon(android.graphics.drawable.Drawable)]]`
     */
   @inline def headerIcon_=(p: android.graphics.drawable.Drawable) = {
-    basis.setHeaderIcon(p); basis
+    basis.setHeaderIcon(p);
+    basis
   }
 
   @inline def headerTitle(implicit no: NoGetterForThisProperty): Nothing =
@@ -2869,7 +3000,8 @@ trait TraitContextMenu[This <: android.view.ContextMenu] {
     * Shortcut for `[[https://developer.android.com/reference/android/view/ContextMenu.html#setHeaderTitle(int) setHeaderTitle(int)]]`
     */
   @inline def headerTitle_=(p: Int) = {
-    basis.setHeaderTitle(p); basis
+    basis.setHeaderTitle(p);
+    basis
   }
 
   /**
@@ -2881,7 +3013,8 @@ trait TraitContextMenu[This <: android.view.ContextMenu] {
     * Shortcut for `[[https://developer.android.com/reference/android/view/ContextMenu.html#setHeaderTitle(java.lang.CharSequence) setHeaderTitle(java.lang.CharSequence)]]`
     */
   @inline def headerTitle_=(p: java.lang.CharSequence) = {
-    basis.setHeaderTitle(p); basis
+    basis.setHeaderTitle(p);
+    basis
   }
 
   @inline def headerView(implicit no: NoGetterForThisProperty): Nothing =
@@ -2896,7 +3029,8 @@ trait TraitContextMenu[This <: android.view.ContextMenu] {
     * Shortcut for `[[https://developer.android.com/reference/android/view/ContextMenu.html#setHeaderView(android.view.View) setHeaderView(android.view.View)]]`
     */
   @inline def headerView_=(p: android.view.View) = {
-    basis.setHeaderView(p); basis
+    basis.setHeaderView(p);
+    basis
   }
 
 }
@@ -2932,7 +3066,8 @@ trait TraitSurfaceView[This <: android.view.SurfaceView]
     * Shortcut for `[[https://developer.android.com/reference/android/view/SurfaceView.html#setZOrderMediaOverlay(boolean) setZOrderMediaOverlay(boolean)]]`
     */
   @inline def zOrderMediaOverlay_=(p: Boolean) = {
-    basis.setZOrderMediaOverlay(p); basis
+    basis.setZOrderMediaOverlay(p);
+    basis
   }
 
   @inline def zOrderOnTop(implicit no: NoGetterForThisProperty): Nothing =
@@ -2947,7 +3082,8 @@ trait TraitSurfaceView[This <: android.view.SurfaceView]
     * Shortcut for `[[https://developer.android.com/reference/android/view/SurfaceView.html#setZOrderOnTop(boolean) setZOrderOnTop(boolean)]]`
     */
   @inline def zOrderOnTop_=(p: Boolean) = {
-    basis.setZOrderOnTop(p); basis
+    basis.setZOrderOnTop(p);
+    basis
   }
 
 }
@@ -3002,7 +3138,8 @@ trait TraitViewStub[This <: android.view.ViewStub] extends TraitView[This] {
     * Shortcut for `[[https://developer.android.com/reference/android/view/ViewStub.html#setInflatedId(int) setInflatedId(int)]]`
     */
   @inline def inflatedId_=(p: Int) = {
-    basis.setInflatedId(p); basis
+    basis.setInflatedId(p);
+    basis
   }
 
   /**
@@ -3020,7 +3157,8 @@ trait TraitViewStub[This <: android.view.ViewStub] extends TraitView[This] {
     * Shortcut for `[[https://developer.android.com/reference/android/view/ViewStub.html#setLayoutInflater(android.view.LayoutInflater) setLayoutInflater(android.view.LayoutInflater)]]`
     */
   @inline def layoutInflater_=(p: android.view.LayoutInflater) = {
-    basis.setLayoutInflater(p); basis
+    basis.setLayoutInflater(p);
+    basis
   }
 
   /**
@@ -3037,7 +3175,8 @@ trait TraitViewStub[This <: android.view.ViewStub] extends TraitView[This] {
     * Shortcut for `[[https://developer.android.com/reference/android/view/ViewStub.html#setLayoutResource(int) setLayoutResource(int)]]`
     */
   @inline def layoutResource_=(p: Int) = {
-    basis.setLayoutResource(p); basis
+    basis.setLayoutResource(p);
+    basis
   }
 
   @inline def onInflateListener(implicit no: NoGetterForThisProperty): Nothing =
@@ -3055,7 +3194,8 @@ trait TraitViewStub[This <: android.view.ViewStub] extends TraitView[This] {
     */
   @inline def onInflateListener_=(
       p: android.view.ViewStub.OnInflateListener) = {
-    basis.setOnInflateListener(p); basis
+    basis.setOnInflateListener(p);
+    basis
   }
 
   @inline def onInflate[U](
@@ -3109,7 +3249,8 @@ trait TraitActionProvider[This <: android.view.ActionProvider] {
     */
   @inline def visibilityListener_=(
       p: android.view.ActionProvider.VisibilityListener) = {
-    basis.setVisibilityListener(p); basis
+    basis.setVisibilityListener(p);
+    basis
   }
 
   @inline def onActionProviderVisibilityChanged[U](f: Boolean => U): This = {
@@ -3163,7 +3304,8 @@ trait TraitTextureView[This <: android.view.TextureView]
     * Shortcut for `[[https://developer.android.com/reference/android/view/TextureView.html#setOpaque(boolean) setOpaque(boolean)]]`
     */
   @inline def opaque_=(p: Boolean) = {
-    basis.setOpaque(p); basis
+    basis.setOpaque(p);
+    basis
   }
 
   /**
@@ -3181,7 +3323,8 @@ trait TraitTextureView[This <: android.view.TextureView]
     * Shortcut for `[[https://developer.android.com/reference/android/view/TextureView.html#setSurfaceTexture(android.graphics.SurfaceTexture) setSurfaceTexture(android.graphics.SurfaceTexture)]]`
     */
   @inline def surfaceTexture_=(p: android.graphics.SurfaceTexture) = {
-    basis.setSurfaceTexture(p); basis
+    basis.setSurfaceTexture(p);
+    basis
   }
 
   /**
@@ -3201,7 +3344,8 @@ trait TraitTextureView[This <: android.view.TextureView]
     */
   @inline def surfaceTextureListener_=(
       p: android.view.TextureView.SurfaceTextureListener) = {
-    basis.setSurfaceTextureListener(p); basis
+    basis.setSurfaceTextureListener(p);
+    basis
   }
 
   @inline def transform(implicit no: NoGetterForThisProperty): Nothing =
@@ -3216,7 +3360,8 @@ trait TraitTextureView[This <: android.view.TextureView]
     * Shortcut for `[[https://developer.android.com/reference/android/view/TextureView.html#setTransform(android.graphics.Matrix) setTransform(android.graphics.Matrix)]]`
     */
   @inline def transform_=(p: android.graphics.Matrix) = {
-    basis.setTransform(p); basis
+    basis.setTransform(p);
+    basis
   }
 
 }

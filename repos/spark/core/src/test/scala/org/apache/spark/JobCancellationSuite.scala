@@ -140,7 +140,8 @@ class JobCancellationSuite
       sc.setJobGroup("jobA", "this is a job to be cancelled")
       sc.parallelize(1 to 10000, 2)
         .map { i =>
-          Thread.sleep(10); i
+          Thread.sleep(10);
+          i
         }
         .count()
     }
@@ -179,7 +180,8 @@ class JobCancellationSuite
         exception = intercept[SparkException] {
           sc.parallelize(1 to 10000, 2)
             .map { i =>
-              Thread.sleep(10); i
+              Thread.sleep(10);
+              i
             }
             .count()
         }
@@ -218,7 +220,8 @@ class JobCancellationSuite
         interruptOnCancel = true)
       sc.parallelize(1 to 10000, 2)
         .map { i =>
-          Thread.sleep(100000); i
+          Thread.sleep(100000);
+          i
         }
         .count()
     }
@@ -283,7 +286,8 @@ class JobCancellationSuite
       val f = sc
         .parallelize(1 to 10000, 2)
         .map { i =>
-          Thread.sleep(10); i
+          Thread.sleep(10);
+          i
         }
         .countAsync()
       Future {
@@ -309,7 +313,8 @@ class JobCancellationSuite
       val f = sc
         .parallelize(1 to 10000, 2)
         .map { i =>
-          Thread.sleep(10); i
+          Thread.sleep(10);
+          i
         }
         .countAsync()
       Future {
@@ -331,7 +336,8 @@ class JobCancellationSuite
       val f = sc
         .parallelize(1 to 10000, 2)
         .map { i =>
-          Thread.sleep(10); i
+          Thread.sleep(10);
+          i
         }
         .takeAsync(5000)
       Future {
@@ -356,7 +362,8 @@ class JobCancellationSuite
       val f = sc
         .parallelize(1 to 10000, 2)
         .map { i =>
-          Thread.sleep(10); i
+          Thread.sleep(10);
+          i
         }
         .takeAsync(5000)
       Future {

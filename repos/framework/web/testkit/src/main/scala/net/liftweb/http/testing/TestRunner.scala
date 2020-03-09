@@ -165,8 +165,10 @@ class TestRunner(
 
         def waitAll(in: List[Thread]) {
           in match {
-            case Nil     =>
-            case x :: xs => x.join; waitAll(xs)
+            case Nil =>
+            case x :: xs =>
+              x.join;
+              waitAll(xs)
           }
         }
 

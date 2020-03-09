@@ -126,12 +126,14 @@ class FusingSpec extends AkkaSpec {
       }
       val async = Flow[Int]
         .map(x ⇒ {
-          testActor ! ref; x
+          testActor ! ref;
+          x
         })
         .async
       Source(0 to 9)
         .map(x ⇒ {
-          testActor ! ref; x
+          testActor ! ref;
+          x
         })
         .flatMapMerge(5, i ⇒ Source.single(i).via(async))
         .grouped(1000)
@@ -151,11 +153,13 @@ class FusingSpec extends AkkaSpec {
         bus.logSource
       }
       val flow = Flow[Int].map(x ⇒ {
-        testActor ! ref; x
+        testActor ! ref;
+        x
       })
       Source(0 to 9)
         .map(x ⇒ {
-          testActor ! ref; x
+          testActor ! ref;
+          x
         })
         .flatMapMerge(5, i ⇒ Source.single(i).via(flow.async))
         .grouped(1000)

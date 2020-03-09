@@ -1,5 +1,6 @@
 trait A {
-  val x: Int; println("A")
+  val x: Int;
+  println("A")
 }
 trait B extends {
   override val x = 1

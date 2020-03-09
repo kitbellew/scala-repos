@@ -971,7 +971,8 @@ class IMain(
 
     private var _originalLine: String = null
     def withOriginalLine(s: String): this.type = {
-      _originalLine = s; this
+      _originalLine = s;
+      this
     }
     def originalLine = if (_originalLine == null) line else _originalLine
 

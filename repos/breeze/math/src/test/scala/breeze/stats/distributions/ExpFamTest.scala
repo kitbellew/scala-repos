@@ -33,7 +33,9 @@ trait ExpFamTest[D <: Density[T] with Rand[T], T]
           true
         }
       } catch {
-        case ex: Exception => ex.printStackTrace(); throw ex
+        case ex: Exception =>
+          ex.printStackTrace();
+          throw ex
       }
     })
   }

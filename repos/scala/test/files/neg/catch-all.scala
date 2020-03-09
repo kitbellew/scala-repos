@@ -14,7 +14,8 @@ object CatchAll {
   try {
     "warn"
   } catch {
-    case _: RuntimeException => ; case x =>
+    case _: RuntimeException => ;
+    case x                   =>
   }
 
   val t = T

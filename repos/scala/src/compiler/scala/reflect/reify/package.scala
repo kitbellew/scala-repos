@@ -138,7 +138,8 @@ package object reify {
         // Note: It's ok to check for any object here, because if we were in an enclosing class, we'd already have returned its classOf
         val isInsideObject =
           typer0.context.enclosingContextChain map (_.tree) exists {
-            case _: ModuleDef => true; case _ => false
+            case _: ModuleDef => true;
+            case _            => false
           }
         isInsideConstructorSuper && isInsideObject
       }

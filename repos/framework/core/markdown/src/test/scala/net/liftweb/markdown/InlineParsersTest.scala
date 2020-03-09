@@ -42,7 +42,8 @@ class InlineParsersTest
         apply(p, a) should equal(b)
       } catch {
         case e: Throwable =>
-          println("Input causing the failure was: '" + a + "'."); throw e;
+          println("Input causing the failure was: '" + a + "'.");
+          throw e;
       }
     }
   }

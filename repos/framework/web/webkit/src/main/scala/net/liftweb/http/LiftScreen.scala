@@ -855,7 +855,8 @@ trait AbstractScreen extends Factory with Loggable {
       } => Box[NodeSeq]),
       otherValue: OtherValueInitializer[OV],
       stuff: FilterOrValidate[T]*): Field {
-    type ValueType = T; type OtherValueType = OV
+    type ValueType = T;
+    type OtherValueType = OV
   } = {
     val newBinding: Box[FieldBinding] = (stuff.collect {
       case AFieldBinding(i) => i
@@ -1078,7 +1079,8 @@ trait AbstractScreen extends Factory with Loggable {
       choices: => Seq[T],
       stuff: FilterOrValidate[T]*)(
       implicit f: SHtml.PairStringPromoter[T]): Field {
-    type ValueType = T; type OtherValueType = Seq[T]
+    type ValueType = T;
+    type OtherValueType = Seq[T]
   } = {
     val eAttr = grabParams(stuff)
 
@@ -1110,7 +1112,8 @@ trait AbstractScreen extends Factory with Loggable {
       choices: => Seq[T],
       stuff: FilterOrValidate[Seq[T]]*)(
       implicit f: SHtml.PairStringPromoter[T]): Field {
-    type ValueType = Seq[T]; type OtherValueType = Seq[T]
+    type ValueType = Seq[T];
+    type OtherValueType = Seq[T]
   } = {
     val eAttr = grabParams(stuff)
 
@@ -1155,7 +1158,8 @@ trait AbstractScreen extends Factory with Loggable {
       default: => String,
       choices: => Seq[String],
       stuff: FilterOrValidate[String]*): Field {
-    type ValueType = String; type OtherValueType = Seq[String]
+    type ValueType = String;
+    type OtherValueType = Seq[String]
   } = {
     val eAttr = grabParams(stuff)
 

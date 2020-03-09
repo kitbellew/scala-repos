@@ -10,7 +10,8 @@ object Test {
 
   def foo() = println(2)
   def client(f: () => Unit) = {
-    f(); f()
+    f();
+    f()
   }
   def attempt2() {
     val bar: () => Unit = foo _

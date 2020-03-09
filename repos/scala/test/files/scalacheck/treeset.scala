@@ -37,7 +37,8 @@ object Test extends Properties("TreeSet") {
       val subject = TreeSet(values: _*)
       val it = subject.iterator
       try {
-        while (it.hasNext) it.next; true
+        while (it.hasNext) it.next;
+        true
       } catch {
         case _ => false
       }

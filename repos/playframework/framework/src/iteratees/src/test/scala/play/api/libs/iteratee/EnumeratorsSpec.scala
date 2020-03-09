@@ -431,7 +431,8 @@ object EnumeratorsSpec
         var os: OutputStream = null
         val osReady = new CountDownLatch(1)
         val enumerator = Enumerator.outputStream { o =>
-          os = o; osReady.countDown()
+          os = o;
+          osReady.countDown()
         }(outputEC)
         val promiseIteratee = Promise[Iteratee[Array[Byte], Array[Byte]]]
         val future = enumerator |>>> Iteratee.flatten(promiseIteratee.future)

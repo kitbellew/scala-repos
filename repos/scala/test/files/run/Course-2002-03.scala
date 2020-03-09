@@ -216,7 +216,8 @@ object M8 {
       buffer.append('[');
       foreach(i => {
         if (buffer.length > 1) {
-          buffer.append(','); ()
+          buffer.append(',');
+          ()
         }; // !!! ; ()
         buffer.append(i);
         ()

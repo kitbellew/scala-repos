@@ -54,11 +54,13 @@ class HashSet[A] private[collection] (contents: FlatHashTable.Contents[A])
   def contains(elem: A): Boolean = containsElem(elem)
 
   def +=(elem: A): this.type = {
-    addElem(elem); this
+    addElem(elem);
+    this
   }
 
   def -=(elem: A): this.type = {
-    removeElem(elem); this
+    removeElem(elem);
+    this
   }
 
   override def par = new ParHashSet(hashTableContents)

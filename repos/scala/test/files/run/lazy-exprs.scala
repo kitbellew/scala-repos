@@ -2,7 +2,8 @@ object TestExpressions {
 
   def patmatchScrut {
     lazy val z1: Option[String] = {
-      println("forced <z1>"); Some("lazy z1")
+      println("forced <z1>");
+      Some("lazy z1")
     }
 
     val res = z1 match {
@@ -21,7 +22,8 @@ object TestExpressions {
     val res = t match {
       case Some(msg) =>
         lazy val z1 = {
-          println("forced <z1>"); "lazy z1"
+          println("forced <z1>");
+          "lazy z1"
         }
         z1
 
@@ -36,7 +38,8 @@ object TestExpressions {
 
   def patmatchPat {
     lazy val Z1 = {
-      println("forced <z1>"); "lazy Z1"
+      println("forced <z1>");
+      "lazy Z1"
     }
     print("lazy val in case: ")
     val t: Option[String] = Some("lazy Z1")
@@ -51,7 +54,8 @@ object TestExpressions {
 
   def ifcond {
     lazy val z1 = {
-      println("forced <z1>"); "lazy z1"
+      println("forced <z1>");
+      "lazy z1"
     }
     print("lazy val in if condition: ")
     if (z1 == "lazy z1")
@@ -61,7 +65,8 @@ object TestExpressions {
   }
 
   lazy val LazyField = {
-    println("forced LazyField"); "LazyField"
+    println("forced LazyField");
+    "LazyField"
   }
 
   def testPatMatchField {
@@ -78,9 +83,11 @@ object TestExpressions {
 
   lazy val (x, y) = (
     {
-      print("x"); "x"
+      print("x");
+      "x"
     }, {
-      print("y"); "y"
+      print("y");
+      "y"
     })
   def testPatLazyVal {
     println("lazy val with patterns:")
@@ -88,9 +95,11 @@ object TestExpressions {
     println("(" + x + ", " + y + ")")
     lazy val (x1, y1) = (
       {
-        print("x1"); "x1"
+        print("x1");
+        "x1"
       }, {
-        print("y1"); "y1"
+        print("y1");
+        "y1"
       })
     print("x1 and y1: ")
     println("(" + x1 + ", " + y1 + ")")

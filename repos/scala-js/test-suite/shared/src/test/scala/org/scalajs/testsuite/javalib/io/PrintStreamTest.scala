@@ -132,13 +132,15 @@ class PrintStreamTest {
 
     test(
       { osw =>
-        osw.print("ab\ud83d"); osw.print('\udca9')
+        osw.print("ab\ud83d");
+        osw.print('\udca9')
       },
       Array('a', 'b', 0xf0, 0x9f, 0x92, 0xa9))
 
     test(
       { osw =>
-        osw.print("ab\ud83d"); osw.print("\udca9cd")
+        osw.print("ab\ud83d");
+        osw.print("\udca9cd")
       },
       Array('a', 'b', 0xf0, 0x9f, 0x92, 0xa9, 'c', 'd'))
 
@@ -149,31 +151,36 @@ class PrintStreamTest {
 
     test(
       { osw =>
-        osw.print('\ud83d'); osw.print('a')
+        osw.print('\ud83d');
+        osw.print('a')
       },
       Array('?', 'a'))
 
     test(
       { osw =>
-        osw.print("ab\ud83d"); osw.print("\ud83d")
+        osw.print("ab\ud83d");
+        osw.print("\ud83d")
       },
       Array('a', 'b', '?'))
 
     test(
       { osw =>
-        osw.print("ab\ud83d"); osw.print("\ud83dc")
+        osw.print("ab\ud83d");
+        osw.print("\ud83dc")
       },
       Array('a', 'b', '?', '?', 'c'))
 
     test(
       { osw =>
-        osw.print('\ud83d'); osw.close()
+        osw.print('\ud83d');
+        osw.close()
       },
       Array('?'))
 
     test(
       { osw =>
-        osw.print("ab\ud83d"); osw.close()
+        osw.print("ab\ud83d");
+        osw.close()
       },
       Array('a', 'b', '?'))
   }

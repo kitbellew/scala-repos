@@ -36,7 +36,8 @@ object Test {
         1,
         cons(
           {
-            print(" A"); 2
+            print(" A");
+            2
           },
           empty)))
     testStreamIterator(3, Stream(1, 2, 3))
@@ -47,11 +48,13 @@ object Test {
         1,
         cons(
           {
-            print(" A"); 2
+            print(" A");
+            2
           },
           cons(
             {
-              print(" B"); 3
+              print(" B");
+              3
             },
             Stream.empty))))
   }

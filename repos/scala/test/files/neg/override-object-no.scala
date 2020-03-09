@@ -74,7 +74,8 @@ object SI9574 {
     override object x
   }
   trait D {
-    object x; def y = x
+    object x;
+    def y = x
   }
   trait E extends D {
     override val x: super.x.type = y

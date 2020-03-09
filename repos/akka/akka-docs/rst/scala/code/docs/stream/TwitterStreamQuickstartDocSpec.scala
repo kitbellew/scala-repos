@@ -168,7 +168,8 @@ class TwitterStreamQuickstartDocSpec extends AkkaSpec {
       val completion: Future[Done] =
         Source(1 to 10)
           .map(i => {
-            println(s"map => $i"); i
+            println(s"map => $i");
+            i
           })
           .runForeach { i =>
             readLine(s"Element = $i; continue reading? [press enter]\n")
