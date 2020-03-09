@@ -151,9 +151,8 @@ object QueryExamplesSpec extends Specification with MongoTestKit {
     people.length must_== 3
     people
       .map(_.id.get)
-      .filterNot(
-        List(wilma.id.get, barney.id.get, betty.id.get)
-          .contains(_)) must_== List()
+      .filterNot(List(wilma.id.get, barney.id.get, betty.id.get)
+        .contains(_)) must_== List()
 
     // you do not need to define the implicit formats val if you write your query in the MongoMetaRecord object.
     val people2 = Person.findAllBornAfter(qryDate.getTime)
@@ -161,9 +160,8 @@ object QueryExamplesSpec extends Specification with MongoTestKit {
     people2.length must_== 3
     people2
       .map(_.id.get)
-      .filterNot(
-        List(wilma.id.get, barney.id.get, betty.id.get)
-          .contains(_)) must_== List()
+      .filterNot(List(wilma.id.get, barney.id.get, betty.id.get)
+        .contains(_)) must_== List()
 
     // query with Sort
     val people3 = Person.findAll(JObject(Nil), ("birthDate" -> -1))

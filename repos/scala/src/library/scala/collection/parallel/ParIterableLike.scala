@@ -1566,12 +1566,11 @@ trait ParIterableLike[
         // val lst = pit.toList
         // val pa = mutable.ParArray(lst: _*)
         // val str = "At leaf we will iterate: " + pa.splitter.toList
-        result =
-          pit.span2combiners(
-            pred,
-            cbfBefore(),
-            cbfAfter()
-          ) // do NOT reuse old combiners here, lest ye be surprised
+        result = pit.span2combiners(
+          pred,
+          cbfBefore(),
+          cbfAfter()
+        ) // do NOT reuse old combiners here, lest ye be surprised
         // println("\nAt leaf result is: " + result)
         if (result._2.size > 0) pit.setIndexFlagIfLesser(pos)
       } else {
