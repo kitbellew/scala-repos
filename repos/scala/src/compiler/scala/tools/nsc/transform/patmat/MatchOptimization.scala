@@ -452,8 +452,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
         case (Ident(nme.WILDCARD), Ident(nme.WILDCARD))     => true
         // type-switch for catch
         case (
-            Bind(_, Typed(Ident(nme.WILDCARD), tpX)),
-            Bind(_, Typed(Ident(nme.WILDCARD), tpY))) =>
+              Bind(_, Typed(Ident(nme.WILDCARD), tpX)),
+              Bind(_, Typed(Ident(nme.WILDCARD), tpY))) =>
           tpX.tpe =:= tpY.tpe
         case _ => false
       }
@@ -470,8 +470,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
         case (Ident(nme.WILDCARD), _)                       => true
         // type-switch for catch
         case (
-            Bind(_, Typed(Ident(nme.WILDCARD), tpX)),
-            Bind(_, Typed(Ident(nme.WILDCARD), tpY))) =>
+              Bind(_, Typed(Ident(nme.WILDCARD), tpX)),
+              Bind(_, Typed(Ident(nme.WILDCARD), tpY))) =>
           instanceOfTpImplies(tpY.tpe, tpX.tpe)
         case _ => false
       }

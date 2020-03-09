@@ -104,10 +104,10 @@ class ComparingUnrelatedTypesInspection
         }
       }
     case MethodRepr(
-        _,
-        Some(baseExpr),
-        Some(ResolvesTo(fun: ScFunction)),
-        Seq(arg, _*)) if mayNeedHighlighting(fun) =>
+          _,
+          Some(baseExpr),
+          Some(ResolvesTo(fun: ScFunction)),
+          Seq(arg, _*)) if mayNeedHighlighting(fun) =>
       for {
         ScParameterizedType(_, Seq(elemType)) <- baseExpr
           .getType()

@@ -260,8 +260,8 @@ object AlterTableCommandParser {
           case Token("TOK_TABCOLVALUE_PAIR", pairs) =>
             pairs.map {
               case Token(
-                  "TOK_TABCOLVALUES",
-                  Token("TOK_TABCOLVALUE", vals) :: Nil) =>
+                    "TOK_TABCOLVALUES",
+                    Token("TOK_TABCOLVALUE", vals) :: Nil) =>
                 vals.map { n => cleanAndUnquoteString(n.text) }
               case _ =>
                 parseFailed("Invalid ALTER TABLE command", node)
@@ -316,8 +316,8 @@ object AlterTableCommandParser {
                     cleanAndUnquoteString(const),
                     cleanAndUnquoteString(loc.text)))
               case Token(
-                  "TOK_TABCOLVALUES",
-                  Token("TOK_TABCOLVALUE", keys) :: Nil) =>
+                    "TOK_TABCOLVALUES",
+                    Token("TOK_TABCOLVALUE", keys) :: Nil) =>
                 keys.map { k =>
                   (
                     cleanAndUnquoteString(k.text),

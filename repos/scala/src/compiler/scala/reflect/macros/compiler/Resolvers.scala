@@ -26,12 +26,12 @@ trait Resolvers {
         _.typed(markMacroImplRef(untypedMacroImplRef)),
         reportAmbiguousErrors = false) match {
         case SilentResultValue(
-            macroImplRef @ MacroImplReference(
-              _,
-              isBlackbox,
-              owner,
-              meth,
-              targs)) =>
+              macroImplRef @ MacroImplReference(
+                _,
+                isBlackbox,
+                owner,
+                meth,
+                targs)) =>
           (macroImplRef, isBlackbox, owner, meth, targs)
         case SilentResultValue(macroImplRef) =>
           MacroImplReferenceWrongShapeError()

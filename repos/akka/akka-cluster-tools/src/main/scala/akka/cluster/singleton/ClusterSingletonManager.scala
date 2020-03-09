@@ -591,8 +591,8 @@ class ClusterSingletonManager(
       stay
 
     case Event(
-        DelayedMemberRemoved(m),
-        BecomingOldestData(Some(previousOldest)))
+          DelayedMemberRemoved(m),
+          BecomingOldestData(Some(previousOldest)))
         if m.address == previousOldest ⇒
       logInfo("Previous oldest [{}] removed", previousOldest)
       addRemoved(m.address)
@@ -656,8 +656,8 @@ class ClusterSingletonManager(
 
   when(Oldest) {
     case Event(
-        OldestChanged(oldestOption),
-        OldestData(singleton, singletonTerminated)) ⇒
+          OldestChanged(oldestOption),
+          OldestData(singleton, singletonTerminated)) ⇒
       oldestChangedReceived = true
       logInfo(
         "Oldest observed OldestChanged: [{} -> {}]",
@@ -731,8 +731,8 @@ class ClusterSingletonManager(
       stop()
 
     case Event(
-        MemberRemoved(m, _),
-        WasOldestData(singleton, singletonTerminated, Some(newOldest)))
+          MemberRemoved(m, _),
+          WasOldestData(singleton, singletonTerminated, Some(newOldest)))
         if !selfExited && m.address == newOldest ⇒
       addRemoved(m.address)
       gotoHandingOver(singleton, singletonTerminated, None)

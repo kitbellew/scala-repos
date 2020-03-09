@@ -520,8 +520,8 @@ private final class Analyzer(
         case (ClassType(leftCls), ClassType(rightCls)) =>
           classIsMoreSpecific(leftCls, rightCls)
         case (
-            ArrayType(leftBase, leftDepth),
-            ArrayType(rightBase, rightDepth)) =>
+              ArrayType(leftBase, leftDepth),
+              ArrayType(rightBase, rightDepth)) =>
           leftDepth == rightDepth && classIsMoreSpecific(leftBase, rightBase)
         case (ArrayType(_, _), ClassType(ObjectClass)) =>
           true

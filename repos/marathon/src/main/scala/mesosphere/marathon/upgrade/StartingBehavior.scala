@@ -71,17 +71,17 @@ trait StartingBehavior { this: Actor with ActorLogging =>
 
   final def checkForRunning: Receive = {
     case MesosStatusUpdateEvent(
-        _,
-        taskId,
-        "TASK_RUNNING",
-        _,
-        app.`id`,
-        _,
-        _,
-        _,
-        VersionString,
-        _,
-        _)
+          _,
+          taskId,
+          "TASK_RUNNING",
+          _,
+          app.`id`,
+          _,
+          _,
+          _,
+          VersionString,
+          _,
+          _)
         if !startedRunningTasks(
           taskId.idString
         ) => // scalastyle:off line.size.limit
@@ -94,17 +94,17 @@ trait StartingBehavior { this: Actor with ActorLogging =>
 
   def commonBehavior: Receive = {
     case MesosStatusUpdateEvent(
-        _,
-        taskId,
-        StartErrorState(_),
-        _,
-        app.`id`,
-        _,
-        _,
-        _,
-        VersionString,
-        _,
-        _
+          _,
+          taskId,
+          StartErrorState(_),
+          _,
+          app.`id`,
+          _,
+          _,
+          _,
+          VersionString,
+          _,
+          _
         ) => // scalastyle:off line.size.limit
       log.warning(
         s"New task [$taskId] failed during app ${app.id.toString} scaling, queueing another task")

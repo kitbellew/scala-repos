@@ -717,8 +717,8 @@ trait MatchTranslation {
               treeCopy.Apply(t, x, binderRef(i.pos) :: Nil)
             // SI-7868 Account for numeric widening, e.g. <unapplySelector>.toInt
             case Apply(
-                x,
-                List(i @ (sel @ Select(Ident(nme.SELECTOR_DUMMY), name)))) =>
+                  x,
+                  List(i @ (sel @ Select(Ident(nme.SELECTOR_DUMMY), name)))) =>
               treeCopy.Apply(
                 t,
                 x,

@@ -20,13 +20,13 @@ class LoopVariableNotUpdatedInspection
 
   def actionFor(holder: ProblemsHolder) = {
     case ScWhileStmt(
-        Some(
-          ScInfixExpr(
-            (ref: ScReferenceExpression) &&(ResolvesTo(
-              target @ Parent(Parent(entity: ScVariable)))),
-            ElementText(operator),
-            _)),
-        Some(body))
+          Some(
+            ScInfixExpr(
+              (ref: ScReferenceExpression) &&(ResolvesTo(
+                target @ Parent(Parent(entity: ScVariable)))),
+              ElementText(operator),
+              _)),
+          Some(body))
         if !ref.isQualified && ComparisonOperators.contains(
           operator) && !isMutatedWithing(body, target) =>
       holder.registerProblem(

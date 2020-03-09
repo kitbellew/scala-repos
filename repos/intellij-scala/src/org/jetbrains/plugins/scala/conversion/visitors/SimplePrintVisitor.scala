@@ -26,15 +26,15 @@ class SimplePrintVisitor extends IntermediateTreeVisitor {
         visitAnnotation(inAnnotation, attributes, name)
       case b @ BlockConstruction(statements) => visitBlock(b, statements)
       case ClassConstruction(
-          name,
-          primaryConstructor,
-          bodyElements,
-          modifiers,
-          typeParams,
-          initalizers,
-          classType,
-          companion,
-          extendsList) =>
+            name,
+            primaryConstructor,
+            bodyElements,
+            modifiers,
+            typeParams,
+            initalizers,
+            classType,
+            companion,
+            extendsList) =>
         visitClass(
           name,
           primaryConstructor,
@@ -56,9 +56,9 @@ class SimplePrintVisitor extends IntermediateTreeVisitor {
       case ArrayInitializer(expresions: Seq[IntermediateNode]) =>
         visitArrayInitalizer(expresions)
       case BinaryExpressionConstruction(
-          firstPart,
-          secondPart,
-          operation: String) =>
+            firstPart,
+            secondPart,
+            operation: String) =>
         visitBinary(firstPart, secondPart, operation)
       case ClassObjectAccess(expression) => visitClassObjAccess(expression)
       case InstanceOfConstruction(operand, mtype) =>
@@ -90,12 +90,12 @@ class SimplePrintVisitor extends IntermediateTreeVisitor {
       case PrimaryConstruction(params, superCall, body, modifiers) =>
         visitPrimaryConstructor(params, superCall, body, modifiers)
       case MethodConstruction(
-          modifiers,
-          name,
-          typeParams,
-          params,
-          body,
-          retType) =>
+            modifiers,
+            name,
+            typeParams,
+            params,
+            body,
+            retType) =>
         visitMethod(modifiers, name, typeParams, params, body, retType)
       case m @ ModifiersConstruction(annotations, modifiers) =>
         visitModifiers(m, annotations, modifiers)
@@ -120,19 +120,19 @@ class SimplePrintVisitor extends IntermediateTreeVisitor {
       case PackageStatement(value) =>
         visitWithExtraWord(Some(value), "package ")
       case ForeachStatement(
-          iterParamName,
-          iteratedValue,
-          body,
-          isJavaCollection) =>
+            iterParamName,
+            iteratedValue,
+            body,
+            isJavaCollection) =>
         visitForEach(iterParamName, iteratedValue, body, isJavaCollection)
       case WhileStatement(initialization, condition, body, update, whileType) =>
         visitWhile(initialization, condition, body, update, whileType)
       case TryCatchStatement(
-          resourcesList,
-          tryBlock,
-          catchStatements,
-          finallyStatements,
-          arrow) =>
+            resourcesList,
+            tryBlock,
+            catchStatements,
+            finallyStatements,
+            arrow) =>
         visitTryCatch(
           resourcesList,
           tryBlock,

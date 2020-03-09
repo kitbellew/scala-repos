@@ -79,8 +79,8 @@ trait ServletFilterProvider extends Filter with HTTPProvider {
             Empty,
             (req, res) match {
               case (
-                  httpReq: HttpServletRequest,
-                  httpRes: HttpServletResponse) =>
+                    httpReq: HttpServletRequest,
+                    httpRes: HttpServletResponse) =>
                 val httpRequest = new HTTPRequestServlet(httpReq, this)
                 val httpResponse = new HTTPResponseServlet(httpRes)
 

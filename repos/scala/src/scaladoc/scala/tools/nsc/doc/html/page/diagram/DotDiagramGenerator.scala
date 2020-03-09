@@ -72,11 +72,11 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
 
     d match {
       case InheritanceDiagram(
-          _thisNode,
-          _superClasses,
-          _subClasses,
-          _incomingImplicits,
-          _outgoingImplicits) =>
+            _thisNode,
+            _superClasses,
+            _subClasses,
+            _incomingImplicits,
+            _outgoingImplicits) =>
         def textTypeEntity(text: String) =
           new TypeEntity {
             val name = text

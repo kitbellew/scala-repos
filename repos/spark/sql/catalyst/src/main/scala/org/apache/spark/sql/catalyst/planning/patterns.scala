@@ -208,8 +208,8 @@ object ExtractFiltersAndInnerJoins extends PredicateHelper {
         (plans ++ Seq(right), conditions ++ cond.toSeq)
 
       case Filter(
-          filterCondition,
-          j @ Join(left, right, Inner, joinCondition)) =>
+            filterCondition,
+            j @ Join(left, right, Inner, joinCondition)) =>
         val (plans, conditions) = flattenJoin(j)
         (plans, conditions ++ splitConjunctivePredicates(filterCondition))
 

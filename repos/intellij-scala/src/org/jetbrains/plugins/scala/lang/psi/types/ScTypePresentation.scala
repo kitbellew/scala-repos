@@ -385,7 +385,7 @@ trait ScTypePresentation {
         case ScTupleType(comps) =>
           typeSeqText(comps, "(", ", ", ")")
         case ScDesignatorType(
-            e @ (_: ScObject | _: ScReferencePattern | _: ScParameter)) =>
+              e @ (_: ScObject | _: ScReferencePattern | _: ScParameter)) =>
           nameFun(e) + typeTail(needDotType)
         case ScDesignatorType(e) =>
           nameFun(e)

@@ -393,8 +393,8 @@ sealed abstract class LongMap[+T]
   def unionWith[S >: T](that: LongMap[S], f: (Long, S, S) => S): LongMap[S] =
     (this, that) match {
       case (
-          LongMap.Bin(p1, m1, l1, r1),
-          that @ (LongMap.Bin(p2, m2, l2, r2))) =>
+            LongMap.Bin(p1, m1, l1, r1),
+            that @ (LongMap.Bin(p2, m2, l2, r2))) =>
         if (shorter(m1, m2)) {
           if (!hasMatch(p2, p1, m1))
             join[S](

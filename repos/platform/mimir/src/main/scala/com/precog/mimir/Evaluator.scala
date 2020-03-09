@@ -623,17 +623,17 @@ trait EvaluatorModule[M[+_]]
               }
 
             case Join(
-                op,
-                joinSort @ (IdentitySort | ValueSort(_)),
-                left,
-                right) =>
+                  op,
+                  joinSort @ (IdentitySort | ValueSort(_)),
+                  left,
+                  right) =>
               join(graph, left, right, joinSort)(
                 transFromBinOp(op, MorphContext(ctx, graph)))
 
             case dag.Filter(
-                joinSort @ (IdentitySort | ValueSort(_)),
-                target,
-                boolean) =>
+                  joinSort @ (IdentitySort | ValueSort(_)),
+                  target,
+                  boolean) =>
               join(graph, target, boolean, joinSort)(trans.Filter(_, _))
 
             case s: SplitParam =>

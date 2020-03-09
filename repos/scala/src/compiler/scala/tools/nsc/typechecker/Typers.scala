@@ -2259,12 +2259,12 @@ trait Typers
         val primaryCtor = treeInfo.firstConstructor(body2)
         val primaryCtor1 = primaryCtor match {
           case DefDef(
-              _,
-              _,
-              _,
-              _,
-              _,
-              Block(earlyVals :+ global.pendingSuperCall, unit)) =>
+                _,
+                _,
+                _,
+                _,
+                _,
+                Block(earlyVals :+ global.pendingSuperCall, unit)) =>
             val argss = superArgs(parents1.head) getOrElse Nil
             val pos = wrappingPos(
               parents1.head.pos,
@@ -2770,8 +2770,8 @@ trait Typers
           // other.
           block match {
             case Block(
-                List(classDef @ ClassDef(_, _, _, _)),
-                Apply(Select(New(_), _), _)) =>
+                  List(classDef @ ClassDef(_, _, _, _)),
+                  Apply(Select(New(_), _), _)) =>
               val classDecls = classDef.symbol.info.decls
               val visibleMembers = pt match {
                 case WildcardType                           => classDecls.toList
@@ -3708,8 +3708,8 @@ trait Typers
           def matches(stat: Tree, synt: Tree) = (stat, synt) match {
             // synt is default arg for stat
             case (
-                DefDef(_, statName, _, _, _, _),
-                DefDef(mods, syntName, _, _, _, _)) =>
+                  DefDef(_, statName, _, _, _, _),
+                  DefDef(mods, syntName, _, _, _, _)) =>
               mods.hasDefault && syntName.toString.startsWith(statName.toString)
 
             // synt is companion module
@@ -3718,8 +3718,8 @@ trait Typers
 
             // synt is implicit def for implicit class (#6278)
             case (
-                ClassDef(cmods, cname, _, _),
-                DefDef(dmods, dname, _, _, _, _)) =>
+                  ClassDef(cmods, cname, _, _),
+                  DefDef(dmods, dname, _, _, _, _)) =>
               cmods.isImplicit && dmods.isImplicit && cname.toTermName == dname
 
             case _ => false

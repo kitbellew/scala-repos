@@ -163,7 +163,7 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
         internalName,
         methodBTypeFromSymbol(_).descriptor) match {
         case Some(
-            EnclosingMethodEntry(className, methodName, methodDescriptor)) =>
+              EnclosingMethodEntry(className, methodName, methodDescriptor)) =>
           cnode.visitOuterClass(className, methodName, methodDescriptor)
         case _ => ()
       }

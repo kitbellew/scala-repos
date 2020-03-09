@@ -561,11 +561,11 @@ private[streaming] class ReceiverTracker(
         context: RpcCallContext): PartialFunction[Any, Unit] = {
       // Remote messages
       case RegisterReceiver(
-          streamId,
-          typ,
-          host,
-          executorId,
-          receiverEndpoint) =>
+            streamId,
+            typ,
+            host,
+            executorId,
+            receiverEndpoint) =>
         val successful =
           registerReceiver(
             streamId,

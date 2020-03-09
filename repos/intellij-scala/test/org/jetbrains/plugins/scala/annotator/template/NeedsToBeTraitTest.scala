@@ -19,7 +19,7 @@ class NeedsToBeTraitTest extends AnnotatorTestBase(NeedsToBeTrait) {
     assertMatches(
       messages("class C; class T1; class T2; new C with T1 with T2")) {
       case Error("T1", Message("T1")) ::
-            Error("T2", Message("T2")) :: Nil =>
+          Error("T2", Message("T2")) :: Nil =>
     }
   }
 

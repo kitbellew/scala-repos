@@ -51,8 +51,8 @@ object SideEffectsUtil {
       else {
         ref.qualifier.forall(hasNoSideEffects) && (ref.resolve() match {
           case Both(
-              b: ScBindingPattern,
-              ScalaPsiUtil.inNameContext(pd: ScPatternDefinition))
+                b: ScBindingPattern,
+                ScalaPsiUtil.inNameContext(pd: ScPatternDefinition))
               if pd.hasModifierProperty("lazy") =>
             false
           case bp: ScBindingPattern =>

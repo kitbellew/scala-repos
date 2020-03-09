@@ -104,8 +104,8 @@ object RelationSpecs
       }
       tree.provenance must beLike {
         case ProductProvenance(
-            StaticProvenance("/foo"),
-            DynamicProvenance(_)) =>
+              StaticProvenance("/foo"),
+              DynamicProvenance(_)) =>
           ok
       }
       tree.errors must beEmpty
@@ -148,8 +148,8 @@ object RelationSpecs
       val tree = compileSingle("s := new 1 //foo ~ s [ //foo, s ]")
       tree.provenance must beLike {
         case ProductProvenance(
-            StaticProvenance("/foo"),
-            DynamicProvenance(_)) =>
+              StaticProvenance("/foo"),
+              DynamicProvenance(_)) =>
           ok
       }
       tree.errors must beEmpty
@@ -183,8 +183,8 @@ object RelationSpecs
       val tree = compileSingle("s := new 1 //foo ~ s //foo[s]")
       tree.provenance must beLike {
         case ProductProvenance(
-            StaticProvenance("/foo"),
-            DynamicProvenance(_)) =>
+              StaticProvenance("/foo"),
+              DynamicProvenance(_)) =>
           ok
       }
       tree.errors must beEmpty
@@ -221,8 +221,8 @@ object RelationSpecs
         compileSingle("s := new 1 //foo ~ s fun(a, b) := a + b fun(//foo, s)")
       tree.provenance must beLike {
         case ProductProvenance(
-            StaticProvenance("/foo"),
-            DynamicProvenance(_)) =>
+              StaticProvenance("/foo"),
+              DynamicProvenance(_)) =>
           ok
       }
       tree.errors must beEmpty
@@ -257,8 +257,8 @@ object RelationSpecs
       val tree = compileSingle("s := new 1 //foo ~ s //foo where s")
       tree.provenance must beLike {
         case ProductProvenance(
-            StaticProvenance("/foo"),
-            DynamicProvenance(_)) =>
+              StaticProvenance("/foo"),
+              DynamicProvenance(_)) =>
           ok
       }
       tree.errors must beEmpty
@@ -292,8 +292,8 @@ object RelationSpecs
       val tree = compileSingle("s := new 1 //foo ~ s //foo with s")
       tree.provenance must beLike {
         case ProductProvenance(
-            StaticProvenance("/foo"),
-            DynamicProvenance(_)) =>
+              StaticProvenance("/foo"),
+              DynamicProvenance(_)) =>
           ok
       }
       tree.errors must beEmpty
@@ -311,8 +311,8 @@ object RelationSpecs
       val tree = compileSingle("//foo ~ //bar //foo union //bar")
       tree.provenance must beLike {
         case CoproductProvenance(
-            StaticProvenance("/foo"),
-            StaticProvenance("/bar")) =>
+              StaticProvenance("/foo"),
+              StaticProvenance("/bar")) =>
           ok
       }
       tree.errors must beEmpty
@@ -322,8 +322,8 @@ object RelationSpecs
       val tree = compileSingle("./foo ~ ./bar ./foo union ./bar")
       tree.provenance must beLike {
         case CoproductProvenance(
-            StaticProvenance("foo"),
-            StaticProvenance("bar")) =>
+              StaticProvenance("foo"),
+              StaticProvenance("bar")) =>
           ok
       }
       tree.errors must beEmpty
@@ -333,8 +333,8 @@ object RelationSpecs
       val tree = compileSingle("s := new 1 //foo ~ s //foo union s")
       tree.provenance must beLike {
         case CoproductProvenance(
-            StaticProvenance("/foo"),
-            DynamicProvenance(_)) =>
+              StaticProvenance("/foo"),
+              DynamicProvenance(_)) =>
           ok
       }
       tree.errors must beEmpty
@@ -422,8 +422,8 @@ object RelationSpecs
       val tree = compileSingle("s := new 1 //foo ~ s //foo + s")
       tree.provenance must beLike {
         case ProductProvenance(
-            StaticProvenance("/foo"),
-            DynamicProvenance(_)) =>
+              StaticProvenance("/foo"),
+              DynamicProvenance(_)) =>
           ok
       }
       tree.errors must beEmpty
@@ -457,8 +457,8 @@ object RelationSpecs
       val tree = compileSingle("s := new 1 //foo ~ s //foo - s")
       tree.provenance must beLike {
         case ProductProvenance(
-            StaticProvenance("/foo"),
-            DynamicProvenance(_)) =>
+              StaticProvenance("/foo"),
+              DynamicProvenance(_)) =>
           ok
       }
       tree.errors must beEmpty
@@ -492,8 +492,8 @@ object RelationSpecs
       val tree = compileSingle("s := new 1 //foo ~ s //foo * s")
       tree.provenance must beLike {
         case ProductProvenance(
-            StaticProvenance("/foo"),
-            DynamicProvenance(_)) =>
+              StaticProvenance("/foo"),
+              DynamicProvenance(_)) =>
           ok
       }
       tree.errors must beEmpty
@@ -527,8 +527,8 @@ object RelationSpecs
       val tree = compileSingle("s := new 1 //foo ~ s //foo / s")
       tree.provenance must beLike {
         case ProductProvenance(
-            StaticProvenance("/foo"),
-            DynamicProvenance(_)) =>
+              StaticProvenance("/foo"),
+              DynamicProvenance(_)) =>
           ok
       }
       tree.errors must beEmpty
@@ -562,8 +562,8 @@ object RelationSpecs
       val tree = compileSingle("s := new 1 //foo ~ s //foo < s")
       tree.provenance must beLike {
         case ProductProvenance(
-            StaticProvenance("/foo"),
-            DynamicProvenance(_)) =>
+              StaticProvenance("/foo"),
+              DynamicProvenance(_)) =>
           ok
       }
       tree.errors must beEmpty
@@ -597,8 +597,8 @@ object RelationSpecs
       val tree = compileSingle("s := new 1 //foo ~ s //foo <= s")
       tree.provenance must beLike {
         case ProductProvenance(
-            StaticProvenance("/foo"),
-            DynamicProvenance(_)) =>
+              StaticProvenance("/foo"),
+              DynamicProvenance(_)) =>
           ok
       }
       tree.errors must beEmpty
@@ -632,8 +632,8 @@ object RelationSpecs
       val tree = compileSingle("s := new 1 //foo ~ s //foo > s")
       tree.provenance must beLike {
         case ProductProvenance(
-            StaticProvenance("/foo"),
-            DynamicProvenance(_)) =>
+              StaticProvenance("/foo"),
+              DynamicProvenance(_)) =>
           ok
       }
       tree.errors must beEmpty
@@ -667,8 +667,8 @@ object RelationSpecs
       val tree = compileSingle("s := new 1 //foo ~ s //foo >= s")
       tree.provenance must beLike {
         case ProductProvenance(
-            StaticProvenance("/foo"),
-            DynamicProvenance(_)) =>
+              StaticProvenance("/foo"),
+              DynamicProvenance(_)) =>
           ok
       }
       tree.errors must beEmpty
@@ -702,8 +702,8 @@ object RelationSpecs
       val tree = compileSingle("s := new 1 //foo ~ s //foo = s")
       tree.provenance must beLike {
         case ProductProvenance(
-            StaticProvenance("/foo"),
-            DynamicProvenance(_)) =>
+              StaticProvenance("/foo"),
+              DynamicProvenance(_)) =>
           ok
       }
       tree.errors must beEmpty
@@ -737,8 +737,8 @@ object RelationSpecs
       val tree = compileSingle("s := new 1 //foo ~ s //foo != s")
       tree.provenance must beLike {
         case ProductProvenance(
-            StaticProvenance("/foo"),
-            DynamicProvenance(_)) =>
+              StaticProvenance("/foo"),
+              DynamicProvenance(_)) =>
           ok
       }
       tree.errors must beEmpty
@@ -756,8 +756,8 @@ object RelationSpecs
       val tree = compileSingle("//foo ~ //bar //foo & //bar")
       tree.provenance must beLike {
         case ProductProvenance(
-            StaticProvenance("/foo"),
-            StaticProvenance("/bar")) =>
+              StaticProvenance("/foo"),
+              StaticProvenance("/bar")) =>
           ok
       }
       tree.errors must beEmpty
@@ -767,8 +767,8 @@ object RelationSpecs
       val tree = compileSingle("./foo ~ ./bar ./foo & ./bar")
       tree.provenance must beLike {
         case ProductProvenance(
-            StaticProvenance("foo"),
-            StaticProvenance("bar")) =>
+              StaticProvenance("foo"),
+              StaticProvenance("bar")) =>
           ok
       }
       tree.errors must beEmpty
@@ -778,8 +778,8 @@ object RelationSpecs
       val tree = compileSingle("s := new 1 //foo ~ s //foo & s")
       tree.provenance must beLike {
         case ProductProvenance(
-            StaticProvenance("/foo"),
-            DynamicProvenance(_)) =>
+              StaticProvenance("/foo"),
+              DynamicProvenance(_)) =>
           ok
       }
       tree.errors must beEmpty
@@ -797,8 +797,8 @@ object RelationSpecs
       val tree = compileSingle("//foo ~ //bar //foo | //bar")
       tree.provenance must beLike {
         case ProductProvenance(
-            StaticProvenance("/foo"),
-            StaticProvenance("/bar")) =>
+              StaticProvenance("/foo"),
+              StaticProvenance("/bar")) =>
           ok
       }
       tree.errors must beEmpty
@@ -808,8 +808,8 @@ object RelationSpecs
       val tree = compileSingle("./foo ~ ./bar ./foo | ./bar")
       tree.provenance must beLike {
         case ProductProvenance(
-            StaticProvenance("foo"),
-            StaticProvenance("bar")) =>
+              StaticProvenance("foo"),
+              StaticProvenance("bar")) =>
           ok
       }
       tree.errors must beEmpty
@@ -819,8 +819,8 @@ object RelationSpecs
       val tree = compileSingle("s := new 1 //foo ~ s //foo | s")
       tree.provenance must beLike {
         case ProductProvenance(
-            StaticProvenance("/foo"),
-            DynamicProvenance(_)) =>
+              StaticProvenance("/foo"),
+              DynamicProvenance(_)) =>
           ok
       }
       tree.errors must beEmpty

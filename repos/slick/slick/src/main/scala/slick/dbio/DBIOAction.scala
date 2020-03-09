@@ -731,10 +731,10 @@ object SynchronousDatabaseAction {
         }
 
       case CleanUpAction(
-          base: SynchronousDatabaseAction[_, _, _, _],
-          f,
-          keepFailure,
-          ec) if ec eq DBIO.sameThreadExecutionContext =>
+            base: SynchronousDatabaseAction[_, _, _, _],
+            f,
+            keepFailure,
+            ec) if ec eq DBIO.sameThreadExecutionContext =>
         new SynchronousDatabaseAction.Fused[R, S, BasicBackend, E] {
           def run(context: BasicBackend#Context): R = {
             val res =

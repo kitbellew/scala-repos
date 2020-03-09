@@ -333,8 +333,8 @@ trait Slice { source =>
       case CPathIndex(i) =>
         source.columns collect {
           case (
-              ColumnRef(CPath(CPathArray, xs @ _*), CArrayType(elemType)),
-              col: HomogeneousArrayColumn[_]) =>
+                ColumnRef(CPath(CPathArray, xs @ _*), CArrayType(elemType)),
+                col: HomogeneousArrayColumn[_]) =>
             (ColumnRef(CPath(xs: _*), elemType), col.select(i))
 
           case (ColumnRef(CPath(CPathIndex(`i`), xs @ _*), ctype), col) =>
@@ -435,9 +435,9 @@ trait Slice { source =>
             cType,
             CPath(cPath: _*))) getOrElse (retain)
         case (
-            JArrayFixedT(elems),
-            CArrayType(cElemType),
-            CPath(CPathArray, cPath @ _*)) =>
+              JArrayFixedT(elems),
+              CArrayType(cElemType),
+              CPath(CPathArray, cPath @ _*)) =>
           val mappers =
             elems mapValues (flattenDeleteTree(_, cElemType, CPath(cPath: _*)))
           xs =>
@@ -449,9 +449,9 @@ trait Slice { source =>
                 }
             })
         case (
-            JArrayHomogeneousT(jType),
-            CArrayType(cType),
-            CPath(CPathArray, _*)) if Schema.ctypes(jType)(cType) =>
+              JArrayHomogeneousT(jType),
+              CArrayType(cType),
+              CPath(CPathArray, _*)) if Schema.ctypes(jType)(cType) =>
           delete
         case _ =>
           retain
@@ -465,8 +465,8 @@ trait Slice { source =>
         None
 
       case (
-          ref @ ColumnRef(cpath, ctype: CArrayType[a]),
-          col: HomogeneousArrayColumn[_]) if ctype == col.tpe =>
+            ref @ ColumnRef(cpath, ctype: CArrayType[a]),
+            col: HomogeneousArrayColumn[_]) if ctype == col.tpe =>
         val trans = flattenDeleteTree(jtype, ctype, cpath)
         Some(
           (
@@ -593,8 +593,8 @@ trait Slice { source =>
     val size = source.size
     val columns = source.columns.collect {
       case (
-          ColumnRef(cPath @ CPath(CPathArray, _*), cType),
-          col: HomogeneousArrayColumn[a]) =>
+            ColumnRef(cPath @ CPath(CPathArray, _*), cType),
+            col: HomogeneousArrayColumn[a]) =>
         (
           ColumnRef(cPath, cType),
           new HomogeneousArrayColumn[a] {

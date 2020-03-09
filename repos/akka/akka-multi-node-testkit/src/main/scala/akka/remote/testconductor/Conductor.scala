@@ -698,8 +698,8 @@ private[akka] class BarrierCoordinator
 
   when(Waiting) {
     case Event(
-        EnterBarrier(name, timeout),
-        d @ Data(clients, barrier, arrived, deadline)) ⇒
+          EnterBarrier(name, timeout),
+          d @ Data(clients, barrier, arrived, deadline)) ⇒
       if (name != barrier) throw WrongBarrier(name, sender(), d)
       val together =
         if (clients.exists(_.fsm == sender())) sender() :: arrived else arrived

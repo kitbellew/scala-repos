@@ -746,8 +746,8 @@ private[spark] object JsonProtocolSuite extends Assertions {
         assert(e1.stageId === e2.stageId)
         assertEquals(e1.taskInfo, e2.taskInfo)
       case (
-          e1: SparkListenerTaskGettingResult,
-          e2: SparkListenerTaskGettingResult) =>
+            e1: SparkListenerTaskGettingResult,
+            e2: SparkListenerTaskGettingResult) =>
         assertEquals(e1.taskInfo, e2.taskInfo)
       case (e1: SparkListenerTaskEnd, e2: SparkListenerTaskEnd) =>
         assert(e1.stageId === e2.stageId)
@@ -763,19 +763,19 @@ private[spark] object JsonProtocolSuite extends Assertions {
         assert(e1.jobId === e2.jobId)
         assertEquals(e1.jobResult, e2.jobResult)
       case (
-          e1: SparkListenerEnvironmentUpdate,
-          e2: SparkListenerEnvironmentUpdate) =>
+            e1: SparkListenerEnvironmentUpdate,
+            e2: SparkListenerEnvironmentUpdate) =>
         assertEquals(e1.environmentDetails, e2.environmentDetails)
       case (e1: SparkListenerExecutorAdded, e2: SparkListenerExecutorAdded) =>
         assert(e1.executorId === e1.executorId)
         assertEquals(e1.executorInfo, e2.executorInfo)
       case (
-          e1: SparkListenerExecutorRemoved,
-          e2: SparkListenerExecutorRemoved) =>
+            e1: SparkListenerExecutorRemoved,
+            e2: SparkListenerExecutorRemoved) =>
         assert(e1.executorId === e1.executorId)
       case (
-          e1: SparkListenerExecutorMetricsUpdate,
-          e2: SparkListenerExecutorMetricsUpdate) =>
+            e1: SparkListenerExecutorMetricsUpdate,
+            e2: SparkListenerExecutorMetricsUpdate) =>
         assert(e1.execId === e2.execId)
         assertSeqEquals[(Long, Int, Int, Seq[AccumulableInfo])](
           e1.accumUpdates,
@@ -930,14 +930,14 @@ private[spark] object JsonProtocolSuite extends Assertions {
       case (TaskResultLost, TaskResultLost) =>
       case (TaskKilled, TaskKilled)         =>
       case (
-          TaskCommitDenied(jobId1, partitionId1, attemptNumber1),
-          TaskCommitDenied(jobId2, partitionId2, attemptNumber2)) =>
+            TaskCommitDenied(jobId1, partitionId1, attemptNumber1),
+            TaskCommitDenied(jobId2, partitionId2, attemptNumber2)) =>
         assert(jobId1 === jobId2)
         assert(partitionId1 === partitionId2)
         assert(attemptNumber1 === attemptNumber2)
       case (
-          ExecutorLostFailure(execId1, exit1CausedByApp, reason1),
-          ExecutorLostFailure(execId2, exit2CausedByApp, reason2)) =>
+            ExecutorLostFailure(execId1, exit1CausedByApp, reason1),
+            ExecutorLostFailure(execId2, exit2CausedByApp, reason2)) =>
         assert(execId1 === execId2)
         assert(exit1CausedByApp === exit2CausedByApp)
         assert(reason1 === reason2)
@@ -951,8 +951,8 @@ private[spark] object JsonProtocolSuite extends Assertions {
       details2: Map[String, Seq[(String, String)]]) {
     details1.zip(details2).foreach {
       case (
-          (key1, values1: Seq[(String, String)]),
-          (key2, values2: Seq[(String, String)])) =>
+            (key1, values1: Seq[(String, String)]),
+            (key2, values2: Seq[(String, String)])) =>
         assert(key1 === key2)
         values1.zip(values2).foreach { case (v1, v2) => assert(v1 === v2) }
     }

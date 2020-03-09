@@ -59,21 +59,21 @@ object EstimatorApp extends App {
   val states =
     lines.toArray map (_.split(" ") filter (_ != "") map (_.toDouble)) collect {
       case Array(
-          s0c,
-          s1c,
-          s0u,
-          s1u,
-          ec,
-          eu,
-          oc,
-          ou,
-          pc,
-          pu,
-          ygc,
-          ygct,
-          fgc,
-          fgct,
-          gct) =>
+            s0c,
+            s1c,
+            s0u,
+            s1u,
+            ec,
+            eu,
+            oc,
+            ou,
+            pc,
+            pu,
+            ygc,
+            ygct,
+            fgc,
+            fgct,
+            gct) =>
         PoolState(ygc.toLong, ec.toLong.bytes, eu.toLong.bytes)
     }
 

@@ -418,8 +418,8 @@ trait TypeComparers {
   private def isThisAndSuperSubtype(tp1: Type, tp2: Type): Boolean =
     (tp1, tp2) match {
       case (
-          SingleType(ThisType(lpre), v1),
-          SingleType(SuperType(ThisType(rpre), _), v2)) =>
+            SingleType(ThisType(lpre), v1),
+            SingleType(SuperType(ThisType(rpre), _), v2)) =>
         (lpre eq rpre) && (v1.overrideChain contains v2)
       case _ => false
     }

@@ -361,9 +361,9 @@ object Printers {
           print(')')
 
         case BinaryOp(
-            BinaryOp.Double_-,
-            IntLiteral(0) | FloatLiteral(0.0f) | DoubleLiteral(0.0),
-            rhs) =>
+              BinaryOp.Double_-,
+              IntLiteral(0) | FloatLiteral(0.0f) | DoubleLiteral(0.0),
+              rhs) =>
           print("(-")
           print(rhs)
           print(')')

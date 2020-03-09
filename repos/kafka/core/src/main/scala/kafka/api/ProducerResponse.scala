@@ -101,9 +101,9 @@ case class ProducerResponse(
       buffer.putInt(errorsAndOffsets.size) // partition count
       errorsAndOffsets.foreach {
         case (
-            (
-            TopicAndPartition(_, partition),
-            ProducerResponseStatus(error, nextOffset, timestamp))) =>
+              (
+                TopicAndPartition(_, partition),
+                ProducerResponseStatus(error, nextOffset, timestamp))) =>
           buffer.putInt(partition)
           buffer.putShort(error)
           buffer.putLong(nextOffset)

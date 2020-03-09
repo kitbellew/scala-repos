@@ -205,8 +205,8 @@ object RejectionHandler {
       }
       .handle {
         case UnsatisfiableRangeRejection(
-            unsatisfiableRanges,
-            actualEntityLength) ⇒
+              unsatisfiableRanges,
+              actualEntityLength) ⇒
           complete(
             (
               RequestedRangeNotSatisfiable,

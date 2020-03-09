@@ -654,8 +654,8 @@ object TypeLambda {
                   case Some(ref) =>
                     (ref.holders, ref.types) match {
                       case (
-                          scala.Seq(),
-                          scala.Seq(tad: ScTypeAliasDefinitionImpl))
+                            scala.Seq(),
+                            scala.Seq(tad: ScTypeAliasDefinitionImpl))
                           if tad.name == nameId.getText =>
                         (
                           tad.typeParametersClause,

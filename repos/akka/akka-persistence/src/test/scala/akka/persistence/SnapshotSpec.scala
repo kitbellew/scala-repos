@@ -103,8 +103,8 @@ class SnapshotSpec
 
       expectMsgPF() {
         case SnapshotOffer(
-            SnapshotMetadata(`persistenceId`, 4, timestamp),
-            state) ⇒
+              SnapshotMetadata(`persistenceId`, 4, timestamp),
+              state) ⇒
           state should ===(List("a-1", "b-2", "c-3", "d-4").reverse)
           timestamp should be > (0L)
       }
@@ -123,8 +123,8 @@ class SnapshotSpec
 
       expectMsgPF() {
         case SnapshotOffer(
-            SnapshotMetadata(`persistenceId`, 2, timestamp),
-            state) ⇒
+              SnapshotMetadata(`persistenceId`, 2, timestamp),
+              state) ⇒
           state should ===(List("a-1", "b-2").reverse)
           timestamp should be > (0L)
       }
@@ -144,8 +144,8 @@ class SnapshotSpec
 
       expectMsgPF() {
         case SnapshotOffer(
-            SnapshotMetadata(`persistenceId`, 4, timestamp),
-            state) ⇒
+              SnapshotMetadata(`persistenceId`, 4, timestamp),
+              state) ⇒
           state should ===(List("a-1", "b-2", "c-3", "d-4").reverse)
           timestamp should be > (0L)
       }
@@ -165,8 +165,8 @@ class SnapshotSpec
 
       expectMsgPF() {
         case SnapshotOffer(
-            SnapshotMetadata(`persistenceId`, 2, timestamp),
-            state) ⇒
+              SnapshotMetadata(`persistenceId`, 2, timestamp),
+              state) ⇒
           state should ===(List("a-1", "b-2").reverse)
           timestamp should be > (0L)
       }
@@ -190,8 +190,8 @@ class SnapshotSpec
 
       expectMsgPF() {
         case SnapshotOffer(
-            SnapshotMetadata(`persistenceId`, 2, timestamp),
-            state) ⇒
+              SnapshotMetadata(`persistenceId`, 2, timestamp),
+              state) ⇒
           state should ===(List("a-1", "b-2").reverse)
           timestamp should be > (0L)
       }
@@ -233,8 +233,8 @@ class SnapshotSpec
 
       val metadata = expectMsgPF() {
         case SnapshotOffer(
-            md @ SnapshotMetadata(`persistenceId`, 4, _),
-            state) ⇒
+              md @ SnapshotMetadata(`persistenceId`, 4, _),
+              state) ⇒
           state should ===(List("a-1", "b-2", "c-3", "d-4").reverse)
           md
       }
@@ -259,8 +259,8 @@ class SnapshotSpec
       expectMsgPF(hint =
         "" + SnapshotOffer(SnapshotMetadata(`persistenceId`, 2, 0), null)) {
         case SnapshotOffer(
-            md @ SnapshotMetadata(`persistenceId`, 2, _),
-            state) ⇒
+              md @ SnapshotMetadata(`persistenceId`, 2, _),
+              state) ⇒
           state should ===(List("a-1", "b-2").reverse)
           md
       }
@@ -287,8 +287,8 @@ class SnapshotSpec
       persistentActor1 ! DeleteN(criteria)
       expectMsgPF() {
         case SnapshotOffer(
-            md @ SnapshotMetadata(`persistenceId`, 4, _),
-            state) ⇒
+              md @ SnapshotMetadata(`persistenceId`, 4, _),
+              state) ⇒
           state should ===(List("a-1", "b-2", "c-3", "d-4").reverse)
       }
       expectMsg(RecoveryCompleted)

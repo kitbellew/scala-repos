@@ -98,9 +98,9 @@ private[sql] object DataSourceAnalysis extends Rule[LogicalPlan] {
 private[sql] object DataSourceStrategy extends Strategy with Logging {
   def apply(plan: LogicalPlan): Seq[execution.SparkPlan] = plan match {
     case PhysicalOperation(
-        projects,
-        filters,
-        l @ LogicalRelation(t: CatalystScan, _, _)) =>
+          projects,
+          filters,
+          l @ LogicalRelation(t: CatalystScan, _, _)) =>
       pruneFilterProjectRaw(
         l,
         projects,
@@ -112,9 +112,9 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
             t.buildScan(requestedColumns, allPredicates))) :: Nil
 
     case PhysicalOperation(
-        projects,
-        filters,
-        l @ LogicalRelation(t: PrunedFilteredScan, _, _)) =>
+          projects,
+          filters,
+          l @ LogicalRelation(t: PrunedFilteredScan, _, _)) =>
       pruneFilterProject(
         l,
         projects,
@@ -125,9 +125,9 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
           toCatalystRDD(l, a, t.buildScan(a.map(_.name).toArray, f))) :: Nil
 
     case PhysicalOperation(
-        projects,
-        filters,
-        l @ LogicalRelation(t: PrunedScan, _, _)) =>
+          projects,
+          filters,
+          l @ LogicalRelation(t: PrunedScan, _, _)) =>
       pruneFilterProject(
         l,
         projects,
@@ -139,9 +139,9 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
 
     // Scanning partitioned HadoopFsRelation
     case PhysicalOperation(
-        projects,
-        filters,
-        l @ LogicalRelation(t: HadoopFsRelation, _, _))
+          projects,
+          filters,
+          l @ LogicalRelation(t: HadoopFsRelation, _, _))
         if t.partitionSchema.nonEmpty =>
       // We divide the filter expressions into 3 parts
       val partitionColumns = AttributeSet(
@@ -210,9 +210,9 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
 
     // Scanning non-partitioned HadoopFsRelation
     case PhysicalOperation(
-        projects,
-        filters,
-        l @ LogicalRelation(t: HadoopFsRelation, _, _)) =>
+          projects,
+          filters,
+          l @ LogicalRelation(t: HadoopFsRelation, _, _)) =>
       // See buildPartitionedTableScan for the reason that we need to create a shard
       // broadcast HadoopConf.
       val sharedHadoopConf = SparkHadoopUtil.get.conf

@@ -239,15 +239,15 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
               // We can discard the event IDs for the purposes of this class
               messages.map(_._2).foldLeft(acc) {
                 case (
-                    acc,
-                    IngestMessage(
-                      _,
-                      _,
-                      writeAs,
-                      records,
-                      _,
-                      _,
-                      StreamRef.Append)) =>
+                      acc,
+                      IngestMessage(
+                        _,
+                        _,
+                        writeAs,
+                        records,
+                        _,
+                        _,
+                        StreamRef.Append)) =>
                   updated(
                     acc,
                     acc.get(currentKey),
@@ -256,15 +256,15 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
                     records.map(_.value))
 
                 case (
-                    acc,
-                    IngestMessage(
-                      _,
-                      _,
-                      writeAs,
-                      records,
-                      _,
-                      _,
-                      StreamRef.Create(id, _))) =>
+                      acc,
+                      IngestMessage(
+                        _,
+                        _,
+                        writeAs,
+                        records,
+                        _,
+                        _,
+                        StreamRef.Create(id, _))) =>
                   val archiveKey = (path, Version.Archived(id))
                   val appendTo = acc
                     .get(archiveKey)
@@ -277,15 +277,15 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
                     records.map(_.value))
 
                 case (
-                    acc,
-                    IngestMessage(
-                      _,
-                      _,
-                      writeAs,
-                      records,
-                      _,
-                      _,
-                      StreamRef.Replace(id, _))) =>
+                      acc,
+                      IngestMessage(
+                        _,
+                        _,
+                        writeAs,
+                        records,
+                        _,
+                        _,
+                        StreamRef.Replace(id, _))) =>
                   val archiveKey = (path, Version.Archived(id))
                   acc.get(archiveKey).orElse(acc.get(currentKey)) map {
                     case rec @ JsonRecord(resource, `id`) =>
@@ -314,29 +314,29 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
                   }
 
                 case (
-                    acc,
-                    StoreFileMessage(
-                      _,
-                      _,
-                      writeAs,
-                      _,
-                      _,
-                      content,
-                      _,
-                      StreamRef.Create(id, _))) =>
+                      acc,
+                      StoreFileMessage(
+                        _,
+                        _,
+                        writeAs,
+                        _,
+                        _,
+                        content,
+                        _,
+                        StreamRef.Create(id, _))) =>
                   sys.error("todo")
 
                 case (
-                    acc,
-                    StoreFileMessage(
-                      _,
-                      _,
-                      writeAs,
-                      _,
-                      _,
-                      content,
-                      _,
-                      StreamRef.Replace(id, _))) =>
+                      acc,
+                      StoreFileMessage(
+                        _,
+                        _,
+                        writeAs,
+                        _,
+                        _,
+                        content,
+                        _,
+                        StreamRef.Replace(id, _))) =>
                   sys.error("todo")
 
                 case (acc, _: ArchiveMessage) =>

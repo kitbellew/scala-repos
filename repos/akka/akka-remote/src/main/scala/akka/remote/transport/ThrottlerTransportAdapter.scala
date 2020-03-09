@@ -530,8 +530,8 @@ private[transport] class ThrottledAssociation(
 
   when(WaitModeAndUpstreamListener) {
     case Event(
-        ListenerAndMode(listener: HandleEventListener, mode: ThrottleMode),
-        _) ⇒
+          ListenerAndMode(listener: HandleEventListener, mode: ThrottleMode),
+          _) ⇒
       upstreamListener = listener
       inboundThrottleMode = mode
       self ! Dequeue

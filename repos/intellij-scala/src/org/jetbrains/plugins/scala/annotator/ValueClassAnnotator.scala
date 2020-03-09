@@ -59,7 +59,7 @@ trait ValueClassAnnotator {
           Option(obj.containingClass)
         ) //keep going
       case Some(
-          _
+            _
           ) => //value class is inside a trait or a class, need to highlight it
         holder.createErrorAnnotation(
           valueClass.nameId,

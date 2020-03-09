@@ -552,16 +552,16 @@ class LazyMacros(val c: whitebox.Context)
         super.transform {
           tree match {
             case UnApply(
-                Apply(
-                  Select(qual, nme.unapply | nme.unapplySeq),
-                  List(Ident(nme.SELECTOR_DUMMY))),
-                args) =>
+                  Apply(
+                    Select(qual, nme.unapply | nme.unapplySeq),
+                    List(Ident(nme.SELECTOR_DUMMY))),
+                  args) =>
               Apply(transform(qual), transformTrees(args))
             case UnApply(
-                Apply(
-                  TypeApply(Select(qual, nme.unapply | nme.unapplySeq), _),
-                  List(Ident(nme.SELECTOR_DUMMY))),
-                args) =>
+                  Apply(
+                    TypeApply(Select(qual, nme.unapply | nme.unapplySeq), _),
+                    List(Ident(nme.SELECTOR_DUMMY))),
+                  args) =>
               Apply(transform(qual), transformTrees(args))
             case t => t
           }

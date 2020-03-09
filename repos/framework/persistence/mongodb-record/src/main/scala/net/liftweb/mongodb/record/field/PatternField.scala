@@ -51,7 +51,7 @@ class PatternField[OwnerType <: BsonRecord[OwnerType]](rec: OwnerType)
   def setFromJValue(jvalue: JValue): Box[Pattern] = jvalue match {
     case JNothing | JNull if optional_? => setBox(Empty)
     case JObject(
-        JField("$regex", JString(s)) :: JField("$flags", JInt(f)) :: Nil) =>
+          JField("$regex", JString(s)) :: JField("$flags", JInt(f)) :: Nil) =>
       setBox(Full(Pattern.compile(s, f.intValue)))
     case other => setBox(FieldHelpers.expectedA("JObject", other))
   }

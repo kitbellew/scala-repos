@@ -1004,8 +1004,8 @@ object ScalaPsiUtil {
                   .aliasedType
                   .getOrAny))
           case ScParameterizedType(
-              ScDesignatorType(ta: ScTypeAliasDefinition),
-              args) =>
+                ScDesignatorType(ta: ScTypeAliasDefinition),
+                args) =>
             val genericSubst = ScalaPsiUtil.typesCallSubstitutor(
               ta.typeParameters.map(tp =>
                 (tp.name, ScalaPsiUtil.getPsiElementId(tp))),
@@ -1043,8 +1043,8 @@ object ScalaPsiUtil {
                             obj.qualifiedName,
                             ScProjectionType(proj, obj, s))
                         case ScParameterizedType(
-                            ScProjectionType(proj, _, s),
-                            _) =>
+                              ScProjectionType(proj, _, s),
+                              _) =>
                           addResult(
                             obj.qualifiedName,
                             ScProjectionType(proj, obj, s))
@@ -1895,10 +1895,11 @@ object ScalaPsiUtil {
             if ScUnderScoreSectionUtil.isUnderscoreFunction(elem) =>
           true
         case (
-            _,
-            _: ScReferenceExpression | _: ScMethodCall | _: ScGenericCall |
-            _: ScLiteral | _: ScTuple | _: ScXmlExpr | _: ScParenthesisedExpr |
-            _: ScUnitExpr | _: ScThisReference | _: ScSuperReference) =>
+              _,
+              _: ScReferenceExpression | _: ScMethodCall | _: ScGenericCall |
+              _: ScLiteral | _: ScTuple | _: ScXmlExpr |
+              _: ScParenthesisedExpr | _: ScUnitExpr | _: ScThisReference |
+              _: ScSuperReference) =>
           false
         case (_: ScMethodCall | _: ScUnderscoreSection, _) => true
         case (_, _: ScBlock)                               => false
@@ -2098,9 +2099,9 @@ object ScalaPsiUtil {
         case us: ScUnderscoreSection =>
           us.bindingExpr.flatMap(referencedMethod(_, canBeParameterless = true))
         case ScMethodCall(
-            invoked @ (_: ScReferenceExpression | _: ScGenericCall |
-            _: ScMethodCall),
-            args) if args.nonEmpty && args.forall(isSimpleUnderscore) =>
+              invoked @ (_: ScReferenceExpression | _: ScGenericCall |
+              _: ScMethodCall),
+              args) if args.nonEmpty && args.forall(isSimpleUnderscore) =>
           referencedMethod(invoked, canBeParameterless = false)
         case mc: ScMethodCall if !mc.getParent.isInstanceOf[ScMethodCall] =>
           referencedMethod(mc, canBeParameterless = false).filter {
@@ -2611,8 +2612,8 @@ object ScalaPsiUtil {
       scope: GlobalSearchScope): Option[ScType] = {
     expected match {
       case ScExistentialType(
-          ScParameterizedType(expectedDesignator, _),
-          wildcards) =>
+            ScParameterizedType(expectedDesignator, _),
+            wildcards) =>
         tp match {
           case ScFunctionType(retTp, params) =>
             def convertParameter(tpArg: ScType, variance: Int): ScType = {

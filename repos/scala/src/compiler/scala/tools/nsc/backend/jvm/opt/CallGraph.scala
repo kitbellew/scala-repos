@@ -206,10 +206,10 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
             )
 
           case LambdaMetaFactoryCall(
-              indy,
-              samMethodType,
-              implMethod,
-              instantiatedMethodType) if a.frameAt(indy) != null =>
+                indy,
+                samMethodType,
+                implMethod,
+                instantiatedMethodType) if a.frameAt(indy) != null =>
             val lmf = LambdaMetaFactoryCall(
               indy,
               samMethodType,
@@ -588,10 +588,10 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
           if indy.bsm == metafactoryHandle || indy.bsm == altMetafactoryHandle =>
         indy.bsmArgs match {
           case Array(
-              samMethodType: Type,
-              implMethod: Handle,
-              instantiatedMethodType: Type,
-              xs @ _*
+                samMethodType: Type,
+                implMethod: Handle,
+                instantiatedMethodType: Type,
+                xs @ _*
               ) => // xs binding because IntelliJ gets confused about _@_*
             // LambdaMetaFactory performs a number of automatic adaptations when invoking the lambda
             // implementation method (casting, boxing, unboxing, and primitive widening, see Javadoc).

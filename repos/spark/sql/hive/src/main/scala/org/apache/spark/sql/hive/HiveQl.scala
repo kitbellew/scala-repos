@@ -168,8 +168,8 @@ private[hive] class HiveQl(conf: ParserConf)
       case Token("TOK_TABLEPROPLIST", list) =>
         list.map {
           case Token(
-              "TOK_TABLEPROPERTY",
-              Token(key, Nil) :: Token(value, Nil) :: Nil) =>
+                "TOK_TABLEPROPERTY",
+                Token(key, Nil) :: Token(value, Nil) :: Nil) =>
             unquoteString(key) -> unquoteString(value)
         }
     }
@@ -237,20 +237,20 @@ private[hive] class HiveQl(conf: ParserConf)
 
       // Special drop table that also uncaches.
       case Token(
-          "TOK_DROPTABLE",
-          Token("TOK_TABNAME", tableNameParts) :: ifExists) =>
+            "TOK_DROPTABLE",
+            Token("TOK_TABNAME", tableNameParts) :: ifExists) =>
         val tableName =
           tableNameParts.map { case Token(p, Nil) => p }.mkString(".")
         DropTable(tableName, ifExists.nonEmpty)
 
       // Support "ANALYZE TABLE tableName COMPUTE STATISTICS noscan"
       case Token(
-          "TOK_ANALYZE",
-          Token(
-            "TOK_TAB",
+            "TOK_ANALYZE",
             Token(
-              "TOK_TABNAME",
-              tableNameParts) :: partitionSpec) :: isNoscan) =>
+              "TOK_TAB",
+              Token(
+                "TOK_TABNAME",
+                tableNameParts) :: partitionSpec) :: isNoscan) =>
         // Reference:
         // https://cwiki.apache.org/confluence/display/Hive/StatsDev#StatsDev-ExistingTables
         if (partitionSpec.nonEmpty) {
@@ -436,15 +436,15 @@ private[hive] class HiveQl(conf: ParserConf)
             // TODO support the sql text
             tableDesc = tableDesc.copy(viewText = Option(comment))
           case Token(
-              "TOK_TABLEPARTCOLS",
-              list @ Token("TOK_TABCOLLIST", _) :: Nil) =>
+                "TOK_TABLEPARTCOLS",
+                list @ Token("TOK_TABCOLLIST", _) :: Nil) =>
             val cols = nodeToColumns(list.head, lowerCase = false)
             if (cols != null) {
               tableDesc = tableDesc.copy(partitionColumns = cols)
             }
           case Token(
-              "TOK_TABLEROWFORMAT",
-              Token("TOK_SERDEPROPS", child :: Nil) :: Nil) =>
+                "TOK_TABLEROWFORMAT",
+                Token("TOK_SERDEPROPS", child :: Nil) :: Nil) =>
             val serdeParams = new java.util.HashMap[String, String]()
             child match {
               case Token("TOK_TABLEROWFORMATFIELD", rowChild1 :: rowChild2) =>
@@ -574,10 +574,10 @@ private[hive] class HiveQl(conf: ParserConf)
             }
 
           case Token(
-              "TOK_TABLESERIALIZER",
-              Token(
-                "TOK_SERDENAME",
-                Token(serdeName, Nil) :: otherProps) :: Nil) =>
+                "TOK_TABLESERIALIZER",
+                Token(
+                  "TOK_SERDENAME",
+                  Token(serdeName, Nil) :: otherProps) :: Nil) =>
             tableDesc =
               tableDesc.withNewStorage(serde = Option(unquoteString(serdeName)))
 
@@ -613,8 +613,8 @@ private[hive] class HiveQl(conf: ParserConf)
 
       // Support "TRUNCATE TABLE table_name [PARTITION partition_spec]"
       case Token(
-          "TOK_TRUNCATETABLE",
-          Token("TOK_TABLE_PARTITION", table) :: Nil) =>
+            "TOK_TRUNCATETABLE",
+            Token("TOK_TABLE_PARTITION", table) :: Nil) =>
         NativePlaceholder
 
       case _ =>
@@ -629,10 +629,10 @@ private[hive] class HiveQl(conf: ParserConf)
       node: ASTNode,
       child: LogicalPlan): Option[logical.ScriptTransformation] = node match {
     case Token(
-        "TOK_SELEXPR",
-        Token(
-          "TOK_TRANSFORM",
-          Token("TOK_EXPLIST", inputExprs) ::
+          "TOK_SELEXPR",
+          Token(
+            "TOK_TRANSFORM",
+            Token("TOK_EXPLIST", inputExprs) ::
             Token("TOK_SERDE", inputSerdeClause) ::
             Token("TOK_RECORDWRITER", writerClause) ::
             // TODO: Need to support other types of (in/out)put
@@ -687,15 +687,15 @@ private[hive] class HiveQl(conf: ParserConf)
         case Token(
               "TOK_SERDENAME",
               Token(serdeClass, Nil) ::
+              Token(
+                "TOK_TABLEPROPERTIES",
                 Token(
-                  "TOK_TABLEPROPERTIES",
-                  Token(
-                    "TOK_TABLEPROPLIST",
-                    propsClause) :: Nil) :: Nil) :: Nil =>
+                  "TOK_TABLEPROPLIST",
+                  propsClause) :: Nil) :: Nil) :: Nil =>
           val serdeProps = propsClause.map {
             case Token(
-                "TOK_TABLEPROPERTY",
-                Token(name, Nil) :: Token(value, Nil) :: Nil) =>
+                  "TOK_TABLEPROPERTY",
+                  Token(name, Nil) :: Token(value, Nil) :: Nil) =>
               (unescapeSQLString(name), unescapeSQLString(value))
           }
 

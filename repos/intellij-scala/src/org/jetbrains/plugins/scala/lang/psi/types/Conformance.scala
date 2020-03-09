@@ -457,10 +457,10 @@ object Conformance {
         }
         result = l.isAliasType match {
           case Some(
-              AliasType(
-                _: ScTypeAliasDefinition,
-                Success(comp: ScCompoundType, _),
-                _)) =>
+                AliasType(
+                  _: ScTypeAliasDefinition,
+                  Success(comp: ScCompoundType, _),
+                  _)) =>
             conformsInner(comp, c, HashSet.empty, undefinedSubst)
           case _ => (false, undefinedSubst)
         }
@@ -566,20 +566,20 @@ object Conformance {
       if (checkWeak && r.isInstanceOf[ValType]) {
         (r, x) match {
           case (
-              types.Byte,
-              types.Short | types.Int | types.Long | types.Float |
-              types.Double) =>
+                types.Byte,
+                types.Short | types.Int | types.Long | types.Float |
+                types.Double) =>
             result = (true, undefinedSubst)
             return
           case (
-              types.Short,
-              types.Int | types.Long | types.Float | types.Double) =>
+                types.Short,
+                types.Int | types.Long | types.Float | types.Double) =>
             result = (true, undefinedSubst)
             return
           case (
-              types.Char,
-              types.Byte | types.Short | types.Int | types.Long | types.Float |
-              types.Double) =>
+                types.Char,
+                types.Byte | types.Short | types.Int | types.Long |
+                types.Float | types.Double) =>
             result = (true, undefinedSubst)
             return
           case (types.Int, types.Long | types.Float | types.Double) =>
@@ -1234,8 +1234,8 @@ object Conformance {
         case ScDesignatorType(a: ScTypeAlias) =>
           r match {
             case ScParameterizedType(
-                des2 @ ScDesignatorType(a2: ScTypeAlias),
-                args2)
+                  des2 @ ScDesignatorType(a2: ScTypeAlias),
+                  args2)
                 if a.isInstanceOf[
                   ScTypeAliasDeclaration] && (p.designator equiv des2) =>
               processEquivalentDesignators(args2)

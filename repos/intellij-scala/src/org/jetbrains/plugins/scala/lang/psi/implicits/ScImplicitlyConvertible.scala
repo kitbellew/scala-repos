@@ -182,13 +182,13 @@ class ScImplicitlyConvertible(
 
     buffer.foreach {
       case ImplicitMapResult(
-          _,
-          r,
-          tp,
-          retTp,
-          newSubst,
-          uSubst,
-          implicitDepSusbt) =>
+            _,
+            r,
+            tp,
+            retTp,
+            newSubst,
+            uSubst,
+            implicitDepSusbt) =>
         r.element match {
           case f: ScFunction if f.hasTypeParameters =>
             uSubst.getSubstitutor match {
@@ -740,8 +740,8 @@ object ScImplicitlyConvertible {
             placeContext = placeContext.getContext
           (functionContext, placeContext) match {
             case (
-                functionContext: ScalaPsiElement,
-                placeContext: ScalaPsiElement) =>
+                  functionContext: ScalaPsiElement,
+                  placeContext: ScalaPsiElement) =>
               val funElem = functionContext.getDeepSameElementInContext
               val conElem = placeContext.getDeepSameElementInContext
               val children = commonContext match {

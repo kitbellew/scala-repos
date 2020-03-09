@@ -166,8 +166,8 @@ object ParserUtils {
         nodeToDataType(dataType),
         nullable = true)
     case Token(
-        "TOK_TABCOL",
-        Token(fieldName, Nil) :: dataType :: comment :: Nil) =>
+          "TOK_TABCOL",
+          Token(fieldName, Nil) :: dataType :: comment :: Nil) =>
       val meta = new MetadataBuilder()
         .putString("comment", unquoteString(comment.text))
         .build()

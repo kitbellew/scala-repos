@@ -82,13 +82,13 @@ class BaseCharsetTest(val charset: Charset) {
 
       (actualTry, expectedTry) match {
         case (
-            Failure(actualEx: MalformedInputException),
-            Failure(expectedEx: MalformedInputException)) =>
+              Failure(actualEx: MalformedInputException),
+              Failure(expectedEx: MalformedInputException)) =>
           assertEquals(expectedEx.getInputLength(), actualEx.getInputLength())
 
         case (
-            Failure(actualEx: UnmappableCharacterException),
-            Failure(expectedEx: UnmappableCharacterException)) =>
+              Failure(actualEx: UnmappableCharacterException),
+              Failure(expectedEx: UnmappableCharacterException)) =>
           assertEquals(expectedEx.getInputLength(), actualEx.getInputLength())
 
         case (Success(actualChars), Success(expectedChars)) =>
@@ -171,13 +171,13 @@ class BaseCharsetTest(val charset: Charset) {
 
       (actualTry, expectedTry) match {
         case (
-            Failure(actualEx: MalformedInputException),
-            Failure(expectedEx: MalformedInputException)) =>
+              Failure(actualEx: MalformedInputException),
+              Failure(expectedEx: MalformedInputException)) =>
           assertEquals(expectedEx.getInputLength(), actualEx.getInputLength())
 
         case (
-            Failure(actualEx: UnmappableCharacterException),
-            Failure(expectedEx: UnmappableCharacterException)) =>
+              Failure(actualEx: UnmappableCharacterException),
+              Failure(expectedEx: UnmappableCharacterException)) =>
           assertEquals(expectedEx.getInputLength(), actualEx.getInputLength())
 
         case (Success(actualBytes), Success(expectedBytes)) =>

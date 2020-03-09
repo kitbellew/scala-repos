@@ -272,8 +272,8 @@ class ScParameterizedType private (
         if (!t._1) return (false, uSubst)
         (true, t._2)
       case (
-          ScParameterizedType(proj @ ScProjectionType(projected, _, _), args),
-          _) if proj.actualElement.isInstanceOf[ScTypeAliasDefinition] =>
+            ScParameterizedType(proj @ ScProjectionType(projected, _, _), args),
+            _) if proj.actualElement.isInstanceOf[ScTypeAliasDefinition] =>
         isAliasType match {
           case Some(AliasType(ta: ScTypeAliasDefinition, lower, _)) =>
             Equivalence.equivInner(
@@ -287,8 +287,10 @@ class ScParameterizedType private (
           case _ => (false, uSubst)
         }
       case (
-          ScParameterizedType(ScDesignatorType(a: ScTypeAliasDefinition), args),
-          _) =>
+            ScParameterizedType(
+              ScDesignatorType(a: ScTypeAliasDefinition),
+              args),
+            _) =>
         isAliasType match {
           case Some(AliasType(ta: ScTypeAliasDefinition, lower, _)) =>
             Equivalence.equivInner(
@@ -302,8 +304,8 @@ class ScParameterizedType private (
           case _ => (false, uSubst)
         }
       case (
-          ScParameterizedType(_, _),
-          ScParameterizedType(designator1, typeArgs1)) =>
+            ScParameterizedType(_, _),
+            ScParameterizedType(designator1, typeArgs1)) =>
         var t = Equivalence.equivInner(
           designator,
           designator1,

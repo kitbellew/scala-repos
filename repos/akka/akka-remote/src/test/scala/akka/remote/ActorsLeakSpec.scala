@@ -40,9 +40,9 @@ object ActorsLeakSpec {
 
           cell.childrenRefs match {
             case ChildrenContainer.TerminatingChildrenContainer(
-                _,
-                toDie,
-                reason) ⇒
+                  _,
+                  toDie,
+                  reason) ⇒
               Nil
             case x @ (ChildrenContainer.TerminatedChildrenContainer |
                 ChildrenContainer.EmptyChildrenContainer) ⇒

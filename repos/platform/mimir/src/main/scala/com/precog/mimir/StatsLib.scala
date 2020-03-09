@@ -536,8 +536,8 @@ trait StatsLibModule[M[+_]]
                     BigDecimal(0),
                     BigDecimal(0))) {
                   case (
-                      (count, sum1, sum2, sumsq1, sumsq2, productSum),
-                      (v1, v2)) =>
+                        (count, sum1, sum2, sumsq1, sumsq2, productSum),
+                        (v1, v2)) =>
                     (
                       count + 1,
                       sum1 + v1,
@@ -565,8 +565,8 @@ trait StatsLibModule[M[+_]]
                     BigDecimal(0),
                     BigDecimal(0))) {
                   case (
-                      (count, sum1, sum2, sumsq1, sumsq2, productSum),
-                      (v1, v2)) =>
+                        (count, sum1, sum2, sumsq1, sumsq2, productSum),
+                        (v1, v2)) =>
                     (
                       count + 1,
                       sum1 + v1,
@@ -594,8 +594,8 @@ trait StatsLibModule[M[+_]]
                     BigDecimal(0),
                     BigDecimal(0))) {
                   case (
-                      (count, sum1, sum2, sumsq1, sumsq2, productSum),
-                      (v1, v2)) =>
+                        (count, sum1, sum2, sumsq1, sumsq2, productSum),
+                        (v1, v2)) =>
                     (
                       count + 1,
                       sum1 + v1,
@@ -623,8 +623,8 @@ trait StatsLibModule[M[+_]]
                     BigDecimal(0),
                     BigDecimal(0))) {
                   case (
-                      (count, sum1, sum2, sumsq1, sumsq2, productSum),
-                      (v1, v2)) =>
+                        (count, sum1, sum2, sumsq1, sumsq2, productSum),
+                        (v1, v2)) =>
                     (
                       count + 1,
                       sum1 + v1,
@@ -652,8 +652,8 @@ trait StatsLibModule[M[+_]]
                     BigDecimal(0),
                     BigDecimal(0))) {
                   case (
-                      (count, sum1, sum2, sumsq1, sumsq2, productSum),
-                      (v1, v2)) =>
+                        (count, sum1, sum2, sumsq1, sumsq2, productSum),
+                        (v1, v2)) =>
                     (
                       count + 1,
                       sum1 + v1,
@@ -681,8 +681,8 @@ trait StatsLibModule[M[+_]]
                     BigDecimal(0),
                     BigDecimal(0))) {
                   case (
-                      (count, sum1, sum2, sumsq1, sumsq2, productSum),
-                      (v1, v2)) =>
+                        (count, sum1, sum2, sumsq1, sumsq2, productSum),
+                        (v1, v2)) =>
                     (
                       count + 1,
                       sum1 + v1,
@@ -710,8 +710,8 @@ trait StatsLibModule[M[+_]]
                     BigDecimal(0),
                     BigDecimal(0))) {
                   case (
-                      (count, sum1, sum2, sumsq1, sumsq2, productSum),
-                      (v1, v2)) =>
+                        (count, sum1, sum2, sumsq1, sumsq2, productSum),
+                        (v1, v2)) =>
                     (
                       count + 1,
                       sum1 + v1,
@@ -739,8 +739,8 @@ trait StatsLibModule[M[+_]]
                     BigDecimal(0),
                     BigDecimal(0))) {
                   case (
-                      (count, sum1, sum2, sumsq1, sumsq2, productSum),
-                      (v1, v2)) =>
+                        (count, sum1, sum2, sumsq1, sumsq2, productSum),
+                        (v1, v2)) =>
                     (
                       count + 1,
                       sum1 + v1,
@@ -768,8 +768,8 @@ trait StatsLibModule[M[+_]]
                     BigDecimal(0),
                     BigDecimal(0))) {
                   case (
-                      (count, sum1, sum2, sumsq1, sumsq2, productSum),
-                      (v1, v2)) =>
+                        (count, sum1, sum2, sumsq1, sumsq2, productSum),
+                        (v1, v2)) =>
                     (
                       count + 1,
                       sum1 + v1,

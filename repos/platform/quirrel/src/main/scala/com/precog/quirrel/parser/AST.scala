@@ -491,8 +491,8 @@ trait AST extends Phases {
       case (a, b) if a == b => true
 
       case (
-          Let(_, id1, params1, left1, right1),
-          Let(_, id2, params2, left2, right2)) =>
+            Let(_, id1, params1, left1, right1),
+            Let(_, id2, params2, left2, right2)) =>
         (id1 == id2) &&
           (params1 == params2) &&
           (left1 equalsIgnoreLoc left2) &&
@@ -565,16 +565,16 @@ trait AST extends Phases {
         (child1 equalsIgnoreLoc child2) && (property1 == property2)
 
       case (
-          MetaDescent(_, child1, property1),
-          MetaDescent(_, child2, property2)) =>
+            MetaDescent(_, child1, property1),
+            MetaDescent(_, child2, property2)) =>
         (child1 equalsIgnoreLoc child2) && (property1 == property2)
 
       case (Deref(_, left1, right1), Deref(_, left2, right2)) =>
         (left1 equalsIgnoreLoc left2) && (right1 equalsIgnoreLoc right2)
 
       case (
-          d1 @ Dispatch(_, name1, actuals1),
-          d2 @ Dispatch(_, name2, actuals2)) => {
+            d1 @ Dispatch(_, name1, actuals1),
+            d2 @ Dispatch(_, name2, actuals2)) => {
         val naming = name1 == name2
         val sizing = actuals1.length == actuals2.length
         val binding = d1.binding == d2.binding
