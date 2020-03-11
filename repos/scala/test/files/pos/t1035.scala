@@ -21,10 +21,11 @@ class D {
   object B {
     def unapply(p: B) = Some(p.getName)
   }
-  def foo(p: Any) = p match {
-    case B(n) => println("B")
-    case A(n) => println("A")
+  def foo(p: Any) =
+    p match {
+      case B(n) => println("B")
+      case A(n) => println("A")
 
-  }
+    }
 
 }

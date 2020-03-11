@@ -40,11 +40,12 @@ private[spark] class ParallelCollectionPartition[T: ClassTag](
 
   override def hashCode(): Int = (41 * (41 + rddId) + slice).toInt
 
-  override def equals(other: Any): Boolean = other match {
-    case that: ParallelCollectionPartition[_] =>
-      this.rddId == that.rddId && this.slice == that.slice
-    case _ => false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case that: ParallelCollectionPartition[_] =>
+        this.rddId == that.rddId && this.slice == that.slice
+      case _ => false
+    }
 
   override def index: Int = slice
 
@@ -69,20 +70,21 @@ private[spark] class ParallelCollectionPartition[T: ClassTag](
     }
 
   @throws(classOf[IOException])
-  private def readObject(in: ObjectInputStream): Unit = Utils.tryOrIOException {
+  private def readObject(in: ObjectInputStream): Unit =
+    Utils.tryOrIOException {
 
-    val sfactory = SparkEnv.get.serializer
-    sfactory match {
-      case js: JavaSerializer => in.defaultReadObject()
-      case _ =>
-        rddId = in.readLong()
-        slice = in.readInt()
+      val sfactory = SparkEnv.get.serializer
+      sfactory match {
+        case js: JavaSerializer => in.defaultReadObject()
+        case _ =>
+          rddId = in.readLong()
+          slice = in.readInt()
 
-        val ser = sfactory.newInstance()
-        Utils.deserializeViaNestedStream(in, ser)(ds =>
-          values = ds.readObject[Seq[T]]())
+          val ser = sfactory.newInstance()
+          Utils.deserializeViaNestedStream(in, ser)(ds =>
+            values = ds.readObject[Seq[T]]())
+      }
     }
-  }
 }
 
 private[spark] class ParallelCollectionRDD[T: ClassTag](

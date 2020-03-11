@@ -39,10 +39,11 @@ private[akka] final case class PruningState(
           this
     }
 
-  def addSeen(node: Address): PruningState = phase match {
-    case PruningInitialized(seen) ⇒
-      if (seen(node) || owner.address == node) this
-      else copy(phase = PruningInitialized(seen + node))
-    case _ ⇒ this
-  }
+  def addSeen(node: Address): PruningState =
+    phase match {
+      case PruningInitialized(seen) ⇒
+        if (seen(node) || owner.address == node) this
+        else copy(phase = PruningInitialized(seen + node))
+      case _ ⇒ this
+    }
 }

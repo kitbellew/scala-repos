@@ -237,17 +237,20 @@ trait ListHelpers {
     * @return all the permutations of the list including sublists, sorted in longest to shortest
     */
   def permuteWithSublists[T](in: Seq[T]): List[List[T]] = {
-    def internal(in: List[T]): List[List[T]] = in match {
-      case Nil      => Nil
-      case x :: Nil => List(List(x))
-      case xs =>
-        val rot = rotateList(xs)
-        val ret = rot.flatMap(z =>
-          (z: @unchecked) match { case x :: xs => permuteList(xs).map(x :: _) })
-        ret ::: rot
-          .map(z => (z: @unchecked) match { case x :: xs => xs })
-          .flatMap(internal(_))
-    }
+    def internal(in: List[T]): List[List[T]] =
+      in match {
+        case Nil      => Nil
+        case x :: Nil => List(List(x))
+        case xs =>
+          val rot = rotateList(xs)
+          val ret = rot.flatMap(z =>
+            (z: @unchecked) match {
+              case x :: xs => permuteList(xs).map(x :: _)
+            })
+          ret ::: rot
+            .map(z => (z: @unchecked) match { case x :: xs => xs })
+            .flatMap(internal(_))
+      }
     internal(in.toList).distinct.sortWith(_.length > _.length)
   }
 
@@ -283,11 +286,12 @@ trait ListHelpers {
 
     /** return a new list where the element at position pos is replaced with another element */
     def replace(pos: Int, withWhat: T): List[T] = {
-      def repl(pos: Int, withWhat: T, rest: List[T]): List[T] = rest match {
-        case Nil                 => Nil
-        case x :: xs if pos <= 0 => withWhat :: xs
-        case x :: xs             => x :: repl(pos - 1, withWhat, xs)
-      }
+      def repl(pos: Int, withWhat: T, rest: List[T]): List[T] =
+        rest match {
+          case Nil                 => Nil
+          case x :: xs if pos <= 0 => withWhat :: xs
+          case x :: xs             => x :: repl(pos - 1, withWhat, xs)
+        }
       repl(pos, withWhat, what)
     }
   }

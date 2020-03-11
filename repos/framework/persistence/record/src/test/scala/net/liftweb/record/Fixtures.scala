@@ -276,13 +276,14 @@ class FieldTypeTestRecord private () extends Record[FieldTypeTestRecord] {
       ) // toInternetDate is lossy (doesn't retain time to ms precision)
   }
 
-  override def equals(other: Any): Boolean = other match {
-    case that: FieldTypeTestRecord =>
-      that.fieldsToCompare.corresponds(this.fieldsToCompare) { (a, b) =>
-        a.name == b.name && a.valueBox == b.valueBox
-      }
-    case _ => false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case that: FieldTypeTestRecord =>
+        that.fieldsToCompare.corresponds(this.fieldsToCompare) { (a, b) =>
+          a.name == b.name && a.valueBox == b.valueBox
+        }
+      case _ => false
+    }
 }
 
 object FieldTypeTestRecord

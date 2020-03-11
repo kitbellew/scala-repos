@@ -425,12 +425,13 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
   /**
     * The name of this field
     */
-  final def name = synchronized {
-    if (_name eq null) {
-      fieldOwner.checkNames
+  final def name =
+    synchronized {
+      if (_name eq null) {
+        fieldOwner.checkNames
+      }
+      _name
     }
-    _name
-  }
 
   /**
     * Set the name of this field
@@ -465,11 +466,12 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
     fieldOwner.getSingleton.internal_dbTableName + ":" + name
 
   def toForm: Box[NodeSeq] = {
-    def mf(in: scala.xml.Node): NodeSeq = in match {
-      case g: Group => g.nodes.flatMap(mf)
-      case e: Elem  => e % toFormAppendedAttributes
-      case other    => other
-    }
+    def mf(in: scala.xml.Node): NodeSeq =
+      in match {
+        case g: Group => g.nodes.flatMap(mf)
+        case e: Elem  => e % toFormAppendedAttributes
+        case other    => other
+      }
 
     _toForm
       .map(_.flatMap(mf))
@@ -501,13 +503,14 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
   /**
     * If the field has a defined fieldId, append it
     */
-  protected def appendFieldId(in: Elem): Elem = fieldId match {
-    case Some(i) => {
-      import util.Helpers._
-      in % ("id" -> i)
+  protected def appendFieldId(in: Elem): Elem =
+    fieldId match {
+      case Some(i) => {
+        import util.Helpers._
+        in % ("id" -> i)
+      }
+      case _ => in
     }
-    case _ => in
-  }
 
   /**
     * Set the field to the Box value if the Box is Full
@@ -702,10 +705,11 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
 
   protected def real_convertToJDBCFriendly(value: FieldType): Object
 
-  override def hashCode(): Int = i_is_! match {
-    case null => 0
-    case x    => x.hashCode
-  }
+  override def hashCode(): Int =
+    i_is_! match {
+      case null => 0
+      case x    => x.hashCode
+    }
 
   /**
     * Does the "right thing" comparing mapped fields
@@ -727,10 +731,11 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
     )
   }
 
-  def canEqual(that: Any) = that match {
-    case ar: AnyRef => ar.getClass == this.getClass
-    case _          => false
-  }
+  def canEqual(that: Any) =
+    that match {
+      case ar: AnyRef => ar.getClass == this.getClass
+      case _          => false
+    }
 
   override def asHtml: scala.xml.Node = Text(toString)
 }

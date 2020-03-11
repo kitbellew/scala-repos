@@ -34,10 +34,11 @@ class SActivityImpl extends SActivity {
   def alertDialog(): AlertDialogBuilder =
     new AlertDialogBuilder("TITLE", "MESSAGE")
 
-  def stateListDrawable(): StateListDrawable = new SStateListDrawable {
-    +=(android.R.drawable.btn_star_big_on, PRESSED)
-    +=(android.R.drawable.btn_star_big_off)
-  }
+  def stateListDrawable(): StateListDrawable =
+    new SStateListDrawable {
+      +=(android.R.drawable.btn_star_big_on, PRESSED)
+      +=(android.R.drawable.btn_star_big_off)
+    }
 }
 
 class SServiceImpl extends SService {

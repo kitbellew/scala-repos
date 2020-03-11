@@ -56,16 +56,19 @@ private[finagle] abstract class CumulativeGauge {
         deregister()
     }
 
-  def addGauge(f: => Float): Gauge = synchronized {
-    val shouldRegister = underlying.isEmpty
-    if (!shouldRegister)
-      removeGauge(null) // there is at least 1 gauge that may need to be cleaned
-    val underlyingGauge = UnderlyingGauge(() => f)
-    underlying :+= new WeakReference(underlyingGauge)
-    if (shouldRegister)
-      register()
-    underlyingGauge
-  }
+  def addGauge(f: => Float): Gauge =
+    synchronized {
+      val shouldRegister = underlying.isEmpty
+      if (!shouldRegister)
+        removeGauge(
+          null
+        ) // there is at least 1 gauge that may need to be cleaned
+      val underlyingGauge = UnderlyingGauge(() => f)
+      underlying :+= new WeakReference(underlyingGauge)
+      if (shouldRegister)
+        register()
+      underlyingGauge
+    }
 
   def getValue: Float = {
     var sum = 0f
@@ -125,14 +128,16 @@ trait StatsReceiverWithCumulativeGauges extends StatsReceiver { self =>
     var cumulativeGauge = gauges.get(name)
     if (cumulativeGauge == null) {
       val insert = new CumulativeGauge {
-        override def register(): Unit = synchronized {
-          self.registerGauge(name, getValue)
-        }
+        override def register(): Unit =
+          synchronized {
+            self.registerGauge(name, getValue)
+          }
 
-        override def deregister(): Unit = synchronized {
-          gauges.remove(name)
-          self.deregisterGauge(name)
-        }
+        override def deregister(): Unit =
+          synchronized {
+            gauges.remove(name)
+            self.deregisterGauge(name)
+          }
       }
       val prev = gauges.putIfAbsent(name, insert)
       cumulativeGauge = if (prev == null) insert else prev

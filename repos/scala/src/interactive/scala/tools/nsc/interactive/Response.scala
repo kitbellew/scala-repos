@@ -27,64 +27,69 @@ class Response[T] {
 
   /** Set provisional data, more to come
     */
-  def setProvisionally(x: T) = synchronized {
-    data = Some(Left(x))
-  }
+  def setProvisionally(x: T) =
+    synchronized {
+      data = Some(Left(x))
+    }
 
   /** Set final data, and mark response as complete.
     */
-  def set(x: T) = synchronized {
-    data = Some(Left(x))
-    complete = true
-    notifyAll()
-  }
+  def set(x: T) =
+    synchronized {
+      data = Some(Left(x))
+      complete = true
+      notifyAll()
+    }
 
   /** Store raised exception in data, and mark response as complete.
     */
-  def raise(exc: Throwable) = synchronized {
-    data = Some(Right(exc))
-    complete = true
-    notifyAll()
-  }
+  def raise(exc: Throwable) =
+    synchronized {
+      data = Some(Right(exc))
+      complete = true
+      notifyAll()
+    }
 
   /** Get final data, wait as long as necessary.
     *  When interrupted will return with Right(InterruptedException)
     */
-  def get: Either[T, Throwable] = synchronized {
-    while (!complete) {
-      try {
-        wait()
-      } catch {
-        case exc: InterruptedException => {
-          Thread.currentThread().interrupt()
-          raise(exc)
+  def get: Either[T, Throwable] =
+    synchronized {
+      while (!complete) {
+        try {
+          wait()
+        } catch {
+          case exc: InterruptedException => {
+            Thread.currentThread().interrupt()
+            raise(exc)
+          }
         }
       }
+      data.get
     }
-    data.get
-  }
 
   /** Optionally get data within `timeout` milliseconds.
     *  When interrupted will return with Some(Right(InterruptedException))
     *  When timeout ends, will return last stored provisional result,
     *  or else None if no provisional result was stored.
     */
-  def get(timeout: Long): Option[Either[T, Throwable]] = synchronized {
-    val start = System.currentTimeMillis
-    var current = start
-    while (!complete && start + timeout > current) {
-      try {
-        wait(timeout - (current - start))
-      } catch {
-        case exc: InterruptedException => {
-          Thread.currentThread().interrupt()
-          raise(exc)
+  def get(timeout: Long): Option[Either[T, Throwable]] =
+    synchronized {
+      val start = System.currentTimeMillis
+      var current = start
+      while (!complete && start + timeout > current) {
+        try {
+          wait(timeout - (current - start))
+        } catch {
+          case exc: InterruptedException => {
+            Thread.currentThread().interrupt()
+            raise(exc)
+          }
         }
+        current = System.currentTimeMillis
       }
-      current = System.currentTimeMillis
+      data
     }
-    data
-  }
 
   /** Final data set was stored
     */
@@ -99,9 +104,10 @@ class Response[T] {
     */
   def isCancelled = synchronized { cancelled }
 
-  def clear() = synchronized {
-    data = None
-    complete = false
-    cancelled = false
-  }
+  def clear() =
+    synchronized {
+      data = None
+      complete = false
+      cancelled = false
+    }
 }

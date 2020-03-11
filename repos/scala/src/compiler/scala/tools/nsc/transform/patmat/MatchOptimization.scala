@@ -51,12 +51,14 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
       def storeDependencies(test: Test) = {
         val cond = test.prop
 
-        def simplify(c: Prop): Set[Prop] = c match {
-          case And(ops)                   => ops.toSet flatMap simplify
-          case Or(ops)                    => Set(False) // TODO: make more precise
-          case Not(Eq(Var(_), NullConst)) => Set(True) // not worth remembering
-          case _                          => Set(c)
-        }
+        def simplify(c: Prop): Set[Prop] =
+          c match {
+            case And(ops) => ops.toSet flatMap simplify
+            case Or(ops)  => Set(False) // TODO: make more precise
+            case Not(Eq(Var(_), NullConst)) =>
+              Set(True) // not worth remembering
+            case _ => Set(c)
+          }
         val conds = simplify(cond)
 
         if (conds(False))
@@ -443,56 +445,59 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
 
       private def caseEquals(x: CaseDef)(y: CaseDef) =
         patternEquals(x.pat)(y.pat)
-      private def patternEquals(x: Tree)(y: Tree): Boolean = (x, y) match {
-        case (Alternative(xs), Alternative(ys)) =>
-          xs.forall(x => ys.exists(patternEquals(x))) &&
-            ys.forall(y => xs.exists(patternEquals(y)))
-        case (Alternative(pats), _) => pats.forall(p => patternEquals(p)(y))
-        case (_, Alternative(pats)) => pats.forall(q => patternEquals(x)(q))
-        // regular switch
-        case (Literal(Constant(cx)), Literal(Constant(cy))) => cx == cy
-        case (Ident(nme.WILDCARD), Ident(nme.WILDCARD))     => true
-        // type-switch for catch
-        case (
-              Bind(_, Typed(Ident(nme.WILDCARD), tpX)),
-              Bind(_, Typed(Ident(nme.WILDCARD), tpY))) =>
-          tpX.tpe =:= tpY.tpe
-        case _ => false
-      }
+      private def patternEquals(x: Tree)(y: Tree): Boolean =
+        (x, y) match {
+          case (Alternative(xs), Alternative(ys)) =>
+            xs.forall(x => ys.exists(patternEquals(x))) &&
+              ys.forall(y => xs.exists(patternEquals(y)))
+          case (Alternative(pats), _) => pats.forall(p => patternEquals(p)(y))
+          case (_, Alternative(pats)) => pats.forall(q => patternEquals(x)(q))
+          // regular switch
+          case (Literal(Constant(cx)), Literal(Constant(cy))) => cx == cy
+          case (Ident(nme.WILDCARD), Ident(nme.WILDCARD))     => true
+          // type-switch for catch
+          case (
+                Bind(_, Typed(Ident(nme.WILDCARD), tpX)),
+                Bind(_, Typed(Ident(nme.WILDCARD), tpY))) =>
+            tpX.tpe =:= tpY.tpe
+          case _ => false
+        }
 
       // if y matches then x matches for sure (thus, if x comes before y, y is unreachable)
       private def caseImplies(x: CaseDef)(y: CaseDef) =
         patternImplies(x.pat)(y.pat)
-      private def patternImplies(x: Tree)(y: Tree): Boolean = (x, y) match {
-        // since alternatives are flattened, must treat them as separate cases
-        case (Alternative(pats), _) => pats.exists(p => patternImplies(p)(y))
-        case (_, Alternative(pats)) => pats.exists(q => patternImplies(x)(q))
-        // regular switch
-        case (Literal(Constant(cx)), Literal(Constant(cy))) => cx == cy
-        case (Ident(nme.WILDCARD), _)                       => true
-        // type-switch for catch
-        case (
-              Bind(_, Typed(Ident(nme.WILDCARD), tpX)),
-              Bind(_, Typed(Ident(nme.WILDCARD), tpY))) =>
-          instanceOfTpImplies(tpY.tpe, tpX.tpe)
-        case _ => false
-      }
+      private def patternImplies(x: Tree)(y: Tree): Boolean =
+        (x, y) match {
+          // since alternatives are flattened, must treat them as separate cases
+          case (Alternative(pats), _) => pats.exists(p => patternImplies(p)(y))
+          case (_, Alternative(pats)) => pats.exists(q => patternImplies(x)(q))
+          // regular switch
+          case (Literal(Constant(cx)), Literal(Constant(cy))) => cx == cy
+          case (Ident(nme.WILDCARD), _)                       => true
+          // type-switch for catch
+          case (
+                Bind(_, Typed(Ident(nme.WILDCARD), tpX)),
+                Bind(_, Typed(Ident(nme.WILDCARD), tpY))) =>
+            instanceOfTpImplies(tpY.tpe, tpX.tpe)
+          case _ => false
+        }
 
       private def noGuards(cs: List[CaseDef]): Boolean =
         !cs.exists(isGuardedCase)
 
       // must do this before removing guards from cases and collapsing (SI-6011, SI-6048)
       private def unreachableCase(cases: List[CaseDef]): Option[CaseDef] = {
-        def loop(cases: List[CaseDef]): Option[CaseDef] = cases match {
-          case head :: next :: _ if isDefault(head) =>
-            Some(next) // subsumed by the next case, but faster
-          case head :: rest
-              if !isGuardedCase(head) || head.guard.tpe =:= ConstantTrue =>
-            rest find caseImplies(head) orElse loop(rest)
-          case head :: _ if head.guard.tpe =:= ConstantFalse => Some(head)
-          case _ :: rest                                     => loop(rest)
-          case _                                             => None
-        }
+        def loop(cases: List[CaseDef]): Option[CaseDef] =
+          cases match {
+            case head :: next :: _ if isDefault(head) =>
+              Some(next) // subsumed by the next case, but faster
+            case head :: rest
+                if !isGuardedCase(head) || head.guard.tpe =:= ConstantTrue =>
+              rest find caseImplies(head) orElse loop(rest)
+            case head :: _ if head.guard.tpe =:= ConstantFalse => Some(head)
+            case _ :: rest                                     => loop(rest)
+            case _                                             => None
+          }
         loop(cases)
       }
 
@@ -529,10 +534,11 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
 
                   // succeed if they were all switchable
                   sequence(switchableAlts) map { switchableAlts =>
-                    def extractConst(t: Tree) = t match {
-                      case Literal(const) => const
-                      case _              => t
-                    }
+                    def extractConst(t: Tree) =
+                      t match {
+                        case Literal(const) => const
+                        case _              => t
+                      }
                     // SI-7290 Discard duplicate alternatives that would crash the backend
                     val distinctAlts = distinctBy(switchableAlts)(extractConst)
                     if (distinctAlts.size < switchableAlts.size) {
@@ -609,27 +615,30 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
       // Constant folding sets the type of a constant tree to `ConstantType(Constant(folded))`
       // The tree itself can be a literal, an ident, a selection, ...
       object SwitchablePattern {
-        def unapply(pat: Tree): Option[Tree] = pat.tpe match {
-          case ConstantType(const) if const.isIntRange =>
-            Some(
-              Literal(Constant(const.intValue))
-            ) // TODO: Java 7 allows strings in switches
-          case _ => None
-        }
+        def unapply(pat: Tree): Option[Tree] =
+          pat.tpe match {
+            case ConstantType(const) if const.isIntRange =>
+              Some(
+                Literal(Constant(const.intValue))
+              ) // TODO: Java 7 allows strings in switches
+            case _ => None
+          }
       }
 
       object SwitchableTreeMaker extends SwitchableTreeMakerExtractor {
-        def unapply(x: TreeMaker): Option[Tree] = x match {
-          case EqualityTestTreeMaker(_, SwitchablePattern(const), _) =>
-            Some(const)
-          case _ => None
-        }
+        def unapply(x: TreeMaker): Option[Tree] =
+          x match {
+            case EqualityTestTreeMaker(_, SwitchablePattern(const), _) =>
+              Some(const)
+            case _ => None
+          }
       }
 
-      def isDefault(x: CaseDef): Boolean = x match {
-        case CaseDef(Ident(nme.WILDCARD), EmptyTree, _) => true
-        case _                                          => false
-      }
+      def isDefault(x: CaseDef): Boolean =
+        x match {
+          case CaseDef(Ident(nme.WILDCARD), EmptyTree, _) => true
+          case _                                          => false
+        }
 
       def defaultSym: Symbol = scrutSym
       def defaultBody: Tree = {
@@ -688,31 +697,33 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
       // TODO: there are more treemaker-sequences that can be handled by type tests
       // analyze the result of approximateTreeMaker rather than the TreeMaker itself
       object SwitchableTreeMaker extends SwitchableTreeMakerExtractor {
-        def unapply(x: TreeMaker): Option[Tree] = x match {
-          case tm @ TypeTestTreeMaker(_, _, pt, _)
-              if tm.isPureTypeTest => //  -- TODO: use this if binder does not occur in the body
-            Some(
-              Bind(
-                tm.nextBinder,
-                Typed(
-                  Ident(nme.WILDCARD),
-                  TypeTree(pt)
-                ) /* not used by back-end */ ))
-          case _ =>
-            None
-        }
+        def unapply(x: TreeMaker): Option[Tree] =
+          x match {
+            case tm @ TypeTestTreeMaker(_, _, pt, _)
+                if tm.isPureTypeTest => //  -- TODO: use this if binder does not occur in the body
+              Some(
+                Bind(
+                  tm.nextBinder,
+                  Typed(
+                    Ident(nme.WILDCARD),
+                    TypeTree(pt)
+                  ) /* not used by back-end */ ))
+            case _ =>
+              None
+          }
       }
 
-      def isDefault(x: CaseDef): Boolean = x match {
-        case CaseDef(Typed(Ident(nme.WILDCARD), tpt), EmptyTree, _)
-            if (tpt.tpe =:= ThrowableTpe) =>
-          true
-        case CaseDef(Bind(_, Typed(Ident(nme.WILDCARD), tpt)), EmptyTree, _)
-            if (tpt.tpe =:= ThrowableTpe) =>
-          true
-        case CaseDef(Ident(nme.WILDCARD), EmptyTree, _) => true
-        case _                                          => false
-      }
+      def isDefault(x: CaseDef): Boolean =
+        x match {
+          case CaseDef(Typed(Ident(nme.WILDCARD), tpt), EmptyTree, _)
+              if (tpt.tpe =:= ThrowableTpe) =>
+            true
+          case CaseDef(Bind(_, Typed(Ident(nme.WILDCARD), tpt)), EmptyTree, _)
+              if (tpt.tpe =:= ThrowableTpe) =>
+            true
+          case CaseDef(Ident(nme.WILDCARD), EmptyTree, _) => true
+          case _                                          => false
+        }
 
       lazy val defaultSym: Symbol = freshSym(NoPosition, ThrowableTpe)
       def defaultBody: Tree = Throw(CODE.REF(defaultSym))

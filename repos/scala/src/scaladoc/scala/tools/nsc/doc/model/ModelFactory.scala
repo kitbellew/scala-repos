@@ -71,10 +71,11 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     new mutable.LinkedHashMap[Symbol, DocTemplateImpl]
   protected val noDocTemplatesCache =
     new mutable.LinkedHashMap[Symbol, NoDocTemplateImpl]
-  def packageDropped(tpl: DocTemplateImpl) = tpl match {
-    case p: PackageImpl => droppedPackages(p)
-    case _              => false
-  }
+  def packageDropped(tpl: DocTemplateImpl) =
+    tpl match {
+      case p: PackageImpl => droppedPackages(p)
+      case _              => false
+    }
 
   def optimize(str: String): String =
     if (str.length < 16) str.intern else str
@@ -231,37 +232,39 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     def signature = externalSignature(sym)
     lazy val signatureCompat = {
 
-      def defParams(mbr: Any): String = mbr match {
-        case d: MemberEntity with Def =>
-          val paramLists: List[String] =
-            if (d.valueParams.isEmpty) Nil
-            else
-              d.valueParams map (ps =>
-                ps map (_.resultType.name) mkString ("(", ",", ")"))
-          paramLists.mkString
-        case _ => ""
-      }
+      def defParams(mbr: Any): String =
+        mbr match {
+          case d: MemberEntity with Def =>
+            val paramLists: List[String] =
+              if (d.valueParams.isEmpty) Nil
+              else
+                d.valueParams map (ps =>
+                  ps map (_.resultType.name) mkString ("(", ",", ")"))
+            paramLists.mkString
+          case _ => ""
+        }
 
-      def tParams(mbr: Any): String = mbr match {
-        case hk: HigherKinded if !hk.typeParams.isEmpty =>
-          def boundsToString(
-              hi: Option[TypeEntity],
-              lo: Option[TypeEntity]): String = {
-            def bound0(bnd: Option[TypeEntity], pre: String): String =
-              bnd match {
-                case None      => ""
-                case Some(tpe) => pre ++ tpe.toString
-              }
-            bound0(hi, "<:") ++ bound0(lo, ">:")
-          }
-          "[" + hk.typeParams
-            .map(tp =>
-              tp.variance + tp.name + tParams(tp) + boundsToString(
-                tp.hi,
-                tp.lo))
-            .mkString(", ") + "]"
-        case _ => ""
-      }
+      def tParams(mbr: Any): String =
+        mbr match {
+          case hk: HigherKinded if !hk.typeParams.isEmpty =>
+            def boundsToString(
+                hi: Option[TypeEntity],
+                lo: Option[TypeEntity]): String = {
+              def bound0(bnd: Option[TypeEntity], pre: String): String =
+                bnd match {
+                  case None      => ""
+                  case Some(tpe) => pre ++ tpe.toString
+                }
+              bound0(hi, "<:") ++ bound0(lo, ">:")
+            }
+            "[" + hk.typeParams
+              .map(tp =>
+                tp.variance + tp.name + tParams(tp) + boundsToString(
+                  tp.hi,
+                  tp.lo))
+              .mkString(", ") + "]"
+          case _ => ""
+        }
 
       (name + tParams(this) + defParams(this) + ":" + resultType.name)
         .replaceAll("\\s", "") // no spaces allowed, they break links
@@ -361,11 +364,12 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
             val tplOwner = this.inTemplate.qualifiedName
             val tplName = this.name
             val patches = new Regex("""€\{(FILE_PATH|TPL_OWNER|TPL_NAME)\}""")
-            def substitute(name: String): String = name match {
-              case "FILE_PATH" => filePath
-              case "TPL_OWNER" => tplOwner
-              case "TPL_NAME"  => tplName
-            }
+            def substitute(name: String): String =
+              name match {
+                case "FILE_PATH" => filePath
+                case "TPL_OWNER" => tplOwner
+                case "TPL_NAME"  => tplName
+              }
             val patchedString = patches.replaceAllIn(
               settings.docsourceurl.value,
               m =>
@@ -435,13 +439,12 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     // all the members that are documentented PLUS the members inherited by implicit conversions
     var members: List[MemberImpl] = ownMembers
 
-    def templates = members collect {
-      case c: TemplateEntity with MemberEntity => c
-    }
-    def methods = members collect { case d: Def                => d }
-    def values = members collect { case v: Val                 => v }
-    def abstractTypes = members collect { case t: AbstractType => t }
-    def aliasTypes = members collect { case t: AliasType       => t }
+    def templates =
+      members collect { case c: TemplateEntity with MemberEntity => c }
+    def methods = members collect { case d: Def                  => d }
+    def values = members collect { case v: Val                   => v }
+    def abstractTypes = members collect { case t: AbstractType   => t }
+    def aliasTypes = members collect { case t: AliasType         => t }
 
     /**
       * This is the final point in the core model creation: no DocTemplates are created after the model has finished, but
@@ -570,9 +573,10 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     override def reprSymbol =
       sym.info.members.find(_.isPackageObject) getOrElse sym
 
-    def packages = members collect {
-      case p: PackageImpl if !(droppedPackages contains p) => p
-    }
+    def packages =
+      members collect {
+        case p: PackageImpl if !(droppedPackages contains p) => p
+      }
   }
 
   abstract class RootPackageImpl(sym: Symbol)
@@ -661,24 +665,26 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
   private trait TypeBoundsImpl {
     def sym: Symbol
     def inTpl: TemplateImpl
-    def lo = sym.info.bounds match {
-      case TypeBounds(lo, hi) if lo.typeSymbol != NothingClass =>
-        Some(
-          makeTypeInTemplateContext(
-            appliedType(lo, sym.info.typeParams map { _.tpe }),
-            inTpl,
-            sym))
-      case _ => None
-    }
-    def hi = sym.info.bounds match {
-      case TypeBounds(lo, hi) if hi.typeSymbol != AnyClass =>
-        Some(
-          makeTypeInTemplateContext(
-            appliedType(hi, sym.info.typeParams map { _.tpe }),
-            inTpl,
-            sym))
-      case _ => None
-    }
+    def lo =
+      sym.info.bounds match {
+        case TypeBounds(lo, hi) if lo.typeSymbol != NothingClass =>
+          Some(
+            makeTypeInTemplateContext(
+              appliedType(lo, sym.info.typeParams map { _.tpe }),
+              inTpl,
+              sym))
+        case _ => None
+      }
+    def hi =
+      sym.info.bounds match {
+        case TypeBounds(lo, hi) if hi.typeSymbol != AnyClass =>
+          Some(
+            makeTypeInTemplateContext(
+              appliedType(hi, sym.info.typeParams map { _.tpe }),
+              inTpl,
+              sym))
+        case _ => None
+      }
   }
 
   trait HigherKindedImpl extends HigherKinded {
@@ -718,18 +724,19 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     *
     * and normalizeTemplate(Bar.owner) will get us the package, instead of the module class of the package object.
     */
-  def normalizeTemplate(aSym: Symbol): Symbol = aSym match {
-    case null | rootMirror.EmptyPackage | NoSymbol =>
-      normalizeTemplate(RootPackage)
-    case ObjectClass =>
-      normalizeTemplate(AnyRefClass)
-    case _ if aSym.isPackageObject =>
-      normalizeTemplate(aSym.owner)
-    case _ if aSym.isModuleClass =>
-      normalizeTemplate(aSym.sourceModule)
-    case _ =>
-      aSym
-  }
+  def normalizeTemplate(aSym: Symbol): Symbol =
+    aSym match {
+      case null | rootMirror.EmptyPackage | NoSymbol =>
+        normalizeTemplate(RootPackage)
+      case ObjectClass =>
+        normalizeTemplate(AnyRefClass)
+      case _ if aSym.isPackageObject =>
+        normalizeTemplate(aSym.owner)
+      case _ if aSym.isModuleClass =>
+        normalizeTemplate(aSym.sourceModule)
+      case _ =>
+        aSym
+    }
 
   /**
     * These are all model construction methods. Please do not use them directly, they are calling each other recursively
@@ -1086,13 +1093,14 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
             case List(unit) =>
               // SI-4922 `sym == aSym` is insufficent if `aSym` is a clone of symbol
               //         of the parameter in the tree, as can happen with type parametric methods.
-              def isCorrespondingParam(sym: Symbol) = (
-                sym != null &&
-                  sym != NoSymbol &&
-                  sym.owner == aSym.owner &&
-                  sym.name == aSym.name &&
-                  sym.isParamWithDefault
-              )
+              def isCorrespondingParam(sym: Symbol) =
+                (
+                  sym != null &&
+                    sym != NoSymbol &&
+                    sym.owner == aSym.owner &&
+                    sym.name == aSym.name &&
+                    sym.isParamWithDefault
+                )
               unit.body find (t => isCorrespondingParam(t.symbol)) collect {
                 case ValDef(_, _, _, rhs) if rhs ne EmptyTree => makeTree(rhs)
               }
@@ -1129,49 +1137,51 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
   def makeParentTypes(
       aType: Type,
       tpl: Option[MemberTemplateImpl],
-      inTpl: TemplateImpl): List[(TemplateEntity, TypeEntity)] = aType match {
-    case RefinedType(parents, defs) =>
-      val ignoreParents = Set[Symbol](AnyClass, AnyRefClass, ObjectClass)
-      val filtParents =
-        // we don't want to expose too many links to AnyRef, that will just be redundant information
-        tpl match {
-          case Some(tpl)
-              if (!tpl.sym.isModule && parents.length < 2) || (tpl.sym == AnyValClass) || (tpl.sym == AnyRefClass) || (tpl.sym == AnyClass) =>
-            parents
-          case _ => parents.filterNot((p: Type) => ignoreParents(p.typeSymbol))
+      inTpl: TemplateImpl): List[(TemplateEntity, TypeEntity)] =
+    aType match {
+      case RefinedType(parents, defs) =>
+        val ignoreParents = Set[Symbol](AnyClass, AnyRefClass, ObjectClass)
+        val filtParents =
+          // we don't want to expose too many links to AnyRef, that will just be redundant information
+          tpl match {
+            case Some(tpl)
+                if (!tpl.sym.isModule && parents.length < 2) || (tpl.sym == AnyValClass) || (tpl.sym == AnyRefClass) || (tpl.sym == AnyClass) =>
+              parents
+            case _ =>
+              parents.filterNot((p: Type) => ignoreParents(p.typeSymbol))
+          }
+
+        /** Returns:
+          *   - a DocTemplate if the type's symbol is documented
+          *   - a NoDocTemplateMember if the type's symbol is not documented in its parent but in another template
+          *   - a NoDocTemplate if the type's symbol is not documented at all */
+        def makeTemplateOrMemberTemplate(parent: Type): TemplateImpl = {
+          def noDocTemplate = makeTemplate(parent.typeSymbol)
+          findTemplateMaybe(parent.typeSymbol) match {
+            case Some(tpl) => tpl
+            case None =>
+              parent match {
+                case TypeRef(pre, sym, args) =>
+                  findTemplateMaybe(pre.typeSymbol) match {
+                    case Some(tpl) =>
+                      findMember(parent.typeSymbol, tpl)
+                        .collect({ case t: TemplateImpl => t })
+                        .getOrElse(noDocTemplate)
+                    case None => noDocTemplate
+                  }
+                case _ => noDocTemplate
+              }
+          }
         }
 
-      /** Returns:
-        *   - a DocTemplate if the type's symbol is documented
-        *   - a NoDocTemplateMember if the type's symbol is not documented in its parent but in another template
-        *   - a NoDocTemplate if the type's symbol is not documented at all */
-      def makeTemplateOrMemberTemplate(parent: Type): TemplateImpl = {
-        def noDocTemplate = makeTemplate(parent.typeSymbol)
-        findTemplateMaybe(parent.typeSymbol) match {
-          case Some(tpl) => tpl
-          case None =>
-            parent match {
-              case TypeRef(pre, sym, args) =>
-                findTemplateMaybe(pre.typeSymbol) match {
-                  case Some(tpl) =>
-                    findMember(parent.typeSymbol, tpl)
-                      .collect({ case t: TemplateImpl => t })
-                      .getOrElse(noDocTemplate)
-                  case None => noDocTemplate
-                }
-              case _ => noDocTemplate
-            }
-        }
-      }
-
-      filtParents.map(parent => {
-        val templateEntity = makeTemplateOrMemberTemplate(parent)
-        val typeEntity = makeType(parent, inTpl)
-        (templateEntity, typeEntity)
-      })
-    case _ =>
-      List((makeTemplate(aType.typeSymbol), makeType(aType, inTpl)))
-  }
+        filtParents.map(parent => {
+          val templateEntity = makeTemplateOrMemberTemplate(parent)
+          val typeEntity = makeType(parent, inTpl)
+          (templateEntity, typeEntity)
+        })
+      case _ =>
+        List((makeTemplate(aType.typeSymbol), makeType(aType, inTpl)))
+    }
 
   def makeQualifiedName(
       sym: Symbol,

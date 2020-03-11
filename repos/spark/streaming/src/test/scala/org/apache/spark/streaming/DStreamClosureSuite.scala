@@ -95,22 +95,26 @@ class DStreamClosureSuite extends SparkFunSuite with BeforeAndAfterAll {
   }
 
   // DStream operations
-  private def testMap(ds: DStream[Int]): Unit = expectCorrectException {
-    ds.map { _ => return; 1 }
-  }
-  private def testFlatMap(ds: DStream[Int]): Unit = expectCorrectException {
-    ds.flatMap { _ => return; Seq.empty }
-  }
-  private def testFilter(ds: DStream[Int]): Unit = expectCorrectException {
-    ds.filter { _ => return; true }
-  }
+  private def testMap(ds: DStream[Int]): Unit =
+    expectCorrectException {
+      ds.map { _ => return; 1 }
+    }
+  private def testFlatMap(ds: DStream[Int]): Unit =
+    expectCorrectException {
+      ds.flatMap { _ => return; Seq.empty }
+    }
+  private def testFilter(ds: DStream[Int]): Unit =
+    expectCorrectException {
+      ds.filter { _ => return; true }
+    }
   private def testMapPartitions(ds: DStream[Int]): Unit =
     expectCorrectException {
       ds.mapPartitions { _ => return; Seq.empty.toIterator }
     }
-  private def testReduce(ds: DStream[Int]): Unit = expectCorrectException {
-    ds.reduce { case (_, _) => return; 1 }
-  }
+  private def testReduce(ds: DStream[Int]): Unit =
+    expectCorrectException {
+      ds.reduce { case (_, _) => return; 1 }
+    }
   private def testForeachRDD(ds: DStream[Int]): Unit = {
     val foreachRDDF1 = (rdd: RDD[Int], t: Time) => return
     val foreachRDDF2 = (rdd: RDD[Int]) => return

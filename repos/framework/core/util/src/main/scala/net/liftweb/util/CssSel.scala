@@ -18,15 +18,16 @@ import collection.mutable.ListBuffer
   * en masse to incoming NodeSeq and do the transformation.
   */
 trait CssSel extends Function1[NodeSeq, NodeSeq] {
-  def &(other: CssSel): CssSel = (this, other) match {
-    case (AggregatedCssBindFunc(a), AggregatedCssBindFunc(b)) =>
-      AggregatedCssBindFunc(a ::: b)
-    case (AggregatedCssBindFunc(a), o: CssBind) =>
-      AggregatedCssBindFunc(a ::: List(o))
-    case (t: CssBind, AggregatedCssBindFunc(a)) =>
-      AggregatedCssBindFunc(t :: a)
-    case (t: CssBind, o: CssBind) => AggregatedCssBindFunc(List(t, o))
-  }
+  def &(other: CssSel): CssSel =
+    (this, other) match {
+      case (AggregatedCssBindFunc(a), AggregatedCssBindFunc(b)) =>
+        AggregatedCssBindFunc(a ::: b)
+      case (AggregatedCssBindFunc(a), o: CssBind) =>
+        AggregatedCssBindFunc(a ::: List(o))
+      case (t: CssBind, AggregatedCssBindFunc(a)) =>
+        AggregatedCssBindFunc(t :: a)
+      case (t: CssBind, o: CssBind) => AggregatedCssBindFunc(List(t, o))
+    }
 
   /**
     * A Java callable aggregator
@@ -60,10 +61,11 @@ private final case class AggregatedCssBindFunc(binds: List[CssBind])
   }
   private lazy val selectorMap = new SelectorMap(good)
 
-  def apply(in: NodeSeq): NodeSeq = bad match {
-    case Nil => selectorMap(in)
-    case bv  => bad.flatMap(_(in)) ++ selectorMap(in)
-  }
+  def apply(in: NodeSeq): NodeSeq =
+    bad match {
+      case Nil => selectorMap(in)
+      case bv  => bad.flatMap(_(in)) ++ selectorMap(in)
+    }
 }
 
 /**
@@ -158,11 +160,12 @@ private class SelectorMap(binds: List[CssBind])
     (idMap, nameMap, clzMap, attrMap, elemMap, starFunc, selThis)
   }
 
-  private def findElemIfThereIsOne(in: NodeSeq): NodeSeq = in match {
-    case e: Elem                                          => e
-    case ns if ns.length == 1 && ns(0).isInstanceOf[Elem] => ns(0)
-    case ns                                               => ns
-  }
+  private def findElemIfThereIsOne(in: NodeSeq): NodeSeq =
+    in match {
+      case e: Elem                                          => e
+      case ns if ns.length == 1 && ns(0).isInstanceOf[Elem] => ns(0)
+      case ns                                               => ns
+    }
 
   private abstract class SlurpedAttrs(
       val id: Box[String],
@@ -171,10 +174,11 @@ private class SelectorMap(binds: List[CssBind])
 
     def classes: List[String]
 
-    def removeId(in: MetaData) = in.filter {
-      case up: UnprefixedAttribute => up.key != "id"
-      case _                       => true
-    }
+    def removeId(in: MetaData) =
+      in.filter {
+        case up: UnprefixedAttribute => up.key != "id"
+        case _                       => true
+      }
 
     private final def isSelThis(bind: CssBind): Boolean =
       bind.css
@@ -692,18 +696,19 @@ private class SelectorMap(binds: List[CssBind])
     }
   }
 
-  final def apply(in: NodeSeq): NodeSeq = selectThis match {
-    case Full(_) => {
-      try {
-        run(in, true, 0)
-      } catch {
-        case RetryWithException(newElem) =>
-          run(newElem, false, 0)
+  final def apply(in: NodeSeq): NodeSeq =
+    selectThis match {
+      case Full(_) => {
+        try {
+          run(in, true, 0)
+        } catch {
+          case RetryWithException(newElem) =>
+            run(newElem, false, 0)
+        }
       }
-    }
 
-    case _ => run(in, false, 0)
-  }
+      case _ => run(in, false, 0)
+    }
 
   final private def run(in: NodeSeq, onlyRunSel: Boolean, depth: Int): NodeSeq =
     in flatMap {
@@ -776,54 +781,58 @@ trait CssBind extends CssSel {
     "CssBind(" + stringSelector + ", " +
       css + ")"
 
-  def apply(in: NodeSeq): NodeSeq = css match {
-    case Full(c) => selectorMap(in)
-    case _       => Helpers.errorDiv(<div>
+  def apply(in: NodeSeq): NodeSeq =
+    css match {
+      case Full(c) => selectorMap(in)
+      case _       => Helpers.errorDiv(<div>
         Syntax error in CSS selector definition:
         {stringSelector openOr "N/A"}
         .
         The selector will not be applied.
       </div>) openOr NodeSeq.Empty
-  }
+    }
 
   /**
     * Is this CssBind a SelectThis bind?
     */
-  private[util] def selectThis_? : Boolean = css match {
-    case Full(sel) => {
-      sel.subNodes match {
-        case Full(SelectThisNode(_)) => true
-        case _                       => false
+  private[util] def selectThis_? : Boolean =
+    css match {
+      case Full(sel) => {
+        sel.subNodes match {
+          case Full(SelectThisNode(_)) => true
+          case _                       => false
+        }
       }
-    }
 
-    case _ => false
-  }
+      case _ => false
+    }
 
   /**
     * Is this an Attribute mutating node?
     */
-  private[util] def attrSel_? : Boolean = css match {
-    case Full(sel) => {
-      sel.subNodes match {
-        case Full(x: AttributeRule) => true
-        case _                      => false
+  private[util] def attrSel_? : Boolean =
+    css match {
+      case Full(sel) => {
+        sel.subNodes match {
+          case Full(x: AttributeRule) => true
+          case _                      => false
+        }
       }
+
+      case _ => false
     }
 
-    case _ => false
-  }
-
-  private[util] def selectThisChildren_? : Boolean = css match {
-    case Full(sel) => {
-      sel.subNodes match {
-        case Full(SelectThisNode(children)) => children
-        case _                              => false
+  private[util] def selectThisChildren_? : Boolean =
+    css match {
+      case Full(sel) => {
+        sel.subNodes match {
+          case Full(SelectThisNode(children)) => children
+          case _                              => false
+        }
       }
-    }
 
-    case _ => false
-  }
+      case _ => false
+    }
 
   private lazy val selectorMap: SelectorMap = new SelectorMap(List(this))
 
@@ -879,16 +888,18 @@ trait CanBind[-T] {
 object CanBind extends CssBindImplicits {
   import scala.language.higherKinds
 
-  implicit def stringTransform: CanBind[String] = new CanBind[String] {
-    def apply(str: => String)(ns: NodeSeq): Seq[NodeSeq] = {
-      val s = str
-      List(if (null eq s) NodeSeq.Empty else Text(s))
+  implicit def stringTransform: CanBind[String] =
+    new CanBind[String] {
+      def apply(str: => String)(ns: NodeSeq): Seq[NodeSeq] = {
+        val s = str
+        List(if (null eq s) NodeSeq.Empty else Text(s))
+      }
     }
-  }
 
-  implicit def bindableTransform: CanBind[Bindable] = new CanBind[Bindable] {
-    def apply(str: => Bindable)(ns: NodeSeq): Seq[NodeSeq] = List(str.asHtml)
-  }
+  implicit def bindableTransform: CanBind[Bindable] =
+    new CanBind[Bindable] {
+      def apply(str: => Bindable)(ns: NodeSeq): Seq[NodeSeq] = List(str.asHtml)
+    }
 
   implicit def numberTransform[T <: java.lang.Number]: CanBind[T] =
     new CanBind[java.lang.Number] {
@@ -898,15 +909,17 @@ object CanBind extends CssBindImplicits {
       }
     }
 
-  implicit def doubleTRansform: CanBind[Double] = new CanBind[Double] {
-    def apply(str: => Double)(ns: NodeSeq): Seq[NodeSeq] =
-      List(Text(str.toString))
-  }
+  implicit def doubleTRansform: CanBind[Double] =
+    new CanBind[Double] {
+      def apply(str: => Double)(ns: NodeSeq): Seq[NodeSeq] =
+        List(Text(str.toString))
+    }
 
-  implicit def jsCmdTransform: CanBind[ToJsCmd] = new CanBind[ToJsCmd] {
-    def apply(str: => ToJsCmd)(ns: NodeSeq): Seq[NodeSeq] =
-      List(Text(str.toJsCmd))
-  }
+  implicit def jsCmdTransform: CanBind[ToJsCmd] =
+    new CanBind[ToJsCmd] {
+      def apply(str: => ToJsCmd)(ns: NodeSeq): Seq[NodeSeq] =
+        List(Text(str.toJsCmd))
+    }
 
   implicit def jsCmdPairTransform: CanBind[(_, ToJsCmd)] =
     new CanBind[(_, ToJsCmd)] {
@@ -914,9 +927,11 @@ object CanBind extends CssBindImplicits {
         List(Text(str._2.toJsCmd))
     }
 
-  implicit def intTransform: CanBind[Int] = new CanBind[Int] {
-    def apply(str: => Int)(ns: NodeSeq): Seq[NodeSeq] = List(Text(str.toString))
-  }
+  implicit def intTransform: CanBind[Int] =
+    new CanBind[Int] {
+      def apply(str: => Int)(ns: NodeSeq): Seq[NodeSeq] =
+        List(Text(str.toString))
+    }
 
   implicit def stringPromoteTransform: CanBind[StringPromotable] =
     new CanBind[StringPromotable] {
@@ -924,19 +939,23 @@ object CanBind extends CssBindImplicits {
         List(Text(str.toString))
     }
 
-  implicit def symbolTransform: CanBind[Symbol] = new CanBind[Symbol] {
-    def apply(str: => Symbol)(ns: NodeSeq): Seq[NodeSeq] = List(Text(str.name))
-  }
+  implicit def symbolTransform: CanBind[Symbol] =
+    new CanBind[Symbol] {
+      def apply(str: => Symbol)(ns: NodeSeq): Seq[NodeSeq] =
+        List(Text(str.name))
+    }
 
-  implicit def longTransform: CanBind[Long] = new CanBind[Long] {
-    def apply(str: => Long)(ns: NodeSeq): Seq[NodeSeq] =
-      List(Text(str.toString))
-  }
+  implicit def longTransform: CanBind[Long] =
+    new CanBind[Long] {
+      def apply(str: => Long)(ns: NodeSeq): Seq[NodeSeq] =
+        List(Text(str.toString))
+    }
 
-  implicit def boolTransform: CanBind[Boolean] = new CanBind[Boolean] {
-    def apply(str: => Boolean)(ns: NodeSeq): Seq[NodeSeq] =
-      List(Text(str.toString))
-  }
+  implicit def boolTransform: CanBind[Boolean] =
+    new CanBind[Boolean] {
+      def apply(str: => Boolean)(ns: NodeSeq): Seq[NodeSeq] =
+        List(Text(str.toString))
+    }
 
   class CanBindNodeSeqTransform[T](f: T => NodeSeq) extends CanBind[T] {
     def apply(param: => T)(ns: NodeSeq): Seq[NodeSeq] = List(f(param))
@@ -945,9 +964,10 @@ object CanBind extends CssBindImplicits {
     new CanBindNodeSeqTransform[T](f)
 
   implicit def nodeSeqFuncTransform[A](
-      implicit view: A => NodeSeq => NodeSeq): CanBind[A] = new CanBind[A] {
-    def apply(func: => A)(ns: NodeSeq): Seq[NodeSeq] = List(view(func)(ns))
-  }
+      implicit view: A => NodeSeq => NodeSeq): CanBind[A] =
+    new CanBind[A] {
+      def apply(func: => A)(ns: NodeSeq): Seq[NodeSeq] = List(view(func)(ns))
+    }
 
   implicit def nodeSeqSeqFuncTransform: CanBind[NodeSeq => Seq[Node]] =
     new CanBind[NodeSeq => Seq[Node]] {

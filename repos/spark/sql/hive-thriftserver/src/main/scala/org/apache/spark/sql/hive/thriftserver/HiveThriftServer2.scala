@@ -189,17 +189,16 @@ object HiveThriftServer2 extends Logging {
 
     def getTotalRunning: Int = synchronized { totalRunning }
 
-    def getSessionList: Seq[SessionInfo] = synchronized {
-      sessionList.values.toSeq
-    }
+    def getSessionList: Seq[SessionInfo] =
+      synchronized { sessionList.values.toSeq }
 
-    def getSession(sessionId: String): Option[SessionInfo] = synchronized {
-      sessionList.get(sessionId)
-    }
+    def getSession(sessionId: String): Option[SessionInfo] =
+      synchronized {
+        sessionList.get(sessionId)
+      }
 
-    def getExecutionList: Seq[ExecutionInfo] = synchronized {
-      executionList.values.toSeq
-    }
+    def getExecutionList: Seq[ExecutionInfo] =
+      synchronized { executionList.values.toSeq }
 
     override def onJobStart(jobStart: SparkListenerJobStart): Unit =
       synchronized {
@@ -226,30 +225,32 @@ object HiveThriftServer2 extends Logging {
       }
     }
 
-    def onSessionClosed(sessionId: String): Unit = synchronized {
-      sessionList(sessionId).finishTimestamp = System.currentTimeMillis
-      onlineSessionNum -= 1
-      trimSessionIfNecessary()
-    }
+    def onSessionClosed(sessionId: String): Unit =
+      synchronized {
+        sessionList(sessionId).finishTimestamp = System.currentTimeMillis
+        onlineSessionNum -= 1
+        trimSessionIfNecessary()
+      }
 
     def onStatementStart(
         id: String,
         sessionId: String,
         statement: String,
         groupId: String,
-        userName: String = "UNKNOWN"): Unit = synchronized {
-      val info = new ExecutionInfo(
-        statement,
-        sessionId,
-        System.currentTimeMillis,
-        userName)
-      info.state = ExecutionState.STARTED
-      executionList.put(id, info)
-      trimExecutionIfNecessary()
-      sessionList(sessionId).totalExecution += 1
-      executionList(id).groupId = groupId
-      totalRunning += 1
-    }
+        userName: String = "UNKNOWN"): Unit =
+      synchronized {
+        val info = new ExecutionInfo(
+          statement,
+          sessionId,
+          System.currentTimeMillis,
+          userName)
+        info.state = ExecutionState.STARTED
+        executionList.put(id, info)
+        trimExecutionIfNecessary()
+        sessionList(sessionId).totalExecution += 1
+        executionList(id).groupId = groupId
+        totalRunning += 1
+      }
 
     def onStatementParsed(id: String, executionPlan: String): Unit =
       synchronized {
@@ -270,12 +271,13 @@ object HiveThriftServer2 extends Logging {
       }
     }
 
-    def onStatementFinish(id: String): Unit = synchronized {
-      executionList(id).finishTimestamp = System.currentTimeMillis
-      executionList(id).state = ExecutionState.FINISHED
-      totalRunning -= 1
-      trimExecutionIfNecessary()
-    }
+    def onStatementFinish(id: String): Unit =
+      synchronized {
+        executionList(id).finishTimestamp = System.currentTimeMillis
+        executionList(id).state = ExecutionState.FINISHED
+        totalRunning -= 1
+        trimExecutionIfNecessary()
+      }
 
     private def trimExecutionIfNecessary() = {
       if (executionList.size > retainedStatements) {

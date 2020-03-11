@@ -127,11 +127,12 @@ abstract class TreeGen {
   /** If this is a reference to a method with an empty
     *  parameter list, wrap it in an apply.
     */
-  def mkApplyIfNeeded(qual: Tree) = qual.tpe match {
-    case MethodType(Nil, restpe) =>
-      atPos(qual.pos)(Apply(qual, Nil) setType restpe)
-    case _ => qual
-  }
+  def mkApplyIfNeeded(qual: Tree) =
+    qual.tpe match {
+      case MethodType(Nil, restpe) =>
+        atPos(qual.pos)(Apply(qual, Nil) setType restpe)
+      case _ => qual
+    }
 
   //          val selType = testedBinder.info
   //
@@ -189,22 +190,24 @@ abstract class TreeGen {
   }
 
   /** Replaces tree type with a stable type if possible */
-  def stabilize(tree: Tree): Tree = stableTypeFor(tree) match {
-    case NoType => tree
-    case tp     => tree setType tp
-  }
+  def stabilize(tree: Tree): Tree =
+    stableTypeFor(tree) match {
+      case NoType => tree
+      case tp     => tree setType tp
+    }
 
   /** Computes stable type for a tree if possible */
-  def stableTypeFor(tree: Tree): Type = (
-    if (!treeInfo.admitsTypeSelection(tree)) NoType
-    else
-      tree match {
-        case This(_)         => ThisType(tree.symbol)
-        case Ident(_)        => singleType(tree.symbol.owner.thisType, tree.symbol)
-        case Select(qual, _) => singleType(qual.tpe, tree.symbol)
-        case _               => NoType
-      }
-  )
+  def stableTypeFor(tree: Tree): Type =
+    (
+      if (!treeInfo.admitsTypeSelection(tree)) NoType
+      else
+        tree match {
+          case This(_)         => ThisType(tree.symbol)
+          case Ident(_)        => singleType(tree.symbol.owner.thisType, tree.symbol)
+          case Select(qual, _) => singleType(qual.tpe, tree.symbol)
+          case _               => NoType
+        }
+    )
 
   /** Builds a reference with stable type to given symbol */
   def mkAttributedStableRef(pre: Type, sym: Symbol): Tree =
@@ -327,23 +330,25 @@ abstract class TreeGen {
     *    var x: T = _
     *  which is appropriate to the given Type.
     */
-  def mkZero(tp: Type): Tree = tp.typeSymbol match {
-    case NothingClass => mkMethodCall(Predef_???, Nil) setType NothingTpe
-    case _            => Literal(mkConstantZero(tp)) setType tp
-  }
+  def mkZero(tp: Type): Tree =
+    tp.typeSymbol match {
+      case NothingClass => mkMethodCall(Predef_???, Nil) setType NothingTpe
+      case _            => Literal(mkConstantZero(tp)) setType tp
+    }
 
-  def mkConstantZero(tp: Type): Constant = tp.typeSymbol match {
-    case UnitClass    => Constant(())
-    case BooleanClass => Constant(false)
-    case FloatClass   => Constant(0.0f)
-    case DoubleClass  => Constant(0.0d)
-    case ByteClass    => Constant(0.toByte)
-    case ShortClass   => Constant(0.toShort)
-    case IntClass     => Constant(0)
-    case LongClass    => Constant(0L)
-    case CharClass    => Constant(0.toChar)
-    case _            => Constant(null)
-  }
+  def mkConstantZero(tp: Type): Constant =
+    tp.typeSymbol match {
+      case UnitClass    => Constant(())
+      case BooleanClass => Constant(false)
+      case FloatClass   => Constant(0.0f)
+      case DoubleClass  => Constant(0.0d)
+      case ByteClass    => Constant(0.toByte)
+      case ShortClass   => Constant(0.toShort)
+      case IntClass     => Constant(0)
+      case LongClass    => Constant(0L)
+      case CharClass    => Constant(0.toChar)
+      case _            => Constant(null)
+    }
 
   /** Wrap an expression in a named argument. */
   def mkNamedArg(name: Name, tree: Tree): Tree = mkNamedArg(Ident(name), tree)
@@ -591,18 +596,20 @@ abstract class TreeGen {
     *  do any wrapping if there is just one statement. Used by
     *  quasiquotes, macro c.parse api and toolbox.
     */
-  def mkTreeOrBlock(stats: List[Tree]) = stats match {
-    case Nil         => EmptyTree
-    case head :: Nil => head
-    case _           => mkBlock(stats)
-  }
+  def mkTreeOrBlock(stats: List[Tree]) =
+    stats match {
+      case Nil         => EmptyTree
+      case head :: Nil => head
+      case _           => mkBlock(stats)
+    }
 
   /** Create a tree representing an assignment <lhs = rhs> */
-  def mkAssign(lhs: Tree, rhs: Tree): Tree = lhs match {
-    case Apply(fn, args) =>
-      Apply(atPos(fn.pos)(Select(fn, nme.update)), args :+ rhs)
-    case _ => Assign(lhs, rhs)
-  }
+  def mkAssign(lhs: Tree, rhs: Tree): Tree =
+    lhs match {
+      case Apply(fn, args) =>
+        Apply(atPos(fn.pos)(Select(fn, nme.update)), args :+ rhs)
+      case _ => Assign(lhs, rhs)
+    }
 
   def mkPackageObject(
       defn: ModuleDef,
@@ -640,12 +647,13 @@ abstract class TreeGen {
     def apply(pat: Tree, rhs: Tree): Tree =
       Apply(Ident(nme.LARROWkw).updateAttachment(ForAttachment), List(pat, rhs))
 
-    def unapply(tree: Tree): Option[(Tree, Tree)] = tree match {
-      case Apply(id @ Ident(nme.LARROWkw), List(pat, rhs))
-          if id.hasAttachment[ForAttachment.type] =>
-        Some((pat, rhs))
-      case _ => None
-    }
+    def unapply(tree: Tree): Option[(Tree, Tree)] =
+      tree match {
+        case Apply(id @ Ident(nme.LARROWkw), List(pat, rhs))
+            if id.hasAttachment[ForAttachment.type] =>
+          Some((pat, rhs))
+        case _ => None
+      }
   }
 
   /** Encode/decode fq"$pat = $rhs" enumerator as q"$pat = $rhs" */
@@ -653,11 +661,12 @@ abstract class TreeGen {
     def apply(pat: Tree, rhs: Tree): Tree =
       Assign(pat, rhs).updateAttachment(ForAttachment)
 
-    def unapply(tree: Tree): Option[(Tree, Tree)] = tree match {
-      case Assign(pat, rhs) if tree.hasAttachment[ForAttachment.type] =>
-        Some((pat, rhs))
-      case _ => None
-    }
+    def unapply(tree: Tree): Option[(Tree, Tree)] =
+      tree match {
+        case Assign(pat, rhs) if tree.hasAttachment[ForAttachment.type] =>
+          Some((pat, rhs))
+        case _ => None
+      }
   }
 
   /** Encode/decode fq"if $cond" enumerator as q"`if`($cond)" */
@@ -665,12 +674,13 @@ abstract class TreeGen {
     def apply(tree: Tree) =
       Apply(Ident(nme.IFkw).updateAttachment(ForAttachment), List(tree))
 
-    def unapply(tree: Tree): Option[Tree] = tree match {
-      case Apply(id @ Ident(nme.IFkw), List(cond))
-          if id.hasAttachment[ForAttachment.type] =>
-        Some((cond))
-      case _ => None
-    }
+    def unapply(tree: Tree): Option[Tree] =
+      tree match {
+        case Apply(id @ Ident(nme.IFkw), List(cond))
+            if id.hasAttachment[ForAttachment.type] =>
+          Some((cond))
+        case _ => None
+      }
   }
 
   /** Encode/decode body of for yield loop as q"`yield`($tree)" */
@@ -678,12 +688,13 @@ abstract class TreeGen {
     def apply(tree: Tree): Tree =
       Apply(Ident(nme.YIELDkw).updateAttachment(ForAttachment), List(tree))
 
-    def unapply(tree: Tree): Option[Tree] = tree match {
-      case Apply(id @ Ident(nme.YIELDkw), List(tree))
-          if id.hasAttachment[ForAttachment.type] =>
-        Some(tree)
-      case _ => None
-    }
+    def unapply(tree: Tree): Option[Tree] =
+      tree match {
+        case Apply(id @ Ident(nme.YIELDkw), List(tree))
+            if id.hasAttachment[ForAttachment.type] =>
+          Some(tree)
+        case _ => None
+      }
   }
 
   /** Create tree for for-comprehension <for (enums) do body> or
@@ -780,15 +791,17 @@ abstract class TreeGen {
         List(makeClosure(pos, pat, body))) setPos pos
 
     /* If `pat` is not yet a `Bind` wrap it in one with a fresh name */
-    def makeBind(pat: Tree): Tree = pat match {
-      case Bind(_, _) => pat
-      case _          => Bind(freshTermName(), pat) setPos pat.pos
-    }
+    def makeBind(pat: Tree): Tree =
+      pat match {
+        case Bind(_, _) => pat
+        case _          => Bind(freshTermName(), pat) setPos pat.pos
+      }
 
     /* A reference to the name bound in Bind `pat`. */
-    def makeValue(pat: Tree): Tree = pat match {
-      case Bind(name, _) => Ident(name) setPos pat.pos.focus
-    }
+    def makeValue(pat: Tree): Tree =
+      pat match {
+        case Bind(name, _) => Ident(name) setPos pat.pos.focus
+      }
 
     /* The position of the closure that starts with generator at position `genpos`. */
     def closurePos(genpos: Position) =
@@ -963,11 +976,12 @@ abstract class TreeGen {
   /** If tree is a variable pattern, return Some("its name and type").
     *  Otherwise return none */
   private def matchVarPattern(tree: Tree): Option[(Name, Tree)] = {
-    def wildType(t: Tree): Option[Tree] = t match {
-      case Ident(x) if x.toTermName == nme.WILDCARD             => Some(TypeTree())
-      case Typed(Ident(x), tpt) if x.toTermName == nme.WILDCARD => Some(tpt)
-      case _                                                    => None
-    }
+    def wildType(t: Tree): Option[Tree] =
+      t match {
+        case Ident(x) if x.toTermName == nme.WILDCARD             => Some(TypeTree())
+        case Typed(Ident(x), tpt) if x.toTermName == nme.WILDCARD => Some(tpt)
+        case _                                                    => None
+      }
     tree match {
       case Ident(name)             => Some((name, TypeTree()))
       case Bind(name, body)        => wildType(body) map (x => (name, x))
@@ -1047,40 +1061,43 @@ abstract class TreeGen {
     *    x: T               becomes      x @ (_: T)
     */
   object patvarTransformer extends Transformer {
-    override def transform(tree: Tree): Tree = tree match {
-      case Ident(name)
-          if (treeInfo.isVarPattern(tree) && name != nme.WILDCARD) =>
-        atPos(tree.pos)(Bind(name, atPos(tree.pos.focus)(Ident(nme.WILDCARD))))
-      case Typed(id @ Ident(name), tpt)
-          if (treeInfo.isVarPattern(id) && name != nme.WILDCARD) =>
-        atPos(tree.pos.withPoint(id.pos.point)) {
-          Bind(
-            name,
-            atPos(tree.pos.withStart(tree.pos.point)) {
-              Typed(Ident(nme.WILDCARD), tpt)
-            })
-        }
-      case Apply(fn @ Apply(_, _), args) =>
-        treeCopy.Apply(tree, transform(fn), transformTrees(args))
-      case Apply(fn, args) =>
-        treeCopy.Apply(tree, fn, transformTrees(args))
-      case Typed(expr, tpt) =>
-        treeCopy.Typed(tree, transform(expr), tpt)
-      case Bind(name, body) =>
-        treeCopy.Bind(tree, name, transform(body))
-      case Alternative(_) | Star(_) =>
-        super.transform(tree)
-      case _ =>
-        tree
-    }
+    override def transform(tree: Tree): Tree =
+      tree match {
+        case Ident(name)
+            if (treeInfo.isVarPattern(tree) && name != nme.WILDCARD) =>
+          atPos(tree.pos)(
+            Bind(name, atPos(tree.pos.focus)(Ident(nme.WILDCARD))))
+        case Typed(id @ Ident(name), tpt)
+            if (treeInfo.isVarPattern(id) && name != nme.WILDCARD) =>
+          atPos(tree.pos.withPoint(id.pos.point)) {
+            Bind(
+              name,
+              atPos(tree.pos.withStart(tree.pos.point)) {
+                Typed(Ident(nme.WILDCARD), tpt)
+              })
+          }
+        case Apply(fn @ Apply(_, _), args) =>
+          treeCopy.Apply(tree, transform(fn), transformTrees(args))
+        case Apply(fn, args) =>
+          treeCopy.Apply(tree, fn, transformTrees(args))
+        case Typed(expr, tpt) =>
+          treeCopy.Typed(tree, transform(expr), tpt)
+        case Bind(name, body) =>
+          treeCopy.Bind(tree, name, transform(body))
+        case Alternative(_) | Star(_) =>
+          super.transform(tree)
+        case _ =>
+          tree
+      }
   }
 
   // annotate the expression with @unchecked
-  def mkUnchecked(expr: Tree): Tree = atPos(expr.pos) {
-    // This can't be "Annotated(New(UncheckedClass), expr)" because annotations
-    // are very picky about things and it crashes the compiler with "unexpected new".
-    Annotated(New(scalaDot(tpnme.unchecked), Nil), expr)
-  }
+  def mkUnchecked(expr: Tree): Tree =
+    atPos(expr.pos) {
+      // This can't be "Annotated(New(UncheckedClass), expr)" because annotations
+      // are very picky about things and it crashes the compiler with "unexpected new".
+      Annotated(New(scalaDot(tpnme.unchecked), Nil), expr)
+    }
 
   def mkSyntheticParam(pname: TermName) =
     ValDef(Modifiers(PARAM | SYNTHETIC), pname, TypeTree(), EmptyTree)

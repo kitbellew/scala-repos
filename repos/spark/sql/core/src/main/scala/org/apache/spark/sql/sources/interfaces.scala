@@ -737,10 +737,11 @@ class HDFSFileCatalog(
     cachedPartitionSpec = null
   }
 
-  override def equals(other: Any): Boolean = other match {
-    case hdfs: HDFSFileCatalog => paths.toSet == hdfs.paths.toSet
-    case _                     => false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case hdfs: HDFSFileCatalog => paths.toSet == hdfs.paths.toSet
+      case _                     => false
+    }
 
   override def hashCode(): Int = paths.toSet.hashCode()
 }

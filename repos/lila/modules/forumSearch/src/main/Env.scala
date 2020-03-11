@@ -23,11 +23,12 @@ final class Env(
   def apply(text: String, page: Int, staff: Boolean, troll: Boolean) =
     paginatorBuilder(Query(text, staff, troll), page)
 
-  def cli = new lila.common.Cli {
-    def process = {
-      case "forum" :: "search" :: "reset" :: Nil => api.reset inject "done"
+  def cli =
+    new lila.common.Cli {
+      def process = {
+        case "forum" :: "search" :: "reset" :: Nil => api.reset inject "done"
+      }
     }
-  }
 
   import Query.jsonWriter
 

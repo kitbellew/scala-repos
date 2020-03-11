@@ -47,16 +47,18 @@ class ScriptRunner extends HasCompileSocket {
   val defaultScriptMain = "Main"
 
   /** Pick a main object name from the specified settings */
-  def scriptMain(settings: Settings) = settings.script.value match {
-    case "" => defaultScriptMain
-    case x  => x
-  }
+  def scriptMain(settings: Settings) =
+    settings.script.value match {
+      case "" => defaultScriptMain
+      case x  => x
+    }
 
   /** Choose a jar filename to hold the compiled version of a script. */
-  private def jarFileFor(scriptFile: String) = File(
-    if (scriptFile endsWith ".jar") scriptFile
-    else scriptFile.stripSuffix(".scala") + ".jar"
-  )
+  private def jarFileFor(scriptFile: String) =
+    File(
+      if (scriptFile endsWith ".jar") scriptFile
+      else scriptFile.stripSuffix(".scala") + ".jar"
+    )
 
   /** Compile a script using the fsc compilation daemon.
     */

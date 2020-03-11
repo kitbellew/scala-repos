@@ -12,7 +12,8 @@ trait A {
 object Test {
   val a: A = null
 
-  def foo(tpe: a.Type) = tpe match {
-    case a.MethodType(_, _) =>
-  }
+  def foo(tpe: a.Type) =
+    tpe match {
+      case a.MethodType(_, _) =>
+    }
 }

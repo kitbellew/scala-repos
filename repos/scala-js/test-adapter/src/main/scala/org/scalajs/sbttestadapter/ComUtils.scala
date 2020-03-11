@@ -71,16 +71,17 @@ private[testadapter] object ComUtils {
       }
     }
 
-    def onFail = status match {
-      case "fail" =>
-        throw throwable
-      case "bad" =>
-        throw new AssertionError(
-          s"JS test interface rejected command.",
-          throwable)
-      case _ =>
-        badResponse()
-    }
+    def onFail =
+      status match {
+        case "fail" =>
+          throw throwable
+        case "bad" =>
+          throw new AssertionError(
+            s"JS test interface rejected command.",
+            throwable)
+        case _ =>
+          badResponse()
+      }
 
     val result = {
       try handler.lift((status, data))

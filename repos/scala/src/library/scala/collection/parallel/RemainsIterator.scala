@@ -488,9 +488,8 @@ trait IterableSplitter[+T]
     def hasNext = remaining > 0
     def next = { remaining -= 1; self.next() }
     def dup: IterableSplitter[T] = self.dup.take(taken)
-    def split: Seq[IterableSplitter[T]] = takeSeq(self.split) { (p, n) =>
-      p.take(n)
-    }
+    def split: Seq[IterableSplitter[T]] =
+      takeSeq(self.split) { (p, n) => p.take(n) }
     protected[this] def takeSeq[PI <: IterableSplitter[T]](sq: Seq[PI])(
         taker: (PI, Int) => PI) = {
       val sizes = sq.scanLeft(0)(_ + _.remaining)

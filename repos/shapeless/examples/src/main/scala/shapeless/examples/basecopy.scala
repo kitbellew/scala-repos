@@ -150,10 +150,11 @@ object UpdateRepr {
       ut: Lazy[UpdateRepr[T, R]]
   ): UpdateRepr[H :+: T, R] =
     new UpdateRepr[H :+: T, R] {
-      def apply(t: H :+: T, r: R): H :+: T = t match {
-        case Inl(h) => Inl(uh.value(h, r))
-        case Inr(t) => Inr(ut.value(t, r))
-      }
+      def apply(t: H :+: T, r: R): H :+: T =
+        t match {
+          case Inl(h) => Inl(uh.value(h, r))
+          case Inr(t) => Inr(ut.value(t, r))
+        }
     }
 
   implicit def genProdUpdateRepr[T, R <: HList, Repr <: HList](implicit

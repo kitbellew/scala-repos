@@ -41,14 +41,14 @@ trait ScentrySupport[UserType <: AnyRef] extends Initializable {
         (s split ";").toList) getOrElse Nil
     }
 
-  private def registerStrategiesFromConfig = _strategiesFromConfig foreach {
-    strategyClassName ⇒
+  private def registerStrategiesFromConfig =
+    _strategiesFromConfig foreach { strategyClassName ⇒
       val strategy = Class
         .forName(strategyClassName)
         .newInstance
         .asInstanceOf[ScentryStrategy[UserType]]
       strategy registerWith scentry
-  }
+    }
 
   private[this] def createScentry() = {
     initializeScentry

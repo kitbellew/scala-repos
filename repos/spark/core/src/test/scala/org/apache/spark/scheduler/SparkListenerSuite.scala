@@ -460,10 +460,11 @@ class SparkListenerSuite
         notify()
       }
 
-    override def onTaskEnd(taskEnd: SparkListenerTaskEnd): Unit = synchronized {
-      endedTasks += taskEnd.taskInfo.index
-      notify()
-    }
+    override def onTaskEnd(taskEnd: SparkListenerTaskEnd): Unit =
+      synchronized {
+        endedTasks += taskEnd.taskInfo.index
+        notify()
+      }
 
     override def onTaskGettingResult(
         taskGettingResult: SparkListenerTaskGettingResult) {

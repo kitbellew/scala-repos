@@ -145,11 +145,12 @@ trait SingletonTypeUtils extends ReprTypes {
   val SymTpe = typeOf[scala.Symbol]
 
   object LiteralSymbol {
-    def unapply(t: Tree): Option[String] = t match {
-      case q""" scala.Symbol.apply(${Literal(Constant(s: String))}) """ =>
-        Some(s)
-      case _ => None
-    }
+    def unapply(t: Tree): Option[String] =
+      t match {
+        case q""" scala.Symbol.apply(${Literal(Constant(s: String))}) """ =>
+          Some(s)
+        case _ => None
+      }
   }
 
   object SingletonSymbolType {
@@ -177,16 +178,17 @@ trait SingletonTypeUtils extends ReprTypes {
   }
 
   object SingletonType {
-    def unapply(t: Tree): Option[Type] = (t, t.tpe) match {
-      case (Literal(k: Constant), _) => Some(c.internal.constantType(k))
-      case (LiteralSymbol(s), _)     => Some(SingletonSymbolType(s))
-      case (_, keyType @ SingleType(p, v))
-          if !v.isParameter && !isValueClass(v) =>
-        Some(keyType)
-      case (q""" $sops.narrow """, _) if sops.tpe <:< singletonOpsTpe =>
-        Some(sops.tpe.member(TypeName("T")).typeSignature)
-      case _ => None
-    }
+    def unapply(t: Tree): Option[Type] =
+      (t, t.tpe) match {
+        case (Literal(k: Constant), _) => Some(c.internal.constantType(k))
+        case (LiteralSymbol(s), _)     => Some(SingletonSymbolType(s))
+        case (_, keyType @ SingleType(p, v))
+            if !v.isParameter && !isValueClass(v) =>
+          Some(keyType)
+        case (q""" $sops.narrow """, _) if sops.tpe <:< singletonOpsTpe =>
+          Some(sops.tpe.member(TypeName("T")).typeSignature)
+        case _ => None
+      }
   }
 
   def narrowValue(t: Tree): (Type, Tree) = {

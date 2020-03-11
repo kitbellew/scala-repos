@@ -642,34 +642,36 @@ abstract class GenIncOptimizer private[optimizer] (
 
     /** UPDATE PASS ONLY. */
     private def isElidableModuleConstructor(impl: MethodImpl): Boolean = {
-      def isTriviallySideEffectFree(tree: Tree): Boolean = tree match {
-        case _: VarRef | _: Literal | _: This | _: Skip => true
-        case _                                          => false
-      }
-      def isElidableStat(tree: Tree): Boolean = tree match {
-        case Block(stats) =>
-          stats.forall(isElidableStat)
-        case Assign(Select(This(), _), rhs) =>
-          isTriviallySideEffectFree(rhs)
-        case ApplyStatic(ClassType(cls), methodName, List(This())) =>
-          statics(cls).methods(methodName.name).originalDef.body match {
-            case Skip() => true
-            case _      => false
-          }
-        case ApplyStatically(This(), ClassType(cls), methodName, args) =>
-          Definitions.isConstructorName(methodName.name) &&
-            args.forall(isTriviallySideEffectFree) &&
-            impl.owner.asInstanceOf[Class].superClass.exists { superCls =>
-              superCls.encodedName == cls &&
-              superCls
-                .lookupMethod(methodName.name)
-                .exists(isElidableModuleConstructor)
+      def isTriviallySideEffectFree(tree: Tree): Boolean =
+        tree match {
+          case _: VarRef | _: Literal | _: This | _: Skip => true
+          case _                                          => false
+        }
+      def isElidableStat(tree: Tree): Boolean =
+        tree match {
+          case Block(stats) =>
+            stats.forall(isElidableStat)
+          case Assign(Select(This(), _), rhs) =>
+            isTriviallySideEffectFree(rhs)
+          case ApplyStatic(ClassType(cls), methodName, List(This())) =>
+            statics(cls).methods(methodName.name).originalDef.body match {
+              case Skip() => true
+              case _      => false
             }
-        case StoreModule(_, _) =>
-          true
-        case _ =>
-          isTriviallySideEffectFree(tree)
-      }
+          case ApplyStatically(This(), ClassType(cls), methodName, args) =>
+            Definitions.isConstructorName(methodName.name) &&
+              args.forall(isTriviallySideEffectFree) &&
+              impl.owner.asInstanceOf[Class].superClass.exists { superCls =>
+                superCls.encodedName == cls &&
+                superCls
+                  .lookupMethod(methodName.name)
+                  .exists(isElidableModuleConstructor)
+              }
+          case StoreModule(_, _) =>
+            true
+          case _ =>
+            isTriviallySideEffectFree(tree)
+        }
       isElidableStat(impl.originalDef.body)
     }
 
@@ -943,21 +945,23 @@ abstract class GenIncOptimizer private[optimizer] (
       *
       *  UPDATE PASS ONLY.
       */
-    def tag(): Unit = if (protectTag()) {
-      scheduleMethod(this)
-      unregisterFromEverywhere()
-    }
+    def tag(): Unit =
+      if (protectTag()) {
+        scheduleMethod(this)
+        unregisterFromEverywhere()
+      }
 
     /** PROCESS PASS ONLY. */
-    def process(): Unit = if (!_deleted) {
-      val rawOptimizedDef = new Optimizer().optimize(thisType, originalDef)
-      lastOutVersion += 1
-      optimizedMethodDef = new LinkedMember(
-        rawOptimizedDef.info,
-        rawOptimizedDef.tree,
-        Some(lastOutVersion.toString))
-      resetTag()
-    }
+    def process(): Unit =
+      if (!_deleted) {
+        val rawOptimizedDef = new Optimizer().optimize(thisType, originalDef)
+        lastOutVersion += 1
+        optimizedMethodDef = new LinkedMember(
+          rawOptimizedDef.info,
+          rawOptimizedDef.tree,
+          Some(lastOutVersion.toString))
+        resetTag()
+      }
 
     /** All methods are PROCESS PASS ONLY */
     private class Optimizer extends OptimizerCore(semantics, esLevel) {

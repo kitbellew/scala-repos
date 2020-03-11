@@ -127,11 +127,11 @@ object ZipperTest extends SpecLite {
   def insertionTest(
       name: String,
       insertion: (Zipper[Int], Int) => Zipper[Int],
-      pred: (Zipper[Int], Zipper[Int], Int) => Prop) = name ! forAll {
-    (z: Zipper[Int], e: Int) =>
+      pred: (Zipper[Int], Zipper[Int], Int) => Prop) =
+    name ! forAll { (z: Zipper[Int], e: Int) =>
       val zi = insertion(z, e)
       pred(zi, z, e)
-  }
+    }
 
   val leftAndFocusChanged: (Zipper[Int], Zipper[Int], Int) => Prop = {
     (zNew, zOld, newFocus) =>

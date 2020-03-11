@@ -22,12 +22,13 @@ object RoutesCompilerSpec extends Specification with FileMatchers {
       try {
         block(tmp)
       } finally {
-        def rm(file: File): Unit = file match {
-          case dir if dir.isDirectory =>
-            dir.listFiles().foreach(rm)
-            dir.delete()
-          case f => f.delete()
-        }
+        def rm(file: File): Unit =
+          file match {
+            case dir if dir.isDirectory =>
+              dir.listFiles().foreach(rm)
+              dir.delete()
+            case f => f.delete()
+          }
         rm(tmp)
       }
     }

@@ -50,12 +50,13 @@ trait StdLibOpFinderModule[M[+_]]
   import library._
 
   trait StdLibOpFinder extends OpFinder {
-    override def op1ForUnOp(op: UnaryOperation) = op match {
-      case BuiltInFunction1Op(op1) => op1
-      case New | WrapArray         => sys.error("assertion error")
-      case Comp                    => Unary.Comp
-      case Neg                     => Unary.Neg
-    }
+    override def op1ForUnOp(op: UnaryOperation) =
+      op match {
+        case BuiltInFunction1Op(op1) => op1
+        case New | WrapArray         => sys.error("assertion error")
+        case Comp                    => Unary.Comp
+        case Neg                     => Unary.Neg
+      }
 
     override def op2ForBinOp(op: BinaryOperation) = {
       import instructions._

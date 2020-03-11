@@ -30,8 +30,8 @@ object PlayApp {
   lazy val langs =
     loadConfig.getStringList("play.i18n.langs").toList map Lang.apply
 
-  protected def loadMessages(file: String): Map[String, String] = withApp {
-    app =>
+  protected def loadMessages(file: String): Map[String, String] =
+    withApp { app =>
       import scala.collection.JavaConverters._
       import play.utils.Resources
       app.classloader
@@ -46,7 +46,7 @@ object PlayApp {
             .fold(e => throw e, identity)
         }
         .foldLeft(Map.empty[String, String]) { _ ++ _ }
-  }
+    }
 
   lazy val messages: Map[String, Map[String, String]] =
     langs

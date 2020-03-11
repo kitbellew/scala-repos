@@ -69,13 +69,14 @@ class TaskKiller @Inject() (
         groups = group.groups.map(updateGroup))
     }
 
-    def killTasks = groupManager.update(
-      PathId.empty,
-      updateGroup,
-      Timestamp.now(),
-      force = force,
-      toKill = appTasks
-    )
+    def killTasks =
+      groupManager.update(
+        PathId.empty,
+        updateGroup,
+        Timestamp.now(),
+        force = force,
+        toKill = appTasks
+      )
 
     appTasks.keys
       .find(id => !taskTracker.hasAppTasksSync(id))

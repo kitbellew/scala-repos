@@ -142,136 +142,145 @@ object ScalaPsiCreator {
     }
 
   //to prevent stack overflow in type checker let's introduce helper method
-  private def inner(node: ASTNode): PsiElement = node.getElementType match {
+  private def inner(node: ASTNode): PsiElement =
+    node.getElementType match {
 
-    /********************** TOKENS **********************/
-    /********************* LITERALS *********************/
-    case ScalaElementTypes.LITERAL => new ScLiteralImpl(node)
-    case ScalaElementTypes.INTERPOLATED_STRING_LITERAL =>
-      new ScInterpolatedStringLiteralImpl(node)
-    case ScalaElementTypes.INTERPOLATED_PREFIX_PATTERN_REFERENCE =>
-      new ScInterpolatedPrefixReference(node)
-    case ScalaElementTypes.INTERPOLATED_PREFIX_LITERAL_REFERENCE =>
-      new ScInterpolatedStringPartReference(node)
+      /********************** TOKENS **********************/
+      /********************* LITERALS *********************/
+      case ScalaElementTypes.LITERAL => new ScLiteralImpl(node)
+      case ScalaElementTypes.INTERPOLATED_STRING_LITERAL =>
+        new ScInterpolatedStringLiteralImpl(node)
+      case ScalaElementTypes.INTERPOLATED_PREFIX_PATTERN_REFERENCE =>
+        new ScInterpolatedPrefixReference(node)
+      case ScalaElementTypes.INTERPOLATED_PREFIX_LITERAL_REFERENCE =>
+        new ScInterpolatedStringPartReference(node)
 
-    /********************** TYPES ************************/
-    case ScalaElementTypes.SIMPLE_TYPE => new ScSimpleTypeElementImpl(node)
-    case ScalaElementTypes.TUPLE_TYPE  => new ScTupleTypeElementImpl(node)
-    case ScalaElementTypes.TYPE_IN_PARENTHESIS =>
-      new ScParenthesisedTypeElementImpl(node)
-    case ScalaElementTypes.TYPE          => new ScFunctionalTypeElementImpl(node)
-    case ScalaElementTypes.COMPOUND_TYPE => new ScCompoundTypeElementImpl(node)
-    case ScalaElementTypes.INFIX_TYPE    => new ScInfixTypeElementImpl(node)
-    case ScalaElementTypes.REFINEMENT    => new ScRefinementImpl(node)
-    case ScalaElementTypes.REFINEMENTS   => new ScRefinementsImpl(node)
-    case ScalaElementTypes.TYPES         => new ScTypesImpl(node)
-    case ScalaElementTypes.TYPE_ARGS     => new ScTypeArgsImpl(node)
-    case ScalaElementTypes.ASCRIPTION    => new ScAscriptionImpl(node)
-    case ScalaElementTypes.ANNOT_TYPE    => new ScAnnotTypeElementImpl(node)
-    case ScalaElementTypes.SEQUENCE_ARG  => new ScSequenceArgImpl(node)
-    case ScalaElementTypes.EXISTENTIAL_CLAUSE =>
-      new ScExistentialClauseImpl(node)
-    case ScalaElementTypes.SELF_TYPE => new ScSelfTypeElementImpl(node)
-    case ScalaElementTypes.EXISTENTIAL_TYPE =>
-      new ScExistentialTypeElementImpl(node)
-    case ScalaElementTypes.WILDCARD_TYPE   => new ScWildcardTypeElementImpl(node)
-    case ScalaElementTypes.TYPE_PROJECTION => new ScTypeProjectionImpl(node)
-    case ScalaElementTypes.TYPE_GENERIC_CALL =>
-      new ScParameterizedTypeElementImpl(node)
-    case ScalaElementTypes.TYPE_VARIABLE =>
-      new ScTypeVariableTypeElementImpl(node)
-    case _ => inner1(node)
-  }
-
-  //to prevent stack overflow in type checker let's introduce helper method
-  private def inner1(node: ASTNode): PsiElement = node.getElementType match {
-
-    /******************* EXPRESSIONS*********************/
-    case ScalaElementTypes.PARENT_EXPR => new ScParenthesisedExprImpl(node)
-    case ScalaElementTypes.METHOD_CALL => new ScMethodCallImpl(node)
-    case ScalaElementTypes.REFERENCE_EXPRESSION =>
-      new ScReferenceExpressionImpl(node)
-    case ScalaElementTypes.THIS_REFERENCE  => new ScThisReferenceImpl(node)
-    case ScalaElementTypes.SUPER_REFERENCE => new ScSuperReferenceImpl(node)
-    case ScalaElementTypes.GENERIC_CALL    => new ScGenericCallImpl(node)
-
-    case ScalaElementTypes.PREFIX_EXPR      => new ScPrefixExprImpl(node)
-    case ScalaElementTypes.PLACEHOLDER_EXPR => new ScUnderscoreSectionImpl(node)
-    case ScalaElementTypes.UNIT_EXPR        => new ScUnitExprImpl(node)
-    case ScalaElementTypes.INFIX_EXPR       => new ScInfixExprImpl(node)
-    case ScalaElementTypes.POSTFIX_EXPR     => new ScPostfixExprImpl(node)
-    case ScalaElementTypes.FUNCTION_EXPR    => new ScFunctionExprImpl(node)
-    case ScalaElementTypes.ENUMERATOR       => new ScEnumeratorImpl(node)
-    case ScalaElementTypes.ENUMERATORS      => new ScEnumeratorsImpl(node)
-    case ScalaElementTypes.GENERATOR        => new ScGeneratorImpl(node)
-    case ScalaElementTypes.GUARD            => new ScGuardImpl(node)
-    case ScalaElementTypes.EXPRS            => new ScExprsImpl(node)
-    case ScalaElementTypes.ARG_EXPRS        => new ScArgumentExprListImpl(node)
-    case ScalaElementTypes.BLOCK_EXPR       => PsiUtilCore.NULL_PSI_ELEMENT
-    case ScalaElementTypes.CONSTR_BLOCK     => new ScConstrBlockImpl(node)
-    case ScalaElementTypes.BLOCK            => new ScBlockImpl(node)
-    case ScalaElementTypes.TUPLE            => new ScTupleImpl(node)
-    case ScalaElementTypes.ERROR_STMT       => new ScErrorStatImpl(node)
-
-    case ScalaElementTypes.IF_STMT         => new ScIfStmtImpl(node)
-    case ScalaElementTypes.FOR_STMT        => new ScForStatementImpl(node)
-    case ScalaElementTypes.DO_STMT         => new ScDoStmtImpl(node)
-    case ScalaElementTypes.TRY_STMT        => new ScTryStmtImpl(node)
-    case ScalaElementTypes.TRY_BLOCK       => new ScTryBlockImpl(node)
-    case ScalaElementTypes.CATCH_BLOCK     => new ScCatchBlockImpl(node)
-    case ScalaElementTypes.FINALLY_BLOCK   => new ScFinallyBlockImpl(node)
-    case ScalaElementTypes.WHILE_STMT      => new ScWhileStmtImpl(node)
-    case ScalaElementTypes.RETURN_STMT     => new ScReturnStmtImpl(node)
-    case ScalaElementTypes.THROW_STMT      => new ScThrowStmtImpl(node)
-    case ScalaElementTypes.ASSIGN_STMT     => new ScAssignStmtImpl(node)
-    case ScalaElementTypes.TYPED_EXPR_STMT => new ScTypedStmtImpl(node)
-    case ScalaElementTypes.MATCH_STMT      => new ScMatchStmtImpl(node)
-    case ScalaElementTypes.NEW_TEMPLATE    => new ScNewTemplateDefinitionImpl(node)
-    case _                                 => inner2(node)
-  }
+      /********************** TYPES ************************/
+      case ScalaElementTypes.SIMPLE_TYPE => new ScSimpleTypeElementImpl(node)
+      case ScalaElementTypes.TUPLE_TYPE  => new ScTupleTypeElementImpl(node)
+      case ScalaElementTypes.TYPE_IN_PARENTHESIS =>
+        new ScParenthesisedTypeElementImpl(node)
+      case ScalaElementTypes.TYPE => new ScFunctionalTypeElementImpl(node)
+      case ScalaElementTypes.COMPOUND_TYPE =>
+        new ScCompoundTypeElementImpl(node)
+      case ScalaElementTypes.INFIX_TYPE   => new ScInfixTypeElementImpl(node)
+      case ScalaElementTypes.REFINEMENT   => new ScRefinementImpl(node)
+      case ScalaElementTypes.REFINEMENTS  => new ScRefinementsImpl(node)
+      case ScalaElementTypes.TYPES        => new ScTypesImpl(node)
+      case ScalaElementTypes.TYPE_ARGS    => new ScTypeArgsImpl(node)
+      case ScalaElementTypes.ASCRIPTION   => new ScAscriptionImpl(node)
+      case ScalaElementTypes.ANNOT_TYPE   => new ScAnnotTypeElementImpl(node)
+      case ScalaElementTypes.SEQUENCE_ARG => new ScSequenceArgImpl(node)
+      case ScalaElementTypes.EXISTENTIAL_CLAUSE =>
+        new ScExistentialClauseImpl(node)
+      case ScalaElementTypes.SELF_TYPE => new ScSelfTypeElementImpl(node)
+      case ScalaElementTypes.EXISTENTIAL_TYPE =>
+        new ScExistentialTypeElementImpl(node)
+      case ScalaElementTypes.WILDCARD_TYPE =>
+        new ScWildcardTypeElementImpl(node)
+      case ScalaElementTypes.TYPE_PROJECTION => new ScTypeProjectionImpl(node)
+      case ScalaElementTypes.TYPE_GENERIC_CALL =>
+        new ScParameterizedTypeElementImpl(node)
+      case ScalaElementTypes.TYPE_VARIABLE =>
+        new ScTypeVariableTypeElementImpl(node)
+      case _ => inner1(node)
+    }
 
   //to prevent stack overflow in type checker let's introduce helper method
-  private def inner2(node: ASTNode): PsiElement = node.getElementType match {
+  private def inner1(node: ASTNode): PsiElement =
+    node.getElementType match {
 
-    /******************* PATTERNS *********************/
-    case ScalaElementTypes.TUPLE_PATTERN => new ScTuplePatternImpl(node)
-    case ScalaElementTypes.CONSTRUCTOR_PATTERN =>
-      new ScConstructorPatternImpl(node)
-    case ScalaElementTypes.TYPED_PATTERN    => new ScTypedPatternImpl(node)
-    case ScalaElementTypes.NAMING_PATTERN   => new ScNamingPatternImpl(node)
-    case ScalaElementTypes.INFIX_PATTERN    => new ScInfixPatternImpl(node)
-    case ScalaElementTypes.PATTERN          => new ScCompositePatternImpl(node)
-    case ScalaElementTypes.PATTERN_ARGS     => new ScPatternArgumentListImpl(node)
-    case ScalaElementTypes.PATTERNS         => new ScPatternsImpl(node)
-    case ScalaElementTypes.WILDCARD_PATTERN => new ScWildcardPatternImpl(node)
-    case ScalaElementTypes.SEQ_WILDCARD     => new ScSeqWildcardImpl(node)
-    case ScalaElementTypes.CASE_CLAUSE      => new ScCaseClauseImpl(node)
-    case ScalaElementTypes.CASE_CLAUSES     => new ScCaseClausesImpl(node)
-    case ScalaElementTypes.LITERAL_PATTERN  => new ScLiteralPatternImpl(node)
-    case ScalaElementTypes.INTERPOLATION_PATTERN =>
-      new ScInterpolationPatternImpl(node)
-    case ScalaElementTypes.REFERENCE_PATTERN => new ScReferencePatternImpl(node)
-    case ScalaElementTypes.STABLE_REFERENCE_PATTERN =>
-      new ScStableReferenceElementPatternImpl(node)
-    case ScalaElementTypes.PATTERN_IN_PARENTHESIS =>
-      new ScParenthesisedPatternImpl(node)
+      /******************* EXPRESSIONS*********************/
+      case ScalaElementTypes.PARENT_EXPR => new ScParenthesisedExprImpl(node)
+      case ScalaElementTypes.METHOD_CALL => new ScMethodCallImpl(node)
+      case ScalaElementTypes.REFERENCE_EXPRESSION =>
+        new ScReferenceExpressionImpl(node)
+      case ScalaElementTypes.THIS_REFERENCE  => new ScThisReferenceImpl(node)
+      case ScalaElementTypes.SUPER_REFERENCE => new ScSuperReferenceImpl(node)
+      case ScalaElementTypes.GENERIC_CALL    => new ScGenericCallImpl(node)
 
-    case ScalaElementTypes.TYPE_PATTERN      => new ScTypePatternImpl(node)
-    case ScalaElementTypes.TYPE_PATTERN_ARGS => new ScTypePatternArgsImpl(node)
+      case ScalaElementTypes.PREFIX_EXPR => new ScPrefixExprImpl(node)
+      case ScalaElementTypes.PLACEHOLDER_EXPR =>
+        new ScUnderscoreSectionImpl(node)
+      case ScalaElementTypes.UNIT_EXPR     => new ScUnitExprImpl(node)
+      case ScalaElementTypes.INFIX_EXPR    => new ScInfixExprImpl(node)
+      case ScalaElementTypes.POSTFIX_EXPR  => new ScPostfixExprImpl(node)
+      case ScalaElementTypes.FUNCTION_EXPR => new ScFunctionExprImpl(node)
+      case ScalaElementTypes.ENUMERATOR    => new ScEnumeratorImpl(node)
+      case ScalaElementTypes.ENUMERATORS   => new ScEnumeratorsImpl(node)
+      case ScalaElementTypes.GENERATOR     => new ScGeneratorImpl(node)
+      case ScalaElementTypes.GUARD         => new ScGuardImpl(node)
+      case ScalaElementTypes.EXPRS         => new ScExprsImpl(node)
+      case ScalaElementTypes.ARG_EXPRS     => new ScArgumentExprListImpl(node)
+      case ScalaElementTypes.BLOCK_EXPR    => PsiUtilCore.NULL_PSI_ELEMENT
+      case ScalaElementTypes.CONSTR_BLOCK  => new ScConstrBlockImpl(node)
+      case ScalaElementTypes.BLOCK         => new ScBlockImpl(node)
+      case ScalaElementTypes.TUPLE         => new ScTupleImpl(node)
+      case ScalaElementTypes.ERROR_STMT    => new ScErrorStatImpl(node)
 
-    /********************* XML ************************/
-    case ScalaElementTypes.XML_EXPR      => new ScXmlExprImpl(node)
-    case ScalaElementTypes.XML_START_TAG => new ScXmlStartTagImpl(node)
-    case ScalaElementTypes.XML_END_TAG   => new ScXmlEndTagImpl(node)
-    case ScalaElementTypes.XML_EMPTY_TAG => new ScXmlEmptyTagImpl(node)
-    case ScalaElementTypes.XML_PI        => new ScXmlPIImpl(node)
-    case ScalaElementTypes.XML_CD_SECT   => new ScXmlCDSectImpl(node)
-    case ScalaElementTypes.XML_ATTRIBUTE => new ScXmlAttributeImpl(node)
-    case ScalaElementTypes.XML_PATTERN   => new ScXmlPatternImpl(node)
-    case ScalaElementTypes.XML_COMMENT   => new ScXmlCommentImpl(node)
-    case ScalaElementTypes.XML_ELEMENT   => new ScXmlElementImpl(node)
-    case _                               => new ASTWrapperPsiElement(node)
-  }
+      case ScalaElementTypes.IF_STMT         => new ScIfStmtImpl(node)
+      case ScalaElementTypes.FOR_STMT        => new ScForStatementImpl(node)
+      case ScalaElementTypes.DO_STMT         => new ScDoStmtImpl(node)
+      case ScalaElementTypes.TRY_STMT        => new ScTryStmtImpl(node)
+      case ScalaElementTypes.TRY_BLOCK       => new ScTryBlockImpl(node)
+      case ScalaElementTypes.CATCH_BLOCK     => new ScCatchBlockImpl(node)
+      case ScalaElementTypes.FINALLY_BLOCK   => new ScFinallyBlockImpl(node)
+      case ScalaElementTypes.WHILE_STMT      => new ScWhileStmtImpl(node)
+      case ScalaElementTypes.RETURN_STMT     => new ScReturnStmtImpl(node)
+      case ScalaElementTypes.THROW_STMT      => new ScThrowStmtImpl(node)
+      case ScalaElementTypes.ASSIGN_STMT     => new ScAssignStmtImpl(node)
+      case ScalaElementTypes.TYPED_EXPR_STMT => new ScTypedStmtImpl(node)
+      case ScalaElementTypes.MATCH_STMT      => new ScMatchStmtImpl(node)
+      case ScalaElementTypes.NEW_TEMPLATE =>
+        new ScNewTemplateDefinitionImpl(node)
+      case _ => inner2(node)
+    }
+
+  //to prevent stack overflow in type checker let's introduce helper method
+  private def inner2(node: ASTNode): PsiElement =
+    node.getElementType match {
+
+      /******************* PATTERNS *********************/
+      case ScalaElementTypes.TUPLE_PATTERN => new ScTuplePatternImpl(node)
+      case ScalaElementTypes.CONSTRUCTOR_PATTERN =>
+        new ScConstructorPatternImpl(node)
+      case ScalaElementTypes.TYPED_PATTERN    => new ScTypedPatternImpl(node)
+      case ScalaElementTypes.NAMING_PATTERN   => new ScNamingPatternImpl(node)
+      case ScalaElementTypes.INFIX_PATTERN    => new ScInfixPatternImpl(node)
+      case ScalaElementTypes.PATTERN          => new ScCompositePatternImpl(node)
+      case ScalaElementTypes.PATTERN_ARGS     => new ScPatternArgumentListImpl(node)
+      case ScalaElementTypes.PATTERNS         => new ScPatternsImpl(node)
+      case ScalaElementTypes.WILDCARD_PATTERN => new ScWildcardPatternImpl(node)
+      case ScalaElementTypes.SEQ_WILDCARD     => new ScSeqWildcardImpl(node)
+      case ScalaElementTypes.CASE_CLAUSE      => new ScCaseClauseImpl(node)
+      case ScalaElementTypes.CASE_CLAUSES     => new ScCaseClausesImpl(node)
+      case ScalaElementTypes.LITERAL_PATTERN  => new ScLiteralPatternImpl(node)
+      case ScalaElementTypes.INTERPOLATION_PATTERN =>
+        new ScInterpolationPatternImpl(node)
+      case ScalaElementTypes.REFERENCE_PATTERN =>
+        new ScReferencePatternImpl(node)
+      case ScalaElementTypes.STABLE_REFERENCE_PATTERN =>
+        new ScStableReferenceElementPatternImpl(node)
+      case ScalaElementTypes.PATTERN_IN_PARENTHESIS =>
+        new ScParenthesisedPatternImpl(node)
+
+      case ScalaElementTypes.TYPE_PATTERN => new ScTypePatternImpl(node)
+      case ScalaElementTypes.TYPE_PATTERN_ARGS =>
+        new ScTypePatternArgsImpl(node)
+
+      /********************* XML ************************/
+      case ScalaElementTypes.XML_EXPR      => new ScXmlExprImpl(node)
+      case ScalaElementTypes.XML_START_TAG => new ScXmlStartTagImpl(node)
+      case ScalaElementTypes.XML_END_TAG   => new ScXmlEndTagImpl(node)
+      case ScalaElementTypes.XML_EMPTY_TAG => new ScXmlEmptyTagImpl(node)
+      case ScalaElementTypes.XML_PI        => new ScXmlPIImpl(node)
+      case ScalaElementTypes.XML_CD_SECT   => new ScXmlCDSectImpl(node)
+      case ScalaElementTypes.XML_ATTRIBUTE => new ScXmlAttributeImpl(node)
+      case ScalaElementTypes.XML_PATTERN   => new ScXmlPatternImpl(node)
+      case ScalaElementTypes.XML_COMMENT   => new ScXmlCommentImpl(node)
+      case ScalaElementTypes.XML_ELEMENT   => new ScXmlElementImpl(node)
+      case _                               => new ASTWrapperPsiElement(node)
+    }
 
   trait SelfPsiCreator {
     def createElement(node: ASTNode): PsiElement

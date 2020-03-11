@@ -389,24 +389,25 @@ class LogisticRegression @Since("1.2.0") (
           new BreezeLBFGS[BDV[Double]]($(maxIter), 10, $(tol))
         } else {
           val standardizationParam = $(standardization)
-          def regParamL1Fun = (index: Int) => {
-            // Remove the L1 penalization on the intercept
-            if (index == numFeatures) {
-              0.0
-            } else {
-              if (standardizationParam) {
-                regParamL1
+          def regParamL1Fun =
+            (index: Int) => {
+              // Remove the L1 penalization on the intercept
+              if (index == numFeatures) {
+                0.0
               } else {
-                // If `standardization` is false, we still standardize the data
-                // to improve the rate of convergence; as a result, we have to
-                // perform this reverse standardization by penalizing each component
-                // differently to get effectively the same objective function when
-                // the training dataset is not standardized.
-                if (featuresStd(index) != 0.0) regParamL1 / featuresStd(index)
-                else 0.0
+                if (standardizationParam) {
+                  regParamL1
+                } else {
+                  // If `standardization` is false, we still standardize the data
+                  // to improve the rate of convergence; as a result, we have to
+                  // perform this reverse standardization by penalizing each component
+                  // differently to get effectively the same objective function when
+                  // the training dataset is not standardized.
+                  if (featuresStd(index) != 0.0) regParamL1 / featuresStd(index)
+                  else 0.0
+                }
               }
             }
-          }
           new BreezeOWLQN[Int, BDV[Double]](
             $(maxIter),
             10,
@@ -584,10 +585,11 @@ class LogisticRegressionModel private[spark] (
     * thrown if `trainingSummary == None`.
     */
   @Since("1.5.0")
-  def summary: LogisticRegressionTrainingSummary = trainingSummary.getOrElse {
-    throw new SparkException(
-      "No training summary available for this LogisticRegressionModel")
-  }
+  def summary: LogisticRegressionTrainingSummary =
+    trainingSummary.getOrElse {
+      throw new SparkException(
+        "No training summary available for this LogisticRegressionModel")
+    }
 
   /**
     * If the probability column is set returns the current model and probability column,

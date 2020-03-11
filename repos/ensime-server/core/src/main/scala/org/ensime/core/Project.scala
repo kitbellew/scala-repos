@@ -125,39 +125,40 @@ class Project(
   // debounces ReloadExistingFilesEvent
   private var rechecking: Cancellable = _
 
-  def handleRequests: Receive = withLabel("handleRequests") {
-    case AskReTypecheck =>
-      Option(rechecking).foreach(_.cancel())
-      rechecking = system.scheduler.scheduleOnce(
-        5 seconds,
-        scalac,
-        ReloadExistingFilesEvent
-      )
-    // HACK: to expedite initial dev, Java requests use the Scala API
-    case m @ TypecheckFileReq(sfi) if sfi.file.isJava => javac forward m
-    case m @ CompletionsReq(sfi, _, _, _, _) if sfi.file.isJava =>
-      javac forward m
-    case m @ DocUriAtPointReq(sfi, _) if sfi.file.isJava => javac forward m
-    case m @ TypeAtPointReq(sfi, _) if sfi.file.isJava   => javac forward m
-    case m @ SymbolDesignationsReq(sfi, _, _, _) if sfi.file.isJava =>
-      javac forward m
-    case m @ SymbolAtPointReq(sfi, _) if sfi.file.isJava => javac forward m
+  def handleRequests: Receive =
+    withLabel("handleRequests") {
+      case AskReTypecheck =>
+        Option(rechecking).foreach(_.cancel())
+        rechecking = system.scheduler.scheduleOnce(
+          5 seconds,
+          scalac,
+          ReloadExistingFilesEvent
+        )
+      // HACK: to expedite initial dev, Java requests use the Scala API
+      case m @ TypecheckFileReq(sfi) if sfi.file.isJava => javac forward m
+      case m @ CompletionsReq(sfi, _, _, _, _) if sfi.file.isJava =>
+        javac forward m
+      case m @ DocUriAtPointReq(sfi, _) if sfi.file.isJava => javac forward m
+      case m @ TypeAtPointReq(sfi, _) if sfi.file.isJava   => javac forward m
+      case m @ SymbolDesignationsReq(sfi, _, _, _) if sfi.file.isJava =>
+        javac forward m
+      case m @ SymbolAtPointReq(sfi, _) if sfi.file.isJava => javac forward m
 
-    // mixed mode query
-    case TypecheckFilesReq(files) =>
-      val (javas, scalas) = files.partition(_.file.isJava)
-      if (javas.nonEmpty) javac forward TypecheckFilesReq(javas)
-      if (scalas.nonEmpty) scalac forward TypecheckFilesReq(scalas)
+      // mixed mode query
+      case TypecheckFilesReq(files) =>
+        val (javas, scalas) = files.partition(_.file.isJava)
+        if (javas.nonEmpty) javac forward TypecheckFilesReq(javas)
+        if (scalas.nonEmpty) scalac forward TypecheckFilesReq(scalas)
 
-    case m: RpcAnalyserRequest => scalac forward m
-    case m: RpcDebuggerRequest => debugger forward m
-    case m: RpcSearchRequest   => indexer forward m
-    case m: DocSigPair         => docs forward m
+      case m: RpcAnalyserRequest => scalac forward m
+      case m: RpcDebuggerRequest => debugger forward m
+      case m: RpcSearchRequest   => indexer forward m
+      case m: DocSigPair         => docs forward m
 
-    // added here to prevent errors when client sends this repeatedly (e.g. as a keepalive
-    case ConnectionInfoReq =>
-      sender() ! ConnectionInfo()
-  }
+      // added here to prevent errors when client sends this repeatedly (e.g. as a keepalive
+      case ConnectionInfoReq =>
+        sender() ! ConnectionInfo()
+    }
 
 }
 object Project {

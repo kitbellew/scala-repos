@@ -14,14 +14,16 @@ private[sbt] sealed abstract class ExceptionCategory {
 }
 private[sbt] object ExceptionCategory {
 
-  @tailrec def apply(t: Throwable): ExceptionCategory = t match {
-    case _: AlreadyHandledException | _: UnprintableException => AlreadyHandled
-    case ite: InvocationTargetException =>
-      val cause = ite.getCause
-      if (cause == null || cause == ite) new Full(ite) else apply(cause)
-    case _: MessageOnlyException => new MessageOnly(t.toString)
-    case _                       => new Full(t)
-  }
+  @tailrec def apply(t: Throwable): ExceptionCategory =
+    t match {
+      case _: AlreadyHandledException | _: UnprintableException =>
+        AlreadyHandled
+      case ite: InvocationTargetException =>
+        val cause = ite.getCause
+        if (cause == null || cause == ite) new Full(ite) else apply(cause)
+      case _: MessageOnlyException => new MessageOnly(t.toString)
+      case _                       => new Full(t)
+    }
 
   object AlreadyHandled extends ExceptionCategory
   final class MessageOnly(val message: String) extends ExceptionCategory

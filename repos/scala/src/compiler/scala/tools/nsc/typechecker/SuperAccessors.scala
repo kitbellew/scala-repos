@@ -173,9 +173,10 @@ abstract class SuperAccessors
           }
       }
 
-      def mixIsTrait = sup.tpe match {
-        case SuperType(thisTpe, superTpe) => superTpe.typeSymbol.isTrait
-      }
+      def mixIsTrait =
+        sup.tpe match {
+          case SuperType(thisTpe, superTpe) => superTpe.typeSymbol.isTrait
+        }
 
       val needAccessor = name.isTermName && {
         mix.isEmpty && (clazz.isTrait || clazz != currentClass || !validCurrentOwner) ||
@@ -622,24 +623,26 @@ abstract class SuperAccessors
             sym.enclosingPackageClass))
       )
       val host = hostForAccessorOf(sym, clazz)
-      def isSelfType = !(host.tpe <:< host.typeOfThis) && {
-        if (host.typeOfThis.typeSymbol.isJavaDefined)
+      def isSelfType =
+        !(host.tpe <:< host.typeOfThis) && {
+          if (host.typeOfThis.typeSymbol.isJavaDefined)
+            restrictionError(
+              pos,
+              unit,
+              "%s accesses protected %s from self type %s."
+                .format(clazz, sym, host.typeOfThis))
+          true
+        }
+      def isJavaProtected =
+        host.isTrait && sym.isJavaDefined && {
           restrictionError(
             pos,
             unit,
-            "%s accesses protected %s from self type %s."
-              .format(clazz, sym, host.typeOfThis))
-        true
-      }
-      def isJavaProtected = host.isTrait && sym.isJavaDefined && {
-        restrictionError(
-          pos,
-          unit,
-          sm"""$clazz accesses protected $sym inside a concrete trait method.
+            sm"""$clazz accesses protected $sym inside a concrete trait method.
               |Add an accessor in a class extending ${sym.enclClass} as a workaround."""
-        )
-        true
-      }
+          )
+          true
+        }
       isCandidate && !host.isPackageClass && !isSelfType && !isJavaProtected
     }
 
@@ -662,20 +665,22 @@ abstract class SuperAccessors
     }
 
     /** For a path-dependent type, return the this type. */
-    private def thisTypeOfPath(path: Type): Symbol = path match {
-      case ThisType(outerSym)  => outerSym
-      case SingleType(rest, _) => thisTypeOfPath(rest)
-      case _                   => NoSymbol
-    }
+    private def thisTypeOfPath(path: Type): Symbol =
+      path match {
+        case ThisType(outerSym)  => outerSym
+        case SingleType(rest, _) => thisTypeOfPath(rest)
+        case _                   => NoSymbol
+      }
 
     /** Is 'tpe' the type of a member of an enclosing class? */
-    private def isThisType(tpe: Type): Boolean = tpe match {
-      case ThisType(sym)           => sym.isClass && !sym.isPackageClass
-      case TypeRef(pre, _, _)      => isThisType(pre)
-      case SingleType(pre, _)      => isThisType(pre)
-      case RefinedType(parents, _) => parents exists isThisType
-      case AnnotatedType(_, tp)    => isThisType(tp)
-      case _                       => false
-    }
+    private def isThisType(tpe: Type): Boolean =
+      tpe match {
+        case ThisType(sym)           => sym.isClass && !sym.isPackageClass
+        case TypeRef(pre, _, _)      => isThisType(pre)
+        case SingleType(pre, _)      => isThisType(pre)
+        case RefinedType(parents, _) => parents exists isThisType
+        case AnnotatedType(_, tp)    => isThisType(tp)
+        case _                       => false
+      }
   }
 }

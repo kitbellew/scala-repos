@@ -152,10 +152,11 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
   private def coalescing = settings.XxmlSettings.isCoalescing
 
   // create scala.xml.Text here <: scala.xml.Node
-  final def text(pos: Position, txt: String): Tree = atPos(pos) {
-    val t = if (isPattern) makeTextPat(const(txt)) else makeText1(const(txt))
-    if (coalescing) t updateAttachment TextAttache(pos, txt) else t
-  }
+  final def text(pos: Position, txt: String): Tree =
+    atPos(pos) {
+      val t = if (isPattern) makeTextPat(const(txt)) else makeText1(const(txt))
+      if (coalescing) t updateAttachment TextAttache(pos, txt) else t
+    }
 
   def makeTextPat(txt: Tree) = Apply(_scala_xml__Text, List(txt))
   def makeText1(txt: Tree) = New(_scala_xml_Text, LL(txt))
@@ -192,10 +193,11 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
       args)
   }
 
-  protected def convertToTextPat(t: Tree): Tree = t match {
-    case _: Literal => makeTextPat(t)
-    case _          => t
-  }
+  protected def convertToTextPat(t: Tree): Tree =
+    t match {
+      case _: Literal => makeTextPat(t)
+      case _          => t
+    }
   protected def convertToTextPat(buf: Seq[Tree]): List[Tree] =
     (buf map convertToTextPat).toList
 
@@ -209,10 +211,11 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
     }
   }
 
-  def isEmptyText(t: Tree) = t match {
-    case Literal(Constant("")) => true
-    case _                     => false
-  }
+  def isEmptyText(t: Tree) =
+    t match {
+      case Literal(Constant("")) => true
+      case _                     => false
+    }
 
   /** could optimize if args.length == 0, args.length == 1 AND args(0) is <: Node. */
   def makeXMLseq(pos: Position, args: Seq[Tree]) = {
@@ -245,10 +248,11 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
       empty: Boolean,
       args: Seq[Tree]): Tree = {
     def handleNamespaceBinding(pre: String, z: String): Tree = {
-      def mkAssign(t: Tree): Tree = Assign(
-        Ident(_tmpscope),
-        New(_scala_xml_NamespaceBinding, LL(const(pre), t, Ident(_tmpscope)))
-      )
+      def mkAssign(t: Tree): Tree =
+        Assign(
+          Ident(_tmpscope),
+          New(_scala_xml_NamespaceBinding, LL(const(pre), t, Ident(_tmpscope)))
+        )
 
       val uri1 = attrMap(z) match {
         case Apply(

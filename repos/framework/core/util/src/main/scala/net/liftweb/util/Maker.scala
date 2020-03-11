@@ -106,24 +106,18 @@ trait Maker[T] {
 }
 
 object Maker {
-  def apply[T](value: T): Maker[T] = new Maker[T] {
-    implicit def make: Box[T] = Full(value)
-  }
-  def apply[T](func: () => T): Maker[T] = new Maker[T] {
-    implicit def make: Box[T] = Full(func())
-  }
-  def apply[T](func: Box[() => T]): Maker[T] = new Maker[T] {
-    implicit def make: Box[T] = func.map(_.apply())
-  }
-  def apply1[T](box: Box[T]): Maker[T] = new Maker[T] {
-    implicit def make: Box[T] = box
-  }
-  def apply2[T](func: Box[() => Box[T]]): Maker[T] = new Maker[T] {
-    implicit def make: Box[T] = func.flatMap(_.apply())
-  }
-  def apply3[T](func: () => Box[T]): Maker[T] = new Maker[T] {
-    implicit def make: Box[T] = func.apply()
-  }
+  def apply[T](value: T): Maker[T] =
+    new Maker[T] { implicit def make: Box[T] = Full(value) }
+  def apply[T](func: () => T): Maker[T] =
+    new Maker[T] { implicit def make: Box[T] = Full(func()) }
+  def apply[T](func: Box[() => T]): Maker[T] =
+    new Maker[T] { implicit def make: Box[T] = func.map(_.apply()) }
+  def apply1[T](box: Box[T]): Maker[T] =
+    new Maker[T] { implicit def make: Box[T] = box }
+  def apply2[T](func: Box[() => Box[T]]): Maker[T] =
+    new Maker[T] { implicit def make: Box[T] = func.flatMap(_.apply()) }
+  def apply3[T](func: () => Box[T]): Maker[T] =
+    new Maker[T] { implicit def make: Box[T] = func.apply() }
 
   implicit def vToMake[T](v: T): Maker[T] = this.apply(v)
   implicit def vToMake[T](v: () => T): Maker[T] = this.apply(v)
@@ -142,10 +136,11 @@ trait StackableMaker[T] extends Maker[T] {
   private val _stack: ThreadLocal[List[PValueHolder[Maker[T]]]] =
     new ThreadLocal
 
-  private def stack: List[PValueHolder[Maker[T]]] = _stack.get() match {
-    case null => Nil
-    case x    => x
-  }
+  private def stack: List[PValueHolder[Maker[T]]] =
+    _stack.get() match {
+      case null => Nil
+      case x    => x
+    }
 
   /**
     * Changes to the stack of Makers made by this method are thread-local!
@@ -228,15 +223,17 @@ class VendorJBridge {
   * A companion to the Vendor trait
   */
 object Vendor {
-  def apply[T](f: () => T): Vendor[T] = new Vendor[T] {
-    implicit def vend: T = f()
-    implicit def make: Box[T] = Full(f())
-  }
+  def apply[T](f: () => T): Vendor[T] =
+    new Vendor[T] {
+      implicit def vend: T = f()
+      implicit def make: Box[T] = Full(f())
+    }
 
-  def apply[T](f: T): Vendor[T] = new Vendor[T] {
-    implicit def vend: T = f
-    implicit def make: Box[T] = Full(f)
-  }
+  def apply[T](f: T): Vendor[T] =
+    new Vendor[T] {
+      implicit def vend: T = f
+      implicit def make: Box[T] = Full(f)
+    }
 
   implicit def valToVendor[T](value: T): Vendor[T] = apply(value)
   implicit def funcToVendor[T](f: () => T): Vendor[T] = apply(f)

@@ -4,9 +4,8 @@ trait DeliteDSL {
 
   trait Forcible[T]
   object Forcible {
-    def factory[T](f: T => Forcible[T]) = new (T <~< Forcible[T]) {
-      def apply(x: T) = f(x)
-    }
+    def factory[T](f: T => Forcible[T]) =
+      new (T <~< Forcible[T]) { def apply(x: T) = f(x) }
   }
 
   case class DeliteInt(x: Int) extends Forcible[Int]

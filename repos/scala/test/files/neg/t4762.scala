@@ -11,19 +11,21 @@ class B(x: Int) extends A(-1) {
   private[this] def y: Int = 99
 
   // Three distinct results.
-  def f = List(
-    /* (99,99) */ (this.x, this.y),
-    /* (-1,99) */ ((this: B).x, (this: B).y),
-    /* (-1,-1) */ ((this: A).x, (this: A).y)
-  )
+  def f =
+    List(
+      /* (99,99) */ (this.x, this.y),
+      /* (-1,99) */ ((this: B).x, (this: B).y),
+      /* (-1,-1) */ ((this: A).x, (this: A).y)
+    )
 
   // The 99s tell us we are reading the private[this]
   // data of a different instance.
-  def g(b: B) = List(
-    /* (-1,99) */ (b.x, b.y),
-    /* (-1,99) */ ((b: B).x, (b: B).y),
-    /* (-1,-1) */ ((b: A).x, (b: A).y)
-  )
+  def g(b: B) =
+    List(
+      /* (-1,99) */ (b.x, b.y),
+      /* (-1,99) */ ((b: B).x, (b: B).y),
+      /* (-1,-1) */ ((b: A).x, (b: A).y)
+    )
 }
 
 object Test {

@@ -280,12 +280,13 @@ class ByteArraySerializer(val system: ExtendedActorSystem)
     else identifierFromConfig
 
   def includeManifest: Boolean = false
-  def toBinary(o: AnyRef) = o match {
-    case null ⇒ null
-    case o: Array[Byte] ⇒ o
-    case other ⇒
-      throw new IllegalArgumentException(
-        "ByteArraySerializer only serializes byte arrays, not [" + other + "]")
-  }
+  def toBinary(o: AnyRef) =
+    o match {
+      case null ⇒ null
+      case o: Array[Byte] ⇒ o
+      case other ⇒
+        throw new IllegalArgumentException(
+          "ByteArraySerializer only serializes byte arrays, not [" + other + "]")
+    }
   def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = bytes
 }

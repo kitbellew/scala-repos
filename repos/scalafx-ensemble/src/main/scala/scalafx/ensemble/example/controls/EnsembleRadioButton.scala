@@ -34,35 +34,36 @@ import scalafx.scene.layout.{Priority, VBox}
 
 class EnsembleRadioButton extends EnsembleExample {
 
-  def getContent = new VBox {
-    vgrow = Priority.Always
-    hgrow = Priority.Always
-    spacing = 10
-    padding = Insets(20)
+  def getContent =
+    new VBox {
+      vgrow = Priority.Always
+      hgrow = Priority.Always
+      spacing = 10
+      padding = Insets(20)
 
-    //Radio Button Toggle Group
-    val tog = new ToggleGroup()
+      //Radio Button Toggle Group
+      val tog = new ToggleGroup()
 
-    children = List(
-      new RadioButton {
-        maxWidth = 200
-        maxHeight = 50
-        text = "Hi"
-        toggleGroup = tog
-      },
-      new RadioButton {
-        maxWidth = 200
-        maxHeight = 50
-        text = "Good bye"
-        selected = true
-        toggleGroup = tog
-      },
-      new RadioButton {
-        maxWidth = 200
-        maxHeight = 50
-        text = "Disabled!!"
-        disable = true
-      }
-    )
-  }
+      children = List(
+        new RadioButton {
+          maxWidth = 200
+          maxHeight = 50
+          text = "Hi"
+          toggleGroup = tog
+        },
+        new RadioButton {
+          maxWidth = 200
+          maxHeight = 50
+          text = "Good bye"
+          selected = true
+          toggleGroup = tog
+        },
+        new RadioButton {
+          maxWidth = 200
+          maxHeight = 50
+          text = "Disabled!!"
+          disable = true
+        }
+      )
+    }
 }

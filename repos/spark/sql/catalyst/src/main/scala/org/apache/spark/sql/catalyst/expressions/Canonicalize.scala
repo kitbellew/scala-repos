@@ -37,11 +37,12 @@ object Canonicalize extends {
   }
 
   /** Remove names and nullability from types. */
-  private def ignoreNamesTypes(e: Expression): Expression = e match {
-    case a: AttributeReference =>
-      AttributeReference("none", a.dataType.asNullable)(exprId = a.exprId)
-    case _ => e
-  }
+  private def ignoreNamesTypes(e: Expression): Expression =
+    e match {
+      case a: AttributeReference =>
+        AttributeReference("none", a.dataType.asNullable)(exprId = a.exprId)
+      case _ => e
+    }
 
   /** Collects adjacent commutative operations. */
   private def gatherCommutative(
@@ -59,24 +60,26 @@ object Canonicalize extends {
     gatherCommutative(e, f).sortBy(_.hashCode())
 
   /** Rearrange expressions that are commutative or associative. */
-  private def expressionReorder(e: Expression): Expression = e match {
-    case a: Add =>
-      orderCommutative(a, { case Add(l, r) => Seq(l, r) }).reduce(Add)
-    case m: Multiply =>
-      orderCommutative(m, { case Multiply(l, r) => Seq(l, r) }).reduce(Multiply)
+  private def expressionReorder(e: Expression): Expression =
+    e match {
+      case a: Add =>
+        orderCommutative(a, { case Add(l, r) => Seq(l, r) }).reduce(Add)
+      case m: Multiply =>
+        orderCommutative(m, { case Multiply(l, r) => Seq(l, r) })
+          .reduce(Multiply)
 
-    case EqualTo(l, r) if l.hashCode() > r.hashCode() => EqualTo(r, l)
-    case EqualNullSafe(l, r) if l.hashCode() > r.hashCode() =>
-      EqualNullSafe(r, l)
+      case EqualTo(l, r) if l.hashCode() > r.hashCode() => EqualTo(r, l)
+      case EqualNullSafe(l, r) if l.hashCode() > r.hashCode() =>
+        EqualNullSafe(r, l)
 
-    case GreaterThan(l, r) if l.hashCode() > r.hashCode() => LessThan(r, l)
-    case LessThan(l, r) if l.hashCode() > r.hashCode()    => GreaterThan(r, l)
+      case GreaterThan(l, r) if l.hashCode() > r.hashCode() => LessThan(r, l)
+      case LessThan(l, r) if l.hashCode() > r.hashCode()    => GreaterThan(r, l)
 
-    case GreaterThanOrEqual(l, r) if l.hashCode() > r.hashCode() =>
-      LessThanOrEqual(r, l)
-    case LessThanOrEqual(l, r) if l.hashCode() > r.hashCode() =>
-      GreaterThanOrEqual(r, l)
+      case GreaterThanOrEqual(l, r) if l.hashCode() > r.hashCode() =>
+        LessThanOrEqual(r, l)
+      case LessThanOrEqual(l, r) if l.hashCode() > r.hashCode() =>
+        GreaterThanOrEqual(r, l)
 
-    case _ => e
-  }
+      case _ => e
+    }
 }

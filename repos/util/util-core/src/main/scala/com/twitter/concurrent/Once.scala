@@ -9,12 +9,13 @@ object Once {
   def apply(fn: => Unit): () => Unit = {
     var executed = false
     new Function0[Unit] {
-      def apply(): Unit = synchronized {
-        if (!executed) {
-          executed = true
-          fn
+      def apply(): Unit =
+        synchronized {
+          if (!executed) {
+            executed = true
+            fn
+          }
         }
-      }
     }
   }
 }

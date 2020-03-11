@@ -79,16 +79,19 @@ private[streaming] class InputInfoTracker(ssc: StreamingContext)
     }
 
   /** Get the all the input stream's information of specified batch time */
-  def getInfo(batchTime: Time): Map[Int, StreamInputInfo] = synchronized {
-    val inputInfos = batchTimeToInputInfos.get(batchTime)
-    // Convert mutable HashMap to immutable Map for the caller
-    inputInfos.map(_.toMap).getOrElse(Map[Int, StreamInputInfo]())
-  }
+  def getInfo(batchTime: Time): Map[Int, StreamInputInfo] =
+    synchronized {
+      val inputInfos = batchTimeToInputInfos.get(batchTime)
+      // Convert mutable HashMap to immutable Map for the caller
+      inputInfos.map(_.toMap).getOrElse(Map[Int, StreamInputInfo]())
+    }
 
   /** Cleanup the tracked input information older than threshold batch time */
-  def cleanup(batchThreshTime: Time): Unit = synchronized {
-    val timesToCleanup = batchTimeToInputInfos.keys.filter(_ < batchThreshTime)
-    logInfo(s"remove old batch metadata: ${timesToCleanup.mkString(" ")}")
-    batchTimeToInputInfos --= timesToCleanup
-  }
+  def cleanup(batchThreshTime: Time): Unit =
+    synchronized {
+      val timesToCleanup =
+        batchTimeToInputInfos.keys.filter(_ < batchThreshTime)
+      logInfo(s"remove old batch metadata: ${timesToCleanup.mkString(" ")}")
+      batchTimeToInputInfos --= timesToCleanup
+    }
 }

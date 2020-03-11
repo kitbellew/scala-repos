@@ -294,19 +294,20 @@ class TaskSerializerTest
                       MarathonTask.Reservation.State.Timeout.Reason.ReservationTimeout))))
           .build()
 
-      def reservedState = Task.Reserved(
-        Task.Id(taskId.idString),
-        Task.AgentInfo(host = host, agentId = Some(agentId), attributes),
-        reservation = Task.Reservation(
-          localVolumeIds,
-          Task.Reservation.State.New(
-            Some(
-              Task.Reservation.Timeout(
-                initiated = now,
-                deadline = now + 1.minute,
-                reason = Task.Reservation.Timeout.Reason.ReservationTimeout)))
+      def reservedState =
+        Task.Reserved(
+          Task.Id(taskId.idString),
+          Task.AgentInfo(host = host, agentId = Some(agentId), attributes),
+          reservation = Task.Reservation(
+            localVolumeIds,
+            Task.Reservation.State.New(
+              Some(
+                Task.Reservation.Timeout(
+                  initiated = now,
+                  deadline = now + 1.minute,
+                  reason = Task.Reservation.Timeout.Reason.ReservationTimeout)))
+          )
         )
-      )
 
       def launchedEphemeralProto =
         MarathonTask
@@ -333,14 +334,15 @@ class TaskSerializerTest
                 .setType(MarathonTask.Reservation.State.Type.Launched)))
           .build()
 
-      def launchedOnReservationState = Task.LaunchedOnReservation(
-        taskId,
-        Task.AgentInfo(host = host, agentId = Some(agentId), attributes),
-        appVersion,
-        status,
-        hostPorts,
-        Task.Reservation(localVolumeIds, Task.Reservation.State.Launched)
-      )
+      def launchedOnReservationState =
+        Task.LaunchedOnReservation(
+          taskId,
+          Task.AgentInfo(host = host, agentId = Some(agentId), attributes),
+          appVersion,
+          status,
+          hostPorts,
+          Task.Reservation(localVolumeIds, Task.Reservation.State.Launched)
+        )
 
       def reservedProtoWithoutReservation =
         reservedProto.toBuilder.clearReservation().build()

@@ -65,10 +65,11 @@ class ScTypeParamImpl private (
   }
 
   def getIndex: Int = 0
-  def getOwner: PsiTypeParameterListOwner = getContext.getContext match {
-    case c: PsiTypeParameterListOwner => c
-    case _                            => null
-  }
+  def getOwner: PsiTypeParameterListOwner =
+    getContext.getContext match {
+      case c: PsiTypeParameterListOwner => c
+      case _                            => null
+    }
 
   override def getContainingClass: ScTemplateDefinition = null
 

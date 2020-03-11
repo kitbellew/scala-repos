@@ -32,10 +32,11 @@ case class QueryResource[A](a: A, close0: Close[A]) {
 sealed trait JobQueryState[+A] {
   import JobQueryState._
 
-  def getOrElse[AA >: A](aa: => AA) = this match {
-    case Cancelled | Expired => aa
-    case Running(_, value)   => value
-  }
+  def getOrElse[AA >: A](aa: => AA) =
+    this match {
+      case Cancelled | Expired => aa
+      case Running(_, value)   => value
+    }
 }
 
 object JobQueryState {
@@ -95,15 +96,16 @@ trait JobQueryStateMonad extends SwappableMonad[JobQueryState] {
     }
 
   def bind[A, B](fa: JobQueryState[A])(
-      f: A => JobQueryState[B]): JobQueryState[B] = maybeCancel(fa) match {
-    case Running(resources0, value0) =>
-      f(value0) match {
-        case Running(resources1, value) =>
-          Running(resources0 ++ resources1, value)
-        case Cancelled => Cancelled
-        case Expired   => Expired
-      }
-    case Cancelled => Cancelled
-    case Expired   => Expired
-  }
+      f: A => JobQueryState[B]): JobQueryState[B] =
+    maybeCancel(fa) match {
+      case Running(resources0, value0) =>
+        f(value0) match {
+          case Running(resources1, value) =>
+            Running(resources0 ++ resources1, value)
+          case Cancelled => Cancelled
+          case Expired   => Expired
+        }
+      case Cancelled => Cancelled
+      case Expired   => Expired
+    }
 }

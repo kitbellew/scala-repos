@@ -99,48 +99,52 @@ object SimplifyBooleanUtil {
   private def getScExprChildren(expr: ScExpression) =
     expr.children.collect { case expr: ScExpression => expr }.toList
 
-  private def booleanConst(expr: ScExpression): Option[Boolean] = expr match {
-    case literal: ScLiteral =>
-      literal.getText match {
-        case "true"  => Some(true)
-        case "false" => Some(false)
-        case _       => None
-      }
-    case _ => None
-  }
+  private def booleanConst(expr: ScExpression): Option[Boolean] =
+    expr match {
+      case literal: ScLiteral =>
+        literal.getText match {
+          case "true"  => Some(true)
+          case "false" => Some(false)
+          case _       => None
+        }
+      case _ => None
+    }
 
-  private def simplifyTrivially(expr: ScExpression): ScExpression = expr match {
-    case parenthesized: ScParenthesisedExpr =>
-      val copy = parenthesized.copy.asInstanceOf[ScParenthesisedExpr]
-      copy
-        .replaceExpression(copy.expr.getOrElse(copy), removeParenthesis = true)
-    case ScPrefixExpr(operation, operand) =>
-      if (operation.refName != "!") expr
-      else {
-        booleanConst(operand) match {
-          case Some(bool: Boolean) =>
-            ScalaPsiElementFactory
-              .createExpressionFromText((!bool).toString, expr.getManager)
-          case None => expr
+  private def simplifyTrivially(expr: ScExpression): ScExpression =
+    expr match {
+      case parenthesized: ScParenthesisedExpr =>
+        val copy = parenthesized.copy.asInstanceOf[ScParenthesisedExpr]
+        copy.replaceExpression(
+          copy.expr.getOrElse(copy),
+          removeParenthesis = true)
+      case ScPrefixExpr(operation, operand) =>
+        if (operation.refName != "!") expr
+        else {
+          booleanConst(operand) match {
+            case Some(bool: Boolean) =>
+              ScalaPsiElementFactory.createExpressionFromText(
+                (!bool).toString,
+                expr.getManager)
+            case None => expr
+          }
         }
-      }
-    case ScInfixExpr(leftExpr, operation, rightExpr) =>
-      val operName = operation.refName
-      if (!boolInfixOperations.contains(operName)) expr
-      else {
-        booleanConst(leftExpr) match {
-          case Some(bool: Boolean) =>
-            simplifyInfixWithLiteral(bool, operName, rightExpr)
-          case None =>
-            booleanConst(rightExpr) match {
-              case Some(bool: Boolean) =>
-                simplifyInfixWithLiteral(bool, operName, leftExpr)
-              case None => expr
-            }
+      case ScInfixExpr(leftExpr, operation, rightExpr) =>
+        val operName = operation.refName
+        if (!boolInfixOperations.contains(operName)) expr
+        else {
+          booleanConst(leftExpr) match {
+            case Some(bool: Boolean) =>
+              simplifyInfixWithLiteral(bool, operName, rightExpr)
+            case None =>
+              booleanConst(rightExpr) match {
+                case Some(bool: Boolean) =>
+                  simplifyInfixWithLiteral(bool, operName, leftExpr)
+                case None => expr
+              }
+          }
         }
-      }
-    case _ => expr
-  }
+      case _ => expr
+    }
 
   private def simplifyInfixWithLiteral(
       value: Boolean,

@@ -220,10 +220,11 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
       case Some(x) => x append arg; Some(x)
       case None    => Some(arg)
     }
-  private def pathAsList(p: Option[Path], name: String): List[File] = p match {
-    case None    => buildError("Member '" + name + "' is empty.")
-    case Some(x) => x.list.toList map nameToFile
-  }
+  private def pathAsList(p: Option[Path], name: String): List[File] =
+    p match {
+      case None    => buildError("Member '" + name + "' is empty.")
+      case Some(x) => x.list.toList map nameToFile
+    }
   private def createNewPath(
       getter: () => Option[Path],
       setter: (Option[Path]) => Unit) = {

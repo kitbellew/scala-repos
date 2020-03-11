@@ -65,9 +65,10 @@ object Tooltip {
     *
     * @param string Tooltip's text.
     */
-  def apply(string: String) = new Tooltip {
-    text = string
-  }
+  def apply(string: String) =
+    new Tooltip {
+      text = string
+    }
 
   /**
     * Converts a String to a Simple Tooltip with default properties.

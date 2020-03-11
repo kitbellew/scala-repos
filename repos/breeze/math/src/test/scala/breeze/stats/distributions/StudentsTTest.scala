@@ -37,10 +37,11 @@ class StudentsTTest
 
   def fromDouble(x: Double) = x
 
-  implicit def arbDistr = Arbitrary {
-    for (dof <- arbitrary[Double].map { x => math.abs(x) % 1000.0 + 3.0 })
-      yield new StudentsT(dof)(RandBasis.mt0)
-  }
+  implicit def arbDistr =
+    Arbitrary {
+      for (dof <- arbitrary[Double].map { x => math.abs(x) % 1000.0 + 3.0 })
+        yield new StudentsT(dof)(RandBasis.mt0)
+    }
 
   override type Distr = StudentsT
 }

@@ -262,11 +262,12 @@ trait DocComments { self: Global =>
 
       def getParentSection(section: (Int, Int)): String = {
 
-        def getSectionHeader = extractSectionTag(child, section) match {
-          case param @ ("@param" | "@tparam" | "@throws") =>
-            param + " " + extractSectionParam(child, section)
-          case other => other
-        }
+        def getSectionHeader =
+          extractSectionTag(child, section) match {
+            case param @ ("@param" | "@tparam" | "@throws") =>
+              param + " " + extractSectionParam(child, section)
+            case other => other
+          }
 
         def sectionString(
             param: String,
@@ -332,20 +333,21 @@ trait DocComments { self: Global =>
     *  @param vble  The variable for which a definition is searched
     *  @param site  The class for which doc comments are generated
     */
-  def lookupVariable(vble: String, site: Symbol): Option[String] = site match {
-    case NoSymbol => None
-    case _ =>
-      val searchList =
-        if (site.isModule) site :: site.info.baseClasses
-        else site.info.baseClasses
+  def lookupVariable(vble: String, site: Symbol): Option[String] =
+    site match {
+      case NoSymbol => None
+      case _ =>
+        val searchList =
+          if (site.isModule) site :: site.info.baseClasses
+          else site.info.baseClasses
 
-      searchList collectFirst {
-        case x if defs(x) contains vble => defs(x)(vble)
-      } match {
-        case Some(str) if str startsWith "$" => lookupVariable(str.tail, site)
-        case res                             => res orElse lookupVariable(vble, site.owner)
-      }
-  }
+        searchList collectFirst {
+          case x if defs(x) contains vble => defs(x)(vble)
+        } match {
+          case Some(str) if str startsWith "$" => lookupVariable(str.tail, site)
+          case res                             => res orElse lookupVariable(vble, site.owner)
+        }
+    }
 
   /** Expand variable occurrences in string `str`, until a fix point is reached or
     *  an expandLimit is exceeded.
@@ -491,10 +493,11 @@ trait DocComments { self: Global =>
       }
 
       def getSite(name: Name): Type = {
-        def findIn(sites: List[Symbol]): Type = sites match {
-          case List()         => NoType
-          case site :: sites1 => select(site.thisType, name, findIn(sites1))
-        }
+        def findIn(sites: List[Symbol]): Type =
+          sites match {
+            case List()         => NoType
+            case site :: sites1 => select(site.thisType, name, findIn(sites1))
+          }
         // Previously, searching was taking place *only* in the current package and in the root package
         // now we're looking for it everywhere in the hierarchy, so we'll be able to link variable expansions like
         // immutable.Seq in package immutable
@@ -586,19 +589,20 @@ trait DocComments { self: Global =>
         else subst(sym, from.tail, to.tail)
 
       val substAliases = new TypeMap {
-        def apply(tp: Type) = mapOver(tp) match {
-          case tp1 @ TypeRef(pre, sym, args)
-              if (sym.name.length > 1 && sym.name.startChar == '$') =>
-            subst(sym, aliases, aliasExpansions) match {
-              case (TypeRef(pre1, sym1, _), canNormalize) =>
-                val tpe = typeRef(pre1, sym1, args)
-                if (canNormalize) tpe.normalize else tpe
-              case _ =>
-                tp1
-            }
-          case tp1 =>
-            tp1
-        }
+        def apply(tp: Type) =
+          mapOver(tp) match {
+            case tp1 @ TypeRef(pre, sym, args)
+                if (sym.name.length > 1 && sym.name.startChar == '$') =>
+              subst(sym, aliases, aliasExpansions) match {
+                case (TypeRef(pre1, sym1, _), canNormalize) =>
+                  val tpe = typeRef(pre1, sym1, args)
+                  if (canNormalize) tpe.normalize else tpe
+                case _ =>
+                  tp1
+              }
+            case tp1 =>
+              tp1
+          }
       }
 
       for (defn <- defined) yield {

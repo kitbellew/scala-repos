@@ -8,10 +8,11 @@ import scalaz.Tags.{First, Last}
 sealed trait EitherInstances0 {
   implicit def eitherEqual[A, B](implicit
       A0: Equal[A],
-      B0: Equal[B]): Equal[Either[A, B]] = new EitherEqual[A, B] {
-    implicit def A = A0
-    implicit def B = B0
-  }
+      B0: Equal[B]): Equal[Either[A, B]] =
+    new EitherEqual[A, B] {
+      implicit def A = A0
+      implicit def B = B0
+    }
 
   implicit def eitherLeftEqual[A, X](
       implicit A0: Equal[A]): Equal[LeftProjection[A, X]] =
@@ -84,10 +85,11 @@ trait EitherInstances extends EitherInstances0 {
       }
 
     def bitraverseImpl[G[_]: Applicative, A, B, C, D](
-        fab: Either[A, B])(f: A => G[C], g: B => G[D]) = fab match {
-      case Left(a)  => Applicative[G].map(f(a))(b => Left(b))
-      case Right(b) => Applicative[G].map(g(b))(d => Right(d))
-    }
+        fab: Either[A, B])(f: A => G[C], g: B => G[D]) =
+      fab match {
+        case Left(a)  => Applicative[G].map(f(a))(b => Left(b))
+        case Right(b) => Applicative[G].map(g(b))(d => Right(d))
+      }
   }
 
   /** Right biased monad */
@@ -99,10 +101,11 @@ trait EitherInstances extends EitherInstances0 {
       with MonadError[Either[L, ?], L]
       with BindRec[Either[L, ?]]
       with Cozip[Either[L, ?]] {
-      def bind[A, B](fa: Either[L, A])(f: A => Either[L, B]) = fa match {
-        case Left(a)  => Left(a)
-        case Right(b) => f(b)
-      }
+      def bind[A, B](fa: Either[L, A])(f: A => Either[L, B]) =
+        fa match {
+          case Left(a)  => Left(a)
+          case Right(b) => f(b)
+        }
 
       def handleError[A](fa: Either[L, A])(f: L => Either[L, A]) =
         fa match {
@@ -116,16 +119,18 @@ trait EitherInstances extends EitherInstances0 {
       def point[A](a: => A) = Right(a)
 
       def traverseImpl[G[_]: Applicative, A, B](fa: Either[L, A])(
-          f: A => G[B]) = fa match {
-        case Left(x)  => Applicative[G].point(Left(x))
-        case Right(x) => Applicative[G].map(f(x))(Right(_))
-      }
+          f: A => G[B]) =
+        fa match {
+          case Left(x)  => Applicative[G].point(Left(x))
+          case Right(x) => Applicative[G].map(f(x))(Right(_))
+        }
 
       override def foldRight[A, B](fa: Either[L, A], z: => B)(
-          f: (A, => B) => B) = fa match {
-        case Left(_)  => z
-        case Right(a) => f(a, z)
-      }
+          f: (A, => B) => B) =
+        fa match {
+          case Left(_)  => z
+          case Right(a) => f(a, z)
+        }
 
       def cozip[A, B](a: Either[L, A \/ B]) =
         a match {
@@ -387,12 +392,14 @@ trait EitherInstances extends EitherInstances0 {
 
   implicit def eitherShow[A, B](implicit
       SA: Show[A],
-      SB: Show[B]): Show[Either[A, B]] = new Show[Either[A, B]] {
-    override def show(f: Either[A, B]): Cord = f match {
-      case Left(a)  => ("Left(": Cord) ++ SA.show(a) :- ')'
-      case Right(b) => ("Right(": Cord) ++ SB.show(b) :- ')'
+      SB: Show[B]): Show[Either[A, B]] =
+    new Show[Either[A, B]] {
+      override def show(f: Either[A, B]): Cord =
+        f match {
+          case Left(a)  => ("Left(": Cord) ++ SA.show(a) :- ')'
+          case Right(b) => ("Right(": Cord) ++ SB.show(b) :- ')'
+        }
     }
-  }
 }
 
 object either extends EitherInstances
@@ -402,11 +409,12 @@ private trait EitherRightEqual[X, A] extends Equal[RightProjection[X, A]] {
 
   final override def equal(
       a1: RightProjection[X, A],
-      a2: RightProjection[X, A]) = (a1.toOption, a2.toOption) match {
-    case (Some(x), Some(y)) => A.equal(x, y)
-    case (None, None)       => true
-    case _                  => false
-  }
+      a2: RightProjection[X, A]) =
+    (a1.toOption, a2.toOption) match {
+      case (Some(x), Some(y)) => A.equal(x, y)
+      case (None, None)       => true
+      case _                  => false
+    }
 }
 
 private trait EitherLeftEqual[A, X] extends Equal[LeftProjection[A, X]] {
@@ -549,12 +557,13 @@ private trait EitherOrder[A, B]
 
   import Ordering._
 
-  def order(f1: Either[A, B], f2: Either[A, B]) = (f1, f2) match {
-    case (Left(x), Left(y))   => A.order(x, y)
-    case (Right(x), Right(y)) => B.order(x, y)
-    case (Left(_), Right(_))  => LT
-    case (Right(_), Left(_))  => GT
-  }
+  def order(f1: Either[A, B], f2: Either[A, B]) =
+    (f1, f2) match {
+      case (Left(x), Left(y))   => A.order(x, y)
+      case (Right(x), Right(y)) => B.order(x, y)
+      case (Left(_), Right(_))  => LT
+      case (Right(_), Left(_))  => GT
+    }
 }
 
 private trait EitherLeftOrder[A, X]

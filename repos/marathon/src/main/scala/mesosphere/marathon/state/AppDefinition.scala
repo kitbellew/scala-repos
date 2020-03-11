@@ -426,11 +426,12 @@ object AppDefinition {
       }
     }
 
-    def forNewConfig(newVersion: Timestamp): FullVersionInfo = FullVersionInfo(
-      version = newVersion,
-      lastScalingAt = newVersion,
-      lastConfigChangeAt = newVersion
-    )
+    def forNewConfig(newVersion: Timestamp): FullVersionInfo =
+      FullVersionInfo(
+        version = newVersion,
+        lastScalingAt = newVersion,
+        lastConfigChangeAt = newVersion
+      )
   }
 
   val RandomPortValue: Int = 0
@@ -573,11 +574,12 @@ object AppDefinition {
         val fromVolumes = from.persistentVolumes
         val toVolumes = to.persistentVolumes
         def sameSize = fromVolumes.size == toVolumes.size
-        def noChange = from.persistentVolumes.forall { fromVolume =>
-          toVolumes
-            .find(_.containerPath == fromVolume.containerPath)
-            .contains(fromVolume)
-        }
+        def noChange =
+          from.persistentVolumes.forall { fromVolume =>
+            toVolumes
+              .find(_.containerPath == fromVolume.containerPath)
+              .contains(fromVolume)
+          }
         sameSize && noChange
       }
 

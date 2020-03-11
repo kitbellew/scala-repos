@@ -43,9 +43,10 @@ class DeploymentManager(
   val deploymentStatus: mutable.Map[String, DeploymentStepInfo] =
     mutable.Map.empty[String, DeploymentStepInfo]
 
-  override def supervisorStrategy: SupervisorStrategy = OneForOneStrategy() {
-    case NonFatal(e) => Stop
-  }
+  override def supervisorStrategy: SupervisorStrategy =
+    OneForOneStrategy() {
+      case NonFatal(e) => Stop
+    }
 
   //TODO: fix style issue and enable this scalastyle check
   //scalastyle:off cyclomatic.complexity method.length

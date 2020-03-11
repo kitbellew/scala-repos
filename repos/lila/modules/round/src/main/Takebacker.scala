@@ -8,42 +8,44 @@ private[round] final class Takebacker(
     uciMemo: UciMemo,
     prefApi: PrefApi) {
 
-  def yes(pov: Pov): Fu[Events] = IfAllowed(pov.game) {
-    pov match {
-      case Pov(game, _) if pov.opponent.isProposingTakeback =>
-        if (pov.opponent.proposeTakebackAt == pov.game.turns) single(game)
-        else double(game)
-      case Pov(game, _) if pov.opponent.isAi => double(game)
-      case Pov(game, color) if (game playerCanProposeTakeback color) =>
-        messenger.system(game, _.takebackPropositionSent)
-        val progress = Progress(game) map { g =>
-          g.updatePlayer(color, _ proposeTakeback g.turns)
-        }
-        GameRepo save progress inject List(
-          Event.TakebackOffers(color.white, color.black))
-      case _ => fufail(ClientError("[takebacker] invalid yes " + pov))
+  def yes(pov: Pov): Fu[Events] =
+    IfAllowed(pov.game) {
+      pov match {
+        case Pov(game, _) if pov.opponent.isProposingTakeback =>
+          if (pov.opponent.proposeTakebackAt == pov.game.turns) single(game)
+          else double(game)
+        case Pov(game, _) if pov.opponent.isAi => double(game)
+        case Pov(game, color) if (game playerCanProposeTakeback color) =>
+          messenger.system(game, _.takebackPropositionSent)
+          val progress = Progress(game) map { g =>
+            g.updatePlayer(color, _ proposeTakeback g.turns)
+          }
+          GameRepo save progress inject List(
+            Event.TakebackOffers(color.white, color.black))
+        case _ => fufail(ClientError("[takebacker] invalid yes " + pov))
+      }
     }
-  }
 
-  def no(pov: Pov): Fu[Events] = IfAllowed(pov.game) {
-    pov match {
-      case Pov(game, color) if pov.player.isProposingTakeback =>
-        GameRepo save {
-          messenger.system(game, _.takebackPropositionCanceled)
-          Progress(game) map { g =>
-            g.updatePlayer(color, _.removeTakebackProposition)
-          }
-        } inject List(Event.TakebackOffers(false, false))
-      case Pov(game, color) if pov.opponent.isProposingTakeback =>
-        GameRepo save {
-          messenger.system(game, _.takebackPropositionDeclined)
-          Progress(game) map { g =>
-            g.updatePlayer(!color, _.removeTakebackProposition)
-          }
-        } inject List(Event.TakebackOffers(false, false))
-      case _ => fufail(ClientError("[takebacker] invalid no " + pov))
+  def no(pov: Pov): Fu[Events] =
+    IfAllowed(pov.game) {
+      pov match {
+        case Pov(game, color) if pov.player.isProposingTakeback =>
+          GameRepo save {
+            messenger.system(game, _.takebackPropositionCanceled)
+            Progress(game) map { g =>
+              g.updatePlayer(color, _.removeTakebackProposition)
+            }
+          } inject List(Event.TakebackOffers(false, false))
+        case Pov(game, color) if pov.opponent.isProposingTakeback =>
+          GameRepo save {
+            messenger.system(game, _.takebackPropositionDeclined)
+            Progress(game) map { g =>
+              g.updatePlayer(!color, _.removeTakebackProposition)
+            }
+          } inject List(Event.TakebackOffers(false, false))
+        case _ => fufail(ClientError("[takebacker] invalid no " + pov))
+      }
     }
-  }
 
   def isAllowedByPrefs(game: Game): Fu[Boolean] =
     if (game.hasAi) fuccess(true)

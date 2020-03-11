@@ -83,10 +83,11 @@ private[akka] trait DefaultOutputTransferStates extends Outputs {
     def isReady = demandAvailable
     def isCompleted = isClosed
   }
-  override def NeedsDemandOrCancel: TransferState = new TransferState {
-    def isReady = demandAvailable || isClosed
-    def isCompleted = false
-  }
+  override def NeedsDemandOrCancel: TransferState =
+    new TransferState {
+      def isReady = demandAvailable || isClosed
+      def isCompleted = false
+    }
 }
 
 // States of the operation that is executed by this processor
@@ -98,17 +99,19 @@ private[akka] trait TransferState {
   def isCompleted: Boolean
   def isExecutable = isReady && !isCompleted
 
-  def ||(other: TransferState): TransferState = new TransferState {
-    def isReady: Boolean = TransferState.this.isReady || other.isReady
-    def isCompleted: Boolean =
-      TransferState.this.isCompleted && other.isCompleted
-  }
+  def ||(other: TransferState): TransferState =
+    new TransferState {
+      def isReady: Boolean = TransferState.this.isReady || other.isReady
+      def isCompleted: Boolean =
+        TransferState.this.isCompleted && other.isCompleted
+    }
 
-  def &&(other: TransferState): TransferState = new TransferState {
-    def isReady: Boolean = TransferState.this.isReady && other.isReady
-    def isCompleted: Boolean =
-      TransferState.this.isCompleted || other.isCompleted
-  }
+  def &&(other: TransferState): TransferState =
+    new TransferState {
+      def isReady: Boolean = TransferState.this.isReady && other.isReady
+      def isCompleted: Boolean =
+        TransferState.this.isCompleted || other.isCompleted
+    }
 }
 
 /**
@@ -193,13 +196,14 @@ private[akka] trait Pump {
     pump()
   }
 
-  final def nextPhase(phase: TransferPhase): Unit = transferState match {
-    case WaitingForUpstreamSubscription(remaining, _) ⇒
-      transferState = WaitingForUpstreamSubscription(remaining, phase)
-    case _ ⇒
-      transferState = phase.precondition
-      currentAction = phase.action
-  }
+  final def nextPhase(phase: TransferPhase): Unit =
+    transferState match {
+      case WaitingForUpstreamSubscription(remaining, _) ⇒
+        transferState = WaitingForUpstreamSubscription(remaining, phase)
+      case _ ⇒
+        transferState = phase.precondition
+        currentAction = phase.action
+    }
 
   final def isPumpFinished: Boolean = transferState.isCompleted
 

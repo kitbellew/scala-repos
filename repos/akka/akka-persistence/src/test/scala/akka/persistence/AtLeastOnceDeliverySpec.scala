@@ -70,22 +70,23 @@ object AtLeastOnceDeliverySpec {
     // simplistic confirmation mechanism, to tell the requester that a snapshot succeeded
     var lastSnapshotAskedForBy: Option[ActorRef] = None
 
-    def updateState(evt: Evt): Unit = evt match {
-      case AcceptedReq(payload, destination) if actorSelectionDelivery ⇒
-        log.debug(
-          s"deliver(destination, deliveryId ⇒ Action(deliveryId, $payload)), recovery: " + recoveryRunning)
-        deliver(context.actorSelection(destination))(deliveryId ⇒
-          Action(deliveryId, payload))
+    def updateState(evt: Evt): Unit =
+      evt match {
+        case AcceptedReq(payload, destination) if actorSelectionDelivery ⇒
+          log.debug(
+            s"deliver(destination, deliveryId ⇒ Action(deliveryId, $payload)), recovery: " + recoveryRunning)
+          deliver(context.actorSelection(destination))(deliveryId ⇒
+            Action(deliveryId, payload))
 
-      case AcceptedReq(payload, destination) ⇒
-        log.debug(
-          s"deliver(destination, deliveryId ⇒ Action(deliveryId, $payload)), recovery: " + recoveryRunning)
-        deliver(destination)(deliveryId ⇒ Action(deliveryId, payload))
+        case AcceptedReq(payload, destination) ⇒
+          log.debug(
+            s"deliver(destination, deliveryId ⇒ Action(deliveryId, $payload)), recovery: " + recoveryRunning)
+          deliver(destination)(deliveryId ⇒ Action(deliveryId, payload))
 
-      case ReqDone(id) ⇒
-        log.debug(s"confirmDelivery($id), recovery: " + recoveryRunning)
-        confirmDelivery(id)
-    }
+        case ReqDone(id) ⇒
+          log.debug(s"confirmDelivery($id), recovery: " + recoveryRunning)
+          confirmDelivery(id)
+      }
 
     val receiveCommand: Receive = {
       case Req(payload) ⇒

@@ -9,15 +9,17 @@ import views._
 
 object WorldMap extends LilaController {
 
-  def index = Action {
-    Ok(views.html.site.worldMap())
-  }
-
-  def stream = Action.async {
-    Env.worldMap.getStream map { stream =>
-      Ok.chunked(
-        stream &> EventSource()
-      ) as "text/event-stream"
+  def index =
+    Action {
+      Ok(views.html.site.worldMap())
     }
-  }
+
+  def stream =
+    Action.async {
+      Env.worldMap.getStream map { stream =>
+        Ok.chunked(
+          stream &> EventSource()
+        ) as "text/event-stream"
+      }
+    }
 }

@@ -11,13 +11,14 @@ case class Schedule(
     position: StartingPosition,
     at: DateTime) {
 
-  def name = freq match {
-    case m @ Schedule.Freq.ExperimentalMarathon => m.name
-    case _ if variant.standard && position.initial =>
-      s"${freq.toString} ${speed.toString}"
-    case _ if variant.standard => s"${position.shortName} ${speed.toString}"
-    case _                     => s"${freq.toString} ${variant.name}"
-  }
+  def name =
+    freq match {
+      case m @ Schedule.Freq.ExperimentalMarathon => m.name
+      case _ if variant.standard && position.initial =>
+        s"${freq.toString} ${speed.toString}"
+      case _ if variant.standard => s"${position.shortName} ${speed.toString}"
+      case _                     => s"${freq.toString} ${variant.name}"
+    }
 
   def similarSpeed(other: Schedule) = Schedule.Speed.similar(speed, other.speed)
 
@@ -78,12 +79,13 @@ object Schedule {
     val mostPopular: List[Speed] = List(Bullet, Blitz, Classical)
     def apply(name: String) = all find (_.name == name)
     def byId(id: Int) = all find (_.id == id)
-    def similar(s1: Speed, s2: Speed) = (s1, s2) match {
-      case (a, b) if a == b      => true
-      case (HyperBullet, Bullet) => true
-      case (Bullet, HyperBullet) => true
-      case _                     => false
-    }
+    def similar(s1: Speed, s2: Speed) =
+      (s1, s2) match {
+        case (a, b) if a == b      => true
+        case (HyperBullet, Bullet) => true
+        case (Bullet, HyperBullet) => true
+        case _                     => false
+      }
   }
 
   sealed trait Season
@@ -134,12 +136,13 @@ object Schedule {
   private def makeInc(sched: Schedule) =
     sched.freq == Freq.Hourly && blitzIncHours(sched.at.getHourOfDay)
 
-  private[tournament] def clockFor(sched: Schedule) = sched.speed match {
-    case Speed.HyperBullet             => TournamentClock(30, 0)
-    case Speed.Bullet                  => TournamentClock(60, 0)
-    case Speed.SuperBlitz              => TournamentClock(3 * 60, 0)
-    case Speed.Blitz if makeInc(sched) => TournamentClock(3 * 60, 2)
-    case Speed.Blitz                   => TournamentClock(5 * 60, 0)
-    case Speed.Classical               => TournamentClock(10 * 60, 0)
-  }
+  private[tournament] def clockFor(sched: Schedule) =
+    sched.speed match {
+      case Speed.HyperBullet             => TournamentClock(30, 0)
+      case Speed.Bullet                  => TournamentClock(60, 0)
+      case Speed.SuperBlitz              => TournamentClock(3 * 60, 0)
+      case Speed.Blitz if makeInc(sched) => TournamentClock(3 * 60, 2)
+      case Speed.Blitz                   => TournamentClock(5 * 60, 0)
+      case Speed.Classical               => TournamentClock(10 * 60, 0)
+    }
 }

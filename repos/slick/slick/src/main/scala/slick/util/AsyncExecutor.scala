@@ -42,10 +42,11 @@ object AsyncExecutor extends Logging {
           case -1 => new LinkedBlockingQueue[Runnable]
           case n =>
             new ManagedArrayBlockingQueue[Runnable](n * 2) {
-              def accept(r: Runnable, size: Int) = r match {
-                case pr: PrioritizedRunnable if pr.highPriority => true
-                case _                                          => size < n
-              }
+              def accept(r: Runnable, size: Int) =
+                r match {
+                  case pr: PrioritizedRunnable if pr.highPriority => true
+                  case _                                          => size < n
+                }
             }
         }
         val tf = new DaemonThreadFactory(name + "-")
@@ -63,12 +64,13 @@ object AsyncExecutor extends Logging {
         }
         ExecutionContext.fromExecutorService(executor, loggingReporter)
       }
-      def close(): Unit = if (state.getAndSet(3) == 2) {
-        executor.shutdownNow()
-        if (!executor.awaitTermination(30, TimeUnit.SECONDS))
-          logger.warn(
-            "Abandoning ThreadPoolExecutor (not yet destroyed after 30 seconds)")
-      }
+      def close(): Unit =
+        if (state.getAndSet(3) == 2) {
+          executor.shutdownNow()
+          if (!executor.awaitTermination(30, TimeUnit.SECONDS))
+            logger.warn(
+              "Abandoning ThreadPoolExecutor (not yet destroyed after 30 seconds)")
+        }
     }
   }
 

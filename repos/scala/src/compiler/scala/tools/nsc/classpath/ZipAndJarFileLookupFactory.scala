@@ -31,14 +31,15 @@ sealed trait ZipAndJarFileLookupFactory {
 
   private def createUsingCache(
       zipFile: AbstractFile,
-      settings: Settings): FlatClassPath = cache.synchronized {
-    def newClassPathInstance = {
-      if (settings.verbose || settings.Ylogcp)
-        println(s"$zipFile is not yet in the classpath cache")
-      createForZipFile(zipFile)
+      settings: Settings): FlatClassPath =
+    cache.synchronized {
+      def newClassPathInstance = {
+        if (settings.verbose || settings.Ylogcp)
+          println(s"$zipFile is not yet in the classpath cache")
+        createForZipFile(zipFile)
+      }
+      cache.getOrElseUpdate(zipFile, newClassPathInstance)
     }
-    cache.getOrElseUpdate(zipFile, newClassPathInstance)
-  }
 }
 
 /**

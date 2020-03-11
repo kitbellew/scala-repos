@@ -150,9 +150,8 @@ trait TestEventService
       accountFinder,
       new Instant(1363327426906L))
     val eventStore = new EventStore[Future] {
-      def save(action: Event, timeout: Timeout) = M.point {
-        stored += action; \/-(PrecogUnit)
-      }
+      def save(action: Event, timeout: Timeout) =
+        M.point { stored += action; \/-(PrecogUnit) }
     }
     val jobManager =
       new InMemoryJobManager[({ type l[+a] = EitherT[Future, String, a] })#l]

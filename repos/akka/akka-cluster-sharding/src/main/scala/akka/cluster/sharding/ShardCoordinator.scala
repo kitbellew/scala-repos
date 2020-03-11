@@ -350,64 +350,65 @@ object ShardCoordinator {
           copy(unallocatedShards = Set.empty, rememberEntities = enabled)
       }
 
-      def updated(event: DomainEvent): State = event match {
-        case ShardRegionRegistered(region) ⇒
-          require(
-            !regions.contains(region),
-            s"Region $region already registered: $this")
-          copy(regions = regions.updated(region, Vector.empty))
-        case ShardRegionProxyRegistered(proxy) ⇒
-          require(
-            !regionProxies.contains(proxy),
-            s"Region proxy $proxy already registered: $this")
-          copy(regionProxies = regionProxies + proxy)
-        case ShardRegionTerminated(region) ⇒
-          require(
-            regions.contains(region),
-            s"Terminated region $region not registered: $this")
-          val newUnallocatedShards =
-            if (rememberEntities) (unallocatedShards ++ regions(region))
-            else unallocatedShards
-          copy(
-            regions = regions - region,
-            shards = shards -- regions(region),
-            unallocatedShards = newUnallocatedShards)
-        case ShardRegionProxyTerminated(proxy) ⇒
-          require(
-            regionProxies.contains(proxy),
-            s"Terminated region proxy $proxy not registered: $this")
-          copy(regionProxies = regionProxies - proxy)
-        case ShardHomeAllocated(shard, region) ⇒
-          require(
-            regions.contains(region),
-            s"Region $region not registered: $this")
-          require(
-            !shards.contains(shard),
-            s"Shard [$shard] already allocated: $this")
-          val newUnallocatedShards =
-            if (rememberEntities) (unallocatedShards - shard)
-            else unallocatedShards
-          copy(
-            shards = shards.updated(shard, region),
-            regions = regions.updated(region, regions(region) :+ shard),
-            unallocatedShards = newUnallocatedShards)
-        case ShardHomeDeallocated(shard) ⇒
-          require(
-            shards.contains(shard),
-            s"Shard [$shard] not allocated: $this")
-          val region = shards(shard)
-          require(
-            regions.contains(region),
-            s"Region $region for shard [$shard] not registered: $this")
-          val newUnallocatedShards =
-            if (rememberEntities) (unallocatedShards + shard)
-            else unallocatedShards
-          copy(
-            shards = shards - shard,
-            regions =
-              regions.updated(region, regions(region).filterNot(_ == shard)),
-            unallocatedShards = newUnallocatedShards)
-      }
+      def updated(event: DomainEvent): State =
+        event match {
+          case ShardRegionRegistered(region) ⇒
+            require(
+              !regions.contains(region),
+              s"Region $region already registered: $this")
+            copy(regions = regions.updated(region, Vector.empty))
+          case ShardRegionProxyRegistered(proxy) ⇒
+            require(
+              !regionProxies.contains(proxy),
+              s"Region proxy $proxy already registered: $this")
+            copy(regionProxies = regionProxies + proxy)
+          case ShardRegionTerminated(region) ⇒
+            require(
+              regions.contains(region),
+              s"Terminated region $region not registered: $this")
+            val newUnallocatedShards =
+              if (rememberEntities) (unallocatedShards ++ regions(region))
+              else unallocatedShards
+            copy(
+              regions = regions - region,
+              shards = shards -- regions(region),
+              unallocatedShards = newUnallocatedShards)
+          case ShardRegionProxyTerminated(proxy) ⇒
+            require(
+              regionProxies.contains(proxy),
+              s"Terminated region proxy $proxy not registered: $this")
+            copy(regionProxies = regionProxies - proxy)
+          case ShardHomeAllocated(shard, region) ⇒
+            require(
+              regions.contains(region),
+              s"Region $region not registered: $this")
+            require(
+              !shards.contains(shard),
+              s"Shard [$shard] already allocated: $this")
+            val newUnallocatedShards =
+              if (rememberEntities) (unallocatedShards - shard)
+              else unallocatedShards
+            copy(
+              shards = shards.updated(shard, region),
+              regions = regions.updated(region, regions(region) :+ shard),
+              unallocatedShards = newUnallocatedShards)
+          case ShardHomeDeallocated(shard) ⇒
+            require(
+              shards.contains(shard),
+              s"Shard [$shard] not allocated: $this")
+            val region = shards(shard)
+            require(
+              regions.contains(region),
+              s"Region $region for shard [$shard] not registered: $this")
+            val newUnallocatedShards =
+              if (rememberEntities) (unallocatedShards + shard)
+              else unallocatedShards
+            copy(
+              shards = shards - shard,
+              regions =
+                regions.updated(region, regions(region).filterNot(_ == shard)),
+              unallocatedShards = newUnallocatedShards)
+        }
     }
 
   }

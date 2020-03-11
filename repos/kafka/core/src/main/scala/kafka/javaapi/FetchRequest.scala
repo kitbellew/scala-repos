@@ -45,10 +45,11 @@ class FetchRequest(
 
   override def toString = underlying.toString
 
-  override def equals(other: Any) = canEqual(other) && {
-    val otherFetchRequest = other.asInstanceOf[kafka.javaapi.FetchRequest]
-    this.underlying.equals(otherFetchRequest.underlying)
-  }
+  override def equals(other: Any) =
+    canEqual(other) && {
+      val otherFetchRequest = other.asInstanceOf[kafka.javaapi.FetchRequest]
+      this.underlying.equals(otherFetchRequest.underlying)
+    }
 
   def canEqual(other: Any) = other.isInstanceOf[kafka.javaapi.FetchRequest]
 

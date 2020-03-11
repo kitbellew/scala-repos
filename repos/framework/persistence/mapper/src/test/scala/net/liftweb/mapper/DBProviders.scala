@@ -109,34 +109,39 @@ object DbProviders {
 
   object MySqlProvider extends Provider with DbSetup {
     def name = "MySql"
-    def vendor = new Vendor("com.mysql.jdbc.Driver") {
-      def mkConn = {
-        DriverManager.getConnection(
-          "jdbc:mysql://localhost:3306/lift_test?autoReconnect=true",
-          "dpp",
-          "")
+    def vendor =
+      new Vendor("com.mysql.jdbc.Driver") {
+        def mkConn = {
+          DriverManager.getConnection(
+            "jdbc:mysql://localhost:3306/lift_test?autoReconnect=true",
+            "dpp",
+            "")
+        }
       }
-    }
     def propName: String = "mysql_local"
   }
 
   object PostgreSqlProvider extends Provider with DbSetup {
     def name = "PostgreSql"
-    def vendor = new Vendor("org.postgresql.Driver") {
-      def mkConn =
-        DriverManager
-          .getConnection("jdbc:postgresql://localhost/lift", "lift", "lift")
-    }
+    def vendor =
+      new Vendor("org.postgresql.Driver") {
+        def mkConn =
+          DriverManager.getConnection(
+            "jdbc:postgresql://localhost/lift",
+            "lift",
+            "lift")
+      }
     def propName: String = "psql_local"
   }
 
   object DerbyProvider extends Provider with FileDbSetup {
     def name = "Derby"
     def filePath = "target/tests_derby_lift"
-    def vendor = new Vendor("org.apache.derby.jdbc.EmbeddedDriver") {
-      def mkConn =
-        DriverManager.getConnection("jdbc:derby:" + filePath + ";create=true")
-    }
+    def vendor =
+      new Vendor("org.apache.derby.jdbc.EmbeddedDriver") {
+        def mkConn =
+          DriverManager.getConnection("jdbc:derby:" + filePath + ";create=true")
+      }
     def propName: String = "derby_local"
     override def required_? = true
   }
@@ -144,51 +149,58 @@ object DbProviders {
   object H2FileProvider extends Provider with FileDbSetup {
     def name = "H2"
     def filePath = "target/tests_h2_lift"
-    def vendor = new Vendor("org.h2.Driver") {
-      def mkConn =
-        DriverManager.getConnection("jdbc:h2:" + filePath + "/test.db")
-    }
+    def vendor =
+      new Vendor("org.h2.Driver") {
+        def mkConn =
+          DriverManager.getConnection("jdbc:h2:" + filePath + "/test.db")
+      }
     def propName: String = "hs_fs"
     override def required_? = true
   }
 
   object H2MemoryProvider extends Provider with DbSetup {
     def name = "H2 in memory"
-    def vendor = new Vendor("org.h2.Driver") {
-      def mkConn =
-        DriverManager.getConnection("jdbc:h2:mem:lift;DB_CLOSE_DELAY=-1")
-    }
+    def vendor =
+      new Vendor("org.h2.Driver") {
+        def mkConn =
+          DriverManager.getConnection("jdbc:h2:mem:lift;DB_CLOSE_DELAY=-1")
+      }
     def propName: String = "hs_mem"
     override def required_? = true
   }
 
   object SqlServerProvider extends Provider with DbSetup {
     def name = "Microsoft SQL Server"
-    def vendor = new Vendor("net.sourceforge.jtds.jdbc.Driver") {
-      def mkConn =
-        DriverManager
-          .getConnection("jdbc:jtds:sqlserver://localhost/lift", "lift", "lift")
-    }
+    def vendor =
+      new Vendor("net.sourceforge.jtds.jdbc.Driver") {
+        def mkConn =
+          DriverManager.getConnection(
+            "jdbc:jtds:sqlserver://localhost/lift",
+            "lift",
+            "lift")
+      }
     def propName: String = "ms_sqlserver"
   }
 
   object OracleProvider extends Provider with DbSetup {
     def name = "Oracle"
-    def vendor = new Vendor("oracle.jdbc.OracleDriver") {
-      def mkConn =
-        DriverManager.getConnection(
-          "jdbc:oracle:thin:lift/lift@//localhost:1521/lift")
-    }
+    def vendor =
+      new Vendor("oracle.jdbc.OracleDriver") {
+        def mkConn =
+          DriverManager.getConnection(
+            "jdbc:oracle:thin:lift/lift@//localhost:1521/lift")
+      }
     def propName: String = "oracle_local"
   }
 
   object MaxDbProvider extends Provider with DbSetup {
     def name = "SAP MaxDB"
-    def vendor = new Vendor("com.sap.dbtech.jdbc.DriverSapDB") {
-      def mkConn =
-        DriverManager.getConnection(
-          "jdbc:sapdb://localhost:7210/lift?user=lift&password=lift")
-    }
+    def vendor =
+      new Vendor("com.sap.dbtech.jdbc.DriverSapDB") {
+        def mkConn =
+          DriverManager.getConnection(
+            "jdbc:sapdb://localhost:7210/lift?user=lift&password=lift")
+      }
     def propName: String = "maxdb_local"
   }
 }

@@ -40,22 +40,26 @@ case class HttpConfiguration(
   *               discarded if a single cookie is found to be invalid.
   */
 case class CookiesConfiguration(strict: Boolean = true) {
-  def serverEncoder: ServerCookieEncoder = strict match {
-    case true  => ServerCookieEncoder.STRICT
-    case false => ServerCookieEncoder.LAX
-  }
-  def clientEncoder: ClientCookieEncoder = strict match {
-    case true  => ClientCookieEncoder.STRICT
-    case false => ClientCookieEncoder.LAX
-  }
-  def serverDecoder: ServerCookieDecoder = strict match {
-    case true  => ServerCookieDecoder.STRICT
-    case false => ServerCookieDecoder.LAX
-  }
-  def clientDecoder: ClientCookieDecoder = strict match {
-    case true  => ClientCookieDecoder.STRICT
-    case false => ClientCookieDecoder.LAX
-  }
+  def serverEncoder: ServerCookieEncoder =
+    strict match {
+      case true  => ServerCookieEncoder.STRICT
+      case false => ServerCookieEncoder.LAX
+    }
+  def clientEncoder: ClientCookieEncoder =
+    strict match {
+      case true  => ClientCookieEncoder.STRICT
+      case false => ClientCookieEncoder.LAX
+    }
+  def serverDecoder: ServerCookieDecoder =
+    strict match {
+      case true  => ServerCookieDecoder.STRICT
+      case false => ServerCookieDecoder.LAX
+    }
+  def clientDecoder: ClientCookieDecoder =
+    strict match {
+      case true  => ClientCookieDecoder.STRICT
+      case false => ClientCookieDecoder.LAX
+    }
 }
 
 /**

@@ -91,13 +91,14 @@ case class In(attribute: String, values: Array[Any]) extends Filter {
     }
     h
   }
-  override def equals(o: Any): Boolean = o match {
-    case In(a, vs) =>
-      a == attribute && vs.length == values.length && vs
-        .zip(values)
-        .forall(x => x._1 == x._2)
-    case _ => false
-  }
+  override def equals(o: Any): Boolean =
+    o match {
+      case In(a, vs) =>
+        a == attribute && vs.length == values.length && vs
+          .zip(values)
+          .forall(x => x._1 == x._2)
+      case _ => false
+    }
   override def toString: String = {
     s"In($attribute, [${values.mkString(",")}]"
   }

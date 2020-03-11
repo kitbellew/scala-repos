@@ -68,11 +68,12 @@ object StormLaws {
   def genStore: (String, Storm#Store[Int, Int]) =
     TestStore.createStore[Int, Int]()
 
-  def genSink: () => ((Int) => Future[Unit]) = () => {
-    x: Int =>
-      append(x)
-      Future.Unit
-  }
+  def genSink: () => ((Int) => Future[Unit]) =
+    () => {
+      x: Int =>
+        append(x)
+        Future.Unit
+    }
 
   def memoryPlanWithoutSummer(original: List[Int])(
       mkJob: (

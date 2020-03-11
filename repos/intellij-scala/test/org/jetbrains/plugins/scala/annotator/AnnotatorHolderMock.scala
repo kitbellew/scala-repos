@@ -22,10 +22,11 @@ class AnnotatorHolderMock extends AnnotationHolder {
     "tooltip")
 
   def annotations = myAnnotations.reverse
-  def errorAnnotations = annotations.filter {
-    case error: Error => true
-    case _            => false
-  }
+  def errorAnnotations =
+    annotations.filter {
+      case error: Error => true
+      case _            => false
+    }
 
   private var myAnnotations = List[Message]()
 

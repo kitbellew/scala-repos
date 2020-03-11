@@ -22,11 +22,12 @@ private[puzzle] final class Selector(
 
   private def mateSelector(mate: Boolean) = BSONDocument("mate" -> mate)
 
-  private def difficultyDecay(difficulty: Int) = difficulty match {
-    case 1 => -200
-    case 3 => +200
-    case _ => 0
-  }
+  private def difficultyDecay(difficulty: Int) =
+    difficulty match {
+      case 1 => -200
+      case 3 => +200
+      case _ => 0
+    }
 
   private val toleranceMax = 1000
 

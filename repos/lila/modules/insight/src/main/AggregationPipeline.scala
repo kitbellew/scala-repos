@@ -40,11 +40,12 @@ private final class AggregationPipeline {
                 acc))
         }
     ))
-  private def dimensionGroupId(dim: Dimension[_]): BSONValue = dim match {
-    case Dimension.MovetimeRange => movetimeIdDispatcher
-    case Dimension.MaterialRange => materialIdDispatcher
-    case d                       => BSONString("$" + d.dbKey)
-  }
+  private def dimensionGroupId(dim: Dimension[_]): BSONValue =
+    dim match {
+      case Dimension.MovetimeRange => movetimeIdDispatcher
+      case Dimension.MaterialRange => materialIdDispatcher
+      case d                       => BSONString("$" + d.dbKey)
+    }
 
   private val sampleGames = Sample(10 * 1000)
   private val sortDate = Sort(Descending(F.date))

@@ -16,12 +16,13 @@ class ScalaUnwrapContext extends AbstractUnwrapper.AbstractContext {
 
   def extractBlockOrSingleStatement(
       blockStmt: ScBlockStatement,
-      from: PsiElement) = blockStmt match {
-    case block: ScBlock if block.statements.nonEmpty =>
-      extract(block.statements.head, block.statements.last, from)
-    case stmt: ScBlockStatement => extract(stmt, stmt, from)
-    case _                      =>
-  }
+      from: PsiElement) =
+    blockStmt match {
+      case block: ScBlock if block.statements.nonEmpty =>
+        extract(block.statements.head, block.statements.last, from)
+      case stmt: ScBlockStatement => extract(stmt, stmt, from)
+      case _                      =>
+    }
 
   def insertNewLine() {
     val lastExtracted = myElementsToExtract.get(myElementsToExtract.size() - 1)

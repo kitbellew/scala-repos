@@ -105,47 +105,51 @@ object CanBeParameter {
 
   implicit val valueCanBeParameter = {
     new CanBeParameter[Value] {
-      def sizeOf(param: Value) = param match {
-        case RawValue(_, _, true, b) => Buffer.sizeOfLen(b.length) + b.length
-        case StringValue(s) =>
-          val bytes = s.getBytes(Charset.defaultCharset);
-          Buffer.sizeOfLen(bytes.size) + bytes.size
-        case ByteValue(_)   => 1
-        case ShortValue(_)  => 2
-        case IntValue(_)    => 4
-        case LongValue(_)   => 8
-        case FloatValue(_)  => 4
-        case DoubleValue(_) => 8
-        case NullValue      => 0
-        case _              => 0
-      }
+      def sizeOf(param: Value) =
+        param match {
+          case RawValue(_, _, true, b) => Buffer.sizeOfLen(b.length) + b.length
+          case StringValue(s) =>
+            val bytes = s.getBytes(Charset.defaultCharset);
+            Buffer.sizeOfLen(bytes.size) + bytes.size
+          case ByteValue(_)   => 1
+          case ShortValue(_)  => 2
+          case IntValue(_)    => 4
+          case LongValue(_)   => 8
+          case FloatValue(_)  => 4
+          case DoubleValue(_) => 8
+          case NullValue      => 0
+          case _              => 0
+        }
 
-      def typeCode(param: Value) = param match {
-        case RawValue(typ, _, _, _) => typ
-        case StringValue(_)         => Type.VarChar
-        case ByteValue(_)           => Type.Tiny
-        case ShortValue(_)          => Type.Short
-        case IntValue(_)            => Type.Long
-        case LongValue(_)           => Type.LongLong
-        case FloatValue(_)          => Type.Float
-        case DoubleValue(_)         => Type.Double
-        case EmptyValue             => -1
-        case NullValue              => Type.Null
-      }
+      def typeCode(param: Value) =
+        param match {
+          case RawValue(typ, _, _, _) => typ
+          case StringValue(_)         => Type.VarChar
+          case ByteValue(_)           => Type.Tiny
+          case ShortValue(_)          => Type.Short
+          case IntValue(_)            => Type.Long
+          case LongValue(_)           => Type.LongLong
+          case FloatValue(_)          => Type.Float
+          case DoubleValue(_)         => Type.Double
+          case EmptyValue             => -1
+          case NullValue              => Type.Null
+        }
 
-      def write(writer: BufferWriter, param: Value) = param match {
-        // allows for generic binary values as params to a prepared statement.
-        case RawValue(_, _, true, bytes) => writer.writeLengthCodedBytes(bytes)
-        // allows for Value types as params to prepared statements
-        case ByteValue(b)   => writer.writeByte(b)
-        case ShortValue(s)  => writer.writeShort(s)
-        case IntValue(i)    => writer.writeInt(i)
-        case LongValue(l)   => writer.writeLong(l)
-        case FloatValue(f)  => writer.writeFloat(f)
-        case DoubleValue(d) => writer.writeDouble(d)
-        case StringValue(s) => writer.writeLengthCodedString(s)
-        case _              => ()
-      }
+      def write(writer: BufferWriter, param: Value) =
+        param match {
+          // allows for generic binary values as params to a prepared statement.
+          case RawValue(_, _, true, bytes) =>
+            writer.writeLengthCodedBytes(bytes)
+          // allows for Value types as params to prepared statements
+          case ByteValue(b)   => writer.writeByte(b)
+          case ShortValue(s)  => writer.writeShort(s)
+          case IntValue(i)    => writer.writeInt(i)
+          case LongValue(l)   => writer.writeLong(l)
+          case FloatValue(f)  => writer.writeFloat(f)
+          case DoubleValue(d) => writer.writeDouble(d)
+          case StringValue(s) => writer.writeLengthCodedString(s)
+          case _              => ()
+        }
     }
   }
 

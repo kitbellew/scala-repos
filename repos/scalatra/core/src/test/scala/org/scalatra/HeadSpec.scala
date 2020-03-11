@@ -13,9 +13,10 @@ A HEAD request should"
 
   def noBody = head("/") { response.body must_== "" }
 
-  def preserveHeaders = head("/") {
-    header("X-Powered-By") must_== "caffeine"
-  }
+  def preserveHeaders =
+    head("/") {
+      header("X-Powered-By") must_== "caffeine"
+    }
 }
 
 class HeadSpecServlet extends ScalatraServlet {

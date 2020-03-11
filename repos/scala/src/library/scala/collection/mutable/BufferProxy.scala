@@ -139,7 +139,8 @@ trait BufferProxy[A] extends Buffer[A] with Proxy {
     *
     *  @return a `Buffer` with the same elements.
     */
-  override def clone(): Buffer[A] = new BufferProxy[A] {
-    def self = BufferProxy.this.self.clone()
-  }
+  override def clone(): Buffer[A] =
+    new BufferProxy[A] {
+      def self = BufferProxy.this.self.clone()
+    }
 }

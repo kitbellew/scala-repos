@@ -453,7 +453,6 @@ object Act {
   final object ParsedGlobal extends ParsedAxis[Nothing]
   final object Omitted extends ParsedAxis[Nothing]
   final class ParsedValue[T](val value: T) extends ParsedAxis[T]
-  def value[T](t: Parser[T]): Parser[ParsedAxis[T]] = t map { v =>
-    new ParsedValue(v)
-  }
+  def value[T](t: Parser[T]): Parser[ParsedAxis[T]] =
+    t map { v => new ParsedValue(v) }
 }

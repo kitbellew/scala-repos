@@ -99,8 +99,8 @@ final class AssessApi(
       case Some(pag) => withGames(pag).map(_.some)
     }
 
-  def refreshAssessByUsername(username: String): Funit = withUser(username) {
-    user =>
+  def refreshAssessByUsername(username: String): Funit =
+    withUser(username) { user =>
       (GameRepo.gamesForAssessment(user.id, 100) flatMap { gs =>
         (gs map { g =>
           AnalysisRepo.byId(g.id) flatMap {
@@ -109,7 +109,7 @@ final class AssessApi(
           }
         }).sequenceFu.void
       }) >> assessUser(user.id)
-  }
+    }
 
   def onAnalysisReady(
       game: Game,

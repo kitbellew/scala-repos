@@ -91,41 +91,42 @@ object HeadHelper {
     if (headInBody.isEmpty) {
       xhtml
     } else {
-      def xform(in: NodeSeq, inBody: Boolean): NodeSeq = in flatMap {
-        case e: Elem if !inBody && e.label == "body" =>
-          Elem(
-            e.prefix,
-            e.label,
-            e.attributes,
-            e.scope,
-            e.minimizeEmpty,
-            xform(e.child, true): _*)
+      def xform(in: NodeSeq, inBody: Boolean): NodeSeq =
+        in flatMap {
+          case e: Elem if !inBody && e.label == "body" =>
+            Elem(
+              e.prefix,
+              e.label,
+              e.attributes,
+              e.scope,
+              e.minimizeEmpty,
+              xform(e.child, true): _*)
 
-        case e: Elem if inBody && e.label == "head" => NodeSeq.Empty
+          case e: Elem if inBody && e.label == "head" => NodeSeq.Empty
 
-        case e: Elem if e.label == "head" =>
-          Elem(
-            e.prefix,
-            e.label,
-            e.attributes,
-            e.scope,
-            e.minimizeEmpty,
-            removeHtmlDuplicates(e.child ++ headInBody): _*)
+          case e: Elem if e.label == "head" =>
+            Elem(
+              e.prefix,
+              e.label,
+              e.attributes,
+              e.scope,
+              e.minimizeEmpty,
+              removeHtmlDuplicates(e.child ++ headInBody): _*)
 
-        case e: Elem =>
-          Elem(
-            e.prefix,
-            e.label,
-            e.attributes,
-            e.scope,
-            e.minimizeEmpty,
-            xform(e.child, inBody): _*)
+          case e: Elem =>
+            Elem(
+              e.prefix,
+              e.label,
+              e.attributes,
+              e.scope,
+              e.minimizeEmpty,
+              xform(e.child, inBody): _*)
 
-        case g: Group =>
-          xform(g.child, inBody)
+          case g: Group =>
+            xform(g.child, inBody)
 
-        case x => x
-      }
+          case x => x
+        }
 
       xform(xhtml, false)
     }

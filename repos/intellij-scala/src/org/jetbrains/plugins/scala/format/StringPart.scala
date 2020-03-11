@@ -37,11 +37,12 @@ case class Injection(expression: ScExpression, specifier: Option[Specifier])
     extends StringPart {
   def text = expression.getText
 
-  def value = expression match {
-    case literal: ScLiteral => literal.getValue.toString
-    case block: ScBlockExpr => block.exprs.headOption.map(_.getText).mkString
-    case element            => element.getText
-  }
+  def value =
+    expression match {
+      case literal: ScLiteral => literal.getValue.toString
+      case block: ScBlockExpr => block.exprs.headOption.map(_.getText).mkString
+      case element            => element.getText
+    }
 
   def format = specifier.map(_.format).getOrElse("")
 
@@ -55,32 +56,34 @@ case class Injection(expression: ScExpression, specifier: Option[Specifier])
 
   def isFormattingRequired = specifier.exists(_.format.length > 2)
 
-  def isComplexBlock = expression match {
-    case block: ScBlockExpr => block.exprs.length > 1
-    case _                  => false
-  }
+  def isComplexBlock =
+    expression match {
+      case block: ScBlockExpr => block.exprs.length > 1
+      case _                  => false
+    }
 
-  def problem: Option[InjectionProblem] = specifier.flatMap {
-    it =>
-      val _type =
-        expressionType.map(ScType.expandAliases(_)).getOrElse(new Object())
-      _type match {
-        case Success(result, _) =>
-          result match {
-            case res: ScType =>
-              try {
-                val value = Types.valueOf(res)
-                value.formatted(it.format)
-                None
-              } catch {
-                case e: IllegalFormatConversionException => Some(Inapplicable)
-                case e: IllegalFormatException           => Some(Malformed)
-              }
-            case _ => Some(Malformed)
-          }
-        case _ => Some(Malformed)
-      }
-  }
+  def problem: Option[InjectionProblem] =
+    specifier.flatMap {
+      it =>
+        val _type =
+          expressionType.map(ScType.expandAliases(_)).getOrElse(new Object())
+        _type match {
+          case Success(result, _) =>
+            result match {
+              case res: ScType =>
+                try {
+                  val value = Types.valueOf(res)
+                  value.formatted(it.format)
+                  None
+                } catch {
+                  case e: IllegalFormatConversionException => Some(Inapplicable)
+                  case e: IllegalFormatException           => Some(Malformed)
+                }
+              case _ => Some(Malformed)
+            }
+          case _ => Some(Malformed)
+        }
+    }
 }
 
 case class UnboundSpecifier(specifier: Specifier) extends StringPart

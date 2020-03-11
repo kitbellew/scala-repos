@@ -84,56 +84,59 @@ object RootIsolator {
     def rec(
         polys: List[TransformedPoly],
         acc: Vector[Interval[Rational]] = Vector.empty)
-        : Vector[Interval[Rational]] = polys match {
-      case TransformedPoly(p, a, b, c, d) :: rest =>
-        if (p(BigInt(0)) == BigInt(0)) {
-          val p0 = p.mapTerms { case Term(coeff, exp) => Term(coeff, exp - 1) }
-          rec(
-            TransformedPoly(p0, a, b, c, d) :: rest,
-            acc :+ Interval.point(Rational(b, d)))
-        } else {
-          p.signVariations match {
-            case 0 => // No roots.
-              rec(rest, acc)
+        : Vector[Interval[Rational]] =
+      polys match {
+        case TransformedPoly(p, a, b, c, d) :: rest =>
+          if (p(BigInt(0)) == BigInt(0)) {
+            val p0 = p.mapTerms {
+              case Term(coeff, exp) => Term(coeff, exp - 1)
+            }
+            rec(
+              TransformedPoly(p0, a, b, c, d) :: rest,
+              acc :+ Interval.point(Rational(b, d)))
+          } else {
+            p.signVariations match {
+              case 0 => // No roots.
+                rec(rest, acc)
 
-            case 1 => // Isolated exactly 1 root.
-              def ub: Rational = {
-                val exp = Roots.upperBound(p)
-                // This is an upper bound for p, but not for the initial poly.
-                val ub0 =
-                  if (exp >= 0) Rational(BigInt(1) << exp)
-                  else Rational(1, BigInt(1) << -exp)
-                // We map the upper bound for p back to a bound for the initial
-                // polynomial by using the inverse Mobius transformation.
-                (Rational(d) * ub0 - Rational(b)) / (Rational(
-                  -c) * ub0 + Rational(a))
-              }
-              val i0 = if (c == 0) ub else Rational(a, c)
-              val i1 = if (d == 0) ub else Rational(b, d)
-              if (i0 < i1) rec(rest, acc :+ Interval.open(i0, i1))
-              else rec(rest, acc :+ Interval.open(i1, i0))
+              case 1 => // Isolated exactly 1 root.
+                def ub: Rational = {
+                  val exp = Roots.upperBound(p)
+                  // This is an upper bound for p, but not for the initial poly.
+                  val ub0 =
+                    if (exp >= 0) Rational(BigInt(1) << exp)
+                    else Rational(1, BigInt(1) << -exp)
+                  // We map the upper bound for p back to a bound for the initial
+                  // polynomial by using the inverse Mobius transformation.
+                  (Rational(d) * ub0 - Rational(b)) / (Rational(
+                    -c) * ub0 + Rational(a))
+                }
+                val i0 = if (c == 0) ub else Rational(a, c)
+                val i1 = if (d == 0) ub else Rational(b, d)
+                if (i0 < i1) rec(rest, acc :+ Interval.open(i0, i1))
+                else rec(rest, acc :+ Interval.open(i1, i0))
 
-            case _ => // Exists 0 or 2 or more roots.
-              val lb = Roots.lowerBound(p)
-              if (lb < 0) {
-                val more = split1(p, a, b, c, d)
-                rec(more reverse_::: rest, acc)
-              } else {
-                val flr = BigInt(1) << lb
-                val more = split1(
-                  p.compose(x + Polynomial.constant(flr)),
-                  a,
-                  b + a * flr,
-                  c,
-                  d + c * flr)
-                rec(more reverse_::: rest, acc)
-              }
+              case _ => // Exists 0 or 2 or more roots.
+                val lb = Roots.lowerBound(p)
+                if (lb < 0) {
+                  val more = split1(p, a, b, c, d)
+                  rec(more reverse_::: rest, acc)
+                } else {
+                  val flr = BigInt(1) << lb
+                  val more = split1(
+                    p.compose(x + Polynomial.constant(flr)),
+                    a,
+                    b + a * flr,
+                    c,
+                    d + c * flr)
+                  rec(more reverse_::: rest, acc)
+                }
+            }
           }
-        }
 
-      case Nil =>
-        acc
-    }
+        case Nil =>
+          acc
+      }
 
     if (poly.isConstant) {
       // A degenerate case we cannot handle.

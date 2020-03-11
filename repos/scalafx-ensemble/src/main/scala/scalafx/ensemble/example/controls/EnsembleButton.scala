@@ -35,31 +35,32 @@ import scalafx.scene.layout.TilePane
 /** Example of organizing buttons in column, of the same width. */
 class EnsembleButton extends EnsembleExample {
 
-  def getContent = new TilePane {
-    padding = Insets(10)
-    orientation = Orientation.VERTICAL
-    hgap = 10
-    vgap = 10
-    children = List(
-      new Button {
-        text = "Button 1"
-        maxWidth = Double.MaxValue
-      },
-      new Button {
-        text = "Default Button - Enter Key"
-        defaultButton = true
-        maxWidth = Double.MaxValue
-      },
-      new Button {
-        text = "Cancel Button - Esc Key"
-        cancelButton = true
-        maxWidth = Double.MaxValue
-      },
-      new Button {
-        text = "Disabled Button"
-        disable = true
-        maxWidth = Double.MaxValue
-      }
-    )
-  }
+  def getContent =
+    new TilePane {
+      padding = Insets(10)
+      orientation = Orientation.VERTICAL
+      hgap = 10
+      vgap = 10
+      children = List(
+        new Button {
+          text = "Button 1"
+          maxWidth = Double.MaxValue
+        },
+        new Button {
+          text = "Default Button - Enter Key"
+          defaultButton = true
+          maxWidth = Double.MaxValue
+        },
+        new Button {
+          text = "Cancel Button - Esc Key"
+          cancelButton = true
+          maxWidth = Double.MaxValue
+        },
+        new Button {
+          text = "Disabled Button"
+          disable = true
+          maxWidth = Double.MaxValue
+        }
+      )
+    }
 }

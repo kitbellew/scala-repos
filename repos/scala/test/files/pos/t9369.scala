@@ -10,15 +10,17 @@ object Test {
 
   case class Not(prop: Prop) extends Prop with Simple
 
-  def simplify1(prop: Prop): Prop = prop match {
-    case Atom(tree) => ???
-    case Not(prop)  => ???
-    case _          => ???
-  }
+  def simplify1(prop: Prop): Prop =
+    prop match {
+      case Atom(tree) => ???
+      case Not(prop)  => ???
+      case _          => ???
+    }
 
-  def simplify2(prop: Prop): Prop = prop match {
-    case Not(Atom(tree)) => ???
-    case Not(Not(prop))  => ???
-    case _               => ???
-  }
+  def simplify2(prop: Prop): Prop =
+    prop match {
+      case Not(Atom(tree)) => ???
+      case Not(Not(prop))  => ???
+      case _               => ???
+    }
 }

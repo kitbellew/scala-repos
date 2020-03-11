@@ -37,34 +37,38 @@ sealed trait AnyContent {
   /**
     * application/form-url-encoded
     */
-  def asFormUrlEncoded: Option[Map[String, Seq[String]]] = this match {
-    case AnyContentAsFormUrlEncoded(data) => Some(data)
-    case _                                => None
-  }
+  def asFormUrlEncoded: Option[Map[String, Seq[String]]] =
+    this match {
+      case AnyContentAsFormUrlEncoded(data) => Some(data)
+      case _                                => None
+    }
 
   /**
     * text/plain
     */
-  def asText: Option[String] = this match {
-    case AnyContentAsText(txt) => Some(txt)
-    case _                     => None
-  }
+  def asText: Option[String] =
+    this match {
+      case AnyContentAsText(txt) => Some(txt)
+      case _                     => None
+    }
 
   /**
     * application/xml
     */
-  def asXml: Option[NodeSeq] = this match {
-    case AnyContentAsXml(xml) => Some(xml)
-    case _                    => None
-  }
+  def asXml: Option[NodeSeq] =
+    this match {
+      case AnyContentAsXml(xml) => Some(xml)
+      case _                    => None
+    }
 
   /**
     * text/json or application/json
     */
-  def asJson: Option[JsValue] = this match {
-    case AnyContentAsJson(json) => Some(json)
-    case _                      => None
-  }
+  def asJson: Option[JsValue] =
+    this match {
+      case AnyContentAsJson(json) => Some(json)
+      case _                      => None
+    }
 
   /**
     * multipart/form-data
@@ -78,10 +82,11 @@ sealed trait AnyContent {
   /**
     * Used when no Content-Type matches
     */
-  def asRaw: Option[RawBuffer] = this match {
-    case AnyContentAsRaw(raw) => Some(raw)
-    case _                    => None
-  }
+  def asRaw: Option[RawBuffer] =
+    this match {
+      case AnyContentAsRaw(raw) => Some(raw)
+      case _                    => None
+    }
 
 }
 
@@ -350,11 +355,12 @@ trait BodyParsers {
       *
       * @param maxLength Max length allowed or returns EntityTooLarge HTTP response.
       */
-    def text(maxLength: Int): BodyParser[String] = when(
-      _.contentType.exists(_.equalsIgnoreCase("text/plain")),
-      tolerantText(maxLength),
-      createBadResult("Expecting text/plain body", UNSUPPORTED_MEDIA_TYPE)
-    )
+    def text(maxLength: Int): BodyParser[String] =
+      when(
+        _.contentType.exists(_.equalsIgnoreCase("text/plain")),
+        tolerantText(maxLength),
+        createBadResult("Expecting text/plain body", UNSUPPORTED_MEDIA_TYPE)
+      )
 
     /**
       * Parse the body as text if the Content-Type is text/plain.
@@ -419,15 +425,16 @@ trait BodyParsers {
       *
       * @param maxLength Max length allowed or returns EntityTooLarge HTTP response.
       */
-    def json(maxLength: Int): BodyParser[JsValue] = when(
-      _.contentType.exists(m =>
-        m.equalsIgnoreCase("text/json") || m.equalsIgnoreCase(
-          "application/json")),
-      tolerantJson(maxLength),
-      createBadResult(
-        "Expecting text/json or application/json body",
-        UNSUPPORTED_MEDIA_TYPE)
-    )
+    def json(maxLength: Int): BodyParser[JsValue] =
+      when(
+        _.contentType.exists(m =>
+          m.equalsIgnoreCase("text/json") || m.equalsIgnoreCase(
+            "application/json")),
+        tolerantJson(maxLength),
+        createBadResult(
+          "Expecting text/json or application/json body",
+          UNSUPPORTED_MEDIA_TYPE)
+      )
 
     /**
       * Parse the body as Json if the Content-Type is text/json or application/json.
@@ -499,9 +506,8 @@ trait BodyParsers {
       */
     def empty: BodyParser[Unit] = ignore(Unit)
 
-    def ignore[A](body: A): BodyParser[A] = BodyParser("ignore") { request =>
-      Accumulator.done(Right(body))
-    }
+    def ignore[A](body: A): BodyParser[A] =
+      BodyParser("ignore") { request => Accumulator.done(Right(body)) }
 
     // -- XML parser
 
@@ -546,17 +552,18 @@ trait BodyParsers {
       *
       * @param maxLength Max length allowed or returns EntityTooLarge HTTP response.
       */
-    def xml(maxLength: Int): BodyParser[NodeSeq] = when(
-      _.contentType.exists { t =>
-        val tl = t.toLowerCase(Locale.ENGLISH)
-        tl.startsWith("text/xml") || tl.startsWith(
-          "application/xml") || ApplicationXmlMatcher.pattern
-          .matcher(tl)
-          .matches()
-      },
-      tolerantXml(maxLength),
-      createBadResult("Expecting xml body", UNSUPPORTED_MEDIA_TYPE)
-    )
+    def xml(maxLength: Int): BodyParser[NodeSeq] =
+      when(
+        _.contentType.exists { t =>
+          val tl = t.toLowerCase(Locale.ENGLISH)
+          tl.startsWith("text/xml") || tl.startsWith(
+            "application/xml") || ApplicationXmlMatcher.pattern
+            .matcher(tl)
+            .matches()
+        },
+        tolerantXml(maxLength),
+        createBadResult("Expecting xml body", UNSUPPORTED_MEDIA_TYPE)
+      )
 
     /**
       * Parse the body as Xml if the Content-Type is application/xml, text/xml or application/XXX+xml.
@@ -570,22 +577,22 @@ trait BodyParsers {
       *
       * @param to The file used to store the content.
       */
-    def file(to: File): BodyParser[File] = BodyParser("file, to=" + to) {
-      request =>
+    def file(to: File): BodyParser[File] =
+      BodyParser("file, to=" + to) { request =>
         import play.api.libs.iteratee.Execution.Implicits.trampoline
         Accumulator(StreamConverters.fromOutputStream(() =>
           new FileOutputStream(to))).map(_ => Right(to))
-    }
+      }
 
     /**
       * Store the body content into a temporary file.
       */
-    def temporaryFile: BodyParser[TemporaryFile] = BodyParser("temporaryFile") {
-      request =>
+    def temporaryFile: BodyParser[TemporaryFile] =
+      BodyParser("temporaryFile") { request =>
         val tempFile = TemporaryFile("requestBody", "asTemporaryFile")
         file(tempFile.file)(request).map(_ => Right(tempFile))(
           play.api.libs.iteratee.Execution.trampoline)
-    }
+      }
 
     // -- FormUrlEncoded
 
@@ -643,14 +650,14 @@ trait BodyParsers {
     /**
       * If the request is a PATCH, POST, or PUT, parse the body content by checking the Content-Type header.
       */
-    def default(maxLength: Option[Long]): BodyParser[AnyContent] = using {
-      request =>
+    def default(maxLength: Option[Long]): BodyParser[AnyContent] =
+      using { request =>
         if (request.method == HttpVerbs.PATCH || request.method == HttpVerbs.POST || request.method == HttpVerbs.PUT) {
           anyContent(maxLength)
         } else {
           ignore(AnyContentAsEmpty)
         }
-    }
+      }
 
     /**
       * Guess the body content by checking the Content-Type header.
@@ -767,18 +774,17 @@ trait BodyParsers {
     /**
       * A body parser that always returns an error.
       */
-    def error[A](result: Future[Result]): BodyParser[A] = BodyParser("error") {
-      request =>
+    def error[A](result: Future[Result]): BodyParser[A] =
+      BodyParser("error") { request =>
         import play.api.libs.iteratee.Execution.Implicits.trampoline
         Accumulator.done(result.map(Left.apply))
-    }
+      }
 
     /**
       * Allow to choose the right BodyParser parser to use by examining the request headers.
       */
-    def using[A](f: RequestHeader => BodyParser[A]) = BodyParser { request =>
-      f(request)(request)
-    }
+    def using[A](f: RequestHeader => BodyParser[A]) =
+      BodyParser { request => f(request)(request) }
 
     /**
       * Create a conditional BodyParser.

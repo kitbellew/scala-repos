@@ -105,11 +105,12 @@ trait TestCodeGenerator {
     def testCode: String = defaultTestCode(this)
 
     class MyGen(model: Model) extends SourceCodeGenerator(model) {
-      override def entityName = sqlName => {
-        val baseName = super.entityName(sqlName)
-        if (baseName.dropRight(3).last == 's') baseName.dropRight(4)
-        else baseName
-      }
+      override def entityName =
+        sqlName => {
+          val baseName = super.entityName(sqlName)
+          if (baseName.dropRight(3).last == 's') baseName.dropRight(4)
+          else baseName
+        }
       override def parentType =
         Some("com.typesafe.slick.testkit.util.TestCodeRunner.TestCase")
       override def code = {

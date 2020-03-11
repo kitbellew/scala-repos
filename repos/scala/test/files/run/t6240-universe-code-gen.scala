@@ -9,10 +9,11 @@ object Test extends App {
   val DefinitionsModule = JavaUniverseTpe.member(TermName("definitions"))
 
   def forceCode(prefix: String, tp: Type): String = {
-    def isLazyAccessorOrObject(sym: Symbol) = (
-      (sym.isMethod && sym.asMethod.isLazy)
-        || sym.isModule
-    )
+    def isLazyAccessorOrObject(sym: Symbol) =
+      (
+        (sym.isMethod && sym.asMethod.isLazy)
+          || sym.isModule
+      )
     val forceables = tp.members.sorted.filter(isLazyAccessorOrObject)
     forceables
       .map {

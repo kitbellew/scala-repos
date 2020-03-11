@@ -6,11 +6,12 @@ import Id._
 trait Zap[F[_], G[_]] { self =>
   def zapWith[A, B, C](fa: F[A], gb: G[B])(f: (A, B) => C): C
   def zap[A, B](f: F[A => B], g: G[A]): B = zapWith(f, g)(_(_))
-  def flip: Zap[G, F] = new Zap[G, F] {
-    def zapWith[A, B, C](ga: G[A], fb: F[B])(f: (A, B) => C): C =
-      self.zapWith(fb, ga)((b, a) => f(a, b))
-    override def flip = self
-  }
+  def flip: Zap[G, F] =
+    new Zap[G, F] {
+      def zapWith[A, B, C](ga: G[A], fb: F[B])(f: (A, B) => C): C =
+        self.zapWith(fb, ga)((b, a) => f(a, b))
+      override def flip = self
+    }
 }
 
 sealed abstract class ZapInstances {

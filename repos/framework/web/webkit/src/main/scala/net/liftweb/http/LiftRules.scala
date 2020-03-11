@@ -1177,15 +1177,16 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     this.setSiteMapFunc(() => sm)
   }
 
-  private def runAsSafe[T](f: => T): T = synchronized {
-    val old = _doneBoot
-    try {
-      _doneBoot = false
-      f
-    } finally {
-      _doneBoot = old
+  private def runAsSafe[T](f: => T): T =
+    synchronized {
+      val old = _doneBoot
+      try {
+        _doneBoot = false
+        f
+      } finally {
+        _doneBoot = old
+      }
     }
-  }
 
   private case class PerRequestPF[A, B](f: PartialFunction[A, B])
       extends PartialFunction[A, B] {
@@ -1403,11 +1404,12 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   /**
     * Sets the HTTPContext
     */
-  def setContext(in: HTTPContext): Unit = synchronized {
-    if (in ne _context) {
-      _context = in
+  def setContext(in: HTTPContext): Unit =
+    synchronized {
+      if (in ne _context) {
+        _context = in
+      }
     }
-  }
 
   private var otherPackages: List[String] = Nil
 
@@ -1462,8 +1464,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   /**
     * Obtain the resource as an array of bytes by name
     */
-  def loadResource(name: String): Box[Array[Byte]] = doWithResource(name) {
-    stream =>
+  def loadResource(name: String): Box[Array[Byte]] =
+    doWithResource(name) { stream =>
       val buffer = new Array[Byte](2048)
       val out = new ByteArrayOutputStream
       def reader {
@@ -1474,7 +1476,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
       }
       reader
       out.toByteArray
-  }
+    }
 
   /**
     * Obtain the resource as an XML by name. If you're using this to load a template, consider using
@@ -2244,10 +2246,11 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
       })(f)
     }
 
-    def toList: List[T] = cur.value match {
-      case null => rules
-      case xs   => xs
-    }
+    def toList: List[T] =
+      cur.value match {
+        case null => rules
+        case xs   => xs
+      }
 
     def prepend(r: T): RulesSeq[T] = {
       safe_? {
@@ -2274,14 +2277,15 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     self: RulesSeq[F => Box[T]] =>
 
     def firstFull(param: F): Box[T] = {
-      def finder(in: List[F => Box[T]]): Box[T] = in match {
-        case Nil => Empty
-        case x :: xs =>
-          x(param) match {
-            case Full(r) => Full(r)
-            case _       => finder(xs)
-          }
-      }
+      def finder(in: List[F => Box[T]]): Box[T] =
+        in match {
+          case Nil => Empty
+          case x :: xs =>
+            x(param) match {
+              case Full(r) => Full(r)
+              case _       => finder(xs)
+            }
+        }
 
       finder(toList)
     }

@@ -43,11 +43,12 @@ case object SexpNaN extends SexpAtom
 object SexpNumber {
   def apply(n: Int) = new SexpNumber(BigDecimal(n))
   def apply(n: Long) = new SexpNumber(BigDecimal(n))
-  def apply(n: Double) = n match {
-    case _ if n.isNaN      => SexpNil
-    case _ if n.isInfinity => SexpNil
-    case _                 => new SexpNumber(BigDecimal(n))
-  }
+  def apply(n: Double) =
+    n match {
+      case _ if n.isNaN      => SexpNil
+      case _ if n.isInfinity => SexpNil
+      case _                 => new SexpNumber(BigDecimal(n))
+    }
   def apply(n: BigInt) = new SexpNumber(BigDecimal(n))
   def apply(n: String) = new SexpNumber(BigDecimal(n))
   def apply(n: Array[Char]) = new SexpNumber(BigDecimal(n))
@@ -57,18 +58,20 @@ object SexpNumber {
 object SexpList {
   def apply(els: Sexp*): Sexp = apply(els.toList)
 
-  def apply(els: List[Sexp]): Sexp = els.foldRight(SexpNil: Sexp) {
-    case (head, tail) => SexpCons(head, tail)
-  }
+  def apply(els: List[Sexp]): Sexp =
+    els.foldRight(SexpNil: Sexp) {
+      case (head, tail) => SexpCons(head, tail)
+    }
 
   def unapply(sexp: Sexp): Option[List[Sexp]] =
     if (!sexp.isList) None
     else {
-      def rec(s: Sexp): List[Sexp] = s match {
-        case SexpNil            => Nil
-        case SexpCons(car, cdr) => car :: rec(cdr)
-        case _                  => throw new IllegalStateException("Not a list: " + s)
-      }
+      def rec(s: Sexp): List[Sexp] =
+        s match {
+          case SexpNil            => Nil
+          case SexpCons(car, cdr) => car :: rec(cdr)
+          case _                  => throw new IllegalStateException("Not a list: " + s)
+        }
       val res = rec(sexp)
       if (res.isEmpty) None
       else Some(res)
@@ -97,26 +100,27 @@ object SexpData {
         kvs.flatMap { case (k, v) => k :: v :: Nil }(breakOut): List[Sexp])
     }
 
-  def unapply(sexp: Sexp): Option[Map[SexpSymbol, Sexp]] = sexp match {
-    case SexpList(values) =>
-      // order can be important in serialised forms
-      val props = {
-        values.grouped(2).collect {
-          case List(SexpSymbol(key), value) if key.startsWith(":") =>
-            (SexpSymbol(key), value)
+  def unapply(sexp: Sexp): Option[Map[SexpSymbol, Sexp]] =
+    sexp match {
+      case SexpList(values) =>
+        // order can be important in serialised forms
+        val props = {
+          values.grouped(2).collect {
+            case List(SexpSymbol(key), value) if key.startsWith(":") =>
+              (SexpSymbol(key), value)
+          }
+        }.foldLeft(ListMap.empty[SexpSymbol, Sexp]) {
+          case (res, el) =>
+            // in elisp, first entry wins
+            if (res.contains(el._1)) res else res + el
         }
-      }.foldLeft(ListMap.empty[SexpSymbol, Sexp]) {
-        case (res, el) =>
-          // in elisp, first entry wins
-          if (res.contains(el._1)) res else res + el
-      }
-      // props.size counts unique keys. We only create data when keys
-      // are not duplicated or we could introduce losses
-      if (values.isEmpty || 2 * props.size != values.size)
-        None
-      else
-        Some(props)
+        // props.size counts unique keys. We only create data when keys
+        // are not duplicated or we could introduce losses
+        if (values.isEmpty || 2 * props.size != values.size)
+          None
+        else
+          Some(props)
 
-    case _ => None
-  }
+      case _ => None
+    }
 }

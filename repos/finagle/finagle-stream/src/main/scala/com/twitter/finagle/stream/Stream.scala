@@ -47,57 +47,61 @@ object Stream {
 }
 
 class Stream[Req: RequestType] extends CodecFactory[Req, StreamResponse] {
-  def server: Server = Function.const {
-    new Codec[Req, StreamResponse] {
-      def pipelineFactory = new ChannelPipelineFactory {
-        def getPipeline = {
-          val pipeline = Channels.pipeline()
-          pipeline.addLast("httpCodec", new HttpServerCodec)
-          pipeline
-        }
+  def server: Server =
+    Function.const {
+      new Codec[Req, StreamResponse] {
+        def pipelineFactory =
+          new ChannelPipelineFactory {
+            def getPipeline = {
+              val pipeline = Channels.pipeline()
+              pipeline.addLast("httpCodec", new HttpServerCodec)
+              pipeline
+            }
+          }
+
+        override def newServerDispatcher(
+            transport: Transport[Any, Any],
+            service: Service[Req, StreamResponse]): Closable =
+          new StreamServerDispatcher(transport, service)
       }
-
-      override def newServerDispatcher(
-          transport: Transport[Any, Any],
-          service: Service[Req, StreamResponse]): Closable =
-        new StreamServerDispatcher(transport, service)
     }
-  }
 
-  def client: Client = Function.const {
-    new Codec[Req, StreamResponse] {
-      def pipelineFactory = new ChannelPipelineFactory {
-        def getPipeline = {
-          val pipeline = Channels.pipeline()
-          pipeline.addLast("httpCodec", new HttpClientCodec)
-          pipeline
-        }
+  def client: Client =
+    Function.const {
+      new Codec[Req, StreamResponse] {
+        def pipelineFactory =
+          new ChannelPipelineFactory {
+            def getPipeline = {
+              val pipeline = Channels.pipeline()
+              pipeline.addLast("httpCodec", new HttpClientCodec)
+              pipeline
+            }
+          }
+
+        override def newClientDispatcher(
+            trans: Transport[Any, Any],
+            params: Stack.Params
+        ): Service[Req, StreamResponse] =
+          new StreamClientDispatcher(
+            trans,
+            params[param.Stats].statsReceiver
+              .scope(GenSerialClientDispatcher.StatsScope)
+          )
+
+        // TODO: remove when the Meta[_] patch lands.
+        override def prepareServiceFactory(
+            underlying: ServiceFactory[Req, StreamResponse]
+        ): ServiceFactory[Req, StreamResponse] =
+          underlying map (new DelayedReleaseService(_))
+
+        // TODO: remove when ChannelTransport is the default for clients.
+        override def newClientTransport(
+            ch: Channel,
+            statsReceiver: StatsReceiver): Transport[Any, Any] =
+          new ChannelTransport(ch)
+
       }
-
-      override def newClientDispatcher(
-          trans: Transport[Any, Any],
-          params: Stack.Params
-      ): Service[Req, StreamResponse] =
-        new StreamClientDispatcher(
-          trans,
-          params[param.Stats].statsReceiver
-            .scope(GenSerialClientDispatcher.StatsScope)
-        )
-
-      // TODO: remove when the Meta[_] patch lands.
-      override def prepareServiceFactory(
-          underlying: ServiceFactory[Req, StreamResponse]
-      ): ServiceFactory[Req, StreamResponse] =
-        underlying map (new DelayedReleaseService(_))
-
-      // TODO: remove when ChannelTransport is the default for clients.
-      override def newClientTransport(
-          ch: Channel,
-          statsReceiver: StatsReceiver): Transport[Any, Any] =
-        new ChannelTransport(ch)
-
     }
-  }
 
   override val protocolLibraryName: String = "http-stream"
 }
@@ -112,10 +116,11 @@ object EOF extends Exception
   */
 final class Header private (val key: String, val value: String) {
   override def toString: String = s"Header($key, $value)"
-  override def equals(o: Any): Boolean = o match {
-    case h: Header => h.key == key && h.value == value
-    case _         => false
-  }
+  override def equals(o: Any): Boolean =
+    o match {
+      case h: Header => h.key == key && h.value == value
+      case _         => false
+    }
 }
 
 object Header {

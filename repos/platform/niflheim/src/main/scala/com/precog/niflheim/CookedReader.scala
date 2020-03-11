@@ -119,9 +119,10 @@ final class CookedReader(
     Block(id, segments, isStable)
   }
 
-  def structure: Iterable[ColumnRef] = metadata.valueOr(throw _).segments map {
-    case (segId, _) => ColumnRef(segId.cpath, segId.ctype)
-  }
+  def structure: Iterable[ColumnRef] =
+    metadata.valueOr(throw _).segments map {
+      case (segId, _) => ColumnRef(segId.cpath, segId.ctype)
+    }
 
   def metadata: Validation[IOException, CookedBlockMetadata] = {
     val segs = maybeBlock
@@ -140,8 +141,8 @@ final class CookedReader(
   }
 
   private def segmentsByRef
-      : Validation[IOException, Map[ColumnRef, List[File]]] = metadata map {
-    md =>
+      : Validation[IOException, Map[ColumnRef, List[File]]] =
+    metadata map { md =>
       md.segments
         .groupBy(s => (s._1.cpath, s._1.ctype))
         .map {
@@ -149,7 +150,7 @@ final class CookedReader(
             (ColumnRef(cpath, ctype), segs.map(_._2).toList)
         }
         .toMap
-  }
+    }
 
   def load(paths: List[ColumnRef])
       : ValidationNel[IOException, List[(ColumnRef, List[Segment])]] = {

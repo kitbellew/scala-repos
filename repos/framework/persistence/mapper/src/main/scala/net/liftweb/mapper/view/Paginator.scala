@@ -111,13 +111,14 @@ class SortedMapperPaginator[T <: Mapper[T]](
         mapperSort,
         MaxRows(itemsPerPage),
         StartAt(first)): _*)
-  private def mapperSort = sort match {
-    case (fieldIndex, ascending) =>
-      OrderBy(
-        headers(fieldIndex) match { case (_, f) => f },
-        if (ascending) Ascending else Descending
-      )
-  }
+  private def mapperSort =
+    sort match {
+      case (fieldIndex, ascending) =>
+        OrderBy(
+          headers(fieldIndex) match { case (_, f) => f },
+          if (ascending) Ascending else Descending
+        )
+    }
 }
 
 /**

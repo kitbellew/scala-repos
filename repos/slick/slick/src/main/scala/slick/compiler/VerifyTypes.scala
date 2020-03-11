@@ -12,10 +12,11 @@ import scala.collection.mutable
 class VerifyTypes(after: Option[Phase] = None) extends Phase {
   val name = "verifyTypes"
 
-  def apply(state: CompilerState) = state.map { tree =>
-    logger.debug(s"Verifying types")
-    check(tree)
-  }
+  def apply(state: CompilerState) =
+    state.map { tree =>
+      logger.debug(s"Verifying types")
+      check(tree)
+    }
 
   def check(tree: Node): Node = {
     val retyped = tree

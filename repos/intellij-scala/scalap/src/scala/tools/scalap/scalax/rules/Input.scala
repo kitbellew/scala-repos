@@ -19,18 +19,19 @@ trait Input[+A] extends Iterable[A] {
   def next: Result[Input[A], A, Nothing]
   def index: Int
 
-  def iterator = new Iterator[A] {
-    private var input: Input[A] = Input.this
-    private var result = input.next
+  def iterator =
+    new Iterator[A] {
+      private var input: Input[A] = Input.this
+      private var result = input.next
 
-    def hasNext = result != Failure
-    def next = {
-      val Success(input, value) = result
-      this.input = input
-      this.result = input.next
-      value
+      def hasNext = result != Failure
+      def next = {
+        val Success(input, value) = result
+        this.input = input
+        this.result = input.next
+        value
+      }
     }
-  }
 }
 
 class ArrayInput[A](val array: Array[A], val index: Int) extends Input[A] {
@@ -60,9 +61,10 @@ class View[A, B](
     val index: Int)
     extends Input[B] {
 
-  def next: Result[Input[B], B, Nothing] = transform(input) match {
-    case Success(context, b) =>
-      Success(new View(transform, context, index + 1), b)
-    case _ => Failure
-  }
+  def next: Result[Input[B], B, Nothing] =
+    transform(input) match {
+      case Success(context, b) =>
+        Success(new View(transform, context, index + 1), b)
+      case _ => Failure
+    }
 }

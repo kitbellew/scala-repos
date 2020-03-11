@@ -34,18 +34,18 @@ final class BuildStructure(
     units.values.flatMap(_.defined.values).toSeq
   def allProjects(build: URI): Seq[ResolvedProject] =
     units.get(build).toList.flatMap(_.defined.values)
-  def allProjectRefs: Seq[ProjectRef] = units.toSeq flatMap {
-    case (build, unit) => refs(build, unit.defined.values.toSeq)
-  }
+  def allProjectRefs: Seq[ProjectRef] =
+    units.toSeq flatMap {
+      case (build, unit) => refs(build, unit.defined.values.toSeq)
+    }
   def allProjectRefs(build: URI): Seq[ProjectRef] =
     refs(build, allProjects(build))
   val extra: BuildUtil[ResolvedProject] =
     BuildUtil(root, units, index.keyIndex, data)
   private[this] def refs(
       build: URI,
-      projects: Seq[ResolvedProject]): Seq[ProjectRef] = projects.map { p =>
-    ProjectRef(build, p.id)
-  }
+      projects: Seq[ResolvedProject]): Seq[ProjectRef] =
+    projects.map { p => ProjectRef(build, p.id) }
 }
 // information that is not original, but can be reconstructed from the rest of BuildStructure
 final class StructureIndex(

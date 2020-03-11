@@ -223,10 +223,11 @@ trait Config extends Serializable {
       Some((new ConfiguredInstantiator(ScalaMapConfig(toMap))).getDelegate)
     else None
 
-  def getArgs: Args = get(Config.ScaldingJobArgs) match {
-    case None      => new Args(Map.empty)
-    case Some(str) => Args(str)
-  }
+  def getArgs: Args =
+    get(Config.ScaldingJobArgs) match {
+      case None      => new Args(Map.empty)
+      case Some(str) => Args(str)
+    }
 
   def setArgs(args: Args): Config =
     this + (Config.ScaldingJobArgs -> args.toString)
@@ -404,10 +405,11 @@ trait Config extends Serializable {
       .getOrElse(false)
 
   override def hashCode = toMap.hashCode
-  override def equals(that: Any) = that match {
-    case thatConf: Config => toMap == thatConf.toMap
-    case _                => false
-  }
+  override def equals(that: Any) =
+    that match {
+      case thatConf: Config => toMap == thatConf.toMap
+      case _                => false
+    }
 }
 
 object Config {

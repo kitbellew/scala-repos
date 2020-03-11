@@ -104,22 +104,24 @@ object Resolvers {
 
     def checkout(branch: String, in: File)
 
-    def toResolver: Resolver = (info: ResolveInfo) => {
-      val uri = info.uri.withoutMarkerScheme
-      val localCopy = uniqueSubdirectoryFor(normalized(uri), in = info.staging)
-      val from = uri.withoutFragment.toASCIIString
+    def toResolver: Resolver =
+      (info: ResolveInfo) => {
+        val uri = info.uri.withoutMarkerScheme
+        val localCopy =
+          uniqueSubdirectoryFor(normalized(uri), in = info.staging)
+        val from = uri.withoutFragment.toASCIIString
 
-      if (uri.hasFragment) {
-        val branch = uri.getFragment
-        Some {
-          () =>
-            creates(localCopy) {
-              clone(from, to = localCopy)
-              checkout(branch, in = localCopy)
-            }
-        }
-      } else Some { () => creates(localCopy) { clone(from, to = localCopy) } }
-    }
+        if (uri.hasFragment) {
+          val branch = uri.getFragment
+          Some {
+            () =>
+              creates(localCopy) {
+                clone(from, to = localCopy)
+                checkout(branch, in = localCopy)
+              }
+          }
+        } else Some { () => creates(localCopy) { clone(from, to = localCopy) } }
+      }
 
     private def normalized(uri: URI) = uri.copy(scheme = scheme)
   }

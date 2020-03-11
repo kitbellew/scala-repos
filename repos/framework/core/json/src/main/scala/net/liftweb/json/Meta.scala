@@ -157,22 +157,23 @@ private[json] object Meta {
           factory(
             fieldMapping(typeParameters(t, k, context)(valueTypeIndex))._1)
 
-      def parameterizedTypeOpt(t: Type) = t match {
-        case x: ParameterizedType =>
-          val typeArgs = x.getActualTypeArguments.toList.zipWithIndex
-            .map {
-              case (t, idx) =>
-                if (t == classOf[java.lang.Object])
-                  ScalaSigReader.readConstructor(
-                    context.argName,
-                    context.containingClass,
-                    idx,
-                    context.allArgs.map(_._1))
-                else t
-            }
-          Some(mkParameterizedType(x.getRawType, typeArgs))
-        case _ => None
-      }
+      def parameterizedTypeOpt(t: Type) =
+        t match {
+          case x: ParameterizedType =>
+            val typeArgs = x.getActualTypeArguments.toList.zipWithIndex
+              .map {
+                case (t, idx) =>
+                  if (t == classOf[java.lang.Object])
+                    ScalaSigReader.readConstructor(
+                      context.argName,
+                      context.containingClass,
+                      idx,
+                      context.allArgs.map(_._1))
+                  else t
+              }
+            Some(mkParameterizedType(x.getRawType, typeArgs))
+          case _ => None
+        }
 
       def mkConstructor(t: Type) =
         if (visited.contains(t)) (Cycle(t), false)
@@ -183,42 +184,43 @@ private[json] object Meta {
               constructors(t, visited + t, Some(context))),
             false)
 
-      def fieldMapping(t: Type): (Mapping, Boolean) = t match {
-        case pType: ParameterizedType =>
-          val raw = rawClassOf(pType)
-          val info = TypeInfo(raw, Some(pType))
-          if (classOf[Set[_]].isAssignableFrom(raw))
-            (mkContainer(t, `* -> *`, 0, Col.apply(info, _)), false)
-          else if (raw.isArray)
-            (mkContainer(t, `* -> *`, 0, Col.apply(info, _)), false)
-          else if (classOf[Option[_]].isAssignableFrom(raw))
-            (mkContainer(t, `* -> *`, 0, identity _), true)
-          else if (classOf[Map[_, _]].isAssignableFrom(raw))
-            (mkContainer(t, `(*,*) -> *`, 1, Dict.apply _), false)
-          else if (classOf[Seq[_]].isAssignableFrom(raw))
-            (mkContainer(t, `* -> *`, 0, Col.apply(info, _)), false)
-          else
-            mkConstructor(t)
-        case aType: GenericArrayType =>
-          // Couldn't find better way to reconstruct proper array type:
-          val raw = java.lang.reflect.Array
-            .newInstance(rawClassOf(aType.getGenericComponentType), 0: Int)
-            .getClass
-          (
-            Col(
-              TypeInfo(raw, None),
-              fieldMapping(aType.getGenericComponentType)._1),
-            false)
-        case raw: Class[_] =>
-          if (primitive_?(raw)) (Value(raw), false)
-          else if (raw.isArray)
+      def fieldMapping(t: Type): (Mapping, Boolean) =
+        t match {
+          case pType: ParameterizedType =>
+            val raw = rawClassOf(pType)
+            val info = TypeInfo(raw, Some(pType))
+            if (classOf[Set[_]].isAssignableFrom(raw))
+              (mkContainer(t, `* -> *`, 0, Col.apply(info, _)), false)
+            else if (raw.isArray)
+              (mkContainer(t, `* -> *`, 0, Col.apply(info, _)), false)
+            else if (classOf[Option[_]].isAssignableFrom(raw))
+              (mkContainer(t, `* -> *`, 0, identity _), true)
+            else if (classOf[Map[_, _]].isAssignableFrom(raw))
+              (mkContainer(t, `(*,*) -> *`, 1, Dict.apply _), false)
+            else if (classOf[Seq[_]].isAssignableFrom(raw))
+              (mkContainer(t, `* -> *`, 0, Col.apply(info, _)), false)
+            else
+              mkConstructor(t)
+          case aType: GenericArrayType =>
+            // Couldn't find better way to reconstruct proper array type:
+            val raw = java.lang.reflect.Array
+              .newInstance(rawClassOf(aType.getGenericComponentType), 0: Int)
+              .getClass
             (
-              mkContainer(t, `* -> *`, 0, Col.apply(TypeInfo(raw, None), _)),
+              Col(
+                TypeInfo(raw, None),
+                fieldMapping(aType.getGenericComponentType)._1),
               false)
-          else
-            mkConstructor(t)
-        case x => (Constructor(TypeInfo(classOf[AnyRef], None), Nil), false)
-      }
+          case raw: Class[_] =>
+            if (primitive_?(raw)) (Value(raw), false)
+            else if (raw.isArray)
+              (
+                mkContainer(t, `* -> *`, 0, Col.apply(TypeInfo(raw, None), _)),
+                false)
+            else
+              mkConstructor(t)
+          case x => (Constructor(TypeInfo(classOf[AnyRef], None), Nil), false)
+        }
 
       val (mapping, optional) = fieldMapping(genericType)
       Arg(name, mapping, optional)
@@ -246,11 +248,12 @@ private[json] object Meta {
     }
   }
 
-  private[json] def rawClassOf(t: Type): Class[_] = t match {
-    case c: Class[_]          => c
-    case p: ParameterizedType => rawClassOf(p.getRawType)
-    case x                    => fail("Raw type of " + x + " not known")
-  }
+  private[json] def rawClassOf(t: Type): Class[_] =
+    t match {
+      case c: Class[_]          => c
+      case p: ParameterizedType => rawClassOf(p.getRawType)
+      case x                    => fail("Raw type of " + x + " not known")
+    }
 
   private[json] def mkParameterizedType(owner: Type, typeArgs: Seq[Type]) =
     new ParameterizedType {
@@ -336,9 +339,10 @@ private[json] object Meta {
         context: Option[Context]): List[(String, Type)] = {
       def argsInfo(c: JConstructor[_], typeArgs: Map[TypeVariable[_], Type]) = {
         val Name = """^((?:[^$]|[$][^0-9]+)+)([$][0-9]+)?$""".r
-        def clean(name: String) = name match {
-          case Name(text, junk) => text
-        }
+        def clean(name: String) =
+          name match {
+            case Name(text, junk) => text
+          }
         try {
           val names = nameReader.lookupParameterNames(c).map(clean)
           val types = c.getGenericParameterTypes.toList.zipWithIndex map {
@@ -387,32 +391,33 @@ private[json] object Meta {
     }
 
     def typeParameters(t: Type, k: Kind, context: Context): List[Class[_]] = {
-      def term(i: Int) = t match {
-        case ptype: ParameterizedType =>
-          ptype.getActualTypeArguments()(i) match {
-            case c: Class[_] =>
-              if (c == classOf[java.lang.Object])
-                ScalaSigReader.readConstructor(
-                  context.argName,
-                  context.containingClass,
-                  i,
-                  context.allArgs.map(_._1))
-              else c
-            case p: ParameterizedType => p.getRawType.asInstanceOf[Class[_]]
-            case x                    => fail("do not know how to get type parameter from " + x)
-          }
-        case clazz: Class[_] if (clazz.isArray) =>
-          i match {
-            case 0 => clazz.getComponentType.asInstanceOf[Class[_]]
-            case _ => fail("Arrays only have one type parameter")
-          }
-        case clazz: GenericArrayType =>
-          i match {
-            case 0 => clazz.getGenericComponentType.asInstanceOf[Class[_]]
-            case _ => fail("Arrays only have one type parameter")
-          }
-        case _ => fail("Unsupported Type: " + t + " (" + t.getClass + ")")
-      }
+      def term(i: Int) =
+        t match {
+          case ptype: ParameterizedType =>
+            ptype.getActualTypeArguments()(i) match {
+              case c: Class[_] =>
+                if (c == classOf[java.lang.Object])
+                  ScalaSigReader.readConstructor(
+                    context.argName,
+                    context.containingClass,
+                    i,
+                    context.allArgs.map(_._1))
+                else c
+              case p: ParameterizedType => p.getRawType.asInstanceOf[Class[_]]
+              case x                    => fail("do not know how to get type parameter from " + x)
+            }
+          case clazz: Class[_] if (clazz.isArray) =>
+            i match {
+              case 0 => clazz.getComponentType.asInstanceOf[Class[_]]
+              case _ => fail("Arrays only have one type parameter")
+            }
+          case clazz: GenericArrayType =>
+            i match {
+              case 0 => clazz.getGenericComponentType.asInstanceOf[Class[_]]
+              case _ => fail("Arrays only have one type parameter")
+            }
+          case _ => fail("Unsupported Type: " + t + " (" + t.getClass + ")")
+        }
 
       k match {
         case `* -> *`     => List(term(0))
@@ -435,17 +440,19 @@ private[json] object Meta {
       }
     }
 
-    def primitive_?(t: Type) = t match {
-      case clazz: Class[_] => primitives contains clazz
-      case _               => false
-    }
+    def primitive_?(t: Type) =
+      t match {
+        case clazz: Class[_] => primitives contains clazz
+        case _               => false
+      }
 
     def static_?(f: Field) = Modifier.isStatic(f.getModifiers)
-    def typeConstructor_?(t: Type) = t match {
-      case p: ParameterizedType =>
-        p.getActualTypeArguments.exists(_.isInstanceOf[ParameterizedType])
-      case _ => false
-    }
+    def typeConstructor_?(t: Type) =
+      t match {
+        case p: ParameterizedType =>
+          p.getActualTypeArguments.exists(_.isInstanceOf[ParameterizedType])
+        case _ => false
+      }
 
     def array_?(x: Any) =
       x != null && classOf[scala.Array[_]]
@@ -507,27 +514,29 @@ private[json] object Meta {
       a
     }
 
-    def primitive2jvalue(a: Any)(implicit formats: Formats) = a match {
-      case x: String            => JString(x)
-      case x: Int               => JInt(x)
-      case x: Long              => JInt(x)
-      case x: Double            => JDouble(x)
-      case x: Float             => JDouble(x)
-      case x: Byte              => JInt(BigInt(x))
-      case x: BigInt            => JInt(x)
-      case x: Boolean           => JBool(x)
-      case x: Short             => JInt(BigInt(x))
-      case x: java.lang.Integer => JInt(BigInt(x.asInstanceOf[Int]))
-      case x: java.lang.Long    => JInt(BigInt(x.asInstanceOf[Long]))
-      case x: java.lang.Double  => JDouble(x.asInstanceOf[Double])
-      case x: java.lang.Float   => JDouble(x.asInstanceOf[Float])
-      case x: java.lang.Byte    => JInt(BigInt(x.asInstanceOf[Byte]))
-      case x: java.lang.Boolean => JBool(x.asInstanceOf[Boolean])
-      case x: java.lang.Short   => JInt(BigInt(x.asInstanceOf[Short]))
-      case x: Date              => JString(formats.dateFormat.format(x))
-      case x: Symbol            => JString(x.name)
-      case _                    => sys.error("not a primitive " + a.asInstanceOf[AnyRef].getClass)
-    }
+    def primitive2jvalue(a: Any)(implicit formats: Formats) =
+      a match {
+        case x: String            => JString(x)
+        case x: Int               => JInt(x)
+        case x: Long              => JInt(x)
+        case x: Double            => JDouble(x)
+        case x: Float             => JDouble(x)
+        case x: Byte              => JInt(BigInt(x))
+        case x: BigInt            => JInt(x)
+        case x: Boolean           => JBool(x)
+        case x: Short             => JInt(BigInt(x))
+        case x: java.lang.Integer => JInt(BigInt(x.asInstanceOf[Int]))
+        case x: java.lang.Long    => JInt(BigInt(x.asInstanceOf[Long]))
+        case x: java.lang.Double  => JDouble(x.asInstanceOf[Double])
+        case x: java.lang.Float   => JDouble(x.asInstanceOf[Float])
+        case x: java.lang.Byte    => JInt(BigInt(x.asInstanceOf[Byte]))
+        case x: java.lang.Boolean => JBool(x.asInstanceOf[Boolean])
+        case x: java.lang.Short   => JInt(BigInt(x.asInstanceOf[Short]))
+        case x: Date              => JString(formats.dateFormat.format(x))
+        case x: Symbol            => JString(x.name)
+        case _ =>
+          sys.error("not a primitive " + a.asInstanceOf[AnyRef].getClass)
+      }
   }
 }
 

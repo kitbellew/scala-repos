@@ -140,12 +140,13 @@ case class PolySparse[@sp(Double) C] private[spire] (
     val cs = new Array[C](es.length)
 
     @tailrec
-    def loop(i: Int, j: Int): Unit = if (j < es.length) {
-      val e = exp(i)
-      es(j) = e - 1
-      cs(j) = e * coeff(i)
-      loop(i + 1, j + 1)
-    }
+    def loop(i: Int, j: Int): Unit =
+      if (j < es.length) {
+        val e = exp(i)
+        es(j) = e - 1
+        cs(j) = e * coeff(i)
+        loop(i + 1, j + 1)
+      }
 
     loop(i0, 0)
     PolySparse.safe(es, cs)

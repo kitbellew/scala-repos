@@ -28,12 +28,13 @@ import scalaz.std.anyVal._
 class PerfTestSuiteSpec extends Specification {
   implicit def perfTestEq = Equal.equalA[PerfTest]
 
-  implicit def treeEq[A: Equal] = new Equal[Tree[A]] {
-    def equal(a: Tree[A], b: Tree[A]): Boolean =
-      Equal[A].equal(a.rootLabel, b.rootLabel) &&
-        a.subForest.size == b.subForest.size &&
-        ((a.subForest zip b.subForest) forall (equal _).tupled)
-  }
+  implicit def treeEq[A: Equal] =
+    new Equal[Tree[A]] {
+      def equal(a: Tree[A], b: Tree[A]): Boolean =
+        Equal[A].equal(a.rootLabel, b.rootLabel) &&
+          a.subForest.size == b.subForest.size &&
+          ((a.subForest zip b.subForest) forall (equal _).tupled)
+    }
 
   object ex extends PerfTestSuite {
     "a" := {

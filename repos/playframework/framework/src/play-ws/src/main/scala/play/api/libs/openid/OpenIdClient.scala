@@ -64,14 +64,15 @@ object UserInfo {
         .flatMap(_.headOption)
         .orElse(params.get("openid.identity").flatMap(_.headOption))
 
-    def axAttributes = params.foldLeft(Map[String, String]()) {
-      case (result, (key, values)) =>
-        extractAxAttribute.lift(key) flatMap {
-          case (fullKey, shortKey) if signedFields.contains(fullKey) =>
-            values.headOption map { value => Map(shortKey -> value) }
-          case _ => None
-        } map (result ++ _) getOrElse result
-    }
+    def axAttributes =
+      params.foldLeft(Map[String, String]()) {
+        case (result, (key, values)) =>
+          extractAxAttribute.lift(key) flatMap {
+            case (fullKey, shortKey) if signedFields.contains(fullKey) =>
+              values.headOption map { value => Map(shortKey -> value) }
+            case _ => None
+          } map (result ++ _) getOrElse result
+      }
   }
 
 }
@@ -272,14 +273,16 @@ class WsDiscovery @Inject() (ws: WSClient) extends Discovery {
       catching(
         classOf[MalformedURLException],
         classOf[URISyntaxException]) opt {
-        def port(p: Int) = p match {
-          case 80 | 443 => -1
-          case port     => port
-        }
-        def schemeForPort(p: Int) = p match {
-          case 443 => "https"
-          case _   => "http"
-        }
+        def port(p: Int) =
+          p match {
+            case 80 | 443 => -1
+            case port     => port
+          }
+        def schemeForPort(p: Int) =
+          p match {
+            case 443 => "https"
+            case _   => "http"
+          }
         def scheme(uri: URI) =
           Option(uri.getScheme) getOrElse schemeForPort(uri.getPort)
         def path(path: String) = if (null == path || path.isEmpty) "/" else path

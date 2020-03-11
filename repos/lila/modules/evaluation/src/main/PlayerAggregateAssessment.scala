@@ -145,9 +145,8 @@ object PlayerAggregateAssessment {
   case class WithGames(
       pag: PlayerAggregateAssessment,
       games: List[lila.game.Game]) {
-    def pov(pa: PlayerAssessment) = games find (_.id == pa.gameId) map {
-      lila.game.Pov(_, pa.color)
-    }
+    def pov(pa: PlayerAssessment) =
+      games find (_.id == pa.gameId) map { lila.game.Pov(_, pa.color) }
   }
 }
 

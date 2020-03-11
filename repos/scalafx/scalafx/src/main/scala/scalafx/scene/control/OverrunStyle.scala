@@ -70,15 +70,16 @@ object OverrunStyle
     "2.2.60")
   val WORD_ELLIPSIS = WordEllipsis
 
-  protected override def unsortedValues: Array[OverrunStyle] = Array(
-    Clip,
-    Ellipsis,
-    WordEllipsis,
-    CenterEllipsis,
-    CenterWordEllipsis,
-    LeadingEllipsis,
-    LeadingWordEllipsis
-  )
+  protected override def unsortedValues: Array[OverrunStyle] =
+    Array(
+      Clip,
+      Ellipsis,
+      WordEllipsis,
+      CenterEllipsis,
+      CenterWordEllipsis,
+      LeadingEllipsis,
+      LeadingWordEllipsis
+    )
 }
 
 sealed case class OverrunStyle(override val delegate: jfxsc.OverrunStyle)

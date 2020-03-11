@@ -119,25 +119,26 @@ class AppliedTypeLambdaCanBeSimplifiedInspection extends LocalInspectionTool {
     }
 
     new ScalaElementVisitor {
-      override def visitElement(elem: ScalaPsiElement): Unit = elem match {
-        case paramType: ScParameterizedTypeElement =>
-          paramType.typeElement match {
-            case typeProjection: ScTypeProjection =>
-              inspectTypeProjection(typeProjection, paramType)
-            case typeLambda: ScParameterizedTypeElement
-                if ScalaPsiUtil.kindProjectorPluginEnabled(paramType) =>
-              //def a: λ[A => (A, A)][String]
-              // can be transformed into
-              //def a: (String, String)
-              typeLambda.computeDesugarizedType match {
-                case Some(typeProjection: ScTypeProjection) =>
-                  inspectTypeProjection(typeProjection, paramType)
-                case _ =>
-              }
-            case _ =>
-          }
-        case _ =>
-      }
+      override def visitElement(elem: ScalaPsiElement): Unit =
+        elem match {
+          case paramType: ScParameterizedTypeElement =>
+            paramType.typeElement match {
+              case typeProjection: ScTypeProjection =>
+                inspectTypeProjection(typeProjection, paramType)
+              case typeLambda: ScParameterizedTypeElement
+                  if ScalaPsiUtil.kindProjectorPluginEnabled(paramType) =>
+                //def a: λ[A => (A, A)][String]
+                // can be transformed into
+                //def a: (String, String)
+                typeLambda.computeDesugarizedType match {
+                  case Some(typeProjection: ScTypeProjection) =>
+                    inspectTypeProjection(typeProjection, paramType)
+                  case _ =>
+                }
+              case _ =>
+            }
+          case _ =>
+        }
     }
   }
 }

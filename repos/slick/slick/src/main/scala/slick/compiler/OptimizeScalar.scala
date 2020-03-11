@@ -66,17 +66,18 @@ class OptimizeScalar extends Phase {
       ))
 
   object Const {
-    def unapply(n: Node): Option[Option[Any]] = n match {
-      case LiteralNode(null) => Some(None)
-      case LiteralNode(v) =>
-        Some(
-          if (n.nodeType.structural.isInstanceOf[OptionType])
-            v.asInstanceOf[Option[Any]]
-          else Some(v))
-      case Apply(Library.SilentCast, ConstArray(ch)) => unapply(ch)
-      case OptionApply(ch)                           => unapply(ch).map(_.map(Option.apply _))
-      case _                                         => None
-    }
+    def unapply(n: Node): Option[Option[Any]] =
+      n match {
+        case LiteralNode(null) => Some(None)
+        case LiteralNode(v) =>
+          Some(
+            if (n.nodeType.structural.isInstanceOf[OptionType])
+              v.asInstanceOf[Option[Any]]
+            else Some(v))
+        case Apply(Library.SilentCast, ConstArray(ch)) => unapply(ch)
+        case OptionApply(ch)                           => unapply(ch).map(_.map(Option.apply _))
+        case _                                         => None
+      }
   }
 
   def cast(tpe: Type, n: Node): Node = {

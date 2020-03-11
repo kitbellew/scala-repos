@@ -68,13 +68,14 @@ package p3 {
   case class Foo(x: Int, y: Int, zs: Int*)
 
   object Bar {
-    def f(x: Foo) = x match {
-      case Foo(5, 10, 15, 20, _*) => 1
-      case Foo(5, 10, 15, _*)     => 2
-      case Foo(5, 10, _*)         => 3
-      case Foo(5, 10)             => 4 // should warn unreachable
-      case _                      => 5
-    }
+    def f(x: Foo) =
+      x match {
+        case Foo(5, 10, 15, 20, _*) => 1
+        case Foo(5, 10, 15, _*)     => 2
+        case Foo(5, 10, _*)         => 3
+        case Foo(5, 10)             => 4 // should warn unreachable
+        case _                      => 5
+      }
   }
 }
 

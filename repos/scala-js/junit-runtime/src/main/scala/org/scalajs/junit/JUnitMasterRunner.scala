@@ -35,16 +35,17 @@ final class JUnitMasterRunner(
     }
   }
 
-  def receiveMessage(msg: String): Option[String] = msg(0) match {
-    case 'd' =>
-      val slaveDone = JUnitBaseRunner.Done.deserialize(msg.tail)
-      doneCount += slaveDone.done
-      passedCount += slaveDone.passed
-      failedCount += slaveDone.failed
-      ignoredCount += slaveDone.skipped
-      skippedCount += slaveDone.skipped
-      totalCount += slaveDone.total
-      slaveCount -= 1
-      None
-  }
+  def receiveMessage(msg: String): Option[String] =
+    msg(0) match {
+      case 'd' =>
+        val slaveDone = JUnitBaseRunner.Done.deserialize(msg.tail)
+        doneCount += slaveDone.done
+        passedCount += slaveDone.passed
+        failedCount += slaveDone.failed
+        ignoredCount += slaveDone.skipped
+        skippedCount += slaveDone.skipped
+        totalCount += slaveDone.total
+        slaveCount -= 1
+        None
+    }
 }

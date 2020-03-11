@@ -156,10 +156,11 @@ trait Mailer extends SimpleInjector {
     */
   var hostFunc: () => String = _host _
 
-  private def _host = properties.getProperty("mail.smtp.host") match {
-    case null => "localhost"
-    case s    => s
-  }
+  private def _host =
+    properties.getProperty("mail.smtp.host") match {
+      case null => "localhost"
+      case s    => s
+    }
 
   def buildProps: Properties = {
     val p = properties.clone.asInstanceOf[Properties]
@@ -315,16 +316,17 @@ trait Mailer extends SimpleInjector {
   protected def encodeHtmlBodyPart(in: NodeSeq): String =
     Html5.toString(firstNode(in))
 
-  protected def firstNode(in: NodeSeq): Node = in match {
-    case n: Node => n
-    case ns =>
-      ns.toList.collect {
-        case e: Elem => e
-      } match {
-        case Nil     => if (ns.length == 0) Text("") else ns(0)
-        case x :: xs => x
-      }
-  }
+  protected def firstNode(in: NodeSeq): Node =
+    in match {
+      case n: Node => n
+      case ns =>
+        ns.toList.collect {
+          case e: Elem => e
+        } match {
+          case Nil     => if (ns.length == 0) Text("") else ns(0)
+          case x :: xs => x
+        }
+    }
 
   /**
     * Given a MailBodyType, convert it to a javax.mail.BodyPart.  You can override this method if you

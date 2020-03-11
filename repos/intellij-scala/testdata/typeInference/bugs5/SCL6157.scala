@@ -10,10 +10,11 @@ object SCL6157 {
 
   import Grammar._
 
-  def test1(pr: ParseResult[(Int, String)]): Int = pr match {
-    case Success((i, _), _) =>
-      /*start*/
-      i /*end*/
-  }
+  def test1(pr: ParseResult[(Int, String)]): Int =
+    pr match {
+      case Success((i, _), _) =>
+        /*start*/
+        i /*end*/
+    }
 }
 //Int

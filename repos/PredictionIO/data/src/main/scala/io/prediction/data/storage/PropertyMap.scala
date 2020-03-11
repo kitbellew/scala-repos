@@ -46,18 +46,19 @@ class PropertyMap(
       ) + firstUpdated.hashCode
     ) + lastUpdated.hashCode
 
-  override def equals(other: Any): Boolean = other match {
-    case that: PropertyMap => {
-      (that.canEqual(this)) &&
-      (super.equals(that)) &&
-      (this.firstUpdated.equals(that.firstUpdated)) &&
-      (this.lastUpdated.equals(that.lastUpdated))
+  override def equals(other: Any): Boolean =
+    other match {
+      case that: PropertyMap => {
+        (that.canEqual(this)) &&
+        (super.equals(that)) &&
+        (this.firstUpdated.equals(that.firstUpdated)) &&
+        (this.lastUpdated.equals(that.lastUpdated))
+      }
+      case that: DataMap => { // for testing purpose
+        super.equals(that)
+      }
+      case _ => false
     }
-    case that: DataMap => { // for testing purpose
-      super.equals(that)
-    }
-    case _ => false
-  }
 
   override def canEqual(other: Any): Boolean = other.isInstanceOf[PropertyMap]
 }
@@ -89,9 +90,10 @@ object PropertyMap {
   def apply(
       js: String,
       firstUpdated: DateTime,
-      lastUpdated: DateTime): PropertyMap = apply(
-    fields = parse(js).asInstanceOf[JObject].obj.toMap,
-    firstUpdated = firstUpdated,
-    lastUpdated = lastUpdated
-  )
+      lastUpdated: DateTime): PropertyMap =
+    apply(
+      fields = parse(js).asInstanceOf[JObject].obj.toMap,
+      firstUpdated = firstUpdated,
+      lastUpdated = lastUpdated
+    )
 }

@@ -12,39 +12,40 @@ import slick.util.ConstArray
 class CreateResultSetMapping extends Phase {
   val name = "createResultSetMapping"
 
-  def apply(state: CompilerState) = state.map { n =>
-    val tpe = state.get(Phase.removeMappedTypes).get
-    ClientSideOp
-      .mapServerSide(n, keepType = false) { ch =>
-        val syms = ch.nodeType.structural match {
-          case StructType(defs) => defs.map(_._1)
-          case CollectionType(_, Type.Structural(StructType(defs))) =>
-            defs.map(_._1)
-          case t =>
-            throw new SlickException("No StructType found at top level: " + t)
+  def apply(state: CompilerState) =
+    state.map { n =>
+      val tpe = state.get(Phase.removeMappedTypes).get
+      ClientSideOp
+        .mapServerSide(n, keepType = false) { ch =>
+          val syms = ch.nodeType.structural match {
+            case StructType(defs) => defs.map(_._1)
+            case CollectionType(_, Type.Structural(StructType(defs))) =>
+              defs.map(_._1)
+            case t =>
+              throw new SlickException("No StructType found at top level: " + t)
+          }
+          val gen = new AnonSymbol
+          (tpe match {
+            case CollectionType(cons, el) =>
+              ResultSetMapping(
+                gen,
+                collectionCast(ch, cons).infer(),
+                createResult(
+                  Ref(gen) :@ ch.nodeType.asCollectionType.elementType,
+                  el,
+                  syms))
+            case t =>
+              ResultSetMapping(
+                gen,
+                ch,
+                createResult(
+                  Ref(gen) :@ ch.nodeType.asCollectionType.elementType,
+                  t,
+                  syms))
+          })
         }
-        val gen = new AnonSymbol
-        (tpe match {
-          case CollectionType(cons, el) =>
-            ResultSetMapping(
-              gen,
-              collectionCast(ch, cons).infer(),
-              createResult(
-                Ref(gen) :@ ch.nodeType.asCollectionType.elementType,
-                el,
-                syms))
-          case t =>
-            ResultSetMapping(
-              gen,
-              ch,
-              createResult(
-                Ref(gen) :@ ch.nodeType.asCollectionType.elementType,
-                t,
-                syms))
-        })
-      }
-      .infer()
-  }
+        .infer()
+    }
 
   def collectionCast(ch: Node, cons: CollectionTypeConstructor): Node =
     ch.nodeType match {
@@ -98,16 +99,18 @@ class RemoveMappedTypes extends Phase {
     else state + (this -> state.tree.nodeType)
 
   /** Remove TypeMapping nodes and MappedTypes */
-  def removeTypeMapping(n: Node): Node = n match {
-    case t: TypeMapping => removeTypeMapping(t.child)
-    case n =>
-      val n2 = n.mapChildren(removeTypeMapping, keepType = true)
-      n2 :@ removeMappedType(n2.nodeType)
-  }
+  def removeTypeMapping(n: Node): Node =
+    n match {
+      case t: TypeMapping => removeTypeMapping(t.child)
+      case n =>
+        val n2 = n.mapChildren(removeTypeMapping, keepType = true)
+        n2 :@ removeMappedType(n2.nodeType)
+    }
 
   /** Remove MappedTypes from a Type */
-  def removeMappedType(tpe: Type): Type = tpe match {
-    case m: MappedScalaType => removeMappedType(m.baseType)
-    case t                  => t.mapChildren(removeMappedType)
-  }
+  def removeMappedType(tpe: Type): Type =
+    tpe match {
+      case m: MappedScalaType => removeMappedType(m.baseType)
+      case t                  => t.mapChildren(removeMappedType)
+    }
 }

@@ -7,22 +7,24 @@ import spire.syntax.field._
 import spire.algebra._
 
 sealed trait Bound[A] { lhs =>
-  def map[B](f: A => B): Bound[B] = this match {
-    case Open(a)      => Open(f(a))
-    case Closed(a)    => Closed(f(a))
-    case Unbound()    => Unbound()
-    case EmptyBound() => EmptyBound()
-  }
-  def combine[B](rhs: Bound[A])(f: (A, A) => A): Bound[A] = (lhs, rhs) match {
-    case (EmptyBound(), _)      => lhs
-    case (_, EmptyBound())      => rhs
-    case (Unbound(), _)         => lhs
-    case (_, Unbound())         => rhs
-    case (Closed(a), Closed(b)) => Closed(f(a, b))
-    case (Closed(a), Open(b))   => Open(f(a, b))
-    case (Open(a), Closed(b))   => Open(f(a, b))
-    case (Open(a), Open(b))     => Open(f(a, b))
-  }
+  def map[B](f: A => B): Bound[B] =
+    this match {
+      case Open(a)      => Open(f(a))
+      case Closed(a)    => Closed(f(a))
+      case Unbound()    => Unbound()
+      case EmptyBound() => EmptyBound()
+    }
+  def combine[B](rhs: Bound[A])(f: (A, A) => A): Bound[A] =
+    (lhs, rhs) match {
+      case (EmptyBound(), _)      => lhs
+      case (_, EmptyBound())      => rhs
+      case (Unbound(), _)         => lhs
+      case (_, Unbound())         => rhs
+      case (Closed(a), Closed(b)) => Closed(f(a, b))
+      case (Closed(a), Open(b))   => Open(f(a, b))
+      case (Open(a), Closed(b))   => Open(f(a, b))
+      case (Open(a), Open(b))     => Open(f(a, b))
+    }
 
   def unary_-()(implicit ev: AdditiveGroup[A]): Bound[A] =
     lhs.map(-_)
@@ -178,11 +180,12 @@ case class Closed[A](a: A) extends ValueBound[A] {
   * The symbols [], (), ? correspond to closed, open or unknown bounds.
   */
 object ValueBound {
-  def unapply[A](b: Bound[A]): Option[A] = b match {
-    case Open(a)   => Some(a)
-    case Closed(a) => Some(a)
-    case _         => None
-  }
+  def unapply[A](b: Bound[A]): Option[A] =
+    b match {
+      case Open(a)   => Some(a)
+      case Closed(a) => Some(a)
+      case _         => None
+    }
 
   /** Returns the interval containing the two given bounds. */
   @inline def union2[A: Order](

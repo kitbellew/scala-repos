@@ -179,16 +179,17 @@ trait HttpComponentsClient extends Client {
     }
   }
 
-  def createBody(name: String, content: Any) = content match {
-    case file: File             => UploadableBody(FilePart(file))
-    case uploadable: Uploadable => UploadableBody(uploadable)
+  def createBody(name: String, content: Any) =
+    content match {
+      case file: File             => UploadableBody(FilePart(file))
+      case uploadable: Uploadable => UploadableBody(uploadable)
 
-    case s: Any =>
-      throw new IllegalArgumentException(
-        ("The body type for file parameter '%s' could not be inferred. The " +
-          "supported types are java.util.File and org.scalatra.test.Uploadable")
-          .format(name))
-  }
+      case s: Any =>
+        throw new IllegalArgumentException(
+          ("The body type for file parameter '%s' could not be inferred. The " +
+            "supported types are java.util.File and org.scalatra.test.Uploadable")
+            .format(name))
+    }
 }
 
 case class UploadableBody(uploadable: Uploadable) extends ContentBody {

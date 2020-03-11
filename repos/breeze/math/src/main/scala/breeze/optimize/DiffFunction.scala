@@ -46,31 +46,32 @@ trait DiffFunction[T] extends StochasticDiffFunction[T] { outer =>
 
 object DiffFunction {
   def withL2Regularization[T, I](d: DiffFunction[T], weight: Double)(
-      implicit space: InnerProductModule[T, Double]) = new DiffFunction[T] {
-    import space._
-    override def gradientAt(x: T): T = {
-      val grad = d.gradientAt(x)
-      myGrad(grad, x)
-    }
+      implicit space: InnerProductModule[T, Double]) =
+    new DiffFunction[T] {
+      import space._
+      override def gradientAt(x: T): T = {
+        val grad = d.gradientAt(x)
+        myGrad(grad, x)
+      }
 
-    override def valueAt(x: T) = {
-      val v = d.valueAt(x)
-      myValueAt(v, x)
-    }
+      override def valueAt(x: T) = {
+        val v = d.valueAt(x)
+        myValueAt(v, x)
+      }
 
-    private def myValueAt(v: Double, x: T) = {
-      v + weight * (x dot x) / 2
-    }
+      private def myValueAt(v: Double, x: T) = {
+        v + weight * (x dot x) / 2
+      }
 
-    private def myGrad(g: T, x: T): T = {
-      g + (x * weight)
-    }
+      private def myGrad(g: T, x: T): T = {
+        g + (x * weight)
+      }
 
-    override def calculate(x: T) = {
-      val (v, grad) = d.calculate(x)
-      (myValueAt(v, x), myGrad(grad, x))
+      override def calculate(x: T) = {
+        val (v, grad) = d.calculate(x)
+        (myValueAt(v, x), myGrad(grad, x))
+      }
     }
-  }
 
   def withL2Regularization[T, I](d: BatchDiffFunction[T], weight: Double)(
       implicit space: InnerProductModule[T, Double]): BatchDiffFunction[T] =

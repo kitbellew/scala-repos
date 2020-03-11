@@ -77,12 +77,13 @@ class TracingFilterTest
       assert(versions == Seq("?"))
     }
 
-    def withDtab(dtab: Dtab) = Filter.mk[Int, Int, Int, Int] { (req, svc) =>
-      Dtab.unwind {
-        Dtab.local = dtab
-        svc(req)
+    def withDtab(dtab: Dtab) =
+      Filter.mk[Int, Int, Int, Int] { (req, svc) =>
+        Dtab.unwind {
+          Dtab.local = dtab
+          svc(req)
+        }
       }
-    }
 
     test(s"$prefix: should trace Dtab.local") {
       val dtab = Dtab.read("/fox=>/spooky;/dana=>/starbuck")

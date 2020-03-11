@@ -52,11 +52,12 @@ trait Conductor { this: TestConductorExt ⇒
   import Controller._
 
   private var _controller: ActorRef = _
-  private def controller: ActorRef = _controller match {
-    case null ⇒
-      throw new IllegalStateException("TestConductorServer was not started")
-    case x ⇒ x
-  }
+  private def controller: ActorRef =
+    _controller match {
+      case null ⇒
+        throw new IllegalStateException("TestConductorServer was not started")
+      case x ⇒ x
+    }
 
   /**
     * Start the [[akka.remote.testconductor.Controller]], which in turn will
@@ -477,16 +478,17 @@ private[akka] class Controller(
    * terminate broken tests as quickly as possible (i.e. without awaiting
    * BarrierTimeouts in the players).
    */
-  override def supervisorStrategy = OneForOneStrategy() {
-    case BarrierTimeout(data) ⇒ failBarrier(data)
-    case FailedBarrier(data) ⇒ failBarrier(data)
-    case BarrierEmpty(data, msg) ⇒ SupervisorStrategy.Resume
-    case WrongBarrier(name, client, data) ⇒ {
-      client ! ToClient(BarrierResult(name, false)); failBarrier(data)
+  override def supervisorStrategy =
+    OneForOneStrategy() {
+      case BarrierTimeout(data) ⇒ failBarrier(data)
+      case FailedBarrier(data) ⇒ failBarrier(data)
+      case BarrierEmpty(data, msg) ⇒ SupervisorStrategy.Resume
+      case WrongBarrier(name, client, data) ⇒ {
+        client ! ToClient(BarrierResult(name, false)); failBarrier(data)
+      }
+      case ClientLost(data, node) ⇒ failBarrier(data)
+      case DuplicateNode(data, node) ⇒ failBarrier(data)
     }
-    case ClientLost(data, node) ⇒ failBarrier(data)
-    case DuplicateNode(data, node) ⇒ failBarrier(data)
-  }
 
   def failBarrier(data: Data): SupervisorStrategy.Directive = {
     for (c ← data.arrived) c ! ToClient(BarrierResult(data.barrier, false))
@@ -500,69 +502,70 @@ private[akka] class Controller(
   var addrInterest = Map[RoleName, Set[ActorRef]]()
   val generation = Iterator from 1
 
-  override def receive = LoggingReceive {
-    case CreateServerFSM(channel) ⇒
-      val (ip, port) = channel.getRemoteAddress match {
-        case s: InetSocketAddress ⇒ (s.getAddress.getHostAddress, s.getPort)
-      }
-      val name = ip + ":" + port + "-server" + generation.next
-      sender() ! context.actorOf(
-        Props(classOf[ServerFSM], self, channel).withDeploy(Deploy.local),
-        name)
-    case c @ NodeInfo(name, addr, fsm) ⇒
-      barrier forward c
-      if (nodes contains name) {
-        if (initialParticipants > 0) {
-          for (NodeInfo(_, _, client) ← nodes.values)
-            client ! ToClient(BarrierResult("initial startup", false))
-          initialParticipants = 0
+  override def receive =
+    LoggingReceive {
+      case CreateServerFSM(channel) ⇒
+        val (ip, port) = channel.getRemoteAddress match {
+          case s: InetSocketAddress ⇒ (s.getAddress.getHostAddress, s.getPort)
         }
-        fsm ! ToClient(BarrierResult("initial startup", false))
-      } else {
-        nodes += name -> c
-        if (initialParticipants <= 0) fsm ! ToClient(Done)
-        else if (nodes.size == initialParticipants) {
-          for (NodeInfo(_, _, client) ← nodes.values) client ! ToClient(Done)
-          initialParticipants = 0
+        val name = ip + ":" + port + "-server" + generation.next
+        sender() ! context.actorOf(
+          Props(classOf[ServerFSM], self, channel).withDeploy(Deploy.local),
+          name)
+      case c @ NodeInfo(name, addr, fsm) ⇒
+        barrier forward c
+        if (nodes contains name) {
+          if (initialParticipants > 0) {
+            for (NodeInfo(_, _, client) ← nodes.values)
+              client ! ToClient(BarrierResult("initial startup", false))
+            initialParticipants = 0
+          }
+          fsm ! ToClient(BarrierResult("initial startup", false))
+        } else {
+          nodes += name -> c
+          if (initialParticipants <= 0) fsm ! ToClient(Done)
+          else if (nodes.size == initialParticipants) {
+            for (NodeInfo(_, _, client) ← nodes.values) client ! ToClient(Done)
+            initialParticipants = 0
+          }
+          if (addrInterest contains name) {
+            addrInterest(name) foreach (_ ! ToClient(AddressReply(name, addr)))
+            addrInterest -= name
+          }
         }
-        if (addrInterest contains name) {
-          addrInterest(name) foreach (_ ! ToClient(AddressReply(name, addr)))
-          addrInterest -= name
+      case c @ ClientDisconnected(name) ⇒
+        nodes -= name
+        barrier forward c
+      case op: ServerOp ⇒
+        op match {
+          case _: EnterBarrier ⇒ barrier forward op
+          case _: FailBarrier ⇒ barrier forward op
+          case GetAddress(node) ⇒
+            if (nodes contains node)
+              sender() ! ToClient(AddressReply(node, nodes(node).addr))
+            else
+              addrInterest += node -> ((addrInterest get node getOrElse Set()) + sender())
+          case _: Done ⇒ //FIXME what should happen?
         }
-      }
-    case c @ ClientDisconnected(name) ⇒
-      nodes -= name
-      barrier forward c
-    case op: ServerOp ⇒
-      op match {
-        case _: EnterBarrier ⇒ barrier forward op
-        case _: FailBarrier ⇒ barrier forward op
-        case GetAddress(node) ⇒
-          if (nodes contains node)
-            sender() ! ToClient(AddressReply(node, nodes(node).addr))
-          else
-            addrInterest += node -> ((addrInterest get node getOrElse Set()) + sender())
-        case _: Done ⇒ //FIXME what should happen?
-      }
-    case op: CommandOp ⇒
-      op match {
-        case Throttle(node, target, direction, rateMBit) ⇒
-          val t = nodes(target)
-          nodes(node).fsm forward ToClient(
-            ThrottleMsg(t.addr, direction, rateMBit))
-        case Disconnect(node, target, abort) ⇒
-          val t = nodes(target)
-          nodes(node).fsm forward ToClient(DisconnectMsg(t.addr, abort))
-        case Terminate(node, shutdownOrExit) ⇒
-          barrier ! BarrierCoordinator.RemoveClient(node)
-          nodes(node).fsm forward ToClient(TerminateMsg(shutdownOrExit))
-          nodes -= node
-        case Remove(node) ⇒
-          barrier ! BarrierCoordinator.RemoveClient(node)
-      }
-    case GetNodes ⇒ sender() ! nodes.keys
-    case GetSockAddr ⇒ sender() ! connection.getLocalAddress
-  }
+      case op: CommandOp ⇒
+        op match {
+          case Throttle(node, target, direction, rateMBit) ⇒
+            val t = nodes(target)
+            nodes(node).fsm forward ToClient(
+              ThrottleMsg(t.addr, direction, rateMBit))
+          case Disconnect(node, target, abort) ⇒
+            val t = nodes(target)
+            nodes(node).fsm forward ToClient(DisconnectMsg(t.addr, abort))
+          case Terminate(node, shutdownOrExit) ⇒
+            barrier ! BarrierCoordinator.RemoveClient(node)
+            nodes(node).fsm forward ToClient(TerminateMsg(shutdownOrExit))
+            nodes -= node
+          case Remove(node) ⇒
+            barrier ! BarrierCoordinator.RemoveClient(node)
+        }
+      case GetNodes ⇒ sender() ! nodes.keys
+      case GetSockAddr ⇒ sender() ! connection.getLocalAddress
+    }
 
   override def postStop() {
     RemoteConnection.shutdown(connection)

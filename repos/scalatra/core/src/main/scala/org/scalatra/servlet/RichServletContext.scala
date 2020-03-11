@@ -43,11 +43,12 @@ case class RichServletContext(sc: ServletContext) extends AttributesMap {
     resource(path)
   }
 
-  private[this] def pathMapping(urlPattern: String): String = urlPattern match {
-    case s if s.endsWith("/*") => s
-    case s if s.endsWith("/")  => s + "*"
-    case s                     => s + "/*"
-  }
+  private[this] def pathMapping(urlPattern: String): String =
+    urlPattern match {
+      case s if s.endsWith("/*") => s
+      case s if s.endsWith("/")  => s + "*"
+      case s                     => s + "/*"
+    }
 
   /**
     * Mounts a handler to the servlet context.  Must be an HttpServlet or a

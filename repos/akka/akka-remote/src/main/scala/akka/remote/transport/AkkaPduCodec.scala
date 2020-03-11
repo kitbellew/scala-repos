@@ -80,12 +80,13 @@ private[remote] trait AkkaPduCodec {
     * @return
     *   Encoded form as raw bytes
     */
-  def encodePdu(pdu: AkkaPdu): ByteString = pdu match {
-    case Associate(info) ⇒ constructAssociate(info)
-    case Payload(bytes) ⇒ constructPayload(bytes)
-    case Disassociate(reason) ⇒ constructDisassociate(reason)
-    case Heartbeat ⇒ constructHeartbeat
-  }
+  def encodePdu(pdu: AkkaPdu): ByteString =
+    pdu match {
+      case Associate(info) ⇒ constructAssociate(info)
+      case Payload(bytes) ⇒ constructPayload(bytes)
+      case Disassociate(reason) ⇒ constructDisassociate(reason)
+      case Heartbeat ⇒ constructHeartbeat
+    }
 
   def constructPayload(payload: ByteString): ByteString
 
@@ -189,11 +190,12 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
     None)
 
   override def constructDisassociate(
-      info: AssociationHandle.DisassociateInfo): ByteString = info match {
-    case AssociationHandle.Unknown ⇒ DISASSOCIATE
-    case AssociationHandle.Shutdown ⇒ DISASSOCIATE_SHUTTING_DOWN
-    case AssociationHandle.Quarantined ⇒ DISASSOCIATE_QUARANTINED
-  }
+      info: AssociationHandle.DisassociateInfo): ByteString =
+    info match {
+      case AssociationHandle.Unknown ⇒ DISASSOCIATE
+      case AssociationHandle.Shutdown ⇒ DISASSOCIATE_SHUTTING_DOWN
+      case AssociationHandle.Quarantined ⇒ DISASSOCIATE_QUARANTINED
+    }
 
   override val constructHeartbeat: ByteString =
     constructControlMessagePdu(WireFormats.CommandType.HEARTBEAT, None)
@@ -312,17 +314,18 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
       .build()
   }
 
-  private def serializeAddress(address: Address): AddressData = address match {
-    case Address(protocol, system, Some(host), Some(port)) ⇒
-      AddressData.newBuilder
-        .setHostname(host)
-        .setPort(port)
-        .setSystem(system)
-        .setProtocol(protocol)
-        .build()
-    case _ ⇒
-      throw new IllegalArgumentException(
-        s"Address [${address}] could not be serialized: host or port missing.")
-  }
+  private def serializeAddress(address: Address): AddressData =
+    address match {
+      case Address(protocol, system, Some(host), Some(port)) ⇒
+        AddressData.newBuilder
+          .setHostname(host)
+          .setPort(port)
+          .setSystem(system)
+          .setProtocol(protocol)
+          .build()
+      case _ ⇒
+        throw new IllegalArgumentException(
+          s"Address [${address}] could not be serialized: host or port missing.")
+    }
 
 }

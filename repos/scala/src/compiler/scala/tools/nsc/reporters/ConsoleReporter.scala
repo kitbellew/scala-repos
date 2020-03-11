@@ -27,11 +27,12 @@ class ConsoleReporter(
   /** maximal number of error messages to be printed */
   final val ERROR_LIMIT = 100
 
-  private def label(severity: Severity): String = severity match {
-    case ERROR   => "error"
-    case WARNING => "warning"
-    case INFO    => null
-  }
+  private def label(severity: Severity): String =
+    severity match {
+      case ERROR   => "error"
+      case WARNING => "warning"
+      case INFO    => null
+    }
 
   protected def clabel(severity: Severity): String = {
     val label0 = label(severity)

@@ -22,9 +22,10 @@ object Responder {
 
   /** Creates a responder that answer continuations with the constant `a`.
     */
-  def constant[A](x: A) = new Responder[A] {
-    def respond(k: A => Unit) = k(x)
-  }
+  def constant[A](x: A) =
+    new Responder[A] {
+      def respond(k: A => Unit) = k(x)
+    }
 
   /** Executes `x` and returns `'''true'''`, useful as syntactic
     *  convenience in for comprehensions.
@@ -65,23 +66,26 @@ abstract class Responder[+A] extends Serializable {
 
   def foreach(k: A => Unit) { respond(k) }
 
-  def map[B](f: A => B) = new Responder[B] {
-    def respond(k: B => Unit) {
-      Responder.this.respond(x => k(f(x)))
+  def map[B](f: A => B) =
+    new Responder[B] {
+      def respond(k: B => Unit) {
+        Responder.this.respond(x => k(f(x)))
+      }
     }
-  }
 
-  def flatMap[B](f: A => Responder[B]) = new Responder[B] {
-    def respond(k: B => Unit) {
-      Responder.this.respond(x => f(x).respond(k))
+  def flatMap[B](f: A => Responder[B]) =
+    new Responder[B] {
+      def respond(k: B => Unit) {
+        Responder.this.respond(x => f(x).respond(k))
+      }
     }
-  }
 
-  def filter(p: A => Boolean) = new Responder[A] {
-    def respond(k: A => Unit) {
-      Responder.this.respond(x => if (p(x)) k(x) else ())
+  def filter(p: A => Boolean) =
+    new Responder[A] {
+      def respond(k: A => Unit) {
+        Responder.this.respond(x => if (p(x)) k(x) else ())
+      }
     }
-  }
 
   override def toString = "Responder"
 }

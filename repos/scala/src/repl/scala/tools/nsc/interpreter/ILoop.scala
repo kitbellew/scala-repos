@@ -122,11 +122,12 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   }
 
   /** print a friendly help message */
-  def helpCommand(line: String): Result = line match {
-    case ""                => helpSummary()
-    case CommandMatch(cmd) => echo(f"%n${cmd.help}")
-    case _                 => ambiguousError(line)
-  }
+  def helpCommand(line: String): Result =
+    line match {
+      case ""                => helpSummary()
+      case CommandMatch(cmd) => echo(f"%n${cmd.help}")
+      case _                 => ambiguousError(line)
+    }
   private def helpSummary() = {
     val usageWidth = commands map (_.usageMsg.length) max
     val formatStr = s"%-${usageWidth}s %s"
@@ -431,9 +432,10 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   }
 
   /** Available commands */
-  def commands: List[LoopCommand] = standardCommands ++ (
-    if (isReplPower) powerCommands else Nil
-  )
+  def commands: List[LoopCommand] =
+    standardCommands ++ (
+      if (isReplPower) powerCommands else Nil
+    )
 
   val replayQuestionMessage =
     """|That entry seems to have slain the compiler.  Shall I replay
@@ -596,38 +598,40 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       if (errless) echo("The compiler reports no errors.")
     }
 
-    def edit(text: String): Result = editor match {
-      case Some(ed) =>
-        val tmp = File.makeTemp()
-        tmp.writeAll(text)
-        try {
-          val pr = new ProcessResult(s"$ed ${tmp.path}")
-          pr.exitCode match {
-            case 0 =>
-              tmp.safeSlurp() match {
-                case Some(edited) if edited.trim.isEmpty =>
-                  echo("Edited text is empty.")
-                case Some(edited) =>
-                  echo(edited.lines map ("+" + _) mkString "\n")
-                  val res = intp interpret edited
-                  if (res == IR.Incomplete) diagnose(edited)
-                  else {
-                    history.historicize(edited)
-                    Result(lineToRecord = Some(edited), keepRunning = true)
-                  }
-                case None => echo("Can't read edited text. Did you delete it?")
-              }
-            case x => echo(s"Error exit from $ed ($x), ignoring")
+    def edit(text: String): Result =
+      editor match {
+        case Some(ed) =>
+          val tmp = File.makeTemp()
+          tmp.writeAll(text)
+          try {
+            val pr = new ProcessResult(s"$ed ${tmp.path}")
+            pr.exitCode match {
+              case 0 =>
+                tmp.safeSlurp() match {
+                  case Some(edited) if edited.trim.isEmpty =>
+                    echo("Edited text is empty.")
+                  case Some(edited) =>
+                    echo(edited.lines map ("+" + _) mkString "\n")
+                    val res = intp interpret edited
+                    if (res == IR.Incomplete) diagnose(edited)
+                    else {
+                      history.historicize(edited)
+                      Result(lineToRecord = Some(edited), keepRunning = true)
+                    }
+                  case None =>
+                    echo("Can't read edited text. Did you delete it?")
+                }
+              case x => echo(s"Error exit from $ed ($x), ignoring")
+            }
+          } finally {
+            tmp.delete()
           }
-        } finally {
-          tmp.delete()
-        }
-      case None =>
-        if (history.historicize(text)) echo("Placing text in recent history.")
-        else
-          echo(
-            f"No EDITOR defined and you can't change history, echoing your text:%n$text")
-    }
+        case None =>
+          if (history.historicize(text)) echo("Placing text in recent history.")
+          else
+            echo(
+              f"No EDITOR defined and you can't change history, echoing your text:%n$text")
+      }
 
     // if what is a number, use it as a line number or range in history
     def isNum = what forall (c => c.isDigit || c == '-' || c == '+')
@@ -675,14 +679,15 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
     "sh",
     "run a shell command (result is implicitly => List[String])") {
     override def usage = "<command line>"
-    def apply(line: String): Result = line match {
-      case "" => showUsage()
-      case _ =>
-        val toRun =
-          s"new ${classOf[ProcessResult].getName}(${string2codeQuoted(line)})"
-        intp interpret toRun
-        ()
-    }
+    def apply(line: String): Result =
+      line match {
+        case "" => showUsage()
+        case _ =>
+          val toRun =
+            s"new ${classOf[ProcessResult].getName}(${string2codeQuoted(line)})"
+          intp interpret toRun
+          ()
+      }
   }
 
   def withFile[A](filename: String)(action: File => A): Option[A] = {
@@ -705,11 +710,12 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
     }
   }
 
-  def saveCommand(filename: String): Result = (
-    if (filename.isEmpty) echo("File name is required.")
-    else if (replayCommandStack.isEmpty) echo("No replay commands in session")
-    else File(filename).printlnAll(replayCommands: _*)
-  )
+  def saveCommand(filename: String): Result =
+    (
+      if (filename.isEmpty) echo("File name is required.")
+      else if (replayCommandStack.isEmpty) echo("No replay commands in session")
+      else File(filename).printlnAll(replayCommands: _*)
+    )
 
   @deprecated(
     "Use reset, replay or require to update class path",
@@ -793,10 +799,11 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
     unleashAndSetPhase()
     asyncEcho(isDuringInit, power.banner)
   }
-  private def unleashAndSetPhase() = if (isReplPower) {
-    power.unleash()
-    intp beSilentDuring phaseCommand("typer") // Set the phase to "typer"
-  }
+  private def unleashAndSetPhase() =
+    if (isReplPower) {
+      power.unleash()
+      intp beSilentDuring phaseCommand("typer") // Set the phase to "typer"
+    }
 
   def asyncEcho(async: Boolean, msg: => String) {
     if (async) asyncMessage(msg)
@@ -820,12 +827,13 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
 
   private val commandish = """(\S+)(?:\s+)?(.*)""".r
 
-  private def colonCommand(line: String): Result = line.trim match {
-    case ""                                  => helpSummary()
-    case commandish(CommandMatch(cmd), rest) => cmd(rest)
-    case commandish(name, _)                 => ambiguousError(name)
-    case _                                   => echo("?")
-  }
+  private def colonCommand(line: String): Result =
+    line.trim match {
+      case ""                                  => helpSummary()
+      case commandish(CommandMatch(cmd), rest) => cmd(rest)
+      case commandish(name, _)                 => ambiguousError(name)
+      case _                                   => echo("?")
+    }
 
   private def readWhile(cond: String => Boolean) = {
     Iterator continually in.readLine("") takeWhile (x => x != null && cond(x))
@@ -977,16 +985,17 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   }
 
   // runs :load `file` on any files passed via -i
-  def loadFiles(settings: Settings) = settings match {
-    case settings: GenericRunnerSettings =>
-      for (filename <- settings.loadfiles.value) {
-        val cmd = ":load " + filename
-        command(cmd)
-        addReplay(cmd)
-        echo("")
-      }
-    case _ =>
-  }
+  def loadFiles(settings: Settings) =
+    settings match {
+      case settings: GenericRunnerSettings =>
+        for (filename <- settings.loadfiles.value) {
+          val cmd = ":load " + filename
+          command(cmd)
+          addReplay(cmd)
+          echo("")
+        }
+      case _ =>
+    }
 
   /** Tries to create a JLineReader, falling back to SimpleReader,
     *  unless settings or properties are such that it should start with SimpleReader.
@@ -999,21 +1008,23 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       type Completer = () => Completion
       type ReaderMaker = Completer => InteractiveReader
 
-      def instantiater(className: String): ReaderMaker = completer => {
-        if (settings.debug)
-          Console.println(
-            s"Trying to instantiate an InteractiveReader from $className")
-        Class
-          .forName(className)
-          .getConstructor(classOf[Completer])
-          .newInstance(completer)
-          .asInstanceOf[InteractiveReader]
-      }
+      def instantiater(className: String): ReaderMaker =
+        completer => {
+          if (settings.debug)
+            Console.println(
+              s"Trying to instantiate an InteractiveReader from $className")
+          Class
+            .forName(className)
+            .getConstructor(classOf[Completer])
+            .newInstance(completer)
+            .asInstanceOf[InteractiveReader]
+        }
 
-      def mkReader(maker: ReaderMaker) = maker { () =>
-        if (settings.noCompletion) NoCompletion
-        else new PresentationCompilerCompleter(intp)
-      }
+      def mkReader(maker: ReaderMaker) =
+        maker { () =>
+          if (settings.noCompletion) NoCompletion
+          else new PresentationCompilerCompleter(intp)
+        }
 
       def internalClass(kind: String) =
         s"scala.tools.nsc.interpreter.$kind.InteractiveReader"
@@ -1062,29 +1073,30 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   }
 
   // start an interpreter with the given settings
-  def process(settings: Settings): Boolean = savingContextLoader {
-    this.settings = settings
-    createInterpreter()
+  def process(settings: Settings): Boolean =
+    savingContextLoader {
+      this.settings = settings
+      createInterpreter()
 
-    // sets in to some kind of reader depending on environmental cues
-    in = in0.fold(chooseReader(settings))(r =>
-      SimpleReader(r, out, interactive = true))
-    globalFuture = Future {
-      intp.initializeSynchronous()
-      loopPostInit()
-      !intp.reporter.hasErrors
+      // sets in to some kind of reader depending on environmental cues
+      in = in0.fold(chooseReader(settings))(r =>
+        SimpleReader(r, out, interactive = true))
+      globalFuture = Future {
+        intp.initializeSynchronous()
+        loopPostInit()
+        !intp.reporter.hasErrors
+      }
+      loadFiles(settings)
+      printWelcome()
+
+      try loop() match {
+        case LineResults.EOF => out print Properties.shellInterruptedString
+        case _               =>
+      } catch AbstractOrMissingHandler()
+      finally closeInterpreter()
+
+      true
     }
-    loadFiles(settings)
-    printWelcome()
-
-    try loop() match {
-      case LineResults.EOF => out print Properties.shellInterruptedString
-      case _               =>
-    } catch AbstractOrMissingHandler()
-    finally closeInterpreter()
-
-    true
-  }
 
   @deprecated("Use `process` instead", "2.9.0")
   def main(settings: Settings): Unit = process(settings) //used by sbt

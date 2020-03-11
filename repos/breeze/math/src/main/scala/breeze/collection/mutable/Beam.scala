@@ -60,10 +60,11 @@ class Beam[T](val maxSize: Int, xs: T*)(implicit o: Ordering[T])
 
   override protected def newBuilder = new GrowingBuilder(new Beam[T](maxSize))
 
-  override def equals(other: Any): Boolean = other match {
-    case b: Beam[T @unchecked] =>
-      (maxSize == b.maxSize) && (iterator sameElements b.iterator)
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case b: Beam[T @unchecked] =>
+        (maxSize == b.maxSize) && (iterator sameElements b.iterator)
+    }
 }
 
 object Beam {

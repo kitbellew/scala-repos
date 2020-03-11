@@ -72,9 +72,10 @@ trait ScTypeDefinition
     PsiClassImplUtil.isClassEquivalentTo(this, another)
   }
 
-  def allInnerTypeDefinitions: Seq[ScTypeDefinition] = members.collect {
-    case td: ScTypeDefinition => td
-  }
+  def allInnerTypeDefinitions: Seq[ScTypeDefinition] =
+    members.collect {
+      case td: ScTypeDefinition => td
+    }
 
   override def syntheticTypeDefinitionsImpl: Seq[ScTypeDefinition] =
     SyntheticMembersInjector.injectInners(this)

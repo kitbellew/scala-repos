@@ -284,9 +284,10 @@ object Scope {
       ps: Seq[ScopeAxis[ProjectRef]]): Seq[ScopeAxis[ResolvedReference]] =
     ps ++ (ps flatMap rawBuild).distinct :+ Global
 
-  def rawBuild(ps: ScopeAxis[ProjectRef]): Seq[ScopeAxis[BuildRef]] = ps match {
-    case Select(ref) => Select(BuildRef(ref.build)) :: Nil; case _ => Nil
-  }
+  def rawBuild(ps: ScopeAxis[ProjectRef]): Seq[ScopeAxis[BuildRef]] =
+    ps match {
+      case Select(ref) => Select(BuildRef(ref.build)) :: Nil; case _ => Nil
+    }
 
   def delegates[Proj](
       refs: Seq[(ProjectRef, Proj)],

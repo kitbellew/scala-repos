@@ -83,25 +83,26 @@ class MongoListField[OwnerType <: BsonRecord[OwnerType], ListType: Manifest](
     }
   }
 
-  def setFromJValue(jvalue: JValue): Box[MyType] = jvalue match {
-    case JNothing | JNull if optional_? => setBox(Empty)
-    case JArray(array) =>
-      setBox(
-        Full(
-          (array
-            .map {
-              case JsonObjectId(objectId) => objectId
-              case JsonRegex(regex)       => regex
-              case JsonUUID(uuid)         => uuid
-              case JsonDateTime(dt)
-                  if (mf.toString == "org.joda.time.DateTime") =>
-                dt
-              case JsonDate(date) => date
-              case other          => other.values
-            })
-            .asInstanceOf[MyType]))
-    case other => setBox(FieldHelpers.expectedA("JArray", other))
-  }
+  def setFromJValue(jvalue: JValue): Box[MyType] =
+    jvalue match {
+      case JNothing | JNull if optional_? => setBox(Empty)
+      case JArray(array) =>
+        setBox(
+          Full(
+            (array
+              .map {
+                case JsonObjectId(objectId) => objectId
+                case JsonRegex(regex)       => regex
+                case JsonUUID(uuid)         => uuid
+                case JsonDateTime(dt)
+                    if (mf.toString == "org.joda.time.DateTime") =>
+                  dt
+                case JsonDate(date) => date
+                case other          => other.values
+              })
+              .asInstanceOf[MyType]))
+      case other => setBox(FieldHelpers.expectedA("JArray", other))
+    }
 
   // parse String into a JObject
   def setFromString(in: String): Box[List[ListType]] =
@@ -197,12 +198,13 @@ class MongoJsonObjectListField[
   override def asJValue: JValue =
     JArray(value.map(_.asJObject()(owner.meta.formats)))
 
-  override def setFromJValue(jvalue: JValue) = jvalue match {
-    case JNothing | JNull if optional_? => setBox(Empty)
-    case JArray(arr) =>
-      setBox(Full(arr.map(jv => {
-        valueMeta.create(jv.asInstanceOf[JObject])(owner.meta.formats)
-      })))
-    case other => setBox(FieldHelpers.expectedA("JArray", other))
-  }
+  override def setFromJValue(jvalue: JValue) =
+    jvalue match {
+      case JNothing | JNull if optional_? => setBox(Empty)
+      case JArray(arr) =>
+        setBox(Full(arr.map(jv => {
+          valueMeta.create(jv.asInstanceOf[JObject])(owner.meta.formats)
+        })))
+      case other => setBox(FieldHelpers.expectedA("JArray", other))
+    }
 }

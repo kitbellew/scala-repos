@@ -201,10 +201,11 @@ final class RecordSchema {
     *
     * @return a [[com.twitter.collection.RecordSchema.Field Field]] with no default value
     */
-  def newField[A](): Field[A] = new Field[A] {
-    override def default(): A =
-      throw new IllegalStateException("attempt to access uninitialized field")
-  }
+  def newField[A](): Field[A] =
+    new Field[A] {
+      override def default(): A =
+        throw new IllegalStateException("attempt to access uninitialized field")
+    }
 
   /**
     * Creates a new [[com.twitter.collection.RecordSchema.Field Field]] with the given
@@ -215,7 +216,8 @@ final class RecordSchema {
     *        previously assigned to this field in a given record.
     * @return a [[com.twitter.collection.RecordSchema.Field Field]] with the given `defaultSupplier`
     */
-  def newField[A](defaultSupplier: => A): Field[A] = new Field[A] {
-    override def default(): A = defaultSupplier
-  }
+  def newField[A](defaultSupplier: => A): Field[A] =
+    new Field[A] {
+      override def default(): A = defaultSupplier
+    }
 }

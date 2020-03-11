@@ -146,31 +146,30 @@ private[reflect] trait SynchronizedSymbols extends internal.Symbols {
 
     override def validTo = gilSynchronizedIfNotThreadsafe { super.validTo }
     override def info = gilSynchronizedIfNotThreadsafe { super.info }
-    override def rawInfo: Type = gilSynchronizedIfNotThreadsafe {
-      super.rawInfo
-    }
-    override def typeSignature: Type = gilSynchronizedIfNotThreadsafe {
-      super.typeSignature
-    }
+    override def rawInfo: Type =
+      gilSynchronizedIfNotThreadsafe { super.rawInfo }
+    override def typeSignature: Type =
+      gilSynchronizedIfNotThreadsafe { super.typeSignature }
     override def typeSignatureIn(site: Type): Type =
       gilSynchronizedIfNotThreadsafe { super.typeSignatureIn(site) }
 
-    override def typeParams: List[Symbol] = gilSynchronizedIfNotThreadsafe {
-      if (isCompilerUniverse) super.typeParams
-      else {
-        if (isMonomorphicType) Nil
+    override def typeParams: List[Symbol] =
+      gilSynchronizedIfNotThreadsafe {
+        if (isCompilerUniverse) super.typeParams
         else {
-          // analogously to the "info" getter, here we allow for two completions:
-          //   one: sourceCompleter to LazyType, two: LazyType to completed type
-          if (validTo == NoPeriod)
-            rawInfo load this
-          if (validTo == NoPeriod)
-            rawInfo load this
+          if (isMonomorphicType) Nil
+          else {
+            // analogously to the "info" getter, here we allow for two completions:
+            //   one: sourceCompleter to LazyType, two: LazyType to completed type
+            if (validTo == NoPeriod)
+              rawInfo load this
+            if (validTo == NoPeriod)
+              rawInfo load this
 
-          rawInfo.typeParams
+            rawInfo.typeParams
+          }
         }
       }
-    }
     override def unsafeTypeParams: List[Symbol] =
       gilSynchronizedIfNotThreadsafe {
         if (isCompilerUniverse) super.unsafeTypeParams
@@ -296,9 +295,8 @@ private[reflect] trait SynchronizedSymbols extends internal.Symbols {
     // unlike with typeConstructor, a lock is necessary here, because tpe calculation relies on
     // temporarily assigning NoType to tpeCache to detect cyclic reference errors
     private lazy val tpeLock = new Object
-    override def tpe_* : Type = gilSynchronizedIfNotThreadsafe {
-      tpeLock.synchronized { super.tpe_* }
-    }
+    override def tpe_* : Type =
+      gilSynchronizedIfNotThreadsafe { tpeLock.synchronized { super.tpe_* } }
   }
 
   trait SynchronizedClassSymbol extends ClassSymbol with SynchronizedTypeSymbol

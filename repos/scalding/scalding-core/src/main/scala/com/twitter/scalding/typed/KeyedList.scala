@@ -156,15 +156,16 @@ trait KeyedListLike[K, +T, +This[K, +T] <: KeyedListLike[K, T, This]]
     * Use this to get the first value encountered.
     * prefer this to take(1).
     */
-  def head: This[K, T] = sum {
-    new Semigroup[T] {
-      override def plus(left: T, right: T) = left
-      // Don't enumerate every item, just take the first
-      override def sumOption(to: TraversableOnce[T]): Option[T] =
-        if (to.isEmpty) None
-        else Some(to.toIterator.next)
+  def head: This[K, T] =
+    sum {
+      new Semigroup[T] {
+        override def plus(left: T, right: T) = left
+        // Don't enumerate every item, just take the first
+        override def sumOption(to: TraversableOnce[T]): Option[T] =
+          if (to.isEmpty) None
+          else Some(to.toIterator.next)
+      }
     }
-  }
 
   /**
     * This is a special case of mapValueStream, but can be optimized because it doesn't need

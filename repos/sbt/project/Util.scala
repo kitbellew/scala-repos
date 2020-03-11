@@ -40,11 +40,12 @@ object Util {
     }
   )
 
-  def projectComponent = projectID <<= (projectID, componentID) { (pid, cid) =>
-    cid match {
-      case Some(id) => pid extra ("e:component" -> id); case None => pid
+  def projectComponent =
+    projectID <<= (projectID, componentID) { (pid, cid) =>
+      cid match {
+        case Some(id) => pid extra ("e:component" -> id); case None => pid
+      }
     }
-  }
 
   lazy val apiDefinitions = TaskKey[Seq[File]]("api-definitions")
 
@@ -106,36 +107,37 @@ object Util {
   def binID = "compiler-interface-bin"
   def srcID = "compiler-interface-src"
 
-  def publishPomSettings: Seq[Setting[_]] = Seq(
-    publishArtifact in makePom := false,
-    pomPostProcess := cleanPom _
-  )
+  def publishPomSettings: Seq[Setting[_]] =
+    Seq(
+      publishArtifact in makePom := false,
+      pomPostProcess := cleanPom _
+    )
 
   def cleanPom(pomNode: scala.xml.Node) = {
     import scala.xml._
-    def cleanNodes(nodes: Seq[Node]): Seq[Node] = nodes flatMap {
-      case elem @ Elem(prefix, "dependency", attributes, scope, children @ _*)
-          if excludePomDependency(elem) =>
-        NodeSeq.Empty
-      case Elem(prefix, "classifier", attributes, scope, children @ _*) =>
-        NodeSeq.Empty
-      case Elem(prefix, label, attributes, scope, children @ _*) =>
-        val cleanedNodes = cleanNodes(children)
-        Elem(
-          prefix,
-          label,
-          attributes,
-          scope,
-          cleanedNodes.isEmpty,
-          cleanedNodes: _*).theSeq
-      case other => other
-    }
+    def cleanNodes(nodes: Seq[Node]): Seq[Node] =
+      nodes flatMap {
+        case elem @ Elem(prefix, "dependency", attributes, scope, children @ _*)
+            if excludePomDependency(elem) =>
+          NodeSeq.Empty
+        case Elem(prefix, "classifier", attributes, scope, children @ _*) =>
+          NodeSeq.Empty
+        case Elem(prefix, label, attributes, scope, children @ _*) =>
+          val cleanedNodes = cleanNodes(children)
+          Elem(
+            prefix,
+            label,
+            attributes,
+            scope,
+            cleanedNodes.isEmpty,
+            cleanedNodes: _*).theSeq
+        case other => other
+      }
     cleanNodes(pomNode.theSeq)(0)
   }
 
-  def excludePomDependency(node: scala.xml.Node) = node \ "artifactId" exists {
-    n => excludePomArtifact(n.text)
-  }
+  def excludePomDependency(node: scala.xml.Node) =
+    node \ "artifactId" exists { n => excludePomArtifact(n.text) }
 
   def excludePomArtifact(artifactId: String) =
     (artifactId == "compiler-interface") || (artifactId startsWith "precompiled")
@@ -195,14 +197,17 @@ object Licensed {
       .map(d => licensePath(base, d.group(1)))
       .toList
 
-  def settings: Seq[Setting[_]] = Seq(
-    notice <<= baseDirectory(_ / "NOTICE"),
-    unmanagedResources in Compile <++= (notice, extractLicenses) map { _ +: _ },
-    extractLicenses <<= (
-      baseDirectory in ThisBuild,
-      notice,
-      streams) map extractLicenses0
-  )
+  def settings: Seq[Setting[_]] =
+    Seq(
+      notice <<= baseDirectory(_ / "NOTICE"),
+      unmanagedResources in Compile <++= (notice, extractLicenses) map {
+        _ +: _
+      },
+      extractLicenses <<= (
+        baseDirectory in ThisBuild,
+        notice,
+        streams) map extractLicenses0
+    )
   def extractLicenses0(base: File, note: File, s: TaskStreams): Seq[File] =
     if (!note.exists) Nil
     else

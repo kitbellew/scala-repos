@@ -55,12 +55,13 @@ trait BatchDiffFunction[T]
   def withScanningBatches(size: Int): StochasticDiffFunction[T] =
     new StochasticDiffFunction[T] {
       var lastStop = 0
-      def nextBatch = synchronized {
-        val start = lastStop
-        lastStop += size
-        lastStop %= fullRange.size
-        Array.tabulate(size)(i => fullRange((i + start) % fullRange.size))
-      }
+      def nextBatch =
+        synchronized {
+          val start = lastStop
+          lastStop += size
+          lastStop %= fullRange.size
+          Array.tabulate(size)(i => fullRange((i + start) % fullRange.size))
+        }
 
       def calculate(x: T) = outer.calculate(x, nextBatch)
     }

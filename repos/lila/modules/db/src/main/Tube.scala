@@ -17,13 +17,15 @@ trait Tube[Doc] extends BSONDocumentReader[Option[Doc]]
 case class BsTube[Doc](handler: BSONHandler[BSONDocument, Doc])
     extends Tube[Doc] {
 
-  def read(bson: BSONDocument): Option[Doc] = handler readTry bson match {
-    case Success(doc) => Some(doc)
-    case Failure(err) =>
-      logger
-        .error(s"[tube] Cannot read ${lila.db.BSON.debug(bson)}\n$err\n", err)
-      None
-  }
+  def read(bson: BSONDocument): Option[Doc] =
+    handler readTry bson match {
+      case Success(doc) => Some(doc)
+      case Failure(err) =>
+        logger.error(
+          s"[tube] Cannot read ${lila.db.BSON.debug(bson)}\n$err\n",
+          err)
+        None
+    }
 
   def write(doc: Doc): BSONDocument = handler write doc
 
@@ -56,22 +58,25 @@ case class JsTube[Doc](
 
   def read(js: JsObject): JsResult[Doc] = reads(js)
 
-  def write(doc: Doc): JsResult[JsObject] = writes(doc) match {
-    case obj: JsObject => JsSuccess(obj)
-    case something =>
-      logger.error(s"[tube] Cannot write $doc\ngot $something")
-      JsError()
-  }
+  def write(doc: Doc): JsResult[JsObject] =
+    writes(doc) match {
+      case obj: JsObject => JsSuccess(obj)
+      case something =>
+        logger.error(s"[tube] Cannot write $doc\ngot $something")
+        JsError()
+    }
 
-  def toMongo(doc: Doc): JsResult[JsObject] = flag(_.NoId)(
-    write(doc),
-    write(doc) flatMap JsTube.toMongoId
-  )
+  def toMongo(doc: Doc): JsResult[JsObject] =
+    flag(_.NoId)(
+      write(doc),
+      write(doc) flatMap JsTube.toMongoId
+    )
 
-  def fromMongo(js: JsObject): JsResult[Doc] = flag(_.NoId)(
-    read(js),
-    JsTube.depath(JsTube fromMongoId js) flatMap read
-  )
+  def fromMongo(js: JsObject): JsResult[Doc] =
+    flag(_.NoId)(
+      read(js),
+      JsTube.depath(JsTube fromMongoId js) flatMap read
+    )
 
   def inColl(c: Coll): JsTubeInColl[Doc] =
     new JsTube[Doc](reader, writer, flags) with InColl[Doc] { def coll = c }

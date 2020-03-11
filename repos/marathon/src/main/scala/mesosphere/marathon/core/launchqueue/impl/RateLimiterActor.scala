@@ -61,12 +61,13 @@ private class RateLimiterActor private (
     cleanup.cancel()
   }
 
-  override def receive: Receive = LoggingReceive {
-    Seq[Receive](
-      receiveCleanup,
-      receiveDelayOps
-    ).reduceLeft(_.orElse[Any, Unit](_))
-  }
+  override def receive: Receive =
+    LoggingReceive {
+      Seq[Receive](
+        receiveCleanup,
+        receiveDelayOps
+      ).reduceLeft(_.orElse[Any, Unit](_))
+    }
 
   private[this] def receiveCleanup: Receive = {
     case CleanupOverdueDelays =>

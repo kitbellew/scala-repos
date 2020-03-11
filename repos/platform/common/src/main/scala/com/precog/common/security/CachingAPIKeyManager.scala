@@ -66,29 +66,33 @@ class CachingAPIKeyManager[M[+_]](
   private val grantCache =
     Cache.simple[GrantId, Grant](settings.grantCacheSettings: _*)
 
-  protected def add(r: APIKeyRecord) = IO {
-    @inline def addChildren(k: APIKey, c: Set[APIKeyRecord]) =
-      childCache.put(k, childCache.get(k).getOrElse(Set()) union c)
+  protected def add(r: APIKeyRecord) =
+    IO {
+      @inline def addChildren(k: APIKey, c: Set[APIKeyRecord]) =
+        childCache.put(k, childCache.get(k).getOrElse(Set()) union c)
 
-    apiKeyCache.put(r.apiKey, r)
-    addChildren(r.issuerKey, Set(r))
-  }
+      apiKeyCache.put(r.apiKey, r)
+      addChildren(r.issuerKey, Set(r))
+    }
 
-  protected def add(g: Grant) = IO {
-    grantCache.put(g.grantId, g)
-  }
+  protected def add(g: Grant) =
+    IO {
+      grantCache.put(g.grantId, g)
+    }
 
-  protected def remove(r: APIKeyRecord) = IO {
-    @inline def removeChildren(k: APIKey, c: Set[APIKeyRecord]) =
-      childCache.put(k, childCache.get(k).getOrElse(Set()) diff c)
+  protected def remove(r: APIKeyRecord) =
+    IO {
+      @inline def removeChildren(k: APIKey, c: Set[APIKeyRecord]) =
+        childCache.put(k, childCache.get(k).getOrElse(Set()) diff c)
 
-    apiKeyCache.remove(r.apiKey)
-    removeChildren(r.issuerKey, Set(r))
-  }
+      apiKeyCache.remove(r.apiKey)
+      removeChildren(r.issuerKey, Set(r))
+    }
 
-  protected def remove(g: Grant) = IO {
-    grantCache.remove(g.grantId)
-  }
+  protected def remove(g: Grant) =
+    IO {
+      grantCache.remove(g.grantId)
+    }
 
   def rootGrantId: M[GrantId] = manager.rootGrantId
   def rootAPIKey: M[APIKey] = manager.rootAPIKey
@@ -117,21 +121,23 @@ class CachingAPIKeyManager[M[+_]](
       perms,
       expiration) map { _ tap add unsafePerformIO }
 
-  def findAPIKey(tid: APIKey) = apiKeyCache.get(tid) match {
-    case None =>
-      logger.debug("Cache miss on api key " + tid)
-      manager.findAPIKey(tid) map { _.traverse(_ tap add).unsafePerformIO }
+  def findAPIKey(tid: APIKey) =
+    apiKeyCache.get(tid) match {
+      case None =>
+        logger.debug("Cache miss on api key " + tid)
+        manager.findAPIKey(tid) map { _.traverse(_ tap add).unsafePerformIO }
 
-    case t => M.point(t)
-  }
+      case t => M.point(t)
+    }
 
-  def findGrant(gid: GrantId) = grantCache.get(gid) match {
-    case None =>
-      logger.debug("Cache miss on grant " + gid)
-      manager.findGrant(gid) map { _.traverse(_ tap add).unsafePerformIO }
+  def findGrant(gid: GrantId) =
+    grantCache.get(gid) match {
+      case None =>
+        logger.debug("Cache miss on grant " + gid)
+        manager.findGrant(gid) map { _.traverse(_ tap add).unsafePerformIO }
 
-    case s @ Some(_) => M.point(s)
-  }
+      case s @ Some(_) => M.point(s)
+    }
 
   def findAPIKeyChildren(apiKey: APIKey): M[Set[APIKeyRecord]] =
     childCache.get(apiKey) match {

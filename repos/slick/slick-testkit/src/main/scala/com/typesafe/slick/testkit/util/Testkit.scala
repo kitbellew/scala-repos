@@ -61,40 +61,41 @@ class Testkit(clazz: Class[_ <: ProfileTest], runnerBuilder: RunnerBuilder)
       }
     } else Nil
 
-  override def runChildren(notifier: RunNotifier) = if (!children.isEmpty) {
-    tdb.cleanUpBefore()
-    try {
-      val is = children.iterator
-        .map(ch => (ch, ch.cl.newInstance()))
-        .filter { case (_, to) => to.setTestDB(tdb) }
-        .zipWithIndex
-        .toIndexedSeq
-      val last = is.length - 1
-      var previousTestObject: GenericTest[_ >: Null <: TestDB] = null
-      for (((ch, preparedTestObject), idx) <- is) {
-        val desc = describeChild(ch)
-        notifier.fireTestStarted(desc)
-        try {
-          val testObject =
-            if (previousTestObject ne null) previousTestObject
-            else preparedTestObject
-          previousTestObject = null
-          try ch.run(testObject)
-          finally {
-            val skipCleanup =
-              idx == last || (testObject.reuseInstance && (ch.cl eq is(
-                idx + 1)._1._1.cl))
-            if (skipCleanup) {
-              if (idx == last) testObject.closeKeepAlive()
-              else previousTestObject = testObject
-            } else testObject.cleanup()
-          }
-        } catch {
-          case t: Throwable => addFailure(t, notifier, desc)
-        } finally notifier.fireTestFinished(desc)
-      }
-    } finally tdb.cleanUpAfter()
-  }
+  override def runChildren(notifier: RunNotifier) =
+    if (!children.isEmpty) {
+      tdb.cleanUpBefore()
+      try {
+        val is = children.iterator
+          .map(ch => (ch, ch.cl.newInstance()))
+          .filter { case (_, to) => to.setTestDB(tdb) }
+          .zipWithIndex
+          .toIndexedSeq
+        val last = is.length - 1
+        var previousTestObject: GenericTest[_ >: Null <: TestDB] = null
+        for (((ch, preparedTestObject), idx) <- is) {
+          val desc = describeChild(ch)
+          notifier.fireTestStarted(desc)
+          try {
+            val testObject =
+              if (previousTestObject ne null) previousTestObject
+              else preparedTestObject
+            previousTestObject = null
+            try ch.run(testObject)
+            finally {
+              val skipCleanup =
+                idx == last || (testObject.reuseInstance && (ch.cl eq is(
+                  idx + 1)._1._1.cl))
+              if (skipCleanup) {
+                if (idx == last) testObject.closeKeepAlive()
+                else previousTestObject = testObject
+              } else testObject.cleanup()
+            }
+          } catch {
+            case t: Throwable => addFailure(t, notifier, desc)
+          } finally notifier.fireTestFinished(desc)
+        }
+      } finally tdb.cleanUpAfter()
+    }
 }
 
 abstract class ProfileTest(val tdb: TestDB) {
@@ -162,13 +163,14 @@ sealed abstract class GenericTest[TDB >: Null <: TestDB](
     db
   }
 
-  final def cleanup() = if (keepAliveSession ne null) {
-    try if (tdb.isPersistent) tdb.dropUserArtifacts(keepAliveSession)
-    finally {
-      try db.close()
-      finally closeKeepAlive()
+  final def cleanup() =
+    if (keepAliveSession ne null) {
+      try if (tdb.isPersistent) tdb.dropUserArtifacts(keepAliveSession)
+      finally {
+        try db.close()
+        finally closeKeepAlive()
+      }
     }
-  }
 
   final def closeKeepAlive() = {
     if (keepAliveSession ne null) keepAliveSession.close()
@@ -397,22 +399,24 @@ abstract class AsyncTest[TDB >: Null <: TestDB](
       f
     }
     try p.subscribe(new Subscriber[T] {
-      def onSubscribe(s: Subscription): Unit = async {
-        sub = s
-        sub.request(1L)
-      }
+      def onSubscribe(s: Subscription): Unit =
+        async {
+          sub = s
+          sub.request(1L)
+        }
       def onComplete(): Unit = async(pr.trySuccess(builder.result()))
       def onError(t: Throwable): Unit = async(pr.tryFailure(t))
-      def onNext(t: T): Unit = async {
-        tr(t).onComplete {
-          case Success(r) =>
-            builder += r
-            sub.request(1L)
-          case Failure(t) =>
-            pr.tryFailure(t)
-            sub.cancel()
-        }(ec)
-      }
+      def onNext(t: T): Unit =
+        async {
+          tr(t).onComplete {
+            case Success(r) =>
+              builder += r
+              sub.request(1L)
+            case Failure(t) =>
+              pr.tryFailure(t)
+              sub.cancel()
+          }(ec)
+        }
     })
     catch { case NonFatal(ex) => pr.tryFailure(ex) }
     val f = pr.future
@@ -468,9 +472,10 @@ abstract class AsyncTest[TDB >: Null <: TestDB](
           throw ex
       }
 
-    def shouldAllMatch(f: PartialFunction[T, _]) = v.foreach { x =>
-      if (!f.isDefinedAt(x))
-        fixStack(Assert.fail("Value does not match expected shape: " + x))
-    }
+    def shouldAllMatch(f: PartialFunction[T, _]) =
+      v.foreach { x =>
+        if (!f.isDefinedAt(x))
+          fixStack(Assert.fail("Value does not match expected shape: " + x))
+      }
   }
 }

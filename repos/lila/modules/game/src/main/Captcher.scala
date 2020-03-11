@@ -31,16 +31,18 @@ private final class Captcher extends Actor {
 
   private object Impl {
 
-    def get(id: String): Fu[Captcha] = find(id) match {
-      case None    => getFromDb(id) map (c => (c | Captcha.default) ~ add)
-      case Some(c) => fuccess(c)
-    }
+    def get(id: String): Fu[Captcha] =
+      find(id) match {
+        case None    => getFromDb(id) map (c => (c | Captcha.default) ~ add)
+        case Some(c) => fuccess(c)
+      }
 
     def current = challenges.head
 
-    def refresh = createFromDb onSuccess {
-      case Some(captcha) => add(captcha)
-    }
+    def refresh =
+      createFromDb onSuccess {
+        case Some(captcha) => add(captcha)
+      }
 
     // Private stuff
 
@@ -103,11 +105,12 @@ private final class Captcher extends Actor {
         safeInit,
         tags = Nil) map (_.state) toOption
 
-    private def safeInit[A](list: List[A]): List[A] = list match {
-      case x :: Nil => Nil
-      case x :: xs  => x :: safeInit(xs)
-      case _        => Nil
-    }
+    private def safeInit[A](list: List[A]): List[A] =
+      list match {
+        case x :: Nil => Nil
+        case x :: xs  => x :: safeInit(xs)
+        case _        => Nil
+      }
 
     private def fen(game: ChessGame): String =
       Forsyth >> game takeWhile (_ != ' ')

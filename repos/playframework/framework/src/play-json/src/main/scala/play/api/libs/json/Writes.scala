@@ -39,16 +39,14 @@ trait Writes[-A] {
   /**
     * Transforms the resulting [[JsValue]] using transformer function
     */
-  def transform(transformer: JsValue => JsValue): Writes[A] = Writes[A] { a =>
-    transformer(this.writes(a))
-  }
+  def transform(transformer: JsValue => JsValue): Writes[A] =
+    Writes[A] { a => transformer(this.writes(a)) }
 
   /**
     * Transforms resulting [[JsValue]] using Writes[JsValue]
     */
-  def transform(transformer: Writes[JsValue]): Writes[A] = Writes[A] { a =>
-    transformer.writes(this.writes(a))
-  }
+  def transform(transformer: Writes[JsValue]): Writes[A] =
+    Writes[A] { a => transformer.writes(this.writes(a)) }
 
 }
 
@@ -91,9 +89,10 @@ object OWrites extends PathWrites with ConstraintWrites {
 
     }
 
-  def apply[A](f: A => JsObject): OWrites[A] = new OWrites[A] {
-    def writes(a: A): JsObject = f(a)
-  }
+  def apply[A](f: A => JsObject): OWrites[A] =
+    new OWrites[A] {
+      def writes(a: A): JsObject = f(a)
+    }
 }
 
 /**
@@ -112,9 +111,10 @@ object Writes extends PathWrites with ConstraintWrites with DefaultWrites {
 
     }
 
-  def apply[A](f: A => JsValue): Writes[A] = new Writes[A] {
-    def writes(a: A): JsValue = f(a)
-  }
+  def apply[A](f: A => JsValue): Writes[A] =
+    new Writes[A] {
+      def writes(a: A): JsValue = f(a)
+    }
 }
 
 /**
@@ -208,9 +208,8 @@ trait DefaultWrites {
   /**
     * Serializer for Traversables types.
     */
-  implicit def traversableWrites[A: Writes] = Writes[Traversable[A]] { as =>
-    JsArray(as.map(toJson(_)).toSeq)
-  }
+  implicit def traversableWrites[A: Writes] =
+    Writes[Traversable[A]] { as => JsArray(as.map(toJson(_)).toSeq) }
 
   /**
     * Serializer for JsValues.
@@ -224,10 +223,11 @@ trait DefaultWrites {
     */
   implicit def OptionWrites[T](implicit fmt: Writes[T]): Writes[Option[T]] =
     new Writes[Option[T]] {
-      def writes(o: Option[T]) = o match {
-        case Some(value) => fmt.writes(value)
-        case None        => JsNull
-      }
+      def writes(o: Option[T]) =
+        o match {
+          case Some(value) => fmt.writes(value)
+          case None        => JsNull
+        }
     }
 
   /**
@@ -326,9 +326,10 @@ trait DefaultWrites {
     * }}}
     */
   def temporalWrites[A <: Temporal, B](formatting: B)(
-      implicit f: B => TemporalFormatter[A]): Writes[A] = new Writes[A] {
-    def writes(temporal: A): JsValue = JsString(f(formatting) format temporal)
-  }
+      implicit f: B => TemporalFormatter[A]): Writes[A] =
+    new Writes[A] {
+      def writes(temporal: A): JsValue = JsString(f(formatting) format temporal)
+    }
 
   /**
     * The default typeclass to write a `java.time.LocalDateTime`,
@@ -516,16 +517,17 @@ trait DefaultWrites {
     * Serializer for Any, used for the args of ValidationErrors.
     */
   private[json] object anyWrites extends Writes[Any] {
-    def writes(a: Any): JsValue = a match {
-      case s: String   => JsString(s)
-      case nb: Int     => JsNumber(nb)
-      case nb: Short   => JsNumber(nb)
-      case nb: Long    => JsNumber(nb)
-      case nb: Double  => JsNumber(nb)
-      case nb: Float   => JsNumber(nb)
-      case b: Boolean  => JsBoolean(b)
-      case js: JsValue => js
-      case x           => JsString(x.toString)
-    }
+    def writes(a: Any): JsValue =
+      a match {
+        case s: String   => JsString(s)
+        case nb: Int     => JsNumber(nb)
+        case nb: Short   => JsNumber(nb)
+        case nb: Long    => JsNumber(nb)
+        case nb: Double  => JsNumber(nb)
+        case nb: Float   => JsNumber(nb)
+        case b: Boolean  => JsBoolean(b)
+        case js: JsValue => js
+        case x           => JsString(x.toString)
+      }
   }
 }

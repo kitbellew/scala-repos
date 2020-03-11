@@ -87,14 +87,15 @@ class SbtAnnotatorTest extends AnnotatorTestBase with MockSbt {
     mock.annotations
   }
 
-  private def createBuildModule(): Module = inWriteAction {
-    val moduleName = getModule.getName + Sbt.BuildModuleSuffix + ".iml"
-    val module = ModuleManager
-      .getInstance(getProject)
-      .newModule(moduleName, SbtModuleType.instance.getId)
-    ModuleRootModificationUtil.setModuleSdk(module, getTestProjectJdk)
-    module
-  }
+  private def createBuildModule(): Module =
+    inWriteAction {
+      val moduleName = getModule.getName + Sbt.BuildModuleSuffix + ".iml"
+      val module = ModuleManager
+        .getInstance(getProject)
+        .newModule(moduleName, SbtModuleType.instance.getId)
+      ModuleRootModificationUtil.setModuleSdk(module, getTestProjectJdk)
+      module
+    }
 
   private def setUpProjectSettings(): Unit = {
     val projectSettings = SbtProjectSettings.default

@@ -95,10 +95,13 @@ class JobServiceSpec extends TestJobService {
       JField("data", JObject(JField("x", JNum(1))))
     ))
 
-  def startJob(ts: Option[DateTime] = None): JValue = JObject(
-    JField("state", JString("started")) ::
-      (ts map { dt => JField("timestamp", dt.serialize) :: Nil } getOrElse Nil)
-  )
+  def startJob(ts: Option[DateTime] = None): JValue =
+    JObject(
+      JField("state", JString("started")) ::
+        (ts map { dt =>
+          JField("timestamp", dt.serialize) :: Nil
+        } getOrElse Nil)
+    )
 
   def postJob(job: JValue, apiKey: String = validAPIKey) =
     jobsClient.query("apiKey", apiKey).post[JValue]("/jobs/")(job)
@@ -555,9 +558,10 @@ class JobServiceSpec extends TestJobService {
           JField("progress", JNum(99)) :: JField("unit", JString("%")) :: Nil))
       } yield (res1, res2, res3, res4)).copoint
 
-      def mustBeBad(res: HttpResponse[JValue]) = res must beLike {
-        case HttpResponse(HttpStatus(BadRequest, _), _, _, _) => ok
-      }
+      def mustBeBad(res: HttpResponse[JValue]) =
+        res must beLike {
+          case HttpResponse(HttpStatus(BadRequest, _), _, _, _) => ok
+        }
 
       mustBeBad(res1)
       mustBeBad(res2)

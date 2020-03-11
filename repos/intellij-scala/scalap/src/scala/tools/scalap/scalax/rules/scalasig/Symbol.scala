@@ -10,12 +10,13 @@ trait Symbol extends Flags {
   def parent: Option[Symbol]
   def children: Seq[Symbol]
 
-  def isType = this match {
-    case _: ClassSymbol if !isModule => true
-    case _: TypeSymbol               => true
-    case _ if isTrait                => true
-    case _                           => false
-  }
+  def isType =
+    this match {
+      case _: ClassSymbol if !isModule => true
+      case _: TypeSymbol               => true
+      case _ if isTrait                => true
+      case _                           => false
+    }
 
   def path: String =
     parent.filterNot(_ == NoSymbol).map(_.path + ".").getOrElse("") + name
@@ -67,10 +68,11 @@ case class SymbolInfo(
     privateWithin: Option[AnyRef],
     info: Int,
     entry: ScalaSig#Entry) {
-  def symbolString(any: AnyRef) = any match {
-    case sym: SymbolInfoSymbol => sym.index.toString
-    case other                 => other.toString
-  }
+  def symbolString(any: AnyRef) =
+    any match {
+      case sym: SymbolInfoSymbol => sym.index.toString
+      case other                 => other.toString
+    }
 
   override def toString =
     name + ", owner=" + symbolString(

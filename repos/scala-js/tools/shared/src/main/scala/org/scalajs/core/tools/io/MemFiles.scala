@@ -43,12 +43,13 @@ class MemVirtualTextFile(p: String)
 trait WritableMemVirtualTextFile
     extends MemVirtualTextFile
     with WritableVirtualTextFile {
-  def contentWriter: Writer = new StringWriter {
-    override def close(): Unit = {
-      super.close()
-      WritableMemVirtualTextFile.this.content = this.toString
+  def contentWriter: Writer =
+    new StringWriter {
+      override def close(): Unit = {
+        super.close()
+        WritableMemVirtualTextFile.this.content = this.toString
+      }
     }
-  }
 }
 
 object WritableMemVirtualTextFile {
@@ -91,12 +92,13 @@ trait WritableMemVirtualJSFile
     with WritableVirtualJSFile
     with WritableMemVirtualTextFile {
 
-  def sourceMapWriter: Writer = new StringWriter {
-    override def close(): Unit = {
-      super.close()
-      WritableMemVirtualJSFile.this.sourceMap = Some(this.toString)
+  def sourceMapWriter: Writer =
+    new StringWriter {
+      override def close(): Unit = {
+        super.close()
+        WritableMemVirtualJSFile.this.sourceMap = Some(this.toString)
+      }
     }
-  }
 }
 
 object WritableMemVirtualJSFile {

@@ -33,26 +33,27 @@ trait ApplicativeErrorTests[F[_], E] extends ApplicativeTests[F] {
       def name: String = "applicativeError"
       def bases: Seq[(String, RuleSet)] = Nil
       def parents: Seq[RuleSet] = Seq(applicative[A, B, C])
-      def props: Seq[(String, Prop)] = Seq(
-        "applicativeError handleWith" -> forAll(
-          laws.applicativeErrorHandleWith[A] _),
-        "applicativeError handle" -> forAll(laws.applicativeErrorHandle[A] _),
-        "applicativeError handleErrorWith pure" -> forAll(
-          laws.handleErrorWithPure[A] _),
-        "applicativeError handleError pure" -> forAll(
-          laws.handleErrorPure[A] _),
-        "applicativeError raiseError attempt" -> forAll(
-          laws.raiseErrorAttempt _),
-        "applicativeError pure attempt" -> forAll(laws.pureAttempt[A] _),
-        "applicativeError handleErrorWith consistent with recoverWith" -> forAll(
-          laws.handleErrorWithConsistentWithRecoverWith[A] _),
-        "applicativeError handleError consistent with recover" -> forAll(
-          laws.handleErrorConsistentWithRecover[A] _),
-        "applicativeError recover consistent with recoverWith" -> forAll(
-          laws.recoverConsistentWithRecoverWith[A] _),
-        "applicativeError attempt consistent with attemptT" -> forAll(
-          laws.attemptConsistentWithAttemptT[A] _)
-      )
+      def props: Seq[(String, Prop)] =
+        Seq(
+          "applicativeError handleWith" -> forAll(
+            laws.applicativeErrorHandleWith[A] _),
+          "applicativeError handle" -> forAll(laws.applicativeErrorHandle[A] _),
+          "applicativeError handleErrorWith pure" -> forAll(
+            laws.handleErrorWithPure[A] _),
+          "applicativeError handleError pure" -> forAll(
+            laws.handleErrorPure[A] _),
+          "applicativeError raiseError attempt" -> forAll(
+            laws.raiseErrorAttempt _),
+          "applicativeError pure attempt" -> forAll(laws.pureAttempt[A] _),
+          "applicativeError handleErrorWith consistent with recoverWith" -> forAll(
+            laws.handleErrorWithConsistentWithRecoverWith[A] _),
+          "applicativeError handleError consistent with recover" -> forAll(
+            laws.handleErrorConsistentWithRecover[A] _),
+          "applicativeError recover consistent with recoverWith" -> forAll(
+            laws.recoverConsistentWithRecoverWith[A] _),
+          "applicativeError attempt consistent with attemptT" -> forAll(
+            laws.attemptConsistentWithAttemptT[A] _)
+        )
     }
   }
 }

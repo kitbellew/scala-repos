@@ -65,16 +65,17 @@ trait GenTrees {
     rtree
   }
 
-  def reifyTreeSyntactically(tree: Tree): Tree = tree match {
-    case global.EmptyTree        => reifyMirrorObject(EmptyTree)
-    case global.noSelfType       => mirrorSelect(nme.noSelfType)
-    case global.pendingSuperCall => mirrorSelect(nme.pendingSuperCall)
-    case Literal(const @ Constant(_)) =>
-      mirrorCall(nme.Literal, reifyProduct(const))
-    case Import(expr, selectors) =>
-      mirrorCall(nme.Import, reify(expr), mkList(selectors map reifyProduct))
-    case _ => reifyProduct(tree)
-  }
+  def reifyTreeSyntactically(tree: Tree): Tree =
+    tree match {
+      case global.EmptyTree        => reifyMirrorObject(EmptyTree)
+      case global.noSelfType       => mirrorSelect(nme.noSelfType)
+      case global.pendingSuperCall => mirrorSelect(nme.pendingSuperCall)
+      case Literal(const @ Constant(_)) =>
+        mirrorCall(nme.Literal, reifyProduct(const))
+      case Import(expr, selectors) =>
+        mirrorCall(nme.Import, reify(expr), mkList(selectors map reifyProduct))
+      case _ => reifyProduct(tree)
+    }
 
   def reifyFlags(flags: FlagSet) =
     if (flags != 0) reifyBuildCall(nme.FlagsRepr, flags)

@@ -96,13 +96,13 @@ class SbtFileImpl(provider: FileViewProvider)
     projectDefinitionModule.fold(super.getFileResolveScope)(
       _.getModuleWithLibrariesScope)
 
-  private def projectDefinitionModule: Option[Module] = fileModule.flatMap {
-    module =>
+  private def projectDefinitionModule: Option[Module] =
+    fileModule.flatMap { module =>
       Option(
         ModuleManager
           .getInstance(getProject)
           .findModuleByName(module.getName + Sbt.BuildModuleSuffix))
-  }
+    }
 
   private def fileModule: Option[Module] =
     Option(ModuleUtilCore.findModuleForPsiElement(this))

@@ -46,15 +46,16 @@ class FscSettings(error: String => Unit) extends Settings(error) {
     (_: String) => None)
 
   // For improved help output, separating fsc options from the others.
-  def fscSpecific = Set[Settings#Setting](
-    currentDir,
-    reset,
-    shutdown,
-    server,
-    port,
-    preferIPv4,
-    idleMins
-  )
+  def fscSpecific =
+    Set[Settings#Setting](
+      currentDir,
+      reset,
+      shutdown,
+      server,
+      port,
+      preferIPv4,
+      idleMins
+    )
   val isFscSpecific: String => Boolean = fscSpecific map (_.name)
 
   /** If a setting (other than a PathSetting) represents a path or paths.

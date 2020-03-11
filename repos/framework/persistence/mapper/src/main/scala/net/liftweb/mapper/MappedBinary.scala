@@ -120,12 +120,13 @@ abstract class MappedBinary[T <: Mapper[T]](val fieldOwner: T)
       case value => JsonAST.JString(base64Encode(value))
     })
 
-  override def setFromAny(f: Any): Array[Byte] = f match {
-    case null | JsonAST.JNull    => this.set(null)
-    case JsonAST.JString(base64) => this.set(base64Decode(base64))
-    case array: Array[Byte]      => this.set(array)
-    case s                       => this.set(s.toString.getBytes("UTF-8"))
-  }
+  override def setFromAny(f: Any): Array[Byte] =
+    f match {
+      case null | JsonAST.JNull    => this.set(null)
+      case JsonAST.JString(base64) => this.set(base64Decode(base64))
+      case array: Array[Byte]      => this.set(array)
+      case s                       => this.set(s.toString.getBytes("UTF-8"))
+    }
 
   def jdbcFriendly(field: String): Object = get
 
@@ -276,10 +277,11 @@ abstract class MappedText[T <: Mapper[T]](val fieldOwner: T)
 
   def jdbcFriendly(field: String): Object = real_convertToJDBCFriendly(data.get)
 
-  def real_convertToJDBCFriendly(value: String): Object = value match {
-    case null => null
-    case s    => s
-  }
+  def real_convertToJDBCFriendly(value: String): Object =
+    value match {
+      case null => null
+      case s    => s
+    }
 
   def buildSetActualValue(
       accessor: Method,
@@ -442,10 +444,11 @@ abstract class MappedFakeClob[T <: Mapper[T]](val fieldOwner: T)
 
   def jdbcFriendly(field: String): Object = real_convertToJDBCFriendly(data.get)
 
-  def real_convertToJDBCFriendly(value: String): Object = value match {
-    case null => null
-    case s    => s.getBytes("UTF-8")
-  }
+  def real_convertToJDBCFriendly(value: String): Object =
+    value match {
+      case null => null
+      case s    => s.getBytes("UTF-8")
+    }
 
   def buildSetActualValue(
       accessor: Method,

@@ -69,16 +69,17 @@ class CoproductTests {
 
   @Test
   def testMatch {
-    def cpMatch(v: ISB) = v match {
-      case Inl(x) =>
-        typed[Int](x)
-      case Inr(Inl(x)) =>
-        typed[String](x)
-      case Inr(Inr(Inl(x))) =>
-        typed[Boolean](x)
-      case Inr(Inr(Inr(_))) =>
-        ??? // This impossible case required for exhaustivity
-    }
+    def cpMatch(v: ISB) =
+      v match {
+        case Inl(x) =>
+          typed[Int](x)
+        case Inr(Inl(x)) =>
+          typed[String](x)
+        case Inr(Inr(Inl(x))) =>
+          typed[Boolean](x)
+        case Inr(Inr(Inr(_))) =>
+          ??? // This impossible case required for exhaustivity
+      }
 
     val foo1 = Coproduct[ISB](23)
     val foo2 = Coproduct[ISB]("foo")

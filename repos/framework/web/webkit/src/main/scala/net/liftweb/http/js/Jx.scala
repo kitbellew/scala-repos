@@ -75,13 +75,14 @@ trait JxBase {
       }
       .foldLeft(Noop)(_ & _)
 
-  private def fixText(in: String): String = (in, in.trim) match {
-    case (x, y) if x == y         => x
-    case (x, y) if x startsWith y => y + " "
-    case (x, y) if y.length == 0  => " "
-    case (x, y) if x endsWith y   => " " + y
-    case (_, y)                   => " " + y + " "
-  }
+  private def fixText(in: String): String =
+    (in, in.trim) match {
+      case (x, y) if x == y         => x
+      case (x, y) if x startsWith y => y + " "
+      case (x, y) if y.length == 0  => " "
+      case (x, y) if x endsWith y   => " " + y
+      case (_, y)                   => " " + y + " "
+    }
 
   def addToDocFrag(parent: String, elems: List[Node]): JsCmd =
     elems

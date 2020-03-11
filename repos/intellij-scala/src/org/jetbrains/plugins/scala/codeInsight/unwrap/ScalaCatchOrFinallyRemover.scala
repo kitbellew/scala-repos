@@ -12,10 +12,11 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.{
   * 2014-06-27
   */
 class ScalaCatchOrFinallyRemover extends ScalaUnwrapper {
-  override def isApplicableTo(e: PsiElement) = e match {
-    case _: ScFinallyBlock | _: ScCatchBlock => true
-    case _                                   => false
-  }
+  override def isApplicableTo(e: PsiElement) =
+    e match {
+      case _: ScFinallyBlock | _: ScCatchBlock => true
+      case _                                   => false
+    }
 
   override def doUnwrap(element: PsiElement, context: ScalaUnwrapContext) =
     element match {
@@ -24,9 +25,10 @@ class ScalaCatchOrFinallyRemover extends ScalaUnwrapper {
       case _                   =>
     }
 
-  override def getDescription(e: PsiElement) = e match {
-    case _: ScFinallyBlock => ScalaBundle.message("remove.finally")
-    case _: ScCatchBlock   => ScalaBundle.message("remove.catch")
-    case _                 => ""
-  }
+  override def getDescription(e: PsiElement) =
+    e match {
+      case _: ScFinallyBlock => ScalaBundle.message("remove.finally")
+      case _: ScCatchBlock   => ScalaBundle.message("remove.catch")
+      case _                 => ""
+    }
 }

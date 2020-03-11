@@ -324,28 +324,31 @@ trait ParIterableLike[
         }
     }
 
-  protected def wrap[R](body: => R) = new NonDivisible[R] {
-    def leaf(prevr: Option[R]) = result = body
-    @volatile var result: R = null.asInstanceOf[R]
-  }
+  protected def wrap[R](body: => R) =
+    new NonDivisible[R] {
+      def leaf(prevr: Option[R]) = result = body
+      @volatile var result: R = null.asInstanceOf[R]
+    }
 
   /* convenience signalling operations wrapper */
   protected implicit def delegatedSignalling2ops[PI <: DelegatedSignalling](
-      it: PI) = new SignallingOps[PI] {
-    def assign(cntx: Signalling): PI = {
-      it.signalDelegate = cntx
-      it
+      it: PI) =
+    new SignallingOps[PI] {
+      def assign(cntx: Signalling): PI = {
+        it.signalDelegate = cntx
+        it
+      }
     }
-  }
 
   protected implicit def builder2ops[Elem, To](cb: Builder[Elem, To]) =
     new BuilderOps[Elem, To] {
-      def ifIs[Cmb](isbody: Cmb => Unit) = new Otherwise[Cmb] {
-        def otherwise(notbody: => Unit)(implicit t: ClassTag[Cmb]) {
-          if (cb.getClass == t.runtimeClass) isbody(cb.asInstanceOf[Cmb])
-          else notbody
+      def ifIs[Cmb](isbody: Cmb => Unit) =
+        new Otherwise[Cmb] {
+          def otherwise(notbody: => Unit)(implicit t: ClassTag[Cmb]) {
+            if (cb.getClass == t.runtimeClass) isbody(cb.asInstanceOf[Cmb])
+            else notbody
+          }
         }
-      }
       def isCombiner = cb.isInstanceOf[Combiner[_, _]]
       def asCombiner = cb.asInstanceOf[Combiner[Elem, To]]
     }
@@ -928,9 +931,11 @@ trait ParIterableLike[
   def copyToArray[U >: T](xs: Array[U], start: Int) =
     copyToArray(xs, start, xs.length - start)
 
-  def copyToArray[U >: T](xs: Array[U], start: Int, len: Int) = if (len > 0) {
-    tasksupport.executeAndWaitResult(new CopyToArray(start, len, xs, splitter))
-  }
+  def copyToArray[U >: T](xs: Array[U], start: Int, len: Int) =
+    if (len > 0) {
+      tasksupport.executeAndWaitResult(
+        new CopyToArray(start, len, xs, splitter))
+    }
 
   def sameElements[U >: T](that: GenIterable[U]) = seq.sameElements(that)
 
@@ -1548,9 +1553,10 @@ trait ParIterableLike[
       for ((p, untilp) <- pits zip pits.scanLeft(0)(_ + _.remaining))
         yield new TakeWhile(pos + untilp, pred, cbf, p)
     }
-    override def merge(that: TakeWhile[U, This]) = if (result._2) {
-      result = (result._1 combine that.result._1, that.result._2)
-    }
+    override def merge(that: TakeWhile[U, This]) =
+      if (result._2) {
+        result = (result._1 combine that.result._1, that.result._2)
+      }
     override def requiresStrictSplitters = true
   }
 
@@ -1798,19 +1804,21 @@ trait ParIterableLike[
           cb += z
           p.scanToCombiner(len, z, op, cb)
       }
-    def split = tree match {
-      case ScanNode(left, right) =>
-        Seq(
-          new FromScanTree(left, z, op, cbf),
-          new FromScanTree(right, z, op, cbf)
-        )
-      case _ =>
-        throw new UnsupportedOperationException("Cannot be split further")
-    }
-    def shouldSplitFurther = tree match {
-      case ScanNode(_, _)             => true
-      case ScanLeaf(_, _, _, _, _, _) => false
-    }
+    def split =
+      tree match {
+        case ScanNode(left, right) =>
+          Seq(
+            new FromScanTree(left, z, op, cbf),
+            new FromScanTree(right, z, op, cbf)
+          )
+        case _ =>
+          throw new UnsupportedOperationException("Cannot be split further")
+      }
+    def shouldSplitFurther =
+      tree match {
+        case ScanNode(_, _)             => true
+        case ScanLeaf(_, _, _, _, _, _) => false
+      }
     override def merge(that: FromScanTree[U, That]) =
       result = result combine that.result
   }
@@ -1884,13 +1892,15 @@ trait ParIterableLike[
   // def debugBuffer: ArrayBuffer[String] = dbbuff
   def debugBuffer: ArrayBuffer[String] = null
 
-  private[parallel] def debugclear() = synchronized {
-    debugBuffer.clear()
-  }
+  private[parallel] def debugclear() =
+    synchronized {
+      debugBuffer.clear()
+    }
 
-  private[parallel] def debuglog(s: String) = synchronized {
-    debugBuffer += s
-  }
+  private[parallel] def debuglog(s: String) =
+    synchronized {
+      debugBuffer += s
+    }
 
   import scala.collection.DebugUtils._
   private[parallel] def printDebugBuffer() =

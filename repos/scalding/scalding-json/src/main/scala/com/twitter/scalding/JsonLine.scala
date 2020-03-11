@@ -48,9 +48,10 @@ case class JsonLine(
   import Dsl._
   import JsonLine._
 
-  override def transformForWrite(pipe: Pipe) = pipe.mapTo(fields -> 'json) {
-    t: TupleEntry => mapper.writeValueAsString(TupleConverter.ToMap(t))
-  }
+  override def transformForWrite(pipe: Pipe) =
+    pipe.mapTo(fields -> 'json) {
+      t: TupleEntry => mapper.writeValueAsString(TupleConverter.ToMap(t))
+    }
 
   override def transformForRead(pipe: Pipe) = {
     @scala.annotation.tailrec
@@ -101,9 +102,10 @@ object JsonLine
 
   val mapTypeReference = typeReference[Map[String, AnyRef]]
 
-  private[this] def typeReference[T: Manifest] = new TypeReference[T] {
-    override def getType = typeFromManifest(manifest[T])
-  }
+  private[this] def typeReference[T: Manifest] =
+    new TypeReference[T] {
+      override def getType = typeFromManifest(manifest[T])
+    }
 
   private[this] def typeFromManifest(m: Manifest[_]): Type = {
     if (m.typeArguments.isEmpty) { m.runtimeClass }

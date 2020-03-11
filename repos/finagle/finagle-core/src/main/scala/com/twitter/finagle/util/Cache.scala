@@ -43,35 +43,38 @@ private[finagle] class Cache[A](
     * Implementation: Assume that there are relatively few items to
     * evict, so it is cheaper to traverse from old->new than new->old
     */
-  private[this] def removeExpiredItems(): Seq[A] = synchronized {
-    val deadline = Time.now - ttl
+  private[this] def removeExpiredItems(): Seq[A] =
+    synchronized {
+      val deadline = Time.now - ttl
 
-    @tailrec
-    def constructExpiredList(acc: List[A]): List[A] = {
-      Option(deque.peekLast) match {
-        case Some((ts, item)) if ts <= deadline =>
-          // should ditch *oldest* items, so take from deque's last
-          deque.removeLast()
-          constructExpiredList(item :: acc)
-        case _ =>
-          // assumes time monotonicity (all items below the split
-          //   point are old, all items above the split point are
-          //   young)
-          acc
+      @tailrec
+      def constructExpiredList(acc: List[A]): List[A] = {
+        Option(deque.peekLast) match {
+          case Some((ts, item)) if ts <= deadline =>
+            // should ditch *oldest* items, so take from deque's last
+            deque.removeLast()
+            constructExpiredList(item :: acc)
+          case _ =>
+            // assumes time monotonicity (all items below the split
+            //   point are old, all items above the split point are
+            //   young)
+            acc
+        }
       }
+      constructExpiredList(Nil)
     }
-    constructExpiredList(Nil)
-  }
 
-  private[this] def scheduleTimer(): Unit = synchronized {
-    require(!timerTask.isDefined)
-    timerTask = Some(timer.schedule(ttl.fromNow) { timeout() })
-  }
+  private[this] def scheduleTimer(): Unit =
+    synchronized {
+      require(!timerTask.isDefined)
+      timerTask = Some(timer.schedule(ttl.fromNow) { timeout() })
+    }
 
-  private[this] def cancelTimer() = synchronized {
-    timerTask foreach { _.cancel() }
-    timerTask = None
-  }
+  private[this] def cancelTimer() =
+    synchronized {
+      timerTask foreach { _.cancel() }
+      timerTask = None
+    }
 
   private[this] def timeout() = {
     val evicted = synchronized {
@@ -89,15 +92,16 @@ private[finagle] class Cache[A](
     * Retrieve an item from the cache.  Items are retrieved in LIFO
     * order.
     */
-  def get() = synchronized {
-    if (!deque.isEmpty) {
-      val rv = Some(deque.pop()._2)
-      if (deque.isEmpty) cancelTimer()
-      rv
-    } else {
-      None
+  def get() =
+    synchronized {
+      if (!deque.isEmpty) {
+        val rv = Some(deque.pop()._2)
+        if (deque.isEmpty) cancelTimer()
+        rv
+      } else {
+        None
+      }
     }
-  }
 
   /**
     * Insert an item into the cache.

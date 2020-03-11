@@ -204,14 +204,15 @@ trait Printers extends api.Printers { self: SymbolTable =>
     def printOpt(prefix: String, tree: Tree) =
       if (tree.nonEmpty) { print(prefix, tree) }
 
-    def printModifiers(tree: Tree, mods: Modifiers): Unit = printFlags(
-      if (tree.symbol == NoSymbol) mods.flags else tree.symbol.flags,
-      "" + (
-        if (tree.symbol == NoSymbol) mods.privateWithin
-        else if (tree.symbol.hasAccessBoundary) tree.symbol.privateWithin.name
-        else ""
+    def printModifiers(tree: Tree, mods: Modifiers): Unit =
+      printFlags(
+        if (tree.symbol == NoSymbol) mods.flags else tree.symbol.flags,
+        "" + (
+          if (tree.symbol == NoSymbol) mods.privateWithin
+          else if (tree.symbol.hasAccessBoundary) tree.symbol.privateWithin.name
+          else ""
+        )
       )
-    )
 
     def printFlags(flags: Long, privateWithin: String) = {
       val mask: Long = if (settings.debug) -1L else PrintableFlags
@@ -301,10 +302,11 @@ trait Printers extends api.Printers { self: SymbolTable =>
     protected def printCaseDef(tree: CaseDef) = {
       val CaseDef(pat, guard, body) = tree
       print("case ")
-      def patConstr(pat: Tree): Tree = pat match {
-        case Apply(fn, args) => patConstr(fn)
-        case _               => pat
-      }
+      def patConstr(pat: Tree): Tree =
+        pat match {
+          case Apply(fn, args) => patConstr(fn)
+          case _               => pat
+        }
 
       print(pat); printOpt(" if ", guard)
       print(" => ", body)
@@ -559,15 +561,16 @@ trait Printers extends api.Printers { self: SymbolTable =>
       printTypesInfo(tree)
     }
 
-    def print(args: Any*): Unit = args foreach {
-      case tree: Tree =>
-        printPosition(tree)
-        printTree(tree)
-      case name: Name =>
-        print(quotedName(name))
-      case arg =>
-        out.print(if (arg == null) "null" else arg.toString)
-    }
+    def print(args: Any*): Unit =
+      args foreach {
+        case tree: Tree =>
+          printPosition(tree)
+          printTree(tree)
+        case name: Name =>
+          print(quotedName(name))
+        case arg =>
+          out.print(if (arg == null) "null" else arg.toString)
+      }
   }
 
   // it's the printer for AST-based code generation
@@ -653,10 +656,12 @@ trait Printers extends api.Printers { self: SymbolTable =>
     }
 
     object EmptyTypeTree {
-      def unapply(tt: TypeTree): Boolean = tt match {
-        case build.SyntacticEmptyTypeTree() if tt.wasEmpty || tt.isEmpty => true
-        case _                                                           => false
-      }
+      def unapply(tt: TypeTree): Boolean =
+        tt match {
+          case build.SyntacticEmptyTypeTree() if tt.wasEmpty || tt.isEmpty =>
+            true
+          case _ => false
+        }
     }
 
     protected def isEmptyTree(tree: Tree) =
@@ -1478,22 +1483,23 @@ trait Printers extends api.Printers { self: SymbolTable =>
     }
   }
 
-  def show(name: Name): String = name match {
-    case tpnme.WILDCARD      => "typeNames.WILDCARD"
-    case tpnme.EMPTY         => "typeNames.EMPTY"
-    case tpnme.ERROR         => "typeNames.ERROR"
-    case tpnme.PACKAGE       => "typeNames.PACKAGE"
-    case tpnme.WILDCARD_STAR => "typeNames.WILDCARD_STAR"
-    case nme.WILDCARD        => "termNames.WILDCARD"
-    case nme.EMPTY           => "termNames.EMPTY"
-    case nme.ERROR           => "termNames.ERROR"
-    case nme.PACKAGE         => "termNames.PACKAGE"
-    case nme.CONSTRUCTOR     => "termNames.CONSTRUCTOR"
-    case nme.ROOTPKG         => "termNames.ROOTPKG"
-    case _ =>
-      val prefix = if (name.isTermName) "TermName(\"" else "TypeName(\""
-      prefix + name.toString + "\")"
-  }
+  def show(name: Name): String =
+    name match {
+      case tpnme.WILDCARD      => "typeNames.WILDCARD"
+      case tpnme.EMPTY         => "typeNames.EMPTY"
+      case tpnme.ERROR         => "typeNames.ERROR"
+      case tpnme.PACKAGE       => "typeNames.PACKAGE"
+      case tpnme.WILDCARD_STAR => "typeNames.WILDCARD_STAR"
+      case nme.WILDCARD        => "termNames.WILDCARD"
+      case nme.EMPTY           => "termNames.EMPTY"
+      case nme.ERROR           => "termNames.ERROR"
+      case nme.PACKAGE         => "termNames.PACKAGE"
+      case nme.CONSTRUCTOR     => "termNames.CONSTRUCTOR"
+      case nme.ROOTPKG         => "termNames.ROOTPKG"
+      case _ =>
+        val prefix = if (name.isTermName) "TermName(\"" else "TypeName(\""
+        prefix + name.toString + "\")"
+    }
 
   def show(flags: FlagSet): String = {
     if (flags == NoFlags) nme.NoFlags.toString

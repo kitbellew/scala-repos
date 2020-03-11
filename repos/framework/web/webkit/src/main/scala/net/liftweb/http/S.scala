@@ -443,10 +443,11 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   private[http] object CurrentLocation
       extends RequestVar[Box[sitemap.Loc[_]]](request.flatMap(_.location))
 
-  def location: Box[sitemap.Loc[_]] = CurrentLocation.is or {
-    //try again in case CurrentLocation was accessed before the request was available
-    request flatMap { r => CurrentLocation(r.location) }
-  }
+  def location: Box[sitemap.Loc[_]] =
+    CurrentLocation.is or {
+      //try again in case CurrentLocation was accessed before the request was available
+      request flatMap { r => CurrentLocation(r.location) }
+    }
 
   /**
     * The user agent of the current request, if any.
@@ -1802,10 +1803,11 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   /**
     * Are we currently in the scope of a stateful request
     */
-  def statefulRequest_? : Boolean = session match {
-    case Full(s) => s.stateful_?
-    case _       => false
-  }
+  def statefulRequest_? : Boolean =
+    session match {
+      case Full(s) => s.stateful_?
+      case _       => false
+    }
 
   private def _nest2InnerInit[B](f: () => B): B = {
     __functionMap.doWith(Map()) {
@@ -2081,11 +2083,12 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see # prefixedAttrsToMap ( String )
     * @see # prefixedAttrsToMap ( String, Map )
     */
-  def attrsFlattenToMap: Map[String, String] = Map.empty ++ attrs.flatMap {
-    case (Left(key), value)            => List((key, value))
-    case (Right((prefix, key)), value) => List((prefix + ":" + key, value))
-    case _                             => Nil
-  }
+  def attrsFlattenToMap: Map[String, String] =
+    Map.empty ++ attrs.flatMap {
+      case (Left(key), value)            => List((key, value))
+      case (Right((prefix, key)), value) => List((prefix + ":" + key, value))
+      case _                             => Nil
+    }
 
   /**
     * Converts S.attrs attributes to a MetaData object that can be used to add
@@ -2289,12 +2292,14 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   /**
     * A function that will eagerly evaluate a template.
     */
-  def eagerEval: NodeSeq => NodeSeq = ns => {
-    S.session match {
-      case Full(session) => session.processSurroundAndInclude("Eager Eval", ns)
-      case _             => ns
+  def eagerEval: NodeSeq => NodeSeq =
+    ns => {
+      S.session match {
+        case Full(session) =>
+          session.processSurroundAndInclude("Eager Eval", ns)
+        case _ => ns
+      }
     }
-  }
 
   /**
     * Initialize the current request session if it's not already initialized.
@@ -2327,10 +2332,11 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * If you want a particular attribute, the S.currentAttr
     * helper object simplifies things considerably.
     */
-  def currentAttrs: MetaData = _attrs.value match {
-    case null            => Null
-    case (current, full) => current
-  }
+  def currentAttrs: MetaData =
+    _attrs.value match {
+      case null            => Null
+      case (current, full) => current
+    }
 
   /**
     * Temporarily adds the given attributes to the current set, then executes the given function.
@@ -2751,11 +2757,12 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
                 future
               }
 
-              def fixShot(): Boolean = synchronized {
-                val ret = shot
-                shot = true
-                ret
-              }
+              def fixShot(): Boolean =
+                synchronized {
+                  val ret = shot
+                  shot = true
+                  ret
+                }
 
               override def apply(in: List[String]): Any = {
                 val ns = fixShot()
@@ -2990,10 +2997,11 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     *
     * @param f the AFuncHolder that you want to wrap with execution context
     */
-  def contextFuncBuilder(f: S.AFuncHolder): S.AFuncHolder = S.session match {
-    case Full(s) => s.contextFuncBuilder(f)
-    case _       => f
-  }
+  def contextFuncBuilder(f: S.AFuncHolder): S.AFuncHolder =
+    S.session match {
+      case Full(s) => s.contextFuncBuilder(f)
+      case _       => f
+    }
 
   def render(xhtml: NodeSeq, httpRequest: HTTPRequest): NodeSeq = {
     def doRender(session: LiftSession): NodeSeq =

@@ -92,22 +92,23 @@ private class LeadershipCoordinatorActor(var whenLeaderActors: Set[ActorRef])
     }
   }
 
-  private[impl] def active: Receive = LoggingReceive.withLabel("active") {
-    log.info(
-      "All actors active:\n{}",
-      whenLeaderActors.map(actorRef => s"* $actorRef").mkString("\n"))
-
+  private[impl] def active: Receive =
     LoggingReceive.withLabel("active") {
-      case Terminated(actorRef) =>
-        log.error("unexpected death of {}", actorRef)
-        whenLeaderActors -= actorRef
+      log.info(
+        "All actors active:\n{}",
+        whenLeaderActors.map(actorRef => s"* $actorRef").mkString("\n"))
 
-      case PreparationMessages.PrepareForStart =>
-        sender() ! PreparationMessages.Prepared(self)
+      LoggingReceive.withLabel("active") {
+        case Terminated(actorRef) =>
+          log.error("unexpected death of {}", actorRef)
+          whenLeaderActors -= actorRef
 
-      case WhenLeaderActor.Stop =>
-        whenLeaderActors.foreach(_ ! Stop)
-        context.become(suspended)
+        case PreparationMessages.PrepareForStart =>
+          sender() ! PreparationMessages.Prepared(self)
+
+        case WhenLeaderActor.Stop =>
+          whenLeaderActors.foreach(_ ! Stop)
+          context.become(suspended)
+      }
     }
-  }
 }

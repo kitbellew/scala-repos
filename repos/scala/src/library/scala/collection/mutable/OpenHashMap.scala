@@ -203,25 +203,26 @@ class OpenHashMap[Key, Value](initialSize: Int)
     *
     *  @return   the iterator
     */
-  def iterator: Iterator[(Key, Value)] = new AbstractIterator[(Key, Value)] {
-    var index = 0
-    val initialModCount = modCount
+  def iterator: Iterator[(Key, Value)] =
+    new AbstractIterator[(Key, Value)] {
+      var index = 0
+      val initialModCount = modCount
 
-    private[this] def advance() {
-      if (initialModCount != modCount) sys.error("Concurrent modification")
-      while ((index <= mask) && (table(index) == null || table(
-               index).value == None)) index += 1
+      private[this] def advance() {
+        if (initialModCount != modCount) sys.error("Concurrent modification")
+        while ((index <= mask) && (table(index) == null || table(
+                 index).value == None)) index += 1
+      }
+
+      def hasNext = { advance(); index <= mask }
+
+      def next = {
+        advance()
+        val result = table(index)
+        index += 1
+        (result.key, result.value.get)
+      }
     }
-
-    def hasNext = { advance(); index <= mask }
-
-    def next = {
-      advance()
-      val result = table(index)
-      index += 1
-      (result.key, result.value.get)
-    }
-  }
 
   override def clone() = {
     val it = new OpenHashMap[Key, Value]

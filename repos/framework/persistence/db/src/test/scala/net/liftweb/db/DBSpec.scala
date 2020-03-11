@@ -35,12 +35,13 @@ class DBSpec extends Specification with Mockito {
     def f(success: Boolean): Unit
   }
 
-  def dBVendor(connection: Connection) = new ProtoDBVendor {
-    def createOne = {
-      connection.createStatement returns mock[PreparedStatement]
-      Full(connection)
+  def dBVendor(connection: Connection) =
+    new ProtoDBVendor {
+      def createOne = {
+        connection.createStatement returns mock[PreparedStatement]
+        Full(connection)
+      }
     }
-  }
 
   "eager buildLoanWrapper" should {
     "call postTransaction functions with true if transaction is committed" in {

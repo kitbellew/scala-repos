@@ -35,15 +35,16 @@ import org.jetbrains.plugins.scala.lang.refactoring.util.ScalaNamesUtil
 class RenameScalaVariableProcessor
     extends RenameJavaMemberProcessor
     with ScalaRenameProcessor {
-  override def canProcessElement(element: PsiElement): Boolean = element match {
-    case c: ScNamedElement =>
-      ScalaPsiUtil.nameContext(c) match {
-        case _: ScVariable | _: ScValue | _: ScParameter => true
-        case method: FakePsiMethod                       => true
-        case _                                           => false
-      }
-    case _ => false
-  }
+  override def canProcessElement(element: PsiElement): Boolean =
+    element match {
+      case c: ScNamedElement =>
+        ScalaPsiUtil.nameContext(c) match {
+          case _: ScVariable | _: ScValue | _: ScParameter => true
+          case method: FakePsiMethod                       => true
+          case _                                           => false
+        }
+      case _ => false
+    }
 
   override def findReferences(element: PsiElement) =
     ScalaRenameUtil.findReferences(element)

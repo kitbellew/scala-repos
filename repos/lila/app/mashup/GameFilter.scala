@@ -79,17 +79,18 @@ object GameFilterMenu {
   private def cachedNbOf(
       user: User,
       info: Option[UserInfo],
-      filter: GameFilter): Option[Int] = filter match {
-    case Bookmark => info.map(_.nbBookmark)
-    case Imported => info.map(_.nbImported)
-    case All      => user.count.game.some
-    case Rated    => user.count.rated.some
-    case Win      => user.count.win.some
-    case Loss     => user.count.loss.some
-    case Draw     => user.count.draw.some
-    case Search   => user.count.game.some
-    case _        => None
-  }
+      filter: GameFilter): Option[Int] =
+    filter match {
+      case Bookmark => info.map(_.nbBookmark)
+      case Imported => info.map(_.nbImported)
+      case All      => user.count.game.some
+      case Rated    => user.count.rated.some
+      case Win      => user.count.win.some
+      case Loss     => user.count.loss.some
+      case Draw     => user.count.draw.some
+      case Search   => user.count.game.some
+      case _        => None
+    }
 
   private def pag = Env.game.paginator
 

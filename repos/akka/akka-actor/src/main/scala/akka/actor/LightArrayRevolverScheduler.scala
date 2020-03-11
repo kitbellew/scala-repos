@@ -245,26 +245,27 @@ class LightArrayRevolverScheduler(
       }
 
       @tailrec
-      private def checkQueue(time: Long): Unit = queue.pollNode() match {
-        case null ⇒ ()
-        case node ⇒
-          node.value.ticks match {
-            case 0 ⇒ node.value.executeTask()
-            case ticks ⇒
-              val futureTick = ((
-                time - start + // calculate the nanos since timer start
-                  (ticks * tickNanos) + // adding the desired delay
-                  tickNanos - 1 // rounding up
-              ) / tickNanos).toInt // and converting to slot number
-              // tick is an Int that will wrap around, but toInt of futureTick gives us modulo operations
-              // and the difference (offset) will be correct in any case
-              val offset = futureTick - tick
-              val bucket = futureTick & wheelMask
-              node.value.ticks = offset
-              wheel(bucket).addNode(node)
-          }
-          checkQueue(time)
-      }
+      private def checkQueue(time: Long): Unit =
+        queue.pollNode() match {
+          case null ⇒ ()
+          case node ⇒
+            node.value.ticks match {
+              case 0 ⇒ node.value.executeTask()
+              case ticks ⇒
+                val futureTick = ((
+                  time - start + // calculate the nanos since timer start
+                    (ticks * tickNanos) + // adding the desired delay
+                    tickNanos - 1 // rounding up
+                ) / tickNanos).toInt // and converting to slot number
+                // tick is an Int that will wrap around, but toInt of futureTick gives us modulo operations
+                // and the difference (offset) will be correct in any case
+                val offset = futureTick - tick
+                val bucket = futureTick & wheelMask
+                node.value.ticks = offset
+                wheel(bucket).addNode(node)
+            }
+            checkQueue(time)
+        }
 
       override final def run =
         try nextTick()
@@ -307,18 +308,19 @@ class LightArrayRevolverScheduler(
           val tasks = wheel(bucket)
           val putBack = new TaskQueue
 
-          @tailrec def executeBucket(): Unit = tasks.pollNode() match {
-            case null ⇒ ()
-            case node ⇒
-              val task = node.value
-              if (!task.isCancelled) {
-                if (task.ticks >= WheelSize) {
-                  task.ticks -= WheelSize
-                  putBack.addNode(node)
-                } else task.executeTask()
-              }
-              executeBucket()
-          }
+          @tailrec def executeBucket(): Unit =
+            tasks.pollNode() match {
+              case null ⇒ ()
+              case node ⇒
+                val task = node.value
+                if (!task.isCancelled) {
+                  if (task.ticks >= WheelSize) {
+                    task.ticks -= WheelSize
+                    putBack.addNode(node)
+                  } else task.executeTask()
+                }
+                executeBucket()
+            }
           executeBucket()
           wheel(bucket) = putBack
 
@@ -385,10 +387,11 @@ object LightArrayRevolverScheduler {
     // This should only be called in execDirectly
     override def run(): Unit = extractTask(ExecutedTask).run()
 
-    override def cancel(): Boolean = extractTask(CancelledTask) match {
-      case ExecutedTask | CancelledTask ⇒ false
-      case _ ⇒ true
-    }
+    override def cancel(): Boolean =
+      extractTask(CancelledTask) match {
+        case ExecutedTask | CancelledTask ⇒ false
+        case _ ⇒ true
+      }
 
     override def isCancelled: Boolean = task eq CancelledTask
   }

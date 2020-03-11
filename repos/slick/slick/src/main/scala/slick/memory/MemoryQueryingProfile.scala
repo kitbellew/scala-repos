@@ -67,52 +67,57 @@ trait MemoryQueryingProfile extends BasicProfile {
       n3 :@ trType(n3.nodeType)
     }
 
-    def transformSimpleGrouping(n: Node) = n match {
-      case Bind(
-            gen,
-            g: GroupBy,
-            p @ Pure((_: ProductNode | _: StructNode), _)) =>
-        val p2 = transformCountAll(gen, p)
-        if (p2 eq p) n else Bind(gen, g, p2).infer(typeChildren = true)
-      case Library.SilentCast(n :@ tpe1) :@ tpe2 if tpe1 == tpe2 => n
-      case n                                                     => n
-    }
+    def transformSimpleGrouping(n: Node) =
+      n match {
+        case Bind(
+              gen,
+              g: GroupBy,
+              p @ Pure((_: ProductNode | _: StructNode), _)) =>
+          val p2 = transformCountAll(gen, p)
+          if (p2 eq p) n else Bind(gen, g, p2).infer(typeChildren = true)
+        case Library.SilentCast(n :@ tpe1) :@ tpe2 if tpe1 == tpe2 => n
+        case n                                                     => n
+      }
 
-    def transformCountAll(gen: TermSymbol, n: Node): Node = n match {
-      case Apply(
-            Library.CountAll,
-            ch @ ConstArray(
-              Bind(
-                gen2,
-                FwdPath(s :: _),
-                Pure(ProductOfCommonPaths(s2, _), _))))
-          if s == gen && s2 == gen2 =>
-        Apply(Library.Count, ch)(n.nodeType)
-      case n => n.mapChildren(ch => transformCountAll(gen, ch), keepType = true)
-    }
+    def transformCountAll(gen: TermSymbol, n: Node): Node =
+      n match {
+        case Apply(
+              Library.CountAll,
+              ch @ ConstArray(
+                Bind(
+                  gen2,
+                  FwdPath(s :: _),
+                  Pure(ProductOfCommonPaths(s2, _), _))))
+            if s == gen && s2 == gen2 =>
+          Apply(Library.Count, ch)(n.nodeType)
+        case n =>
+          n.mapChildren(ch => transformCountAll(gen, ch), keepType = true)
+      }
 
-    def trType(t: Type): Type = t.structural match {
-      case t @ (_: StructType | _: ProductType | _: CollectionType |
-          _: MappedScalaType | OptionType.NonPrimitive(_)) =>
-        t.mapChildren(trType)
-      case t => typeInfoFor(t)
-    }
+    def trType(t: Type): Type =
+      t.structural match {
+        case t @ (_: StructType | _: ProductType | _: CollectionType |
+            _: MappedScalaType | OptionType.NonPrimitive(_)) =>
+          t.mapChildren(trType)
+        case t => typeInfoFor(t)
+      }
 
     override def compile(
-        n: Node): ResultConverter[MemoryResultConverterDomain, _] = n match {
-      // We actually get a Scala Option value from the interpreter, so the SilentCast is not silent after all
-      case Library.SilentCast(
-            sel @ Select(_, ElementSymbol(idx)) :@ OptionType(tpe2)) :@ tpe
-          if !tpe.isInstanceOf[OptionType] =>
-        val base = createColumnConverter(sel, idx, None).asInstanceOf[
-          ResultConverter[MemoryResultConverterDomain, Option[Any]]]
-        createGetOrElseResultConverter(
-          base,
-          () =>
-            throw new SlickException(
-              "Read null value for non-nullable column in Option"))
-      case n => super.compile(n)
-    }
+        n: Node): ResultConverter[MemoryResultConverterDomain, _] =
+      n match {
+        // We actually get a Scala Option value from the interpreter, so the SilentCast is not silent after all
+        case Library.SilentCast(
+              sel @ Select(_, ElementSymbol(idx)) :@ OptionType(tpe2)) :@ tpe
+            if !tpe.isInstanceOf[OptionType] =>
+          val base = createColumnConverter(sel, idx, None).asInstanceOf[
+            ResultConverter[MemoryResultConverterDomain, Option[Any]]]
+          createGetOrElseResultConverter(
+            base,
+            () =>
+              throw new SlickException(
+                "Read null value for non-nullable column in Option"))
+        case n => super.compile(n)
+      }
 
     def createColumnConverter(n: Node, idx: Int, column: Option[FieldSymbol])
         : ResultConverter[MemoryResultConverterDomain, _] =

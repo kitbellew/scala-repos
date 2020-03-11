@@ -121,10 +121,11 @@ final case class DateTime private (
 
   override def hashCode() = clicks.##
 
-  override def equals(obj: Any) = obj match {
-    case x: DateTime ⇒ x.clicks == clicks
-    case _ ⇒ false
-  }
+  override def equals(obj: Any) =
+    obj match {
+      case x: DateTime ⇒ x.clicks == clicks
+      case _ ⇒ false
+    }
 }
 
 object DateTime {

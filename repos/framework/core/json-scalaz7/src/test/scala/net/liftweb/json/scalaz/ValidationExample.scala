@@ -65,15 +65,16 @@ object ValidationExample extends Specification {
         if (x1 > x2) Fail("asc", x1 + " > " + x2) else (x1, x2).success
 
     // Valid range is a range having start <= end
-    implicit def rangeJSON: JSONR[Range] = new JSONR[Range] {
-      def read(json: JValue) = {
-        (for {
-          s <- field[Int]("s")(json).disjunction
-          e <- field[Int]("e")(json).disjunction
-          r <- ascending(s, e).disjunction
-        } yield Range.tupled(r)).validation
+    implicit def rangeJSON: JSONR[Range] =
+      new JSONR[Range] {
+        def read(json: JValue) = {
+          (for {
+            s <- field[Int]("s")(json).disjunction
+            e <- field[Int]("e")(json).disjunction
+            r <- ascending(s, e).disjunction
+          } yield Range.tupled(r)).validation
+        }
       }
-    }
 
     "fail if lists contains invalid ranges" in {
       val r = fromJSON[List[Range]](json)

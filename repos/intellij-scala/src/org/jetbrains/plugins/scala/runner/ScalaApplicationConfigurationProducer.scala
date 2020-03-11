@@ -89,13 +89,14 @@ abstract class BaseScalaApplicationConfigurationProducer[
   private def hasClassAncestorWithName(
       _element: PsiElement,
       name: String): Boolean = {
-    def isConfigClassWithName(clazz: PsiClass) = clazz match {
-      case clazz: PsiClassWrapper if clazz.getQualifiedName == name => true
-      case o: ScObject
-          if o.fakeCompanionClassOrCompanionClass.getQualifiedName == name =>
-        true
-      case _ => false
-    }
+    def isConfigClassWithName(clazz: PsiClass) =
+      clazz match {
+        case clazz: PsiClassWrapper if clazz.getQualifiedName == name => true
+        case o: ScObject
+            if o.fakeCompanionClassOrCompanionClass.getQualifiedName == name =>
+          true
+        case _ => false
+      }
 
     var element = _element
     do {

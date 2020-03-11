@@ -14,9 +14,8 @@ final class RatingChartApi(
     mongoCache: lila.memo.MongoCache.Builder,
     cacheTtl: FiniteDuration) {
 
-  def apply(user: User): Fu[Option[String]] = cache(user) map { chart =>
-    chart.nonEmpty option chart
-  }
+  def apply(user: User): Fu[Option[String]] =
+    cache(user) map { chart => chart.nonEmpty option chart }
 
   private val cache = mongoCache[User, String](
     prefix = "history:rating",

@@ -73,15 +73,17 @@ trait ScNamedElement
     new ItemPresentation {
       def getPresentableText: String = name
       def getTextAttributesKey: TextAttributesKey = null
-      def getLocationString: String = clazz match {
-        case _: ScTypeDefinition        => "(" + clazz.qualifiedName + ")"
-        case x: ScNewTemplateDefinition => "(<anonymous>)"
-        case _                          => ""
-      }
-      override def getIcon(open: Boolean) = parentMember match {
-        case mem: ScMember => mem.getIcon(0)
-        case _             => null
-      }
+      def getLocationString: String =
+        clazz match {
+          case _: ScTypeDefinition        => "(" + clazz.qualifiedName + ")"
+          case x: ScNewTemplateDefinition => "(<anonymous>)"
+          case _                          => ""
+        }
+      override def getIcon(open: Boolean) =
+        parentMember match {
+          case mem: ScMember => mem.getIcon(0)
+          case _             => null
+        }
     }
   }
 

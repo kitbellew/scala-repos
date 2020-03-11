@@ -39,11 +39,12 @@ case class LineReader private (val lines: Seq[String], val lineCount: Int)
   def rest =
     if (lines.isEmpty) this else new LineReader(lines.tail, lineCount + 1)
   def atEnd = lines.isEmpty
-  def pos = new Position {
-    def line = lineCount
-    def column = 1
-    protected def lineContents = first
-  }
+  def pos =
+    new Position {
+      def line = lineCount
+      def column = 1
+      protected def lineContents = first
+    }
 }
 
 /**
@@ -66,16 +67,17 @@ class LineTokenizer() extends Parsers {
     * Returns a parser based on the given line parser.
     * The resulting parser succeeds if the given line parser consumes the whole String.
     */
-  def p[T](parser: lineParsers.Parser[T]): Parser[T] = Parser { in =>
-    if (in.atEnd) {
-      Failure("End of Input.", in)
-    } else {
-      lineParsers.parseAll(parser, in.first) match {
-        case lineParsers.Success(t, _) => Success(t, in.rest)
-        case n: lineParsers.NoSuccess  => Failure(n.msg, in)
+  def p[T](parser: lineParsers.Parser[T]): Parser[T] =
+    Parser { in =>
+      if (in.atEnd) {
+        Failure("End of Input.", in)
+      } else {
+        lineParsers.parseAll(parser, in.first) match {
+          case lineParsers.Success(t, _) => Success(t, in.rest)
+          case n: lineParsers.NoSuccess  => Failure(n.msg, in)
+        }
       }
     }
-  }
 
   /** Returns the first char in the given string or a newline if the string is empty.
     * This is done to speed up header parsing. Used to speed up line tokenizing substantially
@@ -148,10 +150,11 @@ class LineTokenizer() extends Parsers {
 
   /** Very dumb parser for XML chunks.
     */
-  def xmlChunk = xmlChunkStart ~ (notXmlChunkEnd *) ~ xmlChunkEnd ^^ {
-    case s ~ ms ~ e =>
-      new XmlChunk(s + "\n" + ms.mkString("\n") + "\n" + e + "\n")
-  }
+  def xmlChunk =
+    xmlChunkStart ~ (notXmlChunkEnd *) ~ xmlChunkEnd ^^ {
+      case s ~ ms ~ e =>
+        new XmlChunk(s + "\n" + ms.mkString("\n") + "\n" + e + "\n")
+    }
 
   /** Parses Markdown Lines. Always succeeds.
     */
@@ -184,21 +187,22 @@ class LineTokenizer() extends Parsers {
 
   /** Parses link definitions and verbatim xml blocks
     */
-  def preprocessToken = Parser { in =>
-    if (in.atEnd) {
-      Failure("End of Input.", in)
-    } else {
-      val line = in.first
-      (firstChar(line), indicatorChar(line)) match {
-        //link definitions have absolute precedence
-        case (_, '[') => linkDefinition(in)
-        //then filter out xml blocks if allowed
-        case ('<', _) if (allowXmlBlocks) => xmlChunk(in)
-        //no token for preprocessing
-        case _ => Failure("No preprocessing token.", in)
+  def preprocessToken =
+    Parser { in =>
+      if (in.atEnd) {
+        Failure("End of Input.", in)
+      } else {
+        val line = in.first
+        (firstChar(line), indicatorChar(line)) match {
+          //link definitions have absolute precedence
+          case (_, '[') => linkDefinition(in)
+          //then filter out xml blocks if allowed
+          case ('<', _) if (allowXmlBlocks) => xmlChunk(in)
+          //no token for preprocessing
+          case _ => Failure("No preprocessing token.", in)
+        }
       }
     }
-  }
 
   /** Parses tokens that may occur inside a block. Works like the normal token parser except that
     * it does not check for link definitions and verbatim XML.

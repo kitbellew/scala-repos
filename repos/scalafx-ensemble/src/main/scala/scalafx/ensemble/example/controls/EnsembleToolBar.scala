@@ -37,23 +37,24 @@ class EnsembleToolBar extends EnsembleExample {
 
   // @stage-property width = 400
   // @stage-property height = 150
-  def getContent = new BorderPane {
-    padding = Insets(20)
-    top = new ToolBar {
-      content = List(
-        new Button {
-          text = "Home"
-          minWidth = 75
-        },
-        new Button {
-          text = "Options"
-          minWidth = 75
-        },
-        new Button {
-          text = "Help"
-          minWidth = 75
-        }
-      )
+  def getContent =
+    new BorderPane {
+      padding = Insets(20)
+      top = new ToolBar {
+        content = List(
+          new Button {
+            text = "Home"
+            minWidth = 75
+          },
+          new Button {
+            text = "Options"
+            minWidth = 75
+          },
+          new Button {
+            text = "Help"
+            minWidth = 75
+          }
+        )
+      }
     }
-  }
 }

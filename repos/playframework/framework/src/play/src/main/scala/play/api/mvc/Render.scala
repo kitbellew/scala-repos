@@ -29,11 +29,12 @@ trait Rendering {
       */
     def apply(f: PartialFunction[MediaRange, Result])(
         implicit request: RequestHeader): Result = {
-      def _render(ms: Seq[MediaRange]): Result = ms match {
-        case Nil => NotAcceptable
-        case Seq(m, ms @ _*) =>
-          f.applyOrElse(m, (m: MediaRange) => _render(ms))
-      }
+      def _render(ms: Seq[MediaRange]): Result =
+        ms match {
+          case Nil => NotAcceptable
+          case Seq(m, ms @ _*) =>
+            f.applyOrElse(m, (m: MediaRange) => _render(ms))
+        }
 
       // “If no Accept header field is present, then it is assumed that the client accepts all media types.”
       val result =
@@ -63,11 +64,12 @@ trait Rendering {
       */
     def async(f: PartialFunction[MediaRange, Future[Result]])(
         implicit request: RequestHeader): Future[Result] = {
-      def _render(ms: Seq[MediaRange]): Future[Result] = ms match {
-        case Nil => Future.successful(NotAcceptable)
-        case Seq(m, ms @ _*) =>
-          f.applyOrElse(m, (m: MediaRange) => _render(ms))
-      }
+      def _render(ms: Seq[MediaRange]): Future[Result] =
+        ms match {
+          case Nil => Future.successful(NotAcceptable)
+          case Seq(m, ms @ _*) =>
+            f.applyOrElse(m, (m: MediaRange) => _render(ms))
+        }
 
       // “If no Accept header field is present, then it is assumed that the client accepts all media types.”
       val result =

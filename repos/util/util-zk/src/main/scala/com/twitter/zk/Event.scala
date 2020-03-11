@@ -24,10 +24,11 @@ sealed trait StateEvent {
   val eventType = EventType.None
   val state: KeeperState
   def apply() = Event(eventType, state, None)
-  def unapply(event: WatchedEvent) = event match {
-    case Event(t, s, _) => (t == eventType && s == state)
-    case _              => false
-  }
+  def unapply(event: WatchedEvent) =
+    event match {
+      case Event(t, s, _) => (t == eventType && s == state)
+      case _              => false
+    }
 }
 
 object StateEvent {
@@ -77,10 +78,11 @@ sealed trait NodeEvent {
   val state = KeeperState.SyncConnected
   val eventType: EventType
   def apply(path: String) = Event(eventType, state, Some(path))
-  def unapply(event: WatchedEvent) = event match {
-    case Event(t, _, somePath) if (t == eventType) => somePath
-    case _                                         => None
-  }
+  def unapply(event: WatchedEvent) =
+    event match {
+      case Event(t, _, somePath) if (t == eventType) => somePath
+      case _                                         => None
+    }
 }
 
 object NodeEvent {

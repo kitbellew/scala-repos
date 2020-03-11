@@ -86,16 +86,18 @@ trait MessageDispatcher {
   /**
     * Attaches the specified actorRef to this dispatcher
     */
-  final def attach(actorRef: ActorRef): Unit = guard withGuard {
-    register(actorRef)
-  }
+  final def attach(actorRef: ActorRef): Unit =
+    guard withGuard {
+      register(actorRef)
+    }
 
   /**
     * Detaches the specified actorRef from this dispatcher
     */
-  final def detach(actorRef: ActorRef): Unit = guard withGuard {
-    unregister(actorRef)
-  }
+  final def detach(actorRef: ActorRef): Unit =
+    guard withGuard {
+      unregister(actorRef)
+    }
 
   private[akka] final def dispatchMessage(invocation: MessageInvocation): Unit =
     dispatch(invocation)
@@ -185,21 +187,22 @@ trait MessageDispatcher {
   }
 
   private val shutdownAction = new Runnable {
-    def run = guard withGuard {
-      shutdownSchedule match {
-        case RESCHEDULED =>
-          shutdownSchedule = SCHEDULED
-          Scheduler.scheduleOnce(this, timeoutMs, TimeUnit.MILLISECONDS)
-        case SCHEDULED =>
-          if (uuids.isEmpty && futures.get == 0) {
-            active switchOff {
-              shutdown // shut down in the dispatcher's references is zero
+    def run =
+      guard withGuard {
+        shutdownSchedule match {
+          case RESCHEDULED =>
+            shutdownSchedule = SCHEDULED
+            Scheduler.scheduleOnce(this, timeoutMs, TimeUnit.MILLISECONDS)
+          case SCHEDULED =>
+            if (uuids.isEmpty && futures.get == 0) {
+              active switchOff {
+                shutdown // shut down in the dispatcher's references is zero
+              }
             }
-          }
-          shutdownSchedule = UNSCHEDULED
-        case UNSCHEDULED => //Do nothing
+            shutdownSchedule = UNSCHEDULED
+          case UNSCHEDULED => //Do nothing
+        }
       }
-    }
   }
 
   /**

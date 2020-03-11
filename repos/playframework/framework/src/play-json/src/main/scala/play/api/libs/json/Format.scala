@@ -52,11 +52,12 @@ object OFormat {
 
     }
 
-  def apply[A](r: Reads[A], w: OWrites[A]): OFormat[A] = new OFormat[A] {
-    def reads(js: JsValue): JsResult[A] = r.reads(js)
+  def apply[A](r: Reads[A], w: OWrites[A]): OFormat[A] =
+    new OFormat[A] {
+      def reads(js: JsValue): JsResult[A] = r.reads(js)
 
-    def writes(a: A): JsObject = w.writes(a)
-  }
+      def writes(a: A): JsObject = w.writes(a)
+    }
 }
 
 /**

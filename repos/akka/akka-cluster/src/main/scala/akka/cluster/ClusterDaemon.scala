@@ -440,12 +440,13 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
 
   def receive = uninitialized
 
-  override def unhandled(message: Any): Unit = message match {
-    case _: Tick ⇒
-    case _: GossipEnvelope ⇒
-    case _: GossipStatus ⇒
-    case other ⇒ super.unhandled(other)
-  }
+  override def unhandled(message: Any): Unit =
+    message match {
+      case _: Tick ⇒
+      case _: GossipEnvelope ⇒
+      case _: GossipStatus ⇒
+      case other ⇒ super.unhandled(other)
+    }
 
   def initJoin(): Unit = {
     val selfStatus = latestGossip.member(selfUniqueAddress).status

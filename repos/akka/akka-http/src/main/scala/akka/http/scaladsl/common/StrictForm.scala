@@ -36,9 +36,8 @@ import FastFuture._
   */
 sealed abstract class StrictForm {
   def fields: immutable.Seq[(String, StrictForm.Field)]
-  def field(name: String): Option[StrictForm.Field] = fields collectFirst {
-    case (`name`, field) ⇒ field
-  }
+  def field(name: String): Option[StrictForm.Field] =
+    fields collectFirst { case (`name`, field) ⇒ field }
 }
 
 object StrictForm {

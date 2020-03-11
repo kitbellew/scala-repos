@@ -93,12 +93,12 @@ trait Constraints {
     * '''name'''[constraint.required]
     * '''error'''[error.required]
     */
-  def nonEmpty: Constraint[String] = Constraint[String]("constraint.required") {
-    o =>
+  def nonEmpty: Constraint[String] =
+    Constraint[String]("constraint.required") { o =>
       if (o == null) Invalid(ValidationError("error.required"))
       else if (o.trim.isEmpty) Invalid(ValidationError("error.required"))
       else Valid
-  }
+    }
 
   /**
     * Defines a minimum value for `Ordered` values, by default the value must be greater than or equal to the constraint parameter

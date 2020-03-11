@@ -377,16 +377,17 @@ class PCDataXmlParser(val input: Source)
         xSpace;
     }
 
-    def findIt(base: MetaData, what: MetaData): MetaData = (base, what) match {
-      case (_, Null) => Null
-      case (upb: UnprefixedAttribute, upn: UnprefixedAttribute)
-          if upb.key == upn.key =>
-        upn
-      case (pb: PrefixedAttribute, pn: PrefixedAttribute)
-          if pb.key == pn.key && pb.pre == pn.key =>
-        pn
-      case _ => findIt(base, what.next)
-    }
+    def findIt(base: MetaData, what: MetaData): MetaData =
+      (base, what) match {
+        case (_, Null) => Null
+        case (upb: UnprefixedAttribute, upn: UnprefixedAttribute)
+            if upb.key == upn.key =>
+          upn
+        case (pb: PrefixedAttribute, pn: PrefixedAttribute)
+            if pb.key == pn.key && pb.pre == pn.key =>
+          pn
+        case _ => findIt(base, what.next)
+      }
 
     if (!aMap.wellformed(scope)) {
       if (findIt(aMap, aMap.next) != Null) {
@@ -479,11 +480,12 @@ case class PCData(_data: String) extends Atom[String](_data) {
     throw new java.lang.NullPointerException(
       "tried to construct Text with null")
 
-  final override def equals(x: Any) = x match {
-    case s: String  => s.equals(data.toString())
-    case s: Atom[_] => data == s.data
-    case _          => false
-  }
+  final override def equals(x: Any) =
+    x match {
+      case s: String  => s.equals(data.toString())
+      case s: Atom[_] => data == s.data
+      case _          => false
+    }
 
   /** Returns text, with some characters escaped according to the XML
     *  specification.

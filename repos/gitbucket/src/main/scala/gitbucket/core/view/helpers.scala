@@ -378,13 +378,14 @@ object helpers
         """<i style="color:inherit;width:inherit;height:inherit" class="octicon octicon-x"></i>"""
     })
 
-  def commitStateText(state: CommitState, commitId: String) = state match {
-    case CommitState.PENDING =>
-      "Waiting to hear about " + commitId.substring(0, 8)
-    case CommitState.SUCCESS => "All is well"
-    case CommitState.ERROR   => "Failed"
-    case CommitState.FAILURE => "Failed"
-  }
+  def commitStateText(state: CommitState, commitId: String) =
+    state match {
+      case CommitState.PENDING =>
+        "Waiting to hear about " + commitId.substring(0, 8)
+      case CommitState.SUCCESS => "All is well"
+      case CommitState.ERROR   => "Failed"
+      case CommitState.FAILURE => "Failed"
+    }
 
   // This pattern comes from: http://stackoverflow.com/a/4390768/1771641 (extract-url-from-string)
   private[this] val detectAndRenderLinksRegex =

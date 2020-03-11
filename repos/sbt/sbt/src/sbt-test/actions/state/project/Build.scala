@@ -64,7 +64,6 @@ object MyBuild extends Build {
     InputTask(resolvedScoped(ctx => (s: State) => f(ctx, s)))(dummyTask)
 
   def dummyTask = (key: Any) => maxErrors map { _ => () }
-  def str(o: Option[Int]) = o match {
-    case None => "blue"; case Some(i) => i.toString
-  }
+  def str(o: Option[Int]) =
+    o match { case None => "blue"; case Some(i) => i.toString }
 }

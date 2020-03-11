@@ -151,11 +151,12 @@ object RenameSuperMembersUtil {
 
         override def getElementText(clazz: PsiClass): String = {
           if (clazz == renameAllMarkerObject) return renameAllText
-          def classKind = clazz match {
-            case _: ScObject => "object"
-            case _: ScTrait  => "trait"
-            case _           => "class"
-          }
+          def classKind =
+            clazz match {
+              case _: ScObject => "object"
+              case _: ScTrait  => "trait"
+              case _           => "class"
+            }
           if (clazz == classes.last) renameOnlyCurrent
           else if (oneSuperClass) renameBase
           else

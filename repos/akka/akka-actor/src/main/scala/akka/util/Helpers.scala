@@ -44,10 +44,11 @@ object Helpers {
     */
   def identityHashComparator[T <: AnyRef](comp: Comparator[T]): Comparator[T] =
     new Comparator[T] {
-      def compare(a: T, b: T): Int = compareIdentityHash(a, b) match {
-        case 0 if a != b ⇒ comp.compare(a, b)
-        case x ⇒ x
-      }
+      def compare(a: T, b: T): Int =
+        compareIdentityHash(a, b) match {
+          case 0 if a != b ⇒ comp.compare(a, b)
+          case x ⇒ x
+        }
     }
 
   /**

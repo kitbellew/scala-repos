@@ -221,17 +221,19 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
   }
 
   implicit class OptionExtension[T](option: Option[T]) {
-    def toBox: Box[T] = option match {
-      case Some(x) => Full(x)
-      case None    => Empty
-    }
+    def toBox: Box[T] =
+      option match {
+        case Some(x) => Full(x)
+        case None    => Empty
+      }
   }
 
   implicit class TryExtension[T](tryy: Try[T]) {
-    def toBox: Box[T] = tryy match {
-      case scala.util.Success(x)  => Full(x)
-      case scala.util.Failure(ex) => Failure(ex.getMessage, Full(ex), Empty)
-    }
+    def toBox: Box[T] =
+      tryy match {
+        case scala.util.Success(x)  => Full(x)
+        case scala.util.Failure(ex) => Failure(ex.getMessage, Full(ex), Empty)
+      }
   }
 
   /**

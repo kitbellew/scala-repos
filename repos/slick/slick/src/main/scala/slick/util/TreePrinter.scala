@@ -130,17 +130,18 @@ object DumpInfo {
 
 /** Create a wrapper for a `Dumpable` to omit some nodes. */
 object Ellipsis {
-  def apply(n: Dumpable, poss: List[Int]*): Dumpable = new Dumpable {
-    def getDumpInfo = {
-      val parent = n.getDumpInfo
-      if (poss.isEmpty) parent
-      else if (poss contains Nil) DumpInfo("...")
-      else
-        parent.copy(children = parent.children.zipWithIndex.map {
-          case ((name, ch), idx) =>
-            val chposs = poss.filter(_.head == idx).map(_.tail)
-            (name, apply(ch, chposs: _*))
-        })
+  def apply(n: Dumpable, poss: List[Int]*): Dumpable =
+    new Dumpable {
+      def getDumpInfo = {
+        val parent = n.getDumpInfo
+        if (poss.isEmpty) parent
+        else if (poss contains Nil) DumpInfo("...")
+        else
+          parent.copy(children = parent.children.zipWithIndex.map {
+            case ((name, ch), idx) =>
+              val chposs = poss.filter(_.head == idx).map(_.tail)
+              (name, apply(ch, chposs: _*))
+          })
+      }
     }
-  }
 }

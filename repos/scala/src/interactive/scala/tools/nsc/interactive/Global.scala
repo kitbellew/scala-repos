@@ -49,11 +49,12 @@ trait InteractiveAnalyzer extends Analyzer {
     override def missingSelectErrorTree(
         tree: Tree,
         qual: Tree,
-        name: Name): Tree = tree match {
-      case Select(_, _) => treeCopy.Select(tree, qual, name)
-      case SelectFromTypeTree(_, _) =>
-        treeCopy.SelectFromTypeTree(tree, qual, name)
-    }
+        name: Name): Tree =
+      tree match {
+        case Select(_, _) => treeCopy.Select(tree, qual, name)
+        case SelectFromTypeTree(_, _) =>
+          treeCopy.SelectFromTypeTree(tree, qual, name)
+      }
   }
 
   trait InteractiveNamer extends Namer {
@@ -379,10 +380,11 @@ with ContextTrees with RichCompilationUnits with Picklers {
   /** Called from typechecker every time a context is created.
     *  Registers the context in a context tree
     */
-  override def registerContext(c: Context) = c.unit match {
-    case u: RichCompilationUnit => addContext(u.contexts, c)
-    case _                      =>
-  }
+  override def registerContext(c: Context) =
+    c.unit match {
+      case u: RichCompilationUnit => addContext(u.contexts, c)
+      case _                      =>
+    }
 
   /** The top level classes and objects currently seen in the presentation compiler
     */
@@ -1018,25 +1020,27 @@ with ContextTrees with RichCompilationUnits with Picklers {
     newTyperRun()
   }
 
-  def stabilizedType(tree: Tree): Type = tree match {
-    case Ident(_) if treeInfo.admitsTypeSelection(tree) =>
-      singleType(NoPrefix, tree.symbol)
-    case Select(qual, _) if treeInfo.admitsTypeSelection(tree) =>
-      singleType(qual.tpe, tree.symbol)
-    case Import(expr, selectors) =>
-      tree.symbol.info match {
-        case ImportType(expr) =>
-          expr match {
-            case s @ Select(qual, name) if treeInfo.admitsTypeSelection(expr) =>
-              singleType(qual.tpe, s.symbol)
-            case i: Ident => i.tpe
-            case _        => tree.tpe
-          }
-        case _ => tree.tpe
-      }
+  def stabilizedType(tree: Tree): Type =
+    tree match {
+      case Ident(_) if treeInfo.admitsTypeSelection(tree) =>
+        singleType(NoPrefix, tree.symbol)
+      case Select(qual, _) if treeInfo.admitsTypeSelection(tree) =>
+        singleType(qual.tpe, tree.symbol)
+      case Import(expr, selectors) =>
+        tree.symbol.info match {
+          case ImportType(expr) =>
+            expr match {
+              case s @ Select(qual, name)
+                  if treeInfo.admitsTypeSelection(expr) =>
+                singleType(qual.tpe, s.symbol)
+              case i: Ident => i.tpe
+              case _        => tree.tpe
+            }
+          case _ => tree.tpe
+        }
 
-    case _ => tree.tpe
-  }
+      case _ => tree.tpe
+    }
 
   import analyzer.{SearchResult, ImplicitSearch}
 

@@ -68,19 +68,22 @@ trait Offer[+T] { self =>
     * translation (performed by {{f}}) is done after the {{Offer[T]}} has
     * successfully synchronized.
     */
-  def map[U](f: T => U): Offer[U] = new Offer[U] {
-    def prepare() = self.prepare() map { tx =>
-      new Tx[U] {
-        import Tx.{Commit, Abort}
-        def ack() = tx.ack() map {
-          case Commit(t) => Commit(f(t))
-          case Abort     => Abort
-        }
+  def map[U](f: T => U): Offer[U] =
+    new Offer[U] {
+      def prepare() =
+        self.prepare() map { tx =>
+          new Tx[U] {
+            import Tx.{Commit, Abort}
+            def ack() =
+              tx.ack() map {
+                case Commit(t) => Commit(f(t))
+                case Abort     => Abort
+              }
 
-        def nack() { tx.nack() }
-      }
+            def nack() { tx.nack() }
+          }
+        }
     }
-  }
 
   /**
     * Synonym for `map()`. Useful in combination with `Offer.choose()`
@@ -112,17 +115,18 @@ trait Offer[+T] { self =>
     * offer orElse Offer.const { computeDefaultValue() }
     * }}}
     */
-  def orElse[U >: T](other: Offer[U]): Offer[U] = new Offer[U] {
-    def prepare() = {
-      val ourTx = self.prepare()
-      if (ourTx.isDefined) ourTx
-      else {
-        ourTx foreach { tx => tx.nack() }
-        ourTx.raise(LostSynchronization)
-        other.prepare()
+  def orElse[U >: T](other: Offer[U]): Offer[U] =
+    new Offer[U] {
+      def prepare() = {
+        val ourTx = self.prepare()
+        if (ourTx.isDefined) ourTx
+        else {
+          ourTx foreach { tx => tx.nack() }
+          ourTx.raise(LostSynchronization)
+          other.prepare()
+        }
       }
     }
-  }
 
   def or[U](other: Offer[U]): Offer[Either[T, U]] =
     Offer.choose(this map { Left(_) }, other map { Right(_) })
@@ -182,9 +186,10 @@ object Offer {
     *
     * Note: Updates here must also be done at [[com.twitter.concurrent.Offers.newConstOffer()]].
     */
-  def const[T](x: => T): Offer[T] = new Offer[T] {
-    def prepare() = Future.value(Tx.const(x))
-  }
+  def const[T](x: => T): Offer[T] =
+    new Offer[T] {
+      def prepare() = Future.value(Tx.const(x))
+    }
 
   /**
     * An offer that never synchronizes.

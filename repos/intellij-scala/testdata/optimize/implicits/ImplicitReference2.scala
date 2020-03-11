@@ -8,9 +8,10 @@ object A {
   implicit def IdentityTo[A](x: A) = new Identity
 }
 object B {
-  implicit def IdentityTo[A](x: A) = new Identity {
-    val value = null
-  }
+  implicit def IdentityTo[A](x: A) =
+    new Identity {
+      val value = null
+    }
 }
 
 object Scratch {

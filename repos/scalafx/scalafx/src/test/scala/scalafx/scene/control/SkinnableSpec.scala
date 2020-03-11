@@ -44,15 +44,17 @@ class SkinnableSpec
       classOf[jfxsc.Skinnable],
       classOf[Skinnable]) {
 
-  override protected def getScalaClassInstance = new Skinnable {
-    override val delegate = getJavaClassInstance
-  }
+  override protected def getScalaClassInstance =
+    new Skinnable {
+      override val delegate = getJavaClassInstance
+    }
 
   // How Skinnable is a abstract class, it is done a basic implementation
-  override protected def getJavaClassInstance = new jfxsc.Skinnable {
-    def skinProperty = null
-    def getSkin = null
-    def setSkin(s: jfxsc.Skin[_]) {}
-  }
+  override protected def getJavaClassInstance =
+    new jfxsc.Skinnable {
+      def skinProperty = null
+      def getSkin = null
+      def setSkin(s: jfxsc.Skin[_]) {}
+    }
 
 }

@@ -313,9 +313,10 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
 
   def logError(msg: String, t: Throwable): Unit = ()
 
-  override def shouldLogAtThisPhase = settings.log.isSetByUser && (
-    (settings.log containsPhase globalPhase) || (settings.log containsPhase phase)
-  )
+  override def shouldLogAtThisPhase =
+    settings.log.isSetByUser && (
+      (settings.log containsPhase globalPhase) || (settings.log containsPhase phase)
+    )
   // Over 200 closure objects are eliminated by inlining this.
   @inline final def log(msg: => AnyRef) {
     if (shouldLogAtThisPhase)
@@ -692,9 +693,10 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     "jvm" -> "generate JVM bytecode"
   ) withDefaultValue ""
 
-  protected def computePlatformPhases() = platform.platformPhases foreach {
-    sub => addToPhasesSet(sub, otherPhaseDescriptions(sub.phaseName))
-  }
+  protected def computePlatformPhases() =
+    platform.platformPhases foreach { sub =>
+      addToPhasesSet(sub, otherPhaseDescriptions(sub.phaseName))
+    }
 
   // sequences the phase assembly
   protected def computePhaseDescriptors: List[SubComponent] = {
@@ -784,39 +786,42 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
 
     // built-in string precision merely truncates
     import java.util.{Formattable, FormattableFlags, Formatter}
-    def dotfmt(s: String) = new Formattable {
-      def elliptically(s: String, max: Int) = (
-        if (max < 0 || s.length <= max) s
-        else if (max < 4) s.take(max)
-        else s.take(max - 3) + "..."
-      )
-      override def formatTo(
-          formatter: Formatter,
-          flags: Int,
-          width: Int,
-          precision: Int) {
-        val p = elliptically(s, precision)
-        val w = if (width > 0 && p.length < width) {
-          import FormattableFlags.LEFT_JUSTIFY
-          val leftly = (flags & LEFT_JUSTIFY) == LEFT_JUSTIFY
-          val sb = new StringBuilder
-          def pad() = 1 to width - p.length foreach (_ => sb.append(' '))
-          if (!leftly) pad()
-          sb.append(p)
-          if (leftly) pad()
-          sb.toString
-        } else p
-        formatter.out.append(w)
+    def dotfmt(s: String) =
+      new Formattable {
+        def elliptically(s: String, max: Int) =
+          (
+            if (max < 0 || s.length <= max) s
+            else if (max < 4) s.take(max)
+            else s.take(max - 3) + "..."
+          )
+        override def formatTo(
+            formatter: Formatter,
+            flags: Int,
+            width: Int,
+            precision: Int) {
+          val p = elliptically(s, precision)
+          val w = if (width > 0 && p.length < width) {
+            import FormattableFlags.LEFT_JUSTIFY
+            val leftly = (flags & LEFT_JUSTIFY) == LEFT_JUSTIFY
+            val sb = new StringBuilder
+            def pad() = 1 to width - p.length foreach (_ => sb.append(' '))
+            if (!leftly) pad()
+            sb.append(p)
+            if (leftly) pad()
+            sb.toString
+          } else p
+          formatter.out.append(w)
+        }
       }
-    }
 
     // phase id in run, or suitable icon
-    def idOf(p: SubComponent) = (
-      if (settings.skip contains p.phaseName)
-        "oo" // (currentRun skipPhase p.phaseName)
-      else if (!p.enabled) "xx"
-      else p.ownPhase.id.toString
-    )
+    def idOf(p: SubComponent) =
+      (
+        if (settings.skip contains p.phaseName)
+          "oo" // (currentRun skipPhase p.phaseName)
+        else if (!p.enabled) "xx"
+        else p.ownPhase.id.toString
+      )
     def mkText(p: SubComponent) = {
       val (name, text) =
         if (elliptically) (dotfmt(p.phaseName), dotfmt(describe(p)))
@@ -900,12 +905,13 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
             path: String): List[(PlatformClassPath, PlatformClassPath)] = {
           val dir = AbstractFile.getDirectory(path)
           val canonical = dir.canonicalPath
-          def matchesCanonical(e: ClassPath[_]) = e.origin match {
-            case Some(opath) =>
-              AbstractFile.getDirectory(opath).canonicalPath == canonical
-            case None =>
-              false
-          }
+          def matchesCanonical(e: ClassPath[_]) =
+            e.origin match {
+              case Some(opath) =>
+                AbstractFile.getDirectory(opath).canonicalPath == canonical
+              case None =>
+                false
+            }
           cp.entries find matchesCanonical match {
             case Some(oldEntry) =>
               List(oldEntry -> cp.context.newClassPath(dir))
@@ -1046,15 +1052,17 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     if (currentUnit.exists) currentUnit.source else lastSeenSourceFile
   def currentFreshNameCreator = currentUnit.fresh
 
-  def isGlobalInitialized = (
-    definitions.isDefinitionsInitialized
-      && rootMirror.isMirrorInitialized
-  )
-  override def isPastTyper = (
-    (curRun ne null)
-      && isGlobalInitialized // defense against init order issues
-      && (globalPhase.id > currentRun.typerPhase.id)
-  )
+  def isGlobalInitialized =
+    (
+      definitions.isDefinitionsInitialized
+        && rootMirror.isMirrorInitialized
+    )
+  override def isPastTyper =
+    (
+      (curRun ne null)
+        && isGlobalInitialized // defense against init order issues
+        && (globalPhase.id > currentRun.typerPhase.id)
+    )
 
   // TODO - trim these to the absolute minimum.
   @inline final def exitingErasure[T](op: => T): T =
@@ -1101,16 +1109,18 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     enteringPhase(currentRun.uncurryPhase)(op)
 
   // Owners which aren't package classes.
-  private def ownerChainString(sym: Symbol): String = (
-    if (sym == null) ""
-    else sym.ownerChain takeWhile (!_.isPackageClass) mkString " -> "
-  )
+  private def ownerChainString(sym: Symbol): String =
+    (
+      if (sym == null) ""
+      else sym.ownerChain takeWhile (!_.isPackageClass) mkString " -> "
+    )
 
-  private def formatExplain(pairs: (String, Any)*): String = (
-    pairs.toList collect {
-      case (k, v) if v != null => "%20s: %s".format(k, v)
-    } mkString "\n"
-  )
+  private def formatExplain(pairs: (String, Any)*): String =
+    (
+      pairs.toList collect {
+        case (k, v) if v != null => "%20s: %s".format(k, v)
+      } mkString "\n"
+    )
 
   /** Don't want to introduce new errors trying to report errors,
     *  so swallow exceptions.
@@ -1225,12 +1235,13 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         new collection.AbstractIterator[CompilationUnit] {
           private var used = 0
           def hasNext = self.synchronized { used < underlying.size }
-          def next = self.synchronized {
-            if (!hasNext)
-              throw new NoSuchElementException("next on empty Iterator")
-            used += 1
-            underlying(used - 1)
-          }
+          def next =
+            self.synchronized {
+              if (!hasNext)
+                throw new NoSuchElementException("next on empty Iterator")
+              used += 1
+              underlying(used - 1)
+            }
         }
       def toList: List[CompilationUnit] = synchronized { underlying.toList }
     }
@@ -1542,21 +1553,22 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       *  unless there is a problem already,
       *  such as a plugin was passed a bad option.
       */
-    def compileSources(sources: List[SourceFile]) = if (!reporter.hasErrors) {
+    def compileSources(sources: List[SourceFile]) =
+      if (!reporter.hasErrors) {
 
-      def checkDeprecations() = {
-        warnDeprecatedAndConflictingSettings(newCompilationUnit(""))
-        reporting.summarizeErrors()
+        def checkDeprecations() = {
+          warnDeprecatedAndConflictingSettings(newCompilationUnit(""))
+          reporting.summarizeErrors()
+        }
+
+        val units = sources map scripted map (new CompilationUnit(_))
+
+        units match {
+          case Nil =>
+            checkDeprecations() // nothing to compile, report deprecated options
+          case _ => compileUnits(units, firstPhase)
+        }
       }
-
-      val units = sources map scripted map (new CompilationUnit(_))
-
-      units match {
-        case Nil =>
-          checkDeprecations() // nothing to compile, report deprecated options
-        case _ => compileUnits(units, firstPhase)
-      }
-    }
 
     def compileUnits(units: List[CompilationUnit], fromPhase: Phase): Unit =
       compileUnitsInternal(units, fromPhase)
@@ -1660,11 +1672,12 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     }
 
     /** If this compilation is scripted, convert the source to a script source. */
-    private def scripted(s: SourceFile) = s match {
-      case b: BatchSourceFile if settings.script.isSetByUser =>
-        ScriptSourceFile(b)
-      case _ => s
-    }
+    private def scripted(s: SourceFile) =
+      s match {
+        case b: BatchSourceFile if settings.script.isSetByUser =>
+          ScriptSourceFile(b)
+        case _ => s
+      }
 
     /** Compile abstract file until `globalPhase`, but at least
       *  to phase "namer".

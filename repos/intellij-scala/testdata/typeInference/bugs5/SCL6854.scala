@@ -22,10 +22,11 @@ object SCL6854 {
 
     // defining the FooAny builder, that has a lower priority
     trait Level1 {
-      implicit def FooAnyBuilder[T] = new Builder[T, FooAny[T]] {
-        def buildInstance(value: T) =
-          FooAny(value)
-      }
+      implicit def FooAnyBuilder[T] =
+        new Builder[T, FooAny[T]] {
+          def buildInstance(value: T) =
+            FooAny(value)
+        }
     }
 
     // removing the FooNumberAny builder also fixes the error highlighting

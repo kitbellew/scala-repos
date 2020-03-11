@@ -70,17 +70,19 @@ class HoconLexer extends LexerBase {
   def always: State => Boolean =
     _ => true
 
-  def onContents(state: State) = state match {
-    case Initial | SubStarting => Value
-    case SubStarted            => Substitution
-    case _                     => state
-  }
+  def onContents(state: State) =
+    state match {
+      case Initial | SubStarting => Value
+      case SubStarted            => Substitution
+      case _                     => state
+    }
 
-  def onDollar(state: State) = state match {
-    case Initial | Value => SubStarting
-    case SubStarted      => Substitution
-    case _               => state
-  }
+  def onDollar(state: State) =
+    state match {
+      case Initial | Value => SubStarting
+      case SubStarted      => Substitution
+      case _               => state
+    }
 
   def isAnyOf(states: State*): State => Boolean =
     states.contains
@@ -201,12 +203,13 @@ class HoconLexer extends LexerBase {
       } else None
     }
 
-    def newState(state: State, newLine: Boolean) = state match {
-      case _ if newLine => Initial
-      case SubStarting  => Value
-      case SubStarted   => Substitution
-      case _            => state
-    }
+    def newState(state: State, newLine: Boolean) =
+      state match {
+        case _ if newLine => Initial
+        case SubStarting  => Value
+        case SubStarted   => Substitution
+        case _            => state
+      }
   }
 
   private var input: CharSequence = _

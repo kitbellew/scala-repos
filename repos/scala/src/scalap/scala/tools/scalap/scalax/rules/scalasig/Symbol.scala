@@ -50,10 +50,11 @@ case class SymbolInfo(
     privateWithin: Option[AnyRef],
     info: Int,
     entry: ScalaSig#Entry) {
-  def symbolString(any: AnyRef) = any match {
-    case sym: SymbolInfoSymbol => sym.index.toString
-    case other                 => other.toString
-  }
+  def symbolString(any: AnyRef) =
+    any match {
+      case sym: SymbolInfoSymbol => sym.index.toString
+      case other                 => other.toString
+    }
 
   override def toString =
     name + ", owner=" + symbolString(

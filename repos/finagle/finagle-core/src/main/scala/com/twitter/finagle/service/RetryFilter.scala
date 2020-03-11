@@ -58,12 +58,13 @@ class RetryFilter[Req, Rep](
       retryPolicy: RetryPolicy[(Req, Try[Rep])],
       timer: Timer,
       statsReceiver: StatsReceiver
-  ) = this(
-    retryPolicy,
-    timer,
-    statsReceiver,
-    RetryBudget()
-  )
+  ) =
+    this(
+      retryPolicy,
+      timer,
+      statsReceiver,
+      RetryBudget()
+    )
 
   private[this] val retriesStat = statsReceiver.stat("retries")
 
@@ -179,12 +180,13 @@ final class RetryExceptionsFilter[Req, Rep](
       retryPolicy: RetryPolicy[Try[Nothing]],
       timer: Timer,
       statsReceiver: StatsReceiver = NullStatsReceiver
-  ) = this(
-    retryPolicy,
-    timer,
-    statsReceiver,
-    RetryBudget()
-  )
+  ) =
+    this(
+      retryPolicy,
+      timer,
+      statsReceiver,
+      RetryBudget()
+    )
 }
 
 object RetryExceptionsFilter {
@@ -212,8 +214,9 @@ object RetryExceptionsFilter {
       retryPolicy: RetryPolicy[Try[Nothing]],
       timer: Timer,
       statsReceiver: StatsReceiver = NullStatsReceiver
-  ): TypeAgnostic = new TypeAgnostic {
-    override def toFilter[Req, Rep]: Filter[Req, Rep, Req, Rep] =
-      new RetryExceptionsFilter[Req, Rep](retryPolicy, timer, statsReceiver)
-  }
+  ): TypeAgnostic =
+    new TypeAgnostic {
+      override def toFilter[Req, Rep]: Filter[Req, Rep, Req, Rep] =
+        new RetryExceptionsFilter[Req, Rep](retryPolicy, timer, statsReceiver)
+    }
 }

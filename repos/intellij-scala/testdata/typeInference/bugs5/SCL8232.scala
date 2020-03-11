@@ -6,10 +6,11 @@ object Moo {
   }
 
   implicit class EitherOps[E, A](self: Either[E, A]) {
-    def flatMap[EE >: E, B](f: A => Either[EE, B]): Either[EE, B] = self match {
-      case Left(e)  => Left(e)
-      case Right(v) => f(v)
-    }
+    def flatMap[EE >: E, B](f: A => Either[EE, B]): Either[EE, B] =
+      self match {
+        case Left(e)  => Left(e)
+        case Right(v) => f(v)
+      }
 
     def map2[EE >: E, B, C](that: Either[EE, B])(
         f: (A, B) => C): Either[EE, C] = {

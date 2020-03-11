@@ -87,40 +87,41 @@ final class JsonView {
         Json toJson M.RatingDiff))
   )
 
-  private implicit def presetWriter[X]: OWrites[Preset] = OWrites { p =>
-    Json.obj(
-      "name" -> p.name,
-      "dimension" -> p.question.dimension.key,
-      "metric" -> p.question.metric.key,
-      "filters" -> JsObject(p.question.filters.map {
-        case Filter(dimension, selected) =>
-          dimension.key -> JsArray(
-            selected.map(Dimension.valueKey(dimension)).map(JsString.apply))
-      })
-    )
-  }
+  private implicit def presetWriter[X]: OWrites[Preset] =
+    OWrites { p =>
+      Json.obj(
+        "name" -> p.name,
+        "dimension" -> p.question.dimension.key,
+        "metric" -> p.question.metric.key,
+        "filters" -> JsObject(p.question.filters.map {
+          case Filter(dimension, selected) =>
+            dimension.key -> JsArray(
+              selected.map(Dimension.valueKey(dimension)).map(JsString.apply))
+        })
+      )
+    }
 
-  private implicit def dimensionWriter[X]: OWrites[Dimension[X]] = OWrites {
-    d =>
+  private implicit def dimensionWriter[X]: OWrites[Dimension[X]] =
+    OWrites { d =>
       Json.obj(
         "key" -> d.key,
         "name" -> d.name,
         "position" -> d.position,
         "description" -> d.description.body,
         "values" -> Dimension.valuesOf(d).map(Dimension.valueToJson(d)))
-  }
+    }
 
-  private implicit def metricWriter: OWrites[Metric] = OWrites { m =>
-    Json.obj(
-      "key" -> m.key,
-      "name" -> m.name,
-      "description" -> m.description.body,
-      "position" -> m.position)
-  }
+  private implicit def metricWriter: OWrites[Metric] =
+    OWrites { m =>
+      Json.obj(
+        "key" -> m.key,
+        "name" -> m.name,
+        "description" -> m.description.body,
+        "position" -> m.position)
+    }
 
-  private implicit def positionWriter: Writes[Position] = Writes { p =>
-    JsString(p.name)
-  }
+  private implicit def positionWriter: Writes[Position] =
+    Writes { p => JsString(p.name) }
 
   object chart {
     private implicit val xAxisWrites = Json.writes[Chart.Xaxis]
@@ -131,16 +132,17 @@ final class JsonView {
     def apply(c: Chart) = ChartWrites writes c
   }
 
-  def question(metric: String, dimension: String, filters: String) = Json.obj(
-    "metric" -> metric,
-    "dimension" -> dimension,
-    "filters" -> (filters
-      .split('/')
-      .map(_ split ':')
-      .collect {
-        case Array(key, values) =>
-          key -> JsArray(values.split(',').map(JsString.apply))
-      }
-      .toMap: Map[String, JsArray])
-  )
+  def question(metric: String, dimension: String, filters: String) =
+    Json.obj(
+      "metric" -> metric,
+      "dimension" -> dimension,
+      "filters" -> (filters
+        .split('/')
+        .map(_ split ':')
+        .collect {
+          case Array(key, values) =>
+            key -> JsArray(values.split(',').map(JsString.apply))
+        }
+        .toMap: Map[String, JsArray])
+    )
 }

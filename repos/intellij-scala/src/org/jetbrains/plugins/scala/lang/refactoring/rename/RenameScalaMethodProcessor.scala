@@ -91,11 +91,12 @@ class RenameScalaMethodProcessor
 }
 
 object RenameScalaMethodProcessor {
-  def canProcessElement(element: PsiElement): Boolean = element match {
-    case _: FakePsiMethod                        => false
-    case _: ScFunction | _: ScPrimaryConstructor => true
-    case _                                       => false
-  }
+  def canProcessElement(element: PsiElement): Boolean =
+    element match {
+      case _: FakePsiMethod                        => false
+      case _: ScFunction | _: ScPrimaryConstructor => true
+      case _                                       => false
+    }
 }
 
 class PrepareRenameScalaMethodProcessor extends RenamePsiElementProcessor {

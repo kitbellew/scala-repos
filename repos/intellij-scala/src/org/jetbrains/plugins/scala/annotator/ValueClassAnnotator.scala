@@ -135,16 +135,17 @@ trait ValueClassAnnotator {
 
   private def annotateValueClassTypeParameters(
       tp: Option[ScTypeParamClause],
-      holder: AnnotationHolder): Unit = tp match {
-    case Some(tpClause) =>
-      tpClause.typeParameters
-        .filter(_.hasAnnotation("scala.specialized").isDefined)
-        .foreach {
-          tpParam =>
-            val message: String = ScalaBundle.message(
-              "type.parameter.value.class.may.not.be.specialized")
-            holder.createErrorAnnotation(tpParam.nameId, message)
-        }
-    case _ =>
-  }
+      holder: AnnotationHolder): Unit =
+    tp match {
+      case Some(tpClause) =>
+        tpClause.typeParameters
+          .filter(_.hasAnnotation("scala.specialized").isDefined)
+          .foreach {
+            tpParam =>
+              val message: String = ScalaBundle.message(
+                "type.parameter.value.class.may.not.be.specialized")
+              holder.createErrorAnnotation(tpParam.nameId, message)
+          }
+      case _ =>
+    }
 }

@@ -19,10 +19,11 @@ final class FakePsiCodeBlock(body: ScExpression)
 
   def getFirstBodyElement: PsiElement = null
 
-  def getStatements: Array[PsiStatement] = body match {
-    case x: ScBlockExpr => x.statements.map(new FakePsiStatement(_)).toArray
-    case _              => Array(new FakePsiStatement(body))
-  }
+  def getStatements: Array[PsiStatement] =
+    body match {
+      case x: ScBlockExpr => x.statements.map(new FakePsiStatement(_)).toArray
+      case _              => Array(new FakePsiStatement(body))
+    }
 
   override def getTextRange: TextRange = body.getTextRange
 

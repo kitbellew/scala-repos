@@ -388,145 +388,146 @@ abstract class TreeBrowsers {
           }))
 
     /** Return a list of children for the given tree node */
-    def children(t: Tree): List[Tree] = t match {
-      case ProgramTree(units) =>
-        units
+    def children(t: Tree): List[Tree] =
+      t match {
+        case ProgramTree(units) =>
+          units
 
-      case UnitTree(unit) =>
-        List(unit.body)
+        case UnitTree(unit) =>
+          List(unit.body)
 
-      case DocDef(comment, definition) =>
-        List(definition)
+        case DocDef(comment, definition) =>
+          List(definition)
 
-      case ClassDef(mods, name, tparams, impl) => {
-        var children: List[Tree] = List()
-        children = tparams ::: children
-        mods.annotations ::: impl :: children
+        case ClassDef(mods, name, tparams, impl) => {
+          var children: List[Tree] = List()
+          children = tparams ::: children
+          mods.annotations ::: impl :: children
+        }
+
+        case PackageDef(pid, stats) =>
+          stats
+
+        case ModuleDef(mods, name, impl) =>
+          mods.annotations ::: List(impl)
+
+        case ValDef(mods, name, tpe, rhs) =>
+          mods.annotations ::: List(tpe, rhs)
+
+        case DefDef(mods, name, tparams, vparams, tpe, rhs) =>
+          mods.annotations ::: tpe :: rhs :: vparams.flatten ::: tparams
+
+        case TypeDef(mods, name, tparams, rhs) =>
+          mods.annotations ::: rhs :: tparams // @M: was List(rhs, lobound)
+
+        case Import(expr, selectors) =>
+          List(expr)
+
+        case CaseDef(pat, guard, body) =>
+          List(pat, guard, body)
+
+        case Template(parents, self, body) =>
+          parents ::: List(self) ::: body
+
+        case LabelDef(name, params, rhs) =>
+          params ::: List(rhs)
+
+        case Block(stats, expr) =>
+          stats ::: List(expr)
+
+        case Alternative(trees) =>
+          trees
+
+        case Bind(name, rhs) =>
+          List(rhs)
+
+        case UnApply(fun, args) =>
+          fun :: args
+
+        case Match(selector, cases) =>
+          selector :: cases
+
+        case Function(vparams, body) =>
+          vparams ::: List(body)
+
+        case Assign(lhs, rhs) =>
+          List(lhs, rhs)
+
+        case If(cond, thenp, elsep) =>
+          List(cond, thenp, elsep)
+
+        case Return(expr) =>
+          List(expr)
+
+        case Throw(expr) =>
+          List(expr)
+
+        case New(init) =>
+          List(init)
+
+        case Typed(expr, tpe) =>
+          List(expr, tpe)
+
+        case TypeApply(fun, args) =>
+          List(fun) ::: args
+
+        case Apply(fun, args) =>
+          List(fun) ::: args
+
+        case ApplyDynamic(qual, args) =>
+          List(qual) ::: args
+
+        case Super(qualif, mix) =>
+          List(qualif)
+
+        case This(qualif) =>
+          Nil
+
+        case Select(qualif, selector) =>
+          List(qualif)
+
+        case Ident(name) =>
+          Nil
+
+        case Literal(value) =>
+          Nil
+
+        case TypeTree() =>
+          Nil
+
+        case Annotated(annot, arg) =>
+          annot :: List(arg)
+
+        case SingletonTypeTree(ref) =>
+          List(ref)
+
+        case SelectFromTypeTree(qualif, selector) =>
+          List(qualif)
+
+        case CompoundTypeTree(templ) =>
+          List(templ)
+
+        case AppliedTypeTree(tpe, args) =>
+          tpe :: args
+
+        case TypeBoundsTree(lo, hi) =>
+          List(lo, hi)
+
+        case ExistentialTypeTree(tpt, whereClauses) =>
+          tpt :: whereClauses
+
+        case Try(block, catches, finalizer) =>
+          block :: catches ::: List(finalizer)
+
+        case ArrayValue(elemtpt, elems) =>
+          elemtpt :: elems
+
+        case EmptyTree =>
+          Nil
+
+        case Star(t) =>
+          List(t)
       }
-
-      case PackageDef(pid, stats) =>
-        stats
-
-      case ModuleDef(mods, name, impl) =>
-        mods.annotations ::: List(impl)
-
-      case ValDef(mods, name, tpe, rhs) =>
-        mods.annotations ::: List(tpe, rhs)
-
-      case DefDef(mods, name, tparams, vparams, tpe, rhs) =>
-        mods.annotations ::: tpe :: rhs :: vparams.flatten ::: tparams
-
-      case TypeDef(mods, name, tparams, rhs) =>
-        mods.annotations ::: rhs :: tparams // @M: was List(rhs, lobound)
-
-      case Import(expr, selectors) =>
-        List(expr)
-
-      case CaseDef(pat, guard, body) =>
-        List(pat, guard, body)
-
-      case Template(parents, self, body) =>
-        parents ::: List(self) ::: body
-
-      case LabelDef(name, params, rhs) =>
-        params ::: List(rhs)
-
-      case Block(stats, expr) =>
-        stats ::: List(expr)
-
-      case Alternative(trees) =>
-        trees
-
-      case Bind(name, rhs) =>
-        List(rhs)
-
-      case UnApply(fun, args) =>
-        fun :: args
-
-      case Match(selector, cases) =>
-        selector :: cases
-
-      case Function(vparams, body) =>
-        vparams ::: List(body)
-
-      case Assign(lhs, rhs) =>
-        List(lhs, rhs)
-
-      case If(cond, thenp, elsep) =>
-        List(cond, thenp, elsep)
-
-      case Return(expr) =>
-        List(expr)
-
-      case Throw(expr) =>
-        List(expr)
-
-      case New(init) =>
-        List(init)
-
-      case Typed(expr, tpe) =>
-        List(expr, tpe)
-
-      case TypeApply(fun, args) =>
-        List(fun) ::: args
-
-      case Apply(fun, args) =>
-        List(fun) ::: args
-
-      case ApplyDynamic(qual, args) =>
-        List(qual) ::: args
-
-      case Super(qualif, mix) =>
-        List(qualif)
-
-      case This(qualif) =>
-        Nil
-
-      case Select(qualif, selector) =>
-        List(qualif)
-
-      case Ident(name) =>
-        Nil
-
-      case Literal(value) =>
-        Nil
-
-      case TypeTree() =>
-        Nil
-
-      case Annotated(annot, arg) =>
-        annot :: List(arg)
-
-      case SingletonTypeTree(ref) =>
-        List(ref)
-
-      case SelectFromTypeTree(qualif, selector) =>
-        List(qualif)
-
-      case CompoundTypeTree(templ) =>
-        List(templ)
-
-      case AppliedTypeTree(tpe, args) =>
-        tpe :: args
-
-      case TypeBoundsTree(lo, hi) =>
-        List(lo, hi)
-
-      case ExistentialTypeTree(tpt, whereClauses) =>
-        tpt :: whereClauses
-
-      case Try(block, catches, finalizer) =>
-        block :: catches ::: List(finalizer)
-
-      case ArrayValue(elemtpt, elems) =>
-        elemtpt :: elems
-
-      case EmptyTree =>
-        Nil
-
-      case Star(t) =>
-        List(t)
-    }
 
     /** Return a textual representation of this t's symbol */
     def symbolText(t: Tree): String = {
@@ -573,140 +574,143 @@ abstract class TreeBrowsers {
     def toDocument(sym: Symbol): Document =
       toDocument(sym.info)
 
-    def symsToDocument(syms: List[Symbol]): Document = syms match {
-      case Nil      => DocNil
-      case s :: Nil => Document.group(toDocument(s))
-      case _ =>
-        Document.group(
-          syms.tail.foldLeft(toDocument(syms.head) :: ", ")(
-            (d: Document, s2: Symbol) => toDocument(s2) :: ", " :/: d))
-    }
+    def symsToDocument(syms: List[Symbol]): Document =
+      syms match {
+        case Nil      => DocNil
+        case s :: Nil => Document.group(toDocument(s))
+        case _ =>
+          Document.group(
+            syms.tail.foldLeft(toDocument(syms.head) :: ", ")(
+              (d: Document, s2: Symbol) => toDocument(s2) :: ", " :/: d))
+      }
 
-    def toDocument(ts: List[Type]): Document = ts match {
-      case Nil      => DocNil
-      case t :: Nil => Document.group(toDocument(t))
-      case _ =>
-        Document.group(
-          ts.tail.foldLeft(toDocument(ts.head) :: ", ")(
-            (d: Document, t2: Type) => toDocument(t2) :: ", " :/: d))
-    }
+    def toDocument(ts: List[Type]): Document =
+      ts match {
+        case Nil      => DocNil
+        case t :: Nil => Document.group(toDocument(t))
+        case _ =>
+          Document.group(
+            ts.tail.foldLeft(toDocument(ts.head) :: ", ")(
+              (d: Document, t2: Type) => toDocument(t2) :: ", " :/: d))
+      }
 
-    def toDocument(t: Type): Document = t match {
-      case ErrorType    => "ErrorType()"
-      case WildcardType => "WildcardType()"
-      case NoType       => "NoType()"
-      case NoPrefix     => "NoPrefix()"
-      case ThisType(s)  => "ThisType(" + s.name + ")"
+    def toDocument(t: Type): Document =
+      t match {
+        case ErrorType    => "ErrorType()"
+        case WildcardType => "WildcardType()"
+        case NoType       => "NoType()"
+        case NoPrefix     => "NoPrefix()"
+        case ThisType(s)  => "ThisType(" + s.name + ")"
 
-      case SingleType(pre, sym) =>
-        Document.group(
-          Document.nest(
-            4,
-            "SingleType(" :/:
-              toDocument(pre) :: ", " :/: sym.name.toString :: ")")
-        )
+        case SingleType(pre, sym) =>
+          Document.group(
+            Document.nest(
+              4,
+              "SingleType(" :/:
+                toDocument(pre) :: ", " :/: sym.name.toString :: ")")
+          )
 
-      case ConstantType(value) =>
-        "ConstantType(" + value + ")"
+        case ConstantType(value) =>
+          "ConstantType(" + value + ")"
 
-      case TypeRef(pre, sym, args) =>
-        Document.group(
-          Document.nest(
-            4,
-            "TypeRef(" :/:
-              toDocument(pre) :: ", " :/:
-              sym.name.toString + sym.idString :: ", " :/:
-              "[ " :: toDocument(args) :: "]" :: ")")
-        )
+        case TypeRef(pre, sym, args) =>
+          Document.group(
+            Document.nest(
+              4,
+              "TypeRef(" :/:
+                toDocument(pre) :: ", " :/:
+                sym.name.toString + sym.idString :: ", " :/:
+                "[ " :: toDocument(args) :: "]" :: ")")
+          )
 
-      case TypeBounds(lo, hi) =>
-        Document.group(
-          Document.nest(
-            4,
-            "TypeBounds(" :/:
-              toDocument(lo) :: ", " :/:
-              toDocument(hi) :: ")")
-        )
+        case TypeBounds(lo, hi) =>
+          Document.group(
+            Document.nest(
+              4,
+              "TypeBounds(" :/:
+                toDocument(lo) :: ", " :/:
+                toDocument(hi) :: ")")
+          )
 
-      case RefinedType(parents, defs) =>
-        Document.group(
-          Document.nest(
-            4,
-            "RefinedType(" :/:
-              toDocument(parents) :: ")")
-        )
+        case RefinedType(parents, defs) =>
+          Document.group(
+            Document.nest(
+              4,
+              "RefinedType(" :/:
+                toDocument(parents) :: ")")
+          )
 
-      case ClassInfoType(parents, defs, clazz) =>
-        Document.group(
-          Document.nest(
-            4,
-            "ClassInfoType(" :/:
-              toDocument(parents) :: ", " :/:
-              clazz.name.toString + clazz.idString :: ")")
-        )
+        case ClassInfoType(parents, defs, clazz) =>
+          Document.group(
+            Document.nest(
+              4,
+              "ClassInfoType(" :/:
+                toDocument(parents) :: ", " :/:
+                clazz.name.toString + clazz.idString :: ")")
+          )
 
-      case MethodType(params, result) =>
-        Document.group(
-          Document.nest(
-            4,
-            "MethodType(" :/:
-              Document.group(
-                "(" :/:
-                  symsToDocument(params) :/:
-                  "), ") :/:
-              toDocument(result) :: ")")
-        )
+        case MethodType(params, result) =>
+          Document.group(
+            Document.nest(
+              4,
+              "MethodType(" :/:
+                Document.group(
+                  "(" :/:
+                    symsToDocument(params) :/:
+                    "), ") :/:
+                toDocument(result) :: ")")
+          )
 
-      case NullaryMethodType(result) =>
-        Document.group(
-          Document.nest(
-            4,
-            "NullaryMethodType(" :/:
-              toDocument(result) :: ")")
-        )
+        case NullaryMethodType(result) =>
+          Document.group(
+            Document.nest(
+              4,
+              "NullaryMethodType(" :/:
+                toDocument(result) :: ")")
+          )
 
-      case PolyType(tparams, result) =>
-        Document.group(
-          Document.nest(
-            4,
-            "PolyType(" :/:
-              Document.group(
-                "(" :/:
-                  symsToDocument(tparams) :/:
-                  "), ") :/:
-              toDocument(result) :: ")")
-        )
+        case PolyType(tparams, result) =>
+          Document.group(
+            Document.nest(
+              4,
+              "PolyType(" :/:
+                Document.group(
+                  "(" :/:
+                    symsToDocument(tparams) :/:
+                    "), ") :/:
+                toDocument(result) :: ")")
+          )
 
-      case AnnotatedType(annots, tp) =>
-        Document.group(
-          Document.nest(
-            4,
-            "AnnotatedType(" :/:
-              annots.mkString("[", ",", "]") :/:
-              "," :/: toDocument(tp) :: ")")
-        )
+        case AnnotatedType(annots, tp) =>
+          Document.group(
+            Document.nest(
+              4,
+              "AnnotatedType(" :/:
+                annots.mkString("[", ",", "]") :/:
+                "," :/: toDocument(tp) :: ")")
+          )
 
-      case ExistentialType(tparams, result) =>
-        Document.group(
-          Document.nest(
-            4,
-            "ExistentialType(" :/:
-              Document.group("(" :/: symsToDocument(tparams) :/: "), ") :/:
-              toDocument(result) :: ")"))
+        case ExistentialType(tparams, result) =>
+          Document.group(
+            Document.nest(
+              4,
+              "ExistentialType(" :/:
+                Document.group("(" :/: symsToDocument(tparams) :/: "), ") :/:
+                toDocument(result) :: ")"))
 
-      case ImportType(expr) =>
-        "ImportType(" + expr.toString + ")"
+        case ImportType(expr) =>
+          "ImportType(" + expr.toString + ")"
 
-      case SuperType(thistpe, supertpe) =>
-        Document.group(
-          Document.nest(
-            4,
-            "SuperType(" :/:
-              toDocument(thistpe) :/: ", " :/:
-              toDocument(supertpe) :: ")"))
-      case _ =>
-        sys.error("Unknown case: " + t.toString + ", " + t.getClass)
-    }
+        case SuperType(thistpe, supertpe) =>
+          Document.group(
+            Document.nest(
+              4,
+              "SuperType(" :/:
+                toDocument(thistpe) :/: ", " :/:
+                toDocument(supertpe) :: ")"))
+        case _ =>
+          sys.error("Unknown case: " + t.toString + ", " + t.getClass)
+      }
   }
 
 }

@@ -30,42 +30,33 @@ import scala.annotation.migration
 trait SynchronizedMap[A, B] extends Map[A, B] {
 
   abstract override def get(key: A): Option[B] = synchronized { super.get(key) }
-  abstract override def iterator: Iterator[(A, B)] = synchronized {
-    super.iterator
-  }
-  abstract override def +=(kv: (A, B)): this.type = synchronized[this.type] {
-    super.+=(kv)
-  }
-  abstract override def -=(key: A): this.type = synchronized[this.type] {
-    super.-=(key)
-  }
+  abstract override def iterator: Iterator[(A, B)] =
+    synchronized { super.iterator }
+  abstract override def +=(kv: (A, B)): this.type =
+    synchronized[this.type] { super.+=(kv) }
+  abstract override def -=(key: A): this.type =
+    synchronized[this.type] { super.-=(key) }
 
   override def size: Int = synchronized { super.size }
-  override def put(key: A, value: B): Option[B] = synchronized {
-    super.put(key, value)
-  }
-  override def update(key: A, value: B): Unit = synchronized {
-    super.update(key, value)
-  }
+  override def put(key: A, value: B): Option[B] =
+    synchronized { super.put(key, value) }
+  override def update(key: A, value: B): Unit =
+    synchronized { super.update(key, value) }
   override def remove(key: A): Option[B] = synchronized { super.remove(key) }
   override def clear(): Unit = synchronized { super.clear() }
-  override def getOrElseUpdate(key: A, default: => B): B = synchronized {
-    super.getOrElseUpdate(key, default)
-  }
-  override def transform(f: (A, B) => B): this.type = synchronized[this.type] {
-    super.transform(f)
-  }
+  override def getOrElseUpdate(key: A, default: => B): B =
+    synchronized { super.getOrElseUpdate(key, default) }
+  override def transform(f: (A, B) => B): this.type =
+    synchronized[this.type] { super.transform(f) }
   override def retain(p: (A, B) => Boolean): this.type =
     synchronized[this.type] { super.retain(p) }
   @migration(
     "`values` returns `Iterable[B]` rather than `Iterator[B]`.",
     "2.8.0")
-  override def values: scala.collection.Iterable[B] = synchronized {
-    super.values
-  }
-  override def valuesIterator: Iterator[B] = synchronized {
-    super.valuesIterator
-  }
+  override def values: scala.collection.Iterable[B] =
+    synchronized { super.values }
+  override def valuesIterator: Iterator[B] =
+    synchronized { super.valuesIterator }
   override def clone(): Self = synchronized { super.clone() }
   override def foreach[U](f: ((A, B)) => U) = synchronized { super.foreach(f) }
   override def apply(key: A): B = synchronized { super.apply(key) }

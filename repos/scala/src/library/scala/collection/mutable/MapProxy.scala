@@ -28,9 +28,8 @@ trait MapProxy[A, B] extends Map[A, B] with MapProxyLike[A, B, Map[A, B]] {
     new MapProxy[A, B1] { val self = newSelf }
 
   override def repr = this
-  override def empty: MapProxy[A, B] = new MapProxy[A, B] {
-    val self = MapProxy.this.self.empty
-  }
+  override def empty: MapProxy[A, B] =
+    new MapProxy[A, B] { val self = MapProxy.this.self.empty }
   override def updated[B1 >: B](key: A, value: B1) =
     newProxy(self.updated(key, value))
 

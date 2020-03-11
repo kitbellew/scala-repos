@@ -66,61 +66,62 @@ private[worker] class WorkerArguments(args: Array[String], conf: SparkConf) {
   checkWorkerMemory()
 
   @tailrec
-  private def parse(args: List[String]): Unit = args match {
-    case ("--ip" | "-i") :: value :: tail =>
-      Utils.checkHost(
-        value,
-        "ip no longer supported, please use hostname " + value)
-      host = value
-      parse(tail)
+  private def parse(args: List[String]): Unit =
+    args match {
+      case ("--ip" | "-i") :: value :: tail =>
+        Utils.checkHost(
+          value,
+          "ip no longer supported, please use hostname " + value)
+        host = value
+        parse(tail)
 
-    case ("--host" | "-h") :: value :: tail =>
-      Utils.checkHost(value, "Please use hostname " + value)
-      host = value
-      parse(tail)
+      case ("--host" | "-h") :: value :: tail =>
+        Utils.checkHost(value, "Please use hostname " + value)
+        host = value
+        parse(tail)
 
-    case ("--port" | "-p") :: IntParam(value) :: tail =>
-      port = value
-      parse(tail)
+      case ("--port" | "-p") :: IntParam(value) :: tail =>
+        port = value
+        parse(tail)
 
-    case ("--cores" | "-c") :: IntParam(value) :: tail =>
-      cores = value
-      parse(tail)
+      case ("--cores" | "-c") :: IntParam(value) :: tail =>
+        cores = value
+        parse(tail)
 
-    case ("--memory" | "-m") :: MemoryParam(value) :: tail =>
-      memory = value
-      parse(tail)
+      case ("--memory" | "-m") :: MemoryParam(value) :: tail =>
+        memory = value
+        parse(tail)
 
-    case ("--work-dir" | "-d") :: value :: tail =>
-      workDir = value
-      parse(tail)
+      case ("--work-dir" | "-d") :: value :: tail =>
+        workDir = value
+        parse(tail)
 
-    case "--webui-port" :: IntParam(value) :: tail =>
-      webUiPort = value
-      parse(tail)
+      case "--webui-port" :: IntParam(value) :: tail =>
+        webUiPort = value
+        parse(tail)
 
-    case ("--properties-file") :: value :: tail =>
-      propertiesFile = value
-      parse(tail)
+      case ("--properties-file") :: value :: tail =>
+        propertiesFile = value
+        parse(tail)
 
-    case ("--help") :: tail =>
-      printUsageAndExit(0)
+      case ("--help") :: tail =>
+        printUsageAndExit(0)
 
-    case value :: tail =>
-      if (masters != null) { // Two positional arguments were given
+      case value :: tail =>
+        if (masters != null) { // Two positional arguments were given
+          printUsageAndExit(1)
+        }
+        masters = Utils.parseStandaloneMasterUrls(value)
+        parse(tail)
+
+      case Nil =>
+        if (masters == null) { // No positional argument was given
+          printUsageAndExit(1)
+        }
+
+      case _ =>
         printUsageAndExit(1)
-      }
-      masters = Utils.parseStandaloneMasterUrls(value)
-      parse(tail)
-
-    case Nil =>
-      if (masters == null) { // No positional argument was given
-        printUsageAndExit(1)
-      }
-
-    case _ =>
-      printUsageAndExit(1)
-  }
+    }
 
   /**
     * Print usage and exit JVM with the given exit code.

@@ -16,9 +16,8 @@ object Test {
     def bar[U >: T](a: => Base[U], i: SomeInfo = NoInfo): Base[U] = null
   }
 
-  implicit def fromStringToBase(a: String): Base[String] = new Base[String] {
-    def apply(in: String) = NotRes
-  }
+  implicit def fromStringToBase(a: String): Base[String] =
+    new Base[String] { def apply(in: String) = NotRes }
 
   // bug
   //def Sample: Base[Any] = ( rep("foo" | "bar") | "sth")

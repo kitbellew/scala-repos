@@ -56,14 +56,15 @@ object Promise {
   private class DetachableFuture[A] extends Promise[A] with Promise.Detachable {
     private[this] var detached: Boolean = false
 
-    def detach(): Boolean = synchronized {
-      if (detached) {
-        false
-      } else {
-        detached = true
-        true
+    def detach(): Boolean =
+      synchronized {
+        if (detached) {
+          false
+        } else {
+          detached = true
+          true
+        }
       }
-    }
   }
 
   /**
@@ -477,14 +478,15 @@ class Promise[A]
   }
 
   // Useful for debugging waitq.
-  private[util] def waitqLength: Int = state match {
-    case Waiting(first, rest) if first == null => rest.length
-    case Waiting(first, rest)                  => rest.length + 1
-    case Interruptible(waitq, _)               => waitq.length
-    case Transforming(waitq, _)                => waitq.length
-    case Interrupted(waitq, _)                 => waitq.length
-    case Done(_) | Linked(_)                   => 0
-  }
+  private[util] def waitqLength: Int =
+    state match {
+      case Waiting(first, rest) if first == null => rest.length
+      case Waiting(first, rest)                  => rest.length + 1
+      case Interruptible(waitq, _)               => waitq.length
+      case Transforming(waitq, _)                => waitq.length
+      case Interrupted(waitq, _)                 => waitq.length
+      case Done(_) | Linked(_)                   => 0
+    }
 
   /**
     * Forward interrupts to another future.
@@ -520,31 +522,32 @@ class Promise[A]
     }
   }
 
-  @tailrec final def raise(intr: Throwable): Unit = state match {
-    case Linked(p) => p.raise(intr)
-    case s @ Interruptible(waitq, handler) =>
-      if (!cas(s, Interrupted(waitq, intr))) raise(intr)
-      else {
-        handler.applyOrElse(intr, Promise.AlwaysUnit)
-      }
+  @tailrec final def raise(intr: Throwable): Unit =
+    state match {
+      case Linked(p) => p.raise(intr)
+      case s @ Interruptible(waitq, handler) =>
+        if (!cas(s, Interrupted(waitq, intr))) raise(intr)
+        else {
+          handler.applyOrElse(intr, Promise.AlwaysUnit)
+        }
 
-    case s @ Transforming(waitq, other) =>
-      if (!cas(s, Interrupted(waitq, intr))) raise(intr)
-      else {
-        other.raise(intr)
-      }
+      case s @ Transforming(waitq, other) =>
+        if (!cas(s, Interrupted(waitq, intr))) raise(intr)
+        else {
+          other.raise(intr)
+        }
 
-    case s @ Interrupted(waitq, _) =>
-      if (!cas(s, Interrupted(waitq, intr)))
-        raise(intr)
+      case s @ Interrupted(waitq, _) =>
+        if (!cas(s, Interrupted(waitq, intr)))
+          raise(intr)
 
-    case s @ Waiting(first, rest) =>
-      val waitq = if (first eq null) rest else first :: rest
-      if (!cas(s, Interrupted(waitq, intr)))
-        raise(intr)
+      case s @ Waiting(first, rest) =>
+        val waitq = if (first eq null) rest else first :: rest
+        if (!cas(s, Interrupted(waitq, intr)))
+          raise(intr)
 
-    case Done(_) =>
-  }
+      case Done(_) =>
+    }
 
   @tailrec protected[Promise] final def detach(k: K[A]): Boolean = {
     state match {
@@ -613,12 +616,13 @@ class Promise[A]
   /**
     * Returns this promise's interrupt if it is interrupted.
     */
-  def isInterrupted: Option[Throwable] = state match {
-    case Linked(p)            => p.isInterrupted
-    case Interrupted(_, intr) => Some(intr)
-    case Done(_) | Waiting(_, _) | Interruptible(_, _) | Transforming(_, _) =>
-      None
-  }
+  def isInterrupted: Option[Throwable] =
+    state match {
+      case Linked(p)            => p.isInterrupted
+      case Interrupted(_, intr) => Some(intr)
+      case Done(_) | Waiting(_, _) | Interruptible(_, _) | Transforming(_, _) =>
+        None
+    }
 
   /**
     * Become the other promise. `become` declares an equivalence
@@ -725,34 +729,35 @@ class Promise[A]
     * @return true only if the result is updated, false if it was already set.
     */
   @tailrec
-  final def updateIfEmpty(result: Try[A]): Boolean = state match {
-    case Done(_) => false
-    case s @ Waiting(first, rest) =>
-      if (!cas(s, Done(result))) updateIfEmpty(result)
-      else {
-        runq(first, rest, result)
-        true
-      }
-    case s @ Interruptible(waitq, _) =>
-      if (!cas(s, Done(result))) updateIfEmpty(result)
-      else {
-        runq(null, waitq, result)
-        true
-      }
-    case s @ Transforming(waitq, _) =>
-      if (!cas(s, Done(result))) updateIfEmpty(result)
-      else {
-        runq(null, waitq, result)
-        true
-      }
-    case s @ Interrupted(waitq, _) =>
-      if (!cas(s, Done(result))) updateIfEmpty(result)
-      else {
-        runq(null, waitq, result)
-        true
-      }
-    case Linked(p) => p.updateIfEmpty(result)
-  }
+  final def updateIfEmpty(result: Try[A]): Boolean =
+    state match {
+      case Done(_) => false
+      case s @ Waiting(first, rest) =>
+        if (!cas(s, Done(result))) updateIfEmpty(result)
+        else {
+          runq(first, rest, result)
+          true
+        }
+      case s @ Interruptible(waitq, _) =>
+        if (!cas(s, Done(result))) updateIfEmpty(result)
+        else {
+          runq(null, waitq, result)
+          true
+        }
+      case s @ Transforming(waitq, _) =>
+        if (!cas(s, Done(result))) updateIfEmpty(result)
+        else {
+          runq(null, waitq, result)
+          true
+        }
+      case s @ Interrupted(waitq, _) =>
+        if (!cas(s, Done(result))) updateIfEmpty(result)
+        else {
+          runq(null, waitq, result)
+          true
+        }
+      case Linked(p) => p.updateIfEmpty(result)
+    }
 
   @tailrec
   protected[util] final def continue(k: K[A]): Unit = {
@@ -787,16 +792,17 @@ class Promise[A]
     * Should only be called when this Promise has already been fulfilled
     * or it is becoming another Future via `become`.
     */
-  protected final def compress(): Promise[A] = state match {
-    case s @ Linked(p) =>
-      val target = p.compress()
-      // due to the assumptions stated above regarding when this can be called,
-      // there should never be a `cas` fail.
-      cas(s, Linked(target))
-      target
-    case _ =>
-      this
-  }
+  protected final def compress(): Promise[A] =
+    state match {
+      case s @ Linked(p) =>
+        val target = p.compress()
+        // due to the assumptions stated above regarding when this can be called,
+        // there should never be a `cas` fail.
+        cas(s, Linked(target))
+        target
+      case _ =>
+        this
+    }
 
   @tailrec
   protected final def link(target: Promise[A]): Unit = {
@@ -862,21 +868,23 @@ class Promise[A]
     }
   }
 
-  def poll: Option[Try[A]] = state match {
-    case Linked(p) => p.poll
-    case Done(res) => Some(res)
-    case Waiting(_, _) | Interruptible(_, _) | Interrupted(_, _) |
-        Transforming(_, _) =>
-      None
-  }
+  def poll: Option[Try[A]] =
+    state match {
+      case Linked(p) => p.poll
+      case Done(res) => Some(res)
+      case Waiting(_, _) | Interruptible(_, _) | Interrupted(_, _) |
+          Transforming(_, _) =>
+        None
+    }
 
-  override def isDefined: Boolean = state match {
-    // Note: the basic implementation is the same as `poll()`, but we want to avoid doing
-    // object allocations for `Some`s when the caller does not need the result.
-    case Linked(p) => p.isDefined
-    case Done(res) => true
-    case Waiting(_, _) | Interruptible(_, _) | Interrupted(_, _) |
-        Transforming(_, _) =>
-      false
-  }
+  override def isDefined: Boolean =
+    state match {
+      // Note: the basic implementation is the same as `poll()`, but we want to avoid doing
+      // object allocations for `Some`s when the caller does not need the result.
+      case Linked(p) => p.isDefined
+      case Done(res) => true
+      case Waiting(_, _) | Interruptible(_, _) | Interrupted(_, _) |
+          Transforming(_, _) =>
+        false
+    }
 }

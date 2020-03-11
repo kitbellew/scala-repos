@@ -16,9 +16,10 @@ private[sbt] object Execute {
   def idMap[A, B]: Map[A, B] =
     JavaConversions.mapAsScalaMap(new java.util.IdentityHashMap[A, B])
   def pMap[A[_], B[_]]: PMap[A, B] = new DelegatingPMap[A, B](idMap)
-  private[sbt] def completed(p: => Unit): Completed = new Completed {
-    def process(): Unit = p
-  }
+  private[sbt] def completed(p: => Unit): Completed =
+    new Completed {
+      def process(): Unit = p
+    }
   def noTriggers[A[_]] = new Triggers[A](Map.empty, Map.empty, idFun)
 
   def config(
@@ -59,10 +60,11 @@ private[sbt] final class Execute[A[_] <: AnyRef](
   private[this] val results = pMap[A, Result]
 
   private[this] val getResult: A ~> Result = new (A ~> Result) {
-    def apply[T](a: A[T]): Result[T] = view.inline(a) match {
-      case Some(v) => Value(v())
-      case None    => results(a)
-    }
+    def apply[T](a: A[T]): Result[T] =
+      view.inline(a) match {
+        case Some(v) => Value(v())
+        case None    => results(a)
+      }
   }
   private[this] var progressState: progress.S = progress.initial
 
@@ -316,9 +318,8 @@ private[sbt] final class Execute[A[_] <: AnyRef](
   }
   def dependencyCheck(node: A[_]): Unit = {
     dependencies(node) foreach { dep =>
-      def onOpt[T](o: Option[T])(f: T => Boolean) = o match {
-        case None => false; case Some(x) => f(x)
-      }
+      def onOpt[T](o: Option[T])(f: T => Boolean) =
+        o match { case None => false; case Some(x) => f(x) }
       def checkForward = onOpt(forward.get(node)) { _ contains dep }
       def checkReverse = onOpt(reverse.get(dep)) { _.exists(_ == node) }
       assert(done(dep) ^ (checkForward && checkReverse))
@@ -367,9 +368,8 @@ private[sbt] final class Execute[A[_] <: AnyRef](
   def cycleCheck[T](node: A[T], target: A[T]): Unit = {
     if (node eq target) cyclic(node, target, "Cannot call self")
     val all = IDSet.create[A[T]]
-    def allCallers(n: A[T]): Unit = (all process n)(()) {
-      callers.get(n).toList.flatten.foreach(allCallers)
-    }
+    def allCallers(n: A[T]): Unit =
+      (all process n)(()) { callers.get(n).toList.flatten.foreach(allCallers) }
     allCallers(node)
     if (all contains target) cyclic(node, target, "Cyclic reference")
   }

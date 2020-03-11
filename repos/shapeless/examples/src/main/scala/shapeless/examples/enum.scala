@@ -37,10 +37,11 @@ object ScalaEnumDemo /*extends App*/ {
 
   // However ...
 
-  def isWeekend(d: WeekDay) = d match {
-    case Sat | Sun => true
-    // Oops! Missing case ... still compiles
-  }
+  def isWeekend(d: WeekDay) =
+    d match {
+      case Sat | Sun => true
+      // Oops! Missing case ... still compiles
+    }
 
   assert(!isWeekend(Mon)) // MatchError at run time
 }
@@ -63,11 +64,12 @@ object ShapelessEnumDemo extends App {
 
   // ... the payoff ...
 
-  def isWeekend(d: WeekDay) = d match {
-    case Sat | Sun => true
-    case _ =>
-      false // compile time non-exhaustive match warning/error without this case
-  }
+  def isWeekend(d: WeekDay) =
+    d match {
+      case Sat | Sun => true
+      case _ =>
+        false // compile time non-exhaustive match warning/error without this case
+    }
 
   assert(!isWeekend(Mon)) //
 }

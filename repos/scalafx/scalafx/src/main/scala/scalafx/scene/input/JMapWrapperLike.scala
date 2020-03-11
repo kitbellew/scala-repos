@@ -66,11 +66,12 @@ private[input] trait JMapWrapperLike[
   }
 
   //  def iterator: Iterator[(A, B)] = new AbstractIterator[(A, B)] {
-  def iterator: Iterator[(A, B)] = new Iterator[(A, B)] {
-    val ui = underlying.entrySet.iterator
-    def hasNext = ui.hasNext
-    def next() = { val e = ui.next(); (e.getKey, e.getValue) }
-  }
+  def iterator: Iterator[(A, B)] =
+    new Iterator[(A, B)] {
+      val ui = underlying.entrySet.iterator
+      def hasNext = ui.hasNext
+      def next() = { val e = ui.next(); (e.getKey, e.getValue) }
+    }
 
   override def clear() = underlying.clear()
 

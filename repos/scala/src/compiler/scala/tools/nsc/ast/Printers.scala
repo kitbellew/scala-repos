@@ -14,35 +14,36 @@ trait Printers extends scala.reflect.internal.Printers { this: Global =>
 
   class TreePrinter(out: PrintWriter) extends super.TreePrinter(out) {
 
-    override def print(args: Any*): Unit = args foreach {
-      case tree: Tree =>
-        printPosition(tree)
-        printTree(
-          if (tree.isDef && tree.symbol != NoSymbol && tree.symbol.isInitialized) {
-            tree match {
-              case ClassDef(_, _, _, impl @ Template(ps, noSelfType, body))
-                  if (tree.symbol.thisSym != tree.symbol) =>
-                ClassDef(
-                  tree.symbol,
-                  Template(ps, ValDef(tree.symbol.thisSym), body))
-              case ClassDef(_, _, _, impl) => ClassDef(tree.symbol, impl)
-              case ModuleDef(_, _, impl)   => ModuleDef(tree.symbol, impl)
-              case ValDef(_, _, _, rhs)    => ValDef(tree.symbol, rhs)
-              case DefDef(_, _, _, vparamss, _, rhs) =>
-                DefDef(tree.symbol, vparamss, rhs)
-              case TypeDef(_, _, _, rhs) => TypeDef(tree.symbol, rhs)
-              case _                     => tree
-            }
-          } else tree)
-      case unit: CompilationUnit =>
-        print("// Scala source: " + unit.source + "\n")
-        if (unit.body == null) print("<null>")
-        else { print(unit.body); println() }
-        println()
-        out.flush()
-      case arg =>
-        super.print(arg)
-    }
+    override def print(args: Any*): Unit =
+      args foreach {
+        case tree: Tree =>
+          printPosition(tree)
+          printTree(
+            if (tree.isDef && tree.symbol != NoSymbol && tree.symbol.isInitialized) {
+              tree match {
+                case ClassDef(_, _, _, impl @ Template(ps, noSelfType, body))
+                    if (tree.symbol.thisSym != tree.symbol) =>
+                  ClassDef(
+                    tree.symbol,
+                    Template(ps, ValDef(tree.symbol.thisSym), body))
+                case ClassDef(_, _, _, impl) => ClassDef(tree.symbol, impl)
+                case ModuleDef(_, _, impl)   => ModuleDef(tree.symbol, impl)
+                case ValDef(_, _, _, rhs)    => ValDef(tree.symbol, rhs)
+                case DefDef(_, _, _, vparamss, _, rhs) =>
+                  DefDef(tree.symbol, vparamss, rhs)
+                case TypeDef(_, _, _, rhs) => TypeDef(tree.symbol, rhs)
+                case _                     => tree
+              }
+            } else tree)
+        case unit: CompilationUnit =>
+          print("// Scala source: " + unit.source + "\n")
+          if (unit.body == null) print("<null>")
+          else { print(unit.body); println() }
+          println()
+          out.flush()
+        case arg =>
+          super.print(arg)
+      }
   }
 
   // overflow cases missing from TreePrinter in scala.reflect.api
@@ -78,10 +79,11 @@ trait Printers extends scala.reflect.internal.Printers { this: Global =>
     }
 
     // drill down through Blocks and pull out the real statements.
-    def allStatements(t: Tree): List[Tree] = t match {
-      case Block(stmts, expr) => (stmts flatMap allStatements) ::: List(expr)
-      case _                  => List(t)
-    }
+    def allStatements(t: Tree): List[Tree] =
+      t match {
+        case Block(stmts, expr) => (stmts flatMap allStatements) ::: List(expr)
+        case _                  => List(t)
+      }
 
     def printLogicalOr(t1: (Tree, Boolean), t2: (Tree, Boolean)) =
       printLogicalOp(t1, t2, "||")

@@ -187,11 +187,12 @@ abstract class Enumeration(initial: Int) extends Serializable {
       if (this.id < that.id) -1
       else if (this.id == that.id) 0
       else 1
-    override def equals(other: Any) = other match {
-      case that: Enumeration#Value =>
-        (outerEnum eq that.outerEnum) && (id == that.id)
-      case _ => false
-    }
+    override def equals(other: Any) =
+      other match {
+        case that: Enumeration#Value =>
+          (outerEnum eq that.outerEnum) && (id == that.id)
+        case _ => false
+      }
     override def hashCode: Int = id.##
 
     /** Create a ValueSet which contains this value and another one */

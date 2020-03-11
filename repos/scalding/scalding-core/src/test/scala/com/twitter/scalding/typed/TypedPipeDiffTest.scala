@@ -10,20 +10,22 @@ import scala.reflect.ClassTag
 
 class NoOrdering(val x: String) {
 
-  override def equals(other: Any): Boolean = other match {
-    case that: NoOrdering => x.equals(that.x)
-    case _                => false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case that: NoOrdering => x.equals(that.x)
+      case _                => false
+    }
 
   override def hashCode(): Int = x.hashCode
 }
 
 class NoOrderingHashCollisions(val x: String) {
 
-  override def equals(other: Any): Boolean = other match {
-    case that: NoOrderingHashCollisions => x.equals(that.x)
-    case _                              => false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case that: NoOrderingHashCollisions => x.equals(that.x)
+      case _                              => false
+    }
 
   override def hashCode(): Int = 0
 }
@@ -144,36 +146,36 @@ object TypedPipeDiffLaws {
     checkDiff(left.map(_.toSeq), right.map(_.toSeq), diff)
   }
 
-  def diffLaw[T: Ordering: Arbitrary]: Prop = Prop.forAll {
-    (left: List[T], right: List[T]) =>
+  def diffLaw[T: Ordering: Arbitrary]: Prop =
+    Prop.forAll { (left: List[T], right: List[T]) =>
       val diff = TypedPipe
         .from(left)
         .diff(TypedPipe.from(right))
         .toTypedPipe
         .inMemoryToList
       checkDiff(left, right, diff)
-  }
+    }
 
   def diffArrayLaw[T](implicit
       arb: Arbitrary[List[Array[T]]],
-      ct: ClassTag[T]): Prop = Prop.forAll {
-    (left: List[Array[T]], right: List[Array[T]]) =>
+      ct: ClassTag[T]): Prop =
+    Prop.forAll { (left: List[Array[T]], right: List[Array[T]]) =>
       val diff = TypedPipe
         .from(left)
         .diffArrayPipes(TypedPipe.from(right))
         .inMemoryToList
         .map { case (arr, counts) => (arr.toSeq, counts) }
       checkArrayDiff(left, right, diff)
-  }
+    }
 
-  def diffByGroupLaw[T: Arbitrary]: Prop = Prop.forAll {
-    (left: List[T], right: List[T]) =>
+  def diffByGroupLaw[T: Arbitrary]: Prop =
+    Prop.forAll { (left: List[T], right: List[T]) =>
       val diff = TypedPipe
         .from(left)
         .diffByHashCode(TypedPipe.from(right))
         .inMemoryToList
       checkDiff(left, right, diff)
-  }
+    }
 
 }
 

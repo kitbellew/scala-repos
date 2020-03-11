@@ -24,10 +24,11 @@ class Coll[+T] {
       def apply4(value: B4) = value.head
     }
   }
-  def contains4 = new {
-    def apply1(s: String)(x: Int)(value: T) = ???
-    def apply2[T1 <: T](s: String)(x: Int)(value: T1) = ???
-  }
+  def contains4 =
+    new {
+      def apply1(s: String)(x: Int)(value: T) = ???
+      def apply2[T1 <: T](s: String)(x: Int)(value: T1) = ???
+    }
   def containsOk = {
     trait Bippy {
       type B1 <: AnyRef

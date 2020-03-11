@@ -93,15 +93,16 @@ final class IntervalSeq[T] private (
       values.asInstanceOf[Array[AnyRef]])
   }
 
-  override def equals(rhs: Any): Boolean = rhs match {
-    case rhs: IntervalSeq[_] =>
-      lhs.belowAll == rhs.belowAll &&
-        Arrays.equals(lhs.kinds, rhs.kinds) &&
-        Arrays.equals(
-          values.asInstanceOf[Array[AnyRef]],
-          rhs.values.asInstanceOf[Array[AnyRef]])
-    case _ => false
-  }
+  override def equals(rhs: Any): Boolean =
+    rhs match {
+      case rhs: IntervalSeq[_] =>
+        lhs.belowAll == rhs.belowAll &&
+          Arrays.equals(lhs.kinds, rhs.kinds) &&
+          Arrays.equals(
+            values.asInstanceOf[Array[AnyRef]],
+            rhs.values.asInstanceOf[Array[AnyRef]])
+      case _ => false
+    }
 
   def edges: Iterable[T] = values
 
@@ -123,18 +124,20 @@ final class IntervalSeq[T] private (
       }
     }
 
-  private[this] def lowerBound(i: Int) = (kinds(i): @switch) match {
-    case K01 => Open(values(i))
-    case K11 => Closed(values(i))
-    case K10 => Closed(values(i))
-    case _   => wrong
-  }
+  private[this] def lowerBound(i: Int) =
+    (kinds(i): @switch) match {
+      case K01 => Open(values(i))
+      case K11 => Closed(values(i))
+      case K10 => Closed(values(i))
+      case _   => wrong
+    }
 
-  private[this] def upperBound(i: Int) = (kinds(i): @switch) match {
-    case K10 => Closed(values(i))
-    case K00 => Open(values(i))
-    case _   => wrong
-  }
+  private[this] def upperBound(i: Int) =
+    (kinds(i): @switch) match {
+      case K10 => Closed(values(i))
+      case K00 => Open(values(i))
+      case _   => wrong
+    }
 
   def hull: Interval[T] = {
     if (isEmpty) {
@@ -151,9 +154,10 @@ final class IntervalSeq[T] private (
   }
 
   // todo: switch to AbstractTraversable once we no longer need to support scala 2.10
-  def intervals: Traversable[Interval[T]] = new Traversable[Interval[T]] {
-    override def foreach[U](f: (Interval[T]) => U): Unit = foreachInterval(f)
-  }
+  def intervals: Traversable[Interval[T]] =
+    new Traversable[Interval[T]] {
+      override def foreach[U](f: (Interval[T]) => U): Unit = foreachInterval(f)
+    }
 
   def intervalIterator: Iterator[Interval[T]] = new IntervalIterator[T](lhs)
 

@@ -12,11 +12,12 @@ object OSGi {
   // The included osgiSettings that creates bundles also publish the jar files
   // in the .../bundles directory which makes testing locally published artifacts
   // a pain. Create bundles but publish them to the normal .../jars directory.
-  def osgiSettings = defaultOsgiSettings ++ Seq(
-    packagedArtifact in (Compile, packageBin) <<= (
-      artifact in (Compile, packageBin),
-      OsgiKeys.bundle).identityMap
-  )
+  def osgiSettings =
+    defaultOsgiSettings ++ Seq(
+      packagedArtifact in (Compile, packageBin) <<= (
+        artifact in (Compile, packageBin),
+        OsgiKeys.bundle).identityMap
+    )
 
   val actor = osgiSettings ++ Seq(
     OsgiKeys.exportPackage := Seq("akka*"),

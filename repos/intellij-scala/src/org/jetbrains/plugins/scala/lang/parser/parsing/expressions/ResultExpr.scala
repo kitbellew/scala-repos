@@ -23,18 +23,19 @@ object ResultExpr {
     val resultMarker = builder.mark
     val backupMarker = builder.mark
 
-    def parseFunctionEnd() = builder.getTokenType match {
-      case ScalaTokenTypes.tFUNTYPE =>
-        builder.advanceLexer() //Ate =>
-        Block parse (builder, hasBrace = false, needNode = true)
-        backupMarker.drop()
-        resultMarker.done(ScalaElementTypes.FUNCTION_EXPR)
-        true
-      case _ =>
-        resultMarker.drop()
-        backupMarker.rollbackTo()
-        false
-    }
+    def parseFunctionEnd() =
+      builder.getTokenType match {
+        case ScalaTokenTypes.tFUNTYPE =>
+          builder.advanceLexer() //Ate =>
+          Block parse (builder, hasBrace = false, needNode = true)
+          backupMarker.drop()
+          resultMarker.done(ScalaElementTypes.FUNCTION_EXPR)
+          true
+        case _ =>
+          resultMarker.drop()
+          backupMarker.rollbackTo()
+          false
+      }
 
     def parseFunction(paramsMarker: PsiBuilder.Marker): Boolean = {
       val paramMarker = builder.mark()

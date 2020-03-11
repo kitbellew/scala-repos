@@ -114,17 +114,18 @@ abstract class ExpiringService[Req, Rep](
     }
   }
 
-  private[this] def deactivate(): Boolean = synchronized {
-    if (!active) false
-    else {
-      active = false
-      idleTask.cancel()
-      lifeTask.cancel()
-      idleTask = NullTimerTask
-      lifeTask = NullTimerTask
-      true
+  private[this] def deactivate(): Boolean =
+    synchronized {
+      if (!active) false
+      else {
+        active = false
+        idleTask.cancel()
+        lifeTask.cancel()
+        idleTask = NullTimerTask
+        lifeTask = NullTimerTask
+        true
+      }
     }
-  }
 
   private[this] def expired(): Unit = {
     if (expireFnCalled.compareAndSet(false, true)) {

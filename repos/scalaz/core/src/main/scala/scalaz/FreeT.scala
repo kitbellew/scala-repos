@@ -64,14 +64,15 @@ object FreeT extends FreeTInstances {
 
   def isoFree[S[_]]: FreeT[S, Id.Id, ?] <~> Free[S, ?] =
     new IsoFunctorTemplate[FreeT[S, Id.Id, ?], Free[S, ?]] {
-      override def to[A](fa: FreeT[S, Id.Id, A]) = fa match {
-        case Suspend(\/-(a)) =>
-          Free.liftF(a)
-        case Suspend(-\/(a)) =>
-          Free.point(a)
-        case a @ Gosub() =>
-          to(a.a).flatMap(a.f.andThen(to(_)))
-      }
+      override def to[A](fa: FreeT[S, Id.Id, A]) =
+        fa match {
+          case Suspend(\/-(a)) =>
+            Free.liftF(a)
+          case Suspend(-\/(a)) =>
+            Free.point(a)
+          case a @ Gosub() =>
+            to(a.a).flatMap(a.f.andThen(to(_)))
+        }
       override def from[A](ga: Free[S, A]) =
         ga.toFreeT
     }

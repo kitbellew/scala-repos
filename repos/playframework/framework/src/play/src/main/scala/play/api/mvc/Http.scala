@@ -312,21 +312,22 @@ package play.api.mvc {
     /**
       * Transform the request body.
       */
-    def map[B](f: A => B): Request[B] = new Request[B] {
-      override def id = self.id
-      override def tags = self.tags
-      override def uri = self.uri
-      override def path = self.path
-      override def method = self.method
-      override def version = self.version
-      override def queryString = self.queryString
-      override def headers = self.headers
-      override def remoteAddress = self.remoteAddress
-      override def secure = self.secure
-      override def clientCertificateChain = self.clientCertificateChain
+    def map[B](f: A => B): Request[B] =
+      new Request[B] {
+        override def id = self.id
+        override def tags = self.tags
+        override def uri = self.uri
+        override def path = self.path
+        override def method = self.method
+        override def version = self.version
+        override def queryString = self.queryString
+        override def headers = self.headers
+        override def remoteAddress = self.remoteAddress
+        override def secure = self.secure
+        override def clientCertificateChain = self.clientCertificateChain
 
-      override lazy val body = f(self.body)
-    }
+        override lazy val body = f(self.body)
+      }
 
   }
 
@@ -348,20 +349,21 @@ package play.api.mvc {
 
   object Request {
 
-    def apply[A](rh: RequestHeader, a: A): Request[A] = new Request[A] {
-      override def id = rh.id
-      override def tags = rh.tags
-      override def uri = rh.uri
-      override def path = rh.path
-      override def method = rh.method
-      override def version = rh.version
-      override def queryString = rh.queryString
-      override def headers = rh.headers
-      override lazy val remoteAddress = rh.remoteAddress
-      override lazy val secure = rh.secure
-      override val clientCertificateChain = rh.clientCertificateChain
-      override val body = a
-    }
+    def apply[A](rh: RequestHeader, a: A): Request[A] =
+      new Request[A] {
+        override def id = rh.id
+        override def tags = rh.tags
+        override def uri = rh.uri
+        override def path = rh.path
+        override def method = rh.method
+        override def version = rh.version
+        override def queryString = rh.queryString
+        override def headers = rh.headers
+        override lazy val remoteAddress = rh.remoteAddress
+        override lazy val secure = rh.secure
+        override val clientCertificateChain = rh.clientCertificateChain
+        override val body = a
+      }
   }
 
   /**
@@ -923,34 +925,37 @@ package play.api.mvc {
 
     private val logger = Logger(this.getClass)
 
-    def fromSetCookieHeader(header: Option[String]): Cookies = header match {
-      case Some(headerValue) =>
-        fromMap(
-          decodeSetCookieHeader(headerValue)
-            .groupBy(_.name)
-            .mapValues(_.head)
-        )
-      case None => fromMap(Map.empty)
-    }
-
-    def fromCookieHeader(header: Option[String]): Cookies = header match {
-      case Some(headerValue) =>
-        fromMap(
-          decodeCookieHeader(headerValue)
-            .groupBy(_.name)
-            .mapValues(_.head)
-        )
-      case None => fromMap(Map.empty)
-    }
-
-    private def fromMap(cookies: Map[String, Cookie]): Cookies = new Cookies {
-      def get(name: String) = cookies.get(name)
-      override def toString = cookies.toString
-
-      def foreach[U](f: (Cookie) => U) {
-        cookies.values.foreach(f)
+    def fromSetCookieHeader(header: Option[String]): Cookies =
+      header match {
+        case Some(headerValue) =>
+          fromMap(
+            decodeSetCookieHeader(headerValue)
+              .groupBy(_.name)
+              .mapValues(_.head)
+          )
+        case None => fromMap(Map.empty)
       }
-    }
+
+    def fromCookieHeader(header: Option[String]): Cookies =
+      header match {
+        case Some(headerValue) =>
+          fromMap(
+            decodeCookieHeader(headerValue)
+              .groupBy(_.name)
+              .mapValues(_.head)
+          )
+        case None => fromMap(Map.empty)
+      }
+
+    private def fromMap(cookies: Map[String, Cookie]): Cookies =
+      new Cookies {
+        def get(name: String) = cookies.get(name)
+        override def toString = cookies.toString
+
+        def foreach[U](f: (Cookie) => U) {
+          cookies.values.foreach(f)
+        }
+      }
 
     /**
       * Encodes cookies as a Set-Cookie HTTP header.

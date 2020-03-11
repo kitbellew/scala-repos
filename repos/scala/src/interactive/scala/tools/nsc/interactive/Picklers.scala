@@ -126,15 +126,16 @@ trait Picklers { self: Global =>
       }
       buf
     }
-    def makeSymbol(root: Symbol, names: List[Name]): Symbol = names match {
-      case List() =>
-        root
-      case name :: rest =>
-        val sym = root.info.decl(name)
-        if (sym.isOverloaded)
-          makeSymbol(sym.alternatives(rest.head.toString.toInt), rest.tail)
-        else makeSymbol(sym, rest)
-    }
+    def makeSymbol(root: Symbol, names: List[Name]): Symbol =
+      names match {
+        case List() =>
+          root
+        case name :: rest =>
+          val sym = root.info.decl(name)
+          if (sym.isOverloaded)
+            makeSymbol(sym.alternatives(rest.head.toString.toInt), rest.tail)
+          else makeSymbol(sym, rest)
+      }
     pkl[List[Name]].wrapped { makeSymbol(rootMirror.RootClass, _) } {
       ownerNames(_, new ListBuffer).toList
     }

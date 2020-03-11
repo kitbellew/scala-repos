@@ -29,10 +29,11 @@ object ORMultiMap {
   /**
     * Extract the [[ORMultiMap#entries]] of an `ORMultiMap`.
     */
-  def unapply(value: Any): Option[Map[String, Set[Any]]] = value match {
-    case m: ORMultiMap[Any] @unchecked ⇒ Some(m.entries)
-    case _ ⇒ None
-  }
+  def unapply(value: Any): Option[Map[String, Set[Any]]] =
+    value match {
+      case m: ORMultiMap[Any] @unchecked ⇒ Some(m.entries)
+      case _ ⇒ None
+    }
 }
 
 /**
@@ -248,10 +249,11 @@ final class ORMultiMap[A] private[akka] (
 
   override def toString: String = s"ORMulti$entries"
 
-  override def equals(o: Any): Boolean = o match {
-    case other: ORMultiMap[_] ⇒ underlying == other.underlying
-    case _ ⇒ false
-  }
+  override def equals(o: Any): Boolean =
+    o match {
+      case other: ORMultiMap[_] ⇒ underlying == other.underlying
+      case _ ⇒ false
+    }
 
   override def hashCode: Int = underlying.hashCode
 }

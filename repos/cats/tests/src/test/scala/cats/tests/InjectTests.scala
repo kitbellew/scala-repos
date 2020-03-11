@@ -21,16 +21,18 @@ class InjectTests extends CatsSuite {
 
   implicit def test1AlgebraAFunctor: Functor[Test1Algebra] =
     new Functor[Test1Algebra] {
-      def map[A, B](a: Test1Algebra[A])(f: A => B): Test1Algebra[B] = a match {
-        case Test1(k, h) => Test1(k, x => f(h(x)))
-      }
+      def map[A, B](a: Test1Algebra[A])(f: A => B): Test1Algebra[B] =
+        a match {
+          case Test1(k, h) => Test1(k, x => f(h(x)))
+        }
     }
 
   implicit def test2AlgebraAFunctor: Functor[Test2Algebra] =
     new Functor[Test2Algebra] {
-      def map[A, B](a: Test2Algebra[A])(f: A => B): Test2Algebra[B] = a match {
-        case Test2(k, h) => Test2(k, x => f(h(x)))
-      }
+      def map[A, B](a: Test2Algebra[A])(f: A => B): Test2Algebra[B] =
+        a match {
+          case Test2(k, h) => Test2(k, x => f(h(x)))
+        }
     }
 
   implicit def test1Arbitrary[A](implicit
@@ -46,15 +48,17 @@ class InjectTests extends CatsSuite {
       for { s <- seqArb.arbitrary; f <- intAArb.arbitrary } yield Test2(s, f))
 
   object Test1Interpreter extends (Test1Algebra ~> Id) {
-    override def apply[A](fa: Test1Algebra[A]): Id[A] = fa match {
-      case Test1(k, h) => Id.pure[A](h(k))
-    }
+    override def apply[A](fa: Test1Algebra[A]): Id[A] =
+      fa match {
+        case Test1(k, h) => Id.pure[A](h(k))
+      }
   }
 
   object Test2Interpreter extends (Test2Algebra ~> Id) {
-    override def apply[A](fa: Test2Algebra[A]): Id[A] = fa match {
-      case Test2(k, h) => Id.pure[A](h(k))
-    }
+    override def apply[A](fa: Test2Algebra[A]): Id[A] =
+      fa match {
+        case Test2(k, h) => Id.pure[A](h(k))
+      }
   }
 
   val coProductInterpreter: T ~> Id = Test1Interpreter or Test2Interpreter

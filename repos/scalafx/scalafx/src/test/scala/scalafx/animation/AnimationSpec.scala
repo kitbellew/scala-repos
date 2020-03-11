@@ -49,9 +49,10 @@ class AnimationSpec
   override protected def getScalaClassInstance =
     new Animation(new jfxa.Timeline) {}
 
-  override def getJavaClassInstance = new jfxa.Animation {
-    def impl_playTo(p1: Long, p2: Long) {}
-    def impl_jumpTo(p1: Long, p2: Long, p3: Boolean) {}
-  }
+  override def getJavaClassInstance =
+    new jfxa.Animation {
+      def impl_playTo(p1: Long, p2: Long) {}
+      def impl_jumpTo(p1: Long, p2: Long, p3: Boolean) {}
+    }
 
 }

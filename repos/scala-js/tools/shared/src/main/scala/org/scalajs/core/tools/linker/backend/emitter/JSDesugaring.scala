@@ -579,18 +579,19 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       def transformLoop(
           trees: List[Tree],
           env: Env,
-          acc: List[js.Tree]): (List[js.Tree], Env) = trees match {
-        case (tree @ VarDef(ident, tpe, mutable, rhs)) :: ts =>
-          val newEnv = env.withDef(ident, tpe, mutable)
-          val newTree = pushLhsInto(tree, rhs)(env)
-          transformLoop(ts, newEnv, newTree :: acc)
+          acc: List[js.Tree]): (List[js.Tree], Env) =
+        trees match {
+          case (tree @ VarDef(ident, tpe, mutable, rhs)) :: ts =>
+            val newEnv = env.withDef(ident, tpe, mutable)
+            val newTree = pushLhsInto(tree, rhs)(env)
+            transformLoop(ts, newEnv, newTree :: acc)
 
-        case tree :: ts =>
-          transformLoop(ts, env, transformStat(tree)(env) :: acc)
+          case tree :: ts =>
+            transformLoop(ts, env, transformStat(tree)(env) :: acc)
 
-        case Nil =>
-          (acc.reverse, env)
-      }
+          case Nil =>
+            (acc.reverse, env)
+        }
 
       transformLoop(trees, env, Nil)
     }
@@ -808,107 +809,110 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
       require(!allowSideEffects || allowUnpure)
 
-      def test(tree: Tree): Boolean = tree match {
-        // Atomic expressions
-        case _: Literal       => true
-        case _: This          => true
-        case _: JSLinkingInfo => true
+      def test(tree: Tree): Boolean =
+        tree match {
+          // Atomic expressions
+          case _: Literal       => true
+          case _: This          => true
+          case _: JSLinkingInfo => true
 
-        // Vars (side-effect free, pure if immutable)
-        case VarRef(name) =>
-          allowUnpure || !env.isLocalMutable(name)
+          // Vars (side-effect free, pure if immutable)
+          case VarRef(name) =>
+            allowUnpure || !env.isLocalMutable(name)
 
-        // Fields may throw if qualifier is null
-        case Select(qualifier, item) =>
-          allowSideEffects && test(qualifier)
+          // Fields may throw if qualifier is null
+          case Select(qualifier, item) =>
+            allowSideEffects && test(qualifier)
 
-        // Expressions preserving pureness
-        case Block(trees)            => trees forall test
-        case If(cond, thenp, elsep)  => test(cond) && test(thenp) && test(elsep)
-        case BinaryOp(_, lhs, rhs)   => test(lhs) && test(rhs)
-        case UnaryOp(_, lhs)         => test(lhs)
-        case JSBinaryOp(_, lhs, rhs) => test(lhs) && test(rhs)
-        case JSUnaryOp(_, lhs)       => test(lhs)
-        case ArrayLength(array)      => test(array)
-        case IsInstanceOf(expr, _)   => test(expr)
+          // Expressions preserving pureness
+          case Block(trees) => trees forall test
+          case If(cond, thenp, elsep) =>
+            test(cond) && test(thenp) && test(elsep)
+          case BinaryOp(_, lhs, rhs)   => test(lhs) && test(rhs)
+          case UnaryOp(_, lhs)         => test(lhs)
+          case JSBinaryOp(_, lhs, rhs) => test(lhs) && test(rhs)
+          case JSUnaryOp(_, lhs)       => test(lhs)
+          case ArrayLength(array)      => test(array)
+          case IsInstanceOf(expr, _)   => test(expr)
 
-        // Expressions preserving side-effect freedom
-        case NewArray(tpe, lengths) =>
-          allowUnpure && (lengths forall test)
-        case ArrayValue(tpe, elems) =>
-          allowUnpure && (elems forall test)
-        case ArraySelect(array, index) =>
-          allowUnpure && test(array) && test(index)
-        case JSArrayConstr(items) =>
-          allowUnpure && (items forall test)
-        case tree @ JSObjectConstr(items) =>
-          allowUnpure && (items forall (item => test(item._2))) &&
-            !doesObjectConstrRequireDesugaring(tree)
-        case Closure(captureParams, params, body, captureValues) =>
-          allowUnpure && (captureValues forall test)
+          // Expressions preserving side-effect freedom
+          case NewArray(tpe, lengths) =>
+            allowUnpure && (lengths forall test)
+          case ArrayValue(tpe, elems) =>
+            allowUnpure && (elems forall test)
+          case ArraySelect(array, index) =>
+            allowUnpure && test(array) && test(index)
+          case JSArrayConstr(items) =>
+            allowUnpure && (items forall test)
+          case tree @ JSObjectConstr(items) =>
+            allowUnpure && (items forall (item => test(item._2))) &&
+              !doesObjectConstrRequireDesugaring(tree)
+          case Closure(captureParams, params, body, captureValues) =>
+            allowUnpure && (captureValues forall test)
 
-        // Scala expressions that can always have side-effects
-        case New(cls, constr, args) =>
-          allowSideEffects && (args forall test)
-        case LoadModule(cls) => // unfortunately
-          allowSideEffects
-        case Apply(receiver, method, args) =>
-          allowSideEffects && test(receiver) && (args forall test)
-        case ApplyStatically(receiver, cls, method, args) =>
-          allowSideEffects && test(receiver) && (args forall test)
-        case ApplyStatic(cls, method, args) =>
-          allowSideEffects && (args forall test)
-        case GetClass(arg) =>
-          allowSideEffects && test(arg)
-        case CallHelper(helper, args) =>
-          allowSideEffects && (args forall test)
+          // Scala expressions that can always have side-effects
+          case New(cls, constr, args) =>
+            allowSideEffects && (args forall test)
+          case LoadModule(cls) => // unfortunately
+            allowSideEffects
+          case Apply(receiver, method, args) =>
+            allowSideEffects && test(receiver) && (args forall test)
+          case ApplyStatically(receiver, cls, method, args) =>
+            allowSideEffects && test(receiver) && (args forall test)
+          case ApplyStatic(cls, method, args) =>
+            allowSideEffects && (args forall test)
+          case GetClass(arg) =>
+            allowSideEffects && test(arg)
+          case CallHelper(helper, args) =>
+            allowSideEffects && (args forall test)
 
-        // Casts
-        case AsInstanceOf(expr, _) =>
-          (allowSideEffects || semantics.asInstanceOfs == Unchecked) && test(
-            expr)
-        case Unbox(expr, _) =>
-          (allowSideEffects || semantics.asInstanceOfs == Unchecked) && test(
-            expr)
+          // Casts
+          case AsInstanceOf(expr, _) =>
+            (allowSideEffects || semantics.asInstanceOfs == Unchecked) && test(
+              expr)
+          case Unbox(expr, _) =>
+            (allowSideEffects || semantics.asInstanceOfs == Unchecked) && test(
+              expr)
 
-        // Because the linking info is a frozen object, linkingInfo["envInfo"] is pure
-        case JSBracketSelect(JSLinkingInfo(), StringLiteral("envInfo")) => true
+          // Because the linking info is a frozen object, linkingInfo["envInfo"] is pure
+          case JSBracketSelect(JSLinkingInfo(), StringLiteral("envInfo")) =>
+            true
 
-        // And because the env is a frozen object too, linkingInfo["envInfo"]["global"] is pure
-        case JSBracketSelect(
-              JSBracketSelect(JSLinkingInfo(), StringLiteral("envInfo")),
-              StringLiteral("global")) =>
-          true
+          // And because the env is a frozen object too, linkingInfo["envInfo"]["global"] is pure
+          case JSBracketSelect(
+                JSBracketSelect(JSLinkingInfo(), StringLiteral("envInfo")),
+                StringLiteral("global")) =>
+            true
 
-        // JavaScript expressions that can always have side-effects
-        case JSNew(fun, args) =>
-          allowSideEffects && test(fun) && (args forall test)
-        case JSDotSelect(qualifier, item) =>
-          allowSideEffects && test(qualifier)
-        case JSBracketSelect(qualifier, item) =>
-          allowSideEffects && test(qualifier) && test(item)
-        case JSFunctionApply(fun, args) =>
-          allowSideEffects && test(fun) && (args forall test)
-        case JSDotMethodApply(receiver, method, args) =>
-          allowSideEffects && test(receiver) && (args forall test)
-        case JSBracketMethodApply(receiver, method, args) =>
-          allowSideEffects && test(receiver) && test(
-            method) && (args forall test)
-        case JSSuperBracketSelect(_, qualifier, item) =>
-          allowSideEffects && test(qualifier) && test(item)
-        case LoadJSModule(_) =>
-          allowSideEffects
+          // JavaScript expressions that can always have side-effects
+          case JSNew(fun, args) =>
+            allowSideEffects && test(fun) && (args forall test)
+          case JSDotSelect(qualifier, item) =>
+            allowSideEffects && test(qualifier)
+          case JSBracketSelect(qualifier, item) =>
+            allowSideEffects && test(qualifier) && test(item)
+          case JSFunctionApply(fun, args) =>
+            allowSideEffects && test(fun) && (args forall test)
+          case JSDotMethodApply(receiver, method, args) =>
+            allowSideEffects && test(receiver) && (args forall test)
+          case JSBracketMethodApply(receiver, method, args) =>
+            allowSideEffects && test(receiver) && test(
+              method) && (args forall test)
+          case JSSuperBracketSelect(_, qualifier, item) =>
+            allowSideEffects && test(qualifier) && test(item)
+          case LoadJSModule(_) =>
+            allowSideEffects
 
-        // LoadJSConstructor is pure only for Scala.js-defined JS classes
-        case LoadJSConstructor(cls) =>
-          allowUnpure || {
-            val linkedClass = classEmitter.linkedClassByName(cls.className)
-            linkedClass.kind == ClassKind.JSClass
-          }
+          // LoadJSConstructor is pure only for Scala.js-defined JS classes
+          case LoadJSConstructor(cls) =>
+            allowUnpure || {
+              val linkedClass = classEmitter.linkedClassByName(cls.className)
+              linkedClass.kind == ClassKind.JSClass
+            }
 
-        // Non-expressions
-        case _ => false
-      }
+          // Non-expressions
+          case _ => false
+        }
       test(tree)
     }
 
@@ -2010,16 +2014,17 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       }
     }
 
-    def isMaybeHijackedClass(tpe: Type): Boolean = tpe match {
-      case ClassType(cls) =>
-        Definitions.HijackedClasses.contains(cls) ||
-          Definitions.AncestorsOfHijackedClasses.contains(cls)
-      case AnyType | UndefType | BooleanType | IntType | LongType | FloatType |
-          DoubleType | StringType =>
-        true
-      case _ =>
-        false
-    }
+    def isMaybeHijackedClass(tpe: Type): Boolean =
+      tpe match {
+        case ClassType(cls) =>
+          Definitions.HijackedClasses.contains(cls) ||
+            Definitions.AncestorsOfHijackedClasses.contains(cls)
+        case AnyType | UndefType | BooleanType | IntType | LongType |
+            FloatType | DoubleType | StringType =>
+          true
+        case _ =>
+          false
+      }
 
     val hijackedClassMethodToHelperName: Map[String, String] = Map(
       "getClass__jl_Class" -> "objectGetClass",
@@ -2106,12 +2111,13 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
     }
 
     private implicit class RecordAwareEnv(env: Env) {
-      def withDef(ident: Ident, tpe: Type, mutable: Boolean): Env = tpe match {
-        case RecordType(fields) =>
-          withRecordDefs(ident, fields, mutable)
-        case _ =>
-          env.withDef(ident, mutable)
-      }
+      def withDef(ident: Ident, tpe: Type, mutable: Boolean): Env =
+        tpe match {
+          case RecordType(fields) =>
+            withRecordDefs(ident, fields, mutable)
+          case _ =>
+            env.withDef(ident, mutable)
+        }
 
       private def withRecordDefs(
           recIdent: Ident,

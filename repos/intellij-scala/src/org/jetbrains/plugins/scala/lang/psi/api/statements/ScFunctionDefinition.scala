@@ -46,16 +46,17 @@ trait ScFunctionDefinition extends ScFunction with ScControlFlowOwner {
         .distinct
     })
 
-  def canBeTailRecursive = getParent match {
-    case (_: ScTemplateBody) && Parent(Parent(owner: ScTypeDefinition)) =>
-      val ownerModifiers = owner.getModifierList
-      val methodModifiers = getModifierList
-      owner.isInstanceOf[ScObject] ||
-      ownerModifiers.has(ScalaTokenTypes.kFINAL) ||
-      methodModifiers.has(ScalaTokenTypes.kPRIVATE) ||
-      methodModifiers.has(ScalaTokenTypes.kFINAL)
-    case _ => true
-  }
+  def canBeTailRecursive =
+    getParent match {
+      case (_: ScTemplateBody) && Parent(Parent(owner: ScTypeDefinition)) =>
+        val ownerModifiers = owner.getModifierList
+        val methodModifiers = getModifierList
+        owner.isInstanceOf[ScObject] ||
+        ownerModifiers.has(ScalaTokenTypes.kFINAL) ||
+        methodModifiers.has(ScalaTokenTypes.kPRIVATE) ||
+        methodModifiers.has(ScalaTokenTypes.kFINAL)
+      case _ => true
+    }
 
   def hasTailRecursionAnnotation: Boolean =
     annotations.exists(
@@ -102,11 +103,12 @@ trait ScFunctionDefinition extends ScFunction with ScControlFlowOwner {
     }
   }
 
-  def recursionType: RecursionType = recursiveReferences match {
-    case Seq()                           => RecursionType.NoRecursion
-    case seq if seq.forall(_.isTailCall) => RecursionType.TailRecursion
-    case _                               => RecursionType.OrdinaryRecursion
-  }
+  def recursionType: RecursionType =
+    recursiveReferences match {
+      case Seq()                           => RecursionType.NoRecursion
+      case seq if seq.forall(_.isTailCall) => RecursionType.TailRecursion
+      case _                               => RecursionType.OrdinaryRecursion
+    }
 
   override def controlFlowScope: Option[ScalaPsiElement] = body
 

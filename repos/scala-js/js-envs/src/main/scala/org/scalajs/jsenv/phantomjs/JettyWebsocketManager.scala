@@ -122,9 +122,10 @@ private[phantomjs] final class JettyWebsocketManager(
 
   def localPort: Int = connector.getLocalPort()
 
-  def sendMessage(msg: String): Unit = synchronized {
-    if (webSocketConn != null)
-      webSocketConn.sendMessage(msg)
-  }
+  def sendMessage(msg: String): Unit =
+    synchronized {
+      if (webSocketConn != null)
+        webSocketConn.sendMessage(msg)
+    }
 
 }

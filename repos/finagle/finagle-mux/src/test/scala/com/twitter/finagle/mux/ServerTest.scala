@@ -395,11 +395,12 @@ class ServerTest extends FunSuite with MockitoSugar with AssertionsForJUnit {
     val failResponse = Response(Utf8("fail"))
 
     val testService = new Service[Request, Response] {
-      override def apply(request: Request): Future[Response] = Future.value {
-        if (Contexts.local.get(Transport.peerCertCtx) == Some(mockCert))
-          okResponse
-        else failResponse
-      }
+      override def apply(request: Request): Future[Response] =
+        Future.value {
+          if (Contexts.local.get(Transport.peerCertCtx) == Some(mockCert))
+            okResponse
+          else failResponse
+        }
     }
 
     val tag = 3
@@ -469,9 +470,10 @@ class ServerTest extends FunSuite with MockitoSugar with AssertionsForJUnit {
     val writep = new Promise[Unit]
 
     val transport = new QueueTransport(serverToClient, clientToServer) {
-      override def write(in: Message) = writep.before {
-        super.write(in)
-      }
+      override def write(in: Message) =
+        writep.before {
+          super.write(in)
+        }
     }
 
     val sr = new InMemoryStatsReceiver

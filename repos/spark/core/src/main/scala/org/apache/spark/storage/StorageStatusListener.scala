@@ -39,13 +39,15 @@ class StorageStatusListener(conf: SparkConf) extends SparkListener {
   private[this] val retainedDeadExecutors =
     conf.getInt("spark.ui.retainedDeadExecutors", 100)
 
-  def storageStatusList: Seq[StorageStatus] = synchronized {
-    executorIdToStorageStatus.values.toSeq
-  }
+  def storageStatusList: Seq[StorageStatus] =
+    synchronized {
+      executorIdToStorageStatus.values.toSeq
+    }
 
-  def deadStorageStatusList: Seq[StorageStatus] = synchronized {
-    deadExecutorStorageStatus.toSeq
-  }
+  def deadStorageStatusList: Seq[StorageStatus] =
+    synchronized {
+      deadExecutorStorageStatus.toSeq
+    }
 
   /** Update storage status list to reflect updated block statuses */
   private def updateStorageStatus(
@@ -73,16 +75,17 @@ class StorageStatusListener(conf: SparkConf) extends SparkListener {
     }
   }
 
-  override def onTaskEnd(taskEnd: SparkListenerTaskEnd): Unit = synchronized {
-    val info = taskEnd.taskInfo
-    val metrics = taskEnd.taskMetrics
-    if (info != null && metrics != null) {
-      val updatedBlocks = metrics.updatedBlockStatuses
-      if (updatedBlocks.length > 0) {
-        updateStorageStatus(info.executorId, updatedBlocks)
+  override def onTaskEnd(taskEnd: SparkListenerTaskEnd): Unit =
+    synchronized {
+      val info = taskEnd.taskInfo
+      val metrics = taskEnd.taskMetrics
+      if (info != null && metrics != null) {
+        val updatedBlocks = metrics.updatedBlockStatuses
+        if (updatedBlocks.length > 0) {
+          updateStorageStatus(info.executorId, updatedBlocks)
+        }
       }
     }
-  }
 
   override def onUnpersistRDD(unpersistRDD: SparkListenerUnpersistRDD): Unit =
     synchronized {

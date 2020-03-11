@@ -168,24 +168,25 @@ class SimplifyJumpsTest {
 
   @Test
   def collapseJumpChains(): Unit = {
-    def ops(target1: Int, target2: Int, target3: Int) = List(
-      VarOp(ILOAD, 1),
-      Jump(IFGE, Label(target1)), // initially 1, then 3
-      VarOp(ILOAD, 1),
-      Op(IRETURN),
-      Label(2),
-      Jump(GOTO, Label(target3)),
-      Label(1),
-      Jump(GOTO, Label(target2)), // initially 2, then 3
-      VarOp(
-        ILOAD,
-        1
-      ), // some code to prevent jumpToSuccessor optimization (once target2 is replaced by 3)
-      Op(RETURN),
-      Label(3),
-      VarOp(ILOAD, 1),
-      Op(IRETURN)
-    )
+    def ops(target1: Int, target2: Int, target3: Int) =
+      List(
+        VarOp(ILOAD, 1),
+        Jump(IFGE, Label(target1)), // initially 1, then 3
+        VarOp(ILOAD, 1),
+        Op(IRETURN),
+        Label(2),
+        Jump(GOTO, Label(target3)),
+        Label(1),
+        Jump(GOTO, Label(target2)), // initially 2, then 3
+        VarOp(
+          ILOAD,
+          1
+        ), // some code to prevent jumpToSuccessor optimization (once target2 is replaced by 3)
+        Op(RETURN),
+        Label(3),
+        VarOp(ILOAD, 1),
+        Op(IRETURN)
+      )
     val method = genMethod()(ops(1, 2, 3): _*)
     assertTrue(LocalOptImpls.simplifyJumps(method))
     assertSameCode(instructionsFromMethod(method), ops(3, 3, 3))
@@ -193,20 +194,21 @@ class SimplifyJumpsTest {
 
   @Test
   def collapseJumpChainLoop(): Unit = {
-    def ops(target: Int) = List(
-      VarOp(ILOAD, 1),
-      Jump(IFGE, Label(target)),
-      VarOp(ILOAD, 1), // some code to prevent rewriting the conditional jump
-      Op(IRETURN),
-      Label(4),
-      Jump(GOTO, Label(3)),
-      VarOp(ILOAD, 1), // some code to prevent jumpToSuccessor (label 3)
-      Op(IRETURN),
-      Label(3),
-      Jump(GOTO, Label(4)),
-      Label(2),
-      Jump(GOTO, Label(3))
-    )
+    def ops(target: Int) =
+      List(
+        VarOp(ILOAD, 1),
+        Jump(IFGE, Label(target)),
+        VarOp(ILOAD, 1), // some code to prevent rewriting the conditional jump
+        Op(IRETURN),
+        Label(4),
+        Jump(GOTO, Label(3)),
+        VarOp(ILOAD, 1), // some code to prevent jumpToSuccessor (label 3)
+        Op(IRETURN),
+        Label(3),
+        Jump(GOTO, Label(4)),
+        Label(2),
+        Jump(GOTO, Label(3))
+      )
 
     val method = genMethod()(ops(2): _*)
     assertTrue(LocalOptImpls.simplifyJumps(method))
@@ -215,17 +217,18 @@ class SimplifyJumpsTest {
 
   @Test
   def simplifyThenElseSameTarget(): Unit = {
-    def ops(jumpOp: Instruction) = List(
-      VarOp(ILOAD, 1),
-      jumpOp,
-      Label(2),
-      Jump(GOTO, Label(1)),
-      VarOp(ILOAD, 1), // some code to prevent jumpToSuccessor (label 1)
-      Op(IRETURN),
-      Label(1),
-      VarOp(ILOAD, 1),
-      Op(IRETURN)
-    )
+    def ops(jumpOp: Instruction) =
+      List(
+        VarOp(ILOAD, 1),
+        jumpOp,
+        Label(2),
+        Jump(GOTO, Label(1)),
+        VarOp(ILOAD, 1), // some code to prevent jumpToSuccessor (label 1)
+        Op(IRETURN),
+        Label(1),
+        VarOp(ILOAD, 1),
+        Op(IRETURN)
+      )
 
     val method = genMethod()(ops(Jump(IFGE, Label(1))): _*)
     assertTrue(LocalOptImpls.simplifyJumps(method))

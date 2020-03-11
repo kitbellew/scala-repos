@@ -133,14 +133,15 @@ private[macros] case class CheckedRewriter[C <: Context](c: C) {
     val Div = termName(c)("$div")
     val Mod = termName(c)("$percent")
 
-    def binopOk(tree: Tree): Boolean = tree match {
-      case Apply(Select(lhs, method), rhs :: Nil) =>
-        val lt = lhs.tpe.widen
-        val rt = rhs.tpe.widen
-        ((lt weak_<:< tpe) && (rt <:< tpe)) || ((lt <:< tpe) && (rt weak_<:< tpe))
-      case _ =>
-        false
-    }
+    def binopOk(tree: Tree): Boolean =
+      tree match {
+        case Apply(Select(lhs, method), rhs :: Nil) =>
+          val lt = lhs.tpe.widen
+          val rt = rhs.tpe.widen
+          ((lt weak_<:< tpe) && (rt <:< tpe)) || ((lt <:< tpe) && (rt weak_<:< tpe))
+        case _ =>
+          false
+      }
 
     def isSimple(tree: Tree): Boolean =
       tree match {

@@ -52,29 +52,30 @@ class JavaWriter(classfile: Classfile, writer: Writer)
   def sigToType(str: String): String =
     sigToType(str, 0)._1
 
-  def sigToType(str: String, i: Int): (String, Int) = str.charAt(i) match {
-    case 'B' => ("scala.Byte", i + 1)
-    case 'C' => ("scala.Char", i + 1)
-    case 'D' => ("scala.Double", i + 1)
-    case 'F' => ("scala.Float", i + 1)
-    case 'I' => ("scala.Int", i + 1)
-    case 'J' => ("scala.Long", i + 1)
-    case 'S' => ("scala.Short", i + 1)
-    case 'V' => ("scala.Unit", i + 1)
-    case 'Z' => ("scala.Boolean", i + 1)
-    case 'L' =>
-      val j = str.indexOf(';', i)
-      (nameToClass(str.substring(i + 1, j)), j + 1)
-    case '[' =>
-      val (tpe, j) = sigToType(str, i + 1)
-      ("scala.Array[" + tpe + "]", j)
-    case '(' =>
-      val (tpe, j) = sigToType0(str, i + 1)
-      ("(" + tpe, j)
-    case ')' =>
-      val (tpe, j) = sigToType(str, i + 1)
-      ("): " + tpe, j)
-  }
+  def sigToType(str: String, i: Int): (String, Int) =
+    str.charAt(i) match {
+      case 'B' => ("scala.Byte", i + 1)
+      case 'C' => ("scala.Char", i + 1)
+      case 'D' => ("scala.Double", i + 1)
+      case 'F' => ("scala.Float", i + 1)
+      case 'I' => ("scala.Int", i + 1)
+      case 'J' => ("scala.Long", i + 1)
+      case 'S' => ("scala.Short", i + 1)
+      case 'V' => ("scala.Unit", i + 1)
+      case 'Z' => ("scala.Boolean", i + 1)
+      case 'L' =>
+        val j = str.indexOf(';', i)
+        (nameToClass(str.substring(i + 1, j)), j + 1)
+      case '[' =>
+        val (tpe, j) = sigToType(str, i + 1)
+        ("scala.Array[" + tpe + "]", j)
+      case '(' =>
+        val (tpe, j) = sigToType0(str, i + 1)
+        ("(" + tpe, j)
+      case ')' =>
+        val (tpe, j) = sigToType(str, i + 1)
+        ("): " + tpe, j)
+    }
 
   def sigToType0(str: String, i: Int): (String, Int) =
     if (str.charAt(i) == ')')

@@ -113,90 +113,93 @@ object Docs {
         }
       )
 
-  def apiDocsTask = Def.task {
+  def apiDocsTask =
+    Def.task {
 
-    val targetDir = new File(
-      target.value,
-      "scala-" + CrossVersion.binaryScalaVersion(scalaVersion.value))
-    val apiTarget = new File(targetDir, "apidocs")
+      val targetDir = new File(
+        target.value,
+        "scala-" + CrossVersion.binaryScalaVersion(scalaVersion.value))
+      val apiTarget = new File(targetDir, "apidocs")
 
-    if ((publishArtifact in packageDoc).value) {
+      if ((publishArtifact in packageDoc).value) {
 
-      val version = Keys.version.value
-      val sourceTree = if (version.endsWith("-SNAPSHOT")) {
-        BuildSettings.snapshotBranch
-      } else {
-        version
+        val version = Keys.version.value
+        val sourceTree = if (version.endsWith("-SNAPSHOT")) {
+          BuildSettings.snapshotBranch
+        } else {
+          version
+        }
+
+        val scalaCache = new File(targetDir, "scalaapidocs.cache")
+        val javaCache = new File(targetDir, "javaapidocs.cache")
+
+        val label = "Play " + version
+        val apiMappings = Keys.apiMappings.value
+        val externalDocsScalacOption = Opts.doc
+          .externalAPI(apiMappings)
+          .head
+          .replace("-doc-external-doc:", "")
+
+        val options = Seq(
+          // Note, this is used by the doc-source-url feature to determine the relative path of a given source file.
+          // If it's not a prefix of a the absolute path of the source file, the absolute path of that file will be put
+          // into the FILE_SOURCE variable below, which is definitely not what we want.
+          // Hence it needs to be the base directory for the build, not the base directory for the play-docs project.
+          "-sourcepath",
+          (baseDirectory in ThisBuild).value.getAbsolutePath,
+          "-doc-source-url",
+          "https://github.com/playframework/playframework/tree/" + sourceTree + "/framework€{FILE_PATH}.scala",
+          "-doc-external-doc",
+          externalDocsScalacOption
+        )
+
+        val compilers = Keys.compilers.value
+        val useCache = apiDocsUseCache.value
+        val classpath = apiDocsClasspath.value
+
+        val scaladoc = {
+          if (useCache) Doc.scaladoc(label, scalaCache, compilers.scalac)
+          else DocNoCache.scaladoc(label, compilers.scalac)
+        }
+        // Since there is absolutely no documentation on what the arguments here should be aside from their types, here
+        // are the parameter names of the method that does eventually get called:
+        // (sources, classpath, outputDirectory, options, maxErrors, log)
+        scaladoc(
+          apiDocsScalaSources.value,
+          classpath,
+          apiTarget / "scala",
+          options,
+          10,
+          streams.value.log)
+
+        val javadocOptions = Seq(
+          "-windowtitle",
+          label,
+          "-notimestamp",
+          "-subpackages",
+          "play",
+          "-Xmaxwarns",
+          "1000",
+          "-Xdoclint:none", // We would like to relax this, but for now too much stuff breaks.
+          "-exclude",
+          "play.api:play.core"
+        )
+
+        val javadoc = {
+          if (useCache) Doc.javadoc(label, javaCache, compilers.javac)
+          else DocNoCache.javadoc(label, compilers)
+        }
+        javadoc(
+          apiDocsJavaSources.value,
+          classpath,
+          apiTarget / "java",
+          javadocOptions,
+          10,
+          streams.value.log)
       }
 
-      val scalaCache = new File(targetDir, "scalaapidocs.cache")
-      val javaCache = new File(targetDir, "javaapidocs.cache")
-
-      val label = "Play " + version
-      val apiMappings = Keys.apiMappings.value
-      val externalDocsScalacOption =
-        Opts.doc.externalAPI(apiMappings).head.replace("-doc-external-doc:", "")
-
-      val options = Seq(
-        // Note, this is used by the doc-source-url feature to determine the relative path of a given source file.
-        // If it's not a prefix of a the absolute path of the source file, the absolute path of that file will be put
-        // into the FILE_SOURCE variable below, which is definitely not what we want.
-        // Hence it needs to be the base directory for the build, not the base directory for the play-docs project.
-        "-sourcepath",
-        (baseDirectory in ThisBuild).value.getAbsolutePath,
-        "-doc-source-url",
-        "https://github.com/playframework/playframework/tree/" + sourceTree + "/framework€{FILE_PATH}.scala",
-        "-doc-external-doc",
-        externalDocsScalacOption
-      )
-
-      val compilers = Keys.compilers.value
-      val useCache = apiDocsUseCache.value
-      val classpath = apiDocsClasspath.value
-
-      val scaladoc = {
-        if (useCache) Doc.scaladoc(label, scalaCache, compilers.scalac)
-        else DocNoCache.scaladoc(label, compilers.scalac)
-      }
-      // Since there is absolutely no documentation on what the arguments here should be aside from their types, here
-      // are the parameter names of the method that does eventually get called:
-      // (sources, classpath, outputDirectory, options, maxErrors, log)
-      scaladoc(
-        apiDocsScalaSources.value,
-        classpath,
-        apiTarget / "scala",
-        options,
-        10,
-        streams.value.log)
-
-      val javadocOptions = Seq(
-        "-windowtitle",
-        label,
-        "-notimestamp",
-        "-subpackages",
-        "play",
-        "-Xmaxwarns",
-        "1000",
-        "-Xdoclint:none", // We would like to relax this, but for now too much stuff breaks.
-        "-exclude",
-        "play.api:play.core"
-      )
-
-      val javadoc = {
-        if (useCache) Doc.javadoc(label, javaCache, compilers.javac)
-        else DocNoCache.javadoc(label, compilers)
-      }
-      javadoc(
-        apiDocsJavaSources.value,
-        classpath,
-        apiTarget / "java",
-        javadocOptions,
-        10,
-        streams.value.log)
+      apiTarget
     }
-
-    apiTarget
-  }
 
   def allConfsTask(
       projectRef: ProjectRef,

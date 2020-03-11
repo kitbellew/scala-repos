@@ -122,291 +122,295 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
     (keys, bitmasks)
   }
 
-  protected def nodeToPlan(node: ASTNode): LogicalPlan = node match {
-    case Token("TOK_SHOWFUNCTIONS", args) =>
-      // Skip LIKE.
-      val pattern = args match {
-        case like :: nodes if like.text.toUpperCase == "LIKE" => nodes
-        case nodes                                            => nodes
-      }
-
-      // Extract Database and Function name
-      pattern match {
-        case Nil =>
-          ShowFunctions(None, None)
-        case Token(name, Nil) :: Nil =>
-          ShowFunctions(None, Some(unquoteString(cleanIdentifier(name))))
-        case Token(db, Nil) :: Token(name, Nil) :: Nil =>
-          ShowFunctions(
-            Some(unquoteString(cleanIdentifier(db))),
-            Some(unquoteString(cleanIdentifier(name))))
-        case _ =>
-          noParseRule("SHOW FUNCTIONS", node)
-      }
-
-    case Token("TOK_DESCFUNCTION", Token(functionName, Nil) :: isExtended) =>
-      DescribeFunction(cleanIdentifier(functionName), isExtended.nonEmpty)
-
-    case Token(
-          "TOK_QUERY",
-          queryArgs @ Token("TOK_CTE" | "TOK_FROM" | "TOK_INSERT", _) :: _) =>
-      val (fromClause: Option[ASTNode], insertClauses, cteRelations) =
-        queryArgs match {
-          case Token("TOK_CTE", ctes) :: Token("TOK_FROM", from) :: inserts =>
-            val cteRelations = ctes.map { node =>
-              val relation = nodeToRelation(node).asInstanceOf[SubqueryAlias]
-              relation.alias -> relation
-            }
-            (Some(from.head), inserts, Some(cteRelations.toMap))
-          case Token("TOK_FROM", from) :: inserts =>
-            (Some(from.head), inserts, None)
-          case Token("TOK_INSERT", _) :: Nil =>
-            (None, queryArgs, None)
+  protected def nodeToPlan(node: ASTNode): LogicalPlan =
+    node match {
+      case Token("TOK_SHOWFUNCTIONS", args) =>
+        // Skip LIKE.
+        val pattern = args match {
+          case like :: nodes if like.text.toUpperCase == "LIKE" => nodes
+          case nodes                                            => nodes
         }
 
-      // Return one query for each insert clause.
-      val queries = insertClauses.map {
-        case Token("TOK_INSERT", singleInsert) =>
-          val (intoClause ::
-            destClause ::
-            selectClause ::
-            selectDistinctClause ::
-            whereClause ::
-            groupByClause ::
-            rollupGroupByClause ::
-            cubeGroupByClause ::
-            groupingSetsClause ::
-            orderByClause ::
-            havingClause ::
-            sortByClause ::
-            clusterByClause ::
-            distributeByClause ::
-            limitClause ::
-            lateralViewClause ::
-            windowClause :: Nil) = {
-            getClauses(
-              Seq(
-                "TOK_INSERT_INTO",
-                "TOK_DESTINATION",
-                "TOK_SELECT",
-                "TOK_SELECTDI",
-                "TOK_WHERE",
-                "TOK_GROUPBY",
-                "TOK_ROLLUP_GROUPBY",
-                "TOK_CUBE_GROUPBY",
-                "TOK_GROUPING_SETS",
-                "TOK_ORDERBY",
-                "TOK_HAVING",
-                "TOK_SORTBY",
-                "TOK_CLUSTERBY",
-                "TOK_DISTRIBUTEBY",
-                "TOK_LIMIT",
-                "TOK_LATERAL_VIEW",
-                "WINDOW"
-              ),
-              singleInsert
-            )
-          }
+        // Extract Database and Function name
+        pattern match {
+          case Nil =>
+            ShowFunctions(None, None)
+          case Token(name, Nil) :: Nil =>
+            ShowFunctions(None, Some(unquoteString(cleanIdentifier(name))))
+          case Token(db, Nil) :: Token(name, Nil) :: Nil =>
+            ShowFunctions(
+              Some(unquoteString(cleanIdentifier(db))),
+              Some(unquoteString(cleanIdentifier(name))))
+          case _ =>
+            noParseRule("SHOW FUNCTIONS", node)
+        }
 
-          val relations = fromClause match {
-            case Some(f) => nodeToRelation(f)
-            case None    => OneRowRelation
-          }
+      case Token("TOK_DESCFUNCTION", Token(functionName, Nil) :: isExtended) =>
+        DescribeFunction(cleanIdentifier(functionName), isExtended.nonEmpty)
 
-          val withLateralView = lateralViewClause
-            .map { lv =>
-              nodeToGenerate(lv.children.head, outer = false, relations)
-            }
-            .getOrElse(relations)
-
-          val withWhere = whereClause
-            .map { whereNode =>
-              val Seq(whereExpr) = whereNode.children
-              Filter(nodeToExpr(whereExpr), withLateralView)
-            }
-            .getOrElse(withLateralView)
-
-          val select = (selectClause orElse selectDistinctClause)
-            .getOrElse(sys.error("No select clause."))
-
-          val transformation =
-            nodeToTransformation(select.children.head, withWhere)
-
-          // The projection of the query can either be a normal projection, an aggregation
-          // (if there is a group by) or a script transformation.
-          val withProject: LogicalPlan = transformation.getOrElse {
-            val selectExpressions =
-              select.children.flatMap(selExprNodeToExpr).map(UnresolvedAlias(_))
-            Seq(
-              groupByClause.map(e =>
-                e match {
-                  case Token("TOK_GROUPBY", children) =>
-                    // Not a transformation so must be either project or aggregation.
-                    Aggregate(
-                      children.map(nodeToExpr),
-                      selectExpressions,
-                      withWhere)
-                  case _ => sys.error("Expect GROUP BY")
-                }),
-              groupingSetsClause.map(e =>
-                e match {
-                  case Token("TOK_GROUPING_SETS", children) =>
-                    val (groupByExprs, masks) = extractGroupingSet(children)
-                    GroupingSets(
-                      masks,
-                      groupByExprs,
-                      withWhere,
-                      selectExpressions)
-                  case _ => sys.error("Expect GROUPING SETS")
-                }),
-              rollupGroupByClause.map(e =>
-                e match {
-                  case Token("TOK_ROLLUP_GROUPBY", children) =>
-                    Aggregate(
-                      Seq(Rollup(children.map(nodeToExpr))),
-                      selectExpressions,
-                      withWhere)
-                  case _ => sys.error("Expect WITH ROLLUP")
-                }),
-              cubeGroupByClause.map(e =>
-                e match {
-                  case Token("TOK_CUBE_GROUPBY", children) =>
-                    Aggregate(
-                      Seq(Cube(children.map(nodeToExpr))),
-                      selectExpressions,
-                      withWhere)
-                  case _ => sys.error("Expect WITH CUBE")
-                }),
-              Some(Project(selectExpressions, withWhere))
-            ).flatten.head
-          }
-
-          // Handle HAVING clause.
-          val withHaving = havingClause
-            .map { h =>
-              val havingExpr = h.children match {
-                case Seq(hexpr) => nodeToExpr(hexpr)
+      case Token(
+            "TOK_QUERY",
+            queryArgs @ Token("TOK_CTE" | "TOK_FROM" | "TOK_INSERT", _) :: _) =>
+        val (fromClause: Option[ASTNode], insertClauses, cteRelations) =
+          queryArgs match {
+            case Token("TOK_CTE", ctes) :: Token("TOK_FROM", from) :: inserts =>
+              val cteRelations = ctes.map { node =>
+                val relation = nodeToRelation(node).asInstanceOf[SubqueryAlias]
+                relation.alias -> relation
               }
-              // Note that we added a cast to boolean. If the expression itself is already boolean,
-              // the optimizer will get rid of the unnecessary cast.
-              Filter(Cast(havingExpr, BooleanType), withProject)
+              (Some(from.head), inserts, Some(cteRelations.toMap))
+            case Token("TOK_FROM", from) :: inserts =>
+              (Some(from.head), inserts, None)
+            case Token("TOK_INSERT", _) :: Nil =>
+              (None, queryArgs, None)
+          }
+
+        // Return one query for each insert clause.
+        val queries = insertClauses.map {
+          case Token("TOK_INSERT", singleInsert) =>
+            val (intoClause ::
+              destClause ::
+              selectClause ::
+              selectDistinctClause ::
+              whereClause ::
+              groupByClause ::
+              rollupGroupByClause ::
+              cubeGroupByClause ::
+              groupingSetsClause ::
+              orderByClause ::
+              havingClause ::
+              sortByClause ::
+              clusterByClause ::
+              distributeByClause ::
+              limitClause ::
+              lateralViewClause ::
+              windowClause :: Nil) = {
+              getClauses(
+                Seq(
+                  "TOK_INSERT_INTO",
+                  "TOK_DESTINATION",
+                  "TOK_SELECT",
+                  "TOK_SELECTDI",
+                  "TOK_WHERE",
+                  "TOK_GROUPBY",
+                  "TOK_ROLLUP_GROUPBY",
+                  "TOK_CUBE_GROUPBY",
+                  "TOK_GROUPING_SETS",
+                  "TOK_ORDERBY",
+                  "TOK_HAVING",
+                  "TOK_SORTBY",
+                  "TOK_CLUSTERBY",
+                  "TOK_DISTRIBUTEBY",
+                  "TOK_LIMIT",
+                  "TOK_LATERAL_VIEW",
+                  "WINDOW"
+                ),
+                singleInsert
+              )
             }
-            .getOrElse(withProject)
 
-          // Handle SELECT DISTINCT
-          val withDistinct =
-            if (selectDistinctClause.isDefined) Distinct(withHaving)
-            else withHaving
+            val relations = fromClause match {
+              case Some(f) => nodeToRelation(f)
+              case None    => OneRowRelation
+            }
 
-          // Handle ORDER BY, SORT BY, DISTRIBUTE BY, and CLUSTER BY clause.
-          val withSort =
-            (
-              orderByClause,
-              sortByClause,
-              distributeByClause,
-              clusterByClause) match {
-              case (Some(totalOrdering), None, None, None) =>
-                Sort(
-                  totalOrdering.children.map(nodeToSortOrder),
-                  global = true,
-                  withDistinct)
-              case (None, Some(perPartitionOrdering), None, None) =>
-                Sort(
-                  perPartitionOrdering.children.map(nodeToSortOrder),
-                  global = false,
-                  withDistinct)
-              case (None, None, Some(partitionExprs), None) =>
-                RepartitionByExpression(
-                  partitionExprs.children.map(nodeToExpr),
-                  withDistinct)
-              case (
-                    None,
-                    Some(perPartitionOrdering),
-                    Some(partitionExprs),
-                    None) =>
-                Sort(
-                  perPartitionOrdering.children.map(nodeToSortOrder),
-                  global = false,
+            val withLateralView = lateralViewClause
+              .map { lv =>
+                nodeToGenerate(lv.children.head, outer = false, relations)
+              }
+              .getOrElse(relations)
+
+            val withWhere = whereClause
+              .map { whereNode =>
+                val Seq(whereExpr) = whereNode.children
+                Filter(nodeToExpr(whereExpr), withLateralView)
+              }
+              .getOrElse(withLateralView)
+
+            val select = (selectClause orElse selectDistinctClause)
+              .getOrElse(sys.error("No select clause."))
+
+            val transformation =
+              nodeToTransformation(select.children.head, withWhere)
+
+            // The projection of the query can either be a normal projection, an aggregation
+            // (if there is a group by) or a script transformation.
+            val withProject: LogicalPlan = transformation.getOrElse {
+              val selectExpressions =
+                select.children
+                  .flatMap(selExprNodeToExpr)
+                  .map(UnresolvedAlias(_))
+              Seq(
+                groupByClause.map(e =>
+                  e match {
+                    case Token("TOK_GROUPBY", children) =>
+                      // Not a transformation so must be either project or aggregation.
+                      Aggregate(
+                        children.map(nodeToExpr),
+                        selectExpressions,
+                        withWhere)
+                    case _ => sys.error("Expect GROUP BY")
+                  }),
+                groupingSetsClause.map(e =>
+                  e match {
+                    case Token("TOK_GROUPING_SETS", children) =>
+                      val (groupByExprs, masks) = extractGroupingSet(children)
+                      GroupingSets(
+                        masks,
+                        groupByExprs,
+                        withWhere,
+                        selectExpressions)
+                    case _ => sys.error("Expect GROUPING SETS")
+                  }),
+                rollupGroupByClause.map(e =>
+                  e match {
+                    case Token("TOK_ROLLUP_GROUPBY", children) =>
+                      Aggregate(
+                        Seq(Rollup(children.map(nodeToExpr))),
+                        selectExpressions,
+                        withWhere)
+                    case _ => sys.error("Expect WITH ROLLUP")
+                  }),
+                cubeGroupByClause.map(e =>
+                  e match {
+                    case Token("TOK_CUBE_GROUPBY", children) =>
+                      Aggregate(
+                        Seq(Cube(children.map(nodeToExpr))),
+                        selectExpressions,
+                        withWhere)
+                    case _ => sys.error("Expect WITH CUBE")
+                  }),
+                Some(Project(selectExpressions, withWhere))
+              ).flatten.head
+            }
+
+            // Handle HAVING clause.
+            val withHaving = havingClause
+              .map { h =>
+                val havingExpr = h.children match {
+                  case Seq(hexpr) => nodeToExpr(hexpr)
+                }
+                // Note that we added a cast to boolean. If the expression itself is already boolean,
+                // the optimizer will get rid of the unnecessary cast.
+                Filter(Cast(havingExpr, BooleanType), withProject)
+              }
+              .getOrElse(withProject)
+
+            // Handle SELECT DISTINCT
+            val withDistinct =
+              if (selectDistinctClause.isDefined) Distinct(withHaving)
+              else withHaving
+
+            // Handle ORDER BY, SORT BY, DISTRIBUTE BY, and CLUSTER BY clause.
+            val withSort =
+              (
+                orderByClause,
+                sortByClause,
+                distributeByClause,
+                clusterByClause) match {
+                case (Some(totalOrdering), None, None, None) =>
+                  Sort(
+                    totalOrdering.children.map(nodeToSortOrder),
+                    global = true,
+                    withDistinct)
+                case (None, Some(perPartitionOrdering), None, None) =>
+                  Sort(
+                    perPartitionOrdering.children.map(nodeToSortOrder),
+                    global = false,
+                    withDistinct)
+                case (None, None, Some(partitionExprs), None) =>
                   RepartitionByExpression(
                     partitionExprs.children.map(nodeToExpr),
-                    withDistinct))
-              case (None, None, None, Some(clusterExprs)) =>
-                Sort(
-                  clusterExprs.children
-                    .map(nodeToExpr)
-                    .map(SortOrder(_, Ascending)),
-                  global = false,
-                  RepartitionByExpression(
-                    clusterExprs.children.map(nodeToExpr),
                     withDistinct)
-                )
-              case (None, None, None, None) => withDistinct
-              case _ =>
-                sys.error("Unsupported set of ordering / distribution clauses.")
+                case (
+                      None,
+                      Some(perPartitionOrdering),
+                      Some(partitionExprs),
+                      None) =>
+                  Sort(
+                    perPartitionOrdering.children.map(nodeToSortOrder),
+                    global = false,
+                    RepartitionByExpression(
+                      partitionExprs.children.map(nodeToExpr),
+                      withDistinct))
+                case (None, None, None, Some(clusterExprs)) =>
+                  Sort(
+                    clusterExprs.children
+                      .map(nodeToExpr)
+                      .map(SortOrder(_, Ascending)),
+                    global = false,
+                    RepartitionByExpression(
+                      clusterExprs.children.map(nodeToExpr),
+                      withDistinct)
+                  )
+                case (None, None, None, None) => withDistinct
+                case _ =>
+                  sys.error(
+                    "Unsupported set of ordering / distribution clauses.")
+              }
+
+            val withLimit =
+              limitClause
+                .map(l => nodeToExpr(l.children.head))
+                .map(Limit(_, withSort))
+                .getOrElse(withSort)
+
+            // Collect all window specifications defined in the WINDOW clause.
+            val windowDefinitions = windowClause.map(_.children.collect {
+              case Token(
+                    "TOK_WINDOWDEF",
+                    Token(windowName, Nil) :: Token(
+                      "TOK_WINDOWSPEC",
+                      spec) :: Nil) =>
+                windowName -> nodesToWindowSpecification(spec)
+            }.toMap)
+            // Handle cases like
+            // window w1 as (partition by p_mfgr order by p_name
+            //               range between 2 preceding and 2 following),
+            //        w2 as w1
+            val resolvedCrossReference = windowDefinitions.map {
+              windowDefMap =>
+                windowDefMap.map {
+                  case (windowName, WindowSpecReference(other)) =>
+                    (
+                      windowName,
+                      windowDefMap(other).asInstanceOf[WindowSpecDefinition])
+                  case o => o.asInstanceOf[(String, WindowSpecDefinition)]
+                }
             }
 
-          val withLimit =
-            limitClause
-              .map(l => nodeToExpr(l.children.head))
-              .map(Limit(_, withSort))
-              .getOrElse(withSort)
+            val withWindowDefinitions =
+              resolvedCrossReference
+                .map(WithWindowDefinition(_, withLimit))
+                .getOrElse(withLimit)
 
-          // Collect all window specifications defined in the WINDOW clause.
-          val windowDefinitions = windowClause.map(_.children.collect {
-            case Token(
-                  "TOK_WINDOWDEF",
-                  Token(windowName, Nil) :: Token(
-                    "TOK_WINDOWSPEC",
-                    spec) :: Nil) =>
-              windowName -> nodesToWindowSpecification(spec)
-          }.toMap)
-          // Handle cases like
-          // window w1 as (partition by p_mfgr order by p_name
-          //               range between 2 preceding and 2 following),
-          //        w2 as w1
-          val resolvedCrossReference = windowDefinitions.map {
-            windowDefMap =>
-              windowDefMap.map {
-                case (windowName, WindowSpecReference(other)) =>
-                  (
-                    windowName,
-                    windowDefMap(other).asInstanceOf[WindowSpecDefinition])
-                case o => o.asInstanceOf[(String, WindowSpecDefinition)]
-              }
-          }
+            // TOK_INSERT_INTO means to add files to the table.
+            // TOK_DESTINATION means to overwrite the table.
+            val resultDestination =
+              (intoClause orElse destClause).getOrElse(
+                sys.error("No destination found."))
+            val overwrite = intoClause.isEmpty
+            nodeToDest(resultDestination, withWindowDefinitions, overwrite)
+        }
 
-          val withWindowDefinitions =
-            resolvedCrossReference
-              .map(WithWindowDefinition(_, withLimit))
-              .getOrElse(withLimit)
+        // If there are multiple INSERTS just UNION them together into one query.
+        val query = if (queries.length == 1) queries.head else Union(queries)
 
-          // TOK_INSERT_INTO means to add files to the table.
-          // TOK_DESTINATION means to overwrite the table.
-          val resultDestination =
-            (intoClause orElse destClause).getOrElse(
-              sys.error("No destination found."))
-          val overwrite = intoClause.isEmpty
-          nodeToDest(resultDestination, withWindowDefinitions, overwrite)
-      }
+        // return With plan if there is CTE
+        cteRelations.map(With(query, _)).getOrElse(query)
 
-      // If there are multiple INSERTS just UNION them together into one query.
-      val query = if (queries.length == 1) queries.head else Union(queries)
+      case Token("TOK_UNIONALL", left :: right :: Nil) =>
+        Union(nodeToPlan(left), nodeToPlan(right))
+      case Token("TOK_UNIONDISTINCT", left :: right :: Nil) =>
+        Distinct(Union(nodeToPlan(left), nodeToPlan(right)))
+      case Token("TOK_EXCEPT", left :: right :: Nil) =>
+        Except(nodeToPlan(left), nodeToPlan(right))
+      case Token("TOK_INTERSECT", left :: right :: Nil) =>
+        Intersect(nodeToPlan(left), nodeToPlan(right))
 
-      // return With plan if there is CTE
-      cteRelations.map(With(query, _)).getOrElse(query)
-
-    case Token("TOK_UNIONALL", left :: right :: Nil) =>
-      Union(nodeToPlan(left), nodeToPlan(right))
-    case Token("TOK_UNIONDISTINCT", left :: right :: Nil) =>
-      Distinct(Union(nodeToPlan(left), nodeToPlan(right)))
-    case Token("TOK_EXCEPT", left :: right :: Nil) =>
-      Except(nodeToPlan(left), nodeToPlan(right))
-    case Token("TOK_INTERSECT", left :: right :: Nil) =>
-      Intersect(nodeToPlan(left), nodeToPlan(right))
-
-    case _ =>
-      noParseRule("Plan", node)
-  }
+      case _ =>
+        noParseRule("Plan", node)
+    }
 
   val allJoinTokens = "(TOK_.*JOIN)".r
   val laterViewToken = "TOK_LATERAL_VIEW(.*)".r
@@ -532,81 +536,83 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
     }
   }
 
-  protected def nodeToSortOrder(node: ASTNode): SortOrder = node match {
-    case Token("TOK_TABSORTCOLNAMEASC", sortExpr :: Nil) =>
-      SortOrder(nodeToExpr(sortExpr), Ascending)
-    case Token("TOK_TABSORTCOLNAMEDESC", sortExpr :: Nil) =>
-      SortOrder(nodeToExpr(sortExpr), Descending)
-    case _ =>
-      noParseRule("SortOrder", node)
-  }
+  protected def nodeToSortOrder(node: ASTNode): SortOrder =
+    node match {
+      case Token("TOK_TABSORTCOLNAMEASC", sortExpr :: Nil) =>
+        SortOrder(nodeToExpr(sortExpr), Ascending)
+      case Token("TOK_TABSORTCOLNAMEDESC", sortExpr :: Nil) =>
+        SortOrder(nodeToExpr(sortExpr), Descending)
+      case _ =>
+        noParseRule("SortOrder", node)
+    }
 
   val destinationToken = "TOK_DESTINATION|TOK_INSERT_INTO".r
   protected def nodeToDest(
       node: ASTNode,
       query: LogicalPlan,
-      overwrite: Boolean): LogicalPlan = node match {
-    case Token(
-          destinationToken(),
-          Token("TOK_DIR", Token("TOK_TMP_FILE", Nil) :: Nil) :: Nil) =>
-      query
+      overwrite: Boolean): LogicalPlan =
+    node match {
+      case Token(
+            destinationToken(),
+            Token("TOK_DIR", Token("TOK_TMP_FILE", Nil) :: Nil) :: Nil) =>
+        query
 
-    case Token(destinationToken(), Token("TOK_TAB", tableArgs) :: Nil) =>
-      val Some(tableNameParts) :: partitionClause :: Nil =
-        getClauses(Seq("TOK_TABNAME", "TOK_PARTSPEC"), tableArgs)
+      case Token(destinationToken(), Token("TOK_TAB", tableArgs) :: Nil) =>
+        val Some(tableNameParts) :: partitionClause :: Nil =
+          getClauses(Seq("TOK_TABNAME", "TOK_PARTSPEC"), tableArgs)
 
-      val tableIdent = extractTableIdent(tableNameParts)
+        val tableIdent = extractTableIdent(tableNameParts)
 
-      val partitionKeys = partitionClause
-        .map(_.children.map {
-          // Parse partitions. We also make keys case insensitive.
-          case Token(
-                "TOK_PARTVAL",
-                Token(key, Nil) :: Token(value, Nil) :: Nil) =>
-            cleanIdentifier(key.toLowerCase) -> Some(unquoteString(value))
-          case Token("TOK_PARTVAL", Token(key, Nil) :: Nil) =>
-            cleanIdentifier(key.toLowerCase) -> None
-        }.toMap)
-        .getOrElse(Map.empty)
+        val partitionKeys = partitionClause
+          .map(_.children.map {
+            // Parse partitions. We also make keys case insensitive.
+            case Token(
+                  "TOK_PARTVAL",
+                  Token(key, Nil) :: Token(value, Nil) :: Nil) =>
+              cleanIdentifier(key.toLowerCase) -> Some(unquoteString(value))
+            case Token("TOK_PARTVAL", Token(key, Nil) :: Nil) =>
+              cleanIdentifier(key.toLowerCase) -> None
+          }.toMap)
+          .getOrElse(Map.empty)
 
-      InsertIntoTable(
-        UnresolvedRelation(tableIdent, None),
-        partitionKeys,
-        query,
-        overwrite,
-        ifNotExists = false)
+        InsertIntoTable(
+          UnresolvedRelation(tableIdent, None),
+          partitionKeys,
+          query,
+          overwrite,
+          ifNotExists = false)
 
-    case Token(
-          destinationToken(),
-          Token("TOK_TAB", tableArgs) ::
-          Token("TOK_IFNOTEXISTS", ifNotExists) :: Nil) =>
-      val Some(tableNameParts) :: partitionClause :: Nil =
-        getClauses(Seq("TOK_TABNAME", "TOK_PARTSPEC"), tableArgs)
+      case Token(
+            destinationToken(),
+            Token("TOK_TAB", tableArgs) ::
+            Token("TOK_IFNOTEXISTS", ifNotExists) :: Nil) =>
+        val Some(tableNameParts) :: partitionClause :: Nil =
+          getClauses(Seq("TOK_TABNAME", "TOK_PARTSPEC"), tableArgs)
 
-      val tableIdent = extractTableIdent(tableNameParts)
+        val tableIdent = extractTableIdent(tableNameParts)
 
-      val partitionKeys = partitionClause
-        .map(_.children.map {
-          // Parse partitions. We also make keys case insensitive.
-          case Token(
-                "TOK_PARTVAL",
-                Token(key, Nil) :: Token(value, Nil) :: Nil) =>
-            cleanIdentifier(key.toLowerCase) -> Some(unquoteString(value))
-          case Token("TOK_PARTVAL", Token(key, Nil) :: Nil) =>
-            cleanIdentifier(key.toLowerCase) -> None
-        }.toMap)
-        .getOrElse(Map.empty)
+        val partitionKeys = partitionClause
+          .map(_.children.map {
+            // Parse partitions. We also make keys case insensitive.
+            case Token(
+                  "TOK_PARTVAL",
+                  Token(key, Nil) :: Token(value, Nil) :: Nil) =>
+              cleanIdentifier(key.toLowerCase) -> Some(unquoteString(value))
+            case Token("TOK_PARTVAL", Token(key, Nil) :: Nil) =>
+              cleanIdentifier(key.toLowerCase) -> None
+          }.toMap)
+          .getOrElse(Map.empty)
 
-      InsertIntoTable(
-        UnresolvedRelation(tableIdent, None),
-        partitionKeys,
-        query,
-        overwrite,
-        ifNotExists = true)
+        InsertIntoTable(
+          UnresolvedRelation(tableIdent, None),
+          partitionKeys,
+          query,
+          overwrite,
+          ifNotExists = true)
 
-    case _ =>
-      noParseRule("Destination", node)
-  }
+      case _ =>
+        noParseRule("Destination", node)
+    }
 
   protected def selExprNodeToExpr(node: ASTNode): Option[Expression] =
     node match {
@@ -668,268 +674,278 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
           balancedTree(expr.slice(l / 2, l), f))
     }
 
-  protected def nodeToExpr(node: ASTNode): Expression = node match {
-    /* Attribute References */
-    case Token("TOK_TABLE_OR_COL", Token(name, Nil) :: Nil) =>
-      UnresolvedAttribute.quoted(cleanIdentifier(name))
-    case Token(".", qualifier :: Token(attr, Nil) :: Nil) =>
-      nodeToExpr(qualifier) match {
-        case UnresolvedAttribute(nameParts) =>
-          UnresolvedAttribute(nameParts :+ cleanIdentifier(attr))
-        case other =>
-          UnresolvedExtractValue(other, Literal(cleanIdentifier(attr)))
-      }
-    case Token(
-          "TOK_SUBQUERY_EXPR",
-          Token("TOK_SUBQUERY_OP", Nil) :: subquery :: Nil) =>
-      ScalarSubquery(nodeToPlan(subquery))
+  protected def nodeToExpr(node: ASTNode): Expression =
+    node match {
+      /* Attribute References */
+      case Token("TOK_TABLE_OR_COL", Token(name, Nil) :: Nil) =>
+        UnresolvedAttribute.quoted(cleanIdentifier(name))
+      case Token(".", qualifier :: Token(attr, Nil) :: Nil) =>
+        nodeToExpr(qualifier) match {
+          case UnresolvedAttribute(nameParts) =>
+            UnresolvedAttribute(nameParts :+ cleanIdentifier(attr))
+          case other =>
+            UnresolvedExtractValue(other, Literal(cleanIdentifier(attr)))
+        }
+      case Token(
+            "TOK_SUBQUERY_EXPR",
+            Token("TOK_SUBQUERY_OP", Nil) :: subquery :: Nil) =>
+        ScalarSubquery(nodeToPlan(subquery))
 
-    /* Stars (*) */
-    case Token("TOK_ALLCOLREF", Nil) => UnresolvedStar(None)
-    // The format of dbName.tableName.* cannot be parsed by HiveParser. TOK_TABNAME will only
-    // has a single child which is tableName.
-    case Token("TOK_ALLCOLREF", Token("TOK_TABNAME", target) :: Nil)
-        if target.nonEmpty =>
-      UnresolvedStar(Some(target.map(x => cleanIdentifier(x.text))))
+      /* Stars (*) */
+      case Token("TOK_ALLCOLREF", Nil) => UnresolvedStar(None)
+      // The format of dbName.tableName.* cannot be parsed by HiveParser. TOK_TABNAME will only
+      // has a single child which is tableName.
+      case Token("TOK_ALLCOLREF", Token("TOK_TABNAME", target) :: Nil)
+          if target.nonEmpty =>
+        UnresolvedStar(Some(target.map(x => cleanIdentifier(x.text))))
 
-    /* Aggregate Functions */
-    case Token("TOK_FUNCTIONDI", Token(COUNT(), Nil) :: args) =>
-      Count(args.map(nodeToExpr)).toAggregateExpression(isDistinct = true)
-    case Token("TOK_FUNCTIONSTAR", Token(COUNT(), Nil) :: Nil) =>
-      Count(Literal(1)).toAggregateExpression()
+      /* Aggregate Functions */
+      case Token("TOK_FUNCTIONDI", Token(COUNT(), Nil) :: args) =>
+        Count(args.map(nodeToExpr)).toAggregateExpression(isDistinct = true)
+      case Token("TOK_FUNCTIONSTAR", Token(COUNT(), Nil) :: Nil) =>
+        Count(Literal(1)).toAggregateExpression()
 
-    /* Casts */
-    case Token("TOK_FUNCTION", Token("TOK_STRING", Nil) :: arg :: Nil) =>
-      Cast(nodeToExpr(arg), StringType)
-    case Token("TOK_FUNCTION", Token("TOK_VARCHAR", _) :: arg :: Nil) =>
-      Cast(nodeToExpr(arg), StringType)
-    case Token("TOK_FUNCTION", Token("TOK_CHAR", _) :: arg :: Nil) =>
-      Cast(nodeToExpr(arg), StringType)
-    case Token("TOK_FUNCTION", Token("TOK_INT", Nil) :: arg :: Nil) =>
-      Cast(nodeToExpr(arg), IntegerType)
-    case Token("TOK_FUNCTION", Token("TOK_BIGINT", Nil) :: arg :: Nil) =>
-      Cast(nodeToExpr(arg), LongType)
-    case Token("TOK_FUNCTION", Token("TOK_FLOAT", Nil) :: arg :: Nil) =>
-      Cast(nodeToExpr(arg), FloatType)
-    case Token("TOK_FUNCTION", Token("TOK_DOUBLE", Nil) :: arg :: Nil) =>
-      Cast(nodeToExpr(arg), DoubleType)
-    case Token("TOK_FUNCTION", Token("TOK_SMALLINT", Nil) :: arg :: Nil) =>
-      Cast(nodeToExpr(arg), ShortType)
-    case Token("TOK_FUNCTION", Token("TOK_TINYINT", Nil) :: arg :: Nil) =>
-      Cast(nodeToExpr(arg), ByteType)
-    case Token("TOK_FUNCTION", Token("TOK_BINARY", Nil) :: arg :: Nil) =>
-      Cast(nodeToExpr(arg), BinaryType)
-    case Token("TOK_FUNCTION", Token("TOK_BOOLEAN", Nil) :: arg :: Nil) =>
-      Cast(nodeToExpr(arg), BooleanType)
-    case Token(
-          "TOK_FUNCTION",
-          Token("TOK_DECIMAL", precision :: scale :: nil) :: arg :: Nil) =>
-      Cast(nodeToExpr(arg), DecimalType(precision.text.toInt, scale.text.toInt))
-    case Token(
-          "TOK_FUNCTION",
-          Token("TOK_DECIMAL", precision :: Nil) :: arg :: Nil) =>
-      Cast(nodeToExpr(arg), DecimalType(precision.text.toInt, 0))
-    case Token("TOK_FUNCTION", Token("TOK_DECIMAL", Nil) :: arg :: Nil) =>
-      Cast(nodeToExpr(arg), DecimalType.USER_DEFAULT)
-    case Token("TOK_FUNCTION", Token("TOK_TIMESTAMP", Nil) :: arg :: Nil) =>
-      Cast(nodeToExpr(arg), TimestampType)
-    case Token("TOK_FUNCTION", Token("TOK_DATE", Nil) :: arg :: Nil) =>
-      Cast(nodeToExpr(arg), DateType)
+      /* Casts */
+      case Token("TOK_FUNCTION", Token("TOK_STRING", Nil) :: arg :: Nil) =>
+        Cast(nodeToExpr(arg), StringType)
+      case Token("TOK_FUNCTION", Token("TOK_VARCHAR", _) :: arg :: Nil) =>
+        Cast(nodeToExpr(arg), StringType)
+      case Token("TOK_FUNCTION", Token("TOK_CHAR", _) :: arg :: Nil) =>
+        Cast(nodeToExpr(arg), StringType)
+      case Token("TOK_FUNCTION", Token("TOK_INT", Nil) :: arg :: Nil) =>
+        Cast(nodeToExpr(arg), IntegerType)
+      case Token("TOK_FUNCTION", Token("TOK_BIGINT", Nil) :: arg :: Nil) =>
+        Cast(nodeToExpr(arg), LongType)
+      case Token("TOK_FUNCTION", Token("TOK_FLOAT", Nil) :: arg :: Nil) =>
+        Cast(nodeToExpr(arg), FloatType)
+      case Token("TOK_FUNCTION", Token("TOK_DOUBLE", Nil) :: arg :: Nil) =>
+        Cast(nodeToExpr(arg), DoubleType)
+      case Token("TOK_FUNCTION", Token("TOK_SMALLINT", Nil) :: arg :: Nil) =>
+        Cast(nodeToExpr(arg), ShortType)
+      case Token("TOK_FUNCTION", Token("TOK_TINYINT", Nil) :: arg :: Nil) =>
+        Cast(nodeToExpr(arg), ByteType)
+      case Token("TOK_FUNCTION", Token("TOK_BINARY", Nil) :: arg :: Nil) =>
+        Cast(nodeToExpr(arg), BinaryType)
+      case Token("TOK_FUNCTION", Token("TOK_BOOLEAN", Nil) :: arg :: Nil) =>
+        Cast(nodeToExpr(arg), BooleanType)
+      case Token(
+            "TOK_FUNCTION",
+            Token("TOK_DECIMAL", precision :: scale :: nil) :: arg :: Nil) =>
+        Cast(
+          nodeToExpr(arg),
+          DecimalType(precision.text.toInt, scale.text.toInt))
+      case Token(
+            "TOK_FUNCTION",
+            Token("TOK_DECIMAL", precision :: Nil) :: arg :: Nil) =>
+        Cast(nodeToExpr(arg), DecimalType(precision.text.toInt, 0))
+      case Token("TOK_FUNCTION", Token("TOK_DECIMAL", Nil) :: arg :: Nil) =>
+        Cast(nodeToExpr(arg), DecimalType.USER_DEFAULT)
+      case Token("TOK_FUNCTION", Token("TOK_TIMESTAMP", Nil) :: arg :: Nil) =>
+        Cast(nodeToExpr(arg), TimestampType)
+      case Token("TOK_FUNCTION", Token("TOK_DATE", Nil) :: arg :: Nil) =>
+        Cast(nodeToExpr(arg), DateType)
 
-    /* Arithmetic */
-    case Token("+", child :: Nil) => nodeToExpr(child)
-    case Token("-", child :: Nil) => UnaryMinus(nodeToExpr(child))
-    case Token("~", child :: Nil) => BitwiseNot(nodeToExpr(child))
-    case Token("+", left :: right :: Nil) =>
-      Add(nodeToExpr(left), nodeToExpr(right))
-    case Token("-", left :: right :: Nil) =>
-      Subtract(nodeToExpr(left), nodeToExpr(right))
-    case Token("*", left :: right :: Nil) =>
-      Multiply(nodeToExpr(left), nodeToExpr(right))
-    case Token("/", left :: right :: Nil) =>
-      Divide(nodeToExpr(left), nodeToExpr(right))
-    case Token(DIV(), left :: right :: Nil) =>
-      Cast(Divide(nodeToExpr(left), nodeToExpr(right)), LongType)
-    case Token("%", left :: right :: Nil) =>
-      Remainder(nodeToExpr(left), nodeToExpr(right))
-    case Token("&", left :: right :: Nil) =>
-      BitwiseAnd(nodeToExpr(left), nodeToExpr(right))
-    case Token("|", left :: right :: Nil) =>
-      BitwiseOr(nodeToExpr(left), nodeToExpr(right))
-    case Token("^", left :: right :: Nil) =>
-      BitwiseXor(nodeToExpr(left), nodeToExpr(right))
+      /* Arithmetic */
+      case Token("+", child :: Nil) => nodeToExpr(child)
+      case Token("-", child :: Nil) => UnaryMinus(nodeToExpr(child))
+      case Token("~", child :: Nil) => BitwiseNot(nodeToExpr(child))
+      case Token("+", left :: right :: Nil) =>
+        Add(nodeToExpr(left), nodeToExpr(right))
+      case Token("-", left :: right :: Nil) =>
+        Subtract(nodeToExpr(left), nodeToExpr(right))
+      case Token("*", left :: right :: Nil) =>
+        Multiply(nodeToExpr(left), nodeToExpr(right))
+      case Token("/", left :: right :: Nil) =>
+        Divide(nodeToExpr(left), nodeToExpr(right))
+      case Token(DIV(), left :: right :: Nil) =>
+        Cast(Divide(nodeToExpr(left), nodeToExpr(right)), LongType)
+      case Token("%", left :: right :: Nil) =>
+        Remainder(nodeToExpr(left), nodeToExpr(right))
+      case Token("&", left :: right :: Nil) =>
+        BitwiseAnd(nodeToExpr(left), nodeToExpr(right))
+      case Token("|", left :: right :: Nil) =>
+        BitwiseOr(nodeToExpr(left), nodeToExpr(right))
+      case Token("^", left :: right :: Nil) =>
+        BitwiseXor(nodeToExpr(left), nodeToExpr(right))
 
-    /* Comparisons */
-    case Token("=", left :: right :: Nil) =>
-      EqualTo(nodeToExpr(left), nodeToExpr(right))
-    case Token("==", left :: right :: Nil) =>
-      EqualTo(nodeToExpr(left), nodeToExpr(right))
-    case Token("<=>", left :: right :: Nil) =>
-      EqualNullSafe(nodeToExpr(left), nodeToExpr(right))
-    case Token("!=", left :: right :: Nil) =>
-      Not(EqualTo(nodeToExpr(left), nodeToExpr(right)))
-    case Token("<>", left :: right :: Nil) =>
-      Not(EqualTo(nodeToExpr(left), nodeToExpr(right)))
-    case Token(">", left :: right :: Nil) =>
-      GreaterThan(nodeToExpr(left), nodeToExpr(right))
-    case Token(">=", left :: right :: Nil) =>
-      GreaterThanOrEqual(nodeToExpr(left), nodeToExpr(right))
-    case Token("<", left :: right :: Nil) =>
-      LessThan(nodeToExpr(left), nodeToExpr(right))
-    case Token("<=", left :: right :: Nil) =>
-      LessThanOrEqual(nodeToExpr(left), nodeToExpr(right))
-    case Token(LIKE(), left :: right :: Nil) =>
-      Like(nodeToExpr(left), nodeToExpr(right))
-    case Token(RLIKE(), left :: right :: Nil) =>
-      RLike(nodeToExpr(left), nodeToExpr(right))
-    case Token(REGEXP(), left :: right :: Nil) =>
-      RLike(nodeToExpr(left), nodeToExpr(right))
-    case Token("TOK_FUNCTION", Token("TOK_ISNOTNULL", Nil) :: child :: Nil) =>
-      IsNotNull(nodeToExpr(child))
-    case Token("TOK_FUNCTION", Token("TOK_ISNULL", Nil) :: child :: Nil) =>
-      IsNull(nodeToExpr(child))
-    case Token("TOK_FUNCTION", Token(IN(), Nil) :: value :: list) =>
-      In(nodeToExpr(value), list.map(nodeToExpr))
-    case Token(
-          "TOK_FUNCTION",
-          Token(BETWEEN(), Nil) ::
-          kw ::
-          target ::
-          minValue ::
-          maxValue :: Nil) =>
-      val targetExpression = nodeToExpr(target)
-      val betweenExpr =
-        And(
-          GreaterThanOrEqual(targetExpression, nodeToExpr(minValue)),
-          LessThanOrEqual(targetExpression, nodeToExpr(maxValue)))
-      kw match {
-        case Token("KW_FALSE", Nil) => betweenExpr
-        case Token("KW_TRUE", Nil)  => Not(betweenExpr)
-      }
+      /* Comparisons */
+      case Token("=", left :: right :: Nil) =>
+        EqualTo(nodeToExpr(left), nodeToExpr(right))
+      case Token("==", left :: right :: Nil) =>
+        EqualTo(nodeToExpr(left), nodeToExpr(right))
+      case Token("<=>", left :: right :: Nil) =>
+        EqualNullSafe(nodeToExpr(left), nodeToExpr(right))
+      case Token("!=", left :: right :: Nil) =>
+        Not(EqualTo(nodeToExpr(left), nodeToExpr(right)))
+      case Token("<>", left :: right :: Nil) =>
+        Not(EqualTo(nodeToExpr(left), nodeToExpr(right)))
+      case Token(">", left :: right :: Nil) =>
+        GreaterThan(nodeToExpr(left), nodeToExpr(right))
+      case Token(">=", left :: right :: Nil) =>
+        GreaterThanOrEqual(nodeToExpr(left), nodeToExpr(right))
+      case Token("<", left :: right :: Nil) =>
+        LessThan(nodeToExpr(left), nodeToExpr(right))
+      case Token("<=", left :: right :: Nil) =>
+        LessThanOrEqual(nodeToExpr(left), nodeToExpr(right))
+      case Token(LIKE(), left :: right :: Nil) =>
+        Like(nodeToExpr(left), nodeToExpr(right))
+      case Token(RLIKE(), left :: right :: Nil) =>
+        RLike(nodeToExpr(left), nodeToExpr(right))
+      case Token(REGEXP(), left :: right :: Nil) =>
+        RLike(nodeToExpr(left), nodeToExpr(right))
+      case Token("TOK_FUNCTION", Token("TOK_ISNOTNULL", Nil) :: child :: Nil) =>
+        IsNotNull(nodeToExpr(child))
+      case Token("TOK_FUNCTION", Token("TOK_ISNULL", Nil) :: child :: Nil) =>
+        IsNull(nodeToExpr(child))
+      case Token("TOK_FUNCTION", Token(IN(), Nil) :: value :: list) =>
+        In(nodeToExpr(value), list.map(nodeToExpr))
+      case Token(
+            "TOK_FUNCTION",
+            Token(BETWEEN(), Nil) ::
+            kw ::
+            target ::
+            minValue ::
+            maxValue :: Nil) =>
+        val targetExpression = nodeToExpr(target)
+        val betweenExpr =
+          And(
+            GreaterThanOrEqual(targetExpression, nodeToExpr(minValue)),
+            LessThanOrEqual(targetExpression, nodeToExpr(maxValue)))
+        kw match {
+          case Token("KW_FALSE", Nil) => betweenExpr
+          case Token("KW_TRUE", Nil)  => Not(betweenExpr)
+        }
 
-    /* Boolean Logic */
-    case Token(AND(), left :: right :: Nil) =>
-      balancedTree(flattenLeftDeepTree(node, AND).map(nodeToExpr), And)
-    case Token(OR(), left :: right :: Nil) =>
-      balancedTree(flattenLeftDeepTree(node, OR).map(nodeToExpr), Or)
-    case Token(NOT(), child :: Nil) => Not(nodeToExpr(child))
-    case Token("!", child :: Nil)   => Not(nodeToExpr(child))
+      /* Boolean Logic */
+      case Token(AND(), left :: right :: Nil) =>
+        balancedTree(flattenLeftDeepTree(node, AND).map(nodeToExpr), And)
+      case Token(OR(), left :: right :: Nil) =>
+        balancedTree(flattenLeftDeepTree(node, OR).map(nodeToExpr), Or)
+      case Token(NOT(), child :: Nil) => Not(nodeToExpr(child))
+      case Token("!", child :: Nil)   => Not(nodeToExpr(child))
 
-    /* Case statements */
-    case Token("TOK_FUNCTION", Token(WHEN(), Nil) :: branches) =>
-      CaseWhen.createFromParser(branches.map(nodeToExpr))
-    case Token("TOK_FUNCTION", Token(CASE(), Nil) :: branches) =>
-      val keyExpr = nodeToExpr(branches.head)
-      CaseKeyWhen(keyExpr, branches.drop(1).map(nodeToExpr))
+      /* Case statements */
+      case Token("TOK_FUNCTION", Token(WHEN(), Nil) :: branches) =>
+        CaseWhen.createFromParser(branches.map(nodeToExpr))
+      case Token("TOK_FUNCTION", Token(CASE(), Nil) :: branches) =>
+        val keyExpr = nodeToExpr(branches.head)
+        CaseKeyWhen(keyExpr, branches.drop(1).map(nodeToExpr))
 
-    /* Complex datatype manipulation */
-    case Token("[", child :: ordinal :: Nil) =>
-      UnresolvedExtractValue(nodeToExpr(child), nodeToExpr(ordinal))
+      /* Complex datatype manipulation */
+      case Token("[", child :: ordinal :: Nil) =>
+        UnresolvedExtractValue(nodeToExpr(child), nodeToExpr(ordinal))
 
-    /* Window Functions */
-    case Token(text, args :+ Token("TOK_WINDOWSPEC", spec)) =>
-      val function = nodeToExpr(node.copy(children = node.children.init))
-      nodesToWindowSpecification(spec) match {
-        case reference: WindowSpecReference =>
-          UnresolvedWindowExpression(function, reference)
-        case definition: WindowSpecDefinition =>
-          WindowExpression(function, definition)
-      }
+      /* Window Functions */
+      case Token(text, args :+ Token("TOK_WINDOWSPEC", spec)) =>
+        val function = nodeToExpr(node.copy(children = node.children.init))
+        nodesToWindowSpecification(spec) match {
+          case reference: WindowSpecReference =>
+            UnresolvedWindowExpression(function, reference)
+          case definition: WindowSpecDefinition =>
+            WindowExpression(function, definition)
+        }
 
-    /* UDFs - Must be last otherwise will preempt built in functions */
-    case Token("TOK_FUNCTION", Token(name, Nil) :: args) =>
-      UnresolvedFunction(name, args.map(nodeToExpr), isDistinct = false)
-    // Aggregate function with DISTINCT keyword.
-    case Token("TOK_FUNCTIONDI", Token(name, Nil) :: args) =>
-      UnresolvedFunction(name, args.map(nodeToExpr), isDistinct = true)
-    case Token("TOK_FUNCTIONSTAR", Token(name, Nil) :: args) =>
-      UnresolvedFunction(name, UnresolvedStar(None) :: Nil, isDistinct = false)
+      /* UDFs - Must be last otherwise will preempt built in functions */
+      case Token("TOK_FUNCTION", Token(name, Nil) :: args) =>
+        UnresolvedFunction(name, args.map(nodeToExpr), isDistinct = false)
+      // Aggregate function with DISTINCT keyword.
+      case Token("TOK_FUNCTIONDI", Token(name, Nil) :: args) =>
+        UnresolvedFunction(name, args.map(nodeToExpr), isDistinct = true)
+      case Token("TOK_FUNCTIONSTAR", Token(name, Nil) :: args) =>
+        UnresolvedFunction(
+          name,
+          UnresolvedStar(None) :: Nil,
+          isDistinct = false)
 
-    /* Literals */
-    case Token("TOK_NULL", Nil) => Literal.create(null, NullType)
-    case Token(TRUE(), Nil)     => Literal.create(true, BooleanType)
-    case Token(FALSE(), Nil)    => Literal.create(false, BooleanType)
-    case Token("TOK_STRINGLITERALSEQUENCE", strings) =>
-      Literal(strings.map(s => ParseUtils.unescapeSQLString(s.text)).mkString)
+      /* Literals */
+      case Token("TOK_NULL", Nil) => Literal.create(null, NullType)
+      case Token(TRUE(), Nil)     => Literal.create(true, BooleanType)
+      case Token(FALSE(), Nil)    => Literal.create(false, BooleanType)
+      case Token("TOK_STRINGLITERALSEQUENCE", strings) =>
+        Literal(strings.map(s => ParseUtils.unescapeSQLString(s.text)).mkString)
 
-    case ast if ast.tokenType == SparkSqlParser.TinyintLiteral =>
-      Literal
-        .create(ast.text.substring(0, ast.text.length() - 1).toByte, ByteType)
+      case ast if ast.tokenType == SparkSqlParser.TinyintLiteral =>
+        Literal.create(
+          ast.text.substring(0, ast.text.length() - 1).toByte,
+          ByteType)
 
-    case ast if ast.tokenType == SparkSqlParser.SmallintLiteral =>
-      Literal
-        .create(ast.text.substring(0, ast.text.length() - 1).toShort, ShortType)
+      case ast if ast.tokenType == SparkSqlParser.SmallintLiteral =>
+        Literal.create(
+          ast.text.substring(0, ast.text.length() - 1).toShort,
+          ShortType)
 
-    case ast if ast.tokenType == SparkSqlParser.BigintLiteral =>
-      Literal
-        .create(ast.text.substring(0, ast.text.length() - 1).toLong, LongType)
+      case ast if ast.tokenType == SparkSqlParser.BigintLiteral =>
+        Literal.create(
+          ast.text.substring(0, ast.text.length() - 1).toLong,
+          LongType)
 
-    case ast if ast.tokenType == SparkSqlParser.DoubleLiteral =>
-      Literal(ast.text.toDouble)
+      case ast if ast.tokenType == SparkSqlParser.DoubleLiteral =>
+        Literal(ast.text.toDouble)
 
-    case ast if ast.tokenType == SparkSqlParser.Number =>
-      val text = ast.text
-      text match {
-        case INTEGRAL() =>
-          BigDecimal(text) match {
-            case v if v.isValidInt =>
-              Literal(v.intValue())
-            case v if v.isValidLong =>
-              Literal(v.longValue())
-            case v => Literal(v.underlying())
-          }
-        case DECIMAL(_*) =>
-          Literal(BigDecimal(text).underlying())
-        case _ =>
-          // Convert a scientifically notated decimal into a double.
-          Literal(text.toDouble)
-      }
-    case ast if ast.tokenType == SparkSqlParser.StringLiteral =>
-      Literal(ParseUtils.unescapeSQLString(ast.text))
+      case ast if ast.tokenType == SparkSqlParser.Number =>
+        val text = ast.text
+        text match {
+          case INTEGRAL() =>
+            BigDecimal(text) match {
+              case v if v.isValidInt =>
+                Literal(v.intValue())
+              case v if v.isValidLong =>
+                Literal(v.longValue())
+              case v => Literal(v.underlying())
+            }
+          case DECIMAL(_*) =>
+            Literal(BigDecimal(text).underlying())
+          case _ =>
+            // Convert a scientifically notated decimal into a double.
+            Literal(text.toDouble)
+        }
+      case ast if ast.tokenType == SparkSqlParser.StringLiteral =>
+        Literal(ParseUtils.unescapeSQLString(ast.text))
 
-    case ast if ast.tokenType == SparkSqlParser.TOK_DATELITERAL =>
-      Literal(Date.valueOf(ast.text.substring(1, ast.text.length - 1)))
+      case ast if ast.tokenType == SparkSqlParser.TOK_DATELITERAL =>
+        Literal(Date.valueOf(ast.text.substring(1, ast.text.length - 1)))
 
-    case ast
-        if ast.tokenType == SparkSqlParser.TOK_INTERVAL_YEAR_MONTH_LITERAL =>
-      Literal(CalendarInterval.fromYearMonthString(ast.children.head.text))
+      case ast
+          if ast.tokenType == SparkSqlParser.TOK_INTERVAL_YEAR_MONTH_LITERAL =>
+        Literal(CalendarInterval.fromYearMonthString(ast.children.head.text))
 
-    case ast if ast.tokenType == SparkSqlParser.TOK_INTERVAL_DAY_TIME_LITERAL =>
-      Literal(CalendarInterval.fromDayTimeString(ast.children.head.text))
+      case ast
+          if ast.tokenType == SparkSqlParser.TOK_INTERVAL_DAY_TIME_LITERAL =>
+        Literal(CalendarInterval.fromDayTimeString(ast.children.head.text))
 
-    case Token("TOK_INTERVAL", elements) =>
-      var interval = new CalendarInterval(0, 0)
-      var updated = false
-      elements.foreach {
-        // The interval node will always contain children for all possible time units. A child node
-        // is only useful when it contains exactly one (numeric) child.
-        case e @ Token(name, Token(value, Nil) :: Nil) =>
-          val unit = name match {
-            case "TOK_INTERVAL_YEAR_LITERAL"        => "year"
-            case "TOK_INTERVAL_MONTH_LITERAL"       => "month"
-            case "TOK_INTERVAL_WEEK_LITERAL"        => "week"
-            case "TOK_INTERVAL_DAY_LITERAL"         => "day"
-            case "TOK_INTERVAL_HOUR_LITERAL"        => "hour"
-            case "TOK_INTERVAL_MINUTE_LITERAL"      => "minute"
-            case "TOK_INTERVAL_SECOND_LITERAL"      => "second"
-            case "TOK_INTERVAL_MILLISECOND_LITERAL" => "millisecond"
-            case "TOK_INTERVAL_MICROSECOND_LITERAL" => "microsecond"
-            case _                                  => noParseRule(s"Interval($name)", e)
-          }
-          interval =
-            interval.add(CalendarInterval.fromSingleUnitString(unit, value))
-          updated = true
-        case _ =>
-      }
-      if (!updated) {
-        throw new AnalysisException(
-          "at least one time unit should be given for interval literal")
-      }
-      Literal(interval)
+      case Token("TOK_INTERVAL", elements) =>
+        var interval = new CalendarInterval(0, 0)
+        var updated = false
+        elements.foreach {
+          // The interval node will always contain children for all possible time units. A child node
+          // is only useful when it contains exactly one (numeric) child.
+          case e @ Token(name, Token(value, Nil) :: Nil) =>
+            val unit = name match {
+              case "TOK_INTERVAL_YEAR_LITERAL"        => "year"
+              case "TOK_INTERVAL_MONTH_LITERAL"       => "month"
+              case "TOK_INTERVAL_WEEK_LITERAL"        => "week"
+              case "TOK_INTERVAL_DAY_LITERAL"         => "day"
+              case "TOK_INTERVAL_HOUR_LITERAL"        => "hour"
+              case "TOK_INTERVAL_MINUTE_LITERAL"      => "minute"
+              case "TOK_INTERVAL_SECOND_LITERAL"      => "second"
+              case "TOK_INTERVAL_MILLISECOND_LITERAL" => "millisecond"
+              case "TOK_INTERVAL_MICROSECOND_LITERAL" => "microsecond"
+              case _                                  => noParseRule(s"Interval($name)", e)
+            }
+            interval =
+              interval.add(CalendarInterval.fromSingleUnitString(unit, value))
+            updated = true
+          case _ =>
+        }
+        if (!updated) {
+          throw new AnalysisException(
+            "at least one time unit should be given for interval literal")
+        }
+        Literal(interval)
 
-    case _ =>
-      noParseRule("Expression", node)
-  }
+      case _ =>
+        noParseRule("Expression", node)
+    }
 
   /* Case insensitive matches for Window Specification */
   val PRECEDING = "(?i)preceding".r
@@ -993,23 +1009,24 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
             UnspecifiedFrame
           } else {
             val frameType = rowFrame.map(_ => RowFrame).getOrElse(RangeFrame)
-            def nodeToBoundary(node: ASTNode): FrameBoundary = node match {
-              case Token(PRECEDING(), Token(count, Nil) :: Nil) =>
-                if (count.toLowerCase() == "unbounded") {
-                  UnboundedPreceding
-                } else {
-                  ValuePreceding(count.toInt)
-                }
-              case Token(FOLLOWING(), Token(count, Nil) :: Nil) =>
-                if (count.toLowerCase() == "unbounded") {
-                  UnboundedFollowing
-                } else {
-                  ValueFollowing(count.toInt)
-                }
-              case Token(CURRENT(), Nil) => CurrentRow
-              case _ =>
-                noParseRule("Window Frame Boundary", node)
-            }
+            def nodeToBoundary(node: ASTNode): FrameBoundary =
+              node match {
+                case Token(PRECEDING(), Token(count, Nil) :: Nil) =>
+                  if (count.toLowerCase() == "unbounded") {
+                    UnboundedPreceding
+                  } else {
+                    ValuePreceding(count.toInt)
+                  }
+                case Token(FOLLOWING(), Token(count, Nil) :: Nil) =>
+                  if (count.toLowerCase() == "unbounded") {
+                    UnboundedFollowing
+                  } else {
+                    ValueFollowing(count.toInt)
+                  }
+                case Token(CURRENT(), Nil) => CurrentRow
+                case _ =>
+                  noParseRule("Window Frame Boundary", node)
+              }
 
             rowFrame
               .orElse(rangeFrame)

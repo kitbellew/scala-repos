@@ -23,33 +23,35 @@ final class TeamApi(
 
   def request(id: String) = $find.byId[Request](id)
 
-  def create(setup: TeamSetup, me: User): Option[Fu[Team]] = me.canTeam option {
-    val s = setup.trim
-    val team = Team.make(
-      name = s.name,
-      location = s.location,
-      description = s.description,
-      open = s.isOpen,
-      createdBy = me)
-    $insert(team) >>
-      MemberRepo.add(team.id, me.id) >>- {
-      (cached.teamIdsCache invalidate me.id)
-      (forum ! MakeTeam(team.id, team.name))
-      (indexer ! InsertTeam(team))
-      (timeline ! Propagate(
-        TeamCreate(me.id, team.id)
-      ).toFollowersOf(me.id))
-    } inject team
-  }
-
-  def update(team: Team, edit: TeamEdit, me: User): Funit = edit.trim |> { e =>
-    team.copy(
-      location = e.location,
-      description = e.description,
-      open = e.isOpen) |> { team =>
-      $update(team) >>- (indexer ! InsertTeam(team))
+  def create(setup: TeamSetup, me: User): Option[Fu[Team]] =
+    me.canTeam option {
+      val s = setup.trim
+      val team = Team.make(
+        name = s.name,
+        location = s.location,
+        description = s.description,
+        open = s.isOpen,
+        createdBy = me)
+      $insert(team) >>
+        MemberRepo.add(team.id, me.id) >>- {
+        (cached.teamIdsCache invalidate me.id)
+        (forum ! MakeTeam(team.id, team.name))
+        (indexer ! InsertTeam(team))
+        (timeline ! Propagate(
+          TeamCreate(me.id, team.id)
+        ).toFollowersOf(me.id))
+      } inject team
     }
-  }
+
+  def update(team: Team, edit: TeamEdit, me: User): Funit =
+    edit.trim |> { e =>
+      team.copy(
+        location = e.location,
+        description = e.description,
+        open = e.isOpen) |> { team =>
+        $update(team) >>- (indexer ! InsertTeam(team))
+      }
+    }
 
   def mine(me: User): Fu[List[Team]] = $find.byIds[Team](cached teamIds me.id)
 

@@ -55,17 +55,19 @@ object Statistics {
   def confInterval[T](x: T, avg: T, sd: T)(implicit n: Numeric[T]): Double =
     1 - cdf(n.abs(x), avg, sd) + cdf(n.times(n.fromInt(-1), n.abs(x)), avg, sd)
 
-  def listAverage[T](x: List[T])(implicit n: Numeric[T]): Double = x match {
-    case Nil      => 0
-    case a :: Nil => n.toDouble(a)
-    case a :: b   => average(NonEmptyList.nel(a, b))
-  }
+  def listAverage[T](x: List[T])(implicit n: Numeric[T]): Double =
+    x match {
+      case Nil      => 0
+      case a :: Nil => n.toDouble(a)
+      case a :: b   => average(NonEmptyList.nel(a, b))
+    }
 
-  def listDeviation[T](x: List[T])(implicit n: Numeric[T]): Double = x match {
-    case Nil      => 0
-    case _ :: Nil => 0
-    case a :: b   => deviation(NonEmptyList.nel(a, b))
-  }
+  def listDeviation[T](x: List[T])(implicit n: Numeric[T]): Double =
+    x match {
+      case Nil      => 0
+      case _ :: Nil => 0
+      case a :: b   => deviation(NonEmptyList.nel(a, b))
+    }
 }
 
 object Erf {

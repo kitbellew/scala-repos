@@ -134,22 +134,23 @@ trait Reporting extends scala.reflect.internal.Reporting {
     /** Has any macro expansion used a fallback during this run? */
     var seenMacroExpansionsFallingBack = false
 
-    def summarizeErrors(): Unit = if (!reporter.hasErrors) {
-      _allConditionalWarnings foreach (_.summarize())
+    def summarizeErrors(): Unit =
+      if (!reporter.hasErrors) {
+        _allConditionalWarnings foreach (_.summarize())
 
-      if (seenMacroExpansionsFallingBack)
-        reporter.warning(
-          NoPosition,
-          "some macros could not be expanded and code fell back to overridden methods;" +
-            "\nrecompiling with generated classfiles on the classpath might help."
-        )
+        if (seenMacroExpansionsFallingBack)
+          reporter.warning(
+            NoPosition,
+            "some macros could not be expanded and code fell back to overridden methods;" +
+              "\nrecompiling with generated classfiles on the classpath might help."
+          )
 
-      // todo: migrationWarnings
+        // todo: migrationWarnings
 
-      if (settings.fatalWarnings && reporter.hasWarnings)
-        reporter.error(
-          NoPosition,
-          "No warnings can be incurred under -Xfatal-warnings.")
-    }
+        if (settings.fatalWarnings && reporter.hasWarnings)
+          reporter.error(
+            NoPosition,
+            "No warnings can be incurred under -Xfatal-warnings.")
+      }
   }
 }

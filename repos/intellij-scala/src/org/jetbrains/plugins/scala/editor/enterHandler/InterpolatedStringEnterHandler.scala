@@ -36,10 +36,11 @@ class InterpolatedStringEnterHandler extends EnterHandlerDelegateAdapter {
       caretOffset.set(caretOffset.get + moveOn)
     }
 
-    def isMLString(element: PsiElement) = element match {
-      case lit: ScLiteral => lit.isMultiLineString
-      case _              => false
-    }
+    def isMLString(element: PsiElement) =
+      element match {
+        case lit: ScLiteral => lit.isMultiLineString
+        case _              => false
+      }
 
     Option(element) foreach (a =>
       if (Set(

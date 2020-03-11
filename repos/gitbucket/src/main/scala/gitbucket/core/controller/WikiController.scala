@@ -314,56 +314,60 @@ trait WikiControllerBase extends ControllerBase {
     } getOrElse NotFound
   })
 
-  private def unique: Constraint = new Constraint() {
-    override def validate(
-        name: String,
-        value: String,
-        params: Map[String, String],
-        messages: Messages): Option[String] =
-      getWikiPageList(params("owner"), params("repository"))
-        .find(_ == value)
-        .map(_ => "Page already exists.")
-  }
+  private def unique: Constraint =
+    new Constraint() {
+      override def validate(
+          name: String,
+          value: String,
+          params: Map[String, String],
+          messages: Messages): Option[String] =
+        getWikiPageList(params("owner"), params("repository"))
+          .find(_ == value)
+          .map(_ => "Page already exists.")
+    }
 
-  private def pagename: Constraint = new Constraint() {
-    override def validate(
-        name: String,
-        value: String,
-        messages: Messages): Option[String] =
-      if (value.exists("\\/:*?\"<>|".contains(_))) {
-        Some(s"${name} contains invalid character.")
-      } else if (notReservedPageName(value) && (value.startsWith("_") || value
-                   .startsWith("-"))) {
-        Some(s"${name} starts with invalid character.")
-      } else {
-        None
-      }
-  }
+  private def pagename: Constraint =
+    new Constraint() {
+      override def validate(
+          name: String,
+          value: String,
+          messages: Messages): Option[String] =
+        if (value.exists("\\/:*?\"<>|".contains(_))) {
+          Some(s"${name} contains invalid character.")
+        } else if (notReservedPageName(value) && (value.startsWith("_") || value
+                     .startsWith("-"))) {
+          Some(s"${name} starts with invalid character.")
+        } else {
+          None
+        }
+    }
 
   private def notReservedPageName(value: String) =
     !(Array[String]("_Sidebar", "_Footer") contains value)
 
-  private def conflictForNew: Constraint = new Constraint() {
-    override def validate(
-        name: String,
-        value: String,
-        messages: Messages): Option[String] = {
-      targetWikiPage.map { _ =>
-        "Someone has created the wiki since you started. Please reload this page and re-apply your changes."
+  private def conflictForNew: Constraint =
+    new Constraint() {
+      override def validate(
+          name: String,
+          value: String,
+          messages: Messages): Option[String] = {
+        targetWikiPage.map { _ =>
+          "Someone has created the wiki since you started. Please reload this page and re-apply your changes."
+        }
       }
     }
-  }
 
-  private def conflictForEdit: Constraint = new Constraint() {
-    override def validate(
-        name: String,
-        value: String,
-        messages: Messages): Option[String] = {
-      targetWikiPage.filter(_.id != params("id")).map { _ =>
-        "Someone has edited the wiki since you started. Please reload this page and re-apply your changes."
+  private def conflictForEdit: Constraint =
+    new Constraint() {
+      override def validate(
+          name: String,
+          value: String,
+          messages: Messages): Option[String] = {
+        targetWikiPage.filter(_.id != params("id")).map { _ =>
+          "Someone has edited the wiki since you started. Please reload this page and re-apply your changes."
+        }
       }
     }
-  }
 
   private def targetWikiPage =
     getWikiPage(params("owner"), params("repository"), params("pageName"))

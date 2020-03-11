@@ -452,10 +452,11 @@ trait ScalatraBase
     * @see #renderPipeline
     */
   protected def renderResponseBody(actionResult: Any): Unit = {
-    @tailrec def loop(ar: Any): Any = ar match {
-      case _: Unit | Unit => runRenderCallbacks(Success(actionResult))
-      case a              => loop(renderPipeline.lift(a).getOrElse(()))
-    }
+    @tailrec def loop(ar: Any): Any =
+      ar match {
+        case _: Unit | Unit => runRenderCallbacks(Success(actionResult))
+        case a              => loop(renderPipeline.lift(a).getOrElse(()))
+      }
     try {
       runCallbacks(Success(actionResult))
       loop(actionResult)
@@ -589,10 +590,11 @@ trait ScalatraBase
     }
   }
 
-  protected def extractStatusCode(e: HaltException): Int = e match {
-    case HaltException(Some(status), _, _, _) => status
-    case _                                    => response.status.code
-  }
+  protected def extractStatusCode(e: HaltException): Int =
+    e match {
+      case HaltException(Some(status), _, _, _) => status
+      case _                                    => response.status.code
+    }
 
   def get(transformers: RouteTransformer*)(action: => Any): Route =
     addRoute(Get, transformers, action)

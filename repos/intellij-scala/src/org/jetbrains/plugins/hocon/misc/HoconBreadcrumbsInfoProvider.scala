@@ -8,15 +8,17 @@ import org.jetbrains.plugins.hocon.psi.HKeyedField
 class HoconBreadcrumbsInfoProvider extends BreadcrumbsInfoProvider {
   def getElementTooltip(e: PsiElement) = null
 
-  def getElementInfo(e: PsiElement) = e match {
-    case kf: HKeyedField => kf.key.map(_.stringValue).getOrElse("")
-    case _               => ""
-  }
+  def getElementInfo(e: PsiElement) =
+    e match {
+      case kf: HKeyedField => kf.key.map(_.stringValue).getOrElse("")
+      case _               => ""
+    }
 
-  def acceptElement(e: PsiElement) = e match {
-    case _: HKeyedField => true
-    case _              => false
-  }
+  def acceptElement(e: PsiElement) =
+    e match {
+      case _: HKeyedField => true
+      case _              => false
+    }
 
   def getLanguages = Array(HoconLanguage)
 }

@@ -49,18 +49,19 @@ class SelectionModelSpec[T]
     new SelectionModel[T](getJavaClassInstance) {}
 
   // How SelectionModelSpec is a abstract class, it is done a basic implementation
-  override protected def getJavaClassInstance = new jfxsc.SelectionModel[T] {
-    def selectLast() {}
-    def selectFirst() {}
-    def selectNext() {}
-    def selectPrevious() {}
-    def isEmpty = { true }
-    def isSelected(index: Int) = { true }
-    def clearSelection() {}
-    def clearSelection(index: Int) {}
-    def select(obj: T) {}
-    def select(index: Int) {}
-    def clearAndSelect(index: Int) {}
-  }
+  override protected def getJavaClassInstance =
+    new jfxsc.SelectionModel[T] {
+      def selectLast() {}
+      def selectFirst() {}
+      def selectNext() {}
+      def selectPrevious() {}
+      def isEmpty = { true }
+      def isSelected(index: Int) = { true }
+      def clearSelection() {}
+      def clearSelection(index: Int) {}
+      def select(obj: T) {}
+      def select(index: Int) {}
+      def clearAndSelect(index: Int) {}
+    }
 
 }

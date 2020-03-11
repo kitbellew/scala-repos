@@ -100,30 +100,33 @@ class MapSemigroupBenchmarks extends MyBenchmark with BenchmarkData {
     def op(x: Int, y: Int): Int = x + y
   }
 
-  def timeAlgebirdMapAdd(reps: Int) = run(reps) {
-    var i = 1
-    var total = 0
-    while (i < numMaps) {
-      total += algebirdAdd(maps(i - 1), maps(i)).size
-      i += 1
+  def timeAlgebirdMapAdd(reps: Int) =
+    run(reps) {
+      var i = 1
+      var total = 0
+      while (i < numMaps) {
+        total += algebirdAdd(maps(i - 1), maps(i)).size
+        i += 1
+      }
     }
-  }
 
-  def timeBulkMapAdd(reps: Int) = run(reps) {
-    var i = 1
-    var total = 0
-    while (i < numMaps) {
-      total += bulkAdd(maps(i - 1), maps(i)).size
-      i += 1
+  def timeBulkMapAdd(reps: Int) =
+    run(reps) {
+      var i = 1
+      var total = 0
+      while (i < numMaps) {
+        total += bulkAdd(maps(i - 1), maps(i)).size
+        i += 1
+      }
     }
-  }
 
-  def timeSpireAdd(reps: Int) = run(reps) {
-    var i = 1
-    var total = 0
-    while (i < numMaps) {
-      total += spireAdd(maps(i - 1), maps(i)).size
-      i += 1
+  def timeSpireAdd(reps: Int) =
+    run(reps) {
+      var i = 1
+      var total = 0
+      while (i < numMaps) {
+        total += spireAdd(maps(i - 1), maps(i)).size
+        i += 1
+      }
     }
-  }
 }

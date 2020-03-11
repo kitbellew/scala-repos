@@ -154,9 +154,10 @@ private[akka] case class ActorMaterializerImpl(
                   tls.hostInfo)
               val impl =
                 actorOf(props, stageName(effectiveAttributes), es.dispatcher)
-              def factory(id: Int) = new ActorPublisher[Any](impl) {
-                override val wakeUpMsg = FanOut.SubstreamSubscribePending(id)
-              }
+              def factory(id: Int) =
+                new ActorPublisher[Any](impl) {
+                  override val wakeUpMsg = FanOut.SubstreamSubscribePending(id)
+                }
               val publishers = Vector.tabulate(2)(factory)
               impl ! FanOut.ExposedPublishers(publishers)
 
@@ -239,17 +240,20 @@ private[akka] case class ActorMaterializerImpl(
             op: StageModule,
             effectiveAttributes: Attributes,
             effectiveSettings: ActorMaterializerSettings)
-            : (Processor[Any, Any], Any) = op match {
-          case DirectProcessor(processorFactory, _) ⇒ processorFactory()
-          case _ ⇒
-            val (opprops, mat) = ActorProcessorFactory
-              .props(ActorMaterializerImpl.this, op, effectiveAttributes)
-            ActorProcessorFactory[Any, Any](
-              actorOf(
-                opprops,
-                stageName(effectiveAttributes),
-                effectiveSettings.dispatcher)) -> mat
-        }
+            : (Processor[Any, Any], Any) =
+          op match {
+            case DirectProcessor(processorFactory, _) ⇒ processorFactory()
+            case _ ⇒
+              val (opprops, mat) = ActorProcessorFactory.props(
+                ActorMaterializerImpl.this,
+                op,
+                effectiveAttributes)
+              ActorProcessorFactory[Any, Any](
+                actorOf(
+                  opprops,
+                  stageName(effectiveAttributes),
+                  effectiveSettings.dispatcher)) -> mat
+          }
       }
 
     session.materialize().asInstanceOf[Mat]

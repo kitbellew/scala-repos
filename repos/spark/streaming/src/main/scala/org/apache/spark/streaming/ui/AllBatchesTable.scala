@@ -136,16 +136,17 @@ private[ui] class ActiveBatchTable(
 
   private val firstFailureReason = getFirstFailureReason(runningBatches)
 
-  override protected def columns: Seq[Node] = super.columns ++ {
-    <th>Output Ops: Succeeded/Total</th>
+  override protected def columns: Seq[Node] =
+    super.columns ++ {
+      <th>Output Ops: Succeeded/Total</th>
       <th>Status</th> ++ {
-      if (firstFailureReason.nonEmpty) {
-        <th>Error</th>
-      } else {
-        Nil
+        if (firstFailureReason.nonEmpty) {
+          <th>Error</th>
+        } else {
+          Nil
+        }
       }
     }
-  }
 
   override protected def renderRows: Seq[Node] = {
     // The "batchTime"s of "waitingBatches" must be greater than "runningBatches"'s, so display
@@ -185,18 +186,19 @@ private[ui] class CompletedBatchTable(
 
   private val firstFailureReason = getFirstFailureReason(batches)
 
-  override protected def columns: Seq[Node] = super.columns ++ {
-    <th>Total Delay {
-      SparkUIUtils.tooltip("Total time taken to handle a batch", "top")
-    }</th>
+  override protected def columns: Seq[Node] =
+    super.columns ++ {
+      <th>Total Delay {
+        SparkUIUtils.tooltip("Total time taken to handle a batch", "top")
+      }</th>
       <th>Output Ops: Succeeded/Total</th> ++ {
-      if (firstFailureReason.nonEmpty) {
-        <th>Error</th>
-      } else {
-        Nil
+        if (firstFailureReason.nonEmpty) {
+          <th>Error</th>
+        } else {
+          Nil
+        }
       }
     }
-  }
 
   override protected def renderRows: Seq[Node] = {
     batches.flatMap(batch => <tr>{completedBatchRow(batch)}</tr>)

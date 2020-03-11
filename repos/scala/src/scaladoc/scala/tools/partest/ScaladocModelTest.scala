@@ -229,27 +229,30 @@ abstract class ScaladocModelTest extends DirectTest {
       def members = underlying.members
     }
 
-    def getTheFirst[T](list: List[T], expl: String): T = list.length match {
-      case 1 => list.head
-      case 0 => sys.error("Error getting " + expl + ": No such element.")
-      case _ =>
-        sys.error(
-          "Error getting " + expl + ": " + list.length + " elements with this name. " +
-            "All elements in list: [" + list
-            .map({
-              case ent: Entity => ent.kind + " " + ent.qualifiedName
-              case other       => other.toString
-            })
-            .mkString(", ") + "]")
-    }
+    def getTheFirst[T](list: List[T], expl: String): T =
+      list.length match {
+        case 1 => list.head
+        case 0 => sys.error("Error getting " + expl + ": No such element.")
+        case _ =>
+          sys.error(
+            "Error getting " + expl + ": " + list.length + " elements with this name. " +
+              "All elements in list: [" + list
+              .map({
+                case ent: Entity => ent.kind + " " + ent.qualifiedName
+                case other       => other.toString
+              })
+              .mkString(", ") + "]")
+      }
 
     def extractCommentText(c: Any) = {
-      def extractText(body: Any): String = body match {
-        case s: String  => s
-        case s: Seq[_]  => s.toList.map(extractText(_)).mkString
-        case p: Product => p.productIterator.toList.map(extractText(_)).mkString
-        case _          => ""
-      }
+      def extractText(body: Any): String =
+        body match {
+          case s: String => s
+          case s: Seq[_] => s.toList.map(extractText(_)).mkString
+          case p: Product =>
+            p.productIterator.toList.map(extractText(_)).mkString
+          case _ => ""
+        }
       c match {
         case c: Comment =>
           extractText(c.body)
@@ -262,12 +265,13 @@ abstract class ScaladocModelTest extends DirectTest {
       countLinksInBody(c.body, p)
 
     def countLinksInBody(body: Body, p: EntityLink => Boolean): Int = {
-      def countLinks(b: Any): Int = b match {
-        case el: EntityLink if p(el) => 1
-        case s: Seq[_]               => s.toList.map(countLinks(_)).sum
-        case p: Product              => p.productIterator.toList.map(countLinks(_)).sum
-        case _                       => 0
-      }
+      def countLinks(b: Any): Int =
+        b match {
+          case el: EntityLink if p(el) => 1
+          case s: Seq[_]               => s.toList.map(countLinks(_)).sum
+          case p: Product              => p.productIterator.toList.map(countLinks(_)).sum
+          case _                       => 0
+        }
       countLinks(body)
     }
 

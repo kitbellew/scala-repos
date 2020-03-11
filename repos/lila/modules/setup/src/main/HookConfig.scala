@@ -39,44 +39,46 @@ case class HookConfig(
       ratingRange.toString.some,
       color.name).some
 
-  def withTimeModeString(tc: Option[String]) = tc match {
-    case Some("realTime")       => copy(timeMode = TimeMode.RealTime)
-    case Some("correspondence") => copy(timeMode = TimeMode.Correspondence)
-    case Some("unlimited")      => copy(timeMode = TimeMode.Unlimited)
-    case _                      => this
-  }
+  def withTimeModeString(tc: Option[String]) =
+    tc match {
+      case Some("realTime")       => copy(timeMode = TimeMode.RealTime)
+      case Some("correspondence") => copy(timeMode = TimeMode.Correspondence)
+      case Some("unlimited")      => copy(timeMode = TimeMode.Unlimited)
+      case _                      => this
+    }
 
   def hook(
       uid: String,
       user: Option[User],
       sid: Option[String],
-      blocking: Set[String]): Either[Hook, Option[Seek]] = timeMode match {
-    case TimeMode.RealTime =>
-      Left(
-        Hook.make(
-          uid = uid,
-          variant = variant,
-          clock = justMakeClock,
-          mode = mode,
-          allowAnon = allowAnon,
-          color = color.name,
-          user = user,
-          blocking = blocking,
-          sid = sid,
-          ratingRange = ratingRange
-        ))
-    case _ =>
-      Right(user map { u =>
-        Seek.make(
-          variant = variant,
-          daysPerTurn = makeDaysPerTurn,
-          mode = mode,
-          color = color.name,
-          user = u,
-          blocking = blocking,
-          ratingRange = ratingRange)
-      })
-  }
+      blocking: Set[String]): Either[Hook, Option[Seek]] =
+    timeMode match {
+      case TimeMode.RealTime =>
+        Left(
+          Hook.make(
+            uid = uid,
+            variant = variant,
+            clock = justMakeClock,
+            mode = mode,
+            allowAnon = allowAnon,
+            color = color.name,
+            user = user,
+            blocking = blocking,
+            sid = sid,
+            ratingRange = ratingRange
+          ))
+      case _ =>
+        Right(user map { u =>
+          Seek.make(
+            variant = variant,
+            daysPerTurn = makeDaysPerTurn,
+            mode = mode,
+            color = color.name,
+            user = u,
+            blocking = blocking,
+            ratingRange = ratingRange)
+        })
+    }
 
   def noRatedUnlimited = mode.casual || hasClock || makeDaysPerTurn.isDefined
 

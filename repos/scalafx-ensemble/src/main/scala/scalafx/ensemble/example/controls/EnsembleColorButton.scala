@@ -40,36 +40,37 @@ import scalafx.scene.layout.{Priority, VBox}
   */
 class EnsembleColorButton extends EnsembleExample {
 
-  def getContent = new VBox {
-    vgrow = Priority.Always
-    hgrow = Priority.Always
-    spacing = 10
-    padding = Insets(20)
-    children = List(
-      new Button {
-        maxWidth = 200
-        maxHeight = 150
-        text = "Color Button 1"
-        style = "-fx-base: red"
-      },
-      new Button {
-        maxWidth = 200
-        maxHeight = 150
-        text = "Color Button 2"
-        style = "-fx-base: green "
-      },
-      new Button {
-        maxWidth = 200
-        maxHeight = 150
-        text = "Color Button 3"
-        style = "-fx-base: Yellow"
-      },
-      new Button {
-        maxWidth = 200
-        maxHeight = 150
-        text = "Color Button 4"
-        style = "-fx-base: Orange"
-      }
-    )
-  }
+  def getContent =
+    new VBox {
+      vgrow = Priority.Always
+      hgrow = Priority.Always
+      spacing = 10
+      padding = Insets(20)
+      children = List(
+        new Button {
+          maxWidth = 200
+          maxHeight = 150
+          text = "Color Button 1"
+          style = "-fx-base: red"
+        },
+        new Button {
+          maxWidth = 200
+          maxHeight = 150
+          text = "Color Button 2"
+          style = "-fx-base: green "
+        },
+        new Button {
+          maxWidth = 200
+          maxHeight = 150
+          text = "Color Button 3"
+          style = "-fx-base: Yellow"
+        },
+        new Button {
+          maxWidth = 200
+          maxHeight = 150
+          text = "Color Button 4"
+          style = "-fx-base: Orange"
+        }
+      )
+    }
 }

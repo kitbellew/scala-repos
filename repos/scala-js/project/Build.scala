@@ -299,23 +299,24 @@ object Build extends sbt.Build {
     }
   )
 
-  private def publishToScalaJSRepoSettings = Seq(
-    publishTo := {
-      Seq("PUBLISH_USER", "PUBLISH_PASS").map(Properties.envOrNone) match {
-        case Seq(Some(user), Some(pass)) =>
-          val snapshotsOrReleases =
-            if (scalaJSIsSnapshotVersion) "snapshots" else "releases"
-          Some(
-            Resolver.sftp(
-              s"scala-js-$snapshotsOrReleases",
-              "repo.scala-js.org",
-              s"/home/scalajsrepo/www/repo/$snapshotsOrReleases")(
-              Resolver.ivyStylePatterns) as (user, pass))
-        case _ =>
-          None
+  private def publishToScalaJSRepoSettings =
+    Seq(
+      publishTo := {
+        Seq("PUBLISH_USER", "PUBLISH_PASS").map(Properties.envOrNone) match {
+          case Seq(Some(user), Some(pass)) =>
+            val snapshotsOrReleases =
+              if (scalaJSIsSnapshotVersion) "snapshots" else "releases"
+            Some(
+              Resolver.sftp(
+                s"scala-js-$snapshotsOrReleases",
+                "repo.scala-js.org",
+                s"/home/scalajsrepo/www/repo/$snapshotsOrReleases")(
+                Resolver.ivyStylePatterns) as (user, pass))
+          case _ =>
+            None
+        }
       }
-    }
-  )
+    )
 
   private def publishToBintraySettings =
     (
@@ -1093,39 +1094,40 @@ object Build extends sbt.Build {
     Seq(
       testOptionTags := {
         @tailrec
-        def envTagsFor(env: JSEnv): Seq[String] = env match {
-          case env: RhinoJSEnv =>
-            val baseArgs = Seq("rhino")
-            if (env.sourceMap) baseArgs :+ "source-maps"
-            else baseArgs
+        def envTagsFor(env: JSEnv): Seq[String] =
+          env match {
+            case env: RhinoJSEnv =>
+              val baseArgs = Seq("rhino")
+              if (env.sourceMap) baseArgs :+ "source-maps"
+              else baseArgs
 
-          case env: NodeJSEnv =>
-            val baseArgs = Seq("nodejs", "typedarray")
-            if (env.sourceMap) {
-              if (!env.hasSourceMapSupport) {
-                sys.error(
-                  "You must install Node.js source map support to " +
-                    "run the full Scala.js test suite (npm install " +
-                    "source-map-support). To deactivate source map " +
-                    "tests, do: set jsEnv in " + thisProject.value.id +
-                    " := NodeJSEnv().value.withSourceMap(false)")
+            case env: NodeJSEnv =>
+              val baseArgs = Seq("nodejs", "typedarray")
+              if (env.sourceMap) {
+                if (!env.hasSourceMapSupport) {
+                  sys.error(
+                    "You must install Node.js source map support to " +
+                      "run the full Scala.js test suite (npm install " +
+                      "source-map-support). To deactivate source map " +
+                      "tests, do: set jsEnv in " + thisProject.value.id +
+                      " := NodeJSEnv().value.withSourceMap(false)")
+                }
+                baseArgs :+ "source-maps"
+              } else {
+                baseArgs
               }
-              baseArgs :+ "source-maps"
-            } else {
-              baseArgs
-            }
 
-          case _: PhantomJSEnv =>
-            Seq("phantomjs")
+            case _: PhantomJSEnv =>
+              Seq("phantomjs")
 
-          case env: RetryingComJSEnv =>
-            envTagsFor(env.baseEnv)
+            case env: RetryingComJSEnv =>
+              envTagsFor(env.baseEnv)
 
-          case _ =>
-            throw new AssertionError(
-              s"Unknown JSEnv of class ${env.getClass.getName}: " +
-                "don't know what tags to specify for the test suite")
-        }
+            case _ =>
+              throw new AssertionError(
+                s"Unknown JSEnv of class ${env.getClass.getName}: " +
+                  "don't know what tags to specify for the test suite")
+          }
 
         val envTags = envTagsFor((resolvedJSEnv in Test).value)
 
@@ -1177,41 +1179,42 @@ object Build extends sbt.Build {
     )
   }
 
-  def testSuiteCommonSettings(isJSTest: Boolean): Seq[Setting[_]] = Seq(
-    publishArtifact in Compile := false,
-    scalacOptions ~= (_.filter(_ != "-deprecation")),
-    // Need reflect for typechecking macros
-    libraryDependencies +=
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value % "provided",
-    testOptions += Tests.Argument(TestFrameworks.JUnit, "-v", "-a"),
-    unmanagedSourceDirectories in Test ++= {
-      def includeIf(testDir: File, condition: Boolean): List[File] =
-        if (condition) List(testDir)
-        else Nil
+  def testSuiteCommonSettings(isJSTest: Boolean): Seq[Setting[_]] =
+    Seq(
+      publishArtifact in Compile := false,
+      scalacOptions ~= (_.filter(_ != "-deprecation")),
+      // Need reflect for typechecking macros
+      libraryDependencies +=
+        "org.scala-lang" % "scala-reflect" % scalaVersion.value % "provided",
+      testOptions += Tests.Argument(TestFrameworks.JUnit, "-v", "-a"),
+      unmanagedSourceDirectories in Test ++= {
+        def includeIf(testDir: File, condition: Boolean): List[File] =
+          if (condition) List(testDir)
+          else Nil
 
-      val testDir = (sourceDirectory in Test).value
-      val sharedTestDir =
-        testDir.getParentFile.getParentFile.getParentFile / "shared/src/test"
+        val testDir = (sourceDirectory in Test).value
+        val sharedTestDir =
+          testDir.getParentFile.getParentFile.getParentFile / "shared/src/test"
 
-      List(sharedTestDir / "scala") ++
-        includeIf(sharedTestDir / "require-jdk7", javaVersion.value >= 7) ++
-        includeIf(sharedTestDir / "require-jdk8", javaVersion.value >= 8)
-    },
-    sources in Test ++= {
-      /* Can't add require-sam as unmanagedSourceDirectories because of the use
-       * of scalacOptions. Hence sources are added individually.
-       * Note that a testSuite/test will not trigger a compile when sources are
-       * modified in require-sam
-       */
-      if (isJSTest && scalaBinaryVersion.value != "2.10" &&
-          scalacOptions.value.contains("-Xexperimental")) {
-        val sourceDir = (sourceDirectory in Test).value / "require-sam"
-        (sourceDir ** "*.scala").get
-      } else {
-        Nil
+        List(sharedTestDir / "scala") ++
+          includeIf(sharedTestDir / "require-jdk7", javaVersion.value >= 7) ++
+          includeIf(sharedTestDir / "require-jdk8", javaVersion.value >= 8)
+      },
+      sources in Test ++= {
+        /* Can't add require-sam as unmanagedSourceDirectories because of the use
+         * of scalacOptions. Hence sources are added individually.
+         * Note that a testSuite/test will not trigger a compile when sources are
+         * modified in require-sam
+         */
+        if (isJSTest && scalaBinaryVersion.value != "2.10" &&
+            scalacOptions.value.contains("-Xexperimental")) {
+          val sourceDir = (sourceDirectory in Test).value / "require-sam"
+          (sourceDir ** "*.scala").get
+        } else {
+          Nil
+        }
       }
-    }
-  )
+    )
 
   lazy val testSuite: Project = Project(
     id = "testSuite",

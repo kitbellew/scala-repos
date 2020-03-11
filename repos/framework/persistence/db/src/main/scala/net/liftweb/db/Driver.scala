@@ -138,10 +138,11 @@ abstract class DriverType(val name: String) {
     * Allows the Vendor-specific Driver to do custom type mapping for a particular
     * column type.
     */
-  protected def customColumnTypeMap: TypeMapFunc = new TypeMapFunc {
-    def apply(in: Int) = -1
-    def isDefinedAt(in: Int) = false
-  }
+  protected def customColumnTypeMap: TypeMapFunc =
+    new TypeMapFunc {
+      def apply(in: Int) = -1
+      def isDefinedAt(in: Int) = false
+    }
 
   /**
     * This method can be overriden by DriverType impls to allow for custom setup

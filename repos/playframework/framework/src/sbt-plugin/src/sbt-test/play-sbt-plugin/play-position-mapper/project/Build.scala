@@ -34,14 +34,15 @@ object ApplicationBuild extends Build {
 
   def simpleParser(state: State) = Space ~> any.+.map(_.mkString(""))
 
-  def checkLogContains(msg: String): Task[Boolean] = task {
-    if (!bufferLogger.messages.exists(_.contains(msg))) {
-      sys.error(
-        "Did not find log message:\n    '" + msg + "'\nin output:\n" + bufferLogger.messages.reverse
-          .mkString("    ", "\n    ", ""))
+  def checkLogContains(msg: String): Task[Boolean] =
+    task {
+      if (!bufferLogger.messages.exists(_.contains(msg))) {
+        sys.error(
+          "Did not find log message:\n    '" + msg + "'\nin output:\n" + bufferLogger.messages.reverse
+            .mkString("    ", "\n    ", ""))
+      }
+      true
     }
-    true
-  }
 
   val checkLogContainsTask = InputKey[Boolean]("checkLogContains") <<=
     InputTask.separate[String, Boolean](simpleParser _)(state(s =>

@@ -31,11 +31,12 @@ class ScalaLibraryProperties
     state
   }
 
-  override def equals(obj: scala.Any) = obj match {
-    case that: ScalaLibraryProperties =>
-      languageLevel == that.languageLevel && compilerClasspath == that.compilerClasspath
-    case _ => false
-  }
+  override def equals(obj: scala.Any) =
+    obj match {
+      case that: ScalaLibraryProperties =>
+        languageLevel == that.languageLevel && compilerClasspath == that.compilerClasspath
+      case _ => false
+    }
 
   override def hashCode() =
     languageLevel.hashCode * 31 + compilerClasspath.hashCode

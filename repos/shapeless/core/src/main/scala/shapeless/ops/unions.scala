@@ -42,10 +42,11 @@ object union {
         implicit st: Selector[T, K]): Aux[H :+: T, K, st.V] =
       new Selector[H :+: T, K] {
         type V = st.V
-        def apply(u: H :+: T): Out = u match {
-          case Inl(l) => None
-          case Inr(r) => if (st == null) None else st(r)
-        }
+        def apply(u: H :+: T): Out =
+          u match {
+            case Inl(l) => None
+            case Inr(r) => if (st == null) None else st(r)
+          }
       }
   }
 
@@ -57,10 +58,11 @@ object union {
         : Aux[FieldType[K, V0] :+: T, K, V0] =
       new Selector[FieldType[K, V0] :+: T, K] {
         type V = V0
-        def apply(u: FieldType[K, V] :+: T): Out = u match {
-          case Inl(l) => Some(l)
-          case Inr(r) => None
-        }
+        def apply(u: FieldType[K, V] :+: T): Out =
+          u match {
+            case Inl(l) => Some(l)
+            case Inr(r) => None
+          }
       }
   }
 
@@ -118,10 +120,11 @@ object union {
         implicit vt: Values[T]): Aux[FieldType[K, V] :+: T, V :+: vt.Out] =
       new Values[FieldType[K, V] :+: T] {
         type Out = V :+: vt.Out
-        def apply(l: FieldType[K, V] :+: T): Out = l match {
-          case Inl(l) => Inl(l)
-          case Inr(r) => Inr(vt(r))
-        }
+        def apply(l: FieldType[K, V] :+: T): Out =
+          l match {
+            case Inl(l) => Inl(l)
+            case Inr(r) => Inr(vt(r))
+          }
       }
   }
 
@@ -196,9 +199,10 @@ object union {
       new ToMap[FieldType[K, V] :+: CNil] {
         type Key = K
         type Value = V
-        def apply(c: FieldType[K, V] :+: CNil) = (c: @unchecked) match {
-          case Inl(h) => Map(wk.value -> (h: V))
-        }
+        def apply(c: FieldType[K, V] :+: CNil) =
+          (c: @unchecked) match {
+            case Inl(h) => Map(wk.value -> (h: V))
+          }
       }
 
     implicit def coproductToMap[HK, HV, TH, TT <: Coproduct, TK, TV, K, V](
@@ -211,13 +215,14 @@ object union {
       new ToMap[FieldType[HK, HV] :+: TH :+: TT] {
         type Key = K
         type Value = V
-        def apply(c: FieldType[HK, HV] :+: TH :+: TT) = c match {
-          case Inl(h) => Map(keyLub.left(wk.value) -> valueLub.left(h: HV))
-          case Inr(t) =>
-            tailToMap(t).map {
-              case (k, v) => keyLub.right(k) -> valueLub.right(v)
-            }
-        }
+        def apply(c: FieldType[HK, HV] :+: TH :+: TT) =
+          c match {
+            case Inl(h) => Map(keyLub.left(wk.value) -> valueLub.left(h: HV))
+            case Inr(t) =>
+              tailToMap(t).map {
+                case (k, v) => keyLub.right(k) -> valueLub.right(v)
+              }
+          }
       }
   }
 
@@ -254,10 +259,11 @@ object union {
       FieldType[K, hc.Result] :+: tailMapValues.Out] =
       new MapValues[HF, FieldType[K, V] :+: T] {
         type Out = FieldType[K, hc.Result] :+: tailMapValues.Out
-        def apply(c: FieldType[K, V] :+: T) = c match {
-          case Inl(h) => Inl(field[K](hc(h: V)))
-          case Inr(t) => Inr(tailMapValues(t))
-        }
+        def apply(c: FieldType[K, V] :+: T) =
+          c match {
+            case Inl(h) => Inl(field[K](hc(h: V)))
+            case Inr(t) => Inr(tailMapValues(t))
+          }
       }
   }
 }

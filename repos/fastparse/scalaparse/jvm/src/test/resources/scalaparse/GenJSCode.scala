@@ -526,13 +526,14 @@ abstract class GenJSCode
 
     // Generate a method -------------------------------------------------------
 
-    def genMethod(dd: DefDef): Option[js.MethodDef] = withNewLocalNameScope {
-      genMethodWithInfoBuilder(dd) map {
-        case (methodDef, infoBuilder) =>
-          currentClassInfoBuilder.addMethod(infoBuilder.result())
-          methodDef
+    def genMethod(dd: DefDef): Option[js.MethodDef] =
+      withNewLocalNameScope {
+        genMethodWithInfoBuilder(dd) map {
+          case (methodDef, infoBuilder) =>
+            currentClassInfoBuilder.addMethod(infoBuilder.result())
+            methodDef
+        }
       }
-    }
 
     /** Gen JS code for a method definition in a class or in an impl class.
       *  On the JS side, method names are mangled to encode the full signature
@@ -581,14 +582,15 @@ abstract class GenJSCode
             .setIsStatic(sym.owner.isImplClass)
         }
 
-        def jsParams = for (param <- params) yield {
-          implicit val pos = param.pos
-          js.ParamDef(
-            encodeLocalSym(param),
-            toIRType(param.tpe),
-            mutable = false,
-            rest = false)
-        }
+        def jsParams =
+          for (param <- params) yield {
+            implicit val pos = param.pos
+            js.ParamDef(
+              encodeLocalSym(param),
+              toIRType(param.tpe),
+              mutable = false,
+              rest = false)
+          }
 
         if (scalaPrimitives.isPrimitive(sym)) {
           None
@@ -614,10 +616,11 @@ abstract class GenJSCode
             mutableLocalVars := mutable.Set.empty,
             mutatedLocalVars := mutable.Set.empty
           ) {
-            def isTraitImplForwarder = dd.rhs match {
-              case app: Apply => foreignIsImplClass(app.symbol.owner)
-              case _          => false
-            }
+            def isTraitImplForwarder =
+              dd.rhs match {
+                case app: Apply => foreignIsImplClass(app.symbol.owner)
+                case _          => false
+              }
 
             val shouldMarkInline = {
               sym.hasAnnotation(InlineAnnotationClass) ||
@@ -1743,10 +1746,11 @@ abstract class GenJSCode
       val Apply(fun @ Select(receiver, _), args) = tree
       val sym = fun.symbol
 
-      def isStringMethodFromObject: Boolean = sym.name match {
-        case nme.toString_ | nme.equals_ | nme.hashCode_ => true
-        case _                                           => false
-      }
+      def isStringMethodFromObject: Boolean =
+        sym.name match {
+          case nme.toString_ | nme.equals_ | nme.hashCode_ => true
+          case _                                           => false
+        }
 
       if (sym.owner == StringClass && !isStringMethodFromObject) {
         genStringCall(tree)
@@ -2025,21 +2029,22 @@ abstract class GenJSCode
       for (caze @ CaseDef(pat, guard, body) <- cases) {
         assert(guard == EmptyTree)
 
-        def genBody(body: Tree): js.Tree = body match {
-          // Yes, this will duplicate the default body in the output
-          case app @ Apply(_, Nil) if app.symbol == defaultLabelSym =>
-            genDefaultBody
-          case Block(List(app @ Apply(_, Nil)), _)
-              if app.symbol == defaultLabelSym =>
-            genDefaultBody
+        def genBody(body: Tree): js.Tree =
+          body match {
+            // Yes, this will duplicate the default body in the output
+            case app @ Apply(_, Nil) if app.symbol == defaultLabelSym =>
+              genDefaultBody
+            case Block(List(app @ Apply(_, Nil)), _)
+                if app.symbol == defaultLabelSym =>
+              genDefaultBody
 
-          case If(cond, thenp, elsep) =>
-            js.If(genExpr(cond), genBody(thenp), genBody(elsep))(resultType)(
-              body.pos)
+            case If(cond, thenp, elsep) =>
+              js.If(genExpr(cond), genBody(thenp), genBody(elsep))(resultType)(
+                body.pos)
 
-          case _ =>
-            genStatOrExpr(body, isStat)
-        }
+            case _ =>
+              genStatOrExpr(body, isStat)
+          }
 
         def genLiteral(lit: Literal): js.Literal =
           genExpr(lit).asInstanceOf[js.Literal]
@@ -2589,14 +2594,15 @@ abstract class GenJSCode
 
       val source = genExpr(receiver)
 
-      def source2int = (code: @switch) match {
-        case F2C | D2C | F2B | D2B | F2S | D2S | F2I | D2I =>
-          js.UnaryOp(js.UnaryOp.DoubleToInt, source)
-        case L2C | L2B | L2S | L2I =>
-          js.UnaryOp(js.UnaryOp.LongToInt, source)
-        case _ =>
-          source
-      }
+      def source2int =
+        (code: @switch) match {
+          case F2C | D2C | F2B | D2B | F2S | D2S | F2I | D2I =>
+            js.UnaryOp(js.UnaryOp.DoubleToInt, source)
+          case L2C | L2B | L2S | L2I =>
+            js.UnaryOp(js.UnaryOp.LongToInt, source)
+          case _ =>
+            source
+        }
 
       (code: @switch) match {
         // To Char, need to crop at unsigned 16-bit
@@ -2705,8 +2711,8 @@ abstract class GenJSCode
         * (result != NoSymbol), we generate a runtime instance check if we are
         * dealing with the appropriate primitive type.
         */
-      def matchingSymIn(clazz: Symbol) = clazz.tpe.member(sym.name).suchThat {
-        s =>
+      def matchingSymIn(clazz: Symbol) =
+        clazz.tpe.member(sym.name).suchThat { s =>
           val sParams = s.tpe.params
           !s.isBridge &&
           params.size == sParams.size &&
@@ -2714,7 +2720,7 @@ abstract class GenJSCode
             case (s1, s2) =>
               s1.tpe =:= s2.tpe
           }
-      }
+        }
 
       val ApplyDynamic(receiver, args) = tree
 
@@ -2829,10 +2835,11 @@ abstract class GenJSCode
                     rawApply
                 } else {
                   val reflBoxClassPatched = {
-                    def isIntOrLongKind(kind: TypeKind) = kind match {
-                      case _: INT | LONG => true
-                      case _             => false
-                    }
+                    def isIntOrLongKind(kind: TypeKind) =
+                      kind match {
+                        case _: INT | LONG => true
+                        case _             => false
+                      }
                     if (rtClass == BoxedDoubleClass &&
                         toTypeKind(
                           implMethodSym.tpe.resultType) == DoubleKind &&
@@ -3581,13 +3588,14 @@ abstract class GenJSCode
     }
 
     object MaybeAsInstanceOf {
-      def unapply(tree: Tree): Some[Tree] = tree match {
-        case Apply(TypeApply(asInstanceOf_? @ Select(base, _), _), _)
-            if asInstanceOf_?.symbol == Object_asInstanceOf =>
-          Some(base)
-        case _ =>
-          Some(tree)
-      }
+      def unapply(tree: Tree): Some[Tree] =
+        tree match {
+          case Apply(TypeApply(asInstanceOf_? @ Select(base, _), _), _)
+              if asInstanceOf_?.symbol == Object_asInstanceOf =>
+            Some(base)
+          case _ =>
+            Some(tree)
+        }
     }
 
     object WrapArray {
@@ -3605,13 +3613,14 @@ abstract class GenJSCode
         nme.genericWrapArray
       ).map(getMemberMethod(PredefModule, _)).toSet
 
-      def unapply(tree: Apply): Option[Tree] = tree match {
-        case Apply(wrapArray_?, List(wrapped))
-            if isWrapArray(wrapArray_?.symbol) =>
-          Some(wrapped)
-        case _ =>
-          None
-      }
+      def unapply(tree: Apply): Option[Tree] =
+        tree match {
+          case Apply(wrapArray_?, List(wrapped))
+              if isWrapArray(wrapArray_?.symbol) =>
+            Some(wrapped)
+          case _ =>
+            None
+        }
     }
 
     // Synthesizers for raw JS functions ---------------------------------------
@@ -3689,19 +3698,20 @@ abstract class GenJSCode
         genNew(clsSym, ctor, List(jsFunction))
       }
 
-      def unapply(tree: js.New): Option[(js.Tree, Int)] = tree match {
-        case js.New(jstpe.ClassType(wrapperName), _, List(fun))
-            if wrapperName.startsWith(AnonFunPrefJS) =>
-          val arityStr = wrapperName.substring(AnonFunPrefJS.length)
-          try {
-            Some((fun, arityStr.toInt))
-          } catch {
-            case e: NumberFormatException => None
-          }
+      def unapply(tree: js.New): Option[(js.Tree, Int)] =
+        tree match {
+          case js.New(jstpe.ClassType(wrapperName), _, List(fun))
+              if wrapperName.startsWith(AnonFunPrefJS) =>
+            val arityStr = wrapperName.substring(AnonFunPrefJS.length)
+            try {
+              Some((fun, arityStr.toInt))
+            } catch {
+              case e: NumberFormatException => None
+            }
 
-        case _ =>
-          None
-      }
+          case _ =>
+            None
+        }
     }
 
     /** Gen and record JS code for a raw JS function class.

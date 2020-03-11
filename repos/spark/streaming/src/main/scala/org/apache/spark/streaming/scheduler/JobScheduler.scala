@@ -65,68 +65,72 @@ private[streaming] class JobScheduler(val ssc: StreamingContext)
 
   private var eventLoop: EventLoop[JobSchedulerEvent] = null
 
-  def start(): Unit = synchronized {
-    if (eventLoop != null) return // scheduler has already been started
+  def start(): Unit =
+    synchronized {
+      if (eventLoop != null) return // scheduler has already been started
 
-    logDebug("Starting JobScheduler")
-    eventLoop = new EventLoop[JobSchedulerEvent]("JobScheduler") {
-      override protected def onReceive(event: JobSchedulerEvent): Unit =
-        processEvent(event)
+      logDebug("Starting JobScheduler")
+      eventLoop = new EventLoop[JobSchedulerEvent]("JobScheduler") {
+        override protected def onReceive(event: JobSchedulerEvent): Unit =
+          processEvent(event)
 
-      override protected def onError(e: Throwable): Unit =
-        reportError("Error in job scheduler", e)
-    }
-    eventLoop.start()
+        override protected def onError(e: Throwable): Unit =
+          reportError("Error in job scheduler", e)
+      }
+      eventLoop.start()
 
-    // attach rate controllers of input streams to receive batch completion updates
-    for {
-      inputDStream <- ssc.graph.getInputStreams
-      rateController <- inputDStream.rateController
-    } ssc.addStreamingListener(rateController)
+      // attach rate controllers of input streams to receive batch completion updates
+      for {
+        inputDStream <- ssc.graph.getInputStreams
+        rateController <- inputDStream.rateController
+      } ssc.addStreamingListener(rateController)
 
-    listenerBus.start()
-    receiverTracker = new ReceiverTracker(ssc)
-    inputInfoTracker = new InputInfoTracker(ssc)
-    receiverTracker.start()
-    jobGenerator.start()
-    logInfo("Started JobScheduler")
-  }
-
-  def stop(processAllReceivedData: Boolean): Unit = synchronized {
-    if (eventLoop == null) return // scheduler has already been stopped
-    logDebug("Stopping JobScheduler")
-
-    if (receiverTracker != null) {
-      // First, stop receiving
-      receiverTracker.stop(processAllReceivedData)
+      listenerBus.start()
+      receiverTracker = new ReceiverTracker(ssc)
+      inputInfoTracker = new InputInfoTracker(ssc)
+      receiverTracker.start()
+      jobGenerator.start()
+      logInfo("Started JobScheduler")
     }
 
-    // Second, stop generating jobs. If it has to process all received data,
-    // then this will wait for all the processing through JobScheduler to be over.
-    jobGenerator.stop(processAllReceivedData)
+  def stop(processAllReceivedData: Boolean): Unit =
+    synchronized {
+      if (eventLoop == null) return // scheduler has already been stopped
+      logDebug("Stopping JobScheduler")
 
-    // Stop the executor for receiving new jobs
-    logDebug("Stopping job executor")
-    jobExecutor.shutdown()
+      if (receiverTracker != null) {
+        // First, stop receiving
+        receiverTracker.stop(processAllReceivedData)
+      }
 
-    // Wait for the queued jobs to complete if indicated
-    val terminated = if (processAllReceivedData) {
-      jobExecutor
-        .awaitTermination(1, TimeUnit.HOURS) // just a very large period of time
-    } else {
-      jobExecutor.awaitTermination(2, TimeUnit.SECONDS)
+      // Second, stop generating jobs. If it has to process all received data,
+      // then this will wait for all the processing through JobScheduler to be over.
+      jobGenerator.stop(processAllReceivedData)
+
+      // Stop the executor for receiving new jobs
+      logDebug("Stopping job executor")
+      jobExecutor.shutdown()
+
+      // Wait for the queued jobs to complete if indicated
+      val terminated = if (processAllReceivedData) {
+        jobExecutor.awaitTermination(
+          1,
+          TimeUnit.HOURS
+        ) // just a very large period of time
+      } else {
+        jobExecutor.awaitTermination(2, TimeUnit.SECONDS)
+      }
+      if (!terminated) {
+        jobExecutor.shutdownNow()
+      }
+      logDebug("Stopped job executor")
+
+      // Stop everything else
+      listenerBus.stop()
+      eventLoop.stop()
+      eventLoop = null
+      logInfo("Stopped JobScheduler")
     }
-    if (!terminated) {
-      jobExecutor.shutdownNow()
-    }
-    logDebug("Stopped job executor")
-
-    // Stop everything else
-    listenerBus.stop()
-    eventLoop.stop()
-    eventLoop = null
-    logInfo("Stopped JobScheduler")
-  }
 
   def submitJobSet(jobSet: JobSet) {
     if (jobSet.jobs.isEmpty) {
@@ -147,9 +151,10 @@ private[streaming] class JobScheduler(val ssc: StreamingContext)
     eventLoop.post(ErrorReported(msg, e))
   }
 
-  def isStarted(): Boolean = synchronized {
-    eventLoop != null
-  }
+  def isStarted(): Boolean =
+    synchronized {
+      eventLoop != null
+    }
 
   private def processEvent(event: JobSchedulerEvent) {
     try {

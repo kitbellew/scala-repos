@@ -69,22 +69,24 @@ class ParHashSet[T] private[immutable] (private[this] val trie: HashSet[T])
 
   protected override def reuse[S, That](
       oldc: Option[Combiner[S, That]],
-      newc: Combiner[S, That]) = oldc match {
-    case Some(old) => old
-    case None      => newc
-  }
+      newc: Combiner[S, That]) =
+    oldc match {
+      case Some(old) => old
+      case None      => newc
+    }
 
   class ParHashSetIterator(var triter: Iterator[T], val sz: Int)
       extends IterableSplitter[T] {
     var i = 0
-    def dup = triter match {
-      case t: TrieIterator[_] =>
-        dupFromIterator(t.dupIterator)
-      case _ =>
-        val buff = triter.toBuffer
-        triter = buff.iterator
-        dupFromIterator(buff.iterator)
-    }
+    def dup =
+      triter match {
+        case t: TrieIterator[_] =>
+          dupFromIterator(t.dupIterator)
+        case _ =>
+          val buff = triter.toBuffer
+          triter = buff.iterator
+          dupFromIterator(buff.iterator)
+      }
     private def dupFromIterator(it: Iterator[T]) = {
       val phit = new ParHashSetIterator(it, sz)
       phit.i = i

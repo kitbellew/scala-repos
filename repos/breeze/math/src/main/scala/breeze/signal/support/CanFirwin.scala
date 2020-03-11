@@ -47,18 +47,18 @@ object CanFirwin {
           zeroPass: Boolean,
           scale: Boolean,
           multiplier: Double,
-          optWindow: OptWindowFunction)
-          : FIRKernel1D[Double] = new FIRKernel1D[Double](
-        firwinDoubleImpl(
-          taps,
-          omegas,
-          nyquist,
-          zeroPass,
-          scale,
-          optWindow) * multiplier,
-        multiplier,
-        "FIRKernel1D(firwin): " + taps + " taps, " + omegas + ", " + optWindow + ", zeroPass=" + zeroPass + ", nyquist=" + nyquist + ", scale=" + scale
-      )
+          optWindow: OptWindowFunction): FIRKernel1D[Double] =
+        new FIRKernel1D[Double](
+          firwinDoubleImpl(
+            taps,
+            omegas,
+            nyquist,
+            zeroPass,
+            scale,
+            optWindow) * multiplier,
+          multiplier,
+          "FIRKernel1D(firwin): " + taps + " taps, " + omegas + ", " + optWindow + ", zeroPass=" + zeroPass + ", nyquist=" + nyquist + ", scale=" + scale
+        )
 
     }
   }
@@ -73,19 +73,20 @@ object CanFirwin {
           zeroPass: Boolean,
           scale: Boolean,
           multiplier: Double,
-          optWindow: OptWindowFunction): FIRKernel1D[T] = new FIRKernel1D[T](
-        convert(
-          firwinDoubleImpl(
-            taps,
-            omegas,
-            nyquist,
-            zeroPass,
-            scale,
-            optWindow) * multiplier,
-          T),
-        multiplier,
-        "FIRKernel1D(firwin): " + taps + " taps, " + omegas + ", " + optWindow + ", zeroPass=" + zeroPass + ", nyquist=" + nyquist + ", scale=" + scale
-      )
+          optWindow: OptWindowFunction): FIRKernel1D[T] =
+        new FIRKernel1D[T](
+          convert(
+            firwinDoubleImpl(
+              taps,
+              omegas,
+              nyquist,
+              zeroPass,
+              scale,
+              optWindow) * multiplier,
+            T),
+          multiplier,
+          "FIRKernel1D(firwin): " + taps + " taps, " + omegas + ", " + optWindow + ", zeroPass=" + zeroPass + ", nyquist=" + nyquist + ", scale=" + scale
+        )
 
     }
   }

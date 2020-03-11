@@ -14,14 +14,15 @@ final class Analyser(
 
   def get(id: String): Fu[Option[Analysis]] = AnalysisRepo byId id
 
-  def save(analysis: Analysis): Funit = GameRepo game analysis.id flatMap {
-    _ ?? { game =>
-      GameRepo.setAnalysed(game.id)
-      AnalysisRepo.save(analysis) >>- {
-        bus.publish(actorApi.AnalysisReady(game, analysis), 'analysisReady)
-        roundSocket ! Tell(game.id, AnalysisAvailable)
-        indexer ! InsertGame(game)
+  def save(analysis: Analysis): Funit =
+    GameRepo game analysis.id flatMap {
+      _ ?? { game =>
+        GameRepo.setAnalysed(game.id)
+        AnalysisRepo.save(analysis) >>- {
+          bus.publish(actorApi.AnalysisReady(game, analysis), 'analysisReady)
+          roundSocket ! Tell(game.id, AnalysisAvailable)
+          indexer ! InsertGame(game)
+        }
       }
     }
-  }
 }

@@ -244,11 +244,12 @@ private class DeferredTransport(
     _.read()
   def read(): Future[Message] = gate().flatMap(read0)
 
-  def status: Status = underlying.poll match {
-    case Some(Return(t)) => t.status
-    case None            => Status.Busy
-    case _               => Status.Closed
-  }
+  def status: Status =
+    underlying.poll match {
+      case Some(Return(t)) => t.status
+      case None            => Status.Busy
+      case _               => Status.Closed
+    }
 
   val onClose: Future[Throwable] = gate().flatMap(_.onClose)
 

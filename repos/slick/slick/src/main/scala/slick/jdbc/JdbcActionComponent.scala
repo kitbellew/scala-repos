@@ -291,12 +291,17 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
       param: Any)
       extends super.QueryActionExtensionMethodsImpl[R, S] {
     def result: ProfileAction[R, S, Effect.Read] = {
-      def findSql(n: Node): String = n match {
-        case c: CompiledStatement => c.extra.asInstanceOf[SQLBuilder.Result].sql
-        case ParameterSwitch(cases, default) =>
-          findSql(
-            cases.find { case (f, n) => f(param) }.map(_._2).getOrElse(default))
-      }
+      def findSql(n: Node): String =
+        n match {
+          case c: CompiledStatement =>
+            c.extra.asInstanceOf[SQLBuilder.Result].sql
+          case ParameterSwitch(cases, default) =>
+            findSql(
+              cases
+                .find { case (f, n) => f(param) }
+                .map(_._2)
+                .getOrElse(default))
+        }
       (tree match {
         case (rsm @ ResultSetMapping(
               _,

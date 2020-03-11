@@ -78,13 +78,14 @@ trait ClusteringLibSpecs[M[+_]]
       case ClusterIdPattern(_) => ok
     }
 
-    def getPoint(sval: SValue): List[Double] = sval match {
-      case SArray(arr) =>
-        arr.collect({ case SDecimal(n) => n.toDouble }).toList
-      case SObject(obj) =>
-        obj.toList.sortBy(_._1) flatMap { case (_, v) => getPoint(v) }
-      case _ => sys.error("not supported")
-    }
+    def getPoint(sval: SValue): List[Double] =
+      sval match {
+        case SArray(arr) =>
+          arr.collect({ case SDecimal(n) => n.toDouble }).toList
+        case SObject(obj) =>
+          obj.toList.sortBy(_._1) flatMap { case (_, v) => getPoint(v) }
+        case _ => sys.error("not supported")
+      }
 
     val clusters: Array[Array[Double]] = clusterMap.values
       .map({ sval =>
@@ -246,27 +247,28 @@ trait ClusteringLibSpecs[M[+_]]
           case (ids, SObject(obj)) if ids.size == 0 =>
             obj.keys mustEqual Set("model1", "model2")
 
-            def checkmodel(model: SValue) = model must beLike {
-              case SObject(clusterMap) =>
-                clusterMap("cluster1") must beLike {
-                  case SObject(schemadCluster) =>
-                    if (schemadCluster contains "a") {
-                      isGoodCluster(
-                        clusterMap,
-                        pointsA,
-                        centersA,
-                        k,
-                        dimensionA)
-                    } else {
-                      isGoodCluster(
-                        clusterMap,
-                        pointsB,
-                        centersB,
-                        k,
-                        dimensionB)
-                    }
-                }
-            }
+            def checkmodel(model: SValue) =
+              model must beLike {
+                case SObject(clusterMap) =>
+                  clusterMap("cluster1") must beLike {
+                    case SObject(schemadCluster) =>
+                      if (schemadCluster contains "a") {
+                        isGoodCluster(
+                          clusterMap,
+                          pointsA,
+                          centersA,
+                          k,
+                          dimensionA)
+                      } else {
+                        isGoodCluster(
+                          clusterMap,
+                          pointsB,
+                          centersB,
+                          k,
+                          dimensionB)
+                      }
+                  }
+              }
 
             checkmodel(obj("model1"))
             checkmodel(obj("model2"))
@@ -296,15 +298,16 @@ trait ClusteringLibSpecs[M[+_]]
           case (ids, SObject(obj)) if ids.size == 0 =>
             obj.keys mustEqual Set("model1", "model2")
 
-            def checkmodel(model: SValue) = model must beLike {
-              case SObject(clusterMap) =>
-                clusterMap("cluster1") must beLike {
-                  case SArray(arr) if arr.size == 6 =>
-                    isGoodCluster(clusterMap, pointsA, centersA, k, dimension)
-                  case SArray(arr) if arr.size == 9 =>
-                    ok
-                }
-            }
+            def checkmodel(model: SValue) =
+              model must beLike {
+                case SObject(clusterMap) =>
+                  clusterMap("cluster1") must beLike {
+                    case SArray(arr) if arr.size == 6 =>
+                      isGoodCluster(clusterMap, pointsA, centersA, k, dimension)
+                    case SArray(arr) if arr.size == 9 =>
+                      ok
+                  }
+              }
 
             checkmodel(obj("model1"))
             checkmodel(obj("model2"))

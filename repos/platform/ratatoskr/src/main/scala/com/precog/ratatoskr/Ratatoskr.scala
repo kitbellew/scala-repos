@@ -818,10 +818,11 @@ object ZookeeperTools extends Command {
       var updateCheckpoint: Option[String] = None,
       var updateAgent: Option[String] = None) {
 
-    def splitPathJson(s: String): (String, String) = s.split(":", 2) match {
-      case Array(path, json) => (path, json)
-      case _                 => sys.error("Invalid format for path+json: \"%s\"".format(s))
-    }
+    def splitPathJson(s: String): (String, String) =
+      s.split(":", 2) match {
+        case Array(path, json) => (path, json)
+        case _                 => sys.error("Invalid format for path+json: \"%s\"".format(s))
+      }
 
     def checkpointUpdate() = updateCheckpoint.map(splitPathJson)
 
@@ -1123,59 +1124,60 @@ object ImportTools extends Command with Logging {
         case Right(success) => logger.info("Grants for " + key + ": " + success)
       }
 
-    def runIngest(apiKey: APIKey) = config.input.toStream traverse {
-      case (db, input) =>
-        val path = Path(db)
-        logger.info("Inserting batch: %s:%s".format(db, input))
+    def runIngest(apiKey: APIKey) =
+      config.input.toStream traverse {
+        case (db, input) =>
+          val path = Path(db)
+          logger.info("Inserting batch: %s:%s".format(db, input))
 
-        val bufSize = 8 * 1024 * 1024
-        val f = new File(input)
-        val ch = new FileInputStream(f).getChannel
-        val bb = ByteBuffer.allocate(bufSize)
+          val bufSize = 8 * 1024 * 1024
+          val f = new File(input)
+          val ch = new FileInputStream(f).getChannel
+          val bb = ByteBuffer.allocate(bufSize)
 
-        def loop(offset: Long, p: AsyncParser): Future[Unit] = {
-          val n = ch.read(bb)
-          bb.flip()
+          def loop(offset: Long, p: AsyncParser): Future[Unit] = {
+            val n = ch.read(bb)
+            bb.flip()
 
-          val input = if (n >= 0) More(bb) else Done
-          val (AsyncParse(errors, results), parser) = p(input)
+            val input = if (n >= 0) More(bb) else Done
+            val (AsyncParse(errors, results), parser) = p(input)
 
-          if (!errors.isEmpty) {
-            sys.error(
-              "found %d parse errors.\nfirst 5 were: %s" format (errors.length, errors
-                .take(5)))
-          } else if (results.size > 0) {
-            val eventidobj = EventId(pid, sid.getAndIncrement)
-            logger.info("Sending %d events".format(results.size))
-            val records = results map { IngestRecord(eventidobj, _) }
-            val update = IngestData(
-              Seq(
-                (
-                  offset,
-                  IngestMessage(
-                    apiKey,
-                    path,
-                    authorities,
-                    records,
-                    None,
-                    yggConfig.clock.instant,
-                    StreamRef.Append)))
-            )
+            if (!errors.isEmpty) {
+              sys.error(
+                "found %d parse errors.\nfirst 5 were: %s" format (errors.length, errors
+                  .take(5)))
+            } else if (results.size > 0) {
+              val eventidobj = EventId(pid, sid.getAndIncrement)
+              logger.info("Sending %d events".format(results.size))
+              val records = results map { IngestRecord(eventidobj, _) }
+              val update = IngestData(
+                Seq(
+                  (
+                    offset,
+                    IngestMessage(
+                      apiKey,
+                      path,
+                      authorities,
+                      records,
+                      None,
+                      yggConfig.clock.instant,
+                      StreamRef.Append)))
+              )
 
-            (vfsModule.projectionsActor ? update) flatMap { _ =>
-              logger.info("Batch saved")
-              bb.flip()
+              (vfsModule.projectionsActor ? update) flatMap { _ =>
+                logger.info("Batch saved")
+                bb.flip()
+                if (n >= 0) loop(offset + 1, parser) else Future(())
+              }
+            } else {
               if (n >= 0) loop(offset + 1, parser) else Future(())
             }
-          } else {
-            if (n >= 0) loop(offset + 1, parser) else Future(())
           }
-        }
 
-        loop(0L, AsyncParser.stream()) onComplete {
-          case _ => ch.close()
-        }
-    }
+          loop(0L, AsyncParser.stream()) onComplete {
+            case _ => ch.close()
+          }
+      }
 
     val complete =
       grantWrite(config.apiKey) >>
@@ -1433,10 +1435,11 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
       deleted.getOrElse(collection + "_deleted")
     }
 
-    def mongoSettings: MongoAPIKeyManagerSettings = MongoAPIKeyManagerSettings(
-      apiKeys = collection,
-      deletedAPIKeys = deletedCollection
-    )
+    def mongoSettings: MongoAPIKeyManagerSettings =
+      MongoAPIKeyManagerSettings(
+        apiKeys = collection,
+        deletedAPIKeys = deletedCollection
+      )
 
     def mongoConfig: Configuration = {
       Configuration.parse("servers = %s".format(mongoServers))
@@ -1454,26 +1457,27 @@ object CSVToJSONConverter {
       file: String,
       delimeter: Char = ',',
       timestampConversion: Boolean = false,
-      verbose: Boolean = false): Iterator[JValue] = new Iterator[JValue] {
+      verbose: Boolean = false): Iterator[JValue] =
+    new Iterator[JValue] {
 
-    private val reader = new CSVReader(new FileReader(file), delimeter)
-    private val header = reader.readNext
-    private var line = reader.readNext
+      private val reader = new CSVReader(new FileReader(file), delimeter)
+      private val header = reader.readNext
+      private var line = reader.readNext
 
-    def hasNext(): Boolean = line != null
+      def hasNext(): Boolean = line != null
 
-    def next(): JValue = {
-      val result = JObject(
-        header
-          .zip(line)
-          .map {
-            case (k, v) => JField(k, parse(v, timestampConversion, verbose))
-          }
-          .toList)
-      line = reader.readNext
-      result
+      def next(): JValue = {
+        val result = JObject(
+          header
+            .zip(line)
+            .map {
+              case (k, v) => JField(k, parse(v, timestampConversion, verbose))
+            }
+            .toList)
+        line = reader.readNext
+        result
+      }
     }
-  }
 
   private val Timestamp =
     """^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2}\.\d{3})\d{0,3}$""".r

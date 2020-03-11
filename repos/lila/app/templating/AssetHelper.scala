@@ -23,10 +23,11 @@ trait AssetHelper { self: I18nHelper =>
   def cssVendorTag(name: String, staticDomain: Boolean = true) =
     cssAt("vendor/" + name, staticDomain)
 
-  def cssAt(path: String, staticDomain: Boolean = true) = Html {
-    val href = if (staticDomain) staticUrl(path) else routes.Assets.at(path)
-    s"""<link href="$href?v=$assetVersion" type="text/css" rel="stylesheet"/>"""
-  }
+  def cssAt(path: String, staticDomain: Boolean = true) =
+    Html {
+      val href = if (staticDomain) staticUrl(path) else routes.Assets.at(path)
+      s"""<link href="$href?v=$assetVersion" type="text/css" rel="stylesheet"/>"""
+    }
 
   def jsTag(name: String) = jsAt("javascripts/" + name)
 
@@ -90,17 +91,20 @@ trait AssetHelper { self: I18nHelper =>
     """<script src="http://cdn.jsdelivr.net/fingerprintjs2/0.7/fingerprint2.min.js"></script>"""
   }
 
-  private def cdnOrLocal(cdn: String, test: String, local: String) = Html {
-    if (isProd)
-      s"""<script src="$cdn"></script><script>$test || document.write('<script src="$local">\\x3C/script>')</script>"""
-    else
-      s"""<script src="$local"></script>"""
-  }
+  private def cdnOrLocal(cdn: String, test: String, local: String) =
+    Html {
+      if (isProd)
+        s"""<script src="$cdn"></script><script>$test || document.write('<script src="$local">\\x3C/script>')</script>"""
+      else
+        s"""<script src="$local"></script>"""
+    }
 
-  def jsAt(path: String, static: Boolean = true) = Html {
-    s"""<script src="${static
-      .fold(staticUrl(path), path)}?v=$assetVersion"></script>"""
-  }
+  def jsAt(path: String, static: Boolean = true) =
+    Html {
+      s"""<script src="${static.fold(
+        staticUrl(path),
+        path)}?v=$assetVersion"></script>"""
+    }
 
   def embedJs(js: String): Html =
     Html(s"""<script>/* <![CDATA[ */ $js /* ]]> */</script>""")

@@ -252,16 +252,17 @@ object Plugins extends PluginsFunctions {
     val (roots, nonRoots) = ns partition (_.isRoot)
     doSort(roots, nonRoots, ns.size * ns.size + 1)
   }
-  private[sbt] def translateMessage(e: LogicException) = e match {
-    case ic: InitialContradictions =>
-      s"Contradiction in selected plugins.  These plugins were both included and excluded: ${literalsString(
-        ic.literals.toSeq)}"
-    case io: InitialOverlap =>
-      s"Cannot directly enable plugins.  Plugins are enabled when their required plugins are satisifed.  The directly selected plugins were: ${literalsString(
-        io.literals.toSeq)}"
-    case cn: CyclicNegation =>
-      s"Cycles in plugin requirements cannot involve excludes.  The problematic cycle is: ${literalsString(cn.cycle)}"
-  }
+  private[sbt] def translateMessage(e: LogicException) =
+    e match {
+      case ic: InitialContradictions =>
+        s"Contradiction in selected plugins.  These plugins were both included and excluded: ${literalsString(
+          ic.literals.toSeq)}"
+      case io: InitialOverlap =>
+        s"Cannot directly enable plugins.  Plugins are enabled when their required plugins are satisifed.  The directly selected plugins were: ${literalsString(
+          io.literals.toSeq)}"
+      case cn: CyclicNegation =>
+        s"Cycles in plugin requirements cannot involve excludes.  The problematic cycle is: ${literalsString(cn.cycle)}"
+    }
   private[this] def literalsString(lits: Seq[Literal]): String =
     lits map { case Atom(l) => l; case Negated(Atom(l)) => l } mkString (", ")
 
@@ -320,18 +321,20 @@ ${listConflicts(conflicting)}""")
     def &&(o: Basic): Plugins = And(o :: plugins)
     override def toString = plugins.mkString(" && ")
   }
-  private[sbt] def and(a: Plugins, b: Plugins) = b match {
-    case Empty    => a
-    case And(ns)  => (a /: ns)(_ && _)
-    case b: Basic => a && b
-  }
-  private[sbt] def remove(a: Plugins, del: Set[Basic]): Plugins = a match {
-    case b: Basic => if (del(b)) Empty else b
-    case Empty    => Empty
-    case And(ns) =>
-      val removed = ns.filterNot(del)
-      if (removed.isEmpty) Empty else And(removed)
-  }
+  private[sbt] def and(a: Plugins, b: Plugins) =
+    b match {
+      case Empty    => a
+      case And(ns)  => (a /: ns)(_ && _)
+      case b: Basic => a && b
+    }
+  private[sbt] def remove(a: Plugins, del: Set[Basic]): Plugins =
+    a match {
+      case b: Basic => if (del(b)) Empty else b
+      case Empty    => Empty
+      case And(ns) =>
+        val removed = ns.filterNot(del)
+        if (removed.isEmpty) Empty else And(removed)
+    }
 
   /** Defines enabled-by clauses for `ap`. */
   private[sbt] def asEnabledByClauses(ap: AutoPlugin): List[Clause] =
@@ -353,44 +356,50 @@ ${listConflicts(conflicting)}""")
       case Exclude(x) => x
     }
   // TODO - This doesn't handle nested AND boolean logic...
-  private[sbt] def hasExclude(n: Plugins, p: AutoPlugin): Boolean = n match {
-    case `p`          => false
-    case Exclude(`p`) => true
-    // TODO - This is stupidly advanced.  We do a nested check through possible and-ed
-    // lists of plugins exclusions to see if the plugin ever winds up in an excluded=true case.
-    // This would handle things like !!p or !(p && z)
-    case Exclude(n) => hasInclude(n, p)
-    case And(ns)    => ns.forall(n => hasExclude(n, p))
-    case b: Basic   => false
-    case Empty      => false
-  }
-  private[sbt] def hasInclude(n: Plugins, p: AutoPlugin): Boolean = n match {
-    case `p`        => true
-    case Exclude(n) => hasExclude(n, p)
-    case And(ns)    => ns.forall(n => hasInclude(n, p))
-    case b: Basic   => false
-    case Empty      => false
-  }
-  private[this] def flattenConvert(n: Plugins): Seq[Literal] = n match {
-    case And(ns)  => convertAll(ns)
-    case b: Basic => convertBasic(b) :: Nil
-    case Empty    => Nil
-  }
-  private[sbt] def flatten(n: Plugins): Seq[Basic] = n match {
-    case And(ns)  => ns
-    case b: Basic => b :: Nil
-    case Empty    => Nil
-  }
+  private[sbt] def hasExclude(n: Plugins, p: AutoPlugin): Boolean =
+    n match {
+      case `p`          => false
+      case Exclude(`p`) => true
+      // TODO - This is stupidly advanced.  We do a nested check through possible and-ed
+      // lists of plugins exclusions to see if the plugin ever winds up in an excluded=true case.
+      // This would handle things like !!p or !(p && z)
+      case Exclude(n) => hasInclude(n, p)
+      case And(ns)    => ns.forall(n => hasExclude(n, p))
+      case b: Basic   => false
+      case Empty      => false
+    }
+  private[sbt] def hasInclude(n: Plugins, p: AutoPlugin): Boolean =
+    n match {
+      case `p`        => true
+      case Exclude(n) => hasExclude(n, p)
+      case And(ns)    => ns.forall(n => hasInclude(n, p))
+      case b: Basic   => false
+      case Empty      => false
+    }
+  private[this] def flattenConvert(n: Plugins): Seq[Literal] =
+    n match {
+      case And(ns)  => convertAll(ns)
+      case b: Basic => convertBasic(b) :: Nil
+      case Empty    => Nil
+    }
+  private[sbt] def flatten(n: Plugins): Seq[Basic] =
+    n match {
+      case And(ns)  => ns
+      case b: Basic => b :: Nil
+      case Empty    => Nil
+    }
 
-  private[this] def convert(n: Plugins): Formula = n match {
-    case And(ns)  => convertAll(ns).reduce[Formula](_ && _)
-    case b: Basic => convertBasic(b)
-    case Empty    => Formula.True
-  }
-  private[this] def convertBasic(b: Basic): Literal = b match {
-    case Exclude(n)    => !convertBasic(n)
-    case a: AutoPlugin => Atom(a.label)
-  }
+  private[this] def convert(n: Plugins): Formula =
+    n match {
+      case And(ns)  => convertAll(ns).reduce[Formula](_ && _)
+      case b: Basic => convertBasic(b)
+      case Empty    => Formula.True
+    }
+  private[this] def convertBasic(b: Basic): Literal =
+    b match {
+      case Exclude(n)    => !convertBasic(n)
+      case a: AutoPlugin => Atom(a.label)
+    }
   private[this] def convertAll(ns: Seq[Basic]): Seq[Literal] =
     ns map convertBasic
 

@@ -97,9 +97,10 @@ class DatabaseService(dir: File) extends SLF4JLogging {
     fqn: Rep[String] => fqnSymbols.filter(_.fqn === fqn).take(1)
   }
 
-  def find(fqn: String): Future[Option[FqnSymbol]] = db.run(
-    findCompiled(fqn).result.headOption
-  )
+  def find(fqn: String): Future[Option[FqnSymbol]] =
+    db.run(
+      findCompiled(fqn).result.headOption
+    )
 
   import org.ensime.indexer.IndexService._
   def find(fqns: List[FqnIndex])(

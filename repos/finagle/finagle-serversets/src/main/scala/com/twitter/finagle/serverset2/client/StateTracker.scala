@@ -21,19 +21,21 @@ class StateTracker(
     timerTask.close(deadline)
   }
 
-  def transition(newState: SessionState): Unit = synchronized {
-    sample()
-    currState = Some(newState)
-  }
-
-  private[this] def sample(): Unit = synchronized {
-    val now = Time.now
-    val delta = now - lastSample
-    lastSample = now
-    currState foreach { state =>
-      statsReceiver
-        .counter(s"${state.name}_duration_ms")
-        .incr(delta.inMilliseconds.toInt)
+  def transition(newState: SessionState): Unit =
+    synchronized {
+      sample()
+      currState = Some(newState)
     }
-  }
+
+  private[this] def sample(): Unit =
+    synchronized {
+      val now = Time.now
+      val delta = now - lastSample
+      lastSample = now
+      currState foreach { state =>
+        statsReceiver
+          .counter(s"${state.name}_duration_ms")
+          .incr(delta.inMilliseconds.toInt)
+      }
+    }
 }

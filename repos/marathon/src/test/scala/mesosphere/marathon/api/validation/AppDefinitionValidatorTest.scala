@@ -407,29 +407,33 @@ class AppDefinitionValidatorTest
   }
 
   class Fixture {
-    def validDockerContainer: Container = Container(
-      `type` = mesos.ContainerInfo.Type.DOCKER,
-      volumes = Nil,
-      docker = Some(Docker(image = "foo/bar:latest"))
-    )
+    def validDockerContainer: Container =
+      Container(
+        `type` = mesos.ContainerInfo.Type.DOCKER,
+        volumes = Nil,
+        docker = Some(Docker(image = "foo/bar:latest"))
+      )
 
-    def invalidDockerContainer: Container = Container(
-      `type` = mesos.ContainerInfo.Type.DOCKER,
-      volumes = Nil,
-      docker = None
-    )
+    def invalidDockerContainer: Container =
+      Container(
+        `type` = mesos.ContainerInfo.Type.DOCKER,
+        volumes = Nil,
+        docker = None
+      )
 
-    def validMesosContainer: Container = Container(
-      `type` = mesos.ContainerInfo.Type.MESOS,
-      volumes = Nil,
-      docker = None
-    )
+    def validMesosContainer: Container =
+      Container(
+        `type` = mesos.ContainerInfo.Type.MESOS,
+        volumes = Nil,
+        docker = None
+      )
 
-    def invalidMesosContainer: Container = Container(
-      `type` = mesos.ContainerInfo.Type.MESOS,
-      volumes = Nil,
-      docker = Some(Docker(image = "foo/bar:latest"))
-    )
+    def invalidMesosContainer: Container =
+      Container(
+        `type` = mesos.ContainerInfo.Type.MESOS,
+        volumes = Nil,
+        docker = Some(Docker(image = "foo/bar:latest"))
+      )
 
     // scalastyle:off magic.number
     def validPersistentVolume: PersistentVolume =

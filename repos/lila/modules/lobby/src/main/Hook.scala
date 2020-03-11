@@ -39,9 +39,10 @@ case class Hook(
       (memberOnly || h.memberOnly).fold(isAuth && h.isAuth, true) &&
       ratingRangeCompatibleWith(h) && h.ratingRangeCompatibleWith(this)
 
-  private def ratingRangeCompatibleWith(h: Hook) = realRatingRange.fold(true) {
-    range => h.rating ?? range.contains
-  }
+  private def ratingRangeCompatibleWith(h: Hook) =
+    realRatingRange.fold(true) {
+      range => h.rating ?? range.contains
+    }
 
   private def compatibilityProperties =
     (variant, clock.limit, clock.increment, mode)
@@ -52,9 +53,8 @@ case class Hook(
   def userId = user map (_.id)
   def isAuth = user.nonEmpty
   def username = user.fold(User.anonymous)(_.username)
-  def rating = user flatMap { u =>
-    perfType map (_.key) flatMap u.ratingMap.get
-  }
+  def rating =
+    user flatMap { u => perfType map (_.key) flatMap u.ratingMap.get }
   def engine = user ?? (_.engine)
   def booster = user ?? (_.booster)
   def lame = user ?? (_.lame)

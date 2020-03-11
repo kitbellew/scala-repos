@@ -56,10 +56,11 @@ object any extends UFunc {
 
   implicit def reduceZero[T, S](implicit
       impl2: Impl2[S => Boolean, T, Boolean],
-      z: Zero[S]): Impl[T, Boolean] = new Impl[T, Boolean] {
-    override def apply(v: T): Boolean = {
-      any((_: S) != z.zero, v)
+      z: Zero[S]): Impl[T, Boolean] =
+    new Impl[T, Boolean] {
+      override def apply(v: T): Boolean = {
+        any((_: S) != z.zero, v)
+      }
     }
-  }
 
 }

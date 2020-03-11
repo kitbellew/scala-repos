@@ -70,12 +70,13 @@ object BitSet extends BitSetFactory[BitSet] {
   val empty: BitSet = new BitSet1(0L)
 
   /** A builder that takes advantage of mutable BitSets. */
-  def newBuilder: Builder[Int, BitSet] = new Builder[Int, BitSet] {
-    private[this] val b = new mutable.BitSet
-    def +=(x: Int) = { b += x; this }
-    def clear() = b.clear()
-    def result() = b.toImmutable
-  }
+  def newBuilder: Builder[Int, BitSet] =
+    new Builder[Int, BitSet] {
+      private[this] val b = new mutable.BitSet
+      def +=(x: Int) = { b += x; this }
+      def clear() = b.clear()
+      def result() = b.toImmutable
+    }
 
   /** $bitsetCanBuildFrom */
   implicit def canBuildFrom: CanBuildFrom[BitSet, Int, BitSet] =

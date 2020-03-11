@@ -51,13 +51,14 @@ final private[stream] class QueueSource[T](
         if (maxBuffer > 0) buffer = Buffer(maxBuffer, materializer)
         initCallback(callback.invoke)
       }
-      override def postStop(): Unit = stopCallback {
-        case Offer(elem, promise) ⇒
-          promise.failure(
-            new IllegalStateException(
-              "Stream is terminated. SourceQueue is detached"))
-        case _ ⇒ // ignore
-      }
+      override def postStop(): Unit =
+        stopCallback {
+          case Offer(elem, promise) ⇒
+            promise.failure(
+              new IllegalStateException(
+                "Stream is terminated. SourceQueue is detached"))
+          case _ ⇒ // ignore
+        }
 
       private def enqueueAndSuccess(offer: Offer[T]): Unit = {
         buffer.enqueue(offer.elem)

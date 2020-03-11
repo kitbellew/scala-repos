@@ -453,32 +453,33 @@ trait Polynomial[@sp(Double) C] { lhs =>
     loop(0)
   }
 
-  override def equals(that: Any): Boolean = that match {
-    case rhs: Polynomial[_] if lhs.degree == rhs.degree =>
-      val it1 = lhs.termsIterator
-      val it2 = rhs.termsIterator
-      @tailrec def loop(): Boolean = {
-        val has1 = it1.hasNext
-        val has2 = it2.hasNext
-        if (has1 && has2) {
-          if (it1.next == it2.next) loop() else false
-        } else has1 == has2
-      }
-      loop()
+  override def equals(that: Any): Boolean =
+    that match {
+      case rhs: Polynomial[_] if lhs.degree == rhs.degree =>
+        val it1 = lhs.termsIterator
+        val it2 = rhs.termsIterator
+        @tailrec def loop(): Boolean = {
+          val has1 = it1.hasNext
+          val has2 = it2.hasNext
+          if (has1 && has2) {
+            if (it1.next == it2.next) loop() else false
+          } else has1 == has2
+        }
+        loop()
 
-    case rhs: Polynomial[_] =>
-      false
+      case rhs: Polynomial[_] =>
+        false
 
-    case n if lhs.isZero =>
-      n == 0
+      case n if lhs.isZero =>
+        n == 0
 
-    case n if lhs.degree == 0 =>
-      val (_, lcs) = Polynomial.split(lhs)
-      lcs(0) == n
+      case n if lhs.degree == 0 =>
+        val (_, lcs) = Polynomial.split(lhs)
+        lcs(0) == n
 
-    case _ =>
-      false
-  }
+      case _ =>
+        false
+    }
 
   override def toString: String =
     if (isZero) {

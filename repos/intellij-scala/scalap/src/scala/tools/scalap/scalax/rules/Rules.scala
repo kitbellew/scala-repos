@@ -37,14 +37,16 @@ trait Rules {
   implicit def seqRule[In, A, X](rule: Rule[In, In, A, X]): SeqRule[In, A, X] =
     new SeqRule(rule)
 
-  def from[In] = new {
-    def apply[Out, A, X](f: In => Result[Out, A, X]) = rule(f)
-  }
+  def from[In] =
+    new {
+      def apply[Out, A, X](f: In => Result[Out, A, X]) = rule(f)
+    }
 
-  def state[s] = new StateRules {
-    type S = s
-    val factory = Rules.this
-  }
+  def state[s] =
+    new StateRules {
+      type S = s
+      val factory = Rules.this
+    }
 
   def success[Out, A](out: Out, a: A) = rule { in: Any => Success(out, a) }
 
@@ -137,25 +139,25 @@ trait StateRules {
   /** Create a rule that succeeds with a list of all the provided rules that succeed.
       @param rules the rules to apply in sequence.
     */
-  def anyOf[A, X](rules: Seq[Rule[A, X]]) = allOf(rules.map(_ ?)) ^^ { opts =>
-    opts.flatMap(x => x)
-  }
+  def anyOf[A, X](rules: Seq[Rule[A, X]]) =
+    allOf(rules.map(_ ?)) ^^ { opts => opts.flatMap(x => x) }
 
   /** Repeatedly apply a rule from initial value until finished condition is met. */
   def repeatUntil[T, X](rule: Rule[T => T, X])(finished: T => Boolean)(
-      initial: T) = apply {
-    // more compact using HoF but written this way so it's tail-recursive
-    def rep(in: S, t: T): Result[S, T, X] = {
-      if (finished(t)) Success(in, t)
-      else
-        rule(in) match {
-          case Success(out, f) => rep(out, f(t))
-          case Failure         => Failure
-          case Error(x)        => Error(x)
-        }
+      initial: T) =
+    apply {
+      // more compact using HoF but written this way so it's tail-recursive
+      def rep(in: S, t: T): Result[S, T, X] = {
+        if (finished(t)) Success(in, t)
+        else
+          rule(in) match {
+            case Success(out, f) => rep(out, f(t))
+            case Failure         => Failure
+            case Error(x)        => Error(x)
+          }
+      }
+      in => rep(in, initial)
     }
-    in => rep(in, initial)
-  }
 
 }
 

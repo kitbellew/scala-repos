@@ -149,10 +149,11 @@ object AddressFromURIString {
   /**
     * Try to construct an Address from the given String or throw a java.net.MalformedURLException.
     */
-  def apply(addr: String): Address = addr match {
-    case AddressFromURIString(address) ⇒ address
-    case _ ⇒ throw new MalformedURLException(addr)
-  }
+  def apply(addr: String): Address =
+    addr match {
+      case AddressFromURIString(address) ⇒ address
+      case _ ⇒ throw new MalformedURLException(addr)
+    }
 
   /**
     * Java API: Try to construct an Address from the given String or throw a java.net.MalformedURLException.

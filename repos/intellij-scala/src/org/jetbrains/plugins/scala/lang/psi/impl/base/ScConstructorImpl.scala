@@ -268,15 +268,16 @@ class ScConstructorImpl(node: ASTNode)
     simpleTypeElement.flatMap(_.reference)
   }
 
-  def simpleTypeElement: Option[ScSimpleTypeElement] = typeElement match {
-    case s: ScSimpleTypeElement => Some(s)
-    case p: ScParameterizedTypeElement =>
-      p.typeElement match {
-        case s: ScSimpleTypeElement => Some(s)
-        case _                      => None
-      }
-    case _ => None
-  }
+  def simpleTypeElement: Option[ScSimpleTypeElement] =
+    typeElement match {
+      case s: ScSimpleTypeElement => Some(s)
+      case p: ScParameterizedTypeElement =>
+        p.typeElement match {
+          case s: ScSimpleTypeElement => Some(s)
+          case _                      => None
+        }
+      case _ => None
+    }
 
   override def accept(visitor: ScalaElementVisitor) {
     visitor.visitConstructor(this)

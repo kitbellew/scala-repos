@@ -46,12 +46,13 @@ abstract class AbstractTable[T](
     * parameter. */
   def * : ProvenShape[T]
 
-  override def toNode = tableTag match {
-    case _: BaseTag =>
-      val sym = new AnonSymbol
-      TableExpansion(sym, tableNode, tableTag.taggedAs(Ref(sym)).*.toNode)
-    case t: RefTag => t.path
-  }
+  override def toNode =
+    tableTag match {
+      case _: BaseTag =>
+        val sym = new AnonSymbol
+        TableExpansion(sym, tableNode, tableTag.taggedAs(Ref(sym)).*.toNode)
+      case t: RefTag => t.path
+    }
 
   def create_* : Iterable[FieldSymbol] = collectFieldSymbols(*.toNode)
 

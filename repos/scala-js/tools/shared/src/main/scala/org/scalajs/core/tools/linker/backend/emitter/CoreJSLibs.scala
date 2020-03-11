@@ -52,19 +52,20 @@ private[scalajs] object CoreJSLibs {
       outputMode: OutputMode): String = {
     // This is a basic sort-of-C-style preprocessor
 
-    def getOption(name: String): String = name match {
-      case "asInstanceOfs" =>
-        semantics.asInstanceOfs.toString()
-      case "moduleInit" =>
-        semantics.moduleInit.toString()
-      case "floats" =>
-        if (semantics.strictFloats) "Strict"
-        else "Loose"
-      case "productionMode" =>
-        semantics.productionMode.toString()
-      case "outputMode" =>
-        outputMode.toString()
-    }
+    def getOption(name: String): String =
+      name match {
+        case "asInstanceOfs" =>
+          semantics.asInstanceOfs.toString()
+        case "moduleInit" =>
+          semantics.moduleInit.toString()
+        case "floats" =>
+          if (semantics.strictFloats) "Strict"
+          else "Loose"
+        case "productionMode" =>
+          semantics.productionMode.toString()
+        case "outputMode" =>
+          outputMode.toString()
+      }
 
     val originalLines = ScalaJSEnvLines
 

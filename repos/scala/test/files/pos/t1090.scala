@@ -9,8 +9,9 @@ object Test {
     trait Manager extends Test.Manager {
       type Node = Core.this.Node
     }
-    def f(manager: Manager) = manager.iterator.foreach {
-      case node: NodeImpl =>
-    }
+    def f(manager: Manager) =
+      manager.iterator.foreach {
+        case node: NodeImpl =>
+      }
   }
 }

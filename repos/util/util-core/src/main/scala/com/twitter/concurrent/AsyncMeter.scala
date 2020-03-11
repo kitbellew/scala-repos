@@ -239,14 +239,15 @@ class AsyncMeter private[concurrent] (
       floor.toInt
     })
 
-  private[this] def restartTimerIfDead(): Unit = synchronized {
-    if (!running) {
-      running = true
-      task = timer.schedule(interval) {
-        allow()
+  private[this] def restartTimerIfDead(): Unit =
+    synchronized {
+      if (!running) {
+        running = true
+        task = timer.schedule(interval) {
+          allow()
+        }
       }
     }
-  }
 
   // it's safe to race on allow, because polling loop is locked
   private[this] final def allow(): Unit = {

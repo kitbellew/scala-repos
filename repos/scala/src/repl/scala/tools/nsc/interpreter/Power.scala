@@ -94,12 +94,13 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
   class PackageSlurper(packageClass: Symbol) extends SymSlurper {
 
     /** Looking for dwindling returns */
-    def droppedEnough() = unseenHistory.size >= 4 && {
-      unseenHistory takeRight 4 sliding 2 forall { it =>
-        val List(a, b) = it.toList
-        a > b
+    def droppedEnough() =
+      unseenHistory.size >= 4 && {
+        unseenHistory takeRight 4 sliding 2 forall { it =>
+          val List(a, b) = it.toList
+          a > b
+        }
       }
-    }
 
     def isRecur(sym: Symbol) = true
     def isIgnore(sym: Symbol) =
@@ -116,10 +117,11 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
     }
   }
 
-  private def customBanner = replProps.powerBanner.option flatMap {
-    case f if f.getName == "classic" => Some(classic)
-    case f                           => io.File(f).safeSlurp()
-  }
+  private def customBanner =
+    replProps.powerBanner.option flatMap {
+      case f if f.getName == "classic" => Some(classic)
+      case f                           => io.File(f).safeSlurp()
+    }
   private def customInit =
     replProps.powerInitCode.option flatMap (f => io.File(f).safeSlurp())
 
@@ -151,14 +153,15 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
 
   /** Quietly starts up power mode and runs whatever is in init.
     */
-  def unleash(): Unit = beQuietDuring {
-    // First we create the ReplVals instance and bind it to $r
-    intp.bind("$r", replVals)
-    // Then we import everything from $r.
-    intp interpret s"import ${intp.originalPath("$r")}._"
-    // And whatever else there is to do.
-    init.lines foreach (intp interpret _)
-  }
+  def unleash(): Unit =
+    beQuietDuring {
+      // First we create the ReplVals instance and bind it to $r
+      intp.bind("$r", replVals)
+      // Then we import everything from $r.
+      intp interpret s"import ${intp.originalPath("$r")}._"
+      // And whatever else there is to do.
+      init.lines foreach (intp interpret _)
+    }
 
   trait LowPriorityInternalInfo {
     implicit def apply[T: ru.TypeTag: ClassTag]: InternalInfo[T] =
@@ -188,12 +191,13 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
     private def isImplClass(s: Symbol) = s.name.toString endsWith "$class"
 
     /** Standard noise reduction filter. */
-    def excludeMember(s: Symbol) = (
-      isSpecialized(s)
-        || isImplClass(s)
-        || s.isAnonOrRefinementClass
-        || s.isAnonymousFunction
-    )
+    def excludeMember(s: Symbol) =
+      (
+        isSpecialized(s)
+          || isImplClass(s)
+          || s.isAnonOrRefinementClass
+          || s.isAnonymousFunction
+      )
     def symbol = compilerSymbolFromTag(tag)
     def tpe = compilerTypeFromTag(tag)
     def members = membersUnabridged filterNot excludeMember
@@ -204,25 +208,27 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
     def shortClass = runtimeClass.getName split "[$.]" last
     def baseClasses = tpe.baseClasses
 
-    override def toString = value match {
-      case Some(x) => "%s (%s)".format(x, shortClass)
-      case _       => runtimeClass.getName
-    }
+    override def toString =
+      value match {
+        case Some(x) => "%s (%s)".format(x, shortClass)
+        case _       => runtimeClass.getName
+      }
   }
 
   trait LowPriorityPrettifier {
     implicit object AnyPrettifier extends Prettifier[Any] {
       def show(x: Any): Unit = prettify(x) foreach println
-      def prettify(x: Any): TraversableOnce[String] = x match {
-        case x: Name => List(x.decode)
-        case Tuple2(k, v) =>
-          List(
-            prettify(k).toIterator ++ Iterator("->") ++ prettify(
-              v) mkString " ")
-        case xs: Array[_]           => xs.iterator flatMap prettify
-        case xs: TraversableOnce[_] => xs flatMap prettify
-        case x                      => List(Prettifier.stringOf(x))
-      }
+      def prettify(x: Any): TraversableOnce[String] =
+        x match {
+          case x: Name => List(x.decode)
+          case Tuple2(k, v) =>
+            List(
+              prettify(k).toIterator ++ Iterator("->") ++ prettify(
+                v) mkString " ")
+          case xs: Array[_]           => xs.iterator flatMap prettify
+          case xs: TraversableOnce[_] => xs flatMap prettify
+          case x                      => List(Prettifier.stringOf(x))
+        }
     }
   }
   object StringPrettifier extends Prettifier[String] {
@@ -231,10 +237,11 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
   }
   object Prettifier extends LowPriorityPrettifier {
     def stringOf(x: Any): String = scala.runtime.ScalaRunTime.stringOf(x)
-    def default[T] = new Prettifier[T] {
-      def prettify(x: T): TraversableOnce[String] = AnyPrettifier prettify x
-      def show(x: T): Unit = AnyPrettifier show x
-    }
+    def default[T] =
+      new Prettifier[T] {
+        def prettify(x: T): TraversableOnce[String] = AnyPrettifier prettify x
+        def show(x: T): Unit = AnyPrettifier show x
+      }
   }
   trait Prettifier[T] {
     def show(x: T): Unit
@@ -268,11 +275,12 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
 
   class RichReplString(s: String) {
     // make an url out of the string
-    def u: URL = (
-      if (s contains ":") new URL(s)
-      else if (new JFile(s) exists) new JFile(s).toURI.toURL
-      else new URL("http://" + s)
-    )
+    def u: URL =
+      (
+        if (s contains ":") new URL(s)
+        else if (new JFile(s) exists) new JFile(s).toURI.toURL
+        else new URL("http://" + s)
+      )
   }
   class RichInputStream(in: InputStream)(implicit codec: Codec) {
     def bytes(): Array[Byte] = io.Streamable.bytes(in)
@@ -348,9 +356,8 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
   with Phased {}
 
   def unit(code: String) = newCompilationUnit(code)
-  def trees(code: String) = parse(code) match {
-    case parse.Success(trees) => trees; case _ => Nil
-  }
+  def trees(code: String) =
+    parse(code) match { case parse.Success(trees) => trees; case _ => Nil }
 
   override def toString = s"""
     |** Power mode status **

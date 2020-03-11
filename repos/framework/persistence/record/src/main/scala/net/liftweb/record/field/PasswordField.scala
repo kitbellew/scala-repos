@@ -81,11 +81,12 @@ trait PasswordTypedField extends TypedField[String] {
     }
   }
 
-  def setFromString(s: String): Box[String] = s match {
-    case null | "" if optional_? => setBoxPlain(Empty)
-    case null | ""               => setBoxPlain(Failure(notOptionalErrorMessage))
-    case _                       => setBoxPlain(Full(s))
-  }
+  def setFromString(s: String): Box[String] =
+    s match {
+      case null | "" if optional_? => setBoxPlain(Empty)
+      case null | ""               => setBoxPlain(Failure(notOptionalErrorMessage))
+      case _                       => setBoxPlain(Full(s))
+    }
 
   override def validate: List[FieldError] = {
     if (!invalidPw && valueBox != defaultValueBox) Nil
@@ -97,13 +98,14 @@ trait PasswordTypedField extends TypedField[String] {
 
   override def formInputType = "password"
 
-  private def elem = S.fmapFunc(SFuncHolder(this.setFromAny(_))) {
-    funcName =>
-      <input type={formInputType}
+  private def elem =
+    S.fmapFunc(SFuncHolder(this.setFromAny(_))) {
+      funcName =>
+        <input type={formInputType}
       name={funcName}
       value={valueBox openOr ""}
       tabindex={tabIndex.toString}/>
-  }
+    }
 
   def toForm: Box[NodeSeq] =
     uniqueFieldId match {
@@ -131,11 +133,12 @@ trait PasswordTypedField extends TypedField[String] {
 
   def asJValue: JValue = valueBox.map(v => JString(v)) openOr (JNothing: JValue)
 
-  def setFromJValue(jvalue: JValue): Box[MyType] = jvalue match {
-    case JNothing | JNull if optional_? => setBoxPlain(Empty)
-    case JString(s)                     => setFromString(s)
-    case other                          => setBoxPlain(FieldHelpers.expectedA("JString", other))
-  }
+  def setFromJValue(jvalue: JValue): Box[MyType] =
+    jvalue match {
+      case JNothing | JNull if optional_? => setBoxPlain(Empty)
+      case JString(s)                     => setFromString(s)
+      case other                          => setBoxPlain(FieldHelpers.expectedA("JString", other))
+    }
 
 }
 

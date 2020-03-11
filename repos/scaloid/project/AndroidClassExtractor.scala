@@ -419,62 +419,64 @@ object AndroidClassExtractor extends JavaConversionHelpers {
       isDeprecated(cls))
   }
 
-  def extractTask = (moduleName, baseDirectory, streams) map {
-    (mName, baseDir, s) =>
-      if (mName == "parent") Map[String, AndroidClass]()
-      else {
-        s.log.info("Extracting class info from Android...")
+  def extractTask =
+    (moduleName, baseDirectory, streams) map {
+      (mName, baseDir, s) =>
+        if (mName == "parent") Map[String, AndroidClass]()
+        else {
+          s.log.info("Extracting class info from Android...")
 
-        val classLoaders =
-          List(
-            ClasspathHelper.contextClassLoader(),
-            ClasspathHelper.staticClassLoader())
+          val classLoaders =
+            List(
+              ClasspathHelper.contextClassLoader(),
+              ClasspathHelper.staticClassLoader())
 
-        val inputFilter = new FilterBuilder()
-          .include(FilterBuilder.prefix("android"))
-          .exclude(
-            ".*Honeycomb.*"
-          ) // excluding some classes that depends on the Android library ABOVE 2.1.1
-          .exclude(".*Compat.*")
+          val inputFilter = new FilterBuilder()
+            .include(FilterBuilder.prefix("android"))
+            .exclude(
+              ".*Honeycomb.*"
+            ) // excluding some classes that depends on the Android library ABOVE 2.1.1
+            .exclude(".*Compat.*")
 
-        val r = new Reflections(
-          new ConfigurationBuilder()
-            .addClassLoaders(classLoaders: _*)
-            .setScanners(new SubTypesScanner(false), new ResourcesScanner())
-            .setUrls(ClasspathHelper.forClassLoader(classLoaders: _*))
-            .filterInputsBy(inputFilter))
+          val r = new Reflections(
+            new ConfigurationBuilder()
+              .addClassLoaders(classLoaders: _*)
+              .setScanners(new SubTypesScanner(false), new ResourcesScanner())
+              .setUrls(ClasspathHelper.forClassLoader(classLoaders: _*))
+              .filterInputsBy(inputFilter))
 
-        val clss = asScalaSet(r.getSubTypesOf(classOf[java.lang.Object]))
-        val res = clss.toList
-          .filter(isPublic)
-          .filter {
-            !_.getName.contains(
-              "$"
-            ) // excludes inner classes for now - let's deal with it later
-          }
-          .filter { n =>
-            val name = n.toString
-            !name.contains("webkit") || name.contains(
-              "WebView"
-            ) // excludes android.webkit.* in Android 2.1.1, which is deprecated
-          }
-          .filter {
-            !_.getName.contains(
-              "RemoteViewsService"
-            ) // excludes RemoteViewsService, because it is packaged weird place "android.view"
-          }
-          .filter(sourceExists)
-          .map(toAndroidClass)
-          .map(c => c.tpe.name -> c)
-          .toMap
+          val clss = asScalaSet(r.getSubTypesOf(classOf[java.lang.Object]))
+          val res = clss.toList
+            .filter(isPublic)
+            .filter {
+              !_.getName.contains(
+                "$"
+              ) // excludes inner classes for now - let's deal with it later
+            }
+            .filter { n =>
+              val name = n.toString
+              !name.contains("webkit") || name.contains(
+                "WebView"
+              ) // excludes android.webkit.* in Android 2.1.1, which is deprecated
+            }
+            .filter {
+              !_.getName.contains(
+                "RemoteViewsService"
+              ) // excludes RemoteViewsService, because it is packaged weird place "android.view"
+            }
+            .filter(sourceExists)
+            .map(toAndroidClass)
+            .map(c => c.tpe.name -> c)
+            .toMap
 
-        val values = res.values.toList
-        s.log.info("Done.")
-        s.log.info("Classes: " + values.length)
-        s.log.info("Properties: " + values.map(_.properties).flatten.length)
-        s.log.info("Listeners: " + values.map(_.listeners).flatten.length)
-        s.log.info("Constructors: " + values.map(_.constructors).flatten.length)
-        res
-      }
-  }
+          val values = res.values.toList
+          s.log.info("Done.")
+          s.log.info("Classes: " + values.length)
+          s.log.info("Properties: " + values.map(_.properties).flatten.length)
+          s.log.info("Listeners: " + values.map(_.listeners).flatten.length)
+          s.log.info(
+            "Constructors: " + values.map(_.constructors).flatten.length)
+          res
+        }
+    }
 }

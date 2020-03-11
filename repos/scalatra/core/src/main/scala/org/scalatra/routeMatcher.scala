@@ -93,16 +93,16 @@ final class SinatraRouteMatcher(pattern: String)
     def apply(pattern: String): (Builder => Builder) =
       parseAll(tokens, pattern) get
 
-    private def tokens: Parser[Builder => Builder] = rep(token) ^^ {
-      tokens => tokens reduceLeft ((acc, fun) => builder => fun(acc(builder)))
-    }
+    private def tokens: Parser[Builder => Builder] =
+      rep(token) ^^ {
+        tokens => tokens reduceLeft ((acc, fun) => builder => fun(acc(builder)))
+      }
 
     private def token: Parser[Builder => Builder] =
       splat | prefixedOptional | optional | named | literal
 
-    private def splat: Parser[Builder => Builder] = "*" ^^^ { builder =>
-      builder addSplat
-    }
+    private def splat: Parser[Builder => Builder] =
+      "*" ^^^ { builder => builder addSplat }
 
     private def prefixedOptional: Parser[Builder => Builder] =
       ("." | "/") ~ "?:" ~ """\w+""".r ~ "?" ^^ {
@@ -175,9 +175,10 @@ final class RailsRouteMatcher(pattern: String)
     def apply(pattern: String): (Builder => Builder) =
       parseAll(tokens, pattern) get
 
-    private def tokens: Parser[Builder => Builder] = rep(token) ^^ {
-      tokens => tokens reduceLeft ((acc, fun) => builder => fun(acc(builder)))
-    }
+    private def tokens: Parser[Builder => Builder] =
+      rep(token) ^^ {
+        tokens => tokens reduceLeft ((acc, fun) => builder => fun(acc(builder)))
+      }
 
     //private def token = param | glob | optional | static
     private def token: Parser[Builder => Builder] =

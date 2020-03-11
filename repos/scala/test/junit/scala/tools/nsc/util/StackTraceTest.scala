@@ -92,8 +92,8 @@ class StackTraceTest extends Expecting {
       assert(res.length > 5)
     }
   }
-  @Test def showsOnlyPrefix() = probe(sample)(_.getMethodName == "sample") {
-    s =>
+  @Test def showsOnlyPrefix() =
+    probe(sample)(_.getMethodName == "sample") { s =>
       val res = s.lines.toList
       /*
     expect {
@@ -101,9 +101,9 @@ class StackTraceTest extends Expecting {
     }
        */
       assert(res.length == 3)
-  }
-  @Test def showsCause() = probe(resampler)(_.getMethodName != "resampler") {
-    s =>
+    }
+  @Test def showsCause() =
+    probe(resampler)(_.getMethodName != "resampler") { s =>
       val res = s.lines.toList
       /*
     expect {
@@ -113,7 +113,7 @@ class StackTraceTest extends Expecting {
        */
       assert(res.length == 6)
       assert(res exists (_ startsWith CausedBy.toString))
-  }
+    }
   @Test def showsWrappedExceptions() =
     probe(rewrapperer)(_.getMethodName != "rewrapperer") { s =>
       val res = s.lines.toList
@@ -132,8 +132,8 @@ class StackTraceTest extends Expecting {
         case s if s startsWith CausedBy.toString => s
       }).size == 2)
     }
-  @Test def dontBlowOnCycle() = probe(insaner)(_.getMethodName != "insaner") {
-    s =>
+  @Test def dontBlowOnCycle() =
+    probe(insaner)(_.getMethodName != "insaner") { s =>
       val res = s.lines.toList
       /*
     expect {
@@ -143,7 +143,7 @@ class StackTraceTest extends Expecting {
        */
       assert(res.length == 7)
       assert(res exists (_ startsWith CausedBy.toString))
-  }
+    }
 
   /** Java 7, but shouldn't bomb on Java 6.
     *

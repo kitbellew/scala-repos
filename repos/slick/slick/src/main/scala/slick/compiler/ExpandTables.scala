@@ -20,33 +20,34 @@ class ExpandTables extends Phase {
     def createResult(
         expansions: collection.Map[TableIdentitySymbol, (TermSymbol, Node)],
         path: Node,
-        tpe: Type): Node = tpe match {
-      case p: ProductType =>
-        ProductNode(p.elements.zipWithIndex.map {
-          case (t, i) =>
-            createResult(expansions, Select(path, ElementSymbol(i + 1)), t)
-        })
-      case NominalType(tsym: TableIdentitySymbol, _)
-          if expansions contains tsym =>
-        val (sym, exp) = expansions(tsym)
-        exp.replace { case Ref(s) if s == sym => path }
-      case tpe: NominalType =>
-        createResult(expansions, path, tpe.structuralView)
-      case m: MappedScalaType =>
-        TypeMapping(
-          createResult(expansions, path, m.baseType),
-          m.mapper,
-          m.classTag)
-      case OptionType(el) =>
-        val gen = new AnonSymbol
-        createdOption = true
-        OptionFold(
-          path,
-          LiteralNode.nullOption,
-          OptionApply(createResult(expansions, Ref(gen), el)),
-          gen)
-      case _ => path
-    }
+        tpe: Type): Node =
+      tpe match {
+        case p: ProductType =>
+          ProductNode(p.elements.zipWithIndex.map {
+            case (t, i) =>
+              createResult(expansions, Select(path, ElementSymbol(i + 1)), t)
+          })
+        case NominalType(tsym: TableIdentitySymbol, _)
+            if expansions contains tsym =>
+          val (sym, exp) = expansions(tsym)
+          exp.replace { case Ref(s) if s == sym => path }
+        case tpe: NominalType =>
+          createResult(expansions, path, tpe.structuralView)
+        case m: MappedScalaType =>
+          TypeMapping(
+            createResult(expansions, path, m.baseType),
+            m.mapper,
+            m.classTag)
+        case OptionType(el) =>
+          val gen = new AnonSymbol
+          createdOption = true
+          OptionFold(
+            path,
+            LiteralNode.nullOption,
+            OptionApply(createResult(expansions, Ref(gen), el)),
+            gen)
+        case _ => path
+      }
 
     val s2 = state
       .map { n =>
@@ -73,22 +74,23 @@ class ExpandTables extends Phase {
           val tables =
             new mutable.HashMap[TableIdentitySymbol, (TermSymbol, Node)]
           var expandDistinct = false
-          def tr(tree: Node): Node = tree.replace {
-            case t: TableExpansion =>
-              val ts = t.table.asInstanceOf[TableNode].identity
-              tables += ((ts, (t.generator, t.columns)))
-              t.table :@ CollectionType(
-                t.nodeType.asCollectionType.cons,
-                structs(ts))
-            case r: Ref => r.untyped
-            case d: Distinct =>
-              if (d.nodeType.existsType {
-                    case NominalType(_: TableIdentitySymbol, _) => true;
-                    case _                                      => false
-                  })
-                expandDistinct = true
-              d.mapChildren(tr)
-          }
+          def tr(tree: Node): Node =
+            tree.replace {
+              case t: TableExpansion =>
+                val ts = t.table.asInstanceOf[TableNode].identity
+                tables += ((ts, (t.generator, t.columns)))
+                t.table :@ CollectionType(
+                  t.nodeType.asCollectionType.cons,
+                  structs(ts))
+              case r: Ref => r.untyped
+              case d: Distinct =>
+                if (d.nodeType.existsType {
+                      case NominalType(_: TableIdentitySymbol, _) => true;
+                      case _                                      => false
+                    })
+                  expandDistinct = true
+                d.mapChildren(tr)
+            }
           val tree2 = tr(tree).infer()
           logger.debug("With correct table types:", tree2)
           logger.debug("Table expansions: " + tables.mkString(", "))

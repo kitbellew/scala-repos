@@ -66,25 +66,27 @@ trait SerializationSupport {
     val out = new ByteArrayOutputStream()
     val buffer = new Array[Byte](BufferSize)
 
-    @tailrec def readChunk(): Unit = in.read(buffer) match {
-      case -1 ⇒ ()
-      case n ⇒
-        out.write(buffer, 0, n)
-        readChunk()
-    }
+    @tailrec def readChunk(): Unit =
+      in.read(buffer) match {
+        case -1 ⇒ ()
+        case n ⇒
+          out.write(buffer, 0, n)
+          readChunk()
+      }
 
     try readChunk()
     finally in.close()
     out.toByteArray
   }
 
-  def addressToProto(address: Address): dm.Address.Builder = address match {
-    case Address(_, _, Some(host), Some(port)) ⇒
-      dm.Address.newBuilder().setHostname(host).setPort(port)
-    case _ ⇒
-      throw new IllegalArgumentException(
-        s"Address [${address}] could not be serialized: host or port missing.")
-  }
+  def addressToProto(address: Address): dm.Address.Builder =
+    address match {
+      case Address(_, _, Some(host), Some(port)) ⇒
+        dm.Address.newBuilder().setHostname(host).setPort(port)
+      case _ ⇒
+        throw new IllegalArgumentException(
+          s"Address [${address}] could not be serialized: host or port missing.")
+    }
 
   def addressFromProto(address: dm.Address): Address =
     Address(addressProtocol, system.name, address.getHostname, address.getPort)

@@ -27,10 +27,11 @@ trait ScConstructor extends ScalaPsiElement {
 
   def simpleTypeElement: Option[ScSimpleTypeElement]
 
-  def typeArgList: Option[ScTypeArgs] = typeElement match {
-    case x: ScParameterizedTypeElement => Some(x.typeArgList)
-    case _                             => None
-  }
+  def typeArgList: Option[ScTypeArgs] =
+    typeElement match {
+      case x: ScParameterizedTypeElement => Some(x.typeArgList)
+      case _                             => None
+    }
 
   def args = findChild(classOf[ScArgumentExprList])
 

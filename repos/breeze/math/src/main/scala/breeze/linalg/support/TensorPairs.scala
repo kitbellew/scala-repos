@@ -26,11 +26,12 @@ class TensorPairs[K, V, +This](
 
   override def toString = iterator.mkString("TensorKeys(", ",", ")")
 
-  override def equals(p1: Any) = p1 match {
-    case x: TensorPairs[_, _, _] =>
-      x.eq(this) || iterator.sameElements(x.iterator)
-    case _ => false
-  }
+  override def equals(p1: Any) =
+    p1 match {
+      case x: TensorPairs[_, _, _] =>
+        x.eq(this) || iterator.sameElements(x.iterator)
+      case _ => false
+    }
 
   def map[TT >: This, O, That](fn: ((K, V)) => O)(
       implicit bf: CanMapKeyValuePairs[TT, K, V, O, That]): That =

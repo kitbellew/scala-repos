@@ -24,9 +24,8 @@ case class Player(
     berserk: Boolean = false,
     name: Option[String] = None) {
 
-  def playerUser = userId flatMap { uid =>
-    rating map { PlayerUser(uid, _, ratingDiff) }
-  }
+  def playerUser =
+    userId flatMap { uid => rating map { PlayerUser(uid, _, ratingDiff) } }
 
   def withUser(id: User.ID, perf: lila.rating.Perf): Player =
     copy(
@@ -42,9 +41,10 @@ case class Player(
 
   def isUser(u: User) = userId.fold(false)(_ == u.id)
 
-  def userInfos: Option[Player.UserInfo] = (userId |@| rating) {
-    case (id, ra) => Player.UserInfo(id, ra, provisional)
-  }
+  def userInfos: Option[Player.UserInfo] =
+    (userId |@| rating) {
+      case (id, ra) => Player.UserInfo(id, ra, provisional)
+    }
 
   def wins = isWinner getOrElse false
 
@@ -53,14 +53,16 @@ case class Player(
 
   def goBerserk = copy(berserk = true)
 
-  def finish(winner: Boolean) = copy(
-    isWinner = if (winner) Some(true) else None
-  )
+  def finish(winner: Boolean) =
+    copy(
+      isWinner = if (winner) Some(true) else None
+    )
 
-  def offerDraw(turn: Int) = copy(
-    isOfferingDraw = true,
-    lastDrawOffer = Some(turn)
-  )
+  def offerDraw(turn: Int) =
+    copy(
+      isOfferingDraw = true,
+      lastDrawOffer = Some(turn)
+    )
 
   def removeDrawOffer = copy(isOfferingDraw = false)
 
@@ -76,17 +78,19 @@ case class Player(
 
   def withName(name: String) = copy(name = name.some)
 
-  def nameSplit: Option[(String, Option[Int])] = name map {
-    case Player.nameSplitRegex(n, r) => n -> parseIntOption(r)
-    case n                           => n -> none
-  }
+  def nameSplit: Option[(String, Option[Int])] =
+    name map {
+      case Player.nameSplitRegex(n, r) => n -> parseIntOption(r)
+      case n                           => n -> none
+    }
 
-  def before(other: Player) = ((rating, id), (other.rating, other.id)) match {
-    case ((Some(a), _), (Some(b), _)) if a != b => a > b
-    case ((Some(_), _), (None, _))              => true
-    case ((None, _), (Some(_), _))              => false
-    case ((_, a), (_, b))                       => a < b
-  }
+  def before(other: Player) =
+    ((rating, id), (other.rating, other.id)) match {
+      case ((Some(a), _), (Some(b), _)) if a != b => a > b
+      case ((Some(_), _), (None, _))              => true
+      case ((None, _), (Some(_), _))              => false
+      case ((_, a), (_, b))                       => a < b
+    }
 
   def ratingAfter = rating map (_ + ~ratingDiff)
 

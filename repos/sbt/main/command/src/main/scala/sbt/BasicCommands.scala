@@ -138,22 +138,23 @@ object BasicCommands {
   def setOnFailure =
     Command(OnFailure, Help.more(OnFailure, OnFailureDetailed))(
       otherCommandParser) { (s, arg) => s.copy(onFailure = Some(arg)) }
-  private[sbt] def compatCommands = Seq(
-    Command.command(Compat.ClearOnFailure) { s =>
-      s.log.warn(Compat.ClearOnFailureDeprecated)
-      s.copy(onFailure = None)
-    },
-    Command.arb(s =>
-      token(Compat.OnFailure, hide = const(true)).flatMap(x =>
-        otherCommandParser(s))) { (s, arg) =>
-      s.log.warn(Compat.OnFailureDeprecated)
-      s.copy(onFailure = Some(arg))
-    },
-    Command.command(Compat.FailureWall) { s =>
-      s.log.warn(Compat.FailureWallDeprecated)
-      s
-    }
-  )
+  private[sbt] def compatCommands =
+    Seq(
+      Command.command(Compat.ClearOnFailure) { s =>
+        s.log.warn(Compat.ClearOnFailureDeprecated)
+        s.copy(onFailure = None)
+      },
+      Command.arb(s =>
+        token(Compat.OnFailure, hide = const(true)).flatMap(x =>
+          otherCommandParser(s))) { (s, arg) =>
+        s.log.warn(Compat.OnFailureDeprecated)
+        s.copy(onFailure = Some(arg))
+      },
+      Command.command(Compat.FailureWall) { s =>
+        s.log.warn(Compat.FailureWallDeprecated)
+        s
+      }
+    )
 
   def clearOnFailure =
     Command.command(ClearOnFailure)(s => s.copy(onFailure = None))
@@ -161,13 +162,14 @@ object BasicCommands {
     Command.command(StashOnFailure)(s =>
       s.copy(onFailure = None)
         .update(OnFailureStack)(s.onFailure :: _.toList.flatten))
-  def popOnFailure = Command.command(PopOnFailure) { s =>
-    val stack = s.get(OnFailureStack).getOrElse(Nil)
-    val updated =
-      if (stack.isEmpty) s.remove(OnFailureStack)
-      else s.put(OnFailureStack, stack.tail)
-    updated.copy(onFailure = stack.headOption.flatten)
-  }
+  def popOnFailure =
+    Command.command(PopOnFailure) { s =>
+      val stack = s.get(OnFailureStack).getOrElse(Nil)
+      val updated =
+        if (stack.isEmpty) s.remove(OnFailureStack)
+        else s.put(OnFailureStack, stack.tail)
+      updated.copy(onFailure = stack.headOption.flatten)
+    }
 
   def reboot =
     Command(RebootCommand, Help.more(RebootCommand, RebootDetailed))(
@@ -236,25 +238,26 @@ object BasicCommands {
       }
     }
 
-  def shell = Command.command(Shell, Help.more(Shell, ShellDetailed)) { s =>
-    val history =
-      (s get historyPath) getOrElse Some(new File(s.baseDir, ".history"))
-    val prompt = (s get shellPrompt) match {
-      case Some(pf) => pf(s); case None => "> "
+  def shell =
+    Command.command(Shell, Help.more(Shell, ShellDetailed)) { s =>
+      val history =
+        (s get historyPath) getOrElse Some(new File(s.baseDir, ".history"))
+      val prompt = (s get shellPrompt) match {
+        case Some(pf) => pf(s); case None => "> "
+      }
+      val reader = new FullReader(history, s.combinedParser)
+      val line = reader.readLine(prompt)
+      line match {
+        case Some(line) =>
+          val newState = s
+            .copy(
+              onFailure = Some(Shell),
+              remainingCommands = line +: Shell +: s.remainingCommands)
+            .setInteractive(true)
+          if (line.trim.isEmpty) newState else newState.clearGlobalLog
+        case None => s.setInteractive(false)
+      }
     }
-    val reader = new FullReader(history, s.combinedParser)
-    val line = reader.readLine(prompt)
-    line match {
-      case Some(line) =>
-        val newState = s
-          .copy(
-            onFailure = Some(Shell),
-            remainingCommands = line +: Shell +: s.remainingCommands)
-          .setInteractive(true)
-        if (line.trim.isEmpty) newState else newState.clearGlobalLog
-      case None => s.setInteractive(false)
-    }
-  }
 
   def read =
     Command.make(ReadCommand, Help.more(ReadCommand, ReadDetailed))(s =>

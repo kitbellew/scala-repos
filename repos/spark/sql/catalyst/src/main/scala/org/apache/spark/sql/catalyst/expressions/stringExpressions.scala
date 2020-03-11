@@ -820,10 +820,11 @@ case class Length(child: Expression)
   override def inputTypes: Seq[AbstractDataType] =
     Seq(TypeCollection(StringType, BinaryType))
 
-  protected override def nullSafeEval(value: Any): Any = child.dataType match {
-    case StringType => value.asInstanceOf[UTF8String].numChars
-    case BinaryType => value.asInstanceOf[Array[Byte]].length
-  }
+  protected override def nullSafeEval(value: Any): Any =
+    child.dataType match {
+      case StringType => value.asInstanceOf[UTF8String].numChars
+      case BinaryType => value.asInstanceOf[Array[Byte]].length
+    }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     child.dataType match {

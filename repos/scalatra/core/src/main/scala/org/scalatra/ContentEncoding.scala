@@ -74,11 +74,12 @@ object ContentEncoding {
       in => new InflaterInputStream(in))
   }
 
-  def forName(name: String): Option[ContentEncoding] = name.toLowerCase match {
-    case "gzip"    => Some(GZip)
-    case "deflate" => Some(Deflate)
-    case _         => None
-  }
+  def forName(name: String): Option[ContentEncoding] =
+    name.toLowerCase match {
+      case "gzip"    => Some(GZip)
+      case "deflate" => Some(Deflate)
+      case _         => None
+    }
 }
 
 // - Request decoding --------------------------------------------------------------------------------------------------
