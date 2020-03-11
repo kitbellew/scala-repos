@@ -139,33 +139,34 @@ class REMatcher(val str: String, val compiled: Pattern) {
   /**
     * Map the specified function over the matches.
     */
-  def map[T](f: (String) => T): List[T] = synchronized {
-    val ab = new ListBuffer[T]
-    matcher.reset
-    val cnt = matcher.groupCount
+  def map[T](f: (String) => T): List[T] =
+    synchronized {
+      val ab = new ListBuffer[T]
+      matcher.reset
+      val cnt = matcher.groupCount
 
-    def doIt {
-      def runIt(pos: Int) {
-        if (pos >= cnt)
+      def doIt {
+        def runIt(pos: Int) {
+          if (pos >= cnt)
+            return
+          else {
+            ab += f(matcher.group(pos + 1));
+            runIt(pos + 1)
+          }
+        }
+
+        if (!matcher.find)
           return
         else {
-          ab += f(matcher.group(pos + 1));
-          runIt(pos + 1)
+          runIt(0);
+          doIt
         }
       }
 
-      if (!matcher.find)
-        return
-      else {
-        runIt(0);
-        doIt
-      }
+      doIt
+
+      ab.toList
     }
-
-    doIt
-
-    ab.toList
-  }
 
   /**
     * Return the list of lists of subgroups of matches.

@@ -176,11 +176,12 @@ private[summingbird] class HDFSVersionMetadata private[store] (
   }
 
   /** Put a new meta-data file, or overwrite on HDFS */
-  def put[T: JsonNodeInjection](obj: Option[T]) = putString {
-    obj
-      .map {
-        JsonInjection.toString[T].apply(_)
-      }
-      .getOrElse("")
-  }
+  def put[T: JsonNodeInjection](obj: Option[T]) =
+    putString {
+      obj
+        .map {
+          JsonInjection.toString[T].apply(_)
+        }
+        .getOrElse("")
+    }
 }

@@ -33,11 +33,12 @@ private class DynNameFactory[Req, Rep](
   private case class Failed(exc: Throwable) extends State
   private case class Closed() extends State
 
-  override def status = state match {
-    case Pending(_)           => Status.Busy
-    case Named(name)          => cache.status(name)
-    case Failed(_) | Closed() => Status.Closed
-  }
+  override def status =
+    state match {
+      case Pending(_)           => Status.Busy
+      case Named(name)          => cache.status(name)
+      case Failed(_) | Closed() => Status.Closed
+    }
 
   @volatile private[this] var state: State = Pending(immutable.Queue.empty)
 
@@ -98,30 +99,31 @@ private class DynNameFactory[Req, Rep](
   }
 
   private[this] def applySync(
-      conn: ClientConnection): Future[Service[Req, Rep]] = synchronized {
-    state match {
-      case Pending(q) =>
-        val p = new Promise[Service[Req, Rep]]
-        val elapsed = Stopwatch.start()
-        val el = (conn, p, elapsed)
-        p setInterruptHandler {
-          case exc =>
-            synchronized {
-              state match {
-                case Pending(q) if q contains el =>
-                  state = Pending(q filter (_ != el))
-                  latencyStat.add(elapsed().inMicroseconds)
-                  p.setException(new CancelledConnectionException(exc))
-                case _ =>
+      conn: ClientConnection): Future[Service[Req, Rep]] =
+    synchronized {
+      state match {
+        case Pending(q) =>
+          val p = new Promise[Service[Req, Rep]]
+          val elapsed = Stopwatch.start()
+          val el = (conn, p, elapsed)
+          p setInterruptHandler {
+            case exc =>
+              synchronized {
+                state match {
+                  case Pending(q) if q contains el =>
+                    state = Pending(q filter (_ != el))
+                    latencyStat.add(elapsed().inMicroseconds)
+                    p.setException(new CancelledConnectionException(exc))
+                  case _ =>
+                }
               }
-            }
-        }
-        state = Pending(q enqueue el)
-        p
+          }
+          state = Pending(q enqueue el)
+          p
 
-      case other => apply(conn)
+        case other => apply(conn)
+      }
     }
-  }
 
   def close(deadline: Time) = {
     val prev = synchronized {

@@ -70,9 +70,10 @@ trait StatefulSnippet extends DispatchSnippet {
     }
   }
 
-  def names: Set[String] = synchronized {
-    _names
-  }
+  def names: Set[String] =
+    synchronized {
+      _names
+    }
 
   def registerThisSnippet() =
     names.foreach(n => S.overrideSnippetForClass(n, this))
@@ -207,10 +208,11 @@ object TransientSnippet {
   /**
     * Compute if the instance should be treated as transient
     */
-  def notTransient(obj: Any): Boolean = obj match {
-    case t: TransientSnippet => !t.transient_?
-    case _                   => true
-  }
+  def notTransient(obj: Any): Boolean =
+    obj match {
+      case t: TransientSnippet => !t.transient_?
+      case _                   => true
+    }
 }
 
 /**

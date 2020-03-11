@@ -36,15 +36,16 @@ object CachedMappedWithRecursionGuard {
     val dataTypeName: c.universe.TypeName = generateTypeName("Data")
 
     //noinspection ZeroIndexToHead
-    def parameters: (Tree, Tree, Tree) = c.prefix.tree match {
-      case q"new CachedMappedWithRecursionGuard(..$params)"
-          if params.length == 3 =>
-        (
-          params(0),
-          params(1),
-          modCountParamToModTracker(c)(params(2), params(0)))
-      case _ => abort("Wrong annotation parameters!")
-    }
+    def parameters: (Tree, Tree, Tree) =
+      c.prefix.tree match {
+        case q"new CachedMappedWithRecursionGuard(..$params)"
+            if params.length == 3 =>
+          (
+            params(0),
+            params(1),
+            modCountParamToModTracker(c)(params(2), params(0)))
+        case _ => abort("Wrong annotation parameters!")
+      }
 
     //annotation parameters
     val (element, defaultValue, dependencyItem) = parameters

@@ -26,10 +26,11 @@ final class OptionOps[A](self: Option[A]) {
   final def some[X](s: A => X): Fold[X] = new Fold(s)
 
   final class Conditional[X](s: => X) {
-    def |(n: => X): X = self match {
-      case None    => n
-      case Some(_) => s
-    }
+    def |(n: => X): X =
+      self match {
+        case None    => n
+        case Some(_) => s
+      }
   }
 
   /**

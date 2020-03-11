@@ -159,28 +159,31 @@ class SparkIMain(
     }
   }
 
-  private def compilerClasspath: Seq[URL] = (
-    if (isInitializeComplete)
-      global.classPath.asURLs
-    else
-      new PathResolver(settings).result.asURLs // the compiler's classpath
-  )
+  private def compilerClasspath: Seq[URL] =
+    (
+      if (isInitializeComplete)
+        global.classPath.asURLs
+      else
+        new PathResolver(settings).result.asURLs // the compiler's classpath
+    )
   // NOTE: Exposed to repl package since accessed indirectly from SparkIMain
   private[repl] def settings = currentSettings
-  private def mostRecentLine = prevRequestList match {
-    case Nil      => ""
-    case req :: _ => req.originalLine
-  }
+  private def mostRecentLine =
+    prevRequestList match {
+      case Nil      => ""
+      case req :: _ => req.originalLine
+    }
   // Run the code body with the given boolean settings flipped to true.
-  private def withoutWarnings[T](body: => T): T = beQuietDuring {
-    val saved = settings.nowarn.value
-    if (!saved)
-      settings.nowarn.value = true
+  private def withoutWarnings[T](body: => T): T =
+    beQuietDuring {
+      val saved = settings.nowarn.value
+      if (!saved)
+        settings.nowarn.value = true
 
-    try body
-    finally if (!saved)
-      settings.nowarn.value = false
-  }
+      try body
+      finally if (!saved)
+        settings.nowarn.value = false
+    }
 
   /** construct an interpreter that reports to Console */
   def this(settings: Settings) =
@@ -879,10 +882,11 @@ class SparkIMain(
   }
 
   // normalize non-public types so we don't see protected aliases like Self
-  private def normalizeNonPublic(tp: Type) = tp match {
-    case TypeRef(_, sym, _) if sym.isAliasType && !sym.isPublic => tp.dealias
-    case _                                                      => tp
-  }
+  private def normalizeNonPublic(tp: Type) =
+    tp match {
+      case TypeRef(_, sym, _) if sym.isAliasType && !sym.isPublic => tp.dealias
+      case _                                                      => tp
+    }
 
   /**
     * Interpret one line of input. All feedback, including parse errors
@@ -1295,9 +1299,10 @@ class SparkIMain(
     /** handlers for each tree in this request */
     val handlers: List[MemberHandler] =
       trees map (memberHandlers chooseHandler _)
-    def defHandlers = handlers collect {
-      case x: MemberDefHandler => x
-    }
+    def defHandlers =
+      handlers collect {
+        case x: MemberDefHandler => x
+      }
 
     /** all (public) names defined by these statements */
     val definedNames = handlers flatMap (_.definedNames)
@@ -1605,10 +1610,12 @@ class SparkIMain(
     * @return The Type information about the term name (id) provided
     */
   @DeveloperApi
-  def typeOfTerm(id: String): Type = newTermName(id) match {
-    case nme.ROOTPKG => RootClass.tpe
-    case name        => requestForName(name).fold(NoType: Type)(_ compilerTypeOf name)
-  }
+  def typeOfTerm(id: String): Type =
+    newTermName(id) match {
+      case nme.ROOTPKG => RootClass.tpe
+      case name =>
+        requestForName(name).fold(NoType: Type)(_ compilerTypeOf name)
+    }
 
   /**
     * Retrieves the symbol representing the id (variable name, method name,
@@ -1674,14 +1681,15 @@ class SparkIMain(
     }
   }
 
-  private def cleanMemberDecl(owner: Symbol, member: Name): Type = afterTyper {
-    normalizeNonPublic {
-      owner.info.nonPrivateDecl(member).tpe match {
-        case NullaryMethodType(tp) => tp
-        case tp                    => tp
+  private def cleanMemberDecl(owner: Symbol, member: Name): Type =
+    afterTyper {
+      normalizeNonPublic {
+        owner.info.nonPrivateDecl(member).tpe match {
+          case NullaryMethodType(tp) => tp
+          case tp                    => tp
+        }
       }
     }
-  }
 
   private object exprTyper extends {
     val repl: SparkIMain.this.type = imain
@@ -1723,12 +1731,14 @@ class SparkIMain(
   def typeOfExpression(expr: String, silent: Boolean = true): Type =
     exprTyper.typeOfExpression(expr, silent)
 
-  protected def onlyTerms(xs: List[Name]) = xs collect {
-    case x: TermName => x
-  }
-  protected def onlyTypes(xs: List[Name]) = xs collect {
-    case x: TypeName => x
-  }
+  protected def onlyTerms(xs: List[Name]) =
+    xs collect {
+      case x: TermName => x
+    }
+  protected def onlyTypes(xs: List[Name]) =
+    xs collect {
+      case x: TypeName => x
+    }
 
   /**
     * Retrieves the defined, public names in the compiler.
@@ -1806,9 +1816,10 @@ class SparkIMain(
     * @return The list of matching ClassSymbol instances
     */
   @DeveloperApi
-  def classSymbols = allDefSymbols collect {
-    case x: ClassSymbol => x
-  }
+  def classSymbols =
+    allDefSymbols collect {
+      case x: ClassSymbol => x
+    }
 
   /**
     * Retrieves the Symbols representing methods in the compiler.
@@ -1816,9 +1827,10 @@ class SparkIMain(
     * @return The list of matching MethodSymbol instances
     */
   @DeveloperApi
-  def methodSymbols = allDefSymbols collect {
-    case x: MethodSymbol => x
-  }
+  def methodSymbols =
+    allDefSymbols collect {
+      case x: MethodSymbol => x
+    }
 
   /** the previous requests this interpreter has processed */
   private var executingRequest: Request = _
@@ -1828,9 +1840,10 @@ class SparkIMain(
   private val directlyBoundNames = mutable.Set[Name]()
 
   private def allHandlers = prevRequestList flatMap (_.handlers)
-  private def allDefHandlers = allHandlers collect {
-    case x: MemberDefHandler => x
-  }
+  private def allDefHandlers =
+    allHandlers collect {
+      case x: MemberDefHandler => x
+    }
   private def allDefSymbols =
     allDefHandlers map (_.symbol) filter (_ ne NoSymbol)
 
@@ -1846,9 +1859,10 @@ class SparkIMain(
   private def allImplicits =
     allHandlers filter (_.definesImplicit) flatMap (_.definedNames)
   // NOTE: Exposed to repl package since used by SparkILoop and SparkImports
-  private[repl] def importHandlers = allHandlers collect {
-    case x: ImportHandler => x
-  }
+  private[repl] def importHandlers =
+    allHandlers collect {
+      case x: ImportHandler => x
+    }
 
   /**
     * Retrieves a list of unique defined and imported names in the compiler.
@@ -1930,11 +1944,12 @@ object SparkIMain {
     def generate: T => String
     def postamble: String
 
-    def apply(contributors: List[T]): String = stringFromWriter { code =>
-      code println preamble
-      contributors map generate foreach (code println _)
-      code println postamble
-    }
+    def apply(contributors: List[T]): String =
+      stringFromWriter { code =>
+        code println preamble
+        contributors map generate foreach (code println _)
+        code println postamble
+      }
   }
 
   trait StrippingWriter {
@@ -2034,12 +2049,13 @@ class SparkISettings(intp: SparkIMain) extends Logging {
 
   def deprecation: Boolean = intp.settings.deprecation.value
 
-  def allSettings = Map(
-    "maxPrintString" -> maxPrintString,
-    "maxAutoprintCompletion" -> maxAutoprintCompletion,
-    "unwrapStrings" -> unwrapStrings,
-    "deprecation" -> deprecation
-  )
+  def allSettings =
+    Map(
+      "maxPrintString" -> maxPrintString,
+      "maxAutoprintCompletion" -> maxAutoprintCompletion,
+      "unwrapStrings" -> unwrapStrings,
+      "deprecation" -> deprecation
+    )
 
   private def allSettingsString =
     allSettings.toList sortBy (_._1) map {

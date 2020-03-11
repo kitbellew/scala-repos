@@ -659,30 +659,32 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
     }
   }
 
-  def createNullRow(tpe: Type): Any = tpe match {
-    case t: ScalaType[_] =>
-      if (t.nullable)
-        None
-      else
-        null
-    case StructType(el) =>
-      new StructValue(
-        el.toSeq.map {
-          case (_, tpe) => createNullRow(tpe)
-        },
-        el.toSeq.zipWithIndex.map {
-          case ((sym, _), idx) => (sym, idx)
-        }(collection.breakOut): Map[TermSymbol, Int])
-    case ProductType(el) =>
-      new ProductValue(el.toSeq.map(tpe => createNullRow(tpe)))
-  }
+  def createNullRow(tpe: Type): Any =
+    tpe match {
+      case t: ScalaType[_] =>
+        if (t.nullable)
+          None
+        else
+          null
+      case StructType(el) =>
+        new StructValue(
+          el.toSeq.map {
+            case (_, tpe) => createNullRow(tpe)
+          },
+          el.toSeq.zipWithIndex.map {
+            case ((sym, _), idx) => (sym, idx)
+          }(collection.breakOut): Map[TermSymbol, Int])
+      case ProductType(el) =>
+        new ProductValue(el.toSeq.map(tpe => createNullRow(tpe)))
+    }
 
-  def asBoolean(v: Any) = v match {
-    case b: Boolean       => b
-    case Some(b: Boolean) => b
-    case None             => false
-    case null             => false
-  }
+  def asBoolean(v: Any) =
+    v match {
+      case b: Boolean       => b
+      case Some(b: Boolean) => b
+      case None             => false
+      case null             => false
+    }
 
   def compileLikePattern(s: String, escape: Option[Char]): Pattern = {
     val b = new StringBuilder append '^'
@@ -710,10 +712,11 @@ object QueryInterpreter {
     def length: Int = data.length
     def apply(idx: Int): Any = data(idx)
     override def toString = "ProductValue(" + data.mkString(", ") + ")"
-    override def equals(other: Any) = other match {
-      case p: ProductValue => data == p.data
-      case _               => false
-    }
+    override def equals(other: Any) =
+      other match {
+        case p: ProductValue => data == p.data
+        case _               => false
+      }
     override def hashCode = data.hashCode()
   }
 

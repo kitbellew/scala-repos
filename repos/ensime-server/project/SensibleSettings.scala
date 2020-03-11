@@ -75,36 +75,37 @@ object Sensible {
   ) ++ inConfig(Test)(testSettings) ++ scalariformSettings
 
   // TODO: scalariformSettingsWithIt generalised
-  def testSettings = Seq(
-    parallelExecution := true,
-    // one JVM per test suite
-    fork := true,
-    testForkedParallel := true,
-    testGrouping <<= (
-      definedTests,
-      baseDirectory,
-      javaOptions,
-      outputStrategy,
-      envVars,
-      javaHome,
-      connectInput
-    ).map { (tests, base, options, strategy, env, javaHomeDir, connectIn) =>
-      val opts = ForkOptions(
-        bootJars = Nil,
-        javaHome = javaHomeDir,
-        connectInput = connectIn,
-        outputStrategy = strategy,
-        runJVMOptions = options,
-        workingDirectory = Some(base),
-        envVars = env
-      )
-      tests.map { test =>
-        Tests.Group(test.name, Seq(test), Tests.SubProcess(opts))
-      }
-    },
-    testOptions ++= noColorIfEmacs,
-    testFrameworks := Seq(TestFrameworks.ScalaTest, TestFrameworks.JUnit)
-  )
+  def testSettings =
+    Seq(
+      parallelExecution := true,
+      // one JVM per test suite
+      fork := true,
+      testForkedParallel := true,
+      testGrouping <<= (
+        definedTests,
+        baseDirectory,
+        javaOptions,
+        outputStrategy,
+        envVars,
+        javaHome,
+        connectInput
+      ).map { (tests, base, options, strategy, env, javaHomeDir, connectIn) =>
+        val opts = ForkOptions(
+          bootJars = Nil,
+          javaHome = javaHomeDir,
+          connectInput = connectIn,
+          outputStrategy = strategy,
+          runJVMOptions = options,
+          workingDirectory = Some(base),
+          envVars = env
+        )
+        tests.map { test =>
+          Tests.Group(test.name, Seq(test), Tests.SubProcess(opts))
+        }
+      },
+      testOptions ++= noColorIfEmacs,
+      testFrameworks := Seq(TestFrameworks.ScalaTest, TestFrameworks.JUnit)
+    )
 
   val scalaModulesVersion = "1.0.4"
   val akkaVersion = "2.3.14"

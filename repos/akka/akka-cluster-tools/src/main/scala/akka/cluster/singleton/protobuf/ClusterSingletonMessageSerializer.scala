@@ -47,25 +47,27 @@ private[akka] class ClusterSingletonMessageSerializer(
       }
     )
 
-  override def manifest(obj: AnyRef): String = obj match {
-    case HandOverToMe ⇒ HandOverToMeManifest
-    case HandOverInProgress ⇒ HandOverInProgressManifest
-    case HandOverDone ⇒ HandOverDoneManifest
-    case TakeOverFromMe ⇒ TakeOverFromMeManifest
-    case _ ⇒
-      throw new IllegalArgumentException(
-        s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
-  }
+  override def manifest(obj: AnyRef): String =
+    obj match {
+      case HandOverToMe ⇒ HandOverToMeManifest
+      case HandOverInProgress ⇒ HandOverInProgressManifest
+      case HandOverDone ⇒ HandOverDoneManifest
+      case TakeOverFromMe ⇒ TakeOverFromMeManifest
+      case _ ⇒
+        throw new IllegalArgumentException(
+          s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
+    }
 
-  override def toBinary(obj: AnyRef): Array[Byte] = obj match {
-    case HandOverToMe ⇒ emptyByteArray
-    case HandOverInProgress ⇒ emptyByteArray
-    case HandOverDone ⇒ emptyByteArray
-    case TakeOverFromMe ⇒ emptyByteArray
-    case _ ⇒
-      throw new IllegalArgumentException(
-        s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
-  }
+  override def toBinary(obj: AnyRef): Array[Byte] =
+    obj match {
+      case HandOverToMe ⇒ emptyByteArray
+      case HandOverInProgress ⇒ emptyByteArray
+      case HandOverDone ⇒ emptyByteArray
+      case TakeOverFromMe ⇒ emptyByteArray
+      case _ ⇒
+        throw new IllegalArgumentException(
+          s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
+    }
 
   override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
     fromBinaryMap.get(manifest) match {

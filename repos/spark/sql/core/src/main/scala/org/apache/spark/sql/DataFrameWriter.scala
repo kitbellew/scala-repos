@@ -312,9 +312,10 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
       .toRdd
   }
 
-  private def normalizedParCols: Option[Seq[String]] = partitioningColumns.map {
-    cols => cols.map(normalize(_, "Partition"))
-  }
+  private def normalizedParCols: Option[Seq[String]] =
+    partitioningColumns.map { cols =>
+      cols.map(normalize(_, "Partition"))
+    }
 
   private def normalizedBucketColNames: Option[Seq[String]] =
     bucketColumnNames.map { cols =>

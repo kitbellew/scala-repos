@@ -178,9 +178,10 @@ trait JsObj extends JsExp {
 object JsExp {
   import json._
 
-  implicit def jValueToJsExp(jv: JValue): JsExp = new JsExp {
-    lazy val toJsCmd = compactRender(jv)
-  }
+  implicit def jValueToJsExp(jv: JValue): JsExp =
+    new JsExp {
+      lazy val toJsCmd = compactRender(jv)
+    }
 
   implicit def strToJsExp(str: String): JE.Str = JE.Str(str)
 
@@ -194,9 +195,10 @@ object JsExp {
 
   implicit def floatToJsExp(in: Float): JE.Num = JE.Num(in)
 
-  implicit def numToJValue(in: JE.Num): JValue = in match {
-    case JE.Num(n) => JDouble(n.doubleValue())
-  }
+  implicit def numToJValue(in: JE.Num): JValue =
+    in match {
+      case JE.Num(n) => JDouble(n.doubleValue())
+    }
 
   implicit def strToJValue(in: JE.Str): JValue = JString(in.str)
 }
@@ -231,21 +233,24 @@ trait JsExp extends HtmlFixer with ToJsCmd {
   /**
     * ~> accesses a property in the current JsExp
     */
-  def ~>(right: JsMember): JsExp = new JsExp {
-    def toJsCmd = JsExp.this.toJsCmd + "." + right.toJsCmd
-  }
+  def ~>(right: JsMember): JsExp =
+    new JsExp {
+      def toJsCmd = JsExp.this.toJsCmd + "." + right.toJsCmd
+    }
 
   def ~>(right: Box[JsMember]): JsExp = right.dmap(this)(r => ~>(r))
 
   def cmd: JsCmd = JsCmds.Run(toJsCmd + ";")
 
-  def +(right: JsExp): JsExp = new JsExp {
-    def toJsCmd = JsExp.this.toJsCmd + " + " + right.toJsCmd
-  }
+  def +(right: JsExp): JsExp =
+    new JsExp {
+      def toJsCmd = JsExp.this.toJsCmd + " + " + right.toJsCmd
+    }
 
-  def ===(right: JsExp): JsExp = new JsExp {
-    def toJsCmd = JsExp.this.toJsCmd + " = " + right.toJsCmd
-  }
+  def ===(right: JsExp): JsExp =
+    new JsExp {
+      def toJsCmd = JsExp.this.toJsCmd + " = " + right.toJsCmd
+    }
 
 }
 
@@ -313,12 +318,13 @@ object JE {
     * gets the element by ID
     */
   case class ElemById(id: String, thenStr: String*) extends JsExp {
-    override def toJsCmd = "document.getElementById(" + id.encJs + ")" + (
-      if (thenStr.isEmpty)
-        ""
-      else
-        thenStr.mkString(".", ".", "")
-    )
+    override def toJsCmd =
+      "document.getElementById(" + id.encJs + ")" + (
+        if (thenStr.isEmpty)
+          ""
+        else
+          thenStr.mkString(".", ".", "")
+      )
   }
 
   /**
@@ -365,20 +371,21 @@ object JE {
     def apply(
         obj: String,
         indexName: String,
-        tables: (String, String)*): JsExp = new JsExp {
-      def toJsCmd =
-        "lift$.buildIndex(" + obj + ", " + indexName.encJs +
-          (if (tables.isEmpty)
-             ""
-           else
-             ", " +
-               tables
-                 .map {
-                   case (l, r) => "[" + l.encJs + ", " + r.encJs + "]"
-                 }
-                 .mkString(", ")) +
-          ")"
-    }
+        tables: (String, String)*): JsExp =
+      new JsExp {
+        def toJsCmd =
+          "lift$.buildIndex(" + obj + ", " + indexName.encJs +
+            (if (tables.isEmpty)
+               ""
+             else
+               ", " +
+                 tables
+                   .map {
+                     case (l, r) => "[" + l.encJs + ", " + r.encJs + "]"
+                   }
+                   .mkString(", ")) +
+            ")"
+      }
 
     def apply(obj: JsExp, indexName: String, tables: (String, String)*): JsExp =
       new JsExp {
@@ -400,31 +407,36 @@ object JE {
   protected trait MostLjFuncs {
     def funcName: String
 
-    def apply(obj: String, func: String): JsExp = new JsExp {
-      def toJsCmd = "lift$." + funcName + "(" + obj + ", " + func.encJs + ")"
-    }
+    def apply(obj: String, func: String): JsExp =
+      new JsExp {
+        def toJsCmd = "lift$." + funcName + "(" + obj + ", " + func.encJs + ")"
+      }
 
-    def apply(obj: JsExp, func: JsExp): JsExp = new JsExp {
-      def toJsCmd =
-        "lift$." + funcName + "(" + obj.toJsCmd + ", " + func.toJsCmd + ")"
-    }
+    def apply(obj: JsExp, func: JsExp): JsExp =
+      new JsExp {
+        def toJsCmd =
+          "lift$." + funcName + "(" + obj.toJsCmd + ", " + func.toJsCmd + ")"
+      }
   }
 
   object LjAlt {
-    def apply(obj: String, func: String, alt: String): JsExp = new JsExp {
-      def toJsCmd =
-        "lift$.alt(" + obj + ", " + func.encJs + ", " + alt.encJs + ")"
-    }
+    def apply(obj: String, func: String, alt: String): JsExp =
+      new JsExp {
+        def toJsCmd =
+          "lift$.alt(" + obj + ", " + func.encJs + ", " + alt.encJs + ")"
+      }
 
-    def apply(obj: JsExp, func: JsExp, alt: String): JsExp = new JsExp {
-      def toJsCmd =
-        "lift$.alt(" + obj.toJsCmd + ", " + func.toJsCmd + ", " + alt.encJs + ")"
-    }
+    def apply(obj: JsExp, func: JsExp, alt: String): JsExp =
+      new JsExp {
+        def toJsCmd =
+          "lift$.alt(" + obj.toJsCmd + ", " + func.toJsCmd + ", " + alt.encJs + ")"
+      }
 
-    def apply(obj: JsExp, func: JsExp, alt: JsExp): JsExp = new JsExp {
-      def toJsCmd =
-        "lift$.alt(" + obj.toJsCmd + ", " + func.toJsCmd + ", " + alt.toJsCmd + ")"
-    }
+    def apply(obj: JsExp, func: JsExp, alt: JsExp): JsExp =
+      new JsExp {
+        def toJsCmd =
+          "lift$.alt(" + obj.toJsCmd + ", " + func.toJsCmd + ", " + alt.toJsCmd + ")"
+      }
   }
 
   object LjMagicUpdate {
@@ -432,19 +444,21 @@ object JE {
         obj: String,
         field: String,
         idField: String,
-        toUpdate: JsExp): JsExp = new JsExp {
-      def toJsCmd =
-        "lift$.magicUpdate(" + obj + ", " + field.encJs + ", " + idField.encJs + ", " + toUpdate.toJsCmd + ")"
-    }
+        toUpdate: JsExp): JsExp =
+      new JsExp {
+        def toJsCmd =
+          "lift$.magicUpdate(" + obj + ", " + field.encJs + ", " + idField.encJs + ", " + toUpdate.toJsCmd + ")"
+      }
 
     def apply(
         obj: JsExp,
         field: String,
         idField: String,
-        toUpdate: JsExp): JsExp = new JsExp {
-      def toJsCmd =
-        "lift$.magicUpdate(" + obj.toJsCmd + ", " + field.encJs + ", " + idField.encJs + ", " + toUpdate.toJsCmd + ")"
-    }
+        toUpdate: JsExp): JsExp =
+      new JsExp {
+        def toJsCmd =
+          "lift$.magicUpdate(" + obj.toJsCmd + ", " + field.encJs + ", " + idField.encJs + ", " + toUpdate.toJsCmd + ")"
+      }
   }
 
   object LjForeach extends MostLjFuncs {
@@ -460,15 +474,17 @@ object JE {
   }
 
   object LjFold {
-    def apply(what: JsExp, init1: JsExp, func: String): JsExp = new JsExp {
-      def toJsCmd =
-        "lift$.fold(" + what.toJsCmd + ", " + init1.toJsCmd + ", " + func.encJs + ")"
-    }
+    def apply(what: JsExp, init1: JsExp, func: String): JsExp =
+      new JsExp {
+        def toJsCmd =
+          "lift$.fold(" + what.toJsCmd + ", " + init1.toJsCmd + ", " + func.encJs + ")"
+      }
 
-    def apply(what: JsExp, init1: JsExp, func: AnonFunc): JsExp = new JsExp {
-      def toJsCmd =
-        "lift$.fold(" + what.toJsCmd + ", " + init1.toJsCmd + ", " + func.toJsCmd + ")"
-    }
+    def apply(what: JsExp, init1: JsExp, func: AnonFunc): JsExp =
+      new JsExp {
+        def toJsCmd =
+          "lift$.fold(" + what.toJsCmd + ", " + init1.toJsCmd + ", " + func.toJsCmd + ")"
+      }
   }
 
   object LjFlatMap extends MostLjFuncs {
@@ -478,19 +494,22 @@ object JE {
   object LjSort extends MostLjFuncs {
     def funcName: String = "sort"
 
-    def apply(obj: String): JsExp = new JsExp {
-      def toJsCmd = "lift$." + funcName + "(" + obj + ")"
-    }
+    def apply(obj: String): JsExp =
+      new JsExp {
+        def toJsCmd = "lift$." + funcName + "(" + obj + ")"
+      }
 
-    def apply(obj: JsExp): JsExp = new JsExp {
-      def toJsCmd = "lift$." + funcName + "(" + obj.toJsCmd + ")"
-    }
+    def apply(obj: JsExp): JsExp =
+      new JsExp {
+        def toJsCmd = "lift$." + funcName + "(" + obj.toJsCmd + ")"
+      }
   }
 
   object FormToJSON {
-    def apply(formId: String) = new JsExp {
-      def toJsCmd = LiftRules.jsArtifacts.formToJSON(formId).toJsCmd;
-    }
+    def apply(formId: String) =
+      new JsExp {
+        def toJsCmd = LiftRules.jsArtifacts.formToJSON(formId).toJsCmd;
+      }
   }
 
   /**
@@ -574,26 +593,30 @@ object JE {
   }
 
   trait AnonFunc extends JsExp {
-    def applied: JsExp = new JsExp {
-      def toJsCmd = "(" + AnonFunc.this.toJsCmd + ")" + "()"
-    }
+    def applied: JsExp =
+      new JsExp {
+        def toJsCmd = "(" + AnonFunc.this.toJsCmd + ")" + "()"
+      }
 
-    def applied(params: JsExp*): JsExp = new JsExp {
-      def toJsCmd =
-        "(" + AnonFunc.this.toJsCmd + ")" +
-          params.map(_.toJsCmd).mkString("(", ",", ")")
-    }
+    def applied(params: JsExp*): JsExp =
+      new JsExp {
+        def toJsCmd =
+          "(" + AnonFunc.this.toJsCmd + ")" +
+            params.map(_.toJsCmd).mkString("(", ",", ")")
+      }
 
   }
 
   object AnonFunc {
-    def apply(in: JsCmd): AnonFunc = new JsExp with AnonFunc {
-      def toJsCmd = "function() {" + in.toJsCmd + "}"
-    }
+    def apply(in: JsCmd): AnonFunc =
+      new JsExp with AnonFunc {
+        def toJsCmd = "function() {" + in.toJsCmd + "}"
+      }
 
-    def apply(params: String, in: JsCmd): AnonFunc = new JsExp with AnonFunc {
-      def toJsCmd = "function(" + params + ") {" + in.toJsCmd + "}"
-    }
+    def apply(params: String, in: JsCmd): AnonFunc =
+      new JsExp with AnonFunc {
+        def toJsCmd = "function(" + params + ") {" + in.toJsCmd + "}"
+      }
   }
 
   object JsObj {
@@ -714,18 +737,21 @@ trait HtmlFixer {
   }
 
   private object FindScript {
-    def unapply(in: NodeSeq): Option[Elem] = in match {
-      case e: Elem => {
-        e.attribute("type").map(_.text).filter(_ == "text/javascript").flatMap {
-          a =>
-            if (e.attribute("src").isEmpty)
-              Some(e)
-            else
-              None
+    def unapply(in: NodeSeq): Option[Elem] =
+      in match {
+        case e: Elem => {
+          e.attribute("type")
+            .map(_.text)
+            .filter(_ == "text/javascript")
+            .flatMap { a =>
+              if (e.attribute("src").isEmpty)
+                Some(e)
+              else
+                None
+            }
         }
+        case _ => None
       }
-      case _ => None
-    }
   }
 
 }
@@ -1090,13 +1116,15 @@ object JsCmds {
   }
 
   object JsReturn {
-    def apply(in: JsExp): JsCmd = new JsCmd {
-      def toJsCmd = "return " + in.toJsCmd
-    }
+    def apply(in: JsExp): JsCmd =
+      new JsCmd {
+        def toJsCmd = "return " + in.toJsCmd
+      }
 
-    def apply(): JsCmd = new JsCmd {
-      def toJsCmd = "return "
-    }
+    def apply(): JsCmd =
+      new JsCmd {
+        def toJsCmd = "return "
+      }
   }
 
 }

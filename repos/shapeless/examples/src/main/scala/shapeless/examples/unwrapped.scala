@@ -51,9 +51,10 @@ object UnwrappedExamples {
     def fields(t: T): Map[String, String]
   }
   object Encode {
-    implicit def encodeHNil = new Encode[HNil] {
-      def fields(hnil: HNil) = Map.empty
-    }
+    implicit def encodeHNil =
+      new Encode[HNil] {
+        def fields(hnil: HNil) = Map.empty
+      }
     implicit def encodeHCons[
         K <: Symbol,
         V,
@@ -62,18 +63,20 @@ object UnwrappedExamples {
         key: Witness.Aux[K],
         encodeV: Lazy[EncodeValue[V]],
         encodeRest: Strict[Encode[Rest]]
-    ) = new Encode[FieldType[K, V] :: Rest] {
-      def fields(hl: FieldType[K, V] :: Rest) =
-        encodeRest.value.fields(hl.tail) +
-          (key.value.name -> encodeV.value.toJsonFragment(hl.head))
-    }
+    ) =
+      new Encode[FieldType[K, V] :: Rest] {
+        def fields(hl: FieldType[K, V] :: Rest) =
+          encodeRest.value.fields(hl.tail) +
+            (key.value.name -> encodeV.value.toJsonFragment(hl.head))
+      }
     // the magic one!
     implicit def encodeGeneric[T, Repr](implicit
         gen: LabelledGeneric.Aux[T, Repr],
         encodeRepr: Lazy[Encode[Repr]]
-    ) = new Encode[T] {
-      def fields(t: T) = encodeRepr.value.fields(gen.to(t))
-    }
+    ) =
+      new Encode[T] {
+        def fields(t: T) = encodeRepr.value.fields(gen.to(t))
+      }
   }
 
   trait EncodeValue[-T] {
@@ -116,9 +119,10 @@ object UnwrappedExamples {
     def fields(t: T): Map[String, String]
   }
   object Encode2 {
-    implicit def encodeHNil = new Encode2[HNil] {
-      def fields(hnil: HNil) = Map.empty
-    }
+    implicit def encodeHNil =
+      new Encode2[HNil] {
+        def fields(hnil: HNil) = Map.empty
+      }
     implicit def encodeHCons[
         K <: Symbol,
         V,
@@ -129,18 +133,20 @@ object UnwrappedExamples {
         uw: Strict[Unwrapped.Aux[V, U]],
         encodeV: Lazy[EncodeValue[U]],
         encodeRest: Strict[Encode2[Rest]]
-    ) = new Encode2[FieldType[K, V] :: Rest] {
-      def fields(hl: FieldType[K, V] :: Rest) =
-        encodeRest.value.fields(hl.tail) +
-          (key.value.name -> encodeV.value.toJsonFragment(
-            uw.value.unwrap(hl.head)))
-    }
+    ) =
+      new Encode2[FieldType[K, V] :: Rest] {
+        def fields(hl: FieldType[K, V] :: Rest) =
+          encodeRest.value.fields(hl.tail) +
+            (key.value.name -> encodeV.value.toJsonFragment(
+              uw.value.unwrap(hl.head)))
+      }
     implicit def encodeGeneric[T, Repr](implicit
         gen: LabelledGeneric.Aux[T, Repr],
         encodeRepr: Lazy[Encode2[Repr]]
-    ) = new Encode2[T] {
-      def fields(t: T) = encodeRepr.value.fields(gen.to(t))
-    }
+    ) =
+      new Encode2[T] {
+        def fields(t: T) = encodeRepr.value.fields(gen.to(t))
+      }
   }
   // OK! Let's try again
   val encoder2 = the[Encode2[User]]

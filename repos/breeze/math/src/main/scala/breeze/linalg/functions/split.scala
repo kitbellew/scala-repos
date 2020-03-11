@@ -71,12 +71,13 @@ object split extends UFunc {
       def apply(
           v: DenseMatrix[T],
           n: Int,
-          axis: Int): IndexedSeq[DenseMatrix[T]] = axis match {
-        case 0 => vsplit(v, n)
-        case 1 => hsplit(v, n)
-        case _ =>
-          throw new IllegalArgumentException("Matrices have only two axes.")
-      }
+          axis: Int): IndexedSeq[DenseMatrix[T]] =
+        axis match {
+          case 0 => vsplit(v, n)
+          case 1 => hsplit(v, n)
+          case _ =>
+            throw new IllegalArgumentException("Matrices have only two axes.")
+        }
     }
 }
 

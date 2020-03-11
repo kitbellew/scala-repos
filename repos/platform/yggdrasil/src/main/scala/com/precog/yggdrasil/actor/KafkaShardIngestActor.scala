@@ -122,19 +122,20 @@ case class FilesystemIngestFailureLog(
 
   def checkFailed(message: EventMessage): Boolean = failureLog.contains(message)
 
-  def persist: IO[IngestFailureLog] = IO {
-    val logFile =
-      new File(persistDir, FilePrefix + System.currentTimeMillis + ".tmp")
-    val out = new PrintWriter(new FileWriter(logFile))
-    try {
-      for (rec <- failureLog.values)
-        out.println(rec.serialize.renderCompact)
-    } finally {
-      out.close()
-    }
+  def persist: IO[IngestFailureLog] =
+    IO {
+      val logFile =
+        new File(persistDir, FilePrefix + System.currentTimeMillis + ".tmp")
+      val out = new PrintWriter(new FileWriter(logFile))
+      try {
+        for (rec <- failureLog.values)
+          out.println(rec.serialize.renderCompact)
+      } finally {
+        out.close()
+      }
 
-    this
-  }
+      this
+    }
 }
 
 object FilesystemIngestFailureLog {
@@ -194,14 +195,15 @@ object FilesystemIngestFailureLog {
       lastKnownGood: YggCheckpoint)
   object LogRecord {
     implicit val decomposer: Decomposer[LogRecord] = new Decomposer[LogRecord] {
-      def decompose(rec: LogRecord) = JObject(
-        "offset" -> rec.offset.serialize,
-        "messageType" -> rec.message
-          .fold(_ => "ingest", _ => "archive", _ => "storeFile")
-          .serialize,
-        "message" -> rec.message.serialize,
-        "lastKnownGood" -> rec.lastKnownGood.serialize
-      )
+      def decompose(rec: LogRecord) =
+        JObject(
+          "offset" -> rec.offset.serialize,
+          "messageType" -> rec.message
+            .fold(_ => "ingest", _ => "archive", _ => "storeFile")
+            .serialize,
+          "message" -> rec.message.serialize,
+          "lastKnownGood" -> rec.lastKnownGood.serialize
+        )
     }
 
     implicit val extractor: Extractor[LogRecord] = new Extractor[LogRecord] {

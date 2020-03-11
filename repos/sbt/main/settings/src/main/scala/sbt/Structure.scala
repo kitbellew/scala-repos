@@ -310,13 +310,14 @@ object Scoped {
     def get(settings: Settings[Scope]): Option[Task[S]] =
       settings.get(scope, key)
 
-    def ? : Initialize[Task[Option[S]]] = Def.optional(scopedKey) {
-      case None =>
-        mktask {
-          None
-        };
-      case Some(t) => t map some.fn
-    }
+    def ? : Initialize[Task[Option[S]]] =
+      Def.optional(scopedKey) {
+        case None =>
+          mktask {
+            None
+          };
+        case Some(t) => t map some.fn
+      }
     def ??[T >: S](or: => T): Initialize[Task[T]] =
       Def.optional(scopedKey)(_ getOrElse mktask(or))
     def or[T >: S](i: Initialize[Task[T]]): Initialize[Task[T]] =
@@ -424,28 +425,32 @@ object Scoped {
 
   final class RichFileSetting(s: SettingKey[File]) extends RichFileBase {
     @deprecated("Use a standard setting definition.", "0.13.0")
-    def /(c: String): Initialize[File] = s {
-      _ / c
-    }
+    def /(c: String): Initialize[File] =
+      s {
+        _ / c
+      }
     protected[this] def map0(f: PathFinder => PathFinder) =
       s(file => finder(f)(file :: Nil))
   }
   final class RichFilesSetting(s: SettingKey[Seq[File]]) extends RichFileBase {
     @deprecated("Use a standard setting definition.", "0.13.0")
-    def /(s: String): Initialize[Seq[File]] = map0 {
-      _ / s
-    }
+    def /(s: String): Initialize[Seq[File]] =
+      map0 {
+        _ / s
+      }
     protected[this] def map0(f: PathFinder => PathFinder) = s(finder(f))
   }
   sealed abstract class RichFileBase {
     @deprecated("Use a standard setting definition.", "0.13.0")
-    def *(filter: FileFilter): Initialize[Seq[File]] = map0 {
-      _ * filter
-    }
+    def *(filter: FileFilter): Initialize[Seq[File]] =
+      map0 {
+        _ * filter
+      }
     @deprecated("Use a standard setting definition.", "0.13.0")
-    def **(filter: FileFilter): Initialize[Seq[File]] = map0 {
-      _ ** filter
-    }
+    def **(filter: FileFilter): Initialize[Seq[File]] =
+      map0 {
+        _ ** filter
+      }
     protected[this] def map0(f: PathFinder => PathFinder): Initialize[Seq[File]]
     protected[this] def finder(
         f: PathFinder => PathFinder): Seq[File] => Seq[File] =

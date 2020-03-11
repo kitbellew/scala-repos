@@ -82,12 +82,14 @@ object CLI extends App with EvaluatorModule {
     }
   }
 
-  def processArgs(args: List[String]): Map[Symbol, String] = args match {
-    // case "--inf" :: format :: tail => processArgs(tail) + ('inf -> format)
-    // case "--outf" :: format :: tail => processArgs(tail) + ('outf -> format)
+  def processArgs(args: List[String]): Map[Symbol, String] =
+    args match {
+      // case "--inf" :: format :: tail => processArgs(tail) + ('inf -> format)
+      // case "--outf" :: format :: tail => processArgs(tail) + ('outf -> format)
 
-    case "--base" :: basePath :: tail => processArgs(tail) + ('base -> basePath)
+      case "--base" :: basePath :: tail =>
+        processArgs(tail) + ('base -> basePath)
 
-    case query :: Nil => Map('query -> query)
-  }
+      case query :: Nil => Map('query -> query)
+    }
 }

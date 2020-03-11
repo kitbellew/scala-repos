@@ -309,12 +309,13 @@ abstract class SymbolPairs {
 
     def hasNext = curEntry ne null
     def currentPair = new SymbolPair(base, low, high)
-    def iterator = new Iterator[SymbolPair] {
-      def hasNext = cursor.hasNext
-      def next() =
-        try cursor.currentPair
-        finally cursor.next()
-    }
+    def iterator =
+      new Iterator[SymbolPair] {
+        def hasNext = cursor.hasNext
+        def next() =
+          try cursor.currentPair
+          finally cursor.next()
+      }
 
     // Note that next is called once during object initialization to
     // populate the fields tracking the current symbol pair.

@@ -28,29 +28,30 @@ import com.precog.common._
 import com.precog.bytecode._
 
 object Schema {
-  def ctypes(jtype: JType): Set[CType] = jtype match {
-    case JArrayFixedT(indices) if indices.isEmpty => Set(CEmptyArray)
-    case JObjectFixedT(fields) if fields.isEmpty  => Set(CEmptyObject)
-    case JArrayFixedT(indices) =>
-      indices.values.toSet.flatMap { tpe: JType =>
-        ctypes(tpe)
-      }
-    case JObjectFixedT(fields) =>
-      fields.values.toSet.flatMap { tpe: JType =>
-        ctypes(tpe)
-      }
-    case JArrayHomogeneousT(elemType) =>
-      ctypes(elemType) collect {
-        case cType: CValueType[_] => CArrayType(cType)
-      }
-    case JNumberT  => Set(CLong, CDouble, CNum)
-    case JTextT    => Set(CString)
-    case JBooleanT => Set(CBoolean)
-    case JNullT    => Set(CNull)
-    case JDateT    => Set(CDate)
-    case JPeriodT  => Set(CPeriod)
-    case _         => Set.empty
-  }
+  def ctypes(jtype: JType): Set[CType] =
+    jtype match {
+      case JArrayFixedT(indices) if indices.isEmpty => Set(CEmptyArray)
+      case JObjectFixedT(fields) if fields.isEmpty  => Set(CEmptyObject)
+      case JArrayFixedT(indices) =>
+        indices.values.toSet.flatMap { tpe: JType =>
+          ctypes(tpe)
+        }
+      case JObjectFixedT(fields) =>
+        fields.values.toSet.flatMap { tpe: JType =>
+          ctypes(tpe)
+        }
+      case JArrayHomogeneousT(elemType) =>
+        ctypes(elemType) collect {
+          case cType: CValueType[_] => CArrayType(cType)
+        }
+      case JNumberT  => Set(CLong, CDouble, CNum)
+      case JTextT    => Set(CString)
+      case JBooleanT => Set(CBoolean)
+      case JNullT    => Set(CNull)
+      case JDateT    => Set(CDate)
+      case JPeriodT  => Set(CPeriod)
+      case _         => Set.empty
+    }
 
   def cpath(jtype: JType): Seq[CPath] = {
     val cpaths = jtype match {
@@ -86,109 +87,112 @@ object Schema {
     def buildPath(
         nodes: List[CPathNode],
         refs: List[ColumnRef],
-        jType: JType): List[ColumnRef] = jType match {
-      case JArrayFixedT(indices) if indices.isEmpty =>
-        ColumnRef(CPath(nodes.reverse), CEmptyArray) :: Nil
+        jType: JType): List[ColumnRef] =
+      jType match {
+        case JArrayFixedT(indices) if indices.isEmpty =>
+          ColumnRef(CPath(nodes.reverse), CEmptyArray) :: Nil
 
-      case JObjectFixedT(fields) if fields.isEmpty =>
-        ColumnRef(CPath(nodes.reverse), CEmptyObject) :: Nil
+        case JObjectFixedT(fields) if fields.isEmpty =>
+          ColumnRef(CPath(nodes.reverse), CEmptyObject) :: Nil
 
-      case JArrayFixedT(indices) =>
-        indices.toList.flatMap {
-          case (idx, tpe) =>
-            val refs0 = refs collect {
-              case ColumnRef(CPath(CPathIndex(`idx`), rest @ _*), ctype) =>
-                ColumnRef(CPath(rest: _*), ctype)
-            }
-            buildPath(CPathIndex(idx) :: nodes, refs0, tpe)
+        case JArrayFixedT(indices) =>
+          indices.toList.flatMap {
+            case (idx, tpe) =>
+              val refs0 = refs collect {
+                case ColumnRef(CPath(CPathIndex(`idx`), rest @ _*), ctype) =>
+                  ColumnRef(CPath(rest: _*), ctype)
+              }
+              buildPath(CPathIndex(idx) :: nodes, refs0, tpe)
+          }
+
+        case JObjectFixedT(fields) => {
+          fields.toList.flatMap {
+            case (field, tpe) =>
+              val refs0 = refs collect {
+                case ColumnRef(CPath(CPathField(`field`), rest @ _*), ctype) =>
+                  ColumnRef(CPath(rest: _*), ctype)
+              }
+              buildPath(CPathField(field) :: nodes, refs0, tpe)
+          }
         }
 
-      case JObjectFixedT(fields) => {
-        fields.toList.flatMap {
-          case (field, tpe) =>
-            val refs0 = refs collect {
-              case ColumnRef(CPath(CPathField(`field`), rest @ _*), ctype) =>
-                ColumnRef(CPath(rest: _*), ctype)
-            }
-            buildPath(CPathField(field) :: nodes, refs0, tpe)
-        }
+        case JArrayUnfixedT =>
+          refs collect {
+            case ColumnRef(p @ CPath(CPathIndex(i), rest @ _*), ctype) =>
+              ColumnRef(CPath(nodes.reverse) \ p, ctype)
+            case ColumnRef(CPath(), CEmptyArray) =>
+              ColumnRef(CPath(nodes.reverse), CEmptyArray)
+          }
+
+        case JObjectUnfixedT =>
+          refs collect {
+            case ColumnRef(p @ CPath(CPathField(i), rest @ _*), ctype) =>
+              ColumnRef(CPath(nodes.reverse) \ p, ctype)
+            case ColumnRef(CPath(), CEmptyObject) =>
+              ColumnRef(CPath(nodes.reverse), CEmptyObject)
+          }
+
+        case JArrayHomogeneousT(tpe) =>
+          val refs0 = refs collect {
+            case ColumnRef(CPath(CPathArray, rest @ _*), ctype) =>
+              ColumnRef(CPath(rest: _*), ctype)
+          }
+          buildPath(CPathArray :: nodes, refs0, tpe)
+
+        case JNumberT =>
+          val path = CPath(nodes.reverse)
+          ColumnRef(path, CLong: CType) :: ColumnRef(
+            path,
+            CDouble) :: ColumnRef(path, CNum) :: Nil
+
+        case JTextT =>
+          ColumnRef(CPath(nodes.reverse), CString) :: Nil
+
+        case JBooleanT =>
+          ColumnRef(CPath(nodes.reverse), CBoolean) :: Nil
+
+        case JDateT =>
+          ColumnRef(CPath(nodes.reverse), CDate) :: Nil
+
+        case JPeriodT =>
+          ColumnRef(CPath(nodes.reverse), CPeriod) :: Nil
+
+        case JNullT =>
+          ColumnRef(CPath(nodes.reverse), CNull) :: Nil
+
+        case JUnionT(ltpe, rtpe) =>
+          buildPath(nodes, refs, ltpe) ++ buildPath(nodes, refs, rtpe)
       }
-
-      case JArrayUnfixedT =>
-        refs collect {
-          case ColumnRef(p @ CPath(CPathIndex(i), rest @ _*), ctype) =>
-            ColumnRef(CPath(nodes.reverse) \ p, ctype)
-          case ColumnRef(CPath(), CEmptyArray) =>
-            ColumnRef(CPath(nodes.reverse), CEmptyArray)
-        }
-
-      case JObjectUnfixedT =>
-        refs collect {
-          case ColumnRef(p @ CPath(CPathField(i), rest @ _*), ctype) =>
-            ColumnRef(CPath(nodes.reverse) \ p, ctype)
-          case ColumnRef(CPath(), CEmptyObject) =>
-            ColumnRef(CPath(nodes.reverse), CEmptyObject)
-        }
-
-      case JArrayHomogeneousT(tpe) =>
-        val refs0 = refs collect {
-          case ColumnRef(CPath(CPathArray, rest @ _*), ctype) =>
-            ColumnRef(CPath(rest: _*), ctype)
-        }
-        buildPath(CPathArray :: nodes, refs0, tpe)
-
-      case JNumberT =>
-        val path = CPath(nodes.reverse)
-        ColumnRef(path, CLong: CType) :: ColumnRef(path, CDouble) :: ColumnRef(
-          path,
-          CNum) :: Nil
-
-      case JTextT =>
-        ColumnRef(CPath(nodes.reverse), CString) :: Nil
-
-      case JBooleanT =>
-        ColumnRef(CPath(nodes.reverse), CBoolean) :: Nil
-
-      case JDateT =>
-        ColumnRef(CPath(nodes.reverse), CDate) :: Nil
-
-      case JPeriodT =>
-        ColumnRef(CPath(nodes.reverse), CPeriod) :: Nil
-
-      case JNullT =>
-        ColumnRef(CPath(nodes.reverse), CNull) :: Nil
-
-      case JUnionT(ltpe, rtpe) =>
-        buildPath(nodes, refs, ltpe) ++ buildPath(nodes, refs, rtpe)
-    }
 
     buildPath(Nil, refsOriginal, jtype).toSet
   }
 
-  private def fromCValueType(t: CValueType[_]): Option[JType] = t match {
-    case CBoolean               => Some(JBooleanT)
-    case CString                => Some(JTextT)
-    case CLong | CDouble | CNum => Some(JNumberT)
-    case CArrayType(elemType) =>
-      fromCValueType(elemType) map (JArrayHomogeneousT(_))
-    case CDate   => Some(JDateT)
-    case CPeriod => Some(JPeriodT)
-    case _       => None
-  }
+  private def fromCValueType(t: CValueType[_]): Option[JType] =
+    t match {
+      case CBoolean               => Some(JBooleanT)
+      case CString                => Some(JTextT)
+      case CLong | CDouble | CNum => Some(JNumberT)
+      case CArrayType(elemType) =>
+        fromCValueType(elemType) map (JArrayHomogeneousT(_))
+      case CDate   => Some(JDateT)
+      case CPeriod => Some(JPeriodT)
+      case _       => None
+    }
 
   /**
     * replaces all leaves in `jtype` with `leaf`
     */
   def replaceLeaf(jtype: JType)(leaf: JType): JType = {
-    def inner(jtype: JType): JType = jtype match {
-      case JNumberT | JTextT | JBooleanT | JNullT | JDateT | JPeriodT => leaf
-      case JArrayFixedT(elements)                                     => JArrayFixedT(elements.mapValues(inner))
-      case JObjectFixedT(fields)                                      => JObjectFixedT(fields.mapValues(inner))
-      case JUnionT(left, right)                                       => JUnionT(inner(left), inner(right))
-      case JArrayHomogeneousT(tpe)                                    => JArrayHomogeneousT(inner(tpe))
-      case arr @ JArrayUnfixedT                                       => arr
-      case obj @ JObjectUnfixedT                                      => obj
-    }
+    def inner(jtype: JType): JType =
+      jtype match {
+        case JNumberT | JTextT | JBooleanT | JNullT | JDateT | JPeriodT => leaf
+        case JArrayFixedT(elements)                                     => JArrayFixedT(elements.mapValues(inner))
+        case JObjectFixedT(fields)                                      => JObjectFixedT(fields.mapValues(inner))
+        case JUnionT(left, right)                                       => JUnionT(inner(left), inner(right))
+        case JArrayHomogeneousT(tpe)                                    => JArrayHomogeneousT(inner(tpe))
+        case arr @ JArrayUnfixedT                                       => arr
+        case obj @ JObjectUnfixedT                                      => obj
+      }
 
     inner(jtype)
   }
@@ -451,75 +455,77 @@ object Schema {
     * Tests whether the supplied sequence contains all the (CPath, CType) pairs that are
     * included by the supplied JType.
     */
-  def subsumes(ctpes: Seq[(CPath, CType)], jtpe: JType): Boolean = jtpe match {
-    case JNumberT =>
-      ctpes.exists {
-        case (CPath.Identity, CLong | CDouble | CNum) => true
-        case _                                        => false
+  def subsumes(ctpes: Seq[(CPath, CType)], jtpe: JType): Boolean =
+    jtpe match {
+      case JNumberT =>
+        ctpes.exists {
+          case (CPath.Identity, CLong | CDouble | CNum) => true
+          case _                                        => false
+        }
+
+      case JTextT => ctpes.contains(CPath.Identity -> CString)
+
+      case JBooleanT => ctpes.contains(CPath.Identity, CBoolean)
+
+      case JNullT => ctpes.contains(CPath.Identity, CNull)
+
+      case JDateT   => ctpes.contains(CPath.Identity, CDate)
+      case JPeriodT => ctpes.contains(CPath.Identity, CPeriod)
+
+      case JObjectUnfixedT if ctpes.contains(CPath.Identity, CEmptyObject) =>
+        true
+      case JObjectUnfixedT =>
+        ctpes.exists {
+          case (CPath(CPathField(_), _*), _) => true
+          case _                             => false
+        }
+      case JObjectFixedT(fields) if fields.isEmpty =>
+        ctpes.contains(CPath.Identity, CEmptyObject)
+      case JObjectFixedT(fields) => {
+        val keys = fields.keySet
+        keys.forall { key =>
+          subsumes(
+            ctpes.collect {
+              case (CPath(CPathField(`key`), tail @ _*), ctpe) =>
+                (CPath(tail: _*), ctpe)
+            },
+            fields(key))
+        }
       }
 
-    case JTextT => ctpes.contains(CPath.Identity -> CString)
-
-    case JBooleanT => ctpes.contains(CPath.Identity, CBoolean)
-
-    case JNullT => ctpes.contains(CPath.Identity, CNull)
-
-    case JDateT   => ctpes.contains(CPath.Identity, CDate)
-    case JPeriodT => ctpes.contains(CPath.Identity, CPeriod)
-
-    case JObjectUnfixedT if ctpes.contains(CPath.Identity, CEmptyObject) => true
-    case JObjectUnfixedT =>
-      ctpes.exists {
-        case (CPath(CPathField(_), _*), _) => true
-        case _                             => false
+      case JArrayUnfixedT if ctpes.contains(CPath.Identity, CEmptyArray) => true
+      case JArrayUnfixedT =>
+        ctpes.exists {
+          case (CPath(CPathArray, _*), _)    => true
+          case (CPath(CPathIndex(_), _*), _) => true
+          case _                             => false
+        }
+      case JArrayFixedT(elements) if elements.isEmpty =>
+        ctpes.contains(CPath.Identity, CEmptyArray)
+      case JArrayFixedT(elements) => {
+        val indices = elements.keySet
+        indices.forall { i =>
+          subsumes(
+            ctpes.collect {
+              case (CPath(CPathArray, tail @ _*), CArrayType(elemType)) =>
+                (CPath(tail: _*), elemType)
+              case (CPath(CPathIndex(`i`), tail @ _*), ctpe) =>
+                (CPath(tail: _*), ctpe)
+            },
+            elements(i)
+          )
+        }
       }
-    case JObjectFixedT(fields) if fields.isEmpty =>
-      ctpes.contains(CPath.Identity, CEmptyObject)
-    case JObjectFixedT(fields) => {
-      val keys = fields.keySet
-      keys.forall { key =>
-        subsumes(
-          ctpes.collect {
-            case (CPath(CPathField(`key`), tail @ _*), ctpe) =>
-              (CPath(tail: _*), ctpe)
-          },
-          fields(key))
-      }
+      case JArrayHomogeneousT(jElemType) =>
+        ctpes.exists {
+          case (CPath(CPathArray, _*), CArrayType(cElemType)) =>
+            ctypes(jElemType) contains cElemType
+          case _ => false
+        }
+
+      case JUnionT(ljtpe, rjtpe) =>
+        subsumes(ctpes, ljtpe) || subsumes(ctpes, rjtpe)
+
+      case _ => false
     }
-
-    case JArrayUnfixedT if ctpes.contains(CPath.Identity, CEmptyArray) => true
-    case JArrayUnfixedT =>
-      ctpes.exists {
-        case (CPath(CPathArray, _*), _)    => true
-        case (CPath(CPathIndex(_), _*), _) => true
-        case _                             => false
-      }
-    case JArrayFixedT(elements) if elements.isEmpty =>
-      ctpes.contains(CPath.Identity, CEmptyArray)
-    case JArrayFixedT(elements) => {
-      val indices = elements.keySet
-      indices.forall { i =>
-        subsumes(
-          ctpes.collect {
-            case (CPath(CPathArray, tail @ _*), CArrayType(elemType)) =>
-              (CPath(tail: _*), elemType)
-            case (CPath(CPathIndex(`i`), tail @ _*), ctpe) =>
-              (CPath(tail: _*), ctpe)
-          },
-          elements(i)
-        )
-      }
-    }
-    case JArrayHomogeneousT(jElemType) =>
-      ctpes.exists {
-        case (CPath(CPathArray, _*), CArrayType(cElemType)) =>
-          ctypes(jElemType) contains cElemType
-        case _ => false
-      }
-
-    case JUnionT(ljtpe, rjtpe) =>
-      subsumes(ctpes, ljtpe) || subsumes(ctpes, rjtpe)
-
-    case _ => false
-  }
 }

@@ -259,10 +259,11 @@ final case class PostRestartException private[akka] (
 @SerialVersionUID(1L)
 object OriginalRestartException {
   def unapply(ex: PostRestartException): Option[Throwable] = {
-    @tailrec def rec(ex: PostRestartException): Option[Throwable] = ex match {
-      case PostRestartException(_, _, e: PostRestartException) ⇒ rec(e)
-      case PostRestartException(_, _, e) ⇒ Some(e)
-    }
+    @tailrec def rec(ex: PostRestartException): Option[Throwable] =
+      ex match {
+        case PostRestartException(_, _, e: PostRestartException) ⇒ rec(e)
+        case PostRestartException(_, _, e) ⇒ Some(e)
+      }
     rec(ex)
   }
 }

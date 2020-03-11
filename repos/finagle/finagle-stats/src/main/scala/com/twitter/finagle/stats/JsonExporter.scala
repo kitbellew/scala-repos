@@ -145,21 +145,22 @@ class JsonExporter(registry: Metrics, timer: Timer)
       default
   }
 
-  private[this] def getOrRegisterLatchedStats(): CounterDeltas = synchronized {
-    deltas match {
-      case Some(ds) => ds
-      case None     =>
-        // Latching should happen every minute, at the top of the minute.
-        deltas = Some(new CounterDeltas())
-        timer.schedule(startOfNextMinute, 1.minute) {
-          val ds = self.synchronized {
-            deltas.get
+  private[this] def getOrRegisterLatchedStats(): CounterDeltas =
+    synchronized {
+      deltas match {
+        case Some(ds) => ds
+        case None     =>
+          // Latching should happen every minute, at the top of the minute.
+          deltas = Some(new CounterDeltas())
+          timer.schedule(startOfNextMinute, 1.minute) {
+            val ds = self.synchronized {
+              deltas.get
+            }
+            ds.update(registry.sampleCounters())
           }
-          ds.update(registry.sampleCounters())
-        }
-        deltas.get
+          deltas.get
+      }
     }
-  }
 
   def json(
       pretty: Boolean,

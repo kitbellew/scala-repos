@@ -114,15 +114,16 @@ trait Dist[@sp A] extends Any { self =>
     else
       flatMap(f).iterate(n - 1, f)
 
-  def iterateUntil(pred: A => Boolean, f: A => Dist[A]): Dist[A] = new Dist[A] {
-    @tailrec def loop(gen: Generator, a: A): A =
-      if (pred(a))
-        a
-      else
-        loop(gen, f(a)(gen))
+  def iterateUntil(pred: A => Boolean, f: A => Dist[A]): Dist[A] =
+    new Dist[A] {
+      @tailrec def loop(gen: Generator, a: A): A =
+        if (pred(a))
+          a
+        else
+          loop(gen, f(a)(gen))
 
-    def apply(gen: Generator): A = loop(gen, self(gen))
-  }
+      def apply(gen: Generator): A = loop(gen, self(gen))
+    }
 
   final def zip[B](that: Dist[B]): Dist[(A, B)] =
     new DistFromGen(g => (this(g), that(g)))
@@ -397,17 +398,18 @@ object Dist extends DistInstances8 {
     new DistFromGen(_.nextInt(d) + from)
   }
 
-  def natural(maxDigits: Int): Dist[Natural] = new Dist[Natural] {
-    @tailrec
-    private def loop(g: Generator, i: Int, size: Int, n: Natural): Natural =
-      if (i < size)
-        loop(g, i + 1, size, Natural.Digit(g.next[UInt], n))
-      else
-        n
+  def natural(maxDigits: Int): Dist[Natural] =
+    new Dist[Natural] {
+      @tailrec
+      private def loop(g: Generator, i: Int, size: Int, n: Natural): Natural =
+        if (i < size)
+          loop(g, i + 1, size, Natural.Digit(g.next[UInt], n))
+        else
+          n
 
-    def apply(gen: Generator): Natural =
-      loop(gen, 1, gen.nextInt(maxDigits) + 1, Natural.End(gen.next[UInt]))
-  }
+      def apply(gen: Generator): Natural =
+        loop(gen, 1, gen.nextInt(maxDigits) + 1, Natural.End(gen.next[UInt]))
+    }
 
   def safelong(maxBytes: Int): Dist[SafeLong] =
     if (maxBytes <= 0) {
@@ -422,10 +424,11 @@ object Dist extends DistInstances8 {
       bigint(maxBytes).map(SafeLong(_))
     }
 
-  def bigint(maxBytes: Int): Dist[BigInt] = new Dist[BigInt] {
-    def apply(gen: Generator): BigInt =
-      BigInt(gen.generateBytes(gen.nextInt(maxBytes) + 1))
-  }
+  def bigint(maxBytes: Int): Dist[BigInt] =
+    new Dist[BigInt] {
+      def apply(gen: Generator): BigInt =
+        BigInt(gen.generateBytes(gen.nextInt(maxBytes) + 1))
+    }
 
   def bigdecimal(maxBytes: Int, maxScale: Int): Dist[BigDecimal] =
     new Dist[BigDecimal] {
@@ -476,20 +479,22 @@ object Dist extends DistInstances8 {
       maxInputs: Int): Dist[Map[A, B]] =
     list[(A, B)](minInputs, maxInputs).map(_.toMap)
 
-  def oneOf[A: ClassTag](as: A*): Dist[A] = new Dist[A] {
-    private val arr = as.toArray
-    def apply(gen: Generator): A = arr(gen.nextInt(arr.length))
-  }
-
-  def cycleOf[A: ClassTag](as: A*): Dist[A] = new Dist[A] {
-    private val arr = as.toArray
-    private var i = 0
-    def apply(gen: Generator): A = {
-      val a = arr(i)
-      i = (i + 1) % arr.length
-      a
+  def oneOf[A: ClassTag](as: A*): Dist[A] =
+    new Dist[A] {
+      private val arr = as.toArray
+      def apply(gen: Generator): A = arr(gen.nextInt(arr.length))
     }
-  }
+
+  def cycleOf[A: ClassTag](as: A*): Dist[A] =
+    new Dist[A] {
+      private val arr = as.toArray
+      private var i = 0
+      def apply(gen: Generator): A = {
+        val a = arr(i)
+        i = (i + 1) % arr.length
+        a
+      }
+    }
 
   def gaussianFromDouble[A: Field]: DistFromGen[A] =
     new DistFromGen[A](g => Field[A].fromDouble(g.nextGaussian))

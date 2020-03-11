@@ -123,14 +123,15 @@ class BTypesFromClassfileTest {
       chk3)
   }
 
-  def check(classSym: Symbol): Unit = duringBackend {
-    clearCache()
-    val fromSymbol = classBTypeFromSymbol(classSym)
-    clearCache()
-    val fromClassfile =
-      bTypes.classBTypeFromParsedClassfile(fromSymbol.internalName)
-    sameBType(fromSymbol, fromClassfile)
-  }
+  def check(classSym: Symbol): Unit =
+    duringBackend {
+      clearCache()
+      val fromSymbol = classBTypeFromSymbol(classSym)
+      clearCache()
+      val fromClassfile =
+        bTypes.classBTypeFromParsedClassfile(fromSymbol.internalName)
+      sameBType(fromSymbol, fromClassfile)
+    }
 
   @Test
   def compareClassBTypes(): Unit = {

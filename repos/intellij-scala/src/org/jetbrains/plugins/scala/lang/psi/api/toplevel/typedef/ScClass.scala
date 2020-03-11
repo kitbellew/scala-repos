@@ -30,10 +30,11 @@ trait ScClass extends ScTypeDefinition with ScParameterOwner {
     (secondaryConstructors ++ constructor.toSeq).toArray
   }
 
-  def clauses: Option[ScParameters] = constructor match {
-    case Some(x: ScPrimaryConstructor) => Some(x.parameterList)
-    case None                          => None
-  }
+  def clauses: Option[ScParameters] =
+    constructor match {
+      case Some(x: ScPrimaryConstructor) => Some(x.parameterList)
+      case None                          => None
+    }
 
   def addEmptyParens() {
     clauses match {

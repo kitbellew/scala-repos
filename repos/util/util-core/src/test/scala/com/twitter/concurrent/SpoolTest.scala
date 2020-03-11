@@ -518,10 +518,11 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
       val tail = new Promise[Spool[Int]]
 
       // A spool where only the head is valid.
-      def spool: Spool[Int] = 0 *:: {
-        tail.setException(new Exception);
-        tail
-      }
+      def spool: Spool[Int] =
+        0 *:: {
+          tail.setException(new Exception);
+          tail
+        }
 
       // create, apply, poll
       val s = f(spool)

@@ -28,10 +28,11 @@ case class PathPattern(regex: Regex, captureGroupNames: List[String] = Nil) {
       None
   }
 
-  def +(pathPattern: PathPattern): PathPattern = PathPattern(
-    new Regex(this.regex.toString + pathPattern.regex.toString),
-    this.captureGroupNames ::: pathPattern.captureGroupNames
-  )
+  def +(pathPattern: PathPattern): PathPattern =
+    PathPattern(
+      new Regex(this.regex.toString + pathPattern.regex.toString),
+      this.captureGroupNames ::: pathPattern.captureGroupNames
+    )
 
 }
 
@@ -62,10 +63,11 @@ trait RegexPathPatternParser extends PathPatternParser with RegexParsers {
 
     def toPathPattern: PathPattern = PathPattern(regex.r, captureGroupNames)
 
-    def +(other: PartialPathPattern): PartialPathPattern = PartialPathPattern(
-      this.regex + other.regex,
-      this.captureGroupNames ::: other.captureGroupNames
-    )
+    def +(other: PartialPathPattern): PartialPathPattern =
+      PartialPathPattern(
+        this.regex + other.regex,
+        this.captureGroupNames ::: other.captureGroupNames
+      )
   }
 }
 
@@ -83,29 +85,33 @@ class SinatraPathPatternParser extends RegexPathPatternParser {
         throw new IllegalArgumentException("Invalid path pattern: " + pattern)
     }
 
-  private def pathPattern = rep(token) ^^ {
-    _.reduceLeft {
-      _ + _
+  private def pathPattern =
+    rep(token) ^^ {
+      _.reduceLeft {
+        _ + _
+      }
     }
-  }
 
   private def token = splat | namedGroup | literal
 
   private def splat = "*" ^^^ PartialPathPattern("(.*?)", List("splat"))
 
-  private def namedGroup = ":" ~> """\w+""".r ^^ { groupName =>
-    PartialPathPattern("([^/?#]+)", List(groupName))
-  }
+  private def namedGroup =
+    ":" ~> """\w+""".r ^^ { groupName =>
+      PartialPathPattern("([^/?#]+)", List(groupName))
+    }
 
   private def literal = metaChar | normalChar
 
-  private def metaChar = """[\.\+\(\)\$]""".r ^^ { c =>
-    PartialPathPattern("\\" + c)
-  }
+  private def metaChar =
+    """[\.\+\(\)\$]""".r ^^ { c =>
+      PartialPathPattern("\\" + c)
+    }
 
-  private def normalChar = ".".r ^^ { c =>
-    PartialPathPattern(c)
-  }
+  private def normalChar =
+    ".".r ^^ { c =>
+      PartialPathPattern(c)
+    }
 
 }
 
@@ -128,51 +134,59 @@ class RailsPathPatternParser extends RegexPathPatternParser {
         throw new IllegalArgumentException("Invalid path pattern: " + pattern)
     }
 
-  private def target = expr ^^ { e =>
-    PartialPathPattern(
-      "\\A" + e.regex + "\\Z",
-      e.captureGroupNames).toPathPattern
-  }
-
-  private def expr = rep1(token) ^^ {
-    _.reduceLeft {
-      _ + _
+  private def target =
+    expr ^^ { e =>
+      PartialPathPattern(
+        "\\A" + e.regex + "\\Z",
+        e.captureGroupNames).toPathPattern
     }
-  }
+
+  private def expr =
+    rep1(token) ^^ {
+      _.reduceLeft {
+        _ + _
+      }
+    }
 
   private def token = param | glob | optional | static
 
-  private def param = ":" ~> identifier ^^ { name =>
-    PartialPathPattern("([^#/.?]+)", List(name))
-  }
+  private def param =
+    ":" ~> identifier ^^ { name =>
+      PartialPathPattern("([^#/.?]+)", List(name))
+    }
 
   private def identifier = """[a-zA-Z_]\w*""".r
 
-  private def glob = "*" ~> identifier ^^ { name =>
-    PartialPathPattern("(.+)", List(name))
-  }
+  private def glob =
+    "*" ~> identifier ^^ { name =>
+      PartialPathPattern("(.+)", List(name))
+    }
 
-  private def optional: Parser[PartialPathPattern] = "(" ~> expr <~ ")" ^^ {
-    e => PartialPathPattern("(?:" + e.regex + ")?", e.captureGroupNames)
-  }
+  private def optional: Parser[PartialPathPattern] =
+    "(" ~> expr <~ ")" ^^ { e =>
+      PartialPathPattern("(?:" + e.regex + ")?", e.captureGroupNames)
+    }
 
-  private def static = (escaped | char) ^^ { str =>
-    PartialPathPattern(str)
-  }
+  private def static =
+    (escaped | char) ^^ { str =>
+      PartialPathPattern(str)
+    }
 
   private def escaped = literal("\\") ~> (char | paren)
 
   private def char = metachar | stdchar
 
-  private def metachar = """[.^$|?+*{}\\\[\]-]""".r ^^ {
-    "\\" + _
-  }
+  private def metachar =
+    """[.^$|?+*{}\\\[\]-]""".r ^^ {
+      "\\" + _
+    }
 
   private def stdchar = """[^()]""".r
 
-  private def paren = ("(" | ")") ^^ {
-    "\\" + _
-  }
+  private def paren =
+    ("(" | ")") ^^ {
+      "\\" + _
+    }
 }
 
 object RailsPathPatternParser {

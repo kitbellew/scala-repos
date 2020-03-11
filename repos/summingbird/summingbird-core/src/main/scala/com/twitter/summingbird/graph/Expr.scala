@@ -104,23 +104,24 @@ object Expr {
           type E[t] = Expr[t, N]
         })#E,
         N],
-      N[T]) = cache.get(expr) match {
-    case Some(node) => (cache, node)
-    case None =>
-      expr match {
-        case Const(n) => (cache + (expr -> n), n)
-        case Var(id) =>
-          val (c1, n) = evaluate(idToExp, cache, idToExp(id))
-          (c1 + (expr -> n), n)
-        case Unary(id, fn) =>
-          val (c1, n1) = evaluate(idToExp, cache, idToExp(id))
-          val n2 = fn(n1)
-          (c1 + (expr -> n2), n2)
-        case Binary(id1, id2, fn) =>
-          val (c1, n1) = evaluate(idToExp, cache, idToExp(id1))
-          val (c2, n2) = evaluate(idToExp, c1, idToExp(id2))
-          val n3 = fn(n1, n2)
-          (c2 + (expr -> n3), n3)
-      }
-  }
+      N[T]) =
+    cache.get(expr) match {
+      case Some(node) => (cache, node)
+      case None =>
+        expr match {
+          case Const(n) => (cache + (expr -> n), n)
+          case Var(id) =>
+            val (c1, n) = evaluate(idToExp, cache, idToExp(id))
+            (c1 + (expr -> n), n)
+          case Unary(id, fn) =>
+            val (c1, n1) = evaluate(idToExp, cache, idToExp(id))
+            val n2 = fn(n1)
+            (c1 + (expr -> n2), n2)
+          case Binary(id1, id2, fn) =>
+            val (c1, n1) = evaluate(idToExp, cache, idToExp(id1))
+            val (c2, n2) = evaluate(idToExp, c1, idToExp(id2))
+            val n3 = fn(n1, n2)
+            (c2 + (expr -> n3), n3)
+        }
+    }
 }

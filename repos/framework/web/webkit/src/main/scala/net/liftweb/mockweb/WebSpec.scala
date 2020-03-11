@@ -140,18 +140,20 @@ abstract class WebSpec(boot: () => Any = () => {})
     /**
       * Modifies the request to POST the given request body JSON.
       */
-    def withPost(jval: JValue) = withMods { mockReq =>
-      mockReq.body = jval
-      mockReq.method = "POST"
-    }
+    def withPost(jval: JValue) =
+      withMods { mockReq =>
+        mockReq.body = jval
+        mockReq.method = "POST"
+      }
 
     /**
       * Modifies the request to POST the given request body XML.
       */
-    def withPost(node: NodeSeq) = withMods { mockReq =>
-      mockReq.body = node
-      mockReq.method = "POST"
-    }
+    def withPost(node: NodeSeq) =
+      withMods { mockReq =>
+        mockReq.body = node
+        mockReq.method = "POST"
+      }
 
     /**
       * Modifies the request to PUT the given request body text. Optionally,
@@ -167,31 +169,34 @@ abstract class WebSpec(boot: () => Any = () => {})
     /**
       * Modifies the request to PUT the given request body JSON.
       */
-    def withPut(jval: JValue) = withMods { mockReq =>
-      mockReq.body = jval
-      mockReq.method = "PUT"
-    }
+    def withPut(jval: JValue) =
+      withMods { mockReq =>
+        mockReq.body = jval
+        mockReq.method = "PUT"
+      }
 
     /**
       * Modifies the request to PUT the given request body XML.
       */
-    def withPut(node: NodeSeq) = withMods { mockReq =>
-      mockReq.body = node
-      mockReq.method = "PUT"
-    }
+    def withPut(node: NodeSeq) =
+      withMods { mockReq =>
+        mockReq.body = node
+        mockReq.method = "PUT"
+      }
 
     /**
       * Allows you to specify your own modification function for the servlet request
       * prior to initialization.
       */
-    def withMods(f: MockHttpServletRequest => Unit): T = req match {
-      case r: MockHttpServletRequest =>
-        f(r);
-        this
-      case _ =>
-        throw new IllegalArgumentException(
-          "We can only mutate MockHttpServletRequest instances")
-    }
+    def withMods(f: MockHttpServletRequest => Unit): T =
+      req match {
+        case r: MockHttpServletRequest =>
+          f(r);
+          this
+        case _ =>
+          throw new IllegalArgumentException(
+            "We can only mutate MockHttpServletRequest instances")
+      }
   }
 
   /**

@@ -17,22 +17,23 @@ package scalaguide.xml.scalaxmlrequests {
       "request body as xml" in {
 
         //#xml-request-body-asXml
-        def sayHello = Action { request =>
-          request.body.asXml
-            .map { xml =>
-              (xml \\ "name" headOption)
-                .map(_.text)
-                .map { name =>
-                  Ok("Hello " + name)
-                }
-                .getOrElse {
-                  BadRequest("Missing parameter [name]")
-                }
-            }
-            .getOrElse {
-              BadRequest("Expecting Xml data")
-            }
-        }
+        def sayHello =
+          Action { request =>
+            request.body.asXml
+              .map { xml =>
+                (xml \\ "name" headOption)
+                  .map(_.text)
+                  .map { name =>
+                    Ok("Hello " + name)
+                  }
+                  .getOrElse {
+                    BadRequest("Missing parameter [name]")
+                  }
+              }
+              .getOrElse {
+                BadRequest("Expecting Xml data")
+              }
+          }
         //#xml-request-body-asXml
 
         testAction(sayHello, FakeRequest().withXmlBody(<name>XF</name>))
@@ -41,16 +42,17 @@ package scalaguide.xml.scalaxmlrequests {
       "request body as xml body parser" in {
 
         //#xml-request-body-parser
-        def sayHello = Action(parse.xml) { request =>
-          (request.body \\ "name" headOption)
-            .map(_.text)
-            .map { name =>
-              Ok("Hello " + name)
-            }
-            .getOrElse {
-              BadRequest("Missing parameter [name]")
-            }
-        }
+        def sayHello =
+          Action(parse.xml) { request =>
+            (request.body \\ "name" headOption)
+              .map(_.text)
+              .map { name =>
+                Ok("Hello " + name)
+              }
+              .getOrElse {
+                BadRequest("Missing parameter [name]")
+              }
+          }
         //#xml-request-body-parser
 
         testAction(
@@ -61,19 +63,20 @@ package scalaguide.xml.scalaxmlrequests {
       "request body as xml body parser and xml response" in {
 
         //#xml-request-body-parser-xml-response
-        def sayHello = Action(parse.xml) { request =>
-          (request.body \\ "name" headOption)
-            .map(_.text)
-            .map { name =>
-              Ok(<message status="OK">Hello {
-                name
-              }</message>)
-            }
-            .getOrElse {
-              BadRequest(
-                <message status="KO">Missing parameter [name]</message>)
-            }
-        }
+        def sayHello =
+          Action(parse.xml) { request =>
+            (request.body \\ "name" headOption)
+              .map(_.text)
+              .map { name =>
+                Ok(<message status="OK">Hello {
+                  name
+                }</message>)
+              }
+              .getOrElse {
+                BadRequest(
+                  <message status="KO">Missing parameter [name]</message>)
+              }
+          }
         //#xml-request-body-parser-xml-response
 
         testAction(

@@ -118,12 +118,13 @@ object TestUtil {
       else
         BatchID(0)
 
-    def earliestTimeOf(batch: BatchID) = batch.id match {
-      case 0L => Timestamp.Min
-      case 1L => Timestamp(0)
-      case 2L => Timestamp.Max
-      case 3L => Timestamp.Max
-    }
+    def earliestTimeOf(batch: BatchID) =
+      batch.id match {
+        case 0L => Timestamp.Min
+        case 1L => Timestamp(0)
+        case 2L => Timestamp.Max
+        case 3L => Timestamp.Max
+      }
     // this is just for testing, it covers everything with batch 1
     override def cover(interval: Interval[Timestamp]): Interval[BatchID] =
       Interval.leftClosedRightOpen(BatchID(1), BatchID(2))

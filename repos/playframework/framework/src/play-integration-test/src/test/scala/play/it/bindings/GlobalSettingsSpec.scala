@@ -76,11 +76,12 @@ trait GlobalSettingsSpec
 /** Inserts an X-Foo header with a custom value. */
 class FooFilter(headerValue: String) extends EssentialFilter {
   def this() = this("filter-default-constructor")
-  def apply(next: EssentialAction) = EssentialAction { request =>
-    val fooBarHeaders =
-      request.copy(headers = request.headers.add("X-Foo" -> headerValue))
-    next(fooBarHeaders)
-  }
+  def apply(next: EssentialAction) =
+    EssentialAction { request =>
+      val fooBarHeaders =
+        request.copy(headers = request.headers.add("X-Foo" -> headerValue))
+      next(fooBarHeaders)
+    }
 
 }
 

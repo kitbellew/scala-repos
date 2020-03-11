@@ -41,23 +41,24 @@ object XmlApiSpec extends Specification {
       }</api>
 
     // This method exists to test the non-XML implicit conversions on XMLApiHelper
-    def produce(in: Any): LiftResponse = in match {
-      // Tests boolToResponse
-      case "true"  => true
-      case "false" => false
-      // Tests canBoolToResponse
-      case s: String =>
-        tryo[Boolean] {
-          s.toInt > 5
-        }
-      // Tests pairToResponse
-      case i: Int if i == 42 => (true, "But what is the question?")
-      // These test the listElemToResponse conversion
-      case f: Float if f == 42f => (<float>perfect</float>: Elem)
-      case f: Float if f == 0f  => (<float>zero</float>: Node)
-      case f: Float if f > 0f   => (<float>positive</float>: NodeSeq)
-      case f: Float if f < 0f   => (<float>negative</float>: Seq[Node])
-    }
+    def produce(in: Any): LiftResponse =
+      in match {
+        // Tests boolToResponse
+        case "true"  => true
+        case "false" => false
+        // Tests canBoolToResponse
+        case s: String =>
+          tryo[Boolean] {
+            s.toInt > 5
+          }
+        // Tests pairToResponse
+        case i: Int if i == 42 => (true, "But what is the question?")
+        // These test the listElemToResponse conversion
+        case f: Float if f == 42f => (<float>perfect</float>: Elem)
+        case f: Float if f == 0f  => (<float>zero</float>: Node)
+        case f: Float if f > 0f   => (<float>positive</float>: NodeSeq)
+        case f: Float if f < 0f   => (<float>negative</float>: Seq[Node])
+      }
 
     // This method tests the XML implicit conversions on XMLApiHelper
     def calculator: LiftRules.DispatchPF = {

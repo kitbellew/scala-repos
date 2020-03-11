@@ -50,11 +50,12 @@ final class ResponseHeader(
 
   override def toString = s"$status, $headers"
   override def hashCode = (status, headers).hashCode
-  override def equals(o: Any) = o match {
-    case ResponseHeader(s, h, r) =>
-      (s, h, r).equals((status, headers, reasonPhrase))
-    case _ => false
-  }
+  override def equals(o: Any) =
+    o match {
+      case ResponseHeader(s, h, r) =>
+        (s, h, r).equals((status, headers, reasonPhrase))
+      case _ => false
+    }
 }
 object ResponseHeader {
   val basicDateFormatPattern = "EEE, dd MMM yyyy HH:mm:ss"

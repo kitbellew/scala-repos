@@ -36,7 +36,8 @@ object StorageTestUtils {
     admin.deleteNamespace(namespace)
   }
 
-  def dropJDBCTable(table: String): Unit = DB autoCommit { implicit s =>
-    SQL(s"drop table $table").execute().apply()
-  }
+  def dropJDBCTable(table: String): Unit =
+    DB autoCommit { implicit s =>
+      SQL(s"drop table $table").execute().apply()
+    }
 }

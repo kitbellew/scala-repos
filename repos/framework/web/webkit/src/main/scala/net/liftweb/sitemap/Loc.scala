@@ -191,10 +191,11 @@ trait Loc[T] {
   def rewritePF: Box[LiftRules.RewritePF] =
     rewrite.map(rw =>
       new NamedPartialFunction[RewriteRequest, RewriteResponse] {
-        def functionName = rw match {
-          case rw: NamedPartialFunction[_, _] => rw.functionName
-          case _                              => "Unnamed"
-        }
+        def functionName =
+          rw match {
+            case rw: NamedPartialFunction[_, _] => rw.functionName
+            case _                              => "Unnamed"
+          }
 
         def isDefinedAt(in: RewriteRequest) = rw.isDefinedAt(in)
 
@@ -355,17 +356,18 @@ trait Loc[T] {
   }
 
   def earlyResponse: Box[LiftResponse] = {
-    def early(what: List[Loc.LocParam[T]]): Box[LiftResponse] = what match {
-      case Nil => Empty
+    def early(what: List[Loc.LocParam[T]]): Box[LiftResponse] =
+      what match {
+        case Nil => Empty
 
-      case Loc.EarlyResponse(func) :: xs =>
-        func() match {
-          case Full(r) => Full(r)
-          case _       => early(xs)
-        }
+        case Loc.EarlyResponse(func) :: xs =>
+          func() match {
+            case Full(r) => Full(r)
+            case _       => early(xs)
+          }
 
-      case x :: xs => early(xs)
-    }
+        case x :: xs => early(xs)
+      }
 
     early(allParams)
   }
@@ -752,9 +754,10 @@ object Loc {
       * to a snippet function (`NodeSeq` => `NodeSeq`).
       */
     def apply[A](pf: PartialFunction[(String, Box[A]), NodeSeq => NodeSeq])
-        : ValueSnippets[A] = new ValueSnippets[A] {
-      def snippets = pf
-    }
+        : ValueSnippets[A] =
+      new ValueSnippets[A] {
+        def snippets = pf
+      }
   }
 
   /**
@@ -1000,22 +1003,24 @@ object Loc {
   }
 
   object ExtLink {
-    def apply(url: String) = new Link[Unit](Nil, false) {
-      override def createLink(value: Unit): Box[NodeSeq] = Full(Text(url))
+    def apply(url: String) =
+      new Link[Unit](Nil, false) {
+        override def createLink(value: Unit): Box[NodeSeq] = Full(Text(url))
 
-      /**
-        * Is the Loc external
-        */
-      override def external_? = true
+        /**
+          * Is the Loc external
+          */
+        override def external_? = true
+      }
+  }
+
+  implicit def strToFailMsg(in: => String): FailMsg =
+    () => {
+      RedirectWithState(
+        LiftRules.siteMapFailRedirectLocation.mkString("/", "/", ""),
+        RedirectState(Empty, in -> NoticeType.Error)
+      )
     }
-  }
-
-  implicit def strToFailMsg(in: => String): FailMsg = () => {
-    RedirectWithState(
-      LiftRules.siteMapFailRedirectLocation.mkString("/", "/", ""),
-      RedirectState(Empty, in -> NoticeType.Error)
-    )
-  }
 
   implicit def strFuncToFailMsg(in: () => String): FailMsg = strToFailMsg(in())
 

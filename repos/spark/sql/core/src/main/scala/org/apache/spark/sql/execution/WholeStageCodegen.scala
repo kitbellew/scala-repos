@@ -37,14 +37,15 @@ import org.apache.spark.sql.internal.SQLConf
 trait CodegenSupport extends SparkPlan {
 
   /** Prefix used in the current operator's variable names. */
-  private def variablePrefix: String = this match {
-    case _: TungstenAggregate => "agg"
-    case _: BroadcastHashJoin => "bhj"
-    case _: SortMergeJoin     => "smj"
-    case _: PhysicalRDD       => "rdd"
-    case _: DataSourceScan    => "scan"
-    case _                    => nodeName.toLowerCase
-  }
+  private def variablePrefix: String =
+    this match {
+      case _: TungstenAggregate => "agg"
+      case _: BroadcastHashJoin => "bhj"
+      case _: SortMergeJoin     => "smj"
+      case _: PhysicalRDD       => "rdd"
+      case _: DataSourceScan    => "scan"
+      case _                    => nodeName.toLowerCase
+    }
 
   /**
     * Creates a metric using the specified name.
@@ -436,10 +437,11 @@ case class WholeStageCodegen(child: SparkPlan)
     child :: Nil
   }
 
-  private def collectInputs(plan: SparkPlan): Seq[SparkPlan] = plan match {
-    case InputAdapter(c) => c :: Nil
-    case other           => other.children.flatMap(collectInputs)
-  }
+  private def collectInputs(plan: SparkPlan): Seq[SparkPlan] =
+    plan match {
+      case InputAdapter(c) => c :: Nil
+      case other           => other.children.flatMap(collectInputs)
+    }
 
   override def treeChildren: Seq[SparkPlan] = {
     collectInputs(child)
@@ -453,49 +455,53 @@ case class WholeStageCodegen(child: SparkPlan)
   */
 case class CollapseCodegenStages(conf: SQLConf) extends Rule[SparkPlan] {
 
-  private def supportCodegen(e: Expression): Boolean = e match {
-    case e: LeafExpression => true
-    case e: CaseWhen       => e.shouldCodegen
-    // CodegenFallback requires the input to be an InternalRow
-    case e: CodegenFallback => false
-    case _                  => true
-  }
+  private def supportCodegen(e: Expression): Boolean =
+    e match {
+      case e: LeafExpression => true
+      case e: CaseWhen       => e.shouldCodegen
+      // CodegenFallback requires the input to be an InternalRow
+      case e: CodegenFallback => false
+      case _                  => true
+    }
 
-  private def supportCodegen(plan: SparkPlan): Boolean = plan match {
-    case plan: CodegenSupport if plan.supportCodegen =>
-      val willFallback =
-        plan.expressions.exists(_.find(e => !supportCodegen(e)).isDefined)
-      // the generated code will be huge if there are too many columns
-      val haveManyColumns = plan.output.length > 200
-      !willFallback && !haveManyColumns
-    case _ => false
-  }
+  private def supportCodegen(plan: SparkPlan): Boolean =
+    plan match {
+      case plan: CodegenSupport if plan.supportCodegen =>
+        val willFallback =
+          plan.expressions.exists(_.find(e => !supportCodegen(e)).isDefined)
+        // the generated code will be huge if there are too many columns
+        val haveManyColumns = plan.output.length > 200
+        !willFallback && !haveManyColumns
+      case _ => false
+    }
 
   /**
     * Inserts a InputAdapter on top of those that do not support codegen.
     */
-  private def insertInputAdapter(plan: SparkPlan): SparkPlan = plan match {
-    case j @ SortMergeJoin(_, _, _, _, left, right) if j.supportCodegen =>
-      // The children of SortMergeJoin should do codegen separately.
-      j.copy(
-        left = InputAdapter(insertWholeStageCodegen(left)),
-        right = InputAdapter(insertWholeStageCodegen(right)))
-    case p if !supportCodegen(p) =>
-      // collapse them recursively
-      InputAdapter(insertWholeStageCodegen(p))
-    case p =>
-      p.withNewChildren(p.children.map(insertInputAdapter))
-  }
+  private def insertInputAdapter(plan: SparkPlan): SparkPlan =
+    plan match {
+      case j @ SortMergeJoin(_, _, _, _, left, right) if j.supportCodegen =>
+        // The children of SortMergeJoin should do codegen separately.
+        j.copy(
+          left = InputAdapter(insertWholeStageCodegen(left)),
+          right = InputAdapter(insertWholeStageCodegen(right)))
+      case p if !supportCodegen(p) =>
+        // collapse them recursively
+        InputAdapter(insertWholeStageCodegen(p))
+      case p =>
+        p.withNewChildren(p.children.map(insertInputAdapter))
+    }
 
   /**
     * Inserts a WholeStageCodegen on top of those that support codegen.
     */
-  private def insertWholeStageCodegen(plan: SparkPlan): SparkPlan = plan match {
-    case plan: CodegenSupport if supportCodegen(plan) =>
-      WholeStageCodegen(insertInputAdapter(plan))
-    case other =>
-      other.withNewChildren(other.children.map(insertWholeStageCodegen))
-  }
+  private def insertWholeStageCodegen(plan: SparkPlan): SparkPlan =
+    plan match {
+      case plan: CodegenSupport if supportCodegen(plan) =>
+        WholeStageCodegen(insertInputAdapter(plan))
+      case other =>
+        other.withNewChildren(other.children.map(insertWholeStageCodegen))
+    }
 
   def apply(plan: SparkPlan): SparkPlan = {
     if (conf.wholeStageEnabled) {

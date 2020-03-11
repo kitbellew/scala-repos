@@ -108,12 +108,13 @@ sealed trait ExpressionDag[N[_]] { self =>
       id2Exp: HMap[Id, E] = self.idToExp,
       node2Literal: GenFunction[N, Lit] = self.nodeToLiteral,
       gcroots: Set[Id[_]] = self.roots,
-      id: Int = self.nextId): ExpressionDag[N] = new ExpressionDag[N] {
-    def idToExp = id2Exp
-    def roots = gcroots
-    def nodeToLiteral = node2Literal
-    def nextId = id
-  }
+      id: Int = self.nextId): ExpressionDag[N] =
+    new ExpressionDag[N] {
+      def idToExp = id2Exp
+      def roots = gcroots
+      def nodeToLiteral = node2Literal
+      def nextId = id
+    }
 
   override def toString: String =
     "ExpressionDag(idToExp = %s)".format(idToExp)
@@ -428,11 +429,12 @@ trait Rule[N[_]] { self =>
   def apply[T](on: ExpressionDag[N]): (N[T] => Option[N[T]])
 
   // If the current rule cannot apply, then try the argument here
-  def orElse(that: Rule[N]): Rule[N] = new Rule[N] {
-    def apply[T](on: ExpressionDag[N]) = { n =>
-      self.apply(on)(n).orElse(that.apply(on)(n))
+  def orElse(that: Rule[N]): Rule[N] =
+    new Rule[N] {
+      def apply[T](on: ExpressionDag[N]) = { n =>
+        self.apply(on)(n).orElse(that.apply(on)(n))
+      }
     }
-  }
 }
 
 /**

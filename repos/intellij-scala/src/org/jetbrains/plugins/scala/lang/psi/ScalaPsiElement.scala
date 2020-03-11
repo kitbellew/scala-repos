@@ -17,10 +17,11 @@ trait ScalaPsiElement
   protected var context: PsiElement = null
   protected var child: PsiElement = null
 
-  def isInCompiledFile = getContainingFile match {
-    case file: ScalaFile => file.isCompiled
-    case _               => false
-  }
+  def isInCompiledFile =
+    getContainingFile match {
+      case file: ScalaFile => file.isCompiled
+      case _               => false
+    }
 
   def setContext(element: PsiElement, child: PsiElement) {
     context = element
@@ -57,10 +58,11 @@ trait ScalaPsiElement
       clazz: Class[T]): Array[T]
 
   protected def findChild[T >: Null <: ScalaPsiElement](
-      clazz: Class[T]): Option[T] = findChildByClassScala(clazz) match {
-    case null => None
-    case e    => Some(e)
-  }
+      clazz: Class[T]): Option[T] =
+    findChildByClassScala(clazz) match {
+      case null => None
+      case e    => Some(e)
+    }
 
   def findLastChildByType[T <: PsiElement](t: IElementType): T = {
     var node = getNode.getLastChildNode

@@ -52,13 +52,14 @@ object Test extends std.TaskExtra {
   }
   lazy val d3 = t3(a, b, c) flatMapR f3
 
-  def d4(i: Int): Task[Int] = nop flatMap { _ =>
-    val x = math.random;
-    if (x < 0.01)
-      task(i);
-    else
-      d4(i + 1)
-  }
+  def d4(i: Int): Task[Int] =
+    nop flatMap { _ =>
+      val x = math.random;
+      if (x < 0.01)
+        task(i);
+      else
+        d4(i + 1)
+    }
 
   def go(): Unit = {
     def run[T](root: Task[T]) =

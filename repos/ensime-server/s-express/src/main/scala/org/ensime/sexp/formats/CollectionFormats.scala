@@ -58,15 +58,17 @@ trait CollectionFormats {
       evidence: T[E] <:< GenTraversable[E],
       cbf: CanBuildFrom[T[E], E, T[E]],
       ef: SexpFormat[E]
-  ): SexpFormat[T[E]] = new SexpFormat[T[E]] {
-    def write(t: T[E]) = SexpList(t.map(_.toSexp)(breakOut): List[Sexp])
+  ): SexpFormat[T[E]] =
+    new SexpFormat[T[E]] {
+      def write(t: T[E]) = SexpList(t.map(_.toSexp)(breakOut): List[Sexp])
 
-    def read(v: Sexp): T[E] = v match {
-      case SexpNil       => cbf().result()
-      case SexpList(els) => els.map(_.convertTo[E])(breakOut)
-      case x             => deserializationError(x)
+      def read(v: Sexp): T[E] =
+        v match {
+          case SexpNil       => cbf().result()
+          case SexpList(els) => els.map(_.convertTo[E])(breakOut)
+          case x             => deserializationError(x)
+        }
     }
-  }
 
   /*
    We could potentially have a specialised mapDataFormat (using
@@ -79,22 +81,25 @@ trait CollectionFormats {
       cbf: CanBuildFrom[M[K, V], (K, V), M[K, V]],
       kf: SexpFormat[K],
       vf: SexpFormat[V]
-  ): SexpFormat[M[K, V]] = new SexpFormat[M[K, V]] {
-    def write(m: M[K, V]) =
-      SexpList(m.map {
-        case (k, v) => SexpList(k.toSexp, v.toSexp)
-      }(breakOut): List[Sexp])
+  ): SexpFormat[M[K, V]] =
+    new SexpFormat[M[K, V]] {
+      def write(m: M[K, V]) =
+        SexpList(m.map {
+          case (k, v) => SexpList(k.toSexp, v.toSexp)
+        }(breakOut): List[Sexp])
 
-    def read(v: Sexp): M[K, V] = v match {
-      case SexpNil => cbf().result()
-      case SexpList(els) =>
-        els.map {
-          case SexpList(sk :: sv :: Nil) => (sk.convertTo[K], sv.convertTo[V])
-          case x                         => deserializationError(x)
-        }(breakOut)
-      case x => deserializationError(x)
+      def read(v: Sexp): M[K, V] =
+        v match {
+          case SexpNil => cbf().result()
+          case SexpList(els) =>
+            els.map {
+              case SexpList(sk :: sv :: Nil) =>
+                (sk.convertTo[K], sv.convertTo[V])
+              case x => deserializationError(x)
+            }(breakOut)
+          case x => deserializationError(x)
+        }
     }
-  }
 
   /**
     * We only support deserialisation via `im.BitSet` as the general
@@ -140,13 +145,14 @@ trait CollectionFormats {
       }
 
     // NOTE: returns immutable BitSet
-    def read(m: Sexp): im.BitSet = m match {
-      case SexpNil => im.BitSet()
-      case SexpString(CalcEval(radix, num)) =>
-        val bigInt = BigInt(num, radix.toInt)
-        BigIntConvertor.toBitSet(bigInt)
-      case x => deserializationError(x)
-    }
+    def read(m: Sexp): im.BitSet =
+      m match {
+        case SexpNil => im.BitSet()
+        case SexpString(CalcEval(radix, num)) =>
+          val bigInt = BigInt(num, radix.toInt)
+          BigIntConvertor.toBitSet(bigInt)
+        case x => deserializationError(x)
+      }
   }
 
   implicit object ImBitSetFormat extends SexpFormat[im.BitSet] {
@@ -159,21 +165,23 @@ trait CollectionFormats {
   private val step = SexpSymbol(":step")
   private val inclusive = SexpSymbol(":inclusive")
   implicit object RangeFormat extends SexpFormat[im.Range] {
-    def write(r: im.Range) = SexpData(
-      start -> SexpNumber(r.start),
-      end -> SexpNumber(r.end),
-      step -> SexpNumber(r.step)
-    )
+    def write(r: im.Range) =
+      SexpData(
+        start -> SexpNumber(r.start),
+        end -> SexpNumber(r.end),
+        step -> SexpNumber(r.step)
+      )
 
-    def read(s: Sexp) = s match {
-      case SexpData(data) =>
-        (data(start), data(end), data(step)) match {
-          case (SexpNumber(s), SexpNumber(e), SexpNumber(st)) =>
-            Range(s.toInt, e.toInt, st.toInt)
-          case _ => deserializationError(s)
-        }
-      case _ => deserializationError(s)
-    }
+    def read(s: Sexp) =
+      s match {
+        case SexpData(data) =>
+          (data(start), data(end), data(step)) match {
+            case (SexpNumber(s), SexpNumber(e), SexpNumber(st)) =>
+              Range(s.toInt, e.toInt, st.toInt)
+            case _ => deserializationError(s)
+          }
+        case _ => deserializationError(s)
+      }
   }
 
   // note that the type has to be im.NumericRange[E]
@@ -184,28 +192,30 @@ trait CollectionFormats {
       n: Numeric[E],
       int: Integral[E]): SexpFormat[im.NumericRange[E]] =
     new SexpFormat[im.NumericRange[E]] {
-      def write(r: im.NumericRange[E]) = SexpData(
-        start -> r.start.toSexp,
-        end -> r.end.toSexp,
-        step -> r.step.toSexp,
-        inclusive -> BooleanFormat.write(r.isInclusive)
-      )
+      def write(r: im.NumericRange[E]) =
+        SexpData(
+          start -> r.start.toSexp,
+          end -> r.end.toSexp,
+          step -> r.step.toSexp,
+          inclusive -> BooleanFormat.write(r.isInclusive)
+        )
 
-      def read(s: Sexp): im.NumericRange[E] = s match {
-        case SexpData(data) =>
-          (data(start), data(end), data(step), data(inclusive)) match {
-            case (s, e, st, incl) if BooleanFormat.read(incl) =>
-              im.NumericRange.inclusive(
-                s.convertTo[E],
-                e.convertTo[E],
-                st.convertTo[E]
-              )
-            case (s, e, st, incl) =>
-              im.NumericRange(s.convertTo[E], e.convertTo[E], st.convertTo[E])
-            case _ => deserializationError(s)
-          }
-        case _ => deserializationError(s)
-      }
+      def read(s: Sexp): im.NumericRange[E] =
+        s match {
+          case SexpData(data) =>
+            (data(start), data(end), data(step), data(inclusive)) match {
+              case (s, e, st, incl) if BooleanFormat.read(incl) =>
+                im.NumericRange.inclusive(
+                  s.convertTo[E],
+                  e.convertTo[E],
+                  st.convertTo[E]
+                )
+              case (s, e, st, incl) =>
+                im.NumericRange(s.convertTo[E], e.convertTo[E], st.convertTo[E])
+              case _ => deserializationError(s)
+            }
+          case _ => deserializationError(s)
+        }
     }
 
 }

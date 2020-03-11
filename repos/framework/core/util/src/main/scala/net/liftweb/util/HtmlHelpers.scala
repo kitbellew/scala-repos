@@ -242,29 +242,30 @@ trait HtmlHelpers extends CssBindImplicits {
       processElement: (Elem, (Node) => Node) => Elem): Seq[NodeSeq] = {
     var ids: Set[String] = Set()
 
-    def stripDuplicateId(node: Node): Node = node match {
-      case Group(ns) => Group(ns.map(stripDuplicateId))
-      case element: Elem =>
-        element.attribute("id") match {
-          case Some(id) => {
-            if (ids.contains(id.text)) {
-              processElement(
-                element.copy(attributes =
-                  removeAttribute("id", element.attributes)),
-                stripDuplicateId _
-              )
-            } else {
-              ids += id.text
+    def stripDuplicateId(node: Node): Node =
+      node match {
+        case Group(ns) => Group(ns.map(stripDuplicateId))
+        case element: Elem =>
+          element.attribute("id") match {
+            case Some(id) => {
+              if (ids.contains(id.text)) {
+                processElement(
+                  element.copy(attributes =
+                    removeAttribute("id", element.attributes)),
+                  stripDuplicateId _
+                )
+              } else {
+                ids += id.text
 
-              processElement(element, stripDuplicateId _)
+                processElement(element, stripDuplicateId _)
+              }
             }
+
+            case _ => element
           }
 
-          case _ => element
-        }
-
-      case other => other
-    }
+        case other => other
+      }
 
     in.map(_.map(stripDuplicateId))
   }
@@ -354,15 +355,16 @@ trait HtmlHelpers extends CssBindImplicits {
     *
     * The strings in the list must be in the format of key=value.
     */
-  def pairsToMetaData(in: List[String]): MetaData = in match {
-    case Nil => Null
-    case x :: xs => {
-      val rest = pairsToMetaData(xs)
-      x.charSplit('=').map(Helpers.urlDecode) match {
-        case Nil         => rest
-        case x :: Nil    => makeMetaData(x, "", rest)
-        case x :: y :: _ => makeMetaData(x, y, rest)
+  def pairsToMetaData(in: List[String]): MetaData =
+    in match {
+      case Nil => Null
+      case x :: xs => {
+        val rest = pairsToMetaData(xs)
+        x.charSplit('=').map(Helpers.urlDecode) match {
+          case Nil         => rest
+          case x :: Nil    => makeMetaData(x, "", rest)
+          case x :: y :: _ => makeMetaData(x, y, rest)
+        }
       }
     }
-  }
 }

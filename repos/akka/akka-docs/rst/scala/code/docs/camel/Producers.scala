@@ -66,13 +66,15 @@ object Producers {
     class Transformer(uri: String) extends Actor with Producer {
       def endpointUri = uri
 
-      def upperCase(msg: CamelMessage) = msg.mapBody { body: String =>
-        body.toUpperCase
-      }
+      def upperCase(msg: CamelMessage) =
+        msg.mapBody { body: String =>
+          body.toUpperCase
+        }
 
-      override def transformOutgoingMessage(msg: Any) = msg match {
-        case msg: CamelMessage => upperCase(msg)
-      }
+      override def transformOutgoingMessage(msg: Any) =
+        msg match {
+          case msg: CamelMessage => upperCase(msg)
+        }
     }
     //#TransformOutgoingMessage
   }

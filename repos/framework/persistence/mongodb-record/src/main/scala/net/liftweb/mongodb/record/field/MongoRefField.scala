@@ -51,30 +51,34 @@ trait MongoRefField[RefType <: MongoRecord[RefType], MyType]
   /**
     * Get the cacheable referenced object
     */
-  def obj = synchronized {
-    if (!_calcedObj) {
-      _calcedObj = true
-      this._obj = find
+  def obj =
+    synchronized {
+      if (!_calcedObj) {
+        _calcedObj = true
+        this._obj = find
+      }
+      _obj
     }
-    _obj
-  }
 
-  def cached_? : Boolean = synchronized {
-    _calcedObj
-  }
+  def cached_? : Boolean =
+    synchronized {
+      _calcedObj
+    }
 
-  def primeObj(obj: Box[RefType]) = synchronized {
-    _obj = obj
-    _calcedObj = true
-  }
+  def primeObj(obj: Box[RefType]) =
+    synchronized {
+      _obj = obj
+      _calcedObj = true
+    }
 
   private var _obj: Box[RefType] = Empty
   private var _calcedObj = false
 
-  override def setBox(in: Box[MyType]): Box[MyType] = synchronized {
-    _calcedObj = false // invalidate the cache
-    super.setBox(in)
-  }
+  override def setBox(in: Box[MyType]): Box[MyType] =
+    synchronized {
+      _calcedObj = false // invalidate the cache
+      super.setBox(in)
+    }
 
   /** Options for select list **/
   def options: List[(Box[MyType], String)] = Nil

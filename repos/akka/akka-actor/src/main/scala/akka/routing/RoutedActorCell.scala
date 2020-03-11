@@ -88,29 +88,32 @@ private[akka] class RoutedActorCell(
       routees foreach stopIfChild
   }
 
-  private def watch(routee: Routee): Unit = routee match {
-    case ActorRefRoutee(ref) ⇒ watch(ref)
-    case _ ⇒
-  }
+  private def watch(routee: Routee): Unit =
+    routee match {
+      case ActorRefRoutee(ref) ⇒ watch(ref)
+      case _ ⇒
+    }
 
-  private def unwatch(routee: Routee): Unit = routee match {
-    case ActorRefRoutee(ref) ⇒ unwatch(ref)
-    case _ ⇒
-  }
+  private def unwatch(routee: Routee): Unit =
+    routee match {
+      case ActorRefRoutee(ref) ⇒ unwatch(ref)
+      case _ ⇒
+    }
 
-  private def stopIfChild(routee: Routee): Unit = routee match {
-    case ActorRefRoutee(ref) ⇒
-      child(ref.path.name) match {
-        case Some(`ref`) ⇒
-          // The reason for the delay is to give concurrent
-          // messages a chance to be placed in mailbox before sending PoisonPill,
-          // best effort.
-          system.scheduler.scheduleOnce(100.milliseconds, ref, PoisonPill)(
-            dispatcher)
-        case _ ⇒
-      }
-    case _ ⇒
-  }
+  private def stopIfChild(routee: Routee): Unit =
+    routee match {
+      case ActorRefRoutee(ref) ⇒
+        child(ref.path.name) match {
+          case Some(`ref`) ⇒
+            // The reason for the delay is to give concurrent
+            // messages a chance to be placed in mailbox before sending PoisonPill,
+            // best effort.
+            system.scheduler.scheduleOnce(100.milliseconds, ref, PoisonPill)(
+              dispatcher)
+          case _ ⇒
+        }
+      case _ ⇒
+    }
 
   override def start(): this.type = {
     // create the initial routees before scheduling the Router actor

@@ -51,8 +51,9 @@ trait DefaultMapModel[A, B] extends Map[A, B] {
     this
   }
 
-  def iterator = entries map { e =>
-    (e.key, e.value)
-  }
+  def iterator =
+    entries map { e =>
+      (e.key, e.value)
+    }
 
 }

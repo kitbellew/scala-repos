@@ -62,11 +62,12 @@ object ComparingUnrelatedTypesInspection {
     }
   }
 
-  def undefinedTypeAlias(tp: ScType) = tp.isAliasType match {
-    case Some(ScTypeUtil.AliasType(_, lower, upper)) =>
-      lower.isEmpty || upper.isEmpty || !lower.get.equiv(upper.get)
-    case _ => false
-  }
+  def undefinedTypeAlias(tp: ScType) =
+    tp.isAliasType match {
+      case Some(ScTypeUtil.AliasType(_, lower, upper)) =>
+        lower.isEmpty || upper.isEmpty || !lower.get.equiv(upper.get)
+      case _ => false
+    }
 
   @tailrec
   def extractActualType(tp: ScType): ScType = {

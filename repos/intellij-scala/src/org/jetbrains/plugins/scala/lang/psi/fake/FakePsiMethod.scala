@@ -100,15 +100,16 @@ class FakePsiMethod(
   def setName(name: String): PsiElement =
     new FakePsiMethod(navElement, name, params, retType, hasModifier)
 
-  def getModifierList: PsiModifierList = navElement match {
-    case b: ScBindingPattern =>
-      b.nameContext match {
-        case v: ScVariable => v.getModifierList
-        case v: ScValue    => v.getModifierList
-        case _             => ScalaPsiUtil.getEmptyModifierList(getManager)
-      }
-    case _ => ScalaPsiUtil.getEmptyModifierList(getManager)
-  }
+  def getModifierList: PsiModifierList =
+    navElement match {
+      case b: ScBindingPattern =>
+        b.nameContext match {
+          case v: ScVariable => v.getModifierList
+          case v: ScValue    => v.getModifierList
+          case _             => ScalaPsiUtil.getEmptyModifierList(getManager)
+        }
+      case _ => ScalaPsiUtil.getEmptyModifierList(getManager)
+    }
 
   def findSuperMethods(parentClass: PsiClass): Array[PsiMethod] =
     PsiMethod.EMPTY_ARRAY
@@ -131,15 +132,16 @@ class FakePsiMethod(
 
   def isVarArgs: Boolean = false
 
-  override def getIcon(flags: Int): Icon = navElement match {
-    case t: ScTypedDefinition =>
-      val context = t.nameContext
-      if (context != null)
-        context.getIcon(flags)
-      else
-        super.getIcon(flags)
-    case _ => super.getIcon(flags)
-  }
+  override def getIcon(flags: Int): Icon =
+    navElement match {
+      case t: ScTypedDefinition =>
+        val context = t.nameContext
+        if (context != null)
+          context.getIcon(flags)
+        else
+          super.getIcon(flags)
+      case _ => super.getIcon(flags)
+    }
 
   def getReturnTypeElement: PsiTypeElement = null
 

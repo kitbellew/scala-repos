@@ -68,15 +68,16 @@ class Preferences(val preferences: SharedPreferences) extends Dynamic {
     }
   }
 
-  def applyDynamic[T](name: String)(defaultVal: T): T = defaultVal match {
-    case v: String  => preferences.getString(name, v).asInstanceOf[T]
-    case v: Int     => preferences.getInt(name, v).asInstanceOf[T]
-    case v: Long    => preferences.getLong(name, v).asInstanceOf[T]
-    case v: Boolean => preferences.getBoolean(name, v).asInstanceOf[T]
-    case v: Float   => preferences.getFloat(name, v).asInstanceOf[T]
-    case v: Set[String @unchecked] =>
-      preferences.getStringSet(name, v).toSet.asInstanceOf[T]
-  }
+  def applyDynamic[T](name: String)(defaultVal: T): T =
+    defaultVal match {
+      case v: String  => preferences.getString(name, v).asInstanceOf[T]
+      case v: Int     => preferences.getInt(name, v).asInstanceOf[T]
+      case v: Long    => preferences.getLong(name, v).asInstanceOf[T]
+      case v: Boolean => preferences.getBoolean(name, v).asInstanceOf[T]
+      case v: Float   => preferences.getFloat(name, v).asInstanceOf[T]
+      case v: Set[String @unchecked] =>
+        preferences.getStringSet(name, v).toSet.asInstanceOf[T]
+    }
 
   def remove(name: String) {
     preferences.edit().remove(name).commit()
@@ -172,9 +173,10 @@ class Extra(val activity: SActivity) extends AnyVal with Dynamic {
       }
     }
 
-  def remove(name: String) = activity.intent.foreach {
-    _.removeExtra(name)
-  }
+  def remove(name: String) =
+    activity.intent.foreach {
+      _.removeExtra(name)
+    }
 }
 
 object Extra {

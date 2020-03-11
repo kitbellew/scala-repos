@@ -150,10 +150,11 @@ object Test {
   trait Shmeez extends AnyRef with Treez {
     val tree: Tree
 
-    def foo = tree match {
-      case Beez(2)       => 1
-      case HagbardCeline => 0
-    }
+    def foo =
+      tree match {
+        case Beez(2)       => 1
+        case HagbardCeline => 0
+      }
   }
 
   // multiple guards for same pattern
@@ -189,12 +190,14 @@ object Test {
 
   // all ignoring patterns on List
   object TestSequence01 {
-    def doMatch(xs: List[String]): String = xs match {
-      case List(_*) => "ok"
-    }
-    def doMatch2(xs: List[String]): List[String] = xs match {
-      case List(_, rest @ _*) => rest.toList
-    }
+    def doMatch(xs: List[String]): String =
+      xs match {
+        case List(_*) => "ok"
+      }
+    def doMatch2(xs: List[String]): List[String] =
+      xs match {
+        case List(_, rest @ _*) => rest.toList
+      }
     def run() {
       val list1 = List()
       assertEquals(doMatch(list1), "ok")
@@ -207,9 +210,10 @@ object Test {
 
   // all ignoring patterns on Seq
   object TestSequence02 {
-    def doMatch(l: Seq[String]): String = l match {
-      case Seq(_*) => "ok"
-    }
+    def doMatch(l: Seq[String]): String =
+      l match {
+        case Seq(_*) => "ok"
+      }
     def run() {
       val list1 = List()
       assertEquals(doMatch(list1), "ok")
@@ -224,10 +228,11 @@ object Test {
 
   // right-ignoring patterns on List, defaults
   object TestSequence03 {
-    def doMatch(xs: List[String]): String = xs match {
-      case List(_, _, _, _*) => "ok"
-      case _                 => "not ok"
-    }
+    def doMatch(xs: List[String]): String =
+      xs match {
+        case List(_, _, _, _*) => "ok"
+        case _                 => "not ok"
+      }
     def run() {
       val list1 = List()
       assertEquals(doMatch(list1), "not ok")
@@ -286,11 +291,12 @@ object Test {
 
     case class A(i: Any)
 
-    def doMatch(x: Any, bla: Int) = x match {
-      case x: A if (bla == 1) => 0
-      case A(1)               => 1
-      case A(A(1))            => 2
-    }
+    def doMatch(x: Any, bla: Int) =
+      x match {
+        case x: A if (bla == 1) => 0
+        case A(1)               => 1
+        case A(A(1))            => 2
+      }
 
     def run() {
       assertEquals(doMatch(A(null), 1), 0)
@@ -302,20 +308,24 @@ object Test {
 
   // List of chars
   object TestSequence07 {
-    def doMatch1(xs: List[Char]) = xs match {
-      case List(x, y, _*) => x :: y :: Nil
-    }
-    def doMatch2(xs: List[Char]) = xs match {
-      case List(x, y, z, w) => List(z, w)
-    }
-    def doMatch3(xs: Seq[Char]) = xs match {
-      case Seq(x, y, 'c', w @ _*) => x :: y :: Nil
-      case Seq(x, y, z @ _*)      => z
-    }
-    def doMatch4(xs: Seq[Char]) = xs match {
-      case Seq(x, 'b')       => x :: 'b' :: Nil
-      case Seq(x, y, z @ _*) => z.toList
-    }
+    def doMatch1(xs: List[Char]) =
+      xs match {
+        case List(x, y, _*) => x :: y :: Nil
+      }
+    def doMatch2(xs: List[Char]) =
+      xs match {
+        case List(x, y, z, w) => List(z, w)
+      }
+    def doMatch3(xs: Seq[Char]) =
+      xs match {
+        case Seq(x, y, 'c', w @ _*) => x :: y :: Nil
+        case Seq(x, y, z @ _*)      => z
+      }
+    def doMatch4(xs: Seq[Char]) =
+      xs match {
+        case Seq(x, 'b')       => x :: 'b' :: Nil
+        case Seq(x, y, z @ _*) => z.toList
+      }
 
     def run() {
       assertEquals(List('a', 'b'), doMatch1(List('a', 'b', 'c', 'd')))
@@ -366,10 +376,11 @@ object Test {
       }
     }
 
-    def flips(l: List[Int]): Int = (l: @unchecked) match {
-      case 1 :: ls => 0
-      case n :: ls => flips((l take n reverse) ::: (l drop n)) + 1
-    }
+    def flips(l: List[Int]): Int =
+      (l: @unchecked) match {
+        case 1 :: ls => 0
+        case n :: ls => flips((l take n reverse) ::: (l drop n)) + 1
+      }
 
     def run() {
       assertEquals("both", (Var("x"), Var("y")), f)
@@ -437,47 +448,54 @@ object Test {
 
   // these are exhaustive matches
   //   should not generate any warnings
-  def f[A](z: (Option[A], Option[A])) = z match {
-    case (None, Some(x))    => 1
-    case (Some(x), None)    => 2
-    case (Some(x), Some(y)) => 3
-    case _                  => 4
-  }
+  def f[A](z: (Option[A], Option[A])) =
+    z match {
+      case (None, Some(x))    => 1
+      case (Some(x), None)    => 2
+      case (Some(x), Some(y)) => 3
+      case _                  => 4
+    }
 
-  def g1[A](z: Option[List[A]]) = z match {
-    case Some(Nil)      => true
-    case Some(x :: Nil) => true
-    case _              => true
-  }
+  def g1[A](z: Option[List[A]]) =
+    z match {
+      case Some(Nil)      => true
+      case Some(x :: Nil) => true
+      case _              => true
+    }
 
-  def g2[A](z: Option[List[A]]) = z match {
-    case Some(x :: Nil) => true
-    case Some(_)        => false
-    case _              => true
-  }
+  def g2[A](z: Option[List[A]]) =
+    z match {
+      case Some(x :: Nil) => true
+      case Some(_)        => false
+      case _              => true
+    }
 
-  def h[A](x: (Option[A], Option[A])) = x match {
-    case (None, _: Some[_])       => 1
-    case (_: Some[_], None)       => 2
-    case (_: Some[_], _: Some[_]) => 3
-    case _                        => 4
-  }
+  def h[A](x: (Option[A], Option[A])) =
+    x match {
+      case (None, _: Some[_])       => 1
+      case (_: Some[_], None)       => 2
+      case (_: Some[_], _: Some[_]) => 3
+      case _                        => 4
+    }
 
-  def j = (List[Int](), List[Int](1)) match {
-    case (Nil, _)             => 'a'
-    case (_, Nil)             => 'b'
-    case (h1 :: t1, h2 :: t2) => 'c'
-  }
+  def j =
+    (List[Int](), List[Int](1)) match {
+      case (Nil, _)             => 'a'
+      case (_, Nil)             => 'b'
+      case (h1 :: t1, h2 :: t2) => 'c'
+    }
 
-  def k(x: AnyRef) = x match {
-    case null => 1
-    case _    => 2
-  }
+  def k(x: AnyRef) =
+    x match {
+      case null => 1
+      case _    => 2
+    }
 
   val FooBar = 42
-  def lala() = 42 match {
-    case FooBar => true
-  }
+  def lala() =
+    42 match {
+      case FooBar => true
+    }
 
   object Bug1270 { // unapply13
     class Sync {
@@ -591,11 +609,12 @@ object Test {
     case class Operator(x: Int);
     val EQ = new Operator(2);
 
-    def analyze(x: Tuple2[Operator, Int]) = (x: @unchecked) match {
-      case (EQ, 0) => "0"
-      case (EQ, 1) => "1"
-      case (EQ, 2) => "2"
-    }
+    def analyze(x: Tuple2[Operator, Int]) =
+      (x: @unchecked) match {
+        case (EQ, 0) => "0"
+        case (EQ, 1) => "1"
+        case (EQ, 2) => "2"
+      }
     def run() {
       val x = (EQ, 0);
       assertEquals("0", analyze(x)); // should print "0"
@@ -622,20 +641,22 @@ object Test {
 
     type Both = SizeImpl with ColorImpl
 
-    def info(x: Impl) = x match {
-      case x: Both      => "size  " + x.size + " color " + x.color // you wish
-      case x: SizeImpl  => "!size " + x.size
-      case x: ColorImpl => "color " + x.color
-      case _            => "n.a."
-    }
+    def info(x: Impl) =
+      x match {
+        case x: Both      => "size  " + x.size + " color " + x.color // you wish
+        case x: SizeImpl  => "!size " + x.size
+        case x: ColorImpl => "color " + x.color
+        case _            => "n.a."
+      }
 
-    def info2(x: Impl) = x match {
-      case x: SizeImpl with ColorImpl =>
-        "size  " + x.size + " color " + x.color // you wish
-      case x: SizeImpl  => "!size " + x.size
-      case x: ColorImpl => "color " + x.color
-      case _            => "n.a."
-    }
+    def info2(x: Impl) =
+      x match {
+        case x: SizeImpl with ColorImpl =>
+          "size  " + x.size + " color " + x.color // you wish
+        case x: SizeImpl  => "!size " + x.size
+        case x: ColorImpl => "color " + x.color
+        case _            => "n.a."
+      }
 
     def run() {
       // make up some class that has a size
@@ -648,11 +669,12 @@ object Test {
   // bug#995
 
   object Bug995 {
-    def foo(v: Any): String = v match {
-      case s: Seq[_]                                    => "Seq" // see hack in object Seq.unapplySeq
-      case a: AnyRef if runtime.ScalaRunTime.isArray(a) => "Array"
-      case _                                            => v.toString
-    }
+    def foo(v: Any): String =
+      v match {
+        case s: Seq[_]                                    => "Seq" // see hack in object Seq.unapplySeq
+        case a: AnyRef if runtime.ScalaRunTime.isArray(a) => "Array"
+        case _                                            => v.toString
+      }
     def run() {
       assertEquals("Array", foo(Array(0)))
     }
@@ -687,10 +709,11 @@ object Test {
 
   class Outer_2 {
     case class Foo(x: Int, y: Int) {
-      override def equals(other: Any) = other match {
-        case Outer_2.this.Foo(`x`, `y`) => true
-        case _                          => false
-      }
+      override def equals(other: Any) =
+        other match {
+          case Outer_2.this.Foo(`x`, `y`) => true
+          case _                          => false
+        }
     }
   }
 
@@ -819,15 +842,17 @@ object Test {
 
     }
 
-    def empty(xs: L): Boolean = xs match {
-      case N => true
-      case _ => false
-    }
+    def empty(xs: L): Boolean =
+      xs match {
+        case N => true
+        case _ => false
+      }
 
-    def singleton(xs: L): Boolean = xs match {
-      case C(_, N) => true
-      case _       => false
-    }
+    def singleton(xs: L): Boolean =
+      xs match {
+        case C(_, N) => true
+        case _       => false
+      }
 
     def run() {
       assert(empty(new L(Nil)))

@@ -156,12 +156,13 @@ object Test extends InteractiveTest {
     // Check inter-classes documentation one-time retrieved ok.
     val baseSource = findSource("Base.scala")
     val derivedSource = findSource("Derived.scala")
-    def existsText(where: Any, text: String): Boolean = where match {
-      case s: String  => s contains text
-      case s: Seq[_]  => s exists (existsText(_, text))
-      case p: Product => p.productIterator exists (existsText(_, text))
-      case c: Comment => existsText(c.body, text)
-    }
+    def existsText(where: Any, text: String): Boolean =
+      where match {
+        case s: String  => s contains text
+        case s: Seq[_]  => s exists (existsText(_, text))
+        case p: Product => p.productIterator exists (existsText(_, text))
+        case c: Comment => existsText(c.body, text)
+      }
     val (derived, base) = compiler.ask { () =>
       val derived = compiler.rootMirror.RootPackage.info
         .decl(newTermName("p"))

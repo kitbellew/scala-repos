@@ -37,10 +37,11 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
   /**
     * Possibly moves to next element to the right of focus.
     */
-  def next: Option[Zipper[A]] = rights match {
-    case Stream.Empty => None
-    case r #:: rs     => Some(zipper(Stream.cons(focus, lefts), r, rs))
-  }
+  def next: Option[Zipper[A]] =
+    rights match {
+      case Stream.Empty => None
+      case r #:: rs     => Some(zipper(Stream.cons(focus, lefts), r, rs))
+    }
 
   /**
     * Possibly moves to next element to the right of focus.
@@ -51,10 +52,11 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
   /**
     * Possibly moves to the previous element to the left of focus.
     */
-  def previous: Option[Zipper[A]] = lefts match {
-    case Stream.Empty => None
-    case l #:: ls     => Some(zipper(ls, l, Stream.cons(focus, rights)))
-  }
+  def previous: Option[Zipper[A]] =
+    lefts match {
+      case Stream.Empty => None
+      case l #:: ls     => Some(zipper(ls, l, Stream.cons(focus, rights)))
+    }
 
   /**
     * Possibly moves to previous element to the left of focus.
@@ -94,14 +96,15 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
     * Deletes the element at focus and moves the focus to the left. If there is no element on the left,
     * focus is moved to the right.
     */
-  def deleteLeft: Option[Zipper[A]] = lefts match {
-    case l #:: ls => Some(zipper(ls, l, rights))
-    case Stream.Empty =>
-      rights match {
-        case r #:: rs     => Some(zipper(Stream.empty, r, rs))
-        case Stream.Empty => None
-      }
-  }
+  def deleteLeft: Option[Zipper[A]] =
+    lefts match {
+      case l #:: ls => Some(zipper(ls, l, rights))
+      case Stream.Empty =>
+        rights match {
+          case r #:: rs     => Some(zipper(Stream.empty, r, rs))
+          case Stream.Empty => None
+        }
+    }
 
   /**
     * Deletes the element at focus and moves the focus to the left. If there is no element on the left,
@@ -114,14 +117,15 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
     * Deletes the element at focus and moves the focus to the right. If there is no element on the right,
     * focus is moved to the left.
     */
-  def deleteRight: Option[Zipper[A]] = rights match {
-    case r #:: rs => Some(zipper(lefts, r, rs))
-    case Stream.Empty =>
-      lefts match {
-        case l #:: ls     => Some(zipper(ls, l, Stream.empty))
-        case Stream.Empty => None
-      }
-  }
+  def deleteRight: Option[Zipper[A]] =
+    rights match {
+      case r #:: rs => Some(zipper(lefts, r, rs))
+      case Stream.Empty =>
+        lefts match {
+          case l #:: ls     => Some(zipper(ls, l, Stream.empty))
+          case Stream.Empty => None
+        }
+    }
 
   /**
     * Deletes the element at focus and moves the focus to the right. If there is no element on the right,
@@ -279,40 +283,43 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
   /**
     * Moves focus to the next element. If the last element is currently focused, loop to the first element.
     */
-  def nextC: Zipper[A] = (lefts, rights) match {
-    case (Stream.Empty, Stream.Empty) => this
-    case (_, Stream.Empty) =>
-      val xs = lefts.reverse
-      zipper(rights, xs.head, xs.tail.append(Stream(focus)))
-    case (_, r #:: rs) =>
-      zipper(Stream.cons(focus, lefts), r, rs)
-  }
+  def nextC: Zipper[A] =
+    (lefts, rights) match {
+      case (Stream.Empty, Stream.Empty) => this
+      case (_, Stream.Empty) =>
+        val xs = lefts.reverse
+        zipper(rights, xs.head, xs.tail.append(Stream(focus)))
+      case (_, r #:: rs) =>
+        zipper(Stream.cons(focus, lefts), r, rs)
+    }
 
   /**
     * Moves focus to the previous element. If the first element is currently focused, loop to the last element.
     */
-  def previousC: Zipper[A] = (lefts, rights) match {
-    case (Stream.Empty, Stream.Empty) => this
-    case (Stream.Empty, _) =>
-      val xs = rights.reverse
-      zipper(xs.tail.append(Stream(focus)), xs.head, lefts)
-    case (_, _) => tryPrevious
-  }
+  def previousC: Zipper[A] =
+    (lefts, rights) match {
+      case (Stream.Empty, Stream.Empty) => this
+      case (Stream.Empty, _) =>
+        val xs = rights.reverse
+        zipper(xs.tail.append(Stream(focus)), xs.head, lefts)
+      case (_, _) => tryPrevious
+    }
 
   /**
     * Deletes the focused element and moves focus to the left. If the focus was on the first element,
     * focus is moved to the last element.
     */
-  def deleteLeftC: Option[Zipper[A]] = lefts match {
-    case l #:: ls => Some(zipper(ls, l, rights))
-    case Stream.Empty =>
-      rights match {
-        case _ #:: _ =>
-          val rrev = rights.reverse;
-          Some(zipper(rrev.tail, rrev.head, Stream.empty))
-        case Stream.Empty => None
-      }
-  }
+  def deleteLeftC: Option[Zipper[A]] =
+    lefts match {
+      case l #:: ls => Some(zipper(ls, l, rights))
+      case Stream.Empty =>
+        rights match {
+          case _ #:: _ =>
+            val rrev = rights.reverse;
+            Some(zipper(rrev.tail, rrev.head, Stream.empty))
+          case Stream.Empty => None
+        }
+    }
 
   /**
     * Deletes the focused element and moves focus to the left. If the focus was on the first element,
@@ -325,16 +332,17 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
     * Deletes the focused element and moves focus to the right. If the focus was on the last element,
     * focus is moved to the first element.
     */
-  def deleteRightC: Option[Zipper[A]] = rights match {
-    case r #:: rs => Some(zipper(lefts, r, rs))
-    case Stream.Empty =>
-      lefts match {
-        case _ #:: _ =>
-          val lrev = lefts.reverse;
-          Some(zipper(Stream.empty, lrev.head, lrev.tail))
-        case Stream.Empty => None
-      }
-  }
+  def deleteRightC: Option[Zipper[A]] =
+    rights match {
+      case r #:: rs => Some(zipper(lefts, r, rs))
+      case Stream.Empty =>
+        lefts match {
+          case _ #:: _ =>
+            val lrev = lefts.reverse;
+            Some(zipper(Stream.empty, lrev.head, lrev.tail))
+          case Stream.Empty => None
+        }
+    }
 
   /**
     * An alias for `deleteRightC`
@@ -470,24 +478,27 @@ sealed abstract class ZipperInstances {
       }
     }
 
-  implicit def zipperEqual[A: Equal]: Equal[Zipper[A]] = new Equal[Zipper[A]] {
-    import std.stream.streamEqual
-    def equal(a1: Zipper[A], a2: Zipper[A]) =
-      streamEqual[A].equal(a1.lefts, a2.lefts) && Equal[A]
-        .equal(a1.focus, a2.focus) && streamEqual[A].equal(a1.rights, a2.rights)
-  }
+  implicit def zipperEqual[A: Equal]: Equal[Zipper[A]] =
+    new Equal[Zipper[A]] {
+      import std.stream.streamEqual
+      def equal(a1: Zipper[A], a2: Zipper[A]) =
+        streamEqual[A].equal(a1.lefts, a2.lefts) && Equal[A].equal(
+          a1.focus,
+          a2.focus) && streamEqual[A].equal(a1.rights, a2.rights)
+    }
 
-  implicit def zipperShow[A: Show]: Show[Zipper[A]] = new Show[Zipper[A]] {
-    import std.stream._
+  implicit def zipperShow[A: Show]: Show[Zipper[A]] =
+    new Show[Zipper[A]] {
+      import std.stream._
 
-    override def show(f: Zipper[A]) =
-      Cord(
-        "Zipper(",
-        Show[Stream[A]].show(f.lefts),
-        ", ",
-        Show[A].show(f.focus),
-        ", ",
-        Show[Stream[A]].show(f.rights),
-        ")")
-  }
+      override def show(f: Zipper[A]) =
+        Cord(
+          "Zipper(",
+          Show[Stream[A]].show(f.lefts),
+          ", ",
+          Show[A].show(f.focus),
+          ", ",
+          Show[Stream[A]].show(f.rights),
+          ")")
+    }
 }

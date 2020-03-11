@@ -66,44 +66,47 @@ object MongoPlatformSpecEngine extends Logging {
     }
   })
 
-  def acquire = lock.synchronized {
-    refcount += 1
+  def acquire =
+    lock.synchronized {
+      refcount += 1
 
-    if (engine == null) {
-      logger.debug("Allocating new Mongo engine")
-      engine = new RealMongoSpecSupport {}
-      engine.startup()
-      runLoads()
-      logger.debug("Mongo engine startup complete")
+      if (engine == null) {
+        logger.debug("Allocating new Mongo engine")
+        engine = new RealMongoSpecSupport {}
+        engine.startup()
+        runLoads()
+        logger.debug("Mongo engine startup complete")
+      }
+
+      logger.debug("Mongo acquired, refcount = " + refcount)
+
+      engine
     }
 
-    logger.debug("Mongo acquired, refcount = " + refcount)
+  def release: Unit =
+    lock.synchronized {
+      refcount -= 1
 
-    engine
-  }
+      if (refcount == 0) {
+        scheduler.schedule(checkUnused, 5, TimeUnit.SECONDS)
+      }
 
-  def release: Unit = lock.synchronized {
-    refcount -= 1
-
-    if (refcount == 0) {
-      scheduler.schedule(checkUnused, 5, TimeUnit.SECONDS)
+      logger.debug("Mongo released, refcount = " + refcount)
     }
-
-    logger.debug("Mongo released, refcount = " + refcount)
-  }
 
   private val checkUnused = new Runnable {
-    def run = lock.synchronized {
-      logger.debug(
-        "Checking for unused MongoPlatformSpecEngine. Count = " + refcount)
-      if (refcount == 0) {
-        logger.debug("Running shutdown after final Mongo release")
-        val current = engine
-        engine = null
-        current.shutdown()
-        logger.debug("Mongo shutdown complete")
+    def run =
+      lock.synchronized {
+        logger.debug(
+          "Checking for unused MongoPlatformSpecEngine. Count = " + refcount)
+        if (refcount == 0) {
+          logger.debug("Running shutdown after final Mongo release")
+          val current = engine
+          engine = null
+          current.shutdown()
+          logger.debug("Mongo shutdown complete")
+        }
       }
-    }
   }
 
   def runLoads(): Unit = {

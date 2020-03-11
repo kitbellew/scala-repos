@@ -28,11 +28,12 @@ sealed abstract class HMap[K[_], V[_]] {
   override def toString: String =
     "H%s".format(map)
 
-  override def equals(that: Any): Boolean = that match {
-    case null          => false
-    case h: HMap[_, _] => map.equals(h.map)
-    case _             => false
-  }
+  override def equals(that: Any): Boolean =
+    that match {
+      case null          => false
+      case h: HMap[_, _] => map.equals(h.map)
+      case _             => false
+    }
   override def hashCode = map.hashCode
 
   def +[T](kv: (K[T], V[T])): HMap[K, V] =

@@ -50,8 +50,9 @@ final class CancelableDownload(
   }(ThreadPoolContext.ioContext)
 
   override def hashCode(): Int = url.hashCode()
-  override def equals(other: Any): Boolean = other match {
-    case c: CancelableDownload => (c.url == this.url) && (c.path == path)
-    case _                     => false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case c: CancelableDownload => (c.url == this.url) && (c.path == path)
+      case _                     => false
+    }
 }

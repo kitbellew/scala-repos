@@ -49,12 +49,12 @@ final class PerfStatIndexer(storage: PerfStatStorage, sequencer: ActorRef) {
       .sequenceFu
       .void
 
-  private def addPov(pov: Pov, userId: String): Funit = pov.game.perfType ?? {
-    perfType =>
+  private def addPov(pov: Pov, userId: String): Funit =
+    pov.game.perfType ?? { perfType =>
       storage.find(userId, perfType) flatMap {
         _ ?? { perfStat =>
           storage.update(perfStat agg pov)
         }
       }
-  }
+    }
 }

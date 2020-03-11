@@ -36,12 +36,14 @@ object Credentials {
     private[this] val key = "[\\w-]+".r
     private[this] val value = ".+".r
 
-    def auth = key ~ ":" ~ value ^^ {
-      case k ~ ":" ~ v => (k, v)
-    }
-    def content: Parser[Map[String, String]] = rep(auth) ^^ { auths =>
-      Map(auths: _*)
-    }
+    def auth =
+      key ~ ":" ~ value ^^ {
+        case k ~ ":" ~ v => (k, v)
+      }
+    def content: Parser[Map[String, String]] =
+      rep(auth) ^^ { auths =>
+        Map(auths: _*)
+      }
 
     def apply(in: String): Map[String, String] = {
       parseAll(content, in) match {

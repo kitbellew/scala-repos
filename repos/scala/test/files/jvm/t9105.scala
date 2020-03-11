@@ -15,22 +15,23 @@ class C {
     }
     List[Object](new A, m, f, g())
   }
-  def met = () => {
-    class E
-    def m: Object = {
-      class F;
-      new F
+  def met =
+    () => {
+      class E
+      def m: Object = {
+        class F;
+        new F
+      }
+      val f: Object = {
+        class G;
+        new G
+      }
+      val g = () => {
+        class H;
+        new H
+      }
+      List[Object](new E, m, f, g())
     }
-    val f: Object = {
-      class G;
-      new G
-    }
-    val g = () => {
-      class H;
-      new H
-    }
-    List[Object](new E, m, f, g())
-  }
 }
 
 object Test extends App {

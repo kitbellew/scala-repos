@@ -1846,18 +1846,19 @@ object Boxed {
       case None => next[K]()
     }
 
-  def next[K](): (K => Boxed[K], Class[Boxed[K]]) = boxes.get match {
-    case list @ (h :: tail) if boxes.compareAndSet(list, tail) =>
-      h.asInstanceOf[(K => Boxed[K], Class[Boxed[K]])]
-    case (h :: tail) => next[K]() // Try again
-    case Nil =>
-      sys.error(
-        """|Scalding's ordered serialization logic exhausted the finite supply of boxed classes.
+  def next[K](): (K => Boxed[K], Class[Boxed[K]]) =
+    boxes.get match {
+      case list @ (h :: tail) if boxes.compareAndSet(list, tail) =>
+        h.asInstanceOf[(K => Boxed[K], Class[Boxed[K]])]
+      case (h :: tail) => next[K]() // Try again
+      case Nil =>
+        sys.error(
+          """|Scalding's ordered serialization logic exhausted the finite supply of boxed classes.
          |
          |Explanation: Scalding's ordered serialization logic internally uses
          |a large, but fixed, supply of unique wrapper types to box values in
          |order to control which serialization is used.  Exhausting this supply
          |means that you happen to have a very complex Scalding job that uses
          |ordered serialization for a very large number of diverse types""".stripMargin)
-  }
+    }
 }

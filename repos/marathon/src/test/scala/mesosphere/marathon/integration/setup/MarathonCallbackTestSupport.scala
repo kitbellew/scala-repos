@@ -79,9 +79,10 @@ trait MarathonCallbackTestSupport extends ExternalMarathonIntegrationTest {
     }
   }
 
-  def waitForStatusUpdates(kinds: String*) = kinds.foreach { kind =>
-    waitForEventWith("status_update_event", _.info("taskStatus") == kind)
-  }
+  def waitForStatusUpdates(kinds: String*) =
+    kinds.foreach { kind =>
+      waitForEventWith("status_update_event", _.info("taskStatus") == kind)
+    }
 
   /**
     * Wait for the events of the given kinds (=types).

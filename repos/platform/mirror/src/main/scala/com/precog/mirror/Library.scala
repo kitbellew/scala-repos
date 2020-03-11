@@ -115,10 +115,11 @@ trait LibraryModule extends Binder {
           case v => JNum(1)
         }
 
-        override def apply(left: JValue, right: JValue) = (left, right) match {
-          case (JNum(l), JNum(r)) => JNum(l + r)
-          case _                  => JNum(0)
-        }
+        override def apply(left: JValue, right: JValue) =
+          (left, right) match {
+            case (JNum(l), JNum(r)) => JNum(l + r)
+            case _                  => JNum(0)
+          }
       }
     }
   }

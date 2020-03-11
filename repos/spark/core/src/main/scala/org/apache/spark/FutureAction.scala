@@ -187,35 +187,38 @@ class ComplexFutureAction[T](run: JobSubmitter => Future[T])
   // A promise used to signal the future.
   private val p = Promise[T]().tryCompleteWith(run(jobSubmitter))
 
-  override def cancel(): Unit = synchronized {
-    _cancelled = true
-    p.tryFailure(new SparkException("Action has been cancelled"))
-    subActions.foreach(_.cancel())
-  }
-
-  private def jobSubmitter = new JobSubmitter {
-    def submitJob[T, U, R](
-        rdd: RDD[T],
-        processPartition: Iterator[T] => U,
-        partitions: Seq[Int],
-        resultHandler: (Int, U) => Unit,
-        resultFunc: => R): FutureAction[R] = self.synchronized {
-      // If the action hasn't been cancelled yet, submit the job. The check and the submitJob
-      // command need to be in an atomic block.
-      if (!isCancelled) {
-        val job = rdd.context.submitJob(
-          rdd,
-          processPartition,
-          partitions,
-          resultHandler,
-          resultFunc)
-        subActions = job :: subActions
-        job
-      } else {
-        throw new SparkException("Action has been cancelled")
-      }
+  override def cancel(): Unit =
+    synchronized {
+      _cancelled = true
+      p.tryFailure(new SparkException("Action has been cancelled"))
+      subActions.foreach(_.cancel())
     }
-  }
+
+  private def jobSubmitter =
+    new JobSubmitter {
+      def submitJob[T, U, R](
+          rdd: RDD[T],
+          processPartition: Iterator[T] => U,
+          partitions: Seq[Int],
+          resultHandler: (Int, U) => Unit,
+          resultFunc: => R): FutureAction[R] =
+        self.synchronized {
+          // If the action hasn't been cancelled yet, submit the job. The check and the submitJob
+          // command need to be in an atomic block.
+          if (!isCancelled) {
+            val job = rdd.context.submitJob(
+              rdd,
+              processPartition,
+              partitions,
+              resultHandler,
+              resultFunc)
+            subActions = job :: subActions
+            job
+          } else {
+            throw new SparkException("Action has been cancelled")
+          }
+        }
+    }
 
   override def isCancelled: Boolean = _cancelled
 
@@ -284,16 +287,17 @@ private[spark] class JavaFutureActionWrapper[S, T](
   override def get(timeout: Long, unit: TimeUnit): T =
     getImpl(Duration.fromNanos(unit.toNanos(timeout)))
 
-  override def cancel(mayInterruptIfRunning: Boolean): Boolean = synchronized {
-    if (isDone) {
-      // According to java.util.Future's Javadoc, this should return false if the task is completed.
-      false
-    } else {
-      // We're limited in terms of the semantics we can provide here; our cancellation is
-      // asynchronous and doesn't provide a mechanism to not cancel if the job is running.
-      futureAction.cancel()
-      true
+  override def cancel(mayInterruptIfRunning: Boolean): Boolean =
+    synchronized {
+      if (isDone) {
+        // According to java.util.Future's Javadoc, this should return false if the task is completed.
+        false
+      } else {
+        // We're limited in terms of the semantics we can provide here; our cancellation is
+        // asynchronous and doesn't provide a mechanism to not cancel if the job is running.
+        futureAction.cancel()
+        true
+      }
     }
-  }
 
 }

@@ -7,9 +7,10 @@ package p {
   object `package` extends T[Int] {
     def O: {
       def apply(): Int
-    } = new {
-      def apply(): Int = 42
-    }
+    } =
+      new {
+        def apply(): Int = 42
+      }
   }
 
   object Test {

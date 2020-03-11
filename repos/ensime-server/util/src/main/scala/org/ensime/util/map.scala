@@ -12,9 +12,10 @@ package object map {
       * rather than a solid implementation, this is what you thought it
       * did.
       */
-    def mapValuesEagerly[W](f: V => W): Map[K, W] = map.map {
-      case (k, v) => (k, f(v))
-    }
+    def mapValuesEagerly[W](f: V => W): Map[K, W] =
+      map.map {
+        case (k, v) => (k, f(v))
+      }
   }
 
   // I'm sure CanBuildFrom could make this general to all value containers

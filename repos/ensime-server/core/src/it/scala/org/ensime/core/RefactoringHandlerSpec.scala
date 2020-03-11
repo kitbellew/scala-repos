@@ -15,9 +15,10 @@ class RefactoringHandlerSpec
     with RichPresentationCompilerTestUtils {
 
   val encoding = "UTF-16"
-  def original = EnsimeConfigFixture.EmptyTestProject.copy(
-    compilerArgs = List("-encoding", encoding)
-  )
+  def original =
+    EnsimeConfigFixture.EmptyTestProject.copy(
+      compilerArgs = List("-encoding", encoding)
+    )
 
   // transitionary methods
   def ContentsSourceFileInfo(file: File, contents: String) =

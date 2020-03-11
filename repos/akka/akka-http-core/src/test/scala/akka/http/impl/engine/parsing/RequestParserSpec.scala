@@ -553,13 +553,14 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
     var closeAfterResponseCompletion = Seq.empty[Boolean]
 
     class StrictEqualHttpRequest(val req: HttpRequest) {
-      override def equals(other: scala.Any): Boolean = other match {
-        case other: StrictEqualHttpRequest ⇒
-          this.req.copy(entity = HttpEntity.Empty) == other.req.copy(entity =
-            HttpEntity.Empty) &&
-            this.req.entity.toStrict(awaitAtMost).awaitResult(awaitAtMost) ==
-              other.req.entity.toStrict(awaitAtMost).awaitResult(awaitAtMost)
-      }
+      override def equals(other: scala.Any): Boolean =
+        other match {
+          case other: StrictEqualHttpRequest ⇒
+            this.req.copy(entity = HttpEntity.Empty) == other.req.copy(entity =
+              HttpEntity.Empty) &&
+              this.req.entity.toStrict(awaitAtMost).awaitResult(awaitAtMost) ==
+                other.req.entity.toStrict(awaitAtMost).awaitResult(awaitAtMost)
+        }
 
       override def toString = req.toString
     }

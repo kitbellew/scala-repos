@@ -206,14 +206,15 @@ private final case class CValueColumnHasher(
 }
 
 private object ColumnHasher {
-  def apply(ref: ColumnRef, col0: Column): ColumnHasher = col0 match {
-    case (col: StrColumn)    => new StrColumnHasher(ref, col)
-    case (col: BoolColumn)   => new BoolColumnHasher(ref, col)
-    case (col: LongColumn)   => new LongColumnHasher(ref, col)
-    case (col: DoubleColumn) => new DoubleColumnHasher(ref, col)
-    case (col: NumColumn)    => new NumColumnHasher(ref, col)
-    case (col: DateColumn)   => new DateColumnHasher(ref, col)
-    case (col: PeriodColumn) => new PeriodColumnHasher(ref, col)
-    case _                   => new CValueColumnHasher(ref, col0)
-  }
+  def apply(ref: ColumnRef, col0: Column): ColumnHasher =
+    col0 match {
+      case (col: StrColumn)    => new StrColumnHasher(ref, col)
+      case (col: BoolColumn)   => new BoolColumnHasher(ref, col)
+      case (col: LongColumn)   => new LongColumnHasher(ref, col)
+      case (col: DoubleColumn) => new DoubleColumnHasher(ref, col)
+      case (col: NumColumn)    => new NumColumnHasher(ref, col)
+      case (col: DateColumn)   => new DateColumnHasher(ref, col)
+      case (col: PeriodColumn) => new PeriodColumnHasher(ref, col)
+      case _                   => new CValueColumnHasher(ref, col0)
+    }
 }

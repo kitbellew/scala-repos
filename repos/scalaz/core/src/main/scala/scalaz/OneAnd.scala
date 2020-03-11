@@ -78,16 +78,17 @@ private sealed trait OneAndBind[F[_]]
   def F: Monad[F]
   def G: Plus[F]
 
-  def bind[A, B](fa: OneAnd[F, A])(f: A => OneAnd[F, B]): OneAnd[F, B] = OneAnd(
-    f(fa.head).head,
-    G.plus(
-      f(fa.head).tail,
-      F.bind(fa.tail) { a =>
-        val x = f(a)
-        G.plus(F.point(x.head), x.tail)
-      }
+  def bind[A, B](fa: OneAnd[F, A])(f: A => OneAnd[F, B]): OneAnd[F, B] =
+    OneAnd(
+      f(fa.head).head,
+      G.plus(
+        f(fa.head).tail,
+        F.bind(fa.tail) { a =>
+          val x = f(a)
+          G.plus(F.point(x.head), x.tail)
+        }
+      )
     )
-  )
 }
 
 private sealed trait OneAndPlus[F[_]] extends Plus[OneAnd[F, ?]] {

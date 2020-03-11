@@ -260,27 +260,30 @@ sealed abstract class \/[+A, +B] extends Product with Serializable {
     }
 
   /** Ensures that the right value of this disjunction satisfies the given predicate, or returns left with the given value. */
-  def ensure[AA >: A](onLeft: => AA)(f: B => Boolean): (AA \/ B) = this match {
-    case \/-(b) =>
-      if (f(b))
-        this
-      else
-        -\/(onLeft)
-    case -\/(_) => this
-  }
+  def ensure[AA >: A](onLeft: => AA)(f: B => Boolean): (AA \/ B) =
+    this match {
+      case \/-(b) =>
+        if (f(b))
+          this
+        else
+          -\/(onLeft)
+      case -\/(_) => this
+    }
 
   /** Run the given function on the left and return right with the result. */
-  def recover[BB >: B](pf: PartialFunction[A, BB]): (A \/ BB) = this match {
-    case -\/(a) if (pf isDefinedAt a) => \/-(pf(a))
-    case _                            => this
-  }
+  def recover[BB >: B](pf: PartialFunction[A, BB]): (A \/ BB) =
+    this match {
+      case -\/(a) if (pf isDefinedAt a) => \/-(pf(a))
+      case _                            => this
+    }
 
   /** Run the given function on the left and return the result. */
   def recoverWith[AA >: A, BB >: B](
-      pf: PartialFunction[AA, AA \/ BB]): (AA \/ BB) = this match {
-    case -\/(a) if (pf isDefinedAt a) => pf(a)
-    case _                            => this
-  }
+      pf: PartialFunction[AA, AA \/ BB]): (AA \/ BB) =
+    this match {
+      case -\/(a) if (pf isDefinedAt a) => pf(a)
+      case _                            => this
+    }
 
   /** Compare two disjunction values for equality. */
   def ===[AA >: A, BB >: B](
@@ -520,18 +523,20 @@ sealed abstract class DisjunctionInstances1 extends DisjunctionInstances2 {
       def plus[A](a: L \/ A, b: => L \/ A) =
         a orElse b
 
-      def pextract[B, A](fa: L \/ A): (L \/ B) \/ A = fa match {
-        case l @ -\/(_) => -\/(l)
-        case r @ \/-(_) => r
-      }
+      def pextract[B, A](fa: L \/ A): (L \/ B) \/ A =
+        fa match {
+          case l @ -\/(_) => -\/(l)
+          case r @ \/-(_) => r
+        }
 
       def raiseError[A](e: L): L \/ A =
         -\/(e)
 
-      def handleError[A](fa: L \/ A)(f: L => L \/ A): L \/ A = fa match {
-        case -\/(e) => f(e)
-        case r      => r
-      }
+      def handleError[A](fa: L \/ A)(f: L => L \/ A): L \/ A =
+        fa match {
+          case -\/(e) => f(e)
+          case r      => r
+        }
     }
 }
 

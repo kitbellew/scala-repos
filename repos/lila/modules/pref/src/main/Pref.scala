@@ -55,57 +55,60 @@ case class Pref(
 
   def hasSeenVerifyTitle = tags contains Tag.verifyTitle
 
-  def get(name: String): Option[String] = name match {
-    case "bg"         => transp.fold("transp", dark.fold("dark", "light")).some
-    case "bgImg"      => bgImg
-    case "theme"      => theme.some
-    case "pieceSet"   => pieceSet.some
-    case "theme3d"    => theme3d.some
-    case "pieceSet3d" => pieceSet3d.some
-    case "is3d"       => is3d.toString.some
-    case "soundSet"   => soundSet.some
-    case _            => none
-  }
-  def set(name: String, value: String): Option[Pref] = name match {
-    case "bg" =>
-      if (value == "transp")
-        copy(dark = true, transp = true).some
-      else
-        Pref.bgs get value map { b =>
-          copy(dark = b, transp = false)
+  def get(name: String): Option[String] =
+    name match {
+      case "bg"         => transp.fold("transp", dark.fold("dark", "light")).some
+      case "bgImg"      => bgImg
+      case "theme"      => theme.some
+      case "pieceSet"   => pieceSet.some
+      case "theme3d"    => theme3d.some
+      case "pieceSet3d" => pieceSet3d.some
+      case "is3d"       => is3d.toString.some
+      case "soundSet"   => soundSet.some
+      case _            => none
+    }
+  def set(name: String, value: String): Option[Pref] =
+    name match {
+      case "bg" =>
+        if (value == "transp")
+          copy(dark = true, transp = true).some
+        else
+          Pref.bgs get value map { b =>
+            copy(dark = b, transp = false)
+          }
+      case "bgImg" => copy(bgImg = value.some).some
+      case "theme" =>
+        Theme.allByName get value map { t =>
+          copy(theme = t.name)
         }
-    case "bgImg" => copy(bgImg = value.some).some
-    case "theme" =>
-      Theme.allByName get value map { t =>
-        copy(theme = t.name)
-      }
-    case "pieceSet" =>
-      PieceSet.allByName get value map { p =>
-        copy(pieceSet = p.name)
-      }
-    case "theme3d" =>
-      Theme3d.allByName get value map { t =>
-        copy(theme3d = t.name)
-      }
-    case "pieceSet3d" =>
-      PieceSet3d.allByName get value map { p =>
-        copy(pieceSet3d = p.name)
-      }
-    case "is3d" => copy(is3d = value == "true").some
-    case "soundSet" =>
-      SoundSet.allByKey get value map { s =>
-        copy(soundSet = s.name)
-      }
-    case _ => none
-  }
+      case "pieceSet" =>
+        PieceSet.allByName get value map { p =>
+          copy(pieceSet = p.name)
+        }
+      case "theme3d" =>
+        Theme3d.allByName get value map { t =>
+          copy(theme3d = t.name)
+        }
+      case "pieceSet3d" =>
+        PieceSet3d.allByName get value map { p =>
+          copy(pieceSet3d = p.name)
+        }
+      case "is3d" => copy(is3d = value == "true").some
+      case "soundSet" =>
+        SoundSet.allByKey get value map { s =>
+          copy(soundSet = s.name)
+        }
+      case _ => none
+    }
 
-  def animationFactor = animation match {
-    case Animation.NONE   => 0
-    case Animation.FAST   => 0.5f
-    case Animation.NORMAL => 1
-    case Animation.SLOW   => 2
-    case _                => 1
-  }
+  def animationFactor =
+    animation match {
+      case Animation.NONE   => 0
+      case Animation.FAST   => 0.5f
+      case Animation.NORMAL => 1
+      case Animation.SLOW   => 2
+      case _                => 1
+    }
 
   def isBlindfold = blindfold == Pref.Blindfold.YES
 
@@ -266,19 +269,20 @@ object Pref {
         to: User,
         pref: Int,
         follow: Boolean,
-        fromCheat: Boolean): Option[String] = pref match {
-      case NEVER => "{{user}} doesn't accept challenges.".some
-      case _ if fromCheat && !follow =>
-        "{{user}} only accepts challenges from friends.".some
-      case RATING if from.perfs.bestRating > to.perfs.bestRating => none
-      case RATING
-          if math.abs(
-            from.perfs.bestRating - to.perfs.bestRating) > ratingThreshold =>
-        s"{{user}} only accepts challenges if rating is ± $ratingThreshold.".some
-      case FRIEND if !follow =>
-        "{{user}} only accepts challenges from friends.".some
-      case _ => none
-    }
+        fromCheat: Boolean): Option[String] =
+      pref match {
+        case NEVER => "{{user}} doesn't accept challenges.".some
+        case _ if fromCheat && !follow =>
+          "{{user}} only accepts challenges from friends.".some
+        case RATING if from.perfs.bestRating > to.perfs.bestRating => none
+        case RATING
+            if math.abs(
+              from.perfs.bestRating - to.perfs.bestRating) > ratingThreshold =>
+          s"{{user}} only accepts challenges if rating is ± $ratingThreshold.".some
+        case FRIEND if !follow =>
+          "{{user}} only accepts challenges from friends.".some
+        case _ => none
+      }
   }
 
   object Message {

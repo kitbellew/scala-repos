@@ -41,19 +41,20 @@ object PerfStat {
 
   def makeId(userId: String, perfType: PerfType) = s"$userId/${perfType.id}"
 
-  def init(userId: String, perfType: PerfType) = PerfStat(
-    _id = makeId(userId, perfType),
-    userId = UserId(userId),
-    perfType = perfType,
-    highest = none,
-    lowest = none,
-    bestWins = Results(Nil),
-    worstLosses = Results(Nil),
-    count = Count.init,
-    resultStreak = ResultStreak(win = Streaks.init, loss = Streaks.init),
-    playStreak =
-      PlayStreak(nb = Streaks.init, time = Streaks.init, lastDate = none)
-  )
+  def init(userId: String, perfType: PerfType) =
+    PerfStat(
+      _id = makeId(userId, perfType),
+      userId = UserId(userId),
+      perfType = perfType,
+      highest = none,
+      lowest = none,
+      bestWins = Results(Nil),
+      worstLosses = Results(Nil),
+      count = Count.init,
+      resultStreak = ResultStreak(win = Streaks.init, loss = Streaks.init),
+      playStreak =
+        PlayStreak(nb = Streaks.init, time = Streaks.init, lastDate = none)
+    )
 }
 
 case class ResultStreak(win: Streaks, loss: Streaks) {
@@ -75,9 +76,10 @@ case class PlayStreak(nb: Streaks, time: Streaks, lastDate: Option[DateTime]) {
       this
     else
       copy(nb = nb.reset, time = time.reset)
-  private def isContinued(at: DateTime) = lastDate.fold(true) { ld =>
-    at.isBefore(ld plusMinutes PlayStreak.expirationMinutes)
-  }
+  private def isContinued(at: DateTime) =
+    lastDate.fold(true) { ld =>
+      at.isBefore(ld plusMinutes PlayStreak.expirationMinutes)
+    }
 }
 object PlayStreak {
   val expirationMinutes = 60

@@ -41,22 +41,25 @@ class DBRefField[
   /*
    * get the referenced object
    */
-  def obj = synchronized {
-    if (!_calcedObj) {
-      _calcedObj = true
-      this._obj = ref.meta.findAny(value.getId)
+  def obj =
+    synchronized {
+      if (!_calcedObj) {
+        _calcedObj = true
+        this._obj = ref.meta.findAny(value.getId)
+      }
+      _obj
     }
-    _obj
-  }
 
-  def cached_? : Boolean = synchronized {
-    _calcedObj
-  }
+  def cached_? : Boolean =
+    synchronized {
+      _calcedObj
+    }
 
-  def primeObj(obj: Box[RefType]) = synchronized {
-    _obj = obj
-    _calcedObj = true
-  }
+  def primeObj(obj: Box[RefType]) =
+    synchronized {
+      _obj = obj
+      _calcedObj = true
+    }
 
   private var _obj: Box[RefType] = Empty
   private var _calcedObj = false
@@ -71,17 +74,18 @@ class DBRefField[
 
   def defaultValue = new DBRef("", null)
 
-  def setFromAny(in: Any): Box[DBRef] = in match {
-    case ref: DBRef                      => Full(set(ref))
-    case Some(ref: DBRef)                => Full(set(ref))
-    case Full(ref: DBRef)                => Full(set(ref))
-    case seq: Seq[_] if !seq.isEmpty     => seq.map(setFromAny).apply(0)
-    case (s: String) :: _                => setFromString(s)
-    case null                            => Full(set(null))
-    case s: String                       => setFromString(s)
-    case None | Empty | Failure(_, _, _) => Full(set(null))
-    case o                               => setFromString(o.toString)
-  }
+  def setFromAny(in: Any): Box[DBRef] =
+    in match {
+      case ref: DBRef                      => Full(set(ref))
+      case Some(ref: DBRef)                => Full(set(ref))
+      case Full(ref: DBRef)                => Full(set(ref))
+      case seq: Seq[_] if !seq.isEmpty     => seq.map(setFromAny).apply(0)
+      case (s: String) :: _                => setFromString(s)
+      case null                            => Full(set(null))
+      case s: String                       => setFromString(s)
+      case None | Empty | Failure(_, _, _) => Full(set(null))
+      case o                               => setFromString(o.toString)
+    }
 
   // assume string is json
   def setFromString(in: String): Box[DBRef] = {

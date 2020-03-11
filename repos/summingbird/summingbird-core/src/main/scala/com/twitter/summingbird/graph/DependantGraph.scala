@@ -49,9 +49,10 @@ abstract class DependantGraph[T] {
     else
       None
 
-  def fanOut(p: T): Option[Int] = dependantsOf(p).map {
-    _.size
-  }
+  def fanOut(p: T): Option[Int] =
+    dependantsOf(p).map {
+      _.size
+    }
 
   /**
     * Return all dependendants of a given node.

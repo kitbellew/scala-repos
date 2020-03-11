@@ -4,9 +4,10 @@ package scalaz
 trait Ran[G[_], H[_], A] { ran =>
   def apply[B](f: A => G[B]): H[B]
 
-  def map[B](f: A => B): Ran[G, H, B] = new Ran[G, H, B] {
-    def apply[C](k: B => G[C]): H[C] = ran(f andThen k)
-  }
+  def map[B](f: A => B): Ran[G, H, B] =
+    new Ran[G, H, B] {
+      def apply[C](k: B => G[C]): H[C] = ran(f andThen k)
+    }
 
   def toAdjoint[F[_]](implicit A: Adjunction[F, G]): H[F[A]] =
     apply(a => A.unit(a))
@@ -83,11 +84,12 @@ trait Lan[G[_], H[_], A] { lan =>
   def toAdjoint[F[_]](implicit H: Functor[H], A: Adjunction[G, F]): H[F[A]] =
     H.map(v)(A.leftAdjunct(_)(f))
 
-  def map[B](g: A => B): Lan[G, H, B] = new Lan[G, H, B] {
-    type I = lan.I
-    lazy val v = lan.v
-    def f(gi: G[I]) = g(lan f gi)
-  }
+  def map[B](g: A => B): Lan[G, H, B] =
+    new Lan[G, H, B] {
+      type I = lan.I
+      lazy val v = lan.v
+      def f(gi: G[I]) = g(lan f gi)
+    }
 
 }
 
@@ -99,11 +101,12 @@ object Lan extends LanInstances {
     new Applicative[Lan[G, H, ?]] with LanApply[G, H] {
       def G = implicitly
       def H = implicitly
-      def point[A](a: => A) = new Lan[G, H, A] {
-        type I = Unit
-        val v = Applicative[H].point(())
-        def f(gi: G[I]) = a
-      }
+      def point[A](a: => A) =
+        new Lan[G, H, A] {
+          type I = Unit
+          val v = Applicative[H].point(())
+          def f(gi: G[I]) = a
+        }
     }
 
   /**
@@ -133,11 +136,12 @@ object Lan extends LanInstances {
     A.leftAdjunct(lan.v)(lan.f)
 
   def composedAdjointToLan[F[_], G[_], H[_], A](h: H[G[A]])(
-      implicit A: Adjunction[F, G]): Lan[F, H, A] = new Lan[F, H, A] {
-    type I = G[A]
-    val v = h
-    def f(fi: F[I]) = A.counit(fi)
-  }
+      implicit A: Adjunction[F, G]): Lan[F, H, A] =
+    new Lan[F, H, A] {
+      type I = G[A]
+      val v = h
+      def f(fi: F[I]) = A.counit(fi)
+    }
 }
 
 sealed abstract class LanInstances0 {

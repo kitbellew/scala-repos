@@ -146,10 +146,11 @@ trait TypeKinds extends SubComponent { this: GenJSCode =>
     override def toString(): String = "ARRAY[" + elem + "]"
     override def isArrayType: Boolean = true
 
-    def dimensions: Int = elem match {
-      case a: ARRAY => a.dimensions + 1
-      case _        => 1
-    }
+    def dimensions: Int =
+      elem match {
+        case a: ARRAY => a.dimensions + 1
+        case _        => 1
+      }
 
     override def toIRType: Types.ArrayType = toReferenceType
 
@@ -158,10 +159,11 @@ trait TypeKinds extends SubComponent { this: GenJSCode =>
     }
 
     /** The ultimate element type of this array. */
-    def elementKind: TypeKindButArray = elem match {
-      case a: ARRAY            => a.elementKind
-      case k: TypeKindButArray => k
-    }
+    def elementKind: TypeKindButArray =
+      elem match {
+        case a: ARRAY            => a.elementKind
+        case k: TypeKindButArray => k
+      }
   }
 
   ////////////////// Conversions //////////////////////////////
@@ -179,79 +181,82 @@ trait TypeKinds extends SubComponent { this: GenJSCode =>
     *  Call to .normalize fixes #3003 (follow type aliases). Otherwise,
     *  arrayOrClassType below would return ObjectReference.
     */
-  def toTypeKind(t: Type): TypeKind = t.normalize match {
-    case ThisType(ArrayClass)  => ObjectReference
-    case ThisType(sym)         => newReference(sym)
-    case SingleType(_, sym)    => primitiveOrRefType(sym)
-    case ConstantType(_)       => toTypeKind(t.underlying)
-    case TypeRef(_, sym, args) => primitiveOrClassType(sym, args)
-    case ClassInfoType(_, _, ArrayClass) =>
-      abort("ClassInfoType to ArrayClass!")
-    case ClassInfoType(_, _, sym) => primitiveOrRefType(sym)
+  def toTypeKind(t: Type): TypeKind =
+    t.normalize match {
+      case ThisType(ArrayClass)  => ObjectReference
+      case ThisType(sym)         => newReference(sym)
+      case SingleType(_, sym)    => primitiveOrRefType(sym)
+      case ConstantType(_)       => toTypeKind(t.underlying)
+      case TypeRef(_, sym, args) => primitiveOrClassType(sym, args)
+      case ClassInfoType(_, _, ArrayClass) =>
+        abort("ClassInfoType to ArrayClass!")
+      case ClassInfoType(_, _, sym) => primitiveOrRefType(sym)
 
-    // !!! Iulian says types which make no sense after erasure should not reach here,
-    // which includes the ExistentialType, AnnotatedType, RefinedType.  I don't know
-    // if the first two cases exist because they do or as a defensive measure, but
-    // at the time I added it, RefinedTypes were indeed reaching here.
-    // !!! Removed in JavaScript backend because I do not know what to do with lub
-    //case ExistentialType(_, t)           => toTypeKind(t)
-    // Apparently, this case does occur (see pos/CustomGlobal.scala)
-    case t: AnnotatedType => toTypeKind(t.underlying)
-    //case RefinedType(parents, _)         => parents map toTypeKind reduceLeft lub
+      // !!! Iulian says types which make no sense after erasure should not reach here,
+      // which includes the ExistentialType, AnnotatedType, RefinedType.  I don't know
+      // if the first two cases exist because they do or as a defensive measure, but
+      // at the time I added it, RefinedTypes were indeed reaching here.
+      // !!! Removed in JavaScript backend because I do not know what to do with lub
+      //case ExistentialType(_, t)           => toTypeKind(t)
+      // Apparently, this case does occur (see pos/CustomGlobal.scala)
+      case t: AnnotatedType => toTypeKind(t.underlying)
+      //case RefinedType(parents, _)         => parents map toTypeKind reduceLeft lub
 
-    /* This case is not in scalac. We need it for the test
-     * run/valueclasses-classtag-existential. I have no idea how icode does
-     * not fail this test: we do everything the same as icode up to here.
-     */
-    case tpe: ErasedValueType => newReference(tpe.valueClazz)
+      /* This case is not in scalac. We need it for the test
+       * run/valueclasses-classtag-existential. I have no idea how icode does
+       * not fail this test: we do everything the same as icode up to here.
+       */
+      case tpe: ErasedValueType => newReference(tpe.valueClazz)
 
-    // For sure WildcardTypes shouldn't reach here either, but when
-    // debugging such situations this may come in handy.
-    // case WildcardType                    => REFERENCE(ObjectClass)
-    case norm =>
-      abort(
-        "Unknown type: %s, %s [%s, %s] TypeRef? %s".format(
-          t,
-          norm,
-          t.getClass,
-          norm.getClass,
-          t.isInstanceOf[TypeRef]
+      // For sure WildcardTypes shouldn't reach here either, but when
+      // debugging such situations this may come in handy.
+      // case WildcardType                    => REFERENCE(ObjectClass)
+      case norm =>
+        abort(
+          "Unknown type: %s, %s [%s, %s] TypeRef? %s".format(
+            t,
+            norm,
+            t.getClass,
+            norm.getClass,
+            t.isInstanceOf[TypeRef]
+          )
         )
-      )
-  }
+    }
 
   /** Return the type kind of a class, possibly an array type.
     */
-  private def arrayOrClassType(sym: Symbol, targs: List[Type]) = sym match {
-    case ArrayClass       => ARRAY(toTypeKind(targs.head))
-    case _ if sym.isClass => newReference(sym)
-    case _ =>
-      assert(sym.isType, sym) // it must be compiling Array[a]
-      ObjectReference
-  }
+  private def arrayOrClassType(sym: Symbol, targs: List[Type]) =
+    sym match {
+      case ArrayClass       => ARRAY(toTypeKind(targs.head))
+      case _ if sym.isClass => newReference(sym)
+      case _ =>
+        assert(sym.isType, sym) // it must be compiling Array[a]
+        ObjectReference
+    }
 
   /** Interfaces have to be handled delicately to avoid introducing
     *  spurious errors, but if we treat them all as AnyRef we lose too
     *  much information.
     */
-  private def newReference(sym: Symbol): TypeKind = sym match {
-    case NothingClass => NOTHING
-    case NullClass    => NULL
-    case _            =>
-      // Can't call .toInterface (at this phase) or we trip an assertion.
-      // See PackratParser#grow for a method which fails with an apparent mismatch
-      // between "object PackratParsers$class" and "trait PackratParsers"
-      if (sym.isImplClass) {
-        // pos/spec-List.scala is the sole failure if we don't check for NoSymbol
-        val traitSym = sym.owner.info.decl(tpnme.interfaceName(sym.name))
-        if (traitSym != NoSymbol)
-          REFERENCE(traitSym)
-        else
+  private def newReference(sym: Symbol): TypeKind =
+    sym match {
+      case NothingClass => NOTHING
+      case NullClass    => NULL
+      case _            =>
+        // Can't call .toInterface (at this phase) or we trip an assertion.
+        // See PackratParser#grow for a method which fails with an apparent mismatch
+        // between "object PackratParsers$class" and "trait PackratParsers"
+        if (sym.isImplClass) {
+          // pos/spec-List.scala is the sole failure if we don't check for NoSymbol
+          val traitSym = sym.owner.info.decl(tpnme.interfaceName(sym.name))
+          if (traitSym != NoSymbol)
+            REFERENCE(traitSym)
+          else
+            REFERENCE(sym)
+        } else {
           REFERENCE(sym)
-      } else {
-        REFERENCE(sym)
-      }
-  }
+        }
+    }
 
   private def primitiveOrRefType(sym: Symbol) =
     primitiveTypeMap.getOrElse(sym, newReference(sym))

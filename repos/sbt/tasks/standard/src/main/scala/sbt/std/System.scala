@@ -16,9 +16,10 @@ object Transform {
   def fromDummyStrict[T](original: Task[T], value: T): Task[T] =
     fromDummy(original)(value)
 
-  implicit def to_~>|[K[_], V[_]](map: RMap[K, V]): K ~>| V = new (K ~>| V) {
-    def apply[T](k: K[T]): Option[V[T]] = map.get(k)
-  }
+  implicit def to_~>|[K[_], V[_]](map: RMap[K, V]): K ~>| V =
+    new (K ~>| V) {
+      def apply[T](k: K[T]): Option[V[T]] = map.get(k)
+    }
 
   final case class DummyTaskMap(mappings: List[TaskAndValue[_]]) {
     def ::[T](tav: (Task[T], T)): DummyTaskMap =
@@ -45,20 +46,23 @@ object Transform {
     taskToNode(getOrId(dummyMap(dummies)))
   }
 
-  def taskToNode(pre: Task ~> Task): NodeView[Task] = new NodeView[Task] {
-    def apply[T](t: Task[T]): Node[Task, T] = pre(t).work match {
-      case Pure(eval, _)       => uniform(Nil)(_ => Right(eval()))
-      case m: Mapped[t, k]     => toNode[t, k](m.in)(right ∙ m.f)(m.alist)
-      case m: FlatMapped[t, k] => toNode[t, k](m.in)(left ∙ m.f)(m.alist)
-      case DependsOn(in, deps) =>
-        uniform(existToAny(deps))(const(Left(in)) ∙ all)
-      case Join(in, f) => uniform(in)(f)
+  def taskToNode(pre: Task ~> Task): NodeView[Task] =
+    new NodeView[Task] {
+      def apply[T](t: Task[T]): Node[Task, T] =
+        pre(t).work match {
+          case Pure(eval, _)       => uniform(Nil)(_ => Right(eval()))
+          case m: Mapped[t, k]     => toNode[t, k](m.in)(right ∙ m.f)(m.alist)
+          case m: FlatMapped[t, k] => toNode[t, k](m.in)(left ∙ m.f)(m.alist)
+          case DependsOn(in, deps) =>
+            uniform(existToAny(deps))(const(Left(in)) ∙ all)
+          case Join(in, f) => uniform(in)(f)
+        }
+      def inline[T](t: Task[T]) =
+        t.work match {
+          case Pure(eval, true) => Some(eval)
+          case _                => None
+        }
     }
-    def inline[T](t: Task[T]) = t.work match {
-      case Pure(eval, true) => Some(eval)
-      case _                => None
-    }
-  }
 
   def uniform[T, D](tasks: Seq[Task[D]])(
       f: Seq[Result[D]] => Either[Task[T], T]): Node[Task, T] =
@@ -69,10 +73,11 @@ object Transform {
       })#l](tasks.toList)(f)(AList.seq[D])
 
   def toNode[T, k[L[x]]](inputs: k[Task])(f: k[Result] => Either[Task[T], T])(
-      implicit a: AList[k]): Node[Task, T] = new Node[Task, T] {
-    type K[L[x]] = k[L]
-    val in = inputs
-    val alist = a
-    def work(results: K[Result]) = f(results)
-  }
+      implicit a: AList[k]): Node[Task, T] =
+    new Node[Task, T] {
+      type K[L[x]] = k[L]
+      val in = inputs
+      val alist = a
+      def work(results: K[Result]) = f(results)
+    }
 }

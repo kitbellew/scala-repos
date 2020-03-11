@@ -58,19 +58,21 @@ class ScalaUselessExpressionInspection
       }
   }
 
-  private def isLastInBlock(expr: ScExpression): Boolean = expr match {
-    case ChildOf(bl: ScBlock) => bl.lastExpr.contains(expr)
-    case ChildOf(
-          _: ScPatternDefinition | _: ScFunctionDefinition |
-          _: ScVariableDefinition) =>
-      !expr.isInstanceOf[ScBlock]
-    case _ => false
-  }
+  private def isLastInBlock(expr: ScExpression): Boolean =
+    expr match {
+      case ChildOf(bl: ScBlock) => bl.lastExpr.contains(expr)
+      case ChildOf(
+            _: ScPatternDefinition | _: ScFunctionDefinition |
+            _: ScVariableDefinition) =>
+        !expr.isInstanceOf[ScBlock]
+      case _ => false
+    }
 
-  private def isInBlock(expr: ScExpression): Boolean = expr match {
-    case ChildOf(bl: ScBlock) => true
-    case _                    => false
-  }
+  private def isInBlock(expr: ScExpression): Boolean =
+    expr match {
+      case ChildOf(bl: ScBlock) => true
+      case _                    => false
+    }
 
   private def canResultInSideEffectsOnly(expr: ScExpression): Boolean = {
     def isNotLastInBlock: Boolean = {

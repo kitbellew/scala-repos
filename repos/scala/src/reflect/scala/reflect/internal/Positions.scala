@@ -213,23 +213,23 @@ trait Positions extends api.Positions { self: SymbolTable =>
   private def insert(
       rs: List[Range],
       t: Tree,
-      conflicting: ListBuffer[Tree]): List[Range] = rs match {
-    case List() =>
-      assert(conflicting.nonEmpty)
-      rs
-    case r :: rs1 =>
-      assert(!t.pos.isTransparent)
-      if (r.isFree && (r.pos includes t.pos)) {
+      conflicting: ListBuffer[Tree]): List[Range] =
+    rs match {
+      case List() =>
+        assert(conflicting.nonEmpty)
+        rs
+      case r :: rs1 =>
+        assert(!t.pos.isTransparent)
+        if (r.isFree && (r.pos includes t.pos)) {
 //      inform("subdividing "+r+"/"+t.pos)
-        maybeFree(t.pos.end, r.pos.end) ::: List(Range(t.pos, t)) ::: maybeFree(
-          r.pos.start,
-          t.pos.start) ::: rs1
-      } else {
-        if (!r.isFree && (r.pos overlaps t.pos))
-          conflicting += r.tree
-        r :: insert(rs1, t, conflicting)
-      }
-  }
+          maybeFree(t.pos.end, r.pos.end) ::: List(
+            Range(t.pos, t)) ::: maybeFree(r.pos.start, t.pos.start) ::: rs1
+        } else {
+          if (!r.isFree && (r.pos overlaps t.pos))
+            conflicting += r.tree
+          r :: insert(rs1, t, conflicting)
+        }
+    }
 
   /** Replace elem `t` of `ts` by `replacement` list. */
   private def replace(

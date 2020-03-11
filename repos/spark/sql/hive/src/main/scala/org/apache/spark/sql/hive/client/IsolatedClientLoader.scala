@@ -97,14 +97,15 @@ private[hive] object IsolatedClientLoader extends Logging {
         barrierPrefixes = barrierPrefixes)
     }
 
-  def hiveVersion(version: String): HiveVersion = version match {
-    case "12" | "0.12" | "0.12.0"            => hive.v12
-    case "13" | "0.13" | "0.13.0" | "0.13.1" => hive.v13
-    case "14" | "0.14" | "0.14.0"            => hive.v14
-    case "1.0" | "1.0.0"                     => hive.v1_0
-    case "1.1" | "1.1.0"                     => hive.v1_1
-    case "1.2" | "1.2.0" | "1.2.1"           => hive.v1_2
-  }
+  def hiveVersion(version: String): HiveVersion =
+    version match {
+      case "12" | "0.12" | "0.12.0"            => hive.v12
+      case "13" | "0.13" | "0.13.0" | "0.13.1" => hive.v13
+      case "14" | "0.14" | "0.14.0"            => hive.v14
+      case "1.0" | "1.0.0"                     => hive.v1_0
+      case "1.1" | "1.1.0"                     => hive.v1_1
+      case "1.2" | "1.2.0" | "1.2.1"           => hive.v1_2
+    }
 
   private def downloadVersion(
       version: HiveVersion,
@@ -261,9 +262,10 @@ private[hive] class IsolatedClientLoader(
     new NonClosableMutableURLClassLoader(isolatedClassLoader)
   }
 
-  private[hive] def addJar(path: URL): Unit = synchronized {
-    classLoader.addURL(path)
-  }
+  private[hive] def addJar(path: URL): Unit =
+    synchronized {
+      classLoader.addURL(path)
+    }
 
   /** The isolated client interface to Hive. */
   private[hive] def createClient(): HiveClient = {

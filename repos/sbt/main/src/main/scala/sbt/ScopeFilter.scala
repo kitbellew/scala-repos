@@ -58,13 +58,13 @@ object ScopeFilter {
       * Evaluates the initialization in all scopes selected by the filter.  These are dynamic dependencies, so
       * static inspections will not show them.
       */
-    def all(sfilter: => ScopeFilter): Initialize[Seq[T]] = Def.bind(getData) {
-      data =>
+    def all(sfilter: => ScopeFilter): Initialize[Seq[T]] =
+      Def.bind(getData) { data =>
         data.allScopes.toSeq
           .filter(sfilter(data))
           .map(s => Project.inScope(s, i))
           .join
-    }
+      }
   }
   final class TaskKeyAll[T] private[sbt] (i: Initialize[Task[T]]) {
 
@@ -240,10 +240,11 @@ object ScopeFilter {
       projects: Data => Seq[ProjectRef]): ProjectFilter =
     selectAxis(data => projects(data).toSet)
 
-  private[this] def globalAxis[T]: AxisFilter[T] = new AxisFilter[T] {
-    private[sbt] def apply(data: Data): ScopeAxis[T] => Boolean =
-      _ == Global
-  }
+  private[this] def globalAxis[T]: AxisFilter[T] =
+    new AxisFilter[T] {
+      private[sbt] def apply(data: Data): ScopeAxis[T] => Boolean =
+        _ == Global
+    }
   private[this] def selectAny[T]: AxisFilter[T] = selectAxis(const(const(true)))
   private[this] def selectAxis[T](f: Data => T => Boolean): AxisFilter[T] =
     new AxisFilter[T] {
@@ -267,30 +268,33 @@ object ScopeFilter {
     def --(other: Base[In]): Base[In] = this && -other
 
     /** Constructs a filter that selects values that match this filter and `other`.*/
-    def &&(other: Base[In]): Base[In] = new Base[In] {
-      private[sbt] def apply(data: Data): In => Boolean = {
-        val a = self(data)
-        val b = other(data)
-        s => a(s) && b(s)
+    def &&(other: Base[In]): Base[In] =
+      new Base[In] {
+        private[sbt] def apply(data: Data): In => Boolean = {
+          val a = self(data)
+          val b = other(data)
+          s => a(s) && b(s)
+        }
       }
-    }
 
     /** Constructs a filter that selects values that match this filter or `other`.*/
-    def ||(other: Base[In]): Base[In] = new Base[In] {
-      private[sbt] def apply(data: Data): In => Boolean = {
-        val a = self(data)
-        val b = other(data)
-        s => a(s) || b(s)
+    def ||(other: Base[In]): Base[In] =
+      new Base[In] {
+        private[sbt] def apply(data: Data): In => Boolean = {
+          val a = self(data)
+          val b = other(data)
+          s => a(s) || b(s)
+        }
       }
-    }
 
     /** Constructs a filter that selects values that do not match this filter.*/
-    def unary_- : Base[In] = new Base[In] {
-      private[sbt] def apply(data: Data): In => Boolean = {
-        val a = self(data)
-        s => !a(s)
+    def unary_- : Base[In] =
+      new Base[In] {
+        private[sbt] def apply(data: Data): In => Boolean = {
+          val a = self(data)
+          s => !a(s)
+        }
       }
-    }
   }
 
 }

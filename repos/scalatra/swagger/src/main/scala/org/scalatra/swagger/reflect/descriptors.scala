@@ -215,26 +215,30 @@ class ManifestScalaType(val manifest: Manifest[_]) extends ScalaType {
   def isCollection =
     erasure.isArray || classOf[Iterable[_]].isAssignableFrom(erasure)
   def isOption = classOf[Option[_]].isAssignableFrom(erasure)
-  def <:<(that: ScalaType): Boolean = that match {
-    case t: ManifestScalaType => manifest <:< t.manifest
-    case _                    => manifest <:< ManifestFactory.manifestOf(that)
-  }
-  def >:>(that: ScalaType): Boolean = that match {
-    case t: ManifestScalaType => manifest >:> t.manifest
-    case _                    => manifest >:> ManifestFactory.manifestOf(that)
-  }
+  def <:<(that: ScalaType): Boolean =
+    that match {
+      case t: ManifestScalaType => manifest <:< t.manifest
+      case _                    => manifest <:< ManifestFactory.manifestOf(that)
+    }
+  def >:>(that: ScalaType): Boolean =
+    that match {
+      case t: ManifestScalaType => manifest >:> t.manifest
+      case _                    => manifest >:> ManifestFactory.manifestOf(that)
+    }
 
   override def hashCode(): Int = manifest.##
 
-  override def equals(obj: Any): Boolean = obj match {
-    case a: ManifestScalaType => manifest == a.manifest
-    case _                    => false
-  }
+  override def equals(obj: Any): Boolean =
+    obj match {
+      case a: ManifestScalaType => manifest == a.manifest
+      case _                    => false
+    }
 
-  def canEqual(that: Any): Boolean = that match {
-    case s: ManifestScalaType => manifest.canEqual(s.manifest)
-    case _                    => false
-  }
+  def canEqual(that: Any): Boolean =
+    that match {
+      case s: ManifestScalaType => manifest.canEqual(s.manifest)
+      case _                    => false
+    }
 
   def copy(
       erasure: Class[_] = erasure,

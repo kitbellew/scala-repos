@@ -498,10 +498,11 @@ private[cluster] final class ClusterDomainEventPublisher
     }
   }
 
-  def unsubscribe(subscriber: ActorRef, to: Option[Class[_]]): Unit = to match {
-    case None ⇒ eventStream.unsubscribe(subscriber)
-    case Some(c) ⇒ eventStream.unsubscribe(subscriber, c)
-  }
+  def unsubscribe(subscriber: ActorRef, to: Option[Class[_]]): Unit =
+    to match {
+      case None ⇒ eventStream.unsubscribe(subscriber)
+      case Some(c) ⇒ eventStream.unsubscribe(subscriber, c)
+    }
 
   def publishChanges(newGossip: Gossip): Unit = {
     val oldGossip = latestGossip

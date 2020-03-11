@@ -29,23 +29,23 @@ class DeploymentsResource @Inject() (
     with Logging {
 
   @GET
-  def running(@Context req: HttpServletRequest): Response = authenticated(req) {
-    implicit identity =>
+  def running(@Context req: HttpServletRequest): Response =
+    authenticated(req) { implicit identity =>
       val infos = result(service.listRunningDeployments())
         .filter(_.plan.affectedApplications.exists(isAuthorized(ViewApp, _)))
         .map { currentStep =>
           toInfo(currentStep.plan, currentStep)
         }
       ok(jsonString(infos))
-  }
+    }
 
   @DELETE
   @Path("{id}")
   def cancel(
       @PathParam("id") id: String,
       @DefaultValue("false") @QueryParam("force") force: Boolean,
-      @Context req: HttpServletRequest): Response = authenticated(req) {
-    implicit identity =>
+      @Context req: HttpServletRequest): Response =
+    authenticated(req) { implicit identity =>
       val plan = result(service.listRunningDeployments())
         .find(_.plan.id == id)
         .map(_.plan)
@@ -70,7 +70,7 @@ class DeploymentsResource @Inject() (
                 )))
         }
       }
-  }
+    }
 
   private def toInfo(
       deployment: DeploymentPlan,

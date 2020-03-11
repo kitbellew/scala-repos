@@ -155,10 +155,11 @@ class BinaryPickleBuilder(format: BinaryPickleFormat, out: BinaryOutput)
     isIgnoringFields = false
   }
 
-  @inline def beginCollection(length: Int): PBuilder = ignoringSharedRefs {
-    output.putInt(length)
-    this
-  }
+  @inline def beginCollection(length: Int): PBuilder =
+    ignoringSharedRefs {
+      output.putInt(length)
+      this
+    }
 
   @inline def putElement(pickler: PBuilder => Unit): PBuilder =
     ignoringSharedRefs {

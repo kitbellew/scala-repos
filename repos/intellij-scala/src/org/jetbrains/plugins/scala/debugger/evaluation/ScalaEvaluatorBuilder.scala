@@ -171,37 +171,38 @@ private[evaluation] trait SyntheticVariablesHelper {
 private object needsCompilation {
   def message(kind: String) = Some(s"Evaluation of $kind needs compilation")
 
-  def unapply(elem: PsiElement): Option[String] = elem match {
-    case m: ScMember =>
-      m match {
-        case td: ScTemplateDefinition =>
-          td match {
-            case o: ScObject => message("object")
-            case c: ScClass  => message("class")
-            case t: ScTrait  => message("trait")
-            case newTd: ScNewTemplateDefinition
-                if DebuggerUtil.generatesAnonClass(newTd) =>
-              message("anonymous class")
-            case _ => None
-          }
-        case t: ScTypeAlias => message("type alias")
-        case f: ScFunction  => message("function definition")
-        case v @ (_: ScVariableDeclaration | _: ScValueDeclaration) =>
-          message("variable declaration")
-        case LazyVal(_) => message("lazy val definition")
-        case _          => None
-      }
-    case expr if ScalaEvaluatorBuilderUtil.isGenerateAnonfun(expr) =>
-      message("anonymous function")
-    case forSt: ScForStatement  => message("for expression")
-    case tryStmt: ScTryStmt     => message("try statement")
-    case ret: ScReturnStmt      => message("return statement")
-    case ms: ScMatchStmt        => message("match statement")
-    case throwStmt: ScThrowStmt => message("throw statement")
-    case xml: ScXmlExpr         => message("xml expression")
-    case interpolated: ScInterpolatedStringLiteral
-        if interpolated.getType != InterpolatedStringType.STANDART =>
-      message("interpolated string")
-    case _ => None
-  }
+  def unapply(elem: PsiElement): Option[String] =
+    elem match {
+      case m: ScMember =>
+        m match {
+          case td: ScTemplateDefinition =>
+            td match {
+              case o: ScObject => message("object")
+              case c: ScClass  => message("class")
+              case t: ScTrait  => message("trait")
+              case newTd: ScNewTemplateDefinition
+                  if DebuggerUtil.generatesAnonClass(newTd) =>
+                message("anonymous class")
+              case _ => None
+            }
+          case t: ScTypeAlias => message("type alias")
+          case f: ScFunction  => message("function definition")
+          case v @ (_: ScVariableDeclaration | _: ScValueDeclaration) =>
+            message("variable declaration")
+          case LazyVal(_) => message("lazy val definition")
+          case _          => None
+        }
+      case expr if ScalaEvaluatorBuilderUtil.isGenerateAnonfun(expr) =>
+        message("anonymous function")
+      case forSt: ScForStatement  => message("for expression")
+      case tryStmt: ScTryStmt     => message("try statement")
+      case ret: ScReturnStmt      => message("return statement")
+      case ms: ScMatchStmt        => message("match statement")
+      case throwStmt: ScThrowStmt => message("throw statement")
+      case xml: ScXmlExpr         => message("xml expression")
+      case interpolated: ScInterpolatedStringLiteral
+          if interpolated.getType != InterpolatedStringType.STANDART =>
+        message("interpolated string")
+      case _ => None
+    }
 }

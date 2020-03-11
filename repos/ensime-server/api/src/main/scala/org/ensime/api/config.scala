@@ -54,9 +54,10 @@ case class EnsimeConfig(
           else
             targetClasspath)
 
-  def targetClasspath: Set[File] = modules.values.toSet.flatMap {
-    m: EnsimeModule => m.targetDirs ++ m.testTargetDirs
-  }
+  def targetClasspath: Set[File] =
+    modules.values.toSet.flatMap { m: EnsimeModule =>
+      m.targetDirs ++ m.testTargetDirs
+    }
 
   def allJars: Set[File] = {
     modules.values.flatMap { m =>

@@ -89,25 +89,28 @@ package parallel {
         def asParIterable = t.asInstanceOf[ParIterable[T]]
         def isParSeq = t.isInstanceOf[ParSeq[_]]
         def asParSeq = t.asInstanceOf[ParSeq[T]]
-        def ifParSeq[R](isbody: ParSeq[T] => R) = new Otherwise[R] {
-          def otherwise(notbody: => R) =
-            if (isParallel)
-              isbody(asParSeq)
-            else
-              notbody
-        }
+        def ifParSeq[R](isbody: ParSeq[T] => R) =
+          new Otherwise[R] {
+            def otherwise(notbody: => R) =
+              if (isParallel)
+                isbody(asParSeq)
+              else
+                notbody
+          }
       }
-    implicit def throwable2ops(self: Throwable) = new ThrowableOps {
-      def alongWith(that: Throwable) = (self, that) match {
-        case (self: CompositeThrowable, that: CompositeThrowable) =>
-          new CompositeThrowable(self.throwables ++ that.throwables)
-        case (self: CompositeThrowable, _) =>
-          new CompositeThrowable(self.throwables + that)
-        case (_, that: CompositeThrowable) =>
-          new CompositeThrowable(that.throwables + self)
-        case _ => new CompositeThrowable(Set(self, that))
+    implicit def throwable2ops(self: Throwable) =
+      new ThrowableOps {
+        def alongWith(that: Throwable) =
+          (self, that) match {
+            case (self: CompositeThrowable, that: CompositeThrowable) =>
+              new CompositeThrowable(self.throwables ++ that.throwables)
+            case (self: CompositeThrowable, _) =>
+              new CompositeThrowable(self.throwables + that)
+            case (_, that: CompositeThrowable) =>
+              new CompositeThrowable(that.throwables + self)
+            case _ => new CompositeThrowable(Set(self, that))
+          }
       }
-    }
   }
 
   trait FactoryOps[From, Elem, To] {

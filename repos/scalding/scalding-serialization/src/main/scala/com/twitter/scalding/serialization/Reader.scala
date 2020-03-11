@@ -69,14 +69,15 @@ object Reader {
     }
   }
 
-  implicit def option[T: Reader]: Reader[Option[T]] = new Reader[Option[T]] {
-    val r = implicitly[Reader[T]]
-    def read(is: InputStream) =
-      if (is.readByte == (0: Byte))
-        None
-      else
-        Some(r.read(is))
-  }
+  implicit def option[T: Reader]: Reader[Option[T]] =
+    new Reader[Option[T]] {
+      val r = implicitly[Reader[T]]
+      def read(is: InputStream) =
+        if (is.readByte == (0: Byte))
+          None
+        else
+          Some(r.read(is))
+    }
 
   implicit def either[L: Reader, R: Reader]: Reader[Either[L, R]] =
     new Reader[Either[L, R]] {
@@ -124,23 +125,24 @@ object Reader {
 
   // Scala seems to have issues with this being implicit
   def collection[T: Reader, C](
-      implicit cbf: CanBuildFrom[Nothing, T, C]): Reader[C] = new Reader[C] {
-    val readerT = implicitly[Reader[T]]
-    def read(is: InputStream): C = {
-      val builder = cbf()
-      val size = is.readPosVarInt
-      builder.sizeHint(size)
-      @annotation.tailrec
-      def go(idx: Int): Unit =
-        if (idx == size)
-          ()
-        else {
-          builder += readerT.read(is)
-          go(idx + 1)
-        }
+      implicit cbf: CanBuildFrom[Nothing, T, C]): Reader[C] =
+    new Reader[C] {
+      val readerT = implicitly[Reader[T]]
+      def read(is: InputStream): C = {
+        val builder = cbf()
+        val size = is.readPosVarInt
+        builder.sizeHint(size)
+        @annotation.tailrec
+        def go(idx: Int): Unit =
+          if (idx == size)
+            ()
+          else {
+            builder += readerT.read(is)
+            go(idx + 1)
+          }
 
-      go(0)
-      builder.result
+        go(0)
+        builder.result
+      }
     }
-  }
 }

@@ -18,19 +18,20 @@ private[tournament] final class Scheduler(api: TournamentApi) extends Actor {
   import Schedule.Season._
   import chess.variant._
 
-  def marathonDates = List(
-    // Spring -> Saturday of the weekend after Orthodox Easter Sunday
-    // Summer -> first Saturday of August
-    // Autumn -> Saturday of weekend before the weekend Halloween falls on (c.f. half-term holidays)
-    // Winter -> 28 December, convenient day in the space between Boxing Day and New Year's Day
-    Summer -> day(2015, 8, 1),
-    Autumn -> day(2015, 10, 24),
-    Winter -> day(2015, 12, 28),
-    Spring -> day(2016, 4, 16),
-    Summer -> day(2016, 8, 6),
-    Autumn -> day(2016, 10, 22),
-    Winter -> day(2016, 12, 28)
-  )
+  def marathonDates =
+    List(
+      // Spring -> Saturday of the weekend after Orthodox Easter Sunday
+      // Summer -> first Saturday of August
+      // Autumn -> Saturday of weekend before the weekend Halloween falls on (c.f. half-term holidays)
+      // Winter -> 28 December, convenient day in the space between Boxing Day and New Year's Day
+      Summer -> day(2015, 8, 1),
+      Autumn -> day(2015, 10, 24),
+      Winter -> day(2015, 12, 28),
+      Spring -> day(2016, 4, 16),
+      Summer -> day(2016, 8, 6),
+      Autumn -> day(2016, 10, 22),
+      Winter -> day(2016, 12, 28)
+    )
 
   override def preStart {
     context.system.scheduler.schedule(5 minutes, 5 minutes, self, ScheduleNow)
@@ -291,13 +292,14 @@ private[tournament] final class Scheduler(api: TournamentApi) extends Actor {
     s.at plus ((~Schedule.durationFor(s)).toLong * 60 * 1000)
   private def interval(s: Schedule) =
     new org.joda.time.Interval(s.at, endsAt(s))
-  private def overlaps(s: Schedule, ss: Seq[Schedule]) = ss exists {
-    case s2 if s.variant.exotic && s.sameVariant(s2) =>
-      interval(s) overlaps interval(s2)
-    case s2 if s.similarSpeed(s2) && s.sameVariant(s2) =>
-      interval(s) overlaps interval(s2)
-    case _ => false
-  }
+  private def overlaps(s: Schedule, ss: Seq[Schedule]) =
+    ss exists {
+      case s2 if s.variant.exotic && s.sameVariant(s2) =>
+        interval(s) overlaps interval(s2)
+      case s2 if s.similarSpeed(s2) && s.sameVariant(s2) =>
+        interval(s) overlaps interval(s2)
+      case _ => false
+    }
 
   private def day(year: Int, month: Int, day: Int) =
     new DateTime(year, month, day, 0, 0)

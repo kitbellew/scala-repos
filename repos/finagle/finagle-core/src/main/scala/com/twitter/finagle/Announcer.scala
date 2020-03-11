@@ -85,9 +85,10 @@ object Announcer {
 
   private[this] val _announcements =
     mutable.Set[(InetSocketAddress, List[String])]()
-  def announcements = synchronized {
-    _announcements.toSet
-  }
+  def announcements =
+    synchronized {
+      _announcements.toSet
+    }
 
   def announce(addr: InetSocketAddress, forum: String): Future[Announcement] = {
     val announcement = forum.split("!", 2) match {

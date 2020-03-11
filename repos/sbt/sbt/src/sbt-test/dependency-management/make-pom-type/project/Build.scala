@@ -3,12 +3,13 @@ import Keys._
 import Import._
 
 object build extends Build {
-  override def settings = super.settings ++ Seq(
-    organization := "org.example",
-    version := "1.0",
-    scalaVersion := "2.9.2",
-    autoScalaLibrary := false
-  )
+  override def settings =
+    super.settings ++ Seq(
+      organization := "org.example",
+      version := "1.0",
+      scalaVersion := "2.9.2",
+      autoScalaLibrary := false
+    )
 
   lazy val p1 = Project("p1", file("p1")) settings (
     checkTask(expectedMongo),

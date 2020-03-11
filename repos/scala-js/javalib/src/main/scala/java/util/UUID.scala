@@ -106,12 +106,13 @@ final class UUID private (
   override def hashCode(): Int =
     i1 ^ i2 ^ i3 ^ i4
 
-  override def equals(that: Any): Boolean = that match {
-    case that: UUID =>
-      i1 == that.i1 && i2 == that.i2 && i3 == that.i3 && i4 == that.i4
-    case _ =>
-      false
-  }
+  override def equals(that: Any): Boolean =
+    that match {
+      case that: UUID =>
+        i1 == that.i1 && i2 == that.i2 && i3 == that.i3 && i4 == that.i4
+      case _ =>
+        false
+    }
 
   def compareTo(that: UUID): Int = {
     if (this.i1 != that.i1) {

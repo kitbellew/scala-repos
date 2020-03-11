@@ -43,9 +43,10 @@ object Liskov extends LiskovInstances {
   type >~>[+B, -A] = Liskov[A, B]
 
   /**Lift Scala's subtyping relationship */
-  implicit def isa[A, B >: A]: A <~< B = new (A <~< B) {
-    def subst[F[-_]](p: F[B]): F[A] = p
-  }
+  implicit def isa[A, B >: A]: A <~< B =
+    new (A <~< B) {
+      def subst[F[-_]](p: F[B]): F[A] = p
+    }
 
   /**We can witness equality by using it to convert between types */
   implicit def witness[A, B](lt: A <~< B): A => B = {
@@ -54,9 +55,10 @@ object Liskov extends LiskovInstances {
   }
 
   /**Subtyping is reflexive */
-  implicit def refl[A]: (A <~< A) = new (A <~< A) {
-    def subst[F[-_]](p: F[A]): F[A] = p
-  }
+  implicit def refl[A]: (A <~< A) =
+    new (A <~< A) {
+      def subst[F[-_]](p: F[A]): F[A] = p
+    }
 
   /**Subtyping is transitive */
   def trans[A, B, C](f: B <~< C, g: A <~< B): A <~< C =

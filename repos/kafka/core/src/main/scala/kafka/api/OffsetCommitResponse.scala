@@ -48,9 +48,10 @@ case class OffsetCommitResponse(
 
   lazy val commitStatusGroupedByTopic = commitStatus.groupBy(_._1.topic)
 
-  def hasError = commitStatus.exists {
-    case (topicAndPartition, errorCode) => errorCode != Errors.NONE.code
-  }
+  def hasError =
+    commitStatus.exists {
+      case (topicAndPartition, errorCode) => errorCode != Errors.NONE.code
+    }
 
   def writeTo(buffer: ByteBuffer) {
     buffer.putInt(correlationId)

@@ -36,9 +36,10 @@ class ScVariableDeclarationImpl private (
   override def toString: String =
     "ScVariableDeclaration: " + declaredElements.map(_.name).mkString(", ")
 
-  def getType(ctx: TypingContext) = wrap(typeElement) flatMap {
-    _.getType(TypingContext.empty)
-  }
+  def getType(ctx: TypingContext) =
+    wrap(typeElement) flatMap {
+      _.getType(TypingContext.empty)
+    }
 
   def declaredElements = getIdList.fieldIds
 

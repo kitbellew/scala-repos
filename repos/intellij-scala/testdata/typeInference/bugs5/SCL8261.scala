@@ -5,9 +5,10 @@ object SCL8261 {
   }
 
   object Foo {
-    implicit def toOps[A <: Foo](a: A): FooOps[A] = new FooOps[A] {
-      override def op = a
-    }
+    implicit def toOps[A <: Foo](a: A): FooOps[A] =
+      new FooOps[A] {
+        override def op = a
+      }
   }
 
   // Both versions compile

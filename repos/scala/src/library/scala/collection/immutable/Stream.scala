@@ -336,31 +336,32 @@ abstract class Stream[+A]
 
   override def toStream: Stream[A] = this
 
-  override def hasDefiniteSize: Boolean = isEmpty || {
-    if (!tailDefined)
-      false
-    else {
-      // Two-iterator trick (2x & 1x speed) for cycle detection.
-      var those = this
-      var these = tail
-      while (those ne these) {
-        if (these.isEmpty)
-          return true
-        if (!these.tailDefined)
-          return false
-        these = these.tail
-        if (these.isEmpty)
-          return true
-        if (!these.tailDefined)
-          return false
-        these = these.tail
-        if (those eq these)
-          return false
-        those = those.tail
+  override def hasDefiniteSize: Boolean =
+    isEmpty || {
+      if (!tailDefined)
+        false
+      else {
+        // Two-iterator trick (2x & 1x speed) for cycle detection.
+        var those = this
+        var these = tail
+        while (those ne these) {
+          if (these.isEmpty)
+            return true
+          if (!these.tailDefined)
+            return false
+          these = these.tail
+          if (these.isEmpty)
+            return true
+          if (!these.tailDefined)
+            return false
+          these = these.tail
+          if (those eq these)
+            return false
+          those = those.tail
+        }
+        false // Cycle detected
       }
-      false // Cycle detected
     }
-  }
 
   /** Create a new stream which contains all elements of this stream followed by
     * all elements of Traversable `that`.
@@ -853,18 +854,19 @@ abstract class Stream[+A]
     * // produces: "5, 6, 7, 8, 9"
     * }}}
     */
-  override def take(n: Int): Stream[A] = (
-    // Note that the n == 1 condition appears redundant but is not.
-    // It prevents "tail" from being referenced (and its head being evaluated)
-    // when obtaining the last element of the result. Such are the challenges
-    // of working with a lazy-but-not-really sequence.
-    if (n <= 0 || isEmpty)
-      Stream.empty
-    else if (n == 1)
-      cons(head, Stream.empty)
-    else
-      cons(head, tail take n - 1)
-  )
+  override def take(n: Int): Stream[A] =
+    (
+      // Note that the n == 1 condition appears redundant but is not.
+      // It prevents "tail" from being referenced (and its head being evaluated)
+      // when obtaining the last element of the result. Such are the challenges
+      // of working with a lazy-but-not-really sequence.
+      if (n <= 0 || isEmpty)
+        Stream.empty
+      else if (n == 1)
+        cons(head, Stream.empty)
+      else
+        cons(head, tail take n - 1)
+    )
 
   @tailrec final override def drop(n: Int): Stream[A] =
     if (n <= 0 || isEmpty)
@@ -1119,12 +1121,13 @@ abstract class Stream[+A]
     Stream.empty
   }
 
-  override def view = new StreamView[A, Stream[A]] {
-    protected lazy val underlying = self.repr
-    override def iterator = self.iterator
-    override def length = self.length
-    override def apply(idx: Int) = self.apply(idx)
-  }
+  override def view =
+    new StreamView[A, Stream[A]] {
+      protected lazy val underlying = self.repr
+      override def iterator = self.iterator
+      override def length = self.length
+      override def apply(idx: Int) = self.apply(idx)
+    }
 
   /** Defines the prefix of this object's `toString` representation as `Stream`.
     */

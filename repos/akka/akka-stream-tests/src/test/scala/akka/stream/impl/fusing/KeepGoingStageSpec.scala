@@ -59,20 +59,21 @@ class KeepGoingStageSpec extends AkkaSpec {
           promise.trySuccess(PingRef(getAsyncCallback(onCommand)))
         }
 
-        private def onCommand(cmd: PingCmd): Unit = cmd match {
-          case Register(probe) ⇒ listener = Some(probe)
-          case Ping ⇒ listener.foreach(_ ! Pong)
-          case CompleteStage ⇒
-            completeStage()
-            listener.foreach(_ ! EndOfEventHandler)
-          case FailStage ⇒
-            failStage(TE("test"))
-            listener.foreach(_ ! EndOfEventHandler)
-          case Throw ⇒
-            try {
-              throw TE("test")
-            } finally listener.foreach(_ ! EndOfEventHandler)
-        }
+        private def onCommand(cmd: PingCmd): Unit =
+          cmd match {
+            case Register(probe) ⇒ listener = Some(probe)
+            case Ping ⇒ listener.foreach(_ ! Pong)
+            case CompleteStage ⇒
+              completeStage()
+              listener.foreach(_ ! EndOfEventHandler)
+            case FailStage ⇒
+              failStage(TE("test"))
+              listener.foreach(_ ! EndOfEventHandler)
+            case Throw ⇒
+              try {
+                throw TE("test")
+              } finally listener.foreach(_ ! EndOfEventHandler)
+          }
 
         setHandler(
           shape.in,

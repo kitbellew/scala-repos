@@ -293,29 +293,30 @@ object IntervalTrie {
       f: Interval[T] => U): Unit = {
     val x = implicitly[Element[T]]
     import x._
-    def op(b0: Bound[T], a0: Boolean, a: Tree): Bound[T] = a match {
-      case Below(a) =>
-        if (a0)
-          f(Interval.fromBounds(b0, Open(fromLong(a))))
-        Closed(fromLong(a))
-      case Above(a) =>
-        if (a0)
-          f(Interval.fromBounds(b0, Closed(fromLong(a))))
-        Open(fromLong(a))
-      case Both(a) =>
-        if (a0)
-          f(Interval.fromBounds(b0, Open(fromLong(a))))
-        else
-          f(Interval.point(fromLong(a)))
-        Open(fromLong(a))
-      case a: Branch =>
-        val am = a0 ^ a.left.sign
-        val bm = op(b0, a0, a.left)
-        val b1 = op(bm, am, a.right)
-        b1
-      case _ =>
-        Unbound()
-    }
+    def op(b0: Bound[T], a0: Boolean, a: Tree): Bound[T] =
+      a match {
+        case Below(a) =>
+          if (a0)
+            f(Interval.fromBounds(b0, Open(fromLong(a))))
+          Closed(fromLong(a))
+        case Above(a) =>
+          if (a0)
+            f(Interval.fromBounds(b0, Closed(fromLong(a))))
+          Open(fromLong(a))
+        case Both(a) =>
+          if (a0)
+            f(Interval.fromBounds(b0, Open(fromLong(a))))
+          else
+            f(Interval.point(fromLong(a)))
+          Open(fromLong(a))
+        case a: Branch =>
+          val am = a0 ^ a.left.sign
+          val bm = op(b0, a0, a.left)
+          val b1 = op(bm, am, a.right)
+          b1
+        case _ =>
+          Unbound()
+      }
     val last = op(Unbound(), a0, a)
     if (a0 ^ ((a ne null) && a.sign))
       f(Interval.fromBounds(last, Unbound()))
@@ -341,16 +342,17 @@ object IntervalTrie {
 
     def hasNextLeaf = index != 0
 
-    final def nextLeaf(): Leaf = pop() match {
-      case b: Branch =>
-        push(b.right)
-        push(b.left)
-        nextLeaf()
-      case l: Leaf => l
-      // $COVERAGE-OFF$
-      case _ => unreachable
-      // $COVERAGE-ON$
-    }
+    final def nextLeaf(): Leaf =
+      pop() match {
+        case b: Branch =>
+          push(b.right)
+          push(b.left)
+          nextLeaf()
+        case l: Leaf => l
+        // $COVERAGE-OFF$
+        case _ => unreachable
+        // $COVERAGE-ON$
+      }
   }
 
   private final class EdgeIterator[T: Element](tree: Tree)
@@ -469,19 +471,21 @@ object IntervalTrie {
 
     def hull: Interval[T] = {
       @tailrec
-      def lowerBound(a: Tree): Bound[T] = a match {
-        case a: Branch => lowerBound(a.left)
-        case Above(x)  => Open(ise.fromLong(x))
-        case Below(x)  => Closed(ise.fromLong(x))
-        case Both(x)   => Closed(ise.fromLong(x))
-      }
+      def lowerBound(a: Tree): Bound[T] =
+        a match {
+          case a: Branch => lowerBound(a.left)
+          case Above(x)  => Open(ise.fromLong(x))
+          case Below(x)  => Closed(ise.fromLong(x))
+          case Both(x)   => Closed(ise.fromLong(x))
+        }
       @tailrec
-      def upperBound(a: Tree): Bound[T] = a match {
-        case a: Branch => upperBound(a.right)
-        case Both(x)   => Closed(ise.fromLong(x))
-        case Above(x)  => Closed(ise.fromLong(x))
-        case Below(x)  => Open(ise.fromLong(x))
-      }
+      def upperBound(a: Tree): Bound[T] =
+        a match {
+          case a: Branch => upperBound(a.right)
+          case Both(x)   => Closed(ise.fromLong(x))
+          case Above(x)  => Closed(ise.fromLong(x))
+          case Below(x)  => Open(ise.fromLong(x))
+        }
       if (isEmpty) {
         Interval.empty[T]
       } else {
@@ -510,53 +514,60 @@ object IntervalTrie {
 
     def apply(value: T): Boolean = at(value)
 
-    def &(rhs: IntervalTrie[T]) = rhs match {
-      case rhs: IntervalTrieImpl[T] =>
-        IntervalTrie[T](
-          lhs.belowAll & rhs.belowAll,
-          AndCalculator(lhs.belowAll, lhs.tree, rhs.belowAll, rhs.tree))
-    }
+    def &(rhs: IntervalTrie[T]) =
+      rhs match {
+        case rhs: IntervalTrieImpl[T] =>
+          IntervalTrie[T](
+            lhs.belowAll & rhs.belowAll,
+            AndCalculator(lhs.belowAll, lhs.tree, rhs.belowAll, rhs.tree))
+      }
 
-    def |(rhs: IntervalTrie[T]) = rhs match {
-      case rhs: IntervalTrieImpl[T] =>
-        IntervalTrie[T](
-          lhs.belowAll | rhs.belowAll,
-          OrCalculator(lhs.belowAll, lhs.tree, rhs.belowAll, rhs.tree))
-    }
+    def |(rhs: IntervalTrie[T]) =
+      rhs match {
+        case rhs: IntervalTrieImpl[T] =>
+          IntervalTrie[T](
+            lhs.belowAll | rhs.belowAll,
+            OrCalculator(lhs.belowAll, lhs.tree, rhs.belowAll, rhs.tree))
+      }
 
-    def ^(rhs: IntervalTrie[T]) = rhs match {
-      case rhs: IntervalTrieImpl[T] =>
-        IntervalTrie[T](
-          lhs.belowAll ^ rhs.belowAll,
-          XorCalculator(lhs.belowAll, lhs.tree, rhs.belowAll, rhs.tree))
-    }
+    def ^(rhs: IntervalTrie[T]) =
+      rhs match {
+        case rhs: IntervalTrieImpl[T] =>
+          IntervalTrie[T](
+            lhs.belowAll ^ rhs.belowAll,
+            XorCalculator(lhs.belowAll, lhs.tree, rhs.belowAll, rhs.tree))
+      }
 
     def unary_~ = IntervalTrie[T](!belowAll, tree)
 
-    def isSupersetOf(rhs: IntervalTrie[T]) = rhs match {
-      case rhs: IntervalTrieImpl[T] =>
-        SupersetOfCalculator(lhs.belowAll, lhs.tree, rhs.belowAll, rhs.tree)
-    }
+    def isSupersetOf(rhs: IntervalTrie[T]) =
+      rhs match {
+        case rhs: IntervalTrieImpl[T] =>
+          SupersetOfCalculator(lhs.belowAll, lhs.tree, rhs.belowAll, rhs.tree)
+      }
 
-    def intersects(rhs: IntervalTrie[T]) = rhs match {
-      case rhs: IntervalTrieImpl[T] =>
-        !DisjointCalculator(lhs.belowAll, lhs.tree, rhs.belowAll, rhs.tree)
-    }
+    def intersects(rhs: IntervalTrie[T]) =
+      rhs match {
+        case rhs: IntervalTrieImpl[T] =>
+          !DisjointCalculator(lhs.belowAll, lhs.tree, rhs.belowAll, rhs.tree)
+      }
 
     def isProperSupersetOf(rhs: IntervalTrie[T]) =
       isSupersetOf(rhs) && (rhs != lhs)
 
-    def intervals = new Traversable[Interval[T]] {
-      override def foreach[U](f: Interval[T] => U): Unit =
-        foreachInterval(belowAll, tree)(f)
-    }
+    def intervals =
+      new Traversable[Interval[T]] {
+        override def foreach[U](f: Interval[T] => U): Unit =
+          foreachInterval(belowAll, tree)(f)
+      }
 
     def intervalIterator = new IntervalIterator[T](lhs)
 
-    def edges: Iterable[T] = new Iterable[T] {
+    def edges: Iterable[T] =
+      new Iterable[T] {
 
-      override def iterator: Iterator[T] = new EdgeIterator[T](lhs.tree)
-    }
+        override def iterator: Iterator[T] = new EdgeIterator[T](lhs.tree)
+      }
 
     override def toString = {
       if (isEmpty)

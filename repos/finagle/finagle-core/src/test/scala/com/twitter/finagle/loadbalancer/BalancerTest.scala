@@ -65,10 +65,11 @@ private class BalancerTest
       def load: Double = ???
       def pending: Int = ???
       def token: Int = ???
-      def close(deadline: Time): Future[Unit] = TestBalancer.this.synchronized {
-        factory.close()
-        Future.Done
-      }
+      def close(deadline: Time): Future[Unit] =
+        TestBalancer.this.synchronized {
+          factory.close()
+          Future.Done
+        }
       def apply(conn: ClientConnection): Future[Service[Unit, Unit]] =
         Future.never
     }
@@ -83,20 +84,21 @@ private class BalancerTest
     protected def initDistributor(): Distributor = Distributor(Vector.empty)
   }
 
-  def newFac(_status: Status = Status.Open) = new ServiceFactory[Unit, Unit] {
-    def apply(conn: ClientConnection) = Future.never
+  def newFac(_status: Status = Status.Open) =
+    new ServiceFactory[Unit, Unit] {
+      def apply(conn: ClientConnection) = Future.never
 
-    override def status = _status
+      override def status = _status
 
-    @volatile var ncloses = 0
+      @volatile var ncloses = 0
 
-    def close(deadline: Time) = {
-      synchronized {
-        ncloses += 1
+      def close(deadline: Time) = {
+        synchronized {
+          ncloses += 1
+        }
+        Future.Done
       }
-      Future.Done
     }
-  }
 
   val genStatus = Gen.oneOf(Status.Open, Status.Busy, Status.Closed)
   val genSvcFac = genStatus.map(newFac)

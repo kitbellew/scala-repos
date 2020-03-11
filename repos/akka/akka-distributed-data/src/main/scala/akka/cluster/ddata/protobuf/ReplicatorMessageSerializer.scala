@@ -204,45 +204,47 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
       GossipManifest -> gossipFromBinary
     )
 
-  override def manifest(obj: AnyRef): String = obj match {
-    case _: DataEnvelope ⇒ DataEnvelopeManifest
-    case _: Write ⇒ WriteManifest
-    case WriteAck ⇒ WriteAckManifest
-    case _: Read ⇒ ReadManifest
-    case _: ReadResult ⇒ ReadResultManifest
-    case _: Status ⇒ StatusManifest
-    case _: Get[_] ⇒ GetManifest
-    case _: GetSuccess[_] ⇒ GetSuccessManifest
-    case _: Changed[_] ⇒ ChangedManifest
-    case _: NotFound[_] ⇒ NotFoundManifest
-    case _: GetFailure[_] ⇒ GetFailureManifest
-    case _: Subscribe[_] ⇒ SubscribeManifest
-    case _: Unsubscribe[_] ⇒ UnsubscribeManifest
-    case _: Gossip ⇒ GossipManifest
-    case _ ⇒
-      throw new IllegalArgumentException(
-        s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
-  }
+  override def manifest(obj: AnyRef): String =
+    obj match {
+      case _: DataEnvelope ⇒ DataEnvelopeManifest
+      case _: Write ⇒ WriteManifest
+      case WriteAck ⇒ WriteAckManifest
+      case _: Read ⇒ ReadManifest
+      case _: ReadResult ⇒ ReadResultManifest
+      case _: Status ⇒ StatusManifest
+      case _: Get[_] ⇒ GetManifest
+      case _: GetSuccess[_] ⇒ GetSuccessManifest
+      case _: Changed[_] ⇒ ChangedManifest
+      case _: NotFound[_] ⇒ NotFoundManifest
+      case _: GetFailure[_] ⇒ GetFailureManifest
+      case _: Subscribe[_] ⇒ SubscribeManifest
+      case _: Unsubscribe[_] ⇒ UnsubscribeManifest
+      case _: Gossip ⇒ GossipManifest
+      case _ ⇒
+        throw new IllegalArgumentException(
+          s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
+    }
 
-  def toBinary(obj: AnyRef): Array[Byte] = obj match {
-    case m: DataEnvelope ⇒ dataEnvelopeToProto(m).toByteArray
-    case m: Write ⇒ writeCache.getOrAdd(m)
-    case WriteAck ⇒ writeAckBytes
-    case m: Read ⇒ readCache.getOrAdd(m)
-    case m: ReadResult ⇒ readResultToProto(m).toByteArray
-    case m: Status ⇒ statusToProto(m).toByteArray
-    case m: Get[_] ⇒ getToProto(m).toByteArray
-    case m: GetSuccess[_] ⇒ getSuccessToProto(m).toByteArray
-    case m: Changed[_] ⇒ changedToProto(m).toByteArray
-    case m: NotFound[_] ⇒ notFoundToProto(m).toByteArray
-    case m: GetFailure[_] ⇒ getFailureToProto(m).toByteArray
-    case m: Subscribe[_] ⇒ subscribeToProto(m).toByteArray
-    case m: Unsubscribe[_] ⇒ unsubscribeToProto(m).toByteArray
-    case m: Gossip ⇒ compress(gossipToProto(m))
-    case _ ⇒
-      throw new IllegalArgumentException(
-        s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
-  }
+  def toBinary(obj: AnyRef): Array[Byte] =
+    obj match {
+      case m: DataEnvelope ⇒ dataEnvelopeToProto(m).toByteArray
+      case m: Write ⇒ writeCache.getOrAdd(m)
+      case WriteAck ⇒ writeAckBytes
+      case m: Read ⇒ readCache.getOrAdd(m)
+      case m: ReadResult ⇒ readResultToProto(m).toByteArray
+      case m: Status ⇒ statusToProto(m).toByteArray
+      case m: Get[_] ⇒ getToProto(m).toByteArray
+      case m: GetSuccess[_] ⇒ getSuccessToProto(m).toByteArray
+      case m: Changed[_] ⇒ changedToProto(m).toByteArray
+      case m: NotFound[_] ⇒ notFoundToProto(m).toByteArray
+      case m: GetFailure[_] ⇒ getFailureToProto(m).toByteArray
+      case m: Subscribe[_] ⇒ subscribeToProto(m).toByteArray
+      case m: Unsubscribe[_] ⇒ unsubscribeToProto(m).toByteArray
+      case m: Gossip ⇒ compress(gossipToProto(m))
+      case _ ⇒
+        throw new IllegalArgumentException(
+          s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
+    }
 
   override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
     fromBinaryMap.get(manifest) match {

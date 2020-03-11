@@ -237,18 +237,20 @@ class OutputCommitCoordinatorSuite extends SparkFunSuite with BeforeAndAfter {
 private case class OutputCommitFunctions(tempDirPath: String) {
 
   // Mock output committer that simulates a successful commit (after commit is authorized)
-  private def successfulOutputCommitter = new FakeOutputCommitter {
-    override def commitTask(context: TaskAttemptContext): Unit = {
-      Utils.createDirectory(tempDirPath)
+  private def successfulOutputCommitter =
+    new FakeOutputCommitter {
+      override def commitTask(context: TaskAttemptContext): Unit = {
+        Utils.createDirectory(tempDirPath)
+      }
     }
-  }
 
   // Mock output committer that simulates a failed commit (after commit is authorized)
-  private def failingOutputCommitter = new FakeOutputCommitter {
-    override def commitTask(taskAttemptContext: TaskAttemptContext) {
-      throw new RuntimeException
+  private def failingOutputCommitter =
+    new FakeOutputCommitter {
+      override def commitTask(taskAttemptContext: TaskAttemptContext) {
+        throw new RuntimeException
+      }
     }
-  }
 
   def commitSuccessfully(iter: Iterator[Int]): Unit = {
     val ctx = TaskContext.get()
@@ -270,9 +272,10 @@ private case class OutputCommitFunctions(tempDirPath: String) {
       ctx: TaskContext,
       iter: Iterator[Int],
       outputCommitter: OutputCommitter): Unit = {
-    def jobConf = new JobConf {
-      override def getOutputCommitter(): OutputCommitter = outputCommitter
-    }
+    def jobConf =
+      new JobConf {
+        override def getOutputCommitter(): OutputCommitter = outputCommitter
+      }
     val sparkHadoopWriter = new SparkHadoopWriter(jobConf) {
       override def newTaskAttemptContext(
           conf: JobConf,

@@ -52,21 +52,23 @@ private class SharedBuffer() {
   var contents: Int = _;
   var available = false;
 
-  def get = synchronized {
-    while (available == false)
-      wait();
-    available = false;
-    // Console println("\t" + "get " + contents);
-    notifyAll();
-    contents
-  }
+  def get =
+    synchronized {
+      while (available == false)
+        wait();
+      available = false;
+      // Console println("\t" + "get " + contents);
+      notifyAll();
+      contents
+    }
 
-  def put(value: Int) = synchronized {
-    while (available == true)
-      wait();
-    contents = value;
-    available = true;
-    // Console println("put " + value);
-    notifyAll();
-  }
+  def put(value: Int) =
+    synchronized {
+      while (available == true)
+        wait();
+      contents = value;
+      available = true;
+      // Console println("put " + value);
+      notifyAll();
+    }
 }

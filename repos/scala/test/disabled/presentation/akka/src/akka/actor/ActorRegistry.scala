@@ -425,7 +425,8 @@ class Index[K <: AnyRef, V <: AnyRef: ArrayTag] {
   /**
     *  Removes all keys and all values
     */
-  def clear = foreach {
-    case (k, v) => remove(k, v)
-  }
+  def clear =
+    foreach {
+      case (k, v) => remove(k, v)
+    }
 }

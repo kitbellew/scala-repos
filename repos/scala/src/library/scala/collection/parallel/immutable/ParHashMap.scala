@@ -71,24 +71,26 @@ class ParHashMap[K, +V] private[immutable] (
 
   protected override def reuse[S, That](
       oldc: Option[Combiner[S, That]],
-      newc: Combiner[S, That]) = oldc match {
-    case Some(old) => old
-    case None      => newc
-  }
+      newc: Combiner[S, That]) =
+    oldc match {
+      case Some(old) => old
+      case None      => newc
+    }
 
   class ParHashMapIterator(
       var triter: Iterator[(K, V @uncheckedVariance)],
       val sz: Int)
       extends IterableSplitter[(K, V)] {
     var i = 0
-    def dup = triter match {
-      case t: TrieIterator[_] =>
-        dupFromIterator(t.dupIterator)
-      case _ =>
-        val buff = triter.toBuffer
-        triter = buff.iterator
-        dupFromIterator(buff.iterator)
-    }
+    def dup =
+      triter match {
+        case t: TrieIterator[_] =>
+          dupFromIterator(t.dupIterator)
+        case _ =>
+          val buff = triter.toBuffer
+          triter = buff.iterator
+          dupFromIterator(buff.iterator)
+      }
     private def dupFromIterator(it: Iterator[(K, V @uncheckedVariance)]) = {
       val phit = new ParHashMapIterator(it, sz)
       phit.i = i
@@ -351,25 +353,26 @@ private[parallel] abstract class HashMapCombiner[K, V]
       evaluateCombiners(trie).asInstanceOf[HashMap[K, Repr]]
     }
     private def evaluateCombiners(
-        trie: HashMap[K, Combiner[V, Repr]]): HashMap[K, Repr] = trie match {
-      case hm1: HashMap.HashMap1[_, _] =>
-        val evaledvalue = hm1.value.result
-        new HashMap.HashMap1[K, Repr](hm1.key, hm1.hash, evaledvalue, null)
-      case hmc: HashMap.HashMapCollision1[_, _] =>
-        val evaledkvs = hmc.kvs map { p =>
-          (p._1, p._2.result)
-        }
-        new HashMap.HashMapCollision1[K, Repr](hmc.hash, evaledkvs)
-      case htm: HashMap.HashTrieMap[k, v] =>
-        var i = 0
-        while (i < htm.elems.length) {
-          htm.elems(i) =
-            evaluateCombiners(htm.elems(i)).asInstanceOf[HashMap[k, v]]
-          i += 1
-        }
-        htm.asInstanceOf[HashMap[K, Repr]]
-      case empty => empty.asInstanceOf[HashMap[K, Repr]]
-    }
+        trie: HashMap[K, Combiner[V, Repr]]): HashMap[K, Repr] =
+      trie match {
+        case hm1: HashMap.HashMap1[_, _] =>
+          val evaledvalue = hm1.value.result
+          new HashMap.HashMap1[K, Repr](hm1.key, hm1.hash, evaledvalue, null)
+        case hmc: HashMap.HashMapCollision1[_, _] =>
+          val evaledkvs = hmc.kvs map { p =>
+            (p._1, p._2.result)
+          }
+          new HashMap.HashMapCollision1[K, Repr](hmc.hash, evaledkvs)
+        case htm: HashMap.HashTrieMap[k, v] =>
+          var i = 0
+          while (i < htm.elems.length) {
+            htm.elems(i) =
+              evaluateCombiners(htm.elems(i)).asInstanceOf[HashMap[k, v]]
+            i += 1
+          }
+          htm.asInstanceOf[HashMap[K, Repr]]
+        case empty => empty.asInstanceOf[HashMap[K, Repr]]
+      }
     def split = {
       val fp = howmany / 2
       List(

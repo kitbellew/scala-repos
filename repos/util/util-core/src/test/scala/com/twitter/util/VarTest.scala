@@ -102,15 +102,16 @@ class VarTest extends FunSuite with GeneratorDrivenPropertyChecks {
     val us = Seq.fill(5) {
       U(0)
     }
-    def short(us: Seq[Var[Int]]): Var[Int] = us match {
-      case Seq(hd, tl @ _*) =>
-        hd flatMap {
-          case 0 => short(tl)
-          case i => Var(i)
-        }
-      case Seq() =>
-        Var(-1)
-    }
+    def short(us: Seq[Var[Int]]): Var[Int] =
+      us match {
+        case Seq(hd, tl @ _*) =>
+          hd flatMap {
+            case 0 => short(tl)
+            case i => Var(i)
+          }
+        case Seq() =>
+          Var(-1)
+      }
 
     val s = short(us)
     assert(Var.sample(s) == -1)
@@ -244,9 +245,10 @@ class VarTest extends FunSuite with GeneratorDrivenPropertyChecks {
   }
 
   test("Var.collect[Seq]") {
-    def ranged(n: Int) = Seq.tabulate(n) { i =>
-      Var(i)
-    }
+    def ranged(n: Int) =
+      Seq.tabulate(n) { i =>
+        Var(i)
+      }
 
     for (i <- 1 to 10) {
       val vars = ranged(i)

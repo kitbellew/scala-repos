@@ -41,47 +41,49 @@ private[hive] trait HiveStrategies {
   val hiveContext: HiveContext
 
   object Scripts extends Strategy {
-    def apply(plan: LogicalPlan): Seq[SparkPlan] = plan match {
-      case logical.ScriptTransformation(
-            input,
-            script,
-            output,
-            child,
-            schema: HiveScriptIOSchema) =>
-        ScriptTransformation(input, script, output, planLater(child), schema)(
-          hiveContext) :: Nil
-      case _ => Nil
-    }
+    def apply(plan: LogicalPlan): Seq[SparkPlan] =
+      plan match {
+        case logical.ScriptTransformation(
+              input,
+              script,
+              output,
+              child,
+              schema: HiveScriptIOSchema) =>
+          ScriptTransformation(input, script, output, planLater(child), schema)(
+            hiveContext) :: Nil
+        case _ => Nil
+      }
   }
 
   object DataSinks extends Strategy {
-    def apply(plan: LogicalPlan): Seq[SparkPlan] = plan match {
-      case logical.InsertIntoTable(
-            table: MetastoreRelation,
+    def apply(plan: LogicalPlan): Seq[SparkPlan] =
+      plan match {
+        case logical.InsertIntoTable(
+              table: MetastoreRelation,
+              partition,
+              child,
+              overwrite,
+              ifNotExists) =>
+          execution.InsertIntoHiveTable(
+            table,
             partition,
-            child,
+            planLater(child),
             overwrite,
-            ifNotExists) =>
-        execution.InsertIntoHiveTable(
-          table,
-          partition,
-          planLater(child),
-          overwrite,
-          ifNotExists) :: Nil
-      case hive.InsertIntoHiveTable(
-            table: MetastoreRelation,
+            ifNotExists) :: Nil
+        case hive.InsertIntoHiveTable(
+              table: MetastoreRelation,
+              partition,
+              child,
+              overwrite,
+              ifNotExists) =>
+          execution.InsertIntoHiveTable(
+            table,
             partition,
-            child,
+            planLater(child),
             overwrite,
-            ifNotExists) =>
-        execution.InsertIntoHiveTable(
-          table,
-          partition,
-          planLater(child),
-          overwrite,
-          ifNotExists) :: Nil
-      case _ => Nil
-    }
+            ifNotExists) :: Nil
+        case _ => Nil
+      }
   }
 
   /**
@@ -89,74 +91,77 @@ private[hive] trait HiveStrategies {
     * applied.
     */
   object HiveTableScans extends Strategy {
-    def apply(plan: LogicalPlan): Seq[SparkPlan] = plan match {
-      case PhysicalOperation(
-            projectList,
-            predicates,
-            relation: MetastoreRelation) =>
-        // Filter out all predicates that only deal with partition keys, these are given to the
-        // hive table scan operator to be used for partition pruning.
-        val partitionKeyIds = AttributeSet(relation.partitionKeys)
-        val (pruningPredicates, otherPredicates) = predicates.partition {
-          predicate =>
-            !predicate.references.isEmpty &&
-            predicate.references.subsetOf(partitionKeyIds)
-        }
+    def apply(plan: LogicalPlan): Seq[SparkPlan] =
+      plan match {
+        case PhysicalOperation(
+              projectList,
+              predicates,
+              relation: MetastoreRelation) =>
+          // Filter out all predicates that only deal with partition keys, these are given to the
+          // hive table scan operator to be used for partition pruning.
+          val partitionKeyIds = AttributeSet(relation.partitionKeys)
+          val (pruningPredicates, otherPredicates) = predicates.partition {
+            predicate =>
+              !predicate.references.isEmpty &&
+              predicate.references.subsetOf(partitionKeyIds)
+          }
 
-        pruneFilterProject(
-          projectList,
-          otherPredicates,
-          identity[Seq[Expression]],
-          HiveTableScan(_, relation, pruningPredicates)(hiveContext)) :: Nil
-      case _ =>
-        Nil
-    }
+          pruneFilterProject(
+            projectList,
+            otherPredicates,
+            identity[Seq[Expression]],
+            HiveTableScan(_, relation, pruningPredicates)(hiveContext)) :: Nil
+        case _ =>
+          Nil
+      }
   }
 
   object HiveDDLStrategy extends Strategy {
-    def apply(plan: LogicalPlan): Seq[SparkPlan] = plan match {
-      case CreateTableUsing(
-            tableIdent,
-            userSpecifiedSchema,
-            provider,
-            false,
-            opts,
-            allowExisting,
-            managedIfNoPath) =>
-        val cmd =
-          CreateMetastoreDataSource(
-            tableIdent,
-            userSpecifiedSchema,
-            provider,
-            opts,
-            allowExisting,
-            managedIfNoPath)
-        ExecutedCommand(cmd) :: Nil
+    def apply(plan: LogicalPlan): Seq[SparkPlan] =
+      plan match {
+        case CreateTableUsing(
+              tableIdent,
+              userSpecifiedSchema,
+              provider,
+              false,
+              opts,
+              allowExisting,
+              managedIfNoPath) =>
+          val cmd =
+            CreateMetastoreDataSource(
+              tableIdent,
+              userSpecifiedSchema,
+              provider,
+              opts,
+              allowExisting,
+              managedIfNoPath)
+          ExecutedCommand(cmd) :: Nil
 
-      case c: CreateTableUsingAsSelect =>
-        val cmd = CreateMetastoreDataSourceAsSelect(
-          c.tableIdent,
-          c.provider,
-          c.partitionColumns,
-          c.bucketSpec,
-          c.mode,
-          c.options,
-          c.child)
-        ExecutedCommand(cmd) :: Nil
+        case c: CreateTableUsingAsSelect =>
+          val cmd = CreateMetastoreDataSourceAsSelect(
+            c.tableIdent,
+            c.provider,
+            c.partitionColumns,
+            c.bucketSpec,
+            c.mode,
+            c.options,
+            c.child)
+          ExecutedCommand(cmd) :: Nil
 
-      case _ => Nil
-    }
+        case _ => Nil
+      }
   }
 
   case class HiveCommandStrategy(context: HiveContext) extends Strategy {
-    def apply(plan: LogicalPlan): Seq[SparkPlan] = plan match {
-      case describe: DescribeCommand =>
-        ExecutedCommand(
-          DescribeHiveTableCommand(
-            describe.table,
-            describe.output,
-            describe.isExtended)) :: Nil
-      case _ => Nil
-    }
+    def apply(plan: LogicalPlan): Seq[SparkPlan] =
+      plan match {
+        case describe: DescribeCommand =>
+          ExecutedCommand(
+            DescribeHiveTableCommand(
+              describe.table,
+              describe.output,
+              describe.isExtended)) :: Nil
+        case _ => Nil
+      }
   }
 }

@@ -91,17 +91,18 @@ class LinkedHashSet[A]
     }
   }
 
-  def iterator: Iterator[A] = new AbstractIterator[A] {
-    private var cur = firstEntry
-    def hasNext = cur ne null
-    def next =
-      if (hasNext) {
-        val res = cur.key;
-        cur = cur.later;
-        res
-      } else
-        Iterator.empty.next()
-  }
+  def iterator: Iterator[A] =
+    new AbstractIterator[A] {
+      private var cur = firstEntry
+      def hasNext = cur ne null
+      def next =
+        if (hasNext) {
+          val res = cur.key;
+          cur = cur.later;
+          res
+        } else
+          Iterator.empty.next()
+    }
 
   override def foreach[U](f: A => U) {
     var cur = firstEntry

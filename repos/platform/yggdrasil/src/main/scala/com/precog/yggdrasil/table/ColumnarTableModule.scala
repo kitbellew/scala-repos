@@ -194,22 +194,23 @@ object ColumnarTableModule extends Logging {
             buf.append(p))
         Indices.fromPaths(buf.toArray)
       }
-      override def equals(that: Any): Boolean = that match {
-        case that: Indices =>
-          val len = n
-          if (len != that.size)
-            return false
-          var i = 0
-          val paths = that.getPaths
-          while (i < len) {
-            if (a(i) != paths(i))
+      override def equals(that: Any): Boolean =
+        that match {
+          case that: Indices =>
+            val len = n
+            if (len != that.size)
               return false
-            i += 1
-          }
-          true
-        case _ =>
-          false
-      }
+            var i = 0
+            val paths = that.getPaths
+            while (i < len) {
+              if (a(i) != paths(i))
+                return false
+              i += 1
+            }
+            true
+          case _ =>
+            false
+        }
       def writeToBuilder(sb: StringBuilder): Unit = {
         if (n == 0)
           return ()
@@ -444,23 +445,28 @@ trait ColumnarTableModule[M[+_]]
   def newScratchDir(): File = IOUtils.createTmpDir("ctmscratch").unsafePerformIO
   def jdbmCommitInterval: Long = 200000L
 
-  implicit def liftF1(f: F1) = new F1Like {
-    def compose(f1: F1) = f compose f1
-    def andThen(f1: F1) = f andThen f1
-  }
-
-  implicit def liftF2(f: F2) = new F2Like {
-    def applyl(cv: CValue) = CF1("builtin::liftF2::applyl") {
-      f(Column.const(cv), _)
-    }
-    def applyr(cv: CValue) = CF1("builtin::liftF2::applyl") {
-      f(_, Column.const(cv))
+  implicit def liftF1(f: F1) =
+    new F1Like {
+      def compose(f1: F1) = f compose f1
+      def andThen(f1: F1) = f andThen f1
     }
 
-    def andThen(f1: F1) = CF2("builtin::liftF2::andThen") { (c1, c2) =>
-      f(c1, c2) flatMap f1.apply
+  implicit def liftF2(f: F2) =
+    new F2Like {
+      def applyl(cv: CValue) =
+        CF1("builtin::liftF2::applyl") {
+          f(Column.const(cv), _)
+        }
+      def applyr(cv: CValue) =
+        CF1("builtin::liftF2::applyl") {
+          f(_, Column.const(cv))
+        }
+
+      def andThen(f1: F1) =
+        CF2("builtin::liftF2::andThen") { (c1, c2) =>
+          f(c1, c2) flatMap f1.apply
+        }
     }
-  }
 
   trait ColumnarTableCompanion extends TableCompanionLike {
     def apply(slices: StreamT[M, Slice], size: TableSize): Table
@@ -911,14 +917,15 @@ trait ColumnarTableModule[M[+_]]
       def loop(
           slices: StreamT[M, Slice],
           acc: List[Slice],
-          size: Long): M[(List[Slice], Long)] = slices.uncons flatMap {
-        case Some((slice, tail)) if slice.size > 0 =>
-          loop(tail, slice.materialized :: acc, size + slice.size)
-        case Some((_, tail)) =>
-          loop(tail, acc, size)
-        case None =>
-          M.point((acc.reverse, size))
-      }
+          size: Long): M[(List[Slice], Long)] =
+        slices.uncons flatMap {
+          case Some((slice, tail)) if slice.size > 0 =>
+            loop(tail, slice.materialized :: acc, size + slice.size)
+          case Some((_, tail)) =>
+            loop(tail, acc, size)
+          case None =>
+            M.point((acc.reverse, size))
+        }
       val former = new (Id.Id ~> M) {
         def apply[A](a: Id.Id[A]): M[A] = M.point(a)
       }
@@ -1004,17 +1011,18 @@ trait ColumnarTableModule[M[+_]]
         maxLength > 0 && minLength >= 0 && maxLength >= minLength,
         "length bounds must be positive and ordered")
 
-      def concat(rslices: List[Slice]): Slice = rslices.reverse match {
-        case Nil          => Slice(Map.empty, 0)
-        case slice :: Nil => slice
-        case slices =>
-          val slice = Slice.concat(slices)
-          if (slices.size > (slice.size / yggConfig.smallSliceSize)) {
-            slice.materialized // Deal w/ lots of small slices by materializing them.
-          } else {
-            slice
-          }
-      }
+      def concat(rslices: List[Slice]): Slice =
+        rslices.reverse match {
+          case Nil          => Slice(Map.empty, 0)
+          case slice :: Nil => slice
+          case slices =>
+            val slice = Slice.concat(slices)
+            if (slices.size > (slice.size / yggConfig.smallSliceSize)) {
+              slice.materialized // Deal w/ lots of small slices by materializing them.
+            } else {
+              slice
+            }
+        }
 
       def step(sliceSize: Int, acc: List[Slice], stream: StreamT[M, Slice])
           : M[StreamT.Step[Slice, StreamT[M, Slice]]] = {
@@ -1902,41 +1910,42 @@ trait ColumnarTableModule[M[+_]]
           filter: SliceTransform1[T]): Table = {
         def stream(
             state: (Option[Slice], T),
-            slices: StreamT[M, Slice]): StreamT[M, Slice] = StreamT(
-          for {
-            head <- slices.uncons
+            slices: StreamT[M, Slice]): StreamT[M, Slice] =
+          StreamT(
+            for {
+              head <- slices.uncons
 
-            back <- {
-              head map {
-                case (s, sx) => {
-                  for {
-                    pairPrev <- id.f(state._1, s)
-                    (prevFilter, cur) = pairPrev
+              back <- {
+                head map {
+                  case (s, sx) => {
+                    for {
+                      pairPrev <- id.f(state._1, s)
+                      (prevFilter, cur) = pairPrev
 
-                    // TODO use an Applicative
-                    pairNext <- filter.f(state._2, s)
-                    (nextT, curFilter) = pairNext
-                  } yield {
-                    val next = cur.distinct(prevFilter, curFilter)
+                      // TODO use an Applicative
+                      pairNext <- filter.f(state._2, s)
+                      (nextT, curFilter) = pairNext
+                    } yield {
+                      val next = cur.distinct(prevFilter, curFilter)
 
-                    StreamT.Yield(
-                      next,
-                      stream(
-                        (
-                          if (next.size > 0)
-                            Some(curFilter)
-                          else
-                            prevFilter,
-                          nextT),
-                        sx))
+                      StreamT.Yield(
+                        next,
+                        stream(
+                          (
+                            if (next.size > 0)
+                              Some(curFilter)
+                            else
+                              prevFilter,
+                            nextT),
+                          sx))
+                    }
                   }
+                } getOrElse {
+                  M.point(StreamT.Done)
                 }
-              } getOrElse {
-                M.point(StreamT.Done)
               }
-            }
-          } yield back
-        )
+            } yield back
+          )
 
         val slices0 = StreamT.wrapEffect(this.sort(spec) map { sorted =>
           stream((id.initial, filter.initial), sorted.slices)
@@ -1953,29 +1962,32 @@ trait ColumnarTableModule[M[+_]]
     def takeRange(startIndex: Long, numberToTake: Long): Table = {
       def loop(
           stream: StreamT[M, Slice],
-          readSoFar: Long): M[StreamT[M, Slice]] = stream.uncons flatMap {
-        // Prior to first needed slice, so skip
-        case Some((head, tail)) if (readSoFar + head.size) < (startIndex + 1) =>
-          loop(tail, readSoFar + head.size)
-        // Somewhere in between, need to transition to splitting/reading
-        case Some(_) if readSoFar < (startIndex + 1) =>
-          inner(stream, 0, (startIndex - readSoFar).toInt)
-        // Read off the end (we took nothing)
-        case _ => M.point(StreamT.empty[M, Slice])
-      }
+          readSoFar: Long): M[StreamT[M, Slice]] =
+        stream.uncons flatMap {
+          // Prior to first needed slice, so skip
+          case Some((head, tail))
+              if (readSoFar + head.size) < (startIndex + 1) =>
+            loop(tail, readSoFar + head.size)
+          // Somewhere in between, need to transition to splitting/reading
+          case Some(_) if readSoFar < (startIndex + 1) =>
+            inner(stream, 0, (startIndex - readSoFar).toInt)
+          // Read off the end (we took nothing)
+          case _ => M.point(StreamT.empty[M, Slice])
+        }
 
       def inner(
           stream: StreamT[M, Slice],
           takenSoFar: Long,
-          sliceStartIndex: Int): M[StreamT[M, Slice]] = stream.uncons flatMap {
-        case Some((head, tail)) if takenSoFar < numberToTake => {
-          val needed =
-            head.takeRange(sliceStartIndex, (numberToTake - takenSoFar).toInt)
-          inner(tail, takenSoFar + (head.size - (sliceStartIndex)), 0)
-            .map(needed :: _)
+          sliceStartIndex: Int): M[StreamT[M, Slice]] =
+        stream.uncons flatMap {
+          case Some((head, tail)) if takenSoFar < numberToTake => {
+            val needed =
+              head.takeRange(sliceStartIndex, (numberToTake - takenSoFar).toInt)
+            inner(tail, takenSoFar + (head.size - (sliceStartIndex)), 0)
+              .map(needed :: _)
+          }
+          case _ => M.point(StreamT.empty[M, Slice])
         }
-        case _ => M.point(StreamT.empty[M, Slice])
-      }
 
       def calcNewSize(current: Long): Long =
         ((current - startIndex) max 0) min numberToTake
@@ -2060,21 +2072,22 @@ trait ColumnarTableModule[M[+_]]
       def dropAndSplit(
           comparatorGen: Slice => (Int => Ordering),
           slices: StreamT[M, Slice],
-          spanStart: Int): StreamT[M, Slice] = StreamT.wrapEffect {
-        slices.uncons map {
-          case Some((head, tail)) =>
-            val headComparator = comparatorGen(head)
-            val spanEnd = findEnd(headComparator, spanStart, head.size - 1)
-            if (spanEnd < head.size) {
-              stepPartition(head, spanEnd, tail)
-            } else {
-              dropAndSplit(comparatorGen, tail, 0)
-            }
+          spanStart: Int): StreamT[M, Slice] =
+        StreamT.wrapEffect {
+          slices.uncons map {
+            case Some((head, tail)) =>
+              val headComparator = comparatorGen(head)
+              val spanEnd = findEnd(headComparator, spanStart, head.size - 1)
+              if (spanEnd < head.size) {
+                stepPartition(head, spanEnd, tail)
+              } else {
+                dropAndSplit(comparatorGen, tail, 0)
+              }
 
-          case None =>
-            StreamT.empty[M, Slice]
+            case None =>
+              StreamT.empty[M, Slice]
+          }
         }
-      }
 
       def stepPartition(
           head: Slice,
@@ -2131,11 +2144,12 @@ trait ColumnarTableModule[M[+_]]
           }
 
         @tailrec
-        def loop(xs: List[Array[Int]], y: Array[Int]): Boolean = xs match {
-          case x :: xs if x.length == y.length && equal(x, y, 0) => true
-          case _ :: xs                                           => loop(xs, y)
-          case Nil                                               => false
-        }
+        def loop(xs: List[Array[Int]], y: Array[Int]): Boolean =
+          xs match {
+            case x :: xs if x.length == y.length && equal(x, y, 0) => true
+            case _ :: xs                                           => loop(xs, y)
+            case Nil                                               => false
+          }
 
         loop(masks, mask)
       }
@@ -2157,18 +2171,19 @@ trait ColumnarTableModule[M[+_]]
       // ignored and there can be no unions. The set of ColumnRefs must all be
       // defined and hence must create a valid JSON object.
       def mkSchema(cols: List[ColumnRef]): Option[JType] = {
-        def leafType(ctype: CType): JType = ctype match {
-          case CBoolean               => JBooleanT
-          case CLong | CDouble | CNum => JNumberT
-          case CString                => JTextT
-          case CDate                  => JDateT
-          case CPeriod                => JPeriodT
-          case CArrayType(elemType)   => leafType(elemType)
-          case CEmptyObject           => JObjectFixedT(Map.empty)
-          case CEmptyArray            => JArrayFixedT(Map.empty)
-          case CNull                  => JNullT
-          case CUndefined             => sys.error("not supported")
-        }
+        def leafType(ctype: CType): JType =
+          ctype match {
+            case CBoolean               => JBooleanT
+            case CLong | CDouble | CNum => JNumberT
+            case CString                => JTextT
+            case CDate                  => JDateT
+            case CPeriod                => JPeriodT
+            case CArrayType(elemType)   => leafType(elemType)
+            case CEmptyObject           => JObjectFixedT(Map.empty)
+            case CEmptyArray            => JArrayFixedT(Map.empty)
+            case CNull                  => JNullT
+            case CUndefined             => sys.error("not supported")
+          }
 
         def fresh(paths: List[CPathNode], leaf: JType): Option[JType] =
           paths match {
@@ -2189,22 +2204,23 @@ trait ColumnarTableModule[M[+_]]
         def merge(
             schema: Option[JType],
             paths: List[CPathNode],
-            leaf: JType): Option[JType] = (schema, paths) match {
-          case (Some(JObjectFixedT(fields)), CPathField(field) :: paths) =>
-            merge(fields get field, paths, leaf) map { tpe =>
-              JObjectFixedT(fields + (field -> tpe))
-            } orElse schema
-          case (Some(JArrayFixedT(indices)), CPathIndex(idx) :: paths) =>
-            merge(indices get idx, paths, leaf) map { tpe =>
-              JArrayFixedT(indices + (idx -> tpe))
-            } orElse schema
-          case (None, paths) =>
-            fresh(paths, leaf)
-          case (jtype, paths) =>
-            sys.error(
-              "Invalid schema."
-            ) // This shouldn't happen for any real data.
-        }
+            leaf: JType): Option[JType] =
+          (schema, paths) match {
+            case (Some(JObjectFixedT(fields)), CPathField(field) :: paths) =>
+              merge(fields get field, paths, leaf) map { tpe =>
+                JObjectFixedT(fields + (field -> tpe))
+              } orElse schema
+            case (Some(JArrayFixedT(indices)), CPathIndex(idx) :: paths) =>
+              merge(indices get idx, paths, leaf) map { tpe =>
+                JArrayFixedT(indices + (idx -> tpe))
+              } orElse schema
+            case (None, paths) =>
+              fresh(paths, leaf)
+            case (jtype, paths) =>
+              sys.error(
+                "Invalid schema."
+              ) // This shouldn't happen for any real data.
+          }
 
         cols.foldLeft(None: Option[JType]) {
           case (schema, ColumnRef(cpath, ctype)) =>

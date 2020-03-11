@@ -15,12 +15,13 @@ case class ZAdd(key: ChannelBuffer, members: Seq[ZMember])
   }
 }
 object ZAdd {
-  def apply(args: Seq[Array[Byte]]) = args match {
-    case head :: tail =>
-      new ZAdd(ChannelBuffers.wrappedBuffer(head), ZMembers(tail))
-    case _ =>
-      throw ClientError("Invalid use of ZADD")
-  }
+  def apply(args: Seq[Array[Byte]]) =
+    args match {
+      case head :: tail =>
+        new ZAdd(ChannelBuffers.wrappedBuffer(head), ZMembers(tail))
+      case _ =>
+        throw ClientError("Invalid use of ZADD")
+    }
 }
 
 case class ZCard(key: ChannelBuffer) extends StrictKeyCommand {
@@ -530,21 +531,23 @@ trait ZStoreCompanion {
       w: Option[Weights],
       a: Option[Aggregate]): ZStore
 
-  def apply(args: Seq[Array[Byte]]) = BytesToString.fromList(args) match {
-    case destination :: nk :: tail =>
-      val numkeys = RequireClientProtocol.safe {
-        NumberFormat.toInt(nk)
-      }
-      tail.size match {
-        case done if done == numkeys =>
-          get(destination, numkeys, tail, None, None)
-        case more if more > numkeys =>
-          parseArgs(destination, numkeys, tail)
-        case _ =>
-          throw ClientError("Specified keys must equal numkeys")
-      }
-    case _ => throw ClientError("Expected a minimum of 3 arguments for command")
-  }
+  def apply(args: Seq[Array[Byte]]) =
+    BytesToString.fromList(args) match {
+      case destination :: nk :: tail =>
+        val numkeys = RequireClientProtocol.safe {
+          NumberFormat.toInt(nk)
+        }
+        tail.size match {
+          case done if done == numkeys =>
+            get(destination, numkeys, tail, None, None)
+          case more if more > numkeys =>
+            parseArgs(destination, numkeys, tail)
+          case _ =>
+            throw ClientError("Specified keys must equal numkeys")
+        }
+      case _ =>
+        throw ClientError("Expected a minimum of 3 arguments for command")
+    }
 
   protected def parseArgs(
       dest: String,
@@ -651,24 +654,25 @@ trait ZScoredRangeCompanion { self =>
       withScores: Option[CommandArgument],
       limit: Option[Limit]): ZScoredRange
 
-  def apply(args: Seq[Array[Byte]]) = args match {
-    case key :: min :: max :: Nil =>
-      get(
-        ChannelBuffers.wrappedBuffer(key),
-        ZInterval(min),
-        ZInterval(max),
-        None,
-        None)
-    case key :: min :: max :: tail =>
-      parseArgs(
-        ChannelBuffers.wrappedBuffer(key),
-        ZInterval(min),
-        ZInterval(max),
-        tail)
-    case _ =>
-      throw ClientError(
-        "Expected either 3, 4 or 5 args for ZRANGEBYSCORE/ZREVRANGEBYSCORE")
-  }
+  def apply(args: Seq[Array[Byte]]) =
+    args match {
+      case key :: min :: max :: Nil =>
+        get(
+          ChannelBuffers.wrappedBuffer(key),
+          ZInterval(min),
+          ZInterval(max),
+          None,
+          None)
+      case key :: min :: max :: tail =>
+        parseArgs(
+          ChannelBuffers.wrappedBuffer(key),
+          ZInterval(min),
+          ZInterval(max),
+          tail)
+      case _ =>
+        throw ClientError(
+          "Expected either 3, 4 or 5 args for ZRANGEBYSCORE/ZREVRANGEBYSCORE")
+    }
 
   def apply(
       key: ChannelBuffer,
@@ -754,10 +758,11 @@ trait ZScoredRangeCompanion { self =>
         }
       case s => s
     }
-  protected def convertScore(arg: ScoreOrLimit) = arg match {
-    case Left(_) => Some(WithScores)
-    case _       => None
-  }
+  protected def convertScore(arg: ScoreOrLimit) =
+    arg match {
+      case Left(_) => Some(WithScores)
+      case _       => None
+    }
   protected def findLimit(arg0: ScoreOrLimit, arg1: ScoreOrLimit) =
     convertLimit(arg0) match {
       case None =>
@@ -767,10 +772,11 @@ trait ZScoredRangeCompanion { self =>
         }
       case s => s
     }
-  protected def convertLimit(arg: ScoreOrLimit) = arg match {
-    case Right(limit) => Some(limit)
-    case _            => None
-  }
+  protected def convertLimit(arg: ScoreOrLimit) =
+    arg match {
+      case Right(limit) => Some(limit)
+      case _            => None
+    }
 }
 
 abstract class ZRangeCmd extends StrictKeyCommand {
@@ -825,22 +831,26 @@ trait ZRangeCmdCompanion {
       key: ChannelBuffer,
       start: Long,
       stop: Long,
-      scored: CommandArgument) = scored match {
-    case WithScores => get(key, start, stop, Some(scored))
-    case _          => throw ClientError("Only WithScores is supported")
-  }
+      scored: CommandArgument) =
+    scored match {
+      case WithScores => get(key, start, stop, Some(scored))
+      case _          => throw ClientError("Only WithScores is supported")
+    }
 
-  protected def safeInt(i: String) = RequireClientProtocol.safe {
-    NumberFormat.toInt(i)
-  }
+  protected def safeInt(i: String) =
+    RequireClientProtocol.safe {
+      NumberFormat.toInt(i)
+    }
 
-  protected def safeDouble(i: String) = RequireClientProtocol.safe {
-    NumberFormat.toDouble(i)
-  }
+  protected def safeDouble(i: String) =
+    RequireClientProtocol.safe {
+      NumberFormat.toDouble(i)
+    }
 
-  protected def safeLong(i: String) = RequireClientProtocol.safe {
-    NumberFormat.toLong(i)
-  }
+  protected def safeLong(i: String) =
+    RequireClientProtocol.safe {
+      NumberFormat.toLong(i)
+    }
 }
 
 abstract class ZRankCmd extends StrictKeyCommand with StrictMemberCommand {

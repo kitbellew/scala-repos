@@ -54,12 +54,13 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
     }
 
     def withEchoServer[T](block: play.libs.ws.WSClient => T) = {
-      def echo = BodyParser { req =>
-        import play.api.libs.concurrent.Execution.Implicits.defaultContext
-        Accumulator.source[ByteString].mapFuture { source =>
-          Future.successful(source).map(Right.apply)
+      def echo =
+        BodyParser { req =>
+          import play.api.libs.concurrent.Execution.Implicits.defaultContext
+          Accumulator.source[ByteString].mapFuture { source =>
+            Future.successful(source).map(Right.apply)
+          }
         }
-      }
 
       Server.withRouter() {
         case _ =>
@@ -251,12 +252,13 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
     }
 
     def withEchoServer[T](block: play.api.libs.ws.WSClient => T) = {
-      def echo = BodyParser { req =>
-        import play.api.libs.concurrent.Execution.Implicits.defaultContext
-        Accumulator.source[ByteString].mapFuture { source =>
-          Future.successful(source).map(Right.apply)
+      def echo =
+        BodyParser { req =>
+          import play.api.libs.concurrent.Execution.Implicits.defaultContext
+          Accumulator.source[ByteString].mapFuture { source =>
+            Future.successful(source).map(Right.apply)
+          }
         }
-      }
 
       Server.withRouter() {
         case _ =>

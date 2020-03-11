@@ -515,9 +515,10 @@ class ScalaControlFlowBuilder(
     interruptFlow()
   }
 
-  private def getClosestFinallyInfo = myCatchedExnStack.collectFirst {
-    case fi: FinallyInfo => fi
-  }
+  private def getClosestFinallyInfo =
+    myCatchedExnStack.collectFirst {
+      case fi: FinallyInfo => fi
+    }
 
   sealed abstract class HandleInfo(val elem: ScalaPsiElement)
   case class CatchInfo(cc: ScCaseClause) extends HandleInfo(cc)
@@ -566,34 +567,35 @@ class ScalaControlFlowBuilder(
         myCatchedExnStack.pop()
       }
 
-      def processCatch(fin: InstructionImpl) = tryStmt.catchBlock.map { cb =>
-        cb.expression match {
-          case Some(b: ScBlockExpr) if b.hasCaseClauses =>
-            for (cc <- b.caseClauses.toSeq.flatMap(_.caseClauses)) {
-              myHead = tryStmtInstr
-              cc.accept(this)
-              if (fin == null) {
-                advancePendingEdges(cc, tryStmt)
-                addPendingEdge(tryStmt, myHead)
-              } else {
-                addEdge(myHead, fin)
+      def processCatch(fin: InstructionImpl) =
+        tryStmt.catchBlock.map { cb =>
+          cb.expression match {
+            case Some(b: ScBlockExpr) if b.hasCaseClauses =>
+              for (cc <- b.caseClauses.toSeq.flatMap(_.caseClauses)) {
+                myHead = tryStmtInstr
+                cc.accept(this)
+                if (fin == null) {
+                  advancePendingEdges(cc, tryStmt)
+                  addPendingEdge(tryStmt, myHead)
+                } else {
+                  addEdge(myHead, fin)
+                }
+                myHead = null
               }
-              myHead = null
-            }
-          case _ =>
-            for (cc <- cb.expression) {
-              myHead = tryStmtInstr
-              cc.accept(this)
-              if (fin == null) {
-                advancePendingEdges(cc, tryStmt)
-                addPendingEdge(tryStmt, myHead)
-              } else {
-                addEdge(myHead, fin)
+            case _ =>
+              for (cc <- cb.expression) {
+                myHead = tryStmtInstr
+                cc.accept(this)
+                if (fin == null) {
+                  advancePendingEdges(cc, tryStmt)
+                  addPendingEdge(tryStmt, myHead)
+                } else {
+                  addEdge(myHead, fin)
+                }
+                myHead = null
               }
-              myHead = null
-            }
+          }
         }
-      }
 
       if (fBlock == null) {
         processCatch((null))

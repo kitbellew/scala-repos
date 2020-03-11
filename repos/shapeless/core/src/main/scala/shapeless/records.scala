@@ -154,14 +154,15 @@ class RecordMacros(val c: whitebox.Context) {
     def mkElem(keyTpe: Type, value: Tree): Tree =
       q"$value.asInstanceOf[${mkFieldTpe(keyTpe, value.tpe)}]"
 
-    def promoteElem(elem: Tree): Tree = elem match {
-      case q""" $prefix(${Literal(k: Constant)}, $v) """ =>
-        mkElem(mkSingletonSymbolType(k), v)
-      case _ =>
-        c.abort(
-          c.enclosingPosition,
-          s"$elem has the wrong shape for a record field")
-    }
+    def promoteElem(elem: Tree): Tree =
+      elem match {
+        case q""" $prefix(${Literal(k: Constant)}, $v) """ =>
+          mkElem(mkSingletonSymbolType(k), v)
+        case _ =>
+          c.abort(
+            c.enclosingPosition,
+            s"$elem has the wrong shape for a record field")
+      }
 
     rec.foldRight(hnilValueTree) {
       case (elem, acc) => q""" $hconsValueTree(${promoteElem(elem)}, $acc) """

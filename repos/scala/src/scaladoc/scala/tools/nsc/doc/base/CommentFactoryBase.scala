@@ -49,67 +49,69 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       groupPrio0: Map[String, Body] = Map.empty,
       hideImplicitConversions0: List[Body] = List.empty,
       shortDescription0: List[Body] = List.empty
-  ): Comment = new Comment {
-    val body = body0 getOrElse Body(Seq.empty)
-    val authors = authors0
-    val see = see0
-    val result = result0
-    val throws = throws0
-    val valueParams = valueParams0
-    val typeParams = typeParams0
-    val version = version0
-    val since = since0
-    val todo = todo0
-    val deprecated = deprecated0
-    val note = note0
-    val example = example0
-    val constructor = constructor0
-    val inheritDiagram = inheritDiagram0
-    val contentDiagram = contentDiagram0
-    val groupDesc = groupDesc0
-    val group =
-      group0 match {
-        case Some(Body(List(Paragraph(Chain(List(Summary(Text(groupId)))))))) =>
-          Some(groupId.toString.trim)
-        case _ => None
+  ): Comment =
+    new Comment {
+      val body = body0 getOrElse Body(Seq.empty)
+      val authors = authors0
+      val see = see0
+      val result = result0
+      val throws = throws0
+      val valueParams = valueParams0
+      val typeParams = typeParams0
+      val version = version0
+      val since = since0
+      val todo = todo0
+      val deprecated = deprecated0
+      val note = note0
+      val example = example0
+      val constructor = constructor0
+      val inheritDiagram = inheritDiagram0
+      val contentDiagram = contentDiagram0
+      val groupDesc = groupDesc0
+      val group =
+        group0 match {
+          case Some(
+                Body(List(Paragraph(Chain(List(Summary(Text(groupId)))))))) =>
+            Some(groupId.toString.trim)
+          case _ => None
+        }
+      val groupPrio = groupPrio0 flatMap {
+        case (group, body) =>
+          try {
+            body match {
+              case Body(List(Paragraph(Chain(List(Summary(Text(prio))))))) =>
+                List(group -> prio.trim.toInt)
+              case _ => List()
+            }
+          } catch {
+            case _: java.lang.NumberFormatException => List()
+          }
       }
-    val groupPrio = groupPrio0 flatMap {
-      case (group, body) =>
-        try {
+      val groupNames = groupNames0 flatMap {
+        case (group, body) =>
           body match {
-            case Body(List(Paragraph(Chain(List(Summary(Text(prio))))))) =>
-              List(group -> prio.trim.toInt)
+            case Body(List(Paragraph(Chain(List(Summary(Text(name)))))))
+                if (!name.trim.contains("\n")) =>
+              List(group -> (name.trim))
             case _ => List()
           }
-        } catch {
-          case _: java.lang.NumberFormatException => List()
+      }
+
+      override val shortDescription: Option[Text] =
+        shortDescription0.lastOption collect {
+          case Body(List(Paragraph(Chain(List(Summary(Text(e)))))))
+              if !e.trim.contains("\n") =>
+            Text(e)
         }
-    }
-    val groupNames = groupNames0 flatMap {
-      case (group, body) =>
-        body match {
-          case Body(List(Paragraph(Chain(List(Summary(Text(name)))))))
-              if (!name.trim.contains("\n")) =>
-            List(group -> (name.trim))
+
+      override val hideImplicitConversions: List[String] =
+        hideImplicitConversions0 flatMap {
+          case Body(List(Paragraph(Chain(List(Summary(Text(e)))))))
+              if !e.trim.contains("\n") =>
+            List(e)
           case _ => List()
         }
     }
-
-    override val shortDescription: Option[Text] =
-      shortDescription0.lastOption collect {
-        case Body(List(Paragraph(Chain(List(Summary(Text(e)))))))
-            if !e.trim.contains("\n") =>
-          Text(e)
-      }
-
-    override val hideImplicitConversions: List[String] =
-      hideImplicitConversions0 flatMap {
-        case Body(List(Paragraph(Chain(List(Summary(Text(e)))))))
-            if !e.trim.contains("\n") =>
-          List(e)
-        case _ => List()
-      }
-  }
 
   private val endOfText = '\u0003'
   private val endOfLine = '\u000A'
@@ -130,19 +132,20 @@ trait CommentFactoryBase { this: MemberLookupBase =>
 
   /** Maps a dangerous HTML tag to a safe wiki replacement, or an empty string
     * if it cannot be salvaged. */
-  private def htmlReplacement(mtch: Regex.Match): String = mtch.group(1) match {
-    case "p" | "div"           => "\n\n"
-    case "h1"                  => "\n= "
-    case "/h1"                 => " =\n"
-    case "h2"                  => "\n== "
-    case "/h2"                 => " ==\n"
-    case "h3"                  => "\n=== "
-    case "/h3"                 => " ===\n"
-    case "h4" | "h5" | "h6"    => "\n==== "
-    case "/h4" | "/h5" | "/h6" => " ====\n"
-    case "li"                  => "\n *  - "
-    case _                     => ""
-  }
+  private def htmlReplacement(mtch: Regex.Match): String =
+    mtch.group(1) match {
+      case "p" | "div"           => "\n\n"
+      case "h1"                  => "\n= "
+      case "/h1"                 => " =\n"
+      case "h2"                  => "\n== "
+      case "/h2"                 => " ==\n"
+      case "h3"                  => "\n=== "
+      case "/h3"                 => " ===\n"
+      case "h4" | "h5" | "h6"    => "\n==== "
+      case "/h4" | "/h5" | "/h6" => " ====\n"
+      case "li"                  => "\n *  - "
+      case _                     => ""
+    }
 
   /** Javadoc tags that should be replaced by something useful, such as wiki
     * syntax, or that should be dropped. */
@@ -261,261 +264,268 @@ trait CommentFactoryBase { this: MemberLookupBase =>
         lastTagKey: Option[TagKey],
         remaining: List[String],
         inCodeBlock: Boolean
-    ): Comment = remaining match {
+    ): Comment =
+      remaining match {
 
-      case CodeBlockStartRegex(before, marker, after) :: ls if (!inCodeBlock) =>
-        if (!before.trim.isEmpty && !after.trim.isEmpty)
-          parse0(
-            docBody,
-            tags,
-            lastTagKey,
-            before :: marker :: after :: ls,
-            inCodeBlock = false)
-        else if (!before.trim.isEmpty)
-          parse0(
-            docBody,
-            tags,
-            lastTagKey,
-            before :: marker :: ls,
-            inCodeBlock = false)
-        else if (!after.trim.isEmpty)
-          parse0(
-            docBody,
-            tags,
-            lastTagKey,
-            marker :: after :: ls,
-            inCodeBlock = true)
-        else
-          lastTagKey match {
-            case Some(key) =>
-              val value =
-                ((tags get key): @unchecked) match {
-                  case Some(b :: bs) => (b + endOfLine + marker) :: bs
-                  case None          => oops("lastTagKey set when no tag exists for key")
-                }
-              parse0(
-                docBody,
-                tags + (key -> value),
-                lastTagKey,
-                ls,
-                inCodeBlock = true)
-            case None =>
-              parse0(
-                docBody append endOfLine append marker,
-                tags,
-                lastTagKey,
-                ls,
-                inCodeBlock = true)
-          }
-
-      case CodeBlockEndRegex(before, marker, after) :: ls => {
-        if (!before.trim.isEmpty && !after.trim.isEmpty)
-          parse0(
-            docBody,
-            tags,
-            lastTagKey,
-            before :: marker :: after :: ls,
-            inCodeBlock = true)
-        if (!before.trim.isEmpty)
-          parse0(
-            docBody,
-            tags,
-            lastTagKey,
-            before :: marker :: ls,
-            inCodeBlock = true)
-        else if (!after.trim.isEmpty)
-          parse0(
-            docBody,
-            tags,
-            lastTagKey,
-            marker :: after :: ls,
-            inCodeBlock = false)
-        else
-          lastTagKey match {
-            case Some(key) =>
-              val value =
-                ((tags get key): @unchecked) match {
-                  case Some(b :: bs) => (b + endOfLine + marker) :: bs
-                  case None          => oops("lastTagKey set when no tag exists for key")
-                }
-              parse0(
-                docBody,
-                tags + (key -> value),
-                lastTagKey,
-                ls,
-                inCodeBlock = false)
-            case None =>
-              parse0(
-                docBody append endOfLine append marker,
-                tags,
-                lastTagKey,
-                ls,
-                inCodeBlock = false)
-          }
-      }
-
-      case SymbolTagRegex(name, sym, body) :: ls if (!inCodeBlock) => {
-        val key = SymbolTagKey(name, sym)
-        val value = body :: tags.getOrElse(key, Nil)
-        parse0(docBody, tags + (key -> value), Some(key), ls, inCodeBlock)
-      }
-
-      case SimpleTagRegex(name, body) :: ls if (!inCodeBlock) => {
-        val key = SimpleTagKey(name)
-        val value = body :: tags.getOrElse(key, Nil)
-        parse0(docBody, tags + (key -> value), Some(key), ls, inCodeBlock)
-      }
-
-      case SingleTagRegex(name) :: ls if (!inCodeBlock) => {
-        val key = SimpleTagKey(name)
-        val value = "" :: tags.getOrElse(key, Nil)
-        parse0(docBody, tags + (key -> value), Some(key), ls, inCodeBlock)
-      }
-
-      case line :: ls if (lastTagKey.isDefined) => {
-        val newtags = if (!line.isEmpty) {
-          val key = lastTagKey.get
-          val value =
-            ((tags get key): @unchecked) match {
-              case Some(b :: bs) => (b + endOfLine + line) :: bs
-              case None          => oops("lastTagKey set when no tag exists for key")
+        case CodeBlockStartRegex(before, marker, after) :: ls
+            if (!inCodeBlock) =>
+          if (!before.trim.isEmpty && !after.trim.isEmpty)
+            parse0(
+              docBody,
+              tags,
+              lastTagKey,
+              before :: marker :: after :: ls,
+              inCodeBlock = false)
+          else if (!before.trim.isEmpty)
+            parse0(
+              docBody,
+              tags,
+              lastTagKey,
+              before :: marker :: ls,
+              inCodeBlock = false)
+          else if (!after.trim.isEmpty)
+            parse0(
+              docBody,
+              tags,
+              lastTagKey,
+              marker :: after :: ls,
+              inCodeBlock = true)
+          else
+            lastTagKey match {
+              case Some(key) =>
+                val value =
+                  ((tags get key): @unchecked) match {
+                    case Some(b :: bs) => (b + endOfLine + marker) :: bs
+                    case None =>
+                      oops("lastTagKey set when no tag exists for key")
+                  }
+                parse0(
+                  docBody,
+                  tags + (key -> value),
+                  lastTagKey,
+                  ls,
+                  inCodeBlock = true)
+              case None =>
+                parse0(
+                  docBody append endOfLine append marker,
+                  tags,
+                  lastTagKey,
+                  ls,
+                  inCodeBlock = true)
             }
-          tags + (key -> value)
-        } else
-          tags
-        parse0(docBody, newtags, lastTagKey, ls, inCodeBlock)
-      }
 
-      case line :: ls => {
-        if (docBody.length > 0)
-          docBody append endOfLine
-        docBody append line
-        parse0(docBody, tags, lastTagKey, ls, inCodeBlock)
-      }
-
-      case Nil => {
-        // Take the {inheritance, content} diagram keys aside, as it doesn't need any parsing
-        val inheritDiagramTag = SimpleTagKey("inheritanceDiagram")
-        val contentDiagramTag = SimpleTagKey("contentDiagram")
-
-        val inheritDiagramText: List[String] =
-          tags.get(inheritDiagramTag) match {
-            case Some(list) => list
-            case None       => List.empty
-          }
-
-        val contentDiagramText: List[String] =
-          tags.get(contentDiagramTag) match {
-            case Some(list) => list
-            case None       => List.empty
-          }
-
-        val stripTags = List(
-          inheritDiagramTag,
-          contentDiagramTag,
-          SimpleTagKey("template"),
-          SimpleTagKey("documentable"))
-        val tagsWithoutDiagram =
-          tags.filterNot(pair => stripTags.contains(pair._1))
-
-        val bodyTags: mutable.Map[TagKey, List[Body]] =
-          mutable.Map(tagsWithoutDiagram mapValues { tag =>
-            tag map (parseWikiAtSymbol(_, pos, site))
-          } toSeq: _*)
-
-        def oneTag(
-            key: SimpleTagKey,
-            filterEmpty: Boolean = true): Option[Body] =
-          ((bodyTags remove key): @unchecked) match {
-            case Some(r :: rs) if !(filterEmpty && r.blocks.isEmpty) =>
-              if (!rs.isEmpty)
-                reporter.warning(pos, s"Only one '@${key.name}' tag is allowed")
-              Some(r)
-            case _ => None
-          }
-
-        def allTags(key: SimpleTagKey): List[Body] =
-          (bodyTags remove key).getOrElse(Nil).filterNot(_.blocks.isEmpty)
-
-        def allSymsOneTag(
-            key: TagKey,
-            filterEmpty: Boolean = true): Map[String, Body] = {
-          val keys: Seq[SymbolTagKey] =
-            bodyTags.keys.toSeq flatMap {
-              case stk: SymbolTagKey if (stk.name == key.name) => Some(stk)
-              case stk: SimpleTagKey if (stk.name == key.name) =>
-                reporter.warning(
-                  pos,
-                  s"Tag '@${stk.name}' must be followed by a symbol name")
-                None
-              case _ => None
+        case CodeBlockEndRegex(before, marker, after) :: ls => {
+          if (!before.trim.isEmpty && !after.trim.isEmpty)
+            parse0(
+              docBody,
+              tags,
+              lastTagKey,
+              before :: marker :: after :: ls,
+              inCodeBlock = true)
+          if (!before.trim.isEmpty)
+            parse0(
+              docBody,
+              tags,
+              lastTagKey,
+              before :: marker :: ls,
+              inCodeBlock = true)
+          else if (!after.trim.isEmpty)
+            parse0(
+              docBody,
+              tags,
+              lastTagKey,
+              marker :: after :: ls,
+              inCodeBlock = false)
+          else
+            lastTagKey match {
+              case Some(key) =>
+                val value =
+                  ((tags get key): @unchecked) match {
+                    case Some(b :: bs) => (b + endOfLine + marker) :: bs
+                    case None =>
+                      oops("lastTagKey set when no tag exists for key")
+                  }
+                parse0(
+                  docBody,
+                  tags + (key -> value),
+                  lastTagKey,
+                  ls,
+                  inCodeBlock = false)
+              case None =>
+                parse0(
+                  docBody append endOfLine append marker,
+                  tags,
+                  lastTagKey,
+                  ls,
+                  inCodeBlock = false)
             }
-          val pairs: Seq[(String, Body)] =
-            for (key <- keys)
-              yield {
-                val bs = (bodyTags remove key).get
-                if (bs.length > 1)
+        }
+
+        case SymbolTagRegex(name, sym, body) :: ls if (!inCodeBlock) => {
+          val key = SymbolTagKey(name, sym)
+          val value = body :: tags.getOrElse(key, Nil)
+          parse0(docBody, tags + (key -> value), Some(key), ls, inCodeBlock)
+        }
+
+        case SimpleTagRegex(name, body) :: ls if (!inCodeBlock) => {
+          val key = SimpleTagKey(name)
+          val value = body :: tags.getOrElse(key, Nil)
+          parse0(docBody, tags + (key -> value), Some(key), ls, inCodeBlock)
+        }
+
+        case SingleTagRegex(name) :: ls if (!inCodeBlock) => {
+          val key = SimpleTagKey(name)
+          val value = "" :: tags.getOrElse(key, Nil)
+          parse0(docBody, tags + (key -> value), Some(key), ls, inCodeBlock)
+        }
+
+        case line :: ls if (lastTagKey.isDefined) => {
+          val newtags = if (!line.isEmpty) {
+            val key = lastTagKey.get
+            val value =
+              ((tags get key): @unchecked) match {
+                case Some(b :: bs) => (b + endOfLine + line) :: bs
+                case None          => oops("lastTagKey set when no tag exists for key")
+              }
+            tags + (key -> value)
+          } else
+            tags
+          parse0(docBody, newtags, lastTagKey, ls, inCodeBlock)
+        }
+
+        case line :: ls => {
+          if (docBody.length > 0)
+            docBody append endOfLine
+          docBody append line
+          parse0(docBody, tags, lastTagKey, ls, inCodeBlock)
+        }
+
+        case Nil => {
+          // Take the {inheritance, content} diagram keys aside, as it doesn't need any parsing
+          val inheritDiagramTag = SimpleTagKey("inheritanceDiagram")
+          val contentDiagramTag = SimpleTagKey("contentDiagram")
+
+          val inheritDiagramText: List[String] =
+            tags.get(inheritDiagramTag) match {
+              case Some(list) => list
+              case None       => List.empty
+            }
+
+          val contentDiagramText: List[String] =
+            tags.get(contentDiagramTag) match {
+              case Some(list) => list
+              case None       => List.empty
+            }
+
+          val stripTags = List(
+            inheritDiagramTag,
+            contentDiagramTag,
+            SimpleTagKey("template"),
+            SimpleTagKey("documentable"))
+          val tagsWithoutDiagram =
+            tags.filterNot(pair => stripTags.contains(pair._1))
+
+          val bodyTags: mutable.Map[TagKey, List[Body]] =
+            mutable.Map(tagsWithoutDiagram mapValues { tag =>
+              tag map (parseWikiAtSymbol(_, pos, site))
+            } toSeq: _*)
+
+          def oneTag(
+              key: SimpleTagKey,
+              filterEmpty: Boolean = true): Option[Body] =
+            ((bodyTags remove key): @unchecked) match {
+              case Some(r :: rs) if !(filterEmpty && r.blocks.isEmpty) =>
+                if (!rs.isEmpty)
                   reporter.warning(
                     pos,
-                    s"Only one '@${key.name}' tag for symbol ${key.symbol} is allowed")
-                (key.symbol, bs.head)
-              }
-          Map.empty[String, Body] ++ (if (filterEmpty)
-                                        pairs.filterNot(_._2.blocks.isEmpty)
-                                      else
-                                        pairs)
-        }
+                    s"Only one '@${key.name}' tag is allowed")
+                Some(r)
+              case _ => None
+            }
 
-        def linkedExceptions: Map[String, Body] = {
-          val m = allSymsOneTag(SimpleTagKey("throws"), filterEmpty = false)
+          def allTags(key: SimpleTagKey): List[Body] =
+            (bodyTags remove key).getOrElse(Nil).filterNot(_.blocks.isEmpty)
 
-          m.map {
-            case (name, body) =>
-              val link = memberLookup(pos, name, site)
-              val newBody = body match {
-                case Body(List(Paragraph(Chain(content)))) =>
-                  val descr = Text(" ") +: content
-                  val entityLink = EntityLink(Monospace(Text(name)), link)
-                  Body(List(Paragraph(Chain(entityLink +: descr))))
-                case _ => body
+          def allSymsOneTag(
+              key: TagKey,
+              filterEmpty: Boolean = true): Map[String, Body] = {
+            val keys: Seq[SymbolTagKey] =
+              bodyTags.keys.toSeq flatMap {
+                case stk: SymbolTagKey if (stk.name == key.name) => Some(stk)
+                case stk: SimpleTagKey if (stk.name == key.name) =>
+                  reporter.warning(
+                    pos,
+                    s"Tag '@${stk.name}' must be followed by a symbol name")
+                  None
+                case _ => None
               }
-              (name, newBody)
+            val pairs: Seq[(String, Body)] =
+              for (key <- keys)
+                yield {
+                  val bs = (bodyTags remove key).get
+                  if (bs.length > 1)
+                    reporter.warning(
+                      pos,
+                      s"Only one '@${key.name}' tag for symbol ${key.symbol} is allowed")
+                  (key.symbol, bs.head)
+                }
+            Map.empty[String, Body] ++ (if (filterEmpty)
+                                          pairs.filterNot(_._2.blocks.isEmpty)
+                                        else
+                                          pairs)
           }
+
+          def linkedExceptions: Map[String, Body] = {
+            val m = allSymsOneTag(SimpleTagKey("throws"), filterEmpty = false)
+
+            m.map {
+              case (name, body) =>
+                val link = memberLookup(pos, name, site)
+                val newBody = body match {
+                  case Body(List(Paragraph(Chain(content)))) =>
+                    val descr = Text(" ") +: content
+                    val entityLink = EntityLink(Monospace(Text(name)), link)
+                    Body(List(Paragraph(Chain(entityLink +: descr))))
+                  case _ => body
+                }
+                (name, newBody)
+            }
+          }
+
+          val com = createComment(
+            body0 = Some(parseWikiAtSymbol(docBody.toString, pos, site)),
+            authors0 = allTags(SimpleTagKey("author")),
+            see0 = allTags(SimpleTagKey("see")),
+            result0 = oneTag(SimpleTagKey("return")),
+            throws0 = linkedExceptions,
+            valueParams0 = allSymsOneTag(SimpleTagKey("param")),
+            typeParams0 = allSymsOneTag(SimpleTagKey("tparam")),
+            version0 = oneTag(SimpleTagKey("version")),
+            since0 = oneTag(SimpleTagKey("since")),
+            todo0 = allTags(SimpleTagKey("todo")),
+            deprecated0 =
+              oneTag(SimpleTagKey("deprecated"), filterEmpty = false),
+            note0 = allTags(SimpleTagKey("note")),
+            example0 = allTags(SimpleTagKey("example")),
+            constructor0 = oneTag(SimpleTagKey("constructor")),
+            source0 = Some(clean(src).mkString("\n")),
+            inheritDiagram0 = inheritDiagramText,
+            contentDiagram0 = contentDiagramText,
+            group0 = oneTag(SimpleTagKey("group")),
+            groupDesc0 = allSymsOneTag(SimpleTagKey("groupdesc")),
+            groupNames0 = allSymsOneTag(SimpleTagKey("groupname")),
+            groupPrio0 = allSymsOneTag(SimpleTagKey("groupprio")),
+            hideImplicitConversions0 =
+              allTags(SimpleTagKey("hideImplicitConversion")),
+            shortDescription0 = allTags(SimpleTagKey("shortDescription"))
+          )
+
+          for ((key, _) <- bodyTags)
+            reporter.warning(pos, s"Tag '@${key.name}' is not recognised")
+
+          com
         }
-
-        val com = createComment(
-          body0 = Some(parseWikiAtSymbol(docBody.toString, pos, site)),
-          authors0 = allTags(SimpleTagKey("author")),
-          see0 = allTags(SimpleTagKey("see")),
-          result0 = oneTag(SimpleTagKey("return")),
-          throws0 = linkedExceptions,
-          valueParams0 = allSymsOneTag(SimpleTagKey("param")),
-          typeParams0 = allSymsOneTag(SimpleTagKey("tparam")),
-          version0 = oneTag(SimpleTagKey("version")),
-          since0 = oneTag(SimpleTagKey("since")),
-          todo0 = allTags(SimpleTagKey("todo")),
-          deprecated0 = oneTag(SimpleTagKey("deprecated"), filterEmpty = false),
-          note0 = allTags(SimpleTagKey("note")),
-          example0 = allTags(SimpleTagKey("example")),
-          constructor0 = oneTag(SimpleTagKey("constructor")),
-          source0 = Some(clean(src).mkString("\n")),
-          inheritDiagram0 = inheritDiagramText,
-          contentDiagram0 = contentDiagramText,
-          group0 = oneTag(SimpleTagKey("group")),
-          groupDesc0 = allSymsOneTag(SimpleTagKey("groupdesc")),
-          groupNames0 = allSymsOneTag(SimpleTagKey("groupname")),
-          groupPrio0 = allSymsOneTag(SimpleTagKey("groupprio")),
-          hideImplicitConversions0 =
-            allTags(SimpleTagKey("hideImplicitConversion")),
-          shortDescription0 = allTags(SimpleTagKey("shortDescription"))
-        )
-
-        for ((key, _) <- bodyTags)
-          reporter.warning(pos, s"Tag '@${key.name}' is not recognised")
-
-        com
       }
-    }
 
     parse0(
       new StringBuilder(comment.size),

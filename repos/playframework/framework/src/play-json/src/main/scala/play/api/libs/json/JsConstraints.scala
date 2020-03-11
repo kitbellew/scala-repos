@@ -45,8 +45,8 @@ trait PathReads {
     *   - If last node is found with value "null" => returns None
     *   - If last node is found => applies implicit Reads[T]
     */
-  def nullable[A](path: JsPath)(implicit reads: Reads[A]) = Reads[Option[A]] {
-    json =>
+  def nullable[A](path: JsPath)(implicit reads: Reads[A]) =
+    Reads[Option[A]] { json =>
       path
         .applyTillLast(json)
         .fold(
@@ -61,7 +61,7 @@ trait PathReads {
                 }
             )
         )
-  }
+    }
 
   def jsPick[A <: JsValue](path: JsPath)(implicit reads: Reads[A]): Reads[A] =
     at(path)(reads)
@@ -197,9 +197,10 @@ trait ConstraintReads {
       }
     }
 
-  def pure[A](a: => A) = Reads[A] { js =>
-    JsSuccess(a)
-  }
+  def pure[A](a: => A) =
+    Reads[A] { js =>
+      JsSuccess(a)
+    }
 
 }
 
@@ -266,9 +267,10 @@ trait ConstraintWrites {
       wrs.writes(fixed)
     }
 
-  def pruned[A](implicit w: Writes[A]): Writes[A] = new Writes[A] {
-    def writes(a: A): JsValue = JsNull
-  }
+  def pruned[A](implicit w: Writes[A]): Writes[A] =
+    new Writes[A] {
+      def writes(a: A): JsValue = JsNull
+    }
 
   def list[A](implicit writes: Writes[A]): Writes[List[A]] =
     Writes.traversableWrites[A]
@@ -284,10 +286,11 @@ trait ConstraintWrites {
     * Pure Option Writer[T] which writes "null" when None which is different
     * from `JsPath.writeNullable` which omits the field when None
     */
-  def optionWithNull[A](implicit wa: Writes[A]) = Writes[Option[A]] { a =>
-    a match {
-      case None     => JsNull
-      case Some(av) => wa.writes(av)
+  def optionWithNull[A](implicit wa: Writes[A]) =
+    Writes[Option[A]] { a =>
+      a match {
+        case None     => JsNull
+        case Some(av) => wa.writes(av)
+      }
     }
-  }
 }

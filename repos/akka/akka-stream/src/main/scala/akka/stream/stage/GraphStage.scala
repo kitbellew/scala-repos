@@ -146,14 +146,15 @@ object GraphStageLogic {
       initialReceive: StageActorRef.Receive) {
 
     private val callback = getAsyncCallback(internalReceive)
-    private def cell = materializer.supervisor match {
-      case ref: LocalActorRef ⇒ ref.underlying
-      case ref: RepointableActorRef if ref.isStarted ⇒
-        ref.underlying.asInstanceOf[ActorCell]
-      case unknown ⇒
-        throw new IllegalStateException(
-          s"Stream supervisor must be a local actor, was [${unknown.getClass.getName}]")
-    }
+    private def cell =
+      materializer.supervisor match {
+        case ref: LocalActorRef ⇒ ref.underlying
+        case ref: RepointableActorRef if ref.isStarted ⇒
+          ref.underlying.asInstanceOf[ActorCell]
+        case unknown ⇒
+          throw new IllegalStateException(
+            s"Stream supervisor must be a local actor, was [${unknown.getClass.getName}]")
+      }
 
     private val functionRef: FunctionRef = {
       cell.addFunctionRef {
@@ -1027,10 +1028,11 @@ abstract class GraphStageLogic private[stream] (
     getAsyncCallback(handler.apply)
 
   private var _stageActor: StageActor = _
-  final def stageActor: StageActor = _stageActor match {
-    case null ⇒ throw StageActorRefNotInitializedException()
-    case ref ⇒ ref
-  }
+  final def stageActor: StageActor =
+    _stageActor match {
+      case null ⇒ throw StageActorRefNotInitializedException()
+      case ref ⇒ ref
+    }
 
   /**
     * Initialize a [[StageActorRef]] which can be used to interact with from the outside world "as-if" an [[Actor]].
@@ -1478,27 +1480,30 @@ private[akka] trait CallbackWrapper[T] extends AsyncCallback[T] {
   private[this] val callbackState =
     new AtomicReference[CallbackState](NotInitialized(Nil))
 
-  def stopCallback(f: T ⇒ Unit): Unit = locked {
-    callbackState.set(Stopped(f))
-  }
-
-  def initCallback(f: T ⇒ Unit): Unit = locked {
-    val list = (callbackState.getAndSet(Initialized(f)): @unchecked) match {
-      case NotInitialized(l) ⇒ l
+  def stopCallback(f: T ⇒ Unit): Unit =
+    locked {
+      callbackState.set(Stopped(f))
     }
-    list.reverse.foreach(f)
-  }
 
-  override def invoke(arg: T): Unit = locked {
-    callbackState.get() match {
-      case Initialized(cb) ⇒ cb(arg)
-      case list @ NotInitialized(l) ⇒
-        callbackState.compareAndSet(list, NotInitialized(arg :: l))
-      case Stopped(cb) ⇒
-        lock.unlock()
-        cb(arg)
+  def initCallback(f: T ⇒ Unit): Unit =
+    locked {
+      val list = (callbackState.getAndSet(Initialized(f)): @unchecked) match {
+        case NotInitialized(l) ⇒ l
+      }
+      list.reverse.foreach(f)
     }
-  }
+
+  override def invoke(arg: T): Unit =
+    locked {
+      callbackState.get() match {
+        case Initialized(cb) ⇒ cb(arg)
+        case list @ NotInitialized(l) ⇒
+          callbackState.compareAndSet(list, NotInitialized(arg :: l))
+        case Stopped(cb) ⇒
+          lock.unlock()
+          cb(arg)
+      }
+    }
 
   private[this] def locked(body: ⇒ Unit): Unit = {
     lock.lock()

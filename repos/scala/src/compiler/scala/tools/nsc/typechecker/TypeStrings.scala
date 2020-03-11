@@ -28,12 +28,13 @@ trait StructuredTypeStrings extends DestructureTypes {
       mdelim: String,
       rdelim: String,
       labels: Boolean) {
-    def join(elems: String*): String = (
-      if (elems.isEmpty)
-        ""
-      else
-        elems.mkString(ldelim, mdelim, rdelim)
-    )
+    def join(elems: String*): String =
+      (
+        if (elems.isEmpty)
+          ""
+        else
+          elems.mkString(ldelim, mdelim, rdelim)
+      )
   }
   val NoGrouping = Grouping("", "", "", labels = false)
   val ListGrouping = Grouping("(", ", ", ")", labels = false)
@@ -262,10 +263,11 @@ trait TypeStrings {
 
   private def tparamString[T: ru.TypeTag]: String = {
     import ru._ // get TypeRefTag in scope so that pattern match works (TypeRef is an abstract type)
-    def typeArguments: List[ru.Type] = ru.typeOf[T] match {
-      case ru.TypeRef(_, _, args) => args;
-      case _                      => Nil
-    }
+    def typeArguments: List[ru.Type] =
+      ru.typeOf[T] match {
+        case ru.TypeRef(_, _, args) => args;
+        case _                      => Nil
+      }
     brackets(typeArguments map (jc => tvarString(List(jc))): _*)
   }
 

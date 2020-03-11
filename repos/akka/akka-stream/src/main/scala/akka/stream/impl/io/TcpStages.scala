@@ -150,10 +150,11 @@ private[stream] class ConnectionSourceStage(
         }
       }
 
-      override def onTimer(timerKey: Any): Unit = timerKey match {
-        case BindShutdownTimer ⇒
-          completeStage() // TODO need to manually shut down instead right?
-      }
+      override def onTimer(timerKey: Any): Unit =
+        timerKey match {
+          case BindShutdownTimer ⇒
+            completeStage() // TODO need to manually shut down instead right?
+        }
 
       override def postStop(): Unit = {
         unbindPromise.trySuccess(())
@@ -345,13 +346,14 @@ private[stream] object TcpConnectionStage {
       }
     )
 
-    override def postStop(): Unit = role match {
-      case Outbound(_, _, localAddressPromise, _) ⇒
-        // Fail if has not been completed with an address earlier
-        localAddressPromise.tryFailure(
-          new StreamTcpException("Connection failed."))
-      case _ ⇒ // do nothing...
-    }
+    override def postStop(): Unit =
+      role match {
+        case Outbound(_, _, localAddressPromise, _) ⇒
+          // Fail if has not been completed with an address earlier
+          localAddressPromise.tryFailure(
+            new StreamTcpException("Connection failed."))
+        case _ ⇒ // do nothing...
+      }
   }
 }
 

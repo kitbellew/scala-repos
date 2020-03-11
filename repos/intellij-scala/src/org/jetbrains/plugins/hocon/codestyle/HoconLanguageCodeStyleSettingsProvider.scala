@@ -198,9 +198,10 @@ class HoconLanguageCodeStyleSettingsProvider
 
   override def getIndentOptionsEditor = new SmartIndentOptionsEditor
 
-  def getCodeSample(settingsType: SettingsType) = settingsType match {
-    case SettingsType.INDENT_SETTINGS =>
-      """object {
+  def getCodeSample(settingsType: SettingsType) =
+    settingsType match {
+      case SettingsType.INDENT_SETTINGS =>
+        """object {
         |  key = value
         |  some.path: 42
         |  list = [
@@ -212,8 +213,8 @@ class HoconLanguageCodeStyleSettingsProvider
         |}
         | """.stripMargin.trim
 
-    case SettingsType.SPACING_SETTINGS =>
-      """include file("application.conf")
+      case SettingsType.SPACING_SETTINGS =>
+        """include file("application.conf")
         |
         |object {
         |  quix: 42
@@ -225,8 +226,8 @@ class HoconLanguageCodeStyleSettingsProvider
         |}
         | """.stripMargin.trim
 
-    case SettingsType.WRAPPING_AND_BRACES_SETTINGS =>
-      """include "someExtraordinarilyLongName"
+      case SettingsType.WRAPPING_AND_BRACES_SETTINGS =>
+        """include "someExtraordinarilyLongName"
         |
         |object {
         |  #comment
@@ -245,8 +246,8 @@ class HoconLanguageCodeStyleSettingsProvider
         |}
         | """.stripMargin.trim
 
-    case SettingsType.BLANK_LINES_SETTINGS =>
-      """include "application"
+      case SettingsType.BLANK_LINES_SETTINGS =>
+        """include "application"
         |
         |
         |object {
@@ -264,6 +265,6 @@ class HoconLanguageCodeStyleSettingsProvider
         |]
         | """.stripMargin.trim
 
-    case _ => ""
-  }
+      case _ => ""
+    }
 }

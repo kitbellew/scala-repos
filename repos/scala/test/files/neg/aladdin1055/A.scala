@@ -6,7 +6,8 @@ object A {
     def f = 0
   }
 
-  def foo = new T {
-    def f = 1
-  } // local subclass of sealed trait T
+  def foo =
+    new T {
+      def f = 1
+    } // local subclass of sealed trait T
 }

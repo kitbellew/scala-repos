@@ -57,21 +57,24 @@ trait EitherInstances extends EitherInstances1 {
 
   implicit def eitherOrder[A, B](implicit
       A: Order[A],
-      B: Order[B]): Order[Either[A, B]] = new Order[Either[A, B]] {
-    def compare(x: Either[A, B], y: Either[A, B]): Int = x.fold(
-      a => y.fold(A.compare(a, _), _ => -1),
-      b => y.fold(_ => 1, B.compare(b, _))
-    )
-  }
+      B: Order[B]): Order[Either[A, B]] =
+    new Order[Either[A, B]] {
+      def compare(x: Either[A, B], y: Either[A, B]): Int =
+        x.fold(
+          a => y.fold(A.compare(a, _), _ => -1),
+          b => y.fold(_ => 1, B.compare(b, _))
+        )
+    }
 
   implicit def eitherShow[A, B](implicit
       A: Show[A],
       B: Show[B]): Show[Either[A, B]] =
     new Show[Either[A, B]] {
-      def show(f: Either[A, B]): String = f.fold(
-        a => s"Left(${A.show(a)})",
-        b => s"Right(${B.show(b)})"
-      )
+      def show(f: Either[A, B]): String =
+        f.fold(
+          a => s"Left(${A.show(a)})",
+          b => s"Right(${B.show(b)})"
+        )
     }
 }
 
@@ -80,19 +83,21 @@ private[std] sealed trait EitherInstances1 extends EitherInstances2 {
       A: PartialOrder[A],
       B: PartialOrder[B]): PartialOrder[Either[A, B]] =
     new PartialOrder[Either[A, B]] {
-      def partialCompare(x: Either[A, B], y: Either[A, B]): Double = x.fold(
-        a => y.fold(A.partialCompare(a, _), _ => -1),
-        b => y.fold(_ => 1, B.partialCompare(b, _))
-      )
+      def partialCompare(x: Either[A, B], y: Either[A, B]): Double =
+        x.fold(
+          a => y.fold(A.partialCompare(a, _), _ => -1),
+          b => y.fold(_ => 1, B.partialCompare(b, _))
+        )
     }
 }
 
 private[std] sealed trait EitherInstances2 {
   implicit def eitherEq[A, B](implicit A: Eq[A], B: Eq[B]): Eq[Either[A, B]] =
     new Eq[Either[A, B]] {
-      def eqv(x: Either[A, B], y: Either[A, B]): Boolean = x.fold(
-        a => y.fold(A.eqv(a, _), _ => false),
-        b => y.fold(_ => false, B.eqv(b, _))
-      )
+      def eqv(x: Either[A, B], y: Either[A, B]): Boolean =
+        x.fold(
+          a => y.fold(A.eqv(a, _), _ => false),
+          b => y.fold(_ => false, B.eqv(b, _))
+        )
     }
 }

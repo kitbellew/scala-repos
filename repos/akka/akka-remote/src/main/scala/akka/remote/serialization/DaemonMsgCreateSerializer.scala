@@ -42,47 +42,48 @@ private[akka] class DaemonMsgCreateSerializer(val system: ExtendedActorSystem)
 
   lazy val serialization = SerializationExtension(system)
 
-  def toBinary(obj: AnyRef): Array[Byte] = obj match {
-    case DaemonMsgCreate(props, deploy, path, supervisor) ⇒
-      def deployProto(d: Deploy): DeployData = {
-        val builder = DeployData.newBuilder.setPath(d.path)
-        if (d.config != ConfigFactory.empty)
-          builder.setConfig(serialize(d.config))
-        if (d.routerConfig != NoRouter)
-          builder.setRouterConfig(serialize(d.routerConfig))
-        if (d.scope != NoScopeGiven)
-          builder.setScope(serialize(d.scope))
-        if (d.dispatcher != NoDispatcherGiven)
-          builder.setDispatcher(d.dispatcher)
-        builder.build
-      }
+  def toBinary(obj: AnyRef): Array[Byte] =
+    obj match {
+      case DaemonMsgCreate(props, deploy, path, supervisor) ⇒
+        def deployProto(d: Deploy): DeployData = {
+          val builder = DeployData.newBuilder.setPath(d.path)
+          if (d.config != ConfigFactory.empty)
+            builder.setConfig(serialize(d.config))
+          if (d.routerConfig != NoRouter)
+            builder.setRouterConfig(serialize(d.routerConfig))
+          if (d.scope != NoScopeGiven)
+            builder.setScope(serialize(d.scope))
+          if (d.dispatcher != NoDispatcherGiven)
+            builder.setDispatcher(d.dispatcher)
+          builder.build
+        }
 
-      def propsProto = {
-        val builder = PropsData.newBuilder
-          .setClazz(props.clazz.getName)
-          .setDeploy(deployProto(props.deploy))
-        props.args map serialize foreach builder.addArgs
-        props.args map (a ⇒
-          if (a == null)
-            "null"
-          else
-            a.getClass.getName) foreach builder.addClasses
-        builder.build
-      }
+        def propsProto = {
+          val builder = PropsData.newBuilder
+            .setClazz(props.clazz.getName)
+            .setDeploy(deployProto(props.deploy))
+          props.args map serialize foreach builder.addArgs
+          props.args map (a ⇒
+            if (a == null)
+              "null"
+            else
+              a.getClass.getName) foreach builder.addClasses
+          builder.build
+        }
 
-      DaemonMsgCreateData.newBuilder
-        .setProps(propsProto)
-        .setDeploy(deployProto(deploy))
-        .setPath(path)
-        .setSupervisor(serializeActorRef(supervisor))
-        .build
-        .toByteArray
+        DaemonMsgCreateData.newBuilder
+          .setProps(propsProto)
+          .setDeploy(deployProto(deploy))
+          .setPath(path)
+          .setSupervisor(serializeActorRef(supervisor))
+          .build
+          .toByteArray
 
-    case _ ⇒
-      throw new IllegalArgumentException(
-        "Can't serialize a non-DaemonMsgCreate message using DaemonMsgCreateSerializer [%s]"
-          .format(obj))
-  }
+      case _ ⇒
+        throw new IllegalArgumentException(
+          "Can't serialize a non-DaemonMsgCreate message using DaemonMsgCreateSerializer [%s]"
+            .format(obj))
+    }
 
   def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = {
     val proto = DaemonMsgCreateData.parseFrom(bytes)

@@ -74,15 +74,16 @@ object PrettyDuration {
         NANOSECONDS
     }
 
-    def abbreviate(unit: TimeUnit): String = unit match {
-      case NANOSECONDS ⇒ "ns"
-      case MICROSECONDS ⇒ "μs"
-      case MILLISECONDS ⇒ "ms"
-      case SECONDS ⇒ "s"
-      case MINUTES ⇒ "min"
-      case HOURS ⇒ "h"
-      case DAYS ⇒ "d"
-    }
+    def abbreviate(unit: TimeUnit): String =
+      unit match {
+        case NANOSECONDS ⇒ "ns"
+        case MICROSECONDS ⇒ "μs"
+        case MILLISECONDS ⇒ "ms"
+        case SECONDS ⇒ "s"
+        case MINUTES ⇒ "min"
+        case HOURS ⇒ "h"
+        case DAYS ⇒ "d"
+      }
   }
 
 }

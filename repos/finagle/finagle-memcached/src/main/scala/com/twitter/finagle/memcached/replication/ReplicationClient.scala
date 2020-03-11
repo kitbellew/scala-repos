@@ -119,20 +119,22 @@ class BaseReplicationClient(
 
     def loopGet(
         clients: Seq[Client],
-        currentRes: GetResult): Future[GetResult] = clients match {
-      case _
-          if currentRes.misses.isEmpty &&
-            currentRes.failures.isEmpty =>
-        Future.value(currentRes)
-      case Seq() => Future.value(currentRes)
-      case Seq(c, tail @ _*) =>
-        val missing = currentRes.misses ++ currentRes.failures.keySet
-        c.getResult(missing) flatMap {
-          case res =>
-            val newRes = GetResult.merged(Seq(GetResult(currentRes.hits), res))
-            loopGet(tail, newRes)
-        }
-    }
+        currentRes: GetResult): Future[GetResult] =
+      clients match {
+        case _
+            if currentRes.misses.isEmpty &&
+              currentRes.failures.isEmpty =>
+          Future.value(currentRes)
+        case Seq() => Future.value(currentRes)
+        case Seq(c, tail @ _*) =>
+          val missing = currentRes.misses ++ currentRes.failures.keySet
+          c.getResult(missing) flatMap {
+            case res =>
+              val newRes =
+                GetResult.merged(Seq(GetResult(currentRes.hits), res))
+              loopGet(tail, newRes)
+          }
+      }
 
     loopGet(clientsInOrder, GetResult(Map.empty, keys.toSet))
   }

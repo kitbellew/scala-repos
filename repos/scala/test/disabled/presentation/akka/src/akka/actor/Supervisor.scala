@@ -136,35 +136,36 @@ sealed class Supervisor(
   def childSupervisors: List[Supervisor] =
     _childActors.values.toArray.toList.asInstanceOf[List[Supervisor]]
 
-  def configure(config: SupervisorConfig): Unit = config match {
-    case SupervisorConfig(_, servers, _) =>
-      servers.map(server =>
-        server match {
-          case Supervise(actorRef, lifeCycle, registerAsRemoteService) =>
-            actorRef.start()
-            val className = actorRef.actor.getClass.getName
-            val currentActors = {
-              val list = _childActors.get(className)
-              if (list eq null)
-                List[ActorRef]()
-              else
-                list
-            }
-            _childActors.put(className, actorRef :: currentActors)
-            actorRef.lifeCycle = lifeCycle
-            supervisor.link(actorRef)
-            if (registerAsRemoteService)
-              Actor.remote.register(actorRef)
-          case supervisorConfig @ SupervisorConfig(
-                _,
-                _,
-                _
-              ) => // recursive supervisor configuration
-            val childSupervisor = Supervisor(supervisorConfig)
-            supervisor.link(childSupervisor.supervisor)
-            _childSupervisors.add(childSupervisor)
-        })
-  }
+  def configure(config: SupervisorConfig): Unit =
+    config match {
+      case SupervisorConfig(_, servers, _) =>
+        servers.map(server =>
+          server match {
+            case Supervise(actorRef, lifeCycle, registerAsRemoteService) =>
+              actorRef.start()
+              val className = actorRef.actor.getClass.getName
+              val currentActors = {
+                val list = _childActors.get(className)
+                if (list eq null)
+                  List[ActorRef]()
+                else
+                  list
+              }
+              _childActors.put(className, actorRef :: currentActors)
+              actorRef.lifeCycle = lifeCycle
+              supervisor.link(actorRef)
+              if (registerAsRemoteService)
+                Actor.remote.register(actorRef)
+            case supervisorConfig @ SupervisorConfig(
+                  _,
+                  _,
+                  _
+                ) => // recursive supervisor configuration
+              val childSupervisor = Supervisor(supervisorConfig)
+              supervisor.link(childSupervisor.supervisor)
+              _childSupervisors.add(childSupervisor)
+          })
+    }
 }
 
 /**

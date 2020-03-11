@@ -123,26 +123,28 @@ class AbstractFileClassLoader(val root: AbstractFile, parent: ClassLoader)
     throw new UnsupportedOperationException()
   }
 
-  override def getPackage(name: String): Package = findAbstractDir(name) match {
-    case null => super.getPackage(name)
-    case file =>
-      packages.getOrElseUpdate(
-        name, {
-          val ctor = classOf[Package].getDeclaredConstructor(
-            classOf[String],
-            classOf[String],
-            classOf[String],
-            classOf[String],
-            classOf[String],
-            classOf[String],
-            classOf[String],
-            classOf[URL],
-            classOf[ClassLoader])
-          ctor.setAccessible(true)
-          ctor.newInstance(name, null, null, null, null, null, null, null, this)
-        }
-      )
-  }
+  override def getPackage(name: String): Package =
+    findAbstractDir(name) match {
+      case null => super.getPackage(name)
+      case file =>
+        packages.getOrElseUpdate(
+          name, {
+            val ctor = classOf[Package].getDeclaredConstructor(
+              classOf[String],
+              classOf[String],
+              classOf[String],
+              classOf[String],
+              classOf[String],
+              classOf[String],
+              classOf[String],
+              classOf[URL],
+              classOf[ClassLoader])
+            ctor.setAccessible(true)
+            ctor
+              .newInstance(name, null, null, null, null, null, null, null, this)
+          }
+        )
+    }
 
   override def getPackages(): Array[Package] =
     root.iterator.filter(_.isDirectory).map(dir => getPackage(dir.name)).toArray

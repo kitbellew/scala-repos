@@ -45,11 +45,12 @@ class TensorValues[K, V, +This](
 
   override def toString = iterator.mkString("TensorValues(", ",", ")")
 
-  override def equals(p1: Any) = p1 match {
-    case x: TensorValues[_, _, _] =>
-      x.eq(this) || iterator.sameElements(x.iterator)
-    case _ => false
-  }
+  override def equals(p1: Any) =
+    p1 match {
+      case x: TensorValues[_, _, _] =>
+        x.eq(this) || iterator.sameElements(x.iterator)
+      case _ => false
+    }
 
   def map[TT >: This, O, That](fn: (V) => O)(
       implicit bf: CanMapValues[TT, V, O, That]): That = {

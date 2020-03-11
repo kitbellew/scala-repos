@@ -6,9 +6,10 @@ class Foo {
     case class Cell[T](var x: T)
     def f[T](x: Any): Cell[t1] forSome {
       type t1
-    } = x match {
-      case y: Cell[t] => y
-    }
+    } =
+      x match {
+        case y: Cell[t] => y
+      }
 
     var x: Cell[T] forSome {
       type T
@@ -23,9 +24,10 @@ class Foo {
 class FooW {
   class Line {
     case class Cell[T](var x: T)
-    def f[T](x: Any): Cell[_] = x match {
-      case y: Cell[t] => y
-    }
+    def f[T](x: Any): Cell[_] =
+      x match {
+        case y: Cell[t] => y
+      }
 
     var x: Cell[_] = new Cell(1)
     println({
@@ -63,9 +65,10 @@ object Bug1189 {
   type U = Cell[T1] forSome {
     type T1
   }
-  def f(x: Any): U = x match {
-    case y: Cell[_] => y
-  }
+  def f(x: Any): U =
+    x match {
+      case y: Cell[_] => y
+    }
 
   var x: U = Cell(1)
   println(x)
@@ -93,23 +96,25 @@ object Test extends App {
     def name: String
   } forSome {
     type T
-  }) = x match {
-    case ctr: Counter[t] =>
-      val c = ctr.newCounter
-      println(ctr.name + " " + ctr.get(ctr.inc(ctr.inc(c))))
-    case _ =>
-  }
+  }) =
+    x match {
+      case ctr: Counter[t] =>
+        val c = ctr.newCounter
+        println(ctr.name + " " + ctr.get(ctr.inc(ctr.inc(c))))
+      case _ =>
+    }
 
   def fooW(x: Counter[T] {
     def name: String
   } forSome {
     type T
-  }) = x match {
-    case ctr: Counter[t] =>
-      val c = ctr.newCounter
-      println(ctr.name + " " + ctr.get(ctr.inc(ctr.inc(c))))
-    case _ =>
-  }
+  }) =
+    x match {
+      case ctr: Counter[t] =>
+        val c = ctr.newCounter
+        println(ctr.name + " " + ctr.get(ctr.inc(ctr.inc(c))))
+      case _ =>
+    }
 
   val ci = new Counter[Int] {
     def newCounter = 0

@@ -213,11 +213,12 @@ sealed trait StreamRef {
 }
 
 object StreamRef {
-  def forWriteMode(mode: WriteMode, terminal: Boolean): StreamRef = mode match {
-    case AccessMode.Create  => StreamRef.Create(UUID.randomUUID, terminal)
-    case AccessMode.Replace => StreamRef.Replace(UUID.randomUUID, terminal)
-    case AccessMode.Append  => StreamRef.Append
-  }
+  def forWriteMode(mode: WriteMode, terminal: Boolean): StreamRef =
+    mode match {
+      case AccessMode.Create  => StreamRef.Create(UUID.randomUUID, terminal)
+      case AccessMode.Replace => StreamRef.Replace(UUID.randomUUID, terminal)
+      case AccessMode.Append  => StreamRef.Append
+    }
 
   object NewVersion {
     def unapply(ref: StreamRef): Option[(UUID, Boolean, Boolean)] = {
@@ -248,40 +249,44 @@ object StreamRef {
   case object Append extends StreamRef {
     val terminal = false
     def terminate = this
-    def split(n: Int): Seq[StreamRef] = Vector.fill(n) {
-      this
-    }
+    def split(n: Int): Seq[StreamRef] =
+      Vector.fill(n) {
+        this
+      }
   }
 
   implicit val decomposer: Decomposer[StreamRef] = new Decomposer[StreamRef] {
-    def decompose(streamRef: StreamRef) = streamRef match {
-      case Create(uuid, terminal) =>
-        JObject(
-          "create" -> JObject("uuid" -> uuid.jv, "terminal" -> terminal.jv))
-      case Replace(uuid, terminal) =>
-        JObject(
-          "replace" -> JObject("uuid" -> uuid.jv, "terminal" -> terminal.jv))
-      case Append => JString("append")
-    }
+    def decompose(streamRef: StreamRef) =
+      streamRef match {
+        case Create(uuid, terminal) =>
+          JObject(
+            "create" -> JObject("uuid" -> uuid.jv, "terminal" -> terminal.jv))
+        case Replace(uuid, terminal) =>
+          JObject(
+            "replace" -> JObject("uuid" -> uuid.jv, "terminal" -> terminal.jv))
+        case Append => JString("append")
+      }
   }
 
   implicit val extractor: Extractor[StreamRef] = new Extractor[StreamRef] {
-    def validated(jv: JValue) = jv match {
-      case JString("append") => Success(Append)
-      case other =>
-        ((other \? "create") map { jv =>
-          (jv, Create.apply _)
-        }) orElse ((other \? "replace") map { jv =>
-          (jv, Replace.apply _)
-        }) map {
-          case (jv, f) =>
-            (jv.validated[UUID]("uuid") |@| jv.validated[Boolean]("terminal")) {
-              f
-            }
-        } getOrElse {
-          Failure(Invalid("Storage mode %s not recogized.".format(other)))
-        }
-    }
+    def validated(jv: JValue) =
+      jv match {
+        case JString("append") => Success(Append)
+        case other =>
+          ((other \? "create") map { jv =>
+            (jv, Create.apply _)
+          }) orElse ((other \? "replace") map { jv =>
+            (jv, Replace.apply _)
+          }) map {
+            case (jv, f) =>
+              (jv.validated[UUID]("uuid") |@| jv.validated[Boolean](
+                "terminal")) {
+                f
+              }
+          } getOrElse {
+            Failure(Invalid("Storage mode %s not recogized.".format(other)))
+          }
+      }
   }
 }
 

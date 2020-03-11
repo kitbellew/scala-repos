@@ -79,21 +79,22 @@ class LAFuture[T](val scheduler: LAScheduler) {
     * Get the future value
     */
   @scala.annotation.tailrec
-  final def get: T = synchronized {
-    if (satisfied)
-      item
-    else if (aborted)
-      throw new AbortedFutureException(failure)
-    else {
-      this.wait()
+  final def get: T =
+    synchronized {
       if (satisfied)
         item
       else if (aborted)
         throw new AbortedFutureException(failure)
-      else
-        get
+      else {
+        this.wait()
+        if (satisfied)
+          item
+        else if (aborted)
+          throw new AbortedFutureException(failure)
+        else
+          get
+      }
     }
-  }
 
   /**
     * Execute the function with the value. If the
@@ -144,39 +145,42 @@ class LAFuture[T](val scheduler: LAScheduler) {
     * satisfied after the timeout period, return an
     * Empty
     */
-  def get(timeout: Long): Box[T] = synchronized {
-    if (satisfied)
-      Full(item)
-    else if (aborted)
-      failure
-    else {
-      try {
-        wait(timeout)
-        if (satisfied)
-          Full(item)
-        else if (aborted)
-          failure
-        else
-          Empty
-      } catch {
-        case _: InterruptedException => Empty
+  def get(timeout: Long): Box[T] =
+    synchronized {
+      if (satisfied)
+        Full(item)
+      else if (aborted)
+        failure
+      else {
+        try {
+          wait(timeout)
+          if (satisfied)
+            Full(item)
+          else if (aborted)
+            failure
+          else
+            Empty
+        } catch {
+          case _: InterruptedException => Empty
+        }
       }
     }
-  }
 
   /**
     * Has the future been satisfied
     */
-  def isSatisfied: Boolean = synchronized {
-    satisfied
-  }
+  def isSatisfied: Boolean =
+    synchronized {
+      satisfied
+    }
 
   /**
     * Has the future been aborted
     */
-  def isAborted: Boolean = synchronized {
-    aborted
-  }
+  def isAborted: Boolean =
+    synchronized {
+      aborted
+    }
 
   /**
     * Abort the future.  It can never be satified

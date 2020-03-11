@@ -114,12 +114,13 @@ class InMemoryAccountManager[M[+_]](resetExpiration: Int = 1)(
     M.point(tokenId)
   }
 
-  def markResetTokenUsed(tokenId: ResetTokenId): M[PrecogUnit] = M.point {
-    resetTokens.get(tokenId).foreach { token =>
-      resetTokens += (tokenId -> token.copy(usedAt = Some(new DateTime)))
+  def markResetTokenUsed(tokenId: ResetTokenId): M[PrecogUnit] =
+    M.point {
+      resetTokens.get(tokenId).foreach { token =>
+        resetTokens += (tokenId -> token.copy(usedAt = Some(new DateTime)))
+      }
+      PrecogUnit
     }
-    PrecogUnit
-  }
 
   def generateResetToken(account: Account): M[ResetTokenId] =
     generateResetToken(account, (new DateTime).plusMinutes(resetExpiration))

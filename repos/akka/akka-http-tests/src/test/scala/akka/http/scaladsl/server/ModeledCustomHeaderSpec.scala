@@ -86,10 +86,11 @@ class ModeledCustomHeaderSpec extends RoutingSpec {
     "be able to match from RawHeader" in {
 
       //#matching-in-routes
-      def extractFromCustomHeader = headerValuePF {
-        case t @ ApiTokenHeader(token) ⇒ s"extracted> $t"
-        case raw: RawHeader ⇒ s"raw> $raw"
-      }
+      def extractFromCustomHeader =
+        headerValuePF {
+          case t @ ApiTokenHeader(token) ⇒ s"extracted> $t"
+          case raw: RawHeader ⇒ s"raw> $raw"
+        }
 
       val routes = extractFromCustomHeader { s ⇒
         complete(s)

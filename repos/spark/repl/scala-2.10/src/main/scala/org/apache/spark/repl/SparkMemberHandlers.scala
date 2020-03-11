@@ -44,16 +44,17 @@ private[repl] trait SparkMemberHandlers {
   private class ImportVarsTraverser extends Traverser {
     val importVars = new mutable.HashSet[Name]()
 
-    override def traverse(ast: Tree) = ast match {
-      case Ident(name) =>
-        // XXX this is obviously inadequate but it's going to require some effort
-        // to get right.
-        if (name.toString startsWith "x$")
-          ()
-        else
-          importVars += name
-      case _ => super.traverse(ast)
-    }
+    override def traverse(ast: Tree) =
+      ast match {
+        case Ident(name) =>
+          // XXX this is obviously inadequate but it's going to require some effort
+          // to get right.
+          if (name.toString startsWith "x$")
+            ()
+          else
+            importVars += name
+        case _ => super.traverse(ast)
+      }
   }
   private object ImportVarsTraverser {
     def apply(member: Tree) = {
@@ -63,17 +64,18 @@ private[repl] trait SparkMemberHandlers {
     }
   }
 
-  def chooseHandler(member: Tree): MemberHandler = member match {
-    case member: DefDef        => new DefHandler(member)
-    case member: ValDef        => new ValHandler(member)
-    case member: Assign        => new AssignHandler(member)
-    case member: ModuleDef     => new ModuleHandler(member)
-    case member: ClassDef      => new ClassHandler(member)
-    case member: TypeDef       => new TypeAliasHandler(member)
-    case member: Import        => new ImportHandler(member)
-    case DocDef(_, documented) => chooseHandler(documented)
-    case member                => new GenericHandler(member)
-  }
+  def chooseHandler(member: Tree): MemberHandler =
+    member match {
+      case member: DefDef        => new DefHandler(member)
+      case member: ValDef        => new ValHandler(member)
+      case member: Assign        => new AssignHandler(member)
+      case member: ModuleDef     => new ModuleHandler(member)
+      case member: ClassDef      => new ClassHandler(member)
+      case member: TypeDef       => new TypeAliasHandler(member)
+      case member: Import        => new ImportHandler(member)
+      case DocDef(_, documented) => chooseHandler(documented)
+      case member                => new GenericHandler(member)
+    }
 
   sealed abstract class MemberDefHandler(override val member: MemberDef)
       extends MemberHandler(member) {

@@ -140,16 +140,17 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
     if (classMembers.isEmpty)
       return
 
-    def membersToRender = position.getContext match {
-      case m: PsiMethod => classMembers.filter(_.isInstanceOf[ScMethodMember])
-      case typedDefinition: ScTypedDefinition if typedDefinition.isVal =>
-        classMembers.filter(_.isInstanceOf[ScValueMember])
-      case typedDefinition: ScTypedDefinition if typedDefinition.isVar =>
-        classMembers.filter(_.isInstanceOf[ScVariableMember])
-      case typeAlis: ScTypeAlias =>
-        classMembers.filter(_.isInstanceOf[ScAliasMember])
-      case _ => classMembers
-    }
+    def membersToRender =
+      position.getContext match {
+        case m: PsiMethod => classMembers.filter(_.isInstanceOf[ScMethodMember])
+        case typedDefinition: ScTypedDefinition if typedDefinition.isVal =>
+          classMembers.filter(_.isInstanceOf[ScValueMember])
+        case typedDefinition: ScTypedDefinition if typedDefinition.isVar =>
+          classMembers.filter(_.isInstanceOf[ScVariableMember])
+        case typeAlis: ScTypeAlias =>
+          classMembers.filter(_.isInstanceOf[ScAliasMember])
+        case _ => classMembers
+      }
 
     handleMembers(
       membersToRender,

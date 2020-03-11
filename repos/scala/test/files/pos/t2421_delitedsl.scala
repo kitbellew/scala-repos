@@ -1,14 +1,16 @@
 trait DeliteDSL {
   abstract class <~<[-From, +To] extends (From => To)
-  implicit def trivial[A]: A <~< A = new (A <~< A) {
-    def apply(x: A) = x
-  }
+  implicit def trivial[A]: A <~< A =
+    new (A <~< A) {
+      def apply(x: A) = x
+    }
 
   trait Forcible[T]
   object Forcible {
-    def factory[T](f: T => Forcible[T]) = new (T <~< Forcible[T]) {
-      def apply(x: T) = f(x)
-    }
+    def factory[T](f: T => Forcible[T]) =
+      new (T <~< Forcible[T]) {
+        def apply(x: T) = f(x)
+      }
   }
 
   case class DeliteInt(x: Int) extends Forcible[Int]

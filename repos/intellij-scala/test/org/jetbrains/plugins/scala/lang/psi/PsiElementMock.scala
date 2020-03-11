@@ -56,9 +56,10 @@ object PsiElementMock extends JavaTokenParsers {
 
   def parse(s: String): PsiElementMock = parse(element, s).get
 
-  private def element: Parser[PsiElementMock] = identifier ~ opt(elements) ^^ {
-    case name ~ children => PsiElementMock(name, children.getOrElse(Nil): _*)
-  }
+  private def element: Parser[PsiElementMock] =
+    identifier ~ opt(elements) ^^ {
+      case name ~ children => PsiElementMock(name, children.getOrElse(Nil): _*)
+    }
 
   private def identifier: Parser[String] = """[^,() ]+""".r
 

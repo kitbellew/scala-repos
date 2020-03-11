@@ -26,10 +26,11 @@ final class ApplyOps[F[_], A] private[syntax] (val self: F[A])(
     * Warning: each call to `|@|` leads to an allocation of wrapper object. For performance sensitive code, consider using
     *          [[scalaz.Apply]]`#applyN` directly.
     */
-  final def |@|[B](fb: F[B]) = new ApplicativeBuilder[F, A, B] {
-    val a: F[A] = self
-    val b: F[B] = fb
-  }
+  final def |@|[B](fb: F[B]) =
+    new ApplicativeBuilder[F, A, B] {
+      val a: F[A] = self
+      val b: F[B] = fb
+    }
 
   /** Alias for `|@|` */
   final def ⊛[B](fb: F[B]) = |@|(fb)

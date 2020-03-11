@@ -165,9 +165,10 @@ trait SubchannelClassification { this: EventBus ⇒
       diff.nonEmpty
     }
 
-  def unsubscribe(subscriber: Subscriber): Unit = subscriptions.synchronized {
-    removeFromCache(subscriptions.removeValue(subscriber))
-  }
+  def unsubscribe(subscriber: Subscriber): Unit =
+    subscriptions.synchronized {
+      removeFromCache(subscriptions.removeValue(subscriber))
+    }
 
   def publish(event: Event): Unit = {
     val c = classify(event)
@@ -600,13 +601,14 @@ trait ActorClassification { this: ActorEventBus with ActorClassifier ⇒
     */
   protected def mapSize: Int
 
-  def publish(event: Event): Unit = mappings.get(classify(event)) match {
-    case null ⇒ ()
-    case some ⇒
-      some foreach {
-        _ ! event
-      }
-  }
+  def publish(event: Event): Unit =
+    mappings.get(classify(event)) match {
+      case null ⇒ ()
+      case some ⇒
+        some foreach {
+          _ ! event
+        }
+    }
 
   def subscribe(subscriber: Subscriber, to: Classifier): Boolean =
     if (subscriber eq null)

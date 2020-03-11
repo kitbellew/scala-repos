@@ -83,9 +83,10 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
   }
 
   def testUnionWithoutProjection = {
-    def f(s: String) = managers filter {
-      _.name === s
-    }
+    def f(s: String) =
+      managers filter {
+        _.name === s
+      }
     val q = f("Peter") union f("Amy")
 
     seq(

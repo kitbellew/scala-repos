@@ -47,10 +47,11 @@ private[controllers] trait LilaController
 
   implicit def lang(implicit req: RequestHeader) = Env.i18n.pool lang req
 
-  protected def NoCache(res: Result): Result = res.withHeaders(
-    CACHE_CONTROL -> "no-cache, no-store, must-revalidate",
-    EXPIRES -> "0"
-  )
+  protected def NoCache(res: Result): Result =
+    res.withHeaders(
+      CACHE_CONTROL -> "no-cache, no-store, must-revalidate",
+      EXPIRES -> "0"
+    )
 
   protected def Socket[A: FrameFormatter](
       f: Context => Fu[(Iteratee[A, _], Enumerator[A])]) =
@@ -211,14 +212,16 @@ private[controllers] trait LilaController
       implicit ctx: Context): Fu[Result] =
     NoPlayban(NoCurrentGame(a))
 
-  protected def JsonOk[A: Writes](fua: Fu[A]) = fua map { a =>
-    Ok(Json toJson a) as JSON
-  }
+  protected def JsonOk[A: Writes](fua: Fu[A]) =
+    fua map { a =>
+      Ok(Json toJson a) as JSON
+    }
 
   protected def JsonOptionOk[A: Writes](fua: Fu[Option[A]])(
-      implicit ctx: Context) = fua flatMap {
-    _.fold(notFound(ctx))(a => fuccess(Ok(Json toJson a) as JSON))
-  }
+      implicit ctx: Context) =
+    fua flatMap {
+      _.fold(notFound(ctx))(a => fuccess(Ok(Json toJson a) as JSON))
+    }
 
   protected def JsonOptionFuOk[A, B: Writes](fua: Fu[Option[A]])(
       op: A => Fu[B])(implicit ctx: Context) =
@@ -249,9 +252,10 @@ private[controllers] trait LilaController
       data => op(data)
     )
 
-  protected def FuRedirect(fua: Fu[Call]) = fua map {
-    Redirect(_)
-  }
+  protected def FuRedirect(fua: Fu[Call]) =
+    fua map {
+      Redirect(_)
+    }
 
   protected def OptionOk[A, B: Writeable: ContentTypeOf](fua: Fu[Option[A]])(
       op: A => B)(implicit ctx: Context): Fu[Result] =
@@ -298,18 +302,20 @@ private[controllers] trait LilaController
       _.fold(notFound(ctx))(a => op(a))
     }
 
-  def notFound(implicit ctx: Context): Fu[Result] = negotiate(
-    html =
-      if (HTTPRequest isSynchronousHttp ctx.req)
-        Main notFound ctx.req
-      else
-        fuccess(Results.NotFound("Resource not found")),
-    api = _ => notFoundJson("Resource not found")
-  )
+  def notFound(implicit ctx: Context): Fu[Result] =
+    negotiate(
+      html =
+        if (HTTPRequest isSynchronousHttp ctx.req)
+          Main notFound ctx.req
+        else
+          fuccess(Results.NotFound("Resource not found")),
+      api = _ => notFoundJson("Resource not found")
+    )
 
-  def notFoundJson(msg: String = "Not found"): Fu[Result] = fuccess {
-    NotFound(jsonError(msg))
-  }
+  def notFoundJson(msg: String = "Not found"): Fu[Result] =
+    fuccess {
+      NotFound(jsonError(msg))
+    }
 
   def jsonError[A: Writes](err: A): JsObject = Json.obj("error" -> err)
 

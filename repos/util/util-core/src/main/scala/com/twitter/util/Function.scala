@@ -59,17 +59,19 @@ object Function {
     * Creates a T => R from a JavaFunction. Used for easier interop
     * between Java 8 and Twitter Util libraries.
     */
-  def func[T, R](f: JavaFunction[T, R]) = new Function[T, R] {
-    override def apply(value: T): R = f(value)
-  }
+  def func[T, R](f: JavaFunction[T, R]) =
+    new Function[T, R] {
+      override def apply(value: T): R = f(value)
+    }
 
   /**
     * Creates a T => Unit from a JavaConsumer.
     * Useful for e.g. future.onSuccess
     */
-  def cons[T](f: JavaConsumer[T]) = new Function[T, Unit] {
-    override def apply(value: T): Unit = f(value)
-  }
+  def cons[T](f: JavaConsumer[T]) =
+    new Function[T, Unit] {
+      override def apply(value: T): Unit = f(value)
+    }
 
   /**
     * like `func`, but deals with checked exceptions as well

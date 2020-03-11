@@ -112,14 +112,15 @@ trait ScalaNumericAnyConversions extends Any {
     *  than Double can hold: same thing.  There's no way given the
     *  interface available here to prevent this error.
     */
-  protected def unifiedPrimitiveEquals(x: Any) = x match {
-    case x: Char   => isValidChar && (toInt == x.toInt)
-    case x: Byte   => isValidByte && (toByte == x)
-    case x: Short  => isValidShort && (toShort == x)
-    case x: Int    => isValidInt && (toInt == x)
-    case x: Long   => toLong == x
-    case x: Float  => toFloat == x
-    case x: Double => toDouble == x
-    case _         => false
-  }
+  protected def unifiedPrimitiveEquals(x: Any) =
+    x match {
+      case x: Char   => isValidChar && (toInt == x.toInt)
+      case x: Byte   => isValidByte && (toByte == x)
+      case x: Short  => isValidShort && (toShort == x)
+      case x: Int    => isValidInt && (toInt == x)
+      case x: Long   => toLong == x
+      case x: Float  => toFloat == x
+      case x: Double => toDouble == x
+      case _         => false
+    }
 }

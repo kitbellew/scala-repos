@@ -81,46 +81,47 @@ abstract class TemplateEmailer(
       subjectTemplate: String,
       bodyTemplates: Seq[(String, String)],
       parameters: Map[String, String],
-      from: Option[String] = None): PrecogUnit = withSession { session =>
-    val msg = new MimeMessage(session)
-    msg.addRecipients(
-      Message.RecipientType.TO,
-      recipients.map(new InternetAddress(_).asInstanceOf[Address]).toArray)
-    from.foreach { fa =>
-      msg.setFrom(new InternetAddress(fa))
-    }
-
-    val templateParams = defaultParameters ++ parameters
-
-    // Process the templates and insert values
-    msg.setSubject(engine.layout(source(subjectTemplate), templateParams))
-
-    val transformed = bodyTemplates.map {
-      case (template, mimetype) =>
-        (
-          engine.layout(source(template), templateParams),
-          mimetype + "; charset=utf-8")
-    }
-
-    if (transformed.size > 1) {
-      val multi = new MimeMultipart("alternative")
-      transformed.foreach {
-        case (content, mimetype) =>
-          val bodyPart = new MimeBodyPart
-          bodyPart.setContent(content, mimetype)
-          multi.addBodyPart(bodyPart)
+      from: Option[String] = None): PrecogUnit =
+    withSession { session =>
+      val msg = new MimeMessage(session)
+      msg.addRecipients(
+        Message.RecipientType.TO,
+        recipients.map(new InternetAddress(_).asInstanceOf[Address]).toArray)
+      from.foreach { fa =>
+        msg.setFrom(new InternetAddress(fa))
       }
-      msg.setContent(multi)
-    } else {
-      transformed.foreach {
-        case (content, mimetype) => msg.setContent(content, mimetype)
+
+      val templateParams = defaultParameters ++ parameters
+
+      // Process the templates and insert values
+      msg.setSubject(engine.layout(source(subjectTemplate), templateParams))
+
+      val transformed = bodyTemplates.map {
+        case (template, mimetype) =>
+          (
+            engine.layout(source(template), templateParams),
+            mimetype + "; charset=utf-8")
       }
+
+      if (transformed.size > 1) {
+        val multi = new MimeMultipart("alternative")
+        transformed.foreach {
+          case (content, mimetype) =>
+            val bodyPart = new MimeBodyPart
+            bodyPart.setContent(content, mimetype)
+            multi.addBodyPart(bodyPart)
+        }
+        msg.setContent(multi)
+      } else {
+        transformed.foreach {
+          case (content, mimetype) => msg.setContent(content, mimetype)
+        }
+      }
+
+      Transport.send(msg)
+
+      PrecogUnit
     }
-
-    Transport.send(msg)
-
-    PrecogUnit
-  }
 }
 
 class DirectoryTemplateEmailer(

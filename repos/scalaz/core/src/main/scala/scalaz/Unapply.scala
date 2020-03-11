@@ -326,12 +326,13 @@ object Unapply extends Unapply_0 {
       implicit TC0: TC[MT[MAB[A0, ?], ?]]): Unapply[TC, MT[MAB[A0, ?], A1]] {
     type M[X] = MT[MAB[A0, ?], X]
     type A = A1
-  } = new Unapply[TC, MT[MAB[A0, ?], A1]] {
-    type M[X] = MT[MAB[A0, ?], X]
-    type A = A1
-    def TC = TC0
-    def leibniz = Leibniz.refl
-  }
+  } =
+    new Unapply[TC, MT[MAB[A0, ?], A1]] {
+      type M[X] = MT[MAB[A0, ?], X]
+      type A = A1
+      def TC = TC0
+      def leibniz = Leibniz.refl
+    }
   // TODO More!
 }
 
@@ -506,12 +507,13 @@ object UnapplyProduct {
     type M[x] = U1#M[x]
     type A = U1#A
     type B = U2#A
-  } = new UnapplyProduct[TC, MA0, MB0] {
-    type M[x] = U1#M[x]
-    type A = U1#A
-    type B = U2#A
-    def TC = sU1.widen.TC
-    def _1(ma: MA0) = sU1.widen(ma)
-    def _2(mb: MB0) = iso.from(sU2.widen(mb))
-  }
+  } =
+    new UnapplyProduct[TC, MA0, MB0] {
+      type M[x] = U1#M[x]
+      type A = U1#A
+      type B = U2#A
+      def TC = sU1.widen.TC
+      def _1(ma: MA0) = sU1.widen(ma)
+      def _2(mb: MB0) = iso.from(sU2.widen(mb))
+    }
 }

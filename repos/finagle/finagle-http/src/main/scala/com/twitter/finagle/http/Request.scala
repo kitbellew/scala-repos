@@ -317,11 +317,12 @@ object Request {
       reqIn: HttpRequest,
       readerIn: Reader,
       remoteAddr: InetSocketAddress
-  ): Request = new Request {
-    override val reader = readerIn
-    val httpRequest = reqIn
-    lazy val remoteSocketAddress = remoteAddr
-  }
+  ): Request =
+    new Request {
+      override val reader = readerIn
+      val httpRequest = reqIn
+      lazy val remoteSocketAddress = remoteAddr
+    }
 
   /** Create Request from HttpRequest and Channel.  Used by Codec. */
   private[finagle] def apply(

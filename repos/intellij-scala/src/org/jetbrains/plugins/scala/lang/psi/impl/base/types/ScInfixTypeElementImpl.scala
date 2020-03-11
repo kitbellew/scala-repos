@@ -25,10 +25,11 @@ class ScInfixTypeElementImpl(node: ASTNode)
     with ScInfixTypeElement {
   override def toString: String = "InfixType: " + getText
 
-  def rOp = findChildrenByClass(classOf[ScTypeElement]) match {
-    case Array(_, r) => Some(r)
-    case _           => None
-  }
+  def rOp =
+    findChildrenByClass(classOf[ScTypeElement]) match {
+      case Array(_, r) => Some(r)
+      case _           => None
+    }
 
   @Cached(synchronized = true, ModCount.getBlockModificationCount, this)
   def desugarizedInfixType: Option[ScParameterizedTypeElement] = {

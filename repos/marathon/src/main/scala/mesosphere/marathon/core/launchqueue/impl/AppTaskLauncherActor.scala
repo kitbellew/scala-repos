@@ -166,17 +166,18 @@ private class AppTaskLauncherActor(
       case message: Any => stash()
     }
 
-  private[this] def active: Receive = LoggingReceive.withLabel("active") {
-    Seq(
-      receiveStop,
-      receiveDelayUpdate,
-      receiveTaskLaunchNotification,
-      receiveTaskStatusUpdate,
-      receiveGetCurrentCount,
-      receiveAddCount,
-      receiveProcessOffers
-    ).reduce(_.orElse[Any, Unit](_))
-  }
+  private[this] def active: Receive =
+    LoggingReceive.withLabel("active") {
+      Seq(
+        receiveStop,
+        receiveDelayUpdate,
+        receiveTaskLaunchNotification,
+        receiveTaskStatusUpdate,
+        receiveGetCurrentCount,
+        receiveAddCount,
+        receiveProcessOffers
+      ).reduce(_.orElse[Any, Unit](_))
+    }
 
   private[this] def receiveWaitingForInFlight: Receive =
     LoggingReceive.withLabel("waitingForInFlight") {

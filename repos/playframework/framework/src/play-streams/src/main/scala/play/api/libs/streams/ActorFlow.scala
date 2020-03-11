@@ -55,11 +55,12 @@ object ActorFlow {
             case other => flowActor ! other
           }
 
-          override def supervisorStrategy = OneForOneStrategy() {
-            case _ =>
-              println("Stopping actor due to exception")
-              SupervisorStrategy.Stop
-          }
+          override def supervisorStrategy =
+            OneForOneStrategy() {
+              case _ =>
+                println("Stopping actor due to exception")
+                SupervisorStrategy.Stop
+            }
         })),
         Status.Success(())
       ),

@@ -87,17 +87,18 @@ class Pool[K, V](valueFactory: Option[(K) => V] = None)
 
   override def size = pool.size
 
-  override def iterator = new Iterator[(K, V)]() {
+  override def iterator =
+    new Iterator[(K, V)]() {
 
-    private val iter = pool.entrySet.iterator
+      private val iter = pool.entrySet.iterator
 
-    def hasNext: Boolean = iter.hasNext
+      def hasNext: Boolean = iter.hasNext
 
-    def next: (K, V) = {
-      val n = iter.next
-      (n.getKey, n.getValue)
+      def next: (K, V) = {
+        val n = iter.next
+        (n.getKey, n.getValue)
+      }
+
     }
-
-  }
 
 }

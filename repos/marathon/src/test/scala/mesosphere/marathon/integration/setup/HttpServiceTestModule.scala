@@ -101,12 +101,14 @@ class ApplicationHealthCheck @Inject() () {
       @PathParam("versionId") versionId: String,
       @PathParam("port") port: Int): Response = {
     val appId = path.toRootPath
-    def instance = ExternalMarathonIntegrationTest.healthChecks.find { c =>
-      c.appId == appId && c.versionId == versionId && c.port == port
-    }
-    def definition = ExternalMarathonIntegrationTest.healthChecks.find { c =>
-      c.appId == appId && c.versionId == versionId && c.port == 0
-    }
+    def instance =
+      ExternalMarathonIntegrationTest.healthChecks.find { c =>
+        c.appId == appId && c.versionId == versionId && c.port == port
+      }
+    def definition =
+      ExternalMarathonIntegrationTest.healthChecks.find { c =>
+        c.appId == appId && c.versionId == versionId && c.port == 0
+      }
     val state = instance.orElse(definition).fold(true)(_.healthy)
     if (state)
       Response.ok().build()

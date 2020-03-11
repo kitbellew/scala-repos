@@ -28,10 +28,11 @@ class ProdConsAnalyzerTest extends ClearAfterClass {
   val noOptCompiler = ProdConsAnalyzerTest.noOptCompiler
   import noOptCompiler.genBCode.bTypes.backendUtils._
 
-  def prodToString(producer: AbstractInsnNode) = producer match {
-    case p: InitialProducer => p.toString
-    case p                  => textify(p)
-  }
+  def prodToString(producer: AbstractInsnNode) =
+    producer match {
+      case p: InitialProducer => p.toString
+      case p                  => textify(p)
+    }
 
   def testSingleInsn(
       singletonInsns: Traversable[AbstractInsnNode],

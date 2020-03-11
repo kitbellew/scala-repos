@@ -190,12 +190,13 @@ object FunctionTwo extends Function(2) {
 
 object Function {
   def make(i: Int) = apply(i)()
-  def apply(i: Int) = i match {
-    case 0 => FunctionZero
-    case 1 => FunctionOne
-    case 2 => FunctionTwo
-    case _ => new Function(i)
-  }
+  def apply(i: Int) =
+    i match {
+      case 0 => FunctionZero
+      case 1 => FunctionOne
+      case 2 => FunctionTwo
+      case _ => new Function(i)
+    }
 }
 
 class Function(val i: Int) extends Group("Function") with Arity {
@@ -262,11 +263,12 @@ class Function(val i: Int) extends Group("Function") with Arity {
   }
 
   // (x1: T1) => ((x2: T2, x3: T3, x4: T4, x5: T5, x6: T6, x7: T7) => self.apply(x1,x2,x3,x4,x5,x6,x7)).curried
-  def longCurry = ((xdefs, targs).zipped.map(_ + ": " + _) drop 1).mkString(
-    "(x1: T1) => ((",
-    ", ",
-    ") => self.apply%s).curried".format(commaXs)
-  )
+  def longCurry =
+    ((xdefs, targs).zipped.map(_ + ": " + _) drop 1).mkString(
+      "(x1: T1) => ((",
+      ", ",
+      ") => self.apply%s).curried".format(commaXs)
+    )
 
   // f(x1,x2,x3,x4,x5,x6)  == (f.curried)(x1)(x2)(x3)(x4)(x5)(x6)
   def curryComment = {
@@ -316,12 +318,13 @@ object Tuple {
   val zipImports = ""
 
   def make(i: Int) = apply(i)()
-  def apply(i: Int) = i match {
-    case 1 => TupleOne
-    case 2 => TupleTwo
-    case 3 => TupleThree
-    case _ => new Tuple(i)
-  }
+  def apply(i: Int) =
+    i match {
+      case 1 => TupleOne
+      case 2 => TupleTwo
+      case 3 => TupleThree
+      case _ => new Tuple(i)
+    }
 }
 
 object TupleOne extends Tuple(1) {
@@ -426,11 +429,12 @@ zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz */
 
 object Product extends Group("Product") {
   def make(i: Int) = apply(i)()
-  def apply(i: Int) = i match {
-    case 1 => ProductOne
-    case 2 => ProductTwo
-    case _ => new Product(i)
-  }
+  def apply(i: Int) =
+    i match {
+      case 1 => ProductOne
+      case 2 => ProductTwo
+      case _ => new Product(i)
+    }
 }
 
 object ProductOne extends Product(1) {
@@ -587,10 +591,11 @@ abstract class {
 }
 object AbstractFunction {
   def make(i: Int) = apply(i)()
-  def apply(i: Int) = i match {
-    case 0 => AbstractFunctionZero
-    case 1 => AbstractFunctionOne
-    case 2 => AbstractFunctionTwo
-    case _ => new AbstractFunction(i)
-  }
+  def apply(i: Int) =
+    i match {
+      case 0 => AbstractFunctionZero
+      case 1 => AbstractFunctionOne
+      case 2 => AbstractFunctionTwo
+      case _ => new AbstractFunction(i)
+    }
 }

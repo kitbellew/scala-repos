@@ -47,16 +47,17 @@ object CronExpressionSerialization {
   }
 
   implicit val cronExpressionExtractor = new Extractor[CronExpression] {
-    def validated(jv: JValue) = jv match {
-      case JString(expr) =>
-        Validation
-          .fromTryCatch(new CronExpression(expr))
-          .leftMap(Extractor.Error.thrown)
-      case invalid =>
-        Failure(
-          Extractor.Error.invalid(
-            "Could not parse CRON expression from " + invalid))
-    }
+    def validated(jv: JValue) =
+      jv match {
+        case JString(expr) =>
+          Validation
+            .fromTryCatch(new CronExpression(expr))
+            .leftMap(Extractor.Error.thrown)
+        case invalid =>
+          Failure(
+            Extractor.Error.invalid(
+              "Could not parse CRON expression from " + invalid))
+      }
   }
 }
 
@@ -70,9 +71,10 @@ case class ScheduledTask(
     sink: Path,
     timeoutMillis: Option[Long]) {
   def taskName = "Scheduled %s -> %s".format(source, sink)
-  def timeout = timeoutMillis map { to =>
-    Duration(to, TimeUnit.MILLISECONDS)
-  }
+  def timeout =
+    timeoutMillis map { to =>
+      Duration(to, TimeUnit.MILLISECONDS)
+    }
 }
 
 object ScheduledTask {

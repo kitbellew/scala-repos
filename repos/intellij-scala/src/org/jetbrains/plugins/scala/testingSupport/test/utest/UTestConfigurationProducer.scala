@@ -194,10 +194,11 @@ with AbstractTestConfigurationProducer {
     }
   }
 
-  private def getTestName(literal: ScLiteral) = literal.getValue match {
-    case symbol: Symbol => symbol.name
-    case other          => other.toString
-  }
+  private def getTestName(literal: ScLiteral) =
+    literal.getValue match {
+      case symbol: Symbol => symbol.name
+      case other          => other.toString
+    }
 
   private def buildPathFromTestExpr(expr: ScExpression): Option[String] =
     expr.firstChild

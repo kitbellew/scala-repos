@@ -56,38 +56,39 @@ private[akka] class CachingConfig(_config: Config) extends Config {
       case _ ⇒ (_config, new ConcurrentHashMap[String, PathEntry])
     }
 
-  private def getPathEntry(path: String): PathEntry = entryMap.get(path) match {
-    case null ⇒
-      val ne = Try {
-        config.hasPath(path)
-      } match {
-        case Failure(e) ⇒ invalidPathEntry
-        case Success(false) ⇒ nonExistingPathEntry
-        case _ ⇒
-          Try {
-            config.getValue(path)
-          } match {
-            case Failure(e) ⇒
-              emptyPathEntry
-            case Success(v) ⇒
-              if (v.valueType() == ConfigValueType.STRING)
-                StringPathEntry(
-                  true,
-                  true,
-                  v.atKey("cached"),
-                  v.unwrapped().asInstanceOf[String])
-              else
-                ValuePathEntry(true, true, v.atKey("cached"))
-          }
-      }
+  private def getPathEntry(path: String): PathEntry =
+    entryMap.get(path) match {
+      case null ⇒
+        val ne = Try {
+          config.hasPath(path)
+        } match {
+          case Failure(e) ⇒ invalidPathEntry
+          case Success(false) ⇒ nonExistingPathEntry
+          case _ ⇒
+            Try {
+              config.getValue(path)
+            } match {
+              case Failure(e) ⇒
+                emptyPathEntry
+              case Success(v) ⇒
+                if (v.valueType() == ConfigValueType.STRING)
+                  StringPathEntry(
+                    true,
+                    true,
+                    v.atKey("cached"),
+                    v.unwrapped().asInstanceOf[String])
+                else
+                  ValuePathEntry(true, true, v.atKey("cached"))
+            }
+        }
 
-      entryMap.putIfAbsent(path, ne) match {
-        case null ⇒ ne
-        case e ⇒ e
-      }
+        entryMap.putIfAbsent(path, ne) match {
+          case null ⇒ ne
+          case e ⇒ e
+        }
 
-    case e ⇒ e
-  }
+      case e ⇒ e
+    }
 
   def checkValid(reference: Config, restrictToPaths: String*) {
     config.checkValid(reference, restrictToPaths: _*)

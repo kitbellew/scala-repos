@@ -48,9 +48,10 @@ class EventDispatchChainSpec
   override protected def getScalaClassInstance: EventDispatchChain =
     getJavaClassInstance
 
-  override protected def getJavaClassInstance = new jfxe.EventDispatchChain() {
-    override def append(eventDispatcher: jfxe.EventDispatcher) = ???
-    override def prepend(eventDispatcher: jfxe.EventDispatcher) = ???
-    override def dispatchEvent(event: jfxe.Event) = ???
-  }
+  override protected def getJavaClassInstance =
+    new jfxe.EventDispatchChain() {
+      override def append(eventDispatcher: jfxe.EventDispatcher) = ???
+      override def prepend(eventDispatcher: jfxe.EventDispatcher) = ???
+      override def dispatchEvent(event: jfxe.Event) = ???
+    }
 }

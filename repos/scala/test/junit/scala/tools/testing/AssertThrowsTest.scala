@@ -14,14 +14,16 @@ class AssertThrowsTest {
   class Bar extends Exception
 
   @Test
-  def catchFoo = assertThrows[Foo] {
-    throw new Foo
-  }
+  def catchFoo =
+    assertThrows[Foo] {
+      throw new Foo
+    }
 
   @Test
-  def catchSubclass = assertThrows[Foo] {
-    throw new SubFoo
-  }
+  def catchSubclass =
+    assertThrows[Foo] {
+      throw new SubFoo
+    }
 
   @Test
   def rethrowBar =

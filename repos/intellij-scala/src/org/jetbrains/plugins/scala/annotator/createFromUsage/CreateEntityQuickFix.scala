@@ -51,10 +51,11 @@ abstract class CreateEntityQuickFix(
     if (!super.isAvailable(project, editor, file))
       return false
 
-    def checkBlock(expr: ScExpression) = blockFor(expr) match {
-      case Success(bl) => !bl.isInCompiledFile
-      case _           => false
-    }
+    def checkBlock(expr: ScExpression) =
+      blockFor(expr) match {
+        case Success(bl) => !bl.isInCompiledFile
+        case _           => false
+      }
 
     ref match {
       case Both(

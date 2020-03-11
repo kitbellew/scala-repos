@@ -50,34 +50,37 @@ object Formats {
     *
     * @param value As we ignore this parameter in binding/unbinding we have to provide a default value.
     */
-  def ignoredFormat[A](value: A): Formatter[A] = new Formatter[A] {
-    def bind(key: String, data: Map[String, String]) = Right(value)
-    def unbind(key: String, value: A) = Map.empty
-  }
+  def ignoredFormat[A](value: A): Formatter[A] =
+    new Formatter[A] {
+      def bind(key: String, data: Map[String, String]) = Right(value)
+      def unbind(key: String, value: A) = Map.empty
+    }
 
   /**
     * Default formatter for the `String` type.
     */
-  implicit def stringFormat: Formatter[String] = new Formatter[String] {
-    def bind(key: String, data: Map[String, String]) =
-      data.get(key).toRight(Seq(FormError(key, "error.required", Nil)))
-    def unbind(key: String, value: String) = Map(key -> value)
-  }
+  implicit def stringFormat: Formatter[String] =
+    new Formatter[String] {
+      def bind(key: String, data: Map[String, String]) =
+        data.get(key).toRight(Seq(FormError(key, "error.required", Nil)))
+      def unbind(key: String, value: String) = Map(key -> value)
+    }
 
   /**
     * Default formatter for the `Char` type.
     */
-  implicit def charFormat: Formatter[Char] = new Formatter[Char] {
-    def bind(key: String, data: Map[String, String]) =
-      data
-        .get(key)
-        .filter(s => s.length == 1 && s != " ")
-        .map(s => Right(s.charAt(0)))
-        .getOrElse(
-          Left(Seq(FormError(key, "error.required", Nil)))
-        )
-    def unbind(key: String, value: Char) = Map(key -> value.toString)
-  }
+  implicit def charFormat: Formatter[Char] =
+    new Formatter[Char] {
+      def bind(key: String, data: Map[String, String]) =
+        data
+          .get(key)
+          .filter(s => s.length == 1 && s != " ")
+          .map(s => Right(s.charAt(0)))
+          .getOrElse(
+            Left(Seq(FormError(key, "error.required", Nil)))
+          )
+      def unbind(key: String, value: Char) = Map(key -> value.toString)
+    }
 
   /**
     * Helper for formatters binders
@@ -202,20 +205,21 @@ object Formats {
   /**
     * Default formatter for the `Boolean` type.
     */
-  implicit def booleanFormat: Formatter[Boolean] = new Formatter[Boolean] {
+  implicit def booleanFormat: Formatter[Boolean] =
+    new Formatter[Boolean] {
 
-    override val format = Some(("format.boolean", Nil))
+      override val format = Some(("format.boolean", Nil))
 
-    def bind(key: String, data: Map[String, String]) = {
-      Right(data.get(key).getOrElse("false")).right.flatMap {
-        case "true"  => Right(true)
-        case "false" => Right(false)
-        case _       => Left(Seq(FormError(key, "error.boolean", Nil)))
+      def bind(key: String, data: Map[String, String]) = {
+        Right(data.get(key).getOrElse("false")).right.flatMap {
+          case "true"  => Right(true)
+          case "false" => Right(false)
+          case _       => Left(Seq(FormError(key, "error.boolean", Nil)))
+        }
       }
-    }
 
-    def unbind(key: String, value: Boolean) = Map(key -> value.toString)
-  }
+      def unbind(key: String, value: Boolean) = Map(key -> value.toString)
+    }
 
   import java.util.{Date, TimeZone}
 
@@ -347,14 +351,15 @@ object Formats {
   /**
     * Default formatter for the `java.util.UUID` type.
     */
-  implicit def uuidFormat: Formatter[UUID] = new Formatter[UUID] {
+  implicit def uuidFormat: Formatter[UUID] =
+    new Formatter[UUID] {
 
-    override val format = Some(("format.uuid", Nil))
+      override val format = Some(("format.uuid", Nil))
 
-    override def bind(key: String, data: Map[String, String]) =
-      parsing(UUID.fromString, "error.uuid", Nil)(key, data)
+      override def bind(key: String, data: Map[String, String]) =
+        parsing(UUID.fromString, "error.uuid", Nil)(key, data)
 
-    override def unbind(key: String, value: UUID) = Map(key -> value.toString)
-  }
+      override def unbind(key: String, value: UUID) = Map(key -> value.toString)
+    }
 
 }

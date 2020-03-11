@@ -71,10 +71,11 @@ trait FileUploadSupport extends ServletBase with HasMultipartConfig {
    * doesn't throw `IllegalStateException` or if it throws
    * `IllegalStateException` for some other reason.
    */
-  protected def isSizeConstraintException(e: Exception): Boolean = e match {
-    case _: IllegalStateException => true
-    case _                        => false
-  }
+  protected def isSizeConstraintException(e: Exception): Boolean =
+    e match {
+      case _: IllegalStateException => true
+      case _                        => false
+    }
 
   override def handle(
       req: HttpServletRequest,

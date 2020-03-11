@@ -162,9 +162,10 @@ abstract class PropertiesNodes[T](target: T, title: String) extends TitledPane {
           Tooltip(tip)
     }
 
-  protected def getLabel(property: StringProperty) = new Label {
-    text <== property
-  }
+  protected def getLabel(property: StringProperty) =
+    new Label {
+      text <== property
+    }
 
   delegate.text = title
   content = controlsPane

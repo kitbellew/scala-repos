@@ -102,212 +102,224 @@ object ScroogeGenerators {
     g(i, 0)
   }
 
-  implicit def arbitraryTestStruct: Arbitrary[TestStruct] = Arbitrary {
-    for {
-      aString <- Gen.alphaStr
-      aI32 <- Gen.oneOf(arb[Int].map(Some(_)), Gen.const(None))
-      aSecondString <- Gen.alphaStr
-    } yield TestStruct(aString, aI32, aSecondString)
-  }
+  implicit def arbitraryTestStruct: Arbitrary[TestStruct] =
+    Arbitrary {
+      for {
+        aString <- Gen.alphaStr
+        aI32 <- Gen.oneOf(arb[Int].map(Some(_)), Gen.const(None))
+        aSecondString <- Gen.alphaStr
+      } yield TestStruct(aString, aI32, aSecondString)
+    }
   case class TestStructPair(a: TestStruct, b: TestStruct)
-  implicit def arbitraryTestStructPair: Arbitrary[TestStructPair] = Arbitrary {
-    for {
-      a <- arb[TestStruct]
-      b <- arb[TestStruct]
-      i <- Gen.choose(1, 4)
-    } yield TestStructPair(a, perturb(a, b, i))
-  }
+  implicit def arbitraryTestStructPair: Arbitrary[TestStructPair] =
+    Arbitrary {
+      for {
+        a <- arb[TestStruct]
+        b <- arb[TestStruct]
+        i <- Gen.choose(1, 4)
+      } yield TestStructPair(a, perturb(a, b, i))
+    }
 
-  implicit def arbitraryTestEnum: Arbitrary[TestEnum] = Arbitrary {
-    for {
-      aEnum <- Gen.oneOf(
-        TestEnum.Zero,
-        TestEnum.One,
-        TestEnum.Two,
-        TestEnum.Large,
-        TestEnum.Huge)
-    } yield aEnum
-  }
+  implicit def arbitraryTestEnum: Arbitrary[TestEnum] =
+    Arbitrary {
+      for {
+        aEnum <- Gen.oneOf(
+          TestEnum.Zero,
+          TestEnum.One,
+          TestEnum.Two,
+          TestEnum.Large,
+          TestEnum.Huge)
+      } yield aEnum
+    }
 
-  implicit def arbitraryTestTypes: Arbitrary[TestTypes] = Arbitrary {
-    for {
-      aBool <- arb[Boolean]
-      aByte <- arb[Byte]
-      aI16 <- arb[Short]
-      aI32 <- arb[Int]
-      aI64 <- arb[Long]
-      aDouble <- arb[Double]
-      aString <- Gen.alphaStr
-      aEnum <- Gen.oneOf(
-        TestEnum.Zero,
-        TestEnum.One,
-        TestEnum.Two,
-        TestEnum.Large,
-        TestEnum.Huge)
-      aBinary <- Gen.alphaStr.map(s => ByteBuffer.wrap(s.getBytes("UTF-8")))
-    } yield TestTypes(
-      aBool,
-      aByte,
-      aI16,
-      aI32,
-      aI64,
-      aDouble,
-      aString,
-      aEnum,
-      aBinary)
-  }
+  implicit def arbitraryTestTypes: Arbitrary[TestTypes] =
+    Arbitrary {
+      for {
+        aBool <- arb[Boolean]
+        aByte <- arb[Byte]
+        aI16 <- arb[Short]
+        aI32 <- arb[Int]
+        aI64 <- arb[Long]
+        aDouble <- arb[Double]
+        aString <- Gen.alphaStr
+        aEnum <- Gen.oneOf(
+          TestEnum.Zero,
+          TestEnum.One,
+          TestEnum.Two,
+          TestEnum.Large,
+          TestEnum.Huge)
+        aBinary <- Gen.alphaStr.map(s => ByteBuffer.wrap(s.getBytes("UTF-8")))
+      } yield TestTypes(
+        aBool,
+        aByte,
+        aI16,
+        aI32,
+        aI64,
+        aDouble,
+        aString,
+        aEnum,
+        aBinary)
+    }
 
-  implicit def arbitraryTestUnion: Arbitrary[TestUnion] = Arbitrary {
-    for {
-      aStructInUnion <- arb[TestStruct].map(TestUnion.AStruct(_))
-      aDoubleSetInUnion <- arb[Set[Double]].map(TestUnion.ADoubleSet(_))
-      aUnionRes <- Gen.oneOf(aStructInUnion, aDoubleSetInUnion)
-    } yield aUnionRes
-  }
+  implicit def arbitraryTestUnion: Arbitrary[TestUnion] =
+    Arbitrary {
+      for {
+        aStructInUnion <- arb[TestStruct].map(TestUnion.AStruct(_))
+        aDoubleSetInUnion <- arb[Set[Double]].map(TestUnion.ADoubleSet(_))
+        aUnionRes <- Gen.oneOf(aStructInUnion, aDoubleSetInUnion)
+      } yield aUnionRes
+    }
 
   case class TestTypesPair(a: TestTypes, b: TestTypes)
-  implicit def arbitraryTestTypesPair: Arbitrary[TestTypesPair] = Arbitrary {
-    for {
-      a <- arb[TestTypes]
-      b <- arb[TestTypes]
-      i <- Gen.choose(1, 10)
-    } yield TestTypesPair(a, perturb(a, b, i))
-  }
-  implicit def arbitraryTestLists: Arbitrary[TestLists] = Arbitrary {
-    for {
-      aBoolList <- Gen.listOf(arb[Boolean])
-      aByteList <- Gen.listOf(arb[Byte])
-      aI16List <- Gen.listOf(arb[Short])
-      aI32List <- Gen.listOf(arb[Int])
-      aI64List <- Gen.listOf(arb[Long])
-      aDoubleList <- Gen.listOf(arb[Double])
-      aStringList <- Gen.listOf(Gen.alphaStr)
-      aStructList <- Gen.listOf(arb[TestStruct])
-      aListList <- Gen.listOf(Gen.listOf(Gen.alphaStr))
-      aSetList <- Gen.listOf(Gen.listOf(Gen.alphaStr).map(_.toSet))
-      aMapList <- Gen.listOf(Gen.listOf(arb[(Int, Int)]).map(_.toMap))
-    } yield TestLists(
-      aBoolList,
-      aByteList,
-      aI16List,
-      aI32List,
-      aI64List,
-      aDoubleList,
-      aStringList,
-      aStructList,
-      aListList,
-      aSetList,
-      aMapList)
-  }
+  implicit def arbitraryTestTypesPair: Arbitrary[TestTypesPair] =
+    Arbitrary {
+      for {
+        a <- arb[TestTypes]
+        b <- arb[TestTypes]
+        i <- Gen.choose(1, 10)
+      } yield TestTypesPair(a, perturb(a, b, i))
+    }
+  implicit def arbitraryTestLists: Arbitrary[TestLists] =
+    Arbitrary {
+      for {
+        aBoolList <- Gen.listOf(arb[Boolean])
+        aByteList <- Gen.listOf(arb[Byte])
+        aI16List <- Gen.listOf(arb[Short])
+        aI32List <- Gen.listOf(arb[Int])
+        aI64List <- Gen.listOf(arb[Long])
+        aDoubleList <- Gen.listOf(arb[Double])
+        aStringList <- Gen.listOf(Gen.alphaStr)
+        aStructList <- Gen.listOf(arb[TestStruct])
+        aListList <- Gen.listOf(Gen.listOf(Gen.alphaStr))
+        aSetList <- Gen.listOf(Gen.listOf(Gen.alphaStr).map(_.toSet))
+        aMapList <- Gen.listOf(Gen.listOf(arb[(Int, Int)]).map(_.toMap))
+      } yield TestLists(
+        aBoolList,
+        aByteList,
+        aI16List,
+        aI32List,
+        aI64List,
+        aDoubleList,
+        aStringList,
+        aStructList,
+        aListList,
+        aSetList,
+        aMapList)
+    }
   case class TestListsPair(a: TestLists, b: TestLists)
-  implicit def arbitraryTestListsPair: Arbitrary[TestListsPair] = Arbitrary {
-    for {
-      a <- arb[TestLists]
-      b <- arb[TestLists]
-      i <- Gen.choose(1, 12)
-    } yield TestListsPair(a, perturb(a, b, i))
-  }
-  implicit def arbitraryTestSets: Arbitrary[TestSets] = Arbitrary {
-    for {
-      aBoolSet <- Gen.listOf(arb[Boolean]).map(_.toSet)
-      aByteSet <- Gen.listOf(arb[Byte]).map(_.toSet)
-      aI16Set <- Gen.listOf(arb[Short]).map(_.toSet)
-      aI32Set <- Gen.listOf(arb[Int]).map(_.toSet)
-      aI64Set <- Gen.listOf(arb[Long]).map(_.toSet)
-      aDoubleSet <- Gen.listOf(arb[Double]).map(_.toSet)
-      aStringSet <- Gen.listOf(Gen.alphaStr).map(_.toSet)
-      aStructSet <- Gen.listOf(arb[TestStruct]).map(_.toSet)
-      aListSet <- Gen
-        .listOf(Gen.listOf(Gen.alphaStr).map(l => l.to[collection.Seq]))
-        .map(_.to[collection.Set])
-      aSetSet <- Gen
-        .listOf(Gen.listOf(Gen.alphaStr).map(l => l.to[collection.Set]))
-        .map(_.to[collection.Set])
-      aMapSet <- Gen
-        .listOf(
-          Gen
-            .listOf(arb[(Int, Int)])
-            .map(l => l.toMap.asInstanceOf[collection.Map[Int, Int]]))
-        .map(_.to[collection.Set])
-    } yield TestSets(
-      aBoolSet,
-      aByteSet,
-      aI16Set,
-      aI32Set,
-      aI64Set,
-      aDoubleSet,
-      aStringSet,
-      aStructSet,
-      aListSet,
-      aSetSet,
-      aMapSet)
-  }
+  implicit def arbitraryTestListsPair: Arbitrary[TestListsPair] =
+    Arbitrary {
+      for {
+        a <- arb[TestLists]
+        b <- arb[TestLists]
+        i <- Gen.choose(1, 12)
+      } yield TestListsPair(a, perturb(a, b, i))
+    }
+  implicit def arbitraryTestSets: Arbitrary[TestSets] =
+    Arbitrary {
+      for {
+        aBoolSet <- Gen.listOf(arb[Boolean]).map(_.toSet)
+        aByteSet <- Gen.listOf(arb[Byte]).map(_.toSet)
+        aI16Set <- Gen.listOf(arb[Short]).map(_.toSet)
+        aI32Set <- Gen.listOf(arb[Int]).map(_.toSet)
+        aI64Set <- Gen.listOf(arb[Long]).map(_.toSet)
+        aDoubleSet <- Gen.listOf(arb[Double]).map(_.toSet)
+        aStringSet <- Gen.listOf(Gen.alphaStr).map(_.toSet)
+        aStructSet <- Gen.listOf(arb[TestStruct]).map(_.toSet)
+        aListSet <- Gen
+          .listOf(Gen.listOf(Gen.alphaStr).map(l => l.to[collection.Seq]))
+          .map(_.to[collection.Set])
+        aSetSet <- Gen
+          .listOf(Gen.listOf(Gen.alphaStr).map(l => l.to[collection.Set]))
+          .map(_.to[collection.Set])
+        aMapSet <- Gen
+          .listOf(
+            Gen
+              .listOf(arb[(Int, Int)])
+              .map(l => l.toMap.asInstanceOf[collection.Map[Int, Int]]))
+          .map(_.to[collection.Set])
+      } yield TestSets(
+        aBoolSet,
+        aByteSet,
+        aI16Set,
+        aI32Set,
+        aI64Set,
+        aDoubleSet,
+        aStringSet,
+        aStructSet,
+        aListSet,
+        aSetSet,
+        aMapSet)
+    }
   case class TestSetsPair(a: TestSets, b: TestSets)
-  implicit def arbitraryTestSetsPair: Arbitrary[TestSetsPair] = Arbitrary {
-    for {
-      a <- arb[TestSets]
-      b <- arb[TestSets]
-      i <- Gen.choose(1, 12)
-    } yield TestSetsPair(a, perturb(a, b, i))
-  }
-  implicit def arbitraryTestMaps: Arbitrary[TestMaps] = Arbitrary {
-    for {
-      aBoolMap <- Gen.listOf(arb[(Boolean, String)]).map(_.toMap)
-      aByteMap <- Gen.listOf(arb[(Byte, Double)]).map(_.toMap)
-      aI16Map <- Gen.listOf(arb[(Short, Long)]).map(_.toMap)
-      aI32Map <- Gen.listOf(arb[(Int, Int)]).map(_.toMap)
-      aI64Map <- Gen.listOf(arb[(Long, Short)]).map(_.toMap)
-      aDoubleMap <- Gen.listOf(arb[(Double, Byte)]).map(_.toMap)
-      aStringMap <- Gen.listOf(arb[(String, Boolean)]).map(_.toMap)
-      aStructMap <- Gen.listOf(arb[(TestStruct, List[String])]).map(_.toMap)
-      aListMap <- Gen
-        .listOf(arb[(List[String], TestStruct)])
-        .map(_.toMap
-          .map {
-            case (k, v) => k.to[collection.Seq] -> v
-          }
-          .asInstanceOf[collection.Map[collection.Seq[String], TestStruct]])
-      aSetMap <- Gen
-        .listOf(arb[(Set[String], Set[String])])
-        .map(
-          _.toMap
+  implicit def arbitraryTestSetsPair: Arbitrary[TestSetsPair] =
+    Arbitrary {
+      for {
+        a <- arb[TestSets]
+        b <- arb[TestSets]
+        i <- Gen.choose(1, 12)
+      } yield TestSetsPair(a, perturb(a, b, i))
+    }
+  implicit def arbitraryTestMaps: Arbitrary[TestMaps] =
+    Arbitrary {
+      for {
+        aBoolMap <- Gen.listOf(arb[(Boolean, String)]).map(_.toMap)
+        aByteMap <- Gen.listOf(arb[(Byte, Double)]).map(_.toMap)
+        aI16Map <- Gen.listOf(arb[(Short, Long)]).map(_.toMap)
+        aI32Map <- Gen.listOf(arb[(Int, Int)]).map(_.toMap)
+        aI64Map <- Gen.listOf(arb[(Long, Short)]).map(_.toMap)
+        aDoubleMap <- Gen.listOf(arb[(Double, Byte)]).map(_.toMap)
+        aStringMap <- Gen.listOf(arb[(String, Boolean)]).map(_.toMap)
+        aStructMap <- Gen.listOf(arb[(TestStruct, List[String])]).map(_.toMap)
+        aListMap <- Gen
+          .listOf(arb[(List[String], TestStruct)])
+          .map(_.toMap
             .map {
-              case (k, v) => k.to[collection.Set] -> v.to[collection.Set]
+              case (k, v) => k.to[collection.Seq] -> v
             }
-            .asInstanceOf[collection.Map[
-              collection.Set[String],
-              collection.Set[String]]])
-      aMapMap <- Gen
-        .listOf(arb[(Map[Int, Int], Map[Int, Int])])
-        .map(
-          _.toMap
-            .map {
-              case (k, v) =>
-                k.asInstanceOf[collection.Map[Int, Int]] -> v
-                  .asInstanceOf[collection.Map[Int, Int]]
-            }
-            .asInstanceOf[collection.Map[
-              collection.Map[Int, Int],
-              collection.Map[Int, Int]]])
-    } yield TestMaps(
-      aBoolMap,
-      aByteMap,
-      aI16Map,
-      aI32Map,
-      aI64Map,
-      aDoubleMap,
-      aStringMap,
-      aStructMap,
-      aListMap,
-      aSetMap,
-      aMapMap)
-  }
+            .asInstanceOf[collection.Map[collection.Seq[String], TestStruct]])
+        aSetMap <- Gen
+          .listOf(arb[(Set[String], Set[String])])
+          .map(
+            _.toMap
+              .map {
+                case (k, v) => k.to[collection.Set] -> v.to[collection.Set]
+              }
+              .asInstanceOf[collection.Map[
+                collection.Set[String],
+                collection.Set[String]]])
+        aMapMap <- Gen
+          .listOf(arb[(Map[Int, Int], Map[Int, Int])])
+          .map(
+            _.toMap
+              .map {
+                case (k, v) =>
+                  k.asInstanceOf[collection.Map[Int, Int]] -> v
+                    .asInstanceOf[collection.Map[Int, Int]]
+              }
+              .asInstanceOf[collection.Map[
+                collection.Map[Int, Int],
+                collection.Map[Int, Int]]])
+      } yield TestMaps(
+        aBoolMap,
+        aByteMap,
+        aI16Map,
+        aI32Map,
+        aI64Map,
+        aDoubleMap,
+        aStringMap,
+        aStructMap,
+        aListMap,
+        aSetMap,
+        aMapMap)
+    }
   case class TestMapsPair(a: TestMaps, b: TestMaps)
-  implicit def arbitraryTestMapsPair: Arbitrary[TestMapsPair] = Arbitrary {
-    for {
-      a <- arb[TestMaps]
-      b <- arb[TestMaps]
-      i <- Gen.choose(1, 12)
-    } yield TestMapsPair(a, perturb(a, b, i))
-  }
+  implicit def arbitraryTestMapsPair: Arbitrary[TestMapsPair] =
+    Arbitrary {
+      for {
+        a <- arb[TestMaps]
+        b <- arb[TestMaps]
+        i <- Gen.choose(1, 12)
+      } yield TestMapsPair(a, perturb(a, b, i))
+    }
 }

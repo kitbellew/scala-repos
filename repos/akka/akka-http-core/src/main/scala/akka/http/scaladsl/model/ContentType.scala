@@ -21,10 +21,11 @@ final case class ContentTypeRange(
         mediaRange.matches(x.mediaType) && charsetRange.matches(x.charset)
     }
 
-  def render[R <: Rendering](r: R): r.type = charsetRange match {
-    case HttpCharsetRange.`*` ⇒ r ~~ mediaRange
-    case x ⇒ r ~~ mediaRange ~~ ContentType.`; charset=` ~~ x
-  }
+  def render[R <: Rendering](r: R): r.type =
+    charsetRange match {
+      case HttpCharsetRange.`*` ⇒ r ~~ mediaRange
+      case x ⇒ r ~~ mediaRange ~~ ContentType.`; charset=` ~~ x
+    }
 }
 
 object ContentTypeRange {

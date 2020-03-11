@@ -48,10 +48,11 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
     * eg for type GetResult[Int], this function gives the tree equivalent of
     * scala.Predef.implicitly[GetResult[Int]]
     */
-  def implicitTree(reqType: Tree, baseType: Tree) = TypeApply(
-    ImplicitlyTree,
-    List(AppliedTypeTree(baseType, List(reqType)))
-  )
+  def implicitTree(reqType: Tree, baseType: Tree) =
+    TypeApply(
+      ImplicitlyTree,
+      List(AppliedTypeTree(baseType, List(reqType)))
+    )
 
   //Some commonly used trees that are created on demand
   lazy val GetResultTypeTree =
@@ -177,13 +178,14 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
     }
 
     /** Fuse adjacent string literals */
-    def fuse(l: List[Tree]): List[Tree] = l match {
-      case Literal(Constant(s1: String)) :: Literal(
-            Constant(s2: String)) :: ss =>
-        fuse(Literal(Constant(s1 + s2)) :: ss)
-      case s :: ss => s :: fuse(ss)
-      case Nil     => Nil
-    }
+    def fuse(l: List[Tree]): List[Tree] =
+      l match {
+        case Literal(Constant(s1: String)) :: Literal(
+              Constant(s2: String)) :: ss =>
+          fuse(Literal(Constant(s1 + s2)) :: ss)
+        case s :: ss => s :: fuse(ss)
+        case Nil     => Nil
+      }
 
     if (rawQueryParts.length == 1)
       (
@@ -256,13 +258,14 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
   lazy val queryParts: Tree =
     Apply(Select(VectorTree, TermName("apply")), interpolationResultParams._1)
 
-  def staticQueryString: String = interpolationResultParams._1 match {
-    case Literal(Constant(s: String)) :: Nil => s
-    case _ =>
-      c.abort(
-        c.enclosingPosition,
-        "Only constant strings may be used after '#$' in 'tsql' interpolation")
-  }
+  def staticQueryString: String =
+    interpolationResultParams._1 match {
+      case Literal(Constant(s: String)) :: Nil => s
+      case _ =>
+        c.abort(
+          c.enclosingPosition,
+          "Only constant strings may be used after '#$' in 'tsql' interpolation")
+    }
 
   lazy val pconvTree: Tree = interpolationResultParams._2
 }

@@ -633,140 +633,146 @@ private[hive] class HiveQl(conf: ParserConf)
 
   protected override def nodeToTransformation(
       node: ASTNode,
-      child: LogicalPlan): Option[logical.ScriptTransformation] = node match {
-    case Token(
-          "TOK_SELEXPR",
-          Token(
-            "TOK_TRANSFORM",
-            Token("TOK_EXPLIST", inputExprs) ::
-            Token("TOK_SERDE", inputSerdeClause) ::
-            Token("TOK_RECORDWRITER", writerClause) ::
-            // TODO: Need to support other types of (in/out)put
-            Token(script, Nil) ::
-            Token("TOK_SERDE", outputSerdeClause) ::
-            Token("TOK_RECORDREADER", readerClause) ::
-            outputClause) :: Nil) =>
-      val (output, schemaLess) = outputClause match {
-        case Token("TOK_ALIASLIST", aliases) :: Nil =>
-          (
-            aliases.map {
-              case Token(name, Nil) =>
-                AttributeReference(cleanIdentifier(name), StringType)()
-            },
-            false)
-        case Token("TOK_TABCOLLIST", attributes) :: Nil =>
-          (
-            attributes.map {
-              case Token("TOK_TABCOL", Token(name, Nil) :: dataType :: Nil) =>
-                AttributeReference(
-                  cleanIdentifier(name),
-                  nodeToDataType(dataType))()
-            },
-            false)
-        case Nil =>
-          (
-            List(
-              AttributeReference("key", StringType)(),
-              AttributeReference("value", StringType)()),
-            true)
-        case _ =>
-          noParseRule("Transform", node)
-      }
+      child: LogicalPlan): Option[logical.ScriptTransformation] =
+    node match {
+      case Token(
+            "TOK_SELEXPR",
+            Token(
+              "TOK_TRANSFORM",
+              Token("TOK_EXPLIST", inputExprs) ::
+              Token("TOK_SERDE", inputSerdeClause) ::
+              Token("TOK_RECORDWRITER", writerClause) ::
+              // TODO: Need to support other types of (in/out)put
+              Token(script, Nil) ::
+              Token("TOK_SERDE", outputSerdeClause) ::
+              Token("TOK_RECORDREADER", readerClause) ::
+              outputClause) :: Nil) =>
+        val (output, schemaLess) = outputClause match {
+          case Token("TOK_ALIASLIST", aliases) :: Nil =>
+            (
+              aliases.map {
+                case Token(name, Nil) =>
+                  AttributeReference(cleanIdentifier(name), StringType)()
+              },
+              false)
+          case Token("TOK_TABCOLLIST", attributes) :: Nil =>
+            (
+              attributes.map {
+                case Token("TOK_TABCOL", Token(name, Nil) :: dataType :: Nil) =>
+                  AttributeReference(
+                    cleanIdentifier(name),
+                    nodeToDataType(dataType))()
+              },
+              false)
+          case Nil =>
+            (
+              List(
+                AttributeReference("key", StringType)(),
+                AttributeReference("value", StringType)()),
+              true)
+          case _ =>
+            noParseRule("Transform", node)
+        }
 
-      type SerDeInfo = (
-          Seq[(String, String)], // Input row format information
-          Option[String], // Optional input SerDe class
-          Seq[(String, String)], // Input SerDe properties
-          Boolean // Whether to use default record reader/writer
-      )
+        type SerDeInfo = (
+            Seq[(String, String)], // Input row format information
+            Option[String], // Optional input SerDe class
+            Seq[(String, String)], // Input SerDe properties
+            Boolean // Whether to use default record reader/writer
+        )
 
-      def matchSerDe(clause: Seq[ASTNode]): SerDeInfo = clause match {
-        case Token("TOK_SERDEPROPS", propsClause) :: Nil =>
-          val rowFormat = propsClause.map {
-            case Token(name, Token(value, Nil) :: Nil) => (name, value)
-          }
-          (rowFormat, None, Nil, false)
+        def matchSerDe(clause: Seq[ASTNode]): SerDeInfo =
+          clause match {
+            case Token("TOK_SERDEPROPS", propsClause) :: Nil =>
+              val rowFormat = propsClause.map {
+                case Token(name, Token(value, Nil) :: Nil) => (name, value)
+              }
+              (rowFormat, None, Nil, false)
 
-        case Token("TOK_SERDENAME", Token(serdeClass, Nil) :: Nil) :: Nil =>
-          (Nil, Some(unescapeSQLString(serdeClass)), Nil, false)
+            case Token("TOK_SERDENAME", Token(serdeClass, Nil) :: Nil) :: Nil =>
+              (Nil, Some(unescapeSQLString(serdeClass)), Nil, false)
 
-        case Token(
-              "TOK_SERDENAME",
-              Token(serdeClass, Nil) ::
-              Token(
-                "TOK_TABLEPROPERTIES",
-                Token(
-                  "TOK_TABLEPROPLIST",
-                  propsClause) :: Nil) :: Nil) :: Nil =>
-          val serdeProps = propsClause.map {
             case Token(
-                  "TOK_TABLEPROPERTY",
-                  Token(name, Nil) :: Token(value, Nil) :: Nil) =>
-              (unescapeSQLString(name), unescapeSQLString(value))
+                  "TOK_SERDENAME",
+                  Token(serdeClass, Nil) ::
+                  Token(
+                    "TOK_TABLEPROPERTIES",
+                    Token(
+                      "TOK_TABLEPROPLIST",
+                      propsClause) :: Nil) :: Nil) :: Nil =>
+              val serdeProps = propsClause.map {
+                case Token(
+                      "TOK_TABLEPROPERTY",
+                      Token(name, Nil) :: Token(value, Nil) :: Nil) =>
+                  (unescapeSQLString(name), unescapeSQLString(value))
+              }
+
+              // SPARK-10310: Special cases LazySimpleSerDe
+              // TODO Fully supports user-defined record reader/writer classes
+              val unescapedSerDeClass = unescapeSQLString(serdeClass)
+              val useDefaultRecordReaderWriter =
+                unescapedSerDeClass == classOf[LazySimpleSerDe].getCanonicalName
+              (
+                Nil,
+                Some(unescapedSerDeClass),
+                serdeProps,
+                useDefaultRecordReaderWriter)
+
+            case Nil =>
+              // Uses default TextRecordReader/TextRecordWriter, sets field delimiter here
+              val serdeProps = Seq(serdeConstants.FIELD_DELIM -> "\t")
+              (
+                Nil,
+                Option(hiveConf.getVar(ConfVars.HIVESCRIPTSERDE)),
+                serdeProps,
+                true)
           }
 
-          // SPARK-10310: Special cases LazySimpleSerDe
-          // TODO Fully supports user-defined record reader/writer classes
-          val unescapedSerDeClass = unescapeSQLString(serdeClass)
-          val useDefaultRecordReaderWriter =
-            unescapedSerDeClass == classOf[LazySimpleSerDe].getCanonicalName
-          (
-            Nil,
-            Some(unescapedSerDeClass),
-            serdeProps,
-            useDefaultRecordReaderWriter)
+        val (inRowFormat, inSerdeClass, inSerdeProps, useDefaultRecordReader) =
+          matchSerDe(inputSerdeClause)
 
-        case Nil =>
-          // Uses default TextRecordReader/TextRecordWriter, sets field delimiter here
-          val serdeProps = Seq(serdeConstants.FIELD_DELIM -> "\t")
-          (
-            Nil,
-            Option(hiveConf.getVar(ConfVars.HIVESCRIPTSERDE)),
-            serdeProps,
-            true)
-      }
+        val (
+          outRowFormat,
+          outSerdeClass,
+          outSerdeProps,
+          useDefaultRecordWriter) =
+          matchSerDe(outputSerdeClause)
 
-      val (inRowFormat, inSerdeClass, inSerdeProps, useDefaultRecordReader) =
-        matchSerDe(inputSerdeClause)
+        val unescapedScript = unescapeSQLString(script)
 
-      val (outRowFormat, outSerdeClass, outSerdeProps, useDefaultRecordWriter) =
-        matchSerDe(outputSerdeClause)
+        // TODO Adds support for user-defined record reader/writer classes
+        val recordReaderClass = if (useDefaultRecordReader) {
+          Option(hiveConf.getVar(ConfVars.HIVESCRIPTRECORDREADER))
+        } else {
+          None
+        }
 
-      val unescapedScript = unescapeSQLString(script)
+        val recordWriterClass = if (useDefaultRecordWriter) {
+          Option(hiveConf.getVar(ConfVars.HIVESCRIPTRECORDWRITER))
+        } else {
+          None
+        }
 
-      // TODO Adds support for user-defined record reader/writer classes
-      val recordReaderClass = if (useDefaultRecordReader) {
-        Option(hiveConf.getVar(ConfVars.HIVESCRIPTRECORDREADER))
-      } else {
-        None
-      }
+        val schema = HiveScriptIOSchema(
+          inRowFormat,
+          outRowFormat,
+          inSerdeClass,
+          outSerdeClass,
+          inSerdeProps,
+          outSerdeProps,
+          recordReaderClass,
+          recordWriterClass,
+          schemaLess)
 
-      val recordWriterClass = if (useDefaultRecordWriter) {
-        Option(hiveConf.getVar(ConfVars.HIVESCRIPTRECORDWRITER))
-      } else {
-        None
-      }
-
-      val schema = HiveScriptIOSchema(
-        inRowFormat,
-        outRowFormat,
-        inSerdeClass,
-        outSerdeClass,
-        inSerdeProps,
-        outSerdeProps,
-        recordReaderClass,
-        recordWriterClass,
-        schemaLess)
-
-      Some(
-        logical.ScriptTransformation(
-          inputExprs.map(nodeToExpr),
-          unescapedScript,
-          output,
-          child,
-          schema))
-    case _ => None
-  }
+        Some(
+          logical.ScriptTransformation(
+            inputExprs.map(nodeToExpr),
+            unescapedScript,
+            output,
+            child,
+            schema))
+      case _ => None
+    }
 
   protected override def nodeToGenerator(node: ASTNode): Generator =
     node match {
@@ -807,74 +813,75 @@ private[hive] class HiveQl(conf: ParserConf)
   //  getTypeStringFromAST
   //  getStructTypeStringFromAST
   //  getUnionTypeStringFromAST
-  protected def nodeToTypeString(node: ASTNode): String = node.tokenType match {
-    case SparkSqlParser.TOK_LIST =>
-      val listType :: Nil = node.children
-      val listTypeString = nodeToTypeString(listType)
-      s"${serdeConstants.LIST_TYPE_NAME}<$listTypeString>"
+  protected def nodeToTypeString(node: ASTNode): String =
+    node.tokenType match {
+      case SparkSqlParser.TOK_LIST =>
+        val listType :: Nil = node.children
+        val listTypeString = nodeToTypeString(listType)
+        s"${serdeConstants.LIST_TYPE_NAME}<$listTypeString>"
 
-    case SparkSqlParser.TOK_MAP =>
-      val keyType :: valueType :: Nil = node.children
-      val keyTypeString = nodeToTypeString(keyType)
-      val valueTypeString = nodeToTypeString(valueType)
-      s"${serdeConstants.MAP_TYPE_NAME}<$keyTypeString,$valueTypeString>"
+      case SparkSqlParser.TOK_MAP =>
+        val keyType :: valueType :: Nil = node.children
+        val keyTypeString = nodeToTypeString(keyType)
+        val valueTypeString = nodeToTypeString(valueType)
+        s"${serdeConstants.MAP_TYPE_NAME}<$keyTypeString,$valueTypeString>"
 
-    case SparkSqlParser.TOK_STRUCT =>
-      val typeNode = node.children.head
-      require(
-        typeNode.children.nonEmpty,
-        "Struct must have one or more columns.")
-      val structColStrings = typeNode.children.map { columnNode =>
-        val Token(colName, Nil) :: colTypeNode :: Nil = columnNode.children
-        cleanIdentifier(colName) + ":" + nodeToTypeString(colTypeNode)
-      }
-      s"${serdeConstants.STRUCT_TYPE_NAME}<${structColStrings.mkString(",")}>"
+      case SparkSqlParser.TOK_STRUCT =>
+        val typeNode = node.children.head
+        require(
+          typeNode.children.nonEmpty,
+          "Struct must have one or more columns.")
+        val structColStrings = typeNode.children.map { columnNode =>
+          val Token(colName, Nil) :: colTypeNode :: Nil = columnNode.children
+          cleanIdentifier(colName) + ":" + nodeToTypeString(colTypeNode)
+        }
+        s"${serdeConstants.STRUCT_TYPE_NAME}<${structColStrings.mkString(",")}>"
 
-    case SparkSqlParser.TOK_UNIONTYPE =>
-      val typeNode = node.children.head
-      val unionTypesString =
-        typeNode.children.map(nodeToTypeString).mkString(",")
-      s"${serdeConstants.UNION_TYPE_NAME}<$unionTypesString>"
+      case SparkSqlParser.TOK_UNIONTYPE =>
+        val typeNode = node.children.head
+        val unionTypesString =
+          typeNode.children.map(nodeToTypeString).mkString(",")
+        s"${serdeConstants.UNION_TYPE_NAME}<$unionTypesString>"
 
-    case SparkSqlParser.TOK_CHAR =>
-      val Token(size, Nil) :: Nil = node.children
-      s"${serdeConstants.CHAR_TYPE_NAME}($size)"
+      case SparkSqlParser.TOK_CHAR =>
+        val Token(size, Nil) :: Nil = node.children
+        s"${serdeConstants.CHAR_TYPE_NAME}($size)"
 
-    case SparkSqlParser.TOK_VARCHAR =>
-      val Token(size, Nil) :: Nil = node.children
-      s"${serdeConstants.VARCHAR_TYPE_NAME}($size)"
+      case SparkSqlParser.TOK_VARCHAR =>
+        val Token(size, Nil) :: Nil = node.children
+        s"${serdeConstants.VARCHAR_TYPE_NAME}($size)"
 
-    case SparkSqlParser.TOK_DECIMAL =>
-      val precisionAndScale = node.children match {
-        case Token(precision, Nil) :: Token(scale, Nil) :: Nil =>
-          precision + "," + scale
-        case Token(precision, Nil) :: Nil =>
-          precision + "," + HiveDecimal.USER_DEFAULT_SCALE
-        case Nil =>
-          HiveDecimal.USER_DEFAULT_PRECISION + "," + HiveDecimal.USER_DEFAULT_SCALE
-        case _ =>
-          noParseRule("Decimal", node)
-      }
-      s"${serdeConstants.DECIMAL_TYPE_NAME}($precisionAndScale)"
+      case SparkSqlParser.TOK_DECIMAL =>
+        val precisionAndScale = node.children match {
+          case Token(precision, Nil) :: Token(scale, Nil) :: Nil =>
+            precision + "," + scale
+          case Token(precision, Nil) :: Nil =>
+            precision + "," + HiveDecimal.USER_DEFAULT_SCALE
+          case Nil =>
+            HiveDecimal.USER_DEFAULT_PRECISION + "," + HiveDecimal.USER_DEFAULT_SCALE
+          case _ =>
+            noParseRule("Decimal", node)
+        }
+        s"${serdeConstants.DECIMAL_TYPE_NAME}($precisionAndScale)"
 
-    // Simple data types.
-    case SparkSqlParser.TOK_BOOLEAN   => serdeConstants.BOOLEAN_TYPE_NAME
-    case SparkSqlParser.TOK_TINYINT   => serdeConstants.TINYINT_TYPE_NAME
-    case SparkSqlParser.TOK_SMALLINT  => serdeConstants.SMALLINT_TYPE_NAME
-    case SparkSqlParser.TOK_INT       => serdeConstants.INT_TYPE_NAME
-    case SparkSqlParser.TOK_BIGINT    => serdeConstants.BIGINT_TYPE_NAME
-    case SparkSqlParser.TOK_FLOAT     => serdeConstants.FLOAT_TYPE_NAME
-    case SparkSqlParser.TOK_DOUBLE    => serdeConstants.DOUBLE_TYPE_NAME
-    case SparkSqlParser.TOK_STRING    => serdeConstants.STRING_TYPE_NAME
-    case SparkSqlParser.TOK_BINARY    => serdeConstants.BINARY_TYPE_NAME
-    case SparkSqlParser.TOK_DATE      => serdeConstants.DATE_TYPE_NAME
-    case SparkSqlParser.TOK_TIMESTAMP => serdeConstants.TIMESTAMP_TYPE_NAME
-    case SparkSqlParser.TOK_INTERVAL_YEAR_MONTH =>
-      serdeConstants.INTERVAL_YEAR_MONTH_TYPE_NAME
-    case SparkSqlParser.TOK_INTERVAL_DAY_TIME =>
-      serdeConstants.INTERVAL_DAY_TIME_TYPE_NAME
-    case SparkSqlParser.TOK_DATETIME => serdeConstants.DATETIME_TYPE_NAME
-    case _                           => null
-  }
+      // Simple data types.
+      case SparkSqlParser.TOK_BOOLEAN   => serdeConstants.BOOLEAN_TYPE_NAME
+      case SparkSqlParser.TOK_TINYINT   => serdeConstants.TINYINT_TYPE_NAME
+      case SparkSqlParser.TOK_SMALLINT  => serdeConstants.SMALLINT_TYPE_NAME
+      case SparkSqlParser.TOK_INT       => serdeConstants.INT_TYPE_NAME
+      case SparkSqlParser.TOK_BIGINT    => serdeConstants.BIGINT_TYPE_NAME
+      case SparkSqlParser.TOK_FLOAT     => serdeConstants.FLOAT_TYPE_NAME
+      case SparkSqlParser.TOK_DOUBLE    => serdeConstants.DOUBLE_TYPE_NAME
+      case SparkSqlParser.TOK_STRING    => serdeConstants.STRING_TYPE_NAME
+      case SparkSqlParser.TOK_BINARY    => serdeConstants.BINARY_TYPE_NAME
+      case SparkSqlParser.TOK_DATE      => serdeConstants.DATE_TYPE_NAME
+      case SparkSqlParser.TOK_TIMESTAMP => serdeConstants.TIMESTAMP_TYPE_NAME
+      case SparkSqlParser.TOK_INTERVAL_YEAR_MONTH =>
+        serdeConstants.INTERVAL_YEAR_MONTH_TYPE_NAME
+      case SparkSqlParser.TOK_INTERVAL_DAY_TIME =>
+        serdeConstants.INTERVAL_DAY_TIME_TYPE_NAME
+      case SparkSqlParser.TOK_DATETIME => serdeConstants.DATETIME_TYPE_NAME
+      case _                           => null
+    }
 
 }

@@ -104,11 +104,12 @@ private[akka] class MsgEncoder extends OneToOneEncoder {
       .setPort(addr.port.get)
       .build
 
-  implicit def direction2proto(dir: Direction): TCP.Direction = dir match {
-    case Direction.Send ⇒ TCP.Direction.Send
-    case Direction.Receive ⇒ TCP.Direction.Receive
-    case Direction.Both ⇒ TCP.Direction.Both
-  }
+  implicit def direction2proto(dir: Direction): TCP.Direction =
+    dir match {
+      case Direction.Send ⇒ TCP.Direction.Send
+      case Direction.Receive ⇒ TCP.Direction.Receive
+      case Direction.Both ⇒ TCP.Direction.Both
+    }
 
   def encode(ctx: ChannelHandlerContext, ch: Channel, msg: AnyRef): AnyRef =
     msg match {
@@ -178,11 +179,12 @@ private[akka] class MsgDecoder extends OneToOneDecoder {
   implicit def address2scala(addr: TCP.Address): Address =
     Address(addr.getProtocol, addr.getSystem, addr.getHost, addr.getPort)
 
-  implicit def direction2scala(dir: TCP.Direction): Direction = dir match {
-    case TCP.Direction.Send ⇒ Direction.Send
-    case TCP.Direction.Receive ⇒ Direction.Receive
-    case TCP.Direction.Both ⇒ Direction.Both
-  }
+  implicit def direction2scala(dir: TCP.Direction): Direction =
+    dir match {
+      case TCP.Direction.Send ⇒ Direction.Send
+      case TCP.Direction.Receive ⇒ Direction.Receive
+      case TCP.Direction.Both ⇒ Direction.Both
+    }
 
   def decode(ctx: ChannelHandlerContext, ch: Channel, msg: AnyRef): AnyRef =
     msg match {

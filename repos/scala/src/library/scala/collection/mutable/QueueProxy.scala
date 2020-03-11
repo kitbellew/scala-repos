@@ -98,7 +98,8 @@ trait QueueProxy[A] extends Queue[A] with Proxy {
     *
     *  @return  a queue with the same elements.
     */
-  override def clone(): Queue[A] = new QueueProxy[A] {
-    def self = QueueProxy.this.self.clone()
-  }
+  override def clone(): Queue[A] =
+    new QueueProxy[A] {
+      def self = QueueProxy.this.self.clone()
+    }
 }

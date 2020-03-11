@@ -26,9 +26,10 @@ case class Video(
        else
          0)
 
-  def durationString = metadata.duration.map { seconds =>
-    "%02d:%02d".format(seconds / 60, seconds % 60)
-  }
+  def durationString =
+    metadata.duration.map { seconds =>
+      "%02d:%02d".format(seconds / 60, seconds % 60)
+    }
 
   override def toString = s"[$id] $title ($author)"
 }
@@ -39,13 +40,14 @@ object Target {
   val ADVANCED = 3
   val EXPERT = 4
 
-  def name(target: Int) = target match {
-    case BEGINNER     => "beginner"
-    case INTERMEDIATE => "intermediate"
-    case ADVANCED     => "advanced"
-    case EXPERT       => "expert"
-    case _            => ""
-  }
+  def name(target: Int) =
+    target match {
+      case BEGINNER     => "beginner"
+      case INTERMEDIATE => "intermediate"
+      case ADVANCED     => "advanced"
+      case EXPERT       => "expert"
+      case _            => ""
+    }
 }
 
 object Video {

@@ -39,12 +39,13 @@ object ValuePipe extends java.io.Serializable {
   * It allows to perform scalar based operations on pipes like normalization.
   */
 sealed trait ValuePipe[+T] extends java.io.Serializable {
-  def leftCross[U](that: ValuePipe[U]): ValuePipe[(T, Option[U])] = that match {
-    case EmptyValue       => map((_, None))
-    case LiteralValue(v2) => map((_, Some(v2)))
-    // We don't know if a computed value is empty or not. We need to run the MR job:
-    case _ => ComputedValue(toTypedPipe.leftCross(that))
-  }
+  def leftCross[U](that: ValuePipe[U]): ValuePipe[(T, Option[U])] =
+    that match {
+      case EmptyValue       => map((_, None))
+      case LiteralValue(v2) => map((_, Some(v2)))
+      // We don't know if a computed value is empty or not. We need to run the MR job:
+      case _ => ComputedValue(toTypedPipe.leftCross(that))
+    }
   def collect[U](fn: PartialFunction[T, U]): ValuePipe[U] =
     filter(fn.isDefinedAt(_)).map(fn(_))
 
@@ -57,13 +58,14 @@ sealed trait ValuePipe[+T] extends java.io.Serializable {
     * The name here follows the convention of adding
     * Execution to the name so in the repl in is removed
     */
-  def getExecution: Execution[T] = toOptionExecution.flatMap {
-    case Some(t) => Execution.from(t)
-    // same exception as scala.None.get
-    // https://github.com/scala/scala/blob/2.12.x/src/library/scala/Option.scala#L347
-    case None =>
-      Execution.failed(new java.util.NoSuchElementException("None.get"))
-  }
+  def getExecution: Execution[T] =
+    toOptionExecution.flatMap {
+      case Some(t) => Execution.from(t)
+      // same exception as scala.None.get
+      // https://github.com/scala/scala/blob/2.12.x/src/library/scala/Option.scala#L347
+      case None =>
+        Execution.failed(new java.util.NoSuchElementException("None.get"))
+    }
 
   /**
     * Like the above, but with a lazy parameter that is evaluated
@@ -115,18 +117,20 @@ case class LiteralValue[T](value: T) extends ValuePipe[T] {
   override def toTypedPipe = TypedPipe.from(Iterable(value))
   override def toOptionExecution = Execution.from(Some(value))
 
-  def debug: ValuePipe[T] = map { v =>
-    println("LiteralValue(" + v.toString + ")")
-    v
-  }
+  def debug: ValuePipe[T] =
+    map { v =>
+      println("LiteralValue(" + v.toString + ")")
+      v
+    }
 }
 case class ComputedValue[T](override val toTypedPipe: TypedPipe[T])
     extends ValuePipe[T] {
   override def map[U](fn: T => U) = ComputedValue(toTypedPipe.map(fn))
   override def filter(fn: T => Boolean) = ComputedValue(toTypedPipe.filter(fn))
 
-  def debug: ValuePipe[T] = map { value =>
-    println("ComputedValue(" + value.toString + ")")
-    value
-  }
+  def debug: ValuePipe[T] =
+    map { value =>
+      println("ComputedValue(" + value.toString + ")")
+      value
+    }
 }

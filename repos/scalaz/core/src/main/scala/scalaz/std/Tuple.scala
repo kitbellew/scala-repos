@@ -52,10 +52,11 @@ sealed trait TupleInstances1 extends TupleInstances0 {
     }
   implicit def tuple2Semigroup[A1, A2](implicit
       A1: Semigroup[A1],
-      A2: Semigroup[A2]): Semigroup[(A1, A2)] = new Tuple2Semigroup[A1, A2] {
-    implicit def _1 = A1
-    implicit def _2 = A2
-  }
+      A2: Semigroup[A2]): Semigroup[(A1, A2)] =
+    new Tuple2Semigroup[A1, A2] {
+      implicit def _1 = A1
+      implicit def _2 = A2
+    }
   implicit def tuple3Semigroup[A1, A2, A3](implicit
       A1: Semigroup[A1],
       A2: Semigroup[A2],
@@ -156,16 +157,18 @@ sealed trait TupleInstances1 extends TupleInstances0 {
       def _1 = implicitly
     }
   implicit def tuple3BindRec[A1: Semigroup, A2: Semigroup]
-      : BindRec[(A1, A2, ?)] = new Tuple3BindRec[A1, A2] {
-    def _1 = implicitly
-    def _2 = implicitly
-  }
+      : BindRec[(A1, A2, ?)] =
+    new Tuple3BindRec[A1, A2] {
+      def _1 = implicitly
+      def _2 = implicitly
+    }
   implicit def tuple4BindRec[A1: Semigroup, A2: Semigroup, A3: Semigroup]
-      : BindRec[(A1, A2, A3, ?)] = new Tuple4BindRec[A1, A2, A3] {
-    def _1 = implicitly
-    def _2 = implicitly
-    def _3 = implicitly
-  }
+      : BindRec[(A1, A2, A3, ?)] =
+    new Tuple4BindRec[A1, A2, A3] {
+      def _1 = implicitly
+      def _2 = implicitly
+      def _3 = implicitly
+    }
   implicit def tuple5BindRec[
       A1: Semigroup,
       A2: Semigroup,
@@ -712,9 +715,10 @@ object tuple extends TupleInstances {
 
 private trait Tuple1Semigroup[A1] extends Semigroup[Tuple1[A1]] {
   implicit def _1: Semigroup[A1]
-  def append(f1: Tuple1[A1], f2: => Tuple1[A1]) = (
-    Tuple1(Semigroup[A1].append(f1._1, f2._1))
-  )
+  def append(f1: Tuple1[A1], f2: => Tuple1[A1]) =
+    (
+      Tuple1(Semigroup[A1].append(f1._1, f2._1))
+    )
 }
 
 private trait Tuple2Semigroup[A1, A2] extends Semigroup[(A1, A2)] {

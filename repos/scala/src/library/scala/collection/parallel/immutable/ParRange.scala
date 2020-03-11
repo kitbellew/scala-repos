@@ -113,10 +113,11 @@ class ParRange(val range: Range) extends ParSeq[Int] with Serializable {
 }
 
 object ParRange {
-  def apply(start: Int, end: Int, step: Int, inclusive: Boolean) = new ParRange(
-    if (inclusive)
-      new Range.Inclusive(start, end, step)
-    else
-      new Range(start, end, step)
-  )
+  def apply(start: Int, end: Int, step: Int, inclusive: Boolean) =
+    new ParRange(
+      if (inclusive)
+        new Range.Inclusive(start, end, step)
+      else
+        new Range(start, end, step)
+    )
 }

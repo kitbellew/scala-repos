@@ -88,10 +88,11 @@ class SingletonPool[Req, Rep](
     * complete.
     */
   private[this] def connect(done: Promise[Unit], conn: ClientConnection) {
-    def complete(newState: State[Req, Rep]) = state.get match {
-      case s @ Awaiting(d) if d == done          => state.compareAndSet(s, newState)
-      case Idle | Closed | Awaiting(_) | Open(_) => false
-    }
+    def complete(newState: State[Req, Rep]) =
+      state.get match {
+        case s @ Awaiting(d) if d == done          => state.compareAndSet(s, newState)
+        case Idle | Closed | Awaiting(_) | Open(_) => false
+      }
 
     done.become(underlying(conn) transform {
       case Throw(exc) =>

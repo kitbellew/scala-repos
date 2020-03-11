@@ -9,13 +9,15 @@ object SCL3555 {
     def noquoteparam: Parser[String] =
       """[^"\s]+""".r
 
-    def command = /*start*/ command_spec ~ params_spec ^^ {
-      case left ~ right => FullCommand(left, right)
-    } /*end*/
+    def command =
+      /*start*/ command_spec ~ params_spec ^^ {
+        case left ~ right => FullCommand(left, right)
+      } /*end*/
 
-    def command_spec = (nonQuotedParam | quotedParam) ^^ { param =>
-      Command(param.value)
-    }
+    def command_spec =
+      (nonQuotedParam | quotedParam) ^^ { param =>
+        Command(param.value)
+      }
 
     // one or more parameters in a row
     def params_spec = param_spec *
@@ -24,14 +26,16 @@ object SCL3555 {
     def param_spec = (nonQuotedParam | quotedParam)
 
     // any param w/out quotes
-    def nonQuotedParam = noquoteparam ^^ { s =>
-      Param(s)
-    }
+    def nonQuotedParam =
+      noquoteparam ^^ { s =>
+        Param(s)
+      }
 
     // a string literal
-    def quotedParam = stringLiteral ^^ { s =>
-      Param(s.substring(1, s.length() - 1))
-    }
+    def quotedParam =
+      stringLiteral ^^ { s =>
+        Param(s.substring(1, s.length() - 1))
+      }
 
     // the parse command
     def parse(input: String): FullCommand =

@@ -58,7 +58,8 @@ trait $operator {
   def $date(value: DateTime) = BSONFormats toJSON BSONDateTime(value.getMillis)
 
   private def wrap[K, V: Writes](
-      pairs: Seq[(K, V)]): Seq[(K, Json.JsValueWrapper)] = pairs map {
-    case (k, v) => k -> Json.toJsFieldJsValueWrapper(v)
-  }
+      pairs: Seq[(K, V)]): Seq[(K, Json.JsValueWrapper)] =
+    pairs map {
+      case (k, v) => k -> Json.toJsFieldJsValueWrapper(v)
+    }
 }

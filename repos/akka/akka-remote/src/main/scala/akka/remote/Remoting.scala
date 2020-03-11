@@ -114,9 +114,10 @@ private[remote] object Remoting {
   private[Remoting] class TransportSupervisor
       extends Actor
       with RequiresMessageQueue[UnboundedMessageQueueSemantics] {
-    override def supervisorStrategy = OneForOneStrategy() {
-      case NonFatal(e) ⇒ Restart
-    }
+    override def supervisorStrategy =
+      OneForOneStrategy() {
+        case NonFatal(e) ⇒ Restart
+      }
 
     def receive = {
       case RegisterTransportActor(props, name) ⇒
@@ -258,16 +259,17 @@ private[remote] class Remoting(
   override def send(
       message: Any,
       senderOption: Option[ActorRef],
-      recipient: RemoteActorRef): Unit = endpointManager match {
-    case Some(manager) ⇒
-      manager.tell(
-        Send(message, senderOption, recipient),
-        sender = senderOption getOrElse Actor.noSender)
-    case None ⇒
-      throw new RemoteTransportExceptionNoStackTrace(
-        "Attempted to send remote message but Remoting is not running.",
-        null)
-  }
+      recipient: RemoteActorRef): Unit =
+    endpointManager match {
+      case Some(manager) ⇒
+        manager.tell(
+          Send(message, senderOption, recipient),
+          sender = senderOption getOrElse Actor.noSender)
+      case None ⇒
+        throw new RemoteTransportExceptionNoStackTrace(
+          "Attempted to send remote message but Remoting is not running.",
+          null)
+    }
 
   override def managementCommand(cmd: Any): Future[Boolean] =
     endpointManager match {
@@ -852,54 +854,58 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
 
   def handleInboundAssociation(
       ia: InboundAssociation,
-      writerIsIdle: Boolean): Unit = ia match {
-    case ia @ InboundAssociation(handle: AkkaProtocolHandle) ⇒
-      endpoints.readOnlyEndpointFor(handle.remoteAddress) match {
-        case Some((endpoint, _)) ⇒
-          pendingReadHandoffs.get(endpoint) foreach (_.disassociate())
-          pendingReadHandoffs += endpoint -> handle
-          endpoint ! EndpointWriter.TakeOver(handle, self)
-          endpoints.writableEndpointWithPolicyFor(handle.remoteAddress) match {
-            case Some(Pass(ep, _, _)) ⇒ ep ! ReliableDeliverySupervisor.Ungate
-            case _ ⇒
-          }
-        case None ⇒
-          if (endpoints
-                .isQuarantined(handle.remoteAddress, handle.handshakeInfo.uid))
-            handle.disassociate(AssociationHandle.Quarantined)
-          else
+      writerIsIdle: Boolean): Unit =
+    ia match {
+      case ia @ InboundAssociation(handle: AkkaProtocolHandle) ⇒
+        endpoints.readOnlyEndpointFor(handle.remoteAddress) match {
+          case Some((endpoint, _)) ⇒
+            pendingReadHandoffs.get(endpoint) foreach (_.disassociate())
+            pendingReadHandoffs += endpoint -> handle
+            endpoint ! EndpointWriter.TakeOver(handle, self)
             endpoints.writableEndpointWithPolicyFor(
               handle.remoteAddress) match {
-              case Some(Pass(ep, None, _)) ⇒
-                // Idle writer will never send a GotUid or a Terminated so we need to "provoke it"
-                // to get an unstash event
-                if (!writerIsIdle) {
-                  ep ! ReliableDeliverySupervisor.IsIdle
-                  stashedInbound += ep -> (stashedInbound
-                    .getOrElse(ep, Vector.empty) :+ ia)
-                } else
+              case Some(Pass(ep, _, _)) ⇒ ep ! ReliableDeliverySupervisor.Ungate
+              case _ ⇒
+            }
+          case None ⇒
+            if (endpoints.isQuarantined(
+                  handle.remoteAddress,
+                  handle.handshakeInfo.uid))
+              handle.disassociate(AssociationHandle.Quarantined)
+            else
+              endpoints.writableEndpointWithPolicyFor(
+                handle.remoteAddress) match {
+                case Some(Pass(ep, None, _)) ⇒
+                  // Idle writer will never send a GotUid or a Terminated so we need to "provoke it"
+                  // to get an unstash event
+                  if (!writerIsIdle) {
+                    ep ! ReliableDeliverySupervisor.IsIdle
+                    stashedInbound += ep -> (stashedInbound.getOrElse(
+                      ep,
+                      Vector.empty) :+ ia)
+                  } else
+                    createAndRegisterEndpoint(
+                      handle,
+                      refuseUid = endpoints.refuseUid(handle.remoteAddress))
+                case Some(Pass(ep, Some(uid), _)) ⇒
+                  if (handle.handshakeInfo.uid == uid) {
+                    pendingReadHandoffs.get(ep) foreach (_.disassociate())
+                    pendingReadHandoffs += ep -> handle
+                    ep ! EndpointWriter.StopReading(ep, self)
+                    ep ! ReliableDeliverySupervisor.Ungate
+                  } else {
+                    context.stop(ep)
+                    endpoints.unregisterEndpoint(ep)
+                    pendingReadHandoffs -= ep
+                    createAndRegisterEndpoint(handle, refuseUid = Some(uid))
+                  }
+                case state ⇒
                   createAndRegisterEndpoint(
                     handle,
                     refuseUid = endpoints.refuseUid(handle.remoteAddress))
-              case Some(Pass(ep, Some(uid), _)) ⇒
-                if (handle.handshakeInfo.uid == uid) {
-                  pendingReadHandoffs.get(ep) foreach (_.disassociate())
-                  pendingReadHandoffs += ep -> handle
-                  ep ! EndpointWriter.StopReading(ep, self)
-                  ep ! ReliableDeliverySupervisor.Ungate
-                } else {
-                  context.stop(ep)
-                  endpoints.unregisterEndpoint(ep)
-                  pendingReadHandoffs -= ep
-                  createAndRegisterEndpoint(handle, refuseUid = Some(uid))
-                }
-              case state ⇒
-                createAndRegisterEndpoint(
-                  handle,
-                  refuseUid = endpoints.refuseUid(handle.remoteAddress))
-            }
-      }
-  }
+              }
+        }
+    }
 
   private def createAndRegisterEndpoint(
       handle: AkkaProtocolHandle,

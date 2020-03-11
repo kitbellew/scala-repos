@@ -112,14 +112,15 @@ object Templates {
     * and lop off the stuff before the first surround
     */
   def checkForContentId(in: NodeSeq): NodeSeq = {
-    def df(in: MetaData): Option[PrefixedAttribute] = in match {
-      case Null => None
-      case p: PrefixedAttribute
-          if (p.pre == "l" || p.pre == "lift") &&
-            (p.key == "content_id") =>
-        Some(p)
-      case n => df(n.next)
-    }
+    def df(in: MetaData): Option[PrefixedAttribute] =
+      in match {
+        case Null => None
+        case p: PrefixedAttribute
+            if (p.pre == "l" || p.pre == "lift") &&
+              (p.key == "content_id") =>
+          Some(p)
+        case n => df(n.next)
+      }
 
     in.flatMap {
         case e: Elem if e.label == "html" => df(e.attributes)

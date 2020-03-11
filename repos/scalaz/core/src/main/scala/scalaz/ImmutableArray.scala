@@ -372,11 +372,12 @@ object ImmutableArray extends ImmutableArrayInstances {
 
   sealed class ImmutableArrayCharW(val self: ImmutableArray[Char])
       extends Ops[ImmutableArray[Char]] {
-    def asString = self match {
-      case a: StringArray => a.str
-      case a: ofChar      => wrapArray(a).mkString
-      case _              => sys.error("Unknown subtype of ImmutableArray[Char]")
-    }
+    def asString =
+      self match {
+        case a: StringArray => a.str
+        case a: ofChar      => wrapArray(a).mkString
+        case _              => sys.error("Unknown subtype of ImmutableArray[Char]")
+      }
   }
 
   implicit def wrapRopeChar(array: ImmutableArray[Char]): ImmutableArrayCharW =

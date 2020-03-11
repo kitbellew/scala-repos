@@ -136,43 +136,47 @@ class FileJobManager[M[+_]] private[FileJobManager] (
       name: String,
       jobType: String,
       data: Option[JValue],
-      started: Option[DateTime]) = M.point {
-    Job(
-      newJobId,
-      auth,
-      name,
-      jobType,
-      data,
-      started map (Started(_, NotStarted)) getOrElse NotStarted) unsafeTap {
-      job =>
-        val jobState = FileJobState(job, None, Map.empty)
-        saveJob(job.id, jobState)
+      started: Option[DateTime]) =
+    M.point {
+      Job(
+        newJobId,
+        auth,
+        name,
+        jobType,
+        data,
+        started map (Started(_, NotStarted)) getOrElse NotStarted) unsafeTap {
+        job =>
+          val jobState = FileJobState(job, None, Map.empty)
+          saveJob(job.id, jobState)
+      }
     }
-  }
 
-  def findJob(jobId: JobId): M[Option[Job]] = M.point {
-    loadJob(jobId).map(_.job)
-  }
+  def findJob(jobId: JobId): M[Option[Job]] =
+    M.point {
+      loadJob(jobId).map(_.job)
+    }
 
   private val jobFileFilter = new FilenameFilter {
     def accept(dir: File, name: String) = name.endsWith(JOB_SUFFIX)
   }
 
-  def listJobs(apiKey: APIKey): M[Seq[Job]] = M.point {
-    // Load all jobs from the workDir that aren't in the cache
-    Option(workDir.list(jobFileFilter)).foreach { names =>
-      names.foreach { name =>
-        loadJob(name.substring(0, name.length - JOB_SUFFIX.length))
+  def listJobs(apiKey: APIKey): M[Seq[Job]] =
+    M.point {
+      // Load all jobs from the workDir that aren't in the cache
+      Option(workDir.list(jobFileFilter)).foreach { names =>
+        names.foreach { name =>
+          loadJob(name.substring(0, name.length - JOB_SUFFIX.length))
+        }
       }
+      cache.values.collect {
+        case FileJobState(job, _, _) if job.apiKey == apiKey => job
+      }.toSeq
     }
-    cache.values.collect {
-      case FileJobState(job, _, _) if job.apiKey == apiKey => job
-    }.toSeq
-  }
 
-  def listChannels(jobId: JobId): M[Seq[ChannelId]] = M.point {
-    loadJob(jobId).map(_.messages.keys.toSeq).getOrElse(Seq.empty)
-  }
+  def listChannels(jobId: JobId): M[Seq[ChannelId]] =
+    M.point {
+      loadJob(jobId).map(_.messages.keys.toSeq).getOrElse(Seq.empty)
+    }
 
   def addMessage(jobId: JobId, channel: ChannelId, value: JValue): M[Message] =
     M.point {
@@ -194,12 +198,14 @@ class FileJobManager[M[+_]] private[FileJobManager] (
   def listMessages(
       jobId: JobId,
       channel: ChannelId,
-      since: Option[MessageId]): M[Seq[Message]] = M.point {
-    val posts = cache.get(jobId).flatMap(_.messages.get(channel)).getOrElse(Nil)
-    since map { mId =>
-      posts.takeWhile(_.id != mId).reverse
-    } getOrElse posts.reverse
-  }
+      since: Option[MessageId]): M[Seq[Message]] =
+    M.point {
+      val posts =
+        cache.get(jobId).flatMap(_.messages.get(channel)).getOrElse(Nil)
+      since map { mId =>
+        posts.takeWhile(_.id != mId).reverse
+      } getOrElse posts.reverse
+    }
 
   def updateStatus(
       jobId: JobId,
@@ -249,9 +255,10 @@ class FileJobManager[M[+_]] private[FileJobManager] (
       .getOrElse(M.point(Left("No job found for jobId " + jobId)))
   }
 
-  def getStatus(jobId: JobId): M[Option[Status]] = M.point {
-    loadJob(jobId).flatMap(_.status)
-  }
+  def getStatus(jobId: JobId): M[Option[Status]] =
+    M.point {
+      loadJob(jobId).flatMap(_.status)
+    }
 
   def transition(jobId: JobId)(
       t: JobState => Either[String, JobState]): M[Either[String, Job]] =
@@ -269,9 +276,10 @@ class FileJobManager[M[+_]] private[FileJobManager] (
     }
 
   // Results handling
-  def exists(file: String): M[Boolean] = M.point {
-    resultFile(file).exists
-  }
+  def exists(file: String): M[Boolean] =
+    M.point {
+      resultFile(file).exists
+    }
 
   def save(file: String, data: FileData[M]): M[Unit] = {
     // TODO: Make this more efficient
@@ -291,38 +299,40 @@ class FileJobManager[M[+_]] private[FileJobManager] (
     }
   }
 
-  def load(file: String): M[Option[FileData[M]]] = M.point {
-    if (resultFile(file).exists) {
-      val input = new DataInputStream(new FileInputStream(resultFile(file)))
+  def load(file: String): M[Option[FileData[M]]] =
+    M.point {
+      if (resultFile(file).exists) {
+        val input = new DataInputStream(new FileInputStream(resultFile(file)))
 
-      try {
-        val mime = input.readUTF match {
-          case ""         => None
-          case mimestring => MimeTypes.parseMimeTypes(mimestring).headOption
+        try {
+          val mime = input.readUTF match {
+            case ""         => None
+            case mimestring => MimeTypes.parseMimeTypes(mimestring).headOption
+          }
+
+          val length = input.readInt
+          val data = new Array[Byte](length)
+          if (input.read(data) != length) {
+            throw new IOException("Incomplete data in " + resultFile(file))
+          }
+
+          Some(FileData(mime, data :: StreamT.empty[M, Array[Byte]]))
+        } finally {
+          input.close()
         }
-
-        val length = input.readInt
-        val data = new Array[Byte](length)
-        if (input.read(data) != length) {
-          throw new IOException("Incomplete data in " + resultFile(file))
-        }
-
-        Some(FileData(mime, data :: StreamT.empty[M, Array[Byte]]))
-      } finally {
-        input.close()
+      } else {
+        None
       }
-    } else {
-      None
     }
-  }
 
-  def remove(file: String): M[Unit] = M.point {
-    val target = resultFile(file)
-    if (target.exists && !target.delete) {
-      throw new IOException(
-        "Failed to delete job file: " + target.getCanonicalPath)
+  def remove(file: String): M[Unit] =
+    M.point {
+      val target = resultFile(file)
+      if (target.exists && !target.delete) {
+        throw new IOException(
+          "Failed to delete job file: " + target.getCanonicalPath)
+      }
     }
-  }
 }
 
 case class FileJobState(

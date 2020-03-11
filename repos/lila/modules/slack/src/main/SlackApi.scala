@@ -30,12 +30,13 @@ final class SlackApi(
     }
   }
 
-  def publishEvent(event: Event): Funit = event match {
-    case Error(msg)   => publishError(msg)
-    case Warning(msg) => publishWarning(msg)
-    case Info(msg)    => publishInfo(msg)
-    case Victory(msg) => publishVictory(msg)
-  }
+  def publishEvent(event: Event): Funit =
+    event match {
+      case Error(msg)   => publishError(msg)
+      case Warning(msg) => publishWarning(msg)
+      case Info(msg)    => publishInfo(msg)
+      case Victory(msg) => publishVictory(msg)
+    }
 
   def publishError(msg: String): Funit =
     client(

@@ -72,8 +72,8 @@ class GroupsResource @Inject() (
   def group(
       @PathParam("id") id: String,
       @QueryParam("embed") embed: java.util.Set[String],
-      @Context req: HttpServletRequest): Response = authenticated(req) {
-    implicit identity =>
+      @Context req: HttpServletRequest): Response =
+    authenticated(req) { implicit identity =>
       import scala.concurrent.ExecutionContext.Implicits.global
 
       val embeds =
@@ -124,7 +124,7 @@ class GroupsResource @Inject() (
       }
 
       result(response)
-  }
+    }
 
   /**
     * Create a new group.
@@ -153,8 +153,8 @@ class GroupsResource @Inject() (
       @PathParam("id") id: String,
       @DefaultValue("false") @QueryParam("force") force: Boolean,
       body: Array[Byte],
-      @Context req: HttpServletRequest): Response = authenticated(req) {
-    implicit identity =>
+      @Context req: HttpServletRequest): Response =
+    authenticated(req) { implicit identity =>
       withValid(Json.parse(body).as[GroupUpdate]) { groupUpdate =>
         val effectivePath = groupUpdate.id
           .map(_.canonicalPath(id.toRootPath))
@@ -176,7 +176,7 @@ class GroupsResource @Inject() (
           updateOrCreate(id.toRootPath, groupUpdate, force)
         deploymentResult(deployment, Response.created(new URI(path.toString)))
       }
-  }
+    }
 
   @PUT
   @Timed
@@ -203,8 +203,8 @@ class GroupsResource @Inject() (
       @DefaultValue("false") @QueryParam("force") force: Boolean,
       @DefaultValue("false") @QueryParam("dryRun") dryRun: Boolean,
       body: Array[Byte],
-      @Context req: HttpServletRequest): Response = authenticated(req) {
-    implicit identity =>
+      @Context req: HttpServletRequest): Response =
+    authenticated(req) { implicit identity =>
       withValid(Json.parse(body).as[GroupUpdate]) { groupUpdate =>
         val newVersion = Timestamp.now()
 
@@ -227,14 +227,14 @@ class GroupsResource @Inject() (
           deploymentResult(deployment)
         }
       }
-  }
+    }
 
   @DELETE
   @Timed
   def delete(
       @DefaultValue("false") @QueryParam("force") force: Boolean,
-      @Context req: HttpServletRequest): Response = authenticated(req) {
-    implicit identity =>
+      @Context req: HttpServletRequest): Response =
+    authenticated(req) { implicit identity =>
       def clearRootGroup(rootGroup: Group): Group = {
         checkAuthorization(DeleteGroup, rootGroup)
         rootGroup.copy(apps = Set.empty, groups = Set.empty)
@@ -248,7 +248,7 @@ class GroupsResource @Inject() (
           force
         ))
       deploymentResult(deployment)
-  }
+    }
 
   /**
     * Delete a specific subtree or a complete tree.
@@ -262,8 +262,8 @@ class GroupsResource @Inject() (
   def delete(
       @PathParam("id") id: String,
       @DefaultValue("false") @QueryParam("force") force: Boolean,
-      @Context req: HttpServletRequest): Response = authenticated(req) {
-    implicit identity =>
+      @Context req: HttpServletRequest): Response =
+    authenticated(req) { implicit identity =>
       val groupId = id.toRootPath
       val version = Timestamp.now()
 
@@ -278,29 +278,31 @@ class GroupsResource @Inject() (
       val deployment =
         result(groupManager.update(groupId.parent, deleteGroup, version, force))
       deploymentResult(deployment)
-  }
+    }
 
   private def applyGroupUpdate(
       group: Group,
       groupUpdate: GroupUpdate,
       newVersion: Timestamp)(implicit identity: Identity) = {
-    def versionChange = groupUpdate.version.map { targetVersion =>
-      checkAuthorization(UpdateGroup, group)
-      val versionedGroup = result(groupManager.group(group.id, targetVersion))
-        .map(checkAuthorization(ViewGroup, _))
-        .map(_.update(group.id, Predef.identity, newVersion))
-      versionedGroup.getOrElse(
-        throw new IllegalArgumentException(
-          s"Group $group.id not available in version $targetVersion")
-      )
-    }
-
-    def scaleChange = groupUpdate.scaleBy.map { scale =>
-      checkAuthorization(UpdateGroup, group)
-      group.updateApps(newVersion) { app =>
-        app.copy(instances = (app.instances * scale).ceil.toInt)
+    def versionChange =
+      groupUpdate.version.map { targetVersion =>
+        checkAuthorization(UpdateGroup, group)
+        val versionedGroup = result(groupManager.group(group.id, targetVersion))
+          .map(checkAuthorization(ViewGroup, _))
+          .map(_.update(group.id, Predef.identity, newVersion))
+        versionedGroup.getOrElse(
+          throw new IllegalArgumentException(
+            s"Group $group.id not available in version $targetVersion")
+        )
       }
-    }
+
+    def scaleChange =
+      groupUpdate.scaleBy.map { scale =>
+        checkAuthorization(UpdateGroup, group)
+        group.updateApps(newVersion) { app =>
+          app.copy(instances = (app.instances * scale).ceil.toInt)
+        }
+      }
 
     def createOrUpdateChange = {
       // groupManager.update always passes a group, even if it doesn't exist

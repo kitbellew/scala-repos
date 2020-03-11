@@ -123,10 +123,11 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
     *   @usecase def getOrElse(key: A, default: => B): B
     *     @inheritdoc
     */
-  def getOrElse[B1 >: B](key: A, default: => B1): B1 = get(key) match {
-    case Some(v) => v
-    case None    => default
-  }
+  def getOrElse[B1 >: B](key: A, default: => B1): B1 =
+    get(key) match {
+      case Some(v) => v
+      case None    => default
+    }
 
   /** Retrieves the value which is associated with the given key. This
     *  method invokes the `default` method of the map if there is no mapping
@@ -137,10 +138,11 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
     *  @return     the value associated with the given key, or the result of the
     *              map's `default` method, if none exists.
     */
-  def apply(key: A): B = get(key) match {
-    case None        => default(key)
-    case Some(value) => value
-  }
+  def apply(key: A): B =
+    get(key) match {
+      case None        => default(key)
+      case Some(value) => value
+    }
 
   /** Tests whether this map contains a binding for a key.
     *
@@ -185,11 +187,12 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
     *
     *  @return an iterator over all keys.
     */
-  def keysIterator: Iterator[A] = new AbstractIterator[A] {
-    val iter = self.iterator
-    def hasNext = iter.hasNext
-    def next() = iter.next()._1
-  }
+  def keysIterator: Iterator[A] =
+    new AbstractIterator[A] {
+      val iter = self.iterator
+      def hasNext = iter.hasNext
+      def next() = iter.next()._1
+    }
 
   /** Collects all keys of this map in an iterable collection.
     *
@@ -222,11 +225,12 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
     *
     *  @return an iterator over all values that are associated with some key in this map.
     */
-  def valuesIterator: Iterator[B] = new AbstractIterator[B] {
-    val iter = self.iterator
-    def hasNext = iter.hasNext
-    def next() = iter.next()._2
-  }
+  def valuesIterator: Iterator[B] =
+    new AbstractIterator[B] {
+      val iter = self.iterator
+      def hasNext = iter.hasNext
+      def next() = iter.next()._2
+    }
 
   /** Defines the default value computation for the map,
     *  returned when a key is not found

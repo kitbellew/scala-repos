@@ -50,12 +50,13 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
   }
 
   // wrap the given expression in a SoftReference so it can be gc-ed
-  def mkSoftRef(expr: Tree): Tree = atPos(expr.pos) {
-    val constructor = SoftReferenceClass.info
-      .nonPrivateMember(nme.CONSTRUCTOR)
-      .suchThat(_.paramss.flatten.size == 1)
-    NewFromConstructor(constructor, expr)
-  }
+  def mkSoftRef(expr: Tree): Tree =
+    atPos(expr.pos) {
+      val constructor = SoftReferenceClass.info
+        .nonPrivateMember(nme.CONSTRUCTOR)
+        .suchThat(_.paramss.flatten.size == 1)
+      NewFromConstructor(constructor, expr)
+    }
 
   // Builds a tree of the form "{ lhs = rhs ; lhs  }"
   def mkAssignAndReturn(lhs: Symbol, rhs: Tree): Tree = {
@@ -209,11 +210,12 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
 
   /** Translate names in Select/Ident nodes to type names.
     */
-  def convertToTypeName(tree: Tree): Option[RefTree] = tree match {
-    case Select(qual, name) => Some(Select(qual, name.toTypeName))
-    case Ident(name)        => Some(Ident(name.toTypeName))
-    case _                  => None
-  }
+  def convertToTypeName(tree: Tree): Option[RefTree] =
+    tree match {
+      case Select(qual, name) => Some(Select(qual, name.toTypeName))
+      case Ident(name)        => Some(Ident(name.toTypeName))
+      case _                  => None
+    }
 
   /** Try to convert Select(qual, name) to a SelectFromTypeTree.
     */
@@ -317,10 +319,11 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
       cond: Tree,
       syncBody: List[Tree],
       stats: List[Tree]): Tree = {
-    def blockOrStat(stats: List[Tree]): Tree = stats match {
-      case head :: Nil => head
-      case _           => Block(stats: _*)
-    }
+    def blockOrStat(stats: List[Tree]): Tree =
+      stats match {
+        case head :: Nil => head
+        case _           => Block(stats: _*)
+      }
     val sync =
       mkSynchronized(attrThis, If(cond, blockOrStat(syncBody), EmptyTree))
     blockOrStat(sync :: stats)

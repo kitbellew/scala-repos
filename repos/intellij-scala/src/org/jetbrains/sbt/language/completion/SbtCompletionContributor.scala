@@ -127,29 +127,30 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
           ResolveUtils.isAccessible(cls, place, forCompletion = true)
 
         // Collect all values, variables and inner objects from given object amd apply them
-        def collectAndApplyVariants(obj: PsiClass): Unit = obj match {
-          case obj: ScObject
-              if isAccessible(obj) && ScalaPsiUtil.hasStablePath(obj) =>
-            def fetchAndApply(element: ScTypedDefinition) {
-              val lookup = LookupElementManager
-                .getLookupElement(
-                  new ScalaResolveResult(element),
-                  isClassName = true,
-                  isOverloadedForClassName = false,
-                  shouldImport = true,
-                  isInStableCodeReference = false)
-                .head
-              lookup.addLookupStrings(obj.name + "." + element.name)
-              applyVariant(lookup)
-            }
-            obj.members.foreach {
-              case v: ScValue    => v.declaredElements foreach fetchAndApply
-              case v: ScVariable => v.declaredElements foreach fetchAndApply
-              case obj: ScObject => fetchAndApply(obj)
-              case _             => // do nothing
-            }
-          case _ => // do nothing
-        }
+        def collectAndApplyVariants(obj: PsiClass): Unit =
+          obj match {
+            case obj: ScObject
+                if isAccessible(obj) && ScalaPsiUtil.hasStablePath(obj) =>
+              def fetchAndApply(element: ScTypedDefinition) {
+                val lookup = LookupElementManager
+                  .getLookupElement(
+                    new ScalaResolveResult(element),
+                    isClassName = true,
+                    isOverloadedForClassName = false,
+                    shouldImport = true,
+                    isInStableCodeReference = false)
+                  .head
+                lookup.addLookupStrings(obj.name + "." + element.name)
+                applyVariant(lookup)
+              }
+              obj.members.foreach {
+                case v: ScValue    => v.declaredElements foreach fetchAndApply
+                case v: ScVariable => v.declaredElements foreach fetchAndApply
+                case obj: ScObject => fetchAndApply(obj)
+                case _             => // do nothing
+              }
+            case _ => // do nothing
+          }
 
         def applyVariant(variantObj: Object) {
           def apply(item: ScalaLookupItem) {

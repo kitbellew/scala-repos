@@ -123,15 +123,16 @@ trait SortedPaginator[T, C] extends Paginator[T] {
     * Example usage:
     * sortedPaginator.sort = sortedPaginator.sortedBy(columns.indexOf(clickedColumn))
     */
-  def sortedBy(column: Int): SortState = sort match {
-    case (
-          `column`,
-          true
-        ) => // descending is only if it was already sorted ascending
-      (column, false)
-    case _ =>
-      (column, true)
-  }
+  def sortedBy(column: Int): SortState =
+    sort match {
+      case (
+            `column`,
+            true
+          ) => // descending is only if it was already sorted ascending
+        (column, false)
+      case _ =>
+        (column, true)
+    }
 }
 
 /**
@@ -322,12 +323,13 @@ trait SortedPaginatorSnippet[T, C]
   /**
     * Calculates the page url taking sorting into account.
     */
-  def sortedPageUrl(offset: Long, sort: (Int, Boolean)) = sort match {
-    case (col, ascending) =>
-      appendParams(
-        super.pageUrl(offset),
-        List(sortParam -> col.toString, ascendingParam -> ascending.toString))
-  }
+  def sortedPageUrl(offset: Long, sort: (Int, Boolean)) =
+    sort match {
+      case (col, ascending) =>
+        appendParams(
+          super.pageUrl(offset),
+          List(sortParam -> col.toString, ascendingParam -> ascending.toString))
+    }
 
   /**
     * Overrides pageUrl and delegates to sortedPageUrl using the current sort
@@ -337,13 +339,14 @@ trait SortedPaginatorSnippet[T, C]
   /**
     * Overrides sort, giving the URL query parameters precedence
     */
-  override def sort = super.sort match {
-    case (col, ascending) =>
-      (
-        S.param("sort").map(toInt) openOr col,
-        S.param("asc").map(toBoolean) openOr ascending
-      )
-  }
+  override def sort =
+    super.sort match {
+      case (col, ascending) =>
+        (
+          S.param("sort").map(toInt) openOr col,
+          S.param("asc").map(toBoolean) openOr ascending
+        )
+    }
 
   /**
     * This method binds template HTML based according to the specified

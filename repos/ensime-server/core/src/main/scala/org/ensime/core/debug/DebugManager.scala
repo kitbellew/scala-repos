@@ -171,9 +171,10 @@ class DebugManager(
   }
 
   // the JVM should have its own actor
-  def receive: Receive = LoggingReceive {
-    fromJvm orElse fromUser
-  }
+  def receive: Receive =
+    LoggingReceive {
+      fromJvm orElse fromUser
+    }
 
   def fromJvm: Receive = {
     case DebuggerShutdownEvent =>

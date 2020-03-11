@@ -241,18 +241,19 @@ trait TimeLike[This <: TimeLike[This]] extends Ordered[This] { self: This =>
     * Time object with duration greater than 1.hour can have unexpected
     * results because of timezones.
     */
-  def floor(increment: Duration): This = (this, increment) match {
-    case (Nanoseconds(0), Duration.Nanoseconds(0)) => Undefined
-    case (Nanoseconds(num), Duration.Nanoseconds(0)) =>
-      if (num < 0)
-        Bottom
-      else
-        Top
-    case (Nanoseconds(num), Duration.Nanoseconds(denom)) =>
-      fromNanoseconds((num / denom) * denom)
-    case (self, Duration.Nanoseconds(_)) => self
-    case (_, _)                          => Undefined
-  }
+  def floor(increment: Duration): This =
+    (this, increment) match {
+      case (Nanoseconds(0), Duration.Nanoseconds(0)) => Undefined
+      case (Nanoseconds(num), Duration.Nanoseconds(0)) =>
+        if (num < 0)
+          Bottom
+        else
+          Top
+      case (Nanoseconds(num), Duration.Nanoseconds(denom)) =>
+        fromNanoseconds((num / denom) * denom)
+      case (self, Duration.Nanoseconds(_)) => self
+      case (_, _)                          => Undefined
+    }
 
   def max(that: This): This =
     if ((this compare that) < 0)
@@ -344,20 +345,23 @@ object Time extends TimeLikeOps[Time] {
       else
         1
 
-    override def equals(other: Any) = other match {
-      case t: Time => t eq this
-      case _       => false
-    }
+    override def equals(other: Any) =
+      other match {
+        case t: Time => t eq this
+        case _       => false
+      }
 
-    override def +(delta: Duration) = delta match {
-      case Duration.Bottom | Duration.Undefined => Undefined
-      case _                                    => this // Top or finite.
-    }
+    override def +(delta: Duration) =
+      delta match {
+        case Duration.Bottom | Duration.Undefined => Undefined
+        case _                                    => this // Top or finite.
+      }
 
-    override def diff(that: Time) = that match {
-      case Top | Undefined => Duration.Undefined
-      case other           => Duration.Top
-    }
+    override def diff(that: Time) =
+      that match {
+        case Top | Undefined => Duration.Undefined
+        case other           => Duration.Top
+      }
 
     override def isFinite = false
 
@@ -378,20 +382,23 @@ object Time extends TimeLikeOps[Time] {
       else
         -1
 
-    override def equals(other: Any) = other match {
-      case t: Time => t eq this
-      case _       => false
-    }
+    override def equals(other: Any) =
+      other match {
+        case t: Time => t eq this
+        case _       => false
+      }
 
-    override def +(delta: Duration) = delta match {
-      case Duration.Top | Duration.Undefined => Undefined
-      case _                                 => this
-    }
+    override def +(delta: Duration) =
+      delta match {
+        case Duration.Top | Duration.Undefined => Undefined
+        case _                                 => this
+      }
 
-    override def diff(that: Time) = that match {
-      case Bottom | Undefined => Duration.Undefined
-      case other              => Duration.Bottom
-    }
+    override def diff(that: Time) =
+      that match {
+        case Bottom | Undefined => Duration.Undefined
+        case other              => Duration.Bottom
+      }
 
     override def isFinite = false
 
@@ -401,10 +408,11 @@ object Time extends TimeLikeOps[Time] {
   val Undefined: Time = new Time(0) {
     override def toString = "Time.Undefined"
 
-    override def equals(other: Any) = other match {
-      case t: Time => t eq this
-      case _       => false
-    }
+    override def equals(other: Any) =
+      other match {
+        case t: Time => t eq this
+        case _       => false
+      }
 
     override def compare(that: Time) =
       if (this eq that)

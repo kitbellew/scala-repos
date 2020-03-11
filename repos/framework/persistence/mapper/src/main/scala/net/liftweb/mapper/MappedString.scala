@@ -321,11 +321,12 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
 }
 
 private[mapper] object IsElem {
-  def unapply(in: NodeSeq): Option[Elem] = in match {
-    case e: Elem      => Some(e)
-    case Seq(e: Elem) => Some(e)
-    case _            => None
-  }
+  def unapply(in: NodeSeq): Option[Elem] =
+    in match {
+      case e: Elem      => Some(e)
+      case Seq(e: Elem) => Some(e)
+      case _            => None
+    }
 }
 
 sealed trait BoxedStringToken

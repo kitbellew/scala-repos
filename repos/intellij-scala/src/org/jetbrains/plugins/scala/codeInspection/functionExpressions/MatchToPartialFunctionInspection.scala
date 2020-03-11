@@ -211,11 +211,12 @@ class MatchToPartialFunctionQuickFix(
     }
   }
 
-  private def needParentheses(p: ScPattern): Boolean = p match {
-    case _: ScReferencePattern | _: ScLiteralPattern | _: ScConstructorPattern |
-        _: ScParenthesisedPattern | _: ScTuplePattern |
-        _: ScStableReferenceElementPattern =>
-      false
-    case _ => true
-  }
+  private def needParentheses(p: ScPattern): Boolean =
+    p match {
+      case _: ScReferencePattern | _: ScLiteralPattern |
+          _: ScConstructorPattern | _: ScParenthesisedPattern |
+          _: ScTuplePattern | _: ScStableReferenceElementPattern =>
+        false
+      case _ => true
+    }
 }

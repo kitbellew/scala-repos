@@ -200,9 +200,10 @@ private[ml] object RFormulaParser extends RegexParsers {
       case r ~ "~" ~ t => ParsedRFormula(r, t)
     }
 
-  def parse(value: String): ParsedRFormula = parseAll(formula, value) match {
-    case Success(result, _) => result
-    case failure: NoSuccess =>
-      throw new IllegalArgumentException("Could not parse formula: " + value)
-  }
+  def parse(value: String): ParsedRFormula =
+    parseAll(formula, value) match {
+      case Success(result, _) => result
+      case failure: NoSuccess =>
+        throw new IllegalArgumentException("Could not parse formula: " + value)
+    }
 }

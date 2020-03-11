@@ -154,9 +154,10 @@ case class Dag[P <: Platform[P]](
   }
 
   def locateOpt(p: Producer[P, _]): Option[Node[P]] = producerToNode.get(p)
-  def locate(p: Producer[P, _]): Node[P] = locateOpt(p).getOrElse {
-    sys.error("Unexpected node missing when looking for %s".format(p))
-  }
+  def locate(p: Producer[P, _]): Node[P] =
+    locateOpt(p).getOrElse {
+      sys.error("Unexpected node missing when looking for %s".format(p))
+    }
   def connect(src: Producer[P, _], dest: Producer[P, _]): Dag[P] =
     connect(locate(src), locate(dest))
 

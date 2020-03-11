@@ -50,9 +50,10 @@ private class JmDNSAnnouncer extends MDNSAnnouncerIface {
       ServiceInfo.create(regType + "." + domain, name, addr.getPort, "")
     DNS.registerService(info) map { _ =>
       new Announcement {
-        def unannounce() = DNS.unregisterService(info) map { _ =>
-          ()
-        }
+        def unannounce() =
+          DNS.unregisterService(info) map { _ =>
+            ()
+          }
       }
     }
   }

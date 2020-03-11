@@ -64,23 +64,24 @@ private[util] class BatchExecutor[In, Out](
   var scheduled: Option[ScheduledFlush] = scala.None
   var currentBufThreshold = newBufThreshold
 
-  def currentBufPercentile = sizePercentile match {
-    case tooHigh if tooHigh > 1.0f =>
-      log.log(
-        WARNING,
-        "value returned for sizePercentile (%f) was > 1.0f, using 1.0",
-        tooHigh)
-      1.0f
+  def currentBufPercentile =
+    sizePercentile match {
+      case tooHigh if tooHigh > 1.0f =>
+        log.log(
+          WARNING,
+          "value returned for sizePercentile (%f) was > 1.0f, using 1.0",
+          tooHigh)
+        1.0f
 
-    case tooLow if tooLow < 0.0f =>
-      log.log(
-        WARNING,
-        "value returned for sizePercentile (%f) was negative, using 0.0f",
-        tooLow)
-      0.0f
+      case tooLow if tooLow < 0.0f =>
+        log.log(
+          WARNING,
+          "value returned for sizePercentile (%f) was negative, using 0.0f",
+          tooLow)
+        0.0f
 
-    case p => p
-  }
+      case p => p
+    }
 
   def newBufThreshold =
     math.round(currentBufPercentile * sizeThreshold) match {

@@ -34,9 +34,10 @@ case class Thread(
 
   def nbUnread: Int = posts count (_.isUnRead)
 
-  def firstPostUnreadBy(user: User): Option[Post] = posts find { post =>
-    post.isUnRead && post.isByCreator != isCreator(user)
-  }
+  def firstPostUnreadBy(user: User): Option[Post] =
+    posts find { post =>
+      post.isUnRead && post.isByCreator != isCreator(user)
+    }
 
   def userIds = List(creatorId, invitedId)
 
@@ -52,9 +53,10 @@ case class Thread(
 
   def nonEmptyName = (name.trim.some filter (_.nonEmpty)) | "No subject"
 
-  def deleteFor(user: User) = copy(
-    visibleByUserIds = visibleByUserIds filter (user.id !=)
-  )
+  def deleteFor(user: User) =
+    copy(
+      visibleByUserIds = visibleByUserIds filter (user.id !=)
+    )
 
   def hasPostsWrittenBy(userId: String) =
     posts exists (_.isByCreator == (creatorId == userId))

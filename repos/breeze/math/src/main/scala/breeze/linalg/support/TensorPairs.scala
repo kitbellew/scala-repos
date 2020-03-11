@@ -21,9 +21,10 @@ class TensorPairs[K, V, +This](
   }.filter(f)
 
   def foreach[U](fn: ((K, V)) => U) = iterator foreach fn
-  def foreach[U](fn: (K, V) => U) = iterator foreach {
-    case (a, b) => fn(a, b)
-  }
+  def foreach[U](fn: (K, V) => U) =
+    iterator foreach {
+      case (a, b) => fn(a, b)
+    }
 
   def filter(p: ((K, V)) => Boolean) = withFilter(p)
 
@@ -38,11 +39,12 @@ class TensorPairs[K, V, +This](
 
   override def toString = iterator.mkString("TensorKeys(", ",", ")")
 
-  override def equals(p1: Any) = p1 match {
-    case x: TensorPairs[_, _, _] =>
-      x.eq(this) || iterator.sameElements(x.iterator)
-    case _ => false
-  }
+  override def equals(p1: Any) =
+    p1 match {
+      case x: TensorPairs[_, _, _] =>
+        x.eq(this) || iterator.sameElements(x.iterator)
+      case _ => false
+    }
 
   def map[TT >: This, O, That](fn: ((K, V)) => O)(
       implicit bf: CanMapKeyValuePairs[TT, K, V, O, That]): That =

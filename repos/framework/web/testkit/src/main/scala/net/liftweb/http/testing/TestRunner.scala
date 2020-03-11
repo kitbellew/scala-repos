@@ -39,27 +39,30 @@ class TestRunner(
       what: List[Item]): (() => TestResults, (String, () => T) => T) = {
     val log = new ListBuffer[Tracker]
 
-    def beforeAssert(name: String): Unit = synchronized {
-      log += Tracker(name, true, true, true, Empty, Nil)
-      beforeAssertListeners.foreach(_(name))
-    }
-
-    def afterAssert(name: String, success: Boolean): Unit = synchronized {
-      log += Tracker(name, true, false, success, Empty, Nil)
-      afterAssertListeners.foreach(_(name, success))
-    }
-
-    def applyAssert(name: String, f: () => T): T = synchronized {
-      var success = false
-      beforeAssert(name)
-      try {
-        val ret = f()
-        success = true
-        ret
-      } finally {
-        afterAssert(name, success)
+    def beforeAssert(name: String): Unit =
+      synchronized {
+        log += Tracker(name, true, true, true, Empty, Nil)
+        beforeAssertListeners.foreach(_(name))
       }
-    }
+
+    def afterAssert(name: String, success: Boolean): Unit =
+      synchronized {
+        log += Tracker(name, true, false, success, Empty, Nil)
+        afterAssertListeners.foreach(_(name, success))
+      }
+
+    def applyAssert(name: String, f: () => T): T =
+      synchronized {
+        var success = false
+        beforeAssert(name)
+        try {
+          val ret = f()
+          success = true
+          ret
+        } finally {
+          afterAssert(name, success)
+        }
+      }
 
     def beforeTest(name: String) {
       log += Tracker(name, false, true, true, Empty, Nil)
@@ -146,13 +149,14 @@ class TestRunner(
                         def combineStack(
                             ex: Throwable,
                             base: List[StackTraceElement])
-                            : List[StackTraceElement] = ex match {
-                          case null => base
-                          case _ =>
-                            combineStack(
-                              ex.getCause,
-                              ex.getStackTrace.toList ::: base)
-                        }
+                            : List[StackTraceElement] =
+                          ex match {
+                            case null => base
+                            case _ =>
+                              combineStack(
+                                ex.getCause,
+                                ex.getStackTrace.toList ::: base)
+                          }
                         val trace = combineStack(e, Nil)
                           .takeWhile(e =>
                             e.getClassName != myTrace.getClassName || e.getFileName != myTrace.getFileName || e.getMethodName != myTrace.getMethodName)
@@ -254,10 +258,11 @@ class Item(
 
 object Item {
   private var _cnt = 0
-  private def cnt() = synchronized {
-    _cnt = _cnt + 1
-    _cnt
-  }
+  private def cnt() =
+    synchronized {
+      _cnt = _cnt + 1
+      _cnt
+    }
   def apply(f: () => Any) = new Item("Test " + cnt(), false, Full(f), 0, Empty)
   def apply(name: String, f: () => Any) =
     new Item(name, false, Full(f), 0, Empty)

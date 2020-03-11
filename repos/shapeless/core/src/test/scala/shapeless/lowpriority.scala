@@ -41,9 +41,10 @@ object LowPriorityTests {
     }
 
     trait LowPriTC {
-      implicit def anyTC[T]: TC[T] = new TC[T] {
-        def prop = None
-      }
+      implicit def anyTC[T]: TC[T] =
+        new TC[T] {
+          def prop = None
+        }
     }
 
     object TC extends LowPriTC {

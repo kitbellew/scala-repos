@@ -64,10 +64,11 @@ class Path private (val elements: String*) {
 
   def prefix: Option[Path] = elements.nonEmpty.option(Path(components.init))
 
-  override def equals(that: Any) = that match {
-    case Path(`path`) => true
-    case _            => false
-  }
+  override def equals(that: Any) =
+    that match {
+      case Path(`path`) => true
+      case _            => false
+    }
 
   override def hashCode = path.hashCode
 

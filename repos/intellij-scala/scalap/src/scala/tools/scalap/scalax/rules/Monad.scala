@@ -25,9 +25,10 @@ trait Monads extends UnitFunctors {
   type M[+A] <: Monad[A]
 
   trait Monad[+A] extends Functor[A] with rules.Monad[A] { this: M[A] =>
-    def map[B](f: A => B) = flatMap { a =>
-      unit(f(a))
-    }
+    def map[B](f: A => B) =
+      flatMap { a =>
+        unit(f(a))
+      }
   }
 
   trait ZeroMonad extends Monad[Nothing] with ZeroFunctor { this: M[Nothing] =>

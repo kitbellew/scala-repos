@@ -135,27 +135,28 @@ private[mux] class WindowedMax(windowSize: Int) {
   private[this] var index: Int = 0
 
   // Amortized 0(1)
-  def add(value: Long): Unit = synchronized {
-    if (value > currentMax) {
-      currentMax = value
-    }
-
-    val prev = buf(index)
-    buf(index) = value
-    index = (index + 1) % windowSize
-
-    // We should recalculate currentMax if it was evicted from the window.
-    if (prev == currentMax && currentMax != value) {
-      var i = 0
-      var nextMax = Long.MinValue
-      while (i < windowSize) {
-        val v = buf(i)
-        nextMax = math.max(nextMax, v)
-        i = i + 1
+  def add(value: Long): Unit =
+    synchronized {
+      if (value > currentMax) {
+        currentMax = value
       }
-      currentMax = nextMax
+
+      val prev = buf(index)
+      buf(index) = value
+      index = (index + 1) % windowSize
+
+      // We should recalculate currentMax if it was evicted from the window.
+      if (prev == currentMax && currentMax != value) {
+        var i = 0
+        var nextMax = Long.MinValue
+        while (i < windowSize) {
+          val v = buf(i)
+          nextMax = math.max(nextMax, v)
+          i = i + 1
+        }
+        currentMax = nextMax
+      }
     }
-  }
 
   // O(1)
   def get: Long = currentMax

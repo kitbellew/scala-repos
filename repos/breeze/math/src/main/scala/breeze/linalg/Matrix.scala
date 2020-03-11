@@ -55,19 +55,20 @@ trait Matrix[@spec(Double, Int, Float, Long) V]
   def rows: Int
   def cols: Int
 
-  def keySet: Set[(Int, Int)] = new Set[(Int, Int)] {
-    def contains(elem: (Int, Int)): Boolean =
-      elem._1 >= 0 && elem._1 < rows && elem._2 >= 0 && elem._2 < cols
+  def keySet: Set[(Int, Int)] =
+    new Set[(Int, Int)] {
+      def contains(elem: (Int, Int)): Boolean =
+        elem._1 >= 0 && elem._1 < rows && elem._2 >= 0 && elem._2 < cols
 
-    def +(elem: (Int, Int)): Set[(Int, Int)] = Set() ++ iterator + elem
-    def -(elem: (Int, Int)): Set[(Int, Int)] = Set() ++ iterator - elem
+      def +(elem: (Int, Int)): Set[(Int, Int)] = Set() ++ iterator + elem
+      def -(elem: (Int, Int)): Set[(Int, Int)] = Set() ++ iterator - elem
 
-    def iterator: Iterator[(Int, Int)] =
-      for {
-        j <- Iterator.range(0, cols);
-        i <- Iterator.range(0, rows)
-      } yield (i, j)
-  }
+      def iterator: Iterator[(Int, Int)] =
+        for {
+          j <- Iterator.range(0, cols);
+          i <- Iterator.range(0, rows)
+        } yield (i, j)
+    }
 
   def iterator =
     for (i <- Iterator.range(0, rows);
@@ -172,13 +173,14 @@ trait Matrix[@spec(Double, Int, Float, Long) V]
 
   def flatten(view: View = View.Prefer): Vector[V]
 
-  override def equals(p1: Any): Boolean = p1 match {
-    case x: Matrix[_] =>
-      this.rows == x.rows && this.cols == x.cols &&
-        keysIterator.forall(k => this(k) == x(k))
-    case _ =>
-      return false
-  }
+  override def equals(p1: Any): Boolean =
+    p1 match {
+      case x: Matrix[_] =>
+        this.rows == x.rows && this.cols == x.cols &&
+          keysIterator.forall(k => this(k) == x(k))
+      case _ =>
+        return false
+    }
 
 }
 
@@ -205,32 +207,33 @@ object Matrix
 
   private[linalg] def emptyMatrix[V: ClassTag](
       _rows: Int,
-      _cols: Int): Matrix[V] = new Matrix[V] {
-    def activeIterator: Iterator[((Int, Int), V)] = Iterator.empty
+      _cols: Int): Matrix[V] =
+    new Matrix[V] {
+      def activeIterator: Iterator[((Int, Int), V)] = Iterator.empty
 
-    def activeValuesIterator: Iterator[V] = Iterator.empty
+      def activeValuesIterator: Iterator[V] = Iterator.empty
 
-    def activeKeysIterator: Iterator[(Int, Int)] = Iterator.empty
+      def activeKeysIterator: Iterator[(Int, Int)] = Iterator.empty
 
-    def apply(i: Int, j: Int): V =
-      throw new IndexOutOfBoundsException("Empty matrix!")
+      def apply(i: Int, j: Int): V =
+        throw new IndexOutOfBoundsException("Empty matrix!")
 
-    def update(i: Int, j: Int, e: V) {
-      throw new IndexOutOfBoundsException("Empty matrix!")
+      def update(i: Int, j: Int, e: V) {
+        throw new IndexOutOfBoundsException("Empty matrix!")
+      }
+
+      def rows: Int = _rows
+
+      def cols: Int = _cols
+
+      def copy: Matrix[V] = this
+
+      def activeSize: Int = 0
+
+      def repr: Matrix[V] = this
+
+      def flatten(view: View) = Vector[V]()
     }
-
-    def rows: Int = _rows
-
-    def cols: Int = _cols
-
-    def copy: Matrix[V] = this
-
-    def activeSize: Int = 0
-
-    def repr: Matrix[V] = this
-
-    def flatten(view: View) = Vector[V]()
-  }
 
   implicit def canTraverseKeyValuePairs[V]
       : CanTraverseKeyValuePairs[Matrix[V], (Int, Int), V] = {

@@ -14,9 +14,10 @@ object Test {
   // problem: missing bridge method
   //  --> abstractmethoderror `Main$$anon$1.foo(Ljava/lang/Object;)Ljava/lang/Object;`
   // the anonymous class only gets `public Bar foo(Bar a)`
-  def BarMonad[X] = new Monad[Bar1[X]#And] {
-    def foo[A](a: Bar[X, A]) = a
-  }
+  def BarMonad[X] =
+    new Monad[Bar1[X]#And] {
+      def foo[A](a: Bar[X, A]) = a
+    }
 
   def main(as: Array[String]) {
     BarMonad[Int] foo (new Bar[Int, Int])

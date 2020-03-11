@@ -53,9 +53,10 @@ final class GCounter private[akka] (
   /**
     * Scala API: Current total value of the counter.
     */
-  def value: BigInt = state.values.foldLeft(Zero) { (acc, v) ⇒
-    acc + v
-  }
+  def value: BigInt =
+    state.values.foldLeft(Zero) { (acc, v) ⇒
+      acc + v
+    }
 
   /**
     * Java API: Current total value of the counter.
@@ -131,10 +132,11 @@ final class GCounter private[akka] (
 
   override def toString: String = s"GCounter($value)"
 
-  override def equals(o: Any): Boolean = o match {
-    case other: GCounter ⇒ state == other.state
-    case _ ⇒ false
-  }
+  override def equals(o: Any): Boolean =
+    o match {
+      case other: GCounter ⇒ state == other.state
+      case _ ⇒ false
+    }
 
   override def hashCode: Int = state.hashCode
 

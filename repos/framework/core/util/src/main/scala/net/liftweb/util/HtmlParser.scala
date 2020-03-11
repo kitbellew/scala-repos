@@ -423,21 +423,22 @@ trait Html5Parser {
         case _ => false
       }
 
-    def unapply(n: Node): Option[Elem] = n match {
-      case e: Elem => {
-        if (e.label == "html" && e.prefix == null &&
-            e.attributes == Null &&
-            e.child.length == 2 &&
-            checkHead(e.child(0)) &&
-            checkBody(e.child(1))) {
-          Some(e.child(1).asInstanceOf[Elem].child(0).asInstanceOf[Elem])
-        } else {
-          None
+    def unapply(n: Node): Option[Elem] =
+      n match {
+        case e: Elem => {
+          if (e.label == "html" && e.prefix == null &&
+              e.attributes == Null &&
+              e.child.length == 2 &&
+              checkHead(e.child(0)) &&
+              checkBody(e.child(1))) {
+            Some(e.child(1).asInstanceOf[Elem].child(0).asInstanceOf[Elem])
+          } else {
+            None
+          }
         }
-      }
 
-      case _ => None
-    }
+        case _ => None
+      }
   }
 
   /**

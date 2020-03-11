@@ -49,27 +49,29 @@ private[akka] class DistributedPubSubMessageSerializer(
       PublishManifest -> publishFromBinary
     )
 
-  override def manifest(obj: AnyRef): String = obj match {
-    case _: Status ⇒ StatusManifest
-    case _: Delta ⇒ DeltaManifest
-    case _: Send ⇒ SendManifest
-    case _: SendToAll ⇒ SendToAllManifest
-    case _: Publish ⇒ PublishManifest
-    case _ ⇒
-      throw new IllegalArgumentException(
-        s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
-  }
+  override def manifest(obj: AnyRef): String =
+    obj match {
+      case _: Status ⇒ StatusManifest
+      case _: Delta ⇒ DeltaManifest
+      case _: Send ⇒ SendManifest
+      case _: SendToAll ⇒ SendToAllManifest
+      case _: Publish ⇒ PublishManifest
+      case _ ⇒
+        throw new IllegalArgumentException(
+          s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
+    }
 
-  override def toBinary(obj: AnyRef): Array[Byte] = obj match {
-    case m: Status ⇒ compress(statusToProto(m))
-    case m: Delta ⇒ compress(deltaToProto(m))
-    case m: Send ⇒ sendToProto(m).toByteArray
-    case m: SendToAll ⇒ sendToAllToProto(m).toByteArray
-    case m: Publish ⇒ publishToProto(m).toByteArray
-    case _ ⇒
-      throw new IllegalArgumentException(
-        s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
-  }
+  override def toBinary(obj: AnyRef): Array[Byte] =
+    obj match {
+      case m: Status ⇒ compress(statusToProto(m))
+      case m: Delta ⇒ compress(deltaToProto(m))
+      case m: Send ⇒ sendToProto(m).toByteArray
+      case m: SendToAll ⇒ sendToAllToProto(m).toByteArray
+      case m: Publish ⇒ publishToProto(m).toByteArray
+      case _ ⇒
+        throw new IllegalArgumentException(
+          s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
+    }
 
   override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
     fromBinaryMap.get(manifest) match {
@@ -92,12 +94,13 @@ private[akka] class DistributedPubSubMessageSerializer(
     val out = new ByteArrayOutputStream()
     val buffer = new Array[Byte](BufferSize)
 
-    @tailrec def readChunk(): Unit = in.read(buffer) match {
-      case -1 ⇒ ()
-      case n ⇒
-        out.write(buffer, 0, n)
-        readChunk()
-    }
+    @tailrec def readChunk(): Unit =
+      in.read(buffer) match {
+        case -1 ⇒ ()
+        case n ⇒
+          out.write(buffer, 0, n)
+          readChunk()
+      }
 
     try readChunk()
     finally in.close()

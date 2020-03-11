@@ -236,69 +236,70 @@ private[twitter] class ServerDispatcher(
   private[this] def isAccepting: Boolean =
     !tracker.isDraining && (!nackOnExpiredLease() || (lease > Duration.Zero))
 
-  private[this] def process(m: Message): Unit = m match {
-    case (_: Message.Tdispatch | _: Message.Treq) if isAccepting =>
-      lessor.observeArrival()
-      val elapsed = Stopwatch.start()
+  private[this] def process(m: Message): Unit =
+    m match {
+      case (_: Message.Tdispatch | _: Message.Treq) if isAccepting =>
+        lessor.observeArrival()
+        val elapsed = Stopwatch.start()
 
-      val reply: Try[Message] => Future[Unit] = {
-        case Return(rep) =>
-          lessor.observe(elapsed())
-          write(rep)
-        case Throw(exc) =>
-          log.log(Level.WARNING, s"Error processing message $m", exc)
-          write(Message.Rerr(m.tag, exc.toString))
-      }
+        val reply: Try[Message] => Future[Unit] = {
+          case Return(rep) =>
+            lessor.observe(elapsed())
+            write(rep)
+          case Throw(exc) =>
+            log.log(Level.WARNING, s"Error processing message $m", exc)
+            write(Message.Rerr(m.tag, exc.toString))
+        }
 
-      if (!tracker.isTracking(m.tag)) {
-        tracker.track(m.tag, service(m))(reply)
-      } else {
-        // This can mean two things:
-        //
-        // 1. We have a pathalogical client which is sending duplicate tags.
-        // We push the responsibility of resolving the duplicate on the client
-        // and service the request.
-        //
-        // 2. We lost a race with the client where it reused a tag before we were
-        // able to cleanup the tracker. This is possible since we cleanup state on
-        // write closures which can be executed on a separate thread from the event
-        // loop thread (in netty3). We take extra precaution in the `ChannelTransport.write`
-        // to a avoid this, but technically it isn't guaranteed by netty3.
-        //
-        // In both cases, we forfeit the ability to track (and thus drain or interrupt)
-        // the request, but we can still service it.
-        log.fine(
-          s"Received duplicate tag ${m.tag} from client ${trans.remoteAddress}")
-        statsReceiver.counter("duplicate_tag").incr()
-        service(m).transform(reply)
-      }
+        if (!tracker.isTracking(m.tag)) {
+          tracker.track(m.tag, service(m))(reply)
+        } else {
+          // This can mean two things:
+          //
+          // 1. We have a pathalogical client which is sending duplicate tags.
+          // We push the responsibility of resolving the duplicate on the client
+          // and service the request.
+          //
+          // 2. We lost a race with the client where it reused a tag before we were
+          // able to cleanup the tracker. This is possible since we cleanup state on
+          // write closures which can be executed on a separate thread from the event
+          // loop thread (in netty3). We take extra precaution in the `ChannelTransport.write`
+          // to a avoid this, but technically it isn't guaranteed by netty3.
+          //
+          // In both cases, we forfeit the ability to track (and thus drain or interrupt)
+          // the request, but we can still service it.
+          log.fine(
+            s"Received duplicate tag ${m.tag} from client ${trans.remoteAddress}")
+          statsReceiver.counter("duplicate_tag").incr()
+          service(m).transform(reply)
+        }
 
-    // Dispatch when !isAccepting
-    case d: Message.Tdispatch =>
-      write(Message.RdispatchNack(d.tag, Nil))
-    case r: Message.Treq =>
-      write(Message.RreqNack(r.tag))
+      // Dispatch when !isAccepting
+      case d: Message.Tdispatch =>
+        write(Message.RdispatchNack(d.tag, Nil))
+      case r: Message.Treq =>
+        write(Message.RreqNack(r.tag))
 
-    case _: Message.Tping =>
-      service(m).respond {
-        case Return(rep) => write(rep)
-        case Throw(exc)  => write(Message.Rerr(m.tag, exc.toString))
-      }
+      case _: Message.Tping =>
+        service(m).respond {
+          case Return(rep) => write(rep)
+          case Throw(exc)  => write(Message.Rerr(m.tag, exc.toString))
+        }
 
-    case Message.Tdiscarded(tag, why) =>
-      tracker.get(tag) match {
-        case Some(reply) =>
-          reply.raise(new ClientDiscardedRequestException(why))
-        case None =>
-      }
+      case Message.Tdiscarded(tag, why) =>
+        tracker.get(tag) match {
+          case Some(reply) =>
+            reply.raise(new ClientDiscardedRequestException(why))
+          case None =>
+        }
 
-    case Message.Rdrain(1) if state.get == State.Draining =>
-      tracker.drain()
+      case Message.Rdrain(1) if state.get == State.Draining =>
+        tracker.drain()
 
-    case m: Message =>
-      val rerr = Message.Rerr(m.tag, s"Unexpected mux message type ${m.typ}")
-      write(rerr)
-  }
+      case m: Message =>
+        val rerr = Message.Rerr(m.tag, s"Unexpected mux message type ${m.typ}")
+        write(rerr)
+    }
 
   private[this] def loop(): Unit =
     Future.each(trans.read) { msg =>
@@ -345,15 +346,16 @@ private[twitter] class ServerDispatcher(
   }
 
   @tailrec
-  private[this] def hangup(deadline: Time): Future[Unit] = state.get match {
-    case State.Closed => Future.Done
-    case s @ (State.Draining | State.Open) =>
-      if (!state.compareAndSet(s, State.Closed))
-        hangup(deadline)
-      else {
-        trans.close(deadline)
-      }
-  }
+  private[this] def hangup(deadline: Time): Future[Unit] =
+    state.get match {
+      case State.Closed => Future.Done
+      case s @ (State.Draining | State.Open) =>
+        if (!state.compareAndSet(s, State.Closed))
+          hangup(deadline)
+        else {
+          trans.close(deadline)
+        }
+    }
 
   def close(deadline: Time): Future[Unit] = {
     if (!state.compareAndSet(State.Open, State.Draining))
@@ -466,12 +468,13 @@ private[finagle] object Processor
 
   def apply(
       req: Message,
-      service: Service[Request, Response]): Future[Message] = req match {
-    case d: Message.Tdispatch => dispatch(d, service)
-    case r: Message.Treq      => dispatch(r, service)
-    case Message.Tping(tag)   => Future.value(Message.Rping(tag))
-    case m =>
-      Future.exception(
-        new IllegalArgumentException(s"Cannot process message $m"))
-  }
+      service: Service[Request, Response]): Future[Message] =
+    req match {
+      case d: Message.Tdispatch => dispatch(d, service)
+      case r: Message.Treq      => dispatch(r, service)
+      case Message.Tping(tag)   => Future.value(Message.Rping(tag))
+      case m =>
+        Future.exception(
+          new IllegalArgumentException(s"Cannot process message $m"))
+    }
 }

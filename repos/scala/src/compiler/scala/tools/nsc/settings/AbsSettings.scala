@@ -31,10 +31,11 @@ trait AbsSettings extends scala.reflect.internal.settings.AbsSettings {
 
   // two AbsSettings objects are equal if their visible settings are equal.
   override def hashCode() = visibleSettings.size // going for cheap
-  override def equals(that: Any) = that match {
-    case s: AbsSettings => this.userSetSettings == s.userSetSettings
-    case _              => false
-  }
+  override def equals(that: Any) =
+    that match {
+      case s: AbsSettings => this.userSetSettings == s.userSetSettings
+      case _              => false
+    }
   override def toString() = {
     val uss = userSetSettings
     val indent =
@@ -124,15 +125,17 @@ trait AbsSettings extends scala.reflect.internal.settings.AbsSettings {
     /** These categorizations are so the help output shows -X and -P among
       *  the standard options and -Y among the advanced options.
       */
-    def isAdvanced = name match {
-      case "-Y" => true;
-      case "-X" => false;
-      case _    => name startsWith "-X"
-    }
-    def isPrivate = name match {
-      case "-Y" => false;
-      case _    => name startsWith "-Y"
-    }
+    def isAdvanced =
+      name match {
+        case "-Y" => true;
+        case "-X" => false;
+        case _    => name startsWith "-X"
+      }
+    def isPrivate =
+      name match {
+        case "-Y" => false;
+        case _    => name startsWith "-Y"
+      }
     def isStandard = !isAdvanced && !isPrivate
     def isForDebug = name endsWith "-debug" // by convention, i.e. -Ytyper-debug
     def isDeprecated = deprecationMessage.isDefined
@@ -143,10 +146,11 @@ trait AbsSettings extends scala.reflect.internal.settings.AbsSettings {
       *  in one place: two AbsSetting objects are equal if their names and
       *  values compare equal.
       */
-    override def equals(that: Any) = that match {
-      case x: AbsSettings#AbsSetting => (name == x.name) && (value == x.value)
-      case _                         => false
-    }
+    override def equals(that: Any) =
+      that match {
+        case x: AbsSettings#AbsSetting => (name == x.name) && (value == x.value)
+        case _                         => false
+      }
     override def hashCode() = name.hashCode + value.hashCode
     override def toString() =
       name + " = " + (if (value == "")

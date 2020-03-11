@@ -108,14 +108,15 @@ object AtLeastOnceDeliveryFailureSpec {
           log.debug(debugMessage(s"replayed event $evt"))
     }
 
-    def updateState(evt: Evt): Unit = evt match {
-      case MsgSent(i) ⇒
-        add(i)
-        deliver(destination.path)(deliveryId ⇒ Msg(deliveryId, i))
+    def updateState(evt: Evt): Unit =
+      evt match {
+        case MsgSent(i) ⇒
+          add(i)
+          deliver(destination.path)(deliveryId ⇒ Msg(deliveryId, i))
 
-      case MsgConfirmed(deliveryId, i) ⇒
-        confirmDelivery(deliveryId)
-    }
+        case MsgConfirmed(deliveryId, i) ⇒
+          confirmDelivery(deliveryId)
+      }
 
     private def debugMessage(msg: String): String =
       s"[sender] ${msg} (mode = ${if (recoveryRunning)
@@ -211,7 +212,8 @@ class AtLeastOnceDeliveryFailureSpec
     }
   }
 
-  def expectDone() = within(numMessages.seconds) {
-    expectMsgType[Done].ints.sorted should ===(1 to numMessages toVector)
-  }
+  def expectDone() =
+    within(numMessages.seconds) {
+      expectMsgType[Done].ints.sorted should ===(1 to numMessages toVector)
+    }
 }

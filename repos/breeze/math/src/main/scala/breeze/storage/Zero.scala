@@ -47,9 +47,10 @@ object Zero extends ZeroLowPriority {
       refDefault
   }
 
-  def apply[T](v: T): Zero[T] = new Zero[T] {
-    def zero = v
-  }
+  def apply[T](v: T): Zero[T] =
+    new Zero[T] {
+      def zero = v
+    }
 
   implicit object IntZero extends Zero[Int] {
     override def zero = 0

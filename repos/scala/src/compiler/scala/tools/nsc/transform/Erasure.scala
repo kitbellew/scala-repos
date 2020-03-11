@@ -89,13 +89,14 @@ abstract class Erasure
   // * higher-order type parameters
   // * type parameters appearing in method parameters
   // * type members not visible in an enclosing template
-  private def isTypeParameterInSig(sym: Symbol, initialSymbol: Symbol) = (
-    !sym.isHigherOrderTypeParameter &&
-      sym.isTypeParameterOrSkolem && (
-      (initialSymbol.enclClassChain.exists(sym isNestedIn _)) ||
-        (initialSymbol.isMethod && initialSymbol.typeParams.contains(sym))
+  private def isTypeParameterInSig(sym: Symbol, initialSymbol: Symbol) =
+    (
+      !sym.isHigherOrderTypeParameter &&
+        sym.isTypeParameterOrSkolem && (
+        (initialSymbol.enclClassChain.exists(sym isNestedIn _)) ||
+          (initialSymbol.isMethod && initialSymbol.typeParams.contains(sym))
+      )
     )
-  )
 
   // Ensure every '.' in the generated signature immediately follows
   // a close angle bracket '>'.  Any which do not are replaced with '$'.
@@ -131,90 +132,92 @@ abstract class Erasure
     *  unboxing some primitive types and further simplifications as they are done in jsig.
     */
   val prepareSigMap = new TypeMap {
-    def squashBoxed(tp: Type): Type = tp.dealiasWiden match {
-      case t @ RefinedType(parents, decls) =>
-        val parents1 = parents mapConserve squashBoxed
-        if (parents1 eq parents)
-          tp
-        else
-          RefinedType(parents1, decls)
-      case t @ ExistentialType(tparams, tpe) =>
-        val tpe1 = squashBoxed(tpe)
-        if (tpe1 eq tpe)
-          t
-        else
-          ExistentialType(tparams, tpe1)
-      case t =>
-        if (boxedClass contains t.typeSymbol)
-          ObjectTpe
-        else
-          tp
-    }
-    def apply(tp: Type): Type = tp.dealiasWiden match {
-      case tp1 @ TypeBounds(lo, hi) =>
-        val lo1 = squashBoxed(apply(lo))
-        val hi1 = squashBoxed(apply(hi))
-        if ((lo1 eq lo) && (hi1 eq hi))
-          tp1
-        else
-          TypeBounds(lo1, hi1)
-      case tp1 @ TypeRef(pre, sym, args) =>
-        def argApply(tp: Type) = {
-          val tp1 = apply(tp)
-          if (tp1.typeSymbol == UnitClass)
+    def squashBoxed(tp: Type): Type =
+      tp.dealiasWiden match {
+        case t @ RefinedType(parents, decls) =>
+          val parents1 = parents mapConserve squashBoxed
+          if (parents1 eq parents)
+            tp
+          else
+            RefinedType(parents1, decls)
+        case t @ ExistentialType(tparams, tpe) =>
+          val tpe1 = squashBoxed(tpe)
+          if (tpe1 eq tpe)
+            t
+          else
+            ExistentialType(tparams, tpe1)
+        case t =>
+          if (boxedClass contains t.typeSymbol)
             ObjectTpe
           else
-            squashBoxed(tp1)
-        }
-        if (sym == ArrayClass && args.nonEmpty)
-          if (unboundedGenericArrayLevel(tp1) == 1)
-            ObjectTpe
-          else
-            mapOver(tp1)
-        else if (sym == AnyClass || sym == AnyValClass || sym == SingletonClass)
-          ObjectTpe
-        else if (sym == UnitClass)
-          BoxedUnitTpe
-        else if (sym == NothingClass)
-          RuntimeNothingClass.tpe
-        else if (sym == NullClass)
-          RuntimeNullClass.tpe
-        else {
-          val pre1 = apply(pre)
-          val args1 = args mapConserve argApply
-          if ((pre1 eq pre) && (args1 eq args))
+            tp
+      }
+    def apply(tp: Type): Type =
+      tp.dealiasWiden match {
+        case tp1 @ TypeBounds(lo, hi) =>
+          val lo1 = squashBoxed(apply(lo))
+          val hi1 = squashBoxed(apply(hi))
+          if ((lo1 eq lo) && (hi1 eq hi))
             tp1
           else
-            TypeRef(pre1, sym, args1)
-        }
-      case tp1 @ MethodType(params, restpe) =>
-        val params1 = mapOver(params)
-        val restpe1 =
-          if (restpe.typeSymbol == UnitClass)
-            UnitTpe
+            TypeBounds(lo1, hi1)
+        case tp1 @ TypeRef(pre, sym, args) =>
+          def argApply(tp: Type) = {
+            val tp1 = apply(tp)
+            if (tp1.typeSymbol == UnitClass)
+              ObjectTpe
+            else
+              squashBoxed(tp1)
+          }
+          if (sym == ArrayClass && args.nonEmpty)
+            if (unboundedGenericArrayLevel(tp1) == 1)
+              ObjectTpe
+            else
+              mapOver(tp1)
+          else if (sym == AnyClass || sym == AnyValClass || sym == SingletonClass)
+            ObjectTpe
+          else if (sym == UnitClass)
+            BoxedUnitTpe
+          else if (sym == NothingClass)
+            RuntimeNothingClass.tpe
+          else if (sym == NullClass)
+            RuntimeNullClass.tpe
+          else {
+            val pre1 = apply(pre)
+            val args1 = args mapConserve argApply
+            if ((pre1 eq pre) && (args1 eq args))
+              tp1
+            else
+              TypeRef(pre1, sym, args1)
+          }
+        case tp1 @ MethodType(params, restpe) =>
+          val params1 = mapOver(params)
+          val restpe1 =
+            if (restpe.typeSymbol == UnitClass)
+              UnitTpe
+            else
+              apply(restpe)
+          if ((params1 eq params) && (restpe1 eq restpe))
+            tp1
           else
-            apply(restpe)
-        if ((params1 eq params) && (restpe1 eq restpe))
+            MethodType(params1, restpe1)
+        case tp1 @ RefinedType(parents, decls) =>
+          val parents1 = parents mapConserve apply
+          if (parents1 eq parents)
+            tp1
+          else
+            RefinedType(parents1, decls)
+        case t @ ExistentialType(tparams, tpe) =>
+          val tpe1 = apply(tpe)
+          if (tpe1 eq tpe)
+            t
+          else
+            ExistentialType(tparams, tpe1)
+        case tp1: ClassInfoType =>
           tp1
-        else
-          MethodType(params1, restpe1)
-      case tp1 @ RefinedType(parents, decls) =>
-        val parents1 = parents mapConserve apply
-        if (parents1 eq parents)
-          tp1
-        else
-          RefinedType(parents1, decls)
-      case t @ ExistentialType(tparams, tpe) =>
-        val tpe1 = apply(tpe)
-        if (tpe1 eq tpe)
-          t
-        else
-          ExistentialType(tparams, tpe1)
-      case tp1: ClassInfoType =>
-        tp1
-      case tp1 =>
-        mapOver(tp1)
-    }
+        case tp1 =>
+          mapOver(tp1)
+      }
   }
 
   private def hiBounds(bounds: TypeBounds): List[Type] =
@@ -256,199 +259,202 @@ abstract class Erasure
   /** The Java signature of type 'info', for symbol sym. The symbol is used to give the right return
     *  type for constructors.
     */
-  def javaSig(sym0: Symbol, info: Type): Option[String] = enteringErasure {
-    val isTraitSignature = sym0.enclClass.isTrait
+  def javaSig(sym0: Symbol, info: Type): Option[String] =
+    enteringErasure {
+      val isTraitSignature = sym0.enclClass.isTrait
 
-    def superSig(parents: List[Type]) = {
-      def isInterfaceOrTrait(sym: Symbol) = sym.isInterface || sym.isTrait
+      def superSig(parents: List[Type]) = {
+        def isInterfaceOrTrait(sym: Symbol) = sym.isInterface || sym.isTrait
 
-      // a signature should always start with a class
-      def ensureClassAsFirstParent(tps: List[Type]) = tps match {
-        case Nil => ObjectTpe :: Nil
-        case head :: tail if isInterfaceOrTrait(head.typeSymbol) =>
-          ObjectTpe :: tps
-        case _ => tps
-      }
-
-      val minParents = minimizeParents(parents)
-      val validParents =
-        if (isTraitSignature)
-          // java is unthrilled about seeing interfaces inherit from classes
-          minParents filter (p => isInterfaceOrTrait(p.typeSymbol))
-        else
-          minParents
-
-      val ps = ensureClassAsFirstParent(validParents)
-
-      (ps map boxedSig).mkString
-    }
-    def boxedSig(tp: Type) = jsig(tp, primitiveOK = false)
-    def boundsSig(bounds: List[Type]) = {
-      val (isTrait, isClass) = bounds partition (_.typeSymbol.isTrait)
-      val classPart = isClass match {
-        case Nil    => ":" // + boxedSig(ObjectTpe)
-        case x :: _ => ":" + boxedSig(x)
-      }
-      classPart :: (isTrait map boxedSig) mkString ":"
-    }
-    def paramSig(tsym: Symbol) =
-      tsym.name + boundsSig(hiBounds(tsym.info.bounds))
-    def polyParamSig(tparams: List[Symbol]) = (
-      if (tparams.isEmpty)
-        ""
-      else
-        tparams map paramSig mkString ("<", "", ">")
-    )
-
-    // Anything which could conceivably be a module (i.e. isn't known to be
-    // a type parameter or similar) must go through here or the signature is
-    // likely to end up with Foo<T>.Empty where it needs Foo<T>.Empty$.
-    def fullNameInSig(sym: Symbol) = "L" + enteringJVM(sym.javaBinaryName)
-
-    def jsig(
-        tp0: Type,
-        existentiallyBound: List[Symbol] = Nil,
-        toplevel: Boolean = false,
-        primitiveOK: Boolean = true): String = {
-      val tp = tp0.dealias
-      tp match {
-        case st: SubType =>
-          jsig(st.supertype, existentiallyBound, toplevel, primitiveOK)
-        case ExistentialType(tparams, tpe) =>
-          jsig(tpe, tparams, toplevel, primitiveOK)
-        case TypeRef(pre, sym, args) =>
-          def argSig(tp: Type) =
-            if (existentiallyBound contains tp.typeSymbol) {
-              val bounds = tp.typeSymbol.info.bounds
-              if (!(AnyRefTpe <:< bounds.hi))
-                "+" + boxedSig(bounds.hi)
-              else if (!(bounds.lo <:< NullTpe))
-                "-" + boxedSig(bounds.lo)
-              else
-                "*"
-            } else
-              tp match {
-                case PolyType(_, res) =>
-                  "*" // SI-7932
-                case _ =>
-                  boxedSig(tp)
-              }
-          def classSig = {
-            val preRebound = pre.baseType(sym.owner) // #2585
-            dotCleanup(
-              (
-                if (needsJavaSig(preRebound, Nil)) {
-                  val s = jsig(preRebound, existentiallyBound)
-                  if (s.charAt(0) == 'L')
-                    s.substring(0, s.length - 1) + "." + sym.javaSimpleName
-                  else
-                    fullNameInSig(sym)
-                } else
-                  fullNameInSig(sym)
-              ) + (
-                if (args.isEmpty)
-                  ""
-                else
-                  "<" + (args map argSig).mkString + ">"
-              ) + (
-                ";"
-              )
-            )
+        // a signature should always start with a class
+        def ensureClassAsFirstParent(tps: List[Type]) =
+          tps match {
+            case Nil => ObjectTpe :: Nil
+            case head :: tail if isInterfaceOrTrait(head.typeSymbol) =>
+              ObjectTpe :: tps
+            case _ => tps
           }
 
-          // If args isEmpty, Array is being used as a type constructor
-          if (sym == ArrayClass && args.nonEmpty) {
-            if (unboundedGenericArrayLevel(tp) == 1)
-              jsig(ObjectTpe)
-            else
-              ARRAY_TAG.toString + (args map (jsig(_))).mkString
-          } else if (isTypeParameterInSig(sym, sym0)) {
-            assert(!sym.isAliasType, "Unexpected alias type: " + sym)
-            "" + TVAR_TAG + sym.name + ";"
-          } else if (sym == AnyClass || sym == AnyValClass || sym == SingletonClass)
-            jsig(ObjectTpe)
-          else if (sym == UnitClass)
-            jsig(BoxedUnitTpe)
-          else if (sym == NothingClass)
-            jsig(RuntimeNothingClass.tpe)
-          else if (sym == NullClass)
-            jsig(RuntimeNullClass.tpe)
-          else if (isPrimitiveValueClass(sym)) {
-            if (!primitiveOK)
+        val minParents = minimizeParents(parents)
+        val validParents =
+          if (isTraitSignature)
+            // java is unthrilled about seeing interfaces inherit from classes
+            minParents filter (p => isInterfaceOrTrait(p.typeSymbol))
+          else
+            minParents
+
+        val ps = ensureClassAsFirstParent(validParents)
+
+        (ps map boxedSig).mkString
+      }
+      def boxedSig(tp: Type) = jsig(tp, primitiveOK = false)
+      def boundsSig(bounds: List[Type]) = {
+        val (isTrait, isClass) = bounds partition (_.typeSymbol.isTrait)
+        val classPart = isClass match {
+          case Nil    => ":" // + boxedSig(ObjectTpe)
+          case x :: _ => ":" + boxedSig(x)
+        }
+        classPart :: (isTrait map boxedSig) mkString ":"
+      }
+      def paramSig(tsym: Symbol) =
+        tsym.name + boundsSig(hiBounds(tsym.info.bounds))
+      def polyParamSig(tparams: List[Symbol]) =
+        (
+          if (tparams.isEmpty)
+            ""
+          else
+            tparams map paramSig mkString ("<", "", ">")
+        )
+
+      // Anything which could conceivably be a module (i.e. isn't known to be
+      // a type parameter or similar) must go through here or the signature is
+      // likely to end up with Foo<T>.Empty where it needs Foo<T>.Empty$.
+      def fullNameInSig(sym: Symbol) = "L" + enteringJVM(sym.javaBinaryName)
+
+      def jsig(
+          tp0: Type,
+          existentiallyBound: List[Symbol] = Nil,
+          toplevel: Boolean = false,
+          primitiveOK: Boolean = true): String = {
+        val tp = tp0.dealias
+        tp match {
+          case st: SubType =>
+            jsig(st.supertype, existentiallyBound, toplevel, primitiveOK)
+          case ExistentialType(tparams, tpe) =>
+            jsig(tpe, tparams, toplevel, primitiveOK)
+          case TypeRef(pre, sym, args) =>
+            def argSig(tp: Type) =
+              if (existentiallyBound contains tp.typeSymbol) {
+                val bounds = tp.typeSymbol.info.bounds
+                if (!(AnyRefTpe <:< bounds.hi))
+                  "+" + boxedSig(bounds.hi)
+                else if (!(bounds.lo <:< NullTpe))
+                  "-" + boxedSig(bounds.lo)
+                else
+                  "*"
+              } else
+                tp match {
+                  case PolyType(_, res) =>
+                    "*" // SI-7932
+                  case _ =>
+                    boxedSig(tp)
+                }
+            def classSig = {
+              val preRebound = pre.baseType(sym.owner) // #2585
+              dotCleanup(
+                (
+                  if (needsJavaSig(preRebound, Nil)) {
+                    val s = jsig(preRebound, existentiallyBound)
+                    if (s.charAt(0) == 'L')
+                      s.substring(0, s.length - 1) + "." + sym.javaSimpleName
+                    else
+                      fullNameInSig(sym)
+                  } else
+                    fullNameInSig(sym)
+                ) + (
+                  if (args.isEmpty)
+                    ""
+                  else
+                    "<" + (args map argSig).mkString + ">"
+                ) + (
+                  ";"
+                )
+              )
+            }
+
+            // If args isEmpty, Array is being used as a type constructor
+            if (sym == ArrayClass && args.nonEmpty) {
+              if (unboundedGenericArrayLevel(tp) == 1)
+                jsig(ObjectTpe)
+              else
+                ARRAY_TAG.toString + (args map (jsig(_))).mkString
+            } else if (isTypeParameterInSig(sym, sym0)) {
+              assert(!sym.isAliasType, "Unexpected alias type: " + sym)
+              "" + TVAR_TAG + sym.name + ";"
+            } else if (sym == AnyClass || sym == AnyValClass || sym == SingletonClass)
               jsig(ObjectTpe)
             else if (sym == UnitClass)
               jsig(BoxedUnitTpe)
+            else if (sym == NothingClass)
+              jsig(RuntimeNothingClass.tpe)
+            else if (sym == NullClass)
+              jsig(RuntimeNullClass.tpe)
+            else if (isPrimitiveValueClass(sym)) {
+              if (!primitiveOK)
+                jsig(ObjectTpe)
+              else if (sym == UnitClass)
+                jsig(BoxedUnitTpe)
+              else
+                abbrvTag(sym).toString
+            } else if (sym.isDerivedValueClass) {
+              val unboxed = sym.derivedValueClassUnbox.tpe_*.finalResultType
+              val unboxedSeen =
+                (tp memberType sym.derivedValueClassUnbox).finalResultType
+              def unboxedMsg =
+                if (unboxed == unboxedSeen)
+                  ""
+                else
+                  s", seen within ${sym.simpleName} as $unboxedSeen"
+              logResult(
+                s"Erasure of value class $sym (underlying type $unboxed$unboxedMsg) is") {
+                if (isPrimitiveValueType(unboxedSeen) && !primitiveOK)
+                  classSig
+                else
+                  jsig(unboxedSeen, existentiallyBound, toplevel, primitiveOK)
+              }
+            } else if (sym.isClass)
+              classSig
             else
-              abbrvTag(sym).toString
-          } else if (sym.isDerivedValueClass) {
-            val unboxed = sym.derivedValueClassUnbox.tpe_*.finalResultType
-            val unboxedSeen =
-              (tp memberType sym.derivedValueClassUnbox).finalResultType
-            def unboxedMsg =
-              if (unboxed == unboxedSeen)
+              jsig(erasure(sym0)(tp), existentiallyBound, toplevel, primitiveOK)
+          case PolyType(tparams, restpe) =>
+            assert(tparams.nonEmpty)
+            val poly =
+              if (toplevel)
+                polyParamSig(tparams)
+              else
                 ""
-              else
-                s", seen within ${sym.simpleName} as $unboxedSeen"
-            logResult(
-              s"Erasure of value class $sym (underlying type $unboxed$unboxedMsg) is") {
-              if (isPrimitiveValueType(unboxedSeen) && !primitiveOK)
-                classSig
-              else
-                jsig(unboxedSeen, existentiallyBound, toplevel, primitiveOK)
-            }
-          } else if (sym.isClass)
-            classSig
-          else
-            jsig(erasure(sym0)(tp), existentiallyBound, toplevel, primitiveOK)
-        case PolyType(tparams, restpe) =>
-          assert(tparams.nonEmpty)
-          val poly =
-            if (toplevel)
-              polyParamSig(tparams)
+            poly + jsig(restpe)
+
+          case MethodType(params, restpe) =>
+            val buf = new StringBuffer("(")
+            params foreach (p => buf append jsig(p.tpe))
+            buf append ")"
+            buf append (if (restpe.typeSymbol == UnitClass || sym0.isConstructor)
+                          VOID_TAG.toString
+                        else
+                          jsig(restpe))
+            buf.toString
+
+          case RefinedType(parents, decls) =>
+            boxedSig(intersectionDominator(parents))
+          case ClassInfoType(parents, _, _) =>
+            superSig(parents)
+          case AnnotatedType(_, atp) =>
+            jsig(atp, existentiallyBound, toplevel, primitiveOK)
+          case BoundedWildcardType(bounds) =>
+            println(
+              "something's wrong: " + sym0 + ":" + sym0.tpe + " has a bounded wildcard type")
+            jsig(bounds.hi, existentiallyBound, toplevel, primitiveOK)
+          case _ =>
+            val etp = erasure(sym0)(tp)
+            if (etp eq tp)
+              throw new UnknownSig
             else
-              ""
-          poly + jsig(restpe)
-
-        case MethodType(params, restpe) =>
-          val buf = new StringBuffer("(")
-          params foreach (p => buf append jsig(p.tpe))
-          buf append ")"
-          buf append (if (restpe.typeSymbol == UnitClass || sym0.isConstructor)
-                        VOID_TAG.toString
-                      else
-                        jsig(restpe))
-          buf.toString
-
-        case RefinedType(parents, decls) =>
-          boxedSig(intersectionDominator(parents))
-        case ClassInfoType(parents, _, _) =>
-          superSig(parents)
-        case AnnotatedType(_, atp) =>
-          jsig(atp, existentiallyBound, toplevel, primitiveOK)
-        case BoundedWildcardType(bounds) =>
-          println(
-            "something's wrong: " + sym0 + ":" + sym0.tpe + " has a bounded wildcard type")
-          jsig(bounds.hi, existentiallyBound, toplevel, primitiveOK)
-        case _ =>
-          val etp = erasure(sym0)(tp)
-          if (etp eq tp)
-            throw new UnknownSig
-          else
-            jsig(etp)
+              jsig(etp)
+        }
       }
+      val throwsArgs = sym0.annotations flatMap ThrownException.unapply
+      if (needsJavaSig(info, throwsArgs)) {
+        try Some(
+          jsig(info, toplevel = true) + throwsArgs
+            .map("^" + jsig(_, toplevel = true))
+            .mkString(""))
+        catch {
+          case ex: UnknownSig => None
+        }
+      } else
+        None
     }
-    val throwsArgs = sym0.annotations flatMap ThrownException.unapply
-    if (needsJavaSig(info, throwsArgs)) {
-      try Some(
-        jsig(info, toplevel = true) + throwsArgs
-          .map("^" + jsig(_, toplevel = true))
-          .mkString(""))
-      catch {
-        case ex: UnknownSig => None
-      }
-    } else
-      None
-  }
 
   class UnknownSig extends Exception
 
@@ -468,14 +474,15 @@ abstract class Erasure
     // which is later translated to a Class. Unfortunately that means we have bugs like the erasure
     // of Class[Foo] and classOf[Bar] not being seen as equivalent, leading to duplicate method
     // generation and failing bytecode. See ticket #4753.
-    def apply(tp: Type): Type = tp match {
-      case PolyType(_, _) => mapOver(tp)
-      case MethodType(_, _) =>
-        mapOver(tp) // nullarymethod was eliminated during uncurry
-      case ConstantType(Constant(_: Type)) =>
-        ClassClass.tpe // all classOfs erase to Class
-      case _ => tp.deconst
-    }
+    def apply(tp: Type): Type =
+      tp match {
+        case PolyType(_, _) => mapOver(tp)
+        case MethodType(_, _) =>
+          mapOver(tp) // nullarymethod was eliminated during uncurry
+        case ConstantType(Constant(_: Type)) =>
+          ClassClass.tpe // all classOfs erase to Class
+        case _ => tp.deconst
+      }
   }
 
   // ## requires a little translation
@@ -988,11 +995,12 @@ abstract class Erasure
       checkNoDeclaredDoubleDefs(root)
       object opc extends Cursor(root) {
         // specialized members have no type history before 'specialize', causing double def errors for curried defs
-        override def exclude(sym: Symbol): Boolean = (
-          sym.isType
-            || super.exclude(sym)
-            || !sym.hasTypeAt(currentRun.refchecksPhase.id)
-        )
+        override def exclude(sym: Symbol): Boolean =
+          (
+            sym.isType
+              || super.exclude(sym)
+              || !sym.hasTypeAt(currentRun.refchecksPhase.id)
+          )
         override def matches(lo: Symbol, high: Symbol) = !high.isPrivate
       }
       def isErasureDoubleDef(pair: SymbolPair) = {
@@ -1058,10 +1066,11 @@ abstract class Erasure
         val fn = tree.fun
         val args = tree.args
 
-        def qualifier = fn match {
-          case Select(qual, _)               => qual
-          case TypeApply(Select(qual, _), _) => qual
-        }
+        def qualifier =
+          fn match {
+            case Select(qual, _)               => qual
+            case TypeApply(Select(qual, _), _) => qual
+          }
         def preEraseAsInstanceOf = {
           (fn: @unchecked) match {
             case TypeApply(Select(qual, _), List(targ)) =>
@@ -1277,97 +1286,101 @@ abstract class Erasure
         }
       }
 
-      def preErase(tree: Tree): Tree = tree match {
-        case tree: Apply =>
-          preEraseApply(tree)
+      def preErase(tree: Tree): Tree =
+        tree match {
+          case tree: Apply =>
+            preEraseApply(tree)
 
-        case TypeApply(fun, args)
-            if (fun.symbol.owner != AnyClass &&
-              fun.symbol != Object_asInstanceOf &&
-              fun.symbol != Object_isInstanceOf) =>
-          // leave all other type tests/type casts, remove all other type applications
-          preErase(fun)
+          case TypeApply(fun, args)
+              if (fun.symbol.owner != AnyClass &&
+                fun.symbol != Object_asInstanceOf &&
+                fun.symbol != Object_isInstanceOf) =>
+            // leave all other type tests/type casts, remove all other type applications
+            preErase(fun)
 
-        case Select(qual, name) =>
-          val sym = tree.symbol
-          val owner = sym.owner
-          if (owner.isRefinementClass) {
-            sym.allOverriddenSymbols filterNot (_.owner.isRefinementClass) match {
-              case overridden :: _ =>
-                log(
-                  s"${sym.fullLocationString} originates in refinement class - replacing with ${overridden.fullLocationString}.")
-                tree.symbol = overridden
-              case Nil =>
-                // Ideally this should not be reached or reachable; anything which would
-                // get here should have been caught in the surrounding Apply.
-                devWarning(
-                  s"Failed to rewrite reflective apply - now don't know what to do with " + tree)
-                return treeCopy.Select(
-                  tree,
-                  gen.mkAttributedCast(qual, qual.tpe.widen),
-                  name)
-            }
-          }
-
-          def isJvmAccessible(sym: Symbol) =
-            (sym.isClass && !sym.isJavaDefined) || localTyper.context
-              .isAccessible(sym, sym.owner.thisType)
-          if (!isJvmAccessible(owner) && qual.tpe != null) {
-            qual match {
-              case Super(_, _) =>
-                // Insert a cast here at your peril -- see SI-5162.
-                reporter.error(
-                  tree.pos,
-                  s"Unable to access ${tree.symbol.fullLocationString} with a super reference.")
-                tree
-              case _ =>
-                // Todo: Figure out how qual.tpe could be null in the check above (it does appear in build where SwingWorker.this
-                // has a null type).
-                val qualSym = qual.tpe.widen.typeSymbol
-                if (isJvmAccessible(
-                      qualSym) && !qualSym.isPackageClass && !qualSym.isPackageObjectClass) {
-                  // insert cast to prevent illegal access error (see #4283)
-                  // util.trace("insert erasure cast ") (*/
-                  treeCopy.Select(
+          case Select(qual, name) =>
+            val sym = tree.symbol
+            val owner = sym.owner
+            if (owner.isRefinementClass) {
+              sym.allOverriddenSymbols filterNot (_.owner.isRefinementClass) match {
+                case overridden :: _ =>
+                  log(
+                    s"${sym.fullLocationString} originates in refinement class - replacing with ${overridden.fullLocationString}.")
+                  tree.symbol = overridden
+                case Nil =>
+                  // Ideally this should not be reached or reachable; anything which would
+                  // get here should have been caught in the surrounding Apply.
+                  devWarning(
+                    s"Failed to rewrite reflective apply - now don't know what to do with " + tree)
+                  return treeCopy.Select(
                     tree,
                     gen.mkAttributedCast(qual, qual.tpe.widen),
-                    name
-                  ) //)
-                } else
-                  tree
+                    name)
+              }
             }
-          } else
+
+            def isJvmAccessible(sym: Symbol) =
+              (sym.isClass && !sym.isJavaDefined) || localTyper.context
+                .isAccessible(sym, sym.owner.thisType)
+            if (!isJvmAccessible(owner) && qual.tpe != null) {
+              qual match {
+                case Super(_, _) =>
+                  // Insert a cast here at your peril -- see SI-5162.
+                  reporter.error(
+                    tree.pos,
+                    s"Unable to access ${tree.symbol.fullLocationString} with a super reference.")
+                  tree
+                case _ =>
+                  // Todo: Figure out how qual.tpe could be null in the check above (it does appear in build where SwingWorker.this
+                  // has a null type).
+                  val qualSym = qual.tpe.widen.typeSymbol
+                  if (isJvmAccessible(
+                        qualSym) && !qualSym.isPackageClass && !qualSym.isPackageObjectClass) {
+                    // insert cast to prevent illegal access error (see #4283)
+                    // util.trace("insert erasure cast ") (*/
+                    treeCopy.Select(
+                      tree,
+                      gen.mkAttributedCast(qual, qual.tpe.widen),
+                      name
+                    ) //)
+                  } else
+                    tree
+              }
+            } else
+              tree
+          case Template(parents, self, body) =>
+            //Console.println("checking no dble defs " + tree)//DEBUG
+            checkNoDoubleDefs(tree.symbol.owner)
+            treeCopy.Template(
+              tree,
+              parents,
+              noSelfType,
+              addBridges(body, currentOwner))
+
+          case Match(selector, cases) =>
+            Match(Typed(selector, TypeTree(selector.tpe)), cases)
+
+          case Literal(ct)
+              if ct.tag == ClazzTag
+                && ct.typeValue.typeSymbol != definitions.UnitClass =>
+            val erased = ct.typeValue match {
+              case tr @ TypeRef(_, clazz, _) if clazz.isDerivedValueClass =>
+                scalaErasure.eraseNormalClassRef(tr)
+              case tpe => specialScalaErasure(tpe)
+            }
+            treeCopy.Literal(tree, Constant(erased))
+
+          case ClassDef(_, _, _, _) =>
+            debuglog("defs of " + tree.symbol + " = " + tree.symbol.info.decls)
+            copyClassDef(tree)(tparams = Nil)
+          case DefDef(_, _, _, _, _, _) =>
+            copyDefDef(tree)(tparams = Nil)
+          case TypeDef(_, _, _, _) =>
+            EmptyTree
+
+          case _ =>
             tree
-        case Template(parents, self, body) =>
-          //Console.println("checking no dble defs " + tree)//DEBUG
-          checkNoDoubleDefs(tree.symbol.owner)
-          treeCopy
-            .Template(tree, parents, noSelfType, addBridges(body, currentOwner))
-
-        case Match(selector, cases) =>
-          Match(Typed(selector, TypeTree(selector.tpe)), cases)
-
-        case Literal(ct)
-            if ct.tag == ClazzTag
-              && ct.typeValue.typeSymbol != definitions.UnitClass =>
-          val erased = ct.typeValue match {
-            case tr @ TypeRef(_, clazz, _) if clazz.isDerivedValueClass =>
-              scalaErasure.eraseNormalClassRef(tr)
-            case tpe => specialScalaErasure(tpe)
-          }
-          treeCopy.Literal(tree, Constant(erased))
-
-        case ClassDef(_, _, _, _) =>
-          debuglog("defs of " + tree.symbol + " = " + tree.symbol.info.decls)
-          copyClassDef(tree)(tparams = Nil)
-        case DefDef(_, _, _, _, _, _) =>
-          copyDefDef(tree)(tparams = Nil)
-        case TypeDef(_, _, _, _) =>
-          EmptyTree
-
-        case _ =>
-          tree
-      }
+        }
 
       override def transform(tree: Tree): Tree = {
         // Reply to "!!! needed?" which adorned the next line: without it, build fails with:

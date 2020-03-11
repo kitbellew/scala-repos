@@ -60,9 +60,10 @@ class NumericsTest extends FunSuite with Checkers with Matchers {
 
   import Arbitrary._
 
-  implicit def ae(x: Double) = new {
-    def =~=(y: Double) = breeze.numerics.closeTo(x, y, 1e-6)
-  }
+  implicit def ae(x: Double) =
+    new {
+      def =~=(y: Double) = breeze.numerics.closeTo(x, y, 1e-6)
+    }
 
   // TODO 2.9 filter out Double.MaxValue.
   test("softmax is approximately associative") {

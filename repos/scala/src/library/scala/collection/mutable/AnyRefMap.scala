@@ -355,33 +355,35 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
     this
   }
 
-  def iterator: Iterator[(K, V)] = new Iterator[(K, V)] {
-    private[this] val hz = _hashes
-    private[this] val kz = _keys
-    private[this] val vz = _values
+  def iterator: Iterator[(K, V)] =
+    new Iterator[(K, V)] {
+      private[this] val hz = _hashes
+      private[this] val kz = _keys
+      private[this] val vz = _values
 
-    private[this] var index = 0
+      private[this] var index = 0
 
-    def hasNext: Boolean = index < hz.length && {
-      var h = hz(index)
-      while (h + h == 0) {
-        index += 1
-        if (index >= hz.length)
-          return false
-        h = hz(index)
+      def hasNext: Boolean =
+        index < hz.length && {
+          var h = hz(index)
+          while (h + h == 0) {
+            index += 1
+            if (index >= hz.length)
+              return false
+            h = hz(index)
+          }
+          true
+        }
+
+      def next: (K, V) = {
+        if (hasNext) {
+          val ans = (kz(index).asInstanceOf[K], vz(index).asInstanceOf[V])
+          index += 1
+          ans
+        } else
+          throw new NoSuchElementException("next")
       }
-      true
     }
-
-    def next: (K, V) = {
-      if (hasNext) {
-        val ans = (kz(index).asInstanceOf[K], vz(index).asInstanceOf[V])
-        index += 1
-        ans
-      } else
-        throw new NoSuchElementException("next")
-    }
-  }
 
   override def foreach[U](f: ((K, V)) => U) {
     var i = 0

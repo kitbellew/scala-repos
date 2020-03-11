@@ -29,13 +29,14 @@ class JavaUniverse
 
   // TODO: why put output under isLogging? Calls to inform are already conditional on debug/verbose/...
   import scala.reflect.internal.{Reporter, ReporterImpl}
-  override def reporter: Reporter = new ReporterImpl {
-    protected def info0(
-        pos: Position,
-        msg: String,
-        severity: Severity,
-        force: Boolean): Unit = log(msg)
-  }
+  override def reporter: Reporter =
+    new ReporterImpl {
+      protected def info0(
+          pos: Position,
+          msg: String,
+          severity: Severity,
+          force: Boolean): Unit = log(msg)
+    }
 
   // minimal Run to get Reporting wired
   def currentRun = new RunReporting {}

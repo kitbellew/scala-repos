@@ -217,30 +217,33 @@ trait TestKitBase {
     * block or throw an [[AssertionError]] if no `within` block surrounds this
     * call.
     */
-  def remaining: FiniteDuration = end match {
-    case f: FiniteDuration ⇒ f - now
-    case _ ⇒
-      throw new AssertionError(
-        "`remaining` may not be called outside of `within`")
-  }
+  def remaining: FiniteDuration =
+    end match {
+      case f: FiniteDuration ⇒ f - now
+      case _ ⇒
+        throw new AssertionError(
+          "`remaining` may not be called outside of `within`")
+    }
 
   /**
     * Obtain time remaining for execution of the innermost enclosing `within`
     * block or missing that it returns the given duration.
     */
-  def remainingOr(duration: FiniteDuration): FiniteDuration = end match {
-    case x if x eq Duration.Undefined ⇒ duration
-    case x if !x.isFinite ⇒
-      throw new IllegalArgumentException("`end` cannot be infinite")
-    case f: FiniteDuration ⇒ f - now
-  }
+  def remainingOr(duration: FiniteDuration): FiniteDuration =
+    end match {
+      case x if x eq Duration.Undefined ⇒ duration
+      case x if !x.isFinite ⇒
+        throw new IllegalArgumentException("`end` cannot be infinite")
+      case f: FiniteDuration ⇒ f - now
+    }
 
-  private def remainingOrDilated(max: Duration): FiniteDuration = max match {
-    case x if x eq Duration.Undefined ⇒ remainingOrDefault
-    case x if !x.isFinite ⇒
-      throw new IllegalArgumentException("max duration cannot be infinite")
-    case f: FiniteDuration ⇒ f.dilated
-  }
+  private def remainingOrDilated(max: Duration): FiniteDuration =
+    max match {
+      case x if x eq Duration.Undefined ⇒ remainingOrDefault
+      case x if !x.isFinite ⇒
+        throw new IllegalArgumentException("max duration cannot be infinite")
+      case f: FiniteDuration ⇒ f.dilated
+    }
 
   /**
     * Query queue status.

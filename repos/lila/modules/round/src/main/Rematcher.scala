@@ -28,33 +28,35 @@ private[round] final class Rematcher(
     rematch960Cache: ExpireSetMemo,
     isRematchCache: ExpireSetMemo) {
 
-  def yes(pov: Pov): Fu[Events] = pov match {
-    case Pov(game, color) if (game playerCanRematch color) =>
-      (game.opponent(color).isOfferingRematch || game.opponent(color).isAi)
-        .fold(
-          game.next.fold(rematchJoin(pov))(rematchExists(pov)),
-          rematchCreate(pov)
-        )
-    case _ => fuccess(Nil)
-  }
+  def yes(pov: Pov): Fu[Events] =
+    pov match {
+      case Pov(game, color) if (game playerCanRematch color) =>
+        (game.opponent(color).isOfferingRematch || game.opponent(color).isAi)
+          .fold(
+            game.next.fold(rematchJoin(pov))(rematchExists(pov)),
+            rematchCreate(pov)
+          )
+      case _ => fuccess(Nil)
+    }
 
-  def no(pov: Pov): Fu[Events] = pov match {
-    case Pov(game, color) if pov.player.isOfferingRematch =>
-      GameRepo save {
-        messenger.system(game, _.rematchOfferCanceled)
-        Progress(game) map { g =>
-          g.updatePlayer(color, _.removeRematchOffer)
-        }
-      } inject List(Event.ReloadOwner)
-    case Pov(game, color) if pov.opponent.isOfferingRematch =>
-      GameRepo save {
-        messenger.system(game, _.rematchOfferDeclined)
-        Progress(game) map { g =>
-          g.updatePlayer(!color, _.removeRematchOffer)
-        }
-      } inject List(Event.ReloadOwner)
-    case _ => fuccess(Nil)
-  }
+  def no(pov: Pov): Fu[Events] =
+    pov match {
+      case Pov(game, color) if pov.player.isOfferingRematch =>
+        GameRepo save {
+          messenger.system(game, _.rematchOfferCanceled)
+          Progress(game) map { g =>
+            g.updatePlayer(color, _.removeRematchOffer)
+          }
+        } inject List(Event.ReloadOwner)
+      case Pov(game, color) if pov.opponent.isOfferingRematch =>
+        GameRepo save {
+          messenger.system(game, _.rematchOfferDeclined)
+          Progress(game) map { g =>
+            g.updatePlayer(!color, _.removeRematchOffer)
+          }
+        } inject List(Event.ReloadOwner)
+      case _ => fuccess(Nil)
+    }
 
   private def rematchExists(pov: Pov)(nextId: String): Fu[Events] =
     GameRepo game nextId flatMap {

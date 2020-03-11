@@ -105,12 +105,14 @@ trait MapSubInstances extends MapSubInstances0 with MapSubFunctions {
       def empty[V] = fromSeq[K, V]()
       def plus[V](a: XMap[K, V], b: => XMap[K, V]) = a ++ b
       def isEmpty[V](fa: XMap[K, V]) = fa.isEmpty
-      def bind[A, B](fa: XMap[K, A])(f: A => XMap[K, B]) = fa.collect {
-        case (k, v) if f(v).isDefinedAt(k) => k -> f(v)(k)
-      }
-      override def map[A, B](fa: XMap[K, A])(f: A => B) = fa.map {
-        case (k, v) => (k, f(v))
-      }
+      def bind[A, B](fa: XMap[K, A])(f: A => XMap[K, B]) =
+        fa.collect {
+          case (k, v) if f(v).isDefinedAt(k) => k -> f(v)(k)
+        }
+      override def map[A, B](fa: XMap[K, A])(f: A => B) =
+        fa.map {
+          case (k, v) => (k, f(v))
+        }
       def traverseImpl[G[_], A, B](m: XMap[K, A])(f: A => G[B])(
           implicit G: Applicative[G]): G[XMap[K, B]] =
         G.map(list.listInstance.traverseImpl(m.toList)({
@@ -126,15 +128,16 @@ trait MapSubInstances extends MapSubInstances0 with MapSubFunctions {
             case _                    => sys.error("Map alignWith")
           })(f)
       }
-      override def align[A, B](a: XMap[K, A], b: XMap[K, B]) = (a, b) match {
-        case (a, b) if b.isEmpty => map(a)(This(_))
-        case (a, b) if a.isEmpty => map(b)(That(_))
-        case (a, b) =>
-          unionWith(map(a)(This(_): A \&/ B), map(b)(That(_): A \&/ B)) {
-            case (This(aa), That(bb)) => Both(aa, bb)
-            case _                    => sys.error("Map align")
-          }
-      }
+      override def align[A, B](a: XMap[K, A], b: XMap[K, B]) =
+        (a, b) match {
+          case (a, b) if b.isEmpty => map(a)(This(_))
+          case (a, b) if a.isEmpty => map(b)(That(_))
+          case (a, b) =>
+            unionWith(map(a)(This(_): A \&/ B), map(b)(That(_): A \&/ B)) {
+              case (This(aa), That(bb)) => Both(aa, bb)
+              case _                    => sys.error("Map align")
+            }
+        }
     }
 
   /** Map union monoid, unifying values with `V`'s `append`. */
@@ -201,9 +204,10 @@ trait MapSubFunctions extends MapSub {
   /** Like `intersectWith`, but tell `f` about the key. */
   final def intersectWithKey[K: BuildKeyConstraint, A, B, C](
       m1: XMap[K, A],
-      m2: XMap[K, B])(f: (K, A, B) => C): XMap[K, C] = m1 collect {
-    case (k, v) if m2 contains k => k -> f(k, v, m2(k))
-  }
+      m2: XMap[K, B])(f: (K, A, B) => C): XMap[K, C] =
+    m1 collect {
+      case (k, v) if m2 contains k => k -> f(k, v, m2(k))
+    }
 
   /** Collect only elements with matching keys, joining their
     * associated values with `f`.

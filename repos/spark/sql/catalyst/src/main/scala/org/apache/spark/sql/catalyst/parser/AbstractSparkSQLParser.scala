@@ -30,14 +30,15 @@ private[sql] abstract class AbstractSparkSQLParser
     with PackratParsers
     with ParserInterface {
 
-  def parsePlan(input: String): LogicalPlan = synchronized {
-    // Initialize the Keywords.
-    initLexical
-    phrase(start)(new lexical.Scanner(input)) match {
-      case Success(plan, _) => plan
-      case failureOrError   => sys.error(failureOrError.toString)
+  def parsePlan(input: String): LogicalPlan =
+    synchronized {
+      // Initialize the Keywords.
+      initLexical
+      phrase(start)(new lexical.Scanner(input)) match {
+        case Success(plan, _) => plan
+        case failureOrError   => sys.error(failureOrError.toString)
+      }
     }
-  }
   /* One time initialization of lexical.This avoid reinitialization of  lexical in parse method */
   protected lazy val initLexical: Unit = lexical.initialize(reservedWords)
 

@@ -111,9 +111,10 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
           def switch: Actor.Receive = {
             case "becomenull" ⇒ context.become(r, false)
           }
-          def receive = switch orElse LoggingReceive {
-            case x ⇒ sender() ! "x"
-          }
+          def receive =
+            switch orElse LoggingReceive {
+              case x ⇒ sender() ! "x"
+            }
         })
 
         val name = actor.path.toString

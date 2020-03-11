@@ -82,16 +82,17 @@ object ComparingUtil {
         else
           isNeverSameType(t1, t2)
       }
-      def getVariance(tp: PsiTypeParameter) = tp match {
-        case scParam: ScTypeParam =>
-          if (scParam.isCovariant)
-            1
-          else if (scParam.isContravariant)
-            -1
-          else
-            0
-        case _ => 0
-      }
+      def getVariance(tp: PsiTypeParameter) =
+        tp match {
+          case scParam: ScTypeParam =>
+            if (scParam.isCovariant)
+              1
+            else if (scParam.isContravariant)
+              -1
+            else
+              0
+          case _ => 0
+        }
       tps1.zip(tps2).zip(tparams.map(getVariance)) exists {
         case ((t1, t2), vr) => isNeverSubArg(t1, t2, vr)
         case _              => false

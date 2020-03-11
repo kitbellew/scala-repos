@@ -537,9 +537,10 @@ trait IterableSplitter[+T]
       self.next()
     }
     def dup: IterableSplitter[T] = self.dup.take(taken)
-    def split: Seq[IterableSplitter[T]] = takeSeq(self.split) { (p, n) =>
-      p.take(n)
-    }
+    def split: Seq[IterableSplitter[T]] =
+      takeSeq(self.split) { (p, n) =>
+        p.take(n)
+      }
     protected[this] def takeSeq[PI <: IterableSplitter[T]](sq: Seq[PI])(
         taker: (PI, Int) => PI) = {
       val sizes = sq.scanLeft(0)(_ + _.remaining)
@@ -588,9 +589,10 @@ trait IterableSplitter[+T]
     def next = f(self.next())
     def remaining = self.remaining
     def dup: IterableSplitter[S] = self.dup map f
-    def split: Seq[IterableSplitter[S]] = self.split.map {
-      _ map f
-    }
+    def split: Seq[IterableSplitter[S]] =
+      self.split.map {
+        _ map f
+      }
   }
 
   override def map[S](f: T => S) = new Mapped(f)
@@ -752,9 +754,10 @@ trait SeqSplitter[+T]
     override def dup = super.dup.asInstanceOf[SeqSplitter[S]]
     override def split: Seq[SeqSplitter[S]] =
       super.split.asInstanceOf[Seq[SeqSplitter[S]]]
-    def psplit(sizes: Int*): Seq[SeqSplitter[S]] = self.psplit(sizes: _*).map {
-      _ map f
-    }
+    def psplit(sizes: Int*): Seq[SeqSplitter[S]] =
+      self.psplit(sizes: _*).map {
+        _ map f
+      }
   }
 
   override def map[S](f: T => S) = new Mapped(f)

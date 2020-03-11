@@ -123,13 +123,14 @@ package object internal {
           tpe.toString
       }
     }
-    def isEffectivelyPrimitive: Boolean = tpe match {
-      case TypeRef(_, sym: ClassSymbol, _) if sym.isPrimitive => true
-      case TypeRef(_, sym, eltpe :: Nil)
-          if sym == ArrayClass && eltpe.typeSymbol.isClass && eltpe.typeSymbol.asClass.isPrimitive =>
-        true
-      case _ => false
-    }
+    def isEffectivelyPrimitive: Boolean =
+      tpe match {
+        case TypeRef(_, sym: ClassSymbol, _) if sym.isPrimitive => true
+        case TypeRef(_, sym, eltpe :: Nil)
+            if sym == ArrayClass && eltpe.typeSymbol.isClass && eltpe.typeSymbol.asClass.isPrimitive =>
+          true
+        case _ => false
+      }
   }
 
   // ----- utilities for managing object identity -----

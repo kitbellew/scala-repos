@@ -53,16 +53,18 @@ class Switch(startAsOn: Boolean = false) {
   /**
     * Switches the switch off (if on), uses locking
     */
-  def switchOff: Boolean = synchronized {
-    switch.compareAndSet(true, false)
-  }
+  def switchOff: Boolean =
+    synchronized {
+      switch.compareAndSet(true, false)
+    }
 
   /**
     * Switches the switch on (if off), uses locking
     */
-  def switchOn: Boolean = synchronized {
-    switch.compareAndSet(false, true)
-  }
+  def switchOn: Boolean =
+    synchronized {
+      switch.compareAndSet(false, true)
+    }
 
   /**
     * Executes the provided action and returns its value if the switch is IMMEDIATELY on (i.e. no lock involved)
@@ -108,65 +110,71 @@ class Switch(startAsOn: Boolean = false) {
     * Executes the provided action and returns its value if the switch is on, waiting for any pending changes to happen before (locking)
     * Be careful of longrunning or blocking within the provided action as it can lead to deadlocks or bad performance
     */
-  def whileOnYield[T](action: ⇒ T): Option[T] = synchronized {
-    if (switch.get)
-      Some(action)
-    else
-      None
-  }
+  def whileOnYield[T](action: ⇒ T): Option[T] =
+    synchronized {
+      if (switch.get)
+        Some(action)
+      else
+        None
+    }
 
   /**
     * Executes the provided action and returns its value if the switch is off, waiting for any pending changes to happen before (locking)
     * Be careful of longrunning or blocking within the provided action as it can lead to deadlocks or bad performance
     */
-  def whileOffYield[T](action: ⇒ T): Option[T] = synchronized {
-    if (!switch.get)
-      Some(action)
-    else
-      None
-  }
+  def whileOffYield[T](action: ⇒ T): Option[T] =
+    synchronized {
+      if (!switch.get)
+        Some(action)
+      else
+        None
+    }
 
   /**
     * Executes the provided action and returns if the action was executed or not, if the switch is on, waiting for any pending changes to happen before (locking)
     * Be careful of longrunning or blocking within the provided action as it can lead to deadlocks or bad performance
     */
-  def whileOn(action: ⇒ Unit): Boolean = synchronized {
-    if (switch.get) {
-      action
-      true
-    } else
-      false
-  }
+  def whileOn(action: ⇒ Unit): Boolean =
+    synchronized {
+      if (switch.get) {
+        action
+        true
+      } else
+        false
+    }
 
   /**
     * Executes the provided action and returns if the action was executed or not, if the switch is off, waiting for any pending changes to happen before (locking)
     * Be careful of longrunning or blocking within the provided action as it can lead to deadlocks or bad performance
     */
-  def whileOff(action: ⇒ Unit): Boolean = synchronized {
-    if (!switch.get) {
-      action
-      true
-    } else
-      false
-  }
+  def whileOff(action: ⇒ Unit): Boolean =
+    synchronized {
+      if (!switch.get) {
+        action
+        true
+      } else
+        false
+    }
 
   /**
     * Executes the provided callbacks depending on if the switch is either on or off waiting for any pending changes to happen before (locking)
     * Be careful of longrunning or blocking within the provided action as it can lead to deadlocks or bad performance
     */
-  def fold[T](on: ⇒ T)(off: ⇒ T): T = synchronized {
-    if (switch.get)
-      on
-    else
-      off
-  }
+  def fold[T](on: ⇒ T)(off: ⇒ T): T =
+    synchronized {
+      if (switch.get)
+        on
+      else
+        off
+    }
 
   /**
     * Executes the given code while holding this switch’s lock, i.e. protected from concurrent modification of the switch status.
     */
-  def locked[T](code: ⇒ T): T = synchronized {
-    code
-  }
+  def locked[T](code: ⇒ T): T =
+    synchronized {
+      code
+    }
 
   /**
     * Returns whether the switch is IMMEDIATELY on (no locking)

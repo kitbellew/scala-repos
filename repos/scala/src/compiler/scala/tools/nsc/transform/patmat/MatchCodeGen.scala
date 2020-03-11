@@ -129,16 +129,17 @@ trait MatchCodeGen extends Interface {
           any = true,
           wrapInApply = false)
 
-      def mkZero(tp: Type): Tree = gen.mkConstantZero(tp) match {
-        case Constant(null) =>
-          gen.mkAsInstanceOf(
-            Literal(Constant(null)),
-            tp,
-            any = true,
-            wrapInApply = false
-          ) // the magic incantation is true/false here
-        case const => Literal(const)
-      }
+      def mkZero(tp: Type): Tree =
+        gen.mkConstantZero(tp) match {
+          case Constant(null) =>
+            gen.mkAsInstanceOf(
+              Literal(Constant(null)),
+              tp,
+              any = true,
+              wrapInApply = false
+            ) // the magic incantation is true/false here
+          case const => Literal(const)
+        }
     }
   }
 

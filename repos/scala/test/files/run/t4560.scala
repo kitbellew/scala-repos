@@ -15,9 +15,10 @@ trait Ab
 trait B {
   self: Aa with Ab =>
 
-  def y = new {
-    def f() = println("Success 1")
-  }
+  def y =
+    new {
+      def f() = println("Success 1")
+    }
   def fail() = {
     println('Test)
     y.f()
@@ -34,9 +35,10 @@ class A2
 trait B2 {
   self: A2 =>
 
-  def y = new {
-    def f() = println("Success 2")
-  }
+  def y =
+    new {
+      def f() = println("Success 2")
+    }
   def fail() = {
     println('Test)
     y.f()
@@ -51,9 +53,10 @@ object Test2 extends A2 with B2
 trait B3 {
   this: Test3.type =>
 
-  def y = new {
-    def f() = println("Success 3")
-  }
+  def y =
+    new {
+      def f() = println("Success 3")
+    }
   def fail() = {
     println('Test)
     y.f()

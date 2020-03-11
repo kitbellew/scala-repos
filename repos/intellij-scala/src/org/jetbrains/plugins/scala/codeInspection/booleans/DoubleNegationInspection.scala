@@ -95,10 +95,11 @@ object DoubleNegationUtil {
   }
 
   @tailrec
-  private def stripParentheses(expr: ScExpression): ScExpression = expr match {
-    case ScParenthesisedExpr(inner) => stripParentheses(inner)
-    case expr: ScExpression         => expr
-  }
+  private def stripParentheses(expr: ScExpression): ScExpression =
+    expr match {
+      case ScParenthesisedExpr(inner) => stripParentheses(inner)
+      case expr: ScExpression         => expr
+    }
 
   private def hasNegation(expr: ScExpression): Boolean = {
     val withoutParentheses = stripParentheses(expr)

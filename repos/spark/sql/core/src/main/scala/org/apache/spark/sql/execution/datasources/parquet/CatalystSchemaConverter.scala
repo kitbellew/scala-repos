@@ -108,10 +108,11 @@ private[parquet] class CatalystSchemaConverter(
   /**
     * Converts a Parquet [[Type]] to a Spark SQL [[DataType]].
     */
-  def convertField(parquetType: Type): DataType = parquetType match {
-    case t: PrimitiveType => convertPrimitiveField(t)
-    case t: GroupType     => convertGroupField(t.asGroupType())
-  }
+  def convertField(parquetType: Type): DataType =
+    parquetType match {
+      case t: PrimitiveType => convertPrimitiveField(t)
+      case t: GroupType     => convertGroupField(t.asGroupType())
+    }
 
   private def convertPrimitiveField(field: PrimitiveType): DataType = {
     val typeName = field.getPrimitiveTypeName

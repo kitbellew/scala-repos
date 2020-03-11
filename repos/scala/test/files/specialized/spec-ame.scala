@@ -5,9 +5,10 @@ object Test {
   }
 
   class A[@specialized(Int) T](x: T) {
-    def foo: B[T] = new B[T] {
-      def value = x
-    }
+    def foo: B[T] =
+      new B[T] {
+        def value = x
+      }
   }
 
   def main(args: Array[String]) {

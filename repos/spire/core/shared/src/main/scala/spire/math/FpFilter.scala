@@ -65,15 +65,16 @@ final class FpFilter[A](
   def signum(implicit ev: Signed[A]): Int = macro FpFilter.signImpl[A]
 
   // Avoid using this.
-  override def equals(that: Any): Boolean = that match {
-    case that: FpFilter[_] =>
-      if (this.error == 0 && that.error == 0)
-        this.apx == that.apx
-      else
-        this.exact == that.exact
-    case _ =>
-      false
-  }
+  override def equals(that: Any): Boolean =
+    that match {
+      case that: FpFilter[_] =>
+        if (this.error == 0 && that.error == 0)
+          this.apx == that.apx
+        else
+          this.exact == that.exact
+      case _ =>
+        false
+    }
 
   // Avoid using this.
   override def hashCode: Int = 23 * exact.hashCode

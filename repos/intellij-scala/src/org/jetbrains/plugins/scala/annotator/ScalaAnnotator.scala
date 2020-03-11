@@ -1469,22 +1469,23 @@ class ScalaAnnotator
 
   def childHasAnnotation(
       teOption: Option[ScTypeElement],
-      annotation: String): Boolean = teOption match {
-    case Some(te) =>
-      te.breadthFirst.exists {
-        case annot: ScAnnotationExpr =>
-          annot.constr.reference match {
-            case Some(ref) =>
-              Option(ref.resolve()) match {
-                case Some(res: PsiNamedElement) => res.getName == annotation
-                case _                          => false
-              }
-            case _ => false
-          }
-        case _ => false
-      }
-    case _ => false
-  }
+      annotation: String): Boolean =
+    teOption match {
+      case Some(te) =>
+        te.breadthFirst.exists {
+          case annot: ScAnnotationExpr =>
+            annot.constr.reference match {
+              case Some(ref) =>
+                Option(ref.resolve()) match {
+                  case Some(res: PsiNamedElement) => res.getName == annotation
+                  case _                          => false
+                }
+              case _ => false
+            }
+          case _ => false
+        }
+      case _ => false
+    }
 
   private def checkFunctionForVariance(
       fun: ScFunction,

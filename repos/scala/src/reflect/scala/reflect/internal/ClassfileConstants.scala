@@ -339,29 +339,30 @@ object ClassfileConstants {
     private def translateFlag(
         jflag: Int,
         isAnnotation: Boolean,
-        isClass: Boolean): Long = (jflag: @switch) match {
-      case JAVA_ACC_PRIVATE   => PRIVATE
-      case JAVA_ACC_PROTECTED => PROTECTED
-      case JAVA_ACC_FINAL     => FINAL
-      case JAVA_ACC_SYNTHETIC =>
-        SYNTHETIC | ARTIFACT // maybe should be just artifact?
-      case JAVA_ACC_STATIC => STATIC
-      case JAVA_ACC_ABSTRACT =>
-        if (isAnnotation)
-          0L
-        else if (isClass)
-          ABSTRACT
-        else
-          DEFERRED
-      case JAVA_ACC_INTERFACE =>
-        if (isAnnotation)
-          0L
-        else
-          TRAIT | INTERFACE | ABSTRACT
-      case JAVA_ACC_ENUM       => JAVA_ENUM
-      case JAVA_ACC_ANNOTATION => JAVA_ANNOTATION
-      case _                   => 0L
-    }
+        isClass: Boolean): Long =
+      (jflag: @switch) match {
+        case JAVA_ACC_PRIVATE   => PRIVATE
+        case JAVA_ACC_PROTECTED => PROTECTED
+        case JAVA_ACC_FINAL     => FINAL
+        case JAVA_ACC_SYNTHETIC =>
+          SYNTHETIC | ARTIFACT // maybe should be just artifact?
+        case JAVA_ACC_STATIC => STATIC
+        case JAVA_ACC_ABSTRACT =>
+          if (isAnnotation)
+            0L
+          else if (isClass)
+            ABSTRACT
+          else
+            DEFERRED
+        case JAVA_ACC_INTERFACE =>
+          if (isAnnotation)
+            0L
+          else
+            TRAIT | INTERFACE | ABSTRACT
+        case JAVA_ACC_ENUM       => JAVA_ENUM
+        case JAVA_ACC_ANNOTATION => JAVA_ANNOTATION
+        case _                   => 0L
+      }
     private def translateFlags(
         jflags: Int,
         baseFlags: Long,

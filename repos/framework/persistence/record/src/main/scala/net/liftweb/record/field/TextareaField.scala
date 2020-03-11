@@ -26,22 +26,23 @@ import S._
 import Helpers._
 
 trait TextareaTypedField extends StringTypedField {
-  private def elem = S.fmapFunc(SFuncHolder(this.setFromAny(_))) { funcName =>
-    <textarea name={
-      funcName
-    }
+  private def elem =
+    S.fmapFunc(SFuncHolder(this.setFromAny(_))) { funcName =>
+      <textarea name={
+        funcName
+      }
       rows={
-      textareaRows.toString
-    }
+        textareaRows.toString
+      }
       cols={
-      textareaCols.toString
-    }
+        textareaCols.toString
+      }
       tabindex={
-      tabIndex.toString
-    }>{
-      valueBox openOr ""
-    }</textarea>
-  }
+        tabIndex.toString
+      }>{
+        valueBox openOr ""
+      }</textarea>
+    }
 
   override def toForm: Box[NodeSeq] =
     uniqueFieldId match {
@@ -49,11 +50,12 @@ trait TextareaTypedField extends StringTypedField {
       case _        => Full(elem)
     }
 
-  override def toString = valueBox match {
-    case Full(s) if s.length >= 100 =>
-      s.substring(0, 40) + " ... " + s.substring(s.length - 40)
-    case _ => super.toString
-  }
+  override def toString =
+    valueBox match {
+      case Full(s) if s.length >= 100 =>
+        s.substring(0, 40) + " ... " + s.substring(s.length - 40)
+      case _ => super.toString
+    }
 
   def textareaRows = 8
 

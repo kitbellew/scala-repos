@@ -104,13 +104,14 @@ object JavaScriptContext {
         Context.exit()
     }
 
-    def exec(str: String): AnyRef = synchronized {
-      if (!initted)
-        init()
-      context.evaluateString(scope, str, "Lift", 0, null) match {
-        case njo: NativeJavaObject => njo.unwrap()
-        case x                     => x
+    def exec(str: String): AnyRef =
+      synchronized {
+        if (!initted)
+          init()
+        context.evaluateString(scope, str, "Lift", 0, null) match {
+          case njo: NativeJavaObject => njo.unwrap()
+          case x                     => x
+        }
       }
-    }
   }
 }

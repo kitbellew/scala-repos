@@ -29,23 +29,25 @@ case class Activity[+T](run: Var[Activity.State[T]]) {
   /**
     * Map a T-typed activity to a U-typed one.
     */
-  def map[U](f: T => U): Activity[U] = collect {
-    case x => f(x)
-  }
+  def map[U](f: T => U): Activity[U] =
+    collect {
+      case x => f(x)
+    }
 
   /**
     * Build a new activity by applying `f` to each value. When
     * `f` is not defined for this activity's current value, the derived
     * activity becomes pending.
     */
-  def collect[U](f: PartialFunction[T, U]): Activity[U] = flatMap {
-    case t if f.isDefinedAt(t) =>
-      try Activity.value(f(t))
-      catch {
-        case NonFatal(exc) => Activity.exception(exc)
-      }
-    case _ => Activity.pending
-  }
+  def collect[U](f: PartialFunction[T, U]): Activity[U] =
+    flatMap {
+      case t if f.isDefinedAt(t) =>
+        try Activity.value(f(t))
+        catch {
+          case NonFatal(exc) => Activity.exception(exc)
+        }
+      case _ => Activity.pending
+    }
 
   /**
     * Join two activities.
@@ -106,10 +108,11 @@ case class Activity[+T](run: Var[Activity.State[T]]) {
     * An [[com.twitter.util.Event Event]] containing only nonpending
     * values.
     */
-  def values: Event[Try[T]] = states collect {
-    case Ok(v)       => Return(v)
-    case Failed(exc) => Throw(exc)
-  }
+  def values: Event[Try[T]] =
+    states collect {
+      case Ok(v)       => Return(v)
+      case Failed(exc) => Throw(exc)
+    }
 
   /**
     * Sample the current value of this activity. Sample throws an
@@ -202,9 +205,10 @@ object Activity {
   def join[A, B, C](
       a: Activity[A],
       b: Activity[B],
-      c: Activity[C]): Activity[(A, B, C)] = collect(Seq(a, b, c)) map { ss =>
-    (ss(0).asInstanceOf[A], ss(1).asInstanceOf[B], ss(2).asInstanceOf[C])
-  }
+      c: Activity[C]): Activity[(A, B, C)] =
+    collect(Seq(a, b, c)) map { ss =>
+      (ss(0).asInstanceOf[A], ss(1).asInstanceOf[B], ss(2).asInstanceOf[C])
+    }
 
   /**
     * Join 4 Activities. The returned Activity is complete when all
@@ -215,14 +219,14 @@ object Activity {
       a: Activity[A],
       b: Activity[B],
       c: Activity[C],
-      d: Activity[D]): Activity[(A, B, C, D)] = collect(Seq(a, b, c, d)) map {
-    ss =>
+      d: Activity[D]): Activity[(A, B, C, D)] =
+    collect(Seq(a, b, c, d)) map { ss =>
       (
         ss(0).asInstanceOf[A],
         ss(1).asInstanceOf[B],
         ss(2).asInstanceOf[C],
         ss(3).asInstanceOf[D])
-  }
+    }
 
   /**
     * Join 5 Activities. The returned Activity is complete when all

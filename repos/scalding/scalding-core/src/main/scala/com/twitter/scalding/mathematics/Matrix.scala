@@ -225,9 +225,10 @@ class MatrixMappableExtensions[T](mappable: Mappable[T])(implicit
 
   def toRow[Row, Val](implicit
       ev: <:<[T, (Row, Val)],
-      setter: TupleSetter[(Row, Val)]): RowVector[Row, Val] = mapToRow {
-    _.asInstanceOf[(Row, Val)]
-  }
+      setter: TupleSetter[(Row, Val)]): RowVector[Row, Val] =
+    mapToRow {
+      _.asInstanceOf[(Row, Val)]
+    }
 
   def mapToRow[Row, Val](fn: (T) => (Row, Val))(implicit
       setter: TupleSetter[(Row, Val)],

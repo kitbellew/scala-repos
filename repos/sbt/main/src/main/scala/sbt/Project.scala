@@ -94,11 +94,12 @@ sealed trait ProjectDefinition[PR <: ProjectReference] {
 
   override final def hashCode: Int =
     id.hashCode ^ base.hashCode ^ getClass.hashCode
-  override final def equals(o: Any) = o match {
-    case p: ProjectDefinition[_] =>
-      p.getClass == this.getClass && p.id == id && p.base == base
-    case _ => false
-  }
+  override final def equals(o: Any) =
+    o match {
+      case p: ProjectDefinition[_] =>
+        p.getClass == this.getClass && p.id == id && p.base == base
+      case _ => false
+    }
   override def toString = {
     val agg = ifNonEmpty("aggregate", aggregate)
     val dep = ifNonEmpty("dependencies", dependencies)
@@ -664,10 +665,11 @@ object Project extends ProjectExtra {
   def fillTaskAxis(scoped: ScopedKey[_]): ScopedKey[_] =
     ScopedKey(Scope.fillTaskAxis(scoped.scope, scoped.key), scoped.key)
 
-  def mapScope(f: Scope => Scope) = new (ScopedKey ~> ScopedKey) {
-    def apply[T](key: ScopedKey[T]) =
-      ScopedKey(f(key.scope), key.key)
-  }
+  def mapScope(f: Scope => Scope) =
+    new (ScopedKey ~> ScopedKey) {
+      def apply[T](key: ScopedKey[T]) =
+        ScopedKey(f(key.scope), key.key)
+    }
 
   def transform(
       g: Scope => Scope,
@@ -922,28 +924,29 @@ object Project extends ProjectExtra {
   def inPluginProject(s: State): Boolean = projectReturn(s).length > 1
   def setProjectReturn(s: State, pr: List[File]): State =
     s.copy(attributes = s.attributes.put(ProjectReturn, pr))
-  def loadAction(s: State, action: LoadAction.Value) = action match {
-    case Return =>
-      projectReturn(s) match {
-        case current :: returnTo :: rest =>
-          (setProjectReturn(s, returnTo :: rest), returnTo)
-        case _ => sys.error("Not currently in a plugin definition")
-      }
-    case Current =>
-      val base = s.configuration.baseDirectory
-      projectReturn(s) match {
-        case Nil     => (setProjectReturn(s, base :: Nil), base);
-        case x :: xs => (s, x)
-      }
-    case Plugins =>
-      val (newBase, oldStack) =
-        if (Project.isProjectLoaded(s))
-          (Project.extract(s).currentUnit.unit.plugins.base, projectReturn(s))
-        else // support changing to the definition project if it fails to load
-          (BuildPaths.projectStandard(s.baseDir), s.baseDir :: Nil)
-      val newS = setProjectReturn(s, newBase :: oldStack)
-      (newS, newBase)
-  }
+  def loadAction(s: State, action: LoadAction.Value) =
+    action match {
+      case Return =>
+        projectReturn(s) match {
+          case current :: returnTo :: rest =>
+            (setProjectReturn(s, returnTo :: rest), returnTo)
+          case _ => sys.error("Not currently in a plugin definition")
+        }
+      case Current =>
+        val base = s.configuration.baseDirectory
+        projectReturn(s) match {
+          case Nil     => (setProjectReturn(s, base :: Nil), base);
+          case x :: xs => (s, x)
+        }
+      case Plugins =>
+        val (newBase, oldStack) =
+          if (Project.isProjectLoaded(s))
+            (Project.extract(s).currentUnit.unit.plugins.base, projectReturn(s))
+          else // support changing to the definition project if it fails to load
+            (BuildPaths.projectStandard(s.baseDir), s.baseDir :: Nil)
+        val newS = setProjectReturn(s, newBase :: oldStack)
+        (newS, newBase)
+    }
   @deprecated(
     "This method does not apply state changes requested during task execution.  Use 'runTask' instead, which does.",
     "0.11.1")

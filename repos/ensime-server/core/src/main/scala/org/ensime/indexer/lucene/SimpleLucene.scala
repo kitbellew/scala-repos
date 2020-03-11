@@ -116,24 +116,25 @@ class SimpleLucene(path: File, analyzers: Map[String, Analyzer])
   def update(
       delete: Seq[Query],
       create: Seq[Document],
-      commit: Boolean = true): Unit = this.synchronized {
-    // Lucene 4.7.2 concurrency bugs: best to synchronise writes
-    // https://issues.apache.org/jira/browse/LUCENE-5923
+      commit: Boolean = true): Unit =
+    this.synchronized {
+      // Lucene 4.7.2 concurrency bugs: best to synchronise writes
+      // https://issues.apache.org/jira/browse/LUCENE-5923
 
-    if (delete.nonEmpty) {
-      writer.deleteDocuments(delete.toArray: _*)
-      if (commit)
-        writer.commit()
-    }
-
-    if (create.nonEmpty) {
-      create foreach { doc =>
-        writer addDocument doc
+      if (delete.nonEmpty) {
+        writer.deleteDocuments(delete.toArray: _*)
+        if (commit)
+          writer.commit()
       }
-      if (commit)
-        writer.commit()
+
+      if (create.nonEmpty) {
+        create foreach { doc =>
+          writer addDocument doc
+        }
+        if (commit)
+          writer.commit()
+      }
     }
-  }
 
   def create(docs: Seq[Document], commit: Boolean = true): Unit =
     update(Nil, docs, commit)

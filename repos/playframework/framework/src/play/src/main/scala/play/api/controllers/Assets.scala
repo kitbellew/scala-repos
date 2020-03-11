@@ -490,8 +490,8 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
   /**
     * Generates an `Action` that serves a versioned static resource.
     */
-  def versioned(path: String, file: Asset): Action[AnyContent] = Action.async {
-    implicit request =>
+  def versioned(path: String, file: Asset): Action[AnyContent] =
+    Action.async { implicit request =>
       val f = new File(file.name)
       // We want to detect if it's a fingerprinted asset, because if it's fingerprinted, we can aggressively cache it,
       // otherwise we can't.
@@ -509,7 +509,7 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
       } else {
         assetAt(path, file.name, false)
       }
-  }
+    }
 
   /**
     * Generates an `Action` that serves a static resource.
@@ -521,9 +521,10 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
   def at(
       path: String,
       file: String,
-      aggressiveCaching: Boolean = false): Action[AnyContent] = Action.async {
-    implicit request => assetAt(path, file, aggressiveCaching)
-  }
+      aggressiveCaching: Boolean = false): Action[AnyContent] =
+    Action.async { implicit request =>
+      assetAt(path, file, aggressiveCaching)
+    }
 
   private def assetAt(path: String, file: String, aggressiveCaching: Boolean)(
       implicit request: RequestHeader): Future[Result] = {

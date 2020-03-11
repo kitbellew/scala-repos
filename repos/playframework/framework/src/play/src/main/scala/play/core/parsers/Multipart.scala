@@ -40,40 +40,44 @@ object Multipart {
     */
   def partParser[A](maxMemoryBufferSize: Int)(
       partHandler: Accumulator[Part[Source[ByteString, _]], Either[Result, A]])(
-      implicit mat: Materializer): BodyParser[A] = BodyParser { request =>
-    val maybeBoundary = for {
-      mt <- request.mediaType
-      (_, value) <- mt.parameters.find(_._1.equalsIgnoreCase("boundary"))
-      boundary <- value
-    } yield boundary
+      implicit mat: Materializer): BodyParser[A] =
+    BodyParser { request =>
+      val maybeBoundary = for {
+        mt <- request.mediaType
+        (_, value) <- mt.parameters.find(_._1.equalsIgnoreCase("boundary"))
+        boundary <- value
+      } yield boundary
 
-    maybeBoundary
-      .map { boundary =>
-        val multipartFlow = Flow[ByteString]
-          .transform(() =>
-            new BodyPartParser(boundary, maxMemoryBufferSize, maxHeaderBuffer))
-          .splitWhen(_.isLeft)
-          .prefixAndTail(1)
-          .map {
-            case (Seq(Left(part: FilePart[_])), body) =>
-              part.copy[Source[ByteString, _]](ref = body.collect {
-                case Right(bytes) => bytes
-              })
-            case (Seq(Left(other)), ignored) =>
-              // If we don't run the source, it takes Akka streams 5 seconds to wake up and realise the source is empty
-              // before it progresses onto the next element
-              ignored.runWith(Sink.cancelled)
-              other.asInstanceOf[Part[Nothing]]
-          }
-          .concatSubstreams
+      maybeBoundary
+        .map { boundary =>
+          val multipartFlow = Flow[ByteString]
+            .transform(() =>
+              new BodyPartParser(
+                boundary,
+                maxMemoryBufferSize,
+                maxHeaderBuffer))
+            .splitWhen(_.isLeft)
+            .prefixAndTail(1)
+            .map {
+              case (Seq(Left(part: FilePart[_])), body) =>
+                part.copy[Source[ByteString, _]](ref = body.collect {
+                  case Right(bytes) => bytes
+                })
+              case (Seq(Left(other)), ignored) =>
+                // If we don't run the source, it takes Akka streams 5 seconds to wake up and realise the source is empty
+                // before it progresses onto the next element
+                ignored.runWith(Sink.cancelled)
+                other.asInstanceOf[Part[Nothing]]
+            }
+            .concatSubstreams
 
-        partHandler.through(multipartFlow)
+          partHandler.through(multipartFlow)
 
-      }
-      .getOrElse {
-        Accumulator.done(createBadResult("Missing boundary header")(request))
-      }
-  }
+        }
+        .getOrElse {
+          Accumulator.done(createBadResult("Missing boundary header")(request))
+        }
+    }
 
   /**
     * Parses the request body into a Multipart body.
@@ -98,14 +102,16 @@ object Multipart {
         val multipartAccumulator = Accumulator(
           Sink.fold[Seq[Part[A]], Part[A]](Vector.empty)(_ :+ _)).mapFuture {
           parts =>
-            def parseError = parts.collectFirst {
-              case ParseError(msg) => createBadResult(msg)(request)
-            }
+            def parseError =
+              parts.collectFirst {
+                case ParseError(msg) => createBadResult(msg)(request)
+              }
 
-            def bufferExceededError = parts.collectFirst {
-              case MaxMemoryBufferExceeded(msg) =>
-                createBadResult(msg, REQUEST_ENTITY_TOO_LARGE)(request)
-            }
+            def bufferExceededError =
+              parts.collectFirst {
+                case MaxMemoryBufferExceeded(msg) =>
+                  createBadResult(msg, REQUEST_ENTITY_TOO_LARGE)(request)
+              }
 
             parseError orElse bufferExceededError getOrElse {
               Future.successful(Right(MultipartFormData(
@@ -543,9 +549,10 @@ object Multipart {
       }
     }
 
-    def emit(bytes: ByteString): Unit = if (bytes.nonEmpty) {
-      output = output.enqueue(Right(bytes))
-    }
+    def emit(bytes: ByteString): Unit =
+      if (bytes.nonEmpty) {
+        output = output.enqueue(Right(bytes))
+      }
 
     def emit(part: Part[Unit]): Unit = {
       output = output.enqueue(Left(part))

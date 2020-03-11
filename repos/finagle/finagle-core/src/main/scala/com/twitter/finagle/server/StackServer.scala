@@ -235,12 +235,13 @@ trait StdStackServer[Req, Rep, This <: StdStackServer[Req, Rep, This]]
       // Hydrates a new ClientConnection with connection information from the
       // given `transport`. ClientConnection instances are used to
       // thread this through a finagle server stack.
-      def newConn(transport: Transport[In, Out]) = new ClientConnection {
-        val remoteAddress = transport.remoteAddress
-        val localAddress = transport.localAddress
-        def close(deadline: Time) = transport.close(deadline)
-        val onClose = transport.onClose.map(_ => ())
-      }
+      def newConn(transport: Transport[In, Out]) =
+        new ClientConnection {
+          val remoteAddress = transport.remoteAddress
+          val localAddress = transport.localAddress
+          def close(deadline: Time) = transport.close(deadline)
+          val onClose = transport.onClose.map(_ => ())
+        }
 
       val statsReceiver =
         if (serverLabel.isEmpty)
@@ -291,25 +292,27 @@ trait StdStackServer[Req, Rep, This <: StdStackServer[Req, Rep, This]]
         server.stack,
         server.params)
 
-      protected def closeServer(deadline: Time) = closeAwaitably {
-        // Here be dragons
-        // We want to do four things here in this order:
-        // 1. close the listening socket
-        // 2. close the factory (not sure if ordering matters for this step)
-        // 3. drain pending requests for existing connections
-        // 4. close those connections when their requests complete
-        // closing `underlying` eventually calls Netty3Listener.close which has an
-        // interesting side-effect of synchronously closing #1
-        val ulClosed = underlying.close(deadline)
+      protected def closeServer(deadline: Time) =
+        closeAwaitably {
+          // Here be dragons
+          // We want to do four things here in this order:
+          // 1. close the listening socket
+          // 2. close the factory (not sure if ordering matters for this step)
+          // 3. drain pending requests for existing connections
+          // 4. close those connections when their requests complete
+          // closing `underlying` eventually calls Netty3Listener.close which has an
+          // interesting side-effect of synchronously closing #1
+          val ulClosed = underlying.close(deadline)
 
-        // However we don't want to wait on the above because it will only complete
-        // when #4 is finished.  So we ignore it and close everything else.  Note that
-        // closing the connections here will do #2 and drain them via the Dispatcher.
-        val everythingElse = Seq[Closable](factory) ++ connections.asScala.toSeq
+          // However we don't want to wait on the above because it will only complete
+          // when #4 is finished.  So we ignore it and close everything else.  Note that
+          // closing the connections here will do #2 and drain them via the Dispatcher.
+          val everythingElse =
+            Seq[Closable](factory) ++ connections.asScala.toSeq
 
-        // and once they're drained we can then wait on the listener physically closing them
-        Closable.all(everythingElse: _*).close(deadline) before ulClosed
-      }
+          // and once they're drained we can then wait on the listener physically closing them
+          Closable.all(everythingElse: _*).close(deadline) before ulClosed
+        }
 
       def boundAddress = underlying.boundAddress
     }

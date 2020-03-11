@@ -95,12 +95,13 @@ object ScalaCsrf extends PlaySpecification {
       import play.api.mvc._
       import play.filters.csrf._
 
-      def save = checkToken {
-        Action { req: RequestHeader =>
-          // handle body
-          Ok
+      def save =
+        checkToken {
+          Action { req: RequestHeader =>
+            // handle body
+            Ok
+          }
         }
-      }
       //#csrf-check
 
       await(
@@ -118,11 +119,12 @@ object ScalaCsrf extends PlaySpecification {
       import play.api.mvc._
       import play.filters.csrf._
 
-      def form = addToken {
-        Action { implicit req: RequestHeader =>
-          Ok(views.html.itemsForm)
+      def form =
+        addToken {
+          Action { implicit req: RequestHeader =>
+            Ok(views.html.itemsForm)
+          }
         }
-      }
       //#csrf-add-token
 
       val body =
@@ -159,14 +161,16 @@ object ScalaCsrf extends PlaySpecification {
       //#csrf-action-builder
 
       //#csrf-actions
-      def save = PostAction {
-        // handle body
-        Ok
-      }
+      def save =
+        PostAction {
+          // handle body
+          Ok
+        }
 
-      def form = GetAction { implicit req =>
-        Ok(views.html.itemsForm)
-      }
+      def form =
+        GetAction { implicit req =>
+          Ok(views.html.itemsForm)
+        }
       //#csrf-actions
 
       await(

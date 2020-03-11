@@ -33,11 +33,12 @@ trait MatrixGenericOps { this: Matrix.type =>
   implicit def setDMDV[V, MM](implicit st: MM <:< Matrix[V]) =
     new SetMMOp[V, MM]
 
-  implicit def canCopyMatrix[V: ClassTag] = new CanCopy[Matrix[V]] {
-    def apply(v1: Matrix[V]) = {
-      v1.copy
+  implicit def canCopyMatrix[V: ClassTag] =
+    new CanCopy[Matrix[V]] {
+      def apply(v1: Matrix[V]) = {
+        v1.copy
+      }
     }
-  }
 
   import breeze.math.PowImplicits._
 
@@ -502,17 +503,20 @@ trait MatrixOpsLowPrio extends MatrixGenericOps {
   this: MatrixOps with Matrix.type =>
   implicit def canMulM_V_def[T, B <: Vector[T]](implicit
       bb: B <:< Vector[T],
-      op: OpMulMatrix.Impl2[Matrix[T], Vector[T], Vector[T]]) = (
-    implicitly[OpMulMatrix.Impl2[Matrix[T], Vector[T], Vector[T]]].asInstanceOf[
-      breeze.linalg.operators.OpMulMatrix.Impl2[Matrix[T], B, Vector[T]]]
-  )
+      op: OpMulMatrix.Impl2[Matrix[T], Vector[T], Vector[T]]) =
+    (
+      implicitly[OpMulMatrix.Impl2[Matrix[T], Vector[T], Vector[T]]]
+        .asInstanceOf[
+          breeze.linalg.operators.OpMulMatrix.Impl2[Matrix[T], B, Vector[T]]]
+      )
 
   // ibid.
   implicit def canMulM_M_def[T, B <: Matrix[T]](implicit
       bb: B <:< Matrix[T],
-      op: OpMulMatrix.Impl2[Matrix[T], Matrix[T], Matrix[T]]) = (
-    op.asInstanceOf[OpMulMatrix.Impl2[Matrix[T], B, Matrix[T]]]
-  )
+      op: OpMulMatrix.Impl2[Matrix[T], Matrix[T], Matrix[T]]) =
+    (
+      op.asInstanceOf[OpMulMatrix.Impl2[Matrix[T], B, Matrix[T]]]
+    )
 }
 
 trait MatrixMultOps extends MatrixOps with MatrixOpsLowPrio {

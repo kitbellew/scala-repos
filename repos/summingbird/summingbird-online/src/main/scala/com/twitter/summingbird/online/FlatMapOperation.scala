@@ -50,12 +50,13 @@ trait FlatMapOperation[-T, +U] extends Serializable with Closeable {
     // trait caused a nullpointerexception after
     // serialization. I think that Kryo mis-serializes that reference.
     new FlatMapOperation[T, V] {
-      def apply(t: T) = self(t).flatMap { tr =>
-        val next: Seq[Future[TraversableOnce[V]]] = tr.map {
-          fmo.apply(_)
-        }.toIndexedSeq
-        Future.collect(next).map(_.flatten) // flatten the inner
-      }
+      def apply(t: T) =
+        self(t).flatMap { tr =>
+          val next: Seq[Future[TraversableOnce[V]]] = tr.map {
+            fmo.apply(_)
+          }.toIndexedSeq
+          Future.collect(next).map(_.flatten) // flatten the inner
+        }
 
       override def maybeFlush = {
         self.maybeFlush.flatMap { x: TraversableOnce[U] =>
@@ -166,7 +167,8 @@ object FlatMapOperation {
 class WriteOperation[T](sinkSupplier: () => (T => Future[Unit]))
     extends FlatMapOperation[T, T] {
   lazy val sink = sinkSupplier()
-  override def apply(t: T) = sink(t).map { _ =>
-    Some(t)
-  }
+  override def apply(t: T) =
+    sink(t).map { _ =>
+      Some(t)
+    }
 }

@@ -195,15 +195,16 @@ class OpenHashSet[@specialized(Long, Int) T: ClassTag](
   /** Return the value at the specified position. */
   def getValue(pos: Int): T = _data(pos)
 
-  def iterator: Iterator[T] = new Iterator[T] {
-    var pos = nextPos(0)
-    override def hasNext: Boolean = pos != INVALID_POS
-    override def next(): T = {
-      val tmp = getValue(pos)
-      pos = nextPos(pos + 1)
-      tmp
+  def iterator: Iterator[T] =
+    new Iterator[T] {
+      var pos = nextPos(0)
+      override def hasNext: Boolean = pos != INVALID_POS
+      override def next(): T = {
+        val tmp = getValue(pos)
+        pos = nextPos(pos + 1)
+        tmp
+      }
     }
-  }
 
   /** Return the value at the specified position. */
   def getValueSafe(pos: Int): T = {

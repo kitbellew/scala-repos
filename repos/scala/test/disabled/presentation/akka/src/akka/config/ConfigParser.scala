@@ -42,9 +42,10 @@ class ConfigParser(
 
   def value: Parser[Any] = number | string | list | boolean
   def number = numberToken
-  def string = stringToken ^^ { s =>
-    s.substring(1, s.length - 1)
-  }
+  def string =
+    stringToken ^^ { s =>
+      s.substring(1, s.length - 1)
+    }
   def list = "[" ~> repsep(string | numberToken, opt(",")) <~ (opt(",") ~ "]")
   def boolean = booleanToken
 
@@ -52,29 +53,33 @@ class ConfigParser(
 
   def root = rep(includeFile | assignment | sectionOpen | sectionClose)
 
-  def includeFile = "include" ~> string ^^ {
-    case filename: String =>
-      new ConfigParser(prefix, map, importer) parse importer.importFile(
-        filename)
-  }
+  def includeFile =
+    "include" ~> string ^^ {
+      case filename: String =>
+        new ConfigParser(prefix, map, importer) parse importer.importFile(
+          filename)
+    }
 
-  def assignment = identToken ~ assignToken ~ value ^^ {
-    case k ~ a ~ v => map(prefix + k) = v
-  }
+  def assignment =
+    identToken ~ assignToken ~ value ^^ {
+      case k ~ a ~ v => map(prefix + k) = v
+    }
 
-  def sectionOpen = sectionToken <~ "{" ^^ { name =>
-    sections push name
-    createPrefix
-  }
-
-  def sectionClose = "}" ^^ { _ =>
-    if (sections.isEmpty) {
-      failure("dangling close tag")
-    } else {
-      sections.pop
+  def sectionOpen =
+    sectionToken <~ "{" ^^ { name =>
+      sections push name
       createPrefix
     }
-  }
+
+  def sectionClose =
+    "}" ^^ { _ =>
+      if (sections.isEmpty) {
+        failure("dangling close tag")
+      } else {
+        sections.pop
+        createPrefix
+      }
+    }
 
   def parse(in: String): Map[String, Any] = {
     parseAll(root, in) match {

@@ -104,12 +104,13 @@ trait ScalaClassLoader extends JClassLoader {
     }
 
   /** An InputStream representing the given class name, or null if not found. */
-  def classAsStream(className: String) = getResourceAsStream {
-    if (className endsWith ".class")
-      className
-    else
-      s"${className.replace('.', '/')}.class" // classNameToPath
-  }
+  def classAsStream(className: String) =
+    getResourceAsStream {
+      if (className endsWith ".class")
+        className
+      else
+        s"${className.replace('.', '/')}.class" // classNameToPath
+    }
 
   /** Run the main method of a class to be loaded by this classloader */
   def run(objectName: String, arguments: Seq[String]) {
@@ -141,12 +142,13 @@ object ScalaClassLoader {
     *  and translates java.net.URLClassLoaders into scala URLClassLoaders.
     *  Otherwise creates a new wrapper.
     */
-  implicit def apply(cl: JClassLoader): ScalaClassLoader = cl match {
-    case cl: ScalaClassLoader => cl
-    case cl: JURLClassLoader =>
-      new URLClassLoader(cl.getURLs.toSeq, cl.getParent)
-    case _ => new JClassLoader(cl) with ScalaClassLoader
-  }
+  implicit def apply(cl: JClassLoader): ScalaClassLoader =
+    cl match {
+      case cl: ScalaClassLoader => cl
+      case cl: JURLClassLoader =>
+        new URLClassLoader(cl.getURLs.toSeq, cl.getParent)
+      case _ => new JClassLoader(cl) with ScalaClassLoader
+    }
   def contextLoader = apply(Thread.currentThread.getContextClassLoader)
   def appLoader = apply(JClassLoader.getSystemClassLoader)
   def setContext(cl: JClassLoader) =

@@ -184,17 +184,19 @@ abstract class ScTypeDefinitionImpl protected (
   override def hasModifierProperty(name: String): Boolean =
     super[ScTypeDefinition].hasModifierProperty(name)
 
-  override def getNavigationElement = getContainingFile match {
-    case s: ScalaFileImpl if s.isCompiled => getSourceMirrorClass
-    case _                                => this
-  }
+  override def getNavigationElement =
+    getContainingFile match {
+      case s: ScalaFileImpl if s.isCompiled => getSourceMirrorClass
+      case _                                => this
+    }
 
-  private def hasSameScalaKind(other: PsiClass) = (this, other) match {
-    case (_: ScTrait, _: ScTrait) | (_: ScObject, _: ScObject) |
-        (_: ScClass, _: ScClass) =>
-      true
-    case _ => false
-  }
+  private def hasSameScalaKind(other: PsiClass) =
+    (this, other) match {
+      case (_: ScTrait, _: ScTrait) | (_: ScObject, _: ScObject) |
+          (_: ScClass, _: ScClass) =>
+        true
+      case _ => false
+    }
 
   def getSourceMirrorClass: PsiClass = {
     val classParent =
@@ -336,34 +338,35 @@ abstract class ScTypeDefinitionImpl protected (
     def _packageName(
         e: PsiElement,
         sep: String,
-        k: (String) => String): String = e.getContext match {
-      case o: ScObject if o.isPackageObject && o.name == "`package`" =>
-        _packageName(o, sep, k)
-      case _: ScClass | _: ScTrait if trunced => k("")
-      case t: ScTypeDefinition =>
-        _packageName(
-          t,
-          sep,
-          (s) => {
-            val name = t.name
-            k(s + transformName(encodeName, name) + sep)
-          })
-      case p: ScPackaging =>
-        _packageName(p, ".", (s) => k(s + p.getPackageName + "."))
-      case f: ScalaFile =>
-        val pn = "";
-        k(
-          if (pn.length > 0)
-            pn + "."
-          else
-            "")
-      case _: PsiFile | null         => k("")
-      case _: ScBlock                => k("")
-      case parent: ScTemplateBody    => _packageName(parent, sep, k)
-      case parent: ScExtendsBlock    => _packageName(parent, sep, k)
-      case parent: ScTemplateParents => _packageName(parent, sep, k)
-      case parent                    => _packageName(parent, sep, identity)
-    }
+        k: (String) => String): String =
+      e.getContext match {
+        case o: ScObject if o.isPackageObject && o.name == "`package`" =>
+          _packageName(o, sep, k)
+        case _: ScClass | _: ScTrait if trunced => k("")
+        case t: ScTypeDefinition =>
+          _packageName(
+            t,
+            sep,
+            (s) => {
+              val name = t.name
+              k(s + transformName(encodeName, name) + sep)
+            })
+        case p: ScPackaging =>
+          _packageName(p, ".", (s) => k(s + p.getPackageName + "."))
+        case f: ScalaFile =>
+          val pn = "";
+          k(
+            if (pn.length > 0)
+              pn + "."
+            else
+              "")
+        case _: PsiFile | null         => k("")
+        case _: ScBlock                => k("")
+        case parent: ScTemplateBody    => _packageName(parent, sep, k)
+        case parent: ScExtendsBlock    => _packageName(parent, sep, k)
+        case parent: ScTemplateParents => _packageName(parent, sep, k)
+        case parent                    => _packageName(parent, sep, identity)
+      }
 
     val packageName = _packageName(this, classSeparator, identity)
     packageName + transformName(encodeName, name)
@@ -386,10 +389,11 @@ abstract class ScTypeDefinitionImpl protected (
 
       def getTextAttributesKey: TextAttributesKey = null
 
-      def getLocationString: String = getPath match {
-        case "" => "<default>"
-        case p  => '(' + p + ')'
-      }
+      def getLocationString: String =
+        getPath match {
+          case "" => "<default>"
+          case p  => '(' + p + ')'
+        }
 
       override def getIcon(open: Boolean) = ScTypeDefinitionImpl.this.getIcon(0)
     }

@@ -51,16 +51,18 @@ private[memory] class ExecutionMemoryPool(
   @GuardedBy("lock")
   private val memoryForTask = new mutable.HashMap[Long, Long]()
 
-  override def memoryUsed: Long = lock.synchronized {
-    memoryForTask.values.sum
-  }
+  override def memoryUsed: Long =
+    lock.synchronized {
+      memoryForTask.values.sum
+    }
 
   /**
     * Returns the memory consumption, in bytes, for the given task.
     */
-  def getMemoryUsageForTask(taskAttemptId: Long): Long = lock.synchronized {
-    memoryForTask.getOrElse(taskAttemptId, 0L)
-  }
+  def getMemoryUsageForTask(taskAttemptId: Long): Long =
+    lock.synchronized {
+      memoryForTask.getOrElse(taskAttemptId, 0L)
+    }
 
   /**
     * Try to acquire up to `numBytes` of memory for the given task and return the number of bytes
@@ -172,10 +174,11 @@ private[memory] class ExecutionMemoryPool(
     * Release all memory for the given task and mark it as inactive (e.g. when a task ends).
     * @return the number of bytes freed.
     */
-  def releaseAllMemoryForTask(taskAttemptId: Long): Long = lock.synchronized {
-    val numBytesToFree = getMemoryUsageForTask(taskAttemptId)
-    releaseMemory(numBytesToFree, taskAttemptId)
-    numBytesToFree
-  }
+  def releaseAllMemoryForTask(taskAttemptId: Long): Long =
+    lock.synchronized {
+      val numBytesToFree = getMemoryUsageForTask(taskAttemptId)
+      releaseMemory(numBytesToFree, taskAttemptId)
+      numBytesToFree
+    }
 
 }

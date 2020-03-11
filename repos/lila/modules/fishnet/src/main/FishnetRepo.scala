@@ -17,9 +17,10 @@ private final class FishnetRepo(analysisColl: Coll, clientColl: Coll) {
     timeToLive = 10 seconds)
 
   def getClient(key: Client.Key) = clientCache(key)
-  def getEnabledClient(key: Client.Key) = getClient(key).map {
-    _.filter(_.enabled)
-  }
+  def getEnabledClient(key: Client.Key) =
+    getClient(key).map {
+      _.filter(_.enabled)
+    }
   def getOfflineClient: Fu[Client] =
     getEnabledClient(Client.offline.key) getOrElse fuccess(Client.offline)
   def updateClient(client: Client): Funit =

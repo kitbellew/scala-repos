@@ -287,13 +287,14 @@ case class Netty3Listener[In, Out](
   private[this] val statsHandlers =
     new IdentityHashMap[StatsReceiver, ChannelHandler]
 
-  def channelStatsHandler(statsReceiver: StatsReceiver) = synchronized {
-    if (!(statsHandlers containsKey statsReceiver)) {
-      statsHandlers.put(statsReceiver, new ChannelStatsHandler(statsReceiver))
-    }
+  def channelStatsHandler(statsReceiver: StatsReceiver) =
+    synchronized {
+      if (!(statsHandlers containsKey statsReceiver)) {
+        statsHandlers.put(statsReceiver, new ChannelStatsHandler(statsReceiver))
+      }
 
-    statsHandlers.get(statsReceiver)
-  }
+      statsHandlers.get(statsReceiver)
+    }
 
   def newServerPipelineFactory(
       statsReceiver: StatsReceiver,
@@ -367,9 +368,10 @@ case class Netty3Listener[In, Out](
         newServerPipelineFactory(scopedStatsReceiver, newBridge))
       val ch = bootstrap.bind(addr)
 
-      def closeServer(deadline: Time) = closeAwaitably {
-        closer.close(bootstrap, ch, deadline)
-      }
+      def closeServer(deadline: Time) =
+        closeAwaitably {
+          closer.close(bootstrap, ch, deadline)
+        }
       def boundAddress = ch.getLocalAddress()
     }
 }
@@ -398,17 +400,18 @@ private[netty3] class ServerBridge[In, Out](
   private[this] val readTimeoutCounter = statsReceiver.counter("read_timeout")
   private[this] val writeTimeoutCounter = statsReceiver.counter("write_timeout")
 
-  private[this] def severity(exc: Throwable): Level = exc match {
-    case e: HasLogLevel => e.logLevel
-    case _: java.nio.channels.ClosedChannelException |
-        _: javax.net.ssl.SSLException | _: ReadTimeoutException |
-        _: WriteTimedOutException | _: javax.net.ssl.SSLException =>
-      Level.FINEST
-    case e: java.io.IOException
-        if FinestIOExceptionMessages.contains(e.getMessage) =>
-      Level.FINEST
-    case _ => Level.WARNING
-  }
+  private[this] def severity(exc: Throwable): Level =
+    exc match {
+      case e: HasLogLevel => e.logLevel
+      case _: java.nio.channels.ClosedChannelException |
+          _: javax.net.ssl.SSLException | _: ReadTimeoutException |
+          _: WriteTimedOutException | _: javax.net.ssl.SSLException =>
+        Level.FINEST
+      case e: java.io.IOException
+          if FinestIOExceptionMessages.contains(e.getMessage) =>
+        Level.FINEST
+      case _ => Level.WARNING
+    }
 
   override def channelConnected(
       ctx: ChannelHandlerContext,

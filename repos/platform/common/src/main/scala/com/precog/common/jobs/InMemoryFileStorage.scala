@@ -34,12 +34,13 @@ final class InMemoryFileStorage[M[+_]](implicit M: Monad[M])
     new mutable.HashMap[String, (Option[MimeType], Array[Byte])]
       with mutable.SynchronizedMap[String, (Option[MimeType], Array[Byte])]
 
-  def exists(file: String): M[Boolean] = M.point {
-    files contains file
-  }
+  def exists(file: String): M[Boolean] =
+    M.point {
+      files contains file
+    }
 
-  def save(file: String, data: FileData[M]): M[Unit] = data.data.toStream map {
-    chunks =>
+  def save(file: String, data: FileData[M]): M[Unit] =
+    data.data.toStream map { chunks =>
       val length = chunks.foldLeft(0)(_ + _.length)
       val bytes = new Array[Byte](length)
       chunks.foldLeft(0) { (offset, chunk) =>
@@ -48,16 +49,18 @@ final class InMemoryFileStorage[M[+_]](implicit M: Monad[M])
       }
 
       files += file -> (data.mimeType, bytes)
-  }
-
-  def load(file: String): M[Option[FileData[M]]] = M.point {
-    files get file map {
-      case (mimeType, data) =>
-        FileData(mimeType, data :: StreamT.empty[M, Array[Byte]])
     }
-  }
 
-  def remove(file: String): M[Unit] = M.point {
-    files -= file
-  }
+  def load(file: String): M[Option[FileData[M]]] =
+    M.point {
+      files get file map {
+        case (mimeType, data) =>
+          FileData(mimeType, data :: StreamT.empty[M, Array[Byte]])
+      }
+    }
+
+  def remove(file: String): M[Unit] =
+    M.point {
+      files -= file
+    }
 }

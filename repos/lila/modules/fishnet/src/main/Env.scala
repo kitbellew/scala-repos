@@ -77,20 +77,21 @@ final class Env(
     name = ActorName
   )
 
-  def cli = new lila.common.Cli {
-    def process = {
-      case "fishnet" :: "client" :: "create" :: userId :: skill :: Nil =>
-        api.createClient(Client.UserId(userId), skill) map (_.key.value)
-      case "fishnet" :: "client" :: "delete" :: key :: Nil =>
-        repo.deleteClient(Client.Key(key)) inject "done!"
-      case "fishnet" :: "client" :: "enable" :: key :: Nil =>
-        repo.enableClient(Client.Key(key), true) inject "done!"
-      case "fishnet" :: "client" :: "disable" :: key :: Nil =>
-        repo.enableClient(Client.Key(key), false) inject "done!"
-      case "fishnet" :: "client" :: "skill" :: key :: skill :: Nil =>
-        api.setClientSkill(Client.Key(key), skill) inject "done!"
+  def cli =
+    new lila.common.Cli {
+      def process = {
+        case "fishnet" :: "client" :: "create" :: userId :: skill :: Nil =>
+          api.createClient(Client.UserId(userId), skill) map (_.key.value)
+        case "fishnet" :: "client" :: "delete" :: key :: Nil =>
+          repo.deleteClient(Client.Key(key)) inject "done!"
+        case "fishnet" :: "client" :: "enable" :: key :: Nil =>
+          repo.enableClient(Client.Key(key), true) inject "done!"
+        case "fishnet" :: "client" :: "disable" :: key :: Nil =>
+          repo.enableClient(Client.Key(key), false) inject "done!"
+        case "fishnet" :: "client" :: "skill" :: key :: skill :: Nil =>
+          api.setClientSkill(Client.Key(key), skill) inject "done!"
+      }
     }
-  }
 }
 
 object Env {

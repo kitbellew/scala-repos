@@ -124,11 +124,12 @@ abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](
       else
         extract)
 
-  def take: E = lockedInterruptibly {
-    while (count == 0)
-      notEmpty.await
-    extract
-  }
+  def take: E =
+    lockedInterruptibly {
+      while (count == 0)
+        notEmpty.await
+      extract
+    }
 
   def poll(timeout: Long, unit: TimeUnit): E = {
     var nanos: Long = unit.toNanos(timeout)
@@ -262,49 +263,50 @@ abstract class ManagedArrayBlockingQueue[E >: Null <: AnyRef](
     }
   }
 
-  def iterator: Iterator[E] = new Iterator[E] {
-    private var remaining: Int = _
-    private var nextIndex: Int = _
-    private var nextItem: E = _
-    private var lastItem: E = _
-    private var lastRet: Int = -1
+  def iterator: Iterator[E] =
+    new Iterator[E] {
+      private var remaining: Int = _
+      private var nextIndex: Int = _
+      private var nextItem: E = _
+      private var lastItem: E = _
+      private var lastRet: Int = -1
 
-    locked {
-      remaining = count
-      if (remaining > 0) {
-        nextIndex = takeIndex
-        nextItem = itemAt(nextIndex)
-      }
-    }
-
-    def hasNext: Boolean = remaining > 0
-
-    def next: E = {
       locked {
-        if (remaining <= 0)
-          throw new NoSuchElementException
-        lastRet = nextIndex
-        var x: E = itemAt(nextIndex)
-        if (x == null) {
-          x = nextItem
-          lastItem = null
-        } else
-          lastItem = x
-        while ({
-          remaining -= 1;
-          remaining > 0
-        } && {
-          nextIndex = inc(nextIndex);
-          nextItem = itemAt(nextIndex);
-          nextItem == null
-        })
-          ()
-        x
+        remaining = count
+        if (remaining > 0) {
+          nextIndex = takeIndex
+          nextItem = itemAt(nextIndex)
+        }
       }
-    }
 
-    def remove: Unit = throw new UnsupportedOperationException
-  }
+      def hasNext: Boolean = remaining > 0
+
+      def next: E = {
+        locked {
+          if (remaining <= 0)
+            throw new NoSuchElementException
+          lastRet = nextIndex
+          var x: E = itemAt(nextIndex)
+          if (x == null) {
+            x = nextItem
+            lastItem = null
+          } else
+            lastItem = x
+          while ({
+            remaining -= 1;
+            remaining > 0
+          } && {
+            nextIndex = inc(nextIndex);
+            nextItem = itemAt(nextIndex);
+            nextItem == null
+          })
+            ()
+          x
+        }
+      }
+
+      def remove: Unit = throw new UnsupportedOperationException
+    }
 
   @inline private[this] def locked[T](f: => T) = {
     lock.lock

@@ -63,22 +63,25 @@ trait Vector[@spec(Int, Double, Float) V] extends VectorLike[V, Vector[V]] {
   def length: Int
   override def size = length
 
-  def iterator = Iterator.range(0, size).map { i =>
-    i -> apply(i)
-  }
+  def iterator =
+    Iterator.range(0, size).map { i =>
+      i -> apply(i)
+    }
 
-  def valuesIterator = Iterator.range(0, size).map { i =>
-    apply(i)
-  }
+  def valuesIterator =
+    Iterator.range(0, size).map { i =>
+      apply(i)
+    }
 
   def keysIterator = Iterator.range(0, size)
 
-  override def equals(p1: Any) = p1 match {
-    case x: Vector[_] =>
-      this.length == x.length &&
-        (valuesIterator sameElements x.valuesIterator)
-    case _ => false
-  }
+  override def equals(p1: Any) =
+    p1 match {
+      case x: Vector[_] =>
+        this.length == x.length &&
+          (valuesIterator sameElements x.valuesIterator)
+      case _ => false
+    }
 
   def toDenseVector(implicit cm: ClassTag[V]) = {
     DenseVector(toArray)
@@ -184,10 +187,11 @@ object Vector extends VectorConstructors[Vector] with VectorOps {
   def apply[@spec(Double, Int, Float, Long) V](values: Array[V]): Vector[V] =
     DenseVector(values)
 
-  implicit def canCopy[E]: CanCopy[Vector[E]] = new CanCopy[Vector[E]] {
-    // Should not inherit from T=>T because those get  used by the compiler.
-    def apply(t: Vector[E]): Vector[E] = t.copy
-  }
+  implicit def canCopy[E]: CanCopy[Vector[E]] =
+    new CanCopy[Vector[E]] {
+      // Should not inherit from T=>T because those get  used by the compiler.
+      def apply(t: Vector[E]): Vector[E] = t.copy
+    }
 
   // There's a bizarre error specializing float's here.
   class CanZipMapValuesVector[

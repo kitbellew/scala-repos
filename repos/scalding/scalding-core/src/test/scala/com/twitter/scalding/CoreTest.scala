@@ -1711,19 +1711,22 @@ object TypedThrowsErrorsJob {
   val input = TypedTsv[(String, Int)]("input")
   val output = TypedTsv[(String, Int)]("output")
 
-  def trans1(x: (String, Int)) = x match {
-    case (str, int) => (str, int, int)
-  }
+  def trans1(x: (String, Int)) =
+    x match {
+      case (str, int) => (str, int, int)
+    }
   val trap1 = TypedTsv[(String, Int, Int)]("trapped1")
 
   val trap2 = TypedTsv[(String, Int, Int, String)]("trapped2")
-  def trans2(x: (String, Int, Int)) = x match {
-    case (str, int1, int2) => (str, int1, int2 * int1, str)
-  }
+  def trans2(x: (String, Int, Int)) =
+    x match {
+      case (str, int1, int2) => (str, int1, int2 * int1, str)
+    }
 
-  def trans3(x: (String, Int, Int, String)) = x match {
-    case (str, int, _, _) => (str, int)
-  }
+  def trans3(x: (String, Int, Int, String)) =
+    x match {
+      case (str, int, _, _) => (str, int)
+    }
 }
 
 class TypedThrowsErrorsJob(args: Args) extends Job(args) {
@@ -1756,15 +1759,18 @@ object TypedThrowsErrorsJob2 {
   val output = TypedTsv[(String, Int)]("output")
   val trap = TypedTsv[(String, Int, Int)]("trapped1")
 
-  def trans1(x: (String, Int)) = x match {
-    case (str, int) => (str, int, int)
-  }
-  def trans2(x: (String, Int, Int)) = x match {
-    case (str, int1, int2) => (str, int1, int2 * int1, str)
-  }
-  def trans3(x: (String, Int, Int, String)) = x match {
-    case (str, int, _, _) => (str, int)
-  }
+  def trans1(x: (String, Int)) =
+    x match {
+      case (str, int) => (str, int, int)
+    }
+  def trans2(x: (String, Int, Int)) =
+    x match {
+      case (str, int1, int2) => (str, int1, int2 * int1, str)
+    }
+  def trans3(x: (String, Int, Int, String)) =
+    x match {
+      case (str, int, _, _) => (str, int)
+    }
 }
 
 class TypedThrowsErrorsJob2(args: Args) extends Job(args) {

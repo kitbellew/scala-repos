@@ -35,17 +35,18 @@ class IteratorTest {
 
   @Test def groupedIteratorIsLazyWhenPadded(): Unit = {
     var counter = 0
-    def it = new Iterator[Int] {
-      var i = 0;
-      def hasNext = {
-        counter = i;
-        true
-      };
-      def next = {
-        i += 1;
-        i
+    def it =
+      new Iterator[Int] {
+        var i = 0;
+        def hasNext = {
+          counter = i;
+          true
+        };
+        def next = {
+          i += 1;
+          i
+        }
       }
-    }
     val slidingIt = it sliding 2 withPadding -1
     slidingIt.next
     assertEquals(
@@ -55,10 +56,11 @@ class IteratorTest {
   }
 
   @Test def dropDoesNotGrowStack(): Unit = {
-    def it = new Iterator[Throwable] {
-      def hasNext = true;
-      def next = new Throwable
-    }
+    def it =
+      new Iterator[Throwable] {
+        def hasNext = true;
+        def next = new Throwable
+      }
 
     assertEquals(
       it.drop(1).next.getStackTrace.length,
@@ -209,10 +211,11 @@ class IteratorTest {
         results += x;
         x
       })
-    def mkInfinite = Iterator continually {
-      results += 1;
-      1
-    }
+    def mkInfinite =
+      Iterator continually {
+        results += 1;
+        1
+      }
 
     // Stream is strict in its head so we should see 1 from each of them.
     val s1 = mkIterator.toStream
@@ -248,14 +251,15 @@ class IteratorTest {
   @Test def noExcessiveHasNextInJoinIterator: Unit = {
     var counter = 0
     val exp = List(1, 2, 3, 1, 2, 3)
-    def it: Iterator[Int] = new Iterator[Int] {
-      val parent = List(1, 2, 3).iterator
-      def next(): Int = parent.next
-      def hasNext: Boolean = {
-        counter += 1;
-        parent.hasNext
+    def it: Iterator[Int] =
+      new Iterator[Int] {
+        val parent = List(1, 2, 3).iterator
+        def next(): Int = parent.next
+        def hasNext: Boolean = {
+          counter += 1;
+          parent.hasNext
+        }
       }
-    }
     // Iterate separately
     val res = new mutable.ArrayBuffer[Int]
     it.foreach(res += _)

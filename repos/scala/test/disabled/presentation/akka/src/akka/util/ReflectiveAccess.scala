@@ -42,12 +42,13 @@ object ReflectiveAccess {
 
     lazy val isEnabled = remoteSupportClass.isDefined
 
-    def ensureEnabled = if (!isEnabled) {
-      val e = new ModuleNotAvailableException(
-        "Can't load the remoting module, make sure that akka-remote.jar is on the classpath")
-      EventHandler.debug(this, e.toString)
-      throw e
-    }
+    def ensureEnabled =
+      if (!isEnabled) {
+        val e = new ModuleNotAvailableException(
+          "Can't load the remoting module, make sure that akka-remote.jar is on the classpath")
+        EventHandler.debug(this, e.toString)
+        throw e
+      }
     val remoteSupportClass = getClassFor[RemoteSupport](TRANSPORT) match {
       case Right(value) => Some(value)
       case Left(exception) =>

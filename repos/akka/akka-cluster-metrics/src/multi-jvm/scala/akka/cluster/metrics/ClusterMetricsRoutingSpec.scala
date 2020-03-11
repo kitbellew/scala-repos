@@ -152,10 +152,11 @@ abstract class AdaptiveLoadBalancingRouterSpec
   /**
     * Fills in self address for local ActorRef
     */
-  def fullAddress(actorRef: ActorRef): Address = actorRef.path.address match {
-    case Address(_, _, None, None) ⇒ cluster.selfAddress
-    case a ⇒ a
-  }
+  def fullAddress(actorRef: ActorRef): Address =
+    actorRef.path.address match {
+      case Address(_, _, None, None) ⇒ cluster.selfAddress
+      case a ⇒ a
+    }
 
   def startRouter(name: String): ActorRef = {
     val router = system.actorOf(

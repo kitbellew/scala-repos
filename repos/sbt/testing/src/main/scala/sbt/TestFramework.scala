@@ -155,11 +155,12 @@ object TestFramework {
           log.error(e.toString)
       })
 
-  private[sbt] def hashCode(f: Fingerprint): Int = f match {
-    case s: SubclassFingerprint  => (s.isModule, s.superclassName).hashCode
-    case a: AnnotatedFingerprint => (a.isModule, a.annotationName).hashCode
-    case _                       => 0
-  }
+  private[sbt] def hashCode(f: Fingerprint): Int =
+    f match {
+      case s: SubclassFingerprint  => (s.isModule, s.superclassName).hashCode
+      case a: AnnotatedFingerprint => (a.isModule, a.annotationName).hashCode
+      case _                       => 0
+    }
   def matches(a: Fingerprint, b: Fingerprint) =
     (a, b) match {
       case (a: SubclassFingerprint, b: SubclassFingerprint) =>

@@ -4,9 +4,10 @@ trait BugTrack {
   trait B[+T]
   val cache: HashMap[A[_], B[_]] = HashMap.empty
 
-  def A[T](f: Int => B[T]): A[T] = new A[T] {
-    def apply(in: Int) = f(in)
-  }
+  def A[T](f: Int => B[T]): A[T] =
+    new A[T] {
+      def apply(in: Int) = f(in)
+    }
 
   abstract class A[+T] extends (Int => B[T]) {
     def giveMeSame = this

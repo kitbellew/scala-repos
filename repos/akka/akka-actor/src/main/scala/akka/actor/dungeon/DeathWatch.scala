@@ -23,32 +23,34 @@ private[akka] trait DeathWatch { this: ActorCell ⇒
   private var watchedBy: Set[ActorRef] = ActorCell.emptyActorRefSet
   private var terminatedQueued: Set[ActorRef] = ActorCell.emptyActorRefSet
 
-  override final def watch(subject: ActorRef): ActorRef = subject match {
-    case a: InternalActorRef ⇒
-      if (a != self && !watchingContains(a)) {
-        maintainAddressTerminatedSubscription(a) {
-          a.sendSystemMessage(
-            Watch(a, self)
-          ) // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
-          watching += a
+  override final def watch(subject: ActorRef): ActorRef =
+    subject match {
+      case a: InternalActorRef ⇒
+        if (a != self && !watchingContains(a)) {
+          maintainAddressTerminatedSubscription(a) {
+            a.sendSystemMessage(
+              Watch(a, self)
+            ) // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
+            watching += a
+          }
         }
-      }
-      a
-  }
+        a
+    }
 
-  override final def unwatch(subject: ActorRef): ActorRef = subject match {
-    case a: InternalActorRef ⇒
-      if (a != self && watchingContains(a)) {
-        a.sendSystemMessage(
-          Unwatch(a, self)
-        ) // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
-        maintainAddressTerminatedSubscription(a) {
-          watching = removeFromSet(a, watching)
+  override final def unwatch(subject: ActorRef): ActorRef =
+    subject match {
+      case a: InternalActorRef ⇒
+        if (a != self && watchingContains(a)) {
+          a.sendSystemMessage(
+            Unwatch(a, self)
+          ) // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
+          maintainAddressTerminatedSubscription(a) {
+            watching = removeFromSet(a, watching)
+          }
         }
-      }
-      terminatedQueued = removeFromSet(a, terminatedQueued)
-      a
-  }
+        terminatedQueued = removeFromSet(a, terminatedQueued)
+        a
+    }
 
   protected def receivedTerminated(t: Terminated): Unit =
     if (terminatedQueued(t.actor)) {
@@ -233,11 +235,12 @@ private[akka] trait DeathWatch { this: ActorCell ⇒
     */
   private def maintainAddressTerminatedSubscription[T](change: ActorRef = null)(
       block: ⇒ T): T = {
-    def isNonLocal(ref: ActorRef) = ref match {
-      case null ⇒ true
-      case a: InternalActorRef if !a.isLocal ⇒ true
-      case _ ⇒ false
-    }
+    def isNonLocal(ref: ActorRef) =
+      ref match {
+        case null ⇒ true
+        case a: InternalActorRef if !a.isLocal ⇒ true
+        case _ ⇒ false
+      }
 
     if (isNonLocal(change)) {
       def hasNonLocalAddress: Boolean =

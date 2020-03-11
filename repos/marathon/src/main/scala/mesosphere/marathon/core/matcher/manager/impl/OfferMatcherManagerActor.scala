@@ -110,14 +110,15 @@ private[impl] class OfferMatcherManagerActor private (
   private[this] var offerQueues
       : Map[OfferID, OfferMatcherManagerActor.OfferData] = Map.empty
 
-  override def receive: Receive = LoggingReceive {
-    Seq[Receive](
-      receiveSetLaunchTokens,
-      receiveChangingMatchers,
-      receiveProcessOffer,
-      receiveMatchedTasks
-    ).reduceLeft(_.orElse[Any, Unit](_))
-  }
+  override def receive: Receive =
+    LoggingReceive {
+      Seq[Receive](
+        receiveSetLaunchTokens,
+        receiveChangingMatchers,
+        receiveProcessOffer,
+        receiveMatchedTasks
+      ).reduceLeft(_.orElse[Any, Unit](_))
+    }
 
   private[this] def receiveSetLaunchTokens: Receive = {
     case OfferMatcherManagerDelegate.SetTaskLaunchTokens(tokens) =>

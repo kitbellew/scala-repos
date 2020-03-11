@@ -24,22 +24,23 @@ trait ServletBase extends ScalatraBase with SessionSupport with Initializable {
 
   }
 
-  protected implicit def configWrapper(config: ConfigT) = new Config {
+  protected implicit def configWrapper(config: ConfigT) =
+    new Config {
 
-    override def context: ServletContext = config.getServletContext
+      override def context: ServletContext = config.getServletContext
 
-    object initParameters extends DefaultMap[String, String] {
+      object initParameters extends DefaultMap[String, String] {
 
-      override def get(key: String): Option[String] =
-        Option(config.getInitParameter(key))
+        override def get(key: String): Option[String] =
+          Option(config.getInitParameter(key))
 
-      override def iterator: Iterator[(String, String)] = {
-        for (name <- config.getInitParameterNames.asScala.toIterator)
-          yield (name, config.getInitParameter(name))
+        override def iterator: Iterator[(String, String)] = {
+          for (name <- config.getInitParameterNames.asScala.toIterator)
+            yield (name, config.getInitParameter(name))
+        }
       }
-    }
 
-  }
+    }
 
   override def handle(
       request: HttpServletRequest,

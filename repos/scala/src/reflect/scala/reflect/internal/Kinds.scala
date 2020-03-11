@@ -30,11 +30,12 @@ trait Kinds {
     def varianceError(syms: SymPair) = copy(variance = variance :+ syms)
     def strictnessError(syms: SymPair) = copy(strictness = strictness :+ syms)
 
-    def ++(errs: KindErrors) = KindErrors(
-      arity ++ errs.arity,
-      variance ++ errs.variance,
-      strictness ++ errs.strictness
-    )
+    def ++(errs: KindErrors) =
+      KindErrors(
+        arity ++ errs.arity,
+        variance ++ errs.variance,
+        strictness ++ errs.strictness
+      )
     // @M TODO this method is duplicated all over the place (varianceString)
     private def varStr(s: Symbol): String =
       if (s.isCovariant)
@@ -101,12 +102,13 @@ trait Kinds {
           xs map f.tupled mkString ("\n", ", ", "")
       )
 
-    def errorMessage(targ: Type, tparam: Symbol): String = (
-      (targ + "'s type parameters do not match " + tparam + "'s expected parameters:")
-        + buildMessage(arity, arityMessage)
-        + buildMessage(variance, varianceMessage)
-        + buildMessage(strictness, strictnessMessage)
-    )
+    def errorMessage(targ: Type, tparam: Symbol): String =
+      (
+        (targ + "'s type parameters do not match " + tparam + "'s expected parameters:")
+          + buildMessage(arity, arityMessage)
+          + buildMessage(variance, varianceMessage)
+          + buildMessage(strictness, strictnessMessage)
+      )
   }
   val NoKindErrors = KindErrors(Nil, Nil, Nil)
 
@@ -124,10 +126,11 @@ trait Kinds {
     *
     *  If `sym2` is invariant, `sym1`'s variance is irrelevant. Otherwise they must be equal.
     */
-  private def variancesMatch(sym1: Symbol, sym2: Symbol) = (
-    sym2.variance.isInvariant
-      || sym1.variance == sym2.variance
-  )
+  private def variancesMatch(sym1: Symbol, sym2: Symbol) =
+    (
+      sym2.variance.isInvariant
+        || sym1.variance == sym2.variance
+    )
 
   /** Check well-kindedness of type application (assumes arities are already checked) -- @M
     *
@@ -362,10 +365,11 @@ trait Kinds {
             Some(sym.nameString)
         StringState(tokens :+ Head(order, Some(n), alias))
       }
-      def countByOrder(o: Int): Int = tokens count {
-        case Head(`o`, _, _) => true
-        case t               => false
-      }
+      def countByOrder(o: Int): Int =
+        tokens count {
+          case Head(`o`, _, _) => true
+          case t               => false
+        }
       // Replace Head(o, Some(1), a) with Head(o, None, a) if countByOrder(o) <= 1, so F1[A] becomes F[A]
       def removeOnes: StringState = {
         val maxOrder = (tokens map {
@@ -493,22 +497,26 @@ trait Kinds {
       def apply(tpe: Type, owner: Symbol): Kind = infer(tpe, owner, true)
     }
 
-    def apply(pre: Type): InferKind = new InferKind {
-      protected def infer(tpe: Type, owner: Symbol, topLevel: Boolean): Kind = {
-        val bounds =
-          if (topLevel)
-            TypeBounds.empty
+    def apply(pre: Type): InferKind =
+      new InferKind {
+        protected def infer(
+            tpe: Type,
+            owner: Symbol,
+            topLevel: Boolean): Kind = {
+          val bounds =
+            if (topLevel)
+              TypeBounds.empty
+            else
+              tpe.asSeenFrom(pre, owner).bounds
+          if (!tpe.isHigherKinded)
+            ProperTypeKind(bounds)
           else
-            tpe.asSeenFrom(pre, owner).bounds
-        if (!tpe.isHigherKinded)
-          ProperTypeKind(bounds)
-        else
-          TypeConKind(
-            bounds,
-            tpe.typeParams map { p =>
-              Argument(p.variance, infer(p, false))(p)
-            })
+            TypeConKind(
+              bounds,
+              tpe.typeParams map { p =>
+                Argument(p.variance, infer(p, false))(p)
+              })
+        }
       }
-    }
   }
 }

@@ -54,10 +54,11 @@ trait JdbcTypesComponent extends RelationalTypesComponent { self: JdbcProfile =>
     override def toString =
       s"MappedJdbcType[${classTag.runtimeClass.getName} -> $tmd]"
     override def hashCode = tmd.hashCode() + classTag.hashCode()
-    override def equals(o: Any) = o match {
-      case o: MappedJdbcType[_, _] => tmd == o.tmd && classTag == o.classTag
-      case _                       => false
-    }
+    override def equals(o: Any) =
+      o match {
+        case o: MappedJdbcType[_, _] => tmd == o.tmd && classTag == o.classTag
+        case _                       => false
+      }
   }
 
   object MappedJdbcType extends MappedColumnTypeFactory {

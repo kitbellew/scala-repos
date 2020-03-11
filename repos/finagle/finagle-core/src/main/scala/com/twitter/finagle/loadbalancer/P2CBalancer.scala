@@ -109,9 +109,10 @@ private trait PeakEwma[Req, Rep] { self: Balancer[Req, Rep] =>
     private[this] var pending: Int = 0 // instantaneous rate
     private[this] var cost: Double = 0.0 // ewma of rtt, sensitive to peaks.
 
-    def rate(): Int = synchronized {
-      pending
-    }
+    def rate(): Int =
+      synchronized {
+        pending
+      }
 
     // Calculate the exponential weighted moving average of our
     // round trip time. It isn't exactly an ewma, but rather a
@@ -131,29 +132,32 @@ private trait PeakEwma[Req, Rep] { self: Balancer[Req, Rep] =>
       stamp = t
     }
 
-    def get(): Double = synchronized {
-      // update our view of the decay on `cost`
-      observe(0.0)
+    def get(): Double =
+      synchronized {
+        // update our view of the decay on `cost`
+        observe(0.0)
 
-      // If we don't have any latency history, we penalize the host on
-      // the first probe. Otherwise, we factor in our current rate
-      // assuming we were to schedule an additional request.
-      if (cost == 0.0 && pending != 0)
-        Penalty + pending
-      else
-        cost * (pending + 1)
-    }
+        // If we don't have any latency history, we penalize the host on
+        // the first probe. Otherwise, we factor in our current rate
+        // assuming we were to schedule an additional request.
+        if (cost == 0.0 && pending != 0)
+          Penalty + pending
+        else
+          cost * (pending + 1)
+      }
 
-    def start(): Long = synchronized {
-      pending += 1
-      nanoTime()
-    }
+    def start(): Long =
+      synchronized {
+        pending += 1
+        nanoTime()
+      }
 
-    def end(ts: Long): Unit = synchronized {
-      val rtt = math.max(nanoTime() - ts, 0)
-      pending -= 1
-      observe(rtt)
-    }
+    def end(ts: Long): Unit =
+      synchronized {
+        val rtt = math.max(nanoTime() - ts, 0)
+        pending -= 1
+        observe(rtt)
+      }
   }
 
   protected case class Node(
@@ -190,9 +194,10 @@ private trait PeakEwma[Req, Rep] { self: Balancer[Req, Rep] =>
       statsReceiver: StatsReceiver): Node =
     Node(factory, new Metric(statsReceiver, factory.toString), rng.nextInt())
 
-  protected def failingNode(cause: Throwable) = Node(
-    new FailingFactory(cause),
-    new Metric(NullStatsReceiver, "failing"),
-    0
-  )
+  protected def failingNode(cause: Throwable) =
+    Node(
+      new FailingFactory(cause),
+      new Metric(NullStatsReceiver, "failing"),
+      0
+    )
 }

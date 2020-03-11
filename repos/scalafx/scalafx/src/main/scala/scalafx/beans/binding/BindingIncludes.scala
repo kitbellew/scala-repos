@@ -231,9 +231,10 @@ trait BindingIncludes extends Bindings {
     * @param i Long to generate a new LongBinding
     * @return a new LongBinding generated from the Long.
     */
-  implicit def long2LongBinding(i: Long): LongBinding = new jfxbb.LongBinding {
-    def computeValue() = i
-  }
+  implicit def long2LongBinding(i: Long): LongBinding =
+    new jfxbb.LongBinding {
+      def computeValue() = i
+    }
 
   /**
     * Converts a Float to a $JFX FloatBinding

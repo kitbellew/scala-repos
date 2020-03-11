@@ -13,9 +13,10 @@ trait OneselfAuthenticator { self: ControllerBase =>
   protected def oneselfOnly(action: => Any) = {
     authenticate(action)
   }
-  protected def oneselfOnly[T](action: T => Any) = (form: T) => {
-    authenticate(action(form))
-  }
+  protected def oneselfOnly[T](action: T => Any) =
+    (form: T) => {
+      authenticate(action(form))
+    }
 
   private def authenticate(action: => Any) = {
     {
@@ -71,9 +72,10 @@ trait UsersAuthenticator { self: ControllerBase =>
   protected def usersOnly(action: => Any) = {
     authenticate(action)
   }
-  protected def usersOnly[T](action: T => Any) = (form: T) => {
-    authenticate(action(form))
-  }
+  protected def usersOnly[T](action: T => Any) =
+    (form: T) => {
+      authenticate(action(form))
+    }
 
   private def authenticate(action: => Any) = {
     {
@@ -92,9 +94,10 @@ trait AdminAuthenticator { self: ControllerBase =>
   protected def adminOnly(action: => Any) = {
     authenticate(action)
   }
-  protected def adminOnly[T](action: T => Any) = (form: T) => {
-    authenticate(action(form))
-  }
+  protected def adminOnly[T](action: T => Any) =
+    (form: T) => {
+      authenticate(action(form))
+    }
 
   private def authenticate(action: => Any) = {
     {
@@ -214,9 +217,10 @@ trait GroupManagerAuthenticator { self: ControllerBase with AccountService =>
   protected def managersOnly(action: => Any) = {
     authenticate(action)
   }
-  protected def managersOnly[T](action: T => Any) = (form: T) => {
-    authenticate(action(form))
-  }
+  protected def managersOnly[T](action: T => Any) =
+    (form: T) => {
+      authenticate(action(form))
+    }
 
   private def authenticate(action: => Any) = {
     {

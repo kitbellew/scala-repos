@@ -13,11 +13,13 @@ final class Env(config: Config, system: ActorSystem) {
     endpoint = Endpoint,
     massImportEndpoint = MassImportEndpoint)
 
-  def cli = new lila.common.Cli {
-    def process = {
-      case "explorer" :: "index" :: since :: Nil => indexer(since) inject "done"
+  def cli =
+    new lila.common.Cli {
+      def process = {
+        case "explorer" :: "index" :: since :: Nil =>
+          indexer(since) inject "done"
+      }
     }
-  }
 
   def fetchPgn(id: String): Fu[Option[String]] = {
     import play.api.libs.ws.WS

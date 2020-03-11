@@ -296,16 +296,17 @@ object ScanCompanion {
     }
   }
 
-  def findCount(args0: Seq[String], args1: Seq[String]) = Count(args0) match {
-    case None if args1.length > 0 =>
-      Count(args1) match {
-        case None =>
-          throw ClientError("Have additional arguments but unable to process")
-        case c => c
-      }
-    case None => None
-    case c    => c
-  }
+  def findCount(args0: Seq[String], args1: Seq[String]) =
+    Count(args0) match {
+      case None if args1.length > 0 =>
+        Count(args1) match {
+          case None =>
+            throw ClientError("Have additional arguments but unable to process")
+          case c => c
+        }
+      case None => None
+      case c    => c
+    }
 
   def findPattern(args0: Seq[String], args1: Seq[String]) =
     Pattern(args0) match {

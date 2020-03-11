@@ -93,16 +93,17 @@ class ArrayBuffer[A](override protected val initialSize: Int)
     *  @param xs    the traversable object.
     *  @return      the updated buffer.
     */
-  override def ++=(xs: TraversableOnce[A]): this.type = xs match {
-    case v: scala.collection.IndexedSeqLike[_, _] =>
-      val n = v.length
-      ensureSize(size0 + n)
-      v.copyToArray(array.asInstanceOf[scala.Array[Any]], size0, n)
-      size0 += n
-      this
-    case _ =>
-      super.++=(xs)
-  }
+  override def ++=(xs: TraversableOnce[A]): this.type =
+    xs match {
+      case v: scala.collection.IndexedSeqLike[_, _] =>
+        val n = v.length
+        ensureSize(size0 + n)
+        v.copyToArray(array.asInstanceOf[scala.Array[Any]], size0, n)
+        size0 += n
+        this
+      case _ =>
+        super.++=(xs)
+    }
 
   /** Prepends a single element to this buffer and returns
     *  the identity of the buffer. It takes time linear in

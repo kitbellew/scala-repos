@@ -62,11 +62,12 @@ package views.html.helper {
       args.get('_name).getOrElse(messages(field.label))
     }
 
-    private def translateMsgArg(msgArg: Any) = msgArg match {
-      case key: String       => messages(key)
-      case keys: Seq[String] => keys.map(key => messages(key))
-      case _                 => msgArg
-    }
+    private def translateMsgArg(msgArg: Any) =
+      msgArg match {
+        case key: String       => messages(key)
+        case keys: Seq[String] => keys.map(key => messages(key))
+        case _                 => msgArg
+      }
 
   }
 

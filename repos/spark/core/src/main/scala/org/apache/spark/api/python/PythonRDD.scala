@@ -273,70 +273,71 @@ private[spark] class PythonRunner(
       this.interrupt()
     }
 
-    override def run(): Unit = Utils.logUncaughtExceptions {
-      try {
-        TaskContext.setTaskContext(context)
-        val stream =
-          new BufferedOutputStream(worker.getOutputStream, bufferSize)
-        val dataOut = new DataOutputStream(stream)
-        // Partition index
-        dataOut.writeInt(partitionIndex)
-        // Python version of driver
-        PythonRDD.writeUTF(pythonVer, dataOut)
-        // sparkFilesDir
-        PythonRDD.writeUTF(SparkFiles.getRootDirectory(), dataOut)
-        // Python includes (*.zip and *.egg files)
-        dataOut.writeInt(pythonIncludes.size())
-        for (include <- pythonIncludes.asScala) {
-          PythonRDD.writeUTF(include, dataOut)
-        }
-        // Broadcast variables
-        val oldBids = PythonRDD.getWorkerBroadcasts(worker)
-        val newBids = broadcastVars.asScala.map(_.id).toSet
-        // number of different broadcasts
-        val toRemove = oldBids.diff(newBids)
-        val cnt = toRemove.size + newBids.diff(oldBids).size
-        dataOut.writeInt(cnt)
-        for (bid <- toRemove) {
-          // remove the broadcast from worker
-          dataOut.writeLong(-bid - 1) // bid >= 0
-          oldBids.remove(bid)
-        }
-        for (broadcast <- broadcastVars.asScala) {
-          if (!oldBids.contains(broadcast.id)) {
-            // send new broadcast
-            dataOut.writeLong(broadcast.id)
-            PythonRDD.writeUTF(broadcast.value.path, dataOut)
-            oldBids.add(broadcast.id)
+    override def run(): Unit =
+      Utils.logUncaughtExceptions {
+        try {
+          TaskContext.setTaskContext(context)
+          val stream =
+            new BufferedOutputStream(worker.getOutputStream, bufferSize)
+          val dataOut = new DataOutputStream(stream)
+          // Partition index
+          dataOut.writeInt(partitionIndex)
+          // Python version of driver
+          PythonRDD.writeUTF(pythonVer, dataOut)
+          // sparkFilesDir
+          PythonRDD.writeUTF(SparkFiles.getRootDirectory(), dataOut)
+          // Python includes (*.zip and *.egg files)
+          dataOut.writeInt(pythonIncludes.size())
+          for (include <- pythonIncludes.asScala) {
+            PythonRDD.writeUTF(include, dataOut)
           }
-        }
-        dataOut.flush()
-        // Serialized command:
-        dataOut.writeInt(command.length)
-        dataOut.write(command)
-        // Data values
-        PythonRDD.writeIteratorToStream(inputIterator, dataOut)
-        dataOut.writeInt(SpecialLengths.END_OF_DATA_SECTION)
-        dataOut.writeInt(SpecialLengths.END_OF_STREAM)
-        dataOut.flush()
-      } catch {
-        case e: Exception if context.isCompleted || context.isInterrupted =>
-          logDebug(
-            "Exception thrown after task completion (likely due to cleanup)",
-            e)
-          if (!worker.isClosed) {
-            Utils.tryLog(worker.shutdownOutput())
+          // Broadcast variables
+          val oldBids = PythonRDD.getWorkerBroadcasts(worker)
+          val newBids = broadcastVars.asScala.map(_.id).toSet
+          // number of different broadcasts
+          val toRemove = oldBids.diff(newBids)
+          val cnt = toRemove.size + newBids.diff(oldBids).size
+          dataOut.writeInt(cnt)
+          for (bid <- toRemove) {
+            // remove the broadcast from worker
+            dataOut.writeLong(-bid - 1) // bid >= 0
+            oldBids.remove(bid)
           }
+          for (broadcast <- broadcastVars.asScala) {
+            if (!oldBids.contains(broadcast.id)) {
+              // send new broadcast
+              dataOut.writeLong(broadcast.id)
+              PythonRDD.writeUTF(broadcast.value.path, dataOut)
+              oldBids.add(broadcast.id)
+            }
+          }
+          dataOut.flush()
+          // Serialized command:
+          dataOut.writeInt(command.length)
+          dataOut.write(command)
+          // Data values
+          PythonRDD.writeIteratorToStream(inputIterator, dataOut)
+          dataOut.writeInt(SpecialLengths.END_OF_DATA_SECTION)
+          dataOut.writeInt(SpecialLengths.END_OF_STREAM)
+          dataOut.flush()
+        } catch {
+          case e: Exception if context.isCompleted || context.isInterrupted =>
+            logDebug(
+              "Exception thrown after task completion (likely due to cleanup)",
+              e)
+            if (!worker.isClosed) {
+              Utils.tryLog(worker.shutdownOutput())
+            }
 
-        case e: Exception =>
-          // We must avoid throwing exceptions here, because the thread uncaught exception handler
-          // will kill the whole executor (see org.apache.spark.executor.Executor).
-          _exception = e
-          if (!worker.isClosed) {
-            Utils.tryLog(worker.shutdownOutput())
-          }
+          case e: Exception =>
+            // We must avoid throwing exceptions here, because the thread uncaught exception handler
+            // will kill the whole executor (see org.apache.spark.executor.Executor).
+            _exception = e
+            if (!worker.isClosed) {
+              Utils.tryLog(worker.shutdownOutput())
+            }
+        }
       }
-    }
   }
 
   /**
@@ -484,22 +485,23 @@ private[spark] object PythonRDD extends Logging {
 
   def writeIteratorToStream[T](iter: Iterator[T], dataOut: DataOutputStream) {
 
-    def write(obj: Any): Unit = obj match {
-      case null =>
-        dataOut.writeInt(SpecialLengths.NULL)
-      case arr: Array[Byte] =>
-        dataOut.writeInt(arr.length)
-        dataOut.write(arr)
-      case str: String =>
-        writeUTF(str, dataOut)
-      case stream: PortableDataStream =>
-        write(stream.toArray())
-      case (key, value) =>
-        write(key)
-        write(value)
-      case other =>
-        throw new SparkException("Unexpected element type " + other.getClass)
-    }
+    def write(obj: Any): Unit =
+      obj match {
+        case null =>
+          dataOut.writeInt(SpecialLengths.NULL)
+        case arr: Array[Byte] =>
+          dataOut.writeInt(arr.length)
+          dataOut.write(arr)
+        case str: String =>
+          writeUTF(str, dataOut)
+        case stream: PortableDataStream =>
+          write(stream.toArray())
+        case (key, value) =>
+          write(key)
+          write(value)
+        case other =>
+          throw new SparkException("Unexpected element type " + other.getClass)
+      }
 
     iter.foreach(write)
   }
@@ -965,44 +967,46 @@ private class PythonAccumulatorParam(
     */
   @transient var socket: Socket = _
 
-  def openSocket(): Socket = synchronized {
-    if (socket == null || socket.isClosed) {
-      socket = new Socket(serverHost, serverPort)
+  def openSocket(): Socket =
+    synchronized {
+      if (socket == null || socket.isClosed) {
+        socket = new Socket(serverHost, serverPort)
+      }
+      socket
     }
-    socket
-  }
 
   override def zero(value: JList[Array[Byte]]): JList[Array[Byte]] =
     new JArrayList
 
   override def addInPlace(
       val1: JList[Array[Byte]],
-      val2: JList[Array[Byte]]): JList[Array[Byte]] = synchronized {
-    if (serverHost == null) {
-      // This happens on the worker node, where we just want to remember all the updates
-      val1.addAll(val2)
-      val1
-    } else {
-      // This happens on the master, where we pass the updates to Python through a socket
-      val socket = openSocket()
-      val in = socket.getInputStream
-      val out = new DataOutputStream(
-        new BufferedOutputStream(socket.getOutputStream, bufferSize))
-      out.writeInt(val2.size)
-      for (array <- val2.asScala) {
-        out.writeInt(array.length)
-        out.write(array)
+      val2: JList[Array[Byte]]): JList[Array[Byte]] =
+    synchronized {
+      if (serverHost == null) {
+        // This happens on the worker node, where we just want to remember all the updates
+        val1.addAll(val2)
+        val1
+      } else {
+        // This happens on the master, where we pass the updates to Python through a socket
+        val socket = openSocket()
+        val in = socket.getInputStream
+        val out = new DataOutputStream(
+          new BufferedOutputStream(socket.getOutputStream, bufferSize))
+        out.writeInt(val2.size)
+        for (array <- val2.asScala) {
+          out.writeInt(array.length)
+          out.write(array)
+        }
+        out.flush()
+        // Wait for a byte from the Python side as an acknowledgement
+        val byteRead = in.read()
+        if (byteRead == -1) {
+          throw new SparkException(
+            "EOF reached before Python server acknowledged")
+        }
+        null
       }
-      out.flush()
-      // Wait for a byte from the Python side as an acknowledgement
-      val byteRead = in.read()
-      if (byteRead == -1) {
-        throw new SparkException(
-          "EOF reached before Python server acknowledged")
-      }
-      null
     }
-  }
 }
 
 /**
@@ -1030,17 +1034,18 @@ private[spark] class PythonBroadcast(@transient var path: String)
   /**
     * Write data into disk, using randomly generated name.
     */
-  private def readObject(in: ObjectInputStream): Unit = Utils.tryOrIOException {
-    val dir = new File(Utils.getLocalDir(SparkEnv.get.conf))
-    val file = File.createTempFile("broadcast", "", dir)
-    path = file.getAbsolutePath
-    val out = new FileOutputStream(file)
-    Utils.tryWithSafeFinally {
-      Utils.copyStream(in, out)
-    } {
-      out.close()
+  private def readObject(in: ObjectInputStream): Unit =
+    Utils.tryOrIOException {
+      val dir = new File(Utils.getLocalDir(SparkEnv.get.conf))
+      val file = File.createTempFile("broadcast", "", dir)
+      path = file.getAbsolutePath
+      val out = new FileOutputStream(file)
+      Utils.tryWithSafeFinally {
+        Utils.copyStream(in, out)
+      } {
+        out.close()
+      }
     }
-  }
 
   /**
     * Delete the file once the object is GCed.

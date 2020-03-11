@@ -58,12 +58,13 @@ class WatermarkPool[Req, Rep](
     * Flush waiters by creating new services for them. This must
     * be called whenever we decrease the service count.
     */
-  private[this] def flushWaiters() = thePool.synchronized {
-    while (numServices < highWatermark && !waiters.isEmpty) {
-      val waiter = waiters.removeFirst()
-      waiter.become(this())
+  private[this] def flushWaiters() =
+    thePool.synchronized {
+      while (numServices < highWatermark && !waiters.isEmpty) {
+        val waiter = waiters.removeFirst()
+        waiter.become(this())
+      }
     }
-  }
 
   private[this] class ServiceWrapper(underlying: Service[Req, Rep])
       extends ServiceProxy[Req, Rep](underlying) {
@@ -170,29 +171,30 @@ class WatermarkPool[Req, Rep](
     p
   }
 
-  def close(deadline: Time): Future[Unit] = thePool.synchronized {
-    // Mark the pool closed, relinquishing completed requests &
-    // denying the issuance of further requests. The order here is
-    // important: we mark the service unavailable before releasing the
-    // individual channels so that they are actually released in the
-    // wrapper.
-    isOpen = false
+  def close(deadline: Time): Future[Unit] =
+    thePool.synchronized {
+      // Mark the pool closed, relinquishing completed requests &
+      // denying the issuance of further requests. The order here is
+      // important: we mark the service unavailable before releasing the
+      // individual channels so that they are actually released in the
+      // wrapper.
+      isOpen = false
 
-    // Drain the pool.
-    queue.asScala foreach {
-      _.close()
+      // Drain the pool.
+      queue.asScala foreach {
+        _.close()
+      }
+      queue.clear()
+
+      // Kill the existing waiters.
+      waiters.asScala foreach {
+        _() = Throw(new ServiceClosedException)
+      }
+      waiters.clear()
+
+      // Close the underlying factory.
+      factory.close(deadline)
     }
-    queue.clear()
-
-    // Kill the existing waiters.
-    waiters.asScala foreach {
-      _() = Throw(new ServiceClosedException)
-    }
-    waiters.clear()
-
-    // Close the underlying factory.
-    factory.close(deadline)
-  }
 
   override def status: Status =
     if (isOpen)

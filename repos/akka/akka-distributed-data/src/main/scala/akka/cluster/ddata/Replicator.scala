@@ -634,16 +634,17 @@ object Replicator {
 
       private def cleaned(
           c: ReplicatedData,
-          p: Map[UniqueAddress, PruningState]): ReplicatedData = p.foldLeft(c) {
-        case (
-              c: RemovedNodePruning,
-              (removed, PruningState(_, PruningPerformed))) ⇒
-          if (c.needPruningFrom(removed))
-            c.pruningCleanup(removed)
-          else
-            c
-        case (c, _) ⇒ c
-      }
+          p: Map[UniqueAddress, PruningState]): ReplicatedData =
+        p.foldLeft(c) {
+          case (
+                c: RemovedNodePruning,
+                (removed, PruningState(_, PruningPerformed))) ⇒
+            if (c.needPruningFrom(removed))
+              c.pruningCleanup(removed)
+            else
+              c
+          case (c, _) ⇒ c
+        }
 
       def addSeen(node: Address): DataEnvelope = {
         var changed = false
@@ -1158,9 +1159,10 @@ final class Replicator(settings: ReplicatorSettings)
       ByteString.fromArray(MessageDigest.getInstance("SHA-1").digest(bytes))
     }
 
-  def getData(key: String): Option[DataEnvelope] = dataEntries.get(key).map {
-    case (envelope, _) ⇒ envelope
-  }
+  def getData(key: String): Option[DataEnvelope] =
+    dataEntries.get(key).map {
+      case (envelope, _) ⇒ envelope
+    }
 
   def receiveFlushChanges(): Unit = {
     def notify(keyId: String, subs: mutable.Set[ActorRef]): Unit = {

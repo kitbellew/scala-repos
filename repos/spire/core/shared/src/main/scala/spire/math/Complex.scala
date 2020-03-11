@@ -126,10 +126,11 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
     * This returns the sign of `real` if it is not 0, otherwise it returns the
     * sign of `imag`.
     */
-  def signum(implicit o: IsReal[T]): Int = real.signum match {
-    case 0 => imag.signum
-    case n => n
-  }
+  def signum(implicit o: IsReal[T]): Int =
+    real.signum match {
+      case 0 => imag.signum
+      case n => n
+    }
 
   /**
     * This implements sgn(z), which (except for z=0) observes:
@@ -449,13 +450,15 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
       (19 * real.##) + (41 * imag.##) + 97
 
   // not typesafe, so this is the best we can do :(
-  override def equals(that: Any): Boolean = that match {
-    case that: Complex[_] => this === that
-    case that: Quaternion[_] =>
-      real == that.r && imag == that.i && anyIsZero(that.j) && anyIsZero(that.k)
-    case that =>
-      anyIsZero(imag) && real == that
-  }
+  override def equals(that: Any): Boolean =
+    that match {
+      case that: Complex[_] => this === that
+      case that: Quaternion[_] =>
+        real == that.r && imag == that.i && anyIsZero(that.j) && anyIsZero(
+          that.k)
+      case that =>
+        anyIsZero(imag) && real == that
+    }
 
   def ===(that: Complex[_]): Boolean =
     real == that.real && imag == that.imag

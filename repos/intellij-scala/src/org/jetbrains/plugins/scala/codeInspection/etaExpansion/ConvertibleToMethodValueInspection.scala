@@ -61,11 +61,12 @@ class ConvertibleToMethodValueInspection
           case null => false
           case cp   => cp.containingClass.hasTypeParameters
         }
-      def checkStable() = und.bindingExpr.get match {
-        case ScReferenceExpression.withQualifier(qual) =>
-          onlyStableValuesUsed(qual)
-        case e => onlyStableValuesUsed(e)
-      }
+      def checkStable() =
+        und.bindingExpr.get match {
+          case ScReferenceExpression.withQualifier(qual) =>
+            onlyStableValuesUsed(qual)
+          case e => onlyStableValuesUsed(e)
+        }
       if (!isInParameterOfParameterizedClass && checkStable())
         registerProblem(
           holder,

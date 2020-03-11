@@ -75,17 +75,18 @@ trait TreeFactory { thisTreeFactory: ModelFactory with TreeFactory =>
             * will be reached with recursivity and we don't want a link on the "new" string
             * If a link is not created, its case is probably not defined in here
             */
-          override def traverse(tree: Tree) = tree match {
-            case Select(qualifier, name) =>
-              qualifier match {
-                case New(_) =>
-                case _      => makeLink(tree)
-              }
-              traverse(qualifier)
-            case Ident(_) => makeLink(tree)
-            case _ =>
-              super.traverse(tree)
-          }
+          override def traverse(tree: Tree) =
+            tree match {
+              case Select(qualifier, name) =>
+                qualifier match {
+                  case New(_) =>
+                  case _      => makeLink(tree)
+                }
+                traverse(qualifier)
+              case Ident(_) => makeLink(tree)
+              case _ =>
+                super.traverse(tree)
+            }
         }
 
         traverser.traverse(rhs)

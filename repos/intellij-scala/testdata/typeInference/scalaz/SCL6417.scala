@@ -13,19 +13,21 @@ class SCL6417 {
     }
   }
 
-  def validateOptionalX(x: Option[Int]): ValidationNel[String, Int] = x match {
-    case Some(p) =>
-      if (p < 0)
-        Failure("Errror!").toValidationNel
-      else
-        Success(p)
-    case None => Success(0)
-  }
+  def validateOptionalX(x: Option[Int]): ValidationNel[String, Int] =
+    x match {
+      case Some(p) =>
+        if (p < 0)
+          Failure("Errror!").toValidationNel
+        else
+          Success(p)
+      case None => Success(0)
+    }
 
-  def validateOptionalY(y: Option[Int]): ValidationNel[String, Int] = y match {
-    case Some(yy) => Success(yy)
-    case None     => Failure("Required!").toValidationNel
-  }
+  def validateOptionalY(y: Option[Int]): ValidationNel[String, Int] =
+    y match {
+      case Some(yy) => Success(yy)
+      case None     => Failure("Required!").toValidationNel
+    }
 
 }
 //Int

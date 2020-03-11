@@ -93,91 +93,95 @@ private[twitter] class ClientSession(
     * Processes mux control messages and transitions the state accordingly.
     * The transitions are synchronized with and reflected in `status`.
     */
-  def processControlMsg(m: Message): Unit = m match {
-    case Message.Tdrain(tag) =>
-      if (log.isLoggable(Level.FINE))
-        safeLog(s"Started draining a connection to $name", Level.FINE)
-      drainingCounter.incr()
+  def processControlMsg(m: Message): Unit =
+    m match {
+      case Message.Tdrain(tag) =>
+        if (log.isLoggable(Level.FINE))
+          safeLog(s"Started draining a connection to $name", Level.FINE)
+        drainingCounter.incr()
 
-      writeLk.lockInterruptibly()
-      try {
-        state =
-          if (outstanding.get() > 0)
-            Draining
-          else {
+        writeLk.lockInterruptibly()
+        try {
+          state =
+            if (outstanding.get() > 0)
+              Draining
+            else {
+              if (log.isLoggable(Level.FINE))
+                safeLog(s"Finished draining a connection to $name", Level.FINE)
+              drainedCounter.incr()
+              Drained
+            }
+          trans.write(Message.Rdrain(tag))
+        } finally writeLk.unlock()
+
+      case Message.Tlease(Message.Tlease.MillisDuration, millis) =>
+        writeLk.lock()
+        try state match {
+          case Leasing(_) | Dispatching =>
+            state = Leasing(Time.now + millis.milliseconds)
+            if (log.isLoggable(Level.FINE))
+              safeLog(s"leased for ${millis.milliseconds} to $name", Level.FINE)
+            leaseCounter.incr()
+          case Draining | Drained =>
+          // Ignore the lease if we're closed, since these are anyway
+          // a irrecoverable states.
+        } finally writeLk.unlock()
+
+      case Message.Tping(tag) => trans.write(Message.Rping(tag))
+
+      case _ => // do nothing
+    }
+
+  private[this] def processRmsg(msg: Message): Unit =
+    msg match {
+      case Message.Rping(Message.Tags.PingTag) =>
+        val p = pingPromise.getAndSet(null)
+        if (p != null)
+          p.setDone()
+
+      case Message.Rerr(Message.Tags.PingTag, err) =>
+        val p = pingPromise.getAndSet(null)
+        if (p != null)
+          p.setException(ServerError(err))
+
+      // Move the session to `Drained`, effectively closing the session,
+      // if we were `Draining` our session.
+      case Message.Rmessage(_) =>
+        readLk.lock()
+        if (outstanding.decrementAndGet() == 0 && state == Draining) {
+          readLk.unlock()
+          writeLk.lock()
+          try {
+            drainedCounter.incr()
             if (log.isLoggable(Level.FINE))
               safeLog(s"Finished draining a connection to $name", Level.FINE)
-            drainedCounter.incr()
-            Drained
-          }
-        trans.write(Message.Rdrain(tag))
-      } finally writeLk.unlock()
+            state = Drained
+          } finally writeLk.unlock()
+        } else {
+          readLk.unlock()
+        }
 
-    case Message.Tlease(Message.Tlease.MillisDuration, millis) =>
-      writeLk.lock()
-      try state match {
-        case Leasing(_) | Dispatching =>
-          state = Leasing(Time.now + millis.milliseconds)
-          if (log.isLoggable(Level.FINE))
-            safeLog(s"leased for ${millis.milliseconds} to $name", Level.FINE)
-          leaseCounter.incr()
-        case Draining | Drained =>
-        // Ignore the lease if we're closed, since these are anyway
-        // a irrecoverable states.
-      } finally writeLk.unlock()
-
-    case Message.Tping(tag) => trans.write(Message.Rping(tag))
-
-    case _ => // do nothing
-  }
-
-  private[this] def processRmsg(msg: Message): Unit = msg match {
-    case Message.Rping(Message.Tags.PingTag) =>
-      val p = pingPromise.getAndSet(null)
-      if (p != null)
-        p.setDone()
-
-    case Message.Rerr(Message.Tags.PingTag, err) =>
-      val p = pingPromise.getAndSet(null)
-      if (p != null)
-        p.setException(ServerError(err))
-
-    // Move the session to `Drained`, effectively closing the session,
-    // if we were `Draining` our session.
-    case Message.Rmessage(_) =>
-      readLk.lock()
-      if (outstanding.decrementAndGet() == 0 && state == Draining) {
-        readLk.unlock()
-        writeLk.lock()
-        try {
-          drainedCounter.incr()
-          if (log.isLoggable(Level.FINE))
-            safeLog(s"Finished draining a connection to $name", Level.FINE)
-          state = Drained
-        } finally writeLk.unlock()
-      } else {
-        readLk.unlock()
-      }
-
-    case _ => // do nothing.
-  }
+      case _ => // do nothing.
+    }
 
   private[this] val processTwriteFail: Throwable => Unit = { _ =>
     outstanding.decrementAndGet()
   }
 
-  private[this] def processAndWrite(msg: Message): Future[Unit] = msg match {
-    case _: Message.Treq | _: Message.Tdispatch =>
-      outstanding.incrementAndGet()
-      trans.write(msg).onFailure(processTwriteFail)
-    case _ => trans.write(msg)
-  }
+  private[this] def processAndWrite(msg: Message): Future[Unit] =
+    msg match {
+      case _: Message.Treq | _: Message.Tdispatch =>
+        outstanding.incrementAndGet()
+        trans.write(msg).onFailure(processTwriteFail)
+      case _ => trans.write(msg)
+    }
 
-  private[this] def processRead(msg: Message) = msg match {
-    case m @ Message.Rmessage(_)       => processRmsg(m)
-    case m @ Message.ControlMessage(_) => processControlMsg(m)
-    case _                             => // do nothing.
-  }
+  private[this] def processRead(msg: Message) =
+    msg match {
+      case m @ Message.Rmessage(_)       => processRmsg(m)
+      case m @ Message.ControlMessage(_) => processControlMsg(m)
+      case _                             => // do nothing.
+    }
 
   /**
     * Write to the underlying transport if our state permits,

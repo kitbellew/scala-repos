@@ -52,9 +52,10 @@ object NumberAxis {
     new NumberAxis(
       new jfxsc.NumberAxis(axisLabel, lowerBound, upperBound, tickUnit))
 
-  def apply(axisLabel: String) = new NumberAxis {
-    label = axisLabel
-  }
+  def apply(axisLabel: String) =
+    new NumberAxis {
+      label = axisLabel
+    }
 
   def apply() = new NumberAxis()
 

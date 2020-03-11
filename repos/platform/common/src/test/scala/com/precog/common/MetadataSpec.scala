@@ -153,9 +153,10 @@ trait MetadataGenerators extends util.ArbitraryJValue {
         l
       }
 
-  def genMetadataMap: Gen[Map[MetadataType, Metadata]] = genMetadataList map {
-    l => Map(l.map(m => (m.metadataType, m)): _*)
-  }
+  def genMetadataMap: Gen[Map[MetadataType, Metadata]] =
+    genMetadataList map { l =>
+      Map(l.map(m => (m.metadataType, m)): _*)
+    }
 
   def genMetadata: Gen[Metadata] =
     frequency(metadataGenerators.map {

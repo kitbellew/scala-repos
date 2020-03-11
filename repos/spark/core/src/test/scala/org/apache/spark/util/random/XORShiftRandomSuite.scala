@@ -27,11 +27,12 @@ import org.apache.spark.util.Utils.times
 
 class XORShiftRandomSuite extends SparkFunSuite with Matchers {
 
-  private def fixture = new {
-    val seed = 1L
-    val xorRand = new XORShiftRandom(seed)
-    val hundMil = 1e8.toInt
-  }
+  private def fixture =
+    new {
+      val seed = 1L
+      val xorRand = new XORShiftRandom(seed)
+      val hundMil = 1e8.toInt
+    }
 
   /*
    * This test is based on a chi-squared test for randomness.

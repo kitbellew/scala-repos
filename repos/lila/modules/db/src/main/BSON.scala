@@ -51,11 +51,12 @@ object BSON {
     implicit def MapWriter[V](implicit
         vw: BSONDocumentWriter[V]): BSONDocumentWriter[Map[String, V]] =
       new BSONDocumentWriter[Map[String, V]] {
-        def write(map: Map[String, V]): BSONDocument = BSONDocument {
-          map.toStream.map { tuple =>
-            tuple._1 -> vw.write(tuple._2)
+        def write(map: Map[String, V]): BSONDocument =
+          BSONDocument {
+            map.toStream.map { tuple =>
+              tuple._1 -> vw.write(tuple._2)
+            }
           }
-        }
       }
 
     implicit def MapHandler[V](implicit
@@ -87,11 +88,12 @@ object BSON {
     implicit def MapWriter[V](implicit
         vw: BSONWriter[V, _ <: BSONValue]): BSONDocumentWriter[Map[String, V]] =
       new BSONDocumentWriter[Map[String, V]] {
-        def write(map: Map[String, V]): BSONDocument = BSONDocument {
-          map.toStream.map { tuple =>
-            tuple._1 -> vw.write(tuple._2)
+        def write(map: Map[String, V]): BSONDocument =
+          BSONDocument {
+            map.toStream.map { tuple =>
+              tuple._1 -> vw.write(tuple._2)
+            }
           }
-        }
       }
 
     implicit def MapHandler[V](implicit
@@ -212,13 +214,14 @@ object BSON {
       else
         ByteArray.ByteArrayBSONHandler.write(b).some
     def bytesO(b: Array[Byte]): Option[BSONBinary] = byteArrayO(ByteArray(b))
-    def listO(list: List[String]): Option[List[String]] = list match {
-      case Nil          => None
-      case List("")     => None
-      case List("", "") => None
-      case List(a, "")  => Some(List(a))
-      case full         => Some(full)
-    }
+    def listO(list: List[String]): Option[List[String]] =
+      list match {
+        case Nil          => None
+        case List("")     => None
+        case List("", "") => None
+        case List(a, "")  => Some(List(a))
+        case full         => Some(full)
+      }
     def docO(o: BSONDocument): Option[BSONDocument] =
       if (o.isEmpty)
         None
@@ -244,11 +247,12 @@ object BSON {
 
   val writer = new Writer
 
-  def debug(v: BSONValue): String = v match {
-    case d: BSONDocument => debugDoc(d)
-    case d: BSONArray    => debugArr(d)
-    case v               => v.toString
-  }
+  def debug(v: BSONValue): String =
+    v match {
+      case d: BSONDocument => debugDoc(d)
+      case d: BSONArray    => debugArr(d)
+      case v               => v.toString
+    }
   def debugArr(doc: BSONArray): String =
     doc.values.toList.map(debug).mkString("[", ", ", "]")
   def debugDoc(doc: BSONDocument): String =

@@ -42,80 +42,95 @@ object DescriptorParser {
 class DescriptorParser(val input: ParserInput) extends Parser {
   import ClassName._
 
-  def Desc: Rule1[Descriptor] = rule {
-    '(' ~ zeroOrMore(Type) ~ ')' ~ Type ~ EOI ~> {
-      (paramSeq: Seq[DescriptorType], retType: DescriptorType) =>
-        Descriptor(paramSeq.toList, retType)
-    }
-  }
-
-  def Type: Rule1[DescriptorType] = rule {
-    // based on the example in the JSON Parser from Parboiled2 doing a one character lookahead here
-    // all descriptor types can be inferred from the first character
-    run {
-      (cursorChar: @switch) match {
-        case 'L' => Class
-        case 'Z' => Boolean
-        case 'B' => Byte
-        case 'C' => Char
-        case 'S' => Short
-        case 'I' => Int
-        case 'J' => Long
-        case 'F' => Float
-        case 'D' => Double
-        case 'V' => Void
-        case '[' => Array
-        case _   => MISMATCH
+  def Desc: Rule1[Descriptor] =
+    rule {
+      '(' ~ zeroOrMore(Type) ~ ')' ~ Type ~ EOI ~> {
+        (paramSeq: Seq[DescriptorType], retType: DescriptorType) =>
+          Descriptor(paramSeq.toList, retType)
       }
     }
-  }
 
-  private def Class: Rule1[DescriptorType] = rule {
-    'L' ~ Package ~ Name ~ ';' ~> ClassName.apply _
-  }
-
-  private def Name: Rule1[String] = rule {
-    capture(oneOrMore(DescriptorParser.ClassNameCharPredicate))
-  }
-
-  private def Package: Rule1[PackageName] = rule {
-    zeroOrMore(
-      capture(oneOrMore(DescriptorParser.PackageNamePredicate)) ~ '/') ~> {
-      seq: Seq[String] => PackageName(seq.toList)
+  def Type: Rule1[DescriptorType] =
+    rule {
+      // based on the example in the JSON Parser from Parboiled2 doing a one character lookahead here
+      // all descriptor types can be inferred from the first character
+      run {
+        (cursorChar: @switch) match {
+          case 'L' => Class
+          case 'Z' => Boolean
+          case 'B' => Byte
+          case 'C' => Char
+          case 'S' => Short
+          case 'I' => Int
+          case 'J' => Long
+          case 'F' => Float
+          case 'D' => Double
+          case 'V' => Void
+          case '[' => Array
+          case _   => MISMATCH
+        }
+      }
     }
-  }
 
-  private def Array: Rule1[DescriptorType] = rule {
-    '[' ~ Type ~> { c =>
-      ArrayDescriptor(c)
+  private def Class: Rule1[DescriptorType] =
+    rule {
+      'L' ~ Package ~ Name ~ ';' ~> ClassName.apply _
     }
-  }
 
-  private def Boolean: Rule1[ClassName] = rule {
-    'Z' ~ push(PrimitiveBoolean)
-  }
-  private def Byte: Rule1[ClassName] = rule {
-    'B' ~ push(PrimitiveByte)
-  }
-  private def Char: Rule1[ClassName] = rule {
-    'C' ~ push(PrimitiveChar)
-  }
-  private def Short: Rule1[ClassName] = rule {
-    'S' ~ push(PrimitiveShort)
-  }
-  private def Int: Rule1[ClassName] = rule {
-    'I' ~ push(PrimitiveInt)
-  }
-  private def Long: Rule1[ClassName] = rule {
-    'J' ~ push(PrimitiveLong)
-  }
-  private def Float: Rule1[ClassName] = rule {
-    'F' ~ push(PrimitiveFloat)
-  }
-  private def Double: Rule1[ClassName] = rule {
-    'D' ~ push(PrimitiveDouble)
-  }
-  private def Void: Rule1[ClassName] = rule {
-    'V' ~ push(PrimitiveVoid)
-  }
+  private def Name: Rule1[String] =
+    rule {
+      capture(oneOrMore(DescriptorParser.ClassNameCharPredicate))
+    }
+
+  private def Package: Rule1[PackageName] =
+    rule {
+      zeroOrMore(
+        capture(oneOrMore(DescriptorParser.PackageNamePredicate)) ~ '/') ~> {
+        seq: Seq[String] => PackageName(seq.toList)
+      }
+    }
+
+  private def Array: Rule1[DescriptorType] =
+    rule {
+      '[' ~ Type ~> { c =>
+        ArrayDescriptor(c)
+      }
+    }
+
+  private def Boolean: Rule1[ClassName] =
+    rule {
+      'Z' ~ push(PrimitiveBoolean)
+    }
+  private def Byte: Rule1[ClassName] =
+    rule {
+      'B' ~ push(PrimitiveByte)
+    }
+  private def Char: Rule1[ClassName] =
+    rule {
+      'C' ~ push(PrimitiveChar)
+    }
+  private def Short: Rule1[ClassName] =
+    rule {
+      'S' ~ push(PrimitiveShort)
+    }
+  private def Int: Rule1[ClassName] =
+    rule {
+      'I' ~ push(PrimitiveInt)
+    }
+  private def Long: Rule1[ClassName] =
+    rule {
+      'J' ~ push(PrimitiveLong)
+    }
+  private def Float: Rule1[ClassName] =
+    rule {
+      'F' ~ push(PrimitiveFloat)
+    }
+  private def Double: Rule1[ClassName] =
+    rule {
+      'D' ~ push(PrimitiveDouble)
+    }
+  private def Void: Rule1[ClassName] =
+    rule {
+      'V' ~ push(PrimitiveVoid)
+    }
 }

@@ -51,130 +51,135 @@ sealed trait CPathTraversal { self =>
     def plan0(
         t: CPathTraversal,
         paths: List[(List[CPathNode], List[CPathNode])],
-        idx: Int): CPathComparator = t match {
-      case Done =>
-        val validPaths = paths map {
-          case (_, nodes) => CPath(nodes.reverse)
-        }
-
-        def makeCols(
-            pathToCol: Map[CPath, Set[Column]]): Array[(CPath, Column)] = {
-          validPaths.flatMap({ path =>
-            pathToCol.getOrElse(path, Set.empty).toList map ((path, _))
-          })(collection.breakOut)
-        }
-
-        val lCols = makeCols(left)
-        val rCols = makeCols(right)
-
-        val comparators: Array[CPathComparator] = (for ((lPath, lCol) <- lCols;
-                                                        (rPath, rCol) <- rCols)
-          yield {
-            CPathComparator(lPath, lCol, rPath, rCol)
-          })(collection.breakOut)
-
-        // Return the first column in the array defined at the row, or -1 if none are defined for that row
-        @inline def firstDefinedIndexFor(
-            columns: Array[(CPath, Column)],
-            row: Int): Int = {
-          var i = 0
-          while (i < columns.length && !columns(i)._2.isDefinedAt(row)) {
-            i += 1
+        idx: Int): CPathComparator =
+      t match {
+        case Done =>
+          val validPaths = paths map {
+            case (_, nodes) => CPath(nodes.reverse)
           }
-          if (i == columns.length)
-            -1
-          else
-            i
-        }
 
-        new CPathComparator {
-          def compare(r1: Int, r2: Int, indices: Array[Int]) = {
-            val i = firstDefinedIndexFor(lCols, r1)
-            val j = firstDefinedIndexFor(rCols, r2)
-            if (i == -1) {
-              if (j == -1) {
-                NoComp
-              } else {
-                Lt
-              }
-            } else if (j == -1) {
-              Gt
-            } else {
-              comparators(i * rCols.length + j).compare(r1, r2, indices)
-            }
+          def makeCols(
+              pathToCol: Map[CPath, Set[Column]]): Array[(CPath, Column)] = {
+            validPaths.flatMap({ path =>
+              pathToCol.getOrElse(path, Set.empty).toList map ((path, _))
+            })(collection.breakOut)
           }
-        }
 
-      case Sequence(ts) =>
-        val comparators: Array[CPathComparator] =
-          ts.map(plan0(_, paths, idx))(collection.breakOut)
+          val lCols = makeCols(left)
+          val rCols = makeCols(right)
 
-        new CPathComparator {
-          def compare(r1: Int, r2: Int, indices: Array[Int]): MaybeOrdering = {
+          val comparators: Array[CPathComparator] =
+            (for ((lPath, lCol) <- lCols;
+                  (rPath, rCol) <- rCols)
+              yield {
+                CPathComparator(lPath, lCol, rPath, rCol)
+              })(collection.breakOut)
+
+          // Return the first column in the array defined at the row, or -1 if none are defined for that row
+          @inline def firstDefinedIndexFor(
+              columns: Array[(CPath, Column)],
+              row: Int): Int = {
             var i = 0
-            var result: MaybeOrdering = NoComp
-            while ((result == Eq || result == NoComp) && i < comparators.length) {
-              val iResult = comparators(i).compare(r1, r2, indices)
-              if (iResult != NoComp) {
-                result = iResult
-              }
-
+            while (i < columns.length && !columns(i)._2.isDefinedAt(row)) {
               i += 1
             }
-            result
+            if (i == columns.length)
+              -1
+            else
+              i
           }
-        }
 
-      case Select(CPathArray, t) =>
-        plan0(Loop(0, None, t), paths, idx)
-
-      case Select(CPathIndex(i), t) =>
-        val matches = paths collect {
-          case (CPathArray :: ns, p)      => (ns, CPathArray :: p)
-          case (CPathIndex(`i`) :: ns, p) => (ns, CPathIndex(i) :: p)
-        }
-        val tailComp = plan0(t, matches, idx + 1)
-        new CPathComparator {
-          def compare(row1: Int, row2: Int, indices: Array[Int]) = {
-            indices(idx) = i
-            tailComp.compare(row1, row2, indices)
-          }
-        }
-
-      case Select(n, t) =>
-        val matches = paths collect {
-          case (`n` :: ns, p) => (ns, n :: p)
-        }
-        plan0(t, matches, idx)
-
-      case Loop(s, e, t) =>
-        val matches = paths collect {
-          case (CPathArray :: ns, p) => (ns, CPathArray :: p)
-        }
-        val tailComp = plan0(t, matches, idx + 1)
-        new CPathComparator {
-          def compare(row1: Int, row2: Int, indices: Array[Int]) = {
-            val max = e.getOrElse(Int.MaxValue) // Yep.
-
-            indices(idx) = 0
-            var result: MaybeOrdering = tailComp.compare(row1, row2, indices)
-
-            var i = 1
-            if (result != NoComp) {
-              while (result == Eq && i < max) {
-                indices(idx) = i
-                result = tailComp.compare(row1, row2, indices)
-                i += 1
-              }
-              if (result == NoComp) {
-                result = Eq
+          new CPathComparator {
+            def compare(r1: Int, r2: Int, indices: Array[Int]) = {
+              val i = firstDefinedIndexFor(lCols, r1)
+              val j = firstDefinedIndexFor(rCols, r2)
+              if (i == -1) {
+                if (j == -1) {
+                  NoComp
+                } else {
+                  Lt
+                }
+              } else if (j == -1) {
+                Gt
+              } else {
+                comparators(i * rCols.length + j).compare(r1, r2, indices)
               }
             }
-
-            result
           }
-        }
-    }
+
+        case Sequence(ts) =>
+          val comparators: Array[CPathComparator] =
+            ts.map(plan0(_, paths, idx))(collection.breakOut)
+
+          new CPathComparator {
+            def compare(
+                r1: Int,
+                r2: Int,
+                indices: Array[Int]): MaybeOrdering = {
+              var i = 0
+              var result: MaybeOrdering = NoComp
+              while ((result == Eq || result == NoComp) && i < comparators.length) {
+                val iResult = comparators(i).compare(r1, r2, indices)
+                if (iResult != NoComp) {
+                  result = iResult
+                }
+
+                i += 1
+              }
+              result
+            }
+          }
+
+        case Select(CPathArray, t) =>
+          plan0(Loop(0, None, t), paths, idx)
+
+        case Select(CPathIndex(i), t) =>
+          val matches = paths collect {
+            case (CPathArray :: ns, p)      => (ns, CPathArray :: p)
+            case (CPathIndex(`i`) :: ns, p) => (ns, CPathIndex(i) :: p)
+          }
+          val tailComp = plan0(t, matches, idx + 1)
+          new CPathComparator {
+            def compare(row1: Int, row2: Int, indices: Array[Int]) = {
+              indices(idx) = i
+              tailComp.compare(row1, row2, indices)
+            }
+          }
+
+        case Select(n, t) =>
+          val matches = paths collect {
+            case (`n` :: ns, p) => (ns, n :: p)
+          }
+          plan0(t, matches, idx)
+
+        case Loop(s, e, t) =>
+          val matches = paths collect {
+            case (CPathArray :: ns, p) => (ns, CPathArray :: p)
+          }
+          val tailComp = plan0(t, matches, idx + 1)
+          new CPathComparator {
+            def compare(row1: Int, row2: Int, indices: Array[Int]) = {
+              val max = e.getOrElse(Int.MaxValue) // Yep.
+
+              indices(idx) = 0
+              var result: MaybeOrdering = tailComp.compare(row1, row2, indices)
+
+              var i = 1
+              if (result != NoComp) {
+                while (result == Eq && i < max) {
+                  indices(idx) = i
+                  result = tailComp.compare(row1, row2, indices)
+                  i += 1
+                }
+                if (result == NoComp) {
+                  result = Eq
+                }
+              }
+
+              result
+            }
+          }
+      }
 
     new spire.math.Order[Int] {
       private val indices = new Array[Int](self.arrayDepth)
@@ -191,14 +196,15 @@ sealed trait CPathTraversal { self =>
   /**
     * Returns the maximum array depth of this traversal.
     */
-  def arrayDepth: Int = this match {
-    case Done                        => 0
-    case Select(CPathArray, tail)    => 1 + tail.arrayDepth
-    case Select(CPathIndex(_), tail) => 1 + tail.arrayDepth
-    case Select(_, tail)             => tail.arrayDepth
-    case Sequence(ts)                => ts.map(_.arrayDepth).max
-    case Loop(_, _, tail)            => 1 + tail.arrayDepth
-  }
+  def arrayDepth: Int =
+    this match {
+      case Done                        => 0
+      case Select(CPathArray, tail)    => 1 + tail.arrayDepth
+      case Select(CPathIndex(_), tail) => 1 + tail.arrayDepth
+      case Select(_, tail)             => tail.arrayDepth
+      case Sequence(ts)                => ts.map(_.arrayDepth).max
+      case Loop(_, _, tail)            => 1 + tail.arrayDepth
+    }
 }
 
 object CPathTraversal {
@@ -235,29 +241,30 @@ object CPathTraversal {
     // Joins (merges) a list of sorted traversals into a single traversal.
     def join(
         os: List[CPathTraversal],
-        seq: List[CPathTraversal]): CPathTraversal = os match {
-      case Select(n, t) :: os =>
-        val (ts, os2) = collectWhile(os) {
-          case Select(`n`, t2) => t2
-        }
-        join(os2, Select(n, join(t :: ts, Nil)) :: seq)
+        seq: List[CPathTraversal]): CPathTraversal =
+      os match {
+        case Select(n, t) :: os =>
+          val (ts, os2) = collectWhile(os) {
+            case Select(`n`, t2) => t2
+          }
+          join(os2, Select(n, join(t :: ts, Nil)) :: seq)
 
-      case Loop(s, e, t) :: os =>
-        val (ts, os2) = collectWhile(os) {
-          case Loop(`s`, `e`, t2) => t2
-        }
-        join(os2, Loop(s, e, join(t :: ts, Nil)) :: seq)
+        case Loop(s, e, t) :: os =>
+          val (ts, os2) = collectWhile(os) {
+            case Loop(`s`, `e`, t2) => t2
+          }
+          join(os2, Loop(s, e, join(t :: ts, Nil)) :: seq)
 
-      case t :: os =>
-        join(os, t :: seq)
+        case t :: os =>
+          join(os, t :: seq)
 
-      case Nil =>
-        seq match {
-          case Nil      => Done
-          case x :: Nil => x
-          case xs       => Sequence(xs.reverse)
-        }
-    }
+        case Nil =>
+          seq match {
+            case Nil      => Done
+            case x :: Nil => x
+            case xs       => Sequence(xs.reverse)
+          }
+      }
 
     val ordered = CPathPosition.disjointOrder(paths) map (fromPositioned(_))
     join(ordered, Nil)
@@ -362,10 +369,11 @@ object CPathTraversal {
     /**
       * Returns a `p` as a positioned CPath.
       */
-    def position(p: CPath): List[CPathPosition] = p.nodes map {
-      case CPathArray => CPathRange(Set(CPathArray), 0, None)
-      case node       => CPathPoint(node)
-    }
+    def position(p: CPath): List[CPathPosition] =
+      p.nodes map {
+        case CPathArray => CPathRange(Set(CPathArray), 0, None)
+        case node       => CPathPoint(node)
+      }
 
     private def overlaps(
         l1: Int,

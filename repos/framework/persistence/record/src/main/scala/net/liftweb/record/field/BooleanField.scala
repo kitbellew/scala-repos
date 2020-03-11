@@ -30,13 +30,14 @@ import JE._
 
 trait BooleanTypedField extends TypedField[Boolean] {
 
-  def setFromAny(in: Any): Box[Boolean] = in match {
-    case b: java.lang.Boolean        => setBox(Full(b.booleanValue))
-    case Full(b: java.lang.Boolean)  => setBox(Full(b.booleanValue))
-    case Some(b: java.lang.Boolean)  => setBox(Full(b.booleanValue))
-    case (b: java.lang.Boolean) :: _ => setBox(Full(b.booleanValue))
-    case _                           => genericSetFromAny(in)
-  }
+  def setFromAny(in: Any): Box[Boolean] =
+    in match {
+      case b: java.lang.Boolean        => setBox(Full(b.booleanValue))
+      case Full(b: java.lang.Boolean)  => setBox(Full(b.booleanValue))
+      case Some(b: java.lang.Boolean)  => setBox(Full(b.booleanValue))
+      case (b: java.lang.Boolean) :: _ => setBox(Full(b.booleanValue))
+      case _                           => genericSetFromAny(in)
+    }
 
   def setFromString(s: String): Box[Boolean] =
     if (s == null || s.isEmpty) {
@@ -64,11 +65,12 @@ trait BooleanTypedField extends TypedField[Boolean] {
   def asJs: JsExp = valueBox.map(boolToJsExp) openOr JsNull
 
   def asJValue: JValue = valueBox.map(JBool) openOr (JNothing: JValue)
-  def setFromJValue(jvalue: JValue) = jvalue match {
-    case JNothing | JNull if optional_? => setBox(Empty)
-    case JBool(b)                       => setBox(Full(b))
-    case other                          => setBox(FieldHelpers.expectedA("JBool", other))
-  }
+  def setFromJValue(jvalue: JValue) =
+    jvalue match {
+      case JNothing | JNull if optional_? => setBox(Empty)
+      case JBool(b)                       => setBox(Full(b))
+      case other                          => setBox(FieldHelpers.expectedA("JBool", other))
+    }
 }
 
 class BooleanField[OwnerType <: Record[OwnerType]](rec: OwnerType)

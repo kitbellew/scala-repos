@@ -50,10 +50,11 @@ object UserQuery {
 
   object Serialization {
     implicit val SortOrderDecomposer = new Decomposer[DesiredSortOrder] {
-      def decompose(sortOrder: DesiredSortOrder): JValue = sortOrder match {
-        case SortAscending  => JString("asc")
-        case SortDescending => JString("desc")
-      }
+      def decompose(sortOrder: DesiredSortOrder): JValue =
+        sortOrder match {
+          case SortAscending  => JString("asc")
+          case SortDescending => JString("desc")
+        }
     }
 
     implicit val SortOrderExtractor = new Extractor[DesiredSortOrder] {

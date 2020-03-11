@@ -15,10 +15,11 @@ object SnapshotSerializationSpec {
   // is bigger than 255 bytes (this happens to be 269)
   object XXXXXXXXXXXXXXXXXXXX {
     class MySnapshot(val id: String) extends SerializationMarker {
-      override def equals(obj: scala.Any) = obj match {
-        case s: MySnapshot ⇒ s.id.equals(id)
-        case _ ⇒ false
-      }
+      override def equals(obj: scala.Any) =
+        obj match {
+          case s: MySnapshot ⇒ s.id.equals(id)
+          case _ ⇒ false
+        }
     }
   }
 

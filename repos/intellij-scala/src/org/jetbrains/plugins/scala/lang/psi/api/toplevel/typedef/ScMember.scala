@@ -137,56 +137,60 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
   protected def isSimilarMemberForNavigation(m: ScMember, isStrict: Boolean) =
     false
 
-  override def getNavigationElement: PsiElement = getContainingFile match {
-    case s: ScalaFileImpl if s.isCompiled => getSourceMirrorMember
-    case _                                => this
-  }
+  override def getNavigationElement: PsiElement =
+    getContainingFile match {
+      case s: ScalaFileImpl if s.isCompiled => getSourceMirrorMember
+      case _                                => this
+    }
 
-  private def getSourceMirrorMember: ScMember = getParent match {
-    case tdb: ScTemplateBody =>
-      tdb.getParent match {
-        case eb: ScExtendsBlock =>
-          eb.getParent match {
-            case td: ScTypeDefinition =>
-              td.getNavigationElement match {
-                case c: ScTypeDefinition =>
-                  val membersIterator = c.members.iterator
-                  val buf: ArrayBuffer[ScMember] = new ArrayBuffer[ScMember]
-                  while (membersIterator.hasNext) {
-                    val member = membersIterator.next()
-                    if (isSimilarMemberForNavigation(member, isStrict = false))
-                      buf += member
-                  }
-                  if (buf.isEmpty)
-                    this
-                  else if (buf.length == 1)
-                    buf(0)
-                  else {
-                    val filter = buf.filter(
-                      isSimilarMemberForNavigation(_, isStrict = true))
-                    if (filter.isEmpty)
+  private def getSourceMirrorMember: ScMember =
+    getParent match {
+      case tdb: ScTemplateBody =>
+        tdb.getParent match {
+          case eb: ScExtendsBlock =>
+            eb.getParent match {
+              case td: ScTypeDefinition =>
+                td.getNavigationElement match {
+                  case c: ScTypeDefinition =>
+                    val membersIterator = c.members.iterator
+                    val buf: ArrayBuffer[ScMember] = new ArrayBuffer[ScMember]
+                    while (membersIterator.hasNext) {
+                      val member = membersIterator.next()
+                      if (isSimilarMemberForNavigation(
+                            member,
+                            isStrict = false))
+                        buf += member
+                    }
+                    if (buf.isEmpty)
+                      this
+                    else if (buf.length == 1)
                       buf(0)
-                    else
-                      filter(0)
-                  }
-                case _ => this
-              }
-            case _ => this
-          }
-        case _ => this
-      }
-    case c: ScTypeDefinition
-        if this.isInstanceOf[ScPrimaryConstructor] => //primary constructor
-      c.getNavigationElement match {
-        case td: ScClass =>
-          td.constructor match {
-            case Some(constr) => constr
-            case _            => this
-          }
-        case _ => this
-      }
-    case _ => this
-  }
+                    else {
+                      val filter = buf.filter(
+                        isSimilarMemberForNavigation(_, isStrict = true))
+                      if (filter.isEmpty)
+                        buf(0)
+                      else
+                        filter(0)
+                    }
+                  case _ => this
+                }
+              case _ => this
+            }
+          case _ => this
+        }
+      case c: ScTypeDefinition
+          if this.isInstanceOf[ScPrimaryConstructor] => //primary constructor
+        c.getNavigationElement match {
+          case td: ScClass =>
+            td.constructor match {
+              case Some(constr) => constr
+              case _            => this
+            }
+          case _ => this
+        }
+      case _ => this
+    }
 
   abstract override def getUseScope: SearchScope = {
     val accessModifier = Option(getModifierList).flatMap(_.accessModifier)

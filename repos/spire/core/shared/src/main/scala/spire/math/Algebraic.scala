@@ -181,24 +181,25 @@ final class Algebraic private (val expr: Algebraic.Expr)
     */
   def isZero: Boolean = signum == 0
 
-  override def equals(that: Any): Boolean = that match {
-    case (that: Algebraic)     => this === that
-    case (that: Real)          => this.toReal == that
-    case (that: Number)        => this.compare(Algebraic(that.toBigDecimal)) == 0
-    case (that: Rational)      => this.compare(Algebraic(that)) == 0
-    case (that: BigInt)        => isWhole && toBigInt == that
-    case (that: Natural)       => isWhole && signum >= 0 && that == toBigInt
-    case (that: SafeLong)      => isWhole && that == this
-    case (that: Complex[_])    => that == this
-    case (that: Quaternion[_]) => that == this
-    case (that: BigDecimal) =>
-      try {
-        toBigDecimal(that.mc) == that
-      } catch {
-        case ae: ArithmeticException => false
-      }
-    case _ => unifiedPrimitiveEquals(that)
-  }
+  override def equals(that: Any): Boolean =
+    that match {
+      case (that: Algebraic)     => this === that
+      case (that: Real)          => this.toReal == that
+      case (that: Number)        => this.compare(Algebraic(that.toBigDecimal)) == 0
+      case (that: Rational)      => this.compare(Algebraic(that)) == 0
+      case (that: BigInt)        => isWhole && toBigInt == that
+      case (that: Natural)       => isWhole && signum >= 0 && that == toBigInt
+      case (that: SafeLong)      => isWhole && that == this
+      case (that: Complex[_])    => that == this
+      case (that: Quaternion[_]) => that == this
+      case (that: BigDecimal) =>
+        try {
+          toBigDecimal(that.mc) == that
+        } catch {
+          case ae: ArithmeticException => false
+        }
+      case _ => unifiedPrimitiveEquals(that)
+    }
 
   def ===(that: Algebraic): Boolean =
     this.compare(that) == 0
@@ -217,22 +218,23 @@ final class Algebraic private (val expr: Algebraic.Expr)
   def toExprString: String = {
     import Expr._
 
-    def recur(e: Expr): String = e match {
-      case ConstantLong(n)             => n.toString
-      case ConstantDouble(n)           => n.toString
-      case ConstantBigDecimal(n)       => n.toString
-      case ConstantRational(n)         => s"(${n})"
-      case ConstantRoot(poly, i, _, _) => s"root($poly, $i)"
-      case Neg(sub)                    => s"-$sub"
-      case Add(lhs, rhs)               => s"(${recur(lhs)}) + (${recur(rhs)})"
-      case Sub(lhs, rhs)               => s"(${recur(lhs)}) - (${recur(rhs)})"
-      case Mul(lhs, rhs)               => s"(${recur(lhs)}) * (${recur(rhs)})"
-      case Div(lhs, rhs)               => s"(${recur(lhs)}) / (${recur(rhs)})"
-      case KRoot(sub, 2)               => s"(${recur(sub)}).sqrt"
-      case KRoot(sub, 3)               => s"(${recur(sub)}).cbrt"
-      case KRoot(sub, k)               => s"(${recur(sub)}).nroot($k)"
-      case Pow(sub, k)                 => s"${recur(sub)}.pow(k)"
-    }
+    def recur(e: Expr): String =
+      e match {
+        case ConstantLong(n)             => n.toString
+        case ConstantDouble(n)           => n.toString
+        case ConstantBigDecimal(n)       => n.toString
+        case ConstantRational(n)         => s"(${n})"
+        case ConstantRoot(poly, i, _, _) => s"root($poly, $i)"
+        case Neg(sub)                    => s"-$sub"
+        case Add(lhs, rhs)               => s"(${recur(lhs)}) + (${recur(rhs)})"
+        case Sub(lhs, rhs)               => s"(${recur(lhs)}) - (${recur(rhs)})"
+        case Mul(lhs, rhs)               => s"(${recur(lhs)}) * (${recur(rhs)})"
+        case Div(lhs, rhs)               => s"(${recur(lhs)}) / (${recur(rhs)})"
+        case KRoot(sub, 2)               => s"(${recur(sub)}).sqrt"
+        case KRoot(sub, 3)               => s"(${recur(sub)}).cbrt"
+        case KRoot(sub, k)               => s"(${recur(sub)}).nroot($k)"
+        case Pow(sub, k)                 => s"${recur(sub)}.pow(k)"
+      }
 
     recur(expr)
   }
@@ -334,64 +336,65 @@ final class Algebraic private (val expr: Algebraic.Expr)
 
     val roundingMode = mc.getRoundingMode
 
-    def rec(e: Expr, digits: Int): JBigDecimal = e match {
-      case ConstantLong(n) =>
-        new JBigDecimal(n, new MathContext(digits, roundingMode))
-      case ConstantDouble(n) =>
-        new JBigDecimal(n, new MathContext(digits, roundingMode))
-      case ConstantBigDecimal(n) =>
-        n.bigDecimal.round(new MathContext(digits, roundingMode))
-      case ConstantRational(n) =>
-        val num = new JBigDecimal(n.numerator.toBigInteger)
-        val den = new JBigDecimal(n.denominator.toBigInteger)
-        num.divide(den, new MathContext(digits, roundingMode))
-      case ConstantRoot(poly, _, lb, ub) =>
-        // Ugh - on an airplane and can't trust BigDecimal's constructors.
-        val poly0 = poly.map { n =>
-          new BigDecimal(new JBigDecimal(n.bigInteger), MathContext.UNLIMITED)
-        }
-        BigDecimalRootRefinement(
-          poly0,
-          lb,
-          ub,
-          new MathContext(digits, roundingMode)).approximateValue
-      case Neg(sub) =>
-        rec(sub, digits).negate()
-      case Add(_, _) | Sub(_, _) if e.signum == 0 =>
-        JBigDecimal.ZERO
-      case Add(lhs, rhs) =>
-        val digits0 = digits + e.separationBound.decimalDigits.toInt + 1
-        val lValue = rec(lhs, digits0)
-        val rValue = rec(rhs, digits0)
-        lValue.add(rValue, new MathContext(digits, roundingMode))
-      case Sub(lhs, rhs) =>
-        val digits0 = digits + e.separationBound.decimalDigits.toInt + 1
-        val lValue = rec(lhs, digits0)
-        val rValue = rec(rhs, digits0)
-        lValue.subtract(rValue, new MathContext(digits, roundingMode))
-      case Mul(lhs, rhs) =>
-        val lValue = rec(lhs, digits + 1)
-        val rValue = rec(rhs, digits + 2)
-        lValue.multiply(rValue, new MathContext(digits, roundingMode))
-      case Div(lhs, rhs) =>
-        val rValue = rec(rhs, digits + 2)
-        if (rValue.compareTo(JBigDecimal.ZERO) == 0)
-          throw new ArithmeticException("divide by zero")
-        val lValue = rec(lhs, digits + 2)
-        lValue
-          .divide(rValue, new MathContext(digits + 2, roundingMode))
-          .round(new MathContext(digits, roundingMode))
-      case KRoot(sub, k) =>
-        Algebraic
-          .nroot(
-            rec(sub, digits + 2),
-            k,
-            new MathContext(digits + 2, roundingMode))
-          .round(new MathContext(digits, roundingMode))
-      case Pow(sub, k) =>
-        val subValue = rec(sub, digits + ceil(log(k.toDouble)).toInt)
-        subValue.pow(k, new MathContext(digits, roundingMode))
-    }
+    def rec(e: Expr, digits: Int): JBigDecimal =
+      e match {
+        case ConstantLong(n) =>
+          new JBigDecimal(n, new MathContext(digits, roundingMode))
+        case ConstantDouble(n) =>
+          new JBigDecimal(n, new MathContext(digits, roundingMode))
+        case ConstantBigDecimal(n) =>
+          n.bigDecimal.round(new MathContext(digits, roundingMode))
+        case ConstantRational(n) =>
+          val num = new JBigDecimal(n.numerator.toBigInteger)
+          val den = new JBigDecimal(n.denominator.toBigInteger)
+          num.divide(den, new MathContext(digits, roundingMode))
+        case ConstantRoot(poly, _, lb, ub) =>
+          // Ugh - on an airplane and can't trust BigDecimal's constructors.
+          val poly0 = poly.map { n =>
+            new BigDecimal(new JBigDecimal(n.bigInteger), MathContext.UNLIMITED)
+          }
+          BigDecimalRootRefinement(
+            poly0,
+            lb,
+            ub,
+            new MathContext(digits, roundingMode)).approximateValue
+        case Neg(sub) =>
+          rec(sub, digits).negate()
+        case Add(_, _) | Sub(_, _) if e.signum == 0 =>
+          JBigDecimal.ZERO
+        case Add(lhs, rhs) =>
+          val digits0 = digits + e.separationBound.decimalDigits.toInt + 1
+          val lValue = rec(lhs, digits0)
+          val rValue = rec(rhs, digits0)
+          lValue.add(rValue, new MathContext(digits, roundingMode))
+        case Sub(lhs, rhs) =>
+          val digits0 = digits + e.separationBound.decimalDigits.toInt + 1
+          val lValue = rec(lhs, digits0)
+          val rValue = rec(rhs, digits0)
+          lValue.subtract(rValue, new MathContext(digits, roundingMode))
+        case Mul(lhs, rhs) =>
+          val lValue = rec(lhs, digits + 1)
+          val rValue = rec(rhs, digits + 2)
+          lValue.multiply(rValue, new MathContext(digits, roundingMode))
+        case Div(lhs, rhs) =>
+          val rValue = rec(rhs, digits + 2)
+          if (rValue.compareTo(JBigDecimal.ZERO) == 0)
+            throw new ArithmeticException("divide by zero")
+          val lValue = rec(lhs, digits + 2)
+          lValue
+            .divide(rValue, new MathContext(digits + 2, roundingMode))
+            .round(new MathContext(digits, roundingMode))
+        case KRoot(sub, k) =>
+          Algebraic
+            .nroot(
+              rec(sub, digits + 2),
+              k,
+              new MathContext(digits + 2, roundingMode))
+            .round(new MathContext(digits, roundingMode))
+        case Pow(sub, k) =>
+          val subValue = rec(sub, digits + ceil(log(k.toDouble)).toInt)
+          subValue.pow(k, new MathContext(digits, roundingMode))
+      }
     val approx = rec(expr, mc.getPrecision + 2)
     val newScale = approx.scale - approx.precision + mc.getPrecision
     val adjustedApprox =
@@ -474,21 +477,22 @@ final class Algebraic private (val expr: Algebraic.Expr)
     import spire.syntax.nroot._
     import Expr._
 
-    def eval(e: Expr): A = e match {
-      case ConstantLong(n)       => conv.fromLong(n)
-      case ConstantDouble(n)     => conv.fromDouble(n)
-      case ConstantBigDecimal(n) => conv.fromBigDecimal(n)
-      case ConstantRational(n)   => conv.fromRational(n)
-      case ConstantRoot(poly, i, _, _) =>
-        RootFinder[A].findRoots(poly.map(conv.fromBigInt)).get(i)
-      case Neg(n)      => -eval(n)
-      case Add(a, b)   => eval(a) + eval(b)
-      case Sub(a, b)   => eval(a) - eval(b)
-      case Mul(a, b)   => eval(a) * eval(b)
-      case Div(a, b)   => eval(a) / eval(b)
-      case KRoot(a, k) => eval(a).nroot(k)
-      case Pow(a, k)   => eval(a).pow(k)
-    }
+    def eval(e: Expr): A =
+      e match {
+        case ConstantLong(n)       => conv.fromLong(n)
+        case ConstantDouble(n)     => conv.fromDouble(n)
+        case ConstantBigDecimal(n) => conv.fromBigDecimal(n)
+        case ConstantRational(n)   => conv.fromRational(n)
+        case ConstantRoot(poly, i, _, _) =>
+          RootFinder[A].findRoots(poly.map(conv.fromBigInt)).get(i)
+        case Neg(n)      => -eval(n)
+        case Add(a, b)   => eval(a) + eval(b)
+        case Sub(a, b)   => eval(a) - eval(b)
+        case Mul(a, b)   => eval(a) * eval(b)
+        case Div(a, b)   => eval(a) / eval(b)
+        case KRoot(a, k) => eval(a).nroot(k)
+        case Pow(a, k)   => eval(a).pow(k)
+      }
 
     eval(expr)
   }
@@ -1016,21 +1020,22 @@ object Algebraic extends AlgebraicInstances {
         } else {
           lhs.signum * rhs.signum
         }
-      def toBigDecimal(digits: Int): JBigDecimal = checked {
-        val lDigits = digits + 2 - rhs.lowerBound.decimalDigits
-        val rDigits = max(
-          1 - rhs.lowerBound.decimalDigits,
-          digits + 4 - 2 * rhs.lowerBound.decimalDigits + lhs.upperBound.decimalDigits
-        )
-        if (lDigits >= Int.MaxValue || rDigits >= Int.MaxValue) {
-          throw new IllegalArgumentException("required precision is too high")
-        } else {
-          val lValue = lhs.toBigDecimal(lDigits.toInt)
-          val rValue = rhs.toBigDecimal(rDigits.toInt)
-          val quotient = lValue.divide(rValue, digits + 1, RoundingMode.DOWN)
-          quotient.setScale(digits, RoundingMode.DOWN)
+      def toBigDecimal(digits: Int): JBigDecimal =
+        checked {
+          val lDigits = digits + 2 - rhs.lowerBound.decimalDigits
+          val rDigits = max(
+            1 - rhs.lowerBound.decimalDigits,
+            digits + 4 - 2 * rhs.lowerBound.decimalDigits + lhs.upperBound.decimalDigits
+          )
+          if (lDigits >= Int.MaxValue || rDigits >= Int.MaxValue) {
+            throw new IllegalArgumentException("required precision is too high")
+          } else {
+            val lValue = lhs.toBigDecimal(lDigits.toInt)
+            val rValue = rhs.toBigDecimal(rDigits.toInt)
+            val quotient = lValue.divide(rValue, digits + 1, RoundingMode.DOWN)
+            quotient.setScale(digits, RoundingMode.DOWN)
+          }
         }
-      }
     }
 
     @SerialVersionUID(0L)
@@ -1448,98 +1453,105 @@ object Algebraic extends AlgebraicInstances {
         /** Upper bound on the value. */
         ub: Long
     ) {
-      def getBitBound(degreeBound: Long): Long = checked {
-        ub * (degreeBound - 1) + lc
-      }
+      def getBitBound(degreeBound: Long): Long =
+        checked {
+          ub * (degreeBound - 1) + lc
+        }
     }
 
-    def apply(expr: Algebraic.Expr): Bound = checked {
-      // Unfortunately, we must call degreeBound early, to avoid many redundant
-      // traversals of the Expr tree. Getting this out of the way early on
-      // means that we will traverse the tree once and populate the degreeBound
-      // cache in all nodes right away. If we do it in a bottom up fashion,
-      // then we risk terrible runtime behaviour.
-      val degreeBound = expr.degreeBound
-      expr match {
-        case ConstantLong(n) =>
-          rational(Rational(n))
+    def apply(expr: Algebraic.Expr): Bound =
+      checked {
+        // Unfortunately, we must call degreeBound early, to avoid many redundant
+        // traversals of the Expr tree. Getting this out of the way early on
+        // means that we will traverse the tree once and populate the degreeBound
+        // cache in all nodes right away. If we do it in a bottom up fashion,
+        // then we risk terrible runtime behaviour.
+        val degreeBound = expr.degreeBound
+        expr match {
+          case ConstantLong(n) =>
+            rational(Rational(n))
 
-        case ConstantDouble(n) =>
-          rational(Rational(n))
+          case ConstantDouble(n) =>
+            rational(Rational(n))
 
-        case ConstantBigDecimal(n) =>
-          rational(Rational(n))
+          case ConstantBigDecimal(n) =>
+            rational(Rational(n))
 
-        case ConstantRational(n) =>
-          rational(n)
+          case ConstantRational(n) =>
+            rational(n)
 
-        case root @ ConstantRoot(poly, _, _, _) =>
-          // Bound on the euclidean distance of the coefficients.
-          val distBound = poly.terms.map {
-            case Term(c, _) =>
-              2L * c.bitLength
-          }.qsum / 2L + 1L
-          Bound(
-            root.lead.bitLength + 1L,
-            root.tail.bitLength + 1L,
-            distBound,
-            Roots.lowerBound(poly),
-            Roots.upperBound(poly)
-          )
+          case root @ ConstantRoot(poly, _, _, _) =>
+            // Bound on the euclidean distance of the coefficients.
+            val distBound = poly.terms.map {
+              case Term(c, _) =>
+                2L * c.bitLength
+            }.qsum / 2L + 1L
+            Bound(
+              root.lead.bitLength + 1L,
+              root.tail.bitLength + 1L,
+              distBound,
+              Roots.lowerBound(poly),
+              Roots.upperBound(poly)
+            )
 
-        case Neg(sub) =>
-          sub.getBound(this)
+          case Neg(sub) =>
+            sub.getBound(this)
 
-        case expr: AddOrSubExpr =>
-          val lhsExpr = expr.lhs
-          val rhsExpr = expr.rhs
-          val lhs = lhsExpr.getBound(this)
-          val rhs = rhsExpr.getBound(this)
-          val lc = lhs.lc * rhsExpr.degreeBound + rhs.lc * lhsExpr.degreeBound
-          val tc =
-            lhs.measure * rhsExpr.degreeBound + rhs.measure * lhsExpr.degreeBound + 2 * degreeBound
-          val measure = tc
-          val ub = max(lhs.ub, rhs.ub) + 1
-          val lb = max(-measure, -(ub * (degreeBound - 1) + lc))
-          Bound(lc, tc, measure, lb, ub)
+          case expr: AddOrSubExpr =>
+            val lhsExpr = expr.lhs
+            val rhsExpr = expr.rhs
+            val lhs = lhsExpr.getBound(this)
+            val rhs = rhsExpr.getBound(this)
+            val lc = lhs.lc * rhsExpr.degreeBound + rhs.lc * lhsExpr.degreeBound
+            val tc =
+              lhs.measure * rhsExpr.degreeBound + rhs.measure * lhsExpr.degreeBound + 2 * degreeBound
+            val measure = tc
+            val ub = max(lhs.ub, rhs.ub) + 1
+            val lb = max(-measure, -(ub * (degreeBound - 1) + lc))
+            Bound(lc, tc, measure, lb, ub)
 
-        case Mul(lhsExpr, rhsExpr) =>
-          val lhs = lhsExpr.getBound(this)
-          val rhs = rhsExpr.getBound(this)
-          val lc = lhs.lc * rhsExpr.degreeBound + rhs.lc * lhsExpr.degreeBound
-          val tc = lhs.tc * rhsExpr.degreeBound + rhs.tc * lhsExpr.degreeBound
-          val measure =
-            lhs.measure * rhsExpr.degreeBound + rhs.measure * lhsExpr.degreeBound
-          val lb = lhs.lb + rhs.lb
-          val ub = lhs.ub + rhs.ub
-          Bound(lc, tc, measure, lb, ub)
+          case Mul(lhsExpr, rhsExpr) =>
+            val lhs = lhsExpr.getBound(this)
+            val rhs = rhsExpr.getBound(this)
+            val lc = lhs.lc * rhsExpr.degreeBound + rhs.lc * lhsExpr.degreeBound
+            val tc = lhs.tc * rhsExpr.degreeBound + rhs.tc * lhsExpr.degreeBound
+            val measure =
+              lhs.measure * rhsExpr.degreeBound + rhs.measure * lhsExpr.degreeBound
+            val lb = lhs.lb + rhs.lb
+            val ub = lhs.ub + rhs.ub
+            Bound(lc, tc, measure, lb, ub)
 
-        case Div(lhsExpr, rhsExpr) =>
-          val lhs = lhsExpr.getBound(this)
-          val rhs = rhsExpr.getBound(this)
-          val lc = lhs.lc * rhsExpr.degreeBound + rhs.tc * lhsExpr.degreeBound
-          val tc = lhs.tc * rhsExpr.degreeBound + rhs.lc * lhsExpr.degreeBound
-          val measure =
-            lhs.measure * rhsExpr.degreeBound + rhs.measure * lhsExpr.degreeBound
-          val lb = lhs.lb - rhs.ub
-          val ub = lhs.ub - rhs.lb
-          Bound(lc, tc, measure, lb, ub)
+          case Div(lhsExpr, rhsExpr) =>
+            val lhs = lhsExpr.getBound(this)
+            val rhs = rhsExpr.getBound(this)
+            val lc = lhs.lc * rhsExpr.degreeBound + rhs.tc * lhsExpr.degreeBound
+            val tc = lhs.tc * rhsExpr.degreeBound + rhs.lc * lhsExpr.degreeBound
+            val measure =
+              lhs.measure * rhsExpr.degreeBound + rhs.measure * lhsExpr.degreeBound
+            val lb = lhs.lb - rhs.ub
+            val ub = lhs.ub - rhs.lb
+            Bound(lc, tc, measure, lb, ub)
 
-        case KRoot(subExpr, k) =>
-          val sub = subExpr.getBound(this)
-          val lb = sub.lb / k
-          val ub =
-            if (sub.ub % k == 0)
-              (sub.ub / k)
-            else
-              ((sub.ub / k) + 1)
-          Bound(sub.lc, sub.tc, sub.measure, lb, ub)
+          case KRoot(subExpr, k) =>
+            val sub = subExpr.getBound(this)
+            val lb = sub.lb / k
+            val ub =
+              if (sub.ub % k == 0)
+                (sub.ub / k)
+              else
+                ((sub.ub / k) + 1)
+            Bound(sub.lc, sub.tc, sub.measure, lb, ub)
 
-        case Pow(subExpr, k) =>
-          val sub = subExpr.getBound(this)
-          Bound(sub.lc * k, sub.tc * k, sub.measure * k, sub.lb * k, sub.ub * k)
+          case Pow(subExpr, k) =>
+            val sub = subExpr.getBound(this)
+            Bound(
+              sub.lc * k,
+              sub.tc * k,
+              sub.measure * k,
+              sub.lb * k,
+              sub.ub * k)
+        }
       }
-    }
 
     private def rational(n: Rational): Bound = {
       // TODO: We can do better here. The + 1 isn't always needed in a & b.
@@ -1573,26 +1585,28 @@ object Algebraic extends AlgebraicInstances {
 
     /** Our state that we store, per node. */
     final case class Bound(l: Long, u: Long) {
-      def getBitBound(degreeBound: Long): Long = checked {
-        l + u * (degreeBound - 1)
-      }
+      def getBitBound(degreeBound: Long): Long =
+        checked {
+          l + u * (degreeBound - 1)
+        }
     }
 
-    def apply(expr: Algebraic.Expr): Bound = expr match {
-      case ConstantLong(n)       => integer(n)
-      case ConstantDouble(n)     => rational(n)
-      case ConstantBigDecimal(n) => rational(n)
-      case ConstantRational(n)   => rational(n)
-      case root @ ConstantRoot(poly, _, _, _) =>
-        Bound(root.lead.bitLength + 1, Roots.upperBound(poly))
-      case Neg(sub)      => sub.getBound(this)
-      case Add(lhs, rhs) => add(lhs.getBound(this), rhs.getBound(this))
-      case Sub(lhs, rhs) => add(lhs.getBound(this), rhs.getBound(this))
-      case Mul(lhs, rhs) => mul(lhs.getBound(this), rhs.getBound(this))
-      case Div(lhs, rhs) => div(lhs.getBound(this), rhs.getBound(this))
-      case KRoot(sub, k) => nroot(sub.getBound(this), k)
-      case Pow(sub, k)   => pow(sub.getBound(this), k)
-    }
+    def apply(expr: Algebraic.Expr): Bound =
+      expr match {
+        case ConstantLong(n)       => integer(n)
+        case ConstantDouble(n)     => rational(n)
+        case ConstantBigDecimal(n) => rational(n)
+        case ConstantRational(n)   => rational(n)
+        case root @ ConstantRoot(poly, _, _, _) =>
+          Bound(root.lead.bitLength + 1, Roots.upperBound(poly))
+        case Neg(sub)      => sub.getBound(this)
+        case Add(lhs, rhs) => add(lhs.getBound(this), rhs.getBound(this))
+        case Sub(lhs, rhs) => add(lhs.getBound(this), rhs.getBound(this))
+        case Mul(lhs, rhs) => mul(lhs.getBound(this), rhs.getBound(this))
+        case Div(lhs, rhs) => div(lhs.getBound(this), rhs.getBound(this))
+        case KRoot(sub, k) => nroot(sub.getBound(this), k)
+        case Pow(sub, k)   => pow(sub.getBound(this), k)
+      }
 
     private def integer(n: Long): Bound =
       integer(BigInt(n))
@@ -1612,40 +1626,44 @@ object Algebraic extends AlgebraicInstances {
     // We're not being fair to the BFMSS bound here. We're really just
     // setting a bound on the max value. However, the alternative would
     // require us to work outside of log arithmetic.
-    private def add(lhs: Bound, rhs: Bound): Bound = checked {
-      Bound(
-        lhs.l + rhs.l,
-        math.max(lhs.u + rhs.l, lhs.l + rhs.u) + 1
-      )
-    }
-
-    private def mul(lhs: Bound, rhs: Bound): Bound = checked {
-      Bound(
-        lhs.l + rhs.l,
-        lhs.u + rhs.u
-      )
-    }
-
-    private def div(lhs: Bound, rhs: Bound): Bound = checked {
-      Bound(
-        lhs.l + rhs.u,
-        lhs.u + rhs.l
-      )
-    }
-
-    private def nroot(sub: Bound, k: Int): Bound = checked {
-      if (sub.u < sub.l) {
+    private def add(lhs: Bound, rhs: Bound): Bound =
+      checked {
         Bound(
-          (sub.l + (k - 1) * sub.u) / k,
-          sub.u
-        )
-      } else {
-        Bound(
-          sub.l,
-          (sub.u * (k - 1) * sub.l) / k
+          lhs.l + rhs.l,
+          math.max(lhs.u + rhs.l, lhs.l + rhs.u) + 1
         )
       }
-    }
+
+    private def mul(lhs: Bound, rhs: Bound): Bound =
+      checked {
+        Bound(
+          lhs.l + rhs.l,
+          lhs.u + rhs.u
+        )
+      }
+
+    private def div(lhs: Bound, rhs: Bound): Bound =
+      checked {
+        Bound(
+          lhs.l + rhs.u,
+          lhs.u + rhs.l
+        )
+      }
+
+    private def nroot(sub: Bound, k: Int): Bound =
+      checked {
+        if (sub.u < sub.l) {
+          Bound(
+            (sub.l + (k - 1) * sub.u) / k,
+            sub.u
+          )
+        } else {
+          Bound(
+            sub.l,
+            (sub.u * (k - 1) * sub.l) / k
+          )
+        }
+      }
 
     private def pow(sub: Bound, k: Int): Bound = {
       @tailrec def sum(acc: Long, k: Int, extra: Long): Long =

@@ -219,10 +219,11 @@ class DriverJdbcDataSource(
     conn
   }
 
-  def close(): Unit = if (keepAliveConnection) {
-    if (openedKeepAliveConnection ne null)
-      openedKeepAliveConnection.close()
-  }
+  def close(): Unit =
+    if (keepAliveConnection) {
+      if (openedKeepAliveConnection ne null)
+        openedKeepAliveConnection.close()
+    }
 }
 
 @deprecated("Use DataSourceJdbcDataSource with DriverDataSource instead", "3.1")
@@ -266,9 +267,10 @@ class ConnectionPreparer(c: Config) extends (Connection => Unit) {
 
   val isLive = isolation.isDefined || catalog.isDefined || readOnly.isDefined
 
-  def apply(c: Connection): Unit = if (isLive) {
-    isolation.foreach(c.setTransactionIsolation)
-    readOnly.foreach(c.setReadOnly)
-    catalog.foreach(c.setCatalog)
-  }
+  def apply(c: Connection): Unit =
+    if (isLive) {
+      isolation.foreach(c.setTransactionIsolation)
+      readOnly.foreach(c.setReadOnly)
+      catalog.foreach(c.setCatalog)
+    }
 }

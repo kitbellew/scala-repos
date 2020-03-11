@@ -77,19 +77,20 @@ object Scalding {
           InclusiveLower(Timestamp(l.timestamp)),
           ExclusiveUpper(Timestamp(u.timestamp + 1L)))
       }
-      override def invert(in: Interval[Timestamp]) = in match {
-        case Intersection(lb, ub) =>
-          val low = lb match {
-            case InclusiveLower(l) => l
-            case ExclusiveLower(l) => l.next
-          }
-          val high = ub match {
-            case InclusiveUpper(u) => u
-            case ExclusiveUpper(u) => u.prev
-          }
-          Success(DateRange(low.toRichDate, high.toRichDate))
-        case _ => Failure(new RuntimeException("Unbounded interval!"))
-      }
+      override def invert(in: Interval[Timestamp]) =
+        in match {
+          case Intersection(lb, ub) =>
+            val low = lb match {
+              case InclusiveLower(l) => l
+              case ExclusiveLower(l) => l.next
+            }
+            val high = ub match {
+              case InclusiveUpper(u) => u
+              case ExclusiveUpper(u) => u.prev
+            }
+            Success(DateRange(low.toRichDate, high.toRichDate))
+          case _ => Failure(new RuntimeException("Unbounded interval!"))
+        }
     }
 
   def emptyFlowProducer[T]: FlowProducer[TypedPipe[T]] =

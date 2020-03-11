@@ -100,54 +100,62 @@ private final class MutableSpan(val traceId: TraceId, val started: Time) {
   private[this] val annotations = ArrayBuffer.empty[ZipkinAnnotation]
   private[this] val binaryAnnotations = ArrayBuffer.empty[BinaryAnnotation]
 
-  def endpoint: Endpoint = synchronized {
-    _endpoint
-  }
-
-  def setName(n: String): MutableSpan = synchronized {
-    _name = Some(n)
-    this
-  }
-
-  def setServiceName(n: String): MutableSpan = synchronized {
-    _service = Some(n)
-    this
-  }
-
-  def addAnnotation(ann: ZipkinAnnotation): MutableSpan = synchronized {
-    if (!_isComplete && (
-          ann.value.equals(Constants.CLIENT_RECV) ||
-          ann.value.equals(Constants.SERVER_SEND) ||
-          ann.value.equals(TimeoutFilter.TimeoutAnnotation)
-        ))
-      _isComplete = true
-
-    annotations.append(ann)
-    this
-  }
-
-  def addBinaryAnnotation(ann: BinaryAnnotation): MutableSpan = synchronized {
-    binaryAnnotations.append(ann)
-    this
-  }
-
-  def setEndpoint(ep: Endpoint): MutableSpan = synchronized {
-    _endpoint = ep
-    var idx = 0
-    while (idx < annotations.size) {
-      val a = annotations(idx)
-      if (a.endpoint == Endpoint.Unknown)
-        annotations(idx) = a.copy(endpoint = ep)
-      idx += 1
+  def endpoint: Endpoint =
+    synchronized {
+      _endpoint
     }
-    this
-  }
 
-  def toSpan: Span = synchronized {
-    Span(traceId, _service, _name, annotations, binaryAnnotations, _endpoint)
-  }
+  def setName(n: String): MutableSpan =
+    synchronized {
+      _name = Some(n)
+      this
+    }
 
-  def isComplete: Boolean = synchronized {
-    _isComplete
-  }
+  def setServiceName(n: String): MutableSpan =
+    synchronized {
+      _service = Some(n)
+      this
+    }
+
+  def addAnnotation(ann: ZipkinAnnotation): MutableSpan =
+    synchronized {
+      if (!_isComplete && (
+            ann.value.equals(Constants.CLIENT_RECV) ||
+            ann.value.equals(Constants.SERVER_SEND) ||
+            ann.value.equals(TimeoutFilter.TimeoutAnnotation)
+          ))
+        _isComplete = true
+
+      annotations.append(ann)
+      this
+    }
+
+  def addBinaryAnnotation(ann: BinaryAnnotation): MutableSpan =
+    synchronized {
+      binaryAnnotations.append(ann)
+      this
+    }
+
+  def setEndpoint(ep: Endpoint): MutableSpan =
+    synchronized {
+      _endpoint = ep
+      var idx = 0
+      while (idx < annotations.size) {
+        val a = annotations(idx)
+        if (a.endpoint == Endpoint.Unknown)
+          annotations(idx) = a.copy(endpoint = ep)
+        idx += 1
+      }
+      this
+    }
+
+  def toSpan: Span =
+    synchronized {
+      Span(traceId, _service, _name, annotations, binaryAnnotations, _endpoint)
+    }
+
+  def isComplete: Boolean =
+    synchronized {
+      _isComplete
+    }
 }

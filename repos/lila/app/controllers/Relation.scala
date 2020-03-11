@@ -52,59 +52,67 @@ object Relation extends LilaController {
         )
     }
 
-  def follow(userId: String) = Auth { implicit ctx => me =>
-    env.api.follow(me.id, userId).nevermind >> renderActions(
-      userId,
-      getBool("mini"))
-  }
+  def follow(userId: String) =
+    Auth { implicit ctx => me =>
+      env.api.follow(me.id, userId).nevermind >> renderActions(
+        userId,
+        getBool("mini"))
+    }
 
-  def unfollow(userId: String) = Auth { implicit ctx => me =>
-    env.api.unfollow(me.id, userId).nevermind >> renderActions(
-      userId,
-      getBool("mini"))
-  }
+  def unfollow(userId: String) =
+    Auth { implicit ctx => me =>
+      env.api.unfollow(me.id, userId).nevermind >> renderActions(
+        userId,
+        getBool("mini"))
+    }
 
-  def block(userId: String) = Auth { implicit ctx => me =>
-    env.api.block(me.id, userId).nevermind >> renderActions(
-      userId,
-      getBool("mini"))
-  }
+  def block(userId: String) =
+    Auth { implicit ctx => me =>
+      env.api.block(me.id, userId).nevermind >> renderActions(
+        userId,
+        getBool("mini"))
+    }
 
-  def unblock(userId: String) = Auth { implicit ctx => me =>
-    env.api.unblock(me.id, userId).nevermind >> renderActions(
-      userId,
-      getBool("mini"))
-  }
+  def unblock(userId: String) =
+    Auth { implicit ctx => me =>
+      env.api.unblock(me.id, userId).nevermind >> renderActions(
+        userId,
+        getBool("mini"))
+    }
 
-  def following(username: String, page: Int) = Open { implicit ctx =>
-    Reasonable(page, 20) {
-      OptionFuResult(UserRepo named username) { user =>
-        RelatedPager(env.api.followingPaginatorAdapter(user.id), page) flatMap {
-          pag =>
+  def following(username: String, page: Int) =
+    Open { implicit ctx =>
+      Reasonable(page, 20) {
+        OptionFuResult(UserRepo named username) { user =>
+          RelatedPager(
+            env.api.followingPaginatorAdapter(user.id),
+            page) flatMap { pag =>
             negotiate(
               html = env.api countFollowers user.id map { nbFollowers =>
                 Ok(html.relation.following(user, pag, nbFollowers))
               },
               api = _ => Ok(jsonRelatedPaginator(pag)).fuccess)
+          }
         }
       }
     }
-  }
 
-  def followers(username: String, page: Int) = Open { implicit ctx =>
-    Reasonable(page, 20) {
-      OptionFuResult(UserRepo named username) { user =>
-        RelatedPager(env.api.followersPaginatorAdapter(user.id), page) flatMap {
-          pag =>
+  def followers(username: String, page: Int) =
+    Open { implicit ctx =>
+      Reasonable(page, 20) {
+        OptionFuResult(UserRepo named username) { user =>
+          RelatedPager(
+            env.api.followersPaginatorAdapter(user.id),
+            page) flatMap { pag =>
             negotiate(
               html = env.api countFollowing user.id map { nbFollowing =>
                 Ok(html.relation.followers(user, pag, nbFollowing))
               },
               api = _ => Ok(jsonRelatedPaginator(pag)).fuccess)
+          }
         }
       }
     }
-  }
 
   private def jsonRelatedPaginator(pag: Paginator[Related]) = {
     import lila.user.JsonView.nameWrites
@@ -121,13 +129,14 @@ object Relation extends LilaController {
     }))
   }
 
-  def blocks(page: Int) = Auth { implicit ctx => me =>
-    Reasonable(page, 20) {
-      RelatedPager(env.api.blockingPaginatorAdapter(me.id), page) map { pag =>
-        html.relation.blocks(me, pag)
+  def blocks(page: Int) =
+    Auth { implicit ctx => me =>
+      Reasonable(page, 20) {
+        RelatedPager(env.api.blockingPaginatorAdapter(me.id), page) map { pag =>
+          html.relation.blocks(me, pag)
+        }
       }
     }
-  }
 
   private def RelatedPager(adapter: AdapterLike[String], page: Int)(
       implicit ctx: Context) =

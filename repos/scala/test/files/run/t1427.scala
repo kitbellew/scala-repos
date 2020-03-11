@@ -1,13 +1,14 @@
 import scala.language.{higherKinds}
 
 class Bob[K[_]] {
-  def foo(other: Any) = other match {
-    case x: (Bob[X] forSome {
-          type X[_]
-        }) =>
-      true
-    case _ => false
-  }
+  def foo(other: Any) =
+    other match {
+      case x: (Bob[X] forSome {
+            type X[_]
+          }) =>
+        true
+      case _ => false
+    }
 }
 
 object Test {

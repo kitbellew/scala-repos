@@ -56,10 +56,11 @@ class SearchService(
   implicit val workerEC =
     actorSystem.dispatchers.lookup("akka.search-service-dispatcher")
 
-  private def scan(f: FileObject) = f.findFiles(ClassfileSelector) match {
-    case null => Nil
-    case res  => res.toList
-  }
+  private def scan(f: FileObject) =
+    f.findFiles(ClassfileSelector) match {
+      case null => Nil
+      case res  => res.toList
+    }
 
   /**
     * Indexes everything, making best endeavours to avoid scanning what
@@ -136,13 +137,14 @@ class SearchService(
         .map(_.flatten.sum)
     }
 
-    def commitIndex(): Future[Unit] = Future {
-      blocking {
-        log.debug("committing index to disk...")
-        index.commit()
-        log.debug("...done committing index")
+    def commitIndex(): Future[Unit] =
+      Future {
+        blocking {
+          log.debug("committing index to disk...")
+          index.commit()
+          log.debug("...done committing index")
+        }
       }
-    }
 
     // chain together all the future tasks
     for {

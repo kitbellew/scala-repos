@@ -177,9 +177,10 @@ object Samples {
     import play.api.Play.current
     import play.api.Play.materializer
 
-    def socket = WebSocket.acceptWithActor[String, String] { request => out =>
-      MyWebSocketActor.props(out)
-    }
+    def socket =
+      WebSocket.acceptWithActor[String, String] { request => out =>
+        MyWebSocketActor.props(out)
+      }
     //#actor-accept
   }
 
@@ -210,12 +211,13 @@ object Samples {
     import play.api.Play.current
     import play.api.Play.materializer
 
-    def socket = WebSocket.tryAcceptWithActor[String, String] { request =>
-      Future.successful(request.session.get("user") match {
-        case None    => Left(Forbidden)
-        case Some(_) => Right(MyWebSocketActor.props)
-      })
-    }
+    def socket =
+      WebSocket.tryAcceptWithActor[String, String] { request =>
+        Future.successful(request.session.get("user") match {
+          case None    => Left(Forbidden)
+          case Some(_) => Right(MyWebSocketActor.props)
+        })
+      }
     //#actor-try-accept
   }
 
@@ -240,9 +242,10 @@ object Samples {
     import play.api.Play.current
     import play.api.Play.materializer
 
-    def socket = WebSocket.acceptWithActor[JsValue, JsValue] { request => out =>
-      MyWebSocketActor.props(out)
-    }
+    def socket =
+      WebSocket.acceptWithActor[JsValue, JsValue] { request => out =>
+        MyWebSocketActor.props(out)
+      }
     //#actor-json
 
   }
@@ -283,9 +286,10 @@ object Samples {
     import play.api.Play.current
     import play.api.Play.materializer
 
-    def socket = WebSocket.acceptWithActor[InEvent, OutEvent] {
-      request => out => MyWebSocketActor.props(out)
-    }
+    def socket =
+      WebSocket.acceptWithActor[InEvent, OutEvent] { request => out =>
+        MyWebSocketActor.props(out)
+      }
     //#actor-json-in-out
 
   }
@@ -297,17 +301,18 @@ object Samples {
     import play.api.libs.iteratee._
     import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-    def socket = WebSocket.using[String] { request =>
-      // Log events to the console
-      val in = Iteratee.foreach[String](println).map { _ =>
-        println("Disconnected")
+    def socket =
+      WebSocket.using[String] { request =>
+        // Log events to the console
+        val in = Iteratee.foreach[String](println).map { _ =>
+          println("Disconnected")
+        }
+
+        // Send a single 'Hello!' message
+        val out = Enumerator("Hello!")
+
+        (in, out)
       }
-
-      // Send a single 'Hello!' message
-      val out = Enumerator("Hello!")
-
-      (in, out)
-    }
     //#iteratee1
 
   }
@@ -318,15 +323,16 @@ object Samples {
     import play.api.mvc._
     import play.api.libs.iteratee._
 
-    def socket = WebSocket.using[String] { request =>
-      // Just ignore the input
-      val in = Iteratee.ignore[String]
+    def socket =
+      WebSocket.using[String] { request =>
+        // Just ignore the input
+        val in = Iteratee.ignore[String]
 
-      // Send a single 'Hello!' message and close
-      val out = Enumerator("Hello!").andThen(Enumerator.eof)
+        // Send a single 'Hello!' message and close
+        val out = Enumerator("Hello!").andThen(Enumerator.eof)
 
-      (in, out)
-    }
+        (in, out)
+      }
     //#iteratee2
 
   }
@@ -338,19 +344,20 @@ object Samples {
     import play.api.libs.iteratee._
     import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-    def socket = WebSocket.using[String] { request =>
-      // Concurrent.broadcast returns (Enumerator, Concurrent.Channel)
-      val (out, channel) = Concurrent.broadcast[String]
+    def socket =
+      WebSocket.using[String] { request =>
+        // Concurrent.broadcast returns (Enumerator, Concurrent.Channel)
+        val (out, channel) = Concurrent.broadcast[String]
 
-      // log the message to stdout and send response back to client
-      val in = Iteratee.foreach[String] { msg =>
-        println(msg)
-        // the Enumerator returned by Concurrent.broadcast subscribes to the channel and will
-        // receive the pushed messages
-        channel push ("I received your message: " + msg)
+        // log the message to stdout and send response back to client
+        val in = Iteratee.foreach[String] { msg =>
+          println(msg)
+          // the Enumerator returned by Concurrent.broadcast subscribes to the channel and will
+          // receive the pushed messages
+          channel push ("I received your message: " + msg)
+        }
+        (in, out)
       }
-      (in, out)
-    }
     //#iteratee3
   }
 

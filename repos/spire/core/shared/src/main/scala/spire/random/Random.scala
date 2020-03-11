@@ -36,10 +36,11 @@ sealed trait Op[+A] {
     }
 
   def run(gen: Generator): A = {
-    def loop(e: Either[() => Op[A], A]): A = e match {
-      case Right(a) => a
-      case Left(k)  => loop(k().resume(gen))
-    }
+    def loop(e: Either[() => Op[A], A]): A =
+      e match {
+        case Right(a) => a
+        case Left(k)  => loop(k().resume(gen))
+      }
     loop(resume(gen))
   }
 }

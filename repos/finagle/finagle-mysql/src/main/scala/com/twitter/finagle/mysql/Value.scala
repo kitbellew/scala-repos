@@ -97,20 +97,21 @@ class TimestampValue(
     * Extracts timestamps in `extractionTimeZone` for values encoded in either
     * the binary or text MySQL protocols.
     */
-  def unapply(v: Value): Option[Timestamp] = v match {
-    case RawValue(t, Charset.Binary, false, bytes)
-        if (t == Type.Timestamp || t == Type.DateTime) =>
-      val str = new String(bytes, Charset(Charset.Binary))
-      val ts = fromString(str, extractionTimeZone)
-      Some(ts)
+  def unapply(v: Value): Option[Timestamp] =
+    v match {
+      case RawValue(t, Charset.Binary, false, bytes)
+          if (t == Type.Timestamp || t == Type.DateTime) =>
+        val str = new String(bytes, Charset(Charset.Binary))
+        val ts = fromString(str, extractionTimeZone)
+        Some(ts)
 
-    case RawValue(t, Charset.Binary, true, bytes)
-        if (t == Type.Timestamp || t == Type.DateTime) =>
-      val ts = fromBytes(bytes, extractionTimeZone)
-      Some(ts)
+      case RawValue(t, Charset.Binary, true, bytes)
+          if (t == Type.Timestamp || t == Type.DateTime) =>
+        val ts = fromBytes(bytes, extractionTimeZone)
+        Some(ts)
 
-    case _ => None
-  }
+      case _ => None
+    }
 
   /**
     * Timestamp object that can appropriately
@@ -275,18 +276,19 @@ object DateValue extends Injectable[Date] with Extractable[Date] {
   /**
     * Value extractor for java.sql.Date
     */
-  def unapply(v: Value): Option[Date] = v match {
-    case RawValue(Type.Date, Charset.Binary, false, bytes) =>
-      val str = new String(bytes, Charset(Charset.Binary))
-      if (str == Zero.toString)
-        Some(Zero)
-      else
-        Some(Date.valueOf(str))
+  def unapply(v: Value): Option[Date] =
+    v match {
+      case RawValue(Type.Date, Charset.Binary, false, bytes) =>
+        val str = new String(bytes, Charset(Charset.Binary))
+        if (str == Zero.toString)
+          Some(Zero)
+        else
+          Some(Date.valueOf(str))
 
-    case RawValue(Type.Date, Charset.Binary, true, bytes) =>
-      Some(fromBytes(bytes))
-    case _ => None
-  }
+      case RawValue(Type.Date, Charset.Binary, true, bytes) =>
+        Some(fromBytes(bytes))
+      case _ => None
+    }
 
   /**
     * Date object that can appropriately
@@ -336,9 +338,10 @@ object BigDecimalValue
     RawValue(Type.NewDecimal, Charset.Binary, true, str)
   }
 
-  def unapply(v: Value): Option[BigDecimal] = v match {
-    case RawValue(Type.NewDecimal, Charset.Binary, _, bytes) =>
-      Some(BigDecimal(new String(bytes, Charset(Charset.Binary))))
-    case _ => None
-  }
+  def unapply(v: Value): Option[BigDecimal] =
+    v match {
+      case RawValue(Type.NewDecimal, Charset.Binary, _, bytes) =>
+        Some(BigDecimal(new String(bytes, Charset(Charset.Binary))))
+      case _ => None
+    }
 }

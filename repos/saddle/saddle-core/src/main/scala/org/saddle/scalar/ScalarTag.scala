@@ -53,11 +53,12 @@ trait ScalarTag[@spec(Boolean, Int, Long, Float, Double) T]
     isAny
       .hashCode() + isAnyVal.hashCode() * 31 + runtimeClass.hashCode() * 31 * 31
 
-  override def equals(o: Any): Boolean = o match {
-    case s: ScalarTag[_] =>
-      (this eq s) || runtimeClass == s.runtimeClass && isAny == s.isAny && isAnyVal == s.isAnyVal
-    case _ => false
-  }
+  override def equals(o: Any): Boolean =
+    o match {
+      case s: ScalarTag[_] =>
+        (this eq s) || runtimeClass == s.runtimeClass && isAny == s.isAny && isAnyVal == s.isAnyVal
+      case _ => false
+    }
 
   override def toString = "ScalarTag[%s]" format runtimeClass
 
@@ -84,9 +85,10 @@ trait ScalarTagImplicits extends ScalarTagImplicitsL1 {
 }
 
 trait ScalarTagImplicitsL1 extends ScalarTagImplicitsL2 {
-  implicit def stAnyVal[T <: AnyVal: CLM] = new ScalarTagAny[T] {
-    override def isAnyVal = true
-  }
+  implicit def stAnyVal[T <: AnyVal: CLM] =
+    new ScalarTagAny[T] {
+      override def isAnyVal = true
+    }
 }
 
 trait ScalarTagImplicitsL2 extends ScalarTagImplicitsL3 {
@@ -94,9 +96,10 @@ trait ScalarTagImplicitsL2 extends ScalarTagImplicitsL3 {
 }
 
 trait ScalarTagImplicitsL3 {
-  implicit def stAny[T: CLM] = new ScalarTagAny[T] {
-    override def isAny = true
-  }
+  implicit def stAny[T: CLM] =
+    new ScalarTagAny[T] {
+      override def isAny = true
+    }
 }
 
 trait CouldBeOrdered[@spec(Boolean, Int, Long, Float, Double) T] {

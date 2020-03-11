@@ -51,28 +51,29 @@ trait RandomLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
       type Result = Option[Long]
 
-      def reducer(ctx: MorphContext) = new Reducer[Result] {
-        def reduce(schema: CSchema, range: Range): Result = {
-          val cols =
-            schema.columns(JObjectFixedT(Map(paths.Value.name -> JNumberT)))
+      def reducer(ctx: MorphContext) =
+        new Reducer[Result] {
+          def reduce(schema: CSchema, range: Range): Result = {
+            val cols =
+              schema.columns(JObjectFixedT(Map(paths.Value.name -> JNumberT)))
 
-          val result: Set[Result] = cols map {
-            case (c: LongColumn) =>
-              range collectFirst {
-                case i if c.isDefinedAt(i) => i
-              } map {
-                c(_)
-              }
+            val result: Set[Result] = cols map {
+              case (c: LongColumn) =>
+                range collectFirst {
+                  case i if c.isDefinedAt(i) => i
+                } map {
+                  c(_)
+                }
 
-            case _ => None
+              case _ => None
+            }
+
+            if (result.isEmpty)
+              None
+            else
+              result.suml(implicitly[Monoid[Result]])
           }
-
-          if (result.isEmpty)
-            None
-          else
-            result.suml(implicitly[Monoid[Result]])
         }
-      }
 
       def extract(res: Result): Table = {
         res map { resultSeed =>

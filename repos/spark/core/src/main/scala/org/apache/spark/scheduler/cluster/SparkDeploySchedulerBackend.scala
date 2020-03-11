@@ -135,9 +135,10 @@ private[spark] class SparkDeploySchedulerBackend(
     launcherBackend.setState(SparkAppHandle.State.RUNNING)
   }
 
-  override def stop(): Unit = synchronized {
-    stop(SparkAppHandle.State.FINISHED)
-  }
+  override def stop(): Unit =
+    synchronized {
+      stop(SparkAppHandle.State.FINISHED)
+    }
 
   override def connected(appId: String) {
     logInfo("Connected to Spark cluster with app ID " + appId)
@@ -239,21 +240,22 @@ private[spark] class SparkDeploySchedulerBackend(
     registrationBarrier.release()
   }
 
-  private def stop(finalState: SparkAppHandle.State): Unit = synchronized {
-    try {
-      stopping = true
+  private def stop(finalState: SparkAppHandle.State): Unit =
+    synchronized {
+      try {
+        stopping = true
 
-      super.stop()
-      client.stop()
+        super.stop()
+        client.stop()
 
-      val callback = shutdownCallback
-      if (callback != null) {
-        callback(this)
+        val callback = shutdownCallback
+        if (callback != null) {
+          callback(this)
+        }
+      } finally {
+        launcherBackend.setState(finalState)
+        launcherBackend.close()
       }
-    } finally {
-      launcherBackend.setState(finalState)
-      launcherBackend.close()
     }
-  }
 
 }

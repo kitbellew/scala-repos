@@ -20,10 +20,11 @@ final class Long private () extends Number with Comparable[Long] {
   @inline def floatValue(): scala.Float = longValue.toFloat
   @inline def doubleValue(): scala.Double = longValue.toDouble
 
-  @inline override def equals(that: Any): scala.Boolean = that match {
-    case that: Long => longValue == that.longValue
-    case _          => false
-  }
+  @inline override def equals(that: Any): scala.Boolean =
+    that match {
+      case that: Long => longValue == that.longValue
+      case _          => false
+    }
 
   @inline override def hashCode(): Int =
     Long.hashCode(longValue)

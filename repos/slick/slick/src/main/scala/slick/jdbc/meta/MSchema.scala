@@ -20,7 +20,8 @@ object MSchema {
     }
   }
 
-  def getSchemas = ResultSetAction[MSchema](_.metaData.getSchemas()) { r =>
-    MSchema(r.<<, r.<<?)
-  }
+  def getSchemas =
+    ResultSetAction[MSchema](_.metaData.getSchemas()) { r =>
+      MSchema(r.<<, r.<<?)
+    }
 }

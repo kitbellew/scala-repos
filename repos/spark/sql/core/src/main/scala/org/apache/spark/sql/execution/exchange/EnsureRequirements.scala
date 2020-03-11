@@ -272,16 +272,17 @@ case class EnsureRequirements(conf: SQLConf) extends Rule[SparkPlan] {
     operator.withNewChildren(children)
   }
 
-  def apply(plan: SparkPlan): SparkPlan = plan.transformUp {
-    case operator @ ShuffleExchange(partitioning, child, _) =>
-      child.children match {
-        case ShuffleExchange(childPartitioning, baseChild, _) :: Nil =>
-          if (childPartitioning.guarantees(partitioning))
-            child
-          else
-            operator
-        case _ => operator
-      }
-    case operator: SparkPlan => ensureDistributionAndOrdering(operator)
-  }
+  def apply(plan: SparkPlan): SparkPlan =
+    plan.transformUp {
+      case operator @ ShuffleExchange(partitioning, child, _) =>
+        child.children match {
+          case ShuffleExchange(childPartitioning, baseChild, _) :: Nil =>
+            if (childPartitioning.guarantees(partitioning))
+              child
+            else
+              operator
+          case _ => operator
+        }
+      case operator: SparkPlan => ensureDistributionAndOrdering(operator)
+    }
 }

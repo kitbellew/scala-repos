@@ -310,12 +310,13 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
     import com.twitter.finagle.memcached.protocol._
 
     class MockedMemcacheServer extends Service[Command, Response] {
-      def apply(command: Command) = command match {
-        case Get(key) =>
-          Future.value(Values(List(Value(Buf.Utf8("foo"), Buf.Utf8("bar")))))
-        case Set(_, _, _, _) => Future.value(Error(new Exception))
-        case x               => Future.exception(new MatchError(x))
-      }
+      def apply(command: Command) =
+        command match {
+          case Get(key) =>
+            Future.value(Values(List(Value(Buf.Utf8("foo"), Buf.Utf8("bar")))))
+          case Set(_, _, _, _) => Future.value(Error(new Exception))
+          case x               => Future.exception(new MatchError(x))
+        }
     }
 
     val cacheServer = Memcached.serve(

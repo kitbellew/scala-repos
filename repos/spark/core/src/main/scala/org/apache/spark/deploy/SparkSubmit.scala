@@ -903,20 +903,21 @@ object SparkSubmit {
     }
 
     @tailrec
-    def findCause(t: Throwable): Throwable = t match {
-      case e: UndeclaredThrowableException =>
-        if (e.getCause() != null)
-          findCause(e.getCause())
-        else
+    def findCause(t: Throwable): Throwable =
+      t match {
+        case e: UndeclaredThrowableException =>
+          if (e.getCause() != null)
+            findCause(e.getCause())
+          else
+            e
+        case e: InvocationTargetException =>
+          if (e.getCause() != null)
+            findCause(e.getCause())
+          else
+            e
+        case e: Throwable =>
           e
-      case e: InvocationTargetException =>
-        if (e.getCause() != null)
-          findCause(e.getCause())
-        else
-          e
-      case e: Throwable =>
-        e
-    }
+      }
 
     try {
       mainMethod.invoke(null, childArgs.toArray)

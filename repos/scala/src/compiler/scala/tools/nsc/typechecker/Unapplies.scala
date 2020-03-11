@@ -86,10 +86,11 @@ trait Unapplies extends ast.TreeDSL {
       // the modifiers on the param accessors.
       // We just generate a call to that param accessor here, which gives us an inaccessible
       // symbol error, as before.
-      def localAccessor = caseclazz.impl.body find {
-        case t @ ValOrDefDef(mods, selector.name, _, _) => mods.isPrivateLocal
-        case _                                          => false
-      }
+      def localAccessor =
+        caseclazz.impl.body find {
+          case t @ ValOrDefDef(mods, selector.name, _, _) => mods.isPrivateLocal
+          case _                                          => false
+        }
       localAccessor.fold(selectByName)(Ident(param) DOT _.symbol)
     }
 
@@ -134,16 +135,22 @@ trait Unapplies extends ast.TreeDSL {
   def companionModuleDef(
       cdef: ClassDef,
       parents: List[Tree] = Nil,
-      body: List[Tree] = Nil): ModuleDef = atPos(cdef.pos.focus) {
-    ModuleDef(
-      Modifiers(
-        cdef.mods.flags & AccessFlags | SYNTHETIC,
-        cdef.mods.privateWithin),
-      cdef.name.toTermName,
-      gen
-        .mkTemplate(parents, noSelfType, NoMods, Nil, body, cdef.impl.pos.focus)
-    )
-  }
+      body: List[Tree] = Nil): ModuleDef =
+    atPos(cdef.pos.focus) {
+      ModuleDef(
+        Modifiers(
+          cdef.mods.flags & AccessFlags | SYNTHETIC,
+          cdef.mods.privateWithin),
+        cdef.name.toTermName,
+        gen.mkTemplate(
+          parents,
+          noSelfType,
+          NoMods,
+          Nil,
+          body,
+          cdef.impl.pos.focus)
+      )
+    }
 
   /** The apply method corresponding to a case class
     */
@@ -186,13 +193,14 @@ trait Unapplies extends ast.TreeDSL {
       if (!settings.isScala212)
         TypeTree()
       else { // fix for SI-6541 under -Xsource:2.12
-        def repeatedToSeq(tp: Tree) = tp match {
-          case AppliedTypeTree(
-                Select(_, tpnme.REPEATED_PARAM_CLASS_NAME),
-                tps) =>
-            AppliedTypeTree(gen.rootScalaDot(tpnme.Seq), tps)
-          case _ => tp
-        }
+        def repeatedToSeq(tp: Tree) =
+          tp match {
+            case AppliedTypeTree(
+                  Select(_, tpnme.REPEATED_PARAM_CLASS_NAME),
+                  tps) =>
+              AppliedTypeTree(gen.rootScalaDot(tpnme.Seq), tps)
+            case _ => tp
+          }
         constrParamss(cdef) match {
           case Nil | Nil :: _ =>
             gen.rootScalaDot(tpnme.Boolean)

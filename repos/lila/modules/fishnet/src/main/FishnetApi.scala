@@ -62,12 +62,13 @@ final class FishnetApi(
           none
       } >>- monitor.acquire(client)
 
-  private def acquireMove(client: Client): Fu[Option[JsonApi.Work]] = fuccess {
-    moveDb.oldestNonAcquired.map(_ assignTo client) map { found =>
-      moveDb update found
-      JsonApi fromWork found
+  private def acquireMove(client: Client): Fu[Option[JsonApi.Work]] =
+    fuccess {
+      moveDb.oldestNonAcquired.map(_ assignTo client) map { found =>
+        moveDb update found
+        JsonApi fromWork found
+      }
     }
-  }
 
   private def acquireAnalysis(client: Client): Fu[Option[JsonApi.Work]] =
     sequencer {
@@ -154,14 +155,15 @@ final class FishnetApi(
         _ ?? saveAnalysis
       }
 
-  def abort(workId: Work.Id, client: Client): Funit = sequencer {
-    repo.getAnalysis(workId).map(_.filter(_ isAcquiredBy client)) flatMap {
-      _ ?? { work =>
-        monitor.abort(work, client)
-        repo.updateAnalysis(work.abort)
+  def abort(workId: Work.Id, client: Client): Funit =
+    sequencer {
+      repo.getAnalysis(workId).map(_.filter(_ isAcquiredBy client)) flatMap {
+        _ ?? { work =>
+          monitor.abort(work, client)
+          repo.updateAnalysis(work.abort)
+        }
       }
     }
-  }
 
   def prioritaryAnalysisExists(gameId: String): Fu[Boolean] =
     analysisColl

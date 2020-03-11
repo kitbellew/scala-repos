@@ -61,20 +61,22 @@ case class LogicalRelation(
   }
 
   // Logical Relations are distinct if they have different output for the sake of transformations.
-  override def equals(other: Any): Boolean = other match {
-    case l @ LogicalRelation(otherRelation, _, _) =>
-      relation == otherRelation && output == l.output
-    case _ => false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case l @ LogicalRelation(otherRelation, _, _) =>
+        relation == otherRelation && output == l.output
+      case _ => false
+    }
 
   override def hashCode: Int = {
     com.google.common.base.Objects.hashCode(relation, output)
   }
 
-  override def sameResult(otherPlan: LogicalPlan): Boolean = otherPlan match {
-    case LogicalRelation(otherRelation, _, _) => relation == otherRelation
-    case _                                    => false
-  }
+  override def sameResult(otherPlan: LogicalPlan): Boolean =
+    otherPlan match {
+      case LogicalRelation(otherRelation, _, _) => relation == otherRelation
+      case _                                    => false
+    }
 
   // When comparing two LogicalRelations from within LogicalPlan.sameResult, we only need
   // LogicalRelation.cleanArgs to return Seq(relation), since expectedOutputAttribute's

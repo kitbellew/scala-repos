@@ -90,10 +90,11 @@ object TimeoutFilter {
       timeout: Duration,
       exception: RequestTimeoutException,
       timer: Timer
-  ): TypeAgnostic = new TypeAgnostic {
-    override def toFilter[Req, Rep]: Filter[Req, Rep, Req, Rep] =
-      new TimeoutFilter[Req, Rep](timeout, exception, timer)
-  }
+  ): TypeAgnostic =
+    new TypeAgnostic {
+      override def toFilter[Req, Rep]: Filter[Req, Rep, Req, Rep] =
+        new TimeoutFilter[Req, Rep](timeout, exception, timer)
+    }
 }
 
 /**

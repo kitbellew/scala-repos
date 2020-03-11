@@ -300,29 +300,30 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
     // The Rhino IR attaches DocComments to the following nodes (rather than
     // having individual nodes). We preprocess these here.
     @tailrec
-    def loop(ts: List[Tree], nextIsCtor: Boolean = false): Unit = ts match {
-      case DocComment(text) :: tss if text.startsWith("@constructor") =>
-        loop(tss, nextIsCtor = true)
-      case DocComment(text) :: tss =>
-        loop(tss)
-      case t :: tss =>
-        val node = transformStat(t)(blockPos)
-        if (nextIsCtor) {
-          // The @constructor must be propagated through an ExprResult node
-          val trg =
-            if (node.isExprResult())
-              node.getChildAtIndex(0)
-            else
-              node
+    def loop(ts: List[Tree], nextIsCtor: Boolean = false): Unit =
+      ts match {
+        case DocComment(text) :: tss if text.startsWith("@constructor") =>
+          loop(tss, nextIsCtor = true)
+        case DocComment(text) :: tss =>
+          loop(tss)
+        case t :: tss =>
+          val node = transformStat(t)(blockPos)
+          if (nextIsCtor) {
+            // The @constructor must be propagated through an ExprResult node
+            val trg =
+              if (node.isExprResult())
+                node.getChildAtIndex(0)
+              else
+                node
 
-          trg.setJSDocInfo(ctorDoc(trg))
-        }
+            trg.setJSDocInfo(ctorDoc(trg))
+          }
 
-        block.addChildToBack(node)
+          block.addChildToBack(node)
 
-        loop(tss)
-      case Nil =>
-    }
+          loop(tss)
+        case Nil =>
+      }
 
     loop(stats)
 

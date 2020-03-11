@@ -34,10 +34,11 @@ trait ReplStrings {
 
   // no escaped or nested quotes
   private[this] val inquotes = """(['"])(.*?)\1""".r
-  def unquoted(s: String) = s match {
-    case inquotes(_, w) => w;
-    case _              => s
-  }
+  def unquoted(s: String) =
+    s match {
+      case inquotes(_, w) => w;
+      case _              => s
+    }
   def words(s: String) =
     (s.trim split "\\s+" filterNot (_ == "") map unquoted).toList
 }

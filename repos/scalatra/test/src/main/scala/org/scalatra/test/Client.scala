@@ -42,9 +42,10 @@ trait Client extends ImplicitConversions {
       headers: Iterable[(String, String)] = Seq.empty,
       files: Iterable[(String, Any)] = Map.empty)(f: => A): A
 
-  def get[A](uri: String)(f: => A): A = submit("GET", uri) {
-    f
-  }
+  def get[A](uri: String)(f: => A): A =
+    submit("GET", uri) {
+      f
+    }
   def get[A](uri: String, params: Tuple2[String, String]*)(f: => A): A =
     get(uri, params, Map[String, String]())(f)
   def get[A](
@@ -55,9 +56,10 @@ trait Client extends ImplicitConversions {
       f
     }
 
-  def head[A](uri: String)(f: => A): A = submit("HEAD", uri) {
-    f
-  }
+  def head[A](uri: String)(f: => A): A =
+    submit("HEAD", uri) {
+      f
+    }
   def head[A](uri: String, params: Tuple2[String, String]*)(f: => A): A =
     get(uri, params, Map[String, String]())(f)
   def head[A](

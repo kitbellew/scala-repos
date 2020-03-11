@@ -36,11 +36,12 @@ final class ForecastApi(coll: Coll, roundMap: akka.actor.ActorSelection) {
       .void
   }
 
-  def save(pov: Pov, steps: Forecast.Steps): Funit = firstStep(steps) match {
-    case None                                         => coll.remove(BSONDocument("_id" -> pov.fullId)).void
-    case Some(step) if pov.game.turns == step.ply - 1 => saveSteps(pov, steps)
-    case _                                            => fufail(Forecast.OutOfSync)
-  }
+  def save(pov: Pov, steps: Forecast.Steps): Funit =
+    firstStep(steps) match {
+      case None                                         => coll.remove(BSONDocument("_id" -> pov.fullId)).void
+      case Some(step) if pov.game.turns == step.ply - 1 => saveSteps(pov, steps)
+      case _                                            => fufail(Forecast.OutOfSync)
+    }
 
   def playAndSave(pov: Pov, uciMove: String, steps: Forecast.Steps): Funit =
     if (!pov.isMyTurn)

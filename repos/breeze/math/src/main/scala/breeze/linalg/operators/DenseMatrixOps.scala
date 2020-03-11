@@ -1134,20 +1134,22 @@ trait DenseMatrixOpsLowPrio { this: DenseMatrixOps =>
 
   implicit def canMulM_V_def[T, B <: Vector[T]](implicit
       bb: B <:< Vector[T],
-      op: OpMulMatrix.Impl2[DenseMatrix[T], Vector[T], DenseVector[T]]) = (
-    implicitly[OpMulMatrix.Impl2[DenseMatrix[T], Vector[T], DenseVector[T]]]
-      .asInstanceOf[breeze.linalg.operators.OpMulMatrix.Impl2[
-        DenseMatrix[T],
-        B,
-        DenseVector[T]]]
-    )
+      op: OpMulMatrix.Impl2[DenseMatrix[T], Vector[T], DenseVector[T]]) =
+    (
+      implicitly[OpMulMatrix.Impl2[DenseMatrix[T], Vector[T], DenseVector[T]]]
+        .asInstanceOf[breeze.linalg.operators.OpMulMatrix.Impl2[
+          DenseMatrix[T],
+          B,
+          DenseVector[T]]]
+      )
 
   // ibid.
   implicit def canMulM_M_def[T, B <: Matrix[T]](implicit
       bb: B <:< Matrix[T],
-      op: OpMulMatrix.Impl2[DenseMatrix[T], Matrix[T], DenseMatrix[T]]) = (
-    op.asInstanceOf[OpMulMatrix.Impl2[DenseMatrix[T], B, DenseMatrix[T]]]
-  )
+      op: OpMulMatrix.Impl2[DenseMatrix[T], Matrix[T], DenseMatrix[T]]) =
+    (
+      op.asInstanceOf[OpMulMatrix.Impl2[DenseMatrix[T], B, DenseMatrix[T]]]
+    )
 
 }
 

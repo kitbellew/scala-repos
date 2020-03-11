@@ -132,10 +132,11 @@ final case class ClusterRouterPoolSettings(
   * INTERNAL API
   */
 private[akka] object ClusterRouterSettingsBase {
-  def useRoleOption(role: String): Option[String] = role match {
-    case null | "" ⇒ None
-    case _ ⇒ Some(role)
-  }
+  def useRoleOption(role: String): Option[String] =
+    role match {
+      case null | "" ⇒ None
+      case _ ⇒ Some(role)
+    }
 
   /**
     * For backwards compatibility reasons, nr-of-instances
@@ -194,15 +195,16 @@ final case class ClusterRouterGroup(
   override private[akka] def createRouterActor(): RouterActor =
     new ClusterRouterGroupActor(settings)
 
-  override def withFallback(other: RouterConfig): RouterConfig = other match {
-    case ClusterRouterGroup(_: ClusterRouterGroup, _) ⇒
-      throw new IllegalStateException(
-        "ClusterRouterGroup is not allowed to wrap a ClusterRouterGroup")
-    case ClusterRouterGroup(local, _) ⇒
-      copy(local = this.local.withFallback(local).asInstanceOf[Group])
-    case _ ⇒
-      copy(local = this.local.withFallback(other).asInstanceOf[Group])
-  }
+  override def withFallback(other: RouterConfig): RouterConfig =
+    other match {
+      case ClusterRouterGroup(_: ClusterRouterGroup, _) ⇒
+        throw new IllegalStateException(
+          "ClusterRouterGroup is not allowed to wrap a ClusterRouterGroup")
+      case ClusterRouterGroup(local, _) ⇒
+        copy(local = this.local.withFallback(local).asInstanceOf[Group])
+      case _ ⇒
+        copy(local = this.local.withFallback(other).asInstanceOf[Group])
+    }
 
 }
 
@@ -265,15 +267,16 @@ final case class ClusterRouterPool(
 
   override def supervisorStrategy: SupervisorStrategy = local.supervisorStrategy
 
-  override def withFallback(other: RouterConfig): RouterConfig = other match {
-    case ClusterRouterPool(_: ClusterRouterPool, _) ⇒
-      throw new IllegalStateException(
-        "ClusterRouterPool is not allowed to wrap a ClusterRouterPool")
-    case ClusterRouterPool(otherLocal, _) ⇒
-      copy(local = this.local.withFallback(otherLocal).asInstanceOf[Pool])
-    case _ ⇒
-      copy(local = this.local.withFallback(other).asInstanceOf[Pool])
-  }
+  override def withFallback(other: RouterConfig): RouterConfig =
+    other match {
+      case ClusterRouterPool(_: ClusterRouterPool, _) ⇒
+        throw new IllegalStateException(
+          "ClusterRouterPool is not allowed to wrap a ClusterRouterPool")
+      case ClusterRouterPool(otherLocal, _) ⇒
+        copy(local = this.local.withFallback(otherLocal).asInstanceOf[Pool])
+      case _ ⇒
+        copy(local = this.local.withFallback(other).asInstanceOf[Pool])
+    }
 
 }
 
@@ -313,21 +316,22 @@ private[akka] class ClusterRouterPoolActor(
     */
   override def addRoutees(): Unit = {
     @tailrec
-    def doAddRoutees(): Unit = selectDeploymentTarget match {
-      case None ⇒ // done
-      case Some(target) ⇒
-        val routeeProps = cell.routeeProps
-        val deploy = Deploy(
-          config = ConfigFactory.empty(),
-          routerConfig = routeeProps.routerConfig,
-          scope = RemoteScope(target))
-        val routee = pool.newRoutee(routeeProps.withDeploy(deploy), context)
-        // must register each one, since registered routees are used in selectDeploymentTarget
-        cell.addRoutee(routee)
+    def doAddRoutees(): Unit =
+      selectDeploymentTarget match {
+        case None ⇒ // done
+        case Some(target) ⇒
+          val routeeProps = cell.routeeProps
+          val deploy = Deploy(
+            config = ConfigFactory.empty(),
+            routerConfig = routeeProps.routerConfig,
+            scope = RemoteScope(target))
+          val routee = pool.newRoutee(routeeProps.withDeploy(deploy), context)
+          // must register each one, since registered routees are used in selectDeploymentTarget
+          cell.addRoutee(routee)
 
-        // recursion until all created
-        doAddRoutees()
-    }
+          // recursion until all created
+          doAddRoutees()
+      }
 
     doAddRoutees()
   }
@@ -384,19 +388,20 @@ private[akka] class ClusterRouterGroupActor(
     */
   override def addRoutees(): Unit = {
     @tailrec
-    def doAddRoutees(): Unit = selectDeploymentTarget match {
-      case None ⇒ // done
-      case Some((address, path)) ⇒
-        val routee = group.routeeFor(address + path, context)
-        usedRouteePaths = usedRouteePaths.updated(
-          address,
-          usedRouteePaths.getOrElse(address, Set.empty) + path)
-        // must register each one, since registered routees are used in selectDeploymentTarget
-        cell.addRoutee(routee)
+    def doAddRoutees(): Unit =
+      selectDeploymentTarget match {
+        case None ⇒ // done
+        case Some((address, path)) ⇒
+          val routee = group.routeeFor(address + path, context)
+          usedRouteePaths = usedRouteePaths.updated(
+            address,
+            usedRouteePaths.getOrElse(address, Set.empty) + path)
+          // must register each one, since registered routees are used in selectDeploymentTarget
+          cell.addRoutee(routee)
 
-        // recursion until all created
-        doAddRoutees()
-    }
+          // recursion until all created
+          doAddRoutees()
+      }
 
     doAddRoutees()
   }

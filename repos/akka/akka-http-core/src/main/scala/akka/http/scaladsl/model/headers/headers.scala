@@ -91,19 +91,20 @@ abstract class ModeledCustomHeaderCompanion[H <: ModeledCustomHeader[H]] {
           ex)
     }
 
-  def unapply(h: HttpHeader): Option[String] = h match {
-    case _: RawHeader ⇒
-      if (h.lowercaseName == lowercaseName)
-        Some(h.value)
-      else
-        None
-    case _: CustomHeader ⇒
-      if (h.lowercaseName == lowercaseName)
-        Some(h.value)
-      else
-        None
-    case _ ⇒ None
-  }
+  def unapply(h: HttpHeader): Option[String] =
+    h match {
+      case _: RawHeader ⇒
+        if (h.lowercaseName == lowercaseName)
+          Some(h.value)
+        else
+          None
+      case _: CustomHeader ⇒
+        if (h.lowercaseName == lowercaseName)
+          Some(h.value)
+        else
+          None
+      case _ ⇒ None
+    }
 
 }
 

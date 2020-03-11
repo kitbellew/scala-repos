@@ -55,24 +55,26 @@ trait TypeInferencerSpecs[M[+_]]
   import library._
 
   def flattenType(jtpe: JType): Map[JPath, Set[CType]] = {
-    def flattenAux(jtpe: JType): Set[(JPath, Option[CType])] = jtpe match {
-      case p: JPrimitiveType =>
-        Schema.ctypes(p).map(tpe => (JPath.Identity, Some(tpe)))
+    def flattenAux(jtpe: JType): Set[(JPath, Option[CType])] =
+      jtpe match {
+        case p: JPrimitiveType =>
+          Schema.ctypes(p).map(tpe => (JPath.Identity, Some(tpe)))
 
-      case JArrayFixedT(elems) =>
-        for ((i, jtpe) <- elems.toSet;
-             (path, ctpes) <- flattenAux(jtpe))
-          yield (JPathIndex(i) \ path, ctpes)
+        case JArrayFixedT(elems) =>
+          for ((i, jtpe) <- elems.toSet;
+               (path, ctpes) <- flattenAux(jtpe))
+            yield (JPathIndex(i) \ path, ctpes)
 
-      case JObjectFixedT(fields) =>
-        for ((field, jtpe) <- fields.toSet;
-             (path, ctpes) <- flattenAux(jtpe))
-          yield (JPathField(field) \ path, ctpes)
+        case JObjectFixedT(fields) =>
+          for ((field, jtpe) <- fields.toSet;
+               (path, ctpes) <- flattenAux(jtpe))
+            yield (JPathField(field) \ path, ctpes)
 
-      case JUnionT(left, right) => flattenAux(left) ++ flattenAux(right)
+        case JUnionT(left, right) => flattenAux(left) ++ flattenAux(right)
 
-      case u @ (JArrayUnfixedT | JObjectUnfixedT) => Set((JPath.Identity, None))
-    }
+        case u @ (JArrayUnfixedT | JObjectUnfixedT) =>
+          Set((JPath.Identity, None))
+      }
 
     flattenAux(jtpe).groupBy(_._1).mapValues(_.flatMap(_._2))
   }
@@ -97,22 +99,23 @@ trait TypeInferencerSpecs[M[+_]]
     }
 
     def extractSpecLoads(
-        spec: BucketSpec): Map[String, Map[JPath, Set[CType]]] = spec match {
-      case UnionBucketSpec(left, right) =>
-        merge(extractSpecLoads(left), extractSpecLoads(right))
+        spec: BucketSpec): Map[String, Map[JPath, Set[CType]]] =
+      spec match {
+        case UnionBucketSpec(left, right) =>
+          merge(extractSpecLoads(left), extractSpecLoads(right))
 
-      case IntersectBucketSpec(left, right) =>
-        merge(extractSpecLoads(left), extractSpecLoads(right))
+        case IntersectBucketSpec(left, right) =>
+          merge(extractSpecLoads(left), extractSpecLoads(right))
 
-      case Group(id, target, child) =>
-        merge(extractLoads(target), extractSpecLoads(child))
+        case Group(id, target, child) =>
+          merge(extractLoads(target), extractSpecLoads(child))
 
-      case UnfixedSolution(id, target) =>
-        extractLoads(target)
+        case UnfixedSolution(id, target) =>
+          extractLoads(target)
 
-      case Extra(target) =>
-        extractLoads(target)
-    }
+        case Extra(target) =>
+          extractLoads(target)
+      }
 
     graph match {
       case _: Root => Map()

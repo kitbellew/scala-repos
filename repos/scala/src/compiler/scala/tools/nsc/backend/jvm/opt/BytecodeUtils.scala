@@ -196,36 +196,38 @@ object BytecodeUtils {
     followGoto(source.label, Set(source.label))
   }
 
-  def negateJumpOpcode(jumpOpcode: Int): Int = (jumpOpcode: @switch) match {
-    case IFEQ => IFNE
-    case IFNE => IFEQ
+  def negateJumpOpcode(jumpOpcode: Int): Int =
+    (jumpOpcode: @switch) match {
+      case IFEQ => IFNE
+      case IFNE => IFEQ
 
-    case IFLT => IFGE
-    case IFGE => IFLT
+      case IFLT => IFGE
+      case IFGE => IFLT
 
-    case IFGT => IFLE
-    case IFLE => IFGT
+      case IFGT => IFLE
+      case IFLE => IFGT
 
-    case IF_ICMPEQ => IF_ICMPNE
-    case IF_ICMPNE => IF_ICMPEQ
+      case IF_ICMPEQ => IF_ICMPNE
+      case IF_ICMPNE => IF_ICMPEQ
 
-    case IF_ICMPLT => IF_ICMPGE
-    case IF_ICMPGE => IF_ICMPLT
+      case IF_ICMPLT => IF_ICMPGE
+      case IF_ICMPGE => IF_ICMPLT
 
-    case IF_ICMPGT => IF_ICMPLE
-    case IF_ICMPLE => IF_ICMPGT
+      case IF_ICMPGT => IF_ICMPLE
+      case IF_ICMPLE => IF_ICMPGT
 
-    case IF_ACMPEQ => IF_ACMPNE
-    case IF_ACMPNE => IF_ACMPEQ
+      case IF_ACMPEQ => IF_ACMPNE
+      case IF_ACMPNE => IF_ACMPEQ
 
-    case IFNULL    => IFNONNULL
-    case IFNONNULL => IFNULL
-  }
+      case IFNULL    => IFNONNULL
+      case IFNONNULL => IFNULL
+    }
 
-  def isSize2LoadOrStore(opcode: Int): Boolean = (opcode: @switch) match {
-    case LLOAD | DLOAD | LSTORE | DSTORE => true
-    case _                               => false
-  }
+  def isSize2LoadOrStore(opcode: Int): Boolean =
+    (opcode: @switch) match {
+      case LLOAD | DLOAD | LSTORE | DSTORE => true
+      case _                               => false
+    }
 
   def getPop(size: Int): InsnNode = {
     val op =
@@ -239,14 +241,15 @@ object BytecodeUtils {
   def instructionResultSize(insn: AbstractInsnNode) =
     InstructionStackEffect.prod(InstructionStackEffect.forClassfile(insn))
 
-  def loadZeroForTypeSort(sort: Int) = (sort: @switch) match {
-    case Type.BOOLEAN | Type.BYTE | Type.CHAR | Type.SHORT | Type.INT =>
-      new InsnNode(ICONST_0)
-    case Type.LONG   => new InsnNode(LCONST_0)
-    case Type.FLOAT  => new InsnNode(FCONST_0)
-    case Type.DOUBLE => new InsnNode(DCONST_0)
-    case Type.OBJECT => new InsnNode(ACONST_NULL)
-  }
+  def loadZeroForTypeSort(sort: Int) =
+    (sort: @switch) match {
+      case Type.BOOLEAN | Type.BYTE | Type.CHAR | Type.SHORT | Type.INT =>
+        new InsnNode(ICONST_0)
+      case Type.LONG   => new InsnNode(LCONST_0)
+      case Type.FLOAT  => new InsnNode(FCONST_0)
+      case Type.DOUBLE => new InsnNode(DCONST_0)
+      case Type.OBJECT => new InsnNode(ACONST_NULL)
+    }
 
   /**
     * The number of local variable slots used for parameters and for the `this` reference.

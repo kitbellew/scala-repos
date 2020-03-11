@@ -107,17 +107,19 @@ object CalendarBatcher {
     }
   }
 
-  def hoursField(tz: TimeZone): CalField = new CalField {
-    def javaIntValue = Calendar.HOUR
-    def defaultSize = 1000L * 60L * 60L
-    def timeZone = tz
-  }
+  def hoursField(tz: TimeZone): CalField =
+    new CalField {
+      def javaIntValue = Calendar.HOUR
+      def defaultSize = 1000L * 60L * 60L
+      def timeZone = tz
+    }
 
-  def daysField(tz: TimeZone): CalField = new CalField {
-    def javaIntValue = Calendar.DAY_OF_YEAR
-    def defaultSize = 1000L * 60L * 60L * 24L
-    def timeZone = tz
-  }
+  def daysField(tz: TimeZone): CalField =
+    new CalField {
+      def javaIntValue = Calendar.DAY_OF_YEAR
+      def defaultSize = 1000L * 60L * 60L * 24L
+      def timeZone = tz
+    }
 
   def ofDays(days: Int)(implicit tz: TimeZone): CalendarBatcher =
     CalendarBatcher(days, daysField(tz))

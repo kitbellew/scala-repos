@@ -85,10 +85,11 @@ class FastFuture[A](val future: Future[A]) extends AnyVal {
 }
 
 object FastFuture {
-  def apply[T](value: Try[T]): Future[T] = value match {
-    case Success(t) ⇒ FulfilledFuture(t)
-    case Failure(e) ⇒ ErrorFuture(e)
-  }
+  def apply[T](value: Try[T]): Future[T] =
+    value match {
+      case Success(t) ⇒ FulfilledFuture(t)
+      case Failure(e) ⇒ ErrorFuture(e)
+    }
   private[this] val _successful: Any ⇒ Future[Any] = FulfilledFuture.apply
   def successful[T]: T ⇒ Future[T] = _successful.asInstanceOf[T ⇒ Future[T]]
   val failed: Throwable ⇒ Future[Nothing] = ErrorFuture.apply

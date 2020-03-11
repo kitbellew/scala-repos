@@ -47,12 +47,13 @@ object TypeDefinitionMembers {
     }
   }
 
-  def isAbstract(s: PhysicalSignature) = s.method match {
-    case _: ScFunctionDeclaration                         => true
-    case _: ScFunctionDefinition                          => false
-    case m if m.hasModifierProperty(PsiModifier.ABSTRACT) => true
-    case _                                                => false
-  }
+  def isAbstract(s: PhysicalSignature) =
+    s.method match {
+      case _: ScFunctionDeclaration                         => true
+      case _: ScFunctionDefinition                          => false
+      case m if m.hasModifierProperty(PsiModifier.ABSTRACT) => true
+      case _                                                => false
+    }
 
   object ParameterlessNodes extends MixinNodes {
     type T = Signature
@@ -85,18 +86,19 @@ object TypeDefinitionMembers {
       }
     }
 
-    def isAbstract(s: Signature) = s match {
-      case phys: PhysicalSignature =>
-        TypeDefinitionMembers.this.isAbstract(phys)
-      case s: Signature =>
-        s.namedElement match {
-          case _: ScFieldId => true
-          case f: PsiField if f.hasModifierProperty(PsiModifier.ABSTRACT) =>
-            true
-          case _ => false
-        }
-      case _ => false
-    }
+    def isAbstract(s: Signature) =
+      s match {
+        case phys: PhysicalSignature =>
+          TypeDefinitionMembers.this.isAbstract(phys)
+        case s: Signature =>
+          s.namedElement match {
+            case _: ScFieldId => true
+            case f: PsiField if f.hasModifierProperty(PsiModifier.ABSTRACT) =>
+              true
+            case _ => false
+          }
+        case _ => false
+      }
 
     def isImplicit(t: Signature) = ScalaPsiUtil.isImplicit(t.namedElement)
 
@@ -302,10 +304,11 @@ object TypeDefinitionMembers {
 
     def elemName(t: PsiNamedElement) = t.name
 
-    def isAbstract(t: PsiNamedElement) = t match {
-      case _: ScTypeAliasDeclaration => true
-      case _                         => false
-    }
+    def isAbstract(t: PsiNamedElement) =
+      t match {
+        case _: ScTypeAliasDeclaration => true
+        case _                         => false
+      }
 
     def isImplicit(t: PsiNamedElement) = false
 
@@ -400,18 +403,19 @@ object TypeDefinitionMembers {
       }
     }
 
-    def isAbstract(s: Signature) = s match {
-      case phys: PhysicalSignature =>
-        TypeDefinitionMembers.this.isAbstract(phys)
-      case s: Signature =>
-        s.namedElement match {
-          case _: ScFieldId => true
-          case f: PsiField if f.hasModifierProperty(PsiModifier.ABSTRACT) =>
-            true
-          case _ => false
-        }
-      case _ => false
-    }
+    def isAbstract(s: Signature) =
+      s match {
+        case phys: PhysicalSignature =>
+          TypeDefinitionMembers.this.isAbstract(phys)
+        case s: Signature =>
+          s.namedElement match {
+            case _: ScFieldId => true
+            case f: PsiField if f.hasModifierProperty(PsiModifier.ABSTRACT) =>
+              true
+            case _ => false
+          }
+        case _ => false
+      }
 
     def isImplicit(t: Signature) = ScalaPsiUtil.isImplicit(t.namedElement)
 
@@ -1382,35 +1386,39 @@ object TypeDefinitionMembers {
 
   import org.jetbrains.plugins.scala.lang.resolve.ResolveTargets._
 
-  def shouldProcessVals(processor: PsiScopeProcessor) = processor match {
-    case BaseProcessor(kinds) =>
-      (kinds contains VAR) || (kinds contains VAL) || (kinds contains OBJECT)
-    case _ =>
-      val hint: ElementClassHint = processor.getHint(ElementClassHint.KEY)
-      hint == null || hint.shouldProcess(
-        ElementClassHint.DeclarationKind.VARIABLE)
-  }
+  def shouldProcessVals(processor: PsiScopeProcessor) =
+    processor match {
+      case BaseProcessor(kinds) =>
+        (kinds contains VAR) || (kinds contains VAL) || (kinds contains OBJECT)
+      case _ =>
+        val hint: ElementClassHint = processor.getHint(ElementClassHint.KEY)
+        hint == null || hint.shouldProcess(
+          ElementClassHint.DeclarationKind.VARIABLE)
+    }
 
-  def shouldProcessMethods(processor: PsiScopeProcessor) = processor match {
-    case BaseProcessor(kinds) => kinds contains METHOD
-    case _ =>
-      val hint = processor.getHint(ElementClassHint.KEY)
-      hint == null || hint.shouldProcess(
-        ElementClassHint.DeclarationKind.METHOD)
-  }
+  def shouldProcessMethods(processor: PsiScopeProcessor) =
+    processor match {
+      case BaseProcessor(kinds) => kinds contains METHOD
+      case _ =>
+        val hint = processor.getHint(ElementClassHint.KEY)
+        hint == null || hint.shouldProcess(
+          ElementClassHint.DeclarationKind.METHOD)
+    }
 
-  def shouldProcessMethodRefs(processor: PsiScopeProcessor) = processor match {
-    case BaseProcessor(kinds) =>
-      (kinds contains METHOD) || (kinds contains VAR) || (kinds contains VAL)
-    case _ => true
-  }
+  def shouldProcessMethodRefs(processor: PsiScopeProcessor) =
+    processor match {
+      case BaseProcessor(kinds) =>
+        (kinds contains METHOD) || (kinds contains VAR) || (kinds contains VAL)
+      case _ => true
+    }
 
-  def shouldProcessTypes(processor: PsiScopeProcessor) = processor match {
-    case b: BaseProcessor if b.isImplicitProcessor => false
-    case BaseProcessor(kinds) =>
-      (kinds contains CLASS) || (kinds contains METHOD)
-    case _ => false //important: do not process inner classes!
-  }
+  def shouldProcessTypes(processor: PsiScopeProcessor) =
+    processor match {
+      case b: BaseProcessor if b.isImplicitProcessor => false
+      case BaseProcessor(kinds) =>
+        (kinds contains CLASS) || (kinds contains METHOD)
+      case _ => false //important: do not process inner classes!
+    }
 
   def shouldProcessJavaInnerClasses(processor: PsiScopeProcessor): Boolean = {
     if (processor.isInstanceOf[BaseProcessor])

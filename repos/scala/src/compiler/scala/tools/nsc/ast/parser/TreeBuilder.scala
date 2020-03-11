@@ -64,10 +64,11 @@ abstract class TreeBuilder {
   /** Create tree representing a while loop */
   def makeWhile(startPos: Int, cond: Tree, body: Tree): Tree = {
     val lname = freshTermName(nme.WHILE_PREFIX)
-    def default = wrappingPos(List(cond, body)) match {
-      case p if p.isDefined => p.end
-      case _                => startPos
-    }
+    def default =
+      wrappingPos(List(cond, body)) match {
+        case p if p.isDefined => p.end
+        case _                => startPos
+      }
     val continu = atPos(o2p(body.pos pointOrElse default)) {
       Apply(Ident(lname), Nil)
     }
@@ -93,10 +94,11 @@ abstract class TreeBuilder {
 
   /** Create tree for a pattern alternative */
   def makeAlternative(ts: List[Tree]): Tree = {
-    def alternatives(t: Tree): List[Tree] = t match {
-      case Alternative(ts) => ts
-      case _               => List(t)
-    }
+    def alternatives(t: Tree): List[Tree] =
+      t match {
+        case Alternative(ts) => ts
+        case _               => List(t)
+      }
     Alternative(ts flatMap alternatives)
   }
 

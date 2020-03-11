@@ -55,8 +55,9 @@ object AggregationClusters {
     }
 
   private def postSort[X](q: Question[X])(
-      clusters: List[Cluster[X]]): List[Cluster[X]] = q.dimension match {
-    case Dimension.Opening => clusters
-    case _                 => clusters.sortLike(Dimension.valuesOf(q.dimension), _.x)
-  }
+      clusters: List[Cluster[X]]): List[Cluster[X]] =
+    q.dimension match {
+      case Dimension.Opening => clusters
+      case _                 => clusters.sortLike(Dimension.valuesOf(q.dimension), _.x)
+    }
 }

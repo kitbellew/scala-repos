@@ -541,14 +541,15 @@ trait IntroduceTypeAlias {
       var selectionHighlighter: RangeHighlighter = null
       val markupModel = editor.getMarkupModel
 
-      def addHighlighter() = if (selectionHighlighter == null) {
-        selectionHighlighter = markupModel.addRangeHighlighter(
-          start,
-          end,
-          HighlighterLayer.SELECTION + 1,
-          textAttributes,
-          HighlighterTargetArea.EXACT_RANGE)
-      }
+      def addHighlighter() =
+        if (selectionHighlighter == null) {
+          selectionHighlighter = markupModel.addRangeHighlighter(
+            start,
+            end,
+            HighlighterLayer.SELECTION + 1,
+            textAttributes,
+            HighlighterTargetArea.EXACT_RANGE)
+        }
 
       def removeHighlighter() =
         if (selectionHighlighter != null)

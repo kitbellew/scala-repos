@@ -225,18 +225,19 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
     *
     * Views are only possible (if(isTranspose) majorStride == cols else majorStride == rows) == true
     */
-  def flatten(view: View = View.Prefer): DenseVector[V] = view match {
-    case View.Require =>
-      if (!canFlattenView)
-        throw new UnsupportedOperationException(
-          "Cannot make a view of this matrix.")
-      else
-        DenseVector.create(data, offset, 1, rows * cols)
-    case View.Copy =>
-      toDenseVector
-    case View.Prefer =>
-      flatten(canFlattenView)
-  }
+  def flatten(view: View = View.Prefer): DenseVector[V] =
+    view match {
+      case View.Require =>
+        if (!canFlattenView)
+          throw new UnsupportedOperationException(
+            "Cannot make a view of this matrix.")
+        else
+          DenseVector.create(data, offset, 1, rows * cols)
+      case View.Copy =>
+        toDenseVector
+      case View.Prefer =>
+        flatten(canFlattenView)
+    }
 
   private def canFlattenView =
     if (isTranspose)
@@ -1054,11 +1055,12 @@ object DenseMatrix
     }
   }
 
-  implicit def canCopyDenseMatrix[V: ClassTag] = new CanCopy[DenseMatrix[V]] {
-    def apply(v1: DenseMatrix[V]) = {
-      v1.copy
+  implicit def canCopyDenseMatrix[V: ClassTag] =
+    new CanCopy[DenseMatrix[V]] {
+      def apply(v1: DenseMatrix[V]) = {
+        v1.copy
+      }
     }
-  }
 
   def binaryOpFromUpdateOp[Op <: OpType, V, Other](implicit
       copy: CanCopy[DenseMatrix[V]],
@@ -1423,9 +1425,10 @@ object DenseMatrix
     }
   }
 
-  implicit def canDim[E] = new dim.Impl[DenseMatrix[E], (Int, Int)] {
-    def apply(v: DenseMatrix[E]): (Int, Int) = (v.rows, v.cols)
-  }
+  implicit def canDim[E] =
+    new dim.Impl[DenseMatrix[E], (Int, Int)] {
+      def apply(v: DenseMatrix[E]): (Int, Int) = (v.rows, v.cols)
+    }
 
   object FrobeniusInnerProductDenseMatrixSpace {
 

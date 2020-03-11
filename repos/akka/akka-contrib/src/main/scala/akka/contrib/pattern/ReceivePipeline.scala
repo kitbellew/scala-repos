@@ -97,21 +97,22 @@ trait ReceivePipeline extends Actor {
     toReceive(zipped)
   }
 
-  private def toReceive(handler: Handler) = new Receive {
-    def isDefinedAt(m: Any): Boolean = evaluate(m) != Undefined
-    def apply(m: Any): Unit = evaluate(m)
+  private def toReceive(handler: Handler) =
+    new Receive {
+      def isDefinedAt(m: Any): Boolean = evaluate(m) != Undefined
+      def apply(m: Any): Unit = evaluate(m)
 
-    override def applyOrElse[A1 <: Any, B1 >: Unit](
-        m: A1,
-        default: A1 ⇒ B1): B1 = {
-      val result = handler(m)
+      override def applyOrElse[A1 <: Any, B1 >: Unit](
+          m: A1,
+          default: A1 ⇒ B1): B1 = {
+        val result = handler(m)
 
-      if (result == Undefined)
-        default(m)
+        if (result == Undefined)
+          default(m)
+      }
+
+      private def evaluate(m: Any) = handler(m)
     }
-
-    private def evaluate(m: Any) = handler(m)
-  }
 
   /**
     * INTERNAL API.

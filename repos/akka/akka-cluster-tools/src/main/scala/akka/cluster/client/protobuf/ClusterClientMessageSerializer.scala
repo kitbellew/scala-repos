@@ -42,25 +42,27 @@ private[akka] class ClusterClientMessageSerializer(
         HeartbeatRsp
       })
 
-  override def manifest(obj: AnyRef): String = obj match {
-    case _: Contacts ⇒ ContactsManifest
-    case GetContacts ⇒ GetContactsManifest
-    case Heartbeat ⇒ HeartbeatManifest
-    case HeartbeatRsp ⇒ HeartbeatRspManifest
-    case _ ⇒
-      throw new IllegalArgumentException(
-        s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
-  }
+  override def manifest(obj: AnyRef): String =
+    obj match {
+      case _: Contacts ⇒ ContactsManifest
+      case GetContacts ⇒ GetContactsManifest
+      case Heartbeat ⇒ HeartbeatManifest
+      case HeartbeatRsp ⇒ HeartbeatRspManifest
+      case _ ⇒
+        throw new IllegalArgumentException(
+          s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
+    }
 
-  override def toBinary(obj: AnyRef): Array[Byte] = obj match {
-    case m: Contacts ⇒ contactsToProto(m).toByteArray
-    case GetContacts ⇒ emptyByteArray
-    case Heartbeat ⇒ emptyByteArray
-    case HeartbeatRsp ⇒ emptyByteArray
-    case _ ⇒
-      throw new IllegalArgumentException(
-        s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
-  }
+  override def toBinary(obj: AnyRef): Array[Byte] =
+    obj match {
+      case m: Contacts ⇒ contactsToProto(m).toByteArray
+      case GetContacts ⇒ emptyByteArray
+      case Heartbeat ⇒ emptyByteArray
+      case HeartbeatRsp ⇒ emptyByteArray
+      case _ ⇒
+        throw new IllegalArgumentException(
+          s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
+    }
 
   override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
     fromBinaryMap.get(manifest) match {

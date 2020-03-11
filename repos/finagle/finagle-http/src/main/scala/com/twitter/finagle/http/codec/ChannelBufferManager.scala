@@ -35,43 +35,49 @@ class ChannelBufferUsageTracker(
       maxUsage.inBytes
     }
 
-  def currentUsage: StorageUnit = synchronized {
-    state.currentUsage.bytes
-  }
-
-  def maxUsage: StorageUnit = synchronized {
-    state.maxUsage.bytes
-  }
-
-  def usageLimit(): StorageUnit = synchronized {
-    state.usageLimit
-  }
-
-  def setUsageLimit(limit: StorageUnit) = synchronized {
-    state.usageLimit = limit
-  }
-
-  def increase(size: Long) = synchronized {
-    if (state.currentUsage + size > state.usageLimit.inBytes) {
-      throw new ChannelBufferUsageException(
-        "Channel buffer usage exceeded limit ("
-          + currentUsage + ", " + size + " vs. " + usageLimit + ")")
-    } else {
-      state.currentUsage += size
-      if (currentUsage > maxUsage)
-        state.maxUsage = state.currentUsage
+  def currentUsage: StorageUnit =
+    synchronized {
+      state.currentUsage.bytes
     }
-  }
 
-  def decrease(size: Long) = synchronized {
-    if (state.currentUsage < size) {
-      throw new ChannelBufferUsageException(
-        "invalid ChannelBufferUsageTracker decrease operation ("
-          + size + " vs. " + currentUsage + ")")
-    } else {
-      state.currentUsage -= size
+  def maxUsage: StorageUnit =
+    synchronized {
+      state.maxUsage.bytes
     }
-  }
+
+  def usageLimit(): StorageUnit =
+    synchronized {
+      state.usageLimit
+    }
+
+  def setUsageLimit(limit: StorageUnit) =
+    synchronized {
+      state.usageLimit = limit
+    }
+
+  def increase(size: Long) =
+    synchronized {
+      if (state.currentUsage + size > state.usageLimit.inBytes) {
+        throw new ChannelBufferUsageException(
+          "Channel buffer usage exceeded limit ("
+            + currentUsage + ", " + size + " vs. " + usageLimit + ")")
+      } else {
+        state.currentUsage += size
+        if (currentUsage > maxUsage)
+          state.maxUsage = state.currentUsage
+      }
+    }
+
+  def decrease(size: Long) =
+    synchronized {
+      if (state.currentUsage < size) {
+        throw new ChannelBufferUsageException(
+          "invalid ChannelBufferUsageTracker decrease operation ("
+            + size + " vs. " + currentUsage + ")")
+      } else {
+        state.currentUsage -= size
+      }
+    }
 }
 
 private[http] class ChannelBufferManager(

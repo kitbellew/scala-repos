@@ -32,18 +32,21 @@ private[util] trait StackTracing extends Any {
     val suppressable = isJavaAtLeast("1.7")
 
     def clazz(e: Throwable) = e.getClass.getName
-    def because(e: Throwable): String = e.getCause match {
-      case null => null;
-      case c    => header(c)
-    }
-    def msg(e: Throwable): String = e.getMessage match {
-      case null => because(e);
-      case s    => s
-    }
-    def txt(e: Throwable): String = msg(e) match {
-      case null => "";
-      case s    => s": $s"
-    }
+    def because(e: Throwable): String =
+      e.getCause match {
+        case null => null;
+        case c    => header(c)
+      }
+    def msg(e: Throwable): String =
+      e.getMessage match {
+        case null => because(e);
+        case s    => s
+      }
+    def txt(e: Throwable): String =
+      msg(e) match {
+        case null => "";
+        case s    => s": $s"
+      }
     def header(e: Throwable): String = s"${clazz(e)}${txt(e)}"
 
     val indent = "\u0020\u0020"
@@ -61,37 +64,38 @@ private[util] trait StackTracing extends Any {
         e: Throwable,
         r: TraceRelation,
         share: Array[StackTraceElement],
-        indents: Int): Unit = if (unseen(e)) {
-      val trace = e.getStackTrace
-      val frames =
-        (
-          if (share.nonEmpty) {
-            val spare = share.reverseIterator
-            val trimmed =
-              trace.reverse dropWhile (spare.hasNext && spare.next == _)
-            trimmed.reverse
-          } else
-            trace
-        )
-      val prefix = frames takeWhile p
-      val margin = indent * indents
-      val indented = margin + indent
-      sb append s"${margin}${r}${header(e)}"
-      prefix foreach (f => sb append s"${indented}at $f")
-      if (frames.size < trace.size)
-        sb append s"$indented... ${trace.size - frames.size} more"
-      if (r == Self && prefix.size < frames.size)
-        sb append s"$indented... ${frames.size - prefix.size} elided"
-      print(e.getCause, CausedBy, trace, indents)
-      if (suppressable) {
-        import scala.language.reflectiveCalls
-        type Suppressing = {
-          def getSuppressed(): Array[Throwable]
+        indents: Int): Unit =
+      if (unseen(e)) {
+        val trace = e.getStackTrace
+        val frames =
+          (
+            if (share.nonEmpty) {
+              val spare = share.reverseIterator
+              val trimmed =
+                trace.reverse dropWhile (spare.hasNext && spare.next == _)
+              trimmed.reverse
+            } else
+              trace
+          )
+        val prefix = frames takeWhile p
+        val margin = indent * indents
+        val indented = margin + indent
+        sb append s"${margin}${r}${header(e)}"
+        prefix foreach (f => sb append s"${indented}at $f")
+        if (frames.size < trace.size)
+          sb append s"$indented... ${trace.size - frames.size} more"
+        if (r == Self && prefix.size < frames.size)
+          sb append s"$indented... ${frames.size - prefix.size} elided"
+        print(e.getCause, CausedBy, trace, indents)
+        if (suppressable) {
+          import scala.language.reflectiveCalls
+          type Suppressing = {
+            def getSuppressed(): Array[Throwable]
+          }
+          for (s <- e.asInstanceOf[Suppressing].getSuppressed)
+            print(s, Suppressed, frames, indents + 1)
         }
-        for (s <- e.asInstanceOf[Suppressing].getSuppressed)
-          print(s, Suppressed, frames, indents + 1)
       }
-    }
     print(e, Self, share = Array.empty, indents = 0)
 
     sb mkString EOL

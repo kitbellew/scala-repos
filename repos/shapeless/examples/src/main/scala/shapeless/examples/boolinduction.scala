@@ -31,14 +31,16 @@ object BooleanInduction extends App {
     def apply(a: A, b: B): T
   }
   object If {
-    implicit def ifTrue[A, B] = new If[True, A, B] {
-      type T = A;
-      def apply(a: A, b: B) = a
-    }
-    implicit def ifFalse[A, B] = new If[False, A, B] {
-      type T = B;
-      def apply(a: A, b: B) = b
-    }
+    implicit def ifTrue[A, B] =
+      new If[True, A, B] {
+        type T = A;
+        def apply(a: A, b: B) = a
+      }
+    implicit def ifFalse[A, B] =
+      new If[False, A, B] {
+        type T = B;
+        def apply(a: A, b: B) = b
+      }
   }
 
   // Scala translation of:

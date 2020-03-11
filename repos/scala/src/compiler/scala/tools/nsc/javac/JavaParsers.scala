@@ -245,18 +245,19 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
 
     /** Convert (qual)ident to type identifier
       */
-    def convertToTypeId(tree: Tree): Tree = gen.convertToTypeName(tree) match {
-      case Some(t) => t setPos tree.pos
-      case _ =>
-        tree match {
-          case AppliedTypeTree(_, _) | ExistentialTypeTree(_, _) |
-              SelectFromTypeTree(_, _) =>
-            tree
-          case _ =>
-            syntaxError(tree.pos, "identifier expected", skipIt = false)
-            errorTypeTree
-        }
-    }
+    def convertToTypeId(tree: Tree): Tree =
+      gen.convertToTypeName(tree) match {
+        case Some(t) => t setPos tree.pos
+        case _ =>
+          tree match {
+            case AppliedTypeTree(_, _) | ExistentialTypeTree(_, _) |
+                SelectFromTypeTree(_, _) =>
+              tree
+            case _ =>
+              syntaxError(tree.pos, "identifier expected", skipIt = false)
+              errorTypeTree
+          }
+      }
 
     // -------------------- specific parsing routines ------------------
 
@@ -328,10 +329,11 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
           // Select nodes can be later
           // converted in the typechecker to SelectFromTypeTree if the class
           // turns out to be an instance ionner class instead of a static inner class.
-          def typeSelect(t: Tree, name: Name) = t match {
-            case Ident(_) | Select(_, _) => Select(t, name)
-            case _                       => SelectFromTypeTree(t, name.toTypeName)
-          }
+          def typeSelect(t: Tree, name: Name) =
+            t match {
+              case Ident(_) | Select(_, _) => Select(t, name)
+              case _                       => SelectFromTypeTree(t, name.toTypeName)
+            }
           while (in.token == DOT) {
             in.nextToken()
             t = typeArgs(atPos(in.currentPos)(typeSelect(t, ident())))
@@ -890,25 +892,27 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
              members) ++= decls
         }
       }
-      def forwarders(sdef: Tree): List[Tree] = sdef match {
-        case ClassDef(mods, name, tparams, _) if (parentToken == INTERFACE) =>
-          val tparams1: List[TypeDef] = tparams map (_.duplicate)
-          var rhs: Tree = Select(Ident(parentName.toTermName), name)
-          if (!tparams1.isEmpty)
-            rhs = AppliedTypeTree(rhs, tparams1 map (tp => Ident(tp.name)))
-          List(TypeDef(Modifiers(Flags.PROTECTED), name, tparams1, rhs))
-        case _ =>
-          List()
-      }
+      def forwarders(sdef: Tree): List[Tree] =
+        sdef match {
+          case ClassDef(mods, name, tparams, _) if (parentToken == INTERFACE) =>
+            val tparams1: List[TypeDef] = tparams map (_.duplicate)
+            var rhs: Tree = Select(Ident(parentName.toTermName), name)
+            if (!tparams1.isEmpty)
+              rhs = AppliedTypeTree(rhs, tparams1 map (tp => Ident(tp.name)))
+            List(TypeDef(Modifiers(Flags.PROTECTED), name, tparams1, rhs))
+          case _ =>
+            List()
+        }
       val sdefs = statics.toList
       val idefs = members.toList ::: (sdefs flatMap forwarders)
       (sdefs, idefs)
     }
-    def annotationParents = List(
-      gen.scalaAnnotationDot(tpnme.Annotation),
-      Select(javaLangDot(nme.annotation), tpnme.Annotation),
-      gen.scalaAnnotationDot(tpnme.ClassfileAnnotation)
-    )
+    def annotationParents =
+      List(
+        gen.scalaAnnotationDot(tpnme.Annotation),
+        Select(javaLangDot(nme.annotation), tpnme.Annotation),
+        gen.scalaAnnotationDot(tpnme.ClassfileAnnotation)
+      )
     def annotationDecl(mods: Modifiers): List[Tree] = {
       accept(AT)
       accept(INTERFACE)
@@ -1016,16 +1020,17 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
       (res, hasClassBody)
     }
 
-    def typeDecl(mods: Modifiers): List[Tree] = in.token match {
-      case ENUM      => enumDecl(mods)
-      case INTERFACE => interfaceDecl(mods)
-      case AT        => annotationDecl(mods)
-      case CLASS     => classDecl(mods)
-      case _ =>
-        in.nextToken();
-        syntaxError("illegal start of type declaration", skipIt = true);
-        List(errorTypeTree)
-    }
+    def typeDecl(mods: Modifiers): List[Tree] =
+      in.token match {
+        case ENUM      => enumDecl(mods)
+        case INTERFACE => interfaceDecl(mods)
+        case AT        => annotationDecl(mods)
+        case CLASS     => classDecl(mods)
+        case _ =>
+          in.nextToken();
+          syntaxError("illegal start of type declaration", skipIt = true);
+          List(errorTypeTree)
+      }
 
     /** CompilationUnit ::= [package QualId semi] TopStatSeq
       */

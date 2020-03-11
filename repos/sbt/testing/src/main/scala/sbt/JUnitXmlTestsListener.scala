@@ -170,9 +170,10 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
   /**
     * Adds all details for the given even to the current suite.
     */
-  override def testEvent(event: TestEvent): Unit = for (e <- event.detail) {
-    testSuite.value.addEvent(e)
-  }
+  override def testEvent(event: TestEvent): Unit =
+    for (e <- event.detail) {
+      testSuite.value.addEvent(e)
+    }
 
   /**
     * called for each class or equivalent grouping

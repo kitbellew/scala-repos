@@ -96,11 +96,12 @@ trait GrouperSpec[M[+_]]
       }
   }
 
-  def augmentWithIdentities(json: Stream[JValue]) = json.zipWithIndex map {
-    case (v, i) =>
-      JObject(
-        JField("key", JArray(JNum(i) :: Nil)) :: JField("value", v) :: Nil)
-  }
+  def augmentWithIdentities(json: Stream[JValue]) =
+    json.zipWithIndex map {
+      case (v, i) =>
+        JObject(
+          JField("key", JArray(JNum(i) :: Nil)) :: JField("value", v) :: Nil)
+    }
 
   def testHistogramByValue(set: Stream[Int]) = {
     val module = emptyTestModule

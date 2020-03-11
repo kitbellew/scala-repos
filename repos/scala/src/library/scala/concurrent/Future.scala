@@ -108,14 +108,15 @@ trait Future[+T] extends Awaitable[T] {
     "use `foreach` or `onComplete` instead (keep in mind that they take total rather than partial functions)",
     "2.12")
   def onSuccess[U](pf: PartialFunction[T, U])(
-      implicit executor: ExecutionContext): Unit = onComplete {
-    case Success(v) =>
-      pf.applyOrElse[T, Any](
-        v,
-        Predef.conforms[T]
-      ) // Exploiting the cached function to avoid MatchError
-    case _ =>
-  }
+      implicit executor: ExecutionContext): Unit =
+    onComplete {
+      case Success(v) =>
+        pf.applyOrElse[T, Any](
+          v,
+          Predef.conforms[T]
+        ) // Exploiting the cached function to avoid MatchError
+      case _ =>
+    }
 
   /** When this future is completed with a failure (i.e., with a throwable),
     *  apply the provided callback to the throwable.
@@ -136,14 +137,15 @@ trait Future[+T] extends Awaitable[T] {
     "2.12")
   def onFailure[U](
       @deprecatedName('callback) pf: PartialFunction[Throwable, U])(
-      implicit executor: ExecutionContext): Unit = onComplete {
-    case Failure(t) =>
-      pf.applyOrElse[Throwable, Any](
-        t,
-        Predef.conforms[Throwable]
-      ) // Exploiting the cached function to avoid MatchError
-    case _ =>
-  }
+      implicit executor: ExecutionContext): Unit =
+    onComplete {
+      case Failure(t) =>
+        pf.applyOrElse[Throwable, Any](
+          t,
+          Predef.conforms[Throwable]
+        ) // Exploiting the cached function to avoid MatchError
+      case _ =>
+    }
 
   /** When this future is completed, either through an exception, or a value,
     *  apply the provided function.
@@ -294,10 +296,11 @@ trait Future[+T] extends Awaitable[T] {
     *  @return    a `Future` which will be completed with the result of the application of the function
     */
   def flatMap[S](f: T => Future[S])(
-      implicit executor: ExecutionContext): Future[S] = transformWith {
-    case Success(s) => f(s)
-    case Failure(_) => this.asInstanceOf[Future[S]]
-  }
+      implicit executor: ExecutionContext): Future[S] =
+    transformWith {
+      case Success(s) => f(s)
+      case Failure(_) => this.asInstanceOf[Future[S]]
+    }
 
   /** Creates a new future with one level of nesting flattened, this method is equivalent
     *  to `flatMap(identity)`.

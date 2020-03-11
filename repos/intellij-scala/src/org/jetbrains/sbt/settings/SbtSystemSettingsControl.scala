@@ -14,14 +14,15 @@ class SbtSystemSettingsControl(settings: SbtSystemSettings)
 
   private val pane = new SbtSettingsPane
 
-  def isModified = ! {
-    pane.isCustomLauncher == settings.customLauncherEnabled &&
-    pane.getLauncherPath == settings.customLauncherPath &&
-    pane.getMaximumHeapSize == settings.maximumHeapSize &&
-    pane.getVmParameters == settings.vmParameters &&
-    pane.isCustomVM == settings.customVMEnabled &&
-    pane.getCustomVMPath == settings.customVMPath
-  }
+  def isModified =
+    ! {
+      pane.isCustomLauncher == settings.customLauncherEnabled &&
+      pane.getLauncherPath == settings.customLauncherPath &&
+      pane.getMaximumHeapSize == settings.maximumHeapSize &&
+      pane.getVmParameters == settings.vmParameters &&
+      pane.isCustomVM == settings.customVMEnabled &&
+      pane.getCustomVMPath == settings.customVMPath
+    }
 
   def showUi(show: Boolean): Unit =
     pane.getContentPanel.setVisible(show)

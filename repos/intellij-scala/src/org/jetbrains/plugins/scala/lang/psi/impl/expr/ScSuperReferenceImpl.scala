@@ -75,14 +75,15 @@ class ScSuperReferenceImpl(node: ASTNode)
     }
   }
 
-  def drvTemplate: Option[ScTemplateDefinition] = reference match {
-    case Some(q) =>
-      q.bind() match {
-        case Some(ScalaResolveResult(td: ScTypeDefinition, _)) => Some(td)
-        case _                                                 => None
-      }
-    case None => ScalaPsiUtil.drvTemplate(this)
-  }
+  def drvTemplate: Option[ScTemplateDefinition] =
+    reference match {
+      case Some(q) =>
+        q.bind() match {
+          case Some(ScalaResolveResult(td: ScTypeDefinition, _)) => Some(td)
+          case _                                                 => None
+        }
+      case None => ScalaPsiUtil.drvTemplate(this)
+    }
 
   def staticSuper: Option[ScType] = {
     val id = findChildByType[PsiElement](ScalaTokenTypes.tIDENTIFIER)
@@ -102,20 +103,22 @@ class ScSuperReferenceImpl(node: ASTNode)
         def getRangeInElement =
           new TextRange(0, id.getTextLength)
             .shiftRight(id.getStartOffsetInParent)
-        def getCanonicalText = resolve match {
-          case c: PsiClass => c.qualifiedName
-          case _           => null
-        }
+        def getCanonicalText =
+          resolve match {
+            case c: PsiClass => c.qualifiedName
+            case _           => null
+          }
         def isSoft: Boolean = false
 
         def handleElementRename(newElementName: String) =
           doRename(newElementName)
-        def bindToElement(e: PsiElement) = e match {
-          case c: PsiClass => doRename(c.name)
-          case _ =>
-            throw new IncorrectOperationException(
-              "cannot bind to anything but class")
-        }
+        def bindToElement(e: PsiElement) =
+          e match {
+            case c: PsiClass => doRename(c.name)
+            case _ =>
+              throw new IncorrectOperationException(
+                "cannot bind to anything but class")
+          }
 
         private def doRename(newName: String) = {
           val parent = id.getNode.getTreeParent
@@ -125,10 +128,11 @@ class ScSuperReferenceImpl(node: ASTNode)
           ScSuperReferenceImpl.this
         }
 
-        def isReferenceTo(element: PsiElement) = element match {
-          case c: PsiClass => c.name == id.getText && resolve == c
-          case _           => false
-        }
+        def isReferenceTo(element: PsiElement) =
+          element match {
+            case c: PsiClass => c.name == id.getText && resolve == c
+            case _           => false
+          }
 
         def resolve = {
           def resolveNoHack: PsiClass = {
@@ -166,52 +170,58 @@ class ScSuperReferenceImpl(node: ASTNode)
           }
         }
 
-        def getVariants: Array[Object] = superTypes match {
-          case None => Array[Object]()
-          case Some(supers) => {
-            val buff = new ArrayBuffer[Object]
-            supers.foreach { t =>
-              ScType.extractClass(t) match {
-                case Some(c) => buff += c
-                case None    =>
+        def getVariants: Array[Object] =
+          superTypes match {
+            case None => Array[Object]()
+            case Some(supers) => {
+              val buff = new ArrayBuffer[Object]
+              supers.foreach { t =>
+                ScType.extractClass(t) match {
+                  case Some(c) => buff += c
+                  case None    =>
+                }
               }
+              buff.toArray
             }
-            buff.toArray
+          }
+      }
+  }
+
+  def findSuper(id: PsiElement): Option[ScType] =
+    superTypes match {
+      case None => None
+      case Some(types) => {
+        val name = id.getText
+        for (t <- types) {
+          ScType.extractClass(t) match {
+            case Some(c) if name == c.name => return Some(t)
+            case _                         =>
           }
         }
+        None
       }
-  }
+    }
 
-  def findSuper(id: PsiElement): Option[ScType] = superTypes match {
-    case None => None
-    case Some(types) => {
-      val name = id.getText
-      for (t <- types) {
-        ScType.extractClass(t) match {
-          case Some(c) if name == c.name => return Some(t)
-          case _                         =>
+  private def superTypes: Option[Seq[ScType]] =
+    reference match {
+      case Some(q) =>
+        q.resolve() match {
+          case clazz: PsiClass =>
+            Some(clazz.getSuperTypes.map { t =>
+              ScType.create(t, getProject, getResolveScope)
+            })
+          case _ => None
+        }
+      case None => {
+        PsiTreeUtil.getContextOfType(
+          this,
+          false,
+          classOf[ScExtendsBlock]) match {
+          case null               => None
+          case eb: ScExtendsBlock => Some(eb.superTypes)
         }
       }
-      None
     }
-  }
-
-  private def superTypes: Option[Seq[ScType]] = reference match {
-    case Some(q) =>
-      q.resolve() match {
-        case clazz: PsiClass =>
-          Some(clazz.getSuperTypes.map { t =>
-            ScType.create(t, getProject, getResolveScope)
-          })
-        case _ => None
-      }
-    case None => {
-      PsiTreeUtil.getContextOfType(this, false, classOf[ScExtendsBlock]) match {
-        case null               => None
-        case eb: ScExtendsBlock => Some(eb.superTypes)
-      }
-    }
-  }
 
   protected override def innerType(ctx: TypingContext) =
     Failure("Cannot infer type of `super' expression", Some(this))

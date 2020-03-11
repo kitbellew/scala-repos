@@ -124,19 +124,20 @@ class DenseVector[@spec(Double, Int, Float, Long) V](
 
   def activeKeysIterator: Iterator[Int] = keysIterator
 
-  override def equals(p1: Any) = p1 match {
-    case y: DenseVector[_] =>
-      y.length == length && ArrayUtil.nonstupidEquals(
-        data,
-        offset,
-        stride,
-        length,
-        y.data,
-        y.offset,
-        y.stride,
-        y.length)
-    case _ => super.equals(p1)
-  }
+  override def equals(p1: Any) =
+    p1 match {
+      case y: DenseVector[_] =>
+        y.length == length && ArrayUtil.nonstupidEquals(
+          data,
+          offset,
+          stride,
+          length,
+          y.data,
+          y.offset,
+          y.stride,
+          y.length)
+      case _ => super.equals(p1)
+    }
 
   // TODO: this is only consistent if the hashcode of inactive elements is 0!!!
   override def hashCode(): Int =

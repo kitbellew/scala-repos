@@ -36,18 +36,19 @@ object Test extends App {
         else
           list.tail
       def isZero = cell == func.zero
-      def execute(ch: Char) = (ch: @switch) match {
-        case '+' => copy(cell = func.inc(cell))
-        case '-' => copy(cell = func.dec(cell))
-        case '<' => Tape(tailOf(left), headOf(left), cell :: right)
-        case '>' => Tape(cell :: left, headOf(right), tailOf(right))
-        case '.' =>
-          func.out(cell);
-          this
-        case ','       => copy(cell = func.in)
-        case '[' | ']' => this
-        case _         => error("Unexpected token: " + ch)
-      }
+      def execute(ch: Char) =
+        (ch: @switch) match {
+          case '+' => copy(cell = func.inc(cell))
+          case '-' => copy(cell = func.dec(cell))
+          case '<' => Tape(tailOf(left), headOf(left), cell :: right)
+          case '>' => Tape(cell :: left, headOf(right), tailOf(right))
+          case '.' =>
+            func.out(cell);
+            this
+          case ','       => copy(cell = func.in)
+          case '[' | ']' => this
+          case _         => error("Unexpected token: " + ch)
+        }
     }
 
     object Tape {

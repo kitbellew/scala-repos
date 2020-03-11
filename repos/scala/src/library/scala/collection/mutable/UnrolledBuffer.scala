@@ -122,29 +122,30 @@ class UnrolledBuffer[T](implicit val tag: ClassTag[T])
     sz = 0
   }
 
-  def iterator: Iterator[T] = new AbstractIterator[T] {
-    var pos: Int = -1
-    var node: Unrolled[T] = headptr
-    scan()
+  def iterator: Iterator[T] =
+    new AbstractIterator[T] {
+      var pos: Int = -1
+      var node: Unrolled[T] = headptr
+      scan()
 
-    private def scan() {
-      pos += 1
-      while (pos >= node.size) {
-        pos = 0
-        node = node.next
-        if (node eq null)
-          return
+      private def scan() {
+        pos += 1
+        while (pos >= node.size) {
+          pos = 0
+          node = node.next
+          if (node eq null)
+            return
+        }
       }
+      def hasNext = node ne null
+      def next =
+        if (hasNext) {
+          val r = node.array(pos)
+          scan()
+          r
+        } else
+          Iterator.empty.next()
     }
-    def hasNext = node ne null
-    def next =
-      if (hasNext) {
-        val r = node.array(pos)
-        scan()
-        r
-      } else
-        Iterator.empty.next()
-  }
 
   // this should be faster than the iterator
   override def foreach[U](f: T => U) = headptr.foreach(f)

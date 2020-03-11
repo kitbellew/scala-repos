@@ -210,17 +210,18 @@ object PerfType {
     pt.name -> pt.iconString
   } toMap
 
-  def variantOf(pt: PerfType): chess.variant.Variant = pt match {
-    case Crazyhouse    => chess.variant.Crazyhouse
-    case Chess960      => chess.variant.Chess960
-    case KingOfTheHill => chess.variant.KingOfTheHill
-    case ThreeCheck    => chess.variant.ThreeCheck
-    case Antichess     => chess.variant.Antichess
-    case Atomic        => chess.variant.Atomic
-    case Horde         => chess.variant.Horde
-    case RacingKings   => chess.variant.RacingKings
-    case _             => chess.variant.Standard
-  }
+  def variantOf(pt: PerfType): chess.variant.Variant =
+    pt match {
+      case Crazyhouse    => chess.variant.Crazyhouse
+      case Chess960      => chess.variant.Chess960
+      case KingOfTheHill => chess.variant.KingOfTheHill
+      case ThreeCheck    => chess.variant.ThreeCheck
+      case Antichess     => chess.variant.Antichess
+      case Atomic        => chess.variant.Atomic
+      case Horde         => chess.variant.Horde
+      case RacingKings   => chess.variant.RacingKings
+      case _             => chess.variant.Standard
+    }
 
   def byVariant(variant: chess.variant.Variant): Option[PerfType] =
     variant match {

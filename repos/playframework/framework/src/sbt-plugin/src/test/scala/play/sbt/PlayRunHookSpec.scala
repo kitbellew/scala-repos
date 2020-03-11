@@ -43,9 +43,10 @@ object PlayRunHookSpec extends Specification {
       class HookFirstMockException extends Throwable
       class HookSecondMockException extends Throwable
 
-      def createDummyHooks = new PlayRunHook {
-        executedHooks += ((this, true))
-      }
+      def createDummyHooks =
+        new PlayRunHook {
+          executedHooks += ((this, true))
+        }
 
       val dummyHooks = Seq.fill(3)(createDummyHooks)
 

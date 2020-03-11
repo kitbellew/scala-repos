@@ -11,14 +11,15 @@ import org.scalacheck.Arbitrary._
 import org.scalacheck.Prop._
 
 object RingLaws {
-  def apply[A: Eq: Arbitrary](implicit _pred: Predicate[A]) = new RingLaws[A] {
-    def Arb = implicitly[Arbitrary[A]]
-    def pred = _pred
-    val nonZeroLaws = new GroupLaws[A] {
-      def Arb = Arbitrary(arbitrary[A] filter _pred)
-      def Equ = Eq[A]
+  def apply[A: Eq: Arbitrary](implicit _pred: Predicate[A]) =
+    new RingLaws[A] {
+      def Arb = implicitly[Arbitrary[A]]
+      def pred = _pred
+      val nonZeroLaws = new GroupLaws[A] {
+        def Arb = Arbitrary(arbitrary[A] filter _pred)
+        def Equ = Eq[A]
+      }
     }
-  }
 }
 
 trait RingLaws[A] extends GroupLaws[A] {
@@ -80,44 +81,49 @@ trait RingLaws[A] extends GroupLaws[A] {
 
   // rings
 
-  def semiring(implicit A: Semiring[A]) = new RingProperties(
-    name = "semiring",
-    al = additiveSemigroup,
-    ml = multiplicativeSemigroup,
-    parents = Seq.empty,
-    "distributive" → forAll((x: A, y: A, z: A) =>
-      (x * (y + z) === (x * y + x * z)) && (((x + y) * z) === (x * z + y * z))),
-    "pow" → forAll((x: A) =>
-      ((x pow 1) === x) && ((x pow 2) === x * x) && ((x pow 3) === x * x * x))
-  )
+  def semiring(implicit A: Semiring[A]) =
+    new RingProperties(
+      name = "semiring",
+      al = additiveSemigroup,
+      ml = multiplicativeSemigroup,
+      parents = Seq.empty,
+      "distributive" → forAll((x: A, y: A, z: A) =>
+        (x * (y + z) === (x * y + x * z)) && (((x + y) * z) === (x * z + y * z))),
+      "pow" → forAll((x: A) =>
+        ((x pow 1) === x) && ((x pow 2) === x * x) && ((x pow 3) === x * x * x))
+    )
 
-  def rng(implicit A: Rng[A]) = new RingProperties(
-    name = "rng",
-    al = additiveAbGroup,
-    ml = multiplicativeSemigroup,
-    parents = Seq(semiring)
-  )
+  def rng(implicit A: Rng[A]) =
+    new RingProperties(
+      name = "rng",
+      al = additiveAbGroup,
+      ml = multiplicativeSemigroup,
+      parents = Seq(semiring)
+    )
 
-  def rig(implicit A: Rig[A]) = new RingProperties(
-    name = "rig",
-    al = additiveMonoid,
-    ml = multiplicativeMonoid,
-    parents = Seq(semiring)
-  )
+  def rig(implicit A: Rig[A]) =
+    new RingProperties(
+      name = "rig",
+      al = additiveMonoid,
+      ml = multiplicativeMonoid,
+      parents = Seq(semiring)
+    )
 
-  def ring(implicit A: Ring[A]) = new RingProperties(
-    // TODO fromParents
-    name = "ring",
-    al = additiveAbGroup,
-    ml = multiplicativeMonoid,
-    parents = Seq(rig, rng)
-  )
+  def ring(implicit A: Ring[A]) =
+    new RingProperties(
+      // TODO fromParents
+      name = "ring",
+      al = additiveAbGroup,
+      ml = multiplicativeMonoid,
+      parents = Seq(rig, rng)
+    )
 
-  def euclideanRing(implicit A: EuclideanRing[A]) = RingProperties.fromParent(
-    // TODO tests?!
-    name = "euclidean ring",
-    parent = ring
-  )
+  def euclideanRing(implicit A: EuclideanRing[A]) =
+    RingProperties.fromParent(
+      // TODO tests?!
+      name = "euclidean ring",
+      parent = ring
+    )
 
   // Everything below fields (e.g. rings) does not require their multiplication
   // operation to be a group. Hence, we do not check for the existence of an

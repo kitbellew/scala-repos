@@ -92,9 +92,10 @@ private final class ExplorerIndexer(
         } void
     }
 
-  def apply(game: Game): Funit = makeFastPgn(game) map {
-    _ foreach flowBuffer.apply
-  }
+  def apply(game: Game): Funit =
+    makeFastPgn(game) map {
+      _ foreach flowBuffer.apply
+    }
 
   private object flowBuffer {
     private val max = 30

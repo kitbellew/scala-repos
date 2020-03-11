@@ -179,23 +179,24 @@ class SecurityServiceSpec
   def equalGrant(g1: Grant, g2: Grant) =
     (g1.grantId == g2.grantId) && (g1.permissions == g2.permissions) && (g1.expirationDate == g2.expirationDate)
 
-  def mkNewGrantRequest(grant: Grant) = grant match {
-    case Grant(
-          _,
+  def mkNewGrantRequest(grant: Grant) =
+    grant match {
+      case Grant(
+            _,
+            name,
+            description,
+            _,
+            parentIds,
+            permissions,
+            _,
+            expirationDate) =>
+        v1.NewGrantRequest(
           name,
           description,
-          _,
           parentIds,
           permissions,
-          _,
-          expirationDate) =>
-      v1.NewGrantRequest(
-        name,
-        description,
-        parentIds,
-        permissions,
-        expirationDate)
-  }
+          expirationDate)
+    }
 
   def standardGrant(accountId: AccountId) =
     mkNewGrantRequest(

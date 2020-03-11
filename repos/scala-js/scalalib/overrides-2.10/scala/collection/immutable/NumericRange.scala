@@ -100,10 +100,11 @@ abstract class NumericRange[T](
   }
   // Tests whether a number is within the endpoints, without testing
   // whether it is a member of the sequence (i.e. when step > 1.)
-  private def isWithinBoundaries(elem: T) = !isEmpty && (
-    (step > zero && start <= elem && elem <= last) ||
-      (step < zero && last <= elem && elem <= start)
-  )
+  private def isWithinBoundaries(elem: T) =
+    !isEmpty && (
+      (step > zero && start <= elem && elem <= last) ||
+        (step < zero && last <= elem && elem <= start)
+    )
   // Methods like apply throw exceptions on invalid n, but methods like take/drop
   // are forgiving: therefore the checks are with the methods.
   private def locationAfterN(n: Int): T = start + (step * fromInt(n))
@@ -114,23 +115,25 @@ abstract class NumericRange[T](
   // based on the given value.
   private def newEmptyRange(value: T) = NumericRange(value, value, step)
 
-  final override def take(n: Int): NumericRange[T] = (
-    if (n <= 0 || length == 0)
-      newEmptyRange(start)
-    else if (n >= length)
-      this
-    else
-      new NumericRange.Inclusive(start, locationAfterN(n - 1), step)
-  )
+  final override def take(n: Int): NumericRange[T] =
+    (
+      if (n <= 0 || length == 0)
+        newEmptyRange(start)
+      else if (n >= length)
+        this
+      else
+        new NumericRange.Inclusive(start, locationAfterN(n - 1), step)
+    )
 
-  final override def drop(n: Int): NumericRange[T] = (
-    if (n <= 0 || length == 0)
-      this
-    else if (n >= length)
-      newEmptyRange(end)
-    else
-      copy(locationAfterN(n), end, step)
-  )
+  final override def drop(n: Int): NumericRange[T] =
+    (
+      if (n <= 0 || length == 0)
+        this
+      else if (n >= length)
+        newEmptyRange(end)
+      else
+        copy(locationAfterN(n), end, step)
+    )
 
   def apply(idx: Int): T = {
     if (idx < 0 || idx >= length)
@@ -225,15 +228,16 @@ abstract class NumericRange[T](
   }
 
   override lazy val hashCode = super.hashCode()
-  override def equals(other: Any) = other match {
-    case x: NumericRange[_] =>
-      (x canEqual this) && (length == x.length) && (
-        (length == 0) || // all empty sequences are equal
-          (start == x.start && last == x.last) // same length and same endpoints implies equality
-      )
-    case _ =>
-      super.equals(other)
-  }
+  override def equals(other: Any) =
+    other match {
+      case x: NumericRange[_] =>
+        (x canEqual this) && (length == x.length) && (
+          (length == 0) || // all empty sequences are equal
+            (start == x.start && last == x.last) // same length and same endpoints implies equality
+        )
+      case _ =>
+        super.equals(other)
+    }
 
   override def toString() = {
     val endStr =

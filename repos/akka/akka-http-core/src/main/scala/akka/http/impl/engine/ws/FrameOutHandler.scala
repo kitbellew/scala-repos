@@ -174,14 +174,15 @@ private[http] class FrameOutHandler(
 
   override def onUpstreamFailure(
       cause: scala.Throwable,
-      ctx: Context[FrameStart]): TerminationDirective = cause match {
-    case p: ProtocolException ⇒
-      become(
-        new SendOutCloseFrameAndComplete(
-          FrameEvent.closeFrame(Protocol.CloseCodes.ProtocolError)))
-      ctx.absorbTermination()
-    case _ ⇒ super.onUpstreamFailure(cause, ctx)
-  }
+      ctx: Context[FrameStart]): TerminationDirective =
+    cause match {
+      case p: ProtocolException ⇒
+        become(
+          new SendOutCloseFrameAndComplete(
+            FrameEvent.closeFrame(Protocol.CloseCodes.ProtocolError)))
+        ctx.absorbTermination()
+      case _ ⇒ super.onUpstreamFailure(cause, ctx)
+    }
 }
 
 private[http] object FrameOutHandler {

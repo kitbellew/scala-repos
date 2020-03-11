@@ -19,35 +19,39 @@ trait BasicFormats {
         SexpTrue
       else
         SexpNil
-    def read(value: Sexp) = value match {
-      case SexpNil => false
-      case _       => true
-    }
+    def read(value: Sexp) =
+      value match {
+        case SexpNil => false
+        case _       => true
+      }
   }
 
   implicit object CharFormat extends SexpFormat[Char] {
     def write(x: Char) = SexpChar(x)
-    def read(value: Sexp) = value match {
-      case SexpChar(x) => x
-      case x           => deserializationError(x)
-    }
+    def read(value: Sexp) =
+      value match {
+        case SexpChar(x) => x
+        case x           => deserializationError(x)
+      }
   }
 
   implicit object StringFormat extends SexpFormat[String] {
     def write(x: String) = SexpString(x)
-    def read(value: Sexp) = value match {
-      case SexpString(x) => x
-      case x             => deserializationError(x)
-    }
+    def read(value: Sexp) =
+      value match {
+        case SexpString(x) => x
+        case x             => deserializationError(x)
+      }
   }
 
   // val allows override
   implicit val SymbolFormat = new SexpFormat[Symbol] {
     def write(x: Symbol): Sexp = SexpString(x.name)
-    def read(value: Sexp): Symbol = value match {
-      case SexpString(x) => Symbol(x)
-      case x             => deserializationError(x)
-    }
+    def read(value: Sexp): Symbol =
+      value match {
+        case SexpString(x) => Symbol(x)
+        case x             => deserializationError(x)
+      }
   }
 
   /**
@@ -77,13 +81,14 @@ trait BasicFormats {
         else
           SexpNumber(c.to(x))
 
-      def read(value: Sexp): T = value match {
-        case SexpNumber(x) => c.from(x)
-        case SexpNaN       => c.NaN
-        case SexpPosInf    => c.PosInf
-        case SexpNegInf    => c.NegInf
-        case x             => deserializationError(x)
-      }
+      def read(value: Sexp): T =
+        value match {
+          case SexpNumber(x) => c.from(x)
+          case SexpNaN       => c.NaN
+          case SexpPosInf    => c.PosInf
+          case SexpNegInf    => c.NegInf
+          case x             => deserializationError(x)
+        }
     }
 
   // boilerplate for performance (uses ViaBigDecimal)
@@ -101,9 +106,10 @@ trait SymbolAltFormat {
   this: BasicFormats =>
   override implicit val SymbolFormat = new SexpFormat[Symbol] {
     def write(x: Symbol): Sexp = SexpSymbol(x.name)
-    def read(value: Sexp): Symbol = value match {
-      case SexpSymbol(x) => Symbol(x)
-      case x             => deserializationError(x)
-    }
+    def read(value: Sexp): Symbol =
+      value match {
+        case SexpSymbol(x) => Symbol(x)
+        case x             => deserializationError(x)
+      }
   }
 }

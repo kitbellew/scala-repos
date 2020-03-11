@@ -46,10 +46,11 @@ class Jar(file: File) extends Iterable[JarEntry] {
     for (m <- manifest;
          cp <- m.attrs get Name.CLASS_PATH)
       yield cp
-  def classPathElements: List[String] = classPathString match {
-    case Some(s) => s split "\\s+" toList
-    case _       => Nil
-  }
+  def classPathElements: List[String] =
+    classPathString match {
+      case Some(s) => s split "\\s+" toList
+      case _       => Nil
+    }
 
   /** Invoke f with input for named jar entry (or None). */
   def withEntryStream[A](name: String)(f: Option[InputStream] => A) = {
@@ -75,9 +76,10 @@ class Jar(file: File) extends Iterable[JarEntry] {
     new JarWriter(file, Jar.WManifest(mainAttrs: _*).underlying)
   }
 
-  override def foreach[U](f: JarEntry => U): Unit = withJarInput { in =>
-    Iterator continually in.getNextJarEntry() takeWhile (_ != null) foreach f
-  }
+  override def foreach[U](f: JarEntry => U): Unit =
+    withJarInput { in =>
+      Iterator continually in.getNextJarEntry() takeWhile (_ != null) foreach f
+    }
   override def iterator: Iterator[JarEntry] = this.toList.iterator
   override def toString = "" + file
 }
@@ -120,12 +122,13 @@ class JarWriter(val file: File, val manifest: Manifest) {
 
   private def transfer(in: InputStream, out: OutputStream) = {
     val buf = new Array[Byte](10240)
-    def loop(): Unit = in.read(buf, 0, buf.length) match {
-      case -1 => in.close()
-      case n =>
-        out.write(buf, 0, n);
-        loop()
-    }
+    def loop(): Unit =
+      in.read(buf, 0, buf.length) match {
+        case -1 => in.close()
+        case n =>
+          out.write(buf, 0, n);
+          loop()
+      }
     loop()
   }
 

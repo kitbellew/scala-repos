@@ -18,12 +18,13 @@ object Test extends App {
         t.getMessage.replace('/', '.').contains(p))
     }
 
-    def unapply(t: Throwable): Option[Throwable] = t match {
-      case _: NoClassDefFoundError | _: ClassNotFoundException |
-          _: TypeNotPresentException if ok(t) =>
-        Some(t)
-      case _ => None
-    }
+    def unapply(t: Throwable): Option[Throwable] =
+      t match {
+        case _: NoClassDefFoundError | _: ClassNotFoundException |
+            _: TypeNotPresentException if ok(t) =>
+          Some(t)
+        case _ => None
+      }
   }
 
   jarsOrDirectories foreach testClasses

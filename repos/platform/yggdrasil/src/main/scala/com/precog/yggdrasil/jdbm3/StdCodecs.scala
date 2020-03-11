@@ -44,10 +44,11 @@ trait StdCodecs {
       elemCodec: Codec[A],
       m: Manifest[A]): Codec[Array[A]]
 
-  def codecForCType(cType: CType): Codec[_] = cType match {
-    case cType: CValueType[_] => codecForCValueType(cType)
-    case _: CNullType         => Codec.ConstCodec(true)
-  }
+  def codecForCType(cType: CType): Codec[_] =
+    cType match {
+      case cType: CValueType[_] => codecForCValueType(cType)
+      case _: CNullType         => Codec.ConstCodec(true)
+    }
 
   def codecForCValueType[A](cType: CValueType[A]): Codec[A] =
     try {

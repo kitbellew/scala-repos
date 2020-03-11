@@ -195,9 +195,10 @@ object Maybe extends MaybeInstances {
 sealed abstract class MaybeInstances {
   import Maybe._
 
-  implicit def maybeEqual[A: Equal]: Equal[Maybe[A]] = new MaybeEqual[A] {
-    def A = implicitly
-  }
+  implicit def maybeEqual[A: Equal]: Equal[Maybe[A]] =
+    new MaybeEqual[A] {
+      def A = implicitly
+    }
 
   implicit def maybeOrder[A: Order]: Order[Maybe[A]] =
     new Order[Maybe[A]] with MaybeEqual[A] {
@@ -256,17 +257,18 @@ sealed abstract class MaybeInstances {
   implicit def maybeLastMonad: Monad[LastMaybe] =
     Tags.Last.subst1[Monad, Maybe](Monad[Maybe])
 
-  implicit def maybeMin[A](implicit o: Order[A]) = new Monoid[MinMaybe[A]] {
-    def zero: MinMaybe[A] = Tag(empty)
+  implicit def maybeMin[A](implicit o: Order[A]) =
+    new Monoid[MinMaybe[A]] {
+      def zero: MinMaybe[A] = Tag(empty)
 
-    def append(f1: MinMaybe[A], f2: => MinMaybe[A]) =
-      Tag((Tag unwrap f1, Tag unwrap f2) match {
-        case (Just(v1), Just(v2))     => Just(Order[A].min(v1, v2))
-        case (_f1 @ Just(_), Empty()) => _f1
-        case (Empty(), _f2 @ Just(_)) => _f2
-        case (Empty(), Empty())       => empty
-      })
-  }
+      def append(f1: MinMaybe[A], f2: => MinMaybe[A]) =
+        Tag((Tag unwrap f1, Tag unwrap f2) match {
+          case (Just(v1), Just(v2))     => Just(Order[A].min(v1, v2))
+          case (_f1 @ Just(_), Empty()) => _f1
+          case (Empty(), _f2 @ Just(_)) => _f2
+          case (Empty(), Empty())       => empty
+        })
+    }
 
   implicit def maybeMinShow[A: Show]: Show[MinMaybe[A]] =
     Tag.subst(Show[Maybe[A]])
@@ -277,17 +279,18 @@ sealed abstract class MaybeInstances {
   implicit def maybeMinMonad: Monad[MinMaybe] =
     Tags.Min.subst1[Monad, Maybe](Monad[Maybe])
 
-  implicit def maybeMax[A](implicit o: Order[A]) = new Monoid[MaxMaybe[A]] {
-    def zero: MaxMaybe[A] = Tag(empty)
+  implicit def maybeMax[A](implicit o: Order[A]) =
+    new Monoid[MaxMaybe[A]] {
+      def zero: MaxMaybe[A] = Tag(empty)
 
-    def append(f1: MaxMaybe[A], f2: => MaxMaybe[A]) =
-      Tag((Tag unwrap f1, Tag unwrap f2) match {
-        case (Just(v1), Just(v2))     => Just(Order[A].max(v1, v2))
-        case (_f1 @ Just(_), Empty()) => _f1
-        case (Empty(), _f2 @ Just(_)) => _f2
-        case (Empty(), Empty())       => Empty()
-      })
-  }
+      def append(f1: MaxMaybe[A], f2: => MaxMaybe[A]) =
+        Tag((Tag unwrap f1, Tag unwrap f2) match {
+          case (Just(v1), Just(v2))     => Just(Order[A].max(v1, v2))
+          case (_f1 @ Just(_), Empty()) => _f1
+          case (Empty(), _f2 @ Just(_)) => _f2
+          case (Empty(), Empty())       => Empty()
+        })
+    }
 
   implicit def maybeMaxShow[A: Show]: Show[MaxMaybe[A]] =
     Tag.subst(Show[Maybe[A]])

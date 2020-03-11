@@ -1647,9 +1647,10 @@ class InlinerTest extends ClearAfterClass {
         |class D extends C
       """.stripMargin
     val List(c, _) = compile(code)
-    def casts(m: String) = getSingleMethod(c, m).instructions collect {
-      case TypeOp(CHECKCAST, tp) => tp
-    }
+    def casts(m: String) =
+      getSingleMethod(c, m).instructions collect {
+        case TypeOp(CHECKCAST, tp) => tp
+      }
     assertSameCode(getSingleMethod(c, "t1"), List(VarOp(ALOAD, 1), Op(ARETURN)))
     assertSameCode(getSingleMethod(c, "t2"), List(VarOp(ALOAD, 1), Op(ARETURN)))
     assertSameCode(

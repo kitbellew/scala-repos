@@ -201,32 +201,34 @@ private[yarn] class YarnAllocator(
   def requestTotalExecutorsWithPreferredLocalities(
       requestedTotal: Int,
       localityAwareTasks: Int,
-      hostToLocalTaskCount: Map[String, Int]): Boolean = synchronized {
-    this.numLocalityAwareTasks = localityAwareTasks
-    this.hostToLocalTaskCounts = hostToLocalTaskCount
+      hostToLocalTaskCount: Map[String, Int]): Boolean =
+    synchronized {
+      this.numLocalityAwareTasks = localityAwareTasks
+      this.hostToLocalTaskCounts = hostToLocalTaskCount
 
-    if (requestedTotal != targetNumExecutors) {
-      logInfo(
-        s"Driver requested a total number of $requestedTotal executor(s).")
-      targetNumExecutors = requestedTotal
-      true
-    } else {
-      false
+      if (requestedTotal != targetNumExecutors) {
+        logInfo(
+          s"Driver requested a total number of $requestedTotal executor(s).")
+        targetNumExecutors = requestedTotal
+        true
+      } else {
+        false
+      }
     }
-  }
 
   /**
     * Request that the ResourceManager release the container running the specified executor.
     */
-  def killExecutor(executorId: String): Unit = synchronized {
-    if (executorIdToContainer.contains(executorId)) {
-      val container = executorIdToContainer.get(executorId).get
-      internalReleaseContainer(container)
-      numExecutorsRunning -= 1
-    } else {
-      logWarning(s"Attempted to kill unknown executor $executorId!")
+  def killExecutor(executorId: String): Unit =
+    synchronized {
+      if (executorIdToContainer.contains(executorId)) {
+        val container = executorIdToContainer.get(executorId).get
+        internalReleaseContainer(container)
+        numExecutorsRunning -= 1
+      } else {
+        logWarning(s"Attempted to kill unknown executor $executorId!")
+      }
     }
-  }
 
   /**
     * Request resources such that, if YARN gives us all we ask for, we'll have a number of containers
@@ -236,36 +238,38 @@ private[yarn] class YarnAllocator(
     *
     * This must be synchronized because variables read in this method are mutated by other methods.
     */
-  def allocateResources(): Unit = synchronized {
-    updateResourceRequests()
+  def allocateResources(): Unit =
+    synchronized {
+      updateResourceRequests()
 
-    val progressIndicator = 0.1f
-    // Poll the ResourceManager. This doubles as a heartbeat if there are no pending container
-    // requests.
-    val allocateResponse = amClient.allocate(progressIndicator)
+      val progressIndicator = 0.1f
+      // Poll the ResourceManager. This doubles as a heartbeat if there are no pending container
+      // requests.
+      val allocateResponse = amClient.allocate(progressIndicator)
 
-    val allocatedContainers = allocateResponse.getAllocatedContainers()
+      val allocatedContainers = allocateResponse.getAllocatedContainers()
 
-    if (allocatedContainers.size > 0) {
-      logDebug(
-        "Allocated containers: %d. Current executor count: %d. Cluster resources: %s."
-          .format(
-            allocatedContainers.size,
-            numExecutorsRunning,
-            allocateResponse.getAvailableResources))
+      if (allocatedContainers.size > 0) {
+        logDebug(
+          "Allocated containers: %d. Current executor count: %d. Cluster resources: %s."
+            .format(
+              allocatedContainers.size,
+              numExecutorsRunning,
+              allocateResponse.getAvailableResources))
 
-      handleAllocatedContainers(allocatedContainers.asScala)
+        handleAllocatedContainers(allocatedContainers.asScala)
+      }
+
+      val completedContainers =
+        allocateResponse.getCompletedContainersStatuses()
+      if (completedContainers.size > 0) {
+        logDebug("Completed %d containers".format(completedContainers.size))
+        processCompletedContainers(completedContainers.asScala)
+        logDebug(
+          "Finished processing %d completed containers. Current running executor count: %d."
+            .format(completedContainers.size, numExecutorsRunning))
+      }
     }
-
-    val completedContainers = allocateResponse.getCompletedContainersStatuses()
-    if (completedContainers.size > 0) {
-      logDebug("Completed %d containers".format(completedContainers.size))
-      processCompletedContainers(completedContainers.asScala)
-      logDebug(
-        "Finished processing %d completed containers. Current running executor count: %d."
-          .format(completedContainers.size, numExecutorsRunning))
-    }
-  }
 
   /**
     * Update the set of container requests that we will sync with the RM based on the number of
@@ -654,21 +658,23 @@ private[yarn] class YarnAllocator(
     */
   private[yarn] def enqueueGetLossReasonRequest(
       eid: String,
-      context: RpcCallContext): Unit = synchronized {
-    if (executorIdToContainer.contains(eid)) {
-      pendingLossReasonRequests
-        .getOrElseUpdate(eid, new ArrayBuffer[RpcCallContext]) += context
-    } else if (releasedExecutorLossReasons.contains(eid)) {
-      // Executor is already released explicitly before getting the loss reason, so directly send
-      // the pre-stored lost reason
-      context.reply(releasedExecutorLossReasons.remove(eid).get)
-    } else {
-      logWarning(s"Tried to get the loss reason for non-existent executor $eid")
-      context.sendFailure(
-        new SparkException(
-          s"Fail to find loss reason for non-existent executor $eid"))
+      context: RpcCallContext): Unit =
+    synchronized {
+      if (executorIdToContainer.contains(eid)) {
+        pendingLossReasonRequests
+          .getOrElseUpdate(eid, new ArrayBuffer[RpcCallContext]) += context
+      } else if (releasedExecutorLossReasons.contains(eid)) {
+        // Executor is already released explicitly before getting the loss reason, so directly send
+        // the pre-stored lost reason
+        context.reply(releasedExecutorLossReasons.remove(eid).get)
+      } else {
+        logWarning(
+          s"Tried to get the loss reason for non-existent executor $eid")
+        context.sendFailure(
+          new SparkException(
+            s"Fail to find loss reason for non-existent executor $eid"))
+      }
     }
-  }
 
   private def internalReleaseContainer(container: Container): Unit = {
     releasedContainers.add(container.getId())
@@ -678,9 +684,10 @@ private[yarn] class YarnAllocator(
   private[yarn] def getNumUnexpectedContainerRelease =
     numUnexpectedContainerRelease
 
-  private[yarn] def getNumPendingLossReasonRequests: Int = synchronized {
-    pendingLossReasonRequests.size
-  }
+  private[yarn] def getNumPendingLossReasonRequests: Int =
+    synchronized {
+      pendingLossReasonRequests.size
+    }
 
   /**
     * Split the pending container requests into 3 groups based on current localities of pending

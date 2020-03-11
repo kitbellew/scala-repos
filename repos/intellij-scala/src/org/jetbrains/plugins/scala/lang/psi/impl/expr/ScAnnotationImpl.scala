@@ -51,10 +51,11 @@ class ScAnnotationImpl private (
     ScType.extractClass(
       annotationExpr.constr.typeElement.getType(TypingContext.empty).getOrAny)
 
-  def getQualifiedName: String = getClazz match {
-    case None    => null
-    case Some(c) => c.qualifiedName
-  }
+  def getQualifiedName: String =
+    getClazz match {
+      case None    => null
+      case Some(c) => c.qualifiedName
+    }
 
   def typeElement: ScTypeElement = {
     val stub = getStub

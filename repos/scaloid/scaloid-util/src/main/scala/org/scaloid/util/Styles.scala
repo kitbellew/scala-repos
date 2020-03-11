@@ -49,11 +49,12 @@ trait Styles {
     transform(color, f)
   }
 
-  def btn(normal: Int, pressed: Int) = new SStateListDrawable {
-    +=(c(pressed), PRESSED)
-    +=(c(LTGRAY), -ENABLED)
-    +=(c(normal))
-  }
+  def btn(normal: Int, pressed: Int) =
+    new SStateListDrawable {
+      +=(c(pressed), PRESSED)
+      +=(c(LTGRAY), -ENABLED)
+      +=(c(normal))
+    }
 
   def btn(normal: Int): SStateListDrawable = btn(normal, pressedColor(normal))
 
@@ -61,16 +62,18 @@ trait Styles {
 
   def black = btn(BLACK)
 
-  def selectable = new SStateListDrawable {
-    +=(c(DKGRAY), SELECTED)
-    +=(c(BLACK))
-  }
+  def selectable =
+    new SStateListDrawable {
+      +=(c(DKGRAY), SELECTED)
+      +=(c(BLACK))
+    }
 
-  def clickable = new SStateListDrawable {
-    +=(c(DKGRAY), SELECTED)
-    +=(c(DKGRAY), PRESSED)
-    +=(c(TRANSPARENT))
-  }
+  def clickable =
+    new SStateListDrawable {
+      +=(c(DKGRAY), SELECTED)
+      +=(c(DKGRAY), PRESSED)
+      +=(c(TRANSPARENT))
+    }
 
   def gray = btn(LTGRAY)
 

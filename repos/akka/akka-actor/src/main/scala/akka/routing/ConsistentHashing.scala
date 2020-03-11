@@ -367,14 +367,15 @@ final case class ConsistentHashingPool(
     * resizer was not defined in config.
     * Uses the `hashMapping` defined in code, since that can't be defined in configuration.
     */
-  override def withFallback(other: RouterConfig): RouterConfig = other match {
-    case _: FromConfig | _: NoRouter ⇒ this.overrideUnsetConfig(other)
-    case otherRouter: ConsistentHashingPool ⇒
-      (copy(hashMapping = otherRouter.hashMapping)).overrideUnsetConfig(other)
-    case _ ⇒
-      throw new IllegalArgumentException(
-        "Expected ConsistentHashingPool, got [%s]".format(other))
-  }
+  override def withFallback(other: RouterConfig): RouterConfig =
+    other match {
+      case _: FromConfig | _: NoRouter ⇒ this.overrideUnsetConfig(other)
+      case otherRouter: ConsistentHashingPool ⇒
+        (copy(hashMapping = otherRouter.hashMapping)).overrideUnsetConfig(other)
+      case _ ⇒
+        throw new IllegalArgumentException(
+          "Expected ConsistentHashingPool, got [%s]".format(other))
+    }
 
 }
 
@@ -447,14 +448,15 @@ final case class ConsistentHashingGroup(
   /**
     * Uses the `hashMapping` defined in code, since that can't be defined in configuration.
     */
-  override def withFallback(other: RouterConfig): RouterConfig = other match {
-    case _: FromConfig | _: NoRouter ⇒ super.withFallback(other)
-    case otherRouter: ConsistentHashingGroup ⇒
-      copy(hashMapping = otherRouter.hashMapping)
-    case _ ⇒
-      throw new IllegalArgumentException(
-        "Expected ConsistentHashingGroup, got [%s]".format(other))
-  }
+  override def withFallback(other: RouterConfig): RouterConfig =
+    other match {
+      case _: FromConfig | _: NoRouter ⇒ super.withFallback(other)
+      case otherRouter: ConsistentHashingGroup ⇒
+        copy(hashMapping = otherRouter.hashMapping)
+      case _ ⇒
+        throw new IllegalArgumentException(
+          "Expected ConsistentHashingGroup, got [%s]".format(other))
+    }
 
 }
 
@@ -470,12 +472,13 @@ private[akka] final case class ConsistentRoutee(
     routee: Routee,
     selfAddress: Address) {
 
-  override def toString: String = routee match {
-    case ActorRefRoutee(ref) ⇒ toStringWithfullAddress(ref.path)
-    case ActorSelectionRoutee(sel) ⇒
-      toStringWithfullAddress(sel.anchorPath) + sel.pathString
-    case other ⇒ other.toString
-  }
+  override def toString: String =
+    routee match {
+      case ActorRefRoutee(ref) ⇒ toStringWithfullAddress(ref.path)
+      case ActorSelectionRoutee(sel) ⇒
+        toStringWithfullAddress(sel.anchorPath) + sel.pathString
+      case other ⇒ other.toString
+    }
 
   private def toStringWithfullAddress(path: ActorPath): String = {
     path.address match {

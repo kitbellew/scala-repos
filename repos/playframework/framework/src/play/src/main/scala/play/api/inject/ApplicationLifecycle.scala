@@ -76,9 +76,10 @@ class DefaultApplicationLifecycle extends ApplicationLifecycle {
   private val mutex = new Object()
   @volatile private var hooks = List.empty[() => Future[_]]
 
-  def addStopHook(hook: () => Future[_]) = mutex.synchronized {
-    hooks = hook :: hooks
-  }
+  def addStopHook(hook: () => Future[_]) =
+    mutex.synchronized {
+      hooks = hook :: hooks
+    }
 
   /**
     * Call to shutdown the application.

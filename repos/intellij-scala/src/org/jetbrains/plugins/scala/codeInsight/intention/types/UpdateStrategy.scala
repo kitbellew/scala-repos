@@ -166,10 +166,11 @@ abstract class UpdateStrategy(editor: Option[Editor]) extends Strategy {
       ScalaPsiElementFactory.createTypeElementFromText(s, context.getManager)
     def typeElemFromType(tp: ScType) = typeElemfromText(tp.canonicalText)
 
-    def isSealed(c: PsiClass) = c match {
-      case _: ScClass | _: ScTrait => c.hasModifierPropertyScala("sealed")
-      case _                       => false
-    }
+    def isSealed(c: PsiClass) =
+      c match {
+        case _: ScClass | _: ScTrait => c.hasModifierPropertyScala("sealed")
+        case _                       => false
+      }
 
     val tps: Seq[ScTypeElement] = t match {
       case ScCompoundType(comps, _, _) =>

@@ -85,10 +85,11 @@ case class Perfs(
 
   def bestProgress: Int = bestProgressIn(PerfType.leaderboardable)
 
-  def bestProgressIn(types: List[PerfType]): Int = types map apply match {
-    case Nil   => 0
-    case perfs => perfs.map(_.progress).max
-  }
+  def bestProgressIn(types: List[PerfType]): Int =
+    types map apply match {
+      case Nil   => 0
+      case perfs => perfs.map(_.progress).max
+    }
 
   lazy val perfsMap: Map[String, Perf] = Map(
     "chess960" -> chess960,
@@ -113,46 +114,49 @@ case class Perfs(
 
   def apply(key: String): Option[Perf] = perfsMap get key
 
-  def apply(perfType: PerfType): Perf = perfType match {
-    case PerfType.Standard       => standard
-    case PerfType.Bullet         => bullet
-    case PerfType.Blitz          => blitz
-    case PerfType.Classical      => classical
-    case PerfType.Correspondence => correspondence
-    case PerfType.Chess960       => chess960
-    case PerfType.KingOfTheHill  => kingOfTheHill
-    case PerfType.ThreeCheck     => threeCheck
-    case PerfType.Antichess      => antichess
-    case PerfType.Atomic         => atomic
-    case PerfType.Horde          => horde
-    case PerfType.RacingKings    => racingKings
-    case PerfType.Crazyhouse     => crazyhouse
-    case PerfType.Puzzle         => puzzle
-    case PerfType.Opening        => opening
-  }
+  def apply(perfType: PerfType): Perf =
+    perfType match {
+      case PerfType.Standard       => standard
+      case PerfType.Bullet         => bullet
+      case PerfType.Blitz          => blitz
+      case PerfType.Classical      => classical
+      case PerfType.Correspondence => correspondence
+      case PerfType.Chess960       => chess960
+      case PerfType.KingOfTheHill  => kingOfTheHill
+      case PerfType.ThreeCheck     => threeCheck
+      case PerfType.Antichess      => antichess
+      case PerfType.Atomic         => atomic
+      case PerfType.Horde          => horde
+      case PerfType.RacingKings    => racingKings
+      case PerfType.Crazyhouse     => crazyhouse
+      case PerfType.Puzzle         => puzzle
+      case PerfType.Opening        => opening
+    }
 
   def inShort =
     perfs map {
       case (name, perf) => s"$name:${perf.intRating}"
     } mkString ", "
 
-  def updateStandard = copy(
-    standard = {
-      val subs = List(bullet, blitz, classical, correspondence)
-      subs.maxBy(_.latest.fold(0L)(_.getMillis)).latest.fold(standard) {
-        date =>
-          val nb = subs.map(_.nb).sum
-          val glicko = Glicko(
-            rating = subs.map(s => s.glicko.rating * (s.nb / nb.toDouble)).sum,
-            deviation =
-              subs.map(s => s.glicko.deviation * (s.nb / nb.toDouble)).sum,
-            volatility =
-              subs.map(s => s.glicko.volatility * (s.nb / nb.toDouble)).sum
-          )
-          Perf(glicko = glicko, nb = nb, recent = Nil, latest = date.some)
+  def updateStandard =
+    copy(
+      standard = {
+        val subs = List(bullet, blitz, classical, correspondence)
+        subs.maxBy(_.latest.fold(0L)(_.getMillis)).latest.fold(standard) {
+          date =>
+            val nb = subs.map(_.nb).sum
+            val glicko = Glicko(
+              rating =
+                subs.map(s => s.glicko.rating * (s.nb / nb.toDouble)).sum,
+              deviation =
+                subs.map(s => s.glicko.deviation * (s.nb / nb.toDouble)).sum,
+              volatility =
+                subs.map(s => s.glicko.volatility * (s.nb / nb.toDouble)).sum
+            )
+            Perf(glicko = glicko, nb = nb, recent = Nil, latest = date.some)
+        }
       }
-    }
-  )
+    )
 }
 
 case object Perfs {
@@ -176,12 +180,13 @@ case object Perfs {
       case _                           => none
     }
 
-  def speedLens(speed: Speed): Perfs => Perf = speed match {
-    case Speed.Bullet         => perfs => perfs.bullet
-    case Speed.Blitz          => perfs => perfs.blitz
-    case Speed.Classical      => perfs => perfs.classical
-    case Speed.Correspondence => perfs => perfs.correspondence
-  }
+  def speedLens(speed: Speed): Perfs => Perf =
+    speed match {
+      case Speed.Bullet         => perfs => perfs.bullet
+      case Speed.Blitz          => perfs => perfs.blitz
+      case Speed.Classical      => perfs => perfs.classical
+      case Speed.Correspondence => perfs => perfs.correspondence
+    }
 
   val perfsBSONHandler = new BSON[Perfs] {
 

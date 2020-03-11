@@ -19,18 +19,20 @@ final class Api(
     blocks: (String, String) => Fu[Boolean],
     bus: lila.common.Bus) {
 
-  def inbox(me: User, page: Int): Fu[Paginator[Thread]] = Paginator(
-    adapter = new Adapter(
-      selector = ThreadRepo visibleByUserQuery me.id,
-      sort = Seq(ThreadRepo.recentSort)
-    ),
-    currentPage = page,
-    maxPerPage = maxPerPage
-  )
+  def inbox(me: User, page: Int): Fu[Paginator[Thread]] =
+    Paginator(
+      adapter = new Adapter(
+        selector = ThreadRepo visibleByUserQuery me.id,
+        sort = Seq(ThreadRepo.recentSort)
+      ),
+      currentPage = page,
+      maxPerPage = maxPerPage
+    )
 
-  def preview(userId: String): Fu[List[Thread]] = unreadCache(userId) flatMap {
-    ids => $find byOrderedIds ids
-  }
+  def preview(userId: String): Fu[List[Thread]] =
+    unreadCache(userId) flatMap { ids =>
+      $find byOrderedIds ids
+    }
 
   def thread(id: String, me: User): Fu[Option[Thread]] =
     for {

@@ -36,9 +36,10 @@ class LogbackLoggerConfigurator extends LoggerConfigurator {
 
     // Get an explicitly configured resource URL
     // Fallback to a file in the conf directory if the resource wasn't found on the classpath
-    def explicitResourceUrl = sys.props.get("logger.resource").map { r =>
-      env.resource(r).getOrElse(new File(env.getFile("conf"), r).toURI.toURL)
-    }
+    def explicitResourceUrl =
+      sys.props.get("logger.resource").map { r =>
+        env.resource(r).getOrElse(new File(env.getFile("conf"), r).toURI.toURL)
+      }
 
     // Get an explicitly configured file URL
     def explicitFileUrl =

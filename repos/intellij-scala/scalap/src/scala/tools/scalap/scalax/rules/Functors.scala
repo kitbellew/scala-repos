@@ -66,9 +66,10 @@ trait Functors {
 /** One of the 'unit' definitions must be overridden in concrete subclasses */
 trait UnitFunctors extends Units with Functors {
   def unit: M[Unit] = unit(())
-  def unit[A](a: => A): M[A] = unit map { Unit =>
-    a
-  }
+  def unit[A](a: => A): M[A] =
+    unit map { Unit =>
+      a
+    }
 }
 
 trait Monoidals extends UnitFunctors {
@@ -80,8 +81,9 @@ trait Monoidals extends UnitFunctors {
   /** One of 'and' and 'applyTo' definitions must be overridden in concrete subclasses */
   trait Monoidal[+A] extends Functor[A] { self: M[A] =>
     def and[B](fb: => M[B]): M[(A, B)] = ((a: A) => (b: B) => (a, b))(this)(fb)
-    def applyTo[B](fab: M[A => B]): M[B] = fab and this map {
-      case (f, a) => f(a)
-    }
+    def applyTo[B](fab: M[A => B]): M[B] =
+      fab and this map {
+        case (f, a) => f(a)
+      }
   }
 }

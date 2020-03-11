@@ -136,14 +136,15 @@ object ByteBufferPool {
   /**
     * Acquire a `ByteBuffer` and add it to the state.
     */
-  def acquire(min: Int): ByteBufferPoolS[ByteBuffer] = State {
-    case (pool, buffers @ (buf :: _)) if buf.remaining() >= min =>
-      ((pool, buffers), buf)
+  def acquire(min: Int): ByteBufferPoolS[ByteBuffer] =
+    State {
+      case (pool, buffers @ (buf :: _)) if buf.remaining() >= min =>
+        ((pool, buffers), buf)
 
-    case (pool, buffers) =>
-      val buf = pool.acquire
-      ((pool, buf :: buffers), buf)
-  }
+      case (pool, buffers) =>
+        val buf = pool.acquire
+        ((pool, buf :: buffers), buf)
+    }
 
   def acquire: ByteBufferPoolS[ByteBuffer] = acquire(512)
 
@@ -151,20 +152,22 @@ object ByteBufferPool {
     * Reverses the state (list of `ByteBuffer`s) and returns an `Array[Byte]` of
     * the contiguous bytes in all the buffers.
     */
-  def flipBytes: ByteBufferPoolS[Array[Byte]] = State {
-    case (pool, sreffub) =>
-      val buffers = sreffub.reverse
-      ((pool, buffers), getBytesFrom(buffers))
-  }
+  def flipBytes: ByteBufferPoolS[Array[Byte]] =
+    State {
+      case (pool, sreffub) =>
+        val buffers = sreffub.reverse
+        ((pool, buffers), getBytesFrom(buffers))
+    }
 
   /**
     * Removes and releases all `ByteBuffer`s in the state to the pool.
     */
-  def release: ByteBufferPoolS[Unit] = State {
-    case (pool, buffers) =>
-      buffers foreach (pool.release(_))
-      ((pool, Nil), ())
-  }
+  def release: ByteBufferPoolS[Unit] =
+    State {
+      case (pool, buffers) =>
+        buffers foreach (pool.release(_))
+        ((pool, Nil), ())
+    }
 
   def getBytesFrom(buffers: List[ByteBuffer]): Array[Byte] = {
     val size = buffers.foldLeft(0) { (size, buf) =>

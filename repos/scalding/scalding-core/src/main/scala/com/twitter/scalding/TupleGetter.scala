@@ -30,9 +30,10 @@ trait TupleGetter[@specialized(Int, Long, Float, Double) T]
 }
 
 trait LowPriorityTupleGetter extends java.io.Serializable {
-  implicit def castingGetter[T]: TupleGetter[T] = new TupleGetter[T] {
-    def get(tup: CTuple, i: Int) = tup.getObject(i).asInstanceOf[T]
-  }
+  implicit def castingGetter[T]: TupleGetter[T] =
+    new TupleGetter[T] {
+      def get(tup: CTuple, i: Int) = tup.getObject(i).asInstanceOf[T]
+    }
 }
 
 object TupleGetter extends LowPriorityTupleGetter {

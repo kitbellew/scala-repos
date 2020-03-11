@@ -161,58 +161,61 @@ private[streaming] class ReceiverTracker(
   private val receiverPreferredLocations = new HashMap[Int, Option[String]]
 
   /** Start the endpoint and receiver execution thread. */
-  def start(): Unit = synchronized {
-    if (isTrackerStarted) {
-      throw new SparkException("ReceiverTracker already started")
-    }
-
-    if (!receiverInputStreams.isEmpty) {
-      endpoint = ssc.env.rpcEnv.setupEndpoint(
-        "ReceiverTracker",
-        new ReceiverTrackerEndpoint(ssc.env.rpcEnv))
-      if (!skipReceiverLaunch)
-        launchReceivers()
-      logInfo("ReceiverTracker started")
-      trackerState = Started
-    }
-  }
-
-  /** Stop the receiver execution thread. */
-  def stop(graceful: Boolean): Unit = synchronized {
-    if (isTrackerStarted) {
-      // First, stop the receivers
-      trackerState = Stopping
-      if (!skipReceiverLaunch) {
-        // Send the stop signal to all the receivers
-        endpoint.askWithRetry[Boolean](StopAllReceivers)
-
-        // Wait for the Spark job that runs the receivers to be over
-        // That is, for the receivers to quit gracefully.
-        receiverJobExitLatch.await(10, TimeUnit.SECONDS)
-
-        if (graceful) {
-          logInfo("Waiting for receiver job to terminate gracefully")
-          receiverJobExitLatch.await()
-          logInfo("Waited for receiver job to terminate gracefully")
-        }
-
-        // Check if all the receivers have been deregistered or not
-        val receivers = endpoint.askWithRetry[Seq[Int]](AllReceiverIds)
-        if (receivers.nonEmpty) {
-          logWarning("Not all of the receivers have deregistered, " + receivers)
-        } else {
-          logInfo("All of the receivers have deregistered successfully")
-        }
+  def start(): Unit =
+    synchronized {
+      if (isTrackerStarted) {
+        throw new SparkException("ReceiverTracker already started")
       }
 
-      // Finally, stop the endpoint
-      ssc.env.rpcEnv.stop(endpoint)
-      endpoint = null
-      receivedBlockTracker.stop()
-      logInfo("ReceiverTracker stopped")
-      trackerState = Stopped
+      if (!receiverInputStreams.isEmpty) {
+        endpoint = ssc.env.rpcEnv.setupEndpoint(
+          "ReceiverTracker",
+          new ReceiverTrackerEndpoint(ssc.env.rpcEnv))
+        if (!skipReceiverLaunch)
+          launchReceivers()
+        logInfo("ReceiverTracker started")
+        trackerState = Started
+      }
     }
-  }
+
+  /** Stop the receiver execution thread. */
+  def stop(graceful: Boolean): Unit =
+    synchronized {
+      if (isTrackerStarted) {
+        // First, stop the receivers
+        trackerState = Stopping
+        if (!skipReceiverLaunch) {
+          // Send the stop signal to all the receivers
+          endpoint.askWithRetry[Boolean](StopAllReceivers)
+
+          // Wait for the Spark job that runs the receivers to be over
+          // That is, for the receivers to quit gracefully.
+          receiverJobExitLatch.await(10, TimeUnit.SECONDS)
+
+          if (graceful) {
+            logInfo("Waiting for receiver job to terminate gracefully")
+            receiverJobExitLatch.await()
+            logInfo("Waited for receiver job to terminate gracefully")
+          }
+
+          // Check if all the receivers have been deregistered or not
+          val receivers = endpoint.askWithRetry[Seq[Int]](AllReceiverIds)
+          if (receivers.nonEmpty) {
+            logWarning(
+              "Not all of the receivers have deregistered, " + receivers)
+          } else {
+            logInfo("All of the receivers have deregistered successfully")
+          }
+        }
+
+        // Finally, stop the endpoint
+        ssc.env.rpcEnv.stop(endpoint)
+        endpoint = null
+        receivedBlockTracker.stop()
+        logInfo("ReceiverTracker stopped")
+        trackerState = Stopped
+      }
+    }
 
   /** Allocate all unallocated blocks to the given batch. */
   def allocateBlocksToBatch(batchTime: Time): Unit = {
@@ -283,10 +286,11 @@ private[streaming] class ReceiverTracker(
       scheduleReceiver(streamId)
     }
 
-    def isAcceptable: Boolean = acceptableExecutors.exists {
-      case loc: ExecutorCacheTaskLocation => loc.executorId == executorId
-      case loc: TaskLocation              => loc.host == host
-    }
+    def isAcceptable: Boolean =
+      acceptableExecutors.exists {
+        case loc: ExecutorCacheTaskLocation => loc.executorId == executorId
+        case loc: TaskLocation              => loc.host == host
+      }
 
     if (!isAcceptable) {
       // Refuse it since it's scheduled to a wrong executor
@@ -352,11 +356,12 @@ private[streaming] class ReceiverTracker(
   }
 
   /** Update a receiver's maximum ingestion rate */
-  def sendRateUpdate(streamUID: Int, newRate: Long): Unit = synchronized {
-    if (isTrackerStarted) {
-      endpoint.send(UpdateReceiverRateLimit(streamUID, newRate))
+  def sendRateUpdate(streamUID: Int, newRate: Long): Unit =
+    synchronized {
+      if (isTrackerStarted) {
+        endpoint.send(UpdateReceiverRateLimit(streamUID, newRate))
+      }
     }
-  }
 
   /** Add new blocks for the given stream */
   private def addBlock(receivedBlockInfo: ReceivedBlockInfo): Boolean = {
@@ -583,14 +588,15 @@ private[streaming] class ReceiverTracker(
       case AddBlock(receivedBlockInfo) =>
         if (WriteAheadLogUtils.isBatchingEnabled(ssc.conf, isDriver = true)) {
           walBatchingThreadPool.execute(new Runnable {
-            override def run(): Unit = Utils.tryLogNonFatalError {
-              if (active) {
-                context.reply(addBlock(receivedBlockInfo))
-              } else {
-                throw new IllegalStateException(
-                  "ReceiverTracker RpcEndpoint shut down.")
+            override def run(): Unit =
+              Utils.tryLogNonFatalError {
+                if (active) {
+                  context.reply(addBlock(receivedBlockInfo))
+                } else {
+                  throw new IllegalStateException(
+                    "ReceiverTracker RpcEndpoint shut down.")
+                }
               }
-            }
           })
         } else {
           context.reply(addBlock(receivedBlockInfo))

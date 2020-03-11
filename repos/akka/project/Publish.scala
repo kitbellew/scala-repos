@@ -43,9 +43,10 @@ object Publish extends AutoPlugin {
     </developers>
   }
 
-  private def akkaPublishTo = Def.setting {
-    sonatypeRepo(version.value) orElse localRepo(defaultPublishTo.value)
-  }
+  private def akkaPublishTo =
+    Def.setting {
+      sonatypeRepo(version.value) orElse localRepo(defaultPublishTo.value)
+    }
 
   private def sonatypeRepo(version: String): Option[Resolver] =
     Option(

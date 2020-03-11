@@ -414,29 +414,32 @@ private[akka] class RemoteActorRefProvider(
   @deprecated("use actorSelection instead of actorFor", "2.2")
   override private[akka] def actorFor(
       ref: InternalActorRef,
-      path: String): InternalActorRef = path match {
-    case ActorPathExtractor(address, elems) ⇒
-      if (hasAddress(address))
-        actorFor(rootGuardian, elems)
-      else {
-        val rootPath = RootActorPath(address) / elems
-        try {
-          new RemoteActorRef(
-            transport,
-            transport.localAddressForRemote(address),
-            rootPath,
-            Nobody,
-            props = None,
-            deploy = None)
-        } catch {
-          case NonFatal(e) ⇒
-            log
-              .error(e, "Error while looking up address [{}]", rootPath.address)
-            new EmptyLocalActorRef(this, rootPath, eventStream)
+      path: String): InternalActorRef =
+    path match {
+      case ActorPathExtractor(address, elems) ⇒
+        if (hasAddress(address))
+          actorFor(rootGuardian, elems)
+        else {
+          val rootPath = RootActorPath(address) / elems
+          try {
+            new RemoteActorRef(
+              transport,
+              transport.localAddressForRemote(address),
+              rootPath,
+              Nobody,
+              props = None,
+              deploy = None)
+          } catch {
+            case NonFatal(e) ⇒
+              log.error(
+                e,
+                "Error while looking up address [{}]",
+                rootPath.address)
+              new EmptyLocalActorRef(this, rootPath, eventStream)
+          }
         }
-      }
-    case _ ⇒ local.actorFor(ref, path)
-  }
+      case _ ⇒ local.actorFor(ref, path)
+    }
 
   @deprecated("use actorSelection instead of actorFor", "2.2")
   override private[akka] def actorFor(
@@ -481,33 +484,34 @@ private[akka] class RemoteActorRefProvider(
     }
   }
 
-  def resolveActorRef(path: String): ActorRef = path match {
-    case ActorPathExtractor(address, elems) ⇒
-      if (hasAddress(address))
-        local.resolveActorRef(rootGuardian, elems)
-      else {
-        val rootPath = RootActorPath(address) / elems
-        try {
-          new RemoteActorRef(
-            transport,
-            transport.localAddressForRemote(address),
-            rootPath,
-            Nobody,
-            props = None,
-            deploy = None)
-        } catch {
-          case NonFatal(e) ⇒
-            log.warning(
-              "Error while resolving address [{}] due to [{}]",
-              rootPath.address,
-              e.getMessage)
-            new EmptyLocalActorRef(this, rootPath, eventStream)
+  def resolveActorRef(path: String): ActorRef =
+    path match {
+      case ActorPathExtractor(address, elems) ⇒
+        if (hasAddress(address))
+          local.resolveActorRef(rootGuardian, elems)
+        else {
+          val rootPath = RootActorPath(address) / elems
+          try {
+            new RemoteActorRef(
+              transport,
+              transport.localAddressForRemote(address),
+              rootPath,
+              Nobody,
+              props = None,
+              deploy = None)
+          } catch {
+            case NonFatal(e) ⇒
+              log.warning(
+                "Error while resolving address [{}] due to [{}]",
+                rootPath.address,
+                e.getMessage)
+              new EmptyLocalActorRef(this, rootPath, eventStream)
+          }
         }
-      }
-    case _ ⇒
-      log.debug("resolve of unknown path [{}] failed", path)
-      deadLetters
-  }
+      case _ ⇒
+        log.debug("resolve of unknown path [{}] failed", path)
+        deadLetters
+    }
 
   def resolveActorRef(path: ActorPath): ActorRef = {
     if (hasAddress(path.address))

@@ -1261,9 +1261,10 @@ class TypedMultiJoinJobTest extends WordSpec with Matchers {
     val rng = new java.util.Random
     val COUNT = 100 * 100
     val KEYS = 10
-    def mk = (1 to COUNT).map { _ =>
-      (rng.nextInt % KEYS, rng.nextInt)
-    }
+    def mk =
+      (1 to COUNT).map { _ =>
+        (rng.nextInt % KEYS, rng.nextInt)
+      }
     val mk0 = mk
     val mk1 = mk
     val mk2 = mk
@@ -1345,9 +1346,10 @@ class TypedMultiSelfJoinJobTest extends WordSpec with Matchers {
     val rng = new java.util.Random
     val COUNT = 10000
     val KEYS = 100
-    def mk = (1 to COUNT).map { _ =>
-      (rng.nextInt % KEYS, rng.nextInt)
-    }
+    def mk =
+      (1 to COUNT).map { _ =>
+        (rng.nextInt % KEYS, rng.nextInt)
+      }
     val mk0 = mk
     val mk1 = mk
     JobTest(new TypedMultiSelfJoinJob(_))

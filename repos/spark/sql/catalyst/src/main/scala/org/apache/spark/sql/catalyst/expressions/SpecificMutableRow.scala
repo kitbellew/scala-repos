@@ -149,10 +149,11 @@ final class MutableShort extends MutableValue {
       null
     else
       value
-  override def update(v: Any): Unit = value = {
-    isNull = false
-    v.asInstanceOf[Short]
-  }
+  override def update(v: Any): Unit =
+    value = {
+      isNull = false
+      v.asInstanceOf[Short]
+    }
   override def copy(): MutableShort = {
     val newCopy = new MutableShort
     newCopy.isNull = isNull
@@ -168,10 +169,11 @@ final class MutableLong extends MutableValue {
       null
     else
       value
-  override def update(v: Any): Unit = value = {
-    isNull = false
-    v.asInstanceOf[Long]
-  }
+  override def update(v: Any): Unit =
+    value = {
+      isNull = false
+      v.asInstanceOf[Long]
+    }
   override def copy(): MutableLong = {
     val newCopy = new MutableLong
     newCopy.isNull = isNull
@@ -187,10 +189,11 @@ final class MutableByte extends MutableValue {
       null
     else
       value
-  override def update(v: Any): Unit = value = {
-    isNull = false
-    v.asInstanceOf[Byte]
-  }
+  override def update(v: Any): Unit =
+    value = {
+      isNull = false
+      v.asInstanceOf[Byte]
+    }
   override def copy(): MutableByte = {
     val newCopy = new MutableByte
     newCopy.isNull = isNull

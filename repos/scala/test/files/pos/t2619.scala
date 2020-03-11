@@ -32,10 +32,11 @@ object ModuleAK extends ModuleType2 {
 }
 object ModuleAL extends ModuleType1 {
   def as = Nil
-  def ms = List(
-    ModuleAG,
-    ModuleAI
-  )
+  def ms =
+    List(
+      ModuleAG,
+      ModuleAI
+    )
 }
 object ModuleAM extends ModuleType1 {
   def as = Nil
@@ -67,10 +68,11 @@ object ModuleBK extends ModuleType2 {
 }
 object ModuleBL extends ModuleType1 {
   def as = Nil
-  def ms = List(
-    ModuleBG,
-    ModuleBI
-  )
+  def ms =
+    List(
+      ModuleBG,
+      ModuleBI
+    )
 }
 object ModuleBM extends ModuleType1 {
   def as = Nil

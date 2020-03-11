@@ -18,15 +18,16 @@ object Test {
       else
         List(x.toChar)
     )
-  def makeFromDouble(x: Double) = List(
-    x.toShort,
-    x.toInt,
-    x.toLong,
-    x.toFloat,
-    x.toDouble,
-    BigInt(x.toInt),
-    BigDecimal(x)
-  )
+  def makeFromDouble(x: Double) =
+    List(
+      x.toShort,
+      x.toInt,
+      x.toLong,
+      x.toFloat,
+      x.toDouble,
+      BigInt(x.toInt),
+      BigDecimal(x)
+    )
 
   def main(args: Array[String]): Unit = {
     var xs = makeFromInt(5)

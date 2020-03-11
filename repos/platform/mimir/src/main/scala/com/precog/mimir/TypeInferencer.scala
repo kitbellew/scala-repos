@@ -45,28 +45,29 @@ trait TypeInferencer extends DAG {
       def collectSpecTypes(
           typing: Map[DepGraph, Set[JType]],
           splits: Map[Identifier, Split],
-          spec: BucketSpec): Map[DepGraph, Set[JType]] = spec match {
-        case UnionBucketSpec(left, right) =>
-          collectSpecTypes(
-            collectSpecTypes(typing, splits, left),
-            splits,
-            right)
+          spec: BucketSpec): Map[DepGraph, Set[JType]] =
+        spec match {
+          case UnionBucketSpec(left, right) =>
+            collectSpecTypes(
+              collectSpecTypes(typing, splits, left),
+              splits,
+              right)
 
-        case IntersectBucketSpec(left, right) =>
-          collectSpecTypes(
-            collectSpecTypes(typing, splits, left),
-            splits,
-            right)
+          case IntersectBucketSpec(left, right) =>
+            collectSpecTypes(
+              collectSpecTypes(typing, splits, left),
+              splits,
+              right)
 
-        case Group(id, target, child) =>
-          collectSpecTypes(inner(None, typing, splits, target), splits, child)
+          case Group(id, target, child) =>
+            collectSpecTypes(inner(None, typing, splits, target), splits, child)
 
-        case UnfixedSolution(id, target) =>
-          inner(Some(universe), typing, splits, target)
+          case UnfixedSolution(id, target) =>
+            inner(Some(universe), typing, splits, target)
 
-        case Extra(target) =>
-          inner(Some(universe), typing, splits, target)
-      }
+          case Extra(target) =>
+            inner(Some(universe), typing, splits, target)
+        }
 
       def inner(
           jtpe: Option[JType],
@@ -237,31 +238,33 @@ trait TypeInferencer extends DAG {
       }
     }
 
-    def findGroup(spec: BucketSpec, id: Int): Option[DepGraph] = spec match {
-      case UnionBucketSpec(left, right) =>
-        findGroup(left, id) orElse findGroup(right, id)
-      case IntersectBucketSpec(left, right) =>
-        findGroup(left, id) orElse findGroup(right, id)
+    def findGroup(spec: BucketSpec, id: Int): Option[DepGraph] =
+      spec match {
+        case UnionBucketSpec(left, right) =>
+          findGroup(left, id) orElse findGroup(right, id)
+        case IntersectBucketSpec(left, right) =>
+          findGroup(left, id) orElse findGroup(right, id)
 
-      case Group(`id`, target, _) => Some(target)
-      case Group(_, _, _)         => None
+        case Group(`id`, target, _) => Some(target)
+        case Group(_, _, _)         => None
 
-      case UnfixedSolution(_, _) => None
-      case Extra(_)              => None
-    }
+        case UnfixedSolution(_, _) => None
+        case Extra(_)              => None
+      }
 
-    def findParams(spec: BucketSpec, id: Int): Set[DepGraph] = spec match {
-      case UnionBucketSpec(left, right) =>
-        findParams(left, id) ++ findParams(right, id)
-      case IntersectBucketSpec(left, right) =>
-        findParams(left, id) ++ findParams(right, id)
+    def findParams(spec: BucketSpec, id: Int): Set[DepGraph] =
+      spec match {
+        case UnionBucketSpec(left, right) =>
+          findParams(left, id) ++ findParams(right, id)
+        case IntersectBucketSpec(left, right) =>
+          findParams(left, id) ++ findParams(right, id)
 
-      case Group(_, _, child) => findParams(child, id)
+        case Group(_, _, child) => findParams(child, id)
 
-      case UnfixedSolution(`id`, child) => Set(child)
-      case UnfixedSolution(_, _)        => Set()
-      case Extra(_)                     => Set()
-    }
+        case UnfixedSolution(`id`, child) => Set(child)
+        case UnfixedSolution(_, _)        => Set()
+        case Extra(_)                     => Set()
+      }
 
     val collectedTypes = collectTypes(jtpe, graph)
     val typing = collectedTypes.mapValues(_.reduce(JUnionT))

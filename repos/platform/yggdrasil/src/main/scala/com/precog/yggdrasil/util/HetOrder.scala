@@ -54,9 +54,10 @@ trait HetOrderLow {
     }
 
   implicit def fromOrder[@spec(Boolean, Long, Double, AnyRef) A](
-      implicit o: Order[A]) = new HetOrder[A, A] {
-    def compare(a: A, b: A) = o.compare(a, b)
-  }
+      implicit o: Order[A]) =
+    new HetOrder[A, A] {
+      def compare(a: A, b: A) = o.compare(a, b)
+    }
 }
 
 object HetOrder extends HetOrderLow {

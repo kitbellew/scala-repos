@@ -23,8 +23,8 @@ object Round extends LilaController with TheftPrevention {
   private def bookmarkApi = Env.bookmark.api
   private def analyser = Env.analyse.analyser
 
-  def websocketWatcher(gameId: String, color: String) = SocketOption[JsValue] {
-    implicit ctx =>
+  def websocketWatcher(gameId: String, color: String) =
+    SocketOption[JsValue] { implicit ctx =>
       get("sri") ?? { uid =>
         env.socketHandler.watcher(
           gameId = gameId,
@@ -34,10 +34,10 @@ object Round extends LilaController with TheftPrevention {
           ip = ctx.ip,
           userTv = get("userTv"))
       }
-  }
+    }
 
-  def websocketPlayer(fullId: String, apiVersion: Int) = SocketEither[JsValue] {
-    implicit ctx =>
+  def websocketPlayer(fullId: String, apiVersion: Int) =
+    SocketEither[JsValue] { implicit ctx =>
       GameRepo pov fullId flatMap {
         case Some(pov) =>
           if (isTheft(pov))
@@ -56,7 +56,7 @@ object Round extends LilaController with TheftPrevention {
             }
         case None => fuccess(Left(NotFound))
       }
-  }
+    }
 
   private def requestAiMove(pov: Pov) =
     pov.game.playableByAi ?? Env.fishnet.player(pov.game)
@@ -101,21 +101,22 @@ object Round extends LilaController with TheftPrevention {
       }
     ) map NoCache
 
-  def player(fullId: String) = Open { implicit ctx =>
-    OptionFuResult(GameRepo pov fullId) { pov =>
-      env.checkOutoftime(pov.game)
-      renderPlayer(pov)
+  def player(fullId: String) =
+    Open { implicit ctx =>
+      OptionFuResult(GameRepo pov fullId) { pov =>
+        env.checkOutoftime(pov.game)
+        renderPlayer(pov)
+      }
     }
-  }
 
-  private def otherPovs(game: GameModel)(implicit ctx: Context) = ctx.me ?? {
-    user =>
+  private def otherPovs(game: GameModel)(implicit ctx: Context) =
+    ctx.me ?? { user =>
       GameRepo urgentGames user map {
         _ filter { pov =>
           pov.game.id != game.id && pov.game.isSwitchable && pov.game.isSimul == game.isSimul
         }
       }
-  }
+    }
 
   private def getNext(currentGame: GameModel)(povs: List[Pov])(
       implicit ctx: Context) =
@@ -123,50 +124,54 @@ object Round extends LilaController with TheftPrevention {
       pov.isMyTurn && (pov.game.hasClock || !currentGame.hasClock)
     }
 
-  def others(gameId: String) = Open { implicit ctx =>
-    OptionFuResult(GameRepo game gameId) { currentGame =>
-      otherPovs(currentGame) map { povs =>
-        Ok(html.round.others(povs))
+  def others(gameId: String) =
+    Open { implicit ctx =>
+      OptionFuResult(GameRepo game gameId) { currentGame =>
+        otherPovs(currentGame) map { povs =>
+          Ok(html.round.others(povs))
+        }
       }
     }
-  }
 
-  def whatsNext(fullId: String) = Open { implicit ctx =>
-    OptionFuResult(GameRepo pov fullId) { currentPov =>
-      if (currentPov.isMyTurn)
-        fuccess {
-          Ok(Json.obj("nope" -> true))
-        }
-      else
-        otherPovs(currentPov.game) map getNext(currentPov.game) map { next =>
-          Ok(Json.obj("next" -> next.map(_.fullId)))
-        }
-    }
-  }
-
-  def next(gameId: String) = Auth { implicit ctx => me =>
-    OptionFuResult(GameRepo game gameId) { currentGame =>
-      otherPovs(currentGame) map getNext(currentGame) map {
-        _ orElse Pov(currentGame, me)
-      } flatMap {
-        case Some(next) => renderPlayer(next)
-        case None =>
-          fuccess(Redirect(currentGame.simulId match {
-            case Some(simulId) => routes.Simul.show(simulId)
-            case None          => routes.Round.watcher(gameId, "white")
-          }))
+  def whatsNext(fullId: String) =
+    Open { implicit ctx =>
+      OptionFuResult(GameRepo pov fullId) { currentPov =>
+        if (currentPov.isMyTurn)
+          fuccess {
+            Ok(Json.obj("nope" -> true))
+          }
+        else
+          otherPovs(currentPov.game) map getNext(currentPov.game) map { next =>
+            Ok(Json.obj("next" -> next.map(_.fullId)))
+          }
       }
     }
-  }
 
-  def watcher(gameId: String, color: String) = Open { implicit ctx =>
-    GameRepo.pov(gameId, color) flatMap {
-      case Some(pov) =>
-        env.checkOutoftime(pov.game)
-        watch(pov)
-      case None => Challenge showId gameId
+  def next(gameId: String) =
+    Auth { implicit ctx => me =>
+      OptionFuResult(GameRepo game gameId) { currentGame =>
+        otherPovs(currentGame) map getNext(currentGame) map {
+          _ orElse Pov(currentGame, me)
+        } flatMap {
+          case Some(next) => renderPlayer(next)
+          case None =>
+            fuccess(Redirect(currentGame.simulId match {
+              case Some(simulId) => routes.Simul.show(simulId)
+              case None          => routes.Round.watcher(gameId, "white")
+            }))
+        }
+      }
     }
-  }
+
+  def watcher(gameId: String, color: String) =
+    Open { implicit ctx =>
+      GameRepo.pov(gameId, color) flatMap {
+        case Some(pov) =>
+          env.checkOutoftime(pov.game)
+          watch(pov)
+        case None => Challenge showId gameId
+      }
+    }
 
   def watch(pov: Pov, userTv: Option[UserModel] = None)(
       implicit ctx: Context): Fu[Result] =
@@ -221,44 +226,49 @@ object Round extends LilaController with TheftPrevention {
       Env.tournament.api.miniStanding(tid, ctx.userId, withStanding)
     }
 
-  def playerText(fullId: String) = Open { implicit ctx =>
-    OptionResult(GameRepo pov fullId) { pov =>
-      if (ctx.blindMode)
-        Ok(html.game.textualRepresentation(pov, true))
-      else
-        BadRequest
+  def playerText(fullId: String) =
+    Open { implicit ctx =>
+      OptionResult(GameRepo pov fullId) { pov =>
+        if (ctx.blindMode)
+          Ok(html.game.textualRepresentation(pov, true))
+        else
+          BadRequest
+      }
     }
-  }
 
-  def watcherText(gameId: String, color: String) = Open { implicit ctx =>
-    OptionResult(GameRepo.pov(gameId, color)) { pov =>
-      if (ctx.blindMode)
-        Ok(html.game.textualRepresentation(pov, false))
-      else
-        BadRequest
+  def watcherText(gameId: String, color: String) =
+    Open { implicit ctx =>
+      OptionResult(GameRepo.pov(gameId, color)) { pov =>
+        if (ctx.blindMode)
+          Ok(html.game.textualRepresentation(pov, false))
+        else
+          BadRequest
+      }
     }
-  }
 
-  def sidesWatcher(gameId: String, color: String) = Open { implicit ctx =>
-    OptionFuResult(GameRepo.pov(gameId, color)) {
-      sides(_, false)
+  def sidesWatcher(gameId: String, color: String) =
+    Open { implicit ctx =>
+      OptionFuResult(GameRepo.pov(gameId, color)) {
+        sides(_, false)
+      }
     }
-  }
 
-  def sidesPlayer(gameId: String, color: String) = Open { implicit ctx =>
-    OptionFuResult(GameRepo.pov(gameId, color)) {
-      sides(_, true)
+  def sidesPlayer(gameId: String, color: String) =
+    Open { implicit ctx =>
+      OptionFuResult(GameRepo.pov(gameId, color)) {
+        sides(_, true)
+      }
     }
-  }
 
-  def writeNote(gameId: String) = AuthBody { implicit ctx => me =>
-    import play.api.data.Forms._
-    import play.api.data._
-    implicit val req = ctx.body
-    Form(single("text" -> text)).bindFromRequest.fold(
-      err => fuccess(BadRequest),
-      text => Env.round.noteApi.set(gameId, me.id, text.trim take 10000))
-  }
+  def writeNote(gameId: String) =
+    AuthBody { implicit ctx => me =>
+      import play.api.data.Forms._
+      import play.api.data._
+      implicit val req = ctx.body
+      Form(single("text" -> text)).bindFromRequest.fold(
+        err => fuccess(BadRequest),
+        text => Env.round.noteApi.set(gameId, me.id, text.trim take 10000))
+    }
 
   private def sides(pov: Pov, isPlayer: Boolean)(implicit ctx: Context) =
     myTour(pov.game.tournamentId, isPlayer) zip
@@ -269,43 +279,48 @@ object Round extends LilaController with TheftPrevention {
         Ok(html.game.sides(pov, initialFen, tour, crosstable, simul))
     }
 
-  def continue(id: String, mode: String) = Open { implicit ctx =>
-    OptionResult(GameRepo game id) { game =>
-      Redirect(
-        "%s?fen=%s#%s".format(
-          routes.Lobby.home(),
-          get("fen") | (chess.format.Forsyth >> game.toChess),
-          mode))
+  def continue(id: String, mode: String) =
+    Open { implicit ctx =>
+      OptionResult(GameRepo game id) { game =>
+        Redirect(
+          "%s?fen=%s#%s".format(
+            routes.Lobby.home(),
+            get("fen") | (chess.format.Forsyth >> game.toChess),
+            mode))
+      }
     }
-  }
 
-  def resign(fullId: String) = Open { implicit ctx =>
-    OptionResult(GameRepo pov fullId) { pov =>
-      env.resign(pov)
-      Redirect(routes.Lobby.home)
+  def resign(fullId: String) =
+    Open { implicit ctx =>
+      OptionResult(GameRepo pov fullId) { pov =>
+        env.resign(pov)
+        Redirect(routes.Lobby.home)
+      }
     }
-  }
 
-  def mini(gameId: String, color: String) = Open { implicit ctx =>
-    OptionOk(GameRepo.pov(gameId, color)) { pov =>
-      html.game.mini(pov)
+  def mini(gameId: String, color: String) =
+    Open { implicit ctx =>
+      OptionOk(GameRepo.pov(gameId, color)) { pov =>
+        html.game.mini(pov)
+      }
     }
-  }
 
-  def miniFullId(fullId: String) = Open { implicit ctx =>
-    OptionOk(GameRepo pov fullId) { pov =>
-      html.game.mini(pov)
+  def miniFullId(fullId: String) =
+    Open { implicit ctx =>
+      OptionOk(GameRepo pov fullId) { pov =>
+        html.game.mini(pov)
+      }
     }
-  }
 
-  def atom(gameId: String, color: String) = Action.async { implicit req =>
-    GameRepo.pov(gameId, color) flatMap {
-      case Some(pov) =>
-        GameRepo initialFen pov.game map { initialFen =>
-          val pgn = Env.game.pgnDump(pov.game, initialFen)
-          Ok(views.xml.round.atom(pov, pgn)) as XML
-        }
-      case _ => NotFound("no such game").fuccess
+  def atom(gameId: String, color: String) =
+    Action.async { implicit req =>
+      GameRepo.pov(gameId, color) flatMap {
+        case Some(pov) =>
+          GameRepo initialFen pov.game map { initialFen =>
+            val pgn = Env.game.pgnDump(pov.game, initialFen)
+            Ok(views.xml.round.atom(pov, pgn)) as XML
+          }
+        case _ => NotFound("no such game").fuccess
+      }
     }
-  }
 }

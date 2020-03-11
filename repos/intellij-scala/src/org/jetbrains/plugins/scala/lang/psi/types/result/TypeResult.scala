@@ -43,10 +43,11 @@ sealed abstract class TypeResult[+T] {
 }
 
 object TypeResult {
-  def fromOption(o: Option[ScType]): TypeResult[ScType] = o match {
-    case Some(t) => Success(t, None)
-    case None    => new Failure("", None)
-  }
+  def fromOption(o: Option[ScType]): TypeResult[ScType] =
+    o match {
+      case Some(t) => Success(t, None)
+      case None    => new Failure("", None)
+    }
 
   def ap2[A, B, Z](tr1: TypeResult[A], tr2: TypeResult[B])(
       f: (A, B) => Z): TypeResult[Z] =
@@ -91,9 +92,10 @@ case class Success[+T](result: T, elem: Option[PsiElement])
   def isEmpty = false
 
   def innerFailures: List[Failure] = List()
-  def apply(fail: Failure) = new Success(result, elem) {
-    override def innerFailures = fail :: self.innerFailures
-  }
+  def apply(fail: Failure) =
+    new Success(result, elem) {
+      override def innerFailures = fail :: self.innerFailures
+    }
   def isCyclic = false
 }
 

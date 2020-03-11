@@ -345,43 +345,44 @@ trait LogisticRegressionSpecs[M[+_]]
 
       result must haveSize(1)
 
-      def theta(model: String) = result collect {
-        case (ids, SObject(elems)) if ids.length == 0 => {
-          elems.keys mustEqual Set("model1", "model2", "model3")
+      def theta(model: String) =
+        result collect {
+          case (ids, SObject(elems)) if ids.length == 0 => {
+            elems.keys mustEqual Set("model1", "model2", "model3")
 
-          val SObject(fields) = elems(model)
-          val SArray(arr) = fields("coefficients")
+            val SObject(fields) = elems(model)
+            val SArray(arr) = fields("coefficients")
 
-          val SDecimal(theta1) = (arr(0): @unchecked) match {
-            case SObject(map) =>
-              (map("bar"): @unchecked) match {
-                case SObject(map) =>
-                  (map("baz"): @unchecked) match {
-                    case SArray(elems) =>
-                      (elems(0): @unchecked) match {
-                        case SObject(obj) =>
-                          returnestimate(obj)
-                      }
-                  }
-              }
+            val SDecimal(theta1) = (arr(0): @unchecked) match {
+              case SObject(map) =>
+                (map("bar"): @unchecked) match {
+                  case SObject(map) =>
+                    (map("baz"): @unchecked) match {
+                      case SArray(elems) =>
+                        (elems(0): @unchecked) match {
+                          case SObject(obj) =>
+                            returnestimate(obj)
+                        }
+                    }
+                }
+            }
+
+            val SDecimal(theta2) = (arr(0): @unchecked) match {
+              case SObject(map) =>
+                (map("foo"): @unchecked) match {
+                  case SObject(obj) =>
+                    returnestimate(obj)
+                }
+            }
+
+            val SDecimal(theta0) = (arr(1): @unchecked) match {
+              case SObject(map) =>
+                returnestimate(map)
+            }
+
+            List(theta0.toDouble, theta1.toDouble, theta2.toDouble)
           }
-
-          val SDecimal(theta2) = (arr(0): @unchecked) match {
-            case SObject(map) =>
-              (map("foo"): @unchecked) match {
-                case SObject(obj) =>
-                  returnestimate(obj)
-              }
-          }
-
-          val SDecimal(theta0) = (arr(1): @unchecked) match {
-            case SObject(map) =>
-              returnestimate(map)
-          }
-
-          List(theta0.toDouble, theta1.toDouble, theta2.toDouble)
         }
-      }
 
       thetasSchema1 = thetasSchema1 ++ theta("model1")
       thetasSchema2 = thetasSchema2 ++ theta("model2")

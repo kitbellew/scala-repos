@@ -145,10 +145,11 @@ trait StreamInstances {
       }
     }
 
-  implicit def streamMonoid[A] = new Monoid[Stream[A]] {
-    def append(f1: Stream[A], f2: => Stream[A]) = f1 #::: f2
-    def zero: Stream[A] = scala.Stream.empty
-  }
+  implicit def streamMonoid[A] =
+    new Monoid[Stream[A]] {
+      def append(f1: Stream[A], f2: => Stream[A]) = f1 #::: f2
+      def zero: Stream[A] = scala.Stream.empty
+    }
 
   implicit def streamEqual[A](implicit A0: Equal[A]): Equal[Stream[A]] =
     new StreamEqual[A] {
@@ -261,10 +262,11 @@ trait StreamFunctions {
 
   /** Intersperse the element `a` between each adjacent pair of elements in `as` */
   final def intersperse[A](as: Stream[A], a: A): Stream[A] = {
-    def loop(rest: Stream[A]): Stream[A] = rest match {
-      case Stream.Empty => Stream.empty
-      case h #:: t      => a #:: h #:: loop(t)
-    }
+    def loop(rest: Stream[A]): Stream[A] =
+      rest match {
+        case Stream.Empty => Stream.empty
+        case h #:: t      => a #:: h #:: loop(t)
+      }
     as match {
       case Stream.Empty => Stream.empty
       case h #:: t      => h #:: loop(t)

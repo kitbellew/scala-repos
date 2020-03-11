@@ -169,18 +169,19 @@ object ScalaMacroDebuggingUtil {
         true
     }
 
-  def isMacroCall(element: PsiElement) = element match {
-    case methodInvocation: MethodInvocation =>
-      methodInvocation.getEffectiveInvokedExpr match {
-        case ref: ScReferenceExpression =>
-          ref.resolve() match {
-            case _: ScMacroDefinition => true
-            case _                    => false
-          }
-        case _ => false
-      }
-    case _ => false
-  }
+  def isMacroCall(element: PsiElement) =
+    element match {
+      case methodInvocation: MethodInvocation =>
+        methodInvocation.getEffectiveInvokedExpr match {
+          case ref: ScReferenceExpression =>
+            ref.resolve() match {
+              case _: ScMacroDefinition => true
+              case _                    => false
+            }
+          case _ => false
+        }
+      case _ => false
+    }
 
   def copyTextBetweenEditors(from: Editor, to: Editor, project: Project) {
     extensions.inWriteAction {

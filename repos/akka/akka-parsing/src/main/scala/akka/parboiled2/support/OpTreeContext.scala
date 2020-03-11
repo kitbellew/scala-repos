@@ -69,11 +69,12 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
 
   sealed abstract class PotentiallyNamedTerminalOpTree(arg: Tree)
       extends TerminalOpTree {
-    override def bubbleUp = callName(arg) match {
-      case Some(name) ⇒
-        q"__bubbleUp(akka.parboiled2.RuleTrace.NonTerminal(akka.parboiled2.RuleTrace.Named($name), 0) :: Nil, $ruleTraceTerminal)"
-      case None ⇒ super.bubbleUp
-    }
+    override def bubbleUp =
+      callName(arg) match {
+        case Some(name) ⇒
+          q"__bubbleUp(akka.parboiled2.RuleTrace.NonTerminal(akka.parboiled2.RuleTrace.Named($name), 0) :: Nil, $ruleTraceTerminal)"
+        case None ⇒ super.bubbleUp
+      }
     def ruleTraceTerminal: Tree
   }
 
@@ -469,21 +470,22 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
       rule: OpTree,
       collector: Collector,
       separator: Separator = null): OpTree = {
-    def handleRange(mn: Tree, mx: Tree, r: Tree) = (mn, mx) match {
-      case (Literal(Constant(min: Int)), Literal(Constant(max: Int))) ⇒
-        if (min <= 0)
-          c.abort(mn.pos, "`min` in `(min to max).times` must be positive")
-        else if (max <= 0)
-          c.abort(mx.pos, "`max` in `(min to max).times` must be positive")
-        else if (max < min)
-          c.abort(mx.pos, "`max` in `(min to max).times` must be >= `min`")
-        else
+    def handleRange(mn: Tree, mx: Tree, r: Tree) =
+      (mn, mx) match {
+        case (Literal(Constant(min: Int)), Literal(Constant(max: Int))) ⇒
+          if (min <= 0)
+            c.abort(mn.pos, "`min` in `(min to max).times` must be positive")
+          else if (max <= 0)
+            c.abort(mx.pos, "`max` in `(min to max).times` must be positive")
+          else if (max < min)
+            c.abort(mx.pos, "`max` in `(min to max).times` must be >= `min`")
+          else
+            Times(rule, q"val min = $mn; val max = $mx", collector, separator)
+        case ((Ident(_) | Select(_, _)), (Ident(_) | Select(_, _))) ⇒
           Times(rule, q"val min = $mn; val max = $mx", collector, separator)
-      case ((Ident(_) | Select(_, _)), (Ident(_) | Select(_, _))) ⇒
-        Times(rule, q"val min = $mn; val max = $mx", collector, separator)
-      case _ ⇒
-        c.abort(r.pos, "Invalid int range expression for `.times(...)`: " + r)
-    }
+        case _ ⇒
+          c.abort(r.pos, "Invalid int range expression for `.times(...)`: " + r)
+      }
 
     base match {
       case q"$a.this.int2NTimes($n)" ⇒

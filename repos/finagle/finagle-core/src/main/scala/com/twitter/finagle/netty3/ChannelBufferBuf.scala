@@ -36,11 +36,12 @@ class ChannelBufferBuf(protected val underlying: ChannelBuffer) extends Buf {
       new ChannelBufferBuf(underlying.slice(i, (j - i) min (length - i)))
   }
 
-  override def equals(other: Any): Boolean = other match {
-    case ChannelBufferBuf(otherCB) => underlying.equals(otherCB)
-    case other: Buf                => Buf.equals(this, other)
-    case _                         => false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case ChannelBufferBuf(otherCB) => underlying.equals(otherCB)
+      case other: Buf                => Buf.equals(this, other)
+      case _                         => false
+    }
 
   protected def unsafeByteArrayBuf: Option[Buf.ByteArray] =
     if (underlying.hasArray) {
@@ -63,14 +64,15 @@ object ChannelBufferBuf {
   /**
     * Coerce a buf to a ChannelBufferBuf
     */
-  def coerce(buf: Buf): ChannelBufferBuf = buf match {
-    case buf: ChannelBufferBuf => buf
-    case buf if buf.isEmpty    => ChannelBufferBuf.Empty
-    case buf =>
-      val Buf.ByteArray.Owned(bytes, begin, end) = Buf.ByteArray.coerce(buf)
-      val cb = ChannelBuffers.wrappedBuffer(bytes, begin, end - begin)
-      new ChannelBufferBuf(cb)
-  }
+  def coerce(buf: Buf): ChannelBufferBuf =
+    buf match {
+      case buf: ChannelBufferBuf => buf
+      case buf if buf.isEmpty    => ChannelBufferBuf.Empty
+      case buf =>
+        val Buf.ByteArray.Owned(bytes, begin, end) = Buf.ByteArray.coerce(buf)
+        val cb = ChannelBuffers.wrappedBuffer(bytes, begin, end - begin)
+        new ChannelBufferBuf(cb)
+    }
 
   /**
     * Java API for [[ChannelBufferBuf.Owned.apply]].
@@ -90,11 +92,12 @@ object ChannelBufferBuf {
       *
       * @see [[newOwned]] for a Java friendly API.
       */
-    def apply(cb: ChannelBuffer): Buf = cb match {
-      case cb if cb.readableBytes == 0 => Buf.Empty
-      case BufChannelBuffer(buf)       => buf
-      case cb                          => new ChannelBufferBuf(cb)
-    }
+    def apply(cb: ChannelBuffer): Buf =
+      cb match {
+        case cb if cb.readableBytes == 0 => Buf.Empty
+        case BufChannelBuffer(buf)       => buf
+        case cb                          => new ChannelBufferBuf(cb)
+      }
 
     /** Extract the buffer's underlying ChannelBuffer. It should not be mutated. */
     def unapply(cbb: ChannelBufferBuf): Option[ChannelBuffer] =

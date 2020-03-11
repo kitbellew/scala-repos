@@ -42,13 +42,16 @@ package sexp {
       SexpCons(SexpAtom(name), SexpCons(value, SexpNil))
 
     // matches the car (name, value) and the cdr
-    def unapply(cons: Sexp): Option[((String, Sexp), Sexp)] = cons match {
-      case SexpCons(SexpAtom(name), SexpCons(value, SexpNil)) =>
-        Some((name, value), SexpNil)
-      case SexpCons(SexpCons(SexpAtom(name), SexpCons(value, SexpNil)), cdr) =>
-        Some((name, value), cdr)
-      case _ => None
-    }
+    def unapply(cons: Sexp): Option[((String, Sexp), Sexp)] =
+      cons match {
+        case SexpCons(SexpAtom(name), SexpCons(value, SexpNil)) =>
+          Some((name, value), SexpNil)
+        case SexpCons(
+              SexpCons(SexpAtom(name), SexpCons(value, SexpNil)),
+              cdr) =>
+          Some((name, value), cdr)
+        case _ => None
+      }
   }
 }
 import sexp._
@@ -264,25 +267,29 @@ trait SexpConvert[T] {
 object SexpUserConvert {
   implicit def stringSexpConvert: SexpConvert[String] =
     new SexpConvert[String] {
-      def deser(s: Sexp) = s match {
-        case SexpAtom(s) => Some(s)
-        case _           => None
-      }
+      def deser(s: Sexp) =
+        s match {
+          case SexpAtom(s) => Some(s)
+          case _           => None
+        }
       def ser(s: String) = SexpAtom(s)
     }
-  implicit def intSexpConvert: SexpConvert[Int] = new SexpConvert[Int] {
-    def deser(s: Sexp) = s match {
-      case SexpAtom(s) => util.Try(s.toInt).toOption
-      case _           => None
+  implicit def intSexpConvert: SexpConvert[Int] =
+    new SexpConvert[Int] {
+      def deser(s: Sexp) =
+        s match {
+          case SexpAtom(s) => util.Try(s.toInt).toOption
+          case _           => None
+        }
+      def ser(i: Int) = SexpAtom(i.toString)
     }
-    def ser(i: Int) = SexpAtom(i.toString)
-  }
   implicit def boolSexpConvert: SexpConvert[Boolean] =
     new SexpConvert[Boolean] {
-      def deser(s: Sexp) = s match {
-        case SexpNil => Some(false)
-        case other   => Some(true)
-      }
+      def deser(s: Sexp) =
+        s match {
+          case SexpNil => Some(false)
+          case other   => Some(true)
+        }
       def ser(b: Boolean) =
         if (b)
           SexpAtom("t")
@@ -292,14 +299,16 @@ object SexpUserConvert {
   implicit def optSexpConvert[T](
       c: Lazy[SexpConvert[T]]): SexpConvert[Option[T]] =
     new SexpConvert[Option[T]] {
-      def deser(s: Sexp) = s match {
-        case SexpNil => None
-        case other   => Some(c.value.deser(other))
-      }
-      def ser(o: Option[T]) = o match {
-        case None    => SexpNil
-        case Some(t) => c.value.ser(t)
-      }
+      def deser(s: Sexp) =
+        s match {
+          case SexpNil => None
+          case other   => Some(c.value.deser(other))
+        }
+      def ser(o: Option[T]) =
+        o match {
+          case None    => SexpNil
+          case Some(t) => c.value.ser(t)
+        }
     }
 }
 
@@ -322,17 +331,18 @@ object SexpConvert {
       sct: Lazy[SexpConvert[T]]
   ): SexpConvert[FieldType[K, V] :: T] =
     new SexpConvert[FieldType[K, V] :: T] {
-      def deser(s: Sexp): Option[FieldType[K, V] :: T] = s match {
-        case SexpProp((label, car), cdr) if label == key.value.name =>
-          for {
-            front <- scv.value.deser(car)
-            back <- sct.value.deser(cdr)
-          } yield field[K](front) :: back
+      def deser(s: Sexp): Option[FieldType[K, V] :: T] =
+        s match {
+          case SexpProp((label, car), cdr) if label == key.value.name =>
+            for {
+              front <- scv.value.deser(car)
+              back <- sct.value.deser(cdr)
+            } yield field[K](front) :: back
 
-        case _ =>
-          println("PRODUCT MISS = " + s)
-          None
-      }
+          case _ =>
+            println("PRODUCT MISS = " + s)
+            None
+        }
 
       def ser(ft: FieldType[K, V] :: T): Sexp = {
         val car = SexpProp(key.value.name, scv.value.ser(ft.head))
@@ -343,10 +353,11 @@ object SexpConvert {
       }
     }
 
-  implicit def deriveCNil: SexpConvert[CNil] = new SexpConvert[CNil] {
-    def deser(s: Sexp): Option[CNil] = None
-    def ser(t: CNil) = SexpNil
-  }
+  implicit def deriveCNil: SexpConvert[CNil] =
+    new SexpConvert[CNil] {
+      def deser(s: Sexp): Option[CNil] = None
+      def ser(t: CNil) = SexpNil
+    }
 
   implicit def deriveCCons[K <: Symbol, V, T <: Coproduct](implicit
       key: Witness.Aux[K],
@@ -354,20 +365,22 @@ object SexpConvert {
       sct: Lazy[SexpConvert[T]]
   ): SexpConvert[FieldType[K, V] :+: T] =
     new SexpConvert[FieldType[K, V] :+: T] {
-      def deser(s: Sexp): Option[FieldType[K, V] :+: T] = s match {
-        case SexpCons(SexpAtom(impl), cdr) if impl == key.value.name =>
-          scv.value.deser(cdr).map(v => Inl(field[K](v)))
-        case SexpCons(SexpAtom(impl), cdr) =>
-          sct.value.deser(s).map(Inr(_))
-        case _ =>
-          println("COPRODUCT MISS " + s)
-          None
-      }
+      def deser(s: Sexp): Option[FieldType[K, V] :+: T] =
+        s match {
+          case SexpCons(SexpAtom(impl), cdr) if impl == key.value.name =>
+            scv.value.deser(cdr).map(v => Inl(field[K](v)))
+          case SexpCons(SexpAtom(impl), cdr) =>
+            sct.value.deser(s).map(Inr(_))
+          case _ =>
+            println("COPRODUCT MISS " + s)
+            None
+        }
 
-      def ser(lr: FieldType[K, V] :+: T): Sexp = lr match {
-        case Inl(l) => SexpCons(SexpAtom(key.value.name), scv.value.ser(l))
-        case Inr(r) => sct.value.ser(r)
-      }
+      def ser(lr: FieldType[K, V] :+: T): Sexp =
+        lr match {
+          case Inl(l) => SexpCons(SexpAtom(key.value.name), scv.value.ser(l))
+          case Inr(r) => sct.value.ser(r)
+        }
     }
 
   implicit def deriveInstance[F, G](implicit

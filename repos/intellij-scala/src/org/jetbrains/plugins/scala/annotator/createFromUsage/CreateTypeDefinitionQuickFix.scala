@@ -45,12 +45,13 @@ abstract class CreateTypeDefinitionQuickFix(
   private val name = ref.refName
 
   override def isAvailable(project: Project, editor: Editor, file: PsiFile) = {
-    def goodQualifier = ref.qualifier match {
-      case Some(InstanceOfClass(typeDef: ScTypeDefinition)) => true
-      case Some(ResolvesTo(pack: PsiPackage))               => true
-      case None                                             => true
-      case _                                                => false
-    }
+    def goodQualifier =
+      ref.qualifier match {
+        case Some(InstanceOfClass(typeDef: ScTypeDefinition)) => true
+        case Some(ResolvesTo(pack: PsiPackage))               => true
+        case None                                             => true
+        case _                                                => false
+      }
     super.isAvailable(project, editor, file) && goodQualifier
   }
 
@@ -133,15 +134,16 @@ abstract class CreateTypeDefinitionQuickFix(
       editor: Editor,
       siblings: Seq[PsiElement]): Unit = {
     val renderer = new PsiElementListCellRenderer[PsiElement] {
-      override def getElementText(element: PsiElement) = element match {
-        case f: PsiFile                            => "New file"
-        case td: ScTypeDefinition if td.isTopLevel => "Top level in this file"
-        case _ childOf (tb: ScTemplateBody) =>
-          val containingClass =
-            PsiTreeUtil.getParentOfType(tb, classOf[ScTemplateDefinition])
-          s"Inner in ${containingClass.name}"
-        case _ => "Local scope"
-      }
+      override def getElementText(element: PsiElement) =
+        element match {
+          case f: PsiFile                            => "New file"
+          case td: ScTypeDefinition if td.isTopLevel => "Top level in this file"
+          case _ childOf (tb: ScTemplateBody) =>
+            val containingClass =
+              PsiTreeUtil.getParentOfType(tb, classOf[ScTemplateDefinition])
+            s"Inner in ${containingClass.name}"
+          case _ => "Local scope"
+        }
 
       override def getContainerText(element: PsiElement, name: String) = null
       override def getIconFlags = 0

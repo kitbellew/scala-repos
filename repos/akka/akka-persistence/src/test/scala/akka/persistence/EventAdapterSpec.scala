@@ -40,11 +40,12 @@ object EventAdapterSpec {
     val Adult = Set("adult")
     val Minor = Set("minor")
 
-    override def toJournal(event: Any): Any = event match {
-      case e @ UserDataChanged(_, age) if age > 18 ⇒ Tagged(e, Adult)
-      case e @ UserDataChanged(_, age) ⇒ Tagged(e, Minor)
-      case e ⇒ NotTagged(e)
-    }
+    override def toJournal(event: Any): Any =
+      event match {
+        case e @ UserDataChanged(_, age) if age > 18 ⇒ Tagged(e, Adult)
+        case e @ UserDataChanged(_, age) ⇒ Tagged(e, Minor)
+        case e ⇒ NotTagged(e)
+      }
     override def fromJournal(event: Any, manifest: String): EventSeq =
       EventSeq.single {
         event match {

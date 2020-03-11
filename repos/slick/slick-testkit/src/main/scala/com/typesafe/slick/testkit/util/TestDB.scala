@@ -329,9 +329,10 @@ abstract class ExternalJdbcTestDB(confName: String)
     }
   }
 
-  def loadCustomDriver() = confOptionalString("driverJar").map { jar =>
-    ExternalTestDB.getCustomDriver(jar, jdbcDriver)
-  }
+  def loadCustomDriver() =
+    confOptionalString("driverJar").map { jar =>
+      ExternalTestDB.getCustomDriver(jar, jdbcDriver)
+    }
 }
 
 object ExternalTestDB {
@@ -339,12 +340,13 @@ object ExternalTestDB {
   private[this] val driverCache =
     new mutable.HashMap[(String, String), Driver]()
 
-  def getCustomDriver(url: String, driverClass: String): Driver = synchronized {
-    driverCache.getOrElseUpdate(
-      (url, driverClass),
-      new URLClassLoader(Array(new URL(url)), getClass.getClassLoader)
-        .loadClass(driverClass)
-        .newInstance
-        .asInstanceOf[Driver])
-  }
+  def getCustomDriver(url: String, driverClass: String): Driver =
+    synchronized {
+      driverCache.getOrElseUpdate(
+        (url, driverClass),
+        new URLClassLoader(Array(new URL(url)), getClass.getClassLoader)
+          .loadClass(driverClass)
+          .newInstance
+          .asInstanceOf[Driver])
+    }
 }

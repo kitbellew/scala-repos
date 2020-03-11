@@ -232,17 +232,19 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
   }
 
   implicit class OptionExtension[T](option: Option[T]) {
-    def toBox: Box[T] = option match {
-      case Some(x) => Full(x)
-      case None    => Empty
-    }
+    def toBox: Box[T] =
+      option match {
+        case Some(x) => Full(x)
+        case None    => Empty
+      }
   }
 
   implicit class TryExtension[T](tryy: Try[T]) {
-    def toBox: Box[T] = tryy match {
-      case scala.util.Success(x)  => Full(x)
-      case scala.util.Failure(ex) => Failure(ex.getMessage, Full(ex), Empty)
-    }
+    def toBox: Box[T] =
+      tryy match {
+        case scala.util.Success(x)  => Full(x)
+        case scala.util.Failure(ex) => Failure(ex.getMessage, Full(ex), Empty)
+      }
   }
 
   /**
@@ -289,9 +291,10 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
   /**
     * Safely convert the specified String to an Int.
     */
-  def asInt(in: String): Box[Int] = tryo {
-    in.trim.toInt
-  }
+  def asInt(in: String): Box[Int] =
+    tryo {
+      in.trim.toInt
+    }
 
   /**
     * A helpful Int extractor
@@ -303,9 +306,10 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
   /**
     * Safely convert the specified String to a Double.
     */
-  def asDouble(in: String): Box[Double] = tryo {
-    in.trim.toDouble
-  }
+  def asDouble(in: String): Box[Double] =
+    tryo {
+      in.trim.toDouble
+    }
 
   /**
     * A helpful Double extractor

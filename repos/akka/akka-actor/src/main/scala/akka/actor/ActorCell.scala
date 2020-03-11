@@ -575,11 +575,12 @@ private[akka] class ActorCell(
    * ACTOR CONTEXT IMPLEMENTATION
    */
 
-  final def sender(): ActorRef = currentMessage match {
-    case null ⇒ system.deadLetters
-    case msg if msg.sender ne null ⇒ msg.sender
-    case _ ⇒ system.deadLetters
-  }
+  final def sender(): ActorRef =
+    currentMessage match {
+      case null ⇒ system.deadLetters
+      case msg if msg.sender ne null ⇒ msg.sender
+      case _ ⇒ system.deadLetters
+    }
 
   def become(behavior: Actor.Receive, discardOld: Boolean = true): Unit =
     behaviorStack = behavior :: (if (discardOld && behaviorStack.nonEmpty)

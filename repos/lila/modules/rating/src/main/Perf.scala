@@ -15,9 +15,10 @@ case class Perf(
   def intRating = glicko.rating.toInt
   def intDeviation = glicko.deviation.toInt
 
-  def progress: Int = ~recent.headOption.flatMap { head =>
-    recent.lastOption map (head -)
-  }
+  def progress: Int =
+    ~recent.headOption.flatMap { head =>
+      recent.lastOption map (head -)
+    }
 
   def add(g: Glicko, date: DateTime): Perf =
     copy(
@@ -37,11 +38,12 @@ case class Perf(
 
   def addOrReset(monitor: lila.mon.IncPath, msg: => String)(
       r: Rating,
-      date: DateTime): Perf = add(r, date) | {
-    lila.log("rating").error(s"Crazy Glicko2 $msg")
-    lila.mon.incPath(monitor)()
-    add(Glicko.default, date)
-  }
+      date: DateTime): Perf =
+    add(r, date) | {
+      lila.log("rating").error(s"Crazy Glicko2 $msg")
+      lila.mon.incPath(monitor)()
+      add(Glicko.default, date)
+    }
 
   def toRating =
     new Rating(

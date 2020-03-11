@@ -433,11 +433,13 @@ class ScProjectionType private (
     }
   }
 
-  override def isFinalType = actualElement match {
-    case cl: PsiClass if cl.isEffectivelyFinal => true
-    case alias: ScTypeAliasDefinition          => alias.aliasedType.exists(_.isFinalType)
-    case _                                     => false
-  }
+  override def isFinalType =
+    actualElement match {
+      case cl: PsiClass if cl.isEffectivelyFinal => true
+      case alias: ScTypeAliasDefinition =>
+        alias.aliasedType.exists(_.isFinalType)
+      case _ => false
+    }
 
   def visitType(visitor: ScalaTypeVisitor) {
     visitor.visitProjectionType(this)
@@ -445,14 +447,15 @@ class ScProjectionType private (
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[ScProjectionType]
 
-  override def equals(other: Any): Boolean = other match {
-    case that: ScProjectionType =>
-      (that canEqual this) &&
-        projected == that.projected &&
-        element == that.element &&
-        superReference == that.superReference
-    case _ => false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case that: ScProjectionType =>
+        (that canEqual this) &&
+          projected == that.projected &&
+          element == that.element &&
+          superReference == that.superReference
+      case _ => false
+    }
 
   override def typeDepth: Int = projected.typeDepth
 }
@@ -649,10 +652,11 @@ case class ScDesignatorType(element: PsiNamedElement) extends ValueType {
     visitor.visitDesignatorType(this)
   }
 
-  override def isFinalType = element match {
-    case cl: PsiClass if cl.isEffectivelyFinal => true
-    case _                                     => false
-  }
+  override def isFinalType =
+    element match {
+      case cl: PsiClass if cl.isEffectivelyFinal => true
+      case _                                     => false
+    }
 }
 
 object ScDesignatorType {

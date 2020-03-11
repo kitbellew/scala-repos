@@ -101,30 +101,31 @@ abstract class Delambdafy
     private val boxingBridgeMethods = mutable.ArrayBuffer[Tree]()
 
     // here's the main entry point of the transform
-    override def transform(tree: Tree): Tree = tree match {
-      // the main thing we care about is lambdas
-      case fun @ Function(_, _) =>
-        transformFunction(fun) match {
-          case DelambdafyAnonClass(lambdaClassDef, newExpr) =>
-            // a lambda becomes a new class, an instantiation expression
-            val pkg = lambdaClassDef.symbol.owner
+    override def transform(tree: Tree): Tree =
+      tree match {
+        // the main thing we care about is lambdas
+        case fun @ Function(_, _) =>
+          transformFunction(fun) match {
+            case DelambdafyAnonClass(lambdaClassDef, newExpr) =>
+              // a lambda becomes a new class, an instantiation expression
+              val pkg = lambdaClassDef.symbol.owner
 
-            // we'll add the lambda class to the package later
-            lambdaClassDefs(pkg) = lambdaClassDef :: lambdaClassDefs(pkg)
+              // we'll add the lambda class to the package later
+              lambdaClassDefs(pkg) = lambdaClassDef :: lambdaClassDefs(pkg)
 
-            super.transform(newExpr)
-          case InvokeDynamicLambda(apply) =>
-            // ... or an invokedynamic call
-            super.transform(apply)
-        }
-      case Template(_, _, _) =>
-        try {
-          // during this call boxingBridgeMethods will be populated from the Function case
-          val Template(parents, self, body) = super.transform(tree)
-          Template(parents, self, body ++ boxingBridgeMethods)
-        } finally boxingBridgeMethods.clear()
-      case _ => super.transform(tree)
-    }
+              super.transform(newExpr)
+            case InvokeDynamicLambda(apply) =>
+              // ... or an invokedynamic call
+              super.transform(apply)
+          }
+        case Template(_, _, _) =>
+          try {
+            // during this call boxingBridgeMethods will be populated from the Function case
+            val Template(parents, self, body) = super.transform(tree)
+            Template(parents, self, body ++ boxingBridgeMethods)
+          } finally boxingBridgeMethods.clear()
+        case _ => super.transform(tree)
+      }
 
     // this entry point is aimed at the statements in the compilation unit.
     // after working on the entire compilation until we'll have a set of
@@ -472,11 +473,12 @@ abstract class Delambdafy
       // Unfortunately, the more obvious `enteringErasure(target.info)` doesn't work
       // as we would like, value classes in parameter position show up as the unboxed types.
       val (functionParamTypes, functionResultType) = exitingErasure {
-        def boxed(tp: Type) = tp match {
-          case ErasedValueType(valueClazz, _) =>
-            TypeRef(NoPrefix, valueClazz, Nil)
-          case _ => tp
-        }
+        def boxed(tp: Type) =
+          tp match {
+            case ErasedValueType(valueClazz, _) =>
+              TypeRef(NoPrefix, valueClazz, Nil)
+            case _ => tp
+          }
         // We don't need to deeply map `boxedValueClassType` over the infos as `ErasedValueType`
         // will only appear directly as a parameter type in a method signature, as shown
         // https://gist.github.com/retronym/ba81dbd462282c504ff8
@@ -668,27 +670,29 @@ abstract class Delambdafy
       pos: Position,
       thisProxy: Symbol)
       extends TypingTransformer(unit) {
-    override def transform(tree: Tree) = tree match {
-      case tree @ This(encl) if tree.symbol == oldClass && thisProxy.exists =>
-        gen mkAttributedSelect (gen mkAttributedThis newClass, thisProxy)
-      case Ident(name) if (captureProxies contains tree.symbol) =>
-        gen mkAttributedSelect (gen mkAttributedThis newClass, captureProxies(
-          tree.symbol))
-      case _ => super.transform(tree)
-    }
+    override def transform(tree: Tree) =
+      tree match {
+        case tree @ This(encl) if tree.symbol == oldClass && thisProxy.exists =>
+          gen mkAttributedSelect (gen mkAttributedThis newClass, thisProxy)
+        case Ident(name) if (captureProxies contains tree.symbol) =>
+          gen mkAttributedSelect (gen mkAttributedThis newClass, captureProxies(
+            tree.symbol))
+        case _ => super.transform(tree)
+      }
   }
 
   /**
     * Get the symbol of the target lifted lambda body method from a function. I.e. if
     * the function is {args => anonfun(args)} then this method returns anonfun's symbol
     */
-  private def targetMethod(fun: Function): Symbol = fun match {
-    case Function(_, Apply(target, _)) =>
-      target.symbol
-    case _ =>
-      // any other shape of Function is unexpected at this point
-      abort(s"could not understand function with tree $fun")
-  }
+  private def targetMethod(fun: Function): Symbol =
+    fun match {
+      case Function(_, Apply(target, _)) =>
+        target.symbol
+      case _ =>
+        // any other shape of Function is unexpected at this point
+        abort(s"could not understand function with tree $fun")
+    }
 
   // finds all methods that reference 'this'
   class ThisReferringMethodsTraverser() extends Traverser {
@@ -698,29 +702,30 @@ abstract class Delambdafy
     // the set of lifted lambda body methods that each method refers to
     val liftedMethodReferences =
       mutable.Map[Symbol, Set[Symbol]]().withDefault(_ => mutable.Set())
-    override def traverse(tree: Tree) = tree match {
-      case DefDef(_, _, _, _, _, _) =>
-        // we don't expect defs within defs. At this phase trees should be very flat
-        if (currentMethod.exists)
-          devWarning(
-            "Found a def within a def at a phase where defs are expected to be flattened out.")
-        currentMethod = tree.symbol
-        super.traverse(tree)
-        currentMethod = NoSymbol
-      case fun @ Function(_, _) =>
-        // we don't drill into functions because at the beginning of this phase they will always refer to 'this'.
-        // They'll be of the form {(args...) => this.anonfun(args...)}
-        // but we do need to make note of the lifted body method in case it refers to 'this'
-        if (currentMethod.exists)
-          liftedMethodReferences(currentMethod) += targetMethod(fun)
-      case This(_) =>
-        if (currentMethod.exists && tree.symbol == currentMethod.enclClass) {
-          debuglog(s"$currentMethod directly refers to 'this'")
-          thisReferringMethods add currentMethod
-        }
-      case _ =>
-        super.traverse(tree)
-    }
+    override def traverse(tree: Tree) =
+      tree match {
+        case DefDef(_, _, _, _, _, _) =>
+          // we don't expect defs within defs. At this phase trees should be very flat
+          if (currentMethod.exists)
+            devWarning(
+              "Found a def within a def at a phase where defs are expected to be flattened out.")
+          currentMethod = tree.symbol
+          super.traverse(tree)
+          currentMethod = NoSymbol
+        case fun @ Function(_, _) =>
+          // we don't drill into functions because at the beginning of this phase they will always refer to 'this'.
+          // They'll be of the form {(args...) => this.anonfun(args...)}
+          // but we do need to make note of the lifted body method in case it refers to 'this'
+          if (currentMethod.exists)
+            liftedMethodReferences(currentMethod) += targetMethod(fun)
+        case This(_) =>
+          if (currentMethod.exists && tree.symbol == currentMethod.enclClass) {
+            debuglog(s"$currentMethod directly refers to 'this'")
+            thisReferringMethods add currentMethod
+          }
+        case _ =>
+          super.traverse(tree)
+      }
   }
 
   final case class LambdaMetaFactoryCapable(

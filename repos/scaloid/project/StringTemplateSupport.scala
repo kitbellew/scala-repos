@@ -168,12 +168,13 @@ object StringTemplateSupport {
   class STCompanionTemplate(stGroup: Option[STGroup])
       extends ScaloidCodeGenerator.CompanionTemplate {
 
-    def get(name: String): Option[String] = stGroup.flatMap { stg =>
-      stg.lookupTemplate(name) match {
-        case null       => None
-        case compiledST => Some(compiledST.template)
+    def get(name: String): Option[String] =
+      stGroup.flatMap { stg =>
+        stg.lookupTemplate(name) match {
+          case null       => None
+          case compiledST => Some(compiledST.template)
+        }
       }
-    }
 
     def safeRender(name: String): String = this.get(name).getOrElse("")
   }

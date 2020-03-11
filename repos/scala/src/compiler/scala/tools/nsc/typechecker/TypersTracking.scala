@@ -21,34 +21,38 @@ trait TypersTracking {
   var lastTreeToTyper: Tree = EmptyTree
 
   def fullSiteString(context: Context): String = {
-    def owner_long_s = (
-      if (settings.debug.value) {
-        def flags_s = context.owner.debugFlagString match {
-          case "" => ""
-          case s  => " with flags " + inLightMagenta(s)
-        }
-        s", a ${context.owner.shortSymbolClass}$flags_s"
-      } else
-        ""
-    )
+    def owner_long_s =
+      (
+        if (settings.debug.value) {
+          def flags_s =
+            context.owner.debugFlagString match {
+              case "" => ""
+              case s  => " with flags " + inLightMagenta(s)
+            }
+          s", a ${context.owner.shortSymbolClass}$flags_s"
+        } else
+          ""
+      )
     def marker =
       if (context.bufferErrors)
         "silent"
       else
         "site"
-    def undet_s = context.undetparams match {
-      case Nil => ""
-      case ps  => ps.mkString(" solving: ", ",", "")
-    }
-    def implicits_s = (
-      if (context.enrichmentEnabled)
-        if (context.implicitsEnabled)
-          ""
+    def undet_s =
+      context.undetparams match {
+        case Nil => ""
+        case ps  => ps.mkString(" solving: ", ",", "")
+      }
+    def implicits_s =
+      (
+        if (context.enrichmentEnabled)
+          if (context.implicitsEnabled)
+            ""
+          else
+            inLightRed("enrichment only")
         else
-          inLightRed("enrichment only")
-      else
-        inLightRed("implicits disabled")
-    )
+          inLightRed("implicits disabled")
+      )
 
     s"($marker$undet_s: ${context.siteString}$owner_long_s) $implicits_s"
   }
@@ -83,13 +87,14 @@ trait TypersTracking {
 
     private class Frame(val tree: Tree) {}
     private def greenType(tp: Type): String = tpe_s(tp, inGreen)
-    private def greenType(tree: Tree): String = tree match {
-      case null => "[exception]"
-      case md: MemberDef if md.tpe == NoType =>
-        inBlue(s"[${md.keyword} ${md.name}]") + " " + greenType(md.symbol.tpe)
-      case _ if tree.tpe.isComplete => greenType(tree.tpe)
-      case _                        => "<?>"
-    }
+    private def greenType(tree: Tree): String =
+      tree match {
+        case null => "[exception]"
+        case md: MemberDef if md.tpe == NoType =>
+          inBlue(s"[${md.keyword} ${md.name}]") + " " + greenType(md.symbol.tpe)
+        case _ if tree.tpe.isComplete => greenType(tree.tpe)
+        case _                        => "<?>"
+      }
     def indented(s: String): String =
       if (s == "")
         ""
@@ -148,20 +153,22 @@ trait TypersTracking {
             ""
           else
             s" based on pt $pt"
-        def tree_s2 = adapted match {
-          case tt: TypeTree =>
-            "is now a TypeTree(" + tpe_s(tt.tpe, inCyan) + ")"
-          case _ =>
-            "adapted to " + inCyan(truncAndOneLine(ptTree(adapted))) + pt_s
-        }
+        def tree_s2 =
+          adapted match {
+            case tt: TypeTree =>
+              "is now a TypeTree(" + tpe_s(tt.tpe, inCyan) + ")"
+            case _ =>
+              "adapted to " + inCyan(truncAndOneLine(ptTree(adapted))) + pt_s
+          }
         show(indented(s"[adapt] $tree_s1 $tree_s2"))
       }
     }
     def showTyped(tree: Tree) {
-      def class_s = tree match {
-        case _: RefTree => ""
-        case _          => " " + tree.shortClass
-      }
+      def class_s =
+        tree match {
+          case _: RefTree => ""
+          case _          => " " + tree.shortClass
+        }
       if (!noPrintTyping(tree))
         show(indented(s"[typed$class_s] " + truncAndOneLine(ptTree(tree))))
     }
@@ -170,15 +177,16 @@ trait TypersTracking {
         body: => Tree): Tree =
       nextTypedInternal(tree, showPush(tree, mode, pt, context))(body)
 
-    def nextTypedInternal(tree: Tree, pushFn: => Unit)(body: => Tree): Tree = (
-      if (noPrintTyping(tree))
-        body
-      else
-        runWith(tree) {
-          pushFn;
-          showPop(body)
-        }
-    )
+    def nextTypedInternal(tree: Tree, pushFn: => Unit)(body: => Tree): Tree =
+      (
+        if (noPrintTyping(tree))
+          body
+        else
+          runWith(tree) {
+            pushFn;
+            showPop(body)
+          }
+      )
 
     @inline final def printTyping(tree: Tree, s: => String) = {
       if (printTypings && !noPrintTyping(tree))
@@ -189,11 +197,12 @@ trait TypersTracking {
         show(indented(s))
     }
   }
-  def tpe_s(tp: Type, colorize: String => String): String = tp match {
-    case OverloadedType(pre, alts) =>
-      alts map (alt => tpe_s(pre memberType alt, colorize)) mkString " <and> "
-    case _ => colorize(tp.toLongString)
-  }
+  def tpe_s(tp: Type, colorize: String => String): String =
+    tp match {
+      case OverloadedType(pre, alts) =>
+        alts map (alt => tpe_s(pre memberType alt, colorize)) mkString " <and> "
+      case _ => colorize(tp.toLongString)
+    }
   // def sym_s(s: Symbol) = if (s eq null) "" + s else s.getClass.getName split '.' last;
 
   // Some trees which are typed with mind-numbing frequency and
@@ -202,8 +211,9 @@ trait TypersTracking {
   def printingOk(t: Tree) =
     printTypings && (settings.debug.value || !noPrint(t))
   def noPrintTyping(t: Tree) = (t.tpe ne null) || !printingOk(t)
-  def noPrintAdapt(tree1: Tree, tree2: Tree) = !printingOk(tree1) || (
-    (tree1.tpe == tree2.tpe)
-      && (tree1.symbol == tree2.symbol)
-  )
+  def noPrintAdapt(tree1: Tree, tree2: Tree) =
+    !printingOk(tree1) || (
+      (tree1.tpe == tree2.tpe)
+        && (tree1.symbol == tree2.symbol)
+    )
 }

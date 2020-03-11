@@ -4,10 +4,11 @@ class AbortException extends RuntimeException
 
 object Transaction {
   private var cnt = 0L
-  def nextId: Long = synchronized {
-    cnt += 1;
-    cnt
-  }
+  def nextId: Long =
+    synchronized {
+      cnt += 1;
+      cnt
+    }
 
   // Transaction status constants
   val Running = 0
@@ -34,20 +35,23 @@ class Transaction {
     this.next = next
   }
 
-  def makeAbort() = synchronized {
-    while (status != Transaction.Aborted && status != Transaction.Committed) {
-      status = Transaction.Abortable
-      wait()
+  def makeAbort() =
+    synchronized {
+      while (status != Transaction.Aborted && status != Transaction.Committed) {
+        status = Transaction.Abortable
+        wait()
+      }
     }
-  }
-  private def abort() = synchronized {
-    status = Transaction.Aborted;
-    notifyAll()
-  }
-  private def commit() = synchronized {
-    status = Transaction.Committed;
-    notifyAll()
-  }
+  private def abort() =
+    synchronized {
+      status = Transaction.Aborted;
+      notifyAll()
+    }
+  private def commit() =
+    synchronized {
+      status = Transaction.Committed;
+      notifyAll()
+    }
   def run[T](b: Transaction => T): Option[T] =
     try {
       status = Transaction.Running

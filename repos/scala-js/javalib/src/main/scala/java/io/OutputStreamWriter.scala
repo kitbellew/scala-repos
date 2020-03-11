@@ -89,54 +89,55 @@ class OutputStreamWriter(
     out.flush()
   }
 
-  override def close(): Unit = if (!closed) {
-    // Finish up the input
-    @inline
-    @tailrec
-    def loopEncode(): Unit = {
-      val cbuf = CharBuffer.wrap(inBuf)
-      val result = enc.encode(cbuf, outBuf, true)
-      if (result.isUnderflow) {
-        assert(
-          !cbuf.hasRemaining,
-          "CharsetEncoder.encode() should not have returned UNDERFLOW when " +
-            "both endOfInput and inBuf.hasRemaining are true. It should have " +
-            "returned a MalformedInput error instead."
-        )
-      } else if (result.isOverflow) {
-        makeRoomInOutBuf()
-        loopEncode()
-      } else {
-        result.throwException()
-        throw new AssertionError("should not get here")
+  override def close(): Unit =
+    if (!closed) {
+      // Finish up the input
+      @inline
+      @tailrec
+      def loopEncode(): Unit = {
+        val cbuf = CharBuffer.wrap(inBuf)
+        val result = enc.encode(cbuf, outBuf, true)
+        if (result.isUnderflow) {
+          assert(
+            !cbuf.hasRemaining,
+            "CharsetEncoder.encode() should not have returned UNDERFLOW when " +
+              "both endOfInput and inBuf.hasRemaining are true. It should have " +
+              "returned a MalformedInput error instead."
+          )
+        } else if (result.isOverflow) {
+          makeRoomInOutBuf()
+          loopEncode()
+        } else {
+          result.throwException()
+          throw new AssertionError("should not get here")
+        }
       }
-    }
 
-    @inline
-    @tailrec
-    def loopFlush(): Unit = {
-      if (enc.flush(outBuf).isOverflow) {
-        makeRoomInOutBuf()
-        loopFlush()
+      @inline
+      @tailrec
+      def loopFlush(): Unit = {
+        if (enc.flush(outBuf).isOverflow) {
+          makeRoomInOutBuf()
+          loopFlush()
+        }
       }
+
+      loopEncode()
+      loopFlush()
+
+      // Flush before closing
+      flush()
+
+      // Close the underlying stream
+      out.close()
+
+      // Clean up all the resources
+      closed = true
+      out = null
+      enc = null
+      inBuf = null
+      outBuf = null
     }
-
-    loopEncode()
-    loopFlush()
-
-    // Flush before closing
-    flush()
-
-    // Close the underlying stream
-    out.close()
-
-    // Clean up all the resources
-    closed = true
-    out = null
-    enc = null
-    inBuf = null
-    outBuf = null
-  }
 
   private def ensureOpen(): Unit = {
     if (closed)

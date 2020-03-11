@@ -62,10 +62,11 @@ private[concurrent] trait Promise[T]
     p.future
   }
 
-  override def toString: String = value match {
-    case Some(result) => "Future(" + result + ")"
-    case None         => "Future(<not completed>)"
-  }
+  override def toString: String =
+    value match {
+      case Some(result) => "Future(" + result + ")"
+      case None         => "Future(<not completed>)"
+    }
 }
 
 /* Precondition: `executor` is prepared, i.e., `executor` has been returned from invocation of `prepare` on some other `ExecutionContext`.
@@ -100,21 +101,23 @@ private final class CallbackRunnable[T](
 
 private[concurrent] object Promise {
 
-  private def resolveTry[T](source: Try[T]): Try[T] = source match {
-    case Failure(t) => resolver(t)
-    case _          => source
-  }
+  private def resolveTry[T](source: Try[T]): Try[T] =
+    source match {
+      case Failure(t) => resolver(t)
+      case _          => source
+    }
 
-  private def resolver[T](throwable: Throwable): Try[T] = throwable match {
-    case t: scala.runtime.NonLocalReturnControl[_] =>
-      Success(t.value.asInstanceOf[T])
-    case t: scala.util.control.ControlThrowable =>
-      Failure(new ExecutionException("Boxed ControlThrowable", t))
-    case t: InterruptedException =>
-      Failure(new ExecutionException("Boxed InterruptedException", t))
-    case e: Error => Failure(new ExecutionException("Boxed Error", e))
-    case t        => Failure(t)
-  }
+  private def resolver[T](throwable: Throwable): Try[T] =
+    throwable match {
+      case t: scala.runtime.NonLocalReturnControl[_] =>
+        Success(t.value.asInstanceOf[T])
+      case t: scala.util.control.ControlThrowable =>
+        Failure(new ExecutionException("Boxed ControlThrowable", t))
+      case t: InterruptedException =>
+        Failure(new ExecutionException("Boxed InterruptedException", t))
+      case e: Error => Failure(new ExecutionException("Boxed Error", e))
+      case t        => Failure(t)
+    }
 
   /**
     * Latch used to implement waiting on a DefaultPromise's result.
@@ -309,20 +312,22 @@ private[concurrent] object Promise {
     def value: Option[Try[T]] = value0
 
     @tailrec
-    private def value0: Option[Try[T]] = get() match {
-      case c: Try[_]             => Some(c.asInstanceOf[Try[T]])
-      case dp: DefaultPromise[_] => compressedRoot(dp).value0
-      case _                     => None
-    }
+    private def value0: Option[Try[T]] =
+      get() match {
+        case c: Try[_]             => Some(c.asInstanceOf[Try[T]])
+        case dp: DefaultPromise[_] => compressedRoot(dp).value0
+        case _                     => None
+      }
 
     override final def isCompleted: Boolean = isCompleted0
 
     @tailrec
-    private def isCompleted0: Boolean = get() match {
-      case _: Try[_]             => true
-      case dp: DefaultPromise[_] => compressedRoot(dp).isCompleted0
-      case _                     => false
-    }
+    private def isCompleted0: Boolean =
+      get() match {
+        case _: Try[_]             => true
+        case dp: DefaultPromise[_] => compressedRoot(dp).isCompleted0
+        case _                     => false
+      }
 
     final def tryComplete(value: Try[T]): Boolean = {
       val resolved = resolveTry(value)
@@ -392,23 +397,24 @@ private[concurrent] object Promise {
       *  promise's result to the target promise.
       */
     @tailrec
-    private def link(target: DefaultPromise[T]): Unit = if (this ne target) {
-      get() match {
-        case r: Try[_] =>
-          if (!target.tryComplete(r.asInstanceOf[Try[T]]))
-            throw new IllegalStateException(
-              "Cannot link completed promises together")
-        case dp: DefaultPromise[_] =>
-          compressedRoot(dp).link(target)
-        case listeners: List[_] if compareAndSet(listeners, target) =>
-          if (listeners.nonEmpty)
-            listeners
-              .asInstanceOf[List[CallbackRunnable[T]]]
-              .foreach(target.dispatchOrAddCallback(_))
-        case _ =>
-          link(target)
+    private def link(target: DefaultPromise[T]): Unit =
+      if (this ne target) {
+        get() match {
+          case r: Try[_] =>
+            if (!target.tryComplete(r.asInstanceOf[Try[T]]))
+              throw new IllegalStateException(
+                "Cannot link completed promises together")
+          case dp: DefaultPromise[_] =>
+            compressedRoot(dp).link(target)
+          case listeners: List[_] if compareAndSet(listeners, target) =>
+            if (listeners.nonEmpty)
+              listeners
+                .asInstanceOf[List[CallbackRunnable[T]]]
+                .foreach(target.dispatchOrAddCallback(_))
+          case _ =>
+            link(target)
+        }
       }
-    }
   }
 
   /** An already completed Future is given its result at creation.

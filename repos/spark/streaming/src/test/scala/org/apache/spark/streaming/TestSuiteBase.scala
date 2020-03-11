@@ -185,17 +185,20 @@ class BatchCounter(ssc: StreamingContext) {
   }
   ssc.addStreamingListener(listener)
 
-  def getNumCompletedBatches: Int = this.synchronized {
-    numCompletedBatches
-  }
+  def getNumCompletedBatches: Int =
+    this.synchronized {
+      numCompletedBatches
+    }
 
-  def getNumStartedBatches: Int = this.synchronized {
-    numStartedBatches
-  }
+  def getNumStartedBatches: Int =
+    this.synchronized {
+      numStartedBatches
+    }
 
-  def getLastCompletedBatchTime: Time = this.synchronized {
-    lastCompletedBatchTime
-  }
+  def getLastCompletedBatchTime: Time =
+    this.synchronized {
+      lastCompletedBatchTime
+    }
 
   /**
     * Wait until `expectedNumCompletedBatches` batches are completed, or timeout. Return true if

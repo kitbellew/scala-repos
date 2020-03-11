@@ -605,10 +605,11 @@ object TestUtils extends Logging {
   }
 
   private def usesSslTransportLayer(
-      securityProtocol: SecurityProtocol): Boolean = securityProtocol match {
-    case SecurityProtocol.SSL | SecurityProtocol.SASL_SSL => true
-    case _                                                => false
-  }
+      securityProtocol: SecurityProtocol): Boolean =
+    securityProtocol match {
+      case SecurityProtocol.SSL | SecurityProtocol.SASL_SSL => true
+      case _                                                => false
+    }
 
   def consumerSecurityConfigs(
       securityProtocol: SecurityProtocol,

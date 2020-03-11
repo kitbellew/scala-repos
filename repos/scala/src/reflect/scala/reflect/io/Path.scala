@@ -186,23 +186,24 @@ class Path private[io] (val jfile: JFile) {
   /**
     * @return The path of the parent directory, or root if path is already root
     */
-  def parent: Directory = path match {
-    case "" | "." => Directory("..")
-    case _        =>
-      // the only solution <-- a comment which could have used elaboration
-      if (segments.nonEmpty && segments.last == "..")
-        (path / "..").toDirectory
-      else
-        jfile.getParent match {
-          case null =>
-            if (isAbsolute)
-              toDirectory // it should be a root. BTW, don't need to worry about relative pathed root
-            else
-              Directory(".") // a dir under pwd
-          case x =>
-            Directory(x)
-        }
-  }
+  def parent: Directory =
+    path match {
+      case "" | "." => Directory("..")
+      case _        =>
+        // the only solution <-- a comment which could have used elaboration
+        if (segments.nonEmpty && segments.last == "..")
+          (path / "..").toDirectory
+        else
+          jfile.getParent match {
+            case null =>
+              if (isAbsolute)
+                toDirectory // it should be a root. BTW, don't need to worry about relative pathed root
+              else
+                Directory(".") // a dir under pwd
+            case x =>
+              Directory(x)
+          }
+    }
   def parents: List[Directory] = {
     val p = parent
     if (p isSame this)
@@ -232,12 +233,13 @@ class Path private[io] (val jfile: JFile) {
   def addExtension(ext: String): Path = Path(path + "." + ext)
   // changes the existing extension out for a new one, or adds it
   // if the current path has none.
-  def changeExtension(ext: String): Path = (
-    if (extension == "")
-      addExtension(ext)
-    else
-      Path(path.stripSuffix(extension) + ext)
-  )
+  def changeExtension(ext: String): Path =
+    (
+      if (extension == "")
+        addExtension(ext)
+      else
+        Path(path.stripSuffix(extension) + ext)
+    )
 
   // conditionally execute
   def ifFile[T](f: File => T): Option[T] =
@@ -342,9 +344,10 @@ class Path private[io] (val jfile: JFile) {
     }
 
   override def toString() = path
-  override def equals(other: Any) = other match {
-    case x: Path => path == x.path
-    case _       => false
-  }
+  override def equals(other: Any) =
+    other match {
+      case x: Path => path == x.path
+      case _       => false
+    }
   override def hashCode() = path.hashCode()
 }

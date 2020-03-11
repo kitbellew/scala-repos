@@ -22,26 +22,28 @@ trait LowPriorityProductFormats {
   object HListFormat {
     implicit val HNilFormat: HListFormat[HNil] = new HListFormat[HNil] {
       def write(x: HNil) = Nil
-      def read(value: List[Sexp]) = value match {
-        case Nil => HNil
-        case x   => throw new DeserializationException(s"Didn't expect $x")
-      }
+      def read(value: List[Sexp]) =
+        value match {
+          case Nil => HNil
+          case x   => throw new DeserializationException(s"Didn't expect $x")
+        }
     }
 
     implicit def hListFormat[H, T <: HList](implicit
         h: Lazy[SexpFormat[H]],
         t: Lazy[HListFormat[T]]
-    ): HListFormat[H :: T] = new HListFormat[H :: T] {
-      def write(x: H :: T) = h.value.write(x.head) :: t.value.write(x.tail)
+    ): HListFormat[H :: T] =
+      new HListFormat[H :: T] {
+        def write(x: H :: T) = h.value.write(x.head) :: t.value.write(x.tail)
 
-      def read(values: List[Sexp]): H :: T = {
-        import HList.ListCompat._
-        values match {
-          case head :: tail => h.value.read(head) :: t.value.read(tail)
-          case x            => throw new DeserializationException("Didn't expect Nil")
+        def read(values: List[Sexp]): H :: T = {
+          import HList.ListCompat._
+          values match {
+            case head :: tail => h.value.read(head) :: t.value.read(tail)
+            case x            => throw new DeserializationException("Didn't expect Nil")
+          }
         }
       }
-    }
   }
 
   /* We really want to have just `T` and its various representations,
@@ -60,36 +62,38 @@ trait LowPriorityProductFormats {
       k: ops.record.Keys.Aux[LR, K],
       ltl: ops.hlist.ToList[K, Symbol],
       r: Lazy[HListFormat[R]]
-  ): SexpFormat[T] = new SexpFormat[T] {
+  ): SexpFormat[T] =
+    new SexpFormat[T] {
 
-    private val keys = k().toList[Symbol].map { sym =>
-      SexpSymbol(":" + toWireName(sym.name))
-    }
-
-    def write(x: T): Sexp =
-      if (keys.isEmpty)
-        SexpNil
-      else {
-        val pairs = keys zip r.value.write(g.to(x))
-        if (skipNilValues)
-          SexpData(pairs.filterNot(_._2 == SexpNil))
-        else
-          SexpData(pairs)
+      private val keys = k().toList[Symbol].map { sym =>
+        SexpSymbol(":" + toWireName(sym.name))
       }
 
-    def read(value: Sexp): T = value match {
-      case SexpNil => g.from(r.value.read(Nil))
-      case SexpData(pairs) =>
-        val els = keys.map { k =>
-          // missing keys are interpreted as nil
-          pairs.getOrElse(k, SexpNil)
+      def write(x: T): Sexp =
+        if (keys.isEmpty)
+          SexpNil
+        else {
+          val pairs = keys zip r.value.write(g.to(x))
+          if (skipNilValues)
+            SexpData(pairs.filterNot(_._2 == SexpNil))
+          else
+            SexpData(pairs)
         }
-        g.from(r.value.read(els))
 
-      case x =>
-        deserializationError(x)
+      def read(value: Sexp): T =
+        value match {
+          case SexpNil => g.from(r.value.read(Nil))
+          case SexpData(pairs) =>
+            val els = keys.map { k =>
+              // missing keys are interpreted as nil
+              pairs.getOrElse(k, SexpNil)
+            }
+            g.from(r.value.read(els))
+
+          case x =>
+            deserializationError(x)
+        }
     }
-  }
 
   // capable of overloading for legacy formats
   def toWireName(field: String): String = field
@@ -104,13 +108,15 @@ trait ProductFormats extends LowPriorityProductFormats {
       t: ops.hlist.Tupler.Aux[R, T2],
       p: T =:= T2,
       r: Lazy[HListFormat[R]]
-  ): SexpFormat[T] = new SexpFormat[T] {
-    def write(x: T): Sexp = SexpList(r.value.write(g.to(x)))
-    def read(value: Sexp): T = value match {
-      case SexpList(els) => g.from(r.value.read(els))
-      case x             => deserializationError(x)
+  ): SexpFormat[T] =
+    new SexpFormat[T] {
+      def write(x: T): Sexp = SexpList(r.value.write(g.to(x)))
+      def read(value: Sexp): T =
+        value match {
+          case SexpList(els) => g.from(r.value.read(els))
+          case x             => deserializationError(x)
+        }
     }
-  }
 }
 
 /**

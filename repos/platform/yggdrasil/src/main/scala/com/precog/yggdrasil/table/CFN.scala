@@ -37,10 +37,11 @@ object CFId {
 
 trait CF {
   def identity: CFId
-  override final def equals(other: Any): Boolean = other match {
-    case cf: CF => identity == cf.identity
-    case _      => false
-  }
+  override final def equals(other: Any): Boolean =
+    other match {
+      case cf: CF => identity == cf.identity
+      case _      => false
+    }
 
   override final def hashCode: Int = identity.hashCode
 
@@ -53,49 +54,54 @@ trait CF1 extends CF { self =>
 
   // Do not use PartialFunction.compose or PartialFunction.andThen for composition,
   // because they will fail out with MatchError.
-  def compose(f1: CF1): CF1 = new CF1 {
-    def apply(c: Column) = f1(c).flatMap(self.apply)
-    val identity = ComposedCFId(f1.identity, self.identity)
-  }
+  def compose(f1: CF1): CF1 =
+    new CF1 {
+      def apply(c: Column) = f1(c).flatMap(self.apply)
+      val identity = ComposedCFId(f1.identity, self.identity)
+    }
 
-  def andThen(f1: CF1): CF1 = new CF1 {
-    def apply(c: Column) = self.apply(c).flatMap(f1.apply)
-    val identity = ComposedCFId(self.identity, f1.identity)
-  }
+  def andThen(f1: CF1): CF1 =
+    new CF1 {
+      def apply(c: Column) = self.apply(c).flatMap(f1.apply)
+      val identity = ComposedCFId(self.identity, f1.identity)
+    }
 }
 
 object CF1 {
   def apply(name: String)(f: Column => Option[Column]): CF1 =
     apply(CFId(name))(f)
-  def apply(id: CFId)(f: Column => Option[Column]): CF1 = new CF1 {
-    def apply(c: Column) = f(c)
-    val identity = id
-  }
+  def apply(id: CFId)(f: Column => Option[Column]): CF1 =
+    new CF1 {
+      def apply(c: Column) = f(c)
+      val identity = id
+    }
 }
 
 object CF1P {
   def apply(name: String)(f: PartialFunction[Column, Column]): CF1 =
     apply(CFId(name))(f)
-  def apply(id: CFId)(f: PartialFunction[Column, Column]): CF1 = new CF1 {
-    def apply(c: Column) = f.lift(c)
-    val identity = id
-  }
+  def apply(id: CFId)(f: PartialFunction[Column, Column]): CF1 =
+    new CF1 {
+      def apply(c: Column) = f.lift(c)
+      val identity = id
+    }
 }
 
 object CF1Array {
   def apply[A, M[+_]](name: String)(
       pf: PartialFunction[(Column, Range), (CType, Array[Array[A]], BitSet)])
-      : CMapper[M] = new ArrayMapperS[M] {
-    def apply(columns0: Map[ColumnRef, Column], range: Range) = {
-      columns0 collect {
-        case (ColumnRef(CPath.Identity, _), col)
-            if pf isDefinedAt (col, range) => {
-          val (tpe, cols, defined) = pf((col, range))
-          tpe -> (cols.asInstanceOf[Array[Array[_]]], defined)
+      : CMapper[M] =
+    new ArrayMapperS[M] {
+      def apply(columns0: Map[ColumnRef, Column], range: Range) = {
+        columns0 collect {
+          case (ColumnRef(CPath.Identity, _), col)
+              if pf isDefinedAt (col, range) => {
+            val (tpe, cols, defined) = pf((col, range))
+            tpe -> (cols.asInstanceOf[Array[Array[_]]], defined)
+          }
         }
       }
     }
-  }
 }
 
 trait CF2 extends CF { self =>
@@ -121,10 +127,11 @@ trait CF2 extends CF { self =>
 object CF2 {
   def apply(id: String)(f: (Column, Column) => Option[Column]): CF2 =
     apply(CFId(id))(f)
-  def apply(id: CFId)(f: (Column, Column) => Option[Column]): CF2 = new CF2 {
-    def apply(c1: Column, c2: Column) = f(c1, c2)
-    val identity = id
-  }
+  def apply(id: CFId)(f: (Column, Column) => Option[Column]): CF2 =
+    new CF2 {
+      def apply(c1: Column, c2: Column) = f(c1, c2)
+      val identity = id
+    }
 }
 
 object CF2P {
@@ -141,18 +148,19 @@ object CF2Array {
   def apply[A, M[+_]](name: String)(
       pf: PartialFunction[
         (Column, Column, Range),
-        (CType, Array[Array[A]], BitSet)]): CMapper[M] = new ArrayMapperS[M] {
-    def apply(columns0: Map[ColumnRef, Column], range: Range) = {
-      for {
-        (ColumnRef(CPath(CPathIndex(0)), _), col1) <- columns0
-        (ColumnRef(CPath(CPathIndex(1)), _), col2) <- columns0
-        if pf isDefinedAt (col1, col2, range)
-      } yield {
-        val (tpe, cols, defined) = pf((col1, col2, range))
-        tpe -> (cols.asInstanceOf[Array[Array[_]]], defined)
+        (CType, Array[Array[A]], BitSet)]): CMapper[M] =
+    new ArrayMapperS[M] {
+      def apply(columns0: Map[ColumnRef, Column], range: Range) = {
+        for {
+          (ColumnRef(CPath(CPathIndex(0)), _), col1) <- columns0
+          (ColumnRef(CPath(CPathIndex(1)), _), col2) <- columns0
+          if pf isDefinedAt (col1, col2, range)
+        } yield {
+          val (tpe, cols, defined) = pf((col1, col2, range))
+          tpe -> (cols.asInstanceOf[Array[Array[_]]], defined)
+        }
       }
     }
-  }
 }
 
 trait CScanner {

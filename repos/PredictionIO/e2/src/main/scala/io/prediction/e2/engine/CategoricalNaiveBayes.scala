@@ -180,10 +180,11 @@ case class LabeledPoint(label: String, features: Array[String]) {
     s"($label, $featuresString)"
   }
 
-  override def equals(other: Any): Boolean = other match {
-    case that: LabeledPoint => that.toString == this.toString
-    case _                  => false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case that: LabeledPoint => that.toString == this.toString
+      case _                  => false
+    }
 
   override def hashCode(): Int = {
     this.toString.hashCode

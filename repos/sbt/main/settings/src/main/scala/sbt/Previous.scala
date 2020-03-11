@@ -17,9 +17,10 @@ private[sbt] final class Previous(
     streams: Streams,
     referenced: IMap[ScopedTaskKey, Referenced]) {
   private[this] val map = referenced.mapValues(toValue)
-  private[this] def toValue = new (Referenced ~> ReferencedValue) {
-    def apply[T](x: Referenced[T]) = new ReferencedValue(x)
-  }
+  private[this] def toValue =
+    new (Referenced ~> ReferencedValue) {
+      def apply[T](x: Referenced[T]) = new ReferencedValue(x)
+    }
 
   private[this] final class ReferencedValue[T](referenced: Referenced[T]) {
     import referenced.{stamped, task}
@@ -70,9 +71,10 @@ object Previous {
       synchronized {
         map = map.put(key, new Referenced(key, format))
       }
-    def getReferences: IMap[ScopedTaskKey, Referenced] = synchronized {
-      map
-    }
+    def getReferences: IMap[ScopedTaskKey, Referenced] =
+      synchronized {
+        map
+      }
   }
 
   /** Persists values of tasks t where there is some task referencing it via t.previous. */
@@ -126,7 +128,8 @@ object Previous {
     }
   }
 
-  private[sbt] def cacheSetting = (streamsManagerKey, references) map {
-    (s, refs) => new Previous(s, refs.getReferences)
-  }
+  private[sbt] def cacheSetting =
+    (streamsManagerKey, references) map { (s, refs) =>
+      new Previous(s, refs.getReferences)
+    }
 }

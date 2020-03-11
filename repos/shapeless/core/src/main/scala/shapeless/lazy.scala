@@ -111,12 +111,14 @@ import scala.reflect.macros.whitebox
 trait Lazy[+T] extends Serializable {
   val value: T
 
-  def map[U](f: T => U): Lazy[U] = Lazy {
-    f(value)
-  }
-  def flatMap[U](f: T => Lazy[U]): Lazy[U] = Lazy {
-    f(value).value
-  }
+  def map[U](f: T => U): Lazy[U] =
+    Lazy {
+      f(value)
+    }
+  def flatMap[U](f: T => Lazy[U]): Lazy[U] =
+    Lazy {
+      f(value).value
+    }
 }
 
 object Lazy {
@@ -156,12 +158,14 @@ object lazily {
 trait Strict[+T] extends Serializable {
   val value: T
 
-  def map[U](f: T => U): Strict[U] = Strict {
-    f(value)
-  }
-  def flatMap[U](f: T => Strict[U]): Strict[U] = Strict {
-    f(value).value
-  }
+  def map[U](f: T => U): Strict[U] =
+    Strict {
+      f(value)
+    }
+  def flatMap[U](f: T => Strict[U]): Strict[U] =
+    Strict {
+      f(value).value
+    }
 }
 
 object Strict {
@@ -515,11 +519,12 @@ class LazyMacros(val c: whitebox.Context)
           }
 
         val existingInstAvailable = existingInstOpt.exists { actualTree =>
-          def ignored = actualTree match {
-            case TypeApply(method, other) =>
-              method.toString().endsWith(ignoring)
-            case _ => false
-          }
+          def ignored =
+            actualTree match {
+              case TypeApply(method, other) =>
+                method.toString().endsWith(ignoring)
+              case _ => false
+            }
 
           ignoring.isEmpty || !ignored
         }

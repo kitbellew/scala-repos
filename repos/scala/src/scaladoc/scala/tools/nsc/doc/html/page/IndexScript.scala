@@ -85,9 +85,10 @@ class IndexScript(universe: doc.Universe) extends Page {
   }
 
   /** Gets the short description i.e. the first sentence of the docstring */
-  def shortDesc(mbr: MemberEntity): String = mbr.comment.fold("") { c =>
-    inlineToStr(c.short).replaceAll("\n", "")
-  }
+  def shortDesc(mbr: MemberEntity): String =
+    mbr.comment.fold("") { c =>
+      inlineToStr(c.short).replaceAll("\n", "")
+    }
 
   /** Returns the json representation of the supplied members */
   def membersToJSON(entities: List[MemberEntity]): JSONType =

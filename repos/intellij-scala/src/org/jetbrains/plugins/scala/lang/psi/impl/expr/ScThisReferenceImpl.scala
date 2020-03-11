@@ -38,25 +38,26 @@ class ScThisReferenceImpl(node: ASTNode)
       case _ => Failure("Cannot infer type", Some(this))
     }
 
-  def refTemplate: Option[ScTemplateDefinition] = reference match {
-    case Some(ref) =>
-      ref.resolve match {
-        case td: ScTypeDefinition
-            if PsiTreeUtil.isContextAncestor(td, ref, false) =>
-          Some(td)
-        case _ => None
+  def refTemplate: Option[ScTemplateDefinition] =
+    reference match {
+      case Some(ref) =>
+        ref.resolve match {
+          case td: ScTypeDefinition
+              if PsiTreeUtil.isContextAncestor(td, ref, false) =>
+            Some(td)
+          case _ => None
+        }
+      case None => {
+        val encl =
+          PsiTreeUtil.getContextOfType(this, false, classOf[ScTemplateBody])
+        if (encl != null)
+          Some(
+            PsiTreeUtil
+              .getContextOfType(encl, false, classOf[ScTemplateDefinition]))
+        else
+          None
       }
-    case None => {
-      val encl =
-        PsiTreeUtil.getContextOfType(this, false, classOf[ScTemplateBody])
-      if (encl != null)
-        Some(
-          PsiTreeUtil
-            .getContextOfType(encl, false, classOf[ScTemplateDefinition]))
-      else
-        None
     }
-  }
 
   override def accept(visitor: ScalaElementVisitor) {
     visitor.visitThisReference(this)

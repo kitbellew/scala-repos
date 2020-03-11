@@ -194,18 +194,19 @@ trait GenTypes {
     *  The type itself still remains not concrete, in the sense that we don't know its erasure.
     *  I.e. we can compile the code that involves `ru.Type`, but we cannot serialize an instance of `ru.Type`.
     */
-  private def reifySemiConcreteTypeMember(tpe: Type): Tree = tpe match {
-    case tpe @ TypeRef(pre @ SingleType(prepre, presym), sym, args)
-        if sym.isAbstractType && !sym.isExistential =>
-      mirrorBuildCall(
-        nme.TypeRef,
-        reify(pre),
+  private def reifySemiConcreteTypeMember(tpe: Type): Tree =
+    tpe match {
+      case tpe @ TypeRef(pre @ SingleType(prepre, presym), sym, args)
+          if sym.isAbstractType && !sym.isExistential =>
         mirrorBuildCall(
-          nme.selectType,
-          reify(sym.owner),
-          reify(sym.name.toString)),
-        reify(args))
-  }
+          nme.TypeRef,
+          reify(pre),
+          mirrorBuildCall(
+            nme.selectType,
+            reify(sym.owner),
+            reify(sym.name.toString)),
+          reify(args))
+    }
 
   /** Reify an annotated type, i.e. the one that makes us deal with AnnotationInfos */
   private def reifyAnnotatedType(tpe: AnnotatedType): Tree = {

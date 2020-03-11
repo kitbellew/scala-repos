@@ -618,13 +618,14 @@ trait HttpHelpers {
     * @param in the element to test &amp; add 'id' to
     * @return the new element and the id
     */
-  def findOrAddId(in: Elem): (Elem, String) = (in \ "@id").toList match {
-    case Nil => {
-      val id = nextFuncName
-      (in % ("id" -> id), id)
+  def findOrAddId(in: Elem): (Elem, String) =
+    (in \ "@id").toList match {
+      case Nil => {
+        val id = nextFuncName
+        (in % ("id" -> id), id)
+      }
+      case x :: xs => (in, x.text)
     }
-    case x :: xs => (in, x.text)
-  }
 
   /**
     * Within a NodeSeq, find the first elem and run it through
@@ -796,19 +797,20 @@ trait ToJsCmd {
 }
 
 object CheckNodeSeq {
-  def unapply(in: Any): Option[NodeSeq] = in match {
-    case Some(ns: NodeSeq) => Some(ns)
-    case Full(ns: NodeSeq) => Some(ns)
-    case Some(sq: Seq[_]) if sq.forall(_.isInstanceOf[Node]) =>
-      val ns: NodeSeq = sq.asInstanceOf[Seq[Node]]
-      Some(ns)
-    case Full(sq: Seq[_]) if sq.forall(_.isInstanceOf[Node]) =>
-      val ns: NodeSeq = sq.asInstanceOf[Seq[Node]]
-      Some(ns)
-    case ns: NodeSeq => Some(ns)
-    case sq: Seq[_] if sq.forall(_.isInstanceOf[Node]) =>
-      val ns: NodeSeq = sq.asInstanceOf[Seq[Node]]
-      Some(ns)
-    case _ => None
-  }
+  def unapply(in: Any): Option[NodeSeq] =
+    in match {
+      case Some(ns: NodeSeq) => Some(ns)
+      case Full(ns: NodeSeq) => Some(ns)
+      case Some(sq: Seq[_]) if sq.forall(_.isInstanceOf[Node]) =>
+        val ns: NodeSeq = sq.asInstanceOf[Seq[Node]]
+        Some(ns)
+      case Full(sq: Seq[_]) if sq.forall(_.isInstanceOf[Node]) =>
+        val ns: NodeSeq = sq.asInstanceOf[Seq[Node]]
+        Some(ns)
+      case ns: NodeSeq => Some(ns)
+      case sq: Seq[_] if sq.forall(_.isInstanceOf[Node]) =>
+        val ns: NodeSeq = sq.asInstanceOf[Seq[Node]]
+        Some(ns)
+      case _ => None
+    }
 }

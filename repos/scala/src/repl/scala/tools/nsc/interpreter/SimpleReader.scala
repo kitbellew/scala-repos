@@ -31,10 +31,11 @@ class SimpleReader(
     sys.error("No char-based input in SimpleReader")
 
   protected def readOneLine(): String = in.readLine()
-  protected def echo(s: String): Unit = if (interactive) {
-    out.print(s)
-    out.flush()
-  }
+  protected def echo(s: String): Unit =
+    if (interactive) {
+      out.print(s)
+      out.flush()
+    }
 }
 
 object SimpleReader {

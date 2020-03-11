@@ -83,13 +83,14 @@ case class LPush(key: ChannelBuffer, values: Seq[ChannelBuffer])
 }
 
 object LPush {
-  def apply(args: List[Array[Byte]]): LPush = args match {
-    case head :: tail =>
-      LPush(
-        ChannelBuffers.wrappedBuffer(head),
-        tail map ChannelBuffers.wrappedBuffer)
-    case _ => throw ClientError("Invalid use of LPush")
-  }
+  def apply(args: List[Array[Byte]]): LPush =
+    args match {
+      case head :: tail =>
+        LPush(
+          ChannelBuffers.wrappedBuffer(head),
+          tail map ChannelBuffers.wrappedBuffer)
+      case _ => throw ClientError("Invalid use of LPush")
+    }
 }
 
 case class LRem(key: ChannelBuffer, count: Long, value: ChannelBuffer)
@@ -177,13 +178,14 @@ case class RPush(key: ChannelBuffer, values: List[ChannelBuffer])
 }
 
 object RPush {
-  def apply(args: List[Array[Byte]]): RPush = args match {
-    case head :: tail =>
-      RPush(
-        ChannelBuffers.wrappedBuffer(head),
-        tail map ChannelBuffers.wrappedBuffer)
-    case _ => throw ClientError("Invalid use of RPush")
-  }
+  def apply(args: List[Array[Byte]]): RPush =
+    args match {
+      case head :: tail =>
+        RPush(
+          ChannelBuffers.wrappedBuffer(head),
+          tail map ChannelBuffers.wrappedBuffer)
+      case _ => throw ClientError("Invalid use of RPush")
+    }
 }
 
 case class LTrim(key: ChannelBuffer, start: Long, end: Long)

@@ -302,10 +302,11 @@ trait MarkupParsers {
           val buf = new ArrayBuffer[Tree]
           val acc = new StringBuilder
           var pos: Position = NoPosition
-          def emit() = if (acc.nonEmpty) {
-            appendText(pos, buf, acc.toString)
-            acc.clear()
-          }
+          def emit() =
+            if (acc.nonEmpty) {
+              appendText(pos, buf, acc.toString)
+              acc.clear()
+            }
           for (t <- ts)
             t.attachments.get[handle.TextAttache] match {
               case Some(ta) =>
@@ -417,49 +418,51 @@ trait MarkupParsers {
     /** xLiteral = element { element }
       *  @return Scala representation of this xml literal
       */
-    def xLiteral: Tree = xLiteralCommon(
-      () => {
-        input = parser.in
-        handle.isPattern = false
+    def xLiteral: Tree =
+      xLiteralCommon(
+        () => {
+          input = parser.in
+          handle.isPattern = false
 
-        val ts = new ArrayBuffer[Tree]
-        val start = curOffset
-        tmppos = o2p(
-          curOffset
-        ) // Iuli: added this line, as it seems content_LT uses tmppos when creating trees
-        content_LT(ts)
+          val ts = new ArrayBuffer[Tree]
+          val start = curOffset
+          tmppos = o2p(
+            curOffset
+          ) // Iuli: added this line, as it seems content_LT uses tmppos when creating trees
+          content_LT(ts)
 
-        // parse more XML?
-        if (charComingAfter(xSpaceOpt()) == '<') {
-          do {
-            xSpaceOpt()
-            nextch()
-            content_LT(ts)
-          } while (charComingAfter(xSpaceOpt()) == '<')
-          handle.makeXMLseq(r2p(start, start, curOffset), ts)
-        } else {
-          assert(ts.length == 1)
-          ts(0)
-        }
-      },
-      msg => parser.incompleteInputError(msg)
-    )
+          // parse more XML?
+          if (charComingAfter(xSpaceOpt()) == '<') {
+            do {
+              xSpaceOpt()
+              nextch()
+              content_LT(ts)
+            } while (charComingAfter(xSpaceOpt()) == '<')
+            handle.makeXMLseq(r2p(start, start, curOffset), ts)
+          } else {
+            assert(ts.length == 1)
+            ts(0)
+          }
+        },
+        msg => parser.incompleteInputError(msg)
+      )
 
     /** @see xmlPattern. resynchronizes after successful parse
       *  @return this xml pattern
       */
-    def xLiteralPattern: Tree = xLiteralCommon(
-      () => {
-        input = parser.in
-        saving[Boolean, Tree](handle.isPattern, handle.isPattern = _) {
-          handle.isPattern = true
-          val tree = xPattern
-          xSpaceOpt()
-          tree
-        }
-      },
-      msg => parser.syntaxError(curOffset, msg)
-    )
+    def xLiteralPattern: Tree =
+      xLiteralCommon(
+        () => {
+          input = parser.in
+          saving[Boolean, Tree](handle.isPattern, handle.isPattern = _) {
+            handle.isPattern = true
+            val tree = xPattern
+            xSpaceOpt()
+            tree
+          }
+        },
+        msg => parser.syntaxError(curOffset, msg)
+      )
 
     def escapeToScala[A](op: => A, kind: String) = {
       xEmbeddedBlock = false

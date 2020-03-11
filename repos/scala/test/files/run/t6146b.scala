@@ -12,9 +12,10 @@ class C[T] extends A {
   class S2 extends F[T]
 }
 object O extends C[Int] {
-  def foo(f: F[Int]) = f match {
-    case X.S1 =>
-  }
+  def foo(f: F[Int]) =
+    f match {
+      case X.S1 =>
+    }
 
   class S3 extends F[Int]
 }

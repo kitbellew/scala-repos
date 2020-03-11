@@ -624,9 +624,10 @@ class RecordTests {
   @Test
   def testMappingOverRecordFields {
     object toUpper extends Poly1 {
-      implicit def stringToUpper[F] = at[FieldType[F, String]] { f =>
-        field[F](f.toUpperCase)
-      }
+      implicit def stringToUpper[F] =
+        at[FieldType[F, String]] { f =>
+          field[F](f.toUpperCase)
+        }
 
       implicit def otherTypes[X] = at[X](identity)
     }

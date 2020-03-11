@@ -37,9 +37,10 @@ private[http] class HeaderParser(
   import CharacterClasses._
 
   // http://www.rfc-editor.org/errata_search.php?rfc=7230 errata id 4189
-  def `header-field-value`: Rule1[String] = rule {
-    FWS ~ clearSB() ~ `field-value` ~ FWS ~ EOI ~ push(sb.toString)
-  }
+  def `header-field-value`: Rule1[String] =
+    rule {
+      FWS ~ clearSB() ~ `field-value` ~ FWS ~ EOI ~ push(sb.toString)
+    }
   def `field-value` = {
     var fwsStart = cursor
     rule {
@@ -54,18 +55,22 @@ private[http] class HeaderParser(
         }
     }
   }
-  def `field-value-chunk` = rule {
-    oneOrMore(`field-value-char` ~ appendSB())
-  }
-  def `field-value-char` = rule {
-    VCHAR | `obs-text`
-  }
-  def FWS = rule {
-    zeroOrMore(WSP) ~ zeroOrMore(`obs-fold`)
-  }
-  def `obs-fold` = rule {
-    CRLF ~ oneOrMore(WSP)
-  }
+  def `field-value-chunk` =
+    rule {
+      oneOrMore(`field-value-char` ~ appendSB())
+    }
+  def `field-value-char` =
+    rule {
+      VCHAR | `obs-text`
+    }
+  def FWS =
+    rule {
+      zeroOrMore(WSP) ~ zeroOrMore(`obs-fold`)
+    }
+  def `obs-fold` =
+    rule {
+      CRLF ~ oneOrMore(WSP)
+    }
 
   ///////////////// DynamicRuleHandler //////////////
 
@@ -79,10 +84,11 @@ private[http] class HeaderParser(
         formatter.format(error, input),
         formatter.formatErrorLine(error, input)))
   }
-  def failure(error: Throwable): Result = error match {
-    case IllegalUriException(info) ⇒ Left(info)
-    case NonFatal(e) ⇒ Left(ErrorInfo.fromCompoundString(e.getMessage))
-  }
+  def failure(error: Throwable): Result =
+    error match {
+      case IllegalUriException(info) ⇒ Left(info)
+      case NonFatal(e) ⇒ Left(ErrorInfo.fromCompoundString(e.getMessage))
+    }
   def ruleNotFound(ruleName: String): Result =
     throw HeaderParser.RuleNotFoundException
 

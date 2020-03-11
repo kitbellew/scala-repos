@@ -54,7 +54,8 @@ final class DisposableEmailDomain(
     (s: String) => matcher(s).matches
   }
 
-  def apply(domain: String) = matchers exists {
-    _(domain)
-  }
+  def apply(domain: String) =
+    matchers exists {
+      _(domain)
+    }
 }

@@ -30,17 +30,18 @@ case class AllowedHostsFilter @Inject() (
   private val hostMatchers: Seq[HostMatcher] =
     config.allowed map HostMatcher.apply
 
-  override def apply(next: EssentialAction) = EssentialAction { req =>
-    if (hostMatchers.exists(_(req.host))) {
-      next(req)
-    } else {
-      Accumulator.done(
-        errorHandler.onClientError(
-          req,
-          Status.BAD_REQUEST,
-          s"Host not allowed: ${req.host}"))
+  override def apply(next: EssentialAction) =
+    EssentialAction { req =>
+      if (hostMatchers.exists(_(req.host))) {
+        next(req)
+      } else {
+        Accumulator.done(
+          errorHandler.onClientError(
+            req,
+            Status.BAD_REQUEST,
+            s"Host not allowed: ${req.host}"))
+      }
     }
-  }
 }
 
 /**
@@ -103,10 +104,11 @@ class AllowedHostsConfigProvider @Inject() (configuration: Configuration)
 }
 
 class AllowedHostsModule extends Module {
-  def bindings(environment: Environment, configuration: Configuration) = Seq(
-    bind[AllowedHostsConfig].toProvider[AllowedHostsConfigProvider],
-    bind[AllowedHostsFilter].toSelf
-  )
+  def bindings(environment: Environment, configuration: Configuration) =
+    Seq(
+      bind[AllowedHostsConfig].toProvider[AllowedHostsConfigProvider],
+      bind[AllowedHostsFilter].toSelf
+    )
 }
 
 trait AllowedHostsComponents {

@@ -268,30 +268,32 @@ trait PersistentView
     *
     * @param replayMax maximum number of messages to replay.
     */
-  private def recoveryStarted(replayMax: Long) = new State {
+  private def recoveryStarted(replayMax: Long) =
+    new State {
 
-    override def toString: String =
-      s"recovery started (replayMax = [${replayMax}])"
-    override def recoveryRunning: Boolean = true
+      override def toString: String =
+        s"recovery started (replayMax = [${replayMax}])"
+      override def recoveryRunning: Boolean = true
 
-    override def stateReceive(receive: Receive, message: Any) = message match {
-      case LoadSnapshotResult(sso, toSnr) ⇒
-        sso.foreach {
-          case SelectedSnapshot(metadata, snapshot) ⇒
-            setLastSequenceNr(metadata.sequenceNr)
-            PersistentView.super
-              .aroundReceive(receive, SnapshotOffer(metadata, snapshot))
+      override def stateReceive(receive: Receive, message: Any) =
+        message match {
+          case LoadSnapshotResult(sso, toSnr) ⇒
+            sso.foreach {
+              case SelectedSnapshot(metadata, snapshot) ⇒
+                setLastSequenceNr(metadata.sequenceNr)
+                PersistentView.super
+                  .aroundReceive(receive, SnapshotOffer(metadata, snapshot))
+            }
+            changeState(replayStarted(await = true))
+            journal ! ReplayMessages(
+              lastSequenceNr + 1L,
+              toSnr,
+              replayMax,
+              persistenceId,
+              self)
+          case other ⇒ internalStash.stash()
         }
-        changeState(replayStarted(await = true))
-        journal ! ReplayMessages(
-          lastSequenceNr + 1L,
-          toSnr,
-          replayMax,
-          persistenceId,
-          self)
-      case other ⇒ internalStash.stash()
     }
-  }
 
   /**
     * Processes replayed messages, if any. The actor's `receive` is invoked with the replayed
@@ -308,77 +310,81 @@ trait PersistentView
     *
     * All incoming messages are stashed when `await` is true.
     */
-  private def replayStarted(await: Boolean) = new State {
-    override def toString: String = s"replay started"
-    override def recoveryRunning: Boolean = true
+  private def replayStarted(await: Boolean) =
+    new State {
+      override def toString: String = s"replay started"
+      override def recoveryRunning: Boolean = true
 
-    override def stateReceive(receive: Receive, message: Any) = message match {
-      case ReplayedMessage(p) ⇒
-        try {
-          updateLastSequenceNr(p)
-          PersistentView.super.aroundReceive(receive, p.payload)
-        } catch {
-          case NonFatal(t) ⇒
-            changeState(ignoreRemainingReplay(t))
+      override def stateReceive(receive: Receive, message: Any) =
+        message match {
+          case ReplayedMessage(p) ⇒
+            try {
+              updateLastSequenceNr(p)
+              PersistentView.super.aroundReceive(receive, p.payload)
+            } catch {
+              case NonFatal(t) ⇒
+                changeState(ignoreRemainingReplay(t))
+            }
+          case _: RecoverySuccess ⇒
+            onReplayComplete()
+          case ReplayMessagesFailure(cause) ⇒
+            try onReplayError(cause)
+            finally onReplayComplete()
+          case ScheduledUpdate(_) ⇒ // ignore
+          case Update(a, _) ⇒
+            if (a)
+              internalStash.stash()
+          case other ⇒
+            if (await)
+              internalStash.stash()
+            else {
+              try {
+                PersistentView.super.aroundReceive(receive, other)
+              } catch {
+                case NonFatal(t) ⇒
+                  changeState(ignoreRemainingReplay(t))
+              }
+            }
         }
-      case _: RecoverySuccess ⇒
-        onReplayComplete()
-      case ReplayMessagesFailure(cause) ⇒
-        try onReplayError(cause)
-        finally onReplayComplete()
-      case ScheduledUpdate(_) ⇒ // ignore
-      case Update(a, _) ⇒
-        if (a)
-          internalStash.stash()
-      case other ⇒
-        if (await)
-          internalStash.stash()
-        else {
-          try {
-            PersistentView.super.aroundReceive(receive, other)
-          } catch {
-            case NonFatal(t) ⇒
-              changeState(ignoreRemainingReplay(t))
-          }
-        }
-    }
 
-    /**
-      * Switches to `idle`
-      */
-    private def onReplayComplete(): Unit = {
-      changeState(idle)
-      internalStash.unstashAll()
+      /**
+        * Switches to `idle`
+        */
+      private def onReplayComplete(): Unit = {
+        changeState(idle)
+        internalStash.unstashAll()
+      }
     }
-  }
 
   /**
     * Consumes remaining replayed messages and then throw the exception.
     */
-  private def ignoreRemainingReplay(cause: Throwable) = new State {
+  private def ignoreRemainingReplay(cause: Throwable) =
+    new State {
 
-    override def toString: String = "replay failed"
-    override def recoveryRunning: Boolean = true
+      override def toString: String = "replay failed"
+      override def recoveryRunning: Boolean = true
 
-    override def stateReceive(receive: Receive, message: Any) = message match {
-      case ReplayedMessage(p) ⇒
-      case ReplayMessagesFailure(_) ⇒
-        replayCompleted(receive)
-        // journal couldn't tell the maximum stored sequence number, hence the next
-        // replay must be a full replay (up to the highest stored sequence number)
-        // Recover(lastSequenceNr) is sent by preRestart
-        setLastSequenceNr(Long.MaxValue)
-      case _: RecoverySuccess ⇒ replayCompleted(receive)
-      case _ ⇒ internalStash.stash()
+      override def stateReceive(receive: Receive, message: Any) =
+        message match {
+          case ReplayedMessage(p) ⇒
+          case ReplayMessagesFailure(_) ⇒
+            replayCompleted(receive)
+            // journal couldn't tell the maximum stored sequence number, hence the next
+            // replay must be a full replay (up to the highest stored sequence number)
+            // Recover(lastSequenceNr) is sent by preRestart
+            setLastSequenceNr(Long.MaxValue)
+          case _: RecoverySuccess ⇒ replayCompleted(receive)
+          case _ ⇒ internalStash.stash()
+        }
+
+      def replayCompleted(receive: Receive): Unit = {
+        // in case the actor resumes the state must be `idle`
+        changeState(idle)
+        internalStash.unstashAll()
+        throw cause
+      }
     }
-
-    def replayCompleted(receive: Receive): Unit = {
-      // in case the actor resumes the state must be `idle`
-      changeState(idle)
-      internalStash.unstashAll()
-      throw cause
-    }
-  }
 
   /**
     * When receiving an [[Update]] request, switches to `replayStarted` state and triggers

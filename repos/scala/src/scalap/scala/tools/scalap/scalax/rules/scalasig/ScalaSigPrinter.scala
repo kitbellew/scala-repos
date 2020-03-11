@@ -89,10 +89,11 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
     })
   }
 
-  private def underCaseClass(m: MethodSymbol) = m.parent match {
-    case Some(c: ClassSymbol) => c.isCase
-    case _                    => false
-  }
+  private def underCaseClass(m: MethodSymbol) =
+    m.parent match {
+      case Some(c: ClassSymbol) => c.isCase
+      case _                    => false
+    }
 
   private def printChildren(level: Int, symbol: Symbol) {
     for (child <- symbol.children)
@@ -366,11 +367,12 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
     buffer.toString
   }
 
-  def valueToString(value: Any): String = value match {
-    case t: Type => toString(t)
-    // TODO string, char, float, etc.
-    case _ => value.toString
-  }
+  def valueToString(value: Any): String =
+    value match {
+      case t: Type => toString(t)
+      // TODO string, char, float, etc.
+      case _ => value.toString
+    }
 
   implicit object _tf extends TypeFlags(false)
 
@@ -481,20 +483,21 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
     else
       ""
 
-  def toString(symbol: Symbol): String = symbol match {
-    case symbol: TypeSymbol => {
-      val attrs = (for (a <- symbol.attributes)
-        yield toString(a)).mkString(" ")
-      val atrs =
-        if (attrs.length > 0)
-          attrs.trim + " "
-        else
-          ""
-      atrs + getVariance(symbol) + processName(symbol.name) + toString(
-        symbol.infoType)
+  def toString(symbol: Symbol): String =
+    symbol match {
+      case symbol: TypeSymbol => {
+        val attrs = (for (a <- symbol.attributes)
+          yield toString(a)).mkString(" ")
+        val atrs =
+          if (attrs.length > 0)
+            attrs.trim + " "
+          else
+            ""
+        atrs + getVariance(symbol) + processName(symbol.name) + toString(
+          symbol.infoType)
+      }
+      case s => symbol.toString
     }
-    case s => symbol.toString
-  }
 
   def typeArgString(typeArgs: Seq[Type]): String =
     if (typeArgs.isEmpty)

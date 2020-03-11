@@ -27,11 +27,12 @@ class metropolisTest extends FunSuite {
   private val l6 = math.log(6) //performance hack
   private val l2 = math.log(2)
   private val l1 = math.log(1)
-  def logLikelihood(x: State) = x match {
-    case A => l6
-    case B => l2
-    case C => l1
-  }
+  def logLikelihood(x: State) =
+    x match {
+      case A => l6
+      case B => l2
+      case C => l1
+    }
 
   val proposal = rand.choose(Seq(A, B, C))
 

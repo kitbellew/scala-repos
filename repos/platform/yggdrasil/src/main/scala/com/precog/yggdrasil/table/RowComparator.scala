@@ -30,9 +30,10 @@ import scala.annotation.tailrec
 trait RowComparator { self =>
   def compare(i1: Int, i2: Int): Ordering
 
-  def swap: RowComparator = new RowComparator {
-    def compare(i1: Int, i2: Int) = self.compare(i2, i1).complement
-  }
+  def swap: RowComparator =
+    new RowComparator {
+      def compare(i1: Int, i2: Int) = self.compare(i2, i1).complement
+    }
 
   @tailrec
   final def nextLeftIndex(lmin: Int, lmax: Int, ridx: Int): Int = {

@@ -124,10 +124,11 @@ abstract class ActorSelection extends Serializable {
     builder.toString
   }
 
-  override def equals(obj: Any): Boolean = obj match {
-    case s: ActorSelection ⇒ this.anchor == s.anchor && this.path == s.path
-    case _ ⇒ false
-  }
+  override def equals(obj: Any): Boolean =
+    obj match {
+      case s: ActorSelection ⇒ this.anchor == s.anchor && this.path == s.path
+      case _ ⇒ false
+    }
 
   override lazy val hashCode: Int = {
     import MurmurHash._
@@ -285,10 +286,11 @@ private[akka] final case class ActorSelectionMessage(
     extends AutoReceivedMessage
     with PossiblyHarmful {
 
-  def identifyRequest: Option[Identify] = msg match {
-    case x: Identify ⇒ Some(x)
-    case _ ⇒ None
-  }
+  def identifyRequest: Option[Identify] =
+    msg match {
+      case x: Identify ⇒ Some(x)
+      case _ ⇒ None
+    }
 }
 
 /**

@@ -118,38 +118,42 @@ private[spark] object Accumulators extends Logging {
     * of overwriting it. This happens when we copy accumulators, e.g. when we reconstruct
     * [[org.apache.spark.executor.TaskMetrics]] from accumulator updates.
     */
-  def register(a: Accumulable[_, _]): Unit = synchronized {
-    if (!originals.contains(a.id)) {
-      originals(a.id) = new WeakReference[Accumulable[_, _]](a)
+  def register(a: Accumulable[_, _]): Unit =
+    synchronized {
+      if (!originals.contains(a.id)) {
+        originals(a.id) = new WeakReference[Accumulable[_, _]](a)
+      }
     }
-  }
 
   /**
     * Unregister the [[Accumulable]] with the given ID, if any.
     */
-  def remove(accId: Long): Unit = synchronized {
-    originals.remove(accId)
-  }
+  def remove(accId: Long): Unit =
+    synchronized {
+      originals.remove(accId)
+    }
 
   /**
     * Return the [[Accumulable]] registered with the given ID, if any.
     */
-  def get(id: Long): Option[Accumulable[_, _]] = synchronized {
-    originals.get(id).map { weakRef =>
-      // Since we are storing weak references, we must check whether the underlying data is valid.
-      weakRef.get.getOrElse {
-        throw new IllegalAccessError(
-          s"Attempted to access garbage collected accumulator $id")
+  def get(id: Long): Option[Accumulable[_, _]] =
+    synchronized {
+      originals.get(id).map { weakRef =>
+        // Since we are storing weak references, we must check whether the underlying data is valid.
+        weakRef.get.getOrElse {
+          throw new IllegalAccessError(
+            s"Attempted to access garbage collected accumulator $id")
+        }
       }
     }
-  }
 
   /**
     * Clear all registered [[Accumulable]]s. For testing only.
     */
-  def clear(): Unit = synchronized {
-    originals.clear()
-  }
+  def clear(): Unit =
+    synchronized {
+      originals.clear()
+    }
 
 }
 

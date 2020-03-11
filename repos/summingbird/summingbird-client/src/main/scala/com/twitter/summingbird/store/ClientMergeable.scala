@@ -69,12 +69,13 @@ class ClientMergeable[K, V: Semigroup](
 
   def semigroup = implicitly[Semigroup[V]]
 
-  private def fsg: Semigroup[FOpt[V]] = new Semigroup[FOpt[V]] {
-    def plus(left: FOpt[V], right: FOpt[V]): FOpt[V] =
-      left.join(right).map {
-        case (l, v) => Monoid.plus(l, v)
-      }
-  }
+  private def fsg: Semigroup[FOpt[V]] =
+    new Semigroup[FOpt[V]] {
+      def plus(left: FOpt[V], right: FOpt[V]): FOpt[V] =
+        left.join(right).map {
+          case (l, v) => Monoid.plus(l, v)
+        }
+    }
   // This should not be needed, but somehow this FOpt breaks the implicit resolution
   private val mm = new MapMonoid[K, FOpt[V]]()(fsg)
 

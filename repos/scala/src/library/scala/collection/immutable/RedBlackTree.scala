@@ -93,12 +93,13 @@ private[collection] object RedBlackTree {
   def rangeImpl[A: Ordering, B](
       tree: Tree[A, B],
       from: Option[A],
-      until: Option[A]): Tree[A, B] = (from, until) match {
-    case (Some(from), Some(until)) => this.range(tree, from, until)
-    case (Some(from), None)        => this.from(tree, from)
-    case (None, Some(until))       => this.until(tree, until)
-    case (None, None)              => tree
-  }
+      until: Option[A]): Tree[A, B] =
+    (from, until) match {
+      case (Some(from), Some(until)) => this.range(tree, from, until)
+      case (Some(from), None)        => this.from(tree, from)
+      case (None, Some(until))       => this.until(tree, until)
+      case (None, None)              => tree
+    }
   def range[A: Ordering, B](tree: Tree[A, B], from: A, until: A): Tree[A, B] =
     blacken(doRange(tree, from, until))
   def from[A: Ordering, B](tree: Tree[A, B], from: A): Tree[A, B] =
@@ -796,13 +797,14 @@ private[collection] object RedBlackTree {
 
     override def hasNext: Boolean = lookahead ne null
 
-    override def next: R = lookahead match {
-      case null =>
-        throw new NoSuchElementException("next on empty iterator")
-      case tree =>
-        lookahead = findLeftMostOrPopOnEmpty(goRight(tree))
-        nextResult(tree)
-    }
+    override def next: R =
+      lookahead match {
+        case null =>
+          throw new NoSuchElementException("next on empty iterator")
+        case tree =>
+          lookahead = findLeftMostOrPopOnEmpty(goRight(tree))
+          nextResult(tree)
+      }
 
     @tailrec
     private[this] def findLeftMostOrPopOnEmpty(tree: Tree[A, B]): Tree[A, B] =

@@ -126,11 +126,12 @@ private[scalding] class VersionedState(
       succeedPart: Interval.GenIntersection[Timestamp])
       extends RunningState[Interval[Timestamp]] {
 
-    def nextTime: Timestamp = succeedPart match {
-      case Intersection(_, ExclusiveUpper(up)) => up
-      case Intersection(_, InclusiveUpper(up)) => up.next
-      case _                                   => sys.error("We should always be running for a finite interval")
-    }
+    def nextTime: Timestamp =
+      succeedPart match {
+        case Intersection(_, ExclusiveUpper(up)) => up
+        case Intersection(_, InclusiveUpper(up)) => up.next
+        case _                                   => sys.error("We should always be running for a finite interval")
+      }
     def batchID: BatchID = batcher.batchOf(nextTime)
 
     /**

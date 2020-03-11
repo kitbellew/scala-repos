@@ -104,7 +104,8 @@ trait StackProxy[A] extends Stack[A] with Proxy {
     *
     *  @return  a stack with the same elements.
     */
-  override def clone(): Stack[A] = new StackProxy[A] {
-    def self = StackProxy.this.self.clone()
-  }
+  override def clone(): Stack[A] =
+    new StackProxy[A] {
+      def self = StackProxy.this.self.clone()
+    }
 }

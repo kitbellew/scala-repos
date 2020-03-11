@@ -16,52 +16,59 @@ trait Parsers {
   // sequence
   def sq[T, U](a: => Parser[T], b: => Parser[U]): Parser[Tuple2[T, U]] =
     new Parser[Tuple2[T, U]] {
-      def apply(in: Input): ParseResult[Tuple2[T, U]] = a(in) match {
-        case Success(next, x) =>
-          b(next) match {
-            case Success(next2, y) => Success(next2, (x, y))
-            case Failure(_, msg)   => Failure(in, msg)
-          }
-        case Failure(_, msg) => Failure(in, msg)
-      }
+      def apply(in: Input): ParseResult[Tuple2[T, U]] =
+        a(in) match {
+          case Success(next, x) =>
+            b(next) match {
+              case Success(next2, y) => Success(next2, (x, y))
+              case Failure(_, msg)   => Failure(in, msg)
+            }
+          case Failure(_, msg) => Failure(in, msg)
+        }
     }
 
   // ordered choice
   def or[T, U <: T](a: => Parser[T], b: => Parser[U]): Parser[T] =
     new Parser[T] {
-      def apply(in: Input): ParseResult[T] = a(in) match {
-        case Success(next, x) => Success(next, x)
-        case Failure(_, _) =>
-          b(in) match {
-            case Success(next, y) => Success(next, y)
-            case Failure(_, msg)  => Failure(in, msg)
-          }
-      }
+      def apply(in: Input): ParseResult[T] =
+        a(in) match {
+          case Success(next, x) => Success(next, x)
+          case Failure(_, _) =>
+            b(in) match {
+              case Success(next, y) => Success(next, y)
+              case Failure(_, msg)  => Failure(in, msg)
+            }
+        }
     }
 
   // lifting
-  def lift[T, U](f: T => U)(a: => Parser[T]): Parser[U] = new Parser[U] {
-    def apply(in: Input): ParseResult[U] = a(in) match {
-      case Success(n, x)   => Success(n, f(x))
-      case Failure(n, msg) => Failure(n, msg)
+  def lift[T, U](f: T => U)(a: => Parser[T]): Parser[U] =
+    new Parser[U] {
+      def apply(in: Input): ParseResult[U] =
+        a(in) match {
+          case Success(n, x)   => Success(n, f(x))
+          case Failure(n, msg) => Failure(n, msg)
+        }
     }
-  }
 
-  def accept[T](c: Char, r: T): Parser[T] = new Parser[T] {
-    def apply(in: Input) = in match {
-      case c2 :: n if c2 == c => Success(n, r)
-      case n                  => Failure(n, "expected " + c + " at the head of " + n)
+  def accept[T](c: Char, r: T): Parser[T] =
+    new Parser[T] {
+      def apply(in: Input) =
+        in match {
+          case c2 :: n if c2 == c => Success(n, r)
+          case n                  => Failure(n, "expected " + c + " at the head of " + n)
+        }
     }
-  }
 
   def apply_++[s, tt](fun: Parser[s => tt], arg: Parser[s]): Parser[tt] =
     lift[Tuple2[s => tt, s], tt]({
       case (f, a) => f(a)
     })(sq(fun, arg))
 
-  def success[u](v: u): Parser[u] = new Parser[u] {
-    def apply(in: Input) = Success(in, v)
-  }
+  def success[u](v: u): Parser[u] =
+    new Parser[u] {
+      def apply(in: Input) = Success(in, v)
+    }
 
 }
 

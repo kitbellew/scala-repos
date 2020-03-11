@@ -129,15 +129,16 @@ trait BaseField extends FieldIdentifier with util.BaseField {
 
   override def uniqueFieldId: Box[String] = Full(name + "_id")
 
-  def label: NodeSeq = uniqueFieldId match {
-    case Full(id) =>
-      <label for={
-        id
-      }>{
-        displayName
-      }</label>
-    case _ => NodeSeq.Empty
-  }
+  def label: NodeSeq =
+    uniqueFieldId match {
+      case Full(id) =>
+        <label for={
+          id
+        }>{
+          displayName
+        }</label>
+      case _ => NodeSeq.Empty
+    }
 
   def asString: String
 
@@ -201,11 +202,12 @@ trait TypedField[ThisType] extends BaseField {
     * @param decode function to try and transform a String into a field value
     */
   protected def setFromJString(jvalue: JValue)(
-      decode: String => Box[MyType]): Box[MyType] = jvalue match {
-    case JNothing | JNull if optional_? => setBox(Empty)
-    case JString(s)                     => setBox(decode(s))
-    case other                          => setBox(FieldHelpers.expectedA("JString", other))
-  }
+      decode: String => Box[MyType]): Box[MyType] =
+    jvalue match {
+      case JNothing | JNull if optional_? => setBox(Empty)
+      case JString(s)                     => setBox(decode(s))
+      case other                          => setBox(FieldHelpers.expectedA("JString", other))
+    }
 
   def validations: List[ValidationFunction] = Nil
 
@@ -213,11 +215,12 @@ trait TypedField[ThisType] extends BaseField {
   def validate: List[FieldError] = runValidation(valueBox)
 
   /** Helper function that does validation of a value by using the validators specified for the field */
-  protected def runValidation(in: Box[MyType]): List[FieldError] = in match {
-    case Full(_)            => validations.flatMap(_(toValueType(in))).distinct
-    case Empty              => Nil
-    case Failure(msg, _, _) => Text(msg)
-  }
+  protected def runValidation(in: Box[MyType]): List[FieldError] =
+    in match {
+      case Full(_)            => validations.flatMap(_(toValueType(in))).distinct
+      case Empty              => Nil
+      case Failure(msg, _, _) => Text(msg)
+    }
 
   protected implicit def boxNodeToFieldError(in: Box[Node]): List[FieldError] =
     in match {
@@ -242,27 +245,28 @@ trait TypedField[ThisType] extends BaseField {
 
   def obscure(in: MyType): Box[MyType] = Failure("value obscured")
 
-  def setBox(in: Box[MyType]): Box[MyType] = synchronized {
-    needsDefault = false
-    val oldValue = data
-    data = in match {
-      case _ if !canWrite_? => Failure(noValueErrorMessage)
-      case Full(_)          => set_!(in)
-      case _ if optional_?  => set_!(in)
-      case (f: Failure)     => set_!(f) // preserve failures set in
-      case _                => Failure(notOptionalErrorMessage)
-    }
-    if (forceDirty_?) {
-      dirty_?(true)
-    } else if (!dirty_?) {
-      val same = (oldValue, data) match {
-        case (Full(ov), Full(nv)) => ov == nv
-        case (a, b)               => a == b
+  def setBox(in: Box[MyType]): Box[MyType] =
+    synchronized {
+      needsDefault = false
+      val oldValue = data
+      data = in match {
+        case _ if !canWrite_? => Failure(noValueErrorMessage)
+        case Full(_)          => set_!(in)
+        case _ if optional_?  => set_!(in)
+        case (f: Failure)     => set_!(f) // preserve failures set in
+        case _                => Failure(notOptionalErrorMessage)
       }
-      dirty_?(!same)
+      if (forceDirty_?) {
+        dirty_?(true)
+      } else if (!dirty_?) {
+        val same = (oldValue, data) match {
+          case (Full(ov), Full(nv)) => ov == nv
+          case (a, b)               => a == b
+        }
+        dirty_?(!same)
+      }
+      data
     }
-    data
-  }
 
   // Helper methods for things to easily use mixins and so on that use ValueType instead of Box[MyType], regardless of the optional-ness of the field
   protected def toValueType(in: Box[MyType]): ValueType
@@ -287,10 +291,11 @@ trait TypedField[ThisType] extends BaseField {
 
   def runFilters(
       in: Box[MyType],
-      filter: List[Box[MyType] => Box[MyType]]): Box[MyType] = filter match {
-    case Nil     => in
-    case x :: xs => runFilters(x(in), xs)
-  }
+      filter: List[Box[MyType] => Box[MyType]]): Box[MyType] =
+    filter match {
+      case Nil     => in
+      case x :: xs => runFilters(x(in), xs)
+    }
 
   /**
     * Set the value of the field from anything.
@@ -315,25 +320,26 @@ trait TypedField[ThisType] extends BaseField {
 
   /** Generic implementation of setFromAny that implements exactly what the doc for setFromAny specifies, using a Manifest to check types */
   protected final def genericSetFromAny(in: Any)(
-      implicit m: Manifest[MyType]): Box[MyType] = in match {
-    case value if m.runtimeClass.isInstance(value) =>
-      setBox(Full(value.asInstanceOf[MyType]))
-    case Some(value) if m.runtimeClass.isInstance(value) =>
-      setBox(Full(value.asInstanceOf[MyType]))
-    case Full(value) if m.runtimeClass.isInstance(value) =>
-      setBox(Full(value.asInstanceOf[MyType]))
-    case (value) :: _ if m.runtimeClass.isInstance(value) =>
-      setBox(Full(value.asInstanceOf[MyType]))
-    case (value: String)      => setFromString(value)
-    case Some(value: String)  => setFromString(value)
-    case Full(value: String)  => setFromString(value)
-    case (value: String) :: _ => setFromString(value)
-    case null | None | Empty  => setBox(defaultValueBox)
-    case (failure: Failure)   => setBox(failure)
-    case Some(other)          => setFromString(String.valueOf(other))
-    case Full(other)          => setFromString(String.valueOf(other))
-    case other                => setFromString(String.valueOf(other))
-  }
+      implicit m: Manifest[MyType]): Box[MyType] =
+    in match {
+      case value if m.runtimeClass.isInstance(value) =>
+        setBox(Full(value.asInstanceOf[MyType]))
+      case Some(value) if m.runtimeClass.isInstance(value) =>
+        setBox(Full(value.asInstanceOf[MyType]))
+      case Full(value) if m.runtimeClass.isInstance(value) =>
+        setBox(Full(value.asInstanceOf[MyType]))
+      case (value) :: _ if m.runtimeClass.isInstance(value) =>
+        setBox(Full(value.asInstanceOf[MyType]))
+      case (value: String)      => setFromString(value)
+      case Some(value: String)  => setFromString(value)
+      case Full(value: String)  => setFromString(value)
+      case (value: String) :: _ => setFromString(value)
+      case null | None | Empty  => setBox(defaultValueBox)
+      case (failure: Failure)   => setBox(failure)
+      case Some(other)          => setFromString(String.valueOf(other))
+      case Full(other)          => setFromString(String.valueOf(other))
+      case other                => setFromString(String.valueOf(other))
+    }
 
   /**
     * Set the value of the field using some kind of type-specific conversion from a String.
@@ -346,23 +352,25 @@ trait TypedField[ThisType] extends BaseField {
     */
   def setFromString(s: String): Box[MyType]
 
-  def valueBox: Box[MyType] = synchronized {
-    if (needsDefault) {
-      needsDefault = false
-      data = defaultValueBox
+  def valueBox: Box[MyType] =
+    synchronized {
+      if (needsDefault) {
+        needsDefault = false
+        data = defaultValueBox
+      }
+
+      if (canRead_?)
+        data
+      else
+        data.flatMap(obscure)
     }
 
-    if (canRead_?)
-      data
-    else
-      data.flatMap(obscure)
-  }
-
   /** Clear the value of this field */
-  def clear: Unit = optional_? match {
-    case true  => setBox(Empty)
-    case false => setBox(defaultValueBox)
-  }
+  def clear: Unit =
+    optional_? match {
+      case true  => setBox(Empty)
+      case false => setBox(defaultValueBox)
+    }
 }
 
 trait MandatoryTypedField[ThisType]
@@ -410,16 +418,17 @@ trait MandatoryTypedField[ThisType]
     else
       Full(defaultValue)
 
-  override def toString = valueBox match {
-    case Full(null) | null => "null"
-    case Full(v)           => v.toString
-    case _ =>
-      defaultValueBox.map(v =>
-        if (v != null)
-          v.toString
-        else
-          "null") openOr ""
-  }
+  override def toString =
+    valueBox match {
+      case Full(null) | null => "null"
+      case Full(v)           => v.toString
+      case _ =>
+        defaultValueBox.map(v =>
+          if (v != null)
+            v.toString
+          else
+            "null") openOr ""
+    }
 }
 
 trait OptionalTypedField[ThisType]
@@ -465,16 +474,17 @@ trait OptionalTypedField[ThisType]
 
   def defaultValueBox: Box[MyType] = Empty
 
-  override def toString = valueBox match {
-    case Full(null) | null => "null"
-    case Full(v)           => v.toString
-    case _ =>
-      defaultValueBox.map(v =>
-        if (v != null)
-          v.toString
-        else
-          "null") openOr ""
-  }
+  override def toString =
+    valueBox match {
+      case Full(null) | null => "null"
+      case Full(v)           => v.toString
+      case _ =>
+        defaultValueBox.map(v =>
+          if (v != null)
+            v.toString
+          else
+            "null") openOr ""
+    }
 
 }
 

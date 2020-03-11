@@ -177,16 +177,17 @@ object Sorter {
     tmp
   }
 
-  def anySorter[T: ORD] = new Sorter[T] {
-    def argSorted(arr: Array[T]) = {
-      val res = range(0, arr.length)
-      val cmp = implicitly[ORD[T]]
-      res.sortWith((a, b) => cmp.compare(arr(a), arr(b)) < 0)
-    }
+  def anySorter[T: ORD] =
+    new Sorter[T] {
+      def argSorted(arr: Array[T]) = {
+        val res = range(0, arr.length)
+        val cmp = implicitly[ORD[T]]
+        res.sortWith((a, b) => cmp.compare(arr(a), arr(b)) < 0)
+      }
 
-    def sorted(arr: Array[T]) = {
-      val res = arr.clone()
-      res.sorted
+      def sorted(arr: Array[T]) = {
+        val res = arr.clone()
+        res.sorted
+      }
     }
-  }
 }

@@ -389,9 +389,10 @@ class ReflectiveCallTest {
   }
 
   @Test def should_work_with_default_arguments_issue_390(): Unit = {
-    def pimpIt(a: Int) = new { // scalastyle:ignore
-      def foo(b: Int, c: Int = 1): Int = a + b + c
-    }
+    def pimpIt(a: Int) =
+      new { // scalastyle:ignore
+        def foo(b: Int, c: Int = 1): Int = a + b + c
+      }
 
     assertEquals(4, pimpIt(1).foo(2))
     assertEquals(8, pimpIt(2).foo(2, 4))

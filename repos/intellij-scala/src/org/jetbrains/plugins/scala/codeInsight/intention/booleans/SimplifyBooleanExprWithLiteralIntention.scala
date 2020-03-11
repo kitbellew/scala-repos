@@ -50,12 +50,13 @@ class SimplifyBooleanExprWithLiteralIntention
 
   @tailrec
   private def findSimplifiableParent(
-      element: PsiElement): Option[ScExpression] = element.getParent match {
-    case expr: ScExpression =>
-      if (SimplifyBooleanUtil.canBeSimplified(expr))
-        Some(expr)
-      else
-        findSimplifiableParent(expr)
-    case _ => None
-  }
+      element: PsiElement): Option[ScExpression] =
+    element.getParent match {
+      case expr: ScExpression =>
+        if (SimplifyBooleanUtil.canBeSimplified(expr))
+          Some(expr)
+        else
+          findSimplifiableParent(expr)
+      case _ => None
+    }
 }

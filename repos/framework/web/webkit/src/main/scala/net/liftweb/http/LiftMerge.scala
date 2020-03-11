@@ -351,12 +351,13 @@ private[http] trait LiftMerge {
               }</div>)
 
             val rule = new RewriteRule {
-              override def transform(n: Node) = n match {
-                case e: Elem if e.label == "body" =>
-                  e.copy(child = e.child ++ errors)
+              override def transform(n: Node) =
+                n match {
+                  case e: Elem if e.label == "body" =>
+                    e.copy(child = e.child ++ errors)
 
-                case x => super.transform(x)
-              }
+                  case x => super.transform(x)
+                }
             }
             (new RuleTransformer(rule)).transform(tmpRet)(0)
         }

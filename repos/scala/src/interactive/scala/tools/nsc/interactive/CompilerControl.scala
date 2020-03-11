@@ -73,18 +73,20 @@ trait CompilerControl { self: Global =>
   /** Returns the top level classes and objects that were deleted
     * in the editor since last time recentlyDeleted() was called.
     */
-  def recentlyDeleted(): List[Symbol] = deletedTopLevelSyms.synchronized {
-    val result = deletedTopLevelSyms
-    deletedTopLevelSyms.clear()
-    result.toList
-  }
+  def recentlyDeleted(): List[Symbol] =
+    deletedTopLevelSyms.synchronized {
+      val result = deletedTopLevelSyms
+      deletedTopLevelSyms.clear()
+      result.toList
+    }
 
   /** Locate smallest tree that encloses position
     *  @pre Position must be loaded
     */
-  def locateTree(pos: Position): Tree = onUnitOf(pos.source) { unit =>
-    new Locator(pos) locateIn unit.body
-  }
+  def locateTree(pos: Position): Tree =
+    onUnitOf(pos.source) { unit =>
+      new Locator(pos) locateIn unit.body
+    }
 
   /** Locates smallest context that encloses position as an optional value.
     */
@@ -95,9 +97,10 @@ trait CompilerControl { self: Global =>
 
   /** Returns the smallest context that contains given `pos`, throws FatalError if none exists.
     */
-  def doLocateContext(pos: Position): Context = locateContext(pos) getOrElse {
-    throw new FatalError("no context found for " + pos)
-  }
+  def doLocateContext(pos: Position): Context =
+    locateContext(pos) getOrElse {
+      throw new FatalError("no context found for " + pos)
+    }
 
   private def postWorkItem(item: WorkItem) =
     if (item.onCompilerThread)
@@ -493,13 +496,15 @@ trait CompilerControl { self: Global =>
     */
   class NoWorkScheduler extends WorkScheduler {
 
-    override def postWorkItem(action: Action) = synchronized {
-      action match {
-        case w: WorkItem    => w.raiseMissing()
-        case e: EmptyAction => // do nothing
-        case _              => println("don't know what to do with this " + action.getClass)
+    override def postWorkItem(action: Action) =
+      synchronized {
+        action match {
+          case w: WorkItem    => w.raiseMissing()
+          case e: EmptyAction => // do nothing
+          case _ =>
+            println("don't know what to do with this " + action.getClass)
+        }
       }
-    }
 
     override def doQuickly[A](op: () => A): A = {
       throw new FailedInterrupt(

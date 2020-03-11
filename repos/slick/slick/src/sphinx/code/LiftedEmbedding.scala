@@ -680,13 +680,14 @@ object LiftedEmbedding extends App {
       class CRow(tag: Tag) extends Table[C](tag, "shape_c") {
         def id = column[Int]("id")
         def s = column[String]("s")
-        def projection = LiftedC(
-          Pair(
-            column("p1"),
-            column("p2")
-          ), // (cols defined inline, type inferred)
-          LiftedB(id, s)
-        )
+        def projection =
+          LiftedC(
+            Pair(
+              column("p1"),
+              column("p2")
+            ), // (cols defined inline, type inferred)
+            LiftedB(id, s)
+          )
         def * = projection
       }
       val cs = TableQuery[CRow]

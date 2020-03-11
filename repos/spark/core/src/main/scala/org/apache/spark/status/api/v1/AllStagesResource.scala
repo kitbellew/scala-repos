@@ -204,10 +204,11 @@ private[v1] object AllStagesResource {
           raw.inputMetrics
         }
 
-        def build: InputMetricDistributions = new InputMetricDistributions(
-          bytesRead = submetricQuantiles(_.bytesRead),
-          recordsRead = submetricQuantiles(_.recordsRead)
-        )
+        def build: InputMetricDistributions =
+          new InputMetricDistributions(
+            bytesRead = submetricQuantiles(_.bytesRead),
+            recordsRead = submetricQuantiles(_.recordsRead)
+          )
       }.metricOption
 
     val outputMetrics: Option[OutputMetricDistributions] =
@@ -218,10 +219,11 @@ private[v1] object AllStagesResource {
             raw: InternalTaskMetrics): Option[InternalOutputMetrics] = {
           raw.outputMetrics
         }
-        def build: OutputMetricDistributions = new OutputMetricDistributions(
-          bytesWritten = submetricQuantiles(_.bytesWritten),
-          recordsWritten = submetricQuantiles(_.recordsWritten)
-        )
+        def build: OutputMetricDistributions =
+          new OutputMetricDistributions(
+            bytesWritten = submetricQuantiles(_.bytesWritten),
+            recordsWritten = submetricQuantiles(_.recordsWritten)
+          )
       }.metricOption
 
     val shuffleReadMetrics: Option[ShuffleReadMetricDistributions] =

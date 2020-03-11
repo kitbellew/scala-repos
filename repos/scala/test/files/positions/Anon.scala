@@ -3,7 +3,8 @@ object Anon {
     val bar: Int
   }
 
-  def foo = new Foo {
-    override val bar = 23
-  }
+  def foo =
+    new Foo {
+      override val bar = 23
+    }
 }

@@ -521,9 +521,10 @@ class DenseVectorTest extends FunSuite with Checkers {
     assert(fy === DenseVector(4.0, 3.0, 2.0, 1.0))
   }
 
-  implicit def genTriple: Arbitrary[DenseVector[Double]] = Arbitrary {
-    Arbitrary.arbitrary[Double].map(DenseVector.rand[Double](30) * _)
-  }
+  implicit def genTriple: Arbitrary[DenseVector[Double]] =
+    Arbitrary {
+      Arbitrary.arbitrary[Double].map(DenseVector.rand[Double](30) * _)
+    }
 
   test("isClose") {
     check((a: DenseVector[Double]) => isClose(a, a))
@@ -651,11 +652,12 @@ class DenseVectorOps_ComplexTest
     }
   }
 
-  implicit def genScalar: Arbitrary[Complex] = Arbitrary {
-    for (r <- Arbitrary.arbitrary[Double];
-         i <- Arbitrary.arbitrary[Double])
-      yield Complex(r % 100, i % 100)
-  }
+  implicit def genScalar: Arbitrary[Complex] =
+    Arbitrary {
+      for (r <- Arbitrary.arbitrary[Double];
+           i <- Arbitrary.arbitrary[Double])
+        yield Complex(r % 100, i % 100)
+    }
 }
 
 @RunWith(classOf[JUnitRunner])

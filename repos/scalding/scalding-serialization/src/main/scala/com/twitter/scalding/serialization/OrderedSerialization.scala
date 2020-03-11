@@ -61,10 +61,11 @@ object OrderedSerialization {
     else
       Equal
 
-  def resultFrom(t: Try[Int]): Result = t match {
-    case Success(i) => resultFrom(i)
-    case Failure(e) => CompareFailure(e)
-  }
+  def resultFrom(t: Try[Int]): Result =
+    t match {
+      case Success(i) => resultFrom(i)
+      case Failure(e) => CompareFailure(e)
+    }
 
   final case class CompareFailure(ex: Throwable) extends Result {
     def unsafeToInt = throw ex

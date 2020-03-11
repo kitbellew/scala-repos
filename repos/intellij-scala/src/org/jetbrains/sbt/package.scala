@@ -208,10 +208,11 @@ package object sbt {
 
   private val NameWithExtension = """(.+)(\..+?)""".r
 
-  private def parse(fileName: String): (String, String) = fileName match {
-    case NameWithExtension(name, extension) => (name, extension)
-    case name                               => (name, "")
-  }
+  private def parse(fileName: String): (String, String) =
+    fileName match {
+      case NameWithExtension(name, extension) => (name, extension)
+      case name                               => (name, "")
+    }
 
   def inWriteAction[T](body: => T): T = {
     ApplicationManager.getApplication.runWriteAction(new Computable[T] {

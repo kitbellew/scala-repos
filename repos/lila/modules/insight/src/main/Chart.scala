@@ -41,16 +41,17 @@ object Chart {
         .noNull
     }
 
-    def games = povs.map { pov =>
-      Json.obj(
-        "id" -> pov.game.id,
-        "fen" -> (chess.format.Forsyth exportBoard pov.game.toChess.board),
-        "color" -> pov.player.color.name,
-        "lastMove" -> ~pov.game.castleLastMoveTime.lastMoveString,
-        "user1" -> gameUserJson(pov.player),
-        "user2" -> gameUserJson(pov.opponent)
-      )
-    }
+    def games =
+      povs.map { pov =>
+        Json.obj(
+          "id" -> pov.game.id,
+          "fen" -> (chess.format.Forsyth exportBoard pov.game.toChess.board),
+          "color" -> pov.player.color.name,
+          "lastMove" -> ~pov.game.castleLastMoveTime.lastMoveString,
+          "user1" -> gameUserJson(pov.player),
+          "user2" -> gameUserJson(pov.opponent)
+        )
+      }
 
     def xAxis =
       Xaxis(
@@ -107,13 +108,14 @@ object Chart {
         }
         .toList
 
-    def sortedSeries = answer.clusters.headOption.fold(series) {
-      _.insight match {
-        case Insight.Single(_) => series
-        case Insight.Stacked(points) =>
-          series.sortLike(points.map(_._1.name), _.name)
+    def sortedSeries =
+      answer.clusters.headOption.fold(series) {
+        _.insight match {
+          case Insight.Single(_) => series
+          case Insight.Stacked(points) =>
+            series.sortLike(points.map(_._1.name), _.name)
+        }
       }
-    }
 
     Chart(
       question = JsonQuestion fromQuestion question,

@@ -680,58 +680,59 @@ private[akka] final class Expand[In, Out](extrapolate: In ⇒ Iterator[Out])
   override def initialAttributes = DefaultAttributes.expand
   override val shape = FlowShape(in, out)
 
-  override def createLogic(attr: Attributes) = new GraphStageLogic(shape) {
-    private var iterator: Iterator[Out] = Iterator.empty
-    private var expanded = false
+  override def createLogic(attr: Attributes) =
+    new GraphStageLogic(shape) {
+      private var iterator: Iterator[Out] = Iterator.empty
+      private var expanded = false
 
-    override def preStart(): Unit = pull(in)
+      override def preStart(): Unit = pull(in)
 
-    setHandler(
-      in,
-      new InHandler {
-        override def onPush(): Unit = {
-          iterator = extrapolate(grab(in))
-          if (iterator.hasNext) {
-            if (isAvailable(out)) {
-              expanded = true
-              pull(in)
-              push(out, iterator.next())
-            } else
-              expanded = false
-          } else
-            pull(in)
-        }
-        override def onUpstreamFinish(): Unit = {
-          if (iterator.hasNext && !expanded)
-            () // need to wait
-          else
-            completeStage()
-        }
-      }
-    )
-
-    setHandler(
-      out,
-      new OutHandler {
-        override def onPull(): Unit = {
-          if (iterator.hasNext) {
-            if (expanded == false) {
-              expanded = true
-              if (isClosed(in)) {
-                push(out, iterator.next())
-                completeStage()
-              } else {
-                // expand needs to pull first to be “fair” when upstream is not actually slow
+      setHandler(
+        in,
+        new InHandler {
+          override def onPush(): Unit = {
+            iterator = extrapolate(grab(in))
+            if (iterator.hasNext) {
+              if (isAvailable(out)) {
+                expanded = true
                 pull(in)
                 push(out, iterator.next())
-              }
+              } else
+                expanded = false
             } else
-              push(out, iterator.next())
+              pull(in)
+          }
+          override def onUpstreamFinish(): Unit = {
+            if (iterator.hasNext && !expanded)
+              () // need to wait
+            else
+              completeStage()
           }
         }
-      }
-    )
-  }
+      )
+
+      setHandler(
+        out,
+        new OutHandler {
+          override def onPull(): Unit = {
+            if (iterator.hasNext) {
+              if (expanded == false) {
+                expanded = true
+                if (isClosed(in)) {
+                  push(out, iterator.next())
+                  completeStage()
+                } else {
+                  // expand needs to pull first to be “fair” when upstream is not actually slow
+                  pull(in)
+                  push(out, iterator.next())
+                }
+              } else
+                push(out, iterator.next())
+            }
+          }
+        }
+      )
+    }
 }
 
 /**
@@ -1354,16 +1355,17 @@ private[stream] final class Reduce[T](f: (T, T) ⇒ T)
             setHandler(in, rest)
           }
         })
-      def rest = new InHandler {
-        override def onPush(): Unit = {
-          aggregator = f(aggregator, grab(in))
-          pull(in)
+      def rest =
+        new InHandler {
+          override def onPush(): Unit = {
+            aggregator = f(aggregator, grab(in))
+            pull(in)
+          }
+          override def onUpstreamFinish(): Unit = {
+            push(out, aggregator)
+            completeStage()
+          }
         }
-        override def onUpstreamFinish(): Unit = {
-          push(out, aggregator)
-          completeStage()
-        }
-      }
 
       setHandler(
         out,
@@ -1382,62 +1384,63 @@ private[stream] final class RecoverWith[T, M](
     extends SimpleLinearGraphStage[T] {
   override def initialAttributes = DefaultAttributes.recoverWith
 
-  override def createLogic(attr: Attributes) = new GraphStageLogic(shape) {
-    setHandler(
-      in,
-      new InHandler {
-        override def onPush(): Unit = push(out, grab(in))
-        override def onUpstreamFailure(ex: Throwable) = onFailure(ex)
-      })
+  override def createLogic(attr: Attributes) =
+    new GraphStageLogic(shape) {
+      setHandler(
+        in,
+        new InHandler {
+          override def onPush(): Unit = push(out, grab(in))
+          override def onUpstreamFailure(ex: Throwable) = onFailure(ex)
+        })
 
-    setHandler(
-      out,
-      new OutHandler {
-        override def onPull(): Unit = pull(in)
-      })
+      setHandler(
+        out,
+        new OutHandler {
+          override def onPull(): Unit = pull(in)
+        })
 
-    def onFailure(ex: Throwable) =
-      if (pf.isDefinedAt(ex))
-        switchTo(pf(ex))
-      else
-        failStage(ex)
-
-    def switchTo(source: Graph[SourceShape[T], M]): Unit = {
-      val sinkIn = new SubSinkInlet[T]("RecoverWithSink")
-      sinkIn.setHandler(new InHandler {
-        override def onPush(): Unit =
-          if (isAvailable(out)) {
-            push(out, sinkIn.grab())
-            sinkIn.pull()
-          }
-        override def onUpstreamFinish(): Unit =
-          if (!sinkIn.isAvailable)
-            completeStage()
-        override def onUpstreamFailure(ex: Throwable) = onFailure(ex)
-      })
-
-      def pushOut(): Unit = {
-        push(out, sinkIn.grab())
-        if (!sinkIn.isClosed)
-          sinkIn.pull()
+      def onFailure(ex: Throwable) =
+        if (pf.isDefinedAt(ex))
+          switchTo(pf(ex))
         else
-          completeStage()
-      }
+          failStage(ex)
 
-      val outHandler = new OutHandler {
-        override def onPull(): Unit =
-          if (sinkIn.isAvailable)
-            pushOut()
-        override def onDownstreamFinish(): Unit = sinkIn.cancel()
-      }
+      def switchTo(source: Graph[SourceShape[T], M]): Unit = {
+        val sinkIn = new SubSinkInlet[T]("RecoverWithSink")
+        sinkIn.setHandler(new InHandler {
+          override def onPush(): Unit =
+            if (isAvailable(out)) {
+              push(out, sinkIn.grab())
+              sinkIn.pull()
+            }
+          override def onUpstreamFinish(): Unit =
+            if (!sinkIn.isAvailable)
+              completeStage()
+          override def onUpstreamFailure(ex: Throwable) = onFailure(ex)
+        })
 
-      Source
-        .fromGraph(source)
-        .runWith(sinkIn.sink)(interpreter.subFusingMaterializer)
-      setHandler(out, outHandler)
-      sinkIn.pull()
+        def pushOut(): Unit = {
+          push(out, sinkIn.grab())
+          if (!sinkIn.isClosed)
+            sinkIn.pull()
+          else
+            completeStage()
+        }
+
+        val outHandler = new OutHandler {
+          override def onPull(): Unit =
+            if (sinkIn.isAvailable)
+              pushOut()
+          override def onDownstreamFinish(): Unit = sinkIn.cancel()
+        }
+
+        Source
+          .fromGraph(source)
+          .runWith(sinkIn.sink)(interpreter.subFusingMaterializer)
+        setHandler(out, outHandler)
+        sinkIn.pull()
+      }
     }
-  }
 
   override def toString: String = "RecoverWith"
 }

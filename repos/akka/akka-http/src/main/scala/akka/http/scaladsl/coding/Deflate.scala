@@ -100,21 +100,22 @@ class DeflateDecompressor(
     maxBytesPerChunk: Int = Decoder.MaxBytesPerChunkDefault)
     extends DeflateDecompressorBase(maxBytesPerChunk) {
 
-  override def createLogic(attr: Attributes) = new DecompressorParsingLogic {
-    override val inflater: Inflater = new Inflater()
+  override def createLogic(attr: Attributes) =
+    new DecompressorParsingLogic {
+      override val inflater: Inflater = new Inflater()
 
-    override val inflateState = new Inflate(true) {
-      override def onTruncation(): Unit = completeStage()
+      override val inflateState = new Inflate(true) {
+        override def onTruncation(): Unit = completeStage()
+      }
+
+      override def afterInflate = inflateState
+      override def afterBytesRead(
+          buffer: Array[Byte],
+          offset: Int,
+          length: Int): Unit = {}
+
+      startWith(inflateState)
     }
-
-    override def afterInflate = inflateState
-    override def afterBytesRead(
-        buffer: Array[Byte],
-        offset: Int,
-        length: Int): Unit = {}
-
-    startWith(inflateState)
-  }
 }
 
 abstract class DeflateDecompressorBase(

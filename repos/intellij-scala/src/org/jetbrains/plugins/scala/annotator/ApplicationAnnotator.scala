@@ -341,24 +341,25 @@ trait ApplicationAnnotator {
 
   private def nameOf(f: PsiNamedElement) = f.name + signatureOf(f)
 
-  private def signatureOf(f: PsiNamedElement): String = f match {
-    case f: ScFunction =>
-      if (f.parameters.isEmpty)
-        ""
-      else
-        formatParamClauses(f.paramClauses)
-    case m: PsiMethod =>
-      val params: Array[PsiParameter] = m.getParameterList.getParameters
-      if (params.isEmpty)
-        ""
-      else
-        formatJavaParams(params)
-    case syn: ScSyntheticFunction =>
-      if (syn.paramClauses.isEmpty)
-        ""
-      else
-        syn.paramClauses.map(formatSyntheticParams).mkString
-  }
+  private def signatureOf(f: PsiNamedElement): String =
+    f match {
+      case f: ScFunction =>
+        if (f.parameters.isEmpty)
+          ""
+        else
+          formatParamClauses(f.paramClauses)
+      case m: PsiMethod =>
+        val params: Array[PsiParameter] = m.getParameterList.getParameters
+        if (params.isEmpty)
+          ""
+        else
+          formatJavaParams(params)
+      case syn: ScSyntheticFunction =>
+        if (syn.paramClauses.isEmpty)
+          ""
+        else
+          syn.paramClauses.map(formatSyntheticParams).mkString
+    }
 
   private def formatParamClauses(paramClauses: ScParameters) = {
     def formatParams(parameters: Seq[ScParameter], types: Seq[ScType]) = {

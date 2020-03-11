@@ -34,55 +34,56 @@ import scalafx.scene.paint.Color
 import scalafx.scene.shape.{Arc, ArcType}
 
 class EnsembleArc extends EnsembleExample {
-  def getContent = new HBox {
-    spacing = 50
-    padding = Insets(20)
-    children = List(
-      new Arc {
-        centerX = 200
-        centerY = 200
-        radiusX = 100
-        radiusY = 100
-        length = 100
-        startAngle = 130
-        fill = Color.Green
-        stroke = Color.Black
-        `type` = ArcType.Open
-      },
-      new Arc {
-        centerX = 200
-        centerY = 200
-        radiusX = 100
-        radiusY = 100
-        length = 40
-        startAngle = 150
-        fill = Color.White
-        stroke = Color.Black
-        `type` = ArcType.Round
-      },
-      new Arc {
-        centerX = 200
-        centerY = 200
-        radiusX = 100
-        radiusY = 100
-        length = 80
-        startAngle = 130
-        fill = Color.Blue
-        stroke = Color.Azure
-        `type` = ArcType.Chord
-      },
-      new Arc {
-        centerX = 200
-        centerY = 200
-        radiusX = 100
-        radiusY = 100
-        length = 80
-        startAngle = 45
-        fill = null
-        stroke = Color.Coral
-        strokeWidth = 3
-        `type` = ArcType.Open
-      }
-    )
-  }
+  def getContent =
+    new HBox {
+      spacing = 50
+      padding = Insets(20)
+      children = List(
+        new Arc {
+          centerX = 200
+          centerY = 200
+          radiusX = 100
+          radiusY = 100
+          length = 100
+          startAngle = 130
+          fill = Color.Green
+          stroke = Color.Black
+          `type` = ArcType.Open
+        },
+        new Arc {
+          centerX = 200
+          centerY = 200
+          radiusX = 100
+          radiusY = 100
+          length = 40
+          startAngle = 150
+          fill = Color.White
+          stroke = Color.Black
+          `type` = ArcType.Round
+        },
+        new Arc {
+          centerX = 200
+          centerY = 200
+          radiusX = 100
+          radiusY = 100
+          length = 80
+          startAngle = 130
+          fill = Color.Blue
+          stroke = Color.Azure
+          `type` = ArcType.Chord
+        },
+        new Arc {
+          centerX = 200
+          centerY = 200
+          radiusX = 100
+          radiusY = 100
+          length = 80
+          startAngle = 45
+          fill = null
+          stroke = Color.Coral
+          strokeWidth = 3
+          `type` = ArcType.Open
+        }
+      )
+    }
 }

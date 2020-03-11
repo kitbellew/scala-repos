@@ -221,16 +221,17 @@ object PatternAnnotator {
     }
   }
 
-  private def widen(scType: ScType): ScType = scType match {
-    case _ if ScType.isSingletonType(scType) =>
-      ScType.extractDesignatorSingletonType(scType).getOrElse(scType)
-    case _ =>
-      scType.recursiveUpdate {
-        case ScAbstractType(_, _, upper)            => (true, upper)
-        case ScTypeParameterType(_, _, _, upper, _) => (true, upper.v)
-        case tp                                     => (false, tp)
-      }
-  }
+  private def widen(scType: ScType): ScType =
+    scType match {
+      case _ if ScType.isSingletonType(scType) =>
+        ScType.extractDesignatorSingletonType(scType).getOrElse(scType)
+      case _ =>
+        scType.recursiveUpdate {
+          case ScAbstractType(_, _, upper)            => (true, upper)
+          case ScTypeParameterType(_, _, _, upper, _) => (true, upper.v)
+          case tp                                     => (false, tp)
+        }
+    }
 
   private def freeTypeParamsOfTerms(tp: ScType): Seq[ScType] = {
     val buffer = ArrayBuffer[ScType]()
@@ -267,12 +268,13 @@ object PatternAnnotatorUtil {
     }
 
     object arrayType {
-      def unapply(scType: ScType): Option[ScType] = scType match {
-        case ScParameterizedType(ScDesignatorType(elem: ScClass), Seq(arg))
-            if elem.qualifiedName == "scala.Array" =>
-          Some(arg)
-        case _ => None
-      }
+      def unapply(scType: ScType): Option[ScType] =
+        scType match {
+          case ScParameterizedType(ScDesignatorType(elem: ScClass), Seq(arg))
+              if elem.qualifiedName == "scala.Array" =>
+            Some(arg)
+          case _ => None
+        }
     }
 
     matching.weakConforms(matched) || ((matching, matched) match {

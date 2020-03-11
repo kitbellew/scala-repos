@@ -6,9 +6,10 @@ package p1 {
   case class Sub[B <: Bound[B]](p: B)
   object Test {
     def g[A](x: Bound[A]) = ()
-    def f(x: Any) = x match {
-      case Sub(p) => g(p)
-    }
+    def f(x: Any) =
+      x match {
+        case Sub(p) => g(p)
+      }
   }
 }
 
@@ -27,9 +28,10 @@ package p2 {
   object Test {
     def g[B](x: Bound[B]) = ()
 
-    def f1(x: Any) = x match {
-      case SubHK(xs) => xs
-    }
+    def f1(x: Any) =
+      x match {
+        case SubHK(xs) => xs
+      }
     def f2[B <: Bound[B], CC[X] <: Traversable[X]](sub: SubHK[B, CC]): CC[B] =
       sub match {
         case SubHK(xs) => xs

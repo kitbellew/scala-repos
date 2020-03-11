@@ -57,12 +57,13 @@ private[scala] trait JavaMirrors
 
   trait JavaClassCompleter
 
-  def runtimeMirror(cl: ClassLoader): Mirror = gilSynchronized {
-    mirrors get cl match {
-      case Some(WeakReference(m)) => m
-      case _                      => createMirror(rootMirror.RootClass, cl)
+  def runtimeMirror(cl: ClassLoader): Mirror =
+    gilSynchronized {
+      mirrors get cl match {
+        case Some(WeakReference(m)) => m
+        case _                      => createMirror(rootMirror.RootClass, cl)
+      }
     }
-  }
 
   /** The API of a mirror for a reflective universe */
   class JavaMirror(
@@ -823,12 +824,13 @@ private[scala] trait JavaMirrors
       jClass.forName(path, true, classLoader)
 
     /** Does `path` correspond to a Java class with that fully qualified name in the current class loader? */
-    def tryJavaClass(path: String): Option[jClass[_]] = (
-      try Some(javaClass(path))
-      catch {
-        case ex @ (_: LinkageError | _: ClassNotFoundException) => None
-      } // TODO - log
-    )
+    def tryJavaClass(path: String): Option[jClass[_]] =
+      (
+        try Some(javaClass(path))
+        catch {
+          case ex @ (_: LinkageError | _: ClassNotFoundException) => None
+        } // TODO - log
+      )
 
     /** The mirror that corresponds to the classloader that original defined the given Java class */
     def mirrorDefining(jclazz: jClass[_]): JavaMirror = {
@@ -1054,68 +1056,69 @@ private[scala] trait JavaMirrors
         markAllCompleted(clazz, module)
       }
 
-      def completeRest(): Unit = gilSynchronized {
-        val tparams = clazz.rawInfo.typeParams
+      def completeRest(): Unit =
+        gilSynchronized {
+          val tparams = clazz.rawInfo.typeParams
 
-        val parents =
-          try {
-            parentsLevel += 1
-            val jsuperclazz = jclazz.getGenericSuperclass
-            val ifaces = jclazz.getGenericInterfaces.toList map typeToScala
-            val isAnnotation = JavaAccFlags(jclazz).isAnnotation
-            if (isAnnotation)
-              AnnotationClass.tpe :: ClassfileAnnotationClass.tpe :: ifaces
-            else if (jclazz.isInterface)
-              ObjectTpe :: ifaces // interfaces have Object as superclass in the classfile (see jvm spec), but getGenericSuperclass seems to return null
-            else
-              (if (jsuperclazz == null)
-                 AnyTpe
-               else
-                 typeToScala(jsuperclazz)) :: ifaces
-          } finally {
-            parentsLevel -= 1
+          val parents =
+            try {
+              parentsLevel += 1
+              val jsuperclazz = jclazz.getGenericSuperclass
+              val ifaces = jclazz.getGenericInterfaces.toList map typeToScala
+              val isAnnotation = JavaAccFlags(jclazz).isAnnotation
+              if (isAnnotation)
+                AnnotationClass.tpe :: ClassfileAnnotationClass.tpe :: ifaces
+              else if (jclazz.isInterface)
+                ObjectTpe :: ifaces // interfaces have Object as superclass in the classfile (see jvm spec), but getGenericSuperclass seems to return null
+              else
+                (if (jsuperclazz == null)
+                   AnyTpe
+                 else
+                   typeToScala(jsuperclazz)) :: ifaces
+            } finally {
+              parentsLevel -= 1
+            }
+          clazz setInfo GenPolyType(
+            tparams,
+            new ClassInfoType(parents, newScope, clazz))
+          if (module != NoSymbol) {
+            module.moduleClass setInfo new ClassInfoType(
+              List(),
+              newScope,
+              module.moduleClass)
           }
-        clazz setInfo GenPolyType(
-          tparams,
-          new ClassInfoType(parents, newScope, clazz))
-        if (module != NoSymbol) {
-          module.moduleClass setInfo new ClassInfoType(
-            List(),
-            newScope,
-            module.moduleClass)
-        }
 
-        def enter(sym: Symbol, mods: JavaAccFlags) =
-          followStatic(clazz, module, mods).info.decls enter sym
+          def enter(sym: Symbol, mods: JavaAccFlags) =
+            followStatic(clazz, module, mods).info.decls enter sym
 
-        def enterEmptyCtorIfNecessary(): Unit = {
-          if (jclazz.getConstructors.isEmpty)
-            clazz.info.decls.enter(clazz.newClassConstructor(NoPosition))
-        }
+          def enterEmptyCtorIfNecessary(): Unit = {
+            if (jclazz.getConstructors.isEmpty)
+              clazz.info.decls.enter(clazz.newClassConstructor(NoPosition))
+          }
 
-        for (jinner <- jclazz.getDeclaredClasses) {
-          jclassAsScala(jinner) // inner class is entered as a side-effect
-          // no need to call enter explicitly
-        }
+          for (jinner <- jclazz.getDeclaredClasses) {
+            jclassAsScala(jinner) // inner class is entered as a side-effect
+            // no need to call enter explicitly
+          }
 
-        pendingLoadActions ::= { () =>
-          jclazz.getDeclaredFields foreach (f =>
-            enter(jfieldAsScala(f), f.javaFlags))
-          jclazz.getDeclaredMethods foreach (m =>
-            enter(jmethodAsScala(m), m.javaFlags))
-          jclazz.getConstructors foreach (c =>
-            enter(jconstrAsScala(c), c.javaFlags))
-          enterEmptyCtorIfNecessary()
-        }
+          pendingLoadActions ::= { () =>
+            jclazz.getDeclaredFields foreach (f =>
+              enter(jfieldAsScala(f), f.javaFlags))
+            jclazz.getDeclaredMethods foreach (m =>
+              enter(jmethodAsScala(m), m.javaFlags))
+            jclazz.getConstructors foreach (c =>
+              enter(jconstrAsScala(c), c.javaFlags))
+            enterEmptyCtorIfNecessary()
+          }
 
-        if (parentsLevel == 0) {
-          while (pendingLoadActions.nonEmpty) {
-            val item = pendingLoadActions.head
-            pendingLoadActions = pendingLoadActions.tail
-            item()
+          if (parentsLevel == 0) {
+            while (pendingLoadActions.nonEmpty) {
+              val item = pendingLoadActions.head
+              pendingLoadActions = pendingLoadActions.tail
+              item()
+            }
           }
         }
-      }
 
       class LazyPolyType(override val typeParams: List[Symbol])
           extends LazyType
@@ -1176,17 +1179,18 @@ private[scala] trait JavaMirrors
     // in that case we could invoke packageNameToScala(jPackageName) and, probably, be okay
     // however, I think, it's better to blow up, since weirdness of the class loader might bite us elsewhere
     // [martin] I think it's better to be forgiving here. Restoring packageNameToScala.
-    private def sOwner(jclazz: jClass[_]): Symbol = jclazz match {
-      case PrimitiveOrArray()            => ScalaPackageClass
-      case EnclosedInMethod(jowner)      => methodToScala(jowner)
-      case EnclosedInConstructor(jowner) => constructorToScala(jowner)
-      case EnclosedInClass(jowner) =>
-        followStatic(classToScala(jowner), jclazz.javaFlags)
-      case EnclosedInPackage(jowner) => packageToScala(jowner).moduleClass
-      case _ =>
-        packageNameToScala(
-          jclazz.getName take jclazz.getName.lastIndexOf('.')).moduleClass
-    }
+    private def sOwner(jclazz: jClass[_]): Symbol =
+      jclazz match {
+        case PrimitiveOrArray()            => ScalaPackageClass
+        case EnclosedInMethod(jowner)      => methodToScala(jowner)
+        case EnclosedInConstructor(jowner) => constructorToScala(jowner)
+        case EnclosedInClass(jowner) =>
+          followStatic(classToScala(jowner), jclazz.javaFlags)
+        case EnclosedInPackage(jowner) => packageToScala(jowner).moduleClass
+        case _ =>
+          packageNameToScala(
+            jclazz.getName take jclazz.getName.lastIndexOf('.')).moduleClass
+      }
 
     /**
       * The Scala owner of the Scala symbol corresponding to the Java member `jmember`
@@ -1208,11 +1212,13 @@ private[scala] trait JavaMirrors
       *  that start with the given name are searched instead.
       */
     private def lookup(clazz: Symbol, jname: String): Symbol = {
-      def approximateMatch(sym: Symbol, jstr: String): Boolean = (
-        (sym.name string_== jstr)
-          || sym.isPrivate && (nme
-            .expandedName(sym.name.toTermName, sym.owner) string_== jstr)
-      )
+      def approximateMatch(sym: Symbol, jstr: String): Boolean =
+        (
+          (sym.name string_== jstr)
+            || sym.isPrivate && (nme.expandedName(
+              sym.name.toTermName,
+              sym.owner) string_== jstr)
+        )
 
       clazz.info.decl(newTermName(jname)) orElse {
         (clazz.info.decls.iterator filter (approximateMatch(
@@ -1420,10 +1426,11 @@ private[scala] trait JavaMirrors
         case jmeth: jMethod           => methodToScala(jmeth)
         case jconstr: jConstructor[_] => constructorToScala(jconstr)
       }
-    def reflectMemberToScala(m: jMember): Symbol = m match {
-      case x: GenericDeclaration => genericDeclarationToScala(x)
-      case x: jField             => jfieldAsScala(x)
-    }
+    def reflectMemberToScala(m: jMember): Symbol =
+      m match {
+        case x: GenericDeclaration => genericDeclarationToScala(x)
+        case x: jField             => jfieldAsScala(x)
+      }
 
     /**
       * Given some Java type arguments, a corresponding list of Scala types, plus potentially
@@ -1433,46 +1440,47 @@ private[scala] trait JavaMirrors
         owner: Symbol,
         args: List[jType]): (List[Type], List[TypeSymbol]) = {
       val tparams = new ListBuffer[TypeSymbol]
-      def targToScala(arg: jType): Type = arg match {
-        case jwild: WildcardType =>
-          val tparam = owner
-            .newExistential(newTypeName("T$" + tparams.length))
-            .setInfo(
-              TypeBounds(
+      def targToScala(arg: jType): Type =
+        arg match {
+          case jwild: WildcardType =>
+            val tparam = owner
+              .newExistential(newTypeName("T$" + tparams.length))
+              .setInfo(TypeBounds(
                 lub(jwild.getLowerBounds.toList map typeToScala),
                 glb(jwild.getUpperBounds.toList map typeToScala map objToAny)))
-          tparams += tparam
-          typeRef(NoPrefix, tparam, List())
-        case _ =>
-          typeToScala(arg)
-      }
+            tparams += tparam
+            typeRef(NoPrefix, tparam, List())
+          case _ =>
+            typeToScala(arg)
+        }
       (args map targToScala, tparams.toList)
     }
 
     /**
       * The Scala type that corresponds to given Java type
       */
-    def typeToScala(jtpe: jType): Type = jtpe match {
-      case jclazz: jClass[_] =>
-        if (jclazz.isArray)
-          arrayType(typeToScala(jclazz.getComponentType))
-        else {
-          val clazz = classToScala(jclazz)
-          rawToExistential(typeRef(clazz.owner.thisType, clazz, List()))
-        }
-      case japplied: ParameterizedType =>
-        // http://stackoverflow.com/questions/5767122/parameterizedtype-getrawtype-returns-j-l-r-type-not-class
-        val sym = classToScala(japplied.getRawType.asInstanceOf[jClass[_]])
-        val pre = sym.owner.thisType
-        val args0 = japplied.getActualTypeArguments
-        val (args, bounds) = targsToScala(pre.typeSymbol, args0.toList)
-        newExistentialType(bounds, typeRef(pre, sym, args))
-      case jarr: GenericArrayType =>
-        arrayType(typeToScala(jarr.getGenericComponentType))
-      case jtvar: jTypeVariable[_] =>
-        val tparam = typeParamToScala(jtvar)
-        typeRef(NoPrefix, tparam, List())
-    }
+    def typeToScala(jtpe: jType): Type =
+      jtpe match {
+        case jclazz: jClass[_] =>
+          if (jclazz.isArray)
+            arrayType(typeToScala(jclazz.getComponentType))
+          else {
+            val clazz = classToScala(jclazz)
+            rawToExistential(typeRef(clazz.owner.thisType, clazz, List()))
+          }
+        case japplied: ParameterizedType =>
+          // http://stackoverflow.com/questions/5767122/parameterizedtype-getrawtype-returns-j-l-r-type-not-class
+          val sym = classToScala(japplied.getRawType.asInstanceOf[jClass[_]])
+          val pre = sym.owner.thisType
+          val args0 = japplied.getActualTypeArguments
+          val (args, bounds) = targsToScala(pre.typeSymbol, args0.toList)
+          newExistentialType(bounds, typeRef(pre, sym, args))
+        case jarr: GenericArrayType =>
+          arrayType(typeToScala(jarr.getGenericComponentType))
+        case jtvar: jTypeVariable[_] =>
+          val tparam = typeParamToScala(jtvar)
+          typeRef(NoPrefix, tparam, List())
+      }
 
     /**
       * The Scala class that corresponds to given Java class without taking
@@ -1591,56 +1599,60 @@ private[scala] trait JavaMirrors
       *  @throws ClassNotFoundException for all Scala classes not in one of these categories.
       */
     @throws(classOf[ClassNotFoundException])
-    def classToJava(clazz: ClassSymbol): jClass[_] = classCache.toJava(clazz) {
-      def noClass =
-        throw new ClassNotFoundException(
-          "no Java class corresponding to " + clazz + " found")
-      //println("classToJava "+clazz+" "+clazz.owner+" "+clazz.owner.isPackageClass)//debug
-      if (clazz.isPrimitiveValueClass)
-        valueClassToJavaType(clazz)
-      else if (clazz == ArrayClass)
-        noClass
-      else if (clazz.isTopLevel)
-        javaClass(clazz.javaClassName)
-      else if (clazz.owner.isClass) {
-        val childOfClass = !clazz.owner.isModuleClass
-        val childOfTopLevel = clazz.owner.isTopLevel
-        val childOfTopLevelObject = clazz.owner.isModuleClass && childOfTopLevel
+    def classToJava(clazz: ClassSymbol): jClass[_] =
+      classCache.toJava(clazz) {
+        def noClass =
+          throw new ClassNotFoundException(
+            "no Java class corresponding to " + clazz + " found")
+        //println("classToJava "+clazz+" "+clazz.owner+" "+clazz.owner.isPackageClass)//debug
+        if (clazz.isPrimitiveValueClass)
+          valueClassToJavaType(clazz)
+        else if (clazz == ArrayClass)
+          noClass
+        else if (clazz.isTopLevel)
+          javaClass(clazz.javaClassName)
+        else if (clazz.owner.isClass) {
+          val childOfClass = !clazz.owner.isModuleClass
+          val childOfTopLevel = clazz.owner.isTopLevel
+          val childOfTopLevelObject =
+            clazz.owner.isModuleClass && childOfTopLevel
 
-        // suggested in https://issues.scala-lang.org/browse/SI-4023?focusedCommentId=54759#comment-54759
-        var ownerClazz = classToJava(clazz.owner.asClass)
-        if (childOfTopLevelObject)
-          ownerClazz = jClass.forName(
-            ownerClazz.getName stripSuffix "$",
-            true,
-            ownerClazz.getClassLoader)
+          // suggested in https://issues.scala-lang.org/browse/SI-4023?focusedCommentId=54759#comment-54759
+          var ownerClazz = classToJava(clazz.owner.asClass)
+          if (childOfTopLevelObject)
+            ownerClazz = jClass.forName(
+              ownerClazz.getName stripSuffix "$",
+              true,
+              ownerClazz.getClassLoader)
 
-        val ownerChildren = ownerClazz.getDeclaredClasses
+          val ownerChildren = ownerClazz.getDeclaredClasses
 
-        var fullNameOfJavaClass = ownerClazz.getName
-        if (childOfClass || childOfTopLevel)
-          fullNameOfJavaClass += "$"
-        fullNameOfJavaClass += clazz.name
+          var fullNameOfJavaClass = ownerClazz.getName
+          if (childOfClass || childOfTopLevel)
+            fullNameOfJavaClass += "$"
+          fullNameOfJavaClass += clazz.name
 
-        // compactify (see SI-7779)
-        fullNameOfJavaClass = fullNameOfJavaClass match {
-          case PackageAndClassPattern(pack, clazzName) =>
-            // in a package
-            pack + compactifyName(clazzName)
-          case _ =>
-            // in the empty package
-            compactifyName(fullNameOfJavaClass)
-        }
+          // compactify (see SI-7779)
+          fullNameOfJavaClass = fullNameOfJavaClass match {
+            case PackageAndClassPattern(pack, clazzName) =>
+              // in a package
+              pack + compactifyName(clazzName)
+            case _ =>
+              // in the empty package
+              compactifyName(fullNameOfJavaClass)
+          }
 
-        if (clazz.isModuleClass)
-          fullNameOfJavaClass += "$"
+          if (clazz.isModuleClass)
+            fullNameOfJavaClass += "$"
 
-        // println(s"ownerChildren = ${ownerChildren.toList}")
-        // println(s"fullNameOfJavaClass = $fullNameOfJavaClass")
-        ownerChildren.find(_.getName == fullNameOfJavaClass).getOrElse(noClass)
-      } else
-        noClass
-    }
+          // println(s"ownerChildren = ${ownerChildren.toList}")
+          // println(s"fullNameOfJavaClass = $fullNameOfJavaClass")
+          ownerChildren
+            .find(_.getName == fullNameOfJavaClass)
+            .getOrElse(noClass)
+        } else
+          noClass
+      }
 
     private val PackageAndClassPattern = """(.*\.)(.*)$""".r
 
@@ -1653,29 +1665,31 @@ private[scala] trait JavaMirrors
     /** The Java field corresponding to a given Scala field.
       *  @param   fld The Scala field.
       */
-    def fieldToJava(fld: TermSymbol): jField = fieldCache.toJava(fld) {
-      val jclazz = classToJava(fld.owner.asClass)
-      val jname = fld.name.dropLocal.toString
-      try jclazz getDeclaredField jname
-      catch {
-        case ex: NoSuchFieldException =>
-          jclazz getDeclaredField expandedName(fld)
+    def fieldToJava(fld: TermSymbol): jField =
+      fieldCache.toJava(fld) {
+        val jclazz = classToJava(fld.owner.asClass)
+        val jname = fld.name.dropLocal.toString
+        try jclazz getDeclaredField jname
+        catch {
+          case ex: NoSuchFieldException =>
+            jclazz getDeclaredField expandedName(fld)
+        }
       }
-    }
 
     /** The Java method corresponding to a given Scala method.
       *  @param   meth The Scala method
       */
-    def methodToJava(meth: MethodSymbol): jMethod = methodCache.toJava(meth) {
-      val jclazz = classToJava(meth.owner.asClass)
-      val paramClasses = transformedType(meth).paramTypes map typeToJavaClass
-      val jname = meth.name.dropLocal.toString
-      try jclazz getDeclaredMethod (jname, paramClasses: _*)
-      catch {
-        case ex: NoSuchMethodException =>
-          jclazz getDeclaredMethod (expandedName(meth), paramClasses: _*)
+    def methodToJava(meth: MethodSymbol): jMethod =
+      methodCache.toJava(meth) {
+        val jclazz = classToJava(meth.owner.asClass)
+        val paramClasses = transformedType(meth).paramTypes map typeToJavaClass
+        val jname = meth.name.dropLocal.toString
+        try jclazz getDeclaredMethod (jname, paramClasses: _*)
+        catch {
+          case ex: NoSuchMethodException =>
+            jclazz getDeclaredMethod (expandedName(meth), paramClasses: _*)
+        }
       }
-    }
 
     /** The Java constructor corresponding to a given Scala constructor.
       *  @param   constr The Scala constructor
@@ -1696,19 +1710,20 @@ private[scala] trait JavaMirrors
     /** The Java class that corresponds to given Scala type.
       *  Pre: Scala type is already transformed to Java level.
       */
-    def typeToJavaClass(tpe: Type): jClass[_] = tpe match {
-      case ExistentialType(_, rtpe) => typeToJavaClass(rtpe)
-      case TypeRef(_, ArrayClass, List(elemtpe)) =>
-        ScalaRunTime.arrayClass(typeToJavaClass(elemtpe))
-      case TypeRef(_, sym: ClassSymbol, _) => classToJava(sym.asClass)
-      case tpe @ TypeRef(_, sym: AliasTypeSymbol, _) =>
-        typeToJavaClass(tpe.dealias)
-      case SingleType(_, sym: ModuleSymbol) =>
-        classToJava(sym.moduleClass.asClass)
-      case _ =>
-        throw new NoClassDefFoundError(
-          "no Java class corresponding to " + tpe + " found")
-    }
+    def typeToJavaClass(tpe: Type): jClass[_] =
+      tpe match {
+        case ExistentialType(_, rtpe) => typeToJavaClass(rtpe)
+        case TypeRef(_, ArrayClass, List(elemtpe)) =>
+          ScalaRunTime.arrayClass(typeToJavaClass(elemtpe))
+        case TypeRef(_, sym: ClassSymbol, _) => classToJava(sym.asClass)
+        case tpe @ TypeRef(_, sym: AliasTypeSymbol, _) =>
+          typeToJavaClass(tpe.dealias)
+        case SingleType(_, sym: ModuleSymbol) =>
+          classToJava(sym.moduleClass.asClass)
+        case _ =>
+          throw new NoClassDefFoundError(
+            "no Java class corresponding to " + tpe + " found")
+      }
   }
 
   /** Assert that packages have package scopes */

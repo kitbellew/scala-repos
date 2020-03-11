@@ -27,10 +27,11 @@ object ORSet {
   /**
     * Extract the [[ORSet#elements]] of an `ORSet`.
     */
-  def unapply(a: ReplicatedData): Option[Set[Any]] = a match {
-    case s: ORSet[Any] @unchecked ⇒ Some(s.elements)
-    case _ ⇒ None
-  }
+  def unapply(a: ReplicatedData): Option[Set[Any]] =
+    a match {
+      case s: ORSet[Any] @unchecked ⇒ Some(s.elements)
+      case _ ⇒ None
+    }
 
   /**
     * INTERNAL API
@@ -410,11 +411,12 @@ final class ORSet[A] private[akka] (
 
   override def toString: String = s"OR$elements"
 
-  override def equals(o: Any): Boolean = o match {
-    case other: ORSet[_] ⇒
-      vvector == other.vvector && elementsMap == other.elementsMap
-    case _ ⇒ false
-  }
+  override def equals(o: Any): Boolean =
+    o match {
+      case other: ORSet[_] ⇒
+        vvector == other.vvector && elementsMap == other.elementsMap
+      case _ ⇒ false
+    }
 
   override def hashCode: Int = {
     var result = HashCode.SEED

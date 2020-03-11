@@ -45,30 +45,31 @@ trait ResizableParArrayCombiner[T]
   class CopyChainToArray(array: Array[Any], offset: Int, howmany: Int)
       extends Task[Unit, CopyChainToArray] {
     var result = ()
-    def leaf(prev: Option[Unit]) = if (howmany > 0) {
-      var totalleft = howmany
-      val (stbuff, stind) = findStart(offset)
-      var buffind = stbuff
-      var ind = stind
-      var arrayIndex = offset
-      while (totalleft > 0) {
-        val currbuff = chain(buffind)
-        val chunksize =
-          if (totalleft < (currbuff.size - ind))
-            totalleft
-          else
-            currbuff.size - ind
-        val until = ind + chunksize
+    def leaf(prev: Option[Unit]) =
+      if (howmany > 0) {
+        var totalleft = howmany
+        val (stbuff, stind) = findStart(offset)
+        var buffind = stbuff
+        var ind = stind
+        var arrayIndex = offset
+        while (totalleft > 0) {
+          val currbuff = chain(buffind)
+          val chunksize =
+            if (totalleft < (currbuff.size - ind))
+              totalleft
+            else
+              currbuff.size - ind
+          val until = ind + chunksize
 
-        copyChunk(currbuff.internalArray, ind, array, arrayIndex, until)
-        arrayIndex += chunksize
-        ind += chunksize
+          copyChunk(currbuff.internalArray, ind, array, arrayIndex, until)
+          arrayIndex += chunksize
+          ind += chunksize
 
-        totalleft -= chunksize
-        buffind += 1
-        ind = 0
+          totalleft -= chunksize
+          buffind += 1
+          ind = 0
+        }
       }
-    }
     private def copyChunk(
         buffarr: Array[AnyRef],
         buffStart: Int,

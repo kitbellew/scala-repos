@@ -374,13 +374,14 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
           case _            => false
         }
 
-      def unapply(xtm: ExtractorTreeMaker): Option[(Tree, Symbol)] = xtm match {
-        case ExtractorTreeMaker(extractor, None, nextBinder)
-            if irrefutableExtractorType(extractor.tpe) =>
-          Some((extractor, nextBinder))
-        case _ =>
-          None
-      }
+      def unapply(xtm: ExtractorTreeMaker): Option[(Tree, Symbol)] =
+        xtm match {
+          case ExtractorTreeMaker(extractor, None, nextBinder)
+              if irrefutableExtractorType(extractor.tpe) =>
+            Some((extractor, nextBinder))
+          case _ =>
+            None
+        }
     }
 
     object TypeTestTreeMaker {
@@ -558,17 +559,18 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
         //   have to test outer and non-null
         // If we do not conform to expected type:
         //   have to test type and outer (non-null is implied by successful type test)
-        def mkDefault = (
-          if (isExpectedPrimitiveType)
-            tru
-          else
-            addOuterTest(
-              if (isExpectedReferenceType)
-                mkNullTest
-              else
-                mkTypeTest
-            )
-        )
+        def mkDefault =
+          (
+            if (isExpectedPrimitiveType)
+              tru
+            else
+              addOuterTest(
+                if (isExpectedReferenceType)
+                  mkNullTest
+                else
+                  mkTypeTest
+              )
+          )
 
         // true when called to type-test the argument to an extractor
         // don't do any fancy equality checking, just test the type
@@ -745,17 +747,18 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
                 // `case 1 | 2` is considered as two cases.
                 def exceedsTwoCasesOrAlts = {
                   // avoids traversing the entire list if there are more than 3 elements
-                  def lengthMax3[T](l: List[T]): Int = l match {
-                    case a :: b :: c :: _ => 3
-                    case cases =>
-                      cases
-                        .map({
-                          case AlternativesTreeMaker(_, alts, _) :: _ =>
-                            lengthMax3(alts)
-                          case c => 1
-                        })
-                        .sum
-                  }
+                  def lengthMax3[T](l: List[T]): Int =
+                    l match {
+                      case a :: b :: c :: _ => 3
+                      case cases =>
+                        cases
+                          .map({
+                            case AlternativesTreeMaker(_, alts, _) :: _ =>
+                              lengthMax3(alts)
+                            case c => 1
+                          })
+                          .sum
+                    }
                   lengthMax3(casesNoSubstOnly) > 2
                 }
                 val requireSwitch = hasSwitchAnnotation && exceedsTwoCasesOrAlts
@@ -814,47 +817,52 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
     // TODO: do this during tree construction, but that will require tracking the current owner in treemakers
     // TODO: assign more fine-grained positions
     // fixes symbol nesting, assigns positions
-    protected def fixerUpper(origOwner: Symbol, pos: Position) = new Traverser {
-      currentOwner = origOwner
+    protected def fixerUpper(origOwner: Symbol, pos: Position) =
+      new Traverser {
+        currentOwner = origOwner
 
-      override def traverse(t: Tree) {
-        if (t != EmptyTree && t.pos == NoPosition) {
-          t.setPos(pos)
-        }
-        t match {
-          case Function(_, _) if t.symbol == NoSymbol =>
-            t.symbol = currentOwner.newAnonymousFunctionValue(t.pos)
-            debug.patmat("new symbol for " + ((t, t.symbol.ownerChain)))
-          case Function(_, _)
-              if (t.symbol.owner == NoSymbol) || (t.symbol.owner == origOwner) =>
-            debug.patmat(
-              "fundef: " + ((t, t.symbol.ownerChain, currentOwner.ownerChain)))
-            t.symbol.owner = currentOwner
-          case d: DefTree
-              if (d.symbol != NoSymbol) && ((d.symbol.owner == NoSymbol) || (d.symbol.owner == origOwner)) => // don't indiscriminately change existing owners! (see e.g., pos/t3440, pos/t3534, pos/unapplyContexts2)
-            debug.patmat(
-              "def: " + ((d, d.symbol.ownerChain, currentOwner.ownerChain)))
+        override def traverse(t: Tree) {
+          if (t != EmptyTree && t.pos == NoPosition) {
+            t.setPos(pos)
+          }
+          t match {
+            case Function(_, _) if t.symbol == NoSymbol =>
+              t.symbol = currentOwner.newAnonymousFunctionValue(t.pos)
+              debug.patmat("new symbol for " + ((t, t.symbol.ownerChain)))
+            case Function(_, _)
+                if (t.symbol.owner == NoSymbol) || (t.symbol.owner == origOwner) =>
+              debug.patmat(
+                "fundef: " + (
+                  (
+                    t,
+                    t.symbol.ownerChain,
+                    currentOwner.ownerChain)))
+              t.symbol.owner = currentOwner
+            case d: DefTree
+                if (d.symbol != NoSymbol) && ((d.symbol.owner == NoSymbol) || (d.symbol.owner == origOwner)) => // don't indiscriminately change existing owners! (see e.g., pos/t3440, pos/t3534, pos/unapplyContexts2)
+              debug.patmat(
+                "def: " + ((d, d.symbol.ownerChain, currentOwner.ownerChain)))
 
-            d.symbol.moduleClass andAlso (_.owner = currentOwner)
-            d.symbol.owner = currentOwner
-            // case _ if (t.symbol != NoSymbol) && (t.symbol ne null) =>
-            debug.patmat(
-              "untouched " + (
-                (
-                  t,
-                  t.getClass,
-                  t.symbol.ownerChain,
-                  currentOwner.ownerChain)))
-          case _ =>
+              d.symbol.moduleClass andAlso (_.owner = currentOwner)
+              d.symbol.owner = currentOwner
+              // case _ if (t.symbol != NoSymbol) && (t.symbol ne null) =>
+              debug.patmat(
+                "untouched " + (
+                  (
+                    t,
+                    t.getClass,
+                    t.symbol.ownerChain,
+                    currentOwner.ownerChain)))
+            case _ =>
+          }
+          super.traverse(t)
         }
-        super.traverse(t)
+
+        // override def apply
+        // debug.patmat("before fixerUpper: "+ xTree)
+        // currentRun.trackerFactory.snapshot()
+        // debug.patmat("after fixerupper")
+        // currentRun.trackerFactory.snapshot()
       }
-
-      // override def apply
-      // debug.patmat("before fixerUpper: "+ xTree)
-      // currentRun.trackerFactory.snapshot()
-      // debug.patmat("after fixerupper")
-      // currentRun.trackerFactory.snapshot()
-    }
   }
 }

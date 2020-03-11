@@ -47,21 +47,23 @@ class FatLazy[T](f: => T) {
     *
     * @return the value of the instance
     */
-  def get: T = synchronized {
-    value match {
-      case Full(v) => v
-      case _ =>
-        value = Full(f)
-        value.openOrThrowException("We just checked that this is a Full box.")
+  def get: T =
+    synchronized {
+      value match {
+        case Full(v) => v
+        case _ =>
+          value = Full(f)
+          value.openOrThrowException("We just checked that this is a Full box.")
+      }
     }
-  }
 
   /**
     * Test whether the value of this class has been set or initialized from the default.
     */
-  def defined_? = synchronized {
-    value != None
-  }
+  def defined_? =
+    synchronized {
+      value != None
+    }
 
   /**
     * Set the instance to a new value and return that value
@@ -70,17 +72,19 @@ class FatLazy[T](f: => T) {
     *
     * @return v
     */
-  def set(v: T): T = synchronized {
-    value = Full(v)
-    v
-  }
+  def set(v: T): T =
+    synchronized {
+      value = Full(v)
+      v
+    }
 
   /**
     * Copy the value of the specified FatLazy into this FatLazy
     */
-  def setFrom(other: FatLazy[T]): Unit = synchronized {
-    value = other.value
-  }
+  def setFrom(other: FatLazy[T]): Unit =
+    synchronized {
+      value = other.value
+    }
 
   /**
     * and the lazy() = foo style of assignment
@@ -91,16 +95,18 @@ class FatLazy[T](f: => T) {
     * Reset the value of this FatLazy to the default (which will be lazily determined
     * on retrieval.)
     */
-  def reset = synchronized {
-    value = Empty
-  }
+  def reset =
+    synchronized {
+      value = Empty
+    }
 
   /**
     * Determine whether the value of this FatLazy has been determined.
     */
-  def calculated_? = synchronized {
-    value.isDefined
-  }
+  def calculated_? =
+    synchronized {
+      value.isDefined
+    }
 
   // implicit def fromLazy[T](in: Lazy[T]): T = in.get
 }

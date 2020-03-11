@@ -62,11 +62,13 @@ class FreeTests extends CatsSuite {
           Free.pure[FTestApi, Int](j)
       } yield z
 
-    def runner: FTestApi ~> Id = new (FTestApi ~> Id) {
-      def apply[A](fa: FTestApi[A]): Id[A] = fa match {
-        case TB(i) => i + 1
+    def runner: FTestApi ~> Id =
+      new (FTestApi ~> Id) {
+        def apply[A](fa: FTestApi[A]): Id[A] =
+          fa match {
+            case TB(i) => i + 1
+          }
       }
-    }
 
     assert(10000 == a(0).foldMap(runner))
   }

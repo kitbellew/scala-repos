@@ -331,15 +331,16 @@ object GuiceableModule extends GuiceableModuleConversions {
   /**
     * Attempt to convert a module of unknown type to a GuiceableModule.
     */
-  def guiceable(module: Any): GuiceableModule = module match {
-    case playModule: PlayModule   => fromPlayModule(playModule)
-    case guiceModule: GuiceModule => fromGuiceModule(guiceModule)
-    case unknown =>
-      throw new PlayException(
-        "Unknown module type",
-        s"Module [$unknown] is not a Play module or a Guice module"
-      )
-  }
+  def guiceable(module: Any): GuiceableModule =
+    module match {
+      case playModule: PlayModule   => fromPlayModule(playModule)
+      case guiceModule: GuiceModule => fromGuiceModule(guiceModule)
+      case unknown =>
+        throw new PlayException(
+          "Unknown module type",
+          s"Module [$unknown] is not a Play module or a Guice module"
+        )
+    }
 
   /**
     * Apply GuiceableModules to create Guice modules.
@@ -366,15 +367,16 @@ trait GuiceableModuleConversions {
     fromGuiceModules(Seq(guiceModule))
 
   implicit def fromGuiceModules(
-      guiceModules: Seq[GuiceModule]): GuiceableModule = new GuiceableModule {
-    def guiced(
-        env: Environment,
-        conf: Configuration,
-        binderOptions: Set[BinderOption]): Seq[GuiceModule] = guiceModules
-    def disable(classes: Seq[Class[_]]): GuiceableModule =
-      fromGuiceModules(filterOut(classes, guiceModules))
-    override def toString = s"GuiceableModule(${guiceModules.mkString(", ")})"
-  }
+      guiceModules: Seq[GuiceModule]): GuiceableModule =
+    new GuiceableModule {
+      def guiced(
+          env: Environment,
+          conf: Configuration,
+          binderOptions: Set[BinderOption]): Seq[GuiceModule] = guiceModules
+      def disable(classes: Seq[Class[_]]): GuiceableModule =
+        fromGuiceModules(filterOut(classes, guiceModules))
+      override def toString = s"GuiceableModule(${guiceModules.mkString(", ")})"
+    }
 
   implicit def fromPlayModule(playModule: PlayModule): GuiceableModule =
     fromPlayModules(Seq(playModule))
@@ -395,15 +397,17 @@ trait GuiceableModuleConversions {
     fromPlayBindings(Seq(binding))
 
   implicit def fromPlayBindings(
-      bindings: Seq[PlayBinding[_]]): GuiceableModule = new GuiceableModule {
-    def guiced(
-        env: Environment,
-        conf: Configuration,
-        binderOptions: Set[BinderOption]): Seq[GuiceModule] =
-      Seq(guice(bindings, binderOptions))
-    def disable(classes: Seq[Class[_]]): GuiceableModule = this // no filtering
-    override def toString = s"GuiceableModule(${bindings.mkString(", ")})"
-  }
+      bindings: Seq[PlayBinding[_]]): GuiceableModule =
+    new GuiceableModule {
+      def guiced(
+          env: Environment,
+          conf: Configuration,
+          binderOptions: Set[BinderOption]): Seq[GuiceModule] =
+        Seq(guice(bindings, binderOptions))
+      def disable(classes: Seq[Class[_]]): GuiceableModule =
+        this // no filtering
+      override def toString = s"GuiceableModule(${bindings.mkString(", ")})"
+    }
 
   private def filterOut[A](classes: Seq[Class[_]], instances: Seq[A]): Seq[A] =
     instances.filterNot(o => classes.exists(_.isAssignableFrom(o.getClass)))

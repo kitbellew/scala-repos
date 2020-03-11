@@ -100,83 +100,88 @@ private[streams] class IterateeSubscriber[T, R, S](iter0: Iteratee[T, R])
     * The final result of this Iteratee, either a Done or Error Iteratee,
     * or the last Iteratee when the Subscription is completed.
     */
-  def result: Iteratee[T, R] = state match {
-    case NotSubscribedNoStep(result) =>
-      promiseToIteratee(result)
-    case SubscribedNoStep(subs, result) =>
-      promiseToIteratee(result)
-    case NotSubscribedWithCont(cont, result) =>
-      promiseToIteratee(result)
-    case SubscribedWithCont(subs, cont, result) =>
-      promiseToIteratee(result)
-    case CompletedNoStep(result) =>
-      promiseToIteratee(result)
-    case Finished(resultIteratee) =>
-      resultIteratee
-  }
+  def result: Iteratee[T, R] =
+    state match {
+      case NotSubscribedNoStep(result) =>
+        promiseToIteratee(result)
+      case SubscribedNoStep(subs, result) =>
+        promiseToIteratee(result)
+      case NotSubscribedWithCont(cont, result) =>
+        promiseToIteratee(result)
+      case SubscribedWithCont(subs, cont, result) =>
+        promiseToIteratee(result)
+      case CompletedNoStep(result) =>
+        promiseToIteratee(result)
+      case Finished(resultIteratee) =>
+        resultIteratee
+    }
 
   // Streams methods
 
-  override def onSubscribe(subs: Subscription): Unit = exclusive {
-    case NotSubscribedNoStep(result) =>
-      state = SubscribedNoStep(subs, result)
-    case SubscribedNoStep(subs, result) =>
-      throw new IllegalStateException("Can't subscribe twice")
-    case NotSubscribedWithCont(cont, result) =>
-      subs.request(1)
-      state = SubscribedWithCont(subs, cont, result)
-    case SubscribedWithCont(subs, cont, result) =>
-      throw new IllegalStateException("Can't subscribe twice")
-    case CompletedNoStep(result) =>
-      throw new IllegalStateException("Can't subscribe once completed")
-    case Finished(resultIteratee) =>
-      subs.cancel()
-  }
+  override def onSubscribe(subs: Subscription): Unit =
+    exclusive {
+      case NotSubscribedNoStep(result) =>
+        state = SubscribedNoStep(subs, result)
+      case SubscribedNoStep(subs, result) =>
+        throw new IllegalStateException("Can't subscribe twice")
+      case NotSubscribedWithCont(cont, result) =>
+        subs.request(1)
+        state = SubscribedWithCont(subs, cont, result)
+      case SubscribedWithCont(subs, cont, result) =>
+        throw new IllegalStateException("Can't subscribe twice")
+      case CompletedNoStep(result) =>
+        throw new IllegalStateException("Can't subscribe once completed")
+      case Finished(resultIteratee) =>
+        subs.cancel()
+    }
 
-  override def onComplete(): Unit = exclusive {
-    case NotSubscribedNoStep(result) =>
-      state = CompletedNoStep(result)
-    case SubscribedNoStep(subs, result) =>
-      state = CompletedNoStep(result)
-    case NotSubscribedWithCont(cont, result) =>
-      finishWithCompletedCont(cont, result)
-    case SubscribedWithCont(subs, cont, result) =>
-      finishWithCompletedCont(cont, result)
-    case CompletedNoStep(result) =>
-      throw new IllegalStateException("Can't complete twice")
-    case Finished(resultIteratee) =>
-      ()
-  }
+  override def onComplete(): Unit =
+    exclusive {
+      case NotSubscribedNoStep(result) =>
+        state = CompletedNoStep(result)
+      case SubscribedNoStep(subs, result) =>
+        state = CompletedNoStep(result)
+      case NotSubscribedWithCont(cont, result) =>
+        finishWithCompletedCont(cont, result)
+      case SubscribedWithCont(subs, cont, result) =>
+        finishWithCompletedCont(cont, result)
+      case CompletedNoStep(result) =>
+        throw new IllegalStateException("Can't complete twice")
+      case Finished(resultIteratee) =>
+        ()
+    }
 
-  override def onError(cause: Throwable): Unit = exclusive {
-    case NotSubscribedNoStep(result) =>
-      finishWithError(cause, result)
-    case SubscribedNoStep(subs, result) =>
-      finishWithError(cause, result)
-    case NotSubscribedWithCont(cont, result) =>
-      finishWithError(cause, result)
-    case SubscribedWithCont(subs, cont, result) =>
-      finishWithError(cause, result)
-    case CompletedNoStep(result) =>
-      throw new IllegalStateException("Can't receive error once completed")
-    case Finished(resultIteratee) =>
-      ()
-  }
+  override def onError(cause: Throwable): Unit =
+    exclusive {
+      case NotSubscribedNoStep(result) =>
+        finishWithError(cause, result)
+      case SubscribedNoStep(subs, result) =>
+        finishWithError(cause, result)
+      case NotSubscribedWithCont(cont, result) =>
+        finishWithError(cause, result)
+      case SubscribedWithCont(subs, cont, result) =>
+        finishWithError(cause, result)
+      case CompletedNoStep(result) =>
+        throw new IllegalStateException("Can't receive error once completed")
+      case Finished(resultIteratee) =>
+        ()
+    }
 
-  override def onNext(element: T): Unit = exclusive {
-    case NotSubscribedNoStep(result) =>
-      throw new IllegalStateException("Got next element before subscribed")
-    case SubscribedNoStep(subs, result) =>
-      throw new IllegalStateException("Got next element before requested")
-    case NotSubscribedWithCont(cont, result) =>
-      throw new IllegalStateException("Got next element before subscribed")
-    case SubscribedWithCont(subs, cont, result) =>
-      continueWithNext(subs, cont, element, result)
-    case CompletedNoStep(result) =>
-      throw new IllegalStateException("Can't receive error once completed")
-    case Finished(resultIteratee) =>
-      ()
-  }
+  override def onNext(element: T): Unit =
+    exclusive {
+      case NotSubscribedNoStep(result) =>
+        throw new IllegalStateException("Got next element before subscribed")
+      case SubscribedNoStep(subs, result) =>
+        throw new IllegalStateException("Got next element before requested")
+      case NotSubscribedWithCont(cont, result) =>
+        throw new IllegalStateException("Got next element before subscribed")
+      case SubscribedWithCont(subs, cont, result) =>
+        continueWithNext(subs, cont, element, result)
+      case CompletedNoStep(result) =>
+        throw new IllegalStateException("Can't receive error once completed")
+      case Finished(resultIteratee) =>
+        ()
+    }
 
   private def continueWithNext(
       subs: Subscription,
@@ -214,21 +219,24 @@ private[streams] class IterateeSubscriber[T, R, S](iter0: Iteratee[T, R])
     * Called when the iteratee folds to a Done or Error step. We may want to
     * cancel our Subscription.
     */
-  private def onDoneOrErrorStep(doneOrError: Step[T, R]): Unit = exclusive {
-    case NotSubscribedNoStep(result) =>
-      finishWithDoneOrErrorStep(doneOrError, result)
-    case SubscribedNoStep(subs, result) =>
-      subs.cancel()
-      finishWithDoneOrErrorStep(doneOrError, result)
-    case NotSubscribedWithCont(cont, result) =>
-      throw new IllegalStateException("Can't get done or error while has cont")
-    case SubscribedWithCont(subs, cont, result) =>
-      throw new IllegalStateException("Can't get done or error while has cont")
-    case CompletedNoStep(result) =>
-      finishWithDoneOrErrorStep(doneOrError, result)
-    case Finished(resultIteratee) =>
-      ()
-  }
+  private def onDoneOrErrorStep(doneOrError: Step[T, R]): Unit =
+    exclusive {
+      case NotSubscribedNoStep(result) =>
+        finishWithDoneOrErrorStep(doneOrError, result)
+      case SubscribedNoStep(subs, result) =>
+        subs.cancel()
+        finishWithDoneOrErrorStep(doneOrError, result)
+      case NotSubscribedWithCont(cont, result) =>
+        throw new IllegalStateException(
+          "Can't get done or error while has cont")
+      case SubscribedWithCont(subs, cont, result) =>
+        throw new IllegalStateException(
+          "Can't get done or error while has cont")
+      case CompletedNoStep(result) =>
+        finishWithDoneOrErrorStep(doneOrError, result)
+      case Finished(resultIteratee) =>
+        ()
+    }
 
   /**
     * Folds an Iteratee to get its Step. The Step is used to choose a method

@@ -160,10 +160,11 @@ case class Form[T](
     * @param success a function to handle form submission success
     * @return a result `R`.
     */
-  def fold[R](hasErrors: Form[T] => R, success: T => R): R = value match {
-    case Some(v) if errors.isEmpty => success(v)
-    case _                         => hasErrors(this)
-  }
+  def fold[R](hasErrors: Form[T] => R, success: T => R): R =
+    value match {
+      case Some(v) if errors.isEmpty => success(v)
+      case _                         => hasErrors(this)
+    }
 
   /**
     * Retrieves a field.
@@ -266,11 +267,12 @@ case class Form[T](
   }
 
   private def translateMsgArg(msgArg: Any)(
-      implicit messages: play.api.i18n.Messages) = msgArg match {
-    case key: String       => messages(key)
-    case keys: Seq[String] => keys.map(key => messages(key))
-    case _                 => msgArg
-  }
+      implicit messages: play.api.i18n.Messages) =
+    msgArg match {
+      case key: String       => messages(key)
+      case keys: Seq[String] => keys.map(key => messages(key))
+      case _                 => msgArg
+    }
 
   /**
     * Adds an error to this form

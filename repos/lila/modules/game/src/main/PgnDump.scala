@@ -32,17 +32,18 @@ final class PgnDump(
 
   private val fileR = """[\s,]""".r
 
-  def filename(game: Game): String = gameLightUsers(game) match {
-    case (wu, bu) =>
-      fileR.replaceAllIn(
-        "lichess_pgn_%s_%s_vs_%s.%s.pgn".format(
-          dateFormat.print(game.createdAt),
-          player(game.whitePlayer, wu),
-          player(game.blackPlayer, bu),
-          game.id
-        ),
-        "_")
-  }
+  def filename(game: Game): String =
+    gameLightUsers(game) match {
+      case (wu, bu) =>
+        fileR.replaceAllIn(
+          "lichess_pgn_%s_%s_vs_%s.%s.pgn".format(
+            dateFormat.print(game.createdAt),
+            player(game.whitePlayer, wu),
+            player(game.blackPlayer, bu),
+            game.id
+          ),
+          "_")
+    }
 
   private def gameUrl(id: String) = s"$netBaseUrl/$id"
 
@@ -68,54 +69,55 @@ final class PgnDump(
   private def tags(
       game: Game,
       initialFen: Option[String],
-      imported: Option[ParsedPgn]): List[Tag] = gameLightUsers(game) match {
-    case (wu, bu) =>
-      List(
-        Tag(
-          _.Event,
-          imported.flatMap(_ tag "event") | {
-            if (game.imported)
-              "Import"
-            else
-              game.rated.fold("Rated game", "Casual game")
-          }),
-        Tag(_.Site, gameUrl(game.id)),
-        Tag(
-          _.Date,
-          imported.flatMap(_ tag "date") | dateFormat.print(game.createdAt)),
-        Tag(_.White, player(game.whitePlayer, wu)),
-        Tag(_.Black, player(game.blackPlayer, bu)),
-        Tag(_.Result, result(game)),
-        Tag("WhiteElo", rating(game.whitePlayer)),
-        Tag("BlackElo", rating(game.blackPlayer)),
-        Tag("PlyCount", game.turns),
-        Tag(_.Variant, game.variant.name.capitalize),
-        Tag(
-          _.TimeControl,
-          game.clock.fold("-") { c =>
-            s"${c.limit}+${c.increment}"
-          }),
-        Tag(_.ECO, game.opening.fold("?")(_.opening.eco)),
-        Tag(_.Opening, game.opening.fold("?")(_.opening.name)),
-        Tag(
-          _.Termination, {
-            import chess.Status._
-            game.status match {
-              case Created | Started                             => "Unterminated"
-              case Aborted | NoStart                             => "Abandoned"
-              case Timeout | Outoftime                           => "Time forfeit"
-              case Resign | Draw | Stalemate | Mate | VariantEnd => "Normal"
-              case Cheat                                         => "Rules infraction"
-              case UnknownFinish                                 => "Unknown"
-            }
-          }
-        )
-      ) ::: customStartPosition(game.variant).??(
+      imported: Option[ParsedPgn]): List[Tag] =
+    gameLightUsers(game) match {
+      case (wu, bu) =>
         List(
-          Tag(_.FEN, initialFen | "?"),
-          Tag("SetUp", "1")
-        ))
-  }
+          Tag(
+            _.Event,
+            imported.flatMap(_ tag "event") | {
+              if (game.imported)
+                "Import"
+              else
+                game.rated.fold("Rated game", "Casual game")
+            }),
+          Tag(_.Site, gameUrl(game.id)),
+          Tag(
+            _.Date,
+            imported.flatMap(_ tag "date") | dateFormat.print(game.createdAt)),
+          Tag(_.White, player(game.whitePlayer, wu)),
+          Tag(_.Black, player(game.blackPlayer, bu)),
+          Tag(_.Result, result(game)),
+          Tag("WhiteElo", rating(game.whitePlayer)),
+          Tag("BlackElo", rating(game.blackPlayer)),
+          Tag("PlyCount", game.turns),
+          Tag(_.Variant, game.variant.name.capitalize),
+          Tag(
+            _.TimeControl,
+            game.clock.fold("-") { c =>
+              s"${c.limit}+${c.increment}"
+            }),
+          Tag(_.ECO, game.opening.fold("?")(_.opening.eco)),
+          Tag(_.Opening, game.opening.fold("?")(_.opening.name)),
+          Tag(
+            _.Termination, {
+              import chess.Status._
+              game.status match {
+                case Created | Started                             => "Unterminated"
+                case Aborted | NoStart                             => "Abandoned"
+                case Timeout | Outoftime                           => "Time forfeit"
+                case Resign | Draw | Stalemate | Mate | VariantEnd => "Normal"
+                case Cheat                                         => "Rules infraction"
+                case UnknownFinish                                 => "Unknown"
+              }
+            }
+          )
+        ) ::: customStartPosition(game.variant).??(
+          List(
+            Tag(_.FEN, initialFen | "?"),
+            Tag("SetUp", "1")
+          ))
+    }
 
   private def turns(moves: List[String], from: Int): List[chessPgn.Turn] =
     (moves grouped 2).zipWithIndex.toList map {

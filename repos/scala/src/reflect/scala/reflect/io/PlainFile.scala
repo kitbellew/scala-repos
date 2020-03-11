@@ -43,10 +43,11 @@ class PlainFile(val givenPath: Path) extends AbstractFile {
 
   override def toString = path
   override def hashCode(): Int = fpath.hashCode()
-  override def equals(that: Any): Boolean = that match {
-    case x: PlainFile => fpath == x.fpath
-    case _            => false
-  }
+  override def equals(that: Any): Boolean =
+    that match {
+      case x: PlainFile => fpath == x.fpath
+      case _            => false
+    }
 
   /** Is this abstract file a directory? */
   def isDirectory: Boolean = givenPath.isDirectory
@@ -58,10 +59,11 @@ class PlainFile(val givenPath: Path) extends AbstractFile {
   def iterator: Iterator[AbstractFile] = {
     // Optimization: Assume that the file was not deleted and did not have permissions changed
     // between the call to `list` and the iteration. This saves a call to `exists`.
-    def existsFast(path: Path) = path match {
-      case (_: Directory | _: io.File) => true
-      case _                           => path.exists
-    }
+    def existsFast(path: Path) =
+      path match {
+        case (_: Directory | _: io.File) => true
+        case _                           => path.exists
+      }
     if (!isDirectory)
       Iterator.empty
     else

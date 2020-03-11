@@ -14,9 +14,10 @@ class MainTest extends AsyncTest[JdbcTestDB] { mainTest =>
     def first = column[String]("first", O SqlType "varchar(64)")
     def last = column[Option[String]]("last")
     def * = (id, first, last)
-    def orders = mainTest.orders filter {
-      _.userID === id
-    }
+    def orders =
+      mainTest.orders filter {
+        _.userID === id
+      }
   }
   lazy val users = TableQuery[Users]
 

@@ -489,11 +489,12 @@ object OldDeps {
       .join
   }
 
-  def oldDepsSettings() = Defaults.coreDefaultSettings ++ Seq(
-    name := "old-deps",
-    scalaVersion := "2.10.5",
-    libraryDependencies := allPreviousArtifactKeys.value.flatten
-  )
+  def oldDepsSettings() =
+    Defaults.coreDefaultSettings ++ Seq(
+      name := "old-deps",
+      scalaVersion := "2.10.5",
+      libraryDependencies := allPreviousArtifactKeys.value.flatten
+    )
 }
 
 object Catalyst {

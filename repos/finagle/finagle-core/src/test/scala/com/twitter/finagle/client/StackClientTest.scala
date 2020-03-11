@@ -343,9 +343,10 @@ class StackClientTest
   test("service acquisition requeues use a separate fixed budget")(
     new RequeueCtx {
       override val stubLB = new ServiceFactory[String, String] {
-        def apply(conn: ClientConnection) = Future.exception(
-          Failure.rejected("unable to establish session")
-        )
+        def apply(conn: ClientConnection) =
+          Future.exception(
+            Failure.rejected("unable to establish session")
+          )
         def close(deadline: Time) = Future.Done
       }
 
@@ -359,9 +360,10 @@ class StackClientTest
   test("service acquisition requeues respect Failure.Restartable")(
     new RequeueCtx {
       override val stubLB = new ServiceFactory[String, String] {
-        def apply(conn: ClientConnection) = Future.exception(
-          Failure("don't restart this!")
-        )
+        def apply(conn: ClientConnection) =
+          Future.exception(
+            Failure("don't restart this!")
+          )
         def close(deadline: Time) = Future.Done
       }
 

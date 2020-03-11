@@ -4,14 +4,15 @@ object Test {
     def length = 5
     def iterator = Iterator(0, 1, 2, 3, 4)
   }
-  def lengthEquiv(result: Int) = println(
-    if (result < 0)
-      -1
-    else if (result == 0)
-      0
-    else
-      1
-  )
+  def lengthEquiv(result: Int) =
+    println(
+      if (result < 0)
+        -1
+      else if (result == 0)
+        0
+      else
+        1
+    )
 
   def main(args: Array[String]) = {
     println(Foo indexWhere (_ >= 2, 1))

@@ -34,10 +34,11 @@ object Buffer {
     else
       9
 
-  def apply(bytes: Array[Byte]): Buffer = new Buffer {
-    // a wrappedBuffer should avoid copying the arrays.
-    val underlying = wrappedBuffer(ByteOrder.LITTLE_ENDIAN, bytes)
-  }
+  def apply(bytes: Array[Byte]): Buffer =
+    new Buffer {
+      // a wrappedBuffer should avoid copying the arrays.
+      val underlying = wrappedBuffer(ByteOrder.LITTLE_ENDIAN, bytes)
+    }
 
   def apply(bufs: Buffer*): Buffer = {
     val underlying = wrappedBuffer(bufs.map(_.underlying): _*)

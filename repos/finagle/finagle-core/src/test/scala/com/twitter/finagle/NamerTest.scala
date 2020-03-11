@@ -48,23 +48,24 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
       }
 
       val pathNamer = new Namer {
-        def lookup(path: Path): Activity[NameTree[Name]] = path match {
-          // Don't capture system paths.
-          case Path.Utf8("$", _*) => Activity.value(NameTree.Neg)
-          case p @ Path.Utf8(elems @ _*) =>
-            acts.get(p) match {
-              case Some((a, _)) =>
-                a map { tree =>
-                  tree.map(Name(_))
-                }
-              case None =>
-                val (act, _) = addPath(p)
-                act map { tree =>
-                  tree.map(Name(_))
-                }
-            }
-          case _ => Activity.value(NameTree.Neg)
-        }
+        def lookup(path: Path): Activity[NameTree[Name]] =
+          path match {
+            // Don't capture system paths.
+            case Path.Utf8("$", _*) => Activity.value(NameTree.Neg)
+            case p @ Path.Utf8(elems @ _*) =>
+              acts.get(p) match {
+                case Some((a, _)) =>
+                  a map { tree =>
+                    tree.map(Name(_))
+                  }
+                case None =>
+                  val (act, _) = addPath(p)
+                  act map { tree =>
+                    tree.map(Name(_))
+                  }
+              }
+            case _ => Activity.value(NameTree.Neg)
+          }
       }
 
       val namer = OrElse(pathNamer, Namer.global)

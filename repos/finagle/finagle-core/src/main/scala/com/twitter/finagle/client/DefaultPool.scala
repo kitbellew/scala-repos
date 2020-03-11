@@ -137,25 +137,27 @@ case class DefaultPool[Req, Rep](
     maxWaiters: Int = Int.MaxValue,
     timer: Timer = DefaultTimer.twitter
 ) extends (StatsReceiver => Transformer[Req, Rep]) {
-  def apply(statsReceiver: StatsReceiver) = inputFactory => {
-    val factory =
-      if (idleTime <= 0.seconds || high <= low)
-        inputFactory
-      else
-        new CachingPool(
-          inputFactory,
-          high - low,
-          idleTime,
-          timer,
-          statsReceiver)
+  def apply(statsReceiver: StatsReceiver) =
+    inputFactory => {
+      val factory =
+        if (idleTime <= 0.seconds || high <= low)
+          inputFactory
+        else
+          new CachingPool(
+            inputFactory,
+            high - low,
+            idleTime,
+            timer,
+            statsReceiver)
 
-    // NB: WatermarkPool conceals the first "low" closes from CachingPool, so that
-    // CachingPool only caches the last "high - low", and WatermarkPool caches the first
-    // "low".
-    val pool = new WatermarkPool(factory, low, high, statsReceiver, maxWaiters)
-    if (bufferSize <= 0)
-      pool
-    else
-      new BufferingPool(pool, bufferSize)
-  }
+      // NB: WatermarkPool conceals the first "low" closes from CachingPool, so that
+      // CachingPool only caches the last "high - low", and WatermarkPool caches the first
+      // "low".
+      val pool =
+        new WatermarkPool(factory, low, high, statsReceiver, maxWaiters)
+      if (bufferSize <= 0)
+        pool
+      else
+        new BufferingPool(pool, bufferSize)
+    }
 }

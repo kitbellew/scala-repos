@@ -24,20 +24,21 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
   import View.viewBSONHandler
 
   private def videoViews(userOption: Option[User])(
-      videos: Seq[Video]): Fu[Seq[VideoView]] = userOption match {
-    case None =>
-      fuccess {
-        videos map {
-          VideoView(_, false)
+      videos: Seq[Video]): Fu[Seq[VideoView]] =
+    userOption match {
+      case None =>
+        fuccess {
+          videos map {
+            VideoView(_, false)
+          }
         }
-      }
-    case Some(user) =>
-      view.seenVideoIds(user, videos) map { ids =>
-        videos.map { v =>
-          VideoView(v, ids contains v.id)
+      case Some(user) =>
+        view.seenVideoIds(user, videos) map { ids =>
+          videos.map { v =>
+            VideoView(v, ids contains v.id)
+          }
         }
-      }
-  }
+    }
 
   object video {
 

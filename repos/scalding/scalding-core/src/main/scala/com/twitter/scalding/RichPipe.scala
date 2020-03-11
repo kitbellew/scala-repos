@@ -128,21 +128,45 @@ class RichPipe(val pipe: Pipe)
     */
   def using[C <: {
     def release()
-  }](bf: => C) = new {
+  }](bf: => C) =
+    new {
 
-    /**
-      * For pure side effect.
-      */
-    def foreach[A](f: Fields)(fn: (C, A) => Unit)(implicit
-        conv: TupleConverter[A],
-        set: TupleSetter[Unit],
-        flowDef: FlowDef,
-        mode: Mode) = {
-      conv.assertArityMatches(f)
-      val newPipe = new Each(
-        pipe,
-        f,
-        new SideEffectMapFunction(
+      /**
+        * For pure side effect.
+        */
+      def foreach[A](f: Fields)(fn: (C, A) => Unit)(implicit
+          conv: TupleConverter[A],
+          set: TupleSetter[Unit],
+          flowDef: FlowDef,
+          mode: Mode) = {
+        conv.assertArityMatches(f)
+        val newPipe = new Each(
+          pipe,
+          f,
+          new SideEffectMapFunction(
+            bf,
+            fn,
+            new Function1[C, Unit] with java.io.Serializable {
+              def apply(c: C) {
+                c.release()
+              }
+            },
+            Fields.NONE,
+            conv,
+            set))
+        NullSource.writeFrom(newPipe)(flowDef, mode)
+        newPipe
+      }
+
+      /**
+        * map with state
+        */
+      def map[A, T](fs: (Fields, Fields))(fn: (C, A) => T)(implicit
+          conv: TupleConverter[A],
+          set: TupleSetter[T]) = {
+        conv.assertArityMatches(fs._1)
+        set.assertArityMatches(fs._2)
+        val mf = new SideEffectMapFunction(
           bf,
           fn,
           new Function1[C, Unit] with java.io.Serializable {
@@ -150,58 +174,35 @@ class RichPipe(val pipe: Pipe)
               c.release()
             }
           },
-          Fields.NONE,
+          fs._2,
           conv,
-          set))
-      NullSource.writeFrom(newPipe)(flowDef, mode)
-      newPipe
-    }
+          set)
+        new Each(pipe, fs._1, mf, defaultMode(fs._1, fs._2))
+      }
 
-    /**
-      * map with state
-      */
-    def map[A, T](fs: (Fields, Fields))(fn: (C, A) => T)(implicit
-        conv: TupleConverter[A],
-        set: TupleSetter[T]) = {
-      conv.assertArityMatches(fs._1)
-      set.assertArityMatches(fs._2)
-      val mf = new SideEffectMapFunction(
-        bf,
-        fn,
-        new Function1[C, Unit] with java.io.Serializable {
-          def apply(c: C) {
-            c.release()
-          }
-        },
-        fs._2,
-        conv,
-        set)
-      new Each(pipe, fs._1, mf, defaultMode(fs._1, fs._2))
+      /**
+        * flatMap with state
+        */
+      def flatMap[A, T](fs: (Fields, Fields))(fn: (C, A) => TraversableOnce[T])(
+          implicit
+          conv: TupleConverter[A],
+          set: TupleSetter[T]) = {
+        conv.assertArityMatches(fs._1)
+        set.assertArityMatches(fs._2)
+        val mf = new SideEffectFlatMapFunction(
+          bf,
+          fn,
+          new Function1[C, Unit] with java.io.Serializable {
+            def apply(c: C) {
+              c.release()
+            }
+          },
+          fs._2,
+          conv,
+          set)
+        new Each(pipe, fs._1, mf, defaultMode(fs._1, fs._2))
+      }
     }
-
-    /**
-      * flatMap with state
-      */
-    def flatMap[A, T](fs: (Fields, Fields))(fn: (C, A) => TraversableOnce[T])(
-        implicit
-        conv: TupleConverter[A],
-        set: TupleSetter[T]) = {
-      conv.assertArityMatches(fs._1)
-      set.assertArityMatches(fs._2)
-      val mf = new SideEffectFlatMapFunction(
-        bf,
-        fn,
-        new Function1[C, Unit] with java.io.Serializable {
-          def apply(c: C) {
-            c.release()
-          }
-        },
-        fs._2,
-        conv,
-        set)
-      new Each(pipe, fs._1, mf, defaultMode(fs._1, fs._2))
-    }
-  }
 
   /**
     * Keep only the given fields, and discard the rest.
@@ -271,9 +272,10 @@ class RichPipe(val pipe: Pipe)
     * This is probably only useful just before setting a tail such as Database
     * tail, so that only one reducer talks to the DB.  Kind of a hack.
     */
-  def groupAll: Pipe = groupAll {
-    _.pass
-  }
+  def groupAll: Pipe =
+    groupAll {
+      _.pass
+    }
 
   /**
     * == Warning ==
@@ -296,17 +298,19 @@ class RichPipe(val pipe: Pipe)
   /**
     * Force a random shuffle of all the data to exactly n reducers
     */
-  def shard(n: Int): Pipe = groupRandomly(n) {
-    _.pass
-  }
+  def shard(n: Int): Pipe =
+    groupRandomly(n) {
+      _.pass
+    }
 
   /**
     * Force a random shuffle of all the data to exactly n reducers,
     * with a given seed if you need repeatability.
     */
-  def shard(n: Int, seed: Int): Pipe = groupRandomly(n, seed) {
-    _.pass
-  }
+  def shard(n: Int, seed: Int): Pipe =
+    groupRandomly(n, seed) {
+      _.pass
+    }
 
   /**
     * Like groupAll, but randomly groups data into n reducers.
@@ -353,9 +357,10 @@ class RichPipe(val pipe: Pipe)
     * you can provide a seed for the random number generator
     * to get reproducible results
     */
-  def shuffle(shards: Int): Pipe = groupAndShuffleRandomly(shards) {
-    _.pass
-  }
+  def shuffle(shards: Int): Pipe =
+    groupAndShuffleRandomly(shards) {
+      _.pass
+    }
   def shuffle(shards: Int, seed: Long): Pipe =
     groupAndShuffleRandomly(shards, seed) {
       _.pass

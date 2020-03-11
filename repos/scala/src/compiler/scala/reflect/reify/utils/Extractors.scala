@@ -169,12 +169,13 @@ trait Extractors {
 
   // if we're reifying a MethodType, we can't use it as a type argument for TypeTag ctor
   // http://groups.google.com/group/scala-internals/browse_thread/thread/2d7bb85bfcdb2e2
-  private def mkTarg(tpe: Type): Tree = (
-    if ((tpe eq null) || !isUseableAsTypeArg(tpe))
-      TypeTree(AnyTpe)
-    else
-      TypeTree(tpe)
-  )
+  private def mkTarg(tpe: Type): Tree =
+    (
+      if ((tpe eq null) || !isUseableAsTypeArg(tpe))
+        TypeTree(AnyTpe)
+      else
+        TypeTree(tpe)
+    )
 
   object ReifiedTree {
     def apply(
@@ -360,23 +361,25 @@ trait Extractors {
     def apply(splicee: Tree): Tree =
       Select(splicee, ExprSplice)
 
-    def unapply(tree: Tree): Option[Tree] = tree match {
-      case Select(splicee, _)
-          if tree.symbol != NoSymbol && tree.symbol == ExprSplice =>
-        Some(splicee)
-      case _ =>
-        None
-    }
+    def unapply(tree: Tree): Option[Tree] =
+      tree match {
+        case Select(splicee, _)
+            if tree.symbol != NoSymbol && tree.symbol == ExprSplice =>
+          Some(splicee)
+        case _ =>
+          None
+      }
   }
 
   // abstract over possible additional .apply select
   // which is sometimes inserted after desugaring of calls
   object ApplyCall {
-    def unapply(tree: Tree): Option[(Tree, List[Tree])] = tree match {
-      case Apply(Select(id, nme.apply), args) => Some((id, args))
-      case Apply(id, args)                    => Some((id, args))
-      case _                                  => None
-    }
+    def unapply(tree: Tree): Option[(Tree, List[Tree])] =
+      tree match {
+        case Apply(Select(id, nme.apply), args) => Some((id, args))
+        case Apply(id, args)                    => Some((id, args))
+        case _                                  => None
+      }
   }
 
   sealed abstract class FreeDefExtractor(
@@ -420,16 +423,17 @@ trait Extractors {
       extends FreeDefExtractor(acceptTerms = false, acceptTypes = true)
 
   object FreeRef {
-    def unapply(tree: Tree): Option[(Tree, TermName)] = tree match {
-      case Apply(
-            Select(Select(Select(uref @ Ident(_), internal), rs), mkIdent),
-            List(Ident(name: TermName)))
-          if internal == nme.internal && rs == nme.reificationSupport && mkIdent == nme.mkIdent && name
-            .startsWith(nme.REIFY_FREE_PREFIX) =>
-        Some((uref, name))
-      case _ =>
-        None
-    }
+    def unapply(tree: Tree): Option[(Tree, TermName)] =
+      tree match {
+        case Apply(
+              Select(Select(Select(uref @ Ident(_), internal), rs), mkIdent),
+              List(Ident(name: TermName)))
+            if internal == nme.internal && rs == nme.reificationSupport && mkIdent == nme.mkIdent && name
+              .startsWith(nme.REIFY_FREE_PREFIX) =>
+          Some((uref, name))
+        case _ =>
+          None
+      }
   }
 
   object SymDef {
@@ -462,41 +466,44 @@ trait Extractors {
   }
 
   object TypeRefToFreeType {
-    def unapply(tree: Tree): Option[TermName] = tree match {
-      case Apply(
-            Select(Select(uref @ Ident(_), typeRef), apply),
-            List(Select(_, noSymbol), Ident(freeType: TermName), nil))
-          if (uref.name == nme.UNIVERSE_SHORT && typeRef == nme.TypeRef && noSymbol == nme.NoSymbol && freeType
-            .startsWith(nme.REIFY_FREE_PREFIX)) =>
-        Some(freeType)
-      case _ =>
-        None
-    }
+    def unapply(tree: Tree): Option[TermName] =
+      tree match {
+        case Apply(
+              Select(Select(uref @ Ident(_), typeRef), apply),
+              List(Select(_, noSymbol), Ident(freeType: TermName), nil))
+            if (uref.name == nme.UNIVERSE_SHORT && typeRef == nme.TypeRef && noSymbol == nme.NoSymbol && freeType
+              .startsWith(nme.REIFY_FREE_PREFIX)) =>
+          Some(freeType)
+        case _ =>
+          None
+      }
   }
 
   object BoundTerm {
-    def unapply(tree: Tree): Option[Tree] = tree match {
-      case Select(_, name) if name.isTermName =>
-        Some(tree)
-      case Ident(name) if name.isTermName =>
-        Some(tree)
-      case This(_) =>
-        Some(tree)
-      case _ =>
-        None
-    }
+    def unapply(tree: Tree): Option[Tree] =
+      tree match {
+        case Select(_, name) if name.isTermName =>
+          Some(tree)
+        case Ident(name) if name.isTermName =>
+          Some(tree)
+        case This(_) =>
+          Some(tree)
+        case _ =>
+          None
+      }
   }
 
   object BoundType {
-    def unapply(tree: Tree): Option[RefTree] = tree match {
-      case tree @ Select(_, name) if name.isTypeName =>
-        Some(tree)
-      case tree @ SelectFromTypeTree(_, _) =>
-        Some(tree)
-      case tree @ Ident(name) if name.isTypeName =>
-        Some(tree)
-      case _ =>
-        None
-    }
+    def unapply(tree: Tree): Option[RefTree] =
+      tree match {
+        case tree @ Select(_, name) if name.isTypeName =>
+          Some(tree)
+        case tree @ SelectFromTypeTree(_, _) =>
+          Some(tree)
+        case tree @ Ident(name) if name.isTypeName =>
+          Some(tree)
+        case _ =>
+          None
+      }
   }
 }

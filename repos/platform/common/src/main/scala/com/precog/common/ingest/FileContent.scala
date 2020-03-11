@@ -101,11 +101,12 @@ object FileContent {
     }
 
   val DecomposerV0: Decomposer[FileContent] = new Decomposer[FileContent] {
-    def decompose(v: FileContent) = JObject(
-      "data" -> JString(v.encoding.encode(v.data)),
-      "mimeType" -> v.mimeType.jv,
-      "encoding" -> v.encoding.jv
-    )
+    def decompose(v: FileContent) =
+      JObject(
+        "data" -> JString(v.encoding.encode(v.data)),
+        "mimeType" -> v.mimeType.jv,
+        "encoding" -> v.encoding.jv
+      )
   }
 
   val ExtractorV0: Extractor[FileContent] = new Extractor[FileContent] {

@@ -10,18 +10,19 @@ import views._
 
 object Lobby extends LilaController {
 
-  def home = Open { implicit ctx =>
-    negotiate(
-      html = renderHome(Results.Ok).map(NoCache),
-      api = _ =>
-        fuccess {
-          Ok(
-            Json.obj(
-              "lobby" -> Json.obj("version" -> Env.lobby.history.version)
-            ))
-        }
-    )
-  }
+  def home =
+    Open { implicit ctx =>
+      negotiate(
+        html = renderHome(Results.Ok).map(NoCache),
+        api = _ =>
+          fuccess {
+            Ok(
+              Json.obj(
+                "lobby" -> Json.obj("version" -> Env.lobby.history.version)
+              ))
+          }
+      )
+    }
 
   def handleStatus(req: RequestHeader, status: Results.Status): Fu[Result] = {
     reqToCtx(req) flatMap { ctx =>
@@ -39,15 +40,17 @@ object Lobby extends LilaController {
     } map ensureSessionId(ctx.req)
   }.mon(_.http.response.home)
 
-  def seeks = Open { implicit ctx =>
-    negotiate(
-      html = fuccess(NotFound),
-      api = _ =>
-        ctx.me.fold(Env.lobby.seekApi.forAnon)(Env.lobby.seekApi.forUser) map {
-          seeks => Ok(JsArray(seeks.map(_.render)))
-        }
-    )
-  }
+  def seeks =
+    Open { implicit ctx =>
+      negotiate(
+        html = fuccess(NotFound),
+        api = _ =>
+          ctx.me
+            .fold(Env.lobby.seekApi.forAnon)(Env.lobby.seekApi.forUser) map {
+            seeks => Ok(JsArray(seeks.map(_.render)))
+          }
+      )
+    }
 
   private val socketConsumer = lila.api.TokenBucket
     .create(system = lila.common.PlayApp.system, size = 10, rate = 6)
@@ -62,9 +65,10 @@ object Lobby extends LilaController {
       }
     }
 
-  def timeline = Auth { implicit ctx => me =>
-    Env.timeline.entryRepo.userEntries(me.id) map {
-      html.timeline.entries(_)
+  def timeline =
+    Auth { implicit ctx => me =>
+      Env.timeline.entryRepo.userEntries(me.id) map {
+        html.timeline.entries(_)
+      }
     }
-  }
 }

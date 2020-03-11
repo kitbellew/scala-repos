@@ -171,15 +171,17 @@ package object collections {
   }
 
   object scalaSome {
-    def unapply(expr: ScExpression): Option[ScExpression] = expr match {
-      case MethodRepr(_, _, Some(ref), Seq(e)) if ref.refName == "Some" =>
-        ref.resolve() match {
-          case m: ScMember if m.containingClass.qualifiedName == "scala.Some" =>
-            Some(e)
-          case _ => None
-        }
-      case _ => None
-    }
+    def unapply(expr: ScExpression): Option[ScExpression] =
+      expr match {
+        case MethodRepr(_, _, Some(ref), Seq(e)) if ref.refName == "Some" =>
+          ref.resolve() match {
+            case m: ScMember
+                if m.containingClass.qualifiedName == "scala.Some" =>
+              Some(e)
+            case _ => None
+          }
+        case _ => None
+      }
   }
 
   object IfStmt {
@@ -483,10 +485,11 @@ package object collections {
   def isOption(expr: ScExpression): Boolean =
     isOfClassFrom(expr, likeOptionClasses)
 
-  def isArray(expr: ScExpression): Boolean = expr match {
-    case ExpressionType(JavaArrayType(_)) => true
-    case _                                => isOfClassFrom(expr, Array("scala.Array"))
-  }
+  def isArray(expr: ScExpression): Boolean =
+    expr match {
+      case ExpressionType(JavaArrayType(_)) => true
+      case _                                => isOfClassFrom(expr, Array("scala.Array"))
+    }
 
   def isSet(expr: ScExpression): Boolean =
     isExpressionOfType("scala.collection.GenSet", expr)
@@ -566,12 +569,13 @@ package object collections {
       }
 
       object definedOutside {
-        def unapply(ref: ScReferenceElement): Option[PsiElement] = ref match {
-          case ResolvesTo(elem: PsiElement)
-              if !PsiTreeUtil.isAncestor(expr, elem, false) =>
-            Some(elem)
-          case _ => None
-        }
+        def unapply(ref: ScReferenceElement): Option[PsiElement] =
+          ref match {
+            case ResolvesTo(elem: PsiElement)
+                if !PsiTreeUtil.isAncestor(expr, elem, false) =>
+              Some(elem)
+            case _ => None
+          }
       }
 
       val predicate: (PsiElement) => Boolean = {
@@ -639,12 +643,13 @@ package object collections {
   }
 
   @tailrec
-  def refNameId(expr: ScExpression): Option[PsiElement] = stripped(expr) match {
-    case MethodRepr(itself: ScMethodCall, Some(base), None, _) =>
-      refNameId(base)
-    case MethodRepr(_, _, Some(ref), _) => Some(ref.nameId)
-    case _                              => None
-  }
+  def refNameId(expr: ScExpression): Option[PsiElement] =
+    stripped(expr) match {
+      case MethodRepr(itself: ScMethodCall, Some(base), None, _) =>
+        refNameId(base)
+      case MethodRepr(_, _, Some(ref), _) => Some(ref.nameId)
+      case _                              => None
+    }
 
   implicit class PsiElementRange(val elem: PsiElement) extends AnyVal {
     def start: Int = elem.getTextRange.getStartOffset

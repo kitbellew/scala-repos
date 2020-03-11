@@ -33,27 +33,30 @@ trait DollarCurrency extends TwoFractionDigits {
 object AU extends CurrencyZone {
   type Currency = AUD
   var locale = new Locale("en", "AU")
-  def make(x: BigDecimal) = new Currency {
-    def amount = x
-  }
+  def make(x: BigDecimal) =
+    new Currency {
+      def amount = x
+    }
   abstract class AUD extends AbstractCurrency("AUD") with DollarCurrency {}
 }
 
 object US extends CurrencyZone {
   type Currency = USD
   var locale = Locale.US
-  def make(x: BigDecimal) = new Currency {
-    def amount = x
-  }
+  def make(x: BigDecimal) =
+    new Currency {
+      def amount = x
+    }
   abstract class USD extends AbstractCurrency("USD") with DollarCurrency {}
 }
 
 object GB extends CurrencyZone {
   type Currency = GBP
   var locale = Locale.UK
-  def make(x: BigDecimal) = new Currency {
-    def amount = x
-  }
+  def make(x: BigDecimal) =
+    new Currency {
+      def amount = x
+    }
   abstract class GBP extends AbstractCurrency("GBP") with TwoFractionDigits {
     def currencySymbol = "£"
   }
@@ -62,10 +65,11 @@ object GB extends CurrencyZone {
 object EU extends CurrencyZone {
   type Currency = EUR
   var locale = Locale.GERMANY // guess this is why its a var
-  def make(x: BigDecimal) = new Currency {
-    def amount = x;
-    override val _locale = locale
-  }
+  def make(x: BigDecimal) =
+    new Currency {
+      def amount = x;
+      override val _locale = locale
+    }
   abstract class EUR extends AbstractCurrency("EUR") with TwoFractionDigits {
     def currencySymbol = "€"
   }
@@ -132,12 +136,13 @@ abstract class CurrencyZone {
 
     def compare(that: Currency) = this.amount compare that.amount
 
-    override def equals(that: Any) = that match {
-      case that: AbstractCurrency =>
-        this.designation + this.format("", scale) == that.designation + that
-          .format("", scale)
-      case _ => false
-    }
+    override def equals(that: Any) =
+      that match {
+        case that: AbstractCurrency =>
+          this.designation + this.format("", scale) == that.designation + that
+            .format("", scale)
+        case _ => false
+      }
 
     override def hashCode = (this.designation + format("", scale)).hashCode
 

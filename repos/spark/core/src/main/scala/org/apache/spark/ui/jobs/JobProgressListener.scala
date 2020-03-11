@@ -155,27 +155,28 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
     }
 
   /** If jobs is too large, remove and garbage collect old jobs */
-  private def trimJobsIfNecessary(jobs: ListBuffer[JobUIData]) = synchronized {
-    if (jobs.size > retainedJobs) {
-      val toRemove = math.max(retainedJobs / 10, 1)
-      jobs.take(toRemove).foreach { job =>
-        // Remove the job's UI data, if it exists
-        jobIdToData.remove(job.jobId).foreach { removedJob =>
-          // A null jobGroupId is used for jobs that are run without a job group
-          val jobGroupId = removedJob.jobGroup.orNull
-          // Remove the job group -> job mapping entry, if it exists
-          jobGroupToJobIds.get(jobGroupId).foreach { jobsInGroup =>
-            jobsInGroup.remove(job.jobId)
-            // If this was the last job in this job group, remove the map entry for the job group
-            if (jobsInGroup.isEmpty) {
-              jobGroupToJobIds.remove(jobGroupId)
+  private def trimJobsIfNecessary(jobs: ListBuffer[JobUIData]) =
+    synchronized {
+      if (jobs.size > retainedJobs) {
+        val toRemove = math.max(retainedJobs / 10, 1)
+        jobs.take(toRemove).foreach { job =>
+          // Remove the job's UI data, if it exists
+          jobIdToData.remove(job.jobId).foreach { removedJob =>
+            // A null jobGroupId is used for jobs that are run without a job group
+            val jobGroupId = removedJob.jobGroup.orNull
+            // Remove the job group -> job mapping entry, if it exists
+            jobGroupToJobIds.get(jobGroupId).foreach { jobsInGroup =>
+              jobsInGroup.remove(job.jobId)
+              // If this was the last job in this job group, remove the map entry for the job group
+              if (jobsInGroup.isEmpty) {
+                jobGroupToJobIds.remove(jobGroupId)
+              }
             }
           }
         }
+        jobs.trimStart(toRemove)
       }
-      jobs.trimStart(toRemove)
     }
-  }
 
   override def onJobStart(jobStart: SparkListenerJobStart): Unit =
     synchronized {
@@ -223,121 +224,128 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
       }
     }
 
-  override def onJobEnd(jobEnd: SparkListenerJobEnd): Unit = synchronized {
-    val jobData = activeJobs.remove(jobEnd.jobId).getOrElse {
-      logWarning(s"Job completed for unknown job ${jobEnd.jobId}")
-      new JobUIData(jobId = jobEnd.jobId)
-    }
-    jobData.completionTime = Option(jobEnd.time).filter(_ >= 0)
+  override def onJobEnd(jobEnd: SparkListenerJobEnd): Unit =
+    synchronized {
+      val jobData = activeJobs.remove(jobEnd.jobId).getOrElse {
+        logWarning(s"Job completed for unknown job ${jobEnd.jobId}")
+        new JobUIData(jobId = jobEnd.jobId)
+      }
+      jobData.completionTime = Option(jobEnd.time).filter(_ >= 0)
 
-    jobData.stageIds.foreach(pendingStages.remove)
-    jobEnd.jobResult match {
-      case JobSucceeded =>
-        completedJobs += jobData
-        trimJobsIfNecessary(completedJobs)
-        jobData.status = JobExecutionStatus.SUCCEEDED
-        numCompletedJobs += 1
-      case JobFailed(exception) =>
-        failedJobs += jobData
-        trimJobsIfNecessary(failedJobs)
-        jobData.status = JobExecutionStatus.FAILED
-        numFailedJobs += 1
-    }
-    for (stageId <- jobData.stageIds) {
-      stageIdToActiveJobIds.get(stageId).foreach { jobsUsingStage =>
-        jobsUsingStage.remove(jobEnd.jobId)
-        if (jobsUsingStage.isEmpty) {
-          stageIdToActiveJobIds.remove(stageId)
-        }
-        stageIdToInfo.get(stageId).foreach { stageInfo =>
-          if (stageInfo.submissionTime.isEmpty) {
-            // if this stage is pending, it won't complete, so mark it as "skipped":
-            skippedStages += stageInfo
-            trimStagesIfNecessary(skippedStages)
-            jobData.numSkippedStages += 1
-            jobData.numSkippedTasks += stageInfo.numTasks
+      jobData.stageIds.foreach(pendingStages.remove)
+      jobEnd.jobResult match {
+        case JobSucceeded =>
+          completedJobs += jobData
+          trimJobsIfNecessary(completedJobs)
+          jobData.status = JobExecutionStatus.SUCCEEDED
+          numCompletedJobs += 1
+        case JobFailed(exception) =>
+          failedJobs += jobData
+          trimJobsIfNecessary(failedJobs)
+          jobData.status = JobExecutionStatus.FAILED
+          numFailedJobs += 1
+      }
+      for (stageId <- jobData.stageIds) {
+        stageIdToActiveJobIds.get(stageId).foreach { jobsUsingStage =>
+          jobsUsingStage.remove(jobEnd.jobId)
+          if (jobsUsingStage.isEmpty) {
+            stageIdToActiveJobIds.remove(stageId)
+          }
+          stageIdToInfo.get(stageId).foreach { stageInfo =>
+            if (stageInfo.submissionTime.isEmpty) {
+              // if this stage is pending, it won't complete, so mark it as "skipped":
+              skippedStages += stageInfo
+              trimStagesIfNecessary(skippedStages)
+              jobData.numSkippedStages += 1
+              jobData.numSkippedTasks += stageInfo.numTasks
+            }
           }
         }
       }
     }
-  }
 
   override def onStageCompleted(
-      stageCompleted: SparkListenerStageCompleted): Unit = synchronized {
-    val stage = stageCompleted.stageInfo
-    stageIdToInfo(stage.stageId) = stage
-    val stageData = stageIdToData.getOrElseUpdate(
-      (stage.stageId, stage.attemptId), {
-        logWarning("Stage completed for unknown stage " + stage.stageId)
-        new StageUIData
-      })
+      stageCompleted: SparkListenerStageCompleted): Unit =
+    synchronized {
+      val stage = stageCompleted.stageInfo
+      stageIdToInfo(stage.stageId) = stage
+      val stageData = stageIdToData.getOrElseUpdate(
+        (stage.stageId, stage.attemptId), {
+          logWarning("Stage completed for unknown stage " + stage.stageId)
+          new StageUIData
+        })
 
-    for ((id, info) <- stageCompleted.stageInfo.accumulables) {
-      stageData.accumulables(id) = info
-    }
+      for ((id, info) <- stageCompleted.stageInfo.accumulables) {
+        stageData.accumulables(id) = info
+      }
 
-    poolToActiveStages.get(stageData.schedulingPool).foreach { hashMap =>
-      hashMap.remove(stage.stageId)
-    }
-    activeStages.remove(stage.stageId)
-    if (stage.failureReason.isEmpty) {
-      completedStages += stage
-      numCompletedStages += 1
-      trimStagesIfNecessary(completedStages)
-    } else {
-      failedStages += stage
-      numFailedStages += 1
-      trimStagesIfNecessary(failedStages)
-    }
-
-    for (activeJobsDependentOnStage <- stageIdToActiveJobIds.get(stage.stageId);
-         jobId <- activeJobsDependentOnStage;
-         jobData <- jobIdToData.get(jobId)) {
-      jobData.numActiveStages -= 1
+      poolToActiveStages.get(stageData.schedulingPool).foreach { hashMap =>
+        hashMap.remove(stage.stageId)
+      }
+      activeStages.remove(stage.stageId)
       if (stage.failureReason.isEmpty) {
-        if (!stage.submissionTime.isEmpty) {
-          jobData.completedStageIndices.add(stage.stageId)
-        }
+        completedStages += stage
+        numCompletedStages += 1
+        trimStagesIfNecessary(completedStages)
       } else {
-        jobData.numFailedStages += 1
+        failedStages += stage
+        numFailedStages += 1
+        trimStagesIfNecessary(failedStages)
+      }
+
+      for (activeJobsDependentOnStage <- stageIdToActiveJobIds.get(
+             stage.stageId);
+           jobId <- activeJobsDependentOnStage;
+           jobData <- jobIdToData.get(jobId)) {
+        jobData.numActiveStages -= 1
+        if (stage.failureReason.isEmpty) {
+          if (!stage.submissionTime.isEmpty) {
+            jobData.completedStageIndices.add(stage.stageId)
+          }
+        } else {
+          jobData.numFailedStages += 1
+        }
       }
     }
-  }
 
   /** For FIFO, all stages are contained by "default" pool but "default" pool here is meaningless */
   override def onStageSubmitted(
-      stageSubmitted: SparkListenerStageSubmitted): Unit = synchronized {
-    val stage = stageSubmitted.stageInfo
-    activeStages(stage.stageId) = stage
-    pendingStages.remove(stage.stageId)
-    val poolName = Option(stageSubmitted.properties)
-      .map { p =>
-        p.getProperty("spark.scheduler.pool", SparkUI.DEFAULT_POOL_NAME)
+      stageSubmitted: SparkListenerStageSubmitted): Unit =
+    synchronized {
+      val stage = stageSubmitted.stageInfo
+      activeStages(stage.stageId) = stage
+      pendingStages.remove(stage.stageId)
+      val poolName = Option(stageSubmitted.properties)
+        .map { p =>
+          p.getProperty("spark.scheduler.pool", SparkUI.DEFAULT_POOL_NAME)
+        }
+        .getOrElse(SparkUI.DEFAULT_POOL_NAME)
+
+      stageIdToInfo(stage.stageId) = stage
+      val stageData = stageIdToData.getOrElseUpdate(
+        (stage.stageId, stage.attemptId),
+        new StageUIData)
+      stageData.schedulingPool = poolName
+
+      stageData.description = Option(stageSubmitted.properties).flatMap { p =>
+        Option(p.getProperty(SparkContext.SPARK_JOB_DESCRIPTION))
       }
-      .getOrElse(SparkUI.DEFAULT_POOL_NAME)
 
-    stageIdToInfo(stage.stageId) = stage
-    val stageData = stageIdToData
-      .getOrElseUpdate((stage.stageId, stage.attemptId), new StageUIData)
-    stageData.schedulingPool = poolName
+      val stages = poolToActiveStages.getOrElseUpdate(
+        poolName,
+        new HashMap[Int, StageInfo])
+      stages(stage.stageId) = stage
 
-    stageData.description = Option(stageSubmitted.properties).flatMap { p =>
-      Option(p.getProperty(SparkContext.SPARK_JOB_DESCRIPTION))
+      for (activeJobsDependentOnStage <- stageIdToActiveJobIds.get(
+             stage.stageId);
+           jobId <- activeJobsDependentOnStage;
+           jobData <- jobIdToData.get(jobId)) {
+        jobData.numActiveStages += 1
+
+        // If a stage retries again, it should be removed from completedStageIndices set
+        jobData.completedStageIndices.remove(stage.stageId)
+      }
     }
-
-    val stages =
-      poolToActiveStages.getOrElseUpdate(poolName, new HashMap[Int, StageInfo])
-    stages(stage.stageId) = stage
-
-    for (activeJobsDependentOnStage <- stageIdToActiveJobIds.get(stage.stageId);
-         jobId <- activeJobsDependentOnStage;
-         jobData <- jobIdToData.get(jobId)) {
-      jobData.numActiveStages += 1
-
-      // If a stage retries again, it should be removed from completedStageIndices set
-      jobData.completedStageIndices.remove(stage.stageId)
-    }
-  }
 
   override def onTaskStart(taskStart: SparkListenerTaskStart): Unit =
     synchronized {
@@ -367,81 +375,82 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
     // stageToTaskInfos already has the updated status.
   }
 
-  override def onTaskEnd(taskEnd: SparkListenerTaskEnd): Unit = synchronized {
-    val info = taskEnd.taskInfo
-    // If stage attempt id is -1, it means the DAGScheduler had no idea which attempt this task
-    // completion event is for. Let's just drop it here. This means we might have some speculation
-    // tasks on the web ui that's never marked as complete.
-    if (info != null && taskEnd.stageAttemptId != -1) {
-      val stageData = stageIdToData.getOrElseUpdate(
-        (taskEnd.stageId, taskEnd.stageAttemptId), {
-          logWarning("Task end for unknown stage " + taskEnd.stageId)
-          new StageUIData
-        })
+  override def onTaskEnd(taskEnd: SparkListenerTaskEnd): Unit =
+    synchronized {
+      val info = taskEnd.taskInfo
+      // If stage attempt id is -1, it means the DAGScheduler had no idea which attempt this task
+      // completion event is for. Let's just drop it here. This means we might have some speculation
+      // tasks on the web ui that's never marked as complete.
+      if (info != null && taskEnd.stageAttemptId != -1) {
+        val stageData = stageIdToData.getOrElseUpdate(
+          (taskEnd.stageId, taskEnd.stageAttemptId), {
+            logWarning("Task end for unknown stage " + taskEnd.stageId)
+            new StageUIData
+          })
 
-      for (accumulableInfo <- info.accumulables) {
-        stageData.accumulables(accumulableInfo.id) = accumulableInfo
-      }
-
-      val execSummaryMap = stageData.executorSummary
-      val execSummary =
-        execSummaryMap.getOrElseUpdate(info.executorId, new ExecutorSummary)
-
-      taskEnd.reason match {
-        case Success =>
-          execSummary.succeededTasks += 1
-        case _ =>
-          execSummary.failedTasks += 1
-      }
-      execSummary.taskTime += info.duration
-      stageData.numActiveTasks -= 1
-
-      val (errorMessage, accums): (Option[String], Seq[AccumulableInfo]) =
-        taskEnd.reason match {
-          case org.apache.spark.Success =>
-            stageData.completedIndices.add(info.index)
-            stageData.numCompleteTasks += 1
-            (None, taskEnd.taskMetrics.accumulatorUpdates())
-          case e: ExceptionFailure => // Handle ExceptionFailure because we might have accumUpdates
-            stageData.numFailedTasks += 1
-            (Some(e.toErrorString), e.accumUpdates)
-          case e: TaskFailedReason => // All other failure cases
-            stageData.numFailedTasks += 1
-            (Some(e.toErrorString), Seq.empty[AccumulableInfo])
+        for (accumulableInfo <- info.accumulables) {
+          stageData.accumulables(accumulableInfo.id) = accumulableInfo
         }
 
-      val taskMetrics =
-        if (accums.nonEmpty) {
-          Some(TaskMetrics.fromAccumulatorUpdates(accums))
-        } else {
-          None
-        }
-      taskMetrics.foreach { m =>
-        val oldMetrics =
-          stageData.taskData.get(info.taskId).flatMap(_.taskMetrics)
-        updateAggregateMetrics(stageData, info.executorId, m, oldMetrics)
-      }
+        val execSummaryMap = stageData.executorSummary
+        val execSummary =
+          execSummaryMap.getOrElseUpdate(info.executorId, new ExecutorSummary)
 
-      val taskData =
-        stageData.taskData.getOrElseUpdate(info.taskId, new TaskUIData(info))
-      taskData.taskInfo = info
-      taskData.taskMetrics = taskMetrics
-      taskData.errorMessage = errorMessage
-
-      for (activeJobsDependentOnStage <- stageIdToActiveJobIds.get(
-             taskEnd.stageId);
-           jobId <- activeJobsDependentOnStage;
-           jobData <- jobIdToData.get(jobId)) {
-        jobData.numActiveTasks -= 1
         taskEnd.reason match {
           case Success =>
-            jobData.numCompletedTasks += 1
+            execSummary.succeededTasks += 1
           case _ =>
-            jobData.numFailedTasks += 1
+            execSummary.failedTasks += 1
+        }
+        execSummary.taskTime += info.duration
+        stageData.numActiveTasks -= 1
+
+        val (errorMessage, accums): (Option[String], Seq[AccumulableInfo]) =
+          taskEnd.reason match {
+            case org.apache.spark.Success =>
+              stageData.completedIndices.add(info.index)
+              stageData.numCompleteTasks += 1
+              (None, taskEnd.taskMetrics.accumulatorUpdates())
+            case e: ExceptionFailure => // Handle ExceptionFailure because we might have accumUpdates
+              stageData.numFailedTasks += 1
+              (Some(e.toErrorString), e.accumUpdates)
+            case e: TaskFailedReason => // All other failure cases
+              stageData.numFailedTasks += 1
+              (Some(e.toErrorString), Seq.empty[AccumulableInfo])
+          }
+
+        val taskMetrics =
+          if (accums.nonEmpty) {
+            Some(TaskMetrics.fromAccumulatorUpdates(accums))
+          } else {
+            None
+          }
+        taskMetrics.foreach { m =>
+          val oldMetrics =
+            stageData.taskData.get(info.taskId).flatMap(_.taskMetrics)
+          updateAggregateMetrics(stageData, info.executorId, m, oldMetrics)
+        }
+
+        val taskData =
+          stageData.taskData.getOrElseUpdate(info.taskId, new TaskUIData(info))
+        taskData.taskInfo = info
+        taskData.taskMetrics = taskMetrics
+        taskData.errorMessage = errorMessage
+
+        for (activeJobsDependentOnStage <- stageIdToActiveJobIds.get(
+               taskEnd.stageId);
+             jobId <- activeJobsDependentOnStage;
+             jobData <- jobIdToData.get(jobId)) {
+          jobData.numActiveTasks -= 1
+          taskEnd.reason match {
+            case Success =>
+              jobData.numCompletedTasks += 1
+            case _ =>
+              jobData.numFailedTasks += 1
+          }
         }
       }
     }
-  }
 
   /**
     * Upon receiving new metrics for a task, updates the per-stage and per-executor-per-stage

@@ -82,16 +82,18 @@ trait MongoMeta[BaseDocument] extends JsonFormats {
   /*
    * Count all documents
    */
-  def count: Long = useColl { coll =>
-    coll.getCount
-  }
+  def count: Long =
+    useColl { coll =>
+      coll.getCount
+    }
 
   /*
    * Count documents by DBObject query
    */
-  def count(qry: DBObject): Long = useColl { coll =>
-    coll.getCount(qry)
-  }
+  def count(qry: DBObject): Long =
+    useColl { coll =>
+      coll.getCount(qry)
+    }
 
   /*
    * Count documents by JObject query
@@ -131,9 +133,10 @@ trait MongoMeta[BaseDocument] extends JsonFormats {
   def delete(qry: JObject): Unit = delete(JObjectParser.parse(qry))
 
   /* drop this document collection */
-  def drop: Unit = useColl { coll =>
-    coll.drop
-  }
+  def drop: Unit =
+    useColl { coll =>
+      coll.drop
+    }
 
   /*
    * Ensure an index exists

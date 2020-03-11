@@ -59,14 +59,15 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
     * Read `n` number of bytes from the bytestream represented by `r`.
     */
   def readNBytes(n: Int, r: Reader): Future[Buf] = {
-    def loop(left: Buf): Future[Buf] = (n - left.length) match {
-      case x if x > 0 =>
-        r.read(x) flatMap {
-          case Some(right) => loop(left concat right)
-          case None        => Future.value(left)
-        }
-      case _ => Future.value(left)
-    }
+    def loop(left: Buf): Future[Buf] =
+      (n - left.length) match {
+        case x if x > 0 =>
+          r.read(x) flatMap {
+            case Some(right) => loop(left concat right)
+            case None        => Future.value(left)
+          }
+        case _ => Future.value(left)
+      }
 
     loop(Buf.Empty)
   }
@@ -301,16 +302,17 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
     }
 
     test(name + ": stream") {
-      def service(r: Reader) = new HttpService {
-        def apply(request: Request) = {
-          val response = Response()
-          response.setChunked(true)
-          response.writer.write(buf("hello")) before
-            response.writer.write(buf("world")) before
-            response.close()
-          Future.value(response)
+      def service(r: Reader) =
+        new HttpService {
+          def apply(request: Request) = {
+            val response = Response()
+            response.setChunked(true)
+            response.writer.write(buf("hello")) before
+              response.writer.write(buf("world")) before
+              response.close()
+            Future.value(response)
+          }
         }
-      }
 
       val writer = Reader.writable()
       val client = connect(service(writer))
@@ -363,16 +365,17 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
   }
 
   def streaming(name: String)(connect: HttpService => HttpService) {
-    def service(r: Reader) = new HttpService {
-      def apply(request: Request) = {
-        val response = new Response {
-          final val httpResponse = request.response.httpResponse
-          override def reader = r
+    def service(r: Reader) =
+      new HttpService {
+        def apply(request: Request) = {
+          val response = new Response {
+            final val httpResponse = request.response.httpResponse
+            override def reader = r
+          }
+          response.setChunked(true)
+          Future.value(response)
         }
-        response.setChunked(true)
-        Future.value(response)
       }
-    }
 
     test(name + ": symmetric reader and getContent") {
       val s = Service.mk[Request, Response] { req =>

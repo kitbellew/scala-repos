@@ -405,10 +405,11 @@ abstract class MappedNullableLong[T <: Mapper[T]](val fieldOwner: T)
   override def readPermission_? = true
   override def writePermission_? = true
 
-  def real_convertToJDBCFriendly(value: Box[Long]): Object = value match {
-    case Full(value) => new java.lang.Long(value)
-    case _           => null
-  }
+  def real_convertToJDBCFriendly(value: Box[Long]): Object =
+    value match {
+      case Full(value) => new java.lang.Long(value)
+      case _           => null
+    }
 
   // def asJsExp = JE.Num(is)
 

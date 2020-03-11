@@ -8,10 +8,11 @@ object Test {
   }
   class Counter {
     var count = 0
-    def apply(i: Int) = synchronized {
-      count += 1;
-      true
-    }
+    def apply(i: Int) =
+      synchronized {
+        count += 1;
+        true
+      }
   }
 
   def testing(label: String)(body: => Any) {

@@ -60,98 +60,100 @@ object PlayRun {
       reloaderClasspath: TaskKey[Classpath],
       reloaderClassLoader: TaskKey[ClassLoaderCreator],
       assetsClassLoader: TaskKey[ClassLoader => ClassLoader])
-      : Def.Initialize[InputTask[Unit]] = Def.inputTask {
+      : Def.Initialize[InputTask[Unit]] =
+    Def.inputTask {
 
-    val args = Def.spaceDelimited().parsed
+      val args = Def.spaceDelimited().parsed
 
-    val state = Keys.state.value
-    val scope = resolvedScoped.value.scope
-    val interaction = playInteractionMode.value
+      val state = Keys.state.value
+      val scope = resolvedScoped.value.scope
+      val interaction = playInteractionMode.value
 
-    val reloadCompile = () =>
-      PlayReload.compile(
-        () => Project.runTask(playReload in scope, state).map(_._2).get,
-        () => Project.runTask(reloaderClasspath in scope, state).map(_._2).get,
-        () =>
-          Project
-            .runTask(streamsManager in scope, state)
-            .map(_._2)
-            .get
-            .toEither
-            .right
-            .toOption
+      val reloadCompile = () =>
+        PlayReload.compile(
+          () => Project.runTask(playReload in scope, state).map(_._2).get,
+          () =>
+            Project.runTask(reloaderClasspath in scope, state).map(_._2).get,
+          () =>
+            Project
+              .runTask(streamsManager in scope, state)
+              .map(_._2)
+              .get
+              .toEither
+              .right
+              .toOption
+        )
+
+      val runSbtTask: String => AnyRef = (task: String) => {
+        val parser = Act.scopedKeyParser(state)
+        val Right(sk) = complete.DefaultParsers.result(parser, task)
+        val result = Project
+          .runTask(sk.asInstanceOf[Def.ScopedKey[Task[AnyRef]]], state)
+          .map(_._2)
+        result.flatMap(_.toEither.right.toOption).orNull
+      }
+
+      lazy val devModeServer = Reloader.startDevMode(
+        runHooks.value,
+        (javaOptions in Runtime).value,
+        dependencyClasspath.value.files,
+        dependencyClassLoader.value,
+        reloadCompile,
+        reloaderClassLoader.value,
+        assetsClassLoader.value,
+        playCommonClassloader.value,
+        playMonitoredFiles.value,
+        fileWatchService.value,
+        (managedClasspath in DocsApplication).value.files,
+        playDocsJar.value,
+        playDefaultPort.value,
+        playDefaultAddress.value,
+        baseDirectory.value,
+        devSettings.value,
+        args,
+        runSbtTask,
+        (mainClass in (Compile, Keys.run)).value.get
       )
 
-    val runSbtTask: String => AnyRef = (task: String) => {
-      val parser = Act.scopedKeyParser(state)
-      val Right(sk) = complete.DefaultParsers.result(parser, task)
-      val result = Project
-        .runTask(sk.asInstanceOf[Def.ScopedKey[Task[AnyRef]]], state)
-        .map(_._2)
-      result.flatMap(_.toEither.right.toOption).orNull
+      interaction match {
+        case nonBlocking: PlayNonBlockingInteractionMode =>
+          nonBlocking.start(devModeServer)
+        case blocking =>
+          devModeServer
+
+          println()
+          println(Colors.green(
+            "(Server started, use Ctrl+D to stop and go back to the console...)"))
+          println()
+
+          // If we have both Watched.Configuration and Watched.ContinuousState
+          // attributes and if Watched.ContinuousState.count is 1 then we assume
+          // we're in ~ run mode
+          val maybeContinuous = for {
+            watched <- state.get(Watched.Configuration)
+            watchState <- state.get(Watched.ContinuousState)
+            if watchState.count == 1
+          } yield watched
+
+          maybeContinuous match {
+            case Some(watched) =>
+              // ~ run mode
+              interaction doWithoutEcho {
+                twiddleRunMonitor(
+                  watched,
+                  state,
+                  devModeServer.buildLink,
+                  Some(WatchState.empty))
+              }
+            case None =>
+              // run mode
+              interaction.waitForCancel()
+          }
+
+          devModeServer.close()
+          println()
+      }
     }
-
-    lazy val devModeServer = Reloader.startDevMode(
-      runHooks.value,
-      (javaOptions in Runtime).value,
-      dependencyClasspath.value.files,
-      dependencyClassLoader.value,
-      reloadCompile,
-      reloaderClassLoader.value,
-      assetsClassLoader.value,
-      playCommonClassloader.value,
-      playMonitoredFiles.value,
-      fileWatchService.value,
-      (managedClasspath in DocsApplication).value.files,
-      playDocsJar.value,
-      playDefaultPort.value,
-      playDefaultAddress.value,
-      baseDirectory.value,
-      devSettings.value,
-      args,
-      runSbtTask,
-      (mainClass in (Compile, Keys.run)).value.get
-    )
-
-    interaction match {
-      case nonBlocking: PlayNonBlockingInteractionMode =>
-        nonBlocking.start(devModeServer)
-      case blocking =>
-        devModeServer
-
-        println()
-        println(Colors.green(
-          "(Server started, use Ctrl+D to stop and go back to the console...)"))
-        println()
-
-        // If we have both Watched.Configuration and Watched.ContinuousState
-        // attributes and if Watched.ContinuousState.count is 1 then we assume
-        // we're in ~ run mode
-        val maybeContinuous = for {
-          watched <- state.get(Watched.Configuration)
-          watchState <- state.get(Watched.ContinuousState)
-          if watchState.count == 1
-        } yield watched
-
-        maybeContinuous match {
-          case Some(watched) =>
-            // ~ run mode
-            interaction doWithoutEcho {
-              twiddleRunMonitor(
-                watched,
-                state,
-                devModeServer.buildLink,
-                Some(WatchState.empty))
-            }
-          case None =>
-            // run mode
-            interaction.waitForCancel()
-        }
-
-        devModeServer.close()
-        println()
-    }
-  }
 
   /**
     * Monitor changes in ~run mode.

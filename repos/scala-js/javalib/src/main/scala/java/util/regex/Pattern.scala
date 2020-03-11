@@ -180,16 +180,17 @@ object Pattern {
       None
   }
 
-  private def charToFlag(c: Char) = (c: @switch) match {
-    case 'i' => CASE_INSENSITIVE
-    case 'd' => UNIX_LINES
-    case 'm' => MULTILINE
-    case 's' => DOTALL
-    case 'u' => UNICODE_CASE
-    case 'x' => COMMENTS
-    case 'U' => UNICODE_CHARACTER_CLASS
-    case _   => sys.error("bad in-pattern flag")
-  }
+  private def charToFlag(c: Char) =
+    (c: @switch) match {
+      case 'i' => CASE_INSENSITIVE
+      case 'd' => UNIX_LINES
+      case 'm' => MULTILINE
+      case 's' => DOTALL
+      case 'u' => UNICODE_CASE
+      case 'x' => COMMENTS
+      case 'U' => UNICODE_CHARACTER_CLASS
+      case _   => sys.error("bad in-pattern flag")
+    }
 
   /** matches \Q<char>\E to support StringLike.split */
   private val splitHackPat = new js.RegExp("^\\\\Q(.|\\n|\\r)\\\\E$")

@@ -670,11 +670,12 @@ class TestEventListener extends Logging.DefaultLogger {
     @scala.annotation.tailrec
     def removeFirst(
         list: List[EventFilter],
-        zipped: List[EventFilter] = Nil): List[EventFilter] = list match {
-      case head :: tail if head == filter ⇒ tail.reverse_:::(zipped)
-      case head :: tail ⇒ removeFirst(tail, head :: zipped)
-      case Nil ⇒ filters // filter not found, just return original list
-    }
+        zipped: List[EventFilter] = Nil): List[EventFilter] =
+      list match {
+        case head :: tail if head == filter ⇒ tail.reverse_:::(zipped)
+        case head :: tail ⇒ removeFirst(tail, head :: zipped)
+        case Nil ⇒ filters // filter not found, just return original list
+      }
     filters = removeFirst(filters)
   }
 

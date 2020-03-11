@@ -101,12 +101,13 @@ package ll {
 
     def nestsIn(outer: Symbol) =
       classes filter (c => c.enclClassChain drop 1 exists (_ isSubClass outer))
-    def typeRefs(targs: List[Type]) = (
-      for (p <- typeRefPrefixes;
-           c <- classes filter (isPossibleEnclosure(p.typeSymbol, _));
-           a <- targs)
-        yield typeRef(p, c, List(a))
-    )
+    def typeRefs(targs: List[Type]) =
+      (
+        for (p <- typeRefPrefixes;
+             c <- classes filter (isPossibleEnclosure(p.typeSymbol, _));
+             a <- targs)
+          yield typeRef(p, c, List(a))
+      )
 
     val wfmt = "%-" + 25 + "s"
     def to_s(x: Any): String =
@@ -125,17 +126,18 @@ package ll {
       sym.kindString + " " + p + x + sym.name
     }
 
-    def permuteAsSeenFrom(targs: List[Type]) = (
-      for {
-        tp <- typeRefs(targs filterNot (_ eq NoType))
-        prefix <- asSeenPrefixes
-        if tp.prefix != prefix
-        site <- classes
-        seen = tp.asSeenFrom(prefix, site)
-        if tp != seen
-        if !seen.isInstanceOf[ExistentialType]
-      } yield ((site, tp, prefix, seen))
-    )
+    def permuteAsSeenFrom(targs: List[Type]) =
+      (
+        for {
+          tp <- typeRefs(targs filterNot (_ eq NoType))
+          prefix <- asSeenPrefixes
+          if tp.prefix != prefix
+          site <- classes
+          seen = tp.asSeenFrom(prefix, site)
+          if tp != seen
+          if !seen.isInstanceOf[ExistentialType]
+        } yield ((site, tp, prefix, seen))
+      )
 
     def block(label: Any)(lines: List[String]): List[String] = {
       val first = "" + label + " {"
@@ -171,12 +173,13 @@ package ll {
     else
       xs.mkString("\n  ", "\n  ", "\n")
 
-  def signaturesIn(info: Type): List[String] = (
-    info.members.toList
-      filterNot (s =>
-        s.isType || s.owner == ObjectClass || s.owner == AnyClass || s.isConstructor)
-      map (_.defString)
-  )
+  def signaturesIn(info: Type): List[String] =
+    (
+      info.members.toList
+        filterNot (s =>
+          s.isType || s.owner == ObjectClass || s.owner == AnyClass || s.isConstructor)
+        map (_.defString)
+    )
 
   def check(source: String, unit: global.CompilationUnit) = {
     import syms._

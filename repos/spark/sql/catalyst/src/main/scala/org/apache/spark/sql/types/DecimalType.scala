@@ -72,25 +72,27 @@ case class DecimalType(precision: Int, scale: Int) extends FractionalType {
     * Returns whether this DecimalType is wider than `other`. If yes, it means `other`
     * can be casted into `this` safely without losing any precision or range.
     */
-  private[sql] def isWiderThan(other: DataType): Boolean = other match {
-    case dt: DecimalType =>
-      (precision - scale) >= (dt.precision - dt.scale) && scale >= dt.scale
-    case dt: IntegralType =>
-      isWiderThan(DecimalType.forType(dt))
-    case _ => false
-  }
+  private[sql] def isWiderThan(other: DataType): Boolean =
+    other match {
+      case dt: DecimalType =>
+        (precision - scale) >= (dt.precision - dt.scale) && scale >= dt.scale
+      case dt: IntegralType =>
+        isWiderThan(DecimalType.forType(dt))
+      case _ => false
+    }
 
   /**
     * Returns whether this DecimalType is tighter than `other`. If yes, it means `this`
     * can be casted into `other` safely without losing any precision or range.
     */
-  private[sql] def isTighterThan(other: DataType): Boolean = other match {
-    case dt: DecimalType =>
-      (precision - scale) <= (dt.precision - dt.scale) && scale <= dt.scale
-    case dt: IntegralType =>
-      isTighterThan(DecimalType.forType(dt))
-    case _ => false
-  }
+  private[sql] def isTighterThan(other: DataType): Boolean =
+    other match {
+      case dt: DecimalType =>
+        (precision - scale) <= (dt.precision - dt.scale) && scale <= dt.scale
+      case dt: IntegralType =>
+        isTighterThan(DecimalType.forType(dt))
+      case _ => false
+    }
 
   /**
     * The default size of a value of the DecimalType is 8 bytes (precision <= 18) or 16 bytes.
@@ -123,14 +125,15 @@ object DecimalType extends AbstractDataType {
   private[sql] val FloatDecimal = DecimalType(14, 7)
   private[sql] val DoubleDecimal = DecimalType(30, 15)
 
-  private[sql] def forType(dataType: DataType): DecimalType = dataType match {
-    case ByteType    => ByteDecimal
-    case ShortType   => ShortDecimal
-    case IntegerType => IntDecimal
-    case LongType    => LongDecimal
-    case FloatType   => FloatDecimal
-    case DoubleType  => DoubleDecimal
-  }
+  private[sql] def forType(dataType: DataType): DecimalType =
+    dataType match {
+      case ByteType    => ByteDecimal
+      case ShortType   => ShortDecimal
+      case IntegerType => IntDecimal
+      case LongType    => LongDecimal
+      case FloatType   => FloatDecimal
+      case DoubleType  => DoubleDecimal
+    }
 
   private[sql] def bounded(precision: Int, scale: Int): DecimalType = {
     DecimalType(min(precision, MAX_PRECISION), min(scale, MAX_SCALE))
@@ -150,10 +153,11 @@ object DecimalType extends AbstractDataType {
   }
 
   private[sql] object Expression {
-    def unapply(e: Expression): Option[(Int, Int)] = e.dataType match {
-      case t: DecimalType => Some((t.precision, t.scale))
-      case _              => None
-    }
+    def unapply(e: Expression): Option[(Int, Int)] =
+      e.dataType match {
+        case t: DecimalType => Some((t.precision, t.scale))
+        case _              => None
+      }
   }
 
   /**

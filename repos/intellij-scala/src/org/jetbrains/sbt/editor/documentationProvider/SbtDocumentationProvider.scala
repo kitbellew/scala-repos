@@ -47,12 +47,13 @@ class SbtDocumentationProvider extends AbstractDocumentationProvider {
   private def appendToScalaDoc(scalaDoc: String, sbtDoc: String): String =
     (scalaDoc.replace("</body></html>", "") + sbtDoc) + "</body></html>"
 
-  private def extractDoc(element: PsiElement): String = element match {
-    case settingKey: ScNamedElement if isElementInSbtFile(element) =>
-      extractDocFromSettingKey(settingKey)
-    case _ =>
-      ""
-  }
+  private def extractDoc(element: PsiElement): String =
+    element match {
+      case settingKey: ScNamedElement if isElementInSbtFile(element) =>
+        extractDocFromSettingKey(settingKey)
+      case _ =>
+        ""
+    }
 
   private def isElementInSbtFile(element: PsiElement): Boolean =
     Option(element)
@@ -91,21 +92,22 @@ class SbtDocumentationProvider extends AbstractDocumentationProvider {
       case _                        => Seq.empty
     }
 
-  private def argToString(arg: ScExpression): Option[String] = arg match {
-    case ScLiteralImpl.string(str) =>
-      Some(str)
-    case ScInfixExpr(lOp, _, rOp) =>
-      val str = argToString(lOp).getOrElse("") ++
-        argToString(rOp).getOrElse("")
-      if (str.nonEmpty)
+  private def argToString(arg: ScExpression): Option[String] =
+    arg match {
+      case ScLiteralImpl.string(str) =>
         Some(str)
-      else
+      case ScInfixExpr(lOp, _, rOp) =>
+        val str = argToString(lOp).getOrElse("") ++
+          argToString(rOp).getOrElse("")
+        if (str.nonEmpty)
+          Some(str)
+        else
+          None
+      case refExpr: ScReferenceExpression =>
+        Some(refExpr.getText)
+      case _ =>
         None
-    case refExpr: ScReferenceExpression =>
-      Some(refExpr.getText)
-    case _ =>
-      None
-  }
+    }
 
   private def getDocForNewKeyDefinition(docs: Seq[String]): Option[String] =
     // val someKey = SettingKey[Unit]("some-key", "Here are docs for some-key")

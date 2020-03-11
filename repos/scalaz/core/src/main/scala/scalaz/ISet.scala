@@ -673,9 +673,10 @@ sealed abstract class ISet[A] {
 sealed abstract class ISetInstances {
   import ISet._
 
-  implicit def setEqual[A: Equal]: Equal[ISet[A]] = new ISetEqual[A] {
-    def A = implicitly
-  }
+  implicit def setEqual[A: Equal]: Equal[ISet[A]] =
+    new ISetEqual[A] {
+      def A = implicitly
+    }
 
   implicit def setOrder[A: Order]: Order[ISet[A]] =
     new Order[ISet[A]] with ISetEqual[A] {
@@ -686,18 +687,20 @@ sealed abstract class ISetInstances {
         Order[List[A]].order(x.toAscList, y.toAscList)
     }
 
-  implicit def setShow[A: Show]: Show[ISet[A]] = new Show[ISet[A]] {
-    override def shows(f: ISet[A]) =
-      f.toAscList.mkString("ISet(", ",", ")")
-  }
+  implicit def setShow[A: Show]: Show[ISet[A]] =
+    new Show[ISet[A]] {
+      override def shows(f: ISet[A]) =
+        f.toAscList.mkString("ISet(", ",", ")")
+    }
 
-  implicit def setMonoid[A: Order]: Monoid[ISet[A]] = new Monoid[ISet[A]] {
-    def zero: ISet[A] =
-      empty[A]
+  implicit def setMonoid[A: Order]: Monoid[ISet[A]] =
+    new Monoid[ISet[A]] {
+      def zero: ISet[A] =
+        empty[A]
 
-    def append(a: ISet[A], b: => ISet[A]): ISet[A] =
-      a union b
-  }
+      def append(a: ISet[A], b: => ISet[A]): ISet[A] =
+        a union b
+    }
 
   implicit val setFoldable: Foldable[ISet] = new Foldable[ISet] {
     override def findLeft[A](fa: ISet[A])(f: A => Boolean) =

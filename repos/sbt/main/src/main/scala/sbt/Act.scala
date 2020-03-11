@@ -341,9 +341,10 @@ object Act {
       trailing: Parser[_]): Parser[ResolvedReference] = {
     def projectID(uri: URI) =
       token(examplesStrict(ID, index projects uri, "project ID") <~ trailing)
-    def projectRef(uri: URI) = projectID(uri) map { id =>
-      ProjectRef(uri, id)
-    }
+    def projectRef(uri: URI) =
+      projectID(uri) map { id =>
+        ProjectRef(uri, id)
+      }
 
     val uris = index.buildURIs
     val resolvedURI =
@@ -481,7 +482,8 @@ object Act {
   final object ParsedGlobal extends ParsedAxis[Nothing]
   final object Omitted extends ParsedAxis[Nothing]
   final class ParsedValue[T](val value: T) extends ParsedAxis[T]
-  def value[T](t: Parser[T]): Parser[ParsedAxis[T]] = t map { v =>
-    new ParsedValue(v)
-  }
+  def value[T](t: Parser[T]): Parser[ParsedAxis[T]] =
+    t map { v =>
+      new ParsedValue(v)
+    }
 }

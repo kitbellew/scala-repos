@@ -36,51 +36,56 @@ sealed trait IntList
   def ::(head: Int): IntList = IntCons(head, this)
 
   override def foreach[@specialized B](f: Int => B): Unit = {
-    @tailrec def loop(xs: IntList): Unit = xs match {
-      case IntCons(h, t) =>
-        f(h);
-        loop(t)
-      case _ =>
-    }
+    @tailrec def loop(xs: IntList): Unit =
+      xs match {
+        case IntCons(h, t) =>
+          f(h);
+          loop(t)
+        case _ =>
+      }
     loop(this)
   }
 
   override def apply(idx: Int): Int = {
-    @tailrec def loop(xs: IntList, row: Int): Int = xs match {
-      case IntCons(x, xs0) =>
-        if (row == idx)
-          x
-        else
-          loop(xs0, row + 1)
-      case IntNil =>
-        throw new IndexOutOfBoundsException("%d is larger than the IntList")
-    }
+    @tailrec def loop(xs: IntList, row: Int): Int =
+      xs match {
+        case IntCons(x, xs0) =>
+          if (row == idx)
+            x
+          else
+            loop(xs0, row + 1)
+        case IntNil =>
+          throw new IndexOutOfBoundsException("%d is larger than the IntList")
+      }
     loop(this, 0)
   }
 
   override def length: Int = {
-    @tailrec def loop(xs: IntList, len: Int): Int = xs match {
-      case IntCons(x, xs0) => loop(xs0, len + 1)
-      case IntNil          => len
-    }
+    @tailrec def loop(xs: IntList, len: Int): Int =
+      xs match {
+        case IntCons(x, xs0) => loop(xs0, len + 1)
+        case IntNil          => len
+      }
     loop(this, 0)
   }
 
-  override def iterator: Iterator[Int] = new Iterator[Int] {
-    private var xs: IntList = self
-    def hasNext: Boolean = xs != IntNil
-    def next(): Int = {
-      val result = xs.head
-      xs = xs.tail
-      result
+  override def iterator: Iterator[Int] =
+    new Iterator[Int] {
+      private var xs: IntList = self
+      def hasNext: Boolean = xs != IntNil
+      def next(): Int = {
+        val result = xs.head
+        xs = xs.tail
+        result
+      }
     }
-  }
 
   override def reverse: IntList = {
-    @tailrec def loop(xs: IntList, ys: IntList): IntList = xs match {
-      case IntCons(x, xs0) => loop(xs0, x :: ys)
-      case IntNil          => ys
-    }
+    @tailrec def loop(xs: IntList, ys: IntList): IntList =
+      xs match {
+        case IntCons(x, xs0) => loop(xs0, x :: ys)
+        case IntNil          => ys
+      }
     loop(this, IntNil)
   }
 
@@ -111,8 +116,9 @@ final class IntListBuilder extends Builder[Int, IntList] {
 }
 
 object IntList {
-  implicit def cbf = new CanBuildFrom[IntList, Int, IntList] {
-    def apply(): Builder[Int, IntList] = new IntListBuilder
-    def apply(from: IntList): Builder[Int, IntList] = apply()
-  }
+  implicit def cbf =
+    new CanBuildFrom[IntList, Int, IntList] {
+      def apply(): Builder[Int, IntList] = new IntListBuilder
+      def apply(from: IntList): Builder[Int, IntList] = apply()
+    }
 }

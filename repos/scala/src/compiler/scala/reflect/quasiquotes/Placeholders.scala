@@ -136,36 +136,41 @@ trait Placeholders { self: Quasiquotes =>
   object TuplePlaceholder {
     def apply(args: List[Tree]) =
       Apply(Ident(nme.QUASIQUOTE_TUPLE), args)
-    def unapply(tree: Tree): Option[List[Tree]] = tree match {
-      case Apply(Ident(nme.QUASIQUOTE_TUPLE), args) => Some(args)
-      case _                                        => None
-    }
+    def unapply(tree: Tree): Option[List[Tree]] =
+      tree match {
+        case Apply(Ident(nme.QUASIQUOTE_TUPLE), args) => Some(args)
+        case _                                        => None
+      }
   }
 
   object TupleTypePlaceholder {
     def apply(args: List[Tree]) =
       AppliedTypeTree(Ident(tpnme.QUASIQUOTE_TUPLE), args)
-    def unapply(tree: Tree): Option[List[Tree]] = tree match {
-      case AppliedTypeTree(Ident(tpnme.QUASIQUOTE_TUPLE), args) => Some(args)
-      case _                                                    => None
-    }
+    def unapply(tree: Tree): Option[List[Tree]] =
+      tree match {
+        case AppliedTypeTree(Ident(tpnme.QUASIQUOTE_TUPLE), args) => Some(args)
+        case _                                                    => None
+      }
   }
 
   object FunctionTypePlaceholder {
     def apply(args: List[Tree], res: Tree) =
       AppliedTypeTree(Ident(tpnme.QUASIQUOTE_FUNCTION), args :+ res)
-    def unapply(tree: Tree): Option[(List[Tree], Tree)] = tree match {
-      case AppliedTypeTree(Ident(tpnme.QUASIQUOTE_FUNCTION), args :+ res) =>
-        Some((args, res))
-      case _ => None
-    }
+    def unapply(tree: Tree): Option[(List[Tree], Tree)] =
+      tree match {
+        case AppliedTypeTree(Ident(tpnme.QUASIQUOTE_FUNCTION), args :+ res) =>
+          Some((args, res))
+        case _ => None
+      }
   }
 
   object SymbolPlaceholder {
-    def unapply(scrutinee: Any): Option[Hole] = scrutinee match {
-      case Placeholder(hole: ApplyHole) if hole.tpe <:< symbolType => Some(hole)
-      case _                                                       => None
-    }
+    def unapply(scrutinee: Any): Option[Hole] =
+      scrutinee match {
+        case Placeholder(hole: ApplyHole) if hole.tpe <:< symbolType =>
+          Some(hole)
+        case _ => None
+      }
   }
 
   object CasePlaceholder {
@@ -174,24 +179,30 @@ trait Placeholders { self: Quasiquotes =>
         Apply(Ident(nme.QUASIQUOTE_CASE), Ident(name) :: Nil),
         EmptyTree,
         EmptyTree)
-    def unapply(tree: Tree): Option[Hole] = tree match {
-      case CaseDef(
-            Apply(Ident(nme.QUASIQUOTE_CASE), List(Placeholder(hole))),
-            EmptyTree,
-            EmptyTree) =>
-        Some(hole)
-      case _ => None
-    }
+    def unapply(tree: Tree): Option[Hole] =
+      tree match {
+        case CaseDef(
+              Apply(Ident(nme.QUASIQUOTE_CASE), List(Placeholder(hole))),
+              EmptyTree,
+              EmptyTree) =>
+          Some(hole)
+        case _ => None
+      }
   }
 
   object RefineStatPlaceholder {
     def apply(name: Name) =
       ValDef(NoMods, nme.QUASIQUOTE_REFINE_STAT, Ident(name), EmptyTree)
-    def unapply(tree: Tree): Option[Hole] = tree match {
-      case ValDef(_, nme.QUASIQUOTE_REFINE_STAT, Ident(Placeholder(hole)), _) =>
-        Some(hole)
-      case _ => None
-    }
+    def unapply(tree: Tree): Option[Hole] =
+      tree match {
+        case ValDef(
+              _,
+              nme.QUASIQUOTE_REFINE_STAT,
+              Ident(Placeholder(hole)),
+              _) =>
+          Some(hole)
+        case _ => None
+      }
   }
 
   object EarlyDefPlaceholder {
@@ -201,25 +212,27 @@ trait Placeholders { self: Quasiquotes =>
         nme.QUASIQUOTE_EARLY_DEF,
         Ident(name),
         EmptyTree)
-    def unapply(tree: Tree): Option[Hole] = tree match {
-      case ValDef(_, nme.QUASIQUOTE_EARLY_DEF, Ident(Placeholder(hole)), _) =>
-        Some(hole)
-      case _ => None
-    }
+    def unapply(tree: Tree): Option[Hole] =
+      tree match {
+        case ValDef(_, nme.QUASIQUOTE_EARLY_DEF, Ident(Placeholder(hole)), _) =>
+          Some(hole)
+        case _ => None
+      }
   }
 
   object PackageStatPlaceholder {
     def apply(name: Name) =
       ValDef(NoMods, nme.QUASIQUOTE_PACKAGE_STAT, Ident(name), EmptyTree)
-    def unapply(tree: Tree): Option[Hole] = tree match {
-      case ValDef(
-            NoMods,
-            nme.QUASIQUOTE_PACKAGE_STAT,
-            Ident(Placeholder(hole)),
-            EmptyTree) =>
-        Some(hole)
-      case _ => None
-    }
+    def unapply(tree: Tree): Option[Hole] =
+      tree match {
+        case ValDef(
+              NoMods,
+              nme.QUASIQUOTE_PACKAGE_STAT,
+              Ident(Placeholder(hole)),
+              EmptyTree) =>
+          Some(hole)
+        case _ => None
+      }
   }
 
   object ForEnumPlaceholder {
@@ -227,12 +240,13 @@ trait Placeholders { self: Quasiquotes =>
       build.SyntacticValFrom(
         Bind(name, Ident(nme.WILDCARD)),
         Ident(nme.QUASIQUOTE_FOR_ENUM))
-    def unapply(tree: Tree): Option[Hole] = tree match {
-      case build.SyntacticValFrom(
-            Bind(Placeholder(hole), Ident(nme.WILDCARD)),
-            Ident(nme.QUASIQUOTE_FOR_ENUM)) =>
-        Some(hole)
-      case _ => None
-    }
+    def unapply(tree: Tree): Option[Hole] =
+      tree match {
+        case build.SyntacticValFrom(
+              Bind(Placeholder(hole), Ident(nme.WILDCARD)),
+              Ident(nme.QUASIQUOTE_FOR_ENUM)) =>
+          Some(hole)
+        case _ => None
+      }
   }
 }

@@ -263,30 +263,32 @@ private[spark] class DAGScheduler(
   }
 
   private[scheduler] def getCacheLocs(
-      rdd: RDD[_]): IndexedSeq[Seq[TaskLocation]] = cacheLocs.synchronized {
-    // Note: this doesn't use `getOrElse()` because this method is called O(num tasks) times
-    if (!cacheLocs.contains(rdd.id)) {
-      // Note: if the storage level is NONE, we don't need to get locations from block manager.
-      val locs: IndexedSeq[Seq[TaskLocation]] =
-        if (rdd.getStorageLevel == StorageLevel.NONE) {
-          IndexedSeq.fill(rdd.partitions.length)(Nil)
-        } else {
-          val blockIds =
-            rdd.partitions.indices
-              .map(index => RDDBlockId(rdd.id, index))
-              .toArray[BlockId]
-          blockManagerMaster.getLocations(blockIds).map { bms =>
-            bms.map(bm => TaskLocation(bm.host, bm.executorId))
+      rdd: RDD[_]): IndexedSeq[Seq[TaskLocation]] =
+    cacheLocs.synchronized {
+      // Note: this doesn't use `getOrElse()` because this method is called O(num tasks) times
+      if (!cacheLocs.contains(rdd.id)) {
+        // Note: if the storage level is NONE, we don't need to get locations from block manager.
+        val locs: IndexedSeq[Seq[TaskLocation]] =
+          if (rdd.getStorageLevel == StorageLevel.NONE) {
+            IndexedSeq.fill(rdd.partitions.length)(Nil)
+          } else {
+            val blockIds =
+              rdd.partitions.indices
+                .map(index => RDDBlockId(rdd.id, index))
+                .toArray[BlockId]
+            blockManagerMaster.getLocations(blockIds).map { bms =>
+              bms.map(bm => TaskLocation(bm.host, bm.executorId))
+            }
           }
-        }
-      cacheLocs(rdd.id) = locs
+        cacheLocs(rdd.id) = locs
+      }
+      cacheLocs(rdd.id)
     }
-    cacheLocs(rdd.id)
-  }
 
-  private def clearCacheLocs(): Unit = cacheLocs.synchronized {
-    cacheLocs.clear()
-  }
+  private def clearCacheLocs(): Unit =
+    cacheLocs.synchronized {
+      cacheLocs.clear()
+    }
 
   /**
     * Get or create a shuffle map stage for the given shuffle dependency's map side.
@@ -1836,65 +1838,71 @@ private[scheduler] class DAGSchedulerEventProcessLoop(
     }
   }
 
-  private def doOnReceive(event: DAGSchedulerEvent): Unit = event match {
-    case JobSubmitted(
+  private def doOnReceive(event: DAGSchedulerEvent): Unit =
+    event match {
+      case JobSubmitted(
+            jobId,
+            rdd,
+            func,
+            partitions,
+            callSite,
+            listener,
+            properties) =>
+        dagScheduler.handleJobSubmitted(
           jobId,
           rdd,
           func,
           partitions,
           callSite,
           listener,
-          properties) =>
-      dagScheduler.handleJobSubmitted(
-        jobId,
-        rdd,
-        func,
-        partitions,
-        callSite,
-        listener,
-        properties)
+          properties)
 
-    case MapStageSubmitted(jobId, dependency, callSite, listener, properties) =>
-      dagScheduler.handleMapStageSubmitted(
-        jobId,
-        dependency,
-        callSite,
-        listener,
-        properties)
+      case MapStageSubmitted(
+            jobId,
+            dependency,
+            callSite,
+            listener,
+            properties) =>
+        dagScheduler.handleMapStageSubmitted(
+          jobId,
+          dependency,
+          callSite,
+          listener,
+          properties)
 
-    case StageCancelled(stageId) =>
-      dagScheduler.handleStageCancellation(stageId)
+      case StageCancelled(stageId) =>
+        dagScheduler.handleStageCancellation(stageId)
 
-    case JobCancelled(jobId) =>
-      dagScheduler.handleJobCancellation(jobId)
+      case JobCancelled(jobId) =>
+        dagScheduler.handleJobCancellation(jobId)
 
-    case JobGroupCancelled(groupId) =>
-      dagScheduler.handleJobGroupCancelled(groupId)
+      case JobGroupCancelled(groupId) =>
+        dagScheduler.handleJobGroupCancelled(groupId)
 
-    case AllJobsCancelled =>
-      dagScheduler.doCancelAllJobs()
+      case AllJobsCancelled =>
+        dagScheduler.doCancelAllJobs()
 
-    case ExecutorAdded(execId, host) =>
-      dagScheduler.handleExecutorAdded(execId, host)
+      case ExecutorAdded(execId, host) =>
+        dagScheduler.handleExecutorAdded(execId, host)
 
-    case ExecutorLost(execId) =>
-      dagScheduler.handleExecutorLost(execId, fetchFailed = false)
+      case ExecutorLost(execId) =>
+        dagScheduler.handleExecutorLost(execId, fetchFailed = false)
 
-    case BeginEvent(task, taskInfo) =>
-      dagScheduler.handleBeginEvent(task, taskInfo)
+      case BeginEvent(task, taskInfo) =>
+        dagScheduler.handleBeginEvent(task, taskInfo)
 
-    case GettingResultEvent(taskInfo) =>
-      dagScheduler.handleGetTaskResult(taskInfo)
+      case GettingResultEvent(taskInfo) =>
+        dagScheduler.handleGetTaskResult(taskInfo)
 
-    case completion: CompletionEvent =>
-      dagScheduler.handleTaskCompletion(completion)
+      case completion: CompletionEvent =>
+        dagScheduler.handleTaskCompletion(completion)
 
-    case TaskSetFailed(taskSet, reason, exception) =>
-      dagScheduler.handleTaskSetFailed(taskSet, reason, exception)
+      case TaskSetFailed(taskSet, reason, exception) =>
+        dagScheduler.handleTaskSetFailed(taskSet, reason, exception)
 
-    case ResubmitFailedStages =>
-      dagScheduler.resubmitFailedStages()
-  }
+      case ResubmitFailedStages =>
+        dagScheduler.resubmitFailedStages()
+    }
 
   override def onError(e: Throwable): Unit = {
     logError(

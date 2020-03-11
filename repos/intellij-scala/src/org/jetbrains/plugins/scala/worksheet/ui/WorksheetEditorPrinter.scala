@@ -410,10 +410,11 @@ object WorksheetEditorPrinter {
         None,
       foldGroup: Option[WorksheetFoldGroup] = None) {
     class MyCaretAdapterBase extends CaretAdapter {
-      override def equals(obj: Any): Boolean = obj match {
-        case _: MyCaretAdapterBase => true
-        case _                     => false
-      }
+      override def equals(obj: Any): Boolean =
+        obj match {
+          case _: MyCaretAdapterBase => true
+          case _                     => false
+        }
 
       override def hashCode(): Int = 12345
     }
@@ -625,17 +626,18 @@ object WorksheetEditorPrinter {
           editorContentComponent.requestFocusInWindow()
       }
 
-      @inline def patchEditor(): Unit = preserveFocus {
-        (parent, child) match {
-          case (parentPane: JLayeredPane, _) =>
-            parentPane remove child
-            parentPane.add(diffPane, BorderLayout.CENTER)
-          case (_, childPane: JLayeredPane) =>
-            childPane remove editorComponent
-            childPane.add(diffPane, BorderLayout.CENTER)
-          case _ =>
+      @inline def patchEditor(): Unit =
+        preserveFocus {
+          (parent, child) match {
+            case (parentPane: JLayeredPane, _) =>
+              parentPane remove child
+              parentPane.add(diffPane, BorderLayout.CENTER)
+            case (_, childPane: JLayeredPane) =>
+              childPane remove editorComponent
+              childPane.add(diffPane, BorderLayout.CENTER)
+            case _ =>
+          }
         }
-      }
 
       if (parent.getComponentCount > 1)
         parent.getComponent(1) match {

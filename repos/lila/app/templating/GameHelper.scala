@@ -85,26 +85,29 @@ trait GameHelper {
       case v                          => v.name
     }
 
-  def variantNameNoCtx(variant: chess.variant.Variant) = variant match {
-    case chess.variant.Standard     => trans.standard.en()
-    case chess.variant.FromPosition => trans.fromPosition.en()
-    case v                          => v.name
-  }
+  def variantNameNoCtx(variant: chess.variant.Variant) =
+    variant match {
+      case chess.variant.Standard     => trans.standard.en()
+      case chess.variant.FromPosition => trans.fromPosition.en()
+      case v                          => v.name
+    }
 
   def shortClockName(clock: Option[Clock])(implicit ctx: UserContext): Html =
     clock.fold(trans.unlimited())(shortClockName)
 
   def shortClockName(clock: Clock): Html = Html(clock.show)
 
-  def modeName(mode: Mode)(implicit ctx: UserContext): String = mode match {
-    case Mode.Casual => trans.casual.str()
-    case Mode.Rated  => trans.rated.str()
-  }
+  def modeName(mode: Mode)(implicit ctx: UserContext): String =
+    mode match {
+      case Mode.Casual => trans.casual.str()
+      case Mode.Rated  => trans.rated.str()
+    }
 
-  def modeNameNoCtx(mode: Mode): String = mode match {
-    case Mode.Casual => trans.casual.en()
-    case Mode.Rated  => trans.rated.en()
-  }
+  def modeNameNoCtx(mode: Mode): String =
+    mode match {
+      case Mode.Casual => trans.casual.en()
+      case Mode.Rated  => trans.rated.en()
+    }
 
   def playerUsername(
       player: Player,
@@ -137,46 +140,47 @@ trait GameHelper {
       withStatus: Boolean = false,
       withBerserk: Boolean = false,
       mod: Boolean = false,
-      link: Boolean = true)(implicit ctx: UserContext) = Html {
-    val statusIcon =
-      if (withStatus)
-        statusIconSpan
-      else if (withBerserk && player.berserk)
-        berserkIconSpan
-      else
-        ""
-    player.userId.flatMap(lightUser) match {
-      case None =>
-        val klass = cssClass.??(" " + _)
-        val content = player.aiLevel.fold(player.name | User.anonymous) {
-          aiName(_, withRating)
-        }
-        s"""<span class="user_link$klass">$content$statusIcon</span>"""
-      case Some(user) =>
-        val klass = userClass(user.id, cssClass, withOnline)
-        val href = s"${routes.User show user.name}${if (mod)
-          "?mod"
+      link: Boolean = true)(implicit ctx: UserContext) =
+    Html {
+      val statusIcon =
+        if (withStatus)
+          statusIconSpan
+        else if (withBerserk && player.berserk)
+          berserkIconSpan
         else
-          ""}"
-        val content = playerUsername(player, withRating)
-        val diff =
-          (player.ratingDiff ifTrue withDiff).fold(Html(""))(showRatingDiff)
-        val mark = engine ?? s"""<span class="engine_mark" title="${trans
-          .thisPlayerUsesChessComputerAssistance()}"></span>"""
-        val dataIcon = withOnline ?? """data-icon="r""""
-        val space =
-          if (withOnline)
-            "&nbsp;"
+          ""
+      player.userId.flatMap(lightUser) match {
+        case None =>
+          val klass = cssClass.??(" " + _)
+          val content = player.aiLevel.fold(player.name | User.anonymous) {
+            aiName(_, withRating)
+          }
+          s"""<span class="user_link$klass">$content$statusIcon</span>"""
+        case Some(user) =>
+          val klass = userClass(user.id, cssClass, withOnline)
+          val href = s"${routes.User show user.name}${if (mod)
+            "?mod"
           else
-            ""
-        val tag =
-          if (link)
-            "a"
-          else
-            "span"
-        s"""<$tag $dataIcon $klass href="$href">$space$content$diff$mark</$tag>$statusIcon"""
+            ""}"
+          val content = playerUsername(player, withRating)
+          val diff =
+            (player.ratingDiff ifTrue withDiff).fold(Html(""))(showRatingDiff)
+          val mark = engine ?? s"""<span class="engine_mark" title="${trans
+            .thisPlayerUsesChessComputerAssistance()}"></span>"""
+          val dataIcon = withOnline ?? """data-icon="r""""
+          val space =
+            if (withOnline)
+              "&nbsp;"
+            else
+              ""
+          val tag =
+            if (link)
+              "a"
+            else
+              "span"
+          s"""<$tag $dataIcon $klass href="$href">$space$content$diff$mark</$tag>$statusIcon"""
+      }
     }
-  }
 
   def gameEndStatus(game: Game)(implicit ctx: UserContext): Html =
     game.status match {
@@ -274,24 +278,25 @@ trait GameHelper {
       tv: Boolean = false,
       withTitle: Boolean = true,
       withLink: Boolean = true,
-      withLive: Boolean = true)(implicit ctx: UserContext) = Html {
-    val game = pov.game
-    var isLive = withLive && game.isBeingPlayed
-    val href =
-      withLink ?? s"""href="${gameLink(game, pov.color, ownerLink, tv)}""""
-    val title = withTitle ?? s"""title="${gameTitle(game, pov.color)}""""
-    val cssClass = isLive ?? ("live live_" + game.id)
-    val live = isLive ?? game.id
-    val fen = Forsyth exportBoard game.toChess.board
-    val lastMove = ~game.castleLastMoveTime.lastMoveString
-    val variant = game.variant.key
-    val tag =
-      if (withLink)
-        "a"
-      else
-        "span"
-    s"""<$tag $href $title class="mini_board mini_board_${game.id} parse_fen is2d $cssClass $variant" data-live="$live" data-color="${pov.color.name}" data-fen="$fen" data-lastmove="$lastMove">$miniBoardContent</$tag>"""
-  }
+      withLive: Boolean = true)(implicit ctx: UserContext) =
+    Html {
+      val game = pov.game
+      var isLive = withLive && game.isBeingPlayed
+      val href =
+        withLink ?? s"""href="${gameLink(game, pov.color, ownerLink, tv)}""""
+      val title = withTitle ?? s"""title="${gameTitle(game, pov.color)}""""
+      val cssClass = isLive ?? ("live live_" + game.id)
+      val live = isLive ?? game.id
+      val fen = Forsyth exportBoard game.toChess.board
+      val lastMove = ~game.castleLastMoveTime.lastMoveString
+      val variant = game.variant.key
+      val tag =
+        if (withLink)
+          "a"
+        else
+          "span"
+      s"""<$tag $href $title class="mini_board mini_board_${game.id} parse_fen is2d $cssClass $variant" data-live="$live" data-color="${pov.color.name}" data-fen="$fen" data-lastmove="$lastMove">$miniBoardContent</$tag>"""
+    }
 
   def gameFenNoCtx(pov: Pov, tv: Boolean = false, blank: Boolean = false) =
     Html {

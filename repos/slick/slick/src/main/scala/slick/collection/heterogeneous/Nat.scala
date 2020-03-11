@@ -50,10 +50,11 @@ abstract class Nat {
   def self: Self
 
   override def toString = value.toString
-  override def equals(o: Any) = o match {
-    case n: Nat => value == n.value
-    case _      => false
-  }
+  override def equals(o: Any) =
+    o match {
+      case n: Nat => value == n.value
+      case _      => false
+    }
   override def hashCode = value
 
   /** Multiply this Nat by 10. */

@@ -86,23 +86,24 @@ object Crosstable {
 
     import BSONFields._
 
-    def reads(r: BSON.Reader): Crosstable = r str id split '/' match {
-      case Array(u1Id, u2Id) =>
-        Crosstable(
-          user1 = User(u1Id, r intD "s1"),
-          user2 = User(u2Id, r intD "s2"),
-          results = r.get[List[String]](results).map { r =>
-            r drop 8 match {
-              case ""  => Result(r take 8, none)
-              case "+" => Result(r take 8, Some(u1Id))
-              case "-" => Result(r take 8, Some(u2Id))
-              case _   => sys error s"Invalid result string $r"
-            }
-          },
-          nbGames = r int nbGames
-        )
-      case x => sys error s"Invalid crosstable id $x"
-    }
+    def reads(r: BSON.Reader): Crosstable =
+      r str id split '/' match {
+        case Array(u1Id, u2Id) =>
+          Crosstable(
+            user1 = User(u1Id, r intD "s1"),
+            user2 = User(u2Id, r intD "s2"),
+            results = r.get[List[String]](results).map { r =>
+              r drop 8 match {
+                case ""  => Result(r take 8, none)
+                case "+" => Result(r take 8, Some(u1Id))
+                case "-" => Result(r take 8, Some(u2Id))
+                case _   => sys error s"Invalid result string $r"
+              }
+            },
+            nbGames = r int nbGames
+          )
+        case x => sys error s"Invalid crosstable id $x"
+      }
 
     def writeResult(result: Result, u1: String): String =
       result.gameId + (result.winnerId ?? { w =>

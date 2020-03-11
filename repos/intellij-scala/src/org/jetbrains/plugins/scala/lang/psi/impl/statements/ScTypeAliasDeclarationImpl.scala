@@ -50,27 +50,30 @@ class ScTypeAliasDeclarationImpl private (
       descriptor.navigate(requestFocus)
   }
 
-  def nameId = findChildByType[PsiElement](ScalaTokenTypes.tIDENTIFIER) match {
-    case null =>
-      ScalaPsiElementFactory
-        .createIdentifier(
-          getStub.asInstanceOf[ScTypeAliasStub].getName,
-          getManager)
-        .getPsi
-    case n => n
-  }
+  def nameId =
+    findChildByType[PsiElement](ScalaTokenTypes.tIDENTIFIER) match {
+      case null =>
+        ScalaPsiElementFactory
+          .createIdentifier(
+            getStub.asInstanceOf[ScTypeAliasStub].getName,
+            getManager)
+          .getPsi
+      case n => n
+    }
 
   override def toString: String = "ScTypeAliasDeclaration: " + name
 
-  def lowerBound = lowerTypeElement match {
-    case Some(te) => te.getType(TypingContext.empty)
-    case None     => Success(Nothing, Some(this))
-  }
+  def lowerBound =
+    lowerTypeElement match {
+      case Some(te) => te.getType(TypingContext.empty)
+      case None     => Success(Nothing, Some(this))
+    }
 
-  def upperBound = upperTypeElement match {
-    case Some(te) => te.getType(TypingContext.empty)
-    case None     => Success(Any, Some(this))
-  }
+  def upperBound =
+    upperTypeElement match {
+      case Some(te) => te.getType(TypingContext.empty)
+      case None     => Success(Any, Some(this))
+    }
 
   override def upperTypeElement: Option[ScTypeElement] = {
     import org.jetbrains.plugins.scala.extensions._

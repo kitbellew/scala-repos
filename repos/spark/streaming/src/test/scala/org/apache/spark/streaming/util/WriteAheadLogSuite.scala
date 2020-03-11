@@ -279,20 +279,24 @@ class FileBasedWriteAheadLogSuite
     class GetMaxCounter {
       private val value = new AtomicInteger()
       @volatile private var max: Int = 0
-      def increment(): Unit = synchronized {
-        val atInstant = value.incrementAndGet()
-        if (atInstant > max)
-          max = atInstant
-      }
-      def decrement(): Unit = synchronized {
-        value.decrementAndGet()
-      }
-      def get(): Int = synchronized {
-        value.get()
-      }
-      def getMax(): Int = synchronized {
-        max
-      }
+      def increment(): Unit =
+        synchronized {
+          val atInstant = value.incrementAndGet()
+          if (atInstant > max)
+            max = atInstant
+        }
+      def decrement(): Unit =
+        synchronized {
+          value.decrementAndGet()
+        }
+      def get(): Int =
+        synchronized {
+          value.get()
+        }
+      def getMax(): Int =
+        synchronized {
+          max
+        }
     }
     try {
       // If Jenkins is slow, we may not have a chance to run many threads simultaneously. Having

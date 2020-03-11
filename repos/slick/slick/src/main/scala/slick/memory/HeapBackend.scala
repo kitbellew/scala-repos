@@ -48,29 +48,33 @@ trait HeapBackend extends RelationalBackend with Logging {
     def createSession(): Session = new SessionDef(this)
     override def shutdown: Future[Unit] = Future.successful(())
     def close: Unit = ()
-    def getTable(name: String): HeapTable = synchronized {
-      tables
-        .get(name)
-        .getOrElse(throw new SlickException(s"Table $name does not exist"))
-    }
+    def getTable(name: String): HeapTable =
+      synchronized {
+        tables
+          .get(name)
+          .getOrElse(throw new SlickException(s"Table $name does not exist"))
+      }
     def createTable(
         name: String,
         columns: IndexedSeq[HeapBackend.Column],
         indexes: IndexedSeq[Index],
-        constraints: IndexedSeq[Constraint]): HeapTable = synchronized {
-      if (tables.contains(name))
-        throw new SlickException(s"Table $name already exists")
-      val t = new HeapTable(name, columns, indexes, constraints)
-      tables += ((name, t))
-      t
-    }
-    def dropTable(name: String): Unit = synchronized {
-      if (!tables.remove(name).isDefined)
-        throw new SlickException(s"Table $name does not exist")
-    }
-    def getTables: IndexedSeq[HeapTable] = synchronized {
-      tables.values.toVector
-    }
+        constraints: IndexedSeq[Constraint]): HeapTable =
+      synchronized {
+        if (tables.contains(name))
+          throw new SlickException(s"Table $name already exists")
+        val t = new HeapTable(name, columns, indexes, constraints)
+        tables += ((name, t))
+        t
+      }
+    def dropTable(name: String): Unit =
+      synchronized {
+        if (!tables.remove(name).isDefined)
+          throw new SlickException(s"Table $name does not exist")
+      }
+    def getTables: IndexedSeq[HeapTable] =
+      synchronized {
+        tables.values.toVector
+      }
   }
 
   def createEmptyDatabase: Database = {
@@ -121,12 +125,13 @@ trait HeapBackend extends RelationalBackend with Logging {
 
     def rows: Iterable[Row] = data
 
-    def append(row: Row): Unit = synchronized {
-      verifier.verify(row)
-      data.append(row)
-      verifier.inserted(row)
-      logger.debug("Inserted (" + row.mkString(", ") + ") into " + this)
-    }
+    def append(row: Row): Unit =
+      synchronized {
+        verifier.verify(row)
+        data.append(row)
+        verifier.inserted(row)
+        logger.debug("Inserted (" + row.mkString(", ") + ") into " + this)
+      }
 
     def createInsertRow: ArrayBuffer[Any] =
       columns.map(_.createDefault)(collection.breakOut)
@@ -155,15 +160,16 @@ trait HeapBackend extends RelationalBackend with Logging {
       }
     }
 
-    protected def createConstraintVerifier(cons: Constraint) = cons match {
-      case PrimaryKey(name, columns) =>
-        createUniquenessVerifier(
-          name,
-          columns.map {
-            case Select(_, f: FieldSymbol) => f
-          })
-      case _ => Verifier.empty
-    }
+    protected def createConstraintVerifier(cons: Constraint) =
+      cons match {
+        case PrimaryKey(name, columns) =>
+          createUniquenessVerifier(
+            name,
+            columns.map {
+              case Select(_, f: FieldSymbol) => f
+            })
+        case _ => Verifier.empty
+      }
 
     protected def createIndexVerifier(idx: Index) =
       if (!idx.unique)
@@ -245,17 +251,18 @@ object HeapBackend extends HeapBackend {
         case ColumnOption.PrimaryKey => true
       }
       .getOrElse(false)
-    def createDefault: Any = autoInc match {
-      case Some(a) =>
-        val i = a.incrementAndGet()
-        if (tpe == ScalaBaseType.longType)
-          i
-        else if (tpe == ScalaBaseType.intType)
-          i.toInt
-        else
-          throw new SlickException(
-            "Only Long and Int types are allowed for AutoInc columns")
-      case None => default.getOrElse(null)
-    }
+    def createDefault: Any =
+      autoInc match {
+        case Some(a) =>
+          val i = a.incrementAndGet()
+          if (tpe == ScalaBaseType.longType)
+            i
+          else if (tpe == ScalaBaseType.intType)
+            i.toInt
+          else
+            throw new SlickException(
+              "Only Long and Int types are allowed for AutoInc columns")
+        case None => default.getOrElse(null)
+      }
   }
 }

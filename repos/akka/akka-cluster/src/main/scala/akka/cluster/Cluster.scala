@@ -446,10 +446,11 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
     }
   }
 
-  private def closeScheduler(): Unit = scheduler match {
-    case x: Closeable ⇒ x.close()
-    case _ ⇒
-  }
+  private def closeScheduler(): Unit =
+    scheduler match {
+      case x: Closeable ⇒ x.close()
+      case _ ⇒
+    }
 
   /**
     * INTERNAL API

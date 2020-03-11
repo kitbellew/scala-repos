@@ -68,30 +68,33 @@ object Writer {
     }
   }
 
-  implicit def option[T: Writer]: Writer[Option[T]] = new Writer[Option[T]] {
-    val w = implicitly[Writer[T]]
-    // Don't use pattern matching in a performance-critical section
-    @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.OptionPartial"))
-    def write(os: OutputStream, t: Option[T]) =
-      if (t.isDefined) {
-        os.write(1: Byte)
-        w.write(os, t.get)
-      } else
-        os.write(0: Byte)
-  }
+  implicit def option[T: Writer]: Writer[Option[T]] =
+    new Writer[Option[T]] {
+      val w = implicitly[Writer[T]]
+      // Don't use pattern matching in a performance-critical section
+      @SuppressWarnings(
+        Array("org.brianmckenna.wartremover.warts.OptionPartial"))
+      def write(os: OutputStream, t: Option[T]) =
+        if (t.isDefined) {
+          os.write(1: Byte)
+          w.write(os, t.get)
+        } else
+          os.write(0: Byte)
+    }
 
   implicit def either[L: Writer, R: Writer]: Writer[Either[L, R]] =
     new Writer[Either[L, R]] {
       val lw = implicitly[Writer[L]]
       val rw = implicitly[Writer[R]]
-      def write(os: OutputStream, e: Either[L, R]) = e match {
-        case Left(l) =>
-          os.write(0: Byte)
-          lw.write(os, l)
-        case Right(r) =>
-          os.write(1: Byte)
-          rw.write(os, r)
-      }
+      def write(os: OutputStream, e: Either[L, R]) =
+        e match {
+          case Left(l) =>
+            os.write(0: Byte)
+            lw.write(os, l)
+          case Right(r) =>
+            os.write(1: Byte)
+            rw.write(os, r)
+        }
     }
 
   implicit def tuple2[T1: Writer, T2: Writer]: Writer[(T1, T2)] =
@@ -131,14 +134,15 @@ object Writer {
     }
 
   // Scala has problems with this being implicit
-  def collection[T: Writer, C <: Iterable[T]]: Writer[C] = new Writer[C] {
-    val writerT = implicitly[Writer[T]]
-    def write(os: OutputStream, c: C) = {
-      val size = c.size
-      os.writePosVarInt(size)
-      c.foreach { t: T =>
-        writerT.write(os, t)
+  def collection[T: Writer, C <: Iterable[T]]: Writer[C] =
+    new Writer[C] {
+      val writerT = implicitly[Writer[T]]
+      def write(os: OutputStream, c: C) = {
+        val size = c.size
+        os.writePosVarInt(size)
+        c.foreach { t: T =>
+          writerT.write(os, t)
+        }
       }
     }
-  }
 }

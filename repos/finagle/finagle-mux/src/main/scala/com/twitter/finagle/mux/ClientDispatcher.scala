@@ -72,17 +72,18 @@ private[twitter] class ClientDispatcher(trans: Transport[Message, Message])
       }
   }
 
-  private[this] def process(msg: Message): Unit = msg match {
-    case Message.Rerr(_, err) =>
-      for (u <- messages.unmap(msg.tag))
-        u() = Throw(ServerError(err))
+  private[this] def process(msg: Message): Unit =
+    msg match {
+      case Message.Rerr(_, err) =>
+        for (u <- messages.unmap(msg.tag))
+          u() = Throw(ServerError(err))
 
-    case Message.Rmessage(_) =>
-      for (u <- messages.unmap(msg.tag))
-        u() = Return(msg)
+      case Message.Rmessage(_) =>
+        for (u <- messages.unmap(msg.tag))
+          u() = Return(msg)
 
-    case _ => // do nothing.
-  }
+      case _ => // do nothing.
+    }
 
   /**
     * Dispatch the message resulting from applying `f`
@@ -146,25 +147,26 @@ private class ReqRepFilter
   @volatile private[this] var canDispatch: CanDispatch.State =
     CanDispatch.Unknown
 
-  private[this] def reply(msg: Try[Message]): Future[Response] = msg match {
-    case Return(Message.RreqOk(_, rep)) =>
-      Future.value(Response(ChannelBufferBuf.Owned(rep)))
+  private[this] def reply(msg: Try[Message]): Future[Response] =
+    msg match {
+      case Return(Message.RreqOk(_, rep)) =>
+        Future.value(Response(ChannelBufferBuf.Owned(rep)))
 
-    case Return(Message.RreqError(_, error)) =>
-      Future.exception(ServerApplicationError(error))
+      case Return(Message.RreqError(_, error)) =>
+        Future.exception(ServerApplicationError(error))
 
-    case Return(Message.RdispatchOk(_, _, rep)) =>
-      Future.value(Response(ChannelBufferBuf.Owned(rep)))
+      case Return(Message.RdispatchOk(_, _, rep)) =>
+        Future.value(Response(ChannelBufferBuf.Owned(rep)))
 
-    case Return(Message.RdispatchError(_, _, error)) =>
-      Future.exception(ServerApplicationError(error))
+      case Return(Message.RdispatchError(_, _, error)) =>
+        Future.exception(ServerApplicationError(error))
 
-    case Return(Message.RreqNack(_)) | Return(Message.RdispatchNack(_, _)) =>
-      FutureNackedException
+      case Return(Message.RreqNack(_)) | Return(Message.RdispatchNack(_, _)) =>
+        FutureNackedException
 
-    case t @ Throw(_) => Future.const(t.cast[Response])
-    case Return(m)    => Future.exception(Failure(s"unexpected response: $m"))
-  }
+      case t @ Throw(_) => Future.const(t.cast[Response])
+      case Return(m)    => Future.exception(Failure(s"unexpected response: $m"))
+    }
 
   def apply(
       req: Request,

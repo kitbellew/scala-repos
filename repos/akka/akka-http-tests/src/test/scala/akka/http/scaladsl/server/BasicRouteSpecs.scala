@@ -173,9 +173,10 @@ class BasicRouteSpecs extends RoutingSpec {
         a += "x";
         complete(a)
       }
-      def expect(route: Route, s: String) = Get() ~> route ~> check {
-        responseAs[String] shouldEqual s
-      }
+      def expect(route: Route, s: String) =
+        Get() ~> route ~> check {
+          responseAs[String] shouldEqual s
+        }
 
       expect(dynamicRoute, "x")
       expect(dynamicRoute, "xx")

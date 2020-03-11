@@ -13,11 +13,12 @@ object Main {
       type T <: Tuple2[BT[E, T], BT[E, T]]
     }]
 
-  def foo[E](tree: BinaryTree[E]): Unit = tree match {
-    case NonEmptyCons(_, tail) => {
-      tail match {
-        case NonEmptyCons(_, _) => {}
+  def foo[E](tree: BinaryTree[E]): Unit =
+    tree match {
+      case NonEmptyCons(_, tail) => {
+        tail match {
+          case NonEmptyCons(_, _) => {}
+        }
       }
     }
-  }
 }

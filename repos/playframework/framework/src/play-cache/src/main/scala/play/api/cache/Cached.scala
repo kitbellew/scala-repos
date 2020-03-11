@@ -220,8 +220,8 @@ final class CachedBuilder(
   /**
     * Compose the cache with an action
     */
-  def build(action: EssentialAction): EssentialAction = EssentialAction {
-    request =>
+  def build(action: EssentialAction): EssentialAction =
+    EssentialAction { request =>
       val resultKey = key(request)
       val etagKey = s"$resultKey-etag"
 
@@ -236,8 +236,7 @@ final class CachedBuilder(
         .orElse {
           // Otherwise try to serve the resource from the cache, if it has not yet expired
           cache.get[SerializableResult](resultKey).map {
-            sr: SerializableResult =>
-              Accumulator.done(sr.result)
+            sr: SerializableResult => Accumulator.done(sr.result)
           }
         }
         .getOrElse {
@@ -247,7 +246,7 @@ final class CachedBuilder(
           // Add cache information to the response, so clients can cache its content
           accumulatorResult.map(handleResult(_, etagKey, resultKey))
         }
-  }
+    }
 
   /**
     * Eternity is one year long. Duration zero means eternity.
@@ -315,11 +314,12 @@ final class CachedBuilder(
     * @param status the status code to check
     * @param duration how long should we cache the result for
     */
-  def includeStatus(status: Int, duration: Duration): CachedBuilder = compose {
-    case e if e.status == status => {
-      duration
+  def includeStatus(status: Int, duration: Duration): CachedBuilder =
+    compose {
+      case e if e.status == status => {
+        duration
+      }
     }
-  }
 
   /**
     * The returned cache will store all responses whatever they may contain
@@ -436,9 +436,10 @@ class UnboundCachedBuilder(
     *        we should cache for
     */
   def compose(alternative: PartialFunction[ResponseHeader, Duration])
-      : UnboundCachedBuilder = new UnboundCachedBuilder(
-    key = key,
-    caching = caching.orElse(alternative)
-  )
+      : UnboundCachedBuilder =
+    new UnboundCachedBuilder(
+      key = key,
+      caching = caching.orElse(alternative)
+    )
 
 }

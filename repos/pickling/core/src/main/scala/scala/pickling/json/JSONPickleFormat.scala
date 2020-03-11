@@ -197,26 +197,29 @@ package json {
       // Always undo this state.
       isIgnoringFields = false
     }
-    def beginCollection(length: Int): PBuilder = ignoringSharedRef {
-      putField("elems", b => ())
-      appendLine("[")
-      // indent()
-      this
-    }
-    def putElement(pickler: PBuilder => Unit): PBuilder = ignoringSharedRef {
-      if (!lastIsBracket)
-        appendLine(
-          ","
-        ) // TODO: very inefficient, but here we don't care much about performance
-      pickler(this)
-      this
-    }
-    def endCollection(): Unit = ignoringSharedRef {
-      appendLine()
-      append("]")
-      // unindent()
-      this
-    }
+    def beginCollection(length: Int): PBuilder =
+      ignoringSharedRef {
+        putField("elems", b => ())
+        appendLine("[")
+        // indent()
+        this
+      }
+    def putElement(pickler: PBuilder => Unit): PBuilder =
+      ignoringSharedRef {
+        if (!lastIsBracket)
+          appendLine(
+            ","
+          ) // TODO: very inefficient, but here we don't care much about performance
+        pickler(this)
+        this
+      }
+    def endCollection(): Unit =
+      ignoringSharedRef {
+        appendLine()
+        append("]")
+        // unindent()
+        this
+      }
     def result(): JSONPickle = {
       assert(tags.isEmpty, tags)
       JSONPickle(buf.toString)
@@ -304,33 +307,34 @@ package json {
       }
       nested
     }
-    def beginEntry(): String = withHints { hints =>
-      lastReadTag = {
-        if (datum == null)
-          FastTypeTag.Null.key
-        else if (hints.isElidedType) {
-          datum match {
-            case JSONObject(fields) if fields.contains("$ref") =>
-              FastTypeTag.Ref.key
-            case _ => hints.elidedType.get.key
-          }
-        } else {
-          datum match {
-            case JSONObject(fields) if fields.contains("$ref") =>
-              FastTypeTag.Ref.key
-            case JSONObject(fields) if fields.contains("$type") =>
-              fields("$type").asInstanceOf[String]
-            case JSONObject(fields) =>
-              throw new PicklingException(
-                s"Logic pickling error:  Could not find a type tag, and no elided type was hinted: ${fields}")
-            case value =>
-              throw new PicklingException(
-                s"Logic pickling error:  Could not find a type tag on primitive, and no elided type was hinted: $value")
+    def beginEntry(): String =
+      withHints { hints =>
+        lastReadTag = {
+          if (datum == null)
+            FastTypeTag.Null.key
+          else if (hints.isElidedType) {
+            datum match {
+              case JSONObject(fields) if fields.contains("$ref") =>
+                FastTypeTag.Ref.key
+              case _ => hints.elidedType.get.key
+            }
+          } else {
+            datum match {
+              case JSONObject(fields) if fields.contains("$ref") =>
+                FastTypeTag.Ref.key
+              case JSONObject(fields) if fields.contains("$type") =>
+                fields("$type").asInstanceOf[String]
+              case JSONObject(fields) =>
+                throw new PicklingException(
+                  s"Logic pickling error:  Could not find a type tag, and no elided type was hinted: ${fields}")
+              case value =>
+                throw new PicklingException(
+                  s"Logic pickling error:  Could not find a type tag on primitive, and no elided type was hinted: $value")
+            }
           }
         }
+        lastReadTag
       }
-      lastReadTag
-    }
     def atPrimitive: Boolean = primitives.contains(lastReadTag)
     def readPrimitive(): Any = {
       datum match {

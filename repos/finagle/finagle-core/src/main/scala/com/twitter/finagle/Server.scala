@@ -30,26 +30,28 @@ trait ListeningServer
   /**
     * Announce the given address and return a future to the announcement
     */
-  def announce(addr: String): Future[Announcement] = synchronized {
-    val public = InetSocketAddressUtil
-      .toPublic(boundAddress)
-      .asInstanceOf[InetSocketAddress]
-    if (isClosed)
-      Future.exception(new Exception("Cannot announce on a closed server"))
-    else {
-      val ann = Announcer.announce(public, addr)
-      announcements ::= ann
-      ann
+  def announce(addr: String): Future[Announcement] =
+    synchronized {
+      val public = InetSocketAddressUtil
+        .toPublic(boundAddress)
+        .asInstanceOf[InetSocketAddress]
+      if (isClosed)
+        Future.exception(new Exception("Cannot announce on a closed server"))
+      else {
+        val ann = Announcer.announce(public, addr)
+        announcements ::= ann
+        ann
+      }
     }
-  }
 
-  final def close(deadline: Time): Future[Unit] = synchronized {
-    isClosed = true
-    val collected = Future.collect(announcements)
-    collected flatMap { list =>
-      Closable.all(list: _*).close(deadline) before closeServer(deadline)
+  final def close(deadline: Time): Future[Unit] =
+    synchronized {
+      isClosed = true
+      val collected = Future.collect(announcements)
+      collected flatMap { list =>
+        Closable.all(list: _*).close(deadline) before closeServer(deadline)
+      }
     }
-  }
 }
 
 /**
@@ -63,9 +65,10 @@ trait ListeningServer
   * }}}
   */
 object NullServer extends ListeningServer with CloseAwaitably {
-  def closeServer(deadline: Time) = closeAwaitably {
-    Future.Done
-  }
+  def closeServer(deadline: Time) =
+    closeAwaitably {
+      Future.Done
+    }
   val boundAddress = new InetSocketAddress(0)
 }
 

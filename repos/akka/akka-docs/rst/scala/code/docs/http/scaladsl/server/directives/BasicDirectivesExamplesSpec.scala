@@ -363,11 +363,12 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
   }
   "mapResponseEntity" in {
     //#mapResponseEntity
-    def prefixEntity(entity: ResponseEntity): ResponseEntity = entity match {
-      case HttpEntity.Strict(contentType, data) =>
-        HttpEntity.Strict(contentType, ByteString("test") ++ data)
-      case _ => throw new IllegalStateException("Unexpected entity type")
-    }
+    def prefixEntity(entity: ResponseEntity): ResponseEntity =
+      entity match {
+        case HttpEntity.Strict(contentType, data) =>
+          HttpEntity.Strict(contentType, ByteString("test") ++ data)
+        case _ => throw new IllegalStateException("Unexpected entity type")
+      }
 
     val prefixWithTest: Directive0 = mapResponseEntity(prefixEntity)
     val route = prefixWithTest(complete("abc"))
@@ -787,15 +788,16 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
   }
   "mapUnmatchedPath-example" in {
     //#mapUnmatchedPath-example
-    def ignore456(path: Uri.Path) = path match {
-      case s @ Uri.Path.Segment(head, tail) if head.startsWith("456") =>
-        val newHead = head.drop(3)
-        if (newHead.isEmpty)
-          tail
-        else
-          s.copy(head = head.drop(3))
-      case _ => path
-    }
+    def ignore456(path: Uri.Path) =
+      path match {
+        case s @ Uri.Path.Segment(head, tail) if head.startsWith("456") =>
+          val newHead = head.drop(3)
+          if (newHead.isEmpty)
+            tail
+          else
+            s.copy(head = head.drop(3))
+        case _ => path
+      }
     val ignoring456 = mapUnmatchedPath(ignore456)
 
     val route =

@@ -245,14 +245,15 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
     var currentTrace: String = null
     val doTrace =
       compilerSettings.YoptTrace.isSetByUser && compilerSettings.YoptTrace.value == ownerClassName + "." + method.name
-    def traceIfChanged(optName: String): Unit = if (doTrace) {
-      val after = AsmUtils.textify(method)
-      if (currentTrace != after) {
-        println(s"after $optName")
-        println(after)
+    def traceIfChanged(optName: String): Unit =
+      if (doTrace) {
+        val after = AsmUtils.textify(method)
+        if (currentTrace != after) {
+          println(s"after $optName")
+          println(after)
+        }
+        currentTrace = after
       }
-      currentTrace = after
-    }
 
     /**
       * Runs the optimizations that depend on each other in a loop until reaching a fixpoint. See
@@ -546,10 +547,11 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
           case _ =>
         }
 
-      def removeFromCallGraph(insn: AbstractInsnNode): Unit = insn match {
-        case mi: MethodInsnNode => callGraph.removeCallsite(mi, method)
-        case _                  =>
-      }
+      def removeFromCallGraph(insn: AbstractInsnNode): Unit =
+        insn match {
+          case mi: MethodInsnNode => callGraph.removeCallsite(mi, method)
+          case _                  =>
+        }
 
       for ((oldOp, newOps) <- toReplace) {
         for (newOp <- newOps)
@@ -838,12 +840,13 @@ object LocalOptImpls {
     * lexically preceding label declaration.
     */
   def removeEmptyLineNumbers(method: MethodNode): Boolean = {
-    def isEmpty(node: AbstractInsnNode): Boolean = node.getNext match {
-      case null                  => true
-      case l: LineNumberNode     => true
-      case n if n.getOpcode >= 0 => false
-      case n                     => isEmpty(n)
-    }
+    def isEmpty(node: AbstractInsnNode): Boolean =
+      node.getNext match {
+        case null                  => true
+        case l: LineNumberNode     => true
+        case n if n.getOpcode >= 0 => false
+        case n                     => isEmpty(n)
+      }
 
     val initialSize = method.instructions.size
     val iterator = method.instructions.iterator()
@@ -965,19 +968,20 @@ object LocalOptImpls {
       *
       * If there's a loop of GOTOs, the initial jump is replaced by one of the labels in the loop.
       */
-    def collapseJumpChains(insn: AbstractInsnNode): Boolean = insn match {
-      case JumpNonJsr(jump) =>
-        val target = finalJumpTarget(jump)
-        if (jump.label == target)
-          false
-        else {
-          jump.label = target
-          _jumpTargets = null
-          true
-        }
+    def collapseJumpChains(insn: AbstractInsnNode): Boolean =
+      insn match {
+        case JumpNonJsr(jump) =>
+          val target = finalJumpTarget(jump)
+          if (jump.label == target)
+            false
+          else {
+            jump.label = target
+            _jumpTargets = null
+            true
+          }
 
-      case _ => false
-    }
+        case _ => false
+      }
 
     /**
       * Eliminates unnecessary jump instructions
@@ -987,16 +991,17 @@ object LocalOptImpls {
       *
       * Introduces 0, 1 or 2 POP instructions, depending on the number of values consumed by the Jump.
       */
-    def removeJumpToSuccessor(insn: AbstractInsnNode): Boolean = insn match {
-      case JumpNonJsr(jump)
-          if nextExecutableInstruction(
-            jump,
-            alsoKeep = Set(jump.label)) contains jump.label =>
-        replaceJumpByPop(jump)
-        true
+    def removeJumpToSuccessor(insn: AbstractInsnNode): Boolean =
+      insn match {
+        case JumpNonJsr(jump)
+            if nextExecutableInstruction(
+              jump,
+              alsoKeep = Set(jump.label)) contains jump.label =>
+          replaceJumpByPop(jump)
+          true
 
-      case _ => false
-    }
+        case _ => false
+      }
 
     /**
       * If the "else" part of a conditional branch is a simple GOTO, negates the conditional branch
@@ -1010,28 +1015,29 @@ object LocalOptImpls {
       */
     def simplifyBranchOverGoto(
         insn: AbstractInsnNode,
-        inTryBlock: Boolean): Boolean = insn match {
-      case ConditionalJump(jump) =>
-        // don't skip over jump targets, see doc comment
-        nextExecutableInstruction(jump, alsoKeep = jumpTargets) match {
-          case Some(Goto(goto)) =>
-            if (nextExecutableInstruction(
-                  goto,
-                  alsoKeep = Set(jump.label)) contains jump.label) {
-              val newJump =
-                new JumpInsnNode(negateJumpOpcode(jump.getOpcode), goto.label)
-              method.instructions.set(jump, newJump)
-              removeJumpFromMap(jump)
-              jumpInsns(newJump) = inTryBlock
-              replaceJumpByPop(goto)
-              true
-            } else
-              false
+        inTryBlock: Boolean): Boolean =
+      insn match {
+        case ConditionalJump(jump) =>
+          // don't skip over jump targets, see doc comment
+          nextExecutableInstruction(jump, alsoKeep = jumpTargets) match {
+            case Some(Goto(goto)) =>
+              if (nextExecutableInstruction(
+                    goto,
+                    alsoKeep = Set(jump.label)) contains jump.label) {
+                val newJump =
+                  new JumpInsnNode(negateJumpOpcode(jump.getOpcode), goto.label)
+                method.instructions.set(jump, newJump)
+                removeJumpFromMap(jump)
+                jumpInsns(newJump) = inTryBlock
+                replaceJumpByPop(goto)
+                true
+              } else
+                false
 
-          case _ => false
-        }
-      case _ => false
-    }
+            case _ => false
+          }
+        case _ => false
+      }
 
     /**
       * Inlines xRETURN and ATHROW

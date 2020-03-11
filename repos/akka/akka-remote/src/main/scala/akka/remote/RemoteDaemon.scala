@@ -141,33 +141,34 @@ private[akka] class RemoteSystemDaemon(
     }
   }
 
-  override def sendSystemMessage(message: SystemMessage): Unit = message match {
-    case DeathWatchNotification(
-          child: ActorRefWithCell with ActorRefScope,
-          _,
-          _) if child.isLocal ⇒
-      terminating.locked {
-        removeChild(child.path.elements.drop(1).mkString("/"), child)
-        val parent = child.getParent
-        if (removeChildParentNeedsUnwatch(parent, child))
-          parent.sendSystemMessage(Unwatch(parent, this))
-        terminationHookDoneWhenNoChildren()
-      }
-    case DeathWatchNotification(parent: ActorRef with ActorRefScope, _, _)
-        if !parent.isLocal ⇒
-      terminating.locked {
-        parent2children.remove(parent) match {
-          case null ⇒
-          case children ⇒
-            for (c ← children) {
-              system.stop(c)
-              removeChild(c.path.elements.drop(1).mkString("/"), c)
-            }
-            terminationHookDoneWhenNoChildren()
+  override def sendSystemMessage(message: SystemMessage): Unit =
+    message match {
+      case DeathWatchNotification(
+            child: ActorRefWithCell with ActorRefScope,
+            _,
+            _) if child.isLocal ⇒
+        terminating.locked {
+          removeChild(child.path.elements.drop(1).mkString("/"), child)
+          val parent = child.getParent
+          if (removeChildParentNeedsUnwatch(parent, child))
+            parent.sendSystemMessage(Unwatch(parent, this))
+          terminationHookDoneWhenNoChildren()
         }
-      }
-    case _ ⇒ super.sendSystemMessage(message)
-  }
+      case DeathWatchNotification(parent: ActorRef with ActorRefScope, _, _)
+          if !parent.isLocal ⇒
+        terminating.locked {
+          parent2children.remove(parent) match {
+            case null ⇒
+            case children ⇒
+              for (c ← children) {
+                system.stop(c)
+                removeChild(c.path.elements.drop(1).mkString("/"), c)
+              }
+              terminationHookDoneWhenNoChildren()
+          }
+        }
+      case _ ⇒ super.sendSystemMessage(message)
+    }
 
   override def !(msg: Any)(implicit sender: ActorRef = Actor.noSender): Unit =
     try msg match {
@@ -283,9 +284,10 @@ private[akka] class RemoteSystemDaemon(
           sender)
     }
 
-  def terminationHookDoneWhenNoChildren(): Unit = terminating.whileOn {
-    if (!hasChildren)
-      terminator.tell(TerminationHookDone, this)
-  }
+  def terminationHookDoneWhenNoChildren(): Unit =
+    terminating.whileOn {
+      if (!hasChildren)
+        terminator.tell(TerminationHookDone, this)
+    }
 
 }

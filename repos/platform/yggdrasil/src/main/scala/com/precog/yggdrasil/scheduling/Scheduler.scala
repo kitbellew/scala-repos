@@ -66,25 +66,28 @@ class ActorScheduler(scheduler: ActorRef, timeout: Timeout)
       context: EvaluationContext,
       source: Path,
       sink: Path,
-      timeoutMillis: Option[Long]): EitherT[Future, String, UUID] = EitherT {
-    (scheduler ? AddTask(
-      repeat,
-      apiKey,
-      authorities,
-      context,
-      source,
-      sink,
-      timeoutMillis)).mapTo[String \/ UUID]
-  }
+      timeoutMillis: Option[Long]): EitherT[Future, String, UUID] =
+    EitherT {
+      (scheduler ? AddTask(
+        repeat,
+        apiKey,
+        authorities,
+        context,
+        source,
+        sink,
+        timeoutMillis)).mapTo[String \/ UUID]
+    }
 
-  def deleteTask(id: UUID) = EitherT {
-    (scheduler ? DeleteTask(id)).mapTo[String \/ PrecogUnit]
-  }
+  def deleteTask(id: UUID) =
+    EitherT {
+      (scheduler ? DeleteTask(id)).mapTo[String \/ PrecogUnit]
+    }
 
-  def statusForTask(id: UUID, limit: Option[Int]) = EitherT {
-    (scheduler ? StatusForTask(id, limit))
-      .mapTo[String \/ Option[(ScheduledTask, Seq[ScheduledRunReport])]]
-  }
+  def statusForTask(id: UUID, limit: Option[Int]) =
+    EitherT {
+      (scheduler ? StatusForTask(id, limit))
+        .mapTo[String \/ Option[(ScheduledTask, Seq[ScheduledRunReport])]]
+    }
 }
 
 object NoopScheduler {

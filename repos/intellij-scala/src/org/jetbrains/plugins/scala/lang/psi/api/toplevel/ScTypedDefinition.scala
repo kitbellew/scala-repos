@@ -179,11 +179,12 @@ trait ScTypedDefinition extends ScNamedElement with TypingContextOwner {
   def isVar: Boolean = false
   def isVal: Boolean = false
 
-  def isAbstractMember: Boolean = ScalaPsiUtil.nameContext(this) match {
-    case _: ScFunctionDefinition | _: ScPatternDefinition |
-        _: ScVariableDefinition =>
-      false
-    case cp: ScClassParameter => false
-    case _                    => true
-  }
+  def isAbstractMember: Boolean =
+    ScalaPsiUtil.nameContext(this) match {
+      case _: ScFunctionDefinition | _: ScPatternDefinition |
+          _: ScVariableDefinition =>
+        false
+      case cp: ScClassParameter => false
+      case _                    => true
+    }
 }

@@ -43,44 +43,45 @@ private final class ApnsActor(certificate: InputStream, password: String)
 
   var manager: PushManager[SimpleApnsPushNotification] = _
 
-  def getManager = Option(manager) getOrElse {
-    val m = new PushManager[SimpleApnsPushNotification](
-      ApnsEnvironment.getSandboxEnvironment(),
-      SSLContextUtil.createDefaultSSLContext(certificate, password),
-      null, // Optional: custom event loop group
-      null, // Optional: custom ExecutorService for calling listeners
-      null, // Optional: custom BlockingQueue implementation
-      new PushManagerConfiguration(),
-      "ApplePushManager")
+  def getManager =
+    Option(manager) getOrElse {
+      val m = new PushManager[SimpleApnsPushNotification](
+        ApnsEnvironment.getSandboxEnvironment(),
+        SSLContextUtil.createDefaultSSLContext(certificate, password),
+        null, // Optional: custom event loop group
+        null, // Optional: custom ExecutorService for calling listeners
+        null, // Optional: custom BlockingQueue implementation
+        new PushManagerConfiguration(),
+        "ApplePushManager")
 
-    m.registerRejectedNotificationListener(
-      new RejectedNotificationListener[SimpleApnsPushNotification] {
-        override def handleRejectedNotification(
-            m: PushManager[_ <: SimpleApnsPushNotification],
-            notification: SimpleApnsPushNotification,
-            reason: RejectedNotificationReason) {
-          logger.error(
-            s"$notification was rejected with rejection reason $reason")
-        }
-      })
-    m.registerFailedConnectionListener(
-      new FailedConnectionListener[SimpleApnsPushNotification] {
-        override def handleFailedConnection(
-            m: PushManager[_ <: SimpleApnsPushNotification],
-            cause: Throwable) {
-          logger.error(s"Can't connect because $cause")
-          cause match {
-            case ssl: javax.net.ssl.SSLHandshakeException =>
-              logger.error(
-                s"This is probably a permanent failure, and we should shut down the manager")
-            case _ =>
+      m.registerRejectedNotificationListener(
+        new RejectedNotificationListener[SimpleApnsPushNotification] {
+          override def handleRejectedNotification(
+              m: PushManager[_ <: SimpleApnsPushNotification],
+              notification: SimpleApnsPushNotification,
+              reason: RejectedNotificationReason) {
+            logger.error(
+              s"$notification was rejected with rejection reason $reason")
           }
-        }
-      })
-    m.start()
-    manager = m
-    m
-  }
+        })
+      m.registerFailedConnectionListener(
+        new FailedConnectionListener[SimpleApnsPushNotification] {
+          override def handleFailedConnection(
+              m: PushManager[_ <: SimpleApnsPushNotification],
+              cause: Throwable) {
+            logger.error(s"Can't connect because $cause")
+            cause match {
+              case ssl: javax.net.ssl.SSLHandshakeException =>
+                logger.error(
+                  s"This is probably a permanent failure, and we should shut down the manager")
+              case _ =>
+            }
+          }
+        })
+      m.start()
+      manager = m
+      m
+    }
 
   override def postStop() {
     Option(manager).foreach(_.shutdown())

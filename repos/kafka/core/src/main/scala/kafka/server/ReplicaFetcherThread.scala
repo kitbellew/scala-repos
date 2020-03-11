@@ -411,10 +411,11 @@ object ReplicaFetcherThread {
 
     def highWatermark: Long = underlying.highWatermark
 
-    def exception: Option[Throwable] = Errors.forCode(errorCode) match {
-      case Errors.NONE => None
-      case e           => Some(e.exception)
-    }
+    def exception: Option[Throwable] =
+      Errors.forCode(errorCode) match {
+        case Errors.NONE => None
+        case e           => Some(e.exception)
+      }
 
   }
 

@@ -366,35 +366,37 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
 
     // we are only interested in the class references in the descriptor, so we can skip over
     // primitives and the brackets of array descriptors
-    def visitDescriptor(desc: String): Unit = (desc.charAt(0): @switch) match {
-      case '(' =>
-        val internalNames = mutable.ListBuffer.empty[String]
-        var i = 1
-        while (i < desc.length) {
-          if (desc.charAt(i) == 'L') {
-            val start = i + 1 // skip the L
-            while (desc.charAt(i) != ';')
-              i += 1
-            internalNames append desc.substring(start, i)
+    def visitDescriptor(desc: String): Unit =
+      (desc.charAt(0): @switch) match {
+        case '(' =>
+          val internalNames = mutable.ListBuffer.empty[String]
+          var i = 1
+          while (i < desc.length) {
+            if (desc.charAt(i) == 'L') {
+              val start = i + 1 // skip the L
+              while (desc.charAt(i) != ';')
+                i += 1
+              internalNames append desc.substring(start, i)
+            }
+            // skips over '[', ')', primitives
+            i += 1
           }
-          // skips over '[', ')', primitives
-          i += 1
-        }
-        internalNames foreach visitInternalName
+          internalNames foreach visitInternalName
 
-      case 'L' =>
-        visitInternalName(desc.substring(1, desc.length - 1))
+        case 'L' =>
+          visitInternalName(desc.substring(1, desc.length - 1))
 
-      case '[' =>
-        visitInternalNameOrArrayReference(desc)
+        case '[' =>
+          visitInternalNameOrArrayReference(desc)
 
-      case _ => // skip over primitive types
-    }
+        case _ => // skip over primitive types
+      }
 
-    def visitConstant(const: AnyRef): Unit = const match {
-      case t: Type => visitDescriptor(t.getDescriptor)
-      case _       =>
-    }
+    def visitConstant(const: AnyRef): Unit =
+      const match {
+        case t: Type => visitDescriptor(t.getDescriptor)
+        case _       =>
+      }
 
     // in principle we could references to annotation types, as they only end up as strings in the
     // constant pool, not as class references. however, the java compiler still includes nested

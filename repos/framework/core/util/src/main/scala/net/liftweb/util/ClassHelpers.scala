@@ -405,9 +405,10 @@ trait ClassHelpers { self: ControlHelpers =>
     *
     * @return a Full can with the instance or a Failure if the instance can't be created
     */
-  def instantiate[C](clz: Class[C]): Box[C] = tryo {
-    clz.newInstance
-  }
+  def instantiate[C](clz: Class[C]): Box[C] =
+    tryo {
+      clz.newInstance
+    }
 
   /**
     * Create a function (the 'invoker') which will trigger any public, parameterless method

@@ -217,26 +217,27 @@ private[http] object OutgoingConnectionBlueprint {
           }
         }
 
-        def onPush(): Unit = grab(in) match {
-          case ResponseStart(
-                statusCode,
-                protocol,
-                headers,
-                entityCreator,
-                closeRequested) ⇒
-            val entity = createEntity(
-              entityCreator) withSizeLimit parserSettings.maxContentLength
-            push(out, HttpResponse(statusCode, headers, entity, protocol))
-            if (closeRequested)
-              completeStage()
+        def onPush(): Unit =
+          grab(in) match {
+            case ResponseStart(
+                  statusCode,
+                  protocol,
+                  headers,
+                  entityCreator,
+                  closeRequested) ⇒
+              val entity = createEntity(
+                entityCreator) withSizeLimit parserSettings.maxContentLength
+              push(out, HttpResponse(statusCode, headers, entity, protocol))
+              if (closeRequested)
+                completeStage()
 
-          case MessageStartError(_, info) ⇒
-            throw IllegalResponseException(info)
+            case MessageStartError(_, info) ⇒
+              throw IllegalResponseException(info)
 
-          case other ⇒
-            throw new IllegalStateException(
-              s"ResponseStart expected but $other received.")
-        }
+            case other ⇒
+              throw new IllegalStateException(
+                s"ResponseStart expected but $other received.")
+          }
 
         def onPull(): Unit = {
           if (!entitySubstreamStarted)
@@ -258,15 +259,16 @@ private[http] object OutgoingConnectionBlueprint {
 
         // with a strict message there still is a MessageEnd to wait for
         lazy val waitForMessageEnd = new InHandler with OutHandler {
-          def onPush(): Unit = grab(in) match {
-            case MessageEnd ⇒
-              if (isAvailable(out))
-                pull(in)
-              setIdleHandlers()
-            case other ⇒
-              throw new IllegalStateException(
-                s"MessageEnd expected but $other received.")
-          }
+          def onPush(): Unit =
+            grab(in) match {
+              case MessageEnd ⇒
+                if (isAvailable(out))
+                  pull(in)
+                setIdleHandlers()
+              case other ⇒
+                throw new IllegalStateException(
+                  s"MessageEnd expected but $other received.")
+            }
 
           override def onPull(): Unit = {
             // ignore pull as we will anyways pull when we get MessageEnd
@@ -276,19 +278,20 @@ private[http] object OutgoingConnectionBlueprint {
         // with a streamed entity we push the chunks into the substream
         // until we reach MessageEnd
         private lazy val substreamHandler = new InHandler with OutHandler {
-          override def onPush(): Unit = grab(in) match {
-            case MessageEnd ⇒
-              entitySource.complete()
-              entitySource = null
-              // there was a deferred pull from upstream
-              // while we were streaming the entity
-              if (isAvailable(out))
-                pull(in)
-              setIdleHandlers()
+          override def onPush(): Unit =
+            grab(in) match {
+              case MessageEnd ⇒
+                entitySource.complete()
+                entitySource = null
+                // there was a deferred pull from upstream
+                // while we were streaming the entity
+                if (isAvailable(out))
+                  pull(in)
+                setIdleHandlers()
 
-            case messagePart ⇒
-              entitySource.push(messagePart)
-          }
+              case messagePart ⇒
+                entitySource.push(messagePart)
+            }
 
           override def onPull(): Unit = pull(in)
 

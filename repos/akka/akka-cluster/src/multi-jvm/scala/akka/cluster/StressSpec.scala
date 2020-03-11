@@ -341,9 +341,10 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
 
     def maxDuration = results.map(_.duration).max
 
-    def totalGossipStats = results.foldLeft(GossipStats()) {
-      _ :+ _.clusterStats
-    }
+    def totalGossipStats =
+      results.foldLeft(GossipStats()) {
+        _ :+ _.clusterStats
+      }
 
     def formatMetrics: String = {
       import akka.cluster.Member.addressOrdering
@@ -367,10 +368,11 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
       s"${nodeMetrics.address}\t${heap}\t${cpuAndLoad}"
     }
 
-    def format(opt: Option[Double]) = opt match {
-      case None ⇒ "N/A"
-      case Some(x) ⇒ x.form
-    }
+    def format(opt: Option[Double]) =
+      opt match {
+        case None ⇒ "N/A"
+        case Some(x) ⇒ x.form
+      }
 
     def formatPhi: String = {
       if (phiValuesObservedByNode.isEmpty)
@@ -450,14 +452,15 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
     var phiByNode = emptyPhiByNode
     var nodes = Set.empty[Address]
 
-    def phi(address: Address): Double = cluster.failureDetector match {
-      case reg: DefaultFailureDetectorRegistry[Address] ⇒
-        reg.failureDetector(address) match {
-          case Some(fd: PhiAccrualFailureDetector) ⇒ fd.phi
-          case _ ⇒ 0.0
-        }
-      case _ ⇒ 0.0
-    }
+    def phi(address: Address): Double =
+      cluster.failureDetector match {
+        case reg: DefaultFailureDetectorRegistry[Address] ⇒
+          reg.failureDetector(address) match {
+            case Some(fd: PhiAccrualFailureDetector) ⇒ fd.phi
+            case _ ⇒ 0.0
+          }
+        case _ ⇒ 0.0
+      }
 
     import context.dispatcher
     val checkPhiTask =

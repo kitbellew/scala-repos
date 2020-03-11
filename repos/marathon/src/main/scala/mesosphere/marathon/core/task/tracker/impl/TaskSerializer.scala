@@ -47,15 +47,16 @@ object TaskSerializer {
 
     def appVersion = Timestamp(proto.getVersion)
 
-    def taskStatus = Task.Status(
-      stagedAt = Timestamp(proto.getStagedAt),
-      startedAt =
-        if (proto.hasStartedAt)
-          Some(Timestamp(proto.getStartedAt))
-        else
-          None,
-      mesosStatus = opt(_.hasStatus, _.getStatus)
-    )
+    def taskStatus =
+      Task.Status(
+        stagedAt = Timestamp(proto.getStagedAt),
+        startedAt =
+          if (proto.hasStartedAt)
+            Some(Timestamp(proto.getStartedAt))
+          else
+            None,
+        mesosStatus = opt(_.hasStatus, _.getStatus)
+      )
 
     def networking =
       if (proto.getPortsCount != 0) {

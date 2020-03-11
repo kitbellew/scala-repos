@@ -66,9 +66,10 @@ class EntityStoreCache[T <: MarathonState[_, T]](store: EntityStore[T])
       store.modify(key, onModified)(update)
     }
 
-  override def names(): Future[Seq[String]] = directOrCached(store.names()) {
-    cache => Future.successful(cache.keySet.toSeq)
-  }
+  override def names(): Future[Seq[String]] =
+    directOrCached(store.names()) { cache =>
+      Future.successful(cache.keySet.toSeq)
+    }
 
   override def expunge(
       key: String,

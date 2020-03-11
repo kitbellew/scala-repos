@@ -13,10 +13,11 @@ object Parsing {
 
   sealed trait MatchInfo[A] {
     def content: A
-    def isMatch = this match {
-      case Matched(_)   => true
-      case Unmatched(_) => false
-    }
+    def isMatch =
+      this match {
+        case Matched(_)   => true
+        case Unmatched(_) => false
+      }
   }
   case class Matched[A](val content: A) extends MatchInfo[A]
   case class Unmatched[A](val content: A) extends MatchInfo[A]

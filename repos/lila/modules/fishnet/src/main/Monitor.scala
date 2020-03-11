@@ -22,9 +22,10 @@ private final class Monitor(
       depth: Int,
       pvSize: Int)
 
-  private def sumOf[A](ints: List[A])(f: A => Option[Int]) = ints.foldLeft(0) {
-    case (acc, a) => acc + f(a).getOrElse(0)
-  }
+  private def sumOf[A](ints: List[A])(f: A => Option[Int]) =
+    ints.foldLeft(0) {
+      case (acc, a) => acc + f(a).getOrElse(0)
+    }
 
   private[fishnet] def analysis(
       work: Work.Analysis,

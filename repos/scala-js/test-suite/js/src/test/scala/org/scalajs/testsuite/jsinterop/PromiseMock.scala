@@ -89,10 +89,11 @@ object PromiseMock {
     private case class Fulfilled[+A](value: A) extends State[A]
     private case class Rejected(reason: Any) extends State[Nothing]
 
-    private def isNotAnObject(x: Any): Boolean = x match {
-      case null | () | _: Double | _: Boolean | _: String => true
-      case _                                              => false
-    }
+    private def isNotAnObject(x: Any): Boolean =
+      x match {
+        case null | () | _: Double | _: Boolean | _: String => true
+        case _                                              => false
+      }
 
     private def isCallable(x: Any): Boolean =
       js.typeOf(x.asInstanceOf[js.Any]) == "function"

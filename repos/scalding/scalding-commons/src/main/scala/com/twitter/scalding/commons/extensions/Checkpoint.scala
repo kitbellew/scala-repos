@@ -145,9 +145,10 @@ object Checkpoint {
       } else {
         baseValue
       }
-    def isTrue: Boolean = value.exists {
-      _.toLowerCase != "false"
-    }
+    def isTrue: Boolean =
+      value.exists {
+        _.toLowerCase != "false"
+      }
   }
 
   // Returns the filename to use for the given checkpoint, or None if this

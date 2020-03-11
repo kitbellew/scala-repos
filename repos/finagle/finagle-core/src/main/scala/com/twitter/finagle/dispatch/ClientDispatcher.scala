@@ -133,7 +133,8 @@ class SerialClientDispatcher[Req, Rep](
       .unit
 
   protected def write(req: Req): Future[Unit] = trans.write(req)
-  protected def read(permit: Permit): Future[Rep] = trans.read().ensure {
-    permit.release()
-  }
+  protected def read(permit: Permit): Future[Rep] =
+    trans.read().ensure {
+      permit.release()
+    }
 }

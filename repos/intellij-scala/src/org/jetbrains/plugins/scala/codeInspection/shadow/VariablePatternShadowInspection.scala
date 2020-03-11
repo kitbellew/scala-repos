@@ -43,10 +43,11 @@ class VariablePatternShadowInspection
       val results = dummyRef
         .asInstanceOf[ResolvableStableCodeReferenceElement]
         .doResolve(dummyRef, proc)
-      def isAccessible(rr: ResolveResult): Boolean = rr.getElement match {
-        case named: PsiNamedElement => proc.isAccessible(named, refPat)
-        case _                      => false
-      }
+      def isAccessible(rr: ResolveResult): Boolean =
+        rr.getElement match {
+          case named: PsiNamedElement => proc.isAccessible(named, refPat)
+          case _                      => false
+        }
       if (results.exists(isAccessible)) {
         holder.registerProblem(
           refPat.nameId,

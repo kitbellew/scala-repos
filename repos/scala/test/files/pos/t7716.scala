@@ -12,8 +12,9 @@ object Test {
       case _ => println("hi")
     }
 
-    def f(ta: TA[_]) = ta match {
-      case _ => "hi"
-    }
+    def f(ta: TA[_]) =
+      ta match {
+        case _ => "hi"
+      }
   }
 }

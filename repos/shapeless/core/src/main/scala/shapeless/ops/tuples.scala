@@ -221,10 +221,11 @@ object tuple {
     implicit def filterTuple[T, L1 <: HList, U, L2 <: HList](implicit
         gen: Generic.Aux[T, L1],
         filter: hl.Filter.Aux[L1, U, L2],
-        tp: hl.Tupler[L2]): Aux[T, U, tp.Out] = new Filter[T, U] {
-      type Out = tp.Out
-      def apply(t: T): Out = tp(filter(gen.to(t)))
-    }
+        tp: hl.Tupler[L2]): Aux[T, U, tp.Out] =
+      new Filter[T, U] {
+        type Out = tp.Out
+        def apply(t: T): Out = tp(filter(gen.to(t)))
+      }
   }
 
   /**
@@ -245,10 +246,11 @@ object tuple {
     implicit def filterNotTuple[T, L1 <: HList, U, L2 <: HList](implicit
         gen: Generic.Aux[T, L1],
         filterNot: hl.FilterNot.Aux[L1, U, L2],
-        tp: hl.Tupler[L2]): Aux[T, U, tp.Out] = new FilterNot[T, U] {
-      type Out = tp.Out
-      def apply(t: T): Out = tp(filterNot(gen.to(t)))
-    }
+        tp: hl.Tupler[L2]): Aux[T, U, tp.Out] =
+      new FilterNot[T, U] {
+        type Out = tp.Out
+        def apply(t: T): Out = tp(filterNot(gen.to(t)))
+      }
   }
 
   /**
@@ -270,13 +272,14 @@ object tuple {
     implicit def removeTuple[T, L1 <: HList, U, L2 <: HList](implicit
         gen: Generic.Aux[T, L1],
         remove: hl.Remove.Aux[L1, U, (U, L2)],
-        tp: hl.Tupler[L2]): Aux[T, U, (U, tp.Out)] = new Remove[T, U] {
-      type Out = (U, tp.Out)
-      def apply(t: T): Out = {
-        val (u, rem) = remove(gen.to(t));
-        (u, tp(rem))
+        tp: hl.Tupler[L2]): Aux[T, U, (U, tp.Out)] =
+      new Remove[T, U] {
+        type Out = (U, tp.Out)
+        def apply(t: T): Out = {
+          val (u, rem) = remove(gen.to(t));
+          (u, tp(rem))
+        }
       }
-    }
   }
 
   /**
@@ -332,13 +335,14 @@ object tuple {
     implicit def replaceTuple[T, L1 <: HList, U, V, L2 <: HList](implicit
         gen: Generic.Aux[T, L1],
         replace: hl.Replacer.Aux[L1, V, U, (V, L2)],
-        tp: hl.Tupler[L2]): Aux[T, U, V, (V, tp.Out)] = new Replacer[T, U, V] {
-      type Out = (V, tp.Out)
-      def apply(t: T, u: U): Out = {
-        val (v, rep) = replace(gen.to(t), u);
-        (v, tp(rep))
+        tp: hl.Tupler[L2]): Aux[T, U, V, (V, tp.Out)] =
+      new Replacer[T, U, V] {
+        type Out = (V, tp.Out)
+        def apply(t: T, u: U): Out = {
+          val (v, rep) = replace(gen.to(t), u);
+          (v, tp(rep))
+        }
       }
-    }
   }
 
   /**
@@ -362,13 +366,14 @@ object tuple {
         implicit
         gen: Generic.Aux[T, L1],
         replaceAt: hl.ReplaceAt.Aux[L1, N, U, (V, L2)],
-        tp: hl.Tupler[L2]): Aux[T, N, U, (V, tp.Out)] = new ReplaceAt[T, N, U] {
-      type Out = (V, tp.Out)
-      def apply(t: T, u: U): Out = {
-        val (v, rep) = replaceAt(gen.to(t), u);
-        (v, tp(rep))
+        tp: hl.Tupler[L2]): Aux[T, N, U, (V, tp.Out)] =
+      new ReplaceAt[T, N, U] {
+        type Out = (V, tp.Out)
+        def apply(t: T, u: U): Out = {
+          val (v, rep) = replaceAt(gen.to(t), u);
+          (v, tp(rep))
+        }
       }
-    }
   }
 
   /**
@@ -392,13 +397,14 @@ object tuple {
     implicit def modifyTuple[T, L1 <: HList, U, V, L2 <: HList](implicit
         gen: Generic.Aux[T, L1],
         modify: hl.Modifier.Aux[L1, U, V, (U, L2)],
-        tp: hl.Tupler[L2]): Aux[T, U, V, (U, tp.Out)] = new Modifier[T, U, V] {
-      type Out = (U, tp.Out)
-      def apply(t: T, f: U => V): Out = {
-        val (u, rep) = modify(gen.to(t), f);
-        (u, tp(rep))
+        tp: hl.Tupler[L2]): Aux[T, U, V, (U, tp.Out)] =
+      new Modifier[T, U, V] {
+        type Out = (U, tp.Out)
+        def apply(t: T, f: U => V): Out = {
+          val (u, rep) = modify(gen.to(t), f);
+          (u, tp(rep))
+        }
       }
-    }
   }
 
   /**
@@ -424,15 +430,16 @@ object tuple {
         gen: Generic.Aux[T, L],
         modifier: hl.ModifierAt.Aux[L, N, U, V, (S, OutL)],
         tup: hl.Tupler[OutL]
-    ): Aux[T, N, U, V, (S, tup.Out)] = new ModifierAt[T, N, U, V] {
+    ): Aux[T, N, U, V, (S, tup.Out)] =
+      new ModifierAt[T, N, U, V] {
 
-      type Out = (S, tup.Out)
+        type Out = (S, tup.Out)
 
-      def apply(t: T, f: U => V) = {
-        val (u, rep) = modifier(gen.to(t), f);
-        (u, tup(rep))
+        def apply(t: T, f: U => V) = {
+          val (u, rep) = modifier(gen.to(t), f);
+          (u, tup(rep))
+        }
       }
-    }
   }
 
   /**
@@ -1341,11 +1348,12 @@ object tuple {
     implicit def collect[T, L <: HList, L2 <: HList, P <: Poly](implicit
         gen: Generic.Aux[T, L],
         collect: hl.Collect.Aux[L, P, L2],
-        tp: hl.Tupler[L2]): Aux[T, P, tp.Out] = new Collect[T, P] {
-      type Out = tp.Out
+        tp: hl.Tupler[L2]): Aux[T, P, tp.Out] =
+      new Collect[T, P] {
+        type Out = tp.Out
 
-      def apply(t: T): tp.Out = tp(collect(gen.to(t)))
-    }
+        def apply(t: T): tp.Out = tp(collect(gen.to(t)))
+      }
   }
 
   /**
@@ -1368,11 +1376,12 @@ object tuple {
         gen: Generic.Aux[T, L],
         collect: hl.Permutations.Aux[L, L2],
         mapper: hl.Mapper.Aux[tupled.type, L2, L3],
-        tp: hl.Tupler[L3]): Aux[T, tp.Out] = new Permutations[T] {
-      type Out = tp.Out
+        tp: hl.Tupler[L3]): Aux[T, tp.Out] =
+      new Permutations[T] {
+        type Out = tp.Out
 
-      def apply(t: T): Out = tp(collect(gen.to(t)).map(tupled))
-    }
+        def apply(t: T): Out = tp(collect(gen.to(t)).map(tupled))
+      }
   }
 
   /**
@@ -1394,11 +1403,12 @@ object tuple {
     implicit def tupleRotateLeft[T, N <: Nat, L <: HList, L2 <: HList](implicit
         gen: Generic.Aux[T, L],
         rotateLeft: hl.RotateLeft.Aux[L, N, L2],
-        tp: hl.Tupler[L2]): Aux[T, N, tp.Out] = new RotateLeft[T, N] {
-      type Out = tp.Out
+        tp: hl.Tupler[L2]): Aux[T, N, tp.Out] =
+      new RotateLeft[T, N] {
+        type Out = tp.Out
 
-      def apply(t: T): Out = tp(rotateLeft(gen.to(t)))
-    }
+        def apply(t: T): Out = tp(rotateLeft(gen.to(t)))
+      }
   }
 
   /**
@@ -1420,11 +1430,12 @@ object tuple {
     implicit def tupleRotateRight[T, N <: Nat, L <: HList, L2 <: HList](implicit
         gen: Generic.Aux[T, L],
         rotateRight: hl.RotateRight.Aux[L, N, L2],
-        tp: hl.Tupler[L2]): Aux[T, N, tp.Out] = new RotateRight[T, N] {
-      type Out = tp.Out
+        tp: hl.Tupler[L2]): Aux[T, N, tp.Out] =
+      new RotateRight[T, N] {
+        type Out = tp.Out
 
-      def apply(t: T): Out = tp(rotateRight(gen.to(t)))
-    }
+        def apply(t: T): Out = tp(rotateRight(gen.to(t)))
+      }
   }
 
   /**
@@ -1570,11 +1581,12 @@ object tuple {
         gen: Generic.Aux[T, L],
         grouper: hl.Grouper.Aux[L, N, Step, OutL],
         tupler: hl.Tupler[OutL]
-    ): Aux[T, N, Step, tupler.Out] = new Grouper[T, N, Step] {
-      type Out = tupler.Out
+    ): Aux[T, N, Step, tupler.Out] =
+      new Grouper[T, N, Step] {
+        type Out = tupler.Out
 
-      def apply(t: T): Out = tupler(grouper(gen.to(t)))
-    }
+        def apply(t: T): Out = tupler(grouper(gen.to(t)))
+      }
 
   }
 
@@ -1614,12 +1626,13 @@ object tuple {
         genPad: Generic.Aux[Pad, PadL],
         grouper: hl.PaddedGrouper.Aux[L, N, Step, PadL, OutL],
         tupler: hl.Tupler[OutL]
-    ): Aux[T, N, Step, Pad, tupler.Out] = new PaddedGrouper[T, N, Step, Pad] {
-      type Out = tupler.Out
+    ): Aux[T, N, Step, Pad, tupler.Out] =
+      new PaddedGrouper[T, N, Step, Pad] {
+        type Out = tupler.Out
 
-      def apply(t: T, pad: Pad): Out =
-        tupler(grouper(genL.to(t), genPad.to(pad)))
-    }
+        def apply(t: T, pad: Pad): Out =
+          tupler(grouper(genL.to(t), genPad.to(pad)))
+      }
 
   }
 

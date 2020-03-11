@@ -99,27 +99,29 @@ object Producer {
   /**
     * Returns true if this node does not directly change the data (does not apply any transformation)
     */
-  def isNoOp[P <: Platform[P]](p: Producer[P, Any]): Boolean = p match {
-    case IdentityKeyedProducer(_) => true
-    case NamedProducer(_, _)      => true
-    case MergedProducer(_, _)     => true
-    case AlsoProducer(_, _)       => true
-    // The rest do something
-    case Source(_)                     => false
-    case OptionMappedProducer(_, _)    => false
-    case FlatMappedProducer(_, _)      => false
-    case KeyFlatMappedProducer(_, _)   => false
-    case ValueFlatMappedProducer(_, _) => false
-    case WrittenProducer(_, _)         => false
-    case LeftJoinedProducer(_, _)      => false
-    case Summer(_, _, _)               => false
-  }
+  def isNoOp[P <: Platform[P]](p: Producer[P, Any]): Boolean =
+    p match {
+      case IdentityKeyedProducer(_) => true
+      case NamedProducer(_, _)      => true
+      case MergedProducer(_, _)     => true
+      case AlsoProducer(_, _)       => true
+      // The rest do something
+      case Source(_)                     => false
+      case OptionMappedProducer(_, _)    => false
+      case FlatMappedProducer(_, _)      => false
+      case KeyFlatMappedProducer(_, _)   => false
+      case ValueFlatMappedProducer(_, _) => false
+      case WrittenProducer(_, _)         => false
+      case LeftJoinedProducer(_, _)      => false
+      case Summer(_, _, _)               => false
+    }
 
   /** returns true if this Producer is an output of the DAG (Summer and WrittenProducer) */
-  def isOutput[P <: Platform[P]](p: Producer[P, Any]): Boolean = p match {
-    case Summer(_, _, _) | WrittenProducer(_, _) => true
-    case _                                       => false
-  }
+  def isOutput[P <: Platform[P]](p: Producer[P, Any]): Boolean =
+    p match {
+      case Summer(_, _, _) | WrittenProducer(_, _) => true
+      case _                                       => false
+    }
 
   /**
     * Return all dependencies of a given node in depth first, left first order.

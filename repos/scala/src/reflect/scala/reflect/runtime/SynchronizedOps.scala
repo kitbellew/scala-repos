@@ -24,33 +24,41 @@ private[reflect] trait SynchronizedOps
       new BaseTypeSeq(parents, elems)
 
   trait SynchronizedBaseTypeSeq extends BaseTypeSeq {
-    override def apply(i: Int): Type = gilSynchronized {
-      super.apply(i)
-    }
-    override def rawElem(i: Int) = gilSynchronized {
-      super.rawElem(i)
-    }
-    override def typeSymbol(i: Int): Symbol = gilSynchronized {
-      super.typeSymbol(i)
-    }
-    override def toList: List[Type] = gilSynchronized {
-      super.toList
-    }
-    override def copy(head: Type, offset: Int): BaseTypeSeq = gilSynchronized {
-      super.copy(head, offset)
-    }
-    override def map(f: Type => Type): BaseTypeSeq = gilSynchronized {
-      super.map(f)
-    }
-    override def exists(p: Type => Boolean): Boolean = gilSynchronized {
-      super.exists(p)
-    }
+    override def apply(i: Int): Type =
+      gilSynchronized {
+        super.apply(i)
+      }
+    override def rawElem(i: Int) =
+      gilSynchronized {
+        super.rawElem(i)
+      }
+    override def typeSymbol(i: Int): Symbol =
+      gilSynchronized {
+        super.typeSymbol(i)
+      }
+    override def toList: List[Type] =
+      gilSynchronized {
+        super.toList
+      }
+    override def copy(head: Type, offset: Int): BaseTypeSeq =
+      gilSynchronized {
+        super.copy(head, offset)
+      }
+    override def map(f: Type => Type): BaseTypeSeq =
+      gilSynchronized {
+        super.map(f)
+      }
+    override def exists(p: Type => Boolean): Boolean =
+      gilSynchronized {
+        super.exists(p)
+      }
     override lazy val maxDepth = gilSynchronized {
       maxDepthOfElems
     }
-    override def toString = gilSynchronized {
-      super.toString
-    }
+    override def toString =
+      gilSynchronized {
+        super.toString
+      }
 
     override def lateMap(f: Type => Type): BaseTypeSeq =
       // only need to synchronize BaseTypeSeqs if they contain refined types
@@ -75,35 +83,45 @@ private[reflect] trait SynchronizedOps
         syncLock.synchronized {
           body
         }
-    override def isEmpty: Boolean = syncLockSynchronized {
-      super.isEmpty
-    }
-    override def size: Int = syncLockSynchronized {
-      super.size
-    }
-    override def enter[T <: Symbol](sym: T): T = syncLockSynchronized {
-      super.enter(sym)
-    }
-    override def rehash(sym: Symbol, newname: Name) = syncLockSynchronized {
-      super.rehash(sym, newname)
-    }
-    override def unlink(e: ScopeEntry) = syncLockSynchronized {
-      super.unlink(e)
-    }
-    override def unlink(sym: Symbol) = syncLockSynchronized {
-      super.unlink(sym)
-    }
-    override def lookupAll(name: Name) = syncLockSynchronized {
-      super.lookupAll(name)
-    }
-    override def lookupEntry(name: Name) = syncLockSynchronized {
-      super.lookupEntry(name)
-    }
-    override def lookupNextEntry(entry: ScopeEntry) = syncLockSynchronized {
-      super.lookupNextEntry(entry)
-    }
-    override def toList: List[Symbol] = syncLockSynchronized {
-      super.toList
-    }
+    override def isEmpty: Boolean =
+      syncLockSynchronized {
+        super.isEmpty
+      }
+    override def size: Int =
+      syncLockSynchronized {
+        super.size
+      }
+    override def enter[T <: Symbol](sym: T): T =
+      syncLockSynchronized {
+        super.enter(sym)
+      }
+    override def rehash(sym: Symbol, newname: Name) =
+      syncLockSynchronized {
+        super.rehash(sym, newname)
+      }
+    override def unlink(e: ScopeEntry) =
+      syncLockSynchronized {
+        super.unlink(e)
+      }
+    override def unlink(sym: Symbol) =
+      syncLockSynchronized {
+        super.unlink(sym)
+      }
+    override def lookupAll(name: Name) =
+      syncLockSynchronized {
+        super.lookupAll(name)
+      }
+    override def lookupEntry(name: Name) =
+      syncLockSynchronized {
+        super.lookupEntry(name)
+      }
+    override def lookupNextEntry(entry: ScopeEntry) =
+      syncLockSynchronized {
+        super.lookupNextEntry(entry)
+      }
+    override def toList: List[Symbol] =
+      syncLockSynchronized {
+        super.toList
+      }
   }
 }

@@ -131,10 +131,12 @@ trait ScParameter
     clause.isImplicit
   }
 
-  def index = getParent.getParent match {
-    case parameters: ScParameters => parameters.params.indexOf(this)
-    case _                        => getParent.asInstanceOf[ScParameterClause].parameters.indexOf(this)
-  }
+  def index =
+    getParent.getParent match {
+      case parameters: ScParameters => parameters.params.indexOf(this)
+      case _ =>
+        getParent.asInstanceOf[ScParameterClause].parameters.indexOf(this)
+    }
 
   override def getName: String = {
     val res = super.getName
@@ -162,58 +164,60 @@ trait ScParameter
       getProject,
       getResolveScope)
 
-  def isAnonymousParameter: Boolean = getContext match {
-    case clause: ScParameterClause =>
-      clause.getContext.getContext match {
-        case f: ScFunctionExpr => true
-        case _                 => false
-      }
-    case _ => false
-  }
+  def isAnonymousParameter: Boolean =
+    getContext match {
+      case clause: ScParameterClause =>
+        clause.getContext.getContext match {
+          case f: ScFunctionExpr => true
+          case _                 => false
+        }
+      case _ => false
+    }
 
-  def expectedParamType: Option[ScType] = getContext match {
-    case clause: ScParameterClause =>
-      clause.getContext.getContext match {
-        // For parameter of anonymous functions to infer parameter's type from an appropriate
-        // an. fun's type
-        case f: ScFunctionExpr =>
-          var flag = false
-          var result: Option[ScType] =
-            None //strange logic to handle problems with detecting type
-          for (tp <- f.expectedTypes(fromUnderscore = false) if !flag) {
-            @tailrec
-            def applyForFunction(tp: ScType, checkDeep: Boolean) {
-              tp.removeAbstracts match {
-                case ScFunctionType(ret, _) if checkDeep =>
-                  applyForFunction(ret, checkDeep = false)
-                case ScFunctionType(_, params)
-                    if params.length == f.parameters.length =>
-                  val i = clause.parameters.indexOf(this)
-                  if (result.isDefined) {
-                    result = None
-                    flag = true
-                  } else
-                    result = Some(params(i))
-                case any if ScalaPsiUtil.isSAMEnabled(f) =>
-                  //infer type if it's a Single Abstract Method
-                  ScalaPsiUtil.toSAMType(any, f.getResolveScope) match {
-                    case Some(ScFunctionType(_, params)) =>
-                      val i = clause.parameters.indexOf(this)
-                      if (i < params.length)
-                        result = Some(params(i))
-                    case _ =>
-                  }
-                case _ =>
+  def expectedParamType: Option[ScType] =
+    getContext match {
+      case clause: ScParameterClause =>
+        clause.getContext.getContext match {
+          // For parameter of anonymous functions to infer parameter's type from an appropriate
+          // an. fun's type
+          case f: ScFunctionExpr =>
+            var flag = false
+            var result: Option[ScType] =
+              None //strange logic to handle problems with detecting type
+            for (tp <- f.expectedTypes(fromUnderscore = false) if !flag) {
+              @tailrec
+              def applyForFunction(tp: ScType, checkDeep: Boolean) {
+                tp.removeAbstracts match {
+                  case ScFunctionType(ret, _) if checkDeep =>
+                    applyForFunction(ret, checkDeep = false)
+                  case ScFunctionType(_, params)
+                      if params.length == f.parameters.length =>
+                    val i = clause.parameters.indexOf(this)
+                    if (result.isDefined) {
+                      result = None
+                      flag = true
+                    } else
+                      result = Some(params(i))
+                  case any if ScalaPsiUtil.isSAMEnabled(f) =>
+                    //infer type if it's a Single Abstract Method
+                    ScalaPsiUtil.toSAMType(any, f.getResolveScope) match {
+                      case Some(ScFunctionType(_, params)) =>
+                        val i = clause.parameters.indexOf(this)
+                        if (i < params.length)
+                          result = Some(params(i))
+                      case _ =>
+                    }
+                  case _ =>
+                }
               }
+              applyForFunction(
+                tp,
+                ScUnderScoreSectionUtil.underscores(f).nonEmpty)
             }
-            applyForFunction(
-              tp,
-              ScUnderScoreSectionUtil.underscores(f).nonEmpty)
-          }
-          result
-        case _ => None
-      }
-  }
+            result
+          case _ => None
+        }
+    }
 
   def getTypeNoResolve: PsiType = PsiType.VOID
 

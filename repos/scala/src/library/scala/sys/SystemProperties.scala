@@ -87,14 +87,15 @@ object SystemProperties {
   private final val PreferIPv6AddressesKey = "java.net.preferIPv6Addresses"
   private final val NoTraceSuppressionKey = "scala.control.noTraceSuppression"
 
-  def help(key: String): String = key match {
-    case HeadlessKey            => "system should not utilize a display device"
-    case PreferIPv4StackKey     => "system should prefer IPv4 sockets"
-    case PreferIPv6AddressesKey => "system should prefer IPv6 addresses"
-    case NoTraceSuppressionKey =>
-      "scala should not suppress any stack trace creation"
-    case _ => ""
-  }
+  def help(key: String): String =
+    key match {
+      case HeadlessKey            => "system should not utilize a display device"
+      case PreferIPv4StackKey     => "system should prefer IPv4 sockets"
+      case PreferIPv6AddressesKey => "system should prefer IPv6 addresses"
+      case NoTraceSuppressionKey =>
+        "scala should not suppress any stack trace creation"
+      case _ => ""
+    }
 
   lazy val headless: BooleanProp = BooleanProp.keyExists(HeadlessKey)
   lazy val preferIPv4Stack: BooleanProp =

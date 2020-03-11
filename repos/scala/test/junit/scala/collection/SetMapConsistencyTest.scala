@@ -53,16 +53,17 @@ class SetMapConsistencyTest {
       }
     }
     def getters: Int = 3
-    def get(n: Int, a: A) = n match {
-      case 0 => m.get(a).getOrElse(-1)
-      case 1 =>
-        if (m contains a)
-          m(a)
-        else
-          -1
-      case 2 => m.getOrElse(a, -1)
-      case _ => oor("get", n)
-    }
+    def get(n: Int, a: A) =
+      n match {
+        case 0 => m.get(a).getOrElse(-1)
+        case 1 =>
+          if (m contains a)
+            m(a)
+          else
+            -1
+        case 2 => m.getOrElse(a, -1)
+        case _ => oor("get", n)
+      }
     def fiddlers: Int = 0
     def fiddle(n: Int) {
       oor("fiddle", n)
@@ -101,18 +102,19 @@ class SetMapConsistencyTest {
       override def adders = 3
       override def subbers = 1
       override def getters: Int = 4
-      override def get(n: Int, a: A) = n match {
-        case 0 => m.get(a).getOrElse(-1)
-        case 1 => m(a)
-        case 2 => m.getOrElse(a, -1)
-        case 3 =>
-          val x = arm.getOrNull(a);
-          if (x == 0 && !(arm contains a))
-            -1
-          else
-            x
-        case _ => oor("get", n)
-      }
+      override def get(n: Int, a: A) =
+        n match {
+          case 0 => m.get(a).getOrElse(-1)
+          case 1 => m(a)
+          case 2 => m.getOrElse(a, -1)
+          case 3 =>
+            val x = arm.getOrNull(a);
+            if (x == 0 && !(arm contains a))
+              -1
+            else
+              x
+          case _ => oor("get", n)
+        }
       override def fiddlers = 2
       override def fiddle(n: Int) {
         n match {
@@ -131,18 +133,19 @@ class SetMapConsistencyTest {
       override def adders = 3
       override def subbers = 1
       override def getters: Int = 4
-      override def get(n: Int, a: Long) = n match {
-        case 0 => m.get(a).getOrElse(-1)
-        case 1 => m(a)
-        case 2 => m.getOrElse(a, -1)
-        case 3 =>
-          val x = lm.getOrNull(a);
-          if (x == 0 && !(lm contains a))
-            -1
-          else
-            x
-        case _ => oor("get", n)
-      }
+      override def get(n: Int, a: Long) =
+        n match {
+          case 0 => m.get(a).getOrElse(-1)
+          case 1 => m(a)
+          case 2 => m.getOrElse(a, -1)
+          case 3 =>
+            val x = lm.getOrNull(a);
+            if (x == 0 && !(lm contains a))
+              -1
+            else
+              x
+          case _ => oor("get", n)
+        }
       override def fiddlers = 2
       override def fiddle(n: Int) {
         n match {
@@ -184,16 +187,17 @@ class SetMapConsistencyTest {
       }
     }
     def getters: Int = 3
-    def get(n: Int, a: A) = n match {
-      case 0 => m.get(a).getOrElse(-1)
-      case 1 =>
-        if (m contains a)
-          m(a)
-        else
-          -1
-      case 2 => m.getOrElse(a, -1)
-      case _ => oor("get", n)
-    }
+    def get(n: Int, a: A) =
+      n match {
+        case 0 => m.get(a).getOrElse(-1)
+        case 1 =>
+          if (m contains a)
+            m(a)
+          else
+            -1
+        case 2 => m.getOrElse(a, -1)
+        case _ => oor("get", n)
+      }
     def fiddlers: Int = 0
     def fiddle(n: Int) {
       oor("fiddle", n)

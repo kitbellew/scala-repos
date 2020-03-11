@@ -115,15 +115,15 @@ class LanguageFeatureInspection
     }
   )
 
-  override def actionFor(holder: ProblemsHolder) = PartialFunction.apply {
-    e: PsiElement =>
+  override def actionFor(holder: ProblemsHolder) =
+    PartialFunction.apply { e: PsiElement =>
       val module = ModuleUtilCore.findModuleForPsiElement(e)
 
       if (module != null && module.scalaSdk.exists(
             _.languageLevel >= Scala_2_10)) {
         Features.foreach(_.process(e, holder))
       }
-  }
+    }
 }
 
 private case class Feature(

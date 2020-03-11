@@ -66,18 +66,22 @@ class SybClassTests {
   }
 
   object cycleFruit extends Poly1 {
-    implicit def caseApple = at[Apple] {
-      case Apple(i) => Pear(i)
-    }
-    implicit def casePear = at[Pear] {
-      case Pear(i) => Banana(i)
-    }
-    implicit def caseBanana = at[Banana] {
-      case Banana(i) => Orange(i)
-    }
-    implicit def caseOrange = at[Orange] {
-      case Orange(i) => Apple(i)
-    }
+    implicit def caseApple =
+      at[Apple] {
+        case Apple(i) => Pear(i)
+      }
+    implicit def casePear =
+      at[Pear] {
+        case Pear(i) => Banana(i)
+      }
+    implicit def caseBanana =
+      at[Banana] {
+        case Banana(i) => Orange(i)
+      }
+    implicit def caseOrange =
+      at[Orange] {
+        case Orange(i) => Apple(i)
+      }
   }
 
   sealed trait Tree[T]

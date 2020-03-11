@@ -125,12 +125,13 @@ trait DerbyProfile extends JdbcProfile {
 
   override def defaultSqlTypeName(
       tmd: JdbcType[_],
-      sym: Option[FieldSymbol]): String = tmd.sqlType match {
-    case java.sql.Types.BOOLEAN => "SMALLINT"
-    /* Derby does not have a TINYINT type, so we use SMALLINT instead. */
-    case java.sql.Types.TINYINT => "SMALLINT"
-    case _                      => super.defaultSqlTypeName(tmd, sym)
-  }
+      sym: Option[FieldSymbol]): String =
+    tmd.sqlType match {
+      case java.sql.Types.BOOLEAN => "SMALLINT"
+      /* Derby does not have a TINYINT type, so we use SMALLINT instead. */
+      case java.sql.Types.TINYINT => "SMALLINT"
+      case _                      => super.defaultSqlTypeName(tmd, sym)
+    }
 
   override val scalarFrom = Some("sysibm.sysdummy1")
 
@@ -141,61 +142,63 @@ trait DerbyProfile extends JdbcProfile {
     override protected val supportsLiteralGroupBy = true
     override protected val quotedJdbcFns = Some(Vector(Library.User))
 
-    override def expr(c: Node, skipParens: Boolean = false): Unit = c match {
-      case Library.Cast(ch @ _*) =>
-        /* Work around DERBY-2072 by casting numeric values first to CHAR and
-         * then to VARCHAR. */
-        val (toVarchar, tn) = {
-          val tn =
-            (if (ch.length == 2)
-               ch(1).asInstanceOf[LiteralNode].value.asInstanceOf[String]
-             else
-               jdbcTypeFor(c.nodeType).sqlTypeName(None)).toLowerCase
-          if (tn == "varchar")
-            (true, columnTypes.stringJdbcType.sqlTypeName(None))
-          else if (tn.startsWith("varchar"))
-            (true, tn)
-          else
-            (false, tn)
-        }
-        if (toVarchar && jdbcTypeFor(ch(0).nodeType)
-              .isInstanceOf[NumericTypedType])
-          b"trim(cast(cast(${ch(0)} as char(30)) as $tn))"
-        else
-          b"cast(${ch(0)} as $tn)"
-      case Library.IfNull(l, r) =>
-        /* Derby does not support IFNULL so we use COALESCE instead,
-         * and it requires NULLs to be casted to a suitable type */
-        b"coalesce(cast($l as ${jdbcTypeFor(c.nodeType).sqlTypeName(None)}),!$r)"
-      case Library.SilentCast(LiteralNode(None)) :@ JdbcType(ti, _)
-          if currentPart == SelectPart =>
-        // Cast NULL to the correct type
-        b"cast(null as ${ti.sqlTypeName(None)})"
-      case LiteralNode(None) :@ JdbcType(ti, _) if currentPart == SelectPart =>
-        // Cast NULL to the correct type
-        b"cast(null as ${ti.sqlTypeName(None)})"
-      case (c @ LiteralNode(v)) :@ JdbcType(ti, option)
-          if currentPart == SelectPart =>
-        /* The Derby embedded driver has a bug (DERBY-4671) which results in a
-         * NullPointerException when using bind variables in a SELECT clause.
-         * This should be fixed in Derby 10.6.1.1. The workaround is to add an
-         * explicit type annotation (in the form of a CAST expression). */
-        if (c.volatileHint || !ti.hasLiteralForm) {
-          b"cast("
-          b +?= { (p, idx, param) =>
-            if (option)
-              ti.setOption(v.asInstanceOf[Option[Any]], p, idx)
+    override def expr(c: Node, skipParens: Boolean = false): Unit =
+      c match {
+        case Library.Cast(ch @ _*) =>
+          /* Work around DERBY-2072 by casting numeric values first to CHAR and
+           * then to VARCHAR. */
+          val (toVarchar, tn) = {
+            val tn =
+              (if (ch.length == 2)
+                 ch(1).asInstanceOf[LiteralNode].value.asInstanceOf[String]
+               else
+                 jdbcTypeFor(c.nodeType).sqlTypeName(None)).toLowerCase
+            if (tn == "varchar")
+              (true, columnTypes.stringJdbcType.sqlTypeName(None))
+            else if (tn.startsWith("varchar"))
+              (true, tn)
             else
-              ti.setValue(v, p, idx)
+              (false, tn)
           }
-          b" as ${ti.sqlTypeName(None)})"
-        } else
-          super.expr(c, skipParens)
-      case Library.NextValue(SequenceNode(name)) => b"(next value for `$name)"
-      case Library.CurrentValue(_*) =>
-        throw new SlickException("Derby does not support CURRVAL")
-      case _ => super.expr(c, skipParens)
-    }
+          if (toVarchar && jdbcTypeFor(ch(0).nodeType)
+                .isInstanceOf[NumericTypedType])
+            b"trim(cast(cast(${ch(0)} as char(30)) as $tn))"
+          else
+            b"cast(${ch(0)} as $tn)"
+        case Library.IfNull(l, r) =>
+          /* Derby does not support IFNULL so we use COALESCE instead,
+           * and it requires NULLs to be casted to a suitable type */
+          b"coalesce(cast($l as ${jdbcTypeFor(c.nodeType).sqlTypeName(None)}),!$r)"
+        case Library.SilentCast(LiteralNode(None)) :@ JdbcType(ti, _)
+            if currentPart == SelectPart =>
+          // Cast NULL to the correct type
+          b"cast(null as ${ti.sqlTypeName(None)})"
+        case LiteralNode(None) :@ JdbcType(ti, _)
+            if currentPart == SelectPart =>
+          // Cast NULL to the correct type
+          b"cast(null as ${ti.sqlTypeName(None)})"
+        case (c @ LiteralNode(v)) :@ JdbcType(ti, option)
+            if currentPart == SelectPart =>
+          /* The Derby embedded driver has a bug (DERBY-4671) which results in a
+           * NullPointerException when using bind variables in a SELECT clause.
+           * This should be fixed in Derby 10.6.1.1. The workaround is to add an
+           * explicit type annotation (in the form of a CAST expression). */
+          if (c.volatileHint || !ti.hasLiteralForm) {
+            b"cast("
+            b +?= { (p, idx, param) =>
+              if (option)
+                ti.setOption(v.asInstanceOf[Option[Any]], p, idx)
+              else
+                ti.setValue(v, p, idx)
+            }
+            b" as ${ti.sqlTypeName(None)})"
+          } else
+            super.expr(c, skipParens)
+        case Library.NextValue(SequenceNode(name)) => b"(next value for `$name)"
+        case Library.CurrentValue(_*) =>
+          throw new SlickException("Derby does not support CURRVAL")
+        case _ => super.expr(c, skipParens)
+      }
   }
 
   class TableDDLBuilder(table: Table[_]) extends super.TableDDLBuilder(table) {

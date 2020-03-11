@@ -276,19 +276,20 @@ object KafkaUtils {
       sc: SparkContext,
       kafkaParams: Map[String, String],
       offsetRanges: Array[OffsetRange]
-  ): RDD[(K, V)] = sc.withScope {
-    val messageHandler =
-      (mmd: MessageAndMetadata[K, V]) => (mmd.key, mmd.message)
-    val kc = new KafkaCluster(kafkaParams)
-    val leaders = leadersForRanges(kc, offsetRanges)
-    checkOffsets(kc, offsetRanges)
-    new KafkaRDD[K, V, KD, VD, (K, V)](
-      sc,
-      kafkaParams,
-      offsetRanges,
-      leaders,
-      messageHandler)
-  }
+  ): RDD[(K, V)] =
+    sc.withScope {
+      val messageHandler =
+        (mmd: MessageAndMetadata[K, V]) => (mmd.key, mmd.message)
+      val kc = new KafkaCluster(kafkaParams)
+      val leaders = leadersForRanges(kc, offsetRanges)
+      checkOffsets(kc, offsetRanges)
+      new KafkaRDD[K, V, KD, VD, (K, V)](
+        sc,
+        kafkaParams,
+        offsetRanges,
+        leaders,
+        messageHandler)
+    }
 
   /**
     * Create a RDD from Kafka using offset ranges for each topic and partition. This allows you
@@ -323,25 +324,26 @@ object KafkaUtils {
       offsetRanges: Array[OffsetRange],
       leaders: Map[TopicAndPartition, Broker],
       messageHandler: MessageAndMetadata[K, V] => R
-  ): RDD[R] = sc.withScope {
-    val kc = new KafkaCluster(kafkaParams)
-    val leaderMap = if (leaders.isEmpty) {
-      leadersForRanges(kc, offsetRanges)
-    } else {
-      // This could be avoided by refactoring KafkaRDD.leaders and KafkaCluster to use Broker
-      leaders.map {
-        case (tp: TopicAndPartition, Broker(host, port)) => (tp, (host, port))
+  ): RDD[R] =
+    sc.withScope {
+      val kc = new KafkaCluster(kafkaParams)
+      val leaderMap = if (leaders.isEmpty) {
+        leadersForRanges(kc, offsetRanges)
+      } else {
+        // This could be avoided by refactoring KafkaRDD.leaders and KafkaCluster to use Broker
+        leaders.map {
+          case (tp: TopicAndPartition, Broker(host, port)) => (tp, (host, port))
+        }
       }
+      val cleanedHandler = sc.clean(messageHandler)
+      checkOffsets(kc, offsetRanges)
+      new KafkaRDD[K, V, KD, VD, R](
+        sc,
+        kafkaParams,
+        offsetRanges,
+        leaderMap,
+        cleanedHandler)
     }
-    val cleanedHandler = sc.clean(messageHandler)
-    checkOffsets(kc, offsetRanges)
-    new KafkaRDD[K, V, KD, VD, R](
-      sc,
-      kafkaParams,
-      offsetRanges,
-      leaderMap,
-      cleanedHandler)
-  }
 
   /**
     * Create a RDD from Kafka using offset ranges for each topic and partition.
@@ -371,17 +373,18 @@ object KafkaUtils {
       valueDecoderClass: Class[VD],
       kafkaParams: JMap[String, String],
       offsetRanges: Array[OffsetRange]
-  ): JavaPairRDD[K, V] = jsc.sc.withScope {
-    implicit val keyCmt: ClassTag[K] = ClassTag(keyClass)
-    implicit val valueCmt: ClassTag[V] = ClassTag(valueClass)
-    implicit val keyDecoderCmt: ClassTag[KD] = ClassTag(keyDecoderClass)
-    implicit val valueDecoderCmt: ClassTag[VD] = ClassTag(valueDecoderClass)
-    new JavaPairRDD(
-      createRDD[K, V, KD, VD](
-        jsc.sc,
-        Map(kafkaParams.asScala.toSeq: _*),
-        offsetRanges))
-  }
+  ): JavaPairRDD[K, V] =
+    jsc.sc.withScope {
+      implicit val keyCmt: ClassTag[K] = ClassTag(keyClass)
+      implicit val valueCmt: ClassTag[V] = ClassTag(valueClass)
+      implicit val keyDecoderCmt: ClassTag[KD] = ClassTag(keyDecoderClass)
+      implicit val valueDecoderCmt: ClassTag[VD] = ClassTag(valueDecoderClass)
+      new JavaPairRDD(
+        createRDD[K, V, KD, VD](
+          jsc.sc,
+          Map(kafkaParams.asScala.toSeq: _*),
+          offsetRanges))
+    }
 
   /**
     * Create a RDD from Kafka using offset ranges for each topic and partition. This allows you
@@ -416,20 +419,21 @@ object KafkaUtils {
       offsetRanges: Array[OffsetRange],
       leaders: JMap[TopicAndPartition, Broker],
       messageHandler: JFunction[MessageAndMetadata[K, V], R]
-  ): JavaRDD[R] = jsc.sc.withScope {
-    implicit val keyCmt: ClassTag[K] = ClassTag(keyClass)
-    implicit val valueCmt: ClassTag[V] = ClassTag(valueClass)
-    implicit val keyDecoderCmt: ClassTag[KD] = ClassTag(keyDecoderClass)
-    implicit val valueDecoderCmt: ClassTag[VD] = ClassTag(valueDecoderClass)
-    implicit val recordCmt: ClassTag[R] = ClassTag(recordClass)
-    val leaderMap = Map(leaders.asScala.toSeq: _*)
-    createRDD[K, V, KD, VD, R](
-      jsc.sc,
-      Map(kafkaParams.asScala.toSeq: _*),
-      offsetRanges,
-      leaderMap,
-      messageHandler.call(_))
-  }
+  ): JavaRDD[R] =
+    jsc.sc.withScope {
+      implicit val keyCmt: ClassTag[K] = ClassTag(keyClass)
+      implicit val valueCmt: ClassTag[V] = ClassTag(valueClass)
+      implicit val keyDecoderCmt: ClassTag[KD] = ClassTag(keyDecoderClass)
+      implicit val valueDecoderCmt: ClassTag[VD] = ClassTag(valueDecoderClass)
+      implicit val recordCmt: ClassTag[R] = ClassTag(recordClass)
+      val leaderMap = Map(leaders.asScala.toSeq: _*)
+      createRDD[K, V, KD, VD, R](
+        jsc.sc,
+        Map(kafkaParams.asScala.toSeq: _*),
+        offsetRanges,
+        leaderMap,
+        messageHandler.call(_))
+    }
 
   /**
     * Create an input stream that directly pulls messages from Kafka Brokers

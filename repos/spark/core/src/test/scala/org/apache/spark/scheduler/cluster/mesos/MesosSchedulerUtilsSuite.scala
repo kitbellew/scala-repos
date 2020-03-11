@@ -36,11 +36,12 @@ class MesosSchedulerUtilsSuite
   def fixture: Object {
     val sc: SparkContext;
     val sparkConf: SparkConf
-  } = new {
-    val sparkConf = new SparkConf
-    val sc = mock[SparkContext]
-    when(sc.conf).thenReturn(sparkConf)
-  }
+  } =
+    new {
+      val sparkConf = new SparkConf
+      val sc = mock[SparkContext]
+      when(sc.conf).thenReturn(sparkConf)
+    }
   val utils = new MesosSchedulerUtils {}
   // scalastyle:on structural.type
 

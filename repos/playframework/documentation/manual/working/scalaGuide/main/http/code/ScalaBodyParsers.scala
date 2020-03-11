@@ -26,46 +26,50 @@ package scalaguide.http.scalabodyparsers {
 
       "parse request as json" in {
         //#access-json-body
-        def save = Action { request =>
-          val body: AnyContent = request.body
-          val jsonBody: Option[JsValue] = body.asJson
+        def save =
+          Action { request =>
+            val body: AnyContent = request.body
+            val jsonBody: Option[JsValue] = body.asJson
 
-          // Expecting json body
-          jsonBody
-            .map { json =>
-              Ok("Got: " + (json \ "name").as[String])
-            }
-            .getOrElse {
-              BadRequest("Expecting application/json request body")
-            }
-        }
+            // Expecting json body
+            jsonBody
+              .map { json =>
+                Ok("Got: " + (json \ "name").as[String])
+              }
+              .getOrElse {
+                BadRequest("Expecting application/json request body")
+              }
+          }
         //#access-json-body
         testAction(save, helloRequest)
       }
 
       "body parser json" in {
         //#body-parser-json
-        def save = Action(parse.json) { request =>
-          Ok("Got: " + (request.body \ "name").as[String])
-        }
+        def save =
+          Action(parse.json) { request =>
+            Ok("Got: " + (request.body \ "name").as[String])
+          }
         //#body-parser-json
         testAction(save, helloRequest)
       }
 
       "body parser tolerantJson" in {
         //#body-parser-tolerantJson
-        def save = Action(parse.tolerantJson) { request =>
-          Ok("Got: " + (request.body \ "name").as[String])
-        }
+        def save =
+          Action(parse.tolerantJson) { request =>
+            Ok("Got: " + (request.body \ "name").as[String])
+          }
         //#body-parser-tolerantJson
         testAction(save, helloRequest)
       }
 
       "body parser file" in {
         //#body-parser-file
-        def save = Action(parse.file(to = new File("/tmp/upload"))) { request =>
-          Ok("Saved the request content to " + request.body)
-        }
+        def save =
+          Action(parse.file(to = new File("/tmp/upload"))) { request =>
+            Ok("Saved the request content to " + request.body)
+          }
         //#body-parser-file
         testAction(save, helloRequest.withSession("username" -> "player"))
       }
@@ -79,9 +83,10 @@ package scalaguide.http.scalabodyparsers {
         val text = "hello"
         //#body-parser-limit-text
         // Accept only 10KB of data.
-        def save = Action(parse.text(maxLength = 1024 * 10)) { request =>
-          Ok("Got: " + text)
-        }
+        def save =
+          Action(parse.text(maxLength = 1024 * 10)) { request =>
+            Ok("Got: " + text)
+          }
         //#body-parser-limit-text
         testAction(save, FakeRequest("POST", "/").withTextBody("foo"))
       }
@@ -93,9 +98,10 @@ package scalaguide.http.scalabodyparsers {
             scalaguide.http.scalabodyparsers.full.Application.storeInUserFile
           //#body-parser-limit-file
           // Accept only 10KB of data.
-          def save = Action(parse.maxLength(1024 * 10, storeInUserFile)) {
-            request => Ok("Saved the request content to " + request.body)
-          }
+          def save =
+            Action(parse.maxLength(1024 * 10, storeInUserFile)) { request =>
+              Ok("Saved the request content to " + request.body)
+            }
           //#body-parser-limit-file
           val result =
             call(save, helloRequest.withSession("username" -> "player"))
@@ -116,8 +122,8 @@ package scalaguide.http.scalabodyparsers {
         class MyController @Inject() (ws: WSClient)(implicit
             ec: ExecutionContext) {
 
-          def forward(request: WSRequest): BodyParser[WSResponse] = BodyParser {
-            req =>
+          def forward(request: WSRequest): BodyParser[WSResponse] =
+            BodyParser { req =>
               Accumulator.source[ByteString].mapFuture { source =>
                 request
                 // TODO: stream body when support is implemented
@@ -125,11 +131,12 @@ package scalaguide.http.scalabodyparsers {
                   .execute()
                   .map(Right.apply)
               }
-          }
+            }
 
-          def myAction = Action(forward(ws.url("https://example.com"))) { req =>
-            Ok("Uploaded")
-          }
+          def myAction =
+            Action(forward(ws.url("https://example.com"))) { req =>
+              Ok("Uploaded")
+            }
         }
         //#forward-body
 
@@ -212,9 +219,10 @@ package scalaguide.http.scalabodyparsers {
           }
       }
 
-      def save = Action(storeInUserFile) { request =>
-        Ok("Saved the request content to " + request.body)
-      }
+      def save =
+        Action(storeInUserFile) { request =>
+          Ok("Saved the request content to " + request.body)
+        }
 
       //#body-parser-combining
     }

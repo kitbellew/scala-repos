@@ -208,12 +208,13 @@ object EmitHtml {
     out println "</html>"
   }
 
-  def main(args: Array[String]) = args match {
-    case Array(classname) => emitHtml(classname)
-    case Array(classname, file, _*) =>
-      emitHtml(classname, new java.io.FileOutputStream(file))
-    case _ => sys.exit(1)
-  }
+  def main(args: Array[String]) =
+    args match {
+      case Array(classname) => emitHtml(classname)
+      case Array(classname, file, _*) =>
+        emitHtml(classname, new java.io.FileOutputStream(file))
+      case _ => sys.exit(1)
+    }
 
   def emitHtml(classname: String, outStream: java.io.OutputStream = out.out) {
     if (outStream != out.out)

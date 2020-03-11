@@ -78,13 +78,14 @@ object ParserUtils extends ParserUtilsBase {
     parsed
   }
 
-  def isAssignmentOperator(id: String) = id.charAt(id.length - 1) match {
-    case '='
-        if id != "<=" && id != ">=" && id != "!=" && (id.charAt(
-          0) != '=' || id == "=") =>
-      true
-    case _ => false
-  }
+  def isAssignmentOperator(id: String) =
+    id.charAt(id.length - 1) match {
+      case '='
+          if id != "<=" && id != ">=" && id != "!=" && (id.charAt(
+            0) != '=' || id == "=") =>
+        true
+      case _ => false
+    }
 
   //Defines priority
   def priority(id: String, assignments: Boolean = false): Int = {

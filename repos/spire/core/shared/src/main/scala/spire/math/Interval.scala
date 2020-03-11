@@ -134,40 +134,41 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
   def fold[B](f: (Bound[A], Bound[A]) => B): B =
     f(lowerBound, upperBound)
 
-  def isSupersetOf(rhs: Interval[A]): Boolean = (lhs, rhs) match {
-    // deal with All, Empty and Point on either left or right side
+  def isSupersetOf(rhs: Interval[A]): Boolean =
+    (lhs, rhs) match {
+      // deal with All, Empty and Point on either left or right side
 
-    case (All(), _) => true
-    case (_, All()) => false
+      case (All(), _) => true
+      case (_, All()) => false
 
-    case (_, Empty()) => true
-    case (Empty(), _) => false
+      case (_, Empty()) => true
+      case (Empty(), _) => false
 
-    case (Point(lhsval), Point(rhsval)) => lhsval === rhsval
-    case (Point(_), _)                  => false // rhs cannot be Empty or Point
-    case (_, Point(rhsval))             => lhs.contains(rhsval)
+      case (Point(lhsval), Point(rhsval)) => lhsval === rhsval
+      case (Point(_), _)                  => false // rhs cannot be Empty or Point
+      case (_, Point(rhsval))             => lhs.contains(rhsval)
 
-    // remaining cases are Above, Below and Bounded, we deal first with the obvious false
+      // remaining cases are Above, Below and Bounded, we deal first with the obvious false
 
-    case (Above(_, _), Below(_, _))      => false
-    case (Below(_, _), Above(_, _))      => false
-    case (Bounded(_, _, _), Below(_, _)) => false
-    case (Bounded(_, _, _), Above(_, _)) => false
+      case (Above(_, _), Below(_, _))      => false
+      case (Below(_, _), Above(_, _))      => false
+      case (Bounded(_, _, _), Below(_, _)) => false
+      case (Bounded(_, _, _), Above(_, _)) => false
 
-    case (Above(lower1, flags1), Bounded(lower2, _, flags2)) =>
-      lowerPairBelow(lower1, flags1, lower2, flags2)
-    case (Above(lower1, flags1), Above(lower2, flags2)) =>
-      lowerPairBelow(lower1, flags1, lower2, flags2)
+      case (Above(lower1, flags1), Bounded(lower2, _, flags2)) =>
+        lowerPairBelow(lower1, flags1, lower2, flags2)
+      case (Above(lower1, flags1), Above(lower2, flags2)) =>
+        lowerPairBelow(lower1, flags1, lower2, flags2)
 
-    case (Below(upper1, flags1), Below(upper2, flags2)) =>
-      upperPairAbove(upper1, flags1, upper2, flags2)
-    case (Below(upper1, flags1), Bounded(_, upper2, flags2)) =>
-      upperPairAbove(upper1, flags1, upper2, flags2)
-
-    case (Bounded(lower1, upper1, flags1), Bounded(lower2, upper2, flags2)) =>
-      lowerPairBelow(lower1, flags1, lower2, flags2) &&
+      case (Below(upper1, flags1), Below(upper2, flags2)) =>
         upperPairAbove(upper1, flags1, upper2, flags2)
-  }
+      case (Below(upper1, flags1), Bounded(_, upper2, flags2)) =>
+        upperPairAbove(upper1, flags1, upper2, flags2)
+
+      case (Bounded(lower1, upper1, flags1), Bounded(lower2, upper2, flags2)) =>
+        lowerPairBelow(lower1, flags1, lower2, flags2) &&
+          upperPairAbove(upper1, flags1, upper2, flags2)
+    }
 
   def isProperSupersetOf(rhs: Interval[A]): Boolean =
     lhs != rhs && (lhs isSupersetOf rhs)
@@ -179,53 +180,58 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
     rhs isProperSupersetOf lhs
 
   // Does this interval contain any points above t ?
-  def hasAbove(t: A): Boolean = this match {
-    case Empty()              => false
-    case Point(p)             => p > t
-    case Below(upper, _)      => upper > t
-    case Bounded(_, upper, _) => upper > t
-    case All()                => true
-    case Above(_, _)          => true
-  }
+  def hasAbove(t: A): Boolean =
+    this match {
+      case Empty()              => false
+      case Point(p)             => p > t
+      case Below(upper, _)      => upper > t
+      case Bounded(_, upper, _) => upper > t
+      case All()                => true
+      case Above(_, _)          => true
+    }
 
   // Does this interval contain any points below t ?
-  def hasBelow(t: A): Boolean = this match {
-    case Empty()              => false
-    case Point(p)             => p < t
-    case Above(lower, _)      => lower < t
-    case Bounded(lower, _, _) => lower < t
-    case Below(_, _)          => true
-    case All()                => true
-  }
+  def hasBelow(t: A): Boolean =
+    this match {
+      case Empty()              => false
+      case Point(p)             => p < t
+      case Above(lower, _)      => lower < t
+      case Bounded(lower, _, _) => lower < t
+      case Below(_, _)          => true
+      case All()                => true
+    }
 
   // Does this interval contains any points at or above t ?
-  def hasAtOrAbove(t: A): Boolean = this match {
-    case _: Empty[_] => false
-    case Point(p)    => p >= t
-    case Below(upper, flags) =>
-      upper > t || isClosedUpper(flags) && upper === t
-    case Bounded(lower, upper, flags) =>
-      upper > t || isClosedUpper(flags) && upper === t
-    case _: Above[_] => true
-    case _: All[_]   => true
-  }
+  def hasAtOrAbove(t: A): Boolean =
+    this match {
+      case _: Empty[_] => false
+      case Point(p)    => p >= t
+      case Below(upper, flags) =>
+        upper > t || isClosedUpper(flags) && upper === t
+      case Bounded(lower, upper, flags) =>
+        upper > t || isClosedUpper(flags) && upper === t
+      case _: Above[_] => true
+      case _: All[_]   => true
+    }
 
   // Does this interval contains any points at or below t ?
-  def hasAtOrBelow(t: A): Boolean = this match {
-    case _: Empty[_] => false
-    case Point(p)    => p <= t
-    case Above(lower, flags) =>
-      lower < t || isClosedLower(flags) && lower === t
-    case Bounded(lower, upper, flags) =>
-      lower < t || isClosedLower(flags) && lower === t
-    case _: Below[_] => true
-    case _: All[_]   => true
-  }
+  def hasAtOrBelow(t: A): Boolean =
+    this match {
+      case _: Empty[_] => false
+      case Point(p)    => p <= t
+      case Above(lower, flags) =>
+        lower < t || isClosedLower(flags) && lower === t
+      case Bounded(lower, upper, flags) =>
+        lower < t || isClosedLower(flags) && lower === t
+      case _: Below[_] => true
+      case _: All[_]   => true
+    }
 
-  def isAt(t: A): Boolean = this match {
-    case Point(p) => t === p
-    case _        => false
-  }
+  def isAt(t: A): Boolean =
+    this match {
+      case Point(p) => t === p
+      case _        => false
+    }
 
   def intersects(rhs: Interval[A]): Boolean =
     !(lhs intersect rhs).isEmpty
@@ -286,36 +292,37 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
       minLower(lhs.lowerBound, rhs.lowerBound, false),
       maxUpper(lhs.upperBound, rhs.upperBound, false))
 
-  override def toString(): String = this match {
-    case All() =>
-      "(-∞, ∞)"
-    case Empty() =>
-      "(Ø)"
-    case Above(lower, flags) =>
-      if (isClosedLower(flags))
-        s"[$lower, ∞)"
-      else
-        s"($lower, ∞)"
-    case Below(upper, flags) =>
-      if (isClosedUpper(flags))
-        s"(-∞, $upper]"
-      else
-        s"(-∞, $upper)"
-    case Point(p) =>
-      s"[$p]"
-    case Bounded(lower, upper, flags) =>
-      val s1 =
+  override def toString(): String =
+    this match {
+      case All() =>
+        "(-∞, ∞)"
+      case Empty() =>
+        "(Ø)"
+      case Above(lower, flags) =>
         if (isClosedLower(flags))
-          s"[$lower"
+          s"[$lower, ∞)"
         else
-          s"($lower"
-      val s2 =
+          s"($lower, ∞)"
+      case Below(upper, flags) =>
         if (isClosedUpper(flags))
-          s"$upper]"
+          s"(-∞, $upper]"
         else
-          s"$upper)"
-      s"$s1, $s2"
-  }
+          s"(-∞, $upper)"
+      case Point(p) =>
+        s"[$p]"
+      case Bounded(lower, upper, flags) =>
+        val s1 =
+          if (isClosedLower(flags))
+            s"[$lower"
+          else
+            s"($lower"
+        val s2 =
+          if (isClosedUpper(flags))
+            s"$upper]"
+          else
+            s"$upper)"
+        s"$s1, $s2"
+    }
 
   def abs(implicit m: AdditiveGroup[A]): Interval[A] =
     if (crossesZero) { // only Bounded, Above or Below can cross zero

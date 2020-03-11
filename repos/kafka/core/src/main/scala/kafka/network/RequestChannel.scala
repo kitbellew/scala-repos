@@ -255,9 +255,10 @@ class RequestChannel(val numProcessors: Int, val queueSize: Int)
   newGauge(
     "ResponseQueueSize",
     new Gauge[Int] {
-      def value = responseQueues.foldLeft(0) { (total, q) =>
-        total + q.size()
-      }
+      def value =
+        responseQueues.foldLeft(0) { (total, q) =>
+          total + q.size()
+        }
     })
 
   for (i <- 0 until numProcessors) {

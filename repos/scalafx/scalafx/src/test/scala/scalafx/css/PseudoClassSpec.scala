@@ -46,7 +46,8 @@ class PseudoClassSpec
 
   override protected def getScalaClassInstance = PseudoClass("test")
 
-  override protected def getJavaClassInstance = new jfxcss.PseudoClass {
-    def getPseudoClassName = ""
-  }
+  override protected def getJavaClassInstance =
+    new jfxcss.PseudoClass {
+      def getPseudoClassName = ""
+    }
 }

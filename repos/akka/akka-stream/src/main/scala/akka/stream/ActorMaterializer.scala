@@ -530,20 +530,21 @@ final class ActorMaterializerSettings private (
     require((n & (n - 1)) == 0, s"$name must be a power of two")
   }
 
-  override def equals(other: Any): Boolean = other match {
-    case s: ActorMaterializerSettings ⇒
-      s.initialInputBufferSize == initialInputBufferSize &&
-        s.maxInputBufferSize == maxInputBufferSize &&
-        s.dispatcher == dispatcher &&
-        s.supervisionDecider == supervisionDecider &&
-        s.subscriptionTimeoutSettings == subscriptionTimeoutSettings &&
-        s.debugLogging == debugLogging &&
-        s.outputBurstLimit == outputBurstLimit &&
-        s.syncProcessingLimit == syncProcessingLimit &&
-        s.fuzzingMode == fuzzingMode &&
-        s.autoFusing == autoFusing
-    case _ ⇒ false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case s: ActorMaterializerSettings ⇒
+        s.initialInputBufferSize == initialInputBufferSize &&
+          s.maxInputBufferSize == maxInputBufferSize &&
+          s.dispatcher == dispatcher &&
+          s.supervisionDecider == supervisionDecider &&
+          s.subscriptionTimeoutSettings == subscriptionTimeoutSettings &&
+          s.debugLogging == debugLogging &&
+          s.outputBurstLimit == outputBurstLimit &&
+          s.syncProcessingLimit == syncProcessingLimit &&
+          s.fuzzingMode == fuzzingMode &&
+          s.autoFusing == autoFusing
+      case _ ⇒ false
+    }
 
   override def toString: String =
     s"ActorMaterializerSettings($initialInputBufferSize,$maxInputBufferSize,$dispatcher,$supervisionDecider,$subscriptionTimeoutSettings,$debugLogging,$outputBurstLimit,$syncProcessingLimit,$fuzzingMode,$autoFusing)"
@@ -597,11 +598,12 @@ object StreamSubscriptionTimeoutSettings {
 final class StreamSubscriptionTimeoutSettings(
     val mode: StreamSubscriptionTimeoutTerminationMode,
     val timeout: FiniteDuration) {
-  override def equals(other: Any): Boolean = other match {
-    case s: StreamSubscriptionTimeoutSettings ⇒
-      s.mode == mode && s.timeout == timeout
-    case _ ⇒ false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case s: StreamSubscriptionTimeoutSettings ⇒
+        s.mode == mode && s.timeout == timeout
+      case _ ⇒ false
+    }
   override def toString: String =
     s"StreamSubscriptionTimeoutSettings($mode,$timeout)"
 }

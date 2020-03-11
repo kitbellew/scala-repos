@@ -67,10 +67,11 @@ class TimeZoneField[OwnerType <: Record[OwnerType]](rec: OwnerType)
 
   override def defaultValue = TimeZone.getDefault.getID
 
-  def isAsTimeZone: TimeZone = TimeZone.getTimeZone(value) match {
-    case null => TimeZone.getDefault
-    case x    => x
-  }
+  def isAsTimeZone: TimeZone =
+    TimeZone.getTimeZone(value) match {
+      case null => TimeZone.getDefault
+      case x    => x
+    }
 }
 
 class OptionalTimeZoneField[OwnerType <: Record[OwnerType]](rec: OwnerType)

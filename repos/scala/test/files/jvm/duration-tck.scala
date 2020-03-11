@@ -11,19 +11,20 @@ object Test extends App {
 
   implicit class Assert(val left: Any) extends AnyVal {
     import Duration.Undefined
-    def mustBe(right: Any) = right match {
-      case r: Double if r.isNaN =>
-        assert(left.asInstanceOf[Double].isNaN, s"$left was not NaN")
-      case r: Double if r == 0 && r.compareTo(0) == -1 =>
-        assert(
-          left == 0 && left.asInstanceOf[Double].compareTo(0) == -1,
-          s"$left was not -0.0")
-      case Undefined =>
-        assert(
-          left.asInstanceOf[AnyRef] eq Undefined,
-          s"$left was not Undefined")
-      case _ => assert(left == right, s"$left was not equal to $right")
-    }
+    def mustBe(right: Any) =
+      right match {
+        case r: Double if r.isNaN =>
+          assert(left.asInstanceOf[Double].isNaN, s"$left was not NaN")
+        case r: Double if r == 0 && r.compareTo(0) == -1 =>
+          assert(
+            left == 0 && left.asInstanceOf[Double].compareTo(0) == -1,
+            s"$left was not -0.0")
+        case Undefined =>
+          assert(
+            left.asInstanceOf[AnyRef] eq Undefined,
+            s"$left was not Undefined")
+        case _ => assert(left == right, s"$left was not equal to $right")
+      }
   }
 
   val zero = 0 seconds

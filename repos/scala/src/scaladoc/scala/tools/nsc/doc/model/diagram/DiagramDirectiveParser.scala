@@ -183,116 +183,118 @@ trait DiagramDirectiveParser {
       template: DocTemplateImpl,
       directives: List[String],
       defaultFilter: DiagramFilter,
-      isInheritanceDiagram: Boolean): DiagramFilter = directives match {
+      isInheritanceDiagram: Boolean): DiagramFilter =
+    directives match {
 
-    // if there are no specific diagram directives, return the default filter (either FullDiagram or NoDiagramAtAll)
-    case Nil =>
-      defaultFilter
+      // if there are no specific diagram directives, return the default filter (either FullDiagram or NoDiagramAtAll)
+      case Nil =>
+        defaultFilter
 
-    // compute the exact filters. By including the annotation, the diagram is automatically added
-    case _ =>
-      tFilter -= System.currentTimeMillis
-      var hideDiagram0: Boolean = false
-      var hideIncomingImplicits0: Boolean = false
-      var hideOutgoingImplicits0: Boolean = false
-      var hideSuperclasses0: Boolean = false
-      var hideSubclasses0: Boolean = false
-      var hideInheritedNodes0: Boolean = false
-      var hideNodesFilter0: List[Pattern] = Nil
-      var hideEdgesFilter0: List[(Pattern, Pattern)] = Nil
+      // compute the exact filters. By including the annotation, the diagram is automatically added
+      case _ =>
+        tFilter -= System.currentTimeMillis
+        var hideDiagram0: Boolean = false
+        var hideIncomingImplicits0: Boolean = false
+        var hideOutgoingImplicits0: Boolean = false
+        var hideSuperclasses0: Boolean = false
+        var hideSubclasses0: Boolean = false
+        var hideInheritedNodes0: Boolean = false
+        var hideNodesFilter0: List[Pattern] = Nil
+        var hideEdgesFilter0: List[(Pattern, Pattern)] = Nil
 
-      def warning(message: String) = {
-        // we need the position from the package object (well, ideally its comment, but yeah ...)
-        val sym =
-          if (template.sym.hasPackageFlag)
-            template.sym.packageObject
-          else
-            template.sym
-        assert(
-          (sym != global.NoSymbol) || (sym == global.rootMirror.RootPackage))
-        global.reporter.warning(sym.pos, message)
-      }
-
-      def preparePattern(className: String) =
-        "^" + className
-          .stripPrefix("\"")
-          .stripSuffix("\"")
-          .replaceAll("\\.", "\\\\.")
-          .replaceAll("\\*", ".*") + "$"
-
-      // separate entries:
-      val entries = directives.foldRight("")(_ + " " + _).split(",").map(_.trim)
-      for (entry <- entries)
-        entry match {
-          case "hideDiagram" =>
-            hideDiagram0 = true
-          case "hideIncomingImplicits" if isInheritanceDiagram =>
-            hideIncomingImplicits0 = true
-          case "hideOutgoingImplicits" if isInheritanceDiagram =>
-            hideOutgoingImplicits0 = true
-          case "hideSuperclasses" if isInheritanceDiagram =>
-            hideSuperclasses0 = true
-          case "hideSubclasses" if isInheritanceDiagram =>
-            hideSubclasses0 = true
-          case "hideInheritedNodes" if !isInheritanceDiagram =>
-            hideInheritedNodes0 = true
-          case HideNodesRegex(last) =>
-            val matcher = NodeSpecPattern.matcher(entry)
-            while (matcher.find()) {
-              val classPattern =
-                Pattern.compile(preparePattern(matcher.group()))
-              hideNodesFilter0 ::= classPattern
-            }
-          case HideEdgesRegex(last) =>
-            val matcher = NodeSpecPattern.matcher(entry)
-            while (matcher.find()) {
-              val class1Pattern =
-                Pattern.compile(preparePattern(matcher.group()))
-              assert(matcher.find()) // it's got to be there, just matched it!
-              val class2Pattern =
-                Pattern.compile(preparePattern(matcher.group()))
-              hideEdgesFilter0 ::= ((class1Pattern, class2Pattern))
-            }
-          case "" =>
-          // don't need to do anything about it
-          case _ =>
-            warning(
-              "Could not understand diagram annotation in " + template.kind + " " + template.qualifiedName +
-                ": unmatched entry \"" + entry + "\".\n" +
-                "  This could be because:\n" +
-                "   - you forgot to separate entries by commas\n" +
-                "   - you used a tag that is not allowed in the current context (like @contentDiagram hideSuperclasses)\n" +
-                "   - you did not use one of the allowed tags (see docs.scala-lang.org for scaladoc annotations)")
+        def warning(message: String) = {
+          // we need the position from the package object (well, ideally its comment, but yeah ...)
+          val sym =
+            if (template.sym.hasPackageFlag)
+              template.sym.packageObject
+            else
+              template.sym
+          assert(
+            (sym != global.NoSymbol) || (sym == global.rootMirror.RootPackage))
+          global.reporter.warning(sym.pos, message)
         }
-      val result =
-        if (hideDiagram0)
-          NoDiagramAtAll
-        else if ((hideNodesFilter0.isEmpty) &&
-                 (hideEdgesFilter0.isEmpty) &&
-                 (hideIncomingImplicits0 == false) &&
-                 (hideOutgoingImplicits0 == false) &&
-                 (hideSuperclasses0 == false) &&
-                 (hideSubclasses0 == false) &&
-                 (hideInheritedNodes0 == false) &&
-                 (hideDiagram0 == false))
-          FullDiagram
-        else
-          AnnotationDiagramFilter(
-            hideDiagram = hideDiagram0,
-            hideIncomingImplicits = hideIncomingImplicits0,
-            hideOutgoingImplicits = hideOutgoingImplicits0,
-            hideSuperclasses = hideSuperclasses0,
-            hideSubclasses = hideSubclasses0,
-            hideInheritedNodes = hideInheritedNodes0,
-            hideNodesFilter = hideNodesFilter0,
-            hideEdgesFilter = hideEdgesFilter0
-          )
 
-      if (settings.docDiagramsDebug && result != NoDiagramAtAll && result != FullDiagram)
-        settings.printMsg(
-          template.kind + " " + template.qualifiedName + " filter: " + result)
-      tFilter += System.currentTimeMillis
+        def preparePattern(className: String) =
+          "^" + className
+            .stripPrefix("\"")
+            .stripSuffix("\"")
+            .replaceAll("\\.", "\\\\.")
+            .replaceAll("\\*", ".*") + "$"
 
-      result
-  }
+        // separate entries:
+        val entries =
+          directives.foldRight("")(_ + " " + _).split(",").map(_.trim)
+        for (entry <- entries)
+          entry match {
+            case "hideDiagram" =>
+              hideDiagram0 = true
+            case "hideIncomingImplicits" if isInheritanceDiagram =>
+              hideIncomingImplicits0 = true
+            case "hideOutgoingImplicits" if isInheritanceDiagram =>
+              hideOutgoingImplicits0 = true
+            case "hideSuperclasses" if isInheritanceDiagram =>
+              hideSuperclasses0 = true
+            case "hideSubclasses" if isInheritanceDiagram =>
+              hideSubclasses0 = true
+            case "hideInheritedNodes" if !isInheritanceDiagram =>
+              hideInheritedNodes0 = true
+            case HideNodesRegex(last) =>
+              val matcher = NodeSpecPattern.matcher(entry)
+              while (matcher.find()) {
+                val classPattern =
+                  Pattern.compile(preparePattern(matcher.group()))
+                hideNodesFilter0 ::= classPattern
+              }
+            case HideEdgesRegex(last) =>
+              val matcher = NodeSpecPattern.matcher(entry)
+              while (matcher.find()) {
+                val class1Pattern =
+                  Pattern.compile(preparePattern(matcher.group()))
+                assert(matcher.find()) // it's got to be there, just matched it!
+                val class2Pattern =
+                  Pattern.compile(preparePattern(matcher.group()))
+                hideEdgesFilter0 ::= ((class1Pattern, class2Pattern))
+              }
+            case "" =>
+            // don't need to do anything about it
+            case _ =>
+              warning(
+                "Could not understand diagram annotation in " + template.kind + " " + template.qualifiedName +
+                  ": unmatched entry \"" + entry + "\".\n" +
+                  "  This could be because:\n" +
+                  "   - you forgot to separate entries by commas\n" +
+                  "   - you used a tag that is not allowed in the current context (like @contentDiagram hideSuperclasses)\n" +
+                  "   - you did not use one of the allowed tags (see docs.scala-lang.org for scaladoc annotations)")
+          }
+        val result =
+          if (hideDiagram0)
+            NoDiagramAtAll
+          else if ((hideNodesFilter0.isEmpty) &&
+                   (hideEdgesFilter0.isEmpty) &&
+                   (hideIncomingImplicits0 == false) &&
+                   (hideOutgoingImplicits0 == false) &&
+                   (hideSuperclasses0 == false) &&
+                   (hideSubclasses0 == false) &&
+                   (hideInheritedNodes0 == false) &&
+                   (hideDiagram0 == false))
+            FullDiagram
+          else
+            AnnotationDiagramFilter(
+              hideDiagram = hideDiagram0,
+              hideIncomingImplicits = hideIncomingImplicits0,
+              hideOutgoingImplicits = hideOutgoingImplicits0,
+              hideSuperclasses = hideSuperclasses0,
+              hideSubclasses = hideSubclasses0,
+              hideInheritedNodes = hideInheritedNodes0,
+              hideNodesFilter = hideNodesFilter0,
+              hideEdgesFilter = hideEdgesFilter0
+            )
+
+        if (settings.docDiagramsDebug && result != NoDiagramAtAll && result != FullDiagram)
+          settings.printMsg(
+            template.kind + " " + template.qualifiedName + " filter: " + result)
+        tFilter += System.currentTimeMillis
+
+        result
+    }
 }

@@ -6,7 +6,8 @@ class C {
     def f: Int
   }
 
-  def foo: T = new T {
-    def f = 1
-  }
+  def foo: T =
+    new T {
+      def f = 1
+    }
 }

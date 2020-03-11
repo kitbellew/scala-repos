@@ -460,105 +460,110 @@ trait RepositorySettingsControllerBase extends ControllerBase {
   /**
     * Provides duplication check for web hook url.
     */
-  private def webHook(needExists: Boolean): Constraint = new Constraint() {
-    override def validate(
-        name: String,
-        value: String,
-        messages: Messages): Option[String] =
-      if (getWebHook(
-            params("owner"),
-            params("repository"),
-            value).isDefined != needExists) {
-        Some(if (needExists) {
-          "URL had not been registered yet."
+  private def webHook(needExists: Boolean): Constraint =
+    new Constraint() {
+      override def validate(
+          name: String,
+          value: String,
+          messages: Messages): Option[String] =
+        if (getWebHook(
+              params("owner"),
+              params("repository"),
+              value).isDefined != needExists) {
+          Some(if (needExists) {
+            "URL had not been registered yet."
+          } else {
+            "URL had been registered already."
+          })
         } else {
-          "URL had been registered already."
-        })
-      } else {
-        None
-      }
-  }
-
-  private def webhookEvents = new ValueType[Set[WebHook.Event]] {
-    def convert(
-        name: String,
-        params: Map[String, String],
-        messages: Messages): Set[WebHook.Event] = {
-      WebHook.Event.values.flatMap { t =>
-        params.get(name + "." + t.name).map(_ => t)
-      }.toSet
+          None
+        }
     }
-    def validate(
-        name: String,
-        params: Map[String, String],
-        messages: Messages): Seq[(String, String)] =
-      if (convert(name, params, messages).isEmpty) {
-        Seq(name -> messages("error.required").format(name))
-      } else {
-        Nil
+
+  private def webhookEvents =
+    new ValueType[Set[WebHook.Event]] {
+      def convert(
+          name: String,
+          params: Map[String, String],
+          messages: Messages): Set[WebHook.Event] = {
+        WebHook.Event.values.flatMap { t =>
+          params.get(name + "." + t.name).map(_ => t)
+        }.toSet
       }
-  }
+      def validate(
+          name: String,
+          params: Map[String, String],
+          messages: Messages): Seq[(String, String)] =
+        if (convert(name, params, messages).isEmpty) {
+          Seq(name -> messages("error.required").format(name))
+        } else {
+          Nil
+        }
+    }
 
   /**
     * Provides Constraint to validate the collaborator name.
     */
-  private def collaborator: Constraint = new Constraint() {
-    override def validate(
-        name: String,
-        value: String,
-        messages: Messages): Option[String] =
-      getAccountByUserName(value) match {
-        case None                          => Some("User does not exist.")
-        case Some(x) if (x.isGroupAccount) => Some("User does not exist.")
-        case Some(x)
-            if (x.userName == params("owner") || getCollaborators(
-              params("owner"),
-              params("repository")).contains(x.userName)) =>
-          Some("User can access this repository already.")
-        case _ => None
-      }
-  }
+  private def collaborator: Constraint =
+    new Constraint() {
+      override def validate(
+          name: String,
+          value: String,
+          messages: Messages): Option[String] =
+        getAccountByUserName(value) match {
+          case None                          => Some("User does not exist.")
+          case Some(x) if (x.isGroupAccount) => Some("User does not exist.")
+          case Some(x)
+              if (x.userName == params("owner") || getCollaborators(
+                params("owner"),
+                params("repository")).contains(x.userName)) =>
+            Some("User can access this repository already.")
+          case _ => None
+        }
+    }
 
   /**
     * Duplicate check for the rename repository name.
     */
-  private def renameRepositoryName: Constraint = new Constraint() {
-    override def validate(
-        name: String,
-        value: String,
-        params: Map[String, String],
-        messages: Messages): Option[String] =
-      params.get("repository").filter(_ != value).flatMap { _ =>
-        params.get("owner").flatMap { userName =>
-          getRepositoryNamesOfUser(userName)
-            .find(_ == value)
-            .map(_ => "Repository already exists.")
+  private def renameRepositoryName: Constraint =
+    new Constraint() {
+      override def validate(
+          name: String,
+          value: String,
+          params: Map[String, String],
+          messages: Messages): Option[String] =
+        params.get("repository").filter(_ != value).flatMap { _ =>
+          params.get("owner").flatMap { userName =>
+            getRepositoryNamesOfUser(userName)
+              .find(_ == value)
+              .map(_ => "Repository already exists.")
+          }
         }
-      }
-  }
+    }
 
   /**
     * Provides Constraint to validate the repository transfer user.
     */
-  private def transferUser: Constraint = new Constraint() {
-    override def validate(
-        name: String,
-        value: String,
-        messages: Messages): Option[String] =
-      getAccountByUserName(value) match {
-        case None => Some("User does not exist.")
-        case Some(x) =>
-          if (x.userName == params("owner")) {
-            Some("This is current repository owner.")
-          } else {
-            params.get("repository").flatMap { repositoryName =>
-              getRepositoryNamesOfUser(x.userName)
-                .find(_ == repositoryName)
-                .map { _ =>
-                  "User already has same repository."
-                }
+  private def transferUser: Constraint =
+    new Constraint() {
+      override def validate(
+          name: String,
+          value: String,
+          messages: Messages): Option[String] =
+        getAccountByUserName(value) match {
+          case None => Some("User does not exist.")
+          case Some(x) =>
+            if (x.userName == params("owner")) {
+              Some("This is current repository owner.")
+            } else {
+              params.get("repository").flatMap { repositoryName =>
+                getRepositoryNamesOfUser(x.userName)
+                  .find(_ == repositoryName)
+                  .map { _ =>
+                    "User already has same repository."
+                  }
+              }
             }
-          }
-      }
-  }
+        }
+    }
 }

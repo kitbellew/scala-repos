@@ -75,17 +75,18 @@ trait StrategysLow {
   /**
     * A strategy that evaluates its arguments using an implicit ExecutorService.
     */
-  implicit def Executor(implicit s: ExecutorService) = new Strategy {
+  implicit def Executor(implicit s: ExecutorService) =
+    new Strategy {
 
-    import java.util.concurrent.Callable
+      import java.util.concurrent.Callable
 
-    def apply[A](a: => A) = {
-      val fut = s.submit(new Callable[A] {
-        def call = a
-      })
-      () => fut.get
+      def apply[A](a: => A) = {
+        val fut = s.submit(new Callable[A] {
+          def call = a
+        })
+        () => fut.get
+      }
     }
-  }
 
   /**
     * A strategy that performs no evaluation of its argument.

@@ -18,76 +18,86 @@ class ProbMonadBenchmark extends BreezeBenchmark {
 
   val size = 1024 * 1024
 
-  def timeMonad(reps: Int) = run(reps) {
-    /* The purpose of this benchmark is to compare monadic usage of rand to non-monadic usage (see timeRaw).
-     */
-    val monadic = for {
-      x <- gaussian
-      y <- gaussian
-    } yield (x + y)
-    monadic.samplesVector(size)
-  }
-
-  def timeRaw(reps: Int) = run(reps) {
-    /* The purpose of this benchmark is to compare monadic usage of rand to non-monadic usage (see timeMonad).
-     */
-    val nonmonadic = new Rand[Double] {
-      def draw() = gaussian.draw() + gaussian.draw()
+  def timeMonad(reps: Int) =
+    run(reps) {
+      /* The purpose of this benchmark is to compare monadic usage of rand to non-monadic usage (see timeRaw).
+       */
+      val monadic = for {
+        x <- gaussian
+        y <- gaussian
+      } yield (x + y)
+      monadic.samplesVector(size)
     }
-    nonmonadic.samplesVector(size)
-  }
 
-  def timeMap(reps: Int) = run(reps) {
-    val mg = gaussian.map(f)
-    mg.samplesVector(size)
-  }
+  def timeRaw(reps: Int) =
+    run(reps) {
+      /* The purpose of this benchmark is to compare monadic usage of rand to non-monadic usage (see timeMonad).
+       */
+      val nonmonadic = new Rand[Double] {
+        def draw() = gaussian.draw() + gaussian.draw()
+      }
+      nonmonadic.samplesVector(size)
+    }
 
-  def timeMapRepeated(reps: Int) = run(reps) {
-    val mg = gaussian.map(f).map(f2).map(f3)
-    mg.samplesVector(size)
-  }
+  def timeMap(reps: Int) =
+    run(reps) {
+      val mg = gaussian.map(f)
+      mg.samplesVector(size)
+    }
 
-  def timeFlatMap(reps: Int) = run(reps) {
-    val mg = gaussian.flatMap(fm)
-    mg.samplesVector(size)
-  }
+  def timeMapRepeated(reps: Int) =
+    run(reps) {
+      val mg = gaussian.map(f).map(f2).map(f3)
+      mg.samplesVector(size)
+    }
 
-  def timeFlatMapRepeated(reps: Int) = run(reps) {
-    val mg = gaussian.flatMap(fm).flatMap(fm).flatMap(fm)
-    mg.samplesVector(size)
-  }
+  def timeFlatMap(reps: Int) =
+    run(reps) {
+      val mg = gaussian.flatMap(fm)
+      mg.samplesVector(size)
+    }
 
-  def timeCondition(reps: Int) = run(reps) {
-    val mg = gaussian.condition(x => x > 0)
-    mg.samplesVector(size)
-  }
+  def timeFlatMapRepeated(reps: Int) =
+    run(reps) {
+      val mg = gaussian.flatMap(fm).flatMap(fm).flatMap(fm)
+      mg.samplesVector(size)
+    }
 
-  def timeRepeatCondition(reps: Int) = run(reps) {
-    val mg = gaussian
-      .condition(x => x > 0)
-      .condition(x => x < 1)
-      .condition(x => x > -1)
-    mg.samplesVector(size)
-  }
+  def timeCondition(reps: Int) =
+    run(reps) {
+      val mg = gaussian.condition(x => x > 0)
+      mg.samplesVector(size)
+    }
 
-  def timeDrawOpt(reps: Int) = run(reps) {
-    val mg = gaussian.condition(x => x > 0)
-    val result = new Array[Option[Double]](size)
-    cfor(0)(i => i < size, i => i + 1)(i => {
-      result(i) = mg.drawOpt()
-    })
-    result
-  }
-  def timeDrawOptMultipleCondition(reps: Int) = run(reps) {
-    val mg = gaussian
-      .condition(x => x > 0)
-      .condition(x => x < 1)
-      .condition(x => x > -1)
-    val result = new Array[Option[Double]](size)
-    cfor(0)(i => i < size, i => i + 1)(i => {
-      result(i) = mg.drawOpt()
-    })
-    result
-  }
+  def timeRepeatCondition(reps: Int) =
+    run(reps) {
+      val mg = gaussian
+        .condition(x => x > 0)
+        .condition(x => x < 1)
+        .condition(x => x > -1)
+      mg.samplesVector(size)
+    }
+
+  def timeDrawOpt(reps: Int) =
+    run(reps) {
+      val mg = gaussian.condition(x => x > 0)
+      val result = new Array[Option[Double]](size)
+      cfor(0)(i => i < size, i => i + 1)(i => {
+        result(i) = mg.drawOpt()
+      })
+      result
+    }
+  def timeDrawOptMultipleCondition(reps: Int) =
+    run(reps) {
+      val mg = gaussian
+        .condition(x => x > 0)
+        .condition(x => x < 1)
+        .condition(x => x > -1)
+      val result = new Array[Option[Double]](size)
+      cfor(0)(i => i < size, i => i + 1)(i => {
+        result(i) = mg.drawOpt()
+      })
+      result
+    }
 
 }

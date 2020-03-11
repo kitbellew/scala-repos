@@ -66,31 +66,32 @@ class ScalaAliasedImportedElementSearcher
     def processTextOccurrence(
         element: PsiElement,
         offsetInElement: Int,
-        consumer: Processor[PsiReference]): Boolean = inReadAction {
-      val alias: String = getAlias(element)
-      if (alias == null)
-        return true
-      val reference: PsiReference = element.getReference
-      if (reference == null) {
-        return true
+        consumer: Processor[PsiReference]): Boolean =
+      inReadAction {
+        val alias: String = getAlias(element)
+        if (alias == null)
+          return true
+        val reference: PsiReference = element.getReference
+        if (reference == null) {
+          return true
+        }
+        if (!reference.isReferenceTo(myTarget)) {
+          return true
+        }
+        val collector: SearchRequestCollector =
+          new SearchRequestCollector(mySession)
+        val fileScope: SearchScope =
+          new LocalSearchScope(element.getContainingFile)
+        collector.searchWord(
+          alias,
+          fileScope,
+          UsageSearchContext.IN_CODE,
+          true,
+          myTarget)
+        PsiSearchHelper.SERVICE
+          .getInstance(element.getProject)
+          .processRequests(collector, consumer)
       }
-      if (!reference.isReferenceTo(myTarget)) {
-        return true
-      }
-      val collector: SearchRequestCollector =
-        new SearchRequestCollector(mySession)
-      val fileScope: SearchScope =
-        new LocalSearchScope(element.getContainingFile)
-      collector.searchWord(
-        alias,
-        fileScope,
-        UsageSearchContext.IN_CODE,
-        true,
-        myTarget)
-      PsiSearchHelper.SERVICE
-        .getInstance(element.getProject)
-        .processRequests(collector, consumer)
-    }
   }
 
 }

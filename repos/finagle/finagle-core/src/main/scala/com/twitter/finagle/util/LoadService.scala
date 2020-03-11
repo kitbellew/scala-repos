@@ -248,61 +248,63 @@ object LoadService {
   private val cache: mutable.Map[ClassLoader, Seq[ClassPath.Info]] =
     mutable.Map.empty
 
-  def apply[T: ClassTag](): Seq[T] = synchronized {
-    val iface = implicitly[ClassTag[T]].runtimeClass.asInstanceOf[Class[T]]
-    val ifaceName = iface.getName
-    val loader = iface.getClassLoader
+  def apply[T: ClassTag](): Seq[T] =
+    synchronized {
+      val iface = implicitly[ClassTag[T]].runtimeClass.asInstanceOf[Class[T]]
+      val ifaceName = iface.getName
+      val loader = iface.getClassLoader
 
-    val denied: Set[String] = loadServiceDenied()
+      val denied: Set[String] = loadServiceDenied()
 
-    val classNames = for {
-      info <- cache.getOrElseUpdate(loader, ClassPath.browse(loader))
-      if info.iface == ifaceName
-      className <- info.lines
-    } yield className
+      val classNames = for {
+        info <- cache.getOrElseUpdate(loader, ClassPath.browse(loader))
+        if info.iface == ifaceName
+        className <- info.lines
+      } yield className
 
-    val classNamesFromResources = for {
-      rsc <- loader.getResources("META-INF/services/" + ifaceName).asScala
-      line <- ClassPath.readLines(Source.fromURL(rsc, "UTF-8"))
-    } yield line
+      val classNamesFromResources = for {
+        rsc <- loader.getResources("META-INF/services/" + ifaceName).asScala
+        line <- ClassPath.readLines(Source.fromURL(rsc, "UTF-8"))
+      } yield line
 
-    val buffer = mutable.ListBuffer.empty[String]
-    val result = (classNames ++ classNamesFromResources).distinct
-      .filterNot { className =>
-        val isDenied = denied.contains(className)
-        if (isDenied)
-          DefaultLogger.info(
-            s"LoadService: skipped $className due to deny list flag")
-        isDenied
-      }
-      .flatMap { className =>
-        val cls = Class.forName(className)
-        if (!iface.isAssignableFrom(cls))
-          throw new ServiceConfigurationError(
-            s"$className not a subclass of $ifaceName")
-
-        DefaultLogger.log(
-          Level.DEBUG,
-          s"LoadService: loaded instance of class $className for requested service $ifaceName"
-        )
-
-        try {
-          val instance = cls.newInstance().asInstanceOf[T]
-          buffer += className
-          Some(instance)
-        } catch {
-          case NonFatal(ex) =>
-            DefaultLogger.log(
-              Level.FATAL,
-              s"LoadService: failed to instantiate '$className' for the requested "
-                + s"service '$ifaceName'",
-              ex
-            )
-            None
+      val buffer = mutable.ListBuffer.empty[String]
+      val result = (classNames ++ classNamesFromResources).distinct
+        .filterNot { className =>
+          val isDenied = denied.contains(className)
+          if (isDenied)
+            DefaultLogger.info(
+              s"LoadService: skipped $className due to deny list flag")
+          isDenied
         }
-      }
+        .flatMap { className =>
+          val cls = Class.forName(className)
+          if (!iface.isAssignableFrom(cls))
+            throw new ServiceConfigurationError(
+              s"$className not a subclass of $ifaceName")
 
-    GlobalRegistry.get.put(Seq("loadservice", ifaceName), buffer.mkString(","))
-    result
-  }
+          DefaultLogger.log(
+            Level.DEBUG,
+            s"LoadService: loaded instance of class $className for requested service $ifaceName"
+          )
+
+          try {
+            val instance = cls.newInstance().asInstanceOf[T]
+            buffer += className
+            Some(instance)
+          } catch {
+            case NonFatal(ex) =>
+              DefaultLogger.log(
+                Level.FATAL,
+                s"LoadService: failed to instantiate '$className' for the requested "
+                  + s"service '$ifaceName'",
+                ex
+              )
+              None
+          }
+        }
+
+      GlobalRegistry.get
+        .put(Seq("loadservice", ifaceName), buffer.mkString(","))
+      result
+    }
 }

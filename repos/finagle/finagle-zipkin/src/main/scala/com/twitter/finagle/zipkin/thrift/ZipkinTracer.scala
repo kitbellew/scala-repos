@@ -67,9 +67,10 @@ private object Json {
   def deserialize[T: Manifest](node: JsonNode): T =
     mapper.readValue(node.traverse, typeReference[T])
 
-  private[this] def typeReference[T: Manifest] = new TypeReference[T] {
-    override def getType = typeFromManifest(manifest[T])
-  }
+  private[this] def typeReference[T: Manifest] =
+    new TypeReference[T] {
+      override def getType = typeFromManifest(manifest[T])
+    }
 
   private[this] def typeFromManifest(m: Manifest[_]): Type =
     if (m.typeArguments.isEmpty)
@@ -95,22 +96,23 @@ object ZipkinTracer {
     new Event.Type {
       val id = "Trace"
 
-      def serialize(event: Event) = event match {
-        case Event(etype, _, _, _: Annotation.BinaryAnnotation, _, _, _)
-            if etype eq this =>
-          Throw(
-            new IllegalArgumentException("unsupported format: " + event)
-              with NoStacktrace)
+      def serialize(event: Event) =
+        event match {
+          case Event(etype, _, _, _: Annotation.BinaryAnnotation, _, _, _)
+              if etype eq this =>
+            Throw(
+              new IllegalArgumentException("unsupported format: " + event)
+                with NoStacktrace)
 
-        case Event(etype, when, _, ann: Annotation, _, tid, sid)
-            if etype eq this =>
-          val (t, s) = serializeTrace(tid, sid)
-          val data = Json.Envelope(id, when.inMilliseconds, t, s, ann)
-          Try(Buf.Utf8(Json.serialize(data)))
+          case Event(etype, when, _, ann: Annotation, _, tid, sid)
+              if etype eq this =>
+            val (t, s) = serializeTrace(tid, sid)
+            val data = Json.Envelope(id, when.inMilliseconds, t, s, ann)
+            Try(Buf.Utf8(Json.serialize(data)))
 
-        case _ =>
-          Throw(new IllegalArgumentException("unknown format: " + event))
-      }
+          case _ =>
+            Throw(new IllegalArgumentException("unknown format: " + event))
+        }
 
       def deserialize(buf: Buf) =
         for {

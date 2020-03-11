@@ -184,12 +184,13 @@ object Future {
 
   private[this] class Monitored[A](private[this] var p: Promise[A])
       extends Monitor {
-    private[this] def getAndSetNull(): Promise[A] = synchronized {
-      val prev = p
-      if (p != null)
-        p = null
-      prev
-    }
+    private[this] def getAndSetNull(): Promise[A] =
+      synchronized {
+        val prev = p
+        if (p != null)
+          p = null
+        prev
+      }
 
     def setTo(r: Try[A]): Unit = {
       val prev = getAndSetNull()
@@ -285,9 +286,10 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
   def join[A, B, C](
       a: Future[A],
       b: Future[B],
-      c: Future[C]): Future[(A, B, C)] = join(Seq(a, b, c)) map { _ =>
-    (Await.result(a), Await.result(b), Await.result(c))
-  }
+      c: Future[C]): Future[(A, B, C)] =
+    join(Seq(a, b, c)) map { _ =>
+      (Await.result(a), Await.result(b), Await.result(c))
+    }
 
   /**
     * Join 4 futures. The returned future is complete when all
@@ -298,9 +300,10 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
       a: Future[A],
       b: Future[B],
       c: Future[C],
-      d: Future[D]): Future[(A, B, C, D)] = join(Seq(a, b, c, d)) map { _ =>
-    (Await.result(a), Await.result(b), Await.result(c), Await.result(d))
-  }
+      d: Future[D]): Future[(A, B, C, D)] =
+    join(Seq(a, b, c, d)) map { _ =>
+      (Await.result(a), Await.result(b), Await.result(c), Await.result(d))
+    }
 
   /**
     * Join 5 futures. The returned future is complete when all
@@ -312,15 +315,15 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
       b: Future[B],
       c: Future[C],
       d: Future[D],
-      e: Future[E]): Future[(A, B, C, D, E)] = join(Seq(a, b, c, d, e)) map {
-    _ =>
+      e: Future[E]): Future[(A, B, C, D, E)] =
+    join(Seq(a, b, c, d, e)) map { _ =>
       (
         Await.result(a),
         Await.result(b),
         Await.result(c),
         Await.result(d),
         Await.result(e))
-  }
+    }
 
   /**
     * Join 6 futures. The returned future is complete when all
@@ -1460,9 +1463,10 @@ abstract class Future[+A] extends Awaitable[A] {
     * @see [[respond]] if you need the result of the computation for
     *     usage in the side-effect.
     */
-  def ensure(f: => Unit): Future[A] = respond { _ =>
-    f
-  }
+  def ensure(f: => Unit): Future[A] =
+    respond { _ =>
+      f
+    }
 
   /**
     * Block indefinitely, wait for the result of the Future to be available.
@@ -1729,9 +1733,10 @@ abstract class Future[+A] extends Awaitable[A] {
       case t: Throw[_] => Future.const[B](t.cast[B])
     }
 
-  def filter(p: A => Boolean): Future[A] = transform { x: Try[A] =>
-    Future.const(x.filter(p))
-  }
+  def filter(p: A => Boolean): Future[A] =
+    transform { x: Try[A] =>
+      Future.const(x.filter(p))
+    }
 
   def withFilter(p: A => Boolean): Future[A] = filter(p)
 
@@ -1822,11 +1827,12 @@ abstract class Future[+A] extends Awaitable[A] {
     * @see [[rescue]]
     */
   def handle[B >: A](
-      rescueException: PartialFunction[Throwable, B]): Future[B] = rescue {
-    case e: Throwable if rescueException.isDefinedAt(e) =>
-      Future(rescueException(e))
-    case e: Throwable => this
-  }
+      rescueException: PartialFunction[Throwable, B]): Future[B] =
+    rescue {
+      case e: Throwable if rescueException.isDefinedAt(e) =>
+        Future(rescueException(e))
+      case e: Throwable => this
+    }
 
   /**
     * Choose the first Future to be satisfied.
@@ -1911,16 +1917,18 @@ abstract class Future[+A] extends Awaitable[A] {
     *
     * The offer is activated when the future is satisfied.
     */
-  def toOffer: Offer[Try[A]] = new Offer[Try[A]] {
-    def prepare() = transform { res: Try[A] =>
-      val tx = new Tx[Try[A]] {
-        def ack(): Future[Tx.Result[Try[A]]] = Future.value(Tx.Commit(res))
-        def nack(): Unit = ()
-      }
+  def toOffer: Offer[Try[A]] =
+    new Offer[Try[A]] {
+      def prepare() =
+        transform { res: Try[A] =>
+          val tx = new Tx[Try[A]] {
+            def ack(): Future[Tx.Result[Try[A]]] = Future.value(Tx.Commit(res))
+            def nack(): Unit = ()
+          }
 
-      Future.value(tx)
+          Future.value(tx)
+        }
     }
-  }
 
   /**
     * Convert a Twitter Future to a Java native Future. This should
@@ -2150,9 +2158,10 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
   def join[A, B, C](
       a: Future[A],
       b: Future[B],
-      c: Future[C]): Future[(A, B, C)] = Future.join(Seq(a, b, c)) map { _ =>
-    (Await.result(a), Await.result(b), Await.result(c))
-  }
+      c: Future[C]): Future[(A, B, C)] =
+    Future.join(Seq(a, b, c)) map { _ =>
+      (Await.result(a), Await.result(b), Await.result(c))
+    }
 
   /**
     * Join 4 futures. The returned future is complete when all
@@ -2163,9 +2172,10 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
       a: Future[A],
       b: Future[B],
       c: Future[C],
-      d: Future[D]): Future[(A, B, C, D)] = Future.join(Seq(a, b, c, d)) map {
-    _ => (Await.result(a), Await.result(b), Await.result(c), Await.result(d))
-  }
+      d: Future[D]): Future[(A, B, C, D)] =
+    Future.join(Seq(a, b, c, d)) map { _ =>
+      (Await.result(a), Await.result(b), Await.result(c), Await.result(d))
+    }
 
   /**
     * Join 5 futures. The returned future is complete when all

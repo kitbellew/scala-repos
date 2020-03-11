@@ -63,12 +63,14 @@ private[repl] trait SparkImports {
   def languageSymbols = languageWildcardSyms flatMap membersAtPickler
   def sessionImportedSymbols = importHandlers flatMap (_.importedSymbols)
   def importedSymbols = languageSymbols ++ sessionImportedSymbols
-  def importedTermSymbols = importedSymbols collect {
-    case x: TermSymbol => x
-  }
-  def importedTypeSymbols = importedSymbols collect {
-    case x: TypeSymbol => x
-  }
+  def importedTermSymbols =
+    importedSymbols collect {
+      case x: TermSymbol => x
+    }
+  def importedTypeSymbols =
+    importedSymbols collect {
+      case x: TypeSymbol => x
+    }
   def implicitSymbols = importedSymbols filter (_.isImplicit)
 
   def importedTermNamed(name: String): Symbol =
@@ -139,16 +141,17 @@ private[repl] trait SparkImports {
           wanted: Set[Name]): List[ReqAndHandler] = {
         // Single symbol imports might be implicits! See bug #1752.  Rather than
         // try to finesse this, we will mimic all imports for now.
-        def keepHandler(handler: MemberHandler) = handler match {
-          /* This case clause tries to "precisely" import only what is required. And in this
-           * it may miss out on some implicits, because implicits are not known in `wanted`. Thus
-           * it is suitable for defining classes. AFAIK while defining classes implicits are not
-           * needed.*/
-          case h: ImportHandler if definedClass && !fallback =>
-            h.importedNames.exists(x => wanted.contains(x))
-          case _: ImportHandler => true
-          case x                => x.definesImplicit || (x.definedNames exists wanted)
-        }
+        def keepHandler(handler: MemberHandler) =
+          handler match {
+            /* This case clause tries to "precisely" import only what is required. And in this
+             * it may miss out on some implicits, because implicits are not known in `wanted`. Thus
+             * it is suitable for defining classes. AFAIK while defining classes implicits are not
+             * needed.*/
+            case h: ImportHandler if definedClass && !fallback =>
+              h.importedNames.exists(x => wanted.contains(x))
+            case _: ImportHandler => true
+            case x                => x.definesImplicit || (x.definedNames exists wanted)
+          }
 
         reqs match {
           case Nil                                    => Nil

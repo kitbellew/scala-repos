@@ -292,15 +292,17 @@ final class BooleanOps(self: Boolean) {
     def apply[A](a: => A)(implicit M: Applicative[M], M0: PlusEmpty[M]): M[A]
   }
 
-  final def guard[M[_]] = new GuardPrevent[M] {
-    def apply[A](a: => A)(implicit M: Applicative[M], M0: PlusEmpty[M]) =
-      b.pointOrEmpty[M, A](self)(a)
-  }
+  final def guard[M[_]] =
+    new GuardPrevent[M] {
+      def apply[A](a: => A)(implicit M: Applicative[M], M0: PlusEmpty[M]) =
+        b.pointOrEmpty[M, A](self)(a)
+    }
 
-  final def prevent[M[_]] = new GuardPrevent[M] {
-    def apply[A](a: => A)(implicit M: Applicative[M], M0: PlusEmpty[M]) =
-      b.emptyOrPure[M, A](self)(a)
-  }
+  final def prevent[M[_]] =
+    new GuardPrevent[M] {
+      def apply[A](a: => A)(implicit M: Applicative[M], M0: PlusEmpty[M]) =
+        b.emptyOrPure[M, A](self)(a)
+    }
 }
 
 trait ToBooleanOps {

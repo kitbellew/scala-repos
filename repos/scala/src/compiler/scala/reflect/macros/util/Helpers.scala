@@ -39,14 +39,15 @@ trait Helpers {
       case _ =>
         NoSymbol // no context parameter in the signature => nothing to do
     }
-    def transformTag(param: Symbol): Symbol = param.tpe.dealias match {
-      case TypeRef(
-            SingleType(SingleType(_, ContextParam), MacroContextUniverse),
-            WeakTypeTagClass,
-            targ :: Nil) =>
-        transform(param, targ.typeSymbol)
-      case _ => param
-    }
+    def transformTag(param: Symbol): Symbol =
+      param.tpe.dealias match {
+        case TypeRef(
+              SingleType(SingleType(_, ContextParam), MacroContextUniverse),
+              WeakTypeTagClass,
+              targ :: Nil) =>
+          transform(param, targ.typeSymbol)
+        case _ => param
+      }
     ContextParam match {
       case NoSymbol => paramss
       case _ =>

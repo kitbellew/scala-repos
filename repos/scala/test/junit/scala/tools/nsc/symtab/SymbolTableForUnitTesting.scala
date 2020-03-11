@@ -80,14 +80,15 @@ class SymbolTableForUnitTesting extends SymbolTable {
     val universe: SymbolTableForUnitTesting.this.type =
       SymbolTableForUnitTesting.this
 
-    def rootLoader: LazyType = settings.YclasspathImpl.value match {
-      case ClassPathRepresentationType.Flat =>
-        new loaders.PackageLoaderUsingFlatClassPath(
-          FlatClassPath.RootPackage,
-          flatClassPath)
-      case ClassPathRepresentationType.Recursive =>
-        new loaders.PackageLoader(classPath)
-    }
+    def rootLoader: LazyType =
+      settings.YclasspathImpl.value match {
+        case ClassPathRepresentationType.Flat =>
+          new loaders.PackageLoaderUsingFlatClassPath(
+            FlatClassPath.RootPackage,
+            flatClassPath)
+        case ClassPathRepresentationType.Recursive =>
+          new loaders.PackageLoader(classPath)
+      }
 
     override def toString = "compiler mirror"
   }
@@ -110,13 +111,14 @@ class SymbolTableForUnitTesting extends SymbolTable {
   def erasurePhase: scala.reflect.internal.Phase = SomePhase
 
   // Members declared in scala.reflect.internal.Reporting
-  def reporter = new scala.reflect.internal.ReporterImpl {
-    protected def info0(
-        pos: Position,
-        msg: String,
-        severity: Severity,
-        force: Boolean): Unit = println(msg)
-  }
+  def reporter =
+    new scala.reflect.internal.ReporterImpl {
+      protected def info0(
+          pos: Position,
+          msg: String,
+          severity: Severity,
+          force: Boolean): Unit = println(msg)
+    }
 
   // minimal Run to get Reporting wired
   def currentRun = new RunReporting {}

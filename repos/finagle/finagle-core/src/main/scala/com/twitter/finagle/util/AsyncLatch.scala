@@ -26,14 +26,15 @@ class AsyncLatch(initialCount: Int = 0) {
     * Execute the given computation when the count of this latch has
     * reached zero.
     */
-  def await(f: => Unit): Unit = synchronized {
-    if (count == 0)
-      f
-    else
-      waiters += { () =>
+  def await(f: => Unit): Unit =
+    synchronized {
+      if (count == 0)
         f
-      }
-  }
+      else
+        waiters += { () =>
+          f
+        }
+    }
 
   /**
     * Increment the latch. Computations passed to `await` will not be executed
@@ -41,10 +42,11 @@ class AsyncLatch(initialCount: Int = 0) {
     *
     * @return the latch's count after being incremented
     */
-  def incr(): Int = synchronized {
-    count += 1;
-    count
-  }
+  def incr(): Int =
+    synchronized {
+      count += 1;
+      count
+    }
 
   /**
     * Decrement the latch. If the latch's count reaches zero, awaiting

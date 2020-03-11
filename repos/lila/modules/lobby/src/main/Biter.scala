@@ -57,14 +57,15 @@ private[lobby] object Biter {
   private def assignCreatorColor(
       creatorUser: Option[User],
       joinerUser: Option[User],
-      color: Color): Fu[chess.Color] = color match {
-    case Color.Random =>
-      UserRepo.firstGetsWhite(
-        creatorUser.map(_.id),
-        joinerUser.map(_.id)) map chess.Color.apply
-    case Color.White => fuccess(chess.White)
-    case Color.Black => fuccess(chess.Black)
-  }
+      color: Color): Fu[chess.Color] =
+    color match {
+      case Color.Random =>
+        UserRepo.firstGetsWhite(
+          creatorUser.map(_.id),
+          joinerUser.map(_.id)) map chess.Color.apply
+      case Color.White => fuccess(chess.White)
+      case Color.Black => fuccess(chess.Black)
+    }
 
   private def blame(color: ChessColor, userOption: Option[User], game: Game) =
     userOption.fold(game) { user =>

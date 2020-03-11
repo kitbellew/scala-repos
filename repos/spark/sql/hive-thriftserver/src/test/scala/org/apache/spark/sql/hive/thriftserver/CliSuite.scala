@@ -99,27 +99,29 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
     val buffer = new ArrayBuffer[String]()
     val lock = new Object
 
-    def captureOutput(source: String)(line: String): Unit = lock.synchronized {
-      // This test suite sometimes gets extremely slow out of unknown reason on Jenkins.  Here we
-      // add a timestamp to provide more diagnosis information.
-      buffer += s"${new Timestamp(new Date().getTime)} - $source> $line"
+    def captureOutput(source: String)(line: String): Unit =
+      lock.synchronized {
+        // This test suite sometimes gets extremely slow out of unknown reason on Jenkins.  Here we
+        // add a timestamp to provide more diagnosis information.
+        buffer += s"${new Timestamp(new Date().getTime)} - $source> $line"
 
-      // If we haven't found all expected answers and another expected answer comes up...
-      if (next < expectedAnswers.size && line.contains(expectedAnswers(next))) {
-        next += 1
-        // If all expected answers have been found...
-        if (next == expectedAnswers.size) {
-          foundAllExpectedAnswers.trySuccess(())
-        }
-      } else {
-        errorResponses.foreach { r =>
-          if (line.contains(r)) {
-            foundAllExpectedAnswers.tryFailure(
-              new RuntimeException(s"Failed with error line '$line'"))
+        // If we haven't found all expected answers and another expected answer comes up...
+        if (next < expectedAnswers.size && line.contains(
+              expectedAnswers(next))) {
+          next += 1
+          // If all expected answers have been found...
+          if (next == expectedAnswers.size) {
+            foundAllExpectedAnswers.trySuccess(())
+          }
+        } else {
+          errorResponses.foreach { r =>
+            if (line.contains(r)) {
+              foundAllExpectedAnswers.tryFailure(
+                new RuntimeException(s"Failed with error line '$line'"))
+            }
           }
         }
       }
-    }
 
     val process = new ProcessBuilder(command: _*).start()
 

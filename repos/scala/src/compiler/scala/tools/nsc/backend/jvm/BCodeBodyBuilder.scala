@@ -1113,11 +1113,12 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
           args.length == params.length,
           s"Wrong number of arguments in call to label at: $gotoPos")
 
-        def isTrivial(kv: (Tree, Symbol)) = kv match {
-          case (This(_), p) if p.name == nme.THIS     => true
-          case (arg @ Ident(_), p) if arg.symbol == p => true
-          case _                                      => false
-        }
+        def isTrivial(kv: (Tree, Symbol)) =
+          kv match {
+            case (This(_), p) if p.name == nme.THIS     => true
+            case (arg @ Ident(_), p) if arg.symbol == p => true
+            case _                                      => false
+          }
 
         (args zip params) filterNot isTrivial
       }
@@ -1259,11 +1260,12 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
       hostSymbol.info;
       methodOwner.info
 
-      def needsInterfaceCall(sym: Symbol) = (
-        sym.isTraitOrInterface
-          || sym.isJavaDefined && sym.isNonBottomSubClass(
-            definitions.ClassfileAnnotationClass)
-      )
+      def needsInterfaceCall(sym: Symbol) =
+        (
+          sym.isTraitOrInterface
+            || sym.isJavaDefined && sym.isNonBottomSubClass(
+              definitions.ClassfileAnnotationClass)
+        )
 
       val isTraitCallToObjectMethod =
         hostSymbol != methodOwner && methodOwner.isTraitOrInterface && ObjectTpe
@@ -1340,16 +1342,18 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
      * Returns a list of trees that each should be concatenated, from left to right.
      * It turns a chained call like "a".+("b").+("c") into a list of arguments.
      */
-    def liftStringConcat(tree: Tree): List[Tree] = tree match {
-      case Apply(fun @ Select(larg, method), rarg) =>
-        if (isPrimitive(fun.symbol) &&
-            scalaPrimitives.getPrimitive(fun.symbol) == scalaPrimitives.CONCAT)
-          liftStringConcat(larg) ::: rarg
-        else
+    def liftStringConcat(tree: Tree): List[Tree] =
+      tree match {
+        case Apply(fun @ Select(larg, method), rarg) =>
+          if (isPrimitive(fun.symbol) &&
+              scalaPrimitives.getPrimitive(
+                fun.symbol) == scalaPrimitives.CONCAT)
+            liftStringConcat(larg) ::: rarg
+          else
+            tree :: Nil
+        case _ =>
           tree :: Nil
-      case _ =>
-        tree :: Nil
-    }
+      }
 
     /* Emit code to compare the two top-most stack values using the 'op' operator. */
     private def genCJUMP(
@@ -1441,12 +1445,14 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
       }
 
     /** Some useful equality helpers. */
-    def isNull(t: Tree) = PartialFunction.cond(t) {
-      case Literal(Constant(null)) => true
-    }
-    def isLiteral(t: Tree) = PartialFunction.cond(t) {
-      case Literal(_) => true
-    }
+    def isNull(t: Tree) =
+      PartialFunction.cond(t) {
+        case Literal(Constant(null)) => true
+      }
+    def isLiteral(t: Tree) =
+      PartialFunction.cond(t) {
+        case Literal(_) => true
+      }
     def isNonNullExpr(t: Tree) =
       isLiteral(t) || ((t.symbol ne null) && t.symbol.isModule)
 

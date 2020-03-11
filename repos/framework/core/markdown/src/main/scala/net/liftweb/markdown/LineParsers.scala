@@ -158,11 +158,12 @@ case class MarkdownLineReader private (
     else
       new MarkdownLineReader(lines.tail, lookup, lineCount + 1)
   def atEnd = lines.isEmpty
-  def pos = new Position {
-    def line = lineCount
-    def column = 1
-    protected def lineContents = first.fullLine
-  }
+  def pos =
+    new Position {
+      def line = lineCount
+      def column = 1
+      protected def lineContents = first.fullLine
+    }
 }
 
 /**

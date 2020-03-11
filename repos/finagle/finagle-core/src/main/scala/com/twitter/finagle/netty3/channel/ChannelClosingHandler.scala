@@ -23,33 +23,35 @@ private[finagle] class ChannelClosingHandler
   private[this] var channel: Channel = null
   private[this] var awaitingClose = false
 
-  private[this] def setChannel(ch: Channel) = synchronized {
-    channel = ch
-    channelCloseFuture.setChannel(ch)
-    if (awaitingClose) {
-      channel
-        .close()
-        .addListener(new ChannelFutureListener {
-          override def operationComplete(f: ChannelFuture): Unit =
-            if (f.isSuccess) {
-              channelCloseFuture.setSuccess()
-            } else if (f.isCancelled) {
-              channelCloseFuture.cancel()
-            } else {
-              channelCloseFuture.setFailure(f.getCause)
-            }
-        })
+  private[this] def setChannel(ch: Channel) =
+    synchronized {
+      channel = ch
+      channelCloseFuture.setChannel(ch)
+      if (awaitingClose) {
+        channel
+          .close()
+          .addListener(new ChannelFutureListener {
+            override def operationComplete(f: ChannelFuture): Unit =
+              if (f.isSuccess) {
+                channelCloseFuture.setSuccess()
+              } else if (f.isCancelled) {
+                channelCloseFuture.cancel()
+              } else {
+                channelCloseFuture.setFailure(f.getCause)
+              }
+          })
+      }
     }
-  }
 
-  def close() = synchronized {
-    if (channel ne null) {
-      channel.close()
-    } else {
-      awaitingClose = true
-      channelCloseFuture
+  def close() =
+    synchronized {
+      if (channel ne null) {
+        channel.close()
+      } else {
+        awaitingClose = true
+        channelCloseFuture
+      }
     }
-  }
 
   override def beforeAdd(ctx: ChannelHandlerContext) {
     if (ctx.getPipeline.isAttached)

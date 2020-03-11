@@ -72,9 +72,10 @@ object BasicAuthStrategy {
     private def authorizationKey =
       AUTHORIZATION_KEYS.find(r.getHeader(_) != null)
 
-    def isBasicAuth = (false /: scheme) { (_, sch) =>
-      sch == "basic"
-    }
+    def isBasicAuth =
+      (false /: scheme) { (_, sch) =>
+        sch == "basic"
+      }
     def providesAuth = authorizationKey.isDefined
 
     private[this] var _credentials: Option[(String, String)] = None

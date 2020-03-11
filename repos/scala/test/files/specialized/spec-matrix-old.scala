@@ -16,14 +16,15 @@ class Matrix[@specialized A: ClassManifest](val rows: Int, val cols: Int) {
     arr(i)(j) = e
   }
 
-  def rowsIterator: Iterator[Array[A]] = new Iterator[Array[A]] {
-    var idx = 0;
-    def hasNext = idx < rows
-    def next = {
-      idx += 1
-      arr(idx - 1)
+  def rowsIterator: Iterator[Array[A]] =
+    new Iterator[Array[A]] {
+      var idx = 0;
+      def hasNext = idx < rows
+      def next = {
+        idx += 1
+        arr(idx - 1)
+      }
     }
-  }
 }
 
 @deprecated("Suppress warnings", since = "2.11")

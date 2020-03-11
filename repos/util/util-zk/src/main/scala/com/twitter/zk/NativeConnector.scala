@@ -196,13 +196,14 @@ object NativeConnector {
       new ZooKeeper(connectString, sessionTimeout.inMillis.toInt, sessionBroker)
     }
 
-    def release(): Future[Unit] = Future {
-      zookeeper foreach { zk =>
-        log.debug("release")
-        zk.close()
-        zookeeper = None
-        releasePromise.setValue(Unit)
+    def release(): Future[Unit] =
+      Future {
+        zookeeper foreach { zk =>
+          log.debug("release")
+          zk.close()
+          zookeeper = None
+          releasePromise.setValue(Unit)
+        }
       }
-    }
   }
 }

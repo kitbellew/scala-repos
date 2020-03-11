@@ -72,21 +72,22 @@ class TypeAliasUsagesSearcher
     def processTextOccurrence(
         element: PsiElement,
         offsetInElement: Int,
-        consumer: Processor[PsiReference]): Boolean = inReadAction {
-      ScalaPsiUtil.getParentOfType(element, classOf[ScConstructor]) match {
-        case cons: ScConstructor
-            if PsiTreeUtil.isAncestor(cons.typeElement, element, false) =>
-          element match {
-            case resRef: ResolvableReferenceElement =>
-              resRef.bind().flatMap(_.parentElement) match {
-                case Some(`myTarget`) =>
-                  consumer.process(resRef)
-                case _ => true
-              }
-            case _ => true
-          }
-        case _ => true
+        consumer: Processor[PsiReference]): Boolean =
+      inReadAction {
+        ScalaPsiUtil.getParentOfType(element, classOf[ScConstructor]) match {
+          case cons: ScConstructor
+              if PsiTreeUtil.isAncestor(cons.typeElement, element, false) =>
+            element match {
+              case resRef: ResolvableReferenceElement =>
+                resRef.bind().flatMap(_.parentElement) match {
+                  case Some(`myTarget`) =>
+                    consumer.process(resRef)
+                  case _ => true
+                }
+              case _ => true
+            }
+          case _ => true
+        }
       }
-    }
   }
 }

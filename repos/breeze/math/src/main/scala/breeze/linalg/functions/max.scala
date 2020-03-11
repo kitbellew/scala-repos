@@ -39,63 +39,64 @@ object max
         Int.MinValue,
         Double.NegativeInfinity,
         Float.NegativeInfinity,
-        Long.MinValue) init: S): Impl[T, S] = new Impl[T, S] {
+        Long.MinValue) init: S): Impl[T, S] =
+    new Impl[T, S] {
 
-    def apply(v: T): S = {
-      class SumVisitor extends ValuesVisitor[S] {
-        var max = init
-        var visitedOne = false
-        def visit(a: S): Unit = {
-          visitedOne = true
-          max = scala.math.max(max, a)
-        }
-
-        def zeros(numZero: Int, zeroValue: S): Unit = {
-          if (numZero != 0) {
+      def apply(v: T): S = {
+        class SumVisitor extends ValuesVisitor[S] {
+          var max = init
+          var visitedOne = false
+          def visit(a: S): Unit = {
             visitedOne = true
-            max = scala.math.max(zeroValue, max)
+            max = scala.math.max(max, a)
+          }
+
+          def zeros(numZero: Int, zeroValue: S): Unit = {
+            if (numZero != 0) {
+              visitedOne = true
+              max = scala.math.max(zeroValue, max)
+            }
+          }
+
+          override def visitArray(
+              arr: Array[S],
+              offset: Int,
+              length: Int,
+              stride: Int): Unit = {
+            if (length >= 0) {
+              visitedOne = true
+            }
+
+            if (stride == 1) {
+              var m = max
+
+              cforRange(offset until (offset + length)) { i =>
+                m = scala.math.max(m, arr(i))
+              }
+              max = m
+            } else {
+              var off = offset
+              var m = max
+              cforRange(0 until length) { i =>
+                m = scala.math.max(m, arr(off))
+                off += stride
+              }
+              max = m
+            }
+
           }
         }
 
-        override def visitArray(
-            arr: Array[S],
-            offset: Int,
-            length: Int,
-            stride: Int): Unit = {
-          if (length >= 0) {
-            visitedOne = true
-          }
+        val visit = new SumVisitor
 
-          if (stride == 1) {
-            var m = max
+        iter.traverse(v, visit)
+        if (!visit.visitedOne)
+          throw new IllegalArgumentException(s"No values in $v!")
 
-            cforRange(offset until (offset + length)) { i =>
-              m = scala.math.max(m, arr(i))
-            }
-            max = m
-          } else {
-            var off = offset
-            var m = max
-            cforRange(0 until length) { i =>
-              m = scala.math.max(m, arr(off))
-              off += stride
-            }
-            max = m
-          }
-
-        }
+        visit.max
       }
 
-      val visit = new SumVisitor
-
-      iter.traverse(v, visit)
-      if (!visit.visitedOne)
-        throw new IllegalArgumentException(s"No values in $v!")
-
-      visit.max
     }
-
-  }
 
   implicit def maxVS[T, U, LHS, RHS, RV](implicit
       cmvH: ScalarOf[T, LHS],
@@ -169,51 +170,52 @@ object min extends UFunc {
         Int.MaxValue,
         Double.PositiveInfinity,
         Float.PositiveInfinity,
-        Long.MaxValue) init: S): Impl[T, S] = new Impl[T, S] {
+        Long.MaxValue) init: S): Impl[T, S] =
+    new Impl[T, S] {
 
-    def apply(v: T): S = {
-      class MinVisitor extends ValuesVisitor[S] {
-        var min = init
-        var visitedOne = false
+      def apply(v: T): S = {
+        class MinVisitor extends ValuesVisitor[S] {
+          var min = init
+          var visitedOne = false
 
-        def visit(a: S): Unit = {
-          visitedOne = true
-          min = scala.math.min(min, a)
-        }
-
-        def zeros(numZero: Int, zeroValue: S): Unit = {
-          if (numZero != 0) {
+          def visit(a: S): Unit = {
             visitedOne = true
-            min = scala.math.min(zeroValue, min)
+            min = scala.math.min(min, a)
+          }
+
+          def zeros(numZero: Int, zeroValue: S): Unit = {
+            if (numZero != 0) {
+              visitedOne = true
+              min = scala.math.min(zeroValue, min)
+            }
+          }
+
+          override def visitArray(
+              arr: Array[S],
+              offset: Int,
+              length: Int,
+              stride: Int): Unit = {
+            var i = 0
+            var off = offset
+            while (i < length) {
+              visitedOne = true
+              min = scala.math.min(min, arr(off))
+              i += 1
+              off += stride
+            }
           }
         }
 
-        override def visitArray(
-            arr: Array[S],
-            offset: Int,
-            length: Int,
-            stride: Int): Unit = {
-          var i = 0
-          var off = offset
-          while (i < length) {
-            visitedOne = true
-            min = scala.math.min(min, arr(off))
-            i += 1
-            off += stride
-          }
-        }
+        val visit = new MinVisitor
+
+        iter.traverse(v, visit)
+        if (!visit.visitedOne)
+          throw new IllegalArgumentException(s"No values in $v!")
+
+        visit.min
       }
 
-      val visit = new MinVisitor
-
-      iter.traverse(v, visit)
-      if (!visit.visitedOne)
-        throw new IllegalArgumentException(s"No values in $v!")
-
-      visit.min
     }
-
-  }
 
   implicit def minVS[T, U, LHS, RHS, RV](implicit
       cmvH: ScalarOf[T, LHS],
@@ -296,55 +298,56 @@ object ptp extends UFunc {
         Int.MaxValue,
         Double.PositiveInfinity,
         Float.PositiveInfinity,
-        Long.MaxValue) init: S): Impl[T, S] = new Impl[T, S] {
+        Long.MaxValue) init: S): Impl[T, S] =
+    new Impl[T, S] {
 
-    def apply(v: T): S = {
-      class SumVisitor extends ValuesVisitor[S] {
-        var max = -init
-        var min = init
-        var visitedOne = false
+      def apply(v: T): S = {
+        class SumVisitor extends ValuesVisitor[S] {
+          var max = -init
+          var min = init
+          var visitedOne = false
 
-        def visit(a: S): Unit = {
-          visitedOne = true
-          max = scala.math.max(max, a)
-          min = scala.math.min(min, a)
-        }
-
-        def zeros(numZero: Int, zeroValue: S): Unit = {
-          if (numZero != 0) {
+          def visit(a: S): Unit = {
             visitedOne = true
-            max = scala.math.max(zeroValue, max)
-            min = scala.math.min(zeroValue, min)
+            max = scala.math.max(max, a)
+            min = scala.math.min(min, a)
+          }
+
+          def zeros(numZero: Int, zeroValue: S): Unit = {
+            if (numZero != 0) {
+              visitedOne = true
+              max = scala.math.max(zeroValue, max)
+              min = scala.math.min(zeroValue, min)
+            }
+          }
+
+          override def visitArray(
+              arr: Array[S],
+              offset: Int,
+              length: Int,
+              stride: Int): Unit = {
+            var i = 0
+            var off = offset
+            while (i < length) {
+              visitedOne = true
+              max = scala.math.max(max, arr(off))
+              min = scala.math.min(min, arr(off))
+              i += 1
+              off += stride
+            }
           }
         }
 
-        override def visitArray(
-            arr: Array[S],
-            offset: Int,
-            length: Int,
-            stride: Int): Unit = {
-          var i = 0
-          var off = offset
-          while (i < length) {
-            visitedOne = true
-            max = scala.math.max(max, arr(off))
-            min = scala.math.min(min, arr(off))
-            i += 1
-            off += stride
-          }
-        }
+        val visit = new SumVisitor
+
+        iter.traverse(v, visit)
+        if (!visit.visitedOne)
+          throw new IllegalArgumentException(s"No values in $v!")
+
+        visit.max - visit.min
       }
 
-      val visit = new SumVisitor
-
-      iter.traverse(v, visit)
-      if (!visit.visitedOne)
-        throw new IllegalArgumentException(s"No values in $v!")
-
-      visit.max - visit.min
     }
-
-  }
 }
 
 /** Minimum and maximum in one traversal, along an axis.
@@ -357,55 +360,56 @@ object minMax extends UFunc {
         Int.MaxValue,
         Double.PositiveInfinity,
         Float.PositiveInfinity,
-        Long.MaxValue) init: S): Impl[T, (S, S)] = new Impl[T, (S, S)] {
+        Long.MaxValue) init: S): Impl[T, (S, S)] =
+    new Impl[T, (S, S)] {
 
-    def apply(v: T): (S, S) = {
-      //the next 30 lines are common with "object ptp extends UFunc"
-      class SumVisitor extends ValuesVisitor[S] {
-        var max = -init
-        var min = init
-        var visitedOne = false
-        def visit(a: S): Unit = {
-          visitedOne = true
-          max = scala.math.max(max, a)
-          min = scala.math.min(min, a)
-        }
-
-        def zeros(numZero: Int, zeroValue: S): Unit = {
-          if (numZero != 0) {
+      def apply(v: T): (S, S) = {
+        //the next 30 lines are common with "object ptp extends UFunc"
+        class SumVisitor extends ValuesVisitor[S] {
+          var max = -init
+          var min = init
+          var visitedOne = false
+          def visit(a: S): Unit = {
             visitedOne = true
-            max = scala.math.max(zeroValue, max)
-            min = scala.math.min(zeroValue, min)
+            max = scala.math.max(max, a)
+            min = scala.math.min(min, a)
+          }
+
+          def zeros(numZero: Int, zeroValue: S): Unit = {
+            if (numZero != 0) {
+              visitedOne = true
+              max = scala.math.max(zeroValue, max)
+              min = scala.math.min(zeroValue, min)
+            }
+          }
+
+          override def visitArray(
+              arr: Array[S],
+              offset: Int,
+              length: Int,
+              stride: Int): Unit = {
+            var i = 0
+            var off = offset
+            while (i < length) {
+              visitedOne = true
+              max = scala.math.max(max, arr(off))
+              min = scala.math.min(min, arr(off))
+              i += 1
+              off += stride
+            }
           }
         }
 
-        override def visitArray(
-            arr: Array[S],
-            offset: Int,
-            length: Int,
-            stride: Int): Unit = {
-          var i = 0
-          var off = offset
-          while (i < length) {
-            visitedOne = true
-            max = scala.math.max(max, arr(off))
-            min = scala.math.min(min, arr(off))
-            i += 1
-            off += stride
-          }
-        }
+        val visit = new SumVisitor
+
+        iter.traverse(v, visit)
+        if (!visit.visitedOne)
+          throw new IllegalArgumentException(s"No values in $v!")
+
+        (visit.min, visit.max)
+
       }
 
-      val visit = new SumVisitor
-
-      iter.traverse(v, visit)
-      if (!visit.visitedOne)
-        throw new IllegalArgumentException(s"No values in $v!")
-
-      (visit.min, visit.max)
-
     }
-
-  }
 
 }

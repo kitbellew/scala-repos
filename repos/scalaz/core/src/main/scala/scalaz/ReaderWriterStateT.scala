@@ -281,9 +281,10 @@ private trait ReaderWriterStateTHoist[R, W, S]
       S,
       ?]) {
       def apply[A](ma: ReaderWriterStateT[M, R, W, S, A])
-          : ReaderWriterStateT[N, R, W, S, A] = ReaderWriterStateT {
-        case (r, s) => f.apply(ma.run(r, s))
-      }
+          : ReaderWriterStateT[N, R, W, S, A] =
+        ReaderWriterStateT {
+          case (r, s) => f.apply(ma.run(r, s))
+        }
     }
 
   def liftM[M[_], A](ma: M[A])(

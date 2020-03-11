@@ -174,10 +174,11 @@ class BatchSourceFile(val file: AbstractFile, content0: Array[Char])
     }
 
   /** True if the index is end of an EOL sequence. */
-  def isAtEndOfLine(idx: Int) = charAtIsEOL(idx) {
-    case CR | LF => true
-    case _       => false
-  }
+  def isAtEndOfLine(idx: Int) =
+    charAtIsEOL(idx) {
+      case CR | LF => true
+      case _       => false
+    }
 
   def calculateLineIndices(cs: Array[Char]) = {
     val buf = new ArrayBuffer[Int]
@@ -199,24 +200,26 @@ class BatchSourceFile(val file: AbstractFile, content0: Array[Char])
     */
   def offsetToLine(offset: Int): Int = {
     val lines = lineIndices
-    def findLine(lo: Int, hi: Int, mid: Int): Int = (
-      if (mid < lo || hi < mid)
-        mid // minimal sanity check - as written this easily went into infinite loopyland
-      else if (offset < lines(mid))
-        findLine(lo, mid - 1, (lo + mid - 1) / 2)
-      else if (offset >= lines(mid + 1))
-        findLine(mid + 1, hi, (mid + 1 + hi) / 2)
-      else
-        mid
-    )
+    def findLine(lo: Int, hi: Int, mid: Int): Int =
+      (
+        if (mid < lo || hi < mid)
+          mid // minimal sanity check - as written this easily went into infinite loopyland
+        else if (offset < lines(mid))
+          findLine(lo, mid - 1, (lo + mid - 1) / 2)
+        else if (offset >= lines(mid + 1))
+          findLine(mid + 1, hi, (mid + 1 + hi) / 2)
+        else
+          mid
+      )
     lastLine = findLine(0, lines.length, lastLine)
     lastLine
   }
 
-  override def equals(that: Any) = that match {
-    case that: BatchSourceFile =>
-      file.path == that.file.path && start == that.start
-    case _ => false
-  }
+  override def equals(that: Any) =
+    that match {
+      case that: BatchSourceFile =>
+        file.path == that.file.path && start == that.start
+      case _ => false
+    }
   override def hashCode = file.path.## + start.##
 }

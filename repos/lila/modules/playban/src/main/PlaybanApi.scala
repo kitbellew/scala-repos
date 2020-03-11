@@ -47,13 +47,15 @@ final class PlaybanApi(coll: Coll, isRematch: String => Boolean) {
       case Blame(player, outcome) => player.userId.??(save(outcome))
     }
 
-  def rageQuit(game: Game, quitterColor: Color): Funit = blameable(game) ?? {
-    game.player(quitterColor).userId ?? save(Outcome.RageQuit)
-  }
+  def rageQuit(game: Game, quitterColor: Color): Funit =
+    blameable(game) ?? {
+      game.player(quitterColor).userId ?? save(Outcome.RageQuit)
+    }
 
-  def goodFinish(game: Game): Funit = blameable(game) ?? {
-    game.userIds.map(save(Outcome.Good)).sequenceFu.void
-  }
+  def goodFinish(game: Game): Funit =
+    blameable(game) ?? {
+      game.userIds.map(save(Outcome.Good)).sequenceFu.void
+    }
 
   def currentBan(userId: String): Fu[Option[TempBan]] =
     coll
@@ -114,17 +116,18 @@ final class PlaybanApi(coll: Coll, isRematch: String => Boolean) {
         case Some(record) => legiferate(record)
       } logFailure lila.log("playban")
 
-  private def legiferate(record: UserRecord): Funit = record.newBan ?? { ban =>
-    coll
-      .update(
-        BSONDocument("_id" -> record.userId),
-        BSONDocument(
-          "$unset" -> BSONDocument("o" -> true),
-          "$push" -> BSONDocument(
-            "b" -> BSONDocument("$each" -> List(ban), "$slice" -> -30)
+  private def legiferate(record: UserRecord): Funit =
+    record.newBan ?? { ban =>
+      coll
+        .update(
+          BSONDocument("_id" -> record.userId),
+          BSONDocument(
+            "$unset" -> BSONDocument("o" -> true),
+            "$push" -> BSONDocument(
+              "b" -> BSONDocument("$each" -> List(ban), "$slice" -> -30)
+            )
           )
         )
-      )
-      .void
-  }
+        .void
+    }
 }

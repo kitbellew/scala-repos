@@ -170,11 +170,12 @@ trait TimeHelpers { self: ControlHelpers =>
       *     month and year lengths in milliseconds are only defined with respect to a reference point,
       *     since the length of a month or year can vary).
       */
-    def millis = dt match {
-      case Left(duration) => duration.getMillis
-      case Right(period) =>
-        period.toStandardDuration.getMillis // will throw exception because it holds month or year
-    }
+    def millis =
+      dt match {
+        case Left(duration) => duration.getMillis
+        case Right(period) =>
+          period.toStandardDuration.getMillis // will throw exception because it holds month or year
+      }
 
     // TODO If we choose to move away from TimeSpan, we'll need to take into
     // TODO account the fact that this method can take anything convertible to
@@ -313,10 +314,11 @@ trait TimeHelpers { self: ControlHelpers =>
               (total._1 / div._1, (total._1 % div._1, div._2) :: total._2)
           }
           ._2
-      def formatAmount(amountUnit: (Long, String)) = amountUnit match {
-        case (amount, unit) if (amount == 1) => amount + " " + unit
-        case (amount, unit)                  => amount + " " + unit + "s"
-      }
+      def formatAmount(amountUnit: (Long, String)) =
+        amountUnit match {
+          case (amount, unit) if (amount == 1) => amount + " " + unit
+          case (amount, unit)                  => amount + " " + unit + "s"
+        }
       divideInUnits(millis).filter(_._1 > 0).map(formatAmount(_)).mkString(", ")
     }
 
@@ -543,9 +545,10 @@ trait TimeHelpers { self: ControlHelpers =>
   }
 
   /** @return a Box[date] from a string using the internet format. */
-  def boxParseInternetDate(dateString: String): Box[Date] = tryo {
-    internetDateFormatter.parse(dateString)
-  }
+  def boxParseInternetDate(dateString: String): Box[Date] =
+    tryo {
+      internetDateFormatter.parse(dateString)
+    }
 
   /** @return a date from a string using the internet format. Return the Epoch date if the parse is unsuccesful */
   def parseInternetDate(dateString: String): Date =

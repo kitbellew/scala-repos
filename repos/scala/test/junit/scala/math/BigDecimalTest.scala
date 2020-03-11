@@ -113,18 +113,19 @@ class BigDecimalTest {
   // Motivated by noticing BigDecimal(0.1f) != BigDecimal(0.1)
   @Test
   def consistentTenthsTest() {
-    def tenths = List[Any](
-      BigDecimal("0.1"),
-      0.1,
-      BigDecimal.decimal(0.1f),
-      BigDecimal.decimal(0.1),
-      BigDecimal(0.1),
-      BigDecimal(BigInt(1), 1),
-      BigDecimal(new BD("0.1")),
-      BigDecimal(1L, 1),
-      BigDecimal(1) / BigDecimal(10),
-      BigDecimal(10).pow(-1)
-    )
+    def tenths =
+      List[Any](
+        BigDecimal("0.1"),
+        0.1,
+        BigDecimal.decimal(0.1f),
+        BigDecimal.decimal(0.1),
+        BigDecimal(0.1),
+        BigDecimal(BigInt(1), 1),
+        BigDecimal(new BD("0.1")),
+        BigDecimal(1L, 1),
+        BigDecimal(1) / BigDecimal(10),
+        BigDecimal(10).pow(-1)
+      )
     for (a <- tenths;
          b <- tenths)
       assert(a == b, s"$a != $b but both should be 0.1")

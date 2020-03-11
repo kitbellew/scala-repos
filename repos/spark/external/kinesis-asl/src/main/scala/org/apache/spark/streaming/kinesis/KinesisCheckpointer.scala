@@ -105,19 +105,20 @@ private[kinesis] class KinesisCheckpointer(
   }
 
   /** Checkpoint the latest saved sequence numbers for all active shardId's. */
-  private def checkpointAll(): Unit = synchronized {
-    // if this method throws an exception, then the scheduled task will not run again
-    try {
-      val shardIds = checkpointers.keys()
-      while (shardIds.hasMoreElements) {
-        val shardId = shardIds.nextElement()
-        checkpoint(shardId, checkpointers.get(shardId))
+  private def checkpointAll(): Unit =
+    synchronized {
+      // if this method throws an exception, then the scheduled task will not run again
+      try {
+        val shardIds = checkpointers.keys()
+        while (shardIds.hasMoreElements) {
+          val shardId = shardIds.nextElement()
+          checkpoint(shardId, checkpointers.get(shardId))
+        }
+      } catch {
+        case NonFatal(e) =>
+          logWarning("Failed to checkpoint to DynamoDB.", e)
       }
-    } catch {
-      case NonFatal(e) =>
-        logWarning("Failed to checkpoint to DynamoDB.", e)
     }
-  }
 
   /**
     * Start the checkpointer thread with the given checkpoint duration.

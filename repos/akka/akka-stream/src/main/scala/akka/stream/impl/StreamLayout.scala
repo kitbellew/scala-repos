@@ -35,13 +35,14 @@ object StreamLayout {
       doPrint: Boolean = false,
       idMap: ju.Map[AnyRef, Integer] = new ju.HashMap): Unit = {
     val ids = Iterator from 1
-    def id(obj: AnyRef) = idMap get obj match {
-      case null ⇒
-        val x = ids.next()
-        idMap.put(obj, x)
-        x
-      case x ⇒ x
-    }
+    def id(obj: AnyRef) =
+      idMap get obj match {
+        case null ⇒
+          val x = ids.next()
+          idMap.put(obj, x)
+          x
+        case x ⇒ x
+      }
     def in(i: InPort) = s"${i.toString}@${id(i)}"
     def out(o: OutPort) = s"${o.toString}@${id(o)}"
     def ins(i: Iterable[InPort]) = i.map(in).mkString("In[", ",", "]")

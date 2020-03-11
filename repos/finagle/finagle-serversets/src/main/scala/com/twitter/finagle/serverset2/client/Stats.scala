@@ -86,13 +86,14 @@ private[serverset2] trait StatsWriter extends StatsClient with ZooKeeperWriter {
       data: Option[Buf],
       acl: Seq[Data.ACL],
       createMode: CreateMode
-  ): Future[String] = createMode match {
-    case CreateMode.Ephemeral =>
-      EphemeralFilter(underlying.create(path, data, acl, createMode))
-    case CreateMode.EphemeralSequential =>
-      EphemeralFilter(underlying.create(path, data, acl, createMode))
-    case _ => WriteFilter(underlying.create(path, data, acl, createMode))
-  }
+  ): Future[String] =
+    createMode match {
+      case CreateMode.Ephemeral =>
+        EphemeralFilter(underlying.create(path, data, acl, createMode))
+      case CreateMode.EphemeralSequential =>
+        EphemeralFilter(underlying.create(path, data, acl, createMode))
+      case _ => WriteFilter(underlying.create(path, data, acl, createMode))
+    }
 
   def delete(path: String, version: Option[Int]): Future[Unit] =
     WriteFilter(underlying.delete(path, version))

@@ -31,12 +31,13 @@ class PoissonTest
   import org.scalacheck.Arbitrary.arbitrary
   val expFam = Poisson
 
-  implicit def arbDistr: Arbitrary[Poisson] = Arbitrary {
-    for (p <- arbitrary[Double].map {
-           _.abs % 200 + 1
-         })
-      yield new Poisson(p)
-  }
+  implicit def arbDistr: Arbitrary[Poisson] =
+    Arbitrary {
+      for (p <- arbitrary[Double].map {
+             _.abs % 200 + 1
+           })
+        yield new Poisson(p)
+    }
   def arbParameter = Arbitrary(arbitrary[Double].map(x => math.abs(x) % 20))
   def paramsClose(p: Double, b: Double) =
     if (b == 0.0)

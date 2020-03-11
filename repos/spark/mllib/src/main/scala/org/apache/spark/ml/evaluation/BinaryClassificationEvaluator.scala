@@ -117,10 +117,11 @@ class BinaryClassificationEvaluator @Since("1.4.0") (
   }
 
   @Since("1.5.0")
-  override def isLargerBetter: Boolean = $(metricName) match {
-    case "areaUnderROC" => true
-    case "areaUnderPR"  => true
-  }
+  override def isLargerBetter: Boolean =
+    $(metricName) match {
+      case "areaUnderROC" => true
+      case "areaUnderPR"  => true
+    }
 
   @Since("1.4.1")
   override def copy(extra: ParamMap): BinaryClassificationEvaluator =

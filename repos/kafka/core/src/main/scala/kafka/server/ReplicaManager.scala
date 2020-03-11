@@ -65,10 +65,11 @@ import org.apache.kafka.common.internals.TopicConstants
 case class LogAppendResult(
     info: LogAppendInfo,
     error: Option[Throwable] = None) {
-  def errorCode = error match {
-    case None    => Errors.NONE.code
-    case Some(e) => Errors.forException(e).code
-  }
+  def errorCode =
+    error match {
+      case None    => Errors.NONE.code
+      case Some(e) => Errors.forException(e).code
+    }
 }
 
 /*
@@ -87,10 +88,11 @@ case class LogReadResult(
     isReadFromLogEnd: Boolean,
     error: Option[Throwable] = None) {
 
-  def errorCode = error match {
-    case None    => Errors.NONE.code
-    case Some(e) => Errors.forException(e).code
-  }
+  def errorCode =
+    error match {
+      case None    => Errors.NONE.code
+      case Some(e) => Errors.forException(e).code
+    }
 
   override def toString = {
     "Fetch Data: [%s], HW: [%d], readSize: [%d], isReadFromLogEnd: [%b], error: [%s]"

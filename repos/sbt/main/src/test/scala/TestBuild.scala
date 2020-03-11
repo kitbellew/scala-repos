@@ -118,19 +118,21 @@ object TestBuild {
     val buildMap = mapBy(builds)(_.uri)
     val taskMap = mapBy(tasks)(getKey)
     def project(ref: ProjectRef) = buildMap(ref.build).projectMap(ref.project)
-    def projectFor(ref: ResolvedReference) = ref match {
-      case pr: ProjectRef => project(pr);
-      case BuildRef(uri)  => buildMap(uri).root
-    }
+    def projectFor(ref: ResolvedReference) =
+      ref match {
+        case pr: ProjectRef => project(pr);
+        case BuildRef(uri)  => buildMap(uri).root
+      }
 
     lazy val allProjects = builds.flatMap(_.allProjects)
     def rootProject(uri: URI): String = buildMap(uri).root.id
     def inheritConfig(ref: ResolvedReference, config: ConfigKey) =
       projectFor(ref).confMap(config.name).extended map toConfigKey
-    def inheritTask(task: AttributeKey[_]) = taskMap.get(task) match {
-      case None    => Nil;
-      case Some(t) => t.delegates map getKey
-    }
+    def inheritTask(task: AttributeKey[_]) =
+      taskMap.get(task) match {
+        case None    => Nil;
+        case Some(t) => t.delegates map getKey
+      }
     def inheritProject(ref: ProjectRef) = project(ref).delegates
     def resolve(ref: Reference) =
       Scope.resolveReference(builds.head.uri, rootProject, ref)
@@ -218,9 +220,10 @@ object TestBuild {
 
   def makeParser(structure: Structure): Parser[ScopedKey[_]] = {
     import structure._
-    def confs(uri: URI) = env.buildMap.get(uri).toList.flatMap {
-      _.root.configurations.map(_.name)
-    }
+    def confs(uri: URI) =
+      env.buildMap.get(uri).toList.flatMap {
+        _.root.configurations.map(_.name)
+      }
     val defaultConfs: Option[ResolvedReference] => Seq[String] = {
       case None                  => confs(env.root.uri)
       case Some(BuildRef(uri))   => confs(uri)
@@ -288,9 +291,10 @@ object TestBuild {
          ps <- pGen(u))
       yield new Build(u, ps)
 
-  def nGen[T](igen: Gen[Int])(implicit g: Gen[T]): Gen[List[T]] = igen flatMap {
-    ig => listOfN(ig, g)
-  }
+  def nGen[T](igen: Gen[Int])(implicit g: Gen[T]): Gen[List[T]] =
+    igen flatMap { ig =>
+      listOfN(ig, g)
+    }
 
   implicit def genProjects(build: URI)(implicit
       genID: Gen[String],
@@ -370,10 +374,11 @@ object TestBuild {
             yield (x, d.toList)
         genAcyclic(maxDeps, xs, next :: acc)
     }
-  def sequence[T](gs: Seq[Gen[T]]): Gen[Seq[T]] = Gen.parameterized { prms =>
-    wrap(gs map { g =>
-      g(prms) getOrElse sys.error("failed generator")
-    })
-  }
+  def sequence[T](gs: Seq[Gen[T]]): Gen[Seq[T]] =
+    Gen.parameterized { prms =>
+      wrap(gs map { g =>
+        g(prms) getOrElse sys.error("failed generator")
+      })
+    }
   type Inputs[A, T] = (T, Seq[T], Seq[A] => A)
 }

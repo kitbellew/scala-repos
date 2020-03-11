@@ -145,12 +145,14 @@ class Switch(startAsOn: Boolean = false) {
   def switchOff(action: => Unit): Boolean = transcend(from = true, action)
   def switchOn(action: => Unit): Boolean = transcend(from = false, action)
 
-  def switchOff: Boolean = synchronized {
-    switch.compareAndSet(true, false)
-  }
-  def switchOn: Boolean = synchronized {
-    switch.compareAndSet(false, true)
-  }
+  def switchOff: Boolean =
+    synchronized {
+      switch.compareAndSet(true, false)
+    }
+  def switchOn: Boolean =
+    synchronized {
+      switch.compareAndSet(false, true)
+    }
 
   def ifOnYield[T](action: => T): Option[T] = {
     if (switch.get)
@@ -182,42 +184,47 @@ class Switch(startAsOn: Boolean = false) {
       false
   }
 
-  def whileOnYield[T](action: => T): Option[T] = synchronized {
-    if (switch.get)
-      Some(action)
-    else
-      None
-  }
+  def whileOnYield[T](action: => T): Option[T] =
+    synchronized {
+      if (switch.get)
+        Some(action)
+      else
+        None
+    }
 
-  def whileOffYield[T](action: => T): Option[T] = synchronized {
-    if (!switch.get)
-      Some(action)
-    else
-      None
-  }
+  def whileOffYield[T](action: => T): Option[T] =
+    synchronized {
+      if (!switch.get)
+        Some(action)
+      else
+        None
+    }
 
-  def whileOn(action: => Unit): Boolean = synchronized {
-    if (switch.get) {
-      action
-      true
-    } else
-      false
-  }
+  def whileOn(action: => Unit): Boolean =
+    synchronized {
+      if (switch.get) {
+        action
+        true
+      } else
+        false
+    }
 
-  def whileOff(action: => Unit): Boolean = synchronized {
-    if (switch.get) {
-      action
-      true
-    } else
-      false
-  }
+  def whileOff(action: => Unit): Boolean =
+    synchronized {
+      if (switch.get) {
+        action
+        true
+      } else
+        false
+    }
 
-  def ifElseYield[T](on: => T)(off: => T) = synchronized {
-    if (switch.get)
-      on
-    else
-      off
-  }
+  def ifElseYield[T](on: => T)(off: => T) =
+    synchronized {
+      if (switch.get)
+        on
+      else
+        off
+    }
 
   def isOn = switch.get
   def isOff = !isOn

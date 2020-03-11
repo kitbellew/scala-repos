@@ -19,9 +19,10 @@ trait NumberHelper { self: I18nHelper =>
   def showMillis(millis: Int)(implicit ctx: UserContext) =
     formatter format ((millis / 100).toDouble / 10)
 
-  implicit def richInt(number: Int) = new {
-    def localize(implicit ctx: UserContext): String = formatter format number
-  }
+  implicit def richInt(number: Int) =
+    new {
+      def localize(implicit ctx: UserContext): String = formatter format number
+    }
 
   def nth(number: Int) =
     if ((11 to 13).contains(number % 100))

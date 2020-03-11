@@ -114,16 +114,19 @@ abstract class AbstractCodec[Req, Rep] extends Codec[Req, Rep]
 object Codec {
   def ofPipelineFactory[Req, Rep](makePipeline: => ChannelPipeline) =
     new Codec[Req, Rep] {
-      def pipelineFactory = new ChannelPipelineFactory {
-        def getPipeline = makePipeline
-      }
+      def pipelineFactory =
+        new ChannelPipelineFactory {
+          def getPipeline = makePipeline
+        }
     }
 
-  def ofPipeline[Req, Rep](p: ChannelPipeline) = new Codec[Req, Rep] {
-    def pipelineFactory = new ChannelPipelineFactory {
-      def getPipeline = p
+  def ofPipeline[Req, Rep](p: ChannelPipeline) =
+    new Codec[Req, Rep] {
+      def pipelineFactory =
+        new ChannelPipelineFactory {
+          def getPipeline = p
+        }
     }
-  }
 }
 
 /**
@@ -138,10 +141,11 @@ case class ClientCodecConfig(serviceName: String)
   * Servers
   */
 case class ServerCodecConfig(serviceName: String, boundAddress: SocketAddress) {
-  def boundInetSocketAddress = boundAddress match {
-    case ia: InetSocketAddress => ia
-    case _                     => new InetSocketAddress(0)
-  }
+  def boundInetSocketAddress =
+    boundAddress match {
+      case ia: InetSocketAddress => ia
+      case _                     => new InetSocketAddress(0)
+    }
 }
 
 /**

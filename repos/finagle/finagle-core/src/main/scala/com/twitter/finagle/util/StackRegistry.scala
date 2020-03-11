@@ -69,9 +69,10 @@ trait StackRegistry {
   /**
     * Returns any registered [[Entry Entries]] that had the same [[Label]].
     */
-  def registeredDuplicates: Seq[Entry] = synchronized {
-    duplicates.values.flatten.toSeq
-  }
+  def registeredDuplicates: Seq[Entry] =
+    synchronized {
+      duplicates.values.flatten.toSeq
+    }
 
   /** Registers an `addr` and `stk`. */
   def register(addr: String, stk: Stack[_], params: Stack.Params): Unit = {
@@ -152,13 +153,15 @@ trait StackRegistry {
   def size: Int = numEntries.get
 
   /** Returns a list of all entries. */
-  def registrants: Iterable[Entry] = synchronized {
-    registry.values
-  }
+  def registrants: Iterable[Entry] =
+    synchronized {
+      registry.values
+    }
 
   // added for tests
-  private[finagle] def clear(): Unit = synchronized {
-    registry = Map.empty[String, Entry]
-    duplicates = Map.empty[String, Seq[Entry]]
-  }
+  private[finagle] def clear(): Unit =
+    synchronized {
+      registry = Map.empty[String, Entry]
+      duplicates = Map.empty[String, Seq[Entry]]
+    }
 }

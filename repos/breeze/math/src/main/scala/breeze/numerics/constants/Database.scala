@@ -24,11 +24,12 @@ object Database {
     * @param regex enter a regex object (i.e. """regex expression""".r)
     * @return returns a vector of (String, Double) objects, which contain the full entry name (String) and the value (Double)
     */
-  def value(regex: Regex) = databaseHM.collect {
-    case (key: String, (value: Double, _, _))
-        if regex.findFirstIn(key).nonEmpty =>
-      (key, value)
-  }
+  def value(regex: Regex) =
+    databaseHM.collect {
+      case (key: String, (value: Double, _, _))
+          if regex.findFirstIn(key).nonEmpty =>
+        (key, value)
+    }
 
   /** Look up the uncertainty of a specific entry.
     * Name must be an exact match with the entry.
@@ -40,11 +41,12 @@ object Database {
     * @param regex enter a regex object (i.e. """regex expression""".r)
     * @return returns a vector of (String, Double) objects, which contain the full entry name (String) and the uncertainty (Double)
     */
-  def uncertainty(regex: Regex) = databaseHM.collect {
-    case (key: String, (_, uncert: Double, _))
-        if regex.findFirstIn(key).nonEmpty =>
-      (key, uncert)
-  }
+  def uncertainty(regex: Regex) =
+    databaseHM.collect {
+      case (key: String, (_, uncert: Double, _))
+          if regex.findFirstIn(key).nonEmpty =>
+        (key, uncert)
+    }
 
   /** Look up the unit of a specific entry.
     * Name must be an exact match with the entry.
@@ -56,11 +58,12 @@ object Database {
     * @param regex enter a regex object (i.e. """regex expression""".r)
     * @return returns a vector of (String, Double) objects, which contain the full entry name (String) and the uncertainty (Double)
     */
-  def unit(regex: Regex) = databaseHM.collect {
-    case (key: String, (_, _, unit: String))
-        if regex.findFirstIn(key).nonEmpty =>
-      (key, unit)
-  }
+  def unit(regex: Regex) =
+    databaseHM.collect {
+      case (key: String, (_, _, unit: String))
+          if regex.findFirstIn(key).nonEmpty =>
+        (key, unit)
+    }
 
   // <editor-fold defaultstate="collapsed" desc=" CODATA2010 Database HashMap ">
 

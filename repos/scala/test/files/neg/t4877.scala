@@ -3,25 +3,29 @@ trait C {}
 class A {
   def foo: AnyRef {
     def bar: String
-  } = new AnyRef {
-    def bar = 42
-  }
+  } =
+    new AnyRef {
+      def bar = 42
+    }
   def foo2: AnyRef {
     def bar: String
-  } = new AnyRef {
-    def bar = "abc"
-  }
+  } =
+    new AnyRef {
+      def bar = "abc"
+    }
   def foo3: AnyRef {
     def bar(x: Int): Int
-  } = new AnyRef {
-    def bar(x: Int) = "abc"
-  }
+  } =
+    new AnyRef {
+      def bar(x: Int) = "abc"
+    }
   def foo4: C {
     def bar(x: Int): Int;
     def quux(x: Int): Int
-  } = new C {
-    def bar(x: Int) = 5
-  }
+  } =
+    new C {
+      def bar(x: Int) = 5
+    }
 }
 
 class B {

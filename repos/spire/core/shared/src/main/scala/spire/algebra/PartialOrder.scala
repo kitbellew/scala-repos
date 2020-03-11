@@ -110,9 +110,10 @@ object PartialOrder {
   def by[@sp A, @sp B](f: A => B)(
       implicit po: PartialOrder[B]): PartialOrder[A] = po.on(f)
 
-  def from[@sp A](f: (A, A) => Double): PartialOrder[A] = new PartialOrder[A] {
-    def partialCompare(x: A, y: A): Double = f(x, y)
-  }
+  def from[@sp A](f: (A, A) => Double): PartialOrder[A] =
+    new PartialOrder[A] {
+      def partialCompare(x: A, y: A): Double = f(x, y)
+    }
 
   implicit def partialOrdering[A](
       implicit po: PartialOrder[A]): PartialOrdering[A] =

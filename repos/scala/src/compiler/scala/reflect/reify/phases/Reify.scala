@@ -27,10 +27,11 @@ trait Reify
       finally currents = currents.tail
     }
   }
-  def boundSymbolsInCallstack = flatCollect(reifyStack.currents) {
-    case ExistentialType(quantified, _) => quantified
-    case PolyType(typeParams, _)        => typeParams
-  }
+  def boundSymbolsInCallstack =
+    flatCollect(reifyStack.currents) {
+      case ExistentialType(quantified, _) => quantified
+      case PolyType(typeParams, _)        => typeParams
+    }
   def current = reifyStack.currents.head
   def currents = reifyStack.currents
 

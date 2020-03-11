@@ -46,13 +46,15 @@ trait NamesDefaults { self: Analyzer =>
       blockTyper: Typer
   ) {}
 
-  private def nameOfNamedArg(arg: Tree) = Some(arg) collect {
-    case AssignOrNamedArg(Ident(name), _) => name
-  }
-  def isNamedArg(arg: Tree) = arg match {
-    case AssignOrNamedArg(Ident(_), _) => true
-    case _                             => false
-  }
+  private def nameOfNamedArg(arg: Tree) =
+    Some(arg) collect {
+      case AssignOrNamedArg(Ident(name), _) => name
+    }
+  def isNamedArg(arg: Tree) =
+    arg match {
+      case AssignOrNamedArg(Ident(_), _) => true
+      case _                             => false
+    }
 
   /** @param pos maps indices from old to new */
   def reorderArgs[T: ClassTag](args: List[T], pos: Int => Int): List[T] = {

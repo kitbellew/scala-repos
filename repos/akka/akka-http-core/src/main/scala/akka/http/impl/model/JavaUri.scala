@@ -27,11 +27,12 @@ case class JavaUri(uri: sm.Uri) extends jm.Uri {
 
   def pathSegments(): jl.Iterable[String] = {
     import sm.Uri.Path._
-    def gatherSegments(path: sm.Uri.Path): List[String] = path match {
-      case Empty ⇒ Nil
-      case Segment(head, tail) ⇒ head :: gatherSegments(tail)
-      case Slash(tail) ⇒ gatherSegments(tail)
-    }
+    def gatherSegments(path: sm.Uri.Path): List[String] =
+      path match {
+        case Empty ⇒ Nil
+        case Segment(head, tail) ⇒ head :: gatherSegments(tail)
+        case Slash(tail) ⇒ gatherSegments(tail)
+      }
     import collection.JavaConverters._
     gatherSegments(uri.path).asJava
   }
@@ -64,15 +65,16 @@ case class JavaUri(uri: sm.Uri) extends jm.Uri {
     t(_.withRawQueryString(rawQuery))
   def query(query: jm.Query): jm.Uri = t(_.withQuery(query.asScala))
 
-  def addPathSegment(segment: String): jm.Uri = t { u ⇒
-    val newPath =
-      if (u.path.endsWithSlash)
-        u.path ++ sm.Uri.Path(segment)
-      else
-        u.path ++ sm.Uri.Path./(segment)
+  def addPathSegment(segment: String): jm.Uri =
+    t { u ⇒
+      val newPath =
+        if (u.path.endsWithSlash)
+          u.path ++ sm.Uri.Path(segment)
+        else
+          u.path ++ sm.Uri.Path./(segment)
 
-    u.withPath(newPath)
-  }
+      u.withPath(newPath)
+    }
 
   def fragment(fragment: Optional[String]): jm.Uri =
     t(_.copy(fragment = fragment.asScala))

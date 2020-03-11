@@ -25,9 +25,10 @@ class ThriftClientFinagleServerTest
   val processor = new B.ServiceIface {
     def add(a: Int, b: Int) = Future.exception(new AnException)
     def add_one(a: Int, b: Int) = Future.Void
-    def multiply(a: Int, b: Int) = Future {
-      a / b
-    }
+    def multiply(a: Int, b: Int) =
+      Future {
+        a / b
+      }
     def complex_return(someString: String) =
       someString match {
         case "throwAnException" =>

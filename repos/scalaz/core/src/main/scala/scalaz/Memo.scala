@@ -16,9 +16,10 @@ sealed abstract class MemoInstances {}
   * thread-safe. */
 object Memo extends MemoInstances {
   def memo[@specialized(Int) K, @specialized(Int, Long, Double) V](
-      f: (K => V) => K => V): Memo[K, V] = new Memo[K, V] {
-    def apply(z: K => V) = f(z)
-  }
+      f: (K => V) => K => V): Memo[K, V] =
+    new Memo[K, V] {
+      def apply(z: K => V) = f(z)
+    }
 
   def nilMemo[@specialized(Int) K, @specialized(Int, Long, Double) V]
       : Memo[K, V] = memo[K, V](z => z)

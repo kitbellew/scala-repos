@@ -19,18 +19,20 @@ abstract class LambdaLift extends InfoTransform {
   val phaseName: String = "lambdalift"
 
   private val lifted = new TypeMap {
-    def apply(tp: Type): Type = tp match {
-      case TypeRef(NoPrefix, sym, Nil) if sym.isClass && !sym.isPackageClass =>
-        typeRef(apply(sym.owner.enclClass.thisType), sym, Nil)
-      case ClassInfoType(parents, decls, clazz) =>
-        val parents1 = parents mapConserve this
-        if (parents1 eq parents)
-          tp
-        else
-          ClassInfoType(parents1, decls, clazz)
-      case _ =>
-        mapOver(tp)
-    }
+    def apply(tp: Type): Type =
+      tp match {
+        case TypeRef(NoPrefix, sym, Nil)
+            if sym.isClass && !sym.isPackageClass =>
+          typeRef(apply(sym.owner.enclClass.thisType), sym, Nil)
+        case ClassInfoType(parents, decls, clazz) =>
+          val parents1 = parents mapConserve this
+          if (parents1 eq parents)
+            tp
+          else
+            ClassInfoType(parents1, decls, clazz)
+        case _ =>
+          mapOver(tp)
+      }
   }
 
   /** Each scala.runtime.*Ref class has a static method `create(value)` that simply instantiates the Ref to carry that value. */
@@ -569,35 +571,37 @@ abstract class LambdaLift extends InfoTransform {
     private def preTransform(tree: Tree) =
       super.transform(tree) setType lifted(tree.tpe)
 
-    override def transform(tree: Tree): Tree = tree match {
-      case Select(ReferenceToBoxed(idt), elem) if elem == nme.elem =>
-        postTransform(preTransform(idt), isBoxedRef = false)
-      case ReferenceToBoxed(idt) =>
-        postTransform(preTransform(idt), isBoxedRef = true)
-      case _ =>
-        postTransform(preTransform(tree))
-    }
+    override def transform(tree: Tree): Tree =
+      tree match {
+        case Select(ReferenceToBoxed(idt), elem) if elem == nme.elem =>
+          postTransform(preTransform(idt), isBoxedRef = false)
+        case ReferenceToBoxed(idt) =>
+          postTransform(preTransform(idt), isBoxedRef = true)
+        case _ =>
+          postTransform(preTransform(tree))
+      }
 
     /** Transform statements and add lifted definitions to them. */
     override def transformStats(
         stats: List[Tree],
         exprOwner: Symbol): List[Tree] = {
-      def addLifted(stat: Tree): Tree = stat match {
-        case ClassDef(_, _, _, _) =>
-          val lifted = liftedDefs remove stat.symbol match {
-            case Some(xs) => xs reverseMap addLifted
-            case _ =>
-              log("unexpectedly no lifted defs for " + stat.symbol);
-              Nil
-          }
-          deriveClassDef(stat)(impl => deriveTemplate(impl)(_ ::: lifted))
+      def addLifted(stat: Tree): Tree =
+        stat match {
+          case ClassDef(_, _, _, _) =>
+            val lifted = liftedDefs remove stat.symbol match {
+              case Some(xs) => xs reverseMap addLifted
+              case _ =>
+                log("unexpectedly no lifted defs for " + stat.symbol);
+                Nil
+            }
+            deriveClassDef(stat)(impl => deriveTemplate(impl)(_ ::: lifted))
 
-        case DefDef(_, _, _, _, _, Block(Nil, expr))
-            if !stat.symbol.isConstructor =>
-          deriveDefDef(stat)(_ => expr)
-        case _ =>
-          stat
-      }
+          case DefDef(_, _, _, _, _, Block(Nil, expr))
+              if !stat.symbol.isConstructor =>
+            deriveDefDef(stat)(_ => expr)
+          case _ =>
+            stat
+        }
       super.transformStats(stats, exprOwner) map addLifted
     }
 

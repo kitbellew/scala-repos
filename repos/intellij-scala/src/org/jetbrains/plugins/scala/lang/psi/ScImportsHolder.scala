@@ -156,11 +156,12 @@ trait ScImportsHolder extends ScalaPsiElement {
       elem: PsiNamedElement,
       ref: PsiElement,
       cClass: Option[PsiClass] = None) {
-    def needImport = ref match {
-      case null                    => true
-      case ref: ScReferenceElement => ref.isValid && !ref.isReferenceTo(elem)
-      case _                       => false
-    }
+    def needImport =
+      ref match {
+        case null                    => true
+        case ref: ScReferenceElement => ref.isValid && !ref.isReferenceTo(elem)
+        case _                       => false
+      }
     ScalaNamesUtil.qualifiedName(elem) match {
       case Some(qual) if needImport => addImportForPath(qual, ref)
       case _                        =>

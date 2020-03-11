@@ -334,15 +334,16 @@ trait IndicesModule[M[+_]]
     /**
       * Constructs an empty SliceIndex instance.
       */
-    def empty = new SliceIndex(
-      mutable.Map.empty[Int, mutable.Set[RValue]],
-      mutable.Map.empty[(Int, RValue), ArrayIntList],
-      mutable.Set.empty[Seq[RValue]],
-      new Slice {
-        def size = 0
-        def columns = Map.empty[ColumnRef, Column]
-      }
-    )
+    def empty =
+      new SliceIndex(
+        mutable.Map.empty[Int, mutable.Set[RValue]],
+        mutable.Map.empty[(Int, RValue), ArrayIntList],
+        mutable.Set.empty[Seq[RValue]],
+        new Slice {
+          def size = 0
+          def columns = Map.empty[ColumnRef, Column]
+        }
+      )
 
     /**
       * Creates a SliceIndex instance given an underlying table, a

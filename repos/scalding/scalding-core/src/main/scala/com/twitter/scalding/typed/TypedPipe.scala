@@ -201,11 +201,12 @@ trait TypedPipe[+T] extends Serializable {
     * This is only realized when a group (or join) is
     * performed.
     */
-  def ++[U >: T](other: TypedPipe[U]): TypedPipe[U] = other match {
-    case EmptyTypedPipe                             => this
-    case IterablePipe(thatIter) if thatIter.isEmpty => this
-    case _                                          => MergedTypedPipe(this, other)
-  }
+  def ++[U >: T](other: TypedPipe[U]): TypedPipe[U] =
+    other match {
+      case EmptyTypedPipe                             => this
+      case IterablePipe(thatIter) if thatIter.isEmpty => this
+      case _                                          => MergedTypedPipe(this, other)
+    }
 
   /**
     * Aggregate all items in this pipe into a single ValuePipe
@@ -343,9 +344,10 @@ trait TypedPipe[+T] extends Serializable {
     groupAll.bufferedTake(count).values
 
   /** Transform each element via the function f */
-  def map[U](f: T => U): TypedPipe[U] = flatMap { t =>
-    Iterator(f(t))
-  }
+  def map[U](f: T => U): TypedPipe[U] =
+    flatMap { t =>
+      Iterator(f(t))
+    }
 
   /** Transform only the values (sometimes requires giving the types due to scala type inference) */
   def mapValues[K, V, U](f: V => U)(
@@ -910,12 +912,13 @@ final case class IterablePipe[T](iterable: Iterable[T]) extends TypedPipe[T] {
       .map(it => LiteralValue(agg(it)))
       .getOrElse(EmptyValue)
 
-  override def ++[U >: T](other: TypedPipe[U]): TypedPipe[U] = other match {
-    case IterablePipe(thatIter) => IterablePipe(iterable ++ thatIter)
-    case EmptyTypedPipe         => this
-    case _ if iterable.isEmpty  => other
-    case _                      => MergedTypedPipe(this, other)
-  }
+  override def ++[U >: T](other: TypedPipe[U]): TypedPipe[U] =
+    other match {
+      case IterablePipe(thatIter) => IterablePipe(iterable ++ thatIter)
+      case EmptyTypedPipe         => this
+      case _ if iterable.isEmpty  => other
+      case _                      => MergedTypedPipe(this, other)
+    }
 
   override def cross[U](tiny: TypedPipe[U]) =
     tiny.flatMap { u =>
@@ -1077,15 +1080,16 @@ class TypedPipeFactory[T] private (
   @annotation.tailrec
   private def unwrap(pipe: TypedPipe[T], st: Array[StackTraceElement])(implicit
       flowDef: FlowDef,
-      mode: Mode): (TypedPipe[T], Array[StackTraceElement]) = pipe match {
-    case TypedPipeFactory(n) =>
-      val fullTrace = n match {
-        case NoStackAndThen.WithStackTrace(_, st) => st
-        case _                                    => Array[StackTraceElement]()
-      }
-      unwrap(n(flowDef, mode), st ++ fullTrace)
-    case tp => (tp, st)
-  }
+      mode: Mode): (TypedPipe[T], Array[StackTraceElement]) =
+    pipe match {
+      case TypedPipeFactory(n) =>
+        val fullTrace = n match {
+          case NoStackAndThen.WithStackTrace(_, st) => st
+          case _                                    => Array[StackTraceElement]()
+        }
+        unwrap(n(flowDef, mode), st ++ fullTrace)
+      case tp => (tp, st)
+    }
 }
 
 /**
@@ -1125,18 +1129,19 @@ class TypedPipeInst[T] private[scalding] (
       "Cannot switch Mode between TypedSource.read and toPipe calls. Pipe: %s, call: %s"
         .format(mode, m))
 
-  override def cross[U](tiny: TypedPipe[U]): TypedPipe[(T, U)] = tiny match {
-    case EmptyTypedPipe        => EmptyTypedPipe
-    case MergedTypedPipe(l, r) => MergedTypedPipe(cross(l), cross(r))
-    case IterablePipe(iter) =>
-      flatMap { t =>
-        iter.map {
-          (t, _)
+  override def cross[U](tiny: TypedPipe[U]): TypedPipe[(T, U)] =
+    tiny match {
+      case EmptyTypedPipe        => EmptyTypedPipe
+      case MergedTypedPipe(l, r) => MergedTypedPipe(cross(l), cross(r))
+      case IterablePipe(iter) =>
+        flatMap { t =>
+          iter.map {
+            (t, _)
+          }
         }
-      }
-    // This should work for any, TODO, should we just call this?
-    case _ => map(((), _)).hashJoin(tiny.groupAll).values
-  }
+      // This should work for any, TODO, should we just call this?
+      case _ => map(((), _)).hashJoin(tiny.groupAll).values
+    }
 
   override def filter(f: T => Boolean): TypedPipe[T] =
     new TypedPipeInst[T](
@@ -1228,10 +1233,11 @@ class TypedPipeInst[T] private[scalding] (
 final case class MergedTypedPipe[T](left: TypedPipe[T], right: TypedPipe[T])
     extends TypedPipe[T] {
 
-  override def cross[U](tiny: TypedPipe[U]): TypedPipe[(T, U)] = tiny match {
-    case EmptyTypedPipe => EmptyTypedPipe
-    case _              => MergedTypedPipe(left.cross(tiny), right.cross(tiny))
-  }
+  override def cross[U](tiny: TypedPipe[U]): TypedPipe[(T, U)] =
+    tiny match {
+      case EmptyTypedPipe => EmptyTypedPipe
+      case _              => MergedTypedPipe(left.cross(tiny), right.cross(tiny))
+    }
 
   override def debug: TypedPipe[T] =
     MergedTypedPipe(left.debug, right.debug)

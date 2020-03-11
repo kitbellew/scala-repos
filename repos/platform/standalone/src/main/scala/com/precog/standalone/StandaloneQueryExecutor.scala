@@ -98,13 +98,14 @@ trait StandaloneQueryExecutor
   override def defaultTimeout = yggConfig.maxEvalDuration
 
   implicit val nt = NaturalTransformation.refl[Future]
-  def executor = new ShardQueryExecutor[Future](M) {
-    val M = platform.M
-    type YggConfig = platform.YggConfig
-    val yggConfig = platform.yggConfig
-    val queryReport = LoggingQueryLogger[Future](M)
-    def freshIdScanner = platform.freshIdScanner
-  }
+  def executor =
+    new ShardQueryExecutor[Future](M) {
+      val M = platform.M
+      type YggConfig = platform.YggConfig
+      val yggConfig = platform.yggConfig
+      val queryReport = LoggingQueryLogger[Future](M)
+      def freshIdScanner = platform.freshIdScanner
+    }
 
   protected def executor(implicit shardQueryMonad: JobQueryTFMonad)
       : QueryExecutor[JobQueryTF, StreamT[JobQueryTF, Slice]] = {

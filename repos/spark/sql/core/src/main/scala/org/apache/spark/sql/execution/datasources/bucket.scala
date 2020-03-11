@@ -44,10 +44,11 @@ private[sql] object BucketingUtils {
   //   part-r-00000-2dd664f9-d2c4-4ffe-878f-c6c70c1fb0cb_00003.gz.parquet
   private val bucketedFileName = """.*_(\d+)(?:\..*)?$""".r
 
-  def getBucketId(fileName: String): Option[Int] = fileName match {
-    case bucketedFileName(bucketId) => Some(bucketId.toInt)
-    case other                      => None
-  }
+  def getBucketId(fileName: String): Option[Int] =
+    fileName match {
+      case bucketedFileName(bucketId) => Some(bucketId.toInt)
+      case other                      => None
+    }
 
   def bucketIdToString(id: Int): String = f"_$id%05d"
 }

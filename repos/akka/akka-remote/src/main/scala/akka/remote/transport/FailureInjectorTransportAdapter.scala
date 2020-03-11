@@ -82,16 +82,17 @@ private[remote] class FailureInjectorTransportAdapter(
   override val addedSchemeIdentifier = FailureInjectorSchemeIdentifier
   protected def maximumOverhead = 0
 
-  override def managementCommand(cmd: Any): Future[Boolean] = cmd match {
-    case All(mode) ⇒
-      allMode = mode
-      Future.successful(true)
-    case One(address, mode) ⇒
-      //  don't care about the protocol part - we are injected in the stack anyway!
-      addressChaosTable.put(address.copy(protocol = "", system = ""), mode)
-      Future.successful(true)
-    case _ ⇒ wrappedTransport.managementCommand(cmd)
-  }
+  override def managementCommand(cmd: Any): Future[Boolean] =
+    cmd match {
+      case All(mode) ⇒
+        allMode = mode
+        Future.successful(true)
+      case One(address, mode) ⇒
+        //  don't care about the protocol part - we are injected in the stack anyway!
+        addressChaosTable.put(address.copy(protocol = "", system = ""), mode)
+        Future.successful(true)
+      case _ ⇒ wrappedTransport.managementCommand(cmd)
+    }
 
   protected def interceptListen(
       listenAddress: Address,
@@ -133,15 +134,16 @@ private[remote] class FailureInjectorTransportAdapter(
         })
   }
 
-  def notify(ev: AssociationEvent): Unit = ev match {
-    case InboundAssociation(handle)
-        if shouldDropInbound(handle.remoteAddress, ev, "notify") ⇒ //Ignore
-    case _ ⇒
-      upstreamListener match {
-        case Some(listener) ⇒ listener notify interceptInboundAssociation(ev)
-        case None ⇒
-      }
-  }
+  def notify(ev: AssociationEvent): Unit =
+    ev match {
+      case InboundAssociation(handle)
+          if shouldDropInbound(handle.remoteAddress, ev, "notify") ⇒ //Ignore
+      case _ ⇒
+        upstreamListener match {
+          case Some(listener) ⇒ listener notify interceptInboundAssociation(ev)
+          case None ⇒
+        }
+    }
 
   def interceptInboundAssociation(ev: AssociationEvent): AssociationEvent =
     ev match {
@@ -153,38 +155,40 @@ private[remote] class FailureInjectorTransportAdapter(
   def shouldDropInbound(
       remoteAddress: Address,
       instance: Any,
-      debugMessage: String): Boolean = chaosMode(remoteAddress) match {
-    case PassThru ⇒ false
-    case Drop(_, inboundDropP) ⇒
-      if (rng.nextDouble() <= inboundDropP) {
-        if (shouldDebugLog)
-          log.debug(
-            "Dropping inbound [{}] for [{}] {}",
-            instance.getClass,
-            remoteAddress,
-            debugMessage)
-        true
-      } else
-        false
-  }
+      debugMessage: String): Boolean =
+    chaosMode(remoteAddress) match {
+      case PassThru ⇒ false
+      case Drop(_, inboundDropP) ⇒
+        if (rng.nextDouble() <= inboundDropP) {
+          if (shouldDebugLog)
+            log.debug(
+              "Dropping inbound [{}] for [{}] {}",
+              instance.getClass,
+              remoteAddress,
+              debugMessage)
+          true
+        } else
+          false
+    }
 
   def shouldDropOutbound(
       remoteAddress: Address,
       instance: Any,
-      debugMessage: String): Boolean = chaosMode(remoteAddress) match {
-    case PassThru ⇒ false
-    case Drop(outboundDropP, _) ⇒
-      if (rng.nextDouble() <= outboundDropP) {
-        if (shouldDebugLog)
-          log.debug(
-            "Dropping outbound [{}] for [{}] {}",
-            instance.getClass,
-            remoteAddress,
-            debugMessage)
-        true
-      } else
-        false
-  }
+      debugMessage: String): Boolean =
+    chaosMode(remoteAddress) match {
+      case PassThru ⇒ false
+      case Drop(outboundDropP, _) ⇒
+        if (rng.nextDouble() <= outboundDropP) {
+          if (shouldDebugLog)
+            log.debug(
+              "Dropping outbound [{}] for [{}] {}",
+              instance.getClass,
+              remoteAddress,
+              debugMessage)
+          true
+        } else
+          false
+    }
 
   def chaosMode(remoteAddress: Address): GremlinMode = {
     val mode =

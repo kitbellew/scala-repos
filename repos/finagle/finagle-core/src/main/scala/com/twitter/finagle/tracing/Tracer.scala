@@ -176,15 +176,17 @@ object DefaultTracer extends Tracer with Proxy {
 class BufferingTracer extends Tracer with Iterable[Record] {
   private[this] var buf: List[Record] = Nil
 
-  def record(record: Record): Unit = synchronized {
-    buf ::= record
-  }
+  def record(record: Record): Unit =
+    synchronized {
+      buf ::= record
+    }
 
   def iterator: Iterator[Record] = synchronized(buf).reverseIterator
 
-  def clear(): Unit = synchronized {
-    buf = Nil
-  }
+  def clear(): Unit =
+    synchronized {
+      buf = Nil
+    }
 
   def sampleTrace(traceId: TraceId): Option[Boolean] = None
 }

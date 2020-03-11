@@ -102,51 +102,52 @@ trait BaseBlockStoreTestModule[M[+_]]
       Order[List[JValue]].contramap((_: JArray).elements)
 
     def getBlockAfter(id: Option[JArray], colSelection: Option[Set[ColumnRef]])(
-        implicit M: Monad[M]) = M.point {
-      @tailrec def findBlockAfter(
-          id: JArray,
-          blocks: Stream[Slice]): Option[Slice] = {
-        blocks.filterNot(_.isEmpty) match {
-          case x #:: xs =>
-            if ((x.toJson(x.size - 1).getOrElse(JUndefined) \ "key") > id)
-              Some(x)
-            else
-              findBlockAfter(id, xs)
+        implicit M: Monad[M]) =
+      M.point {
+        @tailrec def findBlockAfter(
+            id: JArray,
+            blocks: Stream[Slice]): Option[Slice] = {
+          blocks.filterNot(_.isEmpty) match {
+            case x #:: xs =>
+              if ((x.toJson(x.size - 1).getOrElse(JUndefined) \ "key") > id)
+                Some(x)
+              else
+                findBlockAfter(id, xs)
 
-          case _ => None
+            case _ => None
+          }
         }
-      }
 
-      val slice = id map { key =>
-        findBlockAfter(key, slices)
-      } getOrElse {
-        slices.headOption
-      }
+        val slice = id map { key =>
+          findBlockAfter(key, slices)
+        } getOrElse {
+          slices.headOption
+        }
 
-      slice map { s =>
-        val s0 = new Slice {
-          val size = s.size
-          val columns = colSelection
-            .map { reqCols =>
-              s.columns.filter {
-                case (ref @ ColumnRef(jpath, ctype), _) =>
-                  jpath.nodes.head == CPathField("key") || reqCols.exists {
-                    ref =>
-                      (CPathField(
-                        "value") \ ref.selector) == jpath && ref.ctype == ctype
-                  }
+        slice map { s =>
+          val s0 = new Slice {
+            val size = s.size
+            val columns = colSelection
+              .map { reqCols =>
+                s.columns.filter {
+                  case (ref @ ColumnRef(jpath, ctype), _) =>
+                    jpath.nodes.head == CPathField("key") || reqCols.exists {
+                      ref =>
+                        (CPathField(
+                          "value") \ ref.selector) == jpath && ref.ctype == ctype
+                    }
+                }
               }
-            }
-            .getOrElse(s.columns)
-        }
+              .getOrElse(s.columns)
+          }
 
-        BlockProjectionData[JArray, Slice](
-          s0.toJson(0).getOrElse(JUndefined) \ "key" --> classOf[JArray],
-          s0.toJson(s0.size - 1)
-            .getOrElse(JUndefined) \ "key" --> classOf[JArray],
-          s0)
+          BlockProjectionData[JArray, Slice](
+            s0.toJson(0).getOrElse(JUndefined) \ "key" --> classOf[JArray],
+            s0.toJson(s0.size - 1)
+              .getOrElse(JUndefined) \ "key" --> classOf[JArray],
+            s0)
+        }
       }
-    }
   }
 
   trait BaseBlockStoreTestTableCompanion extends SliceColumnarTableCompanion

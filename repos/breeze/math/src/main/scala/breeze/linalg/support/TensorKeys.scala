@@ -46,10 +46,11 @@ class TensorKeys[K, V, +This](
 
   override def toString = iterator.mkString("TensorKeys(", ",", ")")
 
-  override def equals(p1: Any) = p1 match {
-    case x: TensorKeys[_, _, _] =>
-      x.eq(this) || iterator.sameElements(x.iterator)
-    case _ => false
-  }
+  override def equals(p1: Any) =
+    p1 match {
+      case x: TensorKeys[_, _, _] =>
+        x.eq(this) || iterator.sameElements(x.iterator)
+      case _ => false
+    }
 
 }

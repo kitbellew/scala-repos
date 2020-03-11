@@ -94,7 +94,8 @@ abstract class PriorityQueueProxy[A](implicit ord: Ordering[A])
     *
     *  @return  a priority queue with the same elements.
     */
-  override def clone(): PriorityQueue[A] = new PriorityQueueProxy[A] {
-    def self = PriorityQueueProxy.this.self.clone()
-  }
+  override def clone(): PriorityQueue[A] =
+    new PriorityQueueProxy[A] {
+      def self = PriorityQueueProxy.this.self.clone()
+    }
 }

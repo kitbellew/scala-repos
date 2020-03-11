@@ -88,16 +88,19 @@ trait OracleProfile extends JdbcProfile {
       extends JdbcModelBuilder(mTables, ignoreInvalidDefaults) {
     override def createColumnBuilder(
         tableBuilder: TableBuilder,
-        meta: MColumn): ColumnBuilder = new ColumnBuilder(tableBuilder, meta) {
-      override def tpe = meta.sqlType match {
-        case 101 => "Double"
-        case _   => super.tpe
+        meta: MColumn): ColumnBuilder =
+      new ColumnBuilder(tableBuilder, meta) {
+        override def tpe =
+          meta.sqlType match {
+            case 101 => "Double"
+            case _   => super.tpe
+          }
+        override def rawDefault =
+          super.rawDefault.map(_.stripSuffix(" ")).map {
+            case "null" => "NULL"
+            case v      => v
+          }
       }
-      override def rawDefault = super.rawDefault.map(_.stripSuffix(" ")).map {
-        case "null" => "NULL"
-        case v      => v
-      }
-    }
   }
 
   override def createModelBuilder(
@@ -143,23 +146,24 @@ trait OracleProfile extends JdbcProfile {
 
   override def defaultSqlTypeName(
       tmd: JdbcType[_],
-      sym: Option[FieldSymbol]): String = tmd.sqlType match {
-    case java.sql.Types.VARCHAR =>
-      val size =
-        sym.flatMap(_.findColumnOption[RelationalProfile.ColumnOption.Length])
-      size.fold("VARCHAR2(254)")(l =>
-        if (l.varying)
-          s"VARCHAR2(${l.length})"
-        else
-          s"CHAR(${l.length})")
-    case java.sql.Types.INTEGER  => "NUMBER(10)"
-    case java.sql.Types.BIGINT   => "NUMBER(19)"
-    case java.sql.Types.SMALLINT => "NUMBER(5)"
-    case java.sql.Types.TINYINT  => "NUMBER(3)"
-    case java.sql.Types.DOUBLE   => "BINARY_DOUBLE"
-    case java.sql.Types.FLOAT    => "BINARY_FLOAT"
-    case _                       => super.defaultSqlTypeName(tmd, sym)
-  }
+      sym: Option[FieldSymbol]): String =
+    tmd.sqlType match {
+      case java.sql.Types.VARCHAR =>
+        val size =
+          sym.flatMap(_.findColumnOption[RelationalProfile.ColumnOption.Length])
+        size.fold("VARCHAR2(254)")(l =>
+          if (l.varying)
+            s"VARCHAR2(${l.length})"
+          else
+            s"CHAR(${l.length})")
+      case java.sql.Types.INTEGER  => "NUMBER(10)"
+      case java.sql.Types.BIGINT   => "NUMBER(19)"
+      case java.sql.Types.SMALLINT => "NUMBER(5)"
+      case java.sql.Types.TINYINT  => "NUMBER(3)"
+      case java.sql.Types.DOUBLE   => "BINARY_DOUBLE"
+      case java.sql.Types.FLOAT    => "BINARY_FLOAT"
+      case _                       => super.defaultSqlTypeName(tmd, sym)
+    }
 
   override val scalarFrom = Some("sys.dual")
 
@@ -173,42 +177,45 @@ trait OracleProfile extends JdbcProfile {
      * these functions. */
     override protected val hasRadDegConversion = false
 
-    override def expr(c: Node, skipParens: Boolean = false): Unit = c match {
-      case RowNumber(_) => b"rownum"
-      case Library.NextValue(SequenceNode(name)) =>
-        b += quoteIdentifier(name) += ".nextval"
-      case Library.CurrentValue(SequenceNode(name)) =>
-        b += quoteIdentifier(name) += ".currval"
-      case Library.Database()   => b += "ORA_DATABASE_NAME"
-      case Library.Repeat(s, n) => b"RPAD($s, LENGTH($s)*$n, $s)"
-      case Library.==(left: ProductNode, right: ProductNode) => //TODO
-        b"\("
-        val cols = (left.children zip right.children).force
-        b.sep(cols, " and ") {
-          case (l, r) => expr(Library.==.typed[Boolean](l, r))
-        }
-        b"\)"
-      case Library.==(l, r)
-          if (l.nodeType != UnassignedType) && jdbcTypeFor(
-            l.nodeType).sqlType == Types.BLOB =>
-        b"\(dbms_lob.compare($l, $r) = 0\)"
-      case _ => super.expr(c, skipParens)
-    }
+    override def expr(c: Node, skipParens: Boolean = false): Unit =
+      c match {
+        case RowNumber(_) => b"rownum"
+        case Library.NextValue(SequenceNode(name)) =>
+          b += quoteIdentifier(name) += ".nextval"
+        case Library.CurrentValue(SequenceNode(name)) =>
+          b += quoteIdentifier(name) += ".currval"
+        case Library.Database()   => b += "ORA_DATABASE_NAME"
+        case Library.Repeat(s, n) => b"RPAD($s, LENGTH($s)*$n, $s)"
+        case Library.==(left: ProductNode, right: ProductNode) => //TODO
+          b"\("
+          val cols = (left.children zip right.children).force
+          b.sep(cols, " and ") {
+            case (l, r) => expr(Library.==.typed[Boolean](l, r))
+          }
+          b"\)"
+        case Library.==(l, r)
+            if (l.nodeType != UnassignedType) && jdbcTypeFor(
+              l.nodeType).sqlType == Types.BLOB =>
+          b"\(dbms_lob.compare($l, $r) = 0\)"
+        case _ => super.expr(c, skipParens)
+      }
   }
 
   class TableDDLBuilder(table: Table[_]) extends super.TableDDLBuilder(table) {
     override val createPhase1 = super.createPhase1 ++ createAutoIncSequences
     override val dropPhase2 = dropAutoIncSequences ++ super.dropPhase2
 
-    def createAutoIncSequences = columns.flatMap {
-      case cb: ColumnDDLBuilder =>
-        cb.createSequenceAndTrigger(table)
-    }
+    def createAutoIncSequences =
+      columns.flatMap {
+        case cb: ColumnDDLBuilder =>
+          cb.createSequenceAndTrigger(table)
+      }
 
-    def dropAutoIncSequences = columns.flatMap {
-      case cb: ColumnDDLBuilder =>
-        cb.dropTriggerAndSequence(table)
-    }
+    def dropAutoIncSequences =
+      columns.flatMap {
+        case cb: ColumnDDLBuilder =>
+          cb.dropTriggerAndSequence(table)
+      }
 
     override protected def addForeignKey(fk: ForeignKey, sb: StringBuilder) {
       sb append "constraint " append quoteIdentifier(
@@ -513,15 +520,17 @@ trait OracleProfile extends JdbcProfile {
         ClientSideOp.mapServerSide(n)(n => rewrite(n, false))
       }
 
-    def rewrite(n: Node, inScalar: Boolean): Node = n match {
-      case n: Comprehension if inScalar && n.orderBy.nonEmpty =>
-        val n2 = n.copy(orderBy = ConstArray.empty) :@ n.nodeType
-        n2.mapChildren(ch => rewrite(ch, false), keepType = true)
-      case Apply(_, _) if !n.nodeType.structural.isInstanceOf[CollectionType] =>
-        n.mapChildren(ch => rewrite(ch, true), keepType = true)
-      case n =>
-        n.mapChildren(ch => rewrite(ch, false), keepType = true)
-    }
+    def rewrite(n: Node, inScalar: Boolean): Node =
+      n match {
+        case n: Comprehension if inScalar && n.orderBy.nonEmpty =>
+          val n2 = n.copy(orderBy = ConstArray.empty) :@ n.nodeType
+          n2.mapChildren(ch => rewrite(ch, false), keepType = true)
+        case Apply(_, _)
+            if !n.nodeType.structural.isInstanceOf[CollectionType] =>
+          n.mapChildren(ch => rewrite(ch, true), keepType = true)
+        case n =>
+          n.mapChildren(ch => rewrite(ch, false), keepType = true)
+      }
   }
 }
 

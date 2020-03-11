@@ -145,10 +145,11 @@ class IndexTime(
     ReIndexer(tmp.lTake, tmp.rTake, il2it(tmp.index))
   }
 
-  private def getTimes(other: Index[DateTime]): Index[Long] = other match {
-    case ts: IndexTime => ts.times
-    case _             => other.map(t2l)
-  }
+  private def getTimes(other: Index[DateTime]): Index[Long] =
+    other match {
+      case ts: IndexTime => ts.times
+      case _             => other.map(t2l)
+    }
 
   override def getIndexer(other: Index[DateTime]): Option[Array[Int]] = {
     val otherTs = getTimes(other)

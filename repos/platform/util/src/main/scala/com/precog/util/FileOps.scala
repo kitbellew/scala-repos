@@ -41,36 +41,40 @@ trait FileOps {
 }
 
 object FilesystemFileOps extends FileOps {
-  def exists(src: File) = IO {
-    src.exists()
-  }
-
-  def rename(src: File, dest: File) = IO {
-    src.renameTo(dest)
-  }
-  def moveDir(src: File, dest: File) = IO {
-    if (!src.isDirectory) {
-      throw new IOException(
-        "Source for moveDir (%s) is not a directory".format(src))
+  def exists(src: File) =
+    IO {
+      src.exists()
     }
 
-    if (!dest.getParentFile.isDirectory) {
-      throw new IOException(
-        "Destination parent for moveDir (%s) is not a directory".format(dest))
+  def rename(src: File, dest: File) =
+    IO {
+      src.renameTo(dest)
     }
+  def moveDir(src: File, dest: File) =
+    IO {
+      if (!src.isDirectory) {
+        throw new IOException(
+          "Source for moveDir (%s) is not a directory".format(src))
+      }
 
-    Files.move(src, dest)
+      if (!dest.getParentFile.isDirectory) {
+        throw new IOException(
+          "Destination parent for moveDir (%s) is not a directory".format(dest))
+      }
 
-    true
-  }
+      Files.move(src, dest)
+
+      true
+    }
 
   def copy(src: File, dest: File) = IOUtils.copyFile(src, dest)
 
   def read(src: File) = IOUtils.readFileToString(src)
   def write(dest: File, content: String) = IOUtils.writeToFile(content, dest)
 
-  def mkdir(dir: File): IO[Boolean] = IO {
-    dir.mkdirs()
-  }
+  def mkdir(dir: File): IO[Boolean] =
+    IO {
+      dir.mkdirs()
+    }
 }
 // vim: set ts=4 sw=4 et:

@@ -71,16 +71,23 @@ object Namer {
   val global: Namer = new Namer {
 
     private[this] object InetPath {
-      def unapply(path: Path): Option[(Address, Path)] = path match {
-        case Path.Utf8("$", "inet", host, IntegerString(port), residual @ _*) =>
-          Some(
-            (
-              Address(new InetSocketAddress(host, port)),
-              Path.Utf8(residual: _*)))
-        case Path.Utf8("$", "inet", IntegerString(port), residual @ _*) =>
-          Some((Address(new InetSocketAddress(port)), Path.Utf8(residual: _*)))
-        case _ => None
-      }
+      def unapply(path: Path): Option[(Address, Path)] =
+        path match {
+          case Path.Utf8(
+                "$",
+                "inet",
+                host,
+                IntegerString(port),
+                residual @ _*) =>
+            Some(
+              (
+                Address(new InetSocketAddress(host, port)),
+                Path.Utf8(residual: _*)))
+          case Path.Utf8("$", "inet", IntegerString(port), residual @ _*) =>
+            Some(
+              (Address(new InetSocketAddress(port)), Path.Utf8(residual: _*)))
+          case _ => None
+        }
     }
 
     private[this] object FailPath {
@@ -98,26 +105,28 @@ object Namer {
     }
 
     private[this] object NamerPath {
-      def unapply(path: Path): Option[(Namer, Path)] = path match {
-        case Path.Utf8("$", kind, rest @ _*) =>
-          Some((namerOfKind(kind), Path.Utf8(rest: _*)))
-        case _ => None
+      def unapply(path: Path): Option[(Namer, Path)] =
+        path match {
+          case Path.Utf8("$", kind, rest @ _*) =>
+            Some((namerOfKind(kind), Path.Utf8(rest: _*)))
+          case _ => None
+        }
+    }
+
+    def lookup(path: Path): Activity[NameTree[Name]] =
+      path match {
+        // Clients may depend on Name.Bound ids being Paths which resolve
+        // back to the same Name.Bound.
+        case InetPath(addr, residual) =>
+          val id = path.take(path.size - residual.size)
+          Activity.value(
+            Leaf(Name.Bound(Var.value(Addr.Bound(addr)), id, residual)))
+
+        case FailPath()             => Activity.value(Fail)
+        case NilPath()              => Activity.value(Empty)
+        case NamerPath(namer, rest) => namer.lookup(rest)
+        case _                      => Activity.value(Neg)
       }
-    }
-
-    def lookup(path: Path): Activity[NameTree[Name]] = path match {
-      // Clients may depend on Name.Bound ids being Paths which resolve
-      // back to the same Name.Bound.
-      case InetPath(addr, residual) =>
-        val id = path.take(path.size - residual.size)
-        Activity.value(
-          Leaf(Name.Bound(Var.value(Addr.Bound(addr)), id, residual)))
-
-      case FailPath()             => Activity.value(Fail)
-      case NilPath()              => Activity.value(Empty)
-      case NamerPath(namer, rest) => namer.lookup(rest)
-      case _                      => Activity.value(Neg)
-    }
 
     override def toString = "Namer.global"
   }
@@ -280,15 +289,16 @@ trait ServiceNamer[Req, Rep] extends Namer {
 
   protected def lookupService(path: Path): Option[Service[Req, Rep]]
 
-  def lookup(path: Path): Activity[NameTree[Name]] = lookupService(path) match {
-    case None =>
-      Activity.value(NameTree.Neg)
-    case Some(svc) =>
-      val factory = ServiceFactory(() => Future.value(svc))
-      val addr = Addr.Bound(exp.Address(factory))
-      val name = Name.Bound(Var.value(addr), factory, path)
-      Activity.value(NameTree.Leaf(name))
-  }
+  def lookup(path: Path): Activity[NameTree[Name]] =
+    lookupService(path) match {
+      case None =>
+        Activity.value(NameTree.Neg)
+      case Some(svc) =>
+        val factory = ServiceFactory(() => Future.value(svc))
+        val addr = Addr.Bound(exp.Address(factory))
+        val name = Name.Bound(Var.value(addr), factory, path)
+        Activity.value(NameTree.Leaf(name))
+    }
 }
 
 package namer {

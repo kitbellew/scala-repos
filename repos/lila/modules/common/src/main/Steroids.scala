@@ -54,9 +54,10 @@ trait ListSteroids {
       } map (_.reverse)
   }
   implicit final class LilaPimpedList[A](list: List[A]) {
-    def sortLike[B](other: List[B], f: A => B): List[A] = list.sortWith {
-      case (x, y) => other.indexOf(f(x)) < other.indexOf(f(y))
-    }
+    def sortLike[B](other: List[B], f: A => B): List[A] =
+      list.sortWith {
+        case (x, y) => other.indexOf(f(x)) < other.indexOf(f(y))
+      }
   }
 }
 
@@ -84,13 +85,14 @@ trait BooleanSteroids {
       else
         f
 
-    def ?[X](t: => X) = new {
-      def |(f: => X) =
-        if (self)
-          t
-        else
-          f
-    }
+    def ?[X](t: => X) =
+      new {
+        def |(f: => X) =
+          if (self)
+            t
+          else
+            f
+      }
 
     def option[A](a: => A): Option[A] =
       if (self)
@@ -110,10 +112,11 @@ trait OptionSteroids {
 
     import scalaz.std.{option => o}
 
-    def fold[X](some: A => X, none: => X): X = self match {
-      case None    => none
-      case Some(a) => some(a)
-    }
+    def fold[X](some: A => X, none: => X): X =
+      self match {
+        case None    => none
+        case Some(a) => some(a)
+      }
 
     def |(a: => A): A = self getOrElse a
 

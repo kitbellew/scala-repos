@@ -171,10 +171,11 @@ object BuiltinCommands {
 
   def boot = Command.make(BootCommand)(bootParser)
 
-  def about = Command.command(AboutCommand, aboutBrief, aboutDetailed) { s =>
-    s.log.info(aboutString(s));
-    s
-  }
+  def about =
+    Command.command(AboutCommand, aboutBrief, aboutDetailed) { s =>
+      s.log.info(aboutString(s));
+      s
+    }
 
   def setLogLevel =
     Command.arb(const(logLevelParser), logLevelHelp)(
@@ -250,10 +251,11 @@ object BuiltinCommands {
   }
   private[this] def selectScalaVersion(
       sv: Option[String],
-      si: ScalaInstance): String = sv match {
-    case Some(si.version) => si.version;
-    case _                => si.actualVersion
-  }
+      si: ScalaInstance): String =
+    sv match {
+      case Some(si.version) => si.version;
+      case _                => si.actualVersion
+    }
   private[this] def quiet[T](t: => T): Option[T] =
     try {
       Some(t)
@@ -367,23 +369,26 @@ object BuiltinCommands {
       (key.label, d)
     }
 
-  def defaults = Command.command(DefaultsCommand) { s =>
-    s.copy(definedCommands = DefaultCommands)
-  }
+  def defaults =
+    Command.command(DefaultsCommand) { s =>
+      s.copy(definedCommands = DefaultCommands)
+    }
 
-  def initialize = Command.command(InitCommand) { s =>
-    /*"load-commands -base ~/.sbt/commands" :: */
-    readLines(readable(sbtRCs(s))) ::: s
-  }
+  def initialize =
+    Command.command(InitCommand) { s =>
+      /*"load-commands -base ~/.sbt/commands" :: */
+      readLines(readable(sbtRCs(s))) ::: s
+    }
 
-  def eval = Command.single(EvalCommand, Help.more(EvalCommand, evalDetailed)) {
-    (s, arg) =>
-      if (Project.isProjectLoaded(s))
-        loadedEval(s, arg)
-      else
-        rawEval(s, arg)
-      s
-  }
+  def eval =
+    Command.single(EvalCommand, Help.more(EvalCommand, evalDetailed)) {
+      (s, arg) =>
+        if (Project.isProjectLoaded(s))
+          loadedEval(s, arg)
+        else
+          rawEval(s, arg)
+        s
+    }
   private[this] def loadedEval(s: State, arg: String): Unit = {
     val extracted = Project extract s
     import extracted._
@@ -415,32 +420,33 @@ object BuiltinCommands {
       Project.showContextKey(newSession, structure))
     Project.setProject(newSession, newStructure, s)
   }
-  def set = Command(SetCommand, setBrief, setDetailed)(setParser) {
-    case (s, (all, arg)) =>
-      val extracted = Project extract s
-      import extracted._
-      val dslVals = extracted.currentUnit.unit.definitions.dslDefinitions
-      // TODO - This is possibly inefficient (or stupid).  We should try to only attach the
-      // classloader + imports NEEDED to compile the set command, rather than
-      // just ALL of them.
-      val ims = (imports(extracted) ++ dslVals.imports.map(i => (i, -1)))
-      val cl = dslVals.classloader(currentLoader)
-      val settings = EvaluateConfigurations.evaluateSetting(
-        session.currentEval(),
-        "<set>",
-        ims,
-        arg,
-        LineRange(0, 0)
-      )(cl)
-      val setResult =
-        if (all)
-          SettingCompletions.setAll(extracted, settings)
-        else
-          SettingCompletions.setThis(s, extracted, settings, arg)
-      s.log.info(setResult.quietSummary)
-      s.log.debug(setResult.verboseSummary)
-      reapply(setResult.session, structure, s)
-  }
+  def set =
+    Command(SetCommand, setBrief, setDetailed)(setParser) {
+      case (s, (all, arg)) =>
+        val extracted = Project extract s
+        import extracted._
+        val dslVals = extracted.currentUnit.unit.definitions.dslDefinitions
+        // TODO - This is possibly inefficient (or stupid).  We should try to only attach the
+        // classloader + imports NEEDED to compile the set command, rather than
+        // just ALL of them.
+        val ims = (imports(extracted) ++ dslVals.imports.map(i => (i, -1)))
+        val cl = dslVals.classloader(currentLoader)
+        val settings = EvaluateConfigurations.evaluateSetting(
+          session.currentEval(),
+          "<set>",
+          ims,
+          arg,
+          LineRange(0, 0)
+        )(cl)
+        val setResult =
+          if (all)
+            SettingCompletions.setAll(extracted, settings)
+          else
+            SettingCompletions.setThis(s, extracted, settings, arg)
+        s.log.info(setResult.quietSummary)
+        s.log.debug(setResult.verboseSummary)
+        reapply(setResult.session, structure, s)
+    }
   // @deprecated("Use SettingCompletions.setThis", "0.13.0")
   def setThis(
       s: State,
@@ -477,13 +483,16 @@ object BuiltinCommands {
     (ext.structure, Select(ext.currentRef), ext.showKey)
   }
 
-  def setParser = (s: State) => {
-    val extracted = Project.extract(s)
-    import extracted._
-    token(Space ~> flag("every" ~ Space)) ~
-      SettingCompletions
-        .settingParser(structure.data, structure.index.keyMap, currentProject)
-  }
+  def setParser =
+    (s: State) => {
+      val extracted = Project.extract(s)
+      import extracted._
+      token(Space ~> flag("every" ~ Space)) ~
+        SettingCompletions.settingParser(
+          structure.data,
+          structure.index.keyMap,
+          currentProject)
+    }
 
   @deprecated("Use Inspect.parser", "0.13.0")
   def inspectParser: State => Parser[(Inspect.Mode, Def.ScopedKey[_])] =
@@ -628,21 +637,22 @@ object BuiltinCommands {
       Help.detailOnly(taskDetail(allTaskAndSettingKeys(s)))
     else
       Help.empty
-  def plugins = Command.command(PluginsCommand, pluginsBrief, pluginsDetailed) {
-    s =>
+  def plugins =
+    Command.command(PluginsCommand, pluginsBrief, pluginsDetailed) { s =>
       val helpString = PluginsDebug.helpAll(s)
       System.out.println(helpString)
       s
-  }
+    }
   val pluginParser: State => Parser[AutoPlugin] = s => {
     val autoPlugins: Map[String, AutoPlugin] = PluginsDebug.autoPluginMap(s)
     token(Space) ~> Act.knownPluginParser(autoPlugins, "plugin")
   }
-  def plugin = Command(PluginCommand)(pluginParser) { (s, plugin) =>
-    val helpString = PluginsDebug.help(plugin, s)
-    System.out.println(helpString)
-    s
-  }
+  def plugin =
+    Command(PluginCommand)(pluginParser) { (s, plugin) =>
+      val helpString = PluginsDebug.help(plugin, s)
+      System.out.println(helpString)
+      s
+    }
 
   def projects =
     Command(

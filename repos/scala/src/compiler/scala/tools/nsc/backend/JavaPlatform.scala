@@ -47,10 +47,11 @@ trait JavaPlatform extends Platform {
       subst: Map[ClassPath[AbstractFile], ClassPath[AbstractFile]]) =
     currentClassPath = Some(new DeltaClassPath(currentClassPath.get, subst))
 
-  def platformPhases = List(
-    flatten, // get rid of inner classes
-    genBCode // generate .class files
-  )
+  def platformPhases =
+    List(
+      flatten, // get rid of inner classes
+      genBCode // generate .class files
+    )
 
   lazy val externalEquals = getDecl(BoxesRunTimeClass, nme.equals_)
   lazy val externalEqualsNumNum = getDecl(BoxesRunTimeClass, nme.equalsNumNum)

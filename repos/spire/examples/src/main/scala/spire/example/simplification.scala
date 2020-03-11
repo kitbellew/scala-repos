@@ -217,27 +217,29 @@ trait BigStream[A] extends Iterable[A] with IterableLike[A, BigStream[A]] {
     loop(this, n)
   }
 
-  def iterator: Iterator[A] = new Iterator[A] {
-    var stream = self
+  def iterator: Iterator[A] =
+    new Iterator[A] {
+      var stream = self
 
-    def hasNext: Boolean = !stream.isEmpty
+      def hasNext: Boolean = !stream.isEmpty
 
-    def next: A =
-      if (stream.isEmpty) {
-        throw new NoSuchElementException
-      } else {
-        val a = stream.head
-        stream = stream.tail
-        a
-      }
-  }
+      def next: A =
+        if (stream.isEmpty) {
+          throw new NoSuchElementException
+        } else {
+          val a = stream.head
+          stream = stream.tail
+          a
+        }
+    }
 
   override def foreach[U](f: A => U): Unit = {
     @tailrec
-    def loop(stream: BigStream[A]): Unit = if (!stream.isEmpty) {
-      f(stream.head)
-      loop(stream.tail)
-    }
+    def loop(stream: BigStream[A]): Unit =
+      if (!stream.isEmpty) {
+        f(stream.head)
+        loop(stream.tail)
+      }
     loop(this)
   }
 
@@ -250,10 +252,11 @@ class BigCons[A](override val head: A, t: => BigStream[A])
   override def tail: BigStream[A] = t
   override def isEmpty = false
   override def toString: String = "BigStream(%s, ...)" format head.toString
-  override def equals(rhs: Any): Boolean = rhs match {
-    case s: BigStream[_] => !s.isEmpty && tail == s.tail
-    case _               => false
-  }
+  override def equals(rhs: Any): Boolean =
+    rhs match {
+      case s: BigStream[_] => !s.isEmpty && tail == s.tail
+      case _               => false
+    }
 }
 
 case class BigNil[A]() extends BigStream[A] {

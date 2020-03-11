@@ -526,10 +526,11 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
     val braceArgs = args.isBraceArgs
     val expects = referenceExpression.expectedTypes()
     for (expected <- expects) {
-      def params(tp: ScType): Seq[ScType] = tp match {
-        case ScFunctionType(_, params) => params
-        case _                         => null
-      }
+      def params(tp: ScType): Seq[ScType] =
+        tp match {
+          case ScFunctionType(_, params) => params
+          case _                         => null
+        }
       val actualParams = params(expected)
       if (actualParams != null) {
         val params = actualParams match {

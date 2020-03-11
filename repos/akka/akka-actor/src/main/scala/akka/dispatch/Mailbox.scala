@@ -170,21 +170,22 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
     * @return true if the suspend count reached zero
     */
   @tailrec
-  final def resume(): Boolean = currentStatus match {
-    case Closed ⇒
-      setStatus(Closed);
-      false
-    case s ⇒
-      val next =
-        if (s < suspendUnit)
-          s
+  final def resume(): Boolean =
+    currentStatus match {
+      case Closed ⇒
+        setStatus(Closed);
+        false
+      case s ⇒
+        val next =
+          if (s < suspendUnit)
+            s
+          else
+            s - suspendUnit
+        if (updateStatus(s, next))
+          next < suspendUnit
         else
-          s - suspendUnit
-      if (updateStatus(s, next))
-        next < suspendUnit
-      else
-        resume()
-  }
+          resume()
+    }
 
   /**
     * Increment the suspend count by one. Caller does not need to worry about whether
@@ -193,28 +194,30 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
     * @return true if the previous suspend count was zero
     */
   @tailrec
-  final def suspend(): Boolean = currentStatus match {
-    case Closed ⇒
-      setStatus(Closed);
-      false
-    case s ⇒
-      if (updateStatus(s, s + suspendUnit))
-        s < suspendUnit
-      else
-        suspend()
-  }
+  final def suspend(): Boolean =
+    currentStatus match {
+      case Closed ⇒
+        setStatus(Closed);
+        false
+      case s ⇒
+        if (updateStatus(s, s + suspendUnit))
+          s < suspendUnit
+        else
+          suspend()
+    }
 
   /**
     * set new primary status Closed. Caller does not need to worry about whether
     * status was Scheduled or not.
     */
   @tailrec
-  final def becomeClosed(): Boolean = currentStatus match {
-    case Closed ⇒
-      setStatus(Closed);
-      false
-    case s ⇒ updateStatus(s, Closed) || becomeClosed()
-  }
+  final def becomeClosed(): Boolean =
+    currentStatus match {
+      case Closed ⇒
+        setStatus(Closed);
+        false
+      case s ⇒ updateStatus(s, Closed) || becomeClosed()
+    }
 
   /**
     * Set Scheduled status, keeping primary status as is.
@@ -265,12 +268,13 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
 
   final def canBeScheduledForExecution(
       hasMessageHint: Boolean,
-      hasSystemMessageHint: Boolean): Boolean = currentStatus match {
-    case Open | Scheduled ⇒
-      hasMessageHint || hasSystemMessageHint || hasSystemMessages || hasMessages
-    case Closed ⇒ false
-    case _ ⇒ hasSystemMessageHint || hasSystemMessages
-  }
+      hasSystemMessageHint: Boolean): Boolean =
+    currentStatus match {
+      case Open | Scheduled ⇒
+        hasMessageHint || hasSystemMessageHint || hasSystemMessages || hasMessages
+      case Closed ⇒ false
+      case _ ⇒ hasSystemMessageHint || hasSystemMessages
+    }
 
   override final def run(): Unit = {
     try {
@@ -563,10 +567,11 @@ private[akka] trait DefaultSystemMessageQueue { self: Mailbox ⇒
       systemDrain(newContents)
   }
 
-  def hasSystemMessages: Boolean = systemQueueGet.head match {
-    case null | NoMessage ⇒ false
-    case _ ⇒ true
-  }
+  def hasSystemMessages: Boolean =
+    systemQueueGet.head match {
+      case null | NoMessage ⇒ false
+      case _ ⇒ true
+    }
 
 }
 
@@ -1034,10 +1039,11 @@ trait ControlAwareMessageQueueSemantics extends QueueBasedMessageQueue {
   def controlQueue: Queue[Envelope]
   def queue: Queue[Envelope]
 
-  def enqueue(receiver: ActorRef, handle: Envelope): Unit = handle match {
-    case envelope @ Envelope(_: ControlMessage, _) ⇒ controlQueue add envelope
-    case envelope ⇒ queue add envelope
-  }
+  def enqueue(receiver: ActorRef, handle: Envelope): Unit =
+    handle match {
+      case envelope @ Envelope(_: ControlMessage, _) ⇒ controlQueue add envelope
+      case envelope ⇒ queue add envelope
+    }
 
   def dequeue(): Envelope = {
     val controlMsg = controlQueue.poll()

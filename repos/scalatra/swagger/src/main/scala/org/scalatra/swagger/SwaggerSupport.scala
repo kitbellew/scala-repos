@@ -62,16 +62,18 @@ object SwaggerSupportSyntax {
       def apply(pattern: String): (Builder => Builder) =
         parseAll(tokens, pattern) get
 
-      private def tokens: Parser[Builder => Builder] = rep(token) ^^ { tokens =>
-        tokens reduceLeft ((acc, fun) => builder => fun(acc(builder)))
-      }
+      private def tokens: Parser[Builder => Builder] =
+        rep(token) ^^ { tokens =>
+          tokens reduceLeft ((acc, fun) => builder => fun(acc(builder)))
+        }
 
       private def token: Parser[Builder => Builder] =
         splat | prefixedOptional | optional | named | literal
 
-      private def splat: Parser[Builder => Builder] = "*" ^^^ { builder =>
-        builder addSplat
-      }
+      private def splat: Parser[Builder => Builder] =
+        "*" ^^^ { builder =>
+          builder addSplat
+        }
 
       private def prefixedOptional: Parser[Builder => Builder] =
         ("." | "/") ~ "?:" ~ """\w+""".r ~ "?" ^^ {
@@ -122,9 +124,10 @@ object SwaggerSupportSyntax {
       def apply(pattern: String): (Builder => Builder) =
         parseAll(tokens, pattern) get
 
-      private def tokens: Parser[Builder => Builder] = rep(token) ^^ { tokens =>
-        tokens reduceLeft ((acc, fun) => builder => fun(acc(builder)))
-      }
+      private def tokens: Parser[Builder => Builder] =
+        rep(token) ^^ { tokens =>
+          tokens reduceLeft ((acc, fun) => builder => fun(acc(builder)))
+        }
 
       //private def token = param | glob | optional | static
       private def token: Parser[Builder => Builder] =
@@ -669,17 +672,18 @@ trait SwaggerSupportSyntax extends Initializable with CorsSupport {
   }
   implicit def dataType2string(dt: DataType) = dt.name
 
-  protected def inferSwaggerEndpoint(route: Route): String = route match {
-    case rev if rev.isReversible =>
-      rev.routeMatchers collectFirst {
-        case sin: SinatraRouteMatcher =>
-          new SinatraSwaggerGenerator(sin).toSwaggerPath
-        case rails: RailsRouteMatcher =>
-          new RailsSwaggerGenerator(rails).toSwaggerPath
-        case path: PathPatternRouteMatcher => path.toString
-      } getOrElse ""
-    case _ => ""
-  }
+  protected def inferSwaggerEndpoint(route: Route): String =
+    route match {
+      case rev if rev.isReversible =>
+        rev.routeMatchers collectFirst {
+          case sin: SinatraRouteMatcher =>
+            new SinatraSwaggerGenerator(sin).toSwaggerPath
+          case rails: RailsRouteMatcher =>
+            new RailsSwaggerGenerator(rails).toSwaggerPath
+          case path: PathPatternRouteMatcher => path.toString
+        } getOrElse ""
+      case _ => ""
+    }
 
   protected def swaggerEndpointEntries[T <: SwaggerOperation](
       extract: (Route, HttpMethod) => T) =

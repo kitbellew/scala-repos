@@ -87,22 +87,23 @@ class ArbTest extends FunSuite {
     val params = this.params
     val samples =
       Array.fill(100)(spire.laws.arb.interval[Int].arbitrary(params)).flatten
-    def classify(x: Interval[Int]): String = x.fold {
-      case (Unbound(), Unbound()) ⇒ "all"
-      case (Unbound(), Open(_)) ⇒ ")"
-      case (Unbound(), Closed(_)) ⇒ "]"
-      case (Open(_), Unbound()) ⇒ "("
-      case (Closed(_), Unbound()) ⇒ "["
-      case (Open(_), Open(_)) ⇒ "()"
-      case (Open(_), Closed(_)) ⇒ "(]"
-      case (Closed(_), Open(_)) ⇒ "[)"
-      case (Closed(a), Closed(b)) ⇒
-        if (a != b)
-          "[]"
-        else
-          "point"
-      case _ ⇒ "empty"
-    }
+    def classify(x: Interval[Int]): String =
+      x.fold {
+        case (Unbound(), Unbound()) ⇒ "all"
+        case (Unbound(), Open(_)) ⇒ ")"
+        case (Unbound(), Closed(_)) ⇒ "]"
+        case (Open(_), Unbound()) ⇒ "("
+        case (Closed(_), Unbound()) ⇒ "["
+        case (Open(_), Open(_)) ⇒ "()"
+        case (Open(_), Closed(_)) ⇒ "(]"
+        case (Closed(_), Open(_)) ⇒ "[)"
+        case (Closed(a), Closed(b)) ⇒
+          if (a != b)
+            "[]"
+          else
+            "point"
+        case _ ⇒ "empty"
+      }
     val kinds = samples.map(classify).distinct.sorted
     assert(kinds.length == 11)
   }

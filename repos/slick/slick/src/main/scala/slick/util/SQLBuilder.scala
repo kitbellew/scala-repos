@@ -74,11 +74,12 @@ final class SQLBuilder { self =>
     else
       this += " "
 
-  private def newLine(): Unit = if (GlobalConfig.sqlIndent) {
-    this += "\n"
-    if (1 <= currentIndentLevel)
-      1.to(currentIndentLevel).foreach(_ => this += "  ")
-  }
+  private def newLine(): Unit =
+    if (GlobalConfig.sqlIndent) {
+      this += "\n"
+      if (1 <= currentIndentLevel)
+        1.to(currentIndentLevel).foreach(_ => this += "  ")
+    }
 }
 
 object SQLBuilder {

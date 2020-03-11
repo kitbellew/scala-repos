@@ -88,10 +88,11 @@ case class Parameter(
       Some(param))
   }
 
-  def paramInCode: Option[ScParameter] = psiParam match {
-    case Some(scParam: ScParameter) => Some(scParam)
-    case _                          => None
-  }
+  def paramInCode: Option[ScParameter] =
+    psiParam match {
+      case Some(scParam: ScParameter) => Some(scParam)
+      case _                          => None
+    }
 
   def nameInCode = psiParam.map(_.getName)
 
@@ -145,16 +146,17 @@ class TypeParameter(
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[TypeParameter]
 
-  override def equals(other: Any): Boolean = other match {
-    case that: TypeParameter =>
-      (that canEqual this) &&
-        name == that.name &&
-        typeParams == that.typeParams &&
-        lowerType() == that.lowerType() &&
-        upperType() == that.upperType() &&
-        ptp == that.ptp
-    case _ => false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case that: TypeParameter =>
+        (that canEqual this) &&
+          name == that.name &&
+          typeParams == that.typeParams &&
+          lowerType() == that.lowerType() &&
+          upperType() == that.upperType() &&
+          ptp == that.ptp
+      case _ => false
+    }
 
   override def hashCode(): Int = {
     val state = Seq(name, typeParams, ptp)

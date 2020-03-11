@@ -438,51 +438,52 @@ final class LongMap[V] private[collection] (
     this
   }
 
-  def iterator: Iterator[(Long, V)] = new Iterator[(Long, V)] {
-    private[this] val kz = _keys
-    private[this] val vz = _values
+  def iterator: Iterator[(Long, V)] =
+    new Iterator[(Long, V)] {
+      private[this] val kz = _keys
+      private[this] val vz = _values
 
-    private[this] var nextPair: (Long, V) =
-      if (extraKeys == 0)
-        null
-      else if ((extraKeys & 1) == 1)
-        (0L, zeroValue.asInstanceOf[V])
-      else
-        (Long.MinValue, minValue.asInstanceOf[V])
+      private[this] var nextPair: (Long, V) =
+        if (extraKeys == 0)
+          null
+        else if ((extraKeys & 1) == 1)
+          (0L, zeroValue.asInstanceOf[V])
+        else
+          (Long.MinValue, minValue.asInstanceOf[V])
 
-    private[this] var anotherPair: (Long, V) =
-      if (extraKeys == 3)
-        (Long.MinValue, minValue.asInstanceOf[V])
-      else
-        null
+      private[this] var anotherPair: (Long, V) =
+        if (extraKeys == 3)
+          (Long.MinValue, minValue.asInstanceOf[V])
+        else
+          null
 
-    private[this] var index = 0
+      private[this] var index = 0
 
-    def hasNext: Boolean =
-      nextPair != null || (index < kz.length && {
-        var q = kz(index)
-        while (q == -q) {
+      def hasNext: Boolean =
+        nextPair != null || (index < kz.length && {
+          var q = kz(index)
+          while (q == -q) {
+            index += 1
+            if (index >= kz.length)
+              return false
+            q = kz(index)
+          }
+          nextPair = (kz(index), vz(index).asInstanceOf[V])
           index += 1
-          if (index >= kz.length)
-            return false
-          q = kz(index)
-        }
-        nextPair = (kz(index), vz(index).asInstanceOf[V])
-        index += 1
-        true
-      })
-    def next = {
-      if (nextPair == null && !hasNext)
-        throw new NoSuchElementException("next")
-      val ans = nextPair
-      if (anotherPair != null) {
-        nextPair = anotherPair
-        anotherPair = null
-      } else
-        nextPair = null
-      ans
+          true
+        })
+      def next = {
+        if (nextPair == null && !hasNext)
+          throw new NoSuchElementException("next")
+        val ans = nextPair
+        if (anotherPair != null) {
+          nextPair = anotherPair
+          anotherPair = null
+        } else
+          nextPair = null
+        ans
+      }
     }
-  }
 
   override def foreach[U](f: ((Long, V)) => U) {
     if ((extraKeys & 1) == 1)

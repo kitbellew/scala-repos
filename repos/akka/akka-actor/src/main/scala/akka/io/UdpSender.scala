@@ -46,11 +46,12 @@ private[io] class UdpSender(
       context.become(sendHandlers(registration))
   }
 
-  override def postStop(): Unit = if (channel.isOpen) {
-    log.debug("Closing DatagramChannel after being stopped")
-    try channel.close()
-    catch {
-      case NonFatal(e) ⇒ log.debug("Error closing DatagramChannel: {}", e)
+  override def postStop(): Unit =
+    if (channel.isOpen) {
+      log.debug("Closing DatagramChannel after being stopped")
+      try channel.close()
+      catch {
+        case NonFatal(e) ⇒ log.debug("Error closing DatagramChannel: {}", e)
+      }
     }
-  }
 }

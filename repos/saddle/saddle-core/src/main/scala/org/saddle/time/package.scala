@@ -163,14 +163,14 @@ package object time {
       else
         getFieldFast(field)
 
-    protected def extractor(unit: Long, range: Long): Vec[Int] = times.map {
-      (t: Long) =>
+    protected def extractor(unit: Long, range: Long): Vec[Int] =
+      times.map { (t: Long) =>
         if (t >= 0L) {
           ((t / unit) % range).toInt
         } else {
           (range - 1L + (((t + 1L) / unit) % range)).toInt
         }
-    }
+      }
 
     /**
       * Using Joda time's PreciseDateTimeField logic directly allows much faster extraction of the
@@ -224,9 +224,10 @@ package object time {
   /**
     * Provides an implicit ordering for DateTime
     */
-  implicit def dtOrdering = new Ordering[DateTime] {
-    def compare(x: DateTime, y: DateTime) = x.compareTo(y)
-  }
+  implicit def dtOrdering =
+    new Ordering[DateTime] {
+      def compare(x: DateTime, y: DateTime) = x.compareTo(y)
+    }
 
   // Convenience methods for constructing ReadablePeriod instances
 

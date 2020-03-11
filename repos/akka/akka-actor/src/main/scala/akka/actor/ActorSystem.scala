@@ -849,10 +849,11 @@ private[akka] class ActorSystemImpl(
    * after the last dispatcher has had its chance to schedule its shutdown
    * action.
    */
-  protected def stopScheduler(): Unit = scheduler match {
-    case x: Closeable ⇒ x.close()
-    case _ ⇒
-  }
+  protected def stopScheduler(): Unit =
+    scheduler match {
+      case x: Closeable ⇒ x.close()
+      case _ ⇒
+    }
 
   private val extensions = new ConcurrentHashMap[ExtensionId[_], AnyRef]
 
@@ -1019,16 +1020,17 @@ private[akka] class ActorSystemImpl(
       * Throws RejectedExecutionException if called after ActorSystem has been terminated.
       */
     final def add(r: Runnable): Unit = {
-      @tailrec def addRec(r: Runnable, p: Promise[T]): Unit = ref.get match {
-        case null ⇒
-          throw new RejectedExecutionException(
-            "ActorSystem already terminated.")
-        case some if ref.compareAndSet(some, p) ⇒
-          some.completeWith(p.future.andThen {
-            case _ ⇒ r.run()
-          })
-        case _ ⇒ addRec(r, p)
-      }
+      @tailrec def addRec(r: Runnable, p: Promise[T]): Unit =
+        ref.get match {
+          case null ⇒
+            throw new RejectedExecutionException(
+              "ActorSystem already terminated.")
+          case some if ref.compareAndSet(some, p) ⇒
+            some.completeWith(p.future.andThen {
+              case _ ⇒ r.run()
+            })
+          case _ ⇒ addRec(r, p)
+        }
       addRec(r, Promise[T]())
     }
 

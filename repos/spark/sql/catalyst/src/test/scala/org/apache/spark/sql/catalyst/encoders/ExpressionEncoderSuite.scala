@@ -35,13 +35,14 @@ import org.apache.spark.sql.types.{ArrayType, ObjectType, StructType}
 case class RepeatedStruct(s: Seq[PrimitiveData])
 
 case class NestedArray(a: Array[Array[Int]]) {
-  override def equals(other: Any): Boolean = other match {
-    case NestedArray(otherArray) =>
-      java.util.Arrays.deepEquals(
-        a.asInstanceOf[Array[AnyRef]],
-        otherArray.asInstanceOf[Array[AnyRef]])
-    case _ => false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case NestedArray(otherArray) =>
+        java.util.Arrays.deepEquals(
+          a.asInstanceOf[Array[AnyRef]],
+          otherArray.asInstanceOf[Array[AnyRef]])
+      case _ => false
+    }
 }
 
 case class BoxedData(

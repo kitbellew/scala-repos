@@ -13,9 +13,10 @@ private[finagle] class Ema(window: Long) {
   private[this] var time = Long.MinValue
   private[this] var ema = 0d
 
-  def isEmpty: Boolean = synchronized {
-    time < 0
-  }
+  def isEmpty: Boolean =
+    synchronized {
+      time < 0
+    }
 
   /**
     * Update the average with observed value `x`, and return the new average.
@@ -23,39 +24,42 @@ private[finagle] class Ema(window: Long) {
     * Since `update` requires monotonic timestamps, it is up to the caller to
     * ensure that calls to update do not race.
     */
-  def update(stamp: Long, x: Long): Double = synchronized {
-    if (time == Long.MinValue) {
-      time = stamp
-      ema = x
-    } else {
-      val td = stamp - time
-      assert(td >= 0, "Nonmonotonic timestamp")
-      time = stamp
-      val w =
-        if (window == 0)
-          0
-        else
-          math.exp(-td.toDouble / window)
-      ema = x * (1 - w) + ema * w
+  def update(stamp: Long, x: Long): Double =
+    synchronized {
+      if (time == Long.MinValue) {
+        time = stamp
+        ema = x
+      } else {
+        val td = stamp - time
+        assert(td >= 0, "Nonmonotonic timestamp")
+        time = stamp
+        val w =
+          if (window == 0)
+            0
+          else
+            math.exp(-td.toDouble / window)
+        ema = x * (1 - w) + ema * w
+      }
+      ema
     }
-    ema
-  }
 
   /**
     * Return the last observation. This is generally only safe to use if you
     * control your own clock, since the current value depends on it.
     */
-  def last: Double = synchronized {
-    ema
-  }
+  def last: Double =
+    synchronized {
+      ema
+    }
 
   /**
     * Reset the average to 0 and erase all observations.
     */
-  def reset(): Unit = synchronized {
-    time = Long.MinValue
-    ema = 0
-  }
+  def reset(): Unit =
+    synchronized {
+      time = Long.MinValue
+      ema = 0
+    }
 }
 
 private[finagle] object Ema {
@@ -73,12 +77,13 @@ private[finagle] object Ema {
   class Monotime {
     private[this] var last = System.nanoTime()
 
-    def nanos(): Long = synchronized {
-      val sample = System.nanoTime()
-      if (sample - last > 0)
-        last = sample
-      last
-    }
+    def nanos(): Long =
+      synchronized {
+        val sample = System.nanoTime()
+        if (sample - last > 0)
+          last = sample
+        last
+      }
 
   }
 }

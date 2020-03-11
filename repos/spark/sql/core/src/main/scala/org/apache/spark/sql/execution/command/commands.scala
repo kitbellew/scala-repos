@@ -393,21 +393,22 @@ case class ShowFunctions(db: Option[String], pattern: Option[String])
     schema.toAttributes
   }
 
-  override def run(sqlContext: SQLContext): Seq[Row] = pattern match {
-    case Some(p) =>
-      try {
-        val regex = java.util.regex.Pattern.compile(p)
-        sqlContext.sessionState.functionRegistry
-          .listFunction()
-          .filter(regex.matcher(_).matches())
-          .map(Row(_))
-      } catch {
-        // probably will failed in the regex that user provided, then returns empty row.
-        case _: Throwable => Seq.empty[Row]
-      }
-    case None =>
-      sqlContext.sessionState.functionRegistry.listFunction().map(Row(_))
-  }
+  override def run(sqlContext: SQLContext): Seq[Row] =
+    pattern match {
+      case Some(p) =>
+        try {
+          val regex = java.util.regex.Pattern.compile(p)
+          sqlContext.sessionState.functionRegistry
+            .listFunction()
+            .filter(regex.matcher(_).matches())
+            .map(Row(_))
+        } catch {
+          // probably will failed in the regex that user provided, then returns empty row.
+          case _: Throwable => Seq.empty[Row]
+        }
+      case None =>
+        sqlContext.sessionState.functionRegistry.listFunction().map(Row(_))
+    }
 }
 
 /**

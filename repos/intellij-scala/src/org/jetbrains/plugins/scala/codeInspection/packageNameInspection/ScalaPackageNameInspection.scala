@@ -44,8 +44,8 @@ class ScalaPackageNameInspection extends LocalInspectionTool {
         }
 
         def problemDescriptors(
-            buffer: Seq[LocalQuickFix]): Seq[ProblemDescriptor] = ranges.map {
-          range =>
+            buffer: Seq[LocalQuickFix]): Seq[ProblemDescriptor] =
+          ranges.map { range =>
             manager.createProblemDescriptor(
               file,
               range,
@@ -55,7 +55,7 @@ class ScalaPackageNameInspection extends LocalInspectionTool {
               isOnTheFly,
               buffer: _*
             )
-        }
+          }
 
         val expectedPackageName = file.typeDefinitions.head match {
           case obj: ScObject if obj.hasPackageKeyword =>

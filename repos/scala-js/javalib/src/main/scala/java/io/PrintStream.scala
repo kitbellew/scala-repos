@@ -75,15 +75,16 @@ class PrintStream private (
   override def flush(): Unit =
     ensureOpenAndTrapIOExceptions(out.flush())
 
-  override def close(): Unit = trapIOExceptions {
-    if (!closing) {
-      closing = true
-      encoder.close()
-      flush()
-      closed = true
-      out.close()
+  override def close(): Unit =
+    trapIOExceptions {
+      if (!closing) {
+        closing = true
+        encoder.close()
+        flush()
+        closed = true
+        out.close()
+      }
     }
-  }
 
   def checkError(): Boolean = {
     if (closed) {
@@ -156,22 +157,25 @@ class PrintStream private (
         s)
   def print(obj: AnyRef): Unit = printString(String.valueOf(obj))
 
-  private def printString(s: String): Unit = ensureOpenAndTrapIOExceptions {
-    encoder.write(s)
-    encoder.flushBuffer()
-  }
+  private def printString(s: String): Unit =
+    ensureOpenAndTrapIOExceptions {
+      encoder.write(s)
+      encoder.flushBuffer()
+    }
 
-  def print(s: Array[Char]): Unit = ensureOpenAndTrapIOExceptions {
-    encoder.write(s)
-    encoder.flushBuffer()
-  }
+  def print(s: Array[Char]): Unit =
+    ensureOpenAndTrapIOExceptions {
+      encoder.write(s)
+      encoder.flushBuffer()
+    }
 
-  def println(): Unit = ensureOpenAndTrapIOExceptions {
-    encoder.write('\n') // In Scala.js the line separator is always LF
-    encoder.flushBuffer()
-    if (autoFlush)
-      flush()
-  }
+  def println(): Unit =
+    ensureOpenAndTrapIOExceptions {
+      encoder.write('\n') // In Scala.js the line separator is always LF
+      encoder.flushBuffer()
+      if (autoFlush)
+        flush()
+    }
 
   def println(b: Boolean): Unit = {
     print(b);

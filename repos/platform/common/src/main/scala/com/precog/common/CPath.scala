@@ -99,15 +99,16 @@ sealed trait CPath { self =>
   def apply(index: Int): CPathNode = nodes(index)
 
   def extract(jvalue: JValue): JValue = {
-    def extract0(path: List[CPathNode], d: JValue): JValue = path match {
-      case Nil => d
+    def extract0(path: List[CPathNode], d: JValue): JValue =
+      path match {
+        case Nil => d
 
-      case head :: tail =>
-        head match {
-          case CPathField(name)  => extract0(tail, d \ name)
-          case CPathIndex(index) => extract0(tail, d(index))
-        }
-    }
+        case head :: tail =>
+          head match {
+            case CPathField(name)  => extract0(tail, d \ name)
+            case CPathIndex(index) => extract0(tail, d(index))
+          }
+      }
 
     extract0(nodes, jvalue)
   }
@@ -122,33 +123,34 @@ sealed trait CPath { self =>
     def expand0(
         current: List[CPathNode],
         right: List[CPathNode],
-        d: JValue): List[CPath] = right match {
-      case Nil => CPath(current) :: Nil
+        d: JValue): List[CPath] =
+      right match {
+        case Nil => CPath(current) :: Nil
 
-      case head :: tail =>
-        head match {
-          case x @ CPathIndex(index) =>
-            expand0(current :+ x, tail, jvalue(index))
-          case x @ CPathField(name) if (isRegex(name)) => {
-            val R = name.r
-            jvalue match {
-              case JObject(fields) =>
-                fields.toList.flatMap {
-                  case (R(name), value) =>
-                    val expandedNode = CPathField(name)
-                    expand0(current :+ expandedNode, tail, value)
+        case head :: tail =>
+          head match {
+            case x @ CPathIndex(index) =>
+              expand0(current :+ x, tail, jvalue(index))
+            case x @ CPathField(name) if (isRegex(name)) => {
+              val R = name.r
+              jvalue match {
+                case JObject(fields) =>
+                  fields.toList.flatMap {
+                    case (R(name), value) =>
+                      val expandedNode = CPathField(name)
+                      expand0(current :+ expandedNode, tail, value)
 
-                  case _ => Nil
-                }
+                    case _ => Nil
+                  }
 
-              case _ => Nil
+                case _ => Nil
+              }
             }
-          }
 
-          case x @ CPathField(name) =>
-            expand0(current :+ x, tail, jvalue \ name)
-        }
-    }
+            case x @ CPathField(name) =>
+              expand0(current :+ x, tail, jvalue \ name)
+          }
+      }
 
     expand0(Nil, nodes, jvalue)
   }
@@ -176,27 +178,29 @@ object CPathNode {
   implicit def i2PathNode(index: Int): CPathNode = CPathIndex(index)
 
   implicit object CPathNodeOrder extends Order[CPathNode] {
-    def order(n1: CPathNode, n2: CPathNode): Ordering = (n1, n2) match {
-      case (CPathField(s1), CPathField(s2)) => Ordering.fromInt(s1.compare(s2))
-      case (CPathField(_), _)               => GT
-      case (_, CPathField(_))               => LT
+    def order(n1: CPathNode, n2: CPathNode): Ordering =
+      (n1, n2) match {
+        case (CPathField(s1), CPathField(s2)) =>
+          Ordering.fromInt(s1.compare(s2))
+        case (CPathField(_), _) => GT
+        case (_, CPathField(_)) => LT
 
-      case (CPathArray, CPathArray) => EQ
-      case (CPathArray, _)          => GT
-      case (_, CPathArray)          => LT
+        case (CPathArray, CPathArray) => EQ
+        case (CPathArray, _)          => GT
+        case (_, CPathArray)          => LT
 
-      case (CPathIndex(i1), CPathIndex(i2)) =>
-        if (i1 < i2)
-          LT
-        else if (i1 == i2)
-          EQ
-        else
-          GT
-      case (CPathIndex(_), _) => GT
-      case (_, CPathIndex(_)) => LT
+        case (CPathIndex(i1), CPathIndex(i2)) =>
+          if (i1 < i2)
+            LT
+          else if (i1 == i2)
+            EQ
+          else
+            GT
+        case (CPathIndex(_), _) => GT
+        case (_, CPathIndex(_)) => LT
 
-      case (CPathMeta(m1), CPathMeta(m2)) => Ordering.fromInt(m1.compare(m2))
-    }
+        case (CPathMeta(m1), CPathMeta(m2)) => Ordering.fromInt(m1.compare(m2))
+      }
   }
 
   implicit val CPathNodeOrdering = CPathNodeOrder.toScalaOrdering

@@ -602,30 +602,32 @@ trait ModelFactoryImplicitSupport {
     * type parameters) or into wildcard types if nothing matches
     */
   object typeVarToOriginOrWildcard extends TypeMap {
-    def apply(tp: Type): Type = mapOver(tp) match {
-      case tv: TypeVar =>
-        if (tv.constr.inst.typeSymbol == NothingClass)
-          WildcardType
-        else
-          tv.origin //appliedType(tv.origin.typeConstructor, tv.typeArgs map this)
-      case other =>
-        if (other.typeSymbol == NothingClass)
-          WildcardType
-        else
-          other
-    }
+    def apply(tp: Type): Type =
+      mapOver(tp) match {
+        case tv: TypeVar =>
+          if (tv.constr.inst.typeSymbol == NothingClass)
+            WildcardType
+          else
+            tv.origin //appliedType(tv.origin.typeConstructor, tv.typeArgs map this)
+        case other =>
+          if (other.typeSymbol == NothingClass)
+            WildcardType
+          else
+            other
+      }
   }
 
   /**
     * wildcardToNothing transforms wildcard types back to Nothing
     */
   object wildcardToNothing extends TypeMap {
-    def apply(tp: Type): Type = mapOver(tp) match {
-      case WildcardType =>
-        NothingTpe
-      case other =>
-        other
-    }
+    def apply(tp: Type): Type =
+      mapOver(tp) match {
+        case WildcardType =>
+          NothingTpe
+        case other =>
+          other
+      }
   }
 
   /** implicitShouldDocument decides whether a member inherited by implicit conversion should be documented */

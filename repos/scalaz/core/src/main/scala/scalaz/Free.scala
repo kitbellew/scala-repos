@@ -164,17 +164,19 @@ sealed abstract class Free[S[_], A] {
 
   /** Runs a single step, using a function that extracts the resumption from its suspension functor. */
   final def bounce(f: S[Free[S, A]] => Free[S, A])(
-      implicit S: Functor[S]): Free[S, A] = resume match {
-    case -\/(s) => f(s)
-    case \/-(r) => Return(r)
-  }
+      implicit S: Functor[S]): Free[S, A] =
+    resume match {
+      case -\/(s) => f(s)
+      case \/-(r) => Return(r)
+    }
 
   /** Runs to completion, using a function that extracts the resumption from its suspension functor. */
   final def go(f: S[Free[S, A]] => Free[S, A])(implicit S: Functor[S]): A = {
-    @tailrec def go2(t: Free[S, A]): A = t.resume match {
-      case -\/(s) => go2(f(s))
-      case \/-(r) => r
-    }
+    @tailrec def go2(t: Free[S, A]): A =
+      t.resume match {
+        case -\/(s) => go2(f(s))
+        case \/-(r) => r
+      }
     go2(this)
   }
 
@@ -185,10 +187,11 @@ sealed abstract class Free[S[_], A] {
   final def runM[M[_]](f: S[Free[S, A]] => M[Free[S, A]])(implicit
       S: Functor[S],
       M: Monad[M]): M[A] = {
-    def runM2(t: Free[S, A]): M[A] = t.resume match {
-      case -\/(s) => Monad[M].bind(f(s))(runM2)
-      case \/-(r) => Monad[M].pure(r)
-    }
+    def runM2(t: Free[S, A]): M[A] =
+      t.resume match {
+        case -\/(s) => Monad[M].bind(f(s))(runM2)
+        case \/-(r) => Monad[M].pure(r)
+      }
     runM2(this)
   }
 
@@ -213,18 +216,19 @@ sealed abstract class Free[S[_], A] {
     * and pulling the first suspension to the top.
     */
   @annotation.tailrec
-  final def step: Free[S, A] = this match {
-    case x @ Gosub() =>
-      x.a match {
-        case b @ Gosub() =>
-          b.a.flatMap(a => b.f(a).flatMap(x.f)).step
-        case Return(b) =>
-          x.f(b).step
-        case _ =>
-          x
-      }
-    case x => x
-  }
+  final def step: Free[S, A] =
+    this match {
+      case x @ Gosub() =>
+        x.a match {
+          case b @ Gosub() =>
+            b.a.flatMap(a => b.f(a).flatMap(x.f)).step
+          case Return(b) =>
+            x.f(b).step
+          case _ =>
+            x
+        }
+      case x => x
+    }
 
   /**
     * Catamorphism for `Free`.
@@ -267,12 +271,13 @@ sealed abstract class Free[S[_], A] {
   /** Runs to completion, allowing the resumption function to thread an arbitrary state of type `B`. */
   final def foldRun[B](b: B)(f: (B, S[Free[S, A]]) => (B, Free[S, A]))(
       implicit S: Functor[S]): (B, A) = {
-    @tailrec def foldRun2(t: Free[S, A], z: B): (B, A) = t.resume match {
-      case -\/(s) =>
-        val (b1, s1) = f(z, s)
-        foldRun2(s1, b1)
-      case \/-(r) => (z, r)
-    }
+    @tailrec def foldRun2(t: Free[S, A], z: B): (B, A) =
+      t.resume match {
+        case -\/(s) =>
+          val (b1, s1) = f(z, s)
+          foldRun2(s1, b1)
+        case \/-(r) => (z, r)
+      }
     foldRun2(this, b)
   }
 

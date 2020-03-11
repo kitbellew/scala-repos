@@ -171,9 +171,10 @@ private[akka] class Shard(
 
   def initialized(): Unit = context.parent ! ShardInitialized(shardId)
 
-  def totalBufferSize = messageBuffers.foldLeft(0) { (sum, entity) ⇒
-    sum + entity._2.size
-  }
+  def totalBufferSize =
+    messageBuffers.foldLeft(0) { (sum, entity) ⇒
+      sum + entity._2.size
+    }
 
   def processChange[A](event: A)(handler: A ⇒ Unit): Unit =
     handler(event)
@@ -189,57 +190,63 @@ private[akka] class Shard(
     case msg if extractEntityId.isDefinedAt(msg) ⇒ deliverMessage(msg, sender())
   }
 
-  def receiveShardCommand(msg: ShardCommand): Unit = msg match {
-    case RestartEntity(id) ⇒ getEntity(id)
-  }
+  def receiveShardCommand(msg: ShardCommand): Unit =
+    msg match {
+      case RestartEntity(id) ⇒ getEntity(id)
+    }
 
-  def receiveShardRegionCommand(msg: ShardRegionCommand): Unit = msg match {
-    case Passivate(stopMessage) ⇒ passivate(sender(), stopMessage)
-    case _ ⇒ unhandled(msg)
-  }
+  def receiveShardRegionCommand(msg: ShardRegionCommand): Unit =
+    msg match {
+      case Passivate(stopMessage) ⇒ passivate(sender(), stopMessage)
+      case _ ⇒ unhandled(msg)
+    }
 
-  def receiveCoordinatorMessage(msg: CoordinatorMessage): Unit = msg match {
-    case HandOff(`shardId`) ⇒ handOff(sender())
-    case HandOff(shard) ⇒
-      log.warning(
-        "Shard [{}] can not hand off for another Shard [{}]",
-        shardId,
-        shard)
-    case _ ⇒ unhandled(msg)
-  }
+  def receiveCoordinatorMessage(msg: CoordinatorMessage): Unit =
+    msg match {
+      case HandOff(`shardId`) ⇒ handOff(sender())
+      case HandOff(shard) ⇒
+        log.warning(
+          "Shard [{}] can not hand off for another Shard [{}]",
+          shardId,
+          shard)
+      case _ ⇒ unhandled(msg)
+    }
 
-  def receiveShardQuery(msg: ShardQuery): Unit = msg match {
-    case GetCurrentShardState ⇒
-      sender() ! CurrentShardState(shardId, refById.keySet)
-    case GetShardStats ⇒ sender() ! ShardStats(shardId, state.entities.size)
-  }
+  def receiveShardQuery(msg: ShardQuery): Unit =
+    msg match {
+      case GetCurrentShardState ⇒
+        sender() ! CurrentShardState(shardId, refById.keySet)
+      case GetShardStats ⇒ sender() ! ShardStats(shardId, state.entities.size)
+    }
 
-  def handOff(replyTo: ActorRef): Unit = handOffStopper match {
-    case Some(_) ⇒
-      log
-        .warning("HandOff shard [{}] received during existing handOff", shardId)
-    case None ⇒
-      log.debug("HandOff shard [{}]", shardId)
+  def handOff(replyTo: ActorRef): Unit =
+    handOffStopper match {
+      case Some(_) ⇒
+        log.warning(
+          "HandOff shard [{}] received during existing handOff",
+          shardId)
+      case None ⇒
+        log.debug("HandOff shard [{}]", shardId)
 
-      if (state.entities.nonEmpty) {
-        handOffStopper = Some(
-          context.watch(
-            context.actorOf(
-              handOffStopperProps(
-                shardId,
-                replyTo,
-                idByRef.keySet,
-                handOffStopMessage))))
+        if (state.entities.nonEmpty) {
+          handOffStopper = Some(
+            context.watch(
+              context.actorOf(
+                handOffStopperProps(
+                  shardId,
+                  replyTo,
+                  idByRef.keySet,
+                  handOffStopMessage))))
 
-        //During hand off we only care about watching for termination of the hand off stopper
-        context become {
-          case Terminated(ref) ⇒ receiveTerminated(ref)
+          //During hand off we only care about watching for termination of the hand off stopper
+          context become {
+            case Terminated(ref) ⇒ receiveTerminated(ref)
+          }
+        } else {
+          replyTo ! ShardStopped(shardId)
+          context stop self
         }
-      } else {
-        replyTo ! ShardStopped(shardId)
-        context stop self
-      }
-  }
+    }
 
   def receiveTerminated(ref: ActorRef): Unit = {
     if (handOffStopper.exists(_ == ref))

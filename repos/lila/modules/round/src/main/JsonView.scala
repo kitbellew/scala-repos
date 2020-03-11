@@ -309,9 +309,10 @@ final class JsonView(
     )
   }
 
-  private def hold(player: lila.game.Player) = player.holdAlert map { h =>
-    Json.obj("ply" -> h.ply, "mean" -> h.mean, "sd" -> h.sd)
-  }
+  private def hold(player: lila.game.Player) =
+    player.holdAlert map { h =>
+      Json.obj("ply" -> h.ply, "mean" -> h.mean, "sd" -> h.sd)
+    }
 
   private def getPlayerChat(
       game: Game,
@@ -342,28 +343,32 @@ final class JsonView(
       }
     }
 
-  private def possibleDrops(pov: Pov) = (pov.game playableBy pov.player) ?? {
-    pov.game.toChess.situation.drops map { drops =>
-      JsString(drops.map(_.key).mkString)
+  private def possibleDrops(pov: Pov) =
+    (pov.game playableBy pov.player) ?? {
+      pov.game.toChess.situation.drops map { drops =>
+        JsString(drops.map(_.key).mkString)
+      }
     }
-  }
 
-  private def animationFactor(pref: Pref): Float = pref.animation match {
-    case 0 => 0
-    case 1 => 0.5f
-    case 2 => 1
-    case 3 => 2
-    case _ => 1
-  }
+  private def animationFactor(pref: Pref): Float =
+    pref.animation match {
+      case 0 => 0
+      case 1 => 0.5f
+      case 2 => 1
+      case 3 => 2
+      case _ => 1
+    }
 
-  private def animationDuration(pov: Pov, pref: Pref) = math.round {
-    animationFactor(pref) * baseAnimationDuration.toMillis * pov.game.finished
-      .fold(
-        1,
-        math
-          .max(0, math.min(1.2, ((pov.game.estimateTotalTime - 60) / 60) * 0.2))
-      )
-  }
+  private def animationDuration(pov: Pov, pref: Pref) =
+    math.round {
+      animationFactor(pref) * baseAnimationDuration.toMillis * pov.game.finished
+        .fold(
+          1,
+          math.max(
+            0,
+            math.min(1.2, ((pov.game.estimateTotalTime - 60) / 60) * 0.2))
+        )
+    }
 }
 
 object JsonView {

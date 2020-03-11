@@ -102,9 +102,10 @@ object StabilizingGroup {
           }
           set() ++= newSet &~ snap
 
-          def inQ(elem: T) = q exists {
-            case (e, _) => e == elem
-          }
+          def inQ(elem: T) =
+            q exists {
+              case (e, _) => e == elem
+            }
           for (el <- snap &~ newSet if !inQ(el)) {
             val until = Time.now + grace
             q = q enqueue ((el, until))

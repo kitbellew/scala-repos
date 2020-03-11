@@ -81,10 +81,11 @@ package object extensions {
       }
     }
 
-    def hasMutatorLikeName = repr.getName match {
-      case MutatorNamePattern() => true
-      case _                    => false
-    }
+    def hasMutatorLikeName =
+      repr.getName match {
+        case MutatorNamePattern() => true
+        case _                    => false
+      }
 
     def hasVoidReturnType = repr.getReturnType == PsiType.VOID
 
@@ -255,14 +256,15 @@ package object extensions {
       }
     }
 
-    def isEffectivelyFinal: Boolean = clazz match {
-      case scClass: ScClass => scClass.hasFinalModifier
-      case _: ScObject      => true
-      case synth: ScSyntheticClass
-          if !Seq("AnyRef", "AnyVal").contains(synth.className) =>
-        true //wrappers for value types
-      case _ => clazz.hasModifierProperty(PsiModifier.FINAL)
-    }
+    def isEffectivelyFinal: Boolean =
+      clazz match {
+        case scClass: ScClass => scClass.hasFinalModifier
+        case _: ScObject      => true
+        case synth: ScSyntheticClass
+            if !Seq("AnyRef", "AnyVal").contains(synth.className) =>
+          true //wrappers for value types
+        case _ => clazz.hasModifierProperty(PsiModifier.FINAL)
+      }
 
     def processPsiMethodsForNode(
         node: SignatureNodes.Node,
@@ -430,18 +432,20 @@ package object extensions {
       override def process(t: T): Boolean = action(t)
     }
 
-  implicit def toRunnable(action: => Any): Runnable = new Runnable {
-    override def run(): Unit = action
-  }
+  implicit def toRunnable(action: => Any): Runnable =
+    new Runnable {
+      override def run(): Unit = action
+    }
 
   implicit def toComputable[T](action: => T): Computable[T] =
     new Computable[T] {
       override def compute(): T = action
     }
 
-  implicit def toCallable[T](action: => T): Callable[T] = new Callable[T] {
-    override def call(): T = action
-  }
+  implicit def toCallable[T](action: => T): Callable[T] =
+    new Callable[T] {
+      override def call(): T = action
+    }
 
   def startCommand(project: Project, commandName: String)(
       body: => Unit): Unit = {
@@ -565,19 +569,20 @@ package object extensions {
   }
 
   /** Create a PartialFunction from a sequence of cases. Workaround for pattern matcher bug */
-  def pf[A, B](cases: PartialFunction[A, B]*) = new PartialFunction[A, B] {
-    def isDefinedAt(x: A): Boolean = cases.exists(_.isDefinedAt(x))
+  def pf[A, B](cases: PartialFunction[A, B]*) =
+    new PartialFunction[A, B] {
+      def isDefinedAt(x: A): Boolean = cases.exists(_.isDefinedAt(x))
 
-    def apply(v1: A): B = {
-      val it = cases.iterator
-      while (it.hasNext) {
-        val caze = it.next()
-        if (caze.isDefinedAt(v1))
-          return caze(v1)
+      def apply(v1: A): B = {
+        val it = cases.iterator
+        while (it.hasNext) {
+          val caze = it.next()
+          if (caze.isDefinedAt(v1))
+            return caze(v1)
+        }
+        throw new MatchError(v1.toString)
       }
-      throw new MatchError(v1.toString)
     }
-  }
 
   implicit class PsiParameterExt(val param: PsiParameter) extends AnyVal {
     def paramType: ScType = {

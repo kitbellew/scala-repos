@@ -180,20 +180,23 @@ case class Cbrt(child: Expression)
 
 case class Ceil(child: Expression)
     extends UnaryMathExpression(math.ceil, "CEIL") {
-  override def dataType: DataType = child.dataType match {
-    case dt @ DecimalType.Fixed(_, 0) => dt
-    case DecimalType.Fixed(precision, scale) =>
-      DecimalType.bounded(precision - scale + 1, 0)
-    case _ => LongType
-  }
+  override def dataType: DataType =
+    child.dataType match {
+      case dt @ DecimalType.Fixed(_, 0) => dt
+      case DecimalType.Fixed(precision, scale) =>
+        DecimalType.bounded(precision - scale + 1, 0)
+      case _ => LongType
+    }
 
   override def inputTypes: Seq[AbstractDataType] =
     Seq(TypeCollection(DoubleType, DecimalType))
 
-  protected override def nullSafeEval(input: Any): Any = child.dataType match {
-    case DoubleType                          => f(input.asInstanceOf[Double]).toLong
-    case DecimalType.Fixed(precision, scale) => input.asInstanceOf[Decimal].ceil
-  }
+  protected override def nullSafeEval(input: Any): Any =
+    child.dataType match {
+      case DoubleType => f(input.asInstanceOf[Double]).toLong
+      case DecimalType.Fixed(precision, scale) =>
+        input.asInstanceOf[Decimal].ceil
+    }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     child.dataType match {
@@ -260,21 +263,23 @@ case class Expm1(child: Expression)
 
 case class Floor(child: Expression)
     extends UnaryMathExpression(math.floor, "FLOOR") {
-  override def dataType: DataType = child.dataType match {
-    case dt @ DecimalType.Fixed(_, 0) => dt
-    case DecimalType.Fixed(precision, scale) =>
-      DecimalType.bounded(precision - scale + 1, 0)
-    case _ => LongType
-  }
+  override def dataType: DataType =
+    child.dataType match {
+      case dt @ DecimalType.Fixed(_, 0) => dt
+      case DecimalType.Fixed(precision, scale) =>
+        DecimalType.bounded(precision - scale + 1, 0)
+      case _ => LongType
+    }
 
   override def inputTypes: Seq[AbstractDataType] =
     Seq(TypeCollection(DoubleType, DecimalType))
 
-  protected override def nullSafeEval(input: Any): Any = child.dataType match {
-    case DoubleType => f(input.asInstanceOf[Double]).toLong
-    case DecimalType.Fixed(precision, scale) =>
-      input.asInstanceOf[Decimal].floor
-  }
+  protected override def nullSafeEval(input: Any): Any =
+    child.dataType match {
+      case DoubleType => f(input.asInstanceOf[Double]).toLong
+      case DecimalType.Fixed(precision, scale) =>
+        input.asInstanceOf[Decimal].floor
+    }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     child.dataType match {
@@ -508,11 +513,12 @@ case class Hex(child: Expression)
 
   override def dataType: DataType = StringType
 
-  protected override def nullSafeEval(num: Any): Any = child.dataType match {
-    case LongType   => Hex.hex(num.asInstanceOf[Long])
-    case BinaryType => Hex.hex(num.asInstanceOf[Array[Byte]])
-    case StringType => Hex.hex(num.asInstanceOf[UTF8String].getBytes)
-  }
+  protected override def nullSafeEval(num: Any): Any =
+    child.dataType match {
+      case LongType   => Hex.hex(num.asInstanceOf[Long])
+      case BinaryType => Hex.hex(num.asInstanceOf[Array[Byte]])
+      case StringType => Hex.hex(num.asInstanceOf[UTF8String].getBytes)
+    }
 
   override protected def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     nullSafeCodeGen(

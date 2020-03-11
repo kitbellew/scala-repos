@@ -70,10 +70,11 @@ final class QaApi(
         .cursor[Question]()
         .collect[List]()
 
-    def accept(q: Question) = questionColl.update(
-      BSONDocument("_id" -> q.id),
-      BSONDocument("$set" -> BSONDocument("acceptedAt" -> DateTime.now))
-    )
+    def accept(q: Question) =
+      questionColl.update(
+        BSONDocument("_id" -> q.id),
+        BSONDocument("$set" -> BSONDocument("acceptedAt" -> DateTime.now))
+      )
 
     def count: Fu[Int] = questionColl.count(None)
 
@@ -145,9 +146,10 @@ final class QaApi(
         BSONDocument("_id" -> q.id),
         BSONDocument("$inc" -> BSONDocument("views" -> BSONInteger(1))))
 
-    def recountAnswers(id: QuestionId) = answer.countByQuestionId(id) flatMap {
-      setAnswers(id, _)
-    }
+    def recountAnswers(id: QuestionId) =
+      answer.countByQuestionId(id) flatMap {
+        setAnswers(id, _)
+      }
 
     def setAnswers(id: QuestionId, nb: Int) =
       questionColl
@@ -167,11 +169,12 @@ final class QaApi(
         tag.clearCache >>
         relation.clearCache
 
-    def removeComment(id: QuestionId, c: CommentId) = questionColl.update(
-      BSONDocument("_id" -> id),
-      BSONDocument(
-        "$pull" -> BSONDocument("comments" -> BSONDocument("id" -> c)))
-    )
+    def removeComment(id: QuestionId, c: CommentId) =
+      questionColl.update(
+        BSONDocument("_id" -> id),
+        BSONDocument(
+          "$pull" -> BSONDocument("comments" -> BSONDocument("id" -> c)))
+      )
   }
 
   object answer {
@@ -256,9 +259,10 @@ final class QaApi(
       answerColl.remove(BSONDocument("_id" -> a.id)) >>
         (question recountAnswers a.questionId).void
 
-    def remove(id: AnswerId): Fu[Unit] = findById(id) flatMap {
-      _ ?? remove
-    }
+    def remove(id: AnswerId): Fu[Unit] =
+      findById(id) flatMap {
+        _ ?? remove
+      }
 
     def removeByQuestion(id: QuestionId) =
       answerColl.remove(BSONDocument("questionId" -> id))
@@ -332,28 +336,29 @@ final class QaApi(
     def clearCache = fuccess(cache.clear)
 
     // list all tags found in questions collection
-    def all: Fu[List[Tag]] = cache(true) {
-      val col = questionColl
-      import reactivemongo.api.collections.bson.BSONBatchCommands.AggregationFramework.{
-        AddToSet,
-        Group,
-        Project,
-        Unwind
-      }
+    def all: Fu[List[Tag]] =
+      cache(true) {
+        val col = questionColl
+        import reactivemongo.api.collections.bson.BSONBatchCommands.AggregationFramework.{
+          AddToSet,
+          Group,
+          Project,
+          Unwind
+        }
 
-      col
-        .aggregate(
-          Project(BSONDocument("tags" -> BSONBoolean(true))),
-          List(
-            Unwind("tags"),
-            Group(BSONBoolean(true))("tags" -> AddToSet("tags"))))
-        .map(
-          _.documents.headOption
-            .flatMap(_.getAs[List[String]]("tags"))
-            .getOrElse(List.empty[String])
-            .map(_.toLowerCase)
-            .distinct)
-    }
+        col
+          .aggregate(
+            Project(BSONDocument("tags" -> BSONBoolean(true))),
+            List(
+              Unwind("tags"),
+              Group(BSONBoolean(true))("tags" -> AddToSet("tags"))))
+          .map(
+            _.documents.headOption
+              .flatMap(_.getAs[List[String]]("tags"))
+              .getOrElse(List.empty[String])
+              .map(_.toLowerCase)
+              .distinct)
+      }
   }
 
   object relation {

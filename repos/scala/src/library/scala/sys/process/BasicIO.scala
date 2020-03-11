@@ -50,15 +50,16 @@ object BasicIO {
   private[process] object Streamed {
     def apply[T](nonzeroException: Boolean): Streamed[T] = {
       val q = new LinkedBlockingQueue[Either[Int, T]]
-      def next(): Stream[T] = q.take match {
-        case Left(0) => Stream.empty
-        case Left(code) =>
-          if (nonzeroException)
-            scala.sys.error("Nonzero exit code: " + code)
-          else
-            Stream.empty
-        case Right(s) => Stream.cons(s, next())
-      }
+      def next(): Stream[T] =
+        q.take match {
+          case Left(0) => Stream.empty
+          case Left(code) =>
+            if (nonzeroException)
+              scala.sys.error("Nonzero exit code: " + code)
+            else
+              Stream.empty
+          case Right(s) => Stream.cons(s, next())
+        }
       new Streamed(
         (s: T) => q put Right(s),
         code => q put Left(code),
@@ -153,10 +154,11 @@ object BasicIO {
     *          [[scala.sys.process.ProcessIO]]) which will send the data to
     *          either the provided `ProcessLogger` or, if `None`, to stderr.
     */
-  def getErr(log: Option[ProcessLogger]) = log match {
-    case Some(lg) => processErrFully(lg)
-    case None     => toStdErr
-  }
+  def getErr(log: Option[ProcessLogger]) =
+    log match {
+      case Some(lg) => processErrFully(lg)
+      case None     => toStdErr
+    }
 
   private def processErrFully(log: ProcessLogger) = processFully(log err _)
   private def processOutFully(log: ProcessLogger) = processFully(log out _)
@@ -191,11 +193,12 @@ object BasicIO {
     *          [[scala.sys.process.ProcessIO]] which will call `processLine`
     *          with all data read from the stream.
     */
-  def processFully(processLine: String => Unit): InputStream => Unit = in => {
-    val reader = new BufferedReader(new InputStreamReader(in))
-    try processLinesFully(processLine)(reader.readLine)
-    finally reader.close()
-  }
+  def processFully(processLine: String => Unit): InputStream => Unit =
+    in => {
+      val reader = new BufferedReader(new InputStreamReader(in))
+      try processLinesFully(processLine)(reader.readLine)
+      finally reader.close()
+    }
 
   /** Calls `processLine` with the result of `readLine` until the latter returns
     *  `null` or the current thread is interrupted.
@@ -260,10 +263,11 @@ object BasicIO {
     try transferFullyImpl(in, out)
     catch onIOInterrupt(())
 
-  private[this] def appendLine(buffer: Appendable): String => Unit = line => {
-    buffer append line
-    buffer append Newline
-  }
+  private[this] def appendLine(buffer: Appendable): String => Unit =
+    line => {
+      buffer append line
+      buffer append Newline
+    }
 
   private[this] def transferFullyImpl(in: InputStream, out: OutputStream) {
     val buffer = new Array[Byte](BufferSize)

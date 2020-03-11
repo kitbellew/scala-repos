@@ -367,9 +367,10 @@ object JqJE {
       *
       * See http://api.jquery.com/html/ .
       */
-    def apply(): JsExp with JsMember = new JsExp with JsMember {
-      def toJsCmd = "html()"
-    }
+    def apply(): JsExp with JsMember =
+      new JsExp with JsMember {
+        def toJsCmd = "html()"
+      }
 
     /**
       * Calls the jQuery html function with the given content.
@@ -378,11 +379,12 @@ object JqJE {
       *
       * See http://api.jquery.com/html/ .
       */
-    def apply(content: NodeSeq): JsExp with JsMember = new JsExp with JsMember {
-      val toJsCmd = fixHtmlCmdFunc("inline", content) {
-        "html(" + _ + ")"
+    def apply(content: NodeSeq): JsExp with JsMember =
+      new JsExp with JsMember {
+        val toJsCmd = fixHtmlCmdFunc("inline", content) {
+          "html(" + _ + ")"
+        }
       }
-    }
   }
 
   object JqText {
@@ -394,9 +396,10 @@ object JqJE {
       *
       * See http://api.jquery.com/text/ .
       */
-    def apply(): JsExp with JsMember = new JsExp with JsMember {
-      def toJsCmd = "text()"
-    }
+    def apply(): JsExp with JsMember =
+      new JsExp with JsMember {
+        def toJsCmd = "text()"
+      }
 
     /**
       * Calls the jQuery text function with the given content.
@@ -405,9 +408,10 @@ object JqJE {
       *
       * See http://api.jquery.com/text/ .
       */
-    def apply(content: String): JsExp with JsMember = new JsExp with JsMember {
-      def toJsCmd = "text(" + content.encJs + ")"
-    }
+    def apply(content: String): JsExp with JsMember =
+      new JsExp with JsMember {
+        def toJsCmd = "text(" + content.encJs + ")"
+      }
   }
 
   /**

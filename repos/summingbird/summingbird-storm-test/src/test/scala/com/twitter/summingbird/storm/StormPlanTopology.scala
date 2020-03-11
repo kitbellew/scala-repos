@@ -42,10 +42,11 @@ object StormPlanTopology extends Properties("StormDag") {
   implicit def sink1: Storm#Sink[Int] = Storm.sink((_) => Future.Unit)
   implicit def sink2: Storm#Sink[(Int, Int)] = Storm.sink((_) => Future.Unit)
 
-  implicit def testStore: Storm#Store[Int, Int] = MergeableStoreFactory.from {
-    MergeableStore.fromStore[(Int, BatchID), Int](
-      new JMapStore[(Int, BatchID), Int]())
-  }
+  implicit def testStore: Storm#Store[Int, Int] =
+    MergeableStoreFactory.from {
+      MergeableStore.fromStore[(Int, BatchID), Int](
+        new JMapStore[(Int, BatchID), Int]())
+    }
 
   implicit def arbSource1: Arbitrary[Producer[Storm, Int]] =
     Arbitrary(Gen.listOfN(5000, Arbitrary.arbitrary[Int]).map { x: List[Int] =>

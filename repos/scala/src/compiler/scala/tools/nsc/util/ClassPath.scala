@@ -207,12 +207,13 @@ abstract class ClassPath[T] extends ClassFileLookup[T] {
     */
   case class ClassRep(binary: Option[T], source: Option[AbstractFile])
       extends ClassRepresentation[T] {
-    def name: String = binary match {
-      case Some(x) => context.toBinaryName(x)
-      case _ =>
-        assert(source.isDefined)
-        toSourceName(source.get)
-    }
+    def name: String =
+      binary match {
+        case Some(x) => context.toBinaryName(x)
+        case _ =>
+          assert(source.isDefined)
+          toSourceName(source.get)
+      }
   }
 
   /** Filters for assessing validity of various entities.
@@ -249,10 +250,11 @@ abstract class ClassPath[T] extends ClassFileLookup[T] {
   override def asSourcePathString: String = sourcepaths.mkString(pathSeparator)
 
   def sortString = join(split(asClassPathString).sorted: _*)
-  override def equals(that: Any) = that match {
-    case x: ClassPath[_] => this.sortString == x.sortString
-    case _               => false
-  }
+  override def equals(that: Any) =
+    that match {
+      case x: ClassPath[_] => this.sortString == x.sortString
+      case _               => false
+    }
   override def hashCode = sortString.hashCode()
 }
 

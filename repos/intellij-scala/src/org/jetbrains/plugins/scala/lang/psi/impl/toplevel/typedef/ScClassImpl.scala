@@ -95,15 +95,18 @@ class ScClassImpl private (
     findChild(classOf[ScPrimaryConstructor])
   }
 
-  def parameters = constructor match {
-    case Some(c) => c.effectiveParameterClauses.flatMap(_.unsafeClassParameters)
-    case None    => Seq.empty
-  }
+  def parameters =
+    constructor match {
+      case Some(c) =>
+        c.effectiveParameterClauses.flatMap(_.unsafeClassParameters)
+      case None => Seq.empty
+    }
 
-  override def members = constructor match {
-    case Some(c) => super.members ++ Seq(c)
-    case _       => super.members
-  }
+  override def members =
+    constructor match {
+      case Some(c) => super.members ++ Seq(c)
+      case _       => super.members
+    }
 
   import com.intellij.psi.scope.PsiScopeProcessor
   import com.intellij.psi.{PsiElement, ResolveState}

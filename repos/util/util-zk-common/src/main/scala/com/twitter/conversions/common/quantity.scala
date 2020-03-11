@@ -25,15 +25,16 @@ object quantity {
     def toDuration: Duration =
       Duration(a.getValue.longValue, translateUnit(a.getUnit))
 
-    def translateUnit(unit: CommonTime): TimeUnit = unit match {
-      case CommonTime.DAYS         => TimeUnit.DAYS
-      case CommonTime.HOURS        => TimeUnit.HOURS
-      case CommonTime.MINUTES      => TimeUnit.MINUTES
-      case CommonTime.MICROSECONDS => TimeUnit.MICROSECONDS
-      case CommonTime.MILLISECONDS => TimeUnit.MILLISECONDS
-      case CommonTime.NANOSECONDS  => TimeUnit.NANOSECONDS
-      case CommonTime.SECONDS      => TimeUnit.SECONDS
-    }
+    def translateUnit(unit: CommonTime): TimeUnit =
+      unit match {
+        case CommonTime.DAYS         => TimeUnit.DAYS
+        case CommonTime.HOURS        => TimeUnit.HOURS
+        case CommonTime.MINUTES      => TimeUnit.MINUTES
+        case CommonTime.MICROSECONDS => TimeUnit.MICROSECONDS
+        case CommonTime.MILLISECONDS => TimeUnit.MILLISECONDS
+        case CommonTime.NANOSECONDS  => TimeUnit.NANOSECONDS
+        case CommonTime.SECONDS      => TimeUnit.SECONDS
+      }
   }
 
   /** Implicit conversion of Amount to DurationAmountAdapter */

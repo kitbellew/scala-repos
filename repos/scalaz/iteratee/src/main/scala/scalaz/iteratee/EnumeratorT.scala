@@ -66,19 +66,21 @@ trait EnumeratorT[E, F[_]] { self =>
   def reduced[B](b: B)(f: (B, E) => B)(
       implicit M: Monad[F]): EnumeratorT[B, F] =
     new EnumeratorT[B, F] {
-      def apply[A] = (step: StepT[B, F, A]) => {
-        def check(s: StepT[E, F, B]): IterateeT[B, F, A] = s.fold(
-          cont = k =>
-            k(eofInput) >>== { s =>
-              s.mapContOr(_ => sys.error("diverging iteratee"), check(s))
-            },
-          done = (a, _) => step.mapCont(f => f(elInput(a)))
-        )
+      def apply[A] =
+        (step: StepT[B, F, A]) => {
+          def check(s: StepT[E, F, B]): IterateeT[B, F, A] =
+            s.fold(
+              cont = k =>
+                k(eofInput) >>== { s =>
+                  s.mapContOr(_ => sys.error("diverging iteratee"), check(s))
+                },
+              done = (a, _) => step.mapCont(f => f(elInput(a)))
+            )
 
-        iterateeT(M.bind((IterateeT.fold[E, F, B](b)(f) &= self).value) { s =>
-          check(s).value
-        })
-      }
+          iterateeT(M.bind((IterateeT.fold[E, F, B](b)(f) &= self).value) { s =>
+            check(s).value
+          })
+        }
     }
 
   def cross[E2](e2: EnumeratorT[E2, F])(
@@ -312,9 +314,10 @@ private trait EnumeratorTMonoid[E, F[_]]
     with EnumeratorTSemigroup[E, F] {
   implicit def F: Monad[F]
 
-  def zero = new EnumeratorT[E, F] {
-    def apply[A] = (s: StepT[E, F, A]) => s.pointI
-  }
+  def zero =
+    new EnumeratorT[E, F] {
+      def apply[A] = (s: StepT[E, F, A]) => s.pointI
+    }
 }
 
 private trait EnumeratorTFunctor[F[_]] extends Functor[EnumeratorT[?, F]] {

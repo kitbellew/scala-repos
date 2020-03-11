@@ -50,21 +50,23 @@ class ContinuousQueryManager(sqlContext: SQLContext) {
     *
     * @since 2.0.0
     */
-  def active: Array[ContinuousQuery] = activeQueriesLock.synchronized {
-    activeQueries.values.toArray
-  }
+  def active: Array[ContinuousQuery] =
+    activeQueriesLock.synchronized {
+      activeQueries.values.toArray
+    }
 
   /**
     * Returns an active query from this SQLContext or throws exception if bad name
     *
     * @since 2.0.0
     */
-  def get(name: String): ContinuousQuery = activeQueriesLock.synchronized {
-    activeQueries.getOrElse(
-      name,
-      throw new IllegalArgumentException(
-        s"There is no active query with name $name"))
-  }
+  def get(name: String): ContinuousQuery =
+    activeQueriesLock.synchronized {
+      activeQueries.getOrElse(
+        name,
+        throw new IllegalArgumentException(
+          s"There is no active query with name $name"))
+    }
 
   /**
     * Wait until any of the queries on the associated SQLContext has terminated since the

@@ -79,14 +79,15 @@ object DecimalPrecision extends Rule[LogicalPlan] {
     PromotePrecision(Cast(e, dataType))
   }
 
-  def apply(plan: LogicalPlan): LogicalPlan = plan resolveOperators {
-    // fix decimal precision for expressions
-    case q =>
-      q.transformExpressions(
-        decimalAndDecimal
-          .orElse(integralAndDecimalLiteral)
-          .orElse(nondecimalAndDecimal))
-  }
+  def apply(plan: LogicalPlan): LogicalPlan =
+    plan resolveOperators {
+      // fix decimal precision for expressions
+      case q =>
+        q.transformExpressions(
+          decimalAndDecimal
+            .orElse(integralAndDecimalLiteral)
+            .orElse(nondecimalAndDecimal))
+    }
 
   /** Decimal precision promotion for +, -, *, /, %, pmod, and binary comparison. */
   private val decimalAndDecimal: PartialFunction[Expression, Expression] = {

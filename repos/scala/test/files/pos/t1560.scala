@@ -8,8 +8,9 @@ object Test extends App {
     type x
   }] = null
 
-  def c = b match {
-    case Some(b) => b.t
-  }
+  def c =
+    b match {
+      case Some(b) => b.t
+    }
 
 }

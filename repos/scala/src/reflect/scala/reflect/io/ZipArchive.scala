@@ -192,10 +192,11 @@ final class FileZipArchive(file: JFile) extends ZipArchive(file) {
   override def sizeOption = Some(file.length.toInt)
   override def canEqual(other: Any) = other.isInstanceOf[FileZipArchive]
   override def hashCode() = file.hashCode
-  override def equals(that: Any) = that match {
-    case x: FileZipArchive => file.getAbsoluteFile == x.file.getAbsoluteFile
-    case _                 => false
-  }
+  override def equals(that: Any) =
+    that match {
+      case x: FileZipArchive => file.getAbsoluteFile == x.file.getAbsoluteFile
+      case _                 => false
+    }
 }
 
 /** ''Note:  This library is considered experimental and should not be used unless you know what you are doing.'' */
@@ -275,10 +276,11 @@ final class URLZipArchive(val url: URL) extends ZipArchive(null) {
 
   override def canEqual(other: Any) = other.isInstanceOf[URLZipArchive]
   override def hashCode() = url.hashCode
-  override def equals(that: Any) = that match {
-    case x: URLZipArchive => url == x.url
-    case _                => false
-  }
+  override def equals(that: Any) =
+    that match {
+      case x: URLZipArchive => url == x.url
+      case _                => false
+    }
 }
 
 final class ManifestResources(val url: URL) extends ZipArchive(null) {
@@ -325,10 +327,11 @@ final class ManifestResources(val url: URL) extends ZipArchive(null) {
 
   override def canEqual(other: Any) = other.isInstanceOf[ManifestResources]
   override def hashCode() = url.hashCode
-  override def equals(that: Any) = that match {
-    case x: ManifestResources => url == x.url
-    case _                    => false
-  }
+  override def equals(that: Any) =
+    that match {
+      case x: ManifestResources => url == x.url
+      case _                    => false
+    }
 
   private def resourceInputStream(path: String): InputStream = {
     new FilterInputStream(null) {

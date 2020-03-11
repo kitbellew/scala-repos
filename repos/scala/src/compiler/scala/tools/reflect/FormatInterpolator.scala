@@ -28,34 +28,36 @@ abstract class FormatInterpolator {
   private def fail(msg: String) = c.abort(c.enclosingPosition, msg)
   private def bail(msg: String) = global.abort(msg)
 
-  def interpolate: Tree = c.macroApplication match {
-    //case q"$_(..$parts).f(..$args)" =>
-    case Applied(Select(Apply(_, parts), _), _, argss) =>
-      val args = argss.flatten
-      def badlyInvoked = (parts.length != args.length + 1) && truly {
-        def because(s: String) = s"too $s arguments for interpolated string"
-        val (p, msg) =
-          if (parts.length == 0)
-            (c.prefix.tree.pos, "there are no parts")
-          else if (args.length + 1 < parts.length)
-            (
-              if (args.isEmpty)
-                c.enclosingPosition
+  def interpolate: Tree =
+    c.macroApplication match {
+      //case q"$_(..$parts).f(..$args)" =>
+      case Applied(Select(Apply(_, parts), _), _, argss) =>
+        val args = argss.flatten
+        def badlyInvoked =
+          (parts.length != args.length + 1) && truly {
+            def because(s: String) = s"too $s arguments for interpolated string"
+            val (p, msg) =
+              if (parts.length == 0)
+                (c.prefix.tree.pos, "there are no parts")
+              else if (args.length + 1 < parts.length)
+                (
+                  if (args.isEmpty)
+                    c.enclosingPosition
+                  else
+                    args.last.pos,
+                  because("few"))
               else
-                args.last.pos,
-              because("few"))
-          else
-            (args(parts.length - 1).pos, because("many"))
-        c.abort(p, msg)
-      }
-      if (badlyInvoked)
-        c.macroApplication
-      else
-        interpolated(parts, args)
-    case other =>
-      bail(s"Unexpected application ${showRaw(other)}")
-      other
-  }
+                (args(parts.length - 1).pos, because("many"))
+            c.abort(p, msg)
+          }
+        if (badlyInvoked)
+          c.macroApplication
+        else
+          interpolated(parts, args)
+      case other =>
+        bail(s"Unexpected application ${showRaw(other)}")
+        other
+    }
 
   /** Every part except the first must begin with a conversion for
     *  the arg that preceded it. If the conversion is missing, "%s"
@@ -109,19 +111,20 @@ abstract class FormatInterpolator {
           def errPoint = part.pos withPoint (part.pos.point + e.index)
           def octalOf(c: Char) = Character.digit(c, 8)
           def alt = {
-            def altOf(i: Int) = i match {
-              case '\b' => "\\b"
-              case '\t' => "\\t"
-              case '\n' => "\\n"
-              case '\f' => "\\f"
-              case '\r' => "\\r"
-              case '\"' =>
-                "${'\"'}" /* avoid lint warn */ +
-                  " or a triple-quoted literal \"\"\"with embedded \" or \\u0022\"\"\"" // $" in future
-              case '\'' => "'"
-              case '\\' => """\\"""
-              case x    => "\\u%04x" format x
-            }
+            def altOf(i: Int) =
+              i match {
+                case '\b' => "\\b"
+                case '\t' => "\\t"
+                case '\n' => "\\n"
+                case '\f' => "\\f"
+                case '\r' => "\\r"
+                case '\"' =>
+                  "${'\"'}" /* avoid lint warn */ +
+                    " or a triple-quoted literal \"\"\"with embedded \" or \\u0022\"\"\"" // $" in future
+                case '\'' => "'"
+                case '\\' => """\\"""
+                case x    => "\\u%04x" format x
+              }
             val suggest = {
               val r = "([0-7]{1,3}).*".r
               (s0 drop e.index + 1) match {
@@ -305,15 +308,18 @@ abstract class FormatInterpolator {
     def errorAtOffset(g: SpecGroup, i: Int, msg: String) =
       c.error(groupPosAt(g, i), msg)
 
-    def noFlags = flags.isEmpty || falsely {
-      errorAt(Flags, "flags not allowed")
-    }
-    def noWidth = width.isEmpty || falsely {
-      errorAt(Width, "width not allowed")
-    }
-    def noPrecision = precision.isEmpty || falsely {
-      errorAt(Precision, "precision not allowed")
-    }
+    def noFlags =
+      flags.isEmpty || falsely {
+        errorAt(Flags, "flags not allowed")
+      }
+    def noWidth =
+      width.isEmpty || falsely {
+        errorAt(Width, "width not allowed")
+      }
+    def noPrecision =
+      precision.isEmpty || falsely {
+        errorAt(Precision, "precision not allowed")
+      }
     def only_-(msg: String) = {
       val badFlags = (flags getOrElse "") filterNot {
         case '-' | '<' => true
@@ -364,23 +370,24 @@ abstract class FormatInterpolator {
             CC
         dk.errorAt(at, msg)
       }
-      def cv(cc: Char) = cc match {
-        case 'b' | 'B' | 'h' | 'H' | 's' | 'S' =>
-          new GeneralXn(m, p, n)
-        case 'c' | 'C' =>
-          new CharacterXn(m, p, n)
-        case 'd' | 'o' | 'x' | 'X' =>
-          new IntegralXn(m, p, n)
-        case 'e' | 'E' | 'f' | 'g' | 'G' | 'a' | 'A' =>
-          new FloatingPointXn(m, p, n)
-        case 't' | 'T' =>
-          new DateTimeXn(m, p, n)
-        case '%' | 'n' =>
-          new LiteralXn(m, p, n)
-        case _ =>
-          badCC(s"illegal conversion character '$cc'")
-          null
-      }
+      def cv(cc: Char) =
+        cc match {
+          case 'b' | 'B' | 'h' | 'H' | 's' | 'S' =>
+            new GeneralXn(m, p, n)
+          case 'c' | 'C' =>
+            new CharacterXn(m, p, n)
+          case 'd' | 'o' | 'x' | 'X' =>
+            new IntegralXn(m, p, n)
+          case 'e' | 'E' | 'f' | 'g' | 'G' | 'a' | 'A' =>
+            new FloatingPointXn(m, p, n)
+          case 't' | 'T' =>
+            new DateTimeXn(m, p, n)
+          case '%' | 'n' =>
+            new LiteralXn(m, p, n)
+          case _ =>
+            badCC(s"illegal conversion character '$cc'")
+            null
+        }
       Option(m group CC.id) map (cc => cv(cc(0))) match {
         case Some(x) => Option(x) filter (_.verify)
         case None =>
@@ -392,31 +399,34 @@ abstract class FormatInterpolator {
   }
   class GeneralXn(val m: Match, val pos: Position, val argc: Int)
       extends Conversion {
-    def accepts(arg: Tree) = cc match {
-      case 's' | 'S' if hasFlag('#') =>
-        pickAcceptable(arg, tagOfFormattable.tpe)
-      case 'b' | 'B' =>
-        if (arg.tpe <:< NullTpe)
-          Some(NullTpe)
-        else
-          Some(BooleanTpe)
-      case _ => Some(AnyTpe)
-    }
-    override protected def okFlags = cc match {
-      case 's' | 'S' => "-#<"
-      case _         => "-<"
-    }
+    def accepts(arg: Tree) =
+      cc match {
+        case 's' | 'S' if hasFlag('#') =>
+          pickAcceptable(arg, tagOfFormattable.tpe)
+        case 'b' | 'B' =>
+          if (arg.tpe <:< NullTpe)
+            Some(NullTpe)
+          else
+            Some(BooleanTpe)
+        case _ => Some(AnyTpe)
+      }
+    override protected def okFlags =
+      cc match {
+        case 's' | 'S' => "-#<"
+        case _         => "-<"
+      }
   }
   class LiteralXn(val m: Match, val pos: Position, val argc: Int)
       extends Conversion {
     import SpecifierGroups.Width
     override val isLiteral = true
-    override def verify = op match {
-      case "%" =>
-        super.verify && noPrecision && truly(width foreach (_ =>
-          c.warning(groupPos(Width), "width ignored on literal")))
-      case "n" => noFlags && noWidth && noPrecision
-    }
+    override def verify =
+      op match {
+        case "%" =>
+          super.verify && noPrecision && truly(width foreach (_ =>
+            c.warning(groupPos(Width), "width ignored on literal")))
+        case "n" => noFlags && noWidth && noPrecision
+      }
     override protected val okFlags = "-"
     def accepts(arg: Tree) = None
   }
@@ -444,14 +454,15 @@ abstract class FormatInterpolator {
     override def accepts(arg: Tree) = {
       def isBigInt = arg.tpe <:< tagOfBigInt.tpe
       val maybeOK = "+ ("
-      def bad_+ = cond(cc) {
-        case 'o' | 'x' | 'X' if hasAnyFlag(maybeOK) && !isBigInt =>
-          maybeOK filter hasFlag foreach (badf =>
-            badFlag(
-              badf,
-              s"only use '$badf' for BigInt conversions to o, x, X"))
-          true
-      }
+      def bad_+ =
+        cond(cc) {
+          case 'o' | 'x' | 'X' if hasAnyFlag(maybeOK) && !isBigInt =>
+            maybeOK filter hasFlag foreach (badf =>
+              badFlag(
+                badf,
+                s"only use '$badf' for BigInt conversions to o, x, X"))
+            true
+        }
       if (bad_+)
         None
       else

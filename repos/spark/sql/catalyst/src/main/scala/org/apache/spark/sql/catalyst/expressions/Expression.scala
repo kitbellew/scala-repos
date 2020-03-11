@@ -193,10 +193,11 @@ abstract class Expression extends TreeNode[Expression] {
     */
   def prettyName: String = getClass.getSimpleName.toLowerCase
 
-  private def flatArguments = productIterator.flatMap {
-    case t: Traversable[_] => t
-    case single            => single :: Nil
-  }
+  private def flatArguments =
+    productIterator.flatMap {
+      case t: Traversable[_] => t
+      case single            => single :: Nil
+    }
 
   override def simpleString: String = toString
 

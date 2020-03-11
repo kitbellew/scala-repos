@@ -46,10 +46,11 @@ class ScDocCommentImpl(text: CharSequence)
       2
   }
 
-  def getOwner: PsiDocCommentOwner = getParent match {
-    case owner: PsiDocCommentOwner if owner.getDocComment eq this => owner
-    case _                                                        => null
-  }
+  def getOwner: PsiDocCommentOwner =
+    getParent match {
+      case owner: PsiDocCommentOwner if owner.getDocComment eq this => owner
+      case _                                                        => null
+    }
 
   override def processDeclarations(
       processor: PsiScopeProcessor,

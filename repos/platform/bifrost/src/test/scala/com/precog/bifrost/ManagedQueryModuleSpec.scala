@@ -344,10 +344,12 @@ trait TestManagedQueryModule
     }
   }
 
-  def startup = Applicative[TestFuture].point {
-    true
-  }
-  def shutdown = Applicative[TestFuture].point {
-    true
-  }
+  def startup =
+    Applicative[TestFuture].point {
+      true
+    }
+  def shutdown =
+    Applicative[TestFuture].point {
+      true
+    }
 }

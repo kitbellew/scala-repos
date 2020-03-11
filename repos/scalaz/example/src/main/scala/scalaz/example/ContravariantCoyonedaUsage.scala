@@ -254,11 +254,12 @@ object ContravariantCoyonedaUsage extends App {
   // It’s simple enough to “interpret” each `SortType' to a
   // contravariant co-Yoneda Order.
 
-  def sortTypeOrd(s: SortType): CtCoyo[Order, String] = s match {
-    case SortType.CI      => CCOrder(caseInsensitively)
-    case SortType.Dateish => CCOrder(parseDate)
-    case SortType.Num     => CCOrder(parseCommaNum) // like numerically4
-  }
+  def sortTypeOrd(s: SortType): CtCoyo[Order, String] =
+    s match {
+      case SortType.CI      => CCOrder(caseInsensitively)
+      case SortType.Dateish => CCOrder(parseDate)
+      case SortType.Num     => CCOrder(parseCommaNum) // like numerically4
+    }
 
   // And then, similarly to `bySchwartzianListSorts', to combine one
   // of these `k's with a Vector lookup to produce a sort of records.
@@ -477,9 +478,10 @@ object ContravariantCoyonedaUsage extends App {
   }
 
   object Binfmt {
-    def apply[A](s: String): Binfmt[A] = new Binfmt[A] {
-      val describe = s
-    }
+    def apply[A](s: String): Binfmt[A] =
+      new Binfmt[A] {
+        val describe = s
+      }
 
     implicit val descLong: Binfmt[Long] = Binfmt("<Long>")
     implicit val descInt: Binfmt[Int] = Binfmt("<Int>")
@@ -517,11 +519,12 @@ object ContravariantCoyonedaUsage extends App {
       f: A => B)(implicit b: Binfmt[B], o: Order[B]): CtCoyo.Aux[BinOrd, A, B] =
     CtCoyo[BinOrd, A, B]((b, o))(f)
 
-  def sortTypeBinOrd(s: SortType): CtCoyo[BinOrd, String] = s match {
-    case SortType.CI      => CCBinOrd(caseInsensitively)
-    case SortType.Dateish => CCBinOrd(parseDate)
-    case SortType.Num     => CCBinOrd(parseCommaNum)
-  }
+  def sortTypeBinOrd(s: SortType): CtCoyo[BinOrd, String] =
+    s match {
+      case SortType.CI      => CCBinOrd(caseInsensitively)
+      case SortType.Dateish => CCBinOrd(parseDate)
+      case SortType.Num     => CCBinOrd(parseCommaNum)
+    }
 
   // It turns out that recItemOrd is completely abstract:
 

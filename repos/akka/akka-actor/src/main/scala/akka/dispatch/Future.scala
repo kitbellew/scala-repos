@@ -318,10 +318,11 @@ abstract class OnFailure extends japi.CallbackBridge[Throwable] {
   * Java API
   */
 abstract class OnComplete[-T] extends japi.CallbackBridge[Try[T]] {
-  protected final override def internal(value: Try[T]): Unit = value match {
-    case Failure(t) ⇒ onComplete(t, null.asInstanceOf[T])
-    case Success(r) ⇒ onComplete(null, r)
-  }
+  protected final override def internal(value: Try[T]): Unit =
+    value match {
+      case Failure(t) ⇒ onComplete(t, null.asInstanceOf[T])
+      case Success(r) ⇒ onComplete(null, r)
+    }
 
   /**
     * This method will be invoked once when/if a Future that this callback is registered on

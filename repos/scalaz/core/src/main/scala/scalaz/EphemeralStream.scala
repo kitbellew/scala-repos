@@ -193,14 +193,15 @@ sealed abstract class EphemeralStreamInstances {
     import EphemeralStream._
     override def isEmpty[A](fa: EphemeralStream[A]) = fa.isEmpty
     override def cojoin[A](
-        a: EphemeralStream[A]): EphemeralStream[EphemeralStream[A]] = a match {
-      case _ ##:: tl =>
-        if (tl.isEmpty)
-          EphemeralStream(a)
-        else
-          cons(a, cojoin(tl))
-      case _ => emptyEphemeralStream
-    }
+        a: EphemeralStream[A]): EphemeralStream[EphemeralStream[A]] =
+      a match {
+        case _ ##:: tl =>
+          if (tl.isEmpty)
+            EphemeralStream(a)
+          else
+            cons(a, cojoin(tl))
+        case _ => emptyEphemeralStream
+      }
     def cobind[A, B](fa: EphemeralStream[A])(
         f: EphemeralStream[A] => B): EphemeralStream[B] = map(cojoin(fa))(f)
     def plus[A](a: EphemeralStream[A], b: => EphemeralStream[A]) = a ++ b
@@ -294,20 +295,22 @@ object EphemeralStream extends EphemeralStreamInstances {
 
   type EStream[A] = EphemeralStream[A]
 
-  def emptyEphemeralStream[A]: EphemeralStream[A] = new EphemeralStream[A] {
-    def isEmpty = true
+  def emptyEphemeralStream[A]: EphemeralStream[A] =
+    new EphemeralStream[A] {
+      def isEmpty = true
 
-    def head: () => Nothing = () => sys.error("head of empty stream")
+      def head: () => Nothing = () => sys.error("head of empty stream")
 
-    def tail: () => Nothing = () => sys.error("tail of empty stream")
-  }
+      def tail: () => Nothing = () => sys.error("tail of empty stream")
+    }
 
-  def cons[A](a: => A, as: => EphemeralStream[A]) = new EphemeralStream[A] {
-    def isEmpty = false
+  def cons[A](a: => A, as: => EphemeralStream[A]) =
+    new EphemeralStream[A] {
+      def isEmpty = false
 
-    val head = weakMemo(a)
-    val tail = weakMemo(as)
-  }
+      val head = weakMemo(a)
+      val tail = weakMemo(as)
+    }
 
   def unfold[A, B](b: => B)(f: B => Option[(A, B)]): EphemeralStream[A] =
     f(b) match {
@@ -327,24 +330,27 @@ object EphemeralStream extends EphemeralStreamInstances {
     else
       cons(lower, range(lower + 1, upper))
 
-  def fromStream[A](s: => Stream[A]): EphemeralStream[A] = s match {
-    case Stream() => emptyEphemeralStream
-    case h #:: t  => cons(h, fromStream(t))
-  }
-
-  def toIterable[A](e: EphemeralStream[A]): Iterable[A] = new Iterable[A] {
-    def iterator = new Iterator[A] {
-      var cur = e
-
-      def next() = {
-        val t = cur.head()
-        cur = cur.tail()
-        t
-      }
-
-      def hasNext = !cur.isEmpty
+  def fromStream[A](s: => Stream[A]): EphemeralStream[A] =
+    s match {
+      case Stream() => emptyEphemeralStream
+      case h #:: t  => cons(h, fromStream(t))
     }
-  }
+
+  def toIterable[A](e: EphemeralStream[A]): Iterable[A] =
+    new Iterable[A] {
+      def iterator =
+        new Iterator[A] {
+          var cur = e
+
+          def next() = {
+            val t = cur.head()
+            cur = cur.tail()
+            t
+          }
+
+          def hasNext = !cur.isEmpty
+        }
+    }
 
   def weakMemo[V](f: => V): () => V = {
     val latch = new Object

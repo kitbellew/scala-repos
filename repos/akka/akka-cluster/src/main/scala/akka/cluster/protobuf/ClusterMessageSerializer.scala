@@ -76,29 +76,31 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
 
   def includeManifest: Boolean = true
 
-  def toBinary(obj: AnyRef): Array[Byte] = obj match {
-    case ClusterHeartbeatSender.Heartbeat(from) ⇒ addressToProtoByteArray(from)
-    case ClusterHeartbeatSender.HeartbeatRsp(from) ⇒
-      uniqueAddressToProtoByteArray(from)
-    case m: GossipEnvelope ⇒ gossipEnvelopeToProto(m).toByteArray
-    case m: GossipStatus ⇒ gossipStatusToProto(m).toByteArray
-    case m: MetricsGossipEnvelope ⇒ compress(metricsGossipEnvelopeToProto(m))
-    case InternalClusterAction.Join(node, roles) ⇒
-      joinToProto(node, roles).toByteArray
-    case InternalClusterAction.Welcome(from, gossip) ⇒
-      compress(welcomeToProto(from, gossip))
-    case ClusterUserAction.Leave(address) ⇒ addressToProtoByteArray(address)
-    case ClusterUserAction.Down(address) ⇒ addressToProtoByteArray(address)
-    case InternalClusterAction.InitJoin ⇒
-      cm.Empty.getDefaultInstance.toByteArray
-    case InternalClusterAction.InitJoinAck(address) ⇒
-      addressToProtoByteArray(address)
-    case InternalClusterAction.InitJoinNack(address) ⇒
-      addressToProtoByteArray(address)
-    case _ ⇒
-      throw new IllegalArgumentException(
-        s"Can't serialize object of type ${obj.getClass}")
-  }
+  def toBinary(obj: AnyRef): Array[Byte] =
+    obj match {
+      case ClusterHeartbeatSender.Heartbeat(from) ⇒
+        addressToProtoByteArray(from)
+      case ClusterHeartbeatSender.HeartbeatRsp(from) ⇒
+        uniqueAddressToProtoByteArray(from)
+      case m: GossipEnvelope ⇒ gossipEnvelopeToProto(m).toByteArray
+      case m: GossipStatus ⇒ gossipStatusToProto(m).toByteArray
+      case m: MetricsGossipEnvelope ⇒ compress(metricsGossipEnvelopeToProto(m))
+      case InternalClusterAction.Join(node, roles) ⇒
+        joinToProto(node, roles).toByteArray
+      case InternalClusterAction.Welcome(from, gossip) ⇒
+        compress(welcomeToProto(from, gossip))
+      case ClusterUserAction.Leave(address) ⇒ addressToProtoByteArray(address)
+      case ClusterUserAction.Down(address) ⇒ addressToProtoByteArray(address)
+      case InternalClusterAction.InitJoin ⇒
+        cm.Empty.getDefaultInstance.toByteArray
+      case InternalClusterAction.InitJoinAck(address) ⇒
+        addressToProtoByteArray(address)
+      case InternalClusterAction.InitJoinNack(address) ⇒
+        addressToProtoByteArray(address)
+      case _ ⇒
+        throw new IllegalArgumentException(
+          s"Can't serialize object of type ${obj.getClass}")
+    }
 
   def compress(msg: MessageLite): Array[Byte] = {
     val bos = new ByteArrayOutputStream(BufferSize)
@@ -113,12 +115,13 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
     val out = new ByteArrayOutputStream()
     val buffer = new Array[Byte](BufferSize)
 
-    @tailrec def readChunk(): Unit = in.read(buffer) match {
-      case -1 ⇒ ()
-      case n ⇒
-        out.write(buffer, 0, n)
-        readChunk()
-    }
+    @tailrec def readChunk(): Unit =
+      in.read(buffer) match {
+        case -1 ⇒ ()
+        case n ⇒
+          out.write(buffer, 0, n)
+          readChunk()
+      }
 
     try readChunk()
     finally in.close()
@@ -243,12 +246,13 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
   private def mapWithErrorMessage[T](
       map: Map[T, Int],
       value: T,
-      unknown: String): Int = map.get(value) match {
-    case Some(x) ⇒ x
-    case _ ⇒
-      throw new IllegalArgumentException(
-        s"Unknown $unknown [$value] in cluster message")
-  }
+      unknown: String): Int =
+    map.get(value) match {
+      case Some(x) ⇒ x
+      case _ ⇒
+        throw new IllegalArgumentException(
+          s"Unknown $unknown [$value] in cluster message")
+    }
 
   private def joinToProto(node: UniqueAddress, roles: Set[String]): cm.Join =
     cm.Join

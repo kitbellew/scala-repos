@@ -12,16 +12,17 @@ class DeadlineFailureDetectorSpec extends AkkaSpec {
 
   "A DeadlineFailureDetector" must {
 
-    def fakeTimeGenerator(timeIntervals: Seq[Long]): Clock = new Clock {
-      @volatile var times =
-        timeIntervals.tail.foldLeft(List[Long](timeIntervals.head))((acc, c) ⇒
-          acc ::: List[Long](acc.last + c))
-      override def apply(): Long = {
-        val currentTime = times.head
-        times = times.tail
-        currentTime
+    def fakeTimeGenerator(timeIntervals: Seq[Long]): Clock =
+      new Clock {
+        @volatile var times =
+          timeIntervals.tail.foldLeft(List[Long](timeIntervals.head))((acc, c) ⇒
+            acc ::: List[Long](acc.last + c))
+        override def apply(): Long = {
+          val currentTime = times.head
+          times = times.tail
+          currentTime
+        }
       }
-    }
 
     def createFailureDetector(
         acceptableLostDuration: FiniteDuration,

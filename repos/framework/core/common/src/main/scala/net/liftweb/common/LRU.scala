@@ -98,13 +98,14 @@ class LRUMap[K, V](
     *
     * Accessing a key this way will mark its value as most-recently-used.
     */
-  def get(key: K): Box[V] = localMap.get(key) match {
-    case null => Empty
-    case v =>
-      v.remove
-      addAtHead(v)
-      Full(v.value2)
-  }
+  def get(key: K): Box[V] =
+    localMap.get(key) match {
+      case null => Empty
+      case v =>
+        v.remove
+        addAtHead(v)
+        Full(v.value2)
+    }
 
   /**
     * Unsafe version of `[[get]]`.

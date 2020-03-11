@@ -56,16 +56,17 @@ object JobState extends JobStateSerialization {
   case class Finished(timestamp: DateTime, prev: JobState)
       extends JobState(true)
 
-  def describe(state: JobState): String = state match {
-    case NotStarted          => "The job has not yet been started."
-    case Started(started, _) => "The job was started at %s." format started
-    case Cancelled(reason, _, _) =>
-      "The job has been cancelled due to '%s'." format reason
-    case Aborted(reason, _, _) =>
-      "The job was aborted early due to '%s'." format reason
-    case Expired(expiration, _) => "The job expired at %s." format expiration
-    case Finished(_, _)         => "The job has finished successfully."
-  }
+  def describe(state: JobState): String =
+    state match {
+      case NotStarted          => "The job has not yet been started."
+      case Started(started, _) => "The job was started at %s." format started
+      case Cancelled(reason, _, _) =>
+        "The job has been cancelled due to '%s'." format reason
+      case Aborted(reason, _, _) =>
+        "The job was aborted early due to '%s'." format reason
+      case Expired(expiration, _) => "The job expired at %s." format expiration
+      case Finished(_, _)         => "The job has finished successfully."
+    }
 }
 
 trait JobStateSerialization {
@@ -90,25 +91,26 @@ trait JobStateSerialization {
       )
     }
 
-    override def decompose(job: JobState): JValue = job match {
-      case NotStarted =>
-        jobject(jfield("state", "not_started"))
+    override def decompose(job: JobState): JValue =
+      job match {
+        case NotStarted =>
+          jobject(jfield("state", "not_started"))
 
-      case Started(ts, prev) =>
-        base("started", ts, prev)
+        case Started(ts, prev) =>
+          base("started", ts, prev)
 
-      case Cancelled(reason, ts, prev) =>
-        base("cancelled", ts, prev, Some(reason))
+        case Cancelled(reason, ts, prev) =>
+          base("cancelled", ts, prev, Some(reason))
 
-      case Aborted(reason, ts, prev) =>
-        base("aborted", ts, prev, Some(reason))
+        case Aborted(reason, ts, prev) =>
+          base("aborted", ts, prev, Some(reason))
 
-      case Expired(ts, prev) =>
-        base("expired", ts, prev)
+        case Expired(ts, prev) =>
+          base("expired", ts, prev)
 
-      case Finished(ts, prev) =>
-        base("finished", ts, prev)
-    }
+        case Finished(ts, prev) =>
+          base("finished", ts, prev)
+      }
   }
 
   implicit object JobStateExtractor extends Extractor[JobState] {

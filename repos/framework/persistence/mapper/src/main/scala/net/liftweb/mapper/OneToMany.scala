@@ -61,19 +61,20 @@ trait OneToMany[K, T <: KeyedMapper[K, T]] extends KeyedMapper[K, T] {
     * Returns false as soon as the parent or a one-to-many field returns false.
     * If they are all successful returns true.
     */
-  override def delete_! = DB.use(connectionIdentifier) { _ =>
-    if (oneToManyFields.forall {
-          (_: MappedOneToManyBase[_ <: Mapper[_]]) match {
-            case f: Cascade[_] => f.delete_!
-            case _             => true
-          }
-        })
-      super.delete_!
-    else {
-      DB.rollback(connectionIdentifier)
-      false
+  override def delete_! =
+    DB.use(connectionIdentifier) { _ =>
+      if (oneToManyFields.forall {
+            (_: MappedOneToManyBase[_ <: Mapper[_]]) match {
+              case f: Cascade[_] => f.delete_!
+              case _             => true
+            }
+          })
+        super.delete_!
+      else {
+        DB.rollback(connectionIdentifier)
+        false
+      }
     }
-  }
 
   /**
     * This implicit allows a MappedForeignKey to be used as foreignKey function.

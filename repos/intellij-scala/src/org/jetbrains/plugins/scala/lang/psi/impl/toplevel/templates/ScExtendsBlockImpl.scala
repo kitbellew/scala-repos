@@ -357,26 +357,30 @@ class ScExtendsBlockImpl private (
     bodyMembers ++ earlyMembers
   }
 
-  def typeDefinitions = templateBody match {
-    case None       => Seq.empty
-    case Some(body) => body.typeDefinitions
-  }
+  def typeDefinitions =
+    templateBody match {
+      case None       => Seq.empty
+      case Some(body) => body.typeDefinitions
+    }
 
   def nameId = null
 
-  def aliases = templateBody match {
-    case None       => Seq.empty
-    case Some(body) => body.aliases
-  }
+  def aliases =
+    templateBody match {
+      case None       => Seq.empty
+      case Some(body) => body.aliases
+    }
 
-  def functions = templateBody match {
-    case None       => Seq.empty
-    case Some(body) => body.functions
-  }
+  def functions =
+    templateBody match {
+      case None       => Seq.empty
+      case Some(body) => body.functions
+    }
 
-  def selfTypeElement = templateBody flatMap { body =>
-    body.selfTypeElement
-  }
+  def selfTypeElement =
+    templateBody flatMap { body =>
+      body.selfTypeElement
+    }
 
   def templateParents: Option[ScTemplateParents] = {
     val stub = getStub
@@ -430,8 +434,9 @@ class ScExtendsBlockImpl private (
     }
   }
 
-  def isUnderCaseClass: Boolean = getParentByStub match {
-    case td: ScTypeDefinition if td.isCase => true
-    case _                                 => false
-  }
+  def isUnderCaseClass: Boolean =
+    getParentByStub match {
+      case td: ScTypeDefinition if td.isCase => true
+      case _                                 => false
+    }
 }

@@ -173,11 +173,12 @@ final class LWWRegister[A] private[akka] (
 
   override def toString: String = s"LWWRegister($value)"
 
-  override def equals(o: Any): Boolean = o match {
-    case other: LWWRegister[_] ⇒
-      timestamp == other.timestamp && value == other.value && node == other.node
-    case _ ⇒ false
-  }
+  override def equals(o: Any): Boolean =
+    o match {
+      case other: LWWRegister[_] ⇒
+        timestamp == other.timestamp && value == other.value && node == other.node
+      case _ ⇒ false
+    }
 
   override def hashCode: Int = {
     var result = HashCode.SEED

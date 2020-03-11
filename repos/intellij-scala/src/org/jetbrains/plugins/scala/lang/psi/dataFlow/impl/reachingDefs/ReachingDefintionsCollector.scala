@@ -76,13 +76,14 @@ object ReachingDefintionsCollector {
   private def isVisible(
       element: PsiNamedElement,
       place: PsiElement): Boolean = {
-    def checkResolve(ref: PsiElement) = ref match {
-      case r: ScReferenceElement =>
-        r.multiResolve(false)
-          .map(_.getElement)
-          .exists(PsiEquivalenceUtil.areElementsEquivalent(_, element))
-      case _ => false
-    }
+    def checkResolve(ref: PsiElement) =
+      ref match {
+        case r: ScReferenceElement =>
+          r.multiResolve(false)
+            .map(_.getElement)
+            .exists(PsiEquivalenceUtil.areElementsEquivalent(_, element))
+        case _ => false
+      }
     val isInstanceMethod = element match {
       case fun: ScFunction => fun.isInstance
       case m: PsiMethod    => !m.hasModifierPropertyScala("static")
@@ -136,9 +137,10 @@ object ReachingDefintionsCollector {
 
   private def filterByFragment(
       cfg: Seq[Instruction],
-      fragment: Seq[PsiElement]) = cfg.filter { i =>
-    i.element.exists(isInFragment(_, fragment))
-  }
+      fragment: Seq[PsiElement]) =
+    cfg.filter { i =>
+      i.element.exists(isInFragment(_, fragment))
+    }
 
   def computeOutputVariables(
       innerInstructions: Seq[Instruction],

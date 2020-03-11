@@ -98,12 +98,13 @@ class ScalaLineMarkerProvider(
 
       def getParent: PsiElement = {
         var e = element
-        def test(x: PsiElement) = x match {
-          case _: ScFunction | _: ScValue | _: ScVariable |
-              _: ScTypeDefinition | _: ScTypeAlias =>
-            true
-          case _ => false
-        }
+        def test(x: PsiElement) =
+          x match {
+            case _: ScFunction | _: ScValue | _: ScVariable |
+                _: ScTypeDefinition | _: ScTypeAlias =>
+              true
+            case _ => false
+          }
         while (e != null && !test(e))
           e = e.getParent
         e
@@ -356,10 +357,11 @@ private object GutterUtil {
     }
   }
 
-  def isAbstract(element: PsiElement) = element match {
-    case method: ScFunctionDeclaration   => true
-    case value: ScValueDeclaration       => true
-    case variable: ScVariableDeclaration => true
-    case _                               => false
-  }
+  def isAbstract(element: PsiElement) =
+    element match {
+      case method: ScFunctionDeclaration   => true
+      case value: ScValueDeclaration       => true
+      case variable: ScVariableDeclaration => true
+      case _                               => false
+    }
 }

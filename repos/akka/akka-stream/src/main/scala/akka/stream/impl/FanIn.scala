@@ -248,16 +248,18 @@ private[akka] object FanIn {
       override def isReady: Boolean = markedPending > 0
     }
 
-    def inputsAvailableFor(id: Int) = new TransferState {
-      override def isCompleted: Boolean =
-        depleted(id) || cancelled(id) || (!pending(id) && completed(id))
-      override def isReady: Boolean = pending(id)
-    }
+    def inputsAvailableFor(id: Int) =
+      new TransferState {
+        override def isCompleted: Boolean =
+          depleted(id) || cancelled(id) || (!pending(id) && completed(id))
+        override def isReady: Boolean = pending(id)
+      }
 
-    def inputsOrCompleteAvailableFor(id: Int) = new TransferState {
-      override def isCompleted: Boolean = false
-      override def isReady: Boolean = pending(id) || depleted(id)
-    }
+    def inputsOrCompleteAvailableFor(id: Int) =
+      new TransferState {
+        override def isCompleted: Boolean = false
+        override def isReady: Boolean = pending(id) || depleted(id)
+      }
 
     // FIXME: Eliminate re-wraps
     def subreceive: SubReceive =

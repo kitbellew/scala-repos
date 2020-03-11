@@ -104,12 +104,13 @@ class JDBCLEvents(
   def close(): Unit = ConnectionPool.closeAll()
 
   def futureInsert(event: Event, appId: Int, channelId: Option[Int])(
-      implicit ec: ExecutionContext): Future[String] = Future {
-    DB localTx { implicit session =>
-      val id = event.eventId.getOrElse(JDBCUtils.generateId)
-      val tableName = sqls.createUnsafely(
-        JDBCUtils.eventTableName(namespace, appId, channelId))
-      sql"""
+      implicit ec: ExecutionContext): Future[String] =
+    Future {
+      DB localTx { implicit session =>
+        val id = event.eventId.getOrElse(JDBCUtils.generateId)
+        val tableName = sqls.createUnsafely(
+          JDBCUtils.eventTableName(namespace, appId, channelId))
+        sql"""
       insert into $tableName values(
         $id,
         ${event.event},
@@ -121,24 +122,25 @@ class JDBCLEvents(
         ${event.eventTime},
         ${event.eventTime.getZone.getID},
         ${if (event.tags.nonEmpty)
-        Some(event.tags.mkString(","))
-      else
-        None},
+          Some(event.tags.mkString(","))
+        else
+          None},
         ${event.prId},
         ${event.creationTime},
         ${event.creationTime.getZone.getID}
       )
       """.update().apply()
-      id
+        id
+      }
     }
-  }
 
   def futureGet(eventId: String, appId: Int, channelId: Option[Int])(
-      implicit ec: ExecutionContext): Future[Option[Event]] = Future {
-    DB readOnly { implicit session =>
-      val tableName = sqls.createUnsafely(
-        JDBCUtils.eventTableName(namespace, appId, channelId))
-      sql"""
+      implicit ec: ExecutionContext): Future[Option[Event]] =
+    Future {
+      DB readOnly { implicit session =>
+        val tableName = sqls.createUnsafely(
+          JDBCUtils.eventTableName(namespace, appId, channelId))
+        sql"""
       select
         id,
         event,
@@ -156,20 +158,21 @@ class JDBCLEvents(
       from $tableName
       where id = $eventId
       """.map(resultToEvent).single().apply()
+      }
     }
-  }
 
   def futureDelete(eventId: String, appId: Int, channelId: Option[Int])(
-      implicit ec: ExecutionContext): Future[Boolean] = Future {
-    DB localTx { implicit session =>
-      val tableName = sqls.createUnsafely(
-        JDBCUtils.eventTableName(namespace, appId, channelId))
-      sql"""
+      implicit ec: ExecutionContext): Future[Boolean] =
+    Future {
+      DB localTx { implicit session =>
+        val tableName = sqls.createUnsafely(
+          JDBCUtils.eventTableName(namespace, appId, channelId))
+        sql"""
       delete from $tableName where id = $eventId
       """.update().apply()
-      true
+        true
+      }
     }
-  }
 
   def futureFind(
       appId: Int,
@@ -183,44 +186,45 @@ class JDBCLEvents(
       targetEntityId: Option[Option[String]] = None,
       limit: Option[Int] = None,
       reversed: Option[Boolean] = None
-  )(implicit ec: ExecutionContext): Future[Iterator[Event]] = Future {
-    DB readOnly { implicit session =>
-      val tableName = sqls.createUnsafely(
-        JDBCUtils.eventTableName(namespace, appId, channelId))
-      val whereClause = sqls
-        .toAndConditionOpt(
-          startTime.map(x => sqls"eventTime >= $x"),
-          untilTime.map(x => sqls"eventTime < $x"),
-          entityType.map(x => sqls"entityType = $x"),
-          entityId.map(x => sqls"entityId = $x"),
-          eventNames
-            .map(x =>
-              sqls.toOrConditionOpt(x.map(y => Some(sqls"event = $y")): _*))
-            .getOrElse(None),
-          targetEntityType.map(x =>
-            x.map(y => sqls"targetEntityType = $y")
-              .getOrElse(sqls"targetEntityType IS NULL")),
-          targetEntityId.map(x =>
-            x.map(y => sqls"targetEntityId = $y")
-              .getOrElse(sqls"targetEntityId IS NULL"))
-        )
-        .map(sqls.where(_))
-        .getOrElse(sqls"")
-      val orderByClause = reversed
-        .map(x =>
-          if (x)
-            sqls"eventTime desc"
-          else
-            sqls"eventTime asc")
-        .getOrElse(sqls"eventTime asc")
-      val limitClause = limit
-        .map(x =>
-          if (x < 0)
-            sqls""
-          else
-            sqls.limit(x))
-        .getOrElse(sqls"")
-      val q = sql"""
+  )(implicit ec: ExecutionContext): Future[Iterator[Event]] =
+    Future {
+      DB readOnly { implicit session =>
+        val tableName = sqls.createUnsafely(
+          JDBCUtils.eventTableName(namespace, appId, channelId))
+        val whereClause = sqls
+          .toAndConditionOpt(
+            startTime.map(x => sqls"eventTime >= $x"),
+            untilTime.map(x => sqls"eventTime < $x"),
+            entityType.map(x => sqls"entityType = $x"),
+            entityId.map(x => sqls"entityId = $x"),
+            eventNames
+              .map(x =>
+                sqls.toOrConditionOpt(x.map(y => Some(sqls"event = $y")): _*))
+              .getOrElse(None),
+            targetEntityType.map(x =>
+              x.map(y => sqls"targetEntityType = $y")
+                .getOrElse(sqls"targetEntityType IS NULL")),
+            targetEntityId.map(x =>
+              x.map(y => sqls"targetEntityId = $y")
+                .getOrElse(sqls"targetEntityId IS NULL"))
+          )
+          .map(sqls.where(_))
+          .getOrElse(sqls"")
+        val orderByClause = reversed
+          .map(x =>
+            if (x)
+              sqls"eventTime desc"
+            else
+              sqls"eventTime asc")
+          .getOrElse(sqls"eventTime asc")
+        val limitClause = limit
+          .map(x =>
+            if (x < 0)
+              sqls""
+            else
+              sqls.limit(x))
+          .getOrElse(sqls"")
+        val q = sql"""
       select
         id,
         event,
@@ -240,9 +244,9 @@ class JDBCLEvents(
       order by $orderByClause
       $limitClause
       """
-      q.map(resultToEvent).list().apply().toIterator
+        q.map(resultToEvent).list().apply().toIterator
+      }
     }
-  }
 
   private[prediction] def resultToEvent(rs: WrappedResultSet): Event = {
     Event(

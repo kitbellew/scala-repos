@@ -62,11 +62,12 @@ object ScalaSuppressableInspectionTool {
       Array.empty
   }
 
-  def allFixesForKey(key: HighlightDisplayKey): Array[SuppressQuickFix] = Array(
-    new ScalaSuppressForStatementFix(key),
-    new ScalaSuppressForClassFix(key),
-    new ScalaSuppressForFunctionFix(key),
-    new ScalaSuppressForVariableFix(key),
-    new ScalaSuppressForTypeAliasFix(key)
-  )
+  def allFixesForKey(key: HighlightDisplayKey): Array[SuppressQuickFix] =
+    Array(
+      new ScalaSuppressForStatementFix(key),
+      new ScalaSuppressForClassFix(key),
+      new ScalaSuppressForFunctionFix(key),
+      new ScalaSuppressForVariableFix(key),
+      new ScalaSuppressForTypeAliasFix(key)
+    )
 }
