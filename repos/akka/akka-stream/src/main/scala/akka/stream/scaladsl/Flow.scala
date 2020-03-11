@@ -267,8 +267,7 @@ final class Flow[-In, +Out, +Mat](private[stream] override val module: Module)
     * only to the contained processing stages).
     */
   override def withAttributes(attr: Attributes): Repr[Out] =
-    if (isIdentity) this
-    else new Flow(module.withAttributes(attr))
+    if (isIdentity) this else new Flow(module.withAttributes(attr))
 
   /**
     * Add the given attributes to this Flow. Further calls to `withAttributes`

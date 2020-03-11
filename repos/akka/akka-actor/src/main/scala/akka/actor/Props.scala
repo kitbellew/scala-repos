@@ -133,15 +133,13 @@ final case class Props(
     * INTERNAL API
     */
   private[akka] def producer: IndirectActorProducer = {
-    if (_producer eq null)
-      _producer = IndirectActorProducer(clazz, args)
+    if (_producer eq null) _producer = IndirectActorProducer(clazz, args)
 
     _producer
   }
 
   private[this] def cachedActorClass: Class[_ <: Actor] = {
-    if (_cachedActorClass eq null)
-      _cachedActorClass = producer.actorClass
+    if (_cachedActorClass eq null) _cachedActorClass = producer.actorClass
 
     _cachedActorClass
   }

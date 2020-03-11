@@ -69,8 +69,7 @@ trait Nondeterminism[F[_]] extends Monad[F] { self =>
     * @return `None`, if the input is empty.
     */
   def chooseAny[A](a: Seq[F[A]]): Option[F[(A, Seq[F[A]])]] =
-    if (a.isEmpty) None
-    else Some(chooseAny(a.head, a.tail))
+    if (a.isEmpty) None else Some(chooseAny(a.head, a.tail))
 
   def chooseAny[A](head: F[A], tail: Seq[F[A]]): F[(A, Seq[F[A]])]
 

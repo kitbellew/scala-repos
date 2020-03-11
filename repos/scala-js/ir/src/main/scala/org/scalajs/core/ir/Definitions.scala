@@ -121,11 +121,9 @@ object Definitions {
     "scala_Float" -> "F",
     "scala_Double" -> "D"
   ) ++ (
-    for (index <- 2 to 22)
-      yield s"scala_Tuple$index" -> ("T" + index)
+    for (index <- 2 to 22) yield s"scala_Tuple$index" -> ("T" + index)
   ) ++ (
-    for (index <- 0 to 22)
-      yield s"scala_Function$index" -> ("F" + index)
+    for (index <- 0 to 22) yield s"scala_Function$index" -> ("F" + index)
   )
 
   private val decompressedClasses: Map[String, String] =
@@ -172,8 +170,7 @@ object Definitions {
     // -1 preserves trailing empty strings
     val parts = privateAndSigString.split("__", -1).toSeq
     val paramsAndResultStrings =
-      if (parts.headOption.exists(_.startsWith("p"))) parts.tail
-      else parts
+      if (parts.headOption.exists(_.startsWith("p"))) parts.tail else parts
 
     val paramStrings :+ resultString = paramsAndResultStrings
 
@@ -189,10 +186,8 @@ object Definitions {
     */
   def decodeReferenceType(encodedName: String): ReferenceType = {
     val arrayDepth = encodedName.indexWhere(_ != 'A')
-    if (arrayDepth == 0)
-      ClassType(encodedName)
-    else
-      ArrayType(encodedName.substring(arrayDepth), arrayDepth)
+    if (arrayDepth == 0) ClassType(encodedName)
+    else ArrayType(encodedName.substring(arrayDepth), arrayDepth)
   }
 
   /* Common predicates on encoded names */

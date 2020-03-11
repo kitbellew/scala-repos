@@ -303,8 +303,7 @@ private[io] abstract class TcpConnection(
     pendingWrite = pendingWrite.doWrite(info)
 
   def closeReason =
-    if (channel.socket.isOutputShutdown) ConfirmedClosed
-    else PeerClosed
+    if (channel.socket.isOutputShutdown) ConfirmedClosed else PeerClosed
 
   def handleClose(
       info: ConnectionInfo,
@@ -344,8 +343,7 @@ private[io] abstract class TcpConnection(
       handler: ActorRef,
       closeCommander: Option[ActorRef],
       closedEvent: ConnectionClosed): Unit = {
-    if (closedEvent == Aborted) abort()
-    else channel.close()
+    if (closedEvent == Aborted) abort() else channel.close()
     stopWith(CloseInformation(Set(handler) ++ closeCommander, closedEvent))
   }
 
@@ -386,8 +384,7 @@ private[io] abstract class TcpConnection(
   }
 
   override def postStop(): Unit = {
-    if (channel.isOpen)
-      abort()
+    if (channel.isOpen) abort()
 
     if (writePending) pendingWrite.release()
 

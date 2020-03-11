@@ -58,8 +58,7 @@ object TextFormatterWithChangeFilterDemo extends JFXApp {
   val converter = new StringConverter[Message] {
     override def fromString(s: String): Message = {
       val r =
-        if (s.startsWith(prompt)) s.substring(prompt.length)
-        else s
+        if (s.startsWith(prompt)) s.substring(prompt.length) else s
       Message(r)
     }
     override def toString(v: Message): String = { prompt + v.text }

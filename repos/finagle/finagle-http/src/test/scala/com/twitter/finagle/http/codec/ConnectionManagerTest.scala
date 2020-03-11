@@ -88,8 +88,7 @@ class ConnectionManagerTest extends FunSuite with MockitoSugar {
         fail()
     }
 
-    if (shouldMarkDead)
-      verify(trans, times(1)).close
+    if (shouldMarkDead) verify(trans, times(1)).close
   }
 
   test("not terminate regular http/1.1 connections") {

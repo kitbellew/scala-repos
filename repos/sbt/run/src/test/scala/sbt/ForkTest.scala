@@ -63,12 +63,8 @@ object ForkTest extends Properties("Fork") {
     if (cp.length > MaximumClasspathLength) {
       val lastEntryI =
         cp.lastIndexOf(File.pathSeparatorChar, MaximumClasspathLength)
-      if (lastEntryI > 0)
-        cp.substring(0, lastEntryI)
-      else
-        cp
-    } else
-      cp
+      if (lastEntryI > 0) cp.substring(0, lastEntryI) else cp
+    } else cp
 }
 
 // Object used in the tests

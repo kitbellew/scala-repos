@@ -85,8 +85,7 @@ package object templates {
   def paramNameOnQueryString(paramName: String) = {
     if (paramName.matches("^`[^`]+`$"))
       paramName.substring(1, paramName.length - 1)
-    else
-      paramName
+    else paramName
   }
 
   /**

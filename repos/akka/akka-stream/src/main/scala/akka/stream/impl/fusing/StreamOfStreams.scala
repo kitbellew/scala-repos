@@ -42,8 +42,7 @@ final class FlattenMerge[T, M](breadth: Int)
     def pushOut(): Unit = {
       val src = q.dequeue()
       push(out, src.grab())
-      if (!src.isClosed) src.pull()
-      else removeSource(src)
+      if (!src.isClosed) src.pull() else removeSource(src)
     }
 
     setHandler(
@@ -400,8 +399,7 @@ final class Split[T](
               handOver(handler)
             } else {
               // Drain into the void
-              if (substreamCancelled) pull(in)
-              else substreamSource.push(elem)
+              if (substreamCancelled) pull(in) else substreamSource.push(elem)
             }
           } catch { case NonFatal(ex) ⇒ onUpstreamFailure(ex) }
         }

@@ -93,8 +93,7 @@ class LineTokenizer() extends Parsers {
     //skip the first three spaces, if present
     while (i < 3 && i < line.length && line.charAt(i) == ' ') i += 1
     //return the next char after the spaces or a newline if there are no more
-    if (i == line.length) '\n'
-    else line.charAt(i)
+    if (i == line.length) '\n' else line.charAt(i)
   }
 
   ////////////////////////

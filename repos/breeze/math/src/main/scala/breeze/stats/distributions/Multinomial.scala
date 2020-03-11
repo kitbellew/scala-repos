@@ -57,10 +57,7 @@ case class Multinomial[T, I](params: T)(implicit
     // if this is the first sample, use linear-time sampling algorithm
     // otherwise, set up and use the alias method
     val result =
-      if (haveSampled)
-        aliasTable.draw()
-      else
-        drawNaive()
+      if (haveSampled) aliasTable.draw() else drawNaive()
     haveSampled = true
     result
   }
@@ -91,10 +88,7 @@ case class Multinomial[T, I](params: T)(implicit
       val large = larger.pop()
       aliases(small) = large
       probs(large) -= (1d - probs(small))
-      if (probs(large) < 1)
-        smaller.push(large)
-      else
-        larger.push(large)
+      if (probs(large) < 1) smaller.push(large) else larger.push(large)
     }
 
     val outcomes = params.keysIterator.toIndexedSeq
@@ -131,10 +125,7 @@ case class AliasTable[I](
   def draw(): I = {
     val roll = rand.randInt(outcomes.length).get()
     val toss = rand.uniform.get()
-    if (toss < probs(roll))
-      outcomes(roll)
-    else
-      outcomes(aliases(roll))
+    if (toss < probs(roll)) outcomes(roll) else outcomes(aliases(roll))
   }
 }
 

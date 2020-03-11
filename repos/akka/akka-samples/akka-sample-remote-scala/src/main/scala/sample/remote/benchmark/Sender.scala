@@ -83,10 +83,8 @@ class Sender(path: String, totalMessages: Int, burstSize: Int, payloadSize: Int)
         s"Starting benchmark of $totalMessages messages with burst size $burstSize and payload size $payloadSize")
       startTime = System.nanoTime
       val remaining = sendBatch(actor, totalMessages)
-      if (remaining == 0)
-        actor ! Done
-      else
-        actor ! Continue(remaining, startTime, startTime, burstSize)
+      if (remaining == 0) actor ! Done
+      else actor ! Continue(remaining, startTime, startTime, burstSize)
 
     case c @ Continue(remaining, t0, t1, n) =>
       val now = System.nanoTime()
@@ -101,8 +99,7 @@ class Sender(path: String, totalMessages: Int, burstSize: Int, payloadSize: Int)
       }
 
       val nextRemaining = sendBatch(actor, remaining)
-      if (nextRemaining == 0)
-        actor ! Done
+      if (nextRemaining == 0) actor ! Done
       else if (duration >= 500)
         actor ! Continue(nextRemaining, now, now, burstSize)
       else

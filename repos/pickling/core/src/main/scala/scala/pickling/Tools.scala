@@ -332,13 +332,11 @@ abstract class ShareAnalyzer[U <: Universe](val u: U) extends RichTypes {
   }
 
   def shouldBotherAboutLooping(tpe: Type): Boolean = {
-    if (shareNothing) false
-    else canCauseLoops(tpe)
+    if (shareNothing) false else canCauseLoops(tpe)
   }
 
   def shouldBotherAboutCleaning(tpe: Type): Boolean = {
-    if (shareNothing) false
-    else true // TODO: need to be more precise here
+    if (shareNothing) false else true // TODO: need to be more precise here
   }
 }
 
@@ -444,8 +442,7 @@ abstract class Macro extends RichTypes { self =>
     import Compat._
 
     val candidates = c.enclosingImplicits
-    if (candidates.isEmpty)
-      return body
+    if (candidates.isEmpty) return body
     val ourPt = candidates.head.pt
 
     def debug(msg: Any) = {
@@ -519,8 +516,7 @@ abstract class Macro extends RichTypes { self =>
     }
     // val field = fir.field.get
     val owner =
-      if (fir.param.nonEmpty) fir.param.get.owner
-      else fir.accessor.get.owner
+      if (fir.param.nonEmpty) fir.param.get.owner else fir.accessor.get.owner
     val ownerSymbol = c.fresh(newTermName(fir.name + "Owner"))
     val firSymbol = c.fresh(newTermName(fir.name + "Symbol"))
     // TODO: make sure this works for:

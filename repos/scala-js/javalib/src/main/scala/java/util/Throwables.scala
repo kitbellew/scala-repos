@@ -12,8 +12,7 @@ class DuplicateFormatFlagsException private () extends IllegalFormatException {
   private var flags: String = null
   def this(f: String) = {
     this()
-    if (f == null)
-      throw new NullPointerException()
+    if (f == null) throw new NullPointerException()
     flags = f
   }
   def getFlags(): String = flags
@@ -27,8 +26,7 @@ class FormatFlagsConversionMismatchException private (private val c: Char)
   private var f: String = null
   def this(f: String, c: Char) = {
     this(c)
-    if (f == null)
-      throw new NullPointerException()
+    if (f == null) throw new NullPointerException()
     this.f = f
   }
   def getFlags(): String = f
@@ -49,8 +47,7 @@ class IllegalFormatConversionException private (private val c: Char)
   private var arg: Class[_] = null
   def this(c: Char, arg: Class[_]) = {
     this(c)
-    if (arg == null)
-      throw new NullPointerException()
+    if (arg == null) throw new NullPointerException()
     this.arg = arg
   }
   def getConversion(): Char = c
@@ -64,8 +61,7 @@ class IllegalFormatFlagsException private () extends IllegalFormatException {
   private var flags: String = null
   def this(f: String) = {
     this()
-    if (f == null)
-      throw new NullPointerException()
+    if (f == null) throw new NullPointerException()
     this.flags = f
   }
   def getFlags(): String = flags
@@ -112,8 +108,7 @@ class MissingFormatArgumentException private () extends IllegalFormatException {
   private var s: String = null
   def this(s: String) = {
     this()
-    if (s == null)
-      throw new NullPointerException()
+    if (s == null) throw new NullPointerException()
     this.s = s
   }
   def getFormatSpecifier(): String = s
@@ -124,8 +119,7 @@ class MissingFormatWidthException private () extends IllegalFormatException {
   private var s: String = null
   def this(s: String) = {
     this()
-    if (s == null)
-      throw new NullPointerException()
+    if (s == null) throw new NullPointerException()
     this.s = s
   }
   def getFormatSpecifier(): String = s
@@ -157,8 +151,7 @@ class UnknownFormatConversionException private ()
   private var s: String = null
   def this(s: String) = {
     this()
-    if (s == null)
-      throw new NullPointerException()
+    if (s == null) throw new NullPointerException()
     this.s = s
   }
   def getConversion(): String = s
@@ -169,8 +162,7 @@ class UnknownFormatFlagsException private () extends IllegalFormatException {
   private var flags: String = null
   def this(f: String) = {
     this()
-    if (f == null)
-      throw new NullPointerException()
+    if (f == null) throw new NullPointerException()
     this.flags = f
   }
   def getFlags(): String = flags

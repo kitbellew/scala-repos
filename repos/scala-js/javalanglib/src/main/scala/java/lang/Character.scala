@@ -237,20 +237,14 @@ object Character {
   }
 
   def digit(c: scala.Char, radix: Int): Int = {
-    if (radix > MAX_RADIX || radix < MIN_RADIX)
-      -1
-    else if (c >= '0' && c <= '9' && c - '0' < radix)
-      c - '0'
-    else if (c >= 'A' && c <= 'Z' && c - 'A' < radix - 10)
-      c - 'A' + 10
-    else if (c >= 'a' && c <= 'z' && c - 'a' < radix - 10)
-      c - 'a' + 10
+    if (radix > MAX_RADIX || radix < MIN_RADIX) -1
+    else if (c >= '0' && c <= '9' && c - '0' < radix) c - '0'
+    else if (c >= 'A' && c <= 'Z' && c - 'A' < radix - 10) c - 'A' + 10
+    else if (c >= 'a' && c <= 'z' && c - 'a' < radix - 10) c - 'a' + 10
     else if (c >= '\uFF21' && c <= '\uFF3A' &&
-             c - '\uFF21' < radix - 10)
-      c - '\uFF21' + 10
+             c - '\uFF21' < radix - 10) c - '\uFF21' + 10
     else if (c >= '\uFF41' && c <= '\uFF5A' &&
-             c - '\uFF41' < radix - 10)
-      c - '\uFF21' + 10
+             c - '\uFF41' < radix - 10) c - '\uFF21' + 10
     else -1
   }
 
@@ -330,8 +324,7 @@ object Character {
   def isLowerCase(c: Int): scala.Boolean = {
     if (c < 256)
       c == '\u00AA' || c == '\u00BA' || getTypeLT256(c) == LOWERCASE_LETTER
-    else
-      isLowerCaseGE256(c)
+    else isLowerCaseGE256(c)
   }
 
   private[this] def isLowerCaseGE256(c: Int): scala.Boolean = {
@@ -366,8 +359,7 @@ object Character {
     isTitleCase(c.toInt)
 
   def isTitleCase(cp: Int): scala.Boolean =
-    if (cp < 256) false
-    else isTitleCaseImpl(getTypeGE256(cp))
+    if (cp < 256) false else isTitleCaseImpl(getTypeGE256(cp))
 
   @inline private[this] def isTitleCaseImpl(tpe: Int): scala.Boolean =
     tpe == TITLECASE_LETTER
@@ -376,8 +368,7 @@ object Character {
     isDigit(c.toInt)
 
   def isDigit(cp: Int): scala.Boolean =
-    if (cp < 256) '0' <= cp && cp <= '9'
-    else isDigitImpl(getTypeGE256(cp))
+    if (cp < 256) '0' <= cp && cp <= '9' else isDigitImpl(getTypeGE256(cp))
 
   @inline private[this] def isDigitImpl(tpe: Int): scala.Boolean =
     tpe == DECIMAL_DIGIT_NUMBER
@@ -386,9 +377,7 @@ object Character {
     isDefined(c.toInt)
 
   def isDefined(c: scala.Int): scala.Boolean = {
-    if (c < 0) false
-    else if (c < 888) true
-    else getTypeGE256(c) != UNASSIGNED
+    if (c < 0) false else if (c < 888) true else getTypeGE256(c) != UNASSIGNED
   }
 
   def isLetter(c: scala.Char): scala.Boolean = isLetter(c.toInt)
@@ -528,8 +517,7 @@ object Character {
   //def reverseBytes(ch: scala.Char): scala.Char
 
   def toChars(codePoint: Int): Array[Char] = {
-    if (!isValidCodePoint(codePoint))
-      throw new IllegalArgumentException()
+    if (!isValidCodePoint(codePoint)) throw new IllegalArgumentException()
 
     if (isSupplementaryCodePoint(codePoint)) {
       val cpPrime = codePoint - 0x10000
@@ -893,8 +881,7 @@ object Character {
   }
 
   private[this] def uncompressDeltas(deltas: Array[Int]): Array[Int] = {
-    for (i <- 1 until deltas.length)
-      deltas(i) += deltas(i - 1)
+    for (i <- 1 until deltas.length) deltas(i) += deltas(i - 1)
     deltas
   }
 }

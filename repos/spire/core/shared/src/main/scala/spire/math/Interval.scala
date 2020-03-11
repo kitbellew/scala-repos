@@ -602,10 +602,8 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
 
   def pow(k: Int)(implicit r: Ring[A]): Interval[A] = {
     def loop(b: Interval[A], k: Int, extra: Interval[A]): Interval[A] =
-      if (k == 1)
-        b * extra
-      else
-        loop(b * b, k >>> 1, if ((k & 1) == 1) b * extra else extra)
+      if (k == 1) b * extra
+      else loop(b * b, k >>> 1, if ((k & 1) == 1) b * extra else extra)
 
     if (k < 0) { throw new IllegalArgumentException(s"negative exponent: $k") }
     else if (k == 0) { Interval.point(r.one) }
@@ -869,12 +867,9 @@ object Interval {
       lower: A,
       upper: A,
       flags: Int): Interval[A] =
-    if (lower < upper)
-      Bounded(lower, upper, flags)
-    else if (lower === upper && flags == 0)
-      Point(lower)
-    else
-      Interval.empty[A]
+    if (lower < upper) Bounded(lower, upper, flags)
+    else if (lower === upper && flags == 0) Point(lower)
+    else Interval.empty[A]
 
   def empty[A](implicit o: Order[A]): Interval[A] = Empty[A]
 

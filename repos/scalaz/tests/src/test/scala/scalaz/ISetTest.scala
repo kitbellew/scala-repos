@@ -108,10 +108,8 @@ object ISetTest extends SpecLite {
     (0 until a.size) foreach { i => a.lookupIndex(l(i)) must_=== Some(i) }
     (0 until 5) foreach { _ =>
       val r = Random.nextInt()
-      if (a.member(r))
-        a.lookupIndex(r) must_=== Some(l.indexOf(r))
-      else
-        a.lookupIndex(r) must_=== None
+      if (a.member(r)) a.lookupIndex(r) must_=== Some(l.indexOf(r))
+      else a.lookupIndex(r) must_=== None
     }
   }
 
@@ -159,19 +157,13 @@ object ISetTest extends SpecLite {
   "sound delete" ! forAll { (a: ISet[Int], i: Int) =>
     val b = a.delete(i)
     structurallySound(b)
-    if (a.member(i))
-      (a.size - b.size) must_=== 1
-    else
-      a must_=== b
+    if (a.member(i)) (a.size - b.size) must_=== 1 else a must_=== b
   }
 
   "sound insert" ! forAll { (a: ISet[Int], i: Int) =>
     val b = a.insert(i)
     structurallySound(b)
-    if (a.member(i))
-      a must_=== b
-    else
-      (b.size - a.size) must_=== 1
+    if (a.member(i)) a must_=== b else (b.size - a.size) must_=== 1
   }
 
   "sound union" ! forAll { (a: ISet[Int], b: ISet[Int]) =>

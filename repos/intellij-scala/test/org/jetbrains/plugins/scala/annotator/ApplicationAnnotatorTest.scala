@@ -41,29 +41,23 @@ class ApplicationAnnotatorTest extends SimpleTestCase {
   def testMissedParametersClause() {
     assertMatches(messages("def f(a: Any, b: Any) {}; f")) {
       case Error("f", "Missing arguments for method f(Any, Any)") ::
-            Error(
-              "f",
-              "Cannot resolve reference f with such signature") :: Nil =>
+          Error("f", "Cannot resolve reference f with such signature") :: Nil =>
     }
   }
 
   def testExcessArguments() {
     assertMatches(messages("def f() {}; f(null, Unit)")) {
       case Error("null", "Too many arguments for method f") ::
-            Error("f", "Cannot resolve reference f with such signature") ::
-            Error("Unit", "Too many arguments for method f") ::
-            Error(
-              "f",
-              "Cannot resolve reference f with such signature") :: Nil =>
+          Error("f", "Cannot resolve reference f with such signature") ::
+          Error("Unit", "Too many arguments for method f") ::
+          Error("f", "Cannot resolve reference f with such signature") :: Nil =>
     }
   }
 
   def testMissedParameters() {
     assertMatches(messages("def f(a: Any, b: Any) {}; f()")) {
       case Error("()", "Unspecified value parameters: a: Any, b: Any") ::
-            Error(
-              "f",
-              "Cannot resolve reference f with such signature") :: Nil =>
+          Error("f", "Cannot resolve reference f with such signature") :: Nil =>
     }
   }
 
@@ -71,14 +65,14 @@ class ApplicationAnnotatorTest extends SimpleTestCase {
     assertMatches(
       messages("def f(a: Any, b: Any, c: Any) {}; f(c = null, null, Unit)")) {
       case Error("null", "Positional after named argument") ::
-            Error("Unit", "Positional after named argument") :: Nil =>
+          Error("Unit", "Positional after named argument") :: Nil =>
     }
   }
 
   def testNamedDuplicates() {
     assertMatches(messages("def f(a: Any) {}; f(a = null, a = Unit)")) {
       case Error("a", "Parameter specified multiple times") ::
-            Error("a", "Parameter specified multiple times") :: Nil =>
+          Error("a", "Parameter specified multiple times") :: Nil =>
     }
   }
 
@@ -91,11 +85,9 @@ class ApplicationAnnotatorTest extends SimpleTestCase {
   def testTypeMismatch() {
     assertMatches(messages("def f(a: A, b: B) {}; f(B, A)")) {
       case Error("B", "Type mismatch, expected: A, actual: B.type") ::
-            Error("f", "Cannot resolve reference f with such signature") ::
-            Error("A", "Type mismatch, expected: B, actual: A.type") ::
-            Error(
-              "f",
-              "Cannot resolve reference f with such signature") :: Nil =>
+          Error("f", "Cannot resolve reference f with such signature") ::
+          Error("A", "Type mismatch, expected: B, actual: A.type") ::
+          Error("f", "Cannot resolve reference f with such signature") :: Nil =>
     }
   }
 
@@ -109,9 +101,9 @@ class ApplicationAnnotatorTest extends SimpleTestCase {
     assertMatches(
       messages("def f(a: Any, b: Any) {}; f(Seq(null): _*, Seq(null): _*)")) {
       case Error("Seq(null): _*", "Expansion for non-repeated parameter") ::
-            Error(
-              "Seq(null): _*",
-              "Expansion for non-repeated parameter") :: Nil =>
+          Error(
+            "Seq(null): _*",
+            "Expansion for non-repeated parameter") :: Nil =>
     }
   }
 

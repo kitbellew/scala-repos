@@ -13,19 +13,16 @@ class LongOverflowArithTest extends WordSpec {
     val maxSqrt = 3037000499L
 
     def randLong() = {
-      if (random.nextInt > 0)
-        random.nextLong() % maxSqrt
-      else
-        random.nextLong()
+      if (random.nextInt > 0) random.nextLong() % maxSqrt else random.nextLong()
     }
 
     "add" in {
       def test(a: Long, b: Long) {
         val bigC = BigInt(a) + BigInt(b)
-        if (bigC.abs > Long.MaxValue)
-          intercept[LongOverflowException] { LongOverflowArith.add(a, b) }
-        else
-          assert(LongOverflowArith.add(a, b) == bigC.toLong)
+        if (bigC.abs > Long.MaxValue) intercept[LongOverflowException] {
+          LongOverflowArith.add(a, b)
+        }
+        else assert(LongOverflowArith.add(a, b) == bigC.toLong)
       }
 
       for (i <- 0 until 1000) { test(randLong(), randLong()) }
@@ -34,10 +31,10 @@ class LongOverflowArithTest extends WordSpec {
     "sub" in {
       def test(a: Long, b: Long) {
         val bigC = BigInt(a) - BigInt(b)
-        if (bigC.abs > Long.MaxValue)
-          intercept[LongOverflowException] { LongOverflowArith.sub(a, b) }
-        else
-          assert(LongOverflowArith.sub(a, b) == bigC.toLong)
+        if (bigC.abs > Long.MaxValue) intercept[LongOverflowException] {
+          LongOverflowArith.sub(a, b)
+        }
+        else assert(LongOverflowArith.sub(a, b) == bigC.toLong)
       }
 
       for (i <- 0 until 1000) { test(randLong(), randLong()) }
@@ -87,10 +84,10 @@ class LongOverflowArithTest extends WordSpec {
 
       def test(a: Long, b: Long) {
         val bigC = BigInt(a) * BigInt(b)
-        if (bigC.abs > Long.MaxValue)
-          intercept[LongOverflowException] { LongOverflowArith.mul(a, b) }
-        else
-          assert(LongOverflowArith.mul(a, b) == bigC.toLong)
+        if (bigC.abs > Long.MaxValue) intercept[LongOverflowException] {
+          LongOverflowArith.mul(a, b)
+        }
+        else assert(LongOverflowArith.mul(a, b) == bigC.toLong)
       }
 
       for (i <- 0 until 1000) {

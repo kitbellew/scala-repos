@@ -282,8 +282,7 @@ object ClusterSingletonManager {
         val before = membersByAge.headOption
         block()
         val after = membersByAge.headOption
-        if (before != after)
-          changes :+= OldestChanged(after.map(_.address))
+        if (before != after) changes :+= OldestChanged(after.map(_.address))
       }
 
       def handleInitial(state: CurrentClusterState): Unit = {
@@ -301,16 +300,14 @@ object ClusterSingletonManager {
       }
 
       def add(m: Member): Unit = {
-        if (matchingRole(m))
-          trackChange { () ⇒
-            membersByAge -= m // replace
-            membersByAge += m
-          }
+        if (matchingRole(m)) trackChange { () ⇒
+          membersByAge -= m // replace
+          membersByAge += m
+        }
       }
 
       def remove(m: Member): Unit = {
-        if (matchingRole(m))
-          trackChange { () ⇒ membersByAge -= m }
+        if (matchingRole(m)) trackChange { () ⇒ membersByAge -= m }
       }
 
       def sendFirstChange(): Unit = {
@@ -520,8 +517,7 @@ class ClusterSingletonManager(
         gotoOldest()
       else if (oldestOption == selfAddressOption)
         goto(BecomingOldest) using BecomingOldestData(None)
-      else
-        goto(Younger) using YoungerData(oldestOption)
+      else goto(Younger) using YoungerData(oldestOption)
   }
 
   when(Younger) {
@@ -572,8 +568,7 @@ class ClusterSingletonManager(
       stay
 
     case Event(HandOverDone, BecomingOldestData(Some(previousOldest))) ⇒
-      if (sender().path.address == previousOldest)
-        gotoOldest()
+      if (sender().path.address == previousOldest) gotoOldest()
       else {
         logInfo(
           "Ignoring HandOverDone in BecomingOldest from [{}]. Expected previous oldest [{}]",
@@ -591,8 +586,8 @@ class ClusterSingletonManager(
       stay
 
     case Event(
-        DelayedMemberRemoved(m),
-        BecomingOldestData(Some(previousOldest)))
+          DelayedMemberRemoved(m),
+          BecomingOldestData(Some(previousOldest)))
         if m.address == previousOldest ⇒
       logInfo("Previous oldest [{}] removed", previousOldest)
       addRemoved(m.address)
@@ -630,8 +625,7 @@ class ClusterSingletonManager(
         logInfo(
           "Timeout in BecomingOldest. Previous oldest unknown, removed and no TakeOver request.")
         gotoOldest()
-      } else if (cluster.isTerminated)
-        stop()
+      } else if (cluster.isTerminated) stop()
       else
         throw new ClusterSingletonManagerIsStuck(
           s"Becoming singleton oldest was stuck because previous oldest [${previousOldestOption}] is unresponsive")
@@ -644,8 +638,7 @@ class ClusterSingletonManager(
         removalMargin,
         self,
         DelayedMemberRemoved(m))(context.dispatcher)
-    } else
-      self ! DelayedMemberRemoved(m)
+    } else self ! DelayedMemberRemoved(m)
   }
 
   def gotoOldest(): State = {
@@ -656,8 +649,8 @@ class ClusterSingletonManager(
 
   when(Oldest) {
     case Event(
-        OldestChanged(oldestOption),
-        OldestData(singleton, singletonTerminated)) ⇒
+          OldestChanged(oldestOption),
+          OldestData(singleton, singletonTerminated)) ⇒
       oldestChangedReceived = true
       logInfo(
         "Oldest observed OldestChanged: [{} -> {}]",
@@ -716,8 +709,7 @@ class ClusterSingletonManager(
           handOverRetryInterval,
           repeat = false)
         stay
-      } else if (cluster.isTerminated)
-        stop()
+      } else if (cluster.isTerminated) stop()
       else
         throw new ClusterSingletonManagerIsStuck(
           s"Expected hand-over to [${newOldestOption}] never occured")
@@ -731,8 +723,8 @@ class ClusterSingletonManager(
       stop()
 
     case Event(
-        MemberRemoved(m, _),
-        WasOldestData(singleton, singletonTerminated, Some(newOldest)))
+          MemberRemoved(m, _),
+          WasOldestData(singleton, singletonTerminated, Some(newOldest)))
         if !selfExited && m.address == newOldest ⇒
       addRemoved(m.address)
       gotoHandingOver(singleton, singletonTerminated, None)
@@ -778,10 +770,8 @@ class ClusterSingletonManager(
     if (removed.contains(cluster.selfAddress)) {
       logInfo("Self removed, stopping ClusterSingletonManager")
       stop()
-    } else if (selfExited)
-      goto(End) using EndData
-    else
-      goto(Younger) using YoungerData(newOldest)
+    } else if (selfExited) goto(End) using EndData
+    else goto(Younger) using YoungerData(newOldest)
   }
 
   when(End) {

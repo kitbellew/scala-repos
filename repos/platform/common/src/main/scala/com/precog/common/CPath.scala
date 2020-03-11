@@ -79,8 +79,7 @@ sealed trait CPath { self =>
           }
 
         case Nil =>
-          if (toDrop.isEmpty) Some(CPath(nodes))
-          else None
+          if (toDrop.isEmpty) Some(CPath(nodes)) else None
       }
     }
 
@@ -314,8 +313,7 @@ object CPath {
       RootNode(Seq(LeafNode(values.head)))
     else if (cpaths0.length == values.length)
       makeStructuredTree(cpaths0.sorted zip values)
-    else
-      RootNode(Seq.empty[CPathTree[A]])
+    else RootNode(Seq.empty[CPathTree[A]])
   }
 
   implicit def singleNodePath(node: CPathNode) = CPath(node)

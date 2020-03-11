@@ -46,14 +46,8 @@ class IntegralComparator
     } else if (isIntegral(a1) && isIntegral(a2)) {
       val long1 = a1.asInstanceOf[Number].longValue
       val long2 = a2.asInstanceOf[Number].longValue
-      if (long1 < long2)
-        -1
-      else if (long1 > long2)
-        1
-      else
-        0
-    } else
-      a1.asInstanceOf[Comparable[AnyRef]].compareTo(a2)
+      if (long1 < long2) -1 else if (long1 > long2) 1 else 0
+    } else a1.asInstanceOf[Comparable[AnyRef]].compareTo(a2)
   }
 
   override def hashCode(obj: AnyRef): Int = {

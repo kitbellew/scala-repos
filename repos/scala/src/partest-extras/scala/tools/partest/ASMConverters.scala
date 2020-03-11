@@ -293,14 +293,14 @@ object ASMConverters {
         case (l1 @ Label(_), l2 @ Label(_)) => sameLabel(l1, l2)
         case (Jump(op1, l1), Jump(op2, l2)) => op1 == op2 && sameLabel(l1, l2)
         case (
-            LookupSwitch(op1, l1, keys1, ls1),
-            LookupSwitch(op2, l2, keys2, ls2)) =>
+              LookupSwitch(op1, l1, keys1, ls1),
+              LookupSwitch(op2, l2, keys2, ls2)) =>
           op1 == op2 && sameLabel(l1, l2) && keys1 == keys2 && sameLabels(
             ls1,
             ls2)
         case (
-            TableSwitch(op1, min1, max1, l1, ls1),
-            TableSwitch(op2, min2, max2, l2, ls2)) =>
+              TableSwitch(op1, min1, max1, l1, ls1),
+              TableSwitch(op2, min2, max2, l2, ls2)) =>
           op1 == op2 && min1 == min2 && max1 == max2 && sameLabel(
             l1,
             l2) && sameLabels(ls1, ls2)

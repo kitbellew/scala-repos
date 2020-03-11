@@ -22,8 +22,7 @@ private[tournament] case class WaitingUsers(
 
   // skips the most recent user if odd
   def evenNumber: List[String] = {
-    if (isOdd) hash.toList.sortBy(-_._2.getMillis).drop(1).map(_._1)
-    else all
+    if (isOdd) hash.toList.sortBy(-_._2.getMillis).drop(1).map(_._1) else all
   }
 
   def waitSecondsOf(userId: String) = hash get userId map { d =>

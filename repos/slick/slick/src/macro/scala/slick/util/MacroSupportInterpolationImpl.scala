@@ -98,8 +98,7 @@ object MacroSupportInterpolationImpl {
         }
         pos += 1
       }
-      if (!sb.isEmpty)
-        exprs += append(Literal(Constant(sb.toString)))
+      if (!sb.isEmpty) exprs += append(Literal(Constant(sb.toString)))
       exprs.toList
     }
 
@@ -116,12 +115,9 @@ object MacroSupportInterpolationImpl {
       marker match {
         case '`' =>
           exprs ++= appendString(s.substring(0, len - 1))
-          if (ae.actualType <:< stringType)
-            exprs += append(quoteIdentifier(a))
-          else if (ae.actualType <:< symbolType)
-            exprs += append(symbolName(a))
-          else
-            ctx.abort(ae.tree.pos, "Unknown type. Must be Node or Symbol.")
+          if (ae.actualType <:< stringType) exprs += append(quoteIdentifier(a))
+          else if (ae.actualType <:< symbolType) exprs += append(symbolName(a))
+          else ctx.abort(ae.tree.pos, "Unknown type. Must be Node or Symbol.")
         case '!' =>
           exprs ++= appendString(s.substring(0, len - 1))
           exprs += Apply(
@@ -133,10 +129,8 @@ object MacroSupportInterpolationImpl {
           //println("### is String: "+(ae.actualType <:< stringType))
           //println("### is Node: "+(ae.actualType <:< nodeType))
           exprs += (
-            if (ae.actualType <:< stringType)
-              append(a)
-            else if (ae.actualType <:< definitions.AnyValTpe)
-              append(toStr(a))
+            if (ae.actualType <:< stringType) append(a)
+            else if (ae.actualType <:< definitions.AnyValTpe) append(toStr(a))
             else if (ae.actualType <:< nodeType)
               Apply(Ident(TermName("expr")), List(a, Literal(Constant(false))))
             else

@@ -71,8 +71,7 @@ object LineNumber {
 
     // there is no .headOption on Iterator. WTF?
     def headOption[T](it: Iterator[T]): Option[T] =
-      if (it.hasNext) Some(it.next)
-      else None
+      if (it.hasNext) Some(it.next) else None
 
     val scaldingJobCaller = headOption(
       stack.iterator

@@ -621,8 +621,7 @@ private[stream] final class GraphInterpreter(
   // Decodes and processes a single event for the given connection
   private def processEvent(connection: Int): Unit = {
     def safeLogics(id: Int) =
-      if (id == Boundary) null
-      else logics(id)
+      if (id == Boundary) null else logics(id)
 
     def processElement(): Unit = {
       if (Debug)
@@ -819,14 +818,12 @@ private[stream] final class GraphInterpreter(
 
     def nameIn(port: Int): String = {
       val owner = assembly.inOwners(port)
-      if (owner == Boundary) "Out" + port
-      else "N" + owner
+      if (owner == Boundary) "Out" + port else "N" + owner
     }
 
     def nameOut(port: Int): String = {
       val owner = assembly.outOwners(port)
-      if (owner == Boundary) "In" + port
-      else "N" + owner
+      if (owner == Boundary) "In" + port else "N" + owner
     }
 
     for (i ← portStates.indices) {

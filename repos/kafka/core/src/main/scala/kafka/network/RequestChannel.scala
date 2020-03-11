@@ -102,8 +102,7 @@ object RequestChannel extends Logging {
               s"Error parsing request header. Our best guess of the apiKey is: $requestId",
               ex)
         }
-      } else
-        null
+      } else null
     val body: AbstractRequest =
       if (requestObj == null)
         try AbstractRequest.getRequest(header.apiKey, header.apiVersion, buffer)
@@ -113,17 +112,14 @@ object RequestChannel extends Logging {
               s"Error getting request for apiKey: ${header.apiKey} and apiVersion: ${header.apiVersion}",
               ex)
         }
-      else
-        null
+      else null
 
     buffer = null
     private val requestLogger = Logger.getLogger("kafka.request.logger")
 
     private def requestDesc(details: Boolean): String = {
-      if (requestObj != null)
-        requestObj.describe(details)
-      else
-        header.toString + " -- " + body.toString
+      if (requestObj != null) requestObj.describe(details)
+      else header.toString + " -- " + body.toString
     }
 
     trace(
@@ -270,8 +266,7 @@ class RequestChannel(val numProcessors: Int, val queueSize: Int)
   /** Send a response back to the socket server to be sent over the network */
   def sendResponse(response: RequestChannel.Response) {
     responseQueues(response.processor).put(response)
-    for (onResponse <- responseListeners)
-      onResponse(response.processor)
+    for (onResponse <- responseListeners) onResponse(response.processor)
   }
 
   /** No operation to take for the request, need to read more over the network */
@@ -282,8 +277,7 @@ class RequestChannel(val numProcessors: Int, val queueSize: Int)
         request,
         null,
         RequestChannel.NoOpAction))
-    for (onResponse <- responseListeners)
-      onResponse(processor)
+    for (onResponse <- responseListeners) onResponse(processor)
   }
 
   /** Close the connection for the request */
@@ -294,8 +288,7 @@ class RequestChannel(val numProcessors: Int, val queueSize: Int)
         request,
         null,
         RequestChannel.CloseConnectionAction))
-    for (onResponse <- responseListeners)
-      onResponse(processor)
+    for (onResponse <- responseListeners) onResponse(processor)
   }
 
   /** Get the next request or block until specified time has elapsed */

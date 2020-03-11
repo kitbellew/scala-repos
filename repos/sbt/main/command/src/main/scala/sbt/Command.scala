@@ -228,10 +228,7 @@ object Help {
       case None =>
         val brief = aligned("  ", "   ", h.brief).mkString("\n", "\n", "\n")
         val more = h.more.toSeq.sorted
-        if (more.isEmpty)
-          brief
-        else
-          brief + "\n" + moreMessage(more)
+        if (more.isEmpty) brief else brief + "\n" + moreMessage(more)
     }
   def moreMessage(more: Seq[String]): String =
     more.mkString(

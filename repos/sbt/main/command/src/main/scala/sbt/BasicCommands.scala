@@ -355,8 +355,7 @@ object BasicCommands {
     printAliases(aliases(s, (n, v) => n == name))
   def printAliases(s: State): Unit = printAliases(allAliases(s))
   def printAliases(as: Seq[(String, String)]): Unit =
-    for ((name, value) <- as)
-      println("\t" + name + " = " + value)
+    for ((name, value) <- as) println("\t" + name + " = " + value)
 
   def aliasNames(s: State): Seq[String] = allAliases(s).map(_._1)
   def allAliases(s: State): Seq[(String, String)] = aliases(s, (n, v) => true)

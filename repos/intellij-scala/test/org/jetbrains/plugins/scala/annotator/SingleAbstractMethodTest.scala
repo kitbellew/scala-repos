@@ -144,7 +144,7 @@ class SingleAbstractMethodTest
       case Error("((j: Int) => j)", typeMismatch()) :: Error(
             "((j: Int) => j)",
             doesNotConform()) ::
-            Error("j", doesNotConform()) :: Nil =>
+          Error("j", doesNotConform()) :: Nil =>
     }
   }
 

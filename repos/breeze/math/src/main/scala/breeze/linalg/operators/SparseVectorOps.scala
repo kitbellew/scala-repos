@@ -106,8 +106,7 @@ trait SparseVector_DenseVector_Ops { this: SparseVector.type =>
         cforRange(0 until a.activeSize) { i =>
           val ind = a.indexAt(i)
           val res: T = op(a.valueAt(i), b(ind))
-          if (res != 0)
-            result.add(ind, res)
+          if (res != 0) result.add(ind, res)
         }
 
         result.toSparseVector(true, true)
@@ -295,8 +294,7 @@ trait DenseVector_SparseVector_Ops { this: SparseVector.type =>
         cforRange(0 until b.activeSize) { i =>
           val ind = b.indexAt(i)
           val res: T = op(a(ind), b.valueAt(i))
-          if (res != 0)
-            result.add(ind, res)
+          if (res != 0) result.add(ind, res)
         }
 
         result.toSparseVector(true, true)
@@ -798,8 +796,7 @@ trait SparseVectorOps { this: SparseVector.type =>
         var i: Int = 0
         while (i < a.length) {
           val r = op(a(i), b)
-          if (r != f.zero)
-            result.add(i, r)
+          if (r != f.zero) result.add(i, r)
           i += 1
         }
         result.toSparseVector(true, true)
@@ -846,8 +843,7 @@ trait SparseVectorOps { this: SparseVector.type =>
         var i: Int = 0
         while (i < a.length) {
           val r = op(a(i), b)
-          if (r != zero)
-            result.add(i, r)
+          if (r != zero) result.add(i, r)
           i += 1
         }
         result.toSparseVector(true, true)
@@ -871,16 +867,14 @@ trait SparseVectorOps { this: SparseVector.type =>
           var i: Int = 0
           while (i < a.length) {
             val r = op(a(i), b)
-            if (r != zero)
-              result.add(i, r)
+            if (r != zero) result.add(i, r)
             i += 1
           }
         } else {
           var i: Int = 0
           cforRange(0 until a.activeSize) { i =>
             val r = op(a.valueAt(i), b)
-            if (r != zero)
-              result.add(a.indexAt(i), r)
+            if (r != zero) result.add(a.indexAt(i), r)
           }
         }
         result.toSparseVector(true, true)
@@ -1020,10 +1014,8 @@ trait SparseVectorOps { this: SparseVector.type =>
         var boff: Int = 0
 
         while (aoff < asize && boff < bsize) {
-          if (a.indexAt(aoff) < b.indexAt(boff))
-            aoff += 1
-          else if (b.indexAt(boff) < a.indexAt(aoff))
-            boff += 1
+          if (a.indexAt(aoff) < b.indexAt(boff)) aoff += 1
+          else if (b.indexAt(boff) < a.indexAt(aoff)) boff += 1
           else {
             result += a.valueAt(aoff) * b.valueAt(boff)
             aoff += 1

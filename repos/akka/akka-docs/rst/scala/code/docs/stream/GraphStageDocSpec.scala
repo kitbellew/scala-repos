@@ -141,8 +141,7 @@ class GraphStageDocSpec extends AkkaSpec {
           new InHandler {
             override def onPush(): Unit = {
               val elem = grab(in)
-              if (p(elem)) push(out, elem)
-              else pull(in)
+              if (p(elem)) push(out, elem) else pull(in)
             }
           })
         setHandler(

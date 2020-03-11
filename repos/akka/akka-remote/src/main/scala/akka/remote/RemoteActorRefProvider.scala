@@ -313,12 +313,11 @@ private[akka] class RemoteActorRefProvider(
 
       val elems = path.elements
       val lookup =
-        if (lookupDeploy)
-          elems.head match {
-            case "user" ⇒ deployer.lookup(elems.drop(1))
-            case "remote" ⇒ lookupRemotes(elems)
-            case _ ⇒ None
-          }
+        if (lookupDeploy) elems.head match {
+          case "user" ⇒ deployer.lookup(elems.drop(1))
+          case "remote" ⇒ lookupRemotes(elems)
+          case _ ⇒ None
+        }
         else None
 
       val deployment = {

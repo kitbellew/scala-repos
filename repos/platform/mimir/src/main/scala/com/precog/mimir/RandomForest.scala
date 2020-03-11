@@ -130,8 +130,7 @@ trait TreeMaker[ /*@specialized(Double) */ A] {
       var i = indices.length
       while (i < opts.features) {
         val j = nextInt(i + 1)
-        if (j < indices.length)
-          indices(j) = i
+        if (j < indices.length) indices(j) = i
         i += 1
       }
       indices

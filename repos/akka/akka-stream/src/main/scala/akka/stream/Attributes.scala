@@ -39,10 +39,7 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
     if (attributeList.isEmpty) java.util.Collections.emptyList()
     else {
       val result = new java.util.ArrayList[T]
-      attributeList.foreach { a ⇒
-        if (c.isInstance(a))
-          result.add(c.cast(a))
-      }
+      attributeList.foreach { a ⇒ if (c.isInstance(a)) result.add(c.cast(a)) }
       result
     }
 
@@ -154,18 +151,17 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
         i: Iterator[Attribute],
         first: String,
         buf: StringBuilder): String =
-      if (i.hasNext)
-        i.next() match {
-          case Name(n) ⇒
-            // FIXME this URLEncode is a bug IMO, if that format is important then that is how it should be store in Name
-            val nn = URLEncoder.encode(n, "UTF-8")
-            if (buf ne null) concatNames(i, null, buf.append('-').append(nn))
-            else if (first ne null) {
-              val b = new StringBuilder((first.length() + nn.length()) * 2)
-              concatNames(i, null, b.append(first).append('-').append(nn))
-            } else concatNames(i, nn, null)
-          case _ ⇒ concatNames(i, first, buf)
-        }
+      if (i.hasNext) i.next() match {
+        case Name(n) ⇒
+          // FIXME this URLEncode is a bug IMO, if that format is important then that is how it should be store in Name
+          val nn = URLEncoder.encode(n, "UTF-8")
+          if (buf ne null) concatNames(i, null, buf.append('-').append(nn))
+          else if (first ne null) {
+            val b = new StringBuilder((first.length() + nn.length()) * 2)
+            concatNames(i, null, b.append(first).append('-').append(nn))
+          } else concatNames(i, nn, null)
+        case _ ⇒ concatNames(i, first, buf)
+      }
       else if (buf eq null) first
       else buf.toString
 
@@ -213,8 +209,7 @@ object Attributes {
     * If the name is null or empty the name is ignored, i.e. [[#none]] is returned.
     */
   def name(name: String): Attributes =
-    if (name == null || name.isEmpty) none
-    else Attributes(Name(name))
+    if (name == null || name.isEmpty) none else Attributes(Name(name))
 
   /**
     * Specifies the initial and maximum size of the input buffer.

@@ -197,8 +197,7 @@ private[json] object Meta {
             (mkContainer(t, `(*,*) -> *`, 1, Dict.apply _), false)
           else if (classOf[Seq[_]].isAssignableFrom(raw))
             (mkContainer(t, `* -> *`, 0, Col.apply(info, _)), false)
-          else
-            mkConstructor(t)
+          else mkConstructor(t)
         case aType: GenericArrayType =>
           // Couldn't find better way to reconstruct proper array type:
           val raw = java.lang.reflect.Array
@@ -215,8 +214,7 @@ private[json] object Meta {
             (
               mkContainer(t, `* -> *`, 0, Col.apply(TypeInfo(raw, None), _)),
               false)
-          else
-            mkConstructor(t)
+          else mkConstructor(t)
         case x => (Constructor(TypeInfo(classOf[AnyRef], None), Nil), false)
       }
 

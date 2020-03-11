@@ -75,9 +75,7 @@ object ComparingUtil {
       }
       def getVariance(tp: PsiTypeParameter) = tp match {
         case scParam: ScTypeParam =>
-          if (scParam.isCovariant) 1
-          else if (scParam.isContravariant) -1
-          else 0
+          if (scParam.isCovariant) 1 else if (scParam.isContravariant) -1 else 0
         case _ => 0
       }
       tps1.zip(tps2).zip(tparams.map(getVariance)) exists {

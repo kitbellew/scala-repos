@@ -62,8 +62,7 @@ abstract class MultiNodeConfig {
         }
         akka.remote.log-remote-lifecycle-events = on
         """)
-    else
-      ConfigFactory.empty
+    else ConfigFactory.empty
 
   /**
     * Construct a RoleName and return it, to be used as an identifier in the

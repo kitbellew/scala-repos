@@ -62,8 +62,7 @@ class InputStreamReader(
   override def read(): Int = {
     ensureOpen()
 
-    if (outBuf.hasRemaining) outBuf.get()
-    else super.read()
+    if (outBuf.hasRemaining) outBuf.get() else super.read()
   }
 
   def read(cbuf: Array[Char], off: Int, len: Int): Int = {
@@ -111,8 +110,7 @@ class InputStreamReader(
       val charsRead = readImpl(outBuf)
       if (charsRead == InputStreamReader.Overflow)
         loopWithOutBuf(desiredOutBufSize * 2)
-      else
-        charsRead
+      else charsRead
     }
 
     val charsRead = loopWithOutBuf(2 * len)
@@ -154,8 +152,7 @@ class InputStreamReader(
         if (decoder.flush(out).isOverflow) { InputStreamReader.Overflow }
         else {
           // Done
-          if (out.position == initPos) -1
-          else out.position - initPos
+          if (out.position == initPos) -1 else out.position - initPos
         }
       } else {
         // We need to read more from the underlying input stream
@@ -179,10 +176,8 @@ class InputStreamReader(
         val bytesRead =
           in.read(inBuf.array, inBuf.limit, inBuf.capacity - inBuf.limit)
 
-        if (bytesRead == -1)
-          endOfInput = true
-        else
-          inBuf.limit(inBuf.limit + bytesRead)
+        if (bytesRead == -1) endOfInput = true
+        else inBuf.limit(inBuf.limit + bytesRead)
 
         readImpl(out)
       }
@@ -202,8 +197,7 @@ class InputStreamReader(
     outBuf.hasRemaining || in.available() > 0
 
   private def ensureOpen(): Unit = {
-    if (closed)
-      throw new IOException("Stream closed")
+    if (closed) throw new IOException("Stream closed")
   }
 
 }

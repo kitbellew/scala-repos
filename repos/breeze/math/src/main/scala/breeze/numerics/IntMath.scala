@@ -35,8 +35,7 @@ object IntMath {
       var e = exp
       var result = 1
       while (e != 0) {
-        if ((e & 1) != 0)
-          result *= b
+        if ((e & 1) != 0) result *= b
         e >>= 1
         b *= b
       }
@@ -58,8 +57,7 @@ object IntMath {
       var e = exp
       var result: Long = 1
       while (e != 0) {
-        if ((e & 1) != 0)
-          result *= b
+        if ((e & 1) != 0) result *= b
         e >>= 1
         b *= b
       }

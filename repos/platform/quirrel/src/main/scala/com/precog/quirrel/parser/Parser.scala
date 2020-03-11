@@ -44,10 +44,8 @@ trait Parser extends RegexParsers with Filters with AST {
     val successes = results collect { case Success(tree, _) => tree }
     val failures = results collect { case f: Failure        => f }
 
-    if (successes.isEmpty)
-      handleFailures(failures)
-    else
-      handleSuccesses(successes)
+    if (successes.isEmpty) handleFailures(failures)
+    else handleSuccesses(successes)
   }
 
   // TODO these functions need to be privatized
@@ -391,10 +389,8 @@ trait Parser extends RegexParsers with Filters with AST {
           val first = {
             val back = RegexUtils first regex
 
-            if (back contains None)
-              UniversalCharSet
-            else
-              back flatMap { x => x }
+            if (back contains None) UniversalCharSet
+            else back flatMap { x => x }
           }
 
           Parsers.keySet filterNot {
@@ -426,10 +422,8 @@ trait Parser extends RegexParsers with Filters with AST {
           val (possibilities, _) =
             (pairs takeWhile { case (_, c) => headCount == c }).unzip
 
-          if (possibilities.isEmpty)
-            None
-          else
-            Some(possibilities mkString " or ")
+          if (possibilities.isEmpty) None
+          else Some(possibilities mkString " or ")
         }
       }
 

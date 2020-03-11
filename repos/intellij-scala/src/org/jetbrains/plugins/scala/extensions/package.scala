@@ -542,8 +542,7 @@ package object extensions {
       val it = cases.iterator
       while (it.hasNext) {
         val caze = it.next()
-        if (caze.isDefinedAt(v1))
-          return caze(v1)
+        if (caze.isDefinedAt(v1)) return caze(v1)
       }
       throw new MatchError(v1.toString)
     }

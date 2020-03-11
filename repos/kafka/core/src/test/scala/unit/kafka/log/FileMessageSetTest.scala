@@ -64,8 +64,7 @@ class FileMessageSetTest extends BaseMessageSetTestCases {
   def testPartialWrite(size: Int, messageSet: FileMessageSet) {
     val buffer = ByteBuffer.allocate(size)
     val originalPosition = messageSet.channel.position
-    for (i <- 0 until size)
-      buffer.put(0.asInstanceOf[Byte])
+    for (i <- 0 until size) buffer.put(0.asInstanceOf[Byte])
     buffer.rewind()
     messageSet.channel.write(buffer)
     // appending those bytes should not change the contents

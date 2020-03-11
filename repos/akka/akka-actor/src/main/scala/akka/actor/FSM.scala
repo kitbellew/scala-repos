@@ -233,10 +233,8 @@ object FSM {
       * INTERNAL API.
       */
     private[akka] def withNotification(notifies: Boolean): State[S, D] = {
-      if (notifies)
-        State(stateName, stateData, timeout, stopReason, replies)
-      else
-        new SilentState(stateName, stateData, timeout, stopReason, replies)
+      if (notifies) State(stateName, stateData, timeout, stopReason, replies)
+      else new SilentState(stateName, stateData, timeout, stopReason, replies)
     }
   }
 
@@ -480,8 +478,7 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
     * @param name of the timer to cancel
     */
   final def cancelTimer(name: String): Unit = {
-    if (debugEvent)
-      log.debug("canceling timer '" + name + "'")
+    if (debugEvent) log.debug("canceling timer '" + name + "'")
     if (timers contains name) {
       timers(name).cancel
       timers -= name
@@ -787,8 +784,7 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
 
       val stopEvent =
         StopEvent(reason, currentState.stateName, currentState.stateData)
-      if (terminateEvent.isDefinedAt(stopEvent))
-        terminateEvent(stopEvent)
+      if (terminateEvent.isDefinedAt(stopEvent)) terminateEvent(stopEvent)
     }
   }
 

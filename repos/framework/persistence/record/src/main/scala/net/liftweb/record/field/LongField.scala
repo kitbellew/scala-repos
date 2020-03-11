@@ -32,10 +32,8 @@ trait LongTypedField extends NumericTypedField[Long] {
 
   def setFromString(s: String): Box[Long] =
     if (s == null || s.isEmpty) {
-      if (optional_?)
-        setBox(Empty)
-      else
-        setBox(Failure(notOptionalErrorMessage))
+      if (optional_?) setBox(Empty)
+      else setBox(Failure(notOptionalErrorMessage))
     } else { setBox(asLong(s)) }
 
   def defaultValue = 0L

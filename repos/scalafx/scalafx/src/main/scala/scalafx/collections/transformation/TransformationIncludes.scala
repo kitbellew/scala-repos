@@ -41,11 +41,9 @@ trait TransformationIncludes {
 
   implicit def sortedList2SortedBuffer[T](
       ol: jfxct.SortedList[T]): SortedBuffer[T] =
-    if (ol != null) new SortedBuffer[T](ol)
-    else null
+    if (ol != null) new SortedBuffer[T](ol) else null
 
   implicit def lilteredList2FilteredBuffer[T](
       ol: jfxct.FilteredList[T]): FilteredBuffer[T] =
-    if (ol != null) new FilteredBuffer[T](ol)
-    else null
+    if (ol != null) new FilteredBuffer[T](ol) else null
 }

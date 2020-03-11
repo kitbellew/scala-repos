@@ -118,8 +118,7 @@ object Writer {
         os.writePosVarInt(size)
         @annotation.tailrec
         def go(p: Int): Unit =
-          if (p == size) ()
-          else { writerT.write(os, a(p)); go(p + 1) }
+          if (p == size) () else { writerT.write(os, a(p)); go(p + 1) }
 
         go(0)
       }

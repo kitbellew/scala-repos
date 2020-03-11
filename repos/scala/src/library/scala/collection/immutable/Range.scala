@@ -87,8 +87,7 @@ class Range(val start: Int, val end: Int, val step: Int)
     else if (isEmpty) 0
     else {
       val len = longLength
-      if (len > scala.Int.MaxValue) -1
-      else len.toInt
+      if (len > scala.Int.MaxValue) -1 else len.toInt
     }
   }
   @deprecated("This method will be made private, use `last` instead.", "2.11")
@@ -115,16 +114,12 @@ class Range(val start: Int, val end: Int, val step: Int)
   override def head = if (isEmpty) Nil.head else start
 
   override def min[A1 >: Int](implicit ord: Ordering[A1]): Int =
-    if (ord eq Ordering.Int) {
-      if (step > 0) head
-      else last
-    } else super.min(ord)
+    if (ord eq Ordering.Int) { if (step > 0) head else last }
+    else super.min(ord)
 
   override def max[A1 >: Int](implicit ord: Ordering[A1]): Int =
-    if (ord eq Ordering.Int) {
-      if (step > 0) last
-      else head
-    } else super.max(ord)
+    if (ord eq Ordering.Int) { if (step > 0) last else head }
+    else super.max(ord)
 
   protected def copy(start: Int, end: Int, step: Int): Range =
     new Range(start, end, step)
@@ -150,10 +145,7 @@ class Range(val start: Int, val end: Int, val step: Int)
   private def fail() =
     throw new IllegalArgumentException(
       description + ": seqs cannot contain more than Int.MaxValue elements.")
-  private def validateMaxLength() {
-    if (numRangeElements < 0)
-      fail()
-  }
+  private def validateMaxLength() { if (numRangeElements < 0) fail() }
 
   final def apply(idx: Int): Int = {
     validateMaxLength()
@@ -233,8 +225,7 @@ class Range(val start: Int, val end: Int, val step: Int)
     *  @return  a new range consisting of all the elements of this range except the last one.
     */
   final override def init: Range = {
-    if (isEmpty)
-      Nil.init
+    if (isEmpty) Nil.init
 
     dropRight(1)
   }
@@ -246,8 +237,7 @@ class Range(val start: Int, val end: Int, val step: Int)
     *  @return  a new range consisting of all the elements of this range except the first one.
     */
   final override def tail: Range = {
-    if (isEmpty)
-      Nil.tail
+    if (isEmpty) Nil.tail
 
     drop(1)
   }
@@ -259,8 +249,7 @@ class Range(val start: Int, val end: Int, val step: Int)
       var current = start
       val stop = last
       while (current != stop && p(current)) current += step
-      if (current != stop || !p(current)) current
-      else current.toLong + step
+      if (current != stop || !p(current)) current else current.toLong + step
     }
   }
   // Methods like apply throw exceptions on invalid n, but methods like take/drop
@@ -278,8 +267,7 @@ class Range(val start: Int, val end: Int, val step: Int)
     if (stop == start) newEmptyRange(start)
     else {
       val x = (stop - step).toInt
-      if (x == last) this
-      else new Range.Inclusive(start, x, step)
+      if (x == last) this else new Range.Inclusive(start, x, step)
     }
   }
   final override def dropWhile(p: Int => Boolean): Range = {
@@ -348,14 +336,12 @@ class Range(val start: Int, val end: Int, val step: Int)
     *  $doesNotUseBuilders
     */
   final override def reverse: Range =
-    if (isEmpty) this
-    else new Range.Inclusive(last, start, -step)
+    if (isEmpty) this else new Range.Inclusive(last, start, -step)
 
   /** Make range inclusive.
     */
   def inclusive =
-    if (isInclusive) this
-    else new Range.Inclusive(start, end, step)
+    if (isInclusive) this else new Range.Inclusive(start, end, step)
 
   final def contains(x: Int) = {
     if (x == end && !isInclusive) false
@@ -434,8 +420,7 @@ object Range {
     *  result will be negative.
     */
   def count(start: Int, end: Int, step: Int, isInclusive: Boolean): Int = {
-    if (step == 0)
-      throw new IllegalArgumentException("step cannot be 0.")
+    if (step == 0) throw new IllegalArgumentException("step cannot be 0.")
 
     val isEmpty =
       (
@@ -453,8 +438,7 @@ object Range {
       val hasStub = isInclusive || (gap % step != 0)
       val result: Long = jumps + (if (hasStub) 1 else 0)
 
-      if (result > scala.Int.MaxValue) -1
-      else result.toInt
+      if (result > scala.Int.MaxValue) -1 else result.toInt
     }
   }
   def count(start: Int, end: Int, step: Int): Int =

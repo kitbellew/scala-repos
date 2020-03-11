@@ -106,8 +106,7 @@ object InstructionStackEffect {
           case _: java.lang.Long | _: java.lang.Double => t(0, 2)
           case _                                       => t(0, 1)
         }
-        else
-          t(0, 1)
+        else t(0, 1)
 
       case LCONST_0 | LCONST_1 | DCONST_0 | DCONST_1 | LLOAD | DLOAD =>
         if (forClassfile) t(0, 2) else t(0, 1)

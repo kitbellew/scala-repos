@@ -39,8 +39,7 @@ class FrameCheck extends Specification with ScalaCheck {
           val ord = array.argsort(f.colAt(0).toVec)
           val exp = f.rowAt(ord)
           res must_== exp
-        } else
-          f must_== Frame.empty[Int, Int, Double]
+        } else f must_== Frame.empty[Int, Int, Double]
       }
     }
 

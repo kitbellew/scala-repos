@@ -47,8 +47,7 @@ private[repl] class SparkJLineReader(_completion: => Completion)
   }
 
   class JLineConsoleReader extends ConsoleReader with ConsoleReaderHelper {
-    if ((history: History) ne NoHistory)
-      this setHistory history
+    if ((history: History) ne NoHistory) this setHistory history
 
     // working around protected/trait/java insufficiencies.
     def goBack(num: Int): Unit = back(num)

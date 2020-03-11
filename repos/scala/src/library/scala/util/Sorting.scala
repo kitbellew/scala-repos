@@ -164,8 +164,7 @@ object Sorting {
         var iB = i0 + m - 1
         while (iB - iA > 1) {
           val ix = (iA + iB) >>> 1 // Use bit shift to get unsigned div by 2
-          if (ord.compare(next, a(ix)) < 0) iB = ix
-          else iA = ix
+          if (ord.compare(next, a(ix)) < 0) iB = ix else iA = ix
         }
         val ix = iA + (if (ord.compare(next, a(iA)) < 0) 0 else 1)
         var i = i0 + m

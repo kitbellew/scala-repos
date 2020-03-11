@@ -57,10 +57,7 @@ class MatCols[A: ST](cols: IndexedSeq[Vec[A]])
     var i = 0
     while (i < locs.length) {
       val idx = locs(i)
-      if (idx == -1)
-        res(i) = nullVec
-      else
-        res(i) = cols(idx)
+      if (idx == -1) res(i) = nullVec else res(i) = cols(idx)
       i += 1
     }
     MatCols(res)

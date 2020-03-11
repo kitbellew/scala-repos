@@ -47,16 +47,14 @@ object Test {
 
     /*Calculate the number of points */
     n = 1
-    for (i <- 0L until m)
-      n <<= 1
+    for (i <- 0L until m) n <<= 1
 
     /* Do the bit reversal */
     i2 = n >> 1
     j = 0
 
     for (i <- 0L until (n - 1)) {
-      if (i < j)
-        swap(x, i.toInt, j.toInt);
+      if (i < j) swap(x, i.toInt, j.toInt);
 
       k = i2;
 
@@ -95,18 +93,14 @@ object Test {
       c = (c._1, sqrt((1.0 - c._1) / 2.0))
       // if (dir == 1)
       //    c.imag(-c.imag());
-      if (dir == 1)
-        c = (c._1, -c._2)
+      if (dir == 1) c = (c._1, -c._2)
 
       // c.real(sqrt((1.0 + c.real()) / 2.0));
       c = (sqrt((1.0 + c._1) / 2.0), c._2)
     }
 
     /* Scaling for forward transform */
-    if (dir == 1) {
-      for (i <- 0L until n)
-        x(i.toInt) = div(x(i.toInt), n)
-    }
+    if (dir == 1) { for (i <- 0L until n) x(i.toInt) = div(x(i.toInt), n) }
   }
 
   def run() { FFT(1, 16, data) }

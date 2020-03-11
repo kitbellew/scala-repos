@@ -39,8 +39,7 @@ private[phantomjs] final class JettyWebsocketManager(
 
   server.addLifeCycleListener(new AbstractLifeCycle.AbstractLifeCycleListener {
     override def lifeCycleStarted(event: LifeCycle): Unit = {
-      if (event.isRunning())
-        wsListener.onRunning()
+      if (event.isRunning()) wsListener.onRunning()
     }
   })
 
@@ -123,8 +122,7 @@ private[phantomjs] final class JettyWebsocketManager(
   def localPort: Int = connector.getLocalPort()
 
   def sendMessage(msg: String): Unit = synchronized {
-    if (webSocketConn != null)
-      webSocketConn.sendMessage(msg)
+    if (webSocketConn != null) webSocketConn.sendMessage(msg)
   }
 
 }

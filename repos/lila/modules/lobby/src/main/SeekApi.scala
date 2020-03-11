@@ -66,8 +66,7 @@ final class SeekApi(
             seek.mode,
             seek.color,
             seek.user.id) mkString ","
-          if (h contains seekH) (res, h)
-          else (seek :: res, h + seekH)
+          if (h contains seekH) (res, h) else (seek :: res, h + seekH)
       }
       ._1
       .reverse

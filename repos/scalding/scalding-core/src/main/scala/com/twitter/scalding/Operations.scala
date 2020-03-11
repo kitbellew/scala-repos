@@ -367,8 +367,7 @@ package com.twitter.scalding {
         flowProcess.getStringProperty(ADAPTIVE_CACHE_KEY)).isDefined
       if (adaptive)
         new AdaptiveMapsideCache(flowProcess, new AdaptiveCache(size))
-      else
-        new SummingMapsideCache(flowProcess, new SummingWithHitsCache(size))
+      else new SummingMapsideCache(flowProcess, new SummingWithHitsCache(size))
     }
   }
 
@@ -393,8 +392,7 @@ package com.twitter.scalding {
       misses.increment(1 - curHits)
       hits.increment(curHits)
 
-      if (evicted.isDefined)
-        evictions.increment(evicted.get.size)
+      if (evicted.isDefined) evictions.increment(evicted.get.size)
       evicted
     }
 
@@ -405,8 +403,7 @@ package com.twitter.scalding {
       misses.increment(kvs.size - curHits)
       hits.increment(curHits)
 
-      if (evicted.isDefined)
-        evictions.increment(evicted.get.size)
+      if (evicted.isDefined) evictions.increment(evicted.get.size)
       evicted
     }
   }
@@ -438,8 +435,7 @@ package com.twitter.scalding {
       capacity.increment(stats.cacheGrowth)
       sentinel.increment(stats.sentinelGrowth)
 
-      if (evicted.isDefined)
-        evictions.increment(evicted.get.size)
+      if (evicted.isDefined) evictions.increment(evicted.get.size)
 
       evicted
 
@@ -454,8 +450,7 @@ package com.twitter.scalding {
       capacity.increment(stats.cacheGrowth)
       sentinel.increment(stats.sentinelGrowth)
 
-      if (evicted.isDefined)
-        evictions.increment(evicted.get.size)
+      if (evicted.isDefined) evictions.increment(evicted.get.size)
 
       evicted
     }
@@ -799,8 +794,7 @@ package com.twitter.scalding {
         flowProcess: FlowProcess[_],
         functionCall: FunctionCall[Poisson]) {
       val r = functionCall.getContext.nextInt
-      for (i <- 0 until r)
-        functionCall.getOutputCollector().add(Tuple.NULL)
+      for (i <- 0 until r) functionCall.getOutputCollector().add(Tuple.NULL)
     }
   }
 

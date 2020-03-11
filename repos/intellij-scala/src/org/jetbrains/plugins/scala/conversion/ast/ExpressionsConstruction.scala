@@ -89,8 +89,7 @@ object NewExpression {
       withArrayInitalizer: Boolean = true): NewExpression = {
     if (withArrayInitalizer)
       NewExpression(mtype, arrayInitalizer, Seq[IntermediateNode]())
-    else
-      NewExpression(mtype, Seq[IntermediateNode](), arrayInitalizer)
+    else NewExpression(mtype, Seq[IntermediateNode](), arrayInitalizer)
   }
 }
 

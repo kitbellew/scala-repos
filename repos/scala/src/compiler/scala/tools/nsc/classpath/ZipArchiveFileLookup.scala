@@ -49,10 +49,8 @@ trait ZipArchiveFileLookup[FileEntryType <: ClassRepClassPathEntry]
       val prefix = PackageNameUtils.packagePrefix(inPackage)
 
       for (entry <- dirEntry.iterator) {
-        if (entry.isPackage)
-          pkgBuf += PackageEntryImpl(prefix + entry.name)
-        else if (isRequiredFileType(entry))
-          fileBuf += createFileEntry(entry)
+        if (entry.isPackage) pkgBuf += PackageEntryImpl(prefix + entry.name)
+        else if (isRequiredFileType(entry)) fileBuf += createFileEntry(entry)
       }
       FlatClassPathEntries(pkgBuf, fileBuf)
     } getOrElse FlatClassPathEntries(Seq.empty, Seq.empty)

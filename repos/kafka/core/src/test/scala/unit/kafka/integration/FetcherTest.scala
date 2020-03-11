@@ -95,10 +95,8 @@ class FetcherTest extends KafkaServerTestHarness {
     while (true) {
       val chunk = queue.poll(2L, TimeUnit.SECONDS)
       assertNotNull("Timed out waiting for data chunk " + (count + 1), chunk)
-      for (message <- chunk.messages)
-        count += 1
-      if (count == expected)
-        return
+      for (message <- chunk.messages) count += 1
+      if (count == expected) return
     }
   }
 

@@ -153,9 +153,7 @@ object Map extends ImmutableMapFactory[Map] {
       else throw new NoSuchElementException("key not found: " + key)
     override def contains(key: A) = (key == key1) || (key == key2)
     def get(key: A): Option[B] =
-      if (key == key1) Some(value1)
-      else if (key == key2) Some(value2)
-      else None
+      if (key == key1) Some(value1) else if (key == key2) Some(value2) else None
     def iterator = Iterator((key1, value1), (key2, value2))
     override def updated[B1 >: B](key: A, value: B1): Map[A, B1] =
       if (key == key1) new Map2(key1, value, key2, value2)

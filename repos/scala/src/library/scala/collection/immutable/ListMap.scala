@@ -225,14 +225,11 @@ class ListMap[A, +B]
         k: A,
         cur: ListMap[A, B1],
         acc: List[ListMap[A, B1]]): ListMap[A, B1] =
-      if (cur.isEmpty)
-        acc.last
-      else if (k == cur.key)
-        (cur.next /: acc) {
-          case (t, h) => val tt = t; new tt.Node(h.key, h.value) // SI-7459
-        }
-      else
-        remove0(k, cur.next, cur :: acc)
+      if (cur.isEmpty) acc.last
+      else if (k == cur.key) (cur.next /: acc) {
+        case (t, h) => val tt = t; new tt.Node(h.key, h.value) // SI-7459
+      }
+      else remove0(k, cur.next, cur :: acc)
 
     override protected def next: ListMap[A, B1] = ListMap.this
 

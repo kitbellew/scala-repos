@@ -99,8 +99,7 @@ private[akka] final class FilePublisher(
       onNext(chunks.head)
       signalOnNexts(chunks.tail)
     } else {
-      if (chunks.isEmpty && eofEncountered)
-        onCompleteThenStop()
+      if (chunks.isEmpty && eofEncountered) onCompleteThenStop()
       chunks
     }
 

@@ -125,11 +125,9 @@ object PhysicalNode {
       def go: Option[V] =
         Option(store.get(k)) match {
           case None =>
-            if (store.putIfAbsent(k, v) == null) None
-            else go
+            if (store.putIfAbsent(k, v) == null) None else go
           case s @ Some(oldV) =>
-            if (store.replace(k, oldV, sg.plus(oldV, v))) s
-            else go
+            if (store.replace(k, oldV, sg.plus(oldV, v))) s else go
         }
       target.push((k, (go, v)))
     }

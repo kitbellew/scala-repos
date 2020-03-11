@@ -595,10 +595,7 @@ package play.api.mvc {
             URLEncoder.encode(k, "UTF-8") + "=" + URLEncoder.encode(v, "UTF-8")
         }
         .mkString("&")
-      if (isSigned)
-        cookieSigner.sign(encoded) + "-" + encoded
-      else
-        encoded
+      if (isSigned) cookieSigner.sign(encoded) + "-" + encoded else encoded
     }
 
     /**
@@ -634,8 +631,7 @@ package play.api.mvc {
           val message = splitted.tail.mkString("-")
           if (safeEquals(splitted(0), cookieSigner.sign(message)))
             urldecode(message)
-          else
-            Map.empty[String, String]
+          else Map.empty[String, String]
         } else urldecode(data)
       } catch {
         // fail gracefully is the session cookie is corrupted

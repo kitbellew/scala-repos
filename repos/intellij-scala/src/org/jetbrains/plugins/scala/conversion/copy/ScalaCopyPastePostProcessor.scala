@@ -147,8 +147,7 @@ class ScalaCopyPastePostProcessor
         val selectedPahts = dialog.getSelectedElements
         if (dialog.getExitCode == DialogWrapper.OK_EXIT_CODE)
           bindingsToRestore.filter(it => selectedPahts.contains(it.path))
-        else
-          Seq.empty
+        else Seq.empty
       } else { bindingsToRestore }
     }
   }

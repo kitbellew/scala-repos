@@ -13,8 +13,7 @@ class ByteArrayInputStream(
   def this(buf: Array[Byte]) = this(buf, 0, buf.length)
 
   override def read(): Int = {
-    if (pos >= count)
-      -1
+    if (pos >= count) -1
     else {
       val res = buf(pos) & 0xFF // convert to unsigned int
       pos += 1
@@ -28,10 +27,8 @@ class ByteArrayInputStream(
 
     val len = Math.min(reqLen, count - pos)
 
-    if (reqLen == 0)
-      0 // 0 requested, 0 returned
-    else if (len == 0)
-      -1 // nothing to read at all
+    if (reqLen == 0) 0 // 0 requested, 0 returned
+    else if (len == 0) -1 // nothing to read at all
     else {
       System.arraycopy(buf, pos, b, off, len)
       pos += len

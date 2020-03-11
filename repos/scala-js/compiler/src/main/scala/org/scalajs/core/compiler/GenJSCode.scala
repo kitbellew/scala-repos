@@ -251,8 +251,7 @@ abstract class GenJSCode
                   s"Raw JS function def should have been recorded: $cd")
                 if (!sym.isTraitOrInterface && isScalaJSDefinedJSClass(sym))
                   genScalaJSDefinedJSClass(cd)
-                else
-                  genRawJSClassData(cd)
+                else genRawJSClassData(cd)
               } else if (sym.isTraitOrInterface) { genInterface(cd) }
               else if (sym.isImplClass) { genImplClass(cd) }
               else { genClass(cd) }
@@ -337,10 +336,8 @@ abstract class GenJSCode
             val isNamedExport = isExport && sym.annotations.exists(
               _.symbol == JSExportNamedAnnotation)
 
-            if (isNamedExport)
-              generatedMethods += genNamedExporterDef(dd)
-            else
-              generatedMethods ++= genMethod(dd)
+            if (isNamedExport) generatedMethods += genNamedExporterDef(dd)
+            else generatedMethods ++= genMethod(dd)
 
             if (isExport) {
               // We add symbols that we have to export here. This way we also
@@ -467,8 +464,7 @@ abstract class GenJSCode
 
       // The complete class definition
       val kind =
-        if (isStaticModule(sym)) ClassKind.JSModuleClass
-        else ClassKind.JSClass
+        if (isStaticModule(sym)) ClassKind.JSModuleClass else ClassKind.JSClass
 
       val classDefinition = js.ClassDef(
         classIdent,
@@ -615,8 +611,7 @@ abstract class GenJSCode
         val mutable =
           suspectFieldMutable(f) || unexpectedMutatedFields.contains(f)
         val name =
-          if (isExposed(f)) js.StringLiteral(jsNameOf(f))
-          else encodeFieldSym(f)
+          if (isExposed(f)) js.StringLiteral(jsNameOf(f)) else encodeFieldSym(f)
 
         val irTpe = if (!isScalaJSDefinedJSClass(classSym)) { toIRType(f.tpe) }
         else {
@@ -1338,8 +1333,8 @@ abstract class GenJSCode
 
       def genBody() = tree match {
         case Block(
-            (thisDef @ ValDef(_, nme.THIS, _, initialThis)) :: otherStats,
-            rhs) =>
+              (thisDef @ ValDef(_, nme.THIS, _, initialThis)) :: otherStats,
+              rhs) =>
           // This method has tail jumps
 
           // To be called from within withScopedVars
@@ -1358,8 +1353,7 @@ abstract class GenJSCode
 
             case _ =>
               val thisSym = thisDef.symbol
-              if (thisSym.isMutable)
-                mutableLocalVars += thisSym
+              if (thisSym.isMutable) mutableLocalVars += thisSym
 
               val thisLocalIdent = encodeLocalSym(thisSym)
               val genRhs = genExpr(initialThis)
@@ -1379,8 +1373,7 @@ abstract class GenJSCode
           }
 
         case _ =>
-          if (bodyIsStat) genStat(tree)
-          else genExpr(tree)
+          if (bodyIsStat) genStat(tree) else genExpr(tree)
       }
 
       if (!isScalaJSDefinedJSClass(currentClassSym)) {
@@ -1462,8 +1455,7 @@ abstract class GenJSCode
 
           val sym = tree.symbol
           val rhsTree =
-            if (rhs == EmptyTree) genZeroOf(sym.tpe)
-            else genExpr(rhs)
+            if (rhs == EmptyTree) genZeroOf(sym.tpe) else genExpr(rhs)
 
           rhsTree match {
             case js.UndefinedParam() =>
@@ -1473,8 +1465,7 @@ abstract class GenJSCode
               undefinedDefaultParams += sym
               js.Skip()
             case _ =>
-              if (sym.isMutable)
-                mutableLocalVars += sym
+              if (sym.isMutable) mutableLocalVars += sym
               js.VarDef(
                 encodeLocalSym(sym),
                 toIRType(sym.tpe),
@@ -1540,8 +1531,7 @@ abstract class GenJSCode
             val boxed =
               if (isExposed(sym))
                 js.JSBracketSelect(genQual, js.StringLiteral(jsNameOf(sym)))
-              else
-                js.JSDotSelect(genQual, encodeFieldSym(sym))
+              else js.JSDotSelect(genQual, encodeFieldSym(sym))
             fromAny(boxed, enteringPhase(currentRun.posterasurePhase)(sym.tpe))
           } else {
             js.Select(genExpr(qualifier), encodeFieldSym(sym))(
@@ -1617,8 +1607,7 @@ abstract class GenJSCode
                 val genLhs =
                   if (isExposed(sym))
                     js.JSBracketSelect(genQual, js.StringLiteral(jsNameOf(sym)))
-                  else
-                    js.JSDotSelect(genQual, encodeFieldSym(sym))
+                  else js.JSDotSelect(genQual, encodeFieldSym(sym))
                 val boxedRhs =
                   ensureBoxed(
                     genRhs,
@@ -1689,34 +1678,34 @@ abstract class GenJSCode
       tree match {
         // while (cond) { body }
         case LabelDef(
-            lname,
-            Nil,
-            If(
-              cond,
-              Block(bodyStats, Apply(target @ Ident(lname2), Nil)),
-              Literal(_))) if (target.symbol == sym) =>
+              lname,
+              Nil,
+              If(
+                cond,
+                Block(bodyStats, Apply(target @ Ident(lname2), Nil)),
+                Literal(_))) if (target.symbol == sym) =>
           js.While(genExpr(cond), js.Block(bodyStats map genStat))
 
         // while (cond) { body }; result
         case LabelDef(
-            lname,
-            Nil,
-            Block(
-              List(
-                If(
-                  cond,
-                  Block(bodyStats, Apply(target @ Ident(lname2), Nil)),
-                  Literal(_))),
-              result)) if (target.symbol == sym) =>
+              lname,
+              Nil,
+              Block(
+                List(
+                  If(
+                    cond,
+                    Block(bodyStats, Apply(target @ Ident(lname2), Nil)),
+                    Literal(_))),
+                result)) if (target.symbol == sym) =>
           js.Block(
             js.While(genExpr(cond), js.Block(bodyStats map genStat)),
             genExpr(result))
 
         // while (true) { body }
         case LabelDef(
-            lname,
-            Nil,
-            Block(bodyStats, Apply(target @ Ident(lname2), Nil)))
+              lname,
+              Nil,
+              Block(bodyStats, Apply(target @ Ident(lname2), Nil)))
             if (target.symbol == sym) =>
           js.While(js.BooleanLiteral(true), js.Block(bodyStats map genStat))
 
@@ -1726,22 +1715,22 @@ abstract class GenJSCode
 
         // do { body } while (cond)
         case LabelDef(
-            lname,
-            Nil,
-            Block(
-              bodyStats,
-              If(cond, Apply(target @ Ident(lname2), Nil), Literal(_))))
+              lname,
+              Nil,
+              Block(
+                bodyStats,
+                If(cond, Apply(target @ Ident(lname2), Nil), Literal(_))))
             if (target.symbol == sym) =>
           js.DoWhile(js.Block(bodyStats map genStat), genExpr(cond))
 
         // do { body } while (cond); result
         case LabelDef(
-            lname,
-            Nil,
-            Block(
-              bodyStats :+
+              lname,
+              Nil,
+              Block(
+                bodyStats :+
                 If(cond, Apply(target @ Ident(lname2), Nil), Literal(_)),
-              result)) if (target.symbol == sym) =>
+                result)) if (target.symbol == sym) =>
           js.Block(
             js.DoWhile(js.Block(bodyStats map genStat), genExpr(cond)),
             genExpr(result))
@@ -1773,8 +1762,7 @@ abstract class GenJSCode
                       js.Block(
                         genStat(rhs),
                         js.Return(js.Undefined(), Some(blockLabelIdent)))
-                    else
-                      js.Return(genExpr(rhs), Some(blockLabelIdent))
+                    else js.Return(genExpr(rhs), Some(blockLabelIdent))
                   },
                   Some(labelIdent)
                 )
@@ -1961,10 +1949,7 @@ abstract class GenJSCode
       val source = genExpr(obj)
 
       if (l.isValueType && r.isValueType) {
-        if (cast)
-          genConversion(l, r, source)
-        else
-          js.BooleanLiteral(l == r)
+        if (cast) genConversion(l, r, source) else js.BooleanLiteral(l == r)
       } else if (l.isValueType) {
         val result = if (cast) {
           val ctor = ClassCastExceptionClass.info
@@ -1977,10 +1962,7 @@ abstract class GenJSCode
         assert(!cast, s"Unexpected asInstanceOf from ref type to value type")
         genIsInstanceOf(source, boxedClass(to.typeSymbol).tpe)
       } else {
-        if (cast)
-          genAsInstanceOf(source, to)
-        else
-          genIsInstanceOf(source, to)
+        if (cast) genAsInstanceOf(source, to) else genIsInstanceOf(source, to)
       }
     }
 
@@ -2350,8 +2332,7 @@ abstract class GenJSCode
       */
     def genNew(clazz: Symbol, ctor: Symbol, arguments: List[js.Tree])(
         implicit pos: Position): js.Tree = {
-      if (clazz.isAnonymousFunction)
-        instantiatedAnonFunctions += clazz
+      if (clazz.isAnonymousFunction) instantiatedAnonFunctions += clazz
       assert(
         !isRawJSFunctionDef(clazz),
         s"Trying to instantiate a raw JS function def $clazz")
@@ -2715,14 +2696,10 @@ abstract class GenJSCode
         genSimpleOp(tree, receiver :: args, code)
       else if (code == scalaPrimitives.CONCAT)
         genStringConcat(tree, receiver, args)
-      else if (code == HASH)
-        genScalaHash(tree, receiver)
-      else if (isArrayOp(code))
-        genArrayOp(tree, code)
-      else if (code == SYNCHRONIZED)
-        genSynchronized(tree, isStat)
-      else if (isCoercion(code))
-        genCoercion(tree, receiver, code)
+      else if (code == HASH) genScalaHash(tree, receiver)
+      else if (isArrayOp(code)) genArrayOp(tree, code)
+      else if (code == SYNCHRONIZED) genSynchronized(tree, isStat)
+      else if (isCoercion(code)) genCoercion(tree, receiver, code)
       else if (jsPrimitives.isJavaScriptPrimitive(code))
         genJSPrimitive(tree, receiver, args, code)
       else
@@ -3349,8 +3326,7 @@ abstract class GenJSCode
                   // Box the result of the implementing method if required
                   if (isPrimitiveValueType(retTpe))
                     makePrimitiveBox(rawApply, retTpe)
-                  else
-                    rawApply
+                  else rawApply
                 } else {
                   val reflBoxClassPatched = {
                     def isIntOrLongKind(kind: TypeKind) = kind match {
@@ -3425,10 +3401,8 @@ abstract class GenJSCode
           val unboxMethod = boxedClass.derivedValueClassUnbox
           val content =
             genApplyMethod(genAsInstanceOf(expr, tpe), unboxMethod, Nil)
-          if (unboxMethod.tpe.resultType <:< tpe.erasedUnderlying)
-            content
-          else
-            fromAny(content, tpe.erasedUnderlying)
+          if (unboxMethod.tpe.resultType <:< tpe.erasedUnderlying) content
+          else fromAny(content, tpe.erasedUnderlying)
 
         case tpe =>
           genAsInstanceOf(expr, tpe)
@@ -3477,8 +3451,7 @@ abstract class GenJSCode
 
     private def lookupModuleClass(name: String) = {
       val module = getModuleIfDefined(name)
-      if (module == NoSymbol) NoSymbol
-      else module.moduleClass
+      if (module == NoSymbol) NoSymbol else module.moduleClass
     }
 
     lazy val ReflectArrayModuleClass = lookupModuleClass(
@@ -3684,8 +3657,7 @@ abstract class GenJSCode
                 mutable = false,
                 rest = false)
               val jsArity =
-                if (isThisFunction) arity - 1
-                else arity
+                if (isThisFunction) arity - 1 else arity
               val jsParams = (1 to jsArity).toList map { x =>
                 js.ParamDef(
                   js.Ident("arg" + x),
@@ -3701,8 +3673,7 @@ abstract class GenJSCode
                   applyMeth,
                   if (isThisFunction)
                     js.This()(jstpe.AnyType) :: jsParams.map(_.ref)
-                  else
-                    jsParams.map(_.ref)),
+                  else jsParams.map(_.ref)),
                 List(arg)
               )
             }
@@ -4154,8 +4125,7 @@ abstract class GenJSCode
       }.toMap
 
       val paramTpes = enteringPhase(currentRun.posterasurePhase) {
-        for (param <- sym.tpe.params)
-          yield param.name -> param.tpe
+        for (param <- sym.tpe.params) yield param.name -> param.tpe
       }.toMap
 
       var reversedArgs: List[js.Tree] = Nil
@@ -4233,7 +4203,7 @@ abstract class GenJSCode
       arg match {
         // foo(arg1, arg2, ..., argN) where N > 0
         case MaybeAsInstanceOf(
-            WrapArray(MaybeAsInstanceOf(ArrayValue(tpt, elems)))) =>
+              WrapArray(MaybeAsInstanceOf(ArrayValue(tpt, elems)))) =>
           /* Value classes in arrays are already boxed, so no need to use
            * the type before erasure.
            */
@@ -4471,8 +4441,7 @@ abstract class GenJSCode
               val name = dd.name.toString
               if (name == "apply" || (ddsym.isSpecialized && name.startsWith(
                     "apply$"))) {
-                if ((applyDef eq null) || ddsym.isSpecialized)
-                  applyDef = dd
+                if ((applyDef eq null) || ddsym.isSpecialized) applyDef = dd
               } else {
                 // Found a method we cannot encode in the rewriting
                 fail(s"Found a non-apply method $ddsym in $cd")
@@ -4504,8 +4473,7 @@ abstract class GenJSCode
 
         val hasUnusedOuterCtorParam = paramAccessors.size != ctorParams.size
         val usedCtorParams =
-          if (hasUnusedOuterCtorParam) ctorParams.tail
-          else ctorParams
+          if (hasUnusedOuterCtorParam) ctorParams.tail else ctorParams
         val ctorParamDefs = usedCtorParams map { p =>
           // in the apply method's context
           js.ParamDef(
@@ -4545,8 +4513,7 @@ abstract class GenJSCode
 
         val functionMaker = { capturedArgs0: List[js.Tree] =>
           val capturedArgs =
-            if (hasUnusedOuterCtorParam) capturedArgs0.tail
-            else capturedArgs0
+            if (hasUnusedOuterCtorParam) capturedArgs0.tail else capturedArgs0
           assert(capturedArgs.size == ctorParamDefs.size)
 
           if (isThisFunction) {
@@ -4687,8 +4654,7 @@ abstract class GenJSCode
 
       // See the comment in genPrimitiveJSArgs for a rationale about this
       val paramTpes = enteringPhase(currentRun.posterasurePhase) {
-        for (param <- methodType.params)
-          yield param.name -> param.tpe
+        for (param <- methodType.params) yield param.name -> param.tpe
       }.toMap
 
       /* Normally, we should work with the list of parameters as seen right
@@ -4704,8 +4670,7 @@ abstract class GenJSCode
         if (useParamsBeforeLambdaLift)
           enteringPhase(currentRun.phaseNamed("lambdalift"))(
             methodSym.tpe.params)
-        else
-          methodSym.tpe.params
+        else methodSym.tpe.params
       }
 
       val (patchedParams, paramsLocal) =
@@ -4761,8 +4726,7 @@ abstract class GenJSCode
         "genLoadModule called with non-module symbol: " + sym0)
       val sym1 = if (sym0.isModule) sym0.moduleClass else sym0
       val sym = // redirect all static methods of String to RuntimeString
-        if (sym1 == StringModule) RuntimeStringModule.moduleClass
-        else sym1
+        if (sym1 == StringModule) RuntimeStringModule.moduleClass else sym1
 
       val isGlobalScope = sym.tpe.typeSymbol isSubClass JSGlobalScopeClass
 
@@ -4772,8 +4736,7 @@ abstract class GenJSCode
         val moduleClassName = encodeClassFullName(sym)
 
         val cls = jstpe.ClassType(moduleClassName)
-        if (isRawJSType(sym.tpe)) js.LoadJSModule(cls)
-        else js.LoadModule(cls)
+        if (isRawJSType(sym.tpe)) js.LoadJSModule(cls) else js.LoadModule(cls)
       }
     }
 
@@ -4875,13 +4838,11 @@ abstract class GenJSCode
      */
     val flatOwnerInfo = {
       // inline Symbol.flatOwnerInfo because it is protected
-      if (sym.needsFlatClasses)
-        sym.info
+      if (sym.needsFlatClasses) sym.info
       sym.owner.rawInfo
     }
     val result = flatOwnerInfo.decl(sym.name).filter(_ isCoDefinedWith sym)
-    if (!result.isOverloaded) result
-    else result.alternatives.head
+    if (!result.isOverloaded) result else result.alternatives.head
   }
 
   /** Whether a field is suspected to be mutable in the IR's terms

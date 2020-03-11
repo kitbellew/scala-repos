@@ -69,12 +69,10 @@ class ScImportExprImpl private (
   }
 
   def qualifier: ScStableCodeReferenceElement = {
-    if (reference.isEmpty)
-      throw new IncorrectOperationException()
+    if (reference.isEmpty) throw new IncorrectOperationException()
     else if (!singleWildcard && selectorSet.isEmpty)
       reference.flatMap(_.qualifier).orNull
-    else
-      reference.get
+    else reference.get
   }
 
   def deleteExpr() {

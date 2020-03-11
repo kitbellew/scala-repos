@@ -159,8 +159,7 @@ class ListSet[A]
       */
     override def size = sizeInternal(this, 0)
     @tailrec private def sizeInternal(n: ListSet[A], acc: Int): Int =
-      if (n.isEmpty) acc
-      else sizeInternal(n.unchecked_outer, acc + 1)
+      if (n.isEmpty) acc else sizeInternal(n.unchecked_outer, acc + 1)
 
     /** Checks if this set is empty.
       *

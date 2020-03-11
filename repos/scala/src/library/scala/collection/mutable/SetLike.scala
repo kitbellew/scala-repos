@@ -140,8 +140,7 @@ trait SetLike[A, +This <: SetLike[A, This] with Set[A]]
     *  the set will be empty.
     */
   def clear(): Unit =
-    for (elem <- this.toList)
-      this -= elem
+    for (elem <- this.toList) this -= elem
 
   override def clone(): This = empty ++= repr.seq
 

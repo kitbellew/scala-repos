@@ -95,8 +95,9 @@ final class FastaOutputStream(in: OutputStream)
     val comp = "TVGHCDMKNYSABWRTVGHCDMKNYSABWR".getBytes
     val iub: Array[Byte] = new Array('z'.toByte)
 
-    for (indexValue <- code zip comp)
-      indexValue match { case (i, v) => iub(i) = v }
+    for (indexValue <- code zip comp) indexValue match {
+      case (i, v) => iub(i) = v
+    }
 
     iub
   }

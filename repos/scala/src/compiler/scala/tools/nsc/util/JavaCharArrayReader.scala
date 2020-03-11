@@ -54,8 +54,7 @@ class JavaCharArrayReader(
         }
         def udigit: Int = {
           val d = digit2int(buf(bp), 16)
-          if (d >= 0) bp += 1
-          else error("error in unicode escape")
+          if (d >= 0) bp += 1 else error("error in unicode escape")
           d
         }
         if (buf(bp) == 'u' && decodeUni && evenSlashPrefix) {

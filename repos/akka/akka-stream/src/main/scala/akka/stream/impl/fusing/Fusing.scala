@@ -300,8 +300,7 @@ private[stream] object Fusing {
     if (Debug) log(s"entering ${m.getClass} (hash=${struct.hash(
       m)}, async=$async, name=${m.attributes.nameLifted}, dispatcher=${dispatcher(m)})")
     val localGroup =
-      if (async) struct.newGroup(indent)
-      else openGroup
+      if (async) struct.newGroup(indent) else openGroup
 
     if (m.isAtomic) {
       m match {

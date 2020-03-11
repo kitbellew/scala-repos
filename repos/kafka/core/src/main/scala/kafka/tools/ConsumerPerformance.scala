@@ -100,14 +100,11 @@ object ConsumerPerformance {
       Thread.sleep(1000)
       logger.info("starting threads")
       startMs = System.currentTimeMillis
-      for (thread <- threadList)
-        thread.start
-      for (thread <- threadList)
-        thread.join
+      for (thread <- threadList) thread.start
+      for (thread <- threadList) thread.join
       if (consumerTimeout.get())
         endMs = System.currentTimeMillis - consumerConfig.consumerTimeoutMs
-      else
-        endMs = System.currentTimeMillis
+      else endMs = System.currentTimeMillis
       consumerConnector.shutdown()
     }
     val elapsedSecs = (endMs - startMs) / 1000.0
@@ -169,14 +166,11 @@ object ConsumerPerformance {
     while (messagesRead < count && System
              .currentTimeMillis() - lastConsumedTime <= timeout) {
       val records = consumer.poll(100)
-      if (records.count() > 0)
-        lastConsumedTime = System.currentTimeMillis
+      if (records.count() > 0) lastConsumedTime = System.currentTimeMillis
       for (record <- records) {
         messagesRead += 1
-        if (record.key != null)
-          bytesRead += record.key.size
-        if (record.value != null)
-          bytesRead += record.value.size
+        if (record.key != null) bytesRead += record.key.size
+        if (record.value != null) bytesRead += record.value.size
 
         if (messagesRead % config.reportingInterval == 0) {
           if (config.showDetailedStats)
@@ -300,8 +294,7 @@ object ConsumerPerformance {
     val props =
       if (options.has(consumerConfigOpt))
         Utils.loadProps(options.valueOf(consumerConfigOpt))
-      else
-        new Properties
+      else new Properties
     if (useNewConsumer) {
       import org.apache.kafka.clients.consumer.ConsumerConfig
       props.put(

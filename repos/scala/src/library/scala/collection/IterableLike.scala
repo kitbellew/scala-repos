@@ -270,8 +270,7 @@ trait IterableLike[+A, +Repr]
     val b = bf(repr)
     val these = this.iterator
     val those = that.iterator
-    while (these.hasNext && those.hasNext)
-      b += ((these.next(), those.next()))
+    while (these.hasNext && those.hasNext) b += ((these.next(), those.next()))
     b.result()
   }
 
@@ -280,12 +279,9 @@ trait IterableLike[+A, +Repr]
     val b = bf(repr)
     val these = this.iterator
     val those = that.iterator
-    while (these.hasNext && those.hasNext)
-      b += ((these.next(), those.next()))
-    while (these.hasNext)
-      b += ((these.next(), thatElem))
-    while (those.hasNext)
-      b += ((thisElem, those.next()))
+    while (these.hasNext && those.hasNext) b += ((these.next(), those.next()))
+    while (these.hasNext) b += ((these.next(), thatElem))
+    while (those.hasNext) b += ((thisElem, those.next()))
     b.result()
   }
 
@@ -304,8 +300,7 @@ trait IterableLike[+A, +Repr]
     val these = this.iterator
     val those = that.iterator
     while (these.hasNext && those.hasNext)
-      if (these.next != those.next)
-        return false
+      if (these.next != those.next) return false
 
     !these.hasNext && !those.hasNext
   }

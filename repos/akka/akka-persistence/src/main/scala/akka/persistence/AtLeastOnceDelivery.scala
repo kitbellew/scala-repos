@@ -239,10 +239,8 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
     val d =
       Delivery(destination, deliveryIdToMessage(deliveryId), now, attempt = 0)
 
-    if (recoveryRunning)
-      unconfirmed = unconfirmed.updated(deliveryId, d)
-    else
-      send(deliveryId, d, now)
+    if (recoveryRunning) unconfirmed = unconfirmed.updated(deliveryId, d)
+    else send(deliveryId, d, now)
   }
 
   /**
@@ -315,8 +313,7 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
               delivery.message)
       }
 
-    if (warnings.nonEmpty)
-      self ! UnconfirmedWarning(warnings)
+    if (warnings.nonEmpty) self ! UnconfirmedWarning(warnings)
   }
 
   private def send(deliveryId: Long, d: Delivery, timestamp: Long): Unit = {

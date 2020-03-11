@@ -92,8 +92,7 @@ private object ScalaGradleDataService {
       val compilerVersion = compilerVersionOption.get
 
       val scalaLibraries = getScalaLibraries
-      if (scalaLibraries.isEmpty)
-        return
+      if (scalaLibraries.isEmpty) return
 
       val scalaLibraryOption =
         scalaLibraries.find(_.scalaVersion.contains(compilerVersion))

@@ -103,8 +103,7 @@ class SystemTest {
     val x2 = new HasIDHashCode
     val x1FirstHash = x1.hashCode()
     assertEquals(x1FirstHash, x1.hashCode())
-    if (!executingInJVM)
-      assertNotEquals(x1.hashCode(), x2.hashCode())
+    if (!executingInJVM) assertNotEquals(x1.hashCode(), x2.hashCode())
     assertEquals(x1FirstHash, x1.hashCode())
 
     assertEquals(x1FirstHash, System.identityHashCode(x1))

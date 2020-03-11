@@ -83,13 +83,12 @@ private[concurrent] object ExecutionContextImpl {
 
     // As per ThreadFactory contract newThread should return `null` if cannot create new thread.
     def newThread(runnable: Runnable): Thread =
-      if (reserveThread())
-        wire(new Thread(new Runnable {
-          // We have to decrement the current thread count when the thread exits
-          override def run() =
-            try runnable.run()
-            finally deregisterThread()
-        }))
+      if (reserveThread()) wire(new Thread(new Runnable {
+        // We have to decrement the current thread count when the thread exits
+        override def run() =
+          try runnable.run()
+          finally deregisterThread()
+      }))
       else null
 
     def newThread(fjp: ForkJoinPool): ForkJoinWorkerThread =

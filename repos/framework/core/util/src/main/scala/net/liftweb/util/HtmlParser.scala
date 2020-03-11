@@ -223,8 +223,7 @@ trait Html5Writer {
       }
 
       case g: Group =>
-        for (c <- g.nodes)
-          write(c, writer, stripComment, convertAmp)
+        for (c <- g.nodes) write(c, writer, stripComment, convertAmp)
 
       case e: Elem
           if (null eq e.prefix) &&

@@ -67,8 +67,7 @@ trait ScentrySupport[UserType <: AnyRef] extends Initializable {
 
   protected def scentry(
       implicit request: HttpServletRequest): Scentry[UserType] = {
-    if (!request.contains(Scentry.ScentryRequestKey))
-      createScentry()
+    if (!request.contains(Scentry.ScentryRequestKey)) createScentry()
     request(Scentry.ScentryRequestKey).asInstanceOf[Scentry[UserType]]
   }
   protected def scentryOption(

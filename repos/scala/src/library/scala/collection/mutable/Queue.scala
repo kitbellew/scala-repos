@@ -59,8 +59,7 @@ class Queue[A]
     *  @return the first element of the queue.
     */
   def dequeue(): A =
-    if (isEmpty)
-      throw new NoSuchElementException("queue empty")
+    if (isEmpty) throw new NoSuchElementException("queue empty")
     else {
       val res = first0.elem
       first0 = first0.next
@@ -75,8 +74,7 @@ class Queue[A]
     *  @return the first element of the queue for which p yields true
     */
   def dequeueFirst(p: A => Boolean): Option[A] =
-    if (isEmpty)
-      None
+    if (isEmpty) None
     else if (p(first0.elem)) {
       val res: Option[A] = Some(first0.elem)
       first0 = first0.next
@@ -110,8 +108,7 @@ class Queue[A]
     *             p yields true.
     */
   def dequeueAll(p: A => Boolean): Seq[A] = {
-    if (first0.isEmpty)
-      Seq.empty
+    if (first0.isEmpty) Seq.empty
     else {
       val res = new ArrayBuffer[A]
       while ((first0.nonEmpty) && p(first0.elem)) {
@@ -119,8 +116,7 @@ class Queue[A]
         first0 = first0.next
         decrementLength()
       }
-      if (first0.isEmpty) res
-      else removeAllFromList(p, res)
+      if (first0.isEmpty) res else removeAllFromList(p, res)
     }
   }
 
@@ -152,8 +148,7 @@ class Queue[A]
     else {
       var cell = start
       while ((cell.next.nonEmpty) && !p(cell.next.elem)) { cell = cell.next }
-      if (cell.next.isEmpty)
-        None
+      if (cell.next.isEmpty) None
       else {
         val res: Option[LinkedList[A]] = Some(cell.next)
         cell.next = cell.next.next

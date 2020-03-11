@@ -238,8 +238,7 @@ abstract class Source extends Iterator[Char] with Closeable {
       val ch = iter.next()
       if (ch == '\n') false
       else if (ch == '\r') {
-        if (iter.hasNext && iter.head == '\n')
-          iter.next()
+        if (iter.hasNext && iter.head == '\n') iter.next()
 
         false
       } else {

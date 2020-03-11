@@ -89,8 +89,7 @@ private[nio] final class GenHeapBufferView[B <: Buffer](val self: B)
   @inline
   def generic_compact()(
       implicit newHeapBufferView: NewThisHeapBufferView): BufferType = {
-    if (isReadOnly)
-      throw new ReadOnlyBufferException
+    if (isReadOnly) throw new ReadOnlyBufferException
 
     val len = remaining
     val bytesPerElem = newHeapBufferView.bytesPerElem
@@ -108,8 +107,7 @@ private[nio] final class GenHeapBufferView[B <: Buffer](val self: B)
 
   @inline
   def generic_order(): ByteOrder =
-    if (isBigEndian) ByteOrder.BIG_ENDIAN
-    else ByteOrder.LITTLE_ENDIAN
+    if (isBigEndian) ByteOrder.BIG_ENDIAN else ByteOrder.LITTLE_ENDIAN
 
   @inline
   def byteArrayBits(

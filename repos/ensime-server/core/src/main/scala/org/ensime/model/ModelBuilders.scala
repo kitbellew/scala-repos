@@ -33,13 +33,11 @@ trait ModelBuilders { self: RichPresentationCompiler =>
   def _locateSymbolPos(
       sym: Symbol,
       needPos: PosNeeded): Option[SourcePosition] = {
-    if (sym == NoSymbol || needPos == PosNeededNo)
-      None
+    if (sym == NoSymbol || needPos == PosNeededNo) None
     else if (sym.pos != NoPosition) {
       if (needPos == PosNeededYes || needPos == PosNeededAvail) {
         OffsetSourcePositionHelper.fromPosition(sym.pos)
-      } else
-        Some(EmptySourcePosition())
+      } else Some(EmptySourcePosition())
     } else {
       // only perform operations is actively requested - this is comparatively expensive
       if (needPos == PosNeededYes) {
@@ -54,11 +52,9 @@ trait ModelBuilders { self: RichPresentationCompiler =>
             if (sourcePos.file.getName.endsWith(".scala"))
               askLinkPos(sym, AbstractFile.getFile(sourcePos.file)).flatMap(
                 pos => OffsetSourcePositionHelper.fromPosition(pos))
-            else
-              Some(sourcePos)
+            else Some(sourcePos)
           }
-      } else
-        None
+      } else None
     }
   }
 

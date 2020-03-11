@@ -252,10 +252,8 @@ trait DenseMatrixMultiplyStuff
         info.`val`
       }
 
-      if (info > 0)
-        throw new MatrixSingularException()
-      else if (info < 0)
-        throw new IllegalArgumentException()
+      if (info > 0) throw new MatrixSingularException()
+      else if (info < 0) throw new IllegalArgumentException()
 
       X
     }
@@ -306,8 +304,7 @@ trait DenseMatrixMultiplyStuff
               1,
               math.min(A.rows, A.cols) + math
                 .max(math.min(A.rows, A.cols), nrhs))
-          else
-            math.max(queryWork(0).toInt, 1)
+          else math.max(queryWork(0).toInt, 1)
         }
         new Array[Double](lwork)
       }
@@ -327,8 +324,7 @@ trait DenseMatrixMultiplyStuff
         work.length,
         info)
 
-      if (info.`val` < 0)
-        throw new IllegalArgumentException
+      if (info.`val` < 0) throw new IllegalArgumentException
 
       // extract solution
       val N = if (!transpose) A.cols else A.rows
@@ -550,10 +546,8 @@ trait DenseMatrixFloatMultiplyStuff
         info.`val`
       }
 
-      if (info > 0)
-        throw new MatrixSingularException()
-      else if (info < 0)
-        throw new IllegalArgumentException()
+      if (info > 0) throw new MatrixSingularException()
+      else if (info < 0) throw new IllegalArgumentException()
 
       X
     }
@@ -605,8 +599,7 @@ trait DenseMatrixFloatMultiplyStuff
               1,
               math.min(A.rows, A.cols) + math
                 .max(math.min(A.rows, A.cols), nrhs))
-          else
-            math.max(queryWork(0).toInt, 1)
+          else math.max(queryWork(0).toInt, 1)
         }
         new Array[Float](lwork)
       }
@@ -626,8 +619,7 @@ trait DenseMatrixFloatMultiplyStuff
         work.length,
         info)
 
-      if (info.`val` < 0)
-        throw new IllegalArgumentException
+      if (info.`val` < 0) throw new IllegalArgumentException
 
       // extract solution
       val N = if (!transpose) A.cols else A.rows

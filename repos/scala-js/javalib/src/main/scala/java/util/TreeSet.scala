@@ -27,10 +27,7 @@ class TreeSet[E](_comparator: Comparator[_ >: E])
 
   private implicit object BoxOrdering extends Ordering[Box[E]] {
 
-    val cmp = {
-      if (_comparator ne null) _comparator
-      else defaultOrdering[E]
-    }
+    val cmp = { if (_comparator ne null) _comparator else defaultOrdering[E] }
 
     def compare(a: Box[E], b: Box[E]): Int = cmp.compare(a.inner, b.inner)
 
@@ -106,8 +103,7 @@ class TreeSet[E](_comparator: Comparator[_ >: E])
   override def add(e: E): Boolean = {
     val boxed = Box(e)
 
-    if (isEmpty)
-      BoxOrdering.compare(boxed, boxed)
+    if (isEmpty) BoxOrdering.compare(boxed, boxed)
 
     inner.add(boxed)
   }
@@ -121,8 +117,7 @@ class TreeSet[E](_comparator: Comparator[_ >: E])
   override def addAll(c: Collection[_ <: E]): Boolean = {
     val iter = c.iterator()
     var changed = false
-    while (iter.hasNext)
-      changed = add(iter.next()) || changed
+    while (iter.hasNext) changed = add(iter.next()) || changed
     changed
   }
 
@@ -145,11 +140,9 @@ class TreeSet[E](_comparator: Comparator[_ >: E])
       // the creation of a new TreeSet is to avoid a mysterious bug with scala 2.10
       var base = new mutable.TreeSet[Box[E]]
       base ++= inner.range(boxedFrom, boxedTo)
-      if (!fromInclusive)
-        base = base - boxedFrom
+      if (!fromInclusive) base = base - boxedFrom
 
-      if (toInclusive && inner.contains(boxedTo))
-        base = base + boxedTo
+      if (toInclusive && inner.contains(boxedTo)) base = base + boxedTo
 
       base
     }
@@ -168,10 +161,7 @@ class TreeSet[E](_comparator: Comparator[_ >: E])
     val headSetFun = { () =>
       // the creation of a new TreeSet is to avoid a mysterious bug with scala 2.10
       var base = new mutable.TreeSet[Box[E]]
-      if (inclusive)
-        base ++= inner.to(boxed)
-      else
-        base ++= inner.until(boxed)
+      if (inclusive) base ++= inner.to(boxed) else base ++= inner.until(boxed)
 
       base
     }
@@ -185,8 +175,7 @@ class TreeSet[E](_comparator: Comparator[_ >: E])
       // the creation of a new TreeSet is to avoid a mysterious bug with scala 2.10
       var base = new mutable.TreeSet[Box[E]]
       base ++= inner.from(boxed)
-      if (!inclusive)
-        base -= boxed
+      if (!inclusive) base -= boxed
 
       base
     }

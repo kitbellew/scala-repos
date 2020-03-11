@@ -60,14 +60,13 @@ class ScalaExplicitlyImportedWeigher extends ProximityWeigher {
       while (exprIter.hasNext) {
         val expr = exprIter.next()
         if (expr.singleWildcard && qualNoPoint != null) {
-          for (resolve <- expr.qualifier.multiResolve(false))
-            resolve match {
-              case ScalaResolveResult(pack: PsiPackage, _) =>
-                if (qualNoPoint == pack.getQualifiedName) return Some(3)
-              case ScalaResolveResult(clazz: PsiClass, _) =>
-                if (qualNoPoint == clazz.qualifiedName) return Some(3)
-              case _ =>
-            }
+          for (resolve <- expr.qualifier.multiResolve(false)) resolve match {
+            case ScalaResolveResult(pack: PsiPackage, _) =>
+              if (qualNoPoint == pack.getQualifiedName) return Some(3)
+            case ScalaResolveResult(clazz: PsiClass, _) =>
+              if (qualNoPoint == clazz.qualifiedName) return Some(3)
+            case _ =>
+          }
         } else if (expr.selectorSet.isDefined) {
           for (selector <- expr.selectors) {
             for (resolve <- selector.reference.multiResolve(false)) {
@@ -81,12 +80,11 @@ class ScalaExplicitlyImportedWeigher extends ProximityWeigher {
         } else {
           expr.reference match {
             case Some(ref) =>
-              for (resolve <- ref.multiResolve(false))
-                resolve match {
-                  case ScalaResolveResult(clazz: PsiClass, _) =>
-                    if (qual == clazz.qualifiedName) return Some(3)
-                  case _ =>
-                }
+              for (resolve <- ref.multiResolve(false)) resolve match {
+                case ScalaResolveResult(clazz: PsiClass, _) =>
+                  if (qual == clazz.qualifiedName) return Some(3)
+                case _ =>
+              }
             case None =>
           }
         }
@@ -94,8 +92,7 @@ class ScalaExplicitlyImportedWeigher extends ProximityWeigher {
     }
     if (qualNoPoint != null && qualNoPoint == "scala" ||
         qualNoPoint == "java.lang" || qualNoPoint == "scala.Predef") {
-      if (qualNoPoint == "java.lang") return Some(1)
-      else return Some(2)
+      if (qualNoPoint == "java.lang") return Some(1) else return Some(2)
     }
     None
   }

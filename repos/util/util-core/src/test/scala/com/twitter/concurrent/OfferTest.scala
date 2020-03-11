@@ -130,8 +130,7 @@ class OfferTest extends WordSpec with MockitoSugar {
           Offer.choose(Some(new Random(Time.now.inNanoseconds)), offers)
         val histo = new Array[Int](3)
         for (_ <- 0 until 1000) {
-          for (tx <- shuffledOffer.prepare())
-            histo(txs.indexOf(tx)) += 1
+          for (tx <- shuffledOffer.prepare()) histo(txs.indexOf(tx)) += 1
         }
 
         assert(histo(0) == 311)
@@ -145,8 +144,7 @@ class OfferTest extends WordSpec with MockitoSugar {
 
         offer.prepare() match {
           case Future(Return(tx)) =>
-            for (loser <- txs if loser ne tx)
-              verify(loser).nack()
+            for (loser <- txs if loser ne tx) verify(loser).nack()
             assert(true)
         }
       }

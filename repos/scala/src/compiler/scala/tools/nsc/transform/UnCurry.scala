@@ -318,8 +318,7 @@ abstract class UnCurry
             localTyper.typedPos(pos) {
               val pt = arrayType(elemtp)
               val adaptedTree = // might need to cast to Array[elemtp], as arrays are not covariant
-                if (tree.tpe <:< pt) tree
-                else gen.mkCastArray(tree, elemtp, pt)
+                if (tree.tpe <:< pt) tree else gen.mkCastArray(tree, elemtp, pt)
 
               gen.mkWrapArray(adaptedTree, elemtp)
             }
@@ -390,8 +389,7 @@ abstract class UnCurry
         else args
 
       map2(formals, args1) { (formal, arg) =>
-        if (!isByNameParamType(formal))
-          arg
+        if (!isByNameParamType(formal)) arg
         else if (isByNameRef(arg)) {
           byNameArgs += arg
           arg setType functionType(Nil, arg.tpe)
@@ -492,8 +490,7 @@ abstract class UnCurry
       val result =
         (
           if ((sym ne null) && sym.elisionLevel.exists(
-                _ < settings.elidebelow.value))
-            replaceElidableTree(tree)
+                _ < settings.elidebelow.value)) replaceElidableTree(tree)
           else
             translateSynchronized(tree) match {
               case dd @ DefDef(mods, name, tparams, _, tpt, rhs) =>
@@ -542,10 +539,10 @@ abstract class UnCurry
                 if (sym eq NoSymbol)
                   throw new IllegalStateException(
                     "Encountered Valdef without symbol: " + tree + " in " + unit)
-                if (!sym.owner.isSourceMethod)
-                  withNeedLift(needLift = true) { super.transform(tree) }
-                else
+                if (!sym.owner.isSourceMethod) withNeedLift(needLift = true) {
                   super.transform(tree)
+                }
+                else super.transform(tree)
 
               case Apply(fn, args) =>
                 val needLift =
@@ -624,10 +621,8 @@ abstract class UnCurry
         }
         if (tree.symbol.isMethod && !tree.tpe.isInstanceOf[PolyType])
           gen.mkApplyIfNeeded(removeNullary())
-        else if (tree.isType)
-          TypeTree(tree.tpe) setPos tree.pos
-        else
-          tree
+        else if (tree.isType) TypeTree(tree.tpe) setPos tree.pos
+        else tree
       }
 
       def isThrowable(pat: Tree): Boolean = pat match {
@@ -876,8 +871,7 @@ abstract class UnCurry
     private def addJavaVarargsForwarders(dd: DefDef, flatdd: DefDef): DefDef = {
       if (!dd.symbol.hasAnnotation(VarargsClass) || !enteringUncurry(
             mexists(dd.symbol.paramss)(sym =>
-              definitions.isRepeatedParamType(sym.tpe))))
-        return flatdd
+              definitions.isRepeatedParamType(sym.tpe)))) return flatdd
 
       def toArrayType(tp: Type): Type = {
         val arg = elementType(SeqClass, tp)
@@ -887,8 +881,7 @@ abstract class UnCurry
         //   becomes     def foo[T](a: Int, b: Array[Object])
         //   instead of  def foo[T](a: Int, b: Array[T]) ===> def foo[T](a: Int, b: Object)
         arrayType(
-          if (arg.typeSymbol.isTypeParameterOrSkolem) ObjectTpe
-          else arg
+          if (arg.typeSymbol.isTypeParameterOrSkolem) ObjectTpe else arg
         )
       }
 

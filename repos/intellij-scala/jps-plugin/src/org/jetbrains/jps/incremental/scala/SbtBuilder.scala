@@ -64,8 +64,7 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
       new ProgressMessage("Searching for compilable files..."))
 
     val filesToCompile = collectCompilableFiles(context, chunk)
-    if (filesToCompile.isEmpty)
-      return ExitCode.NOTHING_DONE
+    if (filesToCompile.isEmpty) return ExitCode.NOTHING_DONE
 
     // Delete dirty class files (to handle force builds and form changes)
     BuildOperations.cleanOutputsCorrespondingToChangedFiles(

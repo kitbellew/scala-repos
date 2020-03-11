@@ -78,10 +78,8 @@ object MatMath {
         val rj0 = j * numRows
 
         val tmp =
-          if (corr && i == j)
-            1.0
-          else
-            covariance(input, ri0, rj0, numRows, corr = corr)
+          if (corr && i == j) 1.0
+          else covariance(input, ri0, rj0, numRows, corr = corr)
 
         output(j * numCols + i) = tmp
         output(i * numCols + j) = tmp
@@ -170,8 +168,7 @@ object MatMath {
     }
     if (corr) // corr or cov?
       ab / math.sqrt(aa * bb)
-    else
-      ab / (count - 1)
+    else ab / (count - 1)
   }
 
   /** Efficient block-based non-square matrix transpose that is sensitive to cache line

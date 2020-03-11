@@ -73,8 +73,7 @@ sealed trait List[@specialized +A]
     *  @ex <code>List(1, 2) ::: List(3, 4) = List(3, 4).:::(List(1, 2)) = List(1, 2, 3, 4)</code>
     */
   def :::[B >: A](prefix: List[B]): List[B] =
-    if (isEmpty) prefix
-    else (new ListBuffer[B] ++= prefix).prependToList(this)
+    if (isEmpty) prefix else (new ListBuffer[B] ++= prefix).prependToList(this)
 
   /** Reverse the given prefix and append the current list to that.
     *  This function is equivalent to an application of <code>reverse</code>
@@ -171,8 +170,7 @@ sealed trait List[@specialized +A]
       b += these.head
       these = these.tail
     }
-    if (these.isEmpty) this
-    else b.toList
+    if (these.isEmpty) this else b.toList
   }
 
   /** Returns the list without its <code>n</code> first elements.
@@ -265,8 +263,7 @@ sealed trait List[@specialized +A]
   override def dropWhile(p: A => Boolean): List[A] = {
     @tailrec
     def loop(xs: List[A]): List[A] =
-      if (xs.isEmpty || !p(xs.head)) xs
-      else loop(xs.tail)
+      if (xs.isEmpty || !p(xs.head)) xs else loop(xs.tail)
 
     loop(this)
   }
@@ -303,8 +300,7 @@ sealed trait List[@specialized +A]
   override def stringPrefix = "List"
 
   override def toStream: Stream[A] =
-    if (isEmpty) Stream.Empty
-    else new Stream.Cons(head, tail.toStream)
+    if (isEmpty) Stream.Empty else new Stream.Cons(head, tail.toStream)
 
   // !!! todo: work in patch
 
@@ -409,10 +405,7 @@ sealed trait List[@specialized +A]
         case Nil      => lst
         case x :: Nil => lst
         case x :: y :: Nil =>
-          if (lt(x, y))
-            lst
-          else
-            y :: x :: Nil
+          if (lt(x, y)) lst else y :: x :: Nil
 
         case lst =>
           val (l1, l2) = split(lst)
@@ -682,8 +675,7 @@ object List extends SeqFactory[List] {
     var pos = str.length()
     while (pos > 0) {
       val pos1 = str.lastIndexOf(separator, pos - 1)
-      if (pos1 + 1 < pos)
-        words = str.substring(pos1 + 1, pos) :: words
+      if (pos1 + 1 < pos) words = str.substring(pos1 + 1, pos) :: words
       pos = pos1
     }
     words

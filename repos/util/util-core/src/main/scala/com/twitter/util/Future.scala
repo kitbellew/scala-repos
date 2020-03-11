@@ -123,15 +123,13 @@ object Future {
     * A `Unit`-typed `Future` that is satisfied after `howlong`.
     */
   def sleep(howlong: Duration)(implicit timer: Timer): Future[Unit] = {
-    if (howlong <= Duration.Zero)
-      return Future.Done
+    if (howlong <= Duration.Zero) return Future.Done
 
     val p = new Promise[Unit]
     val task = timer.schedule(howlong.fromNow) { p.setDone() }
     p.setInterruptHandler {
       case e =>
-        if (p.updateIfEmpty(Throw(e)))
-          task.cancel()
+        if (p.updateIfEmpty(Throw(e))) task.cancel()
     }
     p
   }
@@ -183,15 +181,13 @@ object Future {
       extends Monitor {
     private[this] def getAndSetNull(): Promise[A] = synchronized {
       val prev = p
-      if (p != null)
-        p = null
+      if (p != null) p = null
       prev
     }
 
     def setTo(r: Try[A]): Unit = {
       val prev = getAndSetNull()
-      if (prev != null)
-        prev.update(r)
+      if (prev != null) prev.update(r)
     }
 
     def handle(exc: Throwable): Boolean = {
@@ -231,8 +227,7 @@ object Future {
       for (f <- fs) {
         f respond {
           case Return(_) =>
-            if (count.decrementAndGet() == 0)
-              p.update(Return.Unit)
+            if (count.decrementAndGet() == 0) p.update(Return.Unit)
           case Throw(cause) =>
             p.updateIfEmpty(Throw(cause))
         }
@@ -1540,8 +1535,7 @@ abstract class Future[+A] extends Awaitable[A] {
       timer: Timer,
       timeout: Duration,
       exc: Throwable): Future[A] = {
-    if (timeout == Duration.Top || isDefined)
-      return this
+    if (timeout == Duration.Top || isDefined) return this
 
     within(timer, timeout, Future.raiseException) rescue {
       case e if e eq Future.raiseException =>
@@ -1576,8 +1570,7 @@ abstract class Future[+A] extends Awaitable[A] {
     * @param exc exception to throw.
     */
   def within(timer: Timer, timeout: Duration, exc: => Throwable): Future[A] = {
-    if (timeout == Duration.Top || isDefined)
-      return this
+    if (timeout == Duration.Top || isDefined) return this
 
     val p = Promise.interrupts[A](this)
     val task = timer.schedule(timeout.fromNow) { p.updateIfEmpty(Throw(exc)) }
@@ -1593,8 +1586,7 @@ abstract class Future[+A] extends Awaitable[A] {
     * `howlong` from now.
     */
   def delayed(howlong: Duration)(implicit timer: Timer): Future[A] = {
-    if (howlong == Duration.Zero)
-      return this
+    if (howlong == Duration.Zero) return this
 
     val p = Promise.interrupts[A](this)
     timer.schedule(howlong.fromNow) { p.become(this) }
@@ -1898,14 +1890,12 @@ abstract class Future[+A] extends Awaitable[A] {
       override def isDone: Boolean = isCancelled || f.isDefined
 
       override def get(): A = {
-        if (isCancelled)
-          throw new CancellationException
+        if (isCancelled) throw new CancellationException
         Await.result(f)
       }
 
       override def get(time: Long, timeUnit: TimeUnit): A = {
-        if (isCancelled)
-          throw new CancellationException
+        if (isCancelled) throw new CancellationException
         Await.result(f, Duration.fromTimeUnit(time, timeUnit))
       }
     }
@@ -1982,8 +1972,7 @@ abstract class Future[+A] extends Awaitable[A] {
     val p = Promise.attached(this)
     p setInterruptHandler {
       case t: Throwable =>
-        if (p.detach())
-          p.setException(t)
+        if (p.detach()) p.setException(t)
     }
     p
   }

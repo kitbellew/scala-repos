@@ -501,8 +501,7 @@ object JE {
 
   case class JsVar(varName: String, andThen: String*) extends JsExp {
     def toJsCmd =
-      varName + (if (andThen.isEmpty) ""
-                 else andThen.mkString(".", ".", ""))
+      varName + (if (andThen.isEmpty) "" else andThen.mkString(".", ".", ""))
   }
 
   /**

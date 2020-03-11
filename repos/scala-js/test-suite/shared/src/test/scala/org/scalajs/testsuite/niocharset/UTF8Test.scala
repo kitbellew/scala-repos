@@ -109,8 +109,7 @@ class UTF8Test extends BaseCharsetTest(Charset.forName("UTF-8")) {
     testDecode(bb"f0 90 80")(Malformed(3))
     // at the end of the buffer - #1537
     testDecode(bb"c0")(Malformed(1))
-    if (!executingInJVM)
-      testDecode(bb"e1 41")(Malformed(1), cb"A")
+    if (!executingInJVM) testDecode(bb"e1 41")(Malformed(1), cb"A")
     testDecode(bb"e1 80 42")(Malformed(2), cb"B")
     // and all of them concatenated
     testDecode(bb"c2  e0  e0 a0  f0  f0 90  f0 90 80")(

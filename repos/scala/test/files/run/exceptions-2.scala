@@ -59,8 +59,7 @@ object Test {
 
   def mixed =
     try {
-      if (10 > 0)
-        throw Leaf(10);
+      if (10 > 0) throw Leaf(10);
       Console.println("nooo oneeee can priiiint meee");
     } catch {
       case Leaf(a)      => Console.println(a);
@@ -69,8 +68,7 @@ object Test {
 
   def method2: Unit = {
     try {
-      if (10 > 0)
-        throw Leaf(10);
+      if (10 > 0) throw Leaf(10);
       Console.println("nooo oneeee can priiiint meee");
     } catch {
       case Leaf(a)      => Console.println(a);

@@ -60,20 +60,15 @@ private[twitter] object ThriftUtil {
     catch { case _: NoSuchMethodException => None }
 
   def findRootWithSuffix(str: String, suffix: String): Option[String] =
-    if (str.endsWith(suffix))
-      Some(str.stripSuffix(suffix))
-    else
-      None
+    if (str.endsWith(suffix)) Some(str.stripSuffix(suffix)) else None
 
   lazy val findSwiftClass: Class[_] => Option[Class[_]] = {
     val f = for {
       serviceSym <- findClass1("com.twitter.finagle.exp.swift.ServiceSym")
       meth <- findMethod(serviceSym, "isService", classOf[Class[_]])
     } yield { k: Class[_] =>
-      try {
-        if (meth.invoke(null, k).asInstanceOf[Boolean]) Some(k)
-        else None
-      } catch { case NonFatal(_) => None }
+      try { if (meth.invoke(null, k).asInstanceOf[Boolean]) Some(k) else None }
+      catch { case NonFatal(_) => None }
     }
 
     f getOrElse Function.const(None)

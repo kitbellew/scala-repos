@@ -179,8 +179,7 @@ object Framing {
 
     override def onUpstreamFinish(
         ctx: Context[ByteString]): TerminationDirective =
-      if (buffer.nonEmpty) ctx.absorbTermination()
-      else ctx.finish()
+      if (buffer.nonEmpty) ctx.absorbTermination() else ctx.finish()
 
     private def tryPull(ctx: Context[ByteString]): SyncDirective = {
       if (ctx.isFinishing) {
@@ -262,8 +261,7 @@ object Framing {
 
     override def onUpstreamFinish(
         ctx: Context[ByteString]): TerminationDirective =
-      if (buffer.nonEmpty) ctx.absorbTermination()
-      else ctx.finish()
+      if (buffer.nonEmpty) ctx.absorbTermination() else ctx.finish()
 
     private def doParse(ctx: Context[ByteString]): SyncDirective = {
       def emitFrame(ctx: Context[ByteString]): SyncDirective = {

@@ -178,8 +178,7 @@ abstract class TailCalls extends Transform {
         label setInfo MethodType(
           thisParam :: method.tpe.params,
           method.tpe_*.finalResultType)
-        if (isEligible)
-          label substInfo (method.tpe.typeParams, tparams)
+        if (isEligible) label substInfo (method.tpe.typeParams, tparams)
 
         label
       }
@@ -421,10 +420,8 @@ abstract class TailCalls extends Transform {
           // we tail-called -- TODO: shield from false-positives where we rewrite but don't tail-call
           // must leave the jump to the original tailpos-label (fun)!
           // there might be *a* tailcall *in* res, but it doesn't mean res *always* tailcalls
-          if (res ne arg)
-            treeCopy.Apply(tree, fun, res :: Nil)
-          else
-            rewriteApply(fun, fun, Nil, args, mustTransformArgs = false)
+          if (res ne arg) treeCopy.Apply(tree, fun, res :: Nil)
+          else rewriteApply(fun, fun, Nil, args, mustTransformArgs = false)
 
         case Apply(fun, args) =>
           rewriteApply(fun, fun, Nil, args)

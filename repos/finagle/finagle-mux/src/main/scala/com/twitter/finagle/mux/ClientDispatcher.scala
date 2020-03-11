@@ -67,19 +67,16 @@ private[twitter] class ClientDispatcher(trans: Transport[Message, Message])
       for (tag <- tags) {
         // unmap the `tag` here to prevent the associated promise from
         // being fetched from the tag map again, and setting a value twice.
-        for (u <- messages.unmap(tag))
-          u() = result
+        for (u <- messages.unmap(tag)) u() = result
       }
   }
 
   private[this] def process(msg: Message): Unit = msg match {
     case Message.Rerr(_, err) =>
-      for (u <- messages.unmap(msg.tag))
-        u() = Throw(ServerError(err))
+      for (u <- messages.unmap(msg.tag)) u() = Throw(ServerError(err))
 
     case Message.Rmessage(_) =>
-      for (u <- messages.unmap(msg.tag))
-        u() = Return(msg)
+      for (u <- messages.unmap(msg.tag)) u() = Return(msg)
 
     case _ => // do nothing.
   }

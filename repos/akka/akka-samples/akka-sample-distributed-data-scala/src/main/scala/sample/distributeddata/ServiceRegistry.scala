@@ -104,8 +104,7 @@ class ServiceRegistry extends Actor with ActorLogging {
       log.debug("Services changed for name [{}]: {}", name, newServices)
       services = services.updated(name, newServices)
       context.system.eventStream.publish(BindingChanged(name, newServices))
-      if (leader)
-        newServices.foreach(context.watch) // watch is idempotent
+      if (leader) newServices.foreach(context.watch) // watch is idempotent
 
     case LeaderChanged(node) ⇒
       // Let one node (the leader) be responsible for removal of terminated services
@@ -116,11 +115,9 @@ class ServiceRegistry extends Actor with ActorLogging {
       // when used with many (> 500) services you must increase the system message buffer
       // `akka.remote.system-message-buffer-size`
       if (!wasLeader && leader)
-        for (refs ← services.valuesIterator; ref ← refs)
-          context.watch(ref)
+        for (refs ← services.valuesIterator; ref ← refs) context.watch(ref)
       else if (wasLeader && !leader)
-        for (refs ← services.valuesIterator; ref ← refs)
-          context.unwatch(ref)
+        for (refs ← services.valuesIterator; ref ← refs) context.unwatch(ref)
 
     case Terminated(ref) ⇒
       val names = services.collect {

@@ -233,8 +233,7 @@ private[kafka] abstract class AbstractServerThread(
     if (channel != null) {
       debug(s"Closing selector connection $connectionId")
       val address = channel.socketAddress
-      if (address != null)
-        connectionQuotas.dec(address)
+      if (address != null) connectionQuotas.dec(address)
       selector.close(connectionId)
     }
   }
@@ -299,8 +298,7 @@ private[kafka] class Acceptor(
               try {
                 val key = iter.next
                 iter.remove()
-                if (key.isAcceptable)
-                  accept(key, processors(currentProcessor))
+                if (key.isAcceptable) accept(key, processors(currentProcessor))
                 else
                   throw new IllegalStateException(
                     "Unrecognized key state for acceptor thread.")
@@ -334,10 +332,8 @@ private[kafka] class Acceptor(
    */
   private def openServerSocket(host: String, port: Int): ServerSocketChannel = {
     val socketAddress =
-      if (host == null || host.trim.isEmpty)
-        new InetSocketAddress(port)
-      else
-        new InetSocketAddress(host, port)
+      if (host == null || host.trim.isEmpty) new InetSocketAddress(port)
+      else new InetSocketAddress(host, port)
     val serverChannel = ServerSocketChannel.open()
     serverChannel.configureBlocking(false)
     serverChannel.socket().setReceiveBufferSize(recvBufferSize)
@@ -648,8 +644,7 @@ class ConnectionQuotas(val defaultMax: Int, overrideQuotas: Map[String, Int]) {
       val count = counts.getOrElseUpdate(address, 0)
       counts.put(address, count + 1)
       val max = overrides.getOrElse(address, defaultMax)
-      if (count >= max)
-        throw new TooManyConnectionsException(address, max)
+      if (count >= max) throw new TooManyConnectionsException(address, max)
     }
   }
 
@@ -659,10 +654,7 @@ class ConnectionQuotas(val defaultMax: Int, overrideQuotas: Map[String, Int]) {
         address,
         throw new IllegalArgumentException(
           s"Attempted to decrease connection count for address with no connections, address: $address"))
-      if (count == 1)
-        counts.remove(address)
-      else
-        counts.put(address, count - 1)
+      if (count == 1) counts.remove(address) else counts.put(address, count - 1)
     }
   }
 

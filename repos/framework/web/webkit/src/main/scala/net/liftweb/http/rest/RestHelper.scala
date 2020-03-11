@@ -119,8 +119,7 @@ trait RestHelper extends LiftRules.DispatchPF {
       * instance are extracted.
       */
     def unapply(r: Req): Option[(List[String], (RequestType, Req))] =
-      if (testResponse_?(r))
-        Some(r.path.partPath -> (r.requestType -> r))
+      if (testResponse_?(r)) Some(r.path.partPath -> (r.requestType -> r))
       else None
 
     def testResponse_?(r: Req): Boolean
@@ -158,9 +157,7 @@ trait RestHelper extends LiftRules.DispatchPF {
       * The path and the Req instance are extracted.
       */
     def unapply(r: Req): Option[(List[String], Req)] =
-      if (r.get_? && testResponse_?(r))
-        Some(r.path.partPath -> r)
-      else None
+      if (r.get_? && testResponse_?(r)) Some(r.path.partPath -> r) else None
 
     def testResponse_?(r: Req): Boolean
   }

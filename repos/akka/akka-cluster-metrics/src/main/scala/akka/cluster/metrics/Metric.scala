@@ -217,12 +217,12 @@ object StandardMetrics {
     */
   def extractCpu(nodeMetrics: NodeMetrics): Cpu = nodeMetrics match {
     case Cpu(
-        address,
-        timestamp,
-        systemLoadAverage,
-        cpuCombined,
-        cpuStolen,
-        processors) ⇒
+          address,
+          timestamp,
+          systemLoadAverage,
+          cpuCombined,
+          cpuStolen,
+          processors) ⇒
       // note that above extractor returns tuple
       Cpu(
         address,

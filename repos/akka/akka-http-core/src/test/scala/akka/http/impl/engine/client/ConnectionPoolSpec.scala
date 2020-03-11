@@ -209,8 +209,7 @@ class ConnectionPoolSpec
       override def mapServerSideOutboundRawBytes(
           bytes: ByteString): ByteString =
         if (bytes.utf8String.contains("/crash") && remainingResponsesToKill
-              .decrementAndGet() >= 0)
-          sys.error("CRASH BOOM BANG")
+              .decrementAndGet() >= 0) sys.error("CRASH BOOM BANG")
         else bytes
 
       val responses = Seq(responseOut.expectNext(), responseOut.expectNext())
@@ -236,8 +235,7 @@ class ConnectionPoolSpec
       override def mapServerSideOutboundRawBytes(
           bytes: ByteString): ByteString =
         if (bytes.utf8String.contains("/crash") && remainingResponsesToKill
-              .decrementAndGet() >= 0)
-          sys.error("CRASH BOOM BANG")
+              .decrementAndGet() >= 0) sys.error("CRASH BOOM BANG")
         else bytes
 
       val responses = Seq(responseOut.expectNext(), responseOut.expectNext())

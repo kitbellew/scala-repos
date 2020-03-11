@@ -99,10 +99,8 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
       case _ => false
     }
 
-    if (suitable)
-      expressions collect { case x: ScLiteral if x.isString => x }
-    else
-      Seq.empty
+    if (suitable) expressions collect { case x: ScLiteral if x.isString => x }
+    else Seq.empty
   }
 
   def injectUsingAnnotation(

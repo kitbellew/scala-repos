@@ -170,8 +170,7 @@ private class BalancerTest
     assert(size() == 3)
     assert(adds() == 3)
     assert(rems() == 0)
-    for (f <- Seq(f1, f2, f3))
-      assert(f.ncloses == 0)
+    for (f <- Seq(f1, f2, f3)) assert(f.ncloses == 0)
 
     bal.update(Seq(f1, f3))
     assert(size() == 2)

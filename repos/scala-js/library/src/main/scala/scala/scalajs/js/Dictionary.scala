@@ -80,8 +80,7 @@ object Dictionary {
 
   def apply[A](properties: (String, A)*): Dictionary[A] = {
     val result = empty[A]
-    for ((key, value) <- properties)
-      result(key) = value
+    for ((key, value) <- properties) result(key) = value
     result
   }
 }

@@ -31,8 +31,7 @@ private[akka] final case class GraphStageModule(
     CopiedModule(shape.deepCopy(), Attributes.none, this)
 
   override def replaceShape(s: Shape): Module =
-    if (s != shape) CompositeModule(this, s)
-    else this
+    if (s != shape) CompositeModule(this, s) else this
 
   override def withAttributes(attributes: Attributes): Module =
     if (attributes ne this.attributes)
@@ -114,8 +113,7 @@ object GraphStages {
             override def onPull(): Unit = {
               if (isAvailable(in)) {
                 push(out, grab(in))
-                if (isClosed(in)) completeStage()
-                else pull(in)
+                if (isClosed(in)) completeStage() else pull(in)
               }
             }
           })

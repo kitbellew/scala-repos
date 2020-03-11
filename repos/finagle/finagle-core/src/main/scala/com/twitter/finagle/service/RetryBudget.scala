@@ -151,14 +151,12 @@ object RetryBudget {
       percentCanRetry <= TokenRetryBudget.ScaleFactor,
       s"percentCanRetry must not be greater than ${TokenRetryBudget.ScaleFactor}: $percentCanRetry")
 
-    if (minRetriesPerSec == 0 && percentCanRetry == 0.0)
-      return Empty
+    if (minRetriesPerSec == 0 && percentCanRetry == 0.0) return Empty
 
     // if you only have minRetries, everything costs 1 but you
     // get no credit for requests. all credits come via time.
     val depositAmount =
-      if (percentCanRetry == 0.0) 0
-      else TokenRetryBudget.ScaleFactor.toInt
+      if (percentCanRetry == 0.0) 0 else TokenRetryBudget.ScaleFactor.toInt
     val withdrawalAmount =
       if (percentCanRetry == 0.0) 1
       else (TokenRetryBudget.ScaleFactor / percentCanRetry).toInt

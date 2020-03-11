@@ -296,14 +296,13 @@ class ZkAuthorizationTest extends ZooKeeperTestHarness with Logging {
   private def deleteRecursive(zkUtils: ZkUtils, path: String): Try[Boolean] = {
     info(s"Deleting $path")
     var result: Try[Boolean] = Success(true)
-    for (child <- zkUtils.getChildren(path))
-      result = (path match {
-        case "/"  => deleteRecursive(zkUtils, s"/$child")
-        case path => deleteRecursive(zkUtils, s"$path/$child")
-      }) match {
-        case Success(v) => result
-        case Failure(e) => Failure(e)
-      }
+    for (child <- zkUtils.getChildren(path)) result = (path match {
+      case "/"  => deleteRecursive(zkUtils, s"/$child")
+      case path => deleteRecursive(zkUtils, s"$path/$child")
+    }) match {
+      case Success(v) => result
+      case Failure(e) => Failure(e)
+    }
     path match {
       // Do not try to delete the root
       case "/" => result

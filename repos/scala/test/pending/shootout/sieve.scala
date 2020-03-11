@@ -14,8 +14,7 @@ object sieve {
     while (n > 0) {
       count = 0;
 
-      for (i <- Iterator.range(start, stop + 1))
-        isPrime(i) = true;
+      for (i <- Iterator.range(start, stop + 1)) isPrime(i) = true;
 
       for (i <- Iterator.range(start, stop + 1)) {
         if (isPrime(i)) {

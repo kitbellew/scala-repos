@@ -19,8 +19,7 @@ private class NameTreeParsers private (str: String) {
   private[this] var idx = 0
 
   private[this] def stringOfChar(char: Char) =
-    if (char == EOI) "end of input"
-    else "'" + char + "'"
+    if (char == EOI) "end of input" else "'" + char + "'"
 
   private[this] def illegal(expected: String, found: String): Nothing = {
     val displayStr =
@@ -40,8 +39,7 @@ private class NameTreeParsers private (str: String) {
     illegal(stringOfChar(expected), stringOfChar(found))
 
   private[this] def peek: Char =
-    if (atEnd) EOI
-    else str(idx)
+    if (atEnd) EOI else str(idx)
 
   private[this] def next() { idx += 1 }
 
@@ -55,16 +53,12 @@ private class NameTreeParsers private (str: String) {
   private[this] def eat(char: Char) { if (!maybeEat(char)) illegal(char, peek) }
 
   private[this] def eatWhitespace() {
-    while (!atEnd && str(idx).isWhitespace)
-      next()
+    while (!atEnd && str(idx).isWhitespace) next()
   }
 
   private[this] def atEnd() = idx >= size
 
-  private[this] def ensureEnd() {
-    if (!atEnd)
-      illegal(EOI, peek)
-  }
+  private[this] def ensureEnd() { if (!atEnd) illegal(EOI, peek) }
 
   private[this] def parseHexChar(): Char =
     peek match {
@@ -116,8 +110,7 @@ private class NameTreeParsers private (str: String) {
 
     while (isNumberChar(peek)) {
       if (peek == '.') {
-        if (seenDot) illegal("number char", peek)
-        else seenDot = true
+        if (seenDot) illegal("number char", peek) else seenDot = true
       }
       sb += peek
       next()
@@ -130,8 +123,7 @@ private class NameTreeParsers private (str: String) {
     eatWhitespace()
     eat('/')
 
-    if (!isLabelChar(peek))
-      Path.empty
+    if (!isLabelChar(peek)) Path.empty
     else {
       val labels = Buffer[Buf]()
 
@@ -149,10 +141,7 @@ private class NameTreeParsers private (str: String) {
       eatWhitespace()
     } while (maybeEat('|'))
 
-    if (trees.size > 1)
-      NameTree.Alt(trees: _*)
-    else
-      trees(0)
+    if (trees.size > 1) NameTree.Alt(trees: _*) else trees(0)
   }
 
   private[this] def parseTree1(): NameTree[Path] = {
@@ -163,10 +152,7 @@ private class NameTreeParsers private (str: String) {
       eatWhitespace()
     } while (maybeEat('&'))
 
-    if (trees.size > 1)
-      NameTree.Union(trees: _*)
-    else
-      trees(0).tree
+    if (trees.size > 1) NameTree.Union(trees: _*) else trees(0).tree
   }
 
   private[this] def parseSimple(): NameTree[Path] = {

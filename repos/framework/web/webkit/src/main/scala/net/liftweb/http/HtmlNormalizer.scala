@@ -109,10 +109,7 @@ private[http] final object HtmlNormalizer {
             // Could be javascript: or javascript://.
             val base = attributeValue.text.substring(11)
             val strippedJs =
-              if (base.startsWith("//"))
-                base.substring(2)
-              else
-                base
+              if (base.startsWith("//")) base.substring(2) else base
 
             if (strippedJs.trim.isEmpty) { Nil }
             else {

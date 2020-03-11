@@ -79,10 +79,7 @@ trait VectorSpaceLaws[V, A] extends Laws {
     parents = Seq(vectorSpace, metricSpace),
     "scalable" → forAll((a: A, v: V) => a.abs * v.norm === (a.abs *: v).norm),
     "only 1 zero" → forAll((v: V) => // This is covered by metricSpace...
-      if (v === V.zero)
-        v.norm === Rng[A].zero
-      else
-        v.norm > Rng[A].zero)
+      if (v === V.zero) v.norm === Rng[A].zero else v.norm > Rng[A].zero)
   )
 
   def linearity(f: V => A)(implicit V: Module[V, A]) = new SimpleRuleSet(

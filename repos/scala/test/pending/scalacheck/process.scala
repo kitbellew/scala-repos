@@ -25,10 +25,8 @@ package processtest {
   object cat {
     def main(args: Array[String]) {
       try {
-        if (args.length == 0)
-          IO.transfer(System.in, System.out)
-        else
-          catFiles(args.toList)
+        if (args.length == 0) IO.transfer(System.in, System.out)
+        else catFiles(args.toList)
         exit.fn(0)
       } catch {
         case e =>
@@ -41,8 +39,7 @@ package processtest {
       filenames match {
         case head :: tail =>
           val file = new File(head)
-          if (file.isDirectory)
-            throw new IOException("Is directory: " + file)
+          if (file.isDirectory) throw new IOException("Is directory: " + file)
           else if (file.exists) {
             IO.transfer(file, System.out)
             catFiles(tail)

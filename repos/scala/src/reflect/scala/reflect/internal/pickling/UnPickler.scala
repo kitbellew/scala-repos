@@ -80,8 +80,7 @@ abstract class UnPickler {
 
     private def expect(expected: Int, msg: => String) {
       val tag = readByte()
-      if (tag != expected)
-        errorBadSignature(s"$msg ($tag)")
+      if (tag != expected) errorBadSignature(s"$msg ($tag)")
     }
 
     //println("unpickled " + classRoot + ":" + classRoot.rawInfo + ", " + moduleRoot + ":" + moduleRoot.rawInfo);//debug
@@ -107,10 +106,8 @@ abstract class UnPickler {
       i = 0
       while (i < index.length) {
         if (entries(i) == null) {
-          if (isSymbolAnnotationEntry(i))
-            runAtIndex(i)(readSymbolAnnotation())
-          else if (isChildrenEntry(i))
-            runAtIndex(i)(readChildren())
+          if (isSymbolAnnotationEntry(i)) runAtIndex(i)(readSymbolAnnotation())
+          else if (isChildrenEntry(i)) runAtIndex(i)(readChildren())
         }
         i += 1
       }
@@ -240,8 +237,7 @@ abstract class UnPickler {
           // right member, so return NoSymbol. This can only happen when unpickling a tree.
           // the "case Apply" in readTree() takes care of selecting the correct alternative
           //  after parsing the arguments.
-          if (owner.isOverloaded)
-            return NoSymbol
+          if (owner.isOverloaded) return NoSymbol
 
           if (tag == EXTMODCLASSref) {
             val moduleVar = owner.info.decl(nme.moduleVarName(name.toTermName))
@@ -269,8 +265,7 @@ abstract class UnPickler {
         }
 
         def localDummy = {
-          if (nme.isLocalDummyName(name))
-            owner.newLocalDummy(NoPosition)
+          if (nme.isLocalDummyName(name)) owner.newLocalDummy(NoPosition)
           else NoSymbol
         }
 
@@ -357,8 +352,7 @@ abstract class UnPickler {
               newLazyTypeRefAndAlias(inforef, readNat())
             }
           )
-        if (shouldEnterInOwnerScope)
-          symScope(sym.owner) enter sym
+        if (shouldEnterInOwnerScope) symScope(sym.owner) enter sym
 
         sym
       }
@@ -374,8 +368,7 @@ abstract class UnPickler {
                 else classRoot setFlag pflags
               } else owner.newClassSymbol(name.toTypeName, NoPosition, pflags)
             )
-          if (!atEnd)
-            sym.typeOfThis = newLazyTypeRef(readNat())
+          if (!atEnd) sym.typeOfThis = newLazyTypeRef(readNat())
 
           sym
         case MODULEsym =>
@@ -540,8 +533,7 @@ abstract class UnPickler {
           val name = at(argref, readName)
           val arg = readClassfileAnnotArg(readNat())
           assocs += ((name, arg))
-        } else
-          args += readAnnotArg(argref)
+        } else args += readAnnotArg(argref)
       }
       AnnotationInfo(atp, args.toList, assocs.toList)
     }

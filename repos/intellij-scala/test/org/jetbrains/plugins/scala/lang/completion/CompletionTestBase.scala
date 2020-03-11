@@ -75,8 +75,7 @@ abstract class CompletionTestBase
     val lookup: LookupImpl =
       LookupManager.getActiveLookup(editor).asInstanceOf[LookupImpl]
 
-    if (lookup == null)
-      Array.empty
+    if (lookup == null) Array.empty
     else
       lookup.getItems.toArray(LookupElement.EMPTY_ARRAY).map(_.getLookupString)
   }

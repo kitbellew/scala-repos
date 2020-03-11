@@ -230,10 +230,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
           val (continuing, expired) = cellBlock partition { _.advance(idx) }
           queue.enqueue(continuing: _*)
 
-          if (expired.isEmpty)
-            consumeToBoundary(queue, cellMatrix, idx + 1)
-          else
-            (idx + 1, expired)
+          if (expired.isEmpty) consumeToBoundary(queue, cellMatrix, idx + 1)
+          else (idx + 1, expired)
         }
       }
 
@@ -246,10 +244,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
         // right now.
         val cellMatrix = CellMatrix(cells)(keyf)
         val ordering =
-          if (inputSortOrder.isAscending)
-            cellMatrix.ordering.reverse
-          else
-            cellMatrix.ordering
+          if (inputSortOrder.isAscending) cellMatrix.ordering.reverse
+          else cellMatrix.ordering
 
         val queue = mutable.PriorityQueue(cells.toSeq: _*)(ordering)
 
@@ -1191,13 +1187,13 @@ trait BlockStoreColumnarTableModule[M[+_]]
           (sliceIndex, jdbmState)
 
         case SortedSlice(
-            indexName,
-            kslice0,
-            vslice0,
-            vEncoder0,
-            keyRefs,
-            valRefs,
-            count) =>
+              indexName,
+              kslice0,
+              vslice0,
+              vEncoder0,
+              keyRefs,
+              valRefs,
+              count) =>
           val keyRowFormat = RowFormat.forSortingKey(krefs)
           val keyComparator =
             SortingKeyComparator(keyRowFormat, sortOrder.isAscending)
@@ -1299,8 +1295,16 @@ trait BlockStoreColumnarTableModule[M[+_]]
                   (k: SortingKey) => M.point(None))))
 
           case (
-              SliceIndex(name, dbFile, _, _, _, keyColumns, valColumns, count),
-              index) =>
+                SliceIndex(
+                  name,
+                  dbFile,
+                  _,
+                  _,
+                  _,
+                  keyColumns,
+                  valColumns,
+                  count),
+                index) =>
             val sortProjection = new JDBMRawSortProjection[M](
               dbFile,
               name,

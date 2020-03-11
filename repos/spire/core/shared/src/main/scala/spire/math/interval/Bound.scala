@@ -234,10 +234,8 @@ object ValueBound {
       v1: ValueBound[A],
       v2: ValueBound[A],
       v3: ValueBound[A]): Interval[A] =
-    if (v1.isClosed || v2.isClosed || v3.isClosed)
-      Interval.point(v1.a)
-    else
-      Interval.empty[A]
+    if (v1.isClosed || v2.isClosed || v3.isClosed) Interval.point(v1.a)
+    else Interval.empty[A]
 
   /** Returns the interval which contains all the given bounds.
     *

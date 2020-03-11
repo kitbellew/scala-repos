@@ -177,8 +177,7 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     * @param keys Array of keys
     */
   def col(keys: Array[CX]): Frame[RX, CX, T] = {
-    if (values.numCols == 0)
-      Frame.empty[RX, CX, T]
+    if (values.numCols == 0) Frame.empty[RX, CX, T]
     else {
       val locs = array.filter[Int](_ != -1)(colIx(keys))
       colAt(locs)
@@ -220,10 +219,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     * @param locs an array of integer offsets
     */
   def colAt(locs: Array[Int]): Frame[RX, CX, T] =
-    if (values.numCols == 0)
-      Frame.empty[RX, CX, T]
-    else
-      Frame(values.take(locs), rowIx, colIx.take(locs))
+    if (values.numCols == 0) Frame.empty[RX, CX, T]
+    else Frame(values.take(locs), rowIx, colIx.take(locs))
 
   /**
     * Access frame columns specified by a slice
@@ -285,8 +282,7 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     * @param keys Array of keys
     */
   def row(keys: Array[RX]): Frame[RX, CX, T] = {
-    if (values.numRows == 0)
-      Frame.empty[RX, CX, T]
+    if (values.numRows == 0) Frame.empty[RX, CX, T]
     else {
       val locs = array.filter[Int](_ != -1)(rowIx(keys))
       rowAt(locs)
@@ -1589,8 +1585,7 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
   def stringify(nrows: Int = 10, ncols: Int = 10): String = {
     val buf = new StringBuilder()
 
-    if (numCols == 0 || numRows == 0)
-      buf.append("Empty Frame")
+    if (numCols == 0 || numRows == 0) buf.append("Empty Frame")
     else {
       buf.append("[%d x %d]\n".format(numRows, numCols))
 
@@ -1782,8 +1777,7 @@ object Frame extends BinOpFrame {
       rowIx: Index[RX],
       colIx: Index[CX]): Frame[RX, CX, T] =
     if (values.isEmpty) empty[RX, CX, T]
-    else
-      new Frame[RX, CX, T](MatCols[T](values: _*), rowIx, colIx)
+    else new Frame[RX, CX, T](MatCols[T](values: _*), rowIx, colIx)
 
   /**
     * Factory method to create a Frame from a sequence of Vec objects
@@ -1898,8 +1892,7 @@ object Frame extends BinOpFrame {
       mat: Mat[T],
       rowIx: Index[RX],
       colIx: Index[CX]): Frame[RX, CX, T] =
-    if (mat.length == 0)
-      empty[RX, CX, T]
+    if (mat.length == 0) empty[RX, CX, T]
     else { new Frame[RX, CX, T](mat.cols(), rowIx, colIx) withMat Some(mat) }
 }
 
@@ -1942,10 +1935,7 @@ object Panel {
       rowIx: Index[RX],
       colIx: Index[CX]): Frame[RX, CX, Any] = {
     val anySeq = values.toIndexedSeq
-    if (values.isEmpty)
-      empty[RX, CX]
-    else
-      Frame(toSeqVec(anySeq), rowIx, colIx)
+    if (values.isEmpty) empty[RX, CX] else Frame(toSeqVec(anySeq), rowIx, colIx)
   }
 
   /**

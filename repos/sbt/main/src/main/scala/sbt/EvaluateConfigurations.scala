@@ -421,8 +421,9 @@ object Index {
     val duplicates = multiMap collect {
       case (k, xs) if xs.size > 1           => (k, xs.map(_.manifest))
     } collect { case (k, xs) if xs.size > 1 => (k, xs) }
-    if (duplicates.isEmpty)
-      multiMap.collect { case (k, v) if validID(k) => (k, v.head) } toMap
+    if (duplicates.isEmpty) multiMap.collect {
+      case (k, v) if validID(k) => (k, v.head)
+    } toMap
     else
       sys.error(duplicates map {
         case (k, tps) => "'" + k + "' (" + tps.mkString(", ") + ")"

@@ -65,8 +65,7 @@ object TypeDescriptorProviderImpl {
         case tpe if tpe =:= typeOf[String] =>
           // if we don't allowUnknown here, we treat null and "" is indistinguishable
           // for text formats
-          if (allowUnknown) thisColumn
-          else (offset + 1, None)
+          if (allowUnknown) thisColumn else (offset + 1, None)
         case tpe if tpe =:= typeOf[Boolean] => thisColumn
         case tpe if tpe =:= typeOf[Short]   => thisColumn
         case tpe if tpe =:= typeOf[Int]     => thisColumn

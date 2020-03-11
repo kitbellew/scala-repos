@@ -55,13 +55,11 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] {
 
   @tailrec
   private def foldl[B](start: Int, end: Int, z: B, op: (B, A) => B): B =
-    if (start == end) z
-    else foldl(start + 1, end, op(z, this(start)), op)
+    if (start == end) z else foldl(start + 1, end, op(z, this(start)), op)
 
   @tailrec
   private def foldr[B](start: Int, end: Int, z: B, op: (A, B) => B): B =
-    if (start == end) z
-    else foldr(start, end - 1, op(this(end - 1), z), op)
+    if (start == end) z else foldr(start, end - 1, op(this(end - 1), z), op)
 
   override /*TraversableLike*/
   def foldLeft[B](z: B)(op: (B, A) => B): B =
@@ -256,8 +254,7 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] {
       val thisLen = length
       val thatElems = that.iterator
       while (i < thisLen && thatElems.hasNext) {
-        if (this(i) != thatElems.next())
-          return false
+        if (this(i) != thatElems.next()) return false
 
         i += 1
       }
@@ -272,8 +269,7 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] {
 
       (j <= i) && {
         while (j >= 0) {
-          if (this(i) != that(j))
-            return false
+          if (this(i) != that(j)) return false
           i -= 1
           j -= 1
         }

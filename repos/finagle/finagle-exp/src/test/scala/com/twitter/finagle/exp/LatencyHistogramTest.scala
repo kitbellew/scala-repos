@@ -19,8 +19,7 @@ class LatencyHistogramTest extends FunSuite with Matchers {
       LatencyHistogram.DefaultSlices,
       Stopwatch.timeMillis)
     val input = Array.fill(N) { (rng.nextDouble() * range).toLong }
-    for (d <- input)
-      histo.add(d)
+    for (d <- input) histo.add(d)
 
     val epsilon = if (err == 0.0) 0 else range * err / 2
     val sorted = input.sorted
@@ -28,10 +27,8 @@ class LatencyHistogramTest extends FunSuite with Matchers {
       withClue(s"quantile $q: ") {
         val actual = histo.quantile(q)
         val ideal = sorted(q * N / 100)
-        if (epsilon == 0)
-          assert(actual == ideal)
-        else
-          actual.toDouble should be(ideal.toDouble +- epsilon)
+        if (epsilon == 0) assert(actual == ideal)
+        else actual.toDouble should be(ideal.toDouble +- epsilon)
       }
     }
   }
@@ -44,10 +41,9 @@ class LatencyHistogramTest extends FunSuite with Matchers {
   )
 
   Seq(0.0, 0.1, 0.01).foreach { err =>
-    for ((seed, n) <- tests)
-      test(s"random: seed=$seed num=$n error=$err") {
-        testRandom(new Random(seed), n, err)
-      }
+    for ((seed, n) <- tests) test(s"random: seed=$seed num=$n error=$err") {
+      testRandom(new Random(seed), n, err)
+    }
   }
 
   test("constructor checks inputs") {

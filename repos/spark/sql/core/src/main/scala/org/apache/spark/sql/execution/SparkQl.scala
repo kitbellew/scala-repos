@@ -122,8 +122,8 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
         }
         val props = dbprops.toSeq.flatMap {
           case Token(
-              "TOK_DATABASEPROPERTIES",
-              Token("TOK_DBPROPLIST", propList) :: Nil) =>
+                "TOK_DATABASEPROPERTIES",
+                Token("TOK_DBPROPLIST", propList) :: Nil) =>
             // Example format:
             //
             //   TOK_DATABASEPROPERTIES
@@ -186,8 +186,8 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
           case Token("TOK_RESOURCE_LIST", resList) =>
             resList.map {
               case Token(
-                  "TOK_RESOURCE_URI",
-                  rType :: Token(rPath, Nil) :: Nil) =>
+                    "TOK_RESOURCE_URI",
+                    rType :: Token(rPath, Nil) :: Nil) =>
                 val resourceType = rType match {
                   case Token("TOK_JAR", Nil)     => "jar"
                   case Token("TOK_FILE", Nil)    => "file"

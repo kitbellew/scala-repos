@@ -310,9 +310,7 @@ trait CaseClassMacros extends ReprTypes {
   }
 
   def lowerKind(tpe: Type): Type =
-    if (tpe.takesTypeArgs)
-      appliedType(tpe, List(typeOf[Any])).dealias
-    else tpe
+    if (tpe.takesTypeArgs) appliedType(tpe, List(typeOf[Any])).dealias else tpe
 
   def isProductAux(tpe: Type): Boolean =
     tpe.typeSymbol.isClass && (isCaseClassLike(
@@ -337,8 +335,7 @@ trait CaseClassMacros extends ReprTypes {
   def ownerChain(sym: Symbol): List[Symbol] = {
     @tailrec
     def loop(sym: Symbol, acc: List[Symbol]): List[Symbol] =
-      if (sym.owner == NoSymbol) acc
-      else loop(sym.owner, sym :: acc)
+      if (sym.owner == NoSymbol) acc else loop(sym.owner, sym :: acc)
 
     loop(sym, Nil)
   }
@@ -390,8 +387,7 @@ trait CaseClassMacros extends ReprTypes {
     def distinct[A](list: List[A])(eq: (A, A) => Boolean): List[A] =
       list
         .foldLeft(List.empty[A]) { (acc, x) =>
-          if (!acc.exists(eq(x, _))) x :: acc
-          else acc
+          if (!acc.exists(eq(x, _))) x :: acc else acc
         }
         .reverse
     distinct(ctorsOfAux(tpe, hk))(_ =:= _)
@@ -402,17 +398,13 @@ trait CaseClassMacros extends ReprTypes {
       classSym.knownDirectSubclasses.toList flatMap { child0 =>
         val child = child0.asClass
         child.typeSignature // Workaround for <https://issues.scala-lang.org/browse/SI-7755>
-        if (isCaseClassLike(child) || isCaseObjectLike(child))
-          List(child)
-        else if (child.isSealed)
-          collectCtors(child)
-        else
-          abort(s"$child is not case class like or a sealed trait")
+        if (isCaseClassLike(child) || isCaseObjectLike(child)) List(child)
+        else if (child.isSealed) collectCtors(child)
+        else abort(s"$child is not case class like or a sealed trait")
       }
     }
 
-    if (isProduct(tpe))
-      List(tpe)
+    if (isProduct(tpe)) List(tpe)
     else if (isCoproduct(tpe)) {
       val basePre = prefix(tpe)
       val baseSym = classSym(tpe)
@@ -444,8 +436,7 @@ trait CaseClassMacros extends ReprTypes {
                 val moduleSym = sym.asClass.module
                 val modulePre = prefix(moduleSym.typeSignature)
                 c.internal.singleType(modulePre, moduleSym)
-              } else
-                appliedType(sym.toTypeIn(basePre), substituteArgs)
+              } else appliedType(sym.toTypeIn(basePre), substituteArgs)
             } else {
               if (sym.isModuleClass) {
                 val path = suffix.tail.map(_.name.toTermName)
@@ -466,8 +457,7 @@ trait CaseClassMacros extends ReprTypes {
             abort(s"$tpe has an inaccessible subtype $ctor")
           if (ctor <:< baseTpe) Some(ctor) else None
         }
-      if (ctors.isEmpty)
-        abort(s"Sealed trait $tpe has no case class subtypes")
+      if (ctors.isEmpty) abort(s"Sealed trait $tpe has no case class subtypes")
       ctors
     } else
       abort(
@@ -686,8 +676,7 @@ trait CaseClassMacros extends ReprTypes {
 
   def classSym(tpe: Type): ClassSymbol = {
     val sym = tpe.typeSymbol
-    if (!sym.isClass)
-      abort(s"$sym is not a class or trait")
+    if (!sym.isClass) abort(s"$sym is not a class or trait")
 
     val classSym = sym.asClass
     classSym.typeSignature // Workaround for <https://issues.scala-lang.org/browse/SI-7755>
@@ -767,10 +756,8 @@ trait CaseClassMacros extends ReprTypes {
                         s"unexpected multiple results for a companion symbol lookup for $original#{$original.id}")
                   }
                 }
-                if (s != NoSymbol && s.owner == expectedOwner)
-                  res = s
-                else
-                  ctx = ctx.outer
+                if (s != NoSymbol && s.owner == expectedOwner) res = s
+                else ctx = ctx.outer
               }
               res
             }
@@ -971,10 +958,7 @@ trait CaseClassMacros extends ReprTypes {
         }
 
       def narrow1(tree: Tree, tpe: Type): Tree =
-        if (isVararg(tpe))
-          q"$tree: _*"
-        else
-          narrow(tree, tpe)
+        if (isVararg(tpe)) q"$tree: _*" else narrow(tree, tpe)
 
       def mkCtorDtor0(elems0: List[(TermName, Type)]) = {
         val elems = elems0.map {
@@ -1099,10 +1083,7 @@ class GenericMacros(val c: whitebox.Context) extends CaseClassMacros {
     if (isReprType(tpe))
       abort("No Generic instance available for HList or Coproduct")
 
-    if (isProduct(tpe))
-      mkProductGeneric(tpe)
-    else
-      mkCoproductGeneric(tpe)
+    if (isProduct(tpe)) mkProductGeneric(tpe) else mkCoproductGeneric(tpe)
   }
 
   def mkProductGeneric(tpe: Type): Tree = {

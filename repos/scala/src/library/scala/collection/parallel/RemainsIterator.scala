@@ -174,8 +174,7 @@ private[collection] trait AugmentedIterableIterator[+T]
       bfalse: Combiner[U, This]) = {
     while (hasNext) {
       val curr = next()
-      if (pred(curr)) btrue += curr
-      else bfalse += curr
+      if (pred(curr)) btrue += curr else bfalse += curr
     }
     (btrue, bfalse)
   }
@@ -236,8 +235,7 @@ private[collection] trait AugmentedIterableIterator[+T]
     var loop = true
     while (hasNext && loop) {
       val curr = next()
-      if (p(curr)) cb += curr
-      else loop = false
+      if (p(curr)) cb += curr else loop = false
     }
     (cb, loop)
   }
@@ -338,20 +336,14 @@ private[collection] trait AugmentedSeqIterator[+T]
   def prefixLength(pred: T => Boolean): Int = {
     var total = 0
     var loop = true
-    while (hasNext && loop) {
-      if (pred(next())) total += 1
-      else loop = false
-    }
+    while (hasNext && loop) { if (pred(next())) total += 1 else loop = false }
     total
   }
 
   override def indexWhere(pred: T => Boolean): Int = {
     var i = 0
     var loop = true
-    while (hasNext && loop) {
-      if (pred(next())) loop = false
-      else i += 1
-    }
+    while (hasNext && loop) { if (pred(next())) loop = false else i += 1 }
     if (loop) -1 else i
   }
 

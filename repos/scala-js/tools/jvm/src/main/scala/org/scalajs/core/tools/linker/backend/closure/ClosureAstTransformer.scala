@@ -265,8 +265,7 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
       implicit parentPos: Position): Node = {
     val node = Node.newString(Token.STRING_KEY, pName.name)
 
-    if (pName.isInstanceOf[StringLiteral])
-      node.setQuotedString()
+    if (pName.isInstanceOf[StringLiteral]) node.setQuotedString()
 
     setNodePosition(node, pName.pos orElse parentPos)
   }
@@ -303,8 +302,7 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
         if (nextIsCtor) {
           // The @constructor must be propagated through an ExprResult node
           val trg =
-            if (node.isExprResult()) node.getChildAtIndex(0)
-            else node
+            if (node.isExprResult()) node.getChildAtIndex(0) else node
 
           trg.setJSDocInfo(ctorDoc(trg))
         }

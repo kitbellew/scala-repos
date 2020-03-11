@@ -42,10 +42,8 @@ class MatLong(r: Int, c: Int, values: Array[Long]) extends Mat[Long] {
   lazy val cachedT = {
     val arrT = values.clone()
 
-    if (this.isSquare)
-      MatMath.squareTranspose(numCols, arrT)
-    else
-      MatMath.blockTranspose(numRows, numCols, this.toArray, arrT)
+    if (this.isSquare) MatMath.squareTranspose(numCols, arrT)
+    else MatMath.blockTranspose(numRows, numCols, this.toArray, arrT)
 
     new MatLong(numCols, numRows, arrT)
   }

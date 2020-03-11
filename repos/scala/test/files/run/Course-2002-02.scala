@@ -16,23 +16,18 @@ object M0 {
 object M1 {
   def cube(x: Int): Double = x * x * x
 
-  def sumInts(a: Int, b: Int): Double =
-    if (a > b) 0
-    else a + sumInts(a + 1, b);
+  def sumInts(a: Int, b: Int): Double = if (a > b) 0 else a + sumInts(a + 1, b);
 
   def sumCubes(a: Int, b: Int): Double =
-    if (a > b) 0
-    else cube(a) + sumCubes(a + 1, b);
+    if (a > b) 0 else cube(a) + sumCubes(a + 1, b);
 
   def sumReciprocals(a: Int, b: Int): Double =
-    if (a > b) 0
-    else 1.0 / a + sumReciprocals(a + 1, b);
+    if (a > b) 0 else 1.0 / a + sumReciprocals(a + 1, b);
 
   def sumPi(n: Int): Double = {
     def element(x: Int): Double = 4.0 / (4 * x + 1) - 4.0 / (4 * x - 1);
     def sumElements(a: Int, b: Int): Double =
-      if (a > b) 0
-      else element(a) + sumElements(a + 1, b);
+      if (a > b) 0 else element(a) + sumElements(a + 1, b);
     4 + sumElements(1, n)
   }
 
@@ -52,8 +47,7 @@ object M2 {
   def reciprocal(x: Int): Double = 1.0 / x;
 
   def sum(f: Int => Double, a: Int, b: Int): Double =
-    if (a > b) 0
-    else f(a) + sum(f, a + 1, b);
+    if (a > b) 0 else f(a) + sum(f, a + 1, b);
 
   def sumInts(a: Int, b: Int): Double = sum(id, a, b);
   def sumCubes(a: Int, b: Int): Double = sum(cube, a, b);
@@ -75,8 +69,7 @@ object M2 {
 
 object M3 {
   def sum(f: Int => Double, a: Int, b: Int): Double =
-    if (a > b) 0
-    else f(a) + sum(f, a + 1, b);
+    if (a > b) 0 else f(a) + sum(f, a + 1, b);
 
   def sumInts(a: Int, b: Int): Double = sum((xXXXXX => xXXXXX), a, b);
   def sumCubes(a: Int, b: Int): Double = sum((x => x * x * x), a, b);
@@ -97,8 +90,7 @@ object M3 {
 object M4 {
   def sum(f: Int => Double): (Int, Int) => Double = {
     def sumF(a: Int, b: Int): Double =
-      if (a > b) 0
-      else f(a) + sumF(a + 1, b);
+      if (a > b) 0 else f(a) + sumF(a + 1, b);
     sumF
   }
 
@@ -121,8 +113,7 @@ object M4 {
 
 object M5 {
   def sum(f: Int => Double): (Int, Int) => Double = { (a, b) =>
-    if (a > b) 0
-    else f(a) + sum(f)(a + 1, b)
+    if (a > b) 0 else f(a) + sum(f)(a + 1, b)
   }
 
   def sumInts = sum(x => x)
@@ -144,8 +135,7 @@ object M5 {
 
 object M6 {
   def sum(f: Int => Double)(a: Int, b: Int): Double =
-    if (a > b) 0
-    else f(a) + sum(f)(a + 1, b);
+    if (a > b) 0 else f(a) + sum(f)(a + 1, b);
 
   def sumInts = sum(x => x) _
   def sumCubes = sum(x => x * x * x) _
@@ -167,8 +157,7 @@ object M6 {
 object M7 {
   def sum(f: Int => Double)(a: Int, b: Int): Double = {
     def iter(a: Int, result: Double): Double =
-      if (a > b) result
-      else iter(a + 1, f(a) + result);
+      if (a > b) result else iter(a + 1, f(a) + result);
     iter(a, 0)
   }
 
@@ -191,8 +180,7 @@ object M7 {
 
 object M8 {
   def product(f: Int => Double)(a: Int, step: Int, b: Int): Double =
-    if (a > b) 1
-    else f(a) * product(f)(a + step, step, b);
+    if (a > b) 1 else f(a) * product(f)(a + step, step, b);
 
   def productPi = { n: Int =>
     product(x => 4.0 * x * x / (2 * x - 1) / (2 * x - 1))(1, 1, n) / n
@@ -259,8 +247,7 @@ object MA {
     def iterate(guess: Double): Double = {
       val next = f(guess);
       Console.println(next);
-      if (isCloseEnough(guess, next)) next
-      else iterate(next)
+      if (isCloseEnough(guess, next)) next else iterate(next)
     }
     iterate(firstGuess)
   }
@@ -280,8 +267,7 @@ object MB {
     def iterate(guess: Double): Double = {
       val next = f(guess);
       Console.println(next);
-      if (isCloseEnough(guess, next)) next
-      else iterate(next)
+      if (isCloseEnough(guess, next)) next else iterate(next)
     }
     iterate(firstGuess)
   }
@@ -297,16 +283,14 @@ object MB {
 object MC {
   def sum(f: Int => Double)(a: Int, b: Int): Double = {
     def iter(a: Int, result: Double): Double = {
-      if (a > b) result
-      else iter(a + 1, result + f(a))
+      if (a > b) result else iter(a + 1, result + f(a))
     }
     iter(a, 0)
   }
 
   def product(f: Int => Double)(a: Int, b: Int): Double = {
     def iter(a: Int, result: Double): Double = {
-      if (a > b) result
-      else iter(a + 1, result * f(a))
+      if (a > b) result else iter(a + 1, result * f(a))
     }
     iter(a, 1)
   }
@@ -336,8 +320,7 @@ object MD {
   def reduce(op: (Double, Double) => Double, zero: Double)(
       f: Int => Double)(a: Int, b: Int): Double = {
     def iter(a: Int, result: Double): Double = {
-      if (a > b) result
-      else iter(a + 1, op(result, f(a)))
+      if (a > b) result else iter(a + 1, op(result, f(a)))
     }
     iter(a, zero)
   }
@@ -372,8 +355,7 @@ object ME {
   def reduce(op: (Double, Double) => Double, zero: Double)(
       f: Int => Double)(a: Int, b: Int): Double = {
     def iter(a: Int, result: Double): Double = {
-      if (a > b) result
-      else iter(a + 1, op(result, f(a)))
+      if (a > b) result else iter(a + 1, op(result, f(a)))
     }
     iter(a, zero)
   }
@@ -405,8 +387,7 @@ object ME {
 
 object MF {
   def fib(x: Int): Int =
-    if (x <= 1) x
-    else fib(x - 2) + fib(x - 1)
+    if (x <= 1) x else fib(x - 2) + fib(x - 1)
 
   Console.println("fib(0) = " + fib(0))
   Console.println("fib(1) = " + fib(1))
@@ -425,8 +406,7 @@ object MF {
 object MG {
   def fib(x: Int) = {
     def loop(n: Int, prev: Int, fibn: Int): Int =
-      if (n == x) fibn
-      else loop(n + 1, fibn, fibn + prev)
+      if (n == x) fibn else loop(n + 1, fibn, fibn + prev)
     if (x == 0) 0 else loop(1, 0, 1)
   }
 

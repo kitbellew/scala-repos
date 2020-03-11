@@ -285,8 +285,7 @@ class ScalaChangeSignatureDialog(
       case _ =>
     }
 
-    if (problems.isEmpty) null
-    else problems.distinct.mkString("\n")
+    if (problems.isEmpty) null else problems.distinct.mkString("\n")
   }
 
   protected override def doValidate(): ValidationInfo = {

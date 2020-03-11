@@ -69,8 +69,7 @@ object MakePomTest extends Build {
         if (writtenRepositories != mavenStyleRepositories)
           sys.error(
             "Written repositories did not match declared repositories.\n\t" + explain)
-        else
-          ()
+        else ()
       }
   }
 

@@ -40,10 +40,7 @@ trait BigIntIsNRoot extends NRoot[BigInt] {
         else {
           val c = b setBit i
 
-          if ((c pow k) <= a)
-            findNroot(c, i - 1)
-          else
-            findNroot(b, i - 1)
+          if ((c pow k) <= a) findNroot(c, i - 1) else findNroot(b, i - 1)
         }
 
       findNroot(0, a.bitLength - 1)

@@ -374,8 +374,7 @@ trait InlineParsers extends BaseParsers {
       val out = s.charAt(i)
       //if it is a an xml reserved char, xml escape it, else just add it
       val xmlEscape = escapeFastForXml(out)
-      if (xmlEscape != null) result.append(xmlEscape)
-      else result.append(out)
+      if (xmlEscape != null) result.append(xmlEscape) else result.append(out)
       //advance a char
       i += 1
     }

@@ -59,8 +59,7 @@ private[http] class Utf8Encoder extends PushStage[String, ByteString] {
       offset += 1
     }
 
-    if (builder.length > 0) ctx.push(builder.result())
-    else ctx.pull()
+    if (builder.length > 0) ctx.push(builder.result()) else ctx.pull()
   }
 
   override def onUpstreamFinish(

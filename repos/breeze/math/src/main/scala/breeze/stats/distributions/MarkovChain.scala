@@ -136,8 +136,7 @@ object MarkovChain {
         k1: (A, B) => Rand[C],
         k2: (C, B) => Rand[D]) = { (t: (A, B)) =>
       for (c <- k1(t._1, t._2);
-           d <- k2(c, t._2))
-        yield (c, d);
+           d <- k2(c, t._2)) yield (c, d);
     }
 
     /**
@@ -149,8 +148,7 @@ object MarkovChain {
         k3: (U1, U2, T3) => Rand[U3]) = { (t: (T1, T2, T3)) =>
       for (c <- k1(t._1, t._2, t._3);
            d <- k2(c, t._2, t._3);
-           e <- k3(c, d, t._3))
-        yield (c, d, e);
+           e <- k3(c, d, t._3)) yield (c, d, e);
     }
 
     /**
@@ -204,8 +202,7 @@ object MarkovChain {
            newLL = logMeasure(next);
            oldLL = logMeasure(t);
            a = min(1, exp(newLL - oldLL));
-           u <- rand.uniform)
-        yield if (u < a) next else t;
+           u <- rand.uniform) yield if (u < a) next else t;
     }
 
     /**
@@ -222,8 +219,7 @@ object MarkovChain {
            oldLL = logMeasure(t);
            oldP = prop.logApply(t);
            a = min(1, exp(newLL + newP - oldLL - oldP));
-           u <- rand.uniform)
-        yield if (u < a) next else t;
+           u <- rand.uniform) yield if (u < a) next else t;
     }
 
     /**
@@ -244,8 +240,7 @@ object MarkovChain {
             val u = rand.uniform.draw;
             // Find the boundaries
             var left = last - WINDOW * u;
-            if (!valid(left))
-              left = last;
+            if (!valid(left)) left = last;
             var right = left + WINDOW;
 
             var j: Int = (rand.uniform.draw() * M).asInstanceOf[Int];
@@ -256,8 +251,7 @@ object MarkovChain {
               j -= 1;
             }
 
-            if (!valid(right))
-              right = last;
+            if (!valid(right)) right = last;
             else
               while (prop < logMeasure(right) && k > 0 && valid(
                        right + WINDOW)) {

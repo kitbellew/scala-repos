@@ -85,8 +85,7 @@ object PrimitiveOrderedBuf {
 
     def accessor(e: c.TermName): c.Tree = {
       val primitiveAccessor = newTermName(shortName.toLowerCase + "Value")
-      if (boxed) q"$e.$primitiveAccessor"
-      else q"$e"
+      if (boxed) q"$e.$primitiveAccessor" else q"$e"
     }
 
     new TreeOrderedBuf[c.type] {

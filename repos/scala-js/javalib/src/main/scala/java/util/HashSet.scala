@@ -34,8 +34,7 @@ class HashSet[E]
   override def removeAll(c: Collection[_]): Boolean = {
     val iter = c.iterator
     var changed = false
-    while (iter.hasNext)
-      changed = remove(iter.next()) || changed
+    while (iter.hasNext) changed = remove(iter.next()) || changed
     changed
   }
 
@@ -44,8 +43,7 @@ class HashSet[E]
     var changed = false
     while (iter.hasNext) {
       val value = iter.next
-      if (!c.contains(value))
-        changed = remove(value) || changed
+      if (!c.contains(value)) changed = remove(value) || changed
     }
     changed
   }
@@ -56,8 +54,7 @@ class HashSet[E]
   override def addAll(c: Collection[_ <: E]): Boolean = {
     val iter = c.iterator()
     var changed = false
-    while (iter.hasNext)
-      changed = add(iter.next()) || changed
+    while (iter.hasNext) changed = add(iter.next()) || changed
     changed
   }
 

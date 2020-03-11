@@ -21,10 +21,7 @@ class ServerBuildertoTwitterService[Req, Rep](
     extends admin.Service {
   private[this] var server: Option[Server] = None
 
-  def start() {
-    if (!server.isDefined)
-      server = Some(builder.build(service))
-  }
+  def start() { if (!server.isDefined) server = Some(builder.build(service)) }
 
   def shutdown() { server foreach { _.close(gracePeriod) } }
 }

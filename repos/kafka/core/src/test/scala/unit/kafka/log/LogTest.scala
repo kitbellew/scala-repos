@@ -768,8 +768,7 @@ class LogTest extends JUnitSuite {
       time = time)
     assertEquals("There should be exactly 1 segment.", 1, log.numberOfSegments)
 
-    for (i <- 1 to msgPerSeg)
-      log.append(set)
+    for (i <- 1 to msgPerSeg) log.append(set)
 
     assertEquals("There should be exactly 1 segments.", 1, log.numberOfSegments)
     assertEquals(
@@ -795,8 +794,7 @@ class LogTest extends JUnitSuite {
     assertEquals("Should change offset", 0, log.logEndOffset)
     assertEquals("Should change log size", 0, log.size)
 
-    for (i <- 1 to msgPerSeg)
-      log.append(set)
+    for (i <- 1 to msgPerSeg) log.append(set)
 
     assertEquals(
       "Should be back to original offset",
@@ -810,8 +808,7 @@ class LogTest extends JUnitSuite {
       lastOffset - (msgPerSeg - 1))
     assertEquals("Should change log size", log.size, 0)
 
-    for (i <- 1 to msgPerSeg)
-      log.append(set)
+    for (i <- 1 to msgPerSeg) log.append(set)
 
     assertTrue(
       "Should be ahead of to original offset",
@@ -841,11 +838,9 @@ class LogTest extends JUnitSuite {
       scheduler = time.scheduler,
       time = time)
     assertEquals("There should be exactly 1 segment.", 1, log.numberOfSegments)
-    for (i <- 1 to msgPerSeg)
-      log.append(set)
+    for (i <- 1 to msgPerSeg) log.append(set)
     assertEquals("There should be exactly 1 segment.", 1, log.numberOfSegments)
-    for (i <- 1 to msgPerSeg)
-      log.append(set)
+    for (i <- 1 to msgPerSeg) log.append(set)
     assertEquals("There should be exactly 2 segment.", 2, log.numberOfSegments)
     assertEquals(
       "The index of the first segment should be trimmed to empty",
@@ -857,8 +852,7 @@ class LogTest extends JUnitSuite {
       "The index of segment 1 should be resized to maxIndexSize",
       log.config.maxIndexSize / 8,
       log.logSegments.toList(0).index.maxEntries)
-    for (i <- 1 to msgPerSeg)
-      log.append(set)
+    for (i <- 1 to msgPerSeg) log.append(set)
     assertEquals("There should be exactly 1 segment.", 1, log.numberOfSegments)
   }
 
@@ -892,8 +886,7 @@ class LogTest extends JUnitSuite {
       bogusIndex2.exists)
 
     // check that we can append to the log
-    for (i <- 0 until 10)
-      log.append(set)
+    for (i <- 0 until 10) log.append(set)
 
     log.delete()
   }
@@ -916,8 +909,7 @@ class LogTest extends JUnitSuite {
     var log = new Log(logDir, config, recoveryPoint = 0L, time.scheduler, time)
 
     // add enough messages to roll over several segments then close and re-open and attempt to truncate
-    for (i <- 0 until 100)
-      log.append(set)
+    for (i <- 0 until 100) log.append(set)
     log.close()
     log = new Log(logDir, config, recoveryPoint = 0L, time.scheduler, time)
     log.truncateTo(3)
@@ -949,8 +941,7 @@ class LogTest extends JUnitSuite {
     val log = new Log(logDir, config, recoveryPoint = 0L, time.scheduler, time)
 
     // append some messages to create some segments
-    for (i <- 0 until 100)
-      log.append(set)
+    for (i <- 0 until 100) log.append(set)
 
     // files should be renamed
     val segments = log.logSegments.toArray
@@ -990,8 +981,7 @@ class LogTest extends JUnitSuite {
     var log = new Log(logDir, config, recoveryPoint = 0L, time.scheduler, time)
 
     // append some messages to create some segments
-    for (i <- 0 until 100)
-      log.append(set)
+    for (i <- 0 until 100) log.append(set)
 
     log.deleteOldSegments((s) => true)
     log.close()
@@ -1043,8 +1033,7 @@ class LogTest extends JUnitSuite {
       var log =
         new Log(logDir, config, recoveryPoint = 0L, time.scheduler, time)
       val numMessages = 50 + TestUtils.random.nextInt(50)
-      for (i <- 0 until numMessages)
-        log.append(set)
+      for (i <- 0 until numMessages) log.append(set)
       val messages = log.logSegments.flatMap(_.log.iterator.toList)
       log.close()
 
@@ -1084,8 +1073,7 @@ class LogTest extends JUnitSuite {
     var recoveryPoint = 0L
     // create a log and write some messages to it
     var log = new Log(logDir, config, recoveryPoint = 0L, time.scheduler, time)
-    for (i <- 0 until 100)
-      log.append(set)
+    for (i <- 0 until 100) log.append(set)
     log.close()
 
     // check if recovery was attempted. Even if the recovery point is 0L, recovery should not be attempted as the

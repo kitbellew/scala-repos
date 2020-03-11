@@ -104,8 +104,7 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
     val idSuffix =
       if (sym.isPrivate || allRefClasses.contains(sym.owner))
         sym.owner.ancestors.count(!_.isTraitOrInterface).toString
-      else
-        "f"
+      else "f"
 
     val encodedName = name + "$" + idSuffix
     js.Ident(mangleJSName(encodedName), Some(sym.unexpandedName.decoded))
@@ -162,12 +161,10 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
       else owner.ancestors.count(!_.isTraitOrInterface).toString
 
     val encodedName = {
-      if (sym.isClassConstructor)
-        "init" + InnerSep
+      if (sym.isClassConstructor) "init" + InnerSep
       else if (sym.isPrivate)
         mangleJSName(name) + OuterSep + "p" + privateSuffix(sym.owner)
-      else
-        mangleJSName(name)
+      else mangleJSName(name)
     }
 
     val paramsString = makeParamsString(sym, reflProxy, inRTClass)
@@ -246,12 +243,9 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
       else internalName(sym.owner.toTypeConstructor) :: paramTypeNames0
 
     val paramAndResultTypeNames = {
-      if (sym.isClassConstructor)
-        paramTypeNames
-      else if (reflProxy)
-        paramTypeNames :+ ""
-      else
-        paramTypeNames :+ internalName(tpe.resultType)
+      if (sym.isClassConstructor) paramTypeNames
+      else if (reflProxy) paramTypeNames :+ ""
+      else paramTypeNames :+ internalName(tpe.resultType)
     }
     makeParamsString(paramAndResultTypeNames)
   }
@@ -275,7 +269,6 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
     *  also mangles names that would collide with these mangled names
     */
   private def mangleJSName(name: String) =
-    if (js.isKeyword(name) || name(0).isDigit || name(0) == '$')
-      "$" + name
+    if (js.isKeyword(name) || name(0).isDigit || name(0) == '$') "$" + name
     else name
 }

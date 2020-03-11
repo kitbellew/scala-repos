@@ -286,8 +286,7 @@ abstract class BTypes {
         val isScala =
           classNode.attrs != null && classNode.attrs.asScala.exists(a =>
             a.`type` == BTypes.ScalaAttributeName || a.`type` == BTypes.ScalaSigAttributeName)
-        if (isScala) Some(NoInlineInfoAttribute(classNode.name))
-        else None
+        if (isScala) Some(NoInlineInfoAttribute(classNode.name)) else None
       }
       // when building MethodInlineInfos for the members of a ClassSymbol, we exclude those methods
       // in scalaPrimitives. This is necessary because some of them have non-erased types, which would
@@ -505,8 +504,7 @@ abstract class BTypes {
     final def typedOpcode(opcode: Int): Int = {
       if (opcode == Opcodes.IALOAD || opcode == Opcodes.IASTORE)
         opcode + loadStoreOpcodeOffset
-      else
-        opcode + typedOpcodeOffset
+      else opcode + typedOpcodeOffset
     }
 
     /**
@@ -600,8 +598,7 @@ abstract class BTypes {
           else uncomparable
 
         case DOUBLE =>
-          if (other.isNumericType) DOUBLE
-          else uncomparable
+          if (other.isNumericType) DOUBLE else uncomparable
 
         case UNIT | BOOL => uncomparable
       }

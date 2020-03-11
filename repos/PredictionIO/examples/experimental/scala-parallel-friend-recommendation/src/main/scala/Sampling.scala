@@ -25,12 +25,7 @@ object Sampling {
       val pivot = a(a.length / 2).srcId
       // 'L'ess, 'E'qual, 'G'reater
       val partitions = a.groupBy((e: Edge[Int]) => {
-        if (e.srcId < pivot)
-          'L'
-        else if (e.srcId > pivot)
-          'G'
-        else
-          'E'
+        if (e.srcId < pivot) 'L' else if (e.srcId > pivot) 'G' else 'E'
       })
 
       var sortedAccumulator: Array[Edge[Int]] = Array()
@@ -110,8 +105,7 @@ object Sampling {
       target: VertexId): ListBuffer[Edge[Int]] = {
     val idx = binarySearchE(e, target)(0, e.size - 1)
     var outEdges: ListBuffer[Edge[Int]] = ListBuffer()
-    if (idx == -1)
-      return outEdges
+    if (idx == -1) return outEdges
     outEdges.append(e(idx))
     var tIdx = idx + 1
     var edge: Edge[Int] = null
@@ -139,14 +133,11 @@ object Sampling {
   def binarySearchE(list: Array[Edge[Int]], target: VertexId)(
       start: Int = 0,
       end: Int = list.length - 1): Int = {
-    if (start > end)
-      return -1
+    if (start > end) return -1
     val mid = start + (end - start + 1) / 2
-    if (list(mid).srcId == target)
-      return mid
+    if (list(mid).srcId == target) return mid
     else if (list(mid).srcId > target)
       return binarySearchE(list, target)(start, mid - 1)
-    else
-      return binarySearchE(list, target)(mid + 1, end)
+    else return binarySearchE(list, target)(mid + 1, end)
   }
 }

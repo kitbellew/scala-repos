@@ -139,8 +139,7 @@ object WikiGraph {
   // println("Building page title map...")
 
   val titles = Source.fromFile(titlesPath).getLines()
-  for ((title, i) <- titles.zipWithIndex)
-    names.put("" + i, title)
+  for ((title, i) <- titles.zipWithIndex) names.put("" + i, title)
 
   // println("Reading wikipedia graph from file... " + linksPath)
   val lines: Iterator[String] = Source.fromFile(linksPath).getLines()

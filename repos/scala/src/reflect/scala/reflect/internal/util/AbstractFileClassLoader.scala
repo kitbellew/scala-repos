@@ -20,8 +20,7 @@ class AbstractFileClassLoader(val root: AbstractFile, parent: ClassLoader)
     extends ClassLoader(parent)
     with ScalaClassLoader {
   protected def classNameToPath(name: String): String =
-    if (name endsWith ".class") name
-    else s"${name.replace('.', '/')}.class"
+    if (name endsWith ".class") name else s"${name.replace('.', '/')}.class"
 
   protected def findAbstractFile(name: String): AbstractFile = {
     var file: AbstractFile = root
@@ -29,8 +28,7 @@ class AbstractFileClassLoader(val root: AbstractFile, parent: ClassLoader)
 
     for (dirPart <- pathParts.init) {
       file = file.lookupName(dirPart, directory = true)
-      if (file == null)
-        return null
+      if (file == null) return null
     }
 
     file.lookupName(pathParts.last, directory = false) match {
@@ -48,8 +46,7 @@ class AbstractFileClassLoader(val root: AbstractFile, parent: ClassLoader)
 
     for (dirPart <- pathParts) {
       file = file.lookupName(dirPart, directory = true)
-      if (file == null)
-        return null
+      if (file == null) return null
     }
 
     file
@@ -57,10 +54,8 @@ class AbstractFileClassLoader(val root: AbstractFile, parent: ClassLoader)
 
   override protected def findClass(name: String): Class[_] = {
     val bytes = classBytes(name)
-    if (bytes.length == 0)
-      throw new ClassNotFoundException(name)
-    else
-      defineClass(name, bytes, 0, bytes.length, protectionDomain)
+    if (bytes.length == 0) throw new ClassNotFoundException(name)
+    else defineClass(name, bytes, 0, bytes.length, protectionDomain)
   }
   override protected def findResource(name: String): URL =
     findAbstractFile(name) match {

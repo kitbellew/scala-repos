@@ -14,8 +14,7 @@ abstract class Dns {
       system: ActorSystem,
       sender: ActorRef): Option[Dns.Resolved] = {
     val ret = cached(name)
-    if (ret.isEmpty)
-      IO(Dns)(system).tell(Dns.Resolve(name), sender)
+    if (ret.isEmpty) IO(Dns)(system).tell(Dns.Resolve(name), sender)
     ret
   }
 }

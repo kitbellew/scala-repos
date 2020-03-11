@@ -230,8 +230,7 @@ class JavaSerializer(val system: ExtendedActorSystem) extends BaseSerializer {
 
   // TODO remove this when deprecated this() is removed
   override val identifier: Int =
-    if (system eq null) 1
-    else identifierFromConfig
+    if (system eq null) 1 else identifierFromConfig
 
   def includeManifest: Boolean = false
 
@@ -276,8 +275,7 @@ class ByteArraySerializer(val system: ExtendedActorSystem)
 
   // TODO remove this when deprecated this() is removed
   override val identifier: Int =
-    if (system eq null) 4
-    else identifierFromConfig
+    if (system eq null) 4 else identifierFromConfig
 
   def includeManifest: Boolean = false
   def toBinary(o: AnyRef) = o match {

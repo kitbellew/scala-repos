@@ -61,8 +61,7 @@ abstract class RestartNodeSpec
     runOn(second) {
       if (secondSystem.whenTerminated.isCompleted)
         shutdown(restartedSecondSystem)
-      else
-        shutdown(secondSystem)
+      else shutdown(secondSystem)
     }
     super.afterAll()
   }

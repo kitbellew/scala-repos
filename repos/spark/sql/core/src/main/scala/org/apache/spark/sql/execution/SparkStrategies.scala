@@ -53,16 +53,17 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
       case logical.ReturnAnswer(rootPlan) =>
         rootPlan match {
           case logical.Limit(
-              IntegerLiteral(limit),
-              logical.Sort(order, true, child)) =>
+                IntegerLiteral(limit),
+                logical.Sort(order, true, child)) =>
             execution.TakeOrderedAndProject(
               limit,
               order,
               None,
               planLater(child)) :: Nil
           case logical.Limit(
-              IntegerLiteral(limit),
-              logical.Project(projectList, logical.Sort(order, true, child))) =>
+                IntegerLiteral(limit),
+                logical
+                  .Project(projectList, logical.Sort(order, true, child))) =>
             execution.TakeOrderedAndProject(
               limit,
               order,
@@ -77,8 +78,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
         execution
           .TakeOrderedAndProject(limit, order, None, planLater(child)) :: Nil
       case logical.Limit(
-          IntegerLiteral(limit),
-          logical.Project(projectList, logical.Sort(order, true, child))) =>
+            IntegerLiteral(limit),
+            logical.Project(projectList, logical.Sort(order, true, child))) =>
         execution.TakeOrderedAndProject(
           limit,
           order,
@@ -91,12 +92,12 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
   object LeftSemiJoin extends Strategy with PredicateHelper {
     def apply(plan: LogicalPlan): Seq[SparkPlan] = plan match {
       case ExtractEquiJoinKeys(
-          LeftSemi,
-          leftKeys,
-          rightKeys,
-          condition,
-          left,
-          CanBroadcast(right)) =>
+            LeftSemi,
+            leftKeys,
+            rightKeys,
+            condition,
+            left,
+            CanBroadcast(right)) =>
         Seq(
           joins.BroadcastHashJoin(
             leftKeys,
@@ -108,12 +109,12 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
             planLater(right)))
       // Find left semi joins where at least some predicates can be evaluated by matching join keys
       case ExtractEquiJoinKeys(
-          LeftSemi,
-          leftKeys,
-          rightKeys,
-          condition,
-          left,
-          right) =>
+            LeftSemi,
+            leftKeys,
+            rightKeys,
+            condition,
+            left,
+            right) =>
         Seq(
           joins.ShuffledHashJoin(
             leftKeys,
@@ -192,12 +193,12 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
       // --- Inner joins --------------------------------------------------------------------------
 
       case ExtractEquiJoinKeys(
-          Inner,
-          leftKeys,
-          rightKeys,
-          condition,
-          left,
-          CanBroadcast(right)) =>
+            Inner,
+            leftKeys,
+            rightKeys,
+            condition,
+            left,
+            CanBroadcast(right)) =>
         Seq(
           joins.BroadcastHashJoin(
             leftKeys,
@@ -209,12 +210,12 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
             planLater(right)))
 
       case ExtractEquiJoinKeys(
-          Inner,
-          leftKeys,
-          rightKeys,
-          condition,
-          CanBroadcast(left),
-          right) =>
+            Inner,
+            leftKeys,
+            rightKeys,
+            condition,
+            CanBroadcast(left),
+            right) =>
         Seq(
           joins.BroadcastHashJoin(
             leftKeys,
@@ -226,12 +227,12 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
             planLater(right)))
 
       case ExtractEquiJoinKeys(
-          Inner,
-          leftKeys,
-          rightKeys,
-          condition,
-          left,
-          right)
+            Inner,
+            leftKeys,
+            rightKeys,
+            condition,
+            left,
+            right)
           if !conf.preferSortMergeJoin && shouldShuffleHashJoin(left, right) ||
             !RowOrdering.isOrderable(leftKeys) =>
         val buildSide =
@@ -249,12 +250,12 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
             planLater(right)))
 
       case ExtractEquiJoinKeys(
-          Inner,
-          leftKeys,
-          rightKeys,
-          condition,
-          left,
-          right) if RowOrdering.isOrderable(leftKeys) =>
+            Inner,
+            leftKeys,
+            rightKeys,
+            condition,
+            left,
+            right) if RowOrdering.isOrderable(leftKeys) =>
         joins.SortMergeJoin(
           leftKeys,
           rightKeys,
@@ -266,12 +267,12 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
       // --- Outer joins --------------------------------------------------------------------------
 
       case ExtractEquiJoinKeys(
-          LeftOuter,
-          leftKeys,
-          rightKeys,
-          condition,
-          left,
-          CanBroadcast(right)) =>
+            LeftOuter,
+            leftKeys,
+            rightKeys,
+            condition,
+            left,
+            CanBroadcast(right)) =>
         Seq(
           joins.BroadcastHashJoin(
             leftKeys,
@@ -283,12 +284,12 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
             planLater(right)))
 
       case ExtractEquiJoinKeys(
-          RightOuter,
-          leftKeys,
-          rightKeys,
-          condition,
-          CanBroadcast(left),
-          right) =>
+            RightOuter,
+            leftKeys,
+            rightKeys,
+            condition,
+            CanBroadcast(left),
+            right) =>
         Seq(
           joins.BroadcastHashJoin(
             leftKeys,
@@ -300,12 +301,12 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
             planLater(right)))
 
       case ExtractEquiJoinKeys(
-          LeftOuter,
-          leftKeys,
-          rightKeys,
-          condition,
-          left,
-          right)
+            LeftOuter,
+            leftKeys,
+            rightKeys,
+            condition,
+            left,
+            right)
           if !conf.preferSortMergeJoin && canBuildHashMap(right) && muchSmaller(
             right,
             left) ||
@@ -321,12 +322,12 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
             planLater(right)))
 
       case ExtractEquiJoinKeys(
-          RightOuter,
-          leftKeys,
-          rightKeys,
-          condition,
-          left,
-          right)
+            RightOuter,
+            leftKeys,
+            rightKeys,
+            condition,
+            left,
+            right)
           if !conf.preferSortMergeJoin && canBuildHashMap(left) && muchSmaller(
             left,
             right) ||
@@ -342,12 +343,12 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
             planLater(right)))
 
       case ExtractEquiJoinKeys(
-          joinType,
-          leftKeys,
-          rightKeys,
-          condition,
-          left,
-          right) if RowOrdering.isOrderable(leftKeys) =>
+            joinType,
+            leftKeys,
+            rightKeys,
+            condition,
+            left,
+            right) if RowOrdering.isOrderable(leftKeys) =>
         joins.SortMergeJoin(
           leftKeys,
           rightKeys,
@@ -570,17 +571,17 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
         execution
           .MapGroups(f, key, in, out, grouping, data, planLater(child)) :: Nil
       case logical.CoGroup(
-          f,
-          keyObj,
-          lObj,
-          rObj,
-          out,
-          lGroup,
-          rGroup,
-          lAttr,
-          rAttr,
-          left,
-          right) =>
+            f,
+            keyObj,
+            lObj,
+            rObj,
+            out,
+            lGroup,
+            rGroup,
+            lAttr,
+            rAttr,
+            left,
+            right) =>
         execution.CoGroup(
           f,
           keyObj,
@@ -658,13 +659,13 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
   object DDLStrategy extends Strategy {
     def apply(plan: LogicalPlan): Seq[SparkPlan] = plan match {
       case CreateTableUsing(
-          tableIdent,
-          userSpecifiedSchema,
-          provider,
-          true,
-          opts,
-          false,
-          _) =>
+            tableIdent,
+            userSpecifiedSchema,
+            provider,
+            true,
+            opts,
+            false,
+            _) =>
         ExecutedCommand(
           CreateTempTableUsing(
             tableIdent,

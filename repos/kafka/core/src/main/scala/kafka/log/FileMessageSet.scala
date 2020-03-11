@@ -57,8 +57,7 @@ class FileMessageSet private[kafka] (
       new AtomicInteger(
         end - start
       ) // don't check the file size if this is just a slice view
-    else
-      new AtomicInteger(math.min(channel.size().toInt, end) - start)
+    else new AtomicInteger(math.min(channel.size().toInt, end) - start)
 
   /* if this is not a slice, update the file pointer to the end of the file */
   if (!isSlice)
@@ -127,8 +126,7 @@ class FileMessageSet private[kafka] (
   def read(position: Int, size: Int): FileMessageSet = {
     if (position < 0)
       throw new IllegalArgumentException("Invalid position: " + position)
-    if (size < 0)
-      throw new IllegalArgumentException("Invalid size: " + size)
+    if (size < 0) throw new IllegalArgumentException("Invalid size: " + size)
     new FileMessageSet(
       file,
       channel,
@@ -155,8 +153,7 @@ class FileMessageSet private[kafka] (
             .format(targetOffset, startingPosition, file.getAbsolutePath))
       buffer.rewind()
       val offset = buffer.getLong()
-      if (offset >= targetOffset)
-        return OffsetPosition(offset, position)
+      if (offset >= targetOffset) return OffsetPosition(offset, position)
       val messageSize = buffer.getInt()
       if (messageSize < Message.MinMessageOverhead)
         throw new IllegalStateException("Invalid message size: " + messageSize)
@@ -211,8 +208,7 @@ class FileMessageSet private[kafka] (
     while (location < end) {
       offsetAndSizeBuffer.rewind()
       channel.read(offsetAndSizeBuffer, location)
-      if (offsetAndSizeBuffer.hasRemaining)
-        return true
+      if (offsetAndSizeBuffer.hasRemaining) return true
       offsetAndSizeBuffer.rewind()
       offsetAndSizeBuffer.getLong // skip offset field
       val messageSize = offsetAndSizeBuffer.getInt
@@ -275,20 +271,17 @@ class FileMessageSet private[kafka] (
       val sizeOffsetBuffer = ByteBuffer.allocate(12)
 
       override def makeNext(): MessageAndOffset = {
-        if (location >= end)
-          return allDone()
+        if (location >= end) return allDone()
 
         // read the size of the item
         sizeOffsetBuffer.rewind()
         channel.read(sizeOffsetBuffer, location)
-        if (sizeOffsetBuffer.hasRemaining)
-          return allDone()
+        if (sizeOffsetBuffer.hasRemaining) return allDone()
 
         sizeOffsetBuffer.rewind()
         val offset = sizeOffsetBuffer.getLong()
         val size = sizeOffsetBuffer.getInt()
-        if (size < Message.MinMessageOverhead)
-          return allDone()
+        if (size < Message.MinMessageOverhead) return allDone()
         if (size > maxMessageSize)
           throw new CorruptRecordException(
             "Message size exceeds the largest allowable message size (%d)."
@@ -297,8 +290,7 @@ class FileMessageSet private[kafka] (
         // read the item itself
         val buffer = ByteBuffer.allocate(size)
         channel.read(buffer, location + 12)
-        if (buffer.hasRemaining)
-          return allDone()
+        if (buffer.hasRemaining) return allDone()
         buffer.rewind()
 
         // increment the location and return the item
@@ -406,18 +398,15 @@ object FileMessageSet {
       initFileSize: Int = 0,
       preallocate: Boolean = false): FileChannel = {
     if (mutable) {
-      if (fileAlreadyExists)
-        new RandomAccessFile(file, "rw").getChannel()
+      if (fileAlreadyExists) new RandomAccessFile(file, "rw").getChannel()
       else {
         if (preallocate) {
           val randomAccessFile = new RandomAccessFile(file, "rw")
           randomAccessFile.setLength(initFileSize)
           randomAccessFile.getChannel()
-        } else
-          new RandomAccessFile(file, "rw").getChannel()
+        } else new RandomAccessFile(file, "rw").getChannel()
       }
-    } else
-      new FileInputStream(file).getChannel()
+    } else new FileInputStream(file).getChannel()
   }
 }
 

@@ -49,8 +49,7 @@ private[akka] class DirectByteBufferPool(
     }
 
     // allocate new and clear outside the lock
-    if (buffer == null)
-      allocate(defaultBufferSize)
+    if (buffer == null) allocate(defaultBufferSize)
     else {
       buffer.clear()
       buffer

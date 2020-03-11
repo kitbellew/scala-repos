@@ -143,8 +143,7 @@ object Activity {
     */
   def collect[T: ClassTag, CC[X] <: Traversable[X]](acts: CC[Activity[T]])(
       implicit newBuilder: CanBuild[T, CC[T]]): Activity[CC[T]] = {
-    if (acts.isEmpty)
-      return Activity.value(newBuilder().result)
+    if (acts.isEmpty) return Activity.value(newBuilder().result)
 
     val states: Traversable[Var[State[T]]] = acts.map(_.run)
     val stateVar: Var[Traversable[State[T]]] = Var.collect(states)

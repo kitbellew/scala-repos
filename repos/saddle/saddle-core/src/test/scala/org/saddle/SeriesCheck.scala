@@ -88,19 +88,15 @@ class SeriesCheck extends Specification with ScalaCheck {
 
     "first works" in {
       forAll { (s: Series[Int, Double]) =>
-        if (s.isEmpty)
-          s.first must_== scalar.NA
-        else
-          s.first must_== s.values.at(0)
+        if (s.isEmpty) s.first must_== scalar.NA
+        else s.first must_== s.values.at(0)
       }
     }
 
     "last works" in {
       forAll { (s: Series[Int, Double]) =>
-        if (s.isEmpty)
-          s.last must_== scalar.NA
-        else
-          s.last must_== s.values.at(s.length - 1)
+        if (s.isEmpty) s.last must_== scalar.NA
+        else s.last must_== s.values.at(s.length - 1)
       }
     }
 

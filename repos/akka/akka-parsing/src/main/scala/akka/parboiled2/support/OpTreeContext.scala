@@ -209,8 +209,7 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
           if (cursorChar == ${s charAt ix}) {
             __advance()
             ${unrollUnwrapped(s, ix + 1)}:Boolean
-          } else false"""
-        else q"true"
+          } else false""" else q"true"
       def unrollWrapped(s: String, ix: Int = 0): Tree =
         if (ix < s.length) {
           val ch = s charAt ix
@@ -497,8 +496,7 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
       q"..$inits; akka.parboiled2.RuleTrace.Times(min, max)"
     def renderInner(wrapped: Boolean): Tree = {
       val recurse =
-        if (separator eq null) q"rec(count + 1, __saveState)"
-        else q"""
+        if (separator eq null) q"rec(count + 1, __saveState)" else q"""
           val m = __saveState; if (${separator(wrapped)}) rec(count + 1, m)
           else (count >= min) && { __restoreState(m); true }"""
 
@@ -570,8 +568,7 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
         val saved = __enterAtomic(start)
         val matched = ${op.render(wrapped)}
         __exitAtomic(saved)
-        matched"""
-      else op.render(wrapped)
+        matched""" else op.render(wrapped)
   }
 
   case class Quiet(op: OpTree) extends DefaultNonTerminalOpTree {
@@ -581,8 +578,7 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
         val saved = __enterQuiet()
         val matched = ${op.render(wrapped)}
         __exitQuiet(saved)
-        matched"""
-      else op.render(wrapped)
+        matched""" else op.render(wrapped)
   }
 
   case class SemanticPredicate(flagTree: Tree) extends TerminalOpTree {

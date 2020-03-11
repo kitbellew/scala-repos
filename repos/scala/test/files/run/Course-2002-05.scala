@@ -6,20 +6,16 @@ object M0 {
   def partition[a](
       xs: List[a],
       pred: a => Boolean): Tuple2[List[a], List[a]] = {
-    if (xs.isEmpty)
-      (List(), List())
+    if (xs.isEmpty) (List(), List())
     else {
       val tailPartition = partition(xs.tail, pred);
-      if (pred(xs.head))
-        (xs.head :: tailPartition._1, tailPartition._2)
-      else
-        (tailPartition._1, xs.head :: tailPartition._2)
+      if (pred(xs.head)) (xs.head :: tailPartition._1, tailPartition._2)
+      else (tailPartition._1, xs.head :: tailPartition._2)
     }
   }
 
   def quicksort[a](less: (a, a) => Boolean)(xs: List[a]): List[a] = {
-    if (xs.isEmpty)
-      xs
+    if (xs.isEmpty) xs
     else {
       val pivot = xs.head;
       val sub = partition(xs.tail, { elem: a => less(elem, pivot) });
@@ -61,8 +57,7 @@ object M1 {
   }
 
   def quicksort[a](less: (a, a) => Boolean)(xs: List[a]): List[a] = {
-    if (xs.isEmpty)
-      xs
+    if (xs.isEmpty) xs
     else {
       val pivot = xs.head;
       val sub = partition(xs.tail, (elem: a) => less(elem, pivot));
@@ -97,8 +92,7 @@ object M1 {
 object M2 {
 
   def powerset[a](s: List[a]): List[List[a]] = {
-    if (s.isEmpty)
-      List(List())
+    if (s.isEmpty) List(List())
     else {
       val x = s.head;
       val withoutX = powerset(s.tail);
@@ -123,15 +117,13 @@ object M3 {
   def abs(x: Int) = if (x < 0) 0 - x else x;
 
   def range(lo: Int, hi: Int): List[Int] =
-    if (lo > hi) List()
-    else lo :: range(lo + 1, hi);
+    if (lo > hi) List() else lo :: range(lo + 1, hi);
 
   type Placement = List[(Int, Int)];
 
   def queens(n: Int): List[Placement] = {
     def placeQueens(row: Int): List[Placement] = {
-      if (row == 0)
-        List(List())
+      if (row == 0) List(List())
       else {
         def isSafe(column: Int, placement: Placement): Boolean =
           placement forall { pos =>
@@ -166,16 +158,14 @@ object M4 {
   def abs(x: Int) = if (x < 0) 0 - x else x;
 
   def range(lo: Int, hi: Int): List[Int] =
-    if (lo > hi) List()
-    else lo :: range(lo + 1, hi);
+    if (lo > hi) List() else lo :: range(lo + 1, hi);
 
   type Placement = List[Int];
 
   def queens(n: Int): List[Placement] = {
     val columns = range(1, n);
     def placeQueens(row: Int): List[Placement] = {
-      if (row == 0)
-        List(List())
+      if (row == 0) List(List())
       else {
         def isSafe(col: Int, p: Placement, delta: Int): Boolean =
           (p.isEmpty ||

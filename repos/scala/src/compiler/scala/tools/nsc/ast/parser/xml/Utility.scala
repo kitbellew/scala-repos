@@ -112,8 +112,7 @@ object Utility {
             reportSyntaxError(
               "hex char not allowed in decimal char ref\n" +
                 "Did you mean to write &#x ?")
-          else
-            i = i * base + ch().asDigit
+          else i = i * base + ch().asDigit
         case SU =>
           reportTruncatedError("")
         case _ =>

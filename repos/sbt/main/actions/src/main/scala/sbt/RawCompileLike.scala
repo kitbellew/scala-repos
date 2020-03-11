@@ -86,8 +86,7 @@ object RawCompileLike {
                   options,
                   maxErrors,
                   log)
-              else
-                log.debug("Uptodate: " + outputDirectory.getAbsolutePath)
+              else log.debug("Uptodate: " + outputDirectory.getAbsolutePath)
           }
       }
       cachedComp(inputs)(() => exists(outputDirectory.allPaths.get.toSet))

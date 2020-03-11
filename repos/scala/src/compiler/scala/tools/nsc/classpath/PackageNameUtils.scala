@@ -16,8 +16,7 @@ object PackageNameUtils {
     */
   def separatePkgAndClassNames(fullClassName: String): (String, String) = {
     val lastDotIndex = fullClassName.lastIndexOf('.')
-    if (lastDotIndex == -1)
-      (RootPackage, fullClassName)
+    if (lastDotIndex == -1) (RootPackage, fullClassName)
     else
       (
         fullClassName.substring(0, lastDotIndex),

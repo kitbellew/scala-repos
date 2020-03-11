@@ -98,10 +98,8 @@ class PriorityQueue[A](implicit val ord: Ordering[A])
     var k: Int = m
     while (n >= 2 * k) {
       var j = 2 * k
-      if (j < n && toA(as(j)) < toA(as(j + 1)))
-        j += 1
-      if (toA(as(k)) >= toA(as(j)))
-        return
+      if (j < n && toA(as(j)) < toA(as(j + 1))) j += 1
+      if (toA(as(k)) >= toA(as(j))) return
       else {
         val h = as(k)
         as(k) = as(j)
@@ -152,8 +150,7 @@ class PriorityQueue[A](implicit val ord: Ordering[A])
       resarr.p_swap(1, resarr.p_size0)
       fixDown(resarr.p_array, 1, resarr.p_size0 - 1)
       toA(resarr.p_array(resarr.p_size0))
-    } else
-      throw new NoSuchElementException("no element to remove from heap")
+    } else throw new NoSuchElementException("no element to remove from heap")
 
   def dequeueAll[A1 >: A, That](
       implicit bf: CanBuildFrom[_, A1, That]): That = {

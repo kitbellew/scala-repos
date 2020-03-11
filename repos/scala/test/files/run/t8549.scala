@@ -31,8 +31,7 @@ object Test extends App {
           case (content, i) if i == line - 1 =>
             val newContent =
               content.replaceAllLiterally(quote(prevResult), quote(result))
-            if (newContent != content)
-              println(s"- $content\n+ $newContent\n")
+            if (newContent != content) println(s"- $content\n+ $newContent\n")
             newContent
           case (content, _) => content
         }

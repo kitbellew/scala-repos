@@ -52,8 +52,7 @@ class WorksheetCompiler {
 
     val runType = getRunType(project)
 
-    if (runType != NonServer)
-      CompileServerLauncher.ensureServerRunning(project)
+    if (runType != NonServer) CompileServerLauncher.ensureServerRunning(project)
 
     val contentManager =
       MessageView.SERVICE.getInstance(project).getContentManager

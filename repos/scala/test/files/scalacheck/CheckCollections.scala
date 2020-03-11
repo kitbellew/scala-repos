@@ -10,8 +10,7 @@ object Test extends Properties("reflect.internal.util.Collections") {
     else {
       val x1 = f(xs.head, ys.head)
       val xs1 = map2Conserve(xs.tail, ys.tail)(f)
-      if ((x1 eq xs.head) && (xs1 eq xs.tail)) xs
-      else x1 :: xs1
+      if ((x1 eq xs.head) && (xs1 eq xs.tail)) xs else x1 :: xs1
     }
 
   val testfun: (String, Int) => String = {

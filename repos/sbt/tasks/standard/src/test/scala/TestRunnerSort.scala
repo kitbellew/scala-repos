@@ -22,8 +22,7 @@ object TaskRunnerSortTest extends Properties("TaskRunnerSort") {
       }
   }
   final def sortDirect(a: Seq[Int]): Seq[Int] = {
-    if (a.length < 2)
-      a
+    if (a.length < 2) a
     else {
       val pivot = a(0)
       val (lt, gte) = a.view.drop(1).partition(_ < pivot)
@@ -31,8 +30,7 @@ object TaskRunnerSortTest extends Properties("TaskRunnerSort") {
     }
   }
   final def sort(a: Seq[Int]): Task[Seq[Int]] = {
-    if (a.length < 200)
-      task(sortDirect(a))
+    if (a.length < 200) task(sortDirect(a))
     else {
       task(a) flatMap { a =>
         val pivot = a(0)

@@ -191,8 +191,7 @@ final class PersistencePluginProxy(config: Config)
 
   def active(targetJournal: ActorRef, targetAtThisNode: Boolean): Receive = {
     case TargetLocation(address) ⇒
-      if (targetAtThisNode && address != selfAddress)
-        becomeIdentifying(address)
+      if (targetAtThisNode && address != selfAddress) becomeIdentifying(address)
     case Terminated(`targetJournal`) ⇒
       context.unwatch(targetJournal)
       context.become(initTimedOut)
@@ -220,11 +219,11 @@ final class PersistencePluginProxy(config: Config)
               persistentActor ! LoopMessageSuccess(r.payload, actorInstanceId)
           }
         case ReplayMessages(
-            fromSequenceNr,
-            toSequenceNr,
-            max,
-            persistenceId,
-            persistentActor) ⇒
+              fromSequenceNr,
+              toSequenceNr,
+              max,
+              persistenceId,
+              persistentActor) ⇒
           persistentActor ! ReplayMessagesFailure(timeoutException)
         case DeleteMessagesTo(persistenceId, toSequenceNr, persistentActor) ⇒
           persistentActor ! DeleteMessagesFailure(

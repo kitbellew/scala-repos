@@ -118,8 +118,7 @@ class TruncatedNewtonMinimizer[T, H](
           math.max(
             sigma1 * newDelta,
             math.min(alpha * stepNorm, sigma3 * newDelta))
-        else
-          math.max(newDelta, math.min(10 * stepNorm, sigma3 * newDelta))
+        else math.max(newDelta, math.min(10 * stepNorm, sigma3 * newDelta))
       }
 
       if (actualReduction > eta0 * predictedReduction) {

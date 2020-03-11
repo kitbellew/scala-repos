@@ -325,11 +325,9 @@ trait PersistentView
         finally onReplayComplete()
       case ScheduledUpdate(_) ⇒ // ignore
       case Update(a, _) ⇒
-        if (a)
-          internalStash.stash()
+        if (a) internalStash.stash()
       case other ⇒
-        if (await)
-          internalStash.stash()
+        if (await) internalStash.stash()
         else {
           try { PersistentView.super.aroundReceive(receive, other) }
           catch {

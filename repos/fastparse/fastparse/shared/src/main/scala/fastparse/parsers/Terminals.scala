@@ -82,8 +82,7 @@ object Terminals {
       else {
         val c1: Char = src.charAt(i + offset)
         val c2: Char = prefix.charAt(i)
-        if (c1 != c2 && c1.toLower != c2.toLower) false
-        else rec(i + 1)
+        if (c1 != c2 && c1.toLower != c2.toLower) false else rec(i + 1)
       }
     }
     rec(0)

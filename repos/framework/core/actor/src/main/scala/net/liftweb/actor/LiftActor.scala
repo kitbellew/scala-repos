@@ -187,8 +187,7 @@ trait SpecializedLiftActor[T] extends SimpleActor[T] {
           if (startCnt == 0) {
             startCnt += 1
             () => LAScheduler.execute(() => processMailbox(false))
-          } else
-            () => {}
+          } else () => {}
         }
       } else () => {}
     }
@@ -211,8 +210,7 @@ trait SpecializedLiftActor[T] extends SimpleActor[T] {
           if (startCnt == 0) {
             startCnt += 1
             () => LAScheduler.execute(() => processMailbox(false))
-          } else
-            () => {}
+          } else () => {}
         }
       } else () => {}
     }
@@ -308,8 +306,7 @@ trait SpecializedLiftActor[T] extends SimpleActor[T] {
       }
     } catch {
       case exception: Throwable =>
-        if (eh.isDefinedAt(exception))
-          eh(exception)
+        if (eh.isDefinedAt(exception)) eh(exception)
 
         throw exception
     } finally {

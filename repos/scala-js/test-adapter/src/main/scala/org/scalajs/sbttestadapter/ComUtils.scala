@@ -43,8 +43,7 @@ private[testadapter] object ComUtils {
       catch {
         case t: ComJSEnv.ComClosedException =>
           // Check if runner failed. If it did, throw that exception instead
-          if (!com.isRunning())
-            com.await() // Will throw if runner failed
+          if (!com.isRunning()) com.await() // Will throw if runner failed
 
           throw t
       }
@@ -58,8 +57,7 @@ private[testadapter] object ComUtils {
 
     val pos = resp.indexOf(':')
 
-    if (pos == -1)
-      badResponse()
+    if (pos == -1) badResponse()
 
     val status = resp.substring(0, pos)
     val data = resp.substring(pos + 1)

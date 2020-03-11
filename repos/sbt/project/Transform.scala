@@ -105,8 +105,7 @@ object Transform {
       map.getOrElse(key, sys.error("No value defined for key '" + key + "'"))
     val newString =
       Property.replaceAllIn(IO.read(in), mtch => get(mtch.group(1)))
-    if (Some(newString) != read(out))
-      IO.write(out, newString)
+    if (Some(newString) != read(out)) IO.write(out, newString)
     out
   }
   def read(file: File): Option[String] =

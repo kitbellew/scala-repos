@@ -117,21 +117,20 @@ private[engine] final class HttpHeaderParser private (
       nodeIx: Int = 0): Int = {
     def startValueBranch(rootValueIx: Int, valueParser: HeaderValueParser) = {
       val (header, endIx) = valueParser(this, input, cursor, onIllegalHeader)
-      if (valueParser.cachingEnabled)
-        try {
-          val valueIx =
-            newValueIndex // compute early in order to trigger OutOfTrieSpaceExceptions before any change
-          unshareIfRequired()
-          val nodeIx = nodeCount
-          insertRemainingCharsAsNewNodes(input, header)(cursor, endIx, valueIx)
-          values(rootValueIx) = ValueBranch(
-            rootValueIx,
-            valueParser,
-            branchRootNodeIx = nodeIx,
-            valueCount = 1)
-        } catch {
-          case OutOfTrieSpaceException ⇒ // if we cannot insert a value then we simply don't
-        }
+      if (valueParser.cachingEnabled) try {
+        val valueIx =
+          newValueIndex // compute early in order to trigger OutOfTrieSpaceExceptions before any change
+        unshareIfRequired()
+        val nodeIx = nodeCount
+        insertRemainingCharsAsNewNodes(input, header)(cursor, endIx, valueIx)
+        values(rootValueIx) = ValueBranch(
+          rootValueIx,
+          valueParser,
+          branchRootNodeIx = nodeIx,
+          valueCount = 1)
+      } catch {
+        case OutOfTrieSpaceException ⇒ // if we cannot insert a value then we simply don't
+      }
       resultHeader = header
       endIx
     }
@@ -206,14 +205,13 @@ private[engine] final class HttpHeaderParser private (
     def parseAndInsertHeader() = {
       val (header, endIx) =
         branch.parser(this, input, valueStart, onIllegalHeader)
-      if (branch.spaceLeft)
-        try {
-          insert(input, header)(cursor, endIx, nodeIx, colonIx = 0)
-          values(branch.valueIx) = branch.withValueCountIncreased
-        } catch {
-          case OutOfTrieSpaceException ⇒
-          /* if we cannot insert then we simply don't */
-        }
+      if (branch.spaceLeft) try {
+        insert(input, header)(cursor, endIx, nodeIx, colonIx = 0)
+        values(branch.valueIx) = branch.withValueCountIncreased
+      } catch {
+        case OutOfTrieSpaceException ⇒
+        /* if we cannot insert then we simply don't */
+      }
       resultHeader = header
       endIx
     }
@@ -658,13 +656,12 @@ private[http] object HttpHeaderParser {
       input: ByteString,
       start: Int,
       limit: Int)(ix: Int): Int =
-    if (ix < limit)
-      byteChar(input, ix) match {
-        case ':' ⇒ ix
-        case c if tchar(c) ⇒
-          scanHeaderNameAndReturnIndexOfColon(input, start, limit)(ix + 1)
-        case c ⇒ fail(s"Illegal character '${escape(c)}' in header name")
-      }
+    if (ix < limit) byteChar(input, ix) match {
+      case ':' ⇒ ix
+      case c if tchar(c) ⇒
+        scanHeaderNameAndReturnIndexOfColon(input, start, limit)(ix + 1)
+      case c ⇒ fail(s"Illegal character '${escape(c)}' in header name")
+    }
     else
       fail(
         s"HTTP header name exceeds the configured limit of ${limit - start - 1} characters")
@@ -680,65 +677,64 @@ private[http] object HttpHeaderParser {
     def appended2(c: Int) =
       if ((c >> 16) != 0) appended(c.toChar).append((c >> 16).toChar)
       else appended(c.toChar)
-    if (ix < limit)
-      byteChar(input, ix) match {
-        case '\t' ⇒
-          scanHeaderValue(hhp, input, start, limit)(appended(' '), ix + 1)
-        case '\r' if byteChar(input, ix + 1) == '\n' ⇒
-          if (WSP(byteChar(input, ix + 2)))
-            scanHeaderValue(hhp, input, start, limit)(appended(' '), ix + 3)
-          else
-            (
-              if (sb != null) sb.toString else asciiString(input, start, ix),
-              ix + 2)
-        case c ⇒
-          var nix = ix + 1
-          val nsb =
-            if (' ' <= c && c <= '\u007F')
-              if (sb != null) sb.append(c) else null // legal 7-Bit ASCII
-            else if ((c & 0xE0) == 0xC0) { // 2-byte UTF-8 sequence?
-              hhp.byteBuffer.put(c.toByte)
-              hhp.byteBuffer.put(byteAt(input, ix + 1))
-              nix = ix + 2
-              hhp.decodeByteBuffer() match { // if we cannot decode as UTF8 we don't decode but simply copy
-                case -1 ⇒
-                  if (sb != null) sb.append(c).append(byteChar(input, ix + 1))
-                  else null
-                case cc ⇒ appended2(cc)
-              }
-            } else if ((c & 0xF0) == 0xE0) { // 3-byte UTF-8 sequence?
-              hhp.byteBuffer.put(c.toByte)
-              hhp.byteBuffer.put(byteAt(input, ix + 1))
-              hhp.byteBuffer.put(byteAt(input, ix + 2))
-              nix = ix + 3
-              hhp.decodeByteBuffer() match { // if we cannot decode as UTF8 we don't decode but simply copy
-                case -1 ⇒
-                  if (sb != null)
-                    sb.append(c)
-                      .append(byteChar(input, ix + 1))
-                      .append(byteChar(input, ix + 2))
-                  else null
-                case cc ⇒ appended2(cc)
-              }
-            } else if ((c & 0xF8) == 0xF0) { // 4-byte UTF-8 sequence?
-              hhp.byteBuffer.put(c.toByte)
-              hhp.byteBuffer.put(byteAt(input, ix + 1))
-              hhp.byteBuffer.put(byteAt(input, ix + 2))
-              hhp.byteBuffer.put(byteAt(input, ix + 3))
-              nix = ix + 4
-              hhp.decodeByteBuffer() match { // if we cannot decode as UTF8 we don't decode but simply copy
-                case -1 ⇒
-                  if (sb != null)
-                    sb.append(c)
-                      .append(byteChar(input, ix + 1))
-                      .append(byteChar(input, ix + 2))
-                      .append(byteChar(input, ix + 3))
-                  else null
-                case cc ⇒ appended2(cc)
-              }
-            } else fail(s"Illegal character '${escape(c)}' in header value")
-          scanHeaderValue(hhp, input, start, limit)(nsb, nix)
-      }
+    if (ix < limit) byteChar(input, ix) match {
+      case '\t' ⇒
+        scanHeaderValue(hhp, input, start, limit)(appended(' '), ix + 1)
+      case '\r' if byteChar(input, ix + 1) == '\n' ⇒
+        if (WSP(byteChar(input, ix + 2)))
+          scanHeaderValue(hhp, input, start, limit)(appended(' '), ix + 3)
+        else
+          (
+            if (sb != null) sb.toString else asciiString(input, start, ix),
+            ix + 2)
+      case c ⇒
+        var nix = ix + 1
+        val nsb =
+          if (' ' <= c && c <= '\u007F')
+            if (sb != null) sb.append(c) else null // legal 7-Bit ASCII
+          else if ((c & 0xE0) == 0xC0) { // 2-byte UTF-8 sequence?
+            hhp.byteBuffer.put(c.toByte)
+            hhp.byteBuffer.put(byteAt(input, ix + 1))
+            nix = ix + 2
+            hhp.decodeByteBuffer() match { // if we cannot decode as UTF8 we don't decode but simply copy
+              case -1 ⇒
+                if (sb != null) sb.append(c).append(byteChar(input, ix + 1))
+                else null
+              case cc ⇒ appended2(cc)
+            }
+          } else if ((c & 0xF0) == 0xE0) { // 3-byte UTF-8 sequence?
+            hhp.byteBuffer.put(c.toByte)
+            hhp.byteBuffer.put(byteAt(input, ix + 1))
+            hhp.byteBuffer.put(byteAt(input, ix + 2))
+            nix = ix + 3
+            hhp.decodeByteBuffer() match { // if we cannot decode as UTF8 we don't decode but simply copy
+              case -1 ⇒
+                if (sb != null)
+                  sb.append(c)
+                    .append(byteChar(input, ix + 1))
+                    .append(byteChar(input, ix + 2))
+                else null
+              case cc ⇒ appended2(cc)
+            }
+          } else if ((c & 0xF8) == 0xF0) { // 4-byte UTF-8 sequence?
+            hhp.byteBuffer.put(c.toByte)
+            hhp.byteBuffer.put(byteAt(input, ix + 1))
+            hhp.byteBuffer.put(byteAt(input, ix + 2))
+            hhp.byteBuffer.put(byteAt(input, ix + 3))
+            nix = ix + 4
+            hhp.decodeByteBuffer() match { // if we cannot decode as UTF8 we don't decode but simply copy
+              case -1 ⇒
+                if (sb != null)
+                  sb.append(c)
+                    .append(byteChar(input, ix + 1))
+                    .append(byteChar(input, ix + 2))
+                    .append(byteChar(input, ix + 3))
+                else null
+              case cc ⇒ appended2(cc)
+            }
+          } else fail(s"Illegal character '${escape(c)}' in header value")
+        scanHeaderValue(hhp, input, start, limit)(nsb, nix)
+    }
     else
       fail(
         s"HTTP header value exceeds the configured limit of ${limit - start - 2} characters")

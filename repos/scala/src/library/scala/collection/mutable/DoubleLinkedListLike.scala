@@ -67,8 +67,7 @@ trait DoubleLinkedListLike[A, This <: Seq[A] with DoubleLinkedListLike[A, This]]
   // returns that list if this list is empty
   // otherwise modifies this list
   override def append(that: This): This =
-    if (isEmpty)
-      that
+    if (isEmpty) that
     else {
       if (next.isEmpty) {
         next = that

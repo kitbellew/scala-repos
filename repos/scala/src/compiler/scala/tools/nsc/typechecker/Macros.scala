@@ -331,8 +331,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
                   case TypeRef(pre, sym, args) =>
                     val pre1 = pre match {
                       case SingleType(
-                          SingleType(SingleType(NoPrefix, c), prefix),
-                          value)
+                            SingleType(SingleType(NoPrefix, c), prefix),
+                            value)
                           if c == implCtxParam && prefix == MacroContextPrefix && value == ExprValue =>
                         ThisType(macroDdef.symbol.owner)
                       case SingleType(SingleType(NoPrefix, implParam), value)
@@ -554,8 +554,7 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
                 targ.tpe.asSeenFrom(
                   if (prefix == EmptyTree) macroDef.owner.tpe else prefix.tpe,
                   macroDef.owner)
-            } else
-              targ.tpe
+            } else targ.tpe
             context.WeakTypeTag(tpe)
           })
           macroLogVerbose(s"tags: $tags")
@@ -566,8 +565,7 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
         }
 
         val binding = loadMacroImplBinding(macroDef).get
-        if (binding.is_???) Nil
-        else calculateMacroArgs(binding)
+        if (binding.is_???) Nil else calculateMacroArgs(binding)
       }
     macroLogVerbose(s"macroImplArgs: $macroImplArgs")
     MacroArgs(context, macroImplArgs)
@@ -1014,17 +1012,16 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
       case (sym, tpe) =>
         println("undetParam inferred: %s as %s".format(sym, tpe))
     }
-    if (!delayed.isEmpty)
-      delayed.toList foreach {
-        case (expandee, undetparams) if !undetparams.isEmpty =>
-          undetparams --= undetNoMore map (_.id)
-          if (undetparams.isEmpty) {
-            hasPendingMacroExpansions = true
-            macroLogVerbose(s"macro expansion is pending: $expandee")
-          }
-        case _ =>
-        // do nothing
-      }
+    if (!delayed.isEmpty) delayed.toList foreach {
+      case (expandee, undetparams) if !undetparams.isEmpty =>
+        undetparams --= undetNoMore map (_.id)
+        if (undetparams.isEmpty) {
+          hasPendingMacroExpansions = true
+          macroLogVerbose(s"macro expansion is pending: $expandee")
+        }
+      case _ =>
+      // do nothing
+    }
   }
 
   /** Performs macro expansion on all subtrees of a given tree.

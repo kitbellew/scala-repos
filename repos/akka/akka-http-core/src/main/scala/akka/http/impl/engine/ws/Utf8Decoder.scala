@@ -105,8 +105,7 @@ private[http] object Utf8Decoder extends StreamingCharsetDecoder {
 
         if (endOfInput && currentState != Utf8Accept)
           fail("Truncated UTF-8 input")
-        else
-          result.toString()
+        else result.toString()
       }
 
       def fail(msg: String): Nothing = throw new IllegalArgumentException(msg)

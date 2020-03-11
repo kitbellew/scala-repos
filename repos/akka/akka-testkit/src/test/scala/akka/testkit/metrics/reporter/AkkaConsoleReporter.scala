@@ -190,8 +190,7 @@ class AkkaConsoleReporter(
       "            99.9%% <= %d %s%n"
         .format(data.getValueAtPercentile(99.9), unit))
 
-    if (verbose)
-      data.outputPercentileDistribution(output, 1)
+    if (verbose) data.outputPercentileDistribution(output, 1)
   }
 
   private def printAveragingGauge(gauge: AveragingGauge) {

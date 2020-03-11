@@ -43,8 +43,7 @@ class ScalaPsiBuilderImpl(builder: PsiBuilder)
       .toString
     if (!textBefore.contains('\n')) return 0
     val lines = s"start $textBefore end".split('\n')
-    if (lines.exists(_.forall(StringUtil.isWhiteSpace))) 2
-    else 1
+    if (lines.exists(_.forall(StringUtil.isWhiteSpace))) 2 else 1
   }
 
   def isNewlinesEnabled = newlinesEnabled.isEmpty || newlinesEnabled.top

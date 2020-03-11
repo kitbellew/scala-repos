@@ -548,16 +548,16 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
                 val (totalArchives, totalEvents, totalStoreFiles) =
                   pathMessages.foldLeft((0, 0, 0)) {
                     case (
-                        (archived, events, storeFiles),
-                        (_, IngestMessage(_, _, _, data, _, _, _))) =>
+                          (archived, events, storeFiles),
+                          (_, IngestMessage(_, _, _, data, _, _, _))) =>
                       (archived, events + data.size, storeFiles)
                     case (
-                        (archived, events, storeFiles),
-                        (_, am: ArchiveMessage)) =>
+                          (archived, events, storeFiles),
+                          (_, am: ArchiveMessage)) =>
                       (archived + 1, events, storeFiles)
                     case (
-                        (archived, events, storeFiles),
-                        (_, sf: StoreFileMessage)) =>
+                          (archived, events, storeFiles),
+                          (_, sf: StoreFileMessage)) =>
                       (archived, events, storeFiles + 1)
                   }
                 logger.debug(
@@ -841,8 +841,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
       msgs traverse {
         case (
-            offset,
-            msg @ IngestMessage(apiKey, path, _, _, _, _, streamRef)) =>
+              offset,
+              msg @ IngestMessage(apiKey, path, _, _, _, _, streamRef)) =>
           streamRef match {
             case StreamRef.Create(streamId, terminal) =>
               logger.trace(
@@ -886,8 +886,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
           }
 
         case (
-            offset,
-            msg @ StoreFileMessage(_, path, _, _, _, _, _, streamRef)) =>
+              offset,
+              msg @ StoreFileMessage(_, path, _, _, _, _, _, streamRef)) =>
           streamRef match {
             case StreamRef.Create(streamId, terminal) =>
               if (!terminal) {

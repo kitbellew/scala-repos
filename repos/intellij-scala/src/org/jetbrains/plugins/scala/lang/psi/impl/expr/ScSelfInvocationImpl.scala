@@ -45,8 +45,7 @@ class ScSelfInvocationImpl(node: ASTNode)
 
   private def bindInternal(shapeResolve: Boolean): Option[PsiElement] = {
     val seq = bindMultiInternal(shapeResolve)
-    if (seq.length == 1) Some(seq(0))
-    else None
+    if (seq.length == 1) Some(seq(0)) else None
   }
 
   private def bindMultiInternal(shapeResolve: Boolean): Seq[PsiElement] = {

@@ -32,8 +32,7 @@ private[repl] trait SparkExprTyper extends Logging {
       val scanner = newUnitParser(code)
       val result = rule(scanner)
 
-      if (!reporter.hasErrors)
-        scanner.accept(EOF)
+      if (!reporter.hasErrors) scanner.accept(EOF)
 
       result
     }

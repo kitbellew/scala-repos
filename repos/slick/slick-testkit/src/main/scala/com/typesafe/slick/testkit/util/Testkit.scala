@@ -182,8 +182,7 @@ sealed abstract class GenericTest[TDB >: Null <: TestDB](
 
   final def mark[T](id: String, f: => T): T = {
     def set(id: String): Unit =
-      if (id eq null) MDC.remove("debugId")
-      else MDC.put("debugId", id)
+      if (id eq null) MDC.remove("debugId") else MDC.put("debugId", id)
     val old = MDC.get("debugId")
     try {
       set(if (id eq null) id else s" [$id]")

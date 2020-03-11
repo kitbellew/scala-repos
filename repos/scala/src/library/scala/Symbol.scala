@@ -81,8 +81,7 @@ private[scala] abstract class UniquenessCache[K, V >: Null] {
     }
 
     val res = cached()
-    if (res == null) updateCache()
-    else res
+    if (res == null) updateCache() else res
   }
   def unapply(other: V): Option[K] = keyFromValue(other)
 }

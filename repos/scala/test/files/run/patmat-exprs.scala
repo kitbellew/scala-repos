@@ -92,8 +92,7 @@ trait Pattern {
       val i1 = a.iterator
       val i2 = b.iterator
       while (i1.hasNext && i2.hasNext)
-        if (!similar(i1.next, i2.next))
-          return false;
+        if (!similar(i1.next, i2.next)) return false;
       true;
     }
   }
@@ -201,8 +200,7 @@ trait Pattern {
       pairs.foldLeft(components) { (c, pair) =>
         if (c.contains(pair._1) && c.contains(pair._2))
           c.diff(pair._1 :: pair._2 :: Nil)
-        else
-          c
+        else c
       }
     }
 
@@ -583,8 +581,7 @@ trait Pattern {
 
     /** Creates a constant expression */
     def const[T](value: T)(implicit num: NumericOps[T]): Leaf[T] =
-      if (num.zero == value) Zero[T]
-      else Const(value)
+      if (num.zero == value) Zero[T] else Const(value)
 
     implicit def double2Constant[T](d: Double)(
         implicit num: NumericOps[T]): Leaf[T] =

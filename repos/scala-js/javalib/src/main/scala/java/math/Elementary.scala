@@ -94,18 +94,14 @@ private[math] object Elementary {
         } else {
           // signs are different
           val cmp = {
-            if (op1Len != op2Len) {
-              if (op1Len > op2Len) 1
-              else -1
-            } else { compareArrays(op1.digits, op2.digits, op1Len) }
+            if (op1Len != op2Len) { if (op1Len > op2Len) 1 else -1 }
+            else { compareArrays(op1.digits, op2.digits, op1Len) }
           }
 
-          if (cmp == BigInteger.EQUALS)
-            return BigInteger.ZERO
+          if (cmp == BigInteger.EQUALS) return BigInteger.ZERO
           else if (cmp == BigInteger.GREATER) // a minuend should not be shorter than subtrahend
             (op1Sign, subtract(op1.digits, op1Len, op2.digits, op2Len))
-          else
-            (op2Sign, subtract(op2.digits, op2Len, op1.digits, op1Len))
+          else (op2Sign, subtract(op2.digits, op2Len, op1.digits, op1Len))
         }
       val res = new BigInteger(resSign, resDigits.length, resDigits)
       res.cutOffLeadingZeroes()
@@ -315,13 +311,10 @@ private[math] object Elementary {
       BigInteger.valueOf(a - b)
     } else {
       val cmp = {
-        if (op1Len != op2Len) {
-          if (op1Len > op2Len) 1
-          else -1
-        } else { Elementary.compareArrays(op1.digits, op2.digits, op1Len) }
+        if (op1Len != op2Len) { if (op1Len > op2Len) 1 else -1 }
+        else { Elementary.compareArrays(op1.digits, op2.digits, op1Len) }
       }
-      if (op1Sign == op2Sign && cmp == BigInteger.EQUALS)
-        return BigInteger.ZERO
+      if (op1Sign == op2Sign && cmp == BigInteger.EQUALS) return BigInteger.ZERO
 
       val (resSign, resDigits) = {
         if (cmp == BigInteger.LESS) {
@@ -395,8 +388,7 @@ private[math] object Elementary {
         i += 1
       }
     }
-    if (carry != 0)
-      res(i) = carry.toInt
+    if (carry != 0) res(i) = carry.toInt
   }
 
   /** Performs {@code res = b - a}. */

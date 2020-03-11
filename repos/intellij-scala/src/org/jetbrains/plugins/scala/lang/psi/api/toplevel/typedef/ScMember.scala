@@ -162,8 +162,7 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
                   else {
                     val filter = buf.filter(
                       isSimilarMemberForNavigation(_, isStrict = true))
-                    if (filter.isEmpty) buf(0)
-                    else filter(0)
+                    if (filter.isEmpty) buf(0) else filter(0)
                   }
                 case _ => this
               }

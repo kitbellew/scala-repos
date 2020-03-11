@@ -96,10 +96,10 @@ class ScalaTestLocationProvider extends SMTestLocator {
               }
             }
           case ScalaTestLineInFinePattern(
-              classFqn,
-              fileName,
-              lineNumber,
-              testName) =>
+                classFqn,
+                fileName,
+                lineNumber,
+                testName) =>
             val clazzes = ScalaPsiManager
               .instance(project)
               .getCachedClass(GlobalSearchScope.allScope(project), classFqn)

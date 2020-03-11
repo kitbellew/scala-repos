@@ -46,8 +46,7 @@ private[netty3] class SslListenerConnectionHandler(
       ctx: ChannelHandlerContext,
       e: ExceptionEvent): Unit = {
     // remove the ssl handler so that it doesn't trap the disconnect
-    if (e.getCause.isInstanceOf[SSLException])
-      ctx.getPipeline.remove("ssl")
+    if (e.getCause.isInstanceOf[SSLException]) ctx.getPipeline.remove("ssl")
     super.exceptionCaught(ctx, e)
   }
 
@@ -104,8 +103,7 @@ class SslConnectHandler(
         // propagated to the listener, not just on the channel.
         wrappedConnectFuture.addListener(new ChannelFutureListener {
           def operationComplete(f: ChannelFuture) {
-            if (f.isSuccess || f.isCancelled)
-              return
+            if (f.isSuccess || f.isCancelled) return
 
             fail(f.getChannel, f.getCause)
           }

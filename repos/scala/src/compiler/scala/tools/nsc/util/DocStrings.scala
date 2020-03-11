@@ -66,8 +66,7 @@ object DocStrings {
     */
   def findNext(str: String, start: Int)(p: Int => Boolean): Int = {
     val idx = skipLineLead(str, skipToEol(str, start))
-    if (idx < str.length && !p(idx)) findNext(str, idx)(p)
-    else idx
+    if (idx < str.length && !p(idx)) findNext(str, idx)(p) else idx
   }
 
   /** Return first index following `start` and starting a line (i.e. after skipLineLead)
@@ -75,8 +74,7 @@ object DocStrings {
     */
   def findAll(str: String, start: Int)(p: Int => Boolean): List[Int] = {
     val idx = findNext(str, start)(p)
-    if (idx == str.length) List()
-    else idx :: findAll(str, idx)(p)
+    if (idx == str.length) List() else idx :: findAll(str, idx)(p)
   }
 
   /** Produces a string index, which is a list of `sections`, i.e
@@ -170,8 +168,7 @@ object DocStrings {
   def variableName(str: String): String =
     if (str.length >= 2 && (str charAt 0) == '{' && (str charAt (str.length - 1)) == '}')
       str.substring(1, str.length - 1)
-    else
-      str
+    else str
 
   /** Returns index following variable, or start index if no variable was recognized
     */
@@ -181,8 +178,7 @@ object DocStrings {
       do idx += 1 while (idx < str.length && (str charAt idx) != '}')
       if (idx < str.length) idx + 1 else start
     } else {
-      while (idx < str.length && isVarPart(str charAt idx))
-        idx += 1
+      while (idx < str.length && isVarPart(str charAt idx)) idx += 1
       idx
     }
   }
@@ -224,15 +220,13 @@ object DocStrings {
           str,
           skipIdent(str, skipWhitespace(str, skipTag(str, beg)))),
         end)
-    else
-      (skipWhitespace(str, skipTag(str, beg)), end)
+    else (skipWhitespace(str, skipTag(str, beg)), end)
   }
 
   /** Cleanup section text */
   def cleanupSectionText(str: String) = {
     var result = str.trim.replaceAll("\n\\s+\\*\\s+", " \n")
-    while (result.endsWith("\n"))
-      result = result.substring(0, str.length - 1)
+    while (result.endsWith("\n")) result = result.substring(0, str.length - 1)
     result
   }
 

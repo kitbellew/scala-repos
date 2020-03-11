@@ -312,8 +312,7 @@ abstract class MixinNodes {
           if (e != null && e.next == null) {
             e.value.info match {
               case p2: PhysicalSignature =>
-                if (p.method == p2.method) return Some(e.value)
-                else return None
+                if (p.method == p2.method) return Some(e.value) else return None
               case _ => return None
             }
           }

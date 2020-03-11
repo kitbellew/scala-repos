@@ -25,10 +25,8 @@ private[http] class EnhancedString(val underlying: String) extends AnyVal {
         end: Int = underlying.length,
         elements: List[String] = Nil): List[String] = {
       val ix = underlying.lastIndexOf(delimiter, end - 1)
-      if (ix < 0)
-        underlying.substring(0, end) :: elements
-      else
-        split(ix, underlying.substring(ix + 1, end) :: elements)
+      if (ix < 0) underlying.substring(0, end) :: elements
+      else split(ix, underlying.substring(ix + 1, end) :: elements)
     }
     split()
   }
@@ -45,10 +43,8 @@ private[http] class EnhancedString(val underlying: String) extends AnyVal {
   def lazySplit(delimiter: Char): Stream[String] = {
     def split(start: Int = 0): Stream[String] = {
       val ix = underlying.indexOf(delimiter, start)
-      if (ix < 0)
-        Stream.cons(underlying.substring(start), Stream.Empty)
-      else
-        Stream.cons(underlying.substring(start, ix), split(ix + 1))
+      if (ix < 0) Stream.cons(underlying.substring(start), Stream.Empty)
+      else Stream.cons(underlying.substring(start, ix), split(ix + 1))
     }
     split()
   }

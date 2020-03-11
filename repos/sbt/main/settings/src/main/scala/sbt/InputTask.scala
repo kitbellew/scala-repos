@@ -132,8 +132,7 @@ object InputTask {
           // sk.key: AttributeKey[T], dummy.key: AttributeKey[Task[I]]
           // (sk.key eq dummy.key) ==> T == Task[I] because AttributeKey is invariant
           Some(dummyTask.asInstanceOf[T])
-        } else
-          None
+        } else None
     }
 
   private[this] def dummyTask[I]: (AttributeKey[Option[I]], Task[I]) = {
@@ -156,13 +155,11 @@ object InputTask {
           val newAction =
             if (t.info.get(marker).isDefined)
               Pure(() => value.asInstanceOf[T], inline = true)
-            else
-              t.work.mapTask(f)
+            else t.work.mapTask(f)
           val newTask = Task(t.info, newAction)
           seen.put(t, newTask)
           newTask
-        } else
-          t0.asInstanceOf[Task[T]]
+        } else t0.asInstanceOf[Task[T]]
       }
     }
     f(task)

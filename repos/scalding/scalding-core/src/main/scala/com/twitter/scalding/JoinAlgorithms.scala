@@ -453,8 +453,7 @@ trait JoinAlgorithms {
 
     // Resolve colliding fields
     val (rightPipe, rightResolvedJoinFields, dupeFields) =
-      if (intersection.isEmpty)
-        (otherPipe, fs._2, Fields.NONE)
+      if (intersection.isEmpty) (otherPipe, fs._2, Fields.NONE)
       else // For now, we are assuming an inner join.
         renameCollidingFields(otherPipe, fs._2, intersection)
     val mergedJoinKeys = Fields.join(fs._1, rightResolvedJoinFields)
@@ -544,8 +543,7 @@ trait JoinAlgorithms {
         .discard(leftReplicationFields)
         .discard(rightReplicationFields)
 
-    if (intersection.isEmpty) joinedPipe
-    else joinedPipe.discard(dupeFields)
+    if (intersection.isEmpty) joinedPipe else joinedPipe.discard(dupeFields)
   }
 
   def skewJoinWithLarger(

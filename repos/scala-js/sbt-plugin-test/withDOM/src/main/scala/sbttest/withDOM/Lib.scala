@@ -14,10 +14,7 @@ object Lib {
   def appendDocument(msg: String): Unit = {
     val trg = {
       val bodies = getElementsByTagName("body")
-      if (bodies.length > 0)
-        bodies(0)
-      else
-        document
+      if (bodies.length > 0) bodies(0) else document
     }
 
     val elem = document.createElement("p")

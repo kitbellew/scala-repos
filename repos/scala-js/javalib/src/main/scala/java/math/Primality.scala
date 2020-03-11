@@ -144,8 +144,7 @@ private[math] object Primality {
         if (Division.remainderArrayByInt(
               n.digits,
               n.numberLength,
-              Primes(i)) == 0)
-          return false
+              Primes(i)) == 0) return false
       }
 
       // To set the number of iterations necessary for Miller-Rabin test
@@ -213,8 +212,7 @@ private[math] object Primality {
       for (i <- 0 until Primes.length) {
         modules(i) = (modules(i) + gapSize) % Primes(i)
         var j =
-          if (modules(i) == 0) 0
-          else (Primes(i) - modules(i))
+          if (modules(i) == 0) 0 else (Primes(i) - modules(i))
         while (j < gapSize) {
           isDivisible(j) = true
           j += Primes(i)
@@ -270,12 +268,10 @@ private[math] object Primality {
         for (j <- 1 until k) {
           if (y != nMinus1) {
             y = y.multiply(y).mod(n)
-            if (y.isOne)
-              return false
+            if (y.isOne) return false
           }
         }
-        if (y != nMinus1)
-          return false
+        if (y != nMinus1) return false
       }
     }
     true

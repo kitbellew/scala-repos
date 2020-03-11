@@ -45,12 +45,11 @@ trait DistributedBackend extends RelationalBackend with Logging {
 
     def createSession(): Session = {
       val sessions = new ArrayBuffer[BasicBackend#Session]
-      for (db <- dbs)
-        sessions += Try(db.createSession()).recoverWith {
-          case ex =>
-            sessions.reverseIterator.foreach { s => Try(s.close()) }
-            Failure(ex)
-        }.get
+      for (db <- dbs) sessions += Try(db.createSession()).recoverWith {
+        case ex =>
+          sessions.reverseIterator.foreach { s => Try(s.close()) }
+          Failure(ex)
+      }.get
       new SessionDef(sessions.toVector)
     }
 

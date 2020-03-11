@@ -478,12 +478,9 @@ trait PLensFunctions extends PLensInstances with PLensFamilyFunctions {
     }
 
   def listNthPLens[A](n: Int): List[A] @?> A =
-    if (n < 0)
-      nil
-    else if (n == 0)
-      listHeadPLens
-    else
-      listNthPLens(n - 1) compose listTailPLens
+    if (n < 0) nil
+    else if (n == 0) listHeadPLens
+    else listNthPLens(n - 1) compose listTailPLens
 
   def listLookupByPLens[K, V](p: K => Boolean): List[(K, V)] @?> V = {
     @annotation.tailrec
@@ -532,12 +529,9 @@ trait PLensFunctions extends PLensInstances with PLensFamilyFunctions {
     }
 
   def streamNthPLens[A](n: Int): Stream[A] @?> A =
-    if (n < 0)
-      nil
-    else if (n == 0)
-      streamHeadPLens
-    else
-      streamNthPLens(n - 1) compose streamTailPLens
+    if (n < 0) nil
+    else if (n == 0) streamHeadPLens
+    else streamNthPLens(n - 1) compose streamTailPLens
 
   def streamLookupByPLens[K, V](p: K => Boolean): Stream[(K, V)] @?> V = {
     @annotation.tailrec
@@ -562,25 +556,18 @@ trait PLensFunctions extends PLensInstances with PLensFamilyFunctions {
 
   def ephemeralStreamHeadPLens[A]: EphemeralStream[A] @?> A =
     plens(s =>
-      if (s.isEmpty)
-        None
-      else
-        Some(Store(EphemeralStream.cons(_, s.tail()), s.head())))
+      if (s.isEmpty) None
+      else Some(Store(EphemeralStream.cons(_, s.tail()), s.head())))
 
   def ephemeralStreamTailPLens[A]: EphemeralStream[A] @?> EphemeralStream[A] =
     plens(s =>
-      if (s.isEmpty)
-        None
-      else
-        Some(Store(EphemeralStream.cons(s.head(), _), s.tail())))
+      if (s.isEmpty) None
+      else Some(Store(EphemeralStream.cons(s.head(), _), s.tail())))
 
   def ephemeralStreamNthPLens[A](n: Int): EphemeralStream[A] @?> A =
-    if (n < 0)
-      nil
-    else if (n == 0)
-      ephemeralStreamHeadPLens
-    else
-      ephemeralStreamNthPLens(n - 1) compose ephemeralStreamTailPLens
+    if (n < 0) nil
+    else if (n == 0) ephemeralStreamHeadPLens
+    else ephemeralStreamNthPLens(n - 1) compose ephemeralStreamTailPLens
 
   def ephemeralStreamLookupByPLens[K, V](
       p: K => Boolean): EphemeralStream[(K, V)] @?> V = {
@@ -592,14 +579,10 @@ trait PLensFunctions extends PLensInstances with PLensFamilyFunctions {
       t match {
         case (_, (k, _), _) if p(k) => Some(t)
         case (l, x, s) =>
-          if (s.isEmpty)
-            None
-          else
-            lookupr((cons(x, l), s.head(), s.tail()))
+          if (s.isEmpty) None else lookupr((cons(x, l), s.head(), s.tail()))
       }
     plens(s =>
-      if (s.isEmpty)
-        None
+      if (s.isEmpty) None
       else
         lookupr(
           (EphemeralStream.emptyEphemeralStream, s.head(), s.tail())) map {

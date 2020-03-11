@@ -124,8 +124,7 @@ trait ProjectStructureMatcher {
       if (folderUrl.startsWith(contentRoot.getUrl))
         folderUrl.substring(
           Math.min(folderUrl.length, contentRoot.getUrl.length + 1))
-      else
-        folderUrl
+      else folderUrl
     }
     assertMatch("Content folder", expected, actualFolders)
   }

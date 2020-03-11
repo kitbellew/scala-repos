@@ -101,8 +101,7 @@ object Output {
     headLines(IO.readLines(file).reverse, tailDelim).reverse
 
   @tailrec def headLines(lines: Seq[String], tailDelim: String): Seq[String] =
-    if (lines.isEmpty)
-      lines
+    if (lines.isEmpty) lines
     else {
       val (first, tail) = lines.span { line => !(line startsWith tailDelim) }
       if (first.isEmpty) headLines(tail drop 1, tailDelim) else first

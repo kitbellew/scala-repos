@@ -122,8 +122,7 @@ object AndroidClassExtractor extends JavaConversionHelpers {
 
     def propName(name: String) = {
       val s = "^(get|is|set)".r.replaceAllIn(name, "")
-      if (s.take(3).matches("[A-Z]{3}")) s
-      else s.head.toLower + s.tail
+      if (s.take(3).matches("[A-Z]{3}")) s else s.head.toLower + s.tail
     }
 
     def isGetter(name: String) = name.matches("^(get|is)[^a-z].*")
@@ -246,10 +245,8 @@ object AndroidClassExtractor extends JavaConversionHelpers {
           val generalName = "^on".r.replaceAllIn(am.name, "")
 
           if (specificName.length > am.name.length && specificName.contains(
-                generalName))
-            specificName
-          else
-            am.name
+                generalName)) specificName
+          else am.name
         }
       }
 

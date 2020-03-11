@@ -92,14 +92,11 @@ object TestBuild {
         def makeKey(task: ScopeAxis[AttributeKey[_]]) =
           ScopedKey(skey.scope.copy(task = task), skey.key)
         val hasGlobal = tasks(Global)
-        if (hasGlobal)
-          global += skey
+        if (hasGlobal) global += skey
         else {
           val keys = tasks map makeKey
-          if (keys.size == 1)
-            single ++= keys
-          else if (keys.size > 1)
-            multi ++= keys
+          if (keys.size == 1) single ++= keys
+          else if (keys.size > 1) multi ++= keys
         }
       }
       (taskAxes, global.toSet, single.toSet, multi.toSet)
@@ -312,8 +309,7 @@ object TestBuild {
         pairs.map { case (key, deps) => mapMake(key, deps, make) }) flatMap {
         inputs =>
           val made = new collection.mutable.HashMap[T, A]
-          for ((key, deps, mk) <- inputs)
-            made(key) = mk(deps map made)
+          for ((key, deps, mk) <- inputs) made(key) = mk(deps map made)
           keys map made
       }
     }

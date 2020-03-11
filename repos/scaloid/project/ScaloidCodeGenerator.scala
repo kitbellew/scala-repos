@@ -70,8 +70,7 @@ class ScaloidCodeGenerator(
          |
          |$companionObjectDef
        """.stripMargin
-    else
-      ""
+    else ""
   }
 
   def companionObjectDef = {
@@ -186,8 +185,7 @@ class ScaloidCodeGenerator(
 
   def argTypes(types: List[ScalaType]) = {
     val str = types.map(genType).mkString(", ")
-    if (types.length > 1) s"($str)"
-    else str
+    if (types.length > 1) s"($str)" else str
   }
 
   def namedArgs(types: List[ScalaType]) =

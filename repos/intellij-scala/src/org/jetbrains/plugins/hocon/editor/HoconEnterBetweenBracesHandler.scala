@@ -32,8 +32,7 @@ class HoconEnterBetweenBracesHandler extends EnterBetweenBracesHandler {
         caretAdvance,
         dataContext,
         originalHandler)
-    else
-      EnterHandlerDelegate.Result.Continue
+    else EnterHandlerDelegate.Result.Continue
 
   override def isBracePair(c1: Char, c2: Char): Boolean =
     c1 == '{' && c2 == '}' || c1 == '[' && c2 == ']'

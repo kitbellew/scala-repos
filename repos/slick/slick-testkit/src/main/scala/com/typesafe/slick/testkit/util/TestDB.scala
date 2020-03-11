@@ -71,8 +71,7 @@ object TestDB {
         var cont = true
         while (cont) {
           val len = in.read(buf)
-          if (len < 0) cont = false
-          else out.write(buf, 0, len)
+          if (len < 0) cont = false else out.write(buf, 0, len)
         }
       } finally in.close()
     } finally out.close()

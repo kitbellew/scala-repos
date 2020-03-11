@@ -40,8 +40,7 @@ object SupervisorSpec {
     def receive = {
       case Ping ⇒
         sendTo ! PingMessage
-        if (sender() != sendTo)
-          sender() ! PongMessage
+        if (sender() != sendTo) sender() ! PongMessage
       case Die ⇒
         throw new RuntimeException(ExceptionMessage)
       case DieReply ⇒

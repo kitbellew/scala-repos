@@ -60,8 +60,7 @@ object ScalaBuilder {
     def storageFile: Option[File] = {
       val projectDir =
         context.getProjectDescriptor.dataManager.getDataPaths.getDataStorageRoot
-      if (projectDir != null)
-        Some(new File(projectDir, "incrementalType.dat"))
+      if (projectDir != null) Some(new File(projectDir, "incrementalType.dat"))
       else None
     }
 

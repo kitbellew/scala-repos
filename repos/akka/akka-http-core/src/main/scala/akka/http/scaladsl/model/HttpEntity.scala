@@ -316,8 +316,7 @@ object HttpEntity {
               val truncatedString =
                 data.take(maxBytes).decodeString(nb.charset.value).dropRight(1)
               s"$truncatedString ... (${data.length} bytes total)"
-            } else
-              data.decodeString(nb.charset.value)
+            } else data.decodeString(nb.charset.value)
           } catch {
             case NonFatal(e) ⇒
               data.toString()

@@ -133,8 +133,7 @@ trait SerializationSupport {
     if (Serialization.currentTransportInformation.value == null)
       Serialization.currentTransportInformation.withValue(
         transportInformation) { buildOther() }
-    else
-      buildOther()
+    else buildOther()
   }
 
   def otherMessageFromBinary(bytes: Array[Byte]): AnyRef =

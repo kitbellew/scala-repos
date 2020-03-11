@@ -44,10 +44,8 @@ case object JObjectUnfixedT extends JObjectT
 
 case class JUnionT(left: JType, right: JType) extends JType {
   override def toString = {
-    if (this == JType.JUniverseT)
-      "JUniverseT"
-    else
-      "JUnionT" + "(" + left + ", " + right + ")"
+    if (this == JType.JUniverseT) "JUniverseT"
+    else "JUnionT" + "(" + left + ", " + right + ")"
   }
 }
 

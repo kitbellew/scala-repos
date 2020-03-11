@@ -61,8 +61,7 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
   private val ackProvider = {
     if (ApplicationManager.getApplication.isUnitTestMode)
       new TestAcknowledgementProvider
-    else
-      new UIAcknowledgementProvider(GROUP, project)
+    else new UIAcknowledgementProvider(GROUP, project)
   }
 
   // reset cache if plugin has been updated
@@ -80,13 +79,11 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
     override def beforeLibraryRemoved(library: Library): Unit = ()
 
     override def afterLibraryRemoved(newLibrary: Library): Unit = {
-      if (!skippedLibs.contains(newLibrary.getName))
-        init()
+      if (!skippedLibs.contains(newLibrary.getName)) init()
     }
 
     override def afterLibraryAdded(newLibrary: Library): Unit = {
-      if (!skippedLibs.contains(newLibrary.getName))
-        init()
+      if (!skippedLibs.contains(newLibrary.getName)) init()
     }
   }
 
@@ -187,8 +184,7 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
       InjectorPersistentCache(
         ScalaPluginVersionVerifier.getPluginVersion.get,
         new util.HashMap())
-    else
-      cache
+    else cache
   }
 
   private def verifyManifest(manifest: JarManifest): Option[JarManifest] = {
@@ -289,8 +285,7 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
     val candidates = validManifests.map(manifest =>
       manifest -> findMatchingInjectors(manifest))
     LOG.trace(s"Found ${candidates.size} new jars with embedded extensions")
-    if (candidates.nonEmpty)
-      askUser(candidates)
+    if (candidates.nonEmpty) askUser(candidates)
   }
 
   private def getAllJarsWithManifest: Seq[VirtualFile] = {
@@ -395,8 +390,7 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
             .map { f =>
               if (f.isDirectory)
                 f.getChildren.filter(!_.isDirectory).map(copyToTmpDir).toSeq
-              else
-                Seq(copyToTmpDir(f))
+              else Seq(copyToTmpDir(f))
             }
             .getOrElse(Seq.empty)
         })

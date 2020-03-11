@@ -275,14 +275,10 @@ abstract class MappedIntIndex[T <: Mapper[T]](owner: T)
 
   override def dbDisplay_? = false
 
-  def convertKey(in: Int): Box[Int] = {
-    if (in < 0) Empty
-    else Full(in)
-  }
+  def convertKey(in: Int): Box[Int] = { if (in < 0) Empty else Full(in) }
 
   def convertKey(in: Long): Box[Int] = {
-    if (in < 0 || in > Integer.MAX_VALUE) Empty
-    else Full(in.asInstanceOf[Int])
+    if (in < 0 || in > Integer.MAX_VALUE) Empty else Full(in.asInstanceOf[Int])
   }
 
   def convertKey(in: AnyRef): Box[Int] = {

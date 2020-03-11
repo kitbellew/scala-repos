@@ -79,10 +79,7 @@ final class RingDeque[@specialized(
     @inline
     @tailrec
     def buildList(i: Int, accum: List[A]): List[A] =
-      if (i < front)
-        accum
-      else
-        buildList(i - 1, ring(i % bound) :: accum)
+      if (i < front) accum else buildList(i - 1, ring(i % bound) :: accum)
 
     buildList(front + length - 1, Nil)
   }

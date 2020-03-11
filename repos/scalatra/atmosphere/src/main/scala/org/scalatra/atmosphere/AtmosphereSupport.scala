@@ -72,8 +72,7 @@ trait AtmosphereSupport
     text.blankOption map { txt =>
       if (txt.startsWith("{") || txt.startsWith("["))
         parseOpt(txt) map JsonMessage.apply getOrElse TextMessage(txt)
-      else
-        TextMessage(txt)
+      else TextMessage(txt)
     } getOrElse TextMessage("")
 
   private[this] def isFilter = self match {

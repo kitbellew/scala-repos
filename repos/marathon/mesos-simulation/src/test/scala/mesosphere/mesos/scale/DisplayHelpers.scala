@@ -7,17 +7,13 @@ object DisplayHelpers {
 
   /** Left align field. */
   def left(str: String, length: Int) = {
-    if (str.length > length)
-      str.substring(length - 3) + "..."
-    else
-      str + (" " * (length - str.length))
+    if (str.length > length) str.substring(length - 3) + "..."
+    else str + (" " * (length - str.length))
   }
 
   def right(str: String, length: Int) = {
-    if (str.length > length)
-      "..." + str.substring(length - 3)
-    else
-      (" " * (length - str.length)) + str
+    if (str.length > length) "..." + str.substring(length - 3)
+    else (" " * (length - str.length)) + str
   }
 
   def printTable(

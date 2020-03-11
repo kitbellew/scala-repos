@@ -230,8 +230,7 @@ final class ORMultiMap[A] private[akka] (
       newElement: A): ORMultiMap[A] =
     if (newElement != oldElement)
       addBinding(node, key, newElement).removeBinding(node, key, oldElement)
-    else
-      this
+    else this
 
   override def needPruningFrom(removedNode: UniqueAddress): Boolean =
     underlying.needPruningFrom(removedNode)

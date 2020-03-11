@@ -67,8 +67,7 @@ object BrokerCompressionCodec {
       producerCompression: CompressionCodec): CompressionCodec = {
     if (ProducerCompressionCodec.name.equals(compressionType))
       producerCompression
-    else
-      getCompressionCodec(compressionType)
+    else getCompressionCodec(compressionType)
   }
 }
 

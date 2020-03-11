@@ -140,8 +140,7 @@ class DslConsistencySpec extends WordSpec with Matchers {
               if !materializing(m)
             } yield m.getName).toSet
 
-          for (c ← classes; op ← allOps)
-            assertHasMethod(c, op)
+          for (c ← classes; op ← allOps) assertHasMethod(c, op)
         }
 
         s"provide same $element materializing operators" in {
@@ -155,8 +154,7 @@ class DslConsistencySpec extends WordSpec with Matchers {
               if materializing(m)
             } yield m.getName).toSet
 
-          for (c ← classes; op ← materializingOps)
-            assertHasMethod(c, op)
+          for (c ← classes; op ← materializingOps) assertHasMethod(c, op)
         }
 
     }

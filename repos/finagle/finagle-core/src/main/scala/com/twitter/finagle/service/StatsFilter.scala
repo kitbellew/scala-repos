@@ -49,8 +49,7 @@ object StatsFilter {
         val param.Stats(statsReceiver) = _stats
         val param.ExceptionStatsHandler(handler) = _exceptions
         val classifier = _classifier.responseClassifier
-        if (statsReceiver.isNull)
-          next
+        if (statsReceiver.isNull) next
         else
           new StatsFilter(statsReceiver, classifier, handler, _param.unit)
             .andThen(next)

@@ -69,8 +69,7 @@ private[util] class NavigableView[E](
   override def removeAll(c: Collection[_]): Boolean = {
     val iter = c.iterator()
     var changed = false
-    while (iter.hasNext)
-      changed = remove(iter.next) || changed
+    while (iter.hasNext) changed = remove(iter.next) || changed
     changed
   }
 
@@ -118,14 +117,12 @@ private[util] class NavigableView[E](
 
   def first(): E = {
     val iter = iterator()
-    if (iter.hasNext) iter.next
-    else null.asInstanceOf[E]
+    if (iter.hasNext) iter.next else null.asInstanceOf[E]
   }
 
   def last(): E = {
     val iter = iterator()
-    if (iter.hasNext) iter.toTraversable.last
-    else null.asInstanceOf[E]
+    if (iter.hasNext) iter.toTraversable.last else null.asInstanceOf[E]
   }
 
   def subSet(
@@ -139,8 +136,7 @@ private[util] class NavigableView[E](
 
     val subSetFun = { () =>
       val toTs =
-        if (toInclusive) innerNow.to(boxedTo)
-        else innerNow.until(boxedTo)
+        if (toInclusive) innerNow.to(boxedTo) else innerNow.until(boxedTo)
       if (fromInclusive) toTs.from(boxedFrom)
       else toTs.from(boxedFrom) - boxedFrom
     }
@@ -159,8 +155,7 @@ private[util] class NavigableView[E](
     val boxed = Box(toElement)
 
     val headSetFun =
-      if (inclusive)() => innerNow.to(boxed)
-      else () => innerNow.until(boxed)
+      if (inclusive)() => innerNow.to(boxed) else () => innerNow.until(boxed)
 
     new NavigableView(this, headSetFun, None, true, Some(toElement), inclusive)
   }

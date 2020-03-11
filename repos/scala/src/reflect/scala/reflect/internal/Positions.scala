@@ -163,8 +163,7 @@ trait Positions extends api.Positions { self: SymbolTable =>
       }
     }
 
-    if (!isPastTyper)
-      validate(tree, tree)
+    if (!isPastTyper) validate(tree, tree)
   }
 
   def solidDescendants(tree: Tree): List[Tree] =
@@ -180,8 +179,7 @@ trait Positions extends api.Positions { self: SymbolTable =>
 
   /** A singleton list of a non-empty range from `lo` to `hi`, or else the empty List */
   private def maybeFree(lo: Int, hi: Int) =
-    if (lo < hi) List(free(lo, hi))
-    else List()
+    if (lo < hi) List(free(lo, hi)) else List()
 
   /** Insert `pos` into ranges `rs` if possible;
     *  otherwise add conflicting trees to `conflicting`.

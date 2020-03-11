@@ -311,8 +311,7 @@ object Plot {
 
     def getSeriesKey(series: Int): Comparable[_] = {
       val name = delegate(series)(_ getSeriesKey _)
-      if (name == null) "Series " + series
-      else name
+      if (name == null) "Series " + series else name
     }
   }
 

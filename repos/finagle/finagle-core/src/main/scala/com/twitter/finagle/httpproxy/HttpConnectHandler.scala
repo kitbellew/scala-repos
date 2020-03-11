@@ -101,16 +101,14 @@ class HttpConnectHandler(
         val wrappedConnectFuture = Channels.future(de.getChannel, true)
         de.getFuture.addListener(new ChannelFutureListener {
           def operationComplete(f: ChannelFuture) {
-            if (f.isCancelled)
-              wrappedConnectFuture.cancel()
+            if (f.isCancelled) wrappedConnectFuture.cancel()
           }
         })
         // Proxy failures here so that if the connect fails, it is
         // propagated to the listener, not just on the channel.
         wrappedConnectFuture.addListener(new ChannelFutureListener {
           def operationComplete(f: ChannelFuture) {
-            if (f.isSuccess || f.isCancelled)
-              return
+            if (f.isSuccess || f.isCancelled) return
 
             fail(f.getChannel, f.getCause)
           }
@@ -141,8 +139,7 @@ class HttpConnectHandler(
     // proxy cancellations again.
     connectFuture.get.addListener(new ChannelFutureListener {
       def operationComplete(f: ChannelFuture) {
-        if (f.isSuccess)
-          HttpConnectHandler.super.channelConnected(ctx, e)
+        if (f.isSuccess) HttpConnectHandler.super.channelConnected(ctx, e)
         else if (f.isCancelled)
           fail(ctx.getChannel, new ChannelClosedException(addr))
       }

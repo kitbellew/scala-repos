@@ -216,11 +216,11 @@ private[http] object OutgoingConnectionBlueprint {
 
         def onPush(): Unit = grab(in) match {
           case ResponseStart(
-              statusCode,
-              protocol,
-              headers,
-              entityCreator,
-              closeRequested) ⇒
+                statusCode,
+                protocol,
+                headers,
+                entityCreator,
+                closeRequested) ⇒
             val entity = createEntity(
               entityCreator) withSizeLimit parserSettings.maxContentLength
             push(out, HttpResponse(statusCode, headers, entity, protocol))
@@ -372,22 +372,19 @@ private[http] object OutgoingConnectionBlueprint {
 
         val getNextMethod = () ⇒ {
           waitingForMethod = true
-          if (isClosed(bypassInput)) completeStage()
-          else pull(bypassInput)
+          if (isClosed(bypassInput)) completeStage() else pull(bypassInput)
         }
 
         val getNextData = () ⇒ {
           waitingForMethod = false
-          if (isClosed(dataInput)) completeStage()
-          else pull(dataInput)
+          if (isClosed(dataInput)) completeStage() else pull(dataInput)
         }
 
         @tailrec def drainParser(
             current: ResponseOutput,
             b: ListBuffer[ResponseOutput] = ListBuffer.empty): Unit = {
           def e(output: List[ResponseOutput], andThen: () ⇒ Unit): Unit =
-            if (output.nonEmpty) emit(out, output, andThen)
-            else andThen()
+            if (output.nonEmpty) emit(out, output, andThen) else andThen()
           current match {
             case NeedNextRequestMethod ⇒ e(b.result(), getNextMethod)
             case StreamEnd ⇒ e(b.result(), () ⇒ completeStage())

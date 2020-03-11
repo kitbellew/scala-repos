@@ -155,8 +155,7 @@ private[akka] class RoutedActorCell(
   override def sendMessage(envelope: Envelope): Unit = {
     if (routerConfig.isManagementMessage(envelope.message))
       super.sendMessage(envelope)
-    else
-      router.route(envelope.message, envelope.sender)
+    else router.route(envelope.message, envelope.sender)
   }
 
 }

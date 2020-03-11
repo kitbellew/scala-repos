@@ -91,10 +91,7 @@ case class TestStore[K, V: Semigroup](storeID: String, initialData: Map[K, V])
 
   override def put(pair: (K, Option[V])) = {
     val (k, optV) = pair
-    if (optV.isDefined)
-      backingStore.put(k, optV)
-    else
-      backingStore.remove(k)
+    if (optV.isDefined) backingStore.put(k, optV) else backingStore.remove(k)
     updates.incrementAndGet
     Future.Unit
   }

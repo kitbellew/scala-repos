@@ -67,8 +67,7 @@ trait Memoizer extends DAG {
             Memoize(
               dag.New(memoized(parent))(target.loc),
               scaleMemoPriority(numRefs(node)))
-          else
-            dag.New(memoized(parent))(target.loc)
+          else dag.New(memoized(parent))(target.loc)
         }
 
         case node @ dag.Morph1(m, parent) => {
@@ -76,8 +75,7 @@ trait Memoizer extends DAG {
             Memoize(
               dag.Morph1(m, memoized(parent))(node.loc),
               scaleMemoPriority(numRefs(node)))
-          else
-            dag.Morph1(m, memoized(parent))(node.loc)
+          else dag.Morph1(m, memoized(parent))(node.loc)
         }
 
         case node @ dag.Morph2(m, left, right) => {
@@ -85,8 +83,7 @@ trait Memoizer extends DAG {
             Memoize(
               dag.Morph2(m, memoized(left), memoized(right))(node.loc),
               scaleMemoPriority(numRefs(node)))
-          else
-            dag.Morph2(m, memoized(left), memoized(right))(node.loc)
+          else dag.Morph2(m, memoized(left), memoized(right))(node.loc)
         }
 
         case node @ dag.Distinct(parent) => {
@@ -94,8 +91,7 @@ trait Memoizer extends DAG {
             Memoize(
               dag.Distinct(memoized(parent))(node.loc),
               scaleMemoPriority(numRefs(node)))
-          else
-            dag.Distinct(memoized(parent))(node.loc)
+          else dag.Distinct(memoized(parent))(node.loc)
         }
 
         case target @ dag.AbsoluteLoad(parent, jtpe) =>
@@ -112,8 +108,7 @@ trait Memoizer extends DAG {
             Memoize(
               dag.Reduce(red, memoized(parent))(node.loc),
               scaleMemoPriority(numRefs(node)))
-          else
-            dag.Reduce(red, memoized(parent))(node.loc)
+          else dag.Reduce(red, memoized(parent))(node.loc)
         }
 
         case node @ dag.MegaReduce(reds, parent) => {
@@ -121,8 +116,7 @@ trait Memoizer extends DAG {
             Memoize(
               dag.MegaReduce(reds, memoized(parent)),
               scaleMemoPriority(numRefs(node)))
-          else
-            dag.MegaReduce(reds, memoized(parent))
+          else dag.MegaReduce(reds, memoized(parent))
         }
 
         case s @ dag.Split(spec, child, id) => {
@@ -132,8 +126,7 @@ trait Memoizer extends DAG {
 
           if (numRefs(s) > MemoThreshold)
             Memoize(result, scaleMemoPriority(numRefs(s)))
-          else
-            result
+          else result
         }
 
         case node @ dag.Assert(pred, child) => {
@@ -141,8 +134,7 @@ trait Memoizer extends DAG {
             Memoize(
               dag.Assert(memoized(pred), memoized(child))(node.loc),
               scaleMemoPriority(numRefs(node)))
-          else
-            dag.Assert(memoized(pred), memoized(child))(node.loc)
+          else dag.Assert(memoized(pred), memoized(child))(node.loc)
         }
 
         case node @ dag.Cond(pred, left, leftJoin, right, rightJoin) => {
@@ -169,8 +161,7 @@ trait Memoizer extends DAG {
             Memoize(
               dag.Observe(memoized(data), memoized(samples))(node.loc),
               scaleMemoPriority(numRefs(node)))
-          else
-            dag.Observe(memoized(data), memoized(samples))(node.loc)
+          else dag.Observe(memoized(data), memoized(samples))(node.loc)
         }
 
         case node @ dag.IUI(union, left, right) => {
@@ -178,8 +169,7 @@ trait Memoizer extends DAG {
             Memoize(
               dag.IUI(union, memoized(left), memoized(right))(node.loc),
               scaleMemoPriority(numRefs(node)))
-          else
-            dag.IUI(union, memoized(left), memoized(right))(node.loc)
+          else dag.IUI(union, memoized(left), memoized(right))(node.loc)
         }
 
         case node @ dag.Diff(left, right) => {
@@ -187,8 +177,7 @@ trait Memoizer extends DAG {
             Memoize(
               dag.Diff(memoized(left), memoized(right))(node.loc),
               scaleMemoPriority(numRefs(node)))
-          else
-            dag.Diff(memoized(left), memoized(right))(node.loc)
+          else dag.Diff(memoized(left), memoized(right))(node.loc)
         }
 
         case node @ dag.Join(op, joinSort, left, right) => {
@@ -196,8 +185,7 @@ trait Memoizer extends DAG {
             Memoize(
               dag.Join(op, joinSort, memoized(left), memoized(right))(node.loc),
               scaleMemoPriority(numRefs(node)))
-          else
-            dag.Join(op, joinSort, memoized(left), memoized(right))(node.loc)
+          else dag.Join(op, joinSort, memoized(left), memoized(right))(node.loc)
         }
 
         case node @ dag.Filter(joinSort, left, right) => {
@@ -205,8 +193,7 @@ trait Memoizer extends DAG {
             Memoize(
               dag.Filter(joinSort, memoized(left), memoized(right))(node.loc),
               scaleMemoPriority(numRefs(node)))
-          else
-            dag.Filter(joinSort, memoized(left), memoized(right))(node.loc)
+          else dag.Filter(joinSort, memoized(left), memoized(right))(node.loc)
         }
 
         case dag.AddSortKey(parent, sortField, valueField, id) =>
@@ -419,9 +406,9 @@ trait Memoizer extends DAG {
 
     // an approximation of table heritage that *should* be accurate
     case Filter(
-        _,
-        target,
-        boolean
+          _,
+          target,
+          boolean
         ) /*if target.identities != boolean.identities*/ => {
       val merged = findForcingRefs(
         target,

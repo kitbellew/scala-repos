@@ -27,22 +27,19 @@ class SimpleDnsCache extends Dns with PeriodicCacheCleanup {
 
   protected def clock(): Long = {
     val now = System.nanoTime()
-    if (now - nanoBase < 0) 0
-    else (now - nanoBase) / 1000000
+    if (now - nanoBase < 0) 0 else (now - nanoBase) / 1000000
   }
 
   @tailrec
   private[io] final def put(r: Resolved, ttlMillis: Long): Unit = {
     val c = cache.get()
-    if (!cache.compareAndSet(c, c.put(r, ttlMillis)))
-      put(r, ttlMillis)
+    if (!cache.compareAndSet(c, c.put(r, ttlMillis))) put(r, ttlMillis)
   }
 
   @tailrec
   override final def cleanup(): Unit = {
     val c = cache.get()
-    if (!cache.compareAndSet(c, c.cleanup()))
-      cleanup()
+    if (!cache.compareAndSet(c, c.cleanup())) cleanup()
   }
 }
 
@@ -75,8 +72,7 @@ object SimpleDnsCache {
         val minEntry = q.head
         val name = minEntry.name
         q -= minEntry
-        if (c.get(name).filterNot(_.isValid(now)).isDefined)
-          c -= name
+        if (c.get(name).filterNot(_.isValid(now)).isDefined) c -= name
       }
       new Cache(q, c, clock)
     }

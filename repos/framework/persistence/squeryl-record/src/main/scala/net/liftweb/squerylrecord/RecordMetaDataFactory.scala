@@ -140,17 +140,11 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
               Some(stringTypedField.maxLength)
             case decimalField: DecimalField[_] => {
               val precision = decimalField.context.getPrecision();
-              if (precision != 0)
-                Some(precision)
-              else
-                None
+              if (precision != 0) Some(precision) else None
             }
             case decimalField: OptionalDecimalField[_] => {
               val precision = decimalField.context.getPrecision();
-              if (precision != 0)
-                Some(precision)
-              else
-                None
+              if (precision != 0) Some(precision) else None
             }
             case _ => None
           }

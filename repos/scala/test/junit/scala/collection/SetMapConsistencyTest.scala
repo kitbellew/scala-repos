@@ -653,8 +653,7 @@ class SetMapConsistencyTest {
       it.hasNext
       xs.clear()
 
-      if (it.hasNext) Some(it.next)
-      else None
+      if (it.hasNext) Some(it.next) else None
     }
     assert(f() match {
       case Some((a, b)) if (a == null || b == null) => false

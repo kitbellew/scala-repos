@@ -30,8 +30,7 @@ object ClassPathMemoryConsumptionTester {
   }
 
   def main(args: Array[String]): Unit = {
-    if (args contains "-help") usage()
-    else doTest(args)
+    if (args contains "-help") usage() else doTest(args)
   }
 
   private def doTest(args: Array[String]) = {

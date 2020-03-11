@@ -55,8 +55,7 @@ sealed trait Spool[+A] {
     * The first element of the spool if it is non-empty.
     */
   def headOption: Option[A] =
-    if (isEmpty) None
-    else Some(head)
+    if (isEmpty) None else Some(head)
 
   /**
     * The (deferred) tail of the spool. Invalid for empty spools.
@@ -322,8 +321,7 @@ object Spool {
 
   object *:: {
     def unapply[A](s: Spool[A]): Option[(A, Future[Spool[A]])] = {
-      if (s.isEmpty) None
-      else Some((s.head, s.tail))
+      if (s.isEmpty) None else Some((s.head, s.tail))
     }
   }
 
@@ -340,8 +338,7 @@ object Spool {
 
   object **:: {
     def unapply[A](s: Spool[A]): Option[(A, Spool[A])] = {
-      if (s.isEmpty) None
-      else Some((s.head, Await.result(s.tail)))
+      if (s.isEmpty) None else Some((s.head, Await.result(s.tail)))
     }
   }
 

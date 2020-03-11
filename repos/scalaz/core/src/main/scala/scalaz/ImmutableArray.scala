@@ -69,8 +69,7 @@ sealed abstract class ImmutableArrayInstances {
         val len = fa.length
         @annotation.tailrec
         def loop(i: Int): Boolean = {
-          if (i < len) f(fa(i)) && loop(i + 1)
-          else true
+          if (i < len) f(fa(i)) && loop(i + 1) else true
         }
         loop(0)
       }
@@ -78,8 +77,7 @@ sealed abstract class ImmutableArrayInstances {
         val len = fa.length
         @annotation.tailrec
         def loop(i: Int): Boolean = {
-          if (i < len) f(fa(i)) || loop(i + 1)
-          else false
+          if (i < len) f(fa(i)) || loop(i + 1) else false
         }
         loop(0)
       }

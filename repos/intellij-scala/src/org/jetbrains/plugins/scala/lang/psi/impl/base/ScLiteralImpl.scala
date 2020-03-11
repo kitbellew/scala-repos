@@ -133,9 +133,9 @@ class ScLiteralImpl(node: ASTNode)
         if (endsWithL) java.lang.Long.valueOf(value)
         else Integer.valueOf(value.toInt)
       case ScalaTokenTypes.tFLOAT =>
-        if (child.getText.endsWith('f') || child.getText.endsWith('F'))
-          try { java.lang.Float.valueOf(text.substring(0, text.length - 1)) }
-          catch { case e: Exception => null }
+        if (child.getText.endsWith('f') || child.getText.endsWith('F')) try {
+          java.lang.Float.valueOf(text.substring(0, text.length - 1))
+        } catch { case e: Exception => null }
         else
           try { java.lang.Double.valueOf(text) }
           catch { case e: Exception => null }

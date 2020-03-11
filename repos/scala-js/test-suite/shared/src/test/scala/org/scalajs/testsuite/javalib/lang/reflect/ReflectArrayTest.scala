@@ -25,8 +25,7 @@ class ReflectArrayTest {
     assertEquals(expectedClazz, array.getClass)
     assertTrue(array.getClass.isArray)
     assertEquals(length, array.length)
-    for (i <- 0 until array.length)
-      assertEquals(sampleElem, array(i))
+    for (i <- 0 until array.length) assertEquals(sampleElem, array(i))
   }
 
   @noinline

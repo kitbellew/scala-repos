@@ -85,10 +85,7 @@ object StackTraceTest {
   class Foo extends FooTrait {
     @noinline
     def f(x: Int): Int = {
-      if (x > 10)
-        throw new IllegalArgumentException(x.toString)
-      else
-        x + 4
+      if (x > 10) throw new IllegalArgumentException(x.toString) else x + 4
     }
   }
 

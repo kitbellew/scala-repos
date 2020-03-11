@@ -175,15 +175,14 @@ object JsonParser {
     }
 
     def newValue(v: JValue) {
-      if (!vals.isEmpty)
-        vals.peekAny match {
-          case JField(name, value) =>
-            vals.pop(classOf[JField])
-            val obj = vals.peek(classOf[JObject])
-            vals.replace(JObject(JField(name, v) :: obj.obj))
-          case a: JArray => vals.replace(JArray(v :: a.arr))
-          case other     => p.fail("expected field or array but got " + other)
-        }
+      if (!vals.isEmpty) vals.peekAny match {
+        case JField(name, value) =>
+          vals.pop(classOf[JField])
+          val obj = vals.peek(classOf[JObject])
+          vals.replace(JObject(JField(name, v) :: obj.obj))
+        case a: JArray => vals.replace(JArray(v :: a.arr))
+        case other     => p.fail("expected field or array but got " + other)
+      }
       else {
         vals.push(v)
         root = Some(v)
@@ -273,8 +272,7 @@ object JsonParser {
           } else s.append(c)
         }
         val value = s.toString
-        if (doubleVal) DoubleVal(parseDouble(value))
-        else IntVal(BigInt(value))
+        if (doubleVal) DoubleVal(parseDouble(value)) else IntVal(BigInt(value))
       }
 
       while (true) {

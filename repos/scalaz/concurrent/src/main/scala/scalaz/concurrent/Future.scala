@@ -105,9 +105,7 @@ sealed abstract class Future[+A] {
     this.stepInterruptibly(cancel) match {
       case Now(a) if !cancel.get => cb(a).run
       case Async(onFinish) if !cancel.get =>
-        onFinish(a =>
-          if (!cancel.get) cb(a)
-          else Trampoline.done(()))
+        onFinish(a => if (!cancel.get) cb(a) else Trampoline.done(()))
       case BindAsync(onFinish, g) if !cancel.get =>
         onFinish(x =>
           if (!cancel.get)
@@ -412,10 +410,8 @@ object Future {
                 f.unsafePerformListen { a =>
                   // Try to reduce number of values in the queue
                   val front = results.poll()
-                  if (front == null)
-                    results.add(R.unit(a))
-                  else
-                    results.add(R.cons(a, front))
+                  if (front == null) results.add(R.unit(a))
+                  else results.add(R.cons(a, front))
 
                   // only last completed f will hit the 0 here.
                   if (c.decrementAndGet() == 0)

@@ -28,12 +28,9 @@ final class FlatJSDependency(
   override def toString(): String = {
     val b = new StringBuilder
     b ++= s"FlatJSDependency(origin=$origin, relPath=$relPath"
-    if (dependencies.nonEmpty)
-      b ++= s", dependencies=$dependencies"
-    if (commonJSName.nonEmpty)
-      b ++= s", commonJSName=$commonJSName"
-    if (relPathMinified.nonEmpty)
-      b ++= s", relPathMinified=$relPathMinified"
+    if (dependencies.nonEmpty) b ++= s", dependencies=$dependencies"
+    if (commonJSName.nonEmpty) b ++= s", commonJSName=$commonJSName"
+    if (relPathMinified.nonEmpty) b ++= s", relPathMinified=$relPathMinified"
     b ++= ")"
     b.result()
   }

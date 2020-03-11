@@ -194,8 +194,7 @@ private[collection] object RedBlackTree {
         l.right.value,
         BlackTree(l.key, l.value, l.left, l.right.left),
         BlackTree(z, zv, l.right.right, d))
-    else
-      mkTree(isBlack, z, zv, l, d)
+    else mkTree(isBlack, z, zv, l, d)
   }
   private[this] def balanceRight[A, B, B1 >: B](
       isBlack: Boolean,
@@ -215,8 +214,7 @@ private[collection] object RedBlackTree {
         r.value,
         BlackTree(x, xv, a, r.left),
         BlackTree(r.right.key, r.right.value, r.right.left, r.right.right))
-    else
-      mkTree(isBlack, x, xv, a, r)
+    else mkTree(isBlack, x, xv, a, r)
   }
   private[this] def upd[A, B, B1 >: B](
       tree: Tree[A, B],
@@ -495,8 +493,7 @@ private[collection] object RedBlackTree {
         zipper: NList[Tree[A, B]],
         leftMost: Boolean): NList[Tree[A, B]] = {
       val next = if (leftMost) zipper.head.left else zipper.head.right
-      if (next eq null) zipper
-      else unzip(cons(next, zipper), leftMost)
+      if (next eq null) zipper else unzip(cons(next, zipper), leftMost)
     }
 
     // Unzip left tree on the rightmost side and right tree on the leftmost side until one is
@@ -761,8 +758,7 @@ private[collection] object RedBlackTree {
           if (tree eq null) popNext()
           else
             find(
-              if (ordering.lteq(key, tree.key)) goLeft(tree)
-              else goRight(tree)
+              if (ordering.lteq(key, tree.key)) goLeft(tree) else goRight(tree)
             )
         find(root)
       }

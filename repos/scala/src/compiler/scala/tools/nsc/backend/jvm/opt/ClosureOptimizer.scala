@@ -502,8 +502,7 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
 
     if (hasAdaptedImplMethod(closureInit) && inliner
           .canInlineBody(bodyMethodCallsite)
-          .isEmpty)
-      inliner.inlineCallsite(bodyMethodCallsite)
+          .isEmpty) inliner.inlineCallsite(bodyMethodCallsite)
   }
 
   /**

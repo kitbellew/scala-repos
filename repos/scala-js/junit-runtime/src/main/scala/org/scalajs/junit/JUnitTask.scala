@@ -24,8 +24,7 @@ final class JUnitTask(val taskDef: TaskDef, runner: JUnitBaseRunner)
     val richLogger =
       new RichLogger(loggers, runner.runSettings, taskDef.fullyQualifiedName)
 
-    if (runner.runSettings.verbose)
-      richLogger.info(c("Test run started", INFO))
+    if (runner.runSettings.verbose) richLogger.info(c("Test run started", INFO))
 
     val bootstrapperName =
       taskDef.fullyQualifiedName + "$scalajs$junit$bootstrapper"

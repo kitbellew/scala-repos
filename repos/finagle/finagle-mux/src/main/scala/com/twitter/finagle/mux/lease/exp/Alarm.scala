@@ -30,8 +30,7 @@ private[lease] object Alarm {
     */
   def arm(setup: () => Alarm) {
     val alarm = setup()
-    while (!alarm.finished)
-      Time.sleep(alarm.sleeptime)
+    while (!alarm.finished) Time.sleep(alarm.sleeptime)
   }
 
   /**

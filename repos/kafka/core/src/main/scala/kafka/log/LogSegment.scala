@@ -155,8 +155,7 @@ class LogSegment(
     val startPosition = translateOffset(startOffset)
 
     // if the start position is already off the end of the log, return null
-    if (startPosition == null)
-      return null
+    if (startPosition == null) return null
 
     val offsetMetadata = new LogOffsetMetadata(
       startOffset,
@@ -164,8 +163,7 @@ class LogSegment(
       startPosition.position)
 
     // if the size is zero, still return a log segment but with zero size
-    if (maxSize == 0)
-      return FetchDataInfo(offsetMetadata, MessageSet.Empty)
+    if (maxSize == 0) return FetchDataInfo(offsetMetadata, MessageSet.Empty)
 
     // calculate the length of the message set to read based on whether or not they gave us a maxOffset
     val length =
@@ -183,8 +181,7 @@ class LogSegment(
           val endPosition =
             if (mapping == null)
               logSize // the max offset is off the end of the log, use the end of the file
-            else
-              mapping.position
+            else mapping.position
           min(
             min(maxPosition, endPosition) - startPosition.position,
             maxSize).toInt
@@ -250,14 +247,12 @@ class LogSegment(
   @nonthreadsafe
   def truncateTo(offset: Long): Int = {
     val mapping = translateOffset(offset)
-    if (mapping == null)
-      return 0
+    if (mapping == null) return 0
     index.truncateTo(offset)
     // after truncation, reset and allocate more space for the (new currently  active) index
     index.resize(index.maxIndexSize)
     val bytesTruncated = log.truncateTo(mapping.position)
-    if (log.sizeInBytes == 0)
-      created = time.milliseconds
+    if (log.sizeInBytes == 0) created = time.milliseconds
     bytesSinceLastIndexEntry = 0
     bytesTruncated
   }

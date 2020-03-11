@@ -186,13 +186,11 @@ object LoadBalancerFactory {
           }
           def close(deadline: Time): Future[Unit] = synchronized {
             isClosed = true
-            if (underlying == null) Future.Done
-            else underlying.close(deadline)
+            if (underlying == null) Future.Done else underlying.close(deadline)
           }
           override def status: Status = synchronized {
             if (underlying == null)
-              if (!isClosed) Status.Open
-              else Status.Closed
+              if (!isClosed) Status.Open else Status.Closed
             else underlying.status
           }
           override def toString: String = addr.toString

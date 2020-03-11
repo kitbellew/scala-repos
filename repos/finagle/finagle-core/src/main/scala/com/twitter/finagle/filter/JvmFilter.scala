@@ -28,8 +28,7 @@ class MkJvmFilter(jvm: Jvm) {
             }
           }
         }
-      } else
-        service(req)
+      } else service(req)
     }
   }
 }

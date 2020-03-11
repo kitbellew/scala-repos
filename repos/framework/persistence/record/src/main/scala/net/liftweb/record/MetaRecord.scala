@@ -198,8 +198,7 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
       val recField = fh.field(rec)
       if (fh.name == field.name)
         recField.asInstanceOf[Field[FieldType, BaseRecord]].setBox(newValue)
-      else
-        recField.setFromAny(fh.field(original).valueBox)
+      else recField.setFromAny(fh.field(original).valueBox)
     }
 
     rec

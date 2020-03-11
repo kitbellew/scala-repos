@@ -110,8 +110,7 @@ trait ClassTag[T]
   override def toString = {
     def prettyprint(clazz: jClass[_]): String =
       if (clazz.isArray) s"Array[${prettyprint(arrayElementClass(clazz))}]"
-      else
-        clazz.getName
+      else clazz.getName
     prettyprint(runtimeClass)
   }
 }
@@ -154,8 +153,7 @@ object ClassTag {
           ClassTag.Nothing.asInstanceOf[ClassTag[T]]
         else if (classOf[scala.runtime.Null$] == runtimeClass1)
           ClassTag.Null.asInstanceOf[ClassTag[T]]
-        else
-          new ClassClassTag[T](runtimeClass1)
+        else new ClassClassTag[T](runtimeClass1)
     }
 
   @inline

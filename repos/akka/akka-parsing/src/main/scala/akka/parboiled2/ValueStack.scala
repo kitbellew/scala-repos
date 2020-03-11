@@ -131,8 +131,7 @@ class ValueStack private[parboiled2] (initialSize: Int, maxSize: Int)
     * Throws a `ValueStackUnderflowException` if the stack is empty.
     */
   def peek: Any =
-    if (_size > 0) buffer(_size - 1)
-    else throw new ValueStackUnderflowException
+    if (_size > 0) buffer(_size - 1) else throw new ValueStackUnderflowException
 
   /**
     * Returns the element `down` elements below the current top element without removing it.
@@ -249,14 +248,12 @@ class ValueStack private[parboiled2] (initialSize: Int, maxSize: Int)
   def iterator: Iterator[Any] = toArray.iterator
 
   private def ensureSize(requiredSize: Int): Unit =
-    if (buffer.length < requiredSize)
-      if (requiredSize <= maxSize) {
-        val newSize =
-          math.min(math.max(buffer.length * 2, requiredSize), maxSize)
-        val newBuffer = new Array[Any](newSize)
-        System.arraycopy(buffer, 0, newBuffer, 0, _size)
-        buffer = newBuffer
-      } else throw new ValueStackOverflowException
+    if (buffer.length < requiredSize) if (requiredSize <= maxSize) {
+      val newSize = math.min(math.max(buffer.length * 2, requiredSize), maxSize)
+      val newBuffer = new Array[Any](newSize)
+      System.arraycopy(buffer, 0, newBuffer, 0, _size)
+      buffer = newBuffer
+    } else throw new ValueStackOverflowException
 }
 
 class ValueStackOverflowException extends RuntimeException

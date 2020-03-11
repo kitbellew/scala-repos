@@ -154,10 +154,8 @@ final class Board {
   }
 
   def asString() =
-    new String(
-      cells map (c =>
-        if (c.piece == null) '-'.toByte
-        else (c.piece.number + 48).toByte))
+    new String(cells map (c =>
+      if (c.piece == null) '-'.toByte else (c.piece.number + 48).toByte))
 
   def firstEmptyCellIndex() = cells.findIndexOf(c => c.isEmpty)
 
@@ -302,8 +300,7 @@ final class Piece(_number: Int) {
   def cells = cache(orientation)
 
   private val cache =
-    for (i <- Array.range(0, Piece.orientations))
-      yield pieceOrientation(i)
+    for (i <- Array.range(0, Piece.orientations)) yield pieceOrientation(i)
 
   var orientation = 0
 
@@ -318,10 +315,8 @@ final class Piece(_number: Int) {
 
     var i = 0
     while (i < k) {
-      if (i % Piece.rotations == 0)
-        for (c <- cells) c.flip
-      else
-        for (c <- cells) c.rotate
+      if (i % Piece.rotations == 0) for (c <- cells) c.flip
+      else for (c <- cells) c.rotate
 
       i = i + 1
     }

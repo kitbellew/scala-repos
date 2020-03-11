@@ -35,8 +35,7 @@ class ExactGenerationalQueue[A] extends GenerationalQueue[A] {
   def remove(a: A) = synchronized { container.remove(a) }
 
   def collect(age: Duration): Option[A] = synchronized {
-    if (container.isEmpty)
-      None
+    if (container.isEmpty) None
     else
       container.min match {
         case (a, t) if (t.untilNow > age) => Some(a)
@@ -99,8 +98,7 @@ class BucketGenerationalQueue[A](timeout: Duration)
       .map((bucket) => { bucket.age() > Duration.Zero })
       .getOrElse(true)
 
-    if (growChain)
-      buckets = TimeBucket.empty[A] :: buckets
+    if (growChain) buckets = TimeBucket.empty[A] :: buckets
     growChain
   }
 
@@ -108,21 +106,16 @@ class BucketGenerationalQueue[A](timeout: Duration)
     val now = Time.now
     // partition equivalent to takeWhile/dropWhile because buckets are ordered
     val (news, olds) = buckets.partition(_.age(now) < timeout)
-    if (olds.isEmpty)
-      news
+    if (olds.isEmpty) news
     else {
       val tailBucket = olds.head
       olds drop 1 foreach { tailBucket ++= _ }
-      if (tailBucket.isEmpty)
-        news
-      else
-        news ::: List(tailBucket)
+      if (tailBucket.isEmpty) news else news ::: List(tailBucket)
     }
   }
 
   private[this] def updateBuckets() {
-    if (maybeGrowChain())
-      buckets = compactChain()
+    if (maybeGrowChain()) buckets = compactChain()
   }
 
   def touch(a: A) = synchronized {
@@ -141,20 +134,14 @@ class BucketGenerationalQueue[A](timeout: Duration)
   }
 
   def collect(d: Duration): Option[A] = synchronized {
-    if (buckets.isEmpty)
-      return None
+    if (buckets.isEmpty) return None
 
-    if (buckets.last.isEmpty)
-      buckets = compactChain()
+    if (buckets.last.isEmpty) buckets = compactChain()
 
-    if (buckets.isEmpty)
-      return None
+    if (buckets.isEmpty) return None
 
     val oldestBucket = buckets.last
-    if (d < oldestBucket.age())
-      oldestBucket.headOption
-    else
-      None
+    if (d < oldestBucket.age()) oldestBucket.headOption else None
   }
 
   def collectAll(d: Duration): Iterable[A] = synchronized {

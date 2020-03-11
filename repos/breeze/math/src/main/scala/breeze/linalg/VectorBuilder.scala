@@ -92,9 +92,7 @@ class VectorBuilder[@spec(Double, Int, Float, Long) E](
     var off = 0
     while (off < used) {
       if (_index(off) == i) {
-        if (!marked)
-          _data(off) = v
-        else _data(off) = ring.zero
+        if (!marked) _data(off) = v else _data(off) = ring.zero
         marked = true
       }
 
@@ -237,8 +235,7 @@ class VectorBuilder[@spec(Double, Int, Float, Long) E](
       }
     }
 
-    if (ord.length > 0)
-      out += 1
+    if (ord.length > 0) out += 1
 
     require(
       ord.length == 0 || length > outIndex.last,

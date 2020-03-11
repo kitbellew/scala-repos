@@ -28,8 +28,7 @@ class LocalRateLimitingStrategy[Req](
       if (remainingRequests > 0) {
         rates(id) = (remainingRequests - 1, timestamp)
         true
-      } else
-        false
+      } else false
     }
 
     Future.value(accept)
@@ -49,8 +48,7 @@ class RateLimitingFilter[Req, Rep](
 
   def apply(request: Req, service: Service[Req, Rep]): Future[Rep] =
     strategy(request) flatMap { isAuthorized =>
-      if (isAuthorized)
-        service(request)
+      if (isAuthorized) service(request)
       else {
         refused.incr()
         Future.exception(new RefusedByRateLimiter)

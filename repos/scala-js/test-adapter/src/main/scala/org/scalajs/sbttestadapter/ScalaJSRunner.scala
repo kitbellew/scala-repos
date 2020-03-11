@@ -120,13 +120,11 @@ final class ScalaJSRunner private[testadapter] (
         master.send(s"msg:$msg")
         ComUtils.receiveResponse(master) {
           case ("ok", msg) =>
-            if (msg.startsWith(":s:")) Some(msg.stripPrefix(":s:"))
-            else None
+            if (msg.startsWith(":s:")) Some(msg.stripPrefix(":s:")) else None
         }
       }
 
-      for (reply <- optReply)
-        slave.send(s"msg:$reply")
+      for (reply <- optReply) slave.send(s"msg:$reply")
 
       None
   }

@@ -45,8 +45,7 @@ class LinkedListTest extends AbstractListTest {
 
     assertEquals(5, ll.size())
 
-    for (i <- 0 until s.size)
-      assertEquals(s(i), ll.poll())
+    for (i <- 0 until s.size) assertEquals(s(i), ll.poll())
 
     assertTrue(ll.isEmpty)
   }
@@ -70,8 +69,7 @@ class LinkedListTest extends AbstractListTest {
 
     assertEquals(5, ll.size())
 
-    for (i <- 0 until s.size)
-      assertEquals(s(i), ll.poll())
+    for (i <- 0 until s.size) assertEquals(s(i), ll.poll())
 
     assertTrue(ll.isEmpty)
   }

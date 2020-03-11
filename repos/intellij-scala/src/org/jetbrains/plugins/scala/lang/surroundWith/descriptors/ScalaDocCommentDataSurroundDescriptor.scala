@@ -81,8 +81,7 @@ class ScalaDocCommentDataSurroundDescriptor extends SurroundDescriptor {
         (
           startElement.getParent.getNextSibling,
           ArrayBuffer(startElement.getParent))
-      else
-        return PsiElement.EMPTY_ARRAY
+      else return PsiElement.EMPTY_ARRAY
     } else { (startElement.getNextSibling, ArrayBuffer(startElement)) }
     val lastBoundElement = if (isLastElementMarked) {
       if (endElement.getTextOffset >= startOffset) (endElement.getParent)

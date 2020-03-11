@@ -163,8 +163,7 @@ object Multipart {
           escape = true
         case '"' =>
           buffer.append('"')
-          if (!escape)
-            quote = !quote
+          if (!escape) quote = !quote
           escape = false
         case ';' =>
           if (!quote) { addPart() }
@@ -307,13 +306,11 @@ object Multipart {
       } else ctx.finish()
 
     override def onPull(ctx: Context[RawPart]): SyncDirective = {
-      if (output.nonEmpty)
-        ctx.push(dequeue())
+      if (output.nonEmpty) ctx.push(dequeue())
       else if (ctx.isFinishing) {
         if (terminated) ctx.finish()
         else ctx.pushAndFinish(Left(ParseError("Unexpected end of input")))
-      } else
-        ctx.pull()
+      } else ctx.pull()
     }
 
     override def onUpstreamFinish(ctx: Context[RawPart]): TerminationDirective =

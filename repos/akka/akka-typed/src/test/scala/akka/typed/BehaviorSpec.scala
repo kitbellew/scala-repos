@@ -75,8 +75,7 @@ class BehaviorSpec extends TypedSpec {
       val ctx =
         new EffectfulActorContext("ctx", Props(factory(inbox.ref)), system)
       val msgs = inbox.receiveAll()
-      if (requirePreStart)
-        msgs should ===(GotSignal(PreStart) :: Nil)
+      if (requirePreStart) msgs should ===(GotSignal(PreStart) :: Nil)
       Setup(ctx, inbox)
     }
 

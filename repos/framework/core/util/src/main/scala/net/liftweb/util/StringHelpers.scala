@@ -42,10 +42,8 @@ trait StringHelpers {
     */
   def unquote(str: String) = {
     if (str != null && str.length >= 2 && str.charAt(0) == '\"' && str.charAt(
-          str.length - 1) == '\"')
-      str.substring(1, str.length - 1)
-    else
-      str
+          str.length - 1) == '\"') str.substring(1, str.length - 1)
+    else str
   }
 
   /**
@@ -112,10 +110,7 @@ trait StringHelpers {
       case c :: rest          => c :: loop(rest)
       case Nil                => Nil
     }
-    if (name == null)
-      ""
-    else
-      loop('_' :: name.toList).mkString
+    if (name == null) "" else loop('_' :: name.toList).mkString
   }
 
   /**
@@ -128,10 +123,8 @@ trait StringHelpers {
     */
   def camelifyMethod(name: String): String = {
     val tmp: String = camelify(name)
-    if (tmp.length == 0)
-      ""
-    else
-      tmp.substring(0, 1).toLowerCase + tmp.substring(1)
+    if (tmp.length == 0) ""
+    else tmp.substring(0, 1).toLowerCase + tmp.substring(1)
   }
 
   /**
@@ -324,8 +317,7 @@ trait StringHelpers {
     * @return a List containing a pair of the 2 trimmed parts
     */
   def splitAt(what: String, sep: String): List[(String, String)] = {
-    if (null eq what)
-      return Nil
+    if (null eq what) return Nil
     else
       what.indexOf(sep) match {
         case -1 => Nil

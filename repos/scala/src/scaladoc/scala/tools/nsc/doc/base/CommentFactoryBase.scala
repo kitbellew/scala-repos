@@ -539,8 +539,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
 
     def document(): Body = {
       val blocks = new mutable.ListBuffer[Block]
-      while (char != endOfText)
-        blocks += block()
+      while (char != endOfText) blocks += block()
       Body(blocks.toList)
     }
 
@@ -548,14 +547,10 @@ trait CommentFactoryBase { this: MemberLookupBase =>
 
     /** {{{ block ::= code | title | hrule | listBlock | para }}} */
     def block(): Block = {
-      if (checkSkipInitWhitespace("{{{"))
-        code()
-      else if (checkSkipInitWhitespace('='))
-        title()
-      else if (checkSkipInitWhitespace("----"))
-        hrule()
-      else if (checkList)
-        listBlock
+      if (checkSkipInitWhitespace("{{{")) code()
+      else if (checkSkipInitWhitespace('=')) title()
+      else if (checkSkipInitWhitespace("----")) hrule()
+      else if (checkList) listBlock
       else { para() }
     }
 
@@ -587,8 +582,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       /** Consumes one list item block and returns it, or None if the block is
         * not a list or a different list. */
       def listLine(indent: Int, style: String): Option[Block] =
-        if (countWhitespace > indent && checkList)
-          Some(listBlock)
+        if (countWhitespace > indent && checkList) Some(listBlock)
         else if (countWhitespace != indent || !checkSkipInitWhitespace(style))
           None
         else {
@@ -622,10 +616,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       jumpWhitespace()
       jump("{{{")
       val str = readUntil("}}}")
-      if (char == endOfText)
-        reportError(pos, "unclosed code block")
-      else
-        jump("}}}")
+      if (char == endOfText) reportError(pos, "unclosed code block")
+      else jump("}}}")
       blockEnded("code block")
       Code(normalizeIndentation(str))
     }
@@ -653,8 +645,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
     /** {{{ para ::= inline '\n' }}} */
     def para(): Block = {
       val p =
-        if (summaryParsed)
-          Paragraph(inline(isInlineEnd = false))
+        if (summaryParsed) Paragraph(inline(isInlineEnd = false))
         else {
           val s = summary()
           val r =
@@ -663,8 +654,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
           summaryParsed = true
           Paragraph(Chain(r))
         }
-      while (char == endOfLine && char != endOfText)
-        nextChar()
+      while (char == endOfLine && char != endOfText) nextChar()
       p
     }
 
@@ -807,10 +797,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
     def summary(): Inline = {
       val i = inline(checkSentenceEnded())
       Summary(
-        if (jump("."))
-          Chain(List(i, Text(".")))
-        else
-          i
+        if (jump(".")) Chain(List(i, Text("."))) else i
       )
     }
 
@@ -846,8 +833,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
           "no additional content on same line after " + blockType)
         jumpUntil(endOfLine)
       }
-      while (char == endOfLine)
-        nextChar()
+      while (char == endOfLine) nextChar()
     }
 
     /**
@@ -940,10 +926,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       val poff = offset
       jumpWhitespace()
       val (ok0, chars0) =
-        if (chars.charAt(0) == ' ')
-          (offset > poff, chars substring 1)
-        else
-          (true, chars)
+        if (chars.charAt(0) == ' ') (offset > poff, chars substring 1)
+        else (true, chars)
       val ok = ok0 && jump(chars0)
       offset = poff
       ok
@@ -985,8 +969,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
 
     final def repeatJump(c: Char, max: Int = Int.MaxValue): Int = {
       var count = 0
-      while (jump(c) && count < max)
-        count += 1
+      while (jump(c) && count < max) count += 1
       count
     }
 
@@ -1024,8 +1007,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
         val c = chars.charAt(0)
         while (!check(chars) && char != endOfText) {
           nextChar()
-          while (char != c && char != endOfText)
-            nextChar()
+          while (char != c && char != endOfText) nextChar()
         }
       }
     }

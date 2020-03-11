@@ -195,9 +195,7 @@ trait MappedForeignKey[
     * Overrides LifecycleCallbacks.beforeSave
     */
   override def beforeSave {
-    if (!defined_?)
-      for (o <- obj)
-        set(o.primaryKeyField.get)
+    if (!defined_?) for (o <- obj) set(o.primaryKeyField.get)
     super.beforeSave
   }
 

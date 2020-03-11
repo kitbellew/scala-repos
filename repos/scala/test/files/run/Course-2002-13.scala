@@ -245,8 +245,7 @@ object Prolog {
               .filter(b => tvs contains b.name)
               .map(b => Binding(b.name, b.term map solutions.head))
               .reverse;
-            if (s.isEmpty) Console.println("yes")
-            else Console.println(s);
+            if (s.isEmpty) Console.println("yes") else Console.println(s);
           }
         } else { program = program ::: List(c); }
       }

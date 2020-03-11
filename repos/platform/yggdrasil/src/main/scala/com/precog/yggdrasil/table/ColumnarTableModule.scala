@@ -249,10 +249,7 @@ object ColumnarTableModule extends Logging {
       var row = 0
       while (row < rows) {
         arr(row) =
-          if (col.isDefinedAt(row))
-            quoteIfNeeded(col.strValue(row))
-          else
-            ""
+          if (col.isDefinedAt(row)) quoteIfNeeded(col.strValue(row)) else ""
         row += 1
       }
       arr
@@ -888,10 +885,8 @@ trait ColumnarTableModule[M[+_]]
       val slices2 = slices flatMap { slice =>
         StreamT.unfoldM(0) { idx =>
           val back =
-            if (idx >= slice.size)
-              None
-            else
-              Some((slice.takeRange(idx, limit), idx + limit))
+            if (idx >= slice.size) None
+            else Some((slice.takeRange(idx, limit), idx + limit))
 
           M.point(back)
         }
@@ -1192,13 +1187,13 @@ trait ColumnarTableModule[M[+_]]
 
               rightStart match {
                 case Some(
-                    resetMarker @ SlicePosition(
-                      rightStartSliceId,
-                      rightStartPos,
-                      _,
-                      rightStartSlice,
-                      _,
-                      _)) =>
+                      resetMarker @ SlicePosition(
+                        rightStartSliceId,
+                        rightStartPos,
+                        _,
+                        rightStartSlice,
+                        _,
+                        _)) =>
                   // We're currently in a cartesian.
                   if (lpos < lhead.size && rpos < rhead.size) {
                     comparator.compare(lpos, rpos) match {
@@ -1226,23 +1221,23 @@ trait ColumnarTableModule[M[+_]]
                                 .format(lpos, rpos))
 
                           case Some(
-                              SlicePosition(
-                                endSliceId,
-                                endPos,
-                                _,
-                                endSlice,
-                                _,
-                                _)) if endSliceId == rSliceId =>
+                                SlicePosition(
+                                  endSliceId,
+                                  endPos,
+                                  _,
+                                  endSlice,
+                                  _,
+                                  _)) if endSliceId == rSliceId =>
                             buildRemappings(lpos, endPos, None, None, endRight)
 
                           case Some(
-                              rend @ SlicePosition(
-                                endSliceId,
-                                _,
-                                _,
-                                _,
-                                _,
-                                _)) =>
+                                rend @ SlicePosition(
+                                  endSliceId,
+                                  _,
+                                  _,
+                                  _,
+                                  _,
+                                  _)) =>
                             // Step out of buildRemappings so that we can restart with the current rightEnd
                             SkipRight(leftPosition.copy(pos = lpos), rend)
                         }

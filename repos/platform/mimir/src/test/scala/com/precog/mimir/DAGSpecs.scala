@@ -200,10 +200,10 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
 
       result must beLike {
         case Right(
-            s @ dag.Split(
-              dag.Group(2, Const(CTrue), UnfixedSolution(1, Const(CTrue))),
-              IUI(true, sg: SplitGroup, sp: SplitParam),
-              id)) => {
+              s @ dag.Split(
+                dag.Group(2, Const(CTrue), UnfixedSolution(1, Const(CTrue))),
+                IUI(true, sg: SplitGroup, sp: SplitParam),
+                id)) => {
 
           sp.id mustEqual 1
           sg.id mustEqual 2
@@ -240,16 +240,16 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
 
       result must beLike {
         case Right(
-            s1 @ dag.Split(
-              dag.Group(2, Const(CFalse), UnfixedSolution(1, Const(CTrue))),
-              s2 @ dag.Split(
-                dag.Group(
-                  4,
-                  sp1: SplitParam,
-                  UnfixedSolution(3, sg1: SplitGroup)),
-                IUI(true, sg2: SplitGroup, sp2: SplitParam),
-                id2),
-              id1)) => {
+              s1 @ dag.Split(
+                dag.Group(2, Const(CFalse), UnfixedSolution(1, Const(CTrue))),
+                s2 @ dag.Split(
+                  dag.Group(
+                    4,
+                    sp1: SplitParam,
+                    UnfixedSolution(3, sg1: SplitGroup)),
+                  IUI(true, sg2: SplitGroup, sp2: SplitParam),
+                  id2),
+                id1)) => {
 
           sp1.id mustEqual 1
           sg1.id mustEqual 2
@@ -294,19 +294,19 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
 
       result must beLike {
         case Right(
-            s1 @ dag.Split(
-              dag.Group(2, Const(CFalse), UnfixedSolution(1, Const(CTrue))),
-              s2 @ dag.Split(
-                dag.Group(
-                  4,
-                  Const(CFalse),
-                  UnfixedSolution(3, Const(CLong(42)))),
-                IUI(
-                  true,
-                  Join(Add, Cross(_), sg1: SplitGroup, sp1: SplitParam),
-                  sg2: SplitGroup),
-                id2),
-              id1)) => {
+              s1 @ dag.Split(
+                dag.Group(2, Const(CFalse), UnfixedSolution(1, Const(CTrue))),
+                s2 @ dag.Split(
+                  dag.Group(
+                    4,
+                    Const(CFalse),
+                    UnfixedSolution(3, Const(CLong(42)))),
+                  IUI(
+                    true,
+                    Join(Add, Cross(_), sg1: SplitGroup, sp1: SplitParam),
+                    sg2: SplitGroup),
+                  id2),
+                id1)) => {
 
           sp1.id mustEqual 1
           sg1.id mustEqual 2
@@ -346,15 +346,15 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
 
         result must beLike {
           case Right(
-              s @ dag.Split(
-                dag.Group(
-                  3,
-                  Const(CLong(2)),
-                  UnionBucketSpec(
-                    UnfixedSolution(1, Const(CLong(1))),
-                    UnfixedSolution(1, Const(CLong(3))))),
-                IUI(true, sg: SplitGroup, sp: SplitParam),
-                id)) => {
+                s @ dag.Split(
+                  dag.Group(
+                    3,
+                    Const(CLong(2)),
+                    UnionBucketSpec(
+                      UnfixedSolution(1, Const(CLong(1))),
+                      UnfixedSolution(1, Const(CLong(3))))),
+                  IUI(true, sg: SplitGroup, sp: SplitParam),
+                  id)) => {
 
             sp.id mustEqual 1
             sg.id mustEqual 3
@@ -388,15 +388,15 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
 
         result must beLike {
           case Right(
-              s @ dag.Split(
-                dag.Group(
-                  3,
-                  Const(CLong(2)),
-                  IntersectBucketSpec(
-                    UnfixedSolution(1, Const(CLong(1))),
-                    UnfixedSolution(1, Const(CLong(3))))),
-                IUI(true, sg: SplitGroup, sp: SplitParam),
-                id)) => {
+                s @ dag.Split(
+                  dag.Group(
+                    3,
+                    Const(CLong(2)),
+                    IntersectBucketSpec(
+                      UnfixedSolution(1, Const(CLong(1))),
+                      UnfixedSolution(1, Const(CLong(3))))),
+                  IUI(true, sg: SplitGroup, sp: SplitParam),
+                  id)) => {
 
             sp.id mustEqual 1
             sg.id mustEqual 3
@@ -436,21 +436,21 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
 
       result must beLike {
         case Right(
-            s @ dag.Split(
-              IntersectBucketSpec(
-                dag.Group(
-                  2,
-                  Const(CLong(2)),
-                  UnfixedSolution(1, Const(CLong(1)))),
-                dag.Group(
-                  3,
-                  Const(CLong(4)),
-                  UnfixedSolution(1, Const(CLong(3))))),
-              IUI(
-                true,
-                sg2: SplitGroup,
-                IUI(true, sg1: SplitGroup, sp1: SplitParam)),
-              id)) => {
+              s @ dag.Split(
+                IntersectBucketSpec(
+                  dag.Group(
+                    2,
+                    Const(CLong(2)),
+                    UnfixedSolution(1, Const(CLong(1)))),
+                  dag.Group(
+                    3,
+                    Const(CLong(4)),
+                    UnfixedSolution(1, Const(CLong(3))))),
+                IUI(
+                  true,
+                  sg2: SplitGroup,
+                  IUI(true, sg1: SplitGroup, sp1: SplitParam)),
+                id)) => {
 
           sp1.id mustEqual 1
           sg1.id mustEqual 3
@@ -484,10 +484,10 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
 
       result must beLike {
         case Right(
-            s @ dag.Split(
-              dag.Group(2, Const(CNull), UnfixedSolution(1, Const(CTrue))),
-              Join(Add, IdentitySort, Const(CLong(42)), sg: SplitGroup),
-              id)) => {
+              s @ dag.Split(
+                dag.Group(2, Const(CNull), UnfixedSolution(1, Const(CTrue))),
+                Join(Add, IdentitySort, Const(CLong(42)), sg: SplitGroup),
+                id)) => {
 
           sg.id mustEqual 2
           sg.identities mustEqual Identities.Specs(Vector())

@@ -104,8 +104,7 @@ object StdType {
 
   def unboxedType(tp: ScType): ScType = {
     val name = tp.canonicalText.stripPrefix("_root_.")
-    if (fqnBoxedToScType.contains(name)) fqnBoxedToScType(name)
-    else tp
+    if (fqnBoxedToScType.contains(name)) fqnBoxedToScType(name) else tp
   }
 
   def unapply(tp: StdType): Option[(String, Option[StdType])] =

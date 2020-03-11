@@ -67,10 +67,8 @@ class CompoundTypeCheckSignatureProcessor(
           val lower1 = tp1.lowerBound.getOrNothing
           val lower2 = substitutor.subst(tp2.lowerType())
           var t = Conformance.conformsInner(
-            if (variance == 1) lower2
-            else lower1,
-            if (variance == 1) lower1
-            else lower2,
+            if (variance == 1) lower2 else lower1,
+            if (variance == 1) lower1 else lower2,
             Set.empty,
             undef)
           if (!t._1) return false
@@ -79,10 +77,8 @@ class CompoundTypeCheckSignatureProcessor(
           val upper1 = tp1.upperBound.getOrAny
           val upper2 = substitutor.subst(tp2.upperType())
           t = Conformance.conformsInner(
-            if (variance == 1) upper1
-            else upper2,
-            if (variance == 1) upper2
-            else upper1,
+            if (variance == 1) upper1 else upper2,
+            if (variance == 1) upper2 else upper1,
             Set.empty,
             undef)
           if (!t._1) return false
@@ -226,10 +222,8 @@ class CompoundTypeCheckTypeAliasProcessor(
           val lower1 = tp1.lowerBound.getOrNothing
           val lower2 = substitutor.subst(tp2.lowerType())
           var t = Conformance.conformsInner(
-            if (variance == 1) lower2
-            else lower1,
-            if (variance == 1) lower1
-            else lower2,
+            if (variance == 1) lower2 else lower1,
+            if (variance == 1) lower1 else lower2,
             Set.empty,
             undef)
           if (!t._1) return false
@@ -238,10 +232,8 @@ class CompoundTypeCheckTypeAliasProcessor(
           val upper1 = tp1.upperBound.getOrAny
           val upper2 = substitutor.subst(tp2.upperType())
           t = Conformance.conformsInner(
-            if (variance == 1) upper1
-            else upper2,
-            if (variance == 1) upper2
-            else upper1,
+            if (variance == 1) upper1 else upper2,
+            if (variance == 1) upper2 else upper1,
             Set.empty,
             undef)
           if (!t._1) return false

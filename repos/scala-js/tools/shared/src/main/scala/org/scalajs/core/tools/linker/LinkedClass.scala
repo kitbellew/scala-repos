@@ -159,10 +159,8 @@ object LinkedClass {
 
       // Normal methods
       case m: MethodDef if m.name.isInstanceOf[Ident] =>
-        if (m.body == EmptyTree)
-          abstractMethods += linkedMethod(m)
-        else
-          memberMethods += linkedMethod(m)
+        if (m.body == EmptyTree) abstractMethods += linkedMethod(m)
+        else memberMethods += linkedMethod(m)
 
       case m: MethodDef if m.name.isInstanceOf[StringLiteral] =>
         exportedMembers += linkedMethod(m)

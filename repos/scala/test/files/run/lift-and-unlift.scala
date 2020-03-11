@@ -14,8 +14,7 @@ object Test {
     val f4 = unlift(f2)
 
     assert(1 to 10 forall { x =>
-      if (!f3.isDefinedAt(x)) !f4.isDefinedAt(x)
-      else f3(x) == f4(x)
+      if (!f3.isDefinedAt(x)) !f4.isDefinedAt(x) else f3(x) == f4(x)
     })
 
     assert(f1 eq f3.lift)

@@ -64,16 +64,11 @@ object TopicCommand extends Logging {
       JaasUtils.isZkSecurityEnabled())
     var exitCode = 0
     try {
-      if (opts.options.has(opts.createOpt))
-        createTopic(zkUtils, opts)
-      else if (opts.options.has(opts.alterOpt))
-        alterTopic(zkUtils, opts)
-      else if (opts.options.has(opts.listOpt))
-        listTopics(zkUtils, opts)
-      else if (opts.options.has(opts.describeOpt))
-        describeTopic(zkUtils, opts)
-      else if (opts.options.has(opts.deleteOpt))
-        deleteTopic(zkUtils, opts)
+      if (opts.options.has(opts.createOpt)) createTopic(zkUtils, opts)
+      else if (opts.options.has(opts.alterOpt)) alterTopic(zkUtils, opts)
+      else if (opts.options.has(opts.listOpt)) listTopics(zkUtils, opts)
+      else if (opts.options.has(opts.describeOpt)) describeTopic(zkUtils, opts)
+      else if (opts.options.has(opts.deleteOpt)) deleteTopic(zkUtils, opts)
     } catch {
       case e: Throwable =>
         println("Error while executing topic command : " + e.getMessage)
@@ -95,8 +90,7 @@ object TopicCommand extends Logging {
       val topicsFilter = new Whitelist(topicsSpec)
       allTopics.filter(
         topicsFilter.isTopicAllowed(_, excludeInternalTopics = false))
-    } else
-      allTopics
+    } else allTopics
   }
 
   def createTopic(zkUtils: ZkUtils, opts: TopicCommandOptions) {
@@ -318,8 +312,7 @@ object TopicCommand extends Logging {
       configsToBeDeleted.foreach(propsToBeDeleted.setProperty(_, ""))
       LogConfig.validateNames(propsToBeDeleted)
       configsToBeDeleted
-    } else
-      Seq.empty
+    } else Seq.empty
   }
 
   def parseReplicaAssignment(
@@ -510,12 +503,10 @@ object TopicCommand extends Logging {
       case n: String => n.toInt
       case _         => -1
     }
-    if (maxMessageBytes > Defaults.MaxMessageSize)
-      if (replicas > 1) {
-        error(longMessageSizeWarning(maxMessageBytes))
-        askToProceed
-      } else
-        warn(shortMessageSizeWarning(maxMessageBytes))
+    if (maxMessageBytes > Defaults.MaxMessageSize) if (replicas > 1) {
+      error(longMessageSizeWarning(maxMessageBytes))
+      askToProceed
+    } else warn(shortMessageSizeWarning(maxMessageBytes))
   }
 
   def askToProceed: Unit = {

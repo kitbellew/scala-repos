@@ -90,8 +90,7 @@ object Mode {
         "[Scalding:INFO] using --tool.partialok. Missing log data won't cause errors.")
     }
 
-    if (args.boolean("local"))
-      Local(strictSources)
+    if (args.boolean("local")) Local(strictSources)
     else if (args.boolean("hdfs"))
       /* FIXME: should we start printing deprecation warnings ? It's okay to set manually c.f.*.class though */
       Hdfs(strictSources, config)

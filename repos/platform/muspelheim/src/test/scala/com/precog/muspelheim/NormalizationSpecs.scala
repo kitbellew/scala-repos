@@ -253,14 +253,10 @@ trait NormalizationSpecs extends EvalStackSpecs {
 
       if (Set("age", "height", "weight").subsetOf(obj.keySet))
         obj mustEqual obj4
-      else if (Set("age", "height").subsetOf(obj.keySet))
-        obj mustEqual obj2
-      else if (Set("age", "weight").subsetOf(obj.keySet))
-        obj mustEqual obj3
-      else if (Set("age").subsetOf(obj.keySet))
-        obj mustEqual obj1
-      else
-        ko
+      else if (Set("age", "height").subsetOf(obj.keySet)) obj mustEqual obj2
+      else if (Set("age", "weight").subsetOf(obj.keySet)) obj mustEqual obj3
+      else if (Set("age").subsetOf(obj.keySet)) obj mustEqual obj1
+      else ko
     }
 
     result must haveAllElementsLike {
@@ -603,8 +599,7 @@ trait NormalizationSpecs extends EvalStackSpecs {
               clusterSchema(clusters, clusterId) == Set("age", "income")
             }
 
-            if (checkClusters) ok
-            else ko
+            if (checkClusters) ok else ko
         }
 
       case _ => ko

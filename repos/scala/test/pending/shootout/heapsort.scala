@@ -8,8 +8,7 @@ object heapsort {
     val n = toPositiveInt(args);
 
     val numbers = new Array[Double](n + 1);
-    for (i <- Iterator.range(1, n + 1))
-      numbers(i) = generate(100.0);
+    for (i <- Iterator.range(1, n + 1)) numbers(i) = generate(100.0);
 
     heapsort(n, numbers);
 

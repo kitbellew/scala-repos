@@ -66,8 +66,7 @@ class ScClassImpl private (
 
   override def additionalJavaNames: Array[String] = {
     //do not add all cases with fakeCompanionModule, it will be used in Stubs.
-    if (isCase) fakeCompanionModule.map(_.getName).toArray
-    else Array.empty
+    if (isCase) fakeCompanionModule.map(_.getName).toArray else Array.empty
   }
 
   def this(node: ASTNode) = { this(null, null, node) }

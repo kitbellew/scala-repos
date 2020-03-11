@@ -22,18 +22,15 @@ final class RichLogger private (loggers: Array[Logger], settings: RunSettings) {
     currentTestClassName.push(s)
 
   def popCurrentTestClassName(): Unit = {
-    if (currentTestClassName.size > 1)
-      currentTestClassName.pop()
+    if (currentTestClassName.size > 1) currentTestClassName.pop()
   }
 
   def debug(s: String): Unit = {
-    for (l <- loggers)
-      l.debug(filterAnsiIfNeeded(l, s))
+    for (l <- loggers) l.debug(filterAnsiIfNeeded(l, s))
   }
 
   def error(s: String): Unit = {
-    for (l <- loggers)
-      l.error(filterAnsiIfNeeded(l, s))
+    for (l <- loggers) l.error(filterAnsiIfNeeded(l, s))
   }
 
   def error(s: String, t: Throwable): Unit = {
@@ -43,18 +40,15 @@ final class RichLogger private (loggers: Array[Logger], settings: RunSettings) {
   }
 
   def info(s: String): Unit = {
-    for (l <- loggers)
-      l.info(filterAnsiIfNeeded(l, s))
+    for (l <- loggers) l.info(filterAnsiIfNeeded(l, s))
   }
 
   def warn(s: String): Unit = {
-    for (l <- loggers)
-      l.warn(filterAnsiIfNeeded(l, s))
+    for (l <- loggers) l.warn(filterAnsiIfNeeded(l, s))
   }
 
   private def filterAnsiIfNeeded(l: Logger, s: String): String =
-    if (l.ansiCodesSupported() && settings.color) s
-    else filterAnsi(s)
+    if (l.ansiCodesSupported() && settings.color) s else filterAnsi(s)
 
   private def logStackTrace(t: Throwable): Unit = {
     val trace = t.getStackTrace.dropWhile { p =>
@@ -65,8 +59,7 @@ final class RichLogger private (loggers: Array[Logger], settings: RunSettings) {
     }
     val testClassName = currentTestClassName.head
     val testFileName = {
-      if (settings.color) findTestFileName(trace, testClassName)
-      else null
+      if (settings.color) findTestFileName(trace, testClassName) else null
     }
     val i = trace.indexWhere { p =>
       p.getFileName != null && p.getFileName.contains("JUnitExecuteTest.scala")

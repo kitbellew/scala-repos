@@ -88,8 +88,7 @@ object Batcher {
           InclusiveLower(Timestamp.Min),
           InclusiveUpper(Timestamp.Max)
         )
-      else
-        Empty[Timestamp]()
+      else Empty[Timestamp]()
 
     val totalBatchInterval = Intersection(
       InclusiveLower(currentBatch),
@@ -102,11 +101,9 @@ object Batcher {
         case Universe()            => totalBatchInterval
         case ExclusiveUpper(upper) => Empty()
         case InclusiveLower(lower) =>
-          if (lower == Timestamp.Min) totalBatchInterval
-          else Empty()
+          if (lower == Timestamp.Min) totalBatchInterval else Empty()
         case InclusiveUpper(upper) =>
-          if (upper == Timestamp.Max) totalBatchInterval
-          else Empty()
+          if (upper == Timestamp.Max) totalBatchInterval else Empty()
         case ExclusiveLower(lower) => Empty()
         case Intersection(low, high) =>
           batchesCoveredBy(low) && batchesCoveredBy(high)

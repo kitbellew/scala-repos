@@ -44,20 +44,16 @@ class SbtDependencyCompletionContributor extends ScalaCompletionContributor {
 
         def completeGroup(artifact: String) = {
           indexes foreach { index =>
-            if (artifact.nonEmpty)
-              index.groups(artifact) foreach addResult
-            else
-              index.groups foreach addResult
+            if (artifact.nonEmpty) index.groups(artifact) foreach addResult
+            else index.groups foreach addResult
           }
           results.stopHere()
         }
 
         def completeArtifact(group: String) = {
           indexes foreach { index =>
-            if (group.nonEmpty)
-              index.artifacts(group) foreach addResult
-            else
-              index.groups flatMap index.artifacts foreach addResult
+            if (group.nonEmpty) index.artifacts(group) foreach addResult
+            else index.groups flatMap index.artifacts foreach addResult
           }
           results.stopHere()
         }

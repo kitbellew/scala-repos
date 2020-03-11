@@ -233,8 +233,7 @@ trait Event[+T] { self =>
         else c.getAndSet(Closable.nop).close()
       })
 
-      if (n.get() == howmany)
-        c.getAndSet(Closable.nop).close()
+      if (n.get() == howmany) c.getAndSet(Closable.nop).close()
 
       Closable.ref(c)
     }
@@ -377,8 +376,7 @@ object Event {
       */
     def notify(t: T): Unit = synchronized {
       val current = witnesses.get
-      for (w <- current)
-        w.notify(t)
+      for (w <- current) w.notify(t)
     }
 
     @tailrec

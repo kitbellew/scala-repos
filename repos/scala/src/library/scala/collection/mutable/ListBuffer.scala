@@ -374,8 +374,7 @@ final class ListBuffer[A]
       }
       if (!cursor.tail.isEmpty) {
         val z = cursor.asInstanceOf[::[A]]
-        if (z.tl == last0)
-          last0 = z
+        if (z.tl == last0) last0 = z
         z.tl = cursor.tail.tail
         reduceLengthBy(1)
       }

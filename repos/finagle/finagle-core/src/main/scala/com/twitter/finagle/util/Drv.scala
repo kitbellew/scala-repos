@@ -38,8 +38,7 @@ object Drv {
     def apply(rng: Rng): Int = {
       val i = rng.nextInt(N)
       val p = prob(i)
-      if (p == 1 || rng.nextDouble() < p) i
-      else alias(i)
+      if (p == 1 || rng.nextDouble() < p) i else alias(i)
     }
   }
 
@@ -56,8 +55,7 @@ object Drv {
     */
   def newVose(dist: Seq[Double]): Aliased = {
     val N = dist.size
-    if (N == 0)
-      return Aliased(Vector.empty, Vector.empty)
+    if (N == 0) return Aliased(Vector.empty, Vector.empty)
 
     val alias = new Array[Int](N)
     val prob = new Array[Double](N)
@@ -69,8 +67,7 @@ object Drv {
 
     for (i <- p.indices) {
       p(i) *= N
-      if (p(i) < 1) small.enqueue(i)
-      else large.enqueue(i)
+      if (p(i) < 1) small.enqueue(i) else large.enqueue(i)
     }
 
     while (large.nonEmpty && small.nonEmpty) {
@@ -81,15 +78,12 @@ object Drv {
       alias(s) = l
 
       p(l) = (p(s) + p(l)) - 1d // Same as p(l)-(1-p(s)), but more stable
-      if (p(l) < 1) small.enqueue(l)
-      else large.enqueue(l)
+      if (p(l) < 1) small.enqueue(l) else large.enqueue(l)
     }
 
-    while (large.nonEmpty)
-      prob(large.dequeue()) = 1
+    while (large.nonEmpty) prob(large.dequeue()) = 1
 
-    while (small.nonEmpty)
-      prob(small.dequeue()) = 1
+    while (small.nonEmpty) prob(small.dequeue()) = 1
 
     Aliased(alias, prob)
   }
@@ -114,9 +108,7 @@ object Drv {
     */
   def fromWeights(weights: Seq[Double]): Drv = {
     val sum = weights.sum
-    if (sum == 0)
-      Drv(Seq.fill(weights.size) { 1d / weights.size })
-    else
-      Drv(weights map (_ / sum))
+    if (sum == 0) Drv(Seq.fill(weights.size) { 1d / weights.size })
+    else Drv(weights map (_ / sum))
   }
 }

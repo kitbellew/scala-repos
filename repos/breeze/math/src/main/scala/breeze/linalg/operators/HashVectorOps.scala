@@ -30,8 +30,7 @@ trait DenseVector_HashVector_Ops { this: HashVector.type =>
         var i = 0
         while (i < bsize) {
           val aoff = a.offset + bi(i) * a.stride
-          if (b.isActive(i))
-            ad(aoff) = op(ad(aoff), bd(i))
+          if (b.isActive(i)) ad(aoff) = op(ad(aoff), bd(i))
           i += 1
         }
       }
@@ -60,8 +59,7 @@ trait DenseVector_HashVector_Ops { this: HashVector.type =>
 
         var i = 0
         while (i < bsize) {
-          if (b.isActive(i))
-            result += adata(aoff + bi(i) * stride) * bd(i)
+          if (b.isActive(i)) result += adata(aoff + bi(i) * stride) * bd(i)
           i += 1
         }
         result
@@ -189,8 +187,7 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
         val builder = new VectorBuilder[T](a.length)
         for ((k, v) <- b.activeIterator) {
           val r = a(k) * v
-          if (r != zero)
-            builder.add(k, r)
+          if (r != zero) builder.add(k, r)
         }
         builder.toHashVector
       }
@@ -466,8 +463,7 @@ trait HashVector_SparseVector_Ops extends HashVectorOps {
         val builder = new VectorBuilder[T](a.length)
         for ((k, v) <- b.iterator) {
           val r = op(a(k), v)
-          if (r != zero)
-            builder.add(k, r)
+          if (r != zero) builder.add(k, r)
         }
         builder.toHashVector
       }
@@ -482,8 +478,7 @@ trait HashVector_SparseVector_Ops extends HashVectorOps {
         val builder = new VectorBuilder[T](a.length)
         for ((k, v) <- b.activeIterator) {
           val r = a(k) * v
-          if (r != zero)
-            builder.add(k, r)
+          if (r != zero) builder.add(k, r)
         }
         builder.toHashVector
       }
@@ -582,8 +577,7 @@ trait SparseVector_HashVector_Ops
         val builder = new VectorBuilder[T](a.length)
         for ((k, v) <- b.iterator) {
           val r = op(a(k), v)
-          if (r != zero)
-            builder.add(k, r)
+          if (r != zero) builder.add(k, r)
         }
         builder.toSparseVector
       }
@@ -599,8 +593,7 @@ trait SparseVector_HashVector_Ops
         val builder = new VectorBuilder[T](a.length)
         for ((k, v) <- a.activeIterator) {
           val r = v * b(k)
-          if (r != zero)
-            builder.add(k, r)
+          if (r != zero) builder.add(k, r)
         }
         builder.toSparseVector(true, true)
       }
@@ -735,8 +728,7 @@ trait HashVector_GenericOps { this: HashVector.type =>
       def apply(a: HashVector[V], s: V, b: HashVector[V]) {
         require(b.length == a.length, "Vectors must be the same length!")
 
-        for ((k, v) <- b.activeIterator)
-          a(k) = ring.+(a(k), ring.*(s, v))
+        for ((k, v) <- b.activeIterator) a(k) = ring.+(a(k), ring.*(s, v))
       }
     }
   }

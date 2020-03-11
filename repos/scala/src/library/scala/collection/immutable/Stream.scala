@@ -371,15 +371,13 @@ abstract class Stream[+A]
     // we assume there is no other builder factory on streams and therefore know that That = Stream[A]
     if (isStreamBuilder(bf))
       asThat(
-        if (isEmpty) that.toStream
-        else cons(head, asStream[A](tail ++ that))
+        if (isEmpty) that.toStream else cons(head, asStream[A](tail ++ that))
       )
     else super.++(that)(bf)
 
   override def +:[B >: A, That](elem: B)(
       implicit bf: CanBuildFrom[Stream[A], B, That]): That =
-    if (isStreamBuilder(bf)) asThat(cons(elem, this))
-    else super.+:(elem)(bf)
+    if (isStreamBuilder(bf)) asThat(cons(elem, this)) else super.+:(elem)(bf)
 
   /**
     * Create a new stream which contains all intermediate results of applying the
@@ -422,8 +420,7 @@ abstract class Stream[+A]
       implicit bf: CanBuildFrom[Stream[A], B, That]): That = {
     if (isStreamBuilder(bf))
       asThat(
-        if (isEmpty) Stream.Empty
-        else cons(f(head), asStream[B](tail map f))
+        if (isEmpty) Stream.Empty else cons(f(head), asStream[B](tail map f))
       )
     else super.map(f)(bf)
   }
@@ -518,8 +515,7 @@ abstract class Stream[+A]
     var rest = this
     while (!rest.isEmpty && p(rest.head) == isFlipped) rest = rest.tail
     // private utility func to avoid `this` on stack (would be needed for the lazy arg)
-    if (rest.nonEmpty) Stream.filteredTail(rest, p, isFlipped)
-    else Stream.Empty
+    if (rest.nonEmpty) Stream.filteredTail(rest, p, isFlipped) else Stream.Empty
   }
 
   /** A FilterMonadic which allows GC of the head of stream during processing */
@@ -559,8 +555,7 @@ abstract class Stream[+A]
     */
   @tailrec
   override final def foldLeft[B](z: B)(op: (B, A) => B): B = {
-    if (this.isEmpty) z
-    else tail.foldLeft(op(z, head))(op)
+    if (this.isEmpty) z else tail.foldLeft(op(z, head))(op)
   }
 
   /** Stream specialization of reduceLeft which allows GC to collect
@@ -817,8 +812,7 @@ abstract class Stream[+A]
   )
 
   @tailrec final override def drop(n: Int): Stream[A] =
-    if (n <= 0 || isEmpty) this
-    else tail drop n - 1
+    if (n <= 0 || isEmpty) this else tail drop n - 1
 
   /** A substream starting at index `from` and extending up to (but not including)
     *  index `until`.  This returns a `Stream` that is lazily evaluated.
@@ -835,8 +829,7 @@ abstract class Stream[+A]
     */
   override def slice(from: Int, until: Int): Stream[A] = {
     val lo = from max 0
-    if (until <= lo || isEmpty) Stream.empty
-    else this drop lo take (until - lo)
+    if (until <= lo || isEmpty) Stream.empty else this drop lo take (until - lo)
   }
 
   /** The stream without its last element.
@@ -884,8 +877,7 @@ abstract class Stream[+A]
       else if (stub0.isEmpty) advance(stub1.reverse, Nil, rest)
       else cons(stub0.head, advance(stub0.tail, rest.head :: stub1, rest.tail))
     }
-    if (n <= 0) this
-    else advance((this take n).toList, Nil, this drop n)
+    if (n <= 0) this else advance((this take n).toList, Nil, this drop n)
   }
 
   /** Returns the longest prefix of this `Stream` whose elements satisfy the
@@ -901,8 +893,7 @@ abstract class Stream[+A]
     * }}}
     */
   override def takeWhile(p: A => Boolean): Stream[A] =
-    if (!isEmpty && p(head)) cons(head, tail takeWhile p)
-    else Stream.Empty
+    if (!isEmpty && p(head)) cons(head, tail takeWhile p) else Stream.Empty
 
   /** Returns the a `Stream` representing the longest suffix of this iterable
     * whose first element does not satisfy the predicate `p`.
@@ -1166,8 +1157,7 @@ object Stream extends SeqFactory[Stream] {
     */
   object #:: {
     def unapply[A](xs: Stream[A]): Option[(A, Stream[A])] =
-      if (xs.isEmpty) None
-      else Some((xs.head, xs.tail))
+      if (xs.isEmpty) None else Some((xs.head, xs.tail))
   }
 
   /** An alternative way of building and matching Streams using Stream.cons(hd, tl).
@@ -1193,13 +1183,12 @@ object Stream extends SeqFactory[Stream] {
     @volatile private[this] var tlGen = tl _
     def tailDefined: Boolean = tlGen eq null
     override def tail: Stream[A] = {
-      if (!tailDefined)
-        synchronized {
-          if (!tailDefined) {
-            tlVal = tlGen()
-            tlGen = null
-          }
+      if (!tailDefined) synchronized {
+        if (!tailDefined) {
+          tlVal = tlGen()
+          tlGen = null
         }
+      }
 
       tlVal
     }

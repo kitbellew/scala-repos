@@ -71,8 +71,7 @@ sealed abstract class PostRepo(troll: Boolean) {
   val selectNotHidden = Json.obj("hidden" -> false)
 
   def selectLangs(langs: List[String]) =
-    if (langs.isEmpty) Json.obj()
-    else Json.obj("lang" -> $in(langs))
+    if (langs.isEmpty) Json.obj() else Json.obj("lang" -> $in(langs))
 
   def findDuplicate(post: Post): Fu[Option[Post]] =
     $find.one(

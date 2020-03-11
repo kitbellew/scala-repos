@@ -140,8 +140,7 @@ object HashVector
         val out = new OpenAddressHashArray[V2](from.length)
         var i = 0
         while (i < from.iterableSize) {
-          if (from.isActive(i))
-            out(from.index(i)) = fn(from.data(i))
+          if (from.isActive(i)) out(from.index(i)) = fn(from.data(i))
           i += 1
         }
         new HashVector(out)
@@ -160,8 +159,7 @@ object HashVector
         fn.zeros(from.size - from.activeSize, from.default)
         var i = 0
         while (i < from.iterableSize) {
-          if (from.isActive(i))
-            fn.visit(from.data(i))
+          if (from.isActive(i)) fn.visit(from.data(i))
           i += 1
         }
       }
@@ -181,8 +179,7 @@ object HashVector
           from.default)
         var i = 0
         while (i < from.iterableSize) {
-          if (from.isActive(i))
-            fn.visit(from.index(i), from.data(i))
+          if (from.isActive(i)) fn.visit(from.index(i), from.data(i))
           i += 1
         }
       }

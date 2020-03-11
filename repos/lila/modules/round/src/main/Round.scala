@@ -40,10 +40,7 @@ private[round] final class Round(
     var white = 0
     var black = 0
     def get(c: Color) = c.fold(white, black)
-    def set(c: Color, v: Int) {
-      if (c.white) white = v
-      else black = v
-    }
+    def set(c: Color, v: Int) { if (c.white) white = v else black = v }
   }
 
   def process = {

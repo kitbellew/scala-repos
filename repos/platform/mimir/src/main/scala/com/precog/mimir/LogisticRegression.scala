@@ -98,14 +98,10 @@ trait LogisticRegressionLibModule[M[+_]]
       }
 
       def checkValue(value: Double): Double = {
-        if (value isPosInfinity)
-          Double.MaxValue
-        else if (value isNegInfinity)
-          Double.MinValue
-        else if (value isNaN)
-          sys.error("Inconceivable! Value is NaN.")
-        else
-          value
+        if (value isPosInfinity) Double.MaxValue
+        else if (value isNegInfinity) Double.MinValue
+        else if (value isNaN) sys.error("Inconceivable! Value is NaN.")
+        else value
       }
 
       def cost(seq: Seq[ColumnValues], theta: Theta): Double = {
@@ -163,8 +159,7 @@ trait LogisticRegressionLibModule[M[+_]]
       def reduceDouble(seq0: Seq[ColumnValues]): Result = {
         val seq = seq0 filter { arr => arr.last == 0 || arr.last == 1 }
 
-        if (seq.isEmpty) None
-        else Some(seq)
+        if (seq.isEmpty) None else Some(seq)
       }
 
       def reducer: Reducer[Result] = new Reducer[Result] {
@@ -181,8 +176,7 @@ trait LogisticRegressionLibModule[M[+_]]
             case _ => None
           }
 
-          if (result.isEmpty) None
-          else result.suml(monoid)
+          if (result.isEmpty) None else result.suml(monoid)
         }
       }
 
@@ -198,10 +192,8 @@ trait LogisticRegressionLibModule[M[+_]]
 
         if (sum / theta.length < 0.01) { theta }
         else if (cost(seq, theta) > cost(seq, theta0)) {
-          if (alpha > Double.MinValue * 2.0)
-            gradloop(seq, theta0, alpha / 2.0)
-          else
-            theta0
+          if (alpha > Double.MinValue * 2.0) gradloop(seq, theta0, alpha / 2.0)
+          else theta0
         } else { gradloop(seq, theta, alpha) }
       }
 
@@ -222,10 +214,7 @@ trait LogisticRegressionLibModule[M[+_]]
                   case ((theta0, cost0), theta) => {
                     val costnew = cost(seq, theta)
 
-                    if (costnew < cost0)
-                      (theta, costnew)
-                    else
-                      (theta0, cost0)
+                    if (costnew < cost0) (theta, costnew) else (theta0, cost0)
                   }
                 }
 

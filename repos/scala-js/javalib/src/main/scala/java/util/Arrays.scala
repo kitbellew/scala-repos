@@ -231,10 +231,7 @@ object Arrays {
           var iB = i0 + m - 1
           while (iB - iA > 1) {
             val ix = (iA + iB) >>> 1 // Use bit shift to get unsigned div by 2
-            if (ord.compare(next, a(ix)) < 0)
-              iB = ix
-            else
-              iA = ix
+            if (ord.compare(next, a(ix)) < 0) iB = ix else iA = ix
           }
           val ix = iA + (if (ord.compare(next, a(iA)) < 0) 0 else 1)
           var i = i0 + m
@@ -360,10 +357,7 @@ object Arrays {
           var iB = i0 + m - 1
           while (iB - iA > 1) {
             val ix = (iA + iB) >>> 1 // Use bit shift to get unsigned div by 2
-            if (ord.compare(next, a(ix)) < 0)
-              iB = ix
-            else
-              iA = ix
+            if (ord.compare(next, a(ix)) < 0) iB = ix else iA = ix
           }
           val ix = iA + (if (ord.compare(next, a(iA)) < 0) 0 else 1)
           var i = i0 + m
@@ -670,8 +664,7 @@ object Arrays {
       toIndex: Int,
       value: T,
       checkIndices: Boolean = true): Unit = {
-    if (checkIndices)
-      checkRangeIndices(a.length, fromIndex, toIndex)
+    if (checkIndices) checkRangeIndices(a.length, fromIndex, toIndex)
     var i = fromIndex
     while (i != toIndex) {
       a(i) = value
@@ -810,18 +803,15 @@ object Arrays {
   }
 
   @inline private def checkArrayLength(len: Int): Unit = {
-    if (len < 0)
-      throw new NegativeArraySizeException
+    if (len < 0) throw new NegativeArraySizeException
   }
 
   @inline private def checkIndicesForCopyOfRange(
       len: Int,
       start: Int,
       end: Int): Unit = {
-    if (start > end)
-      throw new IllegalArgumentException(start + " > " + end)
-    if (start < 0 || start > len)
-      throw new ArrayIndexOutOfBoundsException
+    if (start > end) throw new IllegalArgumentException(start + " > " + end)
+    if (start < 0 || start > len) throw new ArrayIndexOutOfBoundsException
   }
 
   @noinline def asList[T](a: Array[T]): List[T] = {
@@ -932,8 +922,7 @@ object Arrays {
 
   @inline
   private def toStringImpl[T](a: Array[T]): String = {
-    if (a == null) "null"
-    else a.mkString("[", ", ", "]")
+    if (a == null) "null" else a.mkString("[", ", ", "]")
   }
 
   @noinline def deepToString(a: Array[AnyRef]): String =

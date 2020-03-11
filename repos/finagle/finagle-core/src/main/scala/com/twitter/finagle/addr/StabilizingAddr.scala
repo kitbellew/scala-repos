@@ -122,8 +122,7 @@ private[finagle] object StabilizingAddr {
             case _                    => Addr.Metadata.empty
           }
           val addr =
-            if (active.nonEmpty) Addr.Bound(active, attrs)
-            else srcAddr
+            if (active.nonEmpty) Addr.Bound(active, attrs) else srcAddr
           stabilized.send(addr) map { _ =>
             loop(remq, h, active, false, srcAddr)
           }

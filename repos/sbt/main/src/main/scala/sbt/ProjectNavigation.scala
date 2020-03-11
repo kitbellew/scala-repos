@@ -42,8 +42,7 @@ final class ProjectNavigation(s: State) {
   def show(): Unit =
     s.log.info(currentRef.project + " (in build " + currentRef.build + ")")
   def selectProject(uri: URI, to: String): State =
-    if (structure.units(uri).defined.contains(to))
-      setProject(uri, to)
+    if (structure.units(uri).defined.contains(to)) setProject(uri, to)
     else
       fail(
         "Invalid project name '" + to + "' in build " + uri + " (type 'projects' to list available projects).")

@@ -38,27 +38,27 @@ class ExpandSums extends Phase {
       val tree3 = tree2 match {
         // Expand multi-column null values in ELSE branches (used by Rep[Option].filter) with correct type
         case IfThenElse(
-            ConstArray(
-              pred,
-              then1 :@ tpe,
-              LiteralNode(None) :@ OptionType(ScalaBaseType.nullType))) =>
+              ConstArray(
+                pred,
+                then1 :@ tpe,
+                LiteralNode(None) :@ OptionType(ScalaBaseType.nullType))) =>
           multi = true
           IfThenElse(ConstArray(pred, then1, buildMultiColumnNone(tpe))) :@ tpe
 
         // Identity OptionFold/OptionApply combination -> remove
         case OptionFold(
-            from,
-            LiteralNode(None) :@ OptionType(ScalaBaseType.nullType),
-            oa @ OptionApply(Ref(s)),
-            gen) if s == gen =>
+              from,
+              LiteralNode(None) :@ OptionType(ScalaBaseType.nullType),
+              oa @ OptionApply(Ref(s)),
+              gen) if s == gen =>
           silentCast(oa.nodeType, from)
 
         // Primitive OptionFold representing GetOrElse -> translate to GetOrElse
         case OptionFold(
-            from :@ OptionType.Primitive(_),
-            LiteralNode(v),
-            Ref(s),
-            gen) if s == gen =>
+              from :@ OptionType.Primitive(_),
+              LiteralNode(v),
+              Ref(s),
+              gen) if s == gen =>
           GetOrElse(from, () => v).infer()
 
         // Primitive OptionFold -> translate to null check
@@ -336,10 +336,10 @@ class ExpandSums extends Phase {
   def fuse(n: Node): Node = n match {
     // Option.map
     case IfThenElse(
-        ConstArray(
-          Library.Not(Library.==(disc, LiteralNode(null))),
-          ProductNode(ConstArray(Disc1, map)),
-          ProductNode(ConstArray(DiscNone, _)))) =>
+          ConstArray(
+            Library.Not(Library.==(disc, LiteralNode(null))),
+            ProductNode(ConstArray(Disc1, map)),
+            ProductNode(ConstArray(DiscNone, _)))) =>
       ProductNode(ConstArray(disc, map)).infer()
     case n => n
   }
@@ -420,10 +420,10 @@ class ExpandSums extends Phase {
 
       // Optimize null-propagating single-column IfThenElse
       case IfThenElse(
-          ConstArray(
-            Library.==(r, LiteralNode(null)),
-            Library.SilentCast(LiteralNode(None)),
-            c @ Library.SilentCast(r2))) if r == r2 =>
+            ConstArray(
+              Library.==(r, LiteralNode(null)),
+              Library.SilentCast(LiteralNode(None)),
+              c @ Library.SilentCast(r2))) if r == r2 =>
         c
 
       // Fix Untyped nulls in else clauses

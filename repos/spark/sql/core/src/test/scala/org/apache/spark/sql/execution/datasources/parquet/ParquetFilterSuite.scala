@@ -72,9 +72,9 @@ class ParquetFilterSuite
         val maybeAnalyzedPredicate = query.queryExecution.optimizedPlan
           .collect {
             case PhysicalOperation(
-                _,
-                filters,
-                LogicalRelation(relation: HadoopFsRelation, _, _)) =>
+                  _,
+                  filters,
+                  LogicalRelation(relation: HadoopFsRelation, _, _)) =>
               maybeRelation = Some(relation)
               filters
           }

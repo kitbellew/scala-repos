@@ -165,8 +165,7 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
   def match_?(toMatch: String): Boolean = {
     if (password.get.startsWith("b;")) {
       BCrypt.checkpw(toMatch, password.get.substring(2) + salt_i.get)
-    } else
-      hash("{" + toMatch + "} salt={" + salt_i.get + "}") == password.get
+    } else hash("{" + toMatch + "} salt={" + salt_i.get + "}") == password.get
   }
 
   override def validate: List[FieldError] = {

@@ -94,8 +94,7 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
           keys.flatMap { key =>
             map.lock(key) { data =>
               data.get(key) filter { entry =>
-                if (!entry.valid)
-                  data.remove(key) // expired
+                if (!entry.valid) data.remove(key) // expired
                 entry.valid
               } map { entry => Value(key, entry.value) }
             }
@@ -105,10 +104,7 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
         getByKeys(keys)
       case Delete(key) =>
         map.lock(key) { data =>
-          if (data.remove(key).isDefined)
-            Deleted()
-          else
-            NotFound()
+          if (data.remove(key).isDefined) Deleted() else NotFound()
         }
       case Incr(key, delta) =>
         map.lock(key) { data =>
@@ -123,8 +119,7 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
                   "cannot increment or decrement non-numeric value")
 
               val existingValue: Long =
-                if (existingString.isEmpty) 0L
-                else existingString.toLong
+                if (existingString.isEmpty) 0L else existingString.toLong
 
               val result: Long = existingValue + delta
               data(key) = Entry(Buf.Utf8(result.toString), entry.expiry)

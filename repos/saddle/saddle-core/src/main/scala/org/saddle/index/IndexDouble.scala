@@ -88,10 +88,7 @@ class IndexDouble(keys: Vec[Double]) extends Index[Double] {
 
     val fnd = locator.count(t)
 
-    if (fnd > 0)
-      locator.get(t)
-    else
-      -(binarySearch(keys, t) + 1)
+    if (fnd > 0) locator.get(t) else -(binarySearch(keys, t) + 1)
   }
 
   // find the last location whereby an insertion would maintain a sorted index
@@ -100,10 +97,7 @@ class IndexDouble(keys: Vec[Double]) extends Index[Double] {
 
     val fnd = locator.count(t)
 
-    if (fnd > 0)
-      fnd + locator.get(t)
-    else
-      -(binarySearch(keys, t) + 1)
+    if (fnd > 0) fnd + locator.get(t) else -(binarySearch(keys, t) + 1)
   }
 
   def map[@spec(Boolean, Int, Long, Double) B: ST: ORD](

@@ -124,8 +124,7 @@ package json {
         indent()
         // We add special support here for null
         val realTag =
-          if (null == picklee) FastTypeTag.Null
-          else tag
+          if (null == picklee) FastTypeTag.Null else tag
         if (hints.isSharedReference) {
           tags.push(FastTypeTag.Ref)
           append("{ \"$ref\": " + hints.oid + " }")
@@ -162,8 +161,7 @@ package json {
         this
       }
     private def ignoringSharedRef(action: => PBuilder): PBuilder =
-      if (isIgnoringFields) this
-      else action
+      if (isIgnoringFields) this else action
     def putField(name: String, pickler: PBuilder => Unit): PBuilder =
       ignoringSharedRef {
         // assert(!primitives.contains(tags.top.key), tags.top)

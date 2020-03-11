@@ -27,10 +27,7 @@ class AsyncLatch(initialCount: Int = 0) {
     * reached zero.
     */
   def await(f: => Unit): Unit = synchronized {
-    if (count == 0)
-      f
-    else
-      waiters += { () => f }
+    if (count == 0) f else waiters += { () => f }
   }
 
   /**

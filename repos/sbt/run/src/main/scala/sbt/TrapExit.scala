@@ -121,14 +121,10 @@ object TrapExit {
       withType: CauseType => T)(notType: Throwable => T)(
       implicit mf: Manifest[CauseType]): T = {
     val clazz = mf.runtimeClass
-    if (clazz.isInstance(e))
-      withType(e.asInstanceOf[CauseType])
+    if (clazz.isInstance(e)) withType(e.asInstanceOf[CauseType])
     else {
       val cause = e.getCause
-      if (cause == null)
-        notType(e)
-      else
-        withCause(cause)(withType)(notType)(mf)
+      if (cause == null) notType(e) else withCause(cause)(withType)(notType)(mf)
     }
   }
 
@@ -210,8 +206,7 @@ private final class TrapExit(delegateManager: SecurityManager)
       }
     }
     // processThreads takes a snapshot of the threads at a given moment, so if there were only daemons, the application should shut down
-    if (!daemonsOnly)
-      waitForExit(app)
+    if (!daemonsOnly) waitForExit(app)
   }
 
   /** Gives managed applications a unique ID to use in the IDs of the main thread and thread group. */
@@ -290,8 +285,7 @@ private final class TrapExit(delegateManager: SecurityManager)
         if (old.isEmpty) { // wasn't registered
           threadToApp.put(threadID, this)
           setExceptionHandler(t)
-          if (!awtUsed && isEventQueue(t))
-            awtUsed = true
+          if (!awtUsed && isEventQueue(t)) awtUsed = true
         }
       }
     }
@@ -322,8 +316,7 @@ private final class TrapExit(delegateManager: SecurityManager)
     private[this] def cleanup(resources: TrieMap[ThreadID, _]): Unit = {
       val snap = resources.readOnlySnapshot
       resources.clear()
-      for ((id, _) <- snap)
-        unregister(id)
+      for ((id, _) <- snap) unregister(id)
     }
 
     // only want to operate on unterminated threads
@@ -337,12 +330,10 @@ private final class TrapExit(delegateManager: SecurityManager)
       val snap = threads.readOnlySnapshot
       for ((id, tref) <- snap) {
         val t = tref.get
-        if ((t eq null) || isDone(t))
-          unregister(id)
+        if ((t eq null) || isDone(t)) unregister(id)
         else {
           f(t)
-          if (isDone(t))
-            unregister(id)
+          if (isDone(t)) unregister(id)
         }
       }
     }
@@ -392,8 +383,7 @@ private final class TrapExit(delegateManager: SecurityManager)
     // only try to dispose frames if we think the App used AWT
     // otherwise, we initialize AWT as a side effect of asking for the frames
     // also, we only assume one AWT application at a time
-    if (app.awtUsed)
-      disposeAllFrames(app.log)
+    if (app.awtUsed) disposeAllFrames(app.log)
     interruptAllThreads(app)
   }
 
@@ -448,12 +438,10 @@ private final class TrapExit(delegateManager: SecurityManager)
   override def checkExec(cmd: String): Unit = ()
 
   override def checkPermission(perm: Permission): Unit = {
-    if (delegateManager ne null)
-      delegateManager.checkPermission(perm)
+    if (delegateManager ne null) delegateManager.checkPermission(perm)
   }
   override def checkPermission(perm: Permission, context: AnyRef): Unit = {
-    if (delegateManager ne null)
-      delegateManager.checkPermission(perm, context)
+    if (delegateManager ne null) delegateManager.checkPermission(perm, context)
   }
 
   /**
@@ -470,8 +458,7 @@ private final class TrapExit(delegateManager: SecurityManager)
         app.register(currentThread)
       }
     }
-    if (delegateManager ne null)
-      delegateManager.checkAccess(t)
+    if (delegateManager ne null) delegateManager.checkAccess(t)
   }
 
   /**
@@ -486,8 +473,7 @@ private final class TrapExit(delegateManager: SecurityManager)
       }
     }
 
-    if (delegateManager ne null)
-      delegateManager.checkAccess(tg)
+    if (delegateManager ne null) delegateManager.checkAccess(tg)
   }
 
   private[this] def noteAccess(group: ThreadGroup)(f: App => Unit): Unit =
@@ -516,10 +502,8 @@ private final class TrapExit(delegateManager: SecurityManager)
 
   /** Returns true if the given thread is in the 'system' thread group or is an AWT thread other than AWT-EventQueue.*/
   private def isSystemThread(t: Thread) =
-    if (t.getName.startsWith("AWT-"))
-      !isEventQueue(t)
-    else
-      isSystemGroup(t.getThreadGroup)
+    if (t.getName.startsWith("AWT-")) !isEventQueue(t)
+    else isSystemGroup(t.getThreadGroup)
 
   /**
     * An App is identified as using AWT if it gets associated with the event queue thread.

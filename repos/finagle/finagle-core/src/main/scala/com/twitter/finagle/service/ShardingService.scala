@@ -32,10 +32,8 @@ class ShardingService[Req, Rep](
     hash(request) map { hash =>
       val shard = distributor.nodeForHash(hash)
       // TODO: a sharding service may consider fine-grained statuses.
-      if (shard.status != Status.Closed)
-        shard(request)
-      else
-        Future.exception(ShardingService.ShardNotAvailableException)
+      if (shard.status != Status.Closed) shard(request)
+      else Future.exception(ShardingService.ShardNotAvailableException)
     } getOrElse (Future.exception(ShardingService.NotShardableException))
   }
 

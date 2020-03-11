@@ -42,8 +42,7 @@ object GlobalConfig {
 
   /** Get a `Config` object for a Slick profile */
   def profileConfig(path: String): Config = {
-    if (config.hasPath(path)) config.getConfig(path)
-    else ConfigFactory.empty()
+    if (config.hasPath(path)) config.getConfig(path) else ConfigFactory.empty()
   }
 }
 

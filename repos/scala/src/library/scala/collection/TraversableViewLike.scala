@@ -115,8 +115,7 @@ trait TraversableViewLike[
     // for views, else they will end up traversing twice in a situation like:
     //   xs.view.flatMap(f).headOption
     override def headOption: Option[B] = {
-      for (x <- this)
-        return Some(x)
+      for (x <- this) return Some(x)
 
       None
     }
@@ -172,20 +171,13 @@ trait TraversableViewLike[
 
   trait Mapped[B] extends Transformed[B] {
     protected[this] val mapping: A => B
-    def foreach[U](f: B => U) {
-      for (x <- self)
-        f(mapping(x))
-    }
+    def foreach[U](f: B => U) { for (x <- self) f(mapping(x)) }
     final override protected[this] def viewIdentifier = "M"
   }
 
   trait FlatMapped[B] extends Transformed[B] {
     protected[this] val mapping: A => GenTraversableOnce[B]
-    def foreach[U](f: B => U) {
-      for (x <- self)
-        for (y <- mapping(x).seq)
-          f(y)
-    }
+    def foreach[U](f: B => U) { for (x <- self) for (y <- mapping(x).seq) f(y) }
     final override protected[this] def viewIdentifier = "N"
   }
 
@@ -209,10 +201,7 @@ trait TraversableViewLike[
 
   trait Filtered extends Transformed[A] {
     protected[this] val pred: A => Boolean
-    def foreach[U](f: A => U) {
-      for (x <- self)
-        if (pred(x)) f(x)
-    }
+    def foreach[U](f: A => U) { for (x <- self) if (pred(x)) f(x) }
     final override protected[this] def viewIdentifier = "F"
   }
 

@@ -42,8 +42,7 @@ final class Slave(
         case "msg" =>
           val res = incomingRunnerMessage(strArg)
           // Only reply if something failed
-          if (res.isFailure)
-            reply(res)
+          if (res.isFailure) reply(res)
         case cmd =>
           throw new IllegalArgumentException(s"Unknown command: $cmd")
       }
@@ -108,8 +107,7 @@ final class Slave(
 
     val launched = Try(task.execute(eventHandler, loggers.toArray, cont))
 
-    if (launched.isFailure)
-      reply(launched)
+    if (launched.isFailure) reply(launched)
   }
 
   private def stopSlave(): Try[Unit] = {
@@ -164,8 +162,7 @@ final class Slave(
   // Utility methods
 
   private def ensureRunnerExists(): Unit = {
-    if (runner == null)
-      throw new IllegalStateException("No runner created")
+    if (runner == null) throw new IllegalStateException("No runner created")
   }
 
 }

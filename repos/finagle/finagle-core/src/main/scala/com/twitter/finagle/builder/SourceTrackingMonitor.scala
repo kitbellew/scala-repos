@@ -21,8 +21,7 @@ class SourceTrackingMonitor(logger: Logger, which: String) extends Monitor {
     }
     val unrolled = unrollCauses(exc)
     val msg =
-      if (unrolled.isEmpty)
-        s"The '$which' service threw an exception"
+      if (unrolled.isEmpty) s"The '$which' service threw an exception"
       else
         s"The '$which' service ${unrolled.mkString(" on behalf of ")} threw an exception"
 

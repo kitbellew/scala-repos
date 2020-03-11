@@ -95,8 +95,7 @@ class ChoiceBox[J <: Any](
     */
   def showing: ReadOnlyBooleanProperty = delegate.showingProperty
   def showing_=(show: Boolean) {
-    if (show) delegate.show()
-    else delegate.hide()
+    if (show) delegate.show() else delegate.hide()
   }
 
   /**

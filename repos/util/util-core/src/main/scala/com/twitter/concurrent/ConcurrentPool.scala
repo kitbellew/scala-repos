@@ -54,14 +54,10 @@ class ConcurrentPool[K, V] {
 
       if (objs.isEmpty) {
         val deadMap = map.remove(k)
-        if (deadMap ne null)
-          deathQueue.offer((k, deadMap))
+        if (deadMap ne null) deathQueue.offer((k, deadMap))
       }
 
-      if (obj == null)
-        None
-      else
-        Some(obj)
+      if (obj == null) None else Some(obj)
     }
   }
 }

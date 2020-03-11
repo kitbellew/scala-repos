@@ -347,8 +347,7 @@ class IndexingQueueActor(searchService: SearchService)
     case Process =>
       val (batch, remaining) = todo.splitAt(500)
       todo = remaining
-      if (remaining.nonEmpty)
-        debounce()
+      if (remaining.nonEmpty) debounce()
 
       import searchService.workerEC
 

@@ -213,8 +213,7 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
             .gatherFromAllOtherQueues(mbox, queue)
           mbox.resume()
         }
-        if (switched)
-          runQueue(mbox, queue)
+        if (switched) runQueue(mbox, queue)
       case m ⇒ m.systemEnqueue(actor.self, Resume(causedByFailure = null))
     }
   }
@@ -309,8 +308,7 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
           }
         } else false
       }
-      if (recurse) process(intex)
-      else intex
+      if (recurse) process(intex) else intex
     }
 
     // if we own the lock then we shouldn't do anything since we are processing

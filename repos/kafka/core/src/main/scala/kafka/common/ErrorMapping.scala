@@ -119,8 +119,7 @@ object ErrorMapping {
   def codeFor(exception: Class[Throwable]): Short = exceptionToCode(exception)
 
   def maybeThrowException(code: Short) =
-    if (code != 0)
-      throw codeToException(code).newInstance()
+    if (code != 0) throw codeToException(code).newInstance()
 
   def exceptionFor(code: Short): Throwable = codeToException(code).newInstance()
 

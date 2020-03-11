@@ -338,19 +338,16 @@ trait ListTest extends CollectionTest {
     val al0 = al.subList(0, al.size)
     assertEquals(6, al0.size)
     assertEquals(al.size, al0.size)
-    for (i <- 0 until al.size)
-      assertEquals(al.get(i), al0.get(i))
+    for (i <- 0 until al.size) assertEquals(al.get(i), al0.get(i))
     al0.set(3, "zero")
     assertEquals("zero", al0.get(3))
-    for (i <- 0 until al.size)
-      assertEquals(al.get(i), al0.get(i))
+    for (i <- 0 until al.size) assertEquals(al.get(i), al0.get(i))
     testListIterator(al, Seq("one", "two", "three", "zero", "five", "six"))
     testListIterator(al0, Seq("one", "two", "three", "zero", "five", "six"))
 
     val al1 = al.subList(2, 5)
     assertEquals(3, al1.size)
-    for (i <- 0 until 3)
-      assertEquals(al.get(2 + i), al1.get(i))
+    for (i <- 0 until 3) assertEquals(al.get(2 + i), al1.get(i))
     al1.set(0, "nine")
     assertEquals("nine", al1.get(0))
     for (i <- 0 until 3) {
@@ -400,8 +397,7 @@ trait ListTest extends CollectionTest {
       val s = Seq("one", "two", "three")
       val ll = factory.empty[String]
 
-      for (e <- s)
-        ll.add(e)
+      for (e <- s) ll.add(e)
 
       val iter = ll.listIterator(1)
 

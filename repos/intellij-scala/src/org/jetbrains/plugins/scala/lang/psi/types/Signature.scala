@@ -57,8 +57,7 @@ case class TypeAliasSignature(
       isDefinition,
       ta)
 
-    if (withCopy) res.copy(ta = ScTypeAlias.getCompoundCopy(res, ta))
-    else res
+    if (withCopy) res.copy(ta = ScTypeAlias.getCompoundCopy(res, ta)) else res
   }
 
   def updateTypesWithVariance(
@@ -81,8 +80,7 @@ case class TypeAliasSignature(
       isDefinition,
       ta)
 
-    if (withCopy) res.copy(ta = ScTypeAlias.getCompoundCopy(res, ta))
-    else res
+    if (withCopy) res.copy(ta = ScTypeAlias.getCompoundCopy(res, ta)) else res
   }
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[TypeAliasSignature]

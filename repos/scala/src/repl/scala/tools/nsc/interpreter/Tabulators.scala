@@ -71,8 +71,7 @@ trait VariColumnTabulator extends Tabulator {
       def resulting(rows: Seq[Seq[String]]) = {
         val columnWidths = maxima(rows) map (_ + marginSize)
         val linelen = columnWidths.sum
-        if (linelen <= width) Some((nrows, columnWidths, rows))
-        else None
+        if (linelen <= width) Some((nrows, columnWidths, rows)) else None
       }
       if (ncols == 1) resulting(columnize(items))
       else if (xwise) resulting((items grouped ncols).toSeq)

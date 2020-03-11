@@ -50,7 +50,6 @@ object SliceInterval {
     val lo = from max 0
     val hi = until max 0
 
-    if (hi <= lo) new SliceInterval(lo, lo)
-    else new SliceInterval(lo, hi)
+    if (hi <= lo) new SliceInterval(lo, lo) else new SliceInterval(lo, hi)
   }
 }

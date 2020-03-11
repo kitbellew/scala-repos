@@ -25,8 +25,7 @@ object Utils {
     if (base.isOpaque || !base.isAbsolute || base.getRawPath == null ||
         trgt.isOpaque || !trgt.isAbsolute || trgt.getRawPath == null ||
         base.getScheme != trgt.getScheme ||
-        base.getRawAuthority != trgt.getRawAuthority)
-      trgt
+        base.getRawAuthority != trgt.getRawAuthority) trgt
     else {
       val trgtCmps = trgt.getRawPath.split('/')
       val baseCmps = base.getRawPath.split('/')
@@ -56,10 +55,8 @@ object Utils {
     var i = 0
     while (i != end) {
       val c = str.charAt(i)
-      if (c >= 32 && c <= 126 && c != '\\' && c != '"')
-        i += 1
-      else
-        return createEscapeJSString(str)
+      if (c >= 32 && c <= 126 && c != '\\' && c != '"') i += 1
+      else return createEscapeJSString(str)
     }
     str
     // scalastyle:on return
@@ -87,12 +84,10 @@ object Utils {
       // Find all consecutive ASCII printable characters from `start`
       while (i != end && c >= 32 && c <= 126 && c != 34 && c != 92) {
         i += 1
-        if (i != end)
-          c = str.charAt(i)
+        if (i != end) c = str.charAt(i)
       }
       // Print ASCII printable characters from `start`
-      if (start != i)
-        out.append(str, start, i)
+      if (start != i) out.append(str, start, i)
 
       // Print next non ASCII printable character
       if (i != end) {

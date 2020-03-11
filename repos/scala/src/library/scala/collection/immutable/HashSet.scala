@@ -609,8 +609,7 @@ object HashSet extends ImmutableSetFactory[HashSet] {
       else if ((bitmap & mask) != 0) {
         val offset = Integer.bitCount(bitmap & (mask - 1))
         elems(offset).get0(key, hash, level + 5)
-      } else
-        false
+      } else false
     }
 
     override private[collection] def updated0(
@@ -777,8 +776,7 @@ object HashSet extends ImmutableSetFactory[HashSet] {
         var bi = 0
 
         // if the bitmasks do not overlap, the result is definitely empty so we can abort here
-        if ((abm & bbm) == 0)
-          return null
+        if ((abm & bbm) == 0) return null
 
         // fetch a new temporary array that is guaranteed to be big enough (32 elements)
         var offset = offset0
@@ -957,12 +955,9 @@ object HashSet extends ImmutableSetFactory[HashSet] {
             // if we have only one child, which is not a HashTrieSet but a self-contained set like
             // HashSet1 or HashSetCollision1, return the child instead
             if (elemsNew.length == 1 && !elemsNew(0)
-                  .isInstanceOf[HashTrieSet[_]])
-              elemsNew(0)
-            else
-              new HashTrieSet(bitmapNew, elemsNew, sizeNew)
-          } else
-            null
+                  .isInstanceOf[HashTrieSet[_]]) elemsNew(0)
+            else new HashTrieSet(bitmapNew, elemsNew, sizeNew)
+          } else null
         } else if (elems.length == 1 && !subNew.isInstanceOf[HashTrieSet[_]]) {
           subNew
         } else {
@@ -998,8 +993,7 @@ object HashSet extends ImmutableSetFactory[HashSet] {
                 if (alsb == blsb) {
                   // we are doing a comparison of a child of this with a child of that,
                   // so we have to increase the level by 5 to keep track of how deep we are in the tree
-                  if (!a(ai).subsetOf0(b(bi), level + 5))
-                    return false
+                  if (!a(ai).subsetOf0(b(bi), level + 5)) return false
                   // clear lowest remaining one bit in abm and increase the a index
                   abm &= ~alsb; ai += 1
                 }

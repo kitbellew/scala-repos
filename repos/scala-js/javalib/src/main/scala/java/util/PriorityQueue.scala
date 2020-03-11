@@ -14,8 +14,7 @@ class PriorityQueue[E] protected (
 
   def this(initialCapacity: Int) = {
     this(defaultOrdering[E], null.asInstanceOf[Comparator[_ >: E]])
-    if (initialCapacity < 1)
-      throw new IllegalArgumentException()
+    if (initialCapacity < 1) throw new IllegalArgumentException()
   }
 
   def this() =
@@ -25,8 +24,7 @@ class PriorityQueue[E] protected (
     this(
       PriorityQueue.safeGetOrdering[E](comparator),
       null.asInstanceOf[Comparator[E]])
-    if (initialCapacity < 1)
-      throw new IllegalArgumentException()
+    if (initialCapacity < 1) throw new IllegalArgumentException()
   }
 
   def this(c: Collection[_ <: E]) = {
@@ -79,8 +77,7 @@ class PriorityQueue[E] protected (
       else {
         val next = inner.dequeue
         if (boxed == next) part
-        else if (BoxOrdering.compare(boxed, next) > 0)
-          part += next
+        else if (BoxOrdering.compare(boxed, next) > 0) part += next
         else takeLeft(part += next)
       }
     }
@@ -123,8 +120,7 @@ class PriorityQueue[E] protected (
     inner.dequeueAll
 
   def poll(): E =
-    if (inner.isEmpty) null.asInstanceOf[E]
-    else inner.dequeue().inner
+    if (inner.isEmpty) null.asInstanceOf[E] else inner.dequeue().inner
 
   def comparator(): Comparator[_ >: E] = _comparator
 }

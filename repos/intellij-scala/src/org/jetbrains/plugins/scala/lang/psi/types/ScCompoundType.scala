@@ -321,8 +321,7 @@ object ScCompoundType {
       new mutable.HashMap[Signature, ScType] {
         override def elemHashCode(s: Signature) = s.name.hashCode * 31 + {
           val length = s.paramLength
-          if (length.sum == 0) List(0).hashCode()
-          else length.hashCode()
+          if (length.sum == 0) List(0).hashCode() else length.hashCode()
         }
       }
     val typesVal = new mutable.HashMap[String, TypeAliasSignature]

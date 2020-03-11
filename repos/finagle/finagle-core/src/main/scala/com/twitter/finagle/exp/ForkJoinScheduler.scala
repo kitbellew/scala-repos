@@ -106,8 +106,7 @@ private class ForkJoinScheduler(
           ForkJoinTask.adapt(local.next()).fork()
           n += 1
         }
-        if (n > 0)
-          splitCount.addAndGet(n)
+        if (n > 0) splitCount.addAndGet(n)
 
         var res: T = null.asInstanceOf[T]
         ForkJoinPool.managedBlock(new ForkJoinPool.ManagedBlocker {

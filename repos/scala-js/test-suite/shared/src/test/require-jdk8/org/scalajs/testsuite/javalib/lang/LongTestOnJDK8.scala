@@ -26,8 +26,7 @@ class LongTestOnJDK8 {
   @Test def parseUnsignedLong(): Unit = {
     def test(s: String, v: Long, radix: Int = 10): Unit = {
       assertEquals(v, JLong.parseUnsignedLong(s, radix))
-      if (radix == 10)
-        assertEquals(v, JLong.parseUnsignedLong(s))
+      if (radix == 10) assertEquals(v, JLong.parseUnsignedLong(s))
     }
 
     for (radix <- MinRadix to MaxRadix) {

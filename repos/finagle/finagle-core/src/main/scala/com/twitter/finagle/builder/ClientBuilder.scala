@@ -372,10 +372,7 @@ class ClientBuilder[
       case (n, l) =>
         val Label(label) = params[Label]
         val cb =
-          if (label.isEmpty || l != addr)
-            this.name(l)
-          else
-            this
+          if (label.isEmpty || l != addr) this.name(l) else this
 
         cb.dest(n)
     }

@@ -17,8 +17,7 @@ private[netty4] class TlsShutdownHandler(o: Object)
       ctx: ChannelHandlerContext,
       t: Throwable): Unit = {
     // remove the ssl handler so that it doesn't trap the disconnect
-    if (t.isInstanceOf[SSLException])
-      ctx.pipeline().remove("ssl")
+    if (t.isInstanceOf[SSLException]) ctx.pipeline().remove("ssl")
 
     super.exceptionCaught(ctx, t)
   }

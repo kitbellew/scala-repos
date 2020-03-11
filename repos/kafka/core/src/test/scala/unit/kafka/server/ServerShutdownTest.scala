@@ -169,8 +169,7 @@ class ServerShutdownTest extends ZooKeeperTestHarness {
           "Expected ZkException during Kafka server starting up but caught a different exception %s"
             .format(e.toString))
     } finally {
-      if (server.brokerState.currentState != NotRunning.state)
-        server.shutdown()
+      if (server.brokerState.currentState != NotRunning.state) server.shutdown()
       server.awaitShutdown()
     }
     CoreUtils.rm(server.config.logDirs)

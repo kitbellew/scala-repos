@@ -180,8 +180,7 @@ trait TypeAdaptingTransformer {
         log(
           "adapting " + tree + ":" + tree.tpe + " : " + tree.tpe.parents + " to " + pt
         ) //debug
-      if (tree.tpe <:< pt)
-        tree
+      if (tree.tpe <:< pt) tree
       else if (isDifferentErasedValueType(tree.tpe, pt))
         adaptToType(box(tree, pt.toString), pt)
       else if (isDifferentErasedValueType(pt, tree.tpe))
@@ -198,8 +197,7 @@ trait TypeAdaptingTransformer {
 //        cast(tree, pt)
       } else if (isPrimitiveValueType(pt) && !isPrimitiveValueType(tree.tpe))
         adaptToType(unbox(tree, pt), pt)
-      else
-        cast(tree, pt)
+      else cast(tree, pt)
     }
   }
 }

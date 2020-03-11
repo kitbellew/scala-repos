@@ -114,10 +114,8 @@ class FixedPoint(val long: Long) extends AnyVal { lhs =>
       catch {
         case _: FixedPointOverflow =>
           val n = (SafeLong(rhs.long) * r) / d
-          if (n.isValidLong)
-            new FixedPoint(n.toLong)
-          else
-            throw new FixedPointOverflow(n.toLong)
+          if (n.isValidLong) new FixedPoint(n.toLong)
+          else throw new FixedPointOverflow(n.toLong)
       }
     qq + rr
   }
@@ -126,8 +124,7 @@ class FixedPoint(val long: Long) extends AnyVal { lhs =>
     val n = lhs.long * rhs
     if (lhs.long == 0 || rhs == 0 || (rhs == n / lhs.long && ((lhs.long ^ rhs ^ n) & Long.MinValue) == 0))
       new FixedPoint(n)
-    else
-      throw new FixedPointOverflow(n)
+    else throw new FixedPointOverflow(n)
   }
 
   def /(rhs: FixedPoint)(implicit scale: FixedScale): FixedPoint =
@@ -147,8 +144,7 @@ class FixedPoint(val long: Long) extends AnyVal { lhs =>
   def /(rhs: Long): FixedPoint =
     if (lhs.long == Long.MinValue && rhs == -1L)
       throw new FixedPointOverflow(lhs.long)
-    else
-      new FixedPoint(lhs.long / rhs)
+    else new FixedPoint(lhs.long / rhs)
 
   def %(rhs: FixedPoint): FixedPoint =
     new FixedPoint(lhs.long % rhs.long)
@@ -158,8 +154,7 @@ class FixedPoint(val long: Long) extends AnyVal { lhs =>
     val p = rhs * d
     if (rhs == 0 || d == 0 || (d == p / rhs && (((rhs ^ d ^ p) & Long.MinValue) == 0)))
       new FixedPoint(lhs.long % p)
-    else
-      lhs
+    else lhs
   }
 
   def /~(rhs: FixedPoint)(implicit scale: FixedScale): FixedPoint =

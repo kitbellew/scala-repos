@@ -179,8 +179,7 @@ class Message(
       else 0
     buffer.put(attributes)
     // Only put timestamp when "magic" value is greater than 0
-    if (magic > MagicValue_V0)
-      buffer.putLong(timestamp)
+    if (magic > MagicValue_V0) buffer.putLong(timestamp)
     if (key == null) { buffer.putInt(-1) }
     else {
       buffer.putInt(key.length)
@@ -191,8 +190,7 @@ class Message(
       else if (payloadSize >= 0) payloadSize
       else bytes.length - payloadOffset
     buffer.putInt(size)
-    if (bytes != null)
-      buffer.put(bytes, payloadOffset, size)
+    if (bytes != null) buffer.put(bytes, payloadOffset, size)
     buffer.rewind()
 
     // now compute the checksum and fill it in
@@ -292,8 +290,7 @@ class Message(
     * The position where the key size is stored.
     */
   private def keySizeOffset = {
-    if (magic == MagicValue_V0) KeySizeOffset_V0
-    else KeySizeOffset_V1
+    if (magic == MagicValue_V0) KeySizeOffset_V0 else KeySizeOffset_V1
   }
 
   /**
@@ -342,8 +339,7 @@ class Message(
     * 3. wrapperMessageTimestampType = CreateTime and wrapperMessageTimestamp is defined - Compressed message using CreateTime
     */
   def timestamp: Long = {
-    if (magic == MagicValue_V0)
-      Message.NoTimestamp
+    if (magic == MagicValue_V0) Message.NoTimestamp
     // Case 2
     else if (wrapperMessageTimestampType.exists(
                _ == TimestampType.LOG_APPEND_TIME) && wrapperMessageTimestamp.isDefined)
@@ -356,8 +352,7 @@ class Message(
     * The timestamp type of the message
     */
   def timestampType = {
-    if (magic == MagicValue_V0)
-      TimestampType.NO_TIMESTAMP_TYPE
+    if (magic == MagicValue_V0) TimestampType.NO_TIMESTAMP_TYPE
     else
       wrapperMessageTimestampType.getOrElse(
         TimestampType.forAttributes(attributes))
@@ -384,8 +379,7 @@ class Message(
     * convert the message to specified format
     */
   def toFormatVersion(toMagicValue: Byte): Message = {
-    if (magic == toMagicValue)
-      this
+    if (magic == toMagicValue) this
     else {
       val byteBuffer =
         ByteBuffer.allocate(size + Message.headerSizeDiff(magic, toMagicValue))
@@ -413,8 +407,7 @@ class Message(
       // Up-conversion, insert the timestamp field
       if (timestampType == TimestampType.LOG_APPEND_TIME)
         byteBuffer.putLong(now)
-      else
-        byteBuffer.putLong(Message.NoTimestamp)
+      else byteBuffer.putLong(Message.NoTimestamp)
       byteBuffer.put(
         buffer.array(),
         buffer.arrayOffset() + Message.KeySizeOffset_V0,

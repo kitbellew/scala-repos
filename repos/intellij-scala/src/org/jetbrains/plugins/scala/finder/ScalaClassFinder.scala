@@ -69,8 +69,7 @@ class ScalaClassFinder(project: Project) extends PsiElementFinder {
 
   def findClass(qualifiedName: String, scope: GlobalSearchScope): PsiClass = {
     val classes = findClasses(qualifiedName, scope)
-    if (classes.length > 0) classes(0)
-    else null
+    if (classes.length > 0) classes(0) else null
   }
 
   override def findPackage(qName: String): PsiPackage = null

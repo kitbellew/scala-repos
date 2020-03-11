@@ -93,10 +93,7 @@ object CoreUtils extends Logging {
     if (file == null) { return }
     else if (file.isDirectory) {
       val files = file.listFiles()
-      if (files != null) {
-        for (f <- files)
-          rm(f)
-      }
+      if (files != null) { for (f <- files) rm(f) }
       file.delete()
     } else { file.delete() }
   }
@@ -116,8 +113,7 @@ object CoreUtils extends Logging {
       val mbs = ManagementFactory.getPlatformMBeanServer()
       mbs synchronized {
         val objName = new ObjectName(name)
-        if (mbs.isRegistered(objName))
-          mbs.unregisterMBean(objName)
+        if (mbs.isRegistered(objName)) mbs.unregisterMBean(objName)
         mbs.registerMBean(mbean, objName)
         true
       }
@@ -137,8 +133,7 @@ object CoreUtils extends Logging {
     val mbs = ManagementFactory.getPlatformMBeanServer()
     mbs synchronized {
       val objName = new ObjectName(name)
-      if (mbs.isRegistered(objName))
-        mbs.unregisterMBean(objName)
+      if (mbs.isRegistered(objName)) mbs.unregisterMBean(objName)
     }
   }
 
@@ -183,8 +178,7 @@ object CoreUtils extends Logging {
     */
   def parseCsvMap(str: String): Map[String, String] = {
     val map = new mutable.HashMap[String, String]
-    if ("".equals(str))
-      return map
+    if ("".equals(str)) return map
     val keyVals = str
       .split("\\s*,\\s*")
       .map(s => {
@@ -199,8 +193,7 @@ object CoreUtils extends Logging {
     * Whitespace surrounding the comma will be removed.
     */
   def parseCsvList(csvList: String): Seq[String] = {
-    if (csvList == null || csvList.isEmpty)
-      Seq.empty[String]
+    if (csvList == null || csvList.isEmpty) Seq.empty[String]
     else { csvList.split("\\s*,\\s*").filter(v => !v.equals("")) }
   }
 

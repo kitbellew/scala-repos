@@ -38,10 +38,8 @@ object Printers {
 
     protected def println(): Unit = {
       out.write('\n')
-      while (indentMargin > indentString.length())
-        indentString += indentString
-      if (indentMargin > 0)
-        out.write(indentString, 0, indentMargin)
+      while (indentMargin > indentString.length()) indentString += indentString
+      if (indentMargin > 0) out.write(indentString, 0, indentMargin)
     }
   }
 
@@ -51,8 +49,7 @@ object Printers {
         case Skip() =>
         // do not print anything
         case Block(stats) =>
-          for (stat <- stats)
-            printTopLevelTree(stat)
+          for (stat <- stats) printTopLevelTree(stat)
         case _ =>
           print(tree)
           println()
@@ -87,8 +84,7 @@ object Printers {
       while (rest.nonEmpty) {
         print(rest.head)
         rest = rest.tail
-        if (rest.nonEmpty)
-          print(sep)
+        if (rest.nonEmpty) print(sep)
       }
       print(end)
     }
@@ -126,10 +122,7 @@ object Printers {
         // Definitions
 
         case VarDef(ident, vtpe, mutable, rhs) =>
-          if (mutable)
-            print("var ")
-          else
-            print("val ")
+          if (mutable) print("var ") else print("val ")
           print(ident)
           print(": ")
           print(vtpe)
@@ -139,10 +132,8 @@ object Printers {
           }
 
         case ParamDef(ident, ptpe, mutable, rest) =>
-          if (mutable)
-            print("var ")
-          if (rest)
-            print("...")
+          if (mutable) print("var ")
+          if (rest) print("...")
           print(ident)
           print(": ")
           print(ptpe)
@@ -359,9 +350,9 @@ object Printers {
           print(')')
 
         case BinaryOp(
-            BinaryOp.Double_-,
-            IntLiteral(0) | FloatLiteral(0.0f) | DoubleLiteral(0.0),
-            rhs) =>
+              BinaryOp.Double_-,
+              IntLiteral(0) | FloatLiteral(0.0f) | DoubleLiteral(0.0),
+              rhs) =>
           print("(-")
           print(rhs)
           print(')')
@@ -446,8 +437,7 @@ object Printers {
             print(length)
             print(']')
           }
-          for (dim <- lengths.size until tpe.dimensions)
-            print("[]")
+          for (dim <- lengths.size until tpe.dimensions) print("[]")
 
         case ArrayValue(tpe, elems) =>
           print(tpe)
@@ -467,8 +457,7 @@ object Printers {
           print('(')
           var first = true
           for ((field, value) <- tpe.fields zip elems) {
-            if (first) first = false
-            else print(", ")
+            if (first) first = false else print(", ")
             print(field.name)
             print(" = ")
             print(value)
@@ -690,33 +679,27 @@ object Printers {
           }
 
         case LongLiteral(value) =>
-          if (value < 0L)
-            print('(')
+          if (value < 0L) print('(')
           print(value.toString)
           print('L')
-          if (value < 0L)
-            print(')')
+          if (value < 0L) print(')')
 
         case FloatLiteral(value) =>
           if (value == 0.0f && 1.0f / value < 0.0f) { print("(-0f)") }
           else {
-            if (value < 0.0f)
-              print('(')
+            if (value < 0.0f) print('(')
             print(value.toString)
             print('f')
-            if (value < 0.0f)
-              print(')')
+            if (value < 0.0f) print(')')
           }
 
         case DoubleLiteral(value) =>
           if (value == 0.0 && 1.0 / value < 0.0) { print("(-0d)") }
           else {
-            if (value < 0.0)
-              print('(')
+            if (value < 0.0) print('(')
             print(value.toString)
             print('d')
-            if (value < 0.0)
-              print(')')
+            if (value < 0.0) print(')')
           }
 
         case StringLiteral(value) =>
@@ -774,8 +757,7 @@ object Printers {
             while (rest.nonEmpty) {
               print(rest.head)
               rest = rest.tail
-              if (rest.nonEmpty)
-                print(", ")
+              if (rest.nonEmpty) print(", ")
             }
           }
           jsName.foreach { name =>
@@ -787,10 +769,7 @@ object Printers {
           println()
 
         case FieldDef(name, vtpe, mutable) =>
-          if (mutable)
-            print("var ")
-          else
-            print("val ")
+          if (mutable) print("var ") else print("val ")
           print(name)
           print(": ")
           print(vtpe)
@@ -798,15 +777,11 @@ object Printers {
         case tree: MethodDef =>
           val MethodDef(static, name, args, resultType, body) = tree
           print(tree.optimizerHints)
-          if (static)
-            print("static ")
+          if (static) print("static ")
           print("def ")
           print(name)
           printSig(args, resultType)
-          if (body == EmptyTree)
-            print("<abstract>")
-          else
-            printBlock(body)
+          if (body == EmptyTree) print("<abstract>") else printBlock(body)
 
         case PropertyDef(name, _, _, _) =>
           // TODO
@@ -855,17 +830,14 @@ object Printers {
 
       case ArrayType(base, dims) =>
         print(base)
-        for (i <- 1 to dims)
-          print("[]")
+        for (i <- 1 to dims) print("[]")
 
       case RecordType(fields) =>
         print('(')
         var first = false
         for (RecordType.Field(name, _, tpe, mutable) <- fields) {
-          if (first) first = false
-          else print(", ")
-          if (mutable)
-            print("var ")
+          if (first) first = false else print(", ")
+          if (mutable) print("var ")
           print(name)
           print(": ")
           print(tpe)
@@ -924,8 +896,7 @@ object Printers {
         while (rest.nonEmpty) {
           printEscapeJS(rest.head, out)
           rest = rest.tail
-          if (rest.nonEmpty)
-            print(", ")
+          if (rest.nonEmpty) print(", ")
         }
         print(']')
         println()
@@ -972,8 +943,7 @@ object Printers {
           val (cls, callers) = iter.next()
           printEscapeJS(cls, out)
           printRow(callers, ": [", ", ", "]")
-          if (iter.hasNext)
-            println()
+          if (iter.hasNext) println()
         }
         undent(); println()
       }
@@ -985,8 +955,7 @@ object Printers {
           val (cls, callers) = iter.next
           printEscapeJS(cls, out)
           printRow(callers, ": [", ", ", "]")
-          if (iter.hasNext)
-            println()
+          if (iter.hasNext) println()
         }
         undent(); println()
       }
@@ -998,8 +967,7 @@ object Printers {
           val (cls, callers) = iter.next()
           printEscapeJS(cls, out)
           printRow(callers, ": [", ", ", "]")
-          if (iter.hasNext)
-            println()
+          if (iter.hasNext) println()
         }
         undent(); println()
       }
@@ -1025,8 +993,7 @@ object Printers {
       while (rest.nonEmpty) {
         print(rest.head)
         rest = rest.tail
-        if (rest.nonEmpty)
-          print(sep)
+        if (rest.nonEmpty) print(sep)
       }
       print(end)
     }

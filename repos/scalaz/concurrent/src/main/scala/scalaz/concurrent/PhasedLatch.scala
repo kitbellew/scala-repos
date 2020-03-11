@@ -55,8 +55,7 @@ trait PhasedLatches {
         def currentPhase = getState
 
         override def tryAcquireShared(waitingFor: Int) =
-          if (phaseOrder.lessThan(currentPhase, waitingFor)) 1
-          else -1
+          if (phaseOrder.lessThan(currentPhase, waitingFor)) 1 else -1
 
         @annotation.tailrec
         override final def tryReleaseShared(ignore: Int) = {

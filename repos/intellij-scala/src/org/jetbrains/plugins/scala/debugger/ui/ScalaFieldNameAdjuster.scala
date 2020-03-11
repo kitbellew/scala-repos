@@ -65,12 +65,9 @@ class ScalaFieldNameAdjuster extends NodeDescriptorNameAdjuster {
           stripped.drop(stripped.lastIndexOf('$') + 1)
         }
 
-        if (isScalaObject)
-          s"[object] ${lastPart(name)}"
-        else if (isLocalFromOuterField)
-          name.takeWhile(_ != '$')
-        else if (nameStartsWithFqn || isFieldFromTrait)
-          lastPart(name)
+        if (isScalaObject) s"[object] ${lastPart(name)}"
+        else if (isLocalFromOuterField) name.takeWhile(_ != '$')
+        else if (nameStartsWithFqn || isFieldFromTrait) lastPart(name)
         else name
     }
   }

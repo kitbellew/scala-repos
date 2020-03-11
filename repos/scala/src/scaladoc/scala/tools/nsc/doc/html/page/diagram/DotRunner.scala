@@ -29,8 +29,7 @@ class DotRunner(settings: doc.Settings) {
           settings.printMsg("Graphviz will be restarted...\n")
         dotAttempts += 1
         dotProcess = new DotProcess(settings)
-      } else
-        return null
+      } else return null
     }
 
     val tStart = System.currentTimeMillis
@@ -72,8 +71,7 @@ class DotRunner(settings: doc.Settings) {
   }
 
   def cleanup() =
-    if (dotProcess != null)
-      dotProcess.cleanup()
+    if (dotProcess != null) dotProcess.cleanup()
 }
 
 class DotProcess(settings: doc.Settings) {

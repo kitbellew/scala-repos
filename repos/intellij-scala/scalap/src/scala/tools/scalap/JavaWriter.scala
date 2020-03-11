@@ -18,12 +18,9 @@ class JavaWriter(classfile: Classfile, writer: Writer)
     val buffer = new StringBuffer()
     var x: StringBuffer = buffer
     if (((flags & 0x0007) == 0) &&
-        ((flags & 0x0002) != 0))
-      x = buffer.append("private ")
-    if ((flags & 0x0004) != 0)
-      x = buffer.append("protected ")
-    if ((flags & 0x0010) != 0)
-      x = buffer.append("final ")
+        ((flags & 0x0002) != 0)) x = buffer.append("private ")
+    if ((flags & 0x0004) != 0) x = buffer.append("protected ")
+    if ((flags & 0x0010) != 0) x = buffer.append("final ")
     if ((flags & 0x0400) != 0)
       x =
         if (clazz) buffer.append("abstract ")
@@ -78,8 +75,7 @@ class JavaWriter(classfile: Classfile, writer: Writer)
   }
 
   def sigToType0(str: String, i: Int): (String, Int) =
-    if (str.charAt(i) == ')')
-      sigToType(str, i)
+    if (str.charAt(i) == ')') sigToType(str, i)
     else {
       val (tpe, j) = sigToType(str, i)
       if (str.charAt(j) == ')') {
@@ -118,10 +114,8 @@ class JavaWriter(classfile: Classfile, writer: Writer)
 
   def printField(flags: Int, name: Int, tpe: Int, attribs: List[cf.Attribute]) {
     print(flagsToStr(false, flags))
-    if ((flags & 0x0010) != 0)
-      print("val " + Names.decode(getName(name)))
-    else
-      print("final var " + Names.decode(getName(name)))
+    if ((flags & 0x0010) != 0) print("val " + Names.decode(getName(name)))
+    else print("final var " + Names.decode(getName(name)))
     print(": " + getType(tpe) + ";").newline
   }
 
@@ -130,8 +124,7 @@ class JavaWriter(classfile: Classfile, writer: Writer)
       name: Int,
       tpe: Int,
       attribs: List[cf.Attribute]) {
-    if (getName(name) == "<init>")
-      print(flagsToStr(false, flags))
+    if (getName(name) == "<init>") print(flagsToStr(false, flags))
     attribs find {
       case cf.Attribute(name, _) => getName(name) == "JacoMeta"
     } match {
@@ -147,10 +140,8 @@ class JavaWriter(classfile: Classfile, writer: Writer)
               print(getType(tpe) + ";").newline
             }
           case Some(str) =>
-            if (getName(name) == "<init>")
-              print("def this" + str + ";").newline
-            else
-              print("def " + Names.decode(getName(name)) + str + ";").newline
+            if (getName(name) == "<init>") print("def this" + str + ";").newline
+            else print("def " + Names.decode(getName(name)) + str + ";").newline
         }
       case None =>
         if (getName(name) == "<init>") {
@@ -189,8 +180,7 @@ class JavaWriter(classfile: Classfile, writer: Writer)
 
   def printClass {
     val pck = getPackage(cf.classname);
-    if (pck.length() > 0)
-      println("package " + pck + ";")
+    if (pck.length() > 0) println("package " + pck + ";")
     print(flagsToStr(true, cf.flags))
     cf.attribs find {
       case cf.Attribute(name, _) => getName(name) == "JacoMeta"
@@ -205,25 +195,20 @@ class JavaWriter(classfile: Classfile, writer: Writer)
           case Some(str) =>
             if (isInterface(cf.flags))
               print("trait " + getSimpleClassName(cf.classname) + str);
-            else
-              print("class " + getSimpleClassName(cf.classname) + str);
+            else print("class " + getSimpleClassName(cf.classname) + str);
         }
     }
     var statics: List[cf.Member] = Nil
     print(" {").indent.newline
     cf.fields foreach {
       case m @ cf.Member(_, flags, name, tpe, attribs) =>
-        if (isStatic(flags))
-          statics = m :: statics
-        else
-          printField(flags, name, tpe, attribs)
+        if (isStatic(flags)) statics = m :: statics
+        else printField(flags, name, tpe, attribs)
     }
     cf.methods foreach {
       case m @ cf.Member(_, flags, name, tpe, attribs) =>
-        if (isStatic(flags))
-          statics = m :: statics
-        else
-          printMethod(flags, name, tpe, attribs)
+        if (isStatic(flags)) statics = m :: statics
+        else printMethod(flags, name, tpe, attribs)
     }
     undent.print("}").newline
     if (!statics.isEmpty) {

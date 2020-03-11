@@ -446,8 +446,7 @@ private[akka] class TLSActor(
             handshakeFinished()
             transportInChoppingBlock.putBack(transportInBuffer)
           case _ ⇒
-            if (transportInBuffer.hasRemaining) doUnwrap()
-            else flushToUser()
+            if (transportInBuffer.hasRemaining) doUnwrap() else flushToUser()
         }
       case CLOSED ⇒
         flushToUser()

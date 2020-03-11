@@ -220,10 +220,8 @@ package scalaguide.http.scalaactionscomposition {
         //#permission-check-action
         object PermissionCheckAction extends ActionFilter[ItemRequest] {
           def filter[A](input: ItemRequest[A]) = Future.successful {
-            if (!input.item.accessibleByUser(input.username))
-              Some(Forbidden)
-            else
-              None
+            if (!input.item.accessibleByUser(input.username)) Some(Forbidden)
+            else None
           }
         }
         //#permission-check-action

@@ -237,8 +237,7 @@ trait PersistentFSMBase[S, D, E]
     * @param name of the timer to cancel
     */
   final def cancelTimer(name: String): Unit = {
-    if (debugEvent)
-      log.debug("canceling timer '" + name + "'")
+    if (debugEvent) log.debug("canceling timer '" + name + "'")
     if (timers contains name) {
       timers(name).cancel
       timers -= name
@@ -554,8 +553,7 @@ trait PersistentFSMBase[S, D, E]
 
       val stopEvent =
         StopEvent(reason, currentState.stateName, currentState.stateData)
-      if (terminateEvent.isDefinedAt(stopEvent))
-        terminateEvent(stopEvent)
+      if (terminateEvent.isDefinedAt(stopEvent)) terminateEvent(stopEvent)
     }
   }
 

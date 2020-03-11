@@ -532,8 +532,7 @@ case class IdentityValueSortedReduce[K, V1](
     * Otherwise, we send all the values to the reducers
     */
   override def take(n: Int) =
-    if (n <= 1) bufferedTake(n)
-    else mapValueStream(_.take(n))
+    if (n <= 1) bufferedTake(n) else mapValueStream(_.take(n))
 
   override lazy val toTypedPipe =
     groupOpWithValueSort[V1](valueSort = Some(valueSort)) { gb =>
@@ -544,8 +543,7 @@ case class IdentityValueSortedReduce[K, V1](
             Grouped.valueField -> Grouped.valueField) {
             it: Iterator[Boxed[V1]] => it.map(_.get)
           }
-        else
-          gb
+        else gb
 
       mappedGB
         .reducers(reducers.getOrElse(-1))

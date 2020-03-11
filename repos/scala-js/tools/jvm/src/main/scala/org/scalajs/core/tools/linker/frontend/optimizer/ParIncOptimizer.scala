@@ -44,8 +44,7 @@ final class ParIncOptimizer(
     def retain[K, V](map: ParMap[K, V])(p: (K, V) => Boolean): Unit = {
       map.foreach {
         case (k, v) =>
-          if (!p(k, v))
-            map.remove(k)
+          if (!p(k, v)) map.remove(k)
       }
     }
 
@@ -86,8 +85,7 @@ final class ParIncOptimizer(
   private[optimizer] def processAllTaggedMethods(): Unit = {
     val methods = methodsToProcess.removeAll().toParArray
     logProcessingMethods(methods.count(!_.deleted))
-    for (method <- methods)
-      method.process()
+    for (method <- methods) method.process()
   }
 
   private class ParInterfaceType(encName: String)

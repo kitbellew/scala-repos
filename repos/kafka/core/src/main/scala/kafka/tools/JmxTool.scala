@@ -110,8 +110,7 @@ object JmxTool extends Logging {
     val queries: Iterable[ObjectName] =
       if (options.has(objectNameOpt))
         options.valuesOf(objectNameOpt).map(new ObjectName(_))
-      else
-        List(null)
+      else List(null)
 
     val names = queries
       .map((name: ObjectName) =>

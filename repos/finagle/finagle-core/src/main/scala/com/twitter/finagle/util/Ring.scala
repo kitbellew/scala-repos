@@ -58,8 +58,7 @@ class Ring(positions: Array[Int]) {
 
     // In the case where positions overlap, we always
     // select the first one. This is to support zero weights.
-    while (i > 0 && nodes(i) == nodes(i - 1))
-      i -= 1
+    while (i > 0 && nodes(i) == nodes(i - 1)) i -= 1
 
     i
   }
@@ -68,8 +67,7 @@ class Ring(positions: Array[Int]) {
     * Compute the width of the given index.
     */
   private[this] def width(i: Int): Int =
-    if (i == 0) nodes(0).toInt
-    else (nodes(i) - nodes(i - 1)).toInt
+    if (i == 0) nodes(0).toInt else (nodes(i) - nodes(i - 1)).toInt
 
   /**
     * Compute the range of the given index.
@@ -119,8 +117,7 @@ class Ring(positions: Array[Int]) {
     val discount = intersect(off, off.toLong + wid.toLong, ab, ae)
 
     val wid1 = wid - discount
-    if (wid1 == 0)
-      return (a, a)
+    if (wid1 == 0) return (a, a)
 
     // Instead of actually splitting the range into two, we offset
     // any pick that takes place in the second range if there is a
@@ -138,8 +135,7 @@ class Ring(positions: Array[Int]) {
     // #3 is taken care of by the fact that we've discounted any
     // possible tail overlap from `wid` in `wid1`.
     var pos = off.toLong + rng.nextLong(wid1)
-    if (pos >= ae - discount)
-      pos += discount
+    if (pos >= ae - discount) pos += discount
 
     (a % N, index(pos) % N)
   }

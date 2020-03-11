@@ -98,8 +98,7 @@ case object DefaultResizer {
   def fromConfig(resizerConfig: Config): Option[DefaultResizer] =
     if (resizerConfig.getBoolean("resizer.enabled"))
       Some(DefaultResizer(resizerConfig.getConfig("resizer")))
-    else
-      None
+    else None
 }
 
 /**

@@ -238,8 +238,7 @@ object Build extends sbt.Build {
 
   val noClassFilesSettings: Setting[_] = (
     scalacOptions in (Compile, compile) ++= {
-      if (isGeneratingEclipse) Seq()
-      else Seq("-Yskip:cleanup,icode,jvm")
+      if (isGeneratingEclipse) Seq() else Seq("-Yskip:cleanup,icode,jvm")
     }
   )
 
@@ -249,8 +248,7 @@ object Build extends sbt.Build {
       val nexus = "https://oss.sonatype.org/"
       if (isSnapshot.value)
         Some("snapshots" at nexus + "content/repositories/snapshots")
-      else
-        Some("releases" at nexus + "service/local/staging/deploy/maven2")
+      else Some("releases" at nexus + "service/local/staging/deploy/maven2")
     },
     pomExtra := (
       <developers>
@@ -326,8 +324,7 @@ object Build extends sbt.Build {
   val publishIvySettings = (
     if (Properties.envOrNone("PUBLISH_TO_BINTRAY") == Some("true"))
       publishToBintraySettings
-    else
-      publishToScalaJSRepoSettings
+    else publishToScalaJSRepoSettings
   ) ++ Seq(
     publishMavenStyle := false
   )
@@ -784,8 +781,7 @@ object Build extends sbt.Build {
           FilesInfo.exists) { dependencies =>
           s.log.info(s"Unpacking Scala library sources to $trgDir...")
 
-          if (trgDir.exists)
-            IO.delete(trgDir)
+          if (trgDir.exists) IO.delete(trgDir)
           IO.createDirectory(trgDir)
           IO.unzip(scalaLibSourcesJar, trgDir)
         }(Set(scalaLibSourcesJar))
@@ -842,10 +838,8 @@ object Build extends sbt.Build {
             path.contains("/scala/collection/parallel/") ||
               path.contains("/scala/util/parsing/")
           if (!useless) {
-            if (paths.add(path))
-              sources += src
-            else
-              streams.value.log.debug(s"not including $src")
+            if (paths.add(path)) sources += src
+            else streams.value.log.debug(s"not including $src")
           }
         }
 
@@ -857,14 +851,12 @@ object Build extends sbt.Build {
         val ver = scalaVersion.value
         if (ver.startsWith("2.10."))
           Seq(compilerPlugin("org.scala-lang.plugins" % "continuations" % ver))
-        else
-          Nil
+        else Nil
       },
       scalacOptions ++= {
         if (scalaVersion.value.startsWith("2.10."))
           Seq("-P:continuations:enable")
-        else
-          Nil
+        else Nil
       }
     ) ++ (
       scalaJSExternalCompileSettings
@@ -1090,8 +1082,7 @@ object Build extends sbt.Build {
         def envTagsFor(env: JSEnv): Seq[String] = env match {
           case env: RhinoJSEnv =>
             val baseArgs = Seq("rhino")
-            if (env.sourceMap) baseArgs :+ "source-maps"
-            else baseArgs
+            if (env.sourceMap) baseArgs :+ "source-maps" else baseArgs
 
           case env: NodeJSEnv =>
             val baseArgs = Seq("nodejs", "typedarray")
@@ -1131,16 +1122,13 @@ object Build extends sbt.Build {
         val semTags = (
           if (sems.asInstanceOfs == CheckedBehavior.Compliant)
             Seq("compliant-asinstanceofs")
-          else
-            Seq()
+          else Seq()
         ) ++ (
           if (sems.moduleInit == CheckedBehavior.Compliant)
             Seq("compliant-moduleinit")
-          else
-            Seq()
-        ) ++ (
-          if (sems.strictFloats) Seq("strict-floats")
           else Seq()
+        ) ++ (
+          if (sems.strictFloats) Seq("strict-floats") else Seq()
         ) ++ (
           if (sems.productionMode) Seq("production-mode")
           else Seq("development-mode")
@@ -1178,8 +1166,7 @@ object Build extends sbt.Build {
     testOptions += Tests.Argument(TestFrameworks.JUnit, "-v", "-a"),
     unmanagedSourceDirectories in Test ++= {
       def includeIf(testDir: File, condition: Boolean): List[File] =
-        if (condition) List(testDir)
-        else Nil
+        if (condition) List(testDir) else Nil
 
       val testDir = (sourceDirectory in Test).value
       val sharedTestDir =

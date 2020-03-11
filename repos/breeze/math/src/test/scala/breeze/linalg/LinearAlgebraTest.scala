@@ -983,8 +983,7 @@ class LinearAlgebraTest
       A: DenseVector[Double],
       B: DenseVector[Double],
       threshold: Double = 1e-6) {
-    for (i <- 0 until A.length)
-      A(i) should be(B(i) +- threshold)
+    for (i <- 0 until A.length) A(i) should be(B(i) +- threshold)
   }
 
   def matricesNearlyEqual(

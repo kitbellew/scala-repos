@@ -37,8 +37,7 @@ class TaskKiller @Inject() (
 
         val tasks = taskTracker.appTasksLaunchedSync(appId)
         val toKill = findToKill(tasks)
-        if (toKill.nonEmpty)
-          service.killTasks(appId, toKill)
+        if (toKill.nonEmpty) service.killTasks(appId, toKill)
 
         Future.successful(toKill)
       case None => Future.failed(UnknownAppException(appId))

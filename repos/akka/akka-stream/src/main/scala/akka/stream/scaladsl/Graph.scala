@@ -68,8 +68,7 @@ final class Merge[T] private (val inputPorts: Int, val eagerComplete: Boolean)
       private def dequeueAndDispatch(): Unit = {
         val in = pendingQueue.dequeue()
         push(out, grab(in))
-        if (upstreamsClosed && !pending) completeStage()
-        else tryPull(in)
+        if (upstreamsClosed && !pending) completeStage() else tryPull(in)
       }
 
       in.foreach { i ⇒
@@ -101,10 +100,7 @@ final class Merge[T] private (val inputPorts: Int, val eagerComplete: Boolean)
       setHandler(
         out,
         new OutHandler {
-          override def onPull(): Unit = {
-            if (pending)
-              dequeueAndDispatch()
-          }
+          override def onPull(): Unit = { if (pending) dequeueAndDispatch() }
         })
     }
 
@@ -574,20 +570,17 @@ final class Partition[T](outputPorts: Int, partitioner: T ⇒ Int)
             else if (!isClosed(out(idx))) {
               if (isAvailable(out(idx))) {
                 push(out(idx), elem)
-                if (out.exists(isAvailable(_)))
-                  pull(in)
+                if (out.exists(isAvailable(_))) pull(in)
               } else {
                 outPendingElem = elem
                 outPendingIdx = idx
               }
 
-            } else if (out.exists(isAvailable(_)))
-              pull(in)
+            } else if (out.exists(isAvailable(_))) pull(in)
           }
 
           override def onUpstreamFinish(): Unit = {
-            if (outPendingElem == null)
-              completeStage()
+            if (outPendingElem == null) completeStage()
           }
         }
       )
@@ -605,22 +598,18 @@ final class Partition[T](outputPorts: Int, partitioner: T ⇒ Int)
                     push(o, elem)
                     outPendingElem = null
                     if (!isClosed(in)) { if (!hasBeenPulled(in)) { pull(in) } }
-                    else
-                      completeStage()
+                    else completeStage()
                   }
-                } else if (!hasBeenPulled(in))
-                  pull(in)
+                } else if (!hasBeenPulled(in)) pull(in)
               }
 
               override def onDownstreamFinish(): Unit = {
                 downstreamRunning -= 1
-                if (downstreamRunning == 0)
-                  completeStage()
+                if (downstreamRunning == 0) completeStage()
                 else if (outPendingElem != null) {
                   if (idx == outPendingIdx) {
                     outPendingElem = null
-                    if (!hasBeenPulled(in))
-                      pull(in)
+                    if (!hasBeenPulled(in)) pull(in)
                   }
                 }
               }

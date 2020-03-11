@@ -52,8 +52,7 @@ private[mux] object TagMap {
 
     def map(el: T): Option[Int] = synchronized {
       set.acquire().map { tag =>
-        if (inFast(tag)) setFast(tag, el)
-        else fallback.put(tag, el)
+        if (inFast(tag)) setFast(tag, el) else fallback.put(tag, el)
         tag
       }
     }
@@ -89,8 +88,7 @@ private[mux] object TagMap {
     def get(tag: Int): Option[T] = synchronized {
       if (!inRange(tag)) return None
 
-      if (inFast(tag)) Option(getFast(tag))
-      else Option(fallback.get(tag))
+      if (inFast(tag)) Option(getFast(tag)) else Option(fallback.get(tag))
     }
 
     private[this] def inRange(tag: Int): Boolean =
@@ -99,8 +97,7 @@ private[mux] object TagMap {
     def iterator: Iterator[(Int, T)] = set.iterator flatMap { tag =>
       synchronized {
         val el = if (inFast(tag)) getFast(tag) else fallback.get(tag)
-        if (el == null) Iterable.empty
-        else Iterator.single((tag, el))
+        if (el == null) Iterable.empty else Iterator.single((tag, el))
       }
     }
   }

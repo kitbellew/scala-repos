@@ -141,8 +141,7 @@ private[akka] object MultiStreamOutputProcessor {
       if (subscriber eq null) {
         subscriber = s
         tryOnSubscribe(subscriber, subscription)
-      } else
-        rejectAdditionalSubscriber(s, "Substream publisher")
+      } else rejectAdditionalSubscriber(s, "Substream publisher")
   }
 }
 
@@ -210,8 +209,7 @@ private[akka] trait MultiStreamOutputProcessorLike
           if (demand < 1) // According to Reactive Streams Spec 3.9, with non-positive demand must yield onError
             sub.error(
               ReactiveStreamsCompliance.numberOfElementsInRequestMustBePositiveException)
-          else
-            sub.enqueueOutputDemand(demand)
+          else sub.enqueueOutputDemand(demand)
         case _ ⇒ // ignore...
       }
     case SubstreamSubscribe(key, subscriber) ⇒

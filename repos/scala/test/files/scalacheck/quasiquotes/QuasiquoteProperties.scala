@@ -87,8 +87,7 @@ trait Helpers {
             assert(false, s"wrong exception: $u")
           true
       }
-    if (!thrown)
-      assert(false, "exception wasn't thrown")
+    if (!thrown) assert(false, "exception wasn't thrown")
   }
 
   def assertEqAst(tree: Tree, code: String) = assert(eqAst(tree, code))
@@ -133,8 +132,7 @@ trait Helpers {
           result(
             false,
             s"error message '${emsg}' is not the same as expected '$msg'")
-        else
-          result(true)
+        else result(true)
     }
   }
 

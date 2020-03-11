@@ -81,8 +81,7 @@ object tile extends UFunc {
       def apply(x: DenseMatrix[T], m: Int, n: Int): DenseMatrix[T] = {
         // First, replicate each column 'm' times.
         val columnTiledMatrix = impl2(x, m)
-        if (n == 1)
-          return columnTiledMatrix
+        if (n == 1) return columnTiledMatrix
         // Nom, replicate the columnTiledMatrix 'n' times.
         val out = DenseMatrix.zeros[T](x.rows * m, x.cols * n)
         var i = 0

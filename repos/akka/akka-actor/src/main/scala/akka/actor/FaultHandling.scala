@@ -517,8 +517,7 @@ case class AllForOneStrategy(
       if (restart && children.forall(_.requestRestartPermission(retriesWindow)))
         children foreach (crs ⇒
           restartChild(crs.child, cause, suspendFirst = (crs.child != child)))
-      else
-        for (c ← children) context.stop(c.child)
+      else for (c ← children) context.stop(c.child)
     }
   }
 }
@@ -623,7 +622,6 @@ case class OneForOneStrategy(
       children: Iterable[ChildRestartStats]): Unit = {
     if (restart && stats.requestRestartPermission(retriesWindow))
       restartChild(child, cause, suspendFirst = false)
-    else
-      context.stop(child) //TODO optimization to drop child here already?
+    else context.stop(child) //TODO optimization to drop child here already?
   }
 }

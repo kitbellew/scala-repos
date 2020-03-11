@@ -14,8 +14,7 @@ class ArrayDeque[E] private (private var inner: js.Array[E])
   def this(initialCapacity: Int) = {
     this(new js.Array[E])
 
-    if (initialCapacity < 0)
-      throw new IllegalArgumentException
+    if (initialCapacity < 0) throw new IllegalArgumentException
   }
 
   def this() =
@@ -51,17 +50,11 @@ class ArrayDeque[E] private (private var inner: js.Array[E])
   }
 
   def removeFirst(): E = {
-    if (inner.isEmpty)
-      throw new NoSuchElementException()
-    else
-      pollFirst()
+    if (inner.isEmpty) throw new NoSuchElementException() else pollFirst()
   }
 
   def removeLast(): E = {
-    if (inner.isEmpty)
-      throw new NoSuchElementException()
-    else
-      pollLast()
+    if (inner.isEmpty) throw new NoSuchElementException() else pollLast()
   }
 
   def pollFirst(): E = {
@@ -74,32 +67,23 @@ class ArrayDeque[E] private (private var inner: js.Array[E])
   }
 
   def pollLast(): E = {
-    if (inner.isEmpty) null.asInstanceOf[E]
-    else inner.pop()
+    if (inner.isEmpty) null.asInstanceOf[E] else inner.pop()
   }
 
   def getFirst(): E = {
-    if (inner.isEmpty)
-      throw new NoSuchElementException()
-    else
-      peekFirst()
+    if (inner.isEmpty) throw new NoSuchElementException() else peekFirst()
   }
 
   def getLast(): E = {
-    if (inner.isEmpty)
-      throw new NoSuchElementException()
-    else
-      peekLast()
+    if (inner.isEmpty) throw new NoSuchElementException() else peekLast()
   }
 
   def peekFirst(): E = {
-    if (inner.isEmpty) null.asInstanceOf[E]
-    else inner.head
+    if (inner.isEmpty) null.asInstanceOf[E] else inner.head
   }
 
   def peekLast(): E = {
-    if (inner.isEmpty) null.asInstanceOf[E]
-    else inner.last
+    if (inner.isEmpty) null.asInstanceOf[E] else inner.last
   }
 
   def removeFirstOccurrence(o: Any): Boolean = {
@@ -108,8 +92,7 @@ class ArrayDeque[E] private (private var inner: js.Array[E])
       inner.remove(index)
       status += 1
       true
-    } else
-      false
+    } else false
   }
 
   def removeLastOccurrence(o: Any): Boolean = {
@@ -118,8 +101,7 @@ class ArrayDeque[E] private (private var inner: js.Array[E])
       inner.remove(index)
       status += 1
       true
-    } else
-      false
+    } else false
   }
 
   override def add(e: E): Boolean = {

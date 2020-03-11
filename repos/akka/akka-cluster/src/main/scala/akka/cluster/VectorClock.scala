@@ -220,10 +220,8 @@ final case class VectorClock(
   }
 
   def prune(removedNode: Node): VectorClock =
-    if (versions.contains(removedNode))
-      copy(versions = versions - removedNode)
-    else
-      this
+    if (versions.contains(removedNode)) copy(versions = versions - removedNode)
+    else this
 
   override def toString =
     versions

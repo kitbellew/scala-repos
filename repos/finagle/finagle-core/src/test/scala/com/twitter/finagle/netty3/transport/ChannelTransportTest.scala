@@ -171,8 +171,7 @@ class ChannelTransportTest
   }
 
   test("FIFO queue messages") {
-    for (i <- 0 until 10)
-      sendUpstreamMessage("message:%d".format(i))
+    for (i <- 0 until 10) sendUpstreamMessage("message:%d".format(i))
 
     for (i <- 0 until 10)
       assert(Await.result(trans.read()) == "message:%d".format(i))

@@ -55,8 +55,7 @@ abstract class ChooseValueExpression[T](lookupItems: Seq[T], defaultItem: T)
 
   override def calculateLookupItems(
       context: ExpressionContext): Array[LookupElement] =
-    if (lookupElements.length > 1) lookupElements
-    else null
+    if (lookupElements.length > 1) lookupElements else null
 
   override def calculateQuickResult(context: ExpressionContext): Result =
     calculateResult(context)

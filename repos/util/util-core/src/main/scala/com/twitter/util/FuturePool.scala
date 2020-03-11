@@ -101,8 +101,7 @@ class ExecutorServiceFuturePool protected[this] (
       def run(): Unit = {
         // Make an effort to skip work in the case the promise
         // has been cancelled or already defined.
-        if (!runOk.compareAndSet(true, false))
-          return
+        if (!runOk.compareAndSet(true, false)) return
 
         val current = Local.save()
         Local.restore(saved)
@@ -137,8 +136,7 @@ class ExecutorServiceFuturePool protected[this] (
         if (interruptible || runOk.compareAndSet(true, false)) {
           val exc = new CancellationException
           exc.initCause(cause)
-          if (p.updateIfEmpty(Throw(exc)))
-            javaFuture.cancel(true)
+          if (p.updateIfEmpty(Throw(exc))) javaFuture.cancel(true)
         }
     }
 

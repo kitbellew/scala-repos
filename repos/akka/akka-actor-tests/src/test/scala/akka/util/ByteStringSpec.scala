@@ -681,8 +681,7 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
           var (nRead, eof) = (0, false)
           while ((nRead < toRead) && !eof) {
             val n = input.asInputStream.read(output, a + nRead, toRead - nRead)
-            if (n == -1) eof = true
-            else nRead += n
+            if (n == -1) eof = true else nRead += n
           }
           if (eof) throw new RuntimeException("Unexpected EOF")
 

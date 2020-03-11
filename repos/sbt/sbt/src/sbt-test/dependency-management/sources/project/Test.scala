@@ -17,12 +17,10 @@ object Test extends Build {
     report.matching(artifactFilter(`classifier` = "sources"))
   def checkSources(report: UpdateReport): Unit = {
     val srcs = getSources(report)
-    if (srcs.isEmpty)
-      sys.error("No sources retrieved")
+    if (srcs.isEmpty) sys.error("No sources retrieved")
     else if (srcs.size != 2)
       sys.error("Incorrect sources retrieved:\n\t" + srcs.mkString("\n\t"))
-    else
-      ()
+    else ()
   }
   def checkBinaries(report: UpdateReport): Unit = {
     val srcs = getSources(report)

@@ -75,10 +75,8 @@ object Scalajsp {
   private def displayFileContent(
       vfile: VirtualScalaJSIRFile,
       opts: Options): Unit = {
-    if (opts.infos)
-      new InfoPrinter(stdout).print(vfile.info)
-    else
-      new IRTreePrinter(stdout).printTopLevelTree(vfile.tree)
+    if (opts.infos) new InfoPrinter(stdout).print(vfile.info)
+    else new IRTreePrinter(stdout).printTopLevelTree(vfile.tree)
 
     stdout.flush()
   }
@@ -91,12 +89,9 @@ object Scalajsp {
   private def readFromFile(fileName: String) = {
     val file = new File(fileName)
 
-    if (!file.exists)
-      fail(s"No such file: $fileName")
-    else if (!file.canRead)
-      fail(s"Unable to read file: $fileName")
-    else
-      FileVirtualScalaJSIRFile(file)
+    if (!file.exists) fail(s"No such file: $fileName")
+    else if (!file.canRead) fail(s"Unable to read file: $fileName")
+    else FileVirtualScalaJSIRFile(file)
   }
 
   private def readFromJar(jar: File, name: String) = {
@@ -105,8 +100,7 @@ object Scalajsp {
       catch { case _: FileNotFoundException => fail(s"No such JAR: $jar") }
     try {
       val entry = jarFile.getEntry(name)
-      if (entry == null)
-        fail(s"No such file in jar: $name")
+      if (entry == null) fail(s"No such file in jar: $name")
       else {
         val name = jarFile.getName + "#" + entry.getName
         val content =

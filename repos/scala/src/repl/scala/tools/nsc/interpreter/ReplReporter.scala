@@ -52,8 +52,7 @@ class ReplReporter(intp: IMain)
       (
         if (replProps.colorOk)
           severityColor(severity) + clabel(severity) + RESET
-        else
-          clabel(severity)
+        else clabel(severity)
       )
     printMessage(pos, prefix + msg)
   }
@@ -63,15 +62,13 @@ class ReplReporter(intp: IMain)
     // the lazy val is complete.
     if (intp.isInitializeComplete) {
       if (intp.totalSilence) {
-        if (isReplTrace)
-          super.printMessage("[silent] " + msg)
+        if (isReplTrace) super.printMessage("[silent] " + msg)
       } else super.printMessage(msg)
     } else Console.println("[init] " + msg)
   }
 
   override def displayPrompt() {
-    if (intp.totalSilence) ()
-    else super.displayPrompt()
+    if (intp.totalSilence) () else super.displayPrompt()
   }
 
 }

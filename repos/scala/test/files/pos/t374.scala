@@ -15,6 +15,5 @@ object test extends AnyRef with App {
       case None     => IDENT
       case Some(tk) => tk
     }
-  } else
-    BAD
+  } else BAD
 }

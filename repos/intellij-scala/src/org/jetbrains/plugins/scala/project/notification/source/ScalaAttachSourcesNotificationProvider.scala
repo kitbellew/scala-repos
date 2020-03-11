@@ -53,8 +53,7 @@ class ScalaAttachSourcesNotificationProvider(
         fileEditor
       ) //as Java has now different message
     val fqn: String =
-      if (isScala) ScalaEditorFileSwapper.getFQN(psiFile)
-      else getFQN(psiFile)
+      if (isScala) ScalaEditorFileSwapper.getFQN(psiFile) else getFQN(psiFile)
     if (fqn == null) return null
     if (isScala && ScalaEditorFileSwapper.findSourceFile(
           myProject,

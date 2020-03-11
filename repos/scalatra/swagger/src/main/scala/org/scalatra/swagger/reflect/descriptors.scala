@@ -166,15 +166,13 @@ class ManifestScalaType(val manifest: Manifest[_]) extends ScalaType {
 
   private[this] var _rawFullName: String = null
   def rawFullName: String = {
-    if (_rawFullName == null)
-      _rawFullName = erasure.getName
+    if (_rawFullName == null) _rawFullName = erasure.getName
     _rawFullName
   }
 
   private[this] var _rawSimpleName: String = null
   def rawSimpleName: String = {
-    if (_rawSimpleName == null)
-      _rawSimpleName = erasure.getSimpleName
+    if (_rawSimpleName == null) _rawSimpleName = erasure.getSimpleName
     _rawSimpleName
   }
 
@@ -255,8 +253,7 @@ class ManifestScalaType(val manifest: Manifest[_]) extends ScalaType {
         erasure,
         typeArgs.map(ManifestFactory.manifestOf(_)))
       val st = new CopiedManifestScalaType(mf, typeVars, isPrimitive)
-      if (typeArgs.isEmpty) types.replace(mf, st)
-      else st
+      if (typeArgs.isEmpty) types.replace(mf, st) else st
     }
   }
 

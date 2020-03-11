@@ -126,8 +126,7 @@ object svd extends UFunc {
 
     if (info.`val` > 0)
       throw new NotConvergedException(NotConvergedException.Iterations)
-    else if (info.`val` < 0)
-      throw new IllegalArgumentException()
+    else if (info.`val` < 0) throw new IllegalArgumentException()
 
     SVD(U, S, Vt)
   }
@@ -188,8 +187,7 @@ object svd extends UFunc {
 
     if (info.`val` > 0)
       throw new NotConvergedException(NotConvergedException.Iterations)
-    else if (info.`val` < 0)
-      throw new IllegalArgumentException()
+    else if (info.`val` < 0) throw new IllegalArgumentException()
 
     SVD(U, S, Vt)
   }
@@ -427,10 +425,7 @@ object svd extends UFunc {
       val svdImpl = svd.Svd_Sparse_Impl[CSCMatrix[Double], CSCMatrix[Double]]
       val isSlimMatrix = mt.rows > mt.cols
       val SVD(u, s, vt) =
-        if (isSlimMatrix)
-          svdImpl(mt.t, k, tol)
-        else
-          svdImpl(mt, k, tol)
+        if (isSlimMatrix) svdImpl(mt.t, k, tol) else svdImpl(mt, k, tol)
 
       if (isSlimMatrix) SVD(vt.t, s, u.t) else SVD(u, s, vt)
     }

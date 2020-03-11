@@ -105,8 +105,7 @@ class IorTests extends CatsSuite {
     forAll { (i: Int Ior String) =>
       var count = 0
       i.foreach { _ => count += 1 }
-      if (i.isRight || i.isBoth) count should ===(1)
-      else count should ===(0)
+      if (i.isRight || i.isBoth) count should ===(1) else count should ===(0)
     }
   }
 

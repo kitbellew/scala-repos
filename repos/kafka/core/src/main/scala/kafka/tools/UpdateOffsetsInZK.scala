@@ -33,8 +33,7 @@ object UpdateOffsetsInZK {
   val Latest = "latest"
 
   def main(args: Array[String]) {
-    if (args.length < 3)
-      usage
+    if (args.length < 3) usage
     val config = new ConsumerConfig(Utils.loadProps(args(1)))
     val zkUtils = ZkUtils(
       config.zkConnect,

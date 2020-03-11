@@ -39,16 +39,14 @@ final class Matcher private[regex] (
     // Further, it might be wrong to just use ^$ delimiters for two reasons:
     // - They might already be there
     // - They might not behave as expected when newline characters are present
-    if ((lastMatch ne null) && (start != 0 || end != inputstr.length))
-      reset()
+    if ((lastMatch ne null) && (start != 0 || end != inputstr.length)) reset()
     lastMatch ne null
   }
 
   def lookingAt(): Boolean = {
     reset()
     find()
-    if ((lastMatch ne null) && (start != 0))
-      reset()
+    if ((lastMatch ne null) && (start != 0)) reset()
     lastMatch ne null
   }
 
@@ -57,8 +55,7 @@ final class Matcher private[regex] (
       lastMatchIsValid = true
       lastMatch = regexp.exec(inputstr)
       if (lastMatch ne null) {
-        if (lastMatch(0).get.isEmpty)
-          regexp.lastIndex += 1
+        if (lastMatch(0).get.isEmpty) regexp.lastIndex += 1
       } else { canStillFind = false }
       lastMatch ne null
     } else false
@@ -83,15 +80,13 @@ final class Matcher private[regex] (
         case '$' =>
           i += 1
           val j = i
-          while (i < len && isDigit(replacement.charAt(i)))
-            i += 1
+          while (i < len && isDigit(replacement.charAt(i))) i += 1
           val group = Integer.parseInt(replacement.substring(j, i))
           sb.append(this.group(group))
 
         case '\\' =>
           i += 1
-          if (i < len)
-            sb.append(replacement.charAt(i))
+          if (i < len) sb.append(replacement.charAt(i))
           i += 1
 
         case c =>
@@ -162,8 +157,7 @@ final class Matcher private[regex] (
   // Query state methods - implementation of MatchResult
 
   private def ensureLastMatch: js.RegExp.ExecResult = {
-    if (lastMatch == null)
-      throw new IllegalStateException("No match available")
+    if (lastMatch == null) throw new IllegalStateException("No match available")
     lastMatch
   }
 
@@ -187,8 +181,7 @@ final class Matcher private[regex] (
 
   def end(group: Int): Int = {
     val s = start(group)
-    if (s == -1) -1
-    else s + this.group(group).length
+    if (s == -1) -1 else s + this.group(group).length
   }
 
   def group(group: Int): String = ensureLastMatch(group).orNull
@@ -259,8 +252,7 @@ object Matcher {
 
     def end(group: Int): Int = {
       val s = start(group)
-      if (s == -1) -1
-      else s + this.group(group).length
+      if (s == -1) -1 else s + this.group(group).length
     }
 
     def group(group: Int): String = ensureLastMatch(group).orNull

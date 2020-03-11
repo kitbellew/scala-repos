@@ -107,8 +107,7 @@ private[finagle] class ClockedDrainer(
   def npending() = {
     var s = 0
     val iter = lessees.iterator()
-    while (iter.hasNext)
-      s += iter.next().npending()
+    while (iter.hasNext) s += iter.next().npending()
     s
   }
 
@@ -191,8 +190,7 @@ private[finagle] class ClockedDrainer(
 
   private[this] def issueAll(duration: Duration) {
     val iter = lessees.iterator()
-    while (iter.hasNext)
-      iter.next().issue(duration)
+    while (iter.hasNext) iter.next().issue(duration)
   }
 
   private[this] def finishDraining() {

@@ -34,8 +34,7 @@ class BoundedBlockingQueue[E <: AnyRef](
     if (e eq null) throw new NullPointerException
     lock.lock()
     try {
-      while (backing.size() == maxCapacity)
-        notFull.await()
+      while (backing.size() == maxCapacity) notFull.await()
       require(backing.offer(e))
       notEmpty.signal()
     } finally { lock.unlock() }
@@ -44,8 +43,7 @@ class BoundedBlockingQueue[E <: AnyRef](
   def take(): E = { //Blocks until not empty
     lock.lockInterruptibly()
     try {
-      while (backing.size() == 0)
-        notEmpty.await()
+      while (backing.size() == 0) notEmpty.await()
       val e = backing.poll()
       require(e ne null)
       notFull.signal()
@@ -72,10 +70,7 @@ class BoundedBlockingQueue[E <: AnyRef](
     lock.lockInterruptibly()
     try {
       while (backing.size() == maxCapacity) {
-        if (nanos <= 0)
-          return false
-        else
-          nanos = notFull.awaitNanos(nanos)
+        if (nanos <= 0) return false else nanos = notFull.awaitNanos(nanos)
       }
       require(backing.offer(e)) //Should never fail
       notEmpty.signal()

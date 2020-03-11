@@ -129,14 +129,12 @@ sealed trait JsResult[+A] { self =>
   final class WithFilter(p: A => Boolean) {
     def map[B](f: A => B): JsResult[B] = self match {
       case JsSuccess(a, path) =>
-        if (p(a)) JsSuccess(f(a), path)
-        else JsError()
+        if (p(a)) JsSuccess(f(a), path) else JsError()
       case e: JsError => e
     }
     def flatMap[B](f: A => JsResult[B]): JsResult[B] = self match {
       case JsSuccess(a, path) =>
-        if (p(a)) f(a).repath(path)
-        else JsError()
+        if (p(a)) f(a).repath(path) else JsError()
       case e: JsError => e
     }
     def foreach(f: A => Unit): Unit = self match {

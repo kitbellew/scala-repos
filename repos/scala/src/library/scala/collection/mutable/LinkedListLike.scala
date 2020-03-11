@@ -75,8 +75,7 @@ trait LinkedListLike[A, This <: Seq[A] with LinkedListLike[A, This]]
     if (elem.isEmpty) acc else length0(elem.next, acc + 1)
 
   override def head: A =
-    if (isEmpty) throw new NoSuchElementException
-    else elem
+    if (isEmpty) throw new NoSuchElementException else elem
 
   override def tail: This = {
     require(nonEmpty, "tail of empty list")
@@ -121,12 +120,8 @@ trait LinkedListLike[A, This <: Seq[A] with LinkedListLike[A, This]]
     */
   def append(that: This): This = {
     @tailrec
-    def loop(x: This) {
-      if (x.next.isEmpty) x.next = that
-      else loop(x.next)
-    }
-    if (isEmpty) that
-    else { loop(repr); repr }
+    def loop(x: This) { if (x.next.isEmpty) x.next = that else loop(x.next) }
+    if (isEmpty) that else { loop(repr); repr }
   }
 
   /** Insert linked list `that` at current position of this linked list
@@ -161,8 +156,7 @@ trait LinkedListLike[A, This <: Seq[A] with LinkedListLike[A, This]]
 
   def get(n: Int): Option[A] = {
     val loc = drop(n)
-    if (loc.nonEmpty) Some(loc.elem)
-    else None
+    if (loc.nonEmpty) Some(loc.elem) else None
   }
 
   override def iterator: Iterator[A] = new AbstractIterator[A] {

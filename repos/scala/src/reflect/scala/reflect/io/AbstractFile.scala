@@ -61,8 +61,7 @@ object AbstractFile {
   def getURL(url: URL): AbstractFile =
     if (url.getProtocol == "file") {
       val f = new java.io.File(url.getPath)
-      if (f.isDirectory) getDirectory(f)
-      else getFile(f)
+      if (f.isDirectory) getDirectory(f) else getFile(f)
     } else null
 
   def getResources(url: URL): AbstractFile = ZipArchive fromManifestURL url
@@ -178,8 +177,7 @@ abstract class AbstractFile extends Iterable[AbstractFile] {
         val arr = new Array[Byte](rest)
         while (rest > 0) {
           val res = in.read(arr, arr.length - rest, rest)
-          if (res == -1)
-            throw new IOException("read error")
+          if (res == -1) throw new IOException("read error")
           rest -= res
         }
         in.close()

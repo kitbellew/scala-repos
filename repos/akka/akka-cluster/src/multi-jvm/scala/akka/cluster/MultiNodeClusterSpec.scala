@@ -181,8 +181,7 @@ trait MultiNodeClusterSpec
       Canceled(new TestCanceledException("Previous step failed", 0))
     } else {
       val out = super.withFixture(test)
-      if (!out.isSucceeded)
-        failed = true
+      if (!out.isSucceeded) failed = true
       out
     }
 
@@ -201,8 +200,7 @@ trait MultiNodeClusterSpec
       cluster join myself
       awaitAssert(
         clusterView.members.map(_.address) should contain(address(myself)))
-    } else
-      clusterView.self
+    } else clusterView.self
   }
 
   /**

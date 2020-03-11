@@ -27,8 +27,7 @@ object PersistentVolumeMatcher {
             .forall(availableVolumes.contains))
         Some(task.reservation.volumeIds.flatMap(id =>
           availableVolumes.get(id.idString)))
-      else
-        None
+      else None
     }
 
     waitingTasks.toStream.flatMap { task =>

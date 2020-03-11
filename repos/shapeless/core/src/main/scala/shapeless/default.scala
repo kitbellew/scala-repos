@@ -251,10 +251,7 @@ class DefaultMacros(val c: whitebox.Context) extends CaseClassMacros {
 
     def methodFrom(tpe: Type, name: String): Option[Symbol] = {
       val m = tpe.member(TermName(name))
-      if (m == NoSymbol)
-        None
-      else
-        Some(m)
+      if (m == NoSymbol) None else Some(m)
     }
 
     val primaryConstructor = tpe.decls
@@ -309,8 +306,7 @@ class DefaultMacros(val c: whitebox.Context) extends CaseClassMacros {
           case None =>
             (noneTpe, q"_root_.scala.None")
         }
-      } else
-        (noneTpe, q"_root_.scala.None")
+      } else (noneTpe, q"_root_.scala.None")
     }
 
     val wrapTpeTrees = fieldsOf(tpe).zipWithIndex.map {

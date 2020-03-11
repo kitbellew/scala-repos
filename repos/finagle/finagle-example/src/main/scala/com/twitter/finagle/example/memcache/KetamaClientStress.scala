@@ -41,19 +41,16 @@ object KetamaClientStress extends App {
   private[this] var loadTask: TimerTask = null
 
   def proc(op: () => Future[Any], qps: Int) {
-    if (qps == 0)
-      op() ensure {
-        throughput_count.incrementAndGet()
-        proc(op, 0)
+    if (qps == 0) op() ensure {
+      throughput_count.incrementAndGet()
+      proc(op, 0)
+    }
+    else if (qps > 0) loadTask = timer.schedule(Time.now, 1.seconds) {
+      1 to qps foreach { _ =>
+        op() ensure { throughput_count.incrementAndGet() }
       }
-    else if (qps > 0)
-      loadTask = timer.schedule(Time.now, 1.seconds) {
-        1 to qps foreach { _ =>
-          op() ensure { throughput_count.incrementAndGet() }
-        }
-      }
-    else
-      1 to (qps * -1) foreach { _ => proc(op, 0) }
+    }
+    else 1 to (qps * -1) foreach { _ => proc(op, 0) }
   }
 
   private[this] def randomString(length: Int): String = {
@@ -221,10 +218,8 @@ object KetamaClientStress extends App {
           () => {
             val c = load_count.getAndIncrement()
             val (key, value) = keyValueSet((c % config.numkeys()).toInt)
-            if (c % 100 >= config.rwRatio())
-              replicationClient.set(key, value)
-            else
-              replicationClient.getOne(key, false)
+            if (c % 100 >= config.rwRatio()) replicationClient.set(key, value)
+            else replicationClient.getOne(key, false)
           }
         case "getsAll" =>
           keyValueSet foreach { case (k, v) => replicationClient.set(k, v)() }
@@ -249,7 +244,7 @@ object KetamaClientStress extends App {
             val (key, value) = nextKeyValue
             casMap.remove(key) match {
               case Some(
-                  ConsistentReplication(Some((_, RCasUnique(uniques))))) =>
+                    ConsistentReplication(Some((_, RCasUnique(uniques))))) =>
                 replicationClient.checkAndSet(key, value, uniques)
               case Some(ConsistentReplication(None)) =>
                 // not expecting this to ever happen

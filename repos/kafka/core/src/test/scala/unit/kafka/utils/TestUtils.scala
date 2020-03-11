@@ -449,8 +449,7 @@ object TestUtils extends Logging {
     * different messages on their Nth element
     */
   def checkEquals[T](s1: java.util.Iterator[T], s2: java.util.Iterator[T]) {
-    while (s1.hasNext && s2.hasNext)
-      assertEquals(s1.next, s2.next)
+    while (s1.hasNext && s2.hasNext) assertEquals(s1.next, s2.next)
     assertFalse("Iterators have uneven length--first has more", s1.hasNext)
     assertFalse("Iterators have uneven length--second has more", s2.hasNext)
   }
@@ -463,13 +462,9 @@ object TestUtils extends Logging {
       def hasNext(): Boolean = {
         while (true) {
           if (cur == null) {
-            if (topIterator.hasNext)
-              cur = topIterator.next
-            else
-              return false
+            if (topIterator.hasNext) cur = topIterator.next else return false
           }
-          if (cur.hasNext)
-            return true
+          if (cur.hasNext) return true
           cur = null
         }
         // should never reach her
@@ -512,8 +507,7 @@ object TestUtils extends Logging {
     val props: Properties = getProducerConfig(brokerList)
 
     //override any explicitly specified properties
-    if (producerProps != null)
-      props.putAll(producerProps)
+    if (producerProps != null) props.putAll(producerProps)
 
     props.put("serializer.class", encoder)
     props.put("key.serializer.class", keyEncoder)
@@ -703,10 +697,7 @@ object TestUtils extends Logging {
       iter: Iterator[MessageAndOffset]): Iterator[Message] = {
     new IteratorTemplate[Message] {
       override def makeNext(): Message = {
-        if (iter.hasNext)
-          iter.next.message
-        else
-          allDone()
+        if (iter.hasNext) iter.next.message else allDone()
       }
     }
   }
@@ -745,8 +736,7 @@ object TestUtils extends Logging {
 
   def getMsgStrings(n: Int): Seq[String] = {
     val buffer = new ListBuffer[String]
-    for (i <- 0 until n)
-      buffer += ("msg" + i)
+    for (i <- 0 until n) buffer += ("msg" + i)
     buffer
   }
 
@@ -931,10 +921,8 @@ object TestUtils extends Logging {
       waitTime: Long = 5000L): Boolean = {
     val startTime = System.currentTimeMillis()
     while (true) {
-      if (condition())
-        return true
-      if (System.currentTimeMillis() > startTime + waitTime)
-        fail(msg)
+      if (condition()) return true
+      if (System.currentTimeMillis() > startTime + waitTime) fail(msg)
       Thread.sleep(waitTime.min(100L))
     }
     // should never hit here
@@ -1023,15 +1011,13 @@ object TestUtils extends Logging {
   def writeNonsenseToFile(fileName: File, position: Long, size: Int) {
     val file = new RandomAccessFile(fileName, "rw")
     file.seek(position)
-    for (i <- 0 until size)
-      file.writeByte(random.nextInt(255))
+    for (i <- 0 until size) file.writeByte(random.nextInt(255))
     file.close()
   }
 
   def appendNonsenseToFile(fileName: File, size: Int) {
     val file = new FileOutputStream(fileName, true)
-    for (i <- 0 until size)
-      file.write(random.nextInt(255))
+    for (i <- 0 until size) file.write(random.nextInt(255))
     file.close()
   }
 
@@ -1391,8 +1377,7 @@ object TestUtils extends Logging {
         .invokeAll(runnables, timeoutMs, TimeUnit.MILLISECONDS)
         .asScala
       futures.foreach { future =>
-        if (future.isCancelled)
-          failWithTimeout()
+        if (future.isCancelled) failWithTimeout()
         else
           try future.get()
           catch {

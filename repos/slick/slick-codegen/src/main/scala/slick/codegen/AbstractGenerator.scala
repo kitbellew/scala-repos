@@ -64,8 +64,7 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
         // put auto inc column last
         (withIndex.filterNot(_._1.autoInc) ++ withIndex.filter(_._1.autoInc))
           .map(_._2)
-      else
-        withIndex.map(_._2)
+      else withIndex.map(_._2)
     }
 
     /** Column code generators in the desired user-facing order. */

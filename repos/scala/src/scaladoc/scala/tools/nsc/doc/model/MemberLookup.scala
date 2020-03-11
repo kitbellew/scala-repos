@@ -31,10 +31,8 @@ trait MemberLookup extends base.MemberLookupBase {
     val mbrs = links.collect {
       case lm @ LinkToMember(mbr: MemberEntity, _) => (mbr, lm)
     }
-    if (mbrs.isEmpty)
-      links.head
-    else
-      mbrs.min(Ordering[MemberEntity].on[(MemberEntity, LinkTo)](_._1))._2
+    if (mbrs.isEmpty) links.head
+    else mbrs.min(Ordering[MemberEntity].on[(MemberEntity, LinkTo)](_._1))._2
   }
 
   override def toString(link: LinkTo) = link match {

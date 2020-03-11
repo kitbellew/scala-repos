@@ -86,16 +86,14 @@ object ScalaAfterNewCompletionUtil {
     val predefinedType =
       if (clazz.getTypeParameters.length == 1) {
         ScParameterizedType(ScDesignatorType(clazz), undefines)
-      } else
-        ScDesignatorType(clazz)
+      } else ScDesignatorType(clazz)
     val noUndefType =
       if (clazz.getTypeParameters.length == 1) {
         ScParameterizedType(
           ScDesignatorType(clazz),
           clazz.getTypeParameters.map(ptp =>
             new ScTypeParameterType(ptp, ScSubstitutor.empty)))
-      } else
-        ScDesignatorType(clazz)
+      } else ScDesignatorType(clazz)
 
     val iterator = expectedTypes.iterator
     while (iterator.hasNext) {

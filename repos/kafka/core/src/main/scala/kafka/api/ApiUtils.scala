@@ -34,8 +34,7 @@ object ApiUtils {
     */
   def readShortString(buffer: ByteBuffer): String = {
     val size: Int = buffer.getShort()
-    if (size < 0)
-      return null
+    if (size < 0) return null
     val bytes = new Array[Byte](size)
     buffer.get(bytes)
     new String(bytes, ProtocolEncoding)

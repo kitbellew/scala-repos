@@ -215,8 +215,8 @@ object Bounds {
     else {
       (t1, t2) match {
         case (
-            ScSkolemizedType(name, args, lower, upper),
-            ScSkolemizedType(name2, args2, lower2, upper2)) =>
+              ScSkolemizedType(name, args, lower, upper),
+              ScSkolemizedType(name2, args2, lower2, upper2)) =>
           ScSkolemizedType(
             name,
             args,
@@ -293,8 +293,8 @@ object Bounds {
           case (_, ScTypeParameterType(_, Nil, _, upper, _)) =>
             lub(t1, upper.v, checkWeak)
           case (
-              ScSkolemizedType(name, args, lower, upper),
-              ScSkolemizedType(name2, args2, lower2, upper2)) =>
+                ScSkolemizedType(name, args, lower, upper),
+                ScSkolemizedType(name2, args2, lower2, upper2)) =>
             ScSkolemizedType(
               name,
               args,
@@ -345,11 +345,9 @@ object Bounds {
               case None => ScParameterizedType(des, Seq(v))
             }
           case (JavaArrayType(_), tp) =>
-            if (tp.conforms(AnyRef)) AnyRef
-            else Any
+            if (tp.conforms(AnyRef)) AnyRef else Any
           case (tp, JavaArrayType(_)) =>
-            if (tp.conforms(AnyRef)) AnyRef
-            else Any
+            if (tp.conforms(AnyRef)) AnyRef else Any
           case _ =>
             val aOptions: Seq[Options] = {
               t1 match {
@@ -422,8 +420,8 @@ object Bounds {
       } else {
         (substed1, substed2) match {
           case (
-              ScSkolemizedType(name, args, lower, upper),
-              ScSkolemizedType(name2, args2, lower2, upper2)) =>
+                ScSkolemizedType(name, args, lower, upper),
+                ScSkolemizedType(name2, args2, lower2, upper2)) =>
             val newLub =
               if (stopAddingUpperBound) types.Any
               else

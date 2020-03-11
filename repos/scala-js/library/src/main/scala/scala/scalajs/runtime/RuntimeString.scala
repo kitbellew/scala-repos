@@ -48,10 +48,8 @@ private[runtime] object RuntimeString {
     val high = thiz.charAt(index)
     if (index + 1 < thiz.length) {
       val low = thiz.charAt(index + 1)
-      if (Character.isSurrogatePair(high, low))
-        Character.toCodePoint(high, low)
-      else
-        high.toInt
+      if (Character.isSurrogatePair(high, low)) Character.toCodePoint(high, low)
+      else high.toInt
     } else { high.toInt }
   }
 
@@ -171,8 +169,7 @@ private[runtime] object RuntimeString {
     thiz.lastIndexOf(fromCodePoint(ch))
 
   def lastIndexOf(thiz: String, ch: Int, fromIndex: Int): Int =
-    if (fromIndex < 0) -1
-    else thiz.lastIndexOf(fromCodePoint(ch), fromIndex)
+    if (fromIndex < 0) -1 else thiz.lastIndexOf(fromCodePoint(ch), fromIndex)
 
   @inline
   def lastIndexOf(thiz: String, str: String): Int =
@@ -180,8 +177,7 @@ private[runtime] object RuntimeString {
 
   @inline
   def lastIndexOf(thiz: String, str: String, fromIndex: Int): Int =
-    if (fromIndex < 0) -1
-    else thiz.jsLastIndexOf(str, fromIndex)
+    if (fromIndex < 0) -1 else thiz.jsLastIndexOf(str, fromIndex)
 
   @inline
   def length(thiz: String): Int =
@@ -409,12 +405,10 @@ private[runtime] object RuntimeString {
 
   @inline
   private def checkNull(s: String): s.type =
-    if (s == null) throw new NullPointerException()
-    else s
+    if (s == null) throw new NullPointerException() else s
 
   private def fromCodePoint(codePoint: Int): String = {
-    if ((codePoint & ~Character.MAX_VALUE) == 0)
-      fromCharCode(codePoint)
+    if ((codePoint & ~Character.MAX_VALUE) == 0) fromCharCode(codePoint)
     else if (codePoint < 0 || codePoint > Character.MAX_CODE_POINT)
       throw new IllegalArgumentException
     else {

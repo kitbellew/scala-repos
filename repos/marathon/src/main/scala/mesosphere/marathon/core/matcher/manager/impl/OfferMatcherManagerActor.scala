@@ -124,13 +124,11 @@ private[impl] class OfferMatcherManagerActor private (
       val tokensBeforeSet = launchTokens
       launchTokens = tokens
       metrics.launchTokenGauge.setValue(launchTokens)
-      if (tokens > 0 && tokensBeforeSet <= 0)
-        updateOffersWanted()
+      if (tokens > 0 && tokensBeforeSet <= 0) updateOffersWanted()
     case OfferMatcherManagerDelegate.AddTaskLaunchTokens(tokens) =>
       launchTokens += tokens
       metrics.launchTokenGauge.setValue(launchTokens)
-      if (tokens > 0 && launchTokens == tokens)
-        updateOffersWanted()
+      if (tokens > 0 && launchTokens == tokens) updateOffersWanted()
   }
 
   private[this] def receiveChangingMatchers: Receive = {
@@ -239,8 +237,7 @@ private[impl] class OfferMatcherManagerActor private (
         dataWithTasks.nextMatcherOpt match {
           case Some((matcher, contData)) =>
             val contDataWithActiveMatcher =
-              if (addedOps.nonEmpty) contData.addMatcher(matcher)
-              else contData
+              if (addedOps.nonEmpty) contData.addMatcher(matcher) else contData
             offerQueues += offerId -> contDataWithActiveMatcher
             contDataWithActiveMatcher
           case None =>

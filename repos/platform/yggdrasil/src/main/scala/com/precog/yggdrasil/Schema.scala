@@ -350,9 +350,9 @@ object Schema {
   def requiredBy(jtpe: JType, path: CPath, ctpe: CType): Boolean =
     includes(jtpe, path, ctpe) || ((jtpe, path, ctpe) match {
       case (
-          JArrayFixedT(elements),
-          CPath(CPathArray, tail @ _*),
-          CArrayType(elemType)) =>
+            JArrayFixedT(elements),
+            CPath(CPathArray, tail @ _*),
+            CArrayType(elemType)) =>
         elements.values exists (requiredBy(_, CPath(tail: _*), elemType))
       case _ => false
     })
@@ -382,8 +382,8 @@ object Schema {
         true
 
       case (
-          JObjectFixedT(fields),
-          (CPath(CPathField(head), tail @ _*), ctpe)) => {
+            JObjectFixedT(fields),
+            (CPath(CPathField(head), tail @ _*), ctpe)) => {
         fields
           .get(head)
           .map(includes(_, CPath(tail: _*), ctpe))
@@ -399,8 +399,8 @@ object Schema {
       case (JArrayFixedT(elements), (CPath(CPathIndex(i), tail @ _*), ctpe)) =>
         elements.get(i).map(includes(_, CPath(tail: _*), ctpe)).getOrElse(false)
       case (
-          JArrayHomogeneousT(jElemType),
-          (CPath(CPathArray, _*), CArrayType(cElemType))) =>
+            JArrayHomogeneousT(jElemType),
+            (CPath(CPathArray, _*), CArrayType(cElemType))) =>
         fromCValueType(cElemType) == Some(jElemType)
 
       // TODO This is a bit contentious, as this situation will need to be dealt
@@ -408,8 +408,8 @@ object Schema {
       // through, posing as a homogeneous array. Especially since, eg, someone
       // should be expecting that if a[1] exists, therefore a[0] exists.
       case (
-          JArrayHomogeneousT(jElemType),
-          (CPath(CPathIndex(i), tail @ _*), ctpe)) =>
+            JArrayHomogeneousT(jElemType),
+            (CPath(CPathIndex(i), tail @ _*), ctpe)) =>
         ctypes(jElemType) contains ctpe
 
       case (JUnionT(ljtpe, rjtpe), (path, ctpe)) =>

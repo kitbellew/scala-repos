@@ -174,10 +174,8 @@ trait Importers { to: SymbolTable =>
 
       def recreateOrRelink: Symbol = {
         val their = their0 // makes their visible in the debugger
-        if (their == null)
-          null
-        else if (their == from.NoSymbol)
-          NoSymbol
+        if (their == null) null
+        else if (their == from.NoSymbol) NoSymbol
         else if (their.isRoot)
           rootMirror.RootClass // !!! replace with actual mirror when we move importers to the mirror
         else {

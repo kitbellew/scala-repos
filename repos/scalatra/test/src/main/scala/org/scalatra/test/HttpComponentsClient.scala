@@ -66,10 +66,8 @@ trait HttpComponentsClient extends Client {
     val client = createClient
     val queryString = toQueryString(queryParams)
     val url =
-      if (queryString == "")
-        "%s/%s".format(baseUrl, path)
-      else
-        "%s/%s?%s".format(baseUrl, path, queryString)
+      if (queryString == "") "%s/%s".format(baseUrl, path)
+      else "%s/%s?%s".format(baseUrl, path, queryString)
 
     val req = createMethod(method.toUpperCase, url)
     attachBody(req, body)

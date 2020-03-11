@@ -96,8 +96,7 @@ class CleanerTest extends JUnitSuite {
 
     // delete all even keys between 0 and N
     val leo = log.logEndOffset
-    for (key <- 0 until leo.toInt by 2)
-      log.append(deleteMessage(key))
+    for (key <- 0 until leo.toInt by 2) log.append(deleteMessage(key))
 
     // append some new unique keys to pad out to a new active segment
     while (log.numberOfSegments < 4)
@@ -122,8 +121,7 @@ class CleanerTest extends JUnitSuite {
     val messageSet = TestUtils.singleMessageSet(
       payload = Array.fill[Byte](50)(0),
       key = 1.toString.getBytes)
-    for (i <- 0 until 6)
-      log.append(messageSet, assignOffsets = true)
+    for (i <- 0 until 6) log.append(messageSet, assignOffsets = true)
 
     val logToClean = LogToClean(
       TopicAndPartition("test", 0),
@@ -457,8 +455,7 @@ class CleanerTest extends JUnitSuite {
 
     // pretend we have odd-numbered keys
     val offsetMap = new FakeOffsetMap(Int.MaxValue)
-    for (k <- 1 until messageCount by 2)
-      offsetMap.put(key(k), Long.MaxValue)
+    for (k <- 1 until messageCount by 2) offsetMap.put(key(k), Long.MaxValue)
 
     // clean the log
     cleaner.cleanSegments(log, log.logSegments.take(9).toSeq, offsetMap, 0L)
@@ -497,8 +494,7 @@ class CleanerTest extends JUnitSuite {
       log.append(message(log.logEndOffset.toInt, log.logEndOffset.toInt))
       messageCount += 1
     }
-    for (k <- 1 until messageCount by 2)
-      offsetMap.put(key(k), Long.MaxValue)
+    for (k <- 1 until messageCount by 2) offsetMap.put(key(k), Long.MaxValue)
     cleaner.cleanSegments(log, log.logSegments.take(9).toSeq, offsetMap, 0L)
     cleanedKeys = keysInLog(log)
 
@@ -512,8 +508,7 @@ class CleanerTest extends JUnitSuite {
       log.append(message(log.logEndOffset.toInt, log.logEndOffset.toInt))
       messageCount += 1
     }
-    for (k <- 1 until messageCount by 2)
-      offsetMap.put(key(k), Long.MaxValue)
+    for (k <- 1 until messageCount by 2) offsetMap.put(key(k), Long.MaxValue)
     cleaner.cleanSegments(log, log.logSegments.take(9).toSeq, offsetMap, 0L)
     cleanedKeys = keysInLog(log)
 
@@ -547,8 +542,7 @@ class CleanerTest extends JUnitSuite {
       checkDone = checkDone)
 
   def writeToLog(log: Log, seq: Iterable[(Int, Int)]): Iterable[Long] = {
-    for ((key, value) <- seq)
-      yield log.append(message(key, value)).firstOffset
+    for ((key, value) <- seq) yield log.append(message(key, value)).firstOffset
   }
 
   def key(id: Int) = ByteBuffer.wrap(id.toString.getBytes)
@@ -585,10 +579,7 @@ class FakeOffsetMap(val slots: Int) extends OffsetMap {
 
   def get(key: ByteBuffer): Long = {
     val k = keyFor(key)
-    if (map.containsKey(k))
-      map.get(k)
-    else
-      -1L
+    if (map.containsKey(k)) map.get(k) else -1L
   }
 
   def clear() = map.clear()

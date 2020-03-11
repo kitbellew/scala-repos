@@ -86,8 +86,7 @@ object Graph {
       math.max( /*JLine.usingTerminal(_.getWidth)*/ 0, defaultWidth) - 8
     val twoSpaces = " " + " " // prevent accidentally being converted into a tab
     def limitLine(s: String): String =
-      if (s.length > maxColumn) s.slice(0, maxColumn - 2) + ".."
-      else s
+      if (s.length > maxColumn) s.slice(0, maxColumn - 2) + ".." else s
     def insertBar(s: String, at: Int): String =
       if (at < s.length)
         s.slice(0, at) +

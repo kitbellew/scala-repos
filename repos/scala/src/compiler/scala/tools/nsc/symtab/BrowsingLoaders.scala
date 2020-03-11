@@ -133,8 +133,7 @@ abstract class BrowsingLoaders extends GlobalSymbolLoaders {
             ".scala"
           )) // RootClass or EmptyPackageClass
         super.enterToplevelsFromSource(root, name, src)
-      else
-        browseTopLevel(root, src)
+      else browseTopLevel(root, src)
     } catch {
       case ex: syntaxAnalyzer.MalformedInput =>
         println(

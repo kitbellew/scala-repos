@@ -1334,8 +1334,7 @@ trait ScreenWizardRendered extends Loggable {
 
       def bindAll() = bindLabel() & bindForm() & bindHelp() & bindErrors()
 
-      if (f.transforms.isEmpty)
-        bindAll()
+      if (f.transforms.isEmpty) bindAll()
       else
         (bindAll() :: f.transforms.map(_ apply (f.field)))
           .reduceLeft(_ andThen _)

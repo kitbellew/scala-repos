@@ -342,8 +342,7 @@ final class CompositeIndex[U](indices: Index[_ <: U]*) extends Index[(Int, U)] {
     */
   @inline
   def mapIndex(component: Int, uIndex: Int) = {
-    if (uIndex < 0) -1
-    else offsets(component) + uIndex
+    if (uIndex < 0) -1 else offsets(component) + uIndex
   }
 
   def apply(t: (Int, U)) = {
@@ -356,8 +355,7 @@ final class CompositeIndex[U](indices: Index[_ <: U]*) extends Index[(Int, U)] {
     else {
       val index = {
         val res = Arrays.binarySearch(offsets, i)
-        if (res >= 0) res
-        else -(res + 2)
+        if (res >= 0) res else -(res + 2)
       }
 
       Some(index -> indices(index).get(i - offsets(index)))

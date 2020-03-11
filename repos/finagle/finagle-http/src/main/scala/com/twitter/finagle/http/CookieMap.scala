@@ -32,10 +32,8 @@ class CookieMap(message: Message)
   private[this] var _isValid = true
 
   private[this] val cookieHeaderName =
-    if (message.isRequest)
-      HttpHeaders.Names.COOKIE
-    else
-      HttpHeaders.Names.SET_COOKIE
+    if (message.isRequest) HttpHeaders.Names.COOKIE
+    else HttpHeaders.Names.SET_COOKIE
 
   private[this] def decodeCookies(header: String): Iterable[Cookie] = {
     val decoder = new NettyCookieDecoder

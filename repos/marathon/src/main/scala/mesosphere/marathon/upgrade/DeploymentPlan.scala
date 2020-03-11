@@ -210,8 +210,7 @@ object DeploymentPlan {
         if (g.containsVertex(vertex)) g.outgoingEdgesOf(vertex).asScala.toSet
         else Set[DefaultEdge]()
 
-      if (outgoingEdges.isEmpty)
-        Seq(vertex)
+      if (outgoingEdges.isEmpty) Seq(vertex)
       else
         outgoingEdges
           .map { e => vertex +: longestPathFromVertex(g, g.getEdgeTarget(e)) }

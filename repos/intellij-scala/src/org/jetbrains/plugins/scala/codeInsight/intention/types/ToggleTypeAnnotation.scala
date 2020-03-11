@@ -49,8 +49,7 @@ object ToggleTypeAnnotation {
 
       if (function.returnTypeElement.isDefined)
         strategy.removeFromFunction(function)
-      else
-        strategy.addToFunction(function)
+      else strategy.addToFunction(function)
 
       return true
     }
@@ -64,10 +63,8 @@ object ToggleTypeAnnotation {
       binding <- bindings
     } {
 
-      if (value.typeElement.isDefined)
-        strategy.removeFromValue(value)
-      else
-        strategy.addToValue(value)
+      if (value.typeElement.isDefined) strategy.removeFromValue(value)
+      else strategy.addToValue(value)
 
       return true
     }
@@ -82,10 +79,8 @@ object ToggleTypeAnnotation {
       binding <- bindings
     } {
 
-      if (variable.typeElement.isDefined)
-        strategy.removeFromVariable(variable)
-      else
-        strategy.addToVariable(variable)
+      if (variable.typeElement.isDefined) strategy.removeFromVariable(variable)
+      else strategy.addToVariable(variable)
 
       return true
     }

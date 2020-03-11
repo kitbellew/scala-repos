@@ -11,8 +11,7 @@ object Test {
 
   def vector(label: String, n: Int): Vector[String] = {
     val a = new VectorBuilder[String]
-    for (i <- 0 until n)
-      a += (label + i)
+    for (i <- 0 until n) a += (label + i)
 
     val res = a.result
     assertVector(res, label, 0, n)
@@ -20,16 +19,14 @@ object Test {
 
   def vectorForward(label: String, n: Int): Vector[String] = {
     var a: Vector[String] = Vector.empty
-    for (i <- 0 until n)
-      a = a :+ (label + i)
+    for (i <- 0 until n) a = a :+ (label + i)
 
     assertVector(a, label, 0, n)
   }
 
   def vectorBackward(label: String, n: Int): Vector[String] = {
     var a: Vector[String] = Vector.empty
-    for (i <- 0 until n)
-      a = (label + (n - 1 - i)) +: a
+    for (i <- 0 until n) a = (label + (n - 1 - i)) +: a
 
     assertVector(a, label, 0, n)
   }

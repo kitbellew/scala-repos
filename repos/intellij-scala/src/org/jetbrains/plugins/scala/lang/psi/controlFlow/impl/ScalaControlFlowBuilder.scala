@@ -269,8 +269,7 @@ class ScalaControlFlowBuilder(
     val receiver = call.getInvokedExpr
     if (receiver != null) { receiver.accept(this) }
     val head = myHead
-    if (head != null)
-      checkPendingEdges(head)
+    if (head != null) checkPendingEdges(head)
     for { arg <- call.argumentExpressions } {
       arg.accept(this)
       if (myHead == null && isByNameOrFunction(arg)) { moveHead(head) }

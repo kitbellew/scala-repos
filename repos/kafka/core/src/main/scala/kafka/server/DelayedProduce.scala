@@ -121,8 +121,7 @@ class DelayedProduce(
     // check if each partition has satisfied at lease one of case A and case B
     if (!produceMetadata.produceStatus.values.exists(p => p.acksPending))
       forceComplete()
-    else
-      false
+    else false
   }
 
   override def onExpiration() {

@@ -34,8 +34,7 @@ object TraversableHelpers {
       incr = incr + 1
     }
 
-    if (curIncr != 0) curIncr
-    else java.lang.Integer.compare(lenA, lenB)
+    if (curIncr != 0) curIncr else java.lang.Integer.compare(lenA, lenB)
   }
 
   final def iteratorCompare[T](iteratorA: Iterator[T], iteratorB: Iterator[T])(
@@ -43,14 +42,12 @@ object TraversableHelpers {
     @annotation.tailrec
     def result: Int =
       if (iteratorA.isEmpty) {
-        if (iteratorB.isEmpty) 0
-        else -1 // a is shorter
+        if (iteratorB.isEmpty) 0 else -1 // a is shorter
       } else {
         if (iteratorB.isEmpty) 1 // a is longer
         else {
           val cmp = ord.compare(iteratorA.next, iteratorB.next)
-          if (cmp != 0) cmp
-          else result
+          if (cmp != 0) cmp else result
         }
       }
 

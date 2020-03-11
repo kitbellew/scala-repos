@@ -46,8 +46,7 @@ object ConsistencySpec {
             step)
 
         var shouldBeFortyTwo = left.value + right.value
-        if (shouldBeFortyTwo != 42)
-          sender() ! "Test failed: 42 failed"
+        if (shouldBeFortyTwo != 42) sender() ! "Test failed: 42 failed"
         else {
           left.value += 1
           right.value -= 1

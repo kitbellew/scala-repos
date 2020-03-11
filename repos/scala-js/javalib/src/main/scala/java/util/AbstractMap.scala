@@ -15,11 +15,9 @@ object AbstractMap {
 
   private def entryHashCode[K, V](entry: Map.Entry[K, V]): Int = {
     val keyHash =
-      if (entry.getKey == null) 0
-      else entry.getKey.hashCode
+      if (entry.getKey == null) 0 else entry.getKey.hashCode
     val valueHash =
-      if (entry.getValue == null) 0
-      else entry.getValue.hashCode
+      if (entry.getValue == null) 0 else entry.getValue.hashCode
 
     keyHash ^ valueHash
   }
@@ -106,10 +104,8 @@ abstract class AbstractMap[K, V] protected () extends java.util.Map[K, V] {
         if (key === item.getKey) {
           iter.remove()
           item.getValue
-        } else
-          findAndRemove(iter)
-      } else
-        null.asInstanceOf[V]
+        } else findAndRemove(iter)
+      } else null.asInstanceOf[V]
     }
     findAndRemove(entrySet.iterator)
   }

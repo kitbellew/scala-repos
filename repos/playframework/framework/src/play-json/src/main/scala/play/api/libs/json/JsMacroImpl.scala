@@ -246,8 +246,7 @@ object JsMacroImpl {
                 else if (tpe.typeConstructor <:< typeOf[Seq[_]].typeConstructor)
                   readsWritesHelper("seq")
                 else if (tpe.typeConstructor <:< typeOf[
-                           Map[_, _]].typeConstructor)
-                  readsWritesHelper("map")
+                           Map[_, _]].typeConstructor) readsWritesHelper("map")
                 else List(q"this.lazyStuff")
 
               q"$jspathTree.$lazyCall(..$arg)"

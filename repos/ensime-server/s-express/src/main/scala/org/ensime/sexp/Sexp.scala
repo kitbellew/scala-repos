@@ -70,8 +70,7 @@ object SexpList {
         case _                  => throw new IllegalStateException("Not a list: " + s)
       }
       val res = rec(sexp)
-      if (res.isEmpty) None
-      else Some(res)
+      if (res.isEmpty) None else Some(res)
     }
 }
 
@@ -83,8 +82,7 @@ object SexpData {
   def apply(kvs: (SexpSymbol, Sexp)*): Sexp = apply(kvs.toList)
 
   def apply(kvs: List[(SexpSymbol, Sexp)]): Sexp =
-    if (kvs.isEmpty)
-      SexpNil
+    if (kvs.isEmpty) SexpNil
     else {
       val mapped = kvs.toMap
       require(
@@ -112,10 +110,7 @@ object SexpData {
       }
       // props.size counts unique keys. We only create data when keys
       // are not duplicated or we could introduce losses
-      if (values.isEmpty || 2 * props.size != values.size)
-        None
-      else
-        Some(props)
+      if (values.isEmpty || 2 * props.size != values.size) None else Some(props)
 
     case _ => None
   }

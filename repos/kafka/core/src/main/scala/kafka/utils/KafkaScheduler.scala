@@ -137,8 +137,7 @@ class KafkaScheduler(
       }
       if (period >= 0)
         executor.scheduleAtFixedRate(runnable, delay, period, unit)
-      else
-        executor.schedule(runnable, delay, unit)
+      else executor.schedule(runnable, delay, unit)
     }
   }
 

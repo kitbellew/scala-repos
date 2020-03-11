@@ -127,16 +127,14 @@ object InputWrapper {
         InputWrapper.wrapInputTask[T](c)(ts, pos)
       else if (tpe <:< c.weakTypeOf[Initialize[InputTask[T]]])
         InputWrapper.wrapInitInputTask[T](c)(ts, pos)
-      else
-        c.abort(pos, s"Internal sbt error. Unexpected type ${tpe.widen}")
+      else c.abort(pos, s"Internal sbt error. Unexpected type ${tpe.widen}")
     }
   def taskValueMacroImpl[T: c.WeakTypeTag](c: Context): c.Expr[Task[T]] =
     ContextUtil.selectMacroImpl[Task[T]](c) { (ts, pos) =>
       val tpe = ts.tree.tpe
       if (tpe <:< c.weakTypeOf[Initialize[Task[T]]])
         InputWrapper.wrapInit[Task[T]](c)(ts, pos)
-      else
-        c.abort(pos, s"Internal sbt error. Unexpected type ${tpe.widen}")
+      else c.abort(pos, s"Internal sbt error. Unexpected type ${tpe.widen}")
     }
 
   /** Translates <task: TaskKey[T]>.previous(format) to Previous.runtime(<task>)(format).value*/
@@ -247,8 +245,7 @@ object ParserInput {
       if (tpe <:< c.weakTypeOf[Parser[T]]) {
         val e = c.Expr[Parser[T]](p.tree)
         wrap[T](c)(reify { Def.toSParser(e.splice) }, pos)
-      } else if (tpe <:< c.weakTypeOf[State => Parser[T]])
-        wrap[T](c)(p, pos)
+      } else if (tpe <:< c.weakTypeOf[State => Parser[T]]) wrap[T](c)(p, pos)
       else if (tpe <:< c.weakTypeOf[Initialize[Parser[T]]]) {
         val e = c.Expr[Initialize[Parser[T]]](p.tree)
         val es = reify { Def.toISParser(e.splice) }

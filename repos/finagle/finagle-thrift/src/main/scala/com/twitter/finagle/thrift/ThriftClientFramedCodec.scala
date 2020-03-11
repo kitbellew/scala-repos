@@ -202,8 +202,7 @@ private[finagle] case class ThriftClientPreparer(
         if (protocolFactory
               .isInstanceOf[TBinaryProtocol.Factory] && !useCallerSeqIds)
           new SeqIdFilter
-        else
-          Filter.identity[ThriftClientRequest, Array[Byte]]
+        else Filter.identity[ThriftClientRequest, Array[Byte]]
 
       seqIdFilter.andThen(ttwitter).andThen(service)
     }

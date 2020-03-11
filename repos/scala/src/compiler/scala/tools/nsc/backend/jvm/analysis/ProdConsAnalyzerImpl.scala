@@ -266,8 +266,7 @@ trait ProdConsAnalyzerImpl {
           dupX1Case
 
         case DUP_X2 =>
-          if (frame.peekStack(1).getSize == 2) dupX1Case
-          else dupX2Case
+          if (frame.peekStack(1).getSize == 2) dupX1Case else dupX2Case
 
         case DUP2 =>
           if (frame.peekStack(0).getSize == 2) stackValue(0)
@@ -279,8 +278,7 @@ trait ProdConsAnalyzerImpl {
           }
 
         case DUP2_X1 =>
-          if (frame.peekStack(0).getSize == 2) dupX1Case
-          else dup2X1Case
+          if (frame.peekStack(0).getSize == 2) dupX1Case else dup2X1Case
 
         case DUP2_X2 =>
           val v1isSize2 = frame.peekStack(0).getSize == 2
@@ -303,8 +301,7 @@ trait ProdConsAnalyzerImpl {
           }
 
         case SWAP =>
-          if (producedIndex(2) == 0) stackValue(0)
-          else stackValue(1)
+          if (producedIndex(2) == 0) stackValue(0) else stackValue(1)
 
         case CHECKCAST =>
           stackValue(0)
@@ -361,8 +358,7 @@ trait ProdConsAnalyzerImpl {
             dupX1Case
 
           case DUP_X2 =>
-            if (nextFrame.peekStack(1).getSize == 2) dupX1Case
-            else dupX2Case
+            if (nextFrame.peekStack(1).getSize == 2) dupX1Case else dupX2Case
 
           case DUP2 =>
             if (nextFrame.peekStack(0).getSize == 2) Set(top - 1, top)
@@ -373,8 +369,7 @@ trait ProdConsAnalyzerImpl {
               }
 
           case DUP2_X1 =>
-            if (nextFrame.peekStack(0).getSize == 2) dupX1Case
-            else dup2X1Case
+            if (nextFrame.peekStack(0).getSize == 2) dupX1Case else dup2X1Case
 
           case DUP2_X2 =>
             val v1isSize2 = nextFrame.peekStack(0).getSize == 2
@@ -397,8 +392,7 @@ trait ProdConsAnalyzerImpl {
             }
 
           case SWAP =>
-            if (consumedIndex(2) == 0) Set(top)
-            else Set(top - 1)
+            if (consumedIndex(2) == 0) Set(top) else Set(top - 1)
 
           case CHECKCAST =>
             Set(top)

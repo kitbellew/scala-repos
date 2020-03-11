@@ -71,8 +71,7 @@ class CharBufferWrappingACharSequenceTest extends CharBufferTest {
     override val createsReadOnly = true
 
     def allocBuffer(capacity: Int): CharBuffer = {
-      if (capacity < 0)
-        throw new IllegalArgumentException
+      if (capacity < 0) throw new IllegalArgumentException
       CharBuffer.wrap(zeros(capacity))
     }
 
@@ -80,8 +79,7 @@ class CharBufferWrappingACharSequenceTest extends CharBufferTest {
         pos: Int,
         limit: Int,
         capacity: Int): CharBuffer = {
-      if (capacity < 0)
-        throw new IllegalArgumentException
+      if (capacity < 0) throw new IllegalArgumentException
       CharBuffer.wrap(zeros(capacity), pos, limit)
     }
 
@@ -105,8 +103,7 @@ class SlicedCharBufferWrappingACharSequenceTest extends CharBufferTest {
     override val createsReadOnly = true
 
     def allocBuffer(capacity: Int): CharBuffer = {
-      if (capacity < 0)
-        throw new IllegalArgumentException
+      if (capacity < 0) throw new IllegalArgumentException
       val buf = CharBuffer.wrap(zeros(capacity + 25))
       buf.position(17)
       buf.limit(17 + capacity)

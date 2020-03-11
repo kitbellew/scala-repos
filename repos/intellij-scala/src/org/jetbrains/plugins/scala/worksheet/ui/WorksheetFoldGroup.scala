@@ -60,11 +60,11 @@ class WorksheetFoldGroup(
 
   def getCorrespondInfo = regions map {
     case FoldRegionInfo(
-        region: WorksheetFoldRegionDelegate,
-        _,
-        leftStart,
-        spaces,
-        lsLength) =>
+          region: WorksheetFoldRegionDelegate,
+          _,
+          leftStart,
+          spaces,
+          lsLength) =>
       (region.getStartOffset, region.getEndOffset, leftStart, spaces, lsLength)
   }
 

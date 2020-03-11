@@ -49,10 +49,7 @@ trait StreamInstances {
       this.foldRight(fa, M.zero)((a, b) => M.append(f(a), b))
 
     override def foldRight[A, B](fa: Stream[A], z: => B)(f: (A, => B) => B): B =
-      if (fa.isEmpty)
-        z
-      else
-        f(fa.head, foldRight(fa.tail, z)(f))
+      if (fa.isEmpty) z else f(fa.head, foldRight(fa.tail, z)(f))
 
     override def toStream[A](fa: Stream[A]) = fa
 
@@ -78,20 +75,16 @@ trait StreamInstances {
     def point[A](a: => A) = scala.Stream(a)
     def zip[A, B](a: => Stream[A], b: => Stream[B]) = {
       val _a = a
-      if (_a.isEmpty) Stream.Empty
-      else _a zip b
+      if (_a.isEmpty) Stream.Empty else _a zip b
     }
     def unzip[A, B](a: Stream[(A, B)]) = a.unzip
 
     def alignWith[A, B, C](
         f: A \&/ B => C): (Stream[A], Stream[B]) => Stream[C] =
       (a, b) =>
-        if (b.isEmpty)
-          a.map(x => f(\&/.This(x)))
-        else if (a.isEmpty)
-          b.map(x => f(\&/.That(x)))
-        else
-          f(\&/.Both(a.head, b.head)) #:: alignWith(f)(a.tail, b.tail)
+        if (b.isEmpty) a.map(x => f(\&/.This(x)))
+        else if (a.isEmpty) b.map(x => f(\&/.That(x)))
+        else f(\&/.Both(a.head, b.head)) #:: alignWith(f)(a.tail, b.tail)
 
     def tailrecM[A, B](f: A => Stream[A \/ B])(a: A): Stream[B] = {
       def go(s: Stream[A \/ B]): Stream[B] = {
@@ -149,10 +142,8 @@ trait StreamInstances {
       import Ordering._
       @annotation.tailrec
       override final def order(a: Stream[A], b: Stream[A]): Ordering =
-        if (a.isEmpty) {
-          if (b.isEmpty) EQ
-          else LT
-        } else {
+        if (a.isEmpty) { if (b.isEmpty) EQ else LT }
+        else {
           if (b.isEmpty) GT
           else {
             A.order(a.head, b.head) match {
@@ -174,8 +165,7 @@ trait StreamInstances {
 
 trait StreamFunctions {
   final def interleave[A](s1: Stream[A], s2: Stream[A]): Stream[A] =
-    if (s1.isEmpty) s2
-    else s1.head #:: interleave(s2, s1.tail)
+    if (s1.isEmpty) s2 else s1.head #:: interleave(s2, s1.tail)
 
   import scala.Stream.{Empty, empty}
 

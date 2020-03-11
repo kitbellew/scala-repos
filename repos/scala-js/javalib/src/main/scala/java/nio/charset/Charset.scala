@@ -89,8 +89,7 @@ object Charset {
            "cp819",
            "819",
            "iso-ir-100"
-         ))
-      m(s) = ISO_8859_1
+         )) m(s) = ISO_8859_1
 
     for (s <- Seq(
            "us-ascii",
@@ -107,29 +106,24 @@ object Charset {
            "ansi_x3.4-1986",
            "ansi_x3.4-1968",
            "iso-ir-6"
-         ))
-      m(s) = US_ASCII
+         )) m(s) = US_ASCII
 
-    for (s <- Seq("utf-8", "utf8", "unicode-1-1-utf-8"))
-      m(s) = UTF_8
+    for (s <- Seq("utf-8", "utf8", "unicode-1-1-utf-8")) m(s) = UTF_8
 
     for (s <- Seq(
            "utf-16be",
            "utf_16be",
            "x-utf-16be",
            "iso-10646-ucs-2",
-           "unicodebigunmarked"))
-      m(s) = UTF_16BE
+           "unicodebigunmarked")) m(s) = UTF_16BE
 
     for (s <- Seq(
            "utf-16le",
            "utf_16le",
            "x-utf-16le",
-           "unicodelittleunmarked"))
-      m(s) = UTF_16LE
+           "unicodelittleunmarked")) m(s) = UTF_16LE
 
-    for (s <- Seq("utf-16", "utf_16", "unicode", "unicodebig"))
-      m(s) = UTF_16
+    for (s <- Seq("utf-16", "utf_16", "unicode", "unicodebig")) m(s) = UTF_16
 
     m
   }

@@ -300,10 +300,7 @@ object TestPurgatoryPerformance {
     def onComplete(): Unit = { latch.countDown() }
 
     def tryComplete(): Boolean = {
-      if (System.currentTimeMillis >= completesAt)
-        forceComplete()
-      else
-        false
+      if (System.currentTimeMillis >= completesAt) forceComplete() else false
     }
   }
 

@@ -376,8 +376,7 @@ class KafkaApis(
           new ResponseSend(request.connectionId, responseHeader, responseBody)))
       }
 
-      if (authorizedRequestInfo.isEmpty)
-        sendResponseCallback(Map.empty)
+      if (authorizedRequestInfo.isEmpty) sendResponseCallback(Map.empty)
       else if (header.apiVersion == 0) {
         // for version 0 always store offsets to ZK
         val responseInfo = authorizedRequestInfo.map {
@@ -410,8 +409,7 @@ class KafkaApis(
           if (header.apiVersion <= 1 ||
               offsetCommitRequest.retentionTime == OffsetCommitRequest.DEFAULT_RETENTION_TIME)
             coordinator.offsetConfig.offsetsRetentionMs
-          else
-            offsetCommitRequest.retentionTime
+          else offsetCommitRequest.retentionTime
 
         // commit timestamp is always set to now.
         // "default" expiration timestamp is now + retention (and retention may be overridden if v2)
@@ -431,8 +429,7 @@ class KafkaApis(
             expireTimestamp = {
               if (partitionData.timestamp == OffsetCommitRequest.DEFAULT_TIMESTAMP)
                 defaultExpireTimestamp
-              else
-                offsetRetention + partitionData.timestamp
+              else offsetRetention + partitionData.timestamp
             }
           )
         }
@@ -550,8 +547,7 @@ class KafkaApis(
         produceResponseCallback)
     }
 
-    if (authorizedRequestInfo.isEmpty)
-      sendResponseCallback(Map.empty)
+    if (authorizedRequestInfo.isEmpty) sendResponseCallback(Map.empty)
     else {
       val internalTopicsAllowed =
         request.header.clientId == AdminUtils.AdminClientId
@@ -687,8 +683,7 @@ class KafkaApis(
       }
     }
 
-    if (authorizedRequestInfo.isEmpty)
-      sendResponseCallback(Map.empty)
+    if (authorizedRequestInfo.isEmpty) sendResponseCallback(Map.empty)
     else {
       // call the replica manager to fetch messages from the local replica
       replicaManager.fetchMessages(
@@ -745,10 +740,8 @@ class KafkaApis(
             allOffsets
           } else {
             val hw = localReplica.highWatermark.messageOffset
-            if (allOffsets.exists(_ > hw))
-              hw +: allOffsets.dropWhile(_ > hw)
-            else
-              allOffsets
+            if (allOffsets.exists(_ > hw)) hw +: allOffsets.dropWhile(_ > hw)
+            else allOffsets
           }
         }
         (
@@ -810,8 +803,7 @@ class KafkaApis(
       case None =>
         if (timestamp == ListOffsetRequest.LATEST_TIMESTAMP || timestamp == ListOffsetRequest.EARLIEST_TIMESTAMP)
           Seq(0L)
-        else
-          Nil
+        else Nil
     }
   }
 
@@ -823,8 +815,7 @@ class KafkaApis(
     var offsetTimeArray: Array[(Long, Long)] = null
     if (segsArray.last.size > 0)
       offsetTimeArray = new Array[(Long, Long)](segsArray.length + 1)
-    else
-      offsetTimeArray = new Array[(Long, Long)](segsArray.length)
+    else offsetTimeArray = new Array[(Long, Long)](segsArray.length)
 
     for (i <- 0 until segsArray.length)
       offsetTimeArray(i) = (segsArray(i).baseOffset, segsArray(i).lastModified)
@@ -844,10 +835,8 @@ class KafkaApis(
           "%d, %d".format(o._1, o._2)))
         startIndex = offsetTimeArray.length - 1
         while (startIndex >= 0 && !isFound) {
-          if (offsetTimeArray(startIndex)._2 <= timestamp)
-            isFound = true
-          else
-            startIndex -= 1
+          if (offsetTimeArray(startIndex)._2 <= timestamp) isFound = true
+          else startIndex -= 1
         }
     }
 
@@ -903,8 +892,7 @@ class KafkaApis(
         Math.min(
           config.offsetsTopicReplicationFactor.toInt,
           aliveBrokers.length)
-      else
-        config.offsetsTopicReplicationFactor.toInt
+      else config.offsetsTopicReplicationFactor.toInt
     createTopic(
       TopicConstants.GROUP_METADATA_TOPIC_NAME,
       config.offsetsTopicPartitions,
@@ -991,10 +979,8 @@ class KafkaApis(
         java.util.Collections.emptyList()))
 
     val topicMetadata =
-      if (authorizedTopics.isEmpty)
-        Seq.empty[MetadataResponse.TopicMetadata]
-      else
-        getTopicMetadata(authorizedTopics, request.securityProtocol)
+      if (authorizedTopics.isEmpty) Seq.empty[MetadataResponse.TopicMetadata]
+      else getTopicMetadata(authorizedTopics, request.securityProtocol)
 
     val brokers = metadataCache.getAliveBrokers
 

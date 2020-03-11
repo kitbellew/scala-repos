@@ -31,12 +31,9 @@ class ScalaDoc {
     def hasFiles =
       command.files.nonEmpty || docSettings.uncompilableFiles.nonEmpty
 
-    if (docSettings.version.value)
-      reporter.echo(versionMsg)
-    else if (docSettings.Xhelp.value)
-      reporter.echo(command.xusageMsg)
-    else if (docSettings.Yhelp.value)
-      reporter.echo(command.yusageMsg)
+    if (docSettings.version.value) reporter.echo(versionMsg)
+    else if (docSettings.Xhelp.value) reporter.echo(command.xusageMsg)
+    else if (docSettings.Yhelp.value) reporter.echo(command.yusageMsg)
     else if (docSettings.showPlugins.value)
       reporter.warning(null, "Plugins are not available when using Scaladoc")
     else if (docSettings.showPhases.value)

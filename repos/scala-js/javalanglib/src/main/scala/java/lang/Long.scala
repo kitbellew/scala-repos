@@ -59,8 +59,7 @@ object Long {
   private lazy val StringRadixInfos: js.Array[StringRadixInfo] = {
     val r = new js.Array[StringRadixInfo]()
 
-    for (_ <- 0 until Character.MIN_RADIX)
-      r += null
+    for (_ <- 0 until Character.MIN_RADIX) r += null
 
     for (radix <- Character.MIN_RADIX to Character.MAX_RADIX) {
       /* Find the biggest chunk size we can use.
@@ -97,8 +96,7 @@ object Long {
   def toString(i: scala.Long, radix: Int): String = {
     if (radix == 10 || radix < Character.MIN_RADIX || radix > Character.MAX_RADIX)
       toString(i)
-    else
-      toStringImpl(i, radix)
+    else toStringImpl(i, radix)
   }
 
   @inline // because radix is almost certainly constant at call site
@@ -170,8 +168,7 @@ object Long {
   }
 
   def parseLong(s: String, radix: Int): scala.Long = {
-    if (s == "")
-      parseLongError(s)
+    if (s == "") parseLongError(s)
 
     var start = 0
     var neg = false
@@ -189,12 +186,10 @@ object Long {
 
     if (neg) {
       val result = -unsignedResult
-      if (result > 0)
-        parseLongError(s)
+      if (result > 0) parseLongError(s)
       result
     } else {
-      if (unsignedResult < 0)
-        parseLongError(s)
+      if (unsignedResult < 0) parseLongError(s)
       unsignedResult
     }
   }
@@ -203,12 +198,10 @@ object Long {
     parseLong(s, 10)
 
   def parseUnsignedLong(s: String, radix: Int): scala.Long = {
-    if (s == "")
-      parseLongError(s)
+    if (s == "") parseLongError(s)
 
     val start =
-      if (s.charAt(0) == '+') 1
-      else 0
+      if (s.charAt(0) == '+') 1 else 0
 
     parseUnsignedLongInternal(s, radix, start)
   }
@@ -240,14 +233,12 @@ object Long {
       /* After that, if more than 3 chunks are necessary, it means the value
        * is too large, and does not fit in an unsigned Long.
        */
-      if (length - firstChunkStart > 3 * chunkLen)
-        parseLongError(s)
+      if (length - firstChunkStart > 3 * chunkLen) parseLongError(s)
 
       // Check each character for validity
       var i = firstChunkStart
       while (i < length) {
-        if (Character.digit(s.charAt(i), radix) < 0)
-          parseLongError(s)
+        if (Character.digit(s.charAt(i), radix) < 0) parseLongError(s)
         i += 1
       }
 
@@ -309,9 +300,7 @@ object Long {
 
   // Intrinsic
   @inline def compare(x: scala.Long, y: scala.Long): scala.Int = {
-    if (x == y) 0
-    else if (x < y) -1
-    else 1
+    if (x == y) 0 else if (x < y) -1 else 1
   }
 
   // TODO Intrinsic?
@@ -334,8 +323,7 @@ object Long {
      * RuntimeLong.unsignedDivModHelper.
      */
 
-    if (b == 0L)
-      throw new ArithmeticException("/ by zero")
+    if (b == 0L) throw new ArithmeticException("/ by zero")
 
     var shift = numberOfLeadingZeros(b) - numberOfLeadingZeros(a)
     var bShift = b << shift
@@ -358,8 +346,7 @@ object Long {
       bShift >>>= 1
     }
 
-    if (isDivide) quot
-    else rem
+    if (isDivide) quot else rem
   }
 
   def highestOneBit(i: scala.Long): scala.Long = {
@@ -394,9 +381,7 @@ object Long {
 
   def signum(i: scala.Long): Int = {
     val hi = (i >>> 32).toInt
-    if (hi < 0) -1
-    else if (hi == 0 && i.toInt == 0) 0
-    else 1
+    if (hi < 0) -1 else if (hi == 0 && i.toInt == 0) 0 else 1
   }
 
   def numberOfLeadingZeros(l: scala.Long): Int = {

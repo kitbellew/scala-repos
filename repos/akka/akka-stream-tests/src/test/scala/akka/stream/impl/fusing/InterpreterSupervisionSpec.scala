@@ -46,10 +46,8 @@ object InterpreterSupervisionSpec {
     }
 
     override def onPull(ctx: Context[Int]): SyncDirective = {
-      if (buf.isEmpty && ctx.isFinishing)
-        ctx.finish()
-      else if (buf.isEmpty)
-        ctx.pull()
+      if (buf.isEmpty && ctx.isFinishing) ctx.finish()
+      else if (buf.isEmpty) ctx.pull()
       else {
         val elem = buf.head
         buf = buf.tail
@@ -59,10 +57,7 @@ object InterpreterSupervisionSpec {
     }
 
     override def onUpstreamFinish(ctx: Context[Int]): TerminationDirective =
-      if (absorbTermination)
-        ctx.absorbTermination()
-      else
-        ctx.finish()
+      if (absorbTermination) ctx.absorbTermination() else ctx.finish()
 
     // note that resume will be turned into failure in the Interpreter if exception is thrown from onPull
     override def decide(t: Throwable): Supervision.Directive = decider(t)
@@ -211,8 +206,7 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
     "restart when onPush throws" in {
       val stage = new RestartTestStage {
         override def onPush(elem: Int, ctx: Context[Int]): SyncDirective = {
-          if (elem <= 0) throw TE
-          else super.onPush(elem, ctx)
+          if (elem <= 0) throw TE else super.onPush(elem, ctx)
         }
       }
 
@@ -458,10 +452,8 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
 
           downstream.requestOne()
           // 3 => boom
-          if (absorbTermination)
-            lastEvents() should be(Set(OnError(TE)))
-          else
-            lastEvents() should be(Set(OnError(TE), Cancel))
+          if (absorbTermination) lastEvents() should be(Set(OnError(TE)))
+          else lastEvents() should be(Set(OnError(TE), Cancel))
         }
       }
 

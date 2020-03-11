@@ -16,9 +16,6 @@ private final class TrapExitSecurityException(val exitCode: Int)
   override def fillInStackTrace = ifAccessAllowed(super.fillInStackTrace)
   override def getLocalizedMessage = ifAccessAllowed(super.getLocalizedMessage)
   private def ifAccessAllowed[T](f: => T): T = {
-    if (accessAllowed)
-      f
-    else
-      throw this
+    if (accessAllowed) f else throw this
   }
 }

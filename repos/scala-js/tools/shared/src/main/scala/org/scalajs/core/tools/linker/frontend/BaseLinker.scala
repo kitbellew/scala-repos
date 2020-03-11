@@ -147,8 +147,7 @@ final class BaseLinker(
       val linkingErrLevel = if (fatal) Level.Error else Level.Warn
       analysis.errors.foreach(logError(_, logger, linkingErrLevel))
 
-      if (fatal)
-        sys.error("There were linking errors")
+      if (fatal) sys.error("There were linking errors")
     }
 
     val linkResult = logger.time("Linker: Assemble LinkedClasses") {
@@ -258,18 +257,15 @@ final class BaseLinker(
 
       // Fields
       case field @ FieldDef(_, _, _) =>
-        if (analyzerInfo.isAnySubclassInstantiated)
-          fields += field
+        if (analyzerInfo.isAnySubclassInstantiated) fields += field
 
       // Normal methods
       case m: MethodDef =>
         if (analyzerInfo.methodInfos(m.name.name).isReachable) {
           if (m.name.isInstanceOf[StringLiteral])
             exportedMembers += linkedMethod(m)
-          else if (m.body == EmptyTree)
-            abstractMethods += linkedMethod(m)
-          else
-            memberMethods += linkedMethod(m)
+          else if (m.body == EmptyTree) abstractMethods += linkedMethod(m)
+          else memberMethods += linkedMethod(m)
         }
 
       case m: PropertyDef =>

@@ -524,8 +524,7 @@ abstract class GraphStageLogic private[stream] (
   final def completeStage(): Unit = {
     var i = 0
     while (i < portToConn.length) {
-      if (i < inCount)
-        interpreter.cancel(portToConn(i))
+      if (i < inCount) interpreter.cancel(portToConn(i))
       else
         handlers(i) match {
           case e: Emitting[_] ⇒
@@ -544,10 +543,8 @@ abstract class GraphStageLogic private[stream] (
   final def failStage(ex: Throwable): Unit = {
     var i = 0
     while (i < portToConn.length) {
-      if (i < inCount)
-        interpreter.cancel(portToConn(i))
-      else
-        interpreter.fail(portToConn(i), ex)
+      if (i < inCount) interpreter.cancel(portToConn(i))
+      else interpreter.fail(portToConn(i), ex)
       i += 1
     }
     setKeepGoing(false)
@@ -683,8 +680,7 @@ abstract class GraphStageLogic private[stream] (
       val elem = grab(in)
       n -= 1
 
-      if (n > 0) pull(in)
-      else setHandler(in, previous)
+      if (n > 0) pull(in) else setHandler(in, previous)
 
       andThen(elem)
     }

@@ -161,8 +161,7 @@ trait KeyedListLike[K, +T, +This[K, +T] <: KeyedListLike[K, T, This]]
       override def plus(left: T, right: T) = left
       // Don't enumerate every item, just take the first
       override def sumOption(to: TraversableOnce[T]): Option[T] =
-        if (to.isEmpty) None
-        else Some(to.toIterator.next)
+        if (to.isEmpty) None else Some(to.toIterator.next)
     }
   }
 

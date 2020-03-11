@@ -124,8 +124,8 @@ object Act {
     ss match {
       case Seq() => Nil
       case Seq(
-          x,
-          tail @ _*
+            x,
+            tail @ _*
           ) => // select the first configuration containing a valid key
         tail.takeWhile(_.key.scope.config == x.key.scope.config) match {
           case Seq() => x :: Nil
@@ -270,8 +270,7 @@ object Act {
     val validKeys = knownKeys.filter {
       case (_, key) => knownValues get key exists (_.nonEmpty)
     }
-    if (validKeys.isEmpty)
-      failure("No valid extra keys.")
+    if (validKeys.isEmpty) failure("No valid extra keys.")
     else
       rep1sep(
         extraParser(validKeys, knownValues),

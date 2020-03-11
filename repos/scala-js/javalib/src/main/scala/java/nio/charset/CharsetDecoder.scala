@@ -99,8 +99,7 @@ abstract class CharsetDecoder protected (
         val remaining = in.remaining
         if (endOfInput && remaining > 0)
           CoderResult.malformedForLength(remaining)
-        else
-          result1
+        else result1
       } else { result1 }
 
       if (result2.isUnderflow || result2.isOverflow) { result2 }
@@ -133,8 +132,7 @@ abstract class CharsetDecoder protected (
     (status: @switch) match {
       case END =>
         val result = implFlush(out)
-        if (result.isUnderflow)
-          status = FLUSHED
+        if (result.isUnderflow) status = FLUSHED
         result
       case FLUSHED =>
         CoderResult.UNDERFLOW

@@ -182,8 +182,7 @@ object TypeParameter {
   }
 
   def fromArray(ptps: Array[PsiTypeParameter]): Array[TypeParameter] = {
-    if (ptps.length == 0) EMPTY_ARRAY
-    else ptps.map(new TypeParameter(_))
+    if (ptps.length == 0) EMPTY_ARRAY else ptps.map(new TypeParameter(_))
   }
 
   val EMPTY_ARRAY: Array[TypeParameter] = Array.empty
@@ -331,8 +330,7 @@ case class ScTypePolymorphicType(
               val (tpName, id) = pair
               if (tp.name == tpName && id == ScalaPsiUtil.getPsiElementId(
                     tp.ptp)) {
-                if (i == -1) contraVariant += 1
-                else coOrInVariant += 1
+                if (i == -1) contraVariant += 1 else coOrInVariant += 1
               }
             }
             (false, typez)

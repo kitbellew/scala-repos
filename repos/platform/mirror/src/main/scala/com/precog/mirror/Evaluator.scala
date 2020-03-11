@@ -99,8 +99,7 @@ trait EvaluatorModule
             case _             => true
           }
 
-          if (result)
-            loop(env, restrict)(child)
+          if (result) loop(env, restrict)(child)
           else
             throw new RuntimeException(
               "assertion failed: %d:%d".format(loc.lineNum, loc.colNum))
@@ -540,10 +539,8 @@ trait EvaluatorModule
           p != ValueProvenance && p != NullProvenance
         }
 
-      if (intersected.isEmpty)
-        cross(left, right)(pf)
-      else
-        join(left, leftProv, right, rightProv)(pf)
+      if (intersected.isEmpty) cross(left, right)(pf)
+      else join(left, leftProv, right, rightProv)(pf)
     }
 
     def join(
@@ -579,16 +576,12 @@ trait EvaluatorModule
       val mergeKey: List[Either[Int, Int]] = leftMergeKey ++ rightMergeKey
 
       val leftSorted =
-        if (indicesLeft == (0 until indicesLeft.length))
-          left
-        else
-          left sorted orderLeft.toScalaOrdering // must be stable!
+        if (indicesLeft == (0 until indicesLeft.length)) left
+        else left sorted orderLeft.toScalaOrdering // must be stable!
 
       val rightSorted =
-        if (indicesRight == (0 until indicesRight.length))
-          right
-        else
-          right sorted orderRight.toScalaOrdering // must be stable!
+        if (indicesRight == (0 until indicesRight.length)) right
+        else right sorted orderRight.toScalaOrdering // must be stable!
 
       val joined = zipAlign(leftSorted, rightSorted) {
         case ((idsLeft, _), (idsRight, _)) => {

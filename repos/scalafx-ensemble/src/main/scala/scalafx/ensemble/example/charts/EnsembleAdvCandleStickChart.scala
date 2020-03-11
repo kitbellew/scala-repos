@@ -390,8 +390,7 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
       val cw = if (candleWidth == -1) {
         // FIXME: It should be possible to access this method without delegate, it is not the same as setPrefWidth
         bar.delegate.prefWidth(-1)
-      } else
-        candleWidth
+      } else candleWidth
       if (openAboveClose) { bar.resizeRelocate(-cw / 2, 0, cw, closeOffset) }
       else { bar.resizeRelocate(-cw / 2, closeOffset, cw, closeOffset * -1) }
     }

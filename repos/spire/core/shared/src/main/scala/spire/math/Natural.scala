@@ -136,10 +136,8 @@ sealed abstract class Natural
           d.toLong.toString + s
         case Digit(d, tail) =>
           val (q, r) = next /% Natural.denom
-          if (q.isZero)
-            r.digit.toLong.toString + s
-          else
-            recur(q, "%09d%s" format (r.digit.toLong, s))
+          if (q.isZero) r.digit.toLong.toString + s
+          else recur(q, "%09d%s" format (r.digit.toLong, s))
       }
     }
     recur(this, "")
@@ -187,12 +185,9 @@ sealed abstract class Natural
         if (t < 0) -1 else if (bit < 0) shift + t else -1
       case Digit(n, tail) =>
         val t = test(n)
-        if (t < 0)
-          recur(tail, shift + 32, bit)
-        else if (bit < 0)
-          recur(tail, shift + 32, shift + t)
-        else
-          -1
+        if (t < 0) recur(tail, shift + 32, bit)
+        else if (bit < 0) recur(tail, shift + 32, shift + t)
+        else -1
     }
     recur(this, 0, -1)
   }
@@ -201,10 +196,7 @@ sealed abstract class Natural
     case End(d) =>
       if (d < rhs) -1 else if (d > rhs) 1 else 0
     case Digit(d, tail) =>
-      if (tail.isZero)
-        if (d > rhs) 1 else if (d < rhs) -1 else 0
-      else
-        1
+      if (tail.isZero) if (d > rhs) 1 else if (d < rhs) -1 else 0 else 1
   }
 
   def compare(rhs: Natural): Int = {
@@ -318,10 +310,8 @@ sealed abstract class Natural
             case Digit(rd, rtail) =>
               val t = ld.toLong - rd.toLong - carry
               val tl = rtail - UInt(-(t >> 32))
-              if (tl.isInstanceOf[End] && tl.digit == UInt(0))
-                End(UInt(t))
-              else
-                Digit(UInt(t), tl)
+              if (tl.isInstanceOf[End] && tl.digit == UInt(0)) End(UInt(t))
+              else Digit(UInt(t), tl)
           }
 
         case Digit(ld, ltail) =>
@@ -329,25 +319,20 @@ sealed abstract class Natural
             case End(rd) =>
               val t = ld.toLong - rd.toLong - carry
               val tl = ltail - UInt(-(t >> 32))
-              if (tl.isInstanceOf[End] && tl.digit == UInt(0))
-                End(UInt(t))
-              else
-                Digit(UInt(t), tl)
+              if (tl.isInstanceOf[End] && tl.digit == UInt(0)) End(UInt(t))
+              else Digit(UInt(t), tl)
 
             case Digit(rd, rtail) =>
               val t = ld.toLong - rd.toLong - carry
               val tl = recur(ltail, rtail, -(t >> 32))
-              if (tl.isInstanceOf[End] && tl.digit == UInt(0))
-                End(UInt(t))
-              else
-                Digit(UInt(t), tl)
+              if (tl.isInstanceOf[End] && tl.digit == UInt(0)) End(UInt(t))
+              else Digit(UInt(t), tl)
           }
       }
     if (lhs < rhs)
       throw new ArithmeticException(
         "negative subtraction: %s - %s" format (lhs, rhs))
-    else
-      recur(lhs, rhs, 0L)
+    else recur(lhs, rhs, 0L)
   }
 
   def *(rhs: Natural): Natural = lhs match {
@@ -421,10 +406,8 @@ sealed abstract class Natural
               case 0  => End(UInt(0))
               case 1 =>
                 val p = rhs.powerOfTwo
-                if (p >= 0)
-                  lhs & ((Natural(1) << p) - UInt(1))
-                else
-                  longdiv(lhs, rhs)._2
+                if (p >= 0) lhs & ((Natural(1) << p) - UInt(1))
+                else longdiv(lhs, rhs)._2
             }
         }
     }
@@ -583,19 +566,15 @@ object Natural extends NaturalInstances {
   }
 
   def apply(n: Long): Natural =
-    if ((n & 0xFFFFFFFFL) == n)
-      End(UInt(n.toInt))
-    else
-      Digit(UInt(n.toInt), End(UInt((n >> 32).toInt)))
+    if ((n & 0xFFFFFFFFL) == n) End(UInt(n.toInt))
+    else Digit(UInt(n.toInt), End(UInt((n >> 32).toInt)))
 
   def apply(n: BigInt): Natural =
     if (n < 0)
       throw new IllegalArgumentException(
         "negative numbers not allowed: %s" format n)
-    else if (n < 0xFFFFFFFFL)
-      End(UInt(n.toLong))
-    else
-      Digit(UInt((n & 0xFFFFFFFFL).toLong), apply(n >> 32))
+    else if (n < 0xFFFFFFFFL) End(UInt(n.toLong))
+    else Digit(UInt((n & 0xFFFFFFFFL).toLong), apply(n >> 32))
 
   private val ten18 = Natural(1000000000000000000L)
   def apply(s: String): Natural = {
@@ -633,12 +612,9 @@ object Natural extends NaturalInstances {
       }
 
     def *(n: UInt): Natural =
-      if (n == UInt(0))
-        End(n)
-      else if (n == UInt(1))
-        this
-      else
-        Natural(d.toLong * n.toLong) + Digit(UInt(0), tl * n)
+      if (n == UInt(0)) End(n)
+      else if (n == UInt(1)) this
+      else Natural(d.toLong * n.toLong) + Digit(UInt(0), tl * n)
 
     def /(n: UInt): Natural = (this /% n)._1
 
@@ -684,42 +660,31 @@ object Natural extends NaturalInstances {
       if (n == UInt(0)) { this }
       else {
         val t = d.toLong + n.toLong
-        if (t <= 0xFFFFFFFFL)
-          End(UInt(t))
-        else
-          Digit(UInt(t), End(UInt(1)))
+        if (t <= 0xFFFFFFFFL) End(UInt(t)) else Digit(UInt(t), End(UInt(1)))
       }
 
     def -(n: UInt): Natural =
       if (n == UInt(0)) { this }
       else {
         val t = d.toLong - n.toLong
-        if (t >= 0L)
-          End(UInt(t.toInt))
+        if (t >= 0L) End(UInt(t.toInt))
         else
           throw new IllegalArgumentException(
             "illegal subtraction: %s %s" format (this, n))
       }
 
     def *(n: UInt): Natural =
-      if (n == UInt(0))
-        End(n)
-      else if (n == UInt(1))
-        this
-      else
-        Natural(d.toLong * n.toLong)
+      if (n == UInt(0)) End(n)
+      else if (n == UInt(1)) this
+      else Natural(d.toLong * n.toLong)
 
     def /(n: UInt): Natural =
-      if (n == UInt(0))
-        throw new IllegalArgumentException("/ by zero")
-      else
-        End(d / n)
+      if (n == UInt(0)) throw new IllegalArgumentException("/ by zero")
+      else End(d / n)
 
     def %(n: UInt): Natural =
-      if (n == UInt(0))
-        throw new IllegalArgumentException("/ by zero")
-      else
-        End(d % n)
+      if (n == UInt(0)) throw new IllegalArgumentException("/ by zero")
+      else End(d % n)
 
     def /%(n: UInt): (Natural, Natural) = (this / n, this % n)
   }

@@ -19,8 +19,7 @@ package util.control
   */
 trait NoStackTrace extends Throwable {
   override def fillInStackTrace(): Throwable =
-    if (NoStackTrace.noSuppression) super.fillInStackTrace()
-    else this
+    if (NoStackTrace.noSuppression) super.fillInStackTrace() else this
 }
 
 object NoStackTrace {

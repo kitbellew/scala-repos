@@ -113,8 +113,7 @@ final case class WatermarkRequestStrategy(highWatermark: Int, lowWatermark: Int)
     this(highWatermark, lowWatermark = math.max(1, highWatermark / 2))
 
   def requestDemand(remainingRequested: Int): Int =
-    if (remainingRequested < lowWatermark)
-      highWatermark - remainingRequested
+    if (remainingRequested < lowWatermark) highWatermark - remainingRequested
     else 0
 }
 
@@ -199,10 +198,8 @@ trait ActorSubscriber extends Actor {
           if (_canceled) {
             context.stop(self)
             sub.cancel()
-          } else if (requested != 0)
-            sub.request(remainingRequested)
-        } else
-          sub.cancel()
+          } else if (requested != 0) sub.request(remainingRequested)
+        } else sub.cancel()
       case OnComplete | OnError(_) ⇒
         if (!_canceled) {
           _canceled = true
@@ -295,8 +292,7 @@ trait ActorSubscriber extends Actor {
   protected def remainingRequested: Int = longToIntMax(requested)
 
   private def longToIntMax(n: Long): Int =
-    if (n > Int.MaxValue) Int.MaxValue
-    else n.toInt
+    if (n > Int.MaxValue) Int.MaxValue else n.toInt
 }
 
 /**

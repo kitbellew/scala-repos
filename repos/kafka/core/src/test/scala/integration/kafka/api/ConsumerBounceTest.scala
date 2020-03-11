@@ -194,10 +194,7 @@ class ConsumerBounceTest extends IntegrationTestHarness with Logging {
       restartDeadBrokers()
 
       iter += 1
-      if (iter == numIters)
-        initiateShutdown()
-      else
-        Thread.sleep(500)
+      if (iter == numIters) initiateShutdown() else Thread.sleep(500)
     }
   }
 

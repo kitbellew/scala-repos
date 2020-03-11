@@ -34,8 +34,7 @@ class InlinerIllegalAccessTest extends ClearAfterClass {
   def addToRepo(cls: List[ClassNode]): Unit =
     for (c <- cls) byteCodeRepository.add(c, ByteCodeRepository.Classfile)
   def assertEmpty(ins: Option[AbstractInsnNode]) =
-    for (i <- ins)
-      throw new AssertionError(textify(i))
+    for (i <- ins) throw new AssertionError(textify(i))
 
   @Test
   def typeAccessible(): Unit = {

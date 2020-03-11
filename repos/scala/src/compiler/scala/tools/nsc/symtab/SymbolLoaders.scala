@@ -252,14 +252,11 @@ abstract class SymbolLoaders {
     private def markAbsent(sym: Symbol): Unit = {
       val tpe: Type = if (ok) NoType else ErrorType
 
-      if (sym != NoSymbol)
-        sym setInfo tpe
+      if (sym != NoSymbol) sym setInfo tpe
     }
     private def initRoot(root: Symbol) {
-      if (root.rawInfo == this)
-        List(root, root.moduleClass) foreach markAbsent
-      else if (root.isClass && !root.isModuleClass)
-        root.rawInfo.load(root)
+      if (root.rawInfo == this) List(root, root.moduleClass) foreach markAbsent
+      else if (root.isClass && !root.isModuleClass) root.rawInfo.load(root)
     }
   }
 

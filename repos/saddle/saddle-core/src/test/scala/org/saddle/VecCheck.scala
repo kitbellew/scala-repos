@@ -64,19 +64,14 @@ class VecCheck extends Specification with ScalaCheck {
 
     "first works" in {
       forAll { (v: Vec[Double]) =>
-        if (v.isEmpty)
-          v.first must_== scalar.NA
-        else
-          v.first must_== v.at(0)
+        if (v.isEmpty) v.first must_== scalar.NA else v.first must_== v.at(0)
       }
     }
 
     "last works" in {
       forAll { (v: Vec[Double]) =>
-        if (v.isEmpty)
-          v.last must_== scalar.NA
-        else
-          v.last must_== v.at(v.length - 1)
+        if (v.isEmpty) v.last must_== scalar.NA
+        else v.last must_== v.at(v.length - 1)
       }
     }
 
@@ -343,8 +338,7 @@ class VecCheck extends Specification with ScalaCheck {
       forAll { (v: Vec[Double]) =>
         val res = v.rolling(2, _.sum)
 
-        if (v.length == 0)
-          res must_== Vec.empty[Double]
+        if (v.length == 0) res must_== Vec.empty[Double]
         else if (v.length == 1) { res.raw(0) must_== v.sum }
         else {
           val dat = v.contents

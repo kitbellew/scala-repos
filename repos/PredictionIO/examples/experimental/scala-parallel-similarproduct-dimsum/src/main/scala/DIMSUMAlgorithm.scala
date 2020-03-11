@@ -227,8 +227,7 @@ class DIMSUMAlgorithm(val ap: DIMSUMAlgorithmParams)
     val q = PriorityQueue()
 
     for (x <- s) {
-      if (q.size < n)
-        q.enqueue(x)
+      if (q.size < n) q.enqueue(x)
       else {
         // q is full
         if (ord.compare(x, q.head) < 0) {

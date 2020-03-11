@@ -206,8 +206,7 @@ trait BaseParsers extends RegexParsers {
   def escapeForXml(c: Char): String = {
     //looks horrible but massively faster than using a proper map and Option[String]
     val escaped: String = escapeFastForXml(c)
-    if (escaped == null) Character.toString(c)
-    else escaped
+    if (escaped == null) Character.toString(c) else escaped
   }
 
   /**
@@ -217,8 +216,7 @@ trait BaseParsers extends RegexParsers {
     * that it is a noticeable difference if we use Option here.
     */
   def escapeFastForXml(c: Char) =
-    if (c < escapedXmlChars.length) escapedXmlChars(c)
-    else null
+    if (c < escapedXmlChars.length) escapedXmlChars(c) else null
 
   /* A single char. If it is one of the chars that have to be escaped in XML it is returned as the xml escape code
    * i.e. parsing '<' returns "&lt;"

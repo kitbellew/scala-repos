@@ -62,8 +62,7 @@ object ClassPath {
 
   /** Expand path and possibly expanding stars */
   def expandPath(path: String, expandStar: Boolean = true): List[String] =
-    if (expandStar) split(path) flatMap expandS
-    else split(path)
+    if (expandStar) split(path) flatMap expandS else split(path)
 
   /** Expand dir out to contents, a la extdir */
   def expandDir(extdir: String): List[String] = {

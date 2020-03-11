@@ -30,8 +30,7 @@ class BufInputStream(val buf: Buf) extends InputStream {
 
   // Reads the next byte of data from the input stream.
   def read(): Int = synchronized {
-    if (rest.length <= 0)
-      return -1
+    if (rest.length <= 0) return -1
 
     val b = new Array[Byte](1)
     rest.slice(0, 1).write(b, 0)
@@ -44,11 +43,9 @@ class BufInputStream(val buf: Buf) extends InputStream {
     *  array of bytes.
     */
   override def read(b: Array[Byte], off: Int, len: Int): Int = synchronized {
-    if (rest.length <= 0)
-      return -1
+    if (rest.length <= 0) return -1
 
-    if (len == 0)
-      return 0
+    if (len == 0) return 0
 
     val n = len min rest.length
     rest.slice(0, n).write(b, off)
@@ -66,8 +63,7 @@ class BufInputStream(val buf: Buf) extends InputStream {
     * Skips over and discards n bytes of data from this input stream.
     */
   override def skip(n: Long): Long = synchronized {
-    if (n <= 0)
-      return 0
+    if (n <= 0) return 0
 
     val skipped = n min rest.length
     rest = rest.slice(skipped.toInt, rest.length)

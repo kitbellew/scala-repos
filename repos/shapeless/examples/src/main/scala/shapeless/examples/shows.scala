@@ -91,10 +91,7 @@ object Show extends LabelledTypeClassCompanion[Show] {
         def show(ft: F :: T) = {
           val head = sh.show(ft.head)
           val tail = st.show(ft.tail)
-          if (tail.isEmpty)
-            s"$name = $head"
-          else
-            s"$name = $head, $tail"
+          if (tail.isEmpty) s"$name = $head" else s"$name = $head, $tail"
         }
       }
 

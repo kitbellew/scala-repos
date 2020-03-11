@@ -93,8 +93,7 @@ trait StackRegistry {
     synchronized {
       duplicates.get(entry.name) match {
         case Some(dups) =>
-          if (dups.size == 1)
-            duplicates -= entry.name
+          if (dups.size == 1) duplicates -= entry.name
           else
             // We may not remove the exact same entry, but since they are duplicates,
             // it does not matter.
@@ -120,8 +119,7 @@ trait StackRegistry {
               entry.addr,
               paramName,
               field)
-            if (gRegistry.put(key, value).isEmpty)
-              numEntries.incrementAndGet()
+            if (gRegistry.put(key, value).isEmpty) numEntries.incrementAndGet()
         }
     }
   }
@@ -140,8 +138,7 @@ trait StackRegistry {
               entry.addr,
               paramName,
               field)
-            if (gRegistry.remove(key).isDefined)
-              numEntries.decrementAndGet()
+            if (gRegistry.remove(key).isDefined) numEntries.decrementAndGet()
         }
     }
   }

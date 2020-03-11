@@ -354,8 +354,7 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
       f: Field[T],
       r: IsReal[T],
       v: VectorSpace[Array[T], T]): Jet[T] = {
-    if (real < f.zero) new Jet(-real, -infinitesimal)
-    else this
+    if (real < f.zero) new Jet(-real, -infinitesimal) else this
   }
 
   // spire.math. does not define this pow generically, so there it is

@@ -127,8 +127,7 @@ object LogManager {
 
   // if global logging levels are not explicitly set, set them from project settings
   private[sbt] def setGlobalLogLevels(s: State, data: Settings[Scope]): State =
-    if (hasExplicitGlobalLogLevels(s))
-      s
+    if (hasExplicitGlobalLogLevels(s)) s
     else {
       val logging = s.globalLogging
       def get[T](key: SettingKey[T]) = key in GlobalScope get data

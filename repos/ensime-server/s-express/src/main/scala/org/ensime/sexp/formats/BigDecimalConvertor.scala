@@ -75,8 +75,7 @@ object BigIntConvertor {
     val bytes = {
       val raw = bigInt.toByteArray
       val rem = raw.length % 8
-      if (rem == 0) raw
-      else Array.ofDim[Byte](8 - rem) ++ raw
+      if (rem == 0) raw else Array.ofDim[Byte](8 - rem) ++ raw
     }
     val longLength = bytes.length / 8
     val bb = java.nio.ByteBuffer.wrap(bytes)

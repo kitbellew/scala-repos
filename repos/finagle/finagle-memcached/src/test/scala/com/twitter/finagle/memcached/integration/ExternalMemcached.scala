@@ -88,16 +88,14 @@ private[memcached] object ExternalMemcached { self =>
         val proc = exec(addr)
         processes :+= proc
 
-        if (waitForPort(addr.getPort))
-          Some(new TestMemcachedServer {
-            val address = addr
-            def stop() {
-              proc.destroy()
-              proc.waitFor()
-            }
-          })
-        else
-          None
+        if (waitForPort(addr.getPort)) Some(new TestMemcachedServer {
+          val address = addr
+          def stop() {
+            proc.destroy()
+            proc.waitFor()
+          }
+        })
+        else None
       } catch { case _: Throwable => None }
     }
   }
@@ -105,10 +103,8 @@ private[memcached] object ExternalMemcached { self =>
   def waitForPort(port: Int, timeout: Duration = 5.seconds): Boolean = {
     val elapsed = Stopwatch.start()
     def loop(): Boolean = {
-      if (!isPortAvailable(port))
-        true
-      else if (timeout < elapsed())
-        false
+      if (!isPortAvailable(port)) true
+      else if (timeout < elapsed()) false
       else {
         Thread.sleep(100)
         loop()
@@ -127,10 +123,7 @@ private[memcached] object ExternalMemcached { self =>
     } catch {
       case ex: BindException =>
         result = (ex.getMessage != "Address already in use")
-    } finally {
-      if (ss != null)
-        ss.close()
-    }
+    } finally { if (ss != null) ss.close() }
 
     result
   }

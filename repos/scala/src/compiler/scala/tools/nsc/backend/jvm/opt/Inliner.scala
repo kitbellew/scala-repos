@@ -273,10 +273,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
         // is there a chain of inlining requests that would inline the callsite method into the callee?
         if (isReachable(
               r.callsite.callee.get.callee,
-              r.callsite.callsiteMethod))
-          elided += r
-        else
-          result += r
+              r.callsite.callsiteMethod)) elided += r
+        else result += r
       }
       result.toList
     }
@@ -652,8 +650,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
           callsiteClass.internalName,
           callsiteMethod.name,
           callsiteMethod.desc))
-    } else
-      None
+    } else None
   }
 
   /**

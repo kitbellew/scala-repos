@@ -268,8 +268,7 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
             var i = 0
             val bd = b.data
             while (i < b.iterableSize) {
-              if (b.isActive(i))
-                a.add(b.indexAt(i), bd(i))
+              if (b.isActive(i)) a.add(b.indexAt(i), bd(i))
               i += 1
             }
 
@@ -295,8 +294,7 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
             var i = 0
             val bd = b.data
             while (i < b.iterableSize) {
-              if (b.isActive(i))
-                a.add(b.indexAt(i), ring.negate(bd(i)))
+              if (b.isActive(i)) a.add(b.indexAt(i), ring.negate(bd(i)))
               i += 1
             }
 

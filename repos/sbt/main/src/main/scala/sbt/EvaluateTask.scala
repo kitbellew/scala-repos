@@ -287,8 +287,7 @@ object EvaluateTask {
   def maxWorkers(extracted: Extracted, structure: BuildStructure): Int =
     if (getSetting(Keys.parallelExecution, true, extracted, structure))
       SystemProcessors
-    else
-      1
+    else 1
   def cancelable(extracted: Extracted, structure: BuildStructure): Boolean =
     getSetting(Keys.cancelable, false, extracted, structure)
   def cancelStrategy(
@@ -579,8 +578,7 @@ object EvaluateTask {
       streams: Streams): Unit =
     for (referenced <- Previous.references in Global get Project
            .structure(state)
-           .data)
-      Previous.complete(referenced, results, streams)
+           .data) Previous.complete(referenced, results, streams)
 
   def applyResults[T](
       results: RMap[Task, Result],
@@ -653,6 +651,5 @@ object EvaluateTask {
         stream.open()
         stream
       })
-    else
-      Nil
+    else Nil
 }

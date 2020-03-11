@@ -80,8 +80,7 @@ abstract class MembershipChangeListenerUpSpec
             case state: CurrentClusterState ⇒ members = state.members
             case MemberUp(m) ⇒
               members = members - m + m
-              if (members.map(_.address) == expectedAddresses)
-                latch.countDown()
+              if (members.map(_.address) == expectedAddresses) latch.countDown()
             case _ ⇒ // ignore
           }
         }).withDeploy(Deploy.local)),

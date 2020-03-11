@@ -59,8 +59,7 @@ class ConcurrentBijectionTest extends WordSpec {
   "iterate over mappings" in {
     val b = new ConcurrentBijection[Int, Int]
 
-    for (i <- 0 until 100)
-      b += (i -> i)
+    for (i <- 0 until 100) b += (i -> i)
 
     assert(b.toSet == (for (i <- 0 until 100) yield (i, i)).toSet)
   }

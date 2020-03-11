@@ -214,8 +214,7 @@ abstract class ClassfileParser {
     def firstExpecting(index: Int, expected: Int): Int = {
       val start = starts(index)
       val first = in.buf(start).toInt
-      if (first == expected) start + 1
-      else this errorBadTag start
+      if (first == expected) start + 1 else this errorBadTag start
     }
 
     /** Return the name found at given index. */
@@ -234,8 +233,7 @@ abstract class ClassfileParser {
 
     /** Return the name found at given index in the constant pool, with '/' replaced by '.'. */
     def getExternalName(index: Int): Name = {
-      if (index <= 0 || len <= index)
-        errorBadIndex(index)
+      if (index <= 0 || len <= index) errorBadIndex(index)
 
       if (internalized(index) == null)
         internalized(index) = getName(index).replace('/', '.')
@@ -439,14 +437,12 @@ abstract class ClassfileParser {
   private def lookupClass(name: Name) = (
     if (name containsChar '.')
       rootMirror getClassByName name // see tickets #2464, #3756
-    else
-      definitions.getMember(rootMirror.EmptyPackageClass, name.toTypeName)
+    else definitions.getMember(rootMirror.EmptyPackageClass, name.toTypeName)
   )
 
   /** Return the class symbol of the given name. */
   def classNameToSymbol(name: Name): Symbol = {
-    if (innerClasses contains name)
-      innerClasses innerSymbol name
+    if (innerClasses contains name) innerClasses innerSymbol name
     else
       try lookupClass(name)
       catch { case _: FatalError => loadClassSymbol(name) }
@@ -501,8 +497,7 @@ abstract class ClassfileParser {
     val classInfo = ClassInfoType(parseParents, instanceScope, clazz)
     val staticInfo = ClassInfoType(List(), staticScope, moduleClass)
 
-    if (!isScala && !isScalaRaw)
-      enterOwnInnerClasses()
+    if (!isScala && !isScalaRaw) enterOwnInnerClasses()
 
     val curbp = in.bp
     skipMembers() // fields
@@ -544,8 +539,7 @@ abstract class ClassfileParser {
           item()
         }
       }
-    } else
-      parseAttributes(clazz, classInfo)
+    } else parseAttributes(clazz, classInfo)
   }
 
   /** Add type parameters of enclosing classes */
@@ -572,10 +566,7 @@ abstract class ClassfileParser {
 
       // Note: the info may be overwritten later with a generic signature
       // parsed from SignatureATTR
-      sym setInfo {
-        if (jflags.isEnum) ConstantType(Constant(sym))
-        else info
-      }
+      sym setInfo { if (jflags.isEnum) ConstantType(Constant(sym)) else info }
       propagatePackageBoundary(jflags, sym)
       parseAttributes(sym, info)
       getScope(jflags) enter sym
@@ -603,8 +594,7 @@ abstract class ClassfileParser {
     val sflags = jflags.toScalaFlags
     if (jflags.isPrivate && !optimized) {
       val name = readName()
-      if (name == nme.CONSTRUCTOR)
-        sawPrivateConstructor = true
+      if (name == nme.CONSTRUCTOR) sawPrivateConstructor = true
       in.skip(2); skipAttributes()
     } else {
       if ((sflags & PRIVATE) != 0L && optimized) { // TODO this should be !optimized, no? See c4181f656d.
@@ -614,44 +604,42 @@ abstract class ClassfileParser {
         val sym =
           ownerForFlags(jflags).newMethod(name.toTermName, NoPosition, sflags)
         var info = pool.getType(sym, u2)
-        if (name == nme.CONSTRUCTOR)
-          info match {
-            case MethodType(params, restpe) =>
-              // if this is a non-static inner class, remove the explicit outer parameter
-              val paramsNoOuter = innerClasses getEntry currentClass match {
-                case Some(entry) if !isScalaRaw && !entry.jflags.isStatic =>
-                  /* About `clazz.owner.hasPackageFlag` below: SI-5957
-                   * For every nested java class A$B, there are two symbols in the scala compiler.
-                   *  1. created by SymbolLoader, because of the existence of the A$B.class file, owner: package
-                   *  2. created by ClassfileParser of A when reading the inner classes, owner: A
-                   * If symbol 1 gets completed (e.g. because the compiled source mentions `A$B`, not `A#B`), the
-                   * ClassfileParser for 1 executes, and clazz.owner is the package.
-                   */
-                  assert(
-                    params.head.tpe.typeSymbol == clazz.owner || clazz.owner.hasPackageFlag,
-                    params.head.tpe.typeSymbol + ": " + clazz.owner)
-                  params.tail
-                case _ =>
-                  params
-              }
-              val newParams = paramsNoOuter match {
-                case (init :+ tail) if jflags.isSynthetic =>
-                  // SI-7455 strip trailing dummy argument ("access constructor tag") from synthetic constructors which
-                  // are added when an inner class needs to access a private constructor.
-                  init
-                case _ =>
-                  paramsNoOuter
-              }
+        if (name == nme.CONSTRUCTOR) info match {
+          case MethodType(params, restpe) =>
+            // if this is a non-static inner class, remove the explicit outer parameter
+            val paramsNoOuter = innerClasses getEntry currentClass match {
+              case Some(entry) if !isScalaRaw && !entry.jflags.isStatic =>
+                /* About `clazz.owner.hasPackageFlag` below: SI-5957
+                 * For every nested java class A$B, there are two symbols in the scala compiler.
+                 *  1. created by SymbolLoader, because of the existence of the A$B.class file, owner: package
+                 *  2. created by ClassfileParser of A when reading the inner classes, owner: A
+                 * If symbol 1 gets completed (e.g. because the compiled source mentions `A$B`, not `A#B`), the
+                 * ClassfileParser for 1 executes, and clazz.owner is the package.
+                 */
+                assert(
+                  params.head.tpe.typeSymbol == clazz.owner || clazz.owner.hasPackageFlag,
+                  params.head.tpe.typeSymbol + ": " + clazz.owner)
+                params.tail
+              case _ =>
+                params
+            }
+            val newParams = paramsNoOuter match {
+              case (init :+ tail) if jflags.isSynthetic =>
+                // SI-7455 strip trailing dummy argument ("access constructor tag") from synthetic constructors which
+                // are added when an inner class needs to access a private constructor.
+                init
+              case _ =>
+                paramsNoOuter
+            }
 
-              info = MethodType(newParams, clazz.tpe)
-          }
+            info = MethodType(newParams, clazz.tpe)
+        }
         // Note: the info may be overwritten later with a generic signature
         // parsed from SignatureATTR
         sym setInfo info
         propagatePackageBoundary(jflags, sym)
         parseAttributes(sym, info)
-        if (jflags.isVarargs)
-          sym modifyInfo arrayToRepeated
+        if (jflags.isVarargs) sym modifyInfo arrayToRepeated
 
         getScope(jflags) enter sym
       }
@@ -792,16 +780,14 @@ abstract class ClassfileParser {
           val restype = if (sym != null && sym.isClassConstructor) {
             accept('V')
             clazz.tpe_*
-          } else
-            sig2type(tparams, skiptvs)
+          } else sig2type(tparams, skiptvs)
           JavaMethodType(
             sym.newSyntheticValueParams(paramtypes.toList),
             restype)
         case 'T' =>
           val n = subName(';'.==).toTypeName
           index += 1
-          if (skiptvs) AnyTpe
-          else tparams(n).typeConstructor
+          if (skiptvs) AnyTpe else tparams(n).typeConstructor
       }
     } // sig2type(tparams, skiptvs)
 
@@ -839,11 +825,9 @@ abstract class ClassfileParser {
       accept('>')
     }
     val ownTypeParams = newTParams.toList
-    if (!ownTypeParams.isEmpty)
-      sym.setInfo(new TypeParamsType(ownTypeParams))
+    if (!ownTypeParams.isEmpty) sym.setInfo(new TypeParamsType(ownTypeParams))
     val tpe =
-      if ((sym eq null) || !sym.isClass)
-        sig2type(tparams, skiptvs = false)
+      if ((sym eq null) || !sym.isClass) sig2type(tparams, skiptvs = false)
       else {
         classTParams = tparams
         val parents = new ListBuffer[Type]()
@@ -862,8 +846,7 @@ abstract class ClassfileParser {
     def convertTo(c: Constant, pt: Type): Constant = {
       if (pt.typeSymbol == BooleanClass && c.tag == IntTag)
         Constant(c.value != 0)
-      else
-        c convertTo pt
+      else c convertTo pt
     }
     def parseAttribute() {
       val attrName = readTypeName()
@@ -926,29 +909,22 @@ abstract class ClassfileParser {
         case tpnme.RuntimeAnnotationATTR =>
           if (isScalaAnnot || !isScala) {
             val scalaSigAnnot = parseAnnotations(attrLen)
-            if (isScalaAnnot)
-              scalaSigAnnot match {
-                case Some(san: AnnotationInfo) =>
-                  val bytes =
-                    san.assocs
-                      .find({ _._1 == nme.bytes })
-                      .get
-                      ._2
-                      .asInstanceOf[ScalaSigBytes]
-                      .bytes
-                  unpickler.unpickle(
-                    bytes,
-                    0,
-                    clazz,
-                    staticModule,
-                    in.file.name)
-                case None =>
-                  throw new RuntimeException(
-                    "Scala class file does not contain Scala annotation")
-              }
+            if (isScalaAnnot) scalaSigAnnot match {
+              case Some(san: AnnotationInfo) =>
+                val bytes =
+                  san.assocs
+                    .find({ _._1 == nme.bytes })
+                    .get
+                    ._2
+                    .asInstanceOf[ScalaSigBytes]
+                    .bytes
+                unpickler.unpickle(bytes, 0, clazz, staticModule, in.file.name)
+              case None =>
+                throw new RuntimeException(
+                  "Scala class file does not contain Scala annotation")
+            }
             debuglog("[class] << " + sym.fullName + sym.annotationsString)
-          } else
-            in.skip(attrLen)
+          } else in.skip(attrLen)
 
         // TODO 1: parse runtime visible annotations on parameters
         // case tpnme.RuntimeParamAnnotationATTR
@@ -1006,13 +982,11 @@ abstract class ClassfileParser {
         case ARRAY_TAG =>
           val arr = new ArrayBuffer[ClassfileAnnotArg]()
           var hasError = false
-          for (i <- 0 until index)
-            parseAnnotArg match {
-              case Some(c) => arr += c
-              case None    => hasError = true
-            }
-          if (hasError) None
-          else Some(ArrayAnnotArg(arr.toArray))
+          for (i <- 0 until index) parseAnnotArg match {
+            case Some(c) => arr += c
+            case None    => hasError = true
+          }
+          if (hasError) None else Some(ArrayAnnotArg(arr.toArray))
         case ANNOTATION_TAG =>
           parseAnnotation(index) map (NestedAnnotArg(_))
       }
@@ -1108,18 +1082,16 @@ abstract class ClassfileParser {
     def parseAnnotations(len: Int): Option[AnnotationInfo] = {
       val nAttr = u2
       var scalaSigAnnot: Option[AnnotationInfo] = None
-      for (n <- 0 until nAttr)
-        parseAnnotation(u2) match {
-          case Some(scalaSig)
-              if (scalaSig.atp == ScalaSignatureAnnotation.tpe) =>
-            scalaSigAnnot = Some(scalaSig)
-          case Some(scalaSig)
-              if (scalaSig.atp == ScalaLongSignatureAnnotation.tpe) =>
-            scalaSigAnnot = Some(scalaSig)
-          case Some(annot) =>
-            sym.addAnnotation(annot)
-          case None =>
-        }
+      for (n <- 0 until nAttr) parseAnnotation(u2) match {
+        case Some(scalaSig) if (scalaSig.atp == ScalaSignatureAnnotation.tpe) =>
+          scalaSigAnnot = Some(scalaSig)
+        case Some(scalaSig)
+            if (scalaSig.atp == ScalaLongSignatureAnnotation.tpe) =>
+          scalaSigAnnot = Some(scalaSig)
+        case Some(annot) =>
+          sym.addAnnotation(annot)
+        case None =>
+      }
       scalaSigAnnot
     }
 
@@ -1166,8 +1138,7 @@ abstract class ClassfileParser {
       val decls = innerClass.enclosingPackage.info.decls
       def unlinkIfPresent(name: Name) = {
         val e = decls lookupEntry name
-        if (e ne null)
-          decls unlink e
+        if (e ne null) decls unlink e
       }
 
       val cName = className(entry.externalName)

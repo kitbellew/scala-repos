@@ -20,36 +20,24 @@ final class IntervalSeq[T] private (
   import IntervalSeq._
 
   private def belowIndex(index: Int): Boolean = {
-    if (index == 0)
-      belowAll
-    else
-      valueAbove(kinds(index - 1))
+    if (index == 0) belowAll else valueAbove(kinds(index - 1))
   }
 
   def at(value: T): Boolean = {
     val index = Searching.search(values, value)
-    if (index >= 0)
-      valueAt(kinds(index))
-    else
-      belowIndex(-index - 1)
+    if (index >= 0) valueAt(kinds(index)) else belowIndex(-index - 1)
   }
 
   def above(value: T): Boolean = {
     val index = Searching.search(values, value)
-    if (index >= 0)
-      valueAbove(kinds(index))
-    else
-      belowIndex(-index - 1)
+    if (index >= 0) valueAbove(kinds(index)) else belowIndex(-index - 1)
   }
 
   def below(value: T): Boolean = {
     val index = Searching.search(values, value)
-    if (index > 0)
-      valueAbove(kinds(index - 1))
-    else if (index == 0)
-      belowAll
-    else
-      belowIndex(-index - 1)
+    if (index > 0) valueAbove(kinds(index - 1))
+    else if (index == 0) belowAll
+    else belowIndex(-index - 1)
   }
 
   def apply(value: T): Boolean = at(value)
@@ -82,10 +70,7 @@ final class IntervalSeq[T] private (
     new IntervalSeq[T](belowAll, values, kinds, order)
 
   override def toString: String = {
-    if (isEmpty)
-      Interval.empty[T].toString()
-    else
-      intervals.mkString(";")
+    if (isEmpty) Interval.empty[T].toString() else intervals.mkString(";")
   }
 
   override def hashCode: Int = {
@@ -179,8 +164,7 @@ final class IntervalSeq[T] private (
         // $COVERAGE-ON$
       }
     }
-    for (prev <- prev)
-      f(Interval.fromBounds(prev, Unbound()))
+    for (prev <- prev) f(Interval.fromBounds(prev, Unbound()))
   }
 
   private[extras] def kindsAccessor = kinds
@@ -434,10 +418,8 @@ object IntervalSeq {
     merge0(0, a.length, 0, b.length)
 
     def result: IntervalSeq[T] = {
-      if (ri == r.length)
-        new IntervalSeq(r0, r, rk, order)
-      else
-        new IntervalSeq(r0, r.take(ri), rk.take(ri), order)
+      if (ri == r.length) new IntervalSeq(r0, r, rk, order)
+      else new IntervalSeq(r0, r.take(ri), rk.take(ri), order)
     }
   }
 
@@ -449,12 +431,10 @@ object IntervalSeq {
     override def op(a: Byte, b: Byte): Int = a & b
 
     override def fromA(a0: Int, a1: Int, b: Boolean): Unit =
-      if (b)
-        copyA(a0, a1)
+      if (b) copyA(a0, a1)
 
     override def fromB(a: Boolean, b0: Int, b1: Int): Unit =
-      if (a)
-        copyB(b0, b1)
+      if (a) copyB(b0, b1)
   }
 
   private class Or[T](val lhs: IntervalSeq[T], val rhs: IntervalSeq[T])
@@ -465,12 +445,10 @@ object IntervalSeq {
     override def op(a: Byte, b: Byte): Int = a | b
 
     override def fromA(a0: Int, a1: Int, b: Boolean): Unit =
-      if (!b)
-        copyA(a0, a1)
+      if (!b) copyA(a0, a1)
 
     override def fromB(a: Boolean, b0: Int, b1: Int): Unit =
-      if (!a)
-        copyB(b0, b1)
+      if (!a) copyB(b0, b1)
   }
 
   private class Xor[T](val lhs: IntervalSeq[T], val rhs: IntervalSeq[T])
@@ -481,16 +459,10 @@ object IntervalSeq {
     override def op(a: Byte, b: Byte): Int = a ^ b
 
     override def fromA(a0: Int, a1: Int, b: Boolean): Unit =
-      if (!b)
-        copyA(a0, a1)
-      else
-        flipA(a0, a1)
+      if (!b) copyA(a0, a1) else flipA(a0, a1)
 
     override def fromB(a: Boolean, b0: Int, b1: Int): Unit =
-      if (!a)
-        copyB(b0, b1)
-      else
-        flipB(b0, b1)
+      if (!a) copyB(b0, b1) else flipB(b0, b1)
   }
 
   private abstract class BooleanOperation[T] {
@@ -647,10 +619,7 @@ object IntervalSeq {
     @tailrec
     override def next(): Interval[T] = {
       val result = nextInterval()
-      if (result ne null)
-        result
-      else
-        next()
+      if (result ne null) result else next()
     }
   }
 }

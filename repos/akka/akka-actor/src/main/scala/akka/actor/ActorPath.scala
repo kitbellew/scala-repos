@@ -128,15 +128,14 @@ object ActorPath {
 
       val len = s.length
       def validate(pos: Int): Int =
-        if (pos < len)
-          s.charAt(pos) match {
-            case c if isValidChar(c) ⇒ validate(pos + 1)
-            case '%'
-                if pos + 2 < len && isHexChar(s.charAt(pos + 1)) && isHexChar(
-                  s.charAt(pos + 2)) ⇒
-              validate(pos + 3)
-            case _ ⇒ pos
-          }
+        if (pos < len) s.charAt(pos) match {
+          case c if isValidChar(c) ⇒ validate(pos + 1)
+          case '%'
+              if pos + 2 < len && isHexChar(s.charAt(pos + 1)) && isHexChar(
+                s.charAt(pos + 2)) ⇒
+            validate(pos + 3)
+          case _ ⇒ pos
+        }
         else ValidPathCode
 
       if (len > 0 && s.charAt(0) != '$') validate(0) else 0
@@ -297,8 +296,7 @@ final case class RootActorPath(address: Address, name: String = "/")
   override val toSerializationFormat: String = toString
 
   override def toStringWithAddress(addr: Address): String =
-    if (address.host.isDefined) address + name
-    else addr + name
+    if (address.host.isDefined) address + name else addr + name
 
   override def toSerializationFormatWithAddress(addr: Address): String =
     toStringWithAddress(addr)
@@ -371,8 +369,7 @@ final class ChildActorPath private[akka] (
     * INTERNAL API
     */
   override private[akka] def withUid(uid: Int): ActorPath =
-    if (uid == this.uid) this
-    else new ChildActorPath(parent, name, uid)
+    if (uid == this.uid) this else new ChildActorPath(parent, name, uid)
 
   override def toString: String = {
     val length = toStringLength
@@ -444,8 +441,7 @@ final class ChildActorPath private[akka] (
         val start = c.toStringOffset + diff
         val end = start + c.name.length
         sb.replace(start, end, c.name)
-        if (c ne this)
-          sb.replace(end, end + 1, "/")
+        if (c ne this) sb.replace(end, end + 1, "/")
         rec(c.parent)
     }
 
@@ -454,8 +450,7 @@ final class ChildActorPath private[akka] (
   }
 
   private def appendUidFragment(sb: JStringBuilder): JStringBuilder = {
-    if (uid == ActorCell.undefinedUid) sb
-    else sb.append("#").append(uid)
+    if (uid == ActorCell.undefinedUid) sb else sb.append("#").append(uid)
   }
 
   override def equals(other: Any): Boolean = {
@@ -498,8 +493,7 @@ final class ChildActorPath private[akka] (
       else if (right.isInstanceOf[RootActorPath]) -(right compareTo left)
       else {
         val x = left.name compareTo right.name
-        if (x == 0) rec(left.parent, right.parent)
-        else x
+        if (x == 0) rec(left.parent, right.parent) else x
       }
 
     rec(this, other)

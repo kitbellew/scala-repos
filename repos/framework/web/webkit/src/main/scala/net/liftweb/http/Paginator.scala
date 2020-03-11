@@ -120,8 +120,8 @@ trait SortedPaginator[T, C] extends Paginator[T] {
     */
   def sortedBy(column: Int): SortState = sort match {
     case (
-        `column`,
-        true
+          `column`,
+          true
         ) => // descending is only if it was already sorted ascending
       (column, false)
     case _ =>
@@ -182,8 +182,7 @@ trait PaginatorSnippet[T] extends Paginator[T] {
     * The status displayed when using &lt;nav:records/&gt; in the template.
     */
   def currentXml: NodeSeq =
-    if (count == 0)
-      Text(S.?("paginator.norecords"))
+    if (count == 0) Text(S.?("paginator.norecords"))
     else
       Text(
         S.?(
@@ -226,10 +225,8 @@ trait PaginatorSnippet[T] extends Paginator[T] {
     * @param ns The link text, if the offset is valid and not the current offset; or, if that is not the case, the static unlinked text to display
     */
   def pageXml(newFirst: Long, ns: NodeSeq): NodeSeq =
-    if (first == newFirst || newFirst < 0 || newFirst >= count)
-      ns
-    else
-      <a href={pageUrl(newFirst)}>{ns}</a>
+    if (first == newFirst || newFirst < 0 || newFirst >= count) ns
+    else <a href={pageUrl(newFirst)}>{ns}</a>
 
   /**
     * Generates links to multiple pages with arbitrary XML delimiting them.

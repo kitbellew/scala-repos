@@ -119,12 +119,10 @@ object CsvImplicits {
       val quote = settings.quoteChar.toString
 
       def quotify(seq: Seq[String]): Seq[String] = {
-        if (settings.useQuote)
-          seq.map { s =>
-            if (s.contains(separ)) "%s%s%s".format(quote, s, quote) else s
-          }
-        else
-          seq
+        if (settings.useQuote) seq.map { s =>
+          if (s.contains(separ)) "%s%s%s".format(quote, s, quote) else s
+        }
+        else seq
       }
 
       def writeHeader(rsm: ScalarTag[RX], csm: ScalarTag[CX]) {
@@ -143,10 +141,8 @@ object CsvImplicits {
           for (i <- 0 until cDepth) {
             stream write {
               val seq =
-                if (!withRowIx)
-                  colIxSeq.map(csm.strList(_)(i))
-                else
-                  lead ++: frame.colIx.toSeq.map(csm.strList(_)(i))
+                if (!withRowIx) colIxSeq.map(csm.strList(_)(i))
+                else lead ++: frame.colIx.toSeq.map(csm.strList(_)(i))
 
               quotify(seq).mkString(separ).getBytes(settings.encoding)
             }
@@ -162,10 +158,8 @@ object CsvImplicits {
           case (ridx, row) =>
             stream write {
               val seq =
-                if (!withRowIx)
-                  row.values.toSeq.map(_.toString)
-                else
-                  rsm.strList(ridx) ++: row.values.toSeq.map(_.toString)
+                if (!withRowIx) row.values.toSeq.map(_.toString)
+                else rsm.strList(ridx) ++: row.values.toSeq.map(_.toString)
 
               quotify(seq).mkString(separ).getBytes(settings.encoding)
             }

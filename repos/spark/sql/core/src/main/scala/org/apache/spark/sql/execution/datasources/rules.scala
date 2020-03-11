@@ -144,11 +144,11 @@ private[sql] case class PreWriteCheck(catalog: Catalog)
         }
 
       case logical.InsertIntoTable(
-          LogicalRelation(r: HadoopFsRelation, _, _),
-          part,
-          query,
-          overwrite,
-          _) =>
+            LogicalRelation(r: HadoopFsRelation, _, _),
+            part,
+            query,
+            overwrite,
+            _) =>
         // We need to make sure the partition columns specified by users do match partition
         // columns of the relation.
         val existingPartitionColumns = r.partitionSchema.fieldNames.toSet

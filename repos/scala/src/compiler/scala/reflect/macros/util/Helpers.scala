@@ -41,9 +41,9 @@ trait Helpers {
     }
     def transformTag(param: Symbol): Symbol = param.tpe.dealias match {
       case TypeRef(
-          SingleType(SingleType(_, ContextParam), MacroContextUniverse),
-          WeakTypeTagClass,
-          targ :: Nil) =>
+            SingleType(SingleType(_, ContextParam), MacroContextUniverse),
+            WeakTypeTagClass,
+            targ :: Nil) =>
         transform(param, targ.typeSymbol)
       case _ => param
     }

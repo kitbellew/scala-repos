@@ -770,9 +770,7 @@ sealed abstract class Box[+A] extends Product with Serializable {
     * partial function.
     */
   final def collect[B](pf: PartialFunction[A, B]): Box[B] = {
-    flatMap(value =>
-      if (pf.isDefinedAt(value)) Full(pf(value))
-      else Empty)
+    flatMap(value => if (pf.isDefinedAt(value)) Full(pf(value)) else Empty)
   }
 
   /**

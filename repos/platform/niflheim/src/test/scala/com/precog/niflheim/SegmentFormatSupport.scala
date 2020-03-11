@@ -56,8 +56,7 @@ trait SegmentFormatSupport {
   def genBitSet(length: Int, density: Double): Gen[BitSet] = Gen { params =>
     val bits = new mutable.ArrayBuffer[Int]
     Loop.range(0, bits.length) { row =>
-      if (params.rng.nextDouble < density)
-        bits += row
+      if (params.rng.nextDouble < density) bits += row
     }
     Some(BitSetUtil.create(bits.toArray))
   }

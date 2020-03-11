@@ -74,8 +74,7 @@ class ScalaIntroduceVariableHandler
               offset,
               classOf[ScTypeElement],
               false))
-        else
-          None
+        else None
 
       file.findElementAt(offset) match {
         case w: PsiWhiteSpace if w.getTextRange.getStartOffset == offset =>

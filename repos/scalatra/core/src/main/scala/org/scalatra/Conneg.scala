@@ -107,8 +107,7 @@ object Conneg {
       req: HttpServletRequest,
       format: Format[T]): List[Conneg[T]] = {
     val header = req.getHeader(name)
-    if (header == null) List()
-    else format.values(header.trim())
+    if (header == null) List() else format.values(header.trim())
   }
 
   /** Retrieves the preferred supported value for the specified content-negotiation header. */

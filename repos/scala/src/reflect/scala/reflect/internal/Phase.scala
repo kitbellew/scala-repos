@@ -8,8 +8,7 @@ package reflect
 package internal
 
 abstract class Phase(val prev: Phase) {
-  if ((prev ne null) && (prev ne NoPhase))
-    prev.nx = this
+  if ((prev ne null) && (prev ne NoPhase)) prev.nx = this
 
   type Id = Int
   val id: Id = if (prev eq null) 0 else prev.id + 1

@@ -170,13 +170,11 @@ trait StatsLibModule[M[+_]]
                             count + 1,
                             modes + BigDecimal(sv),
                             maxCount)
-                        else
-                          (Some(sv), count + 1, modes, maxCount)
+                        else (Some(sv), count + 1, modes, maxCount)
                       } else {
                         if (maxCount == 1)
                           (Some(sv), 1, modes + BigDecimal(sv), maxCount)
-                        else
-                          (Some(sv), 1, modes, maxCount)
+                        else (Some(sv), 1, modes, maxCount)
                       }
                     }
                   }
@@ -217,8 +215,7 @@ trait StatsLibModule[M[+_]]
         def apply(row: Int): BigDecimal = {
           var i = 0
           while (i < cols0.length) {
-            if (cols0(i).isDefinedAt(row))
-              return cols0(i)(row)
+            if (cols0(i).isDefinedAt(row)) return cols0(i)(row)
             i += 1
           }
           return null
@@ -526,8 +523,8 @@ trait StatsLibModule[M[+_]]
                     BigDecimal(0),
                     BigDecimal(0))) {
                   case (
-                      (count, sum1, sum2, sumsq1, sumsq2, productSum),
-                      (v1, v2)) =>
+                        (count, sum1, sum2, sumsq1, sumsq2, productSum),
+                        (v1, v2)) =>
                     (
                       count + 1,
                       sum1 + v1,
@@ -554,8 +551,8 @@ trait StatsLibModule[M[+_]]
                     BigDecimal(0),
                     BigDecimal(0))) {
                   case (
-                      (count, sum1, sum2, sumsq1, sumsq2, productSum),
-                      (v1, v2)) =>
+                        (count, sum1, sum2, sumsq1, sumsq2, productSum),
+                        (v1, v2)) =>
                     (
                       count + 1,
                       sum1 + v1,
@@ -582,8 +579,8 @@ trait StatsLibModule[M[+_]]
                     BigDecimal(0),
                     BigDecimal(0))) {
                   case (
-                      (count, sum1, sum2, sumsq1, sumsq2, productSum),
-                      (v1, v2)) =>
+                        (count, sum1, sum2, sumsq1, sumsq2, productSum),
+                        (v1, v2)) =>
                     (
                       count + 1,
                       sum1 + v1,
@@ -610,8 +607,8 @@ trait StatsLibModule[M[+_]]
                     BigDecimal(0),
                     BigDecimal(0))) {
                   case (
-                      (count, sum1, sum2, sumsq1, sumsq2, productSum),
-                      (v1, v2)) =>
+                        (count, sum1, sum2, sumsq1, sumsq2, productSum),
+                        (v1, v2)) =>
                     (
                       count + 1,
                       sum1 + v1,
@@ -638,8 +635,8 @@ trait StatsLibModule[M[+_]]
                     BigDecimal(0),
                     BigDecimal(0))) {
                   case (
-                      (count, sum1, sum2, sumsq1, sumsq2, productSum),
-                      (v1, v2)) =>
+                        (count, sum1, sum2, sumsq1, sumsq2, productSum),
+                        (v1, v2)) =>
                     (
                       count + 1,
                       sum1 + v1,
@@ -666,8 +663,8 @@ trait StatsLibModule[M[+_]]
                     BigDecimal(0),
                     BigDecimal(0))) {
                   case (
-                      (count, sum1, sum2, sumsq1, sumsq2, productSum),
-                      (v1, v2)) =>
+                        (count, sum1, sum2, sumsq1, sumsq2, productSum),
+                        (v1, v2)) =>
                     (
                       count + 1,
                       sum1 + v1,
@@ -694,8 +691,8 @@ trait StatsLibModule[M[+_]]
                     BigDecimal(0),
                     BigDecimal(0))) {
                   case (
-                      (count, sum1, sum2, sumsq1, sumsq2, productSum),
-                      (v1, v2)) =>
+                        (count, sum1, sum2, sumsq1, sumsq2, productSum),
+                        (v1, v2)) =>
                     (
                       count + 1,
                       sum1 + v1,
@@ -722,8 +719,8 @@ trait StatsLibModule[M[+_]]
                     BigDecimal(0),
                     BigDecimal(0))) {
                   case (
-                      (count, sum1, sum2, sumsq1, sumsq2, productSum),
-                      (v1, v2)) =>
+                        (count, sum1, sum2, sumsq1, sumsq2, productSum),
+                        (v1, v2)) =>
                     (
                       count + 1,
                       sum1 + v1,
@@ -750,8 +747,8 @@ trait StatsLibModule[M[+_]]
                     BigDecimal(0),
                     BigDecimal(0))) {
                   case (
-                      (count, sum1, sum2, sumsq1, sumsq2, productSum),
-                      (v1, v2)) =>
+                        (count, sum1, sum2, sumsq1, sumsq2, productSum),
+                        (v1, v2)) =>
                     (
                       count + 1,
                       sum1 + v1,
@@ -766,8 +763,7 @@ trait StatsLibModule[M[+_]]
             case _ => None
           }
 
-          if (result.isEmpty) None
-          else result.suml(monoid)
+          if (result.isEmpty) None else result.suml(monoid)
         }
       }
 
@@ -1004,8 +1000,7 @@ trait StatsLibModule[M[+_]]
             case _ => None
           }
 
-          if (result.isEmpty) None
-          else result.suml(monoid)
+          if (result.isEmpty) None else result.suml(monoid)
         }
       }
 
@@ -1290,8 +1285,7 @@ trait StatsLibModule[M[+_]]
             case _ => None
           }
 
-          if (result.isEmpty) None
-          else result.suml(monoid)
+          if (result.isEmpty) None else result.suml(monoid)
         }
       }
 
@@ -1613,8 +1607,7 @@ trait StatsLibModule[M[+_]]
             case _ => None
           }
 
-          if (result.isEmpty) None
-          else result.suml(monoid)
+          if (result.isEmpty) None else result.suml(monoid)
         }
       }
 

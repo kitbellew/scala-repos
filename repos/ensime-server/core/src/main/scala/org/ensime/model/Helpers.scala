@@ -102,8 +102,7 @@ trait Helpers { self: Global =>
 
     val typeSym = tpe.typeSymbol
     val prefix =
-      if (typeSym.enclosingPackage == NoSymbol)
-        ""
+      if (typeSym.enclosingPackage == NoSymbol) ""
       else typeSym.enclosingPackage.fullName + "."
 
     val withoutArgs = if (typeSym.isNestedClass) {
@@ -255,28 +254,18 @@ trait Helpers { self: Global =>
   import scala.tools.nsc.symtab.Flags._
 
   def declaredAs(sym: Symbol): DeclaredAs = {
-    if (sym.isMethod)
-      DeclaredAs.Method
-    else if (sym.isTrait && sym.hasFlag(JAVA))
-      DeclaredAs.Interface
-    else if (sym.isTrait)
-      DeclaredAs.Trait
-    else if (sym.isInterface)
-      DeclaredAs.Interface
-    else if (sym.isModule)
-      DeclaredAs.Object
-    else if (sym.isModuleClass)
-      DeclaredAs.Object
-    else if (sym.isClass)
-      DeclaredAs.Class
-    else if (sym.isPackageClass)
-      DeclaredAs.Class
+    if (sym.isMethod) DeclaredAs.Method
+    else if (sym.isTrait && sym.hasFlag(JAVA)) DeclaredAs.Interface
+    else if (sym.isTrait) DeclaredAs.Trait
+    else if (sym.isInterface) DeclaredAs.Interface
+    else if (sym.isModule) DeclaredAs.Object
+    else if (sym.isModuleClass) DeclaredAs.Object
+    else if (sym.isClass) DeclaredAs.Class
+    else if (sym.isPackageClass) DeclaredAs.Class
 
     // check this last so objects are not
     // classified as fields
-    else if (sym.isValue || sym.isVariable)
-      DeclaredAs.Field
-    else
-      DeclaredAs.Nil
+    else if (sym.isValue || sym.isVariable) DeclaredAs.Field
+    else DeclaredAs.Nil
   }
 }

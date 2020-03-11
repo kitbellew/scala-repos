@@ -81,14 +81,12 @@ private[coordinator] class MemberMetadata(
     * Check if the provided protocol metadata matches the currently stored metadata.
     */
   def matches(protocols: List[(String, Array[Byte])]): Boolean = {
-    if (protocols.size != this.supportedProtocols.size)
-      return false
+    if (protocols.size != this.supportedProtocols.size) return false
 
     for (i <- 0 until protocols.size) {
       val p1 = protocols(i)
       val p2 = supportedProtocols(i)
-      if (p1._1 != p2._1 || !util.Arrays.equals(p1._2, p2._2))
-        return false
+      if (p1._1 != p2._1 || !util.Arrays.equals(p1._2, p2._2)) return false
     }
     return true
   }

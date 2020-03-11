@@ -76,10 +76,7 @@ trait BlockLoadSpec[M[+_]]
           }
         }
 
-        if (back \ "value" == JUndefined)
-          None
-        else
-          Some(back)
+        if (back \ "value" == JUndefined) None else Some(back)
       }
 
       Path("/test") -> Projection(stream)

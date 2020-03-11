@@ -102,8 +102,7 @@ object ResolveUtils {
           }
         case patt: ScFieldId =>
           if (patt.getParent /*list of ids*/ .getParent
-                .isInstanceOf[ScVariable])
-            kinds contains VAR
+                .isInstanceOf[ScVariable]) kinds contains VAR
           else kinds contains VAL
         case classParam: ScClassParameter =>
           if (classParam.isVar) kinds.contains(VAR) else kinds.contains(VAL)

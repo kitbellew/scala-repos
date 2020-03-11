@@ -71,8 +71,7 @@ class UdpIntegrationSpec extends AkkaSpec("""
       (0 until 20).foreach(_ ⇒ checkSendingToServer())
       (0 until 20).foreach(_ ⇒ checkSendingToClient())
       (0 until 20).foreach { i ⇒
-        if (i % 2 == 0) checkSendingToServer()
-        else checkSendingToClient()
+        if (i % 2 == 0) checkSendingToServer() else checkSendingToClient()
       }
     }
 

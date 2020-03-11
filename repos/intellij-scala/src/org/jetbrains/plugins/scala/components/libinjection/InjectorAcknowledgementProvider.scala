@@ -46,8 +46,7 @@ class UIAcknowledgementProvider(
           notification: Notification,
           event: HyperlinkEvent): Unit = {
         notification.expire()
-        if (event.getDescription == "Yes")
-          acceptCallback
+        if (event.getDescription == "Yes") acceptCallback
       }
     }
     GROUP

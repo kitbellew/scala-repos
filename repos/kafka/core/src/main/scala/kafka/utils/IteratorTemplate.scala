@@ -34,8 +34,7 @@ abstract class IteratorTemplate[T]
   private var nextItem = null.asInstanceOf[T]
 
   def next(): T = {
-    if (!hasNext())
-      throw new NoSuchElementException()
+    if (!hasNext()) throw new NoSuchElementException()
     state = NOT_READY
     if (nextItem == null)
       throw new IllegalStateException("Expected item but none found.")
@@ -43,8 +42,7 @@ abstract class IteratorTemplate[T]
   }
 
   def peek(): T = {
-    if (!hasNext())
-      throw new NoSuchElementException()
+    if (!hasNext()) throw new NoSuchElementException()
     nextItem
   }
 

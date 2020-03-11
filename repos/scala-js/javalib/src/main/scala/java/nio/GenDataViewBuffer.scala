@@ -52,8 +52,7 @@ private[nio] object GenDataViewBuffer {
     if (byteLength == 0)
       lit(buffer = buffer, byteOffset = byteOffset, byteLength = byteLength)
         .asInstanceOf[DataView]
-    else
-      new DataView(buffer, byteOffset, byteLength)
+    else new DataView(buffer, byteOffset, byteLength)
   }
 }
 
@@ -100,8 +99,7 @@ private[nio] final class GenDataViewBuffer[B <: Buffer](val self: B)
   @inline
   def generic_compact()(
       implicit newDataViewBuffer: NewThisDataViewBuffer): BufferType = {
-    if (isReadOnly)
-      throw new ReadOnlyBufferException
+    if (isReadOnly) throw new ReadOnlyBufferException
 
     val dataView = _dataView
     val bytesPerElem = newDataViewBuffer.bytesPerElem
@@ -118,8 +116,7 @@ private[nio] final class GenDataViewBuffer[B <: Buffer](val self: B)
 
   @inline
   def generic_order(): ByteOrder =
-    if (isBigEndian) ByteOrder.BIG_ENDIAN
-    else ByteOrder.LITTLE_ENDIAN
+    if (isBigEndian) ByteOrder.BIG_ENDIAN else ByteOrder.LITTLE_ENDIAN
 
   @inline
   def generic_arrayBuffer: ArrayBuffer =

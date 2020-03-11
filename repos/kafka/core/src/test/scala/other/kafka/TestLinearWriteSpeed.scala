@@ -190,8 +190,7 @@ object TestLinearWriteSpeed {
         val lastReportMs = lastReport / (1000 * 1000)
         val now = System.nanoTime / (1000 * 1000)
         val sleepMs = lastReportMs + reportingInterval - now
-        if (sleepMs > 0)
-          Thread.sleep(sleepMs)
+        if (sleepMs > 0) Thread.sleep(sleepMs)
       }
     }
     val elapsedSecs = (System.nanoTime - beginTest) / (1000.0 * 1000.0 * 1000.0)

@@ -333,15 +333,11 @@ case class Netty3Transporter[In, Out](
 
     if (channelReaderTimeout.isFinite || channelWriterTimeout.isFinite) {
       val rms =
-        if (channelReaderTimeout.isFinite)
-          channelReaderTimeout.inMilliseconds
-        else
-          0L
+        if (channelReaderTimeout.isFinite) channelReaderTimeout.inMilliseconds
+        else 0L
       val wms =
-        if (channelWriterTimeout.isFinite)
-          channelWriterTimeout.inMilliseconds
-        else
-          0L
+        if (channelWriterTimeout.isFinite) channelWriterTimeout.inMilliseconds
+        else 0L
 
       pipeline.addFirst("idleReactor", new IdleChannelHandler(statsReceiver))
       pipeline.addFirst(
@@ -417,8 +413,7 @@ case class Netty3Transporter[In, Out](
       case _ =>
     }
 
-    for (snooper <- channelSnooper)
-      pipeline.addFirst("channelSnooper", snooper)
+    for (snooper <- channelSnooper) pipeline.addFirst("channelSnooper", snooper)
 
     pipeline
   }

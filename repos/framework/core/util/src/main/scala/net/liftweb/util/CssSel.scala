@@ -636,9 +636,7 @@ private class SelectorMap(binds: List[CssBind])
 
         case csb :: _ =>
           throw new RetryWithException(
-            if (csb.selectThisChildren_?)
-              e.child
-            else e)
+            if (csb.selectThisChildren_?) e.child else e)
       }
     } else {
       lb.toList.filterNot(_.selectThis_?) match {

@@ -185,8 +185,7 @@ object SbtResolverIndex {
     val kind = {
       if (props.getProperty(Keys.KIND) == SbtResolver.Kind.Maven.toString)
         SbtResolver.Kind.Maven
-      else
-        SbtResolver.Kind.Ivy
+      else SbtResolver.Kind.Ivy
     }
 
     new SbtResolverIndex(kind, root, timestamp, indexDir)

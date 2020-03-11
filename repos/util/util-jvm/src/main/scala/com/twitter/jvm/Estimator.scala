@@ -33,34 +33,27 @@ class Kalman(N: Int) {
     mbuf(i) = m
     ebuf(i) = e
 
-    if (n == 0)
-      est = m
+    if (n == 0) est = m
 
     est += weight * (m - est)
     val mv = mvar
     val ev = evar
-    if (mv + ev == 0)
-      weight = 1d
-    else
-      weight = mv / (mv + ev)
+    if (mv + ev == 0) weight = 1d else weight = mv / (mv + ev)
     n += 1
   }
 
   private[this] def mvar = variance(
-    if (n < N) mbuf take n.toInt
-    else mbuf
+    if (n < N) mbuf take n.toInt else mbuf
   )
 
   private[this] def evar = variance(
-    if (n < N) ebuf take n.toInt
-    else ebuf
+    if (n < N) ebuf take n.toInt else ebuf
   )
 
   def estimate = est
 
   private[this] def variance(samples: Array[Double]): Double = {
-    if (samples.length == 1)
-      return 0d
+    if (samples.length == 1) return 0d
 
     val sum = samples.sum
     val mean = sum / samples.length
@@ -107,8 +100,7 @@ class WindowedMeans(N: Int, windows: Seq[(Int, Int)])
     require(count <= N && count > 0)
     val i = {
       val x = ((from - count) % N).toInt
-      if (x < 0) (x + N)
-      else x
+      if (x < 0) (x + N) else x
     }
     val j = (from % N).toInt
     val sum =
@@ -119,10 +111,7 @@ class WindowedMeans(N: Int, windows: Seq[(Int, Int)])
   }
 
   def measure(m: Double) {
-    if (n == 0)
-      java.util.Arrays.fill(buf, m)
-    else
-      buf((n % N).toInt) = m
+    if (n == 0) java.util.Arrays.fill(buf, m) else buf((n % N).toInt) = m
     n += 1
   }
 
@@ -144,9 +133,7 @@ class LoadAverage(interval: Double) extends Estimator[Double] {
   private[this] var load = Double.NaN
 
   def measure(m: Double) {
-    load =
-      if (load.isNaN) m
-      else load * a + m * (1 - a)
+    load = if (load.isNaN) m else load * a + m * (1 - a)
   }
 
   def estimate = load

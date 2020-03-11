@@ -514,10 +514,8 @@ class UpgradedImageIExtractor(
     }
 
     val knownImgSrcOpt =
-      if (knownImageElem != null)
-        Option(knownImageElem.attr("src"))
-      else
-        checkForMsnVideoHeadlineImage
+      if (knownImageElem != null) Option(knownImageElem.attr("src"))
+      else checkForMsnVideoHeadlineImage
 
     knownImgSrcOpt match {
       case Some(knownImgSrc) if knownImgSrc != "" =>

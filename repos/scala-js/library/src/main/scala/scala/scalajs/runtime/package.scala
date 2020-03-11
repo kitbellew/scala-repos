@@ -26,8 +26,7 @@ package object runtime {
     val result = js.Dynamic.newInstance(fromDyn.constructor)()
     val fromDict = from.asInstanceOf[js.Dictionary[js.Any]]
     val resultDict = result.asInstanceOf[js.Dictionary[js.Any]]
-    for (key <- fromDict.keys)
-      resultDict(key) = fromDict(key)
+    for (key <- fromDict.keys) resultDict(key) = fromDict(key)
     result
   }
 
@@ -46,8 +45,7 @@ package object runtime {
   final def jsTupleArray2jsObject(
       tuples: js.Array[(String, js.Any)]): js.Object with js.Dynamic = {
     val result = js.Dynamic.literal()
-    for ((name, value) <- tuples)
-      result.updateDynamic(name)(value)
+    for ((name, value) <- tuples) result.updateDynamic(name)(value)
     result
   }
 
@@ -103,8 +101,7 @@ package object runtime {
           var i = 0
           while (i < enumPropsLen) {
             val prop = enumProps(i)
-            if (!alreadySeen.get(prop).isDefined)
-              result.push(prop)
+            if (!alreadySeen.get(prop).isDefined) result.push(prop)
             i += 1
           }
 

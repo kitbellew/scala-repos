@@ -180,8 +180,7 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
               gen.mkMethodCall(
                 currentRun.runDefinitions.Boxes_isNumberOrBool,
                 t :: Nil)
-            else if (nme.BooleanOpNames(name))
-              t IS_OBJ BoxedBooleanClass.tpe
+            else if (nme.BooleanOpNames(name)) t IS_OBJ BoxedBooleanClass.tpe
             else
               gen.mkMethodCall(
                 currentRun.runDefinitions.Boxes_isNumber,
@@ -511,10 +510,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
         val tpe = c.typeValue
         typedWithPos(tree.pos) {
           if (isPrimitiveValueClass(tpe.typeSymbol)) {
-            if (tpe.typeSymbol == UnitClass)
-              REF(BoxedUnit_TYPE)
-            else
-              Select(REF(boxedModule(tpe.typeSymbol)), nme.TYPE_)
+            if (tpe.typeSymbol == UnitClass) REF(BoxedUnit_TYPE)
+            else Select(REF(boxedModule(tpe.typeSymbol)), nme.TYPE_)
           } else tree
         }
 
@@ -534,8 +531,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
        * have little in common.
        */
       case Apply(
-          fn @ Select(qual, _),
-          (arg @ Literal(Constant(symname: String))) :: Nil)
+            fn @ Select(qual, _),
+            (arg @ Literal(Constant(symname: String))) :: Nil)
           if treeInfo.isQualifierSafeToElide(
             qual) && fn.symbol == Symbol_apply && !currentClass.isTrait =>
         super.transform(
@@ -550,17 +547,17 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
       //
       // See SI-6611; we must *only* do this for literal vararg arrays.
       case Apply(
-          appMeth,
-          List(
-            Apply(wrapRefArrayMeth, List(arg @ StripCast(ArrayValue(_, _)))),
-            _))
+            appMeth,
+            List(
+              Apply(wrapRefArrayMeth, List(arg @ StripCast(ArrayValue(_, _)))),
+              _))
           if wrapRefArrayMeth.symbol == currentRun.runDefinitions.Predef_wrapRefArray && appMeth.symbol == ArrayModule_genericApply =>
         super.transform(arg)
       case Apply(
-          appMeth,
-          List(
-            elem0,
-            Apply(wrapArrayMeth, List(rest @ ArrayValue(elemtpt, _)))))
+            appMeth,
+            List(
+              elem0,
+              Apply(wrapArrayMeth, List(rest @ ArrayValue(elemtpt, _)))))
           if wrapArrayMeth.symbol == Predef_wrapArray(
             elemtpt.tpe) && appMeth.symbol == ArrayModule_apply(elemtpt.tpe) =>
         super.transform(

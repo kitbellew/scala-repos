@@ -101,8 +101,7 @@ trait MySQLProfile extends JdbcProfile { profile =>
           }
       override def length: Option[Int] = {
         val l = super.length
-        if (tpe == "String" && varying && l == Some(65535)) None
-        else l
+        if (tpe == "String" && varying && l == Some(65535)) None else l
       }
     }
   }
@@ -149,8 +148,7 @@ trait MySQLProfile extends JdbcProfile { profile =>
                     .isDefined ||
                   sym
                     .flatMap(_.findColumnOption[ColumnOption.PrimaryKey.type])
-                    .isDefined)
-                "VARCHAR(254)"
+                    .isDefined) "VARCHAR(254)"
               else "TEXT"
           }
       }
@@ -234,10 +232,8 @@ trait MySQLProfile extends JdbcProfile { profile =>
     }
 
     override protected def buildOrdering(n: Node, o: Ordering) {
-      if (o.nulls.last && !o.direction.desc)
-        b"isnull($n),"
-      else if (o.nulls.first && o.direction.desc)
-        b"isnull($n) desc,"
+      if (o.nulls.last && !o.direction.desc) b"isnull($n),"
+      else if (o.nulls.first && o.direction.desc) b"isnull($n) desc,"
       expr(n)
       if (o.direction.desc) b" desc"
     }

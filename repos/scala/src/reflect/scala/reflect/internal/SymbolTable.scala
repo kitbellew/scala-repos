@@ -119,8 +119,7 @@ abstract class SymbolTable
   @inline
   final private[scala] def logResultIf[T](msg: => String, cond: T => Boolean)(
       result: T): T = {
-    if (cond(result))
-      log(msg + ": " + result)
+    if (cond(result)) log(msg + ": " + result)
 
     result
   }
@@ -128,8 +127,7 @@ abstract class SymbolTable
   final private[scala] def debuglogResultIf[T](
       msg: => String,
       cond: T => Boolean)(result: T): T = {
-    if (cond(result))
-      debuglog(msg + ": " + result)
+    if (cond(result)) debuglog(msg + ": " + result)
 
     result
   }
@@ -145,8 +143,7 @@ abstract class SymbolTable
 
   private object SimpleNameOrdering extends Ordering[Names#Name] {
     def compare(n1: Names#Name, n2: Names#Name) = (
-      if (n1 eq n2) 0
-      else n1.toString compareTo n2.toString
+      if (n1 eq n2) 0 else n1.toString compareTo n2.toString
     )
   }
 
@@ -261,8 +258,7 @@ abstract class SymbolTable
   }
 
   def slowButSafeEnteringPhase[T](ph: Phase)(op: => T): T = {
-    if (isCompilerUniverse) enteringPhase(ph)(op)
-    else op
+    if (isCompilerUniverse) enteringPhase(ph)(op) else op
   }
 
   @inline final def exitingPhase[T](ph: Phase)(op: => T): T =

@@ -102,8 +102,7 @@ object Files {
             file.toPath,
             to.toPath,
             StandardCopyOption.REPLACE_EXISTING)
-        else
-          JFiles.move(file.toPath, to.toPath)
+        else JFiles.move(file.toPath, to.toPath)
       } catch { case ex: FileAlreadyExistsException => to }
 
       to

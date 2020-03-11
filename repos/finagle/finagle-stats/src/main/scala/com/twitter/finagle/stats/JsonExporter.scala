@@ -134,10 +134,8 @@ class JsonExporter(registry: Metrics, timer: Timer)
       default: Boolean
   ): Boolean = {
     val vals = params.getAll(name)
-    if (vals.nonEmpty)
-      vals.exists { v => v == "1" || v == "true" }
-    else
-      default
+    if (vals.nonEmpty) vals.exists { v => v == "1" || v == "true" }
+    else default
   }
 
   private[this] def getOrRegisterLatchedStats(): CounterDeltas = synchronized {

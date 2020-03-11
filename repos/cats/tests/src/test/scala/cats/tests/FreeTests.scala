@@ -98,8 +98,7 @@ sealed trait FreeTestsInstances {
         freeFA <- freeGen[F, A](freeDepth)
       } yield freeFA.flatMap(f)
 
-    if (maxDepth <= 1) noGosub
-    else Gen.oneOf(noGosub, withGosub)
+    if (maxDepth <= 1) noGosub else Gen.oneOf(noGosub, withGosub)
   }
 
   implicit def freeArbitrary[F[_], A](implicit

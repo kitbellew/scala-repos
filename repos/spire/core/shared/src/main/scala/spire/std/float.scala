@@ -42,8 +42,7 @@ trait FloatIsField extends Field[Float] {
       val shift0 = if (exp == 0) shift - 1 else shift
       val mantissa = (n << shift0) & 0x007FFFFF
       // If exp < 0, then we have underflowed; not much we can do but return 0.
-      if (exp < 0) 0f
-      else intBitsToFloat((exp << 23) | mantissa)
+      if (exp < 0) 0f else intBitsToFloat((exp << 23) | mantissa)
     }
 
     if (a == 0f) b

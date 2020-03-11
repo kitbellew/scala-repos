@@ -70,8 +70,7 @@ private object RenderSupport {
           chunk: HttpEntity.ChunkStreamPart,
           ctx: Context[ByteString]): SyncDirective = {
         val bytes = renderChunk(chunk)
-        if (chunk.isLastChunk) ctx.pushAndFinish(bytes)
-        else ctx.push(bytes)
+        if (chunk.isLastChunk) ctx.pushAndFinish(bytes) else ctx.push(bytes)
       }
     }
     override def onUpstreamFinish(

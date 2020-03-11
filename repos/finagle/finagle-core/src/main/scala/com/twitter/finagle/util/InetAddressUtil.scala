@@ -17,8 +17,7 @@ object InetAddressUtil {
           true
         else if (addr(0) == 192.toByte && addr(1) == 168.toByte) // 192.168/16
           true
-        else
-          false
+        else false
       case _ =>
         false
     }

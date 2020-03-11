@@ -131,8 +131,7 @@ class ZkResolver(factory: ZkClientFactory) extends Resolver {
     val zkOffer = new ZkOffer(new ServerSetImpl(zkClient, path), path)
     val addrOffer = zkOffer map { newSet =>
       val sockaddrs = toAddresses(newSet)
-      if (sockaddrs.nonEmpty) Addr.Bound(sockaddrs)
-      else Addr.Neg
+      if (sockaddrs.nonEmpty) Addr.Bound(sockaddrs) else Addr.Neg
     }
 
     val stable = StabilizingAddr(

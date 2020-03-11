@@ -22,9 +22,7 @@ object UnsignedComparisons {
     else {
       val xor = (a ^ b)
       // If xor >= 0, then a and b are on the same side of zero
-      if (xor >= 0L) java.lang.Long.compare(a, b)
-      else if (b >= 0L) 1
-      else -1
+      if (xor >= 0L) java.lang.Long.compare(a, b) else if (b >= 0L) 1 else -1
     }
   final def unsignedIntCompare(a: Int, b: Int): Int =
     java.lang.Long.compare(a.toLong & 0xFFFFFFFFL, b.toLong & 0xFFFFFFFFL)

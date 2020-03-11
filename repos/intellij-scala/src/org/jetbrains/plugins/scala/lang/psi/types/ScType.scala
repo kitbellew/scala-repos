@@ -159,8 +159,7 @@ trait ScType {
       update: ScType => (Boolean, ScType),
       visited: IHashSet[ScType] = IHashSet.empty): ScType = {
     val res = update(this)
-    if (res._1) res._2
-    else this
+    if (res._1) res._2 else this
   }
 
   def recursiveVarianceUpdate(
@@ -180,8 +179,7 @@ trait ScType {
       update: (ScType, Int, T) => (Boolean, ScType, T),
       variance: Int = 1): ScType = {
     val res = update(this, variance, data)
-    if (res._1) res._2
-    else this
+    if (res._1) res._2 else this
   }
 
   def collectAbstracts: Seq[ScAbstractType] = {

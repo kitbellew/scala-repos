@@ -13,8 +13,7 @@ class DrvTest extends FunSuite {
     val weights = Seq.range(1, 11) map (_.toDouble)
     val drv = Drv.fromWeights(weights)
     val histo = new Array[Int](10)
-    for (_ <- 0 until N)
-      histo(drv(rng)) += 1
+    for (_ <- 0 until N) histo(drv(rng)) += 1
 
     for (i <- 1 to 9) {
       val a = histo(i - 1) / i

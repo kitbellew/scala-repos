@@ -55,12 +55,10 @@ class Pool[K, V](valueFactory: Option[(K) => V] = None)
     if (curr == null) {
       createLock synchronized {
         val curr = pool.get(key)
-        if (curr == null)
-          pool.put(key, valueFactory.get(key))
+        if (curr == null) pool.put(key, valueFactory.get(key))
         pool.get(key)
       }
-    } else
-      curr
+    } else curr
   }
 
   def contains(id: K) = pool.containsKey(id)

@@ -29,8 +29,7 @@ trait FramedStringProtocol extends Protocol with SLF4JLogging {
 
   protected def tryReadString(
       bytes: ByteString): (Option[String], ByteString) = {
-    if (bytes.length < headerLen)
-      (None, bytes) // header is incomplete
+    if (bytes.length < headerLen) (None, bytes) // header is incomplete
     else {
       val header = bytes.take(headerLen)
       val msgLen = Integer.valueOf(header.utf8String, 16).intValue()

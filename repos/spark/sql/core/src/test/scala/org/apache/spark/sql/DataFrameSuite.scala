@@ -518,11 +518,11 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
         .collect()
         .map {
           case Row(
-              id: Int,
-              name: String,
-              age: Int,
-              idToDrop: Int,
-              salary: Double) =>
+                id: Int,
+                name: String,
+                age: Int,
+                idToDrop: Int,
+                salary: Double) =>
             Row(id, name, age, salary)
         }
         .toSeq)

@@ -141,8 +141,7 @@ class EndToEndTest
         new Service[Request, Response] {
           def apply(req: Request) = {
             count += 1
-            if (count >= 1) Future.value(Response(req.body))
-            else client(req)
+            if (count >= 1) Future.value(Response(req.body)) else client(req)
           }
         })
 
@@ -178,8 +177,7 @@ class EndToEndTest
       def apply(req: Request): Future[Response] = {
         if (n.getAndIncrement() == 0)
           Future.exception(Failure.rejected("better luck next time"))
-        else
-          Future.value(Response.empty)
+        else Future.value(Response.empty)
       }
     }
 

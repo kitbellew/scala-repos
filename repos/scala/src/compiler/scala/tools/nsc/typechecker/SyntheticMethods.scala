@@ -84,8 +84,7 @@ trait SyntheticMethods extends ast.TreeDSL {
           false
       }
     }
-    if (!syntheticsOk)
-      return templ
+    if (!syntheticsOk) return templ
 
     val synthesizer = new ClassMethodSynthesis(
       clazz0,
@@ -226,8 +225,7 @@ trait SyntheticMethods extends ast.TreeDSL {
         if (accessors.isEmpty)
           if (clazz.isFinal) thatTest(m)
           else thatTest(m) AND ((thatCast(m) DOT nme.canEqual_)(mkThis))
-        else
-          (mkThis ANY_EQ Ident(m.firstParam)) OR equalsCore(m, accessors)
+        else (mkThis ANY_EQ Ident(m.firstParam)) OR equalsCore(m, accessors)
       }
 
     /* The equality method for value classes
@@ -314,8 +312,7 @@ trait SyntheticMethods extends ast.TreeDSL {
     def chooseHashcode = {
       if (accessors exists (x => isPrimitiveValueType(x.tpe.finalResultType)))
         specializedHashcode
-      else
-        forwardToRuntime(Object_hashCode)
+      else forwardToRuntime(Object_hashCode)
     }
 
     def valueClassMethods = List(

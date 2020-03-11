@@ -68,10 +68,8 @@ class AsyncSemaphore protected (initialPermits: Int, maxWaiters: Option[Int]) {
     override def release() {
       self.synchronized {
         val next = waitq.pollFirst()
-        if (next != null)
-          next.setValue(new SemaphorePermit)
-        else
-          availablePermits += 1
+        if (next != null) next.setValue(new SemaphorePermit)
+        else availablePermits += 1
       }
     }
   }
@@ -105,8 +103,7 @@ class AsyncSemaphore protected (initialPermits: Int, maxWaiters: Option[Int]) {
     */
   def acquire(): Future[Permit] = {
     self.synchronized {
-      if (closed.isDefined)
-        return Future.exception(closed.get)
+      if (closed.isDefined) return Future.exception(closed.get)
 
       if (availablePermits > 0) {
         availablePermits -= 1
@@ -120,8 +117,7 @@ class AsyncSemaphore protected (initialPermits: Int, maxWaiters: Option[Int]) {
             promise.setInterruptHandler {
               case t: Throwable =>
                 self.synchronized {
-                  if (promise.updateIfEmpty(Throw(t)))
-                    waitq.remove(promise)
+                  if (promise.updateIfEmpty(Throw(t))) waitq.remove(promise)
                 }
             }
             waitq.addLast(promise)

@@ -333,8 +333,7 @@ class ReliableProxy(
       val q = queue dropWhile (m ⇒ compare(m.serial, serial) <= 0)
       if (compare(serial, lastAckSerial) > 0) lastAckSerial = serial
       scheduleTick()
-      if (q.isEmpty) goto(Idle) using Vector.empty
-      else stay using q
+      if (q.isEmpty) goto(Idle) using Vector.empty else stay using q
     case Event(Tick, queue) ⇒
       logResend(queue.size)
       queue foreach { tunnel ! _ }
@@ -404,8 +403,7 @@ class ReliableProxy(
 
   def terminated(): State = {
     logDebug("Terminated: {}", targetPath)
-    if (reconnectAfter.isDefined) goto(Connecting)
-    else stop()
+    if (reconnectAfter.isDefined) goto(Connecting) else stop()
   }
 
   def scheduleReconnectTick(): Unit = {

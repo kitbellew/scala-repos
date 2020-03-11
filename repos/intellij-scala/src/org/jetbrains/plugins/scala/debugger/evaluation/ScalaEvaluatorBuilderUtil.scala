@@ -139,8 +139,7 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
     val (outerClass, iterationCount) =
       findContextClass(e => e == null || e == containingClass)
 
-    if (outerClass != null)
-      new ScalaThisEvaluator(iterationCount)
+    if (outerClass != null) new ScalaThisEvaluator(iterationCount)
     else new ScalaThisEvaluator()
   }
 
@@ -157,8 +156,7 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
     def default: Evaluator = {
       val (result, iters) =
         findContextClass(e => e == null || e.isInstanceOf[PsiClass])
-      if (result == null) thisEval(0)
-      else thisEval(iters)
+      if (result == null) thisEval(0) else thisEval(iters)
     }
 
     refOpt match {
@@ -168,8 +166,7 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
             stableEvaluator(stableObjectEvaluator(o))
           case _ =>
             val (result, iters) = findContextClass(e => e == null || e == clazz)
-            if (result == null) thisEval(0)
-            else thisEval(iters)
+            if (result == null) thisEval(0) else thisEval(iters)
         }
       case Some(ref) =>
         val refName = ref.refName
@@ -213,8 +210,7 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
             true)
           if (containingFun != null && call.isAncestorOf(containingFun))
             transformed
-          else
-            transformed + "$macro"
+          else transformed + "$macro"
         case _ => transformed
       }
     }
@@ -233,8 +229,7 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
         val (outerClass, iters) =
           findContextClass(e => e == null || e == containingClass)
 
-        if (outerClass != null) new ScalaThisEvaluator(iters)
-        else null
+        if (outerClass != null) new ScalaThisEvaluator(iters) else null
     }
     if (thisEvaluator != null) {
       val locals = DebuggerUtil.localParamsForFunDef(fun)
@@ -260,8 +255,7 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
 
   def stableObjectEvaluator(obj: ScObject): Evaluator = {
     val qualName =
-      if (obj.isPackageObject)
-        obj.qualifiedName + ".package"
+      if (obj.isPackageObject) obj.qualifiedName + ".package"
       else obj.getQualifiedNameForDebugger
     val qual =
       qualName.split('.').map(NameTransformer.encode).mkString(".") + "$"
@@ -838,8 +832,7 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
               throw EvaluationException(
                 ScalaBundle.message("cannot.evaluate.parameter", p.name))
 
-          if (!isOfPrimitiveType(param)) boxEvaluator(evaluator)
-          else evaluator
+          if (!isOfPrimitiveType(param)) boxEvaluator(evaluator) else evaluator
       }
     }
 
@@ -1134,8 +1127,7 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
 
     val labeledValue = resolve.getUserData(
       CodeFragmentFactoryContextWrapper.LABEL_VARIABLE_VALUE_KEY)
-    if (labeledValue != null)
-      return Some(new IdentityEvaluator(labeledValue))
+    if (labeledValue != null) return Some(new IdentityEvaluator(labeledValue))
 
     val isSynthetic = codeFragment.isAncestorOf(resolve)
     if (isSynthetic && ref.qualifier.isEmpty)
@@ -1426,8 +1418,7 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
       for { arg <- explicitArgs } yield {
         val eval = evaluatorFor(arg)
         val param = ScalaPsiUtil.parameterOf(arg).flatMap(_.psiParam)
-        if (param.exists(!isOfPrimitiveType(_))) boxEvaluator(eval)
-        else eval
+        if (param.exists(!isOfPrimitiveType(_))) boxEvaluator(eval) else eval
       }
     constrDef match {
       case scMethod: ScMethodLike =>
@@ -1442,8 +1433,7 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
             p <- implicitParams
           } yield {
             val eval = implicitArgEvaluator(scMethod, p, typeElem)
-            if (isOfPrimitiveType(p)) eval
-            else boxEvaluator(eval)
+            if (isOfPrimitiveType(p)) eval else boxEvaluator(eval)
           }
         val (outerClass, iters) =
           findContextClass(e => e == null || e == containingClass)
@@ -1641,11 +1631,11 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
 
     methodCall match {
       case hasDeepestInvokedReference(
-          ScReferenceExpression.withQualifier(implicitlyConvertedTo(expr))) =>
+            ScReferenceExpression.withQualifier(implicitlyConvertedTo(expr))) =>
         val copy = methodCall.copy().asInstanceOf[ScMethodCall]
         copy match {
           case hasDeepestInvokedReference(
-              ScReferenceExpression.withQualifier(q)) =>
+                ScReferenceExpression.withQualifier(q)) =>
             q.replaceExpression(expr, removeParenthesis = false)
             evaluatorFor(copy)
           case _ =>
@@ -2046,8 +2036,9 @@ object ScalaEvaluatorBuilderUtil {
           true
         case ScalaPsiUtil.MethodValue(_) => true
         case Both(
-            ChildOf(argExprs: ScArgumentExprList),
-            ScalaPositionManager.InsideAsync(call)) if call.args == argExprs =>
+              ChildOf(argExprs: ScArgumentExprList),
+              ScalaPositionManager.InsideAsync(call))
+            if call.args == argExprs =>
           true
         case _ => false
       }
@@ -2161,7 +2152,7 @@ object ScalaEvaluatorBuilderUtil {
       place: PsiElement): Boolean = {
     named match {
       case ScalaPsiUtil.inNameContext(
-          enum @ (_: ScEnumerator | _: ScGenerator)) =>
+            enum @ (_: ScEnumerator | _: ScGenerator)) =>
         enum.getParent.getParent match {
           case ScForStatement(enums, body) =>
             enums.namings.map(_.pattern) match {
@@ -2229,8 +2220,8 @@ object ScalaEvaluatorBuilderUtil {
       elem match {
         case c: ScClassParameter if c.isPrivateThis => Some(c)
         case Both(
-            bp: ScBindingPattern,
-            ScalaPsiUtil.inNameContext(v @ (_: ScVariable | _: ScValue))) =>
+              bp: ScBindingPattern,
+              ScalaPsiUtil.inNameContext(v @ (_: ScVariable | _: ScValue))) =>
           v match {
             case mo: ScModifierListOwner
                 if mo.getModifierList.accessModifier.exists(am =>

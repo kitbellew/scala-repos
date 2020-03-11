@@ -48,10 +48,8 @@ trait Infer extends Checkable {
     def lastType = formals1.last.dealiasWiden.typeArgs.head
     def expanded(n: Int) = (1 to n).toList map (_ => lastType)
 
-    if (expandLast)
-      formals1.init ::: expanded(numArgs - numFormals + 1)
-    else
-      formals1
+    if (expandLast) formals1.init ::: expanded(numArgs - numFormals + 1)
+    else formals1
   }
 
   /** Sorts the alternatives according to the given comparison function.
@@ -222,8 +220,7 @@ trait Infer extends Checkable {
         else stdErrorValue
       def errorSym = if (tree.isType) errorClass else errorValue
 
-      if (tree.hasSymbolField)
-        tree setSymbol errorSym
+      if (tree.hasSymbolField) tree setSymbol errorSym
 
       tree setType ErrorType
     }
@@ -253,8 +250,7 @@ trait Infer extends Checkable {
           sym,
           pre,
           context.enclClass.owner,
-          if (settings.check.isDefault)
-            analyzer.lastAccessCheckDetails
+          if (settings.check.isDefault) analyzer.lastAccessCheckDetails
           else
             ptBlock(
               "because of an internal error (no accessible symbol)",
@@ -313,8 +309,7 @@ trait Infer extends Checkable {
       if (context.unit.exists)
         context.unit.depends += sym.enclosingTopLevelClass
 
-      if (sym.isError)
-        tree setSymbol sym setType ErrorType
+      if (sym.isError) tree setSymbol sym setType ErrorType
       else
         accessible match {
           case NoSymbol => checkAccessibleError(tree, sym, pre, site)
@@ -411,8 +406,7 @@ trait Infer extends Checkable {
         case BoundedWildcardType(bounds) => addTypeParam(bounds)
         case t                           => t
       }
-      if (tp eq tp1) tp
-      else existentialAbstraction(tparams.reverse, tp1)
+      if (tp eq tp1) tp else existentialAbstraction(tparams.reverse, tp1)
     }
     def ensureFullyDefined(tp: Type): Type =
       if (isFullyDefined(tp)) tp else makeFullyDefined(tp)
@@ -451,8 +445,7 @@ trait Infer extends Checkable {
       if (conforms)
         try solve()
         catch { case _: NoInstance => null }
-      else
-        null
+      else null
     }
 
     /** Overload which allocates fresh type vars.
@@ -497,14 +490,11 @@ trait Infer extends Checkable {
           assert(tvar.constr.inst != tvar, tvar.origin)
           instantiate(tvar.constr.inst)
         }
-        if (tvar.constr.instValid)
-          instantiate(tvar.constr.inst)
-        else if (loBounds.nonEmpty && variance.isContravariant)
-          setInst(lower)
+        if (tvar.constr.instValid) instantiate(tvar.constr.inst)
+        else if (loBounds.nonEmpty && variance.isContravariant) setInst(lower)
         else if (hiBounds.nonEmpty && (variance.isPositive || loBounds.nonEmpty && upper <:< lower))
           setInst(upper)
-        else
-          WildcardType
+        else WildcardType
       }
 
       val tvars = tparams map freshVar
@@ -514,8 +504,7 @@ trait Infer extends Checkable {
         map2(tparams, tvars)((tparam, tvar) =>
           try instantiateToBound(tvar, varianceInTypes(formals)(tparam))
           catch { case ex: NoInstance => WildcardType })
-      else
-        tvars map (_ => WildcardType)
+      else tvars map (_ => WildcardType)
     }
 
     /** [Martin] Can someone comment this please? I have no idea what it's for
@@ -653,8 +642,7 @@ trait Infer extends Checkable {
       // throw new DeferredNoInstance(() =>
       //   "result type " + normalize(restpe) + " is incompatible with expected type " + pt)
 
-      for (tvar <- tvars)
-        if (!isFullyDefined(tvar)) tvar.constr.inst = NoType
+      for (tvar <- tvars) if (!isFullyDefined(tvar)) tvar.constr.inst = NoType
 
       // Then define remaining type variables from argument types.
       map2(argtpes, formals) { (argtpe, formal) =>
@@ -752,10 +740,8 @@ trait Infer extends Checkable {
         // A varargs star call, e.g. (x, y:_*) can only match a varargs method
         // with the same number of parameters.  See SI-5859 for an example of what
         // would fail were this not enforced before we arrived at isApplicable.
-        if (varargsStar)
-          varargsTarget && simpleMatch
-        else
-          simpleMatch || varargsMatch || (tuplingMatch && notUsingDefaults)
+        if (varargsStar) varargsTarget && simpleMatch
+        else simpleMatch || varargsMatch || (tuplingMatch && notUsingDefaults)
     }
 
     private[typechecker] def followApply(tp: Type): Type = tp match {
@@ -808,16 +794,14 @@ trait Infer extends Checkable {
           } else if (argPos.contains(pos)) { // parameter specified twice
             namesOK = false
           } else {
-            if (index != pos)
-              positionalAllowed = false
+            if (index != pos) positionalAllowed = false
             argPos(index) = pos
           }
           index += 1
           res
         case tp => // a positional argument
           argPos(index) = index
-          if (!positionalAllowed)
-            namesOK = false // positional after named
+          if (!positionalAllowed) namesOK = false // positional after named
           index += 1
           tp
       }
@@ -880,8 +864,7 @@ trait Infer extends Checkable {
         argtpes: List[Type]): List[Type] = {
       if (eligibleForTupleConversion(formals, argtpes.size))
         typeAfterTupleConversion(argtpes) :: Nil
-      else
-        argtpes
+      else argtpes
     }
 
     private def isApplicableToMethod(
@@ -1000,8 +983,7 @@ trait Infer extends Checkable {
           newTyper(silent).infer.isApplicable(undetparams, ftpe, argtpes0, pt)
         if (silent.reporter.hasErrors && !pt.isWildcard)
           applicableExpectingPt(WildcardType) // second try
-        else
-          result
+        else result
       }
       applicableExpectingPt(pt)
     }
@@ -1548,10 +1530,8 @@ trait Infer extends Checkable {
         debuglog("free type params (2) = " + ptparams)
         val ptvars = ptparams map freshVar
         val pt1 = pt.instantiateTypeParams(ptparams, ptvars)
-        if (pat.tpe <:< pt1)
-          ptvars foreach instantiateTypeVar
-        else
-          PatternTypeIncompatibleWithPtError2(pat, pt1, pt)
+        if (pat.tpe <:< pt1) ptvars foreach instantiateTypeVar
+        else PatternTypeIncompatibleWithPtError2(pat, pt1, pt)
       }
 
     object toOrigin extends TypeMap {

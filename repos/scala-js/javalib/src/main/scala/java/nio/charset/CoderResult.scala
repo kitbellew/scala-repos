@@ -18,8 +18,7 @@ class CoderResult private (kind: Int, _length: Int) {
 
   @inline def length(): Int = {
     val l = _length
-    if (l < 0)
-      throw new UnsupportedOperationException
+    if (l < 0) throw new UnsupportedOperationException
     l
   }
 

@@ -532,8 +532,7 @@ abstract class StatefulStage[In, Out] extends PushPullStage[In, Out] {
     _current.onPull(ctx)
 
   override def onUpstreamFinish(ctx: Context[Out]): TerminationDirective =
-    if (emitting) ctx.absorbTermination()
-    else ctx.finish()
+    if (emitting) ctx.absorbTermination() else ctx.finish()
 
   /**
     * Scala API: Can be used from [[StageState#onPush]] or [[StageState#onPull]] to push more than one
@@ -573,8 +572,7 @@ abstract class StatefulStage[In, Out] extends PushPullStage[In, Out] {
           emittingState(
             iter,
             andThen = Become(nextState.asInstanceOf[StageState[Any, Any]])))
-      } else
-        become(nextState)
+      } else become(nextState)
       ctx.push(elem)
     }
   }
@@ -599,16 +597,14 @@ abstract class StatefulStage[In, Out] extends PushPullStage[In, Out] {
       iter: Iterator[Out],
       ctx: Context[Out]): SyncDirective = {
     if (emitting) throw new IllegalStateException("already in emitting state")
-    if (iter.isEmpty)
-      ctx.finish()
+    if (iter.isEmpty) ctx.finish()
     else {
       val elem = iter.next()
       if (iter.hasNext) {
         emitting = true
         become(emittingState(iter, andThen = Finish))
         ctx.push(elem)
-      } else
-        ctx.pushAndFinish(elem)
+      } else ctx.pushAndFinish(elem)
     }
   }
 
@@ -633,8 +629,7 @@ abstract class StatefulStage[In, Out] extends PushPullStage[In, Out] {
       iter: Iterator[Out],
       ctx: Context[Out]): TerminationDirective = {
     if (iter.isEmpty) {
-      if (emitting) ctx.absorbTermination()
-      else ctx.finish()
+      if (emitting) ctx.absorbTermination() else ctx.finish()
     } else {
       val nextState = current match {
         case es: EmittingState if emitting ⇒ es.copy(iter = es.iter ++ iter)
@@ -666,8 +661,7 @@ abstract class StatefulStage[In, Out] extends PushPullStage[In, Out] {
     override def onPull(ctx: Context[Out]) = {
       if (iter.hasNext) {
         val elem = iter.next()
-        if (iter.hasNext)
-          ctx.push(elem)
+        if (iter.hasNext) ctx.push(elem)
         else if (!ctx.isFinishing) {
           emitting = false
           andThen match {
@@ -677,8 +671,7 @@ abstract class StatefulStage[In, Out] extends PushPullStage[In, Out] {
             case Finish ⇒ ctx.pushAndFinish(elem)
           }
           ctx.push(elem)
-        } else
-          ctx.pushAndFinish(elem)
+        } else ctx.pushAndFinish(elem)
       } else
         throw new IllegalStateException(
           "onPull with empty iterator is not expected in emittingState")

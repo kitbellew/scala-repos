@@ -356,8 +356,7 @@ object PersistentActorSpec {
         persistAsync(Evt(data)) { evt ⇒
           if (data != evt.data)
             sender() ! s"Expected [$data] bot got [${evt.data}]"
-          if (evt.data == "done")
-            sender() ! "done"
+          if (evt.data == "done") sender() ! "done"
         }
     }
 

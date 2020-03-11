@@ -140,10 +140,8 @@ object ReplicaVerificationTool extends Logging {
       topicsMetadataResponse.topicsMetadata.filter(topicMetadata =>
         if (topicWhiteListFiler.isTopicAllowed(
               topicMetadata.topic,
-              excludeInternalTopics = false))
-          true
-        else
-          false)
+              excludeInternalTopics = false)) true
+        else false)
     val topicPartitionReplicaList: Seq[TopicPartitionReplica] =
       filteredTopicMetadata.flatMap(topicMetadataResponse =>
         topicMetadataResponse.partitionsMetadata.flatMap(partitionMetadata =>
@@ -365,8 +363,7 @@ private class ReplicaBuffer(
               // only verify up to the high watermark
               if (messageAndOffset.offset >= fetchResponsePerReplica
                     .get(replicaId)
-                    .hw)
-                isMessageInAllReplicas = false
+                    .hw) isMessageInAllReplicas = false
               else {
                 messageInfoFromFirstReplicaOpt match {
                   case None =>
@@ -391,8 +388,7 @@ private class ReplicaBuffer(
                         + "; replica " + replicaId + "'s checksum " + messageAndOffset.message.checksum)
                 }
               }
-            } else
-              isMessageInAllReplicas = false
+            } else isMessageInAllReplicas = false
           } catch {
             case t: Throwable =>
               throw new RuntimeException(
@@ -474,8 +470,7 @@ private class ReplicaFetcher(
     try { response = simpleConsumer.fetch(fetchRequest) }
     catch {
       case t: Throwable =>
-        if (!isRunning.get)
-          throw t
+        if (!isRunning.get) throw t
     }
 
     if (response != null) {

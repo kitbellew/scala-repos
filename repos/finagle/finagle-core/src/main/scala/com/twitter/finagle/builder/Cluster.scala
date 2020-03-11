@@ -75,8 +75,7 @@ trait Cluster[T] { self =>
                 mapped.get(t) match {
                   case Some(q) =>
                     val u = q.dequeue()
-                    if (q.isEmpty)
-                      mapped.remove(t)
+                    if (q.isEmpty) mapped.remove(t)
                     Cluster.Rem(u)
 
                   case None =>

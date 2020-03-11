@@ -122,8 +122,7 @@ class ScalaBlock(
                      .getNode
                      .getElementType == ScalaElementTypes.CASE_CLAUSES)
             Indent.getSpaceIndent(2 * indentSize)
-          else
-            Indent.getNormalIndent,
+          else Indent.getNormalIndent,
           null)
       case scope if isBlockOnlyScope(scope) =>
         new ChildAttributes(
@@ -146,8 +145,7 @@ class ScalaBlock(
           Indent.getNormalIndent(scalaSettings.ALIGN_IF_ELSE),
           this.getAlignment)
       case x: ScDoStmt =>
-        if (x.hasExprBody)
-          new ChildAttributes(Indent.getNoneIndent, null)
+        if (x.hasExprBody) new ChildAttributes(Indent.getNoneIndent, null)
         else
           new ChildAttributes(
             if (mySettings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED)
@@ -217,13 +215,11 @@ class ScalaBlock(
   }
 
   def isLeaf(node: ASTNode): Boolean = {
-    if (myLastNode == null) node.getFirstChildNode == null
-    else false
+    if (myLastNode == null) node.getFirstChildNode == null else false
   }
 
   def isIncomplete(node: ASTNode): Boolean = {
-    if (node.getPsi.isInstanceOf[PsiErrorElement])
-      return true
+    if (node.getPsi.isInstanceOf[PsiErrorElement]) return true
     var lastChild = node.getLastChildNode
     while (lastChild != null &&
            (lastChild.getPsi.isInstanceOf[PsiWhiteSpace] || lastChild.getPsi

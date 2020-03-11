@@ -142,9 +142,7 @@ object Statistics {
       with Ordered[Counter] {
     var value: Int = 0
     def compare(that: Counter): Int =
-      if (this.value < that.value) -1
-      else if (this.value > that.value) 1
-      else 0
+      if (this.value < that.value) -1 else if (this.value > that.value) 1 else 0
     override def equals(that: Any): Boolean =
       that match {
         case that: Counter => (this compare that) == 0

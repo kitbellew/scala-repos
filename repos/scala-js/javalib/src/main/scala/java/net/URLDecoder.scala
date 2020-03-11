@@ -14,10 +14,8 @@ object URLDecoder {
      * character encoding needs to be consulted
      */
     lazy val charset = {
-      if (!Charset.isSupported(enc))
-        throw new UnsupportedEncodingException(enc)
-      else
-        Charset.forName(enc)
+      if (!Charset.isSupported(enc)) throw new UnsupportedEncodingException(enc)
+      else Charset.forName(enc)
     }
 
     decodeImpl(s, charset)
@@ -55,8 +53,7 @@ object URLDecoder {
             val c1 = Character.digit(s.charAt(i + 1), 16)
             val c2 = Character.digit(s.charAt(i + 2), 16)
 
-            if (c1 < 0 || c2 < 0)
-              throwIllegalHex()
+            if (c1 < 0 || c2 < 0) throwIllegalHex()
 
             buffer.put(((c1 << 4) + c2).toByte)
             i += 3
@@ -66,8 +63,7 @@ object URLDecoder {
           val decodeResult = decoder.decode(buffer, charBuffer, true)
           val flushResult = decoder.flush(charBuffer)
 
-          if (decodeResult.isError || flushResult.isError)
-            throwIllegalHex()
+          if (decodeResult.isError || flushResult.isError) throwIllegalHex()
 
         case c =>
           charBuffer.append(c)

@@ -88,8 +88,7 @@ object AtLeastOnceDeliveryFailureSpec {
             sender() ! Ack(i)
             if (shouldFail(liveProcessingFailureRate))
               throw new TestException(debugMessage(s"failed at payload $i"))
-            else
-              log.debug(debugMessage(s"processed payload $i"))
+            else log.debug(debugMessage(s"processed payload $i"))
           }
 
         }
@@ -103,8 +102,7 @@ object AtLeastOnceDeliveryFailureSpec {
         updateState(evt)
         if (shouldFail(replayProcessingFailureRate))
           throw new TestException(debugMessage(s"replay failed at event $evt"))
-        else
-          log.debug(debugMessage(s"replayed event $evt"))
+        else log.debug(debugMessage(s"replayed event $evt"))
     }
 
     def updateState(evt: Evt): Unit = evt match {

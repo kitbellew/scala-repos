@@ -135,8 +135,7 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
               dirtyFilesHolder,
               chunk,
               scalaSources,
-              successfullyCompiled.asJava))
-          ExitCode.ADDITIONAL_PASS_REQUIRED
+              successfullyCompiled.asJava)) ExitCode.ADDITIONAL_PASS_REQUIRED
         else {
           if (ScalaReflectMacroExpansionParser.expansions.nonEmpty)
             ScalaReflectMacroExpansionParser.serializeExpansions(context)
@@ -186,8 +185,7 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
 
     def checkAndCollectFile(file: File): Boolean = {
       val fileName = file.getName
-      if (extensionsToCollect.exists(fileName.endsWith))
-        result += file
+      if (extensionsToCollect.exists(fileName.endsWith)) result += file
 
       true
     }

@@ -208,8 +208,7 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
       }
 
       // non-blocking send a list of records
-      for (i <- 1 to numRecords)
-        producer.send(record0, callback)
+      for (i <- 1 to numRecords) producer.send(record0, callback)
 
       // check that all messages have been acked via offset
       assertEquals(
@@ -334,8 +333,7 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
         null,
         "key".getBytes,
         "value".getBytes)
-      for (i <- 1 to numRecords)
-        producer.send(record0)
+      for (i <- 1 to numRecords) producer.send(record0)
       val response0 = producer.send(record0)
 
       // close the producer

@@ -50,13 +50,12 @@ class DoubleNegationQuickFix(expr: ScExpression)
 object DoubleNegationUtil {
 
   def hasDoubleNegation(expr: ScExpression): Boolean = {
-    if (hasNegation(expr))
-      expr match {
-        case ScPrefixExpr(_, operand) => hasNegation(operand)
-        case ScInfixExpr(left, _, right) =>
-          hasNegation(left) || hasNegation(right)
-        case _ => false
-      }
+    if (hasNegation(expr)) expr match {
+      case ScPrefixExpr(_, operand) => hasNegation(operand)
+      case ScInfixExpr(left, _, right) =>
+        hasNegation(left) || hasNegation(right)
+      case _ => false
+    }
     else
       expr match {
         case ScInfixExpr(left, operation, right) =>

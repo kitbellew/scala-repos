@@ -111,8 +111,7 @@ trait CounterOps {
         val r = Counter[K1, V]()
         for ((k, v) <- a.activeIterator) {
           val vr = semiring.*(v, b(k))
-          if (vr != semiring.zero)
-            r(k) = vr
+          if (vr != semiring.zero) r(k) = vr
         }
         r
       }

@@ -48,8 +48,7 @@ trait Publisher[Evt] {
   protected def publish(event: Evt) {
     filters.keys.foreach(sub =>
       if (!suspended.contains(sub) &&
-          filters.entryExists(sub, p => p(event)))
-        sub.notify(self, event))
+          filters.entryExists(sub, p => p(event))) sub.notify(self, event))
   }
 
   /** Checks if two publishers are structurally identical.

@@ -276,8 +276,7 @@ private[stream] object Timers {
             override def onPull(): Unit = {
               if (isAvailable(in)) {
                 push(out, grab(in))
-                if (isClosed(in)) completeStage()
-                else pull(in)
+                if (isClosed(in)) completeStage() else pull(in)
               } else {
                 if (nextDeadline.isOverdue()) {
                   nextDeadline = Deadline.now + timeout

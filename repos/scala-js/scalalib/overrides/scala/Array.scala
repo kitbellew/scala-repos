@@ -122,8 +122,7 @@ object Array extends FallbackArrayBuilding {
     val srcClass = src.getClass
     if (srcClass.isArray && dest.getClass.isAssignableFrom(srcClass))
       arraycopy(src, srcPos, dest, destPos, length)
-    else
-      slowcopy(src, srcPos, dest, destPos, length)
+    else slowcopy(src, srcPos, dest, destPos, length)
   }
 
   /** Returns an array of length 0 */

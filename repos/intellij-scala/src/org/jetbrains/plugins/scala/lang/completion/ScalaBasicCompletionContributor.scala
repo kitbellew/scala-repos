@@ -163,8 +163,7 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
 
         var elementAdded = false
         def addElement(el: LookupElement) {
-          if (result.getPrefixMatcher.prefixMatches(el))
-            elementAdded = true
+          if (result.getPrefixMatcher.prefixMatches(el)) elementAdded = true
           result.addElement(el)
           addedElements += el.getLookupString
         }

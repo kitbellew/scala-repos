@@ -246,8 +246,7 @@ class Regex private[matching] (val pattern: Pattern, groupNames: String*)
     case null => None
     case _ =>
       val m = pattern matcher s
-      if (runMatcher(m)) Some((1 to m.groupCount).toList map m.group)
-      else None
+      if (runMatcher(m)) Some((1 to m.groupCount).toList map m.group) else None
   }
 
   /** Tries to match the String representation of a [[scala.Char]].
@@ -314,8 +313,7 @@ class Regex private[matching] (val pattern: Pattern, groupNames: String*)
   def unapplySeq(target: Any): Option[List[String]] = target match {
     case s: CharSequence =>
       val m = pattern matcher s
-      if (runMatcher(m)) Some((1 to m.groupCount).toList map m.group)
-      else None
+      if (runMatcher(m)) Some((1 to m.groupCount).toList map m.group) else None
     case m: Match => unapplySeq(m.matched)
     case _        => None
   }
@@ -621,15 +619,13 @@ object Regex {
 
     /** The matched string, or `null` if nothing was matched. */
     def matched: String =
-      if (start >= 0) source.subSequence(start, end).toString
-      else null
+      if (start >= 0) source.subSequence(start, end).toString else null
 
     /** The matched string in group `i`,
       *  or `null` if nothing was matched.
       */
     def group(i: Int): String =
-      if (start(i) >= 0) source.subSequence(start(i), end(i)).toString
-      else null
+      if (start(i) >= 0) source.subSequence(start(i), end(i)).toString else null
 
     /** All capturing groups, i.e., not including group(0). */
     def subgroups: List[String] = (1 to groupCount).toList map group
@@ -638,29 +634,25 @@ object Regex {
       *  or `null` if nothing was matched.
       */
     def before: CharSequence =
-      if (start >= 0) source.subSequence(0, start)
-      else null
+      if (start >= 0) source.subSequence(0, start) else null
 
     /** The char sequence before first character of match in group `i`,
       *  or `null` if nothing was matched for that group.
       */
     def before(i: Int): CharSequence =
-      if (start(i) >= 0) source.subSequence(0, start(i))
-      else null
+      if (start(i) >= 0) source.subSequence(0, start(i)) else null
 
     /** Returns char sequence after last character of match,
       *  or `null` if nothing was matched.
       */
     def after: CharSequence =
-      if (end >= 0) source.subSequence(end, source.length)
-      else null
+      if (end >= 0) source.subSequence(end, source.length) else null
 
     /** The char sequence after last character of match in group `i`,
       *  or `null` if nothing was matched for that group.
       */
     def after(i: Int): CharSequence =
-      if (end(i) >= 0) source.subSequence(end(i), source.length)
-      else null
+      if (end(i) >= 0) source.subSequence(end(i), source.length) else null
 
     private lazy val nameToIndex: Map[String, Int] =
       Map[String, Int]() ++ ("" :: groupNames.toList).zipWithIndex

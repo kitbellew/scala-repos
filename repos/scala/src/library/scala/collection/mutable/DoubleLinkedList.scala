@@ -92,10 +92,8 @@ object DoubleLinkedList extends SeqFactory[DoubleLinkedList] {
       var current = emptyList()
 
       def +=(elem: A): this.type = {
-        if (current.isEmpty)
-          current = new DoubleLinkedList(elem, emptyList())
-        else
-          current append new DoubleLinkedList(elem, emptyList())
+        if (current.isEmpty) current = new DoubleLinkedList(elem, emptyList())
+        else current append new DoubleLinkedList(elem, emptyList())
 
         this
       }

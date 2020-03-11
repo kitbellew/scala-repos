@@ -87,8 +87,7 @@ abstract class Flatten extends InfoTransform {
                   // currently they don't get the flag, even though they are lifted to the package
                   sym.moduleClass setFlag LIFTED
                 }
-              } else if (sym.isClass)
-                liftSymbol(sym)
+              } else if (sym.isClass) liftSymbol(sym)
             }
           }
           decls1

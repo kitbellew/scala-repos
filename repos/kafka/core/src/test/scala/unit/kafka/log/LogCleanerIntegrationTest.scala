@@ -126,8 +126,7 @@ class LogCleanerIntegrationTest(compressionCodec: String) {
            // create single message iterator or deep iterator depending on compression codec
            if (entry.message.compressionCodec == NoCompressionCodec)
              Stream.cons(entry, Stream.empty).iterator
-           else
-             ByteBufferMessageSet.deepIterator(entry)
+           else ByteBufferMessageSet.deepIterator(entry)
          }) yield {
       val key = TestUtils.readString(messageAndOffset.message.key).toInt
       val value = TestUtils.readString(messageAndOffset.message.payload).toInt
@@ -207,8 +206,7 @@ object LogCleanerIntegrationTest {
   @Parameters
   def parameters: java.util.Collection[Array[String]] = {
     val list = new java.util.ArrayList[Array[String]]()
-    for (codec <- CompressionType.values)
-      list.add(Array(codec.name))
+    for (codec <- CompressionType.values) list.add(Array(codec.name))
     list
   }
 }

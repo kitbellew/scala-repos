@@ -13,8 +13,7 @@ trait PrivateWithin {
   def propagatePackageBoundary(m: jMember, syms: Symbol*): Unit =
     propagatePackageBoundary(JavaAccFlags(m), syms: _*)
   def propagatePackageBoundary(jflags: JavaAccFlags, syms: Symbol*) {
-    if (jflags.hasPackageAccessBoundary)
-      syms foreach setPackageAccessBoundary
+    if (jflags.hasPackageAccessBoundary) syms foreach setPackageAccessBoundary
   }
 
   // protected in java means package protected. #3946

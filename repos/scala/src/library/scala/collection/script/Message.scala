@@ -79,8 +79,7 @@ class Script[A] extends ArrayBuffer[Message[A]] with Message[A] {
     val it = this.iterator
     var i = 1
     while (it.hasNext) {
-      if (i > 1)
-        res = res + ", "
+      if (i > 1) res = res + ", "
       res = res + "[" + i + "] " + it.next
       i += 1
     }

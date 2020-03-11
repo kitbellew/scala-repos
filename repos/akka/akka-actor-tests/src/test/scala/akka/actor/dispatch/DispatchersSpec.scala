@@ -73,8 +73,7 @@ object DispatchersSpec {
     val created = new AtomicBoolean(false)
     override def create(owner: Option[ActorRef], system: Option[ActorSystem]) =
       if (created.compareAndSet(false, true)) { new DoublingMailbox(owner) }
-      else
-        throw new IllegalStateException("I've already created the mailbox.")
+      else throw new IllegalStateException("I've already created the mailbox.")
   }
 
   class DoublingMailbox(owner: Option[ActorRef])

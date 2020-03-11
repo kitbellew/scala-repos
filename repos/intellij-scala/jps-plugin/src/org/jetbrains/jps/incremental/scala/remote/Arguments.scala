@@ -64,26 +64,26 @@ object Arguments {
 
   def from(strings: Seq[String]): Arguments = strings match {
     case Seq(
-        PathToFile(interfaceJar),
-        PathToFile(sourceJar),
-        PathToFile(interfacesHome),
-        javaClassVersion,
-        StringToOption(compilerJarPaths),
-        StringToOption(javaHomePath),
-        PathsToFiles(sources),
-        PathsToFiles(classpath),
-        PathToFile(output),
-        StringToSequence(scalaOptions),
-        StringToSequence(javaOptions),
-        order,
-        PathToFile(cacheFile),
-        PathsToFiles(outputs),
-        PathsToFiles(caches),
-        incrementalTypeName,
-        PathsToFiles(sourceRoots),
-        PathsToFiles(outputDirs),
-        StringToSequence(worksheetClass),
-        sbtIncOptionsString) =>
+          PathToFile(interfaceJar),
+          PathToFile(sourceJar),
+          PathToFile(interfacesHome),
+          javaClassVersion,
+          StringToOption(compilerJarPaths),
+          StringToOption(javaHomePath),
+          PathsToFiles(sources),
+          PathsToFiles(classpath),
+          PathToFile(output),
+          StringToSequence(scalaOptions),
+          StringToSequence(javaOptions),
+          order,
+          PathToFile(cacheFile),
+          PathsToFiles(outputs),
+          PathsToFiles(caches),
+          incrementalTypeName,
+          PathsToFiles(sourceRoots),
+          PathsToFiles(outputDirs),
+          StringToSequence(worksheetClass),
+          sbtIncOptionsString) =>
       val sbtData =
         SbtData(interfaceJar, sourceJar, interfacesHome, javaClassVersion)
 

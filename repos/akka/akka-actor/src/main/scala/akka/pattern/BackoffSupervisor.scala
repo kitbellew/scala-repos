@@ -291,8 +291,7 @@ private[akka] trait HandleBackoff { this: Actor ⇒
       }
 
     case ResetRestartCount(current) ⇒
-      if (current == restartCount)
-        restartCount = 0
+      if (current == restartCount) restartCount = 0
 
     case GetRestartCount ⇒
       sender() ! RestartCount(restartCount)

@@ -55,8 +55,7 @@ object Bernoulli
 
   def posterior(prior: Beta.Parameter, evidence: TraversableOnce[Boolean]) = {
     evidence.foldLeft(prior) { (acc, ev) =>
-      if (ev) acc.copy(_1 = acc._1 + 1)
-      else acc.copy(_2 = acc._2 + 1)
+      if (ev) acc.copy(_1 = acc._1 + 1) else acc.copy(_2 = acc._2 + 1)
     }
   }
 

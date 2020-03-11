@@ -43,10 +43,8 @@ class MatDouble(r: Int, c: Int, values: Array[Double]) extends Mat[Double] {
   lazy val cachedT = {
     val arrT = values.clone()
 
-    if (this.isSquare)
-      MatMath.squareTranspose(numCols, arrT)
-    else
-      MatMath.blockTranspose(numRows, numCols, this.toArray, arrT)
+    if (this.isSquare) MatMath.squareTranspose(numCols, arrT)
+    else MatMath.blockTranspose(numRows, numCols, this.toArray, arrT)
 
     new MatDouble(numCols, numRows, arrT)
   }

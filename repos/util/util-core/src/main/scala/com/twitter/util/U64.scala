@@ -100,15 +100,12 @@ object U64 {
   def u64ToBigint(x: Long): BigInt =
     if ((x & 0x8000000000000000L) != 0L)
       ((x & 0x7FFFFFFFFFFFFFFFL): BigInt) + bigInt0x8000000000000000L
-    else
-      x: BigInt
+    else x: BigInt
 
   // compares x < y
   def u64_lt(x: Long, y: Long): Boolean =
-    if (x < 0 == y < 0)
-      x < y // signed comparison, straightforward!
-    else
-      x > y // x is less if it doesn't have its high bit set (<0)
+    if (x < 0 == y < 0) x < y // signed comparison, straightforward!
+    else x > y // x is less if it doesn't have its high bit set (<0)
 
   implicit def longToRichU64Long(x: Long): RichU64Long = new RichU64Long(x)
 

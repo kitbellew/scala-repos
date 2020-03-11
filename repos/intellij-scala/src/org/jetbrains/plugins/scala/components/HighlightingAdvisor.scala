@@ -146,10 +146,8 @@ class HighlightingAdvisor(project: Project)
       updateWidget(bar)
       reparseActiveFile()
 
-      if (enabled)
-        notify(status, EnabledMessage, NotificationType.INFORMATION)
-      else
-        notify(status, DisabledMessage, NotificationType.INFORMATION)
+      if (enabled) notify(status, EnabledMessage, NotificationType.INFORMATION)
+      else notify(status, DisabledMessage, NotificationType.INFORMATION)
     }
   }
 

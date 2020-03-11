@@ -33,10 +33,8 @@ abstract class AkkaPublisherVerification[T](
     TestPublisher.error(new Exception("Unable to serve subscribers right now!"))
 
   def iterable(elements: Long): immutable.Iterable[Int] =
-    if (elements > Int.MaxValue)
-      new immutable.Iterable[Int] {
-        override def iterator = Iterator from 0
-      }
-    else
-      0 until elements.toInt
+    if (elements > Int.MaxValue) new immutable.Iterable[Int] {
+      override def iterator = Iterator from 0
+    }
+    else 0 until elements.toInt
 }

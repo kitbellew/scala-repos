@@ -51,8 +51,7 @@ class CodeWriter(writer: Writer) {
   }
 
   def newline: CodeWriter = {
-    if (step == null)
-      newspace
+    if (step == null) newspace
     else if (!line) {
       try { writer.write(nl) }
       catch { case e: Exception => sys.error("IO error") }
@@ -60,8 +59,7 @@ class CodeWriter(writer: Writer) {
       align = true
       space = false
       this
-    } else
-      this
+    } else this
   }
 
   def newspace: CodeWriter = {
@@ -116,8 +114,7 @@ class CodeWriter(writer: Writer) {
           i += 1
         }
       }
-      if (space)
-        writer.write(" ")
+      if (space) writer.write(" ")
       writer.write(value)
       align = false
       space = false

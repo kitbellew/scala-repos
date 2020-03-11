@@ -149,8 +149,7 @@ private[html] object SyntaxHigh {
       while (i < buf.length && j < l) {
         val bch = buf(i)
         val kch = key charAt j
-        if (bch < kch) return -1
-        else if (bch > kch) return 1
+        if (bch < kch) return -1 else if (bch > kch) return 1
         i += 1
         j += 1
       }
@@ -169,9 +168,7 @@ private[html] object SyntaxHigh {
       while (lo <= hi) {
         val m = (hi + lo) / 2
         val d = compare(i, a(m))
-        if (d < 0) hi = m - 1
-        else if (d > 0) lo = m + 1
-        else return m
+        if (d < 0) hi = m - 1 else if (d > 0) lo = m + 1 else return m
       }
       -1
     }
@@ -197,8 +194,7 @@ private[html] object SyntaxHigh {
             if (star) {
               if (level > 0) level -= 1
               if (level == 0) i else multiline(i + 1, star = true)
-            } else
-              multiline(i + 1, star = false)
+            } else multiline(i + 1, star = false)
           case _ =>
             multiline(i + 1, star = false)
         }
@@ -313,30 +309,25 @@ private[html] object SyntaxHigh {
           val ch = buf(i + 1)
           if (ch == '-' || ch == ':' || ch == '%')
             parse("<span class=\"kw\">&lt;" + ch + "</span>", i + 2)
-          else
-            parse("&lt;", i + 1)
+          else parse("&lt;", i + 1)
         case '>' =>
           if (i + 1 < buf.length && buf(i + 1) == ':')
             parse("<span class=\"kw\">&gt;:</span>", i + 2)
-          else
-            parse("&gt;", i + 1)
+          else parse("&gt;", i + 1)
         case '=' =>
           if (i + 1 < buf.length && buf(i + 1) == '>')
             parse("<span class=\"kw\">=&gt;</span>", i + 2)
-          else
-            parse(buf(i).toString, i + 1)
+          else parse(buf(i).toString, i + 1)
         case '/' =>
           if (i + 1 < buf.length && (buf(i + 1) == '/' || buf(i + 1) == '*')) {
             val c = comment(i + 1)
             parse("<span class=\"cmt\">" + c + "</span>", i + c.length)
-          } else
-            parse(buf(i).toString, i + 1)
+          } else parse(buf(i).toString, i + 1)
         case '\'' =>
           val s = charlit(i + 1)
           if (s.length > 0)
             parse("<span class=\"lit\">" + s + "</span>", i + s.length)
-          else
-            parse(buf(i).toString, i + 1)
+          else parse(buf(i).toString, i + 1)
         case '"' =>
           val s = strlit(i + 1)
           parse("<span class=\"lit\">" + s + "</span>", i + s.length)
@@ -346,8 +337,7 @@ private[html] object SyntaxHigh {
             parse(
               "<span class=\"ano\">@" + annotations(k) + "</span>",
               i + annotations(k).length + 1)
-          else
-            parse(buf(i).toString, i + 1)
+          else parse(buf(i).toString, i + 1)
         case _ =>
           if (i == 0 || (i >= 1 && !Character.isJavaIdentifierPart(
                 buf(i - 1)))) {
@@ -368,12 +358,10 @@ private[html] object SyntaxHigh {
                   parse(
                     "<span class=\"std\">" + standards(k) + "</span>",
                     i + standards(k).length)
-                else
-                  parse(buf(i).toString, i + 1)
+                else parse(buf(i).toString, i + 1)
               }
             }
-          } else
-            parse(buf(i).toString, i + 1)
+          } else parse(buf(i).toString, i + 1)
       }
     }
 

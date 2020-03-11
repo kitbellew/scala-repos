@@ -45,8 +45,7 @@ sealed abstract class IterateeT[E, F[_], A] {
           s.fold[F[StepT[E, F, B]]](
             cont = k => F.point(StepT.scont(u => through(k(u)))),
             done = (a, i) =>
-              if (i.isEmpty)
-                f(a).value
+              if (i.isEmpty) f(a).value
               else
                 F.bind(f(a).value)(
                   _.fold(
@@ -154,8 +153,7 @@ sealed abstract class IterateeT[E, F[_], A] {
             Input[A] => IterateeT[A, F, B]) => IterateeT[E, F, StepT[A, F, B]] =
           k =>
             isEof[E, F] flatMap { eof =>
-              if (eof) done(scont(k), eofInput)
-              else step(k)
+              if (eof) done(scont(k), eofInput) else step(k)
             }
         def step: (
             Input[A] => IterateeT[A, F, B]) => IterateeT[E, F, StepT[A, F, B]] =
@@ -336,8 +334,7 @@ trait IterateeTFunctions {
   def drop[E, F[_]: Applicative](n: Int): IterateeT[E, F, Unit] = {
     def step(s: Input[E]): IterateeT[E, F, Unit] =
       s(el = _ => drop(n - 1), empty = cont(step), eof = done((), eofInput[E]))
-    if (n == 0) done((), emptyInput[E])
-    else cont(step)
+    if (n == 0) done((), emptyInput[E]) else cont(step)
   }
 
   /**

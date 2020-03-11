@@ -150,8 +150,7 @@ class OWLQN[K, T](maxIter: Int, m: Int, l1reg: K => Double, tolerance: Double)(
       grad,
       {
         case (v, gv) =>
-          if (v != 0) math.signum(v)
-          else math.signum(-gv)
+          if (v != 0) math.signum(v) else math.signum(-gv)
       })
     orth
   }

@@ -85,8 +85,7 @@ final class Formatter(private val dest: Appendable)
           val precisionStr = matchResult(4).getOrElse("")
           val hasPrecision = !precisionStr.isEmpty
           val precision =
-            if (hasPrecision) Integer.parseInt(precisionStr)
-            else 0
+            if (hasPrecision) Integer.parseInt(precisionStr) else 0
 
           val conversion = matchResult(5).get.charAt(0)
 
@@ -107,8 +106,7 @@ final class Formatter(private val dest: Appendable)
             val firstChar = argStr.charAt(0)
             if (firstChar == '+' || firstChar == '-')
               pad(argStr.substring(1), firstChar + prefix)
-            else
-              pad(argStr, prefix)
+            else pad(argStr, prefix)
           }
 
           def strRepeat(s: String, times: Int) = {
@@ -123,17 +121,12 @@ final class Formatter(private val dest: Appendable)
 
           def with_+(s: String, preventZero: scala.Boolean = false) = {
             if (s.charAt(0) != '-') {
-              if (hasFlag("+"))
-                pad(s, "+", preventZero)
-              else if (hasFlag(" "))
-                pad(s, " ", preventZero)
-              else
-                pad(s, "", preventZero)
+              if (hasFlag("+")) pad(s, "+", preventZero)
+              else if (hasFlag(" ")) pad(s, " ", preventZero)
+              else pad(s, "", preventZero)
             } else {
-              if (hasFlag("("))
-                pad(s.substring(1) + ")", "(", preventZero)
-              else
-                pad(s.substring(1), "-", preventZero)
+              if (hasFlag("(")) pad(s.substring(1) + ")", "(", preventZero)
+              else pad(s.substring(1), "-", preventZero)
             }
           }
 
@@ -161,8 +154,7 @@ final class Formatter(private val dest: Appendable)
             }
 
             val casedStr =
-              if (isConversionUpperCase) padStr.toUpperCase()
-              else padStr
+              if (isConversionUpperCase) padStr.toUpperCase() else padStr
             dest.append(casedStr)
           }
 
@@ -177,8 +169,7 @@ final class Formatter(private val dest: Appendable)
               }
             case 'h' | 'H' =>
               pad {
-                if (arg eq null) "null"
-                else Integer.toHexString(arg.hashCode)
+                if (arg eq null) "null" else Integer.toHexString(arg.hashCode)
               }
             case 's' | 'S' =>
               arg match {
@@ -196,8 +187,7 @@ final class Formatter(private val dest: Appendable)
                     if (hasPrecision) precision else -1)
                   None // no further processing
                 case _ =>
-                  if (!hasFlag("#"))
-                    pad(String.valueOf(arg))
+                  if (!hasFlag("#")) pad(String.valueOf(arg))
                   else
                     throw new FormatFlagsConversionMismatchException("#", 's')
               }
@@ -225,9 +215,7 @@ final class Formatter(private val dest: Appendable)
               // precision here means number of significant digits
               // not digits after decimal point
               val p =
-                if (!hasPrecision) 6
-                else if (precision == 0) 1
-                else precision
+                if (!hasPrecision) 6 else if (precision == 0) 1 else precision
               // between 1e-4 and 10e(p): display as fixed
               if (m >= 1e-4 && m < Math.pow(10, p)) {
                 val sig = Math.ceil(Math.log10(m)).toInt
@@ -269,8 +257,7 @@ final class Formatter(private val dest: Appendable)
   override def toString(): String = out().toString()
 
   @inline private def ifNotClosed[T](body: => T): T =
-    if (closed) throwClosedException()
-    else body
+    if (closed) throwClosedException() else body
 
   private def throwClosedException(): Nothing =
     throw new FormatterClosedException()

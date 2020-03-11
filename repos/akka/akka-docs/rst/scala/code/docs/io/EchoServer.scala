@@ -116,8 +116,7 @@ class EchoHandler(connection: ActorRef, remote: InetSocketAddress)
       context become buffering(ack)
 
     case PeerClosed =>
-      if (storage.isEmpty) context stop self
-      else context become closing
+      if (storage.isEmpty) context stop self else context become closing
   }
   //#writing
 
@@ -312,8 +311,7 @@ class SimpleEchoHandler(connection: ActorRef, remote: InetSocketAddress)
     }
 
     if (storage.isEmpty) {
-      if (closing) context stop self
-      else context.unbecome()
+      if (closing) context stop self else context.unbecome()
     } else connection ! Write(storage(0), Ack)
   }
   //#simple-helpers

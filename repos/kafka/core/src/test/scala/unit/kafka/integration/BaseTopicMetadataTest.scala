@@ -316,8 +316,7 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
           "Actual ISR  : " + (if (metadata.topicsMetadata.nonEmpty &&
                                   metadata.topicsMetadata.head.partitionsMetadata.nonEmpty)
                                 metadata.topicsMetadata.head.partitionsMetadata.head.isr
-                              else
-                                ""),
+                              else ""),
         8000L
       )
     })

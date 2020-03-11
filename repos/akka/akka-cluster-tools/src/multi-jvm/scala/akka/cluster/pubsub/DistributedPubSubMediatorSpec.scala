@@ -457,8 +457,7 @@ class DistributedPubSubMediatorSpec
       // this test is configured with max-delta-elements = 500
       val many = 1010
       runOn(first) {
-        for (i ← 0 until many)
-          mediator ! Put(createChatUser("u" + (1000 + i)))
+        for (i ← 0 until many) mediator ! Put(createChatUser("u" + (1000 + i)))
 
         mediator ! Status(versions = Map.empty)
         val deltaBuckets1 = expectMsgType[Delta].buckets

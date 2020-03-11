@@ -38,8 +38,7 @@ object MinimumThroughput {
       * complete processing `numBytes` while staying above the min bps requirements.
       */
     def nextDeadline(numBytes: Int): Duration =
-      if (minBps == 0)
-        Duration.Top
+      if (minBps == 0) Duration.Top
       else
         Duration
           .fromSeconds(((bytes + numBytes) / minBps).toInt)

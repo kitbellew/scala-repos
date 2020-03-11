@@ -72,8 +72,7 @@ class RouteRegistry {
       val routes = kv._2
       !p(method) && (routes exists (_.apply(requestPath).isDefined))
     }).keys.toSet
-    if (methods.contains(Get))
-      methods += Head
+    if (methods.contains(Get)) methods += Head
     methods
   }
 

@@ -82,8 +82,7 @@ final class ScriptedTests(
       prescripted: File => Unit,
       log: Logger): Unit = {
     val buffered = new BufferedLogger(new FullLogger(log))
-    if (bufferLog)
-      buffered.record()
+    if (bufferLog) buffered.record()
 
     def createParser() = {
       val fileHandler = new FileCommands(testDirectory)
@@ -296,8 +295,7 @@ private[test] final class ListTests(
     } else {
       val (included, skipped) = allTests.toList.partition(test =>
         accept(ScriptedTest(groupName, test.getName)))
-      if (included.isEmpty)
-        log.warn("Test group " + groupName + " skipped.")
+      if (included.isEmpty) log.warn("Test group " + groupName + " skipped.")
       else if (skipped.nonEmpty) {
         log.warn("Tests skipped in group " + group.getName + ":")
         skipped.foreach(testName => log.warn(" " + testName.getName))

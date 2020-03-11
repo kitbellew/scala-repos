@@ -40,8 +40,7 @@ class FlowConcatAllSpec extends AkkaSpec {
         .run()
       val subscription = subscriber.expectSubscription()
       subscription.request(10)
-      for (i ← 1 to 10)
-        subscriber.expectNext() shouldBe i
+      for (i ← 1 to 10) subscriber.expectNext() shouldBe i
       subscription.request(1)
       subscriber.expectComplete()
     }
@@ -56,8 +55,7 @@ class FlowConcatAllSpec extends AkkaSpec {
         .flatMapConcat(ConstantFun.scalaIdentityFunction)
         .runWith(Sink.fromSubscriber(subscriber))
 
-      for (i ← 1 to 10)
-        subscriber.requestNext() shouldBe i
+      for (i ← 1 to 10) subscriber.requestNext() shouldBe i
 
       subscriber.request(1)
       subscriber.expectComplete()

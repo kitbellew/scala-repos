@@ -75,8 +75,7 @@ class ReplicatedCacheSpec
 
     "replicate many cached entries" in within(10.seconds) {
       runOn(node1) {
-        for (i ← 100 to 200)
-          replicatedCache ! new PutInCache("key" + i, i)
+        for (i ← 100 to 200) replicatedCache ! new PutInCache("key" + i, i)
       }
 
       awaitAssert {

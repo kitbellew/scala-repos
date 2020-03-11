@@ -80,8 +80,7 @@ object `package` {
 
       // clearing an entry from the cache doesn't close it
       val zip = zipFileField.get(fs)
-      if (zip != null)
-        zip.asInstanceOf[ZipFile].close()
+      if (zip != null) zip.asInstanceOf[ZipFile].close()
 
       vfs.getFilesCache.clear(fs)
     }

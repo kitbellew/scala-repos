@@ -100,8 +100,7 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
   def within(r: Range, x: Int) =
     if (r.step > 0)
       r.start <= x && (if (r.isInclusive) x <= r.end else x < r.end)
-    else
-      r.start >= x && (if (r.isInclusive) x >= r.end else x > r.end)
+    else r.start >= x && (if (r.isInclusive) x >= r.end else x > r.end)
 
   def multiple(r: Range, x: Int) = (x.toLong - r.start) % r.step == 0
 

@@ -157,8 +157,7 @@ object MiscTests extends TestSuite {
       'trieNode {
         val names = (0 until 1000).map(_.toString.flatMap(_.toString * 5))
         val trie = new Utils.TrieNode(names)
-        for (name <- names)
-          assert(trie.query(name, 0) != -1)
+        for (name <- names) assert(trie.query(name, 0) != -1)
       }
     }
   }

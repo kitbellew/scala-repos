@@ -142,8 +142,7 @@ private[cluster] final class ClusterHeartbeatSender
 
   def addMember(m: Member): Unit =
     if (m.uniqueAddress != selfUniqueAddress && !state.contains(
-          m.uniqueAddress))
-      state = state.addMember(m.uniqueAddress)
+          m.uniqueAddress)) state = state.addMember(m.uniqueAddress)
 
   def removeMember(m: Member): Unit =
     if (m.uniqueAddress == cluster.selfUniqueAddress) {
@@ -239,8 +238,7 @@ private[cluster] final case class ClusterHeartbeatSenderState(
     if (newState.oldReceiversNowUnreachable(node))
       newState.copy(oldReceiversNowUnreachable =
         newState.oldReceiversNowUnreachable - node)
-    else
-      newState
+    else newState
   }
 
   def unreachableMember(node: UniqueAddress): ClusterHeartbeatSenderState =
@@ -257,8 +255,7 @@ private[cluster] final case class ClusterHeartbeatSenderState(
     removedReceivers foreach { a ⇒
       if (failureDetector.isAvailable(a.address))
         failureDetector remove a.address
-      else
-        adjustedOldReceiversNowUnreachable += a
+      else adjustedOldReceiversNowUnreachable += a
     }
     copy(newRing, adjustedOldReceiversNowUnreachable)
   }
@@ -268,8 +265,7 @@ private[cluster] final case class ClusterHeartbeatSenderState(
       failureDetector heartbeat from.address
       if (oldReceiversNowUnreachable(from)) {
         // back from unreachable, ok to stop heartbeating to it
-        if (!ring.myReceivers(from))
-          failureDetector remove from.address
+        if (!ring.myReceivers(from)) failureDetector remove from.address
         copy(oldReceiversNowUnreachable = oldReceiversNowUnreachable - from)
       } else this
     } else this
@@ -318,8 +314,7 @@ private[cluster] final case class HeartbeatNodeRing(
     * The receivers to use from a specified sender.
     */
   def receivers(sender: UniqueAddress): Set[UniqueAddress] =
-    if (useAllAsReceivers)
-      nodeRing - sender
+    if (useAllAsReceivers) nodeRing - sender
     else {
 
       // Pick nodes from the iterator until n nodes that are not unreachable have been selected.
@@ -348,8 +343,7 @@ private[cluster] final case class HeartbeatNodeRing(
               iter,
               acc + next
             ) // include the unreachable, but don't count it
-          else
-            take(n - 1, iter, acc + next) // include the reachable
+          else take(n - 1, iter, acc + next) // include the reachable
         }
 
       val (remaining, slice1) = take(
@@ -357,8 +351,7 @@ private[cluster] final case class HeartbeatNodeRing(
         nodeRing.from(sender).tail.iterator,
         Set.empty)
       val slice =
-        if (remaining == 0)
-          slice1
+        if (remaining == 0) slice1
         else {
           // wrap around
           val (_, slice2) = take(

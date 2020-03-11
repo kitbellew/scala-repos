@@ -110,10 +110,7 @@ class LogRoleReplace {
 
   def processLine(line: String): String = {
     val cleanLine = removeColorCodes(line)
-    if (updateReplacements(cleanLine))
-      replaceLine(cleanLine)
-    else
-      cleanLine
+    if (updateReplacements(cleanLine)) replaceLine(cleanLine) else cleanLine
   }
 
   private def removeColorCodes(line: String): String =

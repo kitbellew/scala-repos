@@ -99,8 +99,7 @@ class QueryCompiler(val phases: Vector[Phase]) extends Logging {
               "After phase " + p.name + ": (no change but not identical)",
               s2.tree,
               (d => rebuilt.contains(RefId(d))))
-          } else
-            logger.debug("After phase " + p.name + ":", s2.tree)
+          } else logger.debug("After phase " + p.name + ":", s2.tree)
         }
         if (GlobalConfig.verifyTypes && s2.wellTyped)
           (new VerifyTypes(after = Some(p))).apply(s2)

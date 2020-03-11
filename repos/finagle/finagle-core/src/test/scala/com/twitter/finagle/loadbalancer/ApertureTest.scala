@@ -160,8 +160,7 @@ private class ApertureTest extends FunSuite with ApertureTesting {
     val bal = new Bal
 
     bal.update(counts.range(10))
-    for (f <- counts)
-      f.status = Status.Closed
+    for (f <- counts) f.status = Status.Closed
 
     bal.applyn(1000)
     // The correctness of this behavior could be argued either way.

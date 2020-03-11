@@ -45,14 +45,10 @@ class ConcurrentRingBuffer[T: ClassTag](capacity: Int) {
     // Note that the race here is intentional: even if another thread
     // adds an item between getting the r/w cursors and testing them,
     // we have still maintain visibility.
-    if (w < r)
-      return None
+    if (w < r) return None
 
     val el = ring((r % capacity).toInt)
-    if (nextRead.compareAndSet(r, r + 1))
-      Some(el)
-    else
-      tryGet()
+    if (nextRead.compareAndSet(r, r + 1)) Some(el) else tryGet()
   }
 
   /**
@@ -64,8 +60,7 @@ class ConcurrentRingBuffer[T: ClassTag](capacity: Int) {
     val w = publishedWrite.get
     val r = nextRead.get
 
-    if (w < r) None
-    else Some(ring((r % capacity).toInt))
+    if (w < r) None else Some(ring((r % capacity).toInt))
   }
 
   /**
@@ -77,8 +72,7 @@ class ConcurrentRingBuffer[T: ClassTag](capacity: Int) {
     val w = nextWrite.get
     val r = nextRead.get
 
-    if (w - r >= capacity)
-      return false
+    if (w - r >= capacity) return false
 
     if (!nextWrite.compareAndSet(w, w + 1)) tryPut(el)
     else {

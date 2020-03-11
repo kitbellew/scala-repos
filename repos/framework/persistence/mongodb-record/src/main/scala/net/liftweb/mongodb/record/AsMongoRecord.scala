@@ -30,6 +30,5 @@ class AsMongoRecord[A <: MongoRecord[A]](meta: MongoMetaRecord[A]) {
   def unapply(in: String): Option[A] = asMongoRecord(in)
 
   def asMongoRecord(in: String): Option[A] =
-    if (ObjectId.isValid(in)) meta.find(new ObjectId(in))
-    else None
+    if (ObjectId.isValid(in)) meta.find(new ObjectId(in)) else None
 }

@@ -144,8 +144,7 @@ object SessionSettings {
     if (session.append.isEmpty) {
       s.log.info("No session settings defined.")
       s
-    } else
-      f(session)
+    } else f(session)
   }
 
   /** Adds `s` to a strings when needed.    Maybe one day we'll care about non-english languages. */

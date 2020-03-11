@@ -46,8 +46,7 @@ trait TimeLikeSpec[T <: TimeLike[T]]
     "complementary diff" in {
       // Note that this doesn't always hold because of two's
       // complement arithmetic.
-      for (a <- easyVs; b <- easyVs)
-        assert((a diff b) == -(b diff a))
+      for (a <- easyVs; b <- easyVs) assert((a diff b) == -(b diff a))
 
     }
 
@@ -60,13 +59,11 @@ trait TimeLikeSpec[T <: TimeLike[T]]
     }
 
     "commutative max" in {
-      for (a <- vs; b <- vs)
-        assert((a max b) == (b max a))
+      for (a <- vs; b <- vs) assert((a max b) == (b max a))
     }
 
     "commutative min" in {
-      for (a <- vs; b <- vs)
-        assert((a min b) == (b min a))
+      for (a <- vs; b <- vs) assert((a min b) == (b min a))
     }
 
     "handle underflows" in {
@@ -80,33 +77,29 @@ trait TimeLikeSpec[T <: TimeLike[T]]
     }
 
     "Nanoseconds(_) extracts only finite values, in nanoseconds" in {
-      for (t <- Seq(Top, Bottom, Undefined))
-        assert(t match {
-          case Nanoseconds(_) => false
-          case _              => true
-        })
+      for (t <- Seq(Top, Bottom, Undefined)) assert(t match {
+        case Nanoseconds(_) => false
+        case _              => true
+      })
 
       for (ns <- Seq(Long.MinValue, -1, 0, 1, Long.MaxValue);
-           t = fromNanoseconds(ns))
-        assert(t match {
-          case Nanoseconds(`ns`) => true
-          case _                 => false
-        })
+           t = fromNanoseconds(ns)) assert(t match {
+        case Nanoseconds(`ns`) => true
+        case _                 => false
+      })
     }
 
     "Finite(_) extracts only finite values" in {
-      for (t <- Seq(Top, Bottom, Undefined))
-        assert(t match {
-          case Finite(_) => false
-          case _         => true
-        })
+      for (t <- Seq(Top, Bottom, Undefined)) assert(t match {
+        case Finite(_) => false
+        case _         => true
+      })
 
       for (ns <- Seq(Long.MinValue, -1, 0, 1, Long.MaxValue);
-           t = fromNanoseconds(ns))
-        assert(t match {
-          case Finite(`t`) => true
-          case _           => false
-        })
+           t = fromNanoseconds(ns)) assert(t match {
+        case Finite(`t`) => true
+        case _           => false
+      })
     }
 
     "roundtrip through serialization" in {

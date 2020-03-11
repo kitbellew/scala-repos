@@ -26,16 +26,11 @@ trait GenSymbols {
   /** Reify a reference to a symbol */
   def reifySymRef(sym: Symbol): Tree = {
     assert(sym != null, "sym is null")
-    if (sym == NoSymbol)
-      mirrorSelect(nme.NoSymbol)
-    else if (sym.isRootPackage)
-      mirrorMirrorSelect(nme.RootPackage)
-    else if (sym.isRoot)
-      mirrorMirrorSelect(nme.RootClass)
-    else if (sym.isEmptyPackage)
-      mirrorMirrorSelect(nme.EmptyPackage)
-    else if (sym.isEmptyPackageClass)
-      mirrorMirrorSelect(nme.EmptyPackageClass)
+    if (sym == NoSymbol) mirrorSelect(nme.NoSymbol)
+    else if (sym.isRootPackage) mirrorMirrorSelect(nme.RootPackage)
+    else if (sym.isRoot) mirrorMirrorSelect(nme.RootClass)
+    else if (sym.isEmptyPackage) mirrorMirrorSelect(nme.EmptyPackage)
+    else if (sym.isEmptyPackageClass) mirrorMirrorSelect(nme.EmptyPackageClass)
     else if (sym.isModuleClass)
       if (sym.sourceModule.isLocatable)
         Select(Select(reify(sym.sourceModule), nme.asModule), nme.moduleClass)
@@ -89,8 +84,7 @@ trait GenSymbols {
               sym.owner.fullNameString))
         val rowner = reify(sym.owner)
         val rname = reify(sym.name.toString)
-        if (sym.isType)
-          mirrorBuildCall(nme.selectType, rowner, rname)
+        if (sym.isType) mirrorBuildCall(nme.selectType, rowner, rname)
         else if (sym.isMethod && sym.owner.isClass && sym.owner.info
                    .decl(sym.name)
                    .isOverloaded) {
@@ -101,8 +95,7 @@ trait GenSymbols {
             rowner,
             rname,
             reify(index))
-        } else
-          mirrorBuildCall(nme.selectTerm, rowner, rname)
+        } else mirrorBuildCall(nme.selectTerm, rowner, rname)
       }
     } else {
       // todo. make sure that free methods work correctly

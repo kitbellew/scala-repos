@@ -12,15 +12,13 @@ object DiagramStats {
     var instances: Int = 0
 
     def addTime(ms: Long) = {
-      if (maxTime < ms)
-        maxTime = ms
+      if (maxTime < ms) maxTime = ms
       totalTime += ms
       instances += 1
     }
 
     def printStats(print: String => Unit) = {
-      if (instances == 0)
-        print(title + ": no stats gathered")
+      if (instances == 0) print(title + ": no stats gathered")
       else {
         print("  " + title)
         print("  " + "=" * title.length)

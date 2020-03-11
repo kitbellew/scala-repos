@@ -311,8 +311,7 @@ final case class OneVersionVector private[akka] (
 
   /** INTERNAL API */
   private[akka] override def versionAt(n: UniqueAddress): Long =
-    if (n == node) version
-    else Timestamp.Zero
+    if (n == node) version else Timestamp.Zero
 
   /** INTERNAL API */
   private[akka] override def contains(n: UniqueAddress): Boolean =
@@ -330,8 +329,7 @@ final case class OneVersionVector private[akka] (
       case ManyVersionVector(vs2) ⇒
         val v2 = vs2.getOrElse(node, Timestamp.Zero)
         val mergedVersions =
-          if (v2 >= version) vs2
-          else vs2.updated(node, version)
+          if (v2 >= version) vs2 else vs2.updated(node, version)
         VersionVector(mergedVersions)
     }
   }
@@ -396,8 +394,7 @@ final case class ManyVersionVector(versions: TreeMap[UniqueAddress, Long])
       case OneVersionVector(n2, v2) ⇒
         val v1 = versions.getOrElse(n2, Timestamp.Zero)
         val mergedVersions =
-          if (v1 >= v2) versions
-          else versions.updated(n2, v2)
+          if (v1 >= v2) versions else versions.updated(n2, v2)
         VersionVector(mergedVersions)
     }
   }

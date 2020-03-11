@@ -54,10 +54,7 @@ class Mediator(winSz: Int) {
 
   def median: Double = {
     val v = data(heap(hMid))
-    if ((totCt & 1) == 0)
-      (v + data(heap(hMid - 1))) / 2.0
-    else
-      v
+    if ((totCt & 1) == 0) (v + data(heap(hMid - 1))) / 2.0 else v
   }
 
   def push(v: Double) {
@@ -156,10 +153,8 @@ class Mediator(winSz: Int) {
     var i = iIn * 2
     while (i <= minCt) {
       if (i < minCt && isless(i + 1, i)) { i += 1 }
-      if (!cas(i, i / 2))
-        i = minCt + 1 // break
-      else
-        i *= 2
+      if (!cas(i, i / 2)) i = minCt + 1 // break
+      else i *= 2
     }
   }
 
@@ -168,10 +163,8 @@ class Mediator(winSz: Int) {
     var i = iIn * 2
     while (i >= -maxCt) {
       if (i > -maxCt && isless(i, i - 1)) { i -= 1 }
-      if (!cas(i / 2, i))
-        i = -(maxCt + 1) // break
-      else
-        i *= 2
+      if (!cas(i / 2, i)) i = -(maxCt + 1) // break
+      else i *= 2
     }
   }
 
@@ -263,28 +256,24 @@ class Mediator(winSz: Int) {
   }
 
   private def printMaxHeap() {
-    if (maxCt > 0)
-      print("%6.2f" format data(heap(-1 + hMid)))
+    if (maxCt > 0) print("%6.2f" format data(heap(-1 + hMid)))
     var i = 2
     while (i <= maxCt) {
       print(" |%6.2f " format data(heap(-i + hMid)))
       i += 1
-      if (i <= maxCt)
-        print("%6.2f" format data(heap(-i + hMid)))
+      if (i <= maxCt) print("%6.2f" format data(heap(-i + hMid)))
       i += 1
     }
     println("")
   }
 
   private def printMinHeap() {
-    if (minCt > 0)
-      print("%6.2f" format data(heap(1 + hMid)))
+    if (minCt > 0) print("%6.2f" format data(heap(1 + hMid)))
     var i = 2
     while (i <= minCt) {
       print(" |%6.2f " format data(heap(i + hMid)))
       i += 1
-      if (i <= minCt)
-        print("%6.2f" format data(heap(i + hMid)))
+      if (i <= minCt) print("%6.2f" format data(heap(i + hMid)))
       i += 1
     }
     println("")

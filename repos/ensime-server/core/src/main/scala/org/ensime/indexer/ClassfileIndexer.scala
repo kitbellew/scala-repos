@@ -104,8 +104,7 @@ trait ClassfileIndexer {
 
         override def visitLineNumber(line: Int, start: Label): Unit = {
           val isEarliestLineSeen = firstLine.map(_ < line).getOrElse(true)
-          if (isEarliestLineSeen)
-            firstLine = Some(line)
+          if (isEarliestLineSeen) firstLine = Some(line)
         }
 
         override def visitEnd(): Unit = {
@@ -178,8 +177,7 @@ trait ClassfileIndexer {
         signature: String,
         exceptions: Array[String]): MethodVisitor = {
       addRefs(classesInDescriptor(desc))
-      if (exceptions != null)
-        addRefs(exceptions.map(ClassName.fromInternal))
+      if (exceptions != null) addRefs(exceptions.map(ClassName.fromInternal))
       null
     }
 

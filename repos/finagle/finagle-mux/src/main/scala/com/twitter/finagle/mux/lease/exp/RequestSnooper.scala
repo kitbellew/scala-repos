@@ -44,8 +44,7 @@ private[lease] class RequestSnooper(
     // TODO: do we want to buffer and then discard if there might have been a gc?
     // this has gross memory implications . . . on the other hand, this doesn't really work
     // without that.
-    if (counter.lastGc < (Time.now - d))
-      histo.add(d.inMilliseconds)
+    if (counter.lastGc < (Time.now - d)) histo.add(d.inMilliseconds)
   }
 
   /**

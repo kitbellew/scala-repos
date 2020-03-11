@@ -264,8 +264,7 @@ class KafkaController(
     new Gauge[Int] {
       def value(): Int = {
         inLock(controllerContext.controllerLock) {
-          if (!isActive())
-            0
+          if (!isActive()) 0
           else
             controllerContext.partitionLeadershipInfo.count(p =>
               !controllerContext.liveOrShuttingDownBrokerIds.contains(
@@ -280,8 +279,7 @@ class KafkaController(
     new Gauge[Int] {
       def value(): Int = {
         inLock(controllerContext.controllerLock) {
-          if (!isActive())
-            0
+          if (!isActive()) 0
           else
             controllerContext.partitionReplicaAssignment.count {
               case (topicPartition, replicas) =>
@@ -470,8 +468,7 @@ class KafkaController(
           TimeUnit.SECONDS)
       }
       deleteTopicManager.start()
-    } else
-      info("Controller has been shut down, aborting startup/failover")
+    } else info("Controller has been shut down, aborting startup/failover")
   }
 
   /**
@@ -486,12 +483,10 @@ class KafkaController(
     deregisterPreferredReplicaElectionListener()
 
     // shutdown delete topic manager
-    if (deleteTopicManager != null)
-      deleteTopicManager.shutdown()
+    if (deleteTopicManager != null) deleteTopicManager.shutdown()
 
     // shutdown leader rebalance scheduler
-    if (config.autoLeaderRebalanceEnable)
-      autoRebalanceScheduler.shutdown()
+    if (config.autoLeaderRebalanceEnable) autoRebalanceScheduler.shutdown()
 
     inLock(controllerContext.controllerLock) {
       // de-register partition ISR listener for on-going partition reassignment task
@@ -1522,7 +1517,7 @@ class KafkaController(
         .getLeaderIsrAndEpochForPartition(zkUtils, topic, partition)
       zkWriteCompleteOrUnnecessary = leaderIsrAndEpochOpt match {
         case Some(
-            leaderIsrAndEpoch
+              leaderIsrAndEpoch
             ) => // increment the leader epoch even if the ISR changes
           val leaderAndIsr = leaderIsrAndEpoch.leaderAndIsr
           val controllerEpoch = leaderIsrAndEpoch.controllerEpoch
@@ -1868,7 +1863,7 @@ class ReassignedPartitionsIsrChangeListener(
               zkUtils.getLeaderAndIsrForPartition(topic, partition)
             newLeaderAndIsrOpt match {
               case Some(
-                  leaderAndIsr
+                    leaderAndIsr
                   ) => // check if new replicas have joined ISR
                 val caughtUpReplicas =
                   reassignedReplicas & leaderAndIsr.isr.toSet

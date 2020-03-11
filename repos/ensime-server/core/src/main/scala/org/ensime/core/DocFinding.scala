@@ -124,8 +124,7 @@ trait DocFinding { self: RichPresentationCompiler =>
       else if (owner.isClass || owner.isModule || owner.isTrait || owner.hasPackageFlag) {
         val ownerAtSite = pos.flatMap(specificOwnerOfSymbolAt).getOrElse(owner)
         DocSig(linkName(ownerAtSite, java), Some(signatureString(sym, java)))
-      } else
-        DocSig(linkName(sym.tpe.typeSymbol, java), None)
+      } else DocSig(linkName(sym.tpe.typeSymbol, java), None)
     }
     Some(DocSigPair(docSig(java = false), docSig(java = true)))
   }

@@ -264,8 +264,7 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
         start: Int): Boolean = {
       var j = start
       while (j < nextuntil) {
-        if (p(a(j).asInstanceOf[T])) j += 1
-        else return false
+        if (p(a(j).asInstanceOf[T])) j += 1 else return false
       }
       true
     }
@@ -296,8 +295,7 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
         start: Int): Boolean = {
       var j = start
       while (j < nextuntil) {
-        if (p(a(j).asInstanceOf[T])) return true
-        else j += 1
+        if (p(a(j).asInstanceOf[T])) return true else j += 1
       }
       false
     }
@@ -330,8 +328,7 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
       var j = start
       while (j < nextuntil) {
         val elem = a(j).asInstanceOf[T]
-        if (p(elem)) return Some(elem)
-        else j += 1
+        if (p(elem)) return Some(elem) else j += 1
       }
       None
     }
@@ -361,8 +358,7 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
       var j = startpos
       var endpos = ntil
       while (j < endpos) {
-        if (pred(a(j).asInstanceOf[T])) j += 1
-        else endpos = j
+        if (pred(a(j).asInstanceOf[T])) j += 1 else endpos = j
       }
       endpos - startpos
     }

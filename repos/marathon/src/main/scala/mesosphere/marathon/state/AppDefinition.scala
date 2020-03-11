@@ -196,8 +196,7 @@ case class AppDefinition(
     val acceptedResourceRoles: Option[Set[String]] =
       if (proto.hasAcceptedResourceRoles)
         Some(proto.getAcceptedResourceRoles.getRoleList.asScala.toSet)
-      else
-        None
+      else None
 
     val versionInfoFromProto =
       if (proto.hasLastScalingAt)
@@ -206,8 +205,7 @@ case class AppDefinition(
           lastScalingAt = Timestamp(proto.getLastScalingAt),
           lastConfigChangeAt = Timestamp(proto.getLastConfigChangeAt)
         )
-      else
-        OnlyVersion(Timestamp(proto.getVersion))
+      else OnlyVersion(Timestamp(proto.getVersion))
 
     val ipAddressOption =
       if (proto.hasIpAddress) Some(IpAddress.fromProto(proto.getIpAddress))

@@ -153,10 +153,8 @@ case class Two[V, A](v: V, a1: A, a2: A)(implicit r: Reducer[A, V])
   private[scalaz] def split1(pred: V => Boolean, accV: V) = {
     val va1 = r.unit(a1)
     val accVa1 = sg.append(accV, va1)
-    if (pred(accVa1))
-      (None, a1, Some(one(a2)))
-    else
-      (Some(One(va1, a1)), a2, None)
+    if (pred(accVa1)) (None, a1, Some(one(a2)))
+    else (Some(One(va1, a1)), a2, None)
   }
 }
 case class Three[V, A](v: V, a1: A, a2: A, a3: A)(implicit r: Reducer[A, V])
@@ -202,14 +200,11 @@ case class Three[V, A](v: V, a1: A, a2: A, a3: A)(implicit r: Reducer[A, V])
   private[scalaz] def split1(pred: V => Boolean, accV: V) = {
     val va1 = r.unit(a1)
     val accVa1 = sg.append(accV, va1)
-    if (pred(accVa1))
-      (None, a1, Some(two(a2, a3)))
+    if (pred(accVa1)) (None, a1, Some(two(a2, a3)))
     else {
       val accVa2 = r.snoc(accVa1, a2)
-      if (pred(accVa2))
-        (Some(One(va1, a1)), a2, Some(one(a3)))
-      else
-        (Some(two(a1, a2)), a3, None)
+      if (pred(accVa2)) (Some(One(va1, a1)), a2, Some(one(a3)))
+      else (Some(two(a1, a2)), a3, None)
     }
   }
 }
@@ -258,18 +253,14 @@ case class Four[V, A](v: V, a1: A, a2: A, a3: A, a4: A)(
   private[scalaz] def split1(pred: V => Boolean, accV: V) = {
     val va1 = r.unit(a1)
     val accVa1 = sg.append(accV, va1)
-    if (pred(accVa1))
-      (None, a1, Some(three(a2, a3, a4)))
+    if (pred(accVa1)) (None, a1, Some(three(a2, a3, a4)))
     else {
       val accVa2 = r.snoc(accVa1, a2)
-      if (pred(accVa2))
-        (Some(One(va1, a1)), a2, Some(two(a3, a4)))
+      if (pred(accVa2)) (Some(One(va1, a1)), a2, Some(two(a3, a4)))
       else {
         val accVa3 = r.snoc(accVa2, a3)
-        if (pred(accVa3))
-          (Some(two(a1, a2)), a3, Some(one(a4)))
-        else
-          (Some(three(a1, a2, a3)), a4, None)
+        if (pred(accVa3)) (Some(two(a1, a2)), a3, Some(one(a4)))
+        else (Some(three(a1, a2, a3)), a4, None)
       }
     }
   }
@@ -319,22 +310,17 @@ sealed abstract class Node[V, A](implicit r: Reducer[A, V]) {
       (v, a1, a2) => {
         val va1 = r.unit(a1)
         val accVa1 = sg.append(accV, va1)
-        if (pred(accVa1))
-          (None, a1, Some(one(a2)))
-        else
-          (Some(One(va1, a1)), a2, None)
+        if (pred(accVa1)) (None, a1, Some(one(a2)))
+        else (Some(One(va1, a1)), a2, None)
       },
       (v, a1, a2, a3) => {
         val va1 = r.unit(a1)
         val accVa1 = sg.append(accV, va1)
-        if (pred(accVa1))
-          (None, a1, Some(two(a2, a3)))
+        if (pred(accVa1)) (None, a1, Some(two(a2, a3)))
         else {
           val accVa2 = r.snoc(accVa1, a2)
-          if (pred(accVa2))
-            (Some(One(va1, a1)), a2, Some(one(a3)))
-          else
-            (Some(two(a1, a2)), a3, None)
+          if (pred(accVa2)) (Some(One(va1, a1)), a2, Some(one(a3)))
+          else (Some(two(a1, a2)), a3, None)
         }
       }
     )
@@ -903,8 +889,7 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
     if (!isEmpty && pred(measure)) {
       val (l, x, r) = split1(pred)
       (l, x +: r)
-    } else
-      (this, empty)
+    } else (this, empty)
 
   /**
     * Like `split`, but returns the element where `pred` first holds separately

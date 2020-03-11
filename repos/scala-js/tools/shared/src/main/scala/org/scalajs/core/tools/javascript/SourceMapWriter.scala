@@ -55,8 +55,7 @@ private object SourceMapWriter {
     def push(pos: Position, originalName: String): Unit = {
       val newTopIdx = topIndex + 1
       topIndex = newTopIdx
-      if (newTopIdx >= posStack.length)
-        growStack()
+      if (newTopIdx >= posStack.length) growStack()
       posStack(newTopIdx) = pos
       nameStack(newTopIdx) = originalName
     }
@@ -157,8 +156,7 @@ class SourceMapWriter(
       originalPos: Position,
       optOriginalName: Option[String]): Unit = {
     val originalName =
-      if (optOriginalName.isDefined) optOriginalName.get
-      else null
+      if (optOriginalName.isDefined) optOriginalName.get else null
     nodePosStack.push(originalPos, originalName)
     startSegment(column, originalPos, originalName)
   }
@@ -173,12 +171,10 @@ class SourceMapWriter(
       originalPos: Position,
       originalName: String): Unit = {
     // There is no point in outputting a segment with the same information
-    if ((originalPos == pendingPos) && (originalName == pendingName))
-      return
+    if ((originalPos == pendingPos) && (originalName == pendingName)) return
 
     // Write pending segment if it covers a non-empty range
-    if (startColumn != pendingColumnInGenerated)
-      writePendingSegment()
+    if (startColumn != pendingColumnInGenerated) writePendingSegment()
 
     // New pending
     pendingColumnInGenerated = startColumn
@@ -187,12 +183,10 @@ class SourceMapWriter(
   }
 
   private def writePendingSegment() {
-    if (pendingColumnInGenerated < 0)
-      return
+    if (pendingColumnInGenerated < 0) return
 
     // Segments of a line are separated by ','
-    if (firstSegmentOfLine) firstSegmentOfLine = false
-    else out.write(',')
+    if (firstSegmentOfLine) firstSegmentOfLine = false else out.write(',')
 
     // Generated column field
     writeBase64VLQ(pendingColumnInGenerated - lastColumnInGenerated)
@@ -200,8 +194,7 @@ class SourceMapWriter(
 
     // If the position is NoPosition, stop here
     val pendingPos1 = pendingPos
-    if (pendingPos1.isEmpty)
-      return
+    if (pendingPos1.isEmpty) return
 
     // Extract relevant properties of pendingPos
     val source = pendingPos1.source
@@ -242,8 +235,7 @@ class SourceMapWriter(
     while (restSources.nonEmpty) {
       printJSONString(restSources.head, out)
       restSources = restSources.tail
-      if (restSources.nonEmpty)
-        out.write(", ")
+      if (restSources.nonEmpty) out.write(", ")
     }
 
     var restNames = names.result()
@@ -251,8 +243,7 @@ class SourceMapWriter(
     while (restNames.nonEmpty) {
       printJSONString(restNames.head, out)
       restNames = restNames.tail
-      if (restNames.nonEmpty)
-        out.write(", ")
+      if (restNames.nonEmpty) out.write(", ")
     }
     out.write("],\n\"lineCount\": ")
     out.write(lineCountInGenerated.toString)
@@ -297,8 +288,7 @@ class SourceMapWriter(
         do {
           var digit = value & VLQBaseMask
           value = value >>> VLQBaseShift
-          if (value != 0)
-            digit |= VLQContinuationBit
+          if (value != 0) digit |= VLQContinuationBit
           out.write(Base64Map.charAt(digit))
         } while (value != 0)
       }

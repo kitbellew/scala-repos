@@ -163,8 +163,7 @@ object ImportInfo {
           val element = rr.element
           val nameToAdd = name(element.name)
           namesForWildcard += nameToAdd
-          if (ScalaPsiUtil.isImplicit(element))
-            implicitNames += nameToAdd
+          if (ScalaPsiUtil.isImplicit(element)) implicitNames += nameToAdd
         case _ =>
       }
     }
@@ -275,8 +274,7 @@ object ImportInfo {
             packageFqn(p)
           else refName
         case Some(ScalaResolveResult(o: ScObject, _)) =>
-          if (isRelativeObject(o)) o.qualifiedName
-          else refName
+          if (isRelativeObject(o)) o.qualifiedName else refName
         case Some(ScalaResolveResult(c: PsiClass, _)) =>
           val parts = c.qualifiedName.split('.')
           if (parts.length > 1) parts.map(name).mkString(".") else refName

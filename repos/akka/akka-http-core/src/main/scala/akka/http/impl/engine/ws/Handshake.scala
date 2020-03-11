@@ -250,8 +250,7 @@ private[http] object Handshake {
         new Expectation {
           def apply(resp: HttpResponse): Option[String] = {
             val v = value(resp)
-            if (condition(v)) None
-            else Some(msg(v))
+            if (condition(v)) None else Some(msg(v))
           }
         }
 

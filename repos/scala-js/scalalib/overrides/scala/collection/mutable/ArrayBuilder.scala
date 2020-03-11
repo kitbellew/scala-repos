@@ -170,8 +170,7 @@ object ArrayBuilder {
     def clear() { size = 0 }
 
     def result() = {
-      if (capacity != 0 && capacity == size) elems
-      else mkArray(size)
+      if (capacity != 0 && capacity == size) elems else mkArray(size)
     }
 
     override def equals(other: Any): Boolean = other match {
@@ -233,8 +232,7 @@ object ArrayBuilder {
     def clear() { size = 0 }
 
     def result() = {
-      if (capacity != 0 && capacity == size) elems
-      else mkArray(size)
+      if (capacity != 0 && capacity == size) elems else mkArray(size)
     }
 
     override def equals(other: Any): Boolean = other match {
@@ -296,8 +294,7 @@ object ArrayBuilder {
     def clear() { size = 0 }
 
     def result() = {
-      if (capacity != 0 && capacity == size) elems
-      else mkArray(size)
+      if (capacity != 0 && capacity == size) elems else mkArray(size)
     }
 
     override def equals(other: Any): Boolean = other match {
@@ -359,8 +356,7 @@ object ArrayBuilder {
     def clear() { size = 0 }
 
     def result() = {
-      if (capacity != 0 && capacity == size) elems
-      else mkArray(size)
+      if (capacity != 0 && capacity == size) elems else mkArray(size)
     }
 
     override def equals(other: Any): Boolean = other match {
@@ -422,8 +418,7 @@ object ArrayBuilder {
     def clear() { size = 0 }
 
     def result() = {
-      if (capacity != 0 && capacity == size) elems
-      else mkArray(size)
+      if (capacity != 0 && capacity == size) elems else mkArray(size)
     }
 
     override def equals(other: Any): Boolean = other match {
@@ -485,8 +480,7 @@ object ArrayBuilder {
     def clear() { size = 0 }
 
     def result() = {
-      if (capacity != 0 && capacity == size) elems
-      else mkArray(size)
+      if (capacity != 0 && capacity == size) elems else mkArray(size)
     }
 
     override def equals(other: Any): Boolean = other match {
@@ -548,8 +542,7 @@ object ArrayBuilder {
     def clear() { size = 0 }
 
     def result() = {
-      if (capacity != 0 && capacity == size) elems
-      else mkArray(size)
+      if (capacity != 0 && capacity == size) elems else mkArray(size)
     }
 
     override def equals(other: Any): Boolean = other match {
@@ -611,8 +604,7 @@ object ArrayBuilder {
     def clear() { size = 0 }
 
     def result() = {
-      if (capacity != 0 && capacity == size) elems
-      else mkArray(size)
+      if (capacity != 0 && capacity == size) elems else mkArray(size)
     }
 
     override def equals(other: Any): Boolean = other match {
@@ -671,8 +663,7 @@ object ArrayBuilder {
     def clear() { size = 0 }
 
     def result() = {
-      if (capacity != 0 && capacity == size) elems
-      else mkArray(size)
+      if (capacity != 0 && capacity == size) elems else mkArray(size)
     }
 
     override def equals(other: Any): Boolean = other match {
@@ -734,8 +725,7 @@ object ArrayBuilder {
     def clear() { size = 0 }
 
     def result() = {
-      if (capacity != 0 && capacity == size) elems
-      else mkArray(size)
+      if (capacity != 0 && capacity == size) elems else mkArray(size)
     }
 
     override def equals(other: Any): Boolean = other match {

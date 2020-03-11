@@ -107,8 +107,7 @@ abstract class ExternalJSEnv(
 
       // Get return value and return
       val retVal = vmInst.exitValue
-      if (retVal != 0)
-        throw new NonZeroExitException(vmName, retVal)
+      if (retVal != 0) throw new NonZeroExitException(vmName, retVal)
     }
 
     protected def startVM(): Process = {
@@ -119,8 +118,7 @@ abstract class ExternalJSEnv(
       val pBuilder = new ProcessBuilder(allArgs: _*)
 
       pBuilder.environment().clear()
-      for ((name, value) <- vmEnv)
-        pBuilder.environment().put(name, value)
+      for ((name, value) <- vmEnv) pBuilder.environment().put(name, value)
 
       logger.debug("Starting process: " + allArgs.mkString(" "))
 

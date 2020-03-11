@@ -65,10 +65,8 @@ class StringEncodedRow(
   lazy val values: IndexedSeq[Value] =
     for (field <- fields) yield {
       val bytes = buffer.readLengthCodedBytes()
-      if (bytes == null)
-        NullValue
-      else if (bytes.isEmpty)
-        EmptyValue
+      if (bytes == null) NullValue
+      else if (bytes.isEmpty) EmptyValue
       else if (!Charset.isCompatible(field.charset))
         RawValue(field.fieldType, field.charset, false, bytes)
       else {

@@ -60,8 +60,7 @@ class SparkJLineCompletion(val intp: SparkIMain)
   def resetVerbosity() = verbosity = 0
 
   private def getSymbol(name: String, isModule: Boolean) = (
-    if (isModule) getModuleIfDefined(name)
-    else getModuleIfDefined(name)
+    if (isModule) getModuleIfDefined(name) else getModuleIfDefined(name)
   )
   private def getType(name: String, isModule: Boolean) =
     getSymbol(name, isModule).tpe
@@ -124,18 +123,15 @@ class SparkJLineCompletion(val intp: SparkIMain)
         }
         override def completions(verbosity: Int) = {
           super.completions(verbosity) ++ (
-            if (verbosity == 0) Nil
-            else upgrade.completions(verbosity)
+            if (verbosity == 0) Nil else upgrade.completions(verbosity)
           )
         }
         override def follow(s: String) = super.follow(s) orElse {
-          if (upgraded) upgrade.follow(s)
-          else None
+          if (upgraded) upgrade.follow(s) else None
         }
         override def alternativesFor(id: String) =
           super.alternativesFor(id) ++ (
-            if (upgraded) upgrade.alternativesFor(id)
-            else Nil
+            if (upgraded) upgrade.alternativesFor(id) else Nil
           ) distinct
       }
     }
@@ -216,12 +212,10 @@ class SparkJLineCompletion(val intp: SparkIMain)
       intp.unqualifiedIds ++ List("classOf") //, "_root_")
     // now we use the compiler for everything.
     override def follow(id: String): Option[CompletionAware] = {
-      if (!completions(0).contains(id))
-        return None
+      if (!completions(0).contains(id)) return None
 
       val tpe = intp typeOfExpression id
-      if (tpe == NoType)
-        return None
+      if (tpe == NoType) return None
 
       def default = Some(TypeMemberCompletion(tpe))
 
@@ -323,8 +317,7 @@ class SparkJLineCompletion(val intp: SparkIMain)
     topLevel foreach { ca =>
       buf ++= (ca completionsFor parsed)
 
-      if (buf.size > topLevelThreshold)
-        return buf.toList.sorted
+      if (buf.size > topLevelThreshold) return buf.toList.sorted
     }
     buf.toList
   }
@@ -392,8 +385,7 @@ class SparkJLineCompletion(val intp: SparkIMain)
           p: Parsed,
           completionFunction: Parsed => List[String]): Option[Candidates] = {
         val winners = completionFunction(p)
-        if (winners.isEmpty)
-          return None
+        if (winners.isEmpty) return None
         val newCursor =
           if (winners contains "") p.cursor
           else {
@@ -441,8 +433,7 @@ class SparkJLineCompletion(val intp: SparkIMain)
             "Error: complete(%s, %s) provoked".format(buf, cursor) + ex)
           Candidates(
             cursor,
-            if (isReplDebug) List("<error:" + ex + ">")
-            else Nil)
+            if (isReplDebug) List("<error:" + ex + ">") else Nil)
       }
     }
   }

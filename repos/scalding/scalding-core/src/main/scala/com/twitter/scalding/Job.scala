@@ -262,8 +262,7 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
         stepStrategy.foreach { strategy =>
           val existing = flow.getFlowStepStrategy
           val composed =
-            if (existing == null)
-              strategy
+            if (existing == null) strategy
             else
               FlowStepStrategies[Any].plus(
                 existing.asInstanceOf[FlowStepStrategy[Any]],
@@ -432,12 +431,9 @@ trait DefaultDateRangeJob extends Job {
   // than over the whole date range)
   // --daily and --weekly are aliases for --period 1 and --period 7 respectively
   val period =
-    if (args.boolean("daily"))
-      1
-    else if (args.boolean("weekly"))
-      7
-    else
-      args.getOrElse("period", "0").toInt
+    if (args.boolean("daily")) 1
+    else if (args.boolean("weekly")) 7
+    else args.getOrElse("period", "0").toInt
 
   lazy val (startDate, endDate) = {
     val DateRange(s, e) = DateRange.parse(args.list("date"))
@@ -451,16 +447,14 @@ trait DefaultDateRangeJob extends Job {
   override def next: Option[Job] =
     if (period > 0) {
       val nextStartDate = startDate + Days(period)
-      if (nextStartDate + Days(period - 1) > endDate)
-        None // we're done
+      if (nextStartDate + Days(period - 1) > endDate) None // we're done
       else // return a new job with the new startDate
         Some(
           clone(
             args + ("date" -> List(
               nextStartDate.toString("yyyy-MM-dd"),
               endDate.toString("yyyy-MM-dd")))))
-    } else
-      None
+    } else None
 }
 
 // DefaultDateRangeJob with default time zone as UTC instead of Pacific.

@@ -73,8 +73,7 @@ final class Refiner {
       info: Analysis.ClassInfo): LinkedClass = {
 
     val fields =
-      if (info.isAnySubclassInstantiated) classDef.fields
-      else Nil
+      if (info.isAnySubclassInstantiated) classDef.fields else Nil
 
     val staticMethods = classDef.staticMethods filter { m =>
       info.staticMethodInfos(m.info.encodedName).isReachable

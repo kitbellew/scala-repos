@@ -27,8 +27,7 @@ abstract class BinaryOutput {
   ////////////////////////
 
   def putBoolean(value: Boolean): Unit = {
-    if (value) putByte(1)
-    else putByte(0)
+    if (value) putByte(1) else putByte(0)
   }
 
   def putString(value: String) {

@@ -188,8 +188,7 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
       o: IsReal[T]): Complex[T] =
     if (e.isSignZero) { Complex.one[T] }
     else if (this.isZero) {
-      if (e < f.zero)
-        throw new Exception("raising 0 to negative/complex power")
+      if (e < f.zero) throw new Exception("raising 0 to negative/complex power")
       Complex.zero[T]
     } else { Complex.polar(abs fpow e, arg * e) }
 
@@ -399,8 +398,7 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
 
   // important to keep in sync with Quaternion[_]
   override def hashCode: Int =
-    if (anyIsZero(imag)) real.##
-    else (19 * real.##) + (41 * imag.##) + 97
+    if (anyIsZero(imag)) real.## else (19 * real.##) + (41 * imag.##) + 97
 
   // not typesafe, so this is the best we can do :(
   override def equals(that: Any): Boolean = that match {

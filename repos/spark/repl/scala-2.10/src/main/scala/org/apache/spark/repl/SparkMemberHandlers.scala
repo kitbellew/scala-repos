@@ -44,8 +44,7 @@ private[repl] trait SparkMemberHandlers {
       case Ident(name) =>
         // XXX this is obviously inadequate but it's going to require some effort
         // to get right.
-        if (name.toString startsWith "x$") ()
-        else importVars += name
+        if (name.toString startsWith "x$") () else importVars += name
       case _ => super.traverse(ast)
     }
   }

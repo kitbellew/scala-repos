@@ -51,8 +51,7 @@ class LogManagerTest {
 
   @After
   def tearDown() {
-    if (logManager != null)
-      logManager.shutdown()
+    if (logManager != null) logManager.shutdown()
     CoreUtils.rm(logDir)
     logManager.logDirs.foreach(CoreUtils.rm(_))
   }

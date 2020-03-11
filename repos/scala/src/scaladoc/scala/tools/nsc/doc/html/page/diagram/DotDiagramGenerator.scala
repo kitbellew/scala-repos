@@ -72,11 +72,11 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
 
     d match {
       case InheritanceDiagram(
-          _thisNode,
-          _superClasses,
-          _subClasses,
-          _incomingImplicits,
-          _outgoingImplicits) =>
+            _thisNode,
+            _superClasses,
+            _subClasses,
+            _incomingImplicits,
+            _outgoingImplicits) =>
         def textTypeEntity(text: String) =
           new TypeEntity {
             val name = text
@@ -286,20 +286,13 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
     }
 
     // styles
-    if (node.isImplicitNode)
-      attr ++= implicitStyle
-    else if (node.isOutsideNode)
-      attr ++= outsideStyle
-    else if (node.isTraitNode)
-      attr ++= traitStyle
-    else if (node.isClassNode)
-      attr ++= classStyle
-    else if (node.isObjectNode)
-      attr ++= objectStyle
-    else if (node.isTypeNode)
-      attr ++= typeStyle
-    else
-      attr ++= defaultStyle
+    if (node.isImplicitNode) attr ++= implicitStyle
+    else if (node.isOutsideNode) attr ++= outsideStyle
+    else if (node.isTraitNode) attr ++= traitStyle
+    else if (node.isClassNode) attr ++= classStyle
+    else if (node.isObjectNode) attr ++= objectStyle
+    else if (node.isTypeNode) attr ++= typeStyle
+    else attr ++= defaultStyle
 
     // HTML label
     var name = escape(node.name)
@@ -334,12 +327,9 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
     * Returns the CSS class for an edge connecting node1 and node2.
     */
   private def cssClass(node1: Node, node2: Node): String = {
-    if (node1.isImplicitNode && node2.isThisNode)
-      "implicit-incoming"
-    else if (node1.isThisNode && node2.isImplicitNode)
-      "implicit-outgoing"
-    else
-      "inheritance"
+    if (node1.isImplicitNode && node2.isThisNode) "implicit-incoming"
+    else if (node1.isThisNode && node2.isImplicitNode) "implicit-outgoing"
+    else "inheritance"
   }
 
   /**
@@ -350,24 +340,16 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
       "implicit-incoming" + cssBaseClass(node, "", " ")
     else if (node.isImplicitNode)
       "implicit-outgoing" + cssBaseClass(node, "", " ")
-    else if (node.isThisNode)
-      "this" + cssBaseClass(node, "", " ")
-    else if (node.isOutsideNode)
-      "outside" + cssBaseClass(node, "", " ")
-    else
-      cssBaseClass(node, "default", "")
+    else if (node.isThisNode) "this" + cssBaseClass(node, "", " ")
+    else if (node.isOutsideNode) "outside" + cssBaseClass(node, "", " ")
+    else cssBaseClass(node, "default", "")
 
   private def cssBaseClass(node: Node, default: String, space: String) =
-    if (node.isClassNode)
-      space + "class"
-    else if (node.isTraitNode)
-      space + "trait"
-    else if (node.isObjectNode)
-      space + "object"
-    else if (node.isTypeNode)
-      space + "type"
-    else
-      default
+    if (node.isClassNode) space + "class"
+    else if (node.isTraitNode) space + "trait"
+    else if (node.isObjectNode) space + "object"
+    else if (node.isTypeNode) space + "type"
+    else default
 
   /**
     * Calls dot with a given dot string and returns the SVG output.
@@ -382,10 +364,7 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
         val cpa = scala.xml.parsing.ConstructingParser
           .fromSource(src, preserveWS = false)
         val doc = cpa.document()
-        if (doc != null)
-          transform(doc.docElem)
-        else
-          NodeSeq.Empty
+        if (doc != null) transform(doc.docElem) else NodeSeq.Empty
       } catch {
         case exc: Exception =>
           if (settings.docDiagramsDebug) {
@@ -416,8 +395,7 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
           }
           NodeSeq.Empty
       }
-    } else
-      NodeSeq.Empty
+    } else NodeSeq.Empty
 
     tSVG += System.currentTimeMillis
     DiagramStats.addSvgTime(tSVG)
@@ -472,35 +450,34 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
          * tests like execute 20K times and diff the output don't trigger the bug -- so it's up to us to place the image
          * back in the node */
         val kind = getKind(klass)
-        if (kind != "")
-          if (((g \ "a" \ "image").isEmpty)) {
-            DiagramStats.addBrokenImage()
-            val xposition = getPosition(g, "x", -22)
-            val yposition = getPosition(g, "y", -11.3334)
-            if (xposition.isDefined && yposition.isDefined) {
-              val imageNode =
-                <image xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href={
-                  ("./lib/" + kind + "_diagram.png")
-                } width="16px" height="16px" preserveAspectRatio="xMinYMin meet" x={
-                  xposition.get.toString
-                } y={yposition.get.toString}/>
-              val anchorNode = (g \ "a") match {
-                case Seq(Elem(prefix, "a", attribs, scope, children @ _*)) =>
-                  transform(
-                    new Elem(
-                      prefix,
-                      "a",
-                      attribs,
-                      scope,
-                      true,
-                      (children ++ imageNode): _*))
-                case _ =>
-                  g \ "a"
-              }
-              res = new Elem(prefix, "g", attribs, scope, true, anchorNode: _*)
-              DiagramStats.addFixedImage()
+        if (kind != "") if (((g \ "a" \ "image").isEmpty)) {
+          DiagramStats.addBrokenImage()
+          val xposition = getPosition(g, "x", -22)
+          val yposition = getPosition(g, "y", -11.3334)
+          if (xposition.isDefined && yposition.isDefined) {
+            val imageNode =
+              <image xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href={
+                ("./lib/" + kind + "_diagram.png")
+              } width="16px" height="16px" preserveAspectRatio="xMinYMin meet" x={
+                xposition.get.toString
+              } y={yposition.get.toString}/>
+            val anchorNode = (g \ "a") match {
+              case Seq(Elem(prefix, "a", attribs, scope, children @ _*)) =>
+                transform(
+                  new Elem(
+                    prefix,
+                    "a",
+                    attribs,
+                    scope,
+                    true,
+                    (children ++ imageNode): _*))
+              case _ =>
+                g \ "a"
             }
+            res = new Elem(prefix, "g", attribs, scope, true, anchorNode: _*)
+            DiagramStats.addFixedImage()
           }
+        }
         res % new UnprefixedAttribute("id", id, Null) %
           new UnprefixedAttribute(
             "class",
@@ -534,10 +511,7 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
       axis: String,
       offset: Double): Option[Double] = {
     val node = g \ "a" \ "text" \ ("@" + axis)
-    if (node.isEmpty)
-      None
-    else
-      Some(node.toString.toDouble + offset)
+    if (node.isEmpty) None else Some(node.toString.toDouble + offset)
   }
 
   /* graph / node / edge attributes */

@@ -74,8 +74,7 @@ class OutputStreamWriter(
     }
 
     loopEncode()
-    if (cbuf1.hasRemaining)
-      inBuf = cbuf1.toString
+    if (cbuf1.hasRemaining) inBuf = cbuf1.toString
   }
 
   override def flush(): Unit = {
@@ -134,8 +133,7 @@ class OutputStreamWriter(
   }
 
   private def ensureOpen(): Unit = {
-    if (closed)
-      throw new IOException("Closed writer.")
+    if (closed) throw new IOException("Closed writer.")
   }
 
   private def makeRoomInOutBuf(): Unit = {

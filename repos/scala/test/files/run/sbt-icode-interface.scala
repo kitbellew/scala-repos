@@ -30,8 +30,7 @@ object Test extends DirectTest {
           if (isTopLevelModule(sym) && sym.companionClass == NoSymbol)
             addGenerated(false)
           addGenerated(true)
-        } else
-          addGenerated(false)
+        } else addGenerated(false)
       }
     }
     val expected = List((false, "C"), (true, "O"), (false, "C$D"))

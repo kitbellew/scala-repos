@@ -338,8 +338,7 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
 
   def versionVectorFromProto(versionVector: rd.VersionVector): VersionVector = {
     val entries = versionVector.getEntriesList
-    if (entries.isEmpty)
-      VersionVector.empty
+    if (entries.isEmpty) VersionVector.empty
     else if (entries.size == 1)
       VersionVector(
         uniqueAddressFromProto(entries.get(0).getNode),
@@ -485,9 +484,7 @@ object OtherMessageComparator extends Comparator[dm.OtherMessage] {
         if (aIter.hasNext) {
           val aByte = aIter.nextByte()
           val bByte = bIter.nextByte()
-          if (aByte < bByte) -1
-          else if (aByte > bByte) 1
-          else findDiff()
+          if (aByte < bByte) -1 else if (aByte > bByte) 1 else findDiff()
         } else 0
       }
       findDiff()

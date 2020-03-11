@@ -65,8 +65,7 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
         * important *when* the substitution happens (can't accumulate and do at once after the full matcher has been constructed)
         */
       def substitution: Substitution =
-        if (currSub eq null) localSubstitution
-        else currSub
+        if (currSub eq null) localSubstitution else currSub
 
       protected def localSubstitution: Substitution
 
@@ -547,8 +546,7 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
           if (isExpectedPrimitiveType) tru
           else
             addOuterTest(
-              if (isExpectedReferenceType) mkNullTest
-              else mkTypeTest
+              if (isExpectedReferenceType) mkNullTest else mkTypeTest
             )
         )
 

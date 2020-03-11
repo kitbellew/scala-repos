@@ -16,8 +16,7 @@ trait Precedence {
   */
 object Precedence {
   def opWrap(s: Precedence, selfOpPred: Int) = {
-    if (s.opPred >= selfOpPred) s.toString
-    else "(" + s + ")"
+    if (s.opPred >= selfOpPred) s.toString else "(" + s + ")"
   }
   val Letters = 0
   val | = 1

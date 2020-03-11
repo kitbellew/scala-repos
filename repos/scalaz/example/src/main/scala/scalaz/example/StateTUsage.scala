@@ -38,10 +38,8 @@ object FibStateExample extends App {
   def getNFibs(k: Int): State[(Int, Int), List[Int]] = { nextFib.replicateM(k) }
 
   def getNthFib(k: Int): State[(Int, Int), Int] = {
-    if (k == 0)
-      pure(0) // will be thrown away
-    else
-      getNthFib(k - 1) >> nextFib
+    if (k == 0) pure(0) // will be thrown away
+    else getNthFib(k - 1) >> nextFib
   }
 
   // run two examples through the magic of App

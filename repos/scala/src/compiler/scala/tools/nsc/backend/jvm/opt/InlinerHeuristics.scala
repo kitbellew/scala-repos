@@ -145,8 +145,7 @@ class InlinerHeuristics[BT <: BTypes](val bTypes: BT) {
 
     compilerSettings.YoptInlineHeuristics.value match {
       case "everything" =>
-        if (callee.safeToInline) Some(requestIfCanInline(callsite))
-        else None
+        if (callee.safeToInline) Some(requestIfCanInline(callsite)) else None
 
       case "at-inline-annotated" =>
         if (callee.safeToInline && callee.annotatedInline)

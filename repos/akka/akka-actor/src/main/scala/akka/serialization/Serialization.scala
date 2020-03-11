@@ -144,8 +144,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
       serializer match {
         case s2: SerializerWithStringManifest ⇒ s2.fromBinary(bytes, manifest)
         case s1 ⇒
-          if (manifest == "")
-            s1.fromBinary(bytes, None)
+          if (manifest == "") s1.fromBinary(bytes, None)
           else {
             system.dynamicAccess.getClassFor[AnyRef](manifest) match {
               case Success(classManifest) ⇒

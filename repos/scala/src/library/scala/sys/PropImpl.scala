@@ -24,13 +24,11 @@ private[sys] class PropImpl[+T](val key: String, valueFn: String => T)
   }
   def setValue[T1 >: T](newValue: T1): T = {
     val old = value
-    if (newValue == null) set(null)
-    else set("" + newValue)
+    if (newValue == null) set(null) else set("" + newValue)
     old
   }
   def get: String =
-    if (isSet) underlying.getOrElse(key, "")
-    else ""
+    if (isSet) underlying.getOrElse(key, "") else ""
 
   def clear(): Unit = underlying -= key
   def option: Option[T] = if (isSet) Some(value) else None

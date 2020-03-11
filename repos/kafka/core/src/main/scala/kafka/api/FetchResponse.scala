@@ -80,8 +80,7 @@ class PartitionDataSend(
 
   override def writeTo(channel: GatheringByteChannel): Long = {
     var written = 0L
-    if (buffer.hasRemaining)
-      written += channel.write(buffer)
+    if (buffer.hasRemaining) written += channel.write(buffer)
     if (!buffer.hasRemaining) {
       if (messagesSentSize < messageSize) {
         val bytesSent = partitionData.messages.writeTo(
@@ -160,11 +159,9 @@ class TopicDataSend(val dest: String, val topicData: TopicData) extends Send {
         "This operation cannot be completed on a complete request.")
 
     var written = 0L
-    if (buffer.hasRemaining)
-      written += channel.write(buffer)
+    if (buffer.hasRemaining) written += channel.write(buffer)
     if (!buffer.hasRemaining) {
-      if (!sends.completed)
-        written += sends.writeTo(channel)
+      if (!sends.completed) written += sends.writeTo(channel)
       if (sends.completed && hasPendingWrites(channel))
         written += channel.write(emptyBuffer)
     }
@@ -245,8 +242,7 @@ case class FetchResponse(
     buffer.putInt(sizeInBytes)
     buffer.putInt(correlationId)
     // Include the throttleTime only if the client can read it
-    if (requestVersion > 0)
-      buffer.putInt(throttleTimeMs)
+    if (requestVersion > 0) buffer.putInt(throttleTimeMs)
 
     buffer.putInt(dataGroupedByTopic.size) // topic count
   }
@@ -331,11 +327,9 @@ class FetchResponseSend(val dest: String, val fetchResponse: FetchResponse)
 
     var written = 0L
 
-    if (buffer.hasRemaining)
-      written += channel.write(buffer)
+    if (buffer.hasRemaining) written += channel.write(buffer)
     if (!buffer.hasRemaining) {
-      if (!sends.completed)
-        written += sends.writeTo(channel)
+      if (!sends.completed) written += sends.writeTo(channel)
       if (sends.completed && hasPendingWrites(channel))
         written += channel.write(emptyBuffer)
     }

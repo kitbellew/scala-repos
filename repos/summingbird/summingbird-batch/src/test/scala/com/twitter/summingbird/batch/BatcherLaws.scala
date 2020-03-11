@@ -113,10 +113,8 @@ object BatcherLaws extends Properties("Batcher") {
   val millisPerHour = 1000 * 60 * 60
 
   def hourlyBatchFloor(batchIdx: Long): Long =
-    if (batchIdx >= 0)
-      batchIdx * millisPerHour
-    else
-      batchIdx * millisPerHour + 1
+    if (batchIdx >= 0) batchIdx * millisPerHour
+    else batchIdx * millisPerHour + 1
 
   val hourlyBatcher = Batcher.ofHours(1)
 

@@ -34,8 +34,7 @@ class DeserializeCtx[Rep](
     * return the first deserialized result.
     */
   def deserialize(responseBytes: Array[Byte]): Try[Rep] = synchronized {
-    if (deserialized == null)
-      deserialized = replyDeserializer(responseBytes)
+    if (deserialized == null) deserialized = replyDeserializer(responseBytes)
     deserialized
   }
 }

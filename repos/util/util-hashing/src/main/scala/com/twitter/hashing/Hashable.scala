@@ -135,10 +135,8 @@ object Hashable extends LowPriorityHashable {
         false
     }
   private[this] def newMd5MessageDigest(): MessageDigest = {
-    if (Md5SupportsClone)
-      MessageDigestMd5.clone().asInstanceOf[MessageDigest]
-    else
-      MessageDigest.getInstance("MD5")
+    if (Md5SupportsClone) MessageDigestMd5.clone().asInstanceOf[MessageDigest]
+    else MessageDigest.getInstance("MD5")
   }
 
   /**
@@ -192,8 +190,7 @@ object Hashable extends LowPriorityHashable {
     override def apply(key: Array[Byte]): Int = {
       var hash: Int = 0
 
-      if (key.isEmpty)
-        return 0
+      if (key.isEmpty) return 0
 
       for (i <- 0 until key.length / 4) {
         val b0 = key(i * 4)

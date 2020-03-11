@@ -194,8 +194,7 @@ trait ScExpression
                 if etaExpansionHappened && retTp.equiv(Unit) =>
               val newTp =
                 ScFunctionType(Unit, params)(getProject, getResolveScope)
-              if (newTp.conforms(methodType)) expectedResult
-              else None
+              if (newTp.conforms(methodType)) expectedResult else None
             case _ => None
           }
         case _ => None

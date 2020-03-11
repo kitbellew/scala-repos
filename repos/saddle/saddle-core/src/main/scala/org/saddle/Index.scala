@@ -223,8 +223,7 @@ trait Index[@spec(Boolean, Int, Long, Double) T] extends Serializable {
     */
   def getLast(key: T): Int = {
     val loc = getFirst(key)
-    if (loc == -1)
-      -1
+    if (loc == -1) -1
     else if (isContiguous) { loc + locator.count(key) - 1 }
     else {
       var i = loc + 1
@@ -244,8 +243,7 @@ trait Index[@spec(Boolean, Int, Long, Double) T] extends Serializable {
   def get(key: T): Array[Int] = {
     val firstLoc = locator.get(key)
     var count = 0
-    if (firstLoc == -1)
-      Array[Int]()
+    if (firstLoc == -1) Array[Int]()
     else if (isUnique || { count = locator.count(key); 1 == count }) {
       Array(locator.get(key))
     } else if (isContiguous) { array.range(firstLoc, firstLoc + count) }
@@ -503,8 +501,7 @@ trait Index[@spec(Boolean, Int, Long, Double) T] extends Serializable {
     val varr = toArray
     val sm = scalarTag
 
-    if (varr.length == 0)
-      buf append "Empty Index"
+    if (varr.length == 0) buf append "Empty Index"
     else {
       val vlens = util
         .grab(varr, half)

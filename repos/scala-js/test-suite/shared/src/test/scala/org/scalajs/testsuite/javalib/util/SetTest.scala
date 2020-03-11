@@ -201,10 +201,8 @@ trait SetTest extends CollectionTest {
     val hs = factory.empty[String]
 
     val l = {
-      if (factory.allowsNullElement)
-        List[String]("ONE", "TWO", (null: String))
-      else
-        List[String]("ONE", "TWO", "THREE")
+      if (factory.allowsNullElement) List[String]("ONE", "TWO", (null: String))
+      else List[String]("ONE", "TWO", "THREE")
     }
     assertTrue(hs.addAll(asJavaCollection(l)))
     assertEquals(3, hs.size)

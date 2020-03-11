@@ -94,10 +94,7 @@ trait JoinOptimizerModule[M[+_]]
                 (compareAncestor(lhs, eqB) && compareAncestor(rhs, eqA)) => {
 
             val (eqLHS, eqRHS) = {
-              if (compareAncestor(lhs, eqA))
-                (eqA, eqB)
-              else
-                (eqB, eqA)
+              if (compareAncestor(lhs, eqA)) (eqA, eqB) else (eqB, eqA)
             }
 
             val ancestorLHS = findOrderAncestor(lhs, ctx) getOrElse lhs

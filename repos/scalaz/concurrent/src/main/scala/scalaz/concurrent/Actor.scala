@@ -34,8 +34,7 @@ final case class Actor[A](
   def !(a: A): Unit = {
     val n = new Node(a)
     val h = head.getAndSet(n)
-    if (h ne null) h.lazySet(n)
-    else schedule(n)
+    if (h ne null) h.lazySet(n) else schedule(n)
   }
 
   /** Pass the message `a` to the mailbox of this actor */
@@ -64,8 +63,7 @@ final case class Actor[A](
   @annotation.tailrec
   private def next(n: Node[A]): Node[A] = {
     val n2 = n.get
-    if (n2 ne null) n2
-    else next(n)
+    if (n2 ne null) n2 else next(n)
   }
 }
 

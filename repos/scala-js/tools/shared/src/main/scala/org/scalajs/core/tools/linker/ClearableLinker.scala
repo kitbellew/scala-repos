@@ -67,8 +67,7 @@ final class ClearableLinker(newLinker: () => GenLinker, batchMode: Boolean)
         throw t
     } finally {
       // Clear if we are in batch mode
-      if (batchMode)
-        clear()
+      if (batchMode) clear()
     }
   }
 
@@ -77,15 +76,12 @@ final class ClearableLinker(newLinker: () => GenLinker, batchMode: Boolean)
     if (_linker == null) {
       val candidate = newLinker()
 
-      if (_semantics == null)
-        _semantics = candidate.semantics
+      if (_semantics == null) _semantics = candidate.semantics
       else
         require(_semantics == candidate.semantics, "Linker changed Semantics")
 
-      if (_esLevel == null)
-        _esLevel = candidate.esLevel
-      else
-        require(_esLevel == candidate.esLevel, "Linker changed ESLevel")
+      if (_esLevel == null) _esLevel = candidate.esLevel
+      else require(_esLevel == candidate.esLevel, "Linker changed ESLevel")
 
       _linker = candidate
     }

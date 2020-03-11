@@ -179,11 +179,7 @@ trait BoolColumn extends Column with (Int => Boolean) {
     val back = new BitSet(size)
     var i = 0
     while (i < size) {
-      val b =
-        if (!isDefinedAt(i))
-          undefinedVal
-        else
-          apply(i)
+      val b = if (!isDefinedAt(i)) undefinedVal else apply(i)
 
       back.set(i, b)
       i += 1

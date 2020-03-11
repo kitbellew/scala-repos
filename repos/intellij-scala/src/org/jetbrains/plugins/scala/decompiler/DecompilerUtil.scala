@@ -46,16 +46,14 @@ object DecompilerUtil {
         .getOpenProjects
         .find(!_.isDisposed)
         .orNull
-      if (testProject != null) Array(testProject)
-      else Array.empty
+      if (testProject != null) Array(testProject) else Array.empty
     } else { manager.getOpenProjects.filter(!_.isDisposed) }
   }
 
   def obtainProject: Project = {
     val manager = ProjectManager.getInstance
     val projects = openedNotDisposedProjects
-    if (projects.length == 0) manager.getDefaultProject
-    else projects(0)
+    if (projects.length == 0) manager.getDefaultProject else projects(0)
   }
 
   // Underlying VFS implementation may not support attributes (e.g. Upsource's file system).

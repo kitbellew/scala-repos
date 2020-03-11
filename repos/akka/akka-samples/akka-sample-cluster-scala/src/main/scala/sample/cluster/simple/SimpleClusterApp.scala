@@ -6,10 +6,7 @@ import akka.actor.Props
 
 object SimpleClusterApp {
   def main(args: Array[String]): Unit = {
-    if (args.isEmpty)
-      startup(Seq("2551", "2552", "0"))
-    else
-      startup(args)
+    if (args.isEmpty) startup(Seq("2551", "2552", "0")) else startup(args)
   }
 
   def startup(ports: Seq[String]): Unit = {

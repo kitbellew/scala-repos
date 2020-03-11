@@ -387,10 +387,8 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
 
     // create filters
     val filterSpec =
-      if (whitelist.isDefined)
-        new Whitelist(whitelist.get)
-      else if (blacklist.isDefined)
-        new Blacklist(blacklist.get)
+      if (whitelist.isDefined) new Whitelist(whitelist.get)
+      else if (blacklist.isDefined) new Blacklist(blacklist.get)
       else
         throw new IllegalArgumentException(
           "Either whitelist or blacklist should be defined!")
@@ -663,8 +661,7 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
     override def receive(): BaseConsumerRecord = {
       if (recordIter == null || !recordIter.hasNext) {
         recordIter = consumer.poll(1000).iterator
-        if (!recordIter.hasNext)
-          throw new ConsumerTimeoutException
+        if (!recordIter.hasNext) throw new ConsumerTimeoutException
       }
 
       val record = recordIter.next()

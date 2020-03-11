@@ -315,10 +315,7 @@ trait IndicesModule[M[+_]]
       * Given a set of rows, builds the appropriate slice.
       */
     private[table] def buildSubSlice(rows: ArrayIntList): Slice =
-      if (rows.isEmpty)
-        emptySlice
-      else
-        valueSlice.remap(rows)
+      if (rows.isEmpty) emptySlice else valueSlice.remap(rows)
   }
 
   object SliceIndex {

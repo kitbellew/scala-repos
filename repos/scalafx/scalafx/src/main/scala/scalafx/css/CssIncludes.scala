@@ -80,10 +80,9 @@ trait CssIncludes {
     * @return $SFX $ST
     */
   implicit def jfxStyleable2sfx(s: jfxcss.Styleable): Styleable =
-    if (s != null)
-      new Styleable {
-        override val delegate = s
-      }
+    if (s != null) new Styleable {
+      override val delegate = s
+    }
     else null
 
   /*

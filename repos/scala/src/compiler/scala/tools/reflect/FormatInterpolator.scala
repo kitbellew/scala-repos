@@ -117,8 +117,7 @@ abstract class FormatInterpolator {
               }
             }
             val txt =
-              if ("" == suggest) ""
-              else s", use $suggest instead"
+              if ("" == suggest) "" else s", use $suggest instead"
             txt
           }
           def badOctal = {

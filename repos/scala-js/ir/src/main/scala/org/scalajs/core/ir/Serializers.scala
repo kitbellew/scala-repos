@@ -454,8 +454,7 @@ object Serializers {
           writeByte(TagModuleExportDef)
           writeString(fullName)
       }
-      if (UseDebugMagic)
-        writeInt(DebugMagic)
+      if (UseDebugMagic) writeInt(DebugMagic)
     }
 
     def writeTrees(trees: List[Tree]): Unit = {
@@ -567,8 +566,7 @@ object Serializers {
         lastPosition = pos
       }
 
-      if (UseDebugMagic)
-        writeInt(PosDebugMagic)
+      if (UseDebugMagic) writeInt(PosDebugMagic)
     }
 
     def writeOptHash(optHash: Option[TreeHash]): Unit = {
@@ -654,10 +652,8 @@ object Serializers {
               readIdent(),
               readTrees())(readType())
           if (useHacks065 && result1.tpe != NoType && isConstructorName(
-                result1.method.name))
-            result1.copy()(NoType)
-          else
-            result1
+                result1.method.name)) result1.copy()(NoType)
+          else result1
         case TagApplyStatic =>
           ApplyStatic(readClassType(), readIdent(), readTrees())(readType())
         case TagUnaryOp     => UnaryOp(readByte(), readTree())
@@ -705,8 +701,7 @@ object Serializers {
         case TagJSEnvInfo =>
           if (useHacks066)
             JSBracketSelect(JSLinkingInfo(), StringLiteral("envInfo"))
-          else
-            throw new MatchError(tag)
+          else throw new MatchError(tag)
 
         case TagUndefined      => Undefined()
         case TagNull           => Null()
@@ -826,8 +821,7 @@ object Serializers {
       List.fill(input.readInt())(readIdent())
 
     def readOptIdent(): Option[Ident] = {
-      if (input.readBoolean()) Some(readIdent())
-      else None
+      if (input.readBoolean()) Some(readIdent()) else None
     }
 
     def readType(): Type = {
@@ -987,11 +981,8 @@ object Serializers {
         implicit val pos = tree.pos
         paramToIndex
           .get(name)
-          .fold {
-            if (name == "arguments") argumentsRef
-            else tree
-          } { paramIndex =>
-            JSBracketSelect(argumentsRef, IntLiteral(paramIndex))
+          .fold { if (name == "arguments") argumentsRef else tree } {
+            paramIndex => JSBracketSelect(argumentsRef, IntLiteral(paramIndex))
           }
 
       case _ =>

@@ -67,8 +67,7 @@ class IndexIntRange(val length: Int, val from: Int = 0) extends Index[Int] {
     if (loc < 0 || loc >= length)
       throw new ArrayIndexOutOfBoundsException(
         "Location %d is out of bounds" format loc)
-    else
-      loc
+    else loc
 
   def raw(loc: Int) = from + guardLoc(loc)
 
@@ -100,8 +99,7 @@ class IndexIntRange(val length: Int, val from: Int = 0) extends Index[Int] {
       new IndexIntRange(
         math.min(length, until - from),
         math.max(this.from + math.max(from, 0), 0))
-    else
-      genIdx.slice(from, until, stride)
+    else genIdx.slice(from, until, stride)
 
   def getAll(keys: Array[Int]) =
     new VecInt(keys).filter(locator.contains _).map(_ - from).toArray

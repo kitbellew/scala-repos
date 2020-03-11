@@ -52,9 +52,7 @@ object NumericComparisons {
 
   @inline def compare(a: DateTime, b: DateTime): Int = {
     val res: Int = a compareTo b
-    if (res < 0) -1
-    else if (res > 0) 1
-    else 0
+    if (res < 0) -1 else if (res > 0) 1 else 0
   }
 
   @inline def eps(b: Double): Double = math.abs(b * 2.220446049250313e-16)

@@ -451,24 +451,23 @@ private[http] object HttpServerBluePrint {
         timeout: Duration,
         handler: HttpRequest ⇒ HttpResponse): Unit = {
       val promise = Promise[TimeoutSetup]()
-      for (old ← getAndSet(promise.future).fast)
-        promise.success {
-          if ((old.scheduledTask eq null) || old.scheduledTask.cancel()) {
-            val newHandler = if (handler eq null) old.handler else handler
-            val newTimeout = if (timeout eq null) old.timeout else timeout
-            val newScheduling = newTimeout match {
-              case x: FiniteDuration ⇒
-                schedule(old.timeoutBase + x - Deadline.now, newHandler)
-              case _ ⇒ null // don't schedule a new timeout
-            }
-            new TimeoutSetup(
-              old.timeoutBase,
-              newScheduling,
-              newTimeout,
-              newHandler)
-          } else
-            old // too late, the previously set timeout cannot be cancelled anymore
-        }
+      for (old ← getAndSet(promise.future).fast) promise.success {
+        if ((old.scheduledTask eq null) || old.scheduledTask.cancel()) {
+          val newHandler = if (handler eq null) old.handler else handler
+          val newTimeout = if (timeout eq null) old.timeout else timeout
+          val newScheduling = newTimeout match {
+            case x: FiniteDuration ⇒
+              schedule(old.timeoutBase + x - Deadline.now, newHandler)
+            case _ ⇒ null // don't schedule a new timeout
+          }
+          new TimeoutSetup(
+            old.timeoutBase,
+            newScheduling,
+            newTimeout,
+            newHandler)
+        } else
+          old // too late, the previously set timeout cannot be cancelled anymore
+      }
     }
     private def schedule(
         delay: FiniteDuration,

@@ -91,16 +91,14 @@ class AsyncQueue[T](maxPendingOffers: Int) {
   @tailrec
   final def offer(elem: T): Boolean = state.get match {
     case Idle =>
-      if (!state.compareAndSet(Idle, Offering(queueOf(elem))))
-        offer(elem)
+      if (!state.compareAndSet(Idle, Offering(queueOf(elem)))) offer(elem)
       else true
 
     case Offering(q) if q.size >= maxPendingOffers =>
       false
 
     case s @ Offering(q) =>
-      if (!state.compareAndSet(s, Offering(q.enqueue(elem))))
-        offer(elem)
+      if (!state.compareAndSet(s, Offering(q.enqueue(elem)))) offer(elem)
       else true
 
     case s @ Polling(q) =>
@@ -125,8 +123,7 @@ class AsyncQueue[T](maxPendingOffers: Int) {
   @tailrec
   final def drain(): Try[Queue[T]] = state.get match {
     case s @ Offering(q) =>
-      if (state.compareAndSet(s, Idle)) Return(q)
-      else drain()
+      if (state.compareAndSet(s, Idle)) Return(q) else drain()
     case s @ Excepting(q, e) if q.nonEmpty =>
       if (state.compareAndSet(s, Excepting(Queue.empty, e))) Return(q)
       else drain()
@@ -158,8 +155,7 @@ class AsyncQueue[T](maxPendingOffers: Int) {
     case s @ Polling(q) =>
       if (!state.compareAndSet(s, Excepting(Queue.empty, exc)))
         fail(exc, discard)
-      else
-        q.foreach(_.setException(exc))
+      else q.foreach(_.setException(exc))
 
     case s @ Offering(q) =>
       val nextq = if (discard) Queue.empty else q

@@ -43,8 +43,7 @@ object StructureViewUtil {
         res.append(", ")
       }
     }
-    if (res.length >= 2)
-      res.delete(res.length - 2, res.length)
+    if (res.length >= 2) res.delete(res.length - 2, res.length)
     res.toString
   }
 }

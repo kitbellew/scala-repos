@@ -1376,18 +1376,18 @@ object DecimalAggregates extends Rule[LogicalPlan] {
 
   def apply(plan: LogicalPlan): LogicalPlan = plan transformAllExpressions {
     case AggregateExpression(
-        Sum(e @ DecimalType.Expression(prec, scale)),
-        mode,
-        isDistinct) if prec + 10 <= MAX_LONG_DIGITS =>
+          Sum(e @ DecimalType.Expression(prec, scale)),
+          mode,
+          isDistinct) if prec + 10 <= MAX_LONG_DIGITS =>
       MakeDecimal(
         AggregateExpression(Sum(UnscaledValue(e)), mode, isDistinct),
         prec + 10,
         scale)
 
     case AggregateExpression(
-        Average(e @ DecimalType.Expression(prec, scale)),
-        mode,
-        isDistinct) if prec + 4 <= MAX_DOUBLE_DIGITS =>
+          Average(e @ DecimalType.Expression(prec, scale)),
+          mode,
+          isDistinct) if prec + 4 <= MAX_DOUBLE_DIGITS =>
       val newAggExpr =
         AggregateExpression(Average(UnscaledValue(e)), mode, isDistinct)
       Cast(

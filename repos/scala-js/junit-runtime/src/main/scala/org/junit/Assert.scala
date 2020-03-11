@@ -10,8 +10,7 @@ import org.hamcrest.MatcherAssert
 
 object Assert {
   def assertTrue(message: String, condition: Boolean): Unit = {
-    if (!condition)
-      fail(message)
+    if (!condition) fail(message)
   }
 
   def assertTrue(condition: Boolean): Unit =
@@ -45,8 +44,7 @@ object Assert {
 
   @inline
   private def equalsRegardingNull(expected: Any, actual: Any): Boolean =
-    if (expected == null) actual == null
-    else isEquals(expected, actual)
+    if (expected == null) actual == null else isEquals(expected, actual)
 
   @inline
   private def isEquals(expected: Any, actual: Any): Boolean =
@@ -59,8 +57,7 @@ object Assert {
       message: String,
       unexpected: AnyRef,
       actual: AnyRef): Unit = {
-    if (equalsRegardingNull(unexpected, actual))
-      failEquals(message, actual)
+    if (equalsRegardingNull(unexpected, actual)) failEquals(message, actual)
   }
 
   def assertNotEquals(unexpected: AnyRef, actual: AnyRef): Unit =
@@ -68,15 +65,13 @@ object Assert {
 
   private def failEquals(message: String, actual: Any): Unit = {
     val checkedMessage = {
-      if (message != null) message
-      else "Values should be different"
+      if (message != null) message else "Values should be different"
     }
     fail(s"$checkedMessage. Actual: $actual")
   }
 
   def assertNotEquals(message: String, unexpected: Long, actual: Long): Unit = {
-    if (unexpected == actual)
-      failEquals(message, actual)
+    if (unexpected == actual) failEquals(message, actual)
   }
 
   def assertNotEquals(unexpected: Long, actual: Long): Unit =
@@ -267,8 +262,7 @@ object Assert {
     assertNotNull(null, obj)
 
   def assertNull(message: String, obj: AnyRef): Unit = {
-    if (obj != null)
-      failNotNull(message, obj)
+    if (obj != null) failNotNull(message, obj)
   }
 
   def assertNull(obj: AnyRef): Unit =
@@ -280,8 +274,7 @@ object Assert {
   }
 
   def assertSame(message: String, expected: AnyRef, actual: AnyRef): Unit = {
-    if (expected ne actual)
-      failNotSame(message, expected, actual)
+    if (expected ne actual) failNotSame(message, expected, actual)
   }
 
   def assertSame(expected: AnyRef, actual: AnyRef): Unit =
@@ -290,29 +283,22 @@ object Assert {
   def assertNotSame(
       message: String,
       unexpected: AnyRef,
-      actual: AnyRef): Unit = {
-    if (unexpected eq actual)
-      failSame(message)
-  }
+      actual: AnyRef): Unit = { if (unexpected eq actual) failSame(message) }
 
   def assertNotSame(unexpected: AnyRef, actual: AnyRef): Unit =
     assertNotSame(null, unexpected, actual)
 
   private def failSame(message: String): Unit = {
-    if (message == null)
-      fail("expected not same")
-    else
-      fail(s"$message expected not same")
+    if (message == null) fail("expected not same")
+    else fail(s"$message expected not same")
   }
 
   private def failNotSame(
       message: String,
       expected: AnyRef,
       actual: AnyRef): Unit = {
-    if (message == null)
-      fail(s"expected same:<$expected> was not:<$actual>")
-    else
-      fail(s"$message expected same:<$expected> was not:<$actual>")
+    if (message == null) fail(s"expected same:<$expected> was not:<$actual>")
+    else fail(s"$message expected same:<$expected> was not:<$actual>")
   }
 
   @inline

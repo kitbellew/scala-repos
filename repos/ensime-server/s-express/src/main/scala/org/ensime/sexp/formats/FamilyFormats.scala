@@ -25,8 +25,7 @@ trait FamilyFormats {
     new SexpFormat[T] {
       def write(t: T) = SexpNil
       def read(v: Sexp) =
-        if (v == SexpNil) w.value
-        else deserializationError(v)
+        if (v == SexpNil) w.value else deserializationError(v)
     }
 
   abstract class TraitFormat[T] extends SexpFormat[T] {

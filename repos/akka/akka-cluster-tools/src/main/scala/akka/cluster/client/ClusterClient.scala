@@ -380,8 +380,7 @@ final class ClusterClient(settings: ClusterClientSettings)
         scheduleRefreshContactsTick(establishingGetContactsInterval)
         context.become(establishing)
         failureDetector.heartbeat()
-      } else
-        receptionist ! Heartbeat
+      } else receptionist ! Heartbeat
     case HeartbeatRsp ⇒
       failureDetector.heartbeat()
     case RefreshContactsTick ⇒
@@ -507,8 +506,7 @@ final class ClusterClientReceptionist(system: ExtendedActorSystem)
     * The [[ClusterReceptionist]] actor
     */
   private val receptionist: ActorRef = {
-    if (isTerminated)
-      system.deadLetters
+    if (isTerminated) system.deadLetters
     else {
       val name = config.getString("name")
       val dispatcher = config.getString("use-dispatcher") match {
@@ -813,8 +811,7 @@ final class ClusterReceptionist(
       }
 
     case MemberRemoved(m, _) ⇒
-      if (m.address == selfAddress)
-        context stop self
+      if (m.address == selfAddress) context stop self
       else if (matchingRole(m)) {
         nodes -= m.address
         consistentHash = ConsistentHash(nodes, virtualNodesFactor)

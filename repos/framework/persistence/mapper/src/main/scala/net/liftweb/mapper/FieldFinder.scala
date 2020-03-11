@@ -41,8 +41,7 @@ class FieldFinder[T: ClassTag](
       startingClass: Class[_]): List[Method] = {
     // If a class name ends in $module, it's a subclass created for scala object instances
     def deMod(in: String): String =
-      if (in.endsWith("$module")) in.substring(0, in.length - 7)
-      else in
+      if (in.endsWith("$module")) in.substring(0, in.length - 7) else in
 
     // find the magic fields for the given superclass
     def findForClass(clz: Class[_]): List[Method] = clz match {

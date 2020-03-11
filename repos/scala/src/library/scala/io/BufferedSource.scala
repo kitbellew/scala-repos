@@ -69,8 +69,7 @@ class BufferedSource(inputStream: InputStream, bufferSize: Int)(
     var nextLine: String = null
 
     override def hasNext = {
-      if (nextLine == null)
-        nextLine = lineReader.readLine
+      if (nextLine == null) nextLine = lineReader.readLine
 
       nextLine != null
     }
@@ -81,8 +80,7 @@ class BufferedSource(inputStream: InputStream, bufferSize: Int)(
           try nextLine
           finally nextLine = null
       }
-      if (result == null) Iterator.empty.next()
-      else result
+      if (result == null) Iterator.empty.next() else result
     }
   }
 

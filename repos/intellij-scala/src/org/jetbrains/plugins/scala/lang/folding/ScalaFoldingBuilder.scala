@@ -264,8 +264,7 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
             return "\"\"\"...\"\"\""
           case _ =>
         }
-        if (node.getPsi.isInstanceOf[ScArgumentExprList])
-          return "(...)"
+        if (node.getPsi.isInstanceOf[ScArgumentExprList]) return "(...)"
       }
     }
     if (node.getTreeParent != null && (ScalaElementTypes.ARG_EXPRS == node.getTreeParent.getElementType
@@ -280,8 +279,7 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
     node.getElementType match {
       case ScalaTokenTypes.tLINE_COMMENT =>
         if (!isWorksheetResults(node)) {
-          if (!isCustomRegionStart(node.getText))
-            return "/.../"
+          if (!isCustomRegionStart(node.getText)) return "/.../"
           else {
             if (isTagRegionStart(node.getText)) {
               val customText: String = node.getText
@@ -650,8 +648,8 @@ object TypeLambda {
                   case Some(ref) =>
                     (ref.holders, ref.types) match {
                       case (
-                          scala.Seq(),
-                          scala.Seq(tad: ScTypeAliasDefinitionImpl))
+                            scala.Seq(),
+                            scala.Seq(tad: ScTypeAliasDefinitionImpl))
                           if tad.name == nameId.getText =>
                         (
                           tad.typeParametersClause,

@@ -112,8 +112,7 @@ class ScalaByNameWeigher extends CompletionWeigher {
         else {
           val distance =
             EditDistance.optimalAlignment(element.getName, text, false)
-          if (distance > maxDist) None
-          else Some(-distance)
+          if (distance > maxDist) None else Some(-distance)
         }
       }
 

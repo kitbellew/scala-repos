@@ -162,8 +162,7 @@ trait CombParserHelpers {
   def permute[T](
       func: List[Parser[T]] => List[List[Parser[T]]],
       p: (Parser[T])*): Parser[List[T]] =
-    if (p.isEmpty)
-      success(Nil);
+    if (p.isEmpty) success(Nil);
     else {
       val right: Parser[List[T]] = success(Nil)
 
@@ -211,8 +210,7 @@ trait SafeSeqParser extends Parsers {
           res = p(in)
         }
 
-        if (!xs.isEmpty) Success(xs.toList, res.next)
-        else Failure("TODO", in0)
+        if (!xs.isEmpty) Success(xs.toList, res.next) else Failure("TODO", in0)
       }
     }
 
@@ -247,8 +245,7 @@ trait SafeSeqParser extends Parsers {
             res = p(in)
           }
         }
-        if (!xs.isEmpty) Success(xs.toList, res.next)
-        else Failure("TODO", in0)
+        if (!xs.isEmpty) Success(xs.toList, res.next) else Failure("TODO", in0)
 
       }
     }

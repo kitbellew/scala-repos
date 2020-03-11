@@ -39,22 +39,19 @@ private[netty4] class Netty4ChannelInitializer(
   val writeCompletionTimeoutHandler =
     if (writeTimeout.isFinite)
       Some(new WriteCompletionTimeoutHandler(timer, writeTimeout))
-    else
-      None
+    else None
 
   val (channelRequestStatsHandler, channelStatsHandler) =
     if (!stats.isNull)
       (
         Some(new ChannelRequestStatsHandler(stats)),
         Some(new ChannelStatsHandler(stats)))
-    else
-      (None, None)
+    else (None, None)
 
   val channelSnooper =
     if (params[Transport.Verbose].enabled)
       Some(ChannelSnooper(label)(logger.log(Level.INFO, _, _)))
-    else
-      None
+    else None
 
   val Transport.TLSServerEngine(engine) = params[Transport.TLSServerEngine]
   val tlsConfig = engine.map(Netty4ListenerTLSConfig)
@@ -177,8 +174,7 @@ private[netty4] class ChannelExceptionHandler(
 
     log.log(severity(t), msg, t)
 
-    if (ctx.channel.isOpen)
-      ctx.channel.close()
+    if (ctx.channel.isOpen) ctx.channel.close()
 
     super.exceptionCaught(ctx, t)
   }

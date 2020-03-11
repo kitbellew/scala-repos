@@ -45,8 +45,7 @@ class ScalaScriptRunConfiguration(
   private var consoleArgs = ""
   private var workingDirectory = {
     val base = getProject.getBaseDir
-    if (base != null) base.getPath
-    else ""
+    if (base != null) base.getPath else ""
   }
 
   def getScriptPath = scriptPath

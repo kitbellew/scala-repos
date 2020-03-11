@@ -70,8 +70,7 @@ class SnapshotSerializer(val system: ExtendedActorSystem)
       snapshotSerializer match {
         case ser2: SerializerWithStringManifest ⇒
           val manifest = ser2.manifest(snapshot)
-          if (manifest != "")
-            headerOut.write(manifest.getBytes(UTF_8))
+          if (manifest != "") headerOut.write(manifest.getBytes(UTF_8))
         case _ ⇒
           if (snapshotSerializer.includeManifest)
             headerOut.write(snapshot.getClass.getName.getBytes(UTF_8))

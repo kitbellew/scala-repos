@@ -23,17 +23,12 @@ class WrappedDictionary[A](val dict: Dictionary[A])
   import WrappedDictionary._
 
   def get(key: String): Option[A] = {
-    if (contains(key))
-      Some(dict.rawApply(key))
-    else
-      None
+    if (contains(key)) Some(dict.rawApply(key)) else None
   }
 
   override def apply(key: String): A = {
-    if (contains(key))
-      dict.rawApply(key)
-    else
-      throw new NoSuchElementException("key not found: " + key)
+    if (contains(key)) dict.rawApply(key)
+    else throw new NoSuchElementException("key not found: " + key)
   }
 
   override def contains(key: String): Boolean = {
@@ -44,8 +39,7 @@ class WrappedDictionary[A](val dict: Dictionary[A])
   }
 
   def -=(key: String): this.type = {
-    if (contains(key))
-      dict.delete(key)
+    if (contains(key)) dict.delete(key)
     this
   }
 

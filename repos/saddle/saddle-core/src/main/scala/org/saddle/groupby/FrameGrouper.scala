@@ -32,8 +32,7 @@ class FrameGrouper[Z: ST: ORD, X: ST: ORD, Y: ST: ORD, T: ST](
         arr,
         array.argsort(arr),
         sys.error("Logic error in sorting group index"))
-    else
-      arr
+    else arr
   }
 
   def keys: Array[Z] = uniq

@@ -48,10 +48,8 @@ package object math {
       if (lo > hi) prod
       else loop(lo + 1L, hi - 1L, BigInt(lo) * BigInt(hi) * prod)
 
-    if (((n - k) & 1) == 1)
-      loop(k + 1, n - 1L, BigInt(n)) / fact(n - k)
-    else
-      loop(k + 1, n, BigInt(1)) / fact(n - k)
+    if (((n - k) & 1) == 1) loop(k + 1, n - 1L, BigInt(n)) / fact(n - k)
+    else loop(k + 1, n, BigInt(1)) / fact(n - k)
   }
 
   /**
@@ -200,8 +198,7 @@ package object math {
       loop(n.setScale(scale2, HALF_UP)).setScale(scale, HALF_UP)
     }
 
-    if (n.signum < 1)
-      throw new IllegalArgumentException("argument <= 0")
+    if (n.signum < 1) throw new IllegalArgumentException("argument <= 0")
 
     @tailrec def rescale(x: BigDecimal, n: Int): (BigDecimal, Int) =
       if (x < 64) (x, n) else rescale(x.sqrt, n + 1)
@@ -226,10 +223,8 @@ package object math {
   // TODO: figure out how much precision we need from log(base) to
   // make the exp() have the right precision
   final def pow(base: BigDecimal, exponent: BigDecimal): BigDecimal =
-    if (exponent.abs <= 99999999 && exponent.isWhole)
-      base.pow(exponent.toInt)
-    else
-      exp(log(base) * exponent)
+    if (exponent.abs <= 99999999 && exponent.isWhole) base.pow(exponent.toInt)
+    else exp(log(base) * exponent)
 
   final def pow(base: BigInt, ex: BigInt): BigInt = {
     @tailrec def bigIntPow(t: BigInt, b: BigInt, e: BigInt): BigInt =

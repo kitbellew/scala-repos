@@ -77,8 +77,7 @@ class CSCMatrix[@spec(Double, Int, Float, Long) V: Zero](
     if (row >= rows || col >= cols || row < 0 || col < 0)
       throw new IndexOutOfBoundsException()
     val ind = locate(row, col)
-    if (ind < 0) zero
-    else data(ind)
+    if (ind < 0) zero else data(ind)
   }
 
   def update(row: Int, col: Int, v: V) {
@@ -618,8 +617,7 @@ object CSCMatrix
 
       val out =
         new CSCMatrix[T](outData, _rows, _cols, outCols, outDataIndex, outRows)
-      if (!keysAlreadyUnique)
-        out.compact()
+      if (!keysAlreadyUnique) out.compact()
       out
     }
 

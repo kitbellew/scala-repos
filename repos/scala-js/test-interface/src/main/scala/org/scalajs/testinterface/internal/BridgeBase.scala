@@ -22,10 +22,8 @@ abstract class BridgeBase(frameworkName: String) {
     val cmd = if (pos == -1) msg else msg.substring(0, pos)
 
     def strArg = {
-      if (pos == -1)
-        throw new IllegalArgumentException(s"$cmd needs args")
-      else
-        msg.substring(pos + 1)
+      if (pos == -1) throw new IllegalArgumentException(s"$cmd needs args")
+      else msg.substring(pos + 1)
     }
 
     try { handleMsgImpl(cmd, strArg) }

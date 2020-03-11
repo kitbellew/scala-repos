@@ -145,8 +145,7 @@ object Utils {
     }
     val word: Boolean = strings.exists(_.isEmpty) || arr.isEmpty
     def apply(c: Char): TrieNode = {
-      if (c > max || c < min) null
-      else arr(c - min)
+      if (c > max || c < min) null else arr(c - min)
     }
 
     /**
@@ -166,8 +165,7 @@ object Utils {
             rec(
               offset + 1,
               next,
-              if (next.word) offset
-              else currentRes
+              if (next.word) offset else currentRes
             )
         }
       }

@@ -71,8 +71,7 @@ class TopicMetadataRequest(
       while (topicIterator.hasNext) {
         val topic = topicIterator.next()
         topicMetadataRequest.append("%s".format(topic))
-        if (topicIterator.hasNext)
-          topicMetadataRequest.append(",")
+        if (topicIterator.hasNext) topicMetadataRequest.append(",")
       }
     }
     topicMetadataRequest.toString()

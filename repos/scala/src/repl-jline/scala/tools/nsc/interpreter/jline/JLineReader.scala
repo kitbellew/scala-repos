@@ -101,8 +101,7 @@ private class JLineConsoleReader
         linesLeft -= 1
         if (linesLeft <= 0) {
           linesLeft = emulateMore()
-          if (linesLeft < 0)
-            return
+          if (linesLeft < 0) return
         }
       }
     }

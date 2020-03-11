@@ -148,8 +148,7 @@ private[coordinator] class GroupMetadata(
   def add(memberId: String, member: MemberMetadata) {
     assert(supportsProtocols(member.protocols))
 
-    if (leaderId == null)
-      leaderId = memberId
+    if (leaderId == null) leaderId = memberId
     members.put(memberId, member)
   }
 

@@ -144,10 +144,10 @@ package object time {
     protected def getField(
         field: DateTimeField,
         isTime: Boolean = false): Vec[Int] =
-      if (chrono != ISO_CHRONO_UTC || !isTime)
-        times.map { (ms: Long) => field.get(ms) }
-      else
-        getFieldFast(field)
+      if (chrono != ISO_CHRONO_UTC || !isTime) times.map { (ms: Long) =>
+        field.get(ms)
+      }
+      else getFieldFast(field)
 
     protected def extractor(unit: Long, range: Long): Vec[Int] = times.map {
       (t: Long) =>

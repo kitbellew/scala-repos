@@ -93,13 +93,9 @@ object TestResultLogger {
 
         run(printSummary)
 
-        if (printStandard_?(results))
-          run(printStandard)
+        if (printStandard_?(results)) run(printStandard)
 
-        if (results.events.isEmpty)
-          run(printNoTests)
-        else
-          run(printFailures)
+        if (results.events.isEmpty) run(printNoTests) else run(printFailures)
 
         results.overall match {
           case TestResult.Error | TestResult.Failed =>
@@ -137,15 +133,15 @@ object TestResultLogger {
         pendingCount) =
         results.events.foldLeft((0, 0, 0, 0, 0, 0, 0)) {
           case (
-              (
-                skippedAcc,
-                errorAcc,
-                passedAcc,
-                failureAcc,
-                ignoredAcc,
-                canceledAcc,
-                pendingAcc),
-              (name, testEvent)) =>
+                (
+                  skippedAcc,
+                  errorAcc,
+                  passedAcc,
+                  failureAcc,
+                  ignoredAcc,
+                  canceledAcc,
+                  pendingAcc),
+                (name, testEvent)) =>
             (
               skippedAcc + testEvent.skippedCount,
               errorAcc + testEvent.errorCount,

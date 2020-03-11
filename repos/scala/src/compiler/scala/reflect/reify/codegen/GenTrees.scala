@@ -20,12 +20,10 @@ trait GenTrees {
   def reifyTree(tree: Tree): Tree = {
     assert(tree != null, "tree is null")
 
-    if (tree.isErroneous)
-      CannotReifyErroneousReifee(tree)
+    if (tree.isErroneous) CannotReifyErroneousReifee(tree)
 
     val splicedTree = spliceTree(tree)
-    if (splicedTree != EmptyTree)
-      return splicedTree
+    if (splicedTree != EmptyTree) return splicedTree
 
     // the idea behind the new reincarnation of reifier is a simple maxim:
     //
@@ -141,8 +139,7 @@ trait GenTrees {
         assert(
           sym != NoSymbol,
           "unexpected: bound term that doesn't have a symbol: " + showRaw(tree))
-        if (sym.isLocalToReifee)
-          mirrorCall(nme.This, reify(qual))
+        if (sym.isLocalToReifee) mirrorCall(nme.This, reify(qual))
         else if (sym.isClass && !sym.isModuleClass) {
           if (reifyDebug) println("This for %s, reified as freeVar".format(sym))
           if (reifyDebug) println("Free: " + sym)
@@ -201,8 +198,7 @@ trait GenTrees {
       // why? because then typechecking of a scrutinee doesn't depend on the environment external to the quasiquote
       // otherwise we need to reify the corresponding type
       if (sym.isLocalToReifee || tpe.isLocalToReifee || treeInfo
-            .isWildcardStarType(tree))
-        reifyProduct(tree)
+            .isWildcardStarType(tree)) reifyProduct(tree)
       else {
         if (reifyDebug)
           println(

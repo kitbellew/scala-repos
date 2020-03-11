@@ -29,8 +29,7 @@ private[akka] final class BalancingRoutingLogic extends RoutingLogic {
   override def select(
       message: Any,
       routees: immutable.IndexedSeq[Routee]): Routee =
-    if (routees.isEmpty) NoRoutee
-    else routees.head
+    if (routees.isEmpty) NoRoutee else routees.head
 }
 
 /**

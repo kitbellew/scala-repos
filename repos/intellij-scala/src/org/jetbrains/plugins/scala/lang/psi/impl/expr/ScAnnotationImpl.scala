@@ -127,8 +127,7 @@ class ScAnnotationImpl private (
           case arg: ScArgumentExprList =>
             var prev = elem.getPrevSibling
             while (prev != null && (ScalaPsiUtil.isLineTerminator(prev) || prev
-                     .isInstanceOf[PsiWhiteSpace]))
-              prev = prev.getPrevSibling
+                     .isInstanceOf[PsiWhiteSpace])) prev = prev.getPrevSibling
             if (prev != null && prev.getNode.getElementType == ScalaTokenTypes.tCOMMA) {
               elem.delete()
               prev.delete()

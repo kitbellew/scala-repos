@@ -98,8 +98,7 @@ trait ScalaJSSuiteRunner extends SuiteRunner {
     // when option "--failed" is provided execute test only if log
     // is present (which means it failed before)
     val state =
-      if (failed && !runner.logFile.canRead)
-        runner.genPass()
+      if (failed && !runner.logFile.canRead) runner.genPass()
       else {
         val (state, elapsed) =
           try timed(runner.run())
@@ -204,7 +203,6 @@ class ScalaJSSBTRunner(
   sys.props("partest.timeout") = "10 hours"
 
   // Set showDiff on global UI module
-  if (options.showDiff)
-    NestUI.setDiffOnFail()
+  if (options.showDiff) NestUI.setDiffOnFail()
 
 }

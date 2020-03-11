@@ -190,8 +190,7 @@ private[repl] trait SparkImports {
         // level if the import might conflict with some other import
         case x: ImportHandler =>
           if (x.importsWildcard || currentImps.exists(
-                x.importedNames contains _))
-            addWrapper()
+                x.importedNames contains _)) addWrapper()
 
           code append (x.member + "\n")
 

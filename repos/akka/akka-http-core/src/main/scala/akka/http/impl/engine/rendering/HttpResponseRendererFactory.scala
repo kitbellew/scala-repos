@@ -86,8 +86,7 @@ private[http] class HttpResponseRendererFactory(
               }
 
             override def onUpstreamFinish(): Unit =
-              if (transferring) closeMode = CloseConnection
-              else completeStage()
+              if (transferring) closeMode = CloseConnection else completeStage()
           }
         )
         val waitForDemandHandler = new OutHandler {

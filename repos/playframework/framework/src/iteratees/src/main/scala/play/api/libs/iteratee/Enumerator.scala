@@ -734,11 +734,10 @@ object Enumerator {
     val it = traversable.toIterator
     Enumerator.unfoldM[scala.collection.Iterator[E], E](
       it: scala.collection.Iterator[E])({ currentIt =>
-      if (currentIt.hasNext)
-        Future[Option[(scala.collection.Iterator[E], E)]]({
-          val next = currentIt.next
-          Some((currentIt -> next))
-        })(ctx)
+      if (currentIt.hasNext) Future[Option[(scala.collection.Iterator[E], E)]]({
+        val next = currentIt.next
+        Some((currentIt -> next))
+      })(ctx)
       else
         Future.successful[Option[(scala.collection.Iterator[E], E)]]({ None })
     })(dec)
@@ -767,8 +766,7 @@ object Enumerator {
           loop: (Iteratee[E, A], Seq[E]) => Future[Iteratee[E, A]],
           s: Seq[E],
           k: Input[E] => Iteratee[E, A]): Future[Iteratee[E, A]] =
-        if (!s.isEmpty)
-          loop(k(Input.El(s.head)), s.tail)
+        if (!s.isEmpty) loop(k(Input.El(s.head)), s.tail)
         else Future.successful(Cont(k))
     })
 
@@ -778,9 +776,7 @@ object Enumerator {
           loop: (Iteratee[E, A], Seq[Input[E]]) => Future[Iteratee[E, A]],
           s: Seq[Input[E]],
           k: Input[E] => Iteratee[E, A]): Future[Iteratee[E, A]] =
-        if (!s.isEmpty)
-          loop(k(s.head), s.tail)
-        else Future.successful(Cont(k))
+        if (!s.isEmpty) loop(k(s.head), s.tail) else Future.successful(Cont(k))
     })
 
 }

@@ -49,14 +49,12 @@ case class CpuProfile(
       next += 1
     }
     putString("---\n--- profile\n")
-    for (w <- Seq(0, 3, 0, 1, 0))
-      putWord(w)
+    for (w <- Seq(0, 3, 0, 1, 0)) putWord(w)
 
     for ((stack, n) <- counts if stack.nonEmpty) {
       putWord(n)
       putWord(stack.size)
-      for (frame <- stack)
-        putWord(uniq(frame))
+      for (frame <- stack) putWord(uniq(frame))
     }
     putWord(0)
     putWord(1)
@@ -135,8 +133,7 @@ object CpuProfile {
         val s = thread.getStackTrace().toSeq
         if (s.nonEmpty) {
           val include = state != Thread.State.RUNNABLE || isRunnable(s.head)
-          if (include)
-            counts(s) = counts.getOrElse(s, 0L) + 1L
+          if (include) counts(s) = counts.getOrElse(s, 0L) + 1L
         }
       }
 

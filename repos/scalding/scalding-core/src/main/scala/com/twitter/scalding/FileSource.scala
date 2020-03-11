@@ -168,10 +168,8 @@ object FileSource {
       .map { fileStatus: FileStatus =>
         // stringify Path for Semigroup
         val dir =
-          if (fileStatus.isDirectory)
-            fileStatus.getPath.toString
-          else
-            fileStatus.getPath.getParent.toString
+          if (fileStatus.isDirectory) fileStatus.getPath.toString
+          else fileStatus.getPath.getParent.toString
 
         // HiddenFileFilter should better be called non-hidden but it borrows its name from the
         // private field name in hadoop FileInputFormat

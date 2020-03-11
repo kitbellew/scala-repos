@@ -48,8 +48,7 @@ class AllProjectHighlightingTest
     val settings = new SbtProjectSettings
     val internalSdk = JavaAwareProjectJdkTableImpl.getInstanceEx.getInternalJdk
     val sdk =
-      if (internalSdk == null) IdeaTestUtil.getMockJdk17
-      else internalSdk
+      if (internalSdk == null) IdeaTestUtil.getMockJdk17 else internalSdk
     val sdkType = sdk.getSdkType.asInstanceOf[JavaSdkType]
     settings.setJdk(sdk.getName)
     settings.setCreateEmptyContentRootDirectories(true)
@@ -82,8 +81,7 @@ class AllProjectHighlightingTest
       val internalSdk =
         JavaAwareProjectJdkTableImpl.getInstanceEx.getInternalJdk
       val sdk =
-        if (internalSdk == null) IdeaTestUtil.getMockJdk17
-        else internalSdk
+        if (internalSdk == null) IdeaTestUtil.getMockJdk17 else internalSdk
 
       //todo: why we need this??? Looks like SBT integration problem, as we attached SDK as setting
       if (ProjectJdkTable.getInstance().findJdk(sdk.getName) == null) {

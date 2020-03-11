@@ -382,17 +382,14 @@ class RegressionTest {
         y = y0
         var res = 0
         while (x > 0 || y > 0 || z > 0) {
-          if (x > 0) x -= 1
-          else if (y > 0) y -= 1
-          else z -= 1
+          if (x > 0) x -= 1 else if (y > 0) y -= 1 else z -= 1
           res += 1
         }
         res
       }
     }
 
-    if (new A().plus(5, 10) < 3)
-      js.debugger()
+    if (new A().plus(5, 10) < 3) js.debugger()
   }
 
   @Test def should_not_cause_Closure_to_crash_with_Unexpected_variable_NaN_issue_1469()

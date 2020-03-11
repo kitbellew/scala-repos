@@ -44,6 +44,5 @@ class CombinedBatcher(
     if (b > batchAtBound) {
       after.earliestTimeOf((b - batchAtBound.id) + afterBatchDelta.id)
     } else if (b == batchAtBound) { beforeBound.upper }
-    else
-      before.earliestTimeOf(b)
+    else before.earliestTimeOf(b)
 }

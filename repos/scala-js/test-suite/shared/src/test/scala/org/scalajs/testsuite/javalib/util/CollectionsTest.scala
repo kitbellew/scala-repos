@@ -31,8 +31,7 @@ class CollectionsTest extends CollectionsTestBase {
 
     if (coll.count(_ == elem) != coll.size)
       expectThrows(classOf[Exception], coll.retainAll(List(elem)))
-    else
-      assertFalse(coll.retainAll(List(elem)))
+    else assertFalse(coll.retainAll(List(elem)))
 
     if (coll.contains(elem)) {
       expectThrows(classOf[Exception], coll.remove(elem))
@@ -74,15 +73,11 @@ class CollectionsTest extends CollectionsTestBase {
       map.putAll(Map(k -> v)))
     map.putAll(Map.empty[K, V]) // Should not throw
 
-    if (map.containsKey(k))
-      expectThrows(classOf[Throwable], map.remove(k))
-    else
-      assertNull(map.remove(k).asInstanceOf[AnyRef])
+    if (map.containsKey(k)) expectThrows(classOf[Throwable], map.remove(k))
+    else assertNull(map.remove(k).asInstanceOf[AnyRef])
 
-    if (map.nonEmpty)
-      expectThrows(classOf[Throwable], map.clear())
-    else
-      map.clear() // Should not throw
+    if (map.nonEmpty) expectThrows(classOf[Throwable], map.clear())
+    else map.clear() // Should not throw
   }
 
   @Test def emptySet(): Unit = {
@@ -282,8 +277,7 @@ class CollectionsTest extends CollectionsTestBase {
     val enum = asJavaEnumeration(range.iterator)
     val list = ju.Collections.list(enum)
     assertEquals(range.size, list.size)
-    for (i <- range)
-      assertEquals(i, list.get(i))
+    for (i <- range) assertEquals(i, list.get(i))
   }
 
   @Test def disjoint(): Unit = {

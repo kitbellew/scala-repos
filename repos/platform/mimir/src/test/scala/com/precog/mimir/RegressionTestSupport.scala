@@ -33,14 +33,12 @@ trait RegressionTestSupport[M[+_]] {
     val theta = Random.nextGaussian * 10
     // we omit values of theta close to zero
     // this is so that normal distribution of the y-values doesn't need to depend on the x-values
-    if (theta >= -3 && theta <= 3) makeTBounded
-    else theta
+    if (theta >= -3 && theta <= 3) makeTBounded else theta
   }
 
   def makeT: Double = {
     val theta = Random.nextGaussian * 10
-    if (theta == 0) makeT
-    else theta
+    if (theta == 0) makeT else theta
   }
 
   def makeThetas(length: Int): Array[Double] = {

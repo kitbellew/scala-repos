@@ -264,8 +264,7 @@ class CircuitBreaker(
     * @param toState State being transitioning from
     */
   private def transition(fromState: State, toState: State): Unit = {
-    if (swapState(fromState, toState))
-      toState.enter()
+    if (swapState(fromState, toState)) toState.enter()
     // else some other thread already swapped state
   }
 
@@ -511,8 +510,7 @@ class CircuitBreaker(
       */
     private def remainingDuration(): FiniteDuration = {
       val diff = System.nanoTime() - get
-      if (diff <= 0L) Duration.Zero
-      else diff.nanos
+      if (diff <= 0L) Duration.Zero else diff.nanos
     }
 
     /**

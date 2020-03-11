@@ -79,8 +79,7 @@ object ScalaTestRunConfiguration extends SuiteValidityChecker {
                   parameterizedType.designator
                 case _ => paramClass
               }
-              if (Conformance.conforms(mapClass, conformanceType))
-                return false
+              if (Conformance.conforms(mapClass, conformanceType)) return false
             }
           case _ =>
         }

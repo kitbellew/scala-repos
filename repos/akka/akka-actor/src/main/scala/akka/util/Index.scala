@@ -71,8 +71,7 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
         } else added = true
       }
 
-      if (retry) spinPut(k, v)
-      else added
+      if (retry) spinPut(k, v) else added
     }
 
     spinPut(key, value)

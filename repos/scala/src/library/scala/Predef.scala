@@ -156,8 +156,7 @@ object Predef extends LowPriorityImplicits with DeprecatedPredef {
     */
   @elidable(ASSERTION)
   def assert(assertion: Boolean) {
-    if (!assertion)
-      throw new java.lang.AssertionError("assertion failed")
+    if (!assertion) throw new java.lang.AssertionError("assertion failed")
   }
 
   /** Tests an expression, throwing an `AssertionError` if false.
@@ -185,8 +184,7 @@ object Predef extends LowPriorityImplicits with DeprecatedPredef {
     */
   @elidable(ASSERTION)
   def assume(assumption: Boolean) {
-    if (!assumption)
-      throw new java.lang.AssertionError("assumption failed")
+    if (!assumption) throw new java.lang.AssertionError("assumption failed")
   }
 
   /** Tests an expression, throwing an `AssertionError` if false.
@@ -212,8 +210,7 @@ object Predef extends LowPriorityImplicits with DeprecatedPredef {
     *  @param requirement   the expression to test
     */
   def require(requirement: Boolean) {
-    if (!requirement)
-      throw new IllegalArgumentException("requirement failed")
+    if (!requirement) throw new IllegalArgumentException("requirement failed")
   }
 
   /** Tests an expression, throwing an `IllegalArgumentException` if false.
@@ -613,8 +610,7 @@ private[scala] abstract class LowPriorityImplicits {
   @inline implicit def booleanWrapper(x: Boolean) = new runtime.RichBoolean(x)
 
   implicit def genericWrapArray[T](xs: Array[T]): WrappedArray[T] =
-    if (xs eq null) null
-    else WrappedArray.make(xs)
+    if (xs eq null) null else WrappedArray.make(xs)
 
   // Since the JVM thinks arrays are covariant, one 0-length Array[AnyRef]
   // is as good as another for all T <: AnyRef.  Instead of creating 100,000,000

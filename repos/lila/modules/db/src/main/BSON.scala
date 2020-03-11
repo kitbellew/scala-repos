@@ -207,8 +207,7 @@ object BSON {
     def doubleO(i: Double): Option[BSONDouble] =
       if (i != 0) Some(BSONDouble(i)) else None
     def intsO(l: List[Int]): Option[BSONArray] =
-      if (l.isEmpty) None
-      else Some(BSONArray(l map BSONInteger.apply))
+      if (l.isEmpty) None else Some(BSONArray(l map BSONInteger.apply))
 
     import scalaz.Functor
     def map[M[_]: Functor, A, B <: BSONValue](a: M[A])(

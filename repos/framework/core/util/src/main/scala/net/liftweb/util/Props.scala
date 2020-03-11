@@ -272,10 +272,7 @@ private[util] trait Props extends Logger {
     "autoDetectRunModeFn",
     () => {
       val st = Thread.currentThread.getStackTrace
-      if ((doesStackTraceContainKnownTestRunner.get)(st))
-        Test
-      else
-        Development
+      if ((doesStackTraceContainKnownTestRunner.get)(st)) Test else Development
     })
 
   /**

@@ -70,8 +70,7 @@ class Sampler {
         if (math.abs(
               traceId.traceId.toLong ^ Sampler.salt) % 10000 < sampleRate * 10000)
           Sampler.SomeTrue
-        else
-          Sampler.SomeFalse
+        else Sampler.SomeFalse
       case sample @ Some(_) =>
         sample
     }

@@ -25,8 +25,7 @@ object Meta {
     Bash.name --> runAndExit(Bash.action())
     val selfUpdateName = SelfUpdate.name --|;
 
-    if (selfUpdateName.isDefined)
-      runAndExit(SelfUpdate.action())
+    if (selfUpdateName.isDefined) runAndExit(SelfUpdate.action())
 
     /** I think we're as close as we can get to bundling completion with
       *  the program given the constraints imposed by bash.  This outputs

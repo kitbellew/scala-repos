@@ -18,8 +18,7 @@ class JUnitAssertionsTest {
       shouldPass: Boolean = true): Unit = {
     Try(assertion) match {
       case Success(_) =>
-        if (!shouldPass)
-          fail("Assertion should have failed.")
+        if (!shouldPass) fail("Assertion should have failed.")
 
       case Failure(assErr: AssertionError) =>
         if (shouldPass) {
@@ -532,8 +531,7 @@ class JUnitAssertionsTest {
         fail("testIfAsserts should not succeed with <throw new Exception>")
 
       case Failure(ex) =>
-        if (ex ne except)
-          throw ex
+        if (ex ne except) throw ex
     }
 
     Try(testIfAsserts(throw except, ShallNotPass)) match {
@@ -541,8 +539,7 @@ class JUnitAssertionsTest {
         fail("testIfAsserts should not succeed with <throw new Exception>")
 
       case Failure(ex) =>
-        if (ex ne except)
-          throw ex
+        if (ex ne except) throw ex
     }
   }
 }

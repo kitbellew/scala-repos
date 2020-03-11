@@ -28,7 +28,6 @@ object Test extends ScaladocModelTest {
         assert(tpl == X, tpl + " == X")
       }
 
-    for (tpl <- List(X, Y, Z, T))
-      checkTemplateOwner(tpl)
+    for (tpl <- List(X, Y, Z, T)) checkTemplateOwner(tpl)
   }
 }

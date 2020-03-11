@@ -204,8 +204,7 @@ object Validation {
               case _       => false
             }
 
-            if (n == 1)
-              Success
+            if (n == 1) Success
             else
               Failure(
                 Set(

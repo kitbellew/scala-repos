@@ -63,8 +63,7 @@ class AbstractTestRerunFailedTestsAction(
           .map(s =>
             {
               val i = s.lastIndexOf(".")
-              if (i < 0) s
-              else s.substring(i + 1)
+              if (i < 0) s else s.substring(i + 1)
             } -> s)
           .toMap
         import scala.collection.JavaConversions._

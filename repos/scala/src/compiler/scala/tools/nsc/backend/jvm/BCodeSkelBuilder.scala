@@ -113,14 +113,12 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
         && settings.Ydelambdafy.value == "method"
         && indyLambdaHosts.contains(cnode.name))
 
-      if (shouldAddLambdaDeserialize)
-        backendUtils.addLambdaDeserialize(cnode)
+      if (shouldAddLambdaDeserialize) backendUtils.addLambdaDeserialize(cnode)
 
       cnode.visitAttribute(classBType.inlineInfoAttribute.get)
 
       if (AsmUtils.traceClassEnabled && cnode.name.contains(
-            AsmUtils.traceClassPattern))
-        AsmUtils.traceClass(cnode)
+            AsmUtils.traceClassPattern)) AsmUtils.traceClass(cnode)
 
       assert(
         cd.symbol == claszSymbol,
@@ -159,7 +157,7 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
         internalName,
         methodBTypeFromSymbol(_).descriptor) match {
         case Some(
-            EnclosingMethodEntry(className, methodName, methodDescriptor)) =>
+              EnclosingMethodEntry(className, methodName, methodDescriptor)) =>
           cnode.visitOuterClass(className, methodName, methodDescriptor)
         case _ => ()
       }
@@ -564,8 +562,7 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
       val thrownExceptions: List[String] = getExceptions(excs)
 
       val bytecodeName =
-        if (isMethSymStaticCtor) CLASS_CONSTRUCTOR_NAME
-        else jMethodName
+        if (isMethSymStaticCtor) CLASS_CONSTRUCTOR_NAME else jMethodName
 
       val mdesc = methodBTypeFromSymbol(methSymbol).descriptor
       mnode = cnode
@@ -696,8 +693,7 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
       }
 
       if (AsmUtils.traceMethodEnabled && mnode.name.contains(
-            AsmUtils.traceMethodPattern))
-        AsmUtils.traceMethod(mnode)
+            AsmUtils.traceMethodPattern)) AsmUtils.traceMethod(mnode)
 
       mnode = null
     } // end of method genDefDef()

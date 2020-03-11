@@ -91,8 +91,7 @@ final class IRFileCache {
 
           val contents = if (oldValue != null) oldValue else newValue
 
-          if (contents.reference()) contents
-          else putContents()
+          if (contents.reference()) contents else putContents()
         }
 
         val contents = putContents()

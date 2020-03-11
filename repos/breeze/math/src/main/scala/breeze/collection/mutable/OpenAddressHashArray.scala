@@ -89,8 +89,7 @@ final class OpenAddressHashArray[
 
   final def apply(i: Int) = {
     if (i < 0 || i >= size) throw new IndexOutOfBoundsException()
-    if (index.length == 0) default.value
-    else data(locate(i))
+    if (index.length == 0) default.value else data(locate(i))
   }
 
   final def update(i: Int, v: V) {
@@ -210,8 +209,7 @@ object OpenAddressHashArray {
   }
 
   private def calculateSize(size: Int): Int = {
-    if (size < 4) 4
-    else nextPowerOfTwo(size - 1)
+    if (size < 4) 4 else nextPowerOfTwo(size - 1)
   }
 
   private def nextPowerOfTwo(size: Int): Int = {

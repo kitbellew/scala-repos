@@ -63,28 +63,24 @@ final class ArrayOps[A](private[this] val array: Array[A])
 
   override def reduceLeft[B >: A](op: (B, A) => B): B = {
     val length = this.length
-    if (length <= 0)
-      throwUnsupported("empty.reduceLeft")
+    if (length <= 0) throwUnsupported("empty.reduceLeft")
 
     @inline
     @tailrec
     def loop(start: Int, z: B): B =
-      if (start == length) z
-      else loop(start + 1, op(z, this(start)))
+      if (start == length) z else loop(start + 1, op(z, this(start)))
 
     loop(1, this(0))
   }
 
   override def reduceRight[B >: A](op: (A, B) => B): B = {
     val length = this.length
-    if (length <= 0)
-      throwUnsupported("empty.reduceRight")
+    if (length <= 0) throwUnsupported("empty.reduceRight")
 
     @inline
     @tailrec
     def loop(end: Int, z: B): B =
-      if (end == 0) z
-      else loop(end - 1, op(this(end - 1), z))
+      if (end == 0) z else loop(end - 1, op(this(end - 1), z))
 
     loop(length - 1, this(length - 1))
   }

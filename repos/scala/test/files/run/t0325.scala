@@ -21,8 +21,7 @@ object Test {
       val ret = f.toList
       if (ret != expect)
         println(which + " returned " + ret + " when expecting " + expect)
-      else
-        println(ret)
+      else println(ret)
     } catch {
       case e: Throwable => println(which + " failed with " + e.getClass)
     }

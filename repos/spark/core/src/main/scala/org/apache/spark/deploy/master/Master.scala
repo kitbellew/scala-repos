@@ -445,13 +445,13 @@ private[deploy] class Master(
   override def receiveAndReply(
       context: RpcCallContext): PartialFunction[Any, Unit] = {
     case RegisterWorker(
-        id,
-        workerHost,
-        workerPort,
-        workerRef,
-        cores,
-        memory,
-        workerWebUiUrl) => {
+          id,
+          workerHost,
+          workerPort,
+          workerRef,
+          cores,
+          memory,
+          workerWebUiUrl) => {
       logInfo("Registering worker %s:%d with %d cores, %s RAM"
         .format(workerHost, workerPort, cores, Utils.megabytesToString(memory)))
       if (state == RecoveryState.STANDBY) { context.reply(MasterInStandby) }

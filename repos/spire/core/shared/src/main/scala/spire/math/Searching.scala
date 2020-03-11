@@ -81,10 +81,7 @@ object Searching {
             fastRemove(i)
             // inspect the next candidate, taking care of the state of candidates
             // after the removal
-            if (i < candidates.length)
-              inspect(i)
-            else
-              inspect(i - 1)
+            if (i < candidates.length) inspect(i) else inspect(i - 1)
           } else if (c > 0.0) {
             // if a > candidates(i), then a is not minimal
             aIsNotMinimal = true
@@ -95,8 +92,7 @@ object Searching {
       }
       inspect(candidates.length - 1)
       // if a is minimal, then add it to the candidates pool
-      if (!aIsNotMinimal)
-        candidates += a
+      if (!aIsNotMinimal) candidates += a
     }
     Seq(candidates: _*)
   }

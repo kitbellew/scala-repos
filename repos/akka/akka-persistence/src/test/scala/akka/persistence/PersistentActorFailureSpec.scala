@@ -30,10 +30,8 @@ object PersistentActorFailureSpec {
         throw new SimulatedException("Simulated Store failure")
       else {
         val ser = checkSerializable(messages)
-        if (ser.exists(_.isFailure))
-          Future.successful(ser)
-        else
-          super.asyncWriteMessages(messages)
+        if (ser.exists(_.isFailure)) Future.successful(ser)
+        else super.asyncWriteMessages(messages)
       }
     }
 
@@ -44,8 +42,7 @@ object PersistentActorFailureSpec {
         max: Long)(recoveryCallback: PersistentRepr ⇒ Unit): Future[Unit] = {
       val highest = highestSequenceNr(persistenceId)
       val readFromStore = read(persistenceId, fromSequenceNr, toSequenceNr, max)
-      if (readFromStore.isEmpty)
-        Future.successful(())
+      if (readFromStore.isEmpty) Future.successful(())
       else if (isCorrupt(readFromStore))
         Future.failed(
           new SimulatedException(s"blahonga $fromSequenceNr $toSequenceNr"))
@@ -143,8 +140,7 @@ object PersistentActorFailureSpec {
     override val receiveCommand: Receive = commonBehavior orElse {
       case Cmd(data) ⇒
         persist(Evt(s"${data}"))(updateState)
-        if (data == "err")
-          throw new SimulatedException("Simulated exception 1")
+        if (data == "err") throw new SimulatedException("Simulated exception 1")
     }
   }
 

@@ -33,8 +33,7 @@ private[rhino] class ScalaJSCoreLib(linkingUnit: LinkingUnit) {
 
     for (linkedClass <- linkingUnit.classDefs) {
       providers += linkedClass.encodedName -> linkedClass
-      if (linkedClass.isExported)
-        exportedSymbols += linkedClass.encodedName
+      if (linkedClass.isExported) exportedSymbols += linkedClass.encodedName
     }
 
     (providers, exportedSymbols)
@@ -48,8 +47,7 @@ private[rhino] class ScalaJSCoreLib(linkingUnit: LinkingUnit) {
     // Make sure exported symbols are loaded
     val ScalaJS = Context.toObject(scope.get("ScalaJS", scope), scope)
     val c = Context.toObject(ScalaJS.get("c", ScalaJS), scope)
-    for (encodedName <- exportedSymbols)
-      c.get(encodedName, c)
+    for (encodedName <- exportedSymbols) c.get(encodedName, c)
   }
 
   /** Source maps the given stack trace (where possible) */
@@ -73,8 +71,7 @@ private[rhino] class ScalaJSCoreLib(linkingUnit: LinkingUnit) {
         val curMaxLine = neededMaps.getOrElse(fileName, -1)
         val reqLine = Context.toNumber(elem.get("lineNumber", elem)).toInt - 1
 
-        if (reqLine > curMaxLine)
-          neededMaps.put(fileName, reqLine)
+        if (reqLine > curMaxLine) neededMaps.put(fileName, reqLine)
       }
     }
 
@@ -94,8 +91,7 @@ private[rhino] class ScalaJSCoreLib(linkingUnit: LinkingUnit) {
       val pos = maps.get(fileName).fold(ir.Position.NoPosition)(_(line))
 
       val newElem =
-        if (pos.isDefined) newPosElem(scope, context, elem, pos)
-        else elem
+        if (pos.isDefined) newPosElem(scope, context, elem, pos) else elem
 
       res.put(i, res, newElem)
     }

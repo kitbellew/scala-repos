@@ -48,10 +48,8 @@ class IngestStress(settings: Settings) extends Task(settings) {
           _ / account.bareRootPath / "foo")
       } catch { case t => println(t) }
 
-      if (n > 0)
-        loop(n - 1, accumulated + sd.data.length)
-      else
-        accumulated + sd.data.length
+      if (n > 0) loop(n - 1, accumulated + sd.data.length)
+      else accumulated + sd.data.length
     }
 
     val start = System.currentTimeMillis

@@ -311,8 +311,8 @@ class ScalaFunctionParameterInfoHandler
                 isImplicit = false)
             }
           case (
-              sign: PhysicalSignature,
-              i: Int
+                sign: PhysicalSignature,
+                i: Int
               ) => //i  can be -1 (it's update method)
             val subst = sign.substitutor
             sign.method match {
@@ -442,8 +442,7 @@ class ScalaFunctionParameterInfoHandler
             false,
             false,
             color)
-        else
-          context.setUIComponentEnabled(false)
+        else context.setUIComponentEnabled(false)
       case _ =>
     }
   }
@@ -516,8 +515,7 @@ class ScalaFunctionParameterInfoHandler
     val file = context.getFile
     val offset = context.getEditor.getCaretModel.getOffset
     val element = file.findElementAt(offset)
-    if (element.isInstanceOf[PsiWhiteSpace])
-      if (element == null) return null
+    if (element.isInstanceOf[PsiWhiteSpace]) if (element == null) return null
     @tailrec
     def findArgs(elem: PsiElement): Option[Invocation] = {
       if (elem == null) return None
@@ -585,8 +583,8 @@ class ScalaFunctionParameterInfoHandler
                   } {
                     variant match {
                       case ScalaResolveResult(
-                          method: ScFunction,
-                          subst: ScSubstitutor) =>
+                            method: ScFunction,
+                            subst: ScSubstitutor) =>
                         res += (
                           (
                             new PhysicalSignature(
@@ -607,9 +605,9 @@ class ScalaFunctionParameterInfoHandler
                     //todo: missed case with last implicit call
                     ref.bind() match {
                       case Some(
-                          ScalaResolveResult(
-                            function: ScFunction,
-                            subst: ScSubstitutor))
+                            ScalaResolveResult(
+                              function: ScFunction,
+                              subst: ScSubstitutor))
                           if function.effectiveParameterClauses.length >= count =>
                         res += (
                           (
@@ -635,8 +633,8 @@ class ScalaFunctionParameterInfoHandler
                       variant match {
                         //todo: Synthetic function
                         case ScalaResolveResult(
-                            method: PsiMethod,
-                            subst: ScSubstitutor) =>
+                              method: PsiMethod,
+                              subst: ScSubstitutor) =>
                           res += (
                             (
                               new PhysicalSignature(
@@ -644,8 +642,8 @@ class ScalaFunctionParameterInfoHandler
                                 subst.followed(collectSubstitutor(method))),
                               0))
                         case ScalaResolveResult(
-                            typed: ScTypedDefinition,
-                            subst: ScSubstitutor) =>
+                              typed: ScTypedDefinition,
+                              subst: ScSubstitutor) =>
                           val typez = subst.subst(
                             typed.getType(TypingContext.empty).getOrNothing
                           ) //todo: implicit conversions

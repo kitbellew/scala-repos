@@ -40,8 +40,7 @@ class DefTypeFilter extends ElementFilter {
               (parent.getPrevSibling == null || parent.getPrevSibling.getPrevSibling == null ||
               (parent.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaElementTypes.MATCH_STMT ||
               !parent.getPrevSibling.getPrevSibling.getLastChild
-                .isInstanceOf[PsiErrorElement])))
-            return true
+                .isInstanceOf[PsiErrorElement]))) return true
         case _ =>
       }
     }

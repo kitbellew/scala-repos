@@ -119,8 +119,7 @@ abstract class GeneratedRouter extends Router {
   // and for avoiding warnings when building for Scala 2.11
   def call[A1, A2](pa1: Param[A1], pa2: Param[A2])(
       generator: Function2[A1, A2, Handler]): Handler = {
-    (for (a1 <- pa1.value.right; a2 <- pa2.value.right)
-      yield (a1, a2))
+    (for (a1 <- pa1.value.right; a2 <- pa2.value.right) yield (a1, a2))
       .fold(badRequest, { case (a1, a2) => generator(a1, a2) })
   }
 
@@ -138,8 +137,7 @@ abstract class GeneratedRouter extends Router {
       pa4: Param[A4])(
       generator: Function4[A1, A2, A3, A4, Handler]): Handler = {
     (for (a1 <- pa1.value.right; a2 <- pa2.value.right; a3 <- pa3.value.right;
-          a4 <- pa4.value.right)
-      yield (a1, a2, a3, a4))
+          a4 <- pa4.value.right) yield (a1, a2, a3, a4))
       .fold(badRequest, { case (a1, a2, a3, a4) => generator(a1, a2, a3, a4) })
   }
 
@@ -185,8 +183,7 @@ abstract class GeneratedRouter extends Router {
       generator: Function7[A1, A2, A3, A4, A5, A6, A7, Handler]): Handler = {
     (for (a1 <- pa1.value.right; a2 <- pa2.value.right; a3 <- pa3.value.right;
           a4 <- pa4.value.right; a5 <- pa5.value.right; a6 <- pa6.value.right;
-          a7 <- pa7.value.right)
-      yield (a1, a2, a3, a4, a5, a6, a7))
+          a7 <- pa7.value.right) yield (a1, a2, a3, a4, a5, a6, a7))
       .fold(
         badRequest,
         {
@@ -494,21 +491,21 @@ abstract class GeneratedRouter extends Router {
         badRequest,
         {
           case (
-              a1,
-              a2,
-              a3,
-              a4,
-              a5,
-              a6,
-              a7,
-              a8,
-              a9,
-              a10,
-              a11,
-              a12,
-              a13,
-              a14,
-              a15) =>
+                a1,
+                a2,
+                a3,
+                a4,
+                a5,
+                a6,
+                a7,
+                a8,
+                a9,
+                a10,
+                a11,
+                a12,
+                a13,
+                a14,
+                a15) =>
             generator(
               a1,
               a2,
@@ -607,22 +604,22 @@ abstract class GeneratedRouter extends Router {
         badRequest,
         {
           case (
-              a1,
-              a2,
-              a3,
-              a4,
-              a5,
-              a6,
-              a7,
-              a8,
-              a9,
-              a10,
-              a11,
-              a12,
-              a13,
-              a14,
-              a15,
-              a16) =>
+                a1,
+                a2,
+                a3,
+                a4,
+                a5,
+                a6,
+                a7,
+                a8,
+                a9,
+                a10,
+                a11,
+                a12,
+                a13,
+                a14,
+                a15,
+                a16) =>
             generator(
               a1,
               a2,
@@ -726,23 +723,23 @@ abstract class GeneratedRouter extends Router {
         badRequest,
         {
           case (
-              a1,
-              a2,
-              a3,
-              a4,
-              a5,
-              a6,
-              a7,
-              a8,
-              a9,
-              a10,
-              a11,
-              a12,
-              a13,
-              a14,
-              a15,
-              a16,
-              a17) =>
+                a1,
+                a2,
+                a3,
+                a4,
+                a5,
+                a6,
+                a7,
+                a8,
+                a9,
+                a10,
+                a11,
+                a12,
+                a13,
+                a14,
+                a15,
+                a16,
+                a17) =>
             generator(
               a1,
               a2,
@@ -852,24 +849,24 @@ abstract class GeneratedRouter extends Router {
         badRequest,
         {
           case (
-              a1,
-              a2,
-              a3,
-              a4,
-              a5,
-              a6,
-              a7,
-              a8,
-              a9,
-              a10,
-              a11,
-              a12,
-              a13,
-              a14,
-              a15,
-              a16,
-              a17,
-              a18) =>
+                a1,
+                a2,
+                a3,
+                a4,
+                a5,
+                a6,
+                a7,
+                a8,
+                a9,
+                a10,
+                a11,
+                a12,
+                a13,
+                a14,
+                a15,
+                a16,
+                a17,
+                a18) =>
             generator(
               a1,
               a2,
@@ -985,25 +982,25 @@ abstract class GeneratedRouter extends Router {
         badRequest,
         {
           case (
-              a1,
-              a2,
-              a3,
-              a4,
-              a5,
-              a6,
-              a7,
-              a8,
-              a9,
-              a10,
-              a11,
-              a12,
-              a13,
-              a14,
-              a15,
-              a16,
-              a17,
-              a18,
-              a19) =>
+                a1,
+                a2,
+                a3,
+                a4,
+                a5,
+                a6,
+                a7,
+                a8,
+                a9,
+                a10,
+                a11,
+                a12,
+                a13,
+                a14,
+                a15,
+                a16,
+                a17,
+                a18,
+                a19) =>
             generator(
               a1,
               a2,
@@ -1125,26 +1122,26 @@ abstract class GeneratedRouter extends Router {
         badRequest,
         {
           case (
-              a1,
-              a2,
-              a3,
-              a4,
-              a5,
-              a6,
-              a7,
-              a8,
-              a9,
-              a10,
-              a11,
-              a12,
-              a13,
-              a14,
-              a15,
-              a16,
-              a17,
-              a18,
-              a19,
-              a20) =>
+                a1,
+                a2,
+                a3,
+                a4,
+                a5,
+                a6,
+                a7,
+                a8,
+                a9,
+                a10,
+                a11,
+                a12,
+                a13,
+                a14,
+                a15,
+                a16,
+                a17,
+                a18,
+                a19,
+                a20) =>
             generator(
               a1,
               a2,
@@ -1271,27 +1268,27 @@ abstract class GeneratedRouter extends Router {
         badRequest,
         {
           case (
-              a1,
-              a2,
-              a3,
-              a4,
-              a5,
-              a6,
-              a7,
-              a8,
-              a9,
-              a10,
-              a11,
-              a12,
-              a13,
-              a14,
-              a15,
-              a16,
-              a17,
-              a18,
-              a19,
-              a20,
-              a21) =>
+                a1,
+                a2,
+                a3,
+                a4,
+                a5,
+                a6,
+                a7,
+                a8,
+                a9,
+                a10,
+                a11,
+                a12,
+                a13,
+                a14,
+                a15,
+                a16,
+                a17,
+                a18,
+                a19,
+                a20,
+                a21) =>
             generator(
               a1,
               a2,

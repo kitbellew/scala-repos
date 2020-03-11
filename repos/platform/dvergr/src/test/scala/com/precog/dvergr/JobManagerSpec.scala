@@ -210,7 +210,7 @@ trait JobManagerSpec[M[+_]] extends Specification {
           status2 must_== status2x
           status2 must beLike {
             case Some(
-                Status(`jobId`, _, "2", `s5`, "%", Some(JString("...")))) =>
+                  Status(`jobId`, _, "2", `s5`, "%", Some(JString("...")))) =>
               ok
           }
       }
@@ -364,16 +364,16 @@ trait JobManagerSpec[M[+_]] extends Specification {
         .cancel(job.id, "I didn't like the way it looked at me.")
         .copoint must beLike {
         case Right(
-            Job(
-              `jobId`,
-              _,
-              _,
-              _,
-              _,
-              Cancelled(
-                "I didn't like the way it looked at me.",
+              Job(
+                `jobId`,
                 _,
-                `state`))) =>
+                _,
+                _,
+                _,
+                Cancelled(
+                  "I didn't like the way it looked at me.",
+                  _,
+                  `state`))) =>
           ok
       }
 
@@ -401,13 +401,13 @@ trait JobManagerSpec[M[+_]] extends Specification {
 
       jobs.abort(job1Id, "The mission was compromised.").copoint must beLike {
         case Right(
-            Job(
-              `job1Id`,
-              _,
-              _,
-              _,
-              _,
-              Aborted("The mission was compromised.", _, `job1State`))) =>
+              Job(
+                `job1Id`,
+                _,
+                _,
+                _,
+                _,
+                Aborted("The mission was compromised.", _, `job1State`))) =>
           ok
       }
 
@@ -421,13 +421,13 @@ trait JobManagerSpec[M[+_]] extends Specification {
 
           jobs.abort(job2.id, "Blagawaga").copoint must beLike {
             case Right(
-                Job(
-                  `job2Id`,
-                  _,
-                  _,
-                  _,
-                  _,
-                  Aborted("Blagawaga", _, `job2State`))) =>
+                  Job(
+                    `job2Id`,
+                    _,
+                    _,
+                    _,
+                    _,
+                    Aborted("Blagawaga", _, `job2State`))) =>
               ok
           }
       }
@@ -437,13 +437,13 @@ trait JobManagerSpec[M[+_]] extends Specification {
 
       jobs.abort(job3Id, "Because I could.").copoint must beLike {
         case Right(
-            Job(
-              `job3Id`,
-              _,
-              _,
-              _,
-              _,
-              Aborted("Because I could.", _, NotStarted))) =>
+              Job(
+                `job3Id`,
+                _,
+                _,
+                _,
+                _,
+                Aborted("Because I could.", _, NotStarted))) =>
           ok
       }
     }

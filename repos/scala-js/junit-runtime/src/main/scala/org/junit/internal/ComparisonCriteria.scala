@@ -55,10 +55,8 @@ abstract class ComparisonCriteria {
       expecteds: AnyRef,
       actuals: AnyRef,
       header: String): Int = {
-    if (expecteds == null)
-      Assert.fail(header + "expected array was null")
-    if (actuals == null)
-      Assert.fail(header + "actual array was null")
+    if (expecteds == null) Assert.fail(header + "expected array was null")
+    if (actuals == null) Assert.fail(header + "actual array was null")
     val actualsLength = actuals.asInstanceOf[Array[_]].length
     val expectedsLength = expecteds.asInstanceOf[Array[_]].length
     if (actualsLength != expectedsLength) {

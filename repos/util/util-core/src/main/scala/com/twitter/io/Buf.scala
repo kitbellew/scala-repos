@@ -298,8 +298,7 @@ object Buf {
         * at the given offsets.
         */
       def apply(bytes: Array[Byte], begin: Int, end: Int): Buf =
-        if (begin == end) Buf.Empty
-        else new ByteArray(bytes, begin, end)
+        if (begin == end) Buf.Empty else new ByteArray(bytes, begin, end)
 
       /** Construct a buffer representing the provided array of bytes. */
       def apply(bytes: Array[Byte]): Buf = apply(bytes, 0, bytes.length)
@@ -424,8 +423,7 @@ object Buf {
         * Create a Buf.ByteBuffer by directly wrapping the provided [[java.nio.ByteBuffer]].
         */
       def apply(bb: java.nio.ByteBuffer): Buf =
-        if (bb.remaining == 0) Buf.Empty
-        else new ByteBuffer(bb)
+        if (bb.remaining == 0) Buf.Empty else new ByteBuffer(bb)
 
       /** Extract the buffer's underlying [[java.nio.ByteBuffer]]. */
       def unapply(buf: ByteBuffer): Option[java.nio.ByteBuffer] =

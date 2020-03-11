@@ -260,8 +260,7 @@ abstract class ScTypeDefinitionImpl protected (
       .mkString(".")
     this match {
       case o: ScObject =>
-        if (o.isPackageObject) res = res + ".package$"
-        else res = res + "$"
+        if (o.isPackageObject) res = res + ".package$" else res = res + "$"
       case _ =>
     }
     res

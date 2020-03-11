@@ -276,12 +276,11 @@ class ScalaDocumentationProvider extends CodeDocumentationProvider {
         buffer.append("Pattern: ")
         buffer.append("<b>" + escapeHtml(pattern.name) + "</b>")
         buffer.append(parseType(pattern, ScType.urlText))
-        if (pattern.getContext != null)
-          pattern.getContext.getContext match {
-            case co: PsiDocCommentOwner =>
-              buffer.append(parseDocComment(co, withDescription = false))
-            case _ =>
-          }
+        if (pattern.getContext != null) pattern.getContext.getContext match {
+          case co: PsiDocCommentOwner =>
+            buffer.append(parseDocComment(co, withDescription = false))
+          case _ =>
+        }
 
         "<html><body>" + buffer.toString + "</body></html>"
       case _ => null
@@ -1134,8 +1133,7 @@ object ScalaDocumentationProvider {
   private def getOneLine(s: String): String = {
     val trimed = s.trim
     val i = trimed.indexOf('\n')
-    if (i == -1) trimed
-    else trimed.substring(0, i) + " ..."
+    if (i == -1) trimed else trimed.substring(0, i) + " ..."
   }
 
   private def appendTypeParams(

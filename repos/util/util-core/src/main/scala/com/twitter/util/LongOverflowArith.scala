@@ -8,19 +8,15 @@ object LongOverflowArith {
   @deprecated("Use Java 8's Math.addExact instead", "2015-11-16")
   def add(a: Long, b: Long) = {
     val c = a + b
-    if (((a ^ c) & (b ^ c)) < 0)
-      throw new LongOverflowException(a + " + " + b)
-    else
-      c
+    if (((a ^ c) & (b ^ c)) < 0) throw new LongOverflowException(a + " + " + b)
+    else c
   }
 
   @deprecated("Use Java 8's Math.subtractExact instead", "2015-11-16")
   def sub(a: Long, b: Long) = {
     val c = a - b
-    if (((a ^ c) & (-b ^ c)) < 0)
-      throw new LongOverflowException(a + " - " + b)
-    else
-      c
+    if (((a ^ c) & (-b ^ c)) < 0) throw new LongOverflowException(a + " - " + b)
+    else c
   }
 
   @deprecated("Use Java 8's Math.multiplyExact instead", "2015-11-16")

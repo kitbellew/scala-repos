@@ -270,8 +270,7 @@ object DateValue extends Injectable[Date] with Extractable[Date] {
   def unapply(v: Value): Option[Date] = v match {
     case RawValue(Type.Date, Charset.Binary, false, bytes) =>
       val str = new String(bytes, Charset(Charset.Binary))
-      if (str == Zero.toString) Some(Zero)
-      else Some(Date.valueOf(str))
+      if (str == Zero.toString) Some(Zero) else Some(Date.valueOf(str))
 
     case RawValue(Type.Date, Charset.Binary, true, bytes) =>
       Some(fromBytes(bytes))

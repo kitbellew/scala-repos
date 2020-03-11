@@ -35,15 +35,13 @@ class LogRecord(level: javalog.Level, msg: String)
 
   // May be incorrect if called lazily
   override def getSourceClassName(): String = {
-    if (!inferred)
-      infer()
+    if (!inferred) infer()
     sourceClassName
   }
 
   // May be incorrect if called lazily
   override def getSourceMethodName(): String = {
-    if (!inferred)
-      infer()
+    if (!inferred) infer()
     sourceMethodName
   }
 

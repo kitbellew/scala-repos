@@ -381,8 +381,7 @@ trait MatchTranslation {
     def translatePattern(bound: BoundTree): List[TreeMaker] = bound.translate()
 
     def translateGuard(guard: Tree): List[TreeMaker] =
-      if (guard == EmptyTree) Nil
-      else List(GuardTreeMaker(guard))
+      if (guard == EmptyTree) Nil else List(GuardTreeMaker(guard))
 
     // TODO: 1) if we want to support a generalisation of Kotlin's patmat continue, must not hard-wire lifting into the monad (which is now done by codegen.one),
     // so that user can generate failure when needed -- use implicit conversion to lift into monad on-demand?
@@ -570,8 +569,7 @@ trait MatchTranslation {
           // when the last subpattern is a wildcard-star the expectedLength is but a lower bound
           // (otherwise equality is required)
           def compareOp: (Tree, Tree) => Tree =
-            if (aligner.isStar) _ INT_>= _
-            else _ INT_== _
+            if (aligner.isStar) _ INT_>= _ else _ INT_== _
 
           // `if (binder != null && $checkExpectedLength [== | >=] 0) then else zero`
           (seqTree(binder) ANY_!= NULL) AND compareOp(checkExpectedLength, ZERO)
@@ -579,8 +577,7 @@ trait MatchTranslation {
 
       def checkedLength: Option[Int] =
         // no need to check unless it's an unapplySeq and the minimal length is non-trivially satisfied
-        if (!isSeq || expectedLength < starArity) None
-        else Some(expectedLength)
+        if (!isSeq || expectedLength < starArity) None else Some(expectedLength)
     }
 
     // TODO: to be called when there's a def unapplyProd(x: T): U
@@ -680,8 +677,7 @@ trait MatchTranslation {
         val binder = freshSym(pos, pureType(resultInMonad))
         val potentiallyMutableBinders: Set[Symbol] =
           if (extractorApply.tpe.typeSymbol.isNonBottomSubClass(
-                OptionClass) && !aligner.isSeq)
-            Set.empty
+                OptionClass) && !aligner.isSeq) Set.empty
           else
             // Ensures we capture unstable bound variables eagerly. These can arise under name based patmat or by indexing into mutable Seqs. See run t9003.scala
             subPatBinders.toSet
@@ -698,8 +694,7 @@ trait MatchTranslation {
       }
 
       override protected def seqTree(binder: Symbol): Tree =
-        if (firstIndexingBinder == 0) REF(binder)
-        else super.seqTree(binder)
+        if (firstIndexingBinder == 0) REF(binder) else super.seqTree(binder)
 
       // the trees that select the subpatterns on the extractor's result, referenced by `binder`
       // require (totalArity > 0 && (!lastIsStar || isSeq))
@@ -717,8 +712,8 @@ trait MatchTranslation {
               treeCopy.Apply(t, x, binderRef(i.pos) :: Nil)
             // SI-7868 Account for numeric widening, e.g. <unapplySelector>.toInt
             case Apply(
-                x,
-                List(i @ (sel @ Select(Ident(nme.SELECTOR_DUMMY), name)))) =>
+                  x,
+                  List(i @ (sel @ Select(Ident(nme.SELECTOR_DUMMY), name)))) =>
               treeCopy.Apply(
                 t,
                 x,

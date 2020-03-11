@@ -90,8 +90,7 @@ object FreeTTest extends SpecLite {
         BindRec[FreeTListOption].tailrecM((i: Int) =>
           if (i < 50000)
             Applicative[FreeTListOption].point(\/.left[Int, Unit](i + 1))
-          else
-            Applicative[FreeTListOption].point(\/.right[Int, Unit](())))(0)
+          else Applicative[FreeTListOption].point(\/.right[Int, Unit](())))(0)
 
       Equal[FreeTListOption[Unit]].equal(expected, result)
     }

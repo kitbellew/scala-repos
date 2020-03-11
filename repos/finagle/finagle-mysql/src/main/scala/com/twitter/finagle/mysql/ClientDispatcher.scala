@@ -265,7 +265,6 @@ class ClientDispatcher(
         }
     }
 
-    if (limit <= 0) Future.value(emptyTx)
-    else aux(0, Nil)
+    if (limit <= 0) Future.value(emptyTx) else aux(0, Nil)
   }
 }

@@ -670,8 +670,7 @@ private[akka] class BarrierCoordinator
 
   when(Idle) {
     case Event(EnterBarrier(name, timeout), d @ Data(clients, _, _, _)) ⇒
-      if (failed)
-        stay replying ToClient(BarrierResult(name, false))
+      if (failed) stay replying ToClient(BarrierResult(name, false))
       else if (clients.map(_.fsm) == Set(sender()))
         stay replying ToClient(BarrierResult(name, true))
       else if (clients.find(_.fsm == sender()).isEmpty)
@@ -696,8 +695,8 @@ private[akka] class BarrierCoordinator
 
   when(Waiting) {
     case Event(
-        EnterBarrier(name, timeout),
-        d @ Data(clients, barrier, arrived, deadline)) ⇒
+          EnterBarrier(name, timeout),
+          d @ Data(clients, barrier, arrived, deadline)) ⇒
       if (name != barrier) throw WrongBarrier(name, sender(), d)
       val together =
         if (clients.exists(_.fsm == sender())) sender() :: arrived else arrived
@@ -706,8 +705,7 @@ private[akka] class BarrierCoordinator
       if (enterDeadline.timeLeft < deadline.timeLeft) {
         setTimer("Timeout", StateTimeout, enterDeadline.timeLeft, false)
         handleBarrier(d.copy(arrived = together, deadline = enterDeadline))
-      } else
-        handleBarrier(d.copy(arrived = together))
+      } else handleBarrier(d.copy(arrived = together))
     case Event(RemoveClient(name), d @ Data(clients, barrier, arrived, _)) ⇒
       clients find (_.name == name) match {
         case None ⇒ stay

@@ -122,8 +122,7 @@ class RemoveFragmentQuickFix(fragment: Seq[PsiElement])
 
     val parent = startElement.getParent
     val endElem = getEndElement
-    if (endElem != null)
-      parent.deleteChildRange(startElement, getEndElement)
+    if (endElem != null) parent.deleteChildRange(startElement, getEndElement)
     else startElement.delete()
   }
 }

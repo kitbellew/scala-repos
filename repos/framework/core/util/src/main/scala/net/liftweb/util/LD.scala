@@ -54,8 +54,7 @@ object LD {
       case w :: ws =>
         val tv = this(root, f(w))
         val rest = this(root, ws, f)
-        if (tv < rest._2) (w, tv)
-        else rest
+        if (tv < rest._2) (w, tv) else rest
     }
 
   /**

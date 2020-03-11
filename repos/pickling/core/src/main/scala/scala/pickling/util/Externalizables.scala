@@ -81,8 +81,7 @@ object Externalizables {
           else if (state == ${is.tail.head}) $argName1
           else $argName2
         """
-      } else
-        c.abort(c.enclosingPosition, "more arguments not supported")
+      } else c.abort(c.enclosingPosition, "more arguments not supported")
 
     // create class parameter list
     // (val x0: Int, val x1: Int, val x2: Array[Byte], val x3: Int, val x4: Long, ...)
@@ -216,8 +215,7 @@ object Externalizables {
           else if (state == ${is.tail.head}) $fldName(1) = x
           else $fldName(2) = x
         """
-      } else
-        c.abort(c.enclosingPosition, "more arguments not supported")
+      } else c.abort(c.enclosingPosition, "more arguments not supported")
     }
 
     // per type a sorted list of indices

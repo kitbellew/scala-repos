@@ -17,8 +17,7 @@ object Test extends App {
     val x = 0
     var y = 1
     val ix = improve(x)
-    while (y != 0 && improve(y) != ix + (1 << 31))
-      y += 1
+    while (y != 0 && improve(y) != ix + (1 << 31)) y += 1
     printf("%s %s %x %x\n", x, y, improve(x), improve(y))
   }
   // this is not done every test run since it would slow down ant test.suite too much.

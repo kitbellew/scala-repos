@@ -18,8 +18,7 @@ object Test {
           .format(i, chars.length, chars.subSequence(i, chars.length)))
       println("sub(%s, %s) == '%s'".format(0, i, chars.subSequence(0, i)))
     }
-    if (chars.length >= 2)
-      check(chars.subSequence(1, chars.length - 1))
+    if (chars.length >= 2) check(chars.subSequence(1, chars.length - 1))
   }
 
   def main(args: Array[String]): Unit = {

@@ -212,8 +212,7 @@ final class RhinoJSEnv private (
       // Rhino has trouble optimizing some big things, e.g., env.js or ScalaTest
       context.setOptimizationLevel(-1)
 
-      if (withDOM)
-        setupDOM(context, scope)
+      if (withDOM) setupDOM(context, scope)
 
       disableLiveConnect(context, scope)
       setupConsole(context, scope, console)
@@ -519,8 +518,7 @@ final class RhinoJSEnv private (
 
     @tailrec
     def loop(): Option[T] = {
-      if (Thread.interrupted())
-        throw new InterruptedException()
+      if (Thread.interrupted()) throw new InterruptedException()
 
       if (taskQ.isEmpty || !continue()) None
       else {
@@ -539,8 +537,7 @@ final class RhinoJSEnv private (
               // Perform task
               task.task()
 
-              if (task.reschedule())
-                taskQ += task
+              if (task.reschedule()) taskQ += task
 
               loop()
           }
@@ -553,8 +550,7 @@ final class RhinoJSEnv private (
 
   private val sleepWait = { (deadline: Deadline) =>
     val timeLeft = deadline.timeLeft.toMillis
-    if (timeLeft > 0)
-      Thread.sleep(timeLeft)
+    if (timeLeft > 0) Thread.sleep(timeLeft)
     None
   }
 
@@ -597,14 +593,12 @@ object RhinoJSEnv {
       while (js2jvm.isEmpty && ensureOpen(_closedJS) && !deadline.isOverdue)
         wait(deadline.millisLeft)
 
-      if (js2jvm.isEmpty)
-        throw new TimeoutException("Timeout expired")
+      if (js2jvm.isEmpty) throw new TimeoutException("Timeout expired")
       js2jvm.dequeue()
     }
 
     def recvJS(): String = synchronized {
-      while (jvm2js.isEmpty && ensureOpen(_closedJVM))
-        wait()
+      while (jvm2js.isEmpty && ensureOpen(_closedJVM)) wait()
 
       jvm2js.dequeue()
     }
@@ -613,14 +607,10 @@ object RhinoJSEnv {
       var expired = false
       while (jvm2js.isEmpty && !expired && ensureOpen(_closedJVM)) {
         val timeLeft = deadline.timeLeft.toMillis
-        if (timeLeft > 0)
-          wait(timeLeft)
-        else
-          expired = true
+        if (timeLeft > 0) wait(timeLeft) else expired = true
       }
 
-      if (expired) None
-      else Some(jvm2js.dequeue())
+      if (expired) None else Some(jvm2js.dequeue())
     }
 
     def closeJS(): Unit = synchronized {
@@ -635,8 +625,7 @@ object RhinoJSEnv {
 
     /** Throws if the channel is closed and returns true */
     private def ensureOpen(closed: Boolean): Boolean = {
-      if (closed)
-        throw new ChannelClosedException
+      if (closed) throw new ChannelClosedException
       true
     }
   }

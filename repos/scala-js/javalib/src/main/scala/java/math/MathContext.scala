@@ -58,8 +58,7 @@ object MathContext {
           roundingModeStrStart,
           "roundingMode=",
           0,
-          roundingModeLength))
-      invalidMathContext("Missing rounding mode", s)
+          roundingModeLength)) invalidMathContext("Missing rounding mode", s)
 
     val roundingModeStart = roundingModeStrStart + roundingModeLength
     val roundingMode = RoundingMode.valueOf(s.substring(roundingModeStart))

@@ -18,15 +18,11 @@ class JavaWriter(classfile: Classfile, writer: Writer)
   def flagsToStr(clazz: Boolean, flags: Int): String = {
     val buffer = new StringBuffer()
     if (((flags & 0x0007) == 0) &&
-        ((flags & 0x0002) != 0))
-      buffer.append("private ")
-    if ((flags & 0x0004) != 0)
-      buffer.append("protected ")
-    if ((flags & 0x0010) != 0)
-      buffer.append("final ")
+        ((flags & 0x0002) != 0)) buffer.append("private ")
+    if ((flags & 0x0004) != 0) buffer.append("protected ")
+    if ((flags & 0x0010) != 0) buffer.append("final ")
     if ((flags & 0x0400) != 0)
-      if (clazz) buffer.append("abstract ")
-      else buffer.append("/*deferred*/ ")
+      if (clazz) buffer.append("abstract ") else buffer.append("/*deferred*/ ")
     buffer.toString()
   }
 
@@ -77,8 +73,7 @@ class JavaWriter(classfile: Classfile, writer: Writer)
   }
 
   def sigToType0(str: String, i: Int): (String, Int) =
-    if (str.charAt(i) == ')')
-      sigToType(str, i)
+    if (str.charAt(i) == ')') sigToType(str, i)
     else {
       val (tpe, j) = sigToType(str, i)
       if (str.charAt(j) == ')') {
@@ -119,8 +114,7 @@ class JavaWriter(classfile: Classfile, writer: Writer)
     print(flagsToStr(false, flags))
     if ((flags & 0x0010) != 0)
       print("val " + NameTransformer.decode(getName(name)))
-    else
-      print("final var " + NameTransformer.decode(getName(name)))
+    else print("final var " + NameTransformer.decode(getName(name)))
     print(": " + getType(tpe) + ";").newline
   }
 
@@ -129,8 +123,7 @@ class JavaWriter(classfile: Classfile, writer: Writer)
       name: Int,
       tpe: Int,
       attribs: List[cf.Attribute]) {
-    if (getName(name) == "<init>")
-      print(flagsToStr(false, flags))
+    if (getName(name) == "<init>") print(flagsToStr(false, flags))
     if (getName(name) == "<init>") {
       print("def this" + getType(tpe) + ";").newline
     } else {
@@ -166,8 +159,7 @@ class JavaWriter(classfile: Classfile, writer: Writer)
 
   def printClass() {
     val pck = getPackage(cf.classname)
-    if (pck.length() > 0)
-      println("package " + pck + ";")
+    if (pck.length() > 0) println("package " + pck + ";")
     print(flagsToStr(true, cf.flags))
     cf.attribs find {
       case cf.Attribute(name, _) => getName(name) == "JacoMeta"
@@ -182,25 +174,20 @@ class JavaWriter(classfile: Classfile, writer: Writer)
           case Some(str) =>
             if (isInterface(cf.flags))
               print("trait " + getSimpleClassName(cf.classname) + str)
-            else
-              print("class " + getSimpleClassName(cf.classname) + str)
+            else print("class " + getSimpleClassName(cf.classname) + str)
         }
     }
     var statics: List[cf.Member] = Nil
     print(" {").indent.newline
     cf.fields foreach {
       case m @ cf.Member(_, flags, name, tpe, attribs) =>
-        if (isStatic(flags))
-          statics = m :: statics
-        else
-          printField(flags, name, tpe, attribs)
+        if (isStatic(flags)) statics = m :: statics
+        else printField(flags, name, tpe, attribs)
     }
     cf.methods foreach {
       case m @ cf.Member(_, flags, name, tpe, attribs) =>
-        if (isStatic(flags))
-          statics = m :: statics
-        else
-          printMethod(flags, name, tpe, attribs)
+        if (isStatic(flags)) statics = m :: statics
+        else printMethod(flags, name, tpe, attribs)
     }
     undent.print("}").newline
     if (!statics.isEmpty) {

@@ -48,8 +48,7 @@ object QaQuestion extends QaController {
     }
 
   def ask = Auth { implicit ctx => _ =>
-    if (QaAuth.canAsk) renderAsk(forms.question, Results.Ok)
-    else renderN00b
+    if (QaAuth.canAsk) renderAsk(forms.question, Results.Ok) else renderN00b
   }
 
   def doAsk = AuthBody { implicit ctx => me =>

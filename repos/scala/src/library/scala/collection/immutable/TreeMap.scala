@@ -186,8 +186,7 @@ class TreeMap[A, +B] private (tree: RB.Tree[A, B])(
   }
 
   def -(key: A): TreeMap[A, B] =
-    if (!RB.contains(tree, key)) this
-    else new TreeMap(RB.delete(tree, key))
+    if (!RB.contains(tree, key)) this else new TreeMap(RB.delete(tree, key))
 
   /** Check if this map maps `key` to a value and return the
     *  value if it exists.

@@ -570,8 +570,7 @@ object TestHelpers {
     val p =
       Pattern.compile("""JSON Func """ + cometName + """ \$\$ ([Ff][^ ]*)""")
     val m = p.matcher(body)
-    if (m.find) Full(m.group(1))
-    else Empty
+    if (m.find) Full(m.group(1)) else Empty
   }
 
   /**
@@ -936,10 +935,7 @@ abstract class BaseResponse(
       filterFunc(trim(n)))
 
   def getOrFail(success: Boolean, msg: String, errorFunc: ReportFailure) =
-    if (success)
-      this.asInstanceOf[SelfType]
-    else
-      errorFunc.fail(msg)
+    if (success) this.asInstanceOf[SelfType] else errorFunc.fail(msg)
 
   def \\(node: Node, msg: => String)(
       implicit errorFunc: ReportFailure): SelfType =

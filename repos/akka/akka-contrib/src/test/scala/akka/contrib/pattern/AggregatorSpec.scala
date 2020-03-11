@@ -85,12 +85,11 @@ class AccountBalanceRetriever extends Actor with Aggregator {
     val results =
       mutable.ArrayBuffer.empty[(AccountType, Option[List[(Long, BigDecimal)]])]
 
-    if (types.size > 0)
-      types foreach {
-        case Checking ⇒ fetchCheckingAccountsBalance()
-        case Savings ⇒ fetchSavingsAccountsBalance()
-        case MoneyMarket ⇒ fetchMoneyMarketAccountsBalance()
-      }
+    if (types.size > 0) types foreach {
+      case Checking ⇒ fetchCheckingAccountsBalance()
+      case Savings ⇒ fetchSavingsAccountsBalance()
+      case MoneyMarket ⇒ fetchMoneyMarketAccountsBalance()
+    }
     else collectBalances() // Empty type list yields empty response
 
     context.system.scheduler.scheduleOnce(1.second, self, TimedOut)

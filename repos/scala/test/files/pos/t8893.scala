@@ -35,49 +35,49 @@ object Test {
                                                               case Some(b15) =>
                                                                 a() match {
                                                                   case Some(
-                                                                      b16) =>
+                                                                        b16) =>
                                                                     a() match {
                                                                       case Some(
-                                                                          b17) =>
+                                                                            b17) =>
                                                                         a() match {
                                                                           case Some(
-                                                                              b18) =>
+                                                                                b18) =>
                                                                             a() match {
                                                                               case Some(
-                                                                                  b19) =>
+                                                                                    b19) =>
                                                                                 a() match {
                                                                                   case Some(
-                                                                                      b20) =>
+                                                                                        b20) =>
                                                                                     a() match {
                                                                                       case Some(
-                                                                                          b21) =>
+                                                                                            b21) =>
                                                                                         a() match {
                                                                                           case Some(
-                                                                                              b22) =>
+                                                                                                b22) =>
                                                                                             a() match {
                                                                                               case Some(
-                                                                                                  b23) =>
+                                                                                                    b23) =>
                                                                                                 a() match {
                                                                                                   case Some(
-                                                                                                      b24) =>
+                                                                                                        b24) =>
                                                                                                     a() match {
                                                                                                       case Some(
-                                                                                                          b25) =>
+                                                                                                            b25) =>
                                                                                                         a() match {
                                                                                                           case Some(
-                                                                                                              b26) =>
+                                                                                                                b26) =>
                                                                                                             a() match {
                                                                                                               case Some(
-                                                                                                                  b27) =>
+                                                                                                                    b27) =>
                                                                                                                 a() match {
                                                                                                                   case Some(
-                                                                                                                      b28) =>
+                                                                                                                        b28) =>
                                                                                                                     a() match {
                                                                                                                       case Some(
-                                                                                                                          b29) =>
+                                                                                                                            b29) =>
                                                                                                                         a() match {
                                                                                                                           case Some(
-                                                                                                                              b30) =>
+                                                                                                                                b30) =>
                                                                                                                             println(
                                                                                                                               "yay")
                                                                                                                           case None =>

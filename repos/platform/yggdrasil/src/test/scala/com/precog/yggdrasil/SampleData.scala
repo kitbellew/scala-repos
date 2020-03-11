@@ -109,9 +109,7 @@ object SampleData extends CValueGenerators {
       implicit cbf: CanBuildFrom[C[T], T, C[T]]): C[T] = {
     val builder = cbf()
 
-    for (t <- c)
-      if (Random.nextDouble < freq)
-        builder += t
+    for (t <- c) if (Random.nextDouble < freq) builder += t
 
     builder.result
   }

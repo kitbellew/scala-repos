@@ -37,8 +37,7 @@ trait TypersTracking {
     }
     def implicits_s = (
       if (context.enrichmentEnabled)
-        if (context.implicitsEnabled) ""
-        else inLightRed("enrichment only")
+        if (context.implicitsEnabled) "" else inLightRed("enrichment only")
       else inLightRed("implicits disabled")
     )
 
@@ -146,19 +145,14 @@ trait TypersTracking {
       nextTypedInternal(tree, showPush(tree, mode, pt, context))(body)
 
     def nextTypedInternal(tree: Tree, pushFn: => Unit)(body: => Tree): Tree = (
-      if (noPrintTyping(tree))
-        body
-      else
-        runWith(tree) { pushFn; showPop(body) }
+      if (noPrintTyping(tree)) body else runWith(tree) { pushFn; showPop(body) }
     )
 
     @inline final def printTyping(tree: Tree, s: => String) = {
-      if (printTypings && !noPrintTyping(tree))
-        show(indented(s))
+      if (printTypings && !noPrintTyping(tree)) show(indented(s))
     }
     @inline final def printTyping(s: => String) = {
-      if (printTypings)
-        show(indented(s))
+      if (printTypings) show(indented(s))
     }
   }
   def tpe_s(tp: Type, colorize: String => String): String = tp match {

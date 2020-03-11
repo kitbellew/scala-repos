@@ -44,8 +44,7 @@ class FlipComparisonInMethodCallExprIntention
       .getText
 
     if (oper != "equals" && oper != "==" && oper != "!=" && oper != "eq" && oper != "ne" &&
-        oper != ">" && oper != "<" && oper != ">=" && oper != "<=")
-      return false
+        oper != ">" && oper != "<" && oper != ">=" && oper != "<=") return false
 
     val range: TextRange = methodCallExpr.getInvokedExpr
       .asInstanceOf[ScReferenceExpression]

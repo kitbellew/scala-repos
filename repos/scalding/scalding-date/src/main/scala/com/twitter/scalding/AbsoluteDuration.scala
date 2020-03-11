@@ -87,10 +87,7 @@ object AbsoluteDuration extends java.io.Serializable {
               "total: " + (diffInMs + AbsoluteDurationList(acc).toMillisecs)
           )
           val thisPart = fn(theseUnits.toInt)
-          if (acc.isEmpty)
-            thisPart
-          else
-            AbsoluteDurationList(thisPart :: acc)
+          if (acc.isEmpty) thisPart else AbsoluteDurationList(thisPart :: acc)
         }
         case Nil => {
           // These are left over millisecs, but should be unreachable

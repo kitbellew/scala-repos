@@ -243,8 +243,7 @@ abstract class GenBCode extends BCodeSyncAndTry {
           // skip call graph for mirror / bean: wd don't inline into tem, and they are not used in the plain class
           if (item.plain != null) callGraph.addClass(item.plain)
         }
-        if (settings.YoptInlinerEnabled)
-          bTypes.inliner.runInliner()
+        if (settings.YoptInlinerEnabled) bTypes.inliner.runInliner()
         if (settings.YoptClosureInvocations)
           closureOptimizer.rewriteClosureApplyInvocations()
       }

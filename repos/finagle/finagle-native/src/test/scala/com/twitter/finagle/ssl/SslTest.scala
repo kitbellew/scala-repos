@@ -113,10 +113,8 @@ class SslTest extends FunSuite {
         request.contentLength = requestSize
       }
 
-      if (responseSize > 0)
-        request.headers.set("Requested-Bytes", responseSize)
-      else
-        request.headers.set("Requested-Bytes", 0)
+      if (responseSize > 0) request.headers.set("Requested-Bytes", responseSize)
+      else request.headers.set("Requested-Bytes", 0)
 
       val response = Await.result(client(request))
       assert(response.status == Status.Ok)

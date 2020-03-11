@@ -48,10 +48,9 @@ trait IssuesService {
 
   def getComment(owner: String, repository: String, commentId: String)(
       implicit s: Session) =
-    if (commentId forall (_.isDigit))
-      IssueComments filter { t =>
-        t.byPrimaryKey(commentId.toInt) && t.byRepository(owner, repository)
-      } firstOption
+    if (commentId forall (_.isDigit)) IssueComments filter { t =>
+      t.byPrimaryKey(commentId.toInt) && t.byRepository(owner, repository)
+    } firstOption
     else None
 
   def getIssueLabels(owner: String, repository: String, issueId: Int)(
@@ -174,15 +173,15 @@ trait IssuesService {
           ON SUMM.CS_ALL = 1 AND SUMM.COMMIT_ID = CSD.COMMIT_ID""");
       query(issueList).list.map {
         case (
-            userName,
-            repositoryName,
-            issueId,
-            count,
-            successCount,
-            context,
-            state,
-            targetUrl,
-            description) =>
+              userName,
+              repositoryName,
+              issueId,
+              count,
+              successCount,
+              context,
+              state,
+              targetUrl,
+              description) =>
           (userName, repositoryName, issueId) -> CommitStatusInfo(
             count,
             successCount,

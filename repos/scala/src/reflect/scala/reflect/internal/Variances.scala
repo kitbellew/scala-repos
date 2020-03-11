@@ -115,8 +115,7 @@ trait Variances {
             s"$base in ${base.owner}" + (if (base.owner.isClass) ""
                                          else " in " + base.owner.enclClass)
           log(s"verifying $sym_s is $required at $base_s")
-          if (sym.variance != required)
-            issueVarianceError(base, sym, required)
+          if (sym.variance != required) issueVarianceError(base, sym, required)
         }
       }
       override def mapOver(decls: Scope): Scope = {

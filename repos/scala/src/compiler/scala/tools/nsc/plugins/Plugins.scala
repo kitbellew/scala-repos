@@ -75,8 +75,7 @@ trait Plugins { global: Global =>
         if (settings.verbose) inform(msg format plug.name)
       def fail(msg: String) = { note(msg); withoutPlug }
 
-      if (plugNames contains plug.name)
-        fail("[skipping a repeated plugin: %s]")
+      if (plugNames contains plug.name) fail("[skipping a repeated plugin: %s]")
       else if (settings.disable.value contains plug.name)
         fail("[disabling plugin: %s]")
       else if (!commonPhases.isEmpty)

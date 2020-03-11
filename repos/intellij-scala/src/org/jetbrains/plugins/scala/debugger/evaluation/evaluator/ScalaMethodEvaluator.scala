@@ -76,8 +76,7 @@ case class ScalaMethodEvaluator(
     }
     val args = argumentEvaluators.flatMap { ev =>
       val result = ev.evaluate(context)
-      if (result == FromLocalArgEvaluator.skipMarker) None
-      else Some(result)
+      if (result == FromLocalArgEvaluator.skipMarker) None else Some(result)
     }
     try {
       val referenceType: ReferenceType =
@@ -173,8 +172,7 @@ case class ScalaMethodEvaluator(
                 })
                 result
               })
-              if (newFiltered.isEmpty)
-                jdiMethod = filtered.head
+              if (newFiltered.isEmpty) jdiMethod = filtered.head
               else jdiMethod = newFiltered.head
             }
           } else if (sortedMethodCandidates.length == 1)

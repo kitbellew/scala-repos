@@ -91,8 +91,7 @@ object Test extends InteractiveTest {
 
     if (b > 1.0)
       println("Rate of memory consumption is alarming! %.4f MB/run".format(b))
-    else
-      println("No leaks detected.")
+    else println("No leaks detected.")
   }
 
   private def typeCheckWith(file: AbstractFile, src: String) = {

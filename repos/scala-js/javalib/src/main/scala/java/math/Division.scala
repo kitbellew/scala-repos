@@ -143,8 +143,7 @@ private[math] object Division {
             if (!(Integer.numberOfLeadingZeros((longR >>> 32).toInt) < 32)) {
               rem = longR.toInt
 
-              if ((leftHand ^ Long.MinValue) > (rightHand ^ Long.MinValue))
-                loop
+              if ((leftHand ^ Long.MinValue) > (rightHand ^ Long.MinValue)) loop
             }
           }
           loop()
@@ -207,10 +206,8 @@ private[math] object Division {
       val b: Long = divisor & UINT_MAX
       var quo: Long = a / b
       var rem: Long = a % b
-      if (valSign != divisorSign)
-        quo = -quo
-      if (valSign < 0)
-        rem = -rem
+      if (valSign != divisorSign) quo = -quo
+      if (valSign < 0) rem = -rem
       new QuotAndRem(BigInteger.valueOf(quo), BigInteger.valueOf(rem))
     } else {
       val quotientLength = valLen
@@ -354,8 +351,7 @@ private[math] object Division {
     val qInv = modPow2Inverse(q, j)
     var y = x2.subtract(x1).multiply(qInv)
     inplaceModPow2(y, j)
-    if (y.sign < 0)
-      y = y.add(BigInteger.getPowerOfTwo(j))
+    if (y.sign < 0) y = y.add(BigInteger.getPowerOfTwo(j))
 
     // STEP 5: Compute and return: x1 + q * y
     x1.add(q.multiply(y))
@@ -386,8 +382,7 @@ private[math] object Division {
       }
     }
     val result = new BigInteger(1, modulusLen + 1, res)
-    if (doSub)
-      Elementary.inplaceSubtract(result, modulus)
+    if (doSub) Elementary.inplaceSubtract(result, modulus)
 
     result.cutOffLeadingZeroes()
     result
@@ -450,8 +445,7 @@ private[math] object Division {
         val swap: BigInteger = op2
         op2 = op1
         op1 = swap
-        if (op1.sign != 0)
-          loop
+        if (op1.sign != 0) loop
       }
     }
 
@@ -476,10 +470,8 @@ private[math] object Division {
     val lsb1 = java.lang.Integer.numberOfTrailingZeros(op1)
     val lsb2 = java.lang.Integer.numberOfTrailingZeros(op2)
     val pow2Count = Math.min(lsb1, lsb2)
-    if (lsb1 != 0)
-      op1 >>>= lsb1
-    if (lsb2 != 0)
-      op2 >>>= lsb2
+    if (lsb1 != 0) op1 >>>= lsb1
+    if (lsb2 != 0) op2 >>>= lsb2
 
     do {
       if (op1 >= op2) {
@@ -505,8 +497,7 @@ private[math] object Division {
       leadingZeros = 32 - (n & 31)
       x.numberLength = fd + 1
       val shift =
-        if (leadingZeros < 32) -1 >>> leadingZeros
-        else 0
+        if (leadingZeros < 32) -1 >>> leadingZeros else 0
       x.digits(fd) &= shift
       x.cutOffLeadingZeroes()
     }
@@ -586,13 +577,10 @@ private[math] object Division {
 
     if (isPowerOfTwo(v, coefV)) {
       r = s
-      if (v.signum() != u.signum())
-        u = u.negate()
+      if (v.signum() != u.signum()) u = u.negate()
     }
-    if (u.testBit(n))
-      r = if (r.signum() < 0) r.negate() else modulo.subtract(r)
-    if (r.signum() < 0)
-      r = r.add(modulo)
+    if (u.testBit(n)) r = if (r.signum() < 0) r.negate() else modulo.subtract(r)
+    if (r.signum() < 0) r = r.add(modulo)
     r
   }
 
@@ -663,8 +651,7 @@ private[math] object Division {
 
     if (!u.isOne) // u is the gcd
       throw new ArithmeticException("BigInteger not invertible.")
-    if (r.compareTo(p) >= BigInteger.EQUALS)
-      Elementary.inplaceSubtract(r, p)
+    if (r.compareTo(p) >= BigInteger.EQUALS) Elementary.inplaceSubtract(r, p)
 
     val n1 = calcN(p)
     if (k > m) {
@@ -795,8 +782,7 @@ private[math] object Division {
      * If 'base' is odd then it's coprime with 2^j and phi(2^j) = 2^(j-1); so we
      * can reduce reduce the exponent (mod 2^(j-1)).
      */
-    if (base.testBit(0))
-      inplaceModPow2(e, j - 1)
+    if (base.testBit(0)) inplaceModPow2(e, j - 1)
 
     inplaceModPow2(baseMod2toN, j)
     var i = e.bitLength() - 1
@@ -918,8 +904,7 @@ private[math] object Division {
     var i = exponent.bitLength() - 1
     while (i >= 0) {
       res = monPro(res, res, modulus, n2)
-      if (BitLevel.testBit(exponent, i))
-        res = monPro(res, a2, modulus, n2)
+      if (BitLevel.testBit(exponent, i)) res = monPro(res, a2, modulus, n2)
       i -= 1
     }
     res
@@ -931,8 +916,7 @@ private[math] object Division {
     var n2: Long = 1L
     var powerOfTwo: Long = 2L
     do {
-      if (((m0 * n2) & powerOfTwo) != 0)
-        n2 |= powerOfTwo
+      if (((m0 * n2) & powerOfTwo) != 0) n2 |= powerOfTwo
       powerOfTwo <<= 1
     } while (powerOfTwo < 0x100000000L)
     n2 = -n2

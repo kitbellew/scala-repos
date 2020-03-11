@@ -71,8 +71,7 @@ trait VectorInstances {
     new Eq[Vector[A]] {
       def eqv(x: Vector[A], y: Vector[A]): Boolean = {
         @tailrec def loop(to: Int): Boolean =
-          if (to == -1) true
-          else ev.eqv(x(to), y(to)) && loop(to - 1)
+          if (to == -1) true else ev.eqv(x(to), y(to)) && loop(to - 1)
 
         (x.size == y.size) && loop(x.size - 1)
       }

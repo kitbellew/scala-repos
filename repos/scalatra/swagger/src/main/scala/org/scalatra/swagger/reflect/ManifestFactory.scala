@@ -48,8 +48,7 @@ private[swagger] object ManifestFactory {
       val normalizedErasure =
         if (erasure.getName == "scala.Array")
           typeArgs(0).arrayManifest.runtimeClass
-        else
-          erasure
+        else erasure
 
       Manifest.classType(normalizedErasure, typeArgs.head, typeArgs.tail: _*)
     }

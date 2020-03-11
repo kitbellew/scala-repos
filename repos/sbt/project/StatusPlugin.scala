@@ -21,10 +21,7 @@ object StatusPlugin extends AutoPlugin {
         case _                          => false
       }
     },
-    publishStatus := {
-      if (isSnapshot.value) "snapshots"
-      else "releases"
-    },
+    publishStatus := { if (isSnapshot.value) "snapshots" else "releases" },
     commands += stampVersion
   )
   def stampVersion = Command.command("stamp-version") { state =>

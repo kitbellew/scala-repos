@@ -25,8 +25,7 @@ class RunSettings private (
       ignoreRunners: String,
       logExceptionClass: Boolean) = {
     this(color, decodeScalaNames, quiet, verbose, logAssert, logExceptionClass)
-    for (s <- ignoreRunners.split(","))
-      ignoreRunnersSet.add(s.trim)
+    for (s <- ignoreRunners.split(",")) ignoreRunnersSet.add(s.trim)
   }
 
   def decodeName(name: String): String =
@@ -42,8 +41,7 @@ class RunSettings private (
         val cn = decodeName(t.getClass.getName)
         val pos1 = cn.indexOf('$')
         val pos2 = {
-          if (pos1 == -1) cn.lastIndexOf('.')
-          else cn.lastIndexOf('.', pos1)
+          if (pos1 == -1) cn.lastIndexOf('.') else cn.lastIndexOf('.', pos1)
         }
         if (pos2 == -1) b.append(c(cn, c1))
         else {

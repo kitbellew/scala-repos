@@ -136,8 +136,7 @@ object ActorContextSpec {
             Same
           case Stop ⇒ Stopped
           case Kill(ref, replyTo) ⇒
-            if (ctx.stop(ref)) replyTo ! Killed
-            else replyTo ! NotKilled
+            if (ctx.stop(ref)) replyTo ! Killed else replyTo ! NotKilled
             Same
           case Watch(ref, replyTo) ⇒
             ctx.watch[Nothing](ref)

@@ -151,8 +151,7 @@ trait BasicProfile extends BasicActionComponent { self: BasicProfile =>
 
   override def toString = {
     val n = getClass.getName
-    if (n.startsWith("slick.") && n.endsWith("Profile$")) n
-    else super.toString
+    if (n.startsWith("slick.") && n.endsWith("Profile$")) n else super.toString
   }
 }
 

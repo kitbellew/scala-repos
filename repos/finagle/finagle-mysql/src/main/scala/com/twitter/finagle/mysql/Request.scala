@@ -188,8 +188,7 @@ class ExecuteRequest(
       param: Parameter,
       writer: BufferWriter): Unit = {
     val typeCode = param.typeCode
-    if (typeCode != -1)
-      writer.writeShort(typeCode)
+    if (typeCode != -1) writer.writeShort(typeCode)
     else {
       // Unsupported type. Write the error to log, and write the type as null.
       // This allows us to safely skip writing the parameter without corrupting the buffer.

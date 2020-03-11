@@ -890,8 +890,7 @@ object ScalaRefactoringUtil {
           expr.getTextRange.getEndOffset)
         invokesNext
       }
-      if (expressions.length == 0)
-        editor.getSelectionModel.selectLineAtCaret()
+      if (expressions.length == 0) editor.getSelectionModel.selectLineAtCaret()
       else if (expressions.length == 1) {
         chooseExpression(expressions(0))
         return
@@ -1316,8 +1315,8 @@ object ScalaRefactoringUtil {
         false
       case _: ScFunction => true
       case Both(
-          fun: ScFunction,
-          _ childOf (_: ScTemplateBody | _: ScEarlyDefinitions)) =>
+            fun: ScFunction,
+            _ childOf (_: ScTemplateBody | _: ScEarlyDefinitions)) =>
         true
       case ifSt: ScIfStmt
           if Seq(ifSt.thenBranch, ifSt.elseBranch) contains Option(parExpr) =>
@@ -1393,8 +1392,7 @@ object ScalaRefactoringUtil {
       if (funDef != null && PsiTreeUtil.isAncestor(
             candidate,
             funDef,
-            true) && oneExprBody(funDef))
-        funDef.body.get
+            true) && oneExprBody(funDef)) funDef.body.get
       else if (isCaseClausesBlock) container(candidate.getContext, file)
       else candidate
     }

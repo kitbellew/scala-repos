@@ -102,8 +102,7 @@ object TokenBucket {
         // We could also add sloppiness here: any sum > 0 we
         // can debit, but the sum just rolls over.
         val ok = count >= n
-        if (ok)
-          w.add(-n)
+        if (ok) w.add(-n)
         ok
       }
     }

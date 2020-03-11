@@ -286,10 +286,7 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
 
       DB.prepareStatement(query, conn) { st =>
         setStatementFields(st, bl, 1, conn)
-        DB.exec(st) { rs =>
-          if (rs.next) rs.getLong(1)
-          else 0
-        }
+        DB.exec(st) { rs => if (rs.next) rs.getLong(1) else 0 }
       }
     }
   }
@@ -851,8 +848,7 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
     mappedFieldList.flatMap(f => ??(f.method, toValidate).validate) :::
       validation.flatMap {
         case pf: PartialFunction[A, List[FieldError]] =>
-          if (pf.isDefinedAt(toValidate)) pf(toValidate)
-          else Nil
+          if (pf.isDefinedAt(toValidate)) pf(toValidate) else Nil
 
         case f => f(toValidate)
       }
@@ -1447,10 +1443,8 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
   private def fixTableName(name: String) = {
     val tableName = MapperRules.tableName(connectionIdentifier, clean(name))
 
-    if (DB.reservedWords.contains(tableName.toLowerCase))
-      tableName + "_t"
-    else
-      tableName
+    if (DB.reservedWords.contains(tableName.toLowerCase)) tableName + "_t"
+    else tableName
   }
 
   private def internalTableName_$_$ =
@@ -1656,8 +1650,7 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
     if (conn.isDefined) {
       val rc =
         conn.openOrThrowException("We just checked that this is a Full Box")
-      if (rc.metaData.storesMixedCaseIdentifiers) name
-      else name.toLowerCase
+      if (rc.metaData.storesMixedCaseIdentifiers) name else name.toLowerCase
     } else name
   } // dbTableName.toLowerCase
 
@@ -2366,8 +2359,7 @@ trait KeyedMetaMapper[Type, A <: KeyedMapper[Type, A]]
               field.targetSQLType(field._dbColumnNameLC)))
         DB.exec(st) { rs =>
           val mi = buildMapper(rs)
-          if (rs.next) Full(createInstance(dbId, rs, mi))
-          else Empty
+          if (rs.next) Full(createInstance(dbId, rs, mi)) else Empty
         }
       }
     }
@@ -2388,8 +2380,7 @@ trait KeyedMetaMapper[Type, A <: KeyedMapper[Type, A]]
         setStatementFields(st, bl, 1, conn)
         DB.exec(st) { rs =>
           val mi = buildMapper(rs)
-          if (rs.next) Full(createInstance(dbId, rs, mi))
-          else Empty
+          if (rs.next) Full(createInstance(dbId, rs, mi)) else Empty
         }
 
       }

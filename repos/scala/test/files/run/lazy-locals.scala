@@ -109,10 +109,7 @@ object Test extends App {
   /** test recursive method with lazy vals and a single forced */
   def testLazyRec(n: Int): Int = {
     lazy val t = { println("forced lazy val t at n = " + n); 42 }
-    if (n > 0)
-      testLazyRec(n - 1)
-    else
-      t
+    if (n > 0) testLazyRec(n - 1) else t
   }
 
   /** test recursive method with lazy vals and all vals forced */
@@ -121,8 +118,7 @@ object Test extends App {
     if (n > 0) {
       testLazyRecMany(n - 1);
       t * t
-    } else
-      t
+    } else t
   }
 
   def testRecVal {

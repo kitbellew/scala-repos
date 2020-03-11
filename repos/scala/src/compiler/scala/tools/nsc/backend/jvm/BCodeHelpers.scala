@@ -111,8 +111,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
   }
 
   def nextEnclosingClass(sym: Symbol): Symbol =
-    if (sym.isClass) sym
-    else nextEnclosingClass(nextEnclosing(sym))
+    if (sym.isClass) sym else nextEnclosingClass(nextEnclosing(sym))
 
   def classOriginallyNestedInClass(
       nestedClass: Symbol,
@@ -424,8 +423,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
             // this is only because forwarders aren't smart enough yet
             failNoForwarder(
               "companion contains its own main method (implementation restriction: no main is allowed, regardless of signature)")
-          else if (companion.isTrait)
-            failNoForwarder("companion is a trait")
+          else if (companion.isTrait) failNoForwarder("companion is a trait")
           // Now either succeeed, or issue some additional warnings for things which look like
           // attempts to be java main methods.
           else
@@ -912,8 +910,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
     def emitParamNames(jmethod: asm.MethodVisitor, params: List[Symbol]) = {
       for (param <- params) {
         var access = asm.Opcodes.ACC_FINAL
-        if (param.isArtifact)
-          access |= asm.Opcodes.ACC_SYNTHETIC
+        if (param.isArtifact) access |= asm.Opcodes.ACC_SYNTHETIC
         jmethod.visitParameter(param.name.decoded, access)
       }
     }
@@ -1195,11 +1192,10 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
      * must-single-thread
      */
     def getExceptions(excs: List[AnnotationInfo]): List[String] = {
-      for (ThrownException(tp) <- excs.distinct)
-        yield {
-          val erased = enteringErasure(erasure.erasure(tp.typeSymbol)(tp))
-          internalName(erased.typeSymbol)
-        }
+      for (ThrownException(tp) <- excs.distinct) yield {
+        val erased = enteringErasure(erasure.erasure(tp.typeSymbol)(tp))
+        internalName(erased.typeSymbol)
+      }
     }
 
   } // end of trait BCForwardersGen
@@ -1344,8 +1340,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
                m.isPublic &&
                !(m.name startsWith "$") &&
                !m.isGetter &&
-               !m.isSetter)
-          yield javaSimpleName(m)
+               !m.isSetter) yield javaSimpleName(m)
 
       val constructor = beanInfoClass.visitMethod(
         asm.Opcodes.ACC_PUBLIC,

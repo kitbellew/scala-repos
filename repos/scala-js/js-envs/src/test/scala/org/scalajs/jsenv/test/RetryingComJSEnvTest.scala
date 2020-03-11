@@ -89,10 +89,7 @@ class RetryingComJSEnvTest extends JSEnvTest with ComTests {
 
       private def shouldFail = !failedReceive && fails < maxFails
 
-      private def maybeFail() = {
-        if (shouldFail)
-          fail()
-      }
+      private def maybeFail() = { if (shouldFail) fail() }
 
       private def fail() = {
         fails += 1

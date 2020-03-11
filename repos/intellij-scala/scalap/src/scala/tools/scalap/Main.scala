@@ -154,8 +154,7 @@ object Main {
       classname: String) {
     // find the classfile
     val encName = Names.encode(
-      if (classname == "scala.AnyRef") "java.lang.Object"
-      else classname)
+      if (classname == "scala.AnyRef") "java.lang.Object" else classname)
     val cls = path.findClass(encName)
     if (cls.isDefined && cls.get.binary.isDefined) {
       val cfile = cls.get.binary.get
@@ -294,8 +293,7 @@ object Main {
     } else if (classname == "scala.Null") {
       Console.println("package scala")
       Console.println("sealed abstract class Null")
-    } else
-      Console.println("class/object " + classname + " not found.")
+    } else Console.println("class/object " + classname + " not found.")
   }
 
   def fromPathString(
@@ -310,8 +308,7 @@ object Main {
     */
   def main(args: Array[String]) {
     // print usage information if there is no command-line argument
-    if (args.length == 0)
-      usage
+    if (args.length == 0) usage
     // otherwise parse the arguments...
     else {
       val arguments = Arguments
@@ -323,10 +320,8 @@ object Main {
         .withOptionalArg("-classpath")
         .withOptionalArg("-cp")
         .parse(args)
-      if (arguments contains "-version")
-        Console.println(versionMsg)
-      if (arguments contains "-help")
-        usage
+      if (arguments contains "-version") Console.println(versionMsg)
+      if (arguments contains "-help") usage
       verbose = arguments contains "-verbose"
       printPrivates = arguments contains "-private"
       // construct a custom class path

@@ -176,10 +176,8 @@ object Main extends Main {
     else {
       val arguments = parseArguments(args)
 
-      if (arguments contains opts.version)
-        Console.println(versionMsg)
-      if (arguments contains opts.help)
-        usage()
+      if (arguments contains opts.version) Console.println(versionMsg)
+      if (arguments contains opts.help) usage()
 
       verbose = arguments contains opts.verbose
       printPrivates = arguments contains opts.showPrivateDefs

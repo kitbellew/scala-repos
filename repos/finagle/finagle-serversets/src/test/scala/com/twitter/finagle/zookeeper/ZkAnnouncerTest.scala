@@ -37,8 +37,7 @@ class ZkAnnouncerTest extends FunSuite with BeforeAndAfter {
 
   // TODO: remove when no longer flaky.
   override def test(testName: String, testTags: Tag*)(f: => Unit) {
-    if (!sys.props.contains("SKIP_FLAKY"))
-      super.test(testName, testTags: _*)(f)
+    if (!sys.props.contains("SKIP_FLAKY")) super.test(testName, testTags: _*)(f)
   }
 
   test("announce a primary endpoint") {

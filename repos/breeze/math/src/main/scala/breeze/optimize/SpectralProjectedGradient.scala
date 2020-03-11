@@ -70,8 +70,7 @@ class SpectralProjectedGradient[T](
     */
   protected def bbAlpha(s: T, y: T): Double = {
     var alpha =
-      if (bbType == 1) (s dot s) / (s dot y)
-      else (s dot y) / (y dot y)
+      if (bbType == 1) (s dot s) / (s dot y) else (s dot y) / (y dot y)
     if (alpha <= alphaMin || alpha > alphaMax) alpha = 1.0
     if (alpha.isNaN) alpha = 1.0
     alpha
@@ -111,8 +110,7 @@ class SpectralProjectedGradient[T](
     val normGradInDir = state.grad dot direction
 
     var gamma =
-      if (state.iter == 0) scala.math.min(1.0, 1.0 / norm(state.grad))
-      else 1.0
+      if (state.iter == 0) scala.math.min(1.0, 1.0 / norm(state.grad)) else 1.0
 
     val searchFun =
       if (curvilinear)

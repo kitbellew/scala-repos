@@ -23,10 +23,8 @@ object Test {
   // when the process is destroyed.  The default handler will print
   // stack traces in the failing case.
   def main(args: Array[String]) {
-    if (args.nonEmpty && args(0) == "data")
-      data()
-    else
-      test() // args(0) == "jvm"
+    if (args.nonEmpty && args(0) == "data") data()
+    else test() // args(0) == "jvm"
   }
 
   // fork the data spewer, wait for input, then destroy the process
@@ -60,7 +58,6 @@ object Test {
   // spew something
   def data() {
     def filler = "." * 100
-    for (i <- 1 to 1000)
-      Console println s"Outputting data line $i $filler"
+    for (i <- 1 to 1000) Console println s"Outputting data line $i $filler"
   }
 }

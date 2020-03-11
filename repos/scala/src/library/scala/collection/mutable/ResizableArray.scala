@@ -97,8 +97,7 @@ trait ResizableArray[A]
     val arrayLength: Long = array.length
     if (n > arrayLength) {
       var newSize: Long = arrayLength * 2
-      while (n > newSize)
-        newSize = newSize * 2
+      while (n > newSize) newSize = newSize * 2
       // Clamp newSize to Int.MaxValue
       if (newSize > Int.MaxValue) newSize = Int.MaxValue
 

@@ -328,8 +328,7 @@ object CrossProject extends CrossProjectExtra {
         Seq(
           srcDir.getParentFile / s"${srcDir.name}-$scalaBinaryVersion",
           srcDir)
-      else
-        Seq(srcDir)
+      else Seq(srcDir)
     }
   }
 

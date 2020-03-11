@@ -22,21 +22,18 @@ class HttpTransport(self: Transport[Any, Any], manager: ConnectionManager)
   def read(): Future[Any] =
     self.read() onSuccess { m =>
       manager.observeMessage(m)
-      if (manager.shouldClose)
-        self.close()
+      if (manager.shouldClose) self.close()
     }
 
   def write(m: Any): Future[Unit] =
     try {
       manager.observeMessage(m)
       val f = self.write(m)
-      if (manager.shouldClose) f before self.close()
-      else f
+      if (manager.shouldClose) f before self.close() else f
     } catch { case NonFatal(e) => Future.exception(e) }
 
   def status =
-    if (manager.shouldClose) finagle.Status.Closed
-    else self.status
+    if (manager.shouldClose) finagle.Status.Closed else self.status
 
   def localAddress = self.localAddress
 

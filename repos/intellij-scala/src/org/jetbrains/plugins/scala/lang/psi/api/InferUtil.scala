@@ -332,10 +332,10 @@ object InferUtil {
     var nonValueType = _nonValueType
     nonValueType match {
       case Success(
-          ScTypePolymorphicType(
-            m @ ScMethodType(internal, params, impl),
-            typeParams),
-          _) if expectedType.isDefined && (!fromImplicitParameters || impl) =>
+            ScTypePolymorphicType(
+              m @ ScMethodType(internal, params, impl),
+              typeParams),
+            _) if expectedType.isDefined && (!fromImplicitParameters || impl) =>
         def updateRes(expected: ScType) {
           if (expected.equiv(types.Unit))
             return //do not update according to Unit type
@@ -637,8 +637,7 @@ object InferUtil {
                       .subst(lower)
                       .conforms(
                         undefiningSubstitutor.subst(upper),
-                        checkWeak = true))
-                  throw new SafeCheckException
+                        checkWeak = true)) throw new SafeCheckException
                 TypeParameter(
                   tp.name,
                   tp.typeParams /* doesn't important here */,

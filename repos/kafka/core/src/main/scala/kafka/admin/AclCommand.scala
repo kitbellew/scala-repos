@@ -43,12 +43,9 @@ object AclCommand {
     opts.checkArgs()
 
     try {
-      if (opts.options.has(opts.addOpt))
-        addAcl(opts)
-      else if (opts.options.has(opts.removeOpt))
-        removeAcl(opts)
-      else if (opts.options.has(opts.listOpt))
-        listAcl(opts)
+      if (opts.options.has(opts.addOpt)) addAcl(opts)
+      else if (opts.options.has(opts.removeOpt)) removeAcl(opts)
+      else if (opts.options.has(opts.listOpt)) listAcl(opts)
     } catch {
       case e: Throwable =>
         println(s"Error while executing ACL command: ${e.getMessage}")
@@ -239,8 +236,7 @@ object AclCommand {
       opts.options.valuesOf(hostOptionSpec).asScala.map(_.trim).toSet
     else if (opts.options.has(principalOptionSpec))
       Set[String](Acl.WildCardHost)
-    else
-      Set.empty[String]
+    else Set.empty[String]
   }
 
   private def getPrincipals(
@@ -253,8 +249,7 @@ object AclCommand {
         .asScala
         .map(s => KafkaPrincipal.fromString(s.trim))
         .toSet
-    else
-      Set.empty[KafkaPrincipal]
+    else Set.empty[KafkaPrincipal]
   }
 
   private def getResource(
@@ -267,8 +262,7 @@ object AclCommand {
         .asScala
         .foreach(topic => resources += new Resource(Topic, topic.trim))
 
-    if (opts.options.has(opts.clusterOpt))
-      resources += Resource.ClusterResource
+    if (opts.options.has(opts.clusterOpt)) resources += Resource.ClusterResource
 
     if (opts.options.has(opts.groupOpt))
       opts.options

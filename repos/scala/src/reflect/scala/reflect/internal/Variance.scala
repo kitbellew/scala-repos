@@ -61,9 +61,7 @@ final class Variance private (val flags: Int) extends AnyVal {
 
   /** The symbolic annotation used to indicate the given kind of variance. */
   def symbolicString = (
-    if (isCovariant) "+"
-    else if (isContravariant) "-"
-    else ""
+    if (isCovariant) "+" else if (isContravariant) "-" else ""
   )
 
   override def toString = (
@@ -81,8 +79,7 @@ object Variance {
   }
 
   def fold(variances: List[Variance]): Variance = (
-    if (variances.isEmpty) Bivariant
-    else variances reduceLeft (_ & _)
+    if (variances.isEmpty) Bivariant else variances reduceLeft (_ & _)
   )
   val Bivariant = new Variance(2)
   val Covariant = new Variance(1)

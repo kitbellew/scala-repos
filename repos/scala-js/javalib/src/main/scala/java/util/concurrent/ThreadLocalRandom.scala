@@ -17,15 +17,13 @@ class ThreadLocalRandom extends Random {
   initialized = true
 
   override def setSeed(seed: Long): Unit = {
-    if (initialized)
-      throw new UnsupportedOperationException()
+    if (initialized) throw new UnsupportedOperationException()
 
     super.setSeed(seed)
   }
 
   def nextInt(least: Int, bound: Int): Int = {
-    if (least >= bound)
-      throw new IllegalArgumentException()
+    if (least >= bound) throw new IllegalArgumentException()
 
     val difference = bound - least
     if (difference > 0) { nextInt(difference) + least }
@@ -36,8 +34,7 @@ class ThreadLocalRandom extends Random {
       @tailrec
       def loop(): Int = {
         val n = nextInt()
-        if (n >= least && n < bound) n
-        else loop()
+        if (n >= least && n < bound) n else loop()
       }
 
       loop()
@@ -45,8 +42,7 @@ class ThreadLocalRandom extends Random {
   }
 
   def nextLong(_n: Long): Long = {
-    if (_n <= 0)
-      throw new IllegalArgumentException("n must be positive")
+    if (_n <= 0) throw new IllegalArgumentException("n must be positive")
 
     /*
      * Divide n by two until small enough for nextInt. On each
@@ -63,18 +59,15 @@ class ThreadLocalRandom extends Random {
       val bits = next(2)
       val halfn = n >>> 1
       val nextn =
-        if ((bits & 2) == 0) halfn
-        else n - halfn
-      if ((bits & 1) == 0)
-        offset += n - nextn
+        if ((bits & 2) == 0) halfn else n - halfn
+      if ((bits & 1) == 0) offset += n - nextn
       n = nextn
     }
     offset + nextInt(n.toInt)
   }
 
   def nextLong(least: Long, bound: Long): Long = {
-    if (least >= bound)
-      throw new IllegalArgumentException()
+    if (least >= bound) throw new IllegalArgumentException()
 
     val difference = bound - least
     if (difference >= 0) { nextLong(difference) + least }
@@ -85,8 +78,7 @@ class ThreadLocalRandom extends Random {
       @tailrec
       def loop(): Long = {
         val n = nextLong()
-        if (n >= least && n < bound) n
-        else loop()
+        if (n >= least && n < bound) n else loop()
       }
 
       loop()
@@ -94,23 +86,20 @@ class ThreadLocalRandom extends Random {
   }
 
   def nextDouble(n: Double): Double = {
-    if (n <= 0)
-      throw new IllegalArgumentException("n must be positive")
+    if (n <= 0) throw new IllegalArgumentException("n must be positive")
 
     nextDouble() * n
   }
 
   def nextDouble(least: Double, bound: Double): Double = {
-    if (least >= bound)
-      throw new IllegalArgumentException()
+    if (least >= bound) throw new IllegalArgumentException()
 
     /* Based on documentation for Random.doubles to avoid issue #2144 and other
      * possible rounding up issues:
      * https://docs.oracle.com/javase/8/docs/api/java/util/Random.html#doubles-double-double-
      */
     val next = nextDouble() * (bound - least) + least
-    if (next < bound) next
-    else Math.nextAfter(bound, Double.NegativeInfinity)
+    if (next < bound) next else Math.nextAfter(bound, Double.NegativeInfinity)
   }
 }
 

@@ -169,8 +169,7 @@ class ScalaPatternParameterInfoHandler
             false,
             false,
             color)
-        else
-          context.setUIComponentEnabled(false)
+        else context.setUIComponentEnabled(false)
       case _ =>
     }
   }

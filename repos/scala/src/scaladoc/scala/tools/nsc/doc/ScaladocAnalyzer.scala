@@ -95,11 +95,10 @@ trait ScaladocAnalyzer extends Analyzer {
         }
       )
 
-      for (tree <- trees; t <- tree)
-        t match {
-          case Ident(name) if name startsWith '$' => defineAlias(name)
-          case _                                  =>
-        }
+      for (tree <- trees; t <- tree) t match {
+        case Ident(name) if name startsWith '$' => defineAlias(name)
+        case _                                  =>
+      }
 
       useCase.aliases = context.scope.toList
       namer.enterSyms(trees)
@@ -145,16 +144,14 @@ abstract class ScaladocSyntaxAnalyzer[G <: Global](val global: G)
         docBuffer = null
         in.next
         val scaladoc = ("/**", "*/")
-        if (in.ch == '*')
-          docBuffer = new StringBuilder(scaladoc._1)
+        if (in.ch == '*') docBuffer = new StringBuilder(scaladoc._1)
         do {
           do {
             if (in.ch != '*' && in.ch != SU) { in.next; putDocChar(in.ch) }
           } while (in.ch != '*' && in.ch != SU)
           while (in.ch == '*') { in.next; putDocChar(in.ch) }
         } while (in.ch != '/' && in.ch != SU)
-        if (in.ch == '/') in.next
-        else incompleteInputError("unclosed comment")
+        if (in.ch == '/') in.next else incompleteInputError("unclosed comment")
         true
       } else { false }
     }
@@ -219,8 +216,7 @@ abstract class ScaladocSyntaxAnalyzer[G <: Global](val global: G)
       finally lastDoc = null)
 
     override protected def putCommentChar() {
-      if (inDocComment)
-        docBuffer append ch
+      if (inDocComment) docBuffer append ch
 
       nextChar()
     }

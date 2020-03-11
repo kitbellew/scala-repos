@@ -221,10 +221,8 @@ class LazyMacros(val c: whitebox.Context)
       case Some(tpe) => LazyMacros.deriveInstance(this)(tpe, mkInst)
       case None =>
         val tpe = iTag.tpe.dealias
-        if (tpe.typeSymbol.isParameter)
-          nullInst
-        else
-          LazyMacros.deriveInstance(this)(tpe, mkInst)
+        if (tpe.typeSymbol.isParameter) nullInst
+        else LazyMacros.deriveInstance(this)(tpe, mkInst)
     }
   }
 
@@ -330,8 +328,7 @@ class LazyMacros(val c: whitebox.Context)
             (State.current.get, tree)
           } finally { State.current = former }
 
-        if (tree == EmptyTree) None
-        else Some((state0, tree))
+        if (tree == EmptyTree) None else Some((state0, tree))
       }
 
       def deriveInstance(
@@ -359,8 +356,7 @@ class LazyMacros(val c: whitebox.Context)
               val $valNme: $actualType = $tree
               ${mkInst(q"$valNme", actualType)}
               """
-            } else
-              mkInst(tree, actualType)
+            } else mkInst(tree, actualType)
           case Left(err) =>
             abort(err)
         }
@@ -425,8 +421,7 @@ class LazyMacros(val c: whitebox.Context)
             case Nil :: t =>
               helper(t, acc)
             case (h :: t0) :: t =>
-              if (acc.exists(_.instTpe =:= h))
-                helper(t0 :: t, acc)
+              if (acc.exists(_.instTpe =:= h)) helper(t0 :: t, acc)
               else {
                 val inst = dict(TypeWrapper(h))
                 helper(inst.dependsOn :: t0 :: t, inst :: acc)
@@ -483,10 +478,10 @@ class LazyMacros(val c: whitebox.Context)
         val existingInstOpt =
           derive(tmpState)(innerTpe).right.toOption.flatMap {
             case (state2, inst) =>
-              if (inst.inst.isEmpty)
-                resolve0(state2)(innerTpe).map { case (_, tree, _) => tree }
-              else
-                Some(inst.inst.get)
+              if (inst.inst.isEmpty) resolve0(state2)(innerTpe).map {
+                case (_, tree, _) => tree
+              }
+              else Some(inst.inst.get)
           }
 
         val existingInstAvailable = existingInstOpt.exists { actualTree =>
@@ -503,8 +498,7 @@ class LazyMacros(val c: whitebox.Context)
           c.abort(c.enclosingPosition, s"$innerTpe available elsewhere")
 
         val lowTpe =
-          if (ignoring.isEmpty)
-            appliedType(lowPriorityForTpe, List(innerTpe))
+          if (ignoring.isEmpty) appliedType(lowPriorityForTpe, List(innerTpe))
           else
             appliedType(
               lowPriorityForIgnoringTpe,
@@ -550,16 +544,16 @@ class LazyMacros(val c: whitebox.Context)
         super.transform {
           tree match {
             case UnApply(
-                Apply(
-                  Select(qual, nme.unapply | nme.unapplySeq),
-                  List(Ident(nme.SELECTOR_DUMMY))),
-                args) =>
+                  Apply(
+                    Select(qual, nme.unapply | nme.unapplySeq),
+                    List(Ident(nme.SELECTOR_DUMMY))),
+                  args) =>
               Apply(transform(qual), transformTrees(args))
             case UnApply(
-                Apply(
-                  TypeApply(Select(qual, nme.unapply | nme.unapplySeq), _),
-                  List(Ident(nme.SELECTOR_DUMMY))),
-                args) =>
+                  Apply(
+                    TypeApply(Select(qual, nme.unapply | nme.unapplySeq), _),
+                    List(Ident(nme.SELECTOR_DUMMY))),
+                  args) =>
               Apply(transform(qual), transformTrees(args))
             case t => t
           }

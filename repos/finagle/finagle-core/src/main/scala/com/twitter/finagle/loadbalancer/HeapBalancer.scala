@@ -98,10 +98,7 @@ class HeapBalancer[Req, Rep](
 
   private[this] val loadGauge = statsReceiver.addGauge("load") {
     val loads = synchronized {
-      heap drop (1) map { n =>
-        if (n.load < 0) n.load + Penalty
-        else n.load
-      }
+      heap drop (1) map { n => if (n.load < 0) n.load + Penalty else n.load }
     }
 
     loads.sum
@@ -158,16 +155,14 @@ class HeapBalancer[Req, Rep](
     while (n != null) {
       if (n.index < 0) { // discarded node
         n = n.downq
-        if (m == null) downq = n
-        else m.downq = n
+        if (m == null) downq = n else m.downq = n
       } else if (n.factory.status == Status.Open) { // revived node
         n.load -= Penalty
         fixUp(heap, n.index)
         val o = n.downq
         n.downq = null
         n = o
-        if (m == null) downq = n
-        else m.downq = n
+        if (m == null) downq = n else m.downq = n
       } else { // unchanged
         m = n
         n = n.downq
@@ -201,8 +196,7 @@ class HeapBalancer[Req, Rep](
 
   def apply(conn: ClientConnection): Future[Service[Req, Rep]] = {
     val node = synchronized {
-      if (size == 0)
-        return Future.exception(emptyException)
+      if (size == 0) return Future.exception(emptyException)
       val n = get()
       n.load += 1
       fixDown(heap, n.index, size)

@@ -63,8 +63,7 @@ private[round] final class Socket(
     def isGone =
       if (time < (nowMillis - isBye
             .fold(ragequitTimeout, disconnectTimeout)
-            .toMillis))
-        isHostingSimul map (!_)
+            .toMillis)) isHostingSimul map (!_)
       else fuccess(false)
   }
 

@@ -96,8 +96,7 @@ class EqEqRefTest {
   def main(args: Array[String]) = {
     val in = new java.io.FileInputStream(args(0))
     var c = 0
-    while ((c = in.read) != -1)
-      print(c.toChar)
+    while ((c = in.read) != -1) print(c.toChar)
 
     in.close
   }

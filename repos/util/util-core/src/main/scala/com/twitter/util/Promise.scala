@@ -362,8 +362,7 @@ class Promise[A]
         // It's always safe to run `first` ahead of everything else
         // since the only way to get a chainer is to register a
         // callback (which would always have depth 0).
-        if (first ne null)
-          first(result)
+        if (first ne null) first(result)
         var k: K[A] = null
         var moreDepth = false
 
@@ -371,30 +370,23 @@ class Promise[A]
         var ks = rest
         while (ks ne Nil) {
           k = ks.head
-          if (k.depth == 0)
-            k(result)
-          else
-            moreDepth = true
+          if (k.depth == 0) k(result) else moreDepth = true
           ks = ks.tail
         }
 
         // depth >= 1, about 23%
-        if (!moreDepth)
-          return
+        if (!moreDepth) return
 
         var maxDepth = 1
         ks = rest
         while (ks ne Nil) {
           k = ks.head
-          if (k.depth == 1)
-            k(result)
-          else if (k.depth > maxDepth)
-            maxDepth = k.depth
+          if (k.depth == 1) k(result)
+          else if (k.depth > maxDepth) maxDepth = k.depth
           ks = ks.tail
         }
         // Depth > 1, about 7%
-        if (maxDepth > 1)
-          runDepth2Plus(rest, result, maxDepth)
+        if (maxDepth > 1) runDepth2Plus(rest, result, maxDepth)
       }
 
       private[this] def runDepth2Plus(
@@ -415,8 +407,7 @@ class Promise[A]
           var ks = rest
           while (ks ne Nil) {
             val k = ks.head
-            if (k.depth > 1)
-              rem += k
+            if (k.depth > 1) rem += k
             ks = ks.tail
           }
 
@@ -432,8 +423,7 @@ class Promise[A]
             var ks = rest
             while (ks ne Nil) {
               val k = ks.head
-              if (k.depth == depth)
-                k(result)
+              if (k.depth == depth) k(result)
               ks = ks.tail
             }
             depth += 1
@@ -455,16 +445,13 @@ class Promise[A]
 
       case s @ Waiting(first, rest) =>
         val waitq = if (first eq null) rest else first :: rest
-        if (!cas(s, Interruptible(waitq, f)))
-          setInterruptHandler(f)
+        if (!cas(s, Interruptible(waitq, f))) setInterruptHandler(f)
 
       case s @ Interruptible(waitq, _) =>
-        if (!cas(s, Interruptible(waitq, f)))
-          setInterruptHandler(f)
+        if (!cas(s, Interruptible(waitq, f))) setInterruptHandler(f)
 
       case s @ Transforming(waitq, _) =>
-        if (!cas(s, Interruptible(waitq, f)))
-          setInterruptHandler(f)
+        if (!cas(s, Interruptible(waitq, f))) setInterruptHandler(f)
 
       case Interrupted(_, signal) =>
         f.applyOrElse(signal, Promise.AlwaysUnit)
@@ -499,16 +486,13 @@ class Promise[A]
 
       case s @ Waiting(first, rest) =>
         val waitq = if (first eq null) rest else first :: rest
-        if (!cas(s, Transforming(waitq, other)))
-          forwardInterruptsTo(other)
+        if (!cas(s, Transforming(waitq, other))) forwardInterruptsTo(other)
 
       case s @ Interruptible(waitq, _) =>
-        if (!cas(s, Transforming(waitq, other)))
-          forwardInterruptsTo(other)
+        if (!cas(s, Transforming(waitq, other))) forwardInterruptsTo(other)
 
       case s @ Transforming(waitq, _) =>
-        if (!cas(s, Transforming(waitq, other)))
-          forwardInterruptsTo(other)
+        if (!cas(s, Transforming(waitq, other))) forwardInterruptsTo(other)
 
       case Interrupted(_, signal) =>
         other.raise(signal)
@@ -528,13 +512,11 @@ class Promise[A]
       else { other.raise(intr) }
 
     case s @ Interrupted(waitq, _) =>
-      if (!cas(s, Interrupted(waitq, intr)))
-        raise(intr)
+      if (!cas(s, Interrupted(waitq, intr))) raise(intr)
 
     case s @ Waiting(first, rest) =>
       val waitq = if (first eq null) rest else first :: rest
-      if (!cas(s, Interrupted(waitq, intr)))
-        raise(intr)
+      if (!cas(s, Interrupted(waitq, intr))) raise(intr)
 
     case Done(_) =>
   }
@@ -545,22 +527,16 @@ class Promise[A]
         p.detach(k)
 
       case s @ Interruptible(waitq, handler) =>
-        if (!cas(s, Interruptible(waitq filterNot (_ eq k), handler)))
-          detach(k)
-        else
-          waitq.contains(k)
+        if (!cas(s, Interruptible(waitq filterNot (_ eq k), handler))) detach(k)
+        else waitq.contains(k)
 
       case s @ Transforming(waitq, other) =>
-        if (!cas(s, Transforming(waitq filterNot (_ eq k), other)))
-          detach(k)
-        else
-          waitq.contains(k)
+        if (!cas(s, Transforming(waitq filterNot (_ eq k), other))) detach(k)
+        else waitq.contains(k)
 
       case s @ Interrupted(waitq, intr) =>
-        if (!cas(s, Interrupted(waitq filterNot (_ eq k), intr)))
-          detach(k)
-        else
-          waitq.contains(k)
+        if (!cas(s, Interrupted(waitq filterNot (_ eq k), intr))) detach(k)
+        else waitq.contains(k)
 
       case s @ Waiting(first, rest) =>
         val waitq = if (first eq null) rest else first :: rest
@@ -568,8 +544,7 @@ class Promise[A]
           case Nil          => initState[A]
           case head :: tail => Waiting(head, tail)
         }
-        if (!cas(s, next)) detach(k)
-        else waitq.contains(k)
+        if (!cas(s, next)) detach(k) else waitq.contains(k)
 
       case Done(_) => false
     }
@@ -755,20 +730,15 @@ class Promise[A]
           def run() { k(v) }
         })
       case s @ Waiting(first, rest) if first == null =>
-        if (!cas(s, Waiting(k, rest)))
-          continue(k)
+        if (!cas(s, Waiting(k, rest))) continue(k)
       case s @ Waiting(first, rest) =>
-        if (!cas(s, Waiting(first, k :: rest)))
-          continue(k)
+        if (!cas(s, Waiting(first, k :: rest))) continue(k)
       case s @ Interruptible(waitq, handler) =>
-        if (!cas(s, Interruptible(k :: waitq, handler)))
-          continue(k)
+        if (!cas(s, Interruptible(k :: waitq, handler))) continue(k)
       case s @ Transforming(waitq, other) =>
-        if (!cas(s, Transforming(k :: waitq, other)))
-          continue(k)
+        if (!cas(s, Transforming(k :: waitq, other))) continue(k)
       case s @ Interrupted(waitq, signal) =>
-        if (!cas(s, Interrupted(k :: waitq, signal)))
-          continue(k)
+        if (!cas(s, Interrupted(k :: waitq, signal))) continue(k)
       case Linked(p) =>
         p.continue(k)
     }
@@ -795,10 +765,7 @@ class Promise[A]
 
     state match {
       case s @ Linked(p) =>
-        if (cas(s, Linked(target)))
-          p.link(target)
-        else
-          link(target)
+        if (cas(s, Linked(target))) p.link(target) else link(target)
 
       case s @ Done(value) =>
         if (!target.updateIfEmpty(value) && value != Await.result(target)) {
@@ -809,8 +776,7 @@ class Promise[A]
       case s @ Waiting(first, rest) =>
         if (!cas(s, Linked(target))) link(target)
         else {
-          if (first != null)
-            target.continue(first)
+          if (first != null) target.continue(first)
           var ks = rest
           while (ks ne Nil) {
             target.continue(ks.head)

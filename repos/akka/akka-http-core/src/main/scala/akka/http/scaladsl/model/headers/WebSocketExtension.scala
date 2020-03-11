@@ -16,11 +16,10 @@ final case class WebSocketExtension(
     extends ValueRenderable {
   def render[R <: Rendering](r: R): r.type = {
     r ~~ name
-    if (params.nonEmpty)
-      params.foreach {
-        case (k, "") ⇒ r ~~ "; " ~~ k
-        case (k, v) ⇒ r ~~ "; " ~~ k ~~ '=' ~~# v
-      }
+    if (params.nonEmpty) params.foreach {
+      case (k, "") ⇒ r ~~ "; " ~~ k
+      case (k, v) ⇒ r ~~ "; " ~~ k ~~ '=' ~~# v
+    }
     r
   }
 }

@@ -127,8 +127,7 @@ class AsyncProducerTest {
         "")
     producerSendThread.start()
 
-    for (producerData <- producerDataList)
-      queue.put(producerData)
+    for (producerData <- producerDataList) queue.put(producerData)
 
     producerSendThread.shutdown
     EasyMock.verify(mockHandler)
@@ -160,8 +159,7 @@ class AsyncProducerTest {
         "")
     producerSendThread.start()
 
-    for (producerData <- producerDataList)
-      queue.put(producerData)
+    for (producerData <- producerDataList) queue.put(producerData)
 
     Thread.sleep(queueExpirationTime + 100)
     EasyMock.verify(mockHandler)
@@ -438,8 +436,7 @@ class AsyncProducerTest {
         for ((brokerId, dataPerBroker) <- partitionedData) {
           for ((
                  TopicAndPartition(topic, partitionId),
-                 dataPerTopic) <- dataPerBroker)
-            assertTrue(partitionId == 0)
+                 dataPerTopic) <- dataPerBroker) assertTrue(partitionId == 0)
         }
       case None =>
         fail("Failed to collate requests by topic, partition")

@@ -291,8 +291,7 @@ abstract class GenIncOptimizer private[optimizer] (
     else {
       val existingParents =
         CollOps.parFlatMapKeys(newChildrenByParent)(classes.get)
-      for (parent <- existingParents)
-        parent.walkForAdditions(getNewChildren)
+      for (parent <- existingParents) parent.walkForAdditions(getNewChildren)
     }
 
   }
@@ -332,8 +331,7 @@ abstract class GenIncOptimizer private[optimizer] (
       val deletedMethods = Set.newBuilder[String]
 
       val linkedMethodDefs =
-        if (isStatic) linkedClass.staticMethods
-        else linkedClass.memberMethods
+        if (isStatic) linkedClass.staticMethods else linkedClass.memberMethods
 
       val newMethodNames = linkedMethodDefs.map(_.info.encodedName).toSet
       val methodSetChanged = methods.keySet != newMethodNames
@@ -369,8 +367,7 @@ abstract class GenIncOptimizer private[optimizer] (
             methods(methodName) = method
             method
           } { method =>
-            if (method.updateWith(linkedMethodDef))
-              changedMethods += methodName
+            if (method.updateWith(linkedMethodDef)) changedMethods += methodName
             method
           }
       }
@@ -446,16 +443,13 @@ abstract class GenIncOptimizer private[optimizer] (
     /** Delete this class and all its subclasses. UPDATE PASS ONLY. */
     def deleteSubtree(): Unit = {
       delete()
-      for (subclass <- subclasses)
-        subclass.deleteSubtree()
+      for (subclass <- subclasses) subclass.deleteSubtree()
     }
 
     /** UPDATE PASS ONLY. */
     private def delete(): Unit = {
-      if (isInstantiated)
-        notInstantiatedAnymore()
-      for (method <- methods.values)
-        method.delete()
+      if (isInstantiated) notInstantiatedAnymore()
+      for (method <- methods.values) method.delete()
       classes -= encodedName
       /* Note: no need to tag methods that call *statically* one of the methods
      * of the deleted classes, since they've got to be invalidated by
@@ -600,8 +594,7 @@ abstract class GenIncOptimizer private[optimizer] (
       if (batchMode) {
         if (isInstantiated) {
           /* Only add the class to all its ancestor interfaces */
-          for (intf <- interfaces)
-            intf.addInstantiatedSubclass(this)
+          for (intf <- interfaces) intf.addInstantiatedSubclass(this)
         }
       } else {
         val allMethodNames = allMethods().keys
@@ -670,8 +663,7 @@ abstract class GenIncOptimizer private[optimizer] (
       */
     def allMethods(): scala.collection.Map[String, MethodImpl] = {
       val result = mutable.Map.empty[String, MethodImpl]
-      for (parent <- reverseParentChain)
-        result ++= parent.methods
+      for (parent <- reverseParentChain) result ++= parent.methods
       result
     }
 
@@ -921,8 +913,7 @@ abstract class GenIncOptimizer private[optimizer] (
     def delete(): Unit = {
       assert(!_deleted, "delete() called twice")
       _deleted = true
-      if (protectTag())
-        unregisterFromEverywhere()
+      if (protectTag()) unregisterFromEverywhere()
     }
 
     /** Concurrency safe with itself and [[delete]] on the same instance

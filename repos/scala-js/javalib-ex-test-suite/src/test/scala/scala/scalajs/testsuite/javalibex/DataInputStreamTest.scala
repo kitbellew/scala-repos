@@ -19,8 +19,7 @@ object DataInputStreamTest extends JasmineTest {
         val data = Seq(0x00, 0x01, 0xF1, 0x00, 0x01)
         val stream = newStream(data: _*)
 
-        for (d <- data)
-          expect(stream.readBoolean()).toBe(d != 0)
+        for (d <- data) expect(stream.readBoolean()).toBe(d != 0)
 
         expect(() => stream.readBoolean()).toThrow // EOF
       }
@@ -29,8 +28,7 @@ object DataInputStreamTest extends JasmineTest {
         val data = Seq(0x00, 0x01, 0xF1, 0x7D, 0x35)
         val stream = newStream(data: _*)
 
-        for (d <- data)
-          expect(stream.readByte()).toBe(d.toByte)
+        for (d <- data) expect(stream.readByte()).toBe(d.toByte)
 
         expect(() => stream.readBoolean()).toThrow // EOF
       }
@@ -52,8 +50,7 @@ object DataInputStreamTest extends JasmineTest {
         )
         var res = ""
 
-        for (i <- 1 to 11)
-          res += stream.readChar()
+        for (i <- 1 to 11) res += stream.readChar()
 
         expect(res).toEqual("Höllö Wărȴđ")
 
@@ -159,8 +156,7 @@ object DataInputStreamTest extends JasmineTest {
         val data = Seq(0x00, 0x01, 0xF1, 0x7D, 0x35)
         val stream = newStream(data: _*)
 
-        for (d <- data)
-          expect(stream.readUnsignedByte()).toBe(d)
+        for (d <- data) expect(stream.readUnsignedByte()).toBe(d)
 
         expect(() => stream.readBoolean()).toThrow // EOF
       }

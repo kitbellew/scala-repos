@@ -280,8 +280,7 @@ trait TransSpecableModule[M[+_]]
 
             result <- if (ap == al && al == ar)
               set(pp, (trans.Cond(p, l, r), ap))
-            else
-              init(Leaf(Source), node)
+            else init(Leaf(Source), node)
           } yield result
         }
 

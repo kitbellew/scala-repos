@@ -514,8 +514,7 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
         })
     }
 
-    if (addBoxConsumers(initialCreation)) Some((creations, consumers))
-    else None
+    if (addBoxConsumers(initialCreation)) Some((creations, consumers)) else None
   }
 
   /**

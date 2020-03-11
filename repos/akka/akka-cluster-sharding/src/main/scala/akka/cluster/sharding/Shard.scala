@@ -240,8 +240,7 @@ private[akka] class Shard(
   }
 
   def receiveTerminated(ref: ActorRef): Unit = {
-    if (handOffStopper.exists(_ == ref))
-      context stop self
+    if (handOffStopper.exists(_ == ref)) context stop self
     else if (idByRef.contains(ref) && handOffStopper.isEmpty)
       entityTerminated(ref)
   }

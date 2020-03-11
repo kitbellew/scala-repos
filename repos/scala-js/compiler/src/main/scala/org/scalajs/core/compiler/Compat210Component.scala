@@ -140,8 +140,7 @@ trait Compat210Component {
       }
 
       private def skipIgnoredEntries(): Unit = {
-        while (cursor.hasNext && ignoreNextEntry)
-          cursor.next()
+        while (cursor.hasNext && ignoreNextEntry) cursor.next()
       }
 
       /** In 2.10 the overridingPairs.Cursor returns some false positives

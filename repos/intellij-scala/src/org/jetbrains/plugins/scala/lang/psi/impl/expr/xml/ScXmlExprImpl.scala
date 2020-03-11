@@ -29,8 +29,7 @@ class ScXmlExprImpl(node: ASTNode)
         .instance(getProject)
         .getCachedClasses(getResolveScope, s)
         .filter(!_.isInstanceOf[ScObject])
-      if (typez.length != 0) ScType.designator(typez(0))
-      else types.Nothing
+      if (typez.length != 0) ScType.designator(typez(0)) else types.Nothing
     }
     Success(
       getElements.length match {

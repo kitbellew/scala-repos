@@ -242,8 +242,7 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
               all find (_.tag == t)
             }
             list.sortBy { t =>
-              if (filterTags contains t.tag) Int.MinValue
-              else -t.nb
+              if (filterTags contains t.tag) Int.MinValue else -t.nb
             }
         }
       },

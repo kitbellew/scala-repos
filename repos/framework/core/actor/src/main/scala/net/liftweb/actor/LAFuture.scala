@@ -138,9 +138,7 @@ class LAFuture[T](val scheduler: LAScheduler) {
     else {
       try {
         wait(timeout)
-        if (satisfied) Full(item)
-        else if (aborted) failure
-        else Empty
+        if (satisfied) Full(item) else if (aborted) failure else Empty
       } catch { case _: InterruptedException => Empty }
     }
   }
@@ -195,8 +193,7 @@ class LAFuture[T](val scheduler: LAScheduler) {
         LAFuture.executeWithObservers(scheduler, () => f(Full(item)))
       } else if (aborted) {
         LAFuture.executeWithObservers(scheduler, () => f(failure))
-      } else
-        onComplete ::= f
+      } else onComplete ::= f
     }
   }
 

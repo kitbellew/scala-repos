@@ -54,6 +54,5 @@ object Search extends LilaController {
   }
 
   private def NoBot(res: => Fu[play.api.mvc.Result])(implicit ctx: Context) =
-    if (HTTPRequest.isBot(ctx.req)) notFound
-    else res
+    if (HTTPRequest.isBot(ctx.req)) notFound else res
 }

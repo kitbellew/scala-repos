@@ -9,10 +9,8 @@ class CustomReporter extends Reporter {
   private def writeFile(filePath: String, content: String): Unit = {
     val file = new File(filePath)
     val writer =
-      if (!file.exists)
-        new FileWriter(new File(filePath))
-      else
-        new FileWriter(new File(filePath + "-2"))
+      if (!file.exists) new FileWriter(new File(filePath))
+      else new FileWriter(new File(filePath + "-2"))
     writer.write(content)
     writer.flush()
     writer.close()

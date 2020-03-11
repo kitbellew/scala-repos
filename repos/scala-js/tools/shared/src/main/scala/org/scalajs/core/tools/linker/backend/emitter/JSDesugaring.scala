@@ -149,10 +149,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       tree: Tree,
       isStat: Boolean): js.Tree = {
     val desugar = new JSDesugar(classEmitter, enclosingClassName, None)
-    if (isStat)
-      desugar.transformStat(tree)(Env.empty)
-    else
-      desugar.transformExpr(tree)(Env.empty)
+    if (isStat) desugar.transformStat(tree)(Env.empty)
+    else desugar.transformExpr(tree)(Env.empty)
   }
 
   private[emitter] implicit def transformIdent(ident: Ident): js.Ident =
@@ -243,8 +241,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       val env = env0.withParams(params)
 
       val withReturn =
-        if (isStat) body
-        else Return(body)
+        if (isStat) body else Return(body)
 
       val translateRestParam = outputMode match {
         case OutputMode.ECMAScript51Global | OutputMode.ECMAScript51Isolated =>
@@ -254,8 +251,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       }
 
       val extractRestParam =
-        if (translateRestParam) makeExtractRestParam(params)
-        else js.Skip()
+        if (translateRestParam) makeExtractRestParam(params) else js.Skip()
 
       val newParams =
         (if (translateRestParam) params.init else params).map(transformParamDef)
@@ -874,8 +870,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
         // And because the env is a frozen object too, linkingInfo["envInfo"]["global"] is pure
         case JSBracketSelect(
-            JSBracketSelect(JSLinkingInfo(), StringLiteral("envInfo")),
-            StringLiteral("global")) =>
+              JSBracketSelect(JSLinkingInfo(), StringLiteral("envInfo")),
+              StringLiteral("global")) =>
           true
 
         // JavaScript expressions that can always have side-effects
@@ -1799,10 +1795,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
               case 'D'             => js.UnaryOp(JSUnaryOp.+, newExpr)
 
               case 'F' =>
-                if (semantics.strictFloats)
-                  genFround(newExpr)
-                else
-                  js.UnaryOp(JSUnaryOp.+, newExpr)
+                if (semantics.strictFloats) genFround(newExpr)
+                else js.UnaryOp(JSUnaryOp.+, newExpr)
             }
           } else { genCallHelper("u" + charCode, newExpr) }
 
@@ -1833,8 +1827,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
         // JavaScript expressions
 
         case JSBracketSelect(
-            JSBracketSelect(JSLinkingInfo(), StringLiteral("envInfo")),
-            StringLiteral("global")) =>
+              JSBracketSelect(JSLinkingInfo(), StringLiteral("envInfo")),
+              StringLiteral("global")) =>
           // Shortcut for this field which is heavily used
           envField("g")
 
@@ -2333,8 +2327,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
     require(item != "eval")
     if (internalOptions.optimizeBracketSelects)
       js.DotSelect(qual, js.Ident(item))
-    else
-      js.BracketSelect(qual, js.StringLiteral(item))
+    else js.BracketSelect(qual, js.StringLiteral(item))
   }
 
   private[emitter] implicit class MyTreeOps(val self: js.Tree) {

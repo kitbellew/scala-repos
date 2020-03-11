@@ -27,8 +27,7 @@ private[immutable] object LongMapUtils extends BitOperations.Long {
       t2: LongMap[T]): LongMap[T] = {
     val m = branchMask(p1, p2)
     val p = mask(p1, m)
-    if (zero(p1, m)) LongMap.Bin(p, m, t1, t2)
-    else LongMap.Bin(p, m, t2, t1)
+    if (zero(p1, m)) LongMap.Bin(p, m, t1, t2) else LongMap.Bin(p, m, t2, t1)
   }
 
   def bin[T](
@@ -254,8 +253,7 @@ sealed abstract class LongMap[+T]
       else bin(prefix, mask, newleft, newright)
     }
     case LongMap.Tip(key, value) =>
-      if (f((key, value))) this
-      else LongMap.Nil
+      if (f((key, value))) this else LongMap.Nil
     case LongMap.Nil => LongMap.Nil
   }
 
@@ -348,8 +346,7 @@ sealed abstract class LongMap[+T]
       else if (zero(key, mask)) bin(prefix, mask, left - key, right)
       else bin(prefix, mask, left, right - key)
     case LongMap.Tip(key2, _) =>
-      if (key == key2) LongMap.Nil
-      else this
+      if (key == key2) LongMap.Nil else this
     case LongMap.Nil => LongMap.Nil
   }
 
@@ -393,8 +390,8 @@ sealed abstract class LongMap[+T]
   def unionWith[S >: T](that: LongMap[S], f: (Long, S, S) => S): LongMap[S] =
     (this, that) match {
       case (
-          LongMap.Bin(p1, m1, l1, r1),
-          that @ (LongMap.Bin(p2, m2, l2, r2))) =>
+            LongMap.Bin(p1, m1, l1, r1),
+            that @ (LongMap.Bin(p2, m2, l2, r2))) =>
         if (shorter(m1, m2)) {
           if (!hasMatch(p2, p1, m1))
             join[S](

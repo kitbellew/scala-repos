@@ -170,10 +170,8 @@ trait SQLiteProfile extends JdbcProfile {
     override protected val quotedJdbcFns = Some(Nil)
 
     override protected def buildOrdering(n: Node, o: Ordering) {
-      if (o.nulls.last && !o.direction.desc)
-        b"($n) is null,"
-      else if (o.nulls.first && o.direction.desc)
-        b"($n) is null desc,"
+      if (o.nulls.last && !o.direction.desc) b"($n) is null,"
+      else if (o.nulls.first && o.direction.desc) b"($n) is null desc,"
       expr(n)
       if (o.direction.desc) b" desc"
     }

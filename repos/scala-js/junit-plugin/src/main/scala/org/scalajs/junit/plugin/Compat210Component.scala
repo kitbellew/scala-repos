@@ -35,8 +35,7 @@ trait Compat210Component {
 
   def TypeTreeMemberType(sym: Symbol): TypeTree = {
     val resType = {
-      if (sym.owner.isTerm) sym.tpe
-      else sym.owner.thisType.memberType(sym)
+      if (sym.owner.isTerm) sym.tpe else sym.owner.thisType.memberType(sym)
     }.finalResultType
     atPos(sym.pos.focus)(TypeTree(resType))
   }

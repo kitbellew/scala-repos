@@ -222,10 +222,8 @@ class Generic1Macros(val c: whitebox.Context) extends CaseClassMacros {
     if (isReprType1(tpe))
       abort("No Generic1 instance available for HList or Coproduct")
 
-    if (isProduct1(tpe))
-      mkProductGeneric1(tpe, frTpe)
-    else
-      mkCoproductGeneric1(tpe, frTpe)
+    if (isProduct1(tpe)) mkProductGeneric1(tpe, frTpe)
+    else mkCoproductGeneric1(tpe, frTpe)
   }
 
   def mkProductGeneric1(tpe: Type, frTpe: Type): Tree = {
@@ -387,8 +385,7 @@ trait IsCons1Macros extends CaseClassMacros {
         case other => (fhTpe0, ftTpe0)
       }
 
-    if (!(lDealiasedTpe.typeConstructor =:= consTpe))
-      abort("Not H/CCons")
+    if (!(lDealiasedTpe.typeConstructor =:= consTpe)) abort("Not H/CCons")
 
     val TypeRef(_, _, List(hd, tl)) = lDealiasedTpe
 

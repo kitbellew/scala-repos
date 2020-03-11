@@ -139,10 +139,8 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions { x =>
   def pow(k: Int): Real = {
     @tailrec
     def loop(b: Real, k: Int, extra: Real): Real =
-      if (k == 1)
-        b * extra
-      else
-        loop(b * b, k >>> 1, if ((k & 1) == 1) b * extra else extra)
+      if (k == 1) b * extra
+      else loop(b * b, k >>> 1, if ((k & 1) == 1) b * extra else extra)
 
     this match {
       case Exact(n) =>
@@ -195,9 +193,7 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions { x =>
         val n = x(p)
         val t = SafeLong.two.pow(p)
         val m = n % t
-        if (m == 0) n
-        else if (n.signum >= 0) n + t - m
-        else n - m
+        if (m == 0) n else if (n.signum >= 0) n + t - m else n - m
       })
   }
 

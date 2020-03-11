@@ -52,8 +52,7 @@ trait CollectionIncludes extends TransformationIncludes {
     */
   implicit def observableList2ObservableBuffer[T](
       ol: jfxc.ObservableList[T]): ObservableBuffer[T] =
-    if (ol != null) new ObservableBuffer[T](ol)
-    else null
+    if (ol != null) new ObservableBuffer[T](ol) else null
 
   /**
     * Converts a JavaFX [[http://docs.oracle.com/javase/8/javafx/api/javafx/collections/ObservableMap.html `ObservableMap`]]

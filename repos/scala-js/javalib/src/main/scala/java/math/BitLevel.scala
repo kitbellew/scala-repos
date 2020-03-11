@@ -94,8 +94,7 @@ private[math] object BitLevel {
       if (bi.sign < 0) {
         val i = bi.getFirstNonzeroDigit
         // We reduce the problem to the positive case.
-        if (i == bi.numberLength - 1)
-          highDigit -= 1
+        if (i == bi.numberLength - 1) highDigit -= 1
       }
       // Subtracting all sign bits
       bLength -= java.lang.Integer.numberOfLeadingZeros(highDigit)
@@ -182,8 +181,7 @@ private[math] object BitLevel {
           bi.digits(i) = 0
           i += 1
         }
-        if (i == bi.numberLength)
-          bi.numberLength += 1
+        if (i == bi.numberLength) bi.numberLength += 1
 
         bi.digits(i) += 1
       }
@@ -283,8 +281,7 @@ private[math] object BitLevel {
       result(i) = (iVal << 1) | carry
       carry = iVal >>> 31
     }
-    if (carry != 0)
-      result(srcLen) = carry
+    if (carry != 0) result(srcLen) = carry
   }
 
   /** @see BigInteger#shiftRight(int).
@@ -298,8 +295,7 @@ private[math] object BitLevel {
     val andCount: Int = count & 31 // count of remaining bits
 
     if (intCount >= source.numberLength) {
-      if (source.sign < 0) BigInteger.MINUS_ONE
-      else BigInteger.ZERO
+      if (source.sign < 0) BigInteger.MINUS_ONE else BigInteger.ZERO
     } else {
       var resLength: Int = source.numberLength - intCount
       val resDigits = new Array[Int](resLength + 1)
@@ -317,8 +313,7 @@ private[math] object BitLevel {
             resDigits(i) = 0
             i += 1
           }
-          if (i == resLength)
-            resLength += 1
+          if (i == resLength) resLength += 1
           resDigits(i) += 1
         }
       }

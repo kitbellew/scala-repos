@@ -198,10 +198,7 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                 str match {
                   case reg(capture @ _*) => {
                     val capture2 = capture map { str =>
-                      if (str == null)
-                        ""
-                      else
-                        str
+                      if (str == null) "" else str
                     }
 
                     table(i) = capture2.toArray
@@ -425,10 +422,8 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             _ => true,
             { d =>
               val back = d.toString
-              if (back.endsWith(".0"))
-                back.substring(0, back.length - 2)
-              else
-                back
+              if (back.endsWith(".0")) back.substring(0, back.length - 2)
+              else back
             })
         }
         case c: NumColumn => new StrFrom.N(c, _ => true, _.toString)

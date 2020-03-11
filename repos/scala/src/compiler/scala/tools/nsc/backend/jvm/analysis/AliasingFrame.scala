@@ -212,8 +212,7 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
 
         if (aliases(top) != null) {
           val topAliases = aliases(top)
-          if (aliases(top - 1) != null) moveNextToTop()
-          else aliases(top) = null
+          if (aliases(top - 1) != null) moveNextToTop() else aliases(top) = null
           // move top to next
           aliases(top - 1) = topAliases
           topAliases -= top
@@ -234,8 +233,7 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
             newAlias(assignee = local, source = stackTopBefore)
             // if the value written is size 2, it overwrites the subsequent slot, which is then no
             // longer an alias of anything. see the corresponding case in `Frame.execute`.
-            if (getLocal(local).getSize == 2)
-              removeAlias(local + 1)
+            if (getLocal(local).getSize == 2) removeAlias(local + 1)
 
             // if the value at the preceding index is size 2, it is no longer valid, so we remove its
             // aliasing. see corresponding case in `Frame.execute`
@@ -636,8 +634,7 @@ object AliasSet {
           x == notA || x == notB || x == notC || x == notD || (notXs != null && bsContains(
             notXs,
             x))
-        if (otherHasA) setThisAndOther(x)
-        else abcdNext = x
+        if (otherHasA) setThisAndOther(x) else abcdNext = x
         (num: @switch) match {
           case 1 => a = -1
           case 2 => b = -1

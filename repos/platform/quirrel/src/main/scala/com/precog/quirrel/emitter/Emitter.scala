@@ -112,10 +112,8 @@ trait Emitter
 
     def emitOrDup(markType: MarkType)(f: => EmitterState): EmitterState =
       StateT.apply[Id, Emission, Unit] { e =>
-        if (e.marks.contains(markType))
-          emitDup(markType)(e)
-        else
-          emitAndMark(markType)(f)(e)
+        if (e.marks.contains(markType)) emitDup(markType)(e)
+        else emitAndMark(markType)(f)(e)
       }
 
     def emitLine(line: Int, col: Int, text: String): EmitterState =
@@ -199,24 +197,17 @@ trait Emitter
         val pullUp = (1 to offset) map Swap
 
         val pushDown =
-          if (offset > 0)
-            (1 to (offset + 1)).reverse map Swap
-          else
-            Vector()
+          if (offset > 0) (1 to (offset + 1)).reverse map Swap else Vector()
 
         // Save the value by pushing it to the tail of the stack:
         val saveSwaps =
-          if (insertStackSize == 1)
-            Vector()
-          else
-            (1 to insertStackSize).reverse map Swap
+          if (insertStackSize == 1) Vector()
+          else (1 to insertStackSize).reverse map Swap
 
         // Restore the value by pulling it forward:
         val restoreSwaps =
-          if (finalStackSize == 1)
-            Vector()
-          else
-            (1 until finalStackSize) map Swap
+          if (finalStackSize == 1) Vector()
+          else (1 until finalStackSize) map Swap
 
         (insertInstrAtMulti(
           (pullUp :+ Dup) ++ pushDown ++ saveSwaps,
@@ -233,8 +224,7 @@ trait Emitter
       val optState =
         for (const <- expr.constrainingExpr if !(const equalsIgnoreLoc expr))
           yield {
-            if (expr.children exists { _.constrainingExpr == Some(const) })
-              None
+            if (expr.children exists { _.constrainingExpr == Some(const) }) None
             else {
               Some(
                 emitExpr(const, dispatches) >> emitInstr(Dup) >> emitInstr(

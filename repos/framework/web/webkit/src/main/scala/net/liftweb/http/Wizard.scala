@@ -226,8 +226,7 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
 
     val prevButton: Box[Elem] =
       if (OnFirstScreen) Empty
-      else
-        Full(theScreen.prevButton % ("onclick" -> submitOrAjax(prevId)))
+      else Full(theScreen.prevButton % ("onclick" -> submitOrAjax(prevId)))
 
     val cancelButton: Elem = theScreen.cancelButton %
       ("onclick" -> submitOrAjax(cancelId))

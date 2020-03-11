@@ -40,10 +40,8 @@ object JsonObjectId {
   def apply(objectId: ObjectId): JValue = ("$oid" -> objectId.toString)
 
   def asJValue(objectId: ObjectId, formats: Formats): JValue =
-    if (isObjectIdSerializerUsed(formats))
-      apply(objectId)
-    else
-      JString(objectId.toString)
+    if (isObjectIdSerializerUsed(formats)) apply(objectId)
+    else JString(objectId.toString)
 
   /**
     * Check to see if the ObjectIdSerializer is being used.
@@ -59,9 +57,9 @@ object JsonRegex {
   def unapply(json: JValue): Option[Pattern] = {
     json match {
       case JObject(
-          JField("$regex", JString(regex)) :: JField(
-            "$flags",
-            JInt(f)) :: Nil) =>
+            JField("$regex", JString(regex)) :: JField(
+              "$flags",
+              JInt(f)) :: Nil) =>
         Some(Pattern.compile(regex, f.intValue))
       case _ =>
         None

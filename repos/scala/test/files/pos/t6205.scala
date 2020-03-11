@@ -2,8 +2,7 @@
 class A[T]
 class Test1 {
   def x(backing: Map[A[_], Any]) =
-    for ((k: A[kt], v) <- backing)
-      yield (k: A[kt])
+    for ((k: A[kt], v) <- backing) yield (k: A[kt])
 }
 
 // this tests same thing as above, but independent of library classes,

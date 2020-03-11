@@ -130,10 +130,8 @@ class HoconPsiParser extends PsiParser {
     }
 
     def parseFile(): Unit = {
-      if (matches(LBrace))
-        parseObject()
-      else
-        parseObjectEntries(insideObject = false)
+      if (matches(LBrace)) parseObject()
+      else parseObjectEntries(insideObject = false)
       errorUntil(Empty.orEof, "expected end of file", onlyNonEmpty = true)
     }
 
@@ -187,10 +185,7 @@ class HoconPsiParser extends PsiParser {
     }
 
     def parseObjectEntry(): Unit = {
-      if (matchesUnquoted("include"))
-        parseInclude()
-      else
-        parseObjectField()
+      if (matchesUnquoted("include")) parseInclude() else parseObjectField()
       errorUntil(
         ValueEnding.orNewLineOrEof,
         "unexpected token",
@@ -361,8 +356,7 @@ class HoconPsiParser extends PsiParser {
         if (matchesUnquoted(kw)) {
           advanceLexer()
           true
-        } else
-          false
+        } else false
 
       val endingMatcher = ValueEnding.orNewLineOrEof
 

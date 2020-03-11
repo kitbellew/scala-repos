@@ -145,8 +145,7 @@ case class RichServletContext(sc: ServletContext) extends AttributesMap {
           r.setMultipartConfig(s.multipartConfig.toMultipartConfigElement)
         case _ =>
       }
-      if (servlet.isInstanceOf[ScalatraAsyncSupport])
-        r.setAsyncSupported(true)
+      if (servlet.isInstanceOf[ScalatraAsyncSupport]) r.setAsyncSupported(true)
       r.setLoadOnStartup(loadOnStartup)
       r
     }
@@ -178,8 +177,7 @@ case class RichServletContext(sc: ServletContext) extends AttributesMap {
       name: String): Unit = {
     val reg = Option(sc.getFilterRegistration(name)) getOrElse {
       val r = sc.addFilter(name, filter)
-      if (filter.isInstanceOf[ScalatraAsyncSupport])
-        r.setAsyncSupported(true)
+      if (filter.isInstanceOf[ScalatraAsyncSupport]) r.setAsyncSupported(true)
       r
     }
     // We don't have an elegant way of threading this all the way through

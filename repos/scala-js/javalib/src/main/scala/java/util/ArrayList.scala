@@ -11,8 +11,7 @@ class ArrayList[E] private (private[ArrayList] val inner: js.Array[E])
 
   def this(initialCapacity: Int) = {
     this(new js.Array[E])
-    if (initialCapacity < 0)
-      throw new IllegalArgumentException
+    if (initialCapacity < 0) throw new IllegalArgumentException
   }
 
   def this() =

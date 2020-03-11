@@ -254,8 +254,7 @@ trait TraversableLike[+A, +Repr]
 
   private[scala] def filterImpl(p: A => Boolean, isFlipped: Boolean): Repr = {
     val b = newBuilder
-    for (x <- this)
-      if (p(x) != isFlipped) b += x
+    for (x <- this) if (p(x) != isFlipped) b += x
 
     b.result
   }
@@ -333,18 +332,14 @@ trait TraversableLike[+A, +Repr]
       bldr += elem
     }
     val b = immutable.Map.newBuilder[K, Repr]
-    for ((k, v) <- m)
-      b += ((k, v.result))
+    for ((k, v) <- m) b += ((k, v.result))
 
     b.result
   }
 
   def forall(p: A => Boolean): Boolean = {
     var result = true
-    breakable {
-      for (x <- this)
-        if (!p(x)) { result = false; break }
-    }
+    breakable { for (x <- this) if (!p(x)) { result = false; break } }
     result
   }
 
@@ -358,19 +353,13 @@ trait TraversableLike[+A, +Repr]
     */
   def exists(p: A => Boolean): Boolean = {
     var result = false
-    breakable {
-      for (x <- this)
-        if (p(x)) { result = true; break }
-    }
+    breakable { for (x <- this) if (p(x)) { result = true; break } }
     result
   }
 
   def find(p: A => Boolean): Option[A] = {
     var result: Option[A] = None
-    breakable {
-      for (x <- this)
-        if (p(x)) { result = Some(x); break }
-    }
+    breakable { for (x <- this) if (p(x)) { result = Some(x); break } }
     result
   }
 
@@ -444,8 +433,7 @@ trait TraversableLike[+A, +Repr]
     */
   def last: A = {
     var lst = head
-    for (x <- this)
-      lst = x
+    for (x <- this) lst = x
     lst
   }
 
@@ -469,8 +457,7 @@ trait TraversableLike[+A, +Repr]
     val b = newBuilder
     b.sizeHint(this, -1)
     for (x <- this) {
-      if (follow) b += lst
-      else follow = true
+      if (follow) b += lst else follow = true
       lst = x
     }
     b.result
@@ -704,8 +691,7 @@ trait TraversableLike[+A, +Repr]
     def map[B, That](f: A => B)(
         implicit bf: CanBuildFrom[Repr, B, That]): That = {
       val b = bf(repr)
-      for (x <- self)
-        if (p(x)) b += f(x)
+      for (x <- self) if (p(x)) b += f(x)
       b.result
     }
 
@@ -736,8 +722,7 @@ trait TraversableLike[+A, +Repr]
     def flatMap[B, That](f: A => GenTraversableOnce[B])(
         implicit bf: CanBuildFrom[Repr, B, That]): That = {
       val b = bf(repr)
-      for (x <- self)
-        if (p(x)) b ++= f(x).seq
+      for (x <- self) if (p(x)) b ++= f(x).seq
       b.result
     }
 
@@ -755,8 +740,7 @@ trait TraversableLike[+A, +Repr]
       *    @inheritdoc
       */
     def foreach[U](f: A => U): Unit =
-      for (x <- self)
-        if (p(x)) f(x)
+      for (x <- self) if (p(x)) f(x)
 
     /** Further refines the filter for this $coll.
       *

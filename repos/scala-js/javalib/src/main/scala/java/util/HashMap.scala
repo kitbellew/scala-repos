@@ -90,8 +90,7 @@ class HashMap[K, V] protected (inner: mutable.Map[Box[K], V])
     override def remove(o: Any): Boolean = {
       val boxedKey = Box(o.asInstanceOf[K])
       val contains = inner.contains(boxedKey)
-      if (contains)
-        inner -= boxedKey
+      if (contains) inner -= boxedKey
       contains
     }
 

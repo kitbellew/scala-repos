@@ -380,8 +380,7 @@ object ConsoleConsumer extends Logging {
     val consumerProps =
       if (options.has(consumerConfigOpt))
         Utils.loadProps(options.valueOf(consumerConfigOpt))
-      else
-        new Properties()
+      else new Properties()
     val zkConnectionStr = options.valueOf(zkConnectOpt)
     val fromBeginning = options.has(resetBeginningOpt)
     val skipMessageOnError =
@@ -418,8 +417,7 @@ object ConsoleConsumer extends Logging {
         csvReporterProps.put(
           "kafka.csv.metrics.dir",
           options.valueOf(metricsDirectoryOpt))
-      else
-        csvReporterProps.put("kafka.csv.metrics.dir", "kafka_metrics")
+      else csvReporterProps.put("kafka.csv.metrics.dir", "kafka_metrics")
       csvReporterProps.put("kafka.csv.metrics.reporter.enabled", "true")
       val verifiableProps = new VerifiableProperties(csvReporterProps)
       KafkaMetricsReporter.startReporters(verifiableProps)
@@ -507,8 +505,7 @@ class DefaultMessageFormatter extends MessageFormatter {
     if (printTimestamp) {
       if (timestampType != TimestampType.NO_TIMESTAMP_TYPE)
         output.write(s"$timestampType:$timestamp".getBytes)
-      else
-        output.write(s"NO_TIMESTAMP".getBytes)
+      else output.write(s"NO_TIMESTAMP".getBytes)
       output.write(keySeparator)
     }
 
@@ -551,10 +548,7 @@ class ChecksumMessageFormatter extends MessageFormatter {
 
   override def init(props: Properties) {
     topicStr = props.getProperty("topic")
-    if (topicStr != null)
-      topicStr = topicStr + ":"
-    else
-      topicStr = ""
+    if (topicStr != null) topicStr = topicStr + ":" else topicStr = ""
   }
 
   def writeTo(

@@ -189,8 +189,7 @@ class ControllerChannelManager(
 
   protected def startRequestSendThread(brokerId: Int) {
     val requestThread = brokerStateInfo(brokerId).requestSendThread
-    if (requestThread.getState == Thread.State.NEW)
-      requestThread.start()
+    if (requestThread.getState == Thread.State.NEW) requestThread.start()
   }
 }
 
@@ -304,8 +303,7 @@ class RequestSendThread(
     import NetworkClientBlockingOps._
     try {
 
-      if (networkClient.isReady(brokerNode, time.milliseconds()))
-        true
+      if (networkClient.isReady(brokerNode, time.milliseconds())) true
       else {
         val ready =
           networkClient.blockingReady(brokerNode, socketTimeoutMs)(time)
@@ -455,21 +453,19 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
 
     val filteredPartitions = {
       val givenPartitions =
-        if (partitions.isEmpty)
-          controllerContext.partitionLeadershipInfo.keySet
-        else
-          partitions
+        if (partitions.isEmpty) controllerContext.partitionLeadershipInfo.keySet
+        else partitions
       if (controller.deleteTopicManager.partitionsToBeDeleted.isEmpty)
         givenPartitions
       else
         givenPartitions -- controller.deleteTopicManager.partitionsToBeDeleted
     }
-    if (filteredPartitions.isEmpty)
-      brokerIds.filter(b => b >= 0).foreach { brokerId =>
+    if (filteredPartitions.isEmpty) brokerIds.filter(b => b >= 0).foreach {
+      brokerId =>
         updateMetadataRequestMap.getOrElseUpdate(
           brokerId,
           mutable.Map.empty[TopicPartition, PartitionStateInfo])
-      }
+    }
     else
       filteredPartitions.foreach(partition =>
         updateMetadataRequestMapFor(partition, beingDeleted = false))

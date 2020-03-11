@@ -39,8 +39,7 @@ class PrintWriterTest {
     assertFalse(sw.flushed)
 
     pw.close()
-    if (!executingInJVM)
-      assertTrue(sw.flushed)
+    if (!executingInJVM) assertTrue(sw.flushed)
     assertTrue(sw.closed)
     assertFalse(pw.checkError())
 
@@ -154,8 +153,7 @@ class PrintWriterTest {
       autoFlush: Boolean): Unit = {
     val (pw, sw) = newPrintWriter(autoFlush = autoFlush)
     body(pw)
-    if (autoFlush) assertTrue(sw.flushed)
-    else assertFalse(sw.flushed)
+    if (autoFlush) assertTrue(sw.flushed) else assertFalse(sw.flushed)
     assertFalse(pw.checkError())
     assertEquals(expected, sw.toString())
   }
@@ -182,8 +180,7 @@ class PrintWriterTest {
       autoFlush: Boolean): Unit = {
     val (pw, sw) = newPrintWriter(autoFlush = autoFlush)
     body(pw)
-    if (autoFlush) assertTrue(sw.flushed)
-    else assertFalse(sw.flushed)
+    if (autoFlush) assertTrue(sw.flushed) else assertFalse(sw.flushed)
     assertFalse(pw.checkError())
     assertEquals(expected, sw.toString())
   }
@@ -276,8 +273,7 @@ class PrintWriterTest {
     def closed: Boolean = _closed
 
     private def maybeThrow(): Unit = {
-      if (throwing)
-        throw new IOException("MockStringWriter throws")
+      if (throwing) throw new IOException("MockStringWriter throws")
     }
 
     private def writeOp[A](op: => A): A = {

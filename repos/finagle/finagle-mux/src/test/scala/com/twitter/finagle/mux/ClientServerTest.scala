@@ -112,11 +112,9 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
     val f2 = client(reqs(1))
     val f3 = client(reqs(2))
 
-    for (i <- 0 to 2)
-      verify(service)(reqs(i))
+    for (i <- 0 to 2) verify(service)(reqs(i))
 
-    for (f <- Seq(f1, f2, f3))
-      assert(f.poll == None)
+    for (f <- Seq(f1, f2, f3)) assert(f.poll == None)
 
     val reps = Seq(10, 20, 9) map { i => Response(buf(i.toByte)) }
     p2.setValue(reps(1))

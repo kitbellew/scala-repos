@@ -91,8 +91,7 @@ class ScalaGenerateToStringHandler extends LanguageCodeInsightActionHandler {
       val fieldsWtihNames =
         if (withFieldNames)
           fields.map(field => field.name + "=" + getDollarName(field))
-        else
-          fields.map(getDollarName)
+        else fields.map(getDollarName)
 
       val fieldsText = fieldsWtihNames.mkString(s"$typeName(", ", ", ")")
       val methodText = s"""override def toString = s"$fieldsText""""
@@ -116,8 +115,7 @@ class ScalaGenerateToStringHandler extends LanguageCodeInsightActionHandler {
       val wizard = new ScalaGenerateToStringWizard(project, allSuitableMembers)
       if (wizard.showAndGet())
         Some(wizard.getToStringFields, wizard.withFieldNames)
-      else
-        None
+      else None
     }
   }
 

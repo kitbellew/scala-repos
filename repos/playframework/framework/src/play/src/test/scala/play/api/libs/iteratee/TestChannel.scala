@@ -25,10 +25,8 @@ class TestChannel[A](defaultTimeout: Duration) extends Concurrent.Channel[A] {
   def end(): Unit = { ends.offer(None) }
 
   private def takeChunk(timeout: Duration): Input[A] = {
-    if (timeout.isFinite)
-      chunks.poll(timeout.length, timeout.unit)
-    else
-      chunks.take
+    if (timeout.isFinite) chunks.poll(timeout.length, timeout.unit)
+    else chunks.take
   }
 
   def expect(expected: A): A = expect(expected, defaultTimeout)
@@ -75,10 +73,7 @@ class TestChannel[A](defaultTimeout: Duration) extends Concurrent.Channel[A] {
   }
 
   private def takeEnd(timeout: Duration): Option[Throwable] = {
-    if (timeout.isFinite)
-      ends.poll(timeout.length, timeout.unit)
-    else
-      ends.take
+    if (timeout.isFinite) ends.poll(timeout.length, timeout.unit) else ends.take
   }
 
   def expectEnd[T](expected: Class[T]): T = expectEnd(expected, defaultTimeout)

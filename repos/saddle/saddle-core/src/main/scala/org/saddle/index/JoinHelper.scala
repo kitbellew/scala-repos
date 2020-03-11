@@ -134,8 +134,7 @@ private[saddle] object JoinHelper {
   private def applyUnsorter(
       unsorter: Array[Int],
       labels: Array[Int]): Array[Int] = {
-    if (unsorter.length > 0)
-      array.take(unsorter, labels, -1)
+    if (unsorter.length > 0) array.take(unsorter, labels, -1)
     else {
       val ll = labels.length
       val ar = Array.ofDim[Int](ll)

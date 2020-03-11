@@ -127,10 +127,8 @@ final class Vector[+A] private[immutable] (
 
   private def checkRangeConvert(index: Int) = {
     val idx = index + startIndex
-    if (0 <= index && idx < endIndex)
-      idx
-    else
-      throw new IndexOutOfBoundsException(index.toString)
+    if (0 <= index && idx < endIndex) idx
+    else throw new IndexOutOfBoundsException(index.toString)
   }
 
   // If we have a default builder, there are faster ways to perform some operations
@@ -162,39 +160,27 @@ final class Vector[+A] private[immutable] (
     else super.:+(elem)(bf)
 
   override def take(n: Int): Vector[A] = {
-    if (n <= 0)
-      Vector.empty
-    else if (startIndex < endIndex - n)
-      dropBack0(startIndex + n)
-    else
-      this
+    if (n <= 0) Vector.empty
+    else if (startIndex < endIndex - n) dropBack0(startIndex + n)
+    else this
   }
 
   override def drop(n: Int): Vector[A] = {
-    if (n <= 0)
-      this
-    else if (startIndex < endIndex - n)
-      dropFront0(startIndex + n)
-    else
-      Vector.empty
+    if (n <= 0) this
+    else if (startIndex < endIndex - n) dropFront0(startIndex + n)
+    else Vector.empty
   }
 
   override def takeRight(n: Int): Vector[A] = {
-    if (n <= 0)
-      Vector.empty
-    else if (endIndex - n > startIndex)
-      dropFront0(endIndex - n)
-    else
-      this
+    if (n <= 0) Vector.empty
+    else if (endIndex - n > startIndex) dropFront0(endIndex - n)
+    else this
   }
 
   override def dropRight(n: Int): Vector[A] = {
-    if (n <= 0)
-      this
-    else if (endIndex - n > startIndex)
-      dropBack0(endIndex - n)
-    else
-      Vector.empty
+    if (n <= 0) this
+    else if (endIndex - n > startIndex) dropBack0(endIndex - n)
+    else Vector.empty
   }
 
   override /*IterableLike*/ def head: A = {
@@ -764,8 +750,7 @@ final class VectorBuilder[A]()
 
   def result: Vector[A] = {
     val size = blockIndex + lo
-    if (size == 0)
-      return Vector.empty
+    if (size == 0) return Vector.empty
     val s = new Vector[A](0, size, 0) // should focus front or back?
     s.initFrom(this)
     if (depth > 1)

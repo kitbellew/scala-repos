@@ -218,8 +218,7 @@ private[akka] class SimpleOutputs(val actor: ActorRef, val pump: Pump)
       if (subscriber eq null) {
         subscriber = sub
         tryOnSubscribe(subscriber, createSubscription())
-      } else
-        rejectAdditionalSubscriber(sub, s"${Logging.simpleName(this)}")
+      } else rejectAdditionalSubscriber(sub, s"${Logging.simpleName(this)}")
     }
 
   protected def waitingExposedPublisher: Actor.Receive = {
@@ -288,8 +287,7 @@ private[akka] abstract class ActorProcessorImpl(
   protected def onError(e: Throwable): Unit = fail(e)
 
   protected def fail(e: Throwable): Unit = {
-    if (settings.debugLogging)
-      log.debug("fail due to: {}", e.getMessage)
+    if (settings.debugLogging) log.debug("fail due to: {}", e.getMessage)
     primaryInputs.cancel()
     primaryOutputs.error(e)
     context.stop(self)

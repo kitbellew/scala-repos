@@ -172,8 +172,7 @@ class Tester(ntests: Int, inputs: Array[SourceFile], settings: Settings) {
     println("done test round: " + errorCount())
     if (errorCount() != 0)
       Some(ErrorTrace(sfidx, changes, reporter.infos, inputs(sfidx).content))
-    else
-      None
+    else None
   }
 
   case class ErrorTrace(
@@ -193,8 +192,7 @@ class Tester(ntests: Int, inputs: Array[SourceFile], settings: Settings) {
   /**/
   def run() {
     askReload(inputs: _*)
-    for (i <- 0 until ntests)
-      testFileChanges(randomSourceFileIdx())
+    for (i <- 0 until ntests) testFileChanges(randomSourceFileIdx())
   }
 }
 

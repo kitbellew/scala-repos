@@ -44,8 +44,7 @@ trait PsiElementExtTrait {
     var prev: PsiElement = repr.getPrevSibling
     while (prev != null && (prev.isInstanceOf[PsiWhiteSpace] ||
            prev.getNode.getElementType == ScalaTokenTypes.tWHITE_SPACE_IN_LINE || prev
-             .isInstanceOf[PsiComment]))
-      prev = prev.getPrevSibling
+             .isInstanceOf[PsiComment])) prev = prev.getPrevSibling
     prev
   }
 
@@ -70,8 +69,7 @@ trait PsiElementExtTrait {
     var next: PsiElement = repr.getNextSibling
     while (next != null && (next.isInstanceOf[PsiWhiteSpace] ||
            next.getNode.getElementType == ScalaTokenTypes.tWHITE_SPACE_IN_LINE || next
-             .isInstanceOf[PsiComment]))
-      next = next.getNextSibling
+             .isInstanceOf[PsiComment])) next = next.getNextSibling
     next
   }
 

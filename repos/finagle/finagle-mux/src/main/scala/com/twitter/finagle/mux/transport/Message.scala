@@ -443,22 +443,19 @@ private[twitter] object Message {
 
   object Tmessage {
     def unapply(m: Message): Option[Int] =
-      if (m.typ > 0) Some(m.tag)
-      else None
+      if (m.typ > 0) Some(m.tag) else None
   }
 
   object Rmessage {
     def unapply(m: Message): Option[Int] =
-      if (m.typ < 0) Some(m.tag)
-      else None
+      if (m.typ < 0) Some(m.tag) else None
   }
 
   object ControlMessage {
     // TODO: Update this extractor in the event that we "fix" the control
     // message flukes by removing backwards compatibility.
     def unapply(m: Message): Option[Int] =
-      if (math.abs(m.typ) >= 64 || m.typ == Types.BAD_Tdiscarded)
-        Some(m.tag)
+      if (math.abs(m.typ) >= 64 || m.typ == Types.BAD_Tdiscarded) Some(m.tag)
       else None
   }
 
@@ -475,12 +472,10 @@ private[twitter] object Message {
     ChannelBuffers.wrappedBuffer(str.getBytes(Charsets.Utf8))
 
   private def decodeTreq(tag: Int, buf: ChannelBuffer) = {
-    if (buf.readableBytes < 1)
-      throw BadMessageException("short Treq")
+    if (buf.readableBytes < 1) throw BadMessageException("short Treq")
 
     var nkeys = buf.readByte().toInt
-    if (nkeys < 0)
-      throw BadMessageException("Treq: too many keys")
+    if (nkeys < 0) throw BadMessageException("Treq: too many keys")
 
     var trace3: Option[(SpanId, SpanId, SpanId)] = None
     var traceFlags = 0L
@@ -515,10 +510,8 @@ private[twitter] object Message {
         case Treq.Keys.TraceFlag =>
           // We only know about bit=0, so discard
           // everything but the last byte
-          if (vsize > 1)
-            buf.readBytes(vsize - 1)
-          if (vsize > 0)
-            traceFlags = buf.readByte().toLong
+          if (vsize > 1) buf.readBytes(vsize - 1)
+          if (vsize > 0) traceFlags = buf.readByte().toLong
 
         case _ =>
           // discard:
@@ -546,8 +539,7 @@ private[twitter] object Message {
   private def decodeContexts(
       buf: ChannelBuffer): Seq[(ChannelBuffer, ChannelBuffer)] = {
     val n = buf.readUnsignedShort()
-    if (n == 0)
-      return Nil
+    if (n == 0) return Nil
 
     val contexts = new Array[(ChannelBuffer, ChannelBuffer)](n)
     var i = 0
@@ -568,8 +560,7 @@ private[twitter] object Message {
     val ndst = buf.readUnsignedShort()
     // Path.read("") fails, so special case empty-dst.
     val dst =
-      if (ndst == 0) Path.empty
-      else Path.read(decodeUtf8(buf.readSlice(ndst)))
+      if (ndst == 0) Path.empty else Path.read(decodeUtf8(buf.readSlice(ndst)))
 
     val nd = buf.readUnsignedShort()
     val dtab =
@@ -601,8 +592,7 @@ private[twitter] object Message {
   }
 
   private def decodeRreq(tag: Int, buf: ChannelBuffer) = {
-    if (buf.readableBytes < 1)
-      throw BadMessageException("short Rreq")
+    if (buf.readableBytes < 1) throw BadMessageException("short Rreq")
     buf.readByte() match {
       case 0 => RreqOk(tag, buf.slice())
       case 1 => RreqError(tag, decodeUtf8(buf))
@@ -621,16 +611,14 @@ private[twitter] object Message {
   }
 
   private def decodeTlease(buf: ChannelBuffer) = {
-    if (buf.readableBytes < 9)
-      throw BadMessageException("short Tlease message")
+    if (buf.readableBytes < 9) throw BadMessageException("short Tlease message")
     val unit: Byte = buf.readByte()
     val howMuch: Long = buf.readLong()
     Tlease(unit, howMuch)
   }
 
   def decode(buf: ChannelBuffer): Message = {
-    if (buf.readableBytes < 4)
-      throw BadMessageException("short message")
+    if (buf.readableBytes < 4) throw BadMessageException("short message")
     val head = buf.readInt()
     val typ = Tags.extractType(head)
     val tag = Tags.extractTag(head)

@@ -198,8 +198,7 @@ object System {
     val idHashCodeMap =
       if (assumingES6 || !js.isUndefined(global.WeakMap))
         js.Dynamic.newInstance(global.WeakMap)()
-      else
-        null
+      else null
 
     def nextIDHashCode(): Int = {
       val r = lastIDHashCode + 1
@@ -353,8 +352,7 @@ private[lang] final class JSConsoleBasedPrintStream(isErr: Boolean)
     if (global.selectDynamic("console")) {
       if (isErr && global.console.selectDynamic("error"))
         global.console.error(line)
-      else
-        global.console.log(line)
+      else global.console.log(line)
     }
   }
 }

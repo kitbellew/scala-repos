@@ -264,8 +264,7 @@ object Templates {
               }
             }
 
-            if (found) Full(ret)
-            else lookForClasses(places)
+            if (found) Full(ret) else lookForClasses(places)
         }
       }
     }

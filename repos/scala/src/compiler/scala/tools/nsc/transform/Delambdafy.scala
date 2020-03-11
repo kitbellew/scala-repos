@@ -151,8 +151,7 @@ abstract class Delambdafy
 
       val target = targetMethod(originalFunction)
       target.makeNotPrivate(target.owner)
-      if (!thisReferringMethods.contains(target))
-        target setFlag STATIC
+      if (!thisReferringMethods.contains(target)) target setFlag STATIC
 
       val isStatic = target.hasFlag(STATIC)
 
@@ -190,13 +189,11 @@ abstract class Delambdafy
           if (target.info.resultType == UnitTpe && functionResultType != UnitTpe) {
             neededAdaptation = true
             ObjectTpe
-          } else
-            boxedType(functionResultType)
+          } else boxedType(functionResultType)
         }
         val methodType = MethodType(bridgeParams, bridgeResultType)
         methSym setInfo methodType
-        if (!neededAdaptation)
-          EmptyTree
+        if (!neededAdaptation) EmptyTree
         else {
           val bridgeParamTrees = bridgeParams.map(ValDef(_))
 
@@ -339,8 +336,7 @@ abstract class Delambdafy
         //      - use `newAnonymousClassSymbol` or push the required variations into a similar factory method
         //      - reinstate the assertion in `Erasure.resolveAnonymousBridgeClash`
         val suffix = nme.DELAMBDAFY_LAMBDA_CLASS_NAME + "$" + (
-          if (funOwner.isPrimaryConstructor) ""
-          else "$" + funOwner.name + "$"
+          if (funOwner.isPrimaryConstructor) "" else "$" + funOwner.name + "$"
         )
         val oldClassPart = oldClass.name.decode
         // make sure the class name doesn't contain $anon, otherwise isAnonymousClass/Function may be true
@@ -373,8 +369,7 @@ abstract class Delambdafy
         // the Optional proxy that will hold a reference to the 'this'
         // object used by the lambda, if any. NoSymbol if there is no this proxy
         val thisProxy = {
-          if (isStatic)
-            NoSymbol
+          if (isStatic) NoSymbol
           else {
             val sym = lambdaClass.newVariable(
               nme.FAKE_LOCAL_THIS,
@@ -484,8 +479,7 @@ abstract class Delambdafy
         val arity = originalFunction.vparams.length
 
         val lambdaTarget =
-          if (isSpecialized)
-            target
+          if (isSpecialized) target
           else {
             createBoxingBridgeMethod(
               functionParamTypes,

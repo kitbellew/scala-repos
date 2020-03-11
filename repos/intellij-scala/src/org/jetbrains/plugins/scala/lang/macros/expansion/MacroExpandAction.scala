@@ -117,8 +117,7 @@ class MacroExpandAction extends AnAction {
   @throws[UnresolvedExpansion]
   def applyExpansion(resolved: ResolvedMacroExpansion)(
       implicit e: AnActionEvent): Unit = {
-    if (resolved.psiElement.isEmpty)
-      throw new UnresolvedExpansion
+    if (resolved.psiElement.isEmpty) throw new UnresolvedExpansion
     if (resolved.expansion.body.isEmpty) {
       LOG.warn(s"got empty expansion at ${resolved.expansion.place}, skipping")
       return
@@ -186,7 +185,7 @@ class MacroExpandAction extends AnAction {
         reformatCode(newPsi)
         newPsi.firstChild match {
           case Some(
-              block: ScBlock
+                block: ScBlock
               ) => // insert content of block expression(annotation can generate >1 expression)
             val children = block.getChildren
             block.children
@@ -261,10 +260,7 @@ class MacroExpandAction extends AnAction {
           if expansion.place.macroApplication.matches("^[^\\)]+\\)$") =>
         val pos =
           e.getContainingFile.getText.indexOf(expansion.place.macroApplication)
-        if (pos != -1)
-          Some(e.getContainingFile.findElementAt(pos))
-        else
-          None
+        if (pos != -1) Some(e.getContainingFile.findElementAt(pos)) else None
       // macro annotations
       case e: LeafPsiElement =>
         def walkUp(elem: PsiElement = e): Option[PsiElement] = elem match {

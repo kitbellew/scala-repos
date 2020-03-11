@@ -269,8 +269,7 @@ abstract class MessageDispatcher(
     */
   protected[akka] def suspend(actor: ActorCell): Unit = {
     val mbox = actor.mailbox
-    if ((mbox.actor eq actor) && (mbox.dispatcher eq this))
-      mbox.suspend()
+    if ((mbox.actor eq actor) && (mbox.dispatcher eq this)) mbox.suspend()
   }
 
   /*
@@ -446,8 +445,7 @@ class ThreadPoolExecutorConfigurator(
           config getInt "max-pool-size-min",
           config getDouble "max-pool-size-factor",
           config getInt "max-pool-size-max")
-    else
-      builder.setFixedPoolSize(config.getInt("fixed-pool-size"))
+    else builder.setFixedPoolSize(config.getInt("fixed-pool-size"))
   }
 
   def createExecutorServiceFactory(
@@ -487,8 +485,7 @@ object ForkJoinExecutorConfigurator {
         super.execute(
           (if (r.isInstanceOf[ForkJoinTask[_]]) r else new AkkaForkJoinTask(r))
             .asInstanceOf[ForkJoinTask[Any]])
-      else
-        throw new NullPointerException("Runnable was null")
+      else throw new NullPointerException("Runnable was null")
 
     def atFullThrottle(): Boolean =
       this.getActiveThreadCount() >= this.getParallelism()

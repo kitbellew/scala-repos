@@ -17,10 +17,7 @@ object Test {
           var again = true
           while (again) {
             val x = i.getAndDecrement()
-            if (x > 0)
-              q put x
-            else
-              again = false
+            if (x > 0) q put x else again = false
           }
         }
       }

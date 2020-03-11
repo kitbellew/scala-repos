@@ -56,8 +56,7 @@ class Context {
     timer)
 
   @volatile var stabilized: Addr = Addr.Pending
-  for (addr <- stabilizedAddr)
-    stabilized = addr
+  for (addr <- stabilizedAddr) stabilized = addr
 
   addrs() = allAddrs
 

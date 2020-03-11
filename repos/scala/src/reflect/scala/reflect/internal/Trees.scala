@@ -218,8 +218,7 @@ trait Trees extends api.Trees {
       *  If the type is null, it remains null - the function is not called.
       */
     def modifyType(f: Type => Type): Tree =
-      if (tpe eq null) this
-      else this setType f(tpe)
+      if (tpe eq null) this else this setType f(tpe)
 
     /** If `pf` is defined for a given subtree, call super.traverse(pf(tree)),
       *  otherwise super.traverse(tree).
@@ -711,8 +710,7 @@ trait Trees extends api.Trees {
         case other: TypeTree =>
           // SI-6648 Critical for correct operation of `resetAttrs`.
           wasEmpty = other.wasEmpty
-          if (other.orig != null)
-            orig = other.orig.duplicate
+          if (other.orig != null) orig = other.orig.duplicate
         case _ =>
       }
       this
@@ -1740,8 +1738,7 @@ trait Trees extends api.Trees {
   private class ShallowDuplicator(orig: Tree) extends Transformer {
     override val treeCopy = newStrictTreeCopier
     override def transform(tree: Tree) =
-      if (tree eq orig) super.transform(tree)
-      else tree
+      if (tree eq orig) super.transform(tree) else tree
   }
 
   /** A transformer that replaces tree `from` with tree `to` in a given tree */
@@ -1803,8 +1800,7 @@ trait Trees extends api.Trees {
   class TypeMapTreeSubstituter(val typeMap: TypeMap) extends Traverser {
     override def traverse(tree: Tree) {
       tree modifyType typeMap
-      if (tree.isDef)
-        tree.symbol modifyInfo typeMap
+      if (tree.isDef) tree.symbol modifyInfo typeMap
 
       super.traverse(tree)
     }
@@ -1879,8 +1875,7 @@ trait Trees extends api.Trees {
           case _ =>
             super.transform(tree)
         }
-      } else
-        super.transform(tree)
+      } else super.transform(tree)
     }
     def apply[T <: Tree](tree: T): T = {
       val tree1 = transform(tree)

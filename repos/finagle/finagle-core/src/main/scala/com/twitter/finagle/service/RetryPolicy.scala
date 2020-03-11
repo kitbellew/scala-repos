@@ -67,8 +67,7 @@ abstract class RetryPolicy[-A]
     */
   def filterEach[B <: A](pred: B => Boolean): RetryPolicy[B] =
     RetryPolicy { e =>
-      if (!pred(e))
-        None
+      if (!pred(e)) None
       else {
         this(e).map { case (backoff, p2) => (backoff, p2.filterEach(pred)) }
       }
@@ -87,8 +86,7 @@ abstract class RetryPolicy[-A]
   def limit(maxRetries: => Int): RetryPolicy[A] =
     RetryPolicy[A] { e =>
       val triesRemaining = maxRetries
-      if (triesRemaining <= 0)
-        None
+      if (triesRemaining <= 0) None
       else {
         this(e).map {
           case (backoff, p2) => (backoff, p2.limit(triesRemaining - 1))
@@ -319,8 +317,7 @@ object RetryPolicy extends JavaSingleton {
 
       val policies2 =
         policies.map { p =>
-          if (backoffOpt.nonEmpty)
-            p
+          if (backoffOpt.nonEmpty) p
           else {
             p(e) match {
               case None => p

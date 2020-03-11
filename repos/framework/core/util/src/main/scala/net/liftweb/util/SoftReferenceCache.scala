@@ -127,8 +127,7 @@ class SoftReferenceCache[K, V](cacheSize: Int) {
         lock(writeLock) {
           val value = cache.get(key)
 
-          if (value != null && value.get == null)
-            remove(key)
+          if (value != null && value.get == null) remove(key)
         }
 
         retval

@@ -26,8 +26,7 @@ object TestActorRefSpec {
       val recv = receiveT
       def isDefinedAt(o: Any) = recv.isDefinedAt(o)
       def apply(o: Any) {
-        if (Thread.currentThread ne thread)
-          otherthread = Thread.currentThread
+        if (Thread.currentThread ne thread) otherthread = Thread.currentThread
         recv(o)
       }
     }

@@ -13,16 +13,11 @@ class PrimeTest extends FunSuite {
     IndexedSeq(2, 3, 5, 7, 11, 13, 17, 19, 23, 29).map(x ⇒ SafeLong(x))
   val nonPrimes = IndexedSeq(10L, 64L, 2L ** 32, 3L ** 10).map(x ⇒ SafeLong(x))
 
-  test("nth") {
-    for (i ← tenPrimes.indices)
-      assert(nth(i + 1) == tenPrimes(i))
-  }
+  test("nth") { for (i ← tenPrimes.indices) assert(nth(i + 1) == tenPrimes(i)) }
 
   test("isPrime") {
-    for (p ← tenPrimes)
-      assert(isPrime(p))
-    for (n ← nonPrimes)
-      assert(!isPrime(n))
+    for (p ← tenPrimes) assert(isPrime(p))
+    for (n ← nonPrimes) assert(!isPrime(n))
   }
 
   test("fill") {

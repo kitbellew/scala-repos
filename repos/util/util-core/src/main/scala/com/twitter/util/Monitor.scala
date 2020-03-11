@@ -81,10 +81,7 @@ trait Monitor { self =>
   protected def tryHandle(exc: Throwable): Try[Unit] =
     Try { self.handle(exc) } rescue {
       case monitorExc => Throw(MonitorException(exc, monitorExc))
-    } flatMap { ok =>
-      if (ok) Return.Unit
-      else Throw(exc): Try[Unit]
-    }
+    } flatMap { ok => if (ok) Return.Unit else Throw(exc): Try[Unit] }
 }
 
 /**
@@ -130,8 +127,7 @@ object Monitor extends Monitor {
     */
   val catcher: PartialFunction[Throwable, Unit] = {
     case exc =>
-      if (!handle(exc))
-        throw exc
+      if (!handle(exc)) throw exc
   }
 
   /**

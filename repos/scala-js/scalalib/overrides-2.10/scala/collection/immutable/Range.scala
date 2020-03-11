@@ -68,8 +68,7 @@ class Range(val start: Int, val end: Int, val step: Int)
     else if (isEmpty) 0
     else {
       val len = longLength
-      if (len > scala.Int.MaxValue) -1
-      else len.toInt
+      if (len > scala.Int.MaxValue) -1 else len.toInt
     }
   }
   final val lastElement = start + (numRangeElements - 1) * step
@@ -78,16 +77,12 @@ class Range(val start: Int, val end: Int, val step: Int)
   override def last = if (isEmpty) Nil.last else lastElement
 
   override def min[A1 >: Int](implicit ord: Ordering[A1]): Int =
-    if (ord eq Ordering.Int) {
-      if (step > 0) start
-      else last
-    } else super.min(ord)
+    if (ord eq Ordering.Int) { if (step > 0) start else last }
+    else super.min(ord)
 
   override def max[A1 >: Int](implicit ord: Ordering[A1]): Int =
-    if (ord eq Ordering.Int) {
-      if (step > 0) last
-      else start
-    } else super.max(ord)
+    if (ord eq Ordering.Int) { if (step > 0) last else start }
+    else super.max(ord)
 
   protected def copy(start: Int, end: Int, step: Int): Range =
     new Range(start, end, step)
@@ -105,10 +100,7 @@ class Range(val start: Int, val end: Int, val step: Int)
   override def length = if (numRangeElements < 0) fail() else numRangeElements
 
   private def fail() = Range.fail(start, end, step, isInclusive)
-  private def validateMaxLength() {
-    if (numRangeElements < 0)
-      fail()
-  }
+  private def validateMaxLength() { if (numRangeElements < 0) fail() }
 
   def validateRangeBoundaries(f: Int => Any): Boolean = {
     validateMaxLength()
@@ -180,8 +172,7 @@ class Range(val start: Int, val end: Int, val step: Int)
     *  @return  a new range consisting of all the elements of this range except the last one.
     */
   final override def init: Range = {
-    if (isEmpty)
-      Nil.init
+    if (isEmpty) Nil.init
 
     dropRight(1)
   }
@@ -193,8 +184,7 @@ class Range(val start: Int, val end: Int, val step: Int)
     *  @return  a new range consisting of all the elements of this range except the first one.
     */
   final override def tail: Range = {
-    if (isEmpty)
-      Nil.tail
+    if (isEmpty) Nil.tail
 
     drop(1)
   }
@@ -255,14 +245,12 @@ class Range(val start: Int, val end: Int, val step: Int)
     *  $doesNotUseBuilders
     */
   final override def reverse: Range =
-    if (isEmpty) this
-    else new Range.Inclusive(last, start, -step)
+    if (isEmpty) this else new Range.Inclusive(last, start, -step)
 
   /** Make range inclusive.
     */
   def inclusive =
-    if (isInclusive) this
-    else new Range.Inclusive(start, end, step)
+    if (isInclusive) this else new Range.Inclusive(start, end, step)
 
   final def contains(x: Int) =
     isWithinBoundaries(x) && ((x - start) % step == 0)
@@ -319,8 +307,7 @@ object Range {
     *  result will be negative.
     */
   def count(start: Int, end: Int, step: Int, isInclusive: Boolean): Int = {
-    if (step == 0)
-      throw new IllegalArgumentException("step cannot be 0.")
+    if (step == 0) throw new IllegalArgumentException("step cannot be 0.")
 
     val isEmpty =
       (
@@ -338,8 +325,7 @@ object Range {
       val hasStub = isInclusive || (gap % step != 0)
       val result: Long = jumps + (if (hasStub) 1 else 0)
 
-      if (result > scala.Int.MaxValue) -1
-      else result.toInt
+      if (result > scala.Int.MaxValue) -1 else result.toInt
     }
   }
   def count(start: Int, end: Int, step: Int): Int =

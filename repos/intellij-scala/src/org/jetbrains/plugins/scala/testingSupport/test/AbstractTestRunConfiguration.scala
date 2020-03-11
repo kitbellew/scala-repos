@@ -219,8 +219,7 @@ abstract class AbstractTestRunConfiguration(
           case _ => unionScope(_ => true)
         }
       case _ =>
-        if (getModule != null) mScope(getModule)
-        else unionScope(_ => true)
+        if (getModule != null) mScope(getModule) else unionScope(_ => true)
     }
   }
 
@@ -372,8 +371,7 @@ abstract class AbstractTestRunConfiguration(
       suiteClass = getSuiteClass
     } catch { case e if clazz == null => classNotFoundError() }
     if (clazz == null && pack == null) classNotFoundError()
-    if (suiteClass == null)
-      throw new ExecutionException(errorMessage)
+    if (suiteClass == null) throw new ExecutionException(errorMessage)
     val classes = new mutable.HashSet[PsiClass]
     if (clazz != null) {
       if (ScalaPsiUtil.cachedDeepIsInheritor(clazz, suiteClass))
@@ -392,8 +390,7 @@ abstract class AbstractTestRunConfiguration(
       for (cl <- getClasses(pack)) {
         if (!isInvalidSuite(cl) && ScalaPsiUtil.cachedDeepIsInheritor(
               cl,
-              suiteClass))
-          classes += cl
+              suiteClass)) classes += cl
       }
     }
 

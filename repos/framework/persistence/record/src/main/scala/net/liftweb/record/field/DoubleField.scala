@@ -32,10 +32,8 @@ trait DoubleTypedField extends NumericTypedField[Double] {
 
   def setFromString(s: String): Box[Double] =
     if (s == null || s.isEmpty) {
-      if (optional_?)
-        setBox(Empty)
-      else
-        setBox(Failure(notOptionalErrorMessage))
+      if (optional_?) setBox(Empty)
+      else setBox(Failure(notOptionalErrorMessage))
     } else { setBox(tryo(java.lang.Double.parseDouble(s))) }
 
   def defaultValue = 0.0

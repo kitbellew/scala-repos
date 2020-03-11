@@ -181,7 +181,6 @@ object HeaderMap {
   }
 
   private def format(date: Date): String =
-    if (date == null) null
-    else formatter.get().format(date)
+    if (date == null) null else formatter.get().format(date)
 
 }

@@ -14,8 +14,7 @@ object TestInlineHandlersNoInline {
     var result = -1
 
     try {
-      if (nextInt % 2 == 0)
-        throw new IllegalArgumentException("something")
+      if (nextInt % 2 == 0) throw new IllegalArgumentException("something")
       result = 1
     } catch {
       case e: StackOverflowError =>
@@ -34,8 +33,7 @@ object TestInlineHandlersSimpleInline {
     var result = -1
 
     try {
-      if (nextInt % 2 == 0)
-        throw new IllegalArgumentException("something")
+      if (nextInt % 2 == 0) throw new IllegalArgumentException("something")
       result = 1
     } catch {
       case e: IllegalArgumentException =>
@@ -54,8 +52,7 @@ object TestInlineHandlersSubclassInline {
     var result = -1
 
     try {
-      if (nextInt % 2 == 0)
-        throw new IllegalArgumentException("something")
+      if (nextInt % 2 == 0) throw new IllegalArgumentException("something")
       result = 1
     } catch {
       case e: RuntimeException =>
@@ -74,8 +71,7 @@ object TestInlineHandlersFinallyInline {
     var result = -1
 
     try {
-      if (nextInt % 2 == 0)
-        throw new IllegalArgumentException("something")
+      if (nextInt % 2 == 0) throw new IllegalArgumentException("something")
       result = 1
     } catch { case e: Exception => throw e }
     finally {
@@ -97,8 +93,7 @@ object TestInlineHandlersCaseClassExceptionInline {
     var result = -1
 
     try {
-      if (nextInt % 2 == 0)
-        throw new MyException("something")
+      if (nextInt % 2 == 0) throw new MyException("something")
       result = 1
     } catch { case MyException(message) => println(message) }
 
@@ -115,8 +110,7 @@ object TestInlineHandlersNestedHandlerInnerInline {
 
     try {
       try {
-        if (nextInt % 2 == 0)
-          throw new MyException("something")
+        if (nextInt % 2 == 0) throw new MyException("something")
         result = 1
       } catch { case MyException(message) => println(message) }
     } catch {
@@ -136,8 +130,7 @@ object TestInlineHandlersNestedHandlerOuterInline {
 
     try {
       try {
-        if (nextInt % 2 == 0)
-          throw new MyException("something")
+        if (nextInt % 2 == 0) throw new MyException("something")
         result = 1
       } catch {
         case e: IllegalArgumentException => println("IllegalArgumentException")
@@ -157,8 +150,7 @@ object TestInlineHandlersNestedHandlerAllInline {
 
     try {
       try {
-        if (nextInt % 2 == 0)
-          throw new MyException("something")
+        if (nextInt % 2 == 0) throw new MyException("something")
         result = 1
       } catch {
         case MyException(message) =>
@@ -187,14 +179,12 @@ object TestInlineHandlersSingleCopy {
 
     try {
 
-      if (nextInt % 2 == 0)
-        throw new MyException("something")
+      if (nextInt % 2 == 0) throw new MyException("something")
 
       println("A side effect in the middle")
       result = 3 // another one
 
-      if (nextInt % 3 == 2)
-        throw new MyException("something else")
+      if (nextInt % 3 == 2) throw new MyException("something else")
       result = 1
     } catch {
       case MyException(message) =>
@@ -260,8 +250,7 @@ object TestInlineHandlersPreciseness {
       val exception: Throwable =
         if (scala.util.Random.nextInt % 2 == 0)
           new IllegalArgumentException("even")
-        else
-          new StackOverflowError("odd")
+        else new StackOverflowError("odd")
       throw exception
     } catch {
       case e: IllegalArgumentException =>

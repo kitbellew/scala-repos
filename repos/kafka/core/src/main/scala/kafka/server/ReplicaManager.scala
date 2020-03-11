@@ -349,16 +349,12 @@ class ReplicaManager(
 
   def getPartition(topic: String, partitionId: Int): Option[Partition] = {
     val partition = allPartitions.get((topic, partitionId))
-    if (partition == null)
-      None
-    else
-      Some(partition)
+    if (partition == null) None else Some(partition)
   }
 
   def getReplicaOrException(topic: String, partition: Int): Replica = {
     val replicaOpt = getReplica(topic, partition)
-    if (replicaOpt.isDefined)
-      replicaOpt.get
+    if (replicaOpt.isDefined) replicaOpt.get
     else
       throw new ReplicaNotAvailableException(
         "Replica %d is not available for partition [%s,%d]"
@@ -531,10 +527,8 @@ class ReplicaManager(
             }
 
             val numAppendedMessages =
-              if (info.firstOffset == -1L || info.lastOffset == -1L)
-                0
-              else
-                info.lastOffset - info.firstOffset + 1
+              if (info.firstOffset == -1L || info.lastOffset == -1L) 0
+              else info.lastOffset - info.firstOffset + 1
 
             // update stats for successfully appended bytes and messages as bytesInRate and messageInRate
             BrokerTopicStats
@@ -678,8 +672,8 @@ class ReplicaManager(
 
     readPartitionInfo.map {
       case (
-          TopicAndPartition(topic, partition),
-          PartitionFetchInfo(offset, fetchSize)) =>
+            TopicAndPartition(topic, partition),
+            PartitionFetchInfo(offset, fetchSize)) =>
         BrokerTopicStats.getBrokerTopicStats(topic).totalFetchRequestRate.mark()
         BrokerTopicStats.getBrokerAllTopicsStats().totalFetchRequestRate.mark()
 
@@ -691,17 +685,14 @@ class ReplicaManager(
 
             // decide whether to only fetch from leader
             val localReplica =
-              if (fetchOnlyFromLeader)
-                getLeaderReplicaIfLocal(topic, partition)
-              else
-                getReplicaOrException(topic, partition)
+              if (fetchOnlyFromLeader) getLeaderReplicaIfLocal(topic, partition)
+              else getReplicaOrException(topic, partition)
 
             // decide whether to only fetch committed data (i.e. messages below high watermark)
             val maxOffsetOpt =
               if (readOnlyCommitted)
                 Some(localReplica.highWatermark.messageOffset)
-              else
-                None
+              else None
 
             /* Read the LogOffsetMetadata prior to performing the read from the log.
              * We use the LogOffsetMetadata to determine if a particular replica is in-sync or not.
@@ -935,8 +926,7 @@ class ReplicaManager(
               partitionsTobeLeader,
               correlationId,
               responseMap)
-          else
-            Set.empty[Partition]
+          else Set.empty[Partition]
         val partitionsBecomeFollower =
           if (!partitionsToBeFollower.isEmpty)
             makeFollowers(
@@ -946,8 +936,7 @@ class ReplicaManager(
               correlationId,
               responseMap,
               metadataCache)
-          else
-            Set.empty[Partition]
+          else Set.empty[Partition]
 
         // we initialize highwatermark thread after the first leaderisrrequest. This ensures that all the partitions
         // have been completely populated before starting the checkpointing there by avoiding weird race conditions
@@ -1010,8 +999,7 @@ class ReplicaManager(
           if (partition.makeLeader(
                 controllerId,
                 partitionStateInfo,
-                correlationId))
-            partitionsToMakeLeaders += partition
+                correlationId)) partitionsToMakeLeaders += partition
           else
             stateChangeLogger.info(
               ("Broker %d skipped the become-leader state change after marking its partition as leader with correlation id %d from " +
@@ -1122,8 +1110,7 @@ class ReplicaManager(
               if (partition.makeFollower(
                     controllerId,
                     partitionStateInfo,
-                    correlationId))
-                partitionsToMakeFollower += partition
+                    correlationId)) partitionsToMakeFollower += partition
               else
                 stateChangeLogger.info(
                   ("Broker %d skipped the become-follower state change after marking its partition as follower with correlation id %d from " +
@@ -1330,8 +1317,7 @@ class ReplicaManager(
     replicaFetcherManager.shutdown()
     delayedFetchPurgatory.shutdown()
     delayedProducePurgatory.shutdown()
-    if (checkpointHW)
-      checkpointHighWatermarks()
+    if (checkpointHW) checkpointHighWatermarks()
     info("Shut down completely")
   }
 }

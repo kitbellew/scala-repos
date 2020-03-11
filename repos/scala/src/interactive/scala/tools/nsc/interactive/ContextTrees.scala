@@ -82,15 +82,12 @@ trait ContextTrees { self: Global =>
           previousSibling: Option[ContextTree]): Option[ContextTree] = {
         // [SI-8239] enforce loop invariant & ensure recursion metric decreases monotonically on every recursion
         if (lo > hi) previousSibling
-        else if (pos properlyPrecedes contexts(lo).pos)
-          previousSibling
-        else if (contexts(hi).pos properlyPrecedes pos)
-          Some(contexts(hi))
+        else if (pos properlyPrecedes contexts(lo).pos) previousSibling
+        else if (contexts(hi).pos properlyPrecedes pos) Some(contexts(hi))
         else {
           val mid = (lo + hi) / 2
           val midpos = contexts(mid).pos
-          if (midpos includes pos)
-            Some(contexts(mid))
+          if (midpos includes pos) Some(contexts(mid))
           else if (midpos properlyPrecedes pos)
             // recursion metric: (hi - ((lo + hi)/2 + 1)) < (hi - lo)
             // since (hi - ((lo + hi)/2 + 1)) - (hi - lo) = lo - ((lo + hi)/2 + 1) < 0
@@ -119,8 +116,7 @@ trait ContextTrees { self: Global =>
     if (cpos.isTransparent)
       for (t <- context.tree.children flatMap solidDescendants)
         addContext(contexts, context, t.pos)
-    else
-      addContext(contexts, context, cpos)
+    else addContext(contexts, context, cpos)
   }
 
   /** Insert a context with non-transparent position `cpos`
@@ -165,12 +161,9 @@ trait ContextTrees { self: Global =>
               if (hi - lo > 1) {
                 val mid = (lo + hi) / 2
                 val midpos = contexts(mid).pos
-                if (cpos precedes midpos)
-                  loop(lo, mid)
-                else if (midpos precedes cpos)
-                  loop(mid, hi)
-                else
-                  addContext(contexts(mid).children, context, cpos)
+                if (cpos precedes midpos) loop(lo, mid)
+                else if (midpos precedes cpos) loop(mid, hi)
+                else addContext(contexts(mid).children, context, cpos)
               } else if (!insertAt(lo) && !insertAt(hi)) {
                 val lopos = contexts(lo).pos
                 val hipos = contexts(hi).pos

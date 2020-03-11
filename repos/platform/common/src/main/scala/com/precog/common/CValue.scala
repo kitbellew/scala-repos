@@ -403,12 +403,7 @@ object CType {
           case _: NumberFormatException | _: ArithmeticException => false
         }
 
-      if (isLong)
-        Some(CLong)
-      else if (isDouble)
-        Some(CDouble)
-      else
-        Some(CNum)
+      if (isLong) Some(CLong) else if (isDouble) Some(CDouble) else Some(CNum)
     }
 
     case JString(_)                      => Some(CString)

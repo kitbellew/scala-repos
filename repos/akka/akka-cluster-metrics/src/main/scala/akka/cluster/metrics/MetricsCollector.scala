@@ -69,10 +69,8 @@ private[metrics] object MetricsCollector {
     }
 
     val collector =
-      if (useCustom)
-        create(collectorCustom)
-      else if (useInternal)
-        create(collectorSigar) orElse create(collectorJMX)
+      if (useCustom) create(collectorCustom)
+      else if (useInternal) create(collectorSigar) orElse create(collectorJMX)
       else // Use complete fall back chain.
         create(collectorCustom) orElse create(collectorSigar) orElse create(
           collectorJMX)

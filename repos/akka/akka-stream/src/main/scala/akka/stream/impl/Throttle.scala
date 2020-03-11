@@ -58,18 +58,17 @@ private[stream] class Throttle[T](
               val currentTokens = Math.min(
                 (currentTime - previousTime) * speed + lastTokens,
                 scaledMaximumBurst)
-              if (currentTokens < elementCost)
-                mode match {
-                  case Shaping ⇒
-                    currentElement = Some(elem)
-                    val waitTime = (elementCost - currentTokens) / speed
-                    previousTime = currentTime + waitTime
-                    scheduleOnce(timerName, waitTime.nanos)
-                  case Enforcing ⇒
-                    failStage(
-                      new RateExceededException(
-                        "Maximum throttle throughput exceeded"))
-                }
+              if (currentTokens < elementCost) mode match {
+                case Shaping ⇒
+                  currentElement = Some(elem)
+                  val waitTime = (elementCost - currentTokens) / speed
+                  previousTime = currentTime + waitTime
+                  scheduleOnce(timerName, waitTime.nanos)
+                case Enforcing ⇒
+                  failStage(
+                    new RateExceededException(
+                      "Maximum throttle throughput exceeded"))
+              }
               else {
                 lastTokens = currentTokens - elementCost
                 previousTime = currentTime

@@ -69,8 +69,7 @@ object PreferredReplicaLeaderElectionCommand extends Logging {
       zkUtils =
         ZkUtils(zkConnect, 30000, 30000, JaasUtils.isZkSecurityEnabled())
       val partitionsForPreferredReplicaElection =
-        if (!options.has(jsonFileOpt))
-          zkUtils.getAllPartitions()
+        if (!options.has(jsonFileOpt)) zkUtils.getAllPartitions()
         else
           parsePreferredReplicaElectionData(
             Utils.readFileAsString(options.valueOf(jsonFileOpt)))
@@ -87,10 +86,7 @@ object PreferredReplicaLeaderElectionCommand extends Logging {
       case e: Throwable =>
         println("Failed to start preferred replica election")
         println(Utils.stackTrace(e))
-    } finally {
-      if (zkClient != null)
-        zkClient.close()
-    }
+    } finally { if (zkClient != null) zkClient.close() }
   }
 
   def parsePreferredReplicaElectionData(

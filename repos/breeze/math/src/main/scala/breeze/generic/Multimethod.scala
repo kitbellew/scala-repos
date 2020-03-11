@@ -113,8 +113,7 @@ trait Multimethod2[Method[AA, BB, RR] <: Function2[AA, BB, RR], A, B, R]
           method.asInstanceOf[Method[A, B, R]].apply(a, b)
         case _ =>
           val selected = selectBestOption(options)
-          if (selected.size != 1)
-            multipleOptions(a, b, options)
+          if (selected.size != 1) multipleOptions(a, b, options)
           else {
             val method = selected.values.head
             cache.put(ac -> bc, Some(method))
@@ -176,8 +175,7 @@ trait Multiproc2[Method[AA, BB] <: (AA, BB) => Unit, A <: AnyRef, B]
           method.asInstanceOf[Method[A, B]].apply(a, b)
         case _ =>
           val selected = selectBestOption(m)
-          if (selected.size != 1)
-            multipleOptions(a, b, m)
+          if (selected.size != 1) multipleOptions(a, b, m)
           else {
             val method = selected.values.head
             cache.put(ac -> bc, Some(method))

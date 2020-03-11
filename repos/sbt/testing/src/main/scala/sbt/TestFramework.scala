@@ -182,8 +182,7 @@ object TestFramework {
       Seq[(String, TestFunction)],
       TestResult.Value => () => Unit) = {
     val mappedTests = testMap(frameworks.values.toSeq, tests)
-    if (mappedTests.isEmpty)
-      (() => (), Nil, _ => () => ())
+    if (mappedTests.isEmpty) (() => (), Nil, _ => () => ())
     else
       createTestTasks(
         testLoader,
@@ -212,8 +211,7 @@ object TestFramework {
       for (framework <- frameworks.find(isTestForFramework))
         map.getOrElseUpdate(framework, new HashSet[TestDefinition]) += test
     }
-    if (frameworks.nonEmpty)
-      for (test <- tests) assignTest(test)
+    if (frameworks.nonEmpty) for (test <- tests) assignTest(test)
     map.toMap.mapValues(_.toSet)
   }
 

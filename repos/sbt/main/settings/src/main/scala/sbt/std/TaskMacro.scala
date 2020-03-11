@@ -308,8 +308,7 @@ object TaskMacro {
       val name = constant[String](c, settingSource(c, f.path, f.name))
       val line = constant[Int](c, pos.line)
       reify { LinePosition(name.splice, line.splice) }
-    } else
-      reify { NoPosition }
+    } else reify { NoPosition }
   }
   private[this] def settingSource(
       c: Context,
@@ -319,12 +318,9 @@ object TaskMacro {
     def inEmptyPackage(s: c.Symbol): Boolean =
       s != c.universe.NoSymbol && (s.owner == c.mirror.EmptyPackage || s.owner == c.mirror.EmptyPackageClass || inEmptyPackage(
         s.owner))
-    if (!ec.isStatic)
-      name
-    else if (inEmptyPackage(ec))
-      path
-    else
-      s"(${ec.fullName}) $name"
+    if (!ec.isStatic) name
+    else if (inEmptyPackage(ec)) path
+    else s"(${ec.fullName}) $name"
   }
 
   private[this] def constant[T: c.TypeTag](c: Context, t: T): c.Expr[T] = {
@@ -490,10 +486,8 @@ object TaskMacro {
     def expandTask[I: WeakTypeTag](
         dyn: Boolean,
         tx: Tree): c.Expr[Initialize[Task[I]]] =
-      if (dyn)
-        taskDynMacroImpl[I](c)(c.Expr[Initialize[Task[I]]](tx))
-      else
-        taskMacroImpl[I](c)(c.Expr[I](tx))
+      if (dyn) taskDynMacroImpl[I](c)(c.Expr[Initialize[Task[I]]](tx))
+      else taskMacroImpl[I](c)(c.Expr[I](tx))
     def wrapTag[I: WeakTypeTag]: WeakTypeTag[Initialize[Task[I]]] = weakTypeTag
 
     def sub(

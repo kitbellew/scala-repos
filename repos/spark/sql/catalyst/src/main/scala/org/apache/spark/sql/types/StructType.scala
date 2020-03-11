@@ -400,15 +400,15 @@ object StructType extends AbstractDataType {
   private[sql] def merge(left: DataType, right: DataType): DataType =
     (left, right) match {
       case (
-          ArrayType(leftElementType, leftContainsNull),
-          ArrayType(rightElementType, rightContainsNull)) =>
+            ArrayType(leftElementType, leftContainsNull),
+            ArrayType(rightElementType, rightContainsNull)) =>
         ArrayType(
           merge(leftElementType, rightElementType),
           leftContainsNull || rightContainsNull)
 
       case (
-          MapType(leftKeyType, leftValueType, leftContainsNull),
-          MapType(rightKeyType, rightValueType, rightContainsNull)) =>
+            MapType(leftKeyType, leftValueType, leftContainsNull),
+            MapType(rightKeyType, rightValueType, rightContainsNull)) =>
         MapType(
           merge(leftKeyType, rightKeyType),
           merge(leftValueType, rightValueType),
@@ -448,8 +448,8 @@ object StructType extends AbstractDataType {
         StructType(newFields)
 
       case (
-          DecimalType.Fixed(leftPrecision, leftScale),
-          DecimalType.Fixed(rightPrecision, rightScale)) =>
+            DecimalType.Fixed(leftPrecision, leftScale),
+            DecimalType.Fixed(rightPrecision, rightScale)) =>
         if ((leftPrecision == rightPrecision) && (leftScale == rightScale)) {
           DecimalType(leftPrecision, leftScale)
         } else if ((leftPrecision != rightPrecision) && (leftScale != rightScale)) {

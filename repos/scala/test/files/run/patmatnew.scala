@@ -377,10 +377,7 @@ object Test {
 
     object PersonFather {
       def unapply(p: Person): Option[Person] =
-        if (p.father == null)
-          None
-        else
-          Some(p.father)
+        if (p.father == null) None else Some(p.father)
     }
     def run() {
       val p1 = new Person("p1", null)
@@ -473,8 +470,7 @@ object Test {
   object Bug1281 {
     class Sync {
       def unapplySeq(scrut: Int): Option[Seq[Int]] = {
-        if (scrut == 42) Some(List(1, 2))
-        else None
+        if (scrut == 42) Some(List(1, 2)) else None
       }
     }
     class Buffer {
@@ -529,14 +525,10 @@ object Test {
         var result: scala.Boolean = false
         if ({
           var result1: scala.Boolean = true;
-          if (y == 100)
-            result1
-          else
-            throw new MatchError("crazybox.scala, line 11")
-        } && (y > 90))
-          result
-        else
-          throw new MatchError("crazybox.scala, line 9")
+          if (y == 100) result1
+          else throw new MatchError("crazybox.scala, line 11")
+        } && (y > 90)) result
+        else throw new MatchError("crazybox.scala, line 9")
       }
     }
 
@@ -754,8 +746,7 @@ object Test {
 
       def unapply(xs: L): Option[(Int, L)] = {
         if (xs.isEmpty) { println("xs is empty"); None }
-        else
-          Some((xs.head, new L(xs.tail)))
+        else Some((xs.head, new L(xs.tail)))
       }
 
     }

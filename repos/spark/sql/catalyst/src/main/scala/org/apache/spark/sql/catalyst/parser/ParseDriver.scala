@@ -123,8 +123,7 @@ private[parser] class ANTLRNoCaseStringStream(input: String)
     extends ANTLRStringStream(input) {
   override def LA(i: Int): Int = {
     val la = super.LA(i)
-    if (la == 0 || la == CharStream.EOF) la
-    else Character.toUpperCase(la)
+    if (la == 0 || la == CharStream.EOF) la else Character.toUpperCase(la)
   }
 }
 

@@ -117,14 +117,13 @@ class JavaCopyPastePostProcessor
           else data.get(0).asInstanceOf[ReferenceTransferableData]
         }
         val shift = startOffsets.headOption.getOrElse(0)
-        if (refs != null)
-          refs.getData.map { it =>
-            new ReferenceData(
-              it.startOffset + shift,
-              it.endOffset + shift,
-              it.qClassName,
-              it.staticMemberName)
-          }
+        if (refs != null) refs.getData.map { it =>
+          new ReferenceData(
+            it.startOffset + shift,
+            it.endOffset + shift,
+            it.qClassName,
+            it.staticMemberName)
+        }
         else Seq.empty
       }
 
@@ -186,8 +185,7 @@ class JavaCopyPastePostProcessor
       content
         .getTransferData(ConvertedCode.Flavor)
         .asInstanceOf[TextBlockTransferableData]
-    else
-      null
+    else null
   }
 
   protected def processTransferableData0(

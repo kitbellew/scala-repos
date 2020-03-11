@@ -269,10 +269,7 @@ object Test {
     while ((nesting ne Nil) && nesting.head == Object) {
       nesting = nesting.tail
     }
-    if (nesting ne Nil)
-      !(nesting.head == Val)
-    else
-      true
+    if (nesting ne Nil) !(nesting.head == Val) else true
   } && !objectInsideLazyVal(structure)
 
   /** Known bug: object inside lazyval leads to deadlock. */

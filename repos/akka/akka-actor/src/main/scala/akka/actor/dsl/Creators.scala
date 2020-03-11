@@ -184,8 +184,7 @@ trait Creators { this: ActorDSL.type ⇒
     val classOfActor = implicitly[ClassTag[T]].runtimeClass
     val props = mkProps(classOfActor, () ⇒ ctor)
 
-    if (name == null) factory.actorOf(props)
-    else factory.actorOf(props, name)
+    if (name == null) factory.actorOf(props) else factory.actorOf(props, name)
   }
 
   /**

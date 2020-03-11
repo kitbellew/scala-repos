@@ -168,9 +168,9 @@ case class SetCommand(kv: Option[(String, Option[String])])
         (keyValueOutput, runFunc)
 
       case Some(
-          (
-            SQLConf.Deprecated.PARQUET_UNSAFE_ROW_RECORD_READER_ENABLED,
-            Some(value))) =>
+            (
+              SQLConf.Deprecated.PARQUET_UNSAFE_ROW_RECORD_READER_ENABLED,
+              Some(value))) =>
         val runFunc = (sqlContext: SQLContext) => {
           logWarning(
             s"Property ${SQLConf.Deprecated.PARQUET_UNSAFE_ROW_RECORD_READER_ENABLED} is " +

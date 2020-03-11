@@ -78,8 +78,7 @@ object Conformance {
             visited,
             undefinedSubst,
             checkWeak)
-          if (!t._1) return false
-          else undefinedSubst = t._2
+          if (!t._1) return false else undefinedSubst = t._2
         } else undefinedSubst = t._2
       }
       if (!lower.equiv(Nothing)) {
@@ -91,8 +90,7 @@ object Conformance {
             visited,
             undefinedSubst,
             checkWeak)
-          if (!t._1) return false
-          else undefinedSubst = t._2
+          if (!t._1) return false else undefinedSubst = t._2
         } else undefinedSubst = t._2
       }
       true
@@ -110,16 +108,14 @@ object Conformance {
             argsPair._1,
             HashSet.empty,
             undefinedSubst)
-          if (!y._1) return (false, undefinedSubst)
-          else undefinedSubst = y._2
+          if (!y._1) return (false, undefinedSubst) else undefinedSubst = y._2
         case scp: ScTypeParam if scp.isCovariant =>
           val y = Conformance.conformsInner(
             argsPair._1,
             argsPair._2,
             HashSet.empty,
             undefinedSubst)
-          if (!y._1) return (false, undefinedSubst)
-          else undefinedSubst = y._2
+          if (!y._1) return (false, undefinedSubst) else undefinedSubst = y._2
         //this case filter out such cases like undefined type
         case _ =>
           argsPair match {
@@ -453,10 +449,10 @@ object Conformance {
         }
         result = l.isAliasType match {
           case Some(
-              AliasType(
-                _: ScTypeAliasDefinition,
-                Success(comp: ScCompoundType, _),
-                _)) =>
+                AliasType(
+                  _: ScTypeAliasDefinition,
+                  Success(comp: ScCompoundType, _),
+                  _)) =>
             conformsInner(comp, c, HashSet.empty, undefinedSubst)
           case _ => (false, undefinedSubst)
         }
@@ -562,20 +558,20 @@ object Conformance {
       if (checkWeak && r.isInstanceOf[ValType]) {
         (r, x) match {
           case (
-              types.Byte,
-              types.Short | types.Int | types.Long | types.Float |
-              types.Double) =>
+                types.Byte,
+                types.Short | types.Int | types.Long | types.Float |
+                types.Double) =>
             result = (true, undefinedSubst)
             return
           case (
-              types.Short,
-              types.Int | types.Long | types.Float | types.Double) =>
+                types.Short,
+                types.Int | types.Long | types.Float | types.Double) =>
             result = (true, undefinedSubst)
             return
           case (
-              types.Char,
-              types.Byte | types.Short | types.Int | types.Long | types.Float |
-              types.Double) =>
+                types.Char,
+                types.Byte | types.Short | types.Int | types.Long |
+                types.Float | types.Double) =>
             result = (true, undefinedSubst)
             return
           case (types.Int, types.Long | types.Float | types.Double) =>
@@ -1224,8 +1220,8 @@ object Conformance {
         case ScDesignatorType(a: ScTypeAlias) =>
           r match {
             case ScParameterizedType(
-                des2 @ ScDesignatorType(a2: ScTypeAlias),
-                args2)
+                  des2 @ ScDesignatorType(a2: ScTypeAlias),
+                  args2)
                 if a.isInstanceOf[
                   ScTypeAliasDeclaration] && (p.designator equiv des2) =>
               processEquivalentDesignators(args2)
@@ -2284,8 +2280,7 @@ object Conformance {
                 visited + rClass,
                 uSubst,
                 checkWeak = false)
-              if (t._1) return (true, t._2)
-              else return (false, uSubst)
+              if (t._1) return (true, t._2) else return (false, uSubst)
             case _ =>
           }
         case _ =>
@@ -2365,8 +2360,7 @@ object Conformance {
       ScType.extractClassType(tp) match {
         case Some((clazz: PsiClass, _)) if visited.contains(clazz) =>
         case Some((clazz: PsiClass, subst)) if condition(clazz) =>
-          if (res == null) res = tp
-          else if (tp.conforms(res)) res = tp
+          if (res == null) res = tp else if (tp.conforms(res)) res = tp
         case Some((clazz: PsiClass, subst)) =>
           later += ((clazz, subst))
         case _ =>
@@ -2381,7 +2375,6 @@ object Conformance {
         else if (recursive._2.conforms(res)) res = recursive._2
       }
     }
-    if (res == null) (false, null)
-    else (true, res)
+    if (res == null) (false, null) else (true, res)
   }
 }

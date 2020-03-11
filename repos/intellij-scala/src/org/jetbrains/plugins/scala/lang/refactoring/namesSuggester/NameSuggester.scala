@@ -86,8 +86,7 @@ object NameSuggester {
       validator: NameValidator,
       names: ArrayBuffer[String]) {
     val name = validator.validateName(s, increaseNumber = true)
-    if (!names.contains(name))
-      names += name
+    if (!names.contains(name)) names += name
   }
 
   private def namesByType(

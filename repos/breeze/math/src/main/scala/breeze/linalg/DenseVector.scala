@@ -336,8 +336,7 @@ object DenseVector
     if (!(vectors forall (_.size == size)))
       throw new IllegalArgumentException("All vectors must have the same size!")
     val result = DenseMatrix.zeros[V](size, vectors.size)
-    for ((v, col) <- vectors.zipWithIndex)
-      result(::, col) := v
+    for ((v, col) <- vectors.zipWithIndex) result(::, col) := v
     result
   }
 

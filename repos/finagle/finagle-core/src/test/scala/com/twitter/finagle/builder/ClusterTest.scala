@@ -74,8 +74,7 @@ class ClusterTest extends FunSuite {
 
     cluster1.del(100)
     assert(changes.size == 9)
-    for (ch <- changes take 8)
-      assert(ch.value != changes(8).value)
+    for (ch <- changes take 8) assert(ch.value != changes(8).value)
   }
 
   test("Cluster ready should wait on cluster initialization") {

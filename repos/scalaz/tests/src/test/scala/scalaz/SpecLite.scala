@@ -55,23 +55,20 @@ abstract class SpecLite extends Properties("") with SpecLitePlatform {
       def test = Equal[A].equal(expected, act)
       def koMessage =
         "%s !== %s".format(Show[A].shows(act), Show[A].shows(expected))
-      if (!test)
-        fail(koMessage)
+      if (!test) fail(koMessage)
     }
     def must_==(expected: A): Unit = {
       val act = actual
       def test = expected == act
       def koMessage = "%s !== %s".format(act, expected)
-      if (!test)
-        fail(koMessage)
+      if (!test) fail(koMessage)
     }
 
     def mustMatch(f: PartialFunction[A, Boolean]): Unit = {
       val act = actual
       def test = f.isDefinedAt(act) && f(act)
       def koMessage = "%s does not satisfy partial function".format(act)
-      if (!test)
-        fail(koMessage)
+      if (!test) fail(koMessage)
     }
 
     def and[B](b: => B): B = {
@@ -83,8 +80,7 @@ abstract class SpecLite extends Properties("") with SpecLitePlatform {
       val act = actual
       def test = ev(act) < x
       def koMessage = "%s <! %s".format(actual, x)
-      if (!test)
-        fail(koMessage)
+      if (!test) fail(koMessage)
     }
 
     def mustThrowA[T <: Throwable](implicit man: ClassTag[T]): Unit = {

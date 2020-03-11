@@ -28,8 +28,7 @@ class AbstractCollectionFactory extends CollectionFactory {
 
       override def add(elem: E): Boolean = {
         val canAdd = !inner(Box(elem))
-        if (canAdd)
-          inner += Box(elem)
+        if (canAdd) inner += Box(elem)
         canAdd
       }
 

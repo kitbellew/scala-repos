@@ -26,10 +26,8 @@ trait ActionResultTestBase {
 
   get("/contentType") {
     val headerName =
-      if (params.getOrElse("lcase", "false") == "true")
-        "content-type"
-      else
-        "Content-Type"
+      if (params.getOrElse("lcase", "false") == "true") "content-type"
+      else "Content-Type"
 
     Ok(
       "Hello, world!",

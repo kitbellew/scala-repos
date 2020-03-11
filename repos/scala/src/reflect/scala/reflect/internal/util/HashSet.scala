@@ -33,8 +33,7 @@ class HashSet[T >: Null <: AnyRef](val label: String, initialCapacity: Int)
     var h = index(x.##)
     var entry = table(h)
     while (entry ne null) {
-      if (x == entry)
-        return entry.asInstanceOf[T]
+      if (x == entry) return entry.asInstanceOf[T]
 
       h = index(h + 1)
       entry = table(h)

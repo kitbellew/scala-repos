@@ -37,11 +37,9 @@ trait ArrayBufferInputStreamTest {
   @Test def read(): Unit = {
     val stream = newStream
 
-    for (i <- 1 to length)
-      assertEquals(i, stream.read())
+    for (i <- 1 to length) assertEquals(i, stream.read())
 
-    for (_ <- 1 to 5)
-      assertEquals(-1, stream.read())
+    for (_ <- 1 to 5) assertEquals(-1, stream.read())
   }
 
   @Test def read_buf(): Unit = {
@@ -113,8 +111,7 @@ trait ArrayBufferInputStreamTest {
 
     assertEquals(7L, stream.skip(7))
 
-    for (i <- 8 to 32)
-      assertEquals(i, stream.read())
+    for (i <- 8 to 32) assertEquals(i, stream.read())
 
     assertEquals(0L, stream.skip(0))
     assertEquals(33, stream.read())

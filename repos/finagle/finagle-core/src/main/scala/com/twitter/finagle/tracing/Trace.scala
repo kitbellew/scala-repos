@@ -34,8 +34,7 @@ object Trace {
   private case class TraceCtx(terminal: Boolean, tracers: List[Tracer]) {
     def withTracer(tracer: Tracer) = copy(tracers = tracer :: this.tracers)
     def withTerminal(terminal: Boolean) =
-      if (terminal == this.terminal) this
-      else copy(terminal = terminal)
+      if (terminal == this.terminal) this else copy(terminal = terminal)
   }
 
   private object TraceCtx {
@@ -273,10 +272,8 @@ object Trace {
     * tracers in the stack.
     */
   def record(rec: => Record): Unit = {
-    if (debugTrace())
-      System.err.println(rec)
-    if (isActivelyTracing)
-      uncheckedRecord(rec)
+    if (debugTrace()) System.err.println(rec)
+    if (isActivelyTracing) uncheckedRecord(rec)
   }
 
   /**
@@ -306,10 +303,8 @@ object Trace {
    * Convenience methods that construct records of different kinds.
    */
   def record(ann: Annotation): Unit = {
-    if (debugTrace())
-      System.err.println(Record(id, Time.now, ann, None))
-    if (isActivelyTracing)
-      uncheckedRecord(Record(id, Time.now, ann, None))
+    if (debugTrace()) System.err.println(Record(id, Time.now, ann, None))
+    if (isActivelyTracing) uncheckedRecord(Record(id, Time.now, ann, None))
   }
 
   def record(ann: Annotation, duration: Duration): Unit = {

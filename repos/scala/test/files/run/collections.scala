@@ -26,8 +26,7 @@ object Test extends App {
     }
     time {
       var x = 0
-      for (i <- 0 to 10000)
-        if (s contains i) x += i
+      for (i <- 0 to 10000) if (s contains i) x += i
       println("test3: " + x)
     }
   }
@@ -44,8 +43,7 @@ object Test extends App {
     }
     time {
       var x = 0
-      for (i <- 0 to 10000)
-        if (s contains i) x += i
+      for (i <- 0 to 10000) if (s contains i) x += i
       println("test3: " + x)
     }
   }
@@ -62,11 +60,10 @@ object Test extends App {
     }
     time {
       var x = 0
-      for (i <- 0 to 10000)
-        s get i match {
-          case Some(i) => x += i
-          case None    =>
-        }
+      for (i <- 0 to 10000) s get i match {
+        case Some(i) => x += i
+        case None    =>
+      }
       println("test3: " + x)
     }
     if (iters == 5000) {
@@ -97,11 +94,10 @@ object Test extends App {
     }
     time {
       var x = 0
-      for (i <- 0 to 10000)
-        s get i match {
-          case Some(i) => x += i
-          case None    =>
-        }
+      for (i <- 0 to 10000) s get i match {
+        case Some(i) => x += i
+        case None    =>
+      }
       println("test3: " + x)
     }
   }

@@ -27,15 +27,13 @@ abstract class InputStream extends Closeable {
         }
       }
 
-      if (bytesWritten <= 0) -1
-      else bytesWritten
+      if (bytesWritten <= 0) -1 else bytesWritten
     }
   }
 
   def skip(n: Long): Long = {
     var skipped = 0
-    while (skipped < n && read() != -1)
-      skipped += 1
+    while (skipped < n && read() != -1) skipped += 1
     skipped
   }
 

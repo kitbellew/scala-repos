@@ -40,8 +40,7 @@ object JObjectParser extends SimpleInjector {
   val stringProcessor = new Inject(() => defaultStringProcessor _) {}
 
   def defaultStringProcessor(s: String): Object = {
-    if (ObjectId.isValid(s)) new ObjectId(s)
-    else s
+    if (ObjectId.isValid(s)) new ObjectId(s) else s
   }
 
   /*

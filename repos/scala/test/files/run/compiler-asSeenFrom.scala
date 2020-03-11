@@ -28,8 +28,7 @@ abstract class CompilerTest extends DirectTest {
   // Utility functions
   class MkType(sym: Symbol) {
     def apply[M](implicit t: ru.TypeTag[M]): Type =
-      if (sym eq NoSymbol) NoType
-      else appliedType(sym, compilerTypeFromTag(t))
+      if (sym eq NoSymbol) NoType else appliedType(sym, compilerTypeFromTag(t))
   }
   implicit def mkMkType(sym: Symbol) = new MkType(sym)
 

@@ -43,10 +43,7 @@ package object interpolation {
     import ord.mkOrderingOps
 
     def apply(x: T): T = {
-      if (x < X(0) || x > X(X.size - 1))
-        extrapolate(x)
-      else
-        interpolate(x)
+      if (x < X(0) || x > X(X.size - 1)) extrapolate(x) else interpolate(x)
     }
 
     protected def interpolate(x: T): T

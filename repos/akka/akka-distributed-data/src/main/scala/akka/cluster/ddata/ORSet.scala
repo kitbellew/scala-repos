@@ -58,18 +58,15 @@ object ORSet {
           if (v2 >= v1)
             // dot is dominated by version vector, drop it
             dropDots(rest, acc)
-          else
-            dropDots(rest, d :: acc)
+          else dropDots(rest, d :: acc)
       }
 
-    if (dot.isEmpty)
-      VersionVector.empty
+    if (dot.isEmpty) VersionVector.empty
     else {
       dot match {
         case OneVersionVector(node, v1) ⇒
           // if dot is dominated by version vector, drop it
-          if (vvector.versionAt(node) >= v1) VersionVector.empty
-          else dot
+          if (vvector.versionAt(node) >= v1) VersionVector.empty else dot
 
         case ManyVersionVector(vs) ⇒
           val remaining = vs.toList
@@ -108,8 +105,7 @@ object ORSet {
               val rhsKeep = ORSet.subtractDots(rhsDots, lhs.vvector)
               val merged = lhsKeep.merge(rhsKeep)
               // Perfectly possible that an item in both sets should be dropped
-              if (merged.isEmpty) acc
-              else acc.updated(k, merged)
+              if (merged.isEmpty) acc else acc.updated(k, merged)
             }
           case (ManyVersionVector(lhsVs), ManyVersionVector(rhsVs)) ⇒
             val commonDots = lhsVs.filter {
@@ -124,8 +120,7 @@ object ORSet {
               ORSet.subtractDots(VersionVector(rhsUniqueDots), lhs.vvector)
             val merged = lhsKeep.merge(rhsKeep).merge(VersionVector(commonDots))
             // Perfectly possible that an item in both sets should be dropped
-            if (merged.isEmpty) acc
-            else acc.updated(k, merged)
+            if (merged.isEmpty) acc else acc.updated(k, merged)
           case (ManyVersionVector(lhsVs), OneVersionVector(n2, v2)) ⇒
             val commonDots = lhsVs.filter {
               case (n1, v1) ⇒ v1 == v2 && n1 == n2
@@ -139,8 +134,7 @@ object ORSet {
             val rhsKeep = ORSet.subtractDots(rhsUnique, lhs.vvector)
             val merged = lhsKeep.merge(rhsKeep).merge(VersionVector(commonDots))
             // Perfectly possible that an item in both sets should be dropped
-            if (merged.isEmpty) acc
-            else acc.updated(k, merged)
+            if (merged.isEmpty) acc else acc.updated(k, merged)
           case (OneVersionVector(n1, v1), ManyVersionVector(rhsVs)) ⇒
             val commonDots = rhsVs.filter {
               case (n2, v2) ⇒ v1 == v2 && n1 == n2
@@ -154,8 +148,7 @@ object ORSet {
               ORSet.subtractDots(VersionVector(rhsUniqueDots), lhs.vvector)
             val merged = lhsKeep.merge(rhsKeep).merge(VersionVector(commonDots))
             // Perfectly possible that an item in both sets should be dropped
-            if (merged.isEmpty) acc
-            else acc.updated(k, merged)
+            if (merged.isEmpty) acc else acc.updated(k, merged)
         }
     }
   }
@@ -179,8 +172,7 @@ object ORSet {
     keys.foldLeft(accumulator) {
       case (acc, k) ⇒
         val dots = elementsMap(k)
-        if (vvector > dots || vvector == dots)
-          acc
+        if (vvector > dots || vvector == dots) acc
         else {
           // Optimise the set of stored dots to include only those unseen
           val newDots = subtractDots(dots, vvector)
@@ -322,8 +314,7 @@ final class ORSet[A] private[akka] (
       val commonKeys =
         if (this.elementsMap.size < that.elementsMap.size)
           this.elementsMap.keysIterator.filter(that.elementsMap.contains)
-        else
-          that.elementsMap.keysIterator.filter(this.elementsMap.contains)
+        else that.elementsMap.keysIterator.filter(this.elementsMap.contains)
       val entries00 = ORSet.mergeCommonKeys(commonKeys, this, that)
       val thisUniqueKeys =
         this.elementsMap.keysIterator.filterNot(that.elementsMap.contains)
@@ -358,8 +349,7 @@ final class ORSet[A] private[akka] (
           acc.updated(elem, dot.prune(removedNode, collapseInto))
         else acc
     }
-    if (pruned.isEmpty)
-      copy(vvector = vvector.prune(removedNode, collapseInto))
+    if (pruned.isEmpty) copy(vvector = vvector.prune(removedNode, collapseInto))
     else {
       // re-add elements that were pruned, to bump dots to right vvector
       val newSet = new ORSet(

@@ -68,7 +68,6 @@ object Test extends App {
       }
     }
 
-    if (faulty.nonEmpty)
-      println(faulty.toList mkString "\n")
+    if (faulty.nonEmpty) println(faulty.toList mkString "\n")
   }
 }

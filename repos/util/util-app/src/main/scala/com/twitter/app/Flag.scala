@@ -323,10 +323,8 @@ class Flag[T: Flaggable] private[app] (
       case (None, Some(v))      => Map(this -> v)
       case (None, None)         => Map.empty[Flag[_], Any]
     }
-    if (updatedMap.isEmpty)
-      localFlagValues.clear()
-    else
-      localFlagValues.set(Some(updatedMap))
+    if (updatedMap.isEmpty) localFlagValues.clear()
+    else localFlagValues.set(Some(updatedMap))
   }
 
   @volatile private[this] var value: Option[T] = None
@@ -387,8 +385,7 @@ class Flag[T: Flaggable] private[app] (
     if (!parsingDone) {
       if (failFastUntilParsed)
         throw new IllegalStateException(s"Flag $name read before parse.")
-      else
-        log.log(Level.SEVERE, s"Flag $name read before parse.")
+      else log.log(Level.SEVERE, s"Flag $name read before parse.")
     }
     valueOrDefault match {
       case Some(v) => v
@@ -600,8 +597,7 @@ class Flags(
           // optimizer that leaves `v' dangling in the last case if
           // we make this a wildcard (Array(k, _@_*))
           case Array(k) if !hasFlag(k) =>
-            if (allowUndefinedFlags)
-              remaining += a
+            if (allowUndefinedFlags) remaining += a
             else
               return Error(
                 "Error parsing flag \"%s\": %s\n%s"
@@ -610,8 +606,7 @@ class Flags(
 
           // Flag isn't defined
           case Array(k, _) if !hasFlag(k) =>
-            if (allowUndefinedFlags)
-              remaining += a
+            if (allowUndefinedFlags) remaining += a
             else
               return Error(
                 "Error parsing flag \"%s\": %s\n%s"
@@ -656,10 +651,7 @@ class Flags(
     }
     finishParsing()
 
-    if (helpFlag())
-      Help(usage)
-    else
-      Ok(remaining)
+    if (helpFlag()) Help(usage) else Ok(remaining)
   }
 
   /**
@@ -790,8 +782,7 @@ class Flags(
 
   def usage: String = synchronized {
     val lines =
-      for (k <- flags.keys.toArray.sorted)
-        yield flags(k).usageString
+      for (k <- flags.keys.toArray.sorted) yield flags(k).usageString
     val globalLines =
       if (!includeGlobal) Seq.empty
       else {

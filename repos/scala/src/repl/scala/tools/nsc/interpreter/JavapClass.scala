@@ -59,8 +59,7 @@ class JavapClass(
 
     if ((options contains "-help") || targets.isEmpty)
       List(JpResult(helper(printWriter)))
-    else
-      tool(options, filter)(targets map targeted)
+    else tool(options, filter)(targets map targeted)
   }
 
   /** Associate the requested path with a possibly failed or empty array of bytes. */

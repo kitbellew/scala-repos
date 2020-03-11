@@ -217,8 +217,7 @@ object ProducerPerformance extends Logging {
     val producerProps =
       if (options.has(producerConfigOpt))
         Utils.loadProps(options.valueOf(producerConfigOpt))
-      else
-        new Properties()
+      else new Properties()
 
     if (csvMetricsReporterEnabled) {
       val props = new Properties()
@@ -228,8 +227,7 @@ object ProducerPerformance extends Logging {
         "kafka.metrics.KafkaCSVMetricsReporter")
       if (options.has(metricsDirectoryOpt))
         props.put("kafka.csv.metrics.dir", options.valueOf(metricsDirectoryOpt))
-      else
-        props.put("kafka.csv.metrics.dir", "kafka_metrics")
+      else props.put("kafka.csv.metrics.dir", "kafka_metrics")
       props.put("kafka.csv.metrics.reporter.enabled", "true")
       val verifiableProps = new VerifiableProperties(props)
       KafkaMetricsReporter.startReporters(verifiableProps)

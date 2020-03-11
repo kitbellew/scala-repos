@@ -212,8 +212,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         if !sym.isBridge && jsNameOf(sym) == name
       } {
         val tpe = sym.tpe
-        if (!alts.exists(alt => tpe.matches(alt.tpe)))
-          alts ::= sym
+        if (!alts.exists(alt => tpe.matches(alt.tpe))) alts ::= sym
       }
 
       assert(
@@ -245,10 +244,8 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         alts: List[Symbol],
         isDispatcher: Boolean): js.Tree = {
       withNewLocalNameScope {
-        if (isProp)
-          genExportProperty(alts, jsName)
-        else
-          genExportMethod(alts.map(ExportedSymbol), jsName)
+        if (isProp) genExportProperty(alts, jsName)
+        else genExportMethod(alts.map(ExportedSymbol), jsName)
       }
     }
 
@@ -303,8 +300,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         // to get correct overloading.
         if (jsName == "toString" && alts0.forall(_.params.nonEmpty))
           ExportedSymbol(Object_toString) :: alts0
-        else
-          alts0
+        else alts0
       }
 
       // Factor out methods with variable argument lists. Note that they can
@@ -325,8 +321,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
           val params = sym.tpe.params
           // Find default param
           val dParam = params.indexWhere { _.hasFlag(Flags.DEFAULTPARAM) }
-          if (dParam == -1) Seq(params.size)
-          else dParam to params.size
+          if (dParam == -1) Seq(params.size) else dParam to params.size
         case ex: ExportedBody =>
           List(ex.params.size)
       }
@@ -394,17 +389,13 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
       } yield (argcList.map(argc => js.IntLiteral(argc - minArgc)), caseBody)
 
       def defaultCase = {
-        if (!hasVarArg)
-          genThrowTypeError()
-        else
-          genExportSameArgc(minArgc, needsRestParam, varArgMeths, 0)
+        if (!hasVarArg) genThrowTypeError()
+        else genExportSameArgc(minArgc, needsRestParam, varArgMeths, 0)
       }
 
       val body = {
-        if (cases.isEmpty)
-          defaultCase
-        else if (cases.size == 1 && !hasVarArg)
-          cases.head._2
+        if (cases.isEmpty) defaultCase
+        else if (cases.size == 1 && !hasVarArg) cases.head._2
         else {
           assert(
             needsRestParam,
@@ -443,8 +434,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
 
       implicit val pos = alts.head.pos
 
-      if (alts.size == 1)
-        alts.head.genBody(minArgc, hasRestParam)
+      if (alts.size == 1) alts.head.genBody(minArgc, hasRestParam)
       else if (maxArgc.exists(_ <= paramIndex) ||
                !alts.exists(_.params.size > paramIndex)) {
         // We reach here in three cases:
@@ -602,8 +592,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
       implicit val pos = sym.pos
 
       val restArg =
-        if (hasRestParam) js.JSSpread(genRestArgRef()) :: Nil
-        else Nil
+        if (hasRestParam) js.JSSpread(genRestArgRef()) :: Nil else Nil
 
       val allArgs =
         (1 to minArgc).map(genFormalArgRef(_, minArgc)) ++: restArg
@@ -761,8 +750,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         } else {
           if (sym.isClassConstructor)
             genApplyMethodStatically(receiver, sym, args)
-          else
-            genApplyMethod(receiver, sym, args)
+          else genApplyMethod(receiver, sym, args)
         }
       }
       ensureBoxed(
@@ -899,8 +887,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
               case StringClass    => HijackedTypeTest(Defs.StringClass, 7)
               case ObjectClass    => NoTypeTest
               case _ =>
-                if (isRawJSType(tpe)) NoTypeTest
-                else InstanceOfTypeTest(tpe)
+                if (isRawJSType(tpe)) NoTypeTest else InstanceOfTypeTest(tpe)
             }
 
           case ARRAY(_) => InstanceOfTypeTest(tpe)
@@ -932,8 +919,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
   private def genFormalArgs(minArgc: Int, needsRestParam: Boolean)(
       implicit pos: Position): List[js.ParamDef] = {
     val fixedParams = (1 to minArgc map genFormalArg).toList
-    if (needsRestParam) fixedParams :+ genRestFormalArg()
-    else fixedParams
+    if (needsRestParam) fixedParams :+ genRestFormalArg() else fixedParams
   }
 
   private def genFormalArg(index: Int)(implicit pos: Position): js.ParamDef = {
@@ -954,10 +940,8 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
 
   private def genFormalArgRef(index: Int, minArgc: Int)(
       implicit pos: Position): js.Tree = {
-    if (index <= minArgc)
-      js.VarRef(js.Ident("arg$" + index))(jstpe.AnyType)
-    else
-      js.JSBracketSelect(genRestArgRef(), js.IntLiteral(index - 1 - minArgc))
+    if (index <= minArgc) js.VarRef(js.Ident("arg$" + index))(jstpe.AnyType)
+    else js.JSBracketSelect(genRestArgRef(), js.IntLiteral(index - 1 - minArgc))
   }
 
   private def genVarargRef(fixedParamCount: Int, minArgc: Int)(

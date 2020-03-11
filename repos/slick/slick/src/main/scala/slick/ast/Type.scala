@@ -108,8 +108,7 @@ object OptionType {
         def elementType = tpe
         def mapChildren(f: Type => Type): OptionType = {
           val e2 = f(elementType)
-          if (e2 eq elementType) this
-          else OptionType(e2)
+          if (e2 eq elementType) this else OptionType(e2)
         }
       }
   }
@@ -157,8 +156,7 @@ final case class CollectionType(
   override def toString = cons + "[" + elementType + "]"
   def mapChildren(f: Type => Type): CollectionType = {
     val e2 = f(elementType)
-    if (e2 eq elementType) this
-    else CollectionType(cons, e2)
+    if (e2 eq elementType) this else CollectionType(cons, e2)
   }
   override final def childrenForeach[R](f: Type => R): Unit = f(elementType)
   def children: ConstArray[Type] = ConstArray(elementType)
@@ -253,8 +251,7 @@ final class MappedScalaType(
   override def toString = s"Mapped[$baseType]"
   def mapChildren(f: Type => Type): MappedScalaType = {
     val e2 = f(baseType)
-    if (e2 eq baseType) this
-    else new MappedScalaType(e2, mapper, classTag)
+    if (e2 eq baseType) this else new MappedScalaType(e2, mapper, classTag)
   }
   override final def childrenForeach[R](f: Type => R): Unit = f(baseType)
   def children: ConstArray[Type] = ConstArray(baseType)
@@ -296,8 +293,7 @@ final case class NominalType(sym: TypeSymbol, structuralView: Type)
   override def select(sym: TermSymbol): Type = structuralView.select(sym)
   def mapChildren(f: Type => Type): NominalType = {
     val struct2 = f(structuralView)
-    if (struct2 eq structuralView) this
-    else new NominalType(sym, struct2)
+    if (struct2 eq structuralView) this else new NominalType(sym, struct2)
   }
   override final def childrenForeach[R](f: Type => R): Unit = f(structuralView)
   def children: ConstArray[Type] = ConstArray(structuralView)
@@ -315,8 +311,7 @@ trait TypedType[T] extends Type { self =>
     def scalaType = new ScalaOptionType[T](self.scalaType)
     def mapChildren(f: Type => Type): Type = {
       val e2 = f(elementType)
-      if (e2 eq elementType) this
-      else OptionType(e2)
+      if (e2 eq elementType) this else OptionType(e2)
     }
   }
   def scalaType: ScalaType[T]
@@ -520,7 +515,6 @@ class ScalaOptionType[T](val elementType: ScalaType[T])
   }
   def mapChildren(f: Type => Type): ScalaOptionType[T] = {
     val e2 = f(elementType)
-    if (e2 eq elementType) this
-    else e2.asInstanceOf[ScalaType[T]].optionType
+    if (e2 eq elementType) this else e2.asInstanceOf[ScalaType[T]].optionType
   }
 }

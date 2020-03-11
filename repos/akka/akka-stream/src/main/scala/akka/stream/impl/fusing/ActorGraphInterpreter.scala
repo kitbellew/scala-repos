@@ -46,8 +46,7 @@ private[stream] final case class GraphModule(
     CopiedModule(shape.deepCopy(), Attributes.none, this)
 
   override final def replaceShape(newShape: Shape): Module =
-    if (newShape != shape) CompositeModule(this, newShape)
-    else this
+    if (newShape != shape) CompositeModule(this, newShape) else this
 
   override def toString: String =
     s"""GraphModule
@@ -233,8 +232,7 @@ private[stream] object ActorGraphInterpreter {
 
     def onSubscribe(subscription: Subscription): Unit = {
       require(subscription != null, "Subscription cannot be null")
-      if (upstreamCompleted)
-        tryCancel(subscription)
+      if (upstreamCompleted) tryCancel(subscription)
       else if (downstreamCanceled) {
         upstreamCompleted = true
         tryCancel(subscription)
@@ -554,8 +552,7 @@ private[stream] final class GraphInterpreterShell(
 
   def sendResume(sendResume: Boolean): Unit = {
     resumeScheduled = true
-    if (sendResume) self ! resume
-    else enqueueToShortCircuit(resume)
+    if (sendResume) self ! resume else enqueueToShortCircuit(resume)
   }
 
   def runBatch(actorEventLimit: Int): Int = {

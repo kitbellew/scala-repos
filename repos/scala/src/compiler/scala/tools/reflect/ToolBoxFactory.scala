@@ -409,8 +409,7 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
         () => {
           val result =
             jmeth.invoke(singleton, thunks map (_.asInstanceOf[AnyRef]): _*)
-          if (jmeth.getReturnType == java.lang.Void.TYPE) ()
-          else result
+          if (jmeth.getReturnType == java.lang.Void.TYPE) () else result
         }
       }
 

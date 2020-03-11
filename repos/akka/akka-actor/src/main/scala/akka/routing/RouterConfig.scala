@@ -116,8 +116,7 @@ private[akka] trait PoolOverrideUnsetConfig[T <: Pool] extends Pool {
 
           if (wssConf.resizer.isEmpty && p.resizer.isDefined)
             wssConf.withResizer(p.resizer.get)
-          else
-            wssConf
+          else wssConf
         case _ ⇒ this
       }
     }
@@ -137,8 +136,7 @@ abstract class GroupBase extends Group {
   @deprecated("Use paths with ActorSystem parameter instead", "2.4")
   override final def paths: immutable.Iterable[String] = {
     val tmp = getPaths
-    if (tmp != null) immutableSeq(tmp)
-    else null
+    if (tmp != null) immutableSeq(tmp) else null
   }
 
   def getPaths(system: ActorSystem): java.lang.Iterable[String]
@@ -232,8 +230,7 @@ trait Pool extends RouterConfig {
           .drop(1)
           .mkString("/", "/", "")
           + ".pool-dispatcher")
-    else
-      routeeProps
+    else routeeProps
 
   /**
     * Pool with dynamically resizable number of routees return the [[akka.routing.Resizer]]

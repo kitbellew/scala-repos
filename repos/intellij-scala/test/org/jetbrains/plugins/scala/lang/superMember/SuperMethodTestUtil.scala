@@ -26,9 +26,7 @@ object SuperMethodTestUtil {
           val s = ScalaPsiUtil.nameContext(sign.namedElement) match {
             case member: PsiMember =>
               val clazz = member.containingClass
-              if (clazz != null)
-                clazz.qualifiedName + "."
-              else ""
+              if (clazz != null) clazz.qualifiedName + "." else ""
             case _ => ""
           }
           res.append(s + sign.namedElement.name + "\n")

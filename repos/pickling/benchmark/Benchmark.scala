@@ -103,8 +103,7 @@ trait Benchmark {
       //logFile.write(prefix)
       val numbers: List[Long] = runBenchmark(args(0).toInt)
       if (enableOutput) {
-        for (t <- numbers.init)
-          logFile.write(t + "\t")
+        for (t <- numbers.init) logFile.write(t + "\t")
         logFile.write(numbers.last.toString)
 
         logFile.write(Platform.EOL)

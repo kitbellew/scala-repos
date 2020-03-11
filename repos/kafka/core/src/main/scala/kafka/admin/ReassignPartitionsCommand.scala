@@ -48,8 +48,7 @@ object ReassignPartitionsCommand extends Logging {
     val zkUtils =
       ZkUtils(zkConnect, 30000, 30000, JaasUtils.isZkSecurityEnabled())
     try {
-      if (opts.options.has(opts.verifyOpt))
-        verifyAssignment(zkUtils, opts)
+      if (opts.options.has(opts.verifyOpt)) verifyAssignment(zkUtils, opts)
       else if (opts.options.has(opts.generateOpt))
         generateAssignment(zkUtils, opts)
       else if (opts.options.has(opts.executeOpt))
@@ -60,8 +59,7 @@ object ReassignPartitionsCommand extends Logging {
         println(Utils.stackTrace(e))
     } finally {
       val zkClient = zkUtils.zkClient
-      if (zkClient != null)
-        zkClient.close()
+      if (zkClient != null) zkClient.close()
     }
   }
 
@@ -260,8 +258,7 @@ object ReassignPartitionsCommand extends Logging {
         val assignedReplicas = zkUtils.getReplicasForPartition(
           topicAndPartition.topic,
           topicAndPartition.partition)
-        if (assignedReplicas == newReplicas)
-          ReassignmentCompleted
+        if (assignedReplicas == newReplicas) ReassignmentCompleted
         else {
           println(
             ("ERROR: Assigned replicas (%s) don't match the list of replicas for reassignment (%s)" +

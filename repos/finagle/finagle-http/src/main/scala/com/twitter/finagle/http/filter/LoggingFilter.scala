@@ -44,8 +44,7 @@ object LogFormatter {
             c.toString().getBytes("UTF-8").foreach { byte =>
               builder.append("\\x")
               val s = java.lang.Integer.toHexString(byte & 0xff)
-              if (s.length == 1)
-                builder.append("0")
+              if (s.length == 1) builder.append("0")
               builder.append(s)
             }
         }

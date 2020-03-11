@@ -265,8 +265,7 @@ trait ScanningClassification { self: EventBus ⇒
     val currentSubscribers = subscribers.iterator()
     while (currentSubscribers.hasNext) {
       val (classifier, subscriber) = currentSubscribers.next()
-      if (matches(classifier, event))
-        publish(event, subscriber)
+      if (matches(classifier, event)) publish(event, subscriber)
     }
   }
 }
@@ -370,8 +369,7 @@ trait ManagedActorClassification { this: ActorEventBus with ActorClassifier ⇒
           // do nothing
 
           case monitors ⇒
-            if (monitors.contains(monitor))
-              dissociate(key, monitor)
+            if (monitors.contains(monitor)) dissociate(key, monitor)
         }
       }
     }
@@ -520,8 +518,7 @@ trait ActorClassification { this: ActorEventBus with ActorClassifier ⇒
         v match {
           case raw: immutable.TreeSet[_] ⇒
             val monitors = raw.asInstanceOf[immutable.TreeSet[ActorRef]]
-            if (monitors.contains(monitor))
-              dissociate(entry.getKey, monitor)
+            if (monitors.contains(monitor)) dissociate(entry.getKey, monitor)
           case _ ⇒ //Dun care
         }
       }

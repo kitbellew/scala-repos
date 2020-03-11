@@ -24,8 +24,7 @@ class NativeJsonCommandSpecServlet
 
   post("/invalid") {
     val cmd = command[NativeJsonTestForm]
-    if (cmd.isInvalid) "OK"
-    else "FAIL"
+    if (cmd.isInvalid) "OK" else "FAIL"
   }
 
   error {

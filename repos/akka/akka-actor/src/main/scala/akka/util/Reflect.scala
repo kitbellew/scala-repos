@@ -116,8 +116,7 @@ private[akka] object Reflect {
         } else null
       }
 
-    if (constructor == null) error("no matching constructor")
-    else constructor
+    if (constructor == null) error("no matching constructor") else constructor
   }
 
   private def safeGetClass(a: Any): Class[_] =

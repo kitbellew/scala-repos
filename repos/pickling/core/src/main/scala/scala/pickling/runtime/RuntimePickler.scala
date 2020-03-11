@@ -32,8 +32,7 @@ class RuntimeTypeInfo(
       appliedType(
         ArrayClass.toType,
         List(mirror.classSymbol(elemClass).asType.toType))
-    else
-      sym.asType.toType
+    else sym.asType.toType
   }
   // debug(s"tpe: ${tpe.key}")
 
@@ -219,17 +218,15 @@ class RuntimePickler(
     //debug(s"fieldTag for pickleInto: ${fieldTag.key}")
 
     val fieldTpe = fieldTag.tpe
-    if (shouldBotherAboutSharing(fieldTpe))
-      fieldValue match {
-        case null => pickler.asInstanceOf[Pickler[Null]].pickle(null, builder)
-        case _ =>
-          val oid = scala.pickling.internal.lookupPicklee(fieldValue)
-          builder.hintOid(oid)
-          // Note: Now we always pickle fully, and the format decides whether to share.
-          pickler.pickle(fieldValue, builder)
-      }
-    else
-      pickler.pickle(fieldValue, builder)
+    if (shouldBotherAboutSharing(fieldTpe)) fieldValue match {
+      case null => pickler.asInstanceOf[Pickler[Null]].pickle(null, builder)
+      case _ =>
+        val oid = scala.pickling.internal.lookupPicklee(fieldValue)
+        builder.hintOid(oid)
+        // Note: Now we always pickle fully, and the format decides whether to share.
+        pickler.pickle(fieldValue, builder)
+    }
+    else pickler.pickle(fieldValue, builder)
   }
 
   def mkPickler: Pickler[_] = {

@@ -191,8 +191,7 @@ class AsyncMeter private[concurrent] (
 
     // don't jump the queue-this is racy, but the race here is indistinguishable
     // from the synchronized behavior
-    if (!running && updateAndGet(permits))
-      return Future.Done
+    if (!running && updateAndGet(permits)) return Future.Done
 
     // if the promise is enqueued, it is satisfied by the thread that removes it
     // from the queue.  if it's not enqueued, it is satisfied immediately.  this

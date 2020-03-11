@@ -171,8 +171,7 @@ class ActorWithStashSpec
         }
 
         override def preRestart(reason: Throwable, message: Option[Any]) = {
-          if (!restartLatch.isOpen)
-            restartLatch.open()
+          if (!restartLatch.isOpen) restartLatch.open()
           super.preRestart(reason, message)
         }
       })

@@ -144,8 +144,7 @@ trait RoundRobinSelector {
   def select(delegates: Seq[ActorRef]): Tuple2[Iterator[ActorRef], Int] = {
     val length = delegates.length
     val take =
-      if (partialFill) math.min(selectionCount, length)
-      else selectionCount
+      if (partialFill) math.min(selectionCount, length) else selectionCount
 
     val set =
       for (i ← 0 until take) yield {

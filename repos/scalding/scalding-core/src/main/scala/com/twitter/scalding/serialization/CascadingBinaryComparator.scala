@@ -73,8 +73,7 @@ object CascadingBinaryComparator {
              */
             if (fields
                   .getComparators()(0)
-                  .isInstanceOf[CascadingBinaryComparator[_]])
-              Success(())
+                  .isInstanceOf[CascadingBinaryComparator[_]]) Success(())
             else
               error(
                 s"pipe: $s, fields: $fields, comparators: ${fields.getComparators.toList}")

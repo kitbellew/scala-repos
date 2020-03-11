@@ -110,10 +110,8 @@ case class SieveSegment(start: SafeLong, primes: BitSet, cutoff: SafeLong) {
     var i = 0
 
     val len: Long =
-      if (start + primes.length < cutoff)
-        (cutoff - start).toLong
-      else
-        primes.length
+      if (start + primes.length < cutoff) (cutoff - start).toLong
+      else primes.length
 
     while (i < arr.length) {
       val factor = arr(i)
@@ -183,10 +181,8 @@ case class SieveSegment(start: SafeLong, primes: BitSet, cutoff: SafeLong) {
     if (start >= cutoff) return ()
 
     val len: Long =
-      if (start + primes.length >= cutoff)
-        (cutoff - start).toLong
-      else
-        primes.length
+      if (start + primes.length >= cutoff) (cutoff - start).toLong
+      else primes.length
 
     var i = 1
     while (i < len) {

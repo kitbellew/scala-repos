@@ -350,8 +350,7 @@ trait RowFormatSupport { self: StdCodecs =>
       if (!RawBitSet.get(undefined, i)) {
         encoders(i).encode(row, buffer, pool) match {
           case Some(buffers) =>
-            if (filled == null)
-              filled = new ListBuffer[ByteBuffer]()
+            if (filled == null) filled = new ListBuffer[ByteBuffer]()
             filled ++= buffers
             buffer = pool.acquire
           case None =>
@@ -993,13 +992,11 @@ trait IdentitiesRowFormat extends RowFormat {
       if (more(lo)) loop(nOffset, shift + 7, m, i)
       else {
         longs(i) = m
-        if (nOffset < bytes.length)
-          loop(nOffset, 0, 0L, i + 1)
+        if (nOffset < bytes.length) loop(nOffset, 0, 0L, i + 1)
       }
     }
 
-    if (identities > 0)
-      loop(offset, 0, 0L, 0)
+    if (identities > 0) loop(offset, 0, 0L, 0)
 
     longs.map(CLong(_))(collection.breakOut)
   }
@@ -1051,8 +1048,7 @@ trait IdentitiesRowFormat extends RowFormat {
           if (more(b)) loop(nOffset, shift + 7, m, col)
           else {
             longCols(col).update(row, m)
-            if (nOffset < src.length)
-              loop(nOffset, 0, 0L, col + 1)
+            if (nOffset < src.length) loop(nOffset, 0, 0L, col + 1)
           }
         }
 

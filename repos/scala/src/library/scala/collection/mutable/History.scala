@@ -37,8 +37,7 @@ class History[Evt, Pub]
     *  @param event the event.
     */
   def notify(pub: Pub, event: Evt) {
-    if (log.length >= maxHistory)
-      log.dequeue()
+    if (log.length >= maxHistory) log.dequeue()
 
     log.enqueue((pub, event))
   }

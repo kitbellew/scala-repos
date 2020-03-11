@@ -17,14 +17,10 @@ sealed abstract class EphemeralStream[A] {
 
   private[scalaz] def tail: () => EphemeralStream[A]
 
-  def headOption: Option[A] = {
-    if (isEmpty) None
-    else Some(head())
-  }
+  def headOption: Option[A] = { if (isEmpty) None else Some(head()) }
 
   def tailOption: Option[EphemeralStream[A]] = {
-    if (isEmpty) None
-    else Some(tail())
+    if (isEmpty) None else Some(tail())
   }
 
   def toList: List[A] = {
@@ -80,16 +76,14 @@ sealed abstract class EphemeralStream[A] {
     else cons(emptyEphemeralStream, tail().inits.map(cons(head(), _)))
 
   def findM[M[_]: Monad](p: A => M[Boolean]): M[Option[A]] =
-    if (isEmpty)
-      Monad[M].point(None)
+    if (isEmpty) Monad[M].point(None)
     else {
       val hh = head()
       Monad[M].bind(p(hh))(if (_) Monad[M].point(Some(hh)) else tail() findM p)
     }
 
   def findMapM[M[_]: Monad, B](f: A => M[Option[B]]): M[Option[B]] = {
-    if (isEmpty)
-      Monad[M].point(None)
+    if (isEmpty) Monad[M].point(None)
     else {
       val hh = head()
       Monad[M].bind(f(hh)) {
@@ -104,10 +98,8 @@ sealed abstract class EphemeralStream[A] {
   }
 
   def zip[B](b: => EphemeralStream[B]): EphemeralStream[(A, B)] =
-    if (isEmpty || b.isEmpty)
-      emptyEphemeralStream
-    else
-      cons((head(), b.head()), tail() zip b.tail())
+    if (isEmpty || b.isEmpty) emptyEphemeralStream
+    else cons((head(), b.head()), tail() zip b.tail())
 
   def unzip[X, Y](
       implicit ev: A <:< (X, Y)): (EphemeralStream[X], EphemeralStream[Y]) =
@@ -116,35 +108,26 @@ sealed abstract class EphemeralStream[A] {
 
   def alignWith[B, C](f: A \&/ B => C)(
       b: EphemeralStream[B]): EphemeralStream[C] =
-    if (b.isEmpty)
-      map(x => f(\&/.This(x)))
-    else if (isEmpty)
-      b.map(x => f(\&/.That(x)))
-    else
-      cons(f(\&/.Both(head(), b.head())), tail().alignWith(f)(b.tail()))
+    if (b.isEmpty) map(x => f(\&/.This(x)))
+    else if (isEmpty) b.map(x => f(\&/.That(x)))
+    else cons(f(\&/.Both(head(), b.head())), tail().alignWith(f)(b.tail()))
 
   def interleave(q: EphemeralStream[A]): EphemeralStream[A] =
-    if (isEmpty)
-      q
-    else if (q.isEmpty)
-      this
-    else
-      cons(head(), cons(q.head(), tail() interleave q.tail()))
+    if (isEmpty) q
+    else if (q.isEmpty) this
+    else cons(head(), cons(q.head(), tail() interleave q.tail()))
 
   def take(n: Int): EphemeralStream[A] =
     unfold((n, this)) {
       case (len, xs) =>
-        if (len > 0 && !xs.isEmpty)
-          Some((xs.head(), (len - 1, xs.tail())))
-        else
-          None
+        if (len > 0 && !xs.isEmpty) Some((xs.head(), (len - 1, xs.tail())))
+        else None
     }
 
   def takeWhile(p: A => Boolean): EphemeralStream[A] =
     if (!isEmpty) {
       val h = head()
-      if (p(h)) cons(h, tail().takeWhile(p))
-      else emptyEphemeralStream
+      if (p(h)) cons(h, tail().takeWhile(p)) else emptyEphemeralStream
     } else this
 
   def zipWithIndex: EphemeralStream[(A, Int)] =
@@ -173,8 +156,7 @@ sealed abstract class EphemeralStreamInstances {
     override def cojoin[A](
         a: EphemeralStream[A]): EphemeralStream[EphemeralStream[A]] = a match {
       case _ ##:: tl =>
-        if (tl.isEmpty) EphemeralStream(a)
-        else cons(a, cojoin(tl))
+        if (tl.isEmpty) EphemeralStream(a) else cons(a, cojoin(tl))
       case _ => emptyEphemeralStream
     }
     def cobind[A, B](fa: EphemeralStream[A])(
@@ -221,8 +203,7 @@ sealed abstract class EphemeralStreamInstances {
       }
     }
     override def index[A](fa: EphemeralStream[A], i: Int): Option[A] = {
-      if (i < 0)
-        None
+      if (i < 0) None
       else {
         var n = i
         var these = fa
@@ -334,9 +315,7 @@ object EphemeralStream extends EphemeralStreamInstances {
       case other                                => other.toIndexedSeq
     }
     val size = as.size
-    unfold(0)(b =>
-      if (b < size) Some((as0(b), b + 1))
-      else None)
+    unfold(0)(b => if (b < size) Some((as0(b), b + 1)) else None)
   }
 
   class ConsWrap[A](e: => EphemeralStream[A]) {
@@ -348,7 +327,6 @@ object EphemeralStream extends EphemeralStreamInstances {
 
   object ##:: {
     def unapply[A](xs: EphemeralStream[A]): Option[(A, EphemeralStream[A])] =
-      if (xs.isEmpty) None
-      else Some((xs.head(), xs.tail()))
+      if (xs.isEmpty) None else Some((xs.head(), xs.tail()))
   }
 }

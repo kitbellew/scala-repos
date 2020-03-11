@@ -86,8 +86,7 @@ private[summingbird] object IteratorSums extends java.io.Serializable {
     def semigroup = Semigroup.from {
       case ((lk, lv), (rk, rv)) =>
         // if the keys match, sum, else return the new pair
-        if (Equiv[K].equiv(lk, rk)) (rk, Semigroup.plus(lv, rv))
-        else (rk, rv)
+        if (Equiv[K].equiv(lk, rk)) (rk, Semigroup.plus(lv, rv)) else (rk, rv)
     }
 
     var lastK: Option[K] = None

@@ -62,8 +62,7 @@ class OptimizerTest {
 
     val elements = js.Array[Int]()
     for (i <- start0 to 2 by -1) {
-      if (i < 0)
-        sys.error("Going into infinite loop")
+      if (i < 0) sys.error("Going into infinite loop")
       elements.push(i)
     }
     assertArrayEquals(Array(10, 9, 8, 7, 6, 5, 4, 3, 2), elements.toArray)

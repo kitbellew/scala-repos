@@ -90,14 +90,12 @@ object HttpDtab {
     while (headerIt.hasNext) {
       val header = headerIt.next()
       if (isDtabHeader(header)) {
-        if (headerArr == null)
-          headerArr = new ArrayBuffer[(String, String)]()
+        if (headerArr == null) headerArr = new ArrayBuffer[(String, String)]()
         headerArr += header
         msg.headerMap -= header._1
       }
     }
-    if (headerArr == null) Nil
-    else headerArr
+    if (headerArr == null) Nil else headerArr
   }
 
   /**
@@ -107,8 +105,7 @@ object HttpDtab {
     val headerIt = msg.headerMap.iterator
     while (headerIt.hasNext) {
       val header = headerIt.next()
-      if (isDtabHeader(header))
-        msg.headerMap -= header._1
+      if (isDtabHeader(header)) msg.headerMap -= header._1
     }
   }
 
@@ -116,8 +113,7 @@ object HttpDtab {
     * Write X-Dtab header pairs into the given message.
     */
   def write(dtab: Dtab, msg: Message): Unit = {
-    if (dtab.isEmpty)
-      return
+    if (dtab.isEmpty) return
 
     if (dtab.size >= Maxsize) {
       throw new IllegalArgumentException(
@@ -178,11 +174,9 @@ object HttpDtab {
       }
     }
 
-    if (keys == null)
-      return EmptyReturn
+    if (keys == null) return EmptyReturn
 
-    if (keys.size % 2 != 0)
-      return Throw(unmatchedFailure)
+    if (keys.size % 2 != 0) return Throw(unmatchedFailure)
 
     keys = keys.sorted
     val n = keys.size / 2
@@ -194,8 +188,7 @@ object HttpDtab {
       val prefix = keys(j)
       val dest = keys(j + 1)
 
-      if (!validHeaderPair(prefix, dest))
-        return Throw(unmatchedFailure)
+      if (!validHeaderPair(prefix, dest)) return Throw(unmatchedFailure)
 
       val tryDentry =
         for {

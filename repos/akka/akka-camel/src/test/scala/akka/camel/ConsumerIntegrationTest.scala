@@ -263,8 +263,7 @@ class FailingOnceConsumer(override val endpointUri: String) extends Consumer {
     case msg: CamelMessage ⇒
       if (msg.headerAs[Boolean]("CamelRedelivered").getOrElse(false))
         sender() ! ("accepted: %s" format msg.body)
-      else
-        throw new TestException("rejected: %s" format msg.body)
+      else throw new TestException("rejected: %s" format msg.body)
   }
 
   final override def preRestart(reason: Throwable, message: Option[Any]) {

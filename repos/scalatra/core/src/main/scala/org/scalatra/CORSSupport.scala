@@ -155,10 +155,8 @@ trait CorsSupport extends Handler with Initializable { self: ScalatraBase ⇒
     val anyOriginAllowed: Boolean =
       corsConfig.allowedOrigins.contains(AnyOrigin)
     val hdr =
-      if (anyOriginAllowed && !corsConfig.allowCredentials)
-        AnyOrigin
-      else
-        request.headers.get(OriginHeader).getOrElse("")
+      if (anyOriginAllowed && !corsConfig.allowCredentials) AnyOrigin
+      else request.headers.get(OriginHeader).getOrElse("")
 
     response.headers(AccessControlAllowOriginHeader) = hdr
     if (corsConfig.allowCredentials)

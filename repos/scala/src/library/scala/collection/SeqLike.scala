@@ -113,18 +113,14 @@ trait SeqLike[+A, +Repr]
   def segmentLength(p: A => Boolean, from: Int): Int = {
     var i = 0
     val it = iterator.drop(from)
-    while (it.hasNext && p(it.next()))
-      i += 1
+    while (it.hasNext && p(it.next())) i += 1
     i
   }
 
   def indexWhere(p: A => Boolean, from: Int): Int = {
     var i = from
     val it = iterator.drop(from)
-    while (it.hasNext) {
-      if (p(it.next())) return i
-      else i += 1
-    }
+    while (it.hasNext) { if (p(it.next())) return i else i += 1 }
 
     -1
   }
@@ -142,8 +138,7 @@ trait SeqLike[+A, +Repr]
     *  @example  `"abb".permutations = Iterator(abb, bab, bba)`
     */
   def permutations: Iterator[Repr] =
-    if (isEmpty) Iterator(repr)
-    else new PermutationsItr
+    if (isEmpty) Iterator(repr) else new PermutationsItr
 
   /** Iterates over combinations.  A _combination_ of length `n` is a subsequence of
     *  the original sequence, with the elements taken in order.  Thus, `"xy"` and `"yy"`
@@ -159,8 +154,7 @@ trait SeqLike[+A, +Repr]
     *  @example  `"abbbc".combinations(2) = Iterator(ab, ac, bb, bc)`
     */
   def combinations(n: Int): Iterator[Repr] =
-    if (n < 0 || n > size) Iterator.empty
-    else new CombinationsItr(n)
+    if (n < 0 || n > size) Iterator.empty else new CombinationsItr(n)
 
   private class PermutationsItr extends AbstractIterator[Repr] {
     private[this] val (elms, idxs) = init()
@@ -168,17 +162,14 @@ trait SeqLike[+A, +Repr]
 
     def hasNext = _hasNext
     def next(): Repr = {
-      if (!hasNext)
-        Iterator.empty.next()
+      if (!hasNext) Iterator.empty.next()
 
       val forcedElms = new mutable.ArrayBuffer[A](elms.size) ++= elms
       val result = (self.newBuilder ++= forcedElms).result()
       var i = idxs.length - 2
-      while (i >= 0 && idxs(i) >= idxs(i + 1))
-        i -= 1
+      while (i >= 0 && idxs(i) >= idxs(i + 1)) i -= 1
 
-      if (i < 0)
-        _hasNext = false
+      if (i < 0) _hasNext = false
       else {
         var j = idxs.length - 1
         while (idxs(j) <= idxs(i)) j -= 1
@@ -221,8 +212,7 @@ trait SeqLike[+A, +Repr]
 
     def hasNext = _hasNext
     def next(): Repr = {
-      if (!hasNext)
-        Iterator.empty.next()
+      if (!hasNext) Iterator.empty.next()
 
       /* Calculate this result. */
       val buf = self.newBuilder
@@ -232,13 +222,11 @@ trait SeqLike[+A, +Repr]
 
       /* Prepare for the next call to next. */
       var idx = nums.length - 1
-      while (idx >= 0 && nums(idx) == cnts(idx))
-        idx -= 1
+      while (idx >= 0 && nums(idx) == cnts(idx)) idx -= 1
 
       idx = nums.lastIndexWhere(_ > 0, idx - 1)
 
-      if (idx < 0)
-        _hasNext = false
+      if (idx < 0) _hasNext = false
       else {
         var sum = nums.slice(idx + 1, nums.length).sum + 1
         nums(idx) -= 1
@@ -277,23 +265,19 @@ trait SeqLike[+A, +Repr]
 
   def reverse: Repr = {
     var xs: List[A] = List()
-    for (x <- this)
-      xs = x :: xs
+    for (x <- this) xs = x :: xs
     val b = newBuilder
     b.sizeHint(this)
-    for (x <- xs)
-      b += x
+    for (x <- xs) b += x
     b.result()
   }
 
   def reverseMap[B, That](f: A => B)(
       implicit bf: CanBuildFrom[Repr, B, That]): That = {
     var xs: List[A] = List()
-    for (x <- this)
-      xs = x :: xs
+    for (x <- this) xs = x :: xs
     val b = bf(repr)
-    for (x <- xs)
-      b += f(x)
+    for (x <- xs) b += f(x)
 
     b.result()
   }
@@ -311,9 +295,7 @@ trait SeqLike[+A, +Repr]
   def startsWith[B](that: GenSeq[B], offset: Int): Boolean = {
     val i = this.iterator drop offset
     val j = that.iterator
-    while (j.hasNext && i.hasNext)
-      if (i.next != j.next)
-        return false
+    while (j.hasNext && i.hasNext) if (i.next != j.next) return false
 
     !j.hasNext
   }
@@ -321,9 +303,7 @@ trait SeqLike[+A, +Repr]
   def endsWith[B](that: GenSeq[B]): Boolean = {
     val i = this.iterator.drop(length - that.length)
     val j = that.iterator
-    while (i.hasNext && j.hasNext)
-      if (i.next != j.next)
-        return false
+    while (i.hasNext && j.hasNext) if (i.next != j.next) return false
 
     !j.hasNext
   }
@@ -364,8 +344,7 @@ trait SeqLike[+A, +Repr]
       var i = from
       var s: Seq[A] = thisCollection drop i
       while (!s.isEmpty) {
-        if (s startsWith that)
-          return i
+        if (s startsWith that) return i
 
         i += 1
         s = s.tail
@@ -474,8 +453,7 @@ trait SeqLike[+A, +Repr]
     val b = newBuilder
     for (x <- this) {
       val ox = occ(x) // Avoid multiple map lookups
-      if (ox == 0) b += x
-      else occ(x) = ox - 1
+      if (ox == 0) b += x else occ(x) = ox - 1
     }
     b.result()
   }
@@ -607,9 +585,7 @@ trait SeqLike[+A, +Repr]
   def corresponds[B](that: GenSeq[B])(p: (A, B) => Boolean): Boolean = {
     val i = this.iterator
     val j = that.iterator
-    while (i.hasNext && j.hasNext)
-      if (!p(i.next(), j.next()))
-        return false
+    while (i.hasNext && j.hasNext) if (!p(i.next(), j.next())) return false
 
     !i.hasNext && !j.hasNext
   }
@@ -822,17 +798,14 @@ object SeqLike {
     def clipL(x: Int, y: Int) = if (x > y) x else -1
 
     if (n1 == n0 + 1) {
-      if (forward)
-        clipR(S.indexOf(W(n0), m0), m1)
-      else
-        clipL(S.lastIndexOf(W(n0), m1 - 1), m0 - 1)
+      if (forward) clipR(S.indexOf(W(n0), m0), m1)
+      else clipL(S.lastIndexOf(W(n0), m1 - 1), m0 - 1)
     }
 
     // Check for redundant case when both sequences are same size
     else if (m1 - m0 == n1 - n0) {
       // Accepting a little slowness for the uncommon case.
-      if (S.view.slice(m0, m1) == W.view.slice(n0, n1)) m0
-      else -1
+      if (S.view.slice(m0, m1) == W.view.slice(n0, n1)) m0 else -1
     }
     // Now we know we actually need KMP search, so do it
     else

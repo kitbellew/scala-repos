@@ -139,10 +139,8 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
 
   /** Calculates the index into the data array for row and column */
   def linearIndex(row: Int, col: Int): Int = {
-    if (isTranspose)
-      offset + col + row * majorStride
-    else
-      offset + row + col * majorStride
+    if (isTranspose) offset + col + row * majorStride
+    else offset + row + col * majorStride
   }
 
   def rowColumnFromLinearIndex(index: Int): (Int, Int) = {
@@ -209,8 +207,7 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
       if (!canFlattenView)
         throw new UnsupportedOperationException(
           "Cannot make a view of this matrix.")
-      else
-        DenseVector.create(data, offset, 1, rows * cols)
+      else DenseVector.create(data, offset, 1, rows * cols)
     case View.Copy =>
       toDenseVector
     case View.Prefer =>

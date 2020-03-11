@@ -125,16 +125,14 @@ class PhantomJSEnv(
       def maybeExit(code: Int) =
         if (autoExit)
           s"window.callPhantom({ action: 'exit', returnValue: $code });"
-        else
-          ""
+        else ""
 
       /* The WebSocket server starts asynchronously. We must wait for it to
        * be fully operational before a) retrieving the port it is running on
        * and b) feeding the connecting JS script to the VM.
        */
       synchronized {
-        while (!mgrIsRunning)
-          wait(10000)
+        while (!mgrIsRunning) wait(10000)
         if (!mgrIsRunning)
           throw new TimeoutException(
             "The PhantomJS WebSocket server startup timed out")
@@ -295,10 +293,8 @@ class PhantomJSEnv(
         wait(deadline.millisLeft)
 
       if (recvBuf.isEmpty) {
-        if (mgr.isClosed)
-          throw new ComJSEnv.ComClosedException
-        else
-          throw new TimeoutException("Timeout expired")
+        if (mgr.isClosed) throw new ComJSEnv.ComClosedException
+        else throw new TimeoutException("Timeout expired")
       }
 
       recvBuf.dequeue()
@@ -310,8 +306,7 @@ class PhantomJSEnv(
       *  terminated. Returns true if a connection was established.
       */
     private def awaitConnection(): Boolean = {
-      while (!mgr.isConnected && !mgr.isClosed && isRunning)
-        wait(10000)
+      while (!mgr.isConnected && !mgr.isClosed && isRunning) wait(10000)
       if (!mgr.isConnected && !mgr.isClosed && isRunning)
         throw new TimeoutException(
           "The PhantomJS WebSocket client took too long to connect")

@@ -70,8 +70,7 @@ trait TypeDiagnostics {
   }
 
   def setAddendum(pos: Position, msg: () => String) =
-    if (pos != NoPosition)
-      addendums(pos) = msg
+    if (pos != NoPosition) addendums(pos) = msg
 
   def withAddendum(pos: Position) =
     (_: String) + addendums.getOrElse(pos, () => "")()
@@ -181,8 +180,7 @@ trait TypeDiagnostics {
     def applyMessage = defaultMessage + tree.symbol.locationString
 
     if (!tree.hasExistingSymbol) {
-      if (isTyperInPattern) patternMessage
-      else exprMessage
+      if (isTyperInPattern) patternMessage else exprMessage
     } else if (sym.isOverloaded) overloadedMessage
     else if (sym.isModule) moduleMessage
     else if (sym.name == nme.apply) applyMessage
@@ -210,8 +208,7 @@ trait TypeDiagnostics {
     else {
       // A sanity check against expansion being identical to original.
       val s = "" + deepDealias
-      if (s == "" + tp) ""
-      else "\n    (which expands to)  " + s
+      if (s == "" + tp) "" else "\n    (which expands to)  " + s
     }
   }
 
@@ -377,9 +374,7 @@ trait TypeDiagnostics {
     def name_==(other: TypeDiag) = sym.name == other.sym.name
 
     def compare(other: TypeDiag) =
-      if (this == other) 0
-      else if (sym isLess other.sym) -1
-      else 1
+      if (this == other) 0 else if (sym isLess other.sym) -1 else 1
 
     override def toString = {
       """
@@ -456,23 +451,19 @@ trait TypeDiagnostics {
         // If the types print identically, qualify them:
         //   a) If the dealiased owner is a package, the full path
         //   b) Otherwise, append (in <owner>)
-        if (td1 string_== td2)
-          tds foreach (_.nameQualify())
+        if (td1 string_== td2) tds foreach (_.nameQualify())
 
         // If they have the same simple name, and either of them is in the
         // scala package or predef, qualify with scala so it is not confusing why
         // e.g. java.util.Iterator and Iterator are different types.
-        if (td1 name_== td2)
-          tds foreach (_.qualifyDefaultNamespaces())
+        if (td1 name_== td2) tds foreach (_.qualifyDefaultNamespaces())
 
         // If they still print identically:
         //   a) If they are type parameters with different owners, append (in <owner>)
         //   b) Failing that, the best we can do is append "(some other)" to the latter.
         if (td1 string_== td2) {
-          if (td1 owner_== td2)
-            td2.modifyName("(some other)" + _)
-          else
-            tds foreach (_.typeQualify())
+          if (td1 owner_== td2) td2.modifyName("(some other)" + _)
+          else tds foreach (_.typeQualify())
         }
       }
       // performing the actual operation

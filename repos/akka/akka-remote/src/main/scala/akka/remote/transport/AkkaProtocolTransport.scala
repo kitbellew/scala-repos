@@ -424,8 +424,8 @@ private[transport] class ProtocolStateActor(
       stop()
 
     case Event(
-        Handle(wrappedHandle),
-        OutboundUnassociated(_, statusPromise, _)) ⇒
+          Handle(wrappedHandle),
+          OutboundUnassociated(_, statusPromise, _)) ⇒
       wrappedHandle.readHandlerPromise.trySuccess(
         ActorHandleEventListener(self))
       if (sendAssociate(wrappedHandle, localHandshakeInfo)) {
@@ -465,8 +465,8 @@ private[transport] class ProtocolStateActor(
       stop(FSM.Failure(info))
 
     case Event(
-        InboundPayload(p),
-        OutboundUnderlyingAssociated(statusPromise, wrappedHandle)) ⇒
+          InboundPayload(p),
+          OutboundUnderlyingAssociated(statusPromise, wrappedHandle)) ⇒
       decodePdu(p) match {
         case Associate(handshakeInfo)
             if refuseUid.exists(_ == handshakeInfo.uid) ⇒
@@ -497,8 +497,8 @@ private[transport] class ProtocolStateActor(
 
     // Events for inbound associations
     case Event(
-        InboundPayload(p),
-        InboundUnassociated(associationHandler, wrappedHandle)) ⇒
+          InboundPayload(p),
+          InboundUnassociated(associationHandler, wrappedHandle)) ⇒
       decodePdu(p) match {
         // After receiving Disassociate we MUST NOT send back a Disassociate (loop)
         case Disassociate(info) ⇒ stop(FSM.Failure(info))
@@ -605,8 +605,8 @@ private[transport] class ProtocolStateActor(
       stop()
 
     case Event(
-        HandleListenerRegistered(listener),
-        AssociatedWaitHandler(_, wrappedHandle, queue)) ⇒
+          HandleListenerRegistered(listener),
+          AssociatedWaitHandler(_, wrappedHandle, queue)) ⇒
       queue.foreach { listener notify InboundPayload(_) }
       stay() using ListenerReady(listener, wrappedHandle)
   }
@@ -651,9 +651,9 @@ private[transport] class ProtocolStateActor(
 
   onTermination {
     case StopEvent(
-        reason,
-        _,
-        OutboundUnassociated(remoteAddress, statusPromise, transport)) ⇒
+          reason,
+          _,
+          OutboundUnassociated(remoteAddress, statusPromise, transport)) ⇒
       statusPromise.tryFailure(reason match {
         case FSM.Failure(info: DisassociateInfo) ⇒ disassociateException(info)
         case _ ⇒
@@ -662,9 +662,9 @@ private[transport] class ProtocolStateActor(
       })
 
     case StopEvent(
-        reason,
-        _,
-        OutboundUnderlyingAssociated(statusPromise, wrappedHandle)) ⇒
+          reason,
+          _,
+          OutboundUnderlyingAssociated(statusPromise, wrappedHandle)) ⇒
       statusPromise.tryFailure(reason match {
         case FSM.Failure(TimeoutReason(errorMessage)) ⇒
           new AkkaProtocolException(errorMessage)
@@ -680,9 +680,9 @@ private[transport] class ProtocolStateActor(
       wrappedHandle.disassociate()
 
     case StopEvent(
-        reason,
-        _,
-        AssociatedWaitHandler(handlerFuture, wrappedHandle, queue)) ⇒
+          reason,
+          _,
+          AssociatedWaitHandler(handlerFuture, wrappedHandle, queue)) ⇒
       // Invalidate exposed but still unfinished promise. The underlying association disappeared, so after
       // registration immediately signal a disassociate
       val disassociateNotification = reason match {

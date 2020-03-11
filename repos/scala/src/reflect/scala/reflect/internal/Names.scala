@@ -61,8 +61,7 @@ trait Names extends api.Names {
       offset: Int,
       len: Int): Boolean = {
     var i = 0
-    while ((i < len) && (chrs(index + i) == cs(offset + i)))
-      i += 1
+    while ((i < len) && (chrs(index + i) == cs(offset + i))) i += 1
     i == len
   }
 
@@ -78,8 +77,7 @@ trait Names extends api.Names {
       chrs(nc + i) = cs(offset + i)
       i += 1
     }
-    if (len == 0) nc += 1
-    else nc = nc + len
+    if (len == 0) nc += 1 else nc = nc + len
   }
 
   /** Create a term name from the characters in cs[offset..offset+len-1]. */
@@ -113,8 +111,7 @@ trait Names extends api.Names {
                n.start,
                cs,
                offset,
-               len)))
-        n = n.next
+               len))) n = n.next
 
       if (n ne null) n
       else {
@@ -365,15 +362,13 @@ trait Names extends api.Names {
     final def startsWith(prefix: Name, start: Int): Boolean = {
       var i = 0
       while (i < prefix.length && start + i < len &&
-             chrs(index + start + i) == chrs(prefix.start + i))
-        i += 1
+             chrs(index + start + i) == chrs(prefix.start + i)) i += 1
       i == prefix.length
     }
     final def startsWith(prefix: String, start: Int): Boolean = {
       var i = 0
       while (i < prefix.length && start + i < len &&
-             chrs(index + start + i) == prefix.charAt(i))
-        i += 1
+             chrs(index + start + i) == prefix.charAt(i)) i += 1
       i == prefix.length
     }
 
@@ -391,8 +386,7 @@ trait Names extends api.Names {
     final def endsWith(suffix: String, end: Int): Boolean = {
       var i = 1
       while (i <= suffix.length && i <= end &&
-             chrs(index + end - i) == suffix.charAt(suffix.length - i))
-        i += 1
+             chrs(index + end - i) == suffix.charAt(suffix.length - i)) i += 1
       i > suffix.length
     }
 
@@ -408,8 +402,7 @@ trait Names extends api.Names {
       var i = index
       val max = index + len
       while (i < max) {
-        if (chrs(i) == ch)
-          return true
+        if (chrs(i) == ch) return true
         i += 1
       }
       false
@@ -475,8 +468,7 @@ trait Names extends api.Names {
       if (this containsChar '$') {
         val str = toString
         val res = NameTransformer.decode(str)
-        if (res == str) str
-        else res
+        if (res == str) str else res
       } else toString
     }
 
@@ -592,8 +584,7 @@ trait Names extends api.Names {
         // Re-computing the hash saves a field for storing it in the TermName
         val h = hashValue(chrs, index, len) & HASH_MASK
         var n = typeHashtable(h)
-        while ((n ne null) && n.start != index)
-          n = n.next
+        while ((n ne null) && n.start != index) n = n.next
 
         if (n ne null) n
         else {
@@ -637,8 +628,7 @@ trait Names extends api.Names {
         // Re-computing the hash saves a field for storing it in the TypeName
         val h = hashValue(chrs, index, len) & HASH_MASK
         var n = termHashtable(h)
-        while ((n ne null) && n.start != index)
-          n = n.next
+        while ((n ne null) && n.start != index) n = n.next
 
         assert(n ne null, s"TypeName $this is missing its correspondent")
         n

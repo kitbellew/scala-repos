@@ -44,8 +44,7 @@ class MessageWriter(segmentSize: Int)
         attributes = timestampType.updateAttributes(attributes)
       write(attributes)
       // Write timestamp
-      if (magicValue > MagicValue_V0)
-        writeLong(timestamp)
+      if (magicValue > MagicValue_V0) writeLong(timestamp)
       // write the key
       if (key == null) { writeInt(-1) }
       else {

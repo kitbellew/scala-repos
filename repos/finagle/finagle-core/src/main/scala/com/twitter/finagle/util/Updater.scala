@@ -36,8 +36,7 @@ private[finagle] trait Updater[T] extends (T => Unit) {
 
   def apply(t: T) {
     q.offer(t)
-    if (n.getAndIncrement() > 0)
-      return
+    if (n.getAndIncrement() > 0) return
 
     do {
       val elems = new ArrayBuffer[T](1 + n.get)
@@ -48,8 +47,7 @@ private[finagle] trait Updater[T] extends (T => Unit) {
 
       elems += q.poll()
 
-      for (elem <- preprocess(elems.result))
-        handle(elem)
+      for (elem <- preprocess(elems.result)) handle(elem)
     } while (n.decrementAndGet() > 0)
   }
 }

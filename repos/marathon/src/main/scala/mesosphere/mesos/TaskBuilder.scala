@@ -285,8 +285,7 @@ class TaskBuilder(
       }
 
       // Set container type to MESOS by default (this is a required field)
-      if (!builder.hasType)
-        builder.setType(ContainerInfo.Type.MESOS)
+      if (!builder.hasType) builder.setType(ContainerInfo.Type.MESOS)
 
       if (builder.getType.equals(ContainerInfo.Type.MESOS)) {
         builder.setMesos(

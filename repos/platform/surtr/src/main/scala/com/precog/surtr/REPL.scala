@@ -155,10 +155,7 @@ trait REPL
 
       if (!tree.errors.isEmpty) { out.println(color.red(strs mkString "\n")) }
 
-      if (tree.errors filterNot isWarning isEmpty)
-        Some(tree)
-      else
-        None
+      if (tree.errors filterNot isWarning isEmpty) Some(tree) else None
     }
 
     def handle(c: Command) = c match {
@@ -230,8 +227,7 @@ trait REPL
           if ((successes lengthCompare 1) > 0)
             throw new AssertionError(
               "Fatal error: ambiguous parse results: " + results.mkString(", "))
-          else
-            successes.head
+          else successes.head
 
         if (handle(command)) {
           out.println()

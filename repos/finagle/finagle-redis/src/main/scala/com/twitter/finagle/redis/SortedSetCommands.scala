@@ -26,10 +26,8 @@ trait SortedSets { self: BaseClient =>
       withScores: JBoolean
   )(messages: List[Reply]): Either[ZRangeResults, Seq[ChannelBuffer]] = {
     val chanBufs = ReplyFormat.toChannelBuffers(messages)
-    if (withScores)
-      Left(ZRangeResults(returnPairs(chanBufs)))
-    else
-      Right(chanBufs)
+    if (withScores) Left(ZRangeResults(returnPairs(chanBufs)))
+    else Right(chanBufs)
   }
 
   /**

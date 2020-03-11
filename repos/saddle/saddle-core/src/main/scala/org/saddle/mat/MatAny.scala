@@ -41,10 +41,8 @@ class MatAny[T: ST](r: Int, c: Int, values: Array[T]) extends Mat[T] {
   lazy val cachedT = {
     val arrT = values.clone()
 
-    if (this.isSquare)
-      MatMath.squareTranspose(numCols, arrT)
-    else
-      MatMath.blockTranspose(numRows, numCols, this.toArray, arrT)
+    if (this.isSquare) MatMath.squareTranspose(numCols, arrT)
+    else MatMath.blockTranspose(numRows, numCols, this.toArray, arrT)
 
     new MatAny[T](numCols, numRows, arrT)
   }

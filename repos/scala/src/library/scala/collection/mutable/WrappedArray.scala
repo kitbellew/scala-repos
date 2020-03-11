@@ -67,10 +67,8 @@ abstract class WrappedArray[T]
 
   override def toArray[U >: T: ClassTag]: Array[U] = {
     val thatElementClass = arrayElementClass(implicitly[ClassTag[U]])
-    if (elementClass eq thatElementClass)
-      array.asInstanceOf[Array[U]]
-    else
-      super.toArray[U]
+    if (elementClass eq thatElementClass) array.asInstanceOf[Array[U]]
+    else super.toArray[U]
   }
 
   override def stringPrefix = "WrappedArray"

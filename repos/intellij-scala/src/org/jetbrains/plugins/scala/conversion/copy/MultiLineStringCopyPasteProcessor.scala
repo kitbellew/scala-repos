@@ -59,8 +59,7 @@ class MultiLineStringCopyPasteProcessor extends CopyPastePreProcessor {
 
     (if (document.getText(textRange).trim.length == 0 && (text
            .trim()
-           .length == 0 || text.trim.charAt(0) != marginChar))
-       marginChar
+           .length == 0 || text.trim.charAt(0) != marginChar)) marginChar
      else "") + text.replace("\n", "\n " + marginChar)
   }
 

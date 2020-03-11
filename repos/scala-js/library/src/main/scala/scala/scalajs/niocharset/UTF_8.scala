@@ -76,10 +76,8 @@ private[niocharset] object UTF_8
 
   private class Decoder extends CharsetDecoder(UTF_8, 1.0f, 1.0f) {
     def decodeLoop(in: ByteBuffer, out: CharBuffer): CoderResult = {
-      if (in.hasArray && out.hasArray)
-        decodeLoopArray(in, out)
-      else
-        decodeLoopNoArray(in, out)
+      if (in.hasArray && out.hasArray) decodeLoopArray(in, out)
+      else decodeLoopNoArray(in, out)
     }
 
     private def decodeLoopArray(
@@ -135,16 +133,14 @@ private[niocharset] object UTF_8
               if (decoded.failure != null) { finalize(decoded.failure) }
               else if (decoded.low == 0) {
                 // not a surrogate pair
-                if (outPos == outEnd)
-                  finalize(CoderResult.OVERFLOW)
+                if (outPos == outEnd) finalize(CoderResult.OVERFLOW)
                 else {
                   outArray(outPos) = decoded.high
                   loop(inPos + length, outPos + 1)
                 }
               } else {
                 // a surrogate pair
-                if (outPos + 2 > outEnd)
-                  finalize(CoderResult.OVERFLOW)
+                if (outPos + 2 > outEnd) finalize(CoderResult.OVERFLOW)
                 else {
                   outArray(outPos) = decoded.high
                   outArray(outPos + 1) = decoded.low
@@ -203,16 +199,14 @@ private[niocharset] object UTF_8
                 finalize(bytesRead, decoded.failure)
               } else if (decoded.low == 0) {
                 // not a surrogate pair
-                if (!out.hasRemaining)
-                  finalize(bytesRead, CoderResult.OVERFLOW)
+                if (!out.hasRemaining) finalize(bytesRead, CoderResult.OVERFLOW)
                 else {
                   out.put(decoded.high)
                   loop()
                 }
               } else {
                 // a surrogate pair
-                if (out.remaining < 2)
-                  finalize(bytesRead, CoderResult.OVERFLOW)
+                if (out.remaining < 2) finalize(bytesRead, CoderResult.OVERFLOW)
                 else {
                   out.put(decoded.high)
                   out.put(decoded.low)
@@ -293,10 +287,8 @@ private[niocharset] object UTF_8
 
   private class Encoder extends CharsetEncoder(UTF_8, 1.1f, 4.0f) {
     def encodeLoop(in: CharBuffer, out: ByteBuffer): CoderResult = {
-      if (in.hasArray && out.hasArray)
-        encodeLoopArray(in, out)
-      else
-        encodeLoopNoArray(in, out)
+      if (in.hasArray && out.hasArray) encodeLoopArray(in, out)
+      else encodeLoopNoArray(in, out)
     }
 
     private def encodeLoopArray(
@@ -328,16 +320,14 @@ private[niocharset] object UTF_8
 
           if (c1 < 0x80) {
             // Encoding in one byte
-            if (outPos == outEnd)
-              finalize(CoderResult.OVERFLOW)
+            if (outPos == outEnd) finalize(CoderResult.OVERFLOW)
             else {
               outArray(outPos) = c1.toByte
               loop(inPos + 1, outPos + 1)
             }
           } else if (c1 < 0x800) {
             // Encoding in 2 bytes (by construction, not a surrogate)
-            if (outPos + 2 > outEnd)
-              finalize(CoderResult.OVERFLOW)
+            if (outPos + 2 > outEnd) finalize(CoderResult.OVERFLOW)
             else {
               outArray(outPos) = ((c1 >> 6) | 0xc0).toByte
               outArray(outPos + 1) = ((c1 & 0x3f) | 0x80).toByte
@@ -345,8 +335,7 @@ private[niocharset] object UTF_8
             }
           } else if (!isSurrogate(c1)) {
             // Not a surrogate, encoding in 3 bytes
-            if (outPos + 3 > outEnd)
-              finalize(CoderResult.OVERFLOW)
+            if (outPos + 3 > outEnd) finalize(CoderResult.OVERFLOW)
             else {
               outArray(outPos) = ((c1 >> 12) | 0xe0).toByte
               outArray(outPos + 1) = (((c1 >> 6) & 0x3f) | 0x80).toByte
@@ -355,16 +344,14 @@ private[niocharset] object UTF_8
             }
           } else if (isHighSurrogate(c1)) {
             // Should have a low surrogate that follows
-            if (inPos + 1 == inEnd)
-              finalize(CoderResult.UNDERFLOW)
+            if (inPos + 1 == inEnd) finalize(CoderResult.UNDERFLOW)
             else {
               val c2 = inArray(inPos + 1)
               if (!isLowSurrogate(c2)) {
                 finalize(CoderResult.malformedForLength(1))
               } else {
                 // Surrogate pair, encoding in 4 bytes
-                if (outPos + 4 > outEnd)
-                  finalize(CoderResult.OVERFLOW)
+                if (outPos + 4 > outEnd) finalize(CoderResult.OVERFLOW)
                 else {
                   val cp = toCodePoint(c1, c2)
                   outArray(outPos) = ((cp >> 18) | 0xf0).toByte
@@ -400,16 +387,14 @@ private[niocharset] object UTF_8
 
           if (c1 < 0x80) {
             // Encoding in one byte
-            if (!out.hasRemaining)
-              finalize(1, CoderResult.OVERFLOW)
+            if (!out.hasRemaining) finalize(1, CoderResult.OVERFLOW)
             else {
               out.put(c1.toByte)
               loop()
             }
           } else if (c1 < 0x800) {
             // Encoding in 2 bytes (by construction, not a surrogate)
-            if (out.remaining < 2)
-              finalize(1, CoderResult.OVERFLOW)
+            if (out.remaining < 2) finalize(1, CoderResult.OVERFLOW)
             else {
               out.put(((c1 >> 6) | 0xc0).toByte)
               out.put(((c1 & 0x3f) | 0x80).toByte)
@@ -417,8 +402,7 @@ private[niocharset] object UTF_8
             }
           } else if (!isSurrogate(c1)) {
             // Not a surrogate, encoding in 3 bytes
-            if (out.remaining < 3)
-              finalize(1, CoderResult.OVERFLOW)
+            if (out.remaining < 3) finalize(1, CoderResult.OVERFLOW)
             else {
               out.put(((c1 >> 12) | 0xe0).toByte)
               out.put((((c1 >> 6) & 0x3f) | 0x80).toByte)
@@ -427,16 +411,14 @@ private[niocharset] object UTF_8
             }
           } else if (isHighSurrogate(c1)) {
             // Should have a low surrogate that follows
-            if (!in.hasRemaining)
-              finalize(1, CoderResult.UNDERFLOW)
+            if (!in.hasRemaining) finalize(1, CoderResult.UNDERFLOW)
             else {
               val c2 = in.get()
               if (!isLowSurrogate(c2)) {
                 finalize(2, CoderResult.malformedForLength(1))
               } else {
                 // Surrogate pair, encoding in 4 bytes
-                if (out.remaining < 4)
-                  finalize(2, CoderResult.OVERFLOW)
+                if (out.remaining < 4) finalize(2, CoderResult.OVERFLOW)
                 else {
                   val cp = toCodePoint(c1, c2)
                   out.put(((cp >> 18) | 0xf0).toByte)

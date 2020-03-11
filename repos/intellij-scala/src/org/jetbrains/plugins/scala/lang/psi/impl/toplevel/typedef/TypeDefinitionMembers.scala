@@ -1033,8 +1033,7 @@ object TypeDefinitionMembers {
                         elem,
                         state.put(
                           ScSubstitutor.key,
-                          n.substitutor followed subst)))
-                    return false
+                          n.substitutor followed subst))) return false
                 } else {
                   if (n.supers.nonEmpty &&
                       !processor.execute(

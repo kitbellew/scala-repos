@@ -615,8 +615,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
             genLoadQualifier(fun)
 
             // TODO @lry make pattern match
-            if (l.isPrimitive && r.isPrimitive)
-              genConversion(l, r, cast)
+            if (l.isPrimitive && r.isPrimitive) genConversion(l, r, cast)
             else if (l.isPrimitive) {
               bc drop l
               if (cast) {
@@ -997,8 +996,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
          * emitted instruction was an ATHROW. As explained above, it is OK to emit a second ATHROW,
          * the verifiers will be happy.
          */
-        if (lastInsn.getOpcode != asm.Opcodes.ATHROW)
-          emit(asm.Opcodes.ATHROW)
+        if (lastInsn.getOpcode != asm.Opcodes.ATHROW) emit(asm.Opcodes.ATHROW)
       } else if (from.isNullType) {
         /* After loading an expression of type `scala.runtime.Null$`, introduce POP; ACONST_NULL.
          * This is required to pass the verifier: in Scala's type system, Null conforms to any
@@ -1197,8 +1195,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
       val jowner = internalName(receiver)
 
       if (style.isSuper && (isTraitCallToObjectMethod || receiver.isTraitOrInterface) && !cnode.interfaces
-            .contains(jowner))
-        cnode.interfaces.add(jowner)
+            .contains(jowner)) cnode.interfaces.add(jowner)
 
       val jname = method.javaSimpleName.toString
       val bmType = methodBTypeFromSymbol(method)
@@ -1254,8 +1251,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
         if (isPrimitive(fun.symbol) &&
             scalaPrimitives.getPrimitive(fun.symbol) == scalaPrimitives.CONCAT)
           liftStringConcat(larg) ::: rarg
-        else
-          tree :: Nil
+        else tree :: Nil
       case _ =>
         tree :: Nil
     }
@@ -1433,8 +1429,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
                     tree.pos)
               } else if (scalaPrimitives.isComparisonOp(code)) {
                 genComparisonOp(lhs, rhs, code)
-              } else
-                loadAndTestBoolean()
+              } else loadAndTestBoolean()
           }
 
         case _ => loadAndTestBoolean()

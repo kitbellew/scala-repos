@@ -93,8 +93,7 @@ class ScalaTool extends ScalaMatchingTask {
   def setPlatforms(input: String) = {
     platforms = input.split(",").toList.flatMap { s: String =>
       val st = s.trim
-      if (Platforms.isPermissible(st))
-        (if (input != "") List(st) else Nil)
+      if (Platforms.isPermissible(st)) (if (input != "") List(st) else Nil)
       else { buildError("Platform " + st + " does not exist.") }
     }
   }
@@ -137,8 +136,7 @@ class ScalaTool extends ScalaMatchingTask {
       val stArray = st.split("=", 2)
       if (stArray.length == 2) {
         if (input != "") List((stArray(0), stArray(1))) else Nil
-      } else
-        buildError("Property " + st + " is not formatted properly.")
+      } else buildError("Property " + st + " is not formatted properly.")
     }
   }
 
@@ -207,10 +205,8 @@ class ScalaTool extends ScalaMatchingTask {
           token.append(char)
           char = chars.next()
         }
-        if (token.toString == "")
-          builder.append('@')
-        else
-          builder.append(pre + token.toString + post)
+        if (token.toString == "") builder.append('@')
+        else builder.append(pre + token.toString + post)
       } else builder.append(char)
     }
     builder.toString
@@ -233,10 +229,8 @@ class ScalaTool extends ScalaMatchingTask {
         }
         if (tokens.contains(token.toString))
           builder.append(tokens(token.toString))
-        else if (token.toString == "")
-          builder.append('@')
-        else
-          builder.append("@" + token.toString + "@")
+        else if (token.toString == "") builder.append('@')
+        else builder.append("@" + token.toString + "@")
       } else builder.append(char)
     }
     builder.toString

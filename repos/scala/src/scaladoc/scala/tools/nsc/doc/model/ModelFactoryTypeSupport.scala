@@ -77,8 +77,7 @@ trait ModelFactoryTypeSupport {
                 (aSym == bSym))
               /* normalization doesn't play tricks on us */
               preSym
-            else
-              bSym.owner
+            else bSym.owner
 
           val link =
             findTemplateMaybe(bSym) match {
@@ -96,8 +95,7 @@ trait ModelFactoryTypeSupport {
                     LinkToMember(bMbr, oTpl)
                   case _ =>
                     val name = makeQualifiedName(bSym)
-                    if (!bSym.owner.hasPackageFlag)
-                      Tooltip(name)
+                    if (!bSym.owner.hasPackageFlag) Tooltip(name)
                     else
                       findExternalLink(bSym, name).getOrElse(
                         // (3) if we couldn't find neither the owner nor external URL to link to, show a tooltip with the qualified name
@@ -113,8 +111,7 @@ trait ModelFactoryTypeSupport {
           // the prefix only for ambiguous references, not for overloaded ones.
           def needsPrefix: Boolean = {
             if ((owner != bSym.owner || preSym.isRefinementClass) && (normalizeTemplate(
-                  owner) != inTpl.sym))
-              return true
+                  owner) != inTpl.sym)) return true
             // don't get tricked into prefixing method type params and existentials:
             // I tried several tricks BUT adding the method for which I'm creating the type => that simply won't scale,
             // as ValueParams are independent of their parent member, and I really don't want to add this information to
@@ -128,8 +125,7 @@ trait ModelFactoryTypeSupport {
                 // No syms with that name, look further inside the owner chain
                 case sym =>
                   // Symbol found -- either the correct symbol, another one OR an overloaded alternative
-                  if (sym == bSym)
-                    return false
+                  if (sym == bSym) return false
                   else
                     sym.info match {
                       case OverloadedType(owner, alternatives) =>

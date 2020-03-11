@@ -899,10 +899,8 @@ object IngestTools extends Command {
 
   def getJsonAt(path: String, client: ZkClient): Option[JValue] = {
     val bytes = client.readData(path).asInstanceOf[Array[Byte]]
-    if (bytes == null || bytes.length == 0)
-      None
-    else
-      JParser.parseFromByteBuffer(ByteBuffer.wrap(bytes)).toOption
+    if (bytes == null || bytes.length == 0) None
+    else JParser.parseFromByteBuffer(ByteBuffer.wrap(bytes)).toOption
   }
 
   def getStatAt(path: String, conn: ZkConnection): Option[Stat] = {

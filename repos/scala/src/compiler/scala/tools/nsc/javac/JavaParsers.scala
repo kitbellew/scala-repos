@@ -93,8 +93,7 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
         // no more errors on this token.
         lastErrorPos = in.currentPos
       }
-      if (skipIt)
-        skip()
+      if (skipIt) skip()
     }
     def errorTypeTree = TypeTree().setType(ErrorType) setPos in.currentPos
 
@@ -684,8 +683,7 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
           } else nameOffset
         }
       }
-      if (in.token == STATIC) in.nextToken()
-      else buf += nme.ROOTPKG
+      if (in.token == STATIC) in.nextToken() else buf += nme.ROOTPKG
       val lastnameOffset = collectIdents()
       accept(SEMI)
       val names = buf.toList
@@ -782,10 +780,8 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
             mods |= Flags.STATIC
           val decls = memberDecl(mods, parentToken)
           (if (mods.hasStaticFlag || inInterface && !(decls exists (_.isInstanceOf[
-                 DefDef])))
-             statics
-           else
-             members) ++= decls
+                 DefDef]))) statics
+           else members) ++= decls
         }
       }
       def forwarders(sdef: Tree): List[Tree] = sdef match {
@@ -937,12 +933,10 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
         case _       => tpnme.EMPTY
       }
       val buf = new ListBuffer[Tree]
-      while (in.token == IMPORT)
-        buf ++= importDecl()
+      while (in.token == IMPORT) buf ++= importDecl()
       while (in.token != EOF && in.token != RBRACE) {
         while (in.token == SEMI) in.nextToken()
-        if (in.token != EOF)
-          buf ++= typeDecl(modifiers(inInterface = false))
+        if (in.token != EOF) buf ++= typeDecl(modifiers(inInterface = false))
       }
       accept(EOF)
       atPos(pos) { makePackaging(pkg, buf.toList) }

@@ -65,16 +65,12 @@ object VerifyConsumerRebalance extends Logging {
       try {
         if (validateRebalancingOperation(zkUtils, group))
           println("Rebalance operation successful !")
-        else
-          println("Rebalance operation failed !")
+        else println("Rebalance operation failed !")
       } catch {
         case e2: Throwable =>
           error("Error while verifying current rebalancing operation", e2)
       }
-    } finally {
-      if (zkUtils != null)
-        zkUtils.close()
-    }
+    } finally { if (zkUtils != null) zkUtils.close() }
   }
 
   private def validateRebalancingOperation(

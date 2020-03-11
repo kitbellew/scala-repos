@@ -10,8 +10,7 @@ class RulesTest extends FunSuite {
   private var flag = false
 
   private val maybeRule = Rule.apply(Category.Performance, "R1", "Maybe") {
-    if (flag) Seq(Issue("welp"))
-    else Nil
+    if (flag) Seq(Issue("welp")) else Nil
   }
 
   private val neverRule = Rule.apply(Category.Performance, "R2", "Good") { Nil }

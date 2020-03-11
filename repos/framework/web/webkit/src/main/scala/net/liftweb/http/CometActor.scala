@@ -476,10 +476,7 @@ trait BaseCometActor
   val uniqueId = Helpers.nextFuncName
   private var spanId = uniqueId
   @volatile private var _lastRenderTime =
-    if (partialUpdateStream_?)
-      0
-    else
-      Helpers.nextNum
+    if (partialUpdateStream_?) 0 else Helpers.nextNum
 
   /**
     * If we're going to cache the last rendering, here's the
@@ -524,10 +521,8 @@ trait BaseCometActor
   private def lastRendering: RenderOut =
     if (dontCacheRendering) {
       val ret =
-        if (partialUpdateStream_?)
-          nsToNsFuncToRenderOut(_ => NodeSeq.Empty)
-        else
-          render
+        if (partialUpdateStream_?) nsToNsFuncToRenderOut(_ => NodeSeq.Empty)
+        else render
       theSession.updateFunctionMap(S.functionMap, uniqueId, lastRenderTime)
       ret
     } else { _realLastRendering }

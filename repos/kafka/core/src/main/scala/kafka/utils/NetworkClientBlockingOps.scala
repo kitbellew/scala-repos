@@ -57,8 +57,7 @@ class NetworkClientBlockingOps(val client: NetworkClient) extends AnyVal {
   def blockingReady(node: Node, timeout: Long)(
       implicit time: JTime): Boolean = {
     client.ready(node, time.milliseconds()) || pollUntil(timeout) { (_, now) =>
-      if (client.isReady(node, now))
-        true
+      if (client.isReady(node, now)) true
       else if (client.connectionFailed(node))
         throw new IOException(s"Connection to $node failed")
       else false
@@ -109,8 +108,7 @@ class NetworkClientBlockingOps(val client: NetworkClient) extends AnyVal {
       predicate: (Seq[ClientResponse], Long) => Boolean)(
       implicit time: JTime): Boolean = {
     pollUntilFound(timeout) { (responses, now) =>
-      if (predicate(responses, now)) Some(true)
-      else None
+      if (predicate(responses, now)) Some(true) else None
     }.fold(false)(_ => true)
   }
 

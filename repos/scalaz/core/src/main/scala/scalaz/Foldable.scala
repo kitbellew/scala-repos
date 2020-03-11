@@ -318,11 +318,7 @@ trait Foldable[F[_]] { self =>
         case (x, b) => {
           val pa = p(a)
           (
-            if (pa)
-              if (b)
-                (a <:: x.head) :: x.tail
-              else
-                NonEmptyList(a) :: x
+            if (pa) if (b) (a <:: x.head) :: x.tail else NonEmptyList(a) :: x
             else x,
             pa)
         }
@@ -332,18 +328,14 @@ trait Foldable[F[_]] { self =>
   def distinct[A](fa: F[A])(implicit A: Order[A]): IList[A] =
     foldLeft(fa, (ISet.empty[A], IList.empty[A])) {
       case ((seen, acc), a) =>
-        if (seen.notMember(a))
-          (seen.insert(a), a :: acc)
-        else (seen, acc)
+        if (seen.notMember(a)) (seen.insert(a), a :: acc) else (seen, acc)
     }._2.reverse
 
   /** ``O(n^2^)`` complexity */
   def distinctE[A](fa: F[A])(implicit A: Equal[A]): IList[A] =
     foldLeft(fa, IList.empty[A]) {
       case (seen, a) =>
-        if (!IList.instances.element(seen, a))
-          a :: seen
-        else seen
+        if (!IList.instances.element(seen, a)) a :: seen else seen
     }.reverse
 
   def collapse[X[_], A](x: F[A])(implicit A: ApplicativePlus[X]): X[A] =

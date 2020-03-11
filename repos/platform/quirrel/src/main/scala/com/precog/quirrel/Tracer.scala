@@ -142,8 +142,7 @@ trait Tracer extends parser.AST with typer.Binder {
           loop(stack :+ grph)(idx)
       }
 
-      if (result.isEmpty) stack
-      else result.toList
+      if (result.isEmpty) stack else result.toList
     }
 
     targetLocations map { loop(Nil) } toList

@@ -32,8 +32,7 @@ private[wiki] final class Fetch(gitUrl: String, markdownPath: String)(
 
   private def filePage(file: File): Option[Page] = {
     val name = """^(.+)\.md$""".r.replaceAllIn(file.getName, _ group 1)
-    if (name == "Home") None
-    else Page.make(name, toHtml(file))
+    if (name == "Home") None else Page.make(name, toHtml(file))
   }
 
   private def getFiles: Fu[List[File]] = Future {

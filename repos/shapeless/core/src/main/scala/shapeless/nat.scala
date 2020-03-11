@@ -116,8 +116,7 @@ trait NatMacroDefns {
 
     @tailrec
     def loop(i: Int, acc: Type): Type = {
-      if (i == 0) acc
-      else loop(i - 1, appliedType(succTpe, acc))
+      if (i == 0) acc else loop(i - 1, appliedType(succTpe, acc))
     }
 
     loop(i, _0Tpe)

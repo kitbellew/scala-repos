@@ -82,8 +82,7 @@ private[thrift] class TTwitterClientFilter(
       case None => // skip
     }
 
-    if (!ctxs.isEmpty)
-      header.setContexts(ctxs)
+    if (!ctxs.isEmpty) header.setContexts(ctxs)
 
     val dtab = Dtab.local
     if (dtab.nonEmpty) {
@@ -113,10 +112,7 @@ private[thrift] class TTwitterClientFilter(
     Trace.recordRpc(msg.name)
 
     val thriftRequest =
-      if (isUpgraded)
-        mkTTwitterRequest(request)
-      else
-        request
+      if (isUpgraded) mkTTwitterRequest(request) else request
 
     val reply = service(thriftRequest)
 
@@ -131,8 +127,7 @@ private[thrift] class TTwitterClientFilter(
             response,
             new thrift.ResponseHeader,
             protocolFactory)
-        } else
-          response
+        } else response
       }
     }
   }

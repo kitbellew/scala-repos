@@ -72,8 +72,7 @@ class LinkedHashSet[A]
     val e = removeEntry(elem)
     if (e eq null) false
     else {
-      if (e.earlier eq null) firstEntry = e.later
-      else e.earlier.later = e.later
+      if (e.earlier eq null) firstEntry = e.later else e.earlier.later = e.later
       if (e.later eq null) lastEntry = e.earlier
       else e.later.earlier = e.earlier
       true

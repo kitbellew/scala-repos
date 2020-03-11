@@ -63,11 +63,9 @@ class ByteBoundedBlockingQueue[E](
       if (currentByteSize.get() < queueByteCapacity && timeoutNanos > 0) {
         val success = queue.offer(e, timeoutNanos, TimeUnit.NANOSECONDS)
         // only increase queue byte size if put succeeds
-        if (success)
-          currentByteSize.addAndGet(sizeFunction.get(e))
+        if (success) currentByteSize.addAndGet(sizeFunction.get(e))
         // wake up another thread in case multiple threads are waiting
-        if (currentByteSize.get() < queueByteCapacity)
-          putLock.notify()
+        if (currentByteSize.get() < queueByteCapacity) putLock.notify()
         success
       } else { false }
     }
@@ -88,11 +86,9 @@ class ByteBoundedBlockingQueue[E](
       if (currentByteSize.get() >= queueByteCapacity) { false }
       else {
         val success = queue.offer(e)
-        if (success)
-          currentByteSize.addAndGet(sizeFunction.get(e))
+        if (success) currentByteSize.addAndGet(sizeFunction.get(e))
         // wake up another thread in case multiple threads are waiting
-        if (currentByteSize.get() < queueByteCapacity)
-          putLock.notify()
+        if (currentByteSize.get() < queueByteCapacity) putLock.notify()
         success
       }
     }
@@ -110,14 +106,11 @@ class ByteBoundedBlockingQueue[E](
     if (e == null)
       throw new NullPointerException("Putting null element into queue.")
     putLock synchronized {
-      if (currentByteSize.get() >= queueByteCapacity)
-        putLock.wait()
+      if (currentByteSize.get() >= queueByteCapacity) putLock.wait()
       val success = queue.offer(e)
-      if (success)
-        currentByteSize.addAndGet(sizeFunction.get(e))
+      if (success) currentByteSize.addAndGet(sizeFunction.get(e))
       // wake up another thread in case multiple threads are waiting
-      if (currentByteSize.get() < queueByteCapacity)
-        putLock.notify()
+      if (currentByteSize.get() < queueByteCapacity) putLock.notify()
       success
     }
   }

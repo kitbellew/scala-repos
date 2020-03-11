@@ -535,8 +535,7 @@ object Test7 {
   val x = new Outer
   x.Inner // initialize
   val y: Outer = read(write(x))
-  if (y.Inner == null)
-    println("Inner object is null")
+  if (y.Inner == null) println("Inner object is null")
 }
 
 // Verify that transient lazy vals don't get serialized

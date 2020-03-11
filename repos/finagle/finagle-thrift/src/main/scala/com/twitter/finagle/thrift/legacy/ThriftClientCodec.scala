@@ -73,8 +73,5 @@ private[thrift] class ThriftClientDecoder(protocolFactory: TProtocolFactory)
       state: VoidEnum) =
     // TProtocol assumes a read of zero bytes is an error, so treat empty buffers
     // as no-ops. This only happens with the ReplayingDecoder.
-    if (buffer.readable)
-      decodeThriftReply(ctx, channel, buffer)
-    else
-      null
+    if (buffer.readable) decodeThriftReply(ctx, channel, buffer) else null
 }

@@ -22,8 +22,7 @@ class BufferedReader(in: Reader, sz: Int) extends Reader {
     ensureOpen()
 
     val srcBuf = buf
-    if (buf.size < readAheadLimit)
-      buf = new Array[Char](readAheadLimit)
+    if (buf.size < readAheadLimit) buf = new Array[Char](readAheadLimit)
 
     // Move data to beginning of buffer
     if (pos != 0 || (buf ne srcBuf))
@@ -74,8 +73,7 @@ class BufferedReader(in: Reader, sz: Int) extends Reader {
 
     if (pos >= end) {
       // We have reached the end of the stream (prepareRead() returned false)
-      if (res == "") null
-      else res
+      if (res == "") null else res
     } else {
       // Consume terminator
       pos += 1
@@ -136,8 +134,7 @@ class BufferedReader(in: Reader, sz: Int) extends Reader {
   }
 
   private def ensureOpen(): Unit = {
-    if (closed)
-      throw new IOException("Operation on closed stream")
+    if (closed) throw new IOException("Operation on closed stream")
   }
 
 }

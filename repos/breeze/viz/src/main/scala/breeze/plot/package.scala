@@ -337,8 +337,7 @@ package object plot {
             GradientPaintScaleFactory[Double]()
               .apply(mt.valuesIterator.toList)
               .asInstanceOf[GradientPaintScale[Double]]
-          else
-            scale
+          else scale
         }
 
         val paintScale = new org.jfree.chart.renderer.PaintScale {

@@ -140,8 +140,7 @@ case class Complex(real: Double, imag: Double) {
   def pow(b: Complex): Complex = {
     if (b == Complex.zero) Complex.one
     else if (this == Complex.zero) {
-      if (b.imag != 0.0 || b.real < 0.0) Complex.nan
-      else Complex.zero
+      if (b.imag != 0.0 || b.real < 0.0) Complex.nan else Complex.zero
     } else {
       val c = log * b
       val expReal = math.exp(c.real)

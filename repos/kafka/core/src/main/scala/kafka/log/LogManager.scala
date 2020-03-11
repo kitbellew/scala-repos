@@ -77,8 +77,7 @@ class LogManager(
   val cleaner: LogCleaner =
     if (cleanerConfig.enableCleaner)
       new LogCleaner(cleanerConfig, logDirs, logs, time = time)
-    else
-      null
+    else null
 
   /**
     * Create and check validity of the given directories, specifically:
@@ -231,8 +230,7 @@ class LogManager(
         period = flushCheckpointMs,
         TimeUnit.MILLISECONDS)
     }
-    if (cleanerConfig.enableCleaner)
-      cleaner.startup()
+    if (cleanerConfig.enableCleaner) cleaner.startup()
   }
 
   /**
@@ -333,8 +331,7 @@ class LogManager(
     // If the log does not exist, skip it
     if (log != null) {
       //Abort and pause the cleaning of the log, and resume after truncation is done.
-      if (cleaner != null)
-        cleaner.abortAndPauseCleaning(topicAndPartition)
+      if (cleaner != null) cleaner.abortAndPauseCleaning(topicAndPartition)
       log.truncateFullyAndStartAt(newOffset)
       if (cleaner != null) {
         cleaner.maybeTruncateCheckpoint(
@@ -372,10 +369,7 @@ class LogManager(
     */
   def getLog(topicAndPartition: TopicAndPartition): Option[Log] = {
     val log = logs.get(topicAndPartition)
-    if (log == null)
-      None
-    else
-      Some(log)
+    if (log == null) None else Some(log)
   }
 
   /**
@@ -389,8 +383,7 @@ class LogManager(
       var log = logs.get(topicAndPartition)
 
       // check if the log has already been created in another thread
-      if (log != null)
-        return log
+      if (log != null) return log
 
       // if not, create it
       val dataDir = nextLogDir()
@@ -459,8 +452,7 @@ class LogManager(
     * Runs through the log removing segments older than a certain age
     */
   private def cleanupExpiredSegments(log: Log): Int = {
-    if (log.config.retentionMs < 0)
-      return 0
+    if (log.config.retentionMs < 0) return 0
     val startMs = time.milliseconds
     log.deleteOldSegments(startMs - _.lastModified > log.config.retentionMs)
   }
@@ -527,8 +519,7 @@ class LogManager(
         debug(
           "Checking if flush is needed on " + topicAndPartition.topic + " flush interval  " + log.config.flushMs +
             " last flushed " + log.lastFlushTime + " time since last flush: " + timeSinceLastFlush)
-        if (timeSinceLastFlush >= log.config.flushMs)
-          log.flush
+        if (timeSinceLastFlush >= log.config.flushMs) log.flush
       } catch {
         case e: Throwable =>
           error("Error flushing topic " + topicAndPartition.topic, e)

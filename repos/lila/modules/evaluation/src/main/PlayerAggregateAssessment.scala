@@ -75,11 +75,7 @@ case class PlayerAggregateAssessment(
                && cheatingSum >= 1) Engine
       else if (reportable) Report
       else Nothing
-    } else {
-      if (markable) Report
-      else if (reportable) Report
-      else Nothing
-    }
+    } else { if (markable) Report else if (reportable) Report else Nothing }
   }
 
   def countAssessmentValue(assessment: GameAssessment) =

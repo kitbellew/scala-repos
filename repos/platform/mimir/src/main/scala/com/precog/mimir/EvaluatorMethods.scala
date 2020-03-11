@@ -129,10 +129,8 @@ trait EvaluatorMethodsModule[M[+_]]
         sharedDerefs ++ unsharedLeft ++ unsharedRight
 
       val newIdentitySpec =
-        if (derefs.isEmpty)
-          trans.ConstLiteral(CEmptyArray, Leaf(SourceLeft))
-        else
-          derefs reduceLeft { trans.InnerArrayConcat(_, _) }
+        if (derefs.isEmpty) trans.ConstLiteral(CEmptyArray, Leaf(SourceLeft))
+        else derefs reduceLeft { trans.InnerArrayConcat(_, _) }
 
       val wrappedIdentitySpec =
         trans.WrapObject(newIdentitySpec, paths.Key.name)

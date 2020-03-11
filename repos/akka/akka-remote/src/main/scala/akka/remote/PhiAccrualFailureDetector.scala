@@ -185,10 +185,8 @@ class PhiAccrualFailureDetector(
       stdDeviation: Double): Double = {
     val y = (timeDiff - mean) / stdDeviation
     val e = math.exp(-y * (1.5976 + 0.070566 * y * y))
-    if (timeDiff > mean)
-      -math.log10(e / (1.0 + e))
-    else
-      -math.log10(1.0 - 1.0 / (1.0 + e))
+    if (timeDiff > mean) -math.log10(e / (1.0 + e))
+    else -math.log10(1.0 - 1.0 / (1.0 + e))
   }
 
   private val minStdDeviationMillis = minStdDeviation.toMillis
@@ -255,8 +253,7 @@ private[akka] final case class HeartbeatHistory private (
         intervals = intervals :+ interval,
         intervalSum = intervalSum + interval,
         squaredIntervalSum = squaredIntervalSum + pow2(interval))
-    else
-      dropOldest :+ interval // recur
+    else dropOldest :+ interval // recur
   }
 
   private def dropOldest: HeartbeatHistory =

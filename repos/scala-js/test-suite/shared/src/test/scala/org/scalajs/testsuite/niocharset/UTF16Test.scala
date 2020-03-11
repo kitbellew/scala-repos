@@ -118,8 +118,7 @@ class UTF16LETest extends BaseUTF16Test(Charset.forName("UTF-16LE")) {
 
   override protected def testEncode(in: CharBuffer)(
       outParts: OutPart[ByteBuffer]*): Unit = {
-    for (BufferPart(buf) <- outParts)
-      flipByteBuffer(buf)
+    for (BufferPart(buf) <- outParts) flipByteBuffer(buf)
     super.testEncode(in)(outParts: _*)
   }
 }

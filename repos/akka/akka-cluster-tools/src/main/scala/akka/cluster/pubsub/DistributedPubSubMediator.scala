@@ -362,10 +362,8 @@ object DistributedPubSubMediator {
             context.parent ! NoMoreSubscribers
           }
         case TerminateRequest ⇒
-          if (subscribers.isEmpty && context.children.isEmpty)
-            context stop self
-          else
-            context.parent ! NewSubscriberArrived
+          if (subscribers.isEmpty && context.children.isEmpty) context stop self
+          else context.parent ! NewSubscriberArrived
         case msg ⇒
           subscribers foreach { _ forward msg }
       }
@@ -375,8 +373,7 @@ object DistributedPubSubMediator {
       def receive = business.orElse[Any, Unit](defaultReceive)
 
       def remove(ref: ActorRef): Unit = {
-        if (subscribers.contains(ref))
-          subscribers -= ref
+        if (subscribers.contains(ref)) subscribers -= ref
         if (subscribers.isEmpty && context.children.isEmpty)
           pruneDeadline = Some(Deadline.now + emptyTimeToLive)
       }
@@ -612,8 +609,7 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
     case Publish(topic, msg, sendOneMessageToEachGroup) ⇒
       if (sendOneMessageToEachGroup)
         publishToEachGroup(mkKey(self.path / encName(topic)), msg)
-      else
-        publish(mkKey(self.path / encName(topic)), msg)
+      else publish(mkKey(self.path / encName(topic)), msg)
 
     case Put(ref: ActorRef) ⇒
       if (ref.path.address.hasGlobalScope)
@@ -675,8 +671,7 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
     case Status(otherVersions) ⇒
       // gossip chat starts with a Status message, containing the bucket versions of the other node
       val delta = collectDelta(otherVersions)
-      if (delta.nonEmpty)
-        sender() ! Delta(delta)
+      if (delta.nonEmpty) sender() ! Delta(delta)
       if (otherHasNewerVersions(otherVersions))
         sender() ! Status(versions = myVersions) // it will reply with Delta
 
@@ -719,16 +714,13 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
       }
 
     case MemberUp(m) ⇒
-      if (matchingRole(m))
-        nodes += m.address
+      if (matchingRole(m)) nodes += m.address
 
     case MemberWeaklyUp(m) ⇒
-      if (matchingRole(m))
-        nodes += m.address
+      if (matchingRole(m)) nodes += m.address
 
     case MemberRemoved(m, _) ⇒
-      if (m.address == selfAddress)
-        context stop self
+      if (m.address == selfAddress) context stop self
       else if (matchingRole(m)) {
         nodes -= m.address
         registry -= m.address
@@ -820,8 +812,7 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
           case (_, value) ⇒ value.version > v
         }
         count += deltaContent.size
-        if (count <= maxDeltaElements)
-          bucket.copy(content = deltaContent)
+        if (count <= maxDeltaElements) bucket.copy(content = deltaContent)
         else {
           // exceeded the maxDeltaElements, pick the elements with lowest versions
           val sortedContent = deltaContent.toVector.sortBy(_._2.version)
@@ -907,8 +898,7 @@ class DistributedPubSub(system: ExtendedActorSystem) extends Extension {
     * The [[DistributedPubSubMediator]]
     */
   val mediator: ActorRef = {
-    if (isTerminated)
-      system.deadLetters
+    if (isTerminated) system.deadLetters
     else {
       val name = system.settings.config.getString("akka.cluster.pub-sub.name")
       val dispatcher = system.settings.config

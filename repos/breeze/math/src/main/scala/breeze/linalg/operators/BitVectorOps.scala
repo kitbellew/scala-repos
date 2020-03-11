@@ -178,8 +178,7 @@ trait BitVectorOps {
         var boff = 0
         var result: T = zero
         while (boff < b.activeSize) {
-          if (ad.get(b.indexAt(boff)))
-            result += b.valueAt(boff)
+          if (ad.get(b.indexAt(boff))) result += b.valueAt(boff)
           boff += 1
         }
         result

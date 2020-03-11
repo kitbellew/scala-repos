@@ -110,26 +110,19 @@ class NameTreeTest extends FunSuite {
             val weight = rng.nextInt(10).toDouble
             NameTree.Weighted(weight, newTree(depth - 1))
           }
-          if (trees.size == 1)
-            trees(0).tree
-          else
-            NameTree.Union(trees: _*)
+          if (trees.size == 1) trees(0).tree else NameTree.Union(trees: _*)
 
         case 2 =>
           val trees = Seq.fill(1 + rng.nextInt(3)) { newTree(depth - 1) }
-          if (trees.size == 1)
-            trees(0)
-          else
-            NameTree.Alt(trees: _*)
+          if (trees.size == 1) trees(0) else NameTree.Alt(trees: _*)
       }
 
     val trees = Seq.fill(100) { newTree(2) }
-    for (tree <- trees)
-      try { assert(NameTree.read(tree.show) == tree) }
-      catch {
-        case NonFatal(exc) =>
-          fail("Exception %s while parsing %s: %s".format(exc, tree.show, tree))
-      }
+    for (tree <- trees) try { assert(NameTree.read(tree.show) == tree) }
+    catch {
+      case NonFatal(exc) =>
+        fail("Exception %s while parsing %s: %s".format(exc, tree.show, tree))
+    }
   }
 
   test("NameTree.bind: infinite loop") {

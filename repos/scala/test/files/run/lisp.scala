@@ -16,8 +16,7 @@ class LispTokenizer(s: String) extends Iterator[String] {
     if (hasNext) {
       val start = i
       if (isDelimiter(s charAt i)) i += 1
-      else
-        do i = i + 1 while (!isDelimiter(s charAt i))
+      else do i = i + 1 while (!isDelimiter(s charAt i))
       s.substring(start, i)
     } else sys.error("premature end of string")
 }
@@ -160,8 +159,8 @@ object LispCaseClasses extends Lisp {
 
   def normalize(x: Data): Data = x match {
     case CONS(
-        SYM("def"),
-        CONS(CONS(SYM(name), args), CONS(body, CONS(expr, NIL())))) =>
+          SYM("def"),
+          CONS(CONS(SYM(name), args), CONS(body, CONS(expr, NIL())))) =>
       normalize(
         list(SYM("def"), SYM(name), list(SYM("lambda"), args, body), expr))
     case CONS(SYM("cond"), CONS(CONS(SYM("else"), CONS(expr, NIL())), NIL())) =>
@@ -468,8 +467,7 @@ object LispAny extends Lisp {
       if (token == "(") parseList
       else if (token == ")") sys.error("unbalanced parentheses")
       //else if (Character.isDigit(token.charAt(0)))
-      else if (token.charAt(0).isDigit)
-        token.toInt
+      else if (token.charAt(0).isDigit) token.toInt
       else if (token.charAt(0) == '\"' && token.charAt(
                  token.length() - 1) == '\"')
         token.substring(1, token.length() - 1)

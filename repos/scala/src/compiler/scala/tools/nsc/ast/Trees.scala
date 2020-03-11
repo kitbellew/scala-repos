@@ -296,16 +296,14 @@ trait Trees extends scala.reflect.internal.Trees { self: Global =>
 
     class Transformer extends self.Transformer {
       override def transform(tree: Tree): Tree = {
-        if (leaveAlone != null && leaveAlone(tree))
-          tree
+        if (leaveAlone != null && leaveAlone(tree)) tree
         else
           super.transform {
             tree match {
               case tree if !tree.canHaveAttrs =>
                 tree
               case tpt: TypeTree =>
-                if (tpt.original != null)
-                  transform(tpt.original)
+                if (tpt.original != null) transform(tpt.original)
                 else {
                   val refersToLocalSymbols =
                     tpt.tpe != null && (tpt.tpe exists (tp =>

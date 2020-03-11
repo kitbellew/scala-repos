@@ -43,12 +43,7 @@ object ResourcesSpec extends Specification {
       val f = new File(resourcesDir, name)
       val fURL = f.toURI.toURL
       if (!f.exists) null
-      else {
-        if (name.last == '/')
-          if (f.isDirectory) fURL
-          else null
-        else fURL
-      }
+      else { if (name.last == '/') if (f.isDirectory) fURL else null else fURL }
     }
   }
 
@@ -201,8 +196,7 @@ object ResourcesSpec extends Specification {
 
   private def addFileToZip(zip: ZipOutputStream, file: File) = {
     val entryName =
-      if (file.isDirectory) file.getName + "/"
-      else file.getName
+      if (file.isDirectory) file.getName + "/" else file.getName
 
     zip.putNextEntry(new ZipEntry(entryName))
 

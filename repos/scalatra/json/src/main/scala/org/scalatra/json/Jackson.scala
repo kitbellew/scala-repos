@@ -31,8 +31,7 @@ trait JacksonJsonSupport
   }
 
   protected def readJsonFromBody(bd: String): JValue = {
-    if (bd.nonBlank) mapper.readValue(bd, classOf[JValue])
-    else JNothing
+    if (bd.nonBlank) mapper.readValue(bd, classOf[JValue]) else JNothing
   }
 }
 

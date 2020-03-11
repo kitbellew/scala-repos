@@ -75,8 +75,7 @@ class RegexPatternTest {
       split("a", "", Array("", "a"))
     }
     split("a", "^d*", Array("a"))
-    if (!executingInJVM)
-      split("a", "d*", Array("", "a"))
+    if (!executingInJVM) split("a", "d*", Array("", "a"))
     split("a", "(?=a)", Array("a"))
     split("ab", "a", Array("", "b"))
 
@@ -102,8 +101,7 @@ class RegexPatternTest {
     splitWithLimit("", "", 1, Array(""))
 
     // Should remove leading empty match under some conditions - #1171
-    if (!executingInJVM)
-      splitWithLimit("abc", "", 2, Array("", "abc"))
+    if (!executingInJVM) splitWithLimit("abc", "", 2, Array("", "abc"))
     splitWithLimit("abc", "(?=a)", 2, Array("abc"))
     splitWithLimit("ab", "a", 1, Array("ab"))
 

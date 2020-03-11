@@ -632,8 +632,7 @@ trait ProtoUser {
   var autologinFunc: Box[() => Unit] = Empty
 
   def loggedIn_? = {
-    if (!currentUserId.isDefined)
-      for (f <- autologinFunc) f()
+    if (!currentUserId.isDefined) for (f <- autologinFunc) f()
     currentUserId.isDefined
   }
 

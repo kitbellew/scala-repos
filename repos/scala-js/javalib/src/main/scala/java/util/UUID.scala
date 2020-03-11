@@ -42,14 +42,12 @@ final class UUID private (
   }
 
   def getLeastSignificantBits(): Long = {
-    if (l2 eq null)
-      l2 = (i3.toLong << 32) | (i4.toLong & 0xFFFFFFFFL)
+    if (l2 eq null) l2 = (i3.toLong << 32) | (i4.toLong & 0xFFFFFFFFL)
     l2.longValue
   }
 
   def getMostSignificantBits(): Long = {
-    if (l1 eq null)
-      l1 = (i1.toLong << 32) | (i2.toLong & 0xFFFFFFFFL)
+    if (l1 eq null) l1 = (i1.toLong << 32) | (i2.toLong & 0xFFFFFFFFL)
     l1.longValue
   }
 
@@ -152,8 +150,7 @@ object UUID {
 
     if (name.length != 36 || name.charAt(8) != '-' ||
         name.charAt(13) != '-' || name.charAt(18) != '-' || name.charAt(
-          23) != '-')
-      fail()
+          23) != '-') fail()
 
     try {
       val i1 = parseHex8(name.substring(0, 4), name.substring(4, 8))

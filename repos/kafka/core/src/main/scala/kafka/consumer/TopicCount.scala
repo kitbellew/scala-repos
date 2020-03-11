@@ -105,10 +105,7 @@ private[kafka] object TopicCount extends Logging {
       val regex = topMap.head._1
       val numStreams = topMap.head._2
       val filter =
-        if (hasWhiteList)
-          new Whitelist(regex)
-        else
-          new Blacklist(regex)
+        if (hasWhiteList) new Whitelist(regex) else new Blacklist(regex)
       new WildcardTopicCount(
         zkUtils,
         consumerId,

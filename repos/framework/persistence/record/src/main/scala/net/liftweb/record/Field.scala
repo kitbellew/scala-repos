@@ -342,8 +342,7 @@ trait TypedField[ThisType] extends BaseField {
       data = defaultValueBox
     }
 
-    if (canRead_?) data
-    else data.flatMap(obscure)
+    if (canRead_?) data else data.flatMap(obscure)
   }
 
   /** Clear the value of this field */
@@ -483,8 +482,9 @@ trait Field[ThisType, OwnerType <: Record[OwnerType]]
 trait DisplayWithLabel[OwnerType <: Record[OwnerType]]
     extends OwnedField[OwnerType] {
   override abstract def toForm: Box[NodeSeq] =
-    for (id <- uniqueFieldId; control <- super.toForm)
-      yield <div id={id + "_holder"}>
+    for (id <- uniqueFieldId; control <- super.toForm) yield <div id={
+      id + "_holder"
+    }>
         <div><label for={id}>{displayName}</label></div>
         {control}
         <lift:msg id={id} errorClass="lift_error"/>

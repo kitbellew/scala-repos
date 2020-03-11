@@ -218,8 +218,7 @@ trait LowerPriorityIncludes {
   implicit def jfxSceneAntialiasing2sfx(
       v: jfxs.SceneAntialiasing): SceneAntialiasing = {
     // A value of null is treated as though antialiasing is disabled.
-    if (v eq null) SceneAntialiasing.Disabled
-    else new SceneAntialiasing(v)
+    if (v eq null) SceneAntialiasing.Disabled else new SceneAntialiasing(v)
   }
 
   /**

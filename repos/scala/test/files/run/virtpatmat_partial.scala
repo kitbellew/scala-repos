@@ -25,8 +25,7 @@ object Test extends App {
         case GTGT     => GT
         case GTEQ     => ASSIGN
       }
-      if (closers isDefinedAt in) println(closers(in))
-      else println("undefined")
+      if (closers isDefinedAt in) println(closers(in)) else println("undefined")
     }
 
     def test() = {
@@ -53,8 +52,7 @@ object Test extends App {
           case GTGT     => GT
           case GTEQ     => ASSIGN
         }
-      if (closers isDefinedAt in) println(closers(in))
-      else println("undefined")
+      if (closers isDefinedAt in) println(closers(in)) else println("undefined")
     }
 
     def test() = {
@@ -81,8 +79,7 @@ object Test extends App {
           case GTGT     => GT
           case GTEQ     => ASSIGN
         }
-      if (closers isDefinedAt in) println(closers(in))
-      else println("undefined")
+      if (closers isDefinedAt in) println(closers(in)) else println("undefined")
     }
 
     def test() = {
@@ -108,8 +105,7 @@ object Test extends App {
         case GTGT     => GT
         case GTEQ     => ASSIGN
       }
-      if (closers isDefinedAt in) println(closers(in))
-      else println("undefined")
+      if (closers isDefinedAt in) println(closers(in)) else println("undefined")
     }
 
     def test() = {
@@ -136,8 +132,7 @@ object Test extends App {
           case GTGT     => GT
           case GTEQ     => ASSIGN
         }
-      if (closers isDefinedAt in) println(closers(in))
-      else println("undefined")
+      if (closers isDefinedAt in) println(closers(in)) else println("undefined")
     }
 
     def test() = {
@@ -163,8 +158,7 @@ object Test extends App {
         case GTGT     => GT
         case GTEQ     => ASSIGN
       }
-      if (closers isDefinedAt in) println(closers(in))
-      else println("undefined")
+      if (closers isDefinedAt in) println(closers(in)) else println("undefined")
     }
 
     def test() = {

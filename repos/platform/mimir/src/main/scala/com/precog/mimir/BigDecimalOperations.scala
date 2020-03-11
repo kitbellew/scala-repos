@@ -31,11 +31,7 @@ object BigDecimalOperations {
         def gen(x: BigDecimal): Stream[BigDecimal] = {
           val x2 = (d + x * x) / (x * 2)
 
-          lazy val tail =
-            if (x2 == x)
-              Stream.empty
-            else
-              gen(x2)
+          lazy val tail = if (x2 == x) Stream.empty else gen(x2)
 
           x2 #:: tail
         }

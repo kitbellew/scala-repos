@@ -28,10 +28,8 @@ object AutoDownSpec {
     override def scheduler: Scheduler = context.system.scheduler
 
     override def down(node: Address): Unit = {
-      if (leader)
-        probe ! DownCalled(node)
-      else
-        probe ! "down must only be done by leader"
+      if (leader) probe ! DownCalled(node)
+      else probe ! "down must only be done by leader"
     }
 
   }

@@ -64,10 +64,8 @@ abstract class Generator {
     if (n < 1)
       throw new IllegalArgumentException(
         "argument must be positive %d" format n)
-    else if ((n & -n) == n)
-      ((n * ((nextInt() >>> 1).toLong)) >>> 31).toInt
-    else
-      loop(nextInt() >>> 1)
+    else if ((n & -n) == n) ((n * ((nextInt() >>> 1).toLong)) >>> 31).toInt
+    else loop(nextInt() >>> 1)
   }
 
   private final def retryCap(width: UInt): UInt = {
@@ -111,10 +109,8 @@ abstract class Generator {
     if (n < 1)
       throw new IllegalArgumentException(
         "argument must be positive %d" format n)
-    else if ((n & -n) == n)
-      nextLong() & (n - 1)
-    else
-      loop(nextLong() >>> 1)
+    else if ((n & -n) == n) nextLong() & (n - 1)
+    else loop(nextLong() >>> 1)
   }
 
   private final def retryCap(width: ULong): ULong = {

@@ -209,8 +209,7 @@ class ZkUtils(
   }
 
   def setupCommonPaths() {
-    for (path <- persistentZkPaths)
-      makeSurePersistentPathExists(path)
+    for (path <- persistentZkPaths) makeSurePersistentPathExists(path)
   }
 
   def getLeaderForPartition(topic: String, partition: Int): Option[Int] = {
@@ -973,10 +972,7 @@ class ZkUtils(
 
   def getAllTopics(): Seq[String] = {
     val topics = getChildrenParentMayNotExist(BrokerTopicsPath)
-    if (topics == null)
-      Seq.empty[String]
-    else
-      topics
+    if (topics == null) Seq.empty[String] else topics
   }
 
   /**
@@ -985,10 +981,7 @@ class ZkUtils(
   def getAllEntitiesWithConfig(entityType: String): Seq[String] = {
     val entities = getChildrenParentMayNotExist(
       getEntityConfigRootPath(entityType))
-    if (entities == null)
-      Seq.empty[String]
-    else
-      entities
+    if (entities == null) Seq.empty[String] else entities
   }
 
   def getAllPartitions(): Set[TopicAndPartition] = {
@@ -1036,10 +1029,7 @@ private object ZKStringSerializer extends ZkSerializer {
 
   @throws(classOf[ZkMarshallingError])
   def deserialize(bytes: Array[Byte]): Object = {
-    if (bytes == null)
-      null
-    else
-      new String(bytes, "UTF-8")
+    if (bytes == null) null else new String(bytes, "UTF-8")
   }
 }
 
@@ -1077,8 +1067,7 @@ object ZkPath {
   @volatile private var isNamespacePresent: Boolean = false
 
   def checkNamespace(client: ZkClient) {
-    if (isNamespacePresent)
-      return
+    if (isNamespacePresent) return
 
     if (!client.exists("/")) {
       throw new ConfigException("Zookeeper namespace does not exist")
@@ -1184,8 +1173,7 @@ class ZKCheckedEphemeral(
         case Code.OK =>
           if (stat.getEphemeralOwner != zkHandle.getSessionId)
             setResult(Code.NODEEXISTS)
-          else
-            setResult(Code.OK)
+          else setResult(Code.OK)
         case Code.NONODE =>
           info(
             "The ephemeral node [%s] at %s has gone away while reading it, "

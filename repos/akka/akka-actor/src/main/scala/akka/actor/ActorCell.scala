@@ -366,8 +366,7 @@ private[akka] object ActorCell {
     // Note that this uid is also used as hashCode in ActorRef, so be careful
     // to not break hashing if you change the way uid is generated
     val uid = ThreadLocalRandom.current.nextInt()
-    if (uid == undefinedUid) newUid
-    else uid
+    if (uid == undefinedUid) newUid else uid
   }
 
   final def splitNameAndUid(name: String): (String, Int) = {
@@ -517,8 +516,7 @@ private[akka] class ActorCell(
       !messageHandle.message.isInstanceOf[NotInfluenceReceiveTimeout]
     try {
       currentMessage = messageHandle
-      if (influenceReceiveTimeout)
-        cancelReceiveTimeout()
+      if (influenceReceiveTimeout) cancelReceiveTimeout()
       messageHandle.message match {
         case msg: AutoReceivedMessage ⇒ autoReceiveMessage(messageHandle)
         case msg ⇒ receiveMessage(msg)
@@ -551,10 +549,8 @@ private[akka] class ActorCell(
   }
 
   private def receiveSelection(sel: ActorSelectionMessage): Unit =
-    if (sel.elements.isEmpty)
-      invoke(Envelope(sel.msg, sender(), system))
-    else
-      ActorSelection.deliverSelection(self, sender(), sel)
+    if (sel.elements.isEmpty) invoke(Envelope(sel.msg, sender(), system))
+    else ActorSelection.deliverSelection(self, sender(), sel)
 
   final def receiveMessage(msg: Any): Unit =
     actor.aroundReceive(behaviorStack.head, msg)

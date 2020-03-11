@@ -214,8 +214,7 @@ class LogSegmentTest {
   @Test
   def testRecoveryFixesCorruptIndex() {
     val seg = createSegment(0)
-    for (i <- 0 until 100)
-      seg.append(i, messages(i, i.toString))
+    for (i <- 0 until 100) seg.append(i, messages(i, i.toString))
     val indexFile = seg.index.file
     TestUtils.writeNonsenseToFile(indexFile, 5, indexFile.length.toInt)
     seg.recover(64 * 1024)
@@ -231,8 +230,7 @@ class LogSegmentTest {
     val messagesAppended = 20
     for (iteration <- 0 until 10) {
       val seg = createSegment(0)
-      for (i <- 0 until messagesAppended)
-        seg.append(i, messages(i, i.toString))
+      for (i <- 0 until messagesAppended) seg.append(i, messages(i, i.toString))
       val offsetToBeginCorruption = TestUtils.random.nextInt(messagesAppended)
       // start corrupting somewhere in the middle of the chosen record all the way to the end
       val position = seg.log

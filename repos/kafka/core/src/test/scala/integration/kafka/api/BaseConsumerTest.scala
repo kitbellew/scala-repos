@@ -233,8 +233,7 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
     consumer0.subscribe(List(topic).asJava, listener)
 
     // the initial subscription should cause a callback execution
-    while (listener.callsToAssigned == 0)
-      consumer0.poll(50)
+    while (listener.callsToAssigned == 0) consumer0.poll(50)
 
     // get metadata for the topic
     var parts: Seq[PartitionInfo] = null
@@ -250,8 +249,7 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
     this.servers(coordinator).shutdown()
 
     // this should cause another callback execution
-    while (listener.callsToAssigned < 2)
-      consumer0.poll(50)
+    while (listener.callsToAssigned < 2) consumer0.poll(50)
 
     assertEquals(2, listener.callsToAssigned)
 
@@ -280,8 +278,7 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
       consumer0.subscribe(List(topic).asJava, listener)
 
       // the initial subscription should cause a callback execution
-      while (listener.callsToAssigned == 0)
-        consumer0.poll(50)
+      while (listener.callsToAssigned == 0) consumer0.poll(50)
 
       consumer0.subscribe(List[String]().asJava)
       assertEquals(0, consumer0.assignment.size())
@@ -403,8 +400,7 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
     while (records.size < numRecords) {
       val polledRecords = consumer.poll(50).asScala
       assertTrue(polledRecords.size <= maxPollRecords)
-      for (record <- polledRecords)
-        records.add(record)
+      for (record <- polledRecords) records.add(record)
       if (iters > maxIters)
         throw new IllegalStateException(
           "Failed to consume the expected records after " + iters + " iterations.")
@@ -419,8 +415,7 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
     val startCount = commitCallback.count
     val started = System.currentTimeMillis()
     while (commitCallback.count == startCount && System
-             .currentTimeMillis() - started < 10000)
-      consumer.poll(50)
+             .currentTimeMillis() - started < 10000) consumer.poll(50)
     assertEquals(startCount + 1, commitCallback.count)
   }
 

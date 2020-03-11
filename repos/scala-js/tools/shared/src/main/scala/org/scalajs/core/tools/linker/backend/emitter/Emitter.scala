@@ -82,8 +82,7 @@ final class Emitter private (
     startRun()
     try {
       val orderedClasses = unit.classDefs.sortWith(compareClasses)
-      for (classInfo <- orderedClasses)
-        emitLinkedClass(classInfo, builder)
+      for (classInfo <- orderedClasses) emitLinkedClass(classInfo, builder)
     } finally {
       endRun(logger)
       classEmitter = null
@@ -237,8 +236,7 @@ final class Emitter private (
         emitNextLine(endOfLine + 1)
       } else { builder.addLine(str.substring(index, str.length)) }
     }
-    if (str != "")
-      emitNextLine(0)
+    if (str != "") emitNextLine(0)
   }
 
   // Caching
@@ -277,8 +275,7 @@ final class Emitter private (
       _staticCaches.retain((_, c) => c.cleanAfterRun())
       _methodCaches.retain((_, c) => c.cleanAfterRun())
 
-      if (!_cacheUsed)
-        _cache = null
+      if (!_cacheUsed) _cache = null
 
       _staticCaches.nonEmpty || _methodCaches.nonEmpty || _cacheUsed
     }
@@ -320,8 +317,7 @@ private[scalajs] object Emitter {
   private final class OneTimeCache[A >: Null] {
     private[this] var value: A = null
     def getOrElseUpdate(v: => A): A = {
-      if (value == null)
-        value = v
+      if (value == null) value = v
       value
     }
   }

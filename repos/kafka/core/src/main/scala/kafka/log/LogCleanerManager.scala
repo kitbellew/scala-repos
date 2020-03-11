@@ -102,8 +102,8 @@ private[log] class LogCleanerManager(
         }
         .map {
           case (
-              topicAndPartition,
-              log
+                topicAndPartition,
+                log
               ) => // create a LogToClean instance for each
             // if the log segments are abnormally truncated and hence the checkpointed offset
             // is no longer valid, reset to the log starting offset and log the error event
@@ -215,10 +215,7 @@ private[log] class LogCleanerManager(
     inProgress.get(topicAndPartition) match {
       case None => false
       case Some(state) =>
-        if (state == expectedState)
-          true
-        else
-          false
+        if (state == expectedState) true else false
     }
   }
 

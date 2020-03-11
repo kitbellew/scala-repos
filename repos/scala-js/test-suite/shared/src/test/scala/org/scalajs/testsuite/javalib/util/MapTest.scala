@@ -183,10 +183,8 @@ trait MapTest {
     mp.put("ONE", "one")
     assertTrue(mp.containsKey("ONE"))
     assertFalse(mp.containsKey("TWO"))
-    if (factory.allowsNullKeysQueries)
-      assertFalse(mp.containsKey(null))
-    else
-      expectThrows(classOf[Throwable], mp.containsKey(null))
+    if (factory.allowsNullKeysQueries) assertFalse(mp.containsKey(null))
+    else expectThrows(classOf[Throwable], mp.containsKey(null))
   }
 
   @Test def should_check_contained_value_presence(): Unit = {
@@ -195,10 +193,8 @@ trait MapTest {
     mp.put("ONE", "one")
     assertTrue(mp.containsValue("one"))
     assertFalse(mp.containsValue("two"))
-    if (factory.allowsNullValuesQueries)
-      assertFalse(mp.containsValue(null))
-    else
-      expectThrows(classOf[Throwable], mp.containsValue(null))
+    if (factory.allowsNullValuesQueries) assertFalse(mp.containsValue(null))
+    else expectThrows(classOf[Throwable], mp.containsValue(null))
   }
 
   @Test def should_give_proper_Collection_over_values(): Unit = {
@@ -319,10 +315,8 @@ trait MapTest {
     assertTrue(values.contains("one"))
     assertTrue(values.contains("two"))
     assertFalse(values.contains("three"))
-    if (factory.allowsNullValuesQueries)
-      assertFalse(values.contains(null))
-    else
-      expectThrows(classOf[Throwable], mp.contains(null))
+    if (factory.allowsNullValuesQueries) assertFalse(values.contains(null))
+    else expectThrows(classOf[Throwable], mp.contains(null))
 
     mp.put("THREE", "three")
 
@@ -467,10 +461,8 @@ trait MapTest {
     assertTrue(keySet.contains("ONE"))
     assertTrue(keySet.contains("TWO"))
     assertFalse(keySet.contains("THREE"))
-    if (factory.allowsNullKeysQueries)
-      assertFalse(keySet.contains(null))
-    else
-      expectThrows(classOf[Throwable], mp.contains(null))
+    if (factory.allowsNullKeysQueries) assertFalse(keySet.contains(null))
+    else expectThrows(classOf[Throwable], mp.contains(null))
 
     mp.put("THREE", "three")
 

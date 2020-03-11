@@ -14,8 +14,7 @@ private object KeyValidation {
     val bs = Buf.ByteArray.Owned.extract(key)
     var i = 0
     while (i < bs.length) {
-      if (Bufs.INVALID_KEY_CHARACTERS.contains(bs(i)))
-        return i
+      if (Bufs.INVALID_KEY_CHARACTERS.contains(bs(i))) return i
       i += 1
     }
     -1

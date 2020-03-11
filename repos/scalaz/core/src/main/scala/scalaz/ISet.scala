@@ -674,10 +674,7 @@ sealed abstract class ISetInstances {
             case a @ Some(_) =>
               a
             case None =>
-              if (f(x))
-                Some(x)
-              else
-                findLeft(r)(f)
+              if (f(x)) Some(x) else findLeft(r)(f)
           }
         case Tip() =>
           None
@@ -690,10 +687,7 @@ sealed abstract class ISetInstances {
             case a @ Some(_) =>
               a
             case None =>
-              if (f(x))
-                Some(x)
-              else
-                findRight(l)(f)
+              if (f(x)) Some(x) else findRight(l)(f)
           }
         case Tip() =>
           None
@@ -730,10 +724,7 @@ sealed abstract class ISetInstances {
             None
         }
 
-      if (i < 0 || fa.size <= i)
-        None
-      else
-        loop(fa, i)
+      if (i < 0 || fa.size <= i) None else loop(fa, i)
     }
 
     override def toIList[A](fa: ISet[A]) =

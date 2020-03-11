@@ -15,8 +15,9 @@ object revcomp {
     val comp = "TVGHCDMKNYSABWRTVGHCDMKNYSABWR".getBytes
     val a: Array[Byte] = new Array('z'.toByte)
 
-    for (indexValue <- code zip comp)
-      indexValue match { case (i, v) => a(i) = v }
+    for (indexValue <- code zip comp) indexValue match {
+      case (i, v) => a(i) = v
+    }
 
     a
   }

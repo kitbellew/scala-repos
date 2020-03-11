@@ -210,8 +210,7 @@ trait GroupSolver
                     group,
                     dtrace)),
                 errors)
-            else
-              (None, errors) // TODO emit a new error
+            else (None, errors) // TODO emit a new error
           } getOrElse (None, errors)
         } else { (None, Set[Error]()) }
       }
@@ -245,18 +244,15 @@ trait GroupSolver
     }
 
     val back =
-      for (r <- result; c <- commonality)
-        yield Group(None, c, r, List())
+      for (r <- result; c <- commonality) yield Group(None, c, r, List())
 
     val contribErrors = if (!back.isDefined) {
       val vars = listTicVars(Some(b), constraint, sigma) map { _._2 }
 
-      if (vars.isEmpty)
-        Set(Error(constraint, SolveLackingFreeVariables))
+      if (vars.isEmpty) Set(Error(constraint, SolveLackingFreeVariables))
       else if (vars.size == 1)
         Set(Error(constraint, UnableToSolveCriticalCondition(vars.head)))
-      else
-        Set(Error(constraint, InseparablePairedTicVariables(vars)))
+      else Set(Error(constraint, InseparablePairedTicVariables(vars)))
     } else { Set() }
 
     (back, errors ++ contribErrors)
@@ -274,10 +270,8 @@ trait GroupSolver
         case (_, targets) => !(vertices & targets).isEmpty
       } keySet
 
-      if (vertices2.isEmpty)
-        vertices.toList
-      else
-        vertices.toList ::: bfs(vertices2)
+      if (vertices2.isEmpty) vertices.toList
+      else vertices.toList ::: bfs(vertices2)
     }
 
     val leaves = edges filter { case (_, targets) => targets.isEmpty } keySet
@@ -298,8 +292,7 @@ trait GroupSolver
         solveGroupCondition(b, right, free, sigma, dtrace)
 
       val andSpec =
-        for (ls <- leftSpec; rs <- rightSpec)
-          yield IntersectBucketSpec(ls, rs)
+        for (ls <- leftSpec; rs <- rightSpec) yield IntersectBucketSpec(ls, rs)
 
       (andSpec orElse leftSpec orElse rightSpec, leftErrors ++ rightErrors)
     }
@@ -311,8 +304,7 @@ trait GroupSolver
         solveGroupCondition(b, right, free, sigma, dtrace)
 
       val andSpec =
-        for (ls <- leftSpec; rs <- rightSpec)
-          yield UnionBucketSpec(ls, rs)
+        for (ls <- leftSpec; rs <- rightSpec) yield UnionBucketSpec(ls, rs)
 
       (andSpec orElse leftSpec orElse rightSpec, leftErrors ++ rightErrors)
     }
@@ -355,8 +347,7 @@ trait GroupSolver
 
         if (result.isDefined)
           (result map { UnfixedSolution(tv, _, dtrace) }, Set())
-        else
-          (None, Set(Error(expr, UnableToSolveTicVariable(tv))))
+        else (None, Set(Error(expr, UnableToSolveTicVariable(tv))))
       }
     }
 
@@ -384,8 +375,7 @@ trait GroupSolver
 
           if (vars.isEmpty) // it's an independent extra; we're saved!
             (Some(Extra(expr, dtrace)), Set())
-          else
-            (None, Set(Error(expr, UnableToSolveCriticalConditionAnon)))
+          else (None, Set(Error(expr, UnableToSolveCriticalConditionAnon)))
         }
       }
     }
@@ -454,10 +444,8 @@ trait GroupSolver
 
     if (back.isDefined && !(errors collect {
           case Error(tpe) => tpe
-        } contains ConstraintsWithinInnerSolve))
-      (back, Set())
-    else
-      (back, errors)
+        } contains ConstraintsWithinInnerSolve)) (back, Set())
+    else (back, errors)
   }
 
   private def isTranspecable(to: Expr, from: Expr, sigma: Sigma): Boolean = {
@@ -815,10 +803,8 @@ trait GroupSolver
       }
       val results = bfs(kernels)
 
-      if (results.size == 1)
-        results.headOption map { _.expr }
-      else
-        None
+      if (results.size == 1) results.headOption map { _.expr }
+      else None
     }
   }
 

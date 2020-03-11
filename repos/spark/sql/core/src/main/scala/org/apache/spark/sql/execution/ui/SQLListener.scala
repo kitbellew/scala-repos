@@ -242,12 +242,12 @@ private[sql] class SQLListener(conf: SparkConf)
 
   override def onOtherEvent(event: SparkListenerEvent): Unit = event match {
     case SparkListenerSQLExecutionStart(
-        executionId,
-        description,
-        details,
-        physicalPlanDescription,
-        sparkPlanInfo,
-        time) =>
+          executionId,
+          description,
+          details,
+          physicalPlanDescription,
+          sparkPlanInfo,
+          time) =>
       val physicalPlanGraph = SparkPlanGraph(sparkPlanInfo)
       val sqlPlanMetrics = physicalPlanGraph.allNodes.flatMap { node =>
         node.metrics.map(metric => metric.accumulatorId -> metric)

@@ -58,12 +58,7 @@ private[interval] object Tree {
       level: Byte,
       l: Tree,
       r: Tree): Tree =
-    if (l eq null)
-      r
-    else if (r eq null)
-      l
-    else
-      Branch(p, level, l, r)
+    if (l eq null) r else if (r eq null) l else Branch(p, level, l, r)
 
   // $COVERAGE-OFF$
   private[extras] def unreachable: Nothing =
@@ -204,14 +199,10 @@ private[interval] object Tree {
 
     final def apply(a0: Boolean, a: Tree, b0: Boolean, b: Tree): Boolean =
       op(a0, b0) && {
-        if ((a eq null) && (b eq null))
-          true
-        else if (a eq null)
-          overlapB(a0, b0, b)
-        else if (b eq null)
-          overlapA(a0, a, b0)
-        else
-          op(a0, a, b0, b)
+        if ((a eq null) && (b eq null)) true
+        else if (a eq null) overlapB(a0, b0, b)
+        else if (b eq null) overlapA(a0, a, b0)
+        else op(a0, a, b0, b)
       }
   }
 
@@ -358,14 +349,10 @@ private[interval] object Tree {
     }
 
     final def apply(a0: Boolean, a: Tree, b0: Boolean, b: Tree) = {
-      if ((a eq null) && (b eq null))
-        null
-      else if (a eq null)
-        overlapB(a0, b0, b)
-      else if (b eq null)
-        overlapA(a0, a, b0)
-      else
-        op(a0, a, b0, b)
+      if ((a eq null) && (b eq null)) null
+      else if (a eq null) overlapB(a0, b0, b)
+      else if (b eq null) overlapA(a0, a, b0)
+      else op(a0, a, b0, b)
     }
   }
 
@@ -429,16 +416,10 @@ private[interval] object Tree {
     }
 
     protected def overlapA(a0: Boolean, a: Tree, b0: Boolean) =
-      if (b0)
-        null
-      else
-        a
+      if (b0) null else a
 
     protected def overlapB(a0: Boolean, b0: Boolean, b: Tree) =
-      if (a0)
-        null
-      else
-        b
+      if (a0) null else b
   }
 
   object XorCalculator extends OrderedBinaryOperator {
@@ -465,16 +446,10 @@ private[interval] object Tree {
     }
 
     protected def overlapA(a0: Boolean, a: Tree, b0: Boolean) =
-      if (b0)
-        a
-      else
-        null
+      if (b0) a else null
 
     protected def overlapB(a0: Boolean, b0: Boolean, b: Tree) =
-      if (a0)
-        b
-      else
-        null
+      if (a0) b else null
   }
 
   /**
@@ -498,24 +473,17 @@ private[interval] object Tree {
         if (!hasMatchAt(value, prefix, level)) {
           // key is either before or after a
           val branchLevel = levelAbove(prefix, value)
-          if (zeroAt(prefix, branchLevel))
-            a0 ^ a.sign // after
-          else
-            a0 // before
+          if (zeroAt(prefix, branchLevel)) a0 ^ a.sign // after
+          else a0 // before
         } else {
           // key is within a
-          if (zeroAt(value, level))
-            op(a0, a.left, value)
-          else
-            op(a0 ^ a.left.sign, a.right, value)
+          if (zeroAt(value, level)) op(a0, a.left, value)
+          else op(a0 ^ a.left.sign, a.right, value)
         }
       case a: Leaf =>
-        if (a.prefix == value)
-          onLeaf(a0, a)
-        else if (unsigned_<(a.prefix, value))
-          a0 ^ a.sign
-        else
-          a0
+        if (a.prefix == value) onLeaf(a0, a)
+        else if (unsigned_<(a.prefix, value)) a0 ^ a.sign
+        else a0
       case _ =>
         a0
     }
@@ -539,14 +507,10 @@ private[interval] object Tree {
   def leaf(changeBelow: Boolean, changeAbove: Boolean, a: Leaf, b: Leaf) = {
     val at = changeBelow
     val sign = changeBelow ^ changeAbove
-    if (!changeBelow && !changeAbove)
-      null
-    else if (at == a.at && sign == a.sign)
-      a
-    else if (at == b.at && sign == b.sign)
-      b
-    else
-      Leaf(a.prefix, at, sign)
+    if (!changeBelow && !changeAbove) null
+    else if (at == a.at && sign == a.sign) a
+    else if (at == b.at && sign == b.sign) b
+    else Leaf(a.prefix, at, sign)
   }
 
   /**
@@ -581,14 +545,10 @@ private[interval] object Tree {
     val sign = left.sign ^ right.sign
 
     def lr(left: Tree, right: Tree): Tree = {
-      if (left eq null)
-        right
-      else if (right eq null)
-        left
-      else if ((left eq this.left) && (right eq this.right))
-        this
-      else
-        copy(left = left, right = right)
+      if (left eq null) right
+      else if (right eq null) left
+      else if ((left eq this.left) && (right eq this.right)) this
+      else copy(left = left, right = right)
     }
   }
 }

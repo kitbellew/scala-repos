@@ -213,8 +213,7 @@ abstract class SymbolPairs {
         if (pIndex >= 0)
           for (bc <- p.baseClasses; if sameInBaseClass(bc)(p, self)) {
             val bcIndex = index(bc)
-            if (bcIndex >= 0)
-              include(subParents(bcIndex), pIndex)
+            if (bcIndex >= 0) include(subParents(bcIndex), pIndex)
           }
       }
       // first, deferred (this will need to change if we change lookup rules!)
@@ -274,8 +273,7 @@ abstract class SymbolPairs {
           // owners of both low and high.
           if (isMatch && !hasCommonParentAsSubclass(lowSymbol, high))
             highSymbol = high
-          else
-            advanceNextEntry()
+          else advanceNextEntry()
         }
       }
     }
@@ -283,10 +281,8 @@ abstract class SymbolPairs {
       if (curEntry ne null) {
         curEntry = curEntry.next
         if (curEntry ne null) {
-          if (visited(curEntry) || exclude(curEntry.sym))
-            advanceCurEntry()
-          else
-            nextEntry = curEntry
+          if (visited(curEntry) || exclude(curEntry.sym)) advanceCurEntry()
+          else nextEntry = curEntry
         }
       }
     }

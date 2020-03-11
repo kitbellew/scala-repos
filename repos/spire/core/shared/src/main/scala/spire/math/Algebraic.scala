@@ -653,8 +653,7 @@ object Algebraic extends AlgebraicInstances {
       * Returns a bound on the degree of this expression.
       */
     def degreeBound: Long = {
-      if (cachedDegreeBound == 0L)
-        radicalNodes()
+      if (cachedDegreeBound == 0L) radicalNodes()
       cachedDegreeBound
     }
 
@@ -803,9 +802,7 @@ object Algebraic extends AlgebraicInstances {
         else { new BitBound(ceil(log(abs(value))).toLong) }
 
       def signum: Int =
-        if (value < 0d) -1
-        else if (value > 0d) 1
-        else 0
+        if (value < 0d) -1 else if (value > 0d) 1 else 0
 
       def toBigDecimal(digits: Int): JBigDecimal =
         new JBigDecimal(value).setScale(digits, RoundingMode.HALF_UP)
@@ -867,8 +864,7 @@ object Algebraic extends AlgebraicInstances {
         }
 
       def signum: Int =
-        if (lb.signum != 0) lb.signum
-        else ub.signum
+        if (lb.signum != 0) lb.signum else ub.signum
 
       private val refinement: AtomicReference[BigDecimalRootRefinement] = {
         val poly0 = poly.map { n =>
@@ -1135,8 +1131,7 @@ object Algebraic extends AlgebraicInstances {
     */
   private final def nroot(signedValue: JBigDecimal, k: Int)(
       getEps: JBigDecimal => Int): JBigDecimal = {
-    if (signedValue.compareTo(JBigDecimal.ZERO) == 0)
-      return JBigDecimal.ZERO
+    if (signedValue.compareTo(JBigDecimal.ZERO) == 0) return JBigDecimal.ZERO
     val value = signedValue.abs
     val n = new JBigDecimal(k)
     @tailrec def loop(
@@ -1157,8 +1152,7 @@ object Algebraic extends AlgebraicInstances {
     }
     val init = nrootApprox(value, k)
     val unsignedResult = loop(init, Int.MinValue, JBigDecimal.ZERO)
-    if (signedValue.signum < 0) unsignedResult.negate
-    else unsignedResult
+    if (signedValue.signum < 0) unsignedResult.negate else unsignedResult
   }
 
   private val bits2dec: Double = log(2, 10)
@@ -1296,8 +1290,7 @@ object Algebraic extends AlgebraicInstances {
               case HALF_EVEN =>
                 cmp > 0 || cmp == 0 && truncatedUnscaledValue.testBit(0)
             }
-            if (roundUp) truncated.add(epsilon)
-            else truncated
+            if (roundUp) truncated.add(epsilon) else truncated
           } else if (remainder < dangerZoneStart) { truncated }
           else { truncated.add(epsilon) }
 
@@ -1441,9 +1434,7 @@ object Algebraic extends AlgebraicInstances {
         case KRoot(subExpr, k) =>
           val sub = subExpr.getBound(this)
           val lb = sub.lb / k
-          val ub =
-            if (sub.ub % k == 0) (sub.ub / k)
-            else ((sub.ub / k) + 1)
+          val ub = if (sub.ub % k == 0) (sub.ub / k) else ((sub.ub / k) + 1)
           Bound(sub.lc, sub.tc, sub.measure, lb, ub)
 
         case Pow(subExpr, k) =>
@@ -1562,8 +1553,7 @@ object Algebraic extends AlgebraicInstances {
         if (k == 1) { checked(acc + extra) }
         else {
           val x =
-            if ((k & 1) == 1) checked(acc + extra)
-            else extra
+            if ((k & 1) == 1) checked(acc + extra) else extra
           sum(checked(acc + acc), k >>> 1, x)
         }
 

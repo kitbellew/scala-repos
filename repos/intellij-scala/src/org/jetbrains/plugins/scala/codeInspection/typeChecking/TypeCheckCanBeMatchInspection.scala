@@ -182,8 +182,7 @@ object TypeCheckToMatchUtil {
       val typeElem = args.typeArgs.head
       val typeName0 = typeElem.getText
       val typeName =
-        if (typeNeedParentheses(typeElem)) s"($typeName0)"
-        else typeName0
+        if (typeNeedParentheses(typeElem)) s"($typeName0)" else typeName0
       val asInstOfInBody = findAsInstOfCalls(ifStmt.thenBranch, isInstOf)
       val guardCond = guardCondition(condition, isInstOf)
       val asInstOfInGuard = findAsInstOfCalls(guardCond, isInstOf)
@@ -431,8 +430,7 @@ object TypeCheckToMatchUtil {
       val referenceVisitor = new ScalaRecursiveElementVisitor() {
         override def visitReferenceExpression(ref: ScReferenceExpression) {
           for (prim <- primary) {
-            if (ref.refName == name && ref.resolve() == prim)
-              dependents += ref
+            if (ref.refName == name && ref.resolve() == prim) dependents += ref
           }
           super.visitReferenceExpression(ref)
         }
@@ -478,8 +476,7 @@ object TypeCheckToMatchUtil {
           case (par1: ScParameter, par2: ScParameter) =>
             val name1 = par1.name
             val name2 = par2.name
-            if (name1 != null && name2 != null) name1.compareTo(name2)
-            else 1
+            if (name1 != null && name2 != null) name1.compareTo(name2) else 1
           case _ => 1
         }
       }

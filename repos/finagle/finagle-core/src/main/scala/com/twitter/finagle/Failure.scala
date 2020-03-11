@@ -47,9 +47,7 @@ final class Failure private[finagle] (
     * See [[Failure$ Failure]] for flag definitions.
     */
   def flagged(addFlags: Long): Failure =
-    if ((flags & addFlags) == addFlags) this
-    else
-      copy(flags = flags | addFlags)
+    if ((flags & addFlags) == addFlags) this else copy(flags = flags | addFlags)
 
   /**
     * This failure with the given flags removed.
@@ -57,9 +55,7 @@ final class Failure private[finagle] (
     * See [[Failure$ Failure]] forflag definitions.
     */
   def unflagged(delFlags: Long): Failure =
-    if ((flags & delFlags) == 0) this
-    else
-      copy(flags = flags & ~delFlags)
+    if ((flags & delFlags) == 0) this else copy(flags = flags & ~delFlags)
 
   /**
     * Apply the given flags mask.
@@ -67,9 +63,7 @@ final class Failure private[finagle] (
     * See [[Failure$ Failure]] forflag definitions.
     */
   def masked(mask: Long): Failure =
-    if ((flags & mask) == flags) this
-    else
-      copy(flags = flags & mask)
+    if ((flags & mask) == flags) this else copy(flags = flags & mask)
 
   /**
     * Test whether the given flags are set.
@@ -110,8 +104,7 @@ final class Failure private[finagle] (
   override def getStackTrace(): Array[StackTraceElement] = stacktrace
   override def printStackTrace(p: java.io.PrintWriter) {
     p.println(this)
-    for (te <- stacktrace)
-      p.println("\tat %s".format(te))
+    for (te <- stacktrace) p.println("\tat %s".format(te))
   }
 
   override def equals(a: Any) = {
@@ -184,16 +177,14 @@ object Failure {
       cause: Throwable,
       flags: Long,
       logLevel: Level = Level.WARNING): Failure =
-    if (cause == null)
-      new Failure("unknown", None, flags, logLevel = logLevel)
+    if (cause == null) new Failure("unknown", None, flags, logLevel = logLevel)
     else if (cause.getMessage == null)
       new Failure(
         cause.getClass.getName,
         Some(cause),
         flags,
         logLevel = logLevel)
-    else
-      new Failure(cause.getMessage, Some(cause), flags, logLevel = logLevel)
+    else new Failure(cause.getMessage, Some(cause), flags, logLevel = logLevel)
 
   /**
     * Create a new failure with the given cause; no flags.

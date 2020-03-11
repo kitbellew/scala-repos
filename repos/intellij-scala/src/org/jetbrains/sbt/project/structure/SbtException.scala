@@ -42,10 +42,8 @@ object SbtException {
         if (trimmed.startsWith(":: ") && !trimmed.contains(
               "UNRESOLVED DEPENDENCIES"))
           acc + s"<li>${trimmed.substring(2)}</li>"
-        else
-          acc
-      } else
-        acc
+        else acc
+      } else acc
     }
     new SbtException(
       SbtBundle(
@@ -65,8 +63,7 @@ object SbtException {
     def trimLogIfNecessary(lines: Seq[String]): TrimResult =
       if (lines.length > ACCEPTABLE_TO_DISPLAY_LOG_SIZE)
         Trimmed(joinLines(lines.takeRight(ACCEPTABLE_TO_DISPLAY_LOG_SIZE)))
-      else
-        NotTrimmed
+      else NotTrimmed
 
     def dumpLog(log: String): File = {
       val file = new File(PathManager.getLogPath, "sbt.last.log")

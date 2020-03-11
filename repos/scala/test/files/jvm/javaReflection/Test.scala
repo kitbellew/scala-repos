@@ -54,8 +54,7 @@ object Test {
   def tr[T](m: => T): String =
     try {
       val r = m
-      if (r == null) "null"
-      else r.toString
+      if (r == null) "null" else r.toString
     } catch { case e: InternalError => e.getMessage }
 
   def assertNotAnonymous(c: Class[_]) = {
@@ -74,10 +73,8 @@ object Test {
     val loc =
       try { c.isLocalClass }
       catch { case e: InternalError => true }
-    if (loc)
-      assert(!c.isMemberClass, c)
-    if (c.isMemberClass)
-      assert(!loc, c)
+    if (loc) assert(!c.isMemberClass, c)
+    if (c.isMemberClass) assert(!loc, c)
   }
 
   def ruleMemberDeclaring(c: Class[_]) = {
@@ -88,8 +85,7 @@ object Test {
   }
 
   def ruleScalaAnonClassIsLocal(c: Class[_]) = {
-    if (c.getName contains "$anon$")
-      assert(c.isLocalClass, c)
+    if (c.getName contains "$anon$") assert(c.isLocalClass, c)
   }
 
   def ruleScalaAnonFunInlineIsLocal(c: Class[_]) = {
@@ -99,8 +95,7 @@ object Test {
   }
 
   def ruleScalaAnonFunMethodIsToplevel(c: Class[_]) = {
-    if (c.getName.contains("$lambda$"))
-      assert(c.getEnclosingClass == null, c)
+    if (c.getName.contains("$lambda$")) assert(c.getEnclosingClass == null, c)
   }
 
   def showClass(name: String) = {

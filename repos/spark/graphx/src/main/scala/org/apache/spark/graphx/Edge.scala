@@ -61,9 +61,7 @@ object Edge {
   private[graphx] def lexicographicOrdering[ED] = new Ordering[Edge[ED]] {
     override def compare(a: Edge[ED], b: Edge[ED]): Int = {
       if (a.srcId == b.srcId) {
-        if (a.dstId == b.dstId) 0
-        else if (a.dstId < b.dstId) -1
-        else 1
+        if (a.dstId == b.dstId) 0 else if (a.dstId < b.dstId) -1 else 1
       } else if (a.srcId < b.srcId) -1
       else 1
     }

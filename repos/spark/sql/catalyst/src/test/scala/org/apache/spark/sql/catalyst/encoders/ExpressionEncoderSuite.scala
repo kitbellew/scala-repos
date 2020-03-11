@@ -361,8 +361,8 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
               .zip(schema)
               .map {
                 case (
-                    a: ArrayData,
-                    AttributeReference(_, ArrayType(et, _), _, _)) =>
+                      a: ArrayData,
+                      AttributeReference(_, ArrayType(et, _), _, _)) =>
                   a.toArray[Any](et).toSeq
                 case (other, _) =>
                   other

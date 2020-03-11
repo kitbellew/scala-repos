@@ -355,8 +355,7 @@ trait Checkable {
             checkCheckable(tree, p, X, inPattern, canRemedy))
         case _ =>
           val checker = new CheckabilityChecker(X, P)
-          if (checker.result == RuntimeCheckable)
-            log(checker.summaryString)
+          if (checker.result == RuntimeCheckable) log(checker.summaryString)
 
           if (checker.neverMatches) {
             val addendum =

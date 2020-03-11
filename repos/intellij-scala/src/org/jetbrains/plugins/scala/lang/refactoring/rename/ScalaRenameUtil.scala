@@ -204,9 +204,7 @@ object ScalaRenameUtil {
   }
 
   def setterSuffix(name: String) = {
-    if (name.endsWith("_=")) "_="
-    else if (name.endsWith("_$eq")) "_$eq"
-    else ""
+    if (name.endsWith("_=")) "_=" else if (name.endsWith("_$eq")) "_$eq" else ""
   }
 
   def sameElement(range: RangeMarker, element: PsiElement): Boolean = {

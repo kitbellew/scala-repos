@@ -52,15 +52,13 @@ class DelayedFactory[Req, Rep](
       underlyingF.onSuccess(_.close(deadline))
       val exc = new ServiceClosedException
       underlyingF.raise(exc)
-      for (p <- q.asScala)
-        p.raise(exc)
+      for (p <- q.asScala) p.raise(exc)
       Future.Done
     }
   }
 
   override def status: Status =
-    if (underlyingF.isDefined) Await.result(underlyingF).status
-    else Status.Busy
+    if (underlyingF.isDefined) Await.result(underlyingF).status else Status.Busy
 
   private[finagle] def numWaiters(): Int = q.size()
 

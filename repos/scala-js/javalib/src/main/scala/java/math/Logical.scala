@@ -80,22 +80,14 @@ private[math] object Logical {
 
   /** @see BigInteger#and(BigInteger) */
   def and(bi: BigInteger, that: BigInteger): BigInteger = {
-    if (that.sign == 0 || bi.sign == 0)
-      BigInteger.ZERO
-    else if (that == BigInteger.MINUS_ONE)
-      bi
-    else if (bi == BigInteger.MINUS_ONE)
-      that
-    else if (bi.sign > 0 && that.sign > 0)
-      andPositive(bi, that)
-    else if (bi.sign > 0)
-      andDiffSigns(bi, that)
-    else if (that.sign > 0)
-      andDiffSigns(that, bi)
-    else if (bi.numberLength > that.numberLength)
-      andNegative(bi, that)
-    else
-      andNegative(that, bi)
+    if (that.sign == 0 || bi.sign == 0) BigInteger.ZERO
+    else if (that == BigInteger.MINUS_ONE) bi
+    else if (bi == BigInteger.MINUS_ONE) that
+    else if (bi.sign > 0 && that.sign > 0) andPositive(bi, that)
+    else if (bi.sign > 0) andDiffSigns(bi, that)
+    else if (that.sign > 0) andDiffSigns(that, bi)
+    else if (bi.numberLength > that.numberLength) andNegative(bi, that)
+    else andNegative(that, bi)
   }
 
   /** @return sign = 1, magnitude = val.magnitude & that.magnitude */
@@ -222,22 +214,14 @@ private[math] object Logical {
 
   /** @see BigInteger#andNot(BigInteger) */
   def andNot(bi: BigInteger, that: BigInteger): BigInteger = {
-    if (that.sign == 0)
-      bi
-    else if (bi.sign == 0)
-      BigInteger.ZERO
-    else if (bi == BigInteger.MINUS_ONE)
-      that.not()
-    else if (that == BigInteger.MINUS_ONE)
-      BigInteger.ZERO
-    else if (bi.sign > 0 && that.sign > 0)
-      andNotPositive(bi, that)
-    else if (bi.sign > 0)
-      andNotPositiveNegative(bi, that)
-    else if (that.sign > 0)
-      andNotNegativePositive(bi, that)
-    else
-      andNotNegative(bi, that)
+    if (that.sign == 0) bi
+    else if (bi.sign == 0) BigInteger.ZERO
+    else if (bi == BigInteger.MINUS_ONE) that.not()
+    else if (that == BigInteger.MINUS_ONE) BigInteger.ZERO
+    else if (bi.sign > 0 && that.sign > 0) andNotPositive(bi, that)
+    else if (bi.sign > 0) andNotPositiveNegative(bi, that)
+    else if (that.sign > 0) andNotNegativePositive(bi, that)
+    else andNotNegative(bi, that)
   }
 
   /** @return sign = 1, magnitude = val.magnitude & ~that.magnitude */
@@ -345,8 +329,7 @@ private[math] object Logical {
             @inline
             @tailrec
             def loop2(bi: BigInteger): Unit = {
-              if (i < bi.numberLength)
-                digit = ~bi.digits(i)
+              if (i < bi.numberLength) digit = ~bi.digits(i)
               if (digit == 0) {
                 i += 1
                 loop2(bi)

@@ -94,13 +94,11 @@ class ScalaFileImpl(
   }
 
   override def getName: String = {
-    if (virtualFile != null) virtualFile.getName
-    else super.getName
+    if (virtualFile != null) virtualFile.getName else super.getName
   }
 
   override def getVirtualFile: VirtualFile = {
-    if (virtualFile != null) virtualFile
-    else super.getVirtualFile
+    if (virtualFile != null) virtualFile else super.getVirtualFile
   }
 
   override def getNavigationElement: PsiElement = {
@@ -220,8 +218,7 @@ class ScalaFileImpl(
   private def isScriptFileCached: Boolean = isScriptFileImpl
 
   def isScriptFile(withCaching: Boolean): Boolean = {
-    if (!withCaching) isScriptFileImpl
-    else isScriptFileCached
+    if (!withCaching) isScriptFileImpl else isScriptFileCached
   }
 
   def isWorksheetFile: Boolean = {
@@ -352,8 +349,7 @@ class ScalaFileImpl(
 
   def getPackageName: String = {
     val res = packageName
-    if (res == null) ""
-    else res
+    if (res == null) "" else res
   }
 
   @Nullable

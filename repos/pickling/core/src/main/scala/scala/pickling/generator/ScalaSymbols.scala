@@ -36,10 +36,8 @@ private[pickling] class IrScalaSymbols[
     whyNotClosed(sym).isEmpty
 
   def whyNotClosed(sym: tools.u.TypeSymbol): Seq[String] = {
-    if (sym.isEffectivelyFinal)
-      Nil
-    else if (isCaseClass(sym.asInstanceOf[u.TypeSymbol]))
-      Nil
+    if (sym.isEffectivelyFinal) Nil
+    else if (isCaseClass(sym.asInstanceOf[u.TypeSymbol])) Nil
     else if (sym.isClass) {
       val classSym = sym.asClass
       if (tools.treatAsSealed(classSym)) {

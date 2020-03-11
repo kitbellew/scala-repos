@@ -173,15 +173,13 @@ object BitSetUtil {
         arr(j) = base + bit
         j += 1
       }
-      if (bit < 63)
-        loopBits(long, bit + 1, base)
+      if (bit < 63) loopBits(long, bit + 1, base)
     }
 
     @tailrec
     def loopLongs(i: Int, longs: Array[Long], last: Int, base: Int) {
       loopBits(longs(i), 0, base)
-      if (i < last)
-        loopLongs(i + 1, longs, last, base + 64)
+      if (i < last) loopLongs(i + 1, longs, last, base + 64)
     }
 
     loopLongs(0, bs.getBits, bs.getBitsLength - 1, 0)
@@ -195,12 +193,10 @@ object BitSetUtil {
         bit: Int,
         base: Int,
         sofar: List[Int]): List[Int] = {
-      if (bit < 0)
-        sofar
+      if (bit < 0) sofar
       else if (((long >> bit) & 1) == 1)
         loopBits(long, bit - 1, base, (base + bit) :: sofar)
-      else
-        loopBits(long, bit - 1, base, sofar)
+      else loopBits(long, bit - 1, base, sofar)
     }
 
     @tailrec
@@ -209,8 +205,7 @@ object BitSetUtil {
         longs: Array[Long],
         base: Int,
         sofar: List[Int]): List[Int] = {
-      if (i < 0)
-        sofar
+      if (i < 0) sofar
       else
         loopLongs(i - 1, longs, base - 64, loopBits(longs(i), 63, base, sofar))
     }

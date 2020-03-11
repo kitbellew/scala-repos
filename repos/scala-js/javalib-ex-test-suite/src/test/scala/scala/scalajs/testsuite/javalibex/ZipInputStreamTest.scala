@@ -16,8 +16,7 @@ object ZipInputStreamTest extends JasmineTest {
         val e = in.getNextEntry()
         expect(e.getName()).toEqual(name)
 
-        for (d <- data)
-          expect(in.read()).toBe(d)
+        for (d <- data) expect(in.read()).toBe(d)
 
         expect(in.read()).toBe(-1)
       }
@@ -28,8 +27,7 @@ object ZipInputStreamTest extends JasmineTest {
 
         val r = new InputStreamReader(in)
 
-        for (c <- content)
-          expect(r.read().toChar).toBe(c)
+        for (c <- content) expect(r.read().toChar).toBe(c)
 
         expect(r.read()).toBe(-1)
       }

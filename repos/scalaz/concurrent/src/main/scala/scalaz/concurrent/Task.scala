@@ -456,17 +456,14 @@ object Task {
                   case \/-(success) =>
                     // Try to reduce number of values in the queue
                     val front = results.poll()
-                    if (front == null)
-                      results.add(R.unit(success))
-                    else
-                      results.add(R.cons(success, front))
+                    if (front == null) results.add(R.unit(success))
+                    else results.add(R.cons(success, front))
 
                     // only last completed f will hit the 0 here.
                     if (togo.decrementAndGet() == 0)
                       cb(\/-(results.toList.foldLeft(R.zero)((a, b) =>
                         R.append(a, b))))
-                    else
-                      Trampoline.done(())
+                    else Trampoline.done(())
                   case e @ (-\/(failure)) =>
                     // Only allow the first failure to invoke the callback, so we
                     // race to set `togo` to 0 here.
@@ -485,8 +482,7 @@ object Task {
                       // but, this may also kill `cb(e)`
                       // could have separate AtomicBooleans for each task
                       cb(e) *> Trampoline.delay { interrupt.set(true); () }
-                    else
-                      Trampoline.done(())
+                    else Trampoline.done(())
                 }
                 t.get.unsafePerformListenInterruptibly(handle, interrupt)
             }

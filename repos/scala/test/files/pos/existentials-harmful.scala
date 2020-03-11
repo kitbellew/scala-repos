@@ -21,10 +21,8 @@ object ExistentialsConsideredHarmful {
   }
 
   val aBox =
-    if (math.random < 0.5)
-      TransportBox(Dog, tools(Dog))
-    else
-      TransportBox(Sheep, tools(Sheep))
+    if (math.random < 0.5) TransportBox(Dog, tools(Dog))
+    else TransportBox(Sheep, tools(Sheep))
 
   // 2.
   //aBox.tools.shave(aBox.animal)

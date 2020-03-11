@@ -451,8 +451,7 @@ class IntegerTest {
     def test(s: String, v: Int, radix: Int = 10): Unit = {
       assertEquals(v, Integer.parseInt(s, radix))
       assertEquals(v, Integer.valueOf(s, radix).intValue())
-      if (radix == 10)
-        assertEquals(v, new Integer(s).intValue())
+      if (radix == 10) assertEquals(v, new Integer(s).intValue())
     }
 
     test("0", 0)
@@ -462,8 +461,7 @@ class IntegerTest {
     test("30000", 30000)
     test("-90000", -90000)
     test("Kona", 411787, 27)
-    if (!executingInJVMOnJDK6)
-      test("+42", 42)
+    if (!executingInJVMOnJDK6) test("+42", 42)
     test("-0", 0)
     test("-FF", -255, 16)
   }

@@ -30,23 +30,22 @@ abstract class LazyVals
     def find(ts: List[Tree]) = { result = false; traverseTrees(ts); result }
 
     override def traverse(t: Tree) {
-      if (!result)
-        t match {
-          case v @ ValDef(_, _, _, _) if v.symbol.isLazy =>
-            result = true
+      if (!result) t match {
+        case v @ ValDef(_, _, _, _) if v.symbol.isLazy =>
+          result = true
 
-          case d @ DefDef(_, _, _, _, _, _)
-              if d.symbol.isLazy && lazyUnit(d.symbol) =>
-            d.symbol.resetFlag(symtab.Flags.LAZY)
-            result = true
+        case d @ DefDef(_, _, _, _, _, _)
+            if d.symbol.isLazy && lazyUnit(d.symbol) =>
+          d.symbol.resetFlag(symtab.Flags.LAZY)
+          result = true
 
-          case ClassDef(_, _, _, _) | DefDef(_, _, _, _, _, _) |
-              ModuleDef(_, _, _) =>
-          // Avoid adding bitmaps when they are fully overshadowed by those that are added inside loops
-          case LabelDef(name, _, _) if nme.isLoopHeaderLabel(name) =>
-          case _ =>
-            super.traverse(t)
-        }
+        case ClassDef(_, _, _, _) | DefDef(_, _, _, _, _, _) |
+            ModuleDef(_, _, _) =>
+        // Avoid adding bitmaps when they are fully overshadowed by those that are added inside loops
+        case LabelDef(name, _, _) if nme.isLoopHeaderLabel(name) =>
+        case _ =>
+          super.traverse(t)
+      }
     }
   }
 
@@ -112,10 +111,8 @@ abstract class LazyVals
                   val enclClass = sym.enclClass
                   if (enclClass != NoSymbol && enclMethod == enclClass.enclMethod)
                     enclClass
-                  else
-                    enclMethod
-                } else
-                  sym.owner
+                  else enclMethod
+                } else sym.owner
               }
               debuglog(
                 s"determined enclosing class/dummy/method for lazy val as $enclosingClassOrDummyOrMethod given symbol $sym")
@@ -213,8 +210,7 @@ abstract class LazyVals
                 cond0,
                 typed(addBitmapDefs(sym.owner, thenp0)),
                 elsep0))
-          else
-            l
+          else l
 
         case l @ LabelDef(name0, params0, block @ Block(stats0, expr))
             if name0.startsWith(nme.WHILE_PREFIX) || name0.startsWith(
@@ -226,8 +222,7 @@ abstract class LazyVals
                 block,
                 typed(addBitmapDefs(sym.owner, stats1.head)) :: stats1.tail,
                 expr))
-          else
-            l
+          else l
 
         case _ => super.transform(tree)
       }
@@ -280,8 +275,7 @@ abstract class LazyVals
       defSym.owner = lzyVal.owner
       debuglog(
         s"crete slow compute path $defSym with owner ${defSym.owner} for lazy val $lzyVal")
-      if (bitmaps.contains(lzyVal))
-        bitmaps(lzyVal).map(_.owner = defSym)
+      if (bitmaps.contains(lzyVal)) bitmaps(lzyVal).map(_.owner = defSym)
       val rhs: Tree = gen
         .mkSynchronizedCheck(clazz, cond, syncBody, stats)
         .changeOwner(currentOwner -> defSym)
@@ -381,8 +375,7 @@ abstract class LazyVals
     private def getBitmapFor(meth: Symbol, offset: Int): Symbol = {
       val n = offset / FLAGS_PER_BYTE
       val bmps = bitmaps(meth)
-      if (bmps.length > n)
-        bmps(n)
+      if (bmps.length > n) bmps(n)
       else {
         val sym = meth
           .newVariable(nme.newBitmapName(nme.BITMAP_NORMAL, n), meth.pos)

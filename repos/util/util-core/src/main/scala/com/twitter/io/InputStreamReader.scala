@@ -28,23 +28,17 @@ class InputStreamReader private[io] (
     * indicates that the stream has completed.
     */
   def read(n: Int): Future[Option[Buf]] = {
-    if (discarded)
-      return Future.exception(new Reader.ReaderDiscarded())
-    if (n == 0)
-      return Future.value(Some(Buf.Empty))
+    if (discarded) return Future.exception(new Reader.ReaderDiscarded())
+    if (n == 0) return Future.value(Some(Buf.Empty))
 
     mutex.acquire() flatMap { permit =>
       pool {
         try {
-          if (discarded)
-            throw new Reader.ReaderDiscarded()
+          if (discarded) throw new Reader.ReaderDiscarded()
           val size = n min maxBufferSize
           val buffer = new Array[Byte](size)
           val c = inputStream.read(buffer, 0, size)
-          if (c == -1)
-            None
-          else
-            Some(Buf.ByteArray.Owned(buffer, 0, c))
+          if (c == -1) None else Some(Buf.ByteArray.Owned(buffer, 0, c))
         } catch {
           case exc: InterruptedException =>
             discarded = true

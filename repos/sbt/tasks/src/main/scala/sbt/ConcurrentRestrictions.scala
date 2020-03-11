@@ -201,8 +201,7 @@ object ConcurrentRestrictions {
           if (tags.valid(newState)) {
             tagState = newState
             submitValid(next.node, next.work)
-          } else
-            tried.add(next)
+          } else tried.add(next)
           submitValid(tried)
         }
 

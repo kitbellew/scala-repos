@@ -73,10 +73,8 @@ abstract class BytecodeTest {
       (ms1, ms2).zipped forall { (m1, m2) =>
         val c1 = f(m1)
         val c2 = f(m2).replaceAllLiterally(name2, name1)
-        if (c1 == c2)
-          println(s"[ok] $m1")
-        else
-          println(s"[fail]\n  in $name1: $c1\n  in $name2: $c2")
+        if (c1 == c2) println(s"[ok] $m1")
+        else println(s"[fail]\n  in $name1: $c1\n  in $name2: $c2")
 
         c1 == c2
       }

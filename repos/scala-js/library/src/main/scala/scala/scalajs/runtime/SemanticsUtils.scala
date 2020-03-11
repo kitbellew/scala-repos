@@ -29,10 +29,8 @@ object SemanticsUtils {
       shouldThrow: => Boolean,
       exception: => Throwable): Unit = {
     if (complianceLevel != Unchecked && shouldThrow) {
-      if (complianceLevel == Compliant)
-        throw exception
-      else
-        throw new UndefinedBehaviorError(exception)
+      if (complianceLevel == Compliant) throw exception
+      else throw new UndefinedBehaviorError(exception)
     }
   }
 

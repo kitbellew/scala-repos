@@ -24,8 +24,7 @@ abstract class LambdaLift extends InfoTransform {
         typeRef(apply(sym.owner.enclClass.thisType), sym, Nil)
       case ClassInfoType(parents, decls, clazz) =>
         val parents1 = parents mapConserve this
-        if (parents1 eq parents) tp
-        else ClassInfoType(parents1, decls, clazz)
+        if (parents1 eq parents) tp else ClassInfoType(parents1, decls, clazz)
       case _ =>
         mapOver(tp)
     }
@@ -218,8 +217,7 @@ abstract class LambdaLift extends InfoTransform {
       do {
         changedFreeVars = false
         for ((caller, callees) <- called; callee <- callees;
-             fvs <- free get callee; fv <- fvs)
-          markFree(fv, caller)
+             fvs <- free get callee; fv <- fvs) markFree(fv, caller)
       } while (changedFreeVars)
 
       def renameSym(sym: Symbol) {
@@ -252,16 +250,14 @@ abstract class LambdaLift extends InfoTransform {
           if (originalName.isTermName && calledFromInner(sym))
             newTermNameCached(nonAnon(
               sym.enclClass.fullName('$')) + nme.EXPAND_SEPARATOR_STRING + name)
-          else
-            name
+          else name
         }
       }
 
       val allFree: Set[Symbol] = free.values.flatMap(_.iterator).toSet
 
       for (sym <- renamable) {
-        if (allFree(sym)) proxyNames(sym) = newName(sym)
-        else renameSym(sym)
+        if (allFree(sym)) proxyNames(sym) = newName(sym) else renameSym(sym)
       }
 
       afterOwnPhase {
@@ -303,8 +299,7 @@ abstract class LambdaLift extends InfoTransform {
           currentOwner.debugLocationString,
           sym.owner.logicallyEnclosingMember.debugLocationString))
 
-      if (isSameOwnerEnclosure(sym)) sym
-      else searchIn(currentOwner)
+      if (isSameOwnerEnclosure(sym)) sym else searchIn(currentOwner)
     }
 
     private def memberRef(sym: Symbol): Tree = {
@@ -456,8 +451,7 @@ abstract class LambdaLift extends InfoTransform {
       tree match {
         case _: ClassDef | _: DefDef =>
           val withFreeParams = addFreeParams(tree, sym)
-          if (sym.isLocalToBlock) liftDef(withFreeParams)
-          else withFreeParams
+          if (sym.isLocalToBlock) liftDef(withFreeParams) else withFreeParams
 
         case ValDef(mods, name, tpt, rhs) =>
           if (sym.isCapturedVariable) {
@@ -495,20 +489,18 @@ abstract class LambdaLift extends InfoTransform {
         case Ident(name) =>
           val tree1 =
             if (sym.isTerm && !sym.isLabel)
-              if (sym.isMethod)
-                atPos(tree.pos)(memberRef(sym))
+              if (sym.isMethod) atPos(tree.pos)(memberRef(sym))
               else if (sym.isLocalToBlock && !isSameOwnerEnclosure(sym))
                 atPos(tree.pos)(proxyRef(sym))
               else tree
             else tree
-          if (sym.isCapturedVariable && !isBoxedRef)
-            atPos(tree.pos) {
-              val tp = tree.tpe
-              val elemTree = typer typed Select(tree1 setType sym.tpe, nme.elem)
-              if (elemTree.tpe.typeSymbol != tp.typeSymbol)
-                gen.mkAttributedCast(elemTree, tp)
-              else elemTree
-            }
+          if (sym.isCapturedVariable && !isBoxedRef) atPos(tree.pos) {
+            val tp = tree.tpe
+            val elemTree = typer typed Select(tree1 setType sym.tpe, nme.elem)
+            if (elemTree.tpe.typeSymbol != tp.typeSymbol)
+              gen.mkAttributedCast(elemTree, tp)
+            else elemTree
+          }
           else tree1
         case Block(stats, expr0) =>
           val (lzyVals, rest) = stats partition {
@@ -570,7 +562,6 @@ abstract class LambdaLift extends InfoTransform {
       !sym.isConstructor // this condition is redundant for now. It will be needed if we remove the second condition in 2.12.x
         && (settings.Ydelambdafy.value == "method" && sym.isDelambdafyTarget) // SI-8359 Makes the lambda body a viable as the target MethodHandle for a call to LambdaMetafactory
     )
-    if (prependFree) free ::: original
-    else original ::: free
+    if (prependFree) free ::: original else original ::: free
   }
 }

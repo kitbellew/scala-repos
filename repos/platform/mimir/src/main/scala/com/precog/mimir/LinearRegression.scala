@@ -228,10 +228,7 @@ trait LinearRegressionLibModule[M[+_]]
             None
         }
 
-        val arrays = {
-          if (values.isEmpty) None
-          else values.suml(betaMonoid)
-        }
+        val arrays = { if (values.isEmpty) None else values.suml(betaMonoid) }
 
         val xs = arrays collect {
           case mx if !mx.isEmpty =>
@@ -471,8 +468,7 @@ trait LinearRegressionLibModule[M[+_]]
           trans.WrapObject(Leaf(Source), "residualStandardError"))
 
         val rSquared = {
-          if (errors.tss == 0) 1
-          else 1 - (errors.rss / errors.tss)
+          if (errors.tss == 0) 1 else 1 - (errors.rss / errors.tss)
         }
         val rSquaredTable0 = Table.fromRValues(Stream(CNum(rSquared)))
         val rSquaredTable =

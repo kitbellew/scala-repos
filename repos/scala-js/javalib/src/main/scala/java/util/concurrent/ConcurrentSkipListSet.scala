@@ -38,16 +38,13 @@ class ConcurrentSkipListSet[E] private (inner: TreeSet[E])
     inner.isEmpty
 
   override def contains(o: Any): Boolean =
-    if (o == null) false
-    else inner.contains(o)
+    if (o == null) false else inner.contains(o)
 
   override def add(e: E): Boolean =
-    if (e == null) throw new NullPointerException()
-    else inner.add(e)
+    if (e == null) throw new NullPointerException() else inner.add(e)
 
   override def remove(o: Any): Boolean =
-    if (o == null) throw new NullPointerException()
-    else inner.remove(o)
+    if (o == null) throw new NullPointerException() else inner.remove(o)
 
   override def clear(): Unit =
     inner.clear()

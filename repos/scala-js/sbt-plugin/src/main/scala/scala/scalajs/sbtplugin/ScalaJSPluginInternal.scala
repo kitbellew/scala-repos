@@ -143,8 +143,7 @@ object ScalaJSPluginInternal {
             val scalaJSFiles = if (classFile.getPath endsWith ".class") {
               val f =
                 FileVirtualFile.withExtension(classFile, ".class", ".sjsir")
-              if (f.exists) List(f)
-              else Nil
+              if (f.exists) List(f) else Nil
             } else Nil
             classFile :: scalaJSFiles
           })
@@ -162,8 +161,7 @@ object ScalaJSPluginInternal {
       cacheName: String,
       getLib: ResolvedJSDependency => VirtualJSFile): Setting[Task[File]] = {
     taskKey <<= Def.taskDyn {
-      if ((skip in taskKey).value)
-        Def.task((artifactPath in taskKey).value)
+      if ((skip in taskKey).value) Def.task((artifactPath in taskKey).value)
       else
         Def.task {
           val s = (streams in taskKey).value
@@ -205,8 +203,7 @@ object ScalaJSPluginInternal {
       val relSourceMapBase = {
         if ((relativeSourceMaps in key).value)
           Some((artifactPath in key).value.getParentFile.toURI())
-        else
-          None
+        else None
       }
 
       val frontendConfig = LinkerFrontend
@@ -335,10 +332,8 @@ object ScalaJSPluginInternal {
           .getOrElse(throw new FileNotFoundException(relPath))
 
         val stdout = new java.io.PrintWriter(System.out)
-        if (options.infos)
-          new InfoPrinter(stdout).print(vfile.info)
-        else
-          new IRTreePrinter(stdout).printTopLevelTree(vfile.tree)
+        if (options.infos) new InfoPrinter(stdout).print(vfile.info)
+        else new IRTreePrinter(stdout).printTopLevelTree(vfile.tree)
         stdout.flush()
 
         logIRCacheStats(streams.value.log)
@@ -507,8 +502,7 @@ object ScalaJSPluginInternal {
         } getOrElse true
       }
 
-      if (needWrite)
-        JSDependencyManifest.write(manifest, vfile)
+      if (needWrite) JSDependencyManifest.write(manifest, vfile)
 
       file
     },
@@ -564,8 +558,7 @@ object ScalaJSPluginInternal {
       // Collect available JS libraries
       val availableLibs = {
         val libs = mutable.Map.empty[String, VirtualJSFile]
-        for (lib <- attLibs.data)
-          libs.getOrElseUpdate(lib.relativePath, lib)
+        for (lib <- attLibs.data) libs.getOrElseUpdate(lib.relativePath, lib)
         libs.toMap
       }
 
@@ -579,10 +572,8 @@ object ScalaJSPluginInternal {
     },
     // Give tasks ability to check we are not forking at build reading time
     scalaJSEnsureUnforked := {
-      if (fork.value)
-        sys.error("Scala.js cannot be run in a forked JVM")
-      else
-        true
+      if (fork.value) sys.error("Scala.js cannot be run in a forked JVM")
+      else true
     },
     scalaJSRequestsDOM := {
       requiresDOM.?.value

@@ -72,8 +72,7 @@ object Test extends App {
 
       /** Remove duplicate elements in 'xs'. */
       def removeDuplicates[A](xs: List[A]): List[A] =
-        if (xs.isEmpty)
-          xs
+        if (xs.isEmpty) xs
         else
           xs.head :: removeDuplicates(
             for (x <- xs.tail if x != xs.head) yield x)

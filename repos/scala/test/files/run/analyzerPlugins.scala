@@ -64,8 +64,7 @@ object Test extends DirectTest {
       }
 
       override def annotationsLub(tp: Type, ts: List[Type]): Type = {
-        if (hasTestAnn(ts: _*))
-          output += s"lub($ts)"
+        if (hasTestAnn(ts: _*)) output += s"lub($ts)"
         tp
       }
 

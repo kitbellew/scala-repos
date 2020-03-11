@@ -317,9 +317,9 @@ trait ScPattern extends ScalaPsiElement {
           case _ => None
         }
       case Some(
-          ScalaResolveResult(
-            FakeCompanionClassOrCompanionClass(cl: ScClass),
-            subst: ScSubstitutor)) if cl.isCase && cl.tooBigForUnapply =>
+            ScalaResolveResult(
+              FakeCompanionClassOrCompanionClass(cl: ScClass),
+              subst: ScSubstitutor)) if cl.isCase && cl.tooBigForUnapply =>
         val undefSubst = subst.followed(new ScSubstitutor(ScThisType(cl)))
         val params: Seq[ScParameter] = cl.parameters
         val types = params
@@ -333,8 +333,7 @@ trait ScPattern extends ScalaPsiElement {
             cl)
           types.dropRight(1) :+ tp
         } else types
-        if (argIndex < args.length) Some(args(argIndex))
-        else None
+        if (argIndex < args.length) Some(args(argIndex)) else None
       case _ => None
     }
   }
@@ -455,8 +454,7 @@ trait ScPattern extends ScalaPsiElement {
     case named: ScNamingPattern => named.expectedType
     case gen: ScGenerator =>
       val analog = getAnalog
-      if (analog != this) analog.expectedType
-      else None
+      if (analog != this) analog.expectedType else None
     case enum: ScEnumerator =>
       Option(enum.rvalue).flatMap { rvalue =>
         rvalue.getType(TypingContext.empty).toOption

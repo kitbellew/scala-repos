@@ -63,13 +63,11 @@ case class Gamma(shape: Double, scale: Double)(implicit rand: RandBasis = Rand)
         if (logU <= math.log1p(-shape)) {
           val logV = log(v)
           val logX = logU / shape
-          if (logX <= logV) logX
-          else rec
+          if (logX <= logV) logX else rec
         } else {
           val y = -log((1 - u) / shape)
           val logX = math.log(1.0 - shape + shape * y) / shape
-          if (logX <= math.log(v + y)) logX
-          else rec
+          if (logX <= math.log(v + y)) logX else rec
         }
       }
       rec + math.log(scale)
@@ -85,13 +83,11 @@ case class Gamma(shape: Double, scale: Double)(implicit rand: RandBasis = Rand)
         val v = -math.log(rand.uniform.draw())
         if (u <= 1.0 - shape) {
           val x = pow(u, 1.0 / shape)
-          if (x <= v) x
-          else rec
+          if (x <= v) x else rec
         } else {
           val y = -log((1 - u) / shape)
           val x = pow(1.0 - shape + shape * y, 1.0 / shape)
-          if (x <= (v + y)) x
-          else rec
+          if (x <= (v + y)) x else rec
         }
       }
 
@@ -207,10 +203,8 @@ object Gamma
      * For a more precise estimate, use Newton-Raphson updates
      */
     val k_new = k - (math.log(k) - digamma(k) - s) / (1.0 / k - trigamma(k))
-    if (math.abs(k - k_new) / math.abs(k_new) < 1.0e-4)
-      k_new
-    else
-      Nwt_Rph_iter_for_k(k_new, s)
+    if (math.abs(k - k_new) / math.abs(k_new) < 1.0e-4) k_new
+    else Nwt_Rph_iter_for_k(k_new, s)
   }
 
   def distribution(p: Parameter) = new Gamma(p._1, p._2)

@@ -54,8 +54,7 @@ trait ScVariable
       isStrict: Boolean): Boolean = m match {
     case other: ScVariable =>
       for (elem <- self.declaredElements) {
-        if (other.declaredElements.exists(_.name == elem.name))
-          return true
+        if (other.declaredElements.exists(_.name == elem.name)) return true
       }
       false
     case _ => false

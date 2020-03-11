@@ -141,8 +141,7 @@ class ThrottlerTransportAdapterSpec
       here ! Lost("Blackhole 3")
       awaitCond(
         {
-          if (receiveOne(Duration.Zero) == Lost("Blackhole 3"))
-            true
+          if (receiveOne(Duration.Zero) == Lost("Blackhole 3")) true
           else {
             here ! Lost("Blackhole 3")
             false

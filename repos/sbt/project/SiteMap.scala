@@ -95,8 +95,7 @@ object SiteMap {
     if (gzip) {
       IO.gzip(output, gzipped)
       gzipped
-    } else
-      output
+    } else output
   }
   private[this] def writeXML(output: File, node: xml.Node): Unit =
     write(output, new xml.PrettyPrinter(1000, 4).format(node))

@@ -419,8 +419,7 @@ final class ActorMaterializerSettings private (
     * stream topology by using [[akka.stream.Attributes#dispatcher]].
     */
   def withDispatcher(dispatcher: String): ActorMaterializerSettings = {
-    if (this.dispatcher == dispatcher) this
-    else copy(dispatcher = dispatcher)
+    if (this.dispatcher == dispatcher) this else copy(dispatcher = dispatcher)
   }
 
   /**
@@ -456,15 +455,13 @@ final class ActorMaterializerSettings private (
     * in FIFO order within a fused subgraph, but randomized.
     */
   def withFuzzing(enable: Boolean): ActorMaterializerSettings =
-    if (enable == this.fuzzingMode) this
-    else copy(fuzzingMode = enable)
+    if (enable == this.fuzzingMode) this else copy(fuzzingMode = enable)
 
   /**
     * Maximum number of elements emitted in batch if downstream signals large demand.
     */
   def withOutputBurstLimit(limit: Int): ActorMaterializerSettings =
-    if (limit == this.outputBurstLimit) this
-    else copy(outputBurstLimit = limit)
+    if (limit == this.outputBurstLimit) this else copy(outputBurstLimit = limit)
 
   /**
     * Limit for number of messages that can be processed synchronously in stream to substream communication
@@ -477,8 +474,7 @@ final class ActorMaterializerSettings private (
     * Enable to log all elements that are dropped due to failures (at DEBUG level).
     */
   def withDebugLogging(enable: Boolean): ActorMaterializerSettings =
-    if (enable == this.debugLogging) this
-    else copy(debugLogging = enable)
+    if (enable == this.debugLogging) this else copy(debugLogging = enable)
 
   /**
     * Enable automatic fusing of all graphs that are run. For short-lived streams
@@ -486,8 +482,7 @@ final class ActorMaterializerSettings private (
     * desirable since it reduces the number of Actors that are created.
     */
   def withAutoFusing(enable: Boolean): ActorMaterializerSettings =
-    if (enable == this.autoFusing) this
-    else copy(autoFusing = enable)
+    if (enable == this.autoFusing) this else copy(autoFusing = enable)
 
   /**
     * Configure the maximum buffer size for which a FixedSizeBuffer will be preallocated.

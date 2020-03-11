@@ -190,12 +190,10 @@ class ScriptRunner extends HasCompileSocket {
       settings: GenericRunnerSettings,
       scriptFile: String,
       scriptArgs: List[String]): Boolean = {
-    if (File(scriptFile).isFile)
-      withCompiledScript(settings, scriptFile) {
-        runCompiled(settings, _, scriptArgs)
-      }
-    else
-      throw new IOException("no such file: " + scriptFile)
+    if (File(scriptFile).isFile) withCompiledScript(settings, scriptFile) {
+      runCompiled(settings, _, scriptArgs)
+    }
+    else throw new IOException("no such file: " + scriptFile)
   }
 
   /** Calls runScript and catches the enumerated exceptions, routing

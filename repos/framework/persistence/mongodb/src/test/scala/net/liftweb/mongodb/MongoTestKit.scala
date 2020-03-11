@@ -52,8 +52,7 @@ trait MongoTestKit extends Specification with BeforeAfterEach {
 
   def isMongoRunning: Boolean =
     try {
-      if (dbs.length < 1)
-        false
+      if (dbs.length < 1) false
       else {
         dbs foreach {
           case (id, _) =>

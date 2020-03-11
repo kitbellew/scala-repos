@@ -43,8 +43,7 @@ private[macroimpls] trait JSMembers {
       (!that.isDefault || this.isDefault) && that.info <:< this.info
 
     override def toString(): String =
-      if (isDefault) s"$info = ???"
-      else info.toString
+      if (isDefault) s"$info = ???" else info.toString
   }
 
   case class JSMethod(params: List[JSMethodParam], resultType: Type)

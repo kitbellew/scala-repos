@@ -302,17 +302,14 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
     if (nameMatch(s.name, j.name)) {
       if (s.parameterTypes.length == j.parameterTypes.length)
         if (typeMatch(s.parameterTypes, j.parameterTypes))
-          if (returnTypeMatch(s.returnType, j.returnType))
-            Match(s, j)
+          if (returnTypeMatch(s.returnType, j.returnType)) Match(s, j)
           else
             MatchFailure(
               s,
               j,
               "Return types don't match! " + s.returnType + ", " + j.returnType)
-        else
-          MatchFailure(s, j, "Types of parameters don't match!")
-      else
-        MatchFailure(s, j, "Same name, but different number of parameters!")
+        else MatchFailure(s, j, "Types of parameters don't match!")
+      else MatchFailure(s, j, "Same name, but different number of parameters!")
     } else { MatchFailure(s, j, "Names don't match!") }
   }
 

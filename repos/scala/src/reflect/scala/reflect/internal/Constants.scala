@@ -183,24 +183,15 @@ trait Constants extends api.Constants {
       */
     def convertTo(pt: Type): Constant = {
       val target = pt.typeSymbol
-      if (target == tpe.typeSymbol)
-        this
-      else if (target == ByteClass && isByteRange)
-        Constant(byteValue)
-      else if (target == ShortClass && isShortRange)
-        Constant(shortValue)
-      else if (target == CharClass && isCharRange)
-        Constant(charValue)
-      else if (target == IntClass && isIntRange)
-        Constant(intValue)
-      else if (target == LongClass && isLongRange)
-        Constant(longValue)
-      else if (target == FloatClass && isFloatRange)
-        Constant(floatValue)
-      else if (target == DoubleClass && isNumeric)
-        Constant(doubleValue)
-      else
-        null
+      if (target == tpe.typeSymbol) this
+      else if (target == ByteClass && isByteRange) Constant(byteValue)
+      else if (target == ShortClass && isShortRange) Constant(shortValue)
+      else if (target == CharClass && isCharRange) Constant(charValue)
+      else if (target == IntClass && isIntRange) Constant(intValue)
+      else if (target == LongClass && isLongRange) Constant(longValue)
+      else if (target == FloatClass && isFloatRange) Constant(floatValue)
+      else if (target == DoubleClass && isNumeric) Constant(doubleValue)
+      else null
     }
 
     def stringValue: String =

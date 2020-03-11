@@ -73,8 +73,7 @@ class HttpClientDispatcher(
         Future
           .join(
             // 1. Drain the Request body into the Transport.
-            if (req.isChunked) streamChunks(trans, req.reader)
-            else Future.Done,
+            if (req.isChunked) streamChunks(trans, req.reader) else Future.Done,
             // 2. Drain the Transport into Response body.
             trans.read() flatMap {
               case res: HttpResponse if HttpNackFilter.isNack(res) =>

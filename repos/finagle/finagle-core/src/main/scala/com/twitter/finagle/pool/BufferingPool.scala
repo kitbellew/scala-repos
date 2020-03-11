@@ -20,10 +20,7 @@ class BufferingPool[Req, Rep](underlying: ServiceFactory[Req, Rep], size: Int)
       extends ServiceProxy[Req, Rep](self) {
     private[this] val wasReleased = new AtomicBoolean(false)
     def releaseSelf() = {
-      if (wasReleased.compareAndSet(false, true))
-        self.close()
-      else
-        Future.Done
+      if (wasReleased.compareAndSet(false, true)) self.close() else Future.Done
     }
 
     override def close(deadline: Time) = {
@@ -31,8 +28,7 @@ class BufferingPool[Req, Rep](underlying: ServiceFactory[Req, Rep], size: Int)
       // between draining and giving back to the pool.
       if (status == Status.Closed || !buffer.tryPut(this) || draining)
         releaseSelf()
-      else
-        Future.Done
+      else Future.Done
     }
   }
 

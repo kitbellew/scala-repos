@@ -11,10 +11,8 @@ class NodeVirtualFile(override val path: String) extends VirtualFile {
 
   override def version: Option[String] = {
     val stat = fs.statSync(path)
-    if (js.isUndefined(stat.mtime))
-      None
-    else
-      Some(stat.mtime.asInstanceOf[js.Date].getTime.toString)
+    if (js.isUndefined(stat.mtime)) None
+    else Some(stat.mtime.asInstanceOf[js.Date].getTime.toString)
   }
 
   override def exists: Boolean =

@@ -103,8 +103,7 @@ trait MessageDispatcher {
     try {
       val future = new DefaultCompletableFuture[T](timeout)
 
-      if (active.isOff)
-        guard withGuard { active.switchOn { start } }
+      if (active.isOff) guard withGuard { active.switchOn { start } }
 
       executeFuture(FutureInvocation[T](future, block, futureCleanup))
       future
@@ -136,8 +135,7 @@ trait MessageDispatcher {
       }
 
   private[akka] def register(actorRef: ActorRef) {
-    if (actorRef.mailbox eq null)
-      actorRef.mailbox = createMailbox(actorRef)
+    if (actorRef.mailbox eq null) actorRef.mailbox = createMailbox(actorRef)
 
     uuids add actorRef.uuid
     if (active.isOff) { active.switchOn { start } }

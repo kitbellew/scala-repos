@@ -236,10 +236,7 @@ object SimpleConsumerShell extends Logging {
             "Error in getting earliest or latest offset due to: " + Utils
               .stackTrace(t))
           System.exit(1)
-      } finally {
-        if (simpleConsumer != null)
-          simpleConsumer.close()
-      }
+      } finally { if (simpleConsumer != null) simpleConsumer.close() }
     }
 
     // initializing formatter
@@ -321,8 +318,7 @@ object SimpleConsumerShell extends Logging {
                       error(
                         "Error processing message, skipping this message: ",
                         e)
-                    else
-                      throw e
+                    else throw e
                 }
                 if (System.out.checkError()) {
                   // This means no one is listening to our output stream any more, time to shutdown

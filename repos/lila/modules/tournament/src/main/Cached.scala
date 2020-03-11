@@ -21,8 +21,7 @@ private[tournament] final class Cached(
     AsyncCache.single(TournamentRepo.promotable, timeToLive = createdTtl)
 
   def ranking(tour: Tournament): Fu[Ranking] =
-    if (tour.isFinished) finishedRanking(tour.id)
-    else ongoingRanking(tour.id)
+    if (tour.isFinished) finishedRanking(tour.id) else ongoingRanking(tour.id)
 
   // only applies to ongoing tournaments
   private val ongoingRanking = AsyncCache[String, Ranking](

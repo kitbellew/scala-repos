@@ -228,8 +228,7 @@ abstract class Parser(
     }
 
     try {
-      if (phase0_initialRun())
-        scheme.success(valueStack.toHList[L]())
+      if (phase0_initialRun()) scheme.success(valueStack.toHList[L]())
       else {
         val principalErrorIndex = phase1_establishPrincipalErrorIndex()
         val p2 = phase2_establishReportedErrorIndex(principalErrorIndex)
@@ -417,11 +416,10 @@ abstract class Parser(
     * THIS IS NOT PUBLIC API and might become hidden in future. Use only if you know what you are doing!
     */
   @tailrec final def __matchString(string: String, ix: Int = 0): Boolean =
-    if (ix < string.length)
-      if (_cursorChar == string.charAt(ix)) {
-        __advance()
-        __matchString(string, ix + 1)
-      } else false
+    if (ix < string.length) if (_cursorChar == string.charAt(ix)) {
+      __advance()
+      __matchString(string, ix + 1)
+    } else false
     else true
 
   /**
@@ -430,21 +428,20 @@ abstract class Parser(
   @tailrec final def __matchStringWrapped(
       string: String,
       ix: Int = 0): Boolean =
-    if (ix < string.length)
-      if (_cursorChar == string.charAt(ix)) {
-        __advance()
-        __updateMaxCursor()
-        __matchStringWrapped(string, ix + 1)
-      } else {
-        try __registerMismatch()
-        catch {
-          case Parser.StartTracingException ⇒
-            import RuleTrace._
-            __bubbleUp(
-              NonTerminal(StringMatch(string), -ix) :: Nil,
-              CharMatch(string charAt ix))
-        }
+    if (ix < string.length) if (_cursorChar == string.charAt(ix)) {
+      __advance()
+      __updateMaxCursor()
+      __matchStringWrapped(string, ix + 1)
+    } else {
+      try __registerMismatch()
+      catch {
+        case Parser.StartTracingException ⇒
+          import RuleTrace._
+          __bubbleUp(
+            NonTerminal(StringMatch(string), -ix) :: Nil,
+            CharMatch(string charAt ix))
       }
+    }
     else true
 
   /**

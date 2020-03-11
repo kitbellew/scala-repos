@@ -72,40 +72,40 @@ class DebugTest
             project ! DebugBacktraceReq(DebugThreadId(1), 0, 3)
             expectMsgType[DebugBacktrace] should matchPattern {
               case DebugBacktrace(
-                  List(
-                    DebugStackFrame(
-                      0,
-                      List(),
-                      0,
-                      "breakpoints.Breakpoints",
-                      "mainTest",
-                      LineSourcePosition(`breakpointsFile`, 32),
-                      _),
-                    DebugStackFrame(
-                      1,
-                      List(
-                        DebugStackLocal(
-                          0,
-                          "args",
-                          "Array[]",
-                          "java.lang.String[]")
-                      ),
-                      1,
-                      "breakpoints.Breakpoints$",
-                      "main",
-                      LineSourcePosition(`breakpointsFile`, 41),
-                      _),
-                    DebugStackFrame(
-                      2,
-                      List(),
-                      1,
-                      "breakpoints.Breakpoints",
-                      "main",
-                      LineSourcePosition(`breakpointsFile`, _),
-                      _)
-                  ),
-                  DebugThreadId(1),
-                  "main") =>
+                    List(
+                      DebugStackFrame(
+                        0,
+                        List(),
+                        0,
+                        "breakpoints.Breakpoints",
+                        "mainTest",
+                        LineSourcePosition(`breakpointsFile`, 32),
+                        _),
+                      DebugStackFrame(
+                        1,
+                        List(
+                          DebugStackLocal(
+                            0,
+                            "args",
+                            "Array[]",
+                            "java.lang.String[]")
+                        ),
+                        1,
+                        "breakpoints.Breakpoints$",
+                        "main",
+                        LineSourcePosition(`breakpointsFile`, 41),
+                        _),
+                      DebugStackFrame(
+                        2,
+                        List(),
+                        1,
+                        "breakpoints.Breakpoints",
+                        "main",
+                        LineSourcePosition(`breakpointsFile`, _),
+                        _)
+                    ),
+                    DebugThreadId(1),
+                    "main") =>
             }
 
             //            val bp11 = session.addLineBreakpoint(BP_TYPENAME, 11)
@@ -286,16 +286,16 @@ class DebugTest
             // String local
             inside(getVariableValue(DebugThreadId(1), "h")) {
               case DebugStringInstance(
-                  "\"test\"",
-                  debugFields,
-                  "java.lang.String",
-                  _) =>
+                    "\"test\"",
+                    debugFields,
+                    "java.lang.String",
+                    _) =>
                 exactly(1, debugFields) should matchPattern {
                   case DebugClassField(
-                      _,
-                      "value",
-                      "char[]",
-                      "Array['t', 'e', 's',...]") =>
+                        _,
+                        "value",
+                        "char[]",
+                        "Array['t', 'e', 's',...]") =>
                 }
             }
 
@@ -307,16 +307,16 @@ class DebugTest
             // type local
             inside(getVariableValue(DebugThreadId(1), "j")) {
               case DebugObjectInstance(
-                  "Instance of $colon$colon",
-                  debugFields,
-                  "scala.collection.immutable.$colon$colon",
-                  _) =>
+                    "Instance of $colon$colon",
+                    debugFields,
+                    "scala.collection.immutable.$colon$colon",
+                    _) =>
                 exactly(1, debugFields) should matchPattern {
                   case DebugClassField(
-                      _,
-                      head,
-                      "java.lang.Object",
-                      "Instance of Integer")
+                        _,
+                        head,
+                        "java.lang.Object",
+                        "Instance of Integer")
                       if head == "head" | head == "scala$collection$immutable$$colon$colon$$hd" =>
                 }
             }
@@ -324,10 +324,10 @@ class DebugTest
             // object array local
             getVariableValue(DebugThreadId(1), "k") should matchPattern {
               case DebugArrayInstance(
-                  3,
-                  "java.lang.Object[]",
-                  "java.lang.Object",
-                  _) =>
+                    3,
+                    "java.lang.Object[]",
+                    "java.lang.Object",
+                    _) =>
             }
           }
         }
@@ -413,17 +413,17 @@ trait DebugTestUtils {
     project ! DebugBacktraceReq(DebugThreadId(1), 0, 1)
     expectMsgType[DebugBacktrace] should matchPattern {
       case DebugBacktrace(
-          List(
-            DebugStackFrame(
-              0,
-              _,
-              1,
-              `className`,
-              `method`,
-              LineSourcePosition(_, `line`),
-              _)),
-          DebugThreadId(1),
-          "main") =>
+            List(
+              DebugStackFrame(
+                0,
+                _,
+                1,
+                `className`,
+                `method`,
+                LineSourcePosition(_, `line`),
+                _)),
+            DebugThreadId(1),
+            "main") =>
     }
   }
 }

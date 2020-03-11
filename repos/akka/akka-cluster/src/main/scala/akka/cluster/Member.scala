@@ -46,8 +46,7 @@ class Member private[cluster] (
   def isOlderThan(other: Member): Boolean =
     if (upNumber == other.upNumber)
       Member.addressOrdering.compare(address, other.address) < 0
-    else
-      upNumber < other.upNumber
+    else upNumber < other.upNumber
 
   def copy(status: MemberStatus): Member = {
     val oldStatus = this.status

@@ -56,8 +56,7 @@ class PrintStream private (
 
   private lazy val encoder = {
     val c =
-      if (charset == null) Charset.defaultCharset
-      else charset
+      if (charset == null) Charset.defaultCharset else charset
     /* We pass `this` as the output stream for the encoding writer so that
      * we can apply auto-flushing. Note that this will flush() more often
      * than required by the spec. It appears to be consistent with how the
@@ -127,16 +126,14 @@ class PrintStream private (
   override def write(b: Int): Unit = {
     ensureOpenAndTrapIOExceptions {
       out.write(b)
-      if (autoFlush && b == '\n')
-        flush()
+      if (autoFlush && b == '\n') flush()
     }
   }
 
   override def write(buf: Array[Byte], off: Int, len: Int): Unit = {
     ensureOpenAndTrapIOExceptions {
       out.write(buf, off, len)
-      if (autoFlush)
-        flush()
+      if (autoFlush) flush()
     }
   }
 
@@ -162,8 +159,7 @@ class PrintStream private (
   def println(): Unit = ensureOpenAndTrapIOExceptions {
     encoder.write('\n') // In Scala.js the line separator is always LF
     encoder.flushBuffer()
-    if (autoFlush)
-      flush()
+    if (autoFlush) flush()
   }
 
   def println(b: Boolean): Unit = { print(b); println() }
@@ -213,8 +209,7 @@ class PrintStream private (
 
   @inline private[this] def ensureOpenAndTrapIOExceptions(
       body: => Unit): Unit = {
-    if (closed) setError()
-    else trapIOExceptions(body)
+    if (closed) setError() else trapIOExceptions(body)
   }
 
 }

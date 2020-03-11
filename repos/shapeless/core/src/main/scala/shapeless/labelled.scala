@@ -137,8 +137,7 @@ class LabelledMacros(val c: whitebox.Context)
 
     val q"${tpeString: String}" = tpeSelector
     val fields =
-      if (tpeString.trim.isEmpty)
-        Array.empty[(Type, Type)]
+      if (tpeString.trim.isEmpty) Array.empty[(Type, Type)]
       else
         tpeString.split(",").map(_.trim).map(_.split("->").map(_.trim)).map {
           case Array(key, value) =>
@@ -183,8 +182,7 @@ class LabelledMacros(val c: whitebox.Context)
       consTpe: Type): Tree = {
     val q"${tpeString: String}" = tpeSelector
     val elemTypes =
-      if (tpeString.trim.isEmpty)
-        Array.empty[Type]
+      if (tpeString.trim.isEmpty) Array.empty[Type]
       else
         tpeString.split(",").map(_.trim).map { elemTypeStr =>
           parseType(elemTypeStr)

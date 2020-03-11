@@ -25,8 +25,7 @@ class PresentationCompilerCompleter(intp: IMain) extends Completion {
     complete(before + after, before.length)
   override def complete(buf: String, cursor: Int): Candidates = {
     val request = Request(buf, cursor)
-    if (request == lastRequest)
-      tabCount += 1
+    if (request == lastRequest) tabCount += 1
     else {
       tabCount = 0
       lastRequest = request
@@ -131,8 +130,7 @@ class PresentationCompilerCompleter(intp: IMain) extends Completion {
           Some(
             buf.substring(0, found.cursor) + StringOps.longestCommonPrefix(
               found.candidates))
-        else
-          None
+        else None
       found
     }
     val buf1 = buf.patch(cursor, Cursor, 0)

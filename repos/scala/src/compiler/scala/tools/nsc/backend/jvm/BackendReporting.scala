@@ -112,10 +112,10 @@ object BackendReporting {
         }
 
       case MethodNotFound(
-          name,
-          descriptor,
-          ownerInternalName,
-          missingClasses) =>
+            name,
+            descriptor,
+            ownerInternalName,
+            missingClasses) =>
         val (javaDef, others) = missingClasses.partition(_.definedInJavaSource)
         s"The method $name$descriptor could not be found in the class $ownerInternalName or any of its parents." +
           (if (others.isEmpty) ""
@@ -278,22 +278,22 @@ object BackendReporting {
           s"\nthat would cause an IllegalAccessError when inlined into class $callsiteClass."
 
       case IllegalAccessCheckFailed(
-          _,
-          _,
-          _,
-          callsiteClass,
-          instruction,
-          cause) =>
+            _,
+            _,
+            _,
+            callsiteClass,
+            instruction,
+            cause) =>
         s"Failed to check if $calleeMethodSig can be safely inlined to $callsiteClass without causing an IllegalAccessError. Checking instruction ${AsmUtils
           .textify(instruction)} failed:\n" + cause
 
       case MethodWithHandlerCalledOnNonEmptyStack(
-          _,
-          _,
-          _,
-          callsiteClass,
-          callsiteName,
-          callsiteDesc) =>
+            _,
+            _,
+            _,
+            callsiteClass,
+            callsiteName,
+            callsiteDesc) =>
         s"""The operand stack at the callsite in ${BackendReporting
              .methodSignature(
                callsiteClass,
@@ -306,12 +306,12 @@ object BackendReporting {
         s"Method $calleeMethodSig cannot be inlined because it is synchronized."
 
       case StrictfpMismatch(
-          _,
-          _,
-          _,
-          callsiteClass,
-          callsiteName,
-          callsiteDesc) =>
+            _,
+            _,
+            _,
+            callsiteClass,
+            callsiteName,
+            callsiteDesc) =>
         s"""The callsite method ${BackendReporting.methodSignature(
              callsiteClass,
              callsiteName,
@@ -320,12 +320,12 @@ object BackendReporting {
          """.stripMargin
 
       case ResultingMethodTooLarge(
-          _,
-          _,
-          _,
-          callsiteClass,
-          callsiteName,
-          callsiteDesc) =>
+            _,
+            _,
+            _,
+            callsiteClass,
+            callsiteName,
+            callsiteDesc) =>
         s"""The size of the callsite method ${BackendReporting
              .methodSignature(callsiteClass, callsiteName, callsiteDesc)}
            |would exceed the JVM method size limit after inlining $calleeMethodSig.

@@ -55,8 +55,7 @@ class TopicConfigHandler(
             s"Log configuration ${LogConfig.MessageFormatVersionProp} is ignored for `$topic` because `$versionString` " +
               s"is not compatible with Kafka inter-broker protocol version `${kafkaConfig.interBrokerProtocolVersionString}`")
           Some(LogConfig.MessageFormatVersionProp)
-        } else
-          None
+        } else None
     }
 
     val logs = logManager.logsByTopicPartition

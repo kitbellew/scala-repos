@@ -2670,10 +2670,7 @@ trait SHtml extends Loggable {
             s"$cssSel [name]" #> funcName &
               s"$cssSel [value]" #> radioOptions(value) &
               s"$cssSel [checked]" #> {
-                if (initialValue === value)
-                  Some("true")
-                else
-                  None
+                if (initialValue === value) Some("true") else None
               }
         }
         .reduceLeft(_ & _)
@@ -2771,10 +2768,10 @@ trait SHtml extends Loggable {
             possibleChoice._2.toString
           }/>)(_ % _) %
             checked(actual.contains(possibleChoice._1)) ++ {
-            if (possibleChoice._2 == 0)
-              <input type="hidden" name={name} value="-1"/>
-            else
-              Nil
+            if (possibleChoice._2 == 0) <input type="hidden" name={
+              name
+            } value="-1"/>
+            else Nil
           }
         )
       })

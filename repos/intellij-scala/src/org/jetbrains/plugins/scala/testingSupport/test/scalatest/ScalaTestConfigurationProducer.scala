@@ -803,8 +803,7 @@ class ScalaTestConfigurationProducer extends {
 
     class OptionExtension(x: Option[String]) {
       def ++(s: => Option[String]): Option[String] = {
-        if (x.isDefined) x
-        else s
+        if (x.isDefined) x else s
       }
     }
     implicit def o2e(x: Option[String]): OptionExtension =

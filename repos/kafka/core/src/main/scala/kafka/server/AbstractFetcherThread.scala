@@ -98,8 +98,7 @@ abstract class AbstractFetcherThread(
       fetchRequest
     }
 
-    if (!fetchRequest.isEmpty)
-      processFetchRequest(fetchRequest)
+    if (!fetchRequest.isEmpty) processFetchRequest(fetchRequest)
   }
 
   private def processFetchRequest(fetchRequest: REQ) {

@@ -40,11 +40,9 @@ abstract class JSASTTest extends DirectTest {
       }
 
       override def traverse(tree: js.Tree): Unit = {
-        if (finding && pf.isDefinedAt(tree))
-          throw Found
+        if (finding && pf.isDefinedAt(tree)) throw Found
 
-        if (!finding)
-          pf.lift(tree)
+        if (!finding) pf.lift(tree)
 
         super.traverse(tree)
       }

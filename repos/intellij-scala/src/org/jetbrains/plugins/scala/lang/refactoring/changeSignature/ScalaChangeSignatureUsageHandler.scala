@@ -165,12 +165,11 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
     }
 
     val params =
-      if (paramTypes.size == names.size)
-        names.zip(paramTypes).map {
-          case (name, tpe) =>
-            ScalaExtractMethodUtils
-              .typedName(name, tpe.canonicalText, usage.expr.getProject)
-        }
+      if (paramTypes.size == names.size) names.zip(paramTypes).map {
+        case (name, tpe) =>
+          ScalaExtractMethodUtils
+            .typedName(name, tpe.canonicalText, usage.expr.getProject)
+      }
       else names
     val clause = params.mkString("(", ", ", ")")
     val newFunExprText = s"$clause => $exprText"
@@ -387,8 +386,7 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
         case jChangeInfo: JavaChangeInfo =>
           if (oldIndex < 0) {
             val text = param.getDefaultValue
-            if (text != "") Seq(text)
-            else Seq.empty
+            if (text != "") Seq(text) else Seq.empty
           } else {
             val (argExprs, wasNamed) =
               oldArgsInfo.byOldParameterIndex.get(oldIndex) match {
@@ -429,10 +427,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
 
   def argsText(change: ChangeInfo, methodUsage: MethodUsageInfo) = {
     val args = arguments(change, methodUsage)
-    if (args.isEmpty && !methodUsage.isInstanceOf[RefExpressionUsage])
-      "()"
-    else
-      args.map(_.mkString("(", ", ", ")")).mkString
+    if (args.isEmpty && !methodUsage.isInstanceOf[RefExpressionUsage]) "()"
+    else args.map(_.mkString("(", ", ", ")")).mkString
   }
 
   private def newArgumentExpression(

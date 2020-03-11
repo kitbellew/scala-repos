@@ -70,8 +70,7 @@ final class IncOptimizer(
 
   private[optimizer] def processAllTaggedMethods(): Unit = {
     logProcessingMethods(methodsToProcess.count(!_.deleted))
-    for (method <- methodsToProcess)
-      method.process()
+    for (method <- methodsToProcess) method.process()
     methodsToProcess.clear()
   }
 

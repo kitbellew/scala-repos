@@ -28,10 +28,8 @@ import org.apache.kafka.common.security.JaasUtils
 object FourLetterWords {
   def sendStat(host: String, port: Int, timeout: Int) {
     val hostAddress =
-      if (host != null)
-        new InetSocketAddress(host, port)
-      else
-        new InetSocketAddress(InetAddress.getByName(null), port)
+      if (host != null) new InetSocketAddress(host, port)
+      else new InetSocketAddress(InetAddress.getByName(null), port)
     val sock = new Socket()
     var reader: BufferedReader = null
     sock.connect(hostAddress, timeout)
@@ -45,8 +43,7 @@ object FourLetterWords {
       }
     } finally {
       sock.close
-      if (reader != null)
-        reader.close
+      if (reader != null) reader.close
     }
   }
 }
@@ -74,10 +71,8 @@ trait ZooKeeperTestHarness extends JUnitSuite with Logging {
 
   @After
   def tearDown() {
-    if (zkUtils != null)
-      CoreUtils.swallow(zkUtils.close())
-    if (zookeeper != null)
-      CoreUtils.swallow(zookeeper.shutdown())
+    if (zkUtils != null) CoreUtils.swallow(zkUtils.close())
+    if (zookeeper != null) CoreUtils.swallow(zookeeper.shutdown())
 
     var isDown = false
     while (!isDown) {

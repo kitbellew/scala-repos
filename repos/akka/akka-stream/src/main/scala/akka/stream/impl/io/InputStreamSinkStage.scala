@@ -65,8 +65,7 @@ final private[stream] class InputStreamSinkStage(readTimeout: FiniteDuration)
         callback.invoke(msg)
 
       private def sendPullIfAllowed(): Unit =
-        if (dataQueue.remainingCapacity() > 1 && !hasBeenPulled(in))
-          pull(in)
+        if (dataQueue.remainingCapacity() > 1 && !hasBeenPulled(in)) pull(in)
 
       override def preStart() = {
         dataQueue.add(Initialized)
@@ -124,8 +123,7 @@ private[akka] class InputStreamAdapter(
   @scala.throws(classOf[IOException])
   override def read(): Int = {
     val a = Array[Byte](1)
-    if (read(a, 0, 1) != -1) a(0)
-    else -1
+    if (read(a, 0, 1) != -1) a(0) else -1
   }
 
   @scala.throws(classOf[IOException])
@@ -200,10 +198,8 @@ private[akka] class InputStreamAdapter(
         if (size <= length) {
           data.copyToArray(arr, begin, size)
           detachedChunk = None
-          if (size == length)
-            gotBytes + size
-          else
-            getData(arr, begin + size, length - size, gotBytes + size)
+          if (size == length) gotBytes + size
+          else getData(arr, begin + size, length - size, gotBytes + size)
         } else {
           data.copyToArray(arr, begin, length)
           detachedChunk = Some(data.drop(length))

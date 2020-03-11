@@ -126,39 +126,30 @@ abstract class Erasure
     def squashBoxed(tp: Type): Type = tp.dealiasWiden match {
       case t @ RefinedType(parents, decls) =>
         val parents1 = parents mapConserve squashBoxed
-        if (parents1 eq parents) tp
-        else RefinedType(parents1, decls)
+        if (parents1 eq parents) tp else RefinedType(parents1, decls)
       case t @ ExistentialType(tparams, tpe) =>
         val tpe1 = squashBoxed(tpe)
-        if (tpe1 eq tpe) t
-        else ExistentialType(tparams, tpe1)
+        if (tpe1 eq tpe) t else ExistentialType(tparams, tpe1)
       case t =>
-        if (boxedClass contains t.typeSymbol) ObjectTpe
-        else tp
+        if (boxedClass contains t.typeSymbol) ObjectTpe else tp
     }
     def apply(tp: Type): Type = tp.dealiasWiden match {
       case tp1 @ TypeBounds(lo, hi) =>
         val lo1 = squashBoxed(apply(lo))
         val hi1 = squashBoxed(apply(hi))
-        if ((lo1 eq lo) && (hi1 eq hi)) tp1
-        else TypeBounds(lo1, hi1)
+        if ((lo1 eq lo) && (hi1 eq hi)) tp1 else TypeBounds(lo1, hi1)
       case tp1 @ TypeRef(pre, sym, args) =>
         def argApply(tp: Type) = {
           val tp1 = apply(tp)
-          if (tp1.typeSymbol == UnitClass) ObjectTpe
-          else squashBoxed(tp1)
+          if (tp1.typeSymbol == UnitClass) ObjectTpe else squashBoxed(tp1)
         }
         if (sym == ArrayClass && args.nonEmpty)
-          if (unboundedGenericArrayLevel(tp1) == 1) ObjectTpe
-          else mapOver(tp1)
+          if (unboundedGenericArrayLevel(tp1) == 1) ObjectTpe else mapOver(tp1)
         else if (sym == AnyClass || sym == AnyValClass || sym == SingletonClass)
           ObjectTpe
-        else if (sym == UnitClass)
-          BoxedUnitTpe
-        else if (sym == NothingClass)
-          RuntimeNothingClass.tpe
-        else if (sym == NullClass)
-          RuntimeNullClass.tpe
+        else if (sym == UnitClass) BoxedUnitTpe
+        else if (sym == NothingClass) RuntimeNothingClass.tpe
+        else if (sym == NullClass) RuntimeNullClass.tpe
         else {
           val pre1 = apply(pre)
           val args1 = args mapConserve argApply
@@ -173,12 +164,10 @@ abstract class Erasure
         else MethodType(params1, restpe1)
       case tp1 @ RefinedType(parents, decls) =>
         val parents1 = parents mapConserve apply
-        if (parents1 eq parents) tp1
-        else RefinedType(parents1, decls)
+        if (parents1 eq parents) tp1 else RefinedType(parents1, decls)
       case t @ ExistentialType(tparams, tpe) =>
         val tpe1 = apply(tpe)
-        if (tpe1 eq tpe) t
-        else ExistentialType(tparams, tpe1)
+        if (tpe1 eq tpe) t else ExistentialType(tparams, tpe1)
       case tp1: ClassInfoType =>
         tp1
       case tp1 =>
@@ -261,8 +250,7 @@ abstract class Erasure
     def paramSig(tsym: Symbol) =
       tsym.name + boundsSig(hiBounds(tsym.info.bounds))
     def polyParamSig(tparams: List[Symbol]) = (
-      if (tparams.isEmpty) ""
-      else tparams map paramSig mkString ("<", "", ">")
+      if (tparams.isEmpty) "" else tparams map paramSig mkString ("<", "", ">")
     )
 
     // Anything which could conceivably be a module (i.e. isn't known to be
@@ -306,9 +294,7 @@ abstract class Erasure
                   else fullNameInSig(sym)
                 } else fullNameInSig(sym)
               ) + (
-                if (args.isEmpty) ""
-                else
-                  "<" + (args map argSig).mkString + ">"
+                if (args.isEmpty) "" else "<" + (args map argSig).mkString + ">"
               ) + (
                 ";"
               )
@@ -324,12 +310,9 @@ abstract class Erasure
             "" + TVAR_TAG + sym.name + ";"
           } else if (sym == AnyClass || sym == AnyValClass || sym == SingletonClass)
             jsig(ObjectTpe)
-          else if (sym == UnitClass)
-            jsig(BoxedUnitTpe)
-          else if (sym == NothingClass)
-            jsig(RuntimeNothingClass.tpe)
-          else if (sym == NullClass)
-            jsig(RuntimeNullClass.tpe)
+          else if (sym == UnitClass) jsig(BoxedUnitTpe)
+          else if (sym == NothingClass) jsig(RuntimeNothingClass.tpe)
+          else if (sym == NullClass) jsig(RuntimeNullClass.tpe)
           else if (isPrimitiveValueClass(sym)) {
             if (!primitiveOK) jsig(ObjectTpe)
             else if (sym == UnitClass) jsig(BoxedUnitTpe)
@@ -343,13 +326,10 @@ abstract class Erasure
               else s", seen within ${sym.simpleName} as $unboxedSeen"
             logResult(
               s"Erasure of value class $sym (underlying type $unboxed$unboxedMsg) is") {
-              if (isPrimitiveValueType(unboxedSeen) && !primitiveOK)
-                classSig
-              else
-                jsig(unboxedSeen, existentiallyBound, toplevel, primitiveOK)
+              if (isPrimitiveValueType(unboxedSeen) && !primitiveOK) classSig
+              else jsig(unboxedSeen, existentiallyBound, toplevel, primitiveOK)
             }
-          } else if (sym.isClass)
-            classSig
+          } else if (sym.isClass) classSig
           else
             jsig(erasure(sym0)(tp), existentiallyBound, toplevel, primitiveOK)
         case PolyType(tparams, restpe) =>
@@ -378,8 +358,7 @@ abstract class Erasure
           jsig(bounds.hi, existentiallyBound, toplevel, primitiveOK)
         case _ =>
           val etp = erasure(sym0)(tp)
-          if (etp eq tp) throw new UnknownSig
-          else jsig(etp)
+          if (etp eq tp) throw new UnknownSig else jsig(etp)
       }
     }
     val throwsArgs = sym0.annotations flatMap ThrownException.unapply
@@ -524,13 +503,11 @@ abstract class Erasure
           !(deconstMap(other.tpe) =:= deconstMap(member.tpe)) && {
           var e = bridgesScope.lookupEntry(member.name)
           while ((e ne null) && !((e.sym.tpe =:= otpe) && (bridgeTarget(
-                   e.sym) == member)))
-            e = bridgesScope.lookupNextEntry(e)
+                   e.sym) == member))) e = bridgesScope.lookupNextEntry(e)
           (e eq null)
         }
       )
-      if (!bridgeNeeded)
-        return
+      if (!bridgeNeeded) return
 
       var newFlags =
         (member.flags | BRIDGE | ARTIFACT) & ~(ACCESSOR | DEFERRED | LAZY | lateDEFERRED)
@@ -715,8 +692,7 @@ abstract class Erasure
                 isErasedValueType(qual1.tpe))
               qual1 = box(qual1, "owner " + tree.symbol.owner)
             else if (!isPrimitiveValueType(qual1.tpe) && isPrimitiveValueMember(
-                       tree.symbol))
-              qual1 = unbox(qual1, tree.symbol.owner.tpe)
+                       tree.symbol)) qual1 = unbox(qual1, tree.symbol.owner.tpe)
 
             def selectFrom(qual: Tree) = treeCopy.Select(tree, qual, name)
 
@@ -976,14 +952,14 @@ abstract class Erasure
         def preEraseAsInstanceOf = {
           (fn: @unchecked) match {
             case TypeApply(Select(qual, _), List(targ)) =>
-              if (qual.tpe <:< targ.tpe)
-                atPos(tree.pos) { Typed(qual, TypeTree(targ.tpe)) }
+              if (qual.tpe <:< targ.tpe) atPos(tree.pos) {
+                Typed(qual, TypeTree(targ.tpe))
+              }
               else if (isNumericValueClass(
                          qual.tpe.typeSymbol) && isNumericValueClass(
                          targ.tpe.typeSymbol))
                 atPos(tree.pos)(numericConversion(qual, targ.tpe.typeSymbol))
-              else
-                tree
+              else tree
           }
           // todo: also handle the case where the singleton type is buried in a compound
         }
@@ -1292,8 +1268,8 @@ abstract class Erasure
               finally tpt setType specialErasure(tree1.symbol)(
                 tree1.symbol.tpe).resultType
             case ApplyDynamic(
-                qual,
-                Literal(Constant(boostrapMethodRef: Symbol)) :: _) =>
+                  qual,
+                  Literal(Constant(boostrapMethodRef: Symbol)) :: _) =>
               tree
             case _ =>
               super.transform(tree1).clearType()

@@ -59,11 +59,9 @@ object CollectionsOnListTest extends CollectionsTestBase {
     val list = factory.empty[T]
 
     def testIfSorted(rangeValues: Boolean): Unit = {
-      for (i <- range.init)
-        assertTrue(list(i).compareTo(list(i + 1)) <= 0)
+      for (i <- range.init) assertTrue(list(i).compareTo(list(i + 1)) <= 0)
       if (absoluteOrder && rangeValues) {
-        for (i <- range)
-          assertEquals(0, list(i).compareTo(toElem(i)))
+        for (i <- range) assertEquals(0, list(i).compareTo(toElem(i)))
       }
     }
 
@@ -94,11 +92,9 @@ object CollectionsOnListTest extends CollectionsTestBase {
     val list = factory.empty[T]
 
     def testIfSorted(rangeValues: Boolean): Unit = {
-      for (i <- range.init)
-        assertTrue(cmpFun(list(i), list(i + 1)) <= 0)
+      for (i <- range.init) assertTrue(cmpFun(list(i), list(i + 1)) <= 0)
       if (absoluteOrder && rangeValues) {
-        for (i <- range)
-          assertEquals(0, cmpFun(list(i), toElem(i)))
+        for (i <- range) assertEquals(0, cmpFun(list(i), toElem(i)))
       }
     }
 
@@ -220,8 +216,7 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
       def testIfInOrder(reversed: Boolean): Unit = {
         for (i <- range) {
           val expected =
-            if (reversed) range.last - i
-            else i
+            if (reversed) range.last - i else i
           assertEquals(toElem(expected), list(i))
         }
       }
@@ -276,21 +271,18 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
       ju.Collections.swap(list, 0, 1)
       assertEquals(toElem(1), list.get(0))
       assertEquals(toElem(0), list.get(1))
-      for (i <- range.drop(2))
-        assertEquals(toElem(i), list.get(i))
+      for (i <- range.drop(2)) assertEquals(toElem(i), list.get(i))
 
       ju.Collections.swap(list, 0, range.last)
       assertEquals(toElem(range.last), list.get(0))
       assertEquals(toElem(0), list.get(1))
-      for (i <- range.drop(2).init)
-        assertEquals(toElem(i), list.get(i))
+      for (i <- range.drop(2).init) assertEquals(toElem(i), list.get(i))
       assertEquals(toElem(1), list.get(range.last))
 
       ju.Collections.swap(list, 0, range.last)
       assertEquals(toElem(1), list.get(0))
       assertEquals(toElem(0), list.get(1))
-      for (i <- range.drop(2))
-        assertEquals(toElem(i), list.get(i))
+      for (i <- range.drop(2)) assertEquals(toElem(i), list.get(i))
     }
 
     test[jl.Integer](_.toInt)
@@ -306,12 +298,10 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
       list.addAll(range.map(toElem(_)))
 
       ju.Collections.fill(list, toElem(0))
-      for (i <- range)
-        assertEquals(toElem(0), list.get(i))
+      for (i <- range) assertEquals(toElem(0), list.get(i))
 
       ju.Collections.fill(list, toElem(42))
-      for (i <- range)
-        assertEquals(toElem(42), list.get(i))
+      for (i <- range) assertEquals(toElem(42), list.get(i))
     }
 
     test[jl.Integer](_.toInt)
@@ -330,8 +320,7 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
       range.foreach(i => source.add(toElem(i)))
       range.foreach(i => dest.add(toElem(-i)))
       ju.Collections.copy(dest, source)
-      for (i <- range)
-        assertEquals(toElem(i), dest(i))
+      for (i <- range) assertEquals(toElem(i), dest(i))
 
       // source.size < dest.size
       source.clear()
@@ -339,10 +328,8 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
       range.take(range.size / 2).foreach(i => source.add(toElem(i)))
       range.foreach(i => dest.add(toElem(-i)))
       ju.Collections.copy(dest, source)
-      for (i <- range.take(range.size / 2))
-        assertEquals(toElem(i), dest(i))
-      for (i <- range.drop(range.size / 2))
-        assertEquals(toElem(-i), dest(i))
+      for (i <- range.take(range.size / 2)) assertEquals(toElem(i), dest(i))
+      for (i <- range.drop(range.size / 2)) assertEquals(toElem(-i), dest(i))
 
       // source.size > dest.size
       source.clear()
@@ -367,30 +354,24 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
       list.addAll(range.map(toElem))
 
       ju.Collections.rotate(list, 0)
-      for (i <- range)
-        assertEquals(toElem(i), list(i))
+      for (i <- range) assertEquals(toElem(i), list(i))
 
       ju.Collections.rotate(list, list.size)
-      for (i <- range)
-        assertEquals(toElem(i), list(i))
+      for (i <- range) assertEquals(toElem(i), list(i))
 
       ju.Collections.rotate(list, 1)
-      for (i <- range)
-        assertEquals(toElem(modulo(i - 1, range.size)), list(i))
+      for (i <- range) assertEquals(toElem(modulo(i - 1, range.size)), list(i))
 
       ju.Collections.rotate(list, 1)
-      for (i <- range)
-        assertEquals(toElem(modulo(i - 2, range.size)), list(i))
+      for (i <- range) assertEquals(toElem(modulo(i - 2, range.size)), list(i))
 
       ju.Collections.rotate(list, -5)
-      for (i <- range)
-        assertEquals(toElem(modulo(i + 3, range.size)), list(i))
+      for (i <- range) assertEquals(toElem(modulo(i + 3, range.size)), list(i))
 
       list.clear()
       list.addAll((0 until 6).map(toElem))
       ju.Collections.rotate(list, 2)
-      for (i <- 0 until 6)
-        assertEquals(toElem(modulo(i - 2, 6)), list(i))
+      for (i <- 0 until 6) assertEquals(toElem(modulo(i - 2, 6)), list(i))
     }
 
     test[jl.Integer](_.toInt)
@@ -405,19 +386,16 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
       list.addAll(range.map(toElem))
 
       ju.Collections.replaceAll(list, toElem(range.last), toElem(0))
-      for (i <- range.init)
-        assertEquals(toElem(i), list(i))
+      for (i <- range.init) assertEquals(toElem(i), list(i))
       assertEquals(toElem(0), list.last)
 
       ju.Collections.replaceAll(list, toElem(range(range.size - 2)), toElem(0))
-      for (i <- range.dropRight(2))
-        assertEquals(toElem(i), list(i))
+      for (i <- range.dropRight(2)) assertEquals(toElem(i), list(i))
       assertEquals(toElem(0), list.dropRight(1).last)
       assertEquals(toElem(0), list.last)
 
       ju.Collections.replaceAll(list, toElem(0), toElem(-1))
-      for (i <- range.tail.dropRight(2))
-        assertEquals(toElem(i), list(i))
+      for (i <- range.tail.dropRight(2)) assertEquals(toElem(i), list(i))
       assertEquals(toElem(-1), list.head)
       assertEquals(toElem(-1), list.dropRight(1).last)
       assertEquals(toElem(-1), list.last)

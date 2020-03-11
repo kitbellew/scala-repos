@@ -113,10 +113,7 @@ object PlayForkProcess {
     } catch {
       case _: IllegalThreadStateException =>
         Thread.sleep(100)
-        if (millis > 0)
-          timedWaitFor(process, millis - 100)
-        else
-          None
+        if (millis > 0) timedWaitFor(process, millis - 100) else None
     }
 
   def makeOptions(

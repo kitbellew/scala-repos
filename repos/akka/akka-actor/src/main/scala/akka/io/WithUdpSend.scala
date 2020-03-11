@@ -36,8 +36,7 @@ private[io] trait WithUdpSend {
       sender() ! CommandFailed(send)
 
     case send: Send if send.payload.isEmpty ⇒
-      if (send.wantsAck)
-        sender() ! send.ack
+      if (send.wantsAck) sender() ! send.ack
 
     case send: Send ⇒
       pendingSend = send

@@ -477,14 +477,11 @@ class ShardRegion(
 
   def receiveClusterEvent(evt: ClusterDomainEvent): Unit = evt match {
     case MemberUp(m) ⇒
-      if (matchingRole(m))
-        changeMembers(membersByAge - m + m) // replace
+      if (matchingRole(m)) changeMembers(membersByAge - m + m) // replace
 
     case MemberRemoved(m, _) ⇒
-      if (m.uniqueAddress == cluster.selfUniqueAddress)
-        context.stop(self)
-      else if (matchingRole(m))
-        changeMembers(membersByAge - m)
+      if (m.uniqueAddress == cluster.selfUniqueAddress) context.stop(self)
+      else if (matchingRole(m)) changeMembers(membersByAge - m)
 
     case _: MemberEvent ⇒ // these are expected, no need to warn about them
 
@@ -515,13 +512,11 @@ class ShardRegion(
       regionByShard = regionByShard.updated(shard, ref)
       regions = regions.updated(ref, regions.getOrElse(ref, Set.empty) + shard)
 
-      if (ref != self)
-        context.watch(ref)
+      if (ref != self) context.watch(ref)
 
       if (ref == self)
         getShard(shard).foreach(deliverBufferedMessages(shard, _))
-      else
-        deliverBufferedMessages(shard, ref)
+      else deliverBufferedMessages(shard, ref)
 
     case RegisterAck(coord) ⇒
       context.watch(coord)
@@ -553,8 +548,7 @@ class ShardRegion(
       if (shards.contains(shard)) {
         handingOff += shards(shard)
         shards(shard) forward msg
-      } else
-        sender() ! ShardStopped(shard)
+      } else sender() ! ShardStopped(shard)
 
     case _ ⇒ unhandled(msg)
 
@@ -562,10 +556,8 @@ class ShardRegion(
 
   def receiveCommand(cmd: ShardRegionCommand): Unit = cmd match {
     case Retry ⇒
-      if (shardBuffers.nonEmpty)
-        retryCount += 1
-      if (coordinator.isEmpty)
-        register()
+      if (shardBuffers.nonEmpty) retryCount += 1
+      if (coordinator.isEmpty) register()
       else {
         sendGracefulShutdownToCoordinator()
         requestShardBufferHomes()
@@ -601,8 +593,7 @@ class ShardRegion(
   }
 
   def receiveTerminated(ref: ActorRef): Unit = {
-    if (coordinator.exists(_ == ref))
-      coordinator = None
+    if (coordinator.exists(_ == ref)) coordinator = None
     else if (regions.contains(ref)) {
       val shards = regions(ref)
       regionByShard --= shards
@@ -690,10 +681,8 @@ class ShardRegion(
         coordinator.foreach { c ⇒
           val logMsg =
             "Retry request for shard [{}] homes from coordinator at [{}]. [{}] buffered messages."
-          if (retryCount >= 5)
-            log.warning(logMsg, shard, c, buf.size)
-          else
-            log.debug(logMsg, shard, c, buf.size)
+          if (retryCount >= 5) log.warning(logMsg, shard, c, buf.size)
+          else log.debug(logMsg, shard, c, buf.size)
 
           c ! GetShardHome(shard)
         }
@@ -725,8 +714,7 @@ class ShardRegion(
       if (tot % (bufferSize / 10) == 0) {
         val logMsg =
           s"ShardRegion for [$typeName] is using [${100.0 * tot / bufferSize} %] of its buffer capacity."
-        if (tot <= bufferSize / 2)
-          log.info(logMsg)
+        if (tot <= bufferSize / 2) log.info(logMsg)
         else
           log.warning(
             logMsg + " The coordinator might not be available. You might want to check cluster membership status.")
@@ -754,8 +742,7 @@ class ShardRegion(
       case RestartShard(shardId) ⇒
         regionByShard.get(shardId) match {
           case Some(ref) ⇒
-            if (ref == self)
-              getShard(shardId)
+            if (ref == self) getShard(shardId)
           case None ⇒
             if (!shardBuffers.contains(shardId)) {
               log.debug("Request shard [{}] home", shardId)
@@ -803,8 +790,7 @@ class ShardRegion(
     }
 
   def getShard(id: ShardId): Option[ActorRef] = {
-    if (startingShards.contains(id))
-      None
+    if (startingShards.contains(id)) None
     else {
       shards
         .get(id)

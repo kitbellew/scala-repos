@@ -281,8 +281,7 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
           // creates the DateTime values for each array-column with index `idx`
           def dateCol(idx: Int): Array[DateTime] = dateTimes map { arr =>
-            if (arr.length > idx) arr(idx)
-            else new DateTime()
+            if (arr.length > idx) arr(idx) else new DateTime()
           }
 
           val result = {
@@ -343,8 +342,7 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         with ExtremeTime {
       def computeExtreme(t1: DateTime, t2: DateTime): DateTime = {
         val res: Int = NumericComparisons.compare(t1, t2)
-        if (res < 0) t1
-        else t2
+        if (res < 0) t1 else t2
       }
     }
 
@@ -353,8 +351,7 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         with ExtremeTime {
       def computeExtreme(t1: DateTime, t2: DateTime): DateTime = {
         val res: Int = NumericComparisons.compare(t1, t2)
-        if (res > 0) t1
-        else t2
+        if (res > 0) t1 else t2
       }
     }
 

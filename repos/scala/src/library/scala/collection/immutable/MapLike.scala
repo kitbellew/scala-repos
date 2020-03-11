@@ -116,11 +116,9 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
       extends super.DefaultKeySet
       with immutable.Set[A] {
     override def +(elem: A): immutable.Set[A] =
-      if (this(elem)) this
-      else immutable.Set[A]() ++ this + elem
+      if (this(elem)) this else immutable.Set[A]() ++ this + elem
     override def -(elem: A): immutable.Set[A] =
-      if (this(elem)) immutable.Set[A]() ++ this - elem
-      else this
+      if (this(elem)) immutable.Set[A]() ++ this - elem else this
 
     // ImmutableDefaultKeySet is only protected, so we won't warn on override.
     // Someone could override in a way that makes widening not okay

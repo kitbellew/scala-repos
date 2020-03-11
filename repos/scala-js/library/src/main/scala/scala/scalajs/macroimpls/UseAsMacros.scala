@@ -74,8 +74,7 @@ private[scalajs] object UseAsMacros {
       val isRawJSType = srcTpe <:< typeOf[js.Any]
 
       val definedMembers =
-        if (isRawJSType) rawJSMembers(srcTpe)
-        else exportedMembers(srcTpe)
+        if (isRawJSType) rawJSMembers(srcTpe) else exportedMembers(srcTpe)
 
       for {
         (jsMemberSelection, jsMembers) <- requiredMembers
@@ -197,8 +196,7 @@ private[scalajs] object UseAsMacros {
 
         optName.fold {
           val name = defaultName(sym)
-          if (name == "apply") JSMemberCall
-          else JSNamedMember(name)
+          if (name == "apply") JSMemberCall else JSNamedMember(name)
         } { name => JSNamedMember(name) }
       }
     }
@@ -268,8 +266,7 @@ private[scalajs] object UseAsMacros {
         if annotIs(annot, JSExportAnnotation)
       } yield { annotStringArg(annot).getOrElse(default) }
 
-      if (exportAll && sym.isPublic) default :: explicitNames
-      else explicitNames
+      if (exportAll && sym.isPublic) default :: explicitNames else explicitNames
     }
 
     /** Default JavaScript name of a method */

@@ -80,10 +80,8 @@ abstract class JSPrimitives {
   private val scalaJSPrimitives = mutable.Map.empty[Symbol, Int]
 
   private def initWithPrimitives(addPrimitive: (Symbol, Int) => Unit): Unit = {
-    for (i <- 0 to 22)
-      addPrimitive(JSAny_fromFunction(i), F2JS)
-    for (i <- 1 to 22)
-      addPrimitive(JSThisFunction_fromFunction(i), F2JSTHIS)
+    for (i <- 0 to 22) addPrimitive(JSAny_fromFunction(i), F2JS)
+    for (i <- 1 to 22) addPrimitive(JSThisFunction_fromFunction(i), F2JSTHIS)
 
     addPrimitive(JSDynamic_newInstance, DYNNEW)
 

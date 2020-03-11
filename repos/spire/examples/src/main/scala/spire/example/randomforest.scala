@@ -147,8 +147,7 @@ trait RandomForest[V, @sp(Double) F, @sp(Double) K] {
       cfor(0)(_ < indices.length, _ + 1) { i => indices(i) = i }
       cfor(V.dimensions - 1)(_ >= indices.length, _ - 1) { i =>
         val j = nextInt(i + 1)
-        if (j < indices.length)
-          indices(j) = i
+        if (j < indices.length) indices(j) = i
       }
       indices
     }

@@ -66,14 +66,12 @@ object Test extends App {
       case Add(l, r) =>
         for (a <- interp(l, e);
              b <- interp(r, e);
-             c <- add(a, b))
-          yield c
+             c <- add(a, b)) yield c
       case Lam(x, t) => unitM(Fun(a => interp(t, (x, a) :: e)))
       case App(f, t) =>
         for (a <- interp(f, e);
              b <- interp(t, e);
-             c <- apply(a, b))
-          yield c
+             c <- apply(a, b)) yield c
       case Ccc(x, t) => callCC(k => interp(t, (x, Fun(k)) :: e))
     }
 

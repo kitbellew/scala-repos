@@ -269,8 +269,7 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
     def check(tag: ScXmlStartTag) {
       if (Option(tag.getClosingTag)
             .map(_.getTagName != tag.getTagName)
-            .getOrElse(true))
-        doInsert(tag)
+            .getOrElse(true)) doInsert(tag)
     }
 
     element.getParent match {

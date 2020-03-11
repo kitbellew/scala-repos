@@ -72,11 +72,10 @@ private[http] class HttpRequestParser(
           ))
 
     @tailrec def parseMethod(meth: HttpMethod, ix: Int = 1): Int =
-      if (ix == meth.value.length)
-        if (byteChar(input, cursor + ix) == ' ') {
-          method = meth
-          cursor + ix + 1
-        } else parseCustomMethod()
+      if (ix == meth.value.length) if (byteChar(input, cursor + ix) == ' ') {
+        method = meth
+        cursor + ix + 1
+      } else parseCustomMethod()
       else if (byteChar(input, cursor + ix) == meth.value.charAt(ix))
         parseMethod(meth, ix + 1)
       else parseCustomMethod()

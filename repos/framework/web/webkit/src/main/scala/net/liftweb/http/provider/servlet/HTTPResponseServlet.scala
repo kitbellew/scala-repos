@@ -67,8 +67,7 @@ class HTTPResponseServlet(resp: HttpServletResponse) extends HTTPResponse {
     for (h <- headers;
          value <- h.values) {
       if (appearOnce.contains(h.name.toLowerCase)) resp.setHeader(h.name, value)
-      else
-        resp.addHeader(h.name, value)
+      else resp.addHeader(h.name, value)
     }
   }
 

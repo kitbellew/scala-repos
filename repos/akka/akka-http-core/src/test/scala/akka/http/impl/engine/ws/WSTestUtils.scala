@@ -54,8 +54,7 @@ object WSTestUtils {
       val mask = Random.nextInt()
       frameHeader(opcode, data.size, fin, mask = Some(mask)) ++
         maskedBytes(data, mask)._1
-    } else
-      frameHeader(opcode, data.size, fin, mask = None) ++ data
+    } else frameHeader(opcode, data.size, fin, mask = None) ++ data
 
   def closeFrame(closeCode: Int, mask: Boolean, msg: String = ""): ByteString =
     closeFrame(closeCode, mask, ByteString(msg, "UTF-8"))

@@ -133,12 +133,11 @@ object ConsumerOffsetChecker extends Logging {
 
   private def printBrokerInfo() {
     println("BROKER INFO")
-    for ((bid, consumerOpt) <- consumerMap)
-      consumerOpt match {
-        case Some(consumer) =>
-          println("%s -> %s:%d".format(bid, consumer.host, consumer.port))
-        case None => // ignore
-      }
+    for ((bid, consumerOpt) <- consumerMap) consumerOpt match {
+      case Some(consumer) =>
+        println("%s -> %s:%d".format(bid, consumer.host, consumer.port))
+      case None => // ignore
+    }
   }
 
   def main(args: Array[String]) {
@@ -257,8 +256,7 @@ object ConsumerOffsetChecker extends Logging {
               case z: ZkNoNodeException =>
                 if (zkUtils.pathExists(topicDirs.consumerOffsetDir))
                   offsetMap.put(topicAndPartition, -1)
-                else
-                  throw z
+                else throw z
             }
           } else if (offsetAndMetadata.error == Errors.NONE.code)
             offsetMap.put(topicAndPartition, offsetAndMetadata.offset)
@@ -276,14 +274,12 @@ object ConsumerOffsetChecker extends Logging {
           .format("Group", "Topic", "Pid", "Offset", "logSize", "Lag", "Owner"))
       topicList.sorted.foreach { topic => processTopic(zkUtils, group, topic) }
 
-      if (options.has("broker-info"))
-        printBrokerInfo()
+      if (options.has("broker-info")) printBrokerInfo()
 
-      for ((_, consumerOpt) <- consumerMap)
-        consumerOpt match {
-          case Some(consumer) => consumer.close()
-          case None           => // ignore
-        }
+      for ((_, consumerOpt) <- consumerMap) consumerOpt match {
+        case Some(consumer) => consumer.close()
+        case None           => // ignore
+      }
     } catch {
       case t: Throwable =>
         println("Exiting due to: %s.".format(t.getMessage))
@@ -294,11 +290,9 @@ object ConsumerOffsetChecker extends Logging {
           case None           => // ignore
         }
       }
-      if (zkUtils != null)
-        zkUtils.close()
+      if (zkUtils != null) zkUtils.close()
 
-      if (channel != null)
-        channel.disconnect()
+      if (channel != null) channel.disconnect()
     }
   }
 }

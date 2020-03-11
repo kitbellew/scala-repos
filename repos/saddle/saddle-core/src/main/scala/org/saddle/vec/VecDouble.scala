@@ -119,10 +119,8 @@ class VecDouble(values: Array[Double]) extends Vec[Double] { self =>
         if (loc >= e || loc < b)
           throw new ArrayIndexOutOfBoundsException(
             "Cannot access location %d (vec length %d)".format(i, self.length))
-        else if (loc >= self.length || loc < 0)
-          scalarTag.missing
-        else
-          self.apply(loc)
+        else if (loc >= self.length || loc < 0) scalarTag.missing
+        else self.apply(loc)
       }
 
       override def needsCopy = true
@@ -134,8 +132,7 @@ class VecDouble(values: Array[Double]) extends Vec[Double] { self =>
 
   private[saddle] override def toArray: Array[Double] = {
     // need to check if we're a view on an array
-    if (!needsCopy)
-      values
+    if (!needsCopy) values
     else {
       val buf = new Array[Double](length)
       var i = 0

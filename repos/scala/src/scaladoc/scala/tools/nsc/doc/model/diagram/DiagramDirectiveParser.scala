@@ -67,8 +67,7 @@ trait DiagramDirectiveParser {
     val defaultFilter =
       if (template.isClass || template.isTrait || template.sym == AnyRefClass)
         FullDiagram
-      else
-        NoDiagramAtAll
+      else NoDiagramAtAll
 
     if (template.comment.isDefined)
       makeDiagramFilter(
@@ -76,8 +75,7 @@ trait DiagramDirectiveParser {
         template.comment.get.inheritDiagram,
         defaultFilter,
         isInheritanceDiagram = true)
-    else
-      defaultFilter
+    else defaultFilter
   }
 
   /** Main entry point into this trait: generate the filter for content diagrams */
@@ -91,8 +89,7 @@ trait DiagramDirectiveParser {
         template.comment.get.contentDiagram,
         defaultFilter,
         isInheritanceDiagram = false)
-    else
-      defaultFilter
+    else defaultFilter
   }
 
   protected var tFilter = 0L
@@ -136,10 +133,7 @@ trait DiagramDirectiveParser {
       extends DiagramFilter {
 
     private[this] def getName(n: Node): String =
-      if (n.tpl.isDefined)
-        n.tpl.get.qualifiedName
-      else
-        n.name
+      if (n.tpl.isDefined) n.tpl.get.qualifiedName else n.name
 
     def hideNode(clazz: Node): Boolean = {
       val qualifiedName = getName(clazz)
@@ -218,51 +212,46 @@ trait DiagramDirectiveParser {
 
       // separate entries:
       val entries = directives.foldRight("")(_ + " " + _).split(",").map(_.trim)
-      for (entry <- entries)
-        entry match {
-          case "hideDiagram" =>
-            hideDiagram0 = true
-          case "hideIncomingImplicits" if isInheritanceDiagram =>
-            hideIncomingImplicits0 = true
-          case "hideOutgoingImplicits" if isInheritanceDiagram =>
-            hideOutgoingImplicits0 = true
-          case "hideSuperclasses" if isInheritanceDiagram =>
-            hideSuperclasses0 = true
-          case "hideSubclasses" if isInheritanceDiagram =>
-            hideSubclasses0 = true
-          case "hideInheritedNodes" if !isInheritanceDiagram =>
-            hideInheritedNodes0 = true
-          case HideNodesRegex(last) =>
-            val matcher = NodeSpecPattern.matcher(entry)
-            while (matcher.find()) {
-              val classPattern =
-                Pattern.compile(preparePattern(matcher.group()))
-              hideNodesFilter0 ::= classPattern
-            }
-          case HideEdgesRegex(last) =>
-            val matcher = NodeSpecPattern.matcher(entry)
-            while (matcher.find()) {
-              val class1Pattern =
-                Pattern.compile(preparePattern(matcher.group()))
-              assert(matcher.find()) // it's got to be there, just matched it!
-              val class2Pattern =
-                Pattern.compile(preparePattern(matcher.group()))
-              hideEdgesFilter0 ::= ((class1Pattern, class2Pattern))
-            }
-          case "" =>
-          // don't need to do anything about it
-          case _ =>
-            warning(
-              "Could not understand diagram annotation in " + template.kind + " " + template.qualifiedName +
-                ": unmatched entry \"" + entry + "\".\n" +
-                "  This could be because:\n" +
-                "   - you forgot to separate entries by commas\n" +
-                "   - you used a tag that is not allowed in the current context (like @contentDiagram hideSuperclasses)\n" +
-                "   - you did not use one of the allowed tags (see docs.scala-lang.org for scaladoc annotations)")
-        }
+      for (entry <- entries) entry match {
+        case "hideDiagram" =>
+          hideDiagram0 = true
+        case "hideIncomingImplicits" if isInheritanceDiagram =>
+          hideIncomingImplicits0 = true
+        case "hideOutgoingImplicits" if isInheritanceDiagram =>
+          hideOutgoingImplicits0 = true
+        case "hideSuperclasses" if isInheritanceDiagram =>
+          hideSuperclasses0 = true
+        case "hideSubclasses" if isInheritanceDiagram =>
+          hideSubclasses0 = true
+        case "hideInheritedNodes" if !isInheritanceDiagram =>
+          hideInheritedNodes0 = true
+        case HideNodesRegex(last) =>
+          val matcher = NodeSpecPattern.matcher(entry)
+          while (matcher.find()) {
+            val classPattern = Pattern.compile(preparePattern(matcher.group()))
+            hideNodesFilter0 ::= classPattern
+          }
+        case HideEdgesRegex(last) =>
+          val matcher = NodeSpecPattern.matcher(entry)
+          while (matcher.find()) {
+            val class1Pattern = Pattern.compile(preparePattern(matcher.group()))
+            assert(matcher.find()) // it's got to be there, just matched it!
+            val class2Pattern = Pattern.compile(preparePattern(matcher.group()))
+            hideEdgesFilter0 ::= ((class1Pattern, class2Pattern))
+          }
+        case "" =>
+        // don't need to do anything about it
+        case _ =>
+          warning(
+            "Could not understand diagram annotation in " + template.kind + " " + template.qualifiedName +
+              ": unmatched entry \"" + entry + "\".\n" +
+              "  This could be because:\n" +
+              "   - you forgot to separate entries by commas\n" +
+              "   - you used a tag that is not allowed in the current context (like @contentDiagram hideSuperclasses)\n" +
+              "   - you did not use one of the allowed tags (see docs.scala-lang.org for scaladoc annotations)")
+      }
       val result =
-        if (hideDiagram0)
-          NoDiagramAtAll
+        if (hideDiagram0) NoDiagramAtAll
         else if ((hideNodesFilter0.isEmpty) &&
                  (hideEdgesFilter0.isEmpty) &&
                  (hideIncomingImplicits0 == false) &&
@@ -270,8 +259,7 @@ trait DiagramDirectiveParser {
                  (hideSuperclasses0 == false) &&
                  (hideSubclasses0 == false) &&
                  (hideInheritedNodes0 == false) &&
-                 (hideDiagram0 == false))
-          FullDiagram
+                 (hideDiagram0 == false)) FullDiagram
         else
           AnnotationDiagramFilter(
             hideDiagram = hideDiagram0,

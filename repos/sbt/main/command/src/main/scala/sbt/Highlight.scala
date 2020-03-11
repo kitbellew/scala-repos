@@ -13,10 +13,8 @@ object Highlight {
       // ANSI codes like \033[39m (normal text color) don't work on Windows
       val highlighted = matcher.replaceAll(scala.Console.RED + "$0" + RESET)
       if (highlighted == line) None else Some(highlighted)
-    } else if (matcher.find)
-      Some(line)
-    else
-      None
+    } else if (matcher.find) Some(line)
+    else None
   }
   def bold(s: String) =
     if (ConsoleLogger.formatEnabled)

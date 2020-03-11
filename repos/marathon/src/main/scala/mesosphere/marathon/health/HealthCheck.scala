@@ -47,14 +47,12 @@ case class HealthCheck(
       path = if (proto.hasPath) Some(proto.getPath) else None,
       protocol = proto.getProtocol,
       portIndex =
-        if (proto.hasPortIndex)
-          Some(proto.getPortIndex)
+        if (proto.hasPortIndex) Some(proto.getPortIndex)
         else if (!proto.hasPort && proto.getProtocol != Protocol.COMMAND)
           Some(
             0
           ) // backward compatibility, this used to be the default value in marathon.proto
-        else
-          None,
+        else None,
       command =
         if (proto.hasCommand) Some(Command("").mergeFromProto(proto.getCommand))
         else None,

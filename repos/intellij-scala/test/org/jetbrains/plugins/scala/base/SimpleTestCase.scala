@@ -69,8 +69,7 @@ abstract class SimpleTestCase extends UsefulTestCase {
   private def toString(root: PsiElement, level: Int): String = {
     val indent = List.fill(level)("  ").mkString
     val content =
-      if (root.isInstanceOf[LeafPsiElement])
-        "\"%s\"".format(root.getText)
+      if (root.isInstanceOf[LeafPsiElement]) "\"%s\"".format(root.getText)
       else root.getClass.getSimpleName
     val title = "%s%s\n".format(indent, content)
     title + root.children.map(toString(_, level + 1)).mkString

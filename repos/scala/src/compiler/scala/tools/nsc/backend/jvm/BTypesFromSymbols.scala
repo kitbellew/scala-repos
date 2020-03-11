@@ -148,8 +148,7 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
       tpe: Type,
       isConstructor: Boolean): MethodBType = {
     val resultType: BType =
-      if (isConstructor) UNIT
-      else typeToBType(tpe.resultType)
+      if (isConstructor) UNIT else typeToBType(tpe.resultType)
     MethodBType(tpe.paramTypes map typeToBType, resultType)
   }
 
@@ -403,14 +402,11 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
         // SI-9393: Java annotation classes don't have the ABSTRACT/INTERFACE flag, so they appear
         // (wrongly) as superclasses. Fix this for BTypes: the java annotation will appear as interface
         // (handled by method implementedInterfaces), the superclass is set to Object.
-        if (sc.hasJavaAnnotationFlag) ObjectClass
-        else sc
+        if (sc.hasJavaAnnotationFlag) ObjectClass else sc
       }
     assert(
-      if (classSym == ObjectClass)
-        superClassSym == NoSymbol
-      else if (classSym.isInterface)
-        superClassSym == ObjectClass
+      if (classSym == ObjectClass) superClassSym == NoSymbol
+      else if (classSym.isInterface) superClassSym == ObjectClass
       else
         // A ClassBType for a primitive class (scala.Boolean et al) is only created when compiling these classes.
         ((superClassSym != NoSymbol) && !superClassSym.isInterface) || (isCompilingPrimitive && primitiveTypeToBType
@@ -488,8 +484,7 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
               // phase travel to exitingPickler: this makes sure that memberClassesForInnerClassTable only sees member
               // classes, not local classes of the companion module (E in the example) that were lifted by lambdalift.
               exitingPickler(memberClassesForInnerClassTable(linkedClass))
-            else
-              Nil
+            else Nil
           }
 
           // Classes nested in value classes are nested in the companion at this point. For InnerClass /
@@ -504,8 +499,7 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
                   memberClassesForInnerClassTable(linkedClass))
               moduleMemberClasses.filter(
                 classOriginallyNestedInClass(_, classSym))
-            } else
-              Nil
+            } else Nil
           }
 
           javaCompatMembers ++ valueClassCompanionMembers

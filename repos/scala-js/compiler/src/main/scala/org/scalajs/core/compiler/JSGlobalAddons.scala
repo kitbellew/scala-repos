@@ -131,8 +131,7 @@ trait JSGlobalAddons extends JSDefinitions with Compat210Component {
     def jsNameOf(sym: Symbol): String = {
       sym.getAnnotation(JSNameAnnotation).flatMap(_.stringArg(0)) getOrElse {
         val base = sym.unexpandedName.decoded.stripSuffix("_=")
-        if (!sym.isMethod) base.stripSuffix(" ")
-        else base
+        if (!sym.isMethod) base.stripSuffix(" ") else base
       }
     }
 

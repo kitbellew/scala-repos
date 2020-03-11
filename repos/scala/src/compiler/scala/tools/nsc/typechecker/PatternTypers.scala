@@ -108,8 +108,7 @@ trait PatternTypers {
         CaseClassConstructorError(
           fun,
           s"${fun.symbol} is not a case class, nor does it have an unapply/unapplySeq member")
-      else if (isOkay)
-        fun
+      else if (isOkay) fun
       else if (isEmptyType == NoType)
         CaseClassConstructorError(
           fun,
@@ -292,8 +291,8 @@ trait PatternTypers {
       // tree1's remaining type-slack skolems will be deskolemized (to the method type parameter skolems)
       tree1 modifyType {
         case MethodType(
-            ctorArgs,
-            restpe
+              ctorArgs,
+              restpe
             ) => // ctorArgs are actually in a covariant position, since this is the type of the subpatterns of the pattern represented by this Apply node
           copyMethodType(
             tree1.tpe,
@@ -379,20 +378,16 @@ trait PatternTypers {
         val args1 = typedArgsForFormals(args, formals, mode)
         val result = UnApply(fun1, args1) setPos tree.pos setType glbType
 
-        if (wrapInTypeTest)
-          wrapClassTagUnapply(result, extractor, glbType)
-        else
-          result
+        if (wrapInTypeTest) wrapClassTagUnapply(result, extractor, glbType)
+        else result
       }
 
-      if (fun1.tpe.isErroneous)
-        duplErrTree
+      if (fun1.tpe.isErroneous) duplErrTree
       else if (unapplyMethod.isMacro && !fun1.isInstanceOf[Apply]) {
         if (isBlackbox(unapplyMethod))
           duplErrorTree(BlackboxExtractorExpansion(tree))
         else duplErrorTree(WrongShapeExtractorExpansion(tree))
-      } else
-        makeTypedUnapply()
+      } else makeTypedUnapply()
     }
 
     def wrapClassTagUnapply(

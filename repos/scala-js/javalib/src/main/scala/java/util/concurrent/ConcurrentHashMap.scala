@@ -35,34 +35,27 @@ class ConcurrentHashMap[K >: Null, V >: Null]
     inner.get(Box(key.asInstanceOf[K])).getOrElse(null)
 
   override def containsKey(key: Any): Boolean = {
-    if (key == null)
-      throw new NullPointerException()
+    if (key == null) throw new NullPointerException()
     inner.exists { case (ik, _) => key === ik() }
   }
 
   override def containsValue(value: Any): Boolean = {
-    if (value == null)
-      throw new NullPointerException()
+    if (value == null) throw new NullPointerException()
     inner.exists { case (_, iv) => value === iv }
   }
 
   override def put(key: K, value: V): V = {
-    if (key != null && value != null)
-      inner.put(Box(key), value).getOrElse(null)
-    else
-      throw new NullPointerException()
+    if (key != null && value != null) inner.put(Box(key), value).getOrElse(null)
+    else throw new NullPointerException()
   }
 
   def putIfAbsent(key: K, value: V): V = {
-    if (key != null && value != null)
-      inner.getOrElseUpdate(Box(key), value)
-    else
-      throw new NullPointerException()
+    if (key != null && value != null) inner.getOrElseUpdate(Box(key), value)
+    else throw new NullPointerException()
   }
 
   override def putAll(m: Map[_ <: K, _ <: V]): Unit = {
-    for (e <- m.entrySet())
-      put(e.getKey, e.getValue)
+    for (e <- m.entrySet()) put(e.getKey, e.getValue)
   }
 
   override def remove(key: Any): V =
@@ -70,10 +63,8 @@ class ConcurrentHashMap[K >: Null, V >: Null]
 
   override def remove(key: Any, value: Any): Boolean = {
     val old = inner(Box(key.asInstanceOf[K]))
-    if (value === old)
-      inner.remove(Box(key.asInstanceOf[K])).isDefined
-    else
-      false
+    if (value === old) inner.remove(Box(key.asInstanceOf[K])).isDefined
+    else false
   }
 
   override def replace(key: K, oldValue: V, newValue: V): Boolean = {
@@ -88,8 +79,7 @@ class ConcurrentHashMap[K >: Null, V >: Null]
 
   override def replace(key: K, value: V): V = {
     if (key != null && value != null) {
-      if (inner(Box(key)) != null) put(key, value)
-      else null
+      if (inner(Box(key)) != null) put(key, value) else null
     } else { throw new NullPointerException() }
   }
 
@@ -173,10 +163,8 @@ object ConcurrentHashMap {
             .asInstanceOf[Array[T]]
 
       val iter = iterator
-      for (i <- 0 until size)
-        toFill(i) = iter.next().asInstanceOf[T]
-      if (toFill.size > size)
-        toFill(size) = null.asInstanceOf[T]
+      for (i <- 0 until size) toFill(i) = iter.next().asInstanceOf[T]
+      if (toFill.size > size) toFill(size) = null.asInstanceOf[T]
       toFill
     }
 

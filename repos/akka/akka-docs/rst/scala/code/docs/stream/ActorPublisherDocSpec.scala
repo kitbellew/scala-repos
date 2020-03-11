@@ -33,8 +33,7 @@ object ActorPublisherDocSpec {
         sender() ! JobDenied
       case job: Job =>
         sender() ! JobAccepted
-        if (buf.isEmpty && totalDemand > 0)
-          onNext(job)
+        if (buf.isEmpty && totalDemand > 0) onNext(job)
         else {
           buf :+= job
           deliverBuf()

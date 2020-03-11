@@ -54,13 +54,11 @@ private[akka] class ActorPublisher[T](val impl: ActorRef) extends Publisher[T] {
     requireNonNullSubscriber(subscriber)
     @tailrec def doSubscribe(): Unit = {
       val current = pendingSubscribers.get
-      if (current eq null)
-        reportSubscribeFailure(subscriber)
+      if (current eq null) reportSubscribeFailure(subscriber)
       else {
         if (pendingSubscribers.compareAndSet(current, subscriber +: current))
           impl ! wakeUpMsg
-        else
-          doSubscribe() // CAS retry
+        else doSubscribe() // CAS retry
       }
     }
 

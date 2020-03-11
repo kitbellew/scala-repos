@@ -956,8 +956,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     *   LiftRules.jsLogFunc = Full(v => JE.Call("alert",v).cmd)
     */
   @volatile var jsLogFunc: Box[JsVar => JsCmd] =
-    if (Props.devMode) Full(v => JE.Call("lift.defaultLogError", v))
-    else Empty
+    if (Props.devMode) Full(v => JE.Call("lift.defaultLogError", v)) else Empty
 
   /**
     * The JavaScript to execute at the end of an
@@ -1267,8 +1266,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     */
   val deferredSnippetTimeout: FactoryMaker[NodeSeq] =
     new FactoryMaker(() => {
-      if (Props.devMode)
-        <div style="border: red solid 2px">
+      if (Props.devMode) <div style="border: red solid 2px">
           A deferred snippet timed out during render.
 
           <i>note: this error is displayed in the browser because
@@ -1276,19 +1274,14 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
             set the system property run.mode=production, this error will not
             be displayed, but there will be errors in the output logs.
           </i>
-        </div>
-      else NodeSeq.Empty
+        </div> else NodeSeq.Empty
     }) {}
 
   /**
     * Should comments be stripped from the served XHTML
     */
   val stripComments: FactoryMaker[Boolean] =
-    new FactoryMaker(() => {
-      if (Props.devMode)
-        false
-      else true
-    }) {}
+    new FactoryMaker(() => { if (Props.devMode) false else true }) {}
 
   private[http] val reqCnt = new AtomicInteger(0)
 
@@ -1937,10 +1930,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     */
   val cometUpdateExceptionHandler: FactoryMaker[Box[JsCmd]] =
     new FactoryMaker[Box[JsCmd]](() => {
-      if (Props.devMode)
-        Full(JE.Call("lift.cometOnError", JE.JsVar("e")).cmd)
-      else
-        Empty
+      if (Props.devMode) Full(JE.Call("lift.cometOnError", JE.JsVar("e")).cmd)
+      else Empty
     }) {}
 
   /**

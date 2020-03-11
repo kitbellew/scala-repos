@@ -25,13 +25,10 @@ private[finagle] class CloseOnReleaseService[Req, Rep](
   }
 
   override def close(deadline: Time) = {
-    if (wasReleased.compareAndSet(false, true))
-      super.close(deadline)
-    else
-      Future.Done
+    if (wasReleased.compareAndSet(false, true)) super.close(deadline)
+    else Future.Done
   }
 
   override def status =
-    if (wasReleased.get) Status.Closed
-    else super.status
+    if (wasReleased.get) Status.Closed else super.status
 }

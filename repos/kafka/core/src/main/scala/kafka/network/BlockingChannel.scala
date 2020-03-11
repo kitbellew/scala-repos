@@ -110,16 +110,14 @@ class BlockingChannel(
   def isConnected = connected
 
   def send(request: RequestOrResponse): Long = {
-    if (!connected)
-      throw new ClosedChannelException()
+    if (!connected) throw new ClosedChannelException()
 
     val send = new RequestOrResponseSend(connectionId, request)
     send.writeCompletely(writeChannel)
   }
 
   def receive(): NetworkReceive = {
-    if (!connected)
-      throw new ClosedChannelException()
+    if (!connected) throw new ClosedChannelException()
 
     val response = readCompletely(readChannel)
     response.payload().rewind()
@@ -129,8 +127,7 @@ class BlockingChannel(
 
   private def readCompletely(channel: ReadableByteChannel): NetworkReceive = {
     val response = new NetworkReceive
-    while (!response.complete())
-      response.readFromReadableChannel(channel)
+    while (!response.complete()) response.readFromReadableChannel(channel)
     response
   }
 

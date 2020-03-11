@@ -20,8 +20,7 @@ object DeltaSimRankRDD {
       outDegreeMap: scala.collection.Map[VertexId, Long])
       : RDD[((VertexId, VertexId), Double)] = {
     // No changes in last iteration -> no changes this iteration.
-    if (prevDelta.count() == 0)
-      return prevDelta
+    if (prevDelta.count() == 0) return prevDelta
 
     val pairList = prevDelta.toArray
     val kvPairs = pairList.map(pair => {
@@ -37,8 +36,7 @@ object DeltaSimRankRDD {
 
     var union = kvPairs(0)
     var index = 0
-    for (index <- 1 to kvPairs.size - 1)
-      union = union ++ kvPairs(index)
+    for (index <- 1 to kvPairs.size - 1) union = union ++ kvPairs(index)
 
     val newDelta = union
       .reduceByKey(_ + _)
@@ -52,10 +50,7 @@ object DeltaSimRankRDD {
     val arr = Array[Long]((0L to numElements).toList: _*)
     // (Score, Index), where (x,y) = (Index/numCols, Index%numCols)
     val pairs = arr.map(x => {
-      if (x / numCols == x % numCols)
-        (x, 1.0)
-      else
-        (x, 0.0)
+      if (x / numCols == x % numCols) (x, 1.0) else (x, 0.0)
     })
     sc.parallelize(pairs)
   }

@@ -68,8 +68,7 @@ private[http4] class HttpClientDispatcher(
       .before {
         // 1. Drain the Request body into the Transport.
         val reqStreamF =
-          if (req.isChunked) streamChunks(trans, req.reader)
-          else Future.Done
+          if (req.isChunked) streamChunks(trans, req.reader) else Future.Done
 
         // 2. Drain the Transport into Response body.
         val repF = trans.read().flatMap {

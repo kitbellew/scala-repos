@@ -57,8 +57,7 @@ abstract class NumericRange[T](
   override def length = numRangeElements
   override def isEmpty = length == 0
   override lazy val last: T =
-    if (length == 0) Nil.last
-    else locationAfterN(length - 1)
+    if (length == 0) Nil.last else locationAfterN(length - 1)
 
   /** Create a new range with the start and end values of this range and
     *  a new `step`.
@@ -121,14 +120,12 @@ abstract class NumericRange[T](
 
   override def min[T1 >: T](implicit ord: Ordering[T1]): T =
     if (ord eq defaultOrdering(num)) {
-      if (num.signum(step) > 0) start
-      else last
+      if (num.signum(step) > 0) start else last
     } else super.min(ord)
 
   override def max[T1 >: T](implicit ord: Ordering[T1]): T =
     if (ord eq defaultOrdering(num)) {
-      if (num.signum(step) > 0) last
-      else start
+      if (num.signum(step) > 0) last else start
     } else super.max(ord)
 
   // Motivated by the desire for Double ranges with BigDecimal precision,

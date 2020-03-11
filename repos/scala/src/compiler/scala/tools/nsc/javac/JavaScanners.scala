@@ -139,8 +139,7 @@ trait JavaScanners extends ast.parser.ScannersCommon {
     /** Convert name to token */
     def name2token(name: Name) = {
       val idx = name.start - kwOffset
-      if (idx >= 0 && idx < kwArray.length) kwArray(idx)
-      else IDENTIFIER
+      if (idx >= 0 && idx < kwArray.length) kwArray(idx) else IDENTIFIER
     }
 
     /** Returns the string representation of given token. */
@@ -741,8 +740,7 @@ trait JavaScanners extends ast.parser.ScannersCommon {
       try {
         val value: Double =
           java.lang.Double.valueOf(name.toString).doubleValue()
-        if (value > limit)
-          syntaxError("floating point number too large")
+        if (value > limit) syntaxError("floating point number too large")
         if (negated) -value else value
       } catch {
         case _: NumberFormatException =>

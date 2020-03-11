@@ -366,8 +366,7 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
     if (direction.includes(Direction.Receive))
       askModeWithDeathCompletion(handle.throttlerActor, mode)(
         ActorTransportAdapter.AskTimeout)
-    else
-      Future.successful(SetThrottleAck)
+    else Future.successful(SetThrottleAck)
   }
 
   private def askModeWithDeathCompletion(target: ActorRef, mode: ThrottleMode)(
@@ -530,8 +529,8 @@ private[transport] class ThrottledAssociation(
 
   when(WaitModeAndUpstreamListener) {
     case Event(
-        ListenerAndMode(listener: HandleEventListener, mode: ThrottleMode),
-        _) ⇒
+          ListenerAndMode(listener: HandleEventListener, mode: ThrottleMode),
+          _) ⇒
       upstreamListener = listener
       inboundThrottleMode = mode
       self ! Dequeue

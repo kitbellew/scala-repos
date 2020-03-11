@@ -46,21 +46,18 @@ object OffsetCommitRequest extends Logging {
 
     // version 1 and 2 specific fields
     val groupGenerationId: Int =
-      if (versionId >= 1)
-        buffer.getInt
+      if (versionId >= 1) buffer.getInt
       else
         org.apache.kafka.common.requests.OffsetCommitRequest.DEFAULT_GENERATION_ID
 
     val memberId: String =
-      if (versionId >= 1)
-        readShortString(buffer)
+      if (versionId >= 1) readShortString(buffer)
       else
         org.apache.kafka.common.requests.OffsetCommitRequest.DEFAULT_MEMBER_ID
 
     // version 2 specific fields
     val retentionMs: Long =
-      if (versionId >= 2)
-        buffer.getLong
+      if (versionId >= 2) buffer.getLong
       else
         org.apache.kafka.common.requests.OffsetCommitRequest.DEFAULT_RETENTION_TIME
 
@@ -73,8 +70,7 @@ object OffsetCommitRequest extends Logging {
         val offset = buffer.getLong
         val timestamp = {
           // version 1 specific field
-          if (versionId == 1)
-            buffer.getLong
+          if (versionId == 1) buffer.getLong
           else
             org.apache.kafka.common.requests.OffsetCommitRequest.DEFAULT_TIMESTAMP
         }
@@ -145,8 +141,7 @@ case class OffsetCommitRequest(
           buffer.putInt(t2._1.partition)
           buffer.putLong(t2._2.offset)
           // version 1 specific data
-          if (versionId == 1)
-            buffer.putLong(t2._2.commitTimestamp)
+          if (versionId == 1) buffer.putLong(t2._2.commitTimestamp)
           writeShortString(buffer, t2._2.metadata)
         })
       })

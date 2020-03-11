@@ -121,8 +121,7 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
         createRuntimePickler(q"builder"))
       // TODO - Figure out if we can handle runtime dispatch...
       val unknownDispatch =
-        if (x.lookupRuntime) List(runtimeDispatch)
-        else List(failDispatch)
+        if (x.lookupRuntime) List(runtimeDispatch) else List(failDispatch)
 
       val picklerLookup = q"""
         val clazz = if (picklee != null) picklee.getClass else null
@@ -518,8 +517,7 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
     // Note: this makes it so modules work, things like foo.type.
     //       For some reason we get an issue with not having == defined on Class[_] otherwise.
     // TODO - fix this for certain primitive types, like Null, etc.
-    if (originalTpe.termSymbol.isModule) originalTpe.widen
-    else originalTpe
+    if (originalTpe.termSymbol.isModule) originalTpe.widen else originalTpe
   }
 
   // -- Externalizable Hackery --

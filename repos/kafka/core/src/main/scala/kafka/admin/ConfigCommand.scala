@@ -52,10 +52,8 @@ object ConfigCommand {
       JaasUtils.isZkSecurityEnabled())
 
     try {
-      if (opts.options.has(opts.alterOpt))
-        alterConfig(zkUtils, opts)
-      else if (opts.options.has(opts.describeOpt))
-        describeConfig(zkUtils, opts)
+      if (opts.options.has(opts.alterOpt)) alterConfig(zkUtils, opts)
+      else if (opts.options.has(opts.describeOpt)) describeConfig(zkUtils, opts)
     } catch {
       case e: Throwable =>
         println("Error while executing topic command " + e.getMessage)
@@ -100,8 +98,7 @@ object ConfigCommand {
     val entityNames: Seq[String] =
       if (opts.options.has(opts.entityName))
         Seq(opts.options.valueOf(opts.entityName))
-      else
-        zkUtils.getAllEntitiesWithConfig(entityType)
+      else zkUtils.getAllEntitiesWithConfig(entityType)
 
     for (entityName <- entityNames) {
       val configs =
@@ -142,8 +139,7 @@ object ConfigCommand {
       val propsToBeDeleted = new Properties
       configsToBeDeleted.foreach(propsToBeDeleted.setProperty(_, ""))
       configsToBeDeleted
-    } else
-      Seq.empty
+    } else Seq.empty
   }
 
   class ConfigCommandOptions(args: Array[String]) {

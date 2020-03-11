@@ -408,8 +408,7 @@ class FailureAccrualFactory[Req, Rep] private[finagle] (
             }
 
             service(request).respond { rep =>
-              if (isSuccess(ReqRep(request, rep))) didSucceed()
-              else didFail()
+              if (isSuccess(ReqRep(request, rep))) didSucceed() else didFail()
             }
           }
 

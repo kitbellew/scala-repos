@@ -175,8 +175,7 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
       setStatus(Closed); false
     case s ⇒
       val next = if (s < suspendUnit) s else s - suspendUnit
-      if (updateStatus(s, next)) next < suspendUnit
-      else resume()
+      if (updateStatus(s, next)) next < suspendUnit else resume()
   }
 
   /**
@@ -190,8 +189,7 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
     case Closed ⇒
       setStatus(Closed); false
     case s ⇒
-      if (updateStatus(s, s + suspendUnit)) s < suspendUnit
-      else suspend()
+      if (updateStatus(s, s + suspendUnit)) s < suspendUnit else suspend()
   }
 
   /**
@@ -1018,8 +1016,7 @@ trait ControlAwareMessageQueueSemantics extends QueueBasedMessageQueue {
   def dequeue(): Envelope = {
     val controlMsg = controlQueue.poll()
 
-    if (controlMsg ne null) controlMsg
-    else queue.poll()
+    if (controlMsg ne null) controlMsg else queue.poll()
   }
 
   override def numberOfMessages: Int = controlQueue.size() + queue.size()

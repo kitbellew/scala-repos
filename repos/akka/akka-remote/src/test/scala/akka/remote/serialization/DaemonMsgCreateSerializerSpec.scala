@@ -121,8 +121,7 @@ class DaemonMsgCreateSerializerSpec extends AkkaSpec {
       got.props.args.length should ===(expected.props.args.length)
       got.props.args zip expected.props.args foreach {
         case (g, e) ⇒
-          if (e.isInstanceOf[Function0[_]]) ()
-          else g should ===(e)
+          if (e.isInstanceOf[Function0[_]]) () else g should ===(e)
       }
       got.props.deploy should ===(expected.props.deploy)
       got.deploy should ===(expected.deploy)

@@ -12,8 +12,7 @@ class ByteArrayOutputStream(initBufSize: Int) extends OutputStream {
   def this() = this(32)
 
   override def write(b: Int): Unit = {
-    if (count >= buf.length)
-      growBuf(1)
+    if (count >= buf.length) growBuf(1)
 
     buf(count) = b.toByte
     count += 1
@@ -23,8 +22,7 @@ class ByteArrayOutputStream(initBufSize: Int) extends OutputStream {
     if (off < 0 || len < 0 || len > b.length - off)
       throw new IndexOutOfBoundsException()
 
-    if (count + len > buf.length)
-      growBuf(len)
+    if (count + len > buf.length) growBuf(len)
 
     System.arraycopy(b, off, buf, count, len)
     count += len

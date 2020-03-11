@@ -11,9 +11,7 @@ trait Marker {
   final def mark(baseKey: SettingKey[File]): Initialize[Task[Unit]] =
     baseKey map { base =>
       val toMark = base / "ran"
-      if (toMark.exists)
-        error("Already ran (" + toMark + " exists)")
-      else
-        IO touch toMark
+      if (toMark.exists) error("Already ran (" + toMark + " exists)")
+      else IO touch toMark
     }
 }

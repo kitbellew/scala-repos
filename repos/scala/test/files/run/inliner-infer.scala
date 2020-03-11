@@ -5,8 +5,7 @@ object Test extends App {
 
   @annotation.tailrec
   def walk(xs: MyList): Unit = {
-    if (xs.isEmpty)
-      println("empty")
+    if (xs.isEmpty) println("empty")
     else {
       println("non-empty")
       walk(MyNil)

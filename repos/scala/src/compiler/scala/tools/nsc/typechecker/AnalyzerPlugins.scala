@@ -408,8 +408,7 @@ trait AnalyzerPlugins { self: Analyzer =>
 
   /** Registers a new macro plugin */
   def addMacroPlugin(plugin: MacroPlugin) {
-    if (!macroPlugins.contains(plugin))
-      macroPlugins = plugin :: macroPlugins
+    if (!macroPlugins.contains(plugin)) macroPlugins = plugin :: macroPlugins
   }
 
   private abstract class NonCumulativeOp[T] {

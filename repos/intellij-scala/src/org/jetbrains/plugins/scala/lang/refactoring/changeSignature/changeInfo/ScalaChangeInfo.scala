@@ -54,8 +54,7 @@ case class ScalaChangeInfo(
 
   override val getOldName: String = function match {
     case fun: ScFunction =>
-      if (fun.isConstructor) fun.containingClass.name
-      else fun.name
+      if (fun.isConstructor) fun.containingClass.name else fun.name
     case pc: ScPrimaryConstructor => pc.containingClass.name
     case _                        => newName
   }

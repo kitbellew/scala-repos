@@ -38,8 +38,7 @@ final class OptionalThrowable(private val exception: Throwable)
   def get(): Throwable = {
     if (exception == null)
       throw new IllegalStateException("This OptionalThrowable is not defined")
-    else
-      exception
+    else exception
   }
 
   override def equals(that: Any): Boolean = that match {
@@ -52,9 +51,7 @@ final class OptionalThrowable(private val exception: Throwable)
     if (exception == null) 0 else exception.hashCode()
 
   override def toString(): String = {
-    if (exception == null)
-      "OptionalThrowable()"
-    else
-      s"OptionalThrowable($exception)"
+    if (exception == null) "OptionalThrowable()"
+    else s"OptionalThrowable($exception)"
   }
 }

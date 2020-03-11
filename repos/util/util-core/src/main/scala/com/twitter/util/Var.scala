@@ -390,8 +390,7 @@ private[util] class UpdatableVar[T](init: T)
       // An antecedent update may have closed the current
       // party (e.g. flatMap does this); we need to check that
       // the party is active here in order to prevent stale updates.
-      if (p.active)
-        obs.publish(this, value, version)
+      if (p.active) obs.publish(this, value, version)
     }
   }
 

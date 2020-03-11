@@ -116,8 +116,8 @@ case class FetchRequest(
         buffer.putInt(partitionFetchInfos.size) // partition count
         partitionFetchInfos.foreach {
           case (
-              TopicAndPartition(_, partition),
-              PartitionFetchInfo(offset, fetchSize)) =>
+                TopicAndPartition(_, partition),
+                PartitionFetchInfo(offset, fetchSize)) =>
             buffer.putInt(partition)
             buffer.putLong(offset)
             buffer.putInt(fetchSize)

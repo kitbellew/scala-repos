@@ -132,16 +132,14 @@ object Jar {
   object WManifest {
     def apply(mainAttrs: (Attributes.Name, String)*): WManifest = {
       val m = WManifest(new JManifest)
-      for ((k, v) <- mainAttrs)
-        m(k) = v
+      for ((k, v) <- mainAttrs) m(k) = v
 
       m
     }
     def apply(manifest: JManifest): WManifest = new WManifest(manifest)
   }
   class WManifest(manifest: JManifest) {
-    for ((k, v) <- initialMainAttrs)
-      this(k) = v
+    for ((k, v) <- initialMainAttrs) this(k) = v
 
     def underlying = manifest
     def attrs =

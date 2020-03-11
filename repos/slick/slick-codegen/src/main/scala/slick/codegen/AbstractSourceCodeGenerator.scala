@@ -123,8 +123,7 @@ val r = $positional
 import r._
 ${result(rearranged)} // putting AutoInc last
             """.trim
-          } else
-            result(positional)
+          } else result(positional)
         s"""
 implicit def ${name}(implicit $dependencies): GR[${TableClass.elementType}] = GR{
   prs => import prs._
@@ -165,10 +164,7 @@ implicit def ${name}(implicit $dependencies): GR[${TableClass.elementType}] = GR
         }.headOption
         val expr =
           discriminator.map(d => s"$d.map(_=> $fac)").getOrElse(s"None")
-        if (columns.size > 1)
-          s"{r=>import r._; $expr}"
-        else
-          s"r => $expr"
+        if (columns.size > 1) s"{r=>import r._; $expr}" else s"r => $expr"
       }
       def code = {
         val prns = parents.map(" with " + _).mkString("")

@@ -167,8 +167,7 @@ class SparkIMain(
   // Run the code body with the given boolean settings flipped to true.
   private def withoutWarnings[T](body: => T): T = beQuietDuring {
     val saved = settings.nowarn.value
-    if (!saved)
-      settings.nowarn.value = true
+    if (!saved) settings.nowarn.value = true
 
     try body
     finally if (!saved) settings.nowarn.value = false
@@ -262,8 +261,7 @@ class SparkIMain(
         initialize(())
       }
       //       // blocks until it is ; false means catastrophic failure
-      if (_isInitialized.get()) _compiler
-      else null
+      if (_isInitialized.get()) _compiler else null
     }
   }
   @deprecated("Use `global` for access to the compiler instance.", "2.9.0")
@@ -294,8 +292,7 @@ class SparkIMain(
     // make sure we don't overwrite their unwisely named res3 etc.
     def freshUserTermName(): TermName = {
       val name = newTermName(freshUserVarName())
-      if (definedNameMap contains name) freshUserTermName()
-      else name
+      if (definedNameMap contains name) freshUserTermName() else name
     }
     def isUserTermName(name: Name) = isUserVarName("" + name)
     def isInternalTermName(name: Name) = isInternalVarName("" + name)
@@ -461,10 +458,8 @@ class SparkIMain(
           platform.classPath.context.newClassPath(
             if (url.getProtocol == "file") {
               val f = new File(url.getPath)
-              if (f.isDirectory)
-                io.AbstractFile.getDirectory(f)
-              else
-                io.AbstractFile.getFile(f)
+              if (f.isDirectory) io.AbstractFile.getDirectory(f)
+              else io.AbstractFile.getFile(f)
             } else { io.AbstractFile.getURL(url) }
           )
         })
@@ -505,8 +500,7 @@ class SparkIMain(
     ensureClassLoader()
   }
   private final def ensureClassLoader() {
-    if (_classLoader == null)
-      _classLoader = makeClassLoader()
+    if (_classLoader == null) _classLoader = makeClassLoader()
   }
 
   // NOTE: Exposed to repl package since used by SparkILoop
@@ -595,8 +589,7 @@ class SparkIMain(
     */
   @DeveloperApi
   def pathToName(name: Name): String = {
-    if (definedNameMap contains name)
-      definedNameMap(name) fullPath name
+    if (definedNameMap contains name) definedNameMap(name) fullPath name
     else name.toString
   }
 
@@ -637,8 +630,7 @@ class SparkIMain(
   }
 
   private def recordRequest(req: Request) {
-    if (req == null || referencedNameMap == null)
-      return
+    if (req == null || referencedNameMap == null) return
 
     prevRequests += req
     req.referencedNames foreach (x => referencedNameMap(x) = req)
@@ -674,8 +666,7 @@ class SparkIMain(
   }
 
   private def replwarn(msg: => String) {
-    if (!settings.nowarnings.value)
-      printMessage(msg)
+    if (!settings.nowarnings.value) printMessage(msg)
   }
 
   private def isParseable(line: String): Boolean = {
@@ -881,8 +872,7 @@ class SparkIMain(
         *  output checking, we have to take one off to balance.
         */
       if (succeeded) {
-        if (printResults && result != "")
-          printMessage(result stripSuffix "\n")
+        if (printResults && result != "") printMessage(result stripSuffix "\n")
         else if (isReplDebug) // show quiet-mode activity
           printMessage(result.trim.lines map ("[quiet] " + _) mkString "\n")
 
@@ -904,8 +894,7 @@ class SparkIMain(
         case Right(req)   =>
           // null indicates a disallowed statement type; otherwise compile and
           // fail if false (implying e.g. a type error)
-          if (req == null || !req.compile) IR.Error
-          else loadAndRunReq(req)
+          if (req == null || !req.compile) IR.Error else loadAndRunReq(req)
       }
   }
 
@@ -969,8 +958,7 @@ class SparkIMain(
   @DeveloperApi
   def directBind(name: String, boundType: String, value: Any): IR.Result = {
     val result = bind(name, boundType, value)
-    if (result == IR.Success)
-      directlyBoundNames += newTermName(name)
+    if (result == IR.Success) directlyBoundNames += newTermName(name)
     result
   }
 
@@ -1011,8 +999,7 @@ class SparkIMain(
     */
   @DeveloperApi
   def addImports(ids: String*): IR.Result =
-    if (ids.isEmpty) IR.Success
-    else interpret("import " + ids.mkString(", "))
+    if (ids.isEmpty) IR.Success else interpret("import " + ids.mkString(", "))
 
   // NOTE: Exposed to repl package since used by SparkILoop
   private[repl] def quietBind(p: NamedParam): IR.Result = beQuietDuring(bind(p))
@@ -1112,8 +1099,7 @@ class SparkIMain(
     def call(name: String, args: Any*): AnyRef = {
       val m = evalMethod(name)
       logDebug("Invoking: " + m)
-      if (args.nonEmpty)
-        logDebug("  with args: " + args.mkString(", "))
+      if (args.nonEmpty) logDebug("  with args: " + args.mkString(", "))
 
       m.invoke(evalClass, args.map(_.asInstanceOf[AnyRef]): _*)
     }
@@ -1797,10 +1783,8 @@ class SparkIMain(
     // old style
     beSilentDuring(parse(code)) foreach { ts =>
       ts foreach { t =>
-        if (isShow || isShowRaw)
-          withoutUnwrapping(echo(asCompactString(t)))
-        else
-          withoutUnwrapping(logDebug(asCompactString(t)))
+        if (isShow || isShowRaw) withoutUnwrapping(echo(asCompactString(t)))
+        else withoutUnwrapping(logDebug(asCompactString(t)))
       }
     }
   }
@@ -1884,8 +1868,7 @@ object SparkIMain {
       // Avoiding deadlock when the compiler starts logging before
       // the lazy val is done.
       if (intp.isInitializeComplete) {
-        if (intp.totalSilence) ()
-        else super.printMessage(msg)
+        if (intp.totalSilence) () else super.printMessage(msg)
       }
       // scalastyle:off println
       else Console.println(msg)

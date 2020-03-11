@@ -477,8 +477,7 @@ private[cluster] final class ClusterDomainEventPublisher
     initMode match {
       case InitialStateAsEvents ⇒
         def pub(event: AnyRef): Unit = {
-          if (to.exists(_.isAssignableFrom(event.getClass)))
-            subscriber ! event
+          if (to.exists(_.isAssignableFrom(event.getClass))) subscriber ! event
         }
         publishDiff(Gossip.empty, latestGossip, pub)
       case InitialStateAsSnapshot ⇒

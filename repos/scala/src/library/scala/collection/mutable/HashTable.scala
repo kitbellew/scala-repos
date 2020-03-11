@@ -73,8 +73,7 @@ trait HashTable[A, Entry >: Null <: HashEntry[A, Entry]]
 
   private def lastPopulatedIndex = {
     var idx = table.length - 1
-    while (table(idx) == null && idx > 0)
-      idx -= 1
+    while (table(idx) == null && idx > 0) idx -= 1
 
     idx
   }
@@ -157,8 +156,7 @@ trait HashTable[A, Entry >: Null <: HashEntry[A, Entry]]
     table(h) = e
     tableSize = tableSize + 1
     nnSizeMapAdd(h)
-    if (tableSize > threshold)
-      resize(2 * table.length)
+    if (tableSize > threshold) resize(2 * table.length)
   }
 
   /** Find entry with given key in table, or add new one if not found.

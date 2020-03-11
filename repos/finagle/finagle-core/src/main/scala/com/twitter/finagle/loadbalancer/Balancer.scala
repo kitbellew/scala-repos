@@ -106,8 +106,7 @@ private trait Balancer[Req, Rep] extends ServiceFactory[Req, Rep] { self =>
 
   private[this] val updater = new Updater[Update] {
     protected def preprocess(updates: Seq[Update]): Seq[Update] = {
-      if (updates.size == 1)
-        return updates
+      if (updates.size == 1) return updates
 
       val types = updates.reverse.groupBy(_.getClass)
 
@@ -126,8 +125,7 @@ private trait Balancer[Req, Rep] extends ServiceFactory[Req, Rep] { self =>
           newFactories.contains(node.factory)
         }
 
-        for (node <- closed)
-          node.close()
+        for (node <- closed) node.close()
         removes.incr(closed.size)
 
         // we could demand that 'n' proxies hashCode, equals (i.e. is a Proxy)
@@ -168,12 +166,10 @@ private trait Balancer[Req, Rep] extends ServiceFactory[Req, Rep] { self =>
 
   @tailrec
   private[this] def pick(nodes: Distributor, count: Int): Node = {
-    if (count == 0)
-      return null.asInstanceOf[Node]
+    if (count == 0) return null.asInstanceOf[Node]
 
     val n = dist.pick()
-    if (n.factory.status == Status.Open) n
-    else pick(nodes, count - 1)
+    if (n.factory.status == Status.Open) n else pick(nodes, count - 1)
   }
 
   def apply(conn: ClientConnection): Future[Service[Req, Rep]] = {
@@ -187,8 +183,7 @@ private trait Balancer[Req, Rep] extends ServiceFactory[Req, Rep] { self =>
     }
 
     val f = n(conn)
-    if (d.needsRebuild && d == dist)
-      rebuild()
+    if (d.needsRebuild && d == dist) rebuild()
     f
   }
 

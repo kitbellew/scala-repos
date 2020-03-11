@@ -215,9 +215,7 @@ private[collection] object RedBlackTree {
     else {
       val z = Node.leaf(key, value, red = true, y)
 
-      if (y eq null) tree.root = z
-      else if (cmp < 0) y.left = z
-      else y.right = z
+      if (y eq null) tree.root = z else if (cmp < 0) y.left = z else y.right = z
 
       fixAfterInsert(tree, z)
       tree.size += 1
@@ -550,8 +548,7 @@ private[collection] object RedBlackTree {
     private[this] def setNullIfAfterEnd(): Unit =
       if (end.isDefined && (nextNode ne null) && ord.compare(
             nextNode.key,
-            end.get) >= 0)
-        nextNode = null
+            end.get) >= 0) nextNode = null
 
     setNullIfAfterEnd()
   }
@@ -646,9 +643,7 @@ private[collection] object RedBlackTree {
         val lh = blackHeight(node.left)
         val rh = blackHeight(node.right)
 
-        if (lh == -1 || lh != rh) -1
-        else if (isRed(node)) lh
-        else lh + 1
+        if (lh == -1 || lh != rh) -1 else if (isRed(node)) lh else lh + 1
       }
     }
 

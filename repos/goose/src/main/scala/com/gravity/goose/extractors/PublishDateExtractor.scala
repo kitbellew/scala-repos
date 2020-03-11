@@ -53,18 +53,14 @@ object PublishDateExtractor extends Logging {
     * Helper function to return the minimum of two non-null Java Dates.
     */
   def minDate(lhs: java.util.Date, rhs: java.util.Date): java.util.Date = {
-    if (lhs.getTime < rhs.getTime)
-      lhs
-    else
-      rhs
+    if (lhs.getTime < rhs.getTime) lhs else rhs
   }
 
   /**
     * Helper function to parse ISO 8601 date/time strings safely.
     */
   def safeParseISO8601Date(txt: String): Option[java.util.Date] = {
-    if (txt == null || txt.isEmpty)
-      return None
+    if (txt == null || txt.isEmpty) return None
 
     try {
       Option(

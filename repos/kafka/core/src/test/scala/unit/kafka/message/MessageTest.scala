@@ -93,8 +93,7 @@ class MessageTest extends JUnitSuite {
       // check key
       if (v.message.hasKey)
         TestUtils.checkEquals(ByteBuffer.wrap(v.key), v.message.key)
-      else
-        assertEquals(null, v.message.key)
+      else assertEquals(null, v.message.key)
       // check compression codec
       assertEquals(v.codec, v.message.compressionCodec)
     }
@@ -161,8 +160,7 @@ class MessageTest extends JUnitSuite {
           "Message key should not change",
           convertedMessage.key,
           ByteBuffer.wrap(v.key))
-      else
-        assertNull(convertedMessage.key)
+      else assertNull(convertedMessage.key)
       if (v.payload == null) {
         assertTrue(convertedMessage.isNull)
         assertEquals("Payload should be null", null, convertedMessage.payload)
@@ -204,10 +202,8 @@ class MessageTest extends JUnitSuite {
   def testIsHashable() {
     // this is silly, but why not
     val m = new HashMap[Message, Message]()
-    for (v <- messages)
-      m.put(v.message, v.message)
-    for (v <- messages)
-      assertEquals(v.message, m.get(v.message))
+    for (v <- messages) m.put(v.message, v.message)
+    for (v <- messages) assertEquals(v.message, m.get(v.message))
   }
 
   @Test

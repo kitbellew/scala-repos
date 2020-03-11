@@ -80,10 +80,7 @@ private[saddle] object VecImpl {
     while (i < vec.length) {
       val v = vec(i)
       if (sa.notMissing(v)) {
-        if (cond(acc, v))
-          acc = f(acc, v)
-        else
-          i = vec.length
+        if (cond(acc, v)) acc = f(acc, v) else i = vec.length
       }
       i += 1
     }
@@ -100,10 +97,7 @@ private[saddle] object VecImpl {
     var i = 0
     while (i < vec.length) {
       val v: A = vec(i)
-      if (sca.isMissing(v))
-        buf(i) = scb.missing
-      else
-        buf(i) = f(v)
+      if (sca.isMissing(v)) buf(i) = scb.missing else buf(i) = f(v)
       i += 1
     }
     Vec(buf)
@@ -208,13 +202,11 @@ private[saddle] object VecImpl {
       @spec(Boolean, Int, Long, Double) A,
       @spec(Boolean, Int, Long, Double) B: ST](
       vec: Vec[A])(winSz: Int, f: Vec[A] => B): Vec[B] = {
-    if (winSz <= 0)
-      Vec.empty[B]
+    if (winSz <= 0) Vec.empty[B]
     else {
       val len = vec.length
       val win = if (winSz > len) len else winSz
-      if (len == 0)
-        Vec.empty
+      if (len == 0) Vec.empty
       else {
         val buf = new Array[B](len - win + 1)
         var i = win
@@ -340,8 +332,7 @@ private[saddle] object VecImpl {
   def pad[@spec(Boolean, Int, Long, Double) A: ST](
       vec: Vec[A],
       atMost: Int = 0): Vec[A] = {
-    if (vec.length == 0 || vec.length == 1)
-      vec
+    if (vec.length == 0 || vec.length == 1) vec
     else {
       val lim = if (atMost > 0) atMost else vec.length
       val sa = implicitly[ST[A]]

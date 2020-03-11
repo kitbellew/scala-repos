@@ -366,8 +366,7 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
           if (userName == context.loginAccount.get.userName && params.get(
                 "removed") == Some("true"))
             Some("You can't disable your account yourself")
-          else
-            None
+          else None
         }
       }
     }

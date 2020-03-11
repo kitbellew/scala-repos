@@ -19,8 +19,7 @@ private[twitter] object parsers {
 
   object list {
     def unapplySeq(s: String): Option[List[String]] =
-      if (s.isEmpty) Some(Nil)
-      else Some(s.split(":").toList)
+      if (s.isEmpty) Some(Nil) else Some(s.split(":").toList)
   }
 
   object double {

@@ -165,8 +165,7 @@ object Server {
         if (request.isError)
           log.error(
             s"Shutdown requested due to internal error: ${request.reason}")
-        else
-          log.info(s"Shutdown requested: ${request.reason}")
+        else log.info(s"Shutdown requested: ${request.reason}")
 
         log.info("Shutting down the ActorSystem")
         Try(system.shutdown())
@@ -176,10 +175,7 @@ object Server {
 
         log.info("Shutdown complete")
         if (!propIsSet("ensime.server.test")) {
-          if (request.isError)
-            System.exit(1)
-          else
-            System.exit(0)
+          if (request.isError) System.exit(1) else System.exit(0)
         }
       }
     })

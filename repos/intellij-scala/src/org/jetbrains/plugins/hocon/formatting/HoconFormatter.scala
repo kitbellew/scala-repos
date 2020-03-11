@@ -95,12 +95,11 @@ class HoconFormatter(settings: CodeStyleSettings) {
         case (LBrace, Include | KeyedField.extractor()) =>
           if (customSettings.OBJECTS_NEW_LINE_AFTER_LBRACE)
             dependentLFSpacing(commonSettings.SPACE_WITHIN_BRACES)
-          else
-            normalSpacing(commonSettings.SPACE_WITHIN_BRACES)
+          else normalSpacing(commonSettings.SPACE_WITHIN_BRACES)
 
         case (
-            Include | KeyedField.extractor(),
-            Include | KeyedField.extractor()) =>
+              Include | KeyedField.extractor(),
+              Include | KeyedField.extractor()) =>
           lineBreakEnsuringSpacing
 
         case (Include | KeyedField.extractor(), Comma) =>
@@ -112,8 +111,7 @@ class HoconFormatter(settings: CodeStyleSettings) {
         case (KeyedField.extractor() | Include | Comma, RBrace) =>
           if (customSettings.OBJECTS_RBRACE_ON_NEXT_LINE)
             dependentLFSpacing(commonSettings.SPACE_WITHIN_BRACES)
-          else
-            normalSpacing(commonSettings.SPACE_WITHIN_BRACES)
+          else normalSpacing(commonSettings.SPACE_WITHIN_BRACES)
 
         case (LBracket, RBracket) =>
           normalSpacing(commonSettings.SPACE_WITHIN_BRACKETS)
@@ -121,8 +119,7 @@ class HoconFormatter(settings: CodeStyleSettings) {
         case (LBracket, Value.extractor()) =>
           if (customSettings.LISTS_NEW_LINE_AFTER_LBRACKET)
             dependentLFSpacing(commonSettings.SPACE_WITHIN_BRACKETS)
-          else
-            normalSpacing(commonSettings.SPACE_WITHIN_BRACKETS)
+          else normalSpacing(commonSettings.SPACE_WITHIN_BRACKETS)
 
         case (Value.extractor(), Value.extractor()) =>
           lineBreakEnsuringSpacing
@@ -136,8 +133,7 @@ class HoconFormatter(settings: CodeStyleSettings) {
         case (Value.extractor() | Comma, RBracket) =>
           if (customSettings.LISTS_RBRACKET_ON_NEXT_LINE)
             dependentLFSpacing(commonSettings.SPACE_WITHIN_BRACKETS)
-          else
-            normalSpacing(commonSettings.SPACE_WITHIN_BRACKETS)
+          else normalSpacing(commonSettings.SPACE_WITHIN_BRACKETS)
 
         case (UnquotedChars, Included) =>
           normalSpacing(shouldBeSpace = true)
@@ -178,16 +174,12 @@ class HoconFormatter(settings: CodeStyleSettings) {
       }
 
     if (Comment.contains(rightChild.getElementType)) {
-      if (isLineBreakBetween)
-        beforeCommentOnNewLineSpacing(parent, rightChild)
-      else
-        null
+      if (isLineBreakBetween) beforeCommentOnNewLineSpacing(parent, rightChild)
+      else null
     } else if (Comment.contains(leftChild.getElementType))
       Spacing.createSafeSpacing(true, maxBlankLines)
-    else if (parent.getElementType == Concatenation)
-      Spacing.getReadOnlySpacing
-    else
-      standardSpacing
+    else if (parent.getElementType == Concatenation) Spacing.getReadOnlySpacing
+    else standardSpacing
   }
 
   // Formatter must be able to return exactly the same instance of Wrap and Alignment objects

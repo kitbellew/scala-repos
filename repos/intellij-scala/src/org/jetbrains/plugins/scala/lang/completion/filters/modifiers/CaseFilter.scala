@@ -89,8 +89,7 @@ class CaseFilter extends ElementFilter {
           leaf.getPrevSibling.getPrevSibling.getLastChild
             .isInstanceOf[ScCatchBlock] &&
           leaf.getPrevSibling.getPrevSibling.getLastChild.getLastChild
-            .isInstanceOf[PsiErrorElement])))
-        return true
+            .isInstanceOf[PsiErrorElement]))) return true
       if (parent.isInstanceOf[ScTemplateBody]) {
         if (leaf.getPrevSibling != null &&
             leaf.getPrevSibling.getPrevSibling != null &&
@@ -99,8 +98,7 @@ class CaseFilter extends ElementFilter {
             leaf.getPrevSibling.getPrevSibling.getLastChild.getText
               .indexOf('{') != -1 &&
             leaf.getPrevSibling.getPrevSibling.getLastChild.getLastChild
-              .isInstanceOf[PsiErrorElement])
-          return true
+              .isInstanceOf[PsiErrorElement]) return true
       }
     }
     false

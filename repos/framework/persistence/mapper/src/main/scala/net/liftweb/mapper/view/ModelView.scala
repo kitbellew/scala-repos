@@ -111,10 +111,7 @@ class ModelView[T <: Mapper[T]](var entity: T, val snippet: ModelSnippet[T]) {
     * created.
     */
   def newOrEdit = {
-    if (entity.saved_?)
-      ".edit ^^" #> "ignored"
-    else
-      ".new ^^" #> "ignored"
+    if (entity.saved_?) ".edit ^^" #> "ignored" else ".new ^^" #> "ignored"
   }
 
   /**
@@ -129,10 +126,7 @@ class ModelView[T <: Mapper[T]](var entity: T, val snippet: ModelSnippet[T]) {
   def save {
     entity.validate match {
       case Nil =>
-        if (entity.save)
-          snippet.onSave(this)
-        else
-          S.error("Save failed")
+        if (entity.save) snippet.onSave(this) else S.error("Save failed")
       case errors =>
         S.error(errors)
     }
@@ -147,14 +141,12 @@ class ModelView[T <: Mapper[T]](var entity: T, val snippet: ModelSnippet[T]) {
     * calls toString on a field named "id."
     */
   def idString =
-    if (entity.saved_?)
-      entity match {
-        case e: net.liftweb.mapper.KeyedMapper[_, T] =>
-          e.primaryKeyField.toString
-        case _ => entity.fieldByName("id").toString
-      }
-    else
-      "<new>"
+    if (entity.saved_?) entity match {
+      case e: net.liftweb.mapper.KeyedMapper[_, T] =>
+        e.primaryKeyField.toString
+      case _ => entity.fieldByName("id").toString
+    }
+    else "<new>"
 
   /**
     * Returns a CssSel that binds a link to ".edit" to load and edit this entity

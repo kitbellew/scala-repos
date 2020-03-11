@@ -89,15 +89,13 @@ object AtLeastOnceDeliverySpec {
 
     val receiveCommand: Receive = {
       case Req(payload) ⇒
-        if (payload.isEmpty)
-          sender() ! InvalidReq
+        if (payload.isEmpty) sender() ! InvalidReq
         else {
           val destination = destinations(payload.take(1).toUpperCase)
-          if (async)
-            persistAsync(AcceptedReq(payload, destination)) { evt ⇒
-              updateState(evt)
-              sender() ! ReqAck
-            }
+          if (async) persistAsync(AcceptedReq(payload, destination)) { evt ⇒
+            updateState(evt)
+            sender() ! ReqAck
+          }
           else
             persist(AcceptedReq(payload, destination)) { evt ⇒
               updateState(evt)
@@ -107,11 +105,10 @@ object AtLeastOnceDeliverySpec {
 
       case ActionAck(id) ⇒
         log.debug("Sender got ack {}", id)
-        if (confirmDelivery(id))
-          if (async)
-            persistAsync(ReqDone(id)) { evt ⇒ updateState(evt) }
-          else
-            persist(ReqDone(id)) { evt ⇒ updateState(evt) }
+        if (confirmDelivery(id)) if (async) persistAsync(ReqDone(id)) { evt ⇒
+          updateState(evt)
+        }
+        else persist(ReqDone(id)) { evt ⇒ updateState(evt) }
 
       case Boom ⇒
         log.debug("Boom!")

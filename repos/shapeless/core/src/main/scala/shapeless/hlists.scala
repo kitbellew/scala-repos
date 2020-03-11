@@ -111,8 +111,7 @@ object HList extends Dynamic {
   @tailrec
   def unsafeGet(l: HList, i: Int): Any = {
     val c = l.asInstanceOf[::[Any, HList]]
-    if (i == 0) c.head
-    else unsafeGet(c.tail, i - 1)
+    if (i == 0) c.head else unsafeGet(c.tail, i - 1)
   }
 
   def unsafeUpdate(l: HList, i: Int, e: Any): HList = {

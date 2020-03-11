@@ -59,9 +59,7 @@ class ArrayMap[@specialized V](defValue: => V, private val arr: ArrayBuffer[V])
   override def update(i: Int, v: V) {
     while (i > arr.length) { arr += default(arr.length) }
 
-    if (i == arr.length)
-      arr += v
-    else arr(i) = v;
+    if (i == arr.length) arr += v else arr(i) = v;
   }
 
   override def empty = new ArrayMap(defValue)

@@ -813,44 +813,32 @@ object Uri {
       fragment: Option[String],
       base: Uri): Uri = {
     require(base.isAbsolute, "Resolution base Uri must be absolute")
-    if (scheme.isEmpty)
-      if (host.isEmpty)
-        if (path.isEmpty) {
-          val q = if (query.isEmpty) base.rawQueryString else query
-          create(base.scheme, base.authority, base.path, q, fragment)
-        } else {
-          // http://tools.ietf.org/html/rfc3986#section-5.2.3
-          def mergePaths(base: Uri, path: Path): Path =
-            if (!base.authority.isEmpty && base.path.isEmpty) Path.Slash(path)
-            else {
-              import Path._
-              def replaceLastSegment(p: Path, replacement: Path): Path =
-                p match {
-                  case Path.Empty | Segment(_, Path.Empty) ⇒ replacement
-                  case Segment(string, tail) ⇒
-                    string :: replaceLastSegment(tail, replacement)
-                  case Slash(tail) ⇒
-                    Slash(replaceLastSegment(tail, replacement))
-                }
-              replaceLastSegment(base.path, path)
-            }
-          val p = if (path.startsWithSlash) path else mergePaths(base, path)
-          create(
-            base.scheme,
-            base.authority,
-            collapseDotSegments(p),
-            query,
-            fragment)
+    if (scheme.isEmpty) if (host.isEmpty) if (path.isEmpty) {
+      val q = if (query.isEmpty) base.rawQueryString else query
+      create(base.scheme, base.authority, base.path, q, fragment)
+    } else {
+      // http://tools.ietf.org/html/rfc3986#section-5.2.3
+      def mergePaths(base: Uri, path: Path): Path =
+        if (!base.authority.isEmpty && base.path.isEmpty) Path.Slash(path)
+        else {
+          import Path._
+          def replaceLastSegment(p: Path, replacement: Path): Path = p match {
+            case Path.Empty | Segment(_, Path.Empty) ⇒ replacement
+            case Segment(string, tail) ⇒
+              string :: replaceLastSegment(tail, replacement)
+            case Slash(tail) ⇒ Slash(replaceLastSegment(tail, replacement))
+          }
+          replaceLastSegment(base.path, path)
         }
-      else
-        create(
-          base.scheme,
-          userinfo,
-          host,
-          port,
-          collapseDotSegments(path),
-          query,
-          fragment)
+      val p = if (path.startsWithSlash) path else mergePaths(base, path)
+      create(
+        base.scheme,
+        base.authority,
+        collapseDotSegments(p),
+        query,
+        fragment)
+    }
+    else create(base.scheme, userinfo, host, port, collapseDotSegments(path), query, fragment)
     else
       create(
         scheme,

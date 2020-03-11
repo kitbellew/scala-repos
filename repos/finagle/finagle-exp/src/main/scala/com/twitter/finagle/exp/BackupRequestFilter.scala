@@ -158,8 +158,7 @@ class BackupRequestFilter[Req, Rep] private[exp] (
     val orig = record(service(req), won)
     val howLong = cutoffMs()
 
-    if (howLong == 0)
-      return orig
+    if (howLong == 0) return orig
 
     val backupCountdown =
       Future.sleep(Duration.fromMilliseconds(howLong))(timer)

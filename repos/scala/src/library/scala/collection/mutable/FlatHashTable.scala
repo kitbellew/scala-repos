@@ -170,8 +170,7 @@ trait FlatHashTable[A] extends FlatHashTable.HashUtils[A] {
     if (tableDebug) checkConsistent()
     def precedes(i: Int, j: Int) = {
       val d = table.length >> 1
-      if (i <= j) j - i < d
-      else i - j > d
+      if (i <= j) j - i < d else i - j > d
     }
     val removalEntry = elemToEntry(elem)
     var h = index(removalEntry.hashCode)

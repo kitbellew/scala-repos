@@ -18,8 +18,7 @@ object StringConcatenationFormatter extends StringFormatter {
             else injection.value
           if (injection.isFormattingRequired)
             "%s.formatted(%s)".format(s, quoted(injection.format))
-          else
-            s
+          else s
       }
       strings.mkString(" + ")
     }

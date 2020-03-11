@@ -121,18 +121,14 @@ trait Foldable1[F[_]] extends Foldable[F] { self =>
     foldMapLeft1[A, (ISet[A], NonEmptyList[A])](fa)(a =>
       (ISet.singleton(a), NonEmptyList(a))) {
       case ((seen, acc), a) =>
-        if (seen.notMember(a))
-          (seen.insert(a), a <:: acc)
-        else (seen, acc)
+        if (seen.notMember(a)) (seen.insert(a), a <:: acc) else (seen, acc)
     }._2.reverse
 
   /** ``O(n^2^)`` complexity */
   def distinctE1[A](fa: F[A])(implicit A: Equal[A]): NonEmptyList[A] =
     foldMapLeft1[A, NonEmptyList[A]](fa)(a => NonEmptyList(a)) {
       case (seen, a) =>
-        if (!NonEmptyList.nonEmptyList.element(seen, a))
-          a <:: seen
-        else seen
+        if (!NonEmptyList.nonEmptyList.element(seen, a)) a <:: seen else seen
     }.reverse
 
   def sumr1[A](fa: F[A])(implicit A: Semigroup[A]): A =

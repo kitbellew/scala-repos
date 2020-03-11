@@ -167,8 +167,7 @@ class SparseVector[@spec(Double, Int, Float, Long) V](
 
   def asCscRow(implicit man: ClassTag[V]): CSCMatrix[V] = {
     // zero SV
-    if (index.length == 0)
-      CSCMatrix.zeros[V](1, length)
+    if (index.length == 0) CSCMatrix.zeros[V](1, length)
     else {
       var ii = 0
       val nIndex = Array.tabulate[Int](length + 1)((cp: Int) =>
@@ -187,8 +186,7 @@ class SparseVector[@spec(Double, Int, Float, Long) V](
 
   def asCscColumn(implicit man: ClassTag[V]): CSCMatrix[V] = {
     // zero SV
-    if (index.length == 0)
-      CSCMatrix.zeros[V](length, 1)
+    if (index.length == 0) CSCMatrix.zeros[V](length, 1)
     else {
       new CSCMatrix[V](
         data.clone(),

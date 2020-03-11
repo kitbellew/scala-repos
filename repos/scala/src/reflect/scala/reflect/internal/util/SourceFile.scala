@@ -131,8 +131,7 @@ class BatchSourceFile(val file: AbstractFile, content0: Array[Char])
   // newline to the array.
   val content =
     (
-      if (content0.length == 0 || !content0.last.isWhitespace)
-        content0 :+ '\n'
+      if (content0.length == 0 || !content0.last.isWhitespace) content0 :+ '\n'
       else content0
     )
   val length = content.length

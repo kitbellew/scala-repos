@@ -406,8 +406,7 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
     */
   def maxConcurrentRequests(max: Int): This = {
     val sem =
-      if (max == Int.MaxValue) None
-      else Some(new AsyncSemaphore(max, 0))
+      if (max == Int.MaxValue) None else Some(new AsyncSemaphore(max, 0))
 
     configured(RequestSemaphoreFilter.Param(sem))
   }

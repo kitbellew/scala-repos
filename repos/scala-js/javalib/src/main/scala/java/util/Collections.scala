@@ -93,10 +93,8 @@ object Collections {
       case _ =>
         def getFrom(iter: ListIterator[E])(index: Int): E = {
           val shift = index - iter.nextIndex
-          if (shift > 0)
-            (0 until shift).foreach(_ => iter.next())
-          else
-            (0 until -shift).foreach(_ => iter.previous())
+          if (shift > 0) (0 until shift).foreach(_ => iter.next())
+          else (0 until -shift).foreach(_ => iter.previous())
           iter.next()
         }
         binarySearch(0, list.size, getFrom(list.listIterator))
@@ -158,8 +156,7 @@ object Collections {
       case _ =>
         val it1 = list.listIterator(i)
         val it2 = list.listIterator(j)
-        if (!it1.hasNext || !it2.hasNext)
-          throw new IndexOutOfBoundsException
+        if (!it1.hasNext || !it2.hasNext) throw new IndexOutOfBoundsException
         val tmp = it1.next()
         it1.set(it2.next())
         it2.set(tmp)
@@ -201,10 +198,8 @@ object Collections {
     val destEnd = dest.size()
     var i = 0
     while (source.hasNext) {
-      if (i < destEnd)
-        dest.set(i, source.next())
-      else
-        throw new IndexOutOfBoundsException
+      if (i < destEnd) dest.set(i, source.next())
+      else throw new IndexOutOfBoundsException
       i += 1
     }
   }
@@ -314,8 +309,7 @@ object Collections {
         def replaceAll(iter: ListIterator[T], mod: Boolean): Boolean = {
           if (iter.hasNext) {
             val isEqual = iter.next() === oldVal
-            if (isEqual)
-              iter.set(newVal)
+            if (isEqual) iter.set(newVal)
             replaceAll(iter, mod || isEqual)
           } else { mod }
         }
@@ -335,10 +329,8 @@ object Collections {
       target: List[_],
       fromStart: Boolean): Int = {
     val targetSize = target.size
-    if (targetSize == 0) {
-      if (fromStart) 0
-      else source.size
-    } else {
+    if (targetSize == 0) { if (fromStart) 0 else source.size }
+    else {
       val indices = 0 to source.size - targetSize
       val indicesInOrder = if (fromStart) indices else indices.reverse
       indicesInOrder
@@ -468,8 +460,7 @@ object Collections {
           def hasNext(): Boolean = _hasNext
 
           def next(): T = {
-            if (!_hasNext)
-              throw new NoSuchElementException
+            if (!_hasNext) throw new NoSuchElementException
             _hasNext = false
             o
           }
@@ -499,15 +490,13 @@ object Collections {
   }
 
   def nCopies[T](n: Int, o: T): List[T] = {
-    if (n < 0)
-      throw new IllegalArgumentException
+    if (n < 0) throw new IllegalArgumentException
 
     val inner = new AbstractList[T] with Serializable with RandomAccess {
       def size(): Int = n
 
       def get(index: Int): T = {
-        if (index < 0 || index >= n)
-          throw new IndexOutOfBoundsException
+        if (index < 0 || index >= n) throw new IndexOutOfBoundsException
         o
       }
     }
@@ -548,18 +537,15 @@ object Collections {
     c.count(_ === o)
 
   def disjoint(c1: Collection[_], c2: Collection[_]): Boolean = {
-    if (c1.size < c2.size)
-      !c1.exists(elem => c2.contains(elem))
-    else
-      !c2.exists(elem => c1.contains(elem))
+    if (c1.size < c2.size) !c1.exists(elem => c2.contains(elem))
+    else !c2.exists(elem => c1.contains(elem))
   }
 
   def addAll[T](c: Collection[_ >: T], elements: Array[AnyRef]): Boolean =
     c.addAll(asJavaCollection(elements.asInstanceOf[Array[T]]))
 
   def newSetFromMap[E](map: Map[E, java.lang.Boolean]): Set[E] = {
-    if (map.nonEmpty)
-      throw new IllegalArgumentException
+    if (map.nonEmpty) throw new IllegalArgumentException
 
     new WrappedSet[E, Set[E]] {
       override protected val inner: Set[E] =
@@ -824,8 +810,7 @@ object Collections {
     protected val eagerThrow: Boolean = true
 
     override def clear(): Unit = {
-      if (eagerThrow || !isEmpty)
-        throw new UnsupportedOperationException
+      if (eagerThrow || !isEmpty) throw new UnsupportedOperationException
     }
 
     override def iterator(): Iterator[E] =
@@ -923,13 +908,11 @@ object Collections {
     }
 
     override def putAll(m: Map[_ <: K, _ <: V]): Unit = {
-      if (eagerThrow || m.nonEmpty)
-        throw new UnsupportedOperationException
+      if (eagerThrow || m.nonEmpty) throw new UnsupportedOperationException
     }
 
     override def clear(): Unit = {
-      if (eagerThrow || !isEmpty)
-        throw new UnsupportedOperationException
+      if (eagerThrow || !isEmpty) throw new UnsupportedOperationException
     }
 
     override def keySet(): Set[K] =

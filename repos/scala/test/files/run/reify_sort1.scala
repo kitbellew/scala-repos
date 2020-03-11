@@ -4,8 +4,7 @@ import scala.tools.reflect.Eval
 object Test extends App {
   reify {
     def sort(a: List[Int]): List[Int] = {
-      if (a.length < 2)
-        a
+      if (a.length < 2) a
       else {
         val pivot = a(a.length / 2)
         sort(a.filter(_ < pivot)) :::

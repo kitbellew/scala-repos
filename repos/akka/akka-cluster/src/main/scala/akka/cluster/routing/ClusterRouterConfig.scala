@@ -369,8 +369,7 @@ private[akka] class ClusterRouterGroupActor(
   var usedRouteePaths: Map[Address, Set[String]] =
     if (settings.allowLocalRoutees)
       Map(cluster.selfAddress -> settings.routeesPaths.toSet)
-    else
-      Map.empty
+    else Map.empty
 
   /**
     * Adds routees based on totalInstances and maxInstancesPerNode settings
@@ -468,8 +467,7 @@ private[akka] trait ClusterRouterActor { this: RouterActor ⇒
           cluster.selfRoles))
       // use my own node, cluster information not updated yet
       immutable.SortedSet(cluster.selfAddress)
-    else
-      nodes
+    else nodes
   }
 
   /**

@@ -129,8 +129,7 @@ object SbtExternalSystemManager {
       settings: SbtSystemSettings): File =
     if (!ApplicationManager.getApplication.isUnitTestMode)
       getRealVmExecutable(projectJdkName, settings)
-    else
-      getUnitTestVmExecutable
+    else getUnitTestVmExecutable
 
   private def getUnitTestVmExecutable: File = {
     val internalSdk = JavaAwareProjectJdkTableImpl.getInstanceEx.getInternalJdk

@@ -75,10 +75,8 @@ class Scaladoc extends ScalaMatchingTask {
   object Flag extends PermissibleValue {
     val values = List("yes", "no", "on", "off")
     def getBooleanValue(value: String, flagName: String): Boolean =
-      if (Flag.isPermissible(value))
-        ("yes".equals(value) || "on".equals(value))
-      else
-        buildError("Unknown " + flagName + " flag '" + value + "'")
+      if (Flag.isPermissible(value)) ("yes".equals(value) || "on".equals(value))
+      else buildError("Unknown " + flagName + " flag '" + value + "'")
   }
 
   /** The directories that contain source files to compile. */
@@ -174,8 +172,7 @@ class Scaladoc extends ScalaMatchingTask {
     *  @param input The value of `origin`.
     */
   def setSrcdir(input: Path) {
-    if (origin.isEmpty) origin = Some(input)
-    else origin.get.append(input)
+    if (origin.isEmpty) origin = Some(input) else origin.get.append(input)
   }
 
   /** Sets the `origin` as a nested src Ant parameter.
@@ -278,8 +275,7 @@ class Scaladoc extends ScalaMatchingTask {
     *  @param input The value of `extdirs`.
     */
   def setExtdirs(input: Path) {
-    if (extdirs.isEmpty) extdirs = Some(input)
-    else extdirs.get.append(input)
+    if (extdirs.isEmpty) extdirs = Some(input) else extdirs.get.append(input)
   }
 
   /** Sets the `extdirs` as a nested sourcepath Ant parameter.
@@ -354,8 +350,7 @@ class Scaladoc extends ScalaMatchingTask {
   def setDeprecation(input: String) {
     if (Flag.isPermissible(input))
       deprecation = "yes".equals(input) || "on".equals(input)
-    else
-      buildError("Unknown deprecation flag '" + input + "'")
+    else buildError("Unknown deprecation flag '" + input + "'")
   }
 
   /** Set the `unchecked` info attribute.
@@ -365,8 +360,7 @@ class Scaladoc extends ScalaMatchingTask {
   def setUnchecked(input: String) {
     if (Flag.isPermissible(input))
       unchecked = "yes".equals(input) || "on".equals(input)
-    else
-      buildError("Unknown unchecked flag '" + input + "'")
+    else buildError("Unknown unchecked flag '" + input + "'")
   }
 
   def setDocUncompilable(input: String) { docUncompilable = Some(input) }
@@ -579,8 +573,7 @@ class Scaladoc extends ScalaMatchingTask {
                 (if (list.length > 1) "s" else "") +
                 (" to " + getDestination.toString)
             )
-          else
-            log("No files selected for documentation", Project.MSG_VERBOSE)
+          else log("No files selected for documentation", Project.MSG_VERBOSE)
 
           list
         }
@@ -605,8 +598,7 @@ class Scaladoc extends ScalaMatchingTask {
     // parameters.
     val docSettings = new Settings(buildError)
     docSettings.outdir.value = asString(destination.get)
-    if (!classpath.isEmpty)
-      docSettings.classpath.value = asString(getClasspath)
+    if (!classpath.isEmpty) docSettings.classpath.value = asString(getClasspath)
     if (!sourcepath.isEmpty)
       docSettings.sourcepath.value = asString(getSourcepath)
     /*else if (origin.get.size() > 0)

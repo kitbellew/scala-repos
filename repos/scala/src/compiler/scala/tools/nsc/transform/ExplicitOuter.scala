@@ -223,8 +223,7 @@ abstract class ExplicitOuter
       // class needs to have a common naming scheme, independently of whether
       // the field was accessed from an inner class or not. See #2946
       if (sym.owner.isTrait && sym.isLocalToThis &&
-          (sym.getterIn(sym.owner) == NoSymbol))
-        sym.makeNotPrivate(sym.owner)
+          (sym.getterIn(sym.owner) == NoSymbol)) sym.makeNotPrivate(sym.owner)
       tp
   }
 
@@ -282,8 +281,7 @@ abstract class ExplicitOuter
               base.tpe =:= currentClass.thisType &&
               outerAcc.owner.isEffectivelyFinal)
             outerField(currentClass) suchThat (_.owner == currentClass)
-          else
-            NoSymbol
+          else NoSymbol
         val path =
           if (outerFld != NoSymbol) Select(base, outerFld)
           else Apply(Select(base, outerAcc), Nil)
@@ -447,14 +445,12 @@ abstract class ExplicitOuter
                 for (mc <- currentClass.mixinClasses)
                   if (outerAccessor(mc) != NoSymbol && !skipMixinOuterAccessor(
                         currentClass,
-                        mc))
-                    newDefs += mixinOuterAccessorDef(mc)
+                        mc)) newDefs += mixinOuterAccessorDef(mc)
             }
           }
           super.transform(
             deriveTemplate(tree)(decls =>
-              if (newDefs.isEmpty) decls
-              else decls ::: newDefs.toList)
+              if (newDefs.isEmpty) decls else decls ::: newDefs.toList)
           )
         case DefDef(_, _, _, vparamss, _, rhs) =>
           if (sym.isClassConstructor) {
@@ -479,8 +475,7 @@ abstract class ExplicitOuter
                   } else vparamss
                 super.transform(copyDefDef(tree)(vparamss = vparamss1))
             }
-          } else
-            super.transform(tree)
+          } else super.transform(tree)
 
         case This(qual) =>
           if (sym == currentClass || sym.hasModuleFlag && sym.isStatic) tree
@@ -528,10 +523,10 @@ abstract class ExplicitOuter
         // base.<outer>.eq(o) --> base.$outer().eq(o) if there's an accessor, else the whole tree becomes TRUE
         // TODO remove the synthetic `<outer>` method from outerFor??
         case Apply(
-            eqsel @ Select(
-              eqapp @ Apply(sel @ Select(base, nme.OUTER_SYNTH), Nil),
-              eq),
-            args) =>
+              eqsel @ Select(
+                eqapp @ Apply(sel @ Select(base, nme.OUTER_SYNTH), Nil),
+                eq),
+              args) =>
           val outerFor = sel.symbol.owner
           val acc = outerAccessor(outerFor)
 
@@ -559,8 +554,7 @@ abstract class ExplicitOuter
 
         case _ =>
           val x = super.transform(tree)
-          if (x.tpe eq null) x
-          else x setType transformInfo(currentOwner, x.tpe)
+          if (x.tpe eq null) x else x setType transformInfo(currentOwner, x.tpe)
       }
     }
 

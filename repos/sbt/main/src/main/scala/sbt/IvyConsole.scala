@@ -65,8 +65,7 @@ object IvyConsole {
       acc.copy(resolvers = parseResolver(arg) +: acc.resolvers)
     else if (arg endsWith ".jar")
       acc.copy(unmanaged = new File(arg) +: acc.unmanaged)
-    else
-      acc.copy(managed = parseManaged(arg, log) ++ acc.managed)
+    else acc.copy(managed = parseManaged(arg, log) ++ acc.managed)
 
   private[this] def parseResolver(arg: String): MavenRepository = {
     val Array(name, url) = arg.split(" at ")

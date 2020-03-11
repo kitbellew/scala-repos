@@ -81,8 +81,7 @@ object Diffable {
       val out = new Array[Any](limit)
       coll.copyToArray(out, 0, limit)
 
-      for ((i, v) <- insert)
-        out(i) = v
+      for ((i, v) <- insert) out(i) = v
 
       out.toSeq.asInstanceOf[Seq[T]]
     }

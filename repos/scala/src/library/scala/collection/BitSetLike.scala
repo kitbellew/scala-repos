@@ -142,8 +142,7 @@ trait BitSetLike[+This <: BitSetLike[This] with SortedSet[Int]]
   def |(other: BitSet): This = {
     val len = this.nwords max other.nwords
     val words = new Array[Long](len)
-    for (idx <- 0 until len)
-      words(idx) = this.word(idx) | other.word(idx)
+    for (idx <- 0 until len) words(idx) = this.word(idx) | other.word(idx)
     fromBitMaskNoCopy(words)
   }
 
@@ -156,8 +155,7 @@ trait BitSetLike[+This <: BitSetLike[This] with SortedSet[Int]]
   def &(other: BitSet): This = {
     val len = this.nwords min other.nwords
     val words = new Array[Long](len)
-    for (idx <- 0 until len)
-      words(idx) = this.word(idx) & other.word(idx)
+    for (idx <- 0 until len) words(idx) = this.word(idx) & other.word(idx)
     fromBitMaskNoCopy(words)
   }
 
@@ -171,8 +169,7 @@ trait BitSetLike[+This <: BitSetLike[This] with SortedSet[Int]]
   def &~(other: BitSet): This = {
     val len = this.nwords
     val words = new Array[Long](len)
-    for (idx <- 0 until len)
-      words(idx) = this.word(idx) & ~other.word(idx)
+    for (idx <- 0 until len) words(idx) = this.word(idx) & ~other.word(idx)
     fromBitMaskNoCopy(words)
   }
 
@@ -186,8 +183,7 @@ trait BitSetLike[+This <: BitSetLike[This] with SortedSet[Int]]
   def ^(other: BitSet): This = {
     val len = this.nwords max other.nwords
     val words = new Array[Long](len)
-    for (idx <- 0 until len)
-      words(idx) = this.word(idx) ^ other.word(idx)
+    for (idx <- 0 until len) words(idx) = this.word(idx) ^ other.word(idx)
     fromBitMaskNoCopy(words)
   }
 
@@ -266,8 +262,7 @@ object BitSetLike {
     if (idx >= newlen && w != 0L) newlen = idx + 1
     val newelems = new Array[Long](newlen)
     Array.copy(elems, 0, newelems, 0, len)
-    if (idx < newlen) newelems(idx) = w
-    else assert(w == 0L)
+    if (idx < newlen) newelems(idx) = w else assert(w == 0L)
     newelems
   }
 }

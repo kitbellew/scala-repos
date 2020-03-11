@@ -71,8 +71,7 @@ private[scala] trait MarkupParserCommon {
     */
   def xEndTag(startName: String) {
     xToken('/')
-    if (xName != startName)
-      errorNoEnd(startName)
+    if (xName != startName) errorNoEnd(startName)
 
     xSpaceOpt()
     xToken('>')
@@ -87,8 +86,7 @@ private[scala] trait MarkupParserCommon {
     *  post-condition: name does neither start, nor end in ':'
     */
   def xName: String = {
-    if (ch == SU)
-      truncatedError("")
+    if (ch == SU) truncatedError("")
     else if (!isNameStart(ch))
       return errorAndResult(
         "name expected, but char '%s' cannot start a name" format ch,
@@ -193,8 +191,7 @@ private[scala] trait MarkupParserCommon {
     val rest = until.tail
 
     while (true) {
-      if (ch == head && peek(rest))
-        return handler(positioner(), sb.toString)
+      if (ch == head && peek(rest)) return handler(positioner(), sb.toString)
       else if (ch == SU)
         truncatedError("") // throws TruncatedXMLControl in compiler
 

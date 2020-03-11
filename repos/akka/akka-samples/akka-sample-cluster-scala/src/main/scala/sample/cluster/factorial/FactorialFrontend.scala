@@ -29,8 +29,7 @@ class FactorialFrontend(upToN: Int, repeat: Boolean)
     case (n: Int, factorial: BigInt) =>
       if (n == upToN) {
         log.debug("{}! = {}", n, factorial)
-        if (repeat) sendJobs()
-        else context.stop(self)
+        if (repeat) sendJobs() else context.stop(self)
       }
     case ReceiveTimeout =>
       log.info("Timeout")

@@ -124,8 +124,7 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
     val len = ns.length
     while (i < len) {
       val z = ns(i)
-      if (z < zmin) zmin = z
-      else if (z > zmax) zmax = z
+      if (z < zmin) zmin = z else if (z > zmax) zmax = z
       i += 1
     }
     (zmin, zmax)
@@ -141,8 +140,7 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
     val len = ns.length
     while (i < len) {
       val z = ns(i)
-      if (z < zmin) zmin = z
-      else if (z > zmax) zmax = z
+      if (z < zmin) zmin = z else if (z > zmax) zmax = z
       i += 1
     }
     (zmin, zmax)
@@ -157,8 +155,7 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
     val len = ns.length
     while (i < len) {
       val z = ns(i)
-      if (z < zmin) zmin = z
-      else if (z > zmax) zmax = z
+      if (z < zmin) zmin = z else if (z > zmax) zmax = z
       i += 1
     }
     (zmin, zmax)

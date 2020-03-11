@@ -166,17 +166,12 @@ private[precog] case class Vector1[+A](_1: A) extends VectorCase[A] {
   def :+[B >: A](b: B) = Vector2(_1, b)
 
   def apply(index: Int) = {
-    if (index == 0)
-      _1
-    else
-      throw new IndexOutOfBoundsException(index.toString)
+    if (index == 0) _1 else throw new IndexOutOfBoundsException(index.toString)
   }
 
   def updated[B >: A](index: Int, b: B) = {
-    if (index == 0)
-      Vector1(b)
-    else
-      throw new IndexOutOfBoundsException(index.toString)
+    if (index == 0) Vector1(b)
+    else throw new IndexOutOfBoundsException(index.toString)
   }
 
   def ++[B >: A](that: VectorCase[B]) = that match {

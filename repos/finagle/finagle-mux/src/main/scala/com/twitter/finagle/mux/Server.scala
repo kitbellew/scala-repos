@@ -60,9 +60,7 @@ private class Tracker[T] {
   @tailrec
   private[this] def enter(): Boolean = {
     val n = state.get
-    if (n <= 0) false
-    else if (!state.compareAndSet(n, n + 1)) enter()
-    else true
+    if (n <= 0) false else if (!state.compareAndSet(n, n + 1)) enter() else true
   }
 
   /**
@@ -71,10 +69,8 @@ private class Tracker[T] {
   @tailrec
   private[this] def exit(): Unit = {
     val n = state.get
-    if (n < 0) {
-      if (state.incrementAndGet() == -1)
-        _drained.setDone()
-    } else if (!state.compareAndSet(n, n - 1)) exit()
+    if (n < 0) { if (state.incrementAndGet() == -1) _drained.setDone() }
+    else if (!state.compareAndSet(n, n - 1)) exit()
   }
 
   /**
@@ -126,8 +122,7 @@ private class Tracker[T] {
     val n = state.get
     if (n < 0) return
 
-    if (!state.compareAndSet(n, -n)) drain()
-    else if (n == 1) _drained.setDone()
+    if (!state.compareAndSet(n, -n)) drain() else if (n == 1) _drained.setDone()
   }
 
   /**
@@ -317,8 +312,7 @@ private[twitter] class ServerDispatcher(
       case Throw(exc)  => exc
     }
     val cancelledExc = new CancelledRequestException(exc)
-    for (tag <- tracker.tags; f <- tracker.get(tag))
-      f.raise(cancelledExc)
+    for (tag <- tracker.tags; f <- tracker.get(tag)) f.raise(cancelledExc)
 
     service.close()
     lessor.unregister(this)
@@ -413,8 +407,7 @@ private[finagle] object Processor
     val contextBufs = tdispatch.contexts.map(ContextsToBufs)
 
     Contexts.broadcast.letUnmarshal(contextBufs) {
-      if (tdispatch.dtab.nonEmpty)
-        Dtab.local ++= tdispatch.dtab
+      if (tdispatch.dtab.nonEmpty) Dtab.local ++= tdispatch.dtab
       service(Request(tdispatch.dst, ChannelBufferBuf.Owned(tdispatch.req)))
         .transform {
           case Return(rep) =>

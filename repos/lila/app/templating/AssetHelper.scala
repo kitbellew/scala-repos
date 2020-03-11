@@ -93,8 +93,7 @@ trait AssetHelper { self: I18nHelper =>
   private def cdnOrLocal(cdn: String, test: String, local: String) = Html {
     if (isProd)
       s"""<script src="$cdn"></script><script>$test || document.write('<script src="$local">\\x3C/script>')</script>"""
-    else
-      s"""<script src="$local"></script>"""
+    else s"""<script src="$local"></script>"""
   }
 
   def jsAt(path: String, static: Boolean = true) = Html {

@@ -406,7 +406,7 @@ private class UpperCaseFormat
       (
         {
           case JObject(
-              JField("string", JString(string)) ::
+                JField("string", JString(string)) ::
                 JField("optional", JString(optional)) ::
                 JField("default", JString(default)) ::
                 Nil) =>

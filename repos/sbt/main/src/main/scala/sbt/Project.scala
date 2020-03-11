@@ -621,8 +621,7 @@ object Project extends ProjectExtra {
 
   private[sbt] def checkTargets(data: Settings[Scope]): Option[String] = {
     val dups = overlappingTargets(allTargets(data))
-    if (dups.isEmpty)
-      None
+    if (dups.isEmpty) None
     else {
       val dupStrs = dups map {
         case (dir, scopes) =>

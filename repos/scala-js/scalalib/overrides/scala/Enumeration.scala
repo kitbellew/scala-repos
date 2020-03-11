@@ -184,9 +184,7 @@ abstract class Enumeration(initial: Int) extends Serializable {
     private[Enumeration] val outerEnum = thisenum
 
     override def compare(that: Value): Int =
-      if (this.id < that.id) -1
-      else if (this.id == that.id) 0
-      else 1
+      if (this.id < that.id) -1 else if (this.id == that.id) 0 else 1
     override def equals(other: Any) = other match {
       case that: Enumeration#Value =>
         (outerEnum eq that.outerEnum) && (id == that.id)
@@ -223,8 +221,7 @@ abstract class Enumeration(initial: Int) extends Serializable {
 
     protected def readResolve(): AnyRef = {
       val enum = thisenum.readResolve().asInstanceOf[Enumeration]
-      if (enum.vmap == null) this
-      else enum.vmap(i)
+      if (enum.vmap == null) this else enum.vmap(i)
     }
   }
 

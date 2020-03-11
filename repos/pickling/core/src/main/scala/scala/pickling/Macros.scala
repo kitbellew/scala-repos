@@ -19,10 +19,8 @@ trait TypeAnalysis extends Macro {
     whyNotClosed(sym).isEmpty
 
   def whyNotClosed(sym: TypeSymbol): Seq[String] = {
-    if (sym.isEffectivelyFinal)
-      Nil
-    else if (isCaseClass(sym))
-      Nil
+    if (sym.isEffectivelyFinal) Nil
+    else if (isCaseClass(sym)) Nil
     else if (sym.isClass) {
       val classSym = sym.asClass
       if (tools.treatAsSealed(classSym)) {

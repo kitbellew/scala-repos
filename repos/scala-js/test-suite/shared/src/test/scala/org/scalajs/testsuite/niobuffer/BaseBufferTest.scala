@@ -51,10 +51,8 @@ abstract class BaseBufferTest {
 
   @Test def isReadOnly()(): Unit = {
     val buf = allocBuffer(10)
-    if (createsReadOnly)
-      assertTrue(buf.isReadOnly())
-    else
-      assertFalse(buf.isReadOnly())
+    if (createsReadOnly) assertTrue(buf.isReadOnly())
+    else assertFalse(buf.isReadOnly())
   }
 
   @Test def position(): Unit = {
@@ -324,8 +322,7 @@ abstract class BaseBufferTest {
         assertEquals(10, buf.limit())
         expectThrows(classOf[InvalidMarkException], buf.reset())
 
-        for (i <- 0 until 4)
-          assertEquals(elemFromInt(i + 6), buf.get(i))
+        for (i <- 0 until 4) assertEquals(elemFromInt(i + 6), buf.get(i))
       }
     } else {
       val buf = allocBuffer(10)
@@ -344,8 +341,7 @@ abstract class BaseBufferTest {
     assertEquals(4, buf2.capacity())
     expectThrows(classOf[InvalidMarkException], buf2.reset())
 
-    if (!executingInJVMOnJDK6)
-      assertEquals(elemFromInt(4), buf2.get(1))
+    if (!executingInJVMOnJDK6) assertEquals(elemFromInt(4), buf2.get(1))
 
     buf2.position(2)
     assertEquals(3, buf1.position())

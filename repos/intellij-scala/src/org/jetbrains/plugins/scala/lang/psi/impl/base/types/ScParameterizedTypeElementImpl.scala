@@ -106,8 +106,7 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
     def kindProjectorInlineSyntax(e: PsiElement): Option[ScTypeElement] = {
       def generateName(i: Int): String = { //kind projector generates names the same way
         val res = ('α' + (i % 25)).toChar.toString
-        if (i < 25) res
-        else res + (i / 25)
+        if (i < 25) res else res + (i / 25)
       }
 
       val (paramOpt: Seq[Option[String]], body: Seq[String]) =
@@ -217,15 +216,15 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
             if (ref.isConstructorReference) {
               ref.resolveNoConstructor match {
                 case Array(
-                    ScalaResolveResult(
-                      to: ScTypeParametersOwner,
-                      subst: ScSubstitutor))
+                      ScalaResolveResult(
+                        to: ScTypeParametersOwner,
+                        subst: ScSubstitutor))
                     if to.isInstanceOf[PsiNamedElement] =>
                   return tr //all things were done in ScSimpleTypeElementImpl.innerType
                 case Array(
-                    ScalaResolveResult(
-                      to: PsiTypeParameterListOwner,
-                      subst: ScSubstitutor))
+                      ScalaResolveResult(
+                        to: PsiTypeParameterListOwner,
+                        subst: ScSubstitutor))
                     if to.isInstanceOf[PsiNamedElement] =>
                   return tr //all things were done in ScSimpleTypeElementImpl.innerType
                 case _ =>

@@ -762,10 +762,7 @@ class GroupCoordinator(
   }
 
   private def maybePrepareRebalance(group: GroupMetadata) {
-    group synchronized {
-      if (group.canRebalance)
-        prepareRebalance(group)
-    }
+    group synchronized { if (group.canRebalance) prepareRebalance(group) }
   }
 
   private def prepareRebalance(group: GroupMetadata) {
@@ -798,9 +795,7 @@ class GroupCoordinator(
 
   def tryCompleteJoin(group: GroupMetadata, forceComplete: () => Boolean) = {
     group synchronized {
-      if (group.notYetRejoinedMembers.isEmpty)
-        forceComplete()
-      else false
+      if (group.notYetRejoinedMembers.isEmpty) forceComplete() else false
     }
   }
 

@@ -165,10 +165,8 @@ object RemoveInternalClusterShardingData {
 
       case RecoveryCompleted ⇒
         deleteMessages(Long.MaxValue)
-        if (hasSnapshots)
-          deleteSnapshots(SnapshotSelectionCriteria())
-        else
-          context.become(waitDeleteMessagesSuccess)
+        if (hasSnapshots) deleteSnapshots(SnapshotSelectionCriteria())
+        else context.become(waitDeleteMessagesSuccess)
     }
 
     override def receiveCommand: Receive =
@@ -244,8 +242,7 @@ class RemoveInternalClusterShardingData(
   def receive = {
     case Result(Success(_)) ⇒
       log.info("Removed data for persistenceId [{}]", currentPid)
-      if (remainingPids.isEmpty) done()
-      else removeNext()
+      if (remainingPids.isEmpty) done() else removeNext()
 
     case Result(Failure(cause)) ⇒
       log.error("Failed to remove data for persistenceId [{}]", currentPid)

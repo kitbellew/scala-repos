@@ -191,14 +191,12 @@ private[serverset2] object Stabilizer {
               ev match {
                 case Left(newAddr) =>
                   // There's a change to the serverset but it's not different. Noop
-                  if (newAddr == st.last)
-                    st.copy(publish = None)
+                  if (newAddr == st.last) st.copy(publish = None)
                   // There's a change to the serverset, but we have published in < batchEpoch. Hold change.
                   else if (now - st.lastEmit < batchEpoch.period)
                     st.copy(publish = None, next = Some(newAddr))
                   // There's a change to the serverset and we haven't published in >= batchEpoch. Publish.
-                  else
-                    States(Some(newAddr), newAddr, None, now)
+                  else States(Some(newAddr), newAddr, None, now)
 
                 case Right(_) =>
                   st.next match {

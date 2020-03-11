@@ -17,8 +17,7 @@ package object internal {
 
   private[this] def initDefaultRuntime = {
     // TODO - Figure out some way to configure the default runtime at startup.
-    if (true) new DefaultRuntime()
-    else new NoReflectionRuntime()
+    if (true) new DefaultRuntime() else new NoReflectionRuntime()
   }
   private[this] var currentRuntimeVar =
     new AtomicReference[spi.PicklingRuntime](initDefaultRuntime)

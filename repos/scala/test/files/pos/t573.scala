@@ -35,8 +35,7 @@ abstract class Linked {
     }
 
     def end(dir: Dir): Node = {
-      if (get(dir) == null) this;
-      else get(dir).end(dir);
+      if (get(dir) == null) this; else get(dir).end(dir);
     }
   }
 }

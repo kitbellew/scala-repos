@@ -75,10 +75,8 @@ class CopyOnWriteArrayList[E <: AnyRef] private (private var inner: js.Array[E])
       else jlr.Array.newInstance(componentType, size).asInstanceOf[Array[T]]
 
     val iter = iterator
-    for (i <- 0 until size)
-      toFill(i) = iter.next().asInstanceOf[T]
-    if (toFill.size > size)
-      toFill(size) = null.asInstanceOf[T]
+    for (i <- 0 until size) toFill(i) = iter.next().asInstanceOf[T]
+    if (toFill.size > size) toFill(size) = null.asInstanceOf[T]
     toFill
   }
 
@@ -144,20 +142,14 @@ class CopyOnWriteArrayList[E <: AnyRef] private (private var inner: js.Array[E])
     clear()
     var modified = false
     for (elem <- iter) {
-      if (c.contains(elem))
-        innerPush(elem)
-      else
-        modified = true
+      if (c.contains(elem)) innerPush(elem) else modified = true
     }
     modified
   }
 
   def addAllAbsent(c: Collection[_ <: E]): Int = {
     var added = 0
-    for (e <- c.iterator()) {
-      if (addIfAbsent(e))
-        added += 1
-    }
+    for (e <- c.iterator()) { if (addIfAbsent(e)) added += 1 }
     added
   }
 

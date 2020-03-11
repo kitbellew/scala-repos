@@ -92,8 +92,8 @@ class ConvertibleToMethodValueInspection
     qual.depthFirst(e => !e.isInstanceOf[ScImportStmt]).forall {
       case _: ScNewTemplateDefinition => false
       case Both(
-          _: ScReferenceExpression | ScConstructor.byReference(_),
-          ResolvesTo(named: PsiNamedElement)) =>
+            _: ScReferenceExpression | ScConstructor.byReference(_),
+            ResolvesTo(named: PsiNamedElement)) =>
         isStable(named)
       case _ => true
     }
@@ -153,8 +153,7 @@ class ConvertibleToMethodValueInspection
   private def possibleReplacements(expr: ScExpression): Seq[String] = {
     val withoutArguments = methodWithoutArgumentsText(expr)
     val withUnderscore =
-      if (expr.getText endsWith "_") Nil
-      else withoutArguments.map(_ + " _")
+      if (expr.getText endsWith "_") Nil else withoutArguments.map(_ + " _")
 
     withoutArguments ++ withUnderscore
   }

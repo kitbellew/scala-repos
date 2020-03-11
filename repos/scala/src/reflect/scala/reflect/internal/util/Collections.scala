@@ -110,8 +110,7 @@ trait Collections {
         pending0: List[A],
         pending1: List[B]): List[A] = {
       if (pending0.isEmpty || pending1.isEmpty) {
-        if (mapped eq null) unchanged
-        else mapped.prependToList(unchanged)
+        if (mapped eq null) unchanged else mapped.prependToList(unchanged)
       } else {
         val head00 = pending0.head
         val head01 = pending1.head
@@ -162,8 +161,7 @@ trait Collections {
   final def flatCollect[A, B](elems: List[A])(
       pf: PartialFunction[A, Traversable[B]]): List[B] = {
     val lb = new ListBuffer[B]
-    for (x <- elems; if pf isDefinedAt x)
-      lb ++= pf(x)
+    for (x <- elems; if pf isDefinedAt x) lb ++= pf(x)
 
     lb.toList
   }
@@ -220,8 +218,7 @@ trait Collections {
   }
   final def collectMap2[A, B, C](xs1: List[A], xs2: List[B])(
       p: (A, B) => Boolean): Map[A, B] = {
-    if (xs1.isEmpty || xs2.isEmpty)
-      return Map()
+    if (xs1.isEmpty || xs2.isEmpty) return Map()
 
     val buf = immutable.Map.newBuilder[A, B]
     var ys1 = xs1
@@ -229,8 +226,7 @@ trait Collections {
     while (!ys1.isEmpty && !ys2.isEmpty) {
       val x1 = ys1.head
       val x2 = ys2.head
-      if (p(x1, x2))
-        buf += ((x1, x2))
+      if (p(x1, x2)) buf += ((x1, x2))
 
       ys1 = ys1.tail
       ys2 = ys2.tail
@@ -264,8 +260,7 @@ trait Collections {
     var ys1 = xs1
     var ys2 = xs2
     while (!ys1.isEmpty && !ys2.isEmpty) {
-      if (f(ys1.head, ys2.head))
-        return true
+      if (f(ys1.head, ys2.head)) return true
 
       ys1 = ys1.tail
       ys2 = ys2.tail
@@ -278,8 +273,7 @@ trait Collections {
     var ys2 = xs2
     var ys3 = xs3
     while (!ys1.isEmpty && !ys2.isEmpty && !ys3.isEmpty) {
-      if (f(ys1.head, ys2.head, ys3.head))
-        return true
+      if (f(ys1.head, ys2.head, ys3.head)) return true
 
       ys1 = ys1.tail
       ys2 = ys2.tail
@@ -293,8 +287,7 @@ trait Collections {
     var ys2 = xs2
     var ys3 = xs3
     while (!ys1.isEmpty && !ys2.isEmpty && !ys3.isEmpty) {
-      if (!f(ys1.head, ys2.head, ys3.head))
-        return false
+      if (!f(ys1.head, ys2.head, ys3.head)) return false
 
       ys1 = ys1.tail
       ys2 = ys2.tail
@@ -304,8 +297,7 @@ trait Collections {
   }
 
   final def sequence[A](as: List[Option[A]]): Option[List[A]] = {
-    if (as.exists(_.isEmpty)) None
-    else Some(as.flatten)
+    if (as.exists(_.isEmpty)) None else Some(as.flatten)
   }
 
   final def transposeSafe[A](ass: List[List[A]]): Option[List[List[A]]] =

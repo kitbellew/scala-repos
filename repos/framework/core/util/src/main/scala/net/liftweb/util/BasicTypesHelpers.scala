@@ -75,8 +75,7 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
       * if the decorated boolean is true, or a BooleanNone otherwise.
       */
     def ?[A](first: => A): BooleanOption[A] = {
-      if (b) BooleanSome(() => first)
-      else BooleanNone
+      if (b) BooleanSome(() => first) else BooleanNone
     }
 
     /**

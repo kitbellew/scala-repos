@@ -37,10 +37,7 @@ object CoGrouped {
         case Nil => acc.reverse // done
         case h :: tail =>
           val uh = fn(h)
-          if (seen(uh))
-            go(tail, seen, acc)
-          else
-            go(tail, seen + uh, h :: acc)
+          if (seen(uh)) go(tail, seen, acc) else go(tail, seen + uh, h :: acc)
       }
     go(list)
   }

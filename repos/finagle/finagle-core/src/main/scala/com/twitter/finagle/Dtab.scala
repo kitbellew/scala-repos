@@ -58,8 +58,7 @@ case class Dtab(dentries0: IndexedSeq[Dentry]) extends IndexedSeq[Dentry] {
     * Construct a new Dtab with the given dtab appended.
     */
   def ++(dtab: Dtab): Dtab = {
-    if (dtab.isEmpty) this
-    else Dtab(dentries0 ++ dtab.dentries0)
+    if (dtab.isEmpty) this else Dtab(dentries0 ++ dtab.dentries0)
   }
 
   /**
@@ -79,15 +78,11 @@ case class Dtab(dentries0: IndexedSeq[Dentry]) extends IndexedSeq[Dentry] {
     while (i < prefix.size) {
       val d1 = this(i)
       val d2 = prefix(i)
-      if (d1 != d2)
-        return this
+      if (d1 != d2) return this
       i += 1
     }
 
-    if (i == size)
-      Dtab.empty
-    else
-      Dtab(this drop prefix.size)
+    if (i == size) Dtab.empty else Dtab(this drop prefix.size)
   }
 
   /**

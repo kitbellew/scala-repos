@@ -158,8 +158,7 @@ class ScalaLookupItem(
             else ""
           )
         }
-        if (!etaExpanded)
-          presentation.setTailText(tailText1)
+        if (!etaExpanded) presentation.setTailText(tailText1)
         else presentation.setTailText(" _")
       case fun: ScFun =>
         presentation.setTypeText(presentationString(fun.retType, substitutor))
@@ -227,13 +226,11 @@ class ScalaLookupItem(
       case p: PsiPackage => presentation.setTailText(tailText, /*grayed*/ true)
       case _             =>
     }
-    if (presentation.isReal)
-      presentation.setIcon(element.getIcon(0))
+    if (presentation.isReal) presentation.setIcon(element.getIcon(0))
     else presentation.setIcon(IconUtil.getEmptyIcon(false))
     var itemText: String =
       if (isRenamed.isEmpty) if (isClassName && shouldImport) {
-        if (containingClass != null) containingClass.name + "." + name
-        else name
+        if (containingClass != null) containingClass.name + "." + name else name
       } else name
       else name + " <= " + element.name
     if (someSmartCompletion) itemText = "Some(" + itemText + ")"
@@ -311,8 +308,7 @@ class ScalaLookupItem(
                    .qualifier match {
                    case Some(r) => r != ref
                    case _       => true
-                 }))
-            ref = ref.getParent.asInstanceOf[ScReferenceElement]
+                 })) ref = ref.getParent.asInstanceOf[ScReferenceElement]
           val newRef = ref match {
             case ref: ScReferenceExpression if prefixCompletion =>
               val parts = cl.qualifiedName.split('.')

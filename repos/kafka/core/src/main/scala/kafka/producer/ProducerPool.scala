@@ -88,8 +88,7 @@ class ProducerPool(val config: ProducerConfig) extends Logging {
     lock.synchronized {
       info("Closing all sync producers")
       val iter = syncProducers.values.iterator
-      while (iter.hasNext)
-        iter.next.close
+      while (iter.hasNext) iter.next.close
     }
   }
 }

@@ -52,8 +52,7 @@ class IncludedFileReferenceSet(
     forcedAbsolute || super.isAbsolutePathReference
 
   override def couldBeConvertedTo(relative: Boolean): Boolean =
-    if (relative) !forcedAbsolute
-    else fromClasspath
+    if (relative) !forcedAbsolute else fromClasspath
 
   override def createFileReference(
       range: TextRange,
@@ -135,12 +134,10 @@ class IncludedFileReferenceSet(
       } getOrElse empty
     }
 
-    if (fromClasspath)
-      classpathDefaultContexts
+    if (fromClasspath) classpathDefaultContexts
     else if (!isAbsolutePathReference)
       psiManager.findDirectory(parent).toOption.map(single).getOrElse(empty)
-    else
-      empty
+    else empty
   }
 
 }
@@ -195,12 +192,9 @@ class IncludedFileReference(
       resolveWithExt(ConfExt)
       resolveWithExt(JsonExt)
       resolveWithExt(PropsExt)
-    } else
-      super.innerResolveInContext(text, context, result, caseSensitive)
+    } else super.innerResolveInContext(text, context, result, caseSensitive)
 
   override def getFileNameToCreate: String =
-    if (lacksExtension(getCanonicalText))
-      super.getFileNameToCreate + ConfExt
-    else
-      super.getFileNameToCreate
+    if (lacksExtension(getCanonicalText)) super.getFileNameToCreate + ConfExt
+    else super.getFileNameToCreate
 }

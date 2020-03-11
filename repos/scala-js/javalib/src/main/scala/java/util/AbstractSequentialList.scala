@@ -10,8 +10,7 @@ abstract class AbstractSequentialList[E] protected () extends AbstractList[E] {
 
   override def set(index: Int, element: E): E = {
     val iter = listIterator(index)
-    if (!iter.hasNext)
-      throw new IndexOutOfBoundsException
+    if (!iter.hasNext) throw new IndexOutOfBoundsException
     val ret = iter.next()
     iter.set(element)
     ret
@@ -22,8 +21,7 @@ abstract class AbstractSequentialList[E] protected () extends AbstractList[E] {
 
   override def remove(index: Int): E = {
     val iter = listIterator(index)
-    if (!iter.hasNext)
-      throw new IndexOutOfBoundsException
+    if (!iter.hasNext) throw new IndexOutOfBoundsException
     val ret = iter.next()
     iter.remove
     ret

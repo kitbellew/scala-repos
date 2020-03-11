@@ -172,8 +172,7 @@ object AdSamples {
     Gen(p => {
       def sample: Double = {
         val testIndex = (p.rng.nextGaussian * (size / 5)) + (size / 2)
-        if (testIndex < 0 || testIndex >= size) sample
-        else testIndex
+        if (testIndex < 0 || testIndex >= size) sample else testIndex
       }
 
       Some(sample.toInt)

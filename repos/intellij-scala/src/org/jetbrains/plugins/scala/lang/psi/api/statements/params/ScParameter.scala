@@ -135,8 +135,7 @@ trait ScParameter
 
   override def getName: String = {
     val res = super.getName
-    if (JavaLexer.isKeyword(res, LanguageLevel.HIGHEST)) "_" + res
-    else res
+    if (JavaLexer.isKeyword(res, LanguageLevel.HIGHEST)) "_" + res else res
   }
 
   abstract override def getUseScope = {

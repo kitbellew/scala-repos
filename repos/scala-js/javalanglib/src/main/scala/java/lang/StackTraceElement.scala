@@ -38,20 +38,16 @@ final class StackTraceElement(
 
   override def toString(): String = {
     var result = ""
-    if (declaringClass != "<jscode>")
-      result += declaringClass + "."
+    if (declaringClass != "<jscode>") result += declaringClass + "."
     result += methodName
     if (fileName eq null) {
-      if (isNativeMethod)
-        result += "(Native Method)"
-      else
-        result += "(Unknown Source)"
+      if (isNativeMethod) result += "(Native Method)"
+      else result += "(Unknown Source)"
     } else {
       result += s"($fileName"
       if (lineNumber >= 0) {
         result += s":$lineNumber"
-        if (columnNumber >= 0)
-          result += s":$columnNumber"
+        if (columnNumber >= 0) result += s":$columnNumber"
       }
       result += ")"
     }

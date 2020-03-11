@@ -59,8 +59,7 @@ trait JavaConversionHelpers {
     def step(tpe: Type, level: Int): ScalaType = {
       val nextLevel = level + 1
 
-      if (level > 5)
-        ScalaType("_")
+      if (level > 5) ScalaType("_")
       else
         tpe match {
           case null => throw new Error("Property cannot be null")

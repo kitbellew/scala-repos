@@ -41,17 +41,15 @@ class LPMaxFlow[N](val g: FlowGraph[N]) {
       val n = queue.dequeue()
       if (!visited(n)) {
         visited += n
-        if (n != sink)
-          for (e <- edgesFrom(n)) {
-            val f_e = Real(e.head + "->" + e.tail)
-            edgeMap += (e -> f_e)
-            constraints += (f_e <= e.capacity)
-            constraints += (f_e >= 0.0)
-            incoming(e.tail) += f_e * e.gain
-            outgoing(e.head) += f_e
-            if (!visited(e.tail))
-              queue += e.tail
-          }
+        if (n != sink) for (e <- edgesFrom(n)) {
+          val f_e = Real(e.head + "->" + e.tail)
+          edgeMap += (e -> f_e)
+          constraints += (f_e <= e.capacity)
+          constraints += (f_e >= 0.0)
+          incoming(e.tail) += f_e * e.gain
+          outgoing(e.head) += f_e
+          if (!visited(e.tail)) queue += e.tail
+        }
       }
     }
 
@@ -102,19 +100,17 @@ class LPMaxFlow[N](val g: FlowGraph[N]) {
       val n = queue.dequeue()
       if (!visited(n)) {
         visited += n
-        if (n != sink)
-          for (e <- edgesFrom(n)) {
-            val f_e = Real(e.head + "->" + e.tail)
-            edgeMap += (e -> f_e)
-            constraints += (f_e <= e.capacity)
-            constraints += (f_e >= 0.0)
-            costs += (f_e * e.cost)
+        if (n != sink) for (e <- edgesFrom(n)) {
+          val f_e = Real(e.head + "->" + e.tail)
+          edgeMap += (e -> f_e)
+          constraints += (f_e <= e.capacity)
+          constraints += (f_e >= 0.0)
+          costs += (f_e * e.cost)
 
-            incoming(e.tail) += f_e * e.gain
-            outgoing(e.head) += f_e
-            if (!visited(e.tail))
-              queue += e.tail
-          }
+          incoming(e.tail) += f_e * e.gain
+          outgoing(e.head) += f_e
+          if (!visited(e.tail)) queue += e.tail
+        }
       }
     }
 

@@ -216,8 +216,8 @@ case class GetJsonObject(json: Expression, path: Expression)
         dirty
 
       case (
-          START_ARRAY,
-          Subscript :: Wildcard :: Subscript :: Wildcard :: xs) =>
+            START_ARRAY,
+            Subscript :: Wildcard :: Subscript :: Wildcard :: xs) =>
         // special handling for the non-structure preserving double wildcard behavior in Hive
         var dirty = false
         g.writeStartArray()
@@ -274,8 +274,8 @@ case class GetJsonObject(json: Expression, path: Expression)
         dirty
 
       case (
-          START_ARRAY,
-          Subscript :: Index(idx) :: (xs @ Subscript :: Wildcard :: _)) =>
+            START_ARRAY,
+            Subscript :: Index(idx) :: (xs @ Subscript :: Wildcard :: _)) =>
         p.nextToken()
         // we're going to have 1 or more results, switch to QuotedStyle
         arrayIndex(p, () => evaluatePath(p, g, QuotedStyle, xs))(idx)

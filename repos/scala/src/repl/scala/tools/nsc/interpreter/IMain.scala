@@ -121,8 +121,7 @@ class IMain(
   // Run the code body with the given boolean settings flipped to true.
   def withoutWarnings[T](body: => T): T = beQuietDuring {
     val saved = settings.nowarn.value
-    if (!saved)
-      settings.nowarn.value = true
+    if (!saved) settings.nowarn.value = true
 
     try body
     finally if (!saved) settings.nowarn.value = false
@@ -215,8 +214,7 @@ class IMain(
     // make sure we don't overwrite their unwisely named res3 etc.
     def freshUserTermName(): TermName = {
       val name = newTermName(freshUserVarName())
-      if (replScope containsName name) freshUserTermName()
-      else name
+      if (replScope containsName name) freshUserTermName() else name
     }
     def isInternalTermName(name: Name) = isInternalVarName("" + name)
   }
@@ -312,8 +310,7 @@ class IMain(
     ensureClassLoader()
   }
   final def ensureClassLoader() {
-    if (_classLoader == null)
-      _classLoader = makeClassLoader()
+    if (_classLoader == null) _classLoader = makeClassLoader()
   }
   def classLoader: util.AbstractFileClassLoader = {
     ensureClassLoader()
@@ -441,8 +438,7 @@ class IMain(
   }
 
   def recordRequest(req: Request) {
-    if (req == null)
-      return
+    if (req == null) return
 
     prevRequests += req
 
@@ -470,8 +466,7 @@ class IMain(
   }
 
   private[nsc] def replwarn(msg: => String) {
-    if (!settings.nowarnings)
-      printMessage(msg)
+    if (!settings.nowarnings) printMessage(msg)
   }
 
   def compileSourcesKeepingRun(sources: SourceFile*) = {
@@ -699,8 +694,7 @@ class IMain(
         *  output checking, we have to take one off to balance.
         */
       if (succeeded) {
-        if (printResults && result != "")
-          printMessage(result stripSuffix "\n")
+        if (printResults && result != "") printMessage(result stripSuffix "\n")
         else if (isReplDebug) // show quiet-mode activity
           printMessage(result.trim.lines map ("[quiet] " + _) mkString "\n")
 
@@ -755,8 +749,7 @@ class IMain(
   }
   def directBind(name: String, boundType: String, value: Any): IR.Result = {
     val result = bind(name, boundType, value)
-    if (result == IR.Success)
-      directlyBoundNames += newTermName(name)
+    if (result == IR.Success) directlyBoundNames += newTermName(name)
     result
   }
   def directBind(p: NamedParam): IR.Result = directBind(p.name, p.tpe, p.value)
@@ -848,8 +841,7 @@ class IMain(
     def call(name: String, args: Any*): AnyRef = {
       val m = evalMethod(name)
       repldbg("Invoking: " + m)
-      if (args.nonEmpty)
-        repldbg("  with args: " + args.mkString(", "))
+      if (args.nonEmpty) repldbg("  with args: " + args.mkString(", "))
 
       m.invoke(evalClass, args.map(_.asInstanceOf[AnyRef]): _*)
     }
@@ -918,8 +910,7 @@ class IMain(
             ((pos, msg)) :: loop(filtered)
         }
       val warnings = loop(run.reporting.allConditionalWarnings)
-      if (warnings.nonEmpty)
-        mostRecentWarnings = warnings
+      if (warnings.nonEmpty) mostRecentWarnings = warnings
     }
     private def evalMethod(name: String) =
       evalClass.getMethods filter (_.getName == name) match {
@@ -1349,8 +1340,7 @@ class IMain(
   private var _replScope: Scope = _
   private def resetReplScope() { _replScope = newScope }
   def replScope = {
-    if (_replScope eq null)
-      _replScope = newScope
+    if (_replScope eq null) _replScope = newScope
 
     _replScope
   }

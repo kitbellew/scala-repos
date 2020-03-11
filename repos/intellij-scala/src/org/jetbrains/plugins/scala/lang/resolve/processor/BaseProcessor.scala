@@ -498,7 +498,6 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
 
   protected def isForwardReference(state: ResolveState): Boolean = {
     val res: java.lang.Boolean = state.get(BaseProcessor.FORWARD_REFERENCE_KEY)
-    if (res != null) res
-    else false
+    if (res != null) res else false
   }
 }

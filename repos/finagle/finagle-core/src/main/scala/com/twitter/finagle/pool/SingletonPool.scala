@@ -113,8 +113,7 @@ class SingletonPool[Req, Rep](
             .withSource(Failure.Source.Role, SingletonPool.role))
 
       case Return(svc) =>
-        if (!complete(Open(new RefcountedService(svc))))
-          svc.close()
+        if (!complete(Open(new RefcountedService(svc)))) svc.close()
 
         Future.Done
     })
@@ -136,8 +135,7 @@ class SingletonPool[Req, Rep](
         svc.open()
 
       case s @ Open(svc) => // service died; try to reconnect.
-        if (state.compareAndSet(s, Idle))
-          svc.close()
+        if (state.compareAndSet(s, Idle)) svc.close()
         apply(conn)
 
       case Idle =>

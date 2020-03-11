@@ -168,10 +168,8 @@ class LocalScheduler(lifo: Boolean) extends Scheduler {
     private[this] def run(): Unit = {
       val save = running
       running = true
-      try {
-        while (hasNext)
-          next().run()
-      } finally { running = save }
+      try { while (hasNext) next().run() }
+      finally { running = save }
     }
 
     def blocking[T](f: => T)(implicit perm: CanAwait): T = f
@@ -179,8 +177,7 @@ class LocalScheduler(lifo: Boolean) extends Scheduler {
 
   private[this] def get(): Activation = {
     val a = local.get()
-    if (a != null)
-      return a
+    if (a != null) return a
 
     val activation = new Activation()
     local.set(activation)
@@ -284,8 +281,7 @@ class BridgedThreadPoolScheduler(
   def this(name: String) = this(name, Executors.newCachedThreadPool(_))
 
   override def submit(r: Runnable) {
-    if (Thread.currentThread.getThreadGroup == threadGroup)
-      local.submit(r)
+    if (Thread.currentThread.getThreadGroup == threadGroup) local.submit(r)
     else
       try executor.execute(new Runnable {
         def run() { BridgedThreadPoolScheduler.this.submit(r) }
@@ -294,6 +290,5 @@ class BridgedThreadPoolScheduler(
   }
 
   override def flush() =
-    if (Thread.currentThread.getThreadGroup == threadGroup)
-      local.flush()
+    if (Thread.currentThread.getThreadGroup == threadGroup) local.flush()
 }

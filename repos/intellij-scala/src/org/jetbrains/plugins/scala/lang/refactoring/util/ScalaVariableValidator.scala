@@ -155,8 +155,7 @@ class ScalaVariableValidator(
           case m: PsiMember => messageForMember(name)
           case _            => ""
         }
-        if (message != "") Seq((elem, message))
-        else Seq.empty
+        if (message != "") Seq((elem, message)) else Seq.empty
       case _ => Seq.empty
     }
   }
@@ -182,10 +181,9 @@ class ScalaVariableValidator(
         case _ =>
       }
     }
-    if (element != container)
-      for (child <- element.getChildren) {
-        buf ++= validateDown(child, name, allOcc)
-      }
+    if (element != container) for (child <- element.getChildren) {
+      buf ++= validateDown(child, name, allOcc)
+    }
     else {
       var from = {
         var parent: PsiElement = if (allOcc) {

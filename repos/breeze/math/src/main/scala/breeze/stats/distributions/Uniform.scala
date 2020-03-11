@@ -25,9 +25,7 @@ case class Uniform(low: Double, high: Double)(implicit rand: RandBasis = Rand)
   def entropy = math.log(high - low)
 
   def cdf(x: Double) = {
-    if (x <= low) 0.0
-    else if (x >= high) 1.0
-    else (x - low) / (high - low)
+    if (x <= low) 0.0 else if (x >= high) 1.0 else (x - low) / (high - low)
   }
 
   override def probability(x: Double, y: Double): Double = {

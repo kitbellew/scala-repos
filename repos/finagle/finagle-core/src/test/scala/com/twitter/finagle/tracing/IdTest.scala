@@ -61,8 +61,7 @@ class IdTest extends FunSuite {
   def hex(l: Long) = new RichU64Long(l).toU64HexString
 
   test("SpanId.toString: each bit must be correct") {
-    for (b <- 0 until 64)
-      assert(hex(1 << b) == SpanId(1 << b).toString)
+    for (b <- 0 until 64) assert(hex(1 << b) == SpanId(1 << b).toString)
   }
 
   test("SpanId.toString: random") {

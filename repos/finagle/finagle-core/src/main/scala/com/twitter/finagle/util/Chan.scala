@@ -25,21 +25,20 @@ trait Proc[-T] extends Chan[T] {
 
   def !(elem: T) {
     q.offer(elem)
-    if (nq.getAndIncrement() == 0)
-      do {
-        val elem = q.poll()
-        // Swallow exceptions as these would cause
-        // unbounded queue growth.
-        if (!closed) {
-          try receiver(elem)
-          catch {
-            case exc: Throwable =>
-              Logger
-                .getLogger("")
-                .log(Level.WARNING, "Exception thrown in proc", exc)
-          }
+    if (nq.getAndIncrement() == 0) do {
+      val elem = q.poll()
+      // Swallow exceptions as these would cause
+      // unbounded queue growth.
+      if (!closed) {
+        try receiver(elem)
+        catch {
+          case exc: Throwable =>
+            Logger
+              .getLogger("")
+              .log(Level.WARNING, "Exception thrown in proc", exc)
         }
-      } while (nq.decrementAndGet() > 0)
+      }
+    } while (nq.decrementAndGet() > 0)
   }
 
   def receive: T => Unit

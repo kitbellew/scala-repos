@@ -29,8 +29,7 @@ trait HasCompileSocket {
       def loop(): Boolean = in.readLine() match {
         case null => noErrors
         case line =>
-          if (isErrorMessage(line))
-            noErrors = false
+          if (isErrorMessage(line)) noErrors = false
 
           // be consistent with scalac: everything goes to stderr
           compileSocket.warn(line)
@@ -61,8 +60,7 @@ class CompileSocket extends CompileOutputCommon {
     case "" => cmdName
     case dirname =>
       val trial = File(dirname) / "bin" / cmdName
-      if (trial.canRead) trial.path
-      else cmdName
+      if (trial.canRead) trial.path else cmdName
   }
 
   /** The class name of the scala compile server */

@@ -12,10 +12,7 @@ private class HashedWheelTimer(underlying: netty.Timer) extends Timer {
   protected def scheduleOnce(when: Time)(f: => Unit): TimerTask = {
     val timeout = underlying.newTimeout(
       new netty.TimerTask {
-        def run(to: netty.Timeout): Unit = {
-          if (!to.isCancelled)
-            f
-        }
+        def run(to: netty.Timeout): Unit = { if (!to.isCancelled) f }
       },
       math.max(0, (when - Time.now).inMilliseconds),
       TimeUnit.MILLISECONDS)

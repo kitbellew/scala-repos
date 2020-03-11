@@ -52,8 +52,7 @@ private[finagle] object ChannelBufferUtils {
     def toInt: Int = {
       val off = buffer.readerIndex()
       val len = buffer.readableBytes()
-      if (len == 0)
-        throw new NumberFormatException("No readable bytes")
+      if (len == 0) throw new NumberFormatException("No readable bytes")
       if (len > 10)
         throw new NumberFormatException("Buffer is larger than max int value")
 
@@ -67,8 +66,7 @@ private[finagle] object ChannelBufferUtils {
         sum += digit
         i += 1
       }
-      if (sum < 0)
-        throw new NumberFormatException(s"Int overflow: $toString")
+      if (sum < 0) throw new NumberFormatException(s"Int overflow: $toString")
       sum
     }
 

@@ -26,10 +26,8 @@ class Interpreter(queues: LoadingCache[Buf, BlockingDeque[Buf]])
             val item = queues
               .get(queueName)
               .poll(wait.inMilliseconds, TimeUnit.MILLISECONDS)
-            if (item eq null)
-              Values(Seq.empty)
-            else
-              Values(Seq(Value(queueName, item)))
+            if (item eq null) Values(Seq.empty)
+            else Values(Seq(Value(queueName, item)))
           case OpenTransaction(txnQueueName, item) =>
             throw new InvalidStateTransition("Transaction", "get")
         }
@@ -41,10 +39,8 @@ class Interpreter(queues: LoadingCache[Buf, BlockingDeque[Buf]])
               .get(queueName)
               .poll(wait.inMilliseconds, TimeUnit.MILLISECONDS)
             state = OpenTransaction(queueName, item)
-            if (item eq null)
-              Values(Seq.empty)
-            else
-              Values(Seq(Value(queueName, item)))
+            if (item eq null) Values(Seq.empty)
+            else Values(Seq(Value(queueName, item)))
           case OpenTransaction(txnQueueName, item) =>
             throw new InvalidStateTransition("Transaction", "get/open")
         }
@@ -87,10 +83,8 @@ class Interpreter(queues: LoadingCache[Buf, BlockingDeque[Buf]])
         val wait = timeout.getOrElse(0.seconds)
         val item =
           queues.get(queueName).poll(wait.inMilliseconds, TimeUnit.MILLISECONDS)
-        if (item eq null)
-          Values(Seq.empty)
-        else
-          Values(Seq(Value(queueName, item)))
+        if (item eq null) Values(Seq.empty)
+        else Values(Seq(Value(queueName, item)))
       case Set(queueName, _, value) =>
         queues.get(queueName).add(value)
         Stored()

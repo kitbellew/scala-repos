@@ -151,8 +151,7 @@ object Parsed {
         index: Int,
         last: String) = {
       val body =
-        for (Frame(index, p) <- stack)
-          yield formatParser(p, input, index)
+        for (Frame(index, p) <- stack) yield formatParser(p, input, index)
       (body :+ last).mkString(" / ") + " ..." + literalize(
         input.slice(index, index + 10))
     }
@@ -436,8 +435,7 @@ trait ParserResults[+T] { this: Parser[T] =>
       traceIndex: Int,
       lhs: Set[Parser[_]],
       rhs: Set[Parser[_]]): Set[Parser[_]] = {
-    if (traceIndex != -1) lhs | rhs
-    else Set.empty
+    if (traceIndex != -1) lhs | rhs else Set.empty
   }
 
   /**
@@ -461,9 +459,7 @@ trait ParserResults[+T] { this: Parser[T] =>
     f.fullStack.clear()
     if (f.traceIndex != -1 && f.traceIndex >= index) {
       if (f.traceIndex == index) {
-        f.traceParsers =
-          if (traceParsers == null) Set(this)
-          else traceParsers
+        f.traceParsers = if (traceParsers == null) Set(this) else traceParsers
       } else { f.traceParsers = Set.empty }
     }
     f.lastParser = this

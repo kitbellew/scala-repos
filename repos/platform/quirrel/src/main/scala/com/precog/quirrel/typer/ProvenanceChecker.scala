@@ -160,8 +160,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
       lazy val leftCard = left.cardinality
       lazy val rightCard = right.cardinality
 
-      if (left == right)
-        (left, Set(), Set())
+      if (left == right) (left, Set(), Set())
       else if (left == NullProvenance || right == NullProvenance)
         (NullProvenance, Set(), Set())
       else if (left == InfiniteProvenance || right == InfiniteProvenance)
@@ -169,10 +168,8 @@ trait ProvenanceChecker extends parser.AST with Binder {
           NullProvenance,
           Set(Error(expr, CannotUseDistributionWithoutSampling)),
           Set())
-      else if (left == UndefinedProvenance)
-        (right, Set(), Set())
-      else if (right == UndefinedProvenance)
-        (left, Set(), Set())
+      else if (left == UndefinedProvenance) (right, Set(), Set())
+      else if (right == UndefinedProvenance) (left, Set(), Set())
       else if (left.isParametric || right.isParametric)
         (
           DerivedUnionProvenance(left, right),
@@ -180,8 +177,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
           Set(SameCard(left, right, tpe)))
       else if (leftCard == rightCard)
         (CoproductProvenance(left, right), Set(), Set())
-      else
-        (NullProvenance, Set(Error(expr, tpe)), Set())
+      else (NullProvenance, Set(Error(expr, tpe)), Set())
     }
 
     // Similar to handleUnion but must ensure that pred's provenance
@@ -305,8 +301,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
       lazy val rightCard = right.provenance.cardinality
 
       val (prov, errors, constr) = {
-        if (left.provenance == right.provenance)
-          (left.provenance, Set(), Set())
+        if (left.provenance == right.provenance) (left.provenance, Set(), Set())
         else if (left.provenance == NullProvenance || right.provenance == NullProvenance)
           (NullProvenance, Set(), Set())
         else if (left.provenance == UndefinedProvenance && right.provenance == UndefinedProvenance)
@@ -382,8 +377,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
       lazy val rightCard = right.provenance.cardinality
 
       val (prov, errors, constr) = {
-        if (left.provenance == right.provenance)
-          (left.provenance, Set(), Set())
+        if (left.provenance == right.provenance) (left.provenance, Set(), Set())
         else if (left.provenance == NullProvenance || right.provenance == NullProvenance)
           (NullProvenance, Set(), Set())
         else if (left.provenance == UndefinedProvenance && right.provenance == UndefinedProvenance)
@@ -419,8 +413,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
             Set())
 
         // (foo|bar difference foo) provenance may have foo|bar provenance
-        else if (isCommon || isDynamic)
-          (left.provenance, Set(), Set())
+        else if (isCommon || isDynamic) (left.provenance, Set(), Set())
 
         // Can prove that result set is the entire LHS. Operation disallowed.
         else
@@ -478,14 +471,12 @@ trait ProvenanceChecker extends parser.AST with Binder {
           val assertErrors = {
             if (pred.provenance == InfiniteProvenance)
               Set(Error(expr, CannotUseDistributionWithoutSampling))
-            else
-              Set()
+            else Set()
           }
 
           if (pred.provenance != NullProvenance && pred.provenance != InfiniteProvenance)
             expr.provenance = child.provenance
-          else
-            expr.provenance = NullProvenance
+          else expr.provenance = NullProvenance
 
           (predErrors ++ childErrors ++ assertErrors, predConst ++ childConst)
         }
@@ -506,8 +497,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
 
           if (data.provenance != InfiniteProvenance && samples.provenance == InfiniteProvenance)
             expr.provenance = data.provenance
-          else
-            expr.provenance = NullProvenance
+          else expr.provenance = NullProvenance
 
           (
             dataErrors ++ samplesErrors ++ observeDataErrors ++ observeSamplesErrors,
@@ -517,8 +507,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
         case New(_, child) => {
           val (errors, constr) = loop(child, relations, constraints)
 
-          if (errors.nonEmpty)
-            expr.provenance = NullProvenance
+          if (errors.nonEmpty) expr.provenance = NullProvenance
           else if (child.provenance == InfiniteProvenance)
             expr.provenance = InfiniteProvenance
           else if (child.provenance.isParametric)
@@ -533,8 +522,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
             expr.provenance = ParametricDynamicProvenance(
               child.provenance,
               currentId.getAndIncrement())
-          else
-            expr.provenance = DynamicProvenance(currentId.getAndIncrement())
+          else expr.provenance = DynamicProvenance(currentId.getAndIncrement())
 
           (errors, constr)
         }
@@ -554,8 +542,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
             } else {
               if (unified.isDefined && unified != Some(NullProvenance))
                 (Set(Error(expr, AlreadyRelatedSets)), Set())
-              else
-                (Set(), Set())
+              else (Set(), Set())
             }
 
           val relations2 = relations + (from.provenance -> (relations.getOrElse(
@@ -651,32 +638,27 @@ trait ProvenanceChecker extends parser.AST with Binder {
                     if !left.isParametric && !right.isParametric => {
                   if (!unifyProvenance(relations)(left, right).isDefined)
                     Some(Left(Error(expr, OperationOnUnrelatedSets)))
-                  else
-                    None
+                  else None
                 }
 
                 case NotRelated(left, right)
                     if !left.isParametric && !right.isParametric => {
                   if (unifyProvenance(relations)(left, right).isDefined)
                     Some(Left(Error(expr, AlreadyRelatedSets)))
-                  else
-                    None
+                  else None
                 }
 
                 case SameCard(left, right, tpe)
                     if !left.isParametric && !right.isParametric => {
                   if (left.cardinality != right.cardinality)
                     Some(Left(Error(expr, tpe)))
-                  else
-                    None
+                  else None
                 }
 
                 case Commonality(left, right, tpe)
                     if !left.isParametric && !right.isParametric => {
-                  if (!hasCommonality(left, right))
-                    Some(Left(Error(expr, tpe)))
-                  else
-                    None
+                  if (!hasCommonality(left, right)) Some(Left(Error(expr, tpe)))
+                  else None
                 }
 
                 case constr => Some(Right(constr))
@@ -789,8 +771,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
                         ParametricDynamicProvenance(
                           actuals.head.provenance,
                           currentId.getAndIncrement())
-                      else
-                        DynamicProvenance(currentId.getAndIncrement())
+                      else DynamicProvenance(currentId.getAndIncrement())
                     }
 
                     case IdentityPolicy.Strip => ValueProvenance
@@ -816,16 +797,14 @@ trait ProvenanceChecker extends parser.AST with Binder {
               def compute(paramProv: Provenance, prov: Provenance)
                   : (Set[Error], Set[ProvConstraint], Provenance) = {
                 if (left.provenance.isParametric || right.provenance.isParametric) {
-                  if (unified.isDefined)
-                    (Set(), Set(), paramProv)
+                  if (unified.isDefined) (Set(), Set(), paramProv)
                   else
                     (
                       Set(),
                       Set(Related(left.provenance, right.provenance)),
                       paramProv)
                 } else {
-                  if (unified.isDefined)
-                    (Set(), Set(), prov)
+                  if (unified.isDefined) (Set(), Set(), prov)
                   else
                     (
                       Set(Error(expr, OperationOnUnrelatedSets)),
@@ -1129,12 +1108,10 @@ trait ProvenanceChecker extends parser.AST with Binder {
       val left2 = substituteParam(id, let, left, sub)
       val right2 = substituteParam(id, let, right, sub)
 
-      if (left2 == right2)
-        left2
+      if (left2 == right2) left2
       else if (!(left2.isParametric && right2.isParametric))
         CoproductProvenance(left2, right2)
-      else
-        DerivedUnionProvenance(left2, right2)
+      else DerivedUnionProvenance(left2, right2)
     }
 
     case DerivedIntersectProvenance(left, right) => {
@@ -1154,8 +1131,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
 
       if (left2 == right2 || (!(left2.isParametric && right2.isParametric)))
         left2
-      else
-        DerivedDifferenceProvenance(left2, right2)
+      else DerivedDifferenceProvenance(left2, right2)
     }
 
     case _ => target
@@ -1332,71 +1308,65 @@ trait ProvenanceChecker extends parser.AST with Binder {
         case (_, ParamProvenance(_, _)) => LT
 
         case (
-            ParametricDynamicProvenance(prov1, id1),
-            ParametricDynamicProvenance(prov2, id2)) => {
+              ParametricDynamicProvenance(prov1, id1),
+              ParametricDynamicProvenance(prov2, id2)) => {
           if (prov1 == prov2) {
-            if (id1 == id2) EQ
-            else if (id1 < id2) LT
-            else GT
+            if (id1 == id2) EQ else if (id1 < id2) LT else GT
           } else { prov1 ?|? prov2 }
         }
         case (ParametricDynamicProvenance(_, _), _) => GT
         case (_, ParametricDynamicProvenance(_, _)) => LT
 
         case (
-            DerivedUnionProvenance(left1, right1),
-            DerivedUnionProvenance(left2, right2)) =>
+              DerivedUnionProvenance(left1, right1),
+              DerivedUnionProvenance(left2, right2)) =>
           (left1 ?|? left2) |+| (right1 ?|? right2)
         case (DerivedUnionProvenance(_, _), _) => GT
         case (_, DerivedUnionProvenance(_, _)) => LT
 
         case (
-            DerivedIntersectProvenance(left1, right1),
-            DerivedIntersectProvenance(left2, right2)) =>
+              DerivedIntersectProvenance(left1, right1),
+              DerivedIntersectProvenance(left2, right2)) =>
           (left1 ?|? left2) |+| (right1 ?|? right2)
         case (DerivedIntersectProvenance(_, _), _) => GT
         case (_, DerivedIntersectProvenance(_, _)) => LT
 
         case (
-            DerivedDifferenceProvenance(left1, right1),
-            DerivedDifferenceProvenance(left2, right2)) =>
+              DerivedDifferenceProvenance(left1, right1),
+              DerivedDifferenceProvenance(left2, right2)) =>
           (left1 ?|? left2) |+| (right1 ?|? right2)
         case (DerivedDifferenceProvenance(_, _), _) => GT
         case (_, DerivedDifferenceProvenance(_, _)) => LT
 
         case (
-            UnifiedProvenance(left1, right1),
-            UnifiedProvenance(left2, right2)) =>
+              UnifiedProvenance(left1, right1),
+              UnifiedProvenance(left2, right2)) =>
           (left1 ?|? left2) |+| (right1 ?|? right2)
         case (UnifiedProvenance(_, _), _) => GT
         case (_, UnifiedProvenance(_, _)) => LT
 
         case (
-            ProductProvenance(left1, right1),
-            ProductProvenance(left2, right2)) =>
+              ProductProvenance(left1, right1),
+              ProductProvenance(left2, right2)) =>
           (left1 ?|? left2) |+| (right1 ?|? right2)
         case (ProductProvenance(_, _), _) => GT
         case (_, ProductProvenance(_, _)) => LT
 
         case (
-            CoproductProvenance(left1, right1),
-            CoproductProvenance(left2, right2)) =>
+              CoproductProvenance(left1, right1),
+              CoproductProvenance(left2, right2)) =>
           (left1 ?|? left2) |+| (right1 ?|? right2)
         case (CoproductProvenance(_, _), _) => GT
         case (_, CoproductProvenance(_, _)) => LT
 
         case (StaticProvenance(v1), StaticProvenance(v2)) => {
-          if (v1 == v2) EQ
-          else if (v1 < v2) LT
-          else GT
+          if (v1 == v2) EQ else if (v1 < v2) LT else GT
         }
         case (StaticProvenance(_), _) => GT
         case (_, StaticProvenance(_)) => LT
 
         case (DynamicProvenance(v1), DynamicProvenance(v2)) => {
-          if (v1 == v2) EQ
-          else if (v1 < v2) LT
-          else GT
+          if (v1 == v2) EQ else if (v1 < v2) LT else GT
         }
         case (DynamicProvenance(_), _) => GT
         case (_, DynamicProvenance(_)) => LT

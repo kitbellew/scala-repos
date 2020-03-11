@@ -29,8 +29,7 @@ private[internal] trait TypeToStrings {
       devWarning(
         "Exceeded recursion depth attempting to print " + util
           .shortClassOfInstance(tpe))
-      if (settings.debug)
-        (new Throwable).printStackTrace
+      if (settings.debug) (new Throwable).printStackTrace
 
       "..."
     } else

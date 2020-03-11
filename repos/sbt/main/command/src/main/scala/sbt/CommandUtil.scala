@@ -57,8 +57,7 @@ object CommandUtil {
           val details = searchHelp(selected, detailMap)
           if (details.isEmpty)
             "No matches for regular expression '" + selected + "'."
-          else
-            layoutDetails(details)
+          else layoutDetails(details)
         } catch {
           case pse: PatternSyntaxException =>
             sys.error(
@@ -77,8 +76,7 @@ object CommandUtil {
         val contentString = contentMatches getOrElse v
         if (keyMatches.isDefined || contentMatches.isDefined)
           (keyString, contentString) :: Nil
-        else
-          Nil
+        else Nil
     }
   }
   def layoutDetails(details: Map[String, String]): String =

@@ -18,22 +18,19 @@ abstract class Reader private[this] (_lock: Option[Object])
         target.array,
         target.position + target.arrayOffset,
         target.remaining)
-      if (charsRead != -1)
-        target.position(target.position + charsRead)
+      if (charsRead != -1) target.position(target.position + charsRead)
       charsRead
     } else {
       val buf = new Array[Char](target.remaining)
       val charsRead = read(buf)
-      if (charsRead != -1)
-        target.put(buf, 0, charsRead)
+      if (charsRead != -1) target.put(buf, 0, charsRead)
       charsRead
     }
   }
 
   def read(): Int = {
     val buf = new Array[Char](1)
-    if (read(buf) == -1) -1
-    else buf(0).toInt
+    if (read(buf) == -1) -1 else buf(0).toInt
   }
 
   def read(cbuf: Array[Char]): Int =
@@ -42,8 +39,7 @@ abstract class Reader private[this] (_lock: Option[Object])
   def read(cbuf: Array[Char], off: Int, len: Int): Int
 
   def skip(n: Long): Long = {
-    if (n < 0)
-      throw new IllegalArgumentException("Cannot skip negative amount")
+    if (n < 0) throw new IllegalArgumentException("Cannot skip negative amount")
     else if (read() == -1) 0
     else 1
   }

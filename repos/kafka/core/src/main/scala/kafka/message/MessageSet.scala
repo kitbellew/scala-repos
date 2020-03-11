@@ -102,12 +102,10 @@ abstract class MessageSet extends Iterable[MessageAndOffset] {
     while (iter.hasNext && i < 100) {
       val message = iter.next
       builder.append(message)
-      if (iter.hasNext)
-        builder.append(", ")
+      if (iter.hasNext) builder.append(", ")
       i += 1
     }
-    if (iter.hasNext)
-      builder.append("...")
+    if (iter.hasNext) builder.append("...")
     builder.append(")")
     builder.toString
   }

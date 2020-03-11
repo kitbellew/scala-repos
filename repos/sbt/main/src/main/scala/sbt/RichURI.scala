@@ -29,10 +29,8 @@ class RichURI(uri: URI) {
 
   /** Returns a copy of the URI without the fragment. */
   def withoutFragment =
-    if (hasFragment)
-      new URI(uri.getScheme, uri.getSchemeSpecificPart, null)
-    else
-      uri
+    if (hasFragment) new URI(uri.getScheme, uri.getSchemeSpecificPart, null)
+    else uri
 
   /** Returns `true` if the scheme specific part of the URI is also a valid URI. */
   def hasMarkerScheme = new URI(uri.getRawSchemeSpecificPart).getScheme ne null
@@ -46,10 +44,8 @@ class RichURI(uri: URI) {
     if (hasMarkerScheme)
       if (hasFragment)
         new URI(uri.getRawSchemeSpecificPart + "#" + uri.getRawFragment)
-      else
-        new URI(uri.getRawSchemeSpecificPart)
-    else
-      uri
+      else new URI(uri.getRawSchemeSpecificPart)
+    else uri
   }
 }
 

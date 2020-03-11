@@ -163,10 +163,7 @@ object PsiTypedDefinitionWrapper {
     val holder = PsiTreeUtil.getContextOfType(b, classOf[ScAnnotationsHolder])
     if (holder != null) { builder.append(LightUtil.getThrowsSection(holder)) }
 
-    if (!isInterface)
-      builder.append(" {}")
-    else
-      builder.append(";")
+    if (!isInterface) builder.append(" {}") else builder.append(";")
 
     builder.toString()
   }

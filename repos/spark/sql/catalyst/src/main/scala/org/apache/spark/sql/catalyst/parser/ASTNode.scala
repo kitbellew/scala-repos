@@ -37,18 +37,15 @@ case class ASTNode(
   /** Line in which the ASTNode starts. */
   lazy val line: Int = {
     val line = token.getLine
-    if (line == 0) {
-      if (children.nonEmpty) children.head.line
-      else 0
-    } else { line }
+    if (line == 0) { if (children.nonEmpty) children.head.line else 0 }
+    else { line }
   }
 
   /** Position of the Character at which ASTNode starts. */
   lazy val positionInLine: Int = {
     val line = token.getCharPositionInLine
     if (line == -1) {
-      if (children.nonEmpty) children.head.positionInLine
-      else 0
+      if (children.nonEmpty) children.head.positionInLine else 0
     } else { line }
   }
 

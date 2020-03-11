@@ -580,10 +580,8 @@ case class AhcWSResponse(ahcResponse: AHCResponse) extends WSResponse {
     val contentType =
       Option(ahcResponse.getContentType).getOrElse("application/octet-stream")
     val charset = Option(HttpUtils.parseCharset(contentType)).getOrElse {
-      if (contentType.startsWith("text/"))
-        HttpUtils.DEFAULT_CHARSET
-      else
-        StandardCharsets.UTF_8
+      if (contentType.startsWith("text/")) HttpUtils.DEFAULT_CHARSET
+      else StandardCharsets.UTF_8
     }
     ahcResponse.getResponseBody(charset)
   }

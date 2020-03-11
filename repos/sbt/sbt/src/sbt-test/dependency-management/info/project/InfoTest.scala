@@ -38,8 +38,7 @@ object InfoTest extends Build {
     if (cp.isEmpty) sys.error("Dependency not downloaded"); ()
   }
   def checkInfo = (customInfo, delivered) map { (addInfo, d) =>
-    if ((d \ "info").isEmpty)
-      sys.error("No info tag generated")
+    if ((d \ "info").isEmpty) sys.error("No info tag generated")
     else if (addInfo) {
       if (!deliveredWithCustom(d))
         sys.error(

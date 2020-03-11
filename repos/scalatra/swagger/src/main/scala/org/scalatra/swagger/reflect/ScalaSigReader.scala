@@ -49,8 +49,7 @@ private[reflect] object ScalaSigReader {
 
   def readField(name: String, clazz: Class[_], typeArgIndex: Int): Class[_] = {
     def read(current: Class[_]): MethodSymbol = {
-      if (current == null)
-        fail("Can't find field " + name + " from " + clazz)
+      if (current == null) fail("Can't find field " + name + " from " + clazz)
       else
         findField(findClass(current), name)
           .getOrElse(read(current.getSuperclass))

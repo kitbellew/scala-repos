@@ -17,8 +17,7 @@ private[sbt] class TestStatusReporter(f: File) extends TestsListener {
   def testEvent(event: TestEvent): Unit = ()
   def endGroup(name: String, t: Throwable): Unit = ()
   def endGroup(name: String, result: TestResult.Value): Unit = {
-    if (result == TestResult.Passed)
-      succeeded(name) = System.currentTimeMillis
+    if (result == TestResult.Passed) succeeded(name) = System.currentTimeMillis
   }
   def doComplete(finalResult: TestResult.Value): Unit = {
     TestStatus.write(succeeded, "Successful Tests", f)

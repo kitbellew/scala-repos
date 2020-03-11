@@ -57,8 +57,7 @@ trait ExistentialsAndSkolems {
       safeBound(s.existentialBound.bounds.hi) match {
         case tp @ RefinedType(parents, decls) =>
           val parents1 = parents mapConserve safeBound
-          if (parents eq parents1) tp
-          else copyRefinedType(tp, parents1, decls)
+          if (parents eq parents1) tp else copyRefinedType(tp, parents1, decls)
         case tp => tp
       }
 

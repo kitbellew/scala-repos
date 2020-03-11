@@ -178,8 +178,7 @@ class RoundRobinSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
             router = router.addRoutee(c)
           case Terminated(c) ⇒
             router = router.removeRoutee(c)
-            if (router.routees.isEmpty)
-              context.stop(self)
+            if (router.routees.isEmpty) context.stop(self)
           case other ⇒ router.route(other, sender())
         }
       }))

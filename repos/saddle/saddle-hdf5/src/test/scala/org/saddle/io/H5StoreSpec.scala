@@ -447,8 +447,7 @@ class H5StoreSpec extends Specification {
 
       val taskListRW = for (i <- 1 to 100) yield new Callable[Unit] {
         def call() {
-          if (i % 2 == 0)
-            H5Store.writeFrame(tmp, "f%s".format(100 + i), df1)
+          if (i % 2 == 0) H5Store.writeFrame(tmp, "f%s".format(100 + i), df1)
           else
             H5Store.readFrame[DateTime, Int, Double](
               tmp,

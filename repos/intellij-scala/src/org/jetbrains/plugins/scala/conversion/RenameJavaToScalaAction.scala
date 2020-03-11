@@ -33,8 +33,7 @@ class RenameJavaToScalaAction extends AnAction {
       var elements = LangDataKeys.PSI_ELEMENT_ARRAY.getData(e.getDataContext)
       if (elements == null) {
         val file = CommonDataKeys.PSI_FILE.getData(e.getDataContext)
-        if (file != null) elements = Array(file)
-        else elements = Array.empty
+        if (file != null) elements = Array(file) else elements = Array.empty
       }
       for (element <- elements) {
         element.getContainingFile match {
@@ -58,8 +57,7 @@ class RenameJavaToScalaAction extends AnAction {
     var elements = LangDataKeys.PSI_ELEMENT_ARRAY.getData(e.getDataContext)
     if (elements == null) {
       val file = CommonDataKeys.PSI_FILE.getData(e.getDataContext)
-      if (file != null) elements = Array(file)
-      else elements = Array.empty
+      if (file != null) elements = Array(file) else elements = Array.empty
     }
     for (element <- elements) {
       element.getContainingFile match {

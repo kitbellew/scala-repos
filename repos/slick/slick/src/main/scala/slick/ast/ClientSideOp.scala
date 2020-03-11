@@ -84,8 +84,7 @@ final case class ResultSetMapping(generator: TermSymbol, from: Node, map: Node)
       case (Some(_), ch) => r(ch)
       case (None, ch)    => ch
     }
-    if (keepType && hasType) this2 :@ nodeType
-    else this2
+    if (keepType && hasType) this2 :@ nodeType else this2
   }
 }
 
@@ -108,8 +107,7 @@ final case class ParameterSwitch(
     val ch = children
     val ch2 = ch.endoMap(r)
     val this2 = if (ch2 eq ch) this else rebuild(ch2)
-    if (keepType && hasType) this2 :@ nodeType
-    else this2
+    if (keepType && hasType) this2 :@ nodeType else this2
   }
   override def getDumpInfo = super.getDumpInfo.copy(mainInfo = "")
 }

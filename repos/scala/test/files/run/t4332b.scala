@@ -1,7 +1,6 @@
 object Test extends App {
   def check(expected: Any, actual: Any, msg: String = "") = {
-    if (expected != actual)
-      sys.error(s"($actual != $expected) $msg")
+    if (expected != actual) sys.error(s"($actual != $expected) $msg")
   }
   val ls = List(1, 3, 2, 1)
   for (N <- -1 to (ls.length + 1)) {

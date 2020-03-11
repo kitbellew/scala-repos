@@ -70,10 +70,7 @@ object PromiseMock {
     def enqueue(f: js.Function0[Any]): Unit =
       queue.push(f)
 
-    def processQueue(): Unit = {
-      while (queue.nonEmpty)
-        queue.shift()()
-    }
+    def processQueue(): Unit = { while (queue.nonEmpty) queue.shift()() }
 
     private sealed abstract class State[+A]
 
@@ -150,8 +147,7 @@ object PromiseMock {
       fulfillReactions = null
       rejectReactions = null
 
-      for (reaction <- reactions)
-        enqueue(() => reaction(argument))
+      for (reaction <- reactions) enqueue(() => reaction(argument))
     }
 
     // 25.4.1.3.2 Promise Resolve Functions

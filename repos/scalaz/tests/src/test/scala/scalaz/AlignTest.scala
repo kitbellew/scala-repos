@@ -19,10 +19,10 @@ object AlignTest extends SpecLite {
     val dropped: List[(Option[Int], Option[Int])] = xys.dropWhile {
       case (x, y) => x.isDefined && y.isDefined
     }
-    if (xs.size > ys.size)
-      dropped.foreach(_ mustMatch { case (Some(_), None) => true })
-    else
-      dropped.foreach(_ mustMatch { case (None, Some(_)) => true })
+    if (xs.size > ys.size) dropped.foreach(_ mustMatch {
+      case (Some(_), None) => true
+    })
+    else dropped.foreach(_ mustMatch { case (None, Some(_)) => true })
   }
 
   "merge" ! forAll { (xs: List[Int], ys: List[Int]) =>

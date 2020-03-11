@@ -635,8 +635,7 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
 
     def resend(): Unit = {
       outstanding.values foreach { jobState ⇒
-        if (jobState.deadline.isOverdue)
-          send(jobState.job)
+        if (jobState.deadline.isOverdue) send(jobState.job)
       }
     }
 
@@ -1051,8 +1050,7 @@ abstract class StressSpec
         reportResult {
           runOn(roles.head) {
             if (shutdown) {
-              if (infolog)
-                log.info("Shutting down [{}]", removeAddress)
+              if (infolog) log.info("Shutting down [{}]", removeAddress)
               testConductor.exit(removeRole, 0).await
             }
           }
@@ -1087,8 +1085,7 @@ abstract class StressSpec
         reportResult {
           runOn(roles.head) {
             if (shutdown) removeRoles.foreach { r ⇒
-              if (infolog)
-                log.info("Shutting down [{}]", address(r))
+              if (infolog) log.info("Shutting down [{}]", address(r))
               testConductor.exit(r, 0).await
             }
           }
@@ -1222,8 +1219,7 @@ abstract class StressSpec
           val workResult = awaitWorkResult(m)
           workResult.sendCount should be > (0L)
           workResult.ackCount should be > (0L)
-          if (!expectDroppedMessages)
-            workResult.retryCount should ===(0)
+          if (!expectDroppedMessages) workResult.retryCount should ===(0)
 
           enterBarrier("routers-done-" + step)
         }

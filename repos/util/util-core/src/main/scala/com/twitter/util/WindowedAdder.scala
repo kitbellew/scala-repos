@@ -44,8 +44,7 @@ private[twitter] class WindowedAdder private[WindowedAdder] (
   @volatile private[this] var old = now()
 
   private[this] def expired(): Unit = {
-    if (!expiredGen.compareAndSet(gen, gen + 1))
-      return
+    if (!expiredGen.compareAndSet(gen, gen + 1)) return
 
     // At the time of add, we were likely up to date,
     // so we credit it to the current slice.
@@ -78,15 +77,13 @@ private[twitter] class WindowedAdder private[WindowedAdder] (
 
   /** Increment the adder by `x` */
   def add(x: Int): Unit = {
-    if ((now() - old) >= window)
-      expired()
+    if ((now() - old) >= window) expired()
     writer.add(x)
   }
 
   /** Retrieve the current sum of the adder */
   def sum(): Long = {
-    if ((now() - old) >= window)
-      expired()
+    if ((now() - old) >= window) expired()
     val _ = gen // Barrier.
     var sum = writer.sum()
     var i = 0

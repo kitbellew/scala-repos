@@ -42,8 +42,7 @@ private[repl] trait SparkILoopInit {
   }
 
   protected def asyncMessage(msg: String) {
-    if (isReplInfo || isReplPower)
-      echoAndRefresh(msg)
+    if (isReplInfo || isReplPower) echoAndRefresh(msg)
   }
 
   private val initLock = new java.util.concurrent.locks.ReentrantLock()
@@ -82,8 +81,9 @@ private[repl] trait SparkILoopInit {
 
   // called from main repl loop
   protected def awaitInitialized(): Boolean = {
-    if (!initIsComplete)
-      withLock { while (!initIsComplete) initLoopCondition.await() }
+    if (!initIsComplete) withLock {
+      while (!initIsComplete) initLoopCondition.await()
+    }
     if (initError != null) {
       // scalastyle:off println
       println(

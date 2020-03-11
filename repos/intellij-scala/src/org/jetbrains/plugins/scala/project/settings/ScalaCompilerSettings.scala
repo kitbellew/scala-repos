@@ -126,8 +126,7 @@ class ScalaCompilerSettings(state: ScalaCompilerSettingsState) {
     case option =>
       if (option.startsWith("-language:"))
         option.substring(10).split(",").map("-language:" + _)
-      else
-        Seq(option)
+      else Seq(option)
   }
 
   def loadState(state: ScalaCompilerSettingsState) {

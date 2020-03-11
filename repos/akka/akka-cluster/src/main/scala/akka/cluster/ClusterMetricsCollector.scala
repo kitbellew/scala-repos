@@ -163,8 +163,7 @@ private[cluster] class ClusterMetricsCollector(publisher: ActorRef)
     val otherGossip = envelope.gossip.filter(nodes)
     latestGossip = latestGossip merge otherGossip
     // changes will be published in the period collect task
-    if (!envelope.reply)
-      replyGossipTo(envelope.from)
+    if (!envelope.reply) replyGossipTo(envelope.from)
   }
 
   /**

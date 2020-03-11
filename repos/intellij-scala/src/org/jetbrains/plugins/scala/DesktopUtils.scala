@@ -34,8 +34,7 @@ object DesktopUtils {
     val supported = Desktop.isDesktopSupported && Desktop.getDesktop
       .isSupported(Desktop.Action.BROWSE)
 
-    if (supported)
-      Desktop.getDesktop.browse(new URI(url))
+    if (supported) Desktop.getDesktop.browse(new URI(url))
     else
       Notifications.Bus.notify(
         new Notification(

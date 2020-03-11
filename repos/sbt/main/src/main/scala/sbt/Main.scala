@@ -584,8 +584,7 @@ object BuiltinCommands {
   def keysHelp(s: State): Help =
     if (Project.isProjectLoaded(s))
       Help.detailOnly(taskDetail(allTaskAndSettingKeys(s)))
-    else
-      Help.empty
+    else Help.empty
   def plugins = Command.command(PluginsCommand, pluginsBrief, pluginsDetailed) {
     s =>
       val helpString = PluginsDebug.helpAll(s)
@@ -657,8 +656,7 @@ object BuiltinCommands {
 
     if (result.isEmpty || matches("retry"))
       loadProjectCommand(LoadProject, loadArg) :: s.clearGlobalLog
-    else if (matches(Quit))
-      s.exit(ok = false)
+    else if (matches(Quit)) s.exit(ok = false)
     else if (matches("ignore")) {
       val hadPrevious = Project.isProjectLoaded(s)
       s.log.warn(
@@ -719,8 +717,7 @@ object BuiltinCommands {
   def registerCompilerCache(s: State): State = {
     val maxCompilers = System.getProperty("sbt.resident.limit")
     val cache =
-      if (maxCompilers == null)
-        CompilerCache.fresh
+      if (maxCompilers == null) CompilerCache.fresh
       else {
         val num =
           try maxCompilers.toInt

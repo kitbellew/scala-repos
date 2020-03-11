@@ -50,8 +50,7 @@ class ChannelBufferUsageTracker(
           + currentUsage + ", " + size + " vs. " + usageLimit + ")")
     } else {
       state.currentUsage += size
-      if (currentUsage > maxUsage)
-        state.maxUsage = state.currentUsage
+      if (currentUsage > maxUsage) state.maxUsage = state.currentUsage
     }
   }
 

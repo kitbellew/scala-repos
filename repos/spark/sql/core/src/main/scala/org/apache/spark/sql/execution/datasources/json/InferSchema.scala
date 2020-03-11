@@ -258,8 +258,8 @@ private[sql] object InferSchema {
           StructType(newFields.toSeq.sortBy(_.name))
 
         case (
-            ArrayType(elementType1, containsNull1),
-            ArrayType(elementType2, containsNull2)) =>
+              ArrayType(elementType1, containsNull1),
+              ArrayType(elementType2, containsNull2)) =>
           ArrayType(
             compatibleType(elementType1, elementType2),
             containsNull1 || containsNull2)

@@ -19,8 +19,7 @@ object ResidencySerializer {
       else Residency.defaultRelaunchEscalationTimeoutSeconds
 
     val taskLostBehavior =
-      if (proto.hasTaskLostBehavior)
-        proto.getTaskLostBehavior
+      if (proto.hasTaskLostBehavior) proto.getTaskLostBehavior
       else Residency.defaultTaskLostBehaviour
 
     Residency(relaunchEscalationTimeoutSeconds, taskLostBehavior)

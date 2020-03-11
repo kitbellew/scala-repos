@@ -70,10 +70,8 @@ private[http] object BodyPartRenderer {
           val r = new ByteStringRendering(boundary.length + 4)
           renderFinalBoundary(r, boundary)
           ctx.pushAndFinish(chunkStream(r.get))
-        } else if (finishing)
-          ctx.finish()
-        else
-          ctx.pull()
+        } else if (finishing) ctx.finish()
+        else ctx.pull()
       }
 
       override def onUpstreamFinish(

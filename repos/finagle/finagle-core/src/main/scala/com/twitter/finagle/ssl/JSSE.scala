@@ -57,8 +57,7 @@ object JSSE {
           List(certificatePath, keyPath, caCertPath).mkString(" + "),
           makeContext
         )
-      else
-        makeContext
+      else makeContext
     }
 
     Some(new Engine(context.createSSLEngine()))

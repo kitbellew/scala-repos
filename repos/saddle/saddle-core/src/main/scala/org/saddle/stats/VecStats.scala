@@ -194,10 +194,8 @@ trait VecStats[@spec(Int, Long, Double) A] {
     val sd = ScalarTagDouble
     val c = count
 
-    if (c < 1)
-      sd.missing
-    else if (c == 1)
-      0.0
+    if (c < 1) sd.missing
+    else if (c == 1) 0.0
     else {
       val m: Double = mean
       r.filterFoldLeft(sa.notMissing)(0d) { (x, y) =>
@@ -252,10 +250,7 @@ trait VecStats[@spec(Int, Long, Double) A] {
     var i = 0
     while (i < r.length) {
       val v = r(i)
-      if (sa.notMissing(v))
-        ar(i) = subOp(r(i), mn)
-      else
-        ar(i) = sd.missing
+      if (sa.notMissing(v)) ar(i) = subOp(r(i), mn) else ar(i) = sd.missing
       i += 1
     }
     new VecDouble(ar)
@@ -284,10 +279,8 @@ trait VecStats[@spec(Int, Long, Double) A] {
 
     val (len, arr) = _arrCopyToDblArr(r)
 
-    if (len == 0)
-      sd.missing
-    else if (len % 2 != 0)
-      _kSmallest(arr, len, len / 2)
+    if (len == 0) sd.missing
+    else if (len % 2 != 0) _kSmallest(arr, len, len / 2)
     else
       (_kSmallest(arr, len, len / 2) + _kSmallest(arr, len, len / 2 - 1)) / 2d
   }
@@ -337,10 +330,7 @@ trait VecStats[@spec(Int, Long, Double) A] {
     }
 
     val srt =
-      if (ascending)
-        array.argsort(v)
-      else
-        array.reverse(array.argsort(v))
+      if (ascending) array.argsort(v) else array.reverse(array.argsort(v))
 
     val dat = array.take(v, srt, 0.0)
 
@@ -353,8 +343,7 @@ trait VecStats[@spec(Int, Long, Double) A] {
 
       s += (i + 1.0)
       d += 1
-      if (v == nan)
-        res(srt(i)) = sd.missing
+      if (v == nan) res(srt(i)) = sd.missing
       else if (i == len - 1 || math.abs(dat(i + 1) - v) > 1e-13) {
         if (tie == RankTie.Avg) {
           var j = i - d + 1
@@ -401,8 +390,7 @@ trait VecStats[@spec(Int, Long, Double) A] {
       implicit n: NUM[A]): Double = {
     val sd = ScalarTagDouble
     val vf = v.dropNA
-    if (vf.length == 0 || tile < 0 || tile > 100)
-      sd.missing
+    if (vf.length == 0 || tile < 0 || tile > 100) sd.missing
     else {
       val c = vf.length
       if (c == 1) vf(0)
@@ -429,8 +417,7 @@ class DoubleStats(r: Vec[Double]) extends VecStats[Double] {
   def count: Int = r.filterFoldLeft(sd.notMissing)(0)((a, b) => a + 1)
 
   def min: Option[Double] =
-    if (r.count == 0)
-      None
+    if (r.count == 0) None
     else {
       val res =
         r.filterFoldLeft(sd.notMissing)(sd.inf)((x: Double, y: Double) =>
@@ -439,8 +426,7 @@ class DoubleStats(r: Vec[Double]) extends VecStats[Double] {
     }
 
   def max: Option[Double] =
-    if (r.count == 0)
-      None
+    if (r.count == 0) None
     else {
       val res: Double =
         r.filterFoldLeft(sd.notMissing)(sd.negInf)((x: Double, y: Double) =>

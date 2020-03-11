@@ -204,10 +204,8 @@ object StackTrace {
     if (mtch ne null) {
       val className = decodeClassName(mtch(1).get)
       val methodName =
-        if (isModule)
-          "<clinit>" // that's how it would be reported on the JVM
-        else
-          decodeMethodName(mtch(2).get)
+        if (isModule) "<clinit>" // that's how it would be reported on the JVM
+        else decodeMethodName(mtch(2).get)
       (className, methodName)
     } else { ("<jscode>", functionName) }
   }
@@ -229,8 +227,7 @@ object StackTrace {
           val prefix = compressedPrefixes(i)
           if (encoded.startsWith(prefix))
             decompressedPrefixes(prefix) + encoded.substring(prefix.length)
-          else
-            loop(i + 1)
+          else loop(i + 1)
         } else {
           // no prefix matches
           if (encoded.startsWith("L")) encoded.substring(1)
@@ -261,8 +258,7 @@ object StackTrace {
 
     var index = 0
     while (index <= 22) {
-      if (index >= 2)
-        dict("T" + index) = "scala_Tuple" + index
+      if (index >= 2) dict("T" + index) = "scala_Tuple" + index
       dict("F" + index) = "scala_Function" + index
       index += 1
     }

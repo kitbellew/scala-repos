@@ -259,12 +259,9 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
       }
 
       // consider two special cases that speed things up down the line
-      if (c == ll)
-        ReIndexer(None, rgt, left)
-      else if (c == rl)
-        ReIndexer(lft, None, right)
-      else
-        ReIndexer(lft, rgt, Index(res))
+      if (c == ll) ReIndexer(None, rgt, left)
+      else if (c == rl) ReIndexer(lft, None, right)
+      else ReIndexer(lft, rgt, Index(res))
     }
   }
 
@@ -290,18 +287,15 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
           if (lval == rval) {
             callback(l, r, res, lc, rc, lval, count)
             rc += 1
-            if (rc < nright && right.raw(rc) == lval)
-              rgrp += 1
+            if (rc < nright && right.raw(rc) == lval) rgrp += 1
             else {
               lc += 1
               rc -= rgrp + 1
               rgrp = 0
             }
             count += 1
-          } else if (scalar.lt(lval, rval))
-            lc += 1
-          else
-            rc += 1
+          } else if (scalar.lt(lval, rval)) lc += 1
+          else rc += 1
         }
       }
       count
@@ -466,8 +460,7 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
       var done = false
       var count = 0
       if (nleft == 0) {
-        if (callback == TNoOp)
-          count = nright
+        if (callback == TNoOp) count = nright
         else
           while (rc < nright) {
             val v: T = right.raw(rc)
@@ -475,8 +468,7 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
             rc += 1
           }
       } else if (nright == 0) {
-        if (callback == TNoOp)
-          count = nleft
+        if (callback == TNoOp) count = nleft
         else
           while (lc < nleft) {
             val v: T = left.raw(lc)
@@ -486,8 +478,7 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
       } else {
         while (!done) {
           if (lc == nleft) {
-            if (callback == TNoOp)
-              count += nright - rc
+            if (callback == TNoOp) count += nright - rc
             else
               while (rc < nright) {
                 val v: T = right.raw(rc)
@@ -497,8 +488,7 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
               }
             done = true
           } else if (rc == nright) {
-            if (callback == TNoOp)
-              count += nleft - lc
+            if (callback == TNoOp) count += nleft - lc
             else
               while (lc < nleft) {
                 val v: T = left.raw(lc)
@@ -604,10 +594,7 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
 
       while (j < rl && scalar.lt({ r = right.raw(j); r }, l)) { j += 1 }
 
-      if (j < rl && l == r)
-        rgt(i) = j
-      else
-        rgt(i) = -1
+      if (j < rl && l == r) rgt(i) = j else rgt(i) = -1
 
       i += 1
     }
@@ -640,8 +627,7 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
         while (!done) {
           if (lc == nleft) { done = true }
           else if (rc == nright) {
-            if (callback == TNoOp)
-              count += nleft - lc
+            if (callback == TNoOp) count += nleft - lc
             else
               while (lc < nleft) {
                 val v: T = left.raw(lc)
@@ -656,8 +642,7 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
             if (lval == rval) {
               callback(l, r, res, lc, rc, lval, count)
               rc += 1
-              if (rc < nright && right.raw(rc) == lval)
-                rgrp += 1
+              if (rc < nright && right.raw(rc) == lval) rgrp += 1
               else {
                 lc += 1
                 rc -= rgrp + 1

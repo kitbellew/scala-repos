@@ -104,8 +104,7 @@ trait JavaLoggingAdapter extends LoggingAdapter {
       Future(logger.log(record)).onFailure {
         case thrown: Throwable ⇒ thrown.printStackTrace()
       }
-    } else
-      logger.log(record)
+    } else logger.log(record)
   }
 
   // it is unfortunate that this workaround is needed

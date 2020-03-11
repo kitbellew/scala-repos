@@ -458,8 +458,7 @@ object Combinators {
         if (delimiter == Pass) None else Some("sep = " + delimiter),
         if (max == Int.MaxValue) None else Some("max = " + max)
       ).flatten.mkString(", ")
-      if (things.isEmpty) opWrap(p) + ".rep"
-      else s"${opWrap(p)}.rep($things)"
+      if (things.isEmpty) opWrap(p) + ".rep" else s"${opWrap(p)}.rep($things)"
     }
   }
 

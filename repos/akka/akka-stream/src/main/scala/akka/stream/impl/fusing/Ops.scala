@@ -43,8 +43,7 @@ private[akka] final case class Filter[T](
     decider: Supervision.Decider)
     extends PushStage[T, T] {
   override def onPush(elem: T, ctx: Context[T]): SyncDirective =
-    if (p(elem)) ctx.push(elem)
-    else ctx.pull()
+    if (p(elem)) ctx.push(elem) else ctx.pull()
 
   override def decide(t: Throwable): Supervision.Directive = decider(t)
 }
@@ -58,10 +57,7 @@ private[akka] final case class TakeWhile[T](
     extends PushStage[T, T] {
 
   override def onPush(elem: T, ctx: Context[T]): SyncDirective =
-    if (p(elem))
-      ctx.push(elem)
-    else
-      ctx.finish()
+    if (p(elem)) ctx.push(elem) else ctx.finish()
 
   override def decide(t: Throwable): Supervision.Directive = decider(t)
 }
@@ -153,8 +149,7 @@ private[akka] final case class Take[T](count: Long)
   }
 
   override def onPull(ctx: Context[T]): SyncDirective =
-    if (left <= 0) ctx.finish()
-    else ctx.pull()
+    if (left <= 0) ctx.finish() else ctx.pull()
 }
 
 /**
@@ -212,8 +207,7 @@ private[akka] final case class Scan[In, Out](
     } else ctx.pull()
 
   override def onUpstreamFinish(ctx: Context[Out]): TerminationDirective =
-    if (pushedZero) ctx.finish()
-    else ctx.absorbTermination()
+    if (pushedZero) ctx.finish() else ctx.absorbTermination()
 
   override def decide(t: Throwable): Supervision.Directive = decider(t)
 
@@ -236,8 +230,7 @@ private[akka] final case class Fold[In, Out](
   }
 
   override def onPull(ctx: Context[Out]): SyncDirective =
-    if (ctx.isFinishing) ctx.pushAndFinish(aggregator)
-    else ctx.pull()
+    if (ctx.isFinishing) ctx.pushAndFinish(aggregator) else ctx.pull()
 
   override def onUpstreamFinish(ctx: Context[Out]): TerminationDirective =
     ctx.absorbTermination()
@@ -332,8 +325,7 @@ private[akka] final case class Grouped[T](n: Int)
 
   override def onUpstreamFinish(
       ctx: Context[immutable.Seq[T]]): TerminationDirective =
-    if (left == n) ctx.finish()
-    else ctx.absorbTermination()
+    if (left == n) ctx.finish() else ctx.absorbTermination()
 }
 
 /**
@@ -364,13 +356,11 @@ private[akka] final case class Sliding[T](n: Int, step: Int)
     if (buf.size < n) { ctx.pull() }
     else if (buf.size == n) { ctx.push(buf) }
     else if (step > n) {
-      if (buf.size == step)
-        buf = Vector.empty
+      if (buf.size == step) buf = Vector.empty
       ctx.pull()
     } else {
       buf = buf.drop(step)
-      if (buf.size == n) ctx.push(buf)
-      else ctx.pull()
+      if (buf.size == n) ctx.push(buf) else ctx.pull()
     }
   }
 
@@ -381,8 +371,7 @@ private[akka] final case class Sliding[T](n: Int, step: Int)
 
   override def onUpstreamFinish(
       ctx: Context[immutable.Seq[T]]): TerminationDirective =
-    if (buf.isEmpty) ctx.finish()
-    else ctx.absorbTermination()
+    if (buf.isEmpty) ctx.finish() else ctx.absorbTermination()
 }
 
 /**
@@ -406,16 +395,14 @@ private[akka] final case class Buffer[T](
   override def onPull(ctx: DetachedContext[T]): DownstreamDirective = {
     if (ctx.isFinishing) {
       val elem = buffer.dequeue()
-      if (buffer.isEmpty) ctx.pushAndFinish(elem)
-      else ctx.push(elem)
+      if (buffer.isEmpty) ctx.pushAndFinish(elem) else ctx.push(elem)
     } else if (ctx.isHoldingUpstream) ctx.pushAndPull(buffer.dequeue())
     else if (buffer.isEmpty) ctx.holdDownstream()
     else ctx.push(buffer.dequeue())
   }
 
   override def onUpstreamFinish(ctx: DetachedContext[T]): TerminationDirective =
-    if (buffer.isEmpty) ctx.finish()
-    else ctx.absorbTermination()
+    if (buffer.isEmpty) ctx.finish() else ctx.absorbTermination()
 
   val enqueueAction: (DetachedContext[T], T) ⇒ UpstreamDirective =
     overflowStrategy match {
@@ -441,8 +428,7 @@ private[akka] final case class Buffer[T](
       case Backpressure ⇒
         (ctx, elem) ⇒
           buffer.enqueue(elem)
-          if (buffer.isFull) ctx.holdUpstream()
-          else ctx.pull()
+          if (buffer.isFull) ctx.holdUpstream() else ctx.pull()
       case Fail ⇒
         (ctx, elem) ⇒
           if (buffer.isFull)
@@ -903,18 +889,16 @@ private[akka] final case class Log[T](
   override def onUpstreamFailure(
       cause: Throwable,
       ctx: Context[T]): TerminationDirective = {
-    if (isEnabled(logLevels.onFailure))
-      logLevels.onFailure match {
-        case Logging.ErrorLevel ⇒
-          log.error(cause, "[{}] Upstream failed.", name)
-        case level ⇒
-          log.log(
-            level,
-            "[{}] Upstream failed, cause: {}: {}",
-            name,
-            Logging.simpleName(cause.getClass),
-            cause.getMessage)
-      }
+    if (isEnabled(logLevels.onFailure)) logLevels.onFailure match {
+      case Logging.ErrorLevel ⇒ log.error(cause, "[{}] Upstream failed.", name)
+      case level ⇒
+        log.log(
+          level,
+          "[{}] Upstream failed, cause: {}: {}",
+          name,
+          Logging.simpleName(cause.getClass),
+          cause.getMessage)
+    }
 
     super.onUpstreamFailure(cause, ctx)
   }
@@ -1023,8 +1007,7 @@ private[stream] final class GroupedWithin[T](n: Int, d: FiniteDuration)
       private def emitGroup(): Unit = {
         push(out, buf.result())
         buf.clear()
-        if (!finished) startNewGroup()
-        else completeStage()
+        if (!finished) startNewGroup() else completeStage()
       }
 
       private def startNewGroup(): Unit = {
@@ -1042,8 +1025,7 @@ private[stream] final class GroupedWithin[T](n: Int, d: FiniteDuration)
               nextElement(grab(in)) // otherwise keep the element for next round
           override def onUpstreamFinish(): Unit = {
             finished = true
-            if (!groupClosed && elements > 0) closeGroup()
-            else completeStage()
+            if (!groupClosed && elements > 0) closeGroup() else completeStage()
           }
           override def onUpstreamFailure(ex: Throwable): Unit = failStage(ex)
         }
@@ -1090,8 +1072,7 @@ private[stream] final class Delay[T](
           override def onPush(): Unit = {
             if (buffer.isFull) strategy match {
               case EmitEarly ⇒
-                if (!isTimerActive(timerName))
-                  push(out, buffer.dequeue()._2)
+                if (!isTimerActive(timerName)) push(out, buffer.dequeue()._2)
                 else {
                   cancelTimer(timerName)
                   onTimer(timerName)
@@ -1204,8 +1185,7 @@ private[stream] final class DropWithin[T](timeout: FiniteDuration)
         in,
         new InHandler {
           override def onPush(): Unit =
-            if (allow) push(out, grab(in))
-            else pull(in)
+            if (allow) push(out, grab(in)) else pull(in)
         })
 
       setHandler(
@@ -1303,8 +1283,7 @@ private[stream] final class RecoverWith[T, M](
 
       def pushOut(): Unit = {
         push(out, sinkIn.grab())
-        if (!sinkIn.isClosed) sinkIn.pull()
-        else completeStage()
+        if (!sinkIn.isClosed) sinkIn.pull() else completeStage()
       }
 
       val outHandler = new OutHandler {
@@ -1351,8 +1330,7 @@ private[stream] final class StatefulMapConcat[In, Out](
         if (hasNext) {
           push(out, currentIterator.next())
           if (!hasNext && isClosed(in)) completeStage()
-        } else if (!isClosed(in))
-          pull(in)
+        } else if (!isClosed(in)) pull(in)
         else completeStage()
 
       def onFinish(): Unit = if (!hasNext) completeStage()

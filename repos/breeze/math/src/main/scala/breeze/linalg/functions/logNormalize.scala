@@ -11,8 +11,7 @@ object logNormalize extends UFunc {
 
     def apply(value: V): V = {
       val max = softmax(value)
-      if (max == Double.NegativeInfinity) value
-      else op(value, max)
+      if (max == Double.NegativeInfinity) value else op(value, max)
     }
   }
 

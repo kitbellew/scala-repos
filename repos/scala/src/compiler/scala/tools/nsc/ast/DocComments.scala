@@ -108,8 +108,7 @@ trait DocComments { self: Global =>
       docStr: String = ""): String = {
     // when parsing a top level class or module, use the (module-)class itself to look up variable definitions
     val site1 =
-      if ((sym.isModule || sym.isClass) && site.hasPackageFlag) sym
-      else site
+      if ((sym.isModule || sym.isClass) && site.hasPackageFlag) sym else site
     expandVariables(cookedDocComment(sym, docStr), sym, site1)
   }
 
@@ -241,8 +240,7 @@ trait DocComments { self: Global =>
     * @return       The child comment with the inheritdoc sections expanded
     */
   def expandInheritdoc(parent: String, child: String, sym: Symbol): String =
-    if (child.indexOf("@inheritdoc") == -1)
-      child
+    if (child.indexOf("@inheritdoc") == -1) child
     else {
       val parentSections = tagIndex(parent)
       val childSections = tagIndex(child)
@@ -255,10 +253,8 @@ trait DocComments { self: Global =>
       val out = new StringBuilder
 
       def replaceInheritdoc(childSection: String, parentSection: => String) =
-        if (childSection.indexOf("@inheritdoc") == -1)
-          childSection
-        else
-          childSection.replaceAllLiterally("@inheritdoc", parentSection)
+        if (childSection.indexOf("@inheritdoc") == -1) childSection
+        else childSection.replaceAllLiterally("@inheritdoc", parentSection)
 
       def getParentSection(section: (Int, Int)): String = {
 
@@ -298,10 +294,8 @@ trait DocComments { self: Global =>
       }
 
       def mainComment(str: String, sections: List[(Int, Int)]): String =
-        if (str.trim.length > 3)
-          str.trim.substring(3, startTag(str, sections))
-        else
-          ""
+        if (str.trim.length > 3) str.trim.substring(3, startTag(str, sections))
+        else ""
 
       // Append main comment
       out.append("/**")
@@ -362,8 +356,7 @@ trait DocComments { self: Global =>
     val expandLimit = 10
 
     def expandInternal(str: String, depth: Int): String = {
-      if (depth >= expandLimit)
-        throw new ExpansionLimitExceeded(str)
+      if (depth >= expandLimit) throw new ExpansionLimitExceeded(str)
 
       val out = new StringBuilder
       var copied, idx = 0
@@ -371,8 +364,7 @@ trait DocComments { self: Global =>
       // necessary to document things like Symbol#decode
       def isEscaped = idx > 0 && str.charAt(idx - 1) == '\\'
       while (idx < str.length) {
-        if ((str charAt idx) != '$' || isEscaped)
-          idx += 1
+        if ((str charAt idx) != '$' || isEscaped) idx += 1
         else {
           val vstart = idx
           idx = skipVariable(str, idx + 1)
@@ -552,8 +544,7 @@ trait DocComments { self: Global =>
         val tstr = str.trim
         if (tstr.length >= 2 && tstr.startsWith("`") && tstr.endsWith("`"))
           tstr.substring(1, tstr.length - 1)
-        else
-          tstr
+        else tstr
       }
 
       // the Boolean tells us whether we can normalize: if we found an actual type, then yes, we can normalize, else no,

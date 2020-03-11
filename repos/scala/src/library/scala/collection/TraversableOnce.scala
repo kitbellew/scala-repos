@@ -112,8 +112,7 @@ trait TraversableOnce[+A] extends Any with GenTraversableOnce[A] {
 
   def count(p: A => Boolean): Int = {
     var cnt = 0
-    for (x <- this)
-      if (p(x)) cnt += 1
+    for (x <- this) if (p(x)) cnt += 1
 
     cnt
   }
@@ -180,8 +179,7 @@ trait TraversableOnce[+A] extends Any with GenTraversableOnce[A] {
     *           where `x,,1,,, ..., x,,n,,` are the elements of this $coll.
     *  @throws UnsupportedOperationException if this $coll is empty.   */
   def reduceLeft[B >: A](op: (B, A) => B): B = {
-    if (isEmpty)
-      throw new UnsupportedOperationException("empty.reduceLeft")
+    if (isEmpty) throw new UnsupportedOperationException("empty.reduceLeft")
 
     var first = true
     var acc: B = 0.asInstanceOf[B]
@@ -196,8 +194,7 @@ trait TraversableOnce[+A] extends Any with GenTraversableOnce[A] {
   }
 
   def reduceRight[B >: A](op: (A, B) => B): B = {
-    if (isEmpty)
-      throw new UnsupportedOperationException("empty.reduceRight")
+    if (isEmpty) throw new UnsupportedOperationException("empty.reduceRight")
 
     reversed.reduceLeft[B]((x, y) => op(y, x))
   }
@@ -224,22 +221,19 @@ trait TraversableOnce[+A] extends Any with GenTraversableOnce[A] {
     foldLeft(num.one)(num.times)
 
   def min[B >: A](implicit cmp: Ordering[B]): A = {
-    if (isEmpty)
-      throw new UnsupportedOperationException("empty.min")
+    if (isEmpty) throw new UnsupportedOperationException("empty.min")
 
     reduceLeft((x, y) => if (cmp.lteq(x, y)) x else y)
   }
 
   def max[B >: A](implicit cmp: Ordering[B]): A = {
-    if (isEmpty)
-      throw new UnsupportedOperationException("empty.max")
+    if (isEmpty) throw new UnsupportedOperationException("empty.max")
 
     reduceLeft((x, y) => if (cmp.gteq(x, y)) x else y)
   }
 
   def maxBy[B](f: A => B)(implicit cmp: Ordering[B]): A = {
-    if (isEmpty)
-      throw new UnsupportedOperationException("empty.maxBy")
+    if (isEmpty) throw new UnsupportedOperationException("empty.maxBy")
 
     var maxF: B = null.asInstanceOf[B]
     var maxElem: A = null.asInstanceOf[A]
@@ -256,8 +250,7 @@ trait TraversableOnce[+A] extends Any with GenTraversableOnce[A] {
     maxElem
   }
   def minBy[B](f: A => B)(implicit cmp: Ordering[B]): A = {
-    if (isEmpty)
-      throw new UnsupportedOperationException("empty.minBy")
+    if (isEmpty) throw new UnsupportedOperationException("empty.minBy")
 
     var minF: B = null.asInstanceOf[B]
     var minElem: A = null.asInstanceOf[A]
@@ -321,8 +314,7 @@ trait TraversableOnce[+A] extends Any with GenTraversableOnce[A] {
 
   def toMap[T, U](implicit ev: A <:< (T, U)): immutable.Map[T, U] = {
     val b = immutable.Map.newBuilder[T, U]
-    for (x <- self)
-      b += x
+    for (x <- self) b += x
 
     b.result()
   }

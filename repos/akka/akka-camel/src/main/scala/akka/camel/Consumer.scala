@@ -74,8 +74,7 @@ trait Consumer extends Actor with CamelSupport {
     */
   def onRouteDefinition: RouteDefinition ⇒ ProcessorDefinition[_] = {
     val mapper = getRouteDefinitionHandler
-    if (mapper != identityRouteMapper) mapper.apply _
-    else identityRouteMapper
+    if (mapper != identityRouteMapper) mapper.apply _ else identityRouteMapper
   }
 
   /**

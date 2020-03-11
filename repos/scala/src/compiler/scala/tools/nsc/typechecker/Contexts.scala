@@ -410,8 +410,7 @@ trait Contexts { self: Analyzer =>
 
         // do last try if try with implicits enabled failed
         // (or if it was not attempted because they were disabled)
-        if (doLastTry)
-          tryOnce(true)
+        if (doLastTry) tryOnce(true)
       }
     }
 
@@ -523,8 +522,7 @@ trait Contexts { self: Analyzer =>
         if (isImport)
           new Context(tree, owner, scope, unit, this, reporter)
             with ImportContext
-        else
-          new Context(tree, owner, scope, unit, this, reporter)
+        else new Context(tree, owner, scope, unit, this, reporter)
 
       // Fields that are directly propagated
       c.variance = variance
@@ -541,8 +539,7 @@ trait Contexts { self: Analyzer =>
       // SI-8245 `isLazy` need to skip lazy getters to ensure `return` binds to the right place
       c.enclMethod = if (isDefDef && !owner.isLazy) c else enclMethod
 
-      if (tree != outer.tree)
-        c(TypeConstructorAllowed) = false
+      if (tree != outer.tree) c(TypeConstructorAllowed) = false
 
       registerContext(c.asInstanceOf[analyzer.Context])
       debuglog("[context] ++ " + c.unit + " / " + tree.summaryString)
@@ -755,8 +752,7 @@ trait Contexts { self: Analyzer =>
 
     def enclosingNonImportContext: Context = {
       var c = this
-      while (c != NoContext && c.tree.isInstanceOf[Import])
-        c = c.outer
+      while (c != NoContext && c.tree.isInstanceOf[Import]) c = c.outer
       c
     }
 
@@ -1154,10 +1150,8 @@ trait Contexts { self: Analyzer =>
           }
       )
       def finishDefSym(sym: Symbol, pre0: Type): NameLookup =
-        if (requiresQualifier(sym))
-          finish(gen.mkAttributedQualifier(pre0), sym)
-        else
-          finish(EmptyTree, sym)
+        if (requiresQualifier(sym)) finish(gen.mkAttributedQualifier(pre0), sym)
+        else finish(EmptyTree, sym)
 
       def isPackageOwnedInDifferentUnit(s: Symbol) = (
         s.isDefinedInPackage && (
@@ -1210,14 +1204,11 @@ trait Contexts { self: Analyzer =>
           case entries @ (hd :: tl) =>
             // we have a winner: record the symbol depth
             symbolDepth = (cx.depth - cx.scope.nestingLevel) + hd.depth
-            if (tl.isEmpty) hd.sym
-            else newOverloaded(cx.owner, pre, entries)
+            if (tl.isEmpty) hd.sym else newOverloaded(cx.owner, pre, entries)
         }
-        if (!defSym.exists)
-          cx = cx.outer // push further outward
+        if (!defSym.exists) cx = cx.outer // push further outward
       }
-      if (symbolDepth < 0)
-        symbolDepth = cx.depth
+      if (symbolDepth < 0) symbolDepth = cx.depth
 
       var impSym: Symbol = NoSymbol
       var imports = Context.this.imports
@@ -1255,25 +1246,21 @@ trait Contexts { self: Analyzer =>
 
       while (!impSym.exists && imports.nonEmpty && depthOk(imports.head)) {
         impSym = lookupImport(imp1, requireExplicit = false)
-        if (!impSym.exists)
-          imports = imports.tail
+        if (!impSym.exists) imports = imports.tail
       }
 
       if (defSym.exists && impSym.exists) {
         // imported symbols take precedence over package-owned symbols in different compilation units.
-        if (isPackageOwnedInDifferentUnit(defSym))
-          defSym = NoSymbol
+        if (isPackageOwnedInDifferentUnit(defSym)) defSym = NoSymbol
         // Defined symbols take precedence over erroneous imports.
         else if (impSym.isError || impSym.name == nme.CONSTRUCTOR)
           impSym = NoSymbol
         // Otherwise they are irreconcilably ambiguous
-        else
-          return ambiguousDefnAndImport(defSym.alternatives.head.owner, imp1)
+        else return ambiguousDefnAndImport(defSym.alternatives.head.owner, imp1)
       }
 
       // At this point only one or the other of defSym and impSym might be set.
-      if (defSym.exists)
-        finishDefSym(defSym, pre)
+      if (defSym.exists) finishDefSym(defSym, pre)
       else if (impSym.exists) {
         // We continue walking down the imports as long as the tail is non-empty, which gives us:
         //   imports  ==  imp1 :: imp2 :: _
@@ -1335,10 +1322,8 @@ trait Contexts { self: Analyzer =>
       var ctx = this
       while (res == NoSymbol && ctx.outer != ctx) {
         val s = ctx.scope lookup name
-        if (s != NoSymbol && s.owner == expectedOwner)
-          res = s
-        else
-          ctx = ctx.outer
+        if (s != NoSymbol && s.owner == expectedOwner) res = s
+        else ctx = ctx.outer
       }
       res
     }
@@ -1618,13 +1603,11 @@ trait Contexts { self: Analyzer =>
           result = qual.tpe
             .nonLocalMember( // new to address #2733: consider only non-local members for imports
               if (name.isTypeName) current.name.toTypeName else current.name)
-        else if (current.name == name.toTermName)
-          renamed = true
+        else if (current.name == name.toTermName) renamed = true
         else if (current.name == nme.WILDCARD && !renamed && !requireExplicit)
           result = qual.tpe.nonLocalMember(name)
 
-        if (result == NoSymbol)
-          selectors = selectors.tail
+        if (result == NoSymbol) selectors = selectors.tail
       }
       if (record && settings.warnUnusedImport && selectors.nonEmpty && result != NoSymbol && pos != NoPosition)
         recordUsage(current, result)
@@ -1635,8 +1618,7 @@ trait Contexts { self: Analyzer =>
       //      check inside the above loop, as I believe that
       //      this always represents a mistake on the part of
       //      the caller.
-      if (definitions isImportable result) result
-      else NoSymbol
+      if (definitions isImportable result) result else NoSymbol
     }
     private def selectorString(s: ImportSelector): String = {
       if (s.name == nme.WILDCARD && s.rename == null) "_"

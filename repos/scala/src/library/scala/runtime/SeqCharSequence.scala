@@ -31,8 +31,7 @@ final class ArrayCharSequence(val xs: Array[Char], start: Int, end: Int)
 
   def length: Int = math.max(0, end - start)
   def charAt(index: Int): Char = {
-    if (0 <= index && index < length)
-      xs(start + index)
+    if (0 <= index && index < length) xs(start + index)
     else throw new ArrayIndexOutOfBoundsException(index)
   }
   def subSequence(start0: Int, end0: Int): CharSequence = {

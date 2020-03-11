@@ -61,8 +61,7 @@ class KafkaHealthcheck(
           InetAddress.getLocalHost.getCanonicalHostName,
           endpoint.port,
           endpoint.protocolType)
-      else
-        endpoint)
+      else endpoint)
 
     // the default host and port are here for compatibility with older client
     // only PLAINTEXT is supported as default

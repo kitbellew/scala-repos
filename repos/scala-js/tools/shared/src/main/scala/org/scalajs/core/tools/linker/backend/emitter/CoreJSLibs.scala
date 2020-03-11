@@ -58,8 +58,7 @@ private[scalajs] object CoreJSLibs {
       case "moduleInit" =>
         semantics.moduleInit.toString()
       case "floats" =>
-        if (semantics.strictFloats) "Strict"
-        else "Loose"
+        if (semantics.strictFloats) "Strict" else "Loose"
       case "productionMode" =>
         semantics.productionMode.toString()
       case "outputMode" =>
@@ -77,8 +76,7 @@ private[scalajs] object CoreJSLibs {
           skipDepth = 0
         } else if (line == "//!endif") {
           skipDepth -= 1
-          if (skipDepth == 0)
-            skipping = false
+          if (skipDepth == 0) skipping = false
         } else if (line.startsWith("//!if ")) { skipDepth += 1 }
         false
       } else {
@@ -150,8 +148,7 @@ private[scalajs] object CoreJSLibs {
     override def toURI: URI = {
       if (!ScalaJSVersions.currentIsSnapshot)
         gitHubBaseURI.resolve(s"v${ScalaJSVersions.current}/tools/$path")
-      else
-        super.toURI
+      else super.toURI
     }
   }
 

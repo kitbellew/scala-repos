@@ -229,8 +229,7 @@ class LogCleaner(
     private val backOffWaitLatch = new CountDownLatch(1)
 
     private def checkDone(topicAndPartition: TopicAndPartition) {
-      if (!isRunning.get())
-        throw new ThreadShutdownException
+      if (!isRunning.get()) throw new ThreadShutdownException
       cleanerManager.checkCleaningAborted(topicAndPartition)
     }
 
@@ -589,8 +588,7 @@ private[log] class Cleaner(
       }
 
       // if we read bytes but didn't get even one complete message, our I/O buffer is too small, grow it and try again
-      if (readBuffer.limit > 0 && messagesRead == 0)
-        growBuffers()
+      if (readBuffer.limit > 0 && messagesRead == 0) growBuffers()
     }
     restoreBuffers()
   }
@@ -634,8 +632,7 @@ private[log] class Cleaner(
               // The offset of the messages are absolute offset, compute the inner offset.
               val innerOffset = messageOffset.offset - firstAbsoluteOffset
               output.writeLong(innerOffset)
-            } else
-              output.writeLong(offset)
+            } else output.writeLong(offset)
             output.writeInt(message.size)
             output.write(
               message.buffer.array,
@@ -775,8 +772,7 @@ private[log] class Cleaner(
       )
       if (map.size + segmentSize <= maxDesiredMapSize)
         offset = buildOffsetMapForSegment(log.topicAndPartition, segment, map)
-      else
-        full = true
+      else full = true
     }
     info("Offset map for log %s complete.".format(log.name))
     offset
@@ -805,8 +801,7 @@ private[log] class Cleaner(
       val startPosition = position
       for (entry <- messages) {
         val message = entry.message
-        if (message.hasKey)
-          map.put(message.key, entry.offset)
+        if (message.hasKey) map.put(message.key, entry.offset)
         offset = entry.offset
         stats.indexMessagesRead(1)
       }
@@ -814,8 +809,7 @@ private[log] class Cleaner(
       stats.indexBytesRead(messages.validBytes)
 
       // if we didn't read even one complete message, our read buffer may be too small
-      if (position == startPosition)
-        growBuffers()
+      if (position == startPosition) growBuffers()
     }
     restoreBuffers()
     offset

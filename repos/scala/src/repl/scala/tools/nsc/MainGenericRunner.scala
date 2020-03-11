@@ -67,8 +67,7 @@ class MainGenericRunner {
       def dashi = settings.loadfiles.value
 
       // Deadlocks on startup under -i unless we disable async.
-      if (isI)
-        settings.Yreplsync.value = true
+      if (isI) settings.Yreplsync.value = true
 
       def combinedCode = {
         val files = if (isI) dashi map (file => File(file).slurp()) else Nil
@@ -116,12 +115,10 @@ class MainGenericRunner {
         }
     }
 
-    if (!command.ok)
-      errorFn(f"%n$shortUsageMsg")
+    if (!command.ok) errorFn(f"%n$shortUsageMsg")
     else if (shouldStopWithInfo)
       errorFn(command getInfoMessage sampleCompiler, isFailure = false)
-    else
-      run()
+    else run()
   }
 }
 

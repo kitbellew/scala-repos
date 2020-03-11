@@ -71,8 +71,9 @@ object RootIsolator {
       val rRoots = TransformedPoly(r, a, b + a, c, d + c)
       if (r.signVariations < p.signVariations) {
         var l = p.reciprocal.compose(x + one)
-        while (l(0) == 0)
-          l = l.mapTerms { case Term(coeff, exp) => Term(coeff, exp - 1) }
+        while (l(0) == 0) l = l.mapTerms {
+          case Term(coeff, exp) => Term(coeff, exp - 1)
+        }
         val lRoots = TransformedPoly(l, b, a + b, d, c + d)
         lRoots :: rRoots :: Nil
       } else { rRoots :: Nil }

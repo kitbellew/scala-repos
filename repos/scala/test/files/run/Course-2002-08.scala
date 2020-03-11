@@ -168,8 +168,7 @@ object M5 {
         case List() =>
           List((time, action))
         case (t, act) :: ag1 =>
-          if (time < t) (time, action) :: ag
-          else (t, act) :: insert(ag1, time)
+          if (time < t) (time, action) :: ag else (t, act) :: insert(ag1, time)
       }
       agenda = insert(agenda, curtime + delay)
     }
@@ -418,8 +417,7 @@ class Simulator() {
       case List() =>
         List((time, action))
       case (t, act) :: ag1 =>
-        if (time < t) (time, action) :: ag
-        else (t, act) :: insert(ag1, time)
+        if (time < t) (time, action) :: ag else (t, act) :: insert(ag1, time)
     }
     agenda = insert(agenda, curtime + delay)
   }

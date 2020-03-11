@@ -20,8 +20,7 @@ trait CollectionsOnMapsTest extends CollectionsTestBase {
         ju.Collections.unmodifiableMap[K, V](map),
         toKey(0),
         toValue(0))
-      for (i <- range)
-        map.put(toKey(i), toValue(i))
+      for (i <- range) map.put(toKey(i), toValue(i))
       testMapUnmodifiability(
         ju.Collections.unmodifiableMap[K, V](map),
         toKey(0),
@@ -47,8 +46,7 @@ trait CollectionsOnSortedMapsTest extends CollectionsOnMapsTest {
         ju.Collections.unmodifiableSortedMap[K, V](sortedMap),
         toKey(0),
         toValue(0))
-      for (i <- range)
-        sortedMap.put(toKey(i), toValue(i))
+      for (i <- range) sortedMap.put(toKey(i), toValue(i))
       testMapUnmodifiability(
         ju.Collections.unmodifiableSortedMap[K, V](sortedMap),
         toKey(0),

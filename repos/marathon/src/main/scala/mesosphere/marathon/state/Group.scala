@@ -175,8 +175,7 @@ case class Group(
   def dependencyGraph: DirectedGraph[AppDefinition, DefaultEdge] = {
     val graph =
       new DefaultDirectedGraph[AppDefinition, DefaultEdge](classOf[DefaultEdge])
-    for (app <- transitiveApps)
-      graph.addVertex(app)
+    for (app <- transitiveApps) graph.addVertex(app)
     for ((app, dependent) <- applicationDependencies)
       graph.addEdge(app, dependent)
     new UnmodifiableDirectedGraph(graph)
@@ -317,8 +316,7 @@ object Group {
                 ruleViolations.toSet))
         }
 
-        if (groupViolations.isEmpty) Success
-        else Failure(groupViolations.toSet)
+        if (groupViolations.isEmpty) Success else Failure(groupViolations.toSet)
       }
     }
   }

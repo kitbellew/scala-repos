@@ -162,10 +162,8 @@ private[reflect] trait SynchronizedSymbols extends internal.Symbols {
         else {
           // analogously to the "info" getter, here we allow for two completions:
           //   one: sourceCompleter to LazyType, two: LazyType to completed type
-          if (validTo == NoPeriod)
-            rawInfo load this
-          if (validTo == NoPeriod)
-            rawInfo load this
+          if (validTo == NoPeriod) rawInfo load this
+          if (validTo == NoPeriod) rawInfo load this
 
           rawInfo.typeParams
         }
@@ -174,10 +172,7 @@ private[reflect] trait SynchronizedSymbols extends internal.Symbols {
     override def unsafeTypeParams: List[Symbol] =
       gilSynchronizedIfNotThreadsafe {
         if (isCompilerUniverse) super.unsafeTypeParams
-        else {
-          if (isMonomorphicType) Nil
-          else rawInfo.typeParams
-        }
+        else { if (isMonomorphicType) Nil else rawInfo.typeParams }
       }
 
 // ------ creators -------------------------------------------------------------------

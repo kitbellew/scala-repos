@@ -96,8 +96,7 @@ class ProducerSendThread[K, V](
         if (full || expired) {
           if (expired)
             debug(elapsed + " ms elapsed. Queue time reached. Sending..")
-          if (full)
-            debug("Batch full. Sending..")
+          if (full) debug("Batch full. Sending..")
           // if either queue time has reached or batch size has reached, dispatch to event handler
           tryToHandle(events)
           lastSend = SystemTime.milliseconds
@@ -116,8 +115,7 @@ class ProducerSendThread[K, V](
     val size = events.size
     try {
       debug("Handling " + size + " events")
-      if (size > 0)
-        handler.handle(events)
+      if (size > 0) handler.handle(events)
     } catch {
       case e: Throwable =>
         error("Error in handling batch of " + size + " events", e)

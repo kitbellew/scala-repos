@@ -110,8 +110,7 @@ trait FindMembers {
                   currentBaseClass,
                   seenFirstNonRefinementClass,
                   refinementParents)) {
-              if (shortCircuit(sym)) return false
-              else addMemberIfNew(sym)
+              if (shortCircuit(sym)) return false else addMemberIfNew(sym)
             } else if (excl == DEFERRED) { deferredSeen = true }
           }
           entry = if (findAll) entry.next else decls lookupNextEntry entry
@@ -206,8 +205,7 @@ trait FindMembers {
     private def narrowForFindMember(tp: Type): Type = {
       val w = tp.widen
       // Only narrow on widened type when we have to -- narrow is expensive unless the target is a singleton type.
-      if ((tp ne w) && containsExistential(w)) w.narrow
-      else tp.narrow
+      if ((tp ne w) && containsExistential(w)) w.narrow else tp.narrow
     }
   }
 
@@ -235,8 +233,7 @@ trait FindMembers {
       var isNew = true
       while ((others ne null) && isNew) {
         val member = others.sym
-        if (!isNewMember(member, sym))
-          isNew = false
+        if (!isNewMember(member, sym)) isNew = false
         others =
           members lookupNextEntry others // next existing member with the same name.
       }
@@ -286,8 +283,7 @@ trait FindMembers {
         var isNew = true
         while ((ms ne null) && isNew) {
           val member = ms.head
-          if (!isNewMember(member, sym))
-            isNew = false
+          if (!isNewMember(member, sym)) isNew = false
           ms = ms.tail
         }
         if (isNew) {

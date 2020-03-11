@@ -85,8 +85,7 @@ private[akka] abstract class AbstractEventsByPersistenceIdPublisher(
 
   def idle: Receive = {
     case Continue | _: LeveldbJournal.EventAppended ⇒
-      if (timeForReplay)
-        replay()
+      if (timeForReplay) replay()
 
     case _: Request ⇒
       receiveIdleRequest()
@@ -188,14 +187,12 @@ private[akka] class LiveEventsByPersistenceIdPublisher(
 
   override def receiveIdleRequest(): Unit = {
     deliverBuf()
-    if (buf.isEmpty && currSeqNo > toSequenceNr)
-      onCompleteThenStop()
+    if (buf.isEmpty && currSeqNo > toSequenceNr) onCompleteThenStop()
   }
 
   override def receiveRecoverySuccess(highestSeqNr: Long): Unit = {
     deliverBuf()
-    if (buf.isEmpty && currSeqNo > toSequenceNr)
-      onCompleteThenStop()
+    if (buf.isEmpty && currSeqNo > toSequenceNr) onCompleteThenStop()
     context.become(idle)
   }
 
@@ -224,20 +221,16 @@ private[akka] class CurrentEventsByPersistenceIdPublisher(
 
   override def receiveIdleRequest(): Unit = {
     deliverBuf()
-    if (buf.isEmpty && currSeqNo > toSequenceNr)
-      onCompleteThenStop()
-    else
-      self ! Continue
+    if (buf.isEmpty && currSeqNo > toSequenceNr) onCompleteThenStop()
+    else self ! Continue
   }
 
   override def receiveRecoverySuccess(highestSeqNr: Long): Unit = {
     deliverBuf()
-    if (highestSeqNr < toSequenceNr)
-      toSeqNr = highestSeqNr
+    if (highestSeqNr < toSequenceNr) toSeqNr = highestSeqNr
     if (buf.isEmpty && (currSeqNo > toSequenceNr || currSeqNo == fromSequenceNr))
       onCompleteThenStop()
-    else
-      self ! Continue // more to fetch
+    else self ! Continue // more to fetch
     context.become(idle)
   }
 

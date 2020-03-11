@@ -155,12 +155,11 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
       child <- symbol.children
       if !(child.isParam && child.isType)
     } {
-      if (!firstConsFiltered)
-        child match {
-          case m: MethodSymbol if m.name == CONSTRUCTOR_NAME =>
-            firstConsFiltered = true
-          case _ => printSymbol(level + 1, child)
-        }
+      if (!firstConsFiltered) child match {
+        case m: MethodSymbol if m.name == CONSTRUCTOR_NAME =>
+          firstConsFiltered = true
+        case _ => printSymbol(level + 1, child)
+      }
       else printSymbol(level + 1, child)
     }
   }
@@ -186,12 +185,10 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
     // print private access modifier
     if (symbol.isPrivate) {
       print("private")
-      if (symbol.isLocal) print("[this] ")
-      else print(" ")
+      if (symbol.isLocal) print("[this] ") else print(" ")
     } else if (symbol.isProtected) {
       print("protected")
-      if (symbol.isLocal) print("[this]")
-      else privateWithin foreach print
+      if (symbol.isLocal) print("[this]") else privateWithin foreach print
       print(" ")
     } else privateWithin.foreach(s => print("private" + s + " "))
 
@@ -266,8 +263,7 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         val printer = new ScalaSigPrinter(stream, verbosity)
         printer.printPrimaryConstructor(m, c)
         val res = baos.toString
-        if (res.length() > 0 && res.charAt(0) != '(') " " + res
-        else res
+        if (res.length() > 0 && res.charAt(0) != '(') " " + res else res
       case _ => ""
     }
   }
@@ -634,9 +630,9 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
                   if refinementClass(classSymbol) =>
                 ""
               case (
-                  ThisType(typeSymbol: ClassSymbol),
-                  ExternalSymbol(_, Some(parent), _),
-                  _)
+                    ThisType(typeSymbol: ClassSymbol),
+                    ExternalSymbol(_, Some(parent), _),
+                    _)
                   if typeSymbol.path != parent.path && checkContainsSelf(
                     typeSymbol.selfType,
                     parent) =>
@@ -736,8 +732,7 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         .mkString("[", ", ", "]")
 
   def typeParamString(params: Seq[TypeSymbol]): String =
-    if (params.isEmpty) ""
-    else params.map(toString).mkString("[", ", ", "]")
+    if (params.isEmpty) "" else params.map(toString).mkString("[", ", ", "]")
 
   val _syms = Map(
     "\\$bar" -> "|",

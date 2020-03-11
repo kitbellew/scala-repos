@@ -149,8 +149,7 @@ abstract class TreeBuilder {
       val vparamssLast = if (vparamss.nonEmpty) vparamss.last else Nil
       if (vparamssLast.nonEmpty && vparamssLast.head.mods.hasFlag(IMPLICIT))
         vparamss.init ::: List(evidenceParams ::: vparamssLast)
-      else
-        vparamss ::: List(evidenceParams)
+      else vparamss ::: List(evidenceParams)
     }
   }
 

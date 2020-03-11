@@ -38,12 +38,8 @@ object Names {
       val c = name.charAt(i)
       if (c < 128) {
         val nop = operatorName(c)
-        if (nop == null)
-          res.append(c)
-        else
-          res.append(nop)
-      } else
-        res.append(c)
+        if (nop == null) res.append(c) else res.append(nop)
+      } else res.append(c)
       i = i + 1
     }
     res.toString()
@@ -65,8 +61,7 @@ object Names {
           if (c != null) {
             i = j
             res.append(c)
-          } else
-            j = j - 1
+          } else j = j - 1
         }
       } else {
         i = i + 1

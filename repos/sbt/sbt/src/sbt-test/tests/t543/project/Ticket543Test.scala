@@ -23,8 +23,7 @@ object Ticket543Test extends Build {
             if (e.throwable != null && e.throwable.isDefined) {
               val caw = new CharArrayWriter
               e.throwable.get.printStackTrace(new PrintWriter(caw))
-              if (caw.toString.contains("Test.scala:"))
-                marker.createNewFile()
+              if (caw.toString.contains("Test.scala:")) marker.createNewFile()
             }
           }
         }

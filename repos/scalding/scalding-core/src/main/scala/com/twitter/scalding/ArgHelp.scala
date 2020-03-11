@@ -73,8 +73,7 @@ trait ArgHelper {
     * @param args Job Arguments
     */
   def describe(describedArgs: Seq[DescribedArg], args: Args): Unit =
-    if (args.boolean("help")) helpRequest(describedArgs)
-    else ()
+    if (args.boolean("help")) helpRequest(describedArgs) else ()
 
   def helpRequest(describedArgs: Seq[DescribedArg]): Nothing = {
     val top =

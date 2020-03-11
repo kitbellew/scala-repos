@@ -80,8 +80,7 @@ object GraphOperations extends Serializable {
 
 case class SetSimilarity(intersection: Int, sizeLeft: Int, sizeRight: Int) {
   lazy val cosine: Option[Double] =
-    if (intersection == 0)
-      Some(0.0)
+    if (intersection == 0) Some(0.0)
     else {
       val denom = scala.math.sqrt(sizeLeft.toDouble * sizeRight.toDouble)
       if (denom == 0.0) { None }
@@ -184,8 +183,7 @@ object TypedSimilarity extends Serializable {
                     } else if (rnd.nextDouble < prob) {
                       // Sample
                       Iterator(((node1, node2), 1.0 / oversample))
-                    } else
-                      Iterator.empty
+                    } else Iterator.empty
                 }
             }
         }
@@ -228,8 +226,7 @@ object TypedSimilarity extends Serializable {
                       // Sample
                       Iterator(
                         ((node1, node2), 1.0 / oversample * weight1 * weight2))
-                    } else
-                      Iterator.empty
+                    } else Iterator.empty
                 }
             }
         }

@@ -23,10 +23,7 @@ object CloseNotifier {
       * handler is invoked immediately.
       */
     def onClose(h: => Unit) = {
-      if (closing.isDefined)
-        h
-      else
-        closeHandlers ::= { () => h }
+      if (closing.isDefined) h else closeHandlers ::= { () => h }
     }
 
     // Invokes close handlers in reverse order from which they were added.

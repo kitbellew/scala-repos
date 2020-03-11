@@ -347,8 +347,7 @@ class SbtProjectResolver
   private def getExcludedTargetDirs(
       project: sbtStructure.ProjectData): Seq[File] = {
     val extractedExcludes = project.configurations.flatMap(_.excludes)
-    if (extractedExcludes.nonEmpty)
-      return extractedExcludes.distinct
+    if (extractedExcludes.nonEmpty) return extractedExcludes.distinct
 
     val managedDirectories = project.configurations
       .flatMap(configuration =>
@@ -534,19 +533,16 @@ class SbtProjectResolver
       DependencyScope.COMPILE
     else if (ids.contains(sbtStructure.Configuration.Runtime))
       DependencyScope.RUNTIME
-    else if (ids.contains(sbtStructure.Configuration.Test))
-      DependencyScope.TEST
+    else if (ids.contains(sbtStructure.Configuration.Test)) DependencyScope.TEST
     else if (ids.contains(sbtStructure.Configuration.Provided))
       DependencyScope.PROVIDED
-    else
-      DependencyScope.COMPILE
+    else DependencyScope.COMPILE
   }
 
   def cancelTask(
       taskId: ExternalSystemTaskId,
       listener: ExternalSystemTaskNotificationListener) = {
-    if (runner != null)
-      runner.cancel()
+    if (runner != null) runner.cancel()
     false
   }
 }

@@ -35,8 +35,7 @@ class PrintStreamTest {
     assertFalse(bos.flushed)
 
     ps.close()
-    if (!executingInJVM)
-      assertTrue(bos.flushed)
+    if (!executingInJVM) assertTrue(bos.flushed)
     assertTrue(bos.closed)
     assertFalse(ps.checkError())
 
@@ -67,8 +66,7 @@ class PrintStreamTest {
         testFlushed: Boolean = false): Unit = {
       val (ps, bos) = newPrintStream(autoFlush = true)
       body(ps)
-      if (testFlushed)
-        assertTrue(bos.flushed)
+      if (testFlushed) assertTrue(bos.flushed)
       assertFalse(ps.checkError())
       assertArrayEquals(expected.map(_.toByte), bos.toByteArray)
     }
@@ -92,8 +90,7 @@ class PrintStreamTest {
         testFlushed: Boolean = false): Unit = {
       val (ps, bos) = newPrintStream(autoFlush = true)
       body(ps)
-      if (testFlushed)
-        assertTrue(bos.flushed)
+      if (testFlushed) assertTrue(bos.flushed)
       assertFalse(ps.checkError())
       assertEquals(expected, bos.toString())
     }
@@ -208,8 +205,7 @@ class PrintStreamTest {
       autoFlush: Boolean): Unit = {
     val (ps, bos) = newPrintStream(autoFlush = autoFlush)
     body(ps)
-    if (autoFlush) assertTrue(bos.flushed)
-    else assertFalse(bos.flushed)
+    if (autoFlush) assertTrue(bos.flushed) else assertFalse(bos.flushed)
     assertFalse(ps.checkError())
     assertEquals(expected, bos.toString())
   }
@@ -235,8 +231,7 @@ class PrintStreamTest {
       autoFlush: Boolean): Unit = {
     val (ps, bos) = newPrintStream(autoFlush = autoFlush)
     body(ps)
-    if (autoFlush) assertTrue(bos.flushed)
-    else assertFalse(bos.flushed)
+    if (autoFlush) assertTrue(bos.flushed) else assertFalse(bos.flushed)
     assertFalse(ps.checkError())
     assertEquals(expected, bos.toString())
   }
@@ -248,8 +243,7 @@ class PrintStreamTest {
         testFlushed: Boolean = false): Unit = {
       val (ps, bos) = newPrintStream(autoFlush = true)
       body(ps)
-      if (testFlushed)
-        assertTrue(bos.flushed)
+      if (testFlushed) assertTrue(bos.flushed)
       assertFalse(ps.checkError())
       assertEquals(expected, bos.toString())
     }

@@ -92,8 +92,7 @@ class PrintWriter(protected[io] var out: Writer, autoFlush: Boolean)
 
   def println(): Unit = {
     write('\n') // In Scala.js the line separator is always LF
-    if (autoFlush)
-      flush()
+    if (autoFlush) flush()
   }
 
   def println(b: Boolean): Unit = { print(b); println() }
@@ -114,8 +113,7 @@ class PrintWriter(protected[io] var out: Writer, autoFlush: Boolean)
 
   def format(fmt: String, args: Array[Object]): PrintWriter = {
     new Formatter(this).format(fmt, args)
-    if (autoFlush)
-      flush()
+    if (autoFlush) flush()
     this
   }
 
@@ -144,7 +142,6 @@ class PrintWriter(protected[io] var out: Writer, autoFlush: Boolean)
 
   @inline private[this] def ensureOpenAndTrapIOExceptions(
       body: => Unit): Unit = {
-    if (closed) setError()
-    else trapIOExceptions(body)
+    if (closed) setError() else trapIOExceptions(body)
   }
 }

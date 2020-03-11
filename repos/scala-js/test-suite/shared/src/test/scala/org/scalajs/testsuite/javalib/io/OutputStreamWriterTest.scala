@@ -38,8 +38,7 @@ class OutputStreamWriterTest {
     assertFalse(bos.flushed)
 
     osw.close()
-    if (!executingInJVM)
-      assertTrue(bos.flushed)
+    if (!executingInJVM) assertTrue(bos.flushed)
     assertTrue(bos.closed)
 
     // can double-close without error
@@ -66,8 +65,7 @@ class OutputStreamWriterTest {
       assertEquals(0, bos.size) // write() methods should buffer
       osw.flush()
     }
-    if (!executingInJVM)
-      assertTrue(bos.flushed)
+    if (!executingInJVM) assertTrue(bos.flushed)
     assertArrayEquals(expected.map(_.toByte), bos.toByteArray)
   }
 

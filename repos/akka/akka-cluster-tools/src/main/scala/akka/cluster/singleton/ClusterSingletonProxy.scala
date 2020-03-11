@@ -231,11 +231,10 @@ final class ClusterSingletonProxy(
     * @param m New cluster member.
     */
   def add(m: Member): Unit = {
-    if (matchingRole(m))
-      trackChange { () ⇒
-        membersByAge -= m // replace
-        membersByAge += m
-      }
+    if (matchingRole(m)) trackChange { () ⇒
+      membersByAge -= m // replace
+      membersByAge += m
+    }
   }
 
   /**
@@ -243,8 +242,7 @@ final class ClusterSingletonProxy(
     * @param m Cluster member to remove.
     */
   def remove(m: Member): Unit = {
-    if (matchingRole(m))
-      trackChange { () ⇒ membersByAge -= m }
+    if (matchingRole(m)) trackChange { () ⇒ membersByAge -= m }
   }
 
   def receive = {

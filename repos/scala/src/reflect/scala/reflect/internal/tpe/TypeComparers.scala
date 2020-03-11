@@ -60,8 +60,7 @@ trait TypeComparers {
     if ((pre1 ne pre2) && (pre1 ne NoPrefix) && (pre2 ne NoPrefix) && pre1 <:< pre2) {
       if (settings.debug) println(s"new isSubPre $sym: $pre1 <:< $pre2")
       true
-    } else
-      false
+    } else false
 
   private def equalSymsAndPrefixes(
       sym1: Symbol,
@@ -70,8 +69,7 @@ trait TypeComparers {
       pre2: Type): Boolean = (
     if (sym1 eq sym2)
       sym1.hasPackageFlag || sym1.owner.hasPackageFlag || phase.erasedTypes || pre1 =:= pre2
-    else
-      (sym1.name == sym2.name) && isUnifiable(pre1, pre2)
+    else (sym1.name == sym2.name) && isUnifiable(pre1, pre2)
   )
 
   def isDifferentType(tp1: Type, tp2: Type): Boolean =
@@ -331,8 +329,7 @@ trait TypeComparers {
       try result = { // if subtype test fails, it should not affect constraints on typevars
         if (subsametypeRecursions >= LogPendingSubTypesThreshold) {
           val p = new SubTypePair(tp1, tp2)
-          if (pendingSubTypes(p))
-            false // see neg/t8146-no-finitary*
+          if (pendingSubTypes(p)) false // see neg/t8146-no-finitary*
           else
             try {
               pendingSubTypes += p
@@ -413,8 +410,8 @@ trait TypeComparers {
   private def isThisAndSuperSubtype(tp1: Type, tp2: Type): Boolean =
     (tp1, tp2) match {
       case (
-          SingleType(ThisType(lpre), v1),
-          SingleType(SuperType(ThisType(rpre), _), v2)) =>
+            SingleType(ThisType(lpre), v1),
+            SingleType(SuperType(ThisType(rpre), _), v2)) =>
         (lpre eq rpre) && (v1.overrideChain contains v2)
       case _ => false
     }

@@ -79,8 +79,7 @@ object StressTestLog {
     override def run() {
       try {
         var offset = 0
-        while (running.get)
-          work()
+        while (running.get) work()
       } catch {
         case e: Exception =>
           e.printStackTrace()
@@ -99,8 +98,7 @@ object StressTestLog {
       require(
         logAppendInfo.firstOffset == offset && logAppendInfo.lastOffset == offset)
       offset += 1
-      if (offset % 1000 == 0)
-        Thread.sleep(500)
+      if (offset % 1000 == 0) Thread.sleep(500)
     }
   }
 

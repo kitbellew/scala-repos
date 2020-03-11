@@ -85,12 +85,9 @@ object Simplification {
   val primes: Stream[Int] = {
     @tailrec
     def next(n: Int, stream: Stream[Int]): Stream[Int] =
-      if (stream.isEmpty || (stream.head ** 2) > n)
-        n #:: loop(n + 2, primes)
-      else if (n % stream.head == 0)
-        next(n + 2, primes)
-      else
-        next(n, stream.tail)
+      if (stream.isEmpty || (stream.head ** 2) > n) n #:: loop(n + 2, primes)
+      else if (n % stream.head == 0) next(n + 2, primes)
+      else next(n, stream.tail)
 
     def loop(n: Int, stream: Stream[Int]): Stream[Int] = next(n, stream)
 

@@ -100,8 +100,8 @@ trait ItemsList[T <: Mapper[T]] {
             case (aval: Ordered[_], bval: Ordered[_]) =>
               aval.asInstanceOf[Ordered[Any]] < bval.asInstanceOf[Ordered[Any]]
             case (
-                aval: java.lang.Comparable[_],
-                bval: java.lang.Comparable[_]) =>
+                  aval: java.lang.Comparable[_],
+                  bval: java.lang.Comparable[_]) =>
               (aval.asInstanceOf[java.lang.Comparable[Any]] compareTo bval
                 .asInstanceOf[java.lang.Comparable[Any]]) < 0
             case (null, _)    => sortNullFirst
@@ -124,10 +124,8 @@ trait ItemsList[T <: Mapper[T]] {
     * Marks an item pending for removal
     */
   def remove(i: T) {
-    if (added.exists(i.eq))
-      added = added.filter(i.ne)
-    else if (current.contains(i))
-      removed ::= i
+    if (added.exists(i.eq)) added = added.filter(i.ne)
+    else if (current.contains(i)) removed ::= i
   }
 
   /**
@@ -316,12 +314,9 @@ trait ItemsListEditor[T <: Mapper[T]] {
             ".msg" #> {
               item.validate match {
                 case Nil =>
-                  if (!item.saved_?)
-                    Text(?("New"))
-                  else if (item.dirty_?)
-                    Text(?("Unsaved"))
-                  else
-                    NodeSeq.Empty
+                  if (!item.saved_?) Text(?("New"))
+                  else if (item.dirty_?) Text(?("Unsaved"))
+                  else NodeSeq.Empty
                 case errors =>
                   <ul>{errors.flatMap(e => <li>{e.msg}</li>)}</ul>
               }

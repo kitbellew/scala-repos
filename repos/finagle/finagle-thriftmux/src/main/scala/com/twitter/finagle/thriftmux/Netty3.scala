@@ -208,8 +208,7 @@ private[finagle] class PipelineFactory(
     override def messageReceived(
         ctx: ChannelHandlerContext,
         e: MessageEvent): Unit = {
-      if (n.incrementAndGet() > 1) q.offer(e)
-      else super.messageReceived(ctx, e)
+      if (n.incrementAndGet() > 1) q.offer(e) else super.messageReceived(ctx, e)
     }
 
     override def writeRequested(
@@ -240,8 +239,7 @@ private[finagle] class PipelineFactory(
     private[this] var q = new mutable.Queue[T]
 
     def offer(e: T): Boolean = synchronized {
-      if (q != null)
-        q.enqueue(e)
+      if (q != null) q.enqueue(e)
       q != null
     }
 
@@ -274,8 +272,7 @@ private[finagle] class PipelineFactory(
     override def writeRequested(
         ctx: ChannelHandlerContext,
         e: MessageEvent): Unit = {
-      if (!writeq.offer(e))
-        super.writeRequested(ctx, e)
+      if (!writeq.offer(e)) super.writeRequested(ctx, e)
     }
 
     override def messageReceived(
@@ -379,8 +376,7 @@ private[finagle] class PipelineFactory(
       // This leaves interdependence between data messages
       // (writeRequested) and other messages (e.g. channel events).
       // Here there are none.
-      for (e <- writeq.drain())
-        pipeline.sendDownstream(e)
+      for (e <- writeq.drain()) pipeline.sendDownstream(e)
     }
   }
 

@@ -165,8 +165,7 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
       _hashes(j) = h
       _keys(j) = key.asInstanceOf[AnyRef]
       _values(j) = value.asInstanceOf[AnyRef]
-      if ((i & VacantBit) != 0) _vacant -= 1
-      else if (imbalanced) repack()
+      if ((i & VacantBit) != 0) _vacant -= 1 else if (imbalanced) repack()
       value
     } else _values(i).asInstanceOf[V]
   }
@@ -248,8 +247,7 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
       _keys(j) = k
       _values(j) = value.asInstanceOf[AnyRef]
       _size += 1
-      if ((i & VacantBit) != 0) _vacant -= 1
-      else if (imbalanced) repack()
+      if ((i & VacantBit) != 0) _vacant -= 1 else if (imbalanced) repack()
       None
     } else {
       val ans = Some(_values(i).asInstanceOf[V])
@@ -274,8 +272,7 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
       _keys(j) = k
       _values(j) = value.asInstanceOf[AnyRef]
       _size += 1
-      if ((i & VacantBit) != 0) _vacant -= 1
-      else if (imbalanced) repack()
+      if ((i & VacantBit) != 0) _vacant -= 1 else if (imbalanced) repack()
     } else {
       _hashes(i) = h
       _keys(i) = k

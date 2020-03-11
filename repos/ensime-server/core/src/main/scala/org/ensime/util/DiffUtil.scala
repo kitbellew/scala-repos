@@ -37,8 +37,7 @@ object DiffUtil {
 
   def fileModificationTimeOrEpoch(file: File): String = {
     val format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss Z")
-    if (file.exists)
-      format.format(new Date(file.lastModified()))
+    if (file.exists) format.format(new Date(file.lastModified()))
     else {
       format.setTimeZone(TimeZone.getTimeZone("UTC"))
       format.format(new Date(0L))

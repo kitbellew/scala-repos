@@ -50,10 +50,8 @@ trait ArrayOps[T]
 
   override def toArray[U >: T: ClassTag]: Array[U] = {
     val thatElementClass = arrayElementClass(implicitly[ClassTag[U]])
-    if (elementClass eq thatElementClass)
-      repr.asInstanceOf[Array[U]]
-    else
-      super.toArray[U]
+    if (elementClass eq thatElementClass) repr.asInstanceOf[Array[U]]
+    else super.toArray[U]
   }
 
   def :+[B >: T: ClassTag](elem: B): Array[B] = {
@@ -87,8 +85,7 @@ trait ArrayOps[T]
       case is: scala.collection.IndexedSeq[_] => is.size
       case _                                  => 0
     }.sum)
-    for (xs <- this)
-      b ++= asTrav(xs)
+    for (xs <- this) b ++= asTrav(xs)
     b.result()
   }
 

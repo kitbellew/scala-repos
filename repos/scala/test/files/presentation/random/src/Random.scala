@@ -54,8 +54,7 @@ object randomserver {
   def main(args: Array[String]): Unit = {
     try {
       val listener = new ServerSocket(9999);
-      while (true)
-        new ServerThread(listener.accept()).start();
+      while (true) new ServerThread(listener.accept()).start();
       listener.close()
     } catch {
       case e: IOException =>

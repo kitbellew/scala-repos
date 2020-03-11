@@ -40,8 +40,7 @@ abstract class DownloadingAndImportingTestCase
     val settings = new SbtProjectSettings
     val internalSdk = JavaAwareProjectJdkTableImpl.getInstanceEx.getInternalJdk
     val sdk =
-      if (internalSdk == null) IdeaTestUtil.getMockJdk18
-      else internalSdk
+      if (internalSdk == null) IdeaTestUtil.getMockJdk18 else internalSdk
     settings.setJdk(sdk.getName)
     settings.setCreateEmptyContentRootDirectories(true)
     settings
@@ -89,8 +88,7 @@ abstract class DownloadingAndImportingTestCase
       val internalSdk =
         JavaAwareProjectJdkTableImpl.getInstanceEx.getInternalJdk
       val sdk =
-        if (internalSdk == null) IdeaTestUtil.getMockJdk17
-        else internalSdk
+        if (internalSdk == null) IdeaTestUtil.getMockJdk17 else internalSdk
 
       if (ProjectJdkTable.getInstance().findJdk(sdk.getName) == null) {
         ProjectJdkTable.getInstance().addJdk(sdk)

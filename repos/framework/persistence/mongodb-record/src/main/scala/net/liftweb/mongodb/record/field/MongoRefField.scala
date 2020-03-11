@@ -92,13 +92,11 @@ trait MongoRefField[RefType <: MongoRecord[RefType], MyType]
     ) % ("tabindex" -> tabIndex.toString)
 
   override def toForm =
-    if (options.length > 0)
-      uniqueFieldId match {
-        case Full(id) => Full(elem % ("id" -> id))
-        case _        => Full(elem)
-      }
-    else
-      Empty
+    if (options.length > 0) uniqueFieldId match {
+      case Full(id) => Full(elem % ("id" -> id))
+      case _        => Full(elem)
+    }
+    else Empty
 }
 
 class ObjectIdRefField[

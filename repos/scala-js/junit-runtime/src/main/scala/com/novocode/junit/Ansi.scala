@@ -5,8 +5,7 @@ object Ansi {
   private[this] final val NORMAL = "\u001B[0m"
 
   def c(s: String, colorSequence: String): String =
-    if (colorSequence == null) s
-    else colorSequence + s + NORMAL
+    if (colorSequence == null) s else colorSequence + s + NORMAL
 
   def filterAnsi(s: String): String = {
     if (s == null) { null }
@@ -18,8 +17,7 @@ object Ansi {
         val c = s.charAt(i)
         if (c == '\u001B') {
           i += 1
-          while (i < len && s.charAt(i) != 'm')
-            i += 1
+          while (i < len && s.charAt(i) != 'm') i += 1
         } else { r += c }
         i += 1
       }

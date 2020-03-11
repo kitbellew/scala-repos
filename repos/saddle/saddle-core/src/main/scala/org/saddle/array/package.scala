@@ -222,10 +222,7 @@ package object array {
     var i = 0
     while (i < offsets.length) {
       val idx = offsets(i)
-      if (idx == -1)
-        res(i) = missing
-      else
-        res(i) = arr(idx)
+      if (idx == -1) res(i) = missing else res(i) = arr(idx)
       i += 1
     }
     res
@@ -396,10 +393,8 @@ package object array {
       stop: Double,
       num: Int = 50,
       endpoint: Boolean = true): Array[Double] = {
-    if (num <= 0)
-      Array.empty[Double]
-    else if (num == 1)
-      Array(start)
+    if (num <= 0) Array.empty[Double]
+    else if (num == 1) Array(start)
     else {
       val result = Array.ofDim[Double](num)
       val step = (stop - start) / (num - (if (endpoint) 1 else 0))

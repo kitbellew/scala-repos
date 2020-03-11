@@ -230,8 +230,7 @@ class MetricsStatsReceiver(
     val count = adder.sum()
     if (count > CreateRequestLimit)
       Some(Issue(s"StatReceiver.$which() has been called $count times"))
-    else
-      None
+    else None
   }
 
   GlobalRules.get.add(

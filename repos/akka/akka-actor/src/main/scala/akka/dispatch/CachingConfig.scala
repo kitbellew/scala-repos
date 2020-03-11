@@ -72,8 +72,7 @@ private[akka] class CachingConfig(_config: Config) extends Config {
                   true,
                   v.atKey("cached"),
                   v.unwrapped().asInstanceOf[String])
-              else
-                ValuePathEntry(true, true, v.atKey("cached"))
+              else ValuePathEntry(true, true, v.atKey("cached"))
           }
       }
 
@@ -100,14 +99,12 @@ private[akka] class CachingConfig(_config: Config) extends Config {
 
   def resolve(options: ConfigResolveOptions) = {
     val resolved = config.resolve(options)
-    if (resolved eq config) this
-    else new CachingConfig(resolved)
+    if (resolved eq config) this else new CachingConfig(resolved)
   }
 
   def hasPath(path: String) = {
     val entry = getPathEntry(path)
-    if (entry.valid)
-      entry.exists
+    if (entry.valid) entry.exists
     else // run the real code to get proper exceptions
       config.hasPath(path)
   }

@@ -63,8 +63,7 @@ class ConsumerIterator[K, V](
     // if we don't have an iterator, get one
     var localCurrent = current.get()
     if (localCurrent == null || !localCurrent.hasNext) {
-      if (consumerTimeoutMs < 0)
-        currentDataChunk = channel.take
+      if (consumerTimeoutMs < 0) currentDataChunk = channel.take
       else {
         currentDataChunk =
           channel.poll(consumerTimeoutMs, TimeUnit.MILLISECONDS)

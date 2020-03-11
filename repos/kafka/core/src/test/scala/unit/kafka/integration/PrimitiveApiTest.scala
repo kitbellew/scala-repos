@@ -185,8 +185,7 @@ class PrimitiveApiTest
     {
       // send some invalid partitions
       val builder = new FetchRequestBuilder()
-      for ((topic, partition) <- topics)
-        builder.addFetch(topic, -1, 0, 10000)
+      for ((topic, partition) <- topics) builder.addFetch(topic, -1, 0, 10000)
 
       try {
         val request = builder.build()

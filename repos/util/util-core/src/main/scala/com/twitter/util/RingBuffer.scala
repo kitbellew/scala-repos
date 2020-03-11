@@ -41,8 +41,7 @@ class RingBuffer[A: ClassTag](val maxSize: Int) extends Seq[A] {
   def +=(elem: A) {
     array(write) = elem
     write = (write + 1) % maxSize
-    if (count_ == maxSize) read = (read + 1) % maxSize
-    else count_ += 1
+    if (count_ == maxSize) read = (read + 1) % maxSize else count_ += 1
   }
 
   /**

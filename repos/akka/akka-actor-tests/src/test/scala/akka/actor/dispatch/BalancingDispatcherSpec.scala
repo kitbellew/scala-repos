@@ -70,8 +70,7 @@ class BalancingDispatcherSpec extends AkkaSpec(BalancingDispatcherSpec.config) {
         if (i % 20 == 0) {
           fast ! i
           sentToFast += 1
-        } else
-          slow ! i
+        } else slow ! i
       }
 
       // now send some messages to actors to keep the dispatcher dispatching messages
@@ -80,8 +79,7 @@ class BalancingDispatcherSpec extends AkkaSpec(BalancingDispatcherSpec.config) {
         if (i % 2 == 0) {
           fast ! i
           sentToFast += 1
-        } else
-          slow ! i
+        } else slow ! i
       }
 
       finishedCounter.await(5, TimeUnit.SECONDS)

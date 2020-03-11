@@ -149,8 +149,7 @@ object ScalaCompletionUtil {
         parent.getParent match {
           case _: ScBlockExpr | _: ScTemplateBody | _: ScBlock |
               _: ScCaseClause =>
-            if (awful(parent, leaf))
-              return (true, true)
+            if (awful(parent, leaf)) return (true, true)
           case _ =>
         }
       case _ =>

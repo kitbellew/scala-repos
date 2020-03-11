@@ -64,8 +64,7 @@ trait BinaryUpdateRegistry[A <: AnyRef, B, Op <: OpType]
           method.asInstanceOf[InPlaceImpl2[Op, A, B]].apply(a, b)
         case _ =>
           val selected = selectBestOption(options)
-          if (selected.size != 1)
-            multipleOptions(a, b, options)
+          if (selected.size != 1) multipleOptions(a, b, options)
           else {
             val method = selected.values.head
             cache.put(ac -> bc, Some(method))

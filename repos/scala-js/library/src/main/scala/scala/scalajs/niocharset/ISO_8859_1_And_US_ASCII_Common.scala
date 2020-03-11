@@ -90,8 +90,7 @@ private[niocharset] abstract class ISO_8859_1_And_US_ASCII_Common protected ( //
           }
         }
 
-        if (overflow) CoderResult.OVERFLOW
-        else CoderResult.UNDERFLOW
+        if (overflow) CoderResult.OVERFLOW else CoderResult.UNDERFLOW
       }
       // scalastyle:on return
     }
@@ -132,8 +131,7 @@ private[niocharset] abstract class ISO_8859_1_And_US_ASCII_Common protected ( //
 
             if (inPos == inEnd) {
               finalize {
-                if (overflow) CoderResult.OVERFLOW
-                else CoderResult.UNDERFLOW
+                if (overflow) CoderResult.OVERFLOW else CoderResult.UNDERFLOW
               }
             } else {
               val c = inArr(inPos)
@@ -149,8 +147,7 @@ private[niocharset] abstract class ISO_8859_1_And_US_ASCII_Common protected ( //
                       val c2 = inArr(inPos + 1)
                       if (Character.isLowSurrogate(c2))
                         CoderResult.unmappableForLength(2)
-                      else
-                        CoderResult.malformedForLength(1)
+                      else CoderResult.malformedForLength(1)
                     } else { CoderResult.UNDERFLOW }
                   } else { CoderResult.unmappableForLength(1) }
                 }

@@ -29,10 +29,7 @@ class ConcurrentLinkedQueue[E]()
 
       _size += 1
 
-      if (oldLast ne null)
-        oldLast.next = last
-      else
-        head = last
+      if (oldLast ne null) oldLast.next = last else head = last
 
       true
     }
@@ -47,8 +44,7 @@ class ConcurrentLinkedQueue[E]()
       val oldHead = head
       head = oldHead.next
 
-      if (head eq null)
-        last = null
+      if (head eq null) last = null
 
       _size -= 1
       oldHead.value
@@ -56,8 +52,7 @@ class ConcurrentLinkedQueue[E]()
   }
 
   override def peek(): E =
-    if (isEmpty()) null.asInstanceOf[E]
-    else head.value
+    if (isEmpty()) null.asInstanceOf[E] else head.value
 
   override def isEmpty(): Boolean =
     _size == 0
@@ -67,8 +62,7 @@ class ConcurrentLinkedQueue[E]()
 
   private def getNodeAt(index: Int): Node[E] = {
     var current: Node[E] = head
-    for (_ <- 0 until index)
-      current = current.next
+    for (_ <- 0 until index) current = current.next
     current
   }
 
@@ -88,8 +82,7 @@ class ConcurrentLinkedQueue[E]()
         _size -= 1
 
         prev.next = current.next
-        if (current eq last)
-          last = prev
+        if (current eq last) last = prev
       }
     }
   }
@@ -99,8 +92,7 @@ class ConcurrentLinkedQueue[E]()
 
       private var nextNode: Node[Node[E]] = {
         val originalHead: Node[Node[E]] =
-          if (head ne null) new Node(head)
-          else null
+          if (head ne null) new Node(head) else null
 
         var current = originalHead
         while (current ne null) {
@@ -121,8 +113,7 @@ class ConcurrentLinkedQueue[E]()
         nextNode ne null
 
       def next(): E = {
-        if (nextNode eq null)
-          throw new NoSuchElementException()
+        if (nextNode eq null) throw new NoSuchElementException()
 
         lastNode = nextNode
         nextNode = nextNode.next
@@ -131,8 +122,7 @@ class ConcurrentLinkedQueue[E]()
       }
 
       def remove(): Unit = {
-        if (lastNode eq null)
-          throw new IllegalStateException()
+        if (lastNode eq null) throw new IllegalStateException()
 
         removeNode(lastNode.value)
 

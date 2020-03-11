@@ -63,8 +63,7 @@ case class Binomial(n: Int, p: Double)(implicit rand: RandBasis = Rand)
       var ok = true
       while (j < n && ok) {
         t *= rand.uniform.draw()
-        if (t < g) ok = false
-        else j += 1
+        if (t < g) ok = false else j += 1
       }
       bnl = if (j <= n) j else n
     } else {

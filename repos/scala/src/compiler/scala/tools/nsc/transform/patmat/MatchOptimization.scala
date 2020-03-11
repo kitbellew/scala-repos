@@ -452,8 +452,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
         case (Ident(nme.WILDCARD), Ident(nme.WILDCARD))     => true
         // type-switch for catch
         case (
-            Bind(_, Typed(Ident(nme.WILDCARD), tpX)),
-            Bind(_, Typed(Ident(nme.WILDCARD), tpY))) =>
+              Bind(_, Typed(Ident(nme.WILDCARD), tpX)),
+              Bind(_, Typed(Ident(nme.WILDCARD), tpY))) =>
           tpX.tpe =:= tpY.tpe
         case _ => false
       }
@@ -470,8 +470,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
         case (Ident(nme.WILDCARD), _)                       => true
         // type-switch for catch
         case (
-            Bind(_, Typed(Ident(nme.WILDCARD), tpX)),
-            Bind(_, Typed(Ident(nme.WILDCARD), tpY))) =>
+              Bind(_, Typed(Ident(nme.WILDCARD), tpX)),
+              Bind(_, Typed(Ident(nme.WILDCARD), tpY))) =>
           instanceOfTpImplies(tpY.tpe, tpX.tpe)
         case _ => false
       }
@@ -732,8 +732,7 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
         bindersAndCases: List[(Symbol, List[TreeMaker])],
         pt: Type): Option[List[CaseDef]] = {
       val caseDefsWithDefault = typeSwitchMaker(bindersAndCases, pt)
-      if (caseDefsWithDefault isEmpty) None
-      else Some(caseDefsWithDefault)
+      if (caseDefsWithDefault isEmpty) None else Some(caseDefsWithDefault)
     }
   }
 
@@ -748,10 +747,9 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
       // TODO: do CSE on result of doDCE(prevBinder, cases, pt)
       val optCases = doCSE(prevBinder, cases, pt)
       val toHoist = (
-        for (treeMakers <- optCases)
-          yield treeMakers.collect {
-            case tm: ReusedCondTreeMaker => tm.treesToHoist
-          }
+        for (treeMakers <- optCases) yield treeMakers.collect {
+          case tm: ReusedCondTreeMaker => tm.treesToHoist
+        }
       ).flatten.flatten.toList
       (optCases, toHoist)
     }

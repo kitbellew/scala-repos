@@ -93,10 +93,7 @@ object CaseClassBasedSetterImpl {
     @annotation.tailrec
     def normalized(tpe: Type): Type = {
       val norm = tpe.normalize
-      if (!(norm =:= tpe))
-        normalized(norm)
-      else
-        tpe
+      if (!(norm =:= tpe)) normalized(norm) else tpe
     }
 
     def matchField(outerType: Type): SetterBuilder = {

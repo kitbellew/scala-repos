@@ -359,8 +359,7 @@ trait DB extends Loggable {
         // stale and unexpectedly closed connections may throw here
         try {
           if (!(c.getAutoCommit() || manualRollback)) {
-            if (rollback) c.rollback
-            else c.commit
+            if (rollback) c.rollback else c.commit
           }
         } catch {
           case e: SQLException =>
@@ -474,8 +473,7 @@ trait DB extends Loggable {
    If the column is null, return null rather than the boxed primitive
    */
   def checkNull[T](rs: ResultSet, pos: Int, res: => T): T = {
-    if (null eq rs.getObject(pos)) null.asInstanceOf[T]
-    else res
+    if (null eq rs.getObject(pos)) null.asInstanceOf[T] else res
   }
 
   private def asAny(pos: Int, rs: ResultSet, md: ResultSetMetaData): Any = {

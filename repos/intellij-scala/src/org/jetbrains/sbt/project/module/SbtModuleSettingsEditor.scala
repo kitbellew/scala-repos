@@ -99,7 +99,6 @@ private class ResolversModel(val resolvers: Seq[SbtResolver])
         .getOrElse(SbtResolverIndex.NO_TIMESTAMP)
       if (ts == SbtResolverIndex.NO_TIMESTAMP)
         SbtBundle("sbt.settings.resolvers.neverUpdated")
-      else
-        DateFormatUtil.formatDate(ts)
+      else DateFormatUtil.formatDate(ts)
   }
 }

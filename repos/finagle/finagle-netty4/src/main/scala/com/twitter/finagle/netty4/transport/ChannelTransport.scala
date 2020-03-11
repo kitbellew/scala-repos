@@ -36,8 +36,7 @@ private[netty4] class ChannelTransport[In, Out](ch: Channel)
   val onClose: Future[Throwable] = closed
 
   private[this] def fail(exc: Throwable): Unit = {
-    if (!failed.compareAndSet(false, true))
-      return
+    if (!failed.compareAndSet(false, true)) return
 
     // Do not discard existing queue items. Doing so causes a race
     // between reading off of the transport and a peer closing it.
@@ -69,12 +68,9 @@ private[netty4] class ChannelTransport[In, Out](ch: Channel)
       val p = new Promise[Unit]
       op.addListener(new ChannelFutureListener {
         def operationComplete(f: ChannelFuture): Unit =
-          if (f.isSuccess)
-            p.setDone()
-          else if (f.isCancelled)
-            p.setException(new CancelledWriteException)
-          else
-            p.setException(ChannelException(f.cause, remoteAddress))
+          if (f.isSuccess) p.setDone()
+          else if (f.isCancelled) p.setException(new CancelledWriteException)
+          else p.setException(ChannelException(f.cause, remoteAddress))
       })
 
       p.setInterruptHandler {

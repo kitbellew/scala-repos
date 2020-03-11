@@ -13,12 +13,9 @@ object Charset {
     * Converts from mysql charset to java charset.
     */
   def apply(charset: Short): JCharset =
-    if (isUtf8(charset))
-      JCharset.forName("UTF-8")
-    else if (isLatin1(charset))
-      JCharset.forName("ISO-8859-1")
-    else if (isBinary(charset))
-      JCharset.forName("US-ASCII")
+    if (isUtf8(charset)) JCharset.forName("UTF-8")
+    else if (isLatin1(charset)) JCharset.forName("ISO-8859-1")
+    else if (isBinary(charset)) JCharset.forName("US-ASCII")
     else
       throw new IllegalArgumentException(
         "Charset %d is not supported.".format(charset))

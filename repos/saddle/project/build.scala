@@ -105,18 +105,14 @@ object SaddleBuild extends sbt.Build {
 object Shared {
   def testDeps(version: String, conf: String = "test") = {
     val specs2 =
-      if (version.startsWith("2.1"))
-        "org.specs2" %% "specs2" % "2.4.1"
+      if (version.startsWith("2.1")) "org.specs2" %% "specs2" % "2.4.1"
       else if (version.startsWith("2.9.3"))
         "org.specs2" %% "specs2" % "1.12.4.1"
-      else
-        "org.specs2" %% "specs2" % "1.12.4"
+      else "org.specs2" %% "specs2" % "1.12.4"
 
     val scalacheck =
-      if (version.startsWith("2.9"))
-        "org.scalacheck" %% "scalacheck" % "1.10.1"
-      else
-        "org.scalacheck" %% "scalacheck" % "1.11.5"
+      if (version.startsWith("2.9")) "org.scalacheck" %% "scalacheck" % "1.10.1"
+      else "org.scalacheck" %% "scalacheck" % "1.11.5"
 
     Seq(
       specs2 % conf,
@@ -174,8 +170,7 @@ object Shared {
       val nexus = "https://oss.sonatype.org/"
       if (version.trim.endsWith("SNAPSHOT"))
         Some("snapshots" at nexus + "content/repositories/snapshots")
-      else
-        Some("releases" at nexus + "service/local/staging/deploy/maven2")
+      else Some("releases" at nexus + "service/local/staging/deploy/maven2")
     },
     credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
     compile <<= (compile in Compile) dependsOn (compile in Test)

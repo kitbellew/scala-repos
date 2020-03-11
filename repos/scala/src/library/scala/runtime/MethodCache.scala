@@ -79,6 +79,5 @@ private[scala] final class PolyMethodCache(
   def add(forReceiver: JClass[_], forMethod: JMethod): MethodCache =
     if (complexity < MaxComplexity)
       new PolyMethodCache(this, forReceiver, forMethod, complexity + 1)
-    else
-      new MegaMethodCache(forMethod.getName, forMethod.getParameterTypes)
+    else new MegaMethodCache(forMethod.getName, forMethod.getParameterTypes)
 }

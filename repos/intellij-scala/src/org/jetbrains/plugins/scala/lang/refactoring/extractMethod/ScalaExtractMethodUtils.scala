@@ -171,9 +171,9 @@ object ScalaExtractMethodUtils {
       override def visitReference(ref: ScReferenceElement) {
         ref.bind() match {
           case Some(
-              ScalaResolveResult(
-                named: PsiNamedElement,
-                subst: ScSubstitutor)) =>
+                ScalaResolveResult(
+                  named: PsiNamedElement,
+                  subst: ScSubstitutor)) =>
             if (named.getContainingFile == method.getContainingFile && named.getTextOffset < offset &&
                 !named.name.startsWith("_")) {
               val oldName = named.name

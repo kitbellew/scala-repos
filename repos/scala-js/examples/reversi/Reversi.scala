@@ -141,8 +141,7 @@ class Reversi(jQuery: JQueryStatic, playground: JQuery) {
       val x = offsetX.toInt / SquareSizePx
       val y = offsetY.toInt / SquareSizePx
 
-      if (inBounds(x, y))
-        clickSquare(board(x)(y))
+      if (inBounds(x, y)) clickSquare(board(x)(y))
     }
 
     // Build the status bar
@@ -241,8 +240,7 @@ class Reversi(jQuery: JQueryStatic, playground: JQuery) {
       allInDir.span(_.owner == currentPlayer.opponent)
 
     val success = remaining.headOption.exists(_.owner == currentPlayer)
-    if (success) toFlip
-    else Nil
+    if (success) toFlip else Nil
   }
 
   def allSquaresInDirection(
@@ -254,8 +252,7 @@ class Reversi(jQuery: JQueryStatic, playground: JQuery) {
     val nexty = fromy + diry
     if (inBounds(nextx, nexty))
       board(nextx)(nexty) :: allSquaresInDirection(nextx, nexty, dirx, diry)
-    else
-      Nil
+    else Nil
   }
 
   def computeScore(): (Int, Int) = {

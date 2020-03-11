@@ -100,8 +100,7 @@ class AndLotsColumn(cols: Array[BoolColumn])
     var result = true
     var i = 0
     while (i < cols.length && result) {
-      if (cols(i).isDefinedAt(row))
-        result = cols(i)(row)
+      if (cols(i).isDefinedAt(row)) result = cols(i)(row)
       i += 1
     }
     result
@@ -115,8 +114,7 @@ class OrLotsColumn(cols: Array[BoolColumn])
     var result = false
     var i = 0
     while (i < cols.length && !result) {
-      if (cols(i).isDefinedAt(row))
-        result = cols(i)(row)
+      if (cols(i).isDefinedAt(row)) result = cols(i)(row)
       i += 1
     }
     result

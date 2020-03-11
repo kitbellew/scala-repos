@@ -112,16 +112,12 @@ object EnsimeConfigFixture {
 
     def renameAndCopy(from: File): File = {
       val to = rename(from)
-      if (!to.isJar)
-        copyDirectory(from, to)
-      else
-        copyFile(from, to)
+      if (!to.isJar) copyDirectory(from, to) else copyFile(from, to)
       to
     }
 
     def renameAndCopyTarget(from: File): File =
-      if (copyTargets) renameAndCopy(from)
-      else rename(from)
+      if (copyTargets) renameAndCopy(from) else rename(from)
 
     // I tried using shapeless everywhere here, but it OOMd the compiler :-(
 

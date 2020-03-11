@@ -103,8 +103,7 @@ package object mat {
     * @param n The number of rows/columns of the square matrix
     */
   def ident(n: Int): Mat[Double] = {
-    if (n <= 0)
-      Mat.empty[Double]
+    if (n <= 0) Mat.empty[Double]
     else {
       val tmp = Array.ofDim[Double](n * n)
       var i = 0

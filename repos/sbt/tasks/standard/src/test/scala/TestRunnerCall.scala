@@ -20,10 +20,7 @@ object TaskRunnerCallTest extends Properties("TaskRunner Call") {
     require(i > 0)
     lazy val next: (Int, Int, Int) => Task[Int] =
       (index, x1, x2) => {
-        if (index == i)
-          task(x2)
-        else
-          iterate((index + 1, x2, x1 + x2))
+        if (index == i) task(x2) else iterate((index + 1, x2, x1 + x2))
       }
     def iterate(iteration: (Int, Int, Int)) =
       task(iteration) flatMap next.tupled
@@ -32,10 +29,7 @@ object TaskRunnerCallTest extends Properties("TaskRunner Call") {
   final def fibDirect(i: Int): Int = {
     require(i > 0)
     def build(index: Int, x1: Int, x2: Int): Int =
-      if (index == i)
-        x2
-      else
-        build(index + 1, x2, x1 + x2)
+      if (index == i) x2 else build(index + 1, x2, x1 + x2)
     build(1, 0, 1)
   }
 }

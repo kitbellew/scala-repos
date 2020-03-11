@@ -34,24 +34,19 @@ class OffsetMapTest extends JUnitSuite {
   @Test
   def testClear() {
     val map = new SkimpyOffsetMap(4000)
-    for (i <- 0 until 10)
-      map.put(key(i), i)
-    for (i <- 0 until 10)
-      assertEquals(i.toLong, map.get(key(i)))
+    for (i <- 0 until 10) map.put(key(i), i)
+    for (i <- 0 until 10) assertEquals(i.toLong, map.get(key(i)))
     map.clear()
-    for (i <- 0 until 10)
-      assertEquals(map.get(key(i)), -1L)
+    for (i <- 0 until 10) assertEquals(map.get(key(i)), -1L)
   }
 
   def key(key: Int) = ByteBuffer.wrap(key.toString.getBytes)
 
   def validateMap(items: Int, loadFactor: Double = 0.5): SkimpyOffsetMap = {
     val map = new SkimpyOffsetMap((items / loadFactor * 24).toInt)
-    for (i <- 0 until items)
-      map.put(key(i), i)
+    for (i <- 0 until items) map.put(key(i), i)
     var misses = 0
-    for (i <- 0 until items)
-      assertEquals(map.get(key(i)), i.toLong)
+    for (i <- 0 until items) assertEquals(map.get(key(i)), i.toLong)
     map
   }
 

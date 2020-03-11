@@ -773,16 +773,15 @@ class FutureSpec
           val originalThread = Thread.currentThread
           // run some nested futures
           val nested =
-            for (i ← 1 to 100)
-              yield Future.successful("abc") flatMap { _ ⇒
+            for (i ← 1 to 100) yield Future.successful("abc") flatMap { _ ⇒
+              if (Thread.currentThread ne originalThread)
+                failCount.incrementAndGet
+              // another level of nesting
+              Future.successful("xyz") map { _ ⇒
                 if (Thread.currentThread ne originalThread)
                   failCount.incrementAndGet
-                // another level of nesting
-                Future.successful("xyz") map { _ ⇒
-                  if (Thread.currentThread ne originalThread)
-                    failCount.incrementAndGet
-                }
               }
+            }
           Future.sequence(nested)
         }
         Await.ready(f, timeout.duration)

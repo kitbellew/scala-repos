@@ -333,8 +333,8 @@ trait Slice { source =>
       case CPathIndex(i) =>
         source.columns collect {
           case (
-              ColumnRef(CPath(CPathArray, xs @ _*), CArrayType(elemType)),
-              col: HomogeneousArrayColumn[_]) =>
+                ColumnRef(CPath(CPathArray, xs @ _*), CArrayType(elemType)),
+                col: HomogeneousArrayColumn[_]) =>
             (ColumnRef(CPath(xs: _*), elemType), col.select(i))
 
           case (ColumnRef(CPath(CPathIndex(`i`), xs @ _*), ctype), col) =>
@@ -435,9 +435,9 @@ trait Slice { source =>
             cType,
             CPath(cPath: _*))) getOrElse (retain)
         case (
-            JArrayFixedT(elems),
-            CArrayType(cElemType),
-            CPath(CPathArray, cPath @ _*)) =>
+              JArrayFixedT(elems),
+              CArrayType(cElemType),
+              CPath(CPathArray, cPath @ _*)) =>
           val mappers =
             elems mapValues (flattenDeleteTree(_, cElemType, CPath(cPath: _*)))
           xs =>
@@ -449,9 +449,9 @@ trait Slice { source =>
                 }
             })
         case (
-            JArrayHomogeneousT(jType),
-            CArrayType(cType),
-            CPath(CPathArray, _*)) if Schema.ctypes(jType)(cType) =>
+              JArrayHomogeneousT(jType),
+              CArrayType(cType),
+              CPath(CPathArray, _*)) if Schema.ctypes(jType)(cType) =>
           delete
         case _ =>
           retain
@@ -465,8 +465,8 @@ trait Slice { source =>
         None
 
       case (
-          ref @ ColumnRef(cpath, ctype: CArrayType[a]),
-          col: HomogeneousArrayColumn[_]) if ctype == col.tpe =>
+            ref @ ColumnRef(cpath, ctype: CArrayType[a]),
+            col: HomogeneousArrayColumn[_]) if ctype == col.tpe =>
         val trans = flattenDeleteTree(jtype, ctype, cpath)
         Some(
           (
@@ -512,10 +512,8 @@ trait Slice { source =>
 
     val size = source.size
     val columns =
-      if (becomeEmpty.isEmpty)
-        withoutPrefixes
-      else
-        withoutPrefixes + (ref -> emptyObjectColumn)
+      if (becomeEmpty.isEmpty) withoutPrefixes
+      else withoutPrefixes + (ref -> emptyObjectColumn)
   }
 
   def typed(jtpe: JType): Slice = new Slice {
@@ -591,8 +589,8 @@ trait Slice { source =>
     val size = source.size
     val columns = source.columns.collect {
       case (
-          ColumnRef(cPath @ CPath(CPathArray, _*), cType),
-          col: HomogeneousArrayColumn[a]) =>
+            ColumnRef(cPath @ CPath(CPathArray, _*), cType),
+            col: HomogeneousArrayColumn[a]) =>
         (
           ColumnRef(cPath, cType),
           new HomogeneousArrayColumn[a] {
@@ -698,8 +696,7 @@ trait Slice { source =>
           }
 
         case AllDefined =>
-          if (colValues.isEmpty)
-            new BitSet
+          if (colValues.isEmpty) new BitSet
           else
             BitSetUtil.filteredRange(0, source.size) { i =>
               colValues.forall(_.isDefinedAt(i))
@@ -803,10 +800,8 @@ trait Slice { source =>
             else {
               val retain = straddleComparator.compare(prevRow, curRow) != EQ
               if (retain) acc.add(curRow)
-              if (retain)
-                findSelfDistinct(curRow, curRow + 1)
-              else
-                findStraddlingDistinct0(prevRow, curRow + 1)
+              if (retain) findSelfDistinct(curRow, curRow + 1)
+              else findStraddlingDistinct0(prevRow, curRow + 1)
             }
           }
 
@@ -879,8 +874,7 @@ trait Slice { source =>
               var k = 0
               while (k < cols.length) {
                 val cmp = cols(k).compare(i, j)
-                if (cmp != 0)
-                  return cmp
+                if (cmp != 0) return cmp
                 k += 1
               }
               0
@@ -889,8 +883,7 @@ trait Slice { source =>
             def eqv(i: Int, j: Int): Boolean = {
               var k = 0
               while (k < cols.length) {
-                if (!cols(k).eqv(i, j))
-                  return false
+                if (!cols(k).eqv(i, j)) return false
                 k += 1
               }
               true
@@ -1183,10 +1176,7 @@ trait Slice { source =>
             }
 
             val back =
-              if (nodes2.isEmpty)
-                None
-              else
-                Some(SchemaNode.Obj(nodes2))
+              if (nodes2.isEmpty) None else Some(SchemaNode.Obj(nodes2))
 
             back foreach { obj =>
               obj.keys = new Array[String](nodes2.size)
@@ -1210,11 +1200,7 @@ trait Slice { source =>
               case (idx, value) => normalize(value) map { idx -> _ }
             }
 
-            val back =
-              if (map2.isEmpty)
-                None
-              else
-                Some(SchemaNode.Arr(map2))
+            val back = if (map2.isEmpty) None else Some(SchemaNode.Arr(map2))
 
             back foreach { arr => arr.nodes = new Array[SchemaNode](map2.size) }
 
@@ -1234,10 +1220,8 @@ trait Slice { source =>
           case SchemaNode.Union(nodes) => {
             val nodes2 = nodes flatMap normalize
 
-            if (nodes2.isEmpty)
-              None
-            else if (nodes2.size == 1)
-              nodes2.headOption
+            if (nodes2.isEmpty) None
+            else if (nodes2.size == 1) nodes2.headOption
             else {
               val union = SchemaNode.Union(nodes2)
               union.possibilities = nodes2.toArray
@@ -1377,10 +1361,8 @@ trait Slice { source =>
 
             if (seed * 10 < 0) // overflow
               seed
-            else if (seed * 10 > ln)
-              seed
-            else
-              power10(ln, seed * 10)
+            else if (seed * 10 > ln) seed
+            else power10(ln, seed * 10)
           }
 
           @inline
@@ -1665,10 +1647,7 @@ trait Slice { source =>
 
         val stream = StreamT.unfoldM(0) { idx =>
           val back =
-            if (idx < vector.length)
-              Some((vector(idx), idx + 1))
-            else
-              None
+            if (idx < vector.length) Some((vector(idx), idx + 1)) else None
 
           M.point(back)
         }

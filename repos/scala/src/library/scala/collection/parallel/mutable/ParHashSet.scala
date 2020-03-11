@@ -295,8 +295,7 @@ private[mutable] abstract class ParHashSetCombiner[T](
         while (i < chunksz) {
           val entry = chunkarr(i)
           val res = t.insertEntry(atPos, beforePos, entry)
-          if (res >= 0) inserted += res
-          else leftovers += entry
+          if (res >= 0) inserted += res else leftovers += entry
           i += 1
         }
         i = 0

@@ -217,10 +217,8 @@ class DefaultClientTest
     val dispatcher: Transport[Int, Int] => Service[Int, Int] = { _ =>
       Service.mk { _ =>
         initialFailures -= 1
-        if (initialFailures >= 0)
-          Future.exception(new FailureAccrualException)
-        else
-          Future.value(3)
+        if (initialFailures >= 0) Future.exception(new FailureAccrualException)
+        else Future.value(3)
       }
     }
   }

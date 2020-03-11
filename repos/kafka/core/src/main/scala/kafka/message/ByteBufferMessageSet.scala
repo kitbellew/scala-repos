@@ -40,8 +40,7 @@ object ByteBufferMessageSet {
       wrapperMessageTimestamp: Option[Long],
       timestampType: TimestampType,
       messages: Message*): ByteBuffer = {
-    if (messages.isEmpty)
-      MessageSet.Empty.buffer
+    if (messages.isEmpty) MessageSet.Empty.buffer
     else if (compressionCodec == NoCompressionCodec) {
       val buffer = ByteBuffer.allocate(MessageSet.messageSetSize(messages))
       for (message <- messages)
@@ -74,8 +73,7 @@ object ByteBufferMessageSet {
             // Use inner offset if magic value is greater than 0
             if (magicAndTimestamp.magic > Message.MagicValue_V0)
               output.writeLong(offsetAssigner.toInnerOffset(offset))
-            else
-              output.writeLong(offset)
+            else output.writeLong(offset)
             output.writeInt(message.size)
             output.write(
               message.buffer.array,
@@ -120,8 +118,7 @@ object ByteBufferMessageSet {
         if (wrapperMessageAndOffset.message.magic > MagicValue_V0) {
           val innerMessageAndOffsets = new ArrayDeque[MessageAndOffset]()
           try {
-            while (true)
-              innerMessageAndOffsets.add(readMessageFromStream())
+            while (true) innerMessageAndOffsets.add(readMessageFromStream())
           } catch {
             case eofe: EOFException =>
               compressed.close()
@@ -352,8 +349,7 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
     // Ignore offset and size from input. We just want to write the whole buffer to the channel.
     buffer.mark()
     var written = 0
-    while (written < sizeInBytes)
-      written += channel.write(buffer)
+    while (written < sizeInBytes) written += channel.write(buffer)
     buffer.reset()
     written
   }
@@ -361,8 +357,7 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
   override def isMagicValueInAllWrapperMessages(
       expectedMagicValue: Byte): Boolean = {
     for (messageAndOffset <- shallowIterator) {
-      if (messageAndOffset.message.magic != expectedMagicValue)
-        return false
+      if (messageAndOffset.message.magic != expectedMagicValue) return false
     }
     true
   }
@@ -384,8 +379,7 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
 
       def makeNextOuter: MessageAndOffset = {
         // if there isn't at least an offset and size, we are done
-        if (topIter.remaining < 12)
-          return allDone()
+        if (topIter.remaining < 12) return allDone()
         val offset = topIter.getLong()
         val size = topIter.getInt()
         if (size < Message.MinMessageOverhead)
@@ -393,8 +387,7 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
             "Message found with corrupt size (" + size + ") in shallow iterator")
 
         // we have an incomplete message
-        if (topIter.remaining < size)
-          return allDone()
+        if (topIter.remaining < size) return allDone()
 
         // read the current message and check correctness
         val message = topIter.slice()
@@ -410,8 +403,7 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
             case _ =>
               innerIter = ByteBufferMessageSet.deepIterator(
                 new MessageAndOffset(newMessage, offset))
-              if (!innerIter.hasNext)
-                innerIter = null
+              if (!innerIter.hasNext) innerIter = null
               makeNext()
           }
         }
@@ -419,12 +411,7 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
 
       override def makeNext(): MessageAndOffset = {
         if (isShallow) { makeNextOuter }
-        else {
-          if (innerDone())
-            makeNextOuter
-          else
-            innerIter.next()
-        }
+        else { if (innerDone()) makeNextOuter else innerIter.next() }
       }
 
     }
@@ -518,8 +505,7 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
               s"compression attribute set: $message")
 
         // No in place assignment situation 4
-        if (message.magic != messageFormatVersion)
-          inPlaceAssignment = false
+        if (message.magic != messageFormatVersion) inPlaceAssignment = false
 
         validatedMessages += message.toFormatVersion(messageFormatVersion)
       }

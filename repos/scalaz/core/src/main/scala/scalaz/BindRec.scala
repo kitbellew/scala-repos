@@ -33,10 +33,8 @@ trait BindRec[F[_]] extends Bind[F] { self =>
         implicit FA: Equal[F[A]]): Boolean = {
       val bounce = tailrecM[(Boolean, A), A] {
         case (bounced, a0) =>
-          if (!bounced)
-            map(f(a0))(a1 => \/.left((true, a1)))
-          else
-            map(f(a0))(\/.right)
+          if (!bounced) map(f(a0))(a1 => \/.left((true, a1)))
+          else map(f(a0))(\/.right)
       }((false, a))
 
       FA.equal(bind(f(a))(f), bounce)

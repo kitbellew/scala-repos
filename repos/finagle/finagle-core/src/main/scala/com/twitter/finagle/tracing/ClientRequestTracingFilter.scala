@@ -17,8 +17,7 @@ trait ClientRequestTracingFilter[Req, Res] extends SimpleFilter[Req, Res] {
       Trace.record(Annotation.ClientSend())
 
       service(request) onSuccess { _ => Trace.record(Annotation.ClientRecv()) }
-    } else
-      service(request)
+    } else service(request)
   }
 
   val serviceName: String

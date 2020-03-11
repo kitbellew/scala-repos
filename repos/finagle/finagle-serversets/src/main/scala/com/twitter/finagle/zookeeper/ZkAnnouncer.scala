@@ -93,8 +93,7 @@ class ZkAnnouncer(factory: ZkClientFactory) extends Announcer { self =>
       Future.exception(
         new ZkAnnouncerException(
           "ZK client address \"%s\" resolves to nothing".format(hosts)))
-    else
-      announce(factory.get(zkHosts)._1, path, shardId, addr, endpoint)
+    else announce(factory.get(zkHosts)._1, path, shardId, addr, endpoint)
   }
 
   def announce(

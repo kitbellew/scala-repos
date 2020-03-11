@@ -346,8 +346,7 @@ object Infos {
         .setEncodedName(ExportedConstructorsName)
         .setIsExported(true)
 
-      for (constructorDef <- constructorDefs)
-        traverse(constructorDef.body)
+      for (constructorDef <- constructorDefs) traverse(constructorDef.body)
 
       builder.result()
     }

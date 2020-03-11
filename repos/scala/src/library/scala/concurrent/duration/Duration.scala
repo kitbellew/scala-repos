@@ -127,15 +127,12 @@ object Duration {
     * @throws IllegalArgumentException if the length was finite but the resulting duration cannot be expressed as a [[FiniteDuration]]
     */
   def fromNanos(nanos: Double): Duration = {
-    if (nanos.isInfinite)
-      if (nanos > 0) Inf else MinusInf
-    else if (nanos.isNaN)
-      Undefined
+    if (nanos.isInfinite) if (nanos > 0) Inf else MinusInf
+    else if (nanos.isNaN) Undefined
     else if (nanos > Long.MaxValue || nanos < Long.MinValue)
       throw new IllegalArgumentException(
         "trying to construct too large duration with " + nanos + "ns")
-    else
-      fromNanos((nanos + 0.5).toLong)
+    else fromNanos((nanos + 0.5).toLong)
   }
 
   private[this] final val µs_per_ns = 1000L
@@ -782,8 +779,7 @@ final class FiniteDuration(val length: Long, val unit: TimeUnit)
       }
     }
 
-    if (unit == DAYS || length == 0) this
-    else loop(length, unit)
+    if (unit == DAYS || length == 0) this else loop(length, unit)
   }
 
   override def equals(other: Any) = other match {

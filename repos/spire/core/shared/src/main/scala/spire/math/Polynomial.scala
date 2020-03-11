@@ -376,8 +376,7 @@ trait Polynomial[@sp(Double) C] { lhs =>
   def flip(implicit ring: Rng[C], eq: Eq[C]): Polynomial[C] =
     mapTerms {
       case term @ Term(coeff, exp) =>
-        if (exp % 2 == 0) term
-        else Term(-coeff, exp)
+        if (exp % 2 == 0) term else Term(-coeff, exp)
     }
 
   /**
@@ -415,10 +414,8 @@ trait Polynomial[@sp(Double) C] { lhs =>
 
   def pow(k: Int)(implicit ring: Rig[C], eq: Eq[C]): Polynomial[C] = {
     def loop(b: Polynomial[C], k: Int, extra: Polynomial[C]): Polynomial[C] =
-      if (k == 1)
-        b * extra
-      else
-        loop(b * b, k >>> 1, if ((k & 1) == 1) b * extra else extra)
+      if (k == 1) b * extra
+      else loop(b * b, k >>> 1, if ((k & 1) == 1) b * extra else extra)
 
     if (k < 0) { throw new IllegalArgumentException("negative exponent") }
     else if (k == 0) { Polynomial.one[C] }

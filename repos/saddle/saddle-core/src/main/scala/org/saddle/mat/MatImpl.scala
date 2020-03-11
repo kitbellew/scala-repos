@@ -33,10 +33,7 @@ private[saddle] object MatImpl {
     var i = 0
     while (i < mat.length) {
       val v = mat(i)
-      if (sca.isMissing(v))
-        buf(i) = scb.missing
-      else
-        buf(i) = f(v)
+      if (sca.isMissing(v)) buf(i) = scb.missing else buf(i) = f(v)
       i += 1
     }
     Mat[B](mat.numRows, mat.numCols, buf)
@@ -62,10 +59,7 @@ private[saddle] object MatImpl {
         }
         r += 1
       }
-      if (nRows == 0)
-        Mat.empty[A]
-      else
-        Mat(nRows, m.numCols, buf)
+      if (nRows == 0) Mat.empty[A] else Mat(nRows, m.numCols, buf)
     }
   }
 

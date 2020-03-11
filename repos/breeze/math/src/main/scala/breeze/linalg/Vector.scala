@@ -315,8 +315,7 @@ object Vector extends VectorConstructors[Vector] with VectorOps {
       def traverse(
           from: Vector[V],
           fn: CanTraverseKeyValuePairs.KeyValuePairsVisitor[Int, V]): Unit = {
-        for (i <- 0 until from.length)
-          fn.visit(i, from(i))
+        for (i <- 0 until from.length) fn.visit(i, from(i))
       }
 
     }
@@ -384,8 +383,7 @@ trait VectorOps { this: Vector.type =>
         val builder = new VectorBuilder[T](a.length)
         for ((k, v) <- b.activeIterator) {
           val r = a(k) * v
-          if (r != zero)
-            builder.add(k, r)
+          if (r != zero) builder.add(k, r)
         }
         builder.toVector
       }

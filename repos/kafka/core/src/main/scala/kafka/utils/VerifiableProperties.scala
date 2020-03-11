@@ -67,10 +67,7 @@ class VerifiableProperties(val props: Properties) extends Logging {
     */
   def getIntInRange(name: String, default: Int, range: (Int, Int)): Int = {
     val v =
-      if (containsKey(name))
-        getProperty(name).toInt
-      else
-        default
+      if (containsKey(name)) getProperty(name).toInt else default
     require(
       v >= range._1 && v <= range._2,
       name + " has value " + v + " which is not in the range " + range + ".")
@@ -82,10 +79,7 @@ class VerifiableProperties(val props: Properties) extends Logging {
       default: Short,
       range: (Short, Short)): Short = {
     val v =
-      if (containsKey(name))
-        getProperty(name).toShort
-      else
-        default
+      if (containsKey(name)) getProperty(name).toShort else default
     require(
       v >= range._1 && v <= range._2,
       name + " has value " + v + " which is not in the range " + range + ".")
@@ -117,10 +111,7 @@ class VerifiableProperties(val props: Properties) extends Logging {
     */
   def getLongInRange(name: String, default: Long, range: (Long, Long)): Long = {
     val v =
-      if (containsKey(name))
-        getProperty(name).toLong
-      else
-        default
+      if (containsKey(name)) getProperty(name).toLong else default
     require(
       v >= range._1 && v <= range._2,
       name + " has value " + v + " which is not in the range " + range + ".")
@@ -141,10 +132,7 @@ class VerifiableProperties(val props: Properties) extends Logging {
     * @param default The default value for the property if not present
     */
   def getDouble(name: String, default: Double): Double = {
-    if (containsKey(name))
-      getDouble(name)
-    else
-      default
+    if (containsKey(name)) getDouble(name) else default
   }
 
   /**
@@ -154,8 +142,7 @@ class VerifiableProperties(val props: Properties) extends Logging {
     * @return the boolean value
     */
   def getBoolean(name: String, default: Boolean): Boolean = {
-    if (!containsKey(name))
-      default
+    if (!containsKey(name)) default
     else {
       val v = getProperty(name)
       require(
@@ -171,10 +158,7 @@ class VerifiableProperties(val props: Properties) extends Logging {
     * Get a string property, or, if no such property is defined, return the given default value
     */
   def getString(name: String, default: String): String = {
-    if (containsKey(name))
-      getProperty(name)
-    else
-      default
+    if (containsKey(name)) getProperty(name) else default
   }
 
   /**

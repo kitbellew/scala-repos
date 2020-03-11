@@ -120,10 +120,7 @@ class SocksConnectHandler(
   private[this] def readInit(): Option[AuthenticationSetting] = {
     checkReadableBytes(2)
     buf.readBytes(bytes, 0, 2)
-    if (bytes(0) == Version5)
-      authenticationMap.get(bytes(1))
-    else
-      None
+    if (bytes(0) == Version5) authenticationMap.get(bytes(1)) else None
   }
 
   private[this] def writeRequest(ctx: ChannelHandlerContext) {
@@ -204,8 +201,7 @@ class SocksConnectHandler(
   }
 
   private[this] def checkReadableBytes(numBytes: Int) {
-    if (buf.readableBytes < numBytes)
-      throw ReplayError
+    if (buf.readableBytes < numBytes) throw ReplayError
   }
 
   override def connectRequested(
@@ -222,16 +218,14 @@ class SocksConnectHandler(
         val wrappedConnectFuture = Channels.future(de.getChannel, true)
         de.getFuture.addListener(new ChannelFutureListener {
           def operationComplete(f: ChannelFuture) {
-            if (f.isCancelled)
-              wrappedConnectFuture.cancel()
+            if (f.isCancelled) wrappedConnectFuture.cancel()
           }
         })
         // Proxy failures here so that if the connect fails, it is
         // propagated to the listener, not just on the channel.
         wrappedConnectFuture.addListener(new ChannelFutureListener {
           def operationComplete(f: ChannelFuture) {
-            if (f.isSuccess || f.isCancelled)
-              return
+            if (f.isSuccess || f.isCancelled) return
 
             fail(f.getChannel, f.getCause)
           }
@@ -262,8 +256,7 @@ class SocksConnectHandler(
     // proxy cancellations again.
     connectFuture.get.addListener(new ChannelFutureListener {
       def operationComplete(f: ChannelFuture) {
-        if (f.isSuccess)
-          SocksConnectHandler.super.channelConnected(ctx, e)
+        if (f.isSuccess) SocksConnectHandler.super.channelConnected(ctx, e)
         else if (f.isCancelled)
           fail(ctx.getChannel, new ChannelClosedException(addr))
       }

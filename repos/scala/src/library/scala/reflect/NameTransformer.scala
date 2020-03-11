@@ -149,8 +149,7 @@ object NameTransformer {
         buffer is non-empty, write the current character and advance
          one */
       if ((ops eq null) && !unicode) {
-        if (buf ne null)
-          buf.append(c)
+        if (buf ne null) buf.append(c)
         i += 1
       }
     }

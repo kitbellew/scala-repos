@@ -53,10 +53,7 @@ class KetamaDistributor[A](
     val truncatedHash = hash & 0xFFFFFFFFL
 
     val entry = continuum.ceilingEntry(truncatedHash)
-    if (entry == null)
-      continuum.firstEntry
-    else
-      entry
+    if (entry == null) continuum.firstEntry else entry
   }
 
   def entryForHash(hash: Long): (Long, A) = {

@@ -240,8 +240,7 @@ private[cluster] final case class Gossip(
 
   def prune(removedNode: VectorClock.Node): Gossip = {
     val newVersion = version.prune(removedNode)
-    if (newVersion eq version) this
-    else copy(version = newVersion)
+    if (newVersion eq version) this else copy(version = newVersion)
   }
 
   override def toString =
@@ -300,10 +299,7 @@ private[cluster] class GossipEnvelope private (
 
   private def deserialize(): Unit = {
     if ((g eq null) && (ser ne null)) {
-      if (serDeadline.hasTimeLeft)
-        g = ser()
-      else
-        g = Gossip.empty
+      if (serDeadline.hasTimeLeft) g = ser() else g = Gossip.empty
       ser = null
     }
   }

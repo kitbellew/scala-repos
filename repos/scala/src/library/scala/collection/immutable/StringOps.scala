@@ -41,8 +41,7 @@ final class StringOps(override val repr: String)
   override def apply(index: Int): Char = repr charAt index
   override def slice(from: Int, until: Int): String = {
     val start = if (from < 0) 0 else from
-    if (until <= start || start >= repr.length)
-      return ""
+    if (until <= start || start >= repr.length) return ""
 
     val end = if (until > length) length else until
     repr.substring(start, end)

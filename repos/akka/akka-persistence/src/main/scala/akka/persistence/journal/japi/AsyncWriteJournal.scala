@@ -25,8 +25,7 @@ abstract class AsyncWriteJournal
       messages: immutable.Seq[AtomicWrite]): Future[immutable.Seq[Try[Unit]]] =
     doAsyncWriteMessages(messages.asJava).map { results ⇒
       results.asScala.map { r ⇒
-        if (r.isPresent) Failure(r.get)
-        else successUnit
+        if (r.isPresent) Failure(r.get) else successUnit
       }(collection.breakOut)
     }
 

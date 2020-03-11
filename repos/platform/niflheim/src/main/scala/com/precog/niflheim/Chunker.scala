@@ -65,8 +65,7 @@ trait Chunker {
       checksum.update(bytes)
       val sum0 = checksum.getValue()
       val sum1 = chunk.getLong(ChunkSize - 8)
-      if (sum0 != sum1)
-        throw new IOException("Corrupted chunk.")
+      if (sum0 != sum1) throw new IOException("Corrupted chunk.")
     }
 
     buffer.put(bytes, 0, len)

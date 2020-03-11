@@ -83,8 +83,7 @@ trait Kinds {
 
     private def buildMessage(xs: List[SymPair], f: (Symbol, Symbol) => String) =
       (
-        if (xs.isEmpty) ""
-        else xs map f.tupled mkString ("\n", ", ", "")
+        if (xs.isEmpty) "" else xs map f.tupled mkString ("\n", ", ", "")
       )
 
     def errorMessage(targ: Type, tparam: Symbol): String = (
@@ -159,8 +158,7 @@ trait Kinds {
       val hkparams = param.typeParams
 
       def kindCheck(cond: Boolean, f: KindErrors => KindErrors) {
-        if (!cond)
-          kindErrors = f(kindErrors)
+        if (!cond) kindErrors = f(kindErrors)
       }
 
       if (settings.debug) {
@@ -223,11 +221,9 @@ trait Kinds {
               withHKArgs ++ hkarg.typeParams
             )
           }
-          if (!explainErrors && !kindErrors.isEmpty)
-            return kindErrors
+          if (!explainErrors && !kindErrors.isEmpty) return kindErrors
         }
-      if (explainErrors) kindErrors
-      else NoKindErrors
+      if (explainErrors) kindErrors else NoKindErrors
     }
 
     if (settings.debug && (tparams.nonEmpty || targs.nonEmpty))
@@ -330,9 +326,7 @@ trait Kinds {
         StringState(tokens :+ Text(value))
       def appendHead(order: Int, sym: Symbol): StringState = {
         val n = countByOrder(order) + 1
-        val alias =
-          if (sym eq NoSymbol) None
-          else Some(sym.nameString)
+        val alias = if (sym eq NoSymbol) None else Some(sym.nameString)
         StringState(tokens :+ Head(order, Some(n), alias))
       }
       def countByOrder(o: Int): Int = tokens count {
@@ -347,11 +341,10 @@ trait Kinds {
         }).max
         StringState((tokens /: (0 to maxOrder)) {
           (ts: Seq[ScalaNotation], o: Int) =>
-            if (countByOrder(o) <= 1)
-              ts map {
-                case Head(`o`, _, a) => Head(o, None, a)
-                case t               => t
-              }
+            if (countByOrder(o) <= 1) ts map {
+              case Head(`o`, _, a) => Head(o, None, a)
+              case t               => t
+            }
             else ts
         })
       }
@@ -402,9 +395,7 @@ trait Kinds {
     def scalaNotation: String = {
       val s =
         buildState(NoSymbol, Variance.Invariant)(StringState.empty).removeOnes
-      val s2 =
-        if (hasBounds) s
-        else s.removeAlias
+      val s2 = if (hasBounds) s else s.removeAlias
       s2.toString
     }
     private[internal] def buildState(sym: Symbol, v: Variance)(
@@ -459,8 +450,7 @@ trait Kinds {
     def apply(pre: Type): InferKind = new InferKind {
       protected def infer(tpe: Type, owner: Symbol, topLevel: Boolean): Kind = {
         val bounds =
-          if (topLevel) TypeBounds.empty
-          else tpe.asSeenFrom(pre, owner).bounds
+          if (topLevel) TypeBounds.empty else tpe.asSeenFrom(pre, owner).bounds
         if (!tpe.isHigherKinded) ProperTypeKind(bounds)
         else
           TypeConKind(

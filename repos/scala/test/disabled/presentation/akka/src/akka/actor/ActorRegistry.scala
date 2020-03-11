@@ -221,8 +221,7 @@ final class ActorRegistry private[actor] () extends ListenerManagement {
   def typedActorFor(uuid: Uuid): Option[AnyRef] = {
     TypedActorModule.ensureEnabled
     val actorRef = actorsByUUID get uuid
-    if (actorRef eq null) None
-    else typedActorFor(actorRef)
+    if (actorRef eq null) None else typedActorFor(actorRef)
   }
 
   /**
@@ -335,8 +334,7 @@ class Index[K <: AnyRef, V <: AnyRef: ArrayTag] {
         } else added = true
       }
 
-      if (retry) spinPut(k, v)
-      else added
+      if (retry) spinPut(k, v) else added
     }
 
     spinPut(key, value)
@@ -358,8 +356,7 @@ class Index[K <: AnyRef, V <: AnyRef: ArrayTag] {
   def findValue(key: K)(f: (V) => Boolean): Option[V] = {
     import scala.collection.JavaConversions._
     val set = container get key
-    if (set ne null) set.iterator.find(f)
-    else None
+    if (set ne null) set.iterator.find(f) else None
   }
 
   /**

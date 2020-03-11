@@ -21,8 +21,7 @@ package object util {
     }
 
     override def hashCode(): Int =
-      if (inner == null) 0
-      else inner.hashCode
+      if (inner == null) 0 else inner.hashCode
   }
 
   private[util] def defaultOrdering[E]: Ordering[E] = {

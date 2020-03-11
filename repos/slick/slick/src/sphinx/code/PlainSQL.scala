@@ -146,8 +146,7 @@ object PlainSQL extends App {
     // all coffees costing less than $9.00
     namesByPrice(9.0).flatMap { l2 =>
       println("Parameterized StaticQuery:")
-      for (t <- l2)
-        println("* " + t._1 + " supplied by " + t._2)
+      for (t <- l2) println("* " + t._1 + " supplied by " + t._2)
       supplierById(49).map(s => println(s"Supplier #49: $s"))
     }
   }

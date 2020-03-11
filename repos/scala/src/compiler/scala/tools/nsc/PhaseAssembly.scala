@@ -189,8 +189,7 @@ trait PhaseAssembly {
         for (edge <- node.before) {
           edges -= edge
           edge.frm.after -= edge
-          if (edge.frm.phaseobj exists (lsc => !lsc.head.internal))
-            warning(msg)
+          if (edge.frm.phaseobj exists (lsc => !lsc.head.internal)) warning(msg)
         }
       }
     }

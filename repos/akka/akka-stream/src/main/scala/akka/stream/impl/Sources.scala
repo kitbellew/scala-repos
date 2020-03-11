@@ -106,8 +106,7 @@ final private[stream] class QueueSource[T](
           } else if (isAvailable(out)) {
             push(out, elem)
             promise.success(QueueOfferResult.Enqueued)
-          } else if (pendingOffer.isEmpty)
-            pendingOffer = Some(offer)
+          } else if (pendingOffer.isEmpty) pendingOffer = Some(offer)
           else
             overflowStrategy match {
               case DropHead | DropBuffer ⇒

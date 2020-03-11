@@ -474,8 +474,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     */
   def receivedCookies: List[HTTPCookie] =
     for (rc <- Box.legacyNullTest(_responseCookies.value).toList;
-         c <- rc.inCookies)
-      yield c.clone().asInstanceOf[HTTPCookie]
+         c <- rc.inCookies) yield c.clone().asInstanceOf[HTTPCookie]
 
   /**
     * Finds a cookie with the given name that was sent in the request.
@@ -890,8 +889,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
         cometHtml,
         cometAttributes)
     } yield {
-      if (receiveUpdatesOnPage)
-        addComet(cometActor)
+      if (receiveUpdatesOnPage) addComet(cometActor)
 
       cometActor
     }
@@ -919,8 +917,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       cometActor <- session
         .findOrCreateComet[T](cometName, cometHtml, cometAttributes)
     } yield {
-      if (receiveUpdatesOnPage)
-        addComet(cometActor)
+      if (receiveUpdatesOnPage) addComet(cometActor)
 
       cometActor
     }
@@ -1218,8 +1215,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see # resourceBundles
     */
   def ?(str: String, params: Any*): String =
-    if (params.length == 0)
-      ?(str)
+    if (params.length == 0) ?(str)
     else
       String.format(
         locale,
@@ -1729,8 +1725,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     */
   def getRequestHeader(name: String): Box[String] =
     for (req <- request;
-         hdr <- req.header(name))
-      yield hdr
+         hdr <- req.header(name)) yield hdr
 
   /**
     * Sets the document type for the response. If this is not set, the DocType for Lift responses
@@ -2284,8 +2279,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @param f A function to execute within the scope of the session
     */
   def initIfUninitted[B](session: LiftSession)(f: => B): B = {
-    if (inS.value) f
-    else init(Empty, session)(f)
+    if (inS.value) f else init(Empty, session)(f)
   }
 
   /**
@@ -2794,10 +2788,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
 
   /** Default func-name logic during test-mode. */
   def generateTestFuncName: String =
-    if (disableTestFuncNames_?)
-      generateFuncName
-    else
-      generatePredictableFuncName
+    if (disableTestFuncNames_?) generateFuncName
+    else generatePredictableFuncName
 
   /** Generates a func-name based on the location in the call-site source code. */
   def generatePredictableFuncName: String = {

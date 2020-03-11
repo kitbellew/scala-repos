@@ -29,8 +29,7 @@ trait FileBackedHistory extends JLineHistory with PersistentHistory {
   }
 
   def addLineToFile(item: CharSequence): Unit = {
-    if (isPersistent)
-      append(item + "\n")
+    if (isPersistent) append(item + "\n")
   }
 
   /** Overwrites the history file with the current memory. */
@@ -45,8 +44,7 @@ trait FileBackedHistory extends JLineHistory with PersistentHistory {
   }
 
   def load(): Unit = {
-    if (!historyFile.canRead)
-      historyFile.createFile()
+    if (!historyFile.canRead) historyFile.createFile()
 
     val lines: IndexedSeq[String] = {
       try historyFile.lines().toIndexedSeq

@@ -39,10 +39,8 @@ trait DecimalTypedField extends NumericTypedField[BigDecimal] {
 
   def setFromString(s: String): Box[BigDecimal] =
     if (s == null || s.isEmpty) {
-      if (optional_?)
-        setBox(Empty)
-      else
-        setBox(Failure(notOptionalErrorMessage))
+      if (optional_?) setBox(Empty)
+      else setBox(Failure(notOptionalErrorMessage))
     } else { setBox(tryo(BigDecimal(s))) }
 
   def set_!(in: BigDecimal): BigDecimal =

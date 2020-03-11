@@ -392,8 +392,7 @@ private[http] abstract class HttpMessageParser[
         emit(EntityPart(input.slice(bodyStart, offset).compact))
         emit(MessageEnd)
         setCompletionHandling(CompletionOk)
-        if (isLastMessage) terminate()
-        else startNewMessage(input, offset)
+        if (isLastMessage) terminate() else startNewMessage(input, offset)
       }
     } else
       continue(input, bodyStart)(
@@ -423,8 +422,7 @@ private[http] abstract class HttpMessageParser[
             emit(EntityChunk(lastChunk))
             emit(MessageEnd)
             setCompletionHandling(CompletionOk)
-            if (isLastMessage) terminate()
-            else startNewMessage(input, lineEnd)
+            if (isLastMessage) terminate() else startNewMessage(input, lineEnd)
           case header if headerCount < maxHeaderCount ⇒
             parseTrailer(extension, lineEnd, header :: headers, headerCount + 1)
           case _ ⇒

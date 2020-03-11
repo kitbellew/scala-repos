@@ -61,8 +61,7 @@ private[scala] trait StdIn {
     val s = readLine()
     if (s == null)
       throw new java.io.EOFException("Console has reached end of input")
-    else
-      s.toByte
+    else s.toByte
   }
 
   /** Reads a short value from an entire line of the default input.
@@ -76,8 +75,7 @@ private[scala] trait StdIn {
     val s = readLine()
     if (s == null)
       throw new java.io.EOFException("Console has reached end of input")
-    else
-      s.toShort
+    else s.toShort
   }
 
   /** Reads a char value from an entire line of the default input.
@@ -91,8 +89,7 @@ private[scala] trait StdIn {
     val s = readLine()
     if (s == null)
       throw new java.io.EOFException("Console has reached end of input")
-    else
-      s charAt 0
+    else s charAt 0
   }
 
   /** Reads an int value from an entire line of the default input.
@@ -106,8 +103,7 @@ private[scala] trait StdIn {
     val s = readLine()
     if (s == null)
       throw new java.io.EOFException("Console has reached end of input")
-    else
-      s.toInt
+    else s.toInt
   }
 
   /** Reads an long value from an entire line of the default input.
@@ -121,8 +117,7 @@ private[scala] trait StdIn {
     val s = readLine()
     if (s == null)
       throw new java.io.EOFException("Console has reached end of input")
-    else
-      s.toLong
+    else s.toLong
   }
 
   /** Reads a float value from an entire line of the default input.
@@ -136,8 +131,7 @@ private[scala] trait StdIn {
     val s = readLine()
     if (s == null)
       throw new java.io.EOFException("Console has reached end of input")
-    else
-      s.toFloat
+    else s.toFloat
   }
 
   /** Reads a double value from an entire line of the default input.
@@ -151,8 +145,7 @@ private[scala] trait StdIn {
     val s = readLine()
     if (s == null)
       throw new java.io.EOFException("Console has reached end of input")
-    else
-      s.toDouble
+    else s.toDouble
   }
 
   /** Reads in some structured input (from the default input), specified by
@@ -168,8 +161,7 @@ private[scala] trait StdIn {
     val s = readLine()
     if (s == null)
       throw new java.io.EOFException("Console has reached end of input")
-    else
-      textComponents(new MessageFormat(format).parse(s))
+    else textComponents(new MessageFormat(format).parse(s))
   }
 
   /** Reads in some structured input (from the default input), specified by

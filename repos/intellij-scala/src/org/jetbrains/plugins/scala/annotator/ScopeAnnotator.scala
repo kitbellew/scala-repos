@@ -117,8 +117,7 @@ trait ScopeAnnotator {
   }
 
   private def signatureOf(f: ScFunction): String = {
-    if (f.parameters.isEmpty)
-      ""
+    if (f.parameters.isEmpty) ""
     else
       f.paramClauses.clauses
         .map(clause => format(clause.parameters, clause.paramTypes))

@@ -190,8 +190,7 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
       }
       buildSelectClause(c)
       buildFromClause(from)
-      if (limit0) b"\nwhere 1=0"
-      else buildWhereClause(and(c.where.toSeq ++ on))
+      if (limit0) b"\nwhere 1=0" else buildWhereClause(and(c.where.toSeq ++ on))
       buildGroupByClause(c.groupBy)
       buildHavingClause(c.having)
       buildOrderByClause(c.orderBy)
@@ -531,23 +530,22 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
     protected def buildOrdering(n: Node, o: Ordering) {
       expr(n)
       if (o.direction.desc) b" desc"
-      if (o.nulls.first) b" nulls first"
-      else if (o.nulls.last) b" nulls last"
+      if (o.nulls.first) b" nulls first" else if (o.nulls.last) b" nulls last"
     }
 
     def buildUpdate: SQLBuilder.Result = {
       val (gen, from, where, select) = tree match {
         case Comprehension(
-            sym,
-            from: TableNode,
-            Pure(select, _),
-            where,
-            None,
-            _,
-            None,
-            None,
-            None,
-            None) =>
+              sym,
+              from: TableNode,
+              Pure(select, _),
+              where,
+              None,
+              _,
+              None,
+              None,
+              None,
+              None) =>
           select match {
             case f @ Select(Ref(struct), _) if struct == sym =>
               (sym, from, where, ConstArray(f.field))
@@ -582,16 +580,16 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
         throw new SlickException("Invalid query for DELETE statement: " + msg)
       val (gen, from, where) = tree match {
         case Comprehension(
-            sym,
-            from,
-            Pure(select, _),
-            where,
-            _,
-            _,
-            None,
-            distinct,
-            fetch,
-            offset) =>
+              sym,
+              from,
+              Pure(select, _),
+              where,
+              _,
+              _,
+              None,
+              distinct,
+              fetch,
+              offset) =>
           if (fetch.isDefined || offset.isDefined || distinct.isDefined)
             fail(".take, .drop and .distinct are not supported for deleting")
           from match {
@@ -663,9 +661,9 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
       n.replace(
         {
           case InsertColumn(
-              ConstArray(Select(ref, ElementSymbol(idx))),
-              fs,
-              tpe) =>
+                ConstArray(Select(ref, ElementSymbol(idx))),
+                fs,
+                tpe) =>
             val newPaths =
               reordering(idx - 1).map(i => Select(ref, ElementSymbol(i)))
             InsertColumn(ConstArray.from(newPaths), fs, tpe) :@ tpe
@@ -864,8 +862,7 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
       var first = true
       for (c <- columns) c match {
         case Select(t: TableNode, field: FieldSymbol) =>
-          if (first) first = false
-          else sb append ","
+          if (first) first = false else sb append ","
           sb append quoteIdentifier(field.name)
           if (requiredTableName != t.tableName)
             throw new SlickException(

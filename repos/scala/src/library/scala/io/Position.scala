@@ -55,10 +55,8 @@ private[scala] abstract class Position {
   final def encode(line: Int, column: Int): Int = {
     checkInput(line, column)
 
-    if (line >= LINE_MASK)
-      LINE_MASK << COLUMN_BITS
-    else
-      (line << COLUMN_BITS) | scala.math.min(COLUMN_MASK, column)
+    if (line >= LINE_MASK) LINE_MASK << COLUMN_BITS
+    else (line << COLUMN_BITS) | scala.math.min(COLUMN_MASK, column)
   }
 
   /** Returns the line number of the encoded position. */
@@ -73,8 +71,7 @@ private[scala] abstract class Position {
 
 private[scala] object Position extends Position {
   def checkInput(line: Int, column: Int) {
-    if (line < 0)
-      throw new IllegalArgumentException(line + " < 0")
+    if (line < 0) throw new IllegalArgumentException(line + " < 0")
     if ((line == 0) && (column != 0))
       throw new IllegalArgumentException(line + "," + column + " not allowed")
     if (column < 0)

@@ -144,8 +144,7 @@ class RollingMedian[@spec(Int, Long, Double) A: ST: Vec2Stats: NUM](
   val win = if (winSz > len) len else winSz
 
   def evaluate: Vec[Double] = {
-    if (len == 0 || winSz <= 0)
-      Vec.empty
+    if (len == 0 || winSz <= 0) Vec.empty
     else {
       val m = new Mediator(win)
       val r = Array.ofDim[Double](len - win + 1)

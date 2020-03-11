@@ -17,10 +17,8 @@ object ManifestFilters {
     val nameMap = nameMappings.toMap
 
     val mapper = { (origin: Origin) => (oldName: String) =>
-      if (modSet(origin.moduleName))
-        nameMap.getOrElse(oldName, oldName)
-      else
-        oldName
+      if (modSet(origin.moduleName)) nameMap.getOrElse(oldName, oldName)
+      else oldName
     }
 
     reinterpretResourceNames(mapper)

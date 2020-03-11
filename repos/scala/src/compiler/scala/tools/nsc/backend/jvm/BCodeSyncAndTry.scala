@@ -372,8 +372,7 @@ abstract class BCodeSyncAndTry extends BCodeBodyBuilder {
         handler: asm.Label,
         excType: ClassBType) {
       val excInternalName: String =
-        if (excType == null) null
-        else excType.internalName
+        if (excType == null) null else excType.internalName
       assert(
         start != end,
         "protecting a range of zero instructions leads to illegal class format. Solution: add a NOP to that range.")

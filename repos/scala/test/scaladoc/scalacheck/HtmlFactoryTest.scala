@@ -105,10 +105,7 @@ object Test extends Properties("HtmlFactory") {
       // resolve the file to be checked
       val fileName = fileHint match {
         case Some(file) =>
-          if (file endsWith ".html")
-            file
-          else
-            file + ".html"
+          if (file endsWith ".html") file else file + ".html"
         case None =>
           htmlFile
       }

@@ -175,8 +175,7 @@ object CharUtils {
       val q = div10(i)
       val r = i - mul10(q)
       buf(ix - 1) = ('0' + r).toChar
-      if (q != 0) phase2(q, ix - 1)
-      else if (long < 0) buf(ix - 2) = '-'
+      if (q != 0) phase2(q, ix - 1) else if (long < 0) buf(ix - 2) = '-'
     }
   }
 

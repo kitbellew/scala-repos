@@ -126,8 +126,7 @@ class SparkILoop(
   private def typeCommandInternal(expr: String, verbose: Boolean): Result = {
     onIntp { intp =>
       val sym = intp.symbolOfLine(expr)
-      if (sym.exists) intp.echoTypeSignature(sym, verbose)
-      else ""
+      if (sym.exists) intp.echoTypeSignature(sym, verbose) else ""
     }
   }
 
@@ -288,8 +287,7 @@ class SparkILoop(
     def defaultLines = 20
 
     def apply(line: String): Result = {
-      if (history eq NoHistory)
-        return "No history available."
+      if (history eq NoHistory) return "No history available."
 
       val xs = words(line)
       val current = history.index
@@ -527,10 +525,8 @@ class SparkILoop(
     val jdkPath = Directory(jdkHome)
     val jar = jdkPath / "lib" / "tools.jar" toFile;
 
-    if (jar isFile)
-      Some(jar)
-    else if (jdkPath.isDirectory)
-      jdkPath.deepFiles find (_.name == "tools.jar")
+    if (jar isFile) Some(jar)
+    else if (jdkPath.isDirectory) jdkPath.deepFiles find (_.name == "tools.jar")
     else None
   }
   private def addToolsJarToLoader() = {
@@ -575,8 +571,7 @@ class SparkILoop(
               MODULE_SUFFIX_STRING)) + MODULE_SUFFIX_STRING
 
           val bytes = super.tryClass(className)
-          if (bytes.nonEmpty) bytes
-          else super.tryClass(moduleName)
+          if (bytes.nonEmpty) bytes else super.tryClass(moduleName)
         }
       }
     }
@@ -596,8 +591,7 @@ class SparkILoop(
   }
 
   private def warningsCommand(): Result = {
-    if (intp.lastWarnings.isEmpty)
-      "Can't find any cached warnings."
+    if (intp.lastWarnings.isEmpty) "Can't find any cached warnings."
     else
       intp.lastWarnings foreach {
         case (pos, msg) => intp.reporter.warning(pos, msg)
@@ -609,12 +603,10 @@ class SparkILoop(
       ":javap unavailable, no tools.jar at %s.  Set JDK_HOME.".format(jdkHome)
     else if (javaVersion startsWith "1.7")
       ":javap not yet working with java 1.7"
-    else if (line == "")
-      ":javap [-lcsvp] [path1 path2 ...]"
+    else if (line == "") ":javap [-lcsvp] [path1 path2 ...]"
     else
       javap(words(line)) foreach { res =>
-        if (res.isError) return "Failed: " + res.value
-        else res.show()
+        if (res.isError) return "Failed: " + res.value else res.show()
       }
   }
 
@@ -707,8 +699,7 @@ class SparkILoop(
             { echo("\nYou must enter y or n."); fn() })
           catch { case _: RuntimeException => false }
 
-        if (fn()) replay()
-        else echo("\nAbandoning crashed session.")
+        if (fn()) replay() else echo("\nAbandoning crashed session.")
     }
     true
   }
@@ -740,8 +731,7 @@ class SparkILoop(
       val shouldContinue =
         try { processLine(readOneLine()) }
         catch { case t: Throwable => crashRecovery(t) }
-      if (shouldContinue)
-        innerLoop()
+      if (shouldContinue) innerLoop()
     }
     innerLoop()
   }
@@ -762,8 +752,7 @@ class SparkILoop(
   /** create a new interpreter and replay the given commands */
   private def replay() {
     reset()
-    if (replayCommandStack.isEmpty)
-      echo("Nothing to replay.")
+    if (replayCommandStack.isEmpty) echo("Nothing to replay.")
     else
       for (cmd <- replayCommands) {
         echo(
@@ -814,8 +803,7 @@ class SparkILoop(
   private def withFile(filename: String)(action: File => Unit) {
     val f = File(filename)
 
-    if (f.exists) action(f)
-    else echo("That file does not exist")
+    if (f.exists) action(f) else echo("That file does not exist")
   }
 
   private def loadCommand(arg: String) = {
@@ -856,8 +844,7 @@ class SparkILoop(
   }
 
   private def powerCmd(): Result = {
-    if (isReplPower) "Already in power mode."
-    else enablePowerMode(false)
+    if (isReplPower) "Already in power mode." else enablePowerMode(false)
   }
 
   private[repl] def enablePowerMode(isDuringInit: Boolean) = {
@@ -874,8 +861,7 @@ class SparkILoop(
 //   }
 
   private def asyncEcho(async: Boolean, msg: => String) {
-    if (async) asyncMessage(msg)
-    else echo(msg)
+    if (async) asyncMessage(msg) else echo(msg)
   }
 
   private def verbosity() = {
@@ -984,8 +970,7 @@ class SparkILoop(
     } else if (code.trim startsWith "//") {
       // line comment, do nothing
       None
-    } else
-      reallyInterpret._2
+    } else reallyInterpret._2
   }
 
   // runs :load `file` on any files passed via -i
@@ -1005,8 +990,7 @@ class SparkILoop(
     *  with SimpleReader.
     */
   private def chooseReader(settings: Settings): InteractiveReader = {
-    if (settings.Xnojline.value || Properties.isEmacsShell)
-      SimpleReader()
+    if (settings.Xnojline.value || Properties.isEmacsShell) SimpleReader()
     else
       try new SparkJLineReader(
         if (settings.noCompletion.value) NoCompletion
@@ -1073,8 +1057,7 @@ class SparkILoop(
     addThunk(initializeSpark())
 
     // it is broken on startup; go ahead and exit
-    if (intp.reporter.hasErrors)
-      return false
+    if (intp.reporter.hasErrors) return false
 
     // This is about the illusion of snappiness.  We call initialize()
     // which spins off a separate thread, then print the prompt and try

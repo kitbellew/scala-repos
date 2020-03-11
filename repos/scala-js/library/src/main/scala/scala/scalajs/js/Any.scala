@@ -2003,8 +2003,7 @@ object Any extends LowPrioAnyImplicits {
     value.asInstanceOf[Any]
 
   @inline implicit def fromJLong(value: java.lang.Long): Any =
-    if (value eq null) null
-    else value.doubleValue.asInstanceOf[Any]
+    if (value eq null) null else value.doubleValue.asInstanceOf[Any]
 
   @inline implicit def fromJFloat(value: java.lang.Float): Any =
     value.asInstanceOf[Any]

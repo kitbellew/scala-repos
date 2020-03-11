@@ -303,38 +303,37 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
                     "Could not find initializer for " + mixinMember.name)
               )
             }
-            if (!mixinMember.isSetter)
-              mixinMember.tpe match {
-                case MethodType(Nil, ConstantType(_)) =>
-                  // mixinMember is a constant; only getter is needed
-                  ;
-                case MethodType(Nil, TypeRef(_, UnitClass, _)) =>
-                  // mixinMember is a value of type unit. No field needed
-                  ;
-                case _ => // otherwise mixin a field as well
-                  // enteringPhase: the private field is moved to the implementation class by erasure,
-                  // so it can no longer be found in the mixinMember's owner (the trait)
-                  val accessed = enteringPickler(mixinMember.accessed)
-                  // #3857, need to retain info before erasure when cloning (since cloning only
-                  // carries over the current entry in the type history)
-                  val sym = enteringErasure {
-                    // so we have a type history entry before erasure
-                    clazz
-                      .newValue(mixinMember.localName, mixinMember.pos)
-                      .setInfo(mixinMember.tpe.resultType)
-                  }
-                  sym updateInfo mixinMember.tpe.resultType // info at current phase
+            if (!mixinMember.isSetter) mixinMember.tpe match {
+              case MethodType(Nil, ConstantType(_)) =>
+                // mixinMember is a constant; only getter is needed
+                ;
+              case MethodType(Nil, TypeRef(_, UnitClass, _)) =>
+                // mixinMember is a value of type unit. No field needed
+                ;
+              case _ => // otherwise mixin a field as well
+                // enteringPhase: the private field is moved to the implementation class by erasure,
+                // so it can no longer be found in the mixinMember's owner (the trait)
+                val accessed = enteringPickler(mixinMember.accessed)
+                // #3857, need to retain info before erasure when cloning (since cloning only
+                // carries over the current entry in the type history)
+                val sym = enteringErasure {
+                  // so we have a type history entry before erasure
+                  clazz
+                    .newValue(mixinMember.localName, mixinMember.pos)
+                    .setInfo(mixinMember.tpe.resultType)
+                }
+                sym updateInfo mixinMember.tpe.resultType // info at current phase
 
-                  val newFlags = (
-                    (PrivateLocal)
-                      | (mixinMember getFlag MUTABLE | LAZY)
-                      | (if (mixinMember.hasStableFlag) 0 else MUTABLE)
-                  )
+                val newFlags = (
+                  (PrivateLocal)
+                    | (mixinMember getFlag MUTABLE | LAZY)
+                    | (if (mixinMember.hasStableFlag) 0 else MUTABLE)
+                )
 
-                  addMember(
-                    clazz,
-                    sym setFlag newFlags setAnnotations accessed.annotations)
-              }
+                addMember(
+                  clazz,
+                  sym setFlag newFlags setAnnotations accessed.annotations)
+            }
           }
         } else if (mixinMember.isSuperAccessor) { // mixin super accessors
           val superAccessor =
@@ -362,8 +361,7 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
       }
     }
 
-    if (clazz.isJavaDefined || treatedClassInfos(clazz) == clazz.info)
-      return
+    if (clazz.isJavaDefined || treatedClassInfos(clazz) == clazz.info) return
 
     treatedClassInfos(clazz) = clazz.info
     assert(!clazz.isTrait && clazz.info.parents.nonEmpty, clazz)
@@ -476,8 +474,7 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
 
           if (!currentOwner.isTrait && !isPrimitiveValueClass(currentOwner))
             addMixedinMembers(currentOwner, unit)
-          else if (currentOwner.isTrait)
-            addLateInterfaceMembers(currentOwner)
+          else if (currentOwner.isTrait) addLateInterfaceMembers(currentOwner)
 
           tree
 
@@ -507,12 +504,8 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
           else return NO_NAME
         )
       if (field.accessed hasAnnotation TransientAttr) {
-        if (isNormal) BITMAP_TRANSIENT
-        else BITMAP_CHECKINIT_TRANSIENT
-      } else {
-        if (isNormal) BITMAP_NORMAL
-        else BITMAP_CHECKINIT
-      }
+        if (isNormal) BITMAP_TRANSIENT else BITMAP_CHECKINIT_TRANSIENT
+      } else { if (isNormal) BITMAP_NORMAL else BITMAP_CHECKINIT }
     }
 
     /** Add all new definitions to a non-trait class
@@ -673,8 +666,7 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
         def lhs = bitmapTree GEN_& (mask, kind)
         kind match {
           case BooleanClass =>
-            if (equalToZero) NOT(bitmapTree)
-            else bitmapTree
+            if (equalToZero) NOT(bitmapTree) else bitmapTree
           case _ =>
             if (equalToZero) lhs GEN_== (ZERO, kind)
             else lhs GEN_!= (ZERO, kind)
@@ -881,8 +873,7 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
                 fieldOffset(sym),
                 stat.pos,
                 sym))(
-                if (sym.tpe.resultType.typeSymbol == UnitClass) UNIT
-                else rhs
+                if (sym.tpe.resultType.typeSymbol == UnitClass) UNIT else rhs
               ))
           } else if (sym.isConstructor) {
             deriveDefDef(stat)(addInitBits(clazz, _))
@@ -1058,8 +1049,7 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
                   // If this is a setter of a mixed-in field which is overridden by another mixin,
                   // the trait setter of the overridden one does not need to do anything - the
                   // trait setter of the overriding field will initialize the field.
-                  if (isOverriddenSetter(sym)) UNIT
-                  else setterBody(sym)
+                  if (isOverriddenSetter(sym)) UNIT else setterBody(sym)
                 } else getterBody(sym)
               }
             )

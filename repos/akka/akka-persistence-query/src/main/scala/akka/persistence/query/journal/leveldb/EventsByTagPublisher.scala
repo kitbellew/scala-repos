@@ -87,8 +87,7 @@ private[akka] abstract class AbstractEventsByTagPublisher(
 
   def idle: Receive = {
     case Continue | _: LeveldbJournal.TaggedEventAppended ⇒
-      if (timeForReplay)
-        replay()
+      if (timeForReplay) replay()
 
     case _: Request ⇒
       receiveIdleRequest()
@@ -185,14 +184,12 @@ private[akka] class LiveEventsByTagPublisher(
 
   override def receiveIdleRequest(): Unit = {
     deliverBuf()
-    if (buf.isEmpty && currOffset > toOffset)
-      onCompleteThenStop()
+    if (buf.isEmpty && currOffset > toOffset) onCompleteThenStop()
   }
 
   override def receiveRecoverySuccess(highestSeqNr: Long): Unit = {
     deliverBuf()
-    if (buf.isEmpty && currOffset > toOffset)
-      onCompleteThenStop()
+    if (buf.isEmpty && currOffset > toOffset) onCompleteThenStop()
     context.become(idle)
   }
 
@@ -221,20 +218,16 @@ private[akka] class CurrentEventsByTagPublisher(
 
   override def receiveIdleRequest(): Unit = {
     deliverBuf()
-    if (buf.isEmpty && currOffset > toOffset)
-      onCompleteThenStop()
-    else
-      self ! Continue
+    if (buf.isEmpty && currOffset > toOffset) onCompleteThenStop()
+    else self ! Continue
   }
 
   override def receiveRecoverySuccess(highestSeqNr: Long): Unit = {
     deliverBuf()
-    if (highestSeqNr < toOffset)
-      _toOffset = highestSeqNr
+    if (highestSeqNr < toOffset) _toOffset = highestSeqNr
     if (buf.isEmpty && (currOffset > toOffset || currOffset == fromOffset))
       onCompleteThenStop()
-    else
-      self ! Continue // more to fetch
+    else self ! Continue // more to fetch
     context.become(idle)
   }
 

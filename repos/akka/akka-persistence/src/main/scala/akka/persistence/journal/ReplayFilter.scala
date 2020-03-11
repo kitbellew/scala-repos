@@ -85,8 +85,7 @@ private[akka] class ReplayFilter(
 
   def receive = {
     case r @ ReplayedMessage(persistent) ⇒
-      if (debugEnabled)
-        log.debug("Replay: {}", persistent)
+      if (debugEnabled) log.debug("Replay: {}", persistent)
       try {
         if (buffer.size == windowSize) {
           val msg = buffer.removeFirst()
@@ -129,8 +128,7 @@ private[akka] class ReplayFilter(
 
         } else {
           // from new writer
-          if (writerUuid != "")
-            oldWriters.add(writerUuid)
+          if (writerUuid != "") oldWriters.add(writerUuid)
           if (oldWriters.size > maxOldWriters)
             oldWriters.remove(oldWriters.head)
 
@@ -164,8 +162,7 @@ private[akka] class ReplayFilter(
       } catch { case e: IllegalStateException if mode == Fail ⇒ fail(e) }
 
     case msg @ (_: RecoverySuccess | _: ReplayMessagesFailure) ⇒
-      if (debugEnabled)
-        log.debug("Replay completed: {}", msg)
+      if (debugEnabled) log.debug("Replay completed: {}", msg)
       sendBuffered()
       persistentActor.tell(msg, Actor.noSender)
       context.stop(self)
@@ -173,8 +170,7 @@ private[akka] class ReplayFilter(
 
   def sendBuffered(): Unit = {
     val iter = buffer.iterator()
-    while (iter.hasNext())
-      persistentActor.tell(iter.next(), Actor.noSender)
+    while (iter.hasNext()) persistentActor.tell(iter.next(), Actor.noSender)
     buffer.clear()
   }
 

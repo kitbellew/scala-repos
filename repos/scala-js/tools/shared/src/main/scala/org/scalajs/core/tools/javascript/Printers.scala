@@ -46,8 +46,7 @@ object Printers {
           }
         case _ =>
           printStat(tree)
-          if (shouldPrintSepAfterTree(tree))
-            print(';')
+          if (shouldPrintSepAfterTree(tree)) print(';')
           println()
       }
     }
@@ -63,8 +62,7 @@ object Printers {
       while (rest.nonEmpty) {
         print(rest.head)
         rest = rest.tail
-        if (rest.nonEmpty)
-          print(", ")
+        if (rest.nonEmpty) print(", ")
       }
       print(end)
     }
@@ -79,8 +77,7 @@ object Printers {
             rest = rest.tail
             printStat(x)
             if (rest.nonEmpty) {
-              if (shouldPrintSepAfterTree(x))
-                print(';')
+              if (shouldPrintSepAfterTree(x)) print(';')
               println()
             }
           }
@@ -151,8 +148,7 @@ object Printers {
           }
 
         case ParamDef(ident, rest) =>
-          if (rest)
-            print("...")
+          if (rest) print("...")
           print(ident)
 
         // Control flow constructs
@@ -161,10 +157,7 @@ object Printers {
           print("/*<skip>*/")
 
         case tree: Block =>
-          if (isStat)
-            printBlock(tree)
-          else
-            printRow(tree.stats, '(', ')')
+          if (isStat) printBlock(tree) else printRow(tree.stats, '(', ')')
 
         case Labeled(label, body) =>
           print(label)
@@ -398,8 +391,7 @@ object Printers {
         case ObjectConstr(Nil) =>
           if (isStat)
             print("({})") // force expression position for the object literal
-          else
-            print("{}")
+          else print("{}")
 
         case ObjectConstr(fields) =>
           if (isStat)
@@ -422,8 +414,7 @@ object Printers {
           undent()
           println()
           print('}')
-          if (isStat)
-            print(')')
+          if (isStat) print(')')
 
         // Literals
 
@@ -503,23 +494,20 @@ object Printers {
           undent(); println(); print('}')
 
         case MethodDef(static, name, params, body) =>
-          if (static)
-            print("static ")
+          if (static) print("static ")
           print(name)
           printSig(params)
           printBlock(body)
 
         case GetterDef(static, name, body) =>
-          if (static)
-            print("static ")
+          if (static) print("static ")
           print("get ")
           print(name)
           printSig(Nil)
           printBlock(body)
 
         case SetterDef(static, name, param, body) =>
-          if (static)
-            print("static ")
+          if (static) print("static ")
           print("set ")
           print(name)
           print('(')
@@ -562,21 +550,18 @@ object Printers {
 
     override def printTree(tree: Tree, isStat: Boolean): Unit = {
       val pos = tree.pos
-      if (pos.isDefined)
-        sourceMap.startNode(column, pos)
+      if (pos.isDefined) sourceMap.startNode(column, pos)
 
       super.printTree(tree, isStat)
 
-      if (pos.isDefined)
-        sourceMap.endNode(column)
+      if (pos.isDefined) sourceMap.endNode(column)
     }
 
     override protected def print(ident: Ident): Unit = {
       if (ident.pos.isDefined)
         sourceMap.startNode(column, ident.pos, ident.originalName)
       super.print(ident)
-      if (ident.pos.isDefined)
-        sourceMap.endNode(column)
+      if (ident.pos.isDefined) sourceMap.endNode(column)
     }
 
     override def println(): Unit = {
@@ -621,15 +606,13 @@ object Printers {
     }
 
     override def printTree(tree: Tree, isStat: Boolean): Unit = {
-      if (positions(curLine).isEmpty)
-        positions(curLine) = tree.pos
+      if (positions(curLine).isEmpty) positions(curLine) = tree.pos
 
       super.printTree(tree, isStat)
     }
 
     override protected def print(ident: Ident): Unit = {
-      if (positions(curLine).isEmpty)
-        positions(curLine) = ident.pos
+      if (positions(curLine).isEmpty) positions(curLine) = ident.pos
 
       super.print(ident)
     }
@@ -637,8 +620,7 @@ object Printers {
     override def println(): Unit = {
       super.println()
       curLine += 1
-      if (curLine > untilLine)
-        doneBreak.break()
+      if (curLine > untilLine) doneBreak.break()
     }
 
     override protected def print(s: String): Unit = {

@@ -62,12 +62,9 @@ object Embed extends DispatchSnippet {
       }
 
       val bindFn =
-        if (bindings.length > 1)
-          bindings.reduceLeft(_ & _)
-        else if (bindings.length == 1)
-          bindings(0)
-        else
-          PassThru
+        if (bindings.length > 1) bindings.reduceLeft(_ & _)
+        else if (bindings.length == 1) bindings(0)
+        else PassThru
 
       bindFn(template)
     }

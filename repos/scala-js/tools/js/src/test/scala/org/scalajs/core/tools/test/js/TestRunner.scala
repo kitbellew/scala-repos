@@ -32,8 +32,7 @@ object TestRunner {
           eventHandler,
           loggers,
           newTasks => taskLoop(tasks.tail ++ newTasks))
-      else if (eventHandler.hasFailed)
-        sys.error("Some tests have failed")
+      else if (eventHandler.hasFailed) sys.error("Some tests have failed")
     }
 
     taskLoop(tasks)

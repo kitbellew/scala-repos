@@ -49,12 +49,10 @@ class AssumptionViolatedException protected (
     StringDescription.asString(this)
 
   def describeTo(description: Description): Unit = {
-    if (fAssumption != null)
-      description.appendText(fAssumption)
+    if (fAssumption != null) description.appendText(fAssumption)
 
     if (fValueMatcher) {
-      if (fAssumption != null)
-        description.appendText(": ")
+      if (fAssumption != null) description.appendText(": ")
 
       description.appendText("got: ")
       description.appendValue(fValue)

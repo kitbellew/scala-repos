@@ -43,8 +43,7 @@ class SbtAnnotator extends Annotator {
         case exp: ScExpression => annotateTypeMismatch(exp)
         case element           => annotateNonExpression(element)
       }
-      if (sbtVersionLessThan("0.13.7"))
-        annotateMissingBlankLines()
+      if (sbtVersionLessThan("0.13.7")) annotateMissingBlankLines()
     }
 
     private def annotateNonExpression(element: PsiElement): Unit =

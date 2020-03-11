@@ -122,8 +122,7 @@ private[akka] class FanoutProcessorImpl(_settings: ActorMaterializerSettings)
     }
 
   override def fail(e: Throwable): Unit = {
-    if (settings.debugLogging)
-      log.debug("fail due to: {}", e.getMessage)
+    if (settings.debugLogging) log.debug("fail due to: {}", e.getMessage)
     primaryInputs.cancel()
     primaryOutputs.error(e)
     // Stopping will happen after flush

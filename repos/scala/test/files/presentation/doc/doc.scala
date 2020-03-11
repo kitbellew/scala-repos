@@ -80,8 +80,7 @@ object Test extends InteractiveTest {
         askDocComment(sym, source, sym.owner, fragments, docResponse)
         docResponse.get.left.toOption flatMap {
           case (expanded, raw, pos) =>
-            if (expanded.isEmpty)
-              None
+            if (expanded.isEmpty) None
             else
               Some(ask { () => parseAtSymbol(expanded, raw, pos, sym.owner) })
         }

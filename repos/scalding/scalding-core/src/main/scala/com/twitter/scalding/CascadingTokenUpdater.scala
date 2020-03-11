@@ -21,8 +21,7 @@ object CascadingTokenUpdater {
   // Take a cascading string of tokens and turns it into a map
   // from token index to class
   def parseTokens(tokClass: String): Map[Int, String] =
-    if (tokClass == null || tokClass.isEmpty)
-      Map[Int, String]()
+    if (tokClass == null || tokClass.isEmpty) Map[Int, String]()
     else
       tokClass
         .split(",")

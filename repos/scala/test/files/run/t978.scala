@@ -13,8 +13,7 @@ object Test extends App {
 //  val set = new collection.jcl.HashSet[Foo]
 
   val max = 200
-  for (x <- 1 to max)
-    set += new Foo(x)
+  for (x <- 1 to max) set += new Foo(x)
 
   testRemove(2)
   testExists(2)

@@ -48,8 +48,7 @@ class RetryBudgetTest extends FunSuite with Matchers {
       // check initial conditions
       val minRetries = ttl.inSeconds * minRetriesPerSec
       assert(minRetries == rb.balance)
-      if (minRetries == 0)
-        assert(!rb.tryWithdraw())
+      if (minRetries == 0) assert(!rb.tryWithdraw())
 
       // use a decent sized number so we see less effects from fractions
       val nReqs = 10000
@@ -57,10 +56,7 @@ class RetryBudgetTest extends FunSuite with Matchers {
       0.until(nReqs).foreach { i =>
         withClue(s"request $i:") {
           rb.deposit()
-          if (rb.tryWithdraw())
-            retried += 1
-          else
-            assert(0 == rb.balance)
+          if (rb.tryWithdraw()) retried += 1 else assert(0 == rb.balance)
         }
       }
 

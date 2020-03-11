@@ -31,12 +31,10 @@ class ReplOutput(val dirSetting: MutableSettings#StringSetting) {
   // a generated temporary directory, or a specified outdir.
   val dir: ReplDir =
     (
-      if (dirSetting.isDefault)
-        new ReplVirtualDir()
+      if (dirSetting.isDefault) new ReplVirtualDir()
       else if (dirSetting.value == "")
         new ReplRealDir(Directory.makeTemp("repl"))
-      else
-        new ReplRealDir(Directory(dirSetting.value))
+      else new ReplRealDir(Directory(dirSetting.value))
     )
 
   // print the contents hierarchically

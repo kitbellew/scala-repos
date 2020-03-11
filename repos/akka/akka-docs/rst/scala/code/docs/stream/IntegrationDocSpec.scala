@@ -110,10 +110,8 @@ object IntegrationDocSpec {
     def convert(s: String): Future[String] = {
       println(s"running: $s (${runningCount.incrementAndGet()})")
       Future {
-        if (s.nonEmpty && s.head.isLower)
-          Thread.sleep(500)
-        else
-          Thread.sleep(20)
+        if (s.nonEmpty && s.head.isLower) Thread.sleep(500)
+        else Thread.sleep(20)
         println(s"completed: $s (${runningCount.decrementAndGet()})")
         s.toUpperCase
       }
@@ -327,10 +325,7 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
 
   "illustrate ordering and parallelism of mapAsync" in {
     val probe = TestProbe()
-    def println(s: String): Unit = {
-      if (s.startsWith("after:"))
-        probe.ref ! s
-    }
+    def println(s: String): Unit = { if (s.startsWith("after:")) probe.ref ! s }
 
     //#sometimes-slow-mapAsync
     implicit val blockingExecutionContext =
@@ -361,10 +356,7 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
 
   "illustrate ordering and parallelism of mapAsyncUnordered" in {
     val probe = TestProbe()
-    def println(s: String): Unit = {
-      if (s.startsWith("after:"))
-        probe.ref ! s
-    }
+    def println(s: String): Unit = { if (s.startsWith("after:")) probe.ref ! s }
 
     //#sometimes-slow-mapAsyncUnordered
     implicit val blockingExecutionContext =

@@ -168,15 +168,13 @@ trait RingLaws[A] extends GroupLaws[A] {
     def nonZero: Boolean = false
 
     def _ml =
-      if (nonZero)
-        new RuleSet with HasOneParent {
-          val name = ml.name
-          val bases = Seq("base-nonzero" → ml.base(nonZeroLaws))
-          val parent = ml.parent
-          val props = ml.props
-        }
-      else
-        ml
+      if (nonZero) new RuleSet with HasOneParent {
+        val name = ml.name
+        val bases = Seq("base-nonzero" → ml.base(nonZeroLaws))
+        val parent = ml.parent
+        val props = ml.props
+      }
+      else ml
 
     def bases = Seq("additive" → al, "multiplicative" → _ml)
   }

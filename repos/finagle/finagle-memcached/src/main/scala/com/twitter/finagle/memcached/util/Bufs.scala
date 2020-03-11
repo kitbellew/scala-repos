@@ -13,10 +13,7 @@ private[finagle] object Bufs {
     * @return the Buf representation of non-empty and non-null Strings, else null
     */
   implicit def nonEmptyStringToBuf(str: String): Buf = {
-    if (Strings.isNullOrEmpty(str))
-      null
-    else
-      Buf.Utf8(str)
+    if (Strings.isNullOrEmpty(str)) null else Buf.Utf8(str)
   }
 
   /**

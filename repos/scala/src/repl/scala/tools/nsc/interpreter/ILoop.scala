@@ -61,8 +61,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   }
 
   protected def asyncMessage(msg: String) {
-    if (isReplInfo || isReplPower)
-      echoAndRefresh(msg)
+    if (isReplInfo || isReplPower) echoAndRefresh(msg)
   }
 
   override def echoCommandMessage(msg: String) {
@@ -115,8 +114,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
 
   /** Create a new interpreter. */
   def createInterpreter() {
-    if (addedClasspath != "")
-      settings.classpath append addedClasspath
+    if (addedClasspath != "") settings.classpath append addedClasspath
 
     intp = new ILoopInterpreter
   }
@@ -165,8 +163,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
     def defaultLines = 20
 
     def apply(line: String): Result = {
-      if (history eq NoHistory)
-        return "No history available."
+      if (history eq NoHistory) return "No history available."
 
       val xs = words(line)
       val current = history.index
@@ -369,8 +366,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   }
 
   private def warningsCommand(): Result = {
-    if (intp.lastWarnings.isEmpty)
-      "Can't find any cached warnings."
+    if (intp.lastWarnings.isEmpty) "Can't find any cached warnings."
     else
       intp.lastWarnings foreach {
         case (pos, msg) => intp.reporter.warning(pos, msg)
@@ -390,12 +386,10 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   private def javapCommand(line: String): Result = {
     if (javap == null)
       s":javap unavailable, no tools.jar at $jdkHome.  Set JDK_HOME."
-    else if (line == "")
-      Javap.helpText
+    else if (line == "") Javap.helpText
     else
       javap(words(line)) foreach { res =>
-        if (res.isError) return s"Failed: ${res.value}"
-        else res.show()
+        if (res.isError) return s"Failed: ${res.value}" else res.show()
       }
   }
 
@@ -445,10 +439,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
     case ex: Throwable =>
       val (err, explain) =
         (
-          if (intp.isInitializeComplete)
-            (intp.global.throwableAsString(ex), "")
-          else
-            (ex.getMessage, "The compiler did not initialize.\n")
+          if (intp.isInitializeComplete) (intp.global.throwableAsString(ex), "")
+          else (ex.getMessage, "The compiler did not initialize.\n")
         )
       echo(err)
 
@@ -463,8 +455,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
               { echo("\nYou must enter y or n."); fn() })
             catch { case _: RuntimeException => false }
 
-          if (fn()) replay()
-          else echo("\nAbandoning crashed session.")
+          if (fn()) replay() else echo("\nAbandoning crashed session.")
       }
       true
   }
@@ -539,8 +530,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
 
   /** Announces as it replays. */
   def replay(): Unit = {
-    if (replayCommandStack.isEmpty)
-      echo("Nothing to replay.")
+    if (replayCommandStack.isEmpty) echo("Nothing to replay.")
     else
       for (cmd <- replayCommands) {
         echo(
@@ -744,8 +734,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
     }
 
     def flatten(f: AbstractFile): Iterator[AbstractFile] =
-      if (f.isClassContainer) f.iterator.flatMap(flatten)
-      else Iterator(f)
+      if (f.isClassContainer) f.iterator.flatMap(flatten) else Iterator(f)
 
     val entries = flatten(jarFile)
 
@@ -795,8 +784,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   }
 
   def asyncEcho(async: Boolean, msg: => String) {
-    if (async) asyncMessage(msg)
-    else echo(msg)
+    if (async) asyncMessage(msg) else echo(msg)
   }
 
   def verbosity() = {

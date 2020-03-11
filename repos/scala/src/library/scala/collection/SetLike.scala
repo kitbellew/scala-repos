@@ -243,8 +243,7 @@ trait SetLike[A, +This <: SetLike[A, This] with Set[A]]
       if (i < 0) _hasNext = false
       else {
         idxs(i) += 1
-        for (j <- (i + 1) until len)
-          idxs(j) = idxs(j - 1) + 1
+        for (j <- (i + 1) until len) idxs(j) = idxs(j - 1) + 1
       }
 
       result

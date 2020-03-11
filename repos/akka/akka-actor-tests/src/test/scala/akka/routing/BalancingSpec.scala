@@ -19,10 +19,8 @@ object BalancingSpec {
     lazy val id = counter.getAndIncrement()
     def receive = {
       case msg: Int ⇒
-        if (id != 1)
-          Await.ready(latch, 1.minute)
-        else if (msg <= 10)
-          Thread.sleep(50) // dispatch to other routees
+        if (id != 1) Await.ready(latch, 1.minute)
+        else if (msg <= 10) Thread.sleep(50) // dispatch to other routees
         sender() ! id
     }
   }

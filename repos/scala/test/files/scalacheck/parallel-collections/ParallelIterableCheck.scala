@@ -57,8 +57,7 @@ abstract class ParallelIterableCheck[T](collName: String)
   def collectionPairsWith2Indices =
     for (inst <- instances(values);
          f <- choose(0, inst.size);
-         s <- choose(0, inst.size))
-      yield (inst, fromTraversable(inst), f, s)
+         s <- choose(0, inst.size)) yield (inst, fromTraversable(inst), f, s)
 
   def collectionTriplets =
     for (inst <- instances(values);

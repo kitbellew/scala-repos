@@ -117,14 +117,14 @@ class ScalastyleCodeInspection extends LocalInspectionTool {
 
         result.flatMap {
           case StyleError(
-              _,
-              _,
-              key,
-              level,
-              args,
-              Some(line),
-              column,
-              customMessage) =>
+                _,
+                _,
+                key,
+                level,
+                args,
+                Some(line),
+                column,
+                customMessage) =>
             findPsiElement(line, column)
               .filter(e => e.isPhysical && !e.getTextRange.isEmpty)
               .map { e =>

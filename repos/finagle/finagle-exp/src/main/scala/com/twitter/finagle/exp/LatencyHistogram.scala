@@ -51,8 +51,7 @@ private[finagle] class LatencyHistogram(
 
   /** size of each "bucket" */
   private[this] val width: Int =
-    if (error == 0.0) 1
-    else math.max(1, (clipDuration * error).toInt)
+    if (error == 0.0) 1 else math.max(1, (clipDuration * error).toInt)
 
   private[this] val numBuckets: Int = (clipDuration / width).toInt + 1
 

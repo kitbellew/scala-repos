@@ -98,7 +98,7 @@ private[impl] class TaskUpdateActor(
 
   def receive: Receive = LoggingReceive {
     case ProcessTaskOp(
-        op @ TaskOpProcessor.Operation(deadline, _, taskId, _)) =>
+          op @ TaskOpProcessor.Operation(deadline, _, taskId, _)) =>
       val oldQueue: Queue[TaskOpProcessor.Operation] =
         operationsByTaskId(taskId)
       val newQueue = oldQueue :+ op
@@ -113,10 +113,8 @@ private[impl] class TaskUpdateActor(
     case FinishedTaskOp(op) =>
       val (dequeued, newQueue) = operationsByTaskId(op.taskId).dequeue
       require(dequeued == op)
-      if (newQueue.isEmpty)
-        operationsByTaskId -= op.taskId
-      else
-        operationsByTaskId += op.taskId -> newQueue
+      if (newQueue.isEmpty) operationsByTaskId -= op.taskId
+      else operationsByTaskId += op.taskId -> newQueue
 
       val activeCount = metrics.numberOfActiveOps.decrement()
       if (log.isDebugEnabled) {
@@ -150,8 +148,7 @@ private[impl] class TaskUpdateActor(
               s"Timeout: ${op.action} for app [${op.appId}] and ${op.taskId}.")
           )
           Future.successful(())
-        } else
-          metrics.processOpTimer.timeFuture(processor.process(op))
+        } else metrics.processOpTimer.timeFuture(processor.process(op))
       }.map { _ =>
         log.debug(
           s"Finished processing ${op.action} for app [${op.appId}] and ${op.taskId}")

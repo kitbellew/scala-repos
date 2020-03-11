@@ -35,10 +35,7 @@ class LazyStrictTestsJVM {
     def instance[T](repr0: Int => String): TC[T] =
       new TC[T] {
         def repr(depth: Int) =
-          if (depth < 0)
-            "…"
-          else
-            repr0(depth)
+          if (depth < 0) "…" else repr0(depth)
       }
   }
 

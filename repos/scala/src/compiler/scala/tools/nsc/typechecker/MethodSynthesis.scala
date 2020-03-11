@@ -157,8 +157,7 @@ trait MethodSynthesis {
         val getterSym = getter.createAndEnterSymbol()
 
         // Create the setter if necessary.
-        if (getter.needsSetter)
-          Setter(tree).createAndEnterSymbol()
+        if (getter.needsSetter) Setter(tree).createAndEnterSymbol()
 
         // If the getter's abstract the tree gets the getter's symbol,
         // otherwise, create a field (assume the getter requires storage).
@@ -255,14 +254,12 @@ trait MethodSynthesis {
       if (vd.mods.isLazy) List(LazyValGetter(vd))
       else {
         val getter = Getter(vd)
-        if (getter.needsSetter) List(getter, Setter(vd))
-        else List(getter)
+        if (getter.needsSetter) List(getter, Setter(vd)) else List(getter)
       }
 
     def beanAccessors(vd: ValDef): List[DerivedFromValDef] = {
       val setter = if (vd.mods.isMutable) List(BeanSetter(vd)) else Nil
-      if (vd.symbol hasAnnotation BeanPropertyAttr)
-        BeanGetter(vd) :: setter
+      if (vd.symbol hasAnnotation BeanPropertyAttr) BeanGetter(vd) :: setter
       else if (vd.symbol hasAnnotation BooleanBeanPropertyAttr)
         BooleanBeanGetter(vd) :: setter
       else Nil
@@ -443,8 +440,7 @@ trait MethodSynthesis {
 
       override def validate() {
         assert(derivedSym != NoSymbol, tree)
-        if (derivedSym.isOverloaded)
-          GetterDefinedTwiceError(derivedSym)
+        if (derivedSym.isOverloaded) GetterDefinedTwiceError(derivedSym)
 
         super.validate()
       }

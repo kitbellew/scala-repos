@@ -41,10 +41,8 @@ class PsiElementMock(val name: String, children: PsiElementMock*)
   override def toString = name
 
   override def getText: String = {
-    if (children.isEmpty)
-      toString
-    else
-      toString + "(" + children.map(_.getText).mkString(", ") + ")"
+    if (children.isEmpty) toString
+    else toString + "(" + children.map(_.getText).mkString(", ") + ")"
   }
 }
 

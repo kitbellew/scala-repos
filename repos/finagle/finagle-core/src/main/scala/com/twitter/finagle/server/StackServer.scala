@@ -240,8 +240,7 @@ trait StdStackServer[Req, Rep, This <: StdStackServer[Req, Rep, This]]
       }
 
       val statsReceiver =
-        if (serverLabel.isEmpty) stats
-        else stats.scope(serverLabel)
+        if (serverLabel.isEmpty) stats else stats.scope(serverLabel)
 
       val serverParams = params +
         Label(serverLabel) +

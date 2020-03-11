@@ -303,8 +303,7 @@ private[akka] abstract class FanIn(
   override def pumpFailed(e: Throwable): Unit = fail(e)
 
   protected def fail(e: Throwable): Unit = {
-    if (settings.debugLogging)
-      log.debug("fail due to: {}", e.getMessage)
+    if (settings.debugLogging) log.debug("fail due to: {}", e.getMessage)
     nextPhase(completedPhase)
     primaryOutputs.error(e)
     pump()

@@ -61,10 +61,7 @@ final class Pattern private (jsRegExp: js.RegExp, _pattern: String, _flags: Int)
       Array(inputStr)
     } else {
       var len = result.length
-      if (limit == 0) {
-        while (len > 1 && result(len - 1).isEmpty)
-          len -= 1
-      }
+      if (limit == 0) { while (len > 1 && result(len - 1).isEmpty) len -= 1 }
 
       val actualResult = new Array[String](len)
       result.copyToArray(actualResult)
@@ -133,10 +130,7 @@ object Pattern {
   @inline
   private def trySplitHack(pat: String, flags: Int) = {
     val m = splitHackPat.exec(pat)
-    if (m != null)
-      Some((quote(m(1).get), flags))
-    else
-      None
+    if (m != null) Some((quote(m(1).get), flags)) else None
   }
 
   @inline
@@ -151,8 +145,7 @@ object Pattern {
         chars.foldLeft(flags1) { (f, c) => f & ~charToFlag(c) }
       }
       Some((newPat, flags2))
-    } else
-      None
+    } else None
   }
 
   private def charToFlag(c: Char) = (c: @switch) match {

@@ -39,11 +39,9 @@ trait StringOps {
     */
   def trimTrailingSpace(s: String): String = {
     var end = s.length
-    while (end > 0 && s.charAt(end - 1).isWhitespace)
-      end -= 1
+    while (end > 0 && s.charAt(end - 1).isWhitespace) end -= 1
 
-    if (end == s.length) s
-    else s.substring(0, end)
+    if (end == s.length) s else s.substring(0, end)
   }
 
   /** Breaks the string into lines and strips each line before reassembling. */

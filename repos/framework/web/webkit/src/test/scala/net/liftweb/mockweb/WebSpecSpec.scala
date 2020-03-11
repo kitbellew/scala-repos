@@ -34,16 +34,16 @@ object WebSpecSpecBoot {
 
     LiftRules.statelessRewrite.append {
       case RewriteRequest(
-          ParsePath(List("test", "stateless"), _, _, _),
-          _,
-          _) => { RewriteResponse(List("stateless", "works")) }
+            ParsePath(List("test", "stateless"), _, _, _),
+            _,
+            _) => { RewriteResponse(List("stateless", "works")) }
     }
 
     LiftRules.statefulRewrite.append {
       case RewriteRequest(
-          ParsePath(List("test", "stateful"), _, _, _),
-          _,
-          _) => { RewriteResponse(List("stateful", "works")) }
+            ParsePath(List("test", "stateful"), _, _, _),
+            _,
+            _) => { RewriteResponse(List("stateful", "works")) }
     }
   }
 }

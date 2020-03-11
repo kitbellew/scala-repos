@@ -655,8 +655,7 @@ object H5Store {
     H5Reg.save(dataset_id, H5D)
 
     // write optional attributes to space
-    for (attr <- withAttr)
-      writeAttrText(dataset_id, attr._1, attr._2)
+    for (attr <- withAttr) writeAttrText(dataset_id, attr._1, attr._2)
 
     H5Reg.close(space_id, H5S)
     H5Reg.close(dataset_id, H5D)
@@ -686,8 +685,7 @@ object H5Store {
     H5Reg.save(dataset_id, H5D)
 
     // write optional attributes to space
-    for (attr <- withAttr)
-      writeAttrText(dataset_id, attr._1, attr._2)
+    for (attr <- withAttr) writeAttrText(dataset_id, attr._1, attr._2)
 
     writeAttrBool(dataset_id, "transposed", datum = true)
 

@@ -54,16 +54,10 @@ class ByteCode(val bytes: Array[Byte], val pos: Int, val length: Int) {
   override def toString = length + " bytes"
 
   def toInt = fold(0) { (x, b) =>
-    {
-      if (b >= 0) (x << 8) + b.toInt
-      else (x << 8) + b.toInt + 256
-    }
+    { if (b >= 0) (x << 8) + b.toInt else (x << 8) + b.toInt + 256 }
   }
   def toLong = fold(0L) { (x, b) =>
-    {
-      if (b >= 0) (x << 8) + b.toLong
-      else (x << 8) + b.toLong + 256L
-    }
+    { if (b >= 0) (x << 8) + b.toLong else (x << 8) + b.toLong + 256L }
   }
 
   /**
@@ -78,8 +72,7 @@ class ByteCode(val bytes: Array[Byte], val pos: Int, val length: Int) {
 
   def byte(i: Int) = {
     val b = bytes(pos)
-    if (b >= 0) b.toInt
-    else b.toInt + 256
+    if (b >= 0) b.toInt else b.toInt + 256
   }
 }
 
@@ -96,10 +89,7 @@ trait ByteCodeReader extends RulesWithState {
 
   val byte = apply(_.nextByte)
 
-  val u1 = byte ^^ (b => {
-    if (b >= 0) b.toInt
-    else b.toInt + 256
-  })
+  val u1 = byte ^^ (b => { if (b >= 0) b.toInt else b.toInt + 256 })
   val u2 = bytes(2) ^^ (_.toInt)
   val u4 = bytes(4) ^^ (_.toInt) // should map to Long??
 

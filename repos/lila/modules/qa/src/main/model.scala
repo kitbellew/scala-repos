@@ -69,9 +69,7 @@ case class Vote(up: Set[String], down: Set[String], score: Int) {
     copy(up = up - user, down = down + user).computeScore
 
   def of(userId: String): Option[Boolean] =
-    if (up(userId)) Some(true)
-    else if (down(userId)) Some(false)
-    else None
+    if (up(userId)) Some(true) else if (down(userId)) Some(false) else None
 
   private def computeScore = copy(score = up.size - down.size)
 }

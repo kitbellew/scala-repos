@@ -218,12 +218,9 @@ class NodeJSEnv private (
 
     def close(): Unit = {
       serverSocket.close()
-      if (jvm2js != null)
-        jvm2js.close()
-      if (js2jvm != null)
-        js2jvm.close()
-      if (comSocket != null)
-        comSocket.close()
+      if (jvm2js != null) jvm2js.close()
+      if (js2jvm != null) js2jvm.close()
+      if (comSocket != null) comSocket.close()
     }
 
     /** Waits until the JS VM has established a connection or terminates

@@ -37,8 +37,7 @@ private object ClassPath {
     val name: String =
       if (path.endsWith(".class"))
         (path take (path.length - 6)).replace('/', '.')
-      else
-        path.replace('/', '.')
+      else path.replace('/', '.')
 
     /**
       * Load the classpath described by this entry.
@@ -69,8 +68,7 @@ private object ClassPath {
   private def getEntries(loader: ClassLoader): Seq[(URI, ClassLoader)] = {
     val ents = mutable.Buffer[(URI, ClassLoader)]()
     val parent = loader.getParent()
-    if (parent != null)
-      ents ++= getEntries(parent)
+    if (parent != null) ents ++= getEntries(parent)
 
     loader match {
       case urlLoader: URLClassLoader =>
@@ -87,16 +85,12 @@ private object ClassPath {
       buf: mutable.Buffer[Info],
       seenUris: mutable.Set[URI]
   ): Unit = {
-    if (uri.getScheme != "file")
-      return
+    if (uri.getScheme != "file") return
     val f = new File(uri)
-    if (!f.exists())
-      return
+    if (!f.exists()) return
 
-    if (f.isDirectory)
-      browseDir(f, loader, "", buf)
-    else
-      browseJar(f, loader, buf, seenUris)
+    if (f.isDirectory) browseDir(f, loader, "", buf)
+    else browseJar(f, loader, buf, seenUris)
   }
 
   private def browseDir(
@@ -111,10 +105,8 @@ private object ClassPath {
     }
 
     for (f <- dir.listFiles)
-      if (f.isDirectory())
-        browseDir(f, loader, prefix + f.getName + "/", buf)
-      else if (isClass(f.getName))
-        buf += Info(prefix + f.getName, loader)
+      if (f.isDirectory()) browseDir(f, loader, prefix + f.getName + "/", buf)
+      else if (isClass(f.getName)) buf += Info(prefix + f.getName, loader)
   }
 
   private def browseJar(
@@ -165,8 +157,7 @@ private object ClassPath {
   def uriFromJarClasspath(jarFile: File, path: String): Option[URI] =
     try {
       val uri = new URI(path)
-      if (uri.isAbsolute)
-        Some(uri)
+      if (uri.isAbsolute) Some(uri)
       else
         Some(
           new File(

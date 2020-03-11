@@ -160,8 +160,7 @@ class Formatter(
         val traceLines =
           Formatter.formatStackTrace(record.getThrown, truncateStackTracesAt)
         lines += record.getThrown.toString
-        if (traceLines.nonEmpty)
-          lines ++= traceLines
+        if (traceLines.nonEmpty) lines ++= traceLines
       }
       lines.toArray
     }
@@ -224,8 +223,7 @@ class Formatter(
   def truncateText(message: String) =
     if ((truncateAt > 0) && (message.length > truncateAt))
       message.take(truncateAt) + "..."
-    else
-      message
+    else message
 }
 
 /**

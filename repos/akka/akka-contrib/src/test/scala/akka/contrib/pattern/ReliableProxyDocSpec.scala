@@ -33,8 +33,7 @@ object ReliableProxyDocSpec {
         client = sender()
       case FSM.CurrentState(`proxy`, initial) ⇒
       case FSM.Transition(`proxy`, from, to) ⇒
-        if (to == ReliableProxy.Idle)
-          client ! "done"
+        if (to == ReliableProxy.Idle) client ! "done"
     }
   }
   //#demo-transition

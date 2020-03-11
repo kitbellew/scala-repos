@@ -170,9 +170,7 @@ object Plugins extends PluginsFunctions {
       // TODO: defined should return all the plugins
       val allReqs = (defined0 flatMap { asRequirements }).toSet
       val diff = allReqs diff defined0.toSet
-      val defined =
-        if (diff.nonEmpty) diff.toList ::: defined0
-        else defined0
+      val defined = if (diff.nonEmpty) diff.toList ::: defined0 else defined0
 
       val byAtom = defined map { x => (Atom(x.label), x) }
       val byAtomMap = byAtom.toMap

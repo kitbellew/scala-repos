@@ -64,11 +64,9 @@ class NodeJSTest extends TimeoutComTests {
 
     start(com)
 
-    for (_ <- 1 to n)
-      com.send("ping")
+    for (_ <- 1 to n) com.send("ping")
 
-    for (_ <- 1 to n)
-      assertEquals(com.receive(), "pong: ping")
+    for (_ <- 1 to n) assertEquals(com.receive(), "pong: ping")
 
     com.close()
     com.await(DefaultTimeout)

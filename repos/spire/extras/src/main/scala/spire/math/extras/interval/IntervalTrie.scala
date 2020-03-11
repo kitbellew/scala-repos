@@ -83,8 +83,7 @@ object IntervalTrie {
     def order: Order[Float] = spire.std.float.FloatAlgebra
 
     def toLong(value: Float): Long = {
-      if (value.isNaN)
-        throw new IllegalArgumentException("NaN")
+      if (value.isNaN) throw new IllegalArgumentException("NaN")
       // sign and magnitude signed integer
       val signAndMagnitude = java.lang.Float.floatToIntBits(value)
       // two's complement signed integer: if the sign bit is set, negate everything except the sign bit
@@ -118,8 +117,7 @@ object IntervalTrie {
     def order: Order[Double] = spire.std.double.DoubleAlgebra
 
     def toLong(value: Double): Long = {
-      if (value.isNaN)
-        throw new IllegalArgumentException("NaN")
+      if (value.isNaN) throw new IllegalArgumentException("NaN")
       // sign and magnitude signed integer
       val signAndMagnitude = java.lang.Double.doubleToLongBits(value)
       // two's complement signed integer: if the sign bit is set, negate everything except the sign bit
@@ -259,8 +257,7 @@ object IntervalTrie {
     def rationalToLong(r: Rational): Long = {
       if (r > Long.MaxValue || r < Long.MinValue)
         throw new NumberFormatException("Integer number too large")
-      else
-        r.toLong
+      else r.toLong
     }
     def intervalToIntervalSet(i: Interval[Long]): IntervalTrie[Long] = apply(i)
     val intervals =
@@ -275,18 +272,14 @@ object IntervalTrie {
     import x._
     def op(b0: Bound[T], a0: Boolean, a: Tree): Bound[T] = a match {
       case Below(a) =>
-        if (a0)
-          f(Interval.fromBounds(b0, Open(fromLong(a))))
+        if (a0) f(Interval.fromBounds(b0, Open(fromLong(a))))
         Closed(fromLong(a))
       case Above(a) =>
-        if (a0)
-          f(Interval.fromBounds(b0, Closed(fromLong(a))))
+        if (a0) f(Interval.fromBounds(b0, Closed(fromLong(a))))
         Open(fromLong(a))
       case Both(a) =>
-        if (a0)
-          f(Interval.fromBounds(b0, Open(fromLong(a))))
-        else
-          f(Interval.point(fromLong(a)))
+        if (a0) f(Interval.fromBounds(b0, Open(fromLong(a))))
+        else f(Interval.point(fromLong(a)))
         Open(fromLong(a))
       case a: Branch =>
         val am = a0 ^ a.left.sign
@@ -297,8 +290,7 @@ object IntervalTrie {
         Unbound()
     }
     val last = op(Unbound(), a0, a)
-    if (a0 ^ ((a ne null) && a.sign))
-      f(Interval.fromBounds(last, Unbound()))
+    if (a0 ^ ((a ne null) && a.sign)) f(Interval.fromBounds(last, Unbound()))
   }
 
   private abstract class TreeIterator[T](a: Tree) extends Iterator[T] {
@@ -316,8 +308,7 @@ object IntervalTrie {
       index += 1
     }
 
-    if (a ne null)
-      push(a)
+    if (a ne null) push(a)
 
     def hasNextLeaf = index != 0
 
@@ -399,10 +390,7 @@ object IntervalTrie {
     @tailrec
     override def next(): Interval[T] = {
       val result = nextInterval()
-      if (result ne null)
-        result
-      else
-        next()
+      if (result ne null) result else next()
     }
   }
 
@@ -519,10 +507,8 @@ object IntervalTrie {
     }
 
     override def toString = {
-      if (isEmpty)
-        Interval.empty[T].toString
-      else
-        intervals.map(_.toString).mkString(";")
+      if (isEmpty) Interval.empty[T].toString
+      else intervals.map(_.toString).mkString(";")
     }
   }
 

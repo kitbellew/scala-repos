@@ -50,8 +50,7 @@ object ScalaKeywordLookupItem {
 
             context.setAddCompletionChar(addCompletionChar)
             if (document.getTextLength <= offset || document.getText.charAt(
-                  offset) != ' ')
-              document.insertString(offset, " ")
+                  offset) != ' ') document.insertString(offset, " ")
             editor.getCaretModel.moveToOffset(offset + 1)
           }
           val settings = CodeStyleSettingsManager

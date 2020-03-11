@@ -69,8 +69,7 @@ private[play] object WebSocketActor {
 
     (enumerator |>> consumer).onComplete { _ =>
       // When the WebSocket is complete, either due to an error or not, shutdown
-      if (!shutdown)
-        webSocketActor ! PoisonPill
+      if (!shutdown) webSocketActor ! PoisonPill
     }
 
     def receive = {

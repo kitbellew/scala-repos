@@ -30,8 +30,7 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
 
   // TODO remove this when deprecated this() is removed
   override val identifier: Int =
-    if (system eq null) 5
-    else identifierFromConfig
+    if (system eq null) 5 else identifierFromConfig
 
   private final val BufferSize = 1024 * 4
   // must be lazy because serializer is initialized from Cluster extension constructor

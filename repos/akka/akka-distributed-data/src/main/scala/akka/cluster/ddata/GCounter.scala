@@ -100,8 +100,7 @@ final class GCounter private[akka] (
       var merged = that.state
       for ((key, thisValue) ← state) {
         val thatValue = merged.getOrElse(key, Zero)
-        if (thisValue > thatValue)
-          merged = merged.updated(key, thisValue)
+        if (thisValue > thatValue) merged = merged.updated(key, thisValue)
       }
       clearAncestor()
       new GCounter(merged)

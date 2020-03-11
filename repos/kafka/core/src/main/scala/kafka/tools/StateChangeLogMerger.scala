@@ -164,8 +164,7 @@ object StateChangeLogMerger extends Logging {
 
     for (itr <- lineIterators) {
       val lineItr = getNextLine(itr)
-      if (!lineItr.isEmpty)
-        lines ::= lineItr
+      if (!lineItr.isEmpty) lines ::= lineItr
     }
     if (!lines.isEmpty) pqueue.enqueue(lines: _*)
 
@@ -173,8 +172,7 @@ object StateChangeLogMerger extends Logging {
       val lineItr = pqueue.dequeue()
       output.write((lineItr.line + "\n").getBytes)
       val nextLineItr = getNextLine(lineItr.itr)
-      if (!nextLineItr.isEmpty)
-        pqueue.enqueue(nextLineItr)
+      if (!nextLineItr.isEmpty) pqueue.enqueue(nextLineItr)
     }
 
     output.flush()

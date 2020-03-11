@@ -85,8 +85,7 @@ private[nio] final class TypedArrayByteBuffer private (
   def asCharBuffer(): CharBuffer = {
     if (hasNativeOrder && (_arrayBufferOffset + position) % 2 == 0)
       TypedArrayCharBuffer.fromTypedArrayByteBuffer(this)
-    else
-      DataViewCharBuffer.fromTypedArrayByteBuffer(this)
+    else DataViewCharBuffer.fromTypedArrayByteBuffer(this)
   }
 
   @noinline def getShort(): Short =
@@ -105,8 +104,7 @@ private[nio] final class TypedArrayByteBuffer private (
   def asShortBuffer(): ShortBuffer = {
     if (hasNativeOrder && (_arrayBufferOffset + position) % 2 == 0)
       TypedArrayShortBuffer.fromTypedArrayByteBuffer(this)
-    else
-      DataViewShortBuffer.fromTypedArrayByteBuffer(this)
+    else DataViewShortBuffer.fromTypedArrayByteBuffer(this)
   }
 
   @noinline def getInt(): Int =
@@ -125,8 +123,7 @@ private[nio] final class TypedArrayByteBuffer private (
   def asIntBuffer(): IntBuffer = {
     if (hasNativeOrder && (_arrayBufferOffset + position) % 4 == 0)
       TypedArrayIntBuffer.fromTypedArrayByteBuffer(this)
-    else
-      DataViewIntBuffer.fromTypedArrayByteBuffer(this)
+    else DataViewIntBuffer.fromTypedArrayByteBuffer(this)
   }
 
   @noinline def getLong(): Long =
@@ -161,8 +158,7 @@ private[nio] final class TypedArrayByteBuffer private (
   def asFloatBuffer(): FloatBuffer = {
     if (hasNativeOrder && (_arrayBufferOffset + position) % 4 == 0)
       TypedArrayFloatBuffer.fromTypedArrayByteBuffer(this)
-    else
-      DataViewFloatBuffer.fromTypedArrayByteBuffer(this)
+    else DataViewFloatBuffer.fromTypedArrayByteBuffer(this)
   }
 
   @noinline def getDouble(): Double =
@@ -181,8 +177,7 @@ private[nio] final class TypedArrayByteBuffer private (
   def asDoubleBuffer(): DoubleBuffer = {
     if (hasNativeOrder && (_arrayBufferOffset + position) % 8 == 0)
       TypedArrayDoubleBuffer.fromTypedArrayByteBuffer(this)
-    else
-      DataViewDoubleBuffer.fromTypedArrayByteBuffer(this)
+    else DataViewDoubleBuffer.fromTypedArrayByteBuffer(this)
   }
 
   // Internal API
@@ -245,8 +240,7 @@ private[nio] object TypedArrayByteBuffer {
   }
 
   def allocate(capacity: Int): ByteBuffer = {
-    if (capacity < 0)
-      throw new IllegalArgumentException
+    if (capacity < 0) throw new IllegalArgumentException
     new TypedArrayByteBuffer(new Int8Array(capacity), 0, capacity, false)
   }
 

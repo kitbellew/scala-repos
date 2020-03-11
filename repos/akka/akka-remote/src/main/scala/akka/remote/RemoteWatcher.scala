@@ -174,12 +174,10 @@ private[akka] class RemoteWatcher(
 
     if (failureDetector.isMonitoring(from))
       log.debug("Received heartbeat rsp from [{}]", from)
-    else
-      log.debug("Received first heartbeat rsp from [{}]", from)
+    else log.debug("Received first heartbeat rsp from [{}]", from)
 
     if (watcheeByNodes.contains(from) && !unreachable(from)) {
-      if (!addressUids.contains(from) || addressUids(from) != uid)
-        reWatch(from)
+      if (!addressUids.contains(from) || addressUids(from) != uid) reWatch(from)
       addressUids += (from → uid)
       failureDetector.heartbeat(from)
     }
@@ -273,12 +271,10 @@ private[akka] class RemoteWatcher(
     // When watchee is stopped it sends DeathWatchNotification to this RemoteWatcher,
     // which will propagate it to all watchers of this watchee.
     // addressTerminated case is already handled by the watcher itself in DeathWatch trait
-    if (!addressTerminated)
-      for {
-        watchers ← watching.get(watchee)
-        watcher ← watchers
-      } watcher.sendSystemMessage(
-        DeathWatchNotification(watchee, existenceConfirmed, addressTerminated))
+    if (!addressTerminated) for {
+      watchers ← watching.get(watchee)
+      watcher ← watchers
+    } watcher.sendSystemMessage(DeathWatchNotification(watchee, existenceConfirmed, addressTerminated))
 
     removeWatchee(watchee)
   }

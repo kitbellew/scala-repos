@@ -36,8 +36,7 @@ class Throwable(s: String, private var e: Throwable)
   def setStackTrace(stackTrace: Array[StackTraceElement]): Unit = {
     var i = 0
     while (i < stackTrace.length) {
-      if (stackTrace(i) eq null)
-        throw new NullPointerException()
+      if (stackTrace(i) eq null) throw new NullPointerException()
       i += 1
     }
 
@@ -91,8 +90,7 @@ class Throwable(s: String, private var e: Throwable)
         /* If at least one, decrement so that the first common frame is still
          * printed. According to Harmony this is spec'ed and common practice.
          */
-        if (sameFrameCount > 0)
-          sameFrameCount -= 1
+        if (sameFrameCount > 0) sameFrameCount -= 1
 
         // Print the non-common frames
         val lengthToPrint = thisLength - sameFrameCount
@@ -102,8 +100,7 @@ class Throwable(s: String, private var e: Throwable)
           i += 1
         }
 
-        if (sameFrameCount > 0)
-          sprintln("  ... " + sameFrameCount + " more")
+        if (sameFrameCount > 0) sprintln("  ... " + sameFrameCount + " more")
       } else { sprintln("  <no stack trace available>") }
     }
   }
@@ -111,8 +108,7 @@ class Throwable(s: String, private var e: Throwable)
   override def toString(): String = {
     val className = getClass.getName
     val message = getMessage()
-    if (message eq null) className
-    else className + ": " + message
+    if (message eq null) className else className + ": " + message
   }
 }
 

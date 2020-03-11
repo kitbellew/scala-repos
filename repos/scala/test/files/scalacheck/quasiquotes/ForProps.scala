@@ -5,12 +5,10 @@ object ForProps extends QuasiquoteProperties("for") {
   case class ForEnums(val value: List[Tree])
 
   def genSimpleBind: Gen[Bind] =
-    for (name <- genTermName)
-      yield pq"$name @ _"
+    for (name <- genTermName) yield pq"$name @ _"
 
   def genForFilter: Gen[Tree] =
-    for (cond <- genIdent(genTermName))
-      yield fq"if $cond"
+    for (cond <- genIdent(genTermName)) yield fq"if $cond"
 
   def genForFrom: Gen[Tree] =
     for (lhs <- genSimpleBind; rhs <- genIdent(genTermName))

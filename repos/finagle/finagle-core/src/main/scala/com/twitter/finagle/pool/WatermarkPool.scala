@@ -88,10 +88,7 @@ class WatermarkPool[Req, Rep](
         }
       }
 
-      if (releasable)
-        underlying.close(deadline)
-      else
-        Future.Done
+      if (releasable) underlying.close(deadline) else Future.Done
     }
   }
 
@@ -109,8 +106,7 @@ class WatermarkPool[Req, Rep](
   }
 
   def apply(conn: ClientConnection): Future[Service[Req, Rep]] = {
-    if (!isOpen)
-      return Future.exception(new ServiceClosedException)
+    if (!isOpen) return Future.exception(new ServiceClosedException)
     thePool.synchronized {
       dequeue() match {
         case Some(service) =>
@@ -152,8 +148,7 @@ class WatermarkPool[Req, Rep](
       case e =>
         val failure =
           Failure.adapt(e, Failure.Restartable | Failure.Interrupted)
-        if (p.updateIfEmpty(Throw(failure)))
-          underlying.onSuccess { _.close() }
+        if (p.updateIfEmpty(Throw(failure))) underlying.onSuccess { _.close() }
     }
     p
   }
@@ -179,8 +174,7 @@ class WatermarkPool[Req, Rep](
   }
 
   override def status: Status =
-    if (isOpen) factory.status
-    else Status.Closed
+    if (isOpen) factory.status else Status.Closed
 
   override val toString: String = "watermark_pool_%s".format(factory.toString)
 }

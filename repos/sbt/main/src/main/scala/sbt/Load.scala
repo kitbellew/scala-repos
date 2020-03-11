@@ -184,8 +184,7 @@ object Load {
     if (base != global && global.exists) {
       val gp = GlobalPlugin.load(global, state, config)
       config.copy(globalPlugin = Some(gp))
-    } else
-      config
+    } else config
 
   def defaultDelegates: sbt.LoadedBuild => Scope => Seq[Scope] =
     (lb: sbt.LoadedBuild) => {
@@ -563,8 +562,7 @@ object Load {
       BuildLoader) =
     bases match {
       case b :: bs =>
-        if (builds contains b)
-          loadAll(bs, references, loaders, builds)
+        if (builds contains b) loadAll(bs, references, loaders, builds)
         else {
           val (loadedBuild, refs) = loaded(loaders(b))
           checkBuildBase(loadedBuild.unit.localBase)
@@ -596,10 +594,8 @@ object Load {
   def checkBuildBase(base: File) = checkDirectory(base)
   def checkDirectory(base: File): Unit = {
     assert(base.isAbsolute, "Not absolute: " + base)
-    if (base.isFile)
-      sys.error("Not a directory: " + base)
-    else if (!base.exists)
-      IO createDirectory base
+    if (base.isFile) sys.error("Not a directory: " + base)
+    else if (!base.exists) IO createDirectory base
   }
   def resolveAll(
       builds: Map[URI, sbt.PartBuildUnit]): Map[URI, sbt.LoadedBuildUnit] = {
@@ -1210,8 +1206,7 @@ object Load {
       config: sbt.LoadBuildConfiguration): sbt.LoadedPlugins =
     if (hasDefinition(dir))
       buildPlugins(dir, s, enableSbtPlugin(activateGlobalPlugin(config)))
-    else
-      noPlugins(dir, config)
+    else noPlugins(dir, config)
 
   def hasDefinition(dir: File) = {
     import Path._
@@ -1258,10 +1253,8 @@ object Load {
       depcp: Seq[Attributed[File]],
       defcp: Seq[Attributed[File]]): (Seq[Attributed[File]], ClassLoader) = {
     val definitionClasspath =
-      if (depcp.isEmpty)
-        config.classpath
-      else
-        (depcp ++ config.classpath).distinct
+      if (depcp.isEmpty) config.classpath
+      else (depcp ++ config.classpath).distinct
     val pm = config.pluginManagement
     // only the dependencyClasspath goes in the common plugin class loader ...
     def addToLoader() = pm.loader add Path.toURLs(data(depcp))
@@ -1269,8 +1262,7 @@ object Load {
     val parentLoader =
       if (depcp.isEmpty) pm.initialLoader else { addToLoader(); pm.loader }
     val pluginLoader =
-      if (defcp.isEmpty)
-        parentLoader
+      if (defcp.isEmpty) parentLoader
       else {
         // ... the build definition classes get their own loader so that they don't conflict with other build definitions (#511)
         ClasspathUtilities.toLoader(data(defcp), parentLoader)

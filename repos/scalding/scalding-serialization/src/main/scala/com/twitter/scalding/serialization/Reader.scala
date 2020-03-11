@@ -72,8 +72,7 @@ object Reader {
   implicit def option[T: Reader]: Reader[Option[T]] = new Reader[Option[T]] {
     val r = implicitly[Reader[T]]
     def read(is: InputStream) =
-      if (is.readByte == (0: Byte)) None
-      else Some(r.read(is))
+      if (is.readByte == (0: Byte)) None else Some(r.read(is))
   }
 
   implicit def either[L: Reader, R: Reader]: Reader[Either[L, R]] =

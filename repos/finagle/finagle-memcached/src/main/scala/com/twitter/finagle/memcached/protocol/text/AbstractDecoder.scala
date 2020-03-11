@@ -73,8 +73,7 @@ abstract class AbstractDecoder extends FrameDecoder {
       bytesNeeded: Int,
       buffer: ChannelBuffer
   )(continue: ChannelBuffer => Decoding): Decoding = {
-    if (buffer.readableBytes < (bytesNeeded + DelimiterLength))
-      null
+    if (buffer.readableBytes < (bytesNeeded + DelimiterLength)) null
     else {
       if (!FindCRLF.find(buffer, bytesNeeded + buffer.readerIndex))
         throw new ClientError("Missing delimiter")

@@ -105,10 +105,8 @@ private[finagle] class RequeueFilter[Req, Rep](
               responseFuture(attempt, t)
           }
         } else {
-          if (retriesRemaining > 0)
-            budgetExhaustCounter.incr()
-          else
-            requestLimitCounter.incr()
+          if (retriesRemaining > 0) budgetExhaustCounter.incr()
+          else requestLimitCounter.incr()
           responseFuture(attempt, t)
         }
       case t =>

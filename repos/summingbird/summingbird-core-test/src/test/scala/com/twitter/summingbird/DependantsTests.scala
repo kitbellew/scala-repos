@@ -132,8 +132,7 @@ object DependantsTest extends Properties("Dependants") {
       @annotation.tailrec
       def fix[T](acc: Set[T])(fn: T => Set[T]): Set[T] = {
         val newSet = acc.flatMap(fn)
-        if (newSet == acc) acc
-        else fix(newSet)(fn)
+        if (newSet == acc) acc else fix(newSet)(fn)
       }
       val alln = fix[Producer[Memory, Any]](Set(prod))(allParents _)
       val deps = Dependants(prod)

@@ -73,11 +73,10 @@ abstract class HtmlPage extends Page { thisPage =>
       w.write('\n')
     }
 
-    if (site.universe.settings.docRawOutput)
-      writeFile(site, ".raw") {
-        // we're only interested in the body, as this will go into the diff
-        _.write(body.text)
-      }
+    if (site.universe.settings.docRawOutput) writeFile(site, ".raw") {
+      // we're only interested in the body, as this will go into the diff
+      _.write(body.text)
+    }
   }
 
   /** Transforms an optional comment into an styled HTML tree representing its body if it is defined, or into an empty
@@ -148,19 +147,17 @@ abstract class HtmlPage extends Page { thisPage =>
 
   def linkToHtml(text: Inline, link: LinkTo, hasLinks: Boolean) = link match {
     case LinkToTpl(dtpl: TemplateEntity) =>
-      if (hasLinks)
-        <a href={relativeLinkTo(dtpl)} class="extype" name={
-          dtpl.qualifiedName
-        }>{inlineToHtml(text)}</a>
+      if (hasLinks) <a href={relativeLinkTo(dtpl)} class="extype" name={
+        dtpl.qualifiedName
+      }>{inlineToHtml(text)}</a>
       else
         <span class="extype" name={dtpl.qualifiedName}>{
           inlineToHtml(text)
         }</span>
     case LinkToMember(mbr: MemberEntity, inTpl: TemplateEntity) =>
-      if (hasLinks)
-        <a href={
-          relativeLinkTo(inTpl) + "#" + mbr.signature
-        } class="extmbr" name={mbr.qualifiedName}>{inlineToHtml(text)}</a>
+      if (hasLinks) <a href={
+        relativeLinkTo(inTpl) + "#" + mbr.signature
+      } class="extmbr" name={mbr.qualifiedName}>{inlineToHtml(text)}</a>
       else
         <span class="extmbr" name={mbr.qualifiedName}>{
           inlineToHtml(text)
@@ -188,12 +185,10 @@ abstract class HtmlPage extends Page { thisPage =>
   def typeToHtml(tpe: model.TypeEntity, hasLinks: Boolean): NodeSeq = {
     val string = tpe.name
     def toLinksOut(inPos: Int, starts: List[Int]): NodeSeq = {
-      if (starts.isEmpty && (inPos == string.length))
-        NodeSeq.Empty
+      if (starts.isEmpty && (inPos == string.length)) NodeSeq.Empty
       else if (starts.isEmpty)
         scala.xml.Text(string.slice(inPos, string.length))
-      else if (inPos == starts.head)
-        toLinksIn(inPos, starts)
+      else if (inPos == starts.head) toLinksIn(inPos, starts)
       else {
         scala.xml.Text(string.slice(inPos, starts.head)) ++ toLinksIn(
           starts.head,
@@ -205,10 +200,8 @@ abstract class HtmlPage extends Page { thisPage =>
       val text = comment.Text(string.slice(inPos, inPos + width))
       linkToHtml(text, link, hasLinks) ++ toLinksOut(inPos + width, starts.tail)
     }
-    if (hasLinks)
-      toLinksOut(0, tpe.refEntity.keySet.toList)
-    else
-      scala.xml.Text(string)
+    if (hasLinks) toLinksOut(0, tpe.refEntity.keySet.toList)
+    else scala.xml.Text(string)
   }
 
   def typesToHtml(

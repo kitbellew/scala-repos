@@ -89,8 +89,7 @@ private[appinfo] class DefaultInfoService(
         resolveAppInfos(
           group.transitiveApps.filter(groupSelector.matches),
           appEmbed)
-      else
-        Future.successful(Seq.empty)
+      else Future.successful(Seq.empty)
     }
 
     appInfos.map { apps =>
@@ -101,16 +100,14 @@ private[appinfo] class DefaultInfoService(
         def groups: Option[Seq[GroupInfo]] =
           if (groupEmbed(GroupInfo.Embed.Groups))
             Some(ref.groups.toIndexedSeq.flatMap(queryGroup).sortBy(_.group.id))
-          else
-            None
+          else None
         def apps: Option[Seq[AppInfo]] =
           if (groupEmbed(GroupInfo.Embed.Apps))
             Some(
               ref.apps.toIndexedSeq
                 .flatMap(a => infoById.get(a.id))
                 .sortBy(_.app.id))
-          else
-            None
+          else None
         //if a subgroup is allowed, we also have to allow all parents implicitly
         def groupMatches(group: Group): Boolean = {
           alreadyMatched.getOrElseUpdate(

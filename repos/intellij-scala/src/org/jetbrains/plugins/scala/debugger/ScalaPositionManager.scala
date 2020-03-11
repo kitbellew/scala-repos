@@ -480,8 +480,7 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
             .flatMap(tryToFindClass)
             .orElse(tryToFindClass(topLevelClassName(originalQName)))
           clazz.map(_.getNavigationElement.getContainingFile).orNull
-        } else
-          searchForMacroDebugging(topLevelClassName(originalQName))
+        } else searchForMacroDebugging(topLevelClassName(originalQName))
       }
       file
     }

@@ -283,10 +283,8 @@ class ClientQuotaManager(
     try {
       logger.info(s"Changing quota for clientId $clientId to ${quota.bound()}")
 
-      if (quota.equals(defaultQuota))
-        this.overriddenQuota.remove(clientId)
-      else
-        this.overriddenQuota.put(clientId, quota)
+      if (quota.equals(defaultQuota)) this.overriddenQuota.remove(clientId)
+      else this.overriddenQuota.put(clientId, quota)
 
       // Change the underlying metric config if the sensor has been created
       val allMetrics = metrics.metrics()

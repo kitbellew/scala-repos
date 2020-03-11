@@ -62,10 +62,7 @@ private[sbt] object SettingCompletions {
       val globalSetting = resolve(
         Def.setting(global, setting.init, setting.pos))
       globalSetting ++ allDefs.flatMap { d =>
-        if (d.key == akey)
-          Seq(SettingKey(akey) in d.scope <<= global)
-        else
-          Nil
+        if (d.key == akey) Seq(SettingKey(akey) in d.scope <<= global) else Nil
       }
     }
     val redefined = settings.flatMap(x => rescope(x))
@@ -115,16 +112,12 @@ private[sbt] object SettingCompletions {
     def strings(in: Set[ScopedKey[_]]): Seq[String] =
       in.toSeq.map(sk => display(sk)).sorted
     def lines(in: Seq[String]): (String, Boolean) =
-      if (in.isEmpty)
-        ("no settings or tasks.", false)
-      else if (verbose)
-        (in.mkString("\n\t", "\n\t", "\n"), false)
-      else
-        quietList(in)
+      if (in.isEmpty) ("no settings or tasks.", false)
+      else if (verbose) (in.mkString("\n\t", "\n\t", "\n"), false)
+      else quietList(in)
     def quietList(in: Seq[String]): (String, Boolean) = {
       val (first, last) = in.splitAt(QuietLimit)
-      if (last.isEmpty)
-        (first.mkString(", "), false)
+      if (last.isEmpty) (first.mkString(", "), false)
       else {
         val s = first
           .take(QuietLimit - 1)
@@ -132,8 +125,7 @@ private[sbt] object SettingCompletions {
         (s, true)
       }
     }
-    if (redefined.isEmpty)
-      "No settings or tasks were redefined."
+    if (redefined.isEmpty) "No settings or tasks were redefined."
     else {
       val (redef, trimR) = lines(strings(redefined))
       val (used, trimU) = lines(strings(affected))
@@ -329,8 +321,7 @@ private[sbt] object SettingCompletions {
       level: Int,
       key: ScopedKey[_]): Seq[Completion] = {
     val allowed: Iterable[Assign.Value] =
-      if (appendable(key.key)) Assign.values
-      else assignNoAppend
+      if (appendable(key.key)) Assign.values else assignNoAppend
     val applicable = allowed.toSeq.flatMap { a =>
       val s = a.toString
       if (s startsWith seen) (s, a) :: Nil else Nil
@@ -379,8 +370,7 @@ private[sbt] object SettingCompletions {
       showDescriptions: Boolean,
       in: Seq[(String, T)])(description: T => String): Seq[Completion] = {
     def appendString(id: String): String = id.stripPrefix(seen) + " "
-    if (in.isEmpty)
-      Nil
+    if (in.isEmpty) Nil
     else if (showDescriptions) {
       val withDescriptions = in map { case (id, key) => (id, description(key)) }
       val padded = CommandUtil.aligned("", "   ", withDescriptions)

@@ -33,8 +33,7 @@ private[akka] class DaemonMsgCreateSerializer(val system: ExtendedActorSystem)
 
   // TODO remove this when deprecated this() is removed
   override val identifier: Int =
-    if (system eq null) 3
-    else identifierFromConfig
+    if (system eq null) 3 else identifierFromConfig
 
   def includeManifest: Boolean = false
 
@@ -48,8 +47,7 @@ private[akka] class DaemonMsgCreateSerializer(val system: ExtendedActorSystem)
           builder.setConfig(serialize(d.config))
         if (d.routerConfig != NoRouter)
           builder.setRouterConfig(serialize(d.routerConfig))
-        if (d.scope != NoScopeGiven)
-          builder.setScope(serialize(d.scope))
+        if (d.scope != NoScopeGiven) builder.setScope(serialize(d.scope))
         if (d.dispatcher != NoDispatcherGiven)
           builder.setDispatcher(d.dispatcher)
         builder.build

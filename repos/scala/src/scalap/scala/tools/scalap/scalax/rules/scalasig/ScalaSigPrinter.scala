@@ -436,8 +436,7 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
         .mkString("[", ", ", "]")
 
   def typeParamString(params: Seq[Symbol]): String =
-    if (params.isEmpty) ""
-    else params.map(toString).mkString("[", ", ", "]")
+    if (params.isEmpty) "" else params.map(toString).mkString("[", ", ", "]")
 
   val _syms = Map(
     "\\$bar" -> "|",

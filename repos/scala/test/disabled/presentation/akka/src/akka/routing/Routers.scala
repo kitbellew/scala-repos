@@ -79,8 +79,7 @@ abstract class UntypedLoadBalancer extends UntypedDispatcher {
   protected def seq: InfiniteIterator[ActorRef]
 
   protected def route(msg: Any) =
-    if (seq.hasNext) seq.next
-    else null
+    if (seq.hasNext) seq.next else null
 
   override def broadcast(message: Any) = seq.items.foreach(_ ! message)
 

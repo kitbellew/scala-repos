@@ -130,8 +130,7 @@ private[sbt] final class Execute[A[_] <: AnyRef](
     }
 
     post {
-      if (done(target))
-        assert(done(node))
+      if (done(target)) assert(done(node))
       else {
         assert(calling(node))
         assert(callers(target) contains node)
@@ -209,8 +208,7 @@ private[sbt] final class Execute[A[_] <: AnyRef](
       deps,
       active.toList /** active is mutable, so take a snapshot */ )
 
-    if (active.isEmpty)
-      ready(node)
+    if (active.isEmpty) ready(node)
     else {
       forward(node) = active
       for (a <- active) {

@@ -170,10 +170,8 @@ object TestLogCleaning {
       for (entry <- ms) {
         val key = TestUtils.readString(entry.message.key)
         val content =
-          if (entry.message.isNull)
-            null
-          else
-            TestUtils.readString(entry.message.payload)
+          if (entry.message.isNull) null
+          else TestUtils.readString(entry.message.payload)
         println(
           "offset = %s, key = %s, content = %s"
             .format(entry.offset, key, content))
@@ -205,8 +203,7 @@ object TestLogCleaning {
       val c = consumed.next()
       consumedDeduped.write(c.toString)
       consumedDeduped.newLine()
-      if (p != c)
-        mismatched += 1
+      if (p != c) mismatched += 1
       total += 1
     }
     producedDeduped.close()
@@ -228,28 +225,21 @@ object TestLogCleaning {
     new IteratorTemplate[TestRecord] {
       def makeNext(): TestRecord = {
         var next = readNext(reader)
-        while (next != null && next.delete)
-          next = readNext(reader)
-        if (next == null)
-          allDone()
-        else
-          next
+        while (next != null && next.delete) next = readNext(reader)
+        if (next == null) allDone() else next
       }
     }
   }
 
   def readNext(reader: BufferedReader): TestRecord = {
     var line = reader.readLine()
-    if (line == null)
-      return null
+    if (line == null) return null
     var curr = new TestRecord(line)
     while (true) {
       line = peekLine(reader)
-      if (line == null)
-        return curr
+      if (line == null) return curr
       val next = new TestRecord(line)
-      if (next == null || next.topicAndKey != curr.topicAndKey)
-        return curr
+      if (next == null || next.topicAndKey != curr.topicAndKey) return curr
       curr = next
       reader.readLine()
     }

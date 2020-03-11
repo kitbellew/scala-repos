@@ -683,8 +683,7 @@ private[scala] trait JavaMirrors
           val result = jmeth.invoke(
             null,
             (objReceiver +: objArgs).asInstanceOf[Seq[AnyRef]]: _*)
-          if (jmeth.getReturnType == java.lang.Void.TYPE) ()
-          else result
+          if (jmeth.getReturnType == java.lang.Void.TYPE) () else result
         }
 
         symbol match {
@@ -1234,8 +1233,7 @@ private[scala] trait JavaMirrors
         val owner = ownerModule.moduleClass
         val name = TermName(fullname) drop split + 1
         val opkg = owner.info decl name
-        if (opkg.hasPackageFlag)
-          opkg.asModule
+        if (opkg.hasPackageFlag) opkg.asModule
         else if (opkg == NoSymbol) {
           val pkg = owner.newPackage(name)
           pkg.moduleClass setInfo new LazyPackageType
@@ -1243,8 +1241,7 @@ private[scala] trait JavaMirrors
           markFlagsCompleted(pkg)(mask = AllFlags)
           info("made Scala " + pkg)
           pkg
-        } else
-          throw new ReflectError(opkg + " is not a package")
+        } else throw new ReflectError(opkg + " is not a package")
       }
 
     private def scalaSimpleName(jclazz: jClass[_]): TypeName = {
@@ -1286,13 +1283,11 @@ private[scala] trait JavaMirrors
             }
           if (nme.isModuleName(simpleName))
             coreLookup(simpleName.dropModule.toTermName) map (_.moduleClass)
-          else
-            coreLookup(simpleName)
+          else coreLookup(simpleName)
         }
 
         val cls =
-          if (jclazz.isMemberClass)
-            lookupClass
+          if (jclazz.isMemberClass) lookupClass
           else if (jclazz.isLocalClass0)
             // local classes and implementation classes not preserved by unpickling - treat as Java
             //
@@ -1305,10 +1300,8 @@ private[scala] trait JavaMirrors
             // this is totally correct, because a top-level class and a nested class with the same name cannot coexist
             // so it's either one or another, but not both - therefore we always load $-bearing classes correctly
             lookupClass orElse jclassAsScala(jclazz)
-          else if (jclazz.isArray)
-            ArrayClass
-          else
-            javaTypeToValueClass(jclazz) orElse lookupClass
+          else if (jclazz.isArray) ArrayClass
+          else javaTypeToValueClass(jclazz) orElse lookupClass
 
         assert(
           cls.isType,
@@ -1382,8 +1375,7 @@ private[scala] trait JavaMirrors
       */
     def typeToScala(jtpe: jType): Type = jtpe match {
       case jclazz: jClass[_] =>
-        if (jclazz.isArray)
-          arrayType(typeToScala(jclazz.getComponentType))
+        if (jclazz.isArray) arrayType(typeToScala(jclazz.getComponentType))
         else {
           val clazz = classToScala(jclazz)
           rawToExistential(typeRef(clazz.owner.thisType, clazz, List()))
@@ -1522,12 +1514,9 @@ private[scala] trait JavaMirrors
         throw new ClassNotFoundException(
           "no Java class corresponding to " + clazz + " found")
       //println("classToJava "+clazz+" "+clazz.owner+" "+clazz.owner.isPackageClass)//debug
-      if (clazz.isPrimitiveValueClass)
-        valueClassToJavaType(clazz)
-      else if (clazz == ArrayClass)
-        noClass
-      else if (clazz.isTopLevel)
-        javaClass(clazz.javaClassName)
+      if (clazz.isPrimitiveValueClass) valueClassToJavaType(clazz)
+      else if (clazz == ArrayClass) noClass
+      else if (clazz.isTopLevel) javaClass(clazz.javaClassName)
       else if (clazz.owner.isClass) {
         val childOfClass = !clazz.owner.isModuleClass
         val childOfTopLevel = clazz.owner.isTopLevel
@@ -1562,8 +1551,7 @@ private[scala] trait JavaMirrors
         // println(s"ownerChildren = ${ownerChildren.toList}")
         // println(s"fullNameOfJavaClass = $fullNameOfJavaClass")
         ownerChildren.find(_.getName == fullNameOfJavaClass).getOrElse(noClass)
-      } else
-        noClass
+      } else noClass
     }
 
     private val PackageAndClassPattern = """(.*\.)(.*)$""".r

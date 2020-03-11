@@ -140,8 +140,7 @@ trait TreeAndTypeAnalysis extends Debugging {
               val subTpApprox =
                 typer.infer.approximateAbstracts(subTp) // TODO: needed?
               // debug.patmat("subtp"+(subTpApprox <:< tpApprox, subTpApprox, tpApprox))
-              if (subTpApprox <:< tpApprox) Some(checkableType(subTp))
-              else None
+              if (subTpApprox <:< tpApprox) Some(checkableType(subTp)) else None
             }
           }
 
@@ -317,8 +316,7 @@ trait MatchApproximation
             orig
           case _ =>
             trees += t
-            if (tpOverride != NoType) t setType tpOverride
-            else t
+            if (tpOverride != NoType) t setType tpOverride else t
         }
 
       def uniqueTp(tp: Type): Type = tp match {

@@ -209,12 +209,9 @@ trait Erasure {
     *  are then later converted to the underlying parameter type in phase posterasure.
     */
   def specialErasure(sym: Symbol)(tp: Type): Type =
-    if (sym != NoSymbol && sym.enclClass.isJavaDefined)
-      erasure(sym)(tp)
-    else if (sym.isClassConstructor)
-      specialConstructorErasure(sym.owner, tp)
-    else
-      specialScalaErasure(tp)
+    if (sym != NoSymbol && sym.enclClass.isJavaDefined) erasure(sym)(tp)
+    else if (sym.isClassConstructor) specialConstructorErasure(sym.owner, tp)
+    else specialScalaErasure(tp)
 
   def specialConstructorErasure(clazz: Symbol, tpe: Type): Type = {
     tpe match {
@@ -264,8 +261,7 @@ trait Erasure {
       *  An intersection such as `Object with Trait` erases to Object.
       */
     def mergeParents(parents: List[Type]): Type =
-      if (parents.isEmpty) ObjectTpe
-      else parents.head
+      if (parents.isEmpty) ObjectTpe else parents.head
 
     override protected def eraseDerivedValueClassRef(tref: TypeRef): Type =
       eraseNormalClassRef(tref)
@@ -360,31 +356,26 @@ trait Erasure {
     *   - For a type parameter   : A type bounds type consisting of the erasures of its bounds.
     */
   def transformInfo(sym: Symbol, tp: Type): Type = {
-    if (sym == Object_asInstanceOf)
-      sym.info
+    if (sym == Object_asInstanceOf) sym.info
     else if (sym == Object_isInstanceOf || sym == ArrayClass)
       PolyType(sym.info.typeParams, specialErasure(sym)(sym.info.resultType))
-    else if (sym.isAbstractType)
-      TypeBounds(WildcardType, WildcardType)
+    else if (sym.isAbstractType) TypeBounds(WildcardType, WildcardType)
     else if (sym.isTerm && sym.owner == ArrayClass) {
-      if (sym.isClassConstructor)
-        tp match {
-          case MethodType(params, TypeRef(pre, sym1, args)) =>
-            MethodType(
-              cloneSymbolsAndModify(params, specialErasure(sym)),
-              typeRef(specialErasure(sym)(pre), sym1, args))
-        }
-      else if (sym.name == nme.apply)
-        tp
-      else if (sym.name == nme.update)
-        (tp: @unchecked) match {
-          case MethodType(List(index, tvar), restpe) =>
-            MethodType(
-              List(
-                index.cloneSymbol.setInfo(specialErasure(sym)(index.tpe)),
-                tvar),
-              UnitTpe)
-        }
+      if (sym.isClassConstructor) tp match {
+        case MethodType(params, TypeRef(pre, sym1, args)) =>
+          MethodType(
+            cloneSymbolsAndModify(params, specialErasure(sym)),
+            typeRef(specialErasure(sym)(pre), sym1, args))
+      }
+      else if (sym.name == nme.apply) tp
+      else if (sym.name == nme.update) (tp: @unchecked) match {
+        case MethodType(List(index, tvar), restpe) =>
+          MethodType(
+            List(
+              index.cloneSymbol.setInfo(specialErasure(sym)(index.tpe)),
+              tvar),
+            UnitTpe)
+      }
       else specialErasure(sym)(tp)
     } else if (sym.owner != NoSymbol &&
                sym.owner.owner == ArrayClass &&

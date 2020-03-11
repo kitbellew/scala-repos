@@ -128,8 +128,7 @@ class BufferedReaderTest {
       val len = r.read(buf)
       assertTrue(len > 0)
 
-      for (i <- 0 until len)
-        assertEquals(str.charAt(i + read), buf(i))
+      for (i <- 0 until len) assertEquals(str.charAt(i + read), buf(i))
 
       read += len
     }
@@ -146,8 +145,7 @@ class BufferedReaderTest {
       assertTrue(len > 0)
       assertTrue(len < 11)
 
-      for (i <- 0 until len)
-        assertEquals(str.charAt(i + read), buf(i + 1))
+      for (i <- 0 until len) assertEquals(str.charAt(i + read), buf(i + 1))
 
       read += len
     }
@@ -187,8 +185,7 @@ class BufferedReaderTest {
   @Test def should_readline_with_empty_lines_only(): Unit = {
     val r = new BufferedReader(new StringReader("\n\r\n\r\r\n"), 1)
 
-    for (_ <- 1 to 4)
-      assertEquals("", r.readLine())
+    for (_ <- 1 to 4) assertEquals("", r.readLine())
 
     assertEquals(null, r.readLine())
   }
@@ -217,8 +214,7 @@ class InputStreamReaderTest {
         if (readSoFar == buf.length) readSoFar
         else {
           val newlyRead = r.read(buf, readSoFar, buf.length - readSoFar)
-          if (newlyRead == -1) readSoFar
-          else readAll(readSoFar + newlyRead)
+          if (newlyRead == -1) readSoFar else readAll(readSoFar + newlyRead)
         }
       }
       assertEquals(str.length, readAll(0))

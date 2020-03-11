@@ -82,8 +82,7 @@ private[scalajs] final class ScalaJSClassEmitter(
     implicit val pos = tree.pos
     if (tree.kind.hasModuleAccessor)
       envFieldDef("n", tree.encodedName, js.Undefined(), mutable = true)
-    else
-      js.Skip()
+    else js.Skip()
   }
 
   /** Desugar a Scala.js class into ECMAScript 5 constructs
@@ -99,20 +98,17 @@ private[scalajs] final class ScalaJSClassEmitter(
     var reverseParts: List[js.Tree] = Nil
 
     reverseParts ::= genStaticMembers(tree)
-    if (kind == ClassKind.Interface)
-      reverseParts ::= genDefaultMethods(tree)
+    if (kind == ClassKind.Interface) reverseParts ::= genDefaultMethods(tree)
     if (kind.isAnyScalaJSDefinedClass && tree.hasInstances)
       reverseParts ::= genClass(tree)
     if (needInstanceTests(tree)) {
       reverseParts ::= genInstanceTests(tree)
       reverseParts ::= genArrayInstanceTests(tree)
     }
-    if (tree.hasRuntimeTypeInfo)
-      reverseParts ::= genTypeData(tree)
+    if (tree.hasRuntimeTypeInfo) reverseParts ::= genTypeData(tree)
     if (kind.isClass && tree.hasInstances && tree.hasRuntimeTypeInfo)
       reverseParts ::= genSetTypeData(tree)
-    if (kind.hasModuleAccessor)
-      reverseParts ::= genModuleAccessor(tree)
+    if (kind.hasModuleAccessor) reverseParts ::= genModuleAccessor(tree)
     reverseParts ::= genClassExports(tree)
 
     js.Block(reverseParts.reverse)
@@ -168,10 +164,8 @@ private[scalajs] final class ScalaJSClassEmitter(
 
     val parentVar = for (parentIdent <- tree.superClass) yield {
       implicit val pos = parentIdent.pos
-      if (!tree.kind.isJSClass)
-        encodeClassVar(parentIdent.name)
-      else
-        genRawJSClassConstructor(linkedClassByName(parentIdent.name))
+      if (!tree.kind.isJSClass) encodeClassVar(parentIdent.name)
+      else genRawJSClassConstructor(linkedClassByName(parentIdent.name))
     }
 
     js.ClassDef(Some(classIdent), parentVar, members)(tree.pos)
@@ -240,8 +234,7 @@ private[scalajs] final class ScalaJSClassEmitter(
     }
 
     val inheritableCtorDef =
-      if (isJSClass) js.Skip()
-      else makeInheritableCtorDef(typeVar)
+      if (isJSClass) js.Skip() else makeInheritableCtorDef(typeVar)
 
     js.Block(docComment, ctorDef, chainProto, inheritableCtorDef)
   }
@@ -730,13 +723,11 @@ private[scalajs] final class ScalaJSClassEmitter(
       kind == ClassKind.RawJSType || kind.isJSClass
 
     val isRawJSTypeParam =
-      if (isRawJSType) js.BooleanLiteral(true)
-      else js.Undefined()
+      if (isRawJSType) js.BooleanLiteral(true) else js.Undefined()
 
     val parentData = if (linkingUnit.globalInfo.isParentDataAccessed) {
       tree.superClass.fold[js.Tree] {
-        if (isObjectClass) js.Null()
-        else js.Undefined()
+        if (isObjectClass) js.Null() else js.Undefined()
       } { parent => envField("d", parent.name) }
     } else { js.Undefined() }
 

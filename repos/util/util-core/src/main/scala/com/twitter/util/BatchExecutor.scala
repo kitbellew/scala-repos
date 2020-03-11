@@ -46,10 +46,7 @@ private[util] class BatchExecutor[In, Out](
 
     def flush() {
       val doAfter = batcher.synchronized {
-        if (!cancelled)
-          flushBatch()
-        else
-          () => ()
+        if (!cancelled) flushBatch() else () => ()
       }
       doAfter()
     }
@@ -92,8 +89,7 @@ private[util] class BatchExecutor[In, Out](
     val promise = new Promise[Out]
     val doAfter = synchronized {
       buf.append((t, promise))
-      if (buf.size >= currentBufThreshold)
-        flushBatch()
+      if (buf.size >= currentBufThreshold) flushBatch()
       else {
         scheduleFlushIfNecessary()
         () => ()

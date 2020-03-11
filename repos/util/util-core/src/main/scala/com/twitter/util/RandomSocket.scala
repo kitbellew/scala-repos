@@ -38,8 +38,7 @@ object RandomSocket {
               IllegalArgumentException])
           throw new Exception(
             "Couldn't find an open port: %s".format(e.getMessage))
-        else
-          throw e
+        else throw e
     } finally { s.close() }
   }
 }

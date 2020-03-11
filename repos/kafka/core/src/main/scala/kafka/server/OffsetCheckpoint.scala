@@ -86,14 +86,12 @@ class OffsetCheckpoint(val file: File) extends Logging {
       var line: String = null
       try {
         line = reader.readLine()
-        if (line == null)
-          return Map.empty
+        if (line == null) return Map.empty
         val version = line.toInt
         version match {
           case CurrentVersion =>
             line = reader.readLine()
-            if (line == null)
-              return Map.empty
+            if (line == null) return Map.empty
             val expectedSize = line.toInt
             val offsets = mutable.Map[TopicAndPartition, Long]()
             line = reader.readLine()

@@ -157,8 +157,7 @@ object ScalaRunTime {
     case _ =>
       val length = array_length(src)
       val dest = new Array[Object](length)
-      for (i <- 0 until length)
-        array_update(dest, i, array_apply(src, i))
+      for (i <- 0 until length) array_update(dest, i, array_apply(src, i))
       dest
   }
 
@@ -247,8 +246,7 @@ object ScalaRunTime {
     if (iv == fv) return iv
 
     val lv = fv.toLong
-    if (lv == fv) return hash(lv)
-    else fv.hashCode
+    if (lv == fv) return hash(lv) else fv.hashCode
   }
   def hash(lv: Long): Int = {
     val low = lv.toInt

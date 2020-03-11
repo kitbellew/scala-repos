@@ -616,16 +616,16 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         .prefixAndTail(1)
         .collect {
           case (
-              Seq(
-                RequestStart(
-                  method,
-                  uri,
-                  protocol,
-                  headers,
-                  createEntity,
-                  _,
-                  close)),
-              entityParts) ⇒
+                Seq(
+                  RequestStart(
+                    method,
+                    uri,
+                    protocol,
+                    headers,
+                    createEntity,
+                    _,
+                    close)),
+                entityParts) ⇒
             closeAfterResponseCompletion :+= close
             Right(
               HttpRequest(
@@ -635,8 +635,8 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
                 createEntity(entityParts),
                 protocol))
           case (
-              Seq(x @ (MessageStartError(_, _) | EntityStreamError(_))),
-              rest) ⇒
+                Seq(x @ (MessageStartError(_, _) | EntityStreamError(_))),
+                rest) ⇒
             rest.runWith(Sink.cancelled)
             Left(x)
         }

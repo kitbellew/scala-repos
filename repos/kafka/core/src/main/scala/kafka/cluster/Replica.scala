@@ -79,10 +79,7 @@ class Replica(
   }
 
   def logEndOffset =
-    if (isLocal)
-      log.get.logEndOffsetMetadata
-    else
-      logEndOffsetMetadata
+    if (isLocal) log.get.logEndOffsetMetadata else logEndOffsetMetadata
 
   def highWatermark_=(newHighWatermark: LogOffsetMetadata) {
     if (isLocal) {
@@ -111,12 +108,10 @@ class Replica(
   }
 
   override def equals(that: Any): Boolean = {
-    if (!(that.isInstanceOf[Replica]))
-      return false
+    if (!(that.isInstanceOf[Replica])) return false
     val other = that.asInstanceOf[Replica]
     if (topic.equals(other.topic) && brokerId == other.brokerId && partition
-          .equals(other.partition))
-      return true
+          .equals(other.partition)) return true
     false
   }
 

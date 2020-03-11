@@ -514,8 +514,7 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
       join(third, first)
 
       runOn(third) {
-        for (_ ← 1 to 10)
-          region ! EntityEnvelope(3, Increment)
+        for (_ ← 1 to 10) region ! EntityEnvelope(3, Increment)
         region ! Get(3)
         expectMsg(10)
         lastSender.path should ===(region.path / "3" / "3") // local
@@ -525,8 +524,7 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
       join(fourth, first)
 
       runOn(fourth) {
-        for (_ ← 1 to 20)
-          region ! EntityEnvelope(4, Increment)
+        for (_ ← 1 to 20) region ! EntityEnvelope(4, Increment)
         region ! Get(4)
         expectMsg(20)
         lastSender.path should ===(region.path / "4" / "4") // local

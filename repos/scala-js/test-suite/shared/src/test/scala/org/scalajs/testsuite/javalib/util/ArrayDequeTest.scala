@@ -45,8 +45,7 @@ class ArrayDequeTest extends AbstractCollectionTest with DequeTest {
 
     assertEquals(ad.size(), 5)
 
-    for (i <- 0 until s.size)
-      assertEquals(ad.poll(), s(i))
+    for (i <- 0 until s.size) assertEquals(ad.poll(), s(i))
 
     assertTrue(ad.isEmpty)
   }

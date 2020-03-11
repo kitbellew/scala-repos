@@ -59,8 +59,7 @@ class AdminClient(
       future = client.send(target, api, request)
       client.poll(future)
 
-      if (future.succeeded())
-        return future.value().responseBody()
+      if (future.succeeded()) return future.value().responseBody()
 
       now = time.milliseconds()
     } while (now < deadline && future
@@ -106,8 +105,7 @@ class AdminClient(
     val responseBody = sendAnyNode(ApiKeys.METADATA, request)
     val response = new MetadataResponse(responseBody)
     val errors = response.errors()
-    if (!errors.isEmpty)
-      debug(s"Metadata request contained errors: ${errors}")
+    if (!errors.isEmpty) debug(s"Metadata request contained errors: ${errors}")
     response.cluster().nodes().asScala.toList
   }
 
@@ -181,8 +179,7 @@ class AdminClient(
 
   def describeConsumerGroup(groupId: String): List[ConsumerSummary] = {
     val group = describeGroup(groupId)
-    if (group.state == "Dead")
-      return List.empty[ConsumerSummary]
+    if (group.state == "Dead") return List.empty[ConsumerSummary]
 
     if (group.protocolType != ConsumerProtocol.PROTOCOL_TYPE)
       throw new IllegalArgumentException(

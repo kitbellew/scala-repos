@@ -139,10 +139,8 @@ object build extends Build {
     testOptions in Test += {
       val scalacheckOptions =
         Seq("-maxSize", "5", "-workers", "1", "-maxDiscardRatio", "50") ++ {
-          if (isJSProject.value)
-            Seq("-minSuccessfulTests", "10")
-          else
-            Seq("-minSuccessfulTests", "33")
+          if (isJSProject.value) Seq("-minSuccessfulTests", "10")
+          else Seq("-minSuccessfulTests", "33")
         }
       Tests.Argument(TestFrameworks.ScalaCheck, scalacheckOptions: _*)
     },
@@ -423,8 +421,7 @@ object build extends Build {
     val nexus = "https://oss.sonatype.org/"
     if (v.trim.endsWith("SNAPSHOT"))
       Some("snapshots" at nexus + "content/repositories/snapshots")
-    else
-      Some("releases" at nexus + "service/local/staging/deploy/maven2")
+    else Some("releases" at nexus + "service/local/staging/deploy/maven2")
   }
 
   lazy val credentialsSetting = credentials += {

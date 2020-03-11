@@ -47,10 +47,8 @@ class HasManyThrough[
           through._dbTableNameLC + "." + throughFromField._dbColumnNameLC + " = ?"
       DB.prepareStatement(query, conn) { st =>
         owner.getSingleton.indexedField(owner).map { indVal =>
-          if (indVal.dbIgnoreSQLType_?)
-            st.setObject(1, indVal.jdbcFriendly)
-          else
-            st.setObject(1, indVal.jdbcFriendly, indVal.targetSQLType)
+          if (indVal.dbIgnoreSQLType_?) st.setObject(1, indVal.jdbcFriendly)
+          else st.setObject(1, indVal.jdbcFriendly, indVal.targetSQLType)
 
           DB.exec(st) { rs =>
             otherSingleton

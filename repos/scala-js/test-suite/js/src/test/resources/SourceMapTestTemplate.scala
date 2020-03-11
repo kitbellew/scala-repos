@@ -280,10 +280,7 @@ trait Writer {
 
         /**/
         val (k, v) = kv
-        if (first)
-          first = false
-        else
-          sb.append(", ")
+        if (first) first = false else sb.append(", ")
 
         /**/
         writeToBuffer(JsString(k), sb)

@@ -569,11 +569,10 @@ private[akka] class LocalActorRefProvider private[akka] (
 
       override def !(message: Any)(
           implicit sender: ActorRef = Actor.noSender): Unit =
-        if (isWalking)
-          message match {
-            case null ⇒ throw new InvalidMessageException("Message is null")
-            case _ ⇒ log.error(s"$this received unexpected message [$message]")
-          }
+        if (isWalking) message match {
+          case null ⇒ throw new InvalidMessageException("Message is null")
+          case _ ⇒ log.error(s"$this received unexpected message [$message]")
+        }
 
       override def sendSystemMessage(message: SystemMessage): Unit =
         if (isWalking) {
@@ -664,8 +663,7 @@ private[akka] class LocalActorRefProvider private[akka] (
     }
 
   override def rootGuardianAt(address: Address): ActorRef =
-    if (address == rootPath.address) rootGuardian
-    else deadLetters
+    if (address == rootPath.address) rootGuardian else deadLetters
 
   override lazy val guardian: LocalActorRef = {
     val cell = rootGuardian.underlying

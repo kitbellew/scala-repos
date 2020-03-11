@@ -41,8 +41,7 @@ private trait P2C[Req, Rep] { self: Balancer[Req, Rep] =>
 
     // TODO: consider consolidating some of this code with `Aperture.Distributor.pick`
     def pick(): Node = {
-      if (vector.isEmpty)
-        return failingNode(emptyException)
+      if (vector.isEmpty) return failingNode(emptyException)
 
       // if all nodes are down, we might as well try to send requests somewhere
       // as our view of the world may be out of date.

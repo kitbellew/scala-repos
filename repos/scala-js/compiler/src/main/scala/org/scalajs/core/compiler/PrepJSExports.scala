@@ -42,19 +42,16 @@ trait PrepJSExports { this: PrepJSInterop =>
 
     // Helper function for errors
     def err(msg: String) = {
-      if (!ignoreInvalid)
-        reporter.error(exports.head.pos, msg)
+      if (!ignoreInvalid) reporter.error(exports.head.pos, msg)
       Nil
     }
 
     def memType = if (baseSym.isConstructor) "constructor" else "method"
 
-    if (exports.isEmpty)
-      Nil
+    if (exports.isEmpty) Nil
     else if (!hasLegalExportVisibility(baseSym))
       err(s"You may only export public and protected ${memType}s")
-    else if (baseSym.isMacro)
-      err("You may not export a macro")
+    else if (baseSym.isMacro) err("You may not export a macro")
     else if (scalaPrimitives.isPrimitive(baseSym))
       err("You may not export a primitive")
     else if (hasIllegalRepeatedParam(baseSym))
@@ -74,8 +71,7 @@ trait PrepJSExports { this: PrepJSInterop =>
         err("You may only export public and protected classes")
       else if (clsSym.isAbstractClass)
         err("You may not export an abstract class")
-      else if (clsSym.isLocalToBlock)
-        err("You may not export a local class")
+      else if (clsSym.isLocalToBlock) err("You may not export a local class")
       else if (clsSym.isNestedClass)
         err(
           s"You may not export a nested class. $createFactoryInOuterClassHint")
@@ -91,10 +87,8 @@ trait PrepJSExports { this: PrepJSInterop =>
 
       // Actually generate exporter methods
       exports.flatMap { exp =>
-        if (exp.isNamed)
-          genNamedExport(baseSym, exp.jsName, exp.pos) :: Nil
-        else
-          genExportDefs(baseSym, exp.jsName, exp.pos)
+        if (exp.isNamed) genNamedExport(baseSym, exp.jsName, exp.pos) :: Nil
+        else genExportDefs(baseSym, exp.jsName, exp.pos)
       }
     }
   }
@@ -121,8 +115,7 @@ trait PrepJSExports { this: PrepJSInterop =>
 
     if (exports.nonEmpty) {
       def err(msg: String) = {
-        if (!ignoreInvalid)
-          reporter.error(exports.head.pos, msg)
+        if (!ignoreInvalid) reporter.error(exports.head.pos, msg)
       }
 
       def hasAnyNonPrivateCtor: Boolean =
@@ -209,8 +202,7 @@ trait PrepJSExports { this: PrepJSInterop =>
     val unitAnnots = {
       if (isMember && sym.isPublic && !sym.isSynthetic)
         sym.owner.annotations.filter(_.symbol == JSExportAllAnnotation)
-      else
-        Nil
+      else Nil
     }
 
     for { annot <- directAnnots ++ unitAnnots } yield {
@@ -375,8 +367,7 @@ trait PrepJSExports { this: PrepJSInterop =>
     // Attention: This will cause boxes for primitive value types and value
     // classes. However, since we have restricted the return types, we can
     // always safely remove these boxes again in the back-end.
-    if (!defSym.isConstructor)
-      expSym.setInfo(retToAny(expSym.tpe))
+    if (!defSym.isConstructor) expSym.setInfo(retToAny(expSym.tpe))
 
     // Change name for new method
     expSym.name = scalaName
@@ -484,10 +475,8 @@ trait PrepJSExports { this: PrepJSInterop =>
 
     // Helper to ascribe repeated argument lists when calling
     def spliceParam(sym: Symbol) = {
-      if (isRepeated(sym))
-        Typed(Ident(sym), Ident(tpnme.WILDCARD_STAR))
-      else
-        Ident(sym)
+      if (isRepeated(sym)) Typed(Ident(sym), Ident(tpnme.WILDCARD_STAR))
+      else Ident(sym)
     }
 
     // Construct proxied function call

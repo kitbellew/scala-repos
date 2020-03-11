@@ -49,8 +49,7 @@ object Streamable {
       */
     def toByteArray(): Array[Byte] = {
       // if we don't know the length, fall back on relative inefficiency
-      if (length == -1L)
-        return (new ArrayBuffer[Byte]() ++= bytes()).toArray
+      if (length == -1L) return (new ArrayBuffer[Byte]() ++= bytes()).toArray
 
       val arr = new Array[Byte](length.toInt)
       val len = arr.length

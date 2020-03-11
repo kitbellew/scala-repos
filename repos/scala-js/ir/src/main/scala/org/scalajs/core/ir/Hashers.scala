@@ -57,13 +57,11 @@ object Hashers {
     def hexDigit(digit: Int): Char = Character.forDigit(digit, 16)
 
     def append(hash: Array[Byte]): Unit = {
-      for (b <- hash)
-        builder.append(hexDigit(b >> 4)).append(hexDigit(b & 0xF))
+      for (b <- hash) builder.append(hexDigit(b >> 4)).append(hexDigit(b & 0xF))
     }
     append(hash.treeHash)
 
-    if (considerPos)
-      append(hash.posHash)
+    if (considerPos) append(hash.posHash)
 
     builder.toString
   }
@@ -110,8 +108,7 @@ object Hashers {
            * emitted in 0.6.3 format is the same as an (implicitly non-rest)
            * ParamDef emitted in 0.6.0 format.
            */
-          if (rest)
-            mixBoolean(rest)
+          if (rest) mixBoolean(rest)
 
         case Skip() =>
           mixTag(TagSkip)

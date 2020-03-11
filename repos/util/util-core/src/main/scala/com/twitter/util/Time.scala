@@ -179,8 +179,7 @@ trait TimeLike[This <: TimeLike[This]] extends Ordered[This] { self: This =>
     // adds a to b while taking care of long overflow
     def addNanos(a: Long, b: Long): This = {
       val c = a + b
-      if (((a ^ c) & (b ^ c)) < 0)
-        if (b < 0) Bottom else Top
+      if (((a ^ c) & (b ^ c)) < 0) if (b < 0) Bottom else Top
       else fromNanoseconds(c)
     }
 
@@ -299,9 +298,7 @@ object Time extends TimeLikeOps[Time] {
     override def toString = "Time.Top"
 
     override def compare(that: Time) =
-      if (that eq Undefined) -1
-      else if (that eq Top) 0
-      else 1
+      if (that eq Undefined) -1 else if (that eq Top) 0 else 1
 
     override def equals(other: Any) = other match {
       case t: Time => t eq this
@@ -584,8 +581,7 @@ sealed class Time private[util] (protected val nanos: Long) extends {
     // subtracts b from a while taking care of long overflow
     def subNanos(a: Long, b: Long): Duration = {
       val c = a - b
-      if (((a ^ c) & (-b ^ c)) < 0)
-        if (b < 0) Duration.Top else Duration.Bottom
+      if (((a ^ c) & (-b ^ c)) < 0) if (b < 0) Duration.Top else Duration.Bottom
       else Duration.fromNanoseconds(c)
     }
 

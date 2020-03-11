@@ -88,10 +88,8 @@ trait MongoDocumentMeta[BaseDocument]
     * Find a single document by _id using a String.
     */
   def find(s: String): Option[BaseDocument] =
-    if (ObjectId.isValid(s))
-      find(new BasicDBObject("_id", new ObjectId(s)))
-    else
-      find(new BasicDBObject("_id", s))
+    if (ObjectId.isValid(s)) find(new BasicDBObject("_id", new ObjectId(s)))
+    else find(new BasicDBObject("_id", s))
 
   /**
     * Find a single document by _id using an ObjectId.

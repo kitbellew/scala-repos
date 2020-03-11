@@ -49,8 +49,7 @@ class DocFactory(val reporter: Reporter, val settings: doc.Settings) {
           new BatchSourceFile("newSource", sourceCode))
     }
 
-    if (reporter.hasErrors)
-      return None
+    if (reporter.hasErrors) return None
 
     val extraTemplatesToDocument: Set[compiler.Symbol] = {
       if (settings.docUncompilable.isDefault) Set()
@@ -136,8 +135,5 @@ class DocFactory(val reporter: Reporter, val settings: doc.Settings) {
     catch documentError
   }
 
-  private[doc] def docdbg(msg: String) {
-    if (settings.Ydocdebug)
-      println(msg)
-  }
+  private[doc] def docdbg(msg: String) { if (settings.Ydocdebug) println(msg) }
 }

@@ -85,8 +85,7 @@ class ExpandTables extends Phase {
               if (d.nodeType.existsType {
                     case NominalType(_: TableIdentitySymbol, _) => true;
                     case _                                      => false
-                  })
-                expandDistinct = true
+                  }) expandDistinct = true
               d.mapChildren(tr)
           }
           val tree2 = tr(tree).infer()

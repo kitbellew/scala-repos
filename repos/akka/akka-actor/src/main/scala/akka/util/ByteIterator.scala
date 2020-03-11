@@ -434,8 +434,7 @@ object ByteIterator {
               normalize()
               val newN = n - m
               val newSkipped = skipped + m
-              if (newN > 0) skipImpl(newN, newSkipped)
-              else newSkipped
+              if (newN > 0) skipImpl(newN, newSkipped) else newSkipped
             } else 0
           } else 0
 
@@ -484,8 +483,7 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
       "Method drop is not implemented in ByteIterator")
 
   override def slice(from: Int, until: Int): this.type = {
-    if (from > 0) drop(from).take(until - from)
-    else take(until)
+    if (from > 0) drop(from).take(until - from) else take(until)
   }
 
   // *must* be overridden by derived classes. This construction is necessary

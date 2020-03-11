@@ -52,10 +52,8 @@ abstract class Task(settings: Settings) extends Specification {
           JParser.parseFromString(s).fold(ApiBadJson, ApiResponse)
         case n if 200 < n && n < 300 =>
           // things like 201 may not have a message body
-          if (s.isEmpty)
-            ApiResponse(JNull)
-          else
-            JParser.parseFromString(s).fold(ApiBadJson, ApiResponse)
+          if (s.isEmpty) ApiResponse(JNull)
+          else JParser.parseFromString(s).fold(ApiBadJson, ApiResponse)
         case n =>
           ApiFailure(n, s)
       }

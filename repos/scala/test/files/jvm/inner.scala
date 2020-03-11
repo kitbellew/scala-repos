@@ -56,10 +56,8 @@ object Scalatest {
   private val classpath = outputdir + File.pathSeparator + scalalib
   private val javabin = {
     val jhome = new File(System.getProperty("java.home"))
-    if (jhome.getName == "jre")
-      new File(jhome.getParent, "bin").getAbsolutePath
-    else
-      new File(jhome, "bin").getAbsolutePath
+    if (jhome.getName == "jre") new File(jhome.getParent, "bin").getAbsolutePath
+    else new File(jhome, "bin").getAbsolutePath
   }
   private val javacmd = javabin + File.separator + "java"
   private val javac = javabin + File.separator + "javac"

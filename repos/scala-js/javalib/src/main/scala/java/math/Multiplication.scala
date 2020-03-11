@@ -175,8 +175,7 @@ private[math] object Multiplication {
     */
   def karatsuba(val1: BigInteger, val2: BigInteger): BigInteger = {
     val (op1, op2) =
-      if (val2.numberLength > val1.numberLength) (val2, val1)
-      else (val1, val2)
+      if (val2.numberLength > val1.numberLength) (val2, val1) else (val1, val2)
 
     if (op2.numberLength < whenUseKaratsuba) { multiplyPAP(op1, op2) }
     else {
@@ -212,8 +211,7 @@ private[math] object Multiplication {
         resDigits(bLen) = multiplyByInt(resDigits, bDigits, bLen, aDigits(0))
       else if (bLen == 1)
         resDigits(aLen) = multiplyByInt(resDigits, aDigits, aLen, bDigits(0))
-      else
-        multPAP(aDigits, bDigits, resDigits, aLen, bLen)
+      else multPAP(aDigits, bDigits, resDigits, aLen, bLen)
     }
   }
 
@@ -312,8 +310,7 @@ private[math] object Multiplication {
     val bLen = b.numberLength
     val resLength = aLen + bLen
     val resSign =
-      if (a.sign != b.sign) -1
-      else 1
+      if (a.sign != b.sign) -1 else 1
 
     if (resLength == 2) {
       val v = unsignedMultAddAdd(a.digits(0), b.digits(0), 0, 0)
@@ -338,8 +335,7 @@ private[math] object Multiplication {
     def loop(exp: Int, res: BigInteger, acc: BigInteger): BigInteger = {
       if (exp > 1) {
         val res2 =
-          if ((exp & 1) != 0) res.multiply(acc)
-          else res
+          if ((exp & 1) != 0) res.multiply(acc) else res
         val acc2 = {
           if (acc.numberLength == 1) { acc.multiply(acc) }
           else {

@@ -328,8 +328,7 @@ trait CompletionControl {
     def keywordCompletions(prefix: String): Seq[CompletionInfo] = {
       if (prefix.length > 0) {
         Keywords.keywordCompletions.filter(_.name.startsWith(prefix))
-      } else
-        Seq()
+      } else Seq()
     }
 
     buff.toList ++ typeSearchResults.getOrElse(Nil) ++ keywordCompletions(

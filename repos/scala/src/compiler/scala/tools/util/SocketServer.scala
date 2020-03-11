@@ -91,8 +91,7 @@ abstract class SocketServer(fixPort: Int = 0) extends CompileOutputCommon {
         case _ =>
           warn("Accept on port %d failed")
       }
-      if (!shutdown)
-        loop()
+      if (!shutdown) loop()
     }
     try loop()
     catch {

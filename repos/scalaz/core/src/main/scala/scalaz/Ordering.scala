@@ -24,9 +24,7 @@ object Ordering extends OrderingInstances {
   }
 
   def fromLessThan[A](a1: A, a2: A)(f: (A, A) => Boolean): Ordering =
-    if (f(a1, a2)) LT
-    else if (f(a2, a1)) GT
-    else EQ
+    if (f(a1, a2)) LT else if (f(a2, a1)) GT else EQ
 
   def fromInt(intOrdering: Int): Ordering =
     if (intOrdering < 0) LT else if (intOrdering > 0) GT else EQ
@@ -69,23 +67,15 @@ sealed abstract class OrderingInstances {
         case Ordering.LT => Ordering.GT
       }
       override def succn(a: Int, b: Ordering) =
-        if (a < 0)
-          predn(-a, b)
-        else if (a % 3 == 0)
-          b
-        else if (a % 3 == 1)
-          succ(b)
-        else
-          succ(succ(b))
+        if (a < 0) predn(-a, b)
+        else if (a % 3 == 0) b
+        else if (a % 3 == 1) succ(b)
+        else succ(succ(b))
       override def predn(a: Int, b: Ordering) =
-        if (a < 0)
-          succn(-a, b)
-        else if (a % 3 == 0)
-          b
-        else if (a % 3 == 1)
-          pred(b)
-        else
-          pred(pred(b))
+        if (a < 0) succn(-a, b)
+        else if (a % 3 == 0) b
+        else if (a % 3 == 1) pred(b)
+        else pred(pred(b))
       override def min = Some(LT)
       override def max = Some(GT)
     }

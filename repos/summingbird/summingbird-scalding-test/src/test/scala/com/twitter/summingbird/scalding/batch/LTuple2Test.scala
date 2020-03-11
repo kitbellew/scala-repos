@@ -39,10 +39,7 @@ object LTuple2Properties extends Properties("LTuple2 Properties") {
       val ltup1 = LTuple2(a1, b1)
       val ltup2 = LTuple2(a2, b2)
 
-      if (a1 == a2 && b1 == b2)
-        ltup1 == ltup2
-      else
-        ltup1 != ltup2
+      if (a1 == a2 && b1 == b2) ltup1 == ltup2 else ltup1 != ltup2
     }
   }
 
@@ -70,10 +67,7 @@ object LTuple2Properties extends Properties("LTuple2 Properties") {
       val ltup1 = LTuple2(a1, b1)
       val ltup2 = LTuple2(a2, b2)
 
-      if (a1 == a2 && b1 == b2)
-        ltup1 == ltup2
-      else
-        ltup1 != ltup2
+      if (a1 == a2 && b1 == b2) ltup1 == ltup2 else ltup1 != ltup2
     }
   }
 

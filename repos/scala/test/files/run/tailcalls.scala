@@ -195,10 +195,7 @@ object FancyTailCalls {
 
 object PolyObject extends App {
   def tramp[A](x: Int): Int =
-    if (x > 0)
-      tramp[A](x - 1)
-    else
-      0
+    if (x > 0) tramp[A](x - 1) else 0
 }
 
 class FancyTailCalls {
@@ -248,15 +245,10 @@ class FancyTailCalls {
 
 class NonTailCall {
   final def f1(n: Int): Int =
-    try {
-      if (n == 0) 0
-      else f1(n - 1)
-    } finally { Console.print(" " + n) }
+    try { if (n == 0) 0 else f1(n - 1) }
+    finally { Console.print(" " + n) }
 
-  final def f2(n: Int): Int = synchronized {
-    if (n == 0) 0
-    else f2(n - 1)
-  }
+  final def f2(n: Int): Int = synchronized { if (n == 0) 0 else f2(n - 1) }
 
 }
 

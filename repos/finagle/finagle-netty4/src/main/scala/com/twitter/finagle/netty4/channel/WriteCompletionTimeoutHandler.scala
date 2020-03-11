@@ -28,8 +28,7 @@ private[finagle] class WriteCompletionTimeoutHandler(
       val writeExn =
         if (ctx.channel != null)
           new WriteTimedOutException(ctx.channel.remoteAddress)
-        else
-          new WriteTimedOutException
+        else new WriteTimedOutException
 
       ctx.fireExceptionCaught(writeExn)
     }

@@ -19,8 +19,7 @@ object ComplianceRequirement {
     val unmet = requirements.filterNot(compliance =>
       semantics.isCompliant(compliance.semantics))
 
-    if (unmet.nonEmpty)
-      throw new BadComplianceException(unmet.toList)
+    if (unmet.nonEmpty) throw new BadComplianceException(unmet.toList)
   }
 
   def mergeFromManifests(

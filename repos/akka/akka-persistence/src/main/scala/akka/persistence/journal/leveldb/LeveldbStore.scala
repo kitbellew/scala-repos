@@ -82,8 +82,7 @@ private[persistence] trait LeveldbStore
                     s"persistenceId [${p.persistenceId}] must not start with $tagPersistenceIdPrefix")
                   addToMessageBatch(p2, tags, batch)
               }
-              if (hasPersistenceIdSubscribers)
-                persistenceIds += a.persistenceId
+              if (hasPersistenceIdSubscribers) persistenceIds += a.persistenceId
             }
         })
     })
@@ -91,8 +90,7 @@ private[persistence] trait LeveldbStore
     if (hasPersistenceIdSubscribers) {
       persistenceIds.foreach { pid ⇒ notifyPersistenceIdChange(pid) }
     }
-    if (hasTagSubscribers && allTags.nonEmpty)
-      allTags.foreach(notifyTagChange)
+    if (hasTagSubscribers && allTags.nonEmpty) allTags.foreach(notifyTagChange)
     result
   }
 

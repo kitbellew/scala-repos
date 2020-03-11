@@ -74,11 +74,8 @@ trait Sorted[K, +This <: Sorted[K, This]] {
     val i = keySet.from(to).iterator
     if (i.isEmpty) return repr
     val next = i.next()
-    if (compare(next, to) == 0)
-      if (i.isEmpty) repr
-      else until(i.next())
-    else
-      until(next)
+    if (compare(next, to) == 0) if (i.isEmpty) repr else until(i.next())
+    else until(next)
   }
 
   /**

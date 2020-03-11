@@ -25,8 +25,7 @@ abstract class Buffer private[nio] (val _capacity: Int) {
     if (newPosition < 0 || newPosition > limit())
       throw new IllegalArgumentException
     _position = newPosition
-    if (_mark > newPosition)
-      _mark = -1
+    if (_mark > newPosition) _mark = -1
     this
   }
 
@@ -38,8 +37,7 @@ abstract class Buffer private[nio] (val _capacity: Int) {
     _limit = newLimit
     if (_position > newLimit) {
       _position = newLimit
-      if (_mark > newLimit)
-        _mark = -1
+      if (_mark > newLimit) _mark = -1
     }
     this
   }
@@ -50,8 +48,7 @@ abstract class Buffer private[nio] (val _capacity: Int) {
   }
 
   final def reset(): Buffer = {
-    if (_mark == -1)
-      throw new InvalidMarkException
+    if (_mark == -1) throw new InvalidMarkException
     _position = _mark
     this
   }
@@ -105,22 +102,19 @@ abstract class Buffer private[nio] (val _capacity: Int) {
 
   def arrayBuffer(): ArrayBuffer = {
     val buffer = _arrayBuffer
-    if (buffer == null || isReadOnly)
-      throw new UnsupportedOperationException
+    if (buffer == null || isReadOnly) throw new UnsupportedOperationException
     buffer
   }
 
   def arrayBufferOffset(): Int = {
     val offset = _arrayBufferOffset
-    if (offset == -1 || isReadOnly)
-      throw new UnsupportedOperationException
+    if (offset == -1 || isReadOnly) throw new UnsupportedOperationException
     offset
   }
 
   def dataView(): DataView = {
     val view = _dataView
-    if (view == null || isReadOnly)
-      throw new UnsupportedOperationException
+    if (view == null || isReadOnly) throw new UnsupportedOperationException
     view
   }
 
@@ -129,8 +123,7 @@ abstract class Buffer private[nio] (val _capacity: Int) {
 
   def typedArray(): TypedArrayType = {
     val array = _typedArray
-    if (array == null || isReadOnly)
-      throw new UnsupportedOperationException
+    if (array == null || isReadOnly) throw new UnsupportedOperationException
     array
   }
 
@@ -181,8 +174,7 @@ abstract class Buffer private[nio] (val _capacity: Int) {
   // Helpers
 
   @inline private[nio] def ensureNotReadOnly(): Unit = {
-    if (isReadOnly)
-      throw new ReadOnlyBufferException
+    if (isReadOnly) throw new ReadOnlyBufferException
   }
 
   @inline private[nio] def validateArrayIndexRange(
@@ -195,8 +187,7 @@ abstract class Buffer private[nio] (val _capacity: Int) {
 
   @inline private[nio] def getPosAndAdvanceRead(): Int = {
     val p = _position
-    if (p == limit)
-      throw new BufferUnderflowException
+    if (p == limit) throw new BufferUnderflowException
     _position = p + 1
     p
   }
@@ -204,16 +195,14 @@ abstract class Buffer private[nio] (val _capacity: Int) {
   @inline private[nio] def getPosAndAdvanceRead(length: Int): Int = {
     val p = _position
     val newPos = p + length
-    if (newPos > limit)
-      throw new BufferUnderflowException
+    if (newPos > limit) throw new BufferUnderflowException
     _position = newPos
     p
   }
 
   @inline private[nio] def getPosAndAdvanceWrite(): Int = {
     val p = _position
-    if (p == limit)
-      throw new BufferOverflowException
+    if (p == limit) throw new BufferOverflowException
     _position = p + 1
     p
   }
@@ -221,21 +210,18 @@ abstract class Buffer private[nio] (val _capacity: Int) {
   @inline private[nio] def getPosAndAdvanceWrite(length: Int): Int = {
     val p = _position
     val newPos = p + length
-    if (newPos > limit)
-      throw new BufferOverflowException
+    if (newPos > limit) throw new BufferOverflowException
     _position = newPos
     p
   }
 
   @inline private[nio] def validateIndex(index: Int): Int = {
-    if (index < 0 || index >= limit)
-      throw new IndexOutOfBoundsException
+    if (index < 0 || index >= limit) throw new IndexOutOfBoundsException
     index
   }
 
   @inline private[nio] def validateIndex(index: Int, length: Int): Int = {
-    if (index < 0 || index + length > limit)
-      throw new IndexOutOfBoundsException
+    if (index < 0 || index + length > limit) throw new IndexOutOfBoundsException
     index
   }
 }

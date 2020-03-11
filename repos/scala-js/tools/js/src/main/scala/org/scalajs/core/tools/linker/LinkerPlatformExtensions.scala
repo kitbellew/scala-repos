@@ -23,8 +23,7 @@ trait LinkerPlatformExtensions { this: Linker.type =>
       frontendConfig: LinkerFrontend.Config = LinkerFrontend.Config(),
       backendConfig: LinkerBackend.Config = LinkerBackend.Config()): Linker = {
     val optOptimizerFactory =
-      if (disableOptimizer) None
-      else Some(IncOptimizer.factory)
+      if (disableOptimizer) None else Some(IncOptimizer.factory)
 
     val frontend = new LinkerFrontend(
       semantics,

@@ -101,8 +101,7 @@ class ZkNodeChangeNotificationListener(
         purgeObsoleteNotifications(now, notifications)
       } catch {
         case e: ZkInterruptedException =>
-          if (!isClosed.get)
-            throw e
+          if (!isClosed.get) throw e
       }
     }
   }

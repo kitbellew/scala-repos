@@ -67,8 +67,7 @@ private[finagle] object Ema {
 
     def nanos(): Long = synchronized {
       val sample = System.nanoTime()
-      if (sample - last > 0)
-        last = sample
+      if (sample - last > 0) last = sample
       last
     }
 

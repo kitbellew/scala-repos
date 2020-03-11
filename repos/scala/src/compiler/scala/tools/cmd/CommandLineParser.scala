@@ -28,8 +28,7 @@ object CommandLineParser {
         }
         // the only way to get out of the above loop is with an empty next or !escaped
         // require(next.isEmpty || !escaped)
-        if (next startsWith del) Some((quoted, next substring 1))
-        else None
+        if (next startsWith del) Some((quoted, next substring 1)) else None
       } else None
     }
   }

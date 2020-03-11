@@ -415,14 +415,10 @@ trait ModelFactoryImplicitSupport {
           val convertors = members.collect {
             case m: MemberImpl if m.sym == convSym => m
           }
-          if (convertors.length == 1)
-            convertor = convertors.head
+          if (convertors.length == 1) convertor = convertors.head
         case _ =>
       }
-      if (convertor ne null)
-        Left(convertor)
-      else
-        Right(convSym.nameString)
+      if (convertor ne null) Left(convertor) else Right(convSym.nameString)
     }
 
     def conversionShortName = convSym.nameString
@@ -597,15 +593,11 @@ trait ModelFactoryImplicitSupport {
   object typeVarToOriginOrWildcard extends TypeMap {
     def apply(tp: Type): Type = mapOver(tp) match {
       case tv: TypeVar =>
-        if (tv.constr.inst.typeSymbol == NothingClass)
-          WildcardType
+        if (tv.constr.inst.typeSymbol == NothingClass) WildcardType
         else
           tv.origin //appliedType(tv.origin.typeConstructor, tv.typeArgs map this)
       case other =>
-        if (other.typeSymbol == NothingClass)
-          WildcardType
-        else
-          other
+        if (other.typeSymbol == NothingClass) WildcardType else other
     }
   }
 

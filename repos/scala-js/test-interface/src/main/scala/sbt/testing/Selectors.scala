@@ -40,8 +40,7 @@ final class SuiteSelector extends Selector with Serializable {
   */
 final class TestSelector(_testName: String) extends Selector with Serializable {
 
-  if (_testName == null)
-    throw new NullPointerException("testName was null");
+  if (_testName == null) throw new NullPointerException("testName was null");
 
   /** The name of a test about which an event was fired.
     *
@@ -65,8 +64,7 @@ final class NestedSuiteSelector(_suiteId: String)
     extends Selector
     with Serializable {
 
-  if (_suiteId == null)
-    throw new NullPointerException("suiteId was null");
+  if (_suiteId == null) throw new NullPointerException("suiteId was null");
 
   /** An id that, in addition to a test class name, identifies a nested suite
     *  about which an event was fired.
@@ -91,10 +89,8 @@ final class NestedTestSelector(_suiteId: String, _testName: String)
     extends Selector
     with Serializable {
 
-  if (_suiteId == null)
-    throw new NullPointerException("suiteId was null");
-  if (_testName == null)
-    throw new NullPointerException("testName was null");
+  if (_suiteId == null) throw new NullPointerException("suiteId was null");
+  if (_testName == null) throw new NullPointerException("testName was null");
 
   /** An id that, in addition to a test class name, identifies a nested suite
     *  that contains a test about which an event was fired.

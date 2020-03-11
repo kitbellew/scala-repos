@@ -49,10 +49,8 @@ class RestartStrategySpec
         }
 
         override def postRestart(reason: Throwable) = {
-          if (!restartLatch.isOpen)
-            restartLatch.open()
-          else
-            secondRestartLatch.open()
+          if (!restartLatch.isOpen) restartLatch.open()
+          else secondRestartLatch.open()
         }
 
         override def postStop() = { stopLatch.open() }
@@ -121,12 +119,9 @@ class RestartStrategySpec
           case Crash ⇒ throw new Exception("Crashing...")
         }
         override def postRestart(reason: Throwable) = {
-          if (!restartLatch.isOpen)
-            restartLatch.open()
-          else if (!secondRestartLatch.isOpen)
-            secondRestartLatch.open()
-          else
-            thirdRestartLatch.open()
+          if (!restartLatch.isOpen) restartLatch.open()
+          else if (!secondRestartLatch.isOpen) secondRestartLatch.open()
+          else thirdRestartLatch.open()
         }
 
         override def postStop() = {
@@ -177,10 +172,8 @@ class RestartStrategySpec
           case Crash ⇒ throw new Exception("Crashing...")
         }
         override def postRestart(reason: Throwable) = {
-          if (!restartLatch.isOpen)
-            restartLatch.open()
-          else
-            secondRestartLatch.open()
+          if (!restartLatch.isOpen) restartLatch.open()
+          else secondRestartLatch.open()
         }
 
         override def postStop() = { stopLatch.open() }

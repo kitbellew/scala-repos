@@ -51,8 +51,7 @@ object Arguments {
       if (eqls < 0) {
         error("missing '" + separator + "' in binding '" + str + "'")
         ("", "")
-      } else
-        (str.substring(0, eqls).trim(), str.substring(eqls + 1).trim())
+      } else (str.substring(0, eqls).trim(), str.substring(eqls + 1).trim())
     }
 
     def parse(args: Array[String]): Arguments = {
@@ -65,8 +64,7 @@ object Arguments {
       if (args != null) {
         var i = 0
         while (i < args.length)
-          if ((args(i) == null) || (args(i).length() == 0))
-            i += 1
+          if ((args(i) == null) || (args(i).length() == 0)) i += 1
           else if (args(i).charAt(0) != optionPrefix) {
             res.addOther(args(i))
             i += 1
@@ -128,8 +126,7 @@ object Arguments {
   def parse(options: String*)(args: Array[String]): Arguments = {
     val parser = new Parser('-')
     val iter = options.iterator
-    while (iter.hasNext)
-      parser withOption iter.next
+    while (iter.hasNext) parser withOption iter.next
     parser.parse(args)
   }
 }
@@ -147,8 +144,7 @@ class Arguments {
   def addArgument(option: String, arg: String) { arguments(option) = arg }
 
   def addPrefixed(prefix: String, arg: String): Unit =
-    if (prefixes isDefinedAt prefix)
-      prefixes(prefix) += arg
+    if (prefixes isDefinedAt prefix) prefixes(prefix) += arg
     else {
       prefixes(prefix) = new HashSet
       prefixes(prefix) += arg
@@ -156,8 +152,7 @@ class Arguments {
 
   def addBinding(tag: String, key: String, value: String): Unit =
     if (key.length() > 0) {
-      if (bindings isDefinedAt tag)
-        bindings(tag)(key) = value
+      if (bindings isDefinedAt tag) bindings(tag)(key) = value
       else {
         bindings(tag) = new HashMap
         bindings(tag)(key) = value

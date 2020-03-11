@@ -632,16 +632,13 @@ private[http] trait CoreRequestVarHandler {
     }
 
   private[http] def set[T](name: String, from: MyType, value: T): Unit =
-    for (ht <- backingStore)
-      ht(name) = (from, value, true)
+    for (ht <- backingStore) ht(name) = (from, value, true)
 
   private[http] def clear(name: String): Unit =
-    for (ht <- backingStore)
-      ht -= name
+    for (ht <- backingStore) ht -= name
 
   private[http] def addCleanupFunc(f: Box[LiftSession] => Unit): Unit =
-    for (cu <- Box.legacyNullTest(cleanup.value))
-      cu += f
+    for (cu <- Box.legacyNullTest(cleanup.value)) cu += f
 
   def apply[T](session: Box[LiftSession], f: => T): T = {
     if ("in" == isIn.value) {

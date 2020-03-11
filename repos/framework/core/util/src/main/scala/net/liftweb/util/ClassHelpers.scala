@@ -188,8 +188,7 @@ trait ClassHelpers { self: ControlHelpers =>
     * @return true if clz is assignable from any of the matching classes
     */
   def containsClass[C](clz: Class[C], toMatch: List[Class[_]]): Boolean =
-    if (toMatch eq null) false
-    else toMatch.exists(_.isAssignableFrom(clz))
+    if (toMatch eq null) false else toMatch.exists(_.isAssignableFrom(clz))
 
   /**
     * Check that the method 'name' is callable for class 'clz'

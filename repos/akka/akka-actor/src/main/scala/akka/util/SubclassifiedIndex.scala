@@ -185,10 +185,7 @@ private[akka] class SubclassifiedIndex[K, V] private (
   protected final def findValues(key: K): Set[V] = root.innerFindValues(key)
   protected def innerFindValues(key: K): Set[V] =
     (Set.empty[V] /: subkeys) { (s, n) ⇒
-      if (sc.isSubclass(key, n.key))
-        s ++ n.innerFindValues(key)
-      else
-        s
+      if (sc.isSubclass(key, n.key)) s ++ n.innerFindValues(key) else s
     }
 
   /**
@@ -206,10 +203,8 @@ private[akka] class SubclassifiedIndex[K, V] private (
       else
         n.innerFindSubKeys(key, except) ++ {
           if (sc.isSubclass(n.key, key) && !except.exists(e ⇒
-                sc.isEqual(key, e.key)))
-            s + n.key
-          else
-            s
+                sc.isEqual(key, e.key))) s + n.key
+          else s
         }
     }
 

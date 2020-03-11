@@ -108,8 +108,7 @@ class ScalaMethodCallFixer extends ScalaFixer {
     val params = args.exprs
     if (params.nonEmpty && startLine(editor, args) != startLine(
           editor,
-          params.head))
-      endOffset = args.getTextRange.getStartOffset + 1
+          params.head)) endOffset = args.getTextRange.getStartOffset + 1
 
     endOffset = CharArrayUtil.shiftBackward(
       editor.getDocument.getCharsSequence,

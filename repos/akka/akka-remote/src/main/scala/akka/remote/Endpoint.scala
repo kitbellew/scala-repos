@@ -397,8 +397,7 @@ private[remote] class ReliableDeliverySupervisor(
       writerTerminated: Boolean,
       earlyUngateRequested: Boolean): Receive = {
     case Terminated(_) if !writerTerminated ⇒
-      if (earlyUngateRequested)
-        self ! Ungate
+      if (earlyUngateRequested) self ! Ungate
       else
         context.system.scheduler
           .scheduleOnce(settings.RetryGateClosedFor, self, Ungate)
@@ -721,10 +720,8 @@ private[remote] class EndpointWriter(
 
   override def postStop(): Unit = {
     ackIdleTimer.cancel()
-    while (!prioBuffer.isEmpty)
-      extendedSystem.deadLetters ! prioBuffer.poll
-    while (!buffer.isEmpty)
-      extendedSystem.deadLetters ! buffer.poll
+    while (!prioBuffer.isEmpty) extendedSystem.deadLetters ! prioBuffer.poll
+    while (!buffer.isEmpty) extendedSystem.deadLetters ! buffer.poll
     handle foreach { _.disassociate(stopReason) }
     eventPublisher.notifyListeners(
       DisassociatedEvent(localAddress, remoteAddress, inbound))
@@ -778,8 +775,7 @@ private[remote] class EndpointWriter(
   }
 
   def becomeWritingOrSendBufferedMessages(): Unit =
-    if (buffer.isEmpty)
-      context.become(writing)
+    if (buffer.isEmpty) context.become(writing)
     else {
       context.become(buffering)
       sendBufferedMessages()
@@ -825,12 +821,11 @@ private[remote] class EndpointWriter(
     }
 
     @tailrec def writeLoop(count: Int): Boolean =
-      if (count > 0 && !buffer.isEmpty)
-        if (delegate(buffer.peek)) {
-          buffer.removeFirst()
-          writeCount += 1
-          writeLoop(count - 1)
-        } else false
+      if (count > 0 && !buffer.isEmpty) if (delegate(buffer.peek)) {
+        buffer.removeFirst()
+        writeCount += 1
+        writeLoop(count - 1)
+      } else false
       else true
 
     @tailrec def writePrioLoop(): Boolean =
@@ -1009,8 +1004,7 @@ private[remote] class EndpointWriter(
       context.stop(self)
     case OutboundAck(ack) ⇒
       lastAck = Some(ack)
-      if (ackDeadline.isOverdue())
-        trySendPureAck()
+      if (ackDeadline.isOverdue()) trySendPureAck()
     case AckIdleCheckTimer ⇒ // Ignore
     case FlushAndStopTimeout ⇒ // ignore
     case BackoffTimer ⇒ // ignore
@@ -1025,11 +1019,10 @@ private[remote] class EndpointWriter(
   }
 
   private def trySendPureAck(): Unit =
-    for (h ← handle; ack ← lastAck)
-      if (h.write(codec.constructPureAck(ack))) {
-        ackDeadline = newAckDeadline
-        lastAck = None
-      }
+    for (h ← handle; ack ← lastAck) if (h.write(codec.constructPureAck(ack))) {
+      ackDeadline = newAckDeadline
+      lastAck = None
+    }
 
   private def startReadEndpoint(handle: AkkaProtocolHandle): Some[ActorRef] = {
     val newReader =

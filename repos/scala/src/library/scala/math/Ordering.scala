@@ -257,17 +257,13 @@ object Ordering extends LowPriorityOrderingImplicits {
 
   trait IntOrdering extends Ordering[Int] {
     def compare(x: Int, y: Int) =
-      if (x < y) -1
-      else if (x == y) 0
-      else 1
+      if (x < y) -1 else if (x == y) 0 else 1
   }
   implicit object Int extends IntOrdering
 
   trait LongOrdering extends Ordering[Long] {
     def compare(x: Long, y: Long) =
-      if (x < y) -1
-      else if (x == y) 0
-      else 1
+      if (x < y) -1 else if (x == y) 0 else 1
   }
   implicit object Long extends LongOrdering
 

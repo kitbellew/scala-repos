@@ -53,8 +53,7 @@ class Properties(protected val defaults: Properties)
         case _                        => // Ignore key
       }
     }
-    if (defaults != null)
-      set ++= defaults.stringPropertyNames()
+    if (defaults != null) set ++= defaults.stringPropertyNames()
     set
   }
 

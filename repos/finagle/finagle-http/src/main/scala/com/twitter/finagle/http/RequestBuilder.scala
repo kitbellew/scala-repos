@@ -195,16 +195,13 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
     val uri = u.toURI
     val host = uri.getHost.toLowerCase
     val hostValue =
-      if (u.getPort == -1 || u.getDefaultPort == u.getPort)
-        host
-      else
-        "%s:%d".format(host, u.getPort)
+      if (u.getPort == -1 || u.getDefaultPort == u.getPort) host
+      else "%s:%d".format(host, u.getPort)
     val withHost =
       config.headers.updated(HttpHeaders.Names.HOST, Seq(hostValue))
     val userInfo = uri.getUserInfo
     val updated =
-      if (userInfo == null || userInfo.isEmpty)
-        withHost
+      if (userInfo == null || userInfo.isEmpty) withHost
       else {
         val auth = "Basic " + Base64StringEncoder.encode(userInfo.getBytes)
         withHost.updated(HttpHeaders.Names.AUTHORIZATION, Seq(auth))
@@ -434,14 +431,11 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
       val builder = new StringBuilder()
 
       val path = url.getPath
-      if (path == null || path.isEmpty)
-        builder.append("/")
-      else
-        builder.append(path)
+      if (path == null || path.isEmpty) builder.append("/")
+      else builder.append(path)
 
       val query = url.getQuery
-      if (query != null && !query.isEmpty)
-        builder.append("?%s".format(query))
+      if (query != null && !query.isEmpty) builder.append("?%s".format(query))
 
       builder.toString
     }

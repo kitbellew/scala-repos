@@ -151,8 +151,7 @@ abstract class ExpiringService[Req, Rep](
       if (decrLatch) {
         val n = latch.decr()
         synchronized {
-          if (n == 0 && active)
-            idleTask = startTimer(maxIdleTime, idleCounter)
+          if (n == 0 && active) idleTask = startTimer(maxIdleTime, idleCounter)
         }
       }
     }

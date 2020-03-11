@@ -60,8 +60,7 @@ object TestExtras {
       Seq(
         excludeTestNames := Params.testNamesExclude,
         excludeTestTags := {
-          if (onlyTestTags.value.isEmpty) Params.testTagsExlcude
-          else Set.empty
+          if (onlyTestTags.value.isEmpty) Params.testTagsExlcude else Set.empty
         },
         onlyTestTags := Params.testTagsOnly,
         // add filters for tests excluded by name

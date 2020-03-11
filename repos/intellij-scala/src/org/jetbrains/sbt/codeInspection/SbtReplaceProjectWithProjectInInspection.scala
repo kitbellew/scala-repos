@@ -26,8 +26,8 @@ class SbtReplaceProjectWithProjectInInspection extends AbstractInspection {
         if defn.getContainingFile.getFileType.getName == Sbt.Name =>
       (defn.expr, defn.bindings) match {
         case (
-            Some(call: ScMethodCall),
-            Seq(projectNamePattern: ScReferencePattern)) =>
+              Some(call: ScMethodCall),
+              Seq(projectNamePattern: ScReferencePattern)) =>
           findPlaceToFix(call, projectNamePattern.getText).foreach { place =>
             holder.registerProblem(
               place,

@@ -45,10 +45,7 @@ object JSTreeExtractors {
         case Tuple2(name: StringLiteral, value) :: xs =>
           genNamedLitExtract(xs, (name, value) :: acc, failIfNonLit)
         case _ :: xs =>
-          if (failIfNonLit)
-            None
-          else
-            genNamedLitExtract(xs, acc, failIfNonLit)
+          if (failIfNonLit) None else genNamedLitExtract(xs, acc, failIfNonLit)
         case Nil => Some(acc.reverse)
       }
     }
@@ -78,14 +75,14 @@ object JSTreeExtractors {
           Some((_1, _2))
         // case x -> y
         case Apply(
-            LoadModule(ClassType("s_Predef$ArrowAssoc$")),
-            Ident("$$minus$greater$extension__O__O__T2", _),
-            List(
-              Apply(
-                LoadModule(ClassType("s_Predef$")),
-                Ident("any2ArrowAssoc__O__O" | "ArrowAssoc__O__O", _),
-                List(_1)),
-              _2)) =>
+              LoadModule(ClassType("s_Predef$ArrowAssoc$")),
+              Ident("$$minus$greater$extension__O__O__T2", _),
+              List(
+                Apply(
+                  LoadModule(ClassType("s_Predef$")),
+                  Ident("any2ArrowAssoc__O__O" | "ArrowAssoc__O__O", _),
+                  List(_1)),
+                _2)) =>
           Some((_1, _2))
         case _ =>
           None

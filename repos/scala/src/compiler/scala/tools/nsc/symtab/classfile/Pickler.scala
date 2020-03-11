@@ -182,8 +182,7 @@ abstract class Pickler extends SubComponent {
           putSymbol(sym.owner)
           putSymbol(sym.privateWithin)
           putType(sym.info)
-          if (sym.hasSelfType)
-            putType(sym.typeOfThis)
+          if (sym.hasSelfType) putType(sym.typeOfThis)
           putSymbol(sym.alias)
           if (!sym.children.isEmpty) {
             val (locals, globals) = sym.children partition (_.isLocalClass)
@@ -277,17 +276,14 @@ abstract class Pickler extends SubComponent {
       override def traverse(tree: Tree): Unit = putTree(tree)
 
       def put(tree: Tree): Unit = {
-        if (tree.canHaveAttrs)
-          putType(tree.tpe)
-        if (tree.hasSymbolField)
-          putSymbol(tree.symbol)
+        if (tree.canHaveAttrs) putType(tree.tpe)
+        if (tree.hasSymbolField) putSymbol(tree.symbol)
 
         super.traverse(tree)
       }
     }
     private def putTree(tree: Tree) {
-      if (putEntry(tree))
-        putTreeTraverser put tree
+      if (putEntry(tree)) putTreeTraverser put tree
     }
 
     /** Store a constant in map index, along with anything it references.
@@ -309,13 +305,11 @@ abstract class Pickler extends SubComponent {
     private def putAnnotation(sym: Symbol, annot: AnnotationInfo) {
       // if an annotation with the same arguments is applied to the
       // same symbol multiple times, it's only pickled once.
-      if (putEntry(sym -> annot))
-        putAnnotationBody(annot)
+      if (putEntry(sym -> annot)) putAnnotationBody(annot)
     }
 
     private def putAnnotation(annot: AnnotationInfo) {
-      if (putEntry(annot))
-        putAnnotationBody(annot)
+      if (putEntry(annot)) putAnnotationBody(annot)
     }
 
     /** Puts the members of an AnnotationInfo */
@@ -425,12 +419,10 @@ abstract class Pickler extends SubComponent {
         super.traverseParamss(vparamss)
       }
       override def traverse(tree: Tree): Unit = {
-        if (refs)
-          writeRef(tree)
+        if (refs) writeRef(tree)
         else {
           writeRef(tree.tpe)
-          if (tree.hasSymbolField)
-            writeRef(tree.symbol)
+          if (tree.hasSymbolField) writeRef(tree.symbol)
 
           asRefs(super.traverse(tree))
         }
@@ -450,15 +442,12 @@ abstract class Pickler extends SubComponent {
       def writeExtSymbolBody(sym: Symbol) {
         val name = if (sym.isModuleClass) sym.name.toTermName else sym.name
         writeRef(name)
-        if (!sym.owner.isRoot)
-          writeRef(sym.owner)
+        if (!sym.owner.isRoot) writeRef(sym.owner)
       }
       def writeSymbolBody(sym: Symbol) {
         if (sym ne NoSymbol) {
-          if (isLocalToPickle(sym))
-            writeLocalSymbolBody(sym)
-          else
-            writeExtSymbolBody(sym)
+          if (isLocalToPickle(sym)) writeLocalSymbolBody(sym)
+          else writeExtSymbolBody(sym)
         }
       }
 
@@ -493,8 +482,7 @@ abstract class Pickler extends SubComponent {
 
       def writeTreeBody(tree: Tree) {
         writeNat(picklerSubTag(tree))
-        if (!tree.isEmpty)
-          writeTreeBodyTraverser traverse tree
+        if (!tree.isEmpty) writeTreeBodyTraverser traverse tree
       }
 
       def writeConstant(c: Constant): Unit = c.tag match {

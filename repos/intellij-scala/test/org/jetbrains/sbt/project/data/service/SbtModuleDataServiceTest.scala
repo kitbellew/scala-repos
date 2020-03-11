@@ -38,10 +38,8 @@ class SbtModuleDataServiceTest extends ProjectDataServiceTestCase {
     val module =
       ModuleManager.getInstance(getProject).findModuleByName("Module 1")
 
-    if (imports.nonEmpty)
-      assert(SbtModule.getImportsFrom(module) == imports)
-    else
-      assert(SbtModule.getImportsFrom(module) == Sbt.DefaultImplicitImports)
+    if (imports.nonEmpty) assert(SbtModule.getImportsFrom(module) == imports)
+    else assert(SbtModule.getImportsFrom(module) == Sbt.DefaultImplicitImports)
 
     assert(SbtModule.getResolversFrom(module) == resolvers)
     resolvers.forall(r => SbtResolverIndexesManager().find(r).isDefined)

@@ -215,8 +215,7 @@ final class SparseArray[@specialized(Double, Int, Float, Long) V](
         var end = used - 1
 
         // Simple optimization: position i can't be after offset i.
-        if (end > i)
-          end = i
+        if (end > i) end = i
 
         var found = false
 
@@ -258,8 +257,7 @@ final class SparseArray[@specialized(Double, Int, Float, Long) V](
             begin = mid + 2
           }
         }
-        if (!found)
-          mid = (end + begin) >> 1
+        if (!found) mid = (end + begin) >> 1
 
         // pick up search.
         while (!found && begin <= end) {
@@ -269,20 +267,16 @@ final class SparseArray[@specialized(Double, Int, Float, Long) V](
           } else if (index(mid) > i) {
             end = mid - 1
             mid = (end + begin) >> 1
-          } else
-            found = true
+          } else found = true
         }
 
         // note: hold onto a local variable
         // because multithreading
         val result =
-          if (found || mid < 0)
-            mid
+          if (found || mid < 0) mid
           // no match found,  insertion point
-          else if (i <= index(mid))
-            ~mid // Insert here (before mid)
-          else
-            ~(mid + 1) // Insert after mid
+          else if (i <= index(mid)) ~mid // Insert here (before mid)
+          else ~(mid + 1) // Insert after mid
 
         lastReturnedPos = result
 

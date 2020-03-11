@@ -70,8 +70,7 @@ class GoToImplicitConversionAction
             val conv3 = additionalExpression.get._1.getImplicitConversions(
               fromUnder = false,
               expectedOption = Some(additionalExpression.get._2))
-            if (conv3._2.isDefined) conv3
-            else conv1
+            if (conv3._2.isDefined) conv3 else conv1
           } else conv1
         } else if (additionalExpression.isDefined) {
           val conv3 = additionalExpression.get._1.getImplicitConversions(
@@ -214,8 +213,7 @@ class GoToImplicitConversionAction
       }
       val expressions = {
         val falseGuard = getExpressions(guard = false)
-        if (falseGuard.length != 0) falseGuard
-        else getExpressions(guard = true)
+        if (falseGuard.length != 0) falseGuard else getExpressions(guard = true)
       }
       def chooseExpression(expr: ScExpression) {
         editor.getSelectionModel.setSelection(
@@ -223,8 +221,7 @@ class GoToImplicitConversionAction
           expr.getTextRange.getEndOffset)
         forExpr(expr)
       }
-      if (expressions.length == 0)
-        editor.getSelectionModel.selectLineAtCaret()
+      if (expressions.length == 0) editor.getSelectionModel.selectLineAtCaret()
       else if (expressions.length == 1) { chooseExpression(expressions(0)) }
       else {
         ScalaRefactoringUtil.showChooser(

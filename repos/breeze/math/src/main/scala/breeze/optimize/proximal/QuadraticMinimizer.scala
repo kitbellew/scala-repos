@@ -238,8 +238,9 @@ class QuadraticMinimizer(
       val entryScale = rho * (z(i) - u(i)) - q(i)
       scale.update(i, entryScale)
     }
-    if (linearEquality > 0)
-      cforRange(0 until beq.length) { i => scale.update(nGram + i, beq(i)) }
+    if (linearEquality > 0) cforRange(0 until beq.length) { i =>
+      scale.update(nGram + i, beq(i))
+    }
 
     // TO DO : Use LDL' based solver for quasi definite / sparse gram
     if (linearEquality > 0) {

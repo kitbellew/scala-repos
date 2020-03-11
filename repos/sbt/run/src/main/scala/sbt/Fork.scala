@@ -107,8 +107,7 @@ sealed class Fork(val commandName: String, val runnerClass: Option[String]) {
     val builder = new JProcessBuilder(command: _*)
     workingDirectory.foreach(wd => builder.directory(wd))
     val environment = builder.environment
-    for ((key, value) <- env)
-      environment.put(key, value)
+    for ((key, value) <- env) environment.put(key, value)
     for (cpenv <- classpathEnv)
       // overriding, not appending, is correct due to the specified priorities of -classpath and CLASSPATH
       environment.put(Fork.ClasspathEnvKey, cpenv)
@@ -156,10 +155,8 @@ object Fork {
 
   private def fitClasspath(
       options: Seq[String]): (Option[String], Seq[String]) =
-    if (isWindows && optionsTooLong(options))
-      convertClasspathToEnv(options)
-    else
-      (None, options)
+    if (isWindows && optionsTooLong(options)) convertClasspathToEnv(options)
+    else (None, options)
   private[this] def optionsTooLong(options: Seq[String]): Boolean =
     options.mkString(" ").length > MaxConcatenatedOptionLength
 
@@ -238,8 +235,7 @@ object Fork {
       val builder = new JProcessBuilder(command: _*)
       workingDirectory.foreach(wd => builder.directory(wd))
       val environment = builder.environment
-      for ((key, value) <- env)
-        environment.put(key, value)
+      for ((key, value) <- env) environment.put(key, value)
       outputStrategy match {
         case StdoutOutput => Process(builder).run(connectInput)
         case BufferedOutput(logger) =>

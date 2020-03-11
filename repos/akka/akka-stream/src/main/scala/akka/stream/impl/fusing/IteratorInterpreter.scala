@@ -93,8 +93,7 @@ private[akka] object IteratorInterpreter {
         val e = lastFailure
         lastFailure = null
         throw e
-      } else if (!hasNext)
-        Iterator.empty.next()
+      } else if (!hasNext) Iterator.empty.next()
       else {
         needsPull = true
         nextElem

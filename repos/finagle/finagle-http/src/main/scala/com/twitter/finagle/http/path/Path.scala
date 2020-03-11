@@ -14,17 +14,12 @@ abstract class Path {
 
 object Path {
   def apply(str: String): Path =
-    if (str == "" || str == "/")
-      Root
-    else if (!str.startsWith("/"))
-      Path("/" + str)
+    if (str == "" || str == "/") Root
+    else if (!str.startsWith("/")) Path("/" + str)
     else {
       val slash = str.lastIndexOf('/')
       val prefix = Path(str.substring(0, slash))
-      if (slash == str.length - 1)
-        prefix
-      else
-        prefix / str.substring(slash + 1)
+      if (slash == str.length - 1) prefix else prefix / str.substring(slash + 1)
     }
 
   def apply(first: String, rest: String*): Path =
@@ -134,8 +129,7 @@ protected class Numeric[A <: AnyVal](cast: String => A) {
       case _: NumberFormatException =>
         None
     }
-    else
-      None
+    else None
   }
 }
 

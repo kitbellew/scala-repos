@@ -57,8 +57,7 @@ private[akka] class AllPersistenceIdsPublisher(
     case LeveldbJournal.CurrentPersistenceIds(allPersistenceIds) ⇒
       buf ++= allPersistenceIds
       deliverBuf()
-      if (!liveQuery && buf.isEmpty)
-        onCompleteThenStop()
+      if (!liveQuery && buf.isEmpty) onCompleteThenStop()
 
     case LeveldbJournal.PersistenceIdAdded(persistenceId) ⇒
       if (liveQuery) {
@@ -68,8 +67,7 @@ private[akka] class AllPersistenceIdsPublisher(
 
     case _: Request ⇒
       deliverBuf()
-      if (!liveQuery && buf.isEmpty)
-        onCompleteThenStop()
+      if (!liveQuery && buf.isEmpty) onCompleteThenStop()
 
     case Cancel ⇒ context.stop(self)
   }

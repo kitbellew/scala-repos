@@ -143,10 +143,8 @@ class ExecuteRequestTest extends FunSuite {
     val bytesAsBigEndian = bytes.reverse
     val bits = BigInt(bytesAsBigEndian)
     for (i <- 0 until params.size) {
-      if (params(i) == null)
-        assert(bits.testBit(i) == true)
-      else
-        assert(bits.testBit(i) == false)
+      if (params(i) == null) assert(bits.testBit(i) == true)
+      else assert(bits.testBit(i) == false)
     }
   }
 
@@ -160,8 +158,7 @@ class ExecuteRequestTest extends FunSuite {
 
   if (hasNewParams) {
     test("type codes") {
-      for (p <- req.params)
-        assert(br.readShort() == p.typeCode)
+      for (p <- req.params) assert(br.readShort() == p.typeCode)
     }
 
     test("String") { assert(br.readLengthCodedString() == strVal) }

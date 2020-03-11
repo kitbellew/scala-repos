@@ -21,8 +21,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
   def quotedName(name: Name, decode: Boolean): String = {
     val s = if (decode) name.decode else name.toString
     val term = name.toTermName
-    if (nme.keywords(term) && term != nme.USCOREkw) "`%s`" format s
-    else s
+    if (nme.keywords(term) && term != nme.USCOREkw) "`%s`" format s else s
   }
   def quotedName(name: Name): String = quotedName(name, decode = false)
   def quotedName(name: String): String =
@@ -37,14 +36,10 @@ trait Printers extends api.Printers { self: SymbolTable =>
     def qowner = quotedName(sym.owner.name.dropLocal, decoded)
     def qsymbol = quotedName(sym.nameString)
 
-    if (sym == null || sym == NoSymbol)
-      qname
-    else if (sym.isErroneous)
-      s"<$qname: error>"
-    else if (sym.isMixinConstructor)
-      s"/*$qowner*/$qsymbol"
-    else
-      qsymbol
+    if (sym == null || sym == NoSymbol) qname
+    else if (sym.isErroneous) s"<$qname: error>"
+    else if (sym.isMixinConstructor) s"/*$qowner*/$qsymbol"
+    else qsymbol
   }
 
   def decodedSymName(tree: Tree, name: Name) =
@@ -87,17 +82,14 @@ trait Printers extends api.Printers { self: SymbolTable =>
       if (printPositions) comment(print(tree.pos.show))
 
     protected def printTypesInfo(tree: Tree) =
-      if (printTypes && tree.isTerm && tree.canHaveAttrs)
-        comment {
-          print("{", if (tree.tpe eq null) "<null>" else tree.tpe.toString, "}")
-        }
+      if (printTypes && tree.isTerm && tree.canHaveAttrs) comment {
+        print("{", if (tree.tpe eq null) "<null>" else tree.tpe.toString, "}")
+      }
 
     def println() = {
       out.println()
-      while (indentMargin > indentString.length())
-        indentString += indentString
-      if (indentMargin > 0)
-        out.write(indentString, 0, indentMargin)
+      while (indentMargin > indentString.length()) indentString += indentString
+      if (indentMargin > 0) out.write(indentString, 0, indentMargin)
     }
 
     def printSeq[a](ls: List[a])(printelem: a => Unit)(
@@ -280,8 +272,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
 
       def selectorToString(s: ImportSelector): String = {
         val from = quotedName(s.name)
-        if (isNotRename(s)) from
-        else from + "=>" + quotedName(s.rename)
+        if (isNotRename(s)) from else from + "=>" + quotedName(s.rename)
       }
       print("import ", resSelect, ".")
       selectors match {
@@ -312,11 +303,13 @@ trait Printers extends api.Printers { self: SymbolTable =>
       print("(");
       printValueParams
       print(" => ", body, ")")
-      if (printIds && tree.symbol != null)
-        comment { print("#" + tree.symbol.id) }
+      if (printIds && tree.symbol != null) comment {
+        print("#" + tree.symbol.id)
+      }
 
-      if (printOwners && tree.symbol != null)
-        comment { print("@" + tree.symbol.owner.id) }
+      if (printOwners && tree.symbol != null) comment {
+        print("@" + tree.symbol.owner.id)
+      }
     }
 
     protected def printSuper(
@@ -471,8 +464,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
 
         case Super(qual, mix) =>
           print(qual, ".super")
-          if (mix.nonEmpty)
-            print("[" + mix + "]")
+          if (mix.nonEmpty) print("[" + mix + "]")
 
         case th @ This(qual) =>
           printThis(th, symName(tree, qual))
@@ -503,8 +495,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
               tree) =>
           def printAnnot() {
             print("@", tpt)
-            if (args.nonEmpty)
-              printRow(args, "(", ",", ")")
+            if (args.nonEmpty) printRow(args, "(", ",", ")")
           }
           print(tree, if (tree.isType) " " else ": ")
           printAnnot()
@@ -580,8 +571,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
         if (decoded && (decName.exists(ch =>
               brackets.contains(ch) || isWhitespace(ch) || isDot(ch)) ||
             (name.isOperatorName && decName.exists(isOperatorPart) && decName
-              .exists(isScalaLetter) && !decName.contains(bslash))))
-          s"`$s`"
+              .exists(isScalaLetter) && !decName.contains(bslash)))) s"`$s`"
         else s
 
       if (name == nme.CONSTRUCTOR) "this"
@@ -1067,10 +1057,12 @@ trait Printers extends api.Printers { self: SymbolTable =>
           tree match {
             // processing methods ending on colons (x \: list)
             case Apply(
-                Block(
-                  l1 @ List(sVD: ValDef),
-                  a1 @ Apply(Select(_, methodName), l2 @ List(Ident(iVDName)))),
-                l3)
+                  Block(
+                    l1 @ List(sVD: ValDef),
+                    a1 @ Apply(
+                      Select(_, methodName),
+                      l2 @ List(Ident(iVDName)))),
+                  l3)
                 if sVD.mods.isSynthetic && treeInfo.isLeftAssoc(
                   methodName) && sVD.name == iVDName =>
               val printBlock = Block(l1, Apply(a1, l3))
@@ -1183,8 +1175,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
         case tt: TypeTree =>
           if (!isEmptyTree(tt)) {
             val original = tt.original
-            if (original != null) print(original)
-            else super.printTree(tree)
+            if (original != null) print(original) else super.printTree(tree)
           }
 
         case AppliedTypeTree(tp, args) =>
@@ -1200,8 +1191,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
               print(args(0), "*")
             } else if (treeInfo.isByNameParamType(tree)) {
               print("=> ", if (args.isEmpty) "()" else args(0))
-            } else
-              super.printTree(tree)
+            } else super.printTree(tree)
           }
 
         case ExistentialTypeTree(tpt, whereClauses) =>
@@ -1302,8 +1292,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
     def print(args: Any*): Unit = {
       // don't print type footnotes if the argument is a mere type
       if (depth == 0 && args.length == 1 && args(0) != null && args(0)
-            .isInstanceOf[Type])
-        printTypesInFootnotes = false
+            .isInstanceOf[Type]) printTypesInFootnotes = false
 
       depth += 1
       args foreach {

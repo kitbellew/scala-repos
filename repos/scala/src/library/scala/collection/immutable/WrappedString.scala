@@ -44,8 +44,7 @@ class WrappedString(val self: String)
 
   override def slice(from: Int, until: Int): WrappedString = {
     val start = if (from < 0) 0 else from
-    if (until <= start || start >= repr.length)
-      return new WrappedString("")
+    if (until <= start || start >= repr.length) return new WrappedString("")
 
     val end = if (until > length) length else until
     new WrappedString(repr.substring(start, end))

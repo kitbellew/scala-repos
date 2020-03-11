@@ -98,8 +98,7 @@ trait StringLike[+Repr]
           0,
           if (last == LF && len >= 2 && apply(len - 2) == CR) len - 2
           else len - 1)
-      else
-        toString
+      else toString
     }
   }
 
@@ -333,8 +332,7 @@ trait StringLike[+Repr]
       case _ =>
         throw new IllegalArgumentException("For input string: \"" + s + "\"")
     }
-    else
-      throw new IllegalArgumentException("For input string: \"null\"")
+    else throw new IllegalArgumentException("For input string: \"null\"")
 
   override def toArray[B >: Char: ClassTag]: Array[B] =
     toString.toCharArray.asInstanceOf[Array[B]]

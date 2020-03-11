@@ -870,8 +870,7 @@ trait DAG extends Instructions {
               )
             }
 
-          if (graph != scope)
-            rewritten
+          if (graph != scope) rewritten
           else
             for {
               node <- rewritten
@@ -934,8 +933,7 @@ trait DAG extends Instructions {
             )
           }
 
-        if (spec != scope)
-          rewritten
+        if (spec != scope) rewritten
         else
           for {
             node <- rewritten
@@ -1006,10 +1004,8 @@ trait DAG extends Instructions {
 
         case dag.Split(specs, child, _) =>
           val specsAcc = foldThroughSpec(specs, acc)
-          if (enterSplitChild)
-            foldDown0(child, specsAcc |+| f(child))
-          else
-            specsAcc
+          if (enterSplitChild) foldDown0(child, specsAcc |+| f(child))
+          else specsAcc
 
         case dag.Assert(pred, child) =>
           val acc2 = foldDown0(pred, acc |+| f(pred))

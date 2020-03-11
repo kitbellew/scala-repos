@@ -22,10 +22,7 @@ object ToolsUtils {
 
   def validatePortOrDie(parser: OptionParser, hostPort: String) = {
     val hostPorts: Array[String] =
-      if (hostPort.contains(','))
-        hostPort.split(",")
-      else
-        Array(hostPort)
+      if (hostPort.contains(',')) hostPort.split(",") else Array(hostPort)
     val validHostPort = hostPorts.filter { hostPortData =>
       org.apache.kafka.common.utils.Utils.getPort(hostPortData) != null
     }

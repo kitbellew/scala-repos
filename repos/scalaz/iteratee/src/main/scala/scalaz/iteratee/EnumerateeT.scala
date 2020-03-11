@@ -89,9 +89,7 @@ trait EnumerateeTFunctions {
         def step: (Input[E] => IterateeT[E, F, A]) => (
             Input[E] => IterateeT[E, F, StepT[E, F, A]]) = { k => in =>
           in(
-            el = e =>
-              if (p(e)) k(in) >>== doneOr(loop)
-              else cont(step(k)),
+            el = e => if (p(e)) k(in) >>== doneOr(loop) else cont(step(k)),
             empty = cont(step(k)),
             eof = done(scont(k), in)
           )

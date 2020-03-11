@@ -103,8 +103,7 @@ object InfixExpr {
                id2,
                assignments = true)) false //  a + b * c = (a + (b * c))
     else if (associate(id1) == associate(id2))
-      if (associate(id1) == -1) true
-      else false
+      if (associate(id1) == -1) true else false
     else {
       builder error ErrMsg("wrong.type.associativity")
       false

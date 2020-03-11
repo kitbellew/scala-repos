@@ -39,8 +39,7 @@ class RecipeByteStrings extends RecipeSpec {
               out,
               new OutHandler {
                 override def onPull(): Unit = {
-                  if (isClosed(in)) emitChunk()
-                  else pull(in)
+                  if (isClosed(in)) emitChunk() else pull(in)
                 }
               })
             setHandler(
@@ -62,8 +61,7 @@ class RecipeByteStrings extends RecipeSpec {
 
             private def emitChunk(): Unit = {
               if (buffer.isEmpty) {
-                if (isClosed(in)) completeStage()
-                else pull(in)
+                if (isClosed(in)) completeStage() else pull(in)
               } else {
                 val (chunk, nextBuffer) = buffer.splitAt(chunkSize)
                 buffer = nextBuffer

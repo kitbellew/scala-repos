@@ -73,8 +73,5 @@ private[thrift] class ThriftServerDecoder(protocolFactory: TProtocolFactory)
       state: VoidEnum) =
     // Thrift incorrectly assumes a read of zero bytes is an error, so treat
     // empty buffers as no-ops.
-    if (buffer.readable)
-      decodeThriftCall(ctx, channel, buffer)
-    else
-      null
+    if (buffer.readable) decodeThriftCall(ctx, channel, buffer) else null
 }

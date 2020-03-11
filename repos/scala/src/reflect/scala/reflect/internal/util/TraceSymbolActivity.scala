@@ -17,10 +17,7 @@ trait TraceSymbolActivity {
   val prevOwners = mutable.Map[Int, List[(Int, Phase)]]() withDefaultValue Nil
   val allTrees = mutable.Set[Tree]()
 
-  def recordSymbolsInTree(tree: Tree) {
-    if (enabled)
-      allTrees += tree
-  }
+  def recordSymbolsInTree(tree: Tree) { if (enabled) allTrees += tree }
 
   def recordNewSymbol(sym: Symbol) {
     if (enabled && sym.id > 1) {

@@ -249,8 +249,7 @@ class MethodResolveProcessor(
         isShapeResolve = false
         MethodResolveProcessor.candidates(this, input)
       }
-    } else
-      MethodResolveProcessor.candidates(this, input)
+    } else MethodResolveProcessor.candidates(this, input)
   }
 }
 

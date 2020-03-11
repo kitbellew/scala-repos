@@ -246,8 +246,8 @@ private class AppTaskLauncherActor(
       OfferMatcherRegistration.manageOfferMatcherStatus()
 
     case TaskOpSourceDelegate.TaskOpRejected(
-        op,
-        AppTaskLauncherActor.TASK_OP_REJECTED_TIMEOUT_REASON) =>
+          op,
+          AppTaskLauncherActor.TASK_OP_REJECTED_TIMEOUT_REASON) =>
       // This is a message that we scheduled in this actor.
       // When we receive a launch confirmation or rejection, we cancel this timer but
       // there is still a race and we might send ourselves the message nevertheless, so we just

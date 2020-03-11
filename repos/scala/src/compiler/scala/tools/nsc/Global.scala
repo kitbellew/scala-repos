@@ -280,10 +280,7 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   }
   @inline final def require(requirement: Boolean) { require(requirement, "") }
 
-  @inline final def ifDebug(body: => Unit) {
-    if (settings.debug)
-      body
-  }
+  @inline final def ifDebug(body: => Unit) { if (settings.debug) body }
 
   override protected def isDeveloper = settings.developer || super.isDeveloper
 
@@ -297,10 +294,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     devWarning(NoPosition, msg)
   @inline final def devWarning(pos: Position, msg: => String) {
     def pos_s = if (pos eq NoPosition) "" else s" [@ $pos]"
-    if (isDeveloper)
-      warning(pos, "!!! " + msg)
-    else
-      log(s"!!!$pos_s $msg") // such warnings always at least logged
+    if (isDeveloper) warning(pos, "!!! " + msg)
+    else log(s"!!!$pos_s $msg") // such warnings always at least logged
   }
 
   def logError(msg: String, t: Throwable): Unit = ()
@@ -315,8 +310,7 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   }
 
   @inline final override def debuglog(msg: => String) {
-    if (settings.debug)
-      log(msg)
+    if (settings.debug) log(msg)
   }
 
   @deprecated("Renamed to reportThrowable", "2.10.1")
@@ -431,8 +425,7 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     }
 
     final def withCurrentUnit(unit: CompilationUnit)(task: => Unit) {
-      if ((unit ne null) && unit.exists)
-        lastSeenSourceFile = unit.source
+      if ((unit ne null) && unit.exists) lastSeenSourceFile = unit.source
 
       if (settings.debug && (settings.verbose || currentRun.size < 5))
         inform("[running phase " + name + " on " + unit + "]")
@@ -825,8 +818,7 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       .filterNot(_ eq NoPhase)
       .foldLeft(List[(Phase, T)]()) { (res, ph) =>
         val value = exitingPhase(ph)(op)
-        if (res.nonEmpty && res.head._2 == value) res
-      else ((ph, value)) :: res
+        if (res.nonEmpty && res.head._2 == value) res else ((ph, value)) :: res
     } reverse
   }
 
@@ -1276,8 +1268,7 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
           if (stoppable && pd.initial) {
             globalError(s"Cannot stop before initial phase '${pd.phaseName}'.")
             true
-          } else
-            !stoppable
+          } else !stoppable
         }
         // skip a component for -Yskip or if not enabled
         def skippable(pd: SubComponent) = {
@@ -1286,8 +1277,7 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
             globalError(
               s"Cannot skip an initial or terminal phase '${pd.phaseName}'.")
             false
-          } else
-            skippable || !pd.enabled
+          } else skippable || !pd.enabled
         }
         val phs = phaseDescriptors takeWhile unstoppable filterNot skippable
         // Ensure there is a terminal phase at the end, since -Ystop may have limited the phases.
@@ -1478,8 +1468,7 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
 
       if (canCheck) {
         phase = globalPhase
-        if (globalPhase.id <= cleanupPhase.id)
-          treeChecker.checkTrees()
+        if (globalPhase.id <= cleanupPhase.id) treeChecker.checkTrees()
       }
     }
 
@@ -1580,12 +1569,10 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         }
 
         // print the symbols presently attached to AST nodes
-        if (settings.Yshowsyms)
-          trackerFactory.snapshot()
+        if (settings.Yshowsyms) trackerFactory.snapshot()
 
         // print members
-        if (settings.Yshow containsPhase globalPhase)
-          showMembers()
+        if (settings.Yshow containsPhase globalPhase) showMembers()
 
         // browse trees with swing tree viewer
         if (settings.browse containsPhase globalPhase)
@@ -1595,12 +1582,10 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         globalPhase = globalPhase.next
 
         // run tree checkers
-        if (settings.check containsPhase globalPhase.prev)
-          runCheckers()
+        if (settings.check containsPhase globalPhase.prev) runCheckers()
 
         // output collected statistics
-        if (settings.YstatisticsEnabled)
-          statistics.print(phase)
+        if (settings.YstatisticsEnabled) statistics.print(phase)
 
         advancePhase()
       }
@@ -1611,15 +1596,12 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         units map (_.body) foreach (traceSymbols recordSymbolsInTree _)
 
       // In case no phase was specified for -Xshow-class/object, show it now for sure.
-      if (settings.Yshow.isDefault)
-        showMembers()
+      if (settings.Yshow.isDefault) showMembers()
 
       if (reporter.hasErrors) {
         for ((sym, file) <- symSource.iterator) {
-          if (file != null)
-            sym.reset(new loaders.SourcefileLoader(file))
-          if (sym.isTerm)
-            sym.moduleClass reset loaders.moduleClassLoader
+          if (file != null) sym.reset(new loaders.SourcefileLoader(file))
+          if (sym.isTerm) sym.moduleClass reset loaders.moduleClassLoader
         }
       }
       symSource.keys foreach (x => resetPackageClass(x.owner))

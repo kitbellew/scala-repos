@@ -128,8 +128,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     var result = List.empty[T]
 
     for (x <- s) {
-      if (result.size < n)
-        result = x :: result
+      if (result.size < n) result = x :: result
       else {
         val min = result.min
         if (ord.compare(x, min) < 0) { result = x :: result.filter(_ != min) }

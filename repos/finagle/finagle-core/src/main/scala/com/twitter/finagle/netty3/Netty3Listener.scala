@@ -434,7 +434,6 @@ private[netty3] class ServerBridge[In, Out](
       " , shutting down connection"
 
     log.log(severity(cause), msg, cause)
-    if (e.getChannel.isOpen)
-      Channels.close(e.getChannel)
+    if (e.getChannel.isOpen) Channels.close(e.getChannel)
   }
 }

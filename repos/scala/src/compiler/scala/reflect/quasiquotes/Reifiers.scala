@@ -208,13 +208,13 @@ trait Reifiers { self: Quasiquotes =>
       case This(SymbolPlaceholder(Hole(tree, _))) if isReifyingExpressions =>
         mirrorCall(nme.This, tree)
       case SyntacticTraitDef(
-          mods,
-          name,
-          tparams,
-          earlyDefs,
-          parents,
-          selfdef,
-          body) =>
+            mods,
+            name,
+            tparams,
+            earlyDefs,
+            parents,
+            selfdef,
+            body) =>
         reifyBuildCall(
           nme.SyntacticTraitDef,
           mods,
@@ -225,15 +225,15 @@ trait Reifiers { self: Quasiquotes =>
           selfdef,
           body)
       case SyntacticClassDef(
-          mods,
-          name,
-          tparams,
-          constrmods,
-          vparamss,
-          earlyDefs,
-          parents,
-          selfdef,
-          body) =>
+            mods,
+            name,
+            tparams,
+            constrmods,
+            vparamss,
+            earlyDefs,
+            parents,
+            selfdef,
+            body) =>
         mirrorBuildCall(
           nme.SyntacticClassDef,
           reify(mods),

@@ -104,8 +104,7 @@ trait TypeKinds extends SubComponent { this: GenJSCode =>
   case class FLOAT private[TypeKinds] (typeSymbol: Symbol)
       extends ValueTypeKind {
     def toIRType: Types.Type =
-      if (typeSymbol == FloatClass) Types.FloatType
-      else Types.DoubleType
+      if (typeSymbol == FloatClass) Types.FloatType else Types.DoubleType
   }
 
   /** Boolean */
@@ -242,10 +241,7 @@ trait TypeKinds extends SubComponent { this: GenJSCode =>
       if (sym.isImplClass) {
         // pos/spec-List.scala is the sole failure if we don't check for NoSymbol
         val traitSym = sym.owner.info.decl(tpnme.interfaceName(sym.name))
-        if (traitSym != NoSymbol)
-          REFERENCE(traitSym)
-        else
-          REFERENCE(sym)
+        if (traitSym != NoSymbol) REFERENCE(traitSym) else REFERENCE(sym)
       } else { REFERENCE(sym) }
   }
 

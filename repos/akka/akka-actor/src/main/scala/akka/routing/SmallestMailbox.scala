@@ -33,8 +33,7 @@ class SmallestMailboxRoutingLogic extends RoutingLogic {
   override def select(
       message: Any,
       routees: immutable.IndexedSeq[Routee]): Routee =
-    if (routees.isEmpty) NoRoutee
-    else selectNext(routees)
+    if (routees.isEmpty) NoRoutee else selectNext(routees)
 
   // Worst-case a 2-pass inspection with mailbox size checking done on second pass, and only until no one empty is found.
   // Lowest score wins, score 0 is autowin
@@ -53,8 +52,7 @@ class SmallestMailboxRoutingLogic extends RoutingLogic {
       currentScore: Long = Long.MaxValue,
       at: Int = 0,
       deep: Boolean = false): Routee = {
-    if (targets.isEmpty)
-      NoRoutee
+    if (targets.isEmpty) NoRoutee
     else if (at >= targets.size) {
       if (deep) {
         if (isTerminated(proposedTarget))

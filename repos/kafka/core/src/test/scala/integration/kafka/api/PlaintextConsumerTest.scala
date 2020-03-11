@@ -665,11 +665,9 @@ class PlaintextConsumerTest extends BaseConsumerTest {
       subscriptions)
 
     // done with pollers and consumers
-    for (poller <- consumerPollers)
-      poller.shutdown()
+    for (poller <- consumerPollers) poller.shutdown()
 
-    for (consumer <- rrConsumers)
-      consumer.unsubscribe()
+    for (consumer <- rrConsumers) consumer.unsubscribe()
   }
 
   /**
@@ -715,11 +713,9 @@ class PlaintextConsumerTest extends BaseConsumerTest {
       subscriptions)
 
     // done with pollers and consumers
-    for (poller <- consumerPollers)
-      poller.shutdown()
+    for (poller <- consumerPollers) poller.shutdown()
 
-    for (consumer <- consumers)
-      consumer.unsubscribe()
+    for (consumer <- consumers) consumer.unsubscribe()
   }
 
   @Test
@@ -1055,8 +1051,7 @@ class PlaintextConsumerTest extends BaseConsumerTest {
 
     // stop polling and close one of the consumers, should trigger partition re-assignment among alive consumers
     timeoutPoller.shutdown()
-    if (closeConsumer)
-      timeoutConsumer.close()
+    if (closeConsumer) timeoutConsumer.close()
 
     val maxSessionTimeout = this.serverConfig
       .getProperty(KafkaConfig.GroupMaxSessionTimeoutMsProp)
@@ -1068,8 +1063,7 @@ class PlaintextConsumerTest extends BaseConsumerTest {
       3 * maxSessionTimeout)
 
     // done with pollers and consumers
-    for (poller <- consumerPollers)
-      poller.shutdown()
+    for (poller <- consumerPollers) poller.shutdown()
   }
 
   /**
@@ -1242,8 +1236,7 @@ class PlaintextConsumerTest extends BaseConsumerTest {
       consumerPollers: Buffer[ConsumerAssignmentPoller],
       topicsToSubscribe: List[String],
       subscriptions: Set[TopicPartition]): Unit = {
-    for (poller <- consumerPollers)
-      poller.subscribe(topicsToSubscribe)
+    for (poller <- consumerPollers) poller.subscribe(topicsToSubscribe)
 
     // since subscribe call to poller does not actually call consumer subscribe right away, wait
     // until subscribe is called on all consumers

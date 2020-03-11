@@ -254,10 +254,8 @@ object State {
       import BasicCommandStrings.Compat.{FailureWall => CompatFailureWall}
       val remaining = s.remainingCommands.dropWhile(c =>
         c != FailureWall && c != CompatFailureWall)
-      if (remaining.isEmpty)
-        applyOnFailure(s, Nil, exit(ok = false))
-      else
-        applyOnFailure(s, remaining, s.copy(remainingCommands = remaining))
+      if (remaining.isEmpty) applyOnFailure(s, Nil, exit(ok = false))
+      else applyOnFailure(s, remaining, s.copy(remainingCommands = remaining))
     }
     private[this] def applyOnFailure(
         s: State,

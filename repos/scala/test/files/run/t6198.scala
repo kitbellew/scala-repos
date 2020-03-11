@@ -6,8 +6,7 @@ object Test extends App {
   // check that ls.tail always returns the same instance
   val ls = ListSet.empty[Int] + 1 + 2
 
-  if (ls.tail ne ls.tail)
-    println("ListSet.tail should not use a builder!")
+  if (ls.tail ne ls.tail) println("ListSet.tail should not use a builder!")
 
   // class that always causes hash collisions
   case class Collision(value: Int) {

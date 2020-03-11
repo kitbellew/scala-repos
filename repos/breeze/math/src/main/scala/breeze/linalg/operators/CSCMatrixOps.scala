@@ -205,8 +205,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
             while (bp < bpStop) {
               val br = b.rowIndices(bp)
               val ndi = ci * rows + br
-              if (rL < br - 1)
-                computeZeroOpOnRange(nData, ci * rows + rL, ndi)
+              if (rL < br - 1) computeZeroOpOnRange(nData, ci * rows + rL, ndi)
               nData(ndi) = op(nData(ndi), b.data(bp))
               rL = br
               bp += 1
@@ -236,10 +235,8 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
         val cols = a.cols
         if (cols == 0 || rows == 0) return CSCMatrix.zeros[T](rows, cols)
 
-        if (a.activeSize == 0)
-          b.copy
-        else if (b.activeSize == 0)
-          a.copy
+        if (a.activeSize == 0) b.copy
+        else if (b.activeSize == 0) a.copy
         else {
           val bldr = new CSCMatrix.Builder[T](
             rows,
@@ -536,10 +533,8 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
         val rows = a.rows
         val cols = a.cols
         if (cols == 0 || rows == 0) return CSCMatrix.zeros[T](rows, cols)
-        if (a.activeSize == 0)
-          -b
-        else if (b.activeSize == 0)
-          a.copy
+        if (a.activeSize == 0) -b
+        else if (b.activeSize == 0) a.copy
         else {
           val bldr = new CSCMatrix.Builder[T](
             rows,
@@ -595,8 +590,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
       : Op.Impl2[CSCMatrix[T], T, CSCMatrix[T]] = {
     new Op.Impl2[CSCMatrix[T], T, CSCMatrix[T]] {
       def apply(a: CSCMatrix[T], b: T): CSCMatrix[T] = {
-        if (b == zero)
-          return CSCMatrix.zeros[T](a.rows, a.cols)
+        if (b == zero) return CSCMatrix.zeros[T](a.rows, a.cols)
         val data: Array[T] =
           Array.tabulate[T](a.data.length)(i => a.data(i) * b)
         new CSCMatrix[T](
@@ -1333,8 +1327,7 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
       val r = implicitly[Semiring[T]]
       val zero = r.zero
       def apply(v: CSCMatrix[T], v2: T): CSCMatrix[T] = {
-        if (v2 == zero)
-          return CSCMatrix.zeros[T](v.rows, v.cols)
+        if (v2 == zero) return CSCMatrix.zeros[T](v.rows, v.cols)
         val data: Array[T] = Array.fill[T](v.rows * v.cols)(v2)
         val colPtrs: Array[Int] =
           Array.tabulate[Int](v.cols + 1)((i: Int) => i * v.rows)
@@ -1357,8 +1350,7 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
     val r = implicitly[Ring[T]]
     new Op.Impl2[CSCMatrix[T], T, CSCMatrix[T]] {
       def apply(v: CSCMatrix[T], v2: T): CSCMatrix[T] = {
-        if (v2 == r.zero)
-          return CSCMatrix.zeros[T](v.rows, v.cols)
+        if (v2 == r.zero) return CSCMatrix.zeros[T](v.rows, v.cols)
         val data: Array[T] =
           Array.tabulate[T](v.data.length)(i => r.*(v.data(i), v2))
         new CSCMatrix[T](
@@ -1437,10 +1429,8 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
         val cols = a.cols
         if (cols == 0 || rows == 0) return CSCMatrix.zeros[A](rows, cols)
 
-        if (a.activeSize == 0)
-          b.copy
-        else if (b.activeSize == 0)
-          a.copy
+        if (a.activeSize == 0) b.copy
+        else if (b.activeSize == 0) a.copy
         else {
           val bldr = new CSCMatrix.Builder[A](
             rows,
@@ -1494,10 +1484,8 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
         val rows = a.rows
         val cols = a.cols
         if (cols == 0 || rows == 0) return CSCMatrix.zeros[A](rows, cols)
-        if (a.activeSize == 0)
-          -b
-        else if (b.activeSize == 0)
-          a.copy
+        if (a.activeSize == 0) -b
+        else if (b.activeSize == 0) a.copy
         else {
           val bldr = new CSCMatrix.Builder[A](
             rows,
@@ -1653,8 +1641,7 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
             while (bp < bpStop) {
               val br = b.rowIndices(bp)
               val ndi = ci * rows + br
-              if (rL < br - 1)
-                computeZeroOpOnRange(nData, ci * rows + rL, ndi)
+              if (rL < br - 1) computeZeroOpOnRange(nData, ci * rows + rL, ndi)
               nData(ndi) = op(nData(ndi), b.data(bp))
               rL = br
               bp += 1

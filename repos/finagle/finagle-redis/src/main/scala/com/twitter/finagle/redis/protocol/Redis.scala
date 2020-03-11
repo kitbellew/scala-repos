@@ -75,8 +75,7 @@ private class RedisTracingFilter extends SimpleFilter[Command, Reply] {
         Trace.record(Annotation.ClientRecv())
         response
       }
-    } else
-      service(command)
+    } else service(command)
   }
 }
 

@@ -40,10 +40,8 @@ trait BooleanTypedField extends TypedField[Boolean] {
 
   def setFromString(s: String): Box[Boolean] =
     if (s == null || s.isEmpty) {
-      if (optional_?)
-        setBox(Empty)
-      else
-        setBox(Failure(notOptionalErrorMessage))
+      if (optional_?) setBox(Empty)
+      else setBox(Failure(notOptionalErrorMessage))
     } else { setBox(tryo(toBoolean(s))) }
 
   private def elem(attrs: SHtml.ElemAttr*) =

@@ -36,8 +36,7 @@ class StringBuilder(private var content: String)
   def append(d: scala.Double): StringBuilder = append(d.toString())
 
   def append(obj: AnyRef): StringBuilder = {
-    if (obj == null) append(null: String)
-    else append(obj.toString())
+    if (obj == null) append(null: String) else append(obj.toString())
   }
 
   def append(csq: CharSequence): StringBuilder = append(csq: AnyRef)
@@ -167,20 +166,16 @@ class StringBuilder(private var content: String)
     insert(index, arr, 0, arr.length)
 
   def insert(index: Int, ref: AnyRef): StringBuilder =
-    if (ref == null)
-      insert(index, null: String)
-    else
-      insert(index, ref.toString)
+    if (ref == null) insert(index, null: String)
+    else insert(index, ref.toString)
 
   def insert(
       index: Int,
       csq: CharSequence,
       start: Int,
       end: Int): StringBuilder =
-    if (csq == null)
-      insert(index, "null", start, end)
-    else
-      insert(index, csq.subSequence(start, end).toString)
+    if (csq == null) insert(index, "null", start, end)
+    else insert(index, csq.subSequence(start, end).toString)
 
   def insert(
       index: Int,
@@ -200,8 +195,7 @@ class StringBuilder(private var content: String)
     val thisLength = length()
     if (index < 0 || index > thisLength)
       throw new StringIndexOutOfBoundsException(index)
-    else if (index == thisLength)
-      append(str)
+    else if (index == thisLength) append(str)
     else
       content =
         content.substring(0, index) + Option(str).getOrElse("null") + content

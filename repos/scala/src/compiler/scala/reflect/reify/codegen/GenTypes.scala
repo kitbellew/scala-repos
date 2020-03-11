@@ -16,19 +16,15 @@ trait GenTypes {
   def reifyType(tpe: Type): Tree = {
     assert(tpe != null, "tpe is null")
 
-    if (tpe.isErroneous)
-      CannotReifyErroneousReifee(tpe)
-    if (tpe.isLocalToReifee)
-      CannotReifyType(tpe)
+    if (tpe.isErroneous) CannotReifyErroneousReifee(tpe)
+    if (tpe.isLocalToReifee) CannotReifyType(tpe)
 
     // this is a very special case. see the comments below for more info.
-    if (isSemiConcreteTypeMember(tpe))
-      return reifySemiConcreteTypeMember(tpe)
+    if (isSemiConcreteTypeMember(tpe)) return reifySemiConcreteTypeMember(tpe)
 
     // SI-6242: splicing might violate type bounds
     val spliced = spliceType(tpe)
-    if (spliced != EmptyTree)
-      return spliced
+    if (spliced != EmptyTree) return spliced
 
     val tsym = tpe.typeSymbolDirect
     if (tsym.isClass && tpe == tsym.typeConstructor && tsym.isStatic)

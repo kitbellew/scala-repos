@@ -65,8 +65,7 @@ package record {
         kTag: WeakTypeTag[K]): Tree = {
       val lTpe = lTag.tpe.dealias
       val kTpe = kTag.tpe.dealias
-      if (!(lTpe <:< hlistTpe))
-        abort(s"$lTpe is not a record type")
+      if (!(lTpe <:< hlistTpe)) abort(s"$lTpe is not a record type")
 
       val lTpes = unpackHListTpe(lTpe).zipWithIndex.flatMap {
         case (fTpe, i) =>
@@ -152,8 +151,7 @@ package record {
         fTag: WeakTypeTag[F]): Tree = {
       val lTpe = lTag.tpe.dealias
       val fTpe = fTag.tpe.dealias
-      if (!(lTpe <:< hlistTpe))
-        abort(s"$lTpe is not a record type")
+      if (!(lTpe <:< hlistTpe)) abort(s"$lTpe is not a record type")
 
       val lTpes = unpackHListTpe(lTpe)
       val (uTpes, i) = {

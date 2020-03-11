@@ -32,8 +32,7 @@ object Resolve {
       index: BuildUtil[P],
       key: AttributeKey[_],
       mask: ScopeMask)(scope: Scope): Scope =
-    if (mask.config)
-      scope
+    if (mask.config) scope
     else {
       val (resolvedRef, proj) = scope.project match {
         case Select(ref) =>

@@ -97,8 +97,7 @@ trait TimeoutComTests extends TimeoutTests with ComTests {
 
     start(com)
 
-    for (i <- 1 to 5)
-      assertEquals("Hello", com.receive())
+    for (i <- 1 to 5) assertEquals("Hello", com.receive())
 
     com.close()
     com.await(DefaultTimeout)

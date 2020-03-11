@@ -47,8 +47,7 @@ trait KafkaServerTestHarness extends ZooKeeperTestHarness {
   def generateConfigs(): Seq[KafkaConfig]
 
   def configs: Seq[KafkaConfig] = {
-    if (instanceConfigs == null)
-      instanceConfigs = generateConfigs()
+    if (instanceConfigs == null) instanceConfigs = generateConfigs()
     instanceConfigs
   }
 

@@ -31,44 +31,35 @@ trait Logging {
     if (logIdent == null) msg else logIdent + msg
 
   def trace(msg: => String): Unit = {
-    if (logger.isTraceEnabled())
-      logger.trace(msgWithLogIdent(msg))
+    if (logger.isTraceEnabled()) logger.trace(msgWithLogIdent(msg))
   }
   def trace(e: => Throwable): Any = {
-    if (logger.isTraceEnabled())
-      logger.trace(logIdent, e)
+    if (logger.isTraceEnabled()) logger.trace(logIdent, e)
   }
   def trace(msg: => String, e: => Throwable) = {
-    if (logger.isTraceEnabled())
-      logger.trace(msgWithLogIdent(msg), e)
+    if (logger.isTraceEnabled()) logger.trace(msgWithLogIdent(msg), e)
   }
   def swallowTrace(action: => Unit) { CoreUtils.swallow(logger.trace, action) }
 
   def debug(msg: => String): Unit = {
-    if (logger.isDebugEnabled())
-      logger.debug(msgWithLogIdent(msg))
+    if (logger.isDebugEnabled()) logger.debug(msgWithLogIdent(msg))
   }
   def debug(e: => Throwable): Any = {
-    if (logger.isDebugEnabled())
-      logger.debug(logIdent, e)
+    if (logger.isDebugEnabled()) logger.debug(logIdent, e)
   }
   def debug(msg: => String, e: => Throwable) = {
-    if (logger.isDebugEnabled())
-      logger.debug(msgWithLogIdent(msg), e)
+    if (logger.isDebugEnabled()) logger.debug(msgWithLogIdent(msg), e)
   }
   def swallowDebug(action: => Unit) { CoreUtils.swallow(logger.debug, action) }
 
   def info(msg: => String): Unit = {
-    if (logger.isInfoEnabled())
-      logger.info(msgWithLogIdent(msg))
+    if (logger.isInfoEnabled()) logger.info(msgWithLogIdent(msg))
   }
   def info(e: => Throwable): Any = {
-    if (logger.isInfoEnabled())
-      logger.info(logIdent, e)
+    if (logger.isInfoEnabled()) logger.info(logIdent, e)
   }
   def info(msg: => String, e: => Throwable) = {
-    if (logger.isInfoEnabled())
-      logger.info(msgWithLogIdent(msg), e)
+    if (logger.isInfoEnabled()) logger.info(msgWithLogIdent(msg), e)
   }
   def swallowInfo(action: => Unit) { CoreUtils.swallow(logger.info, action) }
 

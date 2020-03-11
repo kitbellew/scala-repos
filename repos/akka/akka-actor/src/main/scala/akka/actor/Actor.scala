@@ -333,8 +333,7 @@ trait ActorLogging { this: Actor ⇒
 
   def log: LoggingAdapter = {
     // only used in Actor, i.e. thread safe
-    if (_log eq null)
-      _log = akka.event.Logging(context.system, this)
+    if (_log eq null) _log = akka.event.Logging(context.system, this)
     _log
   }
 

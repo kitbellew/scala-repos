@@ -59,8 +59,7 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
     def discarded = seen.size - keep.size
 
     def members(x: Symbol): List[Symbol] =
-      if (x.rawInfo.isComplete) x.info.members.toList
-      else Nil
+      if (x.rawInfo.isComplete) x.info.members.toList else Nil
 
     var lastCount = -1
     var pass = 0
@@ -107,8 +106,7 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
     def isKeep(sym: Symbol) = sym.hasTransOwner(packageClass)
     def isFinished() = droppedEnough()
     def slurp() = {
-      if (packageClass.isPackageClass)
-        apply(packageClass)
+      if (packageClass.isPackageClass) apply(packageClass)
       else {
         repldbg("Not a package class! " + packageClass)
         Set()
@@ -296,9 +294,7 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
     }
     object symbolSubtypeOrdering extends Ordering[Symbol] {
       def compare(s1: Symbol, s2: Symbol) =
-        if (s1 eq s2) 0
-        else if (s1 isLess s2) -1
-        else 1
+        if (s1 eq s2) 0 else if (s1 isLess s2) -1 else 1
     }
     implicit lazy val powerSymbolOrdering: Ordering[Symbol] =
       Ordering[Name] on (_.name)

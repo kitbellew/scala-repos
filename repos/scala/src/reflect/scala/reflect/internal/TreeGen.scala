@@ -25,10 +25,8 @@ abstract class TreeGen {
       restpe: Tree,
       abstractFun: Boolean = false): Tree = {
     val cls =
-      if (abstractFun)
-        mkAttributedRef(AbstractFunctionClass(argtpes.length))
-      else
-        mkAttributedRef(FunctionClass(argtpes.length))
+      if (abstractFun) mkAttributedRef(AbstractFunctionClass(argtpes.length))
+      else mkAttributedRef(FunctionClass(argtpes.length))
     AppliedTypeTree(cls, argtpes :+ restpe)
   }
 
@@ -87,8 +85,7 @@ abstract class TreeGen {
       case NoPrefix =>
         EmptyTree
       case ThisType(clazz) =>
-        if (clazz.isEffectiveRoot) EmptyTree
-        else mkAttributedThis(clazz)
+        if (clazz.isEffectiveRoot) EmptyTree else mkAttributedThis(clazz)
       case SingleType(pre, sym) =>
         mkApplyIfNeeded(mkAttributedStableRef(pre, sym))
       case TypeRef(pre, sym, args) =>
@@ -166,8 +163,7 @@ abstract class TreeGen {
   /** Builds a reference to given symbol. */
   def mkAttributedRef(sym: Symbol): RefTree =
     if (sym.owner.isStaticOwner) {
-      if (sym.owner.isRoot)
-        mkAttributedIdent(sym)
+      if (sym.owner.isRoot) mkAttributedIdent(sym)
       else {
         val ownerModule = sym.owner.sourceModule
         assert(ownerModule != NoSymbol, sym.owner)
@@ -536,8 +532,7 @@ abstract class TreeGen {
       stats: List[Tree],
       npos: Position,
       cpos: Position): Tree =
-    if (parents.isEmpty)
-      mkNew(List(scalaAnyRefConstr), self, stats, npos, cpos)
+    if (parents.isEmpty) mkNew(List(scalaAnyRefConstr), self, stats, npos, cpos)
     else if (parents.tail.isEmpty && stats.isEmpty) {
       // `Parsers.template` no longer differentiates tpts and their argss
       // e.g. `C()` will be represented as a single tree Apply(Ident(C), Nil)
@@ -1022,8 +1017,7 @@ abstract class TreeGen {
         case _ =>
           super.traverse(tree)
       }
-      if (buf.length > bl)
-        tree setPos tree.pos.makeTransparent
+      if (buf.length > bl) tree setPos tree.pos.makeTransparent
     }
     def apply(tree: Tree) = {
       traverse(tree)

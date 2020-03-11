@@ -115,8 +115,7 @@ object TerminateJson {
               if (!isWhitespace(c)) stack.pop()
               anyValue()
             case CloseString =>
-              if (c == '\\') stack.push(SkipChar)
-              else if (c == '"') stack.pop()
+              if (c == '\\') stack.push(SkipChar) else if (c == '"') stack.pop()
             case CloseArray =>
               if (c == ']') stack.pop()
               else if (c == ',') stack.push(ExpectValue)

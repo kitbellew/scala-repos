@@ -144,8 +144,7 @@ class ScObjectImpl protected (
             processor,
             newState,
             lastParent,
-            place))
-        return false
+            place)) return false
     }
     true
   }
@@ -295,13 +294,11 @@ class ScObjectImpl protected (
     Array(new EmptyPrivateConstructor(this))
 
   override def isPhysical: Boolean = {
-    if (isSyntheticObject) false
-    else super.isPhysical
+    if (isSyntheticObject) false else super.isPhysical
   }
 
   override def getTextRange: TextRange = {
-    if (isSyntheticObject) null
-    else super.getTextRange
+    if (isSyntheticObject) null else super.getTextRange
   }
 
   override def getInterfaces: Array[PsiClass] = {

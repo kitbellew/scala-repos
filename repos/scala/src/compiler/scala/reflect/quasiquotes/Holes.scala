@@ -151,8 +151,7 @@ trait Holes { self: Quasiquotes =>
         tree :: Nil)
 
     private def toList(tree: Tree, tpe: Type): Tree =
-      if (isListType(tpe)) tree
-      else Select(tree, nme.toList)
+      if (isListType(tpe)) tree else Select(tree, nme.toList)
 
     private def mapF(tree: Tree, f: Tree => Tree): Tree =
       if (f(Ident(TermName("x"))) equalsStructure Ident(TermName("x"))) tree

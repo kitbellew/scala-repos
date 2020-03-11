@@ -1473,8 +1473,7 @@ trait ScalaActorRef extends ActorRefShared { ref: ActorRef =>
     */
   def sender: Option[ActorRef] = {
     val msg = currentMessage
-    if (msg eq null) None
-    else msg.sender
+    if (msg eq null) None else msg.sender
   }
 
   /**
@@ -1483,8 +1482,7 @@ trait ScalaActorRef extends ActorRefShared { ref: ActorRef =>
     */
   def senderFuture(): Option[CompletableFuture[Any]] = {
     val msg = currentMessage
-    if (msg eq null) None
-    else msg.senderFuture
+    if (msg eq null) None else msg.senderFuture
   }
 
   /**
@@ -1581,8 +1579,7 @@ trait ScalaActorRef extends ActorRefShared { ref: ActorRef =>
           timeout,
           sender.get.sender,
           sender.get.senderFuture)
-      else
-        postMessageToMailbox(message, sender.get.sender)
+      else postMessageToMailbox(message, sender.get.sender)
     } else
       throw new ActorInitializationException(
         "Actor has not been started, you need to invoke 'actor.start()' before using it")

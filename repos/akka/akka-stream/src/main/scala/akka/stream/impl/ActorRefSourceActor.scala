@@ -65,20 +65,17 @@ private[akka] class ActorRefSourceActor(
     case _: Request ⇒
       // totalDemand is tracked by super
       if (bufferSize != 0)
-        while (totalDemand > 0L && !buffer.isEmpty)
-          onNext(buffer.dequeue())
+        while (totalDemand > 0L && !buffer.isEmpty) onNext(buffer.dequeue())
   }
 
   def receiveElem: Receive = {
     case elem if isActive ⇒
-      if (totalDemand > 0L)
-        onNext(elem)
+      if (totalDemand > 0L) onNext(elem)
       else if (bufferSize == 0)
         log.debug(
           "Dropping element because there is no downstream demand: [{}]",
           elem)
-      else if (!buffer.isFull)
-        buffer.enqueue(elem)
+      else if (!buffer.isFull) buffer.enqueue(elem)
       else
         overflowStrategy match {
           case DropHead ⇒
@@ -124,8 +121,7 @@ private[akka] class ActorRefSourceActor(
 
     case _: Request ⇒
       // totalDemand is tracked by super
-      while (totalDemand > 0L && !buffer.isEmpty)
-        onNext(buffer.dequeue())
+      while (totalDemand > 0L && !buffer.isEmpty) onNext(buffer.dequeue())
 
       if (buffer.isEmpty)
         context.stop(self) // will complete the stream successfully

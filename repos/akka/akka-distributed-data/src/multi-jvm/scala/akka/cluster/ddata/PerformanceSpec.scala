@@ -45,8 +45,7 @@ object PerformanceSpec extends MultiNodeConfig {
     def receive = {
       case _ ⇒
         latch.countDown()
-        if (latch.isOpen)
-          context.stop(self)
+        if (latch.isOpen) context.stop(self)
     }
   }
 

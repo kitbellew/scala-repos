@@ -143,8 +143,7 @@ case class SparseHint(sparsity: Double, rows: BigInt, cols: BigInt)
   def total: Option[BigInt] = {
     if ((rows >= 0) && (cols >= 0)) {
       Some((BigDecimal(rows) * BigDecimal(cols) * sparsity).toBigInt)
-    } else
-      None
+    } else None
   }
   def setCols(c: Long): SizeHint = copy(cols = c)
   def setRows(r: Long): SizeHint = copy(rows = r)

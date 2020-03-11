@@ -70,8 +70,7 @@ private class DeadlineSpanMap(
       }
     }
 
-    if (ss.isEmpty) Future.Done
-    else logSpans(ss)
+    if (ss.isEmpty) Future.Done else logSpans(ss)
   }
 
   /**

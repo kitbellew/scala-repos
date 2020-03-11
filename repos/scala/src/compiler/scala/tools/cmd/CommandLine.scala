@@ -46,8 +46,7 @@ class CommandLine(val spec: Reference, val originalArgs: List[String])
       def expand(s1: String) = {
         if (isExpandOption(s1)) {
           val s2 = spec expandArg s1
-          if (s2 == List(s1)) None
-          else Some(s2)
+          if (s2 == List(s1)) None else Some(s2)
         } else None
       }
 

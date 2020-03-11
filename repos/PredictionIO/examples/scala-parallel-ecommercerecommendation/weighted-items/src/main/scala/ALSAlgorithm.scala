@@ -230,10 +230,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       timeout = 200.millis
     ) match {
       case Right(x) =>
-        if (x.hasNext)
-          x.next().properties.get[Seq[WeightsGroup]]("weights")
-        else
-          Seq.empty
+        if (x.hasNext) x.next().properties.get[Seq[WeightsGroup]]("weights")
+        else Seq.empty
       case Left(e) =>
         logger.error(s"Error when reading set weightedItems event: ${e}")
         Seq.empty
@@ -408,8 +406,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val q = PriorityQueue()
 
     for (x <- s) {
-      if (q.size < n)
-        q.enqueue(x)
+      if (q.size < n) q.enqueue(x)
       else {
         // q is full
         if (ord.compare(x, q.head) < 0) {

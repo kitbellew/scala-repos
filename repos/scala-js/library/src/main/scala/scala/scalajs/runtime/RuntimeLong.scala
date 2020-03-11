@@ -160,13 +160,8 @@ final class RuntimeLong(val lo: Int, val hi: Int)
     if (ahi == bhi) {
       val alo = a.lo
       val blo = b.lo
-      if (alo == blo) 0
-      else if (inlineUnsignedInt_<(alo, blo)) -1
-      else 1
-    } else {
-      if (ahi < bhi) -1
-      else 1
-    }
+      if (alo == blo) 0 else if (inlineUnsignedInt_<(alo, blo)) -1 else 1
+    } else { if (ahi < bhi) -1 else 1 }
   }
 
   def compareTo(that: java.lang.Long): Int =
@@ -185,15 +180,13 @@ final class RuntimeLong(val lo: Int, val hi: Int)
   def <(b: RuntimeLong): Boolean = {
     val ahi = a.hi
     val bhi = b.hi
-    if (ahi == bhi) inlineUnsignedInt_<(a.lo, b.lo)
-    else ahi < bhi
+    if (ahi == bhi) inlineUnsignedInt_<(a.lo, b.lo) else ahi < bhi
   }
 
   def <=(b: RuntimeLong): Boolean = {
     val ahi = a.hi
     val bhi = b.hi
-    if (ahi == bhi) inlineUnsignedInt_<=(a.lo, b.lo)
-    else ahi < bhi
+    if (ahi == bhi) inlineUnsignedInt_<=(a.lo, b.lo) else ahi < bhi
   }
 
   def >(b: RuntimeLong): Boolean = {
@@ -359,8 +352,7 @@ final class RuntimeLong(val lo: Int, val hi: Int)
     val blo = b.lo
     val bhi = b.hi
 
-    if (isZero(blo, bhi))
-      throw new ArithmeticException("/ by zero")
+    if (isZero(blo, bhi)) throw new ArithmeticException("/ by zero")
 
     if (isInt32(alo, ahi)) {
       if (isInt32(blo, bhi)) {
@@ -375,8 +367,7 @@ final class RuntimeLong(val lo: Int, val hi: Int)
       val (aNeg, aAbsLo, aAbsHi) = inline_abs(alo, ahi)
       val (bNeg, bAbsLo, bAbsHi) = inline_abs(blo, bhi)
       val absR = unsigned_/(aAbsLo, aAbsHi, bAbsLo, bAbsHi)
-      if (aNeg == bNeg) absR
-      else inlineLongUnary_-(absR.lo, absR.hi)
+      if (aNeg == bNeg) absR else inlineLongUnary_-(absR.lo, absR.hi)
     }
   }
 
@@ -387,8 +378,7 @@ final class RuntimeLong(val lo: Int, val hi: Int)
     val blo = b.lo
     val bhi = b.hi
 
-    if (isZero(blo, bhi))
-      throw new ArithmeticException("/ by zero")
+    if (isZero(blo, bhi)) throw new ArithmeticException("/ by zero")
 
     if (isUInt32(ahi)) {
       if (isUInt32(bhi)) {
@@ -437,8 +427,7 @@ final class RuntimeLong(val lo: Int, val hi: Int)
     val blo = b.lo
     val bhi = b.hi
 
-    if (isZero(blo, bhi))
-      throw new ArithmeticException("/ by zero")
+    if (isZero(blo, bhi)) throw new ArithmeticException("/ by zero")
 
     if (isInt32(alo, ahi)) {
       if (isInt32(blo, bhi)) {
@@ -453,8 +442,7 @@ final class RuntimeLong(val lo: Int, val hi: Int)
       val (aNeg, aAbsLo, aAbsHi) = inline_abs(alo, ahi)
       val (_, bAbsLo, bAbsHi) = inline_abs(blo, bhi)
       val absR = unsigned_%(aAbsLo, aAbsHi, bAbsLo, bAbsHi)
-      if (aNeg) inlineLongUnary_-(absR.lo, absR.hi)
-      else absR
+      if (aNeg) inlineLongUnary_-(absR.lo, absR.hi) else absR
     }
   }
 
@@ -465,8 +453,7 @@ final class RuntimeLong(val lo: Int, val hi: Int)
     val blo = b.lo
     val bhi = b.hi
 
-    if (isZero(blo, bhi))
-      throw new ArithmeticException("/ by zero")
+    if (isZero(blo, bhi)) throw new ArithmeticException("/ by zero")
 
     if (isUInt32(ahi)) {
       if (isUInt32(bhi)) {
@@ -543,10 +530,8 @@ final class RuntimeLong(val lo: Int, val hi: Int)
         val newRem = inline_-(remLo, remHi, bShiftLo, bShiftHi)
         remLo = newRem._1
         remHi = newRem._2
-        if (shift < 32)
-          quotLo |= (1 << shift)
-        else
-          quotHi |= (1 << shift) // == (1 << (shift - 32))
+        if (shift < 32) quotLo |= (1 << shift)
+        else quotHi |= (1 << shift) // == (1 << (shift - 32))
       }
       shift -= 1
       val newBShift = inline_>>>(bShiftLo, bShiftHi, 1)
@@ -641,9 +626,7 @@ final class RuntimeLong(val lo: Int, val hi: Int)
   @deprecated("Use java.lang.Long.signum instead.", "0.6.6")
   def signum: RuntimeLong = {
     val hi = this.hi
-    if (hi < 0) MinusOne
-    else if (isZero(lo, hi)) Zero
-    else One
+    if (hi < 0) MinusOne else if (isZero(lo, hi)) Zero else One
   }
 
   @deprecated("Use java.lang.Long.numberOfLeadingZeros instead.", "0.6.6")
@@ -702,8 +685,7 @@ object RuntimeLong {
       val absValue = if (neg) -value else value
       val lo = rawToInt(absValue)
       val hi = rawToInt(absValue / TwoPow32)
-      if (neg) inlineLongUnary_-(lo, hi)
-      else new RuntimeLong(lo, hi)
+      if (neg) inlineLongUnary_-(lo, hi) else new RuntimeLong(lo, hi)
     }
   }
 

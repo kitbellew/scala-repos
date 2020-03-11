@@ -63,22 +63,19 @@ class LinkedHashMap[A, B]
 
   def get(key: A): Option[B] = {
     val e = findEntry(key)
-    if (e == null) None
-    else Some(e.value)
+    if (e == null) None else Some(e.value)
   }
 
   override def put(key: A, value: B): Option[B] = {
     val e = findOrAddEntry(key, value)
-    if (e eq null) None
-    else { val v = e.value; e.value = value; Some(v) }
+    if (e eq null) None else { val v = e.value; e.value = value; Some(v) }
   }
 
   override def remove(key: A): Option[B] = {
     val e = removeEntry(key)
     if (e eq null) None
     else {
-      if (e.earlier eq null) firstEntry = e.later
-      else e.earlier.later = e.later
+      if (e.earlier eq null) firstEntry = e.later else e.earlier.later = e.later
       if (e.later eq null) lastEntry = e.earlier
       else e.later.earlier = e.earlier
       Some(e.value)

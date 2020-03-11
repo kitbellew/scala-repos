@@ -265,8 +265,7 @@ object AdminUtils extends Logging {
     var rackIndex = 0
     while (result.size < brokerRackMap.size) {
       val rackIterator = brokersIteratorByRack(racks(rackIndex))
-      if (rackIterator.hasNext)
-        result += rackIterator.next()
+      if (rackIterator.hasNext) result += rackIterator.next()
       rackIndex = (rackIndex + 1) % racks.length
     }
     result
@@ -671,14 +670,13 @@ object AdminUtils extends Logging {
           require(map("version") == 1)
           map.get("config") match {
             case Some(config: Map[_, _]) =>
-              for (configTup <- config)
-                configTup match {
-                  case (k: String, v: String) =>
-                    props.setProperty(k, v)
-                  case _ =>
-                    throw new IllegalArgumentException(
-                      "Invalid " + entityType + " config: " + str)
-                }
+              for (configTup <- config) configTup match {
+                case (k: String, v: String) =>
+                  props.setProperty(k, v)
+                case _ =>
+                  throw new IllegalArgumentException(
+                    "Invalid " + entityType + " config: " + str)
+              }
             case _ =>
               throw new IllegalArgumentException(
                 "Invalid " + entityType + " config: " + str)

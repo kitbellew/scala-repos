@@ -2718,8 +2718,7 @@ trait Trees { self: Universe =>
 
     /** Transforms a `ValDef`. */
     def transformValDef(tree: ValDef): ValDef =
-      if (tree eq noSelfType) tree
-      else transform(tree).asInstanceOf[ValDef]
+      if (tree eq noSelfType) tree else transform(tree).asInstanceOf[ValDef]
 
     /** Transforms a list of `ValDef` nodes. */
     def transformValDefs(trees: List[ValDef]): List[ValDef] =
@@ -2748,8 +2747,7 @@ trait Trees { self: Universe =>
 
     /** Transforms `Modifiers`. */
     def transformModifiers(mods: Modifiers): Modifiers = {
-      if (mods.annotations.isEmpty) mods
-      else mods mapAnnotations transformTrees
+      if (mods.annotations.isEmpty) mods else mods mapAnnotations transformTrees
     }
 
     /** Transforms a tree with a given owner symbol. */

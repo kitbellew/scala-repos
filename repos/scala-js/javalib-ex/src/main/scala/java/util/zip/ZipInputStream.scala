@@ -49,13 +49,11 @@ class ZipInputStream(in: InputStream) extends InflaterInputStream(in) {
   }
 
   override def available(): Int = {
-    if (inner == null || inner.available() <= 0) 0
-    else 1
+    if (inner == null || inner.available() <= 0) 0 else 1
   }
 
   def closeEntry(): Unit = {
-    if (inner != null)
-      inner.close()
+    if (inner != null) inner.close()
     inner = null
   }
 
@@ -74,20 +72,12 @@ class ZipInputStream(in: InputStream) extends InflaterInputStream(in) {
     } else null
   }
 
-  override def read(): Int = {
-    if (inner == null) -1
-    else inner.read()
-  }
+  override def read(): Int = { if (inner == null) -1 else inner.read() }
 
   override def read(buf: Array[Byte], off: Int, len: Int): Int = {
-    if (len == 0) 0
-    else if (inner == null) -1
-    else inner.read(buf, off, len)
+    if (len == 0) 0 else if (inner == null) -1 else inner.read(buf, off, len)
   }
 
-  override def skip(n: Long): Long = {
-    if (inner == null) 0
-    else inner.skip(n)
-  }
+  override def skip(n: Long): Long = { if (inner == null) 0 else inner.skip(n) }
 
 }

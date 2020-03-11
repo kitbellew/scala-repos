@@ -126,8 +126,7 @@ trait ContextErrors {
         s"$name is $descr, which means AnyRef is not a known parent"
       } else if (tp.typeSymbol.isAnonOrRefinementClass)
         s"the parents of this type ($parents_s) extend Any, not AnyRef"
-      else
-        s"$name extends Any, not AnyRef"
+      else s"$name extends Any, not AnyRef"
     )
     if (isPrimitiveValueType(found) || isTrivialTopType(tp)) ""
     else
@@ -169,8 +168,7 @@ trait ContextErrors {
       def evOrParam =
         (if (paramName startsWith nme.EVIDENCE_PARAM_PREFIX)
            "evidence parameter of type"
-         else
-           s"parameter $paramName:")
+         else s"parameter $paramName:")
       paramTp.typeSymbolDirect match {
         case ImplicitNotFoundMsg(msg) => msg.format(paramName, paramTp)
         case _                        => s"could not find implicit value for $evOrParam $paramTp"
@@ -421,8 +419,7 @@ trait ContextErrors {
               (
                 if (linePrecedes(qual, sel))
                   "\npossible cause: maybe a semicolon is missing before `" + nameString + "'?"
-                else
-                  ""
+                else ""
               )
             val notAnyRef =
               (
@@ -1030,7 +1027,7 @@ trait ContextErrors {
             // the code above tries various tricks to detect the relevant portion of the stack trace
             // if these tricks fail, just fall back to uninformative, but better than nothing, getMessage
             case NonFatal(
-                ex
+                  ex
                 ) => // currently giving a spurious warning, see SI-6994
               macroLogVerbose(
                 "got an exception when processing a macro generated exception\n" +

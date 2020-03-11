@@ -259,8 +259,7 @@ class ClusterClientSpec
         }
         // shutdown all but the one that the client is connected to
         remainingServerRoleNames.foreach { r ⇒
-          if (r != receptionistRoleName)
-            testConductor.exit(r, 0).await
+          if (r != receptionistRoleName) testConductor.exit(r, 0).await
         }
         remainingServerRoleNames = Set(receptionistRoleName)
         // network partition between client and server

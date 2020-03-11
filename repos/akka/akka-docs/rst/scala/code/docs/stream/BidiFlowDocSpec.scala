@@ -86,8 +86,7 @@ object BidiFlowDocSpec {
             out,
             new OutHandler {
               override def onPull(): Unit = {
-                if (isClosed(in)) run()
-                else pull(in)
+                if (isClosed(in)) run() else pull(in)
               }
             })
           setHandler(
@@ -111,8 +110,7 @@ object BidiFlowDocSpec {
             if (needed == -1) {
               // are we at a boundary? then figure out next length
               if (stash.length < 4) {
-                if (isClosed(in)) completeStage()
-                else pull(in)
+                if (isClosed(in)) completeStage() else pull(in)
               } else {
                 needed = stash.iterator.getInt
                 stash = stash.drop(4)
@@ -121,8 +119,7 @@ object BidiFlowDocSpec {
             } else if (stash.length < needed) {
               // we are in the middle of a message, need more bytes,
               // or have to stop if input closed
-              if (isClosed(in)) completeStage()
-              else pull(in)
+              if (isClosed(in)) completeStage() else pull(in)
             } else {
               // we have enough to emit at least one message, so do it
               val emit = stash.take(needed)

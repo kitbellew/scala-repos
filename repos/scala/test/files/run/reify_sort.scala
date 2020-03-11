@@ -29,8 +29,7 @@ object Test extends App {
         if (j < r) sort1(i, r)
       }
 
-      if (a.length > 0)
-        sort1(0, a.length - 1)
+      if (a.length > 0) sort1(0, a.length - 1)
     }
 
     def println(ar: Array[Int]) {

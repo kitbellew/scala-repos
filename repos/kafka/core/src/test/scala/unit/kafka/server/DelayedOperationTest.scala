@@ -146,12 +146,7 @@ class DelayedOperationTest {
 
     def awaitExpiration() { synchronized { wait() } }
 
-    override def tryComplete() = {
-      if (completable)
-        forceComplete()
-      else
-        false
-    }
+    override def tryComplete() = { if (completable) forceComplete() else false }
 
     override def onExpiration() {}
 

@@ -44,8 +44,7 @@ private final class MoveBroadcast extends Actor {
         m.gameIds foreach { id =>
           games get id foreach { uids =>
             val newUids = uids - uid
-            if (newUids.isEmpty) games -= id
-            else games += (id -> newUids)
+            if (newUids.isEmpty) games -= id else games += (id -> newUids)
           }
         }
       }

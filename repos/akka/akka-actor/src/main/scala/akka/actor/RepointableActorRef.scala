@@ -288,8 +288,7 @@ private[akka] class UnstartedCell(
     lock.lock // we cannot lose system messages, ever, and we cannot throw an Error from here as well
     try {
       val cell = self.underlying
-      if (cellIsReady(cell))
-        cell.sendSystemMessage(msg)
+      if (cellIsReady(cell)) cell.sendSystemMessage(msg)
       else {
         sysmsgQueue ::= msg
         if (Mailbox.debug) println(s"$self temp queueing system $msg")

@@ -173,8 +173,8 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
           tp match {
             case ScMethodType(_, params, _) => Left(params)
             case ScTypePolymorphicType(
-                ScMethodType(_, params, _),
-                typeParams) =>
+                  ScMethodType(_, params, _),
+                  typeParams) =>
               if (!existential) {
                 val s: ScSubstitutor =
                   typeParams.foldLeft(ScSubstitutor.empty) {
@@ -443,8 +443,7 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
       None
     }
     val result = calc(checkImplicits = false)
-    if (!noImplicit && result.isEmpty) calc(checkImplicits = true)
-    else result
+    if (!noImplicit && result.isEmpty) calc(checkImplicits = true) else result
   }
 
   private def nextLayerSpecificGeneric[T](

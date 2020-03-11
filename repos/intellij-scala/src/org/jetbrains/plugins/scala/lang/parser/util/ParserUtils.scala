@@ -128,8 +128,7 @@ object ParserUtils extends ParserUtilsBase {
           }
           builder.advanceLexer()
         }
-        if (builder.eof)
-          return
+        if (builder.eof) return
       case _ =>
         if (!braceReported) {
           builder error ErrMsg("rbrace.expected")

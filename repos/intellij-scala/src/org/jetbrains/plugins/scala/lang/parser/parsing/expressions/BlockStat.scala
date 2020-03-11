@@ -66,8 +66,7 @@ object BlockStat {
                 if (EmptyDcl.parse(builder)) {
                   builder error ErrMsg("wrong.declaration.in.block")
                   return true
-                } else
-                  return false
+                } else return false
               }
             }
           }

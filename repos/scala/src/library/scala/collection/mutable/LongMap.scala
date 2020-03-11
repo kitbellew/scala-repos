@@ -190,8 +190,7 @@ final class LongMap[V] private[collection] (
         val j = i & IndexMask
         _keys(j) = key
         _values(j) = value.asInstanceOf[AnyRef]
-        if ((i & VacantBit) != 0) _vacant -= 1
-        else if (imbalanced) repack()
+        if ((i & VacantBit) != 0) _vacant -= 1 else if (imbalanced) repack()
         value
       } else _values(i).asInstanceOf[V]
     }
@@ -292,8 +291,7 @@ final class LongMap[V] private[collection] (
         _keys(j) = key
         _values(j) = value.asInstanceOf[AnyRef]
         _size += 1
-        if ((i & VacantBit) != 0) _vacant -= 1
-        else if (imbalanced) repack()
+        if ((i & VacantBit) != 0) _vacant -= 1 else if (imbalanced) repack()
         None
       } else {
         val ans = Some(_values(i).asInstanceOf[V])
@@ -324,8 +322,7 @@ final class LongMap[V] private[collection] (
         _keys(j) = key
         _values(j) = value.asInstanceOf[AnyRef]
         _size += 1
-        if ((i & VacantBit) != 0) _vacant -= 1
-        else if (imbalanced) repack()
+        if ((i & VacantBit) != 0) _vacant -= 1 else if (imbalanced) repack()
       } else {
         _keys(i) = key
         _values(i) = value.asInstanceOf[AnyRef]
@@ -369,8 +366,7 @@ final class LongMap[V] private[collection] (
       else (Long.MinValue, minValue.asInstanceOf[V])
 
     private[this] var anotherPair: (Long, V) =
-      if (extraKeys == 3) (Long.MinValue, minValue.asInstanceOf[V])
-      else null
+      if (extraKeys == 3) (Long.MinValue, minValue.asInstanceOf[V]) else null
 
     private[this] var index = 0
 

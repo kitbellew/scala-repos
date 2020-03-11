@@ -86,8 +86,7 @@ class AkkaGraphiteReporter(
       metrics: Iterable[(String, T)],
       send: (Long, String, T) ⇒ Unit) {
     for ((key, metric) ← metrics) {
-      if (verbose)
-        println("  " + key)
+      if (verbose) println("  " + key)
       send(now, key, metric)
     }
   }
@@ -192,13 +191,11 @@ class AkkaGraphiteReporter(
   }
 
   private def send(key: String, value: Double, now: Long) {
-    if (value >= 0)
-      graphite.send(s"$prefix.$key", "%2.2f".format(value), now)
+    if (value >= 0) graphite.send(s"$prefix.$key", "%2.2f".format(value), now)
   }
 
   private def send(key: String, value: Long, now: Long) {
-    if (value >= 0)
-      graphite.send(s"$prefix.$key", value.toString, now)
+    if (value >= 0) graphite.send(s"$prefix.$key", value.toString, now)
   }
 
   private def sendWithBanner(s: String, c: Char) {

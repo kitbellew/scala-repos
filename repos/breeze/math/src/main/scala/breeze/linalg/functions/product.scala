@@ -18,8 +18,7 @@ object product extends UFunc {
         def visit(a: S): Unit = { product *= a }
 
         def zeros(numZero: Int, zeroValue: S): Unit = {
-          if (numZero > 0)
-            product = 0
+          if (numZero > 0) product = 0
         }
       }
       val visit = new ProductVisitor
@@ -37,8 +36,7 @@ object product extends UFunc {
         def visit(a: S): Unit = { product = semiring.*(product, a) }
 
         def zeros(numZero: Int, zeroValue: S): Unit = {
-          if (numZero > 0)
-            product = semiring.zero
+          if (numZero > 0) product = semiring.zero
         }
 
       }

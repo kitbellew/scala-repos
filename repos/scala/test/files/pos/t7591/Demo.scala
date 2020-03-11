@@ -80,8 +80,7 @@ object Demo {
   def main(args: Array[String]): Unit = {
     val runner = new Demo(args.toList)
 
-    if (args.isEmpty)
-      println(runner.helpMsg)
+    if (args.isEmpty) println(runner.helpMsg)
 
     println(runner)
   }

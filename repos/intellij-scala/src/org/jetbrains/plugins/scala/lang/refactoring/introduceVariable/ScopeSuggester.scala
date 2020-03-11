@@ -50,8 +50,7 @@ object ScopeSuggester {
           element,
           classOf[ScTemplateBody],
           classOf[ScalaFile])
-      else
-        PsiTreeUtil.getParentOfType(element, classOf[ScTemplateBody])
+      else PsiTreeUtil.getParentOfType(element, classOf[ScTemplateBody])
     }
 
     def isSuitableParent(
@@ -174,8 +173,7 @@ object ScopeSuggester {
 
     if (companion.isDefined)
       ScalaRefactoringUtil.getTypeElementOccurrences(typeElement, companion.get)
-    else
-      Array[ScTypeElement]()
+    else Array[ScTypeElement]()
   }
 
   //return Array of (package, containing directory)
@@ -313,8 +311,7 @@ object ScopeSuggester {
           PsiTreeUtil
             .getChildOfType(packageObject.get, classOf[ScExtendsBlock]),
           classOf[ScTemplateBody])
-      else
-        containinDirectory
+      else containinDirectory
 
     val allOcurrences: mutable.MutableList[Array[ScTypeElement]] =
       mutable.MutableList()

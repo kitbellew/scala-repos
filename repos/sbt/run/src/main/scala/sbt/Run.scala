@@ -60,10 +60,8 @@ class ForkRun(config: ForkOptions) extends ScalaRun {
   private def classpathOption(classpath: Seq[File]) =
     "-classpath" :: Path.makeString(classpath) :: Nil
   private def processExitCode(exitCode: Int, label: String) = {
-    if (exitCode == 0)
-      None
-    else
-      Some("Nonzero exit code returned from " + label + ": " + exitCode)
+    if (exitCode == 0) None
+    else Some("Nonzero exit code returned from " + label + ": " + exitCode)
   }
 }
 class Run(instance: ScalaInstance, trapExit: Boolean, nativeTmp: File)
@@ -138,7 +136,6 @@ object Run {
     if (exitCode == 0) {
       log.debug("Exited with code 0")
       None
-    } else
-      Some("Nonzero exit code: " + exitCode)
+    } else Some("Nonzero exit code: " + exitCode)
   }
 }

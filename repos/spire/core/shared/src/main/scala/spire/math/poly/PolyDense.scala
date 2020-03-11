@@ -29,8 +29,7 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
       f: (Int, C) => U)(implicit ring: Semiring[C], eq: Eq[C]): Unit = {
     cfor(0)(_ < coeffs.length, _ + 1) { e =>
       val c = coeffs(e)
-      if (c =!= ring.zero)
-        f(e, c)
+      if (c =!= ring.zero) f(e, c)
     }
   }
 

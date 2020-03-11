@@ -18,8 +18,7 @@ case class UserRecord(
   lazy val nbBadOutcomes = outcomes.count(_ != Outcome.Good)
 
   def badOutcomeRatio: Double =
-    if (nbOutcomes == 0) 0
-    else nbBadOutcomes.toDouble / nbOutcomes
+    if (nbOutcomes == 0) 0 else nbBadOutcomes.toDouble / nbOutcomes
 
   def nbBadOutcomesBeforeBan = if (bans.isEmpty) 4 else 2
 

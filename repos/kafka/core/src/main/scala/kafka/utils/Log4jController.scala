@@ -53,22 +53,18 @@ private class Log4jController extends Log4jControllerMBean {
   }
 
   private def newLogger(loggerName: String) =
-    if (loggerName == "root")
-      LogManager.getRootLogger
+    if (loggerName == "root") LogManager.getRootLogger
     else LogManager.getLogger(loggerName)
 
   private def existingLogger(loggerName: String) =
-    if (loggerName == "root")
-      LogManager.getRootLogger
+    if (loggerName == "root") LogManager.getRootLogger
     else LogManager.exists(loggerName)
 
   def getLogLevel(loggerName: String) = {
     val log = existingLogger(loggerName)
     if (log != null) {
       val level = log.getLevel
-      if (level != null)
-        log.getLevel.toString
-      else "Null log level."
+      if (level != null) log.getLevel.toString else "Null log level."
     } else "No such logger."
   }
 

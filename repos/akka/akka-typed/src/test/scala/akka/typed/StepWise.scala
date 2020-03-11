@@ -81,8 +81,7 @@ object StepWise {
 
   final case class Steps[T, U](ops: List[AST], keepTraces: Boolean) {
     private def getTrace(): Trace =
-      if (keepTraces) new WithTrace
-      else WithoutTrace
+      if (keepTraces) new WithTrace else WithoutTrace
 
     def apply[V](thunk: U ⇒ V): Steps[T, V] =
       copy(ops = ThunkV(thunk.asInstanceOf[Any ⇒ Any]) :: ops)

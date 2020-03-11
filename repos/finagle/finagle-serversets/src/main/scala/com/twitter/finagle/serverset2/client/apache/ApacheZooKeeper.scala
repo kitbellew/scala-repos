@@ -387,8 +387,7 @@ private[serverset2] object ApacheZooKeeper {
           protected val print = { m: String => logger.info(m) }
         },
         statsWatcher)
-    } else
-      Watched(wrappedZk, statsWatcher)
+    } else Watched(wrappedZk, statsWatcher)
   }
 }
 

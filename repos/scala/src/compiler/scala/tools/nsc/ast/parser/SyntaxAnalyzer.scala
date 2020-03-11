@@ -101,8 +101,7 @@ abstract class SyntaxAnalyzer
       informProgress("parsing " + unit)
       // if the body is already filled in, don't overwrite it
       // otherwise compileLate is going to overwrite bodies of synthetic source files
-      if (unit.body == EmptyTree)
-        unit.body = initialUnitBody(unit)
+      if (unit.body == EmptyTree) unit.body = initialUnitBody(unit)
 
       if (settings.Yrangepos && !reporter.hasErrors)
         validatePositions(unit.body)

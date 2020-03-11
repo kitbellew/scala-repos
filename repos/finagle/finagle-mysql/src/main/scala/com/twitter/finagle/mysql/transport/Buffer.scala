@@ -115,8 +115,7 @@ trait BufferReader extends Buffer {
     */
   def readLengthCodedBinary(): Long = {
     val firstByte = readUnsignedByte()
-    if (firstByte < 251)
-      firstByte
+    if (firstByte < 251) firstByte
     else
       firstByte match {
         case 251 => Buffer.NullLength
@@ -139,8 +138,7 @@ trait BufferReader extends Buffer {
     val start = offset
     var length = 0
 
-    while (readByte() != 0x00)
-      length += 1
+    while (readByte() != 0x00) length += 1
 
     this.toString(start, length, charset)
   }
@@ -167,10 +165,8 @@ trait BufferReader extends Buffer {
   def readLengthCodedString(
       charset: JCharset = Charset.defaultCharset): String = {
     val length = readLengthCodedBinary().toInt
-    if (length == Buffer.NullLength)
-      null
-    else if (length == 0)
-      Buffer.EmptyString
+    if (length == Buffer.NullLength) null
+    else if (length == 0) Buffer.EmptyString
     else {
       val start = offset
       skip(length)
@@ -187,12 +183,9 @@ trait BufferReader extends Buffer {
     */
   def readLengthCodedBytes(): Array[Byte] = {
     val len = readLengthCodedBinary().toInt
-    if (len == Buffer.NullLength)
-      null
-    else if (len == 0)
-      Buffer.EmptyByteArray
-    else
-      take(len)
+    if (len == Buffer.NullLength) null
+    else if (len == 0) Buffer.EmptyByteArray
+    else take(len)
   }
 
   /**

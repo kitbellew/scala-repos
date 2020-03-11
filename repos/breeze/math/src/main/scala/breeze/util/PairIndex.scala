@@ -11,8 +11,7 @@ class PairIndex[T, U](tIndex: Index[T], uIndex: Index[U])
   def pairs = iterator.zipWithIndex;
 
   def mapIndex(indexInT: Int, indexInU: Int) = {
-    if (indexInT < 0 || indexInU < 0) -1
-    else indexInT * uIndex.size + indexInU
+    if (indexInT < 0 || indexInU < 0) -1 else indexInT * uIndex.size + indexInU
   }
 
   def unapply(i: Int) =

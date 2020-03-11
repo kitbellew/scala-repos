@@ -107,8 +107,7 @@ class QueueingHandler(
     DefaultFuturePool {
       // We run this in a FuturePool to avoid satisfying pollers
       // (which flush the record) inline.
-      if (!queue.offer(record))
-        onOverflow(record)
+      if (!queue.offer(record)) onOverflow(record)
     }
   }
 

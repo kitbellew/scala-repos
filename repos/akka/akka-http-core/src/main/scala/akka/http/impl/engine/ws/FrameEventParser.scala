@@ -70,8 +70,7 @@ private[http] object FrameEventParser extends ByteStringParser[FrameEvent] {
           throw new ProtocolException("Highest bit of 64bit length was set")
 
         val mask =
-          if (maskBit) Some(reader.readIntBE())
-          else None
+          if (maskBit) Some(reader.readIntBE()) else None
 
         def isFlagSet(mask: Int): Boolean = (flags & mask) != 0
         val header =

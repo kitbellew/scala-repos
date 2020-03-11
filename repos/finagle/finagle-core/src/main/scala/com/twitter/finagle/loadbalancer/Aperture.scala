@@ -155,18 +155,15 @@ private trait Aperture[Req, Rep] { self: Balancer[Req, Rep] =>
     // We use power of two choices to pick nodes. This keeps things
     // simple, but we could reasonably use a heap here, too.
     def pick(): Node = {
-      if (up.isEmpty)
-        return failingNode(emptyException)
+      if (up.isEmpty) return failingNode(emptyException)
 
-      if (up.size == 1)
-        return up(0)
+      if (up.size == 1) return up(0)
 
       val (i, j) = ring.pick2(rng, 0, aperture * unitWidth)
       val a = up(i)
       val b = up(j)
 
-      if (a.status != Status.Open || b.status != Status.Open)
-        sawDown = true
+      if (a.status != Status.Open || b.status != Status.Open) sawDown = true
 
       if (a.load < b.load) a else b
     }
@@ -273,10 +270,8 @@ private trait LoadBand[Req, Rep] {
     // overshoot, the controller will self-correct quickly.
     val a = avg / aperture
 
-    if (a >= highLoad && aperture < units)
-      widen()
-    else if (a <= lowLoad && aperture > minAperture)
-      narrow()
+    if (a >= highLoad && aperture < units) widen()
+    else if (a <= lowLoad && aperture > minAperture) narrow()
   }
 
   protected case class Node(

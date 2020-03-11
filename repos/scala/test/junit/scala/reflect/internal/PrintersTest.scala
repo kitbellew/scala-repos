@@ -84,8 +84,7 @@ object PrinterHelper {
       source: String,
       checkTypedTree: Boolean = true,
       wrapCode: Boolean = false) = {
-    if (checkTypedTree)
-      assertResultCode(source)(source, source, wrapCode)
+    if (checkTypedTree) assertResultCode(source)(source, source, wrapCode)
     else assertResultCode(source)(parsedCode = source, wrap = wrapCode)
   }
 

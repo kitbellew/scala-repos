@@ -89,8 +89,7 @@ abstract class GenSerialServerDispatcher[Req, Rep, In, Out](
   // protocol support). Presumably, half-closing TCP connection is
   // also possible.
   def close(deadline: Time) = {
-    if (state.getAndSet(Closed) eq Idle)
-      trans.close(deadline)
+    if (state.getAndSet(Closed) eq Idle) trans.close(deadline)
     trans.onClose.unit
   }
 }

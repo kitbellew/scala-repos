@@ -65,8 +65,7 @@ object M1 {
   var pi2 = veryGood(pi0, euler);
 
   def pad(s: String, n: Int): String =
-    if (n <= 0) s.substring(0, s.length() + n)
-    else pad(s + " ", n - 1);
+    if (n <= 0) s.substring(0, s.length() + n) else pad(s + " ", n - 1);
   def str(d: Double) = { val s = d.toString(); pad(s, 18 - s.length()) };
 
   def test = {

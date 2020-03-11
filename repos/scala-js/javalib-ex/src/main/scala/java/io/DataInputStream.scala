@@ -70,24 +70,18 @@ class DataInputStream(in: InputStream)
   }
 
   def readChar(): Char = {
-    if (hasArrayBuffer)
-      bufDataView.getUint16(consumePos(2)).toChar
-    else
-      view(2).getUint16(0).toChar
+    if (hasArrayBuffer) bufDataView.getUint16(consumePos(2)).toChar
+    else view(2).getUint16(0).toChar
   }
 
   def readDouble(): Double = {
-    if (hasArrayBuffer)
-      bufDataView.getFloat64(consumePos(8))
-    else
-      view(8).getFloat64(0)
+    if (hasArrayBuffer) bufDataView.getFloat64(consumePos(8))
+    else view(8).getFloat64(0)
   }
 
   def readFloat(): Float = {
-    if (hasArrayBuffer)
-      bufDataView.getFloat32(consumePos(4))
-    else
-      view(4).getFloat32(0)
+    if (hasArrayBuffer) bufDataView.getFloat32(consumePos(4))
+    else view(4).getFloat32(0)
   }
 
   def readFully(b: Array[Byte]): Unit = readFully(b, 0, b.length)
@@ -107,10 +101,8 @@ class DataInputStream(in: InputStream)
   }
 
   def readInt(): Int = {
-    if (hasArrayBuffer)
-      bufDataView.getInt32(consumePos(4))
-    else
-      view(4).getInt32(0)
+    if (hasArrayBuffer) bufDataView.getInt32(consumePos(4))
+    else view(4).getInt32(0)
   }
 
   def readLine(): String = {
@@ -138,10 +130,8 @@ class DataInputStream(in: InputStream)
   }
 
   def readShort(): Short = {
-    if (hasArrayBuffer)
-      bufDataView.getInt16(consumePos(2))
-    else
-      view(2).getInt16(0)
+    if (hasArrayBuffer) bufDataView.getInt16(consumePos(2))
+    else view(2).getInt16(0)
   }
 
   def readUnsignedByte(): Int = {
@@ -151,10 +141,8 @@ class DataInputStream(in: InputStream)
   }
 
   def readUnsignedShort(): Int = {
-    if (hasArrayBuffer)
-      bufDataView.getUint16(consumePos(2))
-    else
-      view(2).getUint16(0)
+    if (hasArrayBuffer) bufDataView.getUint16(consumePos(2))
+    else view(2).getUint16(0)
   }
 
   def readUTF(): String = {
@@ -167,8 +155,7 @@ class DataInputStream(in: InputStream)
     while (i < length) {
       val a = read()
 
-      if (a == -1)
-        badFormat(s"Unexpected EOF: ${length - i} bytes to go")
+      if (a == -1) badFormat(s"Unexpected EOF: ${length - i} bytes to go")
 
       i += 1
 
@@ -221,8 +208,7 @@ class DataInputStream(in: InputStream)
   // Methods on FilterInputStream.
   // Overridden to track pushedBack / pushedBackMark
   override def available(): Int = {
-    if (pushedBack != -1) in.available + 1
-    else in.available
+    if (pushedBack != -1) in.available + 1 else in.available
   }
 
   override def mark(readlimit: Int): Unit = {
@@ -233,12 +219,7 @@ class DataInputStream(in: InputStream)
   override def markSupported(): Boolean = in.markSupported()
 
   override def read(): Int = {
-    val res = {
-      if (pushedBack != -1)
-        pushedBack
-      else
-        in.read()
-    }
+    val res = { if (pushedBack != -1) pushedBack else in.read() }
 
     pushedBack = -1
 
@@ -246,8 +227,7 @@ class DataInputStream(in: InputStream)
   }
 
   override def read(b: Array[Byte], off: Int, len: Int): Int = {
-    if (len == 0)
-      0
+    if (len == 0) 0
     else if (pushedBack != -1) {
       b(off) = pushedBack.toByte
       pushedBack = -1
@@ -264,8 +244,7 @@ class DataInputStream(in: InputStream)
   }
 
   override def skip(n: Long): Long = {
-    if (n == 0)
-      0L
+    if (n == 0) 0L
     else if (pushedBack != -1) {
       pushedBack = -1
       1L

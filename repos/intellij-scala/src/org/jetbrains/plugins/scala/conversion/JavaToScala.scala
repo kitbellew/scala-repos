@@ -200,8 +200,7 @@ object JavaToScala {
         AssertStatement(condition, description)
       case s: PsiSwitchLabelStatement =>
         val caseValue =
-          if (s.isDefaultCase)
-            Some(LiteralExpression("_"))
+          if (s.isDefaultCase) Some(LiteralExpression("_"))
           else
             Option(s.getCaseValue)
               .map(convertPsiToIntermdeiate(_, externalProperties))
@@ -750,10 +749,8 @@ object JavaToScala {
           val updatedModifiers = modifiers
             .asInstanceOf[ModifiersConstruction]
             .without(ModifierType.ABSTRACT)
-          if (inClass.isEnum)
-            handleAsEnum(updatedModifiers)
-          else
-            handleAsObject(updatedModifiers)
+          if (inClass.isEnum) handleAsEnum(updatedModifiers)
+          else handleAsObject(updatedModifiers)
         } finally { context.get().pop() }
       } else { EmptyConstruction() }
     }
@@ -800,8 +797,7 @@ object JavaToScala {
             classMembers.indexOf(left) > classMembers.indexOf(right)
           }
 
-          if (targetMap.isEmpty)
-            classMembers
+          if (targetMap.isEmpty) classMembers
           else
             classMembers.sortWith { (left, right) =>
               if (isConstructor(left) && isConstructor(right)) {

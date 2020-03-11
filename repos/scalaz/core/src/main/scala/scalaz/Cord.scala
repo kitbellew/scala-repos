@@ -148,10 +148,7 @@ object Cord {
     UnitReducer((a: String) => a.length)
 
   def mkCord(sep: Cord, as: Cord*): Cord =
-    if (!as.isEmpty)
-      as.tail.foldLeft(as.head)(_ ++ sep ++ _)
-    else
-      Cord()
+    if (!as.isEmpty) as.tail.foldLeft(as.head)(_ ++ sep ++ _) else Cord()
 
   implicit lazy val CordShow: Show[Cord] = new Show[Cord] {
     override def show(x: Cord) = x

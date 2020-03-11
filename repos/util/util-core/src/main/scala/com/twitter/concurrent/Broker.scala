@@ -46,14 +46,12 @@ class Broker[T] {
       case s @ Sending(q) =>
         val nextq = q filter { _ ne elem }
         val nextState = if (nextq.isEmpty) Quiet else Sending(nextq)
-        if (!state.compareAndSet(s, nextState))
-          rmElem(elem)
+        if (!state.compareAndSet(s, nextState)) rmElem(elem)
 
       case s @ Receiving(q) =>
         val nextq = q filter { _ ne elem }
         val nextState = if (nextq.isEmpty) Quiet else Receiving(nextq)
-        if (!state.compareAndSet(s, nextState))
-          rmElem(elem)
+        if (!state.compareAndSet(s, nextState)) rmElem(elem)
 
       case Quiet => ()
     }

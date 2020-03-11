@@ -257,18 +257,15 @@ private[kafka] class ZookeeperConsumerConnector(
       val startTime = System.nanoTime()
       KafkaMetricsGroup.removeAllConsumerMetrics(config.clientId)
       rebalanceLock synchronized {
-        if (wildcardTopicWatcher != null)
-          wildcardTopicWatcher.shutdown()
+        if (wildcardTopicWatcher != null) wildcardTopicWatcher.shutdown()
         try {
-          if (config.autoCommitEnable)
-            scheduler.shutdown()
+          if (config.autoCommitEnable) scheduler.shutdown()
           fetcher match {
             case Some(f) => f.stopConnections
             case None    =>
           }
           sendShutdownToAllQueues()
-          if (config.autoCommitEnable)
-            commitOffsets(true)
+          if (config.autoCommitEnable) commitOffsets(true)
           if (zkUtils != null) {
             zkUtils.close()
             zkUtils = null
@@ -472,10 +469,7 @@ private[kafka] class ZookeeperConsumerConnector(
                 offsetsChannel.disconnect()
               }
 
-              if (commitFailed && retryableIfFailed)
-                false
-              else
-                true
+              if (commitFailed && retryableIfFailed) false else true
             } catch {
               case t: Throwable =>
                 error("Error while committing offsets.", t)
@@ -517,8 +511,7 @@ private[kafka] class ZookeeperConsumerConnector(
   }
 
   private def fetchOffsets(partitions: Seq[TopicAndPartition]) = {
-    if (partitions.isEmpty)
-      Some(OffsetFetchResponse(Map.empty))
+    if (partitions.isEmpty) Some(OffsetFetchResponse(Map.empty))
     else if (config.offsetsStorage == "zookeeper") {
       val offsets = partitions.map(fetchOffsetFromZooKeeper)
       Some(OffsetFetchResponse(immutable.Map(offsets: _*)))
@@ -573,8 +566,7 @@ private[kafka] class ZookeeperConsumerConnector(
                         Errors.NONE.code))
                 }
                 Some(OffsetFetchResponse(mostRecentOffsets))
-              } else
-                Some(offsetFetchResponse)
+              } else Some(offsetFetchResponse)
             }
           } catch {
             case e: Exception =>
@@ -715,8 +707,7 @@ private[kafka] class ZookeeperConsumerConnector(
               isWatcherTriggered = false
               lock.unlock()
             }
-            if (doRebalance)
-              syncedRebalance
+            if (doRebalance) syncedRebalance
           } catch {
             case t: Throwable => error("error during syncedRebalance", t)
           }
@@ -868,8 +859,7 @@ private[kafka] class ZookeeperConsumerConnector(
 
         val offsetFetchResponseOpt = fetchOffsets(topicPartitions)
 
-        if (isShuttingDown.get || !offsetFetchResponseOpt.isDefined)
-          false
+        if (isShuttingDown.get || !offsetFetchResponseOpt.isDefined) false
         else {
           val offsetFetchResponse = offsetFetchResponseOpt.get
           topicPartitions.foreach(topicAndPartition => {
@@ -1010,8 +1000,7 @@ private[kafka] class ZookeeperConsumerConnector(
       // update partitions for fetcher
       var allPartitionInfos: List[PartitionTopicInfo] = Nil
       for (partitionInfos <- topicRegistry.values)
-        for (partition <- partitionInfos.values)
-          allPartitionInfos ::= partition
+        for (partition <- partitionInfos.values) allPartitionInfos ::= partition
       info(
         "Consumer " + consumerIdString + " selected partitions : " +
           allPartitionInfos

@@ -171,8 +171,7 @@ private[akka] object ChildrenContainer {
 
   object NormalChildrenContainer {
     def apply(c: immutable.TreeMap[String, ChildStats]): ChildrenContainer =
-      if (c.isEmpty) EmptyChildrenContainer
-      else new NormalChildrenContainer(c)
+      if (c.isEmpty) EmptyChildrenContainer else new NormalChildrenContainer(c)
   }
 
   /**

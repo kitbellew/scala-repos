@@ -1055,8 +1055,7 @@ private[finagle] class KetamaPartitionedClient(
     }
 
   override def clientOf(key: String): Client = {
-    if (ketamaNodeGrp() ne ketamaNodeSnap)
-      updateGroup()
+    if (ketamaNodeGrp() ne ketamaNodeSnap) updateGroup()
 
     val bytes = key.getBytes(Charsets.Utf8)
     val hash = keyHasher.hashKey(bytes)
@@ -1162,8 +1161,7 @@ private[finagle] class KetamaPartitionedClient(
     ready.interruptible before super.decr(key, delta)
 
   def release() = synchronized {
-    for ((_, Node(node, _)) <- nodes)
-      node.handle.release()
+    for ((_, Node(node, _)) <- nodes) node.handle.release()
   }
 }
 

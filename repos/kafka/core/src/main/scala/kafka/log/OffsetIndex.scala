@@ -79,8 +79,7 @@ class OffsetIndex(
       val idx = raf.getChannel.map(FileChannel.MapMode.READ_WRITE, 0, len)
 
       /* set the position in the index for the next entry */
-      if (newlyCreated)
-        idx.position(0)
+      if (newlyCreated) idx.position(0)
       else
         // if this is a pre-existing index, assume it is all valid and set position to last entry
         idx.position(roundToExactMultiple(idx.limit, 8))
@@ -139,8 +138,7 @@ class OffsetIndex(
     maybeLock(lock) {
       val idx = mmap.duplicate
       val slot = indexSlotFor(idx, targetOffset)
-      if (slot == -1)
-        OffsetPosition(baseOffset, 0)
+      if (slot == -1) OffsetPosition(baseOffset, 0)
       else
         OffsetPosition(
           baseOffset + relativeOffset(idx, slot),
@@ -162,12 +160,10 @@ class OffsetIndex(
     val relOffset = targetOffset - baseOffset
 
     // check if the index is empty
-    if (entries == 0)
-      return -1
+    if (entries == 0) return -1
 
     // check if the target offset is smaller than the least offset
-    if (relativeOffset(idx, 0) > relOffset)
-      return -1
+    if (relativeOffset(idx, 0) > relOffset) return -1
 
     // binary search for the entry
     var lo = 0
@@ -175,12 +171,9 @@ class OffsetIndex(
     while (lo < hi) {
       val mid = ceil(hi / 2.0 + lo / 2.0).toInt
       val found = relativeOffset(idx, mid)
-      if (found == relOffset)
-        return mid
-      else if (found < relOffset)
-        lo = mid
-      else
-        hi = mid - 1
+      if (found == relOffset) return mid
+      else if (found < relOffset) lo = mid
+      else hi = mid - 1
     }
     lo
   }
@@ -261,12 +254,9 @@ class OffsetIndex(
        * 3) if there is no entry for this offset, delete everything larger than the next smallest
        */
       val newEntries =
-        if (slot < 0)
-          0
-        else if (relativeOffset(idx, slot) == offset - baseOffset)
-          slot
-        else
-          slot + 1
+        if (slot < 0) 0
+        else if (relativeOffset(idx, slot) == offset - baseOffset) slot
+        else slot + 1
       truncateToEntries(newEntries)
     }
   }
@@ -301,8 +291,7 @@ class OffsetIndex(
       val position = this.mmap.position
 
       /* Windows won't let us modify the file length while the file is mmapped :-( */
-      if (Os.isWindows)
-        forceUnmap(this.mmap)
+      if (Os.isWindows) forceUnmap(this.mmap)
       try {
         raf.setLength(roundedNewSize)
         this.mmap = raf
@@ -336,8 +325,7 @@ class OffsetIndex(
     */
   def delete(): Boolean = {
     info("Deleting index " + this.file.getAbsolutePath)
-    if (Os.isWindows)
-      CoreUtils.swallow(forceUnmap(this.mmap))
+    if (Os.isWindows) CoreUtils.swallow(forceUnmap(this.mmap))
     this.file.delete()
   }
 
@@ -391,12 +379,8 @@ class OffsetIndex(
     * and this requires synchronizing reads.
     */
   private def maybeLock[T](lock: Lock)(fun: => T): T = {
-    if (Os.isWindows)
-      lock.lock()
+    if (Os.isWindows) lock.lock()
     try { fun }
-    finally {
-      if (Os.isWindows)
-        lock.unlock()
-    }
+    finally { if (Os.isWindows) lock.unlock() }
   }
 }

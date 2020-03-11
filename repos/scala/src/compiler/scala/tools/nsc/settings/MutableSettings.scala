@@ -82,10 +82,8 @@ class MutableSettings(val errorFn: String => Unit)
               errorFn(s"bad option: '$x'"); (false, args)
             case newArgs => loop(newArgs, residualArgs)
           }
-        } else if (processAll)
-          loop(xs, residualArgs :+ x)
-        else
-          (checkDependencies, args)
+        } else if (processAll) loop(xs, residualArgs :+ x)
+        else (checkDependencies, args)
     }
     loop(arguments, Nil)
   }
@@ -319,13 +317,11 @@ class MutableSettings(val errorFn: String => Unit)
         dir: AbstractFile,
         name: String,
         allowJar: Boolean = false): AbstractFile = (
-      if (dir != null && dir.isDirectory)
-        dir
+      if (dir != null && dir.isDirectory) dir
       else if (allowJar && dir == null && Jar
                  .isJarOrZip(name, examineFile = false))
         new PlainFile(Path(name))
-      else
-        throw new FatalError(name + " does not exist or is not a directory")
+      else throw new FatalError(name + " does not exist or is not a directory")
     )
 
     /** Set the single output directory. From now on, all files will
@@ -507,8 +503,7 @@ class MutableSettings(val errorFn: String => Unit)
         }
 
     def unparse: List[String] =
-      if (value == default) Nil
-      else List(name, value.toString)
+      if (value == default) Nil else List(name, value.toString)
 
     withHelpSyntax(name + " <n>")
   }
@@ -1002,8 +997,7 @@ class MutableSettings(val errorFn: String => Unit)
     def unparse: List[String] = value map (name + ":" + _)
 
     withHelpSyntax(
-      if (default == "") name + ":<phases>"
-      else name + "[:phases]"
+      if (default == "") name + ":<phases>" else name + "[:phases]"
     )
   }
 

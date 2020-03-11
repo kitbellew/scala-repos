@@ -68,8 +68,7 @@ object Watched {
     val sourcesFinder = PathFinder { watched watchPaths s }
     val watchState = s get ContinuousState getOrElse WatchState.empty
 
-    if (watchState.count > 0)
-      printIfDefined(watched watchingMessage watchState)
+    if (watchState.count > 0) printIfDefined(watched watchingMessage watchState)
 
     val (triggered, newWatchState, newState) =
       try {

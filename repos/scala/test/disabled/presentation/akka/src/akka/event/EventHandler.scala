@@ -113,8 +113,7 @@ object EventHandler extends ListenerManagement {
   def notify(event: Any) {
     if (event.isInstanceOf[Event]) {
       if (level >= event.asInstanceOf[Event].level) notifyListeners(event)
-    } else
-      notifyListeners(event)
+    } else notifyListeners(event)
   }
 
   def notify[T <: Event: ClassTag](event: => T) {

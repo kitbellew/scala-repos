@@ -124,19 +124,14 @@ class Partition(
 
   def getReplica(replicaId: Int = localBrokerId): Option[Replica] = {
     val replica = assignedReplicaMap.get(replicaId)
-    if (replica == null)
-      None
-    else
-      Some(replica)
+    if (replica == null) None else Some(replica)
   }
 
   def leaderReplicaIfLocal(): Option[Replica] = {
     leaderReplicaIdOpt match {
       case Some(leaderReplicaId) =>
-        if (leaderReplicaId == localBrokerId)
-          getReplica(localBrokerId)
-        else
-          None
+        if (leaderReplicaId == localBrokerId) getReplica(localBrokerId)
+        else None
       case None => None
     }
   }
@@ -215,8 +210,7 @@ class Partition(
       (maybeIncrementLeaderHW(leaderReplica), isNewLeader)
     }
     // some delayed operations may be unblocked after HW changed
-    if (leaderHWIncremented)
-      tryCompleteDelayedRequests()
+    if (leaderHWIncremented) tryCompleteDelayedRequests()
     isNewLeader
   }
 
@@ -320,8 +314,7 @@ class Partition(
     }
 
     // some delayed operations may be unblocked after HW changed
-    if (leaderHWIncremented)
-      tryCompleteDelayedRequests()
+    if (leaderHWIncremented) tryCompleteDelayedRequests()
   }
 
   /*
@@ -336,16 +329,13 @@ class Partition(
         // keep the current immutable replica list reference
         val curInSyncReplicas = inSyncReplicas
         val numAcks = curInSyncReplicas.count(r => {
-          if (!r.isLocal)
-            if (r.logEndOffset.messageOffset >= requiredOffset) {
-              trace(
-                "Replica %d of %s-%d received offset %d"
-                  .format(r.brokerId, topic, partitionId, requiredOffset))
-              true
-            } else
-              false
-          else
-            true /* also count the local (leader) replica */
+          if (!r.isLocal) if (r.logEndOffset.messageOffset >= requiredOffset) {
+            trace(
+              "Replica %d of %s-%d received offset %d"
+                .format(r.brokerId, topic, partitionId, requiredOffset))
+            true
+          } else false
+          else true /* also count the local (leader) replica */
         })
 
         trace(
@@ -361,8 +351,7 @@ class Partition(
            */
           if (minIsr <= curInSyncReplicas.size) { (true, Errors.NONE.code) }
           else { (true, Errors.NOT_ENOUGH_REPLICAS_AFTER_APPEND.code) }
-        } else
-          (false, Errors.NONE.code)
+        } else (false, Errors.NONE.code)
       case None =>
         (false, Errors.NOT_LEADER_FOR_PARTITION.code)
     }
@@ -442,8 +431,7 @@ class Partition(
     }
 
     // some delayed operations may be unblocked after HW changed
-    if (leaderHWIncremented)
-      tryCompleteDelayedRequests()
+    if (leaderHWIncremented) tryCompleteDelayedRequests()
   }
 
   def getOutOfSyncReplicas(
@@ -508,8 +496,7 @@ class Partition(
     }
 
     // some delayed operations may be unblocked after HW changed
-    if (leaderHWIncremented)
-      tryCompleteDelayedRequests()
+    if (leaderHWIncremented) tryCompleteDelayedRequests()
 
     info
   }
@@ -548,8 +535,7 @@ class Partition(
   private def removePartitionMetrics() { removeMetric("UnderReplicated", tags) }
 
   override def equals(that: Any): Boolean = {
-    if (!(that.isInstanceOf[Partition]))
-      return false
+    if (!(that.isInstanceOf[Partition])) return false
     val other = that.asInstanceOf[Partition]
     if (topic.equals(other.topic) && partitionId == other.partitionId)
       return true

@@ -168,15 +168,11 @@ object Scalding {
       // The invariant is that low isGood, low < upper, and upper isGood == false
       @annotation.tailrec
       def findEnd(low: Long, upper: Long): Long =
-        if (low == (upper - 1L))
-          low
+        if (low == (upper - 1L)) low
         else {
           // mid must be > low because upper >= low + 2
           val mid = low + (upper - low) / 2
-          if (isGood(mid))
-            findEnd(mid, upper)
-          else
-            findEnd(low, mid)
+          if (isGood(mid)) findEnd(mid, upper) else findEnd(low, mid)
         }
 
       if (isGood(end.timestamp)) Some(desired)
@@ -385,10 +381,10 @@ object Scalding {
       * https://github.com/twitter/scalding/issues/513
       */
     def forceNode[U](p: PipeFactory[U]): PipeFactory[U] =
-      if (forceFanOut || fanOuts(producer))
-        p.map { flowP => flowP.map { _.fork } }
-      else
-        p
+      if (forceFanOut || fanOuts(producer)) p.map { flowP =>
+        flowP.map { _.fork }
+      }
+      else p
 
     built.get(producer) match {
       case Some(pf) => (pf.asInstanceOf[PipeFactory[T]], built)
@@ -397,11 +393,7 @@ object Scalding {
           case Source(src) => {
             val shards =
               getOrElse(options, names, producer, FlatMapShards.default).count
-            val srcPf =
-              if (shards <= 1)
-                src
-              else
-                src.mapPipe(_.shard(shards))
+            val srcPf = if (shards <= 1) src else src.mapPipe(_.shard(shards))
 
             (srcPf, built)
           }
@@ -597,8 +589,7 @@ object Scalding {
                         "not enabling flatMapKeys mapside caching, due to non-commutativity")
                       fmp
                   }
-                } else
-                  fmp
+                } else fmp
               case _ => fmp
             }
 
@@ -619,10 +610,7 @@ object Scalding {
               getOrElse(options, names, producer, FlatMapShards.default).count
             val (fmp, m) = recurse(producer)
             val fmpSharded =
-              if (shards < 1)
-                fmp
-              else
-                fmp.mapPipe(_.shard(shards))
+              if (shards < 1) fmp else fmp.mapPipe(_.shard(shards))
 
             (
               fmpSharded.map { flowP =>
@@ -909,10 +897,8 @@ class Scalding(
                     }
                   }
                   flow.complete
-                  if (flow.getFlowStats.isSuccessful)
-                    runningState.succeed
-                  else
-                    throw new Exception("Flow did not complete.")
+                  if (flow.getFlowStats.isSuccessful) runningState.succeed
+                  else throw new Exception("Flow did not complete.")
               }
             } catch { case NonFatal(e) => runningState.fail(e) }
           case Left(waitingState) => waitingState

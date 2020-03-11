@@ -80,8 +80,7 @@ object Integer {
 
     if (s == null || s.size == 0 ||
         radix < Character.MIN_RADIX ||
-        radix > Character.MAX_RADIX)
-      fail
+        radix > Character.MAX_RADIX) fail
     else {
       var i = if ((signed && s(0) == '-') || s(0) == '+') 1 else 0
       // JavaDoc says: We need at least one digit
@@ -117,9 +116,7 @@ object Integer {
 
   @inline def compareUnsigned(x: scala.Int, y: scala.Int): scala.Int = {
     import js.JSNumberOps._
-    if (x == y) 0
-    else if (x.toUint > y.toUint) 1
-    else -1
+    if (x == y) 0 else if (x.toUint > y.toUint) 1 else -1
   }
 
   @inline def toUnsignedLong(x: Int): scala.Long =
@@ -157,8 +154,7 @@ object Integer {
   }
 
   @inline def highestOneBit(i: Int): Int =
-    if (i == 0) 0
-    else (1 << 31) >>> numberOfLeadingZeros(i)
+    if (i == 0) 0 else (1 << 31) >>> numberOfLeadingZeros(i)
 
   @inline def lowestOneBit(i: Int): Int =
     i & -i
@@ -196,8 +192,7 @@ object Integer {
   }
 
   @inline def numberOfTrailingZeros(i: scala.Int): scala.Int =
-    if (i == 0) 32
-    else 31 - numberOfLeadingZeros(i & -i)
+    if (i == 0) 32 else 31 - numberOfLeadingZeros(i & -i)
 
   def toBinaryString(i: scala.Int): String = toStringBase(i, 2)
   def toHexString(i: scala.Int): String = toStringBase(i, 16)

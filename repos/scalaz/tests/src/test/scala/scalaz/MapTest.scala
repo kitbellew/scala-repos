@@ -79,17 +79,11 @@ object MapTest extends SpecLite {
   }
 
   "findMin" ! forAll { a: Int ==>> Int =>
-    a.findMin must_=== {
-      if (a.isEmpty) None
-      else Some(a.toList.minBy(_._1))
-    }
+    a.findMin must_=== { if (a.isEmpty) None else Some(a.toList.minBy(_._1)) }
   }
 
   "findMax" ! forAll { a: Int ==>> Int =>
-    a.findMax must_=== {
-      if (a.isEmpty) None
-      else Some(a.toList.maxBy(_._1))
-    }
+    a.findMax must_=== { if (a.isEmpty) None else Some(a.toList.maxBy(_._1)) }
   }
 
   "deleteMin" ! forAll { a: Int ==>> Int =>
@@ -257,10 +251,7 @@ object MapTest extends SpecLite {
       val a = m delete i
       structurallySound(a)
       (a member i) must_=== false
-      if (m member i)
-        (m.size - 1) must_=== a.size
-      else
-        m must_=== a
+      if (m member i) (m.size - 1) must_=== a.size else m must_=== a
     }
   }
 
@@ -278,10 +269,7 @@ object MapTest extends SpecLite {
     "insert sound" ! forAll { (m: Int ==>> Int, a: Int, b: Int) =>
       val c = m insert (a, b)
       structurallySound(c)
-      if (m member a)
-        m.size must_=== c.size
-      else
-        (m.size + 1) must_=== c.size
+      if (m member a) m.size must_=== c.size else (m.size + 1) must_=== c.size
       c.lookup(a) must_=== Some(b)
     }
 

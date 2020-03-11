@@ -169,8 +169,7 @@ sealed abstract class List[+A]
         unchanged: List[A],
         pending: List[A]): List[B] =
       if (pending.isEmpty) {
-        if (mapped eq null) unchanged
-        else mapped.prependToList(unchanged)
+        if (mapped eq null) unchanged else mapped.prependToList(unchanged)
       } else {
         val head0 = pending.head
         val head1 = f(head0)
@@ -246,8 +245,7 @@ sealed abstract class List[+A]
     */
   override def slice(from: Int, until: Int): List[A] = {
     val lo = scala.math.max(from, 0)
-    if (until <= lo || isEmpty) Nil
-    else this drop lo take (until - lo)
+    if (until <= lo || isEmpty) Nil else this drop lo take (until - lo)
   }
 
   override def takeRight(n: Int): List[A] = {
@@ -364,8 +362,7 @@ sealed abstract class List[+A]
   @inline final override def dropWhile(p: A => Boolean): List[A] = {
     @tailrec
     def loop(xs: List[A]): List[A] =
-      if (xs.isEmpty || !p(xs.head)) xs
-      else loop(xs.tail)
+      if (xs.isEmpty || !p(xs.head)) xs else loop(xs.tail)
 
     loop(this)
   }
@@ -406,8 +403,7 @@ sealed abstract class List[+A]
   override def stringPrefix = "List"
 
   override def toStream: Stream[A] =
-    if (isEmpty) Stream.Empty
-    else new Stream.Cons(head, tail.toStream)
+    if (isEmpty) Stream.Empty else new Stream.Cons(head, tail.toStream)
 
   // Create a proxy for Java serialization that allows us to avoid mutation
   // during de-serialization.  This is the Serialization Proxy Pattern.

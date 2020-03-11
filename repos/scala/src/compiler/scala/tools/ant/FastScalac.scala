@@ -85,8 +85,7 @@ class FastScalac extends Scalac {
   /** Performs the compilation. */
   override def execute() {
     val (settings, sourceFiles, javaOnly) = initialize
-    if (sourceFiles.isEmpty || javaOnly)
-      return
+    if (sourceFiles.isEmpty || javaOnly) return
 
     // initialize fsc specific settings
     val s = settings.asInstanceOf[FscSettings] // safe (newSettings)

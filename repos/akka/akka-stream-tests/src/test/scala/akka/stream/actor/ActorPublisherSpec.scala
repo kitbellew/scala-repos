@@ -71,8 +71,7 @@ object ActorPublisherSpec {
 
     def receive = {
       case i: Int ⇒
-        if (buf.isEmpty && totalDemand > 0)
-          onNext(i)
+        if (buf.isEmpty && totalDemand > 0) onNext(i)
         else {
           buf :+= i
           deliverBuf()

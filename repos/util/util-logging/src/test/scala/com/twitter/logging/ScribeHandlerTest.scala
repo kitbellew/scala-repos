@@ -158,8 +158,7 @@ class ScribeHandlerTest extends WordSpec with BeforeAndAfter with Eventually {
         scribe.publish(record1)
         if (retries > 0 && statsReceiver.counter("connection_failed")() < 1L)
           scribeWithConnectionFailure(retries - 1)
-        else
-          scribe
+        else scribe
       }
       val scribe = scribeWithConnectionFailure(2)
 

@@ -106,19 +106,17 @@ trait SeqViewLike[
     protected[this] lazy val fstSeq = fst.toSeq
     def length: Int = fstSeq.length + self.length
     def apply(idx: Int): B =
-      if (idx < fstSeq.length) fstSeq(idx)
-      else self.apply(idx - fstSeq.length)
+      if (idx < fstSeq.length) fstSeq(idx) else self.apply(idx - fstSeq.length)
   }
 
   trait Filtered extends super.Filtered with Transformed[A] {
     protected[this] lazy val index = {
       var len = 0
       val arr = new Array[Int](self.length)
-      for (i <- 0 until self.length)
-        if (pred(self(i))) {
-          arr(len) = i
-          len += 1
-        }
+      for (i <- 0 until self.length) if (pred(self(i))) {
+        arr(len) = i
+        len += 1
+      }
       arr take len
     }
     def length = index.length

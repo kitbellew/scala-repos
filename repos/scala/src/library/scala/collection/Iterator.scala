@@ -127,8 +127,7 @@ object Iterator {
     private[this] var acc = start
     def hasNext: Boolean = true
     def next(): T = {
-      if (first) first = false
-      else acc = f(acc)
+      if (first) first = false else acc = f(acc)
 
       acc
     }
@@ -261,8 +260,7 @@ object Iterator {
         if (underlying.hasNext) {
           underlying.next()
           dropping -= 1
-        } else
-          dropping = 0
+        } else dropping = 0
       }
     def hasNext = { skip(); remaining != 0 && underlying.hasNext }
     def next() = {
@@ -276,8 +274,7 @@ object Iterator {
     override protected def sliceIterator(from: Int, until: Int): Iterator[A] = {
       val lo = from max 0
       def adjustedBound =
-        if (unbounded) -1
-        else 0 max (remaining - lo)
+        if (unbounded) -1 else 0 max (remaining - lo)
       val rest =
         if (until < 0) adjustedBound // respect current bound, if any
         else if (until <= lo) 0 // empty
@@ -444,8 +441,7 @@ trait Iterator[+A] extends TraversableOnce[A] {
       else if (until <= lo) 0 // empty
       else until - lo // finite
 
-    if (rest == 0) empty
-    else new Iterator.SliceIterator(this, lo, rest)
+    if (rest == 0) empty else new Iterator.SliceIterator(this, lo, rest)
   }
 
   /** Creates a new iterator that maps all produced values of this iterator
@@ -537,8 +533,7 @@ trait Iterator[+A] extends TraversableOnce[A] {
   def corresponds[B](that: GenTraversableOnce[B])(
       p: (A, B) => Boolean): Boolean = {
     val that0 = that.toIterator
-    while (hasNext && that0.hasNext)
-      if (!p(next(), that0.next())) return false
+    while (hasNext && that0.hasNext) if (!p(next(), that0.next())) return false
 
     hasNext == that0.hasNext
   }
@@ -621,8 +616,7 @@ trait Iterator[+A] extends TraversableOnce[A] {
       def next() =
         if (hasNext) {
           val res = elem
-          if (self.hasNext) elem = op(elem, self.next())
-          else hasNext = false
+          if (self.hasNext) elem = op(elem, self.next()) else hasNext = false
           res
         } else Iterator.empty.next()
     }
@@ -660,8 +654,7 @@ trait Iterator[+A] extends TraversableOnce[A] {
 
     def hasNext = hdDefined || tail.hasNext && {
       hd = tail.next()
-      if (p(hd)) hdDefined = true
-      else tail = Iterator.empty
+      if (p(hd)) hdDefined = true else tail = Iterator.empty
       hdDefined
     }
     def next() =
@@ -687,8 +680,7 @@ trait Iterator[+A] extends TraversableOnce[A] {
         while (self.hasNext && !p(self.head)) { other.lookahead += self.next }
       def hasNext = !lookahead.isEmpty || { skip(); self.hasNext }
       def next() =
-        if (!lookahead.isEmpty) lookahead.dequeue()
-        else { skip(); self.next() }
+        if (!lookahead.isEmpty) lookahead.dequeue() else { skip(); self.next() }
     }
     val l = new PartitionIterator(p)
     val r = new PartitionIterator(!p(_))
@@ -934,10 +926,7 @@ trait Iterator[+A] extends TraversableOnce[A] {
       if (self.hasNext) {
         if (that.hasNext) (self.next(), that.next())
         else (self.next(), thatElem)
-      } else {
-        if (that.hasNext) (thisElem, that.next())
-        else empty.next()
-      }
+      } else { if (that.hasNext) (thisElem, that.next()) else empty.next() }
   }
 
   /** Applies a function `f` to all values produced by this iterator.
@@ -1206,12 +1195,10 @@ trait Iterator[+A] extends TraversableOnce[A] {
       // elements is less than the gap between sequences, we are done.
       def deliver(howMany: Int) = {
         (howMany > 0 && (isFirst || len > gap)) && {
-          if (!isFirst)
-            buffer trimStart (step min prevSize)
+          if (!isFirst) buffer trimStart (step min prevSize)
 
           val available =
-            if (isFirst) len
-            else howMany min (len - gap)
+            if (isFirst) len else howMany min (len - gap)
 
           buffer ++= (xs takeRight available)
           filled = true
@@ -1237,11 +1224,9 @@ trait Iterator[+A] extends TraversableOnce[A] {
 
     def hasNext = filled || fill()
     def next = {
-      if (!filled)
-        fill()
+      if (!filled) fill()
 
-      if (!filled)
-        throw new NoSuchElementException("next on empty iterator")
+      if (!filled) throw new NoSuchElementException("next on empty iterator")
       filled = false
       buffer.toList
     }
@@ -1366,8 +1351,7 @@ trait Iterator[+A] extends TraversableOnce[A] {
         i = -1
       }
       if (i < 0) {
-        if (patchElems.hasNext) patchElems.next()
-        else origElems.next()
+        if (patchElems.hasNext) patchElems.next() else origElems.next()
       } else {
         if (origElems.hasNext) {
           i -= 1
@@ -1418,9 +1402,7 @@ trait Iterator[+A] extends TraversableOnce[A] {
     *  @note        Reuse: $consumesTwoIterators
     */
   def sameElements(that: Iterator[_]): Boolean = {
-    while (hasNext && that.hasNext)
-      if (next != that.next)
-        return false
+    while (hasNext && that.hasNext) if (next != that.next) return false
 
     !hasNext && !that.hasNext
   }

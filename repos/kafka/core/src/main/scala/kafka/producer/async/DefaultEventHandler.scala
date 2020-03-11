@@ -309,8 +309,7 @@ class DefaultEventHandler[K, V](
             sendPartitionPerTopicCache.put(topic, partitionId)
             partitionId
         }
-      } else
-        partitioner.partition(key, numPartitions)
+      } else partitioner.partition(key, numPartitions)
     if (partition < 0 || partition >= numPartitions)
       throw new UnknownTopicOrPartitionException(
         "Invalid partition id: " + partition + " for topic " + topic +
@@ -484,8 +483,5 @@ class DefaultEventHandler[K, V](
     } catch { case t: Throwable => error("Failed to group messages", t); None }
   }
 
-  def close() {
-    if (producerPool != null)
-      producerPool.close
-  }
+  def close() { if (producerPool != null) producerPool.close }
 }

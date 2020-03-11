@@ -78,8 +78,7 @@ trait NormalizationHelperModule[M[+_]]
           def apply(row: Int): BigDecimal = {
             var i = 0
             while (i < cols0.length) {
-              if (cols0(i).isDefinedAt(row))
-                return cols0(i)(row)
+              if (cols0(i).isDefinedAt(row)) return cols0(i)(row)
               i += 1
             }
             return null
@@ -228,10 +227,7 @@ trait NormalizationHelperModule[M[+_]]
               groupedCols.keySet exists { _.hasSuffix(cpath) }
           }
 
-          if (subsumes)
-            continue
-          else
-            Map.empty[ColumnRef, Column]
+          if (subsumes) continue else Map.empty[ColumnRef, Column]
         }
       }
 

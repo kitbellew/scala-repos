@@ -150,8 +150,7 @@ class BaseReplicationClient(
     getResult(keys, useRandomOrder) flatMap { result =>
       if (result.failures.nonEmpty)
         Future.exception(result.failures.values.head)
-      else
-        Future.value(result.values)
+      else Future.value(result.values)
     }
 
   /**

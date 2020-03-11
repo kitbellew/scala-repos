@@ -55,12 +55,9 @@ class HttpMuxer(
     // find the longest pattern that matches (the patterns are already sorted)
     val matching = sorted.find {
       case (pattern, _) =>
-        if (pattern == "")
-          path == "/" || path == "" // special cases
-        else if (pattern.endsWith("/"))
-          path.startsWith(pattern) // prefix match
-        else
-          path == pattern // exact match
+        if (pattern == "") path == "/" || path == "" // special cases
+        else if (pattern.endsWith("/")) path.startsWith(pattern) // prefix match
+        else path == pattern // exact match
     }
 
     matching match {

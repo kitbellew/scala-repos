@@ -209,11 +209,9 @@ private class BufChannelBuffer(val buf: Buf, endianness: ByteOrder)
   }
 
   def getBytes(index: Int, dst: ByteBuffer) {
-    if (index < 0)
-      throw new IndexOutOfBoundsException()
+    if (index < 0) throw new IndexOutOfBoundsException()
 
-    if (index >= buf.length)
-      throw new IndexOutOfBoundsException()
+    if (index >= buf.length) throw new IndexOutOfBoundsException()
 
     val c = (buf.length - index) min dst.remaining()
     val a = new Array[Byte](c)
@@ -228,8 +226,7 @@ private class BufChannelBuffer(val buf: Buf, endianness: ByteOrder)
   }
 
   def copy(index: Int, length: Int): ChannelBuffer = {
-    if (index < 0)
-      throw new IndexOutOfBoundsException("index < 0")
+    if (index < 0) throw new IndexOutOfBoundsException("index < 0")
 
     if (index > buf.length)
       throw new IndexOutOfBoundsException("index > buf.length")
@@ -243,8 +240,7 @@ private class BufChannelBuffer(val buf: Buf, endianness: ByteOrder)
   }
 
   def slice(index: Int, length: Int): ChannelBuffer = {
-    if (index < 0)
-      throw new IndexOutOfBoundsException("index < 0")
+    if (index < 0) throw new IndexOutOfBoundsException("index < 0")
 
     if (index > buf.length)
       throw new IndexOutOfBoundsException("index > buf.length")
@@ -258,11 +254,9 @@ private class BufChannelBuffer(val buf: Buf, endianness: ByteOrder)
   }
 
   def getByte(index: Int): Byte = {
-    if (index < 0)
-      throw new IndexOutOfBoundsException()
+    if (index < 0) throw new IndexOutOfBoundsException()
 
-    if (index >= buf.length)
-      throw new IndexOutOfBoundsException()
+    if (index >= buf.length) throw new IndexOutOfBoundsException()
 
     val one = new Array[Byte](1)
     buf.slice(index, index + 1).write(one, 0)
@@ -270,11 +264,9 @@ private class BufChannelBuffer(val buf: Buf, endianness: ByteOrder)
   }
 
   def getShort(index: Int): Short = {
-    if (index < 0)
-      throw new IndexOutOfBoundsException()
+    if (index < 0) throw new IndexOutOfBoundsException()
 
-    if (index + 2 > buf.length)
-      throw new IndexOutOfBoundsException()
+    if (index + 2 > buf.length) throw new IndexOutOfBoundsException()
 
     val bytes = new Array[Byte](2)
     buf.slice(index, index + 2).write(bytes, 0)
@@ -287,11 +279,9 @@ private class BufChannelBuffer(val buf: Buf, endianness: ByteOrder)
   }
 
   def getUnsignedMedium(index: Int): Int = {
-    if (index < 0)
-      throw new IndexOutOfBoundsException()
+    if (index < 0) throw new IndexOutOfBoundsException()
 
-    if (index + 3 > buf.length)
-      throw new IndexOutOfBoundsException()
+    if (index + 3 > buf.length) throw new IndexOutOfBoundsException()
 
     val bytes = new Array[Byte](3)
     buf.slice(index, index + 3).write(bytes, 0)
@@ -308,11 +298,9 @@ private class BufChannelBuffer(val buf: Buf, endianness: ByteOrder)
   }
 
   def getInt(index: Int): Int = {
-    if (index < 0)
-      throw new IndexOutOfBoundsException()
+    if (index < 0) throw new IndexOutOfBoundsException()
 
-    if (index + 4 > buf.length)
-      throw new IndexOutOfBoundsException()
+    if (index + 4 > buf.length) throw new IndexOutOfBoundsException()
 
     val bytes = new Array[Byte](4)
     buf.slice(index, index + 4).write(bytes, 0)
@@ -331,11 +319,9 @@ private class BufChannelBuffer(val buf: Buf, endianness: ByteOrder)
   }
 
   def getLong(index: Int): Long = {
-    if (index < 0)
-      throw new IndexOutOfBoundsException()
+    if (index < 0) throw new IndexOutOfBoundsException()
 
-    if (index + 8 > buf.length)
-      throw new IndexOutOfBoundsException()
+    if (index + 8 > buf.length) throw new IndexOutOfBoundsException()
 
     val bytes = new Array[Byte](8)
     buf.slice(index, index + 8).write(bytes, 0)
@@ -362,8 +348,7 @@ private class BufChannelBuffer(val buf: Buf, endianness: ByteOrder)
   }
 
   def toByteBuffer(index: Int, length: Int): ByteBuffer = {
-    if (index + length > buf.length)
-      throw new IndexOutOfBoundsException()
+    if (index + length > buf.length) throw new IndexOutOfBoundsException()
 
     val bytes = new Array[Byte](length)
     buf.slice(index, index + length).write(bytes, 0)
@@ -374,8 +359,7 @@ private class BufChannelBuffer(val buf: Buf, endianness: ByteOrder)
 
   override def readBytes(length: Int): ChannelBuffer = {
     checkReadableBytes(length)
-    if (length == 0)
-      return ChannelBuffers.EMPTY_BUFFER
+    if (length == 0) return ChannelBuffers.EMPTY_BUFFER
 
     val offset = readerIndex()
     readerIndex(offset + length)

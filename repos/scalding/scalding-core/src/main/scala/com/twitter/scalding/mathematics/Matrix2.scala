@@ -594,10 +594,8 @@ case class HadamardProduct[R, C, V](
   override val sizeHint = left.sizeHint #*# right.sizeHint
   override def negate(implicit g: Group[V]): HadamardProduct[R, C, V] =
     if (left.sizeHint.total.getOrElse(BigInt(0L)) > right.sizeHint.total
-          .getOrElse(BigInt(0L)))
-      HadamardProduct(left, right.negate, ring)
-    else
-      HadamardProduct(left.negate, right, ring)
+          .getOrElse(BigInt(0L))) HadamardProduct(left, right.negate, ring)
+    else HadamardProduct(left.negate, right, ring)
 
   implicit override val rowOrd: Ordering[R] = left.rowOrd
   implicit override val colOrd: Ordering[C] = left.colOrd
@@ -654,14 +652,12 @@ trait Scalar2[V] extends Serializable {
         if (left.sizeHint.total.getOrElse(BigInt(0L)) > right.sizeHint.total
               .getOrElse(BigInt(0L)))
           Product(left, (this * right), ring, expressions)(p.joiner)
-        else
-          Product(this * left, right, ring, expressions)(p.joiner)
+        else Product(this * left, right, ring, expressions)(p.joiner)
       case HadamardProduct(left, right, _) =>
         if (left.sizeHint.total.getOrElse(BigInt(0L)) > right.sizeHint.total
               .getOrElse(BigInt(0L)))
           HadamardProduct(left, (this * right), ring)
-        else
-          HadamardProduct(this * left, right, ring)
+        else HadamardProduct(this * left, right, ring)
       case s @ Sum(left, right, mon) => Sum(this * left, this * right, mon)
       case m @ MatrixLiteral(_, _)   => timesLiteral(m) // handle literals here
       case x @ OneC() =>

@@ -291,8 +291,7 @@ private[akka] abstract class FanOut(
   override def pumpFailed(e: Throwable): Unit = fail(e)
 
   protected def fail(e: Throwable): Unit = {
-    if (settings.debugLogging)
-      log.debug("fail due to: {}", e.getMessage)
+    if (settings.debugLogging) log.debug("fail due to: {}", e.getMessage)
     primaryInputs.cancel()
     outputBunch.cancel(e)
     pump()

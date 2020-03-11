@@ -49,8 +49,7 @@ final class Tuple3Zipped[El1, Repr1, El2, Repr2, El3, Repr3](
     for (el1 <- colls._1) {
       if (elems2.hasNext && elems3.hasNext)
         b += f(el1, elems2.next(), elems3.next())
-      else
-        return b.result()
+      else return b.result()
     }
     b.result()
   }
@@ -64,8 +63,7 @@ final class Tuple3Zipped[El1, Repr1, El2, Repr2, El3, Repr3](
     for (el1 <- colls._1) {
       if (elems2.hasNext && elems3.hasNext)
         b ++= f(el1, elems2.next(), elems3.next())
-      else
-        return b.result()
+      else return b.result()
     }
     b.result()
   }
@@ -103,8 +101,7 @@ final class Tuple3Zipped[El1, Repr1, El2, Repr2, El3, Repr3](
 
     for (el1 <- colls._1) {
       if (elems2.hasNext && elems3.hasNext) {
-        if (p(el1, elems2.next(), elems3.next()))
-          return true
+        if (p(el1, elems2.next(), elems3.next())) return true
       } else return false
     }
     false
@@ -118,10 +115,8 @@ final class Tuple3Zipped[El1, Repr1, El2, Repr2, El3, Repr3](
     val elems3 = colls._3.iterator
 
     for (el1 <- colls._1) {
-      if (elems2.hasNext && elems3.hasNext)
-        f(el1, elems2.next(), elems3.next())
-      else
-        return
+      if (elems2.hasNext && elems3.hasNext) f(el1, elems2.next(), elems3.next())
+      else return
     }
   }
 

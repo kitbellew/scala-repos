@@ -79,8 +79,7 @@ class SimpleLock {
   }
 
   def tryLock() = {
-    if (acquired.get) false
-    else acquired.compareAndSet(false, true)
+    if (acquired.get) false else acquired.compareAndSet(false, true)
   }
 
   def tryUnlock() = { acquired.compareAndSet(true, false) }
@@ -117,13 +116,11 @@ class Switch(startAsOn: Boolean = false) {
   def switchOn: Boolean = synchronized { switch.compareAndSet(false, true) }
 
   def ifOnYield[T](action: => T): Option[T] = {
-    if (switch.get) Some(action)
-    else None
+    if (switch.get) Some(action) else None
   }
 
   def ifOffYield[T](action: => T): Option[T] = {
-    if (!switch.get) Some(action)
-    else None
+    if (!switch.get) Some(action) else None
   }
 
   def ifOn(action: => Unit): Boolean = {
@@ -141,13 +138,11 @@ class Switch(startAsOn: Boolean = false) {
   }
 
   def whileOnYield[T](action: => T): Option[T] = synchronized {
-    if (switch.get) Some(action)
-    else None
+    if (switch.get) Some(action) else None
   }
 
   def whileOffYield[T](action: => T): Option[T] = synchronized {
-    if (!switch.get) Some(action)
-    else None
+    if (!switch.get) Some(action) else None
   }
 
   def whileOn(action: => Unit): Boolean = synchronized {

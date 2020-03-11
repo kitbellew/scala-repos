@@ -15,12 +15,9 @@ class FlatClassPathFactory(settings: Settings)
     extends ClassPathFactory[FlatClassPath] {
 
   override def newClassPath(file: AbstractFile): FlatClassPath =
-    if (file.isJarOrZip)
-      ZipAndJarFlatClassPathFactory.create(file, settings)
-    else if (file.isDirectory)
-      new DirectoryFlatClassPath(file.file)
-    else
-      sys.error(s"Unsupported classpath element: $file")
+    if (file.isJarOrZip) ZipAndJarFlatClassPathFactory.create(file, settings)
+    else if (file.isDirectory) new DirectoryFlatClassPath(file.file)
+    else sys.error(s"Unsupported classpath element: $file")
 
   override def sourcesInPath(path: String): List[FlatClassPath] =
     for {
@@ -29,10 +26,7 @@ class FlatClassPathFactory(settings: Settings)
     } yield createSourcePath(dir)
 
   private def createSourcePath(file: AbstractFile): FlatClassPath =
-    if (file.isJarOrZip)
-      ZipAndJarFlatSourcePathFactory.create(file, settings)
-    else if (file.isDirectory)
-      new DirectoryFlatSourcePath(file.file)
-    else
-      sys.error(s"Unsupported sourcepath element: $file")
+    if (file.isJarOrZip) ZipAndJarFlatSourcePathFactory.create(file, settings)
+    else if (file.isDirectory) new DirectoryFlatSourcePath(file.file)
+    else sys.error(s"Unsupported sourcepath element: $file")
 }

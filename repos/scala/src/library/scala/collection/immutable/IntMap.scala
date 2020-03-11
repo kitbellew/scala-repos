@@ -23,8 +23,7 @@ private[immutable] object IntMapUtils extends BitOperations.Int {
   def join[T](p1: Int, t1: IntMap[T], p2: Int, t2: IntMap[T]): IntMap[T] = {
     val m = branchMask(p1, p2)
     val p = mask(p1, m)
-    if (zero(p1, m)) IntMap.Bin(p, m, t1, t2)
-    else IntMap.Bin(p, m, t2, t1)
+    if (zero(p1, m)) IntMap.Bin(p, m, t1, t2) else IntMap.Bin(p, m, t2, t1)
   }
 
   def bin[T](
@@ -258,8 +257,7 @@ sealed abstract class IntMap[+T]
       else bin(prefix, mask, newleft, newright)
     }
     case IntMap.Tip(key, value) =>
-      if (f((key, value))) this
-      else IntMap.Nil
+      if (f((key, value))) this else IntMap.Nil
     case IntMap.Nil => IntMap.Nil
   }
 
@@ -352,8 +350,7 @@ sealed abstract class IntMap[+T]
       else if (zero(key, mask)) bin(prefix, mask, left - key, right)
       else bin(prefix, mask, left, right - key)
     case IntMap.Tip(key2, _) =>
-      if (key == key2) IntMap.Nil
-      else this
+      if (key == key2) IntMap.Nil else this
     case IntMap.Nil => IntMap.Nil
   }
 

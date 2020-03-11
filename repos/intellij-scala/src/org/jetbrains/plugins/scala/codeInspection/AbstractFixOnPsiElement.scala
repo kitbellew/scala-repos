@@ -24,8 +24,7 @@ abstract class AbstractFixOnPsiElement[T <: PsiElement](
   def getElement: T = {
     try {
       val elem = getStartElement.asInstanceOf[T]
-      if (elem.isValid) elem
-      else null.asInstanceOf[T]
+      if (elem.isValid) elem else null.asInstanceOf[T]
     } catch { case e: ClassCastException => null.asInstanceOf[T] }
   }
 
@@ -59,15 +58,13 @@ abstract class AbstractFixOnTwoPsiElements[T <: PsiElement, S <: PsiElement](
   def getFirstElement: T = {
     try {
       val elem = getStartElement.asInstanceOf[T]
-      if (elem.isValid) elem
-      else null.asInstanceOf[T]
+      if (elem.isValid) elem else null.asInstanceOf[T]
     } catch { case e: ClassCastException => null.asInstanceOf[T] }
   }
 
   def getSecondElement: S = {
     val elem = secondRef.getElement
-    if (elem != null && elem.isValid) elem
-    else null.asInstanceOf[S]
+    if (elem != null && elem.isValid) elem else null.asInstanceOf[S]
   }
 
   override def invoke(

@@ -104,11 +104,9 @@ private[collection] abstract class TrieIterator[+T](elems: Array[Iterable[T]])
   def next(): T = {
     if (subIter ne null) {
       val el = subIter.next()
-      if (!subIter.hasNext)
-        subIter = null
+      if (!subIter.hasNext) subIter = null
       el
-    } else
-      next0(arrayD, posD)
+    } else next0(arrayD, posD)
   }
 
   @tailrec private[this] def next0(elems: Array[Iterable[T]], i: Int): T = {
@@ -122,16 +120,14 @@ private[collection] abstract class TrieIterator[+T](elems: Array[Iterable[T]])
         arrayD = null
         posD = 0
       }
-    } else
-      posD += 1
+    } else posD += 1
 
     val m = elems(i)
 
     // Note: this block is over twice as fast written this way as it is
     // as a pattern match.  Haven't started looking into why that is, but
     // it's pretty sad the pattern matcher is that much slower.
-    if (isContainer(m))
-      getElem(m) // push current pos onto stack and descend
+    if (isContainer(m)) getElem(m) // push current pos onto stack and descend
     else if (isTrie(m)) {
       if (depth >= 0) {
         arrayStack(depth) = arrayD
@@ -170,8 +166,7 @@ private[collection] abstract class TrieIterator[+T](elems: Array[Iterable[T]])
   // returns the 1st iterator, its number of elements, and the second iterator
   def split: SplitIterators = {
     // 0) simple case: no elements have been iterated - simply divide arrayD
-    if (arrayD != null && depth == 0 && posD == 0)
-      return splitArray(arrayD)
+    if (arrayD != null && depth == 0 && posD == 0) return splitArray(arrayD)
 
     // otherwise, some elements have been iterated over
     // 1) collision case: if we have a subIter, we return subIter and elements after it
@@ -211,8 +206,7 @@ private[collection] abstract class TrieIterator[+T](elems: Array[Iterable[T]])
           // 3a) positioned at the last element of arrayD
           val m = arrayD(posD)
           arrayToIterators(
-            if (isTrie(m)) getElems(m)
-            else collisionToArray(m)
+            if (isTrie(m)) getElems(m) else collisionToArray(m)
           )
         } else {
           // 3b) arrayD has more free elements

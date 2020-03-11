@@ -20,8 +20,7 @@ private[persistence] class InmemJournal
     with InmemMessages {
   override def asyncWriteMessages(messages: immutable.Seq[AtomicWrite])
       : Future[immutable.Seq[Try[Unit]]] = {
-    for (w ← messages; p ← w.payload)
-      add(p)
+    for (w ← messages; p ← w.payload) add(p)
     Future.successful(Nil) // all good
   }
 

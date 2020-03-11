@@ -49,11 +49,11 @@ object ReadsSpec extends org.specs2.mutable.Specification {
     "not be read from invalid string" in {
       reads(JsString("invalid")) aka "read date" must beLike {
         case JsError(
-            (
-              _,
-              ValidationError(
-                "error.expected.date.isoformat" :: Nil,
-                _) :: Nil) :: Nil) =>
+              (
+                _,
+                ValidationError(
+                  "error.expected.date.isoformat" :: Nil,
+                  _) :: Nil) :: Nil) =>
           ok
       }
     }
@@ -88,11 +88,11 @@ object ReadsSpec extends org.specs2.mutable.Specification {
       "with default implicit" in {
         correctedReads.reads(JsString("2011-12-03T10:15:30")) must beLike {
           case JsError(
-              (
-                _,
-                ValidationError(
-                  "error.expected.date.isoformat" :: Nil,
-                  _) :: Nil) :: Nil) =>
+                (
+                  _,
+                  ValidationError(
+                    "error.expected.date.isoformat" :: Nil,
+                    _) :: Nil) :: Nil) =>
             ok
         }
       }
@@ -100,11 +100,11 @@ object ReadsSpec extends org.specs2.mutable.Specification {
       "with custom formatter" in {
         CustomReads2.reads(JsString("03/12/2011, 10:15:30")) must beLike {
           case JsError(
-              (
-                _,
-                ValidationError(
-                  "error.expected.date.isoformat" :: Nil,
-                  _) :: Nil) :: Nil) =>
+                (
+                  _,
+                  ValidationError(
+                    "error.expected.date.isoformat" :: Nil,
+                    _) :: Nil) :: Nil) =>
             ok
         }
       }
@@ -149,19 +149,18 @@ object ReadsSpec extends org.specs2.mutable.Specification {
       "from an invalid string" in {
         reads(JsString("invalid")) aka "read date" must beLike {
           case JsError(
-              (
-                _,
-                ValidationError(
-                  "error.expected.date.isoformat" :: Nil,
-                  _) :: Nil) :: Nil) =>
+                (
+                  _,
+                  ValidationError(
+                    "error.expected.date.isoformat" :: Nil,
+                    _) :: Nil) :: Nil) =>
             ok
         }
       }
 
       "from a number" in {
         reads(JsNumber(123L)) aka "read date" must beLike {
-          case JsError(
-              (
+          case JsError((
                 _,
                 ValidationError("error.expected.date" :: Nil) :: Nil) :: Nil) =>
             ok
@@ -187,11 +186,11 @@ object ReadsSpec extends org.specs2.mutable.Specification {
       "with default implicit" in {
         correctedReads.reads(JsString("2011-12-03T10:15:30")) must beLike {
           case JsError(
-              (
-                _,
-                ValidationError(
-                  "error.expected.date.isoformat" :: Nil,
-                  _) :: Nil) :: Nil) =>
+                (
+                  _,
+                  ValidationError(
+                    "error.expected.date.isoformat" :: Nil,
+                    _) :: Nil) :: Nil) =>
             ok
         }
       }
@@ -199,11 +198,11 @@ object ReadsSpec extends org.specs2.mutable.Specification {
       "with custom formatter" in {
         CustomReads2.reads(JsString("03/12/2011, 10:15:30")) must beLike {
           case JsError(
-              (
-                _,
-                ValidationError(
-                  "error.expected.date.isoformat" :: Nil,
-                  _) :: Nil) :: Nil) =>
+                (
+                  _,
+                  ValidationError(
+                    "error.expected.date.isoformat" :: Nil,
+                    _) :: Nil) :: Nil) =>
             ok
         }
       }
@@ -254,11 +253,11 @@ object ReadsSpec extends org.specs2.mutable.Specification {
     "not be read from invalid string" in {
       reads(JsString("invalid")) aka "read date" must beLike {
         case JsError(
-            (
-              _,
-              ValidationError(
-                "error.expected.date.isoformat" :: Nil,
-                _) :: Nil) :: Nil) =>
+              (
+                _,
+                ValidationError(
+                  "error.expected.date.isoformat" :: Nil,
+                  _) :: Nil) :: Nil) =>
           ok
       }
     }
@@ -289,11 +288,11 @@ object ReadsSpec extends org.specs2.mutable.Specification {
       "with default implicit" in {
         correctedReads.reads(JsString("2011-12-03T10:15:30")) must beLike {
           case JsError(
-              (
-                _,
-                ValidationError(
-                  "error.expected.date.isoformat" :: Nil,
-                  _) :: Nil) :: Nil) =>
+                (
+                  _,
+                  ValidationError(
+                    "error.expected.date.isoformat" :: Nil,
+                    _) :: Nil) :: Nil) =>
             ok
         }
       }
@@ -301,11 +300,11 @@ object ReadsSpec extends org.specs2.mutable.Specification {
       "with custom formatter" in {
         CustomReads2.reads(JsString("03/12/2011, 10:15:30+08:00")) must beLike {
           case JsError(
-              (
-                _,
-                ValidationError(
-                  "error.expected.date.isoformat" :: Nil,
-                  _) :: Nil) :: Nil) =>
+                (
+                  _,
+                  ValidationError(
+                    "error.expected.date.isoformat" :: Nil,
+                    _) :: Nil) :: Nil) =>
             ok
         }
       }
@@ -353,11 +352,11 @@ object ReadsSpec extends org.specs2.mutable.Specification {
     "not be read from invalid string" in {
       reads(JsString("invalid")) aka "read date" must beLike {
         case JsError(
-            (
-              _,
-              ValidationError(
-                "error.expected.date.isoformat" :: Nil,
-                _) :: Nil) :: Nil) =>
+              (
+                _,
+                ValidationError(
+                  "error.expected.date.isoformat" :: Nil,
+                  _) :: Nil) :: Nil) =>
           ok
       }
     }
@@ -377,11 +376,11 @@ object ReadsSpec extends org.specs2.mutable.Specification {
       "with default implicit" in {
         correctedReads.reads(JsString("2011-12-03")) must beLike {
           case JsError(
-              (
-                _,
-                ValidationError(
-                  "error.expected.date.isoformat" :: Nil,
-                  _) :: Nil) :: Nil) =>
+                (
+                  _,
+                  ValidationError(
+                    "error.expected.date.isoformat" :: Nil,
+                    _) :: Nil) :: Nil) =>
             ok
         }
       }
@@ -389,11 +388,11 @@ object ReadsSpec extends org.specs2.mutable.Specification {
       "with custom formatter" in {
         CustomReads2.reads(JsString("03/12/2011")) must beLike {
           case JsError(
-              (
-                _,
-                ValidationError(
-                  "error.expected.date.isoformat" :: Nil,
-                  _) :: Nil) :: Nil) =>
+                (
+                  _,
+                  ValidationError(
+                    "error.expected.date.isoformat" :: Nil,
+                    _) :: Nil) :: Nil) =>
             ok
         }
       }
@@ -442,11 +441,11 @@ object ReadsSpec extends org.specs2.mutable.Specification {
     "not be read from invalid string" in {
       reads(JsString("invalid")) aka "read date" must beLike {
         case JsError(
-            (
-              _,
-              ValidationError(
-                "error.expected.date.isoformat" :: Nil,
-                _) :: Nil) :: Nil) =>
+              (
+                _,
+                ValidationError(
+                  "error.expected.date.isoformat" :: Nil,
+                  _) :: Nil) :: Nil) =>
           ok
       }
     }
@@ -500,11 +499,11 @@ object ReadsSpec extends org.specs2.mutable.Specification {
       "with default implicit" in {
         correctedReads.reads(JsString("2011-12-03T10:15:30")) must beLike {
           case JsError(
-              (
-                _,
-                ValidationError(
-                  "error.expected.date.isoformat" :: Nil,
-                  _) :: Nil) :: Nil) =>
+                (
+                  _,
+                  ValidationError(
+                    "error.expected.date.isoformat" :: Nil,
+                    _) :: Nil) :: Nil) =>
             ok
         }
       }
@@ -512,11 +511,11 @@ object ReadsSpec extends org.specs2.mutable.Specification {
       "with custom formatter" in {
         CustomReads2.reads(JsString("03/12/2011, 10:15:30")) must beLike {
           case JsError(
-              (
-                _,
-                ValidationError(
-                  "error.expected.date.isoformat" :: Nil,
-                  _) :: Nil) :: Nil) =>
+                (
+                  _,
+                  ValidationError(
+                    "error.expected.date.isoformat" :: Nil,
+                    _) :: Nil) :: Nil) =>
             ok
         }
       }

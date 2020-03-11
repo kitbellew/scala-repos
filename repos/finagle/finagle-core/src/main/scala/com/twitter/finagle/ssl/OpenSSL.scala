@@ -105,11 +105,9 @@ object OpenSSL {
         "ssl.cipher_spec",
         Option(ciphers).getOrElse { defaultCiphers })
 
-      if (caPath != null)
-        configMap.put("ssl.ca_path", caPath)
+      if (caPath != null) configMap.put("ssl.ca_path", caPath)
 
-      if (nextProtos != null)
-        configMap.put("ssl.next_protos", nextProtos)
+      if (nextProtos != null) configMap.put("ssl.next_protos", nextProtos)
 
       val config = linker.configurationCtor.newInstance(
         configMap.asInstanceOf[MapOfStrings])
@@ -126,8 +124,7 @@ object OpenSSL {
     val contextHolder = synchronized {
       if (useCache)
         contextHolderCache.getOrElseUpdate(certificatePath, makeContextHolder)
-      else
-        makeContextHolder
+      else makeContextHolder
     }
 
     val engine: SSLEngine = linker.sslEngineCtor

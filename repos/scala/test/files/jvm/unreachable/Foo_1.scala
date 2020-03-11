@@ -8,44 +8,29 @@ class Foo_1 {
 
   def unreachableIf: Int = {
     return 42
-    if (util.Random.nextInt % 2 == 0)
-      0
-    else
-      1
+    if (util.Random.nextInt % 2 == 0) 0 else 1
   }
 
   def unreachableIfBranches: Int = {
-    if (util.Random.nextInt % 2 == 0)
-      return 42
-    else
-      return 42
+    if (util.Random.nextInt % 2 == 0) return 42 else return 42
 
     return 0
   }
 
   def unreachableOneLegIf: Int = {
-    if (util.Random.nextInt % 2 == 0)
-      return 42
+    if (util.Random.nextInt % 2 == 0) return 42
 
     return 42
   }
 
   def unreachableLeftBranch: Int = {
-    val result =
-      if (util.Random.nextInt % 2 == 0)
-        return 42
-      else
-        42
+    val result = if (util.Random.nextInt % 2 == 0) return 42 else 42
 
     return result
   }
 
   def unreachableRightBranch: Int = {
-    val result =
-      if (util.Random.nextInt % 2 == 0)
-        42
-      else
-        return 42
+    val result = if (util.Random.nextInt % 2 == 0) 42 else return 42
 
     return result
   }

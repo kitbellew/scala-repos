@@ -106,10 +106,8 @@ abstract class NodeChurnSpec
         awaitAllMembersUp(systems)
         enterBarrier("members-up-" + n)
         systems.foreach { node ⇒
-          if (n % 2 == 0)
-            Cluster(node).down(Cluster(node).selfAddress)
-          else
-            Cluster(node).leave(Cluster(node).selfAddress)
+          if (n % 2 == 0) Cluster(node).down(Cluster(node).selfAddress)
+          else Cluster(node).leave(Cluster(node).selfAddress)
         }
         awaitRemoved(systems)
         enterBarrier("members-removed-" + n)

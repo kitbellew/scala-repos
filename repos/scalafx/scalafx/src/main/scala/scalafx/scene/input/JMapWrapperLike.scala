@@ -42,12 +42,9 @@ private[input] trait JMapWrapperLike[
 
   def get(k: A) = {
     val v = underlying get k
-    if (v != null)
-      Some(v)
-    else if (underlying containsKey k)
-      Some(null.asInstanceOf[B])
-    else
-      None
+    if (v != null) Some(v)
+    else if (underlying containsKey k) Some(null.asInstanceOf[B])
+    else None
   }
 
   def +=(kv: (A, B)): this.type = { underlying.put(kv._1, kv._2); this }

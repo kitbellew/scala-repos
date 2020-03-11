@@ -89,10 +89,8 @@ class DelayedFetch(
               topicAndPartition.topic,
               topicAndPartition.partition)
             val endOffset =
-              if (fetchMetadata.fetchOnlyCommitted)
-                replica.highWatermark
-              else
-                replica.logEndOffset
+              if (fetchMetadata.fetchOnlyCommitted) replica.highWatermark
+              else replica.logEndOffset
 
             // Go directly to the check for Case D if the message offsets are the same. If the log segment
             // has just rolled, then the high watermark offset will remain the same but be on the old segment,
@@ -134,17 +132,14 @@ class DelayedFetch(
     }
 
     // Case D
-    if (accumulatedSize >= fetchMetadata.fetchMinBytes)
-      forceComplete()
-    else
-      false
+    if (accumulatedSize >= fetchMetadata.fetchMinBytes) forceComplete()
+    else false
   }
 
   override def onExpiration() {
     if (fetchMetadata.isFromFollower)
       DelayedFetchMetrics.followerExpiredRequestMeter.mark()
-    else
-      DelayedFetchMetrics.consumerExpiredRequestMeter.mark()
+    else DelayedFetchMetrics.consumerExpiredRequestMeter.mark()
   }
 
   /**

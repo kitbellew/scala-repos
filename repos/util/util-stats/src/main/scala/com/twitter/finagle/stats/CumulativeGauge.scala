@@ -28,8 +28,7 @@ private[finagle] abstract class CumulativeGauge {
     val gs = new mutable.ArrayBuffer[UnderlyingGauge](underlying.size)
     underlying.foreach { weakRef =>
       val g = weakRef.get()
-      if (g != null)
-        gs += g
+      if (g != null) gs += g
     }
     gs
   }
@@ -48,12 +47,10 @@ private[finagle] abstract class CumulativeGauge {
         mutable.IndexedSeq.newBuilder[WeakReference[UnderlyingGauge]]
       underlying.foreach { weakRef =>
         val g = weakRef.get()
-        if (g != null && (g ne underlyingGauge))
-          newUnderlying += weakRef
+        if (g != null && (g ne underlyingGauge)) newUnderlying += weakRef
       }
       underlying = newUnderlying.result()
-      if (underlying.isEmpty)
-        deregister()
+      if (underlying.isEmpty) deregister()
     }
 
   def addGauge(f: => Float): Gauge = synchronized {
@@ -62,8 +59,7 @@ private[finagle] abstract class CumulativeGauge {
       removeGauge(null) // there is at least 1 gauge that may need to be cleaned
     val underlyingGauge = UnderlyingGauge(() => f)
     underlying :+= new WeakReference(underlyingGauge)
-    if (shouldRegister)
-      register()
+    if (shouldRegister) register()
     underlyingGauge
   }
 
@@ -100,8 +96,7 @@ trait StatsReceiverWithCumulativeGauges extends StatsReceiver { self =>
       ) {
         val largeCgs = gauges.asScala.flatMap {
           case (ks, cg) =>
-            if (cg.totalSize >= 100000) Some(ks -> cg.totalSize)
-            else None
+            if (cg.totalSize >= 100000) Some(ks -> cg.totalSize) else None
         }
         if (largeCgs.isEmpty) { Nil }
         else {
@@ -149,8 +144,7 @@ trait StatsReceiverWithCumulativeGauges extends StatsReceiver { self =>
     */
   protected def numUnderlying(name: String*): Int = {
     val cumulativeGauge = gauges.get(name)
-    if (cumulativeGauge == null) 0
-    else cumulativeGauge.size
+    if (cumulativeGauge == null) 0 else cumulativeGauge.size
   }
 
 }

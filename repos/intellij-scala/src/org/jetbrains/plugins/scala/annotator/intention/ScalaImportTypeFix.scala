@@ -354,8 +354,7 @@ object ScalaImportTypeFix {
   private def notInner(clazz: PsiClass, ref: PsiElement): Boolean = {
     def parent(t: ScTypeDefinition): PsiElement = {
       val stub = t.asInstanceOf[ScTypeDefinitionImpl].getStub
-      if (stub != null) stub.getParentStub.getPsi
-      else t.getParent
+      if (stub != null) stub.getParentStub.getPsi else t.getParent
     }
     clazz match {
       case o: ScObject if o.isSyntheticObject =>

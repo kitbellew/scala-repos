@@ -55,8 +55,7 @@ private[netty4] class Netty4ClientChannelInitializer[In, Out](
     encodeHandler.foreach { enc =>
       if (pipe.get(WriteTimeoutHandlerKey) != null)
         pipe.addBefore(WriteTimeoutHandlerKey, FrameEncoderHandlerKey, enc)
-      else
-        pipe.addLast(FrameEncoderHandlerKey, enc)
+      else pipe.addLast(FrameEncoderHandlerKey, enc)
     }
   }
 }

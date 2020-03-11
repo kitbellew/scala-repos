@@ -134,8 +134,7 @@ final object Aggregation {
       if (get(showTiming)) {
         val msg = timingString(start, stop, "", structure.data, currentRef, log)
         if (success) log.success(msg) else log.error(msg)
-      } else if (success)
-        log.success("")
+      } else if (success) log.success("")
     }
   }
   private def timingString(
@@ -188,8 +187,7 @@ final object Aggregation {
       Util.separate(in)(f)
 
     val kvs = keys.toList
-    if (kvs.isEmpty)
-      failure("No such setting/task")
+    if (kvs.isEmpty) failure("No such setting/task")
     else {
       val (inputTasks, other) = separate[InputTask[_]](kvs) {
         case KeyValue(k, v: InputTask[_]) => Left(KeyValue(k, v))
@@ -257,12 +255,9 @@ final object Aggregation {
       reverse: Boolean = false): Seq[ScopedKey[T]] = {
     val mask = rawMask.copy(project = true)
     Dag.topologicalSort(key) { k =>
-      if (reverse)
-        reverseAggregatedKeys(k, extra, mask)
-      else if (aggregationEnabled(k, extra.data))
-        aggregatedKeys(k, extra, mask)
-      else
-        Nil
+      if (reverse) reverseAggregatedKeys(k, extra, mask)
+      else if (aggregationEnabled(k, extra.data)) aggregatedKeys(k, extra, mask)
+      else Nil
     }
   }
   def reverseAggregatedKeys[T](

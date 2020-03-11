@@ -60,18 +60,15 @@ object ComparisonFailure {
       def actualDiff(): String = extractDiff(actual)
 
       def compactPrefix(): String = {
-        if (_sharedPrefix.length() <= MAX_CONTEXT_LENGTH)
-          _sharedPrefix
+        if (_sharedPrefix.length() <= MAX_CONTEXT_LENGTH) _sharedPrefix
         else
           ELLIPSIS + _sharedPrefix.substring(
             _sharedPrefix.length() - MAX_CONTEXT_LENGTH)
       }
 
       def compactSuffix(): String = {
-        if (_sharedSuffix.length() <= MAX_CONTEXT_LENGTH)
-          _sharedSuffix
-        else
-          _sharedSuffix.substring(0, MAX_CONTEXT_LENGTH) + ELLIPSIS
+        if (_sharedSuffix.length() <= MAX_CONTEXT_LENGTH) _sharedSuffix
+        else _sharedSuffix.substring(0, MAX_CONTEXT_LENGTH) + ELLIPSIS
       }
 
       private def extractDiff(source: String): String = {

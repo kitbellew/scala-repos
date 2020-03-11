@@ -361,8 +361,7 @@ class GroupMetadataManager(
                    || status.errorCode == Errors.RECORD_LIST_TOO_LARGE.code
                    || status.errorCode == Errors.INVALID_FETCH_SIZE.code)
             Errors.INVALID_COMMIT_OFFSET_SIZE.code
-          else
-            status.errorCode
+          else status.errorCode
         }
 
       // compute the final error codes for the commit response
@@ -370,8 +369,7 @@ class GroupMetadataManager(
         case (topicAndPartition, offsetAndMetadata) =>
           if (validateOffsetMetadataLength(offsetAndMetadata.metadata))
             (topicAndPartition, responseCode)
-          else
-            (topicAndPartition, Errors.OFFSET_METADATA_TOO_LARGE.code)
+          else (topicAndPartition, Errors.OFFSET_METADATA_TOO_LARGE.code)
       }
 
       // finally trigger the callback logic passed from the API layer
@@ -497,8 +495,7 @@ class GroupMetadataManager(
                           expireTimestamp = {
                             if (value.expireTimestamp == org.apache.kafka.common.requests.OffsetCommitRequest.DEFAULT_TIMESTAMP)
                               value.commitTimestamp + config.offsetsRetentionMs
-                            else
-                              value.expireTimestamp
+                            else value.expireTimestamp
                           }
                         )
                       )
@@ -531,8 +528,7 @@ class GroupMetadataManager(
                 if (group != currentGroup)
                   debug(s"Attempt to load group ${group.groupId} from log with generation ${group.generationId} failed " +
                     s"because there is already a cached group with generation ${currentGroup.generationId}")
-                else
-                  onGroupLoaded(group)
+                else onGroupLoaded(group)
               }
 
               removedGroups.foreach { groupId =>
@@ -783,10 +779,8 @@ class GroupMetadataManager(
   private def getOffsetsTopicPartitionCount = {
     val topic = TopicConstants.GROUP_METADATA_TOPIC_NAME
     val topicData = zkUtils.getPartitionAssignmentForTopics(Seq(topic))
-    if (topicData(topic).nonEmpty)
-      topicData(topic).size
-    else
-      config.offsetsTopicNumPartitions
+    if (topicData(topic).nonEmpty) topicData(topic).size
+    else config.offsetsTopicNumPartitions
   }
 
   private def getMessageFormatVersionAndTimestamp(

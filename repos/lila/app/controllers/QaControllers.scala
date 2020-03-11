@@ -55,14 +55,12 @@ trait QaController extends LilaController {
   protected def WithOwnQuestion(id: QuestionId)(block: Question => Fu[Result])(
       implicit ctx: Context): Fu[Result] =
     WithQuestion(id) { q =>
-      if (QaAuth canEdit q) block(q)
-      else fuccess(Unauthorized)
+      if (QaAuth canEdit q) block(q) else fuccess(Unauthorized)
     }
   protected def WithOwnQuestion(id: QuestionId, slug: String)(
       block: Question => Fu[Result])(implicit ctx: Context): Fu[Result] =
     WithQuestion(id, slug) { q =>
-      if (QaAuth canEdit q) block(q)
-      else fuccess(Unauthorized)
+      if (QaAuth canEdit q) block(q) else fuccess(Unauthorized)
     }
 
   protected def WithOwnAnswer(questionId: QuestionId, answerId: AnswerId)(

@@ -39,11 +39,9 @@ object Path {
   }
   def extension(name: String): String = {
     var i = name.length - 1
-    while (i >= 0 && name.charAt(i) != '.')
-      i -= 1
+    while (i >= 0 && name.charAt(i) != '.') i -= 1
 
-    if (i < 0) ""
-    else name.substring(i + 1).toLowerCase
+    if (i < 0) "" else name.substring(i + 1).toLowerCase
   }
 
   // not certain these won't be problematic, but looks good so far
@@ -166,8 +164,7 @@ class Path private[io] (val jfile: JFile) {
     case "" | "." => Directory("..")
     case _        =>
       // the only solution <-- a comment which could have used elaboration
-      if (segments.nonEmpty && segments.last == "..")
-        (path / "..").toDirectory
+      if (segments.nonEmpty && segments.last == "..") (path / "..").toDirectory
       else
         jfile.getParent match {
           case null =>
@@ -185,11 +182,9 @@ class Path private[io] (val jfile: JFile) {
   // if name ends with an extension (e.g. "foo.jpg") returns the extension ("jpg"), otherwise ""
   def extension: String = {
     var i = name.length - 1
-    while (i >= 0 && name.charAt(i) != '.')
-      i -= 1
+    while (i >= 0 && name.charAt(i) != '.') i -= 1
 
-    if (i < 0) ""
-    else name.substring(i + 1)
+    if (i < 0) "" else name.substring(i + 1)
   }
   // compares against extensions in a CASE INSENSITIVE way.
   def hasExtension(ext: String, exts: String*) = {

@@ -277,8 +277,7 @@ abstract class RefChecks
               // we need to create a bridge
               val inherited1 = inherited filter (sym =>
                 !(sym hasFlag VBRIDGE) && (self memberType sym matches jtpe))
-              if (inherited1.exists)
-                bridges += varargBridge(member, jtpe)
+              if (inherited1.exists) bridges += varargBridge(member, jtpe)
             }
           }
         }
@@ -398,8 +397,7 @@ abstract class RefChecks
                   infoStringWithLocation(other),
                   infoStringWithLocation(member)
                 )
-            else if (settings.debug)
-              analyzer.foundReqMsg(member.tpe, other.tpe)
+            else if (settings.debug) analyzer.foundReqMsg(member.tpe, other.tpe)
             else ""
 
           "overriding %s;\n %s %s%s".format(
@@ -415,8 +413,7 @@ abstract class RefChecks
         }
 
         def overrideError(msg: String) {
-          if (noErrorType)
-            emitOverrideError(overrideErrorMsg(msg))
+          if (noErrorType) emitOverrideError(overrideErrorMsg(msg))
         }
 
         def overrideTypeError() {
@@ -504,8 +501,7 @@ abstract class RefChecks
                     other) + "  and\n  " + infoStringWithLocation(member)
                   + "\n(Note: this can be resolved by declaring an override in " + clazz + ".)"
               )
-            else
-              overrideError("needs `override' modifier")
+            else overrideError("needs `override' modifier")
           } else if (other.isAbstractOverride && other.isIncompleteIn(
                        clazz) && !member.isAbstractOverride) {
             overrideError("needs `abstract override' modifiers")
@@ -659,8 +655,7 @@ abstract class RefChecks
 
       val opc = new overridingPairs.Cursor(clazz)
       while (opc.hasNext) {
-        if (!opc.high.isClass)
-          checkOverride(opc.currentPair)
+        if (!opc.high.isClass) checkOverride(opc.currentPair)
 
         opc.next()
       }
@@ -739,8 +734,7 @@ abstract class RefChecks
                 m.defStringSeenAs(clazz.tpe_* memberType m) + " = ???")
             }
 
-            if (regrouped.tail.isEmpty)
-              membersStrings(regrouped.head._2)
+            if (regrouped.tail.isEmpty) membersStrings(regrouped.head._2)
             else
               (regrouped.sortBy("" + _._1.name) flatMap {
                 case (owner, members) =>
@@ -894,8 +888,7 @@ abstract class RefChecks
         }
 
         checkNoAbstractMembers()
-        if (abstractErrors.isEmpty)
-          checkNoAbstractDecls(clazz)
+        if (abstractErrors.isEmpty) checkNoAbstractDecls(clazz)
 
         if (abstractErrors.nonEmpty)
           reporter.error(clazz.pos, abstractErrorMessage)
@@ -1001,8 +994,7 @@ abstract class RefChecks
     private def validateBaseTypes(clazz: Symbol) {
       val seenParents = mutable.HashSet[Type]()
       val seenTypes = new Array[List[Type]](clazz.info.baseTypeSeq.length)
-      for (i <- 0 until seenTypes.length)
-        seenTypes(i) = Nil
+      for (i <- 0 until seenTypes.length) seenTypes(i) = Nil
 
       /* validate all base types of a class in reverse linear order. */
       def register(tp: Type): Unit = {
@@ -1154,8 +1146,7 @@ abstract class RefChecks
       }
       def underlyingClass(tp: Type): Symbol = {
         val sym = tp.widen.typeSymbol
-        if (sym.isAbstractType) underlyingClass(sym.info.bounds.hi)
-        else sym
+        if (sym.isAbstractType) underlyingClass(sym.info.bounds.hi) else sym
       }
       val actual = underlyingClass(other.tpe)
       val receiver = underlyingClass(qual.tpe)
@@ -1276,18 +1267,15 @@ abstract class RefChecks
         else if (isNew(other) && (receiver.isEffectivelyFinal || isReferenceOp)) // object X ; X == new Y
           nonSensiblyNew()
         else if (receiver.isEffectivelyFinal && !(receiver isSubClass actual) && !actual.isRefinementClass) { // object X, Y; X == Y
-          if (isEitherNullable)
-            nonSensible("non-null ", false)
-          else
-            nonSensiblyNeq()
+          if (isEitherNullable) nonSensible("non-null ", false)
+          else nonSensiblyNeq()
         }
       }
 
       // warn if one but not the other is a derived value class
       // this is especially important to enable transitioning from
       // regular to value classes without silent failures.
-      if (isNonsenseValueClassCompare)
-        unrelatedTypes()
+      if (isNonsenseValueClassCompare) unrelatedTypes()
       // possibleNumericCount is insufficient or this will warn on e.g. Boolean == j.l.Boolean
       else if (isWarnable && nullCount == 0 && !(isSpecial(
                  receiver) && isSpecial(actual))) {
@@ -1409,14 +1397,12 @@ abstract class RefChecks
           if (module.isStatic)
             // trait T { def f: Object }; object O extends T { object f }. Need to generate method f in O.
             if (module.isOverridingSymbol) matchingInnerObject() else Nil
-          else
-            newInnerObject(site, module)
+          else newInnerObject(site, module)
         )
         transformTrees(newTrees map localTyper.typedPos(moduleDef.pos))
       }
     def newInnerObject(site: Symbol, module: Symbol): List[Tree] = {
-      if (site.isTrait)
-        DefDef(module, EmptyTree) :: Nil
+      if (site.isTrait) DefDef(module, EmptyTree) :: Nil
       else {
         val moduleVar = site newModuleVarSymbol module
         // used for the mixin case: need a new symbol owned by the subclass for the accessor, rather than repurposing the module symbol
@@ -1699,8 +1685,7 @@ abstract class RefChecks
             // FIXME: reconcile this check with one in resetAttrs
             case _ => checkUndesiredProperties(sym, tree.pos)
           }
-          if (sym.isJavaDefined)
-            sym.typeParams foreach (_.cookJavaRawInfo())
+          if (sym.isJavaDefined) sym.typeParams foreach (_.cookJavaRawInfo())
           if (!tp.isHigherKinded && !skipBounds)
             checkBounds(tree, pre, sym.owner, sym.typeParams, args)
         case _ =>
@@ -1816,11 +1801,11 @@ abstract class RefChecks
 
     private def transformApply(tree: Apply): Tree = tree match {
       case Apply(
-          Select(qual, nme.filter | nme.withFilter),
-          List(
-            Function(
-              List(ValDef(_, pname, tpt, _)),
-              Match(_, CaseDef(pat1, _, _) :: _))))
+            Select(qual, nme.filter | nme.withFilter),
+            List(
+              Function(
+                List(ValDef(_, pname, tpt, _)),
+                Match(_, CaseDef(pat1, _, _) :: _))))
           if ((pname startsWith nme.CHECK_IF_REFUTABLE_STRING) &&
             isIrrefutable(pat1, tpt.tpe) && (qual.tpe <:< tree.tpe)) =>
         transform(qual)
@@ -1943,8 +1928,7 @@ abstract class RefChecks
           case ValDef(_, _, _, _) | DefDef(_, _, _, _, _, _) =>
             checkDeprecatedOvers(tree)
             checkInfiniteLoop(tree.asInstanceOf[ValOrDefDef])
-            if (settings.warnNullaryUnit)
-              checkNullaryMethodReturnType(sym)
+            if (settings.warnNullaryUnit) checkNullaryMethodReturnType(sym)
             if (settings.warnInaccessible) {
               if (!sym.isConstructor && !sym.isEffectivelyFinalOrNotOverridden && !sym.isSynthetic)
                 checkAccessibilityOfReferencedTypes(tree)
@@ -2022,10 +2006,7 @@ abstract class RefChecks
               NoSymbol,
               fn.tpe.typeParams,
               args map (_.tpe))
-            if (isSimpleCaseApply(tree))
-              transformCaseApply(tree)
-            else
-              tree
+            if (isSimpleCaseApply(tree)) transformCaseApply(tree) else tree
 
           case x @ Apply(_, _) =>
             transformApply(x)

@@ -28,10 +28,7 @@ object StormConfig {
 class WrappedBacktypeStormConfig(backingConfig: BacktypeStormConfig)
     extends ReadableMap {
   def get(key: String): Option[AnyRef] =
-    if (backingConfig.containsKey(key))
-      Some(backingConfig.get(key))
-    else
-      None
+    if (backingConfig.containsKey(key)) Some(backingConfig.get(key)) else None
 
   val keys: Set[String] = backingConfig.keySet.asScala.toSet
 }

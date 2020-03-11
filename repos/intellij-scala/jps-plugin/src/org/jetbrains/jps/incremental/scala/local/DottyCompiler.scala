@@ -85,8 +85,7 @@ class DottyCompiler(scalaInstance: ScalaInstance, compilerJars: CompilerJars)
 
 class ClientDottyCallback(client: Client) extends CompilerCallback {
   private def toJFile(f: AbstractFile) = {
-    if (f.jfile().isPresent) f.jfile().get()
-    else new File(f.path())
+    if (f.jfile().isPresent) f.jfile().get() else new File(f.path())
   }
 
   override def onClassGenerated(

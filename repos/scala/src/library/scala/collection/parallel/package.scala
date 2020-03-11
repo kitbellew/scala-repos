@@ -31,8 +31,7 @@ package object parallel {
     */
   def thresholdFromSize(sz: Int, parallelismLevel: Int) = {
     val p = parallelismLevel
-    if (p > 1) 1 + sz / (8 * p)
-    else sz
+    if (p > 1) 1 + sz / (8 * p) else sz
   }
 
   val defaultTaskSupport: TaskSupport = new ExecutionContextTaskSupport
@@ -250,8 +249,7 @@ package parallel {
 
             var i = 0
             while (i < bucketnumber) {
-              if (buckets(i) eq null)
-                buckets(i) = that.buckets(i)
+              if (buckets(i) eq null) buckets(i) = that.buckets(i)
               else if (that.buckets(i) ne null)
                 buckets(i) concat that.buckets(i)
 

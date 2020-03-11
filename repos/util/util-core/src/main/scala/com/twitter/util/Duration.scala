@@ -49,9 +49,7 @@ object Duration extends TimeLikeOps[Duration] {
 
     /** Top is equal only to Top and greater than every finite duration */
     override def compare(that: Duration) =
-      if (that eq Undefined) -1
-      else if (that eq Top) 0
-      else 1
+      if (that eq Undefined) -1 else if (that eq Top) 0 else 1
 
     override def equals(other: Any) = other match {
       case d: Duration => d eq this
@@ -59,9 +57,7 @@ object Duration extends TimeLikeOps[Duration] {
     }
 
     override def *(x: Long): Duration =
-      if (x == 0) Undefined
-      else if (x < 0) Bottom
-      else Top
+      if (x == 0) Undefined else if (x < 0) Bottom else Top
 
     override def *(x: Double): Duration =
       if (x == 0.0 || java.lang.Double.isNaN(x)) Undefined
@@ -69,9 +65,7 @@ object Duration extends TimeLikeOps[Duration] {
       else Top
 
     override def /(x: Long): Duration =
-      if (x == 0) Undefined
-      else if (x < 0) Bottom
-      else Top
+      if (x == 0) Undefined else if (x < 0) Bottom else Top
 
     override def /(x: Double): Duration =
       if (x == 0.0 || java.lang.Double.isNaN(x)) Undefined
@@ -112,9 +106,7 @@ object Duration extends TimeLikeOps[Duration] {
 
     /** Scaling arithmetic is Bottom preserving. */
     override def *(x: Long): Duration =
-      if (x == 0) Undefined
-      else if (x < 0) Top
-      else Bottom
+      if (x == 0) Undefined else if (x < 0) Top else Bottom
 
     override def *(x: Double): Duration =
       if (x == 0.0 || java.lang.Double.isNaN(x)) Undefined
@@ -122,9 +114,7 @@ object Duration extends TimeLikeOps[Duration] {
       else Bottom
 
     override def /(x: Long): Duration =
-      if (x == 0) Undefined
-      else if (x < 0) Top
-      else Bottom
+      if (x == 0) Undefined else if (x < 0) Top else Bottom
 
     override def /(x: Double): Duration =
       if (x == 0.0 || java.lang.Double.isNaN(x)) Undefined
@@ -334,8 +324,7 @@ sealed class Duration private[util] (protected val nanos: Long) extends {
     * res0: com.twitter.util.Duration = 9.seconds+999.milliseconds+999.microseconds
     */
   override def toString: String = {
-    if (nanos == 0)
-      return "0.seconds"
+    if (nanos == 0) return "0.seconds"
 
     val s = new StringBuilder
     var ns = nanos
@@ -343,8 +332,7 @@ sealed class Duration private[util] (protected val nanos: Long) extends {
       val v = u.convert(ns, TimeUnit.NANOSECONDS)
       if (v != 0) {
         ns -= TimeUnit.NANOSECONDS.convert(v, u)
-        if (v > 0 && !s.isEmpty)
-          s.append("+")
+        if (v > 0 && !s.isEmpty) s.append("+")
         s.append(v.toString)
         s.append(".")
         s.append(u.name.toLowerCase)
@@ -414,8 +402,7 @@ sealed class Duration private[util] (protected val nanos: Long) extends {
     * Scales this `Duration` by dividing by `x`.
     */
   def /(x: Double): Duration =
-    if (x == 0.0) this / 0
-    else this * (1.0 / x)
+    if (x == 0.0) this / 0 else this * (1.0 / x)
 
   /**
     * Scales this `Duration` by modding by `x`.

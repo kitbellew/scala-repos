@@ -97,10 +97,8 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
     // restore set request handler logger to a higher level
     requestHandlerLogger.setLevel(Level.ERROR)
 
-    if (consumer1 != null)
-      consumer1.close()
-    if (consumer2 != null)
-      consumer2.close()
+    if (consumer1 != null) consumer1.close()
+    if (consumer2 != null) consumer2.close()
 
     server1.shutdown
     server2.shutdown

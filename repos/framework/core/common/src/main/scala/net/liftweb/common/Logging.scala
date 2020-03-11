@@ -79,10 +79,8 @@ object Logger {
 
   def loggerNameFor(cls: Class[_]) = {
     val className = cls.getName
-    if (className endsWith "$")
-      className.substring(0, className.length - 1)
-    else
-      className
+    if (className endsWith "$") className.substring(0, className.length - 1)
+    else className
   }
 
   def apply(cls: Class[_]): Logger =
@@ -102,12 +100,7 @@ object Logger {
     val old = SLF4JMDC.getCopyOfContextMap
     MDC.put(mdcValues: _*)
     try { f }
-    finally {
-      if (old eq null)
-        MDC.clear
-      else
-        SLF4JMDC.setContextMap(old)
-    }
+    finally { if (old eq null) MDC.clear else SLF4JMDC.setContextMap(old) }
   }
 }
 
@@ -375,8 +368,7 @@ object Log4j {
     if (url.getPath.endsWith(".xml")) {
       val domConf = new DOMConfigurator
       domConf.doConfigure(url, LogManager.getLoggerRepository())
-    } else
-      PropertyConfigurator.configure(url)
+    } else PropertyConfigurator.configure(url)
   }
 
   /**

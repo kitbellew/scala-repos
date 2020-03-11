@@ -442,9 +442,9 @@ class ScSimpleTypeElementImpl(node: ASTNode)
             r.map { tp =>
               ref.bind() match {
                 case Some(
-                    r @ ScalaResolveResult(
-                      method: PsiMethod,
-                      subst: ScSubstitutor)) =>
+                      r @ ScalaResolveResult(
+                        method: PsiMethod,
+                        subst: ScSubstitutor)) =>
                   val (params, lastImplicit) =
                     getConstructorParams(method, subst.followed(ss))
                   updateImplicits(
@@ -467,9 +467,9 @@ class ScSimpleTypeElementImpl(node: ASTNode)
           case Array(ScalaResolveResult(synth: ScSyntheticClass, _)) =>
             lift(synth.t)
           case Array(
-              ScalaResolveResult(
-                to: ScTypeParametersOwner,
-                subst: ScSubstitutor))
+                ScalaResolveResult(
+                  to: ScTypeParametersOwner,
+                  subst: ScSubstitutor))
               if constrRef && to.isInstanceOf[PsiNamedElement] &&
                 (to.typeParameters.isEmpty || getContext
                   .isInstanceOf[ScParameterizedTypeElement]) =>
@@ -489,9 +489,9 @@ class ScSimpleTypeElementImpl(node: ASTNode)
             }
             updateImplicitsWithoutLocalTypeInference(tp, ss)
           case Array(
-              ScalaResolveResult(
-                to: PsiTypeParameterListOwner,
-                subst: ScSubstitutor))
+                ScalaResolveResult(
+                  to: PsiTypeParameterListOwner,
+                  subst: ScSubstitutor))
               if constrRef && to.isInstanceOf[PsiNamedElement] &&
                 (to.getTypeParameters.isEmpty || getContext
                   .isInstanceOf[ScParameterizedTypeElement]) =>
@@ -513,9 +513,9 @@ class ScSimpleTypeElementImpl(node: ASTNode)
           case _ => //resolve constructor with local type inference
             ref.bind() match {
               case Some(
-                  r @ ScalaResolveResult(
-                    method: PsiMethod,
-                    subst: ScSubstitutor)) if !noConstructor =>
+                    r @ ScalaResolveResult(
+                      method: PsiMethod,
+                      subst: ScSubstitutor)) if !noConstructor =>
                 Success(
                   typeForConstructor(ref, method, subst, r.getActualElement),
                   Some(this))
@@ -574,16 +574,15 @@ object ScSimpleTypeElementImpl {
                                          if (ref.isConstructorReference) {
                                            ref.resolveNoConstructor match {
                                              case Array(
-                                                 r @ ScalaResolveResult(
-                                                   to: ScTypeParametersOwner,
-                                                   subst: ScSubstitutor))
+                                                   r @ ScalaResolveResult(
+                                                     to: ScTypeParametersOwner,
+                                                     subst: ScSubstitutor))
                                                  if to.isInstanceOf[
                                                    PsiNamedElement] &&
                                                    (to.typeParameters.isEmpty || ref.getContext
                                                      .isInstanceOf[ScParameterizedTypeElement]) =>
                                                Some(r)
-                                             case Array(
-                                                 r @ ScalaResolveResult(
+                                             case Array(r @ ScalaResolveResult(
                                                    to: PsiTypeParameterListOwner,
                                                    subst: ScSubstitutor))
                                                  if to.isInstanceOf[

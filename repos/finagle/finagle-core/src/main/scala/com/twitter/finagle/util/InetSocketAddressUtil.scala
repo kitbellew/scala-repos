@@ -88,10 +88,8 @@ object InetSocketAddressUtil {
 
     (parseHostPorts(hosts) map {
       case (host, port) =>
-        if (host == "")
-          new InetSocketAddress(port)
-        else
-          new InetSocketAddress(host, port)
+        if (host == "") new InetSocketAddress(port)
+        else new InetSocketAddress(host, port)
     }).toList
   }
 }

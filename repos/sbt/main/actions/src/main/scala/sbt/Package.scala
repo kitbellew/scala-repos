@@ -90,8 +90,7 @@ object Package {
           (outChanged, jar: PlainFileInfo) =>
             if (inChanged || outChanged)
               makeJar(sources.toSeq, jar.file, manifest, log)
-            else
-              log.debug("Jar uptodate: " + jar.file)
+            else log.debug("Jar uptodate: " + jar.file)
         }
     }
 
@@ -101,8 +100,7 @@ object Package {
   }
   def setVersion(main: Attributes): Unit = {
     val version = Attributes.Name.MANIFEST_VERSION
-    if (main.getValue(version) eq null)
-      main.put(version, "1.0")
+    if (main.getValue(version) eq null) main.put(version, "1.0")
   }
   def addSpecManifestAttributes(
       name: String,

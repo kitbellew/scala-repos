@@ -57,8 +57,7 @@ abstract class TreeBrowsers {
     def browse(pName: String, units: List[CompilationUnit]): Unit = {
       var unitList: List[UnitTree] = Nil
 
-      for (i <- units)
-        unitList = UnitTree(i) :: unitList
+      for (i <- units) unitList = UnitTree(i) :: unitList
       val tm = new ASTTreeModel(ProgramTree(unitList))
 
       val frame = new BrowserFrame(pName)
@@ -190,10 +189,7 @@ abstract class TreeBrowsers {
             row: Int,
             hasFocus: Boolean) = {
           val (cls, name) = TreeInfo.treeName(value.asInstanceOf[Tree])
-          if (name != EMPTY)
-            cls + "[" + name + "]"
-          else
-            cls
+          if (name != EMPTY) cls + "[" + name + "]" else cls
         }
       }
 
@@ -323,8 +319,7 @@ abstract class TreeBrowsers {
             .append(
               if ((t.symbol ne null) && t.symbol != NoSymbol)
                 t.symbol.owner.toString
-              else
-                "NoSymbol has no owner")
+              else "NoSymbol has no owner")
           if ((t.symbol ne null) && t.symbol.isType) {
             str.append(
               "\ntermSymbol: " + t.symbol.tpe.termSymbol
@@ -527,9 +522,7 @@ abstract class TreeBrowsers {
     /** Return a textual representation of this t's symbol */
     def symbolText(t: Tree): String = {
       val prefix =
-        if (t.hasSymbolField) "[has] "
-        else if (t.isDef) "[defines] "
-        else ""
+        if (t.hasSymbolField) "[has] " else if (t.isDef) "[defines] " else ""
 
       prefix + t.symbol
     }
@@ -537,10 +530,7 @@ abstract class TreeBrowsers {
     /** Return t's symbol type  */
     def symbolTypeDoc(t: Tree): Document = {
       val s = t.symbol
-      if (s ne null)
-        TypePrinter.toDocument(s.info)
-      else
-        DocNil
+      if (s ne null) TypePrinter.toDocument(s.info) else DocNil
     }
 
     /** Return a textual representation of (some of) the symbol's

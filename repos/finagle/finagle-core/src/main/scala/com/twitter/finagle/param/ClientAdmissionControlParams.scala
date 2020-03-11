@@ -17,8 +17,7 @@ class ClientAdmissionControlParams[A <: Stack.Parameterized[A]](
     */
   def maxPendingRequests(requestLimit: Int): A = {
     val lim =
-      if (requestLimit == Int.MaxValue) None
-      else Some(requestLimit)
+      if (requestLimit == Int.MaxValue) None else Some(requestLimit)
 
     self.configured(PendingRequestFilter.Param(limit = lim))
   }

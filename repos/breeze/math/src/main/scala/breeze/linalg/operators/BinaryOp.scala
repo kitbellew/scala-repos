@@ -113,8 +113,7 @@ trait BinaryRegistry[A, B, Op, +R]
           method.asInstanceOf[UImpl2[Op, A, B, R]].apply(a, b)
         case _ =>
           val selected = selectBestOption(options)
-          if (selected.size != 1)
-            multipleOptions(a, b, options)
+          if (selected.size != 1) multipleOptions(a, b, options)
           else {
             val method = selected.values.head
             val some = Some(method)

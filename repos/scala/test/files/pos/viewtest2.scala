@@ -48,8 +48,7 @@ object O {
         else if (ys.isEmpty) 1
         else {
           val s = xs.head compareTo ys.head;
-          if (s != 0) s
-          else compareLists(xs.tail, ys.tail)
+          if (s != 0) s else compareLists(xs.tail, ys.tail)
         }
       }
     }
@@ -86,8 +85,7 @@ object Test {
   import O._
 
   private def toCharList(s: String): List[Char] =
-    if (s.length() == 0) List()
-    else s.charAt(0) :: toCharList(s.substring(1))
+    if (s.length() == 0) List() else s.charAt(0) :: toCharList(s.substring(1))
 
   def main(args: Array[String]) {
     {

@@ -57,8 +57,7 @@ class DefinitionsFilter extends ElementFilter {
                   (parent.getPrevSibling == null || parent.getPrevSibling.getPrevSibling == null ||
                   (parent.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaElementTypes.MATCH_STMT ||
                   !parent.getPrevSibling.getPrevSibling.getLastChild
-                    .isInstanceOf[PsiErrorElement])))
-                return p
+                    .isInstanceOf[PsiErrorElement]))) return p
             null
           case _ => findParent(p.getParent)
         }

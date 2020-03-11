@@ -65,8 +65,7 @@ trait OneToMany[K, T <: KeyedMapper[K, T]] extends KeyedMapper[K, T] {
             case f: Cascade[_] => f.delete_!
             case _             => true
           }
-        })
-      super.delete_!
+        }) super.delete_!
     else {
       DB.rollback(connectionIdentifier)
       false
@@ -148,8 +147,7 @@ trait OneToMany[K, T <: KeyedMapper[K, T]] extends KeyedMapper[K, T] {
         case f: MappedForeignKey[K, _, T] =>
           f.set(OneToMany.this.primaryKeyField.get)
       }
-      if (!OneToMany.this.saved_?)
-        unlinked ::= e
+      if (!OneToMany.this.saved_?) unlinked ::= e
       e
     }
 
@@ -217,10 +215,7 @@ trait OneToMany[K, T <: KeyedMapper[K, T]] extends KeyedMapper[K, T] {
       e
     }
 
-    def clear() {
-      while (delegate.length > 0)
-        remove(0)
-    }
+    def clear() { while (delegate.length > 0) remove(0) }
 
     /**
       * Reloads the children from storage.
@@ -229,10 +224,7 @@ trait OneToMany[K, T <: KeyedMapper[K, T]] extends KeyedMapper[K, T] {
       */
     def refresh {
       delegate = reloadFunc().toList
-      if (saved_?)
-        unlinked = Nil
-      else
-        unlinked = _delegate
+      if (saved_?) unlinked = Nil else unlinked = _delegate
     }
 
     /**
@@ -298,8 +290,7 @@ trait OneToMany[K, T <: KeyedMapper[K, T]] extends KeyedMapper[K, T] {
       delegate.forall { e =>
         if (foreign(e).get ==
               OneToMany.this.primaryKeyField.get) { e.delete_! }
-        else
-          true // doesn't constitute a failure
+        else true // doesn't constitute a failure
       }
     }
   }

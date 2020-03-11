@@ -35,8 +35,7 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
   def GCAS_READ(ct: TrieMap[K, V]): MainNode[K, V] = {
     val m = /*READ*/ mainnode
     val prevval = /*READ*/ m.prev
-    if (prevval eq null) m
-    else GCAS_Complete(m, ct)
+    if (prevval eq null) m else GCAS_Complete(m, ct)
   }
 
   @tailrec private def GCAS_Complete(
@@ -65,8 +64,7 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
           //     or both
           if ((ctr.gen eq gen) && ct.nonReadOnly) {
             // try to commit
-            if (m.CAS_PREV(prev, null)) m
-            else GCAS_Complete(m, ct)
+            if (m.CAS_PREV(prev, null)) m else GCAS_Complete(m, ct)
           } else {
             // try to abort
             m.CAS_PREV(prev, new FailedNode(prev))
@@ -218,8 +216,7 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
                           lev + 5,
                           gen)),
                       gen)
-                    if (GCAS(cn, nn, ct)) None
-                    else null
+                    if (GCAS(cn, nn, ct)) None else null
                   }
                 case INode.KEY_ABSENT =>
                   if (sn.hc == hc && equal(sn.k, k, ct)) Some(sn.v)
@@ -236,8 +233,7 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
                           lev + 5,
                           gen)),
                       gen)
-                    if (GCAS(cn, nn, ct)) None
-                    else null
+                    if (GCAS(cn, nn, ct)) None else null
                   }
                 case INode.KEY_PRESENT =>
                   if (sn.hc == hc && equal(sn.k, k, ct)) {
@@ -341,8 +337,7 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
             clean(parent, ct, lev - 5)
             RESTART // used to be throw RestartException
           } else {
-            if (tn.hc == hc && tn.k == k) tn.v.asInstanceOf[AnyRef]
-            else null
+            if (tn.hc == hc && tn.k == k) tn.v.asInstanceOf[AnyRef] else null
           }
         cleanReadOnly(tn)
       case ln: LNode[K, V] => // 5) an l-node
@@ -422,8 +417,7 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
 
             if (parent ne null) { // never tomb at root
               val n = GCAS_READ(ct)
-              if (n.isInstanceOf[TNode[_, _]])
-                cleanParent(n)
+              if (n.isInstanceOf[TNode[_, _]]) cleanParent(n)
             }
 
             res
@@ -843,20 +837,15 @@ final class TrieMap[K, V] private (
       case in: INode[K, V] => in
       case desc: RDCSS_Descriptor[K, V] =>
         val RDCSS_Descriptor(ov, exp, nv) = desc
-        if (abort) {
-          if (CAS_ROOT(desc, ov)) ov
-          else RDCSS_Complete(abort)
-        } else {
+        if (abort) { if (CAS_ROOT(desc, ov)) ov else RDCSS_Complete(abort) }
+        else {
           val oldmain = ov.gcasRead(this)
           if (oldmain eq exp) {
             if (CAS_ROOT(desc, nv)) {
               desc.committed = true
               nv
             } else RDCSS_Complete(abort)
-          } else {
-            if (CAS_ROOT(desc, ov)) ov
-            else RDCSS_Complete(abort)
-          }
+          } else { if (CAS_ROOT(desc, ov)) ov else RDCSS_Complete(abort) }
         }
     }
   }
@@ -886,15 +875,13 @@ final class TrieMap[K, V] private (
     val r = RDCSS_READ_ROOT()
 
     val ret = r.rec_insertif(k, v, hc, cond, 0, null, r.gen, this)
-    if (ret eq null) insertifhc(k, hc, v, cond)
-    else ret
+    if (ret eq null) insertifhc(k, hc, v, cond) else ret
   }
 
   @tailrec private def lookuphc(k: K, hc: Int): AnyRef = {
     val r = RDCSS_READ_ROOT()
     val res = r.rec_lookup(k, hc, 0, null, r.gen, this)
-    if (res eq INodeBase.RESTART) lookuphc(k, hc)
-    else res
+    if (res eq INodeBase.RESTART) lookuphc(k, hc) else res
   }
 
   /* slower:
@@ -913,8 +900,7 @@ final class TrieMap[K, V] private (
   @tailrec private def removehc(k: K, v: V, hc: Int): Option[V] = {
     val r = RDCSS_READ_ROOT()
     val res = r.rec_remove(k, v, hc, 0, null, r.gen, this)
-    if (res ne null) res
-    else removehc(k, v, hc)
+    if (res ne null) res else removehc(k, v, hc)
   }
 
   def string = RDCSS_READ_ROOT().string(0)
@@ -983,8 +969,7 @@ final class TrieMap[K, V] private (
   override def apply(k: K): V = {
     val hc = computeHash(k)
     val res = lookuphc(k, hc)
-    if (res eq null) throw new NoSuchElementException
-    else res.asInstanceOf[V]
+    if (res eq null) throw new NoSuchElementException else res.asInstanceOf[V]
   }
 
   def get(k: K): Option[V] = {
@@ -1086,8 +1071,7 @@ final class TrieMap[K, V] private (
   }
 
   override def size: Int =
-    if (nonReadOnly) readOnlySnapshot().size
-    else cachedSize()
+    if (nonReadOnly) readOnlySnapshot().size else cachedSize()
 
   override def stringPrefix = "TrieMap"
 

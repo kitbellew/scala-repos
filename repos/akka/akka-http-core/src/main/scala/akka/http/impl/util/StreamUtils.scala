@@ -35,15 +35,13 @@ private[http] object StreamUtils {
           element: ByteString,
           ctx: Context[ByteString]): SyncDirective = {
         val data = f(element)
-        if (data.nonEmpty) ctx.push(data)
-        else ctx.pull()
+        if (data.nonEmpty) ctx.push(data) else ctx.pull()
       }
 
       override def onPull(ctx: Context[ByteString]): SyncDirective =
         if (ctx.isFinishing) {
           val data = finish()
-          if (data.nonEmpty) ctx.pushAndFinish(data)
-          else ctx.finish()
+          if (data.nonEmpty) ctx.pushAndFinish(data) else ctx.finish()
         } else ctx.pull()
 
       override def onUpstreamFinish(
@@ -119,8 +117,7 @@ private[http] object StreamUtils {
             ctx: Context[ByteString]): SyncDirective = {
           val data = element.take(math.min(remaining, Int.MaxValue).toInt)
           remaining -= data.size
-          if (remaining <= 0) ctx.pushAndFinish(data)
-          else ctx.push(data)
+          if (remaining <= 0) ctx.pushAndFinish(data) else ctx.push(data)
         }
       }
 

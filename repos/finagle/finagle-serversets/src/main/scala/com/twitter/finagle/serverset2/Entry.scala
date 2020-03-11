@@ -63,8 +63,7 @@ object Entry {
 
     if (basename startsWith EndpointPrefix)
       Endpoint.parseJson(json) map (_.copy(memberId = basename))
-    else
-      Nil
+    else Nil
   }
 }
 
@@ -101,8 +100,7 @@ object Endpoint {
 
         val h = Option(ep.get("host")) collect { case host: String => host }
 
-        for (h <- h; p <- p)
-          yield (h, p.toInt)
+        for (h <- h; p <- p) yield (h, p.toInt)
 
       case _ => None
     }

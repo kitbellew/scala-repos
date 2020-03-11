@@ -25,11 +25,9 @@ trait CommonStreamsTests {
     @Test def should_provide_read()(): Unit = {
       val stream = newStream
 
-      for (i <- 1 to length)
-        assertEquals(i, stream.read())
+      for (i <- 1 to length) assertEquals(i, stream.read())
 
-      for (_ <- 1 to 5)
-        assertEquals(-1, stream.read())
+      for (_ <- 1 to 5) assertEquals(-1, stream.read())
     }
 
     @Test def should_provide_read_from_buf(): Unit = {
@@ -100,8 +98,7 @@ trait CommonStreamsTests {
 
       assertEquals(7, stream.skip(7))
 
-      for (i <- 8 to 32)
-        assertEquals(i, stream.read())
+      for (i <- 8 to 32) assertEquals(i, stream.read())
 
       assertEquals(0, stream.skip(0))
       assertEquals(33, stream.read())

@@ -50,8 +50,7 @@ trait ListInstances extends ListInstances0 {
 
       def zip[A, B](a: => List[A], b: => List[B]) = {
         val _a = a
-        if (_a.isEmpty) Nil
-        else _a zip b
+        if (_a.isEmpty) Nil else _a zip b
       }
       def unzip[A, B](a: List[(A, B)]) = a.unzip
       def alignWith[A, B, C](f: A \&/ B => C) = {

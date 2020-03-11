@@ -257,8 +257,7 @@ trait ArbitraryBigDecimal {
         exponent - mantissa.toString.length
       else if (exponent.toLong - mantissa.toString.length <= Int.MinValue.toLong)
         exponent + mantissa.toString.length
-      else
-        exponent
+      else exponent
     } yield BigDecimal(mantissa, adjusted, java.math.MathContext.UNLIMITED))
 }
 // vim: set ts=4 sw=4 et:

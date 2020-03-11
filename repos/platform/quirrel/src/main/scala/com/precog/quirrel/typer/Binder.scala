@@ -66,8 +66,7 @@ trait Binder extends parser.AST {
         val errors =
           if (varVector exists { _.isEmpty })
             Set(Error(b, SolveLackingFreeVariables))
-          else
-            Set[Error]()
+          else Set[Error]()
 
         val ids = varVector reduce { _ ++ _ }
         b.vars = ids
@@ -92,14 +91,12 @@ trait Binder extends parser.AST {
                 if (ns.length >= prefix.length) {
                   if (ns zip prefix forall { case (a, b) => a == b })
                     Some(Identifier(ns drop (prefix.length - 1), name) -> b)
-                  else
-                    None
+                  else None
                 } else if (ns.length == prefix.length - 1) {
                   if (ns zip prefix forall { case (a, b) => a == b }) {
                     if (name == prefix.last)
                       Some(Identifier(Vector(), name) -> b)
-                    else
-                      None
+                    else None
                   } else { None }
                 } else { None }
               }
@@ -114,13 +111,11 @@ trait Binder extends parser.AST {
                 if (ns.length >= prefix.length + 1) {
                   if (ns zip prefix forall { case (a, b) => a == b })
                     Some(Identifier(ns drop prefix.length, name) -> b)
-                  else
-                    None
+                  else None
                 } else if (ns.length == prefix.length) {
                   if (ns zip prefix forall { case (a, b) => a == b })
                     Some(Identifier(Vector(), name) -> b)
-                  else
-                    None
+                  else None
                 } else { None }
               }
 

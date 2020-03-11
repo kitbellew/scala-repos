@@ -431,16 +431,13 @@ object ScalaImportOptimizer {
     val needReplaceWithFqnImports =
       addFullQualifiedImports && !(isLocalRange && isLocalImportsCanBeRelative)
 
-    if (needReplaceWithFqnImports)
-      buffer ++= importInfos.map(_.withoutRelative)
-    else
-      buffer ++= importInfos
+    if (needReplaceWithFqnImports) buffer ++= importInfos.map(_.withoutRelative)
+    else buffer ++= importInfos
 
     if (sortImports) sortImportInfos(buffer, settings)
 
     val result =
-      if (collectImports) mergeImportInfos(buffer)
-      else buffer.flatMap(_.split)
+      if (collectImports) mergeImportInfos(buffer) else buffer.flatMap(_.split)
 
     updateToWildcardImports(
       result,
@@ -673,12 +670,10 @@ object ScalaImportOptimizer {
   def getFirstId(s: String): String = {
     if (s.startsWith("`")) {
       val index: Int = s.indexOf('`', 1)
-      if (index == -1) s
-      else s.substring(0, index + 1)
+      if (index == -1) s else s.substring(0, index + 1)
     } else {
       val index: Int = s.indexOf('.')
-      if (index == -1) s
-      else s.substring(0, index)
+      if (index == -1) s else s.substring(0, index)
     }
   }
 
@@ -706,9 +701,7 @@ object ScalaImportOptimizer {
       settings: OptimizeImportSettings): Boolean = {
     val lIndex = findGroupIndex(lPrefix, settings)
     val rIndex = findGroupIndex(rPrefix, settings)
-    if (lIndex > rIndex) true
-    else if (rIndex > lIndex) false
-    else lText > rText
+    if (lIndex > rIndex) true else if (rIndex > lIndex) false else lText > rText
   }
 
   def greater(

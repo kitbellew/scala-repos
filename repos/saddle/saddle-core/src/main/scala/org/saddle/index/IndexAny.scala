@@ -89,10 +89,7 @@ class IndexAny[T: ST: ORD](keys: Vec[T]) extends Index[T] {
 
     val fnd = locator.count(t)
 
-    if (fnd > 0)
-      locator.get(t)
-    else
-      -(binarySearch(keys, t) + 1)
+    if (fnd > 0) locator.get(t) else -(binarySearch(keys, t) + 1)
   }
 
   // find the last location whereby an insertion would maintain a sorted index
@@ -101,10 +98,7 @@ class IndexAny[T: ST: ORD](keys: Vec[T]) extends Index[T] {
 
     val fnd = locator.count(t)
 
-    if (fnd > 0)
-      fnd + locator.get(t)
-    else
-      -(binarySearch(keys, t) + 1)
+    if (fnd > 0) fnd + locator.get(t) else -(binarySearch(keys, t) + 1)
   }
 
   // adapted from java source

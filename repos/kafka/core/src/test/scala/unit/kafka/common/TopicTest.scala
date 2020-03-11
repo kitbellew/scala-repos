@@ -27,8 +27,7 @@ class TopicTest {
     val invalidTopicNames = new ArrayBuffer[String]()
     invalidTopicNames += ("", ".", "..")
     var longName = "ATCG"
-    for (i <- 1 to 6)
-      longName += longName
+    for (i <- 1 to 6) longName += longName
     invalidTopicNames += longName
     val badChars = Array(
       '/',

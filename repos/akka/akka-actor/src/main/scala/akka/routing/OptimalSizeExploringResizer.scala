@@ -231,8 +231,7 @@ case class DefaultOptimalSizeExploringResizer(
     val fullyUtilized = utilized == currentSize
 
     val newUnderutilizationStreak =
-      if (fullyUtilized)
-        None
+      if (fullyUtilized) None
       else
         Some(
           UnderUtilizationStreak(
@@ -282,8 +281,7 @@ case class DefaultOptimalSizeExploringResizer(
       } else {
         if (!stopExploring && random.nextDouble() < explorationProbability)
           explore(currentSize)
-        else
-          optimize(currentSize)
+        else optimize(currentSize)
       }
     Math.max(
       lowerBound,
@@ -316,10 +314,7 @@ case class DefaultOptimalSizeExploringResizer(
 
     val optimalSize = adjacentDispatchWaits.minBy(_._2)._1
     val movement = (optimalSize - currentSize) / 2.0
-    if (movement < 0)
-      Math.floor(movement).toInt
-    else
-      Math.ceil(movement).toInt
+    if (movement < 0) Math.floor(movement).toInt else Math.ceil(movement).toInt
 
   }
 
@@ -327,10 +322,7 @@ case class DefaultOptimalSizeExploringResizer(
     val change = Math.max(
       1,
       random.nextInt(Math.ceil(currentSize * exploreStepSize).toInt))
-    if (random.nextDouble() < chanceOfScalingDownWhenFull)
-      -change
-    else
-      change
+    if (random.nextDouble() < chanceOfScalingDownWhenFull) -change else change
   }
 
 }

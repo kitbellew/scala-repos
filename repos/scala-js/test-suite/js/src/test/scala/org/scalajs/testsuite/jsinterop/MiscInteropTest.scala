@@ -92,8 +92,7 @@ class MiscInteropTest {
       val tag = js.constructorTag[ConcreteJSClass]
       if (assumingES6)
         js.Dynamic.newInstance(tag.constructor)().asInstanceOf[ConcreteJSClass]
-      else
-        tag.newInstance()
+      else tag.newInstance()
     }
     assertTrue((concreteInstance: Any).isInstanceOf[ConcreteJSClass])
 

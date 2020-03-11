@@ -17,8 +17,7 @@ class CompilerCommand(arguments: List[String], val settings: Settings) {
   type Setting = Settings#Setting
 
   private val processArgumentsResult =
-    if (shouldProcessArguments) processArguments
-    else (true, Nil)
+    if (shouldProcessArguments) processArguments else (true, Nil)
   def ok = processArgumentsResult._1
   def files = processArgumentsResult._2
 

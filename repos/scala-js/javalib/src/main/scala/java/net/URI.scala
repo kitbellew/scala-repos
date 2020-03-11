@@ -48,12 +48,9 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
 
   private val _path = {
     val useNetPath = fld(AbsAuthority, RelAuthority).isDefined
-    if (useNetPath)
-      fld(AbsNetPath, RelNetPath) orElse ""
-    else if (_isAbsolute)
-      fld(AbsAbsPath)
-    else
-      fld(RelAbsPath) orElse fld(RelRelPath)
+    if (useNetPath) fld(AbsNetPath, RelNetPath) orElse ""
+    else if (_isAbsolute) fld(AbsAbsPath)
+    else fld(RelAbsPath) orElse fld(RelRelPath)
   }
 
   private val _query = fld(AbsQuery, RelQuery)
@@ -114,8 +111,7 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
       if (this._isOpaque) 1 else -1
     else if (_isOpaque) {
       val ssp = cmp(this._schemeSpecificPart, that._schemeSpecificPart)
-      if (ssp != 0) ssp
-      else cmpOpt(this._fragment, that._fragment)
+      if (ssp != 0) ssp else cmpOpt(this._fragment, that._fragment)
     } else if (this._authority != that._authority) {
       if (this._host.isDefined && that._host.isDefined) {
         val ui = cmpOpt(this._userInfo, that._userInfo)
@@ -128,14 +124,10 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
           else if (that._port == -1) 1
           else this._port - that._port
         }
-      } else
-        cmpOpt(this._authority, that._authority)
-    } else if (this._path != that._path)
-      cmpOpt(this._path, that._path)
-    else if (this._query != that._query)
-      cmpOpt(this._query, that._query)
-    else
-      cmpOpt(this._fragment, that._fragment)
+      } else cmpOpt(this._authority, that._authority)
+    } else if (this._path != that._path) cmpOpt(this._path, that._path)
+    else if (this._query != that._query) cmpOpt(this._query, that._query)
+    else cmpOpt(this._fragment, that._fragment)
   }
 
   def compareTo(that: URI): Int = internalCompare(that)(_.compareTo(_))
@@ -229,8 +221,7 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
       // segment (according to JavaDoc). If it is absolute, add empty
       // segment again to have leading "/".
       val segments3 = {
-        if (isAbsPath)
-          "" :: segments2
+        if (isAbsPath) "" :: segments2
         else if (segments2.nonEmpty && segments2.head.contains(':'))
           "." :: segments2
         else segments2
@@ -239,8 +230,7 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
       val newPath = segments3.mkString("/")
 
       // Only create new instance if anything changed
-      if (newPath == origPath)
-        this
+      if (newPath == origPath) this
       else
         new URI(
           getScheme(),
@@ -577,14 +567,11 @@ object URI {
   private def uriStr(scheme: String, ssp: String, fragment: String): String = {
     var resStr = ""
 
-    if (scheme != null)
-      resStr += scheme + ":"
+    if (scheme != null) resStr += scheme + ":"
 
-    if (ssp != null)
-      resStr += quoteIllegal(ssp)
+    if (ssp != null) resStr += quoteIllegal(ssp)
 
-    if (fragment != null)
-      resStr += "#" + quoteIllegal(fragment)
+    if (fragment != null) resStr += "#" + quoteIllegal(fragment)
 
     resStr
   }
@@ -599,33 +586,23 @@ object URI {
       fragment: String): String = {
     var resStr = ""
 
-    if (scheme != null)
-      resStr += scheme + ":"
+    if (scheme != null) resStr += scheme + ":"
 
-    if (userInfo != null || host != null || port != -1)
-      resStr += "//"
+    if (userInfo != null || host != null || port != -1) resStr += "//"
 
-    if (userInfo != null)
-      resStr += quoteUserInfo(userInfo) + "@"
+    if (userInfo != null) resStr += quoteUserInfo(userInfo) + "@"
 
     if (host != null) {
-      if (URI.ipv6Re.test(host))
-        resStr += "[" + host + "]"
-      else
-        resStr += host
+      if (URI.ipv6Re.test(host)) resStr += "[" + host + "]" else resStr += host
     }
 
-    if (port != -1)
-      resStr += ":" + port
+    if (port != -1) resStr += ":" + port
 
-    if (path != null)
-      resStr += quotePath(path)
+    if (path != null) resStr += quotePath(path)
 
-    if (query != null)
-      resStr += "?" + quoteIllegal(query)
+    if (query != null) resStr += "?" + quoteIllegal(query)
 
-    if (fragment != null)
-      resStr += "#" + quoteIllegal(fragment)
+    if (fragment != null) resStr += "#" + quoteIllegal(fragment)
 
     resStr
   }
@@ -638,20 +615,15 @@ object URI {
       fragment: String) = {
     var resStr = ""
 
-    if (scheme != null)
-      resStr += scheme + ":"
+    if (scheme != null) resStr += scheme + ":"
 
-    if (authority != null)
-      resStr += "//" + quoteAuthority(authority)
+    if (authority != null) resStr += "//" + quoteAuthority(authority)
 
-    if (path != null)
-      resStr += quotePath(path)
+    if (path != null) resStr += quotePath(path)
 
-    if (query != null)
-      resStr += "?" + quoteIllegal(query)
+    if (query != null) resStr += "?" + quoteIllegal(query)
 
-    if (fragment != null)
-      resStr += "#" + quoteIllegal(fragment)
+    if (fragment != null) resStr += "#" + quoteIllegal(fragment)
 
     resStr
   }
@@ -683,8 +655,7 @@ object URI {
       while (inBuf.hasRemaining) {
         inBuf.get() match {
           case '%' =>
-            if (!byteBuf.hasRemaining)
-              decode(false)
+            if (!byteBuf.hasRemaining) decode(false)
 
             // get two chars - they must exist, otherwise the URI would not have
             // passed syntax checking
@@ -694,14 +665,12 @@ object URI {
             decoding = true
 
           case c =>
-            if (decoding)
-              decode(true)
+            if (decoding) decode(true)
             outBuf.put(c)
         }
       }
 
-      if (decoding)
-        decode(true)
+      if (decoding) decode(true)
 
       outBuf.flip()
       outBuf.toString
@@ -811,8 +780,7 @@ object URI {
   private def escapeAwareCompare(x: String, y: String): Int = {
     @tailrec
     def loop(i: Int): Int = {
-      if (i >= x.length || i >= y.length)
-        x.length - y.length
+      if (i >= x.length || i >= y.length) x.length - y.length
       else {
         val diff = x.charAt(i) - y.charAt(i)
         if (diff != 0) diff
@@ -823,8 +791,7 @@ object URI {
           val cmp =
             x.substring(i + 1, i + 3)
               .compareToIgnoreCase(y.substring(i + 1, i + 3))
-          if (cmp != 0) cmp
-          else loop(i + 3)
+          if (cmp != 0) cmp else loop(i + 3)
         } else loop(i + 1)
       }
     }

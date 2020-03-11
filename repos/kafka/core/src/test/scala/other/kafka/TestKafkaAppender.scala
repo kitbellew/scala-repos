@@ -37,8 +37,7 @@ object TestKafkaAppender extends Logging {
         System.exit(1)
     }
 
-    for (i <- 1 to 10)
-      info("test")
+    for (i <- 1 to 10) info("test")
   }
 }
 

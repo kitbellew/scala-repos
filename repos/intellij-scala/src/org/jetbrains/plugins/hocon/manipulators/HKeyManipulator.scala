@@ -30,8 +30,7 @@ class HKeyManipulator extends AbstractElementManipulator[HKey] {
         "\"\"\"" + newContent + "\"\"\""
       else if (allStringTypes.contains(QuotedString) || needsQuoting)
         "\"" + StringUtil.escapeStringCharacters(newContent) + "\""
-      else
-        newContent
+      else newContent
 
     val newKey =
       HoconPsiElementFactory.createKey(quotedEscapedContent, psiManager)

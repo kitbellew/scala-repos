@@ -329,8 +329,7 @@ trait Implicits {
     }
     override def hashCode = name.## + pre.## + sym.##
     override def toString = (
-      if (tpeCache eq null) name + ": ?"
-      else name + ": " + tpe
+      if (tpeCache eq null) name + ": ?" else name + ": " + tpe
     )
   }
 
@@ -675,8 +674,7 @@ trait Implicits {
         pt0: Type): Boolean = {
       @tailrec def loop(tp: Type, pt: Type): Boolean = tp match {
         case mt @ MethodType(params, restpe) =>
-          if (mt.isImplicit)
-            loop(restpe, pt)
+          if (mt.isImplicit) loop(restpe, pt)
           else
             pt match {
               case tr @ TypeRef(pre, sym, args) =>
@@ -697,8 +695,7 @@ trait Implicits {
                       }
                     } else {
                       while (ps.nonEmpty && as.nonEmpty) {
-                        if (!(as.head <:< ps.head.tpe))
-                          return false
+                        if (!(as.head <:< ps.head.tpe)) return false
                         ps = ps.tail
                         as = as.tail
                       }
@@ -1289,8 +1286,7 @@ trait Implicits {
                 val infos = pre1.implicitMembers.iterator
                   .map(mem => new ImplicitInfo(mem.name, pre1, mem))
                   .toList
-                if (infos.nonEmpty)
-                  infoMap += (sym -> infos)
+                if (infos.nonEmpty) infoMap += (sym -> infos)
               }
               val bts = tp.baseTypeSeq
               var i = 1
@@ -1314,29 +1310,26 @@ trait Implicits {
           infoMap: InfoMap,
           seen: mutable.Set[Type],
           pending: Set[Symbol]) {
-        if (seen(tp))
-          return
+        if (seen(tp)) return
         seen += tp
         tp match {
           case TypeRef(pre, sym, args) =>
             if (sym.isClass) {
               if (!sym.isAnonOrRefinementClass && !sym.isRoot) {
-                if (sym.isStatic && !(pending contains sym))
-                  infoMap ++= {
-                    infoMapCache get sym match {
-                      case Some(imap) => imap
-                      case None =>
-                        val result = new InfoMap
-                        getClassParts(sym.tpeHK)(
-                          result,
-                          new mutable.HashSet(),
-                          pending + sym)
-                        infoMapCache(sym) = result
-                        result
-                    }
+                if (sym.isStatic && !(pending contains sym)) infoMap ++= {
+                  infoMapCache get sym match {
+                    case Some(imap) => imap
+                    case None =>
+                      val result = new InfoMap
+                      getClassParts(sym.tpeHK)(
+                        result,
+                        new mutable.HashSet(),
+                        pending + sym)
+                      infoMapCache(sym) = result
+                      result
                   }
-                else
-                  getClassParts(tp)
+                }
+                else getClassParts(tp)
                 args foreach getParts
               }
             } else if (sym.isAliasType) {
@@ -1584,8 +1577,8 @@ trait Implicits {
               EmptyTree
             }
           case RefinedType(
-              parents,
-              decls
+                parents,
+                decls
               ) => // !!! not yet: if !full || decls.isEmpty =>
             // refinement is not generated yet
             if (hasLength(parents, 1)) findManifest(parents.head)
@@ -1733,8 +1726,7 @@ trait Implicits {
           result =
             searchImplicit(implicitsOfExpectedType, isLocalToCallsite = false)
 
-        if (result.isFailure)
-          context.reporter ++= previousErrs
+        if (result.isFailure) context.reporter ++= previousErrs
 
         if (stats) {
           if (result.isFailure) Statistics.stopTimer(oftypeFailNanos, failstart)
@@ -1761,8 +1753,7 @@ trait Implicits {
               true
             }
             if (prohibit(AnyRefClass) || (settings.isScala211 && prohibit(
-                  AnyValClass)))
-              result = SearchFailure
+                  AnyValClass))) result = SearchFailure
           case _ => false
         }
         if (settings.isScala211 && isInvalidConversionSource(pt)) {
@@ -1803,8 +1794,7 @@ trait Implicits {
           // any previous errors should not affect us now
           context.reporter.clearAllErrors()
           val res = typedImplicit(ii, ptChecked = false, isLocalToCallsite)
-          if (res.tree ne EmptyTree) List((res, tvars map (_.constr)))
-          else Nil
+          if (res.tree ne EmptyTree) List((res, tvars map (_.constr))) else Nil
         }
       }
       eligibleInfos(context.implicitss, isLocalToCallsite = true) ++

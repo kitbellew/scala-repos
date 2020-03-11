@@ -281,8 +281,7 @@ class TypedRichPipeEx[K: Ordering, V: Monoid](pipe: TypedPipe[(K, V)])
       flowDef: FlowDef,
       mode: Mode): TypedPipe[(K, V)] = {
     val outPipe =
-      if (!src.resourceExists(mode))
-        pipe
+      if (!src.resourceExists(mode)) pipe
       else {
         val oldPairs = TypedPipe
           .from[(K, V)](src.read, (0, 1))
@@ -321,8 +320,7 @@ class RichPipeEx(pipe: Pipe) extends java.io.Serializable {
       }
 
     val outPipe =
-      if (!src.resourceExists(mode))
-        pipe
+      if (!src.resourceExists(mode)) pipe
       else {
         val oldPairs = appendToken(src.read, 0)
         val newPairs = appendToken(pipe, 1)

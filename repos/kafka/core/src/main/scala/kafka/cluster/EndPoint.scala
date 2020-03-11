@@ -62,10 +62,7 @@ case class EndPoint(host: String, port: Int, protocolType: SecurityProtocol) {
 
   def connectionString(): String = {
     val hostport =
-      if (host == null)
-        ":" + port
-      else
-        Utils.formatAddress(host, port)
+      if (host == null) ":" + port else Utils.formatAddress(host, port)
     protocolType + "://" + hostport
   }
 

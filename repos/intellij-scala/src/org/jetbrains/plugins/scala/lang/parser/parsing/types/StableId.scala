@@ -47,10 +47,8 @@ object StableId extends ParserNode {
           if (lookAhead(builder, tDOT, kTHIS) || lookAhead(
                 builder,
                 tDOT,
-                kSUPER))
-            marker.done(REFERENCE)
-          else
-            marker.done(element)
+                kSUPER)) marker.done(REFERENCE)
+          else marker.done(element)
           builder.advanceLexer()
           builder.getTokenType match {
             case ScalaTokenTypes.tIDENTIFIER =>

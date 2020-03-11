@@ -152,10 +152,7 @@ class FlowStageSpec
             var tot = 0
             override def onPush(elem: Int, ctx: Context[Int]) = {
               tot += elem
-              if (elem % 2 == 0)
-                ctx.pull()
-              else
-                ctx.push(tot)
+              if (elem % 2 == 0) ctx.pull() else ctx.push(tot)
             }
           })
         .runWith(Sink.asPublisher(false))
@@ -246,10 +243,7 @@ class FlowStageSpec
             var s = ""
             override def onPush(element: Int, ctx: Context[Int]) = {
               s += element
-              if (s == "1")
-                ctx.pushAndFinish(element)
-              else
-                ctx.push(element)
+              if (s == "1") ctx.pushAndFinish(element) else ctx.push(element)
             }
           })
         .toMat(TestSink.probe[Int])(Keep.both)

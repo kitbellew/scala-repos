@@ -161,8 +161,7 @@ abstract class MailboxSpec
           for (i ← (1 to enqueueN by step).toList)
             yield createProducer(i, Math.min(enqueueN, i + step - 1))
 
-        if (parallel == false)
-          ps foreach { Await.ready(_, remainingOrDefault) }
+        if (parallel == false) ps foreach { Await.ready(_, remainingOrDefault) }
 
         ps
       }
@@ -321,8 +320,7 @@ class SingleConsumerOnlyMailboxVerificationSpec
           case Ping ⇒
             n -= 1
             sender() ! Ping
-            if (n == 0)
-              context stop self
+            if (n == 0) context stop self
         }
       }).withDispatcher(dispatcherId)))
       def receive = {

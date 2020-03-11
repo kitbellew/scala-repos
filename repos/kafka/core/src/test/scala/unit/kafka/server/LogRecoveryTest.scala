@@ -74,8 +74,7 @@ class LogRecoveryTest extends ZooKeeperTestHarness {
   // Some tests restart the brokers then produce more data. But since test brokers use random ports, we need
   // to use a new producer that knows the new ports
   def updateProducer() = {
-    if (producer != null)
-      producer.close()
+    if (producer != null) producer.close()
     producer = TestUtils.createNewProducer(
       TestUtils.getBrokerListStrFromServers(servers),
       retries = 5,

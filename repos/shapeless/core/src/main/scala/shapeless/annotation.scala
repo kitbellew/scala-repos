@@ -142,15 +142,13 @@ class AnnotationMacros(val c: whitebox.Context) extends CaseClassMacros {
 
     if (isCaseClass || hasNonGenericCompanionMember("apply"))
       args => q"${companionRef(tpe)}(..$args)"
-    else
-      args => q"new $tpe(..$args)"
+    else args => q"new $tpe(..$args)"
   }
 
   def materializeAnnotation[A: WeakTypeTag, T: WeakTypeTag]: Tree = {
     val annTpe = weakTypeOf[A]
 
-    if (!isProduct(annTpe))
-      abort(s"$annTpe is not a case class-like type")
+    if (!isProduct(annTpe)) abort(s"$annTpe is not a case class-like type")
 
     val construct0 = construct(annTpe)
 
@@ -172,8 +170,7 @@ class AnnotationMacros(val c: whitebox.Context) extends CaseClassMacros {
       : Tree = {
     val annTpe = weakTypeOf[A]
 
-    if (!isProduct(annTpe))
-      abort(s"$annTpe is not a case class-like type")
+    if (!isProduct(annTpe)) abort(s"$annTpe is not a case class-like type")
 
     val construct0 = construct(annTpe)
 
@@ -198,13 +195,12 @@ class AnnotationMacros(val c: whitebox.Context) extends CaseClassMacros {
                 construct0(ann.tree.children.tail)
             }
         }
-      } else if (isCoproduct(tpe))
-        ctorsOf(tpe).map { cTpe =>
-          cTpe.typeSymbol.annotations.collectFirst {
-            case ann if ann.tree.tpe =:= annTpe =>
-              construct0(ann.tree.children.tail)
-          }
+      } else if (isCoproduct(tpe)) ctorsOf(tpe).map { cTpe =>
+        cTpe.typeSymbol.annotations.collectFirst {
+          case ann if ann.tree.tpe =:= annTpe =>
+            construct0(ann.tree.children.tail)
         }
+      }
       else
         abort(
           s"$tpe is not case class like or the root of a sealed family of types")

@@ -86,8 +86,7 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
   // register topic and partition change listeners
   def registerListeners() {
     registerTopicChangeListener()
-    if (controller.config.deleteTopicEnable)
-      registerDeleteTopicListener()
+    if (controller.config.deleteTopicEnable) registerDeleteTopicListener()
   }
 
   // de-register topic and partition change listeners
@@ -98,8 +97,7 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
         zkUtils.zkClient.unsubscribeDataChanges(getTopicPath(topic), listener)
     }
     partitionModificationsListeners.clear()
-    if (controller.config.deleteTopicEnable)
-      deregisterDeleteTopicListener()
+    if (controller.config.deleteTopicEnable) deregisterDeleteTopicListener()
   }
 
   /**

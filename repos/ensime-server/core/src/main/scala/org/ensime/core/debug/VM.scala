@@ -250,8 +250,7 @@ class VM(
             .getValues(0, 3)
             .map(valueSummary)
             .mkString(", ") + ",...]"
-        else
-          "Array[" + v.getValues.map(valueSummary).mkString(", ") + "]"
+        else "Array[" + v.getValues.map(valueSummary).mkString(", ") + "]"
       case v: ObjectReference =>
         val tpe = v.referenceType()
         if (tpe.name().matches("^scala\\.runtime\\.[A-Z][a-z]+Ref$")) {

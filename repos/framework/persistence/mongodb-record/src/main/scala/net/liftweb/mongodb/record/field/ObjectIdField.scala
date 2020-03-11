@@ -65,10 +65,8 @@ class ObjectIdField[OwnerType <: BsonRecord[OwnerType]](rec: OwnerType)
   }
 
   def setFromString(in: String): Box[ObjectId] =
-    if (ObjectId.isValid(in))
-      setBox(Full(new ObjectId(in)))
-    else
-      setBox(Failure("Invalid ObjectId string: " + in))
+    if (ObjectId.isValid(in)) setBox(Full(new ObjectId(in)))
+    else setBox(Failure("Invalid ObjectId string: " + in))
 
   private def elem =
     S.fmapFunc(S.SFuncHolder(this.setFromAny(_))) { funcName =>

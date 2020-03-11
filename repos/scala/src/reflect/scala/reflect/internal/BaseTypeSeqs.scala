@@ -196,8 +196,7 @@ trait BaseTypeSeqs {
         i = 1
         while (i < nparents) {
           val nextSym = nextTypeSymbol(i)
-          if (nextSym isLess minSym)
-            minSym = nextSym
+          if (nextSym isLess minSym) minSym = nextSym
           i += 1
         }
         var minTypes: List[Type] = List()
@@ -215,8 +214,7 @@ trait BaseTypeSeqs {
           if (nextTypeSymbol(i) == minSym) {
             nextRawElem(i) match {
               case RefinedType(variants, decls) =>
-                for (tp <- variants)
-                  if (!alreadyInMinTypes(tp)) minTypes ::= tp
+                for (tp <- variants) if (!alreadyInMinTypes(tp)) minTypes ::= tp
               case tp =>
                 if (!alreadyInMinTypes(tp)) minTypes ::= tp
             }

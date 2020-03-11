@@ -23,10 +23,8 @@ package scala.collection.immutable.redblacktree {
     import RB._
 
     def nodeAt[A](tree: Tree[String, A], n: Int): Option[(String, A)] =
-      if (n < iterator(tree).size && n >= 0)
-        Some(iterator(tree).drop(n).next)
-      else
-        None
+      if (n < iterator(tree).size && n >= 0) Some(iterator(tree).drop(n).next)
+      else None
 
     def treeContains[A](tree: Tree[String, A], key: String) =
       iterator(tree).map(_._1) contains key
@@ -49,10 +47,8 @@ package scala.collection.immutable.redblacktree {
           left <- mkTree(nextLevel, !isRed, label + "L")
           right <- mkTree(nextLevel, !isRed, label + "R")
         } yield {
-          if (isRed)
-            RedTree(label + "N", 0, left, right)
-          else
-            BlackTree(label + "N", 0, left, right)
+          if (isRed) RedTree(label + "N", 0, left, right)
+          else BlackTree(label + "N", 0, left, right)
         }
       }
 

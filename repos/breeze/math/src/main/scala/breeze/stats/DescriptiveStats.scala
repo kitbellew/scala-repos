@@ -100,8 +100,7 @@ trait DescriptiveStats {
             }
 
             def zeros(numZero: Int, zeroValue: S): Unit = {
-              if (numZero != 0)
-                mu = mu * n / (n + numZero)
+              if (numZero != 0) mu = mu * n / (n + numZero)
               n += numZero
             }
           }

@@ -135,8 +135,7 @@ class HttpDtabTest extends FunSuite with AssertionsForJUnit {
       "X-Dtab-01-B",
       "Dtab-Local")
 
-    for (h <- headers)
-      assert(m.headers.contains(h), h + " not in headers")
+    for (h <- headers) assert(m.headers.contains(h), h + " not in headers")
 
     assert(m.headers.contains("onetwothree"), "onetwothree not in headers")
 

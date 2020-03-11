@@ -271,13 +271,13 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
 
     def receive = {
       case AddTask(
-          repeat,
-          apiKey,
-          authorities,
-          context,
-          source,
-          sink,
-          timeout) =>
+            repeat,
+            apiKey,
+            authorities,
+            context,
+            source,
+            sink,
+            timeout) =>
         val ourself = self
         val taskId = UUID.randomUUID()
         val newTask = ScheduledTask(

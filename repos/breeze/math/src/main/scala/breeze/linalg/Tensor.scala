@@ -89,8 +89,7 @@ trait QuasiTensor[@spec(Int) K, @spec(Double, Int, Float, Long) V] {
     var hash = 43
     for (v <- activeValuesIterator) {
       val hh = v.##
-      if (hh != 0)
-        hash = MurmurHash3.mix(hash, hh)
+      if (hh != 0) hash = MurmurHash3.mix(hash, hh)
     }
 
     hash

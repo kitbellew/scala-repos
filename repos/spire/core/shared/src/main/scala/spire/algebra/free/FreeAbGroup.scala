@@ -31,8 +31,7 @@ final class FreeAbGroup[A] private (val terms: Map[A, Int]) extends AnyVal {
     @tailrec def loop(total: B): Option[B] =
       if (it.hasNext) {
         val (a, n) = it.next()
-        if (n < 0) None
-        else loop(B.op(total, B.combinen(f(a), n)))
+        if (n < 0) None else loop(B.op(total, B.combinen(f(a), n)))
       } else Some(total)
 
     loop(B.id)
@@ -58,9 +57,7 @@ final class FreeAbGroup[A] private (val terms: Map[A, Int]) extends AnyVal {
     @tailrec def loop0: Option[B] =
       if (it.hasNext) {
         val (a, n) = it.next()
-        if (n == 0) loop0
-        else if (n < 0) None
-        else loop1(B.combinen(f(a), n))
+        if (n == 0) loop0 else if (n < 0) None else loop1(B.combinen(f(a), n))
       } else None
 
     loop0

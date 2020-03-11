@@ -356,8 +356,7 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
                       case ref: ScReferenceExpression =>
                         val ind = methods.indexWhere(p =>
                           ScalaPsiUtil.memberNamesEquals(p.name, ref.refName))
-                        if (ind != -1) methods.remove(ind)
-                        else tail()
+                        if (ind != -1) methods.remove(ind) else tail()
                       case _ => tail()
                     }
                   case _ => tail()
@@ -515,8 +514,7 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
               case ref: ScReferenceExpression =>
                 val ind = params.indexWhere(p =>
                   ScalaPsiUtil.memberNamesEquals(p.name, ref.refName))
-                if (ind != -1) params.remove(ind)
-                else tail()
+                if (ind != -1) params.remove(ind) else tail()
               case _ => tail()
             }
           case _ => tail()

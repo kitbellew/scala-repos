@@ -431,8 +431,7 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
           HttpResponse(
             StatusCodes.NotFound,
             entity = "Literally nothing to see here."))
-      else
-        Rejected(rejections)
+      else Rejected(rejections)
     }
     val neverAuth: Authenticator[String] = creds => None
     val alwaysAuth: Authenticator[String] = creds => Some("id")
@@ -475,8 +474,7 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
         // imagine checking rejections takes a longer time:
         if (rejections.exists(_.isInstanceOf[AuthenticationFailedRejection]))
           Complete(HttpResponse(entity = "Nothing to see here, move along."))
-        else
-          Rejected(rejections)
+        else Rejected(rejections)
       }
     }
     val neverAuth: Authenticator[String] = creds => None
@@ -735,8 +733,7 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     def ignore456(path: Uri.Path) = path match {
       case s @ Uri.Path.Segment(head, tail) if head.startsWith("456") =>
         val newHead = head.drop(3)
-        if (newHead.isEmpty) tail
-        else s.copy(head = head.drop(3))
+        if (newHead.isEmpty) tail else s.copy(head = head.drop(3))
       case _ => path
     }
     val ignoring456 = mapUnmatchedPath(ignore456)

@@ -31,14 +31,12 @@ abstract class ScalaStructureViewElement(
        */
       if (PsiTreeUtil.getParentOfType(myElement, classOf[ScValue]) != null) {
         val v = PsiTreeUtil.getParentOfType(myElement, classOf[ScValue])
-        if (myElement.textMatches(v.declaredElements.apply(0))) v
-        else myElement
+        if (myElement.textMatches(v.declaredElements.apply(0))) v else myElement
       } else if (PsiTreeUtil.getParentOfType(
                    myElement,
                    classOf[ScVariable]) != null) {
         val v = PsiTreeUtil.getParentOfType(myElement, classOf[ScVariable])
-        if (myElement.textMatches(v.declaredElements.apply(0))) v
-        else myElement
+        if (myElement.textMatches(v.declaredElements.apply(0))) v else myElement
       } else { myElement }
     } else { null; }
   }
@@ -61,14 +59,12 @@ abstract class ScalaStructureViewElement(
     if (inherited != that.inherited) return false
 
     val value = getValue
-    if (value == null) that.getValue == null
-    else value == that.getValue
+    if (value == null) that.getValue == null else value == that.getValue
   }
 
   override def hashCode(): Int = {
     val value = getValue
     val is = if (inherited) 1 else 0
-    if (value == null) 0
-    else value.hashCode * 2 + is
+    if (value == null) 0 else value.hashCode * 2 + is
   }
 }

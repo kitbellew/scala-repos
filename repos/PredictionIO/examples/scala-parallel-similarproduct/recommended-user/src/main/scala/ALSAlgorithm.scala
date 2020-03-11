@@ -182,8 +182,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val q = mutable.PriorityQueue()
 
     for (x <- s) {
-      if (q.size < n)
-        q.enqueue(x)
+      if (q.size < n) q.enqueue(x)
       else {
         // q is full
         if (ord.compare(x, q.head) < 0) {

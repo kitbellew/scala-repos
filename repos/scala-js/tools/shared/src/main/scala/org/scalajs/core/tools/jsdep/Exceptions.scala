@@ -95,8 +95,7 @@ object JSLibResolveException {
         msg.append(
           s"- Ambiguous reference to a JS library: ${p.resourceName}\n")
         msg.append("  Possible paths found on the classpath:\n")
-        for (relPath <- p.possiblePaths)
-          msg.append(s"  - $relPath\n")
+        for (relPath <- p.possiblePaths) msg.append(s"  - $relPath\n")
       }
       msg.append(s"  originating from: ${p.origins.mkString(", ")}\n")
     }

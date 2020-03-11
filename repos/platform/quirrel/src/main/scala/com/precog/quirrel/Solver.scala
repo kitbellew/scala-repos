@@ -253,8 +253,7 @@ trait Solver extends parser.AST with typer.Binder {
             newWorkLists,
             seen ++ (filteredWork map { _.head }),
             results ++ results2)
-        else
-          results2
+        else results2
       }
     }
 

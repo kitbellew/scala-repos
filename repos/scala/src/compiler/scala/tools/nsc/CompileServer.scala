@@ -85,8 +85,7 @@ class StandardCompileServer(fixPort: Int = 0) extends SocketServer(fixPort) {
     def fscError(msg: String): Unit = out println (
       FakePos("fsc") + msg + "\n  fsc -help  gives more information"
     )
-    if (input == null || password != guessedPassword)
-      return
+    if (input == null || password != guessedPassword) return
 
     val args = input.split("\u0000", -1).toList
     val newSettings = new FscSettings(fscError)
@@ -114,8 +113,7 @@ class StandardCompileServer(fixPort: Int = 0) extends SocketServer(fixPort) {
     if (newSettings.reset.value) {
       clearCompiler()
       out.println("[Compile server was reset]")
-      if (command.files.isEmpty)
-        return
+      if (command.files.isEmpty) return
     }
 
     reporter = new ConsoleReporter(newSettings, in, out) {
@@ -139,8 +137,7 @@ class StandardCompileServer(fixPort: Int = 0) extends SocketServer(fixPort) {
 
     if (command.shouldStopWithInfo)
       reporter.echo(command.getInfoMessage(newGlobal(newSettings, reporter)))
-    else if (command.files.isEmpty)
-      reporter.echo(command.usageMsg)
+    else if (command.files.isEmpty) reporter.echo(command.usageMsg)
     else {
       if (isCompilerReusable) {
         info("[Reusing existing Global instance.]")

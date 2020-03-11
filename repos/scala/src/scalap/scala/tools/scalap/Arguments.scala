@@ -62,8 +62,7 @@ object Arguments {
       if (args != null) {
         var i = 0
         while (i < args.length)
-          if ((args(i) == null) || (args(i).length() == 0))
-            i += 1
+          if ((args(i) == null) || (args(i).length() == 0)) i += 1
           else if (args(i).charAt(0) != optionPrefix) {
             res.addOther(args(i))
             i += 1

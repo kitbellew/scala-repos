@@ -59,8 +59,7 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
       }
       i += 1
     }
-    if (j == 0) ConstArray.empty
-    else new ConstArray[R](ar, j)
+    if (j == 0) ConstArray.empty else new ConstArray[R](ar, j)
   }
 
   def flatMap[R](f: T => ConstArray[R]): ConstArray[R] = {
@@ -233,8 +232,7 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
         }
         i += 1
       }
-      if (ri == 0) ConstArray.empty
-      else new ConstArray[R](ar, ri)
+      if (ri == 0) ConstArray.empty else new ConstArray[R](ar, ri)
     }
     def foreach[R](f: T => R): Unit = {
       var i = 0
@@ -352,10 +350,8 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
   def lastOption: Option[T] = if (isEmpty) None else Some(last)
 
   def slice(from: Int, until: Int): ConstArray[T] = {
-    if (from == 0) {
-      if (until == length) this
-      else new ConstArray(a, until)
-    } else
+    if (from == 0) { if (until == length) this else new ConstArray(a, until) }
+    else
       new ConstArray(
         Arrays
           .copyOfRange[AnyRef](a.asInstanceOf[Array[AnyRef]], from, until)
@@ -501,8 +497,7 @@ final class ConstArrayBuilder[T](
   def length = len
 
   def result: ConstArray[T] =
-    if (len == 0) ConstArray.empty
-    else new ConstArray[T](a, len)
+    if (len == 0) ConstArray.empty else new ConstArray[T](a, len)
 
   def +=(v: T): Unit = {
     ensure(1)

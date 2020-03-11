@@ -62,8 +62,7 @@ trait JavaSourceFinding extends Helpers with SLF4JLogging {
           javaFqn
             .flatMap(askLinkPos(_, SourceFileInfo(sourcePos.file, None, None)))
             .orElse(Some(sourcePos))
-        else
-          Some(sourcePos)
+        else Some(sourcePos)
       }
   }
 

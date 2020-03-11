@@ -103,8 +103,7 @@ class TopicDeletionManager(
   def start() {
     if (isDeleteTopicEnabled) {
       deleteTopicsThread = new DeleteTopicsThread()
-      if (topicsToBeDeleted.size > 0)
-        deleteTopicStateChanged.set(true)
+      if (topicsToBeDeleted.size > 0) deleteTopicStateChanged.set(true)
       deleteTopicsThread.start()
     }
   }
@@ -204,29 +203,25 @@ class TopicDeletionManager(
 
   def isTopicIneligibleForDeletion(topic: String): Boolean = {
     if (isDeleteTopicEnabled) { topicsIneligibleForDeletion.contains(topic) }
-    else
-      true
+    else true
   }
 
   def isTopicDeletionInProgress(topic: String): Boolean = {
     if (isDeleteTopicEnabled) {
       controller.replicaStateMachine.isAtLeastOneReplicaInDeletionStartedState(
         topic)
-    } else
-      false
+    } else false
   }
 
   def isPartitionToBeDeleted(topicAndPartition: TopicAndPartition) = {
     if (isDeleteTopicEnabled) {
       partitionsToBeDeleted.contains(topicAndPartition)
-    } else
-      false
+    } else false
   }
 
   def isTopicQueuedUpForDeletion(topic: String): Boolean = {
     if (isDeleteTopicEnabled) { topicsToBeDeleted.contains(topic) }
-    else
-      false
+    else false
   }
 
   /**
@@ -457,8 +452,7 @@ class TopicDeletionManager(
     override def doWork() {
       awaitTopicDeletionNotification()
 
-      if (!isRunning.get)
-        return
+      if (!isRunning.get) return
 
       inLock(controllerContext.controllerLock) {
         val topicsQueuedForDeletion = Set.empty[String] ++ topicsToBeDeleted

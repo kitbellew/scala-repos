@@ -94,15 +94,13 @@ object Challenge extends LilaController {
 
   def decline(id: String) = Auth { implicit ctx => me =>
     OptionFuResult(env.api byId id) { c =>
-      if (isForMe(c)) env.api decline c
-      else notFound
+      if (isForMe(c)) env.api decline c else notFound
     }
   }
 
   def cancel(id: String) = Open { implicit ctx =>
     OptionFuResult(env.api byId id) { c =>
-      if (isMine(c)) env.api cancel c
-      else notFound
+      if (isMine(c)) env.api cancel c else notFound
     }
   }
 

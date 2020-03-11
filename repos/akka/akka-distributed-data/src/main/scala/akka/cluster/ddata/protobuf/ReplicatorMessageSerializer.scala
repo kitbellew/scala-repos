@@ -69,8 +69,7 @@ private[akka] object ReplicatorMessageSerializer {
         if (end - i == 0) null.asInstanceOf[B]
         else {
           val x = elements(i & mask)
-          if ((x eq null) || (x._1 ne a)) find(i + 1)
-          else x._2
+          if ((x eq null) || (x._1 ne a)) find(i + 1) else x._2
         }
       }
       lastUsed = System.nanoTime()
@@ -99,8 +98,7 @@ private[akka] object ReplicatorMessageSerializer {
     def getOrAdd(a: A): B = {
       val position = n.get
       val c = get(a, position)
-      if (c ne null)
-        c
+      if (c ne null) c
       else {
         val b2 = getOrAddFactory(a)
         if (position == n.get) {

@@ -116,8 +116,7 @@ object Test {
     testCount += 1
     val resStr = str.format(op1, op2)
     // println(resStr)
-    if (!res)
-      failures += ("FAIL: " + resStr)
+    if (!res) failures += ("FAIL: " + resStr)
     // assert(res, resStr)
   }
 

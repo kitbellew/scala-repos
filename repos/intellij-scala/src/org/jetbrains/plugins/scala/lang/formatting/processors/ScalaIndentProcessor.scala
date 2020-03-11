@@ -127,8 +127,7 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
             if (settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED ||
                 settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED2)
               Indent.getNormalIndent
-            else
-              Indent.getNoneIndent
+            else Indent.getNoneIndent
           case _ => Indent.getNoneIndent
         }
         else Indent.getNoneIndent
@@ -147,8 +146,7 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
             if (settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED ||
                 settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED2)
               Indent.getNormalIndent
-            else
-              Indent.getNoneIndent
+            else Indent.getNoneIndent
           case ScalaTokenTypes.kTRY => Indent.getNoneIndent
           case _                    => Indent.getNormalIndent
         }

@@ -15,12 +15,10 @@ class JUnitAssumptionsTest {
       shouldPass: Boolean = true): Unit = {
     try {
       assumption
-      if (!shouldPass)
-        fail("Assumption should have failed")
+      if (!shouldPass) fail("Assumption should have failed")
     } catch {
       case assVio: AssumptionViolatedException =>
-        if (shouldPass)
-          throw assVio
+        if (shouldPass) throw assVio
     }
   }
 

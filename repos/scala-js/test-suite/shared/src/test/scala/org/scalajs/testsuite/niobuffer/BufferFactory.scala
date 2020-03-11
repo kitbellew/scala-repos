@@ -219,8 +219,7 @@ object BufferFactory {
 
   trait SlicedBufferFactory extends BufferFactory {
     abstract override def allocBuffer(capacity: Int): BufferType = {
-      if (capacity < 0)
-        throw new IllegalArgumentException
+      if (capacity < 0) throw new IllegalArgumentException
       val buf = super.allocBuffer(capacity + 25)
       buf.position(17)
       buf.limit(17 + capacity)

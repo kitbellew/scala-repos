@@ -131,8 +131,7 @@ final case class Router(
         .provider
         .deadLetters
         .tell(unwrap(msg), sender)
-    else
-      routee.send(unwrap(msg), sender)
+    else routee.send(unwrap(msg), sender)
   }
 
   private def unwrap(msg: Any): Any = msg match {

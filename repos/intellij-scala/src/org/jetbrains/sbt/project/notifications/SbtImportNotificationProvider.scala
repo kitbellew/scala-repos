@@ -60,10 +60,8 @@ abstract class SbtImportNotificationProvider(
 
   protected def importProject(file: VirtualFile): Unit = {
     val externalProjectPath = {
-      if (file.getName == Sbt.BuildFile)
-        file.getParent.getCanonicalPath
-      else
-        file.getParent.getParent.getCanonicalPath
+      if (file.getName == Sbt.BuildFile) file.getParent.getCanonicalPath
+      else file.getParent.getParent.getCanonicalPath
     }
 
     val projectSettings = SbtProjectSettings.default

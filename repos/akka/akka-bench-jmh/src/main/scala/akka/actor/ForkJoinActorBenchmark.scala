@@ -119,8 +119,7 @@ object ForkJoinActorBenchmark {
     var left = messages / 2
     def receive = {
       case `message` =>
-        if (left <= 1)
-          context stop self
+        if (left <= 1) context stop self
 
         sender() ! message
         left -= 1

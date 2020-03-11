@@ -139,15 +139,12 @@ trait Enum[F] extends Order[F] { self =>
   def fromTo(a: F, z: F): EphemeralStream[F] =
     EphemeralStream.cons(
       a,
-      if (equal(a, z))
-        EphemeralStream.emptyEphemeralStream
-      else
-        fromTo(if (lessThan(a, z)) succ(a) else pred(a), z))
+      if (equal(a, z)) EphemeralStream.emptyEphemeralStream
+      else fromTo(if (lessThan(a, z)) succ(a) else pred(a), z))
 
   def fromToL(a: F, z: F): List[F] = {
     def fromToLT(a: F, z: F): Trampoline[List[F]] =
-      if (equal(a, z))
-        return_(a :: Nil)
+      if (equal(a, z)) return_(a :: Nil)
       else
         suspend(
           fromToLT(if (lessThan(a, z)) succ(a) else pred(a), z) map (a :: _))
@@ -156,36 +153,26 @@ trait Enum[F] extends Order[F] { self =>
 
   def fromStepTo(n: Int, a: F, z: F): EphemeralStream[F] = {
     lazy val cmp =
-      if (n > 0)
-        greaterThan(_, _)
-      else if (n < 0)
-        lessThan(_, _)
-      else
-        (_: F, _: F) => false
+      if (n > 0) greaterThan(_, _)
+      else if (n < 0) lessThan(_, _)
+      else (_: F, _: F) => false
     EphemeralStream.cons(
       a, {
         val k = succn(n, a)
-        if (cmp(k, z))
-          EphemeralStream.emptyEphemeralStream
-        else
-          fromStepTo(n, k, z)
+        if (cmp(k, z)) EphemeralStream.emptyEphemeralStream
+        else fromStepTo(n, k, z)
       })
   }
 
   def fromStepToL(n: Int, a: F, z: F): List[F] = {
     def fromStepToLT(n: Int, a: F, z: F): Trampoline[List[F]] = {
       lazy val cmp =
-        if (n > 0)
-          greaterThan(_, _)
-        else if (n < 0)
-          lessThan(_, _)
-        else
-          (_: F, _: F) => false
+        if (n > 0) greaterThan(_, _)
+        else if (n < 0) lessThan(_, _)
+        else (_: F, _: F) => false
       val k = succn(n, a)
-      if (cmp(k, z))
-        return_(a :: Nil)
-      else
-        suspend(fromStepToLT(n, k, z) map (a :: _))
+      if (cmp(k, z)) return_(a :: Nil)
+      else suspend(fromStepToLT(n, k, z) map (a :: _))
     }
     fromStepToLT(n, a, z).run
   }

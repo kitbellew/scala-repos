@@ -155,10 +155,8 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
 
     //if principal is allowed to read or write we allow describe by default, the reverse does not apply to Deny.
     val ops =
-      if (Describe == operation)
-        Set[Operation](operation, Read, Write)
-      else
-        Set[Operation](operation)
+      if (Describe == operation) Set[Operation](operation, Read, Write)
+      else Set[Operation](operation)
 
     //now check if there is any allow acl that will allow this operation.
     val allowMatch = ops.exists(operation =>
@@ -324,10 +322,8 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
     val path = toResourcePath(resource)
 
     var currentVersionedAcls =
-      if (aclCache.contains(resource))
-        getAclsFromCache(resource)
-      else
-        getAclsFromZk(resource)
+      if (aclCache.contains(resource)) getAclsFromCache(resource)
+      else getAclsFromZk(resource)
     var newVersionedAcls: VersionedAcls = null
     var writeComplete = false
     var retries = 0

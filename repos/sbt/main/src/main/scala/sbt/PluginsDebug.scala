@@ -166,8 +166,7 @@ private[sbt] object PluginsDebug {
       val availableInBuilds: List[URI] =
         perBuild.toList.filter(_._2(plugin)).map(_._1)
       s"Plugin ${plugin.label} is only available in builds:\n\t${availableInBuilds.mkString("\n\t")}\nSwitch to a project in one of those builds using `project` and rerun this command for more information."
-    } else if (definesPlugin(currentProject))
-      debug.activatedHelp(plugin)
+    } else if (definesPlugin(currentProject)) debug.activatedHelp(plugin)
     else {
       val thisAggregated = BuildUtil
         .dependencies(structure.units)
@@ -259,10 +258,8 @@ private[sbt] object PluginsDebug {
 
   /** Determines how to enable [[plugin]] in [[context]]. */
   def pluginEnable(context: Context, plugin: AutoPlugin): PluginEnable =
-    if (context.enabled.contains(plugin))
-      PluginActivated(plugin, context)
-    else
-      enableDeactivated(context, plugin)
+    if (context.enabled.contains(plugin)) PluginActivated(plugin, context)
+    else enableDeactivated(context, plugin)
 
   private[this] def enableDeactivated(
       context: Context,
@@ -384,13 +381,13 @@ private[sbt] object PluginsDebug {
   def explainPluginEnable(ps: PluginEnable): String =
     ps match {
       case PluginRequirements(
-          plugin,
-          context,
-          blockingExcludes,
-          enablingPlugins,
-          extraEnabledPlugins,
-          toBeRemoved,
-          deactivate) =>
+            plugin,
+            context,
+            blockingExcludes,
+            enablingPlugins,
+            extraEnabledPlugins,
+            toBeRemoved,
+            deactivate) =>
         def indent(str: String) = if (str.isEmpty) "" else s"\t$str"
         def note(str: String) = if (str.isEmpty) "" else s"Note: $str"
         val parts =

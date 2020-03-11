@@ -409,8 +409,7 @@ object DebuggerUtil {
       try { debugProcess.getPositionManager.getAllClasses(sourcePosition) }
       catch { case e: NoDataException => return None }
 
-    if (!allClasses.isEmpty) Some(allClasses.get(0))
-    else None
+    if (!allClasses.isEmpty) Some(allClasses.get(0)) else None
   }
 
   def withoutBackticks(name: String): String = {
@@ -495,8 +494,7 @@ object DebuggerUtil {
       val refType = objRef.referenceType()
       if (typeNameCondition(refType.name)) {
         val elemField = refType.fieldByName("elem")
-        if (elemField != null) objRef.getValue(elemField)
-        else objRef
+        if (elemField != null) objRef.getValue(elemField) else objRef
       } else objRef
     case _ => value
   }

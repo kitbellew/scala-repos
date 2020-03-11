@@ -125,8 +125,7 @@ class ScConstructorImpl(node: ASTNode)
 
   def shapeType(i: Int): TypeResult[ScType] = {
     val seq = shapeMultiType(i)
-    if (seq.length == 1) seq.head
-    else Failure("Can't resolve type", Some(this))
+    if (seq.length == 1) seq.head else Failure("Can't resolve type", Some(this))
   }
 
   def shapeMultiType(i: Int): Seq[TypeResult[ScType]] =

@@ -227,8 +227,7 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
   private def createNewPath(
       getter: () => Option[Path],
       setter: (Option[Path]) => Unit) = {
-    if (getter().isEmpty)
-      setter(Some(new Path(getProject)))
+    if (getter().isEmpty) setter(Some(new Path(getProject)))
 
     getter().get.createPath()
   }
@@ -372,8 +371,7 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
   def setLogPhase(input: String) {
     logPhase = input.split(",").toList.flatMap { s: String =>
       val st = s.trim()
-      if (CompilerPhase.isPermissible(st))
-        (if (input != "") List(st) else Nil)
+      if (CompilerPhase.isPermissible(st)) (if (input != "") List(st) else Nil)
       else { buildError("Phase " + st + " in log does not exist.") }
     }
   }
@@ -612,10 +610,8 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
     // parameters.
     val settings = newSettings(buildError)
     settings.outdir.value = asString(destination.get)
-    if (!classpath.isEmpty)
-      settings.classpath.value = asString(getClasspath)
-    if (!sourcepath.isEmpty)
-      settings.sourcepath.value = asString(getSourcepath)
+    if (!classpath.isEmpty) settings.classpath.value = asString(getClasspath)
+    if (!sourcepath.isEmpty) settings.sourcepath.value = asString(getSourcepath)
     else if (origin.get.size() > 0)
       settings.sourcepath.value = origin.get.list()(0)
     if (!bootclasspath.isEmpty)
@@ -667,8 +663,7 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
 
   override def execute() {
     val (settings, sourceFiles, javaOnly) = initialize
-    if (sourceFiles.isEmpty || javaOnly)
-      return
+    if (sourceFiles.isEmpty || javaOnly) return
 
     if (fork) executeFork(settings, sourceFiles) // TODO - Error
     else executeInternal(settings, sourceFiles)

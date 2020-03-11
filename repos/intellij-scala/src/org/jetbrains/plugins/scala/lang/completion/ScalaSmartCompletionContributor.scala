@@ -147,66 +147,63 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
             }
             elementAdded
           }
-          if (!el.isNamedParameterOrAssignment)
-            elem match {
-              case fun: ScSyntheticFunction =>
-                val second =
-                  checkForSecondCompletion && fun.paramClauses.flatten.isEmpty
-                checkType(fun.retType, ScSubstitutor.empty, second)
-              case fun: ScFunction =>
-                if (fun.containingClass != null && fun.containingClass.qualifiedName == "scala.Predef") {
-                  fun.name match {
-                    case "implicitly" | "identity" | "locally" => return
-                    case _                                     =>
-                  }
+          if (!el.isNamedParameterOrAssignment) elem match {
+            case fun: ScSyntheticFunction =>
+              val second =
+                checkForSecondCompletion && fun.paramClauses.flatten.isEmpty
+              checkType(fun.retType, ScSubstitutor.empty, second)
+            case fun: ScFunction =>
+              if (fun.containingClass != null && fun.containingClass.qualifiedName == "scala.Predef") {
+                fun.name match {
+                  case "implicitly" | "identity" | "locally" => return
+                  case _                                     =>
                 }
-                val infer =
-                  if (chainVariant) ScSubstitutor.empty
-                  else ScalaPsiUtil.inferMethodTypesArgs(fun, subst)
-                val second = checkForSecondCompletion &&
-                  fun.paramClauses.clauses
-                    .filterNot(_.isImplicit)
-                    .flatMap(_.parameters)
-                    .isEmpty
-                val added = fun.returnType match {
-                  case Success(tp, _) => checkType(tp, infer, second)
-                  case _              => false
+              }
+              val infer =
+                if (chainVariant) ScSubstitutor.empty
+                else ScalaPsiUtil.inferMethodTypesArgs(fun, subst)
+              val second = checkForSecondCompletion &&
+                fun.paramClauses.clauses
+                  .filterNot(_.isImplicit)
+                  .flatMap(_.parameters)
+                  .isEmpty
+              val added = fun.returnType match {
+                case Success(tp, _) => checkType(tp, infer, second)
+                case _              => false
+              }
+              if (!added) {
+                fun.getType(TypingContext.empty) match {
+                  case Success(tp, _) =>
+                    checkType(tp, infer, second, etaExpanded = true)
+                  case _ =>
                 }
-                if (!added) {
-                  fun.getType(TypingContext.empty) match {
-                    case Success(tp, _) =>
-                      checkType(tp, infer, second, etaExpanded = true)
-                    case _ =>
-                  }
-                }
-              case method: PsiMethod =>
-                val second =
-                  checkForSecondCompletion && method.getParameterList.getParametersCount == 0
-                val infer =
-                  if (chainVariant) ScSubstitutor.empty
-                  else ScalaPsiUtil.inferMethodTypesArgs(method, subst)
-                checkType(
-                  ScType.create(method.getReturnType, method.getProject, scope),
-                  infer,
-                  second)
-              case typed: ScTypedDefinition =>
-                if (!PsiTreeUtil.isContextAncestor(
-                      typed.nameContext,
-                      place,
-                      false) &&
-                    (originalPlace == null || !PsiTreeUtil.isContextAncestor(
-                      typed.nameContext,
-                      originalPlace,
-                      false)))
-                  for (tt <- typed.getType(TypingContext.empty))
-                    checkType(tt, ScSubstitutor.empty, checkForSecondCompletion)
-              case f: PsiField =>
-                checkType(
-                  ScType.create(f.getType, f.getProject, scope),
-                  ScSubstitutor.empty,
-                  checkForSecondCompletion)
-              case _ =>
-            }
+              }
+            case method: PsiMethod =>
+              val second =
+                checkForSecondCompletion && method.getParameterList.getParametersCount == 0
+              val infer =
+                if (chainVariant) ScSubstitutor.empty
+                else ScalaPsiUtil.inferMethodTypesArgs(method, subst)
+              checkType(
+                ScType.create(method.getReturnType, method.getProject, scope),
+                infer,
+                second)
+            case typed: ScTypedDefinition =>
+              if (!PsiTreeUtil
+                    .isContextAncestor(typed.nameContext, place, false) &&
+                  (originalPlace == null || !PsiTreeUtil.isContextAncestor(
+                    typed.nameContext,
+                    originalPlace,
+                    false)))
+                for (tt <- typed.getType(TypingContext.empty))
+                  checkType(tt, ScSubstitutor.empty, checkForSecondCompletion)
+            case f: PsiField =>
+              checkType(
+                ScType.create(f.getType, f.getProject, scope),
+                ScSubstitutor.empty,
+                checkForSecondCompletion)
+            case _ =>
+          }
         case _ =>
       }
     }
@@ -273,9 +270,9 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
           def checkTypeProjection(tp: ScType) {
             tp match {
               case ScProjectionType(
-                  proj,
-                  _: ScTypeAlias | _: ScClass | _: ScTrait,
-                  _) =>
+                    proj,
+                    _: ScTypeAlias | _: ScClass | _: ScTrait,
+                    _) =>
                 ScType.extractClass(proj) match {
                   case Some(o: ScObject)
                       if ResolveUtils.isAccessible(

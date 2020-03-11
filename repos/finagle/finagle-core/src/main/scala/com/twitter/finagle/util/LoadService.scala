@@ -50,8 +50,7 @@ private object ClassPath {
   def browse(loader: ClassLoader): Seq[Info] = {
     val buf = mutable.Buffer[Info]()
 
-    for ((uri, loader) <- getEntries(loader))
-      browseUri(uri, loader, buf)
+    for ((uri, loader) <- getEntries(loader)) browseUri(uri, loader, buf)
 
     buf
   }
@@ -67,8 +66,7 @@ private object ClassPath {
   private def getEntries(loader: ClassLoader): Seq[(URI, ClassLoader)] = {
     val ents = mutable.Buffer[(URI, ClassLoader)]()
     val parent = loader.getParent
-    if (parent != null)
-      ents ++= getEntries(parent)
+    if (parent != null) ents ++= getEntries(parent)
 
     loader match {
       case urlLoader: URLClassLoader =>
@@ -92,21 +90,16 @@ private object ClassPath {
       history: mutable.Set[String]
   ): Unit = {
 
-    if (uri.getScheme != "file")
-      return
+    if (uri.getScheme != "file") return
     val f = new File(uri)
-    if (!(f.exists() && f.canRead))
-      return
+    if (!(f.exists() && f.canRead)) return
     val path = f.getCanonicalPath
-    if (history.contains(path))
-      return
+    if (history.contains(path)) return
 
     history.add(path)
 
-    if (f.isDirectory)
-      browseDir(f, loader, "", buf)
-    else
-      browseJar(f, loader, buf, history)
+    if (f.isDirectory) browseDir(f, loader, "", buf)
+    else browseJar(f, loader, buf, history)
   }
 
   private def browseDir(
@@ -114,8 +107,7 @@ private object ClassPath {
       loader: ClassLoader,
       prefix: String,
       buf: mutable.Buffer[Info]) {
-    if (ignoredPackages contains prefix)
-      return
+    if (ignoredPackages contains prefix) return
 
     for (f <- dir.listFiles)
       if (f.isDirectory && f.canRead)
@@ -175,8 +167,7 @@ private object ClassPath {
   private def uriFromJarClasspath(jarFile: File, path: String) =
     try {
       val uri = new URI(path)
-      if (uri.isAbsolute)
-        Some(uri)
+      if (uri.isAbsolute) Some(uri)
       else
         Some(
           new File(

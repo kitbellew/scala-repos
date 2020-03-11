@@ -93,8 +93,7 @@ object CsvParser {
       if (!interner.contains(s)) {
         interner.add(s)
         bufdata(buf).add(s)
-      } else
-        bufdata(buf).add(interner.get(s))
+      } else bufdata(buf).add(interner.get(s))
     }
 
     // first line is either header, or needs to be processed
@@ -140,10 +139,8 @@ object CsvParser {
 
       if (chr == quote) { // handle a quote
         if (stripQuote) {
-          if (inQ)
-            inQoff = 1 // we're exiting a quoted field
-          else
-            curBeg = curEnd + 1 // we're starting a quoted field
+          if (inQ) inQoff = 1 // we're exiting a quoted field
+          else curBeg = curEnd + 1 // we're starting a quoted field
         }
         inQ = !inQ
       }
@@ -210,10 +207,8 @@ object CsvParser {
 
       if (chr == quote) { // handle a quote
         if (stripQuote) {
-          if (inQ)
-            inQoff = 1 // we're exiting a quoted field
-          else
-            curBeg = curEnd + 1 // we're starting a quoted field
+          if (inQ) inQoff = 1 // we're exiting a quoted field
+          else curBeg = curEnd + 1 // we're starting a quoted field
         }
         inQ = !inQ
       }

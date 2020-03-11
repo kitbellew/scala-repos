@@ -46,28 +46,23 @@ class CopyOnWriteArrayListTest extends ListTest {
 
     assertEquals(3, list.addAllAbsent(0 until 3))
     assertEquals(3, list.size)
-    for (i <- 0 until 3)
-      assertEquals(i, list.get(i))
+    for (i <- 0 until 3) assertEquals(i, list.get(i))
 
     assertEquals(0, list.addAllAbsent(0 until 2))
     assertEquals(3, list.size)
-    for (i <- 0 until 3)
-      assertEquals(i, list.get(i))
+    for (i <- 0 until 3) assertEquals(i, list.get(i))
 
     assertEquals(3, list.addAllAbsent(3 until 6))
     assertEquals(6, list.size)
-    for (i <- 0 until 6)
-      assertEquals(i, list.get(i))
+    for (i <- 0 until 6) assertEquals(i, list.get(i))
 
     assertEquals(4, list.addAllAbsent(0 until 10))
     assertEquals(10, list.size)
-    for (i <- 0 until 10)
-      assertEquals(i, list.get(i))
+    for (i <- 0 until 10) assertEquals(i, list.get(i))
 
     assertEquals(1, list.addAllAbsent(Seq(42, 42, 42)))
     assertEquals(11, list.size)
-    for (i <- 0 until 10)
-      assertEquals(i, list.get(i))
+    for (i <- 0 until 10) assertEquals(i, list.get(i))
     assertEquals(42, list.get(10))
   }
 
@@ -82,8 +77,7 @@ class CopyOnWriteArrayListTest extends ListTest {
 
     for (i <- 0 to 10) {
       assertTrue(iter.hasNext)
-      if (iter.hasNext)
-        assertEquals(i, iter.next())
+      if (iter.hasNext) assertEquals(i, iter.next())
     }
     assertFalse(iter2.hasNext)
   }
@@ -92,8 +86,7 @@ class CopyOnWriteArrayListTest extends ListTest {
     def test[T <: AnyRef](arr: Array[T]): Unit = {
       val cowal1 = factory.newFrom(arr)
       assertEquals(arr.length, cowal1.length)
-      for (i <- arr.indices)
-        assertEquals(arr(i), cowal1.get(i))
+      for (i <- arr.indices) assertEquals(arr(i), cowal1.get(i))
     }
 
     test(Array("a", "", "da", "23"))

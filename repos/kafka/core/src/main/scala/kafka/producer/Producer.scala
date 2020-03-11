@@ -86,8 +86,7 @@ class Producer[K, V](
     */
   def send(messages: KeyedMessage[K, V]*) {
     lock synchronized {
-      if (hasShutdown.get)
-        throw new ProducerClosedException
+      if (hasShutdown.get) throw new ProducerClosedException
       recordStats(messages)
       sync match {
         case true  => eventHandler.handle(messages)
@@ -151,8 +150,7 @@ class Producer[K, V](
         info("Shutting down producer")
         val startTime = System.nanoTime()
         KafkaMetricsGroup.removeAllProducerMetrics(config.clientId)
-        if (producerSendThread != null)
-          producerSendThread.shutdown
+        if (producerSendThread != null) producerSendThread.shutdown
         eventHandler.close
         info(
           "Producer shutdown completed in " + (System

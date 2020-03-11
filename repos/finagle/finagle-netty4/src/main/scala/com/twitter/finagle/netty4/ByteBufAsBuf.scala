@@ -12,10 +12,7 @@ private[finagle] object ByteBufAsBuf {
       * Construct a [[Buf]] wrapper for ``ByteBuf``.
       */
     def apply(buf: ByteBuf): Buf =
-      if (buf.readableBytes == 0)
-        Buf.Empty
-      else
-        new ByteBufAsBuf(buf)
+      if (buf.readableBytes == 0) Buf.Empty else new ByteBufAsBuf(buf)
 
     /**
       * Extract a [[ByteBufAsBuf]]'s underlying ByteBuf without copying.
@@ -35,10 +32,7 @@ private[finagle] object ByteBufAsBuf {
       * Construct a [[Buf]] by copying `ByteBuf`.
       */
     def apply(buf: ByteBuf): Buf =
-      if (buf.readableBytes == 0)
-        Buf.Empty
-      else
-        new ByteBufAsBuf(buf.copy())
+      if (buf.readableBytes == 0) Buf.Empty else new ByteBufAsBuf(buf.copy())
 
     /**
       * Extract a copy of the [[ByteBufAsBuf]]'s underlying ByteBuf.

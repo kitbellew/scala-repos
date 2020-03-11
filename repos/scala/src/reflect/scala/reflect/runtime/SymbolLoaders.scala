@@ -121,8 +121,7 @@ private[reflect] trait SymbolLoaders { self: SymbolTable =>
 
     override def enterIfNew[T <: Symbol](sym: T): T = {
       val existing = super.lookupEntry(sym.name)
-      if (existing == null) enter(sym)
-      else existing.sym.asInstanceOf[T]
+      if (existing == null) enter(sym) else existing.sym.asInstanceOf[T]
     }
 
     // package scopes need to synchronize on the GIL
@@ -131,10 +130,8 @@ private[reflect] trait SymbolLoaders { self: SymbolTable =>
     private val negatives = new mutable.HashSet[Name]
     override def lookupEntry(name: Name): ScopeEntry = syncLockSynchronized {
       val e = super.lookupEntry(name)
-      if (e != null)
-        e
-      else if (negatives contains name)
-        null
+      if (e != null) e
+      else if (negatives contains name) null
       else {
         val path =
           if (pkgClass.isEmptyPackageClass) name.toString

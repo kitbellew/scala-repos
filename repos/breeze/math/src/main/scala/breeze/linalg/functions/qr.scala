@@ -181,8 +181,7 @@ object qr extends UFunc {
     //Error check
     if (info.`val` > 0)
       throw new NotConvergedException(NotConvergedException.Iterations)
-    else if (info.`val` < 0)
-      throw new IllegalArgumentException()
+    else if (info.`val` < 0) throw new IllegalArgumentException()
 
     // Handle mode that don't return Q
     if (skipQ) (null, upperTriangular(A(0 until mn, ::)))
@@ -205,8 +204,7 @@ object qr extends UFunc {
       //Error check
       if (info.`val` > 0)
         throw new NotConvergedException(NotConvergedException.Iterations)
-      else if (info.`val` < 0)
-        throw new IllegalArgumentException()
+      else if (info.`val` < 0) throw new IllegalArgumentException()
 
       // Upper triangle
       cforRange(0 until mc) { i =>
@@ -242,8 +240,7 @@ object qr extends UFunc {
     //Error check
     if (info.`val` > 0)
       throw new NotConvergedException(NotConvergedException.Iterations)
-    else if (info.`val` < 0)
-      throw new IllegalArgumentException()
+    else if (info.`val` < 0) throw new IllegalArgumentException()
 
     // Handle mode that don't return Q
     if (skipQ) (null, upperTriangular(A(0 until mn, ::)))
@@ -266,8 +263,7 @@ object qr extends UFunc {
       //Error check
       if (info.`val` > 0)
         throw new NotConvergedException(NotConvergedException.Iterations)
-      else if (info.`val` < 0)
-        throw new IllegalArgumentException()
+      else if (info.`val` < 0) throw new IllegalArgumentException()
 
       // Upper triangle
       cforRange(0 until mc) { i =>
@@ -345,8 +341,7 @@ object qrp extends UFunc {
       //Error check
       if (info.`val` > 0)
         throw new NotConvergedException(NotConvergedException.Iterations)
-      else if (info.`val` < 0)
-        throw new IllegalArgumentException()
+      else if (info.`val` < 0) throw new IllegalArgumentException()
 
       //Get R
       val R = DenseMatrix.zeros[Double](m, n)
@@ -375,8 +370,7 @@ object qrp extends UFunc {
       //Error check
       if (info.`val` > 0)
         throw new NotConvergedException(NotConvergedException.Iterations)
-      else if (info.`val` < 0)
-        throw new IllegalArgumentException()
+      else if (info.`val` < 0) throw new IllegalArgumentException()
 
       //Get P
       import NumericOps.Arrays._

@@ -53,10 +53,7 @@ class LongAdder {
   def add(x: BigDecimal): Unit = ts.append(x)
 
   def addSquare(x: Long) =
-    if (x < maxLongSqrt)
-      add(x * x)
-    else
-      add(BigDecimal(x) pow 2)
+    if (x < maxLongSqrt) add(x * x) else add(BigDecimal(x) pow 2)
 
   def add(x: Long): Unit = {
     val y = t + x
@@ -126,8 +123,7 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             r <- right
           } yield {
             val res = NumericComparisons.compare(l, r)
-            if (res > 0) l
-            else r
+            if (res > 0) l else r
           }) orElse left orElse right
         }
       }
@@ -175,8 +171,7 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             r <- right
           } yield {
             val res = NumericComparisons.compare(l, r)
-            if (res < 0) l
-            else r
+            if (res < 0) l else r
           }) orElse left orElse right
         }
       }
@@ -693,10 +688,7 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               if (idef) { defined = true }
             }
 
-            if (defined)
-              Some(back)
-            else
-              None
+            if (defined) Some(back) else None
           }
         }
       }
@@ -741,10 +733,7 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               if (idef) { defined = true }
             }
 
-            if (defined)
-              Some(back)
-            else
-              None
+            if (defined) Some(back) else None
           }
         }
       }

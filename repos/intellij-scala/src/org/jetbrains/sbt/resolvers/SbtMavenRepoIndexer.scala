@@ -84,10 +84,8 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
 
   def update(progressIndicator: Option[ProgressIndicator]): Unit =
     try {
-      if (context.getRepositoryUrl == null)
-        updateLocal(progressIndicator)
-      else
-        updateRemote(progressIndicator)
+      if (context.getRepositoryUrl == null) updateLocal(progressIndicator)
+      else updateRemote(progressIndicator)
     } catch {
       case exc: IOException =>
         throw new RepositoryIndexingException(root, exc)
@@ -181,8 +179,7 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
         progressIndicator foreach { _.checkCanceled() }
         val info =
           IndexUtils.constructArtifactInfo(reader.document(i - 1), context)
-        if (info != null)
-          f(info)
+        if (info != null) f(info)
         progressIndicator foreach (_.setFraction(
           0.5 + 0.5 * (i.toFloat / maxDoc)))
       }

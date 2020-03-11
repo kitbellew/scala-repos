@@ -42,10 +42,8 @@ class MatBool(r: Int, c: Int, values: Array[Boolean]) extends Mat[Boolean] {
   lazy val cachedT = {
     val arrT = values.clone()
 
-    if (this.isSquare)
-      MatMath.squareTranspose(numCols, arrT)
-    else
-      MatMath.blockTranspose(numRows, numCols, this.toArray, arrT)
+    if (this.isSquare) MatMath.squareTranspose(numCols, arrT)
+    else MatMath.blockTranspose(numRows, numCols, this.toArray, arrT)
 
     new MatBool(numCols, numRows, arrT)
   }

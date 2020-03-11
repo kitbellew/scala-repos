@@ -157,8 +157,7 @@ private[util] trait CloseAwaitably0[U <: Unit] extends Awaitable[U] {
     * `close`. The underlying `f` will be called at most once.
     */
   protected def closeAwaitably(f: => Future[U]): Future[U] = {
-    if (closed.compareAndSet(false, true))
-      onClose.become(f)
+    if (closed.compareAndSet(false, true)) onClose.become(f)
     onClose
   }
 

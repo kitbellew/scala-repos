@@ -381,8 +381,7 @@ object ScalaPsiElementFactory {
         val stub = s.getStub.asInstanceOf[StubElement[_ <: PsiElement]]
         val children = stub.getChildrenStubs
         val size = children.size()
-        if (size == 0) null
-        else children.get(size - 1).getPsi
+        if (size == 0) null else children.get(size - 1).getPsi
       case _ => context.getLastChild
     }
   }
@@ -666,8 +665,7 @@ object ScalaPsiElementFactory {
       case _ =>
         var element: PsiElement = holder
         while (element != null && !element.isInstanceOf[ScalaFile] && !element
-                 .isInstanceOf[ScPackaging])
-          element = element.getParent
+                 .isInstanceOf[ScPackaging]) element = element.getParent
         element match {
           case packaging: ScPackaging => packaging.getPackageName
           case _                      => null
@@ -1354,8 +1352,7 @@ object ScalaPsiElementFactory {
       context: PsiElement,
       child: PsiElement): ScType = {
     val te = createTypeElementFromText(text, context, child)
-    if (te == null) null
-    else te.getType(TypingContext.empty).getOrAny
+    if (te == null) null else te.getType(TypingContext.empty).getOrAny
   }
 
   def createMethodWithContext(

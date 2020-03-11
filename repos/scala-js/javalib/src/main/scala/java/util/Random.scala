@@ -104,8 +104,7 @@ class Random(seed_in: Long) extends AnyRef with java.io.Serializable {
       def loop(): Int = {
         val bits = next(31)
         val value = bits % n
-        if (bits - value + (n - 1) < 0) loop()
-        else value
+        if (bits - value + (n - 1) < 0) loop() else value
       }
 
       loop()

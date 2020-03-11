@@ -308,8 +308,7 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
     val td = PsiTreeUtil.getContextOfType(
       file.findElementAt(offset),
       classOf[ScTemplateDefinition])
-    if (td == null || td.extendsBlock.templateBody.isEmpty) null
-    else td
+    if (td == null || td.extendsBlock.templateBody.isEmpty) null else td
   }
 
   private def parentClasses(

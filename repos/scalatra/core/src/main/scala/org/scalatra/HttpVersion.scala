@@ -27,8 +27,7 @@ abstract class HttpVersion(
     if (v != 0) v
     else {
       val vv = majorVersion - that.majorVersion
-      if (vv != 0) vv
-      else minorVersion - that.minorVersion
+      if (vv != 0) vv else minorVersion - that.minorVersion
     }
   }
 

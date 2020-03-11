@@ -51,8 +51,7 @@ private class IdlingFactory[Req, Rep](self: ServiceFactory[Req, Rep])
   }
 
   @inline private[this] def decr() {
-    if (n.decrementAndGet() == 0)
-      watch = Stopwatch.start()
+    if (n.decrementAndGet() == 0) watch = Stopwatch.start()
   }
 
   /**
@@ -105,10 +104,8 @@ private[finagle] class ServiceFactoryCache[Key, Req, Rep](
    */
   def apply(key: Key, conn: ClientConnection): Future[Service[Req, Rep]] = {
     readLock.lock()
-    try {
-      if (cache contains key)
-        return cache(key).apply(conn)
-    } finally { readLock.unlock() }
+    try { if (cache contains key) return cache(key).apply(conn) }
+    finally { readLock.unlock() }
 
     miss(key, conn)
   }
@@ -168,8 +165,7 @@ private[finagle] class ServiceFactoryCache[Key, Req, Rep](
     val (evictNamer, evictFactory) = cache maxBy {
       case (_, fac) => fac.idleFor
     }
-    if (evictFactory.idleFor > Duration.Zero) Some(evictNamer)
-    else None
+    if (evictFactory.idleFor > Duration.Zero) Some(evictNamer) else None
   }
 
   def close(deadline: Time) =
@@ -178,10 +174,8 @@ private[finagle] class ServiceFactoryCache[Key, Req, Rep](
 
   def status(key: Key): Status = {
     readLock.lock()
-    try {
-      if (cache.contains(key))
-        return cache(key).status
-    } finally { readLock.unlock() }
+    try { if (cache.contains(key)) return cache(key).status }
+    finally { readLock.unlock() }
 
     // This is somewhat dubious, as the status is outdated
     // pretty much right after we query it.

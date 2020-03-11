@@ -535,8 +535,7 @@ class ScSubstitutor(
           case Some(thisType @ ScDesignatorType(param: ScParameter)) =>
             val paramType =
               param.getRealParameterType(TypingContext.empty).getOrAny
-            if (paramType.conforms(middleRes)) thisType
-            else middleRes
+            if (paramType.conforms(middleRes)) thisType else middleRes
           case _ => middleRes
         }
       }

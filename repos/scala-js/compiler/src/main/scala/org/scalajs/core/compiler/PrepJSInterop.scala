@@ -217,8 +217,7 @@ abstract class PrepJSInterop
                 "have a @js.native annotation")
           }
 
-          if (shouldPrepareExports)
-            registerModuleExports(sym.moduleClass)
+          if (shouldPrepareExports) registerModuleExports(sym.moduleClass)
 
           enterOwner(OwnerKind.NonEnumScalaMod) { super.transform(modDef) }
 
@@ -433,8 +432,7 @@ abstract class PrepJSInterop
                 base + ". To export a (case) class field, use the " +
                   "meta-annotation scala.annotation.meta.field like this: " +
                   "@(JSExport @field)."
-              else
-                base
+              else base
             }
             reporter.error(exp.pos, msg)
           }
@@ -447,8 +445,7 @@ abstract class PrepJSInterop
             !sym.isSynthetic &&
             !isPrivateMaybeWithin(sym)
           }
-          if (shouldBeExposed)
-            sym.addAnnotation(ExposedJSMemberAnnot)
+          if (shouldBeExposed) sym.addAnnotation(ExposedJSMemberAnnot)
         }
 
         memDef
@@ -628,15 +625,12 @@ abstract class PrepJSInterop
               "You may not export a native JS class or object")
           }
         } else {
-          if (sym.isModuleClass)
-            registerModuleExports(sym)
-          else if (!sym.isTrait)
-            registerClassExports(sym)
+          if (sym.isModuleClass) registerModuleExports(sym)
+          else if (!sym.isTrait) registerClassExports(sym)
         }
       }
 
-      if (shouldCheckLiterals)
-        checkJSNameLiteral(sym)
+      if (shouldCheckLiterals) checkJSNameLiteral(sym)
 
       // Check for overrides with different JS names - issue #1983
       for (overridingPair <- new overridingPairs.Cursor(sym).iterator) {
@@ -667,8 +661,7 @@ abstract class PrepJSInterop
 
       val kind = {
         if (!isJSNative) {
-          if (sym.isModuleClass) OwnerKind.JSMod
-          else OwnerKind.JSClass
+          if (sym.isModuleClass) OwnerKind.JSMod else OwnerKind.JSClass
         } else {
           if (sym.isModuleClass) OwnerKind.JSNativeMod
           else OwnerKind.JSNativeClass
@@ -712,8 +705,7 @@ abstract class PrepJSInterop
             /* The field being accessed must also be exposed, although it's
              * private.
              */
-            if (sym.isAccessor)
-              sym.accessed.addAnnotation(ExposedJSMemberAnnot)
+            if (sym.isAccessor) sym.accessed.addAnnotation(ExposedJSMemberAnnot)
           }
         }
       }
@@ -780,8 +772,7 @@ abstract class PrepJSInterop
         reporter.error(tree.pos, "Methods in a js.Any may not be @native")
       }
 
-      if (shouldCheckLiterals)
-        checkJSNameLiteral(sym)
+      if (shouldCheckLiterals) checkJSNameLiteral(sym)
 
       if (enclosingOwner is OwnerKind.JSNonNative) {
         // Private methods cannot be overloaded
@@ -915,8 +906,7 @@ abstract class PrepJSInterop
           val msg = s"$typeStr setters may not have default params"
           if (exported)
             reporter.warning(pos, msg + ". This will be enforced in 1.0.")
-          else
-            reporter.error(pos, msg)
+          else reporter.error(pos, msg)
         }
 
       case _ =>

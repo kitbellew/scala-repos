@@ -113,10 +113,8 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
     * Find a single row by a String id
     */
   def find(s: String): Box[BaseRecord] =
-    if (ObjectId.isValid(s))
-      find(new BasicDBObject("_id", new ObjectId(s)))
-    else
-      find(new BasicDBObject("_id", s))
+    if (ObjectId.isValid(s)) find(new BasicDBObject("_id", new ObjectId(s)))
+    else find(new BasicDBObject("_id", s))
 
   /**
     * Find a single row by an Int id

@@ -170,8 +170,7 @@ trait GenericTraversableTemplate[+A, +CC[X] <: GenTraversable[X]]
   def flatten[B](
       implicit asTraversable: A => /*<:<!!!*/ GenTraversableOnce[B]): CC[B] = {
     val b = genericBuilder[B]
-    for (xs <- sequential)
-      b ++= asTraversable(xs).seq
+    for (xs <- sequential) b ++= asTraversable(xs).seq
     b.result()
   }
 
@@ -213,8 +212,7 @@ trait GenericTraversableTemplate[+A, +CC[X] <: GenTraversable[X]]
   def transpose[B](
       implicit asTraversable: A => /*<:<!!!*/ GenTraversableOnce[B])
       : CC[CC[B] @uncheckedVariance] = {
-    if (isEmpty)
-      return genericBuilder[CC[B]].result()
+    if (isEmpty) return genericBuilder[CC[B]].result()
 
     def fail =
       throw new IllegalArgumentException(
@@ -230,8 +228,7 @@ trait GenericTraversableTemplate[+A, +CC[X] <: GenTraversable[X]]
         bs(i) += x
         i += 1
       }
-      if (i != headSize)
-        fail
+      if (i != headSize) fail
     }
     val bb = genericBuilder[CC[B]]
     for (b <- bs) bb += b.result

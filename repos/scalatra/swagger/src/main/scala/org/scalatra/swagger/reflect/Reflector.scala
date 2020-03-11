@@ -211,8 +211,7 @@ object Reflector {
               allCatch opt {
                 paramNameReader.lookupParameterNames(ctor)
               } getOrElse Nil
-            else
-              Nil
+            else Nil
           val genParams = Vector(ctor.getGenericParameterTypes: _*)
           val ctorParams = ctorParameterNames.zipWithIndex map {
             case (paramName, index) =>

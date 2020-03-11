@@ -583,8 +583,7 @@ class Eval(target: Option[File]) {
       * Compile scala code. It can be found using the above class loader.
       */
     def apply(code: String) {
-      if (Debug.enabled)
-        Debug.printWithLineNumbers(code)
+      if (Debug.enabled) Debug.printWithLineNumbers(code)
 
       // if you're looking for the performance hit, it's 1/2 this line...
       val compiler = new global.Run

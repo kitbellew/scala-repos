@@ -104,10 +104,7 @@ class Log(
   private val lastflushedTime = new AtomicLong(time.milliseconds)
 
   def initFileSize(): Int = {
-    if (config.preallocate)
-      config.segmentSize
-    else
-      0
+    if (config.preallocate) config.segmentSize else 0
   }
 
   /* the actual segments of the log */
@@ -171,8 +168,7 @@ class Log(
     // first do a pass through the files in the log directory and remove any temporary files
     // and find any interrupted swap operations
     for (file <- dir.listFiles if file.isFile) {
-      if (!file.canRead)
-        throw new IOException("Could not read file " + file)
+      if (!file.canRead) throw new IOException("Could not read file " + file)
       val filename = file.getName
       if (filename.endsWith(DeletedFileSuffix) || filename.endsWith(
             CleanedFileSuffix)) {
@@ -361,10 +357,7 @@ class Log(
     */
   def close() {
     debug("Closing log " + name)
-    lock synchronized {
-      for (seg <- logSegments)
-        seg.close()
-    }
+    lock synchronized { for (seg <- logSegments) seg.close() }
   }
 
   /**
@@ -386,8 +379,7 @@ class Log(
     val appendInfo = analyzeAndValidateMessageSet(messages)
 
     // if we have any valid messages, append them to the log
-    if (appendInfo.shallowCount == 0)
-      return appendInfo
+    if (appendInfo.shallowCount == 0) return appendInfo
 
     // trim any invalid bytes or partial messages before appending it to the on-disk log
     var validMessages = trimInvalidBytes(messages, appendInfo)
@@ -479,8 +471,7 @@ class Log(
               nextOffsetMetadata.messageOffset,
               validMessages))
 
-        if (unflushedMessages >= config.flushInterval)
-          flush()
+        if (unflushedMessages >= config.flushInterval) flush()
 
         appendInfo
       }
@@ -518,11 +509,9 @@ class Log(
     var monotonic = true
     for (messageAndOffset <- messages.shallowIterator) {
       // update the first offset if on the first message
-      if (firstOffset < 0)
-        firstOffset = messageAndOffset.offset
+      if (firstOffset < 0) firstOffset = messageAndOffset.offset
       // check that offsets are monotonically increasing
-      if (lastOffset >= messageAndOffset.offset)
-        monotonic = false
+      if (lastOffset >= messageAndOffset.offset) monotonic = false
       // update the last offset seen
       lastOffset = messageAndOffset.offset
 
@@ -549,8 +538,7 @@ class Log(
       validBytesCount += messageSize
 
       val messageCodec = m.compressionCodec
-      if (messageCodec != NoCompressionCodec)
-        sourceCodec = messageCodec
+      if (messageCodec != NoCompressionCodec) sourceCodec = messageCodec
     }
 
     // Apply broker-side compression if any
@@ -639,8 +627,7 @@ class Log(
           if (entry != segments.lastEntry)
             // New log segment has rolled out, we can read up to the file end.
             entry.getValue.size
-          else
-            exposedPos
+          else exposedPos
         } else { entry.getValue.size }
       }
       val fetchInfo =
@@ -685,8 +672,7 @@ class Log(
     if (numToDelete > 0) {
       lock synchronized {
         // we must always have at least one segment, so if we are going to delete all the segments, create a new one first
-        if (segments.size == numToDelete)
-          roll()
+        if (segments.size == numToDelete) roll()
         // remove the segments for lookups
         deletable.foreach(deleteSegment(_))
       }
@@ -814,13 +800,11 @@ class Log(
     * @param offset The offset to flush up to (non-inclusive); the new recovery point
     */
   def flush(offset: Long): Unit = {
-    if (offset <= this.recoveryPoint)
-      return
+    if (offset <= this.recoveryPoint) return
     debug(
       "Flushing log '" + name + " up to offset " + offset + ", last flushed: " + lastFlushTime + " current time: " +
         time.milliseconds + " unflushed = " + unflushedMessages)
-    for (segment <- logSegments(this.recoveryPoint, offset))
-      segment.flush()
+    for (segment <- logSegments(this.recoveryPoint, offset)) segment.flush()
     lock synchronized {
       if (offset > this.recoveryPoint) {
         this.recoveryPoint = offset
@@ -921,10 +905,8 @@ class Log(
     import JavaConversions._
     lock synchronized {
       val floor = segments.floorKey(from)
-      if (floor eq null)
-        segments.headMap(to).values
-      else
-        segments.subMap(floor, true, to, false).values
+      if (floor eq null) segments.headMap(to).values
+      else segments.subMap(floor, true, to, false).values
     }
   }
 

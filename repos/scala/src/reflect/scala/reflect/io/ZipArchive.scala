@@ -57,9 +57,7 @@ object ZipArchive {
     val path = if (isDir) path0.substring(0, path0.length - 1) else path0
     val idx = path.lastIndexOf('/')
 
-    if (idx < 0)
-      if (front) "/"
-      else path
+    if (idx < 0) if (front) "/" else path
     else if (front) path.substring(0, idx + 1)
     else path.substring(idx + 1)
   }
@@ -98,8 +96,7 @@ abstract class ZipArchive(override val file: JFile)
     override def isDirectory = true
     override def iterator: Iterator[Entry] = entries.valuesIterator
     override def lookupName(name: String, directory: Boolean): Entry = {
-      if (directory) entries(name + "/")
-      else entries(name)
+      if (directory) entries(name + "/") else entries(name)
     }
   }
 
@@ -222,8 +219,7 @@ final class URLZipArchive(val url: URL) extends ZipArchive(null) {
 
       if (zipEntry != null) {
         val dir = getDir(dirs, zipEntry)
-        if (zipEntry.isDirectory)
-          dir
+        if (zipEntry.isDirectory) dir
         else {
           val f =
             if (zipEntry.getSize() == 0) new EmptyFileEntry()

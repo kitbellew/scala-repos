@@ -55,8 +55,7 @@ object Sync {
     }
 
   def copy(source: File, target: File): Unit =
-    if (source.isFile)
-      IO.copyFile(source, target, true)
+    if (source.isFile) IO.copyFile(source, target, true)
     else if (!target.exists) // we don't want to update the last modified time of an existing directory
       {
         IO.createDirectory(target)
@@ -71,8 +70,7 @@ object Sync {
       case (target, srcs) =>
         "\n\t" + target + "\nfrom\n\t" + srcs.mkString("\n\t\t")
     }
-    if (dups.nonEmpty)
-      sys.error("Duplicate mappings:" + dups.mkString)
+    if (dups.nonEmpty) sys.error("Duplicate mappings:" + dups.mkString)
   }
 
   import java.io.{File, IOException}

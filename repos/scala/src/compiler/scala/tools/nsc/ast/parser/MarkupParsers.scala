@@ -60,8 +60,7 @@ trait MarkupParsers {
 
     def truncatedError(msg: String): Nothing = throw TruncatedXMLControl
     def xHandleError(that: Char, msg: String) =
-      if (ch == SU) throw TruncatedXMLControl
-      else reportSyntaxError(msg)
+      if (ch == SU) throw TruncatedXMLControl else reportSyntaxError(msg)
 
     var input: CharArrayReader = _
     def lookahead(): BufferedIterator[Char] =
@@ -151,8 +150,7 @@ trait MarkupParsers {
           reportSyntaxError("attribute %s may only be defined once" format key)
 
         aMap(key) = value
-        if (ch != '/' && ch != '>')
-          xSpace()
+        if (ch != '/' && ch != '>') xSpace()
       }
       aMap
     }
@@ -284,15 +282,14 @@ trait MarkupParsers {
             appendText(pos, buf, acc.toString)
             acc.clear()
           }
-          for (t <- ts)
-            t.attachments.get[handle.TextAttache] match {
-              case Some(ta) =>
-                if (acc.isEmpty) pos = ta.pos
-                acc append ta.text
-              case _ =>
-                emit()
-                buf += t
-            }
+          for (t <- ts) t.attachments.get[handle.TextAttache] match {
+            case Some(ta) =>
+              if (acc.isEmpty) pos = ta.pos
+              acc append ta.text
+            case _ =>
+              emit()
+              buf += t
+          }
           emit()
           buf
         }
@@ -321,8 +318,7 @@ trait MarkupParsers {
           new ListBuffer[Tree])
       } else { // handle content
         xToken('>')
-        if (qname == "xml:unparsed")
-          return xUnparsed
+        if (qname == "xml:unparsed") return xUnparsed
 
         debugLastStartElement.push((start, qname))
         val ts = content
@@ -342,15 +338,13 @@ trait MarkupParsers {
     private def xText: String = {
       assert(!xEmbeddedBlock, "internal error: encountered embedded block")
       val buf = new StringBuilder
-      if (ch != SU)
-        do {
-          if (ch == '}') {
-            if (charComingAfter(nextch()) == '}') nextch()
-            else errorBraces()
-          }
-          buf append ch
-          nextch()
-        } while (!(ch == SU || xCheckEmbeddedBlock || ch == '<' || ch == '&'))
+      if (ch != SU) do {
+        if (ch == '}') {
+          if (charComingAfter(nextch()) == '}') nextch() else errorBraces()
+        }
+        buf append ch
+        nextch()
+      } while (!(ch == SU || xCheckEmbeddedBlock || ch == '<' || ch == '&'))
       buf.toString
     }
 

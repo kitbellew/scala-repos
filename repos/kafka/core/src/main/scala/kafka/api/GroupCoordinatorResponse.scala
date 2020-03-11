@@ -31,10 +31,7 @@ object GroupCoordinatorResponse {
     val errorCode = buffer.getShort
     val broker = BrokerEndPoint.readFrom(buffer)
     val coordinatorOpt =
-      if (errorCode == Errors.NONE.code)
-        Some(broker)
-      else
-        None
+      if (errorCode == Errors.NONE.code) Some(broker) else None
 
     GroupCoordinatorResponse(coordinatorOpt, errorCode, correlationId)
   }

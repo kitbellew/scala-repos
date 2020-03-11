@@ -46,14 +46,9 @@ class NullEncoder[T](props: VerifiableProperties = null) extends Encoder[T] {
 class StringEncoder(props: VerifiableProperties = null)
     extends Encoder[String] {
   val encoding =
-    if (props == null)
-      "UTF8"
-    else
-      props.getString("serializer.encoding", "UTF8")
+    if (props == null) "UTF8"
+    else props.getString("serializer.encoding", "UTF8")
 
   override def toBytes(s: String): Array[Byte] =
-    if (s == null)
-      null
-    else
-      s.getBytes(encoding)
+    if (s == null) null else s.getBytes(encoding)
 }

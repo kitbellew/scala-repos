@@ -59,8 +59,7 @@ object ReplayLogProducer extends Logging {
       for (stream <- streamList)
         threadList ::= new ZKConsumerThread(config, stream)
 
-    for (thread <- threadList)
-      thread.start
+    for (thread <- threadList) thread.start
 
     threadList.foreach(_.shutdown)
     consumerConnector.shutdown
@@ -168,10 +167,8 @@ object ReplayLogProducer extends Logging {
       var messageCount: Int = 0
       try {
         val iter =
-          if (config.numMessages >= 0)
-            stream.slice(0, config.numMessages)
-          else
-            stream
+          if (config.numMessages >= 0) stream.slice(0, config.numMessages)
+          else stream
         for (messageAndMetadata <- iter) {
           try {
             val response = producer.send(

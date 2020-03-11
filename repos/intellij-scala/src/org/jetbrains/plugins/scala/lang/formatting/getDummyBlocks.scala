@@ -83,8 +83,7 @@ object getDummyBlocks {
         return subBlocks
       case _: ScIfStmt =>
         val alignment =
-          if (scalaSettings.ALIGN_IF_ELSE) Alignment.createAlignment
-          else null
+          if (scalaSettings.ALIGN_IF_ELSE) Alignment.createAlignment else null
         subBlocks.addAll(getIfSubBlocks(node, block, alignment))
         return subBlocks
       case _: ScInfixExpr | _: ScInfixPattern | _: ScInfixTypeElement =>
@@ -276,8 +275,7 @@ object getDummyBlocks {
       case _ =>
     }
     val alignment: Alignment =
-      if (mustAlignment(node, block.getSettings))
-        Alignment.createAlignment
+      if (mustAlignment(node, block.getSettings)) Alignment.createAlignment
       else null
     var alternateAlignment: Alignment = null
     for (child <- children if isCorrectBlock(child)) {
@@ -592,8 +590,7 @@ object getDummyBlocks {
         def getAlignment(node: ASTNode): Alignment = {
           val alignment = node.getPsi.getUserData(fieldGroupAlignmentKey)
           val newAlignment =
-            if (alignment == null) createNewAlignment
-            else alignment
+            if (alignment == null) createNewAlignment else alignment
           child.getPsi.putUserData(fieldGroupAlignmentKey, newAlignment)
           newAlignment
         }
@@ -700,8 +697,7 @@ object getDummyBlocks {
         def getAlignment(node: ASTNode): Alignment = {
           val alignment = node.getPsi.getUserData(fieldGroupAlignmentKey)
           val newAlignment =
-            if (alignment == null) createNewAlignment
-            else alignment
+            if (alignment == null) createNewAlignment else alignment
           child.getPsi.putUserData(fieldGroupAlignmentKey, newAlignment)
           newAlignment
         }
@@ -755,8 +751,7 @@ object getDummyBlocks {
     val subBlocks = new util.ArrayList[Block]
     val children = node.getChildren(null)
     val alignment =
-      if (mustAlignment(node, settings))
-        Alignment.createAlignment(true)
+      if (mustAlignment(node, settings)) Alignment.createAlignment(true)
       else null
     for (child <- children) {
       if (isCorrectBlock(child)) {
@@ -1120,10 +1115,8 @@ object getDummyBlocks {
     val subBlocks = new util.ArrayList[Block]
     val children = node.getChildren(null)
     val alignment =
-      if (parentAlignment != null)
-        parentAlignment
-      else if (mustAlignment(node, settings))
-        Alignment.createAlignment
+      if (parentAlignment != null) parentAlignment
+      else if (mustAlignment(node, settings)) Alignment.createAlignment
       else null
     for (child <- children) {
       def checkSamePriority: Boolean = {
@@ -1182,10 +1175,8 @@ object getDummyBlocks {
       settings.getCustomSettings(classOf[ScalaCodeStyleSettings])
     val subBlocks = new util.ArrayList[Block]
     val alignment =
-      if (parentAlignment != null)
-        parentAlignment
-      else if (mustAlignment(node, settings))
-        Alignment.createAlignment
+      if (parentAlignment != null) parentAlignment
+      else if (mustAlignment(node, settings)) Alignment.createAlignment
       else null
     def addSubBlock(
         node: ASTNode,

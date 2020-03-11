@@ -168,8 +168,7 @@ object TestOffsetManager {
           .getOrElse(-1)
 
         val channel =
-          if (channels.contains(coordinatorId))
-            channels(coordinatorId)
+          if (channels.contains(coordinatorId)) channels(coordinatorId)
           else {
             val newChannel = ClientUtils.channelToOffsetManager(
               group,

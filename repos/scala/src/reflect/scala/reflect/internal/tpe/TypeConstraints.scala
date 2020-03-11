@@ -115,10 +115,8 @@ private[internal] trait TypeConstraints {
       }
       if (mustConsider) {
         if (isNumericBound && isNumericValueType(tp)) {
-          if (numlo == NoType || isNumericSubType(numlo, tp))
-            numlo = tp
-          else if (!isNumericSubType(tp, numlo))
-            numlo = numericLoBound
+          if (numlo == NoType || isNumericSubType(numlo, tp)) numlo = tp
+          else if (!isNumericSubType(tp, numlo)) numlo = numericLoBound
         } else lobounds ::= tp
       }
     }
@@ -142,10 +140,8 @@ private[internal] trait TypeConstraints {
       if (mustConsider) {
         checkWidening(tp)
         if (isNumericBound && isNumericValueType(tp)) {
-          if (numhi == NoType || isNumericSubType(tp, numhi))
-            numhi = tp
-          else if (!isNumericSubType(numhi, tp))
-            numhi = numericHiBound
+          if (numhi == NoType || isNumericSubType(tp, numhi)) numhi = tp
+          else if (!isNumericSubType(numhi, tp)) numhi = numericHiBound
         } else hibounds ::= tp
       }
     }
@@ -184,8 +180,7 @@ private[internal] trait TypeConstraints {
         }
         lo + hi
       }
-      if (inst eq NoType) boundsStr
-      else boundsStr + " _= " + inst.safeToString
+      if (inst eq NoType) boundsStr else boundsStr + " _= " + inst.safeToString
     }
   }
 
@@ -230,30 +225,28 @@ private[internal] trait TypeConstraints {
                 s"$tvar addHiBound $bound.instantiateTypeParams($tparams, $tvars)")
               tvar addHiBound bound.instantiateTypeParams(tparams, tvars)
             }
-            for (tparam2 <- tparams)
-              tparam2.info.bounds.lo.dealias match {
-                case TypeRef(_, `tparam`, _) =>
-                  debuglog(
-                    s"$tvar addHiBound $tparam2.tpeHK.instantiateTypeParams($tparams, $tvars)")
-                  tvar addHiBound tparam2.tpeHK
-                    .instantiateTypeParams(tparams, tvars)
-                case _ =>
-              }
+            for (tparam2 <- tparams) tparam2.info.bounds.lo.dealias match {
+              case TypeRef(_, `tparam`, _) =>
+                debuglog(
+                  s"$tvar addHiBound $tparam2.tpeHK.instantiateTypeParams($tparams, $tvars)")
+                tvar addHiBound tparam2.tpeHK
+                  .instantiateTypeParams(tparams, tvars)
+              case _ =>
+            }
           } else {
             if (bound.typeSymbol != NothingClass && bound.typeSymbol != tparam) {
               debuglog(
                 s"$tvar addLoBound $bound.instantiateTypeParams($tparams, $tvars)")
               tvar addLoBound bound.instantiateTypeParams(tparams, tvars)
             }
-            for (tparam2 <- tparams)
-              tparam2.info.bounds.hi.dealias match {
-                case TypeRef(_, `tparam`, _) =>
-                  debuglog(
-                    s"$tvar addLoBound $tparam2.tpeHK.instantiateTypeParams($tparams, $tvars)")
-                  tvar addLoBound tparam2.tpeHK
-                    .instantiateTypeParams(tparams, tvars)
-                case _ =>
-              }
+            for (tparam2 <- tparams) tparam2.info.bounds.hi.dealias match {
+              case TypeRef(_, `tparam`, _) =>
+                debuglog(
+                  s"$tvar addLoBound $tparam2.tpeHK.instantiateTypeParams($tparams, $tvars)")
+                tvar addLoBound tparam2.tpeHK
+                  .instantiateTypeParams(tparams, tvars)
+              case _ =>
+            }
           }
         }
         tvar.constr.inst =

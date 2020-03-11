@@ -14,14 +14,12 @@ class ExceptionFilterTest extends FunSuite {
     def apply(request: Request): Future[Response] = {
       request.response.write("hello")
       request.response.contentLength = 5
-      if (request.params.get("exception").isDefined)
-        throw new Exception
+      if (request.params.get("exception").isDefined) throw new Exception
       else if (request.params.get("throw").isDefined)
         Future.exception(new Exception)
       else if (request.params.get("cancel").isDefined)
         Future.exception(new CancelledRequestException)
-      else
-        Future.value(request.response)
+      else Future.value(request.response)
     }
   }
 

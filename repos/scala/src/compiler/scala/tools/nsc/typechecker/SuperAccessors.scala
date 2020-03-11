@@ -119,8 +119,7 @@ abstract class SuperAccessors
 
     private def transformArgs(params: List[Symbol], args: List[Tree]) = {
       treeInfo.mapMethodParamsAndArgs(params, args) { (param, arg) =>
-        if (isByNameParamType(param.tpe))
-          withInvalidOwner(transform(arg))
+        if (isByNameParamType(param.tpe)) withInvalidOwner(transform(arg))
         else transform(arg)
       }
     }
@@ -184,9 +183,7 @@ abstract class SuperAccessors
         !mix.isEmpty && (clazz != currentClass || !validCurrentOwner) && !mixIsTrait
       }
 
-      if (needAccessor)
-        ensureAccessor(sel, mix.toTermName)
-      else sel
+      if (needAccessor) ensureAccessor(sel, mix.toTermName) else sel
     }
 
     // Disallow some super.XX calls targeting Any methods which would
@@ -409,8 +406,7 @@ abstract class SuperAccessors
               val setter = makeSetter(lhs)
               debuglog("Replaced " + tree + " with " + setter)
               transform(localTyper.typed(Apply(setter, List(qual, rhs))))
-            } else
-              super.transform(tree)
+            } else super.transform(tree)
           }
           transformAssign
 
@@ -559,8 +555,7 @@ abstract class SuperAccessors
         gen.mkAsInstanceOf(
           result,
           pt.asSeenFrom(singleType(NoPrefix, obj), clazz))
-      else
-        result
+      else result
     }
 
     /** Add an accessor for field, if needed, and return a selection tree for it .

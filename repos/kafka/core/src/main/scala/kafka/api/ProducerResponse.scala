@@ -101,9 +101,9 @@ case class ProducerResponse(
       buffer.putInt(errorsAndOffsets.size) // partition count
       errorsAndOffsets.foreach {
         case (
-            (
-            TopicAndPartition(_, partition),
-            ProducerResponseStatus(error, nextOffset, timestamp))) =>
+              (
+                TopicAndPartition(_, partition),
+                ProducerResponseStatus(error, nextOffset, timestamp))) =>
           buffer.putInt(partition)
           buffer.putShort(error)
           buffer.putLong(nextOffset)
@@ -111,8 +111,7 @@ case class ProducerResponse(
       }
     })
     // Throttle time is only supported on V1 style requests
-    if (requestVersion > 0)
-      buffer.putInt(throttleTime)
+    if (requestVersion > 0) buffer.putInt(throttleTime)
   }
 
   override def describe(details: Boolean): String = { toString }

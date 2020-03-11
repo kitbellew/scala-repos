@@ -105,8 +105,7 @@ class TypedArrayConversionTest {
     assertTrue(y.isInstanceOf[Int8Array])
     assertEquals(x.length, y.length)
 
-    for (i <- 0 until y.length)
-      assertEquals(x(i), y(i))
+    for (i <- 0 until y.length) assertEquals(x(i), y(i))
 
     // Ensure its a copy
     x(0) = 0
@@ -121,8 +120,7 @@ class TypedArrayConversionTest {
     assertTrue(y.isInstanceOf[Int16Array])
     assertEquals(x.length, y.length)
 
-    for (i <- 0 until y.length)
-      assertEquals(x(i), y(i))
+    for (i <- 0 until y.length) assertEquals(x(i), y(i))
 
     // Ensure its a copy
     x(0) = 0
@@ -136,8 +134,7 @@ class TypedArrayConversionTest {
     assertTrue(y.isInstanceOf[Uint16Array])
     assertEquals(x.length, y.length)
 
-    for (i <- 0 until y.length)
-      assertEquals(x(i).toInt, y(i))
+    for (i <- 0 until y.length) assertEquals(x(i).toInt, y(i))
 
     // Ensure its a copy
     x(0) = 0
@@ -152,8 +149,7 @@ class TypedArrayConversionTest {
     assertTrue(y.isInstanceOf[Int32Array])
     assertEquals(x.length, y.length)
 
-    for (i <- 0 until y.length)
-      assertEquals(x(i), y(i))
+    for (i <- 0 until y.length) assertEquals(x(i), y(i))
 
     // Ensure its a copy
     x(0) = 0
@@ -167,8 +163,7 @@ class TypedArrayConversionTest {
     assertTrue(y.isInstanceOf[Float32Array])
     assertEquals(x.length, y.length)
 
-    for (i <- 0 until y.length)
-      assertEquals(x(i), y(i))
+    for (i <- 0 until y.length) assertEquals(x(i), y(i))
 
     // Ensure its a copy
     x(0) = 0
@@ -182,8 +177,7 @@ class TypedArrayConversionTest {
     assertTrue(y.isInstanceOf[Float64Array])
     assertEquals(x.length, y.length)
 
-    for (i <- 0 until y.length)
-      assertEquals(x(i), y(i))
+    for (i <- 0 until y.length) assertEquals(x(i), y(i))
 
     // Ensure its a copy
     x(0) = 0

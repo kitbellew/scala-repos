@@ -42,10 +42,8 @@ class DefaultDecoder(props: VerifiableProperties = null)
 class StringDecoder(props: VerifiableProperties = null)
     extends Decoder[String] {
   val encoding =
-    if (props == null)
-      "UTF8"
-    else
-      props.getString("serializer.encoding", "UTF8")
+    if (props == null) "UTF8"
+    else props.getString("serializer.encoding", "UTF8")
 
   def fromBytes(bytes: Array[Byte]): String = { new String(bytes, encoding) }
 }

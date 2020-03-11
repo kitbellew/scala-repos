@@ -91,8 +91,7 @@ object TcpHelper {
         readTo ! c
         if (!c.isPeerClosed) context.stop(self)
       case ClientClose(cmd) ⇒
-        if (!writePending) connection ! cmd
-        else closeAfterWrite = Some(cmd)
+        if (!writePending) connection ! cmd else closeAfterWrite = Some(cmd)
     }
 
   }

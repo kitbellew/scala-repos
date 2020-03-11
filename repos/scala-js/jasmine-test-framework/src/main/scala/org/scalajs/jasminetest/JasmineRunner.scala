@@ -28,8 +28,7 @@ final class JasmineRunner(
 
   def tasks(taskDefs: Array[TaskDef]): Array[Task] = {
     ensureNotDone()
-    for (taskDef <- taskDefs)
-      yield new JasmineTask(this, taskDef)
+    for (taskDef <- taskDefs) yield new JasmineTask(this, taskDef)
   }
 
   def done(): String = {
@@ -53,8 +52,7 @@ final class JasmineRunner(
   }
 
   private def ensureNotDone(): Unit = {
-    if (isDone)
-      throw new IllegalStateException("Runner is done")
+    if (isDone) throw new IllegalStateException("Runner is done")
   }
 }
 
@@ -92,8 +90,7 @@ object JasmineRunner {
 
   private def handleArgs(args: Array[String]): Unit = {
     val tags = for (arg <- args) yield {
-      if (arg.startsWith("-t"))
-        arg.stripPrefix("-t")
+      if (arg.startsWith("-t")) arg.stripPrefix("-t")
       else
         throw new IllegalArgumentException(
           s"Unknown argument for JasmineFramework: $arg")

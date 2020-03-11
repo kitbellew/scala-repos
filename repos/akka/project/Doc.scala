@@ -41,8 +41,7 @@ object Scaladoc extends AutoPlugin {
       Seq(validateDiagrams in Compile := true) ++
       CliOptions.scaladocDiagramsEnabled.ifTrue(doc in Compile := {
         val docs = (doc in Compile).value
-        if ((validateDiagrams in Compile).value)
-          scaladocVerifier(docs)
+        if ((validateDiagrams in Compile).value) scaladocVerifier(docs)
         docs
       })
   }
@@ -92,8 +91,7 @@ object Scaladoc extends AutoPlugin {
     // if we have generated scaladoc and none of the files have a diagram then fail
     if (file.exists() && !findHTMLFileWithDiagram(List(file)))
       sys.error("ScalaDoc diagrams not generated!")
-    else
-      file
+    else file
   }
 }
 

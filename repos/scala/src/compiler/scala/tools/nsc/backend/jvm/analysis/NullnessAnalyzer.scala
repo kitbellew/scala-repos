@@ -204,8 +204,7 @@ class NullnessFrame(nLocals: Int, nStack: Int)
 
     if (nullCheckedAliases != null) {
       val it = nullCheckedAliases.iterator
-      while (it.hasNext)
-        this.setValue(it.next(), NotNullValue)
+      while (it.hasNext) this.setValue(it.next(), NotNullValue)
     }
   }
 }

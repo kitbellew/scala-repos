@@ -73,8 +73,7 @@ final class JsonView(
       .noNull
 
   def standing(tour: Tournament, page: Int): Fu[JsObject] =
-    if (page == 1) firstPageCache(tour.id)
-    else computeStanding(tour, page)
+    if (page == 1) firstPageCache(tour.id) else computeStanding(tour, page)
 
   def clearCache(id: String) =
     firstPageCache.remove(id) >> cachableData.remove(id)

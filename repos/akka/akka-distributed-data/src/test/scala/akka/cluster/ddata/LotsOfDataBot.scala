@@ -26,10 +26,7 @@ import com.typesafe.config.ConfigFactory
 object LotsOfDataBot {
 
   def main(args: Array[String]): Unit = {
-    if (args.isEmpty)
-      startup(Seq("2551", "2552", "0"))
-    else
-      startup(args)
+    if (args.isEmpty) startup(Seq("2551", "2552", "0")) else startup(args)
   }
 
   def startup(ports: Seq[String]): Unit = {
@@ -83,8 +80,7 @@ class LotsOfDataBot extends Actor with ActorLogging {
   var tickTask =
     if (isPassive)
       context.system.scheduler.schedule(1.seconds, 1.seconds, self, Tick)
-    else
-      context.system.scheduler.schedule(20.millis, 20.millis, self, Tick)
+    else context.system.scheduler.schedule(20.millis, 20.millis, self, Tick)
 
   val startTime = System.nanoTime()
   var count = 1L
@@ -97,8 +93,7 @@ class LotsOfDataBot extends Actor with ActorLogging {
       val loop = if (count >= maxEntries) 1 else 100
       for (_ ← 1 to loop) {
         count += 1
-        if (count % 10000 == 0)
-          log.info("Reached {} entries", count)
+        if (count % 10000 == 0) log.info("Reached {} entries", count)
         if (count == maxEntries) {
           log.info("Reached {} entries", count)
           tickTask.cancel()
@@ -106,8 +101,7 @@ class LotsOfDataBot extends Actor with ActorLogging {
             context.system.scheduler.schedule(1.seconds, 1.seconds, self, Tick)
         }
         val key = ORSetKey[String]((count % maxEntries).toString)
-        if (count <= 100)
-          replicator ! Subscribe(key, self)
+        if (count <= 100) replicator ! Subscribe(key, self)
         val s = ThreadLocalRandom.current().nextInt(97, 123).toChar.toString
         if (count <= maxEntries || ThreadLocalRandom.current().nextBoolean()) {
           // add
@@ -127,8 +121,7 @@ class LotsOfDataBot extends Actor with ActorLogging {
 
   def passive: Receive = {
     case Tick ⇒
-      if (!tickTask.isCancelled)
-        replicator ! GetKeyIds
+      if (!tickTask.isCancelled) replicator ! GetKeyIds
     case GetKeyIdsResult(keys) ⇒
       if (keys.size >= maxEntries) {
         tickTask.cancel()

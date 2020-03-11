@@ -16,8 +16,7 @@ object SbtOpts {
     val sbtOptsFile = directory / ".sbtopts"
     if (sbtOptsFile.exists && sbtOptsFile.isFile && sbtOptsFile.canRead)
       process(FileUtil.loadLines(sbtOptsFile).asScala.map(_.trim))
-    else
-      Seq.empty
+    else Seq.empty
   }
 
   private val noShareOpts =
@@ -35,18 +34,13 @@ object SbtOpts {
 
   private def process(opts: Seq[String]): Seq[String] = {
     opts.flatMap { opt =>
-      if (opt.startsWith("-no-share"))
-        Some(noShareOpts)
-      else if (opt.startsWith("-no-global"))
-        Some(noGlobalOpts)
+      if (opt.startsWith("-no-share")) Some(noShareOpts)
+      else if (opt.startsWith("-no-global")) Some(noGlobalOpts)
       else if (sbtToJdkOpts.exists { case (k, _) => opt.startsWith(k) })
         processOptWithArg(opt)
-      else if (opt.startsWith("-J"))
-        Some(opt.substring(2))
-      else if (opt.startsWith("-D"))
-        Some(opt)
-      else
-        None
+      else if (opt.startsWith("-J")) Some(opt.substring(2))
+      else if (opt.startsWith("-D")) Some(opt)
+      else None
     }
   }
 

@@ -131,8 +131,7 @@ object Menu extends MenuSingleton {
         encoder,
         pathElement
           .charSplit('/')
-          .drop(if (pathElement.startsWith("/")) 1
-          else 0)
+          .drop(if (pathElement.startsWith("/")) 1 else 0)
           .map(_.trim)
           .filter(_ != "**")
           .map {
@@ -765,8 +764,7 @@ case class Menu(loc: Loc[_], private val convertableKids: ConvertableToMenu*)
   def toMenu = this
 
   def findLoc(req: Req): Box[Loc[_]] =
-    if (loc.doesMatch_?(req)) Full(loc)
-    else first(kids)(_.findLoc(req))
+    if (loc.doesMatch_?(req)) Full(loc) else first(kids)(_.findLoc(req))
 
   def locForGroup(group: String): Seq[Loc[_]] =
     (if (loc.inGroup_?(group)) List[Loc[_]](loc) else Nil) ++
@@ -780,10 +778,7 @@ case class Menu(loc: Loc[_], private val convertableKids: ConvertableToMenu*)
       _parent.toList.flatMap(
         _.kids.toList.flatMap(m =>
           m.loc.buildItem(
-            if (m == this)
-              populate
-            else
-              Nil,
+            if (m == this) populate else Nil,
             m == actual,
             m == pathAt)))
 
@@ -801,8 +796,7 @@ case class Menu(loc: Loc[_], private val convertableKids: ConvertableToMenu*)
     * Make a menu item only of the current loc is in the given group
     */
   def makeMenuItem(path: List[Loc[_]], group: String): Box[MenuItem] =
-    if (loc.inGroup_?(group)) makeMenuItem(path)
-    else Empty
+    if (loc.inGroup_?(group)) makeMenuItem(path) else Empty
 
   private def _inPath(in: List[Loc[_]]): Boolean = in match {
     case Nil                 => false

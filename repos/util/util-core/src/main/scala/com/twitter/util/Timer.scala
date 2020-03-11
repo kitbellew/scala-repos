@@ -76,10 +76,7 @@ trait Timer {
       } else { false }
     }
 
-    val task = schedule(time) {
-      if (isFirst())
-        p.update(Try(f))
-    }
+    val task = schedule(time) { if (isFirst()) p.update(Try(f)) }
 
     p.setInterruptHandler {
       case cause =>
@@ -354,8 +351,7 @@ class MockTimer extends Timer {
   var nCancelled = 0
 
   def tick(): Unit = synchronized {
-    if (isStopped)
-      throw new IllegalStateException("timer is stopped already")
+    if (isStopped) throw new IllegalStateException("timer is stopped already")
 
     val now = Time.now
     val (toRun, toQueue) = tasks.partition { task => task.when <= now }

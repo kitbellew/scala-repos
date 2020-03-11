@@ -149,8 +149,7 @@ abstract class ActorRef
   private[akka] def isTerminated: Boolean
 
   final override def hashCode: Int = {
-    if (path.uid == ActorCell.undefinedUid) path.hashCode
-    else path.uid
+    if (path.uid == ActorCell.undefinedUid) path.hashCode else path.uid
   }
 
   /**
@@ -411,8 +410,7 @@ private[akka] class LocalActorRef private[akka] (
           ref.getChild(name)
       }
 
-    if (names.isEmpty) this
-    else rec(this, names)
+    if (names.isEmpty) this else rec(this, names)
   }
 
   // ========= AKKA PROTECTED FUNCTIONS =========
@@ -695,15 +693,13 @@ private[akka] class VirtualPathContainer(
         case SelectChildName(name) ⇒
           getChild(name) match {
             case null ⇒
-              if (!wildcardFanOut)
-                emptyRef.tell(msg, sender)
+              if (!wildcardFanOut) emptyRef.tell(msg, sender)
             case child ⇒
               if (elements.tail.isEmpty) { child ! msg }
               else if (!wildcardFanOut) { emptyRef.tell(msg, sender) }
           }
         case _ ⇒
-          if (!wildcardFanOut)
-            emptyRef.tell(msg, sender)
+          if (!wildcardFanOut) emptyRef.tell(msg, sender)
       }
     }
     case _ ⇒ super.!(message)
@@ -747,8 +743,7 @@ private[akka] class VirtualPathContainer(
         children.get(n) match {
           case null ⇒ Nobody
           case some ⇒
-            if (name.isEmpty) some
-            else some.getChild(name)
+            if (name.isEmpty) some else some.getChild(name)
         }
     }
   }

@@ -124,14 +124,12 @@ trait SymbolTrackers {
                 else if ((removed & flag) != 0L) "-"
                 else ""
               )
-            if ((all & flag) == 0L) ""
-            else prefix + Flags.flagToString(flag)
+            if ((all & flag) == 0L) "" else prefix + Flags.flagToString(flag)
           }
 
           " " + strs.filterNot(_ == "").mkString("[", " ", "]")
         case _ =>
-          if (masked == 0L) ""
-          else " (" + Flags.flagsToString(masked) + ")"
+          if (masked == 0L) "" else " (" + Flags.flagsToString(masked) + ")"
       }
       def symString(sym: Symbol) = (
         if (settings.debug && sym.hasCompleteInfo) {

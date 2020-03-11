@@ -200,12 +200,11 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
 
   system.registerOnTermination(shutdown())
 
-  if (JmxEnabled)
-    clusterJmx = {
-      val jmx = new ClusterJmx(this, log)
-      jmx.createMBean()
-      Some(jmx)
-    }
+  if (JmxEnabled) clusterJmx = {
+    val jmx = new ClusterJmx(this, log)
+    jmx.createMBean()
+    Some(jmx)
+  }
 
   logInfo("Started up successfully")
 
@@ -393,8 +392,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
     * Typically used together `cluster.leave(cluster.selfAddress)` and then `system.terminate()`.
     */
   def registerOnMemberRemoved(callback: Runnable): Unit = {
-    if (_isTerminated.get())
-      callback.run()
+    if (_isTerminated.get()) callback.run()
     else
       clusterDaemons ! InternalClusterAction.AddOnMemberRemovedListener(
         callback)
@@ -429,8 +427,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
       system.stop(clusterDaemons)
 
       // readView might be null if init fails before it is created
-      if (readView != null)
-        readView.close()
+      if (readView != null) readView.close()
 
       closeScheduler()
 

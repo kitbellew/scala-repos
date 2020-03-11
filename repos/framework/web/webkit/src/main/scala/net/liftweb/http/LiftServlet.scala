@@ -244,10 +244,7 @@ class LiftServlet extends Loggable {
     }
 
     def process(req: Req) = {
-      if (LiftRules.ending)
-        notFoundOrIgnore(req, Empty)
-      else
-        Empty
+      if (LiftRules.ending) notFoundOrIgnore(req, Empty) else Empty
     }
 
   }
@@ -276,8 +273,7 @@ class LiftServlet extends Loggable {
     def process(req: Req) =
       if (!authPassed_?(req))
         Full(LiftRules.authentication.unauthorizedResponse)
-      else
-        Empty
+      else Empty
 
   }
 
@@ -302,8 +298,7 @@ class LiftServlet extends Loggable {
                 .JsRaw(
                   LiftRules.noCometSessionCmd.vend.toJsCmd + ";lift.setToWatch({});")
                 .cmd
-            else
-              js.JE.JsRaw(LiftRules.noAjaxSessionCmd.vend.toJsCmd).cmd
+            else js.JE.JsRaw(LiftRules.noAjaxSessionCmd.vend.toJsCmd).cmd
 
           Full(new JsCommands(cmd :: Nil).toResponse)
         }
@@ -596,8 +591,7 @@ class LiftServlet extends Loggable {
               .parseInt(ajaxPathPart.substring(ajaxPathPart.length - 1), 36)
           )
         )
-      else
-        None
+      else None
     }
   }
 
@@ -1064,8 +1058,7 @@ class LiftServlet extends Loggable {
       toInsure
         .foldLeft(org) {
           case (map, (key, value)) =>
-            if (map.contains(key)) map
-            else map + (key -> value)
+            if (map.contains(key)) map else map + (key -> value)
         }
         .toList
 
@@ -1074,8 +1067,7 @@ class LiftServlet extends Loggable {
     val len = resp.size
     // insure that certain header fields are set
     val header =
-      if (resp.code == 304 || resp.code == 303)
-        fixHeaders(resp.headers)
+      if (resp.code == 304 || resp.code == 303) fixHeaders(resp.headers)
       else
         insureField(
           fixHeaders(resp.headers),

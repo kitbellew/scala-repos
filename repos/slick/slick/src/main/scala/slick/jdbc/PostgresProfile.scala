@@ -95,8 +95,7 @@ trait PostgresProfile extends JdbcProfile {
           }
       override def length: Option[Int] = {
         val l = super.length
-        if (tpe == "String" && varying && l == Some(2147483647)) None
-        else l
+        if (tpe == "String" && varying && l == Some(2147483647)) None else l
       }
       override def tpe = meta.typeName match {
         case "bytea"                                         => "Array[Byte]"

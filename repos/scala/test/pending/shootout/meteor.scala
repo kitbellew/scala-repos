@@ -133,10 +133,8 @@ final class Board {
   def unmark() = for (c <- cells) c.unmark
 
   def asString() =
-    new String(
-      cells map (c =>
-        if (c.piece == null) '-'.toByte
-        else (c.piece.number + 48).toByte))
+    new String(cells map (c =>
+      if (c.piece == null) '-'.toByte else (c.piece.number + 48).toByte))
 
   def firstEmptyCellIndex() = cells.findIndexOf(c => c.isEmpty)
 

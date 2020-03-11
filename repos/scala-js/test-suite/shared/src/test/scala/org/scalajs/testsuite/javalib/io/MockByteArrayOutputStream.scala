@@ -20,8 +20,7 @@ class MockByteArrayOutputStream extends ByteArrayOutputStream {
   def closed: Boolean = _closed
 
   private def maybeThrow(): Unit = {
-    if (throwing)
-      throw new IOException("MockByteArrayOutputStream throws")
+    if (throwing) throw new IOException("MockByteArrayOutputStream throws")
   }
 
   private def writeOp[A](op: => A): A = {

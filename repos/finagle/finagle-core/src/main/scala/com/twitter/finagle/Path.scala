@@ -21,8 +21,7 @@ case class Path(elems: Buf*) {
   def take(n: Int) = Path((elems take n): _*)
   def drop(n: Int) = Path((elems drop n): _*)
   def ++(that: Path) =
-    if (that.isEmpty) this
-    else Path((elems ++ that.elems): _*)
+    if (that.isEmpty) this else Path((elems ++ that.elems): _*)
   def size = elems.size
   def isEmpty = elems.isEmpty
 
@@ -79,8 +78,7 @@ object Path {
 
   private val charSet = {
     val bits = new BitSet(Byte.MaxValue + 1)
-    for (c <- showableChars)
-      bits.set(c.toInt)
+    for (c <- showableChars) bits.set(c.toInt)
     bits
   }
 
@@ -96,8 +94,7 @@ object Path {
   private def showableAsString(bytes: Array[Byte], size: Int): Boolean = {
     var i = 0
     while (i < size) {
-      if (!isShowable(bytes(i).toChar))
-        return false
+      if (!isShowable(bytes(i).toChar)) return false
       i += 1
     }
     true

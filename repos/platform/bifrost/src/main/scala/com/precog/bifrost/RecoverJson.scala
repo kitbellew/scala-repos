@@ -39,8 +39,7 @@ object RecoverJson {
       buffers: Vector[CharBuffer],
       bufferIndex: Int,
       offset: Int): Option[(Int, Int)] = {
-    if (bufferIndex >= buffers.length)
-      None
+    if (bufferIndex >= buffers.length) None
     else if (offset >= buffers(bufferIndex).limit)
       findEndString(
         buffers,
@@ -49,12 +48,9 @@ object RecoverJson {
     else {
       val char = buffers(bufferIndex).get(offset)
 
-      if (char == '"')
-        Some((bufferIndex, offset))
-      else if (char == '\\')
-        findEndString(buffers, bufferIndex, offset + 2)
-      else
-        findEndString(buffers, bufferIndex, offset + 1)
+      if (char == '"') Some((bufferIndex, offset))
+      else if (char == '\\') findEndString(buffers, bufferIndex, offset + 2)
+      else findEndString(buffers, bufferIndex, offset + 1)
     }
   }
 
@@ -82,8 +78,7 @@ object RecoverJson {
   private def balancedStack(buffers: Vector[CharBuffer]) = {
     @tailrec @inline def buildState(
         accum: BalancedStackState): BalancedStackState =
-      if (accum.bufferIndex >= buffers.length)
-        accum
+      if (accum.bufferIndex >= buffers.length) accum
       else if (accum.offset >= buffers(accum.bufferIndex).limit)
         buildState(
           BalancedStackState(

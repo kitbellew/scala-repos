@@ -98,10 +98,7 @@ trait StdLibStaticInlinerModule[M[+_]]
             val left2 = recurse(left)
             val right2 = recurse(right)
 
-            if (left2 == right2)
-              left2
-            else
-              IUI(union, left2, right2)(graph.loc)
+            if (left2 == right2) left2 else IUI(union, left2, right2)(graph.loc)
           }
 
           // Array operations

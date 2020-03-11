@@ -139,8 +139,7 @@ final class JUnitExecuteTest(
       testAnnotation: org.junit.Test,
       timeInSeconds: Double) = {
     if (testAnnotation.expected == classOf[org.junit.Test.None]) {
-      if (runner.runSettings.verbose)
-        logFormattedInfo(methodName, "started")
+      if (runner.runSettings.verbose) logFormattedInfo(methodName, "started")
       taskPassed(methodName)
     } else {
       val msg = {
@@ -164,8 +163,7 @@ final class JUnitExecuteTest(
       logAssertionWarning(methodName, ex, timeInSeconds)
       taskSkipped()
     } else if (testAnnotation.expected.isInstance(ex)) {
-      if (runner.runSettings.verbose)
-        logFormattedInfo(methodName, "started")
+      if (runner.runSettings.verbose) logFormattedInfo(methodName, "started")
       taskPassed(methodName)
     } else if (testAnnotation.expected == classOf[org.junit.Test.None]) {
       val failedMsg = new StringBuilder

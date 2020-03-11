@@ -55,8 +55,7 @@ class ULong(val signed: Long) extends AnyVal {
     toBigInt.toDouble
 
   final def toBigInt: BigInt =
-    if (signed < 0) ULong.LimitAsBigInt + signed
-    else BigInt(signed)
+    if (signed < 0) ULong.LimitAsBigInt + signed else BigInt(signed)
 
   // FIXME: it would be nice to avoid converting to BigInt here
   override final def toString: String =
@@ -71,16 +70,12 @@ class ULong(val signed: Long) extends AnyVal {
   final def =!=(that: ULong): Boolean = this.signed != that.signed
 
   final def <=(that: ULong): Boolean =
-    if (this.signed >= 0L)
-      this.signed <= that.signed || that.signed < 0L
-    else
-      that.signed >= this.signed && that.signed < 0L
+    if (this.signed >= 0L) this.signed <= that.signed || that.signed < 0L
+    else that.signed >= this.signed && that.signed < 0L
 
   final def <(that: ULong): Boolean =
-    if (this.signed >= 0L)
-      this.signed < that.signed || that.signed < 0L
-    else
-      that.signed > this.signed && that.signed < 0L
+    if (this.signed >= 0L) this.signed < that.signed || that.signed < 0L
+    else that.signed > this.signed && that.signed < 0L
 
   @inline final def >=(that: ULong): Boolean = that <= this
   @inline final def >(that: ULong): Boolean = that < this

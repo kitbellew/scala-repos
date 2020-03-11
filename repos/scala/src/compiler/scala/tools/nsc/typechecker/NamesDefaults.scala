@@ -281,8 +281,7 @@ trait NamesDefaults { self: Analyzer =>
         case Select(qual, name) =>
           if (treeInfo.isExprSafeToInline(qual))
             blockWithoutQualifier(Some(qual.duplicate))
-          else
-            blockWithQualifier(qual, name)
+          else blockWithQualifier(qual, name)
       }
     }
 
@@ -700,8 +699,7 @@ trait NamesDefaults { self: Analyzer =>
           if (positionalAllowed) {
             argPos(argIndex) = argIndex
             arg
-          } else
-            PositionalAfterNamedNamesDefaultError(arg)
+          } else PositionalAfterNamedNamesDefaultError(arg)
       }
     }
     (namelessArgs, argPos)

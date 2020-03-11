@@ -82,10 +82,8 @@ object DependencyResolver {
         .fold[Unit](problems += _, resolvedLibs += resourceName -> _)
     }
 
-    if (problems.nonEmpty)
-      throw new JSLibResolveException(problems.toList)
-    else
-      resolvedLibs.result()
+    if (problems.nonEmpty) throw new JSLibResolveException(problems.toList)
+    else resolvedLibs.result()
   }
 
   /** Resolves one resource name wrt to the current classpath. */
@@ -134,10 +132,8 @@ object DependencyResolver {
           coll forall { y => (x eq y) || !y.dependencies.contains(x.relPath) }
         }
 
-        if (selected.nonEmpty)
-          loop(pending, selected ::: acc)
-        else
-          throw new CyclicDependencyException(pending)
+        if (selected.nonEmpty) loop(pending, selected ::: acc)
+        else throw new CyclicDependencyException(pending)
       }
     }
 
@@ -179,8 +175,7 @@ object DependencyResolver {
       if flatDeps.exists(hasConflict(dep, _))
     } yield dep
 
-    if (conflicts.nonEmpty)
-      throw new ConflictingNameException(conflicts.toList)
+    if (conflicts.nonEmpty) throw new ConflictingNameException(conflicts.toList)
   }
 
   private def checkMinifiedJSConflicts(

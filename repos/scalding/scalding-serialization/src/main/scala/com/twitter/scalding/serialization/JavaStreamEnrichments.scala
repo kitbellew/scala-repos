@@ -138,8 +138,7 @@ object JavaStreamEnrichments {
         if (l == 0) ()
         else {
           val count = s.read(bytes, o, l)
-          if (count < 0) eof
-          else go(o + count, l - count)
+          if (count < 0) eof else go(o + count, l - count)
         }
       go(offset, len)
     }
@@ -204,8 +203,7 @@ object JavaStreamEnrichments {
       if (c1 < ((1 << 8) - 1)) c1
       else {
         val c2 = readUnsignedShort
-        if (c2 < ((1 << 16) - 1)) c2
-        else readInt
+        if (c2 < ((1 << 16) - 1)) c2 else readInt
       }
     }
 

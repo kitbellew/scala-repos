@@ -541,8 +541,7 @@ object AkkaBuild extends Build {
                   "cd akka-samples/akka-sample-osgi-dining-hakkers; mvn ",
                   " ",
                   "")) !
-            } != 0)
-              throw new Exception(failureMessage)
+            } != 0) throw new Exception(failureMessage)
           }
           executeMvnCommands(
             "Osgi sample Dining hakkers test failed",
@@ -612,15 +611,13 @@ object AkkaBuild extends Build {
     // should we be allowed to use artifacts published to the local maven repository
     if (System
           .getProperty("akka.build.useLocalMavenResolver", "false")
-          .toBoolean)
-      Seq(resolvers += mavenLocalResolver)
+          .toBoolean) Seq(resolvers += mavenLocalResolver)
     else Seq.empty
   } ++ {
     // should we be allowed to use artifacts from sonatype snapshots
     if (System
           .getProperty("akka.build.useSnapshotSonatypeResolver", "false")
-          .toBoolean)
-      Seq(resolvers += Resolver.sonatypeRepo("snapshots"))
+          .toBoolean) Seq(resolvers += Resolver.sonatypeRepo("snapshots"))
     else Seq.empty
   } ++ Seq(
     pomIncludeRepository := (_ =>

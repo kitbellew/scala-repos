@@ -56,8 +56,7 @@ abstract class AbstractReporter extends Reporter {
           display(pos, "[ suppressed ] " + msg, severity)
         }
 
-        if (isPromptSet)
-          displayPrompt()
+        if (isPromptSet) displayPrompt()
       }
     }
   }

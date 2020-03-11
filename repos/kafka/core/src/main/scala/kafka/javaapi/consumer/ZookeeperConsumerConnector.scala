@@ -95,8 +95,7 @@ private[kafka] class ZookeeperConsumerConnector(
     val ret = new java.util.HashMap[String, java.util.List[KafkaStream[K, V]]]
     for ((topic, streams) <- scalaReturn) {
       var javaStreamList = new java.util.ArrayList[KafkaStream[K, V]]
-      for (stream <- streams)
-        javaStreamList.add(stream)
+      for (stream <- streams) javaStreamList.add(stream)
       ret.put(topic, javaStreamList)
     }
     ret

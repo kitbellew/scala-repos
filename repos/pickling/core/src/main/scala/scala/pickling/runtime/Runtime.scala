@@ -95,17 +95,14 @@ class InterpretedPicklerRuntime(classLoader: ClassLoader, preclazz: Class[_])(
           picklee: Any,
           builder: PBuilder,
           pickler: Pickler[Any]): Unit = {
-        if (shouldBotherAboutSharing(fieldTpe))
-          picklee match {
-            case null =>
-              pickler.asInstanceOf[Pickler[Null]].pickle(null, builder)
-            case _ =>
-              val oid = scala.pickling.internal.lookupPicklee(picklee)
-              builder.hintOid(oid)
-              pickler.pickle(picklee, builder)
-          }
-        else
-          pickler.pickle(picklee, builder)
+        if (shouldBotherAboutSharing(fieldTpe)) picklee match {
+          case null => pickler.asInstanceOf[Pickler[Null]].pickle(null, builder)
+          case _ =>
+            val oid = scala.pickling.internal.lookupPicklee(picklee)
+            builder.hintOid(oid)
+            pickler.pickle(picklee, builder)
+        }
+        else pickler.pickle(picklee, builder)
       }
 
       def pickle(picklee: Any, builder: PBuilder): Unit = {

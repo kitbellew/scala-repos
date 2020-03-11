@@ -138,15 +138,12 @@ import org.apache.tools.ant.types.Mapper
           if (originRemaining == destRemaining)
             for (idx <- 0 until originRemaining)
               equalNow = equalNow && (originBuffer(idx) == destBuffer(idx))
-          else
-            equalNow = false
+          else equalNow = false
           originRemaining = originStream.read(originBuffer)
           destRemaining = destStream.read(destBuffer)
         }
-        if (destRemaining > 0)
-          equalNow = false
-        if (!equalNow)
-          reportDiff(originFile, destFile)
+        if (destRemaining > 0) equalNow = false
+        if (!equalNow) reportDiff(originFile, destFile)
         originStream.close
         destStream.close
       } else reportMissing(originFile)

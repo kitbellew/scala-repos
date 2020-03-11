@@ -45,8 +45,7 @@ class Serialization2[A, B](
 
   override def write(out: OutputStream, a: (A, B)): Try[Unit] = {
     val resA = serA.write(out, a._1)
-    if (resA.isSuccess) serB.write(out, a._2)
-    else resA
+    if (resA.isSuccess) serB.write(out, a._2) else resA
   }
 
   override val staticSize = for {
@@ -84,8 +83,7 @@ class OrderedSerialization2[A, B](
     with OrderedSerialization[(A, B)] {
   override def compare(x: (A, B), y: (A, B)) = {
     val ca = ordA.compare(x._1, y._1)
-    if (ca != 0) ca
-    else ordB.compare(x._2, y._2)
+    if (ca != 0) ca else ordB.compare(x._2, y._2)
   }
   override def compareBinary(a: InputStream, b: InputStream) = {
     // This mutates the buffers and advances them. Only keep reading if they are different

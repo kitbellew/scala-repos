@@ -52,8 +52,7 @@ object Rng {
       // This is the algorithm used by Java's random number generator
       // internally.
       //   http://docs.oracle.com/javase/6/docs/api/java/util/Random.html#nextInt(int)
-      if ((n & -n) == n)
-        return r.nextLong() % n
+      if ((n & -n) == n) return r.nextLong() % n
 
       var bits = 0L
       var v = 0L

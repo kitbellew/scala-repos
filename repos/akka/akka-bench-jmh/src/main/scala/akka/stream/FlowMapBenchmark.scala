@@ -104,10 +104,8 @@ class FlowMapBenchmark {
     }
 
     flow = mkMaps(Source.fromPublisher(syncTestPublisher), numberOfMapOps) {
-      if (UseGraphStageIdentity)
-        GraphStages.identity[Int]
-      else
-        Flow[Int].map(identity)
+      if (UseGraphStageIdentity) GraphStages.identity[Int]
+      else Flow[Int].map(identity)
     }
   }
 
@@ -130,8 +128,7 @@ class FlowMapBenchmark {
   private def mkMaps[O, Mat](source: Source[O, Mat], count: Int)(
       flow: => Graph[FlowShape[O, O], _]): Source[O, Mat] = {
     var f = source
-    for (i ← 1 to count)
-      f = f.via(flow)
+    for (i ← 1 to count) f = f.via(flow)
     f
   }
 

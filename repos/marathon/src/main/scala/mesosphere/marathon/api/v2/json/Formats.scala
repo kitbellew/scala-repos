@@ -168,14 +168,12 @@ trait Formats
     val withServicePorts =
       if (task.servicePorts.nonEmpty)
         enrichedJson ++ Json.obj("servicePorts" -> task.servicePorts)
-      else
-        enrichedJson
+      else enrichedJson
 
     if (task.healthCheckResults.nonEmpty)
       withServicePorts ++ Json.obj(
         "healthCheckResults" -> task.healthCheckResults)
-    else
-      withServicePorts
+    else withServicePorts
   }
 
   implicit lazy val PathIdFormat: Format[PathId] = Format(

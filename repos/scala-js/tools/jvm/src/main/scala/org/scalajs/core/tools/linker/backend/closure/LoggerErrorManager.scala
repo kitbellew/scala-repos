@@ -15,8 +15,7 @@ private[closure] class LoggerErrorManager(private val log: Logger)
   override def report(level: CheckLevel, error: JSError): Unit = {
     if (error.getType.key == "JSC_FRACTIONAL_BITWISE_OPERAND")
       super.report(CheckLevel.OFF, error)
-    else
-      super.report(level, error)
+    else super.report(level, error)
   }
 
   def println(level: CheckLevel, error: JSError): Unit = level match {
@@ -29,12 +28,9 @@ private[closure] class LoggerErrorManager(private val log: Logger)
     val msg =
       s"Closure: ${getErrorCount} error(s), ${getWarningCount} warning(s)"
 
-    if (getErrorCount > 0)
-      log.error(msg)
-    else if (getWarningCount > 0)
-      log.warn(msg)
-    else
-      log.info(msg)
+    if (getErrorCount > 0) log.error(msg)
+    else if (getWarningCount > 0) log.warn(msg)
+    else log.info(msg)
   }
 
 }

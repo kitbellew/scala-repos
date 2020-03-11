@@ -173,10 +173,10 @@ object Multipart {
           case MultipartFormData.DataPart(innerKey, _) =>
             (innerKey, None, Option("text/plain"))
           case MultipartFormData.FilePart(
-              innerKey,
-              innerFilename,
-              innerContentType,
-              _) =>
+                innerKey,
+                innerFilename,
+                innerContentType,
+                _) =>
             (innerKey, Option(innerFilename), innerContentType)
           case _ => throw new UnsupportedOperationException()
         }

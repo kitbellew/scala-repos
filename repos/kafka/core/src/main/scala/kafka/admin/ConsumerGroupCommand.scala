@@ -69,8 +69,7 @@ object ConsumerGroupCommand {
     }
 
     try {
-      if (opts.options.has(opts.listOpt))
-        consumerGroupService.list()
+      if (opts.options.has(opts.listOpt)) consumerGroupService.list()
       else if (opts.options.has(opts.describeOpt))
         consumerGroupService.describe()
       else if (opts.options.has(opts.deleteOpt)) {
@@ -178,10 +177,8 @@ object ConsumerGroupCommand {
     def delete() {
       if (opts.options.has(opts.groupOpt) && opts.options.has(opts.topicOpt))
         deleteForTopic()
-      else if (opts.options.has(opts.groupOpt))
-        deleteForGroup()
-      else if (opts.options.has(opts.topicOpt))
-        deleteAllForTopic()
+      else if (opts.options.has(opts.groupOpt)) deleteForGroup()
+      else if (opts.options.has(opts.topicOpt)) deleteAllForTopic()
     }
 
     protected def describeGroup(group: String) {
@@ -478,8 +475,7 @@ object ConsumerGroupCommand {
     }
 
     private def getConsumer() = {
-      if (consumer == null)
-        consumer = createNewConsumer()
+      if (consumer == null) consumer = createNewConsumer()
       consumer
     }
 

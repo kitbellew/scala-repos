@@ -148,12 +148,10 @@ package object linalg {
     * @author dlwh,dramage,retronym,afwlehmann,lancelet
     */
   private[linalg] def requireNonEmptyMatrix[V](mat: Matrix[V]): Unit =
-    if (mat.cols == 0 || mat.rows == 0)
-      throw new MatrixEmptyException
+    if (mat.cols == 0 || mat.rows == 0) throw new MatrixEmptyException
 
   private[linalg] def requireSquareMatrix[V](mat: Matrix[V]): Unit =
-    if (mat.rows != mat.cols)
-      throw new MatrixNotSquareException
+    if (mat.rows != mat.cols) throw new MatrixNotSquareException
 
   private[linalg] def requireSymmetricMatrix(
       mat: Matrix[Double],
@@ -217,8 +215,7 @@ package object linalg {
       X: Matrix[T]): DenseMatrix[T] = {
     val N = X.rows
     DenseMatrix.tabulate(N, N)((i, j) =>
-      if (j <= i) X(i, j)
-      else implicitly[Semiring[T]].zero)
+      if (j <= i) X(i, j) else implicitly[Semiring[T]].zero)
   }
 
   /**
@@ -229,8 +226,7 @@ package object linalg {
       X: Matrix[T]): DenseMatrix[T] = {
     val N = X.rows
     DenseMatrix.tabulate(N, N)((i, j) =>
-      if (j < i) X(i, j)
-      else implicitly[Semiring[T]].zero)
+      if (j < i) X(i, j) else implicitly[Semiring[T]].zero)
   }
 
   /**
@@ -241,8 +237,7 @@ package object linalg {
       X: Matrix[T]): DenseMatrix[T] = {
     val N = X.rows
     DenseMatrix.tabulate(N, N)((i, j) =>
-      if (j >= i) X(i, j)
-      else implicitly[Semiring[T]].zero)
+      if (j >= i) X(i, j) else implicitly[Semiring[T]].zero)
   }
 
   /**
@@ -253,8 +248,7 @@ package object linalg {
       X: Matrix[T]): DenseMatrix[T] = {
     val N = X.rows
     DenseMatrix.tabulate(N, N)((i, j) =>
-      if (j > i) X(i, j)
-      else implicitly[Semiring[T]].zero)
+      if (j > i) X(i, j) else implicitly[Semiring[T]].zero)
   }
 
   /**
@@ -291,16 +285,8 @@ package object linalg {
     import breeze.stats.{mean, stddev}
     if (center) {
       val xc = x(*, ::) - mean(x, Axis._0).t
-      if (scale)
-        xc(*, ::) :/ stddev(x(::, *)).t
-      else
-        xc
-    } else {
-      if (scale)
-        x(*, ::) :/ columnRMS(x)
-      else
-        x
-    }
+      if (scale) xc(*, ::) :/ stddev(x(::, *)).t else xc
+    } else { if (scale) x(*, ::) :/ columnRMS(x) else x }
   }
 
   /**

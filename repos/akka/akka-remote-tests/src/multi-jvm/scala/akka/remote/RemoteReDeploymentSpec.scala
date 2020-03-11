@@ -129,11 +129,10 @@ abstract class RemoteReDeploymentMultiJvmSpec
       runOn(first) {
         testConductor.blackhole(second, first, Both).await
         testConductor.shutdown(second, abort = true).await
-        if (expectQuarantine)
-          within(sleepAfterKill) {
-            expectMsg("PostStop")
-            expectNoMsg()
-          }
+        if (expectQuarantine) within(sleepAfterKill) {
+          expectMsg("PostStop")
+          expectNoMsg()
+        }
         else expectNoMsg(sleepAfterKill)
         awaitAssert(node(second), 10.seconds, 100.millis)
       }

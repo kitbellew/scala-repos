@@ -26,8 +26,7 @@ private[internal] trait GlbLubs {
       if (tp == NoType) ""
       else {
         val s = ("" + tp).replaceAll("""[\w.]+\.(\w+)""", "$1")
-        if (s.length < 60) s
-        else (s take 57) + "..."
+        if (s.length < 60) s else (s take 57) + "..."
       }
     }
 
@@ -179,8 +178,7 @@ private[internal] trait GlbLubs {
     }
 
     val initialBTSes = ts map (_.baseTypeSeq.toList)
-    if (printLubs)
-      printLubMatrix((ts zip initialBTSes).toMap, depth)
+    if (printLubs) printLubMatrix((ts zip initialBTSes).toMap, depth)
 
     loop(Nil, initialBTSes)
   }
@@ -224,8 +222,7 @@ private[internal] trait GlbLubs {
     if (ts0.isEmpty || ts0.tail.isEmpty) ts0
     else {
       val ts1 = ts0 mapConserve (t => elimAnonymousClass(t.dealiasWiden))
-      if (ts1 eq ts0) ts0
-      else elimSub(ts1, depth)
+      if (ts1 eq ts0) ts0 else elimSub(ts1, depth)
     }
   }
 
@@ -268,14 +265,11 @@ private[internal] trait GlbLubs {
     *  be further altered. Otherwise, the regular lub.
     */
   def weakLub(tps: List[Type]): Type = (
-    if (tps.isEmpty)
-      NothingTpe
-    else if (tps forall isNumericValueType)
-      numericLub(tps)
+    if (tps.isEmpty) NothingTpe
+    else if (tps forall isNumericValueType) numericLub(tps)
     else if (tps exists typeHasAnnotations)
       annotationsLub(lub(tps map (_.withoutAnnotations)), tps)
-    else
-      lub(tps)
+    else lub(tps)
   )
 
   def numericLub(ts: List[Type]) =
@@ -440,8 +434,7 @@ private[internal] trait GlbLubs {
               }
             }
             // If not, fall back on the more conservative calculation.
-            if (ok) lubRefined
-            else lubBase
+            if (ok) lubRefined else lubBase
           }
         }
       // dropIllegalStarTypes is a localized fix for SI-6897. We should probably
@@ -568,13 +561,11 @@ private[internal] trait GlbLubs {
                     def glbBounds(bnds: List[Type]): TypeBounds = {
                       val lo = lub(bnds map (_.bounds.lo), depth.decr)
                       val hi = glb(bnds map (_.bounds.hi), depth.decr)
-                      if (lo <:< hi) TypeBounds(lo, hi)
-                      else throw GlbFailure
+                      if (lo <:< hi) TypeBounds(lo, hi) else throw GlbFailure
                     }
                     val symbounds = symtypes filter isTypeBound
                     var result: Type =
-                      if (symbounds.isEmpty)
-                        TypeBounds.empty
+                      if (symbounds.isEmpty) TypeBounds.empty
                       else glbBounds(symbounds)
                     for (t <- symtypes if !isTypeBound(t))
                       if (result.bounds containsType t) result = t
@@ -582,28 +573,25 @@ private[internal] trait GlbLubs {
                     result
                   })
             }
-            if (globalGlbDepth < globalGlbLimit)
-              try {
-                globalGlbDepth = globalGlbDepth.incr
-                val dss = ts flatMap refinedToDecls
-                for (ds <- dss; sym <- ds.iterator)
-                  if (globalGlbDepth < globalGlbLimit && !specializesSym(
-                        glbThisType,
-                        sym,
-                        depth))
-                    try {
-                      addMember(glbThisType, glbRefined, glbsym(sym), depth)
-                    } catch {
-                      case ex: NoCommonType =>
-                    }
-              } finally { globalGlbDepth = globalGlbDepth.decr }
+            if (globalGlbDepth < globalGlbLimit) try {
+              globalGlbDepth = globalGlbDepth.incr
+              val dss = ts flatMap refinedToDecls
+              for (ds <- dss; sym <- ds.iterator)
+                if (globalGlbDepth < globalGlbLimit && !specializesSym(
+                      glbThisType,
+                      sym,
+                      depth)) try {
+                  addMember(glbThisType, glbRefined, glbsym(sym), depth)
+                } catch {
+                  case ex: NoCommonType =>
+                }
+            } finally { globalGlbDepth = globalGlbDepth.decr }
             if (glbRefined.decls.isEmpty) glbBase else glbRefined
           }
         existentialAbstraction(tparams, glbType)
       } catch {
         case GlbFailure =>
-          if (ts forall (t => NullTpe <:< t)) NullTpe
-          else NothingTpe
+          if (ts forall (t => NullTpe <:< t)) NullTpe else NothingTpe
       }
     }
     // if (settings.debug.value) { println(indent + "glb of " + ts + " at depth "+depth); indent = indent + "  " } //DEBUG

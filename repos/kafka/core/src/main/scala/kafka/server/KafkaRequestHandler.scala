@@ -102,10 +102,8 @@ class KafkaRequestHandlerPool(
 
   def shutdown() {
     info("shutting down")
-    for (handler <- runnables)
-      handler.shutdown
-    for (thread <- threads)
-      thread.join
+    for (handler <- runnables) handler.shutdown
+    for (thread <- threads) thread.join
     info("shut down completely")
   }
 }

@@ -67,8 +67,7 @@ abstract class GenSerialClientDispatcher[Req, Rep, In, Out](
 
         p.setInterruptHandler {
           case intr =>
-            if (p.updateIfEmpty(Throw(intr)))
-              trans.close()
+            if (p.updateIfEmpty(Throw(intr))) trans.close()
         }
 
         dispatch(req, p)

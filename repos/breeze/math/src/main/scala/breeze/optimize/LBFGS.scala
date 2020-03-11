@@ -92,8 +92,7 @@ class LBFGS[T](convergenceCheck: ConvergenceCheck[T], m: Int)(
     val alpha =
       search.minimize(ff, if (state.iter == 0.0) 1.0 / norm(dir) else 1.0)
 
-    if (alpha * norm(grad) < 1e-10)
-      throw new StepSizeUnderflow
+    if (alpha * norm(grad) < 1e-10) throw new StepSizeUnderflow
     alpha
   }
 }

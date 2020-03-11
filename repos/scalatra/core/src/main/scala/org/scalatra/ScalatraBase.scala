@@ -392,8 +392,9 @@ trait ScalatraBase
     * $ - Call the render pipeline on the result.
     */
   protected def renderResponse(actionResult: Any): Unit = {
-    if (contentType == null)
-      contentTypeInferrer.lift(actionResult) foreach { contentType = _ }
+    if (contentType == null) contentTypeInferrer.lift(actionResult) foreach {
+      contentType = _
+    }
 
     renderResponseBody(actionResult)
   }

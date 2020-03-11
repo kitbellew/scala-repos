@@ -125,8 +125,7 @@ object Closable {
         try {
           val ref = refq.remove()
           val closable = refs.synchronized(refs.remove(ref))
-          if (closable != null)
-            closable.close()
+          if (closable != null) closable.close()
           ref.clear()
         } catch {
           case _: InterruptedException =>

@@ -68,8 +68,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
 
       if (!methodDef.name.isInstanceOf[Ident])
         reportError(s"Static method ${methodDef.name} cannot be exported")
-      else
-        checkMethodDef(methodDef, classDef)
+      else checkMethodDef(methodDef, classDef)
     }
   }
 
@@ -133,8 +132,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
         if (classDef.kind == ClassKind.HijackedClass) "Hijacked classes"
         else "Interfaces"
 
-      if (classDef.fields.nonEmpty)
-        reportError(s"$kindStr may not have fields")
+      if (classDef.fields.nonEmpty) reportError(s"$kindStr may not have fields")
 
       if (classDef.exportedMembers.nonEmpty || classDef.classExports.nonEmpty)
         reportError(s"$kindStr may not have exports")
@@ -166,8 +164,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
           reportError(s"FieldDef '$name' cannot have a string literal name")
     }
 
-    if (tpe == NoType)
-      reportError(s"FieldDef cannot have type NoType")
+    if (tpe == NoType) reportError(s"FieldDef cannot have type NoType")
   }
 
   private def checkMethodDef(
@@ -183,8 +180,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
     }
 
     for (ParamDef(name, tpe, _, rest) <- params) {
-      if (tpe == NoType)
-        reportError(s"Parameter $name has type NoType")
+      if (tpe == NoType) reportError(s"Parameter $name has type NoType")
       if (rest)
         reportError(s"Rest parameter $name is illegal in a Scala method")
     }
@@ -213,14 +209,11 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
     } else {
       // Concrete
       val thisType =
-        if (static) NoType
-        else ClassType(classDef.name.name)
+        if (static) NoType else ClassType(classDef.name.name)
       val bodyEnv =
         Env.fromSignature(thisType, params, resultType, isConstructor)
-      if (resultType == NoType)
-        typecheckStat(body, bodyEnv)
-      else
-        typecheckExpect(body, bodyEnv, resultType)
+      if (resultType == NoType) typecheckStat(body, bodyEnv)
+      else typecheckExpect(body, bodyEnv, resultType)
     }
   }
 
@@ -236,15 +229,13 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
       return
     }
 
-    if (static)
-      reportError("Exported method def cannot be static")
+    if (static) reportError("Exported method def cannot be static")
 
     if (name.contains("__") && name != Definitions.ExportedConstructorsName)
       reportError("Exported method def name cannot contain __")
 
     for (ParamDef(name, tpe, _, _) <- params) {
-      if (tpe == NoType)
-        reportError(s"Parameter $name has type NoType")
+      if (tpe == NoType) reportError(s"Parameter $name has type NoType")
       else if (tpe != AnyType)
         reportError(
           s"Parameter $name of exported method def has type $tpe, " +
@@ -253,8 +244,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
 
     if (params.nonEmpty) {
       for (ParamDef(name, _, _, rest) <- params.init) {
-        if (rest)
-          reportError(s"Non-last rest parameter $name is illegal")
+        if (rest) reportError(s"Non-last rest parameter $name is illegal")
       }
     }
 
@@ -268,8 +258,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
       }
 
       val thisType =
-        if (classDef.kind.isJSClass) AnyType
-        else ClassType(classDef.name.name)
+        if (classDef.kind.isJSClass) AnyType else ClassType(classDef.name.name)
 
       val bodyEnv = Env.fromSignature(thisType, params, resultType)
       typecheckExpect(body, bodyEnv, resultType)
@@ -313,8 +302,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
       typecheckStat(stat, prevEnv)
     }
 
-    for (arg <- superCall.args)
-      typecheckExprOrSpread(arg, preparedEnv)
+    for (arg <- superCall.args) typecheckExprOrSpread(arg, preparedEnv)
 
     val restEnv = preparedEnv.withThis(AnyType)
     typecheckStat(Block(restStats)(methodDef.pos), restEnv)
@@ -332,8 +320,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
     }
 
     val thisType =
-      if (classDef.kind.isJSClass) AnyType
-      else ClassType(classDef.name.name)
+      if (classDef.kind.isJSClass) AnyType else ClassType(classDef.name.name)
 
     if (getterBody != EmptyTree) {
       val getterBodyEnv = Env.fromSignature(thisType, Nil, AnyType)
@@ -365,8 +352,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
     }
 
     for (ParamDef(name, tpe, _, _) <- params) {
-      if (tpe == NoType)
-        reportError(s"Parameter $name has type NoType")
+      if (tpe == NoType) reportError(s"Parameter $name has type NoType")
       else if (tpe != AnyType)
         reportError(
           s"Parameter $name of exported constructor def has type " +
@@ -375,8 +361,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
 
     if (params.nonEmpty) {
       for (ParamDef(name, _, _, rest) <- params.init) {
-        if (rest)
-          reportError(s"Non-last rest parameter $name is illegal")
+        if (rest) reportError(s"Non-last rest parameter $name is illegal")
       }
     }
 
@@ -524,8 +509,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
 
   private def typecheckExpr(tree: Tree, env: Env): Type = {
     implicit val ctx = ErrorContext(tree)
-    if (tree.tpe == NoType)
-      reportError(s"Expression tree has type NoType")
+    if (tree.tpe == NoType) reportError(s"Expression tree has type NoType")
     typecheck(tree, env)
   }
 
@@ -626,8 +610,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
 
       case New(cls, ctor, args) =>
         val clazz = lookupClass(cls)
-        if (!clazz.kind.isClass)
-          reportError(s"new $cls which is not a class")
+        if (!clazz.kind.isClass) reportError(s"new $cls which is not a class")
         checkApplyGeneric(
           ctor.name,
           s"$cls.$ctor",
@@ -736,13 +719,11 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
         }
 
       case NewArray(tpe, lengths) =>
-        for (length <- lengths)
-          typecheckExpect(length, env, IntType)
+        for (length <- lengths) typecheckExpect(length, env, IntType)
 
       case ArrayValue(tpe, elems) =>
         val elemType = arrayElemType(tpe)
-        for (elem <- elems)
-          typecheckExpect(elem, env, elemType)
+        for (elem <- elems) typecheckExpect(elem, env, elemType)
 
       case ArrayLength(array) =>
         val arrayType = typecheckExpr(array, env)
@@ -776,8 +757,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
 
       case JSNew(ctor, args) =>
         typecheckExpr(ctor, env)
-        for (arg <- args)
-          typecheckExprOrSpread(arg, env)
+        for (arg <- args) typecheckExprOrSpread(arg, env)
 
       case JSDotSelect(qualifier, item) =>
         typecheckExpr(qualifier, env)
@@ -788,19 +768,16 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
 
       case JSFunctionApply(fun, args) =>
         typecheckExpr(fun, env)
-        for (arg <- args)
-          typecheckExprOrSpread(arg, env)
+        for (arg <- args) typecheckExprOrSpread(arg, env)
 
       case JSDotMethodApply(receiver, method, args) =>
         typecheckExpr(receiver, env)
-        for (arg <- args)
-          typecheckExprOrSpread(arg, env)
+        for (arg <- args) typecheckExprOrSpread(arg, env)
 
       case JSBracketMethodApply(receiver, method, args) =>
         typecheckExpr(receiver, env)
         typecheckExpr(method, env)
-        for (arg <- args)
-          typecheckExprOrSpread(arg, env)
+        for (arg <- args) typecheckExprOrSpread(arg, env)
 
       case JSSuperBracketSelect(cls, qualifier, item) =>
         if (!lookupClass(cls).kind.isJSClass)
@@ -813,8 +790,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
           reportError(s"JS class type expected but $cls found")
         typecheckExpr(receiver, env)
         typecheckExpr(method, env)
-        for (arg <- args)
-          typecheckExprOrSpread(arg, env)
+        for (arg <- args) typecheckExprOrSpread(arg, env)
 
       case LoadJSConstructor(cls) =>
         val clazz = lookupClass(cls)
@@ -824,8 +800,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
           case ClassKind.RawJSType     => clazz.jsName.isDefined
           case _                       => false
         }
-        if (!valid)
-          reportError(s"JS class type expected but $cls found")
+        if (!valid) reportError(s"JS class type expected but $cls found")
 
       case LoadJSModule(cls) =>
         val clazz = lookupClass(cls)
@@ -840,12 +815,10 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
         typecheckExpr(rhs, env)
 
       case JSArrayConstr(items) =>
-        for (item <- items)
-          typecheckExprOrSpread(item, env)
+        for (item <- items) typecheckExprOrSpread(item, env)
 
       case JSObjectConstr(fields) =>
-        for ((_, value) <- fields)
-          typecheckExpr(value, env)
+        for ((_, value) <- fields) typecheckExpr(value, env)
 
       case JSLinkingInfo() =>
       // Literals
@@ -877,19 +850,15 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
         for ((
                ParamDef(name, ctpe, mutable, rest),
                value) <- captureParams zip captureValues) {
-          if (mutable)
-            reportError(s"Capture parameter $name cannot be mutable")
+          if (mutable) reportError(s"Capture parameter $name cannot be mutable")
           if (rest)
             reportError(s"Capture parameter $name cannot be a rest parameter")
-          if (ctpe == NoType)
-            reportError(s"Parameter $name has type NoType")
-          else
-            typecheckExpect(value, env, ctpe)
+          if (ctpe == NoType) reportError(s"Parameter $name has type NoType")
+          else typecheckExpect(value, env, ctpe)
         }
 
         for (ParamDef(name, ptpe, mutable, rest) <- params) {
-          if (ptpe == NoType)
-            reportError(s"Parameter $name has type NoType")
+          if (ptpe == NoType) reportError(s"Parameter $name has type NoType")
           else if (ptpe != AnyType)
             reportError(
               s"Closure parameter $name has type $ptpe instead of any")

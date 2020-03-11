@@ -61,10 +61,8 @@ object eig extends UFunc {
 
       // Allocate the workspace
       val lwork: Int =
-        if (info.`val` != 0)
-          scala.math.max(1, 4 * n)
-        else
-          scala.math.max(1, worksize(0).toInt)
+        if (info.`val` != 0) scala.math.max(1, 4 * n)
+        else scala.math.max(1, worksize(0).toInt)
 
       val work = Array.ofDim[Double](lwork)
 
@@ -90,8 +88,7 @@ object eig extends UFunc {
 
       if (info.`val` > 0)
         throw new NotConvergedException(NotConvergedException.Iterations)
-      else if (info.`val` < 0)
-        throw new IllegalArgumentException()
+      else if (info.`val` < 0) throw new IllegalArgumentException()
 
       Eig(Wr, Wi, Vr)
     }

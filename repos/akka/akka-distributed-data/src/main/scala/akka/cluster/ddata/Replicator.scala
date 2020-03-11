@@ -631,8 +631,8 @@ object Replicator {
           c: ReplicatedData,
           p: Map[UniqueAddress, PruningState]): ReplicatedData = p.foldLeft(c) {
         case (
-            c: RemovedNodePruning,
-            (removed, PruningState(_, PruningPerformed))) ⇒
+              c: RemovedNodePruning,
+              (removed, PruningState(_, PruningPerformed))) ⇒
           if (c.needPruningFrom(removed)) c.pruningCleanup(removed) else c
         case (c, _) ⇒ c
       }
@@ -645,8 +645,7 @@ object Replicator {
             changed = (newPruningState ne pruningState) || changed
             (removed, newPruningState)
         }
-        if (changed) copy(pruning = newRemovedNodePruning)
-        else this
+        if (changed) copy(pruning = newRemovedNodePruning) else this
       }
     }
 
@@ -1029,8 +1028,7 @@ final class Replicator(settings: ReplicatorSettings)
           newData)
         val envelope = DataEnvelope(pruningCleanupTombstoned(newData))
         setData(key.id, envelope)
-        if (isLocalUpdate(writeConsistency))
-          sender() ! UpdateSuccess(key, req)
+        if (isLocalUpdate(writeConsistency)) sender() ! UpdateSuccess(key, req)
         else
           context.actorOf(
             WriteAggregator
@@ -1098,8 +1096,7 @@ final class Replicator(settings: ReplicatorSettings)
         sender() ! DataDeleted(key)
       case _ ⇒
         setData(key.id, DeletedEnvelope)
-        if (isLocalUpdate(consistency))
-          sender() ! DeleteSuccess(key)
+        if (isLocalUpdate(consistency)) sender() ! DeleteSuccess(key)
         else
           context.actorOf(
             WriteAggregator
@@ -1113,8 +1110,7 @@ final class Replicator(settings: ReplicatorSettings)
       if (subscribers.contains(key) && !changed.contains(key)) {
         val oldDigest = getDigest(key)
         val dig = digest(envelope)
-        if (dig != oldDigest)
-          changed += key // notify subscribers, later
+        if (dig != oldDigest) changed += key // notify subscribers, later
         dig
       } else if (envelope.data == DeletedData) DeletedDigest
       else LazyDigest
@@ -1158,8 +1154,7 @@ final class Replicator(settings: ReplicatorSettings)
 
     if (subscribers.nonEmpty) {
       for (key ← changed; if subscribers.contains(key);
-           subs ← subscribers.get(key))
-        notify(key, subs)
+           subs ← subscribers.get(key)) notify(key, subs)
     }
 
     // Changed event is sent to new subscribers even though the key has not changed,
@@ -1189,8 +1184,7 @@ final class Replicator(settings: ReplicatorSettings)
     } else {
       val totChunks = dataEntries.size / maxDeltaElements
       for (_ ← 1 to math.min(totChunks, 10)) {
-        if (totChunks == statusTotChunks)
-          statusCount += 1
+        if (totChunks == statusTotChunks) statusCount += 1
         else {
           statusCount = ThreadLocalRandom.current.nextInt(0, totChunks)
           statusTotChunks = totChunks
@@ -1302,8 +1296,7 @@ final class Replicator(settings: ReplicatorSettings)
   def receiveUnsubscribe(key: KeyR, subscriber: ActorRef): Unit = {
     subscribers.removeBinding(key.id, subscriber)
     newSubscribers.removeBinding(key.id, subscriber)
-    if (!hasSubscriber(subscriber))
-      context.unwatch(subscriber)
+    if (!hasSubscriber(subscriber)) context.unwatch(subscriber)
     if (!subscribers.contains(key.id) && !newSubscribers.contains(key.id))
       subscriptionKeys -= key.id
   }
@@ -1325,12 +1318,10 @@ final class Replicator(settings: ReplicatorSettings)
   }
 
   def receiveMemberUp(m: Member): Unit =
-    if (matchingRole(m) && m.address != selfAddress)
-      nodes += m.address
+    if (matchingRole(m) && m.address != selfAddress) nodes += m.address
 
   def receiveMemberRemoved(m: Member): Unit = {
-    if (m.address == selfAddress)
-      context stop self
+    if (m.address == selfAddress) context stop self
     else if (matchingRole(m)) {
       nodes -= m.address
       removedNodes =
@@ -1352,8 +1343,7 @@ final class Replicator(settings: ReplicatorSettings)
 
   def receiveClockTick(): Unit = {
     val now = System.nanoTime()
-    if (unreachable.isEmpty)
-      allReachableClockTime += (now - previousClockTime)
+    if (unreachable.isEmpty) allReachableClockTime += (now - previousClockTime)
     previousClockTime = now
   }
 
@@ -1402,8 +1392,8 @@ final class Replicator(settings: ReplicatorSettings)
     // perform pruning when all seen Init
     dataEntries.foreach {
       case (
-          key,
-          (envelope @ DataEnvelope(data: RemovedNodePruning, pruning), _)) ⇒
+            key,
+            (envelope @ DataEnvelope(data: RemovedNodePruning, pruning), _)) ⇒
         pruning.foreach {
           case (removed, PruningState(owner, PruningInitialized(seen)))
               if owner == selfUniqueAddress
@@ -1428,8 +1418,8 @@ final class Replicator(settings: ReplicatorSettings)
     def allPruningPerformed(removed: UniqueAddress): Boolean = {
       dataEntries forall {
         case (
-            key,
-            (envelope @ DataEnvelope(data: RemovedNodePruning, pruning), _)) ⇒
+              key,
+              (envelope @ DataEnvelope(data: RemovedNodePruning, pruning), _)) ⇒
           pruning.get(removed) match {
             case Some(PruningState(_, PruningInitialized(_))) ⇒ false
             case _ ⇒ true
@@ -1448,8 +1438,8 @@ final class Replicator(settings: ReplicatorSettings)
         tombstoneNodes += removed
         dataEntries.foreach {
           case (
-              key,
-              (envelope @ DataEnvelope(data: RemovedNodePruning, _), _)) ⇒
+                key,
+                (envelope @ DataEnvelope(data: RemovedNodePruning, _), _)) ⇒
             setData(key, pruningCleanupTombstoned(removed, envelope))
           case _ ⇒ // deleted, or pruning not needed
         }
@@ -1470,8 +1460,7 @@ final class Replicator(settings: ReplicatorSettings)
       envelope.copy(
         data = pruningCleanuped,
         pruning = envelope.pruning - removed)
-    else
-      envelope
+    else envelope
   }
 
   def pruningCleanupTombstoned(data: ReplicatedData): ReplicatedData =
@@ -1527,8 +1516,7 @@ private[akka] abstract class ReadWriteAggregator extends Actor {
 
   lazy val (primaryNodes, secondaryNodes) = {
     val primarySize = nodes.size - doneWhenRemainingSize
-    if (primarySize >= nodes.size)
-      (nodes, Set.empty[Address])
+    if (primarySize >= nodes.size) (nodes, Set.empty[Address])
     else {
       val (p, s) =
         scala.util.Random.shuffle(nodes.toVector).splitAt(primarySize)
@@ -1596,8 +1584,7 @@ private[akka] class WriteAggregator(
   override def preStart(): Unit = {
     primaryNodes.foreach { replica(_) ! writeMsg }
 
-    if (remaining.size == doneWhenRemainingSize)
-      reply(ok = true)
+    if (remaining.size == doneWhenRemainingSize) reply(ok = true)
     else if (doneWhenRemainingSize < 0 || remaining.size < doneWhenRemainingSize)
       reply(ok = false)
   }
@@ -1605,8 +1592,7 @@ private[akka] class WriteAggregator(
   def receive = {
     case WriteAck ⇒
       remaining -= senderAddress()
-      if (remaining.size == doneWhenRemainingSize)
-        reply(ok = true)
+      if (remaining.size == doneWhenRemainingSize) reply(ok = true)
     case SendToSecondary ⇒
       secondaryNodes.foreach { replica(_) ! writeMsg }
     case ReceiveTimeout ⇒ reply(ok = false)
@@ -1617,12 +1603,10 @@ private[akka] class WriteAggregator(
   def reply(ok: Boolean): Unit = {
     if (ok && envelope.data == DeletedData)
       replyTo.tell(DeleteSuccess(key), context.parent)
-    else if (ok)
-      replyTo.tell(UpdateSuccess(key, req), context.parent)
+    else if (ok) replyTo.tell(UpdateSuccess(key, req), context.parent)
     else if (envelope.data == DeletedData)
       replyTo.tell(ReplicationDeleteFailure(key), context.parent)
-    else
-      replyTo.tell(UpdateTimeout(key, req), context.parent)
+    else replyTo.tell(UpdateTimeout(key, req), context.parent)
     context.stop(self)
   }
 }
@@ -1679,8 +1663,7 @@ private[akka] class ReadAggregator(
   override def preStart(): Unit = {
     primaryNodes.foreach { replica(_) ! readMsg }
 
-    if (remaining.size == doneWhenRemainingSize)
-      reply(ok = true)
+    if (remaining.size == doneWhenRemainingSize) reply(ok = true)
     else if (doneWhenRemainingSize < 0 || remaining.size < doneWhenRemainingSize)
       reply(ok = false)
   }
@@ -1694,8 +1677,7 @@ private[akka] class ReadAggregator(
         case (None, None) ⇒ None
       }
       remaining -= sender().path.address
-      if (remaining.size == doneWhenRemainingSize)
-        reply(ok = true)
+      if (remaining.size == doneWhenRemainingSize) reply(ok = true)
     case SendToSecondary ⇒
       secondaryNodes.foreach { replica(_) ! readMsg }
     case ReceiveTimeout ⇒ reply(ok = false)

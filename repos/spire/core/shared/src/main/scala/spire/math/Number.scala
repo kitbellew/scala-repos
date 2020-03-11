@@ -43,14 +43,12 @@ object Number extends NumberInstances {
   implicit def apply(n: Float): Number =
     if (java.lang.Float.isNaN(n) || java.lang.Float.isInfinite(n))
       throw new IllegalArgumentException(n.toString)
-    else
-      FloatNumber(n)
+    else FloatNumber(n)
 
   implicit def apply(n: Double): Number =
     if (java.lang.Double.isNaN(n) || java.lang.Double.isInfinite(n))
       throw new IllegalArgumentException(n.toString)
-    else
-      FloatNumber(n)
+    else FloatNumber(n)
 
   def apply(s: String): Number =
     try { Number(SafeLong(s)) }
@@ -278,16 +276,12 @@ private[math] case class IntNumber(n: SafeLong) extends Number { lhs =>
   }
 
   def sqrt: Number =
-    if (withinDouble)
-      Number(Math.sqrt(n.toDouble))
-    else
-      Number(n.toBigDecimal.sqrt)
+    if (withinDouble) Number(Math.sqrt(n.toDouble))
+    else Number(n.toBigDecimal.sqrt)
 
   def nroot(k: Int): Number =
-    if (withinDouble)
-      Number(Math.pow(n.toDouble, 1.0 / k))
-    else
-      Number(n.toBigDecimal.nroot(k))
+    if (withinDouble) Number(Math.pow(n.toDouble, 1.0 / k))
+    else Number(n.toBigDecimal.nroot(k))
 
   def floor: Number = this
   def ceil: Number = this

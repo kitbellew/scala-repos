@@ -108,16 +108,14 @@ abstract class CharArrayReader extends CharArrayReaderData { self =>
 
   /** replace CR;LF by LF */
   private def skipCR() =
-    if (ch == CR && charOffset < buf.length)
-      buf(charOffset) match {
-        case LF =>
-          charOffset += 1
-          ch = LF
-        case '\\' =>
-          if (lookaheadReader.getu == LF)
-            potentialUnicode()
-        case _ =>
-      }
+    if (ch == CR && charOffset < buf.length) buf(charOffset) match {
+      case LF =>
+        charOffset += 1
+        ch = LF
+      case '\\' =>
+        if (lookaheadReader.getu == LF) potentialUnicode()
+      case _ =>
+    }
 
   /** Handle line ends */
   private def potentialLineEnd() {

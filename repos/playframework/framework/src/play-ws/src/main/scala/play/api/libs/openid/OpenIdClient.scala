@@ -221,8 +221,7 @@ class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
   private def axParameters(
       axRequired: Seq[(String, String)],
       axOptional: Seq[(String, String)]): Seq[(String, String)] = {
-    if (axRequired.isEmpty && axOptional.isEmpty)
-      Nil
+    if (axRequired.isEmpty && axOptional.isEmpty) Nil
     else {
       val axRequiredParams =
         if (axRequired.isEmpty) Nil

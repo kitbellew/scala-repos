@@ -215,8 +215,7 @@ class KafkaServer(
         throw new IllegalStateException(
           "Kafka server is still shutting down, cannot re-start!")
 
-      if (startupComplete.get)
-        return
+      if (startupComplete.get) return
 
       val canStartup = isStartingUp.compareAndSet(false, true)
       if (canStartup) {
@@ -325,8 +324,7 @@ class KafkaServer(
                   endpoint.host,
                   socketServer.boundPort(protocol),
                   endpoint.protocolType))
-            else
-              (protocol, endpoint)
+            else (protocol, endpoint)
         }
         kafkaHealthcheck = new KafkaHealthcheck(
           config.brokerId,
@@ -363,8 +361,7 @@ class KafkaServer(
     val chroot = {
       if (config.zkConnect.indexOf("/") > 0)
         config.zkConnect.substring(config.zkConnect.indexOf("/"))
-      else
-        ""
+      else ""
     }
 
     val secureAclsEnabled =
@@ -492,8 +489,7 @@ class KafkaServer(
 
               if (!networkClient.blockingReady(
                     node(prevController),
-                    socketTimeoutMs))
-                throw socketTimeoutException
+                    socketTimeoutMs)) throw socketTimeoutException
 
               // send the controlled shutdown request
               val requestHeader =
@@ -564,8 +560,7 @@ class KafkaServer(
                     .equals(broker)) {
                 // if this is the first attempt or if the controller has changed, create a channel to the most recent
                 // controller
-                if (channel != null)
-                  channel.disconnect()
+                if (channel != null) channel.disconnect()
 
                 channel = new BlockingChannel(
                   broker
@@ -676,26 +671,20 @@ class KafkaServer(
       if (canShutdown && shutdownLatch.getCount > 0) {
         CoreUtils.swallow(controlledShutdown())
         brokerState.newState(BrokerShuttingDown)
-        if (socketServer != null)
-          CoreUtils.swallow(socketServer.shutdown())
+        if (socketServer != null) CoreUtils.swallow(socketServer.shutdown())
         if (requestHandlerPool != null)
           CoreUtils.swallow(requestHandlerPool.shutdown())
         CoreUtils.swallow(kafkaScheduler.shutdown())
-        if (apis != null)
-          CoreUtils.swallow(apis.close())
+        if (apis != null) CoreUtils.swallow(apis.close())
         CoreUtils.swallow(authorizer.foreach(_.close()))
-        if (replicaManager != null)
-          CoreUtils.swallow(replicaManager.shutdown())
-        if (logManager != null)
-          CoreUtils.swallow(logManager.shutdown())
+        if (replicaManager != null) CoreUtils.swallow(replicaManager.shutdown())
+        if (logManager != null) CoreUtils.swallow(logManager.shutdown())
         if (consumerCoordinator != null)
           CoreUtils.swallow(consumerCoordinator.shutdown())
         if (kafkaController != null)
           CoreUtils.swallow(kafkaController.shutdown())
-        if (zkUtils != null)
-          CoreUtils.swallow(zkUtils.close())
-        if (metrics != null)
-          CoreUtils.swallow(metrics.close())
+        if (zkUtils != null) CoreUtils.swallow(zkUtils.close())
+        if (metrics != null) CoreUtils.swallow(metrics.close())
 
         brokerState.newState(NotRunning)
 
@@ -801,8 +790,7 @@ class KafkaServer(
 
     for (logDir <- config.logDirs) {
       val brokerMetadataOpt = brokerMetadataCheckpoints(logDir).read()
-      if (brokerMetadataOpt.isEmpty)
-        logDirsWithoutMetaProps ++= List(logDir)
+      if (brokerMetadataOpt.isEmpty) logDirsWithoutMetaProps ++= List(logDir)
     }
 
     for (logDir <- logDirsWithoutMetaProps) {

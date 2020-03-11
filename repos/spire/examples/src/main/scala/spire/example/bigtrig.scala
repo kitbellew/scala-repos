@@ -104,10 +104,8 @@ object TrigTest {
       if (check) {
         val want = new Apfloat(s, i)
         val d =
-          if (seen.compareTo(want) < 0)
-            want.subtract(seen)
-          else
-            seen.subtract(want)
+          if (seen.compareTo(want) < 0) want.subtract(seen)
+          else seen.subtract(want)
         val ulp = ApfloatMath.pow(new Apfloat(10, i), -i)
         if (d.compareTo(ulp) > 0) {
           println(s"failed on i=$i:")

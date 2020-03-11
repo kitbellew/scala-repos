@@ -29,8 +29,7 @@ trait StructuredTypeStrings extends DestructureTypes {
       rdelim: String,
       labels: Boolean) {
     def join(elems: String*): String = (
-      if (elems.isEmpty) ""
-      else elems.mkString(ldelim, mdelim, rdelim)
+      if (elems.isEmpty) "" else elems.mkString(ldelim, mdelim, rdelim)
     )
   }
   val NoGrouping = Grouping("", "", "", labels = false)
@@ -55,8 +54,7 @@ trait StructuredTypeStrings extends DestructureTypes {
 
     val try1 = str(level)(
       name + grouping.join(nodes map (_.show(0, grouping.labels)): _*))
-    if (try1.length < threshold) try1
-    else block(level, grouping)(name, nodes)
+    if (try1.length < threshold) try1 else block(level, grouping)(name, nodes)
   }
   private def shortClass(x: Any) = {
     if (settings.debug) {
@@ -212,15 +210,13 @@ trait TypeStrings {
   def anyClass(x: Any): JClass = if (x == null) null else x.getClass
 
   private def brackets(tps: String*): String =
-    if (tps.isEmpty) ""
-    else tps.mkString("[", ", ", "]")
+    if (tps.isEmpty) "" else tps.mkString("[", ", ", "]")
 
   private def tvarString(tvar: TypeVariable[_]): String =
     tvarString(tvar.getBounds.toList)
   private def tvarString(bounds: List[AnyRef]): String = {
     val xs = bounds filterNot (_ == ObjectClass) collect { case x: JClass => x }
-    if (xs.isEmpty) "_"
-    else scalaName(xs.head)
+    if (xs.isEmpty) "_" else scalaName(xs.head)
   }
   private def tparamString(clazz: JClass): String = {
     brackets(clazz.getTypeParameters map tvarString: _*)

@@ -185,10 +185,8 @@ object ByteString {
       ByteIterator.ByteArrayIterator(bytes, startIndex, startIndex + length)
 
     private def checkRangeConvert(index: Int): Int = {
-      if (0 <= index && length > index)
-        index + startIndex
-      else
-        throw new IndexOutOfBoundsException(index.toString)
+      if (0 <= index && length > index) index + startIndex
+      else throw new IndexOutOfBoundsException(index.toString)
     }
 
     private[akka] def writeToOutputStream(os: ObjectOutputStream): Unit = {
@@ -205,8 +203,7 @@ object ByteString {
 
     def asByteBuffer: ByteBuffer = {
       val buffer = ByteBuffer.wrap(bytes, startIndex, length).asReadOnlyBuffer
-      if (buffer.remaining < bytes.length) buffer.slice
-      else buffer
+      if (buffer.remaining < bytes.length) buffer.slice else buffer
     }
 
     def asByteBuffers: scala.collection.immutable.Iterable[ByteBuffer] =
@@ -276,10 +273,7 @@ object ByteString {
 
     // 0: both empty, 1: 2nd empty, 2: 1st empty, 3: neither empty
     def compare(b1: ByteString, b2: ByteString): Int =
-      if (b1.isEmpty)
-        if (b2.isEmpty) 0 else 2
-      else if (b2.isEmpty) 1
-      else 3
+      if (b1.isEmpty) if (b2.isEmpty) 0 else 2 else if (b2.isEmpty) 1 else 3
 
     val SerializationIdentity = 2.toByte
 
@@ -460,8 +454,7 @@ sealed abstract class ByteString
     val maxSize = 100
     if (size > maxSize)
       take(maxSize).toString + s"... and [${size - maxSize}] more"
-    else
-      super.toString
+    else super.toString
   }
 
   /**
@@ -967,10 +960,8 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
     else {
       clearTemp()
       val bytestrings = _builder.result
-      if (bytestrings.size == 1)
-        bytestrings.head
-      else
-        ByteStrings(bytestrings, _length)
+      if (bytestrings.size == 1) bytestrings.head
+      else ByteStrings(bytestrings, _length)
     }
 
   /**

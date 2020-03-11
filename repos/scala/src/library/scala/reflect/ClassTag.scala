@@ -127,8 +127,7 @@ trait ClassTag[T]
   override def toString = {
     def prettyprint(clazz: jClass[_]): String =
       if (clazz.isArray) s"Array[${prettyprint(arrayElementClass(clazz))}]"
-      else
-        clazz.getName
+      else clazz.getName
     prettyprint(runtimeClass)
   }
 }

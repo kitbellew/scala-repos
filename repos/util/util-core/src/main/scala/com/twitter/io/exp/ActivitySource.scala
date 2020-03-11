@@ -101,8 +101,7 @@ class CachingActivitySource[T](underlying: ActivitySource[T])
     var ref = refq.poll()
     while (ref != null) {
       val key = reverse.remove(ref)
-      if (key != null)
-        forward.remove(key)
+      if (key != null) forward.remove(key)
 
       ref = refq.poll()
     }

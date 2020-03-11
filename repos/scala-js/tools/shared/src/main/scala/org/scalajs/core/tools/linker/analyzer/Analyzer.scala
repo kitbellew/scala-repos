@@ -71,8 +71,7 @@ private final class Analyzer(
       reachSymbolRequirement(symbolRequirements)
 
       // Reach all user stuff
-      for (classInfo <- _classInfos.values)
-        classInfo.reachExports()
+      for (classInfo <- _classInfos.values) classInfo.reachExports()
 
       // Reach additional data, based on reflection methods used
       reachDataThroughReflection()
@@ -84,8 +83,7 @@ private final class Analyzer(
       _errors += MissingJavaLangObjectClass(fromAnalyzer)
     } else {
       try {
-        for (classInfo <- _classInfos.values.toList)
-          classInfo.linkClasses()
+        for (classInfo <- _classInfos.values.toList) classInfo.linkClasses()
       } catch {
         case CyclicDependencyException(chain) =>
           _errors += CycleInInheritanceChain(chain, fromAnalyzer)
@@ -99,16 +97,14 @@ private final class Analyzer(
 
     def withClass(className: String)(body: ClassInfo => Unit) = {
       val clazz = lookupClass(className)
-      if (!clazz.nonExistent || !optional)
-        body(clazz)
+      if (!clazz.nonExistent || !optional) body(clazz)
     }
 
     def withMethod(className: String, methodName: String)(
         body: ClassInfo => Unit) = {
       withClass(className) { clazz =>
         val doReach = !optional || clazz.tryLookupMethod(methodName).isDefined
-        if (doReach)
-          body(clazz)
+        if (doReach) body(clazz)
       }
     }
 
@@ -203,8 +199,7 @@ private final class Analyzer(
       *  @throws CyclicDependencyException if this class is already linking
       */
     def linkClasses(): Unit = {
-      if (_linking)
-        throw CyclicDependencyException(this :: Nil)
+      if (_linking) throw CyclicDependencyException(this :: Nil)
 
       if (!_linked) {
         _linking = true
@@ -219,8 +214,7 @@ private final class Analyzer(
     }
 
     private[this] def linkClassesImpl(): Unit = {
-      for (superCls <- data.superClass)
-        superClass = lookupClass(superCls)
+      for (superCls <- data.superClass) superClass = lookupClass(superCls)
 
       val parents = data.superClass ++: data.interfaces
 
@@ -230,13 +224,11 @@ private final class Analyzer(
         cls.ancestors
       }.distinct
 
-      for (ancestor <- ancestors)
-        ancestor.descendants += this
+      for (ancestor <- ancestors) ancestor.descendants += this
     }
 
     lazy val ancestorCount: Int =
-      if (superClass == null) 0
-      else superClass.ancestorCount + 1
+      if (superClass == null) 0 else superClass.ancestorCount + 1
 
     lazy val descendentClasses = descendants.filter(_.isScalaClass)
 
@@ -512,8 +504,8 @@ private final class Analyzer(
         case (ClassType(leftCls), ClassType(rightCls)) =>
           classIsMoreSpecific(leftCls, rightCls)
         case (
-            ArrayType(leftBase, leftDepth),
-            ArrayType(rightBase, rightDepth)) =>
+              ArrayType(leftBase, leftDepth),
+              ArrayType(rightBase, rightDepth)) =>
           leftDepth == rightDepth && classIsMoreSpecific(leftBase, rightBase)
         case (ArrayType(_, _), ClassType(ObjectClass)) =>
           true
@@ -537,8 +529,7 @@ private final class Analyzer(
           (if (returnsChar) Map(BoxedCharacterClass -> List("init___C"))
            else Map.empty),
         instantiatedClasses =
-          (if (returnsChar) List(BoxedCharacterClass)
-           else Nil)
+          (if (returnsChar) List(BoxedCharacterClass) else Nil)
       )
       val m = new MethodInfo(this, syntheticInfo)
       m.syntheticKind = MethodSyntheticKind.ReflectiveProxy(targetName)
@@ -566,16 +557,12 @@ private final class Analyzer(
       implicit val from = FromExports
 
       // Myself
-      if (isExported) {
-        if (isStaticModule) accessModule()
-        else instantiated()
-      }
+      if (isExported) { if (isStaticModule) accessModule() else instantiated() }
 
       // My methods
       if (!isJSClass) {
         for (methodInfo <- methodInfos.values) {
-          if (methodInfo.isExported)
-            callMethod(methodInfo.encodedName)
+          if (methodInfo.isExported) callMethod(methodInfo.encodedName)
         }
       }
     }
@@ -585,8 +572,7 @@ private final class Analyzer(
       else if (!isModuleAccessed) {
         isModuleAccessed = true
         instantiated()
-        if (isScalaClass)
-          callMethod("init___", statically = true)
+        if (isScalaClass) callMethod("init___", statically = true)
       }
     }
 
@@ -606,12 +592,10 @@ private final class Analyzer(
 
           subclassInstantiated()
 
-          if (isJSClass)
-            superClass.instantiated()
+          if (isJSClass) superClass.instantiated()
 
           for (methodInfo <- methodInfos.values) {
-            if (methodInfo.isExported)
-              methodInfo.reach(this)(FromExports)
+            if (methodInfo.isExported) methodInfo.reach(this)(FromExports)
           }
         }
       }
@@ -662,8 +646,7 @@ private final class Analyzer(
         for (descendentClass <- descendentClasses) {
           if (descendentClass.isInstantiated)
             descendentClass.delayedCallMethod(methodName)
-          else
-            descendentClass.delayedCalls += ((methodName, from))
+          else descendentClass.delayedCalls += ((methodName, from))
         }
       }
     }
@@ -796,8 +779,7 @@ private final class Analyzer(
           }
         } else {
           val classInfo = lookupClass(className)
-          for (methodName <- methods)
-            classInfo.callMethod(methodName)
+          for (methodName <- methods) classInfo.callMethod(methodName)
         }
       }
 
@@ -814,8 +796,7 @@ private final class Analyzer(
       while (staticMethodsCalledIterator.hasNext) {
         val (className, methods) = staticMethodsCalledIterator.next()
         val classInfo = lookupClass(className)
-        for (methodName <- methods)
-          classInfo.callStaticMethod(methodName)
+        for (methodName <- methods) classInfo.callStaticMethod(methodName)
       }
     }
   }

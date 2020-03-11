@@ -132,8 +132,7 @@ class FakePsiMethod(
   override def getIcon(flags: Int): Icon = navElement match {
     case t: ScTypedDefinition =>
       val context = t.nameContext
-      if (context != null) context.getIcon(flags)
-      else super.getIcon(flags)
+      if (context != null) context.getIcon(flags) else super.getIcon(flags)
     case _ => super.getIcon(flags)
   }
 

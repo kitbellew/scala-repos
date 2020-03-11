@@ -146,8 +146,7 @@ trait Parsers { self: Quasiquotes =>
           val c = CasePlaceholder(ident())
           while (in.token == SEMI) in.nextToken()
           c
-        } else
-          super.caseClause()
+        } else super.caseClause()
 
       override def caseBlock(): Tree = super.caseBlock() match {
         case Block(Nil, expr) => expr
@@ -248,10 +247,7 @@ trait Parsers { self: Quasiquotes =>
 
   object TypeParser extends Parser {
     def entryPoint = { parser =>
-      if (parser.in.token == EOF)
-        TypeTree()
-      else
-        parser.typ()
+      if (parser.in.token == EOF) TypeTree() else parser.typ()
     }
   }
 

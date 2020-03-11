@@ -232,11 +232,9 @@ class HeapBalancerTest
     import ctx._
 
     for (_ <- 0 until N) b()
-    for (f <- factories)
-      f.setStatus(Status.Closed)
+    for (f <- factories) f.setStatus(Status.Closed)
     for (_ <- 0 until 100 * N) b()
-    for (f <- factories)
-      assert(f.load == 101)
+    for (f <- factories) assert(f.load == 101)
   }
 
   test("balance somewhat evenly between two non-loaded hosts") {
@@ -269,8 +267,7 @@ class HeapBalancerTest
     import ctx._
 
     for (_ <- 0 until N) b()
-    for (f <- factories)
-      f.setStatus(Status.Closed)
+    for (f <- factories) f.setStatus(Status.Closed)
     for (_ <- 0 until 100 * N) b()
     val f0 = factories(0)
     f0.setStatus(Status.Open)

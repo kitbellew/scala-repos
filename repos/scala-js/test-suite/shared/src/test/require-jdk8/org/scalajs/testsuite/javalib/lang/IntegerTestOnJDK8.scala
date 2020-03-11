@@ -140,8 +140,7 @@ class IntegerTestOnJDK8 {
   }
 
   @Test def should_provide_hashCode_as_a_static_function(): Unit = {
-    for (i <- -256 to 256)
-      assertEquals(i.hashCode(), Integer.hashCode(i))
+    for (i <- -256 to 256) assertEquals(i.hashCode(), Integer.hashCode(i))
     assertEquals(Int.MaxValue.hashCode, Integer.hashCode(Int.MaxValue))
     assertEquals(Int.MinValue.hashCode, Integer.hashCode(Int.MinValue))
   }

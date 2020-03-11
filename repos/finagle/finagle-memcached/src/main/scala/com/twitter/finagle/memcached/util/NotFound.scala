@@ -21,8 +21,7 @@ private[twitter] class NotFound(val cutoff: Double) {
     val iter = from.iterator
     while (iter.hasNext) {
       val k = iter.next()
-      if (!toRemove.contains(k))
-        remaining += k
+      if (!toRemove.contains(k)) remaining += k
     }
     remaining.result()
   }
@@ -56,8 +55,7 @@ private[twitter] class NotFound(val cutoff: Double) {
       val iter = from.iterator
       while (iter.hasNext) {
         val kv = iter.next()
-        if (!toRemove.contains(kv._1))
-          remaining += kv
+        if (!toRemove.contains(kv._1)) remaining += kv
       }
       remaining.result()
     } else { from -- toRemove }

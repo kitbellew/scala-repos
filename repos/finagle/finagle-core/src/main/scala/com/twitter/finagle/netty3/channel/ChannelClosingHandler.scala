@@ -47,8 +47,7 @@ private[finagle] class ChannelClosingHandler
   }
 
   override def beforeAdd(ctx: ChannelHandlerContext) {
-    if (ctx.getPipeline.isAttached)
-      setChannel(ctx.getChannel)
+    if (ctx.getPipeline.isAttached) setChannel(ctx.getChannel)
   }
 
   def afterAdd(ctx: ChannelHandlerContext) { /*nop*/ }

@@ -231,8 +231,7 @@ final class Eval(
 
     def compile(phase: Phase): Unit = {
       globalPhase = phase
-      if (phase == null || phase == phase.next || reporter.hasErrors)
-        ()
+      if (phase == null || phase == phase.next || reporter.hasErrors) ()
       else {
         atPhase(phase) { phase.run }
         compile(phase.next)

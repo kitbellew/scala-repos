@@ -63,8 +63,7 @@ object ScalaReflectMacroExpansionParser {
           parsingState = PLACE
         }
       case PLACE =>
-        if (message != delim) reset()
-        else parsingState = DELIM
+        if (message != delim) reset() else parsingState = DELIM
       case DELIM =>
         val matcher = expansionRegex.matcher(message)
         if (!matcher.matches()) reset()

@@ -76,8 +76,7 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
             // doing this first allows self-referential vals, which to be a conservative
             // warner we will do because it's possible though difficult for it to be useful.
             uninitializedVals -= vd.symbol.accessedOrSelf
-            if (!vd.symbol.isLazy)
-              check(vd.rhs)
+            if (!vd.symbol.isLazy) check(vd.rhs)
           case _: MemberDef => // skip other member defs
           case t            => check(t) // constructor body statement
         }
@@ -452,8 +451,7 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
             genericClazz,
             clazz,
             Map.empty)
-        } else
-          stat1
+        } else stat1
       }
 //      if (specBuf.nonEmpty)
 //        println("residual specialized constructor statements: " + specBuf)
@@ -592,15 +590,13 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
         case Apply(Select(This(_), _), List()) =>
           // references to parameter accessor methods of own class become references to parameters
           // outer accessors become references to $outer parameter
-          if (clazz.isTrait)
-            super.transform(tree)
+          if (clazz.isTrait) super.transform(tree)
           else if (canBeSupplanted(tree.symbol))
             gen.mkAttributedIdent(
               parameter(tree.symbol.accessed)) setPos tree.pos
           else if (tree.symbol.outerSource == clazz)
             gen.mkAttributedIdent(parameterNamed(nme.OUTER)) setPos tree.pos
-          else
-            super.transform(tree)
+          else super.transform(tree)
 
         case Select(This(_), _) if canBeSupplanted(tree.symbol) =>
           // references to parameter accessor field of own class become references to parameters

@@ -31,10 +31,7 @@ import scala.util.Random
 case class CacheSize(lowerBound: Int, fuzz: Double = 0.2)
     extends java.io.Serializable {
   private def getFuzz(base: Int): Int =
-    if ((fuzz * base).toInt > 0)
-      Random.nextInt((fuzz * base).toInt)
-    else
-      0
+    if ((fuzz * base).toInt > 0) Random.nextInt((fuzz * base).toInt) else 0
 
   def size: Option[Int] =
     Some(lowerBound)

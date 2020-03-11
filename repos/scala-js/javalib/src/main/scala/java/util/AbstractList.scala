@@ -41,8 +41,7 @@ abstract class AbstractList[E] protected ()
 
   def addAll(index: Int, c: Collection[_ <: E]): Boolean = {
     checkIndexOnBounds(index)
-    for ((elem, i) <- c.iterator().zipWithIndex)
-      add(index + i, elem)
+    for ((elem, i) <- c.iterator().zipWithIndex) add(index + i, elem)
     c.nonEmpty
   }
 
@@ -61,12 +60,10 @@ abstract class AbstractList[E] protected ()
   }
 
   def subList(fromIndex: Int, toIndex: Int): List[E] = {
-    if (fromIndex < 0)
-      throw new IndexOutOfBoundsException(fromIndex.toString)
+    if (fromIndex < 0) throw new IndexOutOfBoundsException(fromIndex.toString)
     else if (toIndex > size)
       throw new IndexOutOfBoundsException(toIndex.toString)
-    else if (fromIndex > toIndex)
-      throw new IllegalArgumentException
+    else if (fromIndex > toIndex) throw new IllegalArgumentException
 
     self match {
       case _: RandomAccess =>

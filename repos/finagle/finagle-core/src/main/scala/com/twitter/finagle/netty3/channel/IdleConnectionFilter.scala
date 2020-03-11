@@ -134,8 +134,7 @@ class IdleConnectionFilter[Req, Rep](
 
   private[this] def accept(c: ClientConnection): Boolean = {
     val connectionCount = connectionCounter.incrementAndGet()
-    if (connectionCount <= threshold.lowWaterMark)
-      true
+    if (connectionCount <= threshold.lowWaterMark) true
     else if (connectionCount <= threshold.highWaterMark) {
       closeIdleConnections() // whatever the result of this, we accept the connection
       true

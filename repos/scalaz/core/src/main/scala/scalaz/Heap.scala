@@ -49,12 +49,11 @@ sealed abstract class Heap[A] {
     case (Empty(), q) => q
     case (q, Empty()) => q
     case (
-        Heap(s1, leq, t1 @ Node(Ranked(r1, x1), f1)),
-        Heap(s2, _, t2 @ Node(Ranked(r2, x2), f2))) =>
+          Heap(s1, leq, t1 @ Node(Ranked(r1, x1), f1)),
+          Heap(s2, _, t2 @ Node(Ranked(r2, x2), f2))) =>
       if (leq(x1, x2))
         Heap(s1 + s2, leq, Node(Ranked(0, x1), skewInsert(leq, t2, f1)))
-      else
-        Heap(s1 + s2, leq, Node(Ranked(0, x2), skewInsert(leq, t1, f2)))
+      else Heap(s1 + s2, leq, Node(Ranked(0, x2), skewInsert(leq, t1, f2)))
   }
 
   /**Split the heap into the minimum element and the remainder. O(log n)*/
@@ -127,8 +126,7 @@ sealed abstract class Heap[A] {
       (_, leq, t) =>
         t.foldMap(x =>
           if (p(x.value)) (singletonWith(leq, x.value), Empty[A])
-          else
-            (Empty[A], singletonWith(leq, x.value))))
+          else (Empty[A], singletonWith(leq, x.value))))
 
   /**Partition the heap of the elements that are less than, equal to, and greater than a given value. O(n)*/
   def split(a: A): (Heap[A], Heap[A], Heap[A]) = {
@@ -138,10 +136,8 @@ sealed abstract class Heap[A] {
         def f(x: A) =
           if (leq(x, a))
             if (leq(a, x)) (Empty[A], singletonWith(leq, x), Empty[A])
-            else
-              (singletonWith(leq, x), Empty[A], Empty[A])
-          else
-            (Empty[A], Empty[A], singletonWith(leq, x))
+            else (singletonWith(leq, x), Empty[A], Empty[A])
+          else (Empty[A], Empty[A], singletonWith(leq, x))
         t foldMap (x => f(x.value))
       }
     )
@@ -287,17 +283,14 @@ object Heap extends HeapInstances {
     def f(x: Heap[A], y: Int): Heap[A] =
       if (y % 2 == 0) f(x union x, y / 2)
       else if (y == 1) x
-      else
-        g(x union x, (y - 1) / 2, x)
+      else g(x union x, (y - 1) / 2, x)
     def g(x: Heap[A], y: Int, z: Heap[A]): Heap[A] =
       if (y % 2 == 0) g(x union x, y / 2, z)
       else if (y == 1) x union z
-      else
-        g(x union x, (y - 1) / 2, x union z)
+      else g(x union x, (y - 1) / 2, x union z)
     if (i < 0) sys.error("Heap.replicate: negative length")
     else if (i == 0) Empty[A]
-    else
-      f(singleton(a), i)
+    else f(singleton(a), i)
   }
 
   def apply[A](sz: Int, leq: (A, A) => Boolean, t: Tree[Ranked[A]]): Heap[A] =
@@ -378,22 +371,20 @@ object Heap extends HeapInstances {
         t1: Tree[Ranked[A]],
         t2: Tree[Ranked[A]]): Tree[Ranked[A]] = (t0, t1, t2) match {
       case (
-          Node(Ranked(r0, x0), cf0),
-          Node(Ranked(r1, x1), cf1),
-          Node(Ranked(r2, x2), cf2)) =>
+            Node(Ranked(r0, x0), cf0),
+            Node(Ranked(r1, x1), cf1),
+            Node(Ranked(r2, x2), cf2)) =>
         if (f(x1, x0) && f(x1, x2)) Node(Ranked(r1 + 1, x1), t0 #:: t2 #:: cf1)
         else if (f(x2, x0) && f(x2, x1))
           Node(Ranked(r2 + 1, x2), t0 #:: t1 #:: cf2)
-        else
-          Node(Ranked(r1 + 1, x0), t1 #:: t2 #:: cf0)
+        else Node(Ranked(r1 + 1, x0), t1 #:: t2 #:: cf0)
     }
 
     def link[A](f: (A, A) => Boolean)
         : (Tree[Ranked[A]], Tree[Ranked[A]]) => Tree[Ranked[A]] = {
       case (t1 @ Node(Ranked(r1, x1), cf1), t2 @ Node(Ranked(r2, x2), cf2)) =>
         if (f(x1, x2)) Node(Ranked(r1 + 1, x1), t2 #:: cf1)
-        else
-          Node(Ranked(r2 + 1, x2), t1 #:: cf2)
+        else Node(Ranked(r2 + 1, x2), t1 #:: cf2)
     }
 
     def skewInsert[A](
@@ -402,8 +393,7 @@ object Heap extends HeapInstances {
         ts: Forest[A]): Forest[A] =
       ts match {
         case t1 #:: t2 #:: rest =>
-          if (rank(t1) == rank(t2))
-            skewLink(f, t, t1, t2) #:: rest
+          if (rank(t1) == rank(t2)) skewLink(f, t, t1, t2) #:: rest
           else (t #:: ts)
         case _ => t #:: ts
       }
@@ -428,13 +418,11 @@ object Heap extends HeapInstances {
       case (1, zs, ts, Stream(t)) => (zs, t #:: ts, Stream())
       case (1, zs, ts, t1 #:: t2 #:: f) =>
         if (rank(t2) == 0) (t1 #:: zs, t2 #:: ts, f)
-        else
-          (zs, t1 #:: ts, t2 #:: f)
+        else (zs, t1 #:: ts, t2 #:: f)
       case (r, zs, ts, (t1 #:: t2 #:: cf)) =>
         if (rank(t1) == rank(t2)) (zs, t1 #:: t2 #:: ts, cf)
         else if (rank(t1) == 0) splitForest(r - 1, t1 #:: zs, t2 #:: ts, cf)
-        else
-          splitForest(r - 1, zs, t1 #:: ts, t2 #:: cf)
+        else splitForest(r - 1, zs, t1 #:: ts, t2 #:: cf)
       case (_, _, _, _) => sys.error("Heap.splitForest: invalid arguments")
     }
 
@@ -446,9 +434,7 @@ object Heap extends HeapInstances {
         t: Tree[Ranked[A]]): Forest[A] => Forest[A] = {
       case Stream() => Stream(t)
       case (tp #:: ts) =>
-        if (rank(t) < rank(tp)) t #:: tp #:: ts
-        else
-          ins(f, link(f)(t, tp))(ts)
+        if (rank(t) < rank(tp)) t #:: tp #:: ts else ins(f, link(f)(t, tp))(ts)
     }
 
     def uniqify[A](f: (A, A) => Boolean): Forest[A] => Forest[A] = {

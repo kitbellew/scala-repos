@@ -145,8 +145,7 @@ class PagedSeq[T: ClassTag] protected (
   private def addMore() = latest.addMore(more)
 
   private def page(absindex: Int) = {
-    if (absindex < current.start)
-      current = first1
+    if (absindex < current.start) current = first1
     while (absindex >= current.end && current.next != null)
       current = current.next
     while (absindex >= current.end && !current.isLast) { current = addMore() }
@@ -189,8 +188,7 @@ class PagedSeq[T: ClassTag] protected (
     val e = if (_end == UndeterminedEnd) _end else start + _end
     var f = first1
     while (f.end <= s && !f.isLast) {
-      if (f.next eq null) f = f.addMore(more)
-      else f = f.next
+      if (f.next eq null) f = f.addMore(more) else f = f.next
     }
     // Warning -- not refining `more` means that slices can freely request and obtain
     // data outside of their slice.  This is part of the design of PagedSeq
@@ -264,8 +262,7 @@ private class Page[T: ClassTag](val num: Int) {
       next.addMore(more)
     } else {
       val count = more(data, filled, PageSize - filled)
-      if (count < 0) isLast = true
-      else filled += count
+      if (count < 0) isLast = true else filled += count
       this
     }
 }

@@ -135,10 +135,8 @@ trait ScalacPatternExpanders {
 
       if (isStar && !isSeq)
         err("Star pattern must correspond with varargs or unapplySeq")
-      else if (elementArity < 0)
-        arityError("not enough")
-      else if (elementArity > 0 && !isSeq)
-        arityError("too many")
+      else if (elementArity < 0) arityError("not enough")
+      else if (elementArity > 0 && !isSeq) arityError("too many")
       else if (settings.warnStarsAlign && isSeq && productArity > 0 && elementArity > 0)
         warn {
           if (isStar)

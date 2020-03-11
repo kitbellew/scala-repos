@@ -404,8 +404,7 @@ trait Logic extends Debugging {
 
               // TODO: populate `v.exclusiveDomains` with `Set`s from the start, and optimize to:
               // val exclusive = v.exclusiveDomains.exists { inDomain => inDomain(sym) && inDomain(excludedSym) }
-              if (!exclusive)
-                addAxiom(Or(Not(sym), Not(excludedSym)))
+              if (!exclusive) addAxiom(Or(Not(sym), Not(excludedSym)))
             }
         }
 
@@ -508,8 +507,7 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
           if (mayBeNull) {
             registerEquality(NullConst)
             subConsts map (_ + NullConst)
-          } else
-            subConsts
+          } else subConsts
 
         observed(); allConsts
       }
@@ -822,8 +820,7 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
             else
               p match {
                 case Literal(c) =>
-                  if (c.tpe =:= UnitTpe) c.tpe
-                  else ConstantType(c)
+                  if (c.tpe =:= UnitTpe) c.tpe else ConstantType(c)
                 case Ident(_) if p.symbol.isStable =>
                   // for Idents, can encode uniqueness of symbol as uniqueness of the corresponding singleton type
                   // for Selects, which are handled by the next case, the prefix of the select varies independently of the symbol (see pos/virtpatmat_unreach_select.scala)

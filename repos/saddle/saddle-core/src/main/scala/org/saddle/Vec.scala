@@ -524,8 +524,7 @@ trait Vec[@spec(Boolean, Int, Long, Double) T]
 
     val maxf = (a: Int, b: String) => math.max(a, b.length)
 
-    if (length == 0)
-      buf append "Empty Vec"
+    if (length == 0) buf append "Empty Vec"
     else {
       buf.append("[%d x 1]\n" format (length))
       val vlen = { head(half) concat tail(half) }

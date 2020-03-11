@@ -223,8 +223,7 @@ abstract class ClusterShardingLeavingSpec(
               region.tell(Ping(id), probe.ref)
               if (ref.path.address == firstAddress)
                 probe.expectMsgType[ActorRef](1.second) should not be (ref)
-              else
-                probe.expectMsg(1.second, ref) // should not move
+              else probe.expectMsg(1.second, ref) // should not move
           }
         }
       }

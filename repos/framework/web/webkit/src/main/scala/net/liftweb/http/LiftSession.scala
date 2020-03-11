@@ -508,10 +508,8 @@ class LiftSession(
           (soFar, current) match {
             case ((valid, invalid), pair @ (_, r)) =>
               try {
-                if (r.hostAndPath == hostAndPath)
-                  (valid :+ pair, invalid)
-                else
-                  soFar
+                if (r.hostAndPath == hostAndPath) (valid :+ pair, invalid)
+                else soFar
               } catch {
                 case exception: Exception =>
                   (valid, invalid :+ pair)
@@ -766,8 +764,7 @@ class LiftSession(
 
           if (remaining.length > 0)
             currentAjaxRequests += (version -> remaining)
-          else
-            currentAjaxRequests -= version
+          else currentAjaxRequests -= version
         }
       }
 
@@ -1425,8 +1422,7 @@ class LiftSession(
   private object DotSplit {
     def unapply(in: String): Option[List[String]] = {
       val i = in.lastIndexOf('.')
-      if (i >= 0) Some(List(in.substring(0, i), in.substring(i + 1)))
-      else None
+      if (i >= 0) Some(List(in.substring(0, i), in.substring(i + 1))) else None
     }
   }
 
@@ -1818,8 +1814,7 @@ class LiftSession(
                           if (isFunc1(pt.getRawType) &&
                               pt.getActualTypeArguments.length == 2 &&
                               isNodeSeq(pt.getActualTypeArguments()(0)) &&
-                              isNodeSeq(pt.getActualTypeArguments()(1)))
-                            true
+                              isNodeSeq(pt.getActualTypeArguments()(1))) true
                           else testGeneric(pt.getRawType)
 
                         case clz: Class[_] =>
@@ -1881,8 +1876,7 @@ class LiftSession(
                               snippetName,
                               LiftRules.SnippetFailures.MethodNotFound,
                               if (intersection.isEmpty) NodeSeq.Empty
-                              else
-                                <div>There are possible matching methods (
+                              else <div>There are possible matching methods (
                                 {intersection}
                                 ),
                                 but none has the required signature:

@@ -33,8 +33,7 @@ object B extends Build {
     val currentID = reload.app
     val currentExtra = currentID.classpathExtra
     val newExtra = (currentExtra ++ extra).distinct
-    if (newExtra.length == currentExtra.length)
-      s
+    if (newExtra.length == currentExtra.length) s
     else {
       val newID = ApplicationID(currentID).copy(extra = extra)
       s.setResult(Some(reload.copy(app = newID)))

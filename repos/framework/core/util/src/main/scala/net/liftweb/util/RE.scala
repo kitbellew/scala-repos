@@ -100,8 +100,7 @@ class REMatcher(val str: String, val compiled: Pattern) {
     * for the specified pattern, or Empty if no match exists.
     */
   lazy val matchStr: Box[String] =
-    if (matches) Full(str.substring(matcher.start, matcher.end))
-    else Empty
+    if (matches) Full(str.substring(matcher.start, matcher.end)) else Empty
 
   /**
     * Cached version of the matched groups in this matcher's string.

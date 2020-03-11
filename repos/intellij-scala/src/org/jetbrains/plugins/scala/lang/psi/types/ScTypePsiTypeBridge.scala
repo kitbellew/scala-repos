@@ -235,8 +235,7 @@ trait ScTypePsiTypeBridge {
             paramTopLevel,
             treatJavaObjectAsAny)
         } else {
-          if (paramTopLevel && treatJavaObjectAsAny) types.Any
-          else types.AnyRef
+          if (paramTopLevel && treatJavaObjectAsAny) types.Any else types.AnyRef
         }
       case p: PsiIntersectionType =>
         ScCompoundType(
@@ -280,8 +279,7 @@ trait ScTypePsiTypeBridge {
         .getInstance(project)
         .getElementFactory
         .createType(c, subst)
-      if (raw) psiType.rawType()
-      else psiType
+      if (raw) psiType.rawType() else psiType
     }
 
     def createTypeByFqn(fqn: String): PsiType = {
@@ -301,8 +299,7 @@ trait ScTypePsiTypeBridge {
       case types.Unit =>
         if (noPrimitives) {
           val boxed = createTypeByFqn("scala.runtime.BoxedUnit")
-          if (boxed != null) boxed
-          else javaObj
+          if (boxed != null) boxed else javaObj
         } else PsiType.VOID
       case types.Boolean                        => if (noPrimitives) javaObj else PsiType.BOOLEAN
       case types.Char                           => if (noPrimitives) javaObj else PsiType.CHAR

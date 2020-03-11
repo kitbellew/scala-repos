@@ -20,8 +20,7 @@ class LinearInterpolator[T: ClassTag: Field: Ordering](
   override protected def interpolate(x: T): T = {
     val index = bisearch(x)
 
-    if (index == 0) Y(0)
-    else interpolate(index, x)
+    if (index == 0) Y(0) else interpolate(index, x)
   }
 
   override protected def extrapolate(x: T): T = {

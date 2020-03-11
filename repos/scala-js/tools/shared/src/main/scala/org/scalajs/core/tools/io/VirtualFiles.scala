@@ -48,8 +48,7 @@ object VirtualFile {
   /** Splits at the last slash and returns remainder */
   def nameFromPath(path: String): String = {
     val pos = path.lastIndexOf('/')
-    if (pos == -1) path
-    else path.substring(pos + 1)
+    if (pos == -1) path else path.substring(pos + 1)
   }
 }
 

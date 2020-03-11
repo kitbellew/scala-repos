@@ -128,10 +128,8 @@ trait AssignClusterModule[M[+_]]
 
           range.toList flatMap { i =>
             val models = rowModels(i)
-            if (models.isEmpty)
-              None
-            else
-              Some(ModelSet(rowIdentities(i), models))
+            if (models.isEmpty) None
+            else Some(ModelSet(rowIdentities(i), models))
           }
         }
       }
@@ -167,8 +165,7 @@ trait AssignClusterModule[M[+_]]
               val columns = cols map { case (_, col) => col }
 
               BitSetUtil.filteredRange(range) { i =>
-                if (columns.isEmpty) false
-                else columns.forall(_ isDefinedAt i)
+                if (columns.isEmpty) false else columns.forall(_ isDefinedAt i)
               }
             }
 

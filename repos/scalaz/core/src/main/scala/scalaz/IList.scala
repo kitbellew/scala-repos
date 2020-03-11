@@ -52,8 +52,7 @@ sealed abstract class IList[A] extends Product with Serializable {
     @tailrec def go(as: IList[A], acc: IList[B]): IList[B] =
       as match {
         case ICons(h, t) =>
-          if (pf isDefinedAt h) go(t, ICons(pf(h), acc))
-          else go(t, acc)
+          if (pf isDefinedAt h) go(t, ICons(pf(h), acc)) else go(t, acc)
         case INil() => acc
       }
     go(this, empty).reverse
@@ -480,8 +479,7 @@ sealed abstract class IList[A] extends Product with Serializable {
         case (ICons(a, as), ICons(b, bs)) => zaccum(as, bs, (a, b) :: accum)
         case _                            => accum
       }
-    if (this.isEmpty) empty
-    else zaccum(this, b, empty).reverse
+    if (this.isEmpty) empty else zaccum(this, b, empty).reverse
   }
 
   // IList is invariant in behavior but covariant by nature, so we can safely widen to IList[B]
@@ -522,11 +520,9 @@ object IList extends IListInstances {
 
   def fill[A](n: Int)(a: A): IList[A] = {
     @tailrec def go(i: Int, list: IList[A]): IList[A] = {
-      if (i > 0) go(i - 1, ICons(a, list))
-      else list
+      if (i > 0) go(i - 1, ICons(a, list)) else list
     }
-    if (n <= 0) empty
-    else go(n, empty)
+    if (n <= 0) empty else go(n, empty)
   }
 
   import Isomorphism._
@@ -668,8 +664,7 @@ sealed abstract class IListInstances extends IListInstance0 {
           case ICons(h, t) => if (n == i) Some(h) else go(t, n + 1)
           case INil()      => None
         }
-        if (i < 0) None
-        else go(fa, 0)
+        if (i < 0) None else go(fa, 0)
       }
 
       override def reverse[A](fa: IList[A]) =

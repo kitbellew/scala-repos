@@ -119,8 +119,7 @@ abstract class ActorSelection extends Serializable {
     val lastChar = builder.charAt(builder.length - 1)
     if (path.nonEmpty && lastChar != '/')
       builder.append(path.mkString("/", "/", ""))
-    else if (path.nonEmpty)
-      builder.append(path.mkString("/"))
+    else if (path.nonEmpty) builder.append(path.mkString("/"))
     builder.toString
   }
 
@@ -185,8 +184,7 @@ object ActorSelection {
       anchor: InternalActorRef,
       sender: ActorRef,
       sel: ActorSelectionMessage): Unit =
-    if (sel.elements.isEmpty)
-      anchor.tell(sel.msg, sender)
+    if (sel.elements.isEmpty) anchor.tell(sel.msg, sender)
     else {
 
       val iter = sel.elements.iterator
@@ -203,19 +201,14 @@ object ActorSelection {
             iter.next() match {
               case SelectParent ⇒
                 val parent = ref.getParent
-                if (iter.isEmpty)
-                  parent.tell(sel.msg, sender)
-                else
-                  rec(parent)
+                if (iter.isEmpty) parent.tell(sel.msg, sender) else rec(parent)
               case SelectChildName(name) ⇒
                 val child = refWithCell.getSingleChild(name)
                 if (child == Nobody) {
                   // don't send to emptyRef after wildcard fan-out
                   if (!sel.wildcardFanOut) emptyRef.tell(sel, sender)
-                } else if (iter.isEmpty)
-                  child.tell(sel.msg, sender)
-                else
-                  rec(child)
+                } else if (iter.isEmpty) child.tell(sel.msg, sender)
+                else rec(child)
               case p: SelectChildPattern ⇒
                 // fan-out when there is a wildcard
                 val chldr = refWithCell.children
@@ -225,8 +218,7 @@ object ActorSelection {
                     chldr.filter(c ⇒ p.pattern.matcher(c.path.name).matches)
                   if (matchingChildren.isEmpty && !sel.wildcardFanOut)
                     emptyRef.tell(sel, sender)
-                  else
-                    matchingChildren.foreach(_.tell(sel.msg, sender))
+                  else matchingChildren.foreach(_.tell(sel.msg, sender))
                 } else {
                   val matchingChildren =
                     chldr.filter(c ⇒ p.pattern.matcher(c.path.name).matches)

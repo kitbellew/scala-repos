@@ -5,10 +5,8 @@ import com.twitter.app.{App, Flaggable}
 object Logging {
   implicit object LevelFlaggable extends Flaggable[Level] {
     def parse(s: String) =
-      if (Logger.levelNames contains s)
-        Logger.levelNames(s)
-      else
-        throw new Exception("Invalid log level: " + s)
+      if (Logger.levelNames contains s) Logger.levelNames(s)
+      else throw new Exception("Invalid log level: " + s)
   }
 
   implicit object PolicyFlaggable extends Flaggable[Policy] {
@@ -74,8 +72,7 @@ trait Logging { self: App =>
     val output = outputFlag()
     val level = Some(levelFlag())
     val handler =
-      if (output == "/dev/stderr")
-        ConsoleHandler(defaultFormatter, level)
+      if (output == "/dev/stderr") ConsoleHandler(defaultFormatter, level)
       else
         FileHandler(
           output,
@@ -89,8 +86,7 @@ trait Logging { self: App =>
     List(
       if (asyncFlag())
         QueueingHandler(handler, asyncMaxSizeFlag(), inferClassNamesFlag())
-      else
-        handler
+      else handler
     )
   }
 

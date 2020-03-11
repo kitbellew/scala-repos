@@ -163,16 +163,14 @@ class ExecutionTest extends WordSpec with Matchers {
             Execution.failed(
               new Exception(
                 s"${message}\n: var: ${cfg.get("test.cfg.variable")}"))
-          else
-            Execution.from(())
+          else Execution.from(())
       }
 
       val hasVariable = Execution.getConfig.flatMap { cfg =>
         if (cfg.get("test.cfg.variable").isEmpty)
           Execution.failed(
             new Exception("Should see variable inside of transform"))
-        else
-          Execution.from(())
+        else Execution.from(())
       }
 
       def addOption(cfg: Config) = cfg.+("test.cfg.variable", "dummyValue")
@@ -193,8 +191,7 @@ class ExecutionTest extends WordSpec with Matchers {
 
       val incrementor = Execution.getConfig.flatMap { cfg =>
         totalEvals += 1
-        if (cfg.get("test.cfg.variable").isDefined)
-          incrementIfDefined += 1
+        if (cfg.get("test.cfg.variable").isDefined) incrementIfDefined += 1
         Execution.from(())
       }
 
@@ -345,10 +342,8 @@ class ExecutionTest extends WordSpec with Matchers {
             "Ordered serialization should have been the MacroEqualityOrderedSerialization for this test")
       }
       def executionLoop(idx: Int): Execution[Unit] = {
-        if (idx > 0)
-          baseExecution(idx).flatMap(_ => executionLoop(idx - 1))
-        else
-          Execution.unit
+        if (idx > 0) baseExecution(idx).flatMap(_ => executionLoop(idx - 1))
+        else Execution.unit
       }
 
       executionLoop(55).shouldSucceed()

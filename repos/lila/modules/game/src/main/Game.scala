@@ -450,8 +450,7 @@ case class Game(
   def startColor = Color(startedAtTurn % 2 == 0)
 
   def playerMoves(color: Color): Int =
-    if (color == startColor) (playedTurns + 1) / 2
-    else playedTurns / 2
+    if (color == startColor) (playedTurns + 1) / 2 else playedTurns / 2
 
   def playerHasMoved(color: Color) = playerMoves(color) > 0
 

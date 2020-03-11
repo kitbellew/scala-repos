@@ -131,8 +131,7 @@ object FlatMapOperation {
           val resultList = trav.toSeq // Can't go through this twice
           val keySet: Set[K] = resultList.map { _._1 }.toSet
 
-          if (keySet.isEmpty)
-            Future.value(Map.empty)
+          if (keySet.isEmpty) Future.value(Map.empty)
           else {
             // Do the lookup
             val mres: Map[K, Future[Option[JoinedV]]] = store.multiGet(keySet)

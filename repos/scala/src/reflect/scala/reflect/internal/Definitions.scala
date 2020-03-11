@@ -247,8 +247,7 @@ trait Definitions extends api.StandardDefinitions {
     def fullyInitializeSymbol(sym: Symbol): Symbol = {
       sym.initialize
       // Watch out for those darn raw types on method parameters
-      if (sym.owner.initialize.isJavaDefined)
-        sym.cookJavaRawInfo()
+      if (sym.owner.initialize.isJavaDefined) sym.cookJavaRawInfo()
 
       fullyInitializeType(sym.info)
       fullyInitializeType(sym.tpe_*)
@@ -1302,8 +1301,7 @@ trait Definitions extends api.StandardDefinitions {
       case x :: xs =>
         if (x.typeSymbol == ObjectClass)
           x :: xs.filterNot(_.typeSymbol == ObjectClass)
-        else
-          x :: removeRedundantObjects(xs)
+        else x :: removeRedundantObjects(xs)
     }
 
     /** The following transformations applied to a list of parents.
@@ -1315,8 +1313,7 @@ trait Definitions extends api.StandardDefinitions {
       if (parents exists (t =>
             (t.typeSymbol ne ObjectClass) && t.typeSymbol.isClass))
         parents filterNot (_.typeSymbol eq ObjectClass)
-      else
-        removeRedundantObjects(parents)
+      else removeRedundantObjects(parents)
     }
 
     /** Flatten curried parameter lists of a method type. */

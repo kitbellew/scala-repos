@@ -70,10 +70,8 @@ final class VirtualFileMaterializer(singleDir: Boolean = false) {
     @tailrec
     def loop(tries: Int): File = {
       val tempDir = new File(baseDir, baseName + tries)
-      if (tempDir.mkdir())
-        tempDir
-      else if (tries < TempDirAttempts)
-        loop(tries + 1)
+      if (tempDir.mkdir()) tempDir
+      else if (tries < TempDirAttempts) loop(tries + 1)
       else {
         throw new IllegalStateException(
           "Failed to create directory within " +

@@ -122,10 +122,8 @@ abstract class TreeCheckers extends Analyzer {
         case _          =>
       }
 
-      if (prevTrees.isEmpty)
-        newSyms += sym
-      else if (prevTrees exists (t => (t eq tree) || (t.symbol == sym)))
-        ()
+      if (prevTrees.isEmpty) newSyms += sym
+      else if (prevTrees exists (t => (t eq tree) || (t.symbol == sym))) ()
       else {
         val s1 = (prevTrees map wholetreestr).sorted.distinct
         val s2 = wholetreestr(tree)
@@ -143,8 +141,7 @@ abstract class TreeCheckers extends Analyzer {
         val toPrint = if (settings.debug) sortedNewSyms mkString " " else ""
 
         newSyms.clear()
-        if (toPrint != "")
-          informFn(toPrint)
+        if (toPrint != "") informFn(toPrint)
       }
 
       // moved symbols
@@ -273,31 +270,26 @@ abstract class TreeCheckers extends Analyzer {
       errorFn(t.pos, "no type: " + treestr(t))
 
     private def checkSym(t: Tree) =
-      if (t.symbol == NoSymbol)
-        errorFn(t.pos, "no symbol: " + treestr(t))
+      if (t.symbol == NoSymbol) errorFn(t.pos, "no symbol: " + treestr(t))
 
     private def passThrough(tree: Tree) = tree match {
       case EmptyTree | TypeTree() => true
       case _                      => tree.tpe eq null
     }
     override def typed(tree: Tree, mode: Mode, pt: Type): Tree = (
-      if (passThrough(tree))
-        super.typed(tree, mode, pt)
-      else
-        checkedTyped(tree, mode, pt)
+      if (passThrough(tree)) super.typed(tree, mode, pt)
+      else checkedTyped(tree, mode, pt)
     )
     private def checkedTyped(tree: Tree, mode: Mode, pt: Type): Tree = {
       val typed = wrap(tree)(super.typed(tree.clearType(), mode, pt))
 
       // Vlad: super.typed returns null for package defs, why is that?
-      if (typed eq null)
-        return tree
+      if (typed eq null) return tree
 
       if (typed.tpe ne null)
         assert(!typed.tpe.isErroneous, "Tree has erroneous type: " + typed)
 
-      if (tree ne typed)
-        treesDiffer(tree, typed)
+      if (tree ne typed) treesDiffer(tree, typed)
       tree
     }
 
@@ -314,8 +306,7 @@ abstract class TreeCheckers extends Analyzer {
       }
 
       private def traverseInternal(tree: Tree) {
-        if (!tree.canHaveAttrs)
-          return
+        if (!tree.canHaveAttrs) return
 
         checkSymbolRefsRespectScope(
           enclosingMemberDefs takeWhile (md => !md.symbol.hasPackageFlag),
@@ -372,10 +363,8 @@ abstract class TreeCheckers extends Analyzer {
             return
           case _ =>
         }
-        if (tree.pos == NoPosition)
-          noPos(tree)
-        else if (tree.tpe == null && isPastTyper)
-          noType(tree)
+        if (tree.pos == NoPosition) noPos(tree)
+        else if (tree.tpe == null && isPastTyper) noType(tree)
         else if (tree.isDef) {
           checkSym(tree)
 
@@ -394,8 +383,7 @@ abstract class TreeCheckers extends Analyzer {
                   currentOwner.ownerChain find (x => cond(x)) getOrElse {
                     fail("DefTree can't find owner: "); NoSymbol
                   }
-                if (sym.owner != expected)
-                  fail(sm"""|
+                if (sym.owner != expected) fail(sm"""|
                             | currentOwner chain: ${currentOwner.ownerChain take 3 mkString " -> "}
                             |       symbol chain: ${sym.ownerChain mkString " -> "}""")
               }
@@ -416,8 +404,7 @@ abstract class TreeCheckers extends Analyzer {
         }
         // Accessors are known to steal the type of the underlying field without cloning existential symbols at the new owner.
         // This happens in Namer#accessorTypeCompleter. We just look the other way here.
-        if (symbolOf(tree).isAccessor)
-          return
+        if (symbolOf(tree).isAccessor) return
 
         val treeSym = symbolOf(tree)
         val treeInfo = infoOf(tree)
@@ -507,10 +494,8 @@ abstract class TreeCheckers extends Analyzer {
                 s"tree.tpe=null for " + tree.shortClass + " (symbol: " + classString(
                   tree.symbol) + " " + signature(
                   tree.symbol) + "), last seen tpe was " + oldtpe)
-            else if (oldtpe =:= tree.tpe)
-              ()
-            else
-              typesDiffer(tree, oldtpe, tree.tpe)
+            else if (oldtpe =:= tree.tpe) ()
+            else typesDiffer(tree, oldtpe, tree.tpe)
 
             super.traverse(tree setType oldtpe)
           }

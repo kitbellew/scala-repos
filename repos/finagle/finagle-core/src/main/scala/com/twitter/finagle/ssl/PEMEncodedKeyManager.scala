@@ -38,8 +38,7 @@ object PEMEncodedKeyManager {
     rng.setSeed(System.currentTimeMillis())
     val b = new Array[Char](length)
 
-    for (i <- 0 until length)
-      b(i) = (65 + rng.nextInt(90 - 65)).toChar
+    for (i <- 0 until length) b(i) = (65 + rng.nextInt(90 - 65)).toChar
 
     b
   }

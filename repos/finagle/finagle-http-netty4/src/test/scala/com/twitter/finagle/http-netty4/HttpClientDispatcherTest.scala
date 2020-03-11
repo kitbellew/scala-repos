@@ -453,8 +453,7 @@ class HttpClientDispatcherTest extends FunSuite {
 
     def write(in: In) = ops match {
       case Write(accept, res) :: rest =>
-        if (!accept(in))
-          fail(s"Did not accept write $in")
+        if (!accept(in)) fail(s"Did not accept write $in")
 
         ops = rest
         res

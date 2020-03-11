@@ -61,8 +61,7 @@ abstract class BaseRunConfiguration(
       if (javaOptions != null) javaOptions += s" $defaultJavaOptions"
     }
     val str = JDOMExternalizer.readString(element, "workingDirectory")
-    if (str != null)
-      workingDirectory = str
+    if (str != null) workingDirectory = str
   }
 
   def createParams: JavaParameters = {

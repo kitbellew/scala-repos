@@ -141,11 +141,9 @@ object Sorting {
 
         // Recursively sort non-partition-elements
         s = b - a
-        if (s > 1)
-          sort2(off, s)
+        if (s > 1) sort2(off, s)
         s = d - c
-        if (s > 1)
-          sort2(n - s, s)
+        if (s > 1) sort2(n - s, s)
       }
     }
     sort2(off, len)

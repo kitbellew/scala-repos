@@ -445,8 +445,7 @@ object StreamLayout {
     override val subModules: Set[Module] = Set(copyOf)
 
     override def withAttributes(attr: Attributes): Module =
-      if (attr ne attributes) this.copy(attributes = attr)
-      else this
+      if (attr ne attributes) this.copy(attributes = attr) else this
 
     override def carbonCopy: Module = this.copy(shape = shape.deepCopy())
 
@@ -647,8 +646,7 @@ private[stream] final class VirtualProcessor[T]
             establishSubscription(sub, subscription)
           else rec(sub)
         case pub: Publisher[_] =>
-          if (compareAndSet(pub, Inert)) pub.subscribe(sub)
-          else rec(sub)
+          if (compareAndSet(pub, Inert)) pub.subscribe(sub) else rec(sub)
         case _ =>
           rejectAdditionalSubscriber(sub, "VirtualProcessor")
       }
@@ -795,8 +793,7 @@ private[stream] final class VirtualProcessor[T]
             val pub = ErrorPublisher(
               new IllegalStateException(noDemand),
               "failed-VirtualPublisher")
-            if (!compareAndSet(other, pub)) rec()
-            else throw pub.t
+            if (!compareAndSet(other, pub)) rec() else throw pub.t
         }
       rec()
     }

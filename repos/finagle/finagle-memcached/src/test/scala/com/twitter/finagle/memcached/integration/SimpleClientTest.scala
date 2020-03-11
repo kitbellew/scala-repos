@@ -38,10 +38,7 @@ class SimpleClientTest extends FunSuite with BeforeAndAfter {
     }
   }
 
-  after {
-    if (testServer.isDefined)
-      testServer map { _.stop() }
-  }
+  after { if (testServer.isDefined) testServer map { _.stop() } }
 
   override def withFixture(test: NoArgTest): Outcome = {
     if (testServer.isDefined) test()

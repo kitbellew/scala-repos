@@ -91,10 +91,8 @@ class SyncProducer(val config: SyncProducerConfig) extends Logging {
       var response: NetworkReceive = null
       try {
         blockingChannel.send(request)
-        if (readResponse)
-          response = blockingChannel.receive()
-        else
-          trace("Skipping reading response")
+        if (readResponse) response = blockingChannel.receive()
+        else trace("Skipping reading response")
       } catch {
         case e: java.io.IOException =>
           // no way to tell if write succeeded. Disconnect and re-throw exception to let client handle retry
@@ -141,8 +139,7 @@ class SyncProducer(val config: SyncProducerConfig) extends Logging {
       producerRequestStats.getProducerRequestAllBrokersStats.throttleTimeStats
         .update(producerResponse.throttleTime, TimeUnit.MILLISECONDS)
       producerResponse
-    } else
-      null
+    } else null
   }
 
   def send(request: TopicMetadataRequest): TopicMetadataResponse = {

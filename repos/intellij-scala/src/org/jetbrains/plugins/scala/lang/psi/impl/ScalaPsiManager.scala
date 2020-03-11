@@ -227,8 +227,7 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
         case OBJECT => allClasses.filter(_.isInstanceOf[ScObject])
         case TYPE   => allClasses.filter(!_.isInstanceOf[ScObject])
       }
-    if (classes.length == 0) null
-    else classes(0)
+    if (classes.length == 0) null else classes(0)
   }
 
   def getClasses(

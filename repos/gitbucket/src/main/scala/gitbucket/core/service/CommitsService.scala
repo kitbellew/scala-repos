@@ -26,12 +26,10 @@ trait CommitsService {
 
   def getCommitComment(owner: String, repository: String, commentId: String)(
       implicit s: Session) =
-    if (commentId forall (_.isDigit))
-      CommitComments filter { t =>
-        t.byPrimaryKey(commentId.toInt) && t.byRepository(owner, repository)
-      } firstOption
-    else
-      None
+    if (commentId forall (_.isDigit)) CommitComments filter { t =>
+      t.byPrimaryKey(commentId.toInt) && t.byRepository(owner, repository)
+    } firstOption
+    else None
 
   def createCommitComment(
       owner: String,

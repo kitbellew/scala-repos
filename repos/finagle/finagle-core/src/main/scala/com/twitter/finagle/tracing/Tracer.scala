@@ -115,8 +115,7 @@ object BroadcastTracer {
         Some(true)
       else if (sampledByFirst == Some(false) && sampledBySecond == Some(false))
         Some(false)
-      else
-        None
+      else None
     }
   }
 
@@ -124,12 +123,10 @@ object BroadcastTracer {
     def record(record: Record): Unit = { tracers foreach { _.record(record) } }
 
     def sampleTrace(traceId: TraceId): Option[Boolean] = {
-      if (tracers exists { _.sampleTrace(traceId) == Some(true) })
-        Some(true)
+      if (tracers exists { _.sampleTrace(traceId) == Some(true) }) Some(true)
       else if (tracers forall { _.sampleTrace(traceId) == Some(false) })
         Some(false)
-      else
-        None
+      else None
     }
   }
 }

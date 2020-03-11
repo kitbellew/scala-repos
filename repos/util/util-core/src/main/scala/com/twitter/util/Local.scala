@@ -33,8 +33,7 @@ object Local {
     assert(i < size)
     var ctx = localCtx.get
 
-    if (ctx == null)
-      ctx = new Array[Option[_]](size)
+    if (ctx == null) ctx = new Array[Option[_]](size)
     else {
       val oldCtx = ctx
       ctx = new Array[Option[_]](size)
@@ -47,8 +46,7 @@ object Local {
 
   private def get(i: Int): Option[_] = {
     val ctx = localCtx.get
-    if (ctx == null || ctx.length <= i)
-      return None
+    if (ctx == null || ctx.length <= i) return None
 
     val v = ctx(i)
     if (v == null) None else v

@@ -64,14 +64,12 @@ object ResourceUtil {
         val rangeBefore: Option[MesosProtos.Value.Range] =
           if (baseRange.getBegin < usedRange.getBegin)
             Some(baseRange.toBuilder.setEnd(usedRange.getBegin - 1).build())
-          else
-            None
+          else None
 
         val rangeAfter: Option[MesosProtos.Value.Range] =
           if (baseRange.getEnd > usedRange.getEnd)
             Some(baseRange.toBuilder.setBegin(usedRange.getEnd + 1).build())
-          else
-            None
+          else None
 
         Seq(rangeBefore, rangeAfter).flatten
       }
@@ -96,10 +94,7 @@ object ResourceUtil {
         .setRanges(rangesBuilder)
         .build()
 
-      if (result.getRanges.getRangeCount > 0)
-        Some(result)
-      else
-        None
+      if (result.getRanges.getRangeCount > 0) Some(result) else None
     }
 
     def consumeSetResource: Option[MesosProtos.Resource] = {
@@ -119,8 +114,7 @@ object ResourceUtil {
               MesosProtos.Value.Set.newBuilder().addAllItem(resultSet.asJava))
             .build()
         )
-      else
-        None
+      else None
     }
 
     resource.getType match {
@@ -208,13 +202,11 @@ object ResourceUtil {
       val principalString =
         if (resource.hasReservation && resource.getReservation.hasPrincipal)
           s", RESERVED for ${resource.getReservation.getPrincipal}"
-        else
-          ""
+        else ""
       val diskString =
         if (resource.hasDisk && resource.getDisk.hasPersistence)
           s", diskId ${resource.getDisk.getPersistence.getId}"
-        else
-          ""
+        else ""
 
       s"${resource.getName}(${resource.getRole}$principalString$diskString)"
     }
@@ -227,8 +219,7 @@ object ResourceUtil {
           val ranges = resource.getRanges.getRangeList.asScala
           if (ranges.size > maxRanges)
             s"${rangesToString(ranges.take(maxRanges))} ... (${ranges.size - maxRanges} more)"
-          else
-            rangesToString(ranges)
+          else rangesToString(ranges)
         }"
       case other: MesosProtos.Value.Type => resource.toString
     }

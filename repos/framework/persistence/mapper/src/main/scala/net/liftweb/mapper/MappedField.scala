@@ -141,8 +141,7 @@ trait BaseMappedField
     val conn = DB.currentConnection
     conn
       .map { c =>
-        if (c.metaData.storesMixedCaseIdentifiers) name
-        else name.toLowerCase
+        if (c.metaData.storesMixedCaseIdentifiers) name else name.toLowerCase
       }
       .openOr(name)
   }
@@ -561,16 +560,14 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
     * If there are no read permissions, the value will be obscured
     */
   def get: FieldType = {
-    if (safe_? || readPermission_?) i_is_!
-    else i_obscure_!(i_is_!)
+    if (safe_? || readPermission_?) i_is_! else i_obscure_!(i_is_!)
   }
 
   /**
     * What value was the field's value when it was pulled from the DB?
     */
   def was: FieldType = {
-    if (safe_? || readPermission_?) i_was_!
-    else i_obscure_!(i_was_!)
+    if (safe_? || readPermission_?) i_was_! else i_obscure_!(i_was_!)
   }
 
   /**
@@ -603,10 +600,8 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
   def dbColumnName = {
     val columnName =
       MapperRules.columnName(fieldOwner.connectionIdentifier, name)
-    if (DB.reservedWords.contains(columnName.toLowerCase))
-      columnName + "_c"
-    else
-      columnName
+    if (DB.reservedWords.contains(columnName.toLowerCase)) columnName + "_c"
+    else columnName
   }
 
   def dbSelectString =
@@ -667,8 +662,7 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
         case x :: rest =>
           val errors = x match {
             case pf: PartialFunction[FieldType, List[FieldError]] =>
-              if (pf.isDefinedAt(cv)) pf(cv)
-              else Nil
+              if (pf.isDefinedAt(cv)) pf(cv) else Nil
             case f => f(cv)
           }
 

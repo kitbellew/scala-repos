@@ -57,8 +57,7 @@ abstract class NodePrinters {
     }
     def showType(tree: Tree): String = {
       val tpe = tree.tpe
-      if (tpe == null || tpe == NoType) ""
-      else "tree.tpe=" + tpe
+      if (tpe == null || tpe == NoType) "" else "tree.tpe=" + tpe
     }
 
     def showAttributes(tree: Tree): String = {
@@ -138,8 +137,7 @@ abstract class NodePrinters {
       buf append "  " * level
       buf append value
       if (comment != "") {
-        if (value != "")
-          buf append " "
+        if (value != "") buf append " "
 
         buf append "// "
         buf append comment
@@ -150,12 +148,10 @@ abstract class NodePrinters {
     def annotationInfoToString(annot: AnnotationInfo): String = {
       val str = new StringBuilder
       str.append(annot.atp.toString())
-      if (!annot.args.isEmpty)
-        str.append(annot.args.mkString("(", ",", ")"))
+      if (!annot.args.isEmpty) str.append(annot.args.mkString("(", ",", ")"))
       if (!annot.assocs.isEmpty)
         for (((name, value), index) <- annot.assocs.zipWithIndex) {
-          if (index > 0)
-            str.append(", ")
+          if (index > 0) str.append(", ")
           str.append(name).append(" = ").append(value)
         }
       str.toString
@@ -208,10 +204,8 @@ abstract class NodePrinters {
     }
 
     def traverseList(ifEmpty: String, what: String)(trees: List[Tree]) {
-      if (trees.isEmpty)
-        println(ifEmpty)
-      else if (trees.tail.isEmpty)
-        traverse(trees.head)
+      if (trees.isEmpty) println(ifEmpty)
+      else if (trees.tail.isEmpty) traverse(trees.head)
       else {
         printLine("", trees.length + " " + what + "s")
         trees foreach traverse
@@ -258,8 +252,7 @@ abstract class NodePrinters {
           printMultiline(tree) {
             traverse(block)
             traverseList("{}", "case")(catches)
-            if (finalizer ne EmptyTree)
-              traverse(finalizer)
+            if (finalizer ne EmptyTree) traverse(finalizer)
           }
 
         case Match(selector, cases) =>
@@ -270,8 +263,7 @@ abstract class NodePrinters {
         case CaseDef(pat, guard, body) =>
           printMultiline(tree) {
             traverse(pat)
-            if (guard ne EmptyTree)
-              traverse(guard)
+            if (guard ne EmptyTree) traverse(guard)
             traverse(body)
           }
         case Block(stats, expr) =>

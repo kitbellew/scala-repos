@@ -369,12 +369,10 @@ class PCDataXmlParser(val input: Source)
         case _ =>
           if (qname == "xmlns")
             scope = new NamespaceBinding(null, value, scope);
-          else
-            aMap = new UnprefixedAttribute(qname, Text(value), aMap);
+          else aMap = new UnprefixedAttribute(qname, Text(value), aMap);
       }
 
-      if ((ch != '/') && (ch != '>') && ('?' != ch))
-        xSpace;
+      if ((ch != '/') && (ch != '>') && ('?' != ch)) xSpace;
     }
 
     def findIt(base: MetaData, what: MetaData): MetaData = (base, what) match {
@@ -563,8 +561,7 @@ object AltXML {
         x.buildString(sb)
 
       case g: Group =>
-        for (c <- g.nodes)
-          toXML(c, x.scope, sb, stripComment, convertAmp)
+        for (c <- g.nodes) toXML(c, x.scope, sb, stripComment, convertAmp)
 
       case e: Elem if ((e.child eq null) || e.child.isEmpty) =>
         sb.append('<')

@@ -39,10 +39,8 @@ final class JSDependencyManifest(
   override def toString(): String = {
     val b = new StringBuilder
     b ++= s"JSDependencyManifest(origin=$origin"
-    if (libDeps.nonEmpty)
-      b ++= s", libDeps=$libDeps"
-    if (requiresDOM)
-      b ++= s", requiresDOM=$requiresDOM"
+    if (libDeps.nonEmpty) b ++= s", libDeps=$libDeps"
+    if (requiresDOM) b ++= s", requiresDOM=$requiresDOM"
     if (compliantSemantics.nonEmpty)
       b ++= s", compliantSemantics=$compliantSemantics"
     b ++= ")"

@@ -65,10 +65,8 @@ private[akka] object EventAdapters {
   def apply(system: ExtendedActorSystem, config: Config): EventAdapters = {
     val adapters = configToMap(config, "event-adapters")
     val adapterBindings = configToListMap(config, "event-adapter-bindings")
-    if (adapters.isEmpty && adapterBindings.isEmpty)
-      IdentityEventAdapters
-    else
-      apply(system, adapters, adapterBindings)
+    if (adapters.isEmpty && adapterBindings.isEmpty) IdentityEventAdapters
+    else apply(system, adapters, adapterBindings)
   }
 
   private def apply(

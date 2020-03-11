@@ -26,10 +26,8 @@ abstract class AbstractCollection[E] protected () extends Collection[E] {
           .asInstanceOf[Array[T]]
 
     val iter = iterator
-    for (i <- 0 until size)
-      toFill(i) = iter.next().asInstanceOf[T]
-    if (toFill.size > size)
-      toFill(size) = null.asInstanceOf[T]
+    for (i <- 0 until size) toFill(i) = iter.next().asInstanceOf[T]
+    if (toFill.size > size) toFill(size) = null.asInstanceOf[T]
     toFill
   }
 
@@ -43,10 +41,8 @@ abstract class AbstractCollection[E] protected () extends Collection[E] {
         if (iter.next() === o) {
           iter.remove()
           true
-        } else
-          findAndRemove(iter)
-      } else
-        false
+        } else findAndRemove(iter)
+      } else false
     }
     findAndRemove(iterator())
   }

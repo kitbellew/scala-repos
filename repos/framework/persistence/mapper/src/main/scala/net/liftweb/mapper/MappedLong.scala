@@ -56,15 +56,9 @@ abstract class MappedLongIndex[T <: Mapper[T]](theOwner: T)
 
   override def dbDisplay_? = false
 
-  def convertKey(in: Long): Box[Long] = {
-    if (in < 0L) Empty
-    else Full(in)
-  }
+  def convertKey(in: Long): Box[Long] = { if (in < 0L) Empty else Full(in) }
 
-  def convertKey(in: Int): Box[Long] = {
-    if (in < 0) Empty
-    else Full(in)
-  }
+  def convertKey(in: Int): Box[Long] = { if (in < 0) Empty else Full(in) }
 
   def convertKey(in: AnyRef): Box[Long] = {
     if ((in eq null) || (in eq None)) Empty

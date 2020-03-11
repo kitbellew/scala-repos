@@ -229,8 +229,7 @@ trait OptimizationSpaceTest[M, V, S] extends TensorSpaceTestBase[V, Int, S] {
       val (a, b, c) = trip
       val res =
         scalars.close(scalars.+(a dot b, a dot c), (a dot (b + c)), 1e-3)
-      if (!res)
-        println(scalars.+(a dot b, a dot c) + " " + (a dot (b + c)))
+      if (!res) println(scalars.+(a dot b, a dot c) + " " + (a dot (b + c)))
       res
     })
 

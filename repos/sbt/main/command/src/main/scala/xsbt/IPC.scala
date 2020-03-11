@@ -31,11 +31,9 @@ object IPC {
     val random = new java.util.Random
     def nextPort = random.nextInt(portMax - portMin + 1) + portMin
     def createServer(attempts: Int): ServerSocket =
-      if (attempts > 0)
-        try { new ServerSocket(nextPort, 1, loopback) }
-        catch { case _: Exception => createServer(attempts - 1) }
-      else
-        sys.error("Could not connect to socket: maximum attempts exceeded")
+      if (attempts > 0) try { new ServerSocket(nextPort, 1, loopback) }
+      catch { case _: Exception => createServer(attempts - 1) }
+      else sys.error("Could not connect to socket: maximum attempts exceeded")
     createServer(10)
   }
   def server[T](f: IPC => Option[T]): T = serverImpl(makeServer, f)

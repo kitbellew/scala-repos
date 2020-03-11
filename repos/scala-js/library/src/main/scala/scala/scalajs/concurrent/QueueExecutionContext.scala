@@ -13,8 +13,7 @@ object QueueExecutionContext {
     new PromisesExecutionContext
 
   def apply(): ExecutionContextExecutor =
-    if (js.isUndefined(js.Dynamic.global.Promise)) timeouts()
-    else promises()
+    if (js.isUndefined(js.Dynamic.global.Promise)) timeouts() else promises()
 
   private final class TimeoutsExecutionContext
       extends ExecutionContextExecutor {

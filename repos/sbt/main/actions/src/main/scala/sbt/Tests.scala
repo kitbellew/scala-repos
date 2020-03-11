@@ -257,8 +257,7 @@ object Tests {
     val mainTasks =
       if (config.parallel)
         makeParallel(loader, runnables, setupTasks, config.tags) //.toSeq.join
-      else
-        makeSerial(loader, runnables, setupTasks, config.tags)
+      else makeSerial(loader, runnables, setupTasks, config.tags)
     val taggedMainTasks = mainTasks.tagw(config.tags: _*)
     taggedMainTasks map processResults flatMap { results =>
       val cleanupTasks =
@@ -363,8 +362,7 @@ object Tests {
   def processResults(results: Iterable[(String, SuiteResult)]): Output =
     Output(overall(results.map(_._2.result)), results.toMap, Iterable.empty)
   def foldTasks(results: Seq[Task[Output]], parallel: Boolean): Task[Output] =
-    if (results.isEmpty)
-      task { Output(TestResult.Passed, Map.empty, Nil) }
+    if (results.isEmpty) task { Output(TestResult.Passed, Map.empty, Nil) }
     else if (parallel)
       reduced(
         results.toIndexedSeq,

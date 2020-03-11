@@ -135,8 +135,7 @@ object Resolvers {
 
   def run(cwd: Option[File], command: String*): Unit = {
     val result = Process(
-      if (onWindows) "cmd" +: "/c" +: command
-      else command,
+      if (onWindows) "cmd" +: "/c" +: command else command,
       cwd
     ) !;
     if (result != 0)
@@ -144,13 +143,12 @@ object Resolvers {
   }
 
   def creates(file: File)(f: => Unit) = {
-    if (!file.exists)
-      try { f }
-      catch {
-        case e: Throwable =>
-          IO.delete(file)
-          throw e
-      }
+    if (!file.exists) try { f }
+    catch {
+      case e: Throwable =>
+        IO.delete(file)
+        throw e
+    }
     file
   }
 

@@ -97,8 +97,7 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
 
     /** the number of entries in this scope */
     override def size: Int = {
-      if (cachedSize < 0)
-        cachedSize = directSize
+      if (cachedSize < 0) cachedSize = directSize
 
       cachedSize
     }
@@ -116,10 +115,8 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
       */
     protected def enterEntry(e: ScopeEntry) {
       flushElemsCache()
-      if (hashtable ne null)
-        enterInHash(e)
-      else if (size >= MIN_HASH)
-        createHash()
+      if (hashtable ne null) enterInHash(e)
+      else if (size >= MIN_HASH) createHash()
     }
 
     private def enterInHash(e: ScopeEntry): Unit = {
@@ -146,8 +143,7 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
 
     def enterIfNew[T <: Symbol](sym: T): T = {
       val existing = lookupEntry(sym.name)
-      if (existing == null) enter(sym)
-      else existing.sym.asInstanceOf[T]
+      if (existing == null) enter(sym) else existing.sym.asInstanceOf[T]
     }
 
     private def createHash() {
@@ -325,10 +321,10 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
       */
     def lookupNextEntry(entry: ScopeEntry): ScopeEntry = {
       var e = entry
-      if (hashtable ne null)
-        do { e = e.tail } while ((e ne null) && e.sym.name != entry.sym.name)
-      else
-        do { e = e.next } while ((e ne null) && e.sym.name != entry.sym.name)
+      if (hashtable ne null) do {
+        e = e.tail
+      } while ((e ne null) && e.sym.name != entry.sym.name)
+      else do { e = e.next } while ((e ne null) && e.sym.name != entry.sym.name)
       e
     }
 
@@ -389,12 +385,10 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
     override def foreach[U](p: Symbol => U): Unit = toList foreach p
 
     override def filterNot(p: Symbol => Boolean): Scope = (
-      if (toList exists p) newScopeWith(toList filterNot p: _*)
-      else this
+      if (toList exists p) newScopeWith(toList filterNot p: _*) else this
     )
     override def filter(p: Symbol => Boolean): Scope = (
-      if (toList forall p) this
-      else newScopeWith(toList filter p: _*)
+      if (toList forall p) this else newScopeWith(toList filter p: _*)
     )
     @deprecated("Use `toList.reverse` instead", "2.10.0") // Used in SBT 0.12.4
     def reverse: List[Symbol] = toList.reverse

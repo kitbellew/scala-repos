@@ -137,8 +137,7 @@ class AgentDocSpec extends AkkaSpec {
     val agent2 = Agent(5)
 
     // uses foreach
-    for (value <- agent1)
-      println(value)
+    for (value <- agent1) println(value)
 
     // uses map
     val agent3 = for (value <- agent1) yield value + 1

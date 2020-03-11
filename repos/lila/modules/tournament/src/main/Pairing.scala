@@ -46,9 +46,7 @@ case class Pairing(
     else none
 
   def berserkOf(userId: String): Int =
-    if (userId == user1) berserk1
-    else if (userId == user2) berserk2
-    else 0
+    if (userId == user1) berserk1 else if (userId == user2) berserk2 else 0
 
   def validBerserkOf(userId: String): Int =
     notSoQuickFinish ?? berserkOf(userId)

@@ -140,12 +140,10 @@ class ScExtendsBlockImpl private (
       case Some(AnyVal) => //do nothing
       case res @ (Some(AnyRef) | Some(Any)) =>
         buffer -= res.get
-        if (javaObject != null)
-          buffer += javaObject
+        if (javaObject != null) buffer += javaObject
       case Some(_) => //do nothing
       case _ =>
-        if (javaObject != null)
-          buffer += javaObject
+        if (javaObject != null) buffer += javaObject
     }
     buffer.toList
   }
@@ -258,12 +256,10 @@ class ScExtendsBlockImpl private (
           if AnyRef.asClass(getProject).contains(s) ||
             Any.asClass(getProject).contains(s) =>
         buffer -= s
-        if (javaObjectClass != null)
-          buffer += javaObjectClass
+        if (javaObjectClass != null) buffer += javaObjectClass
       case Some(clazz: PsiClass) => //do nothing
       case _ =>
-        if (javaObjectClass != null)
-          buffer += javaObjectClass
+        if (javaObjectClass != null) buffer += javaObjectClass
     }
     buffer.toSeq
   }
@@ -298,9 +294,7 @@ class ScExtendsBlockImpl private (
 
     def productSerializable(res: Seq[String])(
         underCaseClass: Boolean): Seq[String] =
-      if (underCaseClass)
-        res ++ Seq[String]("Product", "Serializable")
-      else res
+      if (underCaseClass) res ++ Seq[String]("Product", "Serializable") else res
 
     def search = productSerializable _ compose default
 

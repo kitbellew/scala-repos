@@ -85,8 +85,7 @@ class ShowTypeInfoAction extends AnAction(ScalaBundle.message("type.info")) {
             val types =
               mainText ++ simplified.orElse(nonSingleton) ++ orig ++ expected
 
-            if (types.size == 1) tpeText
-            else types.mkString("\n")
+            if (types.size == 1) tpeText else types.mkString("\n")
           case _ => "Could not find type for selection"
         }
       }

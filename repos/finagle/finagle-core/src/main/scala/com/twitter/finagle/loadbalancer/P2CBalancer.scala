@@ -122,8 +122,7 @@ private trait PeakEwma[Req, Rep] { self: Balancer[Req, Rep] =>
       val t = nanoTime()
       val td = math.max(t - stamp, 0)
       val w = math.exp(-td / Tau)
-      if (rtt > cost) cost = rtt
-      else cost = cost * w + rtt * (1.0 - w)
+      if (rtt > cost) cost = rtt else cost = cost * w + rtt * (1.0 - w)
       stamp = t
     }
 

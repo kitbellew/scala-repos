@@ -7,8 +7,7 @@ object Test {
   }
   def bkwSlowSearch[A](xs: Seq[A], ys: Seq[A]) = {
     val i = slowSearch(xs.reverse, ys.reverse)
-    if (i < 0) i
-    else xs.length - ys.length - i
+    if (i < 0) i else xs.length - ys.length - i
   }
   def main(args: Array[String]) {
     val rng = new scala.util.Random(java.lang.Integer.parseInt("kmp", 36))

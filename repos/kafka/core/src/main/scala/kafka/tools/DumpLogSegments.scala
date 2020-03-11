@@ -191,8 +191,7 @@ object DumpLogSegments {
         misMatchesForIndexFilesMap.put(file.getAbsolutePath, misMatchesSeq)
       }
       // since it is a sparse file, in the event of a crash there may be many zero entries, stop if we see one
-      if (entry.offset == 0 && i > 0)
-        return
+      if (entry.offset == 0 && i > 0) return
       if (!verifyOnly)
         println(
           "offset: %d position: %d"
@@ -214,8 +213,7 @@ object DumpLogSegments {
         val key =
           if (message.hasKey)
             Some(keyDecoder.fromBytes(Utils.readBytes(message.key)))
-          else
-            None
+          else None
 
         val payload = Some(
           valueDecoder.fromBytes(Utils.readBytes(message.payload)))
@@ -227,10 +225,7 @@ object DumpLogSegments {
 
   private class OffsetsMessageParser extends MessageParser[String, String] {
     private def hex(bytes: Array[Byte]): String = {
-      if (bytes.isEmpty)
-        ""
-      else
-        String.format("%X", BigInt(1, bytes))
+      if (bytes.isEmpty) "" else String.format("%X", BigInt(1, bytes))
     }
 
     private def parseOffsets(offsetKey: OffsetKey, payload: ByteBuffer) = {
@@ -241,10 +236,8 @@ object DumpLogSegments {
       val keyString =
         s"offset::${group}:${topicPartition.topic}:${topicPartition.partition}"
       val valueString =
-        if (offset.metadata.isEmpty)
-          String.valueOf(offset.offset)
-        else
-          s"${offset.offset}:${offset.metadata}"
+        if (offset.metadata.isEmpty) String.valueOf(offset.offset)
+        else s"${offset.offset}:${offset.metadata}"
 
       (Some(keyString), Some(valueString))
     }
@@ -279,8 +272,7 @@ object DumpLogSegments {
     }
 
     override def parse(message: Message): (Option[String], Option[String]) = {
-      if (message.isNull)
-        (None, None)
+      if (message.isNull) (None, None)
       else if (!message.hasKey) {
         throw new KafkaException(
           "Failed to decode message using offset topic decoder (message had a missing key)")
@@ -318,8 +310,7 @@ object DumpLogSegments {
       for (messageAndOffset <- itr) {
         val msg = messageAndOffset.message
 
-        if (lastOffset == -1)
-          lastOffset = messageAndOffset.offset
+        if (lastOffset == -1) lastOffset = messageAndOffset.offset
         // If we are iterating uncompressed messages, offsets must be consecutive
         else if (msg.compressionCodec == NoCompressionCodec && messageAndOffset.offset != lastOffset + 1) {
           var nonConsecutivePairsSeq = nonConsecutivePairsForLogFilesMap
@@ -335,8 +326,7 @@ object DumpLogSegments {
           "offset: " + messageAndOffset.offset + " position: " + validBytes + " isvalid: " + msg.isValid +
             " payloadsize: " + msg.payloadSize + " magic: " + msg.magic +
             " compresscodec: " + msg.compressionCodec + " crc: " + msg.checksum)
-        if (msg.hasKey)
-          print(" keysize: " + msg.keySize)
+        if (msg.hasKey) print(" keysize: " + msg.keySize)
         if (printContents) {
           val (key, payload) = parser.parse(msg)
           key.map(key => print(s" key: ${key}"))
@@ -364,8 +354,7 @@ object DumpLogSegments {
         case _ =>
           ByteBufferMessageSet.deepIterator(messageAndOffset)
       }
-    } else
-      getSingleMessageIterator(messageAndOffset)
+    } else getSingleMessageIterator(messageAndOffset)
   }
 
   private def getSingleMessageIterator(messageAndOffset: MessageAndOffset) = {
@@ -376,8 +365,7 @@ object DumpLogSegments {
         if (!messageIterated) {
           messageIterated = true
           messageAndOffset
-        } else
-          allDone()
+        } else allDone()
       }
     }
   }

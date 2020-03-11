@@ -24,10 +24,8 @@ class MetaParser(meta: String) {
   }
 
   protected def parseType(): Unit = {
-    if (token startsWith "?")
-      res.append(token.substring(1))
-    else
-      res.append(token)
+    if (token startsWith "?") res.append(token.substring(1))
+    else res.append(token)
     nextToken
     if (token == "[") {
       do {
@@ -44,21 +42,14 @@ class MetaParser(meta: String) {
     if (scanner.hasMoreTokens()) {
       nextToken
       try {
-        if (!scanner.hasMoreTokens())
-          None
-        else if (token == "class")
-          Some(parseMetaClass)
-        else if (token == "method")
-          Some(parseMetaMethod)
-        else if (token == "field")
-          Some(parseMetaField)
-        else if (token == "constr")
-          Some(parseConstrField)
-        else
-          None
+        if (!scanner.hasMoreTokens()) None
+        else if (token == "class") Some(parseMetaClass)
+        else if (token == "method") Some(parseMetaMethod)
+        else if (token == "field") Some(parseMetaField)
+        else if (token == "constr") Some(parseConstrField)
+        else None
       } catch { case _: Exception => None }
-    } else
-      None
+    } else None
 
   protected def parseMetaClass: String = {
     nextToken
@@ -86,10 +77,8 @@ class MetaParser(meta: String) {
     }
     if (token == "extends") {
       do {
-        if (token == "extends")
-          res.append(" extends ")
-        else
-          res.append(" with ")
+        if (token == "extends") res.append(" extends ")
+        else res.append(" with ")
         nextToken
         parseType
       } while (token == "with")
@@ -116,8 +105,7 @@ class MetaParser(meta: String) {
           if (token == ",") {
             nextToken
             res.append(", ")
-          } else
-            loop = false
+          } else loop = false
         }
         nextToken
         res.append("]")
@@ -127,8 +115,7 @@ class MetaParser(meta: String) {
       do {
         if (token == ",") {
           nextToken
-          if (token != ")")
-            res.append(", ")
+          if (token != ")") res.append(", ")
         } else {
           nextToken
           res.append("(")
@@ -164,8 +151,7 @@ class MetaParser(meta: String) {
       do {
         res.append(if (token == "(") "(" else ", ")
         nextToken
-        if (token != ")")
-          parseType
+        if (token != ")") parseType
       } while (token == ",")
       nextToken
       res.append(")")

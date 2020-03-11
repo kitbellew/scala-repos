@@ -24,8 +24,7 @@ trait NumberHelper { self: I18nHelper =>
   }
 
   def nth(number: Int) =
-    if ((11 to 13).contains(number % 100))
-      "th"
+    if ((11 to 13).contains(number % 100)) "th"
     else
       number % 10 match {
         case 1 => "st"

@@ -38,11 +38,9 @@ abstract class ShutdownableThread(
     if (isRunning.compareAndSet(true, false)) {
       info("Shutting down")
       isRunning.set(false)
-      if (isInterruptible)
-        interrupt()
+      if (isInterruptible) interrupt()
       true
-    } else
-      false
+    } else false
   }
 
   /**
@@ -63,8 +61,7 @@ abstract class ShutdownableThread(
     try { while (isRunning.get()) { doWork() } }
     catch {
       case e: Throwable =>
-        if (isRunning.get())
-          error("Error due to ", e)
+        if (isRunning.get()) error("Error due to ", e)
     }
     shutdownLatch.countDown()
     info("Stopped ")

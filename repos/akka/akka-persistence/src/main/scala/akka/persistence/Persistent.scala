@@ -189,8 +189,7 @@ private[persistence] final case class PersistentImpl(
     copy(payload = payload)
 
   def withManifest(manifest: String): PersistentRepr =
-    if (this.manifest == manifest) this
-    else copy(manifest = manifest)
+    if (this.manifest == manifest) this else copy(manifest = manifest)
 
   def update(
       sequenceNr: Long,

@@ -42,14 +42,8 @@ abstract class LocalSchedulerTest(lifo: Boolean) extends FunSuite {
 
   test("handle many submits") {
     var ran = Nil: List[Int]
-    submit {
-      for (which <- 0 until N)
-        submit { ran ::= which }
-    }
-    if (lifo)
-      assert(ran == (0 until N))
-    else
-      assert(ran == (0 until N).reverse)
+    submit { for (which <- 0 until N) submit { ran ::= which } }
+    if (lifo) assert(ran == (0 until N)) else assert(ran == (0 until N).reverse)
   }
 }
 

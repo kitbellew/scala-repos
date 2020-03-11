@@ -31,8 +31,7 @@ trait CollectionsOnCollectionsTest extends CollectionsTestBase {
 
     val minMax = if (isMin) range.head else range.last
     def getMinMax(): T =
-      if (isMin) ju.Collections.min(coll)
-      else ju.Collections.max(coll)
+      if (isMin) ju.Collections.min(coll) else ju.Collections.max(coll)
 
     assertEquals(0, getMinMax().compareTo(toElem(minMax)))
 

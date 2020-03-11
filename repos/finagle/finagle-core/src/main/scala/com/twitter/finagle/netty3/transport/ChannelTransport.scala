@@ -24,8 +24,7 @@ class ChannelTransport[In, Out](ch: Channel)
     // Note: we buffer 1 message here so that we receive socket
     // closes proactively.
     val r = nneed >= 0
-    if (ch.isReadable != r && ch.isOpen)
-      ch.setReadable(r)
+    if (ch.isReadable != r && ch.isOpen) ch.setReadable(r)
   }
 
   ch.getPipeline.addLast("finagleTransportBridge", this)
@@ -38,8 +37,7 @@ class ChannelTransport[In, Out](ch: Channel)
   }
 
   private[this] def fail(exc: Throwable) {
-    if (!failed.compareAndSet(false, true))
-      return
+    if (!failed.compareAndSet(false, true)) return
 
     // Do not discard existing queue items. Doing so causes a race
     // between reading off of the transport and a peer closing it.
@@ -147,12 +145,10 @@ class ChannelTransport[In, Out](ch: Channel)
   }
 
   def status: Status =
-    if (failed.get || !ch.isOpen) Status.Closed
-    else Status.Open
+    if (failed.get || !ch.isOpen) Status.Closed else Status.Open
 
   def close(deadline: Time): Future[Unit] = {
-    if (ch.isOpen)
-      Channels.close(ch)
+    if (ch.isOpen) Channels.close(ch)
     closep.unit
   }
 

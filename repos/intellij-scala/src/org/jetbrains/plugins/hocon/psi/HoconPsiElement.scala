@@ -312,8 +312,7 @@ final class HIncluded(ast: ASTNode)
               hs,
               forcedAbsolute,
               fromClasspath))
-        else
-          None
+        else None
       }
     } yield rs
 }
@@ -459,8 +458,7 @@ final class HNumber(ast: ASTNode)
   def numberValue: jl.Number =
     if (getText.exists(HNumber.DecimalIndicators.contains))
       jl.Double.parseDouble(getText)
-    else
-      jl.Long.parseLong(getText)
+    else jl.Long.parseLong(getText)
 }
 
 object HNumber {

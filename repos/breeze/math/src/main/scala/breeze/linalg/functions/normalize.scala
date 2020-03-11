@@ -14,8 +14,7 @@ object normalize extends UFunc {
     new Impl2[T, Double, U] {
       def apply(t: T, n: Double): U = {
         val norm = canNorm(t, n)
-        if (norm == 0) t
-        else div(t, norm)
+        if (norm == 0) t else div(t, norm)
       }
     }
   }
@@ -26,8 +25,7 @@ object normalize extends UFunc {
     new Impl2[T, Float, U] {
       def apply(t: T, n: Float): U = {
         val norm = canNorm(t, n)
-        if (norm == 0) t
-        else div(t, norm)
+        if (norm == 0) t else div(t, norm)
       }
     }
   }
@@ -38,8 +36,7 @@ object normalize extends UFunc {
     new InPlaceImpl2[T, Double] {
       def apply(t: T, n: Double): Unit = {
         val norm = canNorm(t, n)
-        if (norm != 0)
-          div(t, norm)
+        if (norm != 0) div(t, norm)
       }
     }
   }
@@ -50,8 +47,7 @@ object normalize extends UFunc {
     new InPlaceImpl2[T, Float] {
       def apply(t: T, n: Float): Unit = {
         val norm = canNorm(t, n)
-        if (norm != 0)
-          div(t, norm)
+        if (norm != 0) div(t, norm)
       }
     }
   }

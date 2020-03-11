@@ -56,8 +56,7 @@ class NewShinyConsumer(
   import scala.collection.JavaConversions._
 
   val consumer = new KafkaConsumer[Array[Byte], Array[Byte]](consumerProps)
-  if (topic.isDefined)
-    consumer.subscribe(List(topic.get))
+  if (topic.isDefined) consumer.subscribe(List(topic.get))
   else if (whitelist.isDefined)
     consumer.subscribe(
       Pattern.compile(whitelist.get),
@@ -71,8 +70,7 @@ class NewShinyConsumer(
   override def receive(): BaseConsumerRecord = {
     if (!recordIter.hasNext) {
       recordIter = consumer.poll(timeoutMs).iterator
-      if (!recordIter.hasNext)
-        throw new ConsumerTimeoutException
+      if (!recordIter.hasNext) throw new ConsumerTimeoutException
     }
 
     val record = recordIter.next
@@ -109,8 +107,7 @@ class OldConsumer(topicFilter: TopicFilter, consumerProps: Properties)
   val iter = stream.iterator
 
   override def receive(): BaseConsumerRecord = {
-    if (!iter.hasNext())
-      throw new StreamEndException
+    if (!iter.hasNext()) throw new StreamEndException
 
     val messageAndMetadata = iter.next
     BaseConsumerRecord(

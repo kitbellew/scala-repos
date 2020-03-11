@@ -25,8 +25,7 @@ trait ReadAheadIterator[+T] extends BufferedIterator[T] {
 
   def headOption: Option[T] = {
     update()
-    if (state == 1) Some(cached)
-    else None
+    if (state == 1) Some(cached) else None
   }
 
   private[this] def update() {

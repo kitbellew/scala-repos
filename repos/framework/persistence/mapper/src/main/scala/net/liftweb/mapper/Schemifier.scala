@@ -164,8 +164,7 @@ object Schemifier extends Loggable {
                 t,
                 connection,
                 actualTableNames))) +
-          (if (structureOnly)
-             EmptyCollector
+          (if (structureOnly) EmptyCollector
            else
              (tables.foldLeft(EmptyCollector)((b, t) =>
                b + tableCheck(

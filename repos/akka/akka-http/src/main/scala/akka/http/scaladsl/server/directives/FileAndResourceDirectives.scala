@@ -94,32 +94,32 @@ trait FileAndResourceDirectives {
       resourceName: String,
       contentType: ContentType,
       classLoader: ClassLoader = defaultClassLoader): Route =
-    if (!resourceName.endsWith("/"))
-      get {
-        Option(
-          classLoader.getResource(
-            resourceName)) flatMap ResourceFile.apply match {
-          case Some(ResourceFile(url, length, lastModified)) ⇒
-            conditionalFor(length, lastModified) {
-              if (length > 0) {
-                withRangeSupportAndPrecompressedMediaTypeSupportAndExtractSettings {
-                  settings ⇒
-                    complete {
-                      HttpEntity.Default(
-                        contentType,
-                        length,
-                        StreamConverters
-                          .fromInputStream(() ⇒ url.openStream())
-                          .withAttributes(ActorAttributes
-                            .dispatcher(settings.fileIODispatcher))
-                      ) // TODO is this needed? It already uses `val inputStreamSource = name("inputStreamSource") and IODispatcher`
-                    }
-                }
-              } else complete(HttpEntity.Empty)
-            }
-          case _ ⇒ reject // not found or directory
-        }
+    if (!resourceName.endsWith("/")) get {
+      Option(
+        classLoader.getResource(
+          resourceName)) flatMap ResourceFile.apply match {
+        case Some(ResourceFile(url, length, lastModified)) ⇒
+          conditionalFor(length, lastModified) {
+            if (length > 0) {
+              withRangeSupportAndPrecompressedMediaTypeSupportAndExtractSettings {
+                settings ⇒
+                  complete {
+                    HttpEntity.Default(
+                      contentType,
+                      length,
+                      StreamConverters
+                        .fromInputStream(() ⇒ url.openStream())
+                        .withAttributes(
+                          ActorAttributes.dispatcher(settings.fileIODispatcher)
+                        )
+                    ) // TODO is this needed? It already uses `val inputStreamSource = name("inputStreamSource") and IODispatcher`
+                  }
+              }
+            } else complete(HttpEntity.Empty)
+          }
+        case _ ⇒ reject // not found or directory
       }
+    }
     else reject // don't serve the content of resource "directories"
 
   /**

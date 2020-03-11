@@ -38,8 +38,7 @@ trait VectorInstances extends VectorInstances0 {
 
     def zip[A, B](a: => Vector[A], b: => Vector[B]): Vector[(A, B)] = {
       val _a = a
-      if (_a.isEmpty) empty
-      else _a zip b
+      if (_a.isEmpty) empty else _a zip b
     }
     def unzip[A, B](a: Vector[(A, B)]) = a.unzip
 
@@ -95,10 +94,8 @@ trait VectorInstances extends VectorInstances0 {
       val sizeA = as.size
       val sizeB = bs.size
       (as, bs).zipped.map((a, b) => f(\&/.Both(a, b))) ++ {
-        if (sizeA > sizeB)
-          as.drop(sizeB).map(a => f(\&/.This(a)))
-        else
-          bs.drop(sizeA).map(b => f(\&/.That(b)))
+        if (sizeA > sizeB) as.drop(sizeB).map(a => f(\&/.This(a)))
+        else bs.drop(sizeA).map(b => f(\&/.That(b)))
       }
     }
 
@@ -221,8 +218,7 @@ trait VectorFunctions {
   /** Split at each point where `p(as(n), as(n+1))` yields false. */
   final def groupWhenM[A, M[_]: Monad](as: Vector[A])(
       p: (A, A) => M[Boolean]): M[Vector[Vector[A]]] =
-    if (as.isEmpty)
-      Monad[M].point(empty)
+    if (as.isEmpty) Monad[M].point(empty)
     else {
       val stateP = (i: A) =>
         StateT[M, A, Boolean](s => Monad[M].map(p(s, i))(i ->))
@@ -246,8 +242,7 @@ trait VectorFunctions {
       }
     @tailrec
     def go(xs: Vector[A], acc: Vector[Vector[A]]): Vector[Vector[A]] = {
-      if (xs.isEmpty)
-        acc
+      if (xs.isEmpty) acc
       else {
         val (x, y) = span1(xs.tail, xs.head, empty)
         go(y, acc :+ (xs.head +: x))

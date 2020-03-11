@@ -71,8 +71,7 @@ object ClassPathImplComparator {
 
   def main(args: Array[String]): Unit = {
 
-    if (args contains "-help")
-      usage()
+    if (args contains "-help") usage()
     else {
       val oldCpSettings =
         loadSettings(args.toList, ClassPathRepresentationType.Recursive)

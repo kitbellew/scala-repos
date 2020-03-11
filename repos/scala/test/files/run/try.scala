@@ -58,8 +58,7 @@ object Test extends AnyRef with App {
     try {
       Console.print("1 + 1 = ");
       try {
-        if (true)
-          sys.error("exit");
+        if (true) sys.error("exit");
         1 + 1;
         ()
       } catch {

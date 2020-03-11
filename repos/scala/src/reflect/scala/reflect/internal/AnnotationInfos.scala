@@ -165,10 +165,8 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
     }
 
     def sigAnnot: Type =
-      if (fitsInOneString)
-        definitions.ScalaSignatureAnnotation.tpe
-      else
-        definitions.ScalaLongSignatureAnnotation.tpe
+      if (fitsInOneString) definitions.ScalaSignatureAnnotation.tpe
+      else definitions.ScalaLongSignatureAnnotation.tpe
 
     private def mapToNextModSevenBits(src: Array[Byte]): Array[Byte] = {
       var i = 0

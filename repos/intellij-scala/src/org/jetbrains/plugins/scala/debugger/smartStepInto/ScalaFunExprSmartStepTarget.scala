@@ -62,8 +62,7 @@ object FunExpressionTarget {
   private def shorten(s: String): String = {
     val trimmed = s.stripPrefix("{").stripSuffix("}").trim
     val lines = trimmed.lines.toList
-    if (lines.size > 1) lines.head + " ..."
-    else trimmed
+    if (lines.size > 1) lines.head + " ..." else trimmed
   }
 
   private def text(e: ScExpression) =

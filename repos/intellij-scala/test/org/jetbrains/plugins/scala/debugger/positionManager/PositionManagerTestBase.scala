@@ -101,8 +101,7 @@ abstract class PositionManagerTestBase extends ScalaDebuggerTestCase {
     sourcePositionsOffsets += (fileName -> offsets)
     addSourceFile(fileName, cleanedText)
 
-    if (breakpointLine >= 0)
-      addBreakpoint(breakpointLine, fileName)
+    if (breakpointLine >= 0) addBreakpoint(breakpointLine, fileName)
   }
 
   private def createLineSourcePositionFromOffset(file: PsiFile, offset: Int) = {

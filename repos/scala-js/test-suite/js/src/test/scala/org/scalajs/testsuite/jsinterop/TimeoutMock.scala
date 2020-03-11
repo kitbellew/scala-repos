@@ -67,9 +67,6 @@ object TimeoutMock {
 
     def clearTimeout(): Unit = { cleared = true }
 
-    def execute(): Unit = {
-      if (!cleared)
-        fun()
-    }
+    def execute(): Unit = { if (!cleared) fun() }
   }
 }

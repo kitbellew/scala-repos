@@ -132,18 +132,15 @@ object CABRunLengthEncoder {
         // we have, better emit whatever tokens are stored in the
         // current state
         emit as true
-      else
-        point(false)
+      else point(false)
     }
 
   /**
     * put output on the writer
     */
   def writeOutput(token: Token, length: Int, minRun: Int): RunLength[Unit] =
-    if (length <= minRun)
-      tell(Monoid[Cord].multiply(token.show, length))
-    else
-      tell(length.show ++ token.show)
+    if (length <= minRun) tell(Monoid[Cord].multiply(token.show, length))
+    else tell(length.show ++ token.show)
 
   /**
     emit the lastToken

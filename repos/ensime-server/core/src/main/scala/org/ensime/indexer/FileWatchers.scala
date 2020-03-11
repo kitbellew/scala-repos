@@ -100,15 +100,13 @@ private class ApachePollingFileWatcher(
 
       def fileChanged(event: FileChangeEvent): Unit = {
         if (watched(event)) {
-          if (log.isDebugEnabled())
-            log.debug(s"${event.getFile} was changed")
+          if (log.isDebugEnabled()) log.debug(s"${event.getFile} was changed")
           listeners foreach (_.fileChanged(event.getFile))
         }
       }
       def fileCreated(event: FileChangeEvent): Unit =
         if (watched(event)) {
-          if (log.isDebugEnabled())
-            log.debug(s"${event.getFile} was created")
+          if (log.isDebugEnabled()) log.debug(s"${event.getFile} was created")
           listeners foreach (_.fileAdded(event.getFile))
         }
       def fileDeleted(event: FileChangeEvent): Unit =
@@ -120,8 +118,7 @@ private class ApachePollingFileWatcher(
           fm = create()
           init(restarted = true)
         } else if (watched(event)) {
-          if (log.isDebugEnabled())
-            log.debug(s"${event.getFile} was deleted")
+          if (log.isDebugEnabled()) log.debug(s"${event.getFile} was deleted")
           listeners foreach (_.fileRemoved(event.getFile))
         }
     })
@@ -131,8 +128,7 @@ private class ApachePollingFileWatcher(
     val base = vfs.vfile(watched)
 
     // we don't send baseReCreated if we create it on startup
-    if (watched.mkdirs() && restarted)
-      listeners.foreach(_.baseReCreated(base))
+    if (watched.mkdirs() && restarted) listeners.foreach(_.baseReCreated(base))
     fm.addFile(base)
     for {
       file <- if (recursive) watched.tree else watched.children

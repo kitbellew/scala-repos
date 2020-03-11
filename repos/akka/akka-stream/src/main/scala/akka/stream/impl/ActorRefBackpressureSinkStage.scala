@@ -83,8 +83,7 @@ private[akka] class ActorRefBackpressureSinkStage[In](
             if (buffer.size() < maxBuffer) pull(in)
           }
           override def onUpstreamFinish(): Unit = {
-            if (buffer.isEmpty) finish()
-            else completeReceived = true
+            if (buffer.isEmpty) finish() else completeReceived = true
           }
           override def onUpstreamFailure(ex: Throwable): Unit = {
             ref ! onFailureMessage(ex)

@@ -101,8 +101,8 @@ class ScTypedPatternImpl(node: ASTNode)
                         des,
                         typeArgs.zip(typeParams).map {
                           case (
-                              arg: ScSkolemizedType,
-                              param: PsiTypeParameter) =>
+                                arg: ScSkolemizedType,
+                                param: PsiTypeParameter) =>
                             val lowerBound = arg.lower
                             val upperBound =
                               if (arg.upper.equiv(psi.types.Any)) {

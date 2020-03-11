@@ -1024,7 +1024,6 @@ case class MenuItem(
   }
 
   def breadCrumbs: Seq[MenuItem] = {
-    if (!path) Nil
-    else this :: kids.toList.flatMap(_.breadCrumbs)
+    if (!path) Nil else this :: kids.toList.flatMap(_.breadCrumbs)
   }
 }

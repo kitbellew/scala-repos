@@ -213,8 +213,7 @@ object PolySparse {
       coeff: Array[C]): PolySparse[C] = {
     var len = 0
     cfor(0)(_ < coeff.length, _ + 1) { i =>
-      if (coeff(i) =!= Semiring[C].zero)
-        len += 1
+      if (coeff(i) =!= Semiring[C].zero) len += 1
     }
 
     if (len == coeff.length) { new PolySparse(exp, coeff) }

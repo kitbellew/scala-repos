@@ -21,8 +21,7 @@ object Test {
           .toSeq == expected.asInstanceOf[Array[Int]].toSeq
       else obj == expected
     val tagEquals = tag == tag2
-    if (expectedEquals && tagEquals) print("OK")
-    else print("FAILED")
+    if (expectedEquals && tagEquals) print("OK") else print("FAILED")
     if (!expectedEquals) print(", " + obj + " != " + expected)
     if (!tagEquals) print(", " + tag + " != " + tag2)
     println("")

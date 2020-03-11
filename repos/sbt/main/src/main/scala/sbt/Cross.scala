@@ -96,8 +96,7 @@ object Cross {
         }
         val fixedSession = session.appendRaw(add ++ delegates)
         val fixedState = BuiltinCommands.reapply(fixedSession, structure, state)
-        if (!command.isEmpty) command :: fixedState
-        else fixedState
+        if (!command.isEmpty) command :: fixedState else fixedState
     }
 
   // Creates a delegate for a scoped key that pulls the setting from the global scope.

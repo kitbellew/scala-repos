@@ -101,8 +101,7 @@ class SbtDependencyAnnotator extends Annotator {
     } yield {
       if (shouldAppendScalaVersion && scalaVersion.isDefined)
         ArtifactInfo(group, artifact + "_" + scalaVersion.get, version)
-      else
-        ArtifactInfo(group, artifact, version)
+      else ArtifactInfo(group, artifact, version)
     }
   }
 

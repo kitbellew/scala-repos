@@ -230,8 +230,7 @@ object SafeLong extends SafeLongInstances {
     if (x == 0) absWrap(y)
     else if (y == 0) absWrap(x)
     else if (x == Long.MinValue) {
-      if (y == Long.MinValue) SafeLong.safe64
-      else spire.math.gcd(y, x % y)
+      if (y == Long.MinValue) SafeLong.safe64 else spire.math.gcd(y, x % y)
     } else if (y == Long.MinValue) SafeLongLong(spire.math.gcd(x, y % x))
     else SafeLongLong(spire.math.gcd(x, y % x))
   }
@@ -274,10 +273,8 @@ private[math] final case class SafeLongLong(x: Long) extends SafeLong {
     Checked.tryOrReturn[SafeLong](SafeLongLong(x % y))(SafeLong.zero)
 
   def /%(y: Long): (SafeLong, SafeLong) =
-    if (x == Long.MinValue && y == -1L)
-      (SafeLong.safe64, SafeLong.zero)
-    else
-      (SafeLongLong(x / y), SafeLongLong(x % y))
+    if (x == Long.MinValue && y == -1L) (SafeLong.safe64, SafeLong.zero)
+    else (SafeLongLong(x / y), SafeLongLong(x % y))
 
   def &(y: Long): SafeLong = SafeLongLong(x & y)
   def |(y: Long): SafeLong = SafeLongLong(x | y)
@@ -481,8 +478,7 @@ private[math] final case class SafeLongBigInteger(x: BigInteger)
     }
 
   def abs: SafeLong =
-    if (x.signum >= 0) this
-    else SafeLongBigInteger(x.negate())
+    if (x.signum >= 0) this else SafeLongBigInteger(x.negate())
 
   def gcd(that: SafeLong): SafeLong =
     that match {

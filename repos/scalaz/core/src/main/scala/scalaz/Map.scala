@@ -734,10 +734,8 @@ sealed abstract class ==>>[A, B] {
       case Tip() =>
         empty
       case Bin(kx, x, l, r) =>
-        if (p(kx, x))
-          l.filterWithKey(p).join(kx, x, r.filterWithKey(p))
-        else
-          l.filterWithKey(p) merge r.filterWithKey(p)
+        if (p(kx, x)) l.filterWithKey(p).join(kx, x, r.filterWithKey(p))
+        else l.filterWithKey(p) merge r.filterWithKey(p)
     }
 
   // Partition
@@ -753,10 +751,8 @@ sealed abstract class ==>>[A, B] {
         val (l1, l2) = l partitionWithKey p
         val (r1, r2) = r partitionWithKey p
 
-        if (p(kx, x))
-          (l1.join(kx, x, r1), l2 merge r2)
-        else
-          (l1 merge r1, l2.join(kx, x, r2))
+        if (p(kx, x)) (l1.join(kx, x, r1), l2 merge r2)
+        else (l1 merge r1, l2.join(kx, x, r2))
     }
 
   def mapOption[C](f: B => Option[C])(implicit o: Order[A]): A ==>> C =
@@ -1001,15 +997,13 @@ sealed abstract class MapInstances0 {
 
       def zip[A, B](a: => (S ==>> A), b: => (S ==>> B)) = {
         val a0 = a
-        if (a0.isEmpty) ==>>.empty
-        else a0.intersectionWith(b)(Tuple2.apply)
+        if (a0.isEmpty) ==>>.empty else a0.intersectionWith(b)(Tuple2.apply)
       }
 
       override def zipWith[A, B, C](a: => (S ==>> A), b: => (S ==>> B))(
           f: (A, B) => C)(implicit F: Functor[S ==>> ?]) = {
         val a0 = a
-        if (a0.isEmpty) ==>>.empty
-        else a0.intersectionWith(b)(f)
+        if (a0.isEmpty) ==>>.empty else a0.intersectionWith(b)(f)
       }
     }
 }
@@ -1056,10 +1050,7 @@ sealed abstract class MapInstances extends MapInstances0 {
               case a @ Some(_) =>
                 a
               case None =>
-                if (f(x))
-                  Some(x)
-                else
-                  findLeft(r)(f)
+                if (f(x)) Some(x) else findLeft(r)(f)
             }
           case Tip() =>
             None
@@ -1072,10 +1063,7 @@ sealed abstract class MapInstances extends MapInstances0 {
               case a @ Some(_) =>
                 a
               case None =>
-                if (f(x))
-                  Some(x)
-                else
-                  findRight(l)(f)
+                if (f(x)) Some(x) else findRight(l)(f)
             }
           case Tip() =>
             None
@@ -1232,14 +1220,10 @@ object ==>> extends MapInstances {
       x: B,
       l: A ==>> B,
       r: A ==>> B): A ==>> B = {
-    if (l.size + r.size <= 1)
-      Bin(k, x, l, r)
-    else if (r.size >= delta * l.size)
-      rotateL(k, x, l, r)
-    else if (l.size >= delta * r.size)
-      rotateR(k, x, l, r)
-    else
-      Bin(k, x, l, r)
+    if (l.size + r.size <= 1) Bin(k, x, l, r)
+    else if (r.size >= delta * l.size) rotateL(k, x, l, r)
+    else if (l.size >= delta * r.size) rotateR(k, x, l, r)
+    else Bin(k, x, l, r)
   }
 
   // Left rotations

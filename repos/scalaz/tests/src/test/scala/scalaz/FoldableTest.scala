@@ -12,44 +12,32 @@ object FoldableTest extends SpecLite {
     v.toList must_== xs
   }
   "maximum" ! forAll { (xs: List[Int]) =>
-    if (xs.isEmpty)
-      (xs.maximum) must_== (None)
-    else
-      (xs.maximum) must_== Some((xs.max))
+    if (xs.isEmpty) (xs.maximum) must_== (None)
+    else (xs.maximum) must_== Some((xs.max))
   }
   "maximumOf" ! forAll { (xs: List[Int]) =>
     val f: Int => Double = 1d + _
-    if (xs.isEmpty)
-      (xs maximumOf f) must_== (None)
-    else
-      (xs maximumOf f) must_== (Some((xs.iterator map f).max))
+    if (xs.isEmpty) (xs maximumOf f) must_== (None)
+    else (xs maximumOf f) must_== (Some((xs.iterator map f).max))
   }
   "maximumBy" ! forAll { (xs: List[Int]) =>
     val f: Int => String = _.toString
-    if (xs.isEmpty)
-      (xs maximumBy f) must_== None
-    else
-      (xs maximumBy f) must_== Some((xs zip (xs map f)).maxBy(_._2)._1)
+    if (xs.isEmpty) (xs maximumBy f) must_== None
+    else (xs maximumBy f) must_== Some((xs zip (xs map f)).maxBy(_._2)._1)
   }
   "minimum" ! forAll { (xs: List[Int]) =>
-    if (xs.isEmpty)
-      (xs.minimum) must_== None
-    else
-      (xs.minimum) must_== Some(xs.min)
+    if (xs.isEmpty) (xs.minimum) must_== None
+    else (xs.minimum) must_== Some(xs.min)
   }
   "minimumOf" ! forAll { (xs: List[Int]) =>
     val f: Int => Double = 1d + _
-    if (xs.isEmpty)
-      (xs minimumOf f) must_== None
-    else
-      (xs minimumOf f) must_== Some((xs.iterator map f).min)
+    if (xs.isEmpty) (xs minimumOf f) must_== None
+    else (xs minimumOf f) must_== Some((xs.iterator map f).min)
   }
   "minimumBy" ! forAll { (xs: List[Int]) =>
     val f: Int => String = _.toString
-    if (xs.isEmpty)
-      (xs minimumBy f) must_== None
-    else
-      (xs minimumBy f) must_== Some((xs zip (xs map f)).minBy(_._2)._1)
+    if (xs.isEmpty) (xs minimumBy f) must_== None
+    else (xs minimumBy f) must_== Some((xs zip (xs map f)).minBy(_._2)._1)
   }
 
   "distinct" ! forAll { (xs: List[Int]) =>

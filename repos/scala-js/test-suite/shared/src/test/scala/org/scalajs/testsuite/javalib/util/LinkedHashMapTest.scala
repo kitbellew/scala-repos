@@ -124,8 +124,7 @@ abstract class LinkedHashMapTest extends HashMapTest {
       val key = expectedKey(index)
       if (key == 0 || key == 1 || key == 42 || key == 52 || key == 98)
         s"new $key"
-      else
-        s"elem $key"
+      else s"elem $key"
     }
 
     val expectedSize = withSizeLimit.getOrElse(101)
@@ -217,8 +216,7 @@ class LinkedHashMapFactory(
     val withSizeLimit: Option[Int])
     extends HashMapFactory {
   def orderName: String =
-    if (accessOrder) "access-order"
-    else "insertion-order"
+    if (accessOrder) "access-order" else "insertion-order"
 
   override def implementationName: String = {
     val sizeLimitSting = withSizeLimit.fold("")(", maxSize=" + _)

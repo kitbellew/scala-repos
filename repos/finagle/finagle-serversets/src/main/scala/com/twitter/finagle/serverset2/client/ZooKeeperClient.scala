@@ -128,8 +128,7 @@ object ZooKeeperReader {
       throw new IllegalArgumentException("Invalid glob pattern")
 
     val slash = pat.lastIndexOf('/')
-    if (slash < 0)
-      throw new IllegalArgumentException("Invalid prefix")
+    if (slash < 0) throw new IllegalArgumentException("Invalid prefix")
 
     val path = if (slash == 0) "/" else pat.substring(0, slash)
     val prefix = pat.substring(slash + 1, pat.length)
@@ -146,8 +145,7 @@ object ZooKeeperReader {
     val iter = children.iterator()
     while (iter.hasNext()) {
       val el = iter.next()
-      if (el startsWith prefix)
-        seq += path + "/" + el
+      if (el startsWith prefix) seq += path + "/" + el
     }
     seq.result
   }

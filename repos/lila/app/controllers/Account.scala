@@ -163,7 +163,6 @@ object Account extends LilaController {
       lila.security.Store
         .closeUserExceptSessionId(me.id, currentSessionId) inject
         Redirect(routes.Account.security)
-    else
-      lila.security.Store.closeUserAndSessionId(me.id, sessionId)
+    else lila.security.Store.closeUserAndSessionId(me.id, sessionId)
   }
 }

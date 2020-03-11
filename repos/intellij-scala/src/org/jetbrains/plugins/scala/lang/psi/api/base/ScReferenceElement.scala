@@ -72,8 +72,7 @@ trait ScReferenceElement
     val len = getTextLength
     if (isBackQuoted && patternNeedBackticks(refName.drop(1).dropRight(1)))
       new TextRange(start + 1, len - 1)
-    else
-      new TextRange(start, len)
+    else new TextRange(start, len)
   }
 
   def getCanonicalText: String = {
@@ -157,8 +156,7 @@ trait ScReferenceElement
                 val classesEquiv: Boolean = ScEquivalenceUtil.smartEquivalence(
                   methodContainingClass,
                   nodeMethodContainingClass)
-                if (classesEquiv)
-                  break = true
+                if (classesEquiv) break = true
               }
             }
 

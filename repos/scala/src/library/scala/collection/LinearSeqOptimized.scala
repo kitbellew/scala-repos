@@ -127,8 +127,7 @@ trait LinearSeqOptimized[+A, +Repr <: LinearSeqOptimized[A, Repr]]
 
   override /*IterableLike*/
   def foldRight[B](z: B)(@deprecatedName('f) op: (A, B) => B): B =
-    if (this.isEmpty) z
-    else op(head, tail.foldRight(z)(op))
+    if (this.isEmpty) z else op(head, tail.foldRight(z)(op))
 
   override /*TraversableLike*/
   def reduceLeft[B >: A](@deprecatedName('f) op: (B, A) => B): B =
@@ -205,8 +204,7 @@ trait LinearSeqOptimized[+A, +Repr <: LinearSeqOptimized[A, Repr]]
   def slice(from: Int, until: Int): Repr = {
     var these: Repr = repr
     var count = from max 0
-    if (until <= count)
-      return newBuilder.result()
+    if (until <= count) return newBuilder.result()
 
     val b = newBuilder
     var sliceElems = until - count
@@ -264,15 +262,11 @@ trait LinearSeqOptimized[+A, +Repr <: LinearSeqOptimized[A, Repr]]
   override /*SeqLike*/
   def lengthCompare(len: Int): Int = {
     @tailrec def loop(i: Int, xs: Repr): Int = {
-      if (i == len)
-        if (xs.isEmpty) 0 else 1
-      else if (xs.isEmpty)
-        -1
-      else
-        loop(i + 1, xs.tail)
+      if (i == len) if (xs.isEmpty) 0 else 1
+      else if (xs.isEmpty) -1
+      else loop(i + 1, xs.tail)
     }
-    if (len < 0) 1
-    else loop(0, this)
+    if (len < 0) 1 else loop(0, this)
   }
 
   override /*SeqLike*/
@@ -294,8 +288,7 @@ trait LinearSeqOptimized[+A, +Repr <: LinearSeqOptimized[A, Repr]]
     var i = from
     var these = this drop from
     while (these.nonEmpty) {
-      if (p(these.head))
-        return i
+      if (p(these.head)) return i
 
       i += 1
       these = these.tail

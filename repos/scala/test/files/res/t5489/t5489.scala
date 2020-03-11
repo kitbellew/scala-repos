@@ -7,10 +7,9 @@ trait HasString {
 class CausesProblems {
   def problems =
     (
-      if ("don't optimize me away!".length == 0)
-        new HasString {
-          def blerg() = "wut"
-        }
+      if ("don't optimize me away!".length == 0) new HasString {
+        def blerg() = "wut"
+      }
       else
         new HasString {
           def blerg() = "okay"

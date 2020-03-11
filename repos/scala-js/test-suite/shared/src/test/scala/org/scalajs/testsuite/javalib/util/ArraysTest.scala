@@ -85,13 +85,11 @@ class ArraysTest {
     val values = Array(5, 3, 6, 1, 2, 4).map(elem)
     val arr = newArray(values.length)
 
-    for (i <- 0 until values.length)
-      arr(i) = values(i)
+    for (i <- 0 until values.length) arr(i) = values(i)
     sort(arr)
     assertArrayEquals(arr, Array(1, 2, 3, 4, 5, 6).map(elem))
 
-    for (i <- 0 until values.length)
-      arr(i) = values(i)
+    for (i <- 0 until values.length) arr(i) = values(i)
     sort2(arr, 0, 3)
     assertArrayEquals(arr, Array(3, 5, 6, 1, 2, 4).map(elem))
 

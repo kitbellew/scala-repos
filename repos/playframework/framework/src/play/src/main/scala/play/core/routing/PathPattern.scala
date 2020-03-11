@@ -48,8 +48,7 @@ case class PathPattern(parts: Seq[PathPart]) {
           val group = matcher.group(groupCount)
           // If param is not correctly encoded, get path will return null, so we prepend a / to it
           new URI("/" + group).getPath.drop(1)
-        } else
-          matcher.group(groupCount)
+        } else matcher.group(groupCount)
       }
 
   private lazy val (regex, groups) = {

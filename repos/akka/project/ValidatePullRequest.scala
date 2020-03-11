@@ -256,12 +256,9 @@ object ValidatePullRequest extends AutoPlugin {
 
         if (githubCommandEnforcedBuildAll.isDefined)
           githubCommandEnforcedBuildAll.get
-        else if (changedDirs contains "project")
-          BuildProjectChangedQuick
-        else if (isDependency)
-          BuildQuick
-        else
-          BuildSkip
+        else if (changedDirs contains "project") BuildProjectChangedQuick
+        else if (isDependency) BuildQuick
+        else BuildSkip
       },
       additionalTasks in ValidatePR := Seq.empty,
       validatePullRequest := Def.taskDyn {

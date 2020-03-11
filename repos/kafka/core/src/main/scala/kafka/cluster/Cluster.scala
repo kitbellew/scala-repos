@@ -27,8 +27,7 @@ private[kafka] class Cluster {
 
   def this(brokerList: Iterable[Broker]) {
     this()
-    for (broker <- brokerList)
-      brokers.put(broker.id, broker)
+    for (broker <- brokerList) brokers.put(broker.id, broker)
   }
 
   def getBroker(id: Int): Option[Broker] = brokers.get(id)

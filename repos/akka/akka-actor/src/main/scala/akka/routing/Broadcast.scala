@@ -22,8 +22,7 @@ final class BroadcastRoutingLogic extends RoutingLogic {
   override def select(
       message: Any,
       routees: immutable.IndexedSeq[Routee]): Routee =
-    if (routees.isEmpty) NoRoutee
-    else SeveralRoutees(routees)
+    if (routees.isEmpty) NoRoutee else SeveralRoutees(routees)
 }
 
 /**

@@ -66,8 +66,7 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
 
   def newModule(accessor: Symbol, tpe: Type) = {
     val ps = tpe.typeSymbol.primaryConstructor.info.paramTypes
-    if (ps.isEmpty) New(tpe)
-    else New(tpe, This(accessor.owner.enclClass))
+    if (ps.isEmpty) New(tpe) else New(tpe, This(accessor.owner.enclClass))
   }
 
   def mkRuntimeCall(meth: Name, args: List[Tree]): Tree =
@@ -185,8 +184,7 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
     if (elemtp.typeSymbol == AnyClass && isPrimitiveValueType(
           tree.tpe.typeArgs.head))
       mkCast(mkRuntimeCall(nme.toObjectArray, List(tree)), pt)
-    else
-      mkCast(tree, pt)
+    else mkCast(tree, pt)
 
   /** Translate names in Select/Ident nodes to type names.
     */

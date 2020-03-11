@@ -26,8 +26,7 @@ class SkewJoinJob(args: Args) extends Job(args) {
   val replicator =
     if (args.getOrElse("replicator", "a") == "a")
       SkewReplicationA(replicationFactor)
-    else
-      SkewReplicationB()
+    else SkewReplicationB()
 
   val in0 = Tsv("input0").read.mapTo((0, 1, 2) -> ('x1, 'y1, 's1)) {
     input: (Int, Int, Int) => input
@@ -168,8 +167,7 @@ class CollidingKeySkewJoinJob(args: Args) extends Job(args) {
   val replicator =
     if (args.getOrElse("replicator", "a") == "a")
       SkewReplicationA(replicationFactor)
-    else
-      SkewReplicationB()
+    else SkewReplicationB()
 
   val in0 = Tsv("input0").read.mapTo((0, 1, 2) -> ('k1, 'k3, 'v1)) {
     input: (Int, Int, Int) => input

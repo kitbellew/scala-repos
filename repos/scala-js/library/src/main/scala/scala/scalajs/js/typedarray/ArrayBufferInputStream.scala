@@ -65,10 +65,8 @@ class ArrayBufferInputStream(
 
     val len = Math.min(reqLen, length - pos)
 
-    if (reqLen == 0)
-      0 // 0 requested, 0 returned
-    else if (len == 0)
-      -1 // nothing to read at all
+    if (reqLen == 0) 0 // 0 requested, 0 returned
+    else if (len == 0) -1 // nothing to read at all
     else {
       var i = 0
       while (i < len) {

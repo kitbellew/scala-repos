@@ -81,8 +81,7 @@ trait StdNames {
       prefix + marker + md5chars + marker + suffix
     }
     def apply(s: String): String = (
-      if (s.length <= MaxNameLength) s
-      else toMD5(s, MaxNameLength / 4)
+      if (s.length <= MaxNameLength) s else toMD5(s, MaxNameLength / 4)
     )
   }
 
@@ -451,8 +450,7 @@ trait StdNames {
         // or something we need to keep the bonus dollars, so e.g. foo$$$outer
         // has an original name of $outer.
         var idx = idx0
-        while (idx > 0 && name.charAt(idx - 1) == '$')
-          idx -= 1
+        while (idx > 0 && name.charAt(idx - 1) == '$') idx -= 1
         name drop idx + 2
     }
 
@@ -505,20 +503,16 @@ trait StdNames {
           name1.subName(0, idxM - 1),
           name1.subName(idxC + 1, name1.length).toString,
           name1.subName(idxM + 1, idxC).toString)
-      } else
-        (name, "", "")
+      } else (name, "", "")
 
     // Nominally, name$default$N, encoded for <init>
     def defaultGetterName(name: Name, pos: Int): TermName = (
-      if (isConstructorName(name))
-        DEFAULT_GETTER_INIT_STRING + pos
-      else
-        name + DEFAULT_GETTER_STRING + pos
+      if (isConstructorName(name)) DEFAULT_GETTER_INIT_STRING + pos
+      else name + DEFAULT_GETTER_STRING + pos
     )
     // Nominally, name from name$default$N, CONSTRUCTOR for <init>
     def defaultGetterToMethod(name: Name): TermName = (
-      if (name startsWith DEFAULT_GETTER_INIT_STRING)
-        nme.CONSTRUCTOR
+      if (name startsWith DEFAULT_GETTER_INIT_STRING) nme.CONSTRUCTOR
       else
         name indexOf DEFAULT_GETTER_STRING match {
           case -1  => name.toTermName

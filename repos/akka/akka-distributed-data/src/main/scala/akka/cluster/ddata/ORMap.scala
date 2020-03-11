@@ -104,8 +104,7 @@ final class ORMap[A <: ReplicatedData] private[akka] (
         "`ORMap.put` must not be used to replace an existing `ORSet` " +
           "value, because important history can be lost when replacing the `ORSet` and " +
           "undesired effects of merging will occur. Use `ORMultiMap` or `ORMap.updated` instead.")
-    else
-      new ORMap(keys.add(node, key), values.updated(key, value))
+    else new ORMap(keys.add(node, key), values.updated(key, value))
 
   /**
     * Scala API: Replace a value by applying the `modify` function on the existing value.

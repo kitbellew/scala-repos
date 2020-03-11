@@ -57,13 +57,11 @@ class BinaryPickleBuilder(format: BinaryPickleFormat, out: BinaryOutput)
       output =
         if (knownSize != -1) new FixedByteArrayOutput(knownSize)
         else new ByteArrayOutput
-    else
-      output.ensureCapacity(knownSize)
+    else output.ensureCapacity(knownSize)
   }
 
   private def ignoringSharedRefs(action: => PBuilder): PBuilder =
-    if (isIgnoringFields) this
-    else action
+    if (isIgnoringFields) this else action
 
   @inline def beginEntry(picklee: Any, tag: FastTypeTag[_]): PBuilder =
     withHints { hints =>

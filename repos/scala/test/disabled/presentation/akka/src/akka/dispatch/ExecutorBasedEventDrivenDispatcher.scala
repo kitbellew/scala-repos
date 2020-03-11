@@ -227,8 +227,7 @@ trait ExecutableMailbox extends Runnable { self: MessageQueue =>
     catch {
       case ie: InterruptedException =>
     } finally { dispatcherLock.unlock() }
-    if (!self.isEmpty)
-      dispatcher.reRegisterForExecution(this)
+    if (!self.isEmpty) dispatcher.reRegisterForExecution(this)
   }
 
   /**

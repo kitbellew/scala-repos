@@ -73,22 +73,19 @@ class ParHashMap[K, V] private[collection] (
 
   def get(key: K): Option[V] = {
     val e = findEntry(key)
-    if (e eq null) None
-    else Some(e.value)
+    if (e eq null) None else Some(e.value)
   }
 
   def put(key: K, value: V): Option[V] = {
     val e = findOrAddEntry(key, value)
-    if (e eq null) None
-    else { val v = e.value; e.value = value; Some(v) }
+    if (e eq null) None else { val v = e.value; e.value = value; Some(v) }
   }
 
   def update(key: K, value: V): Unit = put(key, value)
 
   def remove(key: K): Option[V] = {
     val e = removeEntry(key)
-    if (e ne null) Some(e.value)
-    else None
+    if (e ne null) Some(e.value) else None
   }
 
   def +=(kv: (K, V)): this.type = {

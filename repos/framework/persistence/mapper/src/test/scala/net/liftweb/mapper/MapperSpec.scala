@@ -174,11 +174,9 @@ class MapperSpec extends Specification with BeforeExample {
 
           (oo.length > 0) must beTrue
 
-          for (t <- oo)
-            (t.tag.get.indexOf("oo") >= 0) must beTrue
+          for (t <- oo) (t.tag.get.indexOf("oo") >= 0) must beTrue
 
-          for (t <- oo)
-            t.model.cached_? must beFalse
+          for (t <- oo) t.model.cached_? must beFalse
 
           val mm = SampleTag.findAll(Like(SampleTag.tag, "M%"))
 

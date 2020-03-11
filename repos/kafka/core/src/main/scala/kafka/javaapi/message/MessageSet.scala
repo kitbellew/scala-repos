@@ -45,8 +45,7 @@ abstract class MessageSet extends java.lang.Iterable[MessageAndOffset] {
     val thisIterator = this.iterator
     while (thisIterator.hasNext) {
       val messageAndOffset = thisIterator.next
-      if (!messageAndOffset.message.isValid)
-        throw new InvalidMessageException
+      if (!messageAndOffset.message.isValid) throw new InvalidMessageException
     }
   }
 }

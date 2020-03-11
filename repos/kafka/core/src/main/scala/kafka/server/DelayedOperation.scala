@@ -100,10 +100,7 @@ abstract class DelayedOperation(delayMs: Long) extends TimerTask with Logging {
   /*
    * run() method defines a task that is executed on timeout
    */
-  override def run(): Unit = {
-    if (forceComplete())
-      onExpiration()
-  }
+  override def run(): Unit = { if (forceComplete()) onExpiration() }
 }
 
 /**
@@ -184,14 +181,12 @@ class DelayedOperationPurgatory[T <: DelayedOperation](
     // expire reaper will clean it up periodically.
 
     var isCompletedByMe = operation synchronized operation.tryComplete()
-    if (isCompletedByMe)
-      return true
+    if (isCompletedByMe) return true
 
     var watchCreated = false
     for (key <- watchKeys) {
       // If the operation is already completed, stop adding it to the rest of the watcher list.
-      if (operation.isCompleted())
-        return false
+      if (operation.isCompleted()) return false
       watchForOperation(key, operation)
 
       if (!watchCreated) {
@@ -201,8 +196,7 @@ class DelayedOperationPurgatory[T <: DelayedOperation](
     }
 
     isCompletedByMe = operation synchronized operation.tryComplete()
-    if (isCompletedByMe)
-      return true
+    if (isCompletedByMe) return true
 
     // if it cannot be completed by now and hence is watched, add to the expire queue also
     if (!operation.isCompleted()) {
@@ -224,10 +218,7 @@ class DelayedOperationPurgatory[T <: DelayedOperation](
     */
   def checkAndComplete(key: Any): Int = {
     val watchers = inReadLock(removeWatchersLock) { watchersForKey.get(key) }
-    if (watchers == null)
-      0
-    else
-      watchers.tryCompleteWatched()
+    if (watchers == null) 0 else watchers.tryCompleteWatched()
   }
 
   /**
@@ -267,8 +258,7 @@ class DelayedOperationPurgatory[T <: DelayedOperation](
   private def removeKeyIfEmpty(key: Any, watchers: Watchers) {
     inWriteLock(removeWatchersLock) {
       // if the current key is no longer correlated to the watchers to remove, skip
-      if (watchersForKey.get(key) != watchers)
-        return
+      if (watchersForKey.get(key) != watchers) return
 
       if (watchers != null && watchers.watched == 0) {
         watchersForKey.remove(key)
@@ -314,8 +304,7 @@ class DelayedOperationPurgatory[T <: DelayedOperation](
         }
       }
 
-      if (operations.size == 0)
-        removeKeyIfEmpty(key, this)
+      if (operations.size == 0) removeKeyIfEmpty(key, this)
 
       completed
     }
@@ -334,8 +323,7 @@ class DelayedOperationPurgatory[T <: DelayedOperation](
         }
       }
 
-      if (operations.size == 0)
-        removeKeyIfEmpty(key, this)
+      if (operations.size == 0) removeKeyIfEmpty(key, this)
 
       purged
     }

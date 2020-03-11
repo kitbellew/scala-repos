@@ -29,8 +29,7 @@ class SimplePool[A](items: mutable.Queue[Future[A]]) extends Pool[A] {
     synchronized {
       if (!requests.isEmpty && !items.isEmpty)
         Some((requests.dequeue(), items.dequeue()))
-      else
-        None
+      else None
     } map {
       case (request, item) =>
         item respond (request() = _)

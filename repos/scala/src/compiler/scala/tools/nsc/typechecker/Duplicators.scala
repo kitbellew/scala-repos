@@ -62,8 +62,7 @@ abstract class Duplicators extends Analyzer {
   private class SubstSkolemsTypeMap(from: List[Symbol], to: List[Type])
       extends SubstTypeMap(from, to) {
     protected override def matches(sym1: Symbol, sym2: Symbol) =
-      if (sym2.isTypeSkolem) sym2.deSkolemize eq sym1
-      else sym1 eq sym2
+      if (sym2.isTypeSkolem) sym2.deSkolemize eq sym1 else sym1 eq sym2
   }
 
   private val invalidSyms: mutable.Map[Symbol, Tree] =
@@ -102,24 +101,21 @@ abstract class Duplicators extends Analyzer {
           if (newsym ne sym) {
             debuglog("fixing " + sym + " -> " + newsym)
             typeRef(mapOver(pre), newsym, mapOverArgs(args, newsym.typeParams))
-          } else
-            super.mapOver(tpe)
+          } else super.mapOver(tpe)
 
         case SingleType(pre, sym) =>
           val sym1 = updateSym(sym)
           if (sym1 ne sym) {
             debuglog("fixing " + sym + " -> " + sym1)
             singleType(mapOver(pre), sym1)
-          } else
-            super.mapOver(tpe)
+          } else super.mapOver(tpe)
 
         case ThisType(sym) =>
           val sym1 = updateSym(sym)
           if (sym1 ne sym) {
             debuglog("fixing " + sym + " -> " + sym1)
             ThisType(sym1)
-          } else
-            super.mapOver(tpe)
+          } else super.mapOver(tpe)
 
         case _ =>
           super.mapOver(tpe)
@@ -138,10 +134,7 @@ abstract class Duplicators extends Analyzer {
 
     /** Return the new symbol corresponding to `sym`. */
     private def updateSym(sym: Symbol): Symbol =
-      if (invalidSyms.isDefinedAt(sym))
-        invalidSyms(sym).symbol
-      else
-        sym
+      if (invalidSyms.isDefinedAt(sym)) invalidSyms(sym).symbol else sym
 
     private def invalidate(tree: Tree, owner: Symbol = NoSymbol) {
       debuglog(s"attempting to invalidate symbol = ${tree.symbol}")
@@ -265,8 +258,7 @@ abstract class Duplicators extends Analyzer {
           // to do it manually here -- but for the tailcalls-generated labels, ValDefs are created before the LabelDef,
           // so we just need to change the tree to point to the updated symbols
           def newParam(p: Tree): Ident =
-            if (isTailLabel)
-              Ident(updateSym(p.symbol))
+            if (isTailLabel) Ident(updateSym(p.symbol))
             else {
               val newsym = p.symbol.cloneSymbol //(context.owner) // TODO owner?
               Ident(newsym.setInfo(fixType(p.symbol.info)))
@@ -381,8 +373,7 @@ abstract class Duplicators extends Analyzer {
             // Not at all sure this is safe.
             else if (scrutTpe <:< AnyRefTpe)
               cases filterNot (_.pat.tpe <:< AnyValTpe)
-            else
-              cases
+            else cases
           }
 
           super.typed(atPos(tree.pos)(Match(scrut, cases1)), mode, pt)

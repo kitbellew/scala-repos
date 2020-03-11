@@ -32,8 +32,7 @@ class DeMorganLawIntention extends PsiElementBaseIntentionAction {
 
     val oper = infixExpr.operation.nameId.getText
 
-    if (oper != "||" && oper != "&&")
-      return false
+    if (oper != "||" && oper != "&&") return false
 
     val range: TextRange = infixExpr.operation.nameId.getTextRange
     val offset = editor.getCaretModel.getOffset

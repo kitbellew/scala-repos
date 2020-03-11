@@ -20,8 +20,7 @@ abstract class ApacheAdaptiveStepIntegrator(
 
   // If error tolerances are not specified, fill with default.
   protected val (aTol, rTol): (Array[Double], Array[Double]) =
-    if (someRelTol.isEmpty && someAbsTol.isEmpty)
-      (Array.empty, Array.empty)
+    if (someRelTol.isEmpty && someAbsTol.isEmpty) (Array.empty, Array.empty)
     else if (!someRelTol.isEmpty && !someAbsTol.isEmpty)
       (someAbsTol.get.toArray, someRelTol.get.toArray)
     else if (someRelTol.isEmpty)

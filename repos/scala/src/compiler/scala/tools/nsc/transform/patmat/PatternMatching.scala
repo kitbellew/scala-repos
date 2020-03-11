@@ -294,8 +294,7 @@ trait Interface extends ast.TreeDSL {
               from,
               to.map(_.symbol)
             ) // SI-7459 catches `case t => new t.Foo`
-          else
-            substIdentsForTrees.transform(tree)
+          else substIdentsForTrees.transform(tree)
         } else tree
       }
 

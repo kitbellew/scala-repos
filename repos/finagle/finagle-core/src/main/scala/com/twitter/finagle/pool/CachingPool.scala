@@ -39,8 +39,7 @@ private[finagle] class CachingPool[Req, Rep](
       if (this.status != Status.Closed && CachingPool.this.isOpen) {
         cache.put(underlying)
         Future.Done
-      } else
-        underlying.close(deadline)
+      } else underlying.close(deadline)
   }
 
   @tailrec
@@ -72,8 +71,7 @@ private[finagle] class CachingPool[Req, Rep](
   }
 
   override def status =
-    if (isOpen) factory.status
-    else Status.Closed
+    if (isOpen) factory.status else Status.Closed
 
   override val toString = "caching_pool_%s".format(factory.toString)
 }

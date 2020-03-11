@@ -114,13 +114,13 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
 
         result match {
           case Right(
-              (
                 (
-                  Intersection(
-                    InclusiveLower(readIntervalLower),
-                    ExclusiveUpper(_)),
-                  _),
-                _)) => {
+                  (
+                    Intersection(
+                      InclusiveLower(readIntervalLower),
+                      ExclusiveUpper(_)),
+                    _),
+                  _)) => {
             //readInterval should start from the last written interval in the store
             val start: Timestamp =
               batcher.earliestTimeOf(testStore.initBatch.next)
@@ -150,13 +150,13 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
 
         result match {
           case Right(
-              (
                 (
-                  Intersection(
-                    InclusiveLower(_),
-                    ExclusiveUpper(readIntervalUpper)),
-                  _),
-                _)) => {
+                  (
+                    Intersection(
+                      InclusiveLower(_),
+                      ExclusiveUpper(readIntervalUpper)),
+                    _),
+                  _)) => {
             //readInterval should start from the last written interval in the store
             implicitly[Ordering[Timestamp]]
               .lteq(readIntervalUpper, interval.upper.upper)
@@ -246,8 +246,7 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
                 .get
 
               val readTime: Interval[Timestamp] =
-                if (startRequestedTime == nextBatchEnding)
-                  Empty()
+                if (startRequestedTime == nextBatchEnding) Empty()
                 else
                   Intersection(
                     InclusiveLower(startRequestedTime),

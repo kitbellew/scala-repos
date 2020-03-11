@@ -413,8 +413,7 @@ object ArrayUtil {
     cforRange(0 until length) { _ =>
       val v = data(i)
       val hh = v.##
-      if (hh != 0)
-        hash = MurmurHash3.mix(hash, hh)
+      if (hh != 0) hash = MurmurHash3.mix(hash, hh)
       i += stride
     }
     hash
@@ -430,8 +429,7 @@ object ArrayUtil {
     cforRange(0 until length) { _ =>
       val v = data(i)
       val hh = v.##
-      if (hh != 0)
-        hash = MurmurHash3.mix(hash, hh)
+      if (hh != 0) hash = MurmurHash3.mix(hash, hh)
       i += stride
     }
     hash

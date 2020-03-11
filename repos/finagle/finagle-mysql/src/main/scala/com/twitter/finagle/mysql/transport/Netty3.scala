@@ -21,8 +21,7 @@ class PacketFrameDecoder extends FrameDecoder {
       ctx: ChannelHandlerContext,
       channel: Channel,
       buffer: ChannelBuffer): Packet = {
-    if (buffer.readableBytes < Packet.HeaderSize)
-      return null
+    if (buffer.readableBytes < Packet.HeaderSize) return null
 
     buffer.markReaderIndex()
 

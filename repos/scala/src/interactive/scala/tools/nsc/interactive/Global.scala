@@ -78,8 +78,7 @@ trait InteractiveAnalyzer extends Analyzer {
     override def enterExistingSym(sym: Symbol, tree: Tree): Context = {
       if (sym != null && sym.owner.isTerm) {
         enterIfNotThere(sym)
-        if (sym.isLazy)
-          sym.lazyAccessor andAlso enterIfNotThere
+        if (sym.isLazy) sym.lazyAccessor andAlso enterIfNotThere
 
         for (defAtt <- sym.attachments.get[DefaultsOfLocalMethodAttachment])
           defAtt.defaultGetters foreach enterIfNotThere
@@ -101,8 +100,7 @@ trait InteractiveAnalyzer extends Analyzer {
     override def enterIfNotThere(sym: Symbol) {
       val scope = context.scope
       @tailrec def search(e: ScopeEntry) {
-        if ((e eq null) || (e.owner ne scope))
-          scope enter sym
+        if ((e eq null) || (e.owner ne scope)) scope enter sym
         else if (e.sym ne sym) // otherwise, aborts since we found sym
           search(e.tail)
       }
@@ -217,13 +215,10 @@ with ContextTrees with RichCompilationUnits with Picklers {
   private def cleanResponses(rmap: ResponseMap): Unit = {
     for ((source, rs) <- rmap.toList) {
       for (r <- rs) {
-        if (getUnit(source).isEmpty)
-          r raise new NoSuchUnitError(source.file)
-        if (r.isComplete)
-          rmap(source) -= r
+        if (getUnit(source).isEmpty) r raise new NoSuchUnitError(source.file)
+        if (r.isComplete) rmap(source) -= r
       }
-      if (rmap(source).isEmpty)
-        rmap -= source
+      if (rmap(source).isEmpty) rmap -= source
     }
   }
 
@@ -434,8 +429,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
       breakable {
         loop = false
         if (!interruptsEnabled) return
-        if (pos == NoPosition || nodesSeen % yieldPeriod == 0)
-          Thread.`yield`()
+        if (pos == NoPosition || nodesSeen % yieldPeriod == 0) Thread.`yield`()
 
         def nodeWithWork(): Option[WorkEvent] =
           if (scheduler.moreWork || pendingResponse.isCancelled)
@@ -599,8 +593,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
           else
             debugLog("%s has syntax errors. Skipped typechecking".format(unit))
         else debugLog("already up to date: " + unit)
-        for (r <- waitLoadedTypeResponses(unit.source))
-          r set unit.body
+        for (r <- waitLoadedTypeResponses(unit.source)) r set unit.body
         serviceParsedEntered()
       } catch {
         case ex: FreshRunReq      => throw ex // propagate a new run request
@@ -987,8 +980,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
           if (mirror ne NoSymbol) forceDocComment(mirror, units(src))
         }
         val mirror = findMirrorSymbol(sym, units(source))
-        if (mirror eq NoSymbol)
-          ("", "", NoPosition)
+        if (mirror eq NoSymbol) ("", "", NoPosition)
         else {
           (
             expandedDocComment(mirror, site),
@@ -1106,13 +1098,11 @@ with ContextTrees with RichCompilationUnits with Picklers {
     //print("add scope members")
     var cx = context
     while (cx != NoContext) {
-      for (sym <- cx.scope)
-        addScopeMember(sym, NoPrefix, EmptyTree)
+      for (sym <- cx.scope) addScopeMember(sym, NoPrefix, EmptyTree)
       localsToEnclosing()
       if (cx == cx.enclClass) {
         val pre = cx.prefix
-        for (sym <- pre.members)
-          addScopeMember(sym, pre, EmptyTree)
+        for (sym <- pre.members) addScopeMember(sym, pre, EmptyTree)
         localsToEnclosing()
       }
       cx = cx.outer
@@ -1120,8 +1110,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
     //print("\nadd imported members")
     for (imp <- context.imports) {
       val pre = imp.qual.tpe
-      for (sym <- imp.allImportedSymbols)
-        addScopeMember(sym, pre, imp.qual)
+      for (sym <- imp.allImportedSymbols) addScopeMember(sym, pre, imp.qual)
       localsToEnclosing()
     }
     // println()
@@ -1424,8 +1413,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
         } finally {
           if (keepLoaded || !outOfDate || onSameThread)
             getParsedEnteredNow(source, response)
-          else
-            getParsedEnteredResponses(source) += response
+          else getParsedEnteredResponses(source) += response
         }
     }
   }

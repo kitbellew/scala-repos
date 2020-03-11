@@ -46,10 +46,7 @@ final class Tuple2Zipped[El1, Repr1, El2, Repr2](
     val elems2 = colls._2.iterator
 
     for (el1 <- colls._1) {
-      if (elems2.hasNext)
-        b += f(el1, elems2.next())
-      else
-        return b.result()
+      if (elems2.hasNext) b += f(el1, elems2.next()) else return b.result()
     }
 
     b.result()
@@ -61,10 +58,7 @@ final class Tuple2Zipped[El1, Repr1, El2, Repr2](
     val elems2 = colls._2.iterator
 
     for (el1 <- colls._1) {
-      if (elems2.hasNext)
-        b ++= f(el1, elems2.next())
-      else
-        return b.result()
+      if (elems2.hasNext) b ++= f(el1, elems2.next()) else return b.result()
     }
 
     b.result()
@@ -94,10 +88,8 @@ final class Tuple2Zipped[El1, Repr1, El2, Repr2](
     val elems2 = colls._2.iterator
 
     for (el1 <- colls._1) {
-      if (elems2.hasNext) {
-        if (p(el1, elems2.next()))
-          return true
-      } else return false
+      if (elems2.hasNext) { if (p(el1, elems2.next())) return true }
+      else return false
     }
     false
   }
@@ -109,10 +101,7 @@ final class Tuple2Zipped[El1, Repr1, El2, Repr2](
     val elems2 = colls._2.iterator
 
     for (el1 <- colls._1) {
-      if (elems2.hasNext)
-        f(el1, elems2.next())
-      else
-        return
+      if (elems2.hasNext) f(el1, elems2.next()) else return
     }
   }
 
@@ -135,8 +124,7 @@ object Tuple2Zipped {
       val buf = bf(x._1)
       val it1 = x._1.toIterator
       val it2 = x._2.toIterator
-      while (it1.hasNext && it2.hasNext)
-        buf += ((it1.next(), it2.next()))
+      while (it1.hasNext && it2.hasNext) buf += ((it1.next(), it2.next()))
 
       buf.result()
     }

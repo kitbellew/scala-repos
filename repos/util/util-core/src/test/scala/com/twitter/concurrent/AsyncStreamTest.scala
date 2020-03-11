@@ -38,10 +38,7 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
 
   test("call-by-name tail evaluated at most once") {
     val p = new Promise[Unit]
-    val s = () +:: {
-      if (p.setDone()) of(())
-      else AsyncStream.empty[Unit]
-    }
+    val s = () +:: { if (p.setDone()) of(()) else AsyncStream.empty[Unit] }
     assert(toSeq(s) == toSeq(s))
   }
 

@@ -102,8 +102,7 @@ object Scope {
   def resolveBuild(current: URI, uri: URI): URI =
     if (!uri.isAbsolute && current.isOpaque && uri.getSchemeSpecificPart == ".")
       current // this handles the shortcut of referring to the current build using "."
-    else
-      IO.directoryURI(current resolve uri)
+    else IO.directoryURI(current resolve uri)
 
   def resolveReference(
       current: URI,
@@ -332,8 +331,7 @@ object Scope {
     if (appendGlobal) o ::: Global :: Nil else o
   }
   def globalProjectDelegates(scope: Scope): Seq[Scope] =
-    if (scope == GlobalScope)
-      GlobalScope :: Nil
+    if (scope == GlobalScope) GlobalScope :: Nil
     else
       for (c <- withGlobalAxis(scope.config); t <- withGlobalAxis(scope.task);
            e <- withGlobalAxis(scope.extra)) yield Scope(Global, c, t, e)

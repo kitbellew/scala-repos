@@ -165,8 +165,7 @@ final class WeakHashSet[A <: AnyRef](
         case null => null.asInstanceOf[A]
         case _ => {
           val entryElem = entry.get
-          if (elem == entryElem) entryElem
-          else linkedListLoop(entry.tail)
+          if (elem == entryElem) entryElem else linkedListLoop(entry.tail)
         }
       }
 
@@ -194,8 +193,7 @@ final class WeakHashSet[A <: AnyRef](
         case null => add()
         case _ => {
           val entryElem = entry.get
-          if (elem == entryElem) entryElem
-          else linkedListLoop(entry.tail)
+          if (elem == entryElem) entryElem else linkedListLoop(entry.tail)
         }
       }
 

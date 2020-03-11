@@ -28,8 +28,7 @@ class IndexGrouper[Y: ST: ORD](ix: Index[Y], sorted: Boolean = true) {
         arr,
         array.argsort(arr),
         sys.error("Logic error in sorting group index"))
-    else
-      arr
+    else arr
   }
 
   def keys: Array[Y] = uniq

@@ -69,8 +69,7 @@ final class TaskDef(
     throw new NullPointerException("fullyQualifiedName was null");
   if (_fingerprint == null)
     throw new NullPointerException("fingerprint was null");
-  if (_selectors == null)
-    throw new NullPointerException("selectors was null");
+  if (_selectors == null) throw new NullPointerException("selectors was null");
 
   /** The fully qualified name of the test class requested by this
     *  <code>TaskDef</code>.

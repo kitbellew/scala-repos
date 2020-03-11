@@ -29,10 +29,8 @@ abstract class AbstractSet[E] protected ()
           if (c.contains(iter.next())) {
             iter.remove()
             removeAll(iter, true)
-          } else
-            removeAll(iter, modified)
-        } else
-          modified
+          } else removeAll(iter, modified)
+        } else modified
       }
       removeAll(this.iterator, false)
     }

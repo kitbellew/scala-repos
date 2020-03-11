@@ -164,10 +164,10 @@ trait SingletonTypeUtils extends ReprTypes {
     def unapply(t: Type): Option[String] =
       t match {
         case RefinedType(
-            List(
-              SymTpe,
-              TypeRef(_, TaggedSym, List(ConstantType(Constant(s: String))))),
-            _) =>
+              List(
+                SymTpe,
+                TypeRef(_, TaggedSym, List(ConstantType(Constant(s: String))))),
+              _) =>
           Some(s)
         case _ => None
       }
@@ -460,7 +460,6 @@ class SingletonTypeMacros(val c: whitebox.Context)
 
     if (widenTpe =:= tpe)
       c.abort(c.enclosingPosition, s"Don't know how to widen $tpe")
-    else
-      q"_root_.shapeless.Widen.instance[$tpe, $widenTpe](x => x)"
+    else q"_root_.shapeless.Widen.instance[$tpe, $widenTpe](x => x)"
   }
 }

@@ -369,8 +369,7 @@ class MergeToComprehensions extends Phase {
 
     val tree2 :@ CollectionType(cons2, _) = convert1(tree)
     val cons1 = tree.nodeType.asCollectionType.cons
-    if (cons2 != cons1) CollectionCast(tree2, cons1).infer()
-    else tree2
+    if (cons2 != cons1) CollectionCast(tree2, cons1).infer() else tree2
   }
 
   /** Lift a valid top-level or source Node into a subquery */

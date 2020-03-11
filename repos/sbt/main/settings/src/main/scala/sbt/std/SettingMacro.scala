@@ -39,8 +39,7 @@ object InitializeConvert extends Convert {
       Converted.Failure(
         in.pos,
         "A setting cannot depend on a task's previous value.")
-    else
-      Converted.NotApplicable
+    else Converted.NotApplicable
 }
 
 object SettingMacro {

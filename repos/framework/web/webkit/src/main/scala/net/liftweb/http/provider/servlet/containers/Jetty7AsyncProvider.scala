@@ -120,10 +120,8 @@ class Jetty7AsyncProvider(req: HTTPRequest) extends ServletAsyncProvider {
     val expired = isExpired.invoke(cont).asInstanceOf[Boolean]
     val resumed = isResumed.invoke(cont).asInstanceOf[Boolean]
 
-    if (expired)
-      RetryState.TIMED_OUT
-    else if (resumed)
-      RetryState.RESUMED
+    if (expired) RetryState.TIMED_OUT
+    else if (resumed) RetryState.RESUMED
     else {
       setTimeout.invoke(cont, new java.lang.Long(timeout))
       suspendMeth.invoke(cont)

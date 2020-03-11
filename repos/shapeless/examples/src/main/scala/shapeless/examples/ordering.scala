@@ -42,8 +42,7 @@ object OrderingExamples extends App {
         ot: Ordering[T]): Ordering[H :: T] = new Ordering[H :: T] {
       def compare(a: H :: T, b: H :: T) = {
         val i = oh.compare(a.head, b.head)
-        if (i == 0) ot.compare(a.tail, b.tail)
-        else i
+        if (i == 0) ot.compare(a.tail, b.tail) else i
       }
     }
   }

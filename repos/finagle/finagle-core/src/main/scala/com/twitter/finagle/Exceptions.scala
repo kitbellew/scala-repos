@@ -179,10 +179,8 @@ class CancelledRequestException(cause: Throwable)
     extends RequestException(cause) {
   def this() = this(null)
   override def exceptionMessage = {
-    if (cause == null)
-      "request cancelled"
-    else
-      "request cancelled due to " + cause
+    if (cause == null) "request cancelled"
+    else "request cancelled due to " + cause
   }
 }
 

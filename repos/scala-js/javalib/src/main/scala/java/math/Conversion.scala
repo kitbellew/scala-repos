@@ -67,8 +67,7 @@ private[math] object Conversion {
     else if (numberLength == 1) {
       val highDigit = digits(numberLength - 1)
       var v = highDigit & 0xFFFFFFFFL
-      if (sign < 0)
-        v = -v
+      if (sign < 0) v = -v
       java.lang.Long.toString(v, radix)
     } else if (radix == 10 || radixOutOfBounds) { bi.toString }
     else {
@@ -100,8 +99,7 @@ private[math] object Conversion {
             currentChar -= 1
             result = Character.forDigit(resDigit % radix, radix) + result
             resDigit /= radix
-            if (resDigit != 0 && currentChar != 0)
-              innerLoop()
+            if (resDigit != 0 && currentChar != 0) innerLoop()
           }
           innerLoop()
 
@@ -115,8 +113,7 @@ private[math] object Conversion {
           i = tempLen - 1
           while (i > 0 && temp(i) == 0) { i -= 1 }
           tempLen = i + 1
-          if (!(tempLen == 1 && temp(0) == 0))
-            loop()
+          if (!(tempLen == 1 && temp(0) == 0)) loop()
         }
 
         loop()
@@ -133,8 +130,7 @@ private[math] object Conversion {
       }
       // strip leading zero's
       result = result.dropWhile(_ == '0')
-      if (sign == -1) '-' + result
-      else result
+      if (sign == -1) '-' + result else result
     }
   }
 
@@ -211,8 +207,7 @@ private[math] object Conversion {
             currentChar -= 1
             result = (48 + (resDigit % 10)).toChar + result
             resDigit /= 10
-            if (resDigit != 0 && currentChar != 0)
-              innerLoop()
+            if (resDigit != 0 && currentChar != 0) innerLoop()
           }
 
           innerLoop()
@@ -233,8 +228,7 @@ private[math] object Conversion {
         loop()
         result = result.dropWhile(_ == '0')
       }
-      if (sign < 0) '-' + result
-      else result
+      if (sign < 0) '-' + result else result
     }
   }
 
@@ -291,19 +285,16 @@ private[math] object Conversion {
         }
       } else if (scale != 0) {
         var result1 = exponent.toString
-        if (exponent > 0)
-          result1 = '+' + result1
+        if (exponent > 0) result1 = '+' + result1
         result1 = 'E' + result1
 
         result =
           if (resLengthInChars - currentChar > 1)
             result(0) + "." + result.substring(1) + result1
-          else
-            result + result1
+          else result + result1
       }
 
-      if (negNumber) '-' + result
-      else result
+      if (negNumber) '-' + result else result
     }
   }
 
@@ -328,8 +319,7 @@ private[math] object Conversion {
     if (bi.numberLength < 2 || ((bi.numberLength == 2) && (bi.digits(1) > 0))) {
       bi.longValue()
     } else if (bi.numberLength > 32) {
-      if (bi.sign > 0) Double.PositiveInfinity
-      else Double.NegativeInfinity
+      if (bi.sign > 0) Double.PositiveInfinity else Double.NegativeInfinity
     } else {
       val bitLen = bi.abs().bitLength()
       var exponent: Long = bitLen - 1
@@ -338,11 +328,9 @@ private[math] object Conversion {
       var mantissa = lVal & 0x1FFFFFFFFFFFFFL
 
       if (exponent == 1023 && mantissa == 0X1FFFFFFFFFFFFFL) {
-        if (bi.sign > 0) Double.PositiveInfinity
-        else Double.NegativeInfinity
+        if (bi.sign > 0) Double.PositiveInfinity else Double.NegativeInfinity
       } else if (exponent == 1023 && mantissa == 0x1FFFFFFFFFFFFEL) {
-        if (bi.sign > 0) Double.MaxValue
-        else -Double.MaxValue
+        if (bi.sign > 0) Double.MaxValue else -Double.MaxValue
       } else {
         val droppedBits = BitLevel.nonZeroDroppedBits(delta, bi.digits)
         if (((mantissa & 1) == 1) && (((mantissa & 2) == 2) || droppedBits))

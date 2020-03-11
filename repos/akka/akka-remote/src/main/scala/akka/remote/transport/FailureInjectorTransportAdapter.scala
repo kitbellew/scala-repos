@@ -225,7 +225,6 @@ private[remote] final case class FailureInjectorHandle(
     if (!gremlinAdapter.shouldDropInbound(
           wrappedHandle.remoteAddress,
           ev,
-          "handler.notify"))
-      upstreamListener notify ev
+          "handler.notify")) upstreamListener notify ev
 
 }

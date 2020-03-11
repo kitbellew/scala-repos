@@ -278,8 +278,7 @@ class JepsenInspiredInsertSpec
       }
       runOn(n2, n3) {
         // without delays all could teoretically have been written before the blackhole
-        if (delayMillis != 0)
-          failureWriteAcks should not be (Nil)
+        if (delayMillis != 0) failureWriteAcks should not be (Nil)
       }
       (successWriteAcks.size + failureWriteAcks.size) should be(myData.size)
 

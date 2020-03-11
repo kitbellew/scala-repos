@@ -386,8 +386,7 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
       else if ((bitmap & mask) != 0) {
         val offset = Integer.bitCount(bitmap & (mask - 1))
         elems(offset).get0(key, hash, level + 5)
-      } else
-        None
+      } else None
     }
 
     private[collection] override def updated0[B1 >: B](
@@ -442,12 +441,9 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
             // if we have only one child, which is not a HashTrieSet but a self-contained set like
             // HashSet1 or HashSetCollision1, return the child instead
             if (elemsNew.length == 1 && !elemsNew(0)
-                  .isInstanceOf[HashTrieMap[_, _]])
-              elemsNew(0)
-            else
-              new HashTrieMap(bitmapNew, elemsNew, sizeNew)
-          } else
-            HashMap.empty[A, B]
+                  .isInstanceOf[HashTrieMap[_, _]]) elemsNew(0)
+            else new HashTrieMap(bitmapNew, elemsNew, sizeNew)
+          } else HashMap.empty[A, B]
         } else if (elems.length == 1 && !subNew
                      .isInstanceOf[HashTrieMap[_, _]]) { subNew }
         else {

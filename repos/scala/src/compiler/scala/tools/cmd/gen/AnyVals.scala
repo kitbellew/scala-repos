@@ -35,8 +35,7 @@ import scala.language.implicitConversions"""
         case F     => companionCoercions(D)
         case _     => Nil
       }
-      if (coercions.isEmpty) Nil
-      else coercionComment.lines.toList ++ coercions
+      if (coercions.isEmpty) Nil else coercionComment.lines.toList ++ coercions
     }
 
     def isCardinal: Boolean = isIntegerType(this)

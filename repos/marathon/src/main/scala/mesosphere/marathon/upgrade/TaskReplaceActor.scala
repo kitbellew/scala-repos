@@ -75,10 +75,8 @@ class TaskReplaceActor(
 
   override def receive: Receive = {
     val behavior =
-      if (app.healthChecks.nonEmpty)
-        healthCheckingBehavior
-      else
-        taskStateBehavior
+      if (app.healthChecks.nonEmpty) healthCheckingBehavior
+      else taskStateBehavior
 
     behavior orElse commonBehavior: PartialFunction[
       Any,
@@ -88,17 +86,17 @@ class TaskReplaceActor(
 
   def taskStateBehavior: Receive = {
     case MesosStatusUpdateEvent(
-        slaveId,
-        taskId,
-        "TASK_RUNNING",
-        _,
-        `appId`,
-        _,
-        _,
-        _,
-        `versionString`,
-        _,
-        _) =>
+          slaveId,
+          taskId,
+          "TASK_RUNNING",
+          _,
+          `appId`,
+          _,
+          _,
+          _,
+          `versionString`,
+          _,
+          _) =>
       handleStartedTask(taskId)
   }
 
@@ -111,17 +109,17 @@ class TaskReplaceActor(
   def commonBehavior: Receive = {
     // New task failed to start, restart it
     case MesosStatusUpdateEvent(
-        slaveId,
-        taskId,
-        FailedToStart(_),
-        _,
-        `appId`,
-        _,
-        _,
-        _,
-        `versionString`,
-        _,
-        _) if !oldTaskIds(taskId) => // scalastyle:ignore line.size.limit
+          slaveId,
+          taskId,
+          FailedToStart(_),
+          _,
+          `appId`,
+          _,
+          _,
+          _,
+          `versionString`,
+          _,
+          _) if !oldTaskIds(taskId) => // scalastyle:ignore line.size.limit
       log.error(
         s"New task $taskId failed on slave $slaveId during app $appId restart")
       healthy -= taskId
@@ -129,17 +127,17 @@ class TaskReplaceActor(
 
     // Old task successfully killed
     case MesosStatusUpdateEvent(
-        slaveId,
-        taskId,
-        KillComplete(_),
-        _,
-        `appId`,
-        _,
-        _,
-        _,
-        _,
-        _,
-        _) if oldTaskIds(taskId) => // scalastyle:ignore line.size.limit
+          slaveId,
+          taskId,
+          KillComplete(_),
+          _,
+          `appId`,
+          _,
+          _,
+          _,
+          _,
+          _,
+          _) if oldTaskIds(taskId) => // scalastyle:ignore line.size.limit
       oldTaskIds -= taskId
       outstandingKills -= taskId
       reconcileNewTasks()

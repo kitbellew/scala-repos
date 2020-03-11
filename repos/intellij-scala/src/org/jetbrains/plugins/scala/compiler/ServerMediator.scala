@@ -61,10 +61,8 @@ class ServerMediator(project: Project) extends ProjectComponent {
 
   private val checkSettingsTask = new CompileTask {
     def execute(context: CompileContext): Boolean = {
-      if (isScalaProject) {
-        if (!checkCompilationSettings()) false
-        else true
-      } else true
+      if (isScalaProject) { if (!checkCompilationSettings()) false else true }
+      else true
     }
   }
 

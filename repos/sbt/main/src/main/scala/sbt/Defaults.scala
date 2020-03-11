@@ -399,8 +399,7 @@ object Defaults extends BuildCommon {
         scalaSrcDir.getParentFile / s"${scalaSrcDir.name}-$sv",
         scalaSrcDir,
         javaSrcDir)
-    else
-      Seq(scalaSrcDir, javaSrcDir)
+    else Seq(scalaSrcDir, javaSrcDir)
   }
 
   def makeCrossTarget(
@@ -433,8 +432,7 @@ object Defaults extends BuildCommon {
       // Here, if the user wants cross-scala-versioning, we also append it
       // to the analysis cache, so we keep the scala versions separated.
       val extra =
-        if (crossPaths.value) s"_${scalaBinaryVersion.value}"
-        else ""
+        if (crossPaths.value) s"_${scalaBinaryVersion.value}" else ""
       s"inc_compile${extra}"
     },
     compileIncSetup <<= compileIncSetupTask,
@@ -528,8 +526,7 @@ object Defaults extends BuildCommon {
         val version = scalaVersion.value
         if (version == scalaProvider.version) // use the same class loader as the Scala classes used by sbt
           Def.task(ScalaInstance(version, scalaProvider))
-        else
-          scalaInstanceFromUpdate
+        else scalaInstanceFromUpdate
     }
   }
   // Returns the ScalaInstance only if it was not constructed via `update`
@@ -566,8 +563,7 @@ object Defaults extends BuildCommon {
     val compilerJar =
       if (ScalaInstance.isDotty(scalaVersion.value))
         file(ScalaArtifacts.dottyID(scalaBinaryVersion.value))
-      else
-        file(ScalaArtifacts.CompilerID)
+      else file(ScalaArtifacts.CompilerID)
     val otherJars = allFiles.filterNot(x => x == libraryJar || x == compilerJar)
     new ScalaInstance(
       scalaVersion.value,
@@ -1260,14 +1256,14 @@ object Defaults extends BuildCommon {
       scalaInstance in task,
       streams) map {
       case (
-          cs: IncrementalCompilerImpl.Compilers,
-          cp,
-          options,
-          initCommands,
-          cleanup,
-          temp,
-          si,
-          s) =>
+            cs: IncrementalCompilerImpl.Compilers,
+            cp,
+            options,
+            initCommands,
+            cleanup,
+            temp,
+            si,
+            s) =>
         val cpFiles = data(cp)
         val fullcp = (cpFiles ++ si.allJars).distinct
         val loader = sbt.internal.inc.classpath.ClasspathUtilities
@@ -2617,8 +2613,7 @@ object Classpaths {
         // map master configuration 'c' and all extended configurations to the appropriate dependency configuration
         for (ac <- applicableConfigs; depConfName <- mapping(ac.name)) {
           for (depConf <- confOpt(configurations, depConfName))
-            if (!visited((dep, depConfName)))
-              visit(dep, depConf)
+            if (!visited((dep, depConfName))) visit(dep, depConf)
         }
       }
     }
@@ -2766,8 +2761,7 @@ object Classpaths {
       version: String): Seq[ModuleID] =
     if (auto)
       modifyForPlugin(plugin, ScalaArtifacts.libraryDependency(version)) :: Nil
-    else
-      Nil
+    else Nil
   def autoLibraryDependency(
       auto: Boolean,
       plugin: Boolean,
@@ -2777,17 +2771,16 @@ object Classpaths {
       modifyForPlugin(
         plugin,
         ModuleID(org, ScalaArtifacts.LibraryID, version)) :: Nil
-    else
-      Nil
+    else Nil
   def addUnmanagedLibrary: Seq[Setting[_]] = Seq(
     unmanagedJars in Compile <++= unmanagedScalaLibrary
   )
   def unmanagedScalaLibrary: Initialize[Task[Seq[File]]] =
     Def.taskDyn {
-      if (autoScalaLibrary.value && scalaHome.value.isDefined)
-        Def.task { scalaInstance.value.libraryJar :: Nil }
-      else
-        Def.task { Nil }
+      if (autoScalaLibrary.value && scalaHome.value.isDefined) Def.task {
+        scalaInstance.value.libraryJar :: Nil
+      }
+      else Def.task { Nil }
     }
 
   import DependencyFilter._
@@ -2871,8 +2864,7 @@ object Classpaths {
           .filter(_.getName == jarName)
           .map(f => (Artifact(f.getName.stripSuffix(".jar")), f))
         if (replaceWith.isEmpty) arts else replaceWith
-      } else
-        arts
+      } else arts
     }
 
   // try/catch for supporting earlier launchers

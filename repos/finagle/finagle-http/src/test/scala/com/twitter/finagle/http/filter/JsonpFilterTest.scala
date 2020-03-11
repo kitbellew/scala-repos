@@ -14,10 +14,8 @@ class JsonpFilterTest extends FunSuite {
     def apply(request: Request): Future[Response] = {
       val response = request.response
       response.status = Status.Ok
-      if (request.params.contains("not_json"))
-        response.mediaType = "not_json"
-      else
-        response.mediaType = MediaType.Json
+      if (request.params.contains("not_json")) response.mediaType = "not_json"
+      else response.mediaType = MediaType.Json
       response.write("{}")
       Future.value(response)
     }

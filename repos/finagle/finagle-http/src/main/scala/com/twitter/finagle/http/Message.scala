@@ -256,10 +256,7 @@ abstract class Message extends HttpMessageProxy {
           case n  => contentType.substring(0, n)
         }
       val mediaType = beforeSemi.trim
-      if (mediaType.nonEmpty)
-        Some(mediaType.toLowerCase)
-      else
-        None
+      if (mediaType.nonEmpty) Some(mediaType.toLowerCase) else None
     }
 
   /**
@@ -347,10 +344,8 @@ abstract class Message extends HttpMessageProxy {
 
   /** Set the content as a string. */
   def contentString_=(value: String) {
-    if (value != "")
-      setContent(BufChannelBuffer(Buf.Utf8(value)))
-    else
-      setContent(ChannelBuffers.EMPTY_BUFFER)
+    if (value != "") setContent(BufChannelBuffer(Buf.Utf8(value)))
+    else setContent(ChannelBuffers.EMPTY_BUFFER)
   }
   def setContentString(value: String) { contentString = value }
 

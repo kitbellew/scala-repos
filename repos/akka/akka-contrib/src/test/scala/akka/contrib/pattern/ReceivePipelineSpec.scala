@@ -518,10 +518,7 @@ object UnhandledSample extends App {
 
     pipelineInner {
       case PrivateMessage(Some(userId), msg) ⇒
-        if (isGranted(userId))
-          Inner(msg)
-        else
-          HandledCompletely
+        if (isGranted(userId)) Inner(msg) else HandledCompletely
     }
   }
   //#unhandled

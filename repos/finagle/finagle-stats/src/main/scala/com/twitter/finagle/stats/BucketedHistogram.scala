@@ -21,10 +21,8 @@ private[twitter] object BucketedHistogram {
   private[this] def makeLimitsFor(error: Double): Array[Int] = {
     def build(maxValue: Double, factor: Double, n: Double): Stream[Double] = {
       val next = n * factor
-      if (next >= maxValue)
-        Stream.empty
-      else
-        Stream.cons(next, build(maxValue, factor, next))
+      if (next >= maxValue) Stream.empty
+      else Stream.cons(next, build(maxValue, factor, next))
     }
     require(error > 0.0 && error <= 1.0, error)
 
@@ -188,8 +186,7 @@ private[stats] class BucketedHistogram(limits: Array[Int])
     else {
       var i = countsLength - 2 // already checked the last, start 1 before
       while (i >= 0 && counts(i) == 0) { i -= 1 }
-      if (i == 0) 0
-      else limitMidpoint(i)
+      if (i == 0) 0 else limitMidpoint(i)
     }
   }
 

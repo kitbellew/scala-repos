@@ -97,8 +97,7 @@ object ThriftResponseClassifier {
     def isDefinedAt(reqRep: ReqRep): Boolean = {
       val deserCtx =
         Contexts.local.getOrElse(DeserializeCtx.Key, NoDeserializerFn)
-      if (deserCtx eq NoDeserializeCtx)
-        return false
+      if (deserCtx eq NoDeserializeCtx) return false
 
       reqRep.response match {
         case Return(bytes: Array[Byte]) =>

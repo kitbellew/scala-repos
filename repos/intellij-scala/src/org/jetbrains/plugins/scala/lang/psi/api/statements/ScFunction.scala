@@ -194,8 +194,8 @@ trait ScFunction
             var typeParamSubst = ScSubstitutor.empty
             fun.typeParameters.zip(typeParameters).foreach {
               case (
-                  oldParam: ScSyntheticTypeParameter,
-                  newParam: ScTypeParam) =>
+                    oldParam: ScSyntheticTypeParameter,
+                    newParam: ScTypeParam) =>
                 typeParamSubst = typeParamSubst.bindT(
                   (oldParam.name, ScalaPsiUtil.getPsiElementId(oldParam)),
                   new ScTypeParameterType(newParam, subst))
@@ -272,18 +272,16 @@ trait ScFunction
       case Some(x) => x
     }
     if (!hasParameterClause) return resultType
-    val res =
-      if (clauses.nonEmpty)
-        clauses.foldRight[ScType](resultType) {
-          (clause: ScParameterClause, tp: ScType) =>
-            new ScMethodType(tp, clause.getSmartParameters, clause.isImplicit)(
-              getProject,
-              getResolveScope)
-        }
-      else
-        new ScMethodType(resultType, Seq.empty, false)(
+    val res = if (clauses.nonEmpty) clauses.foldRight[ScType](resultType) {
+      (clause: ScParameterClause, tp: ScType) =>
+        new ScMethodType(tp, clause.getSmartParameters, clause.isImplicit)(
           getProject,
           getResolveScope)
+    }
+    else
+      new ScMethodType(resultType, Seq.empty, false)(
+        getProject,
+        getResolveScope)
     res.asInstanceOf[ScMethodType]
   }
 
@@ -652,8 +650,7 @@ trait ScFunction
 
   def findDeepestSuperMethod: PsiMethod = {
     val s = superMethods
-    if (s.isEmpty) null
-    else s.last
+    if (s.isEmpty) null else s.last
   }
 
   def getReturnTypeElement = null
@@ -772,13 +769,11 @@ trait ScFunction
       if (isConstructor && getContainingClass != null)
         getContainingClass.getName
       else super.getName
-    if (JavaLexer.isKeyword(res, LanguageLevel.HIGHEST)) "_mth" + res
-    else res
+    if (JavaLexer.isKeyword(res, LanguageLevel.HIGHEST)) "_mth" + res else res
   }
 
   override def setName(name: String): PsiElement = {
-    if (isConstructor) this
-    else super.setName(name)
+    if (isConstructor) this else super.setName(name)
   }
 
   override def getOriginalElement: PsiElement = {
@@ -801,8 +796,7 @@ trait ScFunction
     else {
       val filter =
         buf.filter(isSimilarMemberForNavigation(_, strictCheck = true))
-      if (filter.isEmpty) buf(0)
-      else filter(0)
+      if (filter.isEmpty) buf(0) else filter(0)
     }
   }
 

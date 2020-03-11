@@ -634,8 +634,7 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
     * @tparam B Result type of function
     */
   def rolling[B: ST](winSz: Int, f: Series[X, T] => B): Series[X, B] = {
-    if (winSz <= 0)
-      Series.empty[X, B]
+    if (winSz <= 0) Series.empty[X, B]
     else {
       val len = values.length
       val win = if (winSz > len) len else winSz
@@ -879,8 +878,7 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
 
     val buf = new StringBuilder()
 
-    if (length == 0)
-      buf append "Empty Series"
+    if (length == 0) buf append "Empty Series"
     else {
       buf.append("[%d x 1]\n" format length)
 

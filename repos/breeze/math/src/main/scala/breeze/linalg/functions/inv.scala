@@ -38,8 +38,7 @@ object inv extends UFunc {
           info.`val` >= 0,
           "Malformed argument %d (LAPACK)".format(-info.`val`))
 
-        if (info.`val` > 0)
-          throw new MatrixSingularException
+        if (info.`val` > 0) throw new MatrixSingularException
 
         m
       }
@@ -70,8 +69,7 @@ object inv extends UFunc {
           info.`val` >= 0,
           "Malformed argument %d (LAPACK)".format(-info.`val`))
 
-        if (info.`val` > 0)
-          throw new MatrixSingularException
+        if (info.`val` > 0) throw new MatrixSingularException
 
         m
       }
@@ -103,8 +101,7 @@ object pinv extends UFunc with pinvLowPrio {
         val vi = svs.map { v => if (v == 0.0) 0.0f else 1 / v }
 
         val svDiag = DenseMatrix.tabulate[T](s.cols, d.rows) { (i, j) =>
-          if (i == j && i < math.min(s.cols, d.rows)) vi(i)
-          else 0.0f
+          if (i == j && i < math.min(s.cols, d.rows)) vi(i) else 0.0f
         }
         val res = s * svDiag * d
         res.t

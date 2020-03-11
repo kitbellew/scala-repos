@@ -40,10 +40,7 @@ class OffsetIndexTest extends JUnitSuite {
   }
 
   @After
-  def teardown() {
-    if (this.idx != null)
-      this.idx.file.delete()
-  }
+  def teardown() { if (this.idx != null) this.idx.file.delete() }
 
   @Test
   def randomLookupTest() {
@@ -73,8 +70,7 @@ class OffsetIndexTest extends JUnitSuite {
     Collections.shuffle(Arrays.asList(offsets))
     for (offset <- offsets.take(30)) {
       val rightAnswer =
-        if (offset < valMap.firstKey)
-          OffsetPosition(idx.baseOffset, 0)
+        if (offset < valMap.firstKey) OffsetPosition(idx.baseOffset, 0)
         else
           OffsetPosition(
             valMap.to(offset).last._1,
@@ -92,8 +88,7 @@ class OffsetIndexTest extends JUnitSuite {
       "Lookup on empty file",
       OffsetPosition(idx.baseOffset, 0),
       idx.lookup(idx.baseOffset))
-    for (i <- 0 until idx.maxEntries)
-      idx.append(idx.baseOffset + i + 1, i)
+    for (i <- 0 until idx.maxEntries) idx.append(idx.baseOffset + i + 1, i)
     // check first and last entry
     assertEquals(OffsetPosition(idx.baseOffset, 0), idx.lookup(idx.baseOffset))
     assertEquals(
@@ -146,8 +141,7 @@ class OffsetIndexTest extends JUnitSuite {
       baseOffset = 0L,
       maxIndexSize = 10 * 8)
     idx.truncate()
-    for (i <- 1 until 10)
-      idx.append(i, i)
+    for (i <- 1 until 10) idx.append(i, i)
 
     // now check the last offset after various truncate points and validate that we can still append to the index.
     idx.truncateTo(12)
