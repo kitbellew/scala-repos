@@ -38,7 +38,8 @@ trait ExistentialsAndSkolems {
     finally skolemizationLevel = saved
   }
 
-  def isRawParameter(sym: Symbol) = // is it a type parameter leaked by a raw type?
+  def isRawParameter(
+      sym: Symbol) = // is it a type parameter leaked by a raw type?
     sym.isTypeParameter && sym.owner.isJavaDefined
 
   /** If we map a set of hidden symbols to their existential bounds, we

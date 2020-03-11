@@ -182,7 +182,9 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
       }
 
       // TODO: finer-grained duplication
-      def chainBefore(next: Tree)(casegen: Casegen): Tree = // assert(codegen eq optimizedCodegen)
+      def chainBefore(
+          next: Tree)(
+          casegen: Casegen): Tree = // assert(codegen eq optimizedCodegen)
         atPos(pos)(
           casegen
             .asInstanceOf[optimizedCodegen.OptimizedCasegen]

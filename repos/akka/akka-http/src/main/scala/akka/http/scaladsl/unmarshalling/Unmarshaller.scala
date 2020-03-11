@@ -51,8 +51,8 @@ object Unmarshaller
 
   //#unmarshaller-creation
   /**
-    * Creates an `Unmarshaller` from the given function.
-    */
+   * Creates an `Unmarshaller` from the given function.
+   */
   def apply[A, B](f: ExecutionContext ⇒ A ⇒ Future[B]): Unmarshaller[A, B] =
     withMaterializer(ec => _ => f(ec))
 
@@ -64,15 +64,15 @@ object Unmarshaller
     }
 
   /**
-    * Helper for creating a synchronous `Unmarshaller` from the given function.
-    */
+   * Helper for creating a synchronous `Unmarshaller` from the given function.
+   */
   def strict[A, B](f: A ⇒ B): Unmarshaller[A, B] = Unmarshaller(_ => a ⇒ FastFuture.successful(f(a)))
 
   /**
-    * Helper for creating a "super-unmarshaller" from a sequence of "sub-unmarshallers", which are tried
-    * in the given order. The first successful unmarshalling of a "sub-unmarshallers" is the one produced by the
-    * "super-unmarshaller".
-    */
+   * Helper for creating a "super-unmarshaller" from a sequence of "sub-unmarshallers", which are tried
+   * in the given order. The first successful unmarshalling of a "sub-unmarshallers" is the one produced by the
+   * "super-unmarshaller".
+   */
   def firstOf[A, B](unmarshallers: Unmarshaller[A, B]*): Unmarshaller[A, B] = //...
   //#
     Unmarshaller.withMaterializer { implicit ec ⇒ implicit mat => a ⇒
