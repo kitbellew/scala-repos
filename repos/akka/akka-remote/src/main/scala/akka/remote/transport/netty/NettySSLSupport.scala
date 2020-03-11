@@ -254,10 +254,10 @@ private[akka] object NettySSLSupport {
       settings.SSLKeyPassword,
       settings.SSLProtocol) match {
       case (
-          Some(keyStore),
-          Some(storePassword),
-          Some(keyPassword),
-          Some(protocol)) ⇒
+            Some(keyStore),
+            Some(storePassword),
+            Some(keyPassword),
+            Some(protocol)) ⇒
         constructServerContext(
           settings,
           log,

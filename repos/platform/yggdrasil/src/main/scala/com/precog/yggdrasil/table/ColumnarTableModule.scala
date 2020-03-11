@@ -1202,13 +1202,13 @@ trait ColumnarTableModule[M[+_]]
 
               rightStart match {
                 case Some(
-                    resetMarker @ SlicePosition(
-                      rightStartSliceId,
-                      rightStartPos,
-                      _,
-                      rightStartSlice,
-                      _,
-                      _)) =>
+                      resetMarker @ SlicePosition(
+                        rightStartSliceId,
+                        rightStartPos,
+                        _,
+                        rightStartSlice,
+                        _,
+                        _)) =>
                   // We're currently in a cartesian.
                   if (lpos < lhead.size && rpos < rhead.size) {
                     comparator.compare(lpos, rpos) match {
@@ -1236,23 +1236,23 @@ trait ColumnarTableModule[M[+_]]
                                 .format(lpos, rpos))
 
                           case Some(
-                              SlicePosition(
-                                endSliceId,
-                                endPos,
-                                _,
-                                endSlice,
-                                _,
-                                _)) if endSliceId == rSliceId =>
+                                SlicePosition(
+                                  endSliceId,
+                                  endPos,
+                                  _,
+                                  endSlice,
+                                  _,
+                                  _)) if endSliceId == rSliceId =>
                             buildRemappings(lpos, endPos, None, None, endRight)
 
                           case Some(
-                              rend @ SlicePosition(
-                                endSliceId,
-                                _,
-                                _,
-                                _,
-                                _,
-                                _)) =>
+                                rend @ SlicePosition(
+                                  endSliceId,
+                                  _,
+                                  _,
+                                  _,
+                                  _,
+                                  _)) =>
                             // Step out of buildRemappings so that we can restart with the current rightEnd
                             SkipRight(leftPosition.copy(pos = lpos), rend)
                         }

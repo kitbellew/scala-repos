@@ -74,11 +74,11 @@ object StatusCodes extends ObjectRegistry[Int, StatusCode] {
   }
 
   /**
-    * Create a custom status code and allow full customization of behavior. The value of `allowsEntity`
-    * changes the parser behavior: If it is set to true, a response with this status code is required to include a
-    * `Content-Length` header to be parsed correctly when keep-alive is enabled (which is the default in HTTP/1.1).
-    * If `allowsEntity` is false, an entity is never expected.
-    */
+   * Create a custom status code and allow full customization of behavior. The value of `allowsEntity`
+   * changes the parser behavior: If it is set to true, a response with this status code is required to include a
+   * `Content-Length` header to be parsed correctly when keep-alive is enabled (which is the default in HTTP/1.1).
+   * If `allowsEntity` is false, an entity is never expected.
+   */
   def custom(intValue: Int, reason: String, defaultMessage: String, isSuccess: Boolean, allowsEntity: Boolean): StatusCode =
     StatusCodes.CustomStatusCode(intValue)(reason, defaultMessage, isSuccess, allowsEntity)
 

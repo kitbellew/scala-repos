@@ -50,12 +50,12 @@ private[api] final class UserApi(
           ctx.userId.?? { relationApi.fetchRelation(_, u.id) } zip
           ctx.userId.?? { relationApi.fetchFollows(u.id, _) } map {
           case (
-              (
                 (
-                  (((gameOption, nbGamesWithMe), following), followers),
-                  followable),
-                relation),
-              isFollowed) =>
+                  (
+                    (((gameOption, nbGamesWithMe), following), followers),
+                    followable),
+                  relation),
+                isFollowed) =>
             jsonView(u) ++ {
               Json.obj(
                 "url" -> makeUrl(s"@/$username"),

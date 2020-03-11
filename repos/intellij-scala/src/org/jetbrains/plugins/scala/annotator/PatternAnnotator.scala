@@ -115,7 +115,7 @@ object PatternAnnotator {
           exprTypeText)
         holder.createErrorAnnotation(pattern, message)
       case ScTypedPattern(
-          typeElem @ ScCompoundTypeElement(_, Some(refinement))) =>
+            typeElem @ ScCompoundTypeElement(_, Some(refinement))) =>
         val message = ScalaBundle.message("pattern.on.refinement.unchecked")
         holder.createWarningAnnotation(typeElem, message)
       case c: ScConstructorPattern if neverMatches && patType.isFinalType =>

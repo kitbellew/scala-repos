@@ -58,9 +58,9 @@ abstract class DefaultMacroCompiler
       MacroImplRefCompiler(macroDdef.rhs.duplicate, isImplBundle = false)
     val (maybeBundleRef, methName, targs) = macroDdef.rhs.duplicate match {
       case Applied(
-          Select(Applied(RefTree(qual, bundleName), _, Nil), methName),
-          targs,
-          Nil) =>
+            Select(Applied(RefTree(qual, bundleName), _, Nil), methName),
+            targs,
+            Nil) =>
         (RefTree(qual, bundleName.toTypeName), methName, targs)
       case Applied(Ident(methName), targs, Nil) =>
         (Ident(context.owner.enclClass), methName, targs)

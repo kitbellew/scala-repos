@@ -59,11 +59,11 @@ class MetricValuesSpec
 
         node match {
           case Cpu(
-              address,
-              _,
-              systemLoadAverageOption,
-              cpuCombinedOption,
-              processors) ⇒
+                address,
+                _,
+                systemLoadAverageOption,
+                cpuCombinedOption,
+                processors) ⇒
             processors should be > (0)
             if (systemLoadAverageOption.isDefined)
               systemLoadAverageOption.get should be >= (0.0)

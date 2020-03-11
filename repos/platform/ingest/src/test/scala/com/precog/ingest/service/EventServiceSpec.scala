@@ -95,8 +95,8 @@ class EventServiceSpec
 
       result.copoint must beLike {
         case (
-            HttpResponse(HttpStatus(OK, _), _, Some(_), _),
-            Ingest(_, _, _, values, _, _, _) :: Nil) =>
+              HttpResponse(HttpStatus(OK, _), _, Some(_), _),
+              Ingest(_, _, _, values, _, _, _) :: Nil) =>
           values must contain(testValue).only
       }
     }
@@ -111,8 +111,8 @@ class EventServiceSpec
 
       result.copoint must beLike {
         case (
-            HttpResponse(HttpStatus(OK, _), _, Some(_), _),
-            Ingest(_, _, _, values, _, _, _) :: Nil) =>
+              HttpResponse(HttpStatus(OK, _), _, Some(_), _),
+              Ingest(_, _, _, values, _, _, _) :: Nil) =>
           values must contain(testValue).only
       }
     }
@@ -133,8 +133,8 @@ class EventServiceSpec
 
       result.copoint must beLike {
         case (
-            HttpResponse(HttpStatus(OK, _), _, Some(_), _),
-            Ingest(_, _, _, values, _, _, _) :: Nil) =>
+              HttpResponse(HttpStatus(OK, _), _, Some(_), _),
+              Ingest(_, _, _, values, _, _, _) :: Nil) =>
           values must containAllOf(t1 :: t2 :: t3 :: Nil).only
       }
     }
@@ -156,8 +156,8 @@ class EventServiceSpec
 
       result.copoint must beLike {
         case (
-            HttpResponse(HttpStatus(OK, _), _, Some(_), _),
-            Ingest(_, _, _, values, _, _, _) :: Nil) =>
+              HttpResponse(HttpStatus(OK, _), _, Some(_), _),
+              Ingest(_, _, _, values, _, _, _) :: Nil) =>
           values must contain(arr).only
       }
     }
@@ -257,14 +257,14 @@ class EventServiceSpec
 
       result.copoint must beLike {
         case (
-            HttpResponse(
-              HttpStatus(Forbidden, _),
-              _,
-              Some(
-                JString(
-                  "The specified API key does not exist: not gonna find it")),
-              _),
-            _) =>
+              HttpResponse(
+                HttpStatus(Forbidden, _),
+                _,
+                Some(
+                  JString(
+                    "The specified API key does not exist: not gonna find it")),
+                _),
+              _) =>
           ok
       }
     }
@@ -288,8 +288,8 @@ class EventServiceSpec
 
       result.copoint must beLike {
         case (
-            HttpResponse(HttpStatus(Forbidden, _), _, Some(JString(_)), _),
-            _) =>
+              HttpResponse(HttpStatus(Forbidden, _), _, Some(JString(_)), _),
+              _) =>
           ok
       }
     }
@@ -302,8 +302,8 @@ class EventServiceSpec
         Some(testAccount.accountId))(testValue)
       result.copoint must beLike {
         case (
-            HttpResponse(HttpStatus(Forbidden, _), _, Some(JString(_)), _),
-            _) =>
+              HttpResponse(HttpStatus(Forbidden, _), _, Some(JString(_)), _),
+              _) =>
           ok
       }
     }
@@ -321,12 +321,12 @@ class EventServiceSpec
 
       result.copoint must beLike {
         case (
-            HttpResponse(
-              HttpStatus(BadRequest, _),
-              _,
-              Some(JObject(fields)),
-              _),
-            _) =>
+              HttpResponse(
+                HttpStatus(BadRequest, _),
+                _,
+                Some(JObject(fields)),
+                _),
+              _) =>
           fields("errors") must beLike {
             case JArray(errors) =>
               atLeastOnce(errors) {

@@ -384,13 +384,13 @@ private[sbt] object PluginsDebug {
   def explainPluginEnable(ps: PluginEnable): String =
     ps match {
       case PluginRequirements(
-          plugin,
-          context,
-          blockingExcludes,
-          enablingPlugins,
-          extraEnabledPlugins,
-          toBeRemoved,
-          deactivate) =>
+            plugin,
+            context,
+            blockingExcludes,
+            enablingPlugins,
+            extraEnabledPlugins,
+            toBeRemoved,
+            deactivate) =>
         def indent(str: String) = if (str.isEmpty) "" else s"\t$str"
         def note(str: String) = if (str.isEmpty) "" else s"Note: $str"
         val parts =

@@ -292,8 +292,8 @@ trait PatternTypers {
       // tree1's remaining type-slack skolems will be deskolemized (to the method type parameter skolems)
       tree1 modifyType {
         case MethodType(
-            ctorArgs,
-            restpe
+              ctorArgs,
+              restpe
             ) => // ctorArgs are actually in a covariant position, since this is the type of the subpatterns of the pattern represented by this Apply node
           copyMethodType(
             tree1.tpe,

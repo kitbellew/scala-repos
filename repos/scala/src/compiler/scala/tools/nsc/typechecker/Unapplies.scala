@@ -180,8 +180,8 @@ trait Unapplies extends ast.TreeDSL {
       else { // fix for SI-6541 under -Xsource:2.12
         def repeatedToSeq(tp: Tree) = tp match {
           case AppliedTypeTree(
-              Select(_, tpnme.REPEATED_PARAM_CLASS_NAME),
-              tps) =>
+                Select(_, tpnme.REPEATED_PARAM_CLASS_NAME),
+                tps) =>
             AppliedTypeTree(gen.rootScalaDot(tpnme.Seq), tps)
           case _ => tp
         }

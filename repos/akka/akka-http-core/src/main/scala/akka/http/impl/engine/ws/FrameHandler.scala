@@ -169,8 +169,8 @@ private[http] object FrameHandler {
       def onPush(elem: FrameEventOrError, ctx: Context[Output]): SyncDirective =
         elem match {
           case FrameStart(
-              FrameHeader(Opcode.Close, _, length, _, _, _, _),
-              data) ⇒
+                FrameHeader(Opcode.Close, _, length, _, _, _, _),
+                data) ⇒
             become(WaitForPeerTcpClose)
             ctx.push(PeerClosed.parse(data))
           case _ ⇒ ctx.pull() // ignore all other data

@@ -294,12 +294,12 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
         case ScMethodType(retType, params, _) =>
           Some(checkConformance(retType, args, params))
         case ScTypePolymorphicType(
-            ScMethodType(retType, params, _),
-            typeParams) =>
+              ScMethodType(retType, params, _),
+              typeParams) =>
           Some(checkConformanceWithInference(retType, args, typeParams, params))
         case ScTypePolymorphicType(
-            ScFunctionType(retType, params),
-            typeParams) =>
+              ScFunctionType(retType, params),
+              typeParams) =>
           Some(
             checkConformanceWithInference(
               retType,

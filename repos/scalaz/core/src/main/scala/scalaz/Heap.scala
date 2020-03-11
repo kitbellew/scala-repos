@@ -49,8 +49,8 @@ sealed abstract class Heap[A] {
     case (Empty(), q) => q
     case (q, Empty()) => q
     case (
-        Heap(s1, leq, t1 @ Node(Ranked(r1, x1), f1)),
-        Heap(s2, _, t2 @ Node(Ranked(r2, x2), f2))) =>
+          Heap(s1, leq, t1 @ Node(Ranked(r1, x1), f1)),
+          Heap(s2, _, t2 @ Node(Ranked(r2, x2), f2))) =>
       if (leq(x1, x2))
         Heap(s1 + s2, leq, Node(Ranked(0, x1), skewInsert(leq, t2, f1)))
       else
@@ -378,9 +378,9 @@ object Heap extends HeapInstances {
         t1: Tree[Ranked[A]],
         t2: Tree[Ranked[A]]): Tree[Ranked[A]] = (t0, t1, t2) match {
       case (
-          Node(Ranked(r0, x0), cf0),
-          Node(Ranked(r1, x1), cf1),
-          Node(Ranked(r2, x2), cf2)) =>
+            Node(Ranked(r0, x0), cf0),
+            Node(Ranked(r1, x1), cf1),
+            Node(Ranked(r2, x2), cf2)) =>
         if (f(x1, x0) && f(x1, x2)) Node(Ranked(r1 + 1, x1), t0 #:: t2 #:: cf1)
         else if (f(x2, x0) && f(x2, x1))
           Node(Ranked(r2 + 1, x2), t0 #:: t1 #:: cf2)

@@ -232,9 +232,9 @@ class Analyzer(
         scalaCompiler.askSymbolInfoAt(p).getOrElse(FalseResponse)
       }
     case SymbolByNameReq(
-        typeFullName: String,
-        memberName: Option[String],
-        signatureString: Option[String]) =>
+          typeFullName: String,
+          memberName: Option[String],
+          signatureString: Option[String]) =>
       sender ! scalaCompiler
         .askSymbolByName(typeFullName, memberName, signatureString)
         .getOrElse(FalseResponse)
@@ -243,9 +243,9 @@ class Analyzer(
       scalaCompiler.askLoadedTyped(p.source)
       sender() ! scalaCompiler.askDocSignatureAtPoint(p)
     case DocUriForSymbolReq(
-        typeFullName: String,
-        memberName: Option[String],
-        signatureString: Option[String]) =>
+          typeFullName: String,
+          memberName: Option[String],
+          signatureString: Option[String]) =>
       sender() ! scalaCompiler.askDocSignatureForSymbol(
         typeFullName,
         memberName,

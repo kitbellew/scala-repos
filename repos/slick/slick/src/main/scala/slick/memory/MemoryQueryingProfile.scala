@@ -69,9 +69,9 @@ trait MemoryQueryingProfile extends BasicProfile {
 
     def transformSimpleGrouping(n: Node) = n match {
       case Bind(
-          gen,
-          g: GroupBy,
-          p @ Pure((_: ProductNode | _: StructNode), _)) =>
+            gen,
+            g: GroupBy,
+            p @ Pure((_: ProductNode | _: StructNode), _)) =>
         val p2 = transformCountAll(gen, p)
         if (p2 eq p) n else Bind(gen, g, p2).infer(typeChildren = true)
       case Library.SilentCast(n :@ tpe1) :@ tpe2 if tpe1 == tpe2 => n
@@ -80,9 +80,12 @@ trait MemoryQueryingProfile extends BasicProfile {
 
     def transformCountAll(gen: TermSymbol, n: Node): Node = n match {
       case Apply(
-          Library.CountAll,
-          ch @ ConstArray(
-            Bind(gen2, FwdPath(s :: _), Pure(ProductOfCommonPaths(s2, _), _))))
+            Library.CountAll,
+            ch @ ConstArray(
+              Bind(
+                gen2,
+                FwdPath(s :: _),
+                Pure(ProductOfCommonPaths(s2, _), _))))
           if s == gen && s2 == gen2 =>
         Apply(Library.Count, ch)(n.nodeType)
       case n => n.mapChildren(ch => transformCountAll(gen, ch), keepType = true)

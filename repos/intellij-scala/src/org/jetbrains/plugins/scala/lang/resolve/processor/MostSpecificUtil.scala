@@ -175,8 +175,8 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
           tp match {
             case ScMethodType(_, params, _) => Left(params)
             case ScTypePolymorphicType(
-                ScMethodType(_, params, _),
-                typeParams) =>
+                  ScMethodType(_, params, _),
+                  typeParams) =>
               if (!existential) {
                 val s: ScSubstitutor =
                   typeParams.foldLeft(ScSubstitutor.empty) {

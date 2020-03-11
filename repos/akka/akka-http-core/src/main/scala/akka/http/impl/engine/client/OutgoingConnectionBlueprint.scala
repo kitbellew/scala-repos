@@ -217,11 +217,11 @@ private[http] object OutgoingConnectionBlueprint {
 
         def onPush(): Unit = grab(in) match {
           case ResponseStart(
-              statusCode,
-              protocol,
-              headers,
-              entityCreator,
-              closeRequested) ⇒
+                statusCode,
+                protocol,
+                headers,
+                entityCreator,
+                closeRequested) ⇒
             val entity = createEntity(
               entityCreator) withSizeLimit parserSettings.maxContentLength
             push(out, HttpResponse(statusCode, headers, entity, protocol))

@@ -1837,13 +1837,13 @@ private[scheduler] class DAGSchedulerEventProcessLoop(
 
   private def doOnReceive(event: DAGSchedulerEvent): Unit = event match {
     case JobSubmitted(
-        jobId,
-        rdd,
-        func,
-        partitions,
-        callSite,
-        listener,
-        properties) =>
+          jobId,
+          rdd,
+          func,
+          partitions,
+          callSite,
+          listener,
+          properties) =>
       dagScheduler.handleJobSubmitted(
         jobId,
         rdd,

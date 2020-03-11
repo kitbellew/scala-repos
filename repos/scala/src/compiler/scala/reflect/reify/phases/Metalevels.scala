@@ -117,7 +117,14 @@ trait Metalevels {
     //    to the contrast, reified types (i.e. synthetic typetags materialized by Implicits.scala) always stay on the same metalevel as their enclosing code
     override def transform(tree: Tree): Tree = tree match {
       case TreeSplice(
-          ReifiedTree(universe, mirror, symtab, rtree, tpe, rtpe, concrete)) =>
+            ReifiedTree(
+              universe,
+              mirror,
+              symtab,
+              rtree,
+              tpe,
+              rtpe,
+              concrete)) =>
         if (reifyDebug) println("entering inlineable splice: " + tree)
         val inlinees = symtab.syms filter (_.isLocalToReifee)
         inlinees foreach (inlinee =>

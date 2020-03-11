@@ -138,11 +138,11 @@ object FailureDetector {
   ): FailureDetector = {
     sessionFailureDetector() match {
       case list(
-          "threshold",
-          duration(min),
-          double(threshold),
-          int(win),
-          duration(closeTimeout)) =>
+            "threshold",
+            duration(min),
+            double(threshold),
+            int(win),
+            duration(closeTimeout)) =>
         new ThresholdFailureDetector(
           ping,
           min,

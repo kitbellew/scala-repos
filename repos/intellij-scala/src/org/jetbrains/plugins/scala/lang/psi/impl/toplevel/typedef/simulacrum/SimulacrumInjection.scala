@@ -80,8 +80,8 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                     if param == clazzTypeParam =>
                   Some(None)
                 case ScParameterizedType(
-                    ScTypeParameterType(_, _, _, _, param),
-                    Seq(p: ScTypeParameterType)) if param == clazzTypeParam =>
+                      ScTypeParameterType(_, _, _, _, param),
+                      Seq(p: ScTypeParameterType)) if param == clazzTypeParam =>
                   Some(Some(p))
                 case _ => None
               }

@@ -98,8 +98,8 @@ class PerfTestSuiteSpec extends Specification {
 
       ex2.test must beLike {
         case Tree.Node(
-            Group(_),
-            Stream(Tree.Node(RunSequential, Stream(inner)))) =>
+              Group(_),
+              Stream(Tree.Node(RunSequential, Stream(inner)))) =>
           treeEq[PerfTest].equal(ex.test, inner) must beTrue
       }
     }

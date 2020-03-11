@@ -691,8 +691,8 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
     userOutBlocks.count()
     val swappedBlockRatings = blockRatings.map {
       case (
-          (userBlockId, itemBlockId),
-          RatingBlock(userIds, itemIds, localRatings)) =>
+            (userBlockId, itemBlockId),
+            RatingBlock(userIds, itemIds, localRatings)) =>
         (
           (itemBlockId, userBlockId),
           RatingBlock(itemIds, userIds, localRatings))

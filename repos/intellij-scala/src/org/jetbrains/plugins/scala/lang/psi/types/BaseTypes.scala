@@ -66,8 +66,8 @@ object BaseTypes {
           p.actualSubst.subst(ta.aliasedType.getOrElse(return Seq.empty)),
           visitedAliases = visitedAliases + ta)
       case ScParameterizedType(
-          ScDesignatorType(ta: ScTypeAliasDefinition),
-          args) =>
+            ScDesignatorType(ta: ScTypeAliasDefinition),
+            args) =>
         if (visitedAliases.contains(ta)) return Seq.empty
         val genericSubst = ScalaPsiUtil.typesCallSubstitutor(
           ta.typeParameters.map(tp =>

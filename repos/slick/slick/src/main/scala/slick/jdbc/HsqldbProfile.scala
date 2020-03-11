@@ -110,12 +110,12 @@ trait HsqldbProfile extends JdbcProfile {
        * safely rearrange views. */
       j match {
         case Join(
-            ls,
-            rs,
-            l,
-            Join(ls2, rs2, l2, r2, JoinType.Inner, on2),
-            JoinType.Inner,
-            on) =>
+              ls,
+              rs,
+              l,
+              Join(ls2, rs2, l2, r2, JoinType.Inner, on2),
+              JoinType.Inner,
+              on) =>
           val on3 = (on, on2) match {
             case (a, LiteralNode(true)) => a
             case (LiteralNode(true), b) => b

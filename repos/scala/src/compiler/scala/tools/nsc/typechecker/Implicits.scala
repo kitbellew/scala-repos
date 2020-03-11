@@ -1588,8 +1588,8 @@ trait Implicits {
               EmptyTree
             }
           case RefinedType(
-              parents,
-              decls
+                parents,
+                decls
               ) => // !!! not yet: if !full || decls.isEmpty =>
             // refinement is not generated yet
             if (hasLength(parents, 1)) findManifest(parents.head)

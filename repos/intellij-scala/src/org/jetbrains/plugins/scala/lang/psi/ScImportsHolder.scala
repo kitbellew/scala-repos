@@ -266,7 +266,7 @@ trait ScImportsHolder extends ScalaPsiElement {
 
       selectedRange match {
         case Some(
-            (range, RangeInfo(names, importInfos, usedImportedNames, _))) =>
+              (range, RangeInfo(names, importInfos, usedImportedNames, _))) =>
           val buffer = importInfos.to[ArrayBuffer]
 
           importInfosToAdd.foreach { infoToAdd =>

@@ -286,7 +286,7 @@ class JobServiceSpec extends TestJobService {
 
       st.validated[JobState] must beLike {
         case Success(
-            Cancelled("Because I said so.", _, Started(_, NotStarted))) =>
+              Cancelled("Because I said so.", _, Started(_, NotStarted))) =>
           ok
       }
     }
@@ -334,7 +334,7 @@ class JobServiceSpec extends TestJobService {
         case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
           obj.validated[JobState] must beLike {
             case Success(
-                Aborted("Yabba dabba doo!", _, Started(_, NotStarted))) =>
+                  Aborted("Yabba dabba doo!", _, Started(_, NotStarted))) =>
               ok
           }
       }
@@ -350,10 +350,10 @@ class JobServiceSpec extends TestJobService {
         case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
           obj.validated[JobState] must beLike {
             case Success(
-                Aborted(
-                  "Yabba dabba doo!",
-                  _,
-                  Cancelled(_, _, Started(_, NotStarted)))) =>
+                  Aborted(
+                    "Yabba dabba doo!",
+                    _,
+                    Cancelled(_, _, Started(_, NotStarted)))) =>
               ok
           }
       }
@@ -463,9 +463,9 @@ class JobServiceSpec extends TestJobService {
         status2 <- getStatus(jobId)
       } yield (jobId, status1, status2)).copoint must beLike {
         case (
-            jobId,
-            status1 @ HttpResponse(HttpStatus(OK, _), _, Some(obj), _),
-            status2) =>
+              jobId,
+              status1 @ HttpResponse(HttpStatus(OK, _), _, Some(obj), _),
+              status2) =>
           obj \ "jobId" must_== JString(jobId)
           obj \ "value" \ "message" must_== JString("Nearly there!")
           obj \ "value" \ "progress" must_== JNum(99.999)

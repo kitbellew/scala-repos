@@ -37,7 +37,7 @@ object ImportMembersUtil {
       case _ childOf(ScInfixExpr(qual: ScReferenceExpression, `ref`, _)) => true
       case _ childOf(ScPostfixExpr(qual: ScReferenceExpression, `ref`))  => true
       case ScReferenceExpression.withQualifier(
-          qualRef: ScReferenceExpression) =>
+            qualRef: ScReferenceExpression) =>
         true
       case stCodeRef: ScStableCodeReferenceElement =>
         stCodeRef.qualifier.isDefined

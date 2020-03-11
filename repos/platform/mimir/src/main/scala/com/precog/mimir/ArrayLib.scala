@@ -63,10 +63,10 @@ trait ArrayLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             val columnTables =
               values.columns.foldLeft(Map[ColumnRef, Array[Column]]()) {
                 case (
-                    acc,
-                    (
-                      ColumnRef(CPath(CPathIndex(idx), ptail @ _*), tpe),
-                      col)) => {
+                      acc,
+                      (
+                        ColumnRef(CPath(CPathIndex(idx), ptail @ _*), tpe),
+                        col)) => {
                   // remap around the mod ring w.r.t. max length
                   // s.t. f(i) = f'(i * max + arrayI)
 

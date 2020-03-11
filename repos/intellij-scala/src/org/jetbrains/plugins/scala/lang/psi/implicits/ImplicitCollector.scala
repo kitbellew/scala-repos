@@ -477,8 +477,8 @@ class ImplicitCollector(
                           if (isExtensionConversion) {
                             tp match {
                               case ScTypePolymorphicType(
-                                  internalType,
-                                  typeParams) =>
+                                    internalType,
+                                    typeParams) =>
                                 val filteredTypeParams =
                                   typeParams.filter(tp =>
                                     !tp.lowerType().equiv(types.Nothing) || !tp
@@ -499,8 +499,8 @@ class ImplicitCollector(
                           } else
                             tp match {
                               case ScTypePolymorphicType(
-                                  internalType,
-                                  typeParams) =>
+                                    internalType,
+                                    typeParams) =>
                                 (tp.inferValueType, typeParams)
                               case _ => (tp.inferValueType, Seq.empty)
                             }
@@ -594,8 +594,8 @@ class ImplicitCollector(
                                   : ScalaResolveResult = {
                                 results.foldLeft(result) {
                                   case (
-                                      r1: ScalaResolveResult,
-                                      r2: ScalaResolveResult) =>
+                                        r1: ScalaResolveResult,
+                                        r2: ScalaResolveResult) =>
                                     r1.copy(importsUsed =
                                       r1.importsUsed ++ r2.importsUsed)
                                 }

@@ -92,13 +92,13 @@ class InterpolatedStringParserTest extends SimpleTestCase {
   def testMixed() {
     assertMatches(parse("foo $exp ${it.name}%2d bar")) {
       case Text("foo ") ::
-            Injection(ElementText("exp"), None) ::
-            Text(" ") ::
-            Injection(
-              ElementText("it.name"),
-              Some(Specifier(Span(_, 0, 3), "%2d"))) ::
-            Text(" bar") ::
-            Nil =>
+          Injection(ElementText("exp"), None) ::
+          Text(" ") ::
+          Injection(
+            ElementText("it.name"),
+            Some(Specifier(Span(_, 0, 3), "%2d"))) ::
+          Text(" bar") ::
+          Nil =>
     }
   }
 

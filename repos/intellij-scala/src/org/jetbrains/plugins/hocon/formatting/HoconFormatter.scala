@@ -99,8 +99,8 @@ class HoconFormatter(settings: CodeStyleSettings) {
             normalSpacing(commonSettings.SPACE_WITHIN_BRACES)
 
         case (
-            Include | KeyedField.extractor(),
-            Include | KeyedField.extractor()) =>
+              Include | KeyedField.extractor(),
+              Include | KeyedField.extractor()) =>
           lineBreakEnsuringSpacing
 
         case (Include | KeyedField.extractor(), Comma) =>

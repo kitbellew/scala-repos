@@ -109,7 +109,7 @@ class ApplyUnapplyForBindingSearcher
         case (sref: ScStableCodeReferenceElement, x: ScConstructorPattern) =>
           sref.bind() match {
             case Some(
-                resolve @ ScalaResolveResult(fun: ScFunctionDefinition, _))
+                  resolve @ ScalaResolveResult(fun: ScFunctionDefinition, _))
                 if Set("unapply", "unapplySeq").contains(fun.name) =>
               resolve.innerResolveResult match {
                 case Some(ScalaResolveResult(`binding`, _)) => Some(sref)

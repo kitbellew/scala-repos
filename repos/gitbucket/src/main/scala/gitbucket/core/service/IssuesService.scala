@@ -175,15 +175,15 @@ trait IssuesService {
           ON SUMM.CS_ALL = 1 AND SUMM.COMMIT_ID = CSD.COMMIT_ID""");
       query(issueList).list.map {
         case (
-            userName,
-            repositoryName,
-            issueId,
-            count,
-            successCount,
-            context,
-            state,
-            targetUrl,
-            description) =>
+              userName,
+              repositoryName,
+              issueId,
+              count,
+              successCount,
+              context,
+              state,
+              targetUrl,
+              description) =>
           (userName, repositoryName, issueId) -> CommitStatusInfo(
             count,
             successCount,

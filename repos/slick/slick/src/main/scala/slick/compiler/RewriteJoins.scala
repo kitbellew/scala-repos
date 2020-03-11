@@ -367,12 +367,12 @@ class RewriteJoins extends Phase {
   def rearrangeJoinConditions(j: Join, alsoPull: Set[TermSymbol]): Join =
     j match {
       case Join(
-          s1,
-          s2,
-          _,
-          j2a @ Join(_, _, _, _, JoinType.Inner, _),
-          JoinType.Inner,
-          on1) =>
+            s1,
+            s2,
+            _,
+            j2a @ Join(_, _, _, _, JoinType.Inner, _),
+            JoinType.Inner,
+            on1) =>
         logger.debug(
           "Trying to rearrange join conditions (alsoPull: " + alsoPull.mkString(
             ", ") + ") in:",
@@ -422,9 +422,9 @@ class RewriteJoins extends Phase {
     * tree smaller to speed up subsequent phases. */
   def flattenAliasingMap(b: Bind): Bind = b match {
     case Bind(
-        s1,
-        Bind(s2, f, Pure(StructNode(p1), ts1)),
-        Pure(StructNode(p2), ts2)) =>
+          s1,
+          Bind(s2, f, Pure(StructNode(p1), ts1)),
+          Pure(StructNode(p2), ts2)) =>
       def isAliasing(s: ConstArray[(TermSymbol, Node)]) = s.forall {
         case (_, n) =>
           n.collect({ case Path(_) => true }, stopOnMatch = true).length <= 1

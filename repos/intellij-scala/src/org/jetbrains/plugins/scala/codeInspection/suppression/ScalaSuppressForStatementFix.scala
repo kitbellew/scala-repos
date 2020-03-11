@@ -71,9 +71,9 @@ class ScalaSuppressForStatementFix(key: HighlightDisplayKey)
     ScalaRefactoringUtil.findEnclosingBlockStatement(context) match {
       case None => null
       case Some(
-          _: ScFunctionDefinition | _: ScVariableDefinition |
-          _: ScPatternDefinition | _: ScTypeAliasDefinition |
-          _: ScMacroDefinition) =>
+            _: ScFunctionDefinition | _: ScVariableDefinition |
+            _: ScPatternDefinition | _: ScTypeAliasDefinition |
+            _: ScMacroDefinition) =>
         null
       case Some(stmt) => stmt
     }

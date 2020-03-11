@@ -331,8 +331,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
                   case TypeRef(pre, sym, args) =>
                     val pre1 = pre match {
                       case SingleType(
-                          SingleType(SingleType(NoPrefix, c), prefix),
-                          value)
+                            SingleType(SingleType(NoPrefix, c), prefix),
+                            value)
                           if c == implCtxParam && prefix == MacroContextPrefix && value == ExprValue =>
                         ThisType(macroDdef.symbol.owner)
                       case SingleType(SingleType(NoPrefix, implParam), value)

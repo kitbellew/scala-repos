@@ -100,8 +100,8 @@ trait ItemsList[T <: Mapper[T]] {
             case (aval: Ordered[_], bval: Ordered[_]) =>
               aval.asInstanceOf[Ordered[Any]] < bval.asInstanceOf[Ordered[Any]]
             case (
-                aval: java.lang.Comparable[_],
-                bval: java.lang.Comparable[_]) =>
+                  aval: java.lang.Comparable[_],
+                  bval: java.lang.Comparable[_]) =>
               (aval.asInstanceOf[java.lang.Comparable[Any]] compareTo bval
                 .asInstanceOf[java.lang.Comparable[Any]]) < 0
             case (null, _)    => sortNullFirst

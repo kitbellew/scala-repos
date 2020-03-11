@@ -145,29 +145,29 @@ object DataType {
       nameToType(name)
 
     case JSortedObject(
-        ("containsNull", JBool(n)),
-        ("elementType", t: JValue),
-        ("type", JString("array"))) =>
+          ("containsNull", JBool(n)),
+          ("elementType", t: JValue),
+          ("type", JString("array"))) =>
       ArrayType(parseDataType(t), n)
 
     case JSortedObject(
-        ("keyType", k: JValue),
-        ("type", JString("map")),
-        ("valueContainsNull", JBool(n)),
-        ("valueType", v: JValue)) =>
+          ("keyType", k: JValue),
+          ("type", JString("map")),
+          ("valueContainsNull", JBool(n)),
+          ("valueType", v: JValue)) =>
       MapType(parseDataType(k), parseDataType(v), n)
 
     case JSortedObject(
-        ("fields", JArray(fields)),
-        ("type", JString("struct"))) =>
+          ("fields", JArray(fields)),
+          ("type", JString("struct"))) =>
       StructType(fields.map(parseStructField))
 
     // Scala/Java UDT
     case JSortedObject(
-        ("class", JString(udtClass)),
-        ("pyClass", _),
-        ("sqlType", _),
-        ("type", JString("udt"))) =>
+          ("class", JString(udtClass)),
+          ("pyClass", _),
+          ("sqlType", _),
+          ("type", JString("udt"))) =>
       Utils
         .classForName(udtClass)
         .newInstance()
@@ -175,19 +175,19 @@ object DataType {
 
     // Python UDT
     case JSortedObject(
-        ("pyClass", JString(pyClass)),
-        ("serializedClass", JString(serialized)),
-        ("sqlType", v: JValue),
-        ("type", JString("udt"))) =>
+          ("pyClass", JString(pyClass)),
+          ("serializedClass", JString(serialized)),
+          ("sqlType", v: JValue),
+          ("type", JString("udt"))) =>
       new PythonUserDefinedType(parseDataType(v), pyClass, serialized)
   }
 
   private def parseStructField(json: JValue): StructField = json match {
     case JSortedObject(
-        ("metadata", metadata: JObject),
-        ("name", JString(name)),
-        ("nullable", JBool(nullable)),
-        ("type", dataType: JValue)) =>
+          ("metadata", metadata: JObject),
+          ("name", JString(name)),
+          ("nullable", JBool(nullable)),
+          ("type", dataType: JValue)) =>
       StructField(
         name,
         parseDataType(dataType),
@@ -195,9 +195,9 @@ object DataType {
         Metadata.fromJObject(metadata))
     // Support reading schema when 'metadata' is missing.
     case JSortedObject(
-        ("name", JString(name)),
-        ("nullable", JBool(nullable)),
-        ("type", dataType: JValue)) =>
+          ("name", JString(name)),
+          ("nullable", JBool(nullable)),
+          ("type", dataType: JValue)) =>
       StructField(name, parseDataType(dataType), nullable)
   }
 
@@ -226,8 +226,8 @@ object DataType {
       case (ArrayType(leftElementType, _), ArrayType(rightElementType, _)) =>
         equalsIgnoreNullability(leftElementType, rightElementType)
       case (
-          MapType(leftKeyType, leftValueType, _),
-          MapType(rightKeyType, rightValueType, _)) =>
+            MapType(leftKeyType, leftValueType, _),
+            MapType(rightKeyType, rightValueType, _)) =>
         equalsIgnoreNullability(leftKeyType, rightKeyType) &&
           equalsIgnoreNullability(leftValueType, rightValueType)
       case (StructType(leftFields), StructType(rightFields)) =>

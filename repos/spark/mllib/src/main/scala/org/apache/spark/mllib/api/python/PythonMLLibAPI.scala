@@ -1249,8 +1249,8 @@ private[python] class PythonMLLibAPI extends Serializable {
     // ((blockRowIndex, blockColIndex), sub-matrix) tuple.
     val blockTuples = blocks.rdd.map {
       case Row(
-          Row(blockRowIndex: Long, blockColIndex: Long),
-          subMatrix: Matrix) =>
+            Row(blockRowIndex: Long, blockColIndex: Long),
+            subMatrix: Matrix) =>
         ((blockRowIndex.toInt, blockColIndex.toInt), subMatrix)
     }
     new BlockMatrix(blockTuples, rowsPerBlock, colsPerBlock, numRows, numCols)

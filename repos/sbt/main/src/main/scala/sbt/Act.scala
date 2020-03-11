@@ -126,8 +126,8 @@ object Act {
     ss match {
       case Seq() => Nil
       case Seq(
-          x,
-          tail @ _*
+            x,
+            tail @ _*
           ) => // select the first configuration containing a valid key
         tail.takeWhile(_.key.scope.config == x.key.scope.config) match {
           case Seq() => x :: Nil

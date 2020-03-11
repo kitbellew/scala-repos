@@ -323,9 +323,9 @@ trait ScPattern extends ScalaPsiElement {
           case _ => None
         }
       case Some(
-          ScalaResolveResult(
-            FakeCompanionClassOrCompanionClass(cl: ScClass),
-            subst: ScSubstitutor)) if cl.isCase && cl.tooBigForUnapply =>
+            ScalaResolveResult(
+              FakeCompanionClassOrCompanionClass(cl: ScClass),
+              subst: ScSubstitutor)) if cl.isCase && cl.tooBigForUnapply =>
         val undefSubst = subst.followed(new ScSubstitutor(ScThisType(cl)))
         val params: Seq[ScParameter] = cl.parameters
         val types = params
