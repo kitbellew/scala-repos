@@ -118,7 +118,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
         with NoNewBinders {
       def pos = body.pos
 
-      def chainBefore(next: Tree)(casegen: Casegen): Tree = // assert(next eq EmptyTree)
+      def chainBefore(
+          next: Tree)(casegen: Casegen): Tree = // assert(next eq EmptyTree)
         atPos(body.pos)(
           casegen.one(substitution(body))
         ) // since SubstOnly treemakers are dropped, need to do it here

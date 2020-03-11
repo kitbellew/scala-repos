@@ -38,7 +38,10 @@ class ThreadBasedDispatcher(_actor: ActorRef, _mailboxType: MailboxType)
   def this(actor: ActorRef, capacity: Int) =
     this(actor, BoundedMailbox(capacity)) //For Java API
 
-  def this(actor: ActorRef, capacity: Int, pushTimeOut: Duration) = //For Java API
+  def this(
+      actor: ActorRef,
+      capacity: Int,
+      pushTimeOut: Duration) = //For Java API
     this(actor, BoundedMailbox(capacity, pushTimeOut))
 
   override def register(actorRef: ActorRef) = {
