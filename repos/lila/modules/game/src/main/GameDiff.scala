@@ -94,10 +94,11 @@ private[game] object GameDiff {
     (addUa(setBuilder.toList), unsetBuilder.toList)
   }
 
-  private def addUa(sets: List[Set]): List[Set] = sets match {
-    case Nil => Nil
-    case sets =>
-      (Game.BSONFields.updatedAt -> BSONJodaDateTimeHandler.write(
-        DateTime.now)) :: sets
-  }
+  private def addUa(sets: List[Set]): List[Set] =
+    sets match {
+      case Nil => Nil
+      case sets =>
+        (Game.BSONFields.updatedAt -> BSONJodaDateTimeHandler.write(
+          DateTime.now)) :: sets
+    }
 }

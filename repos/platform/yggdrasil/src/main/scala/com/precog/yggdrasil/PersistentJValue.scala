@@ -100,26 +100,27 @@ final case class PersistentJValue(baseDir: File, fileName: String)
     log.replay(new ReplayListener {
       def getLogRecord: LogRecord = new LogRecord(1024 * 64)
       def onError(ex: LogException): Unit = throw ex
-      def onRecord(rec: LogRecord): Unit = rec.`type` match {
-        case LogRecordType.END_OF_LOG =>
-          logger.debug(
-            "Versions TX log replay complete in " + baseDir.getCanonicalPath)
+      def onRecord(rec: LogRecord): Unit =
+        rec.`type` match {
+          case LogRecordType.END_OF_LOG =>
+            logger.debug(
+              "Versions TX log replay complete in " + baseDir.getCanonicalPath)
 
-        case LogRecordType.USER =>
-          val bytes = rec.getFields()(0)
-          bytes match {
-            case Update(rawJson) =>
-              pending = Some(rawJson)
-            case Written(rawPath) =>
-              lastUpdate = Some(rawPath)
-              pending = None
-            case _ =>
-              sys.error("Found unknown user record!")
-          }
+          case LogRecordType.USER =>
+            val bytes = rec.getFields()(0)
+            bytes match {
+              case Update(rawJson) =>
+                pending = Some(rawJson)
+              case Written(rawPath) =>
+                lastUpdate = Some(rawPath)
+                pending = None
+              case _ =>
+                sys.error("Found unknown user record!")
+            }
 
-        case other =>
-          logger.warn("Unknown LogRecord type: " + other)
-      }
+          case other =>
+            logger.warn("Unknown LogRecord type: " + other)
+        }
     })
 
     (pending, lastUpdate) match {

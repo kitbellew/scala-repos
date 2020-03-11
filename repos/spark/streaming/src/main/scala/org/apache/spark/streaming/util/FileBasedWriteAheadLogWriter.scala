@@ -37,23 +37,25 @@ private[streaming] class FileBasedWriteAheadLogWriter(
   private var closed = false
 
   /** Write the bytebuffer to the log file */
-  def write(data: ByteBuffer): FileBasedWriteAheadLogSegment = synchronized {
-    assertOpen()
-    data.rewind() // Rewind to ensure all data in the buffer is retrieved
-    val lengthToWrite = data.remaining()
-    val segment =
-      new FileBasedWriteAheadLogSegment(path, nextOffset, lengthToWrite)
-    stream.writeInt(lengthToWrite)
-    Utils.writeByteBuffer(data, stream: OutputStream)
-    flush()
-    nextOffset = stream.getPos()
-    segment
-  }
+  def write(data: ByteBuffer): FileBasedWriteAheadLogSegment =
+    synchronized {
+      assertOpen()
+      data.rewind() // Rewind to ensure all data in the buffer is retrieved
+      val lengthToWrite = data.remaining()
+      val segment =
+        new FileBasedWriteAheadLogSegment(path, nextOffset, lengthToWrite)
+      stream.writeInt(lengthToWrite)
+      Utils.writeByteBuffer(data, stream: OutputStream)
+      flush()
+      nextOffset = stream.getPos()
+      segment
+    }
 
-  override def close(): Unit = synchronized {
-    closed = true
-    stream.close()
-  }
+  override def close(): Unit =
+    synchronized {
+      closed = true
+      stream.close()
+    }
 
   private def flush() {
     stream.hflush()

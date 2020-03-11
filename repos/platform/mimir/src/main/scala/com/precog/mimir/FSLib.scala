@@ -77,40 +77,41 @@ trait FSLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         walk(pattern.matcher(pathString), Stream(pathRoot))
       }
 
-      def apply(input: Table, ctx: MorphContext): M[Table] = M.point {
-        val result = Table(
-          input.transform(SourceValue.Single).slices flatMap { slice =>
-            slice.columns.get(ColumnRef.identity(CString)) collect {
-              case col: StrColumn =>
-                val expanded: Stream[M[Stream[Path]]] =
-                  Stream.tabulate(slice.size) { i =>
-                    expand_*(
-                      ctx.evalContext.apiKey,
-                      col(i),
-                      ctx.evalContext.basePath)
+      def apply(input: Table, ctx: MorphContext): M[Table] =
+        M.point {
+          val result = Table(
+            input.transform(SourceValue.Single).slices flatMap { slice =>
+              slice.columns.get(ColumnRef.identity(CString)) collect {
+                case col: StrColumn =>
+                  val expanded: Stream[M[Stream[Path]]] =
+                    Stream.tabulate(slice.size) { i =>
+                      expand_*(
+                        ctx.evalContext.apiKey,
+                        col(i),
+                        ctx.evalContext.basePath)
+                    }
+
+                  StreamT wrapEffect {
+                    expanded.sequence map { pathSets =>
+                      val unprefixed: Stream[String] = for {
+                        paths <- pathSets
+                        path <- paths
+                        suffix <- (path - ctx.evalContext.basePath)
+                      } yield suffix.toString
+
+                      Table.constString(unprefixed.toSet).slices
+                    }
                   }
+              } getOrElse {
+                StreamT.empty[M, Slice]
+              }
+            },
+            UnknownSize
+          )
 
-                StreamT wrapEffect {
-                  expanded.sequence map { pathSets =>
-                    val unprefixed: Stream[String] = for {
-                      paths <- pathSets
-                      path <- paths
-                      suffix <- (path - ctx.evalContext.basePath)
-                    } yield suffix.toString
-
-                    Table.constString(unprefixed.toSet).slices
-                  }
-                }
-            } getOrElse {
-              StreamT.empty[M, Slice]
-            }
-          },
-          UnknownSize
-        )
-
-        result.transform(
-          WrapObject(Leaf(Source), TransSpecModule.paths.Value.name))
-      }
+          result.transform(
+            WrapObject(Leaf(Source), TransSpecModule.paths.Value.name))
+        }
     }
   }
 }

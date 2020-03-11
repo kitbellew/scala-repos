@@ -176,15 +176,16 @@ private[finagle] object MultiReaderHelper {
         _closeHandleOf: Offer[Unit],
         _numReadHandlesGauge: Gauge,
         _outstandingReadsGauge: Gauge
-    ): ReadHandle = new ReadHandle {
-      val messages = _messages
-      val error = _error
-      def close() = _closeHandleOf.sync()
+    ): ReadHandle =
+      new ReadHandle {
+        val messages = _messages
+        val error = _error
+        def close() = _closeHandleOf.sync()
 
-      // keep gauge references here since addGauge are weekly referenced.
-      val numReadHandlesGauge = _numReadHandlesGauge
-      val outstandingReadsGauge = _outstandingReadsGauge
-    }
+        // keep gauge references here since addGauge are weekly referenced.
+        val numReadHandlesGauge = _numReadHandlesGauge
+        val outstandingReadsGauge = _outstandingReadsGauge
+      }
 
     createReadHandle(
       messages.recv,

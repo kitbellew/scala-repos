@@ -48,14 +48,15 @@ abstract class SimpleParentRunner[T](testClass: Class[_])
   protected final def addFailure(
       t: Throwable,
       notifier: RunNotifier,
-      desc: Description): Unit = t match {
-    case t: MultipleFailureException =>
-      t.getFailures.asScala.foreach(t2 => addFailure(t2, notifier, desc))
-    case i: InvocationTargetException =>
-      addFailure(i.getTargetException, notifier, desc)
-    case t: Throwable =>
-      notifier.fireTestFailure(new Failure(desc, t))
-  }
+      desc: Description): Unit =
+    t match {
+      case t: MultipleFailureException =>
+        t.getFailures.asScala.foreach(t2 => addFailure(t2, notifier, desc))
+      case i: InvocationTargetException =>
+        addFailure(i.getTargetException, notifier, desc)
+      case t: Throwable =>
+        notifier.fireTestFailure(new Failure(desc, t))
+    }
 
   def getDescription = {
     val desc = Description.createSuiteDescription(

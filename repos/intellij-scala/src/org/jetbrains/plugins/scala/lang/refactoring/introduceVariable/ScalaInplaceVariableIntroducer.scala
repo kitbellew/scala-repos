@@ -153,10 +153,12 @@ class ScalaInplaceVariableIntroducer(
       .commitDocument(myEditor.getDocument)
   }
 
-  private def needInferType = forceInferType.getOrElse {
-    if (mySpecifyTypeChb != null) mySpecifyTypeChb.isSelected
-    else ScalaApplicationSettings.getInstance().INTRODUCE_VARIABLE_EXPLICIT_TYPE
-  }
+  private def needInferType =
+    forceInferType.getOrElse {
+      if (mySpecifyTypeChb != null) mySpecifyTypeChb.isSelected
+      else
+        ScalaApplicationSettings.getInstance().INTRODUCE_VARIABLE_EXPLICIT_TYPE
+    }
 
   override def getInitialName: String = initialName
 

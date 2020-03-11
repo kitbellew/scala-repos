@@ -33,12 +33,13 @@ class DefaultCamelTest
     "mocksystem"))
   when(sys.name) thenReturn ("mocksystem")
 
-  def camelWithMocks = new DefaultCamel(sys) {
-    override val log = mock[LoggingAdapter]
-    override lazy val template = mock[ProducerTemplate]
-    override lazy val context = mock[DefaultCamelContext]
-    override val settings = mock[CamelSettings]
-  }
+  def camelWithMocks =
+    new DefaultCamel(sys) {
+      override val log = mock[LoggingAdapter]
+      override lazy val template = mock[ProducerTemplate]
+      override lazy val context = mock[DefaultCamelContext]
+      override val settings = mock[CamelSettings]
+    }
 
   "during shutdown, when both context and template fail to shutdown" when {
     val camel = camelWithMocks

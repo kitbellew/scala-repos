@@ -6,7 +6,8 @@ package controllers
 import play.api.mvc._
 
 class πø$7ß extends Controller {
-  def ôü65$t(i: Int) = Action {
-    Ok
-  }
+  def ôü65$t(i: Int) =
+    Action {
+      Ok
+    }
 }

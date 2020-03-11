@@ -89,11 +89,12 @@ trait MappedForeignKey[
   private def checkTypes(km: KeyedMapper[KeyType, _]): Boolean =
     km.getSingleton eq foreignMeta
 
-  override def equals(other: Any) = other match {
-    case km: KeyedMapper[KeyType, Other] if checkTypes(km) =>
-      this.get == km.primaryKeyField.get
-    case _ => super.equals(other)
-  }
+  override def equals(other: Any) =
+    other match {
+      case km: KeyedMapper[KeyType, Other] if checkTypes(km) =>
+        this.get == km.primaryKeyField.get
+      case _ => super.equals(other)
+    }
 
   def dbKeyToTable: KeyedMetaMapper[KeyType, Other]
 
@@ -122,18 +123,19 @@ trait MappedForeignKey[
     */
   def cached_? : Boolean = synchronized { _calcedObj }
 
-  override protected def dirty_?(b: Boolean) = synchronized { // issue 165
-    // invalidate if the primary key has changed Issue 370
-    if (_obj.isEmpty || (_calcedObj && _obj.isDefined &&
-        _obj
-          .openOrThrowException("_obj was just checked as full.")
-          .primaryKeyField
-          .get != this.i_is_!)) {
-      _obj = Empty
-      _calcedObj = false
+  override protected def dirty_?(b: Boolean) =
+    synchronized { // issue 165
+      // invalidate if the primary key has changed Issue 370
+      if (_obj.isEmpty || (_calcedObj && _obj.isDefined &&
+          _obj
+            .openOrThrowException("_obj was just checked as full.")
+            .primaryKeyField
+            .get != this.i_is_!)) {
+        _obj = Empty
+        _calcedObj = false
+      }
+      super.dirty_?(b)
     }
-    super.dirty_?(b)
-  }
 
   /**
     * Some people prefer the name foreign to materialize the
@@ -144,13 +146,14 @@ trait MappedForeignKey[
   /**
     * Load and cache the record that this field references
     */
-  def obj: Box[Other] = synchronized {
-    if (!_calcedObj) {
-      _calcedObj = true
-      this._obj = if (defined_?) dbKeyToTable.find(i_is_!) else Empty
+  def obj: Box[Other] =
+    synchronized {
+      if (!_calcedObj) {
+        _calcedObj = true
+        this._obj = if (defined_?) dbKeyToTable.find(i_is_!) else Empty
+      }
+      _obj
     }
-    _obj
-  }
 
   private[mapper] def _primeObj(obj: Box[Any]) =
     primeObj(obj.asInstanceOf[Box[Other]])
@@ -158,10 +161,11 @@ trait MappedForeignKey[
   /**
     * Prime the reference of this FK reference
     */
-  def primeObj(obj: Box[Other]) = synchronized {
-    _obj = obj
-    _calcedObj = true
-  }
+  def primeObj(obj: Box[Other]) =
+    synchronized {
+      _obj = obj
+      _calcedObj = true
+    }
 
   private var _obj: Box[Other] = Empty
   private var _calcedObj = false

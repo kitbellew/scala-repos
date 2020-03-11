@@ -866,10 +866,11 @@ class ArraysTest {
   @Test def equals_AnyRefs(): Unit = {
     // scalastyle:off equals.hash.code
     class A(private val x: Int) {
-      override def equals(that: Any): Boolean = that match {
-        case that: A => this.x == that.x
-        case _       => false
-      }
+      override def equals(that: Any): Boolean =
+        that match {
+          case that: A => this.x == that.x
+          case _       => false
+        }
     }
     // scalastyle:on equals.hash.code
 

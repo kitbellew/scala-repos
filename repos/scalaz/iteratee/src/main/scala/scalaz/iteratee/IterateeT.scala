@@ -131,13 +131,14 @@ sealed abstract class IterateeT[E, F[_], A] {
       outer: IterateeT[E, F, A] =:= IterateeT[E, F, StepT[I, F, B]],
       M: Monad[F]): IterateeT[E, F, B] = {
     val M0 = IterateeT.IterateeTMonad[E, F]
-    def check: StepT[I, F, B] => IterateeT[E, F, B] = _.fold(
-      cont = k =>
-        k(eofInput) >>== { s =>
-          s.mapContOr(_ => sys.error("diverging iteratee"), check(s))
-        },
-      done = (a, _) => M0.point(a)
-    )
+    def check: StepT[I, F, B] => IterateeT[E, F, B] =
+      _.fold(
+        cont = k =>
+          k(eofInput) >>== { s =>
+            s.mapContOr(_ => sys.error("diverging iteratee"), check(s))
+          },
+        done = (a, _) => M0.point(a)
+      )
 
     outer(this) flatMap check
   }
@@ -175,23 +176,24 @@ sealed abstract class IterateeT[E, F[_], A] {
             done = (a, x) => F.point((Some((a, x)), done(a, x)))
           ))
     def loop(x: IterateeT[E, F, A], y: IterateeT[E, F, B])(
-        in: Input[E]): IterateeT[E, F, (A, B)] = in(
-      el = _ =>
-        step(x, in) flatMap {
-          case (a, xx) =>
-            step(y, in) flatMap {
-              case (b, yy) =>
-                (a, b) match {
-                  case (Some((a, e)), Some((b, ee))) =>
-                    done((a, b), if (e.isEl) e else ee)
-                  case _ => cont(loop(xx, yy))
-                }
-            }
-        },
-      empty = cont(loop(x, y)),
-      eof = (x &= enumEofT[E, F]) flatMap (a =>
-        (y &= enumEofT[E, F]) map (b => (a, b)))
-    )
+        in: Input[E]): IterateeT[E, F, (A, B)] =
+      in(
+        el = _ =>
+          step(x, in) flatMap {
+            case (a, xx) =>
+              step(y, in) flatMap {
+                case (b, yy) =>
+                  (a, b) match {
+                    case (Some((a, e)), Some((b, ee))) =>
+                      done((a, b), if (e.isEl) e else ee)
+                    case _ => cont(loop(xx, yy))
+                  }
+              }
+          },
+        empty = cont(loop(x, y)),
+        eof = (x &= enumEofT[E, F]) flatMap (a =>
+          (y &= enumEofT[E, F]) map (b => (a, b)))
+      )
     cont(loop(this, other))
   }
 }

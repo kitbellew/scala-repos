@@ -59,17 +59,19 @@ trait ZKAccountIdSource extends AccountManager[Future] {
   def zkc: ZkClient
   def settings: ZkAccountManagerSettings
 
-  def newAccountId: Future[String] = M.point {
-    if (!zkc.exists(settings.zkAccountIdPath)) {
-      zkc.createPersistent(settings.zkAccountIdPath, true)
-    }
+  def newAccountId: Future[String] =
+    M.point {
+      if (!zkc.exists(settings.zkAccountIdPath)) {
+        zkc.createPersistent(settings.zkAccountIdPath, true)
+      }
 
-    val createdPath = zkc
-      .createPersistentSequential(settings.zkAccountIdPath, Array.empty[Byte])
-    createdPath.substring(
-      createdPath.length - 10
-    ) //last 10 characters are a sequential int
-  }
+      val createdPath = zkc.createPersistentSequential(
+        settings.zkAccountIdPath,
+        Array.empty[Byte])
+      createdPath.substring(
+        createdPath.length - 10
+      ) //last 10 characters are a sequential int
+    }
 }
 
 trait MongoAccountManagerSettings {

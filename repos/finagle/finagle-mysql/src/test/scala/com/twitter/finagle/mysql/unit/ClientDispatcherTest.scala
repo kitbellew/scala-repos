@@ -26,16 +26,17 @@ class ClientDispatcherTest extends FunSuite {
   val handshake = Handshake(Some("username"), Some("password"))
   val initReply = handshake(init)
 
-  def newCtx = new {
-    val clientq = new AsyncQueue[Packet]()
-    val serverq = new AsyncQueue[Packet]()
-    val trans = new QueueTransport[Packet, Packet](serverq, clientq)
-    val service = new ClientDispatcher(trans, handshake)
-    // authenticate
-    clientq.offer(initPacket)
-    val handshakeResponse = serverq.poll()
-    clientq.offer(okPacket)
-  }
+  def newCtx =
+    new {
+      val clientq = new AsyncQueue[Packet]()
+      val serverq = new AsyncQueue[Packet]()
+      val trans = new QueueTransport[Packet, Packet](serverq, clientq)
+      val service = new ClientDispatcher(trans, handshake)
+      // authenticate
+      clientq.offer(initPacket)
+      val handshakeResponse = serverq.poll()
+      clientq.offer(okPacket)
+    }
 
   val okPacket =
     Packet(1, Buffer(Array[Byte](0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00)))
@@ -100,26 +101,27 @@ class ClientDispatcherTest extends FunSuite {
     val db = "database0"
     val table = "table0"
 
-    def aux(len: Int): List[Field] = len match {
-      case 0 => Nil
-      case x =>
-        val maxLen = 12
-        val fieldName = "field" + len
-        val f = Field(
-          catalog,
-          db,
-          table,
-          table,
-          fieldName,
-          fieldName,
-          33.toShort,
-          maxLen,
-          Type.VarChar,
-          0,
-          0
-        )
-        f :: aux(len - 1)
-    }
+    def aux(len: Int): List[Field] =
+      len match {
+        case 0 => Nil
+        case x =>
+          val maxLen = 12
+          val fieldName = "field" + len
+          val f = Field(
+            catalog,
+            db,
+            table,
+            table,
+            fieldName,
+            fieldName,
+            33.toShort,
+            maxLen,
+            Type.VarChar,
+            0,
+            0
+          )
+          f :: aux(len - 1)
+      }
     aux(numFields)
   }
 

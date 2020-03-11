@@ -42,10 +42,11 @@ class AsyncQueue[T](maxPendingOffers: Int) {
   /**
     * Returns the current number of pending elements.
     */
-  def size: Int = state.get match {
-    case Offering(q) => q.size
-    case _           => 0
-  }
+  def size: Int =
+    state.get match {
+      case Offering(q) => q.size
+      case _           => 0
+    }
 
   private[this] def queueOf[E](e: E): Queue[E] =
     Queue.empty.enqueue(e)
@@ -66,23 +67,24 @@ class AsyncQueue[T](maxPendingOffers: Int) {
     * returned future when the element is available.
     */
   @tailrec
-  final def poll(): Future[T] = state.get match {
-    case Idle =>
-      val p = new Promise[T]
-      if (state.compareAndSet(Idle, Polling(queueOf(p)))) p else poll()
+  final def poll(): Future[T] =
+    state.get match {
+      case Idle =>
+        val p = new Promise[T]
+        if (state.compareAndSet(Idle, Polling(queueOf(p)))) p else poll()
 
-    case s @ Polling(q) =>
-      val p = new Promise[T]
-      if (state.compareAndSet(s, Polling(q.enqueue(p)))) p else poll()
+      case s @ Polling(q) =>
+        val p = new Promise[T]
+        if (state.compareAndSet(s, Polling(q.enqueue(p)))) p else poll()
 
-    case s @ Offering(q) =>
-      val (elem, nextq) = q.dequeue
-      val nextState = if (nextq.nonEmpty) Offering(nextq) else Idle
-      if (state.compareAndSet(s, nextState)) Future.value(elem) else poll()
+      case s @ Offering(q) =>
+        val (elem, nextq) = q.dequeue
+        val nextState = if (nextq.nonEmpty) Offering(nextq) else Idle
+        if (state.compareAndSet(s, nextState)) Future.value(elem) else poll()
 
-    case s: Excepting[T] =>
-      pollExcepting(s)
-  }
+      case s: Excepting[T] =>
+        pollExcepting(s)
+    }
 
   /**
     * Insert the given element at the tail of the queue.
@@ -90,33 +92,34 @@ class AsyncQueue[T](maxPendingOffers: Int) {
     * @return `true` if the item was successfully added, `false` otherwise.
     */
   @tailrec
-  final def offer(elem: T): Boolean = state.get match {
-    case Idle =>
-      if (!state.compareAndSet(Idle, Offering(queueOf(elem))))
-        offer(elem)
-      else true
+  final def offer(elem: T): Boolean =
+    state.get match {
+      case Idle =>
+        if (!state.compareAndSet(Idle, Offering(queueOf(elem))))
+          offer(elem)
+        else true
 
-    case Offering(q) if q.size >= maxPendingOffers =>
-      false
+      case Offering(q) if q.size >= maxPendingOffers =>
+        false
 
-    case s @ Offering(q) =>
-      if (!state.compareAndSet(s, Offering(q.enqueue(elem))))
-        offer(elem)
-      else true
+      case s @ Offering(q) =>
+        if (!state.compareAndSet(s, Offering(q.enqueue(elem))))
+          offer(elem)
+        else true
 
-    case s @ Polling(q) =>
-      val (waiter, nextq) = q.dequeue
-      val nextState = if (nextq.nonEmpty) Polling(nextq) else Idle
-      if (state.compareAndSet(s, nextState)) {
-        waiter.setValue(elem)
-        true
-      } else {
-        offer(elem)
-      }
+      case s @ Polling(q) =>
+        val (waiter, nextq) = q.dequeue
+        val nextState = if (nextq.nonEmpty) Polling(nextq) else Idle
+        if (state.compareAndSet(s, nextState)) {
+          waiter.setValue(elem)
+          true
+        } else {
+          offer(elem)
+        }
 
-    case Excepting(_, _) =>
-      false // Drop.
-  }
+      case Excepting(_, _) =>
+        false // Drop.
+    }
 
   /**
     * Drains any pending elements into a `Try[Queue]`.
@@ -126,18 +129,19 @@ class AsyncQueue[T](maxPendingOffers: Int) {
     * Otherwise, return a `Return(Queue)` of the pending elements.
     */
   @tailrec
-  final def drain(): Try[Queue[T]] = state.get match {
-    case s @ Offering(q) =>
-      if (state.compareAndSet(s, Idle)) Return(q)
-      else drain()
-    case s @ Excepting(q, e) if q.nonEmpty =>
-      if (state.compareAndSet(s, Excepting(Queue.empty, e))) Return(q)
-      else drain()
-    case s @ Excepting(q, e) =>
-      Throw(e)
-    case _ =>
-      Return(Queue.empty)
-  }
+  final def drain(): Try[Queue[T]] =
+    state.get match {
+      case s @ Offering(q) =>
+        if (state.compareAndSet(s, Idle)) Return(q)
+        else drain()
+      case s @ Excepting(q, e) if q.nonEmpty =>
+        if (state.compareAndSet(s, Excepting(Queue.empty, e))) Return(q)
+        else drain()
+      case s @ Excepting(q, e) =>
+        Throw(e)
+      case _ =>
+        Return(Queue.empty)
+    }
 
   /**
     * Fail the queue: current and subsequent pollers will be completed
@@ -153,23 +157,24 @@ class AsyncQueue[T](maxPendingOffers: Int) {
     * No new elements are admitted to the queue after it has been failed.
     */
   @tailrec
-  final def fail(exc: Throwable, discard: Boolean): Unit = state.get match {
-    case Idle =>
-      if (!state.compareAndSet(Idle, Excepting(Queue.empty, exc)))
-        fail(exc, discard)
+  final def fail(exc: Throwable, discard: Boolean): Unit =
+    state.get match {
+      case Idle =>
+        if (!state.compareAndSet(Idle, Excepting(Queue.empty, exc)))
+          fail(exc, discard)
 
-    case s @ Polling(q) =>
-      if (!state.compareAndSet(s, Excepting(Queue.empty, exc)))
-        fail(exc, discard)
-      else
-        q.foreach(_.setException(exc))
+      case s @ Polling(q) =>
+        if (!state.compareAndSet(s, Excepting(Queue.empty, exc)))
+          fail(exc, discard)
+        else
+          q.foreach(_.setException(exc))
 
-    case s @ Offering(q) =>
-      val nextq = if (discard) Queue.empty else q
-      if (!state.compareAndSet(s, Excepting(nextq, exc))) fail(exc, discard)
+      case s @ Offering(q) =>
+        val nextq = if (discard) Queue.empty else q
+        if (!state.compareAndSet(s, Excepting(nextq, exc))) fail(exc, discard)
 
-    case Excepting(_, _) => // Just take the first one.
-  }
+      case Excepting(_, _) => // Just take the first one.
+    }
 
   override def toString = "AsyncQueue<%s>".format(state.get)
 }

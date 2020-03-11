@@ -33,8 +33,8 @@ object Prismic {
       case _ => routes.Lobby.home.url
     }
 
-  def getDocument(id: String): Fu[Option[Document]] = prismicApi flatMap {
-    api =>
+  def getDocument(id: String): Fu[Option[Document]] =
+    prismicApi flatMap { api =>
       api
         .forms("everything")
         .query(s"""[[:d = at(document.id, "$id")]]""")
@@ -42,7 +42,7 @@ object Prismic {
         .submit() map {
         _.results.headOption
       }
-  }
+    }
 
   def getBookmark(name: String) =
     fetchPrismicApi(true) flatMap { api =>
@@ -55,13 +55,14 @@ object Prismic {
         none
     }
 
-  def getVariant(variant: chess.variant.Variant) = prismicApi flatMap { api =>
-    api
-      .forms("variant")
-      .query(s"""[[:d = at(my.variant.key, "${variant.key}")]]""")
-      .ref(api.master.ref)
-      .submit() map {
-      _.results.headOption map (_ -> makeLinkResolver(api))
+  def getVariant(variant: chess.variant.Variant) =
+    prismicApi flatMap { api =>
+      api
+        .forms("variant")
+        .query(s"""[[:d = at(my.variant.key, "${variant.key}")]]""")
+        .ref(api.master.ref)
+        .submit() map {
+        _.results.headOption map (_ -> makeLinkResolver(api))
+      }
     }
-  }
 }

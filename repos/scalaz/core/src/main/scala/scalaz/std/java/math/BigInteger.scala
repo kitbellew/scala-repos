@@ -21,11 +21,12 @@ trait BigIntegerInstances {
       override def min = None
       override def max = None
 
-      def order(x: BigInteger, y: BigInteger) = x.compareTo(y) match {
-        case x if x < 0  => Ordering.LT
-        case x if x == 0 => Ordering.EQ
-        case x if x > 0  => Ordering.GT
-      }
+      def order(x: BigInteger, y: BigInteger) =
+        x.compareTo(y) match {
+          case x if x < 0  => Ordering.LT
+          case x if x == 0 => Ordering.EQ
+          case x if x > 0  => Ordering.GT
+        }
     }
 
   import Tags.Multiplication

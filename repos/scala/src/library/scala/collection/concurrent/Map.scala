@@ -87,14 +87,15 @@ trait Map[A, B] extends scala.collection.mutable.Map[A, B] {
     */
   def replace(k: A, v: B): Option[B]
 
-  override def getOrElseUpdate(key: A, op: => B): B = get(key) match {
-    case Some(v) => v
-    case None =>
-      val v = op
-      putIfAbsent(key, v) match {
-        case Some(nv) => nv
-        case None     => v
-      }
-  }
+  override def getOrElseUpdate(key: A, op: => B): B =
+    get(key) match {
+      case Some(v) => v
+      case None =>
+        val v = op
+        putIfAbsent(key, v) match {
+          case Some(nv) => nv
+          case None     => v
+        }
+    }
 
 }

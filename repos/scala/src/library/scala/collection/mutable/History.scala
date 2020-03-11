@@ -53,9 +53,10 @@ class History[Evt, Pub]
     *
     *  @return true, iff both history objects contain the same sequence of elements.
     */
-  override def equals(obj: Any): Boolean = obj match {
-    case that: History[_, _] => this.log equals that.log
-    case _                   => false
-  }
+  override def equals(obj: Any): Boolean =
+    obj match {
+      case that: History[_, _] => this.log equals that.log
+      case _                   => false
+    }
   override def hashCode = log.hashCode()
 }

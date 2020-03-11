@@ -303,12 +303,13 @@ object Messages {
     override def skipWhitespace = false
     override val whiteSpace = """^[ \t]+""".r
 
-    def namedError[A](p: Parser[A], msg: String) = Parser[A] { i =>
-      p(i) match {
-        case Failure(_, in) => Failure(msg, in)
-        case o              => o
+    def namedError[A](p: Parser[A], msg: String) =
+      Parser[A] { i =>
+        p(i) match {
+          case Failure(_, in) => Failure(msg, in)
+          case o              => o
+        }
       }
-    }
 
     val end = """^\s*""".r
     val newLine = namedError((("\r" ?) ~> "\n"), "End of line expected")
@@ -588,10 +589,11 @@ class DefaultMessagesApi @Inject() (
     })
   }
 
-  private def joinPaths(first: Option[String], second: String) = first match {
-    case Some(parent) => new java.io.File(parent, second).getPath
-    case None         => second
-  }
+  private def joinPaths(first: Option[String], second: String) =
+    first match {
+      case Some(parent) => new java.io.File(parent, second).getPath
+      case None         => second
+    }
 
   protected def loadMessages(file: String): Map[String, String] = {
     import scala.collection.JavaConverters._

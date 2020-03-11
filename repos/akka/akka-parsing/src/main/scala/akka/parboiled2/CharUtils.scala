@@ -194,14 +194,15 @@ object CharUtils {
   def toUpperCase(c: Char): Char =
     if (CharPredicate.LowerAlpha(c)) (c + 0x20).toChar else c
 
-  def escape(c: Char): String = c match {
-    case '\t' ⇒ "\\t"
-    case '\r' ⇒ "\\r"
-    case '\n' ⇒ "\\n"
-    case EOI ⇒ "EOI"
-    case x if Character.isISOControl(x) ⇒ "\\u%04x" format c.toInt
-    case x ⇒ x.toString
-  }
+  def escape(c: Char): String =
+    c match {
+      case '\t' ⇒ "\\t"
+      case '\r' ⇒ "\\r"
+      case '\n' ⇒ "\\n"
+      case EOI ⇒ "EOI"
+      case x if Character.isISOControl(x) ⇒ "\\u%04x" format c.toInt
+      case x ⇒ x.toString
+    }
 
   val escapedChars = CharPredicate("\t\r\n", EOI, Character.isISOControl _)
 

@@ -314,10 +314,11 @@ class DenseMatrix @Since("1.3.0") (
   def this(numRows: Int, numCols: Int, values: Array[Double]) =
     this(numRows, numCols, values, false)
 
-  override def equals(o: Any): Boolean = o match {
-    case m: Matrix => toBreeze == m.toBreeze
-    case _         => false
-  }
+  override def equals(o: Any): Boolean =
+    o match {
+      case m: Matrix => toBreeze == m.toBreeze
+      case _         => false
+    }
 
   override def hashCode: Int = {
     com.google.common.base.Objects
@@ -638,10 +639,11 @@ class SparseMatrix @Since("1.3.0") (
       values: Array[Double]) =
     this(numRows, numCols, colPtrs, rowIndices, values, false)
 
-  override def equals(o: Any): Boolean = o match {
-    case m: Matrix => toBreeze == m.toBreeze
-    case _         => false
-  }
+  override def equals(o: Any): Boolean =
+    o match {
+      case m: Matrix => toBreeze == m.toBreeze
+      case _         => false
+    }
 
   private[mllib] def toBreeze: BM[Double] = {
     if (!isTransposed) {

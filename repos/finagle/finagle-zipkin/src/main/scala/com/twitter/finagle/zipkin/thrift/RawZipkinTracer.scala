@@ -62,11 +62,12 @@ object RawZipkinTracer {
       scribePort: Int = 1463,
       statsReceiver: StatsReceiver = NullStatsReceiver,
       timer: Timer = DefaultTimer.twitter
-  ): RawZipkinTracer = synchronized {
-    map.getOrElseUpdate(
-      scribeHost + ":" + scribePort,
-      apply(newClient(scribeHost, scribePort), statsReceiver, timer))
-  }
+  ): RawZipkinTracer =
+    synchronized {
+      map.getOrElseUpdate(
+        scribeHost + ":" + scribePort,
+        apply(newClient(scribeHost, scribePort), statsReceiver, timer))
+    }
 
   def apply(
       client: Scribe.FutureIface,

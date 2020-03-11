@@ -159,13 +159,14 @@ class EnsembleTree(
       styleClass += "category-header"
     }
 
-  private def createTiles(value: List[EnsembleThumbNail]) = new TilePane {
-    prefColumns = 1
-    hgap = 4
-    vgap = 4
-    padding = Insets(10, 10, 10, 10)
-    orientation = Orientation.HORIZONTAL
-    styleClass += "category-page-flow"
-    children = value.map(_.button)
-  }
+  private def createTiles(value: List[EnsembleThumbNail]) =
+    new TilePane {
+      prefColumns = 1
+      hgap = 4
+      vgap = 4
+      padding = Insets(10, 10, 10, 10)
+      orientation = Orientation.HORIZONTAL
+      styleClass += "category-page-flow"
+      children = value.map(_.button)
+    }
 }

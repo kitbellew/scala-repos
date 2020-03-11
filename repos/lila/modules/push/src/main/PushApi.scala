@@ -55,59 +55,61 @@ private final class PushApi(
         .sequenceFu
         .void
 
-  def move(move: MoveEvent): Funit = move.mobilePushable ?? {
-    GameRepo game move.gameId flatMap {
-      _ ?? { game =>
-        val pov = Pov(game, !move.color)
-        game.player(!move.color).userId ?? { userId =>
-          game.pgnMoves.lastOption ?? { sanMove =>
-            IfAway(pov) {
-              pushToAll(
-                userId,
-                _.move,
-                PushApi.Data(
-                  title = "It's your turn!",
-                  body = s"${opponentName(pov)} played $sanMove",
-                  payload = Json.obj(
-                    "userId" -> userId,
-                    "userData" -> Json.obj(
-                      "type" -> "gameMove",
-                      "gameId" -> game.id,
-                      "fullId" -> pov.fullId,
-                      "color" -> pov.color.name,
-                      "fen" -> Forsyth.exportBoard(game.toChess.board),
-                      "lastMove" -> game.castleLastMoveTime.lastMoveString,
-                      "secondsLeft" -> pov.remainingSeconds
+  def move(move: MoveEvent): Funit =
+    move.mobilePushable ?? {
+      GameRepo game move.gameId flatMap {
+        _ ?? { game =>
+          val pov = Pov(game, !move.color)
+          game.player(!move.color).userId ?? { userId =>
+            game.pgnMoves.lastOption ?? { sanMove =>
+              IfAway(pov) {
+                pushToAll(
+                  userId,
+                  _.move,
+                  PushApi.Data(
+                    title = "It's your turn!",
+                    body = s"${opponentName(pov)} played $sanMove",
+                    payload = Json.obj(
+                      "userId" -> userId,
+                      "userData" -> Json.obj(
+                        "type" -> "gameMove",
+                        "gameId" -> game.id,
+                        "fullId" -> pov.fullId,
+                        "color" -> pov.color.name,
+                        "fen" -> Forsyth.exportBoard(game.toChess.board),
+                        "lastMove" -> game.castleLastMoveTime.lastMoveString,
+                        "secondsLeft" -> pov.remainingSeconds
+                      )
                     )
                   )
                 )
-              )
+              }
             }
           }
         }
       }
     }
-  }
 
-  def challengeCreate(c: Challenge): Funit = c.destUser ?? { dest =>
-    c.challengerUser.ifFalse(c.hasClock) ?? { challenger =>
-      lightUser(challenger.id) ?? { lightChallenger =>
-        pushToAll(
-          dest.id,
-          _.challenge.create,
-          PushApi.Data(
-            title =
-              s"${lightChallenger.titleName} (${challenger.rating.show}) challenges you!",
-            body = describeChallenge(c),
-            payload = Json.obj(
-              "userId" -> dest.id,
-              "userData" -> Json
-                .obj("type" -> "challengeCreate", "challengeId" -> c.id))
+  def challengeCreate(c: Challenge): Funit =
+    c.destUser ?? { dest =>
+      c.challengerUser.ifFalse(c.hasClock) ?? { challenger =>
+        lightUser(challenger.id) ?? { lightChallenger =>
+          pushToAll(
+            dest.id,
+            _.challenge.create,
+            PushApi.Data(
+              title =
+                s"${lightChallenger.titleName} (${challenger.rating.show}) challenges you!",
+              body = describeChallenge(c),
+              payload = Json.obj(
+                "userId" -> dest.id,
+                "userData" -> Json
+                  .obj("type" -> "challengeCreate", "challengeId" -> c.id))
+            )
           )
-        )
+        }
       }
     }
-  }
 
   def challengeAccept(c: Challenge, joinerId: Option[String]): Funit =
     c.challengerUser.ifTrue(c.finalColor.white && !c.hasClock) ?? {

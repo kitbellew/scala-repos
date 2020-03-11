@@ -27,26 +27,31 @@ class FailFastFactoryTest
     with Conductors
     with IntegrationPatience {
 
-  def newCtx() = new {
-    val timer = new MockTimer
-    val backoffs = 1.second #:: 2.seconds #:: Stream.empty[Duration]
-    val service = mock[Service[Int, Int]]
-    when(service.close(any[Time])).thenReturn(Future.Done)
-    val underlying = mock[ServiceFactory[Int, Int]]
-    when(underlying.status).thenReturn(Status.Open)
-    when(underlying.close(any[Time])).thenReturn(Future.Done)
-    val stats = new InMemoryStatsReceiver
-    val label = "test"
-    val failfast =
-      new FailFastFactory(underlying, stats, timer, label, backoffs = backoffs)
+  def newCtx() =
+    new {
+      val timer = new MockTimer
+      val backoffs = 1.second #:: 2.seconds #:: Stream.empty[Duration]
+      val service = mock[Service[Int, Int]]
+      when(service.close(any[Time])).thenReturn(Future.Done)
+      val underlying = mock[ServiceFactory[Int, Int]]
+      when(underlying.status).thenReturn(Status.Open)
+      when(underlying.close(any[Time])).thenReturn(Future.Done)
+      val stats = new InMemoryStatsReceiver
+      val label = "test"
+      val failfast = new FailFastFactory(
+        underlying,
+        stats,
+        timer,
+        label,
+        backoffs = backoffs)
 
-    val p, q, r = new Promise[Service[Int, Int]]
-    when(underlying()).thenReturn(p)
-    val pp = failfast()
-    assert(pp.isDefined == false)
-    assert(failfast.isAvailable)
-    assert(timer.tasks.isEmpty)
-  }
+      val p, q, r = new Promise[Service[Int, Int]]
+      when(underlying()).thenReturn(p)
+      val pp = failfast()
+      assert(pp.isDefined == false)
+      assert(failfast.isAvailable)
+      assert(timer.tasks.isEmpty)
+    }
 
   test("pass through whenever everything is fine") {
     Time.withCurrentTimeFrozen { tc =>

@@ -85,9 +85,10 @@ private[finagle] class ByteBufAsBuf(private val underlying: ByteBuf)
         underlying.slice(from, Math.min((until - from), (length - from))))
   }
 
-  override def equals(other: Any): Boolean = other match {
-    case ByteBufAsBuf.Owned(otherBB) => underlying.equals(otherBB)
-    case other: Buf                  => Buf.equals(this, other)
-    case _                           => false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case ByteBufAsBuf.Owned(otherBB) => underlying.equals(otherBB)
+      case other: Buf                  => Buf.equals(this, other)
+      case _                           => false
+    }
 }

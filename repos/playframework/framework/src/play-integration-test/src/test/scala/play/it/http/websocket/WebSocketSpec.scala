@@ -68,18 +68,21 @@ trait WebSocketSpec
     }
   }
 
-  def pongFrame(matcher: Matcher[String]): Matcher[ExtendedMessage] = beLike {
-    case SimpleMessage(PongMessage(data), _) => data.utf8String must matcher
-  }
+  def pongFrame(matcher: Matcher[String]): Matcher[ExtendedMessage] =
+    beLike {
+      case SimpleMessage(PongMessage(data), _) => data.utf8String must matcher
+    }
 
-  def textFrame(matcher: Matcher[String]): Matcher[ExtendedMessage] = beLike {
-    case SimpleMessage(TextMessage(text), _) => text must matcher
-  }
+  def textFrame(matcher: Matcher[String]): Matcher[ExtendedMessage] =
+    beLike {
+      case SimpleMessage(TextMessage(text), _) => text must matcher
+    }
 
-  def closeFrame(status: Int = 1000): Matcher[ExtendedMessage] = beLike {
-    case SimpleMessage(CloseMessage(statusCode, _), _) =>
-      statusCode must beSome(status)
-  }
+  def closeFrame(status: Int = 1000): Matcher[ExtendedMessage] =
+    beLike {
+      case SimpleMessage(CloseMessage(statusCode, _), _) =>
+        statusCode must beSome(status)
+    }
 
   def consumeFrames[A]: Sink[A, Future[List[A]]] =
     Sink

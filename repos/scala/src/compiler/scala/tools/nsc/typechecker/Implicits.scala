@@ -218,10 +218,11 @@ trait Implicits {
       finally id += 1
   }
 
-  private def isInvalidConversionSource(tpe: Type): Boolean = tpe match {
-    case Function1(in, _) => in <:< NullClass.tpe
-    case _                => false
-  }
+  private def isInvalidConversionSource(tpe: Type): Boolean =
+    tpe match {
+      case Function1(in, _) => in <:< NullClass.tpe
+      case _                => false
+    }
 
   def resetImplicits() {
     implicitsCache.clear()
@@ -234,11 +235,12 @@ trait Implicits {
    * when checking whether `b` is a valid implicit, as we haven't even searched a value for the implicit arg `x`,
    * so we have to approximate (otherwise it is excluded a priori).
    */
-  private def depoly(tp: Type): Type = tp match {
-    case PolyType(tparams, restpe) =>
-      deriveTypeWithWildcards(tparams)(ApproximateDependentMap(restpe))
-    case _ => ApproximateDependentMap(tp)
-  }
+  private def depoly(tp: Type): Type =
+    tp match {
+      case PolyType(tparams, restpe) =>
+        deriveTypeWithWildcards(tparams)(ApproximateDependentMap(restpe))
+      case _ => ApproximateDependentMap(tp)
+    }
 
   /** The result of an implicit search
     *  @param  tree    The tree representing the implicit
@@ -306,32 +308,35 @@ trait Implicits {
 
     /** Does type `tp` contain an Error type as parameter or result?
       */
-    private def containsError(tp: Type): Boolean = tp match {
-      case PolyType(tparams, restpe) =>
-        containsError(restpe)
-      case NullaryMethodType(restpe) =>
-        containsError(restpe)
-      case mt @ MethodType(_, restpe) =>
-        // OPT avoiding calling `mt.paramTypes` which creates a new list.
-        (mt.params exists symTypeIsError) || containsError(restpe)
-      case _ =>
-        tp.isError
-    }
+    private def containsError(tp: Type): Boolean =
+      tp match {
+        case PolyType(tparams, restpe) =>
+          containsError(restpe)
+        case NullaryMethodType(restpe) =>
+          containsError(restpe)
+        case mt @ MethodType(_, restpe) =>
+          // OPT avoiding calling `mt.paramTypes` which creates a new list.
+          (mt.params exists symTypeIsError) || containsError(restpe)
+        case _ =>
+          tp.isError
+      }
 
     def isStablePrefix = pre.isStable
 
-    override def equals(other: Any) = other match {
-      case that: ImplicitInfo =>
-        this.name == that.name &&
-          this.pre =:= that.pre &&
-          this.sym == that.sym
-      case _ => false
-    }
+    override def equals(other: Any) =
+      other match {
+        case that: ImplicitInfo =>
+          this.name == that.name &&
+            this.pre =:= that.pre &&
+            this.sym == that.sym
+        case _ => false
+      }
     override def hashCode = name.## + pre.## + sym.##
-    override def toString = (
-      if (tpeCache eq null) name + ": ?"
-      else name + ": " + tpe
-    )
+    override def toString =
+      (
+        if (tpeCache eq null) name + ": ?"
+        else name + ": " + tpe
+      )
   }
 
   /** A class which is used to track pending implicits to prevent infinite implicit searches.
@@ -342,10 +347,11 @@ trait Implicits {
   val NoImplicitInfo = new ImplicitInfo(null, NoType, NoSymbol) {
     // equals used to be implemented in ImplicitInfo with an `if(this eq NoImplicitInfo)`
     // overriding the equals here seems cleaner and benchmarks show no difference in performance
-    override def equals(other: Any) = other match {
-      case that: AnyRef => that eq this
-      case _            => false
-    }
+    override def equals(other: Any) =
+      other match {
+        case that: AnyRef => that eq this
+        case _            => false
+      }
     override def hashCode = 1
   }
 
@@ -388,21 +394,22 @@ trait Implicits {
         restpe)
       memberWildcardType(name, mtpe)
     }
-    def unapply(pt: Type): Option[(Name, List[Type], Type)] = pt match {
-      case RefinedType(List(WildcardType), decls) =>
-        decls.toList match {
-          case List(sym) =>
-            sym.tpe match {
-              case MethodType(params, restpe)
-                  if (params forall (_.tpe
-                    .isInstanceOf[BoundedWildcardType])) =>
-                Some((sym.name, params map (_.tpe.bounds.lo), restpe))
-              case _ => None
-            }
-          case _ => None
-        }
-      case _ => None
-    }
+    def unapply(pt: Type): Option[(Name, List[Type], Type)] =
+      pt match {
+        case RefinedType(List(WildcardType), decls) =>
+          decls.toList match {
+            case List(sym) =>
+              sym.tpe match {
+                case MethodType(params, restpe)
+                    if (params forall (_.tpe
+                      .isInstanceOf[BoundedWildcardType])) =>
+                  Some((sym.name, params map (_.tpe.bounds.lo), restpe))
+                case _ => None
+              }
+            case _ => None
+          }
+        case _ => None
+      }
   }
 
   /** An extractor for unary function types arg => res
@@ -412,10 +419,11 @@ trait Implicits {
     // It is tempting to think that this should be inspecting "tp baseType Sym"
     // rather than tp. See test case run/t8280 and the commit message which
     // accompanies it for explanation why that isn't done.
-    def unapply(tp: Type) = tp match {
-      case TypeRef(_, Sym, arg1 :: arg2 :: _) => Some((arg1, arg2))
-      case _                                  => None
-    }
+    def unapply(tp: Type) =
+      tp match {
+        case TypeRef(_, Sym, arg1 :: arg2 :: _) => Some((arg1, arg2))
+        case _                                  => None
+      }
   }
 
   /** A class that sets up an implicit search. For more info, see comments for `inferImplicit`.
@@ -517,16 +525,19 @@ trait Implicits {
       *  if one or both are intersection types with a pair of overlapping parent types.
       */
     private def dominates(dtor: Type, dted: Type): Boolean = {
-      def core(tp: Type): Type = tp.dealiasWiden match {
-        case RefinedType(parents, defs) =>
-          intersectionType(parents map core, tp.typeSymbol.owner)
-        case AnnotatedType(annots, tp) => core(tp)
-        case ExistentialType(tparams, result) =>
-          core(result).subst(tparams, tparams map (t => core(t.info.bounds.hi)))
-        case PolyType(tparams, result) =>
-          core(result).subst(tparams, tparams map (t => core(t.info.bounds.hi)))
-        case _ => tp
-      }
+      def core(tp: Type): Type =
+        tp.dealiasWiden match {
+          case RefinedType(parents, defs) =>
+            intersectionType(parents map core, tp.typeSymbol.owner)
+          case AnnotatedType(annots, tp) => core(tp)
+          case ExistentialType(tparams, result) =>
+            core(result)
+              .subst(tparams, tparams map (t => core(t.info.bounds.hi)))
+          case PolyType(tparams, result) =>
+            core(result)
+              .subst(tparams, tparams map (t => core(t.info.bounds.hi)))
+          case _ => tp
+        }
       def stripped(tp: Type): Type = {
         // `t.typeSymbol` returns the symbol of the normalized type. If that normalized type
         // is a `PolyType`, the symbol of the result type is collected. This is precisely
@@ -535,21 +546,23 @@ trait Implicits {
           for (t <- tp; if t.typeSymbol.isTypeParameter) yield t.typeSymbol
         deriveTypeWithWildcards(syms.distinct)(tp)
       }
-      def complexity(tp: Type): Int = tp.dealias match {
-        case NoPrefix => 0
-        case SingleType(pre, sym) =>
-          if (sym.hasPackageFlag) 0 else complexity(tp.dealiasWiden)
-        case ThisType(sym) => if (sym.hasPackageFlag) 0 else 1
-        case TypeRef(pre, sym, args) =>
-          complexity(pre) + (args map complexity).sum + 1
-        case RefinedType(parents, _) => (parents map complexity).sum + 1
-        case _                       => 1
-      }
-      def overlaps(tp1: Type, tp2: Type): Boolean = (tp1, tp2) match {
-        case (RefinedType(parents, _), _) => parents exists (overlaps(_, tp2))
-        case (_, RefinedType(parents, _)) => parents exists (overlaps(tp1, _))
-        case _                            => tp1.typeSymbol == tp2.typeSymbol
-      }
+      def complexity(tp: Type): Int =
+        tp.dealias match {
+          case NoPrefix => 0
+          case SingleType(pre, sym) =>
+            if (sym.hasPackageFlag) 0 else complexity(tp.dealiasWiden)
+          case ThisType(sym) => if (sym.hasPackageFlag) 0 else 1
+          case TypeRef(pre, sym, args) =>
+            complexity(pre) + (args map complexity).sum + 1
+          case RefinedType(parents, _) => (parents map complexity).sum + 1
+          case _                       => 1
+        }
+      def overlaps(tp1: Type, tp2: Type): Boolean =
+        (tp1, tp2) match {
+          case (RefinedType(parents, _), _) => parents exists (overlaps(_, tp2))
+          case (_, RefinedType(parents, _)) => parents exists (overlaps(tp1, _))
+          case _                            => tp1.typeSymbol == tp2.typeSymbol
+        }
       val dtor1 = stripped(core(dtor))
       val dted1 = stripped(core(dted))
       overlaps(dtor1, dted1) && (dtor1 =:= dted1 || complexity(
@@ -629,25 +642,27 @@ trait Implicits {
       if (Statistics.canEnable) Statistics.stopTimer(matchesPtNanos, start)
       result
     }
-    private def matchesPt(info: ImplicitInfo): Boolean = (
-      info.isStablePrefix && matchesPt(depoly(info.tpe), wildPt, Nil)
-    )
+    private def matchesPt(info: ImplicitInfo): Boolean =
+      (
+        info.isStablePrefix && matchesPt(depoly(info.tpe), wildPt, Nil)
+      )
 
     private def matchesPtView(
         tp: Type,
         ptarg: Type,
         ptres: Type,
-        undet: List[Symbol]): Boolean = tp match {
-      case MethodType(p :: _, restpe) if p.isImplicit =>
-        matchesPtView(restpe, ptarg, ptres, undet)
-      case MethodType(p :: Nil, restpe) =>
-        matchesArgRes(p.tpe, restpe, ptarg, ptres, undet)
-      case ExistentialType(_, qtpe) =>
-        matchesPtView(normalize(qtpe), ptarg, ptres, undet)
-      case Function1(arg1, res1) =>
-        matchesArgRes(arg1, res1, ptarg, ptres, undet)
-      case _ => false
-    }
+        undet: List[Symbol]): Boolean =
+      tp match {
+        case MethodType(p :: _, restpe) if p.isImplicit =>
+          matchesPtView(restpe, ptarg, ptres, undet)
+        case MethodType(p :: Nil, restpe) =>
+          matchesArgRes(p.tpe, restpe, ptarg, ptres, undet)
+        case ExistentialType(_, qtpe) =>
+          matchesPtView(normalize(qtpe), ptarg, ptres, undet)
+        case Function1(arg1, res1) =>
+          matchesArgRes(arg1, res1, ptarg, ptres, undet)
+        case _ => false
+      }
 
     private def matchesArgRes(
         tparg: Type,
@@ -675,52 +690,53 @@ trait Implicits {
         fast: Boolean,
         tp0: Type,
         pt0: Type): Boolean = {
-      @tailrec def loop(tp: Type, pt: Type): Boolean = tp match {
-        case mt @ MethodType(params, restpe) =>
-          if (mt.isImplicit)
-            loop(restpe, pt)
-          else
-            pt match {
-              case tr @ TypeRef(pre, sym, args) =>
-                if (sym.isAliasType) loop(tp, pt.dealias)
-                else if (sym.isAbstractType) loop(tp, pt.bounds.lo)
-                else {
-                  val len = args.length - 1
-                  hasLength(params, len) &&
-                  sym == FunctionClass(len) && {
-                    var ps = params
-                    var as = args
-                    if (fast) {
-                      while (ps.nonEmpty && as.nonEmpty) {
-                        if (!isPlausiblySubType(as.head, ps.head.tpe))
-                          return false
-                        ps = ps.tail
-                        as = as.tail
+      @tailrec def loop(tp: Type, pt: Type): Boolean =
+        tp match {
+          case mt @ MethodType(params, restpe) =>
+            if (mt.isImplicit)
+              loop(restpe, pt)
+            else
+              pt match {
+                case tr @ TypeRef(pre, sym, args) =>
+                  if (sym.isAliasType) loop(tp, pt.dealias)
+                  else if (sym.isAbstractType) loop(tp, pt.bounds.lo)
+                  else {
+                    val len = args.length - 1
+                    hasLength(params, len) &&
+                    sym == FunctionClass(len) && {
+                      var ps = params
+                      var as = args
+                      if (fast) {
+                        while (ps.nonEmpty && as.nonEmpty) {
+                          if (!isPlausiblySubType(as.head, ps.head.tpe))
+                            return false
+                          ps = ps.tail
+                          as = as.tail
+                        }
+                      } else {
+                        while (ps.nonEmpty && as.nonEmpty) {
+                          if (!(as.head <:< ps.head.tpe))
+                            return false
+                          ps = ps.tail
+                          as = as.tail
+                        }
                       }
-                    } else {
-                      while (ps.nonEmpty && as.nonEmpty) {
-                        if (!(as.head <:< ps.head.tpe))
-                          return false
-                        ps = ps.tail
-                        as = as.tail
+                      ps.isEmpty && as.nonEmpty && {
+                        val lastArg = as.head
+                        as.tail.isEmpty && loop(restpe, lastArg)
                       }
-                    }
-                    ps.isEmpty && as.nonEmpty && {
-                      val lastArg = as.head
-                      as.tail.isEmpty && loop(restpe, lastArg)
                     }
                   }
-                }
 
-              case _ => if (fast) false else tp <:< pt
-            }
-        case NullaryMethodType(restpe) => loop(restpe, pt)
-        case PolyType(_, restpe)       => loop(restpe, pt)
-        case ExistentialType(_, qtpe) =>
-          if (fast) loop(qtpe, pt)
-          else normalize(tp) <:< pt // is !fast case needed??
-        case _ => if (fast) isPlausiblySubType(tp, pt) else tp <:< pt
-      }
+                case _ => if (fast) false else tp <:< pt
+              }
+          case NullaryMethodType(restpe) => loop(restpe, pt)
+          case PolyType(_, restpe)       => loop(restpe, pt)
+          case ExistentialType(_, qtpe) =>
+            if (fast) loop(qtpe, pt)
+            else normalize(tp) <:< pt // is !fast case needed??
+          case _ => if (fast) isPlausiblySubType(tp, pt) else tp <:< pt
+        }
       loop(tp0, pt0)
     }
 
@@ -959,10 +975,11 @@ trait Implicits {
       */
     def isValid(sym: Symbol) = {
       def hasExplicitResultType(sym: Symbol) = {
-        def hasExplicitRT(tree: Tree) = tree match {
-          case x: ValOrDefDef => !x.tpt.isEmpty
-          case _              => false
-        }
+        def hasExplicitRT(tree: Tree) =
+          tree match {
+            case x: ValOrDefDef => !x.tpt.isEmpty
+            case _              => false
+          }
         sym.rawInfo match {
           case tc: TypeCompleter              => hasExplicitRT(tc.tree)
           case PolyType(_, tc: TypeCompleter) => hasExplicitRT(tc.tree)
@@ -1022,27 +1039,29 @@ trait Implicits {
 
       private var best: SearchResult = SearchFailure
 
-      private def isIneligible(info: ImplicitInfo) = (
-        info.isCyclicOrErroneous
-          || isView && (info.sym eq Predef_conforms) // as an implicit conversion, Predef.$conforms is a no-op, so exclude it
-          || (!context.macrosEnabled && info.sym.isTermMacro)
-      )
+      private def isIneligible(info: ImplicitInfo) =
+        (
+          info.isCyclicOrErroneous
+            || isView && (info.sym eq Predef_conforms) // as an implicit conversion, Predef.$conforms is a no-op, so exclude it
+            || (!context.macrosEnabled && info.sym.isTermMacro)
+        )
 
       /** True if a given ImplicitInfo (already known isValid) is eligible.
         */
-      def survives(info: ImplicitInfo) = (
-        !isIneligible(
-          info
-        ) // cyclic, erroneous, shadowed, or specially excluded
-          && isPlausiblyCompatible(
-            info.tpe,
-            wildPt
-          ) // optimization to avoid matchesPt
-          && !shadower.isShadowed(
-            info.name
-          ) // OPT rare, only check for plausible candidates
-          && matchesPt(info) // stable and matches expected type
-      )
+      def survives(info: ImplicitInfo) =
+        (
+          !isIneligible(
+            info
+          ) // cyclic, erroneous, shadowed, or specially excluded
+            && isPlausiblyCompatible(
+              info.tpe,
+              wildPt
+            ) // optimization to avoid matchesPt
+            && !shadower.isShadowed(
+              info.name
+            ) // OPT rare, only check for plausible candidates
+            && matchesPt(info) // stable and matches expected type
+        )
 
       /** The implicits that are not valid because they come later in the source and
         *  lack an explicit result type. Used for error diagnostics only.
@@ -1051,9 +1070,8 @@ trait Implicits {
 
       /** Tests for validity and updates invalidImplicits by side effect when false.
         */
-      private def checkValid(sym: Symbol) = isValid(sym) || {
-        invalidImplicits += sym; false
-      }
+      private def checkValid(sym: Symbol) =
+        isValid(sym) || { invalidImplicits += sym; false }
 
       /** Preventing a divergent implicit from terminating implicit search,
         *  so that if there is a best candidate it can still be selected.
@@ -1127,44 +1145,45 @@ trait Implicits {
       @tailrec private def rankImplicits(
           pending: Infos,
           acc: List[(SearchResult, ImplicitInfo)])
-          : List[(SearchResult, ImplicitInfo)] = pending match {
-        case Nil => acc
-        case firstPending :: otherPending =>
-          def firstPendingImproves(alt: ImplicitInfo) =
-            firstPending == alt || (
-              try improves(firstPending, alt)
-              catch {
-                case e: CyclicReference =>
-                  devWarning(
-                    s"Discarding $firstPending during implicit search due to cyclic reference.")
-                  true
-              }
-            )
+          : List[(SearchResult, ImplicitInfo)] =
+        pending match {
+          case Nil => acc
+          case firstPending :: otherPending =>
+            def firstPendingImproves(alt: ImplicitInfo) =
+              firstPending == alt || (
+                try improves(firstPending, alt)
+                catch {
+                  case e: CyclicReference =>
+                    devWarning(
+                      s"Discarding $firstPending during implicit search due to cyclic reference.")
+                    true
+                }
+              )
 
-          val typedFirstPending =
-            typedImplicit(firstPending, ptChecked = true, isLocalToCallsite)
+            val typedFirstPending =
+              typedImplicit(firstPending, ptChecked = true, isLocalToCallsite)
 
-          // Pass the errors to `DivergentImplicitRecovery` so that it can note
-          // the first `DivergentImplicitTypeError` that is being propagated
-          // from a nested implicit search; this one will be
-          // re-issued if this level of the search fails.
-          DivergentImplicitRecovery(
-            typedFirstPending,
-            firstPending,
-            context.reporter.errors) match {
-            case sr if sr.isDivergent => Nil
-            case sr if sr.isFailure   => rankImplicits(otherPending, acc)
-            case newBest =>
-              best =
-                newBest // firstPending is our new best, since we already pruned last time around:
-              val pendingImprovingBest = undoLog undo {
-                otherPending filterNot firstPendingImproves
-              }
-              rankImplicits(
-                pendingImprovingBest,
-                (newBest, firstPending) :: acc)
-          }
-      }
+            // Pass the errors to `DivergentImplicitRecovery` so that it can note
+            // the first `DivergentImplicitTypeError` that is being propagated
+            // from a nested implicit search; this one will be
+            // re-issued if this level of the search fails.
+            DivergentImplicitRecovery(
+              typedFirstPending,
+              firstPending,
+              context.reporter.errors) match {
+              case sr if sr.isDivergent => Nil
+              case sr if sr.isFailure   => rankImplicits(otherPending, acc)
+              case newBest =>
+                best =
+                  newBest // firstPending is our new best, since we already pruned last time around:
+                val pendingImprovingBest = undoLog undo {
+                  otherPending filterNot firstPendingImproves
+                }
+                rankImplicits(
+                  pendingImprovingBest,
+                  (newBest, firstPending) :: acc)
+            }
+        }
 
       /** Returns all eligible ImplicitInfos and their SearchResults in a map.
         */
@@ -1273,36 +1292,37 @@ trait Implicits {
       def getClassParts(tp: Type)(implicit
           infoMap: InfoMap,
           seen: mutable.Set[Type],
-          pending: Set[Symbol]) = tp match {
-        case TypeRef(pre, sym, args) =>
-          infoMap get sym match {
-            case Some(infos1) =>
-              if (infos1.nonEmpty && !(pre =:= infos1.head.pre.prefix)) {
-                log(
-                  s"Ignoring implicit members of $pre#$sym as it is also visible via another prefix: ${infos1.head.pre.prefix}")
-                infoMap(sym) =
-                  List() // ambiguous prefix - ignore implicit members
-              }
-            case None =>
-              if (pre.isStable && !pre.typeSymbol.isExistentiallyBound) {
-                val pre1 =
-                  if (sym.isPackageClass) sym.packageObject.typeOfThis
-                  else singleType(pre, companionSymbolOf(sym, context))
-                val infos = pre1.implicitMembers.iterator
-                  .map(mem => new ImplicitInfo(mem.name, pre1, mem))
-                  .toList
-                if (infos.nonEmpty)
-                  infoMap += (sym -> infos)
-              }
-              val bts = tp.baseTypeSeq
-              var i = 1
-              while (i < bts.length) {
-                getParts(bts(i))
-                i += 1
-              }
-              getParts(pre)
-          }
-      }
+          pending: Set[Symbol]) =
+        tp match {
+          case TypeRef(pre, sym, args) =>
+            infoMap get sym match {
+              case Some(infos1) =>
+                if (infos1.nonEmpty && !(pre =:= infos1.head.pre.prefix)) {
+                  log(
+                    s"Ignoring implicit members of $pre#$sym as it is also visible via another prefix: ${infos1.head.pre.prefix}")
+                  infoMap(sym) =
+                    List() // ambiguous prefix - ignore implicit members
+                }
+              case None =>
+                if (pre.isStable && !pre.typeSymbol.isExistentiallyBound) {
+                  val pre1 =
+                    if (sym.isPackageClass) sym.packageObject.typeOfThis
+                    else singleType(pre, companionSymbolOf(sym, context))
+                  val infos = pre1.implicitMembers.iterator
+                    .map(mem => new ImplicitInfo(mem.name, pre1, mem))
+                    .toList
+                  if (infos.nonEmpty)
+                    infoMap += (sym -> infos)
+                }
+                val bts = tp.baseTypeSeq
+                var i = 1
+                while (i < bts.length) {
+                  getParts(bts(i))
+                  i += 1
+                }
+                getParts(pre)
+            }
+        }
 
       /* Populate implicit info map by traversing all parts of type `tp`.
        * This method is performance critical.
@@ -1507,9 +1527,10 @@ trait Implicits {
           }
 
       /* Creates a tree representing one of the singleton manifests.*/
-      def findSingletonManifest(name: String) = typedPos(tree.pos.focus) {
-        Select(gen.mkAttributedRef(FullManifestModule), name)
-      }
+      def findSingletonManifest(name: String) =
+        typedPos(tree.pos.focus) {
+          Select(gen.mkAttributedRef(FullManifestModule), name)
+        }
 
       /* Re-wraps a type in a manifest before calling inferImplicit on the result */
       def findManifest(
@@ -1759,11 +1780,12 @@ trait Implicits {
         pt match {
           case Function1(_, out) =>
             // must inline to avoid capturing result
-            def prohibit(sym: Symbol) = (sym.tpe <:< out) && {
-              maybeInvalidConversionError(
-                s"the result type of an implicit conversion must be more specific than ${sym.name}")
-              true
-            }
+            def prohibit(sym: Symbol) =
+              (sym.tpe <:< out) && {
+                maybeInvalidConversionError(
+                  s"the result type of an implicit conversion must be more specific than ${sym.name}")
+                true
+              }
             if (prohibit(AnyRefClass) || (settings.isScala211 && prohibit(
                   AnyValClass)))
               result = SearchFailure
@@ -1820,15 +1842,16 @@ trait Implicits {
       f: Symbol => Option[String],
       clazz: Symbol,
       annotationName: String) {
-    def unapply(sym: Symbol): Option[(Message)] = f(sym) match {
-      case Some(m)                 => Some(new Message(sym, m, annotationName))
-      case None if sym.isAliasType =>
-        // perform exactly one step of dealiasing
-        // this is necessary because ClassManifests are now aliased to ClassTags
-        // but we don't want to intimidate users by showing unrelated error messages
-        unapply(sym.info.resultType.betaReduce.typeSymbolDirect)
-      case _ => None
-    }
+    def unapply(sym: Symbol): Option[(Message)] =
+      f(sym) match {
+        case Some(m)                 => Some(new Message(sym, m, annotationName))
+        case None if sym.isAliasType =>
+          // perform exactly one step of dealiasing
+          // this is necessary because ClassManifests are now aliased to ClassTags
+          // but we don't want to intimidate users by showing unrelated error messages
+          unapply(sym.info.resultType.betaReduce.typeSymbolDirect)
+        case _ => None
+      }
 
     // check the message's syntax: should be a string literal that may contain occurrences of the string "${X}",
     // where `X` refers to a type parameter of `sym`

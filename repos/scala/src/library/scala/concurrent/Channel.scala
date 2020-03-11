@@ -29,27 +29,29 @@ class Channel[A] {
     *
     * @param x object to enqueue to this channel
     */
-  def write(x: A) = synchronized {
-    lastWritten.elem = x
-    lastWritten.next = new LinkedList[A]
-    lastWritten = lastWritten.next
-    if (nreaders > 0) notify()
-  }
+  def write(x: A) =
+    synchronized {
+      lastWritten.elem = x
+      lastWritten.next = new LinkedList[A]
+      lastWritten = lastWritten.next
+      if (nreaders > 0) notify()
+    }
 
   /** Retrieve the next waiting object from the FIFO queue,
     *  blocking if necessary until an object is available.
     *
     * @return next object dequeued from this channel
     */
-  def read: A = synchronized {
-    while (written.next == null) {
-      try {
-        nreaders += 1
-        wait()
-      } finally nreaders -= 1
+  def read: A =
+    synchronized {
+      while (written.next == null) {
+        try {
+          nreaders += 1
+          wait()
+        } finally nreaders -= 1
+      }
+      val x = written.elem
+      written = written.next
+      x
     }
-    val x = written.elem
-    written = written.next
-    x
-  }
 }

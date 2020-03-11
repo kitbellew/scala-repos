@@ -102,28 +102,30 @@ trait SQLServerProfile extends JdbcProfile {
       extends JdbcModelBuilder(mTables, ignoreInvalidDefaults) {
     override def createColumnBuilder(
         tableBuilder: TableBuilder,
-        meta: MColumn): ColumnBuilder = new ColumnBuilder(tableBuilder, meta) {
-      override def tpe = dbType match {
-        case Some("date") => "java.sql.Date"
-        case Some("time") => "java.sql.Time"
-        case _            => super.tpe
-      }
-      override def rawDefault =
-        super.rawDefault.map(
-          _.stripPrefix("(") // jtds
-            .stripPrefix("(")
-            .stripSuffix(")")
-            .stripSuffix(")"))
-      override def default =
-        rawDefault
-          .map((_, tpe))
-          .collect {
-            case ("0", "Boolean") => Some(false)
-            case ("1", "Boolean") => Some(true)
+        meta: MColumn): ColumnBuilder =
+      new ColumnBuilder(tableBuilder, meta) {
+        override def tpe =
+          dbType match {
+            case Some("date") => "java.sql.Date"
+            case Some("time") => "java.sql.Time"
+            case _            => super.tpe
           }
-          .map(d => Some(d))
-          .getOrElse { super.default }
-    }
+        override def rawDefault =
+          super.rawDefault.map(
+            _.stripPrefix("(") // jtds
+              .stripPrefix("(")
+              .stripSuffix(")")
+              .stripSuffix(")"))
+        override def default =
+          rawDefault
+            .map((_, tpe))
+            .collect {
+              case ("0", "Boolean") => Some(false)
+              case ("1", "Boolean") => Some(true)
+            }
+            .map(d => Some(d))
+            .getOrElse { super.default }
+      }
   }
 
   override def createModelBuilder(
@@ -137,30 +139,31 @@ trait SQLServerProfile extends JdbcProfile {
 
   override def defaultSqlTypeName(
       tmd: JdbcType[_],
-      sym: Option[FieldSymbol]): String = tmd.sqlType match {
-    case java.sql.Types.VARCHAR =>
-      sym.flatMap(
-        _.findColumnOption[RelationalProfile.ColumnOption.Length]) match {
-        case Some(l) =>
-          if (l.varying) s"VARCHAR(${l.length})" else s"CHAR(${l.length})"
-        case None =>
-          defaultStringType match {
-            case Some(s) => s
-            case None =>
-              if (sym
-                    .flatMap(_.findColumnOption[ColumnOption.PrimaryKey.type])
-                    .isDefined)
-                "VARCHAR(254)"
-              else "VARCHAR(MAX)"
-          }
-      }
-    case java.sql.Types.BOOLEAN => "BIT"
-    case java.sql.Types.BLOB    => "VARBINARY(MAX)"
-    case java.sql.Types.CLOB    => "TEXT"
-    case java.sql.Types.DOUBLE  => "FLOAT(53)"
-    case java.sql.Types.FLOAT   => "FLOAT(24)"
-    case _                      => super.defaultSqlTypeName(tmd, sym)
-  }
+      sym: Option[FieldSymbol]): String =
+    tmd.sqlType match {
+      case java.sql.Types.VARCHAR =>
+        sym.flatMap(
+          _.findColumnOption[RelationalProfile.ColumnOption.Length]) match {
+          case Some(l) =>
+            if (l.varying) s"VARCHAR(${l.length})" else s"CHAR(${l.length})"
+          case None =>
+            defaultStringType match {
+              case Some(s) => s
+              case None =>
+                if (sym
+                      .flatMap(_.findColumnOption[ColumnOption.PrimaryKey.type])
+                      .isDefined)
+                  "VARCHAR(254)"
+                else "VARCHAR(MAX)"
+            }
+        }
+      case java.sql.Types.BOOLEAN => "BIT"
+      case java.sql.Types.BLOB    => "VARBINARY(MAX)"
+      case java.sql.Types.CLOB    => "TEXT"
+      case java.sql.Types.DOUBLE  => "FLOAT(53)"
+      case java.sql.Types.FLOAT   => "FLOAT(24)"
+      case _                      => super.defaultSqlTypeName(tmd, sym)
+    }
 
   class QueryBuilder(tree: Node, state: CompilerState)
       extends super.QueryBuilder(tree, state) {
@@ -190,26 +193,27 @@ trait SQLServerProfile extends JdbcProfile {
       if (o.direction.desc) b" desc"
     }
 
-    override def expr(n: Node, skipParens: Boolean = false): Unit = n match {
-      // Cast bind variables of type TIME to TIME (otherwise they're treated as TIMESTAMP)
-      case c @ LiteralNode(v)
-          if c.volatileHint && jdbcTypeFor(
-            c.nodeType) == columnTypes.timeJdbcType =>
-        b"cast("
-        super.expr(n, skipParens)
-        b" as ${columnTypes.timeJdbcType.sqlTypeName(None)})"
-      case QueryParameter(extractor, tpe, _)
-          if jdbcTypeFor(tpe) == columnTypes.timeJdbcType =>
-        b"cast("
-        super.expr(n, skipParens)
-        b" as ${columnTypes.timeJdbcType.sqlTypeName(None)})"
-      case Library.Substring(n, start) =>
-        b"\({fn substring($n, ${QueryParameter
-          .constOp[Int]("+")(_ + _)(start, LiteralNode(1).infer())}, ${Int.MaxValue})}\)"
-      case Library.Repeat(str, count) =>
-        b"replicate($str, $count)"
-      case n => super.expr(n, skipParens)
-    }
+    override def expr(n: Node, skipParens: Boolean = false): Unit =
+      n match {
+        // Cast bind variables of type TIME to TIME (otherwise they're treated as TIMESTAMP)
+        case c @ LiteralNode(v)
+            if c.volatileHint && jdbcTypeFor(
+              c.nodeType) == columnTypes.timeJdbcType =>
+          b"cast("
+          super.expr(n, skipParens)
+          b" as ${columnTypes.timeJdbcType.sqlTypeName(None)})"
+        case QueryParameter(extractor, tpe, _)
+            if jdbcTypeFor(tpe) == columnTypes.timeJdbcType =>
+          b"cast("
+          super.expr(n, skipParens)
+          b" as ${columnTypes.timeJdbcType.sqlTypeName(None)})"
+        case Library.Substring(n, start) =>
+          b"\({fn substring($n, ${QueryParameter
+            .constOp[Int]("+")(_ + _)(start, LiteralNode(1).infer())}, ${Int.MaxValue})}\)"
+        case Library.Repeat(str, count) =>
+          b"replicate($str, $count)"
+        case n => super.expr(n, skipParens)
+      }
   }
 
   class InsertBuilder(ins: Insert) extends super.InsertBuilder(ins) {
@@ -362,17 +366,18 @@ class ProtectGroupBy extends Phase {
         keepType = true
       ))
 
-  def source(bs: TermSymbol, b: Node, n: Node): (Node, TermSymbol) = n match {
-    case Filter(_, f, _)      => source(bs, b, f)
-    case CollectionCast(f, _) => source(bs, b, f)
-    case Bind(s, f, Pure(StructNode(defs), _)) =>
-      val m = defs.toMap
-      val b2 = b.replace(
-        {
-          case Select(Ref(s), f) if s == bs => m(f)
-        },
-        keepType = true)
-      source(s, b2, f)
-    case _ => (b, bs)
-  }
+  def source(bs: TermSymbol, b: Node, n: Node): (Node, TermSymbol) =
+    n match {
+      case Filter(_, f, _)      => source(bs, b, f)
+      case CollectionCast(f, _) => source(bs, b, f)
+      case Bind(s, f, Pure(StructNode(defs), _)) =>
+        val m = defs.toMap
+        val b2 = b.replace(
+          {
+            case Select(Ref(s), f) if s == bs => m(f)
+          },
+          keepType = true)
+        source(s, b2, f)
+      case _ => (b, bs)
+    }
 }

@@ -51,11 +51,12 @@ object Event {
   }
 
   // Note: Not a val so we can discriminate between constructions in tests.
-  private[twitter] def nullType: Type = new Type {
-    val id = "Null"
-    def serialize(event: Event) = Return(Buf.Empty)
-    def deserialize(buf: Buf) = Return(Event(this, Time.Bottom))
-  }
+  private[twitter] def nullType: Type =
+    new Type {
+      val id = "Null"
+      def serialize(event: Event) = Return(Buf.Empty)
+      def deserialize(buf: Buf) = Return(Event(this, Time.Bottom))
+    }
 }
 
 /**

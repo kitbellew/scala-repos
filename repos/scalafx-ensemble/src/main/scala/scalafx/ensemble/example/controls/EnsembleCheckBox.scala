@@ -40,25 +40,26 @@ import scalafx.scene.layout.{Priority, VBox}
   */
 class EnsembleCheckBox extends EnsembleExample {
 
-  def getContent = new VBox {
-    vgrow = Priority.Always
-    hgrow = Priority.Always
-    spacing = 10
-    padding = Insets(20)
-    children = List(
-      new CheckBox {
-        text = "Simple CheckBox"
-      },
-      new CheckBox {
-        text = "Three state checkbox"
-        allowIndeterminate = true
-        indeterminate = false
-      },
-      new CheckBox {
-        text = "Disabled"
-        selected = true
-        disable = true
-      }
-    )
-  }
+  def getContent =
+    new VBox {
+      vgrow = Priority.Always
+      hgrow = Priority.Always
+      spacing = 10
+      padding = Insets(20)
+      children = List(
+        new CheckBox {
+          text = "Simple CheckBox"
+        },
+        new CheckBox {
+          text = "Three state checkbox"
+          allowIndeterminate = true
+          indeterminate = false
+        },
+        new CheckBox {
+          text = "Disabled"
+          selected = true
+          disable = true
+        }
+      )
+    }
 }

@@ -17,13 +17,14 @@ class Cache[K, V](capacity: Int) {
         size > capacity
     }
 
-  def getOrUpdate(key: K)(value: => V): V = lock.synchronized {
-    Option(map.get(key))
-      .flatMap(reference => Option(reference.get()))
-      .getOrElse {
-        val v = value
-        map.put(key, new SoftReference(v))
-        v
-      }
-  }
+  def getOrUpdate(key: K)(value: => V): V =
+    lock.synchronized {
+      Option(map.get(key))
+        .flatMap(reference => Option(reference.get()))
+        .getOrElse {
+          val v = value
+          map.put(key, new SoftReference(v))
+          v
+        }
+    }
 }

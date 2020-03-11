@@ -32,14 +32,15 @@ private[twitter] class StreamServerDispatcher[Req: RequestType](
     }
   }
 
-  protected def dispatch(req: Any, eos: Promise[Unit]) = req match {
-    case httpReq: HttpRequest =>
-      service(RT.specialize(from(httpReq))) ensure eos.setDone()
-    case invalid =>
-      eos.setDone()
-      Future.exception(
-        new IllegalArgumentException(s"Invalid message: $invalid"))
-  }
+  protected def dispatch(req: Any, eos: Promise[Unit]) =
+    req match {
+      case httpReq: HttpRequest =>
+        service(RT.specialize(from(httpReq))) ensure eos.setDone()
+      case invalid =>
+        eos.setDone()
+        Future.exception(
+          new IllegalArgumentException(s"Invalid message: $invalid"))
+    }
 
   protected def handle(rep: StreamResponse) = {
     val httpRes: HttpResponse = from(rep.info)

@@ -15,8 +15,9 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
 trait ScTuplePattern extends ScPattern {
   def patternList = findChild(classOf[ScPatterns])
 
-  override def getType(ctx: TypingContext) = wrap(patternList) flatMap { l =>
-    collectFailures(l.patterns.map(_.getType(ctx)), Any)(
-      ScTupleType(_)(getProject, getResolveScope))
-  }
+  override def getType(ctx: TypingContext) =
+    wrap(patternList) flatMap { l =>
+      collectFailures(l.patterns.map(_.getType(ctx)), Any)(
+        ScTupleType(_)(getProject, getResolveScope))
+    }
 }

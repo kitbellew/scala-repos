@@ -22,8 +22,9 @@ class QuietReporter(inColor: Boolean, withDurations: Boolean = false)
   def this() =
     this(!getBoolean("akka.test.nocolor"), !getBoolean("akka.test.nodurations"))
 
-  override def apply(event: Event): Unit = event match {
-    case _: RunStarting ⇒ ()
-    case _ ⇒ super.apply(event)
-  }
+  override def apply(event: Event): Unit =
+    event match {
+      case _: RunStarting ⇒ ()
+      case _ ⇒ super.apply(event)
+    }
 }

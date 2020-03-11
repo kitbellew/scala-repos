@@ -41,12 +41,12 @@ trait NumericTypedField[MyType] extends TypedField[MyType] {
       case _                => genericSetFromAny(in)
     }
 
-  private def elem = S.fmapFunc((s: List[String]) => setFromAny(s)) {
-    funcName =>
+  private def elem =
+    S.fmapFunc((s: List[String]) => setFromAny(s)) { funcName =>
       <input type={formInputType} name={funcName} value={
         valueBox.map(_.toString) openOr ""
       } tabindex={tabIndex.toString}/>
-  }
+    }
 
   /**
     * Returns form input of this field

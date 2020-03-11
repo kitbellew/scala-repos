@@ -110,13 +110,14 @@ class JavaValsUsagesSearcher
   }
 
   private object scalaValue {
-    def unapply(td: ScTypedDefinition) = inReadAction {
-      ScalaPsiUtil.nameContext(td) match {
-        case _: ScValue | _: ScVariable | _: ScClassParameter
-            if td.getName != "" =>
-          Some(td)
-        case _ => None
+    def unapply(td: ScTypedDefinition) =
+      inReadAction {
+        ScalaPsiUtil.nameContext(td) match {
+          case _: ScValue | _: ScVariable | _: ScClassParameter
+              if td.getName != "" =>
+            Some(td)
+          case _ => None
+        }
       }
-    }
   }
 }

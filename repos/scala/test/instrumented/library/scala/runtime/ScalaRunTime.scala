@@ -49,12 +49,13 @@ object ScalaRunTime {
   // includes specialized subclasses and future proofed against hypothetical TupleN (for N > 22)
   def isTuple(x: Any) =
     x != null && x.getClass.getName.startsWith("scala.Tuple")
-  def isAnyVal(x: Any) = x match {
-    case _: Byte | _: Short | _: Char | _: Int | _: Long | _: Float |
-        _: Double | _: Boolean | _: Unit =>
-      true
-    case _ => false
-  }
+  def isAnyVal(x: Any) =
+    x match {
+      case _: Byte | _: Short | _: Char | _: Int | _: Long | _: Float |
+          _: Double | _: Boolean | _: Unit =>
+        true
+      case _ => false
+    }
 
   /** Return the class object representing an array with element class `clazz`.
     */
@@ -66,13 +67,14 @@ object ScalaRunTime {
 
   /** Return the class object representing elements in arrays described by a given schematic.
     */
-  def arrayElementClass(schematic: Any): jClass[_] = schematic match {
-    case cls: jClass[_]   => cls.getComponentType
-    case tag: ClassTag[_] => tag.runtimeClass
-    case _ =>
-      throw new UnsupportedOperationException(
-        s"unsupported schematic $schematic (${schematic.getClass})")
-  }
+  def arrayElementClass(schematic: Any): jClass[_] =
+    schematic match {
+      case cls: jClass[_]   => cls.getComponentType
+      case tag: ClassTag[_] => tag.runtimeClass
+      case _ =>
+        throw new UnsupportedOperationException(
+          s"unsupported schematic $schematic (${schematic.getClass})")
+    }
 
   /** Return the class object representing an unboxed value type,
     *  e.g. classOf[int], not classOf[java.lang.Integer].  The compiler
@@ -120,47 +122,50 @@ object ScalaRunTime {
   }
 
   /** Get generic array length */
-  def array_length(xs: AnyRef): Int = xs match {
-    case x: Array[AnyRef]  => x.length
-    case x: Array[Int]     => x.length
-    case x: Array[Double]  => x.length
-    case x: Array[Long]    => x.length
-    case x: Array[Float]   => x.length
-    case x: Array[Char]    => x.length
-    case x: Array[Byte]    => x.length
-    case x: Array[Short]   => x.length
-    case x: Array[Boolean] => x.length
-    case x: Array[Unit]    => x.length
-    case null              => throw new NullPointerException
-  }
+  def array_length(xs: AnyRef): Int =
+    xs match {
+      case x: Array[AnyRef]  => x.length
+      case x: Array[Int]     => x.length
+      case x: Array[Double]  => x.length
+      case x: Array[Long]    => x.length
+      case x: Array[Float]   => x.length
+      case x: Array[Char]    => x.length
+      case x: Array[Byte]    => x.length
+      case x: Array[Short]   => x.length
+      case x: Array[Boolean] => x.length
+      case x: Array[Unit]    => x.length
+      case null              => throw new NullPointerException
+    }
 
-  def array_clone(xs: AnyRef): AnyRef = xs match {
-    case x: Array[AnyRef]  => ArrayRuntime.cloneArray(x)
-    case x: Array[Int]     => ArrayRuntime.cloneArray(x)
-    case x: Array[Double]  => ArrayRuntime.cloneArray(x)
-    case x: Array[Long]    => ArrayRuntime.cloneArray(x)
-    case x: Array[Float]   => ArrayRuntime.cloneArray(x)
-    case x: Array[Char]    => ArrayRuntime.cloneArray(x)
-    case x: Array[Byte]    => ArrayRuntime.cloneArray(x)
-    case x: Array[Short]   => ArrayRuntime.cloneArray(x)
-    case x: Array[Boolean] => ArrayRuntime.cloneArray(x)
-    case x: Array[Unit]    => x
-    case null              => throw new NullPointerException
-  }
+  def array_clone(xs: AnyRef): AnyRef =
+    xs match {
+      case x: Array[AnyRef]  => ArrayRuntime.cloneArray(x)
+      case x: Array[Int]     => ArrayRuntime.cloneArray(x)
+      case x: Array[Double]  => ArrayRuntime.cloneArray(x)
+      case x: Array[Long]    => ArrayRuntime.cloneArray(x)
+      case x: Array[Float]   => ArrayRuntime.cloneArray(x)
+      case x: Array[Char]    => ArrayRuntime.cloneArray(x)
+      case x: Array[Byte]    => ArrayRuntime.cloneArray(x)
+      case x: Array[Short]   => ArrayRuntime.cloneArray(x)
+      case x: Array[Boolean] => ArrayRuntime.cloneArray(x)
+      case x: Array[Unit]    => x
+      case null              => throw new NullPointerException
+    }
 
   /** Convert an array to an object array.
     *  Needed to deal with vararg arguments of primitive types that are passed
     *  to a generic Java vararg parameter T ...
     */
-  def toObjectArray(src: AnyRef): Array[Object] = src match {
-    case x: Array[AnyRef] => x
-    case _ =>
-      val length = array_length(src)
-      val dest = new Array[Object](length)
-      for (i <- 0 until length)
-        array_update(dest, i, array_apply(src, i))
-      dest
-  }
+  def toObjectArray(src: AnyRef): Array[Object] =
+    src match {
+      case x: Array[AnyRef] => x
+      case _ =>
+        val length = array_length(src)
+        val dest = new Array[Object](length)
+        for (i <- 0 until length)
+          array_update(dest, i, array_apply(src, i))
+        dest
+    }
 
   def toArray[T](xs: scala.collection.Seq[T]) = {
     val arr = new Array[AnyRef](xs.length)
@@ -215,11 +220,12 @@ object ScalaRunTime {
       BoxesRunTime.equalsCharObject(x.asInstanceOf[java.lang.Character], y)
     else x.equals(y)
 
-  def _equals(x: Product, y: Any): Boolean = y match {
-    case y: Product if x.productArity == y.productArity =>
-      x.productIterator sameElements y.productIterator
-    case _ => false
-  }
+  def _equals(x: Product, y: Any): Boolean =
+    y match {
+      case y: Product if x.productArity == y.productArity =>
+        x.productIterator sameElements y.productIterator
+      case _ => false
+    }
 
   // hashcode -----------------------------------------------------------
   //
@@ -290,40 +296,43 @@ object ScalaRunTime {
     */
   def stringOf(arg: Any): String = stringOf(arg, scala.Int.MaxValue)
   def stringOf(arg: Any, maxElements: Int): String = {
-    def packageOf(x: AnyRef) = x.getClass.getPackage match {
-      case null => ""
-      case p    => p.getName
-    }
+    def packageOf(x: AnyRef) =
+      x.getClass.getPackage match {
+        case null => ""
+        case p    => p.getName
+      }
     def isScalaClass(x: AnyRef) = packageOf(x) startsWith "scala."
     def isScalaCompilerClass(x: AnyRef) =
       packageOf(x) startsWith "scala.tools.nsc."
 
     // When doing our own iteration is dangerous
-    def useOwnToString(x: Any) = x match {
-      // Node extends NodeSeq extends Seq[Node] and MetaData extends Iterable[MetaData]
-      case _: Node | _: MetaData => true
-      // Range/NumericRange have a custom toString to avoid walking a gazillion elements
-      case _: Range | _: NumericRange[_] => true
-      // Sorted collections to the wrong thing (for us) on iteration - ticket #3493
-      case _: Sorted[_, _] => true
-      // StringBuilder(a, b, c) and similar not so attractive
-      case _: StringLike[_] => true
-      // Don't want to evaluate any elements in a view
-      case _: TraversableView[_, _] => true
-      // Don't want to a) traverse infinity or b) be overly helpful with peoples' custom
-      // collections which may have useful toString methods - ticket #3710
-      // or c) print AbstractFiles which are somehow also Iterable[AbstractFile]s.
-      case x: Traversable[_] =>
-        !x.hasDefiniteSize || !isScalaClass(x) || isScalaCompilerClass(x)
-      // Otherwise, nothing could possibly go wrong
-      case _ => false
-    }
+    def useOwnToString(x: Any) =
+      x match {
+        // Node extends NodeSeq extends Seq[Node] and MetaData extends Iterable[MetaData]
+        case _: Node | _: MetaData => true
+        // Range/NumericRange have a custom toString to avoid walking a gazillion elements
+        case _: Range | _: NumericRange[_] => true
+        // Sorted collections to the wrong thing (for us) on iteration - ticket #3493
+        case _: Sorted[_, _] => true
+        // StringBuilder(a, b, c) and similar not so attractive
+        case _: StringLike[_] => true
+        // Don't want to evaluate any elements in a view
+        case _: TraversableView[_, _] => true
+        // Don't want to a) traverse infinity or b) be overly helpful with peoples' custom
+        // collections which may have useful toString methods - ticket #3710
+        // or c) print AbstractFiles which are somehow also Iterable[AbstractFile]s.
+        case x: Traversable[_] =>
+          !x.hasDefiniteSize || !isScalaClass(x) || isScalaCompilerClass(x)
+        // Otherwise, nothing could possibly go wrong
+        case _ => false
+      }
 
     // A variation on inner for maps so they print -> instead of bare tuples
-    def mapInner(arg: Any): String = arg match {
-      case (k, v) => inner(k) + " -> " + inner(v)
-      case _      => inner(arg)
-    }
+    def mapInner(arg: Any): String =
+      arg match {
+        case (k, v) => inner(k) + " -> " + inner(v)
+        case _      => inner(arg)
+      }
 
     // Special casing Unit arrays, the value class which uses a reference array type.
     def arrayToString(x: AnyRef) = {
@@ -338,25 +347,26 @@ object ScalaRunTime {
     // Note that iterator is used if possible and foreach is used as a
     // last resort, because the parallel collections "foreach" in a
     // random order even on sequences.
-    def inner(arg: Any): String = arg match {
-      case null => "null"
-      case ""   => "\"\""
-      case x: String =>
-        if (x.head.isWhitespace || x.last.isWhitespace) "\"" + x + "\"" else x
-      case x if useOwnToString(x)  => x.toString
-      case x: AnyRef if isArray(x) => arrayToString(x)
-      case x: scala.collection.Map[_, _] =>
-        x.iterator take maxElements map mapInner mkString (x.stringPrefix + "(", ", ", ")")
-      case x: Iterable[_] =>
-        x.iterator take maxElements map inner mkString (x.stringPrefix + "(", ", ", ")")
-      case x: Traversable[_] =>
-        x take maxElements map inner mkString (x.stringPrefix + "(", ", ", ")")
-      case x: Product1[_] if isTuple(x) =>
-        "(" + inner(x._1) + ",)" // that special trailing comma
-      case x: Product if isTuple(x) =>
-        x.productIterator map inner mkString ("(", ",", ")")
-      case x => x.toString
-    }
+    def inner(arg: Any): String =
+      arg match {
+        case null => "null"
+        case ""   => "\"\""
+        case x: String =>
+          if (x.head.isWhitespace || x.last.isWhitespace) "\"" + x + "\"" else x
+        case x if useOwnToString(x)  => x.toString
+        case x: AnyRef if isArray(x) => arrayToString(x)
+        case x: scala.collection.Map[_, _] =>
+          x.iterator take maxElements map mapInner mkString (x.stringPrefix + "(", ", ", ")")
+        case x: Iterable[_] =>
+          x.iterator take maxElements map inner mkString (x.stringPrefix + "(", ", ", ")")
+        case x: Traversable[_] =>
+          x take maxElements map inner mkString (x.stringPrefix + "(", ", ", ")")
+        case x: Product1[_] if isTuple(x) =>
+          "(" + inner(x._1) + ",)" // that special trailing comma
+        case x: Product if isTuple(x) =>
+          x.productIterator map inner mkString ("(", ",", ")")
+        case x => x.toString
+      }
 
     // The try/catch is defense against iterables which aren't actually designed
     // to be iterated, such as some scala.tools.nsc.io.AbstractFile derived classes.

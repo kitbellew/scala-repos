@@ -43,22 +43,25 @@ trait ScBindingPattern
     }
   }
 
-  override def isStable = getEnclosingVariable match {
-    case None => true
-    case _    => false
-  }
+  override def isStable =
+    getEnclosingVariable match {
+      case None => true
+      case _    => false
+    }
 
   override def isVar: Boolean = nameContext.isInstanceOf[ScVariable]
   override def isVal: Boolean = nameContext.isInstanceOf[ScValue]
 
-  def isClassMember = nameContext.getContext match {
-    case _: ScTemplateBody | _: ScEarlyDefinitions => true
-    case _                                         => false
-  }
-  def isBeanProperty: Boolean = nameContext match {
-    case a: ScAnnotationsHolder => ScalaPsiUtil.isBeanProperty(a)
-    case _                      => false
-  }
+  def isClassMember =
+    nameContext.getContext match {
+      case _: ScTemplateBody | _: ScEarlyDefinitions => true
+      case _                                         => false
+    }
+  def isBeanProperty: Boolean =
+    nameContext match {
+      case a: ScAnnotationsHolder => ScalaPsiUtil.isBeanProperty(a)
+      case _                      => false
+    }
 
   def containingClass: ScTemplateDefinition = {
     ScalaPsiUtil.nameContext(this) match {

@@ -107,18 +107,20 @@ private[spark] class CompressedMapStatus(
     MapStatus.decompressSize(compressedSizes(reduceId))
   }
 
-  override def writeExternal(out: ObjectOutput): Unit = Utils.tryOrIOException {
-    loc.writeExternal(out)
-    out.writeInt(compressedSizes.length)
-    out.write(compressedSizes)
-  }
+  override def writeExternal(out: ObjectOutput): Unit =
+    Utils.tryOrIOException {
+      loc.writeExternal(out)
+      out.writeInt(compressedSizes.length)
+      out.write(compressedSizes)
+    }
 
-  override def readExternal(in: ObjectInput): Unit = Utils.tryOrIOException {
-    loc = BlockManagerId(in)
-    val len = in.readInt()
-    compressedSizes = new Array[Byte](len)
-    in.readFully(compressedSizes)
-  }
+  override def readExternal(in: ObjectInput): Unit =
+    Utils.tryOrIOException {
+      loc = BlockManagerId(in)
+      val len = in.readInt()
+      compressedSizes = new Array[Byte](len)
+      in.readFully(compressedSizes)
+    }
 }
 
 /**
@@ -155,18 +157,20 @@ private[spark] class HighlyCompressedMapStatus private (
     }
   }
 
-  override def writeExternal(out: ObjectOutput): Unit = Utils.tryOrIOException {
-    loc.writeExternal(out)
-    emptyBlocks.writeExternal(out)
-    out.writeLong(avgSize)
-  }
+  override def writeExternal(out: ObjectOutput): Unit =
+    Utils.tryOrIOException {
+      loc.writeExternal(out)
+      emptyBlocks.writeExternal(out)
+      out.writeLong(avgSize)
+    }
 
-  override def readExternal(in: ObjectInput): Unit = Utils.tryOrIOException {
-    loc = BlockManagerId(in)
-    emptyBlocks = new RoaringBitmap()
-    emptyBlocks.readExternal(in)
-    avgSize = in.readLong()
-  }
+  override def readExternal(in: ObjectInput): Unit =
+    Utils.tryOrIOException {
+      loc = BlockManagerId(in)
+      emptyBlocks = new RoaringBitmap()
+      emptyBlocks.readExternal(in)
+      avgSize = in.readLong()
+    }
 }
 
 private[spark] object HighlyCompressedMapStatus {

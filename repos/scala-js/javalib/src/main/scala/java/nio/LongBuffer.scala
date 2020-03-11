@@ -77,10 +77,11 @@ abstract class LongBuffer private[nio] (
   override def hashCode(): Int =
     GenBuffer(this).generic_hashCode(LongBuffer.HashSeed)
 
-  override def equals(that: Any): Boolean = that match {
-    case that: LongBuffer => compareTo(that) == 0
-    case _                => false
-  }
+  override def equals(that: Any): Boolean =
+    that match {
+      case that: LongBuffer => compareTo(that) == 0
+      case _                => false
+    }
 
   @noinline
   def compareTo(that: LongBuffer): Int =

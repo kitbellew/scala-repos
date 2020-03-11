@@ -34,13 +34,14 @@ trait Product4[+T1, +T2, +T3, +T4] extends Any with Product {
     */
 
   @throws(classOf[IndexOutOfBoundsException])
-  override def productElement(n: Int) = n match {
-    case 0 => _1
-    case 1 => _2
-    case 2 => _3
-    case 3 => _4
-    case _ => throw new IndexOutOfBoundsException(n.toString())
-  }
+  override def productElement(n: Int) =
+    n match {
+      case 0 => _1
+      case 1 => _2
+      case 2 => _3
+      case 3 => _4
+      case _ => throw new IndexOutOfBoundsException(n.toString())
+    }
 
   /** A projection of element 1 of this Product.
     *  @return   A projection of element 1.

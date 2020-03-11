@@ -12,12 +12,13 @@ object Tv extends LilaController {
 
   def index = onChannel(lila.tv.Tv.Channel.Best.key)
 
-  def onChannel(chanKey: String) = Open { implicit ctx =>
-    (lila.tv.Tv.Channel.byKey get chanKey).fold(notFound)(lichessTv)
-  }
+  def onChannel(chanKey: String) =
+    Open { implicit ctx =>
+      (lila.tv.Tv.Channel.byKey get chanKey).fold(notFound)(lichessTv)
+    }
 
-  def sides(chanKey: String, gameId: String, color: String) = Open {
-    implicit ctx =>
+  def sides(chanKey: String, gameId: String, color: String) =
+    Open { implicit ctx =>
       lila.tv.Tv.Channel.byKey get chanKey match {
         case None => notFound
         case Some(channel) =>
@@ -31,7 +32,7 @@ object Tv extends LilaController {
             }
           }
       }
-  }
+    }
 
   private def lichessTv(channel: lila.tv.Tv.Channel)(implicit ctx: Context) =
     OptionFuResult(Env.tv.tv getGame channel) { game =>
@@ -63,9 +64,10 @@ object Tv extends LilaController {
 
   def games = gamesChannel(lila.tv.Tv.Channel.Best.key)
 
-  def gamesChannel(chanKey: String) = Open { implicit ctx =>
-    (lila.tv.Tv.Channel.byKey get chanKey).fold(notFound)(lichessGames)
-  }
+  def gamesChannel(chanKey: String) =
+    Open { implicit ctx =>
+      (lila.tv.Tv.Channel.byKey get chanKey).fold(notFound)(lichessGames)
+    }
 
   private def lichessGames(channel: lila.tv.Tv.Channel)(implicit ctx: Context) =
     Env.tv.tv.getChampions zip
@@ -76,66 +78,72 @@ object Tv extends LilaController {
         }
     }
 
-  def streamIn(id: String) = Open { implicit ctx =>
-    OptionFuResult(Env.tv.streamerList find id) { streamer =>
-      Env.tv.streamsOnAir.all flatMap { streams =>
-        val others = streams.filter(_.id != id)
-        streams find (_.id == id) match {
-          case None    => fuccess(Ok(html.tv.notStreaming(streamer, others)))
-          case Some(s) => fuccess(Ok(html.tv.stream(s, others)))
+  def streamIn(id: String) =
+    Open { implicit ctx =>
+      OptionFuResult(Env.tv.streamerList find id) { streamer =>
+        Env.tv.streamsOnAir.all flatMap { streams =>
+          val others = streams.filter(_.id != id)
+          streams find (_.id == id) match {
+            case None    => fuccess(Ok(html.tv.notStreaming(streamer, others)))
+            case Some(s) => fuccess(Ok(html.tv.stream(s, others)))
+          }
         }
       }
     }
-  }
 
-  def feed = Action.async {
-    import makeTimeout.short
-    import akka.pattern.ask
-    import lila.round.TvBroadcast
-    import play.api.libs.EventSource
-    implicit val encoder = play.api.libs.Comet.CometMessage.jsonMessages
-    Env.round.tvBroadcast ? TvBroadcast.GetEnumerator mapTo
-      manifest[TvBroadcast.EnumeratorType] map { enum =>
-      Ok.chunked(enum &> EventSource()).as("text/event-stream")
+  def feed =
+    Action.async {
+      import makeTimeout.short
+      import akka.pattern.ask
+      import lila.round.TvBroadcast
+      import play.api.libs.EventSource
+      implicit val encoder = play.api.libs.Comet.CometMessage.jsonMessages
+      Env.round.tvBroadcast ? TvBroadcast.GetEnumerator mapTo
+        manifest[TvBroadcast.EnumeratorType] map { enum =>
+        Ok.chunked(enum &> EventSource()).as("text/event-stream")
+      }
     }
-  }
 
-  def streamConfig = Auth { implicit ctx => me =>
-    Env.tv.streamerList.store.get.map { text =>
-      Ok(html.tv.streamConfig(Env.tv.streamerList.form.fill(text)))
+  def streamConfig =
+    Auth { implicit ctx => me =>
+      Env.tv.streamerList.store.get.map { text =>
+        Ok(html.tv.streamConfig(Env.tv.streamerList.form.fill(text)))
+      }
     }
-  }
 
-  def streamConfigSave = SecureBody(_.StreamConfig) { implicit ctx => me =>
-    implicit val req = ctx.body
-    FormFuResult(Env.tv.streamerList.form) { err =>
-      fuccess(html.tv.streamConfig(err))
-    } { text =>
-      Env.tv.streamerList.store.set(text) >>
-        Env.mod.logApi.streamConfig(me.id) inject Redirect(
-        routes.Tv.streamConfig)
+  def streamConfigSave =
+    SecureBody(_.StreamConfig) { implicit ctx => me =>
+      implicit val req = ctx.body
+      FormFuResult(Env.tv.streamerList.form) { err =>
+        fuccess(html.tv.streamConfig(err))
+      } { text =>
+        Env.tv.streamerList.store.set(text) >>
+          Env.mod.logApi.streamConfig(me.id) inject Redirect(
+          routes.Tv.streamConfig)
+      }
     }
-  }
 
-  def embed = Action { req =>
-    Ok {
-      val bg = get("bg", req) | "light"
-      val theme = get("theme", req) | "brown"
-      val url = s"""${req.domain + routes.Tv.frame}?bg=$bg&theme=$theme"""
-      s"""document.write("<iframe src='http://$url&embed=" + document.domain + "' class='lichess-tv-iframe' allowtransparency='true' frameBorder='0' style='width: 224px; height: 264px;' title='Lichess free online chess'></iframe>");"""
-    } as JAVASCRIPT withHeaders (CACHE_CONTROL -> "max-age=86400")
-  }
-
-  def frame = Action.async { req =>
-    Env.tv.tv.getBest map {
-      case None => NotFound
-      case Some(game) =>
-        Ok(
-          views.html.tv.embed(
-            Pov first game,
-            get("bg", req) | "light",
-            lila.pref.Theme(~get("theme", req)).cssClass
-          ))
+  def embed =
+    Action { req =>
+      Ok {
+        val bg = get("bg", req) | "light"
+        val theme = get("theme", req) | "brown"
+        val url = s"""${req.domain + routes.Tv.frame}?bg=$bg&theme=$theme"""
+        s"""document.write("<iframe src='http://$url&embed=" + document.domain + "' class='lichess-tv-iframe' allowtransparency='true' frameBorder='0' style='width: 224px; height: 264px;' title='Lichess free online chess'></iframe>");"""
+      } as JAVASCRIPT withHeaders (CACHE_CONTROL -> "max-age=86400")
     }
-  }
+
+  def frame =
+    Action.async { req =>
+      Env.tv.tv.getBest map {
+        case None => NotFound
+        case Some(game) =>
+          Ok(
+            views.html.tv.embed(
+              Pov first game,
+              get("bg", req) | "light",
+              lila.pref.Theme(~get("theme", req)).cssClass
+            ))
+      }
+    }
 }

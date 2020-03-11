@@ -101,12 +101,14 @@ object Test {
 
     def nextChunkSize = 3 //rand.nextInt(chunkLimit)
 
-    def seqBack() = for (i <- 0 until Math.min(nextChunkSize, N - max)) {
-      a = a :+ ("a" + max); max += 1
-    }
-    def seqFront() = for (i <- 0 until Math.min(nextChunkSize, min)) {
-      min -= 1; a = ("a" + min) +: a
-    }
+    def seqBack() =
+      for (i <- 0 until Math.min(nextChunkSize, N - max)) {
+        a = a :+ ("a" + max); max += 1
+      }
+    def seqFront() =
+      for (i <- 0 until Math.min(nextChunkSize, min)) {
+        min -= 1; a = ("a" + min) +: a
+      }
 
     try {
 

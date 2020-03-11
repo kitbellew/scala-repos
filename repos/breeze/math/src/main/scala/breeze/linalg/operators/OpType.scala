@@ -48,9 +48,10 @@ object OpAdd extends OpAdd with UFunc {
   */
 sealed trait OpSub extends OpType
 object OpSub extends OpSub with UFunc {
-  implicit def opSubFromRing[S: Ring]: Impl2[S, S, S] = new Impl2[S, S, S] {
-    def apply(v: S, v2: S): S = implicitly[Ring[S]].-(v, v2)
-  }
+  implicit def opSubFromRing[S: Ring]: Impl2[S, S, S] =
+    new Impl2[S, S, S] {
+      def apply(v: S, v2: S): S = implicitly[Ring[S]].-(v, v2)
+    }
 }
 
 /**
@@ -73,9 +74,10 @@ object OpMulScalar extends OpMulScalar with UFunc {
   */
 sealed trait OpDiv extends OpType
 object OpDiv extends OpDiv with UFunc {
-  implicit def opDivFromField[S: Field]: Impl2[S, S, S] = new Impl2[S, S, S] {
-    def apply(v: S, v2: S): S = implicitly[Field[S]]./(v, v2)
-  }
+  implicit def opDivFromField[S: Field]: Impl2[S, S, S] =
+    new Impl2[S, S, S] {
+      def apply(v: S, v2: S): S = implicitly[Field[S]]./(v, v2)
+    }
 }
 
 /**

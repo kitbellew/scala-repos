@@ -285,22 +285,23 @@ object AuthApi {
 
   class AuthOperationBuilder[T <: AnyRef](val resultClass: DataType)
       extends SwaggerAuthOperationBuilder[T] {
-    def result: AuthOperation[T] = AuthOperation[T](
-      null,
-      resultClass,
-      summary,
-      position,
-      notes,
-      deprecated,
-      nickname,
-      parameters,
-      responseMessages,
-      consumes,
-      produces,
-      protocols,
-      authorizations,
-      allows
-    )
+    def result: AuthOperation[T] =
+      AuthOperation[T](
+        null,
+        resultClass,
+        summary,
+        position,
+        notes,
+        deprecated,
+        nickname,
+        parameters,
+        responseMessages,
+        consumes,
+        produces,
+        protocols,
+        authorizations,
+        allows
+      )
   }
 
 }

@@ -81,13 +81,15 @@ class CoalescedPartitioner(
     parentPartitionMapping(parent.getPartition(key))
   }
 
-  override def equals(other: Any): Boolean = other match {
-    case c: CoalescedPartitioner =>
-      c.parent == parent && Arrays
-        .equals(c.partitionStartIndices, partitionStartIndices)
-    case _ =>
-      false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case c: CoalescedPartitioner =>
+        c.parent == parent && Arrays.equals(
+          c.partitionStartIndices,
+          partitionStartIndices)
+      case _ =>
+        false
+    }
 
   override def hashCode(): Int =
     31 * parent.hashCode() + Arrays.hashCode(partitionStartIndices)

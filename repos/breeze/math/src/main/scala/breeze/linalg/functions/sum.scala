@@ -18,50 +18,54 @@ object sum extends UFunc with sumLowPrio with VectorizedReduceUFunc {
 
   @expand
   implicit def reduce[T, @expand.args(Int, Double, Float, Long) S](
-      implicit iter: CanTraverseValues[T, S]): Impl[T, S] = new Impl[T, S] {
-    def apply(v: T): S = {
-      class SumVisitor extends ValuesVisitor[S] {
-        var sum: S = 0
-        def visit(a: S): Unit = {
-          sum += a
-        }
+      implicit iter: CanTraverseValues[T, S]): Impl[T, S] =
+    new Impl[T, S] {
+      def apply(v: T): S = {
+        class SumVisitor extends ValuesVisitor[S] {
+          var sum: S = 0
+          def visit(a: S): Unit = {
+            sum += a
+          }
 
-        def zeros(numZero: Int, zeroValue: S): Unit = {
-          sum += numZero * zeroValue
+          def zeros(numZero: Int, zeroValue: S): Unit = {
+            sum += numZero * zeroValue
+          }
         }
+        val visit = new SumVisitor
+        iter.traverse(v, visit)
+        visit.sum
       }
-      val visit = new SumVisitor
-      iter.traverse(v, visit)
-      visit.sum
     }
-  }
 
   implicit def reduceSemiring[T, S](implicit
       iter: CanTraverseValues[T, S],
-      semiring: Semiring[S]): Impl[T, S] = new Impl[T, S] {
-    def apply(v: T): S = {
-      class SumVisitor extends ValuesVisitor[S] {
-        var sum: S = semiring.zero
-        def visit(a: S): Unit = {
-          sum = semiring.+(sum, a)
+      semiring: Semiring[S]): Impl[T, S] =
+    new Impl[T, S] {
+      def apply(v: T): S = {
+        class SumVisitor extends ValuesVisitor[S] {
+          var sum: S = semiring.zero
+          def visit(a: S): Unit = {
+            sum = semiring.+(sum, a)
+          }
+
+          def zeros(numZero: Int, zeroValue: S): Unit = {}
+
         }
-
-        def zeros(numZero: Int, zeroValue: S): Unit = {}
-
+        val visit = new SumVisitor
+        iter.traverse(v, visit)
+        visit.sum
       }
-      val visit = new SumVisitor
-      iter.traverse(v, visit)
-      visit.sum
     }
-  }
 
   @expand
   implicit def helper[@expand.args(Int, Float, Long, Double) T]
-      : VectorizeHelper[T] = new VectorizeHelper[T] {
-    override def zerosLike(len: Int): DenseVector[T] = DenseVector.zeros[T](len)
+      : VectorizeHelper[T] =
+    new VectorizeHelper[T] {
+      override def zerosLike(len: Int): DenseVector[T] =
+        DenseVector.zeros[T](len)
 
-    override def combine(x: T, y: T): T = x + y
-  }
+      override def combine(x: T, y: T): T = x + y
+    }
 }
 
 /** Reducing UFunc that provides implementations for Broadcasted Dense stuff */

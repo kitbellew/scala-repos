@@ -232,13 +232,14 @@ trait BlockParsers extends Parsers {
     protected def addResult(
         level: Int,
         out: StringBuilder,
-        list: List[ListItem]): Unit = list match {
-      case last :: current :: rest => {
-        current.addResult(level + 1, out, last.endsWithNewline)
-        addResult(level, out, current :: rest)
+        list: List[ListItem]): Unit =
+      list match {
+        case last :: current :: rest => {
+          current.addResult(level + 1, out, last.endsWithNewline)
+          addResult(level, out, current :: rest)
+        }
+        case _ => {} //end of recursion, list with one item or less
       }
-      case _ => {} //end of recursion, list with one item or less
-    }
 
     /**
       * calls recursive handling of nested items
@@ -277,27 +278,30 @@ trait BlockParsers extends Parsers {
   /**
     * Parses a line of the given type T
     */
-  def line[T](c: Class[T]): Parser[T] = Parser { in =>
-    if (in.first.getClass == c) Success(in.first.asInstanceOf[T], in.rest)
-    else Failure("Not a fitting line.", in)
-  }
+  def line[T](c: Class[T]): Parser[T] =
+    Parser { in =>
+      if (in.first.getClass == c) Success(in.first.asInstanceOf[T], in.rest)
+      else Failure("Not a fitting line.", in)
+    }
 
   /**
     * Parses a line of any type *but* T
     */
-  def notLine[T](c: Class[T]): Parser[MarkdownLine] = Parser { in =>
-    if (in.atEnd) Failure("At end of input.", in)
-    else if (in.first.getClass == c) Failure("Not a fitting line.", in)
-    else Success(in.first, in.rest)
-  }
+  def notLine[T](c: Class[T]): Parser[MarkdownLine] =
+    Parser { in =>
+      if (in.atEnd) Failure("At end of input.", in)
+      else if (in.first.getClass == c) Failure("Not a fitting line.", in)
+      else Success(in.first, in.rest)
+    }
 
   /**
     * Parses any line.
     */
-  def anyLine: Parser[MarkdownLine] = Parser { in =>
-    if (in.atEnd) Failure("End of input reached.", in)
-    else Success(in.first, in.rest)
-  }
+  def anyLine: Parser[MarkdownLine] =
+    Parser { in =>
+      if (in.atEnd) Failure("End of input reached.", in)
+      else Success(in.first, in.rest)
+    }
 
   def emptyLine: Parser[EmptyLine] = line(classOf[EmptyLine])
 
@@ -312,18 +316,20 @@ trait BlockParsers extends Parsers {
   /** returns the current link lookup from the reader
     * always succeeds, never consumes input
     */
-  def lookup: Parser[Map[String, LinkDefinition]] = Parser { in =>
-    //why is the instanceof necessary? re-declaring type Input above does not change anything :(
-    Success(in.asInstanceOf[MarkdownLineReader].lookup, in)
-  }
+  def lookup: Parser[Map[String, LinkDefinition]] =
+    Parser { in =>
+      //why is the instanceof necessary? re-declaring type Input above does not change anything :(
+      Success(in.asInstanceOf[MarkdownLineReader].lookup, in)
+    }
 
   ///////////////////
   // Block parsers //
   ///////////////////
 
-  def atxHeader: Parser[Header] = line(classOf[AtxHeaderLine]) ~ lookup ^^ {
-    case l ~ lu => new Header(l.trimHashes, l.headerLevel, lu)
-  }
+  def atxHeader: Parser[Header] =
+    line(classOf[AtxHeaderLine]) ~ lookup ^^ {
+      case l ~ lu => new Header(l.trimHashes, l.headerLevel, lu)
+    }
 
   def setExtHeader: Parser[Header] =
     not(emptyLine) ~> anyLine ~ line(classOf[SetExtHeaderLine]) ~ lookup ^^ {
@@ -338,9 +344,8 @@ trait BlockParsers extends Parsers {
 
   /** parses a verbatim xml block
     */
-  def verbatimXml: Parser[VerbatimXml] = line(classOf[XmlChunk]) ^^ {
-    new VerbatimXml(_)
-  }
+  def verbatimXml: Parser[VerbatimXml] =
+    line(classOf[XmlChunk]) ^^ { new VerbatimXml(_) }
 
   /** parses a code block
     */
@@ -376,9 +381,10 @@ trait BlockParsers extends Parsers {
   /** a consecutive block of paragraph lines
     *  returns the content of the matched block wrapped in <p> tags
     */
-  def paragraph: Parser[Paragraph] = lookup ~ (line(classOf[OtherLine]) +) ^^ {
-    case lu ~ ls => new Paragraph(ls, lu)
-  }
+  def paragraph: Parser[Paragraph] =
+    lookup ~ (line(classOf[OtherLine]) +) ^^ {
+      case lu ~ ls => new Paragraph(ls, lu)
+    }
 
   /**
     * Parses a blockquote fragment: a block starting with a blockquote line followed
@@ -395,9 +401,10 @@ trait BlockParsers extends Parsers {
     * followed by more blockquote lines, paragraph lines following blockqoute lines
     * and may be interspersed with empty lines
     */
-  def blockquote: Parser[Blockquote] = lookup ~ (blockquoteFragment +) ^^ {
-    case lu ~ fs => new Blockquote(fs.flatten, lu)
-  }
+  def blockquote: Parser[Blockquote] =
+    lookup ~ (blockquoteFragment +) ^^ {
+      case lu ~ fs => new Blockquote(fs.flatten, lu)
+    }
 
   /**
     * parses a list of lines that may make up the body of a list item
@@ -454,25 +461,26 @@ trait BlockParsers extends Parsers {
   /**
     * speed up block processing by looking ahead
     */
-  def fastBlock: Parser[MarkdownBlock] = Parser { in =>
-    if (in.atEnd) {
-      Failure("End of Input.", in)
-    } else {
-      in.first match {
-        case l: AtxHeaderLine => atxHeader(in)
-        case l: RulerLine     => ruler(in)
-        //setext headers have been processed before we are called, so this is safe
-        case l: SetExtHeaderLine   => ruler(in)
-        case l: CodeLine           => codeBlock(in)
-        case l: ExtendedFencedCode => fencedCodeBlock(in)
-        case l: FencedCode         => fencedCodeBlock(in)
-        case l: BlockQuoteLine     => blockquote(in)
-        case l: OItemStartLine     => oList(in)
-        case l: UItemStartLine     => uList(in)
-        case _                     => paragraph(in)
+  def fastBlock: Parser[MarkdownBlock] =
+    Parser { in =>
+      if (in.atEnd) {
+        Failure("End of Input.", in)
+      } else {
+        in.first match {
+          case l: AtxHeaderLine => atxHeader(in)
+          case l: RulerLine     => ruler(in)
+          //setext headers have been processed before we are called, so this is safe
+          case l: SetExtHeaderLine   => ruler(in)
+          case l: CodeLine           => codeBlock(in)
+          case l: ExtendedFencedCode => fencedCodeBlock(in)
+          case l: FencedCode         => fencedCodeBlock(in)
+          case l: BlockQuoteLine     => blockquote(in)
+          case l: OItemStartLine     => oList(in)
+          case l: UItemStartLine     => uList(in)
+          case _                     => paragraph(in)
+        }
       }
     }
-  }
 
   /**
     * parses inner blocks (everything excluding xml)

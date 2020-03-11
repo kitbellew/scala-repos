@@ -98,16 +98,18 @@ sealed abstract class Validated[+E, +A] extends Product with Serializable {
 
   def partialCompare[EE >: E, AA >: A](that: Validated[EE, AA])(implicit
       EE: PartialOrder[EE],
-      AA: PartialOrder[AA]): Double = fold(
-    a => that.fold(EE.partialCompare(a, _), _ => -1),
-    b => that.fold(_ => 1, AA.partialCompare(b, _))
-  )
+      AA: PartialOrder[AA]): Double =
+    fold(
+      a => that.fold(EE.partialCompare(a, _), _ => -1),
+      b => that.fold(_ => 1, AA.partialCompare(b, _))
+    )
 
   def ===[EE >: E, AA >: A](
-      that: Validated[EE, AA])(implicit EE: Eq[EE], AA: Eq[AA]): Boolean = fold(
-    a => that.fold(EE.eqv(a, _), _ => false),
-    b => that.fold(_ => false, AA.eqv(b, _))
-  )
+      that: Validated[EE, AA])(implicit EE: Eq[EE], AA: Eq[AA]): Boolean =
+    fold(
+      a => that.fold(EE.eqv(a, _), _ => false),
+      b => that.fold(_ => false, AA.eqv(b, _))
+    )
 
   /**
     * From Apply:
@@ -206,10 +208,11 @@ sealed abstract class Validated[+E, +A] extends Product with Serializable {
       case _                        => that
     }
 
-  def swap: Validated[A, E] = this match {
-    case Valid(a)   => Invalid(a)
-    case Invalid(e) => Valid(e)
-  }
+  def swap: Validated[A, E] =
+    this match {
+      case Valid(a)   => Invalid(a)
+      case Invalid(e) => Valid(e)
+    }
 }
 
 object Validated extends ValidatedInstances with ValidatedFunctions {
@@ -222,11 +225,12 @@ private[data] sealed abstract class ValidatedInstances
 
   implicit def validatedMonoid[A, B](implicit
       A: Semigroup[A],
-      B: Monoid[B]): Monoid[Validated[A, B]] = new Monoid[Validated[A, B]] {
-    def empty: Validated[A, B] = Valid(B.empty)
-    def combine(x: Validated[A, B], y: Validated[A, B]): Validated[A, B] =
-      x combine y
-  }
+      B: Monoid[B]): Monoid[Validated[A, B]] =
+    new Monoid[Validated[A, B]] {
+      def empty: Validated[A, B] = Valid(B.empty)
+      def combine(x: Validated[A, B], y: Validated[A, B]): Validated[A, B] =
+        x combine y
+    }
 
   implicit def validatedOrder[A: Order, B: Order]: Order[Validated[A, B]] =
     new Order[Validated[A, B]] {
@@ -240,9 +244,10 @@ private[data] sealed abstract class ValidatedInstances
 
   implicit def validatedShow[A, B](implicit
       A: Show[A],
-      B: Show[B]): Show[Validated[A, B]] = new Show[Validated[A, B]] {
-    def show(f: Validated[A, B]): String = f.show
-  }
+      B: Show[B]): Show[Validated[A, B]] =
+    new Show[Validated[A, B]] {
+      def show(f: Validated[A, B]): String = f.show
+    }
 
   implicit def validatedBifunctor: Bifunctor[Validated] =
     new Bifunctor[Validated] {
@@ -362,10 +367,11 @@ trait ValidatedFunctions {
   /**
     * Converts a `Try[A]` to a `Validated[Throwable, A]`.
     */
-  def fromTry[A](t: Try[A]): Validated[Throwable, A] = t match {
-    case Failure(e) => invalid(e)
-    case Success(v) => valid(v)
-  }
+  def fromTry[A](t: Try[A]): Validated[Throwable, A] =
+    t match {
+      case Failure(e) => invalid(e)
+      case Success(v) => valid(v)
+    }
 
   /**
     * Converts an `Either[A, B]` to an `Validated[A,B]`.

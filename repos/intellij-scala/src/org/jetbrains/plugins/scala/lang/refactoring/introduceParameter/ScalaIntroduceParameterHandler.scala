@@ -395,10 +395,11 @@ class ScalaIntroduceParameterHandler
     }
   }
 
-  private def toHighlight(e: PsiElement) = e match {
-    case pc: ScPrimaryConstructor => pc.containingClass.extendsBlock
-    case _                        => e
-  }
+  private def toHighlight(e: PsiElement) =
+    e match {
+      case pc: ScPrimaryConstructor => pc.containingClass.extendsBlock
+      case _                        => e
+    }
 
   def afterMethodChoosing(elem: PsiElement, editor: Editor)(
       action: ScMethodLike => Unit): Unit = {

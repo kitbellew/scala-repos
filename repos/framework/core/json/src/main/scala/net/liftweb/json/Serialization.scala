@@ -75,8 +75,9 @@ object Serialization {
     * implicit val formats = Serialization.formats(hints)
     * </pre>
     */
-  def formats(hints: TypeHints) = new Formats {
-    val dateFormat = DefaultFormats.lossless.dateFormat
-    override val typeHints = hints
-  }
+  def formats(hints: TypeHints) =
+    new Formats {
+      val dateFormat = DefaultFormats.lossless.dateFormat
+      override val typeHints = hints
+    }
 }

@@ -234,10 +234,11 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
       key.zip(value))
   }
 
-  def encodeRef(path: Node): Query[E, U, C] = new Query[E, U, C] {
-    val shaped = self.shaped.encodeRef(path)
-    def toNode = path
-  }
+  def encodeRef(path: Node): Query[E, U, C] =
+    new Query[E, U, C] {
+      val shaped = self.shaped.encodeRef(path)
+      def toNode = path
+    }
 
   /** Return a new query containing the elements from both operands. Duplicate
     * elements are eliminated from the result. */
@@ -337,10 +338,11 @@ object Query {
   }
 
   /** The empty Query. */
-  def empty: Query[Unit, Unit, Seq] = new Query[Unit, Unit, Seq] {
-    val toNode = shaped.toNode
-    def shaped = ShapedValue((), Shape.unitShape[FlatShapeLevel])
-  }
+  def empty: Query[Unit, Unit, Seq] =
+    new Query[Unit, Unit, Seq] {
+      val toNode = shaped.toNode
+      def shaped = ShapedValue((), Shape.unitShape[FlatShapeLevel])
+    }
 
   @inline implicit def queryShape[
       Level >: NestedShapeLevel <: ShapeLevel,

@@ -34,20 +34,22 @@ abstract class SyntaxAnalyzer
     def currentDepth = depth
 
     /** Prune this tree and all trees beneath it. Can be overridden. */
-    def prune(md: MemberDef): Boolean = (
-      md.mods.isSynthetic
-        || md.mods.isParamAccessor
-        || nme.isConstructorName(md.name)
-        || (md.name containsName nme.ANON_CLASS_NAME)
-    )
+    def prune(md: MemberDef): Boolean =
+      (
+        md.mods.isSynthetic
+          || md.mods.isParamAccessor
+          || nme.isConstructorName(md.name)
+          || (md.name containsName nme.ANON_CLASS_NAME)
+      )
 
-    override def traverse(t: Tree): Unit = t match {
-      case md: MemberDef if prune(md) =>
-      case md @ PackageDef(_, stats)  => traverseTrees(stats)
-      case md: ImplDef                => onMember(md); lower(traverseTrees(md.impl.body))
-      case md: ValOrDefDef            => onMember(md); lower(traverse(md.rhs))
-      case _                          => super.traverse(t)
-    }
+    override def traverse(t: Tree): Unit =
+      t match {
+        case md: MemberDef if prune(md) =>
+        case md @ PackageDef(_, stats)  => traverseTrees(stats)
+        case md: ImplDef                => onMember(md); lower(traverseTrees(md.impl.body))
+        case md: ValOrDefDef            => onMember(md); lower(traverse(md.rhs))
+        case _                          => super.traverse(t)
+      }
   }
 
   class MemberPosReporter(unit: CompilationUnit) extends MemberDefTraverser {

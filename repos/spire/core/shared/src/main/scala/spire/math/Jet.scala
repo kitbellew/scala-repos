@@ -605,10 +605,11 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
     else 13 * real.## + infinitesimal.foldLeft(53)((x, y) => x + y.## * 19)
   }
 
-  override def equals(that: Any): Boolean = that match {
-    case that: Jet[_] => this === that
-    case that         => isReal && real == that
-  }
+  override def equals(that: Any): Boolean =
+    that match {
+      case that: Jet[_] => this === that
+      case that         => isReal && real == that
+    }
 
   def ===(that: Jet[_]): Boolean =
     real == that.real && dimension == that.dimension &&

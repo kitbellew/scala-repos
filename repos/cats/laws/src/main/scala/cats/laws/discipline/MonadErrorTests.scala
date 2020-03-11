@@ -33,9 +33,10 @@ trait MonadErrorTests[F[_], E]
       def name: String = "monadError"
       def bases: Seq[(String, RuleSet)] = Nil
       def parents: Seq[RuleSet] = Seq(applicativeError[A, B, C], monad[A, B, C])
-      def props: Seq[(String, Prop)] = Seq(
-        "monadError left zero" -> forAll(laws.monadErrorLeftZero[A, B] _)
-      )
+      def props: Seq[(String, Prop)] =
+        Seq(
+          "monadError left zero" -> forAll(laws.monadErrorLeftZero[A, B] _)
+        )
     }
   }
 }

@@ -111,14 +111,15 @@ private[gameSearch] case class SearchData(
 
   import DataForm.DateDelta
 
-  private def toDate(delta: String): Option[DateTime] = delta match {
-    case DateDelta(n, "h") => parseIntOption(n) map DateTime.now.minusHours
-    case DateDelta(n, "d") => parseIntOption(n) map DateTime.now.minusDays
-    case DateDelta(n, "w") => parseIntOption(n) map DateTime.now.minusWeeks
-    case DateDelta(n, "m") => parseIntOption(n) map DateTime.now.minusMonths
-    case DateDelta(n, "y") => parseIntOption(n) map DateTime.now.minusYears
-    case _                 => None
-  }
+  private def toDate(delta: String): Option[DateTime] =
+    delta match {
+      case DateDelta(n, "h") => parseIntOption(n) map DateTime.now.minusHours
+      case DateDelta(n, "d") => parseIntOption(n) map DateTime.now.minusDays
+      case DateDelta(n, "w") => parseIntOption(n) map DateTime.now.minusWeeks
+      case DateDelta(n, "m") => parseIntOption(n) map DateTime.now.minusMonths
+      case DateDelta(n, "y") => parseIntOption(n) map DateTime.now.minusYears
+      case _                 => None
+    }
   private val dateConstraint =
     Constraints.pattern(regex = DateDelta, error = "Invalid date.")
 }

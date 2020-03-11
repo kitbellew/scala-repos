@@ -15,16 +15,18 @@ sealed abstract class IsomorphismsLow0 extends IsomorphismsLow1 {
   self: Isomorphisms =>
 
   /**Set isomorphism is reflexive */
-  implicit def isoRefl[A]: A <=> A = new (A <=> A) {
-    def to: A => A = a => a
-    def from: A => A = a => a
-  }
+  implicit def isoRefl[A]: A <=> A =
+    new (A <=> A) {
+      def to: A => A = a => a
+      def from: A => A = a => a
+    }
 
   /**Natural isomorphism is reflexive */
-  implicit def isoNaturalRefl[F[_]]: F <~> F = new IsoFunctorTemplate[F, F] {
-    def to[A](fa: F[A]): F[A] = fa
-    def from[A](fa: F[A]): F[A] = fa
-  }
+  implicit def isoNaturalRefl[F[_]]: F <~> F =
+    new IsoFunctorTemplate[F, F] {
+      def to[A](fa: F[A]): F[A] = fa
+      def from[A](fa: F[A]): F[A] = fa
+    }
 }
 
 sealed abstract class Isomorphisms extends IsomorphismsLow0 {
@@ -34,11 +36,12 @@ sealed abstract class Isomorphisms extends IsomorphismsLow0 {
     self =>
     def to: Arr[A, B]
     def from: Arr[B, A]
-    def flip: Iso[Arr, B, A] = new Iso[Arr, B, A] {
-      val to = self.from
-      val from = self.to
-      override def flip = self
-    }
+    def flip: Iso[Arr, B, A] =
+      new Iso[Arr, B, A] {
+        val to = self.from
+        val from = self.to
+        override def flip = self
+      }
 
     def %~(f: Arr[B, B])(implicit C: Compose[Arr]): Arr[A, A] =
       C.compose(from, C.compose(f, to))
@@ -49,11 +52,12 @@ sealed abstract class Isomorphisms extends IsomorphismsLow0 {
     self =>
     def to: Arr[F, G]
     def from: Arr[G, F]
-    def flip: Iso2[Arr, G, F] = new Iso2[Arr, G, F] {
-      val to = self.from
-      val from = self.to
-      override def flip = self
-    }
+    def flip: Iso2[Arr, G, F] =
+      new Iso2[Arr, G, F] {
+        val to = self.from
+        val from = self.to
+        override def flip = self
+      }
 
     import Liskov._
 
@@ -78,11 +82,12 @@ sealed abstract class Isomorphisms extends IsomorphismsLow0 {
     self =>
     def to: Arr[F, G]
     def from: Arr[G, F]
-    def flip: Iso3[Arr, G, F] = new Iso3[Arr, G, F] {
-      val to = self.from
-      val from = self.to
-      override def flip = self
-    }
+    def flip: Iso3[Arr, G, F] =
+      new Iso3[Arr, G, F] {
+        val to = self.from
+        val from = self.to
+        override def flip = self
+      }
 
     import Liskov._
 

@@ -291,11 +291,12 @@ trait PropertyIncludes extends LowerPriorityIncludes {
 
 trait LowerPriorityIncludes {
   implicit def jfxProperty2sfx[T <: AnyRef](
-      p: jfxbp.Property[T]): Property[T, T] = new Property[T, T] {
-    override def delegate = p
-    override def value = delegate.getValue
-    override def value_=(v: T) {
-      delegate.setValue(v)
+      p: jfxbp.Property[T]): Property[T, T] =
+    new Property[T, T] {
+      override def delegate = p
+      override def value = delegate.getValue
+      override def value_=(v: T) {
+        delegate.setValue(v)
+      }
     }
-  }
 }

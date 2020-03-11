@@ -92,10 +92,11 @@ object PlayCommands {
   val playMonitoredFilesTask: Def.Initialize[Task[Seq[File]]] = Def.taskDyn {
     val projectRef = thisProjectRef.value
 
-    def filter = ScopeFilter(
-      inDependencies(projectRef),
-      inConfigurations(Compile, Assets)
-    )
+    def filter =
+      ScopeFilter(
+        inDependencies(projectRef),
+        inConfigurations(Compile, Assets)
+      )
 
     Def.task {
 

@@ -37,8 +37,9 @@ abstract class GenSetFactory[CC[X] <: GenSet[X] with GenSetLike[X, CC[X]]]
 
   /** $setCanBuildFromInfo
     */
-  def setCanBuildFrom[A] = new CanBuildFrom[CC[_], A, CC[A]] {
-    def apply(from: CC[_]) = newBuilder[A]
-    def apply() = newBuilder[A]
-  }
+  def setCanBuildFrom[A] =
+    new CanBuildFrom[CC[_], A, CC[A]] {
+      def apply(from: CC[_]) = newBuilder[A]
+      def apply() = newBuilder[A]
+    }
 }

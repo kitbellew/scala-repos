@@ -267,9 +267,10 @@ class StreamExecution(
     * least the given `Offset`. This method is indented for use primarily when writing tests.
     */
   def awaitOffset(source: Source, newOffset: Offset): Unit = {
-    def notDone = streamProgress.synchronized {
-      !streamProgress.contains(source) || streamProgress(source) < newOffset
-    }
+    def notDone =
+      streamProgress.synchronized {
+        !streamProgress.contains(source) || streamProgress(source) < newOffset
+      }
 
     while (notDone) {
       logInfo(s"Waiting until $newOffset at $source")

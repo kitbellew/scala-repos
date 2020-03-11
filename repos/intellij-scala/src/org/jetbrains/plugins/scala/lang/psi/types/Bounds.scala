@@ -34,18 +34,20 @@ object Bounds {
 
   //similar to Scala code, this code is duplicated and optimized to avoid closures.
   def typeDepth(ts: Seq[ScType]): Int = {
-    @tailrec def loop(tps: Seq[ScType], acc: Int): Int = tps match {
-      case tp :: rest => loop(rest, acc max tp.typeDepth)
-      case _          => acc
-    }
+    @tailrec def loop(tps: Seq[ScType], acc: Int): Int =
+      tps match {
+        case tp :: rest => loop(rest, acc max tp.typeDepth)
+        case _          => acc
+      }
     loop(ts, 0)
   }
 
   def baseTypeSeqDepth(ts: Seq[ScType]): Int = {
-    @tailrec def loop(tps: Seq[ScType], acc: Int): Int = tps match {
-      case tp :: rest => loop(rest, acc max tp.baseTypeSeqDepth)
-      case _          => acc
-    }
+    @tailrec def loop(tps: Seq[ScType], acc: Int): Int =
+      tps match {
+        case tp :: rest => loop(rest, acc max tp.baseTypeSeqDepth)
+        case _          => acc
+      }
     loop(ts, 0)
   }
 

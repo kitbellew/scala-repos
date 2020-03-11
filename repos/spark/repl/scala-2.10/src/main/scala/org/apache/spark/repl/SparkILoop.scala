@@ -465,65 +465,66 @@ class SparkILoop(
     }
   }
 
-  private def implicitsCommand(line: String): Result = onIntp { intp =>
-    import intp._
-    import global._
+  private def implicitsCommand(line: String): Result =
+    onIntp { intp =>
+      import intp._
+      import global._
 
-    def p(x: Any) = intp.reporter.printMessage("" + x)
+      def p(x: Any) = intp.reporter.printMessage("" + x)
 
-    // If an argument is given, only show a source with that
-    // in its name somewhere.
-    val args = line split "\\s+"
-    val filtered = intp.implicitSymbolsBySource filter {
-      case (source, syms) =>
-        (args contains "-v") || {
-          if (line == "") (source.fullName.toString != "scala.Predef")
-          else (args exists (source.name.toString contains _))
-        }
+      // If an argument is given, only show a source with that
+      // in its name somewhere.
+      val args = line split "\\s+"
+      val filtered = intp.implicitSymbolsBySource filter {
+        case (source, syms) =>
+          (args contains "-v") || {
+            if (line == "") (source.fullName.toString != "scala.Predef")
+            else (args exists (source.name.toString contains _))
+          }
+      }
+
+      if (filtered.isEmpty)
+        return "No implicits have been imported other than those in Predef."
+
+      filtered foreach {
+        case (source, syms) =>
+          p("/* " + syms.size + " implicit members imported from " + source.fullName + " */")
+
+          // This groups the members by where the symbol is defined
+          val byOwner = syms groupBy (_.owner)
+          val sortedOwners = byOwner.toList sortBy {
+            case (owner, _) => afterTyper(source.info.baseClasses indexOf owner)
+          }
+
+          sortedOwners foreach {
+            case (owner, members) =>
+              // Within each owner, we cluster results based on the final result type
+              // if there are more than a couple, and sort each cluster based on name.
+              // This is really just trying to make the 100 or so implicits imported
+              // by default into something readable.
+              val memberGroups: List[List[Symbol]] = {
+                val groups = members groupBy (_.tpe.finalResultType) toList
+                val (big, small) = groups partition (_._2.size > 3)
+                val xss = (
+                  (big sortBy (_._1.toString) map (_._2)) :+
+                    (small flatMap (_._2))
+                )
+
+                xss map (xs => xs sortBy (_.name.toString))
+              }
+
+              val ownerMessage =
+                if (owner == source) " defined in " else " inherited from "
+              p("  /* " + members.size + ownerMessage + owner.fullName + " */")
+
+              memberGroups foreach { group =>
+                group foreach (s => p("  " + intp.symbolDefString(s)))
+                p("")
+              }
+          }
+          p("")
+      }
     }
-
-    if (filtered.isEmpty)
-      return "No implicits have been imported other than those in Predef."
-
-    filtered foreach {
-      case (source, syms) =>
-        p("/* " + syms.size + " implicit members imported from " + source.fullName + " */")
-
-        // This groups the members by where the symbol is defined
-        val byOwner = syms groupBy (_.owner)
-        val sortedOwners = byOwner.toList sortBy {
-          case (owner, _) => afterTyper(source.info.baseClasses indexOf owner)
-        }
-
-        sortedOwners foreach {
-          case (owner, members) =>
-            // Within each owner, we cluster results based on the final result type
-            // if there are more than a couple, and sort each cluster based on name.
-            // This is really just trying to make the 100 or so implicits imported
-            // by default into something readable.
-            val memberGroups: List[List[Symbol]] = {
-              val groups = members groupBy (_.tpe.finalResultType) toList
-              val (big, small) = groups partition (_._2.size > 3)
-              val xss = (
-                (big sortBy (_._1.toString) map (_._2)) :+
-                  (small flatMap (_._2))
-              )
-
-              xss map (xs => xs sortBy (_.name.toString))
-            }
-
-            val ownerMessage =
-              if (owner == source) " defined in " else " inherited from "
-            p("  /* " + members.size + ownerMessage + owner.fullName + " */")
-
-            memberGroups foreach { group =>
-              group foreach (s => p("  " + intp.symbolDefString(s)))
-              p("")
-            }
-        }
-        p("")
-    }
-  }
 
   private def findToolsJar() = {
     val jdkPath = Directory(jdkHome)
@@ -804,14 +805,15 @@ class SparkILoop(
     "sh",
     "run a shell command (result is implicitly => List[String])") {
     override def usage = "<command line>"
-    def apply(line: String): Result = line match {
-      case "" => showUsage()
-      case _ =>
-        val toRun =
-          classOf[ProcessResult].getName + "(" + string2codeQuoted(line) + ")"
-        intp interpret toRun
-        ()
-    }
+    def apply(line: String): Result =
+      line match {
+        case "" => showUsage()
+        case _ =>
+          val toRun =
+            classOf[ProcessResult].getName + "(" + string2codeQuoted(line) + ")"
+          intp interpret toRun
+          ()
+      }
   }
 
   private def withFile(filename: String)(action: File => Unit) {
@@ -992,16 +994,17 @@ class SparkILoop(
   }
 
   // runs :load `file` on any files passed via -i
-  private def loadFiles(settings: Settings) = settings match {
-    case settings: SparkRunnerSettings =>
-      for (filename <- settings.loadfiles.value) {
-        val cmd = ":load " + filename
-        command(cmd)
-        addReplay(cmd)
-        echo("")
-      }
-    case _ =>
-  }
+  private def loadFiles(settings: Settings) =
+    settings match {
+      case settings: SparkRunnerSettings =>
+        for (filename <- settings.loadfiles.value) {
+          val cmd = ":load " + filename
+          command(cmd)
+          addReplay(cmd)
+          echo("")
+        }
+      case _ =>
+    }
 
   /** Tries to create a JLineReader, falling back to SimpleReader:
     *  unless settings or properties are such that it should start
@@ -1037,70 +1040,71 @@ class SparkILoop(
       }
     )
 
-  private def process(settings: Settings): Boolean = savingContextLoader {
-    if (getMaster() == "yarn-client")
-      System.setProperty("SPARK_YARN_MODE", "true")
+  private def process(settings: Settings): Boolean =
+    savingContextLoader {
+      if (getMaster() == "yarn-client")
+        System.setProperty("SPARK_YARN_MODE", "true")
 
-    this.settings = settings
-    createInterpreter()
+      this.settings = settings
+      createInterpreter()
 
-    // sets in to some kind of reader depending on environmental cues
-    in = in0 match {
-      case Some(reader) => SimpleReader(reader, out, true)
-      case None         =>
-        // some post-initialization
-        chooseReader(settings) match {
-          case x: SparkJLineReader => addThunk(x.consoleReader.postInit); x
-          case x                   => x
-        }
+      // sets in to some kind of reader depending on environmental cues
+      in = in0 match {
+        case Some(reader) => SimpleReader(reader, out, true)
+        case None         =>
+          // some post-initialization
+          chooseReader(settings) match {
+            case x: SparkJLineReader => addThunk(x.consoleReader.postInit); x
+            case x                   => x
+          }
+      }
+      lazy val tagOfSparkIMain =
+        tagOfStaticClass[org.apache.spark.repl.SparkIMain]
+      // Bind intp somewhere out of the regular namespace where
+      // we can get at it in generated code.
+      addThunk(
+        intp.quietBind(
+          NamedParam[SparkIMain]("$intp", intp)(
+            tagOfSparkIMain,
+            classTag[SparkIMain])))
+      addThunk({
+        import scala.tools.nsc.io._
+        import Properties.userHome
+        import scala.compat.Platform.EOL
+        val autorun =
+          replProps.replAutorunCode.option flatMap (f => io.File(f).safeSlurp())
+        if (autorun.isDefined) intp.quietRun(autorun.get)
+      })
+
+      addThunk(printWelcome())
+      addThunk(initializeSpark())
+
+      // it is broken on startup; go ahead and exit
+      if (intp.reporter.hasErrors)
+        return false
+
+      // This is about the illusion of snappiness.  We call initialize()
+      // which spins off a separate thread, then print the prompt and try
+      // our best to look ready.  The interlocking lazy vals tend to
+      // inter-deadlock, so we break the cycle with a single asynchronous
+      // message to an rpcEndpoint.
+      if (isAsync) {
+        intp initialize initializedCallback()
+        createAsyncListener() // listens for signal to run postInitialization
+      } else {
+        intp.initializeSynchronous()
+        postInitialization()
+      }
+      // printWelcome()
+
+      loadFiles(settings)
+
+      try loop()
+      catch AbstractOrMissingHandler()
+      finally closeInterpreter()
+
+      true
     }
-    lazy val tagOfSparkIMain =
-      tagOfStaticClass[org.apache.spark.repl.SparkIMain]
-    // Bind intp somewhere out of the regular namespace where
-    // we can get at it in generated code.
-    addThunk(
-      intp.quietBind(
-        NamedParam[SparkIMain]("$intp", intp)(
-          tagOfSparkIMain,
-          classTag[SparkIMain])))
-    addThunk({
-      import scala.tools.nsc.io._
-      import Properties.userHome
-      import scala.compat.Platform.EOL
-      val autorun =
-        replProps.replAutorunCode.option flatMap (f => io.File(f).safeSlurp())
-      if (autorun.isDefined) intp.quietRun(autorun.get)
-    })
-
-    addThunk(printWelcome())
-    addThunk(initializeSpark())
-
-    // it is broken on startup; go ahead and exit
-    if (intp.reporter.hasErrors)
-      return false
-
-    // This is about the illusion of snappiness.  We call initialize()
-    // which spins off a separate thread, then print the prompt and try
-    // our best to look ready.  The interlocking lazy vals tend to
-    // inter-deadlock, so we break the cycle with a single asynchronous
-    // message to an rpcEndpoint.
-    if (isAsync) {
-      intp initialize initializedCallback()
-      createAsyncListener() // listens for signal to run postInitialization
-    } else {
-      intp.initializeSynchronous()
-      postInitialization()
-    }
-    // printWelcome()
-
-    loadFiles(settings)
-
-    try loop()
-    catch AbstractOrMissingHandler()
-    finally closeInterpreter()
-
-    true
-  }
 
   // NOTE: Must be public for visibility
   @DeveloperApi

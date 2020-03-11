@@ -133,22 +133,24 @@ trait SHtml extends Loggable {
     * Invokes the Ajax request
     * @param in the JsExp that returns the request data
     */
-  def makeAjaxCall(in: JsExp): JsExp = new JsExp {
-    def toJsCmd = "lift.ajax(" + in.toJsCmd + ", null, null, null)"
-  }
+  def makeAjaxCall(in: JsExp): JsExp =
+    new JsExp {
+      def toJsCmd = "lift.ajax(" + in.toJsCmd + ", null, null, null)"
+    }
 
   /**
     * Invokes the Ajax request
     * @param in the JsExp that returns the request data
     * @param context defines the response callback functions and the response type (JavaScript or JSON)
     */
-  def makeAjaxCall(in: JsExp, context: AjaxContext): JsExp = new JsExp {
-    def toJsCmd =
-      "lift.ajax(" + in.toJsCmd + ", " + (context.success openOr "null") +
-        ", " + (context.failure openOr "null") +
-        ", " + context.responseType.toString.encJs +
-        ")"
-  }
+  def makeAjaxCall(in: JsExp, context: AjaxContext): JsExp =
+    new JsExp {
+      def toJsCmd =
+        "lift.ajax(" + in.toJsCmd + ", " + (context.success openOr "null") +
+          ", " + (context.failure openOr "null") +
+          ", " + context.responseType.toString.encJs +
+          ")"
+    }
 
   /**
     * Build a JavaScript function that will perform an AJAX call based on a value calculated in JavaScript
@@ -1334,15 +1336,16 @@ trait SHtml extends Loggable {
       attrs: ElemAttr*): Elem =
     text_*(value, func, Full(ajaxTest), attrs: _*)
 
-  private def buildOnBlur(bf: Box[String => JsCmd]): MetaData = bf match {
-    case Full(func) =>
-      new UnprefixedAttribute(
-        "onblur",
-        Text(ajaxCall(JsRaw("this.value"), func)._2.toJsCmd),
-        Null)
+  private def buildOnBlur(bf: Box[String => JsCmd]): MetaData =
+    bf match {
+      case Full(func) =>
+        new UnprefixedAttribute(
+          "onblur",
+          Text(ajaxCall(JsRaw("this.value"), func)._2.toJsCmd),
+          Null)
 
-    case _ => Null
-  }
+      case _ => Null
+    }
 
   def text_*(
       value: String,
@@ -2731,10 +2734,11 @@ trait SHtml extends Loggable {
   private def checked(in: Boolean) =
     if (in) new UnprefixedAttribute("checked", "checked", Null) else Null
 
-  private def setId(in: Box[String]) = in match {
-    case Full(id) => new UnprefixedAttribute("id", Text(id), Null);
-    case _        => Null
-  }
+  private def setId(in: Box[String]) =
+    in match {
+      case Full(id) => new UnprefixedAttribute("id", Text(id), Null);
+      case _        => Null
+    }
 
   /**
     * Generate a ChoiceHolder of possible checkbox type inputs that calls back to the given function when the form is submitted.

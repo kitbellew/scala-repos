@@ -50,15 +50,16 @@ import scalaz._
 object JDBCPlatformSpecEngine extends Logging {
   Class.forName("org.h2.Driver")
 
-  def jvToSQL(jv: JValue): (String, String) = jv match {
-    case JBool(v)      => ("BOOL", v.toString)
-    case JNumLong(v)   => ("BIGINT", v.toString)
-    case JNumDouble(v) => ("DOUBLE", v.toString)
-    case JNumBigDec(v) => ("DECIMAL", v.toString)
-    case JNumStr(v)    => ("DECIMAL", v)
-    case JString(v)    => ("VARCHAR", "'" + v.replaceAll("'", "\\'") + "'")
-    case _             => sys.error("SQL conversion doesn't support: " + jv)
-  }
+  def jvToSQL(jv: JValue): (String, String) =
+    jv match {
+      case JBool(v)      => ("BOOL", v.toString)
+      case JNumLong(v)   => ("BIGINT", v.toString)
+      case JNumDouble(v) => ("DOUBLE", v.toString)
+      case JNumBigDec(v) => ("DECIMAL", v.toString)
+      case JNumStr(v)    => ("DECIMAL", v)
+      case JString(v)    => ("VARCHAR", "'" + v.replaceAll("'", "\\'") + "'")
+      case _             => sys.error("SQL conversion doesn't support: " + jv)
+    }
 
   private[this] val lock = new Object
 
@@ -75,38 +76,41 @@ object JDBCPlatformSpecEngine extends Logging {
     stmt.execute("SHUTDOWN")
   }
 
-  def acquire = lock.synchronized {
-    refcount += 1
+  def acquire =
+    lock.synchronized {
+      refcount += 1
 
-    if (refcount == 1) {
-      logger.debug("Initializing fresh DB instance")
-      runLoads()
-      logger.debug("DB initialized")
+      if (refcount == 1) {
+        logger.debug("Initializing fresh DB instance")
+        runLoads()
+        logger.debug("DB initialized")
+      }
+
+      logger.debug("DB acquired, refcount = " + refcount)
     }
 
-    logger.debug("DB acquired, refcount = " + refcount)
-  }
+  def release: Unit =
+    lock.synchronized {
+      refcount -= 1
 
-  def release: Unit = lock.synchronized {
-    refcount -= 1
+      if (refcount == 0) {
+        scheduler.schedule(checkUnused, 5, TimeUnit.SECONDS)
+      }
 
-    if (refcount == 0) {
-      scheduler.schedule(checkUnused, 5, TimeUnit.SECONDS)
+      logger.debug("DB released, refcount = " + refcount)
     }
-
-    logger.debug("DB released, refcount = " + refcount)
-  }
 
   val checkUnused = new Runnable {
-    def run = lock.synchronized {
-      logger.debug(
-        "Checking for unused JDBCPlatformSpecEngine. Count = " + refcount)
-      if (refcount == 0) {
-        logger.debug("Shutting down DB after final release")
-        shutdown()
-        logger.debug("DB shutdown complete")
+    def run =
+      lock.synchronized {
+        logger.debug(
+          "Checking for unused JDBCPlatformSpecEngine. Count = " + refcount)
+        if (refcount == 0) {
+          logger.debug("Shutting down DB after final release")
+          shutdown()
+          logger.debug("DB shutdown complete")
+        }
       }
-    }
   }
 
   def runLoads(): Unit = {

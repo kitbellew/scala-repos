@@ -315,9 +315,10 @@ object JGitUtil {
 
       def tupleAdd(
           tuple: (ObjectId, FileMode, String, Option[String]),
-          rev: RevCommit) = tuple match {
-        case (oid, fmode, name, opt) => (oid, fmode, name, opt, rev)
-      }
+          rev: RevCommit) =
+        tuple match {
+          case (oid, fmode, name, opt) => (oid, fmode, name, opt, rev)
+        }
 
       @tailrec
       def findLastCommits(

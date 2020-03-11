@@ -89,9 +89,8 @@ class ScalaDirectClassInheritorsSearcher
     }
 
     if (map.nonEmpty) {
-      def getJarFile(clazz: PsiClass) = inReadAction {
-        PsiUtil.getJarFile(clazz)
-      }
+      def getJarFile(clazz: PsiClass) =
+        inReadAction { PsiUtil.getJarFile(clazz) }
 
       val clazzJar = getJarFile(clazz)
       for ((_, sameNameInheritors) <- map) {

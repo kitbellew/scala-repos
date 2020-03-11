@@ -181,9 +181,8 @@ class ClientRegistryTest
       new Stack.Module1[TestParam, ServiceFactory[Int, Int]] {
         def make(
             p: TestParam,
-            l: ServiceFactory[Int, Int]): ServiceFactory[Int, Int] = l.map {
-          _.map { _ + p.p1 }
-        }
+            l: ServiceFactory[Int, Int]): ServiceFactory[Int, Int] =
+          l.map { _.map { _ + p.p1 } }
 
         val description: String = "description"
         val role: Stack.Role = nameRole

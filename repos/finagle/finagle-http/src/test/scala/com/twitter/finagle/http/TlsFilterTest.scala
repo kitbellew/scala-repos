@@ -12,10 +12,11 @@ class TlsFilterTest extends FunSuite {
   import Version._
   import Method._
 
-  def svc(p: Promise[Request]) = Service.mk { (req: Request) =>
-    p.setValue(req)
-    Future.never
-  }
+  def svc(p: Promise[Request]) =
+    Service.mk { (req: Request) =>
+      p.setValue(req)
+      Future.never
+    }
 
   test("filter") {
     val host = "test.host"

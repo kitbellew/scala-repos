@@ -40,23 +40,26 @@ case class Simul(
 
   def hasUser(userId: String) = hasApplicant(userId) || hasPairing(userId)
 
-  def addApplicant(applicant: SimulApplicant) = Created {
-    if (!hasApplicant(applicant.player.user) && variants.contains(
-          applicant.player.variant))
-      copy(applicants = applicants :+ applicant)
-    else this
-  }
+  def addApplicant(applicant: SimulApplicant) =
+    Created {
+      if (!hasApplicant(applicant.player.user) && variants.contains(
+            applicant.player.variant))
+        copy(applicants = applicants :+ applicant)
+      else this
+    }
 
-  def removeApplicant(userId: String) = Created {
-    copy(applicants = applicants filterNot (_ is userId))
-  }
+  def removeApplicant(userId: String) =
+    Created {
+      copy(applicants = applicants filterNot (_ is userId))
+    }
 
-  def accept(userId: String, v: Boolean) = Created {
-    copy(applicants = applicants map {
-      case a if a is userId => a.copy(accepted = v)
-      case a                => a
-    })
-  }
+  def accept(userId: String, v: Boolean) =
+    Created {
+      copy(applicants = applicants map {
+        case a if a is userId => a.copy(accepted = v)
+        case a                => a
+      })
+    }
 
   def removePairing(userId: String) =
     copy(pairings = pairings filterNot (_ is userId)).finishIfDone
@@ -93,12 +96,13 @@ case class Simul(
 
   def gameIds = pairings.map(_.gameId)
 
-  def perfTypes: List[lila.rating.PerfType] = variants.flatMap { variant =>
-    lila.game.PerfPicker.perfType(
-      speed = chess.Speed(clock.chessClock.some),
-      variant = variant,
-      daysPerTurn = none)
-  }
+  def perfTypes: List[lila.rating.PerfType] =
+    variants.flatMap { variant =>
+      lila.game.PerfPicker.perfType(
+        speed = chess.Speed(clock.chessClock.some),
+        variant = variant,
+        daysPerTurn = none)
+    }
 
   def applicantRatio = s"${applicants.count(_.accepted)}/${applicants.size}"
 

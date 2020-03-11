@@ -50,9 +50,8 @@ final class LWWMap[A] private[akka] (
   /**
     * Scala API: All entries of the map.
     */
-  def entries: Map[String, A] = underlying.entries.map {
-    case (k, r) ⇒ k -> r.value
-  }
+  def entries: Map[String, A] =
+    underlying.entries.map { case (k, r) ⇒ k -> r.value }
 
   /**
     * Java API: All entries of the map.
@@ -162,10 +161,11 @@ final class LWWMap[A] private[akka] (
 
   override def toString: String = s"LWW$entries" //e.g. LWWMap(a -> 1, b -> 2)
 
-  override def equals(o: Any): Boolean = o match {
-    case other: LWWMap[_] ⇒ underlying == other.underlying
-    case _ ⇒ false
-  }
+  override def equals(o: Any): Boolean =
+    o match {
+      case other: LWWMap[_] ⇒ underlying == other.underlying
+      case _ ⇒ false
+    }
 
   override def hashCode: Int = underlying.hashCode
 }

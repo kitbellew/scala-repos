@@ -65,17 +65,19 @@ class BlockManagerId private (
     executorId == SparkContext.LEGACY_DRIVER_IDENTIFIER
   }
 
-  override def writeExternal(out: ObjectOutput): Unit = Utils.tryOrIOException {
-    out.writeUTF(executorId_)
-    out.writeUTF(host_)
-    out.writeInt(port_)
-  }
+  override def writeExternal(out: ObjectOutput): Unit =
+    Utils.tryOrIOException {
+      out.writeUTF(executorId_)
+      out.writeUTF(host_)
+      out.writeInt(port_)
+    }
 
-  override def readExternal(in: ObjectInput): Unit = Utils.tryOrIOException {
-    executorId_ = in.readUTF()
-    host_ = in.readUTF()
-    port_ = in.readInt()
-  }
+  override def readExternal(in: ObjectInput): Unit =
+    Utils.tryOrIOException {
+      executorId_ = in.readUTF()
+      host_ = in.readUTF()
+      port_ = in.readInt()
+    }
 
   @throws(classOf[IOException])
   private def readResolve(): Object =
@@ -86,12 +88,13 @@ class BlockManagerId private (
   override def hashCode: Int =
     (executorId.hashCode * 41 + host.hashCode) * 41 + port
 
-  override def equals(that: Any): Boolean = that match {
-    case id: BlockManagerId =>
-      executorId == id.executorId && port == id.port && host == id.host
-    case _ =>
-      false
-  }
+  override def equals(that: Any): Boolean =
+    that match {
+      case id: BlockManagerId =>
+        executorId == id.executorId && port == id.port && host == id.host
+      case _ =>
+        false
+    }
 }
 
 private[spark] object BlockManagerId {

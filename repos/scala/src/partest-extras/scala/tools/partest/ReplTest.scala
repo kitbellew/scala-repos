@@ -84,10 +84,11 @@ abstract class SessionTest extends ReplTest {
   override final def code =
     pasted findAllMatchIn (expected mkString ("", "\n", "\n")) map {
       case pasted(null, null, prompted) =>
-        def continued(m: Match): Option[String] = m match {
-          case margin(text) => Some(text)
-          case _            => None
-        }
+        def continued(m: Match): Option[String] =
+          m match {
+            case margin(text) => Some(text)
+            case _            => None
+          }
         margin.replaceSomeIn(prompted, continued)
       case pasted(cmd, pasted, null) =>
         cmd + pasted + "\u0004"

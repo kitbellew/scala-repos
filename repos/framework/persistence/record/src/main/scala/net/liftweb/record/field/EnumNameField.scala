@@ -39,11 +39,12 @@ trait EnumNameTypedField[EnumType <: Enumeration]
   def setFromAny(in: Any): Box[EnumType#Value] =
     genericSetFromAny(in)(valueManifest)
 
-  def setFromString(s: String): Box[EnumType#Value] = s match {
-    case null | "" if optional_? => setBox(Empty)
-    case null | ""               => setBox(Failure(notOptionalErrorMessage))
-    case _                       => setBox(enum.values.find(_.toString == s))
-  }
+  def setFromString(s: String): Box[EnumType#Value] =
+    s match {
+      case null | "" if optional_? => setBox(Empty)
+      case null | ""               => setBox(Failure(notOptionalErrorMessage))
+      case _                       => setBox(enum.values.find(_.toString == s))
+    }
 
   /** Label for the selection item representing Empty, show when this field is optional. Defaults to the empty string. */
   def emptyOptionLabel: String = ""
@@ -75,13 +76,14 @@ trait EnumNameTypedField[EnumType <: Enumeration]
 
   def asJStringName: JValue =
     valueBox.map(v => JString(v.toString)) openOr (JNothing: JValue)
-  def setFromJStringName(jvalue: JValue): Box[EnumType#Value] = jvalue match {
-    case JNothing | JNull if optional_? => setBox(Empty)
-    case JString(s) =>
-      setBox(
-        enum.values.find(_.toString == s) ?~ ("Unknown value \"" + s + "\""))
-    case other => setBox(FieldHelpers.expectedA("JString", other))
-  }
+  def setFromJStringName(jvalue: JValue): Box[EnumType#Value] =
+    jvalue match {
+      case JNothing | JNull if optional_? => setBox(Empty)
+      case JString(s) =>
+        setBox(
+          enum.values.find(_.toString == s) ?~ ("Unknown value \"" + s + "\""))
+      case other => setBox(FieldHelpers.expectedA("JString", other))
+    }
 
   def asJValue: JValue = asJStringName
   def setFromJValue(jvalue: JValue): Box[EnumType#Value] =

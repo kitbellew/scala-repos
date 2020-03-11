@@ -46,27 +46,28 @@ object Refresh {
     */
   def every[T](ttl: Duration)(provider: => Future[T]): () => Future[T] = {
     val ref = new AtomicReference[(Future[T], Time)](empty)
-    def result(): Future[T] = ref.get match {
-      case tuple @ (cachedValue, lastRetrieved) =>
-        val now = Time.now
-        // interruptible allows the promise to be interrupted safely
-        if (now < lastRetrieved + ttl) cachedValue.interruptible()
-        else {
-          val p = Promise[T]()
-          val nextTuple = (p, now)
-          if (ref.compareAndSet(tuple, nextTuple)) {
-            val nextResult = provider onFailure { _ =>
-              // evict failed result lazily, next request will kick off a new request
-              ref.compareAndSet(
-                nextTuple,
-                empty
-              ) // OK if we lose so no need to examine result
-            }
-            nextResult.proxyTo(p)
-            p.interruptible() // interruptible allows the promise to be interrupted safely
-          } else result()
-        }
-    }
+    def result(): Future[T] =
+      ref.get match {
+        case tuple @ (cachedValue, lastRetrieved) =>
+          val now = Time.now
+          // interruptible allows the promise to be interrupted safely
+          if (now < lastRetrieved + ttl) cachedValue.interruptible()
+          else {
+            val p = Promise[T]()
+            val nextTuple = (p, now)
+            if (ref.compareAndSet(tuple, nextTuple)) {
+              val nextResult = provider onFailure { _ =>
+                // evict failed result lazily, next request will kick off a new request
+                ref.compareAndSet(
+                  nextTuple,
+                  empty
+                ) // OK if we lose so no need to examine result
+              }
+              nextResult.proxyTo(p)
+              p.interruptible() // interruptible allows the promise to be interrupted safely
+            } else result()
+          }
+      }
     // Return result, which is a no-arg function that returns a future
     result
   }

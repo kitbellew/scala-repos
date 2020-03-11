@@ -264,9 +264,8 @@ trait BaseClient[T] {
   /**
     * Get a key from the server.
     */
-  def get(key: String): Future[Option[T]] = get(Seq(key)).map {
-    _.values.headOption
-  }
+  def get(key: String): Future[Option[T]] =
+    get(Seq(key)).map { _.values.headOption }
 
   /**
     * Get a key from the server, with a "cas unique" token.  The token
@@ -409,20 +408,22 @@ trait Client extends BaseClient[Buf] {
     new ClientAdaptor[T](this, bijection)
 
   /** Adaptor to use String as values */
-  def withStrings: BaseClient[String] = adapt(
-    new Bijection[Buf, String] {
-      def apply(a: Buf): String = a match { case Buf.Utf8(s) => s }
-      def invert(b: String): Buf = Buf.Utf8(b)
-    }
-  )
+  def withStrings: BaseClient[String] =
+    adapt(
+      new Bijection[Buf, String] {
+        def apply(a: Buf): String = a match { case Buf.Utf8(s) => s }
+        def invert(b: String): Buf = Buf.Utf8(b)
+      }
+    )
 
   /** Adaptor to use Array[Byte] as values */
-  def withBytes: BaseClient[Array[Byte]] = adapt(
-    new Bijection[Buf, Array[Byte]] {
-      def apply(a: Buf): Array[Byte] = a.toArray
-      def invert(b: Array[Byte]): Buf = Buf.ByteArray.Owned(b)
-    }
-  )
+  def withBytes: BaseClient[Array[Byte]] =
+    adapt(
+      new Bijection[Buf, Array[Byte]] {
+        def apply(a: Buf): Array[Byte] = a.toArray
+        def invert(b: Array[Byte]): Buf = Buf.ByteArray.Owned(b)
+      }
+    )
 }
 
 trait ProxyClient extends Client {
@@ -812,10 +813,11 @@ object KetamaClientKey {
 
   def apply(id: String) = CustomKey(id)
 
-  def fromCacheNode(node: CacheNode): KetamaClientKey = node.key match {
-    case Some(id) => KetamaClientKey(id)
-    case None     => KetamaClientKey(node.host, node.port, node.weight)
-  }
+  def fromCacheNode(node: CacheNode): KetamaClientKey =
+    node.key match {
+      case Some(id) => KetamaClientKey(id)
+      case None     => KetamaClientKey(node.host, node.port, node.weight)
+    }
 }
 
 private[finagle] sealed trait NodeEvent
@@ -856,29 +858,30 @@ private[finagle] object KetamaFailureAccrualFactory {
           _timer: finagle.param.Timer,
           _stats: finagle.param.Stats,
           next: ServiceFactory[Req, Rep]
-      ) = failureAccrual match {
-        case Param.Configured(policy) =>
-          val Memcached.param.EjectFailedHost(ejectFailedHost) =
-            _ejectFailedHost
-          val finagle.param.Timer(timer) = _timer
-          val finagle.param.Stats(stats) = _stats
-          val finagle.param.Label(label) = _label
-          new KetamaFailureAccrualFactory[Req, Rep](
-            next,
-            policy(),
-            timer,
-            key,
-            healthBroker,
-            ejectFailedHost,
-            label,
-            stats)
+      ) =
+        failureAccrual match {
+          case Param.Configured(policy) =>
+            val Memcached.param.EjectFailedHost(ejectFailedHost) =
+              _ejectFailedHost
+            val finagle.param.Timer(timer) = _timer
+            val finagle.param.Stats(stats) = _stats
+            val finagle.param.Label(label) = _label
+            new KetamaFailureAccrualFactory[Req, Rep](
+              next,
+              policy(),
+              timer,
+              key,
+              healthBroker,
+              ejectFailedHost,
+              label,
+              stats)
 
-        case Param.Replaced(f) =>
-          val param.Timer(timer) = _timer
-          f(timer) andThen next
+          case Param.Replaced(f) =>
+            val param.Timer(timer) = _timer
+            f(timer) andThen next
 
-        case Param.Disabled => next
-      }
+          case Param.Disabled => next
+        }
     }
 }
 
@@ -931,23 +934,24 @@ private[finagle] class KetamaFailureAccrualFactory[Req, Rep](
       })
 
   // exclude CancelledRequestException and CancelledConnectionException for cache client failure accrual
-  override def isSuccess(reqRep: ReqRep): Boolean = reqRep.response match {
-    case Return(_) => true
-    case Throw(f: Failure)
-        if f.cause.exists(_.isInstanceOf[CancelledRequestException]) && f
-          .isFlagged(Failure.Interrupted) =>
-      true
-    case Throw(f: Failure)
-        if f.cause.exists(_.isInstanceOf[CancelledConnectionException]) && f
-          .isFlagged(Failure.Interrupted) =>
-      true
-    // Failure.InterruptedBy(_) would subsume all these eventually after rb/334371
-    case Throw(WriteException(_: CancelledRequestException))    => true
-    case Throw(_: CancelledRequestException)                    => true
-    case Throw(WriteException(_: CancelledConnectionException)) => true
-    case Throw(_: CancelledConnectionException)                 => true
-    case Throw(e)                                               => false
-  }
+  override def isSuccess(reqRep: ReqRep): Boolean =
+    reqRep.response match {
+      case Return(_) => true
+      case Throw(f: Failure)
+          if f.cause.exists(_.isInstanceOf[CancelledRequestException]) && f
+            .isFlagged(Failure.Interrupted) =>
+        true
+      case Throw(f: Failure)
+          if f.cause.exists(_.isInstanceOf[CancelledConnectionException]) && f
+            .isFlagged(Failure.Interrupted) =>
+        true
+      // Failure.InterruptedBy(_) would subsume all these eventually after rb/334371
+      case Throw(WriteException(_: CancelledRequestException))    => true
+      case Throw(_: CancelledRequestException)                    => true
+      case Throw(WriteException(_: CancelledConnectionException)) => true
+      case Throw(_: CancelledConnectionException)                 => true
+      case Throw(e)                                               => false
+    }
 
   override protected def didMarkDead() {
     if (ejectFailedHost) healthBroker ! NodeMarkedDead(key)
@@ -955,10 +959,11 @@ private[finagle] class KetamaFailureAccrualFactory[Req, Rep](
 
   // When host ejection is on, the host should be returned to the ring
   // immediately after it is woken, so it can satisfy a probe request
-  override def startProbing() = synchronized {
-    super.startProbing()
-    if (ejectFailedHost) healthBroker ! NodeRevived(key)
-  }
+  override def startProbing() =
+    synchronized {
+      super.startProbing()
+      if (ejectFailedHost) healthBroker ! NodeRevived(key)
+    }
 
   override def apply(conn: ClientConnection): Future[Service[Req, Rep]] =
     getState match {
@@ -1071,55 +1076,59 @@ private[finagle] class KetamaPartitionedClient(
     currentDistributor.nodeForHash(hash)
   }
 
-  private[this] def rebuildDistributor(): Unit = synchronized {
-    val liveNodes = for ((_, Node(node, NodeState.Live)) <- nodes) yield node
-    currentDistributor = buildDistributor(liveNodes.toSeq)
-    keyRingRedistributeCount.incr()
-  }
-
-  private[this] def updateGroup() = synchronized {
-    if (ketamaNodeGrp() ne ketamaNodeSnap) {
-      val old = ketamaNodeSnap
-      ketamaNodeSnap = ketamaNodeGrp()
-
-      // remove old nodes and release clients
-      nodes --= (old &~ ketamaNodeSnap) collect {
-        case (key, node) =>
-          node.handle.release()
-          nodeLeaveCount.incr()
-          key
-      }
-
-      // new joined node appears as Live state
-      nodes ++= (ketamaNodeSnap &~ old) collect {
-        case (key, node) =>
-          nodeJoinCount.incr()
-          key -> Node(node, NodeState.Live)
-      }
-
-      rebuildDistributor()
+  private[this] def rebuildDistributor(): Unit =
+    synchronized {
+      val liveNodes = for ((_, Node(node, NodeState.Live)) <- nodes) yield node
+      currentDistributor = buildDistributor(liveNodes.toSeq)
+      keyRingRedistributeCount.incr()
     }
-  }
 
-  private[this] def ejectNode(key: KetamaClientKey) = synchronized {
-    nodes.get(key) match {
-      case Some(node) if (node.state == NodeState.Live) =>
-        node.state = NodeState.Ejected
+  private[this] def updateGroup() =
+    synchronized {
+      if (ketamaNodeGrp() ne ketamaNodeSnap) {
+        val old = ketamaNodeSnap
+        ketamaNodeSnap = ketamaNodeGrp()
+
+        // remove old nodes and release clients
+        nodes --= (old &~ ketamaNodeSnap) collect {
+          case (key, node) =>
+            node.handle.release()
+            nodeLeaveCount.incr()
+            key
+        }
+
+        // new joined node appears as Live state
+        nodes ++= (ketamaNodeSnap &~ old) collect {
+          case (key, node) =>
+            nodeJoinCount.incr()
+            key -> Node(node, NodeState.Live)
+        }
+
         rebuildDistributor()
-        ejectionCount.incr()
-      case _ =>
+      }
     }
-  }
 
-  private[this] def reviveNode(key: KetamaClientKey) = synchronized {
-    nodes.get(key) match {
-      case Some(node) if node.state == NodeState.Ejected =>
-        node.state = NodeState.Live
-        rebuildDistributor()
-        revivalCount.incr()
-      case _ =>
+  private[this] def ejectNode(key: KetamaClientKey) =
+    synchronized {
+      nodes.get(key) match {
+        case Some(node) if (node.state == NodeState.Live) =>
+          node.state = NodeState.Ejected
+          rebuildDistributor()
+          ejectionCount.incr()
+        case _ =>
+      }
     }
-  }
+
+  private[this] def reviveNode(key: KetamaClientKey) =
+    synchronized {
+      nodes.get(key) match {
+        case Some(node) if node.state == NodeState.Ejected =>
+          node.state = NodeState.Live
+          rebuildDistributor()
+          revivalCount.incr()
+        case _ =>
+      }
+    }
 
   // await for the readiness of initial loading of ketamaNodeGrp prior to first request
   // this readiness here will be fulfilled the first time the ketamaNodeGrp is updated
@@ -1169,10 +1178,11 @@ private[finagle] class KetamaPartitionedClient(
   override def decr(key: String, delta: Long) =
     ready.interruptible before super.decr(key, delta)
 
-  def release() = synchronized {
-    for ((_, Node(node, _)) <- nodes)
-      node.handle.release()
-  }
+  def release() =
+    synchronized {
+      for ((_, Node(node, _)) <- nodes)
+        node.handle.release()
+    }
 }
 
 object KetamaClient {
@@ -1363,10 +1373,11 @@ case class RubyMemCacheClientBuilder(
     _nodes: Seq[(String, Int, Int)],
     _clientBuilder: Option[ClientBuilder[_, _, _, _, ClientConfig.Yes]]) {
 
-  def this() = this(
-    Nil, // nodes
-    None // clientBuilder
-  )
+  def this() =
+    this(
+      Nil, // nodes
+      None // clientBuilder
+    )
 
   def nodes(nodes: Seq[(String, Int, Int)]): RubyMemCacheClientBuilder =
     copy(_nodes = nodes)

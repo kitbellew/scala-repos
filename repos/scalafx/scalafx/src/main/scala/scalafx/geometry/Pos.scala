@@ -96,20 +96,21 @@ object Pos extends SFXEnumDelegateCompanion[jfxg.Pos, Pos] {
     "2.2.60")
   val TOP_RIGHT = TopRight
 
-  protected override def unsortedValues: Array[Pos] = Array(
-    TopLeft,
-    TopCenter,
-    TopRight,
-    CenterLeft,
-    Center,
-    CenterRight,
-    BottomLeft,
-    BottomCenter,
-    BottomRight,
-    BaselineLeft,
-    BaselineCenter,
-    BaselineRight
-  )
+  protected override def unsortedValues: Array[Pos] =
+    Array(
+      TopLeft,
+      TopCenter,
+      TopRight,
+      CenterLeft,
+      Center,
+      CenterRight,
+      BottomLeft,
+      BottomCenter,
+      BottomRight,
+      BaselineLeft,
+      BaselineCenter,
+      BaselineRight
+    )
 }
 
 sealed case class Pos(override val delegate: jfxg.Pos)

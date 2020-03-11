@@ -62,10 +62,11 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
   override def companion
       : GenericCompanion[ParArray] with GenericParCompanion[ParArray] = ParArray
 
-  def this(sz: Int) = this {
-    require(sz >= 0)
-    new ArraySeq[T](sz)
-  }
+  def this(sz: Int) =
+    this {
+      require(sz >= 0)
+      new ArraySeq[T](sz)
+    }
 
   def apply(i: Int) = array(i).asInstanceOf[T]
 
@@ -745,15 +746,16 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
     var result = ()
 
     def leaf(prev: Option[Unit]) = iterate(tree)
-    private def iterate(tree: ScanTree[U]): Unit = tree match {
-      case ScanNode(left, right) =>
-        iterate(left)
-        iterate(right)
-      case ScanLeaf(_, _, from, len, Some(prev), _) =>
-        scanLeaf(array, targetarr, from, len, prev.acc)
-      case ScanLeaf(_, _, from, len, None, _) =>
-        scanLeaf(array, targetarr, from, len, z)
-    }
+    private def iterate(tree: ScanTree[U]): Unit =
+      tree match {
+        case ScanNode(left, right) =>
+          iterate(left)
+          iterate(right)
+        case ScanLeaf(_, _, from, len, Some(prev), _) =>
+          scanLeaf(array, targetarr, from, len, prev.acc)
+        case ScanLeaf(_, _, from, len, None, _) =>
+          scanLeaf(array, targetarr, from, len, z)
+      }
     private def scanLeaf(
         srcarr: Array[Any],
         targetarr: Array[Any],
@@ -770,18 +772,20 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
         targetarr(i) = curr
       }
     }
-    def split = tree match {
-      case ScanNode(left, right) =>
-        Seq(
-          new ScanToArray(left, z, op, targetarr),
-          new ScanToArray(right, z, op, targetarr)
-        )
-      case _ => sys.error("Can only split scan tree internal nodes.")
-    }
-    def shouldSplitFurther = tree match {
-      case ScanNode(_, _) => true
-      case _              => false
-    }
+    def split =
+      tree match {
+        case ScanNode(left, right) =>
+          Seq(
+            new ScanToArray(left, z, op, targetarr),
+            new ScanToArray(right, z, op, targetarr)
+          )
+        case _ => sys.error("Can only split scan tree internal nodes.")
+      }
+    def shouldSplitFurther =
+      tree match {
+        case ScanNode(_, _) => true
+        case _              => false
+      }
   }
 
   class Map[S](f: T => S, targetarr: Array[Any], offset: Int, howmany: Int)
@@ -842,14 +846,16 @@ object ParArray extends ParFactory[ParArray] {
     */
   def handoff[T](arr: Array[T], sz: Int): ParArray[T] = wrapOrRebuild(arr, sz)
 
-  private def wrapOrRebuild[T](arr: AnyRef, sz: Int) = arr match {
-    case arr: Array[AnyRef] => new ParArray[T](new ExposedArraySeq[T](arr, sz))
-    case _ =>
-      new ParArray[T](
-        new ExposedArraySeq[T](
-          scala.runtime.ScalaRunTime.toObjectArray(arr),
-          sz))
-  }
+  private def wrapOrRebuild[T](arr: AnyRef, sz: Int) =
+    arr match {
+      case arr: Array[AnyRef] =>
+        new ParArray[T](new ExposedArraySeq[T](arr, sz))
+      case _ =>
+        new ParArray[T](
+          new ExposedArraySeq[T](
+            scala.runtime.ScalaRunTime.toObjectArray(arr),
+            sz))
+    }
 
   def createFromCopy[T <: AnyRef: ClassTag](arr: Array[T]): ParArray[T] = {
     val newarr = new Array[T](arr.length)

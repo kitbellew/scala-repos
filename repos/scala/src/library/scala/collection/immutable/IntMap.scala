@@ -31,11 +31,12 @@ private[immutable] object IntMapUtils extends BitOperations.Int {
       prefix: Int,
       mask: Int,
       left: IntMap[T],
-      right: IntMap[T]): IntMap[T] = (left, right) match {
-    case (left, IntMap.Nil)  => left
-    case (IntMap.Nil, right) => right
-    case (left, right)       => IntMap.Bin(prefix, mask, left, right)
-  }
+      right: IntMap[T]): IntMap[T] =
+    (left, right) match {
+      case (left, IntMap.Nil)  => left
+      case (IntMap.Nil, right) => right
+      case (left, right)       => IntMap.Bin(prefix, mask, left, right)
+    }
 }
 
 import IntMapUtils._
@@ -70,11 +71,12 @@ object IntMap {
     // loop from Map.equals => size => pattern-match-on-Nil => equals
     // develops.  Case objects and custom equality don't mix without
     // careful handling.
-    override def equals(that: Any) = that match {
-      case _: this.type => true
-      case _: IntMap[_] => false // The only empty IntMaps are eq Nil
-      case _            => super.equals(that)
-    }
+    override def equals(that: Any) =
+      that match {
+        case _: this.type => true
+        case _: IntMap[_] => false // The only empty IntMaps are eq Nil
+        case _            => super.equals(that)
+      }
   }
 
   private[immutable] case class Tip[+T](key: Int, value: T) extends IntMap[T] {
@@ -195,24 +197,29 @@ sealed abstract class IntMap[+T]
     *
     * @return an iterator over pairs of integer keys and corresponding values.
     */
-  def iterator: Iterator[(Int, T)] = this match {
-    case IntMap.Nil => Iterator.empty
-    case _          => new IntMapEntryIterator(this)
-  }
+  def iterator: Iterator[(Int, T)] =
+    this match {
+      case IntMap.Nil => Iterator.empty
+      case _          => new IntMapEntryIterator(this)
+    }
 
   /**
     * Loops over the key, value pairs of the map in unsigned order of the keys.
     */
-  override final def foreach[U](f: ((Int, T)) => U): Unit = this match {
-    case IntMap.Bin(_, _, left, right) => { left.foreach(f); right.foreach(f) }
-    case IntMap.Tip(key, value)        => f((key, value))
-    case IntMap.Nil                    =>
-  }
+  override final def foreach[U](f: ((Int, T)) => U): Unit =
+    this match {
+      case IntMap.Bin(_, _, left, right) => {
+        left.foreach(f); right.foreach(f)
+      }
+      case IntMap.Tip(key, value) => f((key, value))
+      case IntMap.Nil             =>
+    }
 
-  override def keysIterator: Iterator[Int] = this match {
-    case IntMap.Nil => Iterator.empty
-    case _          => new IntMapKeyIterator(this)
-  }
+  override def keysIterator: Iterator[Int] =
+    this match {
+      case IntMap.Nil => Iterator.empty
+      case _          => new IntMapKeyIterator(this)
+    }
 
   /**
     * Loop over the keys of the map. The same as `keys.foreach(f)`, but may
@@ -220,18 +227,20 @@ sealed abstract class IntMap[+T]
     *
     * @param f The loop body
     */
-  final def foreachKey(f: Int => Unit): Unit = this match {
-    case IntMap.Bin(_, _, left, right) => {
-      left.foreachKey(f); right.foreachKey(f)
+  final def foreachKey(f: Int => Unit): Unit =
+    this match {
+      case IntMap.Bin(_, _, left, right) => {
+        left.foreachKey(f); right.foreachKey(f)
+      }
+      case IntMap.Tip(key, _) => f(key)
+      case IntMap.Nil         =>
     }
-    case IntMap.Tip(key, _) => f(key)
-    case IntMap.Nil         =>
-  }
 
-  override def valuesIterator: Iterator[T] = this match {
-    case IntMap.Nil => Iterator.empty
-    case _          => new IntMapValueIterator(this)
-  }
+  override def valuesIterator: Iterator[T] =
+    this match {
+      case IntMap.Nil => Iterator.empty
+      case _          => new IntMapValueIterator(this)
+    }
 
   /**
     * Loop over the values of the map. The same as `values.foreach(f)`, but may
@@ -239,49 +248,54 @@ sealed abstract class IntMap[+T]
     *
     * @param f The loop body
     */
-  final def foreachValue(f: T => Unit): Unit = this match {
-    case IntMap.Bin(_, _, left, right) => {
-      left.foreachValue(f); right.foreachValue(f)
+  final def foreachValue(f: T => Unit): Unit =
+    this match {
+      case IntMap.Bin(_, _, left, right) => {
+        left.foreachValue(f); right.foreachValue(f)
+      }
+      case IntMap.Tip(_, value) => f(value)
+      case IntMap.Nil           =>
     }
-    case IntMap.Tip(_, value) => f(value)
-    case IntMap.Nil           =>
-  }
 
   override def stringPrefix = "IntMap"
 
   override def isEmpty = this == IntMap.Nil
 
-  override def filter(f: ((Int, T)) => Boolean): IntMap[T] = this match {
-    case IntMap.Bin(prefix, mask, left, right) => {
-      val (newleft, newright) = (left.filter(f), right.filter(f))
-      if ((left eq newleft) && (right eq newright)) this
-      else bin(prefix, mask, newleft, newright)
+  override def filter(f: ((Int, T)) => Boolean): IntMap[T] =
+    this match {
+      case IntMap.Bin(prefix, mask, left, right) => {
+        val (newleft, newright) = (left.filter(f), right.filter(f))
+        if ((left eq newleft) && (right eq newright)) this
+        else bin(prefix, mask, newleft, newright)
+      }
+      case IntMap.Tip(key, value) =>
+        if (f((key, value))) this
+        else IntMap.Nil
+      case IntMap.Nil => IntMap.Nil
     }
-    case IntMap.Tip(key, value) =>
-      if (f((key, value))) this
-      else IntMap.Nil
-    case IntMap.Nil => IntMap.Nil
-  }
 
-  def transform[S](f: (Int, T) => S): IntMap[S] = this match {
-    case b @ IntMap.Bin(prefix, mask, left, right) =>
-      b.bin(left.transform(f), right.transform(f))
-    case t @ IntMap.Tip(key, value) => t.withValue(f(key, value))
-    case IntMap.Nil                 => IntMap.Nil
-  }
+  def transform[S](f: (Int, T) => S): IntMap[S] =
+    this match {
+      case b @ IntMap.Bin(prefix, mask, left, right) =>
+        b.bin(left.transform(f), right.transform(f))
+      case t @ IntMap.Tip(key, value) => t.withValue(f(key, value))
+      case IntMap.Nil                 => IntMap.Nil
+    }
 
-  final override def size: Int = this match {
-    case IntMap.Nil                    => 0
-    case IntMap.Tip(_, _)              => 1
-    case IntMap.Bin(_, _, left, right) => left.size + right.size
-  }
+  final override def size: Int =
+    this match {
+      case IntMap.Nil                    => 0
+      case IntMap.Tip(_, _)              => 1
+      case IntMap.Bin(_, _, left, right) => left.size + right.size
+    }
 
-  final def get(key: Int): Option[T] = this match {
-    case IntMap.Bin(prefix, mask, left, right) =>
-      if (zero(key, mask)) left.get(key) else right.get(key)
-    case IntMap.Tip(key2, value) => if (key == key2) Some(value) else None
-    case IntMap.Nil              => None
-  }
+  final def get(key: Int): Option[T] =
+    this match {
+      case IntMap.Bin(prefix, mask, left, right) =>
+        if (zero(key, mask)) left.get(key) else right.get(key)
+      case IntMap.Tip(key2, value) => if (key == key2) Some(value) else None
+      case IntMap.Nil              => None
+    }
 
   final override def getOrElse[S >: T](key: Int, default: => S): S =
     this match {
@@ -292,28 +306,30 @@ sealed abstract class IntMap[+T]
         else right.getOrElse(key, default)
     }
 
-  final override def apply(key: Int): T = this match {
-    case IntMap.Bin(prefix, mask, left, right) =>
-      if (zero(key, mask)) left(key) else right(key)
-    case IntMap.Tip(key2, value) =>
-      if (key == key2) value else sys.error("Key not found")
-    case IntMap.Nil => sys.error("key not found")
-  }
+  final override def apply(key: Int): T =
+    this match {
+      case IntMap.Bin(prefix, mask, left, right) =>
+        if (zero(key, mask)) left(key) else right(key)
+      case IntMap.Tip(key2, value) =>
+        if (key == key2) value else sys.error("Key not found")
+      case IntMap.Nil => sys.error("key not found")
+    }
 
   def +[S >: T](kv: (Int, S)): IntMap[S] = updated(kv._1, kv._2)
 
-  override def updated[S >: T](key: Int, value: S): IntMap[S] = this match {
-    case IntMap.Bin(prefix, mask, left, right) =>
-      if (!hasMatch(key, prefix, mask))
-        join(key, IntMap.Tip(key, value), prefix, this)
-      else if (zero(key, mask))
-        IntMap.Bin(prefix, mask, left.updated(key, value), right)
-      else IntMap.Bin(prefix, mask, left, right.updated(key, value))
-    case IntMap.Tip(key2, value2) =>
-      if (key == key2) IntMap.Tip(key, value)
-      else join(key, IntMap.Tip(key, value), key2, this)
-    case IntMap.Nil => IntMap.Tip(key, value)
-  }
+  override def updated[S >: T](key: Int, value: S): IntMap[S] =
+    this match {
+      case IntMap.Bin(prefix, mask, left, right) =>
+        if (!hasMatch(key, prefix, mask))
+          join(key, IntMap.Tip(key, value), prefix, this)
+        else if (zero(key, mask))
+          IntMap.Bin(prefix, mask, left.updated(key, value), right)
+        else IntMap.Bin(prefix, mask, left, right.updated(key, value))
+      case IntMap.Tip(key2, value2) =>
+        if (key == key2) IntMap.Tip(key, value)
+        else join(key, IntMap.Tip(key, value), key2, this)
+      case IntMap.Nil => IntMap.Tip(key, value)
+    }
 
   /**
     * Updates the map, using the provided function to resolve conflicts if the key is already present.
@@ -346,16 +362,17 @@ sealed abstract class IntMap[+T]
       case IntMap.Nil => IntMap.Tip(key, value)
     }
 
-  def -(key: Int): IntMap[T] = this match {
-    case IntMap.Bin(prefix, mask, left, right) =>
-      if (!hasMatch(key, prefix, mask)) this
-      else if (zero(key, mask)) bin(prefix, mask, left - key, right)
-      else bin(prefix, mask, left, right - key)
-    case IntMap.Tip(key2, _) =>
-      if (key == key2) IntMap.Nil
-      else this
-    case IntMap.Nil => IntMap.Nil
-  }
+  def -(key: Int): IntMap[T] =
+    this match {
+      case IntMap.Bin(prefix, mask, left, right) =>
+        if (!hasMatch(key, prefix, mask)) this
+        else if (zero(key, mask)) bin(prefix, mask, left - key, right)
+        else bin(prefix, mask, left, right - key)
+      case IntMap.Tip(key2, _) =>
+        if (key == key2) IntMap.Nil
+        else this
+      case IntMap.Nil => IntMap.Nil
+    }
 
   /**
     * A combined transform and filter function. Returns an `IntMap` such that
@@ -366,25 +383,27 @@ sealed abstract class IntMap[+T]
     * @param f   The transforming function.
     * @return    The modified map.
     */
-  def modifyOrRemove[S](f: (Int, T) => Option[S]): IntMap[S] = this match {
-    case IntMap.Bin(prefix, mask, left, right) =>
-      val newleft = left.modifyOrRemove(f)
-      val newright = right.modifyOrRemove(f)
-      if ((left eq newleft) && (right eq newright)) this.asInstanceOf[IntMap[S]]
-      else bin(prefix, mask, newleft, newright)
-    case IntMap.Tip(key, value) =>
-      f(key, value) match {
-        case None =>
-          IntMap.Nil
-        case Some(value2) =>
-          //hack to preserve sharing
-          if (value.asInstanceOf[AnyRef] eq value2.asInstanceOf[AnyRef])
-            this.asInstanceOf[IntMap[S]]
-          else IntMap.Tip(key, value2)
-      }
-    case IntMap.Nil =>
-      IntMap.Nil
-  }
+  def modifyOrRemove[S](f: (Int, T) => Option[S]): IntMap[S] =
+    this match {
+      case IntMap.Bin(prefix, mask, left, right) =>
+        val newleft = left.modifyOrRemove(f)
+        val newright = right.modifyOrRemove(f)
+        if ((left eq newleft) && (right eq newright))
+          this.asInstanceOf[IntMap[S]]
+        else bin(prefix, mask, newleft, newright)
+      case IntMap.Tip(key, value) =>
+        f(key, value) match {
+          case None =>
+            IntMap.Nil
+          case Some(value2) =>
+            //hack to preserve sharing
+            if (value.asInstanceOf[AnyRef] eq value2.asInstanceOf[AnyRef])
+              this.asInstanceOf[IntMap[S]]
+            else IntMap.Tip(key, value2)
+        }
+      case IntMap.Nil =>
+        IntMap.Nil
+    }
 
   /**
     * Forms a union map with that map, using the combining function to resolve conflicts.
@@ -492,19 +511,21 @@ sealed abstract class IntMap[+T]
     * The entry with the lowest key value considered in unsigned order.
     */
   @tailrec
-  final def firstKey: Int = this match {
-    case Bin(_, _, l, r) => l.firstKey
-    case Tip(k, v)       => k
-    case IntMap.Nil      => sys.error("Empty set")
-  }
+  final def firstKey: Int =
+    this match {
+      case Bin(_, _, l, r) => l.firstKey
+      case Tip(k, v)       => k
+      case IntMap.Nil      => sys.error("Empty set")
+    }
 
   /**
     * The entry with the highest key value considered in unsigned order.
     */
   @tailrec
-  final def lastKey: Int = this match {
-    case Bin(_, _, l, r) => r.lastKey
-    case Tip(k, v)       => k
-    case IntMap.Nil      => sys.error("Empty set")
-  }
+  final def lastKey: Int =
+    this match {
+      case Bin(_, _, l, r) => r.lastKey
+      case Tip(k, v)       => k
+      case IntMap.Nil      => sys.error("Empty set")
+    }
 }

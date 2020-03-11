@@ -650,19 +650,20 @@ private[twitter] object Message {
     }
   }
 
-  def encode(msg: Message): ChannelBuffer = msg match {
-    case m: PreEncodedTping => m.buf
-    case m: Message =>
-      if (m.tag < Tags.MarkerTag || (m.tag & ~Tags.TagMSB) > Tags.MaxTag)
-        throw new BadMessageException("invalid tag number %d".format(m.tag))
+  def encode(msg: Message): ChannelBuffer =
+    msg match {
+      case m: PreEncodedTping => m.buf
+      case m: Message =>
+        if (m.tag < Tags.MarkerTag || (m.tag & ~Tags.TagMSB) > Tags.MaxTag)
+          throw new BadMessageException("invalid tag number %d".format(m.tag))
 
-      val head = Array[Byte](
-        m.typ,
-        (m.tag >> 16 & 0xff).toByte,
-        (m.tag >> 8 & 0xff).toByte,
-        (m.tag & 0xff).toByte
-      )
+        val head = Array[Byte](
+          m.typ,
+          (m.tag >> 16 & 0xff).toByte,
+          (m.tag >> 8 & 0xff).toByte,
+          (m.tag & 0xff).toByte
+        )
 
-      ChannelBuffers.wrappedBuffer(ChannelBuffers.wrappedBuffer(head), m.buf)
-  }
+        ChannelBuffers.wrappedBuffer(ChannelBuffers.wrappedBuffer(head), m.buf)
+    }
 }

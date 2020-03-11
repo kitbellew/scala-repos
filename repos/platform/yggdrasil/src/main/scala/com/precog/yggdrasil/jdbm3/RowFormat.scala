@@ -346,19 +346,20 @@ trait RowFormatSupport { self: StdCodecs =>
     var filled: ListBuffer[ByteBuffer] = null
 
     @inline @tailrec
-    def encodeAll(i: Int): Unit = if (i < encoders.length) {
-      if (!RawBitSet.get(undefined, i)) {
-        encoders(i).encode(row, buffer, pool) match {
-          case Some(buffers) =>
-            if (filled == null)
-              filled = new ListBuffer[ByteBuffer]()
-            filled ++= buffers
-            buffer = pool.acquire
-          case None =>
+    def encodeAll(i: Int): Unit =
+      if (i < encoders.length) {
+        if (!RawBitSet.get(undefined, i)) {
+          encoders(i).encode(row, buffer, pool) match {
+            case Some(buffers) =>
+              if (filled == null)
+                filled = new ListBuffer[ByteBuffer]()
+              filled ++= buffers
+              buffer = pool.acquire
+            case None =>
+          }
         }
+        encodeAll(i + 1)
       }
-      encodeAll(i + 1)
-    }
 
     encodeAll(0)
 
@@ -407,10 +408,11 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
       def encodeFromRow(row: Int) = {
         val undefined = RawBitSet.create(colsArray.length)
 
-        @inline @tailrec def definedCols(i: Int): Unit = if (i >= 0) {
-          if (!colsArray(i).isDefinedAt(row)) RawBitSet.set(undefined, i)
-          definedCols(i - 1)
-        }
+        @inline @tailrec def definedCols(i: Int): Unit =
+          if (i >= 0) {
+            if (!colsArray(i).isDefinedAt(row)) RawBitSet.set(undefined, i)
+            definedCols(i - 1)
+          }
         definedCols(colsArray.length - 1)
 
         val init = pool.acquire
@@ -466,11 +468,12 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
       val bits = RawBitSet.create(xs.size)
 
       @inline @tailrec
-      def rec(i: Int, xs: List[CValue]): Unit = xs match {
-        case CUndefined :: xs => RawBitSet.set(bits, i); rec(i + 1, xs)
-        case _ :: xs          => rec(i + 1, xs)
-        case Nil              =>
-      }
+      def rec(i: Int, xs: List[CValue]): Unit =
+        xs match {
+          case CUndefined :: xs => RawBitSet.set(bits, i); rec(i + 1, xs)
+          case _ :: xs          => rec(i + 1, xs)
+          case Nil              =>
+        }
       rec(0, xs)
 
       bits
@@ -533,13 +536,14 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
       }
     }
 
-    def writeMore(more: S, sink: ByteBuffer) = more match {
-      case (Left(s), xs) =>
-        rawBitSetCodec.writeMore(s, sink) map (s =>
-          (Left(s), xs)) orElse writeCValues(xs, sink)
-      case (Right(s), xs) =>
-        s.more(sink) map (s => (Right(s), xs)) orElse writeCValues(xs, sink)
-    }
+    def writeMore(more: S, sink: ByteBuffer) =
+      more match {
+        case (Left(s), xs) =>
+          rawBitSetCodec.writeMore(s, sink) map (s =>
+            (Left(s), xs)) orElse writeCValues(xs, sink)
+        case (Right(s), xs) =>
+          s.more(sink) map (s => (Right(s), xs)) orElse writeCValues(xs, sink)
+      }
 
     def read(src: ByteBuffer): List[CValue] = {
       val undefined = rawBitSetCodec.read(src)
@@ -864,33 +868,35 @@ object SortingRowFormat {
     }
   }
 
-  def flagForCType(cType: CType): Byte = cType match {
-    case CBoolean     => FBoolean
-    case CString      => FString
-    case CLong        => FLong
-    case CDouble      => FDouble
-    case CNum         => FBigDecimal
-    case CDate        => FDate
-    case CPeriod      => FPeriod
-    case CEmptyObject => FEmptyObject
-    case CEmptyArray  => FEmptyArray
-    case CNull        => FNull
-    case CUndefined   => FUndefined
-  }
+  def flagForCType(cType: CType): Byte =
+    cType match {
+      case CBoolean     => FBoolean
+      case CString      => FString
+      case CLong        => FLong
+      case CDouble      => FDouble
+      case CNum         => FBigDecimal
+      case CDate        => FDate
+      case CPeriod      => FPeriod
+      case CEmptyObject => FEmptyObject
+      case CEmptyArray  => FEmptyArray
+      case CNull        => FNull
+      case CUndefined   => FUndefined
+    }
 
-  def cTypeForFlag(flag: Byte): CType = flag match {
-    case FBoolean     => CBoolean
-    case FString      => CString
-    case FLong        => CLong
-    case FDouble      => CDouble
-    case FBigDecimal  => CNum
-    case FDate        => CDate
-    case FPeriod      => CPeriod
-    case FEmptyObject => CEmptyObject
-    case FEmptyArray  => CEmptyArray
-    case FNull        => CNull
-    case FUndefined   => CUndefined
-  }
+  def cTypeForFlag(flag: Byte): CType =
+    flag match {
+      case FBoolean     => CBoolean
+      case FString      => CString
+      case FLong        => CLong
+      case FDouble      => CDouble
+      case FBigDecimal  => CNum
+      case FDate        => CDate
+      case FPeriod      => CPeriod
+      case FEmptyObject => CEmptyObject
+      case FEmptyArray  => CEmptyArray
+      case FNull        => CNull
+      case FUndefined   => CUndefined
+    }
 
   private val FUndefined: Byte = 0x0.toByte
   private val FBoolean: Byte = 0x10.toByte
@@ -973,19 +979,21 @@ trait IdentitiesRowFormat extends RowFormat {
 
   def encode(cValues: List[CValue]): Array[Byte] = {
     @inline @tailrec
-    def sumPackedSize(cvals: List[CValue], len: Int): Int = cvals match {
-      case CLong(n) :: cvals => sumPackedSize(cvals, len + packedSize(n))
-      case cv :: _           => sys.error("Expecting CLong, but found: " + cv)
-      case Nil               => len
-    }
+    def sumPackedSize(cvals: List[CValue], len: Int): Int =
+      cvals match {
+        case CLong(n) :: cvals => sumPackedSize(cvals, len + packedSize(n))
+        case cv :: _           => sys.error("Expecting CLong, but found: " + cv)
+        case Nil               => len
+      }
 
     val bytes = new Array[Byte](sumPackedSize(cValues, 0))
 
     @inline @tailrec
-    def packAll(xs: List[CValue], offset: Int): Unit = xs match {
-      case CLong(n) :: xs => packAll(xs, packLong(n, bytes, offset))
-      case _              =>
-    }
+    def packAll(xs: List[CValue], offset: Int): Unit =
+      xs match {
+        case CLong(n) :: xs => packAll(xs, packLong(n, bytes, offset))
+        case _              =>
+      }
 
     packAll(cValues, 0)
     bytes
@@ -1031,9 +1039,10 @@ trait IdentitiesRowFormat extends RowFormat {
         val bytes = new Array[Byte](sumPackedSize(0, 0))
 
         @inline @tailrec
-        def packAll(i: Int, offset: Int): Unit = if (i < longCols.length) {
-          packAll(i + 1, packLong(longCols(i)(row), bytes, offset))
-        }
+        def packAll(i: Int, offset: Int): Unit =
+          if (i < longCols.length) {
+            packAll(i + 1, packLong(longCols(i)(row), bytes, offset))
+          }
 
         packAll(0, 0)
         bytes

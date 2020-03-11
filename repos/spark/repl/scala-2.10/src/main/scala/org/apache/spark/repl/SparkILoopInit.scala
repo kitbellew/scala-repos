@@ -154,17 +154,19 @@ private[repl] trait SparkILoopInit {
   // code to be executed only after the interpreter is initialized
   // and the lazy val `global` can be accessed without risk of deadlock.
   private var pendingThunks: List[() => Unit] = Nil
-  protected def addThunk(body: => Unit) = synchronized {
-    pendingThunks :+= (() => body)
-  }
-  protected def runThunks(): Unit = synchronized {
-    if (pendingThunks.nonEmpty)
-      logDebug("Clearing " + pendingThunks.size + " thunks.")
-
-    while (pendingThunks.nonEmpty) {
-      val thunk = pendingThunks.head
-      pendingThunks = pendingThunks.tail
-      thunk()
+  protected def addThunk(body: => Unit) =
+    synchronized {
+      pendingThunks :+= (() => body)
     }
-  }
+  protected def runThunks(): Unit =
+    synchronized {
+      if (pendingThunks.nonEmpty)
+        logDebug("Clearing " + pendingThunks.size + " thunks.")
+
+      while (pendingThunks.nonEmpty) {
+        val thunk = pendingThunks.head
+        pendingThunks = pendingThunks.tail
+        thunk()
+      }
+    }
 }

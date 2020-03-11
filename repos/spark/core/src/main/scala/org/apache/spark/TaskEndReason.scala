@@ -156,9 +156,10 @@ case class ExceptionFailure(
     this(e, accumUpdates, preserveCause = true)
   }
 
-  def exception: Option[Throwable] = exceptionWrapper.flatMap {
-    (w: ThrowableSerializationWrapper) => Option(w.exception)
-  }
+  def exception: Option[Throwable] =
+    exceptionWrapper.flatMap { (w: ThrowableSerializationWrapper) =>
+      Option(w.exception)
+    }
 
   override def toErrorString: String =
     if (fullStackTrace == null) {

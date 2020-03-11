@@ -26,16 +26,18 @@ object Inbox {
     }
 
     val ref: ActorRef[T] = ActorRef(r)
-    def receiveMsg(): T = q.poll() match {
-      case null ⇒
-        throw new NoSuchElementException(s"polling on an empty inbox: $name")
-      case x ⇒ x
-    }
-    def receiveAll(): immutable.Seq[T] = {
-      @tailrec def rec(acc: List[T]): List[T] = q.poll() match {
-        case null ⇒ acc.reverse
-        case x ⇒ rec(x :: acc)
+    def receiveMsg(): T =
+      q.poll() match {
+        case null ⇒
+          throw new NoSuchElementException(s"polling on an empty inbox: $name")
+        case x ⇒ x
       }
+    def receiveAll(): immutable.Seq[T] = {
+      @tailrec def rec(acc: List[T]): List[T] =
+        q.poll() match {
+          case null ⇒ acc.reverse
+          case x ⇒ rec(x :: acc)
+        }
       rec(Nil)
     }
     def hasMessages: Boolean = q.peek() != null

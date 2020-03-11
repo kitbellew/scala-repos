@@ -22,12 +22,10 @@ protected[zk] class LiftableFuture[T](f: Future[T]) {
   def liftFailure = liftSuccess handle { case e => Throw(e) }
 
   /** Lift all KeeperExceptions to a Throw */
-  def liftKeeperException = liftSuccess handle {
-    case e: KeeperException => Throw(e)
-  }
+  def liftKeeperException =
+    liftSuccess handle { case e: KeeperException => Throw(e) }
 
   /** Lift failures when a watch would have been successfully installed */
-  def liftNoNode = liftSuccess handle {
-    case e: KeeperException.NoNodeException => Throw(e)
-  }
+  def liftNoNode =
+    liftSuccess handle { case e: KeeperException.NoNodeException => Throw(e) }
 }

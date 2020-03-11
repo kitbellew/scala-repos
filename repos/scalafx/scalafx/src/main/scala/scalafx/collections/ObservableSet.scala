@@ -183,11 +183,12 @@ trait ObservableSet[T]
   /**
     * Creates a new iterator over elements of this set
     */
-  def iterator = new Iterator[T] {
-    val it = delegate.iterator
-    def hasNext = it.hasNext
-    def next() = it.next()
-  }
+  def iterator =
+    new Iterator[T] {
+      val it = delegate.iterator
+      def hasNext = it.hasNext
+      def next() = it.next()
+    }
 
   /**
     * @return This $SET's size.

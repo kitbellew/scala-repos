@@ -40,9 +40,10 @@ case class VectorClock(map: Map[Int, Int]) {
       this
     }
 
-  def isDominatedBy(other: VectorClock): Boolean = map forall {
-    case (prodId, maxSeqId) => other.get(prodId).forall(_ >= maxSeqId)
-  }
+  def isDominatedBy(other: VectorClock): Boolean =
+    map forall {
+      case (prodId, maxSeqId) => other.get(prodId).forall(_ >= maxSeqId)
+    }
 }
 
 trait VectorClockSerialization {

@@ -66,10 +66,11 @@ trait Disposable[+T] {
 }
 
 object Disposable {
-  def const[T](t: T) = new Disposable[T] {
-    def get = t
-    def dispose(deadline: Time) = Future.value(())
-  }
+  def const[T](t: T) =
+    new Disposable[T] {
+      def get = t
+      def dispose(deadline: Time) = Future.value(())
+    }
 }
 
 /**
@@ -93,34 +94,36 @@ trait Managed[+T] { selfT =>
   /**
     * Compose a new managed resource that depends on `this' managed resource.
     */
-  def flatMap[U](f: T => Managed[U]): Managed[U] = new Managed[U] {
-    def make() = new Disposable[U] {
-      val t = selfT.make()
+  def flatMap[U](f: T => Managed[U]): Managed[U] =
+    new Managed[U] {
+      def make() =
+        new Disposable[U] {
+          val t = selfT.make()
 
-      val u =
-        try {
-          f(t.get).make()
-        } catch {
-          case e: Exception =>
-            t.dispose()
-            throw e
-        }
-
-      def get = u.get
-
-      def dispose(deadline: Time) = {
-        u.dispose(deadline) transform {
-          case Return(_) => t.dispose(deadline)
-          case Throw(outer) =>
-            t.dispose transform {
-              case Throw(inner) =>
-                Future.exception(new DoubleTrouble(outer, inner))
-              case Return(_) => Future.exception(outer)
+          val u =
+            try {
+              f(t.get).make()
+            } catch {
+              case e: Exception =>
+                t.dispose()
+                throw e
             }
+
+          def get = u.get
+
+          def dispose(deadline: Time) = {
+            u.dispose(deadline) transform {
+              case Return(_) => t.dispose(deadline)
+              case Throw(outer) =>
+                t.dispose transform {
+                  case Throw(inner) =>
+                    Future.exception(new DoubleTrouble(outer, inner))
+                  case Return(_) => Future.exception(outer)
+                }
+            }
+          }
         }
-      }
     }
-  }
 
   def map[U](f: T => U): Managed[U] = flatMap { t => Managed.const(f(t)) }
 

@@ -44,10 +44,11 @@ object TestPublisher {
   /**
     * Publisher that subscribes the subscriber and completes after the first request.
     */
-  def lazyEmpty[T]: Publisher[T] = new Publisher[T] {
-    override def subscribe(subscriber: Subscriber[_ >: T]): Unit =
-      subscriber.onSubscribe(CompletedSubscription(subscriber))
-  }
+  def lazyEmpty[T]: Publisher[T] =
+    new Publisher[T] {
+      override def subscribe(subscriber: Subscriber[_ >: T]): Unit =
+        subscriber.onSubscribe(CompletedSubscription(subscriber))
+    }
 
   /**
     * Publisher that signals error to subscribers immediately after handing out subscription.
@@ -58,10 +59,11 @@ object TestPublisher {
   /**
     * Publisher that subscribes the subscriber and signals error after the first request.
     */
-  def lazyError[T](cause: Throwable): Publisher[T] = new Publisher[T] {
-    override def subscribe(subscriber: Subscriber[_ >: T]): Unit =
-      subscriber.onSubscribe(FailedSubscription(subscriber, cause))
-  }
+  def lazyError[T](cause: Throwable): Publisher[T] =
+    new Publisher[T] {
+      override def subscribe(subscriber: Subscriber[_ >: T]): Unit =
+        subscriber.onSubscribe(FailedSubscription(subscriber, cause))
+    }
 
   /**
     * Probe that implements [[org.reactivestreams.Publisher]] interface.
@@ -362,15 +364,16 @@ object TestSubscriber {
       */
     def expectNextUnorderedN(all: immutable.Seq[I]): Self = {
       @annotation.tailrec
-      def expectOneOf(all: immutable.Seq[I]): Unit = all match {
-        case Nil ⇒
-        case list ⇒
-          val next = expectNext()
-          assert(
-            all.contains(next),
-            s"expected one of $all, but received $next")
-          expectOneOf(all.diff(Seq(next)))
-      }
+      def expectOneOf(all: immutable.Seq[I]): Unit =
+        all match {
+          case Nil ⇒
+          case list ⇒
+            val next = expectNext()
+            assert(
+              all.contains(next),
+              s"expected one of $all, but received $next")
+            expectOneOf(all.diff(Seq(next)))
+        }
 
       expectOneOf(all)
       self
@@ -704,14 +707,16 @@ private[testkit] object StreamTestKit {
 
     def expectRequest(n: Long): Unit =
       publisherProbe.expectMsg(RequestMore(this, n))
-    def expectRequest(): Long = publisherProbe.expectMsgPF() {
-      case RequestMore(sub, n) if sub eq this ⇒ n
-    }
+    def expectRequest(): Long =
+      publisherProbe.expectMsgPF() {
+        case RequestMore(sub, n) if sub eq this ⇒ n
+      }
 
-    def expectCancellation(): Unit = publisherProbe.fishForMessage() {
-      case CancelSubscription(sub) if sub eq this ⇒ true
-      case RequestMore(sub, _) if sub eq this ⇒ false
-    }
+    def expectCancellation(): Unit =
+      publisherProbe.fishForMessage() {
+        case CancelSubscription(sub) if sub eq this ⇒ true
+        case RequestMore(sub, _) if sub eq this ⇒ false
+      }
 
     def sendNext(element: I): Unit = subscriber.onNext(element)
     def sendComplete(): Unit = subscriber.onComplete()

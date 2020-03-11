@@ -125,11 +125,12 @@ object ReadHandle {
       _messages: Offer[ReadMessage],
       _error: Offer[Throwable],
       closeOf: Offer[Unit]
-  ): ReadHandle = new ReadHandle {
-    val messages = _messages
-    val error = _error
-    def close() = closeOf.sync()
-  }
+  ): ReadHandle =
+    new ReadHandle {
+      val messages = _messages
+      val error = _error
+      def close() = closeOf.sync()
+    }
 
   /**
     * A Java-friendly API for the `ReadHandle() constructor`.
@@ -145,11 +146,12 @@ object ReadHandle {
     * the given underlying handles.  Closing this handle will close all
     * of the underlying ones.
     */
-  def merged(handles: Seq[ReadHandle]): ReadHandle = new ReadHandle {
-    val messages = Offer.choose(handles.map { _.messages }.toSeq: _*)
-    val error = Offer.choose(handles.map { _.error }.toSeq: _*)
-    def close() = handles.foreach { _.close() }
-  }
+  def merged(handles: Seq[ReadHandle]): ReadHandle =
+    new ReadHandle {
+      val messages = Offer.choose(handles.map { _.messages }.toSeq: _*)
+      val error = Offer.choose(handles.map { _.error }.toSeq: _*)
+      def close() = handles.foreach { _.close() }
+    }
 
   /**
     * A java-friendly interface to {{merged}}

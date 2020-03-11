@@ -281,10 +281,11 @@ trait ProvenanceChecker extends parser.AST with Binder {
     // A DynamicProvenance being involved in either side means
     // we can't _prove_ the data is coming from different sets,
     // since `(new //foo) intersect (new //foo)` returns `new //foo`
-    def dynamicPossibility(prov: Provenance) = prov.possibilities exists {
-      case DynamicProvenance(_) => true
-      case _                    => false
-    }
+    def dynamicPossibility(prov: Provenance) =
+      prov.possibilities exists {
+        case DynamicProvenance(_) => true
+        case _                    => false
+      }
 
     def hasDynamic(left: Provenance, right: Provenance) =
       dynamicPossibility(left) && dynamicPossibility(right)
@@ -790,28 +791,31 @@ trait ProvenanceChecker extends parser.AST with Binder {
                 if (morph1.isInfinite) {
                   InfiniteProvenance
                 } else {
-                  def rec(policy: IdentityPolicy): Provenance = policy match {
-                    case IdentityPolicy.Product(left, right) => {
-                      val recLeft = rec(left)
-                      val recRight = rec(right)
-                      unifyProvenance(relations)(
-                        recLeft,
-                        recRight) getOrElse ProductProvenance(recLeft, recRight)
+                  def rec(policy: IdentityPolicy): Provenance =
+                    policy match {
+                      case IdentityPolicy.Product(left, right) => {
+                        val recLeft = rec(left)
+                        val recRight = rec(right)
+                        unifyProvenance(relations)(
+                          recLeft,
+                          recRight) getOrElse ProductProvenance(
+                          recLeft,
+                          recRight)
+                      }
+
+                      case (_: IdentityPolicy.Retain) => actuals.head.provenance
+
+                      case IdentityPolicy.Synthesize => {
+                        if (actuals.head.provenance.isParametric)
+                          ParametricDynamicProvenance(
+                            actuals.head.provenance,
+                            currentId.getAndIncrement())
+                        else
+                          DynamicProvenance(currentId.getAndIncrement())
+                      }
+
+                      case IdentityPolicy.Strip => ValueProvenance
                     }
-
-                    case (_: IdentityPolicy.Retain) => actuals.head.provenance
-
-                    case IdentityPolicy.Synthesize => {
-                      if (actuals.head.provenance.isParametric)
-                        ParametricDynamicProvenance(
-                          actuals.head.provenance,
-                          currentId.getAndIncrement())
-                      else
-                        DynamicProvenance(currentId.getAndIncrement())
-                    }
-
-                    case IdentityPolicy.Strip => ValueProvenance
-                  }
                   rec(morph1.idPolicy)
                 }
               }
@@ -1021,72 +1025,73 @@ trait ProvenanceChecker extends parser.AST with Binder {
 
   def unifyProvenance(relations: Map[Provenance, Set[Provenance]])(
       p1: Provenance,
-      p2: Provenance): Option[Provenance] = (p1, p2) match {
-    case (p1, p2) if p1 == p2 => Some(p1)
+      p2: Provenance): Option[Provenance] =
+    (p1, p2) match {
+      case (p1, p2) if p1 == p2 => Some(p1)
 
-    case (p1, p2)
-        if pathExists(relations, p1, p2) || pathExists(relations, p2, p1) =>
-      Some(p1 & p2)
+      case (p1, p2)
+          if pathExists(relations, p1, p2) || pathExists(relations, p2, p1) =>
+        Some(p1 & p2)
 
-    case (NullProvenance, p) => Some(NullProvenance)
-    case (p, NullProvenance) => Some(NullProvenance)
+      case (NullProvenance, p) => Some(NullProvenance)
+      case (p, NullProvenance) => Some(NullProvenance)
 
-    case (UndefinedProvenance, _) => Some(UndefinedProvenance)
-    case (_, UndefinedProvenance) => Some(UndefinedProvenance)
+      case (UndefinedProvenance, _) => Some(UndefinedProvenance)
+      case (_, UndefinedProvenance) => Some(UndefinedProvenance)
 
-    case (ValueProvenance, p) => Some(p)
-    case (p, ValueProvenance) => Some(p)
+      case (ValueProvenance, p) => Some(p)
+      case (p, ValueProvenance) => Some(p)
 
-    case (ProductProvenance(left, right), p2) => {
-      val leftP = unifyProvenance(relations)(left, p2)
-      val rightP = unifyProvenance(relations)(right, p2)
+      case (ProductProvenance(left, right), p2) => {
+        val leftP = unifyProvenance(relations)(left, p2)
+        val rightP = unifyProvenance(relations)(right, p2)
 
-      val unionP = (leftP |@| rightP) {
-        case (p1, p2) => p1 & p2
+        val unionP = (leftP |@| rightP) {
+          case (p1, p2) => p1 & p2
+        }
+
+        lazy val unionLeft = leftP map { ProductProvenance(_, right) }
+        lazy val unionRight = rightP map { ProductProvenance(left, _) }
+
+        unionP orElse unionLeft orElse unionRight
       }
 
-      lazy val unionLeft = leftP map { ProductProvenance(_, right) }
-      lazy val unionRight = rightP map { ProductProvenance(left, _) }
+      case (p1, ProductProvenance(left, right)) => {
+        val leftP = unifyProvenance(relations)(p1, left)
+        val rightP = unifyProvenance(relations)(p1, right)
 
-      unionP orElse unionLeft orElse unionRight
-    }
+        val unionP = (leftP |@| rightP) {
+          case (p1, p2) => p1 & p2
+        }
 
-    case (p1, ProductProvenance(left, right)) => {
-      val leftP = unifyProvenance(relations)(p1, left)
-      val rightP = unifyProvenance(relations)(p1, right)
+        lazy val unionLeft = leftP map { ProductProvenance(_, right) }
+        lazy val unionRight = rightP map { ProductProvenance(left, _) }
 
-      val unionP = (leftP |@| rightP) {
-        case (p1, p2) => p1 & p2
+        unionP orElse unionLeft orElse unionRight
       }
 
-      lazy val unionLeft = leftP map { ProductProvenance(_, right) }
-      lazy val unionRight = rightP map { ProductProvenance(left, _) }
+      case (CoproductProvenance(left, right), p2) => {
+        val leftP = unifyProvenance(relations)(left, p2)
+        val rightP = unifyProvenance(relations)(right, p2)
 
-      unionP orElse unionLeft orElse unionRight
-    }
-
-    case (CoproductProvenance(left, right), p2) => {
-      val leftP = unifyProvenance(relations)(left, p2)
-      val rightP = unifyProvenance(relations)(right, p2)
-
-      val unionP = (leftP |@| rightP) {
-        case (p1, p2) => p1 | p2
+        val unionP = (leftP |@| rightP) {
+          case (p1, p2) => p1 | p2
+        }
+        unionP orElse leftP orElse rightP
       }
-      unionP orElse leftP orElse rightP
-    }
 
-    case (p1, CoproductProvenance(left, right)) => {
-      val leftP = unifyProvenance(relations)(p1, left)
-      val rightP = unifyProvenance(relations)(p1, right)
+      case (p1, CoproductProvenance(left, right)) => {
+        val leftP = unifyProvenance(relations)(p1, left)
+        val rightP = unifyProvenance(relations)(p1, right)
 
-      val unionP = (leftP |@| rightP) {
-        case (p1, p2) => p1 | p2
+        val unionP = (leftP |@| rightP) {
+          case (p1, p2) => p1 | p2
+        }
+        unionP orElse leftP orElse rightP
       }
-      unionP orElse leftP orElse rightP
-    }
 
-    case _ => None
-  }
+      case _ => None
+    }
 
   private def pathExists(
       graph: Map[Provenance, Set[Provenance]],
@@ -1130,134 +1135,138 @@ trait ProvenanceChecker extends parser.AST with Binder {
       id: Identifier,
       let: ast.Let,
       target: Provenance,
-      sub: Provenance): Provenance = target match {
-    case ParamProvenance(`id`, `let`) => sub
+      sub: Provenance): Provenance =
+    target match {
+      case ParamProvenance(`id`, `let`) => sub
 
-    case ParametricDynamicProvenance(prov, _)
-        if components(prov, ParamProvenance(`id`, `let`)) =>
-      DynamicProvenance(currentId.getAndIncrement())
+      case ParametricDynamicProvenance(prov, _)
+          if components(prov, ParamProvenance(`id`, `let`)) =>
+        DynamicProvenance(currentId.getAndIncrement())
 
-    case UnifiedProvenance(left, right) =>
-      UnifiedProvenance(
-        substituteParam(id, let, left, sub),
-        substituteParam(id, let, right, sub))
+      case UnifiedProvenance(left, right) =>
+        UnifiedProvenance(
+          substituteParam(id, let, left, sub),
+          substituteParam(id, let, right, sub))
 
-    case ProductProvenance(left, right) =>
-      ProductProvenance(
-        substituteParam(id, let, left, sub),
-        substituteParam(id, let, right, sub))
+      case ProductProvenance(left, right) =>
+        ProductProvenance(
+          substituteParam(id, let, left, sub),
+          substituteParam(id, let, right, sub))
 
-    case CoproductProvenance(left, right) =>
-      CoproductProvenance(
-        substituteParam(id, let, left, sub),
-        substituteParam(id, let, right, sub))
+      case CoproductProvenance(left, right) =>
+        CoproductProvenance(
+          substituteParam(id, let, left, sub),
+          substituteParam(id, let, right, sub))
 
-    case DerivedUnionProvenance(left, right) => {
-      val left2 = substituteParam(id, let, left, sub)
-      val right2 = substituteParam(id, let, right, sub)
+      case DerivedUnionProvenance(left, right) => {
+        val left2 = substituteParam(id, let, left, sub)
+        val right2 = substituteParam(id, let, right, sub)
 
-      if (left2 == right2)
-        left2
-      else if (!(left2.isParametric && right2.isParametric))
-        CoproductProvenance(left2, right2)
-      else
-        DerivedUnionProvenance(left2, right2)
-    }
-
-    case DerivedIntersectProvenance(left, right) => {
-      val left2 = substituteParam(id, let, left, sub)
-      val right2 = substituteParam(id, let, right, sub)
-
-      if (left2 == right2) {
-        left2
-      } else if (!(left2.isParametric && right2.isParametric)) {
-        val unified = unifyProvenance(Map())(left2, right2)
-        unified getOrElse CoproductProvenance(left2, right2)
-      } else {
-        DerivedIntersectProvenance(left2, right2)
+        if (left2 == right2)
+          left2
+        else if (!(left2.isParametric && right2.isParametric))
+          CoproductProvenance(left2, right2)
+        else
+          DerivedUnionProvenance(left2, right2)
       }
+
+      case DerivedIntersectProvenance(left, right) => {
+        val left2 = substituteParam(id, let, left, sub)
+        val right2 = substituteParam(id, let, right, sub)
+
+        if (left2 == right2) {
+          left2
+        } else if (!(left2.isParametric && right2.isParametric)) {
+          val unified = unifyProvenance(Map())(left2, right2)
+          unified getOrElse CoproductProvenance(left2, right2)
+        } else {
+          DerivedIntersectProvenance(left2, right2)
+        }
+      }
+
+      case DerivedDifferenceProvenance(left, right) => {
+        val left2 = substituteParam(id, let, left, sub)
+        val right2 = substituteParam(id, let, right, sub)
+
+        if (left2 == right2 || (!(left2.isParametric && right2.isParametric)))
+          left2
+        else
+          DerivedDifferenceProvenance(left2, right2)
+      }
+
+      case _ => target
     }
-
-    case DerivedDifferenceProvenance(left, right) => {
-      val left2 = substituteParam(id, let, left, sub)
-      val right2 = substituteParam(id, let, right, sub)
-
-      if (left2 == right2 || (!(left2.isParametric && right2.isParametric)))
-        left2
-      else
-        DerivedDifferenceProvenance(left2, right2)
-    }
-
-    case _ => target
-  }
 
   def resolveUnifications(relations: Map[Provenance, Set[Provenance]])(
-      prov: Provenance): Provenance = prov match {
-    case UnifiedProvenance(left, right)
-        if !left.isParametric && !right.isParametric => {
-      val left2 = resolveUnifications(relations)(left)
-      val right2 = resolveUnifications(relations)(right)
+      prov: Provenance): Provenance =
+    prov match {
+      case UnifiedProvenance(left, right)
+          if !left.isParametric && !right.isParametric => {
+        val left2 = resolveUnifications(relations)(left)
+        val right2 = resolveUnifications(relations)(right)
 
-      val optResult = unifyProvenance(relations)(left2, right2)
-      optResult getOrElse (left2 & right2)
+        val optResult = unifyProvenance(relations)(left2, right2)
+        optResult getOrElse (left2 & right2)
+      }
+
+      case UnifiedProvenance(left, right) => {
+        val left2 = resolveUnifications(relations)(left)
+        val right2 = resolveUnifications(relations)(right)
+        UnifiedProvenance(left2, right2)
+      }
+
+      case ProductProvenance(left, right) => {
+        val left2 = resolveUnifications(relations)(left)
+        val right2 = resolveUnifications(relations)(right)
+        left2 & right2
+      }
+
+      case CoproductProvenance(left, right) => {
+        val left2 = resolveUnifications(relations)(left)
+        val right2 = resolveUnifications(relations)(right)
+        left2 | right2
+      }
+
+      case DerivedUnionProvenance(left, right) => {
+        val left2 = resolveUnifications(relations)(left)
+        val right2 = resolveUnifications(relations)(right)
+        DerivedUnionProvenance(left2, right2)
+      }
+
+      case DerivedIntersectProvenance(left, right) => {
+        val left2 = resolveUnifications(relations)(left)
+        val right2 = resolveUnifications(relations)(right)
+        DerivedIntersectProvenance(left2, right2)
+      }
+
+      case DerivedDifferenceProvenance(left, right) => {
+        val left2 = resolveUnifications(relations)(left)
+        val right2 = resolveUnifications(relations)(right)
+        DerivedDifferenceProvenance(left2, right2)
+      }
+
+      case ParamProvenance(_, _) | ParametricDynamicProvenance(_, _) |
+          StaticProvenance(_) | DynamicProvenance(_) | ValueProvenance |
+          UndefinedProvenance | NullProvenance | InfiniteProvenance =>
+        prov
     }
-
-    case UnifiedProvenance(left, right) => {
-      val left2 = resolveUnifications(relations)(left)
-      val right2 = resolveUnifications(relations)(right)
-      UnifiedProvenance(left2, right2)
-    }
-
-    case ProductProvenance(left, right) => {
-      val left2 = resolveUnifications(relations)(left)
-      val right2 = resolveUnifications(relations)(right)
-      left2 & right2
-    }
-
-    case CoproductProvenance(left, right) => {
-      val left2 = resolveUnifications(relations)(left)
-      val right2 = resolveUnifications(relations)(right)
-      left2 | right2
-    }
-
-    case DerivedUnionProvenance(left, right) => {
-      val left2 = resolveUnifications(relations)(left)
-      val right2 = resolveUnifications(relations)(right)
-      DerivedUnionProvenance(left2, right2)
-    }
-
-    case DerivedIntersectProvenance(left, right) => {
-      val left2 = resolveUnifications(relations)(left)
-      val right2 = resolveUnifications(relations)(right)
-      DerivedIntersectProvenance(left2, right2)
-    }
-
-    case DerivedDifferenceProvenance(left, right) => {
-      val left2 = resolveUnifications(relations)(left)
-      val right2 = resolveUnifications(relations)(right)
-      DerivedDifferenceProvenance(left2, right2)
-    }
-
-    case ParamProvenance(_, _) | ParametricDynamicProvenance(_, _) |
-        StaticProvenance(_) | DynamicProvenance(_) | ValueProvenance |
-        UndefinedProvenance | NullProvenance | InfiniteProvenance =>
-      prov
-  }
 
   sealed trait Provenance {
-    def &(that: Provenance) = (this, that) match {
-      case (`that`, `that`)    => that
-      case (NullProvenance, _) => that
-      case (_, NullProvenance) => this
-      case _                   => ProductProvenance(this, that)
-    }
+    def &(that: Provenance) =
+      (this, that) match {
+        case (`that`, `that`)    => that
+        case (NullProvenance, _) => that
+        case (_, NullProvenance) => this
+        case _                   => ProductProvenance(this, that)
+      }
 
-    def |(that: Provenance) = (this, that) match {
-      case (`that`, `that`)    => that
-      case (NullProvenance, _) => NullProvenance
-      case (_, NullProvenance) => NullProvenance
-      case _                   => CoproductProvenance(this, that)
-    }
+    def |(that: Provenance) =
+      (this, that) match {
+        case (`that`, `that`)    => that
+        case (NullProvenance, _) => NullProvenance
+        case (_, NullProvenance) => NullProvenance
+        case _                   => CoproductProvenance(this, that)
+      }
 
     def isParametric: Boolean
 
@@ -1265,58 +1274,60 @@ trait ProvenanceChecker extends parser.AST with Binder {
 
     def cardinality: Option[Int]
 
-    private def associateLeft: Provenance = this match {
-      case UnifiedProvenance(_, _) =>
-        findChildren(
-          this,
-          true).toList sorted Provenance.order.toScalaOrdering reduceLeft UnifiedProvenance
+    private def associateLeft: Provenance =
+      this match {
+        case UnifiedProvenance(_, _) =>
+          findChildren(
+            this,
+            true).toList sorted Provenance.order.toScalaOrdering reduceLeft UnifiedProvenance
 
-      case ProductProvenance(_, _) =>
-        findChildren(
-          this,
-          false).toList sorted Provenance.order.toScalaOrdering reduceLeft ProductProvenance
+        case ProductProvenance(_, _) =>
+          findChildren(
+            this,
+            false).toList sorted Provenance.order.toScalaOrdering reduceLeft ProductProvenance
 
-      case CoproductProvenance(_, _) =>
-        findChildren(
-          this,
-          false).toList sorted Provenance.order.toScalaOrdering reduceLeft CoproductProvenance
+        case CoproductProvenance(_, _) =>
+          findChildren(
+            this,
+            false).toList sorted Provenance.order.toScalaOrdering reduceLeft CoproductProvenance
 
-      case DerivedUnionProvenance(_, _) =>
-        findChildren(
-          this,
-          false).toList sorted Provenance.order.toScalaOrdering reduceLeft DerivedUnionProvenance
+        case DerivedUnionProvenance(_, _) =>
+          findChildren(
+            this,
+            false).toList sorted Provenance.order.toScalaOrdering reduceLeft DerivedUnionProvenance
 
-      case DerivedIntersectProvenance(_, _) =>
-        findChildren(
-          this,
-          false).toList sorted Provenance.order.toScalaOrdering reduceLeft DerivedIntersectProvenance
+        case DerivedIntersectProvenance(_, _) =>
+          findChildren(
+            this,
+            false).toList sorted Provenance.order.toScalaOrdering reduceLeft DerivedIntersectProvenance
 
-      case DerivedDifferenceProvenance(_, _) =>
-        findChildren(
-          this,
-          false).toList sorted Provenance.order.toScalaOrdering reduceLeft DerivedDifferenceProvenance
+        case DerivedDifferenceProvenance(_, _) =>
+          findChildren(
+            this,
+            false).toList sorted Provenance.order.toScalaOrdering reduceLeft DerivedDifferenceProvenance
 
-      case prov => prov
-    }
+        case prov => prov
+      }
 
     // TODO is this too slow?
     private def findChildren(
         prov: Provenance,
-        unified: Boolean): Set[Provenance] = prov match {
-      case UnifiedProvenance(left, right) if unified =>
-        findChildren(left, unified) ++ findChildren(right, unified)
-      case ProductProvenance(left, right) if !unified =>
-        findChildren(left, unified) ++ findChildren(right, unified)
-      case CoproductProvenance(left, right) if !unified =>
-        findChildren(left, unified) ++ findChildren(right, unified)
-      case DerivedUnionProvenance(left, right) if !unified =>
-        findChildren(left, unified) ++ findChildren(right, unified)
-      case DerivedIntersectProvenance(left, right) if !unified =>
-        findChildren(left, unified) ++ findChildren(right, unified)
-      case DerivedDifferenceProvenance(left, right) if !unified =>
-        findChildren(left, unified) ++ findChildren(right, unified)
-      case _ => Set(prov)
-    }
+        unified: Boolean): Set[Provenance] =
+      prov match {
+        case UnifiedProvenance(left, right) if unified =>
+          findChildren(left, unified) ++ findChildren(right, unified)
+        case ProductProvenance(left, right) if !unified =>
+          findChildren(left, unified) ++ findChildren(right, unified)
+        case CoproductProvenance(left, right) if !unified =>
+          findChildren(left, unified) ++ findChildren(right, unified)
+        case DerivedUnionProvenance(left, right) if !unified =>
+          findChildren(left, unified) ++ findChildren(right, unified)
+        case DerivedIntersectProvenance(left, right) if !unified =>
+          findChildren(left, unified) ++ findChildren(right, unified)
+        case DerivedDifferenceProvenance(left, right) if !unified =>
+          findChildren(left, unified) ++ findChildren(right, unified)
+        case _ => Set(prov)
+      }
 
     def makeCanonical: Provenance = {
       this match {
@@ -1344,109 +1355,111 @@ trait ProvenanceChecker extends parser.AST with Binder {
   }
 
   object Provenance {
-    implicit def order: Order[Provenance] = new Order[Provenance] {
-      def order(p1: Provenance, p2: Provenance): Ordering = (p1, p2) match {
-        case (ParamProvenance(id1, let1), ParamProvenance(id2, let2)) => {
-          if (id1.id == id2.id) {
-            if (let1 == let2) EQ
-            else if (let1.loc.lineNum == let2.loc.lineNum) {
-              if (let1.loc.colNum == let2.loc.colNum) EQ // wtf??
-              else if (let1.loc.colNum < let2.loc.colNum) LT
+    implicit def order: Order[Provenance] =
+      new Order[Provenance] {
+        def order(p1: Provenance, p2: Provenance): Ordering =
+          (p1, p2) match {
+            case (ParamProvenance(id1, let1), ParamProvenance(id2, let2)) => {
+              if (id1.id == id2.id) {
+                if (let1 == let2) EQ
+                else if (let1.loc.lineNum == let2.loc.lineNum) {
+                  if (let1.loc.colNum == let2.loc.colNum) EQ // wtf??
+                  else if (let1.loc.colNum < let2.loc.colNum) LT
+                  else GT
+                } else if (let1.loc.lineNum < let2.loc.lineNum) LT
+                else GT
+              } else if (id1.id < id2.id) LT
               else GT
-            } else if (let1.loc.lineNum < let2.loc.lineNum) LT
-            else GT
-          } else if (id1.id < id2.id) LT
-          else GT
-        }
-        case (ParamProvenance(_, _), _) => GT
-        case (_, ParamProvenance(_, _)) => LT
+            }
+            case (ParamProvenance(_, _), _) => GT
+            case (_, ParamProvenance(_, _)) => LT
 
-        case (
-              ParametricDynamicProvenance(prov1, id1),
-              ParametricDynamicProvenance(prov2, id2)) => {
-          if (prov1 == prov2) {
-            if (id1 == id2) EQ
-            else if (id1 < id2) LT
-            else GT
-          } else {
-            prov1 ?|? prov2
+            case (
+                  ParametricDynamicProvenance(prov1, id1),
+                  ParametricDynamicProvenance(prov2, id2)) => {
+              if (prov1 == prov2) {
+                if (id1 == id2) EQ
+                else if (id1 < id2) LT
+                else GT
+              } else {
+                prov1 ?|? prov2
+              }
+            }
+            case (ParametricDynamicProvenance(_, _), _) => GT
+            case (_, ParametricDynamicProvenance(_, _)) => LT
+
+            case (
+                  DerivedUnionProvenance(left1, right1),
+                  DerivedUnionProvenance(left2, right2)) =>
+              (left1 ?|? left2) |+| (right1 ?|? right2)
+            case (DerivedUnionProvenance(_, _), _) => GT
+            case (_, DerivedUnionProvenance(_, _)) => LT
+
+            case (
+                  DerivedIntersectProvenance(left1, right1),
+                  DerivedIntersectProvenance(left2, right2)) =>
+              (left1 ?|? left2) |+| (right1 ?|? right2)
+            case (DerivedIntersectProvenance(_, _), _) => GT
+            case (_, DerivedIntersectProvenance(_, _)) => LT
+
+            case (
+                  DerivedDifferenceProvenance(left1, right1),
+                  DerivedDifferenceProvenance(left2, right2)) =>
+              (left1 ?|? left2) |+| (right1 ?|? right2)
+            case (DerivedDifferenceProvenance(_, _), _) => GT
+            case (_, DerivedDifferenceProvenance(_, _)) => LT
+
+            case (
+                  UnifiedProvenance(left1, right1),
+                  UnifiedProvenance(left2, right2)) =>
+              (left1 ?|? left2) |+| (right1 ?|? right2)
+            case (UnifiedProvenance(_, _), _) => GT
+            case (_, UnifiedProvenance(_, _)) => LT
+
+            case (
+                  ProductProvenance(left1, right1),
+                  ProductProvenance(left2, right2)) =>
+              (left1 ?|? left2) |+| (right1 ?|? right2)
+            case (ProductProvenance(_, _), _) => GT
+            case (_, ProductProvenance(_, _)) => LT
+
+            case (
+                  CoproductProvenance(left1, right1),
+                  CoproductProvenance(left2, right2)) =>
+              (left1 ?|? left2) |+| (right1 ?|? right2)
+            case (CoproductProvenance(_, _), _) => GT
+            case (_, CoproductProvenance(_, _)) => LT
+
+            case (StaticProvenance(v1), StaticProvenance(v2)) => {
+              if (v1 == v2) EQ
+              else if (v1 < v2) LT
+              else GT
+            }
+            case (StaticProvenance(_), _) => GT
+            case (_, StaticProvenance(_)) => LT
+
+            case (DynamicProvenance(v1), DynamicProvenance(v2)) => {
+              if (v1 == v2) EQ
+              else if (v1 < v2) LT
+              else GT
+            }
+            case (DynamicProvenance(_), _) => GT
+            case (_, DynamicProvenance(_)) => LT
+
+            case (ValueProvenance, _) => GT
+            case (_, ValueProvenance) => LT
+
+            case (UndefinedProvenance, UndefinedProvenance) => EQ
+            case (UndefinedProvenance, _)                   => GT
+            case (_, UndefinedProvenance)                   => LT
+
+            case (InfiniteProvenance, InfiniteProvenance) => EQ
+            case (InfiniteProvenance, _)                  => GT
+            case (_, InfiniteProvenance)                  => LT
+
+            case (NullProvenance, NullProvenance) => EQ
           }
-        }
-        case (ParametricDynamicProvenance(_, _), _) => GT
-        case (_, ParametricDynamicProvenance(_, _)) => LT
-
-        case (
-              DerivedUnionProvenance(left1, right1),
-              DerivedUnionProvenance(left2, right2)) =>
-          (left1 ?|? left2) |+| (right1 ?|? right2)
-        case (DerivedUnionProvenance(_, _), _) => GT
-        case (_, DerivedUnionProvenance(_, _)) => LT
-
-        case (
-              DerivedIntersectProvenance(left1, right1),
-              DerivedIntersectProvenance(left2, right2)) =>
-          (left1 ?|? left2) |+| (right1 ?|? right2)
-        case (DerivedIntersectProvenance(_, _), _) => GT
-        case (_, DerivedIntersectProvenance(_, _)) => LT
-
-        case (
-              DerivedDifferenceProvenance(left1, right1),
-              DerivedDifferenceProvenance(left2, right2)) =>
-          (left1 ?|? left2) |+| (right1 ?|? right2)
-        case (DerivedDifferenceProvenance(_, _), _) => GT
-        case (_, DerivedDifferenceProvenance(_, _)) => LT
-
-        case (
-              UnifiedProvenance(left1, right1),
-              UnifiedProvenance(left2, right2)) =>
-          (left1 ?|? left2) |+| (right1 ?|? right2)
-        case (UnifiedProvenance(_, _), _) => GT
-        case (_, UnifiedProvenance(_, _)) => LT
-
-        case (
-              ProductProvenance(left1, right1),
-              ProductProvenance(left2, right2)) =>
-          (left1 ?|? left2) |+| (right1 ?|? right2)
-        case (ProductProvenance(_, _), _) => GT
-        case (_, ProductProvenance(_, _)) => LT
-
-        case (
-              CoproductProvenance(left1, right1),
-              CoproductProvenance(left2, right2)) =>
-          (left1 ?|? left2) |+| (right1 ?|? right2)
-        case (CoproductProvenance(_, _), _) => GT
-        case (_, CoproductProvenance(_, _)) => LT
-
-        case (StaticProvenance(v1), StaticProvenance(v2)) => {
-          if (v1 == v2) EQ
-          else if (v1 < v2) LT
-          else GT
-        }
-        case (StaticProvenance(_), _) => GT
-        case (_, StaticProvenance(_)) => LT
-
-        case (DynamicProvenance(v1), DynamicProvenance(v2)) => {
-          if (v1 == v2) EQ
-          else if (v1 < v2) LT
-          else GT
-        }
-        case (DynamicProvenance(_), _) => GT
-        case (_, DynamicProvenance(_)) => LT
-
-        case (ValueProvenance, _) => GT
-        case (_, ValueProvenance) => LT
-
-        case (UndefinedProvenance, UndefinedProvenance) => EQ
-        case (UndefinedProvenance, _)                   => GT
-        case (_, UndefinedProvenance)                   => LT
-
-        case (InfiniteProvenance, InfiniteProvenance) => EQ
-        case (InfiniteProvenance, _)                  => GT
-        case (_, InfiniteProvenance)                  => LT
-
-        case (NullProvenance, NullProvenance) => EQ
       }
-    }
   }
 
   case class ParamProvenance(id: Identifier, let: ast.Let) extends Provenance {

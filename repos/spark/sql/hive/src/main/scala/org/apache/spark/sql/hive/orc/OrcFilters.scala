@@ -79,15 +79,16 @@ private[orc] object OrcFilters extends Logging {
       builder: Builder): Option[Builder] = {
     def newBuilder = SearchArgumentFactory.newBuilder()
 
-    def isSearchableLiteral(value: Any): Boolean = value match {
-      // These are types recognized by the `SearchArgumentImpl.BuilderImpl.boxLiteral()` method.
-      case _: String | _: Long | _: Double | _: Byte | _: Short | _: Integer |
-          _: Float =>
-        true
-      case _: DateWritable | _: HiveDecimal | _: HiveChar | _: HiveVarchar =>
-        true
-      case _ => false
-    }
+    def isSearchableLiteral(value: Any): Boolean =
+      value match {
+        // These are types recognized by the `SearchArgumentImpl.BuilderImpl.boxLiteral()` method.
+        case _: String | _: Long | _: Double | _: Byte | _: Short | _: Integer |
+            _: Float =>
+          true
+        case _: DateWritable | _: HiveDecimal | _: HiveChar | _: HiveVarchar =>
+          true
+        case _ => false
+      }
 
     expression match {
       case And(left, right) =>

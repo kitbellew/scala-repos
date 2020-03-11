@@ -57,13 +57,15 @@ class CoalescedPartitioner(
     parentPartitionMapping(parent.getPartition(key))
   }
 
-  override def equals(other: Any): Boolean = other match {
-    case c: CoalescedPartitioner =>
-      c.parent == parent && Arrays
-        .equals(c.partitionStartIndices, partitionStartIndices)
-    case _ =>
-      false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case c: CoalescedPartitioner =>
+        c.parent == parent && Arrays.equals(
+          c.partitionStartIndices,
+          partitionStartIndices)
+      case _ =>
+        false
+    }
 }
 
 private[spark] class CustomShuffledRDDPartition(

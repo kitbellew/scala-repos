@@ -110,16 +110,17 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
 
     // The qualified identifier immediately following the `macro` keyword
     // may only refer to a method.
-    def isInMacroDef = getContext match {
-      case _: ScMacroDefinition =>
-        prevSiblings.exists {
-          case l: LeafPsiElement
-              if l.getNode.getElementType == ScalaTokenTypes.kMACRO =>
-            true
-          case _ => false
-        }
-      case _ => false
-    }
+    def isInMacroDef =
+      getContext match {
+        case _: ScMacroDefinition =>
+          prevSiblings.exists {
+            case l: LeafPsiElement
+                if l.getNode.getElementType == ScalaTokenTypes.kMACRO =>
+              true
+            case _ => false
+          }
+        case _ => false
+      }
 
     val result = getContext match {
       case _: ScStableCodeReferenceElement => stableQualRef

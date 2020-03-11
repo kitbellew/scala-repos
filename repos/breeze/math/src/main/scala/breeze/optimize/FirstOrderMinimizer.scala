@@ -206,22 +206,23 @@ object FirstOrderMinimizer {
   object ConvergenceCheck {
     implicit def fromPartialFunction[T](
         pf: PartialFunction[State[T, _, _], ConvergenceReason])
-        : ConvergenceCheck[T] = new ConvergenceCheck[T] {
-      override type Info = Unit
+        : ConvergenceCheck[T] =
+      new ConvergenceCheck[T] {
+        override type Info = Unit
 
-      def update(
-          newX: T,
-          newGrad: T,
-          newVal: Double,
-          oldState: State[T, _, _],
-          oldInfo: Info): Info = oldInfo
+        def update(
+            newX: T,
+            newGrad: T,
+            newVal: Double,
+            oldState: State[T, _, _],
+            oldInfo: Info): Info = oldInfo
 
-      override def apply(
-          state: State[T, _, _],
-          info: Info): Option[ConvergenceReason] = pf.lift(state)
+        override def apply(
+            state: State[T, _, _],
+            info: Info): Option[ConvergenceReason] = pf.lift(state)
 
-      override def initialInfo: Info = ()
-    }
+        override def initialInfo: Info = ()
+      }
   }
 
   case class SequenceConvergenceCheck[T](

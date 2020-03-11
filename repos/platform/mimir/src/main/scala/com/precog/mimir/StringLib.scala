@@ -112,10 +112,11 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       //@deprecated, see the DEPRECATED comment in StringLib
       val tpe = UnaryOperationType(StrAndDateT, JNumberT)
       private def build(c: StrColumn) = new StrFrom.S(c, _ != null, f)
-      def f1(ctx: MorphContext): F1 = CF1P("builtin::str::op1ss::" + name) {
-        case c: StrColumn  => build(c)
-        case c: DateColumn => build(dateToStrCol(c))
-      }
+      def f1(ctx: MorphContext): F1 =
+        CF1P("builtin::str::op1ss::" + name) {
+          case c: StrColumn  => build(c)
+          case c: DateColumn => build(dateToStrCol(c))
+        }
     }
 
     object trim extends Op1SS("trim", _.trim)
@@ -129,11 +130,12 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
     object isEmpty extends Op1F1(StringNamespace, "isEmpty") {
       //@deprecated, see the DEPRECATED comment in StringLib
       val tpe = UnaryOperationType(StrAndDateT, JBooleanT)
-      def f1(ctx: MorphContext): F1 = CF1P("builtin::str::isEmpty") {
-        case c: StrColumn => new BoolFrom.S(c, _ != null, _.isEmpty)
-        case c: DateColumn =>
-          new BoolFrom.S(dateToStrCol(c), _ != null, _ => false)
-      }
+      def f1(ctx: MorphContext): F1 =
+        CF1P("builtin::str::isEmpty") {
+          case c: StrColumn => new BoolFrom.S(c, _ != null, _.isEmpty)
+          case c: DateColumn =>
+            new BoolFrom.S(dateToStrCol(c), _ != null, _ => false)
+        }
     }
 
     def neitherNull(x: String, y: String) = x != null && y != null
@@ -142,10 +144,11 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       //@deprecated, see the DEPRECATED comment in StringLib
       val tpe = UnaryOperationType(StrAndDateT, JNumberT)
       private def build(c: StrColumn) = new LongFrom.S(c, _ != null, _.length)
-      def f1(ctx: MorphContext): F1 = CF1P("builtin::str::length") {
-        case c: StrColumn  => build(c)
-        case c: DateColumn => build(dateToStrCol(c))
-      }
+      def f1(ctx: MorphContext): F1 =
+        CF1P("builtin::str::length") {
+          case c: StrColumn  => build(c)
+          case c: DateColumn => build(dateToStrCol(c))
+        }
     }
 
     class Op2SSB(name: String, f: (String, String) => Boolean)
@@ -154,13 +157,14 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       val tpe = BinaryOperationType(StrAndDateT, StrAndDateT, JBooleanT)
       private def build(c1: StrColumn, c2: StrColumn) =
         new BoolFrom.SS(c1, c2, neitherNull, f)
-      def f2(ctx: MorphContext): F2 = CF2P("builtin::str::op2ss" + name) {
-        case (c1: StrColumn, c2: StrColumn)  => build(c1, c2)
-        case (c1: StrColumn, c2: DateColumn) => build(c1, dateToStrCol(c2))
-        case (c1: DateColumn, c2: StrColumn) => build(dateToStrCol(c1), c2)
-        case (c1: DateColumn, c2: DateColumn) =>
-          build(dateToStrCol(c1), dateToStrCol(c2))
-      }
+      def f2(ctx: MorphContext): F2 =
+        CF2P("builtin::str::op2ss" + name) {
+          case (c1: StrColumn, c2: StrColumn)  => build(c1, c2)
+          case (c1: StrColumn, c2: DateColumn) => build(c1, dateToStrCol(c2))
+          case (c1: DateColumn, c2: StrColumn) => build(dateToStrCol(c1), c2)
+          case (c1: DateColumn, c2: DateColumn) =>
+            build(dateToStrCol(c1), dateToStrCol(c2))
+        }
     }
 
     // FIXME: I think it's a bad idea to override Object.equals here...
@@ -227,20 +231,21 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
     object concat extends Op2F2(StringNamespace, "concat") {
       //@deprecated, see the DEPRECATED comment in StringLib
       val tpe = BinaryOperationType(StrAndDateT, StrAndDateT, JTextT)
-      def f2(ctx: MorphContext): F2 = CF2P("builtin::str::concat") {
-        case (c1: StrColumn, c2: StrColumn) =>
-          new StrFrom.SS(c1, c2, neitherNull, _ concat _)
-        case (c1: DateColumn, c2: StrColumn) =>
-          new StrFrom.SS(dateToStrCol(c1), c2, neitherNull, _ concat _)
-        case (c1: StrColumn, c2: DateColumn) =>
-          new StrFrom.SS(c1, dateToStrCol(c2), neitherNull, _ concat _)
-        case (c1: DateColumn, c2: DateColumn) =>
-          new StrFrom.SS(
-            dateToStrCol(c1),
-            dateToStrCol(c2),
-            neitherNull,
-            _ concat _)
-      }
+      def f2(ctx: MorphContext): F2 =
+        CF2P("builtin::str::concat") {
+          case (c1: StrColumn, c2: StrColumn) =>
+            new StrFrom.SS(c1, c2, neitherNull, _ concat _)
+          case (c1: DateColumn, c2: StrColumn) =>
+            new StrFrom.SS(dateToStrCol(c1), c2, neitherNull, _ concat _)
+          case (c1: StrColumn, c2: DateColumn) =>
+            new StrFrom.SS(c1, dateToStrCol(c2), neitherNull, _ concat _)
+          case (c1: DateColumn, c2: DateColumn) =>
+            new StrFrom.SS(
+              dateToStrCol(c1),
+              dateToStrCol(c2),
+              neitherNull,
+              _ concat _)
+        }
     }
 
     class Op2SLL(
@@ -250,41 +255,42 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         extends Op2F2(StringNamespace, name) {
       //@deprecated, see the DEPRECATED comment in StringLib
       val tpe = BinaryOperationType(StrAndDateT, JNumberT, JNumberT)
-      def f2(ctx: MorphContext): F2 = CF2P("builtin::str::op2sll::" + name) {
-        case (c1: StrColumn, c2: DoubleColumn) =>
-          new LongFrom.SD(
-            c1,
-            c2,
-            (s, n) => (n % 1 == 0) && defined(s, n.toLong),
-            (s, n) => f(s, n.toLong))
+      def f2(ctx: MorphContext): F2 =
+        CF2P("builtin::str::op2sll::" + name) {
+          case (c1: StrColumn, c2: DoubleColumn) =>
+            new LongFrom.SD(
+              c1,
+              c2,
+              (s, n) => (n % 1 == 0) && defined(s, n.toLong),
+              (s, n) => f(s, n.toLong))
 
-        case (c1: StrColumn, c2: LongColumn) =>
-          new LongFrom.SL(c1, c2, defined, f)
+          case (c1: StrColumn, c2: LongColumn) =>
+            new LongFrom.SL(c1, c2, defined, f)
 
-        case (c1: StrColumn, c2: NumColumn) =>
-          new LongFrom.SN(
-            c1,
-            c2,
-            (s, n) => (n % 1 == 0) && defined(s, n.toLong),
-            (s, n) => f(s, n.toLong))
+          case (c1: StrColumn, c2: NumColumn) =>
+            new LongFrom.SN(
+              c1,
+              c2,
+              (s, n) => (n % 1 == 0) && defined(s, n.toLong),
+              (s, n) => f(s, n.toLong))
 
-        case (c1: DateColumn, c2: DoubleColumn) =>
-          new LongFrom.SD(
-            dateToStrCol(c1),
-            c2,
-            (s, n) => (n % 1 == 0) && defined(s, n.toLong),
-            (s, n) => f(s, n.toLong))
+          case (c1: DateColumn, c2: DoubleColumn) =>
+            new LongFrom.SD(
+              dateToStrCol(c1),
+              c2,
+              (s, n) => (n % 1 == 0) && defined(s, n.toLong),
+              (s, n) => f(s, n.toLong))
 
-        case (c1: DateColumn, c2: LongColumn) =>
-          new LongFrom.SL(dateToStrCol(c1), c2, defined, f)
+          case (c1: DateColumn, c2: LongColumn) =>
+            new LongFrom.SL(dateToStrCol(c1), c2, defined, f)
 
-        case (c1: DateColumn, c2: NumColumn) =>
-          new LongFrom.SN(
-            dateToStrCol(c1),
-            c2,
-            (s, n) => (n % 1 == 0) && defined(s, n.toLong),
-            (s, n) => f(s, n.toLong))
-      }
+          case (c1: DateColumn, c2: NumColumn) =>
+            new LongFrom.SN(
+              dateToStrCol(c1),
+              c2,
+              (s, n) => (n % 1 == 0) && defined(s, n.toLong),
+              (s, n) => f(s, n.toLong))
+        }
     }
 
     object codePointAt
@@ -303,41 +309,46 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         extends Op2F2(StringNamespace, name) {
       //@deprecated, see the DEPRECATED comment in StringLib
       val tpe = BinaryOperationType(StrAndDateT, JNumberT, JTextT)
-      def f2(ctx: MorphContext): F2 = CF2P("builtin::str::substring::" + name) {
-        case (c1: StrColumn, c2: LongColumn) =>
-          new StrFrom.SL(c1, c2, (s, n) => n >= 0, { (s, n) => f(s, n.toInt) })
-        case (c1: StrColumn, c2: DoubleColumn) =>
-          new StrFrom.SD(
-            c1,
-            c2,
-            (s, n) => n >= 0 && (n % 1 == 0),
-            { (s, n) => f(s, n.toInt) })
-        case (c1: StrColumn, c2: NumColumn) =>
-          new StrFrom.SN(
-            c1,
-            c2,
-            (s, n) => n >= 0 && (n % 1 == 0),
-            { (s, n) => f(s, n.toInt) })
+      def f2(ctx: MorphContext): F2 =
+        CF2P("builtin::str::substring::" + name) {
+          case (c1: StrColumn, c2: LongColumn) =>
+            new StrFrom.SL(
+              c1,
+              c2,
+              (s, n) => n >= 0,
+              { (s, n) => f(s, n.toInt) })
+          case (c1: StrColumn, c2: DoubleColumn) =>
+            new StrFrom.SD(
+              c1,
+              c2,
+              (s, n) => n >= 0 && (n % 1 == 0),
+              { (s, n) => f(s, n.toInt) })
+          case (c1: StrColumn, c2: NumColumn) =>
+            new StrFrom.SN(
+              c1,
+              c2,
+              (s, n) => n >= 0 && (n % 1 == 0),
+              { (s, n) => f(s, n.toInt) })
 
-        case (c1: DateColumn, c2: LongColumn) =>
-          new StrFrom.SL(
-            dateToStrCol(c1),
-            c2,
-            (s, n) => n >= 0,
-            { (s, n) => f(s, n.toInt) })
-        case (c1: DateColumn, c2: DoubleColumn) =>
-          new StrFrom.SD(
-            dateToStrCol(c1),
-            c2,
-            (s, n) => n >= 0 && (n % 1 == 0),
-            { (s, n) => f(s, n.toInt) })
-        case (c1: DateColumn, c2: NumColumn) =>
-          new StrFrom.SN(
-            dateToStrCol(c1),
-            c2,
-            (s, n) => n >= 0 && (n % 1 == 0),
-            { (s, n) => f(s, n.toInt) })
-      }
+          case (c1: DateColumn, c2: LongColumn) =>
+            new StrFrom.SL(
+              dateToStrCol(c1),
+              c2,
+              (s, n) => n >= 0,
+              { (s, n) => f(s, n.toInt) })
+          case (c1: DateColumn, c2: DoubleColumn) =>
+            new StrFrom.SD(
+              dateToStrCol(c1),
+              c2,
+              (s, n) => n >= 0 && (n % 1 == 0),
+              { (s, n) => f(s, n.toInt) })
+          case (c1: DateColumn, c2: NumColumn) =>
+            new StrFrom.SN(
+              dateToStrCol(c1),
+              c2,
+              (s, n) => n >= 0 && (n % 1 == 0),
+              { (s, n) => f(s, n.toInt) })
+        }
     }
 
     object takeLeft
@@ -364,16 +375,17 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         extends Op2F2(StringNamespace, name) {
       //@deprecated, see the DEPRECATED comment in StringLib
       val tpe = BinaryOperationType(StrAndDateT, StrAndDateT, JNumberT)
-      def f2(ctx: MorphContext): F2 = CF2P("builtin::str::op2ssl::" + name) {
-        case (c1: StrColumn, c2: StrColumn) =>
-          new LongFrom.SS(c1, c2, neitherNull, f)
-        case (c1: DateColumn, c2: StrColumn) =>
-          new LongFrom.SS(dateToStrCol(c1), c2, neitherNull, f)
-        case (c1: StrColumn, c2: DateColumn) =>
-          new LongFrom.SS(c1, dateToStrCol(c2), neitherNull, f)
-        case (c1: DateColumn, c2: DateColumn) =>
-          new LongFrom.SS(dateToStrCol(c1), dateToStrCol(c2), neitherNull, f)
-      }
+      def f2(ctx: MorphContext): F2 =
+        CF2P("builtin::str::op2ssl::" + name) {
+          case (c1: StrColumn, c2: StrColumn) =>
+            new LongFrom.SS(c1, c2, neitherNull, f)
+          case (c1: DateColumn, c2: StrColumn) =>
+            new LongFrom.SS(dateToStrCol(c1), c2, neitherNull, f)
+          case (c1: StrColumn, c2: DateColumn) =>
+            new LongFrom.SS(c1, dateToStrCol(c2), neitherNull, f)
+          case (c1: DateColumn, c2: DateColumn) =>
+            new LongFrom.SS(dateToStrCol(c1), dateToStrCol(c2), neitherNull, f)
+        }
     }
 
     object compareTo extends Op2SSL("compareTo", _ compareTo _) {
@@ -402,40 +414,43 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       //@deprecated, see the DEPRECATED comment in StringLib
       val tpe = UnaryOperationType(StrAndDateT, JNumberT)
 
-      private def build(c: StrColumn) = new Map1Column(c) with NumColumn {
-        override def isDefinedAt(row: Int): Boolean = {
-          if (!super.isDefinedAt(row)) return false
-          val s = c(row)
-          s != null && decPattern.matcher(s).matches
+      private def build(c: StrColumn) =
+        new Map1Column(c) with NumColumn {
+          override def isDefinedAt(row: Int): Boolean = {
+            if (!super.isDefinedAt(row)) return false
+            val s = c(row)
+            s != null && decPattern.matcher(s).matches
+          }
+
+          def apply(row: Int) = BigDecimal(c(row))
         }
 
-        def apply(row: Int) = BigDecimal(c(row))
-      }
-
-      def f1(ctx: MorphContext): F1 = CF1P("builtin::str::parseNum") {
-        case c: StrColumn  => build(c)
-        case c: DateColumn => build(dateToStrCol(c))
-      }
+      def f1(ctx: MorphContext): F1 =
+        CF1P("builtin::str::parseNum") {
+          case c: StrColumn  => build(c)
+          case c: DateColumn => build(dateToStrCol(c))
+        }
     }
 
     object numToString extends Op1F1(StringNamespace, "numToString") {
       val tpe = UnaryOperationType(JNumberT, JTextT)
-      def f1(ctx: MorphContext): F1 = CF1P("builtin::str::numToString") {
-        case c: LongColumn => new StrFrom.L(c, _ => true, _.toString)
-        case c: DoubleColumn => {
-          new StrFrom.D(
-            c,
-            _ => true,
-            { d =>
-              val back = d.toString
-              if (back.endsWith(".0"))
-                back.substring(0, back.length - 2)
-              else
-                back
-            })
+      def f1(ctx: MorphContext): F1 =
+        CF1P("builtin::str::numToString") {
+          case c: LongColumn => new StrFrom.L(c, _ => true, _.toString)
+          case c: DoubleColumn => {
+            new StrFrom.D(
+              c,
+              _ => true,
+              { d =>
+                val back = d.toString
+                if (back.endsWith(".0"))
+                  back.substring(0, back.length - 2)
+                else
+                  back
+              })
+          }
+          case c: NumColumn => new StrFrom.N(c, _ => true, _.toString)
         }
-        case c: NumColumn => new StrFrom.N(c, _ => true, _.toString)
-      }
     }
 
     object split extends Op2(StringNamespace, "split") with Op2Array {
@@ -459,13 +474,14 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           def apply(row: Int): Long = Levenshtein.distance(c1(row), c2(row))
         }
 
-      def f2(ctx: MorphContext): F2 = CF2P("builtin::str::parseNum") {
-        case (c1: StrColumn, c2: StrColumn)  => build(c1, c2)
-        case (c1: DateColumn, c2: StrColumn) => build(dateToStrCol(c1), c2)
-        case (c1: StrColumn, c2: DateColumn) => build(c1, dateToStrCol(c2))
-        case (c1: DateColumn, c2: DateColumn) =>
-          build(dateToStrCol(c1), dateToStrCol(c2))
-      }
+      def f2(ctx: MorphContext): F2 =
+        CF2P("builtin::str::parseNum") {
+          case (c1: StrColumn, c2: StrColumn)  => build(c1, c2)
+          case (c1: DateColumn, c2: StrColumn) => build(dateToStrCol(c1), c2)
+          case (c1: StrColumn, c2: DateColumn) => build(c1, dateToStrCol(c2))
+          case (c1: DateColumn, c2: DateColumn) =>
+            build(dateToStrCol(c1), dateToStrCol(c2))
+        }
     }
 
     object splitRegex extends Op2(StringNamespace, "splitRegex") with Op2Array {

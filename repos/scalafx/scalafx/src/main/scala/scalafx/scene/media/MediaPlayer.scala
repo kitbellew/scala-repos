@@ -141,11 +141,12 @@ object MediaPlayer {
     */
   val Indefinite: Int = jfxsm.MediaPlayer.INDEFINITE
 
-  private def runnable(op: => Unit): Runnable = new Runnable {
-    def run() {
-      op
+  private def runnable(op: => Unit): Runnable =
+    new Runnable {
+      def run() {
+        op
+      }
     }
-  }
 }
 
 class MediaPlayer(override val delegate: jfxsm.MediaPlayer)

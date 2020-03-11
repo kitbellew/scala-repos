@@ -44,15 +44,16 @@ final class Semantics private (
       productionMode = true)
   }
 
-  override def equals(that: Any): Boolean = that match {
-    case that: Semantics =>
-      this.asInstanceOfs == that.asInstanceOfs &&
-        this.moduleInit == that.moduleInit &&
-        this.strictFloats == that.strictFloats &&
-        this.productionMode == that.productionMode
-    case _ =>
-      false
-  }
+  override def equals(that: Any): Boolean =
+    that match {
+      case that: Semantics =>
+        this.asInstanceOfs == that.asInstanceOfs &&
+          this.moduleInit == that.moduleInit &&
+          this.strictFloats == that.strictFloats &&
+          this.productionMode == that.productionMode
+      case _ =>
+        false
+    }
 
   override def hashCode(): Int = {
     import scala.util.hashing.MurmurHash3._
@@ -74,12 +75,13 @@ final class Semantics private (
   }
 
   /** Checks whether the given semantics setting is Java compliant */
-  def isCompliant(name: String): Boolean = name match {
-    case "asInstanceOfs" => asInstanceOfs == CheckedBehavior.Compliant
-    case "moduleInit"    => moduleInit == CheckedBehavior.Compliant
-    case "strictFloats"  => strictFloats
-    case _               => false
-  }
+  def isCompliant(name: String): Boolean =
+    name match {
+      case "asInstanceOfs" => asInstanceOfs == CheckedBehavior.Compliant
+      case "moduleInit"    => moduleInit == CheckedBehavior.Compliant
+      case "strictFloats"  => strictFloats
+      case _               => false
+    }
 
   /** Retrieve a list of semantics which are set to compliant */
   def compliants: List[String] = {

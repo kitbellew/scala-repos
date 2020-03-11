@@ -31,9 +31,8 @@ object nat {
 
     type Aux[A <: Nat, B <: Nat] = Pred[A] { type Out = B }
 
-    implicit def pred[B <: Nat]: Aux[Succ[B], B] = new Pred[Succ[B]] {
-      type Out = B
-    }
+    implicit def pred[B <: Nat]: Aux[Succ[B], B] =
+      new Pred[Succ[B]] { type Out = B }
   }
 
   /**
@@ -68,9 +67,8 @@ object nat {
 
     type Aux[A <: Nat, B <: Nat, C <: Nat] = Diff[A, B] { type Out = C }
 
-    implicit def diff1[A <: Nat]: Aux[A, _0, A] = new Diff[A, _0] {
-      type Out = A
-    }
+    implicit def diff1[A <: Nat]: Aux[A, _0, A] =
+      new Diff[A, _0] { type Out = A }
     implicit def diff2[A <: Nat, B <: Nat](
         implicit diff: Diff[A, B]): Aux[Succ[A], Succ[B], diff.Out] =
       new Diff[Succ[A], Succ[B]] { type Out = diff.Out }
@@ -89,14 +87,12 @@ object nat {
 
     type Aux[A <: Nat, B <: Nat, C <: Nat] = Prod[A, B] { type Out = C }
 
-    implicit def prod1[B <: Nat]: Aux[_0, B, _0] = new Prod[_0, B] {
-      type Out = _0
-    }
+    implicit def prod1[B <: Nat]: Aux[_0, B, _0] =
+      new Prod[_0, B] { type Out = _0 }
     implicit def prod2[A <: Nat, B <: Nat, C <: Nat](implicit
         prod: Prod.Aux[A, B, C],
-        sum: Sum[B, C]): Aux[Succ[A], B, sum.Out] = new Prod[Succ[A], B] {
-      type Out = sum.Out
-    }
+        sum: Sum[B, C]): Aux[Succ[A], B, sum.Out] =
+      new Prod[Succ[A], B] { type Out = sum.Out }
   }
 
   /**
@@ -114,9 +110,8 @@ object nat {
 
     type Aux[A <: Nat, B <: Nat, C <: Nat] = Div[A, B] { type Out = C }
 
-    implicit def div1[A <: Nat]: Aux[_0, A, _0] = new Div[_0, A] {
-      type Out = _0
-    }
+    implicit def div1[A <: Nat]: Aux[_0, A, _0] =
+      new Div[_0, A] { type Out = _0 }
 
     implicit def div2[A <: Nat, B <: Nat](implicit lt: A < B): Aux[A, B, _0] =
       new Div[A, B] { type Out = _0 }
@@ -227,9 +222,8 @@ object nat {
     type Aux[A <: Nat, B <: Nat, C <: Nat] = Min[A, B] { type Out = C }
 
     implicit def minAux0[A <: Nat, B <: Nat, C <: Nat](
-        implicit lteq: LTEq[A, B]): Aux[A, B, A] = new Min[A, B] {
-      type Out = A
-    }
+        implicit lteq: LTEq[A, B]): Aux[A, B, A] =
+      new Min[A, B] { type Out = A }
     implicit def minAux1[A <: Nat, B <: Nat, C <: Nat](
         implicit lteq: LT[B, A]): Aux[A, B, B] = new Min[A, B] { type Out = B }
   }
@@ -248,9 +242,8 @@ object nat {
     type Aux[A <: Nat, B <: Nat, C <: Nat] = Max[A, B] { type Out = C }
 
     implicit def maxAux0[A <: Nat, B <: Nat, C <: Nat](
-        implicit lteq: LTEq[A, B]): Aux[A, B, B] = new Max[A, B] {
-      type Out = B
-    }
+        implicit lteq: LTEq[A, B]): Aux[A, B, B] =
+      new Max[A, B] { type Out = B }
     implicit def maxAux1[A <: Nat, B <: Nat, C <: Nat](
         implicit lteq: LT[B, A]): Aux[A, B, A] = new Max[A, B] { type Out = A }
   }
@@ -270,17 +263,14 @@ object nat {
 
     type Aux[N <: Nat, X <: Nat, Z <: Nat] = Pow[N, X] { type Out = Z }
 
-    implicit def pow1[A <: Nat]: Aux[Succ[A], _0, _0] = new Pow[Succ[A], _0] {
-      type Out = _0
-    }
-    implicit def pow2[A <: Nat]: Aux[_0, Succ[A], _1] = new Pow[_0, Succ[A]] {
-      type Out = _1
-    }
+    implicit def pow1[A <: Nat]: Aux[Succ[A], _0, _0] =
+      new Pow[Succ[A], _0] { type Out = _0 }
+    implicit def pow2[A <: Nat]: Aux[_0, Succ[A], _1] =
+      new Pow[_0, Succ[A]] { type Out = _1 }
     implicit def pow3[N <: Nat, X <: Nat, Z <: Nat, Y <: Nat](implicit
         ev: Pow.Aux[N, X, Z],
-        ev2: Prod.Aux[Z, X, Y]): Aux[Succ[N], X, Y] = new Pow[Succ[N], X] {
-      type Out = Y
-    }
+        ev2: Prod.Aux[Z, X, Y]): Aux[Succ[N], X, Y] =
+      new Pow[Succ[N], X] { type Out = Y }
   }
 
   /**
@@ -302,11 +292,12 @@ object nat {
 
     import shapeless.ops.hlist._
 
-    implicit def range1[A <: Nat]: Aux[A, A, HNil] = new Range[A, A] {
-      type Out = HNil
+    implicit def range1[A <: Nat]: Aux[A, A, HNil] =
+      new Range[A, A] {
+        type Out = HNil
 
-      def apply(): Out = HNil
-    }
+        def apply(): Out = HNil
+      }
 
     implicit def range2[A <: Nat, B <: Nat, L <: HList, LO <: HList](implicit
         w: Witness.Aux[B],
@@ -328,9 +319,10 @@ object nat {
   trait LowPriorityGCD {
     implicit def defaultCase[A <: Nat, B <: Nat, T <: Nat](implicit
         mod: Mod.Aux[A, B, T],
-        gcd: GCD[B, T]): GCD.Aux[A, B, gcd.Out] = new GCD[A, B] {
-      type Out = gcd.Out
-    }
+        gcd: GCD[B, T]): GCD.Aux[A, B, gcd.Out] =
+      new GCD[A, B] {
+        type Out = gcd.Out
+      }
   }
   trait GCD[A <: Nat, B <: Nat] extends Serializable {
     type Out <: Nat
@@ -342,9 +334,10 @@ object nat {
 
     type Aux[A <: Nat, B <: Nat, Out0 <: Nat] = GCD[A, B] { type Out = Out0 }
 
-    implicit def terminationCase[A <: Nat]: Aux[A, _0, A] = new GCD[A, _0] {
-      type Out = A
-    }
+    implicit def terminationCase[A <: Nat]: Aux[A, _0, A] =
+      new GCD[A, _0] {
+        type Out = A
+      }
   }
 
   /**
@@ -367,9 +360,10 @@ object nat {
         prod: Prod.Aux[A, B, M],
         gcd: GCD.Aux[A, B, N],
         div: Div[M, N]
-    ): Aux[A, B, div.Out] = new LCM[A, B] {
-      type Out = div.Out
-    }
+    ): Aux[A, B, div.Out] =
+      new LCM[A, B] {
+        type Out = div.Out
+      }
   }
 
   /**

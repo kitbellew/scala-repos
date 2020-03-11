@@ -44,16 +44,17 @@ object StorageUnit {
     * Note, this can cause overflows of the Long used to represent the
     * number of bytes.
     */
-  def parse(s: String): StorageUnit = s.split("\\.") match {
-    case Array(v, u) =>
-      val vv = v.toLong
-      val uu = factor(u)
-      new StorageUnit(vv * uu)
+  def parse(s: String): StorageUnit =
+    s.split("\\.") match {
+      case Array(v, u) =>
+        val vv = v.toLong
+        val uu = factor(u)
+        new StorageUnit(vv * uu)
 
-    case _ =>
-      throw new NumberFormatException(
-        "invalid storage unit string: %s".format(s))
-  }
+      case _ =>
+        throw new NumberFormatException(
+          "invalid storage unit string: %s".format(s))
+    }
 }
 
 /**

@@ -308,10 +308,12 @@ private[camel] case object ActorEndpointPath {
     * Expects the uri in the akka [[akka.actor.ActorPath]] format, i.e 'akka://system/user/someactor'.
     * parameters can be optionally added to the actor path to indicate auto-acknowledgement and replyTimeout for a [[akka.camel.Consumer]] actor.
     */
-  def fromCamelPath(camelPath: String): ActorEndpointPath = camelPath match {
-    case id if id startsWith "akka://" ⇒ new ActorEndpointPath(id.split('?')(0))
-    case _ ⇒
-      throw new IllegalArgumentException(
-        "Invalid path: [%s] - should be an actorPath starting with 'akka://', optionally followed by options" format camelPath)
-  }
+  def fromCamelPath(camelPath: String): ActorEndpointPath =
+    camelPath match {
+      case id if id startsWith "akka://" ⇒
+        new ActorEndpointPath(id.split('?')(0))
+      case _ ⇒
+        throw new IllegalArgumentException(
+          "Invalid path: [%s] - should be an actorPath starting with 'akka://', optionally followed by options" format camelPath)
+    }
 }

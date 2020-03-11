@@ -2,11 +2,12 @@ import org.scalacheck._, Prop._, Gen._, Arbitrary._
 import scala.reflect.runtime.universe._, Flag._
 
 object RuntimeErrorProps extends QuasiquoteProperties("errors") {
-  def testFails[T](block: => T) = test {
-    assertThrows[IllegalArgumentException] {
-      block
+  def testFails[T](block: => T) =
+    test {
+      assertThrows[IllegalArgumentException] {
+        block
+      }
     }
-  }
 
   property("default param anon function") = testFails {
     val param = q"val x: Int = 1"

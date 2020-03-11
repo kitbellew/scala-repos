@@ -40,20 +40,21 @@ private[stats] class CounterDeltas {
     *
     * @param newCounters the new absolute values for the counters.
     */
-  def update(newCounters: JMap[String, Number]): Unit = synchronized {
-    val next = new JHashMap[String, Last](newCounters.size)
-    newCounters.asScala.foreach {
-      case (k, v) =>
-        val last = lasts.get(k)
-        val current = v.longValue
-        val delta =
-          if (last == null) current
-          else {
-            current - last.abs
-          }
-        next.put(k, new Last(current, delta))
+  def update(newCounters: JMap[String, Number]): Unit =
+    synchronized {
+      val next = new JHashMap[String, Last](newCounters.size)
+      newCounters.asScala.foreach {
+        case (k, v) =>
+          val last = lasts.get(k)
+          val current = v.longValue
+          val delta =
+            if (last == null) current
+            else {
+              current - last.abs
+            }
+          next.put(k, new Last(current, delta))
+      }
+      lasts = next
     }
-    lasts = next
-  }
 
 }

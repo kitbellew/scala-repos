@@ -53,12 +53,13 @@ class KafkaCluster(val kafkaParams: Map[String, String]) extends Serializable {
   // ConsumerConfig isn't serializable
   @transient private var _config: SimpleConsumerConfig = null
 
-  def config: SimpleConsumerConfig = this.synchronized {
-    if (_config == null) {
-      _config = SimpleConsumerConfig(kafkaParams)
+  def config: SimpleConsumerConfig =
+    this.synchronized {
+      if (_config == null) {
+        _config = SimpleConsumerConfig(kafkaParams)
+      }
+      _config
     }
-    _config
-  }
 
   def connect(host: String, port: Int): SimpleConsumer =
     new SimpleConsumer(

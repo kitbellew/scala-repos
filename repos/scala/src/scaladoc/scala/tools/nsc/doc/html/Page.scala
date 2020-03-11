@@ -107,15 +107,16 @@ abstract class Page {
     relativize(thisPage.path.reverse, destPath.reverse).mkString("/")
   }
 
-  protected def inlineToStr(inl: comment.Inline): String = inl match {
-    case comment.Chain(items)                      => items flatMap (inlineToStr(_)) mkString ""
-    case comment.Italic(in)                        => inlineToStr(in)
-    case comment.Bold(in)                          => inlineToStr(in)
-    case comment.Underline(in)                     => inlineToStr(in)
-    case comment.Monospace(in)                     => inlineToStr(in)
-    case comment.Text(text)                        => text
-    case comment.Summary(in)                       => inlineToStr(in)
-    case comment.EntityLink(comment.Text(text), _) => text
-    case _                                         => inl.toString
-  }
+  protected def inlineToStr(inl: comment.Inline): String =
+    inl match {
+      case comment.Chain(items)                      => items flatMap (inlineToStr(_)) mkString ""
+      case comment.Italic(in)                        => inlineToStr(in)
+      case comment.Bold(in)                          => inlineToStr(in)
+      case comment.Underline(in)                     => inlineToStr(in)
+      case comment.Monospace(in)                     => inlineToStr(in)
+      case comment.Text(text)                        => text
+      case comment.Summary(in)                       => inlineToStr(in)
+      case comment.EntityLink(comment.Text(text), _) => text
+      case _                                         => inl.toString
+    }
 }

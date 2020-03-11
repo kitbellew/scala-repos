@@ -63,71 +63,73 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
     )
   }
 
-  def testBlob = ifCapF(rcap.typeBlob) {
-    class T(tag: Tag) extends Table[(Int, Blob)](tag, "test3") {
-      def id = column[Int]("id")
-      def data = column[Blob]("data")
-      def * = (id, data)
+  def testBlob =
+    ifCapF(rcap.typeBlob) {
+      class T(tag: Tag) extends Table[(Int, Blob)](tag, "test3") {
+        def id = column[Int]("id")
+        def data = column[Blob]("data")
+        def * = (id, data)
+      }
+      val ts = TableQuery[T]
+
+      val a1 = (
+        ts.schema.create >>
+          (ts += (1, new SerialBlob(Array[Byte](1, 2, 3)))) >>
+          (ts += (2, new SerialBlob(Array[Byte](4, 5)))) >>
+          ts.result
+      ).transactionally
+      val p1 = db.stream(a1).mapResult {
+        case (id, data) => (id, data.getBytes(1, data.length.toInt).mkString)
+      }
+      materialize(p1).map(_.toSet shouldBe Set((1, "123"), (2, "45"))) flatMap {
+        _ =>
+          val f = materializeAsync[(Int, Blob), (Int, String)](
+            db.stream(ts.result.transactionally, bufferNext = false),
+            {
+              case (id, data) =>
+                db.io((id, data.getBytes(1, data.length.toInt).mkString))
+            })
+          f.map(_.toSet shouldBe Set((1, "123"), (2, "45")))
+      }
     }
-    val ts = TableQuery[T]
 
-    val a1 = (
-      ts.schema.create >>
-        (ts += (1, new SerialBlob(Array[Byte](1, 2, 3)))) >>
-        (ts += (2, new SerialBlob(Array[Byte](4, 5)))) >>
-        ts.result
-    ).transactionally
-    val p1 = db.stream(a1).mapResult {
-      case (id, data) => (id, data.getBytes(1, data.length.toInt).mkString)
+  def testMappedBlob =
+    ifCap(rcap.typeBlob) {
+      case class Serialized[T](value: T)
+
+      implicit def serializedType[T] =
+        MappedColumnType.base[Serialized[T], Blob](
+          { s =>
+            val b = new ByteArrayOutputStream
+            val out = new ObjectOutputStream(b)
+            out.writeObject(s.value)
+            out.flush
+            new SerialBlob(b.toByteArray)
+          },
+          { b =>
+            val in = new ObjectInputStream(b.getBinaryStream)
+            Serialized[T](in.readObject().asInstanceOf[T])
+          }
+        )
+
+      class T(tag: Tag) extends Table[(Int, Serialized[List[Int]])](tag, "t") {
+        def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
+        def b = column[Serialized[List[Int]]]("b")
+        def * = (id, b)
+      }
+      val ts = TableQuery[T]
+
+      seq(
+        ts.schema.create,
+        ts.map(_.b) ++= Seq(Serialized(List(1, 2, 3)), Serialized(List(4, 5))),
+        ts.to[Set]
+          .result
+          .map(
+            _ shouldBe Set(
+              (1, Serialized(List(1, 2, 3))),
+              (2, Serialized(List(4, 5)))))
+      ).transactionally
     }
-    materialize(p1).map(_.toSet shouldBe Set((1, "123"), (2, "45"))) flatMap {
-      _ =>
-        val f = materializeAsync[(Int, Blob), (Int, String)](
-          db.stream(ts.result.transactionally, bufferNext = false),
-          {
-            case (id, data) =>
-              db.io((id, data.getBytes(1, data.length.toInt).mkString))
-          })
-        f.map(_.toSet shouldBe Set((1, "123"), (2, "45")))
-    }
-  }
-
-  def testMappedBlob = ifCap(rcap.typeBlob) {
-    case class Serialized[T](value: T)
-
-    implicit def serializedType[T] =
-      MappedColumnType.base[Serialized[T], Blob](
-        { s =>
-          val b = new ByteArrayOutputStream
-          val out = new ObjectOutputStream(b)
-          out.writeObject(s.value)
-          out.flush
-          new SerialBlob(b.toByteArray)
-        },
-        { b =>
-          val in = new ObjectInputStream(b.getBinaryStream)
-          Serialized[T](in.readObject().asInstanceOf[T])
-        }
-      )
-
-    class T(tag: Tag) extends Table[(Int, Serialized[List[Int]])](tag, "t") {
-      def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
-      def b = column[Serialized[List[Int]]]("b")
-      def * = (id, b)
-    }
-    val ts = TableQuery[T]
-
-    seq(
-      ts.schema.create,
-      ts.map(_.b) ++= Seq(Serialized(List(1, 2, 3)), Serialized(List(4, 5))),
-      ts.to[Set]
-        .result
-        .map(
-          _ shouldBe Set(
-            (1, Serialized(List(1, 2, 3))),
-            (2, Serialized(List(4, 5)))))
-    ).transactionally
-  }
 
   private def roundtrip[T: BaseColumnType](tn: String, v: T) = {
     class T1(tag: Tag) extends Table[(Int, T)](tag, tn) {

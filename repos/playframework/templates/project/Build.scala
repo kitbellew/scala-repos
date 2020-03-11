@@ -398,11 +398,12 @@ object Templates {
       with FeedbackProvidedException
 
   private object StdOutLogger {
-    def apply(log: String => Unit) = new ProcessLogger {
-      def info(s: => String) = log(s)
-      def error(s: => String) = System.err.println(s)
-      def buffer[T](f: => T) = f
-    }
+    def apply(log: String => Unit) =
+      new ProcessLogger {
+        def info(s: => String) = log(s)
+        def error(s: => String) = System.err.println(s)
+        def buffer[T](f: => T) = f
+      }
   }
 
   private sealed trait TemplateStatus

@@ -89,9 +89,8 @@ class StorageStatus(val blockManagerId: BlockManagerId, val maxMem: Long) {
     * concatenating them together. Much faster alternatives exist for common operations such as
     * getting the memory, disk, and off-heap memory sizes occupied by this RDD.
     */
-  def rddBlocks: Map[BlockId, BlockStatus] = _rddBlocks.flatMap {
-    case (_, blocks) => blocks
-  }
+  def rddBlocks: Map[BlockId, BlockStatus] =
+    _rddBlocks.flatMap { case (_, blocks) => blocks }
 
   /** Return the blocks that belong to the given RDD stored in this block manager. */
   def rddBlocksById(rddId: Int): Map[BlockId, BlockStatus] =

@@ -182,10 +182,12 @@ class Dataset[T] private[sql] (
   }
 
   @transient protected[sql] val logicalPlan: LogicalPlan = {
-    def hasSideEffects(plan: LogicalPlan): Boolean = plan match {
-      case _: Command | _: InsertIntoTable | _: CreateTableUsingAsSelect => true
-      case _                                                             => false
-    }
+    def hasSideEffects(plan: LogicalPlan): Boolean =
+      plan match {
+        case _: Command | _: InsertIntoTable | _: CreateTableUsingAsSelect =>
+          true
+        case _ => false
+      }
 
     queryExecution.logical match {
       // For various commands (like DDL) and queries with side effects, we force query execution
@@ -390,9 +392,8 @@ class Dataset[T] private[sql] (
     * @group basic
     * @since 1.6.0
     */
-  def dtypes: Array[(String, String)] = schema.fields.map { field =>
-    (field.name, field.dataType.toString)
-  }
+  def dtypes: Array[(String, String)] =
+    schema.fields.map { field => (field.name, field.dataType.toString) }
 
   /**
     * Returns all column names as an array.
@@ -506,9 +507,10 @@ class Dataset[T] private[sql] (
     * @group untypedrel
     * @since 2.0.0
     */
-  def join(right: DataFrame): DataFrame = withPlan {
-    Join(logicalPlan, right.logicalPlan, joinType = Inner, None)
-  }
+  def join(right: DataFrame): DataFrame =
+    withPlan {
+      Join(logicalPlan, right.logicalPlan, joinType = Inner, None)
+    }
 
   /**
     * Inner equi-join with another [[DataFrame]] using the given column.
@@ -846,13 +848,14 @@ class Dataset[T] private[sql] (
     * @group untypedrel
     * @since 2.0.0
     */
-  def col(colName: String): Column = colName match {
-    case "*" =>
-      Column(ResolvedStar(queryExecution.analyzed.output))
-    case _ =>
-      val expr = resolve(colName)
-      Column(expr)
-  }
+  def col(colName: String): Column =
+    colName match {
+      case "*" =>
+        Column(ResolvedStar(queryExecution.analyzed.output))
+      case _ =>
+        val expr = resolve(colName)
+        Column(expr)
+    }
 
   /**
     * Returns a new [[Dataset]] with an alias set.
@@ -860,9 +863,10 @@ class Dataset[T] private[sql] (
     * @group typedrel
     * @since 1.6.0
     */
-  def as(alias: String): Dataset[T] = withTypedPlan {
-    SubqueryAlias(alias, logicalPlan)
-  }
+  def as(alias: String): Dataset[T] =
+    withTypedPlan {
+      SubqueryAlias(alias, logicalPlan)
+    }
 
   /**
     * (Scala-specific) Returns a new [[Dataset]] with an alias set.
@@ -898,9 +902,10 @@ class Dataset[T] private[sql] (
     * @since 2.0.0
     */
   @scala.annotation.varargs
-  def select(cols: Column*): DataFrame = withPlan {
-    Project(cols.map(_.named), logicalPlan)
-  }
+  def select(cols: Column*): DataFrame =
+    withPlan {
+      Project(cols.map(_.named), logicalPlan)
+    }
 
   /**
     * Selects a set of columns. This is a variant of `select` that can only select
@@ -1046,9 +1051,10 @@ class Dataset[T] private[sql] (
     * @group typedrel
     * @since 1.6.0
     */
-  def filter(condition: Column): Dataset[T] = withTypedPlan {
-    Filter(condition.expr, logicalPlan)
-  }
+  def filter(condition: Column): Dataset[T] =
+    withTypedPlan {
+      Filter(condition.expr, logicalPlan)
+    }
 
   /**
     * Filters rows using the given SQL expression.
@@ -1413,9 +1419,10 @@ class Dataset[T] private[sql] (
     * @group typedrel
     * @since 2.0.0
     */
-  def limit(n: Int): Dataset[T] = withTypedPlan {
-    Limit(Literal(n), logicalPlan)
-  }
+  def limit(n: Int): Dataset[T] =
+    withTypedPlan {
+      Limit(Literal(n), logicalPlan)
+    }
 
   /**
     * Returns a new [[Dataset]] containing union of rows in this frame and another frame.
@@ -1427,11 +1434,12 @@ class Dataset[T] private[sql] (
     * @group typedrel
     * @since 2.0.0
     */
-  def unionAll(other: Dataset[T]): Dataset[T] = withTypedPlan {
-    // This breaks caching, but it's usually ok because it addresses a very specific use case:
-    // using union to union many files or partitions.
-    CombineUnions(Union(logicalPlan, other.logicalPlan))
-  }
+  def unionAll(other: Dataset[T]): Dataset[T] =
+    withTypedPlan {
+      // This breaks caching, but it's usually ok because it addresses a very specific use case:
+      // using union to union many files or partitions.
+      CombineUnions(Union(logicalPlan, other.logicalPlan))
+    }
 
   /**
     * Returns a new [[Dataset]] containing union of rows in this frame and another frame.
@@ -1452,9 +1460,10 @@ class Dataset[T] private[sql] (
     * @group typedrel
     * @since 1.6.0
     */
-  def intersect(other: Dataset[T]): Dataset[T] = withTypedPlan {
-    Intersect(logicalPlan, other.logicalPlan)
-  }
+  def intersect(other: Dataset[T]): Dataset[T] =
+    withTypedPlan {
+      Intersect(logicalPlan, other.logicalPlan)
+    }
 
   /**
     * Returns a new [[Dataset]] containing rows in this frame but not in another frame.
@@ -1466,9 +1475,10 @@ class Dataset[T] private[sql] (
     * @group typedrel
     * @since 2.0.0
     */
-  def except(other: Dataset[T]): Dataset[T] = withTypedPlan {
-    Except(logicalPlan, other.logicalPlan)
-  }
+  def except(other: Dataset[T]): Dataset[T] =
+    withTypedPlan {
+      Except(logicalPlan, other.logicalPlan)
+    }
 
   /**
     * Returns a new [[Dataset]] containing rows in this frame but not in another frame.
@@ -1492,9 +1502,10 @@ class Dataset[T] private[sql] (
   def sample(
       withReplacement: Boolean,
       fraction: Double,
-      seed: Long): Dataset[T] = withTypedPlan {
-    Sample(0.0, fraction, withReplacement, seed, logicalPlan)()
-  }
+      seed: Long): Dataset[T] =
+    withTypedPlan {
+      Sample(0.0, fraction, withReplacement, seed, logicalPlan)()
+    }
 
   /**
     * Returns a new [[Dataset]] by sampling a fraction of rows, using a random seed.
@@ -1802,18 +1813,19 @@ class Dataset[T] private[sql] (
     * @group typedrel
     * @since 2.0.0
     */
-  def dropDuplicates(colNames: Seq[String]): Dataset[T] = withTypedPlan {
-    val groupCols = colNames.map(resolve)
-    val groupColExprIds = groupCols.map(_.exprId)
-    val aggCols = logicalPlan.output.map { attr =>
-      if (groupColExprIds.contains(attr.exprId)) {
-        attr
-      } else {
-        Alias(new First(attr).toAggregateExpression(), attr.name)()
+  def dropDuplicates(colNames: Seq[String]): Dataset[T] =
+    withTypedPlan {
+      val groupCols = colNames.map(resolve)
+      val groupColExprIds = groupCols.map(_.exprId)
+      val aggCols = logicalPlan.output.map { attr =>
+        if (groupColExprIds.contains(attr.exprId)) {
+          attr
+        } else {
+          Alias(new First(attr).toAggregateExpression(), attr.name)()
+        }
       }
+      Aggregate(groupCols, aggCols, logicalPlan)
     }
-    Aggregate(groupCols, aggCols, logicalPlan)
-  }
 
   /**
     * Returns a new [[Dataset]] with duplicate rows removed, considering only
@@ -1849,47 +1861,50 @@ class Dataset[T] private[sql] (
     * @since 1.6.0
     */
   @scala.annotation.varargs
-  def describe(cols: String*): DataFrame = withPlan {
+  def describe(cols: String*): DataFrame =
+    withPlan {
 
-    // The list of summary statistics to compute, in the form of expressions.
-    val statistics = List[(String, Expression => Expression)](
-      "count" -> ((child: Expression) => Count(child).toAggregateExpression()),
-      "mean" -> ((child: Expression) => Average(child).toAggregateExpression()),
-      "stddev" -> ((child: Expression) =>
-        StddevSamp(child).toAggregateExpression()),
-      "min" -> ((child: Expression) => Min(child).toAggregateExpression()),
-      "max" -> ((child: Expression) => Max(child).toAggregateExpression())
-    )
+      // The list of summary statistics to compute, in the form of expressions.
+      val statistics = List[(String, Expression => Expression)](
+        "count" -> ((child: Expression) =>
+          Count(child).toAggregateExpression()),
+        "mean" -> ((child: Expression) =>
+          Average(child).toAggregateExpression()),
+        "stddev" -> ((child: Expression) =>
+          StddevSamp(child).toAggregateExpression()),
+        "min" -> ((child: Expression) => Min(child).toAggregateExpression()),
+        "max" -> ((child: Expression) => Max(child).toAggregateExpression())
+      )
 
-    val outputCols =
-      (if (cols.isEmpty) numericColumns.map(usePrettyExpression(_).sql)
-       else cols).toList
+      val outputCols =
+        (if (cols.isEmpty) numericColumns.map(usePrettyExpression(_).sql)
+         else cols).toList
 
-    val ret: Seq[Row] = if (outputCols.nonEmpty) {
-      val aggExprs = statistics.flatMap {
-        case (_, colToAgg) =>
-          outputCols.map(c =>
-            Column(Cast(colToAgg(Column(c).expr), StringType)).as(c))
+      val ret: Seq[Row] = if (outputCols.nonEmpty) {
+        val aggExprs = statistics.flatMap {
+          case (_, colToAgg) =>
+            outputCols.map(c =>
+              Column(Cast(colToAgg(Column(c).expr), StringType)).as(c))
+        }
+
+        val row = agg(aggExprs.head, aggExprs.tail: _*).head().toSeq
+
+        // Pivot the data so each summary is one row
+        row.grouped(outputCols.size).toSeq.zip(statistics).map {
+          case (aggregation, (statistic, _)) =>
+            Row(statistic :: aggregation.toList: _*)
+        }
+      } else {
+        // If there are no output columns, just output a single column that contains the stats.
+        statistics.map { case (name, _) => Row(name) }
       }
 
-      val row = agg(aggExprs.head, aggExprs.tail: _*).head().toSeq
-
-      // Pivot the data so each summary is one row
-      row.grouped(outputCols.size).toSeq.zip(statistics).map {
-        case (aggregation, (statistic, _)) =>
-          Row(statistic :: aggregation.toList: _*)
-      }
-    } else {
-      // If there are no output columns, just output a single column that contains the stats.
-      statistics.map { case (name, _) => Row(name) }
+      // All columns are string type
+      val schema = StructType(
+        StructField("summary", StringType) :: outputCols.map(
+          StructField(_, StringType))).toAttributes
+      LocalRelation.fromExternalRows(schema, ret)
     }
-
-    // All columns are string type
-    val schema = StructType(
-      StructField("summary", StringType) :: outputCols.map(
-        StructField(_, StringType))).toAttributes
-    LocalRelation.fromExternalRows(schema, ret)
-  }
 
   /**
     * Returns the first `n` rows.
@@ -1900,9 +1915,10 @@ class Dataset[T] private[sql] (
     * @group action
     * @since 1.6.0
     */
-  def head(n: Int): Array[T] = withTypedCallback("head", limit(n)) { df =>
-    df.collect(needCallback = false)
-  }
+  def head(n: Int): Array[T] =
+    withTypedCallback("head", limit(n)) { df =>
+      df.collect(needCallback = false)
+    }
 
   /**
     * Returns the first row.
@@ -2045,9 +2061,10 @@ class Dataset[T] private[sql] (
     * @group action
     * @since 1.6.0
     */
-  def foreach(f: T => Unit): Unit = withNewExecutionId {
-    rdd.foreach(f)
-  }
+  def foreach(f: T => Unit): Unit =
+    withNewExecutionId {
+      rdd.foreach(f)
+    }
 
   /**
     * (Java-specific)
@@ -2064,9 +2081,10 @@ class Dataset[T] private[sql] (
     * @group action
     * @since 1.6.0
     */
-  def foreachPartition(f: Iterator[T] => Unit): Unit = withNewExecutionId {
-    rdd.foreachPartition(f)
-  }
+  def foreachPartition(f: Iterator[T] => Unit): Unit =
+    withNewExecutionId {
+      rdd.foreachPartition(f)
+    }
 
   /**
     * (Java-specific)
@@ -2134,9 +2152,10 @@ class Dataset[T] private[sql] (
     }
 
   private def collect(needCallback: Boolean): Array[T] = {
-    def execute(): Array[T] = withNewExecutionId {
-      queryExecution.executedPlan.executeCollect().map(boundTEncoder.fromRow)
-    }
+    def execute(): Array[T] =
+      withNewExecutionId {
+        queryExecution.executedPlan.executeCollect().map(boundTEncoder.fromRow)
+      }
 
     if (needCallback) {
       withCallback("collect", toDF())(_ => execute())
@@ -2150,9 +2169,10 @@ class Dataset[T] private[sql] (
     * @group action
     * @since 1.6.0
     */
-  def count(): Long = withCallback("count", groupBy().count()) { df =>
-    df.collect(needCallback = false).head.getLong(0)
-  }
+  def count(): Long =
+    withCallback("count", groupBy().count()) { df =>
+      df.collect(needCallback = false).head.getLong(0)
+    }
 
   /**
     * Returns a new [[Dataset]] that has exactly `numPartitions` partitions.
@@ -2160,9 +2180,10 @@ class Dataset[T] private[sql] (
     * @group typedrel
     * @since 1.6.0
     */
-  def repartition(numPartitions: Int): Dataset[T] = withTypedPlan {
-    Repartition(numPartitions, shuffle = true, logicalPlan)
-  }
+  def repartition(numPartitions: Int): Dataset[T] =
+    withTypedPlan {
+      Repartition(numPartitions, shuffle = true, logicalPlan)
+    }
 
   /**
     * Returns a new [[Dataset]] partitioned by the given partitioning expressions into
@@ -2192,12 +2213,13 @@ class Dataset[T] private[sql] (
     * @since 2.0.0
     */
   @scala.annotation.varargs
-  def repartition(partitionExprs: Column*): Dataset[T] = withTypedPlan {
-    RepartitionByExpression(
-      partitionExprs.map(_.expr),
-      logicalPlan,
-      numPartitions = None)
-  }
+  def repartition(partitionExprs: Column*): Dataset[T] =
+    withTypedPlan {
+      RepartitionByExpression(
+        partitionExprs.map(_.expr),
+        logicalPlan,
+        numPartitions = None)
+    }
 
   /**
     * Returns a new [[Dataset]] that has exactly `numPartitions` partitions.
@@ -2208,9 +2230,10 @@ class Dataset[T] private[sql] (
     * @group rdd
     * @since 1.6.0
     */
-  def coalesce(numPartitions: Int): Dataset[T] = withTypedPlan {
-    Repartition(numPartitions, shuffle = false, logicalPlan)
-  }
+  def coalesce(numPartitions: Int): Dataset[T] =
+    withTypedPlan {
+      Repartition(numPartitions, shuffle = false, logicalPlan)
+    }
 
   /**
     * Returns a new [[Dataset]] that contains only the unique rows from this [[Dataset]].

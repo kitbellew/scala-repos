@@ -256,12 +256,13 @@ class AlgebraicTest extends SpireProperties {
         x <- arbitrary[Double]
       } yield RationalAlgebraic(Algebraic(x), Rational(x))
 
-    def genLeaf: Gen[RationalAlgebraic] = Gen.oneOf(
-      genRational.map { q => RationalAlgebraic(Algebraic(q), q) },
-      genBigDecimal,
-      genDouble,
-      genLong
-    )
+    def genLeaf: Gen[RationalAlgebraic] =
+      Gen.oneOf(
+        genRational.map { q => RationalAlgebraic(Algebraic(q), q) },
+        genBigDecimal,
+        genDouble,
+        genLong
+      )
 
     def genAdd(depth: Int): Gen[RationalAlgebraic] =
       for {

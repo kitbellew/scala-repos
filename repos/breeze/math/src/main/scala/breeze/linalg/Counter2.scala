@@ -99,11 +99,12 @@ trait Counter2Like[
       .mkString("Counter2(", ",\n", ")")
   }
 
-  override def equals(p1: Any): Boolean = p1 match {
-    case x: Counter2[_, _, _] =>
-      x.activeIterator.toSet == activeIterator.toSet
-    case _ => false
-  }
+  override def equals(p1: Any): Boolean =
+    p1 match {
+      case x: Counter2[_, _, _] =>
+        x.activeIterator.toSet == activeIterator.toSet
+      case _ => false
+    }
 
 }
 
@@ -127,16 +128,17 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
       with Serializable {
     def default = scalar.zero
 
-    def keySet: Set[(K1, K2)] = new Set[(K1, K2)] {
-      def contains(k: (K1, K2)): Boolean =
-        data.contains(k._1) && data(k._1).contains(k._2)
+    def keySet: Set[(K1, K2)] =
+      new Set[(K1, K2)] {
+        def contains(k: (K1, K2)): Boolean =
+          data.contains(k._1) && data(k._1).contains(k._2)
 
-      def +(elem: (K1, K2)): Set[(K1, K2)] = Set.empty ++ iterator + elem
-      def -(elem: (K1, K2)): Set[(K1, K2)] = Set.empty ++ iterator - elem
+        def +(elem: (K1, K2)): Set[(K1, K2)] = Set.empty ++ iterator + elem
+        def -(elem: (K1, K2)): Set[(K1, K2)] = Set.empty ++ iterator - elem
 
-      def iterator: Iterator[(K1, K2)] =
-        for ((k1, m) <- data.iterator; k2 <- m.keysIterator) yield (k1, k2)
-    }
+        def iterator: Iterator[(K1, K2)] =
+          for ((k1, m) <- data.iterator; k2 <- m.keysIterator) yield (k1, k2)
+      }
   }
 
   /** Returns a new empty counter. */

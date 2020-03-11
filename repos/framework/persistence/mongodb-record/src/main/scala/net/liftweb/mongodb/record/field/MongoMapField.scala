@@ -65,16 +65,17 @@ class MongoMapField[OwnerType <: BsonRecord[OwnerType], MapValueType](
     }
   }
 
-  def setFromJValue(jvalue: JValue) = jvalue match {
-    case JNothing | JNull if optional_? => setBox(Empty)
-    case JObject(obj) =>
-      setBox(
-        Full(
-          Map() ++ obj.map(jf =>
-            (jf.name, jf.value.values.asInstanceOf[MapValueType]))
-        ))
-    case other => setBox(FieldHelpers.expectedA("JObject", other))
-  }
+  def setFromJValue(jvalue: JValue) =
+    jvalue match {
+      case JNothing | JNull if optional_? => setBox(Empty)
+      case JObject(obj) =>
+        setBox(
+          Full(
+            Map() ++ obj.map(jf =>
+              (jf.name, jf.value.values.asInstanceOf[MapValueType]))
+          ))
+      case other => setBox(FieldHelpers.expectedA("JObject", other))
+    }
 
   def setFromString(in: String): Box[Map[String, MapValueType]] =
     tryo(JsonParser.parse(in)) match {

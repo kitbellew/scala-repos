@@ -283,30 +283,37 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
 
   private def canBeTargetInClass(
       member: ClassMember,
-      clazz: ScTemplateDefinition): Boolean = member match {
-    case ta: ScAliasMember                                     => false
-    case typed: ScalaTypedMember if typed.scType == types.Unit => false
-    case method: ScMethodMember =>
-      method.getElement match {
-        case m: PsiMethod if {
-              val cl = m.getContainingClass;
-              cl != null && cl.getQualifiedName == CommonClassNames.JAVA_LANG_OBJECT
-            } =>
-          false
-        case f: ScFunction =>
-          (f.isParameterless || f.isEmptyParen) && ResolveUtils
-            .isAccessible(f, clazz, forCompletion = false)
-        case m: PsiMethod =>
-          m.isAccessor && ResolveUtils
-            .isAccessible(m, clazz, forCompletion = false)
-        case _ => false
-      }
-    case v @ (_: ScValueMember | _: ScVariableMember | _: JavaFieldMember)
-        if ResolveUtils
-          .isAccessible(v.getElement, clazz, forCompletion = false) =>
-      true
-    case _ => false
-  }
+      clazz: ScTemplateDefinition): Boolean =
+    member match {
+      case ta: ScAliasMember                                     => false
+      case typed: ScalaTypedMember if typed.scType == types.Unit => false
+      case method: ScMethodMember =>
+        method.getElement match {
+          case m: PsiMethod if {
+                val cl = m.getContainingClass;
+                cl != null && cl.getQualifiedName == CommonClassNames.JAVA_LANG_OBJECT
+              } =>
+            false
+          case f: ScFunction =>
+            (f.isParameterless || f.isEmptyParen) && ResolveUtils.isAccessible(
+              f,
+              clazz,
+              forCompletion = false)
+          case m: PsiMethod =>
+            m.isAccessor && ResolveUtils.isAccessible(
+              m,
+              clazz,
+              forCompletion = false)
+          case _ => false
+        }
+      case v @ (_: ScValueMember | _: ScVariableMember | _: JavaFieldMember)
+          if ResolveUtils.isAccessible(
+            v.getElement,
+            clazz,
+            forCompletion = false) =>
+        true
+      case _ => false
+    }
 
   private def classAtOffset(offset: Int, file: PsiFile) = {
     val td = PsiTreeUtil.getContextOfType(

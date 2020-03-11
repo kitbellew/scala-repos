@@ -326,20 +326,21 @@ class LinearRegression @Since("1.3.0") (
       new BreezeLBFGS[BDV[Double]]($(maxIter), 10, $(tol))
     } else {
       val standardizationParam = $(standardization)
-      def effectiveL1RegFun = (index: Int) => {
-        if (standardizationParam) {
-          effectiveL1RegParam
-        } else {
-          // If `standardization` is false, we still standardize the data
-          // to improve the rate of convergence; as a result, we have to
-          // perform this reverse standardization by penalizing each component
-          // differently to get effectively the same objective function when
-          // the training dataset is not standardized.
-          if (featuresStd(index) != 0.0)
-            effectiveL1RegParam / featuresStd(index)
-          else 0.0
+      def effectiveL1RegFun =
+        (index: Int) => {
+          if (standardizationParam) {
+            effectiveL1RegParam
+          } else {
+            // If `standardization` is false, we still standardize the data
+            // to improve the rate of convergence; as a result, we have to
+            // perform this reverse standardization by penalizing each component
+            // differently to get effectively the same objective function when
+            // the training dataset is not standardized.
+            if (featuresStd(index) != 0.0)
+              effectiveL1RegParam / featuresStd(index)
+            else 0.0
+          }
         }
-      }
       new BreezeOWLQN[Int, BDV[Double]](
         $(maxIter),
         10,
@@ -456,10 +457,11 @@ class LinearRegressionModel private[ml] (
     * thrown if `trainingSummary == None`.
     */
   @Since("1.5.0")
-  def summary: LinearRegressionTrainingSummary = trainingSummary.getOrElse {
-    throw new SparkException(
-      "No training summary available for this LinearRegressionModel")
-  }
+  def summary: LinearRegressionTrainingSummary =
+    trainingSummary.getOrElse {
+      throw new SparkException(
+        "No training summary available for this LinearRegressionModel")
+    }
 
   private[regression] def setSummary(
       summary: LinearRegressionTrainingSummary): this.type = {

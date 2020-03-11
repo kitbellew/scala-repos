@@ -242,13 +242,14 @@ class Regex private[matching] (val pattern: Pattern, groupNames: String*)
     *  @param  s     The string to match
     *  @return       The matches
     */
-  def unapplySeq(s: CharSequence): Option[List[String]] = s match {
-    case null => None
-    case _ =>
-      val m = pattern matcher s
-      if (runMatcher(m)) Some((1 to m.groupCount).toList map m.group)
-      else None
-  }
+  def unapplySeq(s: CharSequence): Option[List[String]] =
+    s match {
+      case null => None
+      case _ =>
+        val m = pattern matcher s
+        if (runMatcher(m)) Some((1 to m.groupCount).toList map m.group)
+        else None
+    }
 
   /** Tries to match the String representation of a [[scala.Char]].
     *
@@ -311,14 +312,15 @@ class Regex private[matching] (val pattern: Pattern, groupNames: String*)
   @deprecated(
     "Extracting a match result from anything but a CharSequence or Match is deprecated",
     "2.11.0")
-  def unapplySeq(target: Any): Option[List[String]] = target match {
-    case s: CharSequence =>
-      val m = pattern matcher s
-      if (runMatcher(m)) Some((1 to m.groupCount).toList map m.group)
-      else None
-    case m: Match => unapplySeq(m.matched)
-    case _        => None
-  }
+  def unapplySeq(target: Any): Option[List[String]] =
+    target match {
+      case s: CharSequence =>
+        val m = pattern matcher s
+        if (runMatcher(m)) Some((1 to m.groupCount).toList map m.group)
+        else None
+      case m: Match => unapplySeq(m.matched)
+      case _        => None
+    }
 
   //  @see UnanchoredRegex
   protected def runMatcher(m: Matcher) = m.matches()
@@ -671,11 +673,12 @@ object Regex {
       *  @return   The requested group
       *  @throws   NoSuchElementException if the requested group name is not defined
       */
-    def group(id: String): String = nameToIndex.get(id) match {
-      case None =>
-        throw new NoSuchElementException("group name " + id + " not defined")
-      case Some(index) => group(index)
-    }
+    def group(id: String): String =
+      nameToIndex.get(id) match {
+        case None =>
+          throw new NoSuchElementException("group name " + id + " not defined")
+        case Some(index) => group(index)
+      }
 
     /** The matched string; equivalent to `matched.toString`. */
     override def toString = matched
@@ -797,10 +800,11 @@ object Regex {
     def groupCount = matcher.groupCount
 
     /** Convert to an iterator that yields MatchData elements instead of Strings. */
-    def matchData: Iterator[Match] = new AbstractIterator[Match] {
-      def hasNext = self.hasNext
-      def next = { self.next(); new Match(source, matcher, groupNames).force }
-    }
+    def matchData: Iterator[Match] =
+      new AbstractIterator[Match] {
+        def hasNext = self.hasNext
+        def next = { self.next(); new Match(source, matcher, groupNames).force }
+      }
 
     /** Convert to an iterator that yields MatchData elements instead of Strings and has replacement support. */
     private[matching] def replacementData =

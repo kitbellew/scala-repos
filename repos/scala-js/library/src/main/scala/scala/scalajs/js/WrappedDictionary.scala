@@ -99,13 +99,14 @@ object WrappedDictionary {
 
   type CBF[A] =
     CanBuildFrom[WrappedDictionary[_], (String, A), WrappedDictionary[A]]
-  implicit def canBuildFrom[A]: CBF[A] = new CBF[A] {
-    def apply(from: WrappedDictionary[_])
-        : Builder[(String, A), WrappedDictionary[A]] =
-      new WrappedDictionaryBuilder[A]
-    def apply(): Builder[(String, A), WrappedDictionary[A]] =
-      new WrappedDictionaryBuilder[A]
-  }
+  implicit def canBuildFrom[A]: CBF[A] =
+    new CBF[A] {
+      def apply(from: WrappedDictionary[_])
+          : Builder[(String, A), WrappedDictionary[A]] =
+        new WrappedDictionaryBuilder[A]
+      def apply(): Builder[(String, A), WrappedDictionary[A]] =
+        new WrappedDictionaryBuilder[A]
+    }
 
   class WrappedDictionaryBuilder[A]
       extends Builder[(String, A), WrappedDictionary[A]] {

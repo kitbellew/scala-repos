@@ -49,18 +49,19 @@ object CreateFromUsageUtil {
   def nameByType(tp: ScType) =
     NameSuggester.suggestNamesByType(tp).headOption.getOrElse("value")
 
-  def nameAndTypeForArg(arg: PsiElement): (String, ScType) = arg match {
-    case ref: ScReferenceExpression => (ref.refName, ref.getType().getOrAny)
-    case expr: ScExpression =>
-      val tp = expr.getType().getOrAny
-      (nameByType(tp), tp)
-    case bp: ScBindingPattern if !bp.isWildcard =>
-      (bp.name, bp.getType(TypingContext.empty).getOrAny)
-    case p: ScPattern =>
-      val tp: ScType = p.getType(TypingContext.empty).getOrAny
-      (nameByType(tp), tp)
-    case _ => ("value", scTypeAny)
-  }
+  def nameAndTypeForArg(arg: PsiElement): (String, ScType) =
+    arg match {
+      case ref: ScReferenceExpression => (ref.refName, ref.getType().getOrAny)
+      case expr: ScExpression =>
+        val tp = expr.getType().getOrAny
+        (nameByType(tp), tp)
+      case bp: ScBindingPattern if !bp.isWildcard =>
+        (bp.name, bp.getType(TypingContext.empty).getOrAny)
+      case p: ScPattern =>
+        val tp: ScType = p.getType(TypingContext.empty).getOrAny
+        (nameByType(tp), tp)
+      case _ => ("value", scTypeAny)
+    }
 
   def paramsText(args: Seq[PsiElement]) = {
     val (names, types) = args.map(nameAndTypeForArg).unzip
@@ -170,24 +171,26 @@ object CreateFromUsageUtil {
 }
 
 object InstanceOfClass {
-  def unapply(elem: PsiElement): Option[PsiClass] = elem match {
-    case ScExpression.Type(TypeAsClass(psiClass)) => Some(psiClass)
-    case ResolvesTo(typed: ScTypedDefinition) =>
-      typed.getType().toOption match {
-        case Some(TypeAsClass(psiClass)) => Some(psiClass)
-        case _                           => None
-      }
-    case _ => None
-  }
+  def unapply(elem: PsiElement): Option[PsiClass] =
+    elem match {
+      case ScExpression.Type(TypeAsClass(psiClass)) => Some(psiClass)
+      case ResolvesTo(typed: ScTypedDefinition) =>
+        typed.getType().toOption match {
+          case Some(TypeAsClass(psiClass)) => Some(psiClass)
+          case _                           => None
+        }
+      case _ => None
+    }
 }
 
 object TypeAsClass {
-  def unapply(scType: ScType): Option[PsiClass] = scType match {
-    case ScType.ExtractClass(aClass) => Some(aClass)
-    case t: ScType =>
-      ScType
-        .extractDesignatorSingletonType(t)
-        .flatMap(ScType.extractClass(_, None))
-    case _ => None
-  }
+  def unapply(scType: ScType): Option[PsiClass] =
+    scType match {
+      case ScType.ExtractClass(aClass) => Some(aClass)
+      case t: ScType =>
+        ScType
+          .extractDesignatorSingletonType(t)
+          .flatMap(ScType.extractClass(_, None))
+      case _ => None
+    }
 }

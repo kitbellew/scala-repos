@@ -38,9 +38,8 @@ final class MultiHandler[S, T](
         Some(b)
     }
 
-  def baseLoader: S => Option[T] = root match {
-    case Some(rl) => rl | builtIn; case None => builtIn
-  }
+  def baseLoader: S => Option[T] =
+    root match { case Some(rl) => rl | builtIn; case None => builtIn }
 
   def addNonRoot(uri: URI, loader: S => Option[T]) =
     new MultiHandler(builtIn, root, (uri, loader) :: nonRoots, getURI, log)
@@ -158,18 +157,19 @@ object BuildLoader {
       base.transformAll)
   }
 
-  def componentLoader: Loader = (info: LoadInfo) => {
-    import info.{components, config, staging, state, uri}
-    val cs = info.components
-    for {
-      resolve <- cs.resolver(new ResolveInfo(uri, staging, config, state))
-      base = resolve()
-      build <- cs.builder(new BuildInfo(uri, base, config, state))
-    } yield () => {
-      val unit = build()
-      cs.transformer(new TransformInfo(uri, base, unit, config, state))
+  def componentLoader: Loader =
+    (info: LoadInfo) => {
+      import info.{components, config, staging, state, uri}
+      val cs = info.components
+      for {
+        resolve <- cs.resolver(new ResolveInfo(uri, staging, config, state))
+        base = resolve()
+        build <- cs.builder(new BuildInfo(uri, base, config, state))
+      } yield () => {
+        val unit = build()
+        cs.transformer(new TransformInfo(uri, base, unit, config, state))
+      }
     }
-  }
 }
 
 final class BuildLoader(

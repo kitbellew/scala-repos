@@ -19,15 +19,16 @@ package org.saddle.time
   * Enumeration of weekdays for utilizing with an RRule
   */
 sealed trait Weekday { this: Weekday =>
-  protected[time] def toICal: com.google.ical.values.Weekday = this match {
-    case SU => com.google.ical.values.Weekday.SU
-    case MO => com.google.ical.values.Weekday.MO
-    case TU => com.google.ical.values.Weekday.TU
-    case WE => com.google.ical.values.Weekday.WE
-    case TH => com.google.ical.values.Weekday.TH
-    case FR => com.google.ical.values.Weekday.FR
-    case SA => com.google.ical.values.Weekday.SA
-  }
+  protected[time] def toICal: com.google.ical.values.Weekday =
+    this match {
+      case SU => com.google.ical.values.Weekday.SU
+      case MO => com.google.ical.values.Weekday.MO
+      case TU => com.google.ical.values.Weekday.TU
+      case WE => com.google.ical.values.Weekday.WE
+      case TH => com.google.ical.values.Weekday.TH
+      case FR => com.google.ical.values.Weekday.FR
+      case SA => com.google.ical.values.Weekday.SA
+    }
 
   /**
     * Create a WeekdayNum instance: e.g., MO(1) or TU(-2)

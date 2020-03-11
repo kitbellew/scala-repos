@@ -360,33 +360,34 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
         case ("GET", "/") => Action(Ok.chunked(largeSource))
       } { ws =>
         //#stream-to-result
-        def downloadFile = Action.async {
+        def downloadFile =
+          Action.async {
 
-          // Make the request
-          ws.url(url).withMethod("GET").stream().map {
-            case StreamedResponse(response, body) =>
-              // Check that the response was successful
-              if (response.status == 200) {
+            // Make the request
+            ws.url(url).withMethod("GET").stream().map {
+              case StreamedResponse(response, body) =>
+                // Check that the response was successful
+                if (response.status == 200) {
 
-                // Get the content type
-                val contentType = response.headers
-                  .get("Content-Type")
-                  .flatMap(_.headOption)
-                  .getOrElse("application/octet-stream")
+                  // Get the content type
+                  val contentType = response.headers
+                    .get("Content-Type")
+                    .flatMap(_.headOption)
+                    .getOrElse("application/octet-stream")
 
-                // If there's a content length, send that, otherwise return the body chunked
-                response.headers.get("Content-Length") match {
-                  case Some(Seq(length)) =>
-                    Ok.sendEntity(HttpEntity
-                      .Streamed(body, Some(length.toLong), Some(contentType)))
-                  case _ =>
-                    Ok.chunked(body).as(contentType)
+                  // If there's a content length, send that, otherwise return the body chunked
+                  response.headers.get("Content-Length") match {
+                    case Some(Seq(length)) =>
+                      Ok.sendEntity(HttpEntity
+                        .Streamed(body, Some(length.toLong), Some(contentType)))
+                    case _ =>
+                      Ok.chunked(body).as(contentType)
+                  }
+                } else {
+                  BadGateway
                 }
-              } else {
-                BadGateway
-              }
+            }
           }
-        }
         //#stream-to-result
         val file = File.createTempFile("stream-to-file-", ".txt")
         await(
@@ -462,9 +463,10 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
 
     "map to async result" in withSimpleServer { ws =>
       //#async-result
-      def wsAction = Action.async {
-        ws.url(url).get().map { response => Ok(response.body) }
-      }
+      def wsAction =
+        Action.async {
+          ws.url(url).get().map { response => Ok(response.body) }
+        }
       status(wsAction(FakeRequest())) must_== OK
       //#async-result
     }

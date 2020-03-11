@@ -142,50 +142,51 @@ class DriverActor(schedulerProps: Props) extends Actor {
   }
 
   //scalastyle:off cyclomatic.complexity
-  override def receive: Receive = LoggingReceive {
-    case driver: SchedulerDriver =>
-      log.debug(s"pass on driver to scheduler $scheduler")
-      scheduler ! driver
+  override def receive: Receive =
+    LoggingReceive {
+      case driver: SchedulerDriver =>
+        log.debug(s"pass on driver to scheduler $scheduler")
+        scheduler ! driver
 
-    case LaunchTasks(offers, tasks) =>
-      simulateTaskLaunch(offers, tasks)
+      case LaunchTasks(offers, tasks) =>
+        simulateTaskLaunch(offers, tasks)
 
-    case AcceptOffers(offers, ops, filters) =>
-      val taskInfos = extractTaskInfos(ops)
-      simulateTaskLaunch(offers, taskInfos)
+      case AcceptOffers(offers, ops, filters) =>
+        val taskInfos = extractTaskInfos(ops)
+        simulateTaskLaunch(offers, taskInfos)
 
-    case KillTask(taskId) =>
-      log.debug(s"kill task $taskId")
+      case KillTask(taskId) =>
+        log.debug(s"kill task $taskId")
 
-      tasks.get(taskId.getValue) match {
-        case Some(task) =>
-          scheduleStatusChange(
-            toState = TaskState.TASK_KILLED,
-            afterDuration = 2.seconds)(taskID = taskId)
-        case None =>
-          scheduleStatusChange(
-            toState = TaskState.TASK_LOST,
-            afterDuration = 1.second)(taskID = taskId)
-      }
+        tasks.get(taskId.getValue) match {
+          case Some(task) =>
+            scheduleStatusChange(
+              toState = TaskState.TASK_KILLED,
+              afterDuration = 2.seconds)(taskID = taskId)
+          case None =>
+            scheduleStatusChange(
+              toState = TaskState.TASK_LOST,
+              afterDuration = 1.second)(taskID = taskId)
+        }
 
-    case SuppressOffers => ()
+      case SuppressOffers => ()
 
-    case ReviveOffers =>
-      scheduler ! offers
+      case ReviveOffers =>
+        scheduler ! offers
 
-    case ChangeTaskStatus(status, create) =>
-      changeTaskStatus(status, create)
+      case ChangeTaskStatus(status, create) =>
+        changeTaskStatus(status, create)
 
-    case ReconcileTask(taskStatuses) =>
-      if (taskStatuses.isEmpty) {
-        tasks.values.foreach(scheduler ! _)
-      } else {
-        taskStatuses.iterator
-          .map(_.getTaskId.getValue)
-          .map(tasks)
-          .foreach(scheduler ! _)
-      }
-  }
+      case ReconcileTask(taskStatuses) =>
+        if (taskStatuses.isEmpty) {
+          tasks.values.foreach(scheduler ! _)
+        } else {
+          taskStatuses.iterator
+            .map(_.getTaskId.getValue)
+            .map(tasks)
+            .foreach(scheduler ! _)
+        }
+    }
   //scalastyle:on
 
   private[this] def extractTaskInfos(

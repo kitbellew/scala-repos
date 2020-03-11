@@ -69,12 +69,13 @@ trait MongoRecord[MyType <: MongoRecord[MyType]] extends BsonRecord[MyType] {
   /**
     * Try to save the instance and return the instance in a Box.
     */
-  def saveBox(): Box[MyType] = tryo {
-    runSafe {
-      meta.save(this)
+  def saveBox(): Box[MyType] =
+    tryo {
+      runSafe {
+        meta.save(this)
+      }
+      this
     }
-    this
-  }
 
   /**
     * Update only the dirty fields
@@ -89,12 +90,13 @@ trait MongoRecord[MyType <: MongoRecord[MyType]] extends BsonRecord[MyType] {
   /**
     * Try to update only the dirty fields
     */
-  def updateBox: Box[MyType] = tryo {
-    runSafe {
-      meta.update(this)
+  def updateBox: Box[MyType] =
+    tryo {
+      runSafe {
+        meta.update(this)
+      }
+      this
     }
-    this
-  }
 
   /**
     * Delete the instance from backing store
@@ -108,9 +110,10 @@ trait MongoRecord[MyType <: MongoRecord[MyType]] extends BsonRecord[MyType] {
   /**
     * Try to delete the instance from backing store
     */
-  def deleteBox_! : Box[Boolean] = tryo {
-    runSafe {
-      meta.delete_!(this)
+  def deleteBox_! : Box[Boolean] =
+    tryo {
+      runSafe {
+        meta.delete_!(this)
+      }
     }
-  }
 }

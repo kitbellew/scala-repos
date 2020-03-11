@@ -165,9 +165,10 @@ sealed trait Spool[+A] {
     }
   }
 
-  def filter(f: A => Boolean): Future[Spool[A]] = collect {
-    case x if f(x) => x
-  }
+  def filter(f: A => Boolean): Future[Spool[A]] =
+    collect {
+      case x if f(x) => x
+    }
 
   /**
     * Take elements from the head of the Spool (lazily), while the given condition is true.

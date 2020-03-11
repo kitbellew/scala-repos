@@ -74,7 +74,8 @@ private object Storage {
   val sortChronological = BSONDocument(F.date -> 1)
   val sortAntiChronological = BSONDocument(F.date -> -1)
 
-  def combineDocs(docs: List[BSONDocument]) = docs.foldLeft(BSONDocument()) {
-    case (acc, doc) => acc ++ doc
-  }
+  def combineDocs(docs: List[BSONDocument]) =
+    docs.foldLeft(BSONDocument()) {
+      case (acc, doc) => acc ++ doc
+    }
 }

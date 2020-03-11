@@ -55,12 +55,13 @@ sealed trait NameTree[+T] {
     * tree is evaluated recursively, Alt nodes are evaluated by
     * selecting its first nonnegative child.
     */
-  def eval[U >: T]: Option[Set[U]] = NameTree.eval[U](this) match {
-    case NameTree.Fail        => None
-    case NameTree.Neg         => None
-    case NameTree.Leaf(value) => Some(value)
-    case _                    => scala.sys.error("bug")
-  }
+  def eval[U >: T]: Option[Set[U]] =
+    NameTree.eval[U](this) match {
+      case NameTree.Fail        => None
+      case NameTree.Neg         => None
+      case NameTree.Leaf(value) => Some(value)
+      case _                    => scala.sys.error("bug")
+    }
 }
 
 /**
@@ -159,149 +160,155 @@ object NameTree {
     * yielding a new [[com.twitter.finagle.NameTree NameTree]] which
     * is evaluation-equivalent.
     */
-  def simplify[T](tree: NameTree[T]): NameTree[T] = tree match {
-    case Alt()     => Neg
-    case Alt(tree) => simplify(tree)
-    case Alt(trees @ _*) =>
-      @tailrec def loop(
-          trees: Seq[NameTree[T]],
-          accum: Seq[NameTree[T]]): Seq[NameTree[T]] =
-        trees match {
-          case Nil => accum
-          case Seq(head, tail @ _*) =>
-            simplify(head) match {
-              case Fail => accum :+ Fail
-              case Neg  => loop(tail, accum)
-              case head => loop(tail, accum :+ head)
-            }
+  def simplify[T](tree: NameTree[T]): NameTree[T] =
+    tree match {
+      case Alt()     => Neg
+      case Alt(tree) => simplify(tree)
+      case Alt(trees @ _*) =>
+        @tailrec def loop(
+            trees: Seq[NameTree[T]],
+            accum: Seq[NameTree[T]]): Seq[NameTree[T]] =
+          trees match {
+            case Nil => accum
+            case Seq(head, tail @ _*) =>
+              simplify(head) match {
+                case Fail => accum :+ Fail
+                case Neg  => loop(tail, accum)
+                case head => loop(tail, accum :+ head)
+              }
+          }
+        loop(trees, Nil) match {
+          case Nil       => Neg
+          case Seq(head) => head
+          case trees     => Alt.fromSeq(trees)
         }
-      loop(trees, Nil) match {
-        case Nil       => Neg
-        case Seq(head) => head
-        case trees     => Alt.fromSeq(trees)
-      }
 
-    case Union()                  => Neg
-    case Union(Weighted(_, tree)) => simplify(tree)
-    case Union(trees @ _*) =>
-      @tailrec def loop(
-          trees: Seq[Weighted[T]],
-          accum: Seq[Weighted[T]]): Seq[Weighted[T]] =
-        trees match {
-          case Nil => accum
-          case Seq(Weighted(w, tree), tail @ _*) =>
-            simplify(tree) match {
-              case Fail => unionFail
-              case Neg  => loop(tail, accum)
-              case tree => loop(tail, accum :+ Weighted(w, tree))
-            }
+      case Union()                  => Neg
+      case Union(Weighted(_, tree)) => simplify(tree)
+      case Union(trees @ _*) =>
+        @tailrec def loop(
+            trees: Seq[Weighted[T]],
+            accum: Seq[Weighted[T]]): Seq[Weighted[T]] =
+          trees match {
+            case Nil => accum
+            case Seq(Weighted(w, tree), tail @ _*) =>
+              simplify(tree) match {
+                case Fail => unionFail
+                case Neg  => loop(tail, accum)
+                case tree => loop(tail, accum :+ Weighted(w, tree))
+              }
+          }
+        loop(trees, Nil) match {
+          case Nil                    => Neg
+          case Seq(Weighted(_, tree)) => tree
+          case trees                  => Union.fromSeq(trees)
         }
-      loop(trees, Nil) match {
-        case Nil                    => Neg
-        case Seq(Weighted(_, tree)) => tree
-        case trees                  => Union.fromSeq(trees)
-      }
 
-    case other => other
-  }
+      case other => other
+    }
 
   /**
     * A string parseable by [[com.twitter.finagle.NameTree.read NameTree.read]].
     */
-  def show[T: Showable](tree: NameTree[T]): String = tree match {
-    case Union(Weighted(_, tree)) => show(tree)
-    case Alt(tree)                => show(tree)
+  def show[T: Showable](tree: NameTree[T]): String =
+    tree match {
+      case Union(Weighted(_, tree)) => show(tree)
+      case Alt(tree)                => show(tree)
 
-    case Alt(trees @ _*) =>
-      val trees1 = trees.map(show1(_))
-      trees1 mkString " | "
+      case Alt(trees @ _*) =>
+        val trees1 = trees.map(show1(_))
+        trees1 mkString " | "
 
-    case _ => show1(tree)
-  }
+      case _ => show1(tree)
+    }
 
-  private def show1[T: Showable](tree: NameTree[T]): String = tree match {
-    case Union(Weighted(_, tree)) => show1(tree)
-    case Alt(tree)                => show1(tree)
+  private def show1[T: Showable](tree: NameTree[T]): String =
+    tree match {
+      case Union(Weighted(_, tree)) => show1(tree)
+      case Alt(tree)                => show1(tree)
 
-    case Union(trees @ _*) =>
-      val trees1 = trees map {
-        case Weighted(Weighted.defaultWeight, t) => showSimple(t)
-        case Weighted(w, t)                      => f"${w}%.2f*${showSimple(t)}"
-      }
-      trees1 mkString " & "
+      case Union(trees @ _*) =>
+        val trees1 = trees map {
+          case Weighted(Weighted.defaultWeight, t) => showSimple(t)
+          case Weighted(w, t)                      => f"${w}%.2f*${showSimple(t)}"
+        }
+        trees1 mkString " & "
 
-    case Alt(_*) => showParens(tree)
+      case Alt(_*) => showParens(tree)
 
-    case _ => showSimple(tree)
-  }
+      case _ => showSimple(tree)
+    }
 
-  private def showSimple[T: Showable](tree: NameTree[T]): String = tree match {
-    case Union(Weighted(_, tree)) => showSimple(tree)
-    case Alt(tree)                => showSimple(tree)
+  private def showSimple[T: Showable](tree: NameTree[T]): String =
+    tree match {
+      case Union(Weighted(_, tree)) => showSimple(tree)
+      case Alt(tree)                => showSimple(tree)
 
-    case Union(_*) => showParens(tree)
-    case Alt(_*)   => showParens(tree)
+      case Union(_*) => showParens(tree)
+      case Alt(_*)   => showParens(tree)
 
-    case Leaf(l) => Showable.show(l)
+      case Leaf(l) => Showable.show(l)
 
-    case Fail  => "!"
-    case Neg   => "~"
-    case Empty => "$"
-  }
+      case Fail  => "!"
+      case Neg   => "~"
+      case Empty => "$"
+    }
 
   private def showParens[T: Showable](tree: NameTree[T]): String =
     s"(${show(tree)})"
 
   // return value is restricted to Fail | Neg | Leaf
   // NB: discards weights
-  private def eval[T](tree: NameTree[T]): NameTree[Set[T]] = tree match {
-    case Union() | Alt()          => Neg
-    case Alt(tree)                => eval(tree)
-    case Union(Weighted(_, tree)) => eval(tree)
-    case Fail                     => Fail
-    case Neg                      => Neg
-    case Empty                    => Leaf(Set.empty)
-    case Leaf(t)                  => Leaf(Set(t))
+  private def eval[T](tree: NameTree[T]): NameTree[Set[T]] =
+    tree match {
+      case Union() | Alt()          => Neg
+      case Alt(tree)                => eval(tree)
+      case Union(Weighted(_, tree)) => eval(tree)
+      case Fail                     => Fail
+      case Neg                      => Neg
+      case Empty                    => Leaf(Set.empty)
+      case Leaf(t)                  => Leaf(Set(t))
 
-    case Union(trees @ _*) =>
-      @tailrec def loop(
-          trees: Seq[Weighted[T]],
-          accum: Seq[Set[T]]): NameTree[Set[T]] =
-        trees match {
-          case Nil =>
-            accum match {
-              case Nil => Neg
-              case _   => Leaf(accum.flatten.toSet)
-            }
-          case Seq(Weighted(_, head), tail @ _*) =>
-            eval(head) match {
-              case Fail        => Fail
-              case Neg         => loop(tail, accum)
-              case Leaf(value) => loop(tail, accum :+ value)
-              case _           => scala.sys.error("bug")
-            }
-        }
-      loop(trees, Nil)
+      case Union(trees @ _*) =>
+        @tailrec def loop(
+            trees: Seq[Weighted[T]],
+            accum: Seq[Set[T]]): NameTree[Set[T]] =
+          trees match {
+            case Nil =>
+              accum match {
+                case Nil => Neg
+                case _   => Leaf(accum.flatten.toSet)
+              }
+            case Seq(Weighted(_, head), tail @ _*) =>
+              eval(head) match {
+                case Fail        => Fail
+                case Neg         => loop(tail, accum)
+                case Leaf(value) => loop(tail, accum :+ value)
+                case _           => scala.sys.error("bug")
+              }
+          }
+        loop(trees, Nil)
 
-    case Alt(trees @ _*) =>
-      @tailrec def loop(trees: Seq[NameTree[T]]): NameTree[Set[T]] =
-        trees match {
-          case Nil => Neg
-          case Seq(head, tail @ _*) =>
-            eval(head) match {
-              case Fail           => Fail
-              case Neg            => loop(tail)
-              case head @ Leaf(_) => head
-              case _              => scala.sys.error("bug")
-            }
-        }
-      loop(trees)
-  }
+      case Alt(trees @ _*) =>
+        @tailrec def loop(trees: Seq[NameTree[T]]): NameTree[Set[T]] =
+          trees match {
+            case Nil => Neg
+            case Seq(head, tail @ _*) =>
+              eval(head) match {
+                case Fail           => Fail
+                case Neg            => loop(tail)
+                case head @ Leaf(_) => head
+                case _              => scala.sys.error("bug")
+              }
+          }
+        loop(trees)
+    }
 
-  implicit def equiv[T]: Equiv[NameTree[T]] = new Equiv[NameTree[T]] {
-    def equiv(t1: NameTree[T], t2: NameTree[T]): Boolean =
-      simplify(t1) == simplify(t2)
-  }
+  implicit def equiv[T]: Equiv[NameTree[T]] =
+    new Equiv[NameTree[T]] {
+      def equiv(t1: NameTree[T], t2: NameTree[T]): Boolean =
+        simplify(t1) == simplify(t2)
+    }
 
   /**
     * Parse a [[com.twitter.finagle.NameTree NameTree]] from a string

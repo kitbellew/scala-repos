@@ -19,8 +19,9 @@ class RenameScalaSyntheticParamProcessor
       element: PsiElement,
       editor: Editor): PsiElement = realParamForSyntheticParam(element).orNull
 
-  private def realParamForSyntheticParam(element: PsiElement) = element match {
-    case x: ScParameter => ScalaPsiUtil.parameterForSyntheticParameter(x)
-    case _              => None
-  }
+  private def realParamForSyntheticParam(element: PsiElement) =
+    element match {
+      case x: ScParameter => ScalaPsiUtil.parameterForSyntheticParameter(x)
+      case _              => None
+    }
 }

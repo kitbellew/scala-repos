@@ -87,30 +87,33 @@ trait GenUtils {
   def termPath(fullname: String): Tree = path(fullname, newTermName)
 
   object TypedOrAnnotated {
-    def unapply(tree: Tree): Option[Tree] = tree match {
-      case ty @ Typed(_, _) =>
-        Some(ty)
-      case at @ Annotated(_, _) =>
-        Some(at)
-      case _ =>
-        None
+    def unapply(tree: Tree): Option[Tree] =
+      tree match {
+        case ty @ Typed(_, _) =>
+          Some(ty)
+        case at @ Annotated(_, _) =>
+          Some(at)
+        case _ =>
+          None
+      }
+  }
+
+  def isSemiConcreteTypeMember(tpe: Type) =
+    tpe match {
+      case TypeRef(SingleType(_, _), sym, _)
+          if sym.isAbstractType && !sym.isExistential =>
+        true
+      case _ => false
     }
-  }
 
-  def isSemiConcreteTypeMember(tpe: Type) = tpe match {
-    case TypeRef(SingleType(_, _), sym, _)
-        if sym.isAbstractType && !sym.isExistential =>
-      true
-    case _ => false
-  }
-
-  def isCrossStageTypeBearer(tree: Tree): Boolean = tree match {
-    case TypeApply(hk, _) => isCrossStageTypeBearer(hk)
-    case Select(sym @ Select(_, ctor), nme.apply)
-        if ctor == nme.WeakTypeTag || ctor == nme.TypeTag || ctor == nme.Expr =>
-      true
-    case _ => false
-  }
+  def isCrossStageTypeBearer(tree: Tree): Boolean =
+    tree match {
+      case TypeApply(hk, _) => isCrossStageTypeBearer(hk)
+      case Select(sym @ Select(_, ctor), nme.apply)
+          if ctor == nme.WeakTypeTag || ctor == nme.TypeTag || ctor == nme.Expr =>
+        true
+      case _ => false
+    }
 
   def origin(sym: Symbol) = {
     var origin = ""

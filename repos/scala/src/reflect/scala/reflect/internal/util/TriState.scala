@@ -12,11 +12,12 @@ import TriState._
   */
 final class TriState private (val value: Int) extends AnyVal {
   def isKnown = this != Unknown
-  def booleanValue = this match {
-    case True  => true
-    case False => false
-    case _     => sys.error("Not a Boolean value")
-  }
+  def booleanValue =
+    this match {
+      case True  => true
+      case False => false
+      case _     => sys.error("Not a Boolean value")
+    }
 }
 
 object TriState {

@@ -86,14 +86,15 @@ private[spark] class StaticMemoryManager(
   private[memory] override def acquireExecutionMemory(
       numBytes: Long,
       taskAttemptId: Long,
-      memoryMode: MemoryMode): Long = synchronized {
-    memoryMode match {
-      case MemoryMode.ON_HEAP =>
-        onHeapExecutionMemoryPool.acquireMemory(numBytes, taskAttemptId)
-      case MemoryMode.OFF_HEAP =>
-        offHeapExecutionMemoryPool.acquireMemory(numBytes, taskAttemptId)
+      memoryMode: MemoryMode): Long =
+    synchronized {
+      memoryMode match {
+        case MemoryMode.ON_HEAP =>
+          onHeapExecutionMemoryPool.acquireMemory(numBytes, taskAttemptId)
+        case MemoryMode.OFF_HEAP =>
+          offHeapExecutionMemoryPool.acquireMemory(numBytes, taskAttemptId)
+      }
     }
-  }
 }
 
 private[spark] object StaticMemoryManager {

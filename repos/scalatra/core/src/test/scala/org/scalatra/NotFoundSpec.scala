@@ -66,43 +66,53 @@ class NotFoundSpec extends ScalatraSpec {
     },
     "/pass-from-not-allowed/*")
 
-  def customNotFound = get("/custom/matches-nothing") {
-    body must_== "custom not found"
-  }
+  def customNotFound =
+    get("/custom/matches-nothing") {
+      body must_== "custom not found"
+    }
 
-  def customNotFoundStatus = get("/custom/matches-nothing") {
-    status must_== 200
-  }
+  def customNotFoundStatus =
+    get("/custom/matches-nothing") {
+      status must_== 200
+    }
 
-  def servletNotFoundSends404 = get("/default/matches-nothing") {
-    status must_== 404
-  }
+  def servletNotFoundSends404 =
+    get("/default/matches-nothing") {
+      status must_== 404
+    }
 
-  def filterNotFoundInvokesChain = get("/filtered/fall-through") {
-    body must_== "fell through"
-  }
+  def filterNotFoundInvokesChain =
+    get("/filtered/fall-through") {
+      body must_== "fell through"
+    }
 
-  def customMethodNotAllowed = get("/custom/no-get") {
-    body must_== "custom method not allowed"
-  }
+  def customMethodNotAllowed =
+    get("/custom/no-get") {
+      body must_== "custom method not allowed"
+    }
 
-  def defaultMethodNotAllowedSends405 = get("/default/no-get") {
-    status must_== 405
-  }
+  def defaultMethodNotAllowedSends405 =
+    get("/default/no-get") {
+      status must_== 405
+    }
 
-  def allowHeader = get("/default/no-get") {
-    header("Allow").split(", ").toSet must_== Set("POST", "PUT")
-  }
+  def allowHeader =
+    get("/default/no-get") {
+      header("Allow").split(", ").toSet must_== Set("POST", "PUT")
+    }
 
-  def getImpliesHead = post("/default/get") {
-    header("Allow").split(", ").toSet must_== Set("GET", "HEAD")
-  }
+  def getImpliesHead =
+    post("/default/get") {
+      header("Allow").split(", ").toSet must_== Set("GET", "HEAD")
+    }
 
-  def passFromNotAllowed = get("/pass-from-not-allowed/no-get") {
-    body must_== "fell through"
-  }
+  def passFromNotAllowed =
+    get("/pass-from-not-allowed/no-get") {
+      body must_== "fell through"
+    }
 
-  def methodNotAllowedFilterPass = get("/filtered/get") {
-    body must_== "servlet get"
-  }
+  def methodNotAllowedFilterPass =
+    get("/filtered/get") {
+      body must_== "servlet get"
+    }
 }

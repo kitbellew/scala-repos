@@ -232,57 +232,60 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
 
             def columns = buildColumns.toSeq
 
-            def extract(rs: ResultSet, rowId: Int) = rs.getObject(index) match {
-              case pgo: PGobject =>
-                pgo.getType match {
-                  case "hstore" =>
-                    pgo.getValue
-                      .split(",|=>")
-                      .toList
-                      .map { v => val t = v.trim; t.substring(1, t.length - 1) }
-                      .grouped(2)
-                      .foreach {
-                        case List(key, value) =>
-                          val hsRef = ColumnRef(selector \ key, CString)
-                          val column = buildColumns
-                            .getOrElse(
-                              hsRef,
-                              ArrayStrColumn.empty(yggConfig.maxSliceSize))
-                            .asInstanceOf[ArrayStrColumn]
-                            .unsafeTap { c => c.update(rowId, value) }
-                          buildColumns += (hsRef -> column)
+            def extract(rs: ResultSet, rowId: Int) =
+              rs.getObject(index) match {
+                case pgo: PGobject =>
+                  pgo.getType match {
+                    case "hstore" =>
+                      pgo.getValue
+                        .split(",|=>")
+                        .toList
+                        .map { v =>
+                          val t = v.trim; t.substring(1, t.length - 1)
+                        }
+                        .grouped(2)
+                        .foreach {
+                          case List(key, value) =>
+                            val hsRef = ColumnRef(selector \ key, CString)
+                            val column = buildColumns
+                              .getOrElse(
+                                hsRef,
+                                ArrayStrColumn.empty(yggConfig.maxSliceSize))
+                              .asInstanceOf[ArrayStrColumn]
+                              .unsafeTap { c => c.update(rowId, value) }
+                            buildColumns += (hsRef -> column)
 
-                        case invalid =>
+                          case invalid =>
+                            logger.error(
+                              "Invalid pair in hstore value: " + invalid)
+                        }
+
+                    case "json" =>
+                      JParser.parseFromString(pgo.getValue) match {
+                        case Success(jv) =>
+                          buildColumns = Slice.withIdsAndValues(
+                            jv,
+                            buildColumns,
+                            rowId,
+                            yggConfig.maxSliceSize,
+                            Some(selector \ CPath(_)))
+
+                        case Failure(error) =>
                           logger.error(
-                            "Invalid pair in hstore value: " + invalid)
+                            "Failure parsing JSON column value (%s): %s".format(
+                              truncateString(pgo.getValue),
+                              error.getMessage))
                       }
 
-                  case "json" =>
-                    JParser.parseFromString(pgo.getValue) match {
-                      case Success(jv) =>
-                        buildColumns = Slice.withIdsAndValues(
-                          jv,
-                          buildColumns,
-                          rowId,
-                          yggConfig.maxSliceSize,
-                          Some(selector \ CPath(_)))
+                    case other =>
+                      logger.warn("Unsupportd PostgreSQL type: " + other)
+                  }
 
-                      case Failure(error) =>
-                        logger.error(
-                          "Failure parsing JSON column value (%s): %s".format(
-                            truncateString(pgo.getValue),
-                            error.getMessage))
-                    }
-
-                  case other =>
-                    logger.warn("Unsupportd PostgreSQL type: " + other)
-                }
-
-              case other =>
-                logger.warn(
-                  "Encountered unknown data from PostgreSQL: %s (%s)"
-                    .format(other, other.getClass))
-            }
+                case other =>
+                  logger.warn(
+                    "Encountered unknown data from PostgreSQL: %s (%s)"
+                      .format(other, other.getClass))
+              }
 
           }
         } else {
@@ -313,33 +316,34 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
 
     private def jTypeToProperties(
         tpe: JType,
-        current: Set[String]): Set[String] = tpe match {
-      case JArrayFixedT(elements) if current.nonEmpty =>
-        elements
-          .map {
-            case (index, childType) =>
-              val newPaths = current.map { s => s + "[" + index + "]" }
-              jTypeToProperties(childType, newPaths)
-          }
-          .toSet
-          .flatten
+        current: Set[String]): Set[String] =
+      tpe match {
+        case JArrayFixedT(elements) if current.nonEmpty =>
+          elements
+            .map {
+              case (index, childType) =>
+                val newPaths = current.map { s => s + "[" + index + "]" }
+                jTypeToProperties(childType, newPaths)
+            }
+            .toSet
+            .flatten
 
-      case JObjectFixedT(fields) =>
-        fields
-          .map {
-            case (name, childType) =>
-              val newPaths = if (current.nonEmpty) {
-                current.map { s => s + "." + name }
-              } else {
-                Set(name)
-              }
-              jTypeToProperties(childType, newPaths)
-          }
-          .toSet
-          .flatten
+        case JObjectFixedT(fields) =>
+          fields
+            .map {
+              case (name, childType) =>
+                val newPaths = if (current.nonEmpty) {
+                  current.map { s => s + "." + name }
+                } else {
+                  Set(name)
+                }
+                jTypeToProperties(childType, newPaths)
+            }
+            .toSet
+            .flatten
 
-      case _ => current
-    }
+        case _ => current
+      }
 
     case class Query(expr: String, limit: Int) {
       private val baseQuery = if (limit > 0) { expr + " LIMIT " + limit }

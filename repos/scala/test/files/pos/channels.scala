@@ -13,17 +13,19 @@ object Bang {
  */
 object Test extends App {
   object IC extends Channel[Int]
-  def f[b](x: ![b]): Int = x match {
-    case send: ![c] =>
-      send.chan match {
-        case IC => send.data
-      }
-  }
+  def f[b](x: ![b]): Int =
+    x match {
+      case send: ![c] =>
+        send.chan match {
+          case IC => send.data
+        }
+    }
 }
 
 object Test2 extends App {
   object IC extends Channel[Set[Int]]
-  def f[b](s: ![b]): Set[Int] = s match {
-    case IC ! x => x
-  }
+  def f[b](s: ![b]): Set[Int] =
+    s match {
+      case IC ! x => x
+    }
 }

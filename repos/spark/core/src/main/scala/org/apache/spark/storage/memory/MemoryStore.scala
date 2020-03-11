@@ -82,9 +82,10 @@ private[spark] class MemoryStore(
     * Amount of storage memory, in bytes, used for caching blocks.
     * This does not include memory used for unrolling.
     */
-  private def blocksMemoryUsed: Long = memoryManager.synchronized {
-    memoryUsed - currentUnrollMemory
-  }
+  private def blocksMemoryUsed: Long =
+    memoryManager.synchronized {
+      memoryUsed - currentUnrollMemory
+    }
 
   def getSize(blockId: BlockId): Long = {
     entries.synchronized {
@@ -299,29 +300,31 @@ private[spark] class MemoryStore(
     }
   }
 
-  def remove(blockId: BlockId): Boolean = memoryManager.synchronized {
-    val entry = entries.synchronized {
-      entries.remove(blockId)
+  def remove(blockId: BlockId): Boolean =
+    memoryManager.synchronized {
+      val entry = entries.synchronized {
+        entries.remove(blockId)
+      }
+      if (entry != null) {
+        memoryManager.releaseStorageMemory(entry.size)
+        logDebug(
+          s"Block $blockId of size ${entry.size} dropped " +
+            s"from memory (free ${maxMemory - blocksMemoryUsed})")
+        true
+      } else {
+        false
+      }
     }
-    if (entry != null) {
-      memoryManager.releaseStorageMemory(entry.size)
-      logDebug(
-        s"Block $blockId of size ${entry.size} dropped " +
-          s"from memory (free ${maxMemory - blocksMemoryUsed})")
-      true
-    } else {
-      false
-    }
-  }
 
-  def clear(): Unit = memoryManager.synchronized {
-    entries.synchronized {
-      entries.clear()
+  def clear(): Unit =
+    memoryManager.synchronized {
+      entries.synchronized {
+        entries.clear()
+      }
+      unrollMemoryMap.clear()
+      memoryManager.releaseAllStorageMemory()
+      logInfo("MemoryStore cleared")
     }
-    unrollMemoryMap.clear()
-    memoryManager.releaseAllStorageMemory()
-    logInfo("MemoryStore cleared")
-  }
 
   /**
     * Return the RDD ID that a given block ID is from, or None if it is not an RDD block.
@@ -462,23 +465,24 @@ private[spark] class MemoryStore(
   /**
     * Return the amount of memory currently occupied for unrolling blocks across all tasks.
     */
-  def currentUnrollMemory: Long = memoryManager.synchronized {
-    unrollMemoryMap.values.sum
-  }
+  def currentUnrollMemory: Long =
+    memoryManager.synchronized {
+      unrollMemoryMap.values.sum
+    }
 
   /**
     * Return the amount of memory currently occupied for unrolling blocks by this task.
     */
-  def currentUnrollMemoryForThisTask: Long = memoryManager.synchronized {
-    unrollMemoryMap.getOrElse(currentTaskAttemptId(), 0L)
-  }
+  def currentUnrollMemoryForThisTask: Long =
+    memoryManager.synchronized {
+      unrollMemoryMap.getOrElse(currentTaskAttemptId(), 0L)
+    }
 
   /**
     * Return the number of tasks currently unrolling blocks.
     */
-  private def numTasksUnrolling: Int = memoryManager.synchronized {
-    unrollMemoryMap.keys.size
-  }
+  private def numTasksUnrolling: Int =
+    memoryManager.synchronized { unrollMemoryMap.keys.size }
 
   /**
     * Log information about current memory usage.

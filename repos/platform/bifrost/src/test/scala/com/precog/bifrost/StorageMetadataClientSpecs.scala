@@ -37,9 +37,10 @@ import org.specs2.mutable._
 abstract class BrowseServiceSpecs[M[+_]](
     implicit val M: Monad[M] with Comonad[M])
     extends Specification {
-  def colSizeMetadata(descriptor: ColumnRef, size: Long): ColumnMetadata = Map(
-    descriptor -> Map(StringValueStats -> StringValueStats(size, "a", "z"))
-  )
+  def colSizeMetadata(descriptor: ColumnRef, size: Long): ColumnMetadata =
+    Map(
+      descriptor -> Map(StringValueStats -> StringValueStats(size, "a", "z"))
+    )
 
   lazy val projectionMetadata: Map[Path, Map[ColumnRef, Long]] = Map(
     Path("/foo/bar1/baz/quux1") -> Map(ColumnRef(CPath(), CString) -> 10L),

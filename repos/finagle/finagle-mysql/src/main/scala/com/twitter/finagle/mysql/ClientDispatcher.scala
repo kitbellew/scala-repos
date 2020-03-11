@@ -66,10 +66,11 @@ private[mysql] class PrepareCache(
     * Populate cache with unique prepare requests identified by their
     * sql queries.
     */
-  override def apply(req: Request): Future[Result] = req match {
-    case _: PrepareRequest => fn(req)
-    case _                 => super.apply(req)
-  }
+  override def apply(req: Request): Future[Result] =
+    req match {
+      case _: PrepareRequest => fn(req)
+      case _                 => super.apply(req)
+    }
 }
 
 object ClientDispatcher {
@@ -183,58 +184,59 @@ class ClientDispatcher(
       packet: Packet,
       cmd: Byte,
       signal: Promise[Unit]
-  ): Future[Result] = packet.body.headOption match {
-    case Some(Packet.OkByte) if cmd == Command.COM_STMT_PREPARE =>
-      // decode PrepareOk Result: A header packet potentially followed
-      // by two transmissions that contain parameter and column
-      // information, respectively.
-      val result = for {
-        ok <- const(PrepareOK(packet))
-        (seq1, _) <- readTx(ok.numOfParams)
-        (seq2, _) <- readTx(ok.numOfCols)
-        ps <- Future.collect(seq1 map { p => const(Field(p)) })
-        cs <- Future.collect(seq2 map { p => const(Field(p)) })
-      } yield ok.copy(params = ps, columns = cs)
+  ): Future[Result] =
+    packet.body.headOption match {
+      case Some(Packet.OkByte) if cmd == Command.COM_STMT_PREPARE =>
+        // decode PrepareOk Result: A header packet potentially followed
+        // by two transmissions that contain parameter and column
+        // information, respectively.
+        val result = for {
+          ok <- const(PrepareOK(packet))
+          (seq1, _) <- readTx(ok.numOfParams)
+          (seq2, _) <- readTx(ok.numOfCols)
+          ps <- Future.collect(seq1 map { p => const(Field(p)) })
+          cs <- Future.collect(seq2 map { p => const(Field(p)) })
+        } yield ok.copy(params = ps, columns = cs)
 
-      result ensure signal.setDone()
+        result ensure signal.setDone()
 
-    // decode OK Result
-    case Some(Packet.OkByte) =>
-      signal.setDone()
-      const(OK(packet))
+      // decode OK Result
+      case Some(Packet.OkByte) =>
+        signal.setDone()
+        const(OK(packet))
 
-    // decode Error result
-    case Some(Packet.ErrorByte) =>
-      signal.setDone()
-      const(Error(packet)) flatMap { err =>
-        val Error(code, state, msg) = err
-        Future.exception(ServerError(code, state, msg))
-      }
+      // decode Error result
+      case Some(Packet.ErrorByte) =>
+        signal.setDone()
+        const(Error(packet)) flatMap { err =>
+          val Error(code, state, msg) = err
+          Future.exception(ServerError(code, state, msg))
+        }
 
-    // decode ResultSet
-    case Some(byte) =>
-      val isBinaryEncoded = cmd != Command.COM_QUERY
-      val numCols = Try {
-        val br = BufferReader(packet.body)
-        br.readLengthCodedBinary().toInt
-      }
+      // decode ResultSet
+      case Some(byte) =>
+        val isBinaryEncoded = cmd != Command.COM_QUERY
+        val numCols = Try {
+          val br = BufferReader(packet.body)
+          br.readLengthCodedBinary().toInt
+        }
 
-      val result = for {
-        cnt <- const(numCols)
-        (fields, _) <- readTx(cnt)
-        (rows, _) <- readTx()
-        res <- const(ResultSet(isBinaryEncoded)(packet, fields, rows))
-      } yield res
+        val result = for {
+          cnt <- const(numCols)
+          (fields, _) <- readTx(cnt)
+          (rows, _) <- readTx()
+          res <- const(ResultSet(isBinaryEncoded)(packet, fields, rows))
+        } yield res
 
-      // TODO: When streaming is implemented the
-      // done signal should dependent on the
-      // completion of the stream.
-      result ensure signal.setDone()
+        // TODO: When streaming is implemented the
+        // done signal should dependent on the
+        // completion of the stream.
+        result ensure signal.setDone()
 
-    case _ =>
-      signal.setDone()
-      Future.exception(lostSyncExc)
-  }
+      case _ =>
+        signal.setDone()
+        Future.exception(lostSyncExc)
+    }
 
   /**
     * Reads a transmission from the transport that is terminated by

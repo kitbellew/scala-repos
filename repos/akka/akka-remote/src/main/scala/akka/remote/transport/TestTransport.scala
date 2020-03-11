@@ -504,9 +504,10 @@ object AssociationRegistry {
   private final val registries =
     scala.collection.mutable.Map[String, AssociationRegistry]()
 
-  def get(key: String): AssociationRegistry = this.synchronized {
-    registries.getOrElseUpdate(key, new AssociationRegistry)
-  }
+  def get(key: String): AssociationRegistry =
+    this.synchronized {
+      registries.getOrElseUpdate(key, new AssociationRegistry)
+    }
 
   def clear(): Unit = this.synchronized { registries.clear() }
 }

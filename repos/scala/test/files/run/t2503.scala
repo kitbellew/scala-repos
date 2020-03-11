@@ -9,9 +9,10 @@ trait SB[A] extends Buffer[A] {
       super.insertAll(n, iter)
     }
 
-  abstract override def update(n: Int, newelem: A): Unit = synchronized {
-    super.update(n, newelem)
-  }
+  abstract override def update(n: Int, newelem: A): Unit =
+    synchronized {
+      super.update(n, newelem)
+    }
 }
 
 object Test extends App {

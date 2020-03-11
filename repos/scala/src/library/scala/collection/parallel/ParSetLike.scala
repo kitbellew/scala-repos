@@ -37,11 +37,13 @@ trait ParSetLike[
 
   // note: should not override toSet (could be mutable)
 
-  def union(that: GenSet[T]): Repr = sequentially {
-    _ union that
-  }
+  def union(that: GenSet[T]): Repr =
+    sequentially {
+      _ union that
+    }
 
-  def diff(that: GenSet[T]): Repr = sequentially {
-    _ diff that
-  }
+  def diff(that: GenSet[T]): Repr =
+    sequentially {
+      _ diff that
+    }
 }

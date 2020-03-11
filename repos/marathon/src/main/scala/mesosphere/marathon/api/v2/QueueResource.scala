@@ -35,8 +35,8 @@ class QueueResource @Inject() (
   @GET
   @Timed
   @Produces(Array(MarathonMediaType.PREFERRED_APPLICATION_JSON))
-  def index(@Context req: HttpServletRequest): Response = authenticated(req) {
-    implicit identity =>
+  def index(@Context req: HttpServletRequest): Response =
+    authenticated(req) { implicit identity =>
       import Formats._
 
       val queuedWithDelay = launchQueue.list
@@ -55,14 +55,14 @@ class QueueResource @Inject() (
             )
         }
       ok(Json.obj("queue" -> queuedWithDelay).toString())
-  }
+    }
 
   @DELETE
   @Path("""{appId:.+}/delay""")
   def resetDelay(
       @PathParam("appId") id: String,
-      @Context req: HttpServletRequest): Response = authenticated(req) {
-    implicit identity =>
+      @Context req: HttpServletRequest): Response =
+    authenticated(req) { implicit identity =>
       val appId = id.toRootPath
       val maybeApp = launchQueue.list.find(_.app.id == appId).map(_.app)
       withAuthorization(
@@ -72,5 +72,5 @@ class QueueResource @Inject() (
         launchQueue.resetDelay(app)
         noContent
       }
-  }
+    }
 }

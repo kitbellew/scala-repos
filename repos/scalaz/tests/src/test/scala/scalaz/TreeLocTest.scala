@@ -11,14 +11,16 @@ object TreeLocTest extends SpecLite {
   checkAll(FoldableTests.anyAndAllLazy[TreeLoc])
 
   {
-    def treeEqual[A: Equal]: Equal[Tree[A]] = new Equal[Tree[A]] {
-      import std.stream.streamEqual
-      def streamEqualApprox =
-        streamEqual[Tree[A]].contramap((_: Stream[Tree[A]]).take(1000))
-      def equal(a1: Tree[A], a2: Tree[A]) =
-        Equal[A].equal(a1.rootLabel, a2.rootLabel) && streamEqualApprox
-          .equal(a1.subForest, a2.subForest)
-    }
+    def treeEqual[A: Equal]: Equal[Tree[A]] =
+      new Equal[Tree[A]] {
+        import std.stream.streamEqual
+        def streamEqualApprox =
+          streamEqual[Tree[A]].contramap((_: Stream[Tree[A]]).take(1000))
+        def equal(a1: Tree[A], a2: Tree[A]) =
+          Equal[A].equal(a1.rootLabel, a2.rootLabel) && streamEqualApprox.equal(
+            a1.subForest,
+            a2.subForest)
+      }
 
     // TODO checkAll("TreeLoc", applicative.laws[TreeLoc])
     checkAll("TreeLoc", comonad.laws[TreeLoc])

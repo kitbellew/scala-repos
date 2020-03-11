@@ -26,16 +26,17 @@ trait HasCompileSocket {
       out println (compileSocket getPassword sock.getPort())
       out println (args mkString "\u0000")
 
-      def loop(): Boolean = in.readLine() match {
-        case null => noErrors
-        case line =>
-          if (isErrorMessage(line))
-            noErrors = false
+      def loop(): Boolean =
+        in.readLine() match {
+          case null => noErrors
+          case line =>
+            if (isErrorMessage(line))
+              noErrors = false
 
-          // be consistent with scalac: everything goes to stderr
-          compileSocket.warn(line)
-          loop()
-      }
+            // be consistent with scalac: everything goes to stderr
+            compileSocket.warn(line)
+            loop()
+        }
       try loop()
       finally sock.close()
     }
@@ -180,29 +181,30 @@ class CompileSocket extends CompileOutputCommon {
     val retryDelay = 50L
     val maxAttempts = (maxMillis / retryDelay).toInt
 
-    def getsock(attempts: Int): Option[Socket] = attempts match {
-      case 0 =>
-        warn("Unable to establish connection to compilation daemon"); None
-      case num =>
-        val port = if (create) getPort(vmArgs) else pollPort()
-        if (port < 0) return None
+    def getsock(attempts: Int): Option[Socket] =
+      attempts match {
+        case 0 =>
+          warn("Unable to establish connection to compilation daemon"); None
+        case num =>
+          val port = if (create) getPort(vmArgs) else pollPort()
+          if (port < 0) return None
 
-        Socket.localhost(port).either match {
-          case Right(socket) =>
-            info("[Connected to compilation daemon at port %d]" format port)
-            Some(socket)
-          case Left(err) =>
-            info(err.toString)
-            info(
-              "[Connecting to compilation daemon at port %d failed; re-trying...]" format port)
+          Socket.localhost(port).either match {
+            case Right(socket) =>
+              info("[Connected to compilation daemon at port %d]" format port)
+              Some(socket)
+            case Left(err) =>
+              info(err.toString)
+              info(
+                "[Connecting to compilation daemon at port %d failed; re-trying...]" format port)
 
-            if (attempts % 2 == 0)
-              deletePort(port) // 50% chance to stop trying on this port
+              if (attempts % 2 == 0)
+                deletePort(port) // 50% chance to stop trying on this port
 
-            Thread sleep retryDelay // delay before retrying
-            getsock(attempts - 1)
-        }
-    }
+              Thread sleep retryDelay // delay before retrying
+              getsock(attempts - 1)
+          }
+      }
     getsock(maxAttempts)
   }
 

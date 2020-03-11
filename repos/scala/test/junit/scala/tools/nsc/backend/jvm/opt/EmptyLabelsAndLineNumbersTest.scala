@@ -68,38 +68,39 @@ class EmptyLabelsAndLineNumbersTest {
         target3: Int,
         target4: Int,
         target5: Int,
-        target6: Int) = List[(Instruction, Boolean)](
-      Label(1),
-      Label(2).dead,
-      Label(3).dead,
-      LineNumber(3, Label(target1)),
-      VarOp(ILOAD, 1),
-      Jump(IFGE, Label(target2)),
-      Label(4),
-      Label(5).dead,
-      Label(6).dead,
-      VarOp(ILOAD, 2),
-      Jump(IFGE, Label(target3)),
-      Label(7),
-      Label(8).dead,
-      Label(9).dead,
-      Op(RETURN),
-      LookupSwitch(
-        LOOKUPSWITCH,
-        Label(target4),
-        List(1, 2),
-        List(Label(target4), Label(target5))),
-      TableSwitch(
-        TABLESWITCH,
-        1,
-        2,
-        Label(target4),
-        List(Label(target4), Label(target5))),
-      Label(10),
-      LineNumber(10, Label(10)),
-      Label(11).dead,
-      LineNumber(12, Label(target6))
-    )
+        target6: Int) =
+      List[(Instruction, Boolean)](
+        Label(1),
+        Label(2).dead,
+        Label(3).dead,
+        LineNumber(3, Label(target1)),
+        VarOp(ILOAD, 1),
+        Jump(IFGE, Label(target2)),
+        Label(4),
+        Label(5).dead,
+        Label(6).dead,
+        VarOp(ILOAD, 2),
+        Jump(IFGE, Label(target3)),
+        Label(7),
+        Label(8).dead,
+        Label(9).dead,
+        Op(RETURN),
+        LookupSwitch(
+          LOOKUPSWITCH,
+          Label(target4),
+          List(1, 2),
+          List(Label(target4), Label(target5))),
+        TableSwitch(
+          TABLESWITCH,
+          1,
+          2,
+          Label(target4),
+          List(Label(target4), Label(target5))),
+        Label(10),
+        LineNumber(10, Label(10)),
+        Label(11).dead,
+        LineNumber(12, Label(target6))
+      )
 
     val method =
       genMethod(handlers = handler)(ops(2, 3, 8, 8, 9, 11).map(_._1): _*)

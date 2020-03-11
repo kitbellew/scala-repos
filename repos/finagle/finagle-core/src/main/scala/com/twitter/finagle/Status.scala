@@ -87,12 +87,13 @@ object Status {
     * exponential backoffs from 1ms to around 1s.
     */
   def whenOpen(get: => Status): Future[Unit] = {
-    def go(n: Int): Future[Unit] = get match {
-      case Open   => Future.Done
-      case Closed => Future.exception(new ClosedException)
-      case Busy =>
-        Future.sleep((1 << n).milliseconds) before go(math.min(n + 1, 10))
-    }
+    def go(n: Int): Future[Unit] =
+      get match {
+        case Open   => Future.Done
+        case Closed => Future.exception(new ClosedException)
+        case Busy =>
+          Future.sleep((1 << n).milliseconds) before go(math.min(n + 1, 10))
+      }
 
     go(0)
   }

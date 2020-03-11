@@ -20,15 +20,16 @@ trait JettyContainer extends Container {
   def servletContextHandler: ServletContextHandler
   def skipDefaultServlet: Boolean = false
 
-  def mount(klass: Class[_], path: String) = klass match {
-    case servlet if classOf[HttpServlet].isAssignableFrom(servlet) =>
-      addServlet(servlet.asInstanceOf[Class[_ <: HttpServlet]], path)
-    case filter if classOf[Filter].isAssignableFrom(filter) =>
-      addFilter(filter.asInstanceOf[Class[_ <: Filter]], path)
-    case _ =>
-      throw new IllegalArgumentException(
-        klass + " is not assignable to either HttpServlet or Filter")
-  }
+  def mount(klass: Class[_], path: String) =
+    klass match {
+      case servlet if classOf[HttpServlet].isAssignableFrom(servlet) =>
+        addServlet(servlet.asInstanceOf[Class[_ <: HttpServlet]], path)
+      case filter if classOf[Filter].isAssignableFrom(filter) =>
+        addFilter(filter.asInstanceOf[Class[_ <: Filter]], path)
+      case _ =>
+        throw new IllegalArgumentException(
+          klass + " is not assignable to either HttpServlet or Filter")
+    }
 
   def mount(servlet: HttpServlet, path: String) { addServlet(servlet, path) }
   def mount(servlet: HttpServlet, path: String, name: String) {

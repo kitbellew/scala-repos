@@ -106,14 +106,16 @@ trait RouteTest
     response.headers.find(_.is(name.toLowerCase))
   def status: StatusCode = response.status
 
-  def closingExtension: String = chunks.lastOption match {
-    case Some(HttpEntity.LastChunk(extension, _)) ⇒ extension
-    case _ ⇒ ""
-  }
-  def trailer: immutable.Seq[HttpHeader] = chunks.lastOption match {
-    case Some(HttpEntity.LastChunk(_, trailer)) ⇒ trailer
-    case _ ⇒ Nil
-  }
+  def closingExtension: String =
+    chunks.lastOption match {
+      case Some(HttpEntity.LastChunk(extension, _)) ⇒ extension
+      case _ ⇒ ""
+    }
+  def trailer: immutable.Seq[HttpHeader] =
+    chunks.lastOption match {
+      case Some(HttpEntity.LastChunk(_, trailer)) ⇒ trailer
+      case _ ⇒ Nil
+    }
 
   def rejections: immutable.Seq[Rejection] = result.rejections
   def rejection: Rejection = {

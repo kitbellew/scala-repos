@@ -36,11 +36,12 @@ trait ClassManifestDeprecatedApis[T] extends OptManifest[T] {
 
   private def subargs(
       args1: List[OptManifest[_]],
-      args2: List[OptManifest[_]]) = (args1 corresponds args2) {
-    // !!! [Martin] this is wrong, need to take variance into account
-    case (x: ClassManifest[_], y: ClassManifest[_]) => x <:< y
-    case (x, y)                                     => (x eq NoManifest) && (y eq NoManifest)
-  }
+      args2: List[OptManifest[_]]) =
+    (args1 corresponds args2) {
+      // !!! [Martin] this is wrong, need to take variance into account
+      case (x: ClassManifest[_], y: ClassManifest[_]) => x <:< y
+      case (x, y)                                     => (x eq NoManifest) && (y eq NoManifest)
+    }
 
   /** Tests whether the type represented by this manifest is a subtype
     * of the type represented by `that` manifest, subject to the limitations
@@ -92,10 +93,11 @@ trait ClassManifestDeprecatedApis[T] extends OptManifest[T] {
   def >:>(that: ClassManifest[_]): Boolean =
     that <:< this
 
-  override def canEqual(other: Any) = other match {
-    case _: ClassManifest[_] => true
-    case _                   => false
-  }
+  override def canEqual(other: Any) =
+    other match {
+      case _: ClassManifest[_] => true
+      case _                   => false
+    }
 
   protected def arrayClass[T](tp: jClass[_]): jClass[Array[T]] =
     java.lang.reflect.Array
@@ -196,18 +198,19 @@ object ClassManifestFactory {
   val Nothing = ManifestFactory.Nothing
   val Null = ManifestFactory.Null
 
-  def fromClass[T](clazz: jClass[T]): ClassManifest[T] = clazz match {
-    case java.lang.Byte.TYPE      => Byte.asInstanceOf[ClassManifest[T]]
-    case java.lang.Short.TYPE     => Short.asInstanceOf[ClassManifest[T]]
-    case java.lang.Character.TYPE => Char.asInstanceOf[ClassManifest[T]]
-    case java.lang.Integer.TYPE   => Int.asInstanceOf[ClassManifest[T]]
-    case java.lang.Long.TYPE      => Long.asInstanceOf[ClassManifest[T]]
-    case java.lang.Float.TYPE     => Float.asInstanceOf[ClassManifest[T]]
-    case java.lang.Double.TYPE    => Double.asInstanceOf[ClassManifest[T]]
-    case java.lang.Boolean.TYPE   => Boolean.asInstanceOf[ClassManifest[T]]
-    case java.lang.Void.TYPE      => Unit.asInstanceOf[ClassManifest[T]]
-    case _                        => classType[T with AnyRef](clazz).asInstanceOf[ClassManifest[T]]
-  }
+  def fromClass[T](clazz: jClass[T]): ClassManifest[T] =
+    clazz match {
+      case java.lang.Byte.TYPE      => Byte.asInstanceOf[ClassManifest[T]]
+      case java.lang.Short.TYPE     => Short.asInstanceOf[ClassManifest[T]]
+      case java.lang.Character.TYPE => Char.asInstanceOf[ClassManifest[T]]
+      case java.lang.Integer.TYPE   => Int.asInstanceOf[ClassManifest[T]]
+      case java.lang.Long.TYPE      => Long.asInstanceOf[ClassManifest[T]]
+      case java.lang.Float.TYPE     => Float.asInstanceOf[ClassManifest[T]]
+      case java.lang.Double.TYPE    => Double.asInstanceOf[ClassManifest[T]]
+      case java.lang.Boolean.TYPE   => Boolean.asInstanceOf[ClassManifest[T]]
+      case java.lang.Void.TYPE      => Unit.asInstanceOf[ClassManifest[T]]
+      case _                        => classType[T with AnyRef](clazz).asInstanceOf[ClassManifest[T]]
+    }
 
   def singleType[T <: AnyRef](value: AnyRef): Manifest[T] =
     Manifest.singleType(value)
@@ -239,10 +242,11 @@ object ClassManifestFactory {
       args: OptManifest[_]*): ClassManifest[T] =
     new ClassTypeManifest[T](Some(prefix), clazz, args.toList)
 
-  def arrayType[T](arg: OptManifest[_]): ClassManifest[Array[T]] = arg match {
-    case NoManifest          => Object.asInstanceOf[ClassManifest[Array[T]]]
-    case m: ClassManifest[_] => m.asInstanceOf[ClassManifest[T]].arrayManifest
-  }
+  def arrayType[T](arg: OptManifest[_]): ClassManifest[Array[T]] =
+    arg match {
+      case NoManifest          => Object.asInstanceOf[ClassManifest[Array[T]]]
+      case m: ClassManifest[_] => m.asInstanceOf[ClassManifest[T]].arrayManifest
+    }
 
   /** ClassManifest for the abstract type `prefix # name`. `upperBound` is not
     * strictly necessary as it could be obtained by reflection. It was

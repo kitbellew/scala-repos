@@ -32,19 +32,20 @@ object WriterReaderProperties extends Properties("WriterReaderProperties") {
   def output = new ByteArrayOutputStream
 
   // The default Array[Equiv] is reference. WAT!?
-  implicit def aeq[T: Equiv]: Equiv[Array[T]] = new Equiv[Array[T]] {
-    def equiv(a: Array[T], b: Array[T]): Boolean = {
-      val teq = Equiv[T]
-      @annotation.tailrec
-      def go(pos: Int): Boolean =
-        if (pos == a.length) true
-        else {
-          teq.equiv(a(pos), b(pos)) && go(pos + 1)
-        }
+  implicit def aeq[T: Equiv]: Equiv[Array[T]] =
+    new Equiv[Array[T]] {
+      def equiv(a: Array[T], b: Array[T]): Boolean = {
+        val teq = Equiv[T]
+        @annotation.tailrec
+        def go(pos: Int): Boolean =
+          if (pos == a.length) true
+          else {
+            teq.equiv(a(pos), b(pos)) && go(pos + 1)
+          }
 
-      (a.length == b.length) && go(0)
+        (a.length == b.length) && go(0)
+      }
     }
-  }
   implicit def teq[T1: Equiv, T2: Equiv]: Equiv[(T1, T2)] =
     new Equiv[(T1, T2)] {
       def equiv(a: (T1, T2), b: (T1, T2)) = {

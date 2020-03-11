@@ -25,24 +25,25 @@ import scala.collection.JavaConverters._
 
 trait LowPriorityFieldConversions {
 
-  protected def anyToFieldArg(f: Any): Comparable[_] = f match {
-    case x: Symbol            => x.name
-    case y: String            => y
-    case z: java.lang.Integer => z
-    case v: Enumeration#Value => v.toString
-    case fld: Field[_]        => fld.id
-    case flds: Fields => {
-      if (flds.size == 1) {
-        flds.get(0)
-      } else {
-        throw new Exception(
-          "Cannot convert Fields(" + flds.toString + ") to a single fields arg")
+  protected def anyToFieldArg(f: Any): Comparable[_] =
+    f match {
+      case x: Symbol            => x.name
+      case y: String            => y
+      case z: java.lang.Integer => z
+      case v: Enumeration#Value => v.toString
+      case fld: Field[_]        => fld.id
+      case flds: Fields => {
+        if (flds.size == 1) {
+          flds.get(0)
+        } else {
+          throw new Exception(
+            "Cannot convert Fields(" + flds.toString + ") to a single fields arg")
+        }
       }
+      case w =>
+        throw new Exception(
+          "Could not convert: " + w.toString + " to Fields argument")
     }
-    case w =>
-      throw new Exception(
-        "Could not convert: " + w.toString + " to Fields argument")
-  }
 
   /**
     * Handles treating any TupleN as a Fields object.
@@ -76,9 +77,8 @@ trait FieldConversions extends LowPriorityFieldConversions {
   // TODO get the comparator also
   def getField(f: Fields, idx: Int): Fields = { new Fields(f.get(idx)) }
 
-  def hasInts(f: Fields): Boolean = f.iterator.asScala.exists {
-    _.isInstanceOf[java.lang.Integer]
-  }
+  def hasInts(f: Fields): Boolean =
+    f.iterator.asScala.exists { _.isInstanceOf[java.lang.Integer] }
 
   /**
     * Rather than give the full power of cascading's selectors, we have

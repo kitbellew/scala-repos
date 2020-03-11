@@ -30,10 +30,11 @@ class ActivitySourceTest extends FunSuite with BeforeAndAfter {
     }
   }
 
-  def bufToString(buf: Buf): String = buf match {
-    case Buf.Utf8(s) => s
-    case _           => ""
-  }
+  def bufToString(buf: Buf): String =
+    buf match {
+      case Buf.Utf8(s) => s
+      case _           => ""
+    }
 
   before {
     writeToTempFile("foo bar")

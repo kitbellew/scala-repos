@@ -7,9 +7,10 @@ import scala.collection.mutable
   * tables, keyed on the request key.
   */
 class AtomicMap[A, B](maps: Seq[mutable.Map[A, B]]) {
-  def this(concurrencyLevel: Int) = this {
-    (0 until concurrencyLevel) map { i => mutable.Map[A, B]() }
-  }
+  def this(concurrencyLevel: Int) =
+    this {
+      (0 until concurrencyLevel) map { i => mutable.Map[A, B]() }
+    }
   def this() = this(16)
 
   private[this] val concurrencyLevel = maps.size

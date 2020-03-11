@@ -9,8 +9,9 @@ import play.api.mvc._
 import javax.inject.Inject
 
 class Application @Inject() (component: Component) extends Controller {
-  def index() = Action {
-    Ok(component.hello)
-  }
+  def index() =
+    Action {
+      Ok(component.hello)
+    }
 }
 // #controller

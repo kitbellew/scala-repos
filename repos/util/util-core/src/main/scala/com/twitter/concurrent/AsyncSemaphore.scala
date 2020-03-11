@@ -85,12 +85,13 @@ class AsyncSemaphore protected (initialPermits: Int, maxWaiters: Option[Int]) {
     * attempts to acquire a permit fail with `exc`. This semaphore's queued waiters
     * are also failed with `exc`.
     */
-  def fail(exc: Throwable): Unit = self.synchronized {
-    closed = Some(exc)
-    val drained = waitq.asScala.toList
-    // delegate dequeuing to the interrupt handler defined in #acquire
-    drained.foreach(_.raise(exc))
-  }
+  def fail(exc: Throwable): Unit =
+    self.synchronized {
+      closed = Some(exc)
+      val drained = waitq.asScala.toList
+      // delegate dequeuing to the interrupt handler defined in #acquire
+      drained.foreach(_.raise(exc))
+    }
 
   /**
     * Acquire a Permit, asynchronously. Be sure to permit.release() in a 'finally'

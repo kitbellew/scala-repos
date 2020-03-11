@@ -14,9 +14,10 @@ sealed abstract class Need[+A] extends Name[A]
 final case class Value[+A](value: A) extends Need[A]
 
 object Name {
-  def apply[A](a: => A) = new Name[A] {
-    def value = a
-  }
+  def apply[A](a: => A) =
+    new Name[A] {
+      def value = a
+    }
   def unapply[A](v: Name[A]): Option[A] = Some(v.value)
 
   implicit val name: Monad[Name]
@@ -71,10 +72,11 @@ object Name {
           case \/-(b)  => Name(b)
         }
     }
-  implicit def nameEqual[A: Equal]: Equal[Name[A]] = new Equal[Name[A]] {
-    def equal(a1: Name[A], a2: Name[A]): Boolean =
-      Equal[A].equal(a1.value, a2.value)
-  }
+  implicit def nameEqual[A: Equal]: Equal[Name[A]] =
+    new Equal[Name[A]] {
+      def equal(a1: Name[A], a2: Name[A]): Boolean =
+        Equal[A].equal(a1.value, a2.value)
+    }
 }
 
 object Need {
@@ -138,10 +140,11 @@ object Need {
           case \/-(b)  => Need(b)
         }
     }
-  implicit def needEqual[A: Equal]: Equal[Need[A]] = new Equal[Need[A]] {
-    def equal(a1: Need[A], a2: Need[A]): Boolean =
-      Equal[A].equal(a1.value, a2.value)
-  }
+  implicit def needEqual[A: Equal]: Equal[Need[A]] =
+    new Equal[Need[A]] {
+      def equal(a1: Need[A], a2: Need[A]): Boolean =
+        Equal[A].equal(a1.value, a2.value)
+    }
 }
 
 object Value {
@@ -193,8 +196,9 @@ object Value {
           case \/-(b)  => Value(b)
         }
     }
-  implicit def valueEqual[A: Equal]: Equal[Value[A]] = new Equal[Value[A]] {
-    def equal(a1: Value[A], a2: Value[A]): Boolean =
-      Equal[A].equal(a1.value, a2.value)
-  }
+  implicit def valueEqual[A: Equal]: Equal[Value[A]] =
+    new Equal[Value[A]] {
+      def equal(a1: Value[A], a2: Value[A]): Boolean =
+        Equal[A].equal(a1.value, a2.value)
+    }
 }

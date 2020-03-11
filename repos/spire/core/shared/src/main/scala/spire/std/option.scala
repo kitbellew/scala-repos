@@ -13,12 +13,13 @@ import spire.syntax.all._
 @SerialVersionUID(0L)
 class OptionMonoid[A: Semigroup] extends Monoid[Option[A]] with Serializable {
   def id: Option[A] = None
-  def op(x: Option[A], y: Option[A]): Option[A] = (x, y) match {
-    case (Some(x), Some(y)) => Some(x |+| y)
-    case (None, None)       => None
-    case (x, None)          => x
-    case (None, y)          => y
-  }
+  def op(x: Option[A], y: Option[A]): Option[A] =
+    (x, y) match {
+      case (Some(x), Some(y)) => Some(x |+| y)
+      case (None, None)       => None
+      case (x, None)          => x
+      case (None, y)          => y
+    }
 }
 
 @SerialVersionUID(0L)
@@ -31,12 +32,13 @@ class OptionAdditiveMonoid[A: AdditiveSemigroup]
     extends AdditiveMonoid[Option[A]]
     with Serializable {
   def zero: Option[A] = None
-  def plus(x: Option[A], y: Option[A]): Option[A] = (x, y) match {
-    case (Some(x), Some(y)) => Some(x + y)
-    case (None, None)       => None
-    case (x, None)          => x
-    case (None, y)          => y
-  }
+  def plus(x: Option[A], y: Option[A]): Option[A] =
+    (x, y) match {
+      case (Some(x), Some(y)) => Some(x + y)
+      case (None, None)       => None
+      case (x, None)          => x
+      case (None, y)          => y
+    }
 }
 
 @SerialVersionUID(0L)
@@ -44,21 +46,23 @@ class OptionMultiplicativeMonoid[A: MultiplicativeSemigroup]
     extends MultiplicativeMonoid[Option[A]]
     with Serializable {
   def one: Option[A] = None
-  def times(x: Option[A], y: Option[A]): Option[A] = (x, y) match {
-    case (Some(x), Some(y)) => Some(x * y)
-    case (None, None)       => None
-    case (x, None)          => x
-    case (None, y)          => y
-  }
+  def times(x: Option[A], y: Option[A]): Option[A] =
+    (x, y) match {
+      case (Some(x), Some(y)) => Some(x * y)
+      case (None, None)       => None
+      case (x, None)          => x
+      case (None, y)          => y
+    }
 }
 
 @SerialVersionUID(0L)
 class OptionEq[A: Eq] extends Eq[Option[A]] with Serializable {
-  def eqv(x: Option[A], y: Option[A]): Boolean = (x, y) match {
-    case (Some(x), Some(y)) => Eq[A].eqv(x, y)
-    case (None, None)       => true
-    case _                  => false
-  }
+  def eqv(x: Option[A], y: Option[A]): Boolean =
+    (x, y) match {
+      case (Some(x), Some(y)) => Eq[A].eqv(x, y)
+      case (None, None)       => true
+      case _                  => false
+    }
 }
 
 @SerialVersionUID(0L)
@@ -66,11 +70,12 @@ class OptionOrder[A: Order]
     extends OptionEq[A]
     with Order[Option[A]]
     with Serializable {
-  override def eqv(x: Option[A], y: Option[A]): Boolean = (x, y) match {
-    case (Some(x), Some(y)) => Eq[A].eqv(x, y)
-    case (None, None)       => true
-    case _                  => false
-  }
+  override def eqv(x: Option[A], y: Option[A]): Boolean =
+    (x, y) match {
+      case (Some(x), Some(y)) => Eq[A].eqv(x, y)
+      case (None, None)       => true
+      case _                  => false
+    }
 
   def compare(x: Option[A], y: Option[A]): Int = {
     (x, y) match {

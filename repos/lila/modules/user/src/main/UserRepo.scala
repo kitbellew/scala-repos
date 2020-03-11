@@ -173,10 +173,11 @@ object UserRepo {
       $select(id),
       $setBson(F.profile -> Profile.profileBSONHandler.write(profile)))
 
-  def setTitle(id: ID, title: Option[String]): Funit = title match {
-    case Some(t) => $update.field(id, F.title, t)
-    case None    => $update($select(id), $unset(F.title))
-  }
+  def setTitle(id: ID, title: Option[String]): Funit =
+    title match {
+      case Some(t) => $update.field(id, F.title, t)
+      case None    => $update($select(id), $unset(F.title))
+    }
 
   def setPlayTime(u: User, playTime: User.PlayTime): Funit =
     $update(
@@ -320,17 +321,17 @@ object UserRepo {
     )(_.asOpt[String])
   }
 
-  def toggleEngine(id: ID): Funit = $update.docBson[ID, User](id) { u =>
-    $setBson("engine" -> BSONBoolean(!u.engine))
-  }
+  def toggleEngine(id: ID): Funit =
+    $update.docBson[ID, User](id) { u =>
+      $setBson("engine" -> BSONBoolean(!u.engine))
+    }
 
   def setEngine(id: ID, v: Boolean): Funit = $update.field(id, "engine", v)
 
   def setBooster(id: ID, v: Boolean): Funit = $update.field(id, "booster", v)
 
-  def toggleIpBan(id: ID) = $update.doc[ID, User](id) { u =>
-    $set("ipBan" -> !u.ipBan)
-  }
+  def toggleIpBan(id: ID) =
+    $update.doc[ID, User](id) { u => $set("ipBan" -> !u.ipBan) }
 
   def toggleKid(user: User) = $update.field(user.id, "kid", !user.kid)
 
@@ -346,14 +347,15 @@ object UserRepo {
 
   def enable(id: ID) = $update.field(id, "enabled", true)
 
-  def disable(user: User) = $update(
-    $select(user.id),
-    BSONDocument("$set" -> BSONDocument("enabled" -> false)) ++
-      user.lameOrTroll.fold(
-        BSONDocument(),
-        BSONDocument("$unset" -> BSONDocument("email" -> true))
-      )
-  )
+  def disable(user: User) =
+    $update(
+      $select(user.id),
+      BSONDocument("$set" -> BSONDocument("enabled" -> false)) ++
+        user.lameOrTroll.fold(
+          BSONDocument(),
+          BSONDocument("$unset" -> BSONDocument("email" -> true))
+        )
+    )
 
   def passwd(id: ID, password: String): Funit =
     $primitive.one($select(id), "salt")(_.asOpt[String]) flatMap { saltOption =>

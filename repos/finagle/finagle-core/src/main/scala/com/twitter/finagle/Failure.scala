@@ -250,10 +250,11 @@ object Failure {
     * this returns a chained failure with the assigned flags. If it is not,
     * it returns a new failure with the given flags.
     */
-  def adapt(exc: Throwable, flags: Long): Failure = exc match {
-    case f: Failure => f.chained.flagged(flags)
-    case exc        => Failure(exc, flags)
-  }
+  def adapt(exc: Throwable, flags: Long): Failure =
+    exc match {
+      case f: Failure => f.chained.flagged(flags)
+      case exc        => Failure(exc, flags)
+    }
 
   /**
     * Create a new wrapped Failure with the given flags. If the passed-in exception

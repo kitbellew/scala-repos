@@ -309,22 +309,24 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
 
   implicit def FingerTreeArbitrary[V, A](implicit
       a: Arbitrary[A],
-      measure: Reducer[A, V]): Arbitrary[FingerTree[V, A]] = Arbitrary {
-    def fingerTree[A](n: Int)(implicit
-        a1: Arbitrary[A],
-        measure1: Reducer[A, V]): Gen[FingerTree[V, A]] = n match {
-      case 0 => empty[V, A]
-      case 1 => arbitrary[A].map(single[V, A](_))
-      case n => {
-        val nextSize = n.abs / 2
-        ^^(
-          FingerArbitrary[V, A].arbitrary,
-          fingerTree[Node[V, A]](nextSize)(NodeArbitrary[V, A], implicitly),
-          FingerArbitrary[V, A].arbitrary)(deep[V, A](_, _, _))
-      }
+      measure: Reducer[A, V]): Arbitrary[FingerTree[V, A]] =
+    Arbitrary {
+      def fingerTree[A](n: Int)(implicit
+          a1: Arbitrary[A],
+          measure1: Reducer[A, V]): Gen[FingerTree[V, A]] =
+        n match {
+          case 0 => empty[V, A]
+          case 1 => arbitrary[A].map(single[V, A](_))
+          case n => {
+            val nextSize = n.abs / 2
+            ^^(
+              FingerArbitrary[V, A].arbitrary,
+              fingerTree[Node[V, A]](nextSize)(NodeArbitrary[V, A], implicitly),
+              FingerArbitrary[V, A].arbitrary)(deep[V, A](_, _, _))
+          }
+        }
+      Gen.sized(fingerTree[A] _)
     }
-    Gen.sized(fingerTree[A] _)
-  }
 
   implicit def IndSeqArbibrary[A: Arbitrary]: Arbitrary[IndSeq[A]] =
     Functor[Arbitrary].map(arb[List[A]])(IndSeq.fromSeq)
@@ -451,9 +453,8 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
     Functor[Arbitrary].map(FA)(StreamT.fromStream(_))
 
   // workaround bug in Scalacheck 1.8-SNAPSHOT.
-  private def arbDouble: Arbitrary[Double] = Arbitrary {
-    Gen.oneOf(posNum[Double], negNum[Double])
-  }
+  private def arbDouble: Arbitrary[Double] =
+    Arbitrary { Gen.oneOf(posNum[Double], negNum[Double]) }
 
   implicit def CaseInsensitiveArbitrary[A](implicit
       A0: Arbitrary[A],

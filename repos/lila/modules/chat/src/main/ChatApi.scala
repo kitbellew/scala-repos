@@ -45,14 +45,15 @@ final class ChatApi(
 
     private[ChatApi] def makeLine(
         userId: String,
-        t1: String): Fu[Option[UserLine]] = UserRepo byId userId map {
-      _ flatMap { user =>
-        Writer cut t1 ifFalse user.disabled flatMap { t2 =>
-          flood.allowMessage(user.id, t2) option
-            UserLine(user.username, Writer preprocessUserInput t2, user.troll)
+        t1: String): Fu[Option[UserLine]] =
+      UserRepo byId userId map {
+        _ flatMap { user =>
+          Writer cut t1 ifFalse user.disabled flatMap { t2 =>
+            flood.allowMessage(user.id, t2) option
+              UserLine(user.username, Writer preprocessUserInput t2, user.troll)
+          }
         }
       }
-    }
   }
 
   object playerChat {

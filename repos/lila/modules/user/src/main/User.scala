@@ -28,10 +28,11 @@ case class User(
     lang: Option[String])
     extends Ordered[User] {
 
-  override def equals(other: Any) = other match {
-    case u: User => id == u.id
-    case _       => false
-  }
+  override def equals(other: Any) =
+    other match {
+      case u: User => id == u.id
+      case _       => false
+    }
 
   override def toString =
     s"User $username(${perfs.bestRating}) games:${count.game}${troll ?? " troll"}${engine ?? " engine"}"
@@ -65,17 +66,19 @@ case class User(
 
   def seenRecently: Boolean = timeNoSee < 10.minutes
 
-  def timeNoSee: Duration = seenAt.fold[Duration](Duration.Inf) { s =>
-    (nowMillis - s.getMillis).millis
-  }
+  def timeNoSee: Duration =
+    seenAt.fold[Duration](Duration.Inf) { s =>
+      (nowMillis - s.getMillis).millis
+    }
 
   def lame = booster || engine
 
   def lameOrTroll = lame || troll
 
-  def lightPerf(key: String) = perfs(key) map { perf =>
-    User.LightPerf(light, key, perf.intRating, perf.progress)
-  }
+  def lightPerf(key: String) =
+    perfs(key) map { perf =>
+      User.LightPerf(light, key, perf.intRating, perf.progress)
+    }
 
   def lightCount = User.LightCount(light, count.game)
 }

@@ -38,11 +38,12 @@ object SortFilter extends SimplificationType {
             Option(text.substring(startIndex))
           else None
         case (ScInfixExpr(left, op, right), _) =>
-          def argListFromInfix(arg: ScExpression) = arg match {
-            case x @ (_: ScBlock | _: ScParenthesisedExpr | _: ScTuple) =>
-              x.getText
-            case _ => s"(${arg.getText})"
-          }
+          def argListFromInfix(arg: ScExpression) =
+            arg match {
+              case x @ (_: ScBlock | _: ScParenthesisedExpr | _: ScTuple) =>
+                x.getText
+              case _ => s"(${arg.getText})"
+            }
           Some(s".${op.refName}${argListFromInfix(right)}")
         case _ => None
       }

@@ -547,48 +547,50 @@ private[persistence] trait Eventsourced
     *
     * @param replayMax maximum number of messages to replay.
     */
-  private def recoveryStarted(replayMax: Long) = new State {
+  private def recoveryStarted(replayMax: Long) =
+    new State {
 
-    private val recoveryBehavior: Receive = {
-      val _receiveRecover = receiveRecover
+      private val recoveryBehavior: Receive = {
+        val _receiveRecover = receiveRecover
 
-      {
-        case PersistentRepr(payload, _)
-            if recoveryRunning && _receiveRecover.isDefinedAt(payload) ⇒
-          _receiveRecover(payload)
-        case s: SnapshotOffer if _receiveRecover.isDefinedAt(s) ⇒
-          _receiveRecover(s)
-        case RecoveryCompleted
-            if _receiveRecover.isDefinedAt(RecoveryCompleted) ⇒
-          _receiveRecover(RecoveryCompleted)
-      }
-    }
-
-    override def toString: String =
-      s"recovery started (replayMax = [$replayMax])"
-    override def recoveryRunning: Boolean = true
-
-    override def stateReceive(receive: Receive, message: Any) = message match {
-      case LoadSnapshotResult(sso, toSnr) ⇒
-        sso.foreach {
-          case SelectedSnapshot(metadata, snapshot) ⇒
-            setLastSequenceNr(metadata.sequenceNr)
-            // Since we are recovering we can ignore the receive behavior from the stack
-            Eventsourced.super.aroundReceive(
-              recoveryBehavior,
-              SnapshotOffer(metadata, snapshot))
+        {
+          case PersistentRepr(payload, _)
+              if recoveryRunning && _receiveRecover.isDefinedAt(payload) ⇒
+            _receiveRecover(payload)
+          case s: SnapshotOffer if _receiveRecover.isDefinedAt(s) ⇒
+            _receiveRecover(s)
+          case RecoveryCompleted
+              if _receiveRecover.isDefinedAt(RecoveryCompleted) ⇒
+            _receiveRecover(RecoveryCompleted)
         }
-        changeState(recovering(recoveryBehavior))
-        journal ! ReplayMessages(
-          lastSequenceNr + 1L,
-          toSnr,
-          replayMax,
-          persistenceId,
-          self)
-      case other ⇒
-        stashInternally(other)
+      }
+
+      override def toString: String =
+        s"recovery started (replayMax = [$replayMax])"
+      override def recoveryRunning: Boolean = true
+
+      override def stateReceive(receive: Receive, message: Any) =
+        message match {
+          case LoadSnapshotResult(sso, toSnr) ⇒
+            sso.foreach {
+              case SelectedSnapshot(metadata, snapshot) ⇒
+                setLastSequenceNr(metadata.sequenceNr)
+                // Since we are recovering we can ignore the receive behavior from the stack
+                Eventsourced.super.aroundReceive(
+                  recoveryBehavior,
+                  SnapshotOffer(metadata, snapshot))
+            }
+            changeState(recovering(recoveryBehavior))
+            journal ! ReplayMessages(
+              lastSequenceNr + 1L,
+              toSnr,
+              replayMax,
+              persistenceId,
+              self)
+          case other ⇒
+            stashInternally(other)
+        }
     }
-  }
 
   /**
     * Processes replayed messages, if any. The actor's `receiveRecover` is invoked with the replayed
@@ -600,34 +602,37 @@ private[persistence] trait Eventsourced
     *
     * All incoming messages are stashed.
     */
-  private def recovering(recoveryBehavior: Receive) = new State {
-    override def toString: String = "replay started"
-    override def recoveryRunning: Boolean = true
+  private def recovering(recoveryBehavior: Receive) =
+    new State {
+      override def toString: String = "replay started"
+      override def recoveryRunning: Boolean = true
 
-    override def stateReceive(receive: Receive, message: Any) = message match {
-      case ReplayedMessage(p) ⇒
-        try {
-          updateLastSequenceNr(p)
-          Eventsourced.super.aroundReceive(recoveryBehavior, p)
-        } catch {
-          case NonFatal(t) ⇒
-            try onRecoveryFailure(t, Some(p.payload))
+      override def stateReceive(receive: Receive, message: Any) =
+        message match {
+          case ReplayedMessage(p) ⇒
+            try {
+              updateLastSequenceNr(p)
+              Eventsourced.super.aroundReceive(recoveryBehavior, p)
+            } catch {
+              case NonFatal(t) ⇒
+                try onRecoveryFailure(t, Some(p.payload))
+                finally context.stop(self)
+            }
+          case RecoverySuccess(highestSeqNr) ⇒
+            onReplaySuccess() // callback for subclass implementation
+            changeState(processingCommands)
+            sequenceNr = highestSeqNr
+            setLastSequenceNr(highestSeqNr)
+            internalStash.unstashAll()
+            Eventsourced.super
+              .aroundReceive(recoveryBehavior, RecoveryCompleted)
+          case ReplayMessagesFailure(cause) ⇒
+            try onRecoveryFailure(cause, event = None)
             finally context.stop(self)
+          case other ⇒
+            stashInternally(other)
         }
-      case RecoverySuccess(highestSeqNr) ⇒
-        onReplaySuccess() // callback for subclass implementation
-        changeState(processingCommands)
-        sequenceNr = highestSeqNr
-        setLastSequenceNr(highestSeqNr)
-        internalStash.unstashAll()
-        Eventsourced.super.aroundReceive(recoveryBehavior, RecoveryCompleted)
-      case ReplayMessagesFailure(cause) ⇒
-        try onRecoveryFailure(cause, event = None)
-        finally context.stop(self)
-      case other ⇒
-        stashInternally(other)
     }
-  }
 
   private def flushBatch() {
     if (eventBatch.nonEmpty) {

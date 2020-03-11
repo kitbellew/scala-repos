@@ -33,15 +33,16 @@ private[twitter] class EndpointRegistry {
     *
     * @param client Name of the client
     */
-  def endpoints(client: String): Map[Dtab, Map[String, Addr]] = synchronized {
-    registry.get(client) match {
-      case Some(dtabMap) =>
-        dtabMap.mapValues { paths =>
-          paths.mapValues { case (observation, _) => observation.get() }.toMap
-        }.toMap
-      case None => Map.empty
+  def endpoints(client: String): Map[Dtab, Map[String, Addr]] =
+    synchronized {
+      registry.get(client) match {
+        case Some(dtabMap) =>
+          dtabMap.mapValues { paths =>
+            paths.mapValues { case (observation, _) => observation.get() }.toMap
+          }.toMap
+        case None => Map.empty
+      }
     }
-  }
 
   /**
     * Register a collection of endpoints for a given client, Dtab, and path.

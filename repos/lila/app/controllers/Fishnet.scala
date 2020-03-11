@@ -17,27 +17,30 @@ object Fishnet extends LilaController {
   private def api = env.api
   override val logger = lila.log("fishnet")
 
-  def clientIp(req: RequestHeader) = lila.fishnet.Client.IpAddress {
-    HTTPRequest lastRemoteAddress req
-  }
+  def clientIp(req: RequestHeader) =
+    lila.fishnet.Client.IpAddress {
+      HTTPRequest lastRemoteAddress req
+    }
 
-  def acquire = ClientAction[JsonApi.Request.Acquire] { req => client =>
-    api acquire client
-  }
+  def acquire =
+    ClientAction[JsonApi.Request.Acquire] { req => client =>
+      api acquire client
+    }
 
-  def move(workId: String) = ClientAction[JsonApi.Request.PostMove] {
-    data => client =>
+  def move(workId: String) =
+    ClientAction[JsonApi.Request.PostMove] { data => client =>
       api.postMove(Work.Id(workId), client, data) >> api.acquire(client)
-  }
+    }
 
-  def analysis(workId: String) = ClientAction[JsonApi.Request.PostAnalysis] {
-    data => client =>
+  def analysis(workId: String) =
+    ClientAction[JsonApi.Request.PostAnalysis] { data => client =>
       api.postAnalysis(Work.Id(workId), client, data) >> api.acquire(client)
-  }
+    }
 
-  def abort(workId: String) = ClientAction[JsonApi.Request.Acquire] {
-    req => client => api.abort(Work.Id(workId), client) inject none
-  }
+  def abort(workId: String) =
+    ClientAction[JsonApi.Request.Acquire] { req => client =>
+      api.abort(Work.Id(workId), client) inject none
+    }
 
   private def ClientAction[A <: JsonApi.Request](
       f: A => lila.fishnet.Client => Fu[Option[JsonApi.Work]])(

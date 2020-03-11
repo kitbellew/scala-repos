@@ -26,23 +26,26 @@ object Match {
   }
 
   object Extractor1 {
-    def unapply(x: Any) = x match {
-      case x: String => Some(x, x + x, x + x + x, x + x, x)
-      case _         => None
-    }
+    def unapply(x: Any) =
+      x match {
+        case x: String => Some(x, x + x, x + x + x, x + x, x)
+        case _         => None
+      }
   }
 
   object Extractor2 {
-    def unapply(x: Any) = x match {
-      case x: String => Some(x, x + x, x + x + x)
-      case _         => None
-    }
+    def unapply(x: Any) =
+      x match {
+        case x: String => Some(x, x + x, x + x + x)
+        case _         => None
+      }
   }
 
   object Extractor3 {
-    def unapply(x: Any) = x match {
-      case x: String => Some(x, x, x)
-      case _         => None
-    }
+    def unapply(x: Any) =
+      x match {
+        case x: String => Some(x, x, x)
+        case _         => None
+      }
   }
 }

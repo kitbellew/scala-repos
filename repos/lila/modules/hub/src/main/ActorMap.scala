@@ -35,18 +35,20 @@ trait ActorMap extends Actor {
 
   protected def size = actors.size
 
-  private def getOrMake(id: String) = actors get id getOrElse {
-    context.actorOf(Props(mkActor(id)), name = id) ~ { actor =>
-      actors += (id -> actor)
-      context watch actor
+  private def getOrMake(id: String) =
+    actors get id getOrElse {
+      context.actorOf(Props(mkActor(id)), name = id) ~ { actor =>
+        actors += (id -> actor)
+        context watch actor
+      }
     }
-  }
 }
 
 object ActorMap {
 
-  def apply(make: String => Actor) = new ActorMap {
-    def mkActor(id: String) = make(id)
-    def receive = actorMapReceive
-  }
+  def apply(make: String => Actor) =
+    new ActorMap {
+      def mkActor(id: String) = make(id)
+      def receive = actorMapReceive
+    }
 }

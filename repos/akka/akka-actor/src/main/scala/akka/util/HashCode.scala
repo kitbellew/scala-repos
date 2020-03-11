@@ -24,24 +24,25 @@ import java.lang.{Float ⇒ JFloat, Double ⇒ JDouble}
 object HashCode {
   val SEED = 23
 
-  def hash(seed: Int, any: Any): Int = any match {
-    case value: Boolean ⇒ hash(seed, value)
-    case value: Char ⇒ hash(seed, value)
-    case value: Short ⇒ hash(seed, value)
-    case value: Int ⇒ hash(seed, value)
-    case value: Long ⇒ hash(seed, value)
-    case value: Float ⇒ hash(seed, value)
-    case value: Double ⇒ hash(seed, value)
-    case value: Byte ⇒ hash(seed, value)
-    case value: AnyRef ⇒
-      var result = seed
-      if (value eq null) result = hash(result, 0)
-      else if (!isArray(value)) result = hash(result, value.hashCode())
-      else
-        for (id ← 0 until JArray.getLength(value))
-          result = hash(result, JArray.get(value, id)) // is an array
-      result
-  }
+  def hash(seed: Int, any: Any): Int =
+    any match {
+      case value: Boolean ⇒ hash(seed, value)
+      case value: Char ⇒ hash(seed, value)
+      case value: Short ⇒ hash(seed, value)
+      case value: Int ⇒ hash(seed, value)
+      case value: Long ⇒ hash(seed, value)
+      case value: Float ⇒ hash(seed, value)
+      case value: Double ⇒ hash(seed, value)
+      case value: Byte ⇒ hash(seed, value)
+      case value: AnyRef ⇒
+        var result = seed
+        if (value eq null) result = hash(result, 0)
+        else if (!isArray(value)) result = hash(result, value.hashCode())
+        else
+          for (id ← 0 until JArray.getLength(value))
+            result = hash(result, JArray.get(value, id)) // is an array
+        result
+    }
   def hash(seed: Int, value: Boolean): Int =
     firstTerm(seed) + (if (value) 1 else 0)
   def hash(seed: Int, value: Char): Int =

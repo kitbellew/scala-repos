@@ -76,25 +76,28 @@ class ExecutionListenerManager private[sql] () extends Logging {
     * Registers the specified [[QueryExecutionListener]].
     */
   @DeveloperApi
-  def register(listener: QueryExecutionListener): Unit = writeLock {
-    listeners += listener
-  }
+  def register(listener: QueryExecutionListener): Unit =
+    writeLock {
+      listeners += listener
+    }
 
   /**
     * Unregisters the specified [[QueryExecutionListener]].
     */
   @DeveloperApi
-  def unregister(listener: QueryExecutionListener): Unit = writeLock {
-    listeners -= listener
-  }
+  def unregister(listener: QueryExecutionListener): Unit =
+    writeLock {
+      listeners -= listener
+    }
 
   /**
     * Removes all the registered [[QueryExecutionListener]].
     */
   @DeveloperApi
-  def clear(): Unit = writeLock {
-    listeners.clear()
-  }
+  def clear(): Unit =
+    writeLock {
+      listeners.clear()
+    }
 
   private[sql] def onSuccess(
       funcName: String,

@@ -234,19 +234,20 @@ abstract class Source extends Iterator[Char] with Closeable {
 
     lazy val iter: BufferedIterator[Char] = Source.this.iter.buffered
     def isNewline(ch: Char) = ch == '\r' || ch == '\n'
-    def getc() = iter.hasNext && {
-      val ch = iter.next()
-      if (ch == '\n') false
-      else if (ch == '\r') {
-        if (iter.hasNext && iter.head == '\n')
-          iter.next()
+    def getc() =
+      iter.hasNext && {
+        val ch = iter.next()
+        if (ch == '\n') false
+        else if (ch == '\r') {
+          if (iter.hasNext && iter.head == '\n')
+            iter.next()
 
-        false
-      } else {
-        sb append ch
-        true
+          false
+        } else {
+          sb append ch
+          true
+        }
       }
-    }
     def hasNext = iter.hasNext
     def next = {
       sb.clear()

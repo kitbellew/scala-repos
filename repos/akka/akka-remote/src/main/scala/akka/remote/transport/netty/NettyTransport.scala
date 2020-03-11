@@ -308,9 +308,8 @@ private[transport] object NettyTransport {
   // 4 bytes will be used to represent the frame length. Used by netty LengthFieldPrepender downstream handler.
   val FrameLengthFieldLength = 4
   def gracefulClose(channel: Channel)(implicit ec: ExecutionContext): Unit = {
-    def always(c: ChannelFuture) = NettyFutureBridge(c) recover {
-      case _ ⇒ c.getChannel
-    }
+    def always(c: ChannelFuture) =
+      NettyFutureBridge(c) recover { case _ ⇒ c.getChannel }
     for {
       _ ← always {
         channel.write(ChannelBuffers.buffer(0))
@@ -326,16 +325,17 @@ private[transport] object NettyTransport {
       schemeIdentifier: String,
       systemName: String,
       hostName: Option[String],
-      port: Option[Int]): Option[Address] = addr match {
-    case sa: InetSocketAddress ⇒
-      Some(
-        Address(
-          schemeIdentifier,
-          systemName,
-          hostName.getOrElse(sa.getHostString),
-          port.getOrElse(sa.getPort)))
-    case _ ⇒ None
-  }
+      port: Option[Int]): Option[Address] =
+    addr match {
+      case sa: InetSocketAddress ⇒
+        Some(
+          Address(
+            schemeIdentifier,
+            systemName,
+            hostName.getOrElse(sa.getHostString),
+            port.getOrElse(sa.getPort)))
+      case _ ⇒ None
+    }
 
   // Need to do like this for binary compatibility reasons
   def addressFromSocketAddress(

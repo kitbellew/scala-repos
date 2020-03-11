@@ -38,10 +38,11 @@ class CORSFilterProvider @Inject() (
   * CORS module.
   */
 class CORSModule extends Module {
-  def bindings(environment: Environment, configuration: Configuration) = Seq(
-    bind[CORSConfig].toProvider[CORSConfigProvider],
-    bind[CORSFilter].toProvider[CORSFilterProvider]
-  )
+  def bindings(environment: Environment, configuration: Configuration) =
+    Seq(
+      bind[CORSConfig].toProvider[CORSConfigProvider],
+      bind[CORSFilter].toProvider[CORSFilterProvider]
+    )
 }
 
 /**

@@ -15,17 +15,19 @@ object localMemcachedPort
       "port to use for local memcached; " +
         "this is a temporary workaround and will be deprecated once memcache has wily support."
     )(new Flaggable[Option[Int]] {
-      def parse(s: String) = s match {
-        case ""    => None
-        case value => Some(value.toInt)
-      }
+      def parse(s: String) =
+        s match {
+          case ""    => None
+          case value => Some(value.toInt)
+        }
       override def show(intOpt: Option[Int]) =
         intOpt.map(_.toString).getOrElse("Not defined")
     })
 
 object LocalMemcached {
   def enabled: Boolean = localMemcachedPort().isDefined
-  def port: Int = localMemcachedPort().getOrElse(
-    throw new IllegalArgumentException("localMemcached port is not defined.")
-  )
+  def port: Int =
+    localMemcachedPort().getOrElse(
+      throw new IllegalArgumentException("localMemcached port is not defined.")
+    )
 }

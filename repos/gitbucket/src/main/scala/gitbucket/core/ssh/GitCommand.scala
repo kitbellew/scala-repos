@@ -40,23 +40,24 @@ abstract class GitCommand() extends Command {
 
   protected def runTask(user: String)(implicit session: Session): Unit
 
-  private def newTask(user: String): Runnable = new Runnable {
-    override def run(): Unit = {
-      Database() withSession { implicit session =>
-        try {
-          runTask(user)
-          callback.onExit(0)
-        } catch {
-          case e: RepositoryNotFoundException =>
-            logger.info(e.getMessage)
-            callback.onExit(1, "Repository Not Found")
-          case e: Throwable =>
-            logger.error(e.getMessage, e)
-            callback.onExit(1)
+  private def newTask(user: String): Runnable =
+    new Runnable {
+      override def run(): Unit = {
+        Database() withSession { implicit session =>
+          try {
+            runTask(user)
+            callback.onExit(0)
+          } catch {
+            case e: RepositoryNotFoundException =>
+              logger.info(e.getMessage)
+              callback.onExit(1, "Repository Not Found")
+            case e: Throwable =>
+              logger.error(e.getMessage, e)
+              callback.onExit(1)
+          }
         }
       }
     }
-  }
 
   override def start(env: Environment): Unit = {
     val user = env.getEnv.get("USER")

@@ -61,13 +61,14 @@ class ImportAllMembersIntention extends PsiElementBaseIntentionAction {
 
   override def getFamilyName: String = ImportAllMembersIntention.familyName
 
-  private def checkQualifier(qual: ScReferenceElement): Boolean = qual match {
-    case isQualifierInImport(impExpr: ScImportExpr) =>
-      val text = impExpr.getText
-      qual.getText != text && !text.endsWith("_")
-    case isQualifierFor(ref) => !isInImport(ref) && resolvesToStablePath(ref)
-    case _                   => false
-  }
+  private def checkQualifier(qual: ScReferenceElement): Boolean =
+    qual match {
+      case isQualifierInImport(impExpr: ScImportExpr) =>
+        val text = impExpr.getText
+        qual.getText != text && !text.endsWith("_")
+      case isQualifierFor(ref) => !isInImport(ref) && resolvesToStablePath(ref)
+      case _                   => false
+    }
 }
 
 object ImportAllMembersIntention {

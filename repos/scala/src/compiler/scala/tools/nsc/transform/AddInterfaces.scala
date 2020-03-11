@@ -18,27 +18,28 @@ abstract class AddInterfaces extends InfoTransform { self: Erasure =>
     */
   override def phaseNewFlags: Long = lateDEFERRED
 
-  def transformMixinInfo(tp: Type): Type = tp match {
-    case ClassInfoType(parents, decls, clazz)
-        if clazz.isPackageClass || !clazz.isJavaDefined =>
-      val parents1 = parents match {
-        case Nil => Nil
-        case hd :: tl =>
-          assert(!hd.typeSymbol.isTrait, clazz)
-          if (clazz.isTrait) ObjectTpe :: tl
-          else parents
-      }
-      if (clazz.isTrait) {
-        decls foreach { sym =>
-          if (!sym.isType)
-            sym.info // initialize to set lateMETHOD flag if necessary
+  def transformMixinInfo(tp: Type): Type =
+    tp match {
+      case ClassInfoType(parents, decls, clazz)
+          if clazz.isPackageClass || !clazz.isJavaDefined =>
+        val parents1 = parents match {
+          case Nil => Nil
+          case hd :: tl =>
+            assert(!hd.typeSymbol.isTrait, clazz)
+            if (clazz.isTrait) ObjectTpe :: tl
+            else parents
         }
-      }
-      if (parents1 eq parents) tp
-      else ClassInfoType(parents1, decls, clazz)
-    case _ =>
-      tp
-  }
+        if (clazz.isTrait) {
+          decls foreach { sym =>
+            if (!sym.isType)
+              sym.info // initialize to set lateMETHOD flag if necessary
+          }
+        }
+        if (parents1 eq parents) tp
+        else ClassInfoType(parents1, decls, clazz)
+      case _ =>
+        tp
+    }
 
 // Tree transformation --------------------------------------------------------------
   private class ChangeOwnerAndReturnTraverser(
@@ -65,9 +66,10 @@ abstract class AddInterfaces extends InfoTransform { self: Erasure =>
     *  to tree, which is assumed to be the body of a constructor of class clazz.
     */
   private def addMixinConstructorCalls(tree: Tree, clazz: Symbol): Tree = {
-    def mixinConstructorCall(mc: Symbol): Tree = atPos(tree.pos) {
-      Apply(SuperSelect(clazz, mc.primaryConstructor), Nil)
-    }
+    def mixinConstructorCall(mc: Symbol): Tree =
+      atPos(tree.pos) {
+        Apply(SuperSelect(clazz, mc.primaryConstructor), Nil)
+      }
     val mixinConstructorCalls: List[Tree] = {
       for (mc <- clazz.mixinClasses.reverse
            if mc.isTrait && mc.primaryConstructor != NoSymbol)

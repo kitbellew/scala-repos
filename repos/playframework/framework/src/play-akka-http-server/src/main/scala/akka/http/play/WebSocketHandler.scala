@@ -22,13 +22,14 @@ object WebSocketHandler {
   def handleWebSocket(
       upgrade: UpgradeToWebSocket,
       flow: Flow[Message, Message, _],
-      bufferLimit: Int): HttpResponse = upgrade match {
-    case lowLevel: UpgradeToWebSocketLowLevel =>
-      lowLevel.handleFrames(messageFlowToFrameFlow(flow, bufferLimit))
-    case other =>
-      throw new IllegalArgumentException(
-        "UpgradeToWebsocket is not an Akka HTTP UpgradeToWebsocketLowLevel")
-  }
+      bufferLimit: Int): HttpResponse =
+    upgrade match {
+      case lowLevel: UpgradeToWebSocketLowLevel =>
+        lowLevel.handleFrames(messageFlowToFrameFlow(flow, bufferLimit))
+      case other =>
+        throw new IllegalArgumentException(
+          "UpgradeToWebsocket is not an Akka HTTP UpgradeToWebsocketLowLevel")
+    }
 
   /**
     * Convert a flow of messages to a flow of frame events.
@@ -122,20 +123,21 @@ object WebSocketHandler {
     * Converts frames to Play messages.
     */
   private def frameOpCodeToMessageType(
-      opcode: Protocol.Opcode): MessageType.Type = opcode match {
-    case Protocol.Opcode.Binary =>
-      MessageType.Binary
-    case Protocol.Opcode.Text =>
-      MessageType.Text
-    case Protocol.Opcode.Close =>
-      MessageType.Close
-    case Protocol.Opcode.Ping =>
-      MessageType.Ping
-    case Protocol.Opcode.Pong =>
-      MessageType.Pong
-    case Protocol.Opcode.Continuation =>
-      MessageType.Continuation
-  }
+      opcode: Protocol.Opcode): MessageType.Type =
+    opcode match {
+      case Protocol.Opcode.Binary =>
+        MessageType.Binary
+      case Protocol.Opcode.Text =>
+        MessageType.Text
+      case Protocol.Opcode.Close =>
+        MessageType.Close
+      case Protocol.Opcode.Ping =>
+        MessageType.Ping
+      case Protocol.Opcode.Pong =>
+        MessageType.Pong
+      case Protocol.Opcode.Continuation =>
+        MessageType.Continuation
+    }
 
   /**
     * Converts Play messages to Akka HTTP frame events.
@@ -171,15 +173,16 @@ object WebSocketHandler {
           var closing = false
           def onPush(
               elem: Either[Message, RawMessage],
-              ctx: Context[Either[RawMessage, Message]]) = elem match {
-            case _ if closing =>
-              ctx.finish()
-            case Right(message) =>
-              ctx.push(Left(message))
-            case Left(close) =>
-              closing = true
-              ctx.push(Right(close))
-          }
+              ctx: Context[Either[RawMessage, Message]]) =
+            elem match {
+              case _ if closing =>
+                ctx.finish()
+              case Right(message) =>
+                ctx.push(Left(message))
+              case Left(close) =>
+                closing = true
+                ctx.push(Right(close))
+            }
         }),
       Merge(2, eagerComplete = true)
     )

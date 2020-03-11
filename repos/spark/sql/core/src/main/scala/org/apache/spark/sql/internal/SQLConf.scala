@@ -801,9 +801,10 @@ class SQLConf
 
   /** ********************** SQLConf functionality methods ************ */
   /** Set Spark SQL configuration properties. */
-  def setConf(props: Properties): Unit = settings.synchronized {
-    props.asScala.foreach { case (k, v) => setConfString(k, v) }
-  }
+  def setConf(props: Properties): Unit =
+    settings.synchronized {
+      props.asScala.foreach { case (k, v) => setConfString(k, v) }
+    }
 
   /** Set the given Spark SQL configuration property using a `string` value. */
   def setConfString(key: String, value: String): Unit = {

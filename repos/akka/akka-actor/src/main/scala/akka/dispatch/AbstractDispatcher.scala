@@ -34,11 +34,12 @@ final case class TaskInvocation(
     runnable: Runnable,
     cleanup: () ⇒ Unit)
     extends Batchable {
-  final override def isBatchable: Boolean = runnable match {
-    case b: Batchable ⇒ b.isBatchable
-    case _: scala.concurrent.OnCompleteRunnable ⇒ true
-    case _ ⇒ false
-  }
+  final override def isBatchable: Boolean =
+    runnable match {
+      case b: Batchable ⇒ b.isBatchable
+      case _: scala.concurrent.OnCompleteRunnable ⇒ true
+      case _ ⇒ false
+    }
 
   def run(): Unit =
     try runnable.run()
@@ -180,11 +181,12 @@ abstract class MessageDispatcher(
     }
   }
 
-  override def reportFailure(t: Throwable): Unit = t match {
-    case e: LogEventException ⇒ eventStream.publish(e.event)
-    case _ ⇒
-      eventStream.publish(Error(t, getClass.getName, getClass, t.getMessage))
-  }
+  override def reportFailure(t: Throwable): Unit =
+    t match {
+      case e: LogEventException ⇒ eventStream.publish(e.event)
+      case _ ⇒
+        eventStream.publish(Error(t, getClass.getName, getClass, t.getMessage))
+    }
 
   @tailrec
   private final def ifSensibleToDoSoThenScheduleShutdown(): Unit = {

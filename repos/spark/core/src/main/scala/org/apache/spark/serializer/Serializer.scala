@@ -168,40 +168,42 @@ abstract class DeserializationStream {
     * Read the elements of this stream through an iterator. This can only be called once, as
     * reading each element will consume data from the input source.
     */
-  def asIterator: Iterator[Any] = new NextIterator[Any] {
-    override protected def getNext() = {
-      try {
-        readObject[Any]()
-      } catch {
-        case eof: EOFException =>
-          finished = true
-          null
+  def asIterator: Iterator[Any] =
+    new NextIterator[Any] {
+      override protected def getNext() = {
+        try {
+          readObject[Any]()
+        } catch {
+          case eof: EOFException =>
+            finished = true
+            null
+        }
+      }
+
+      override protected def close() {
+        DeserializationStream.this.close()
       }
     }
-
-    override protected def close() {
-      DeserializationStream.this.close()
-    }
-  }
 
   /**
     * Read the elements of this stream through an iterator over key-value pairs. This can only be
     * called once, as reading each element will consume data from the input source.
     */
-  def asKeyValueIterator: Iterator[(Any, Any)] = new NextIterator[(Any, Any)] {
-    override protected def getNext() = {
-      try {
-        (readKey[Any](), readValue[Any]())
-      } catch {
-        case eof: EOFException => {
-          finished = true
-          null
+  def asKeyValueIterator: Iterator[(Any, Any)] =
+    new NextIterator[(Any, Any)] {
+      override protected def getNext() = {
+        try {
+          (readKey[Any](), readValue[Any]())
+        } catch {
+          case eof: EOFException => {
+            finished = true
+            null
+          }
         }
       }
-    }
 
-    override protected def close() {
-      DeserializationStream.this.close()
+      override protected def close() {
+        DeserializationStream.this.close()
+      }
     }
-  }
 }

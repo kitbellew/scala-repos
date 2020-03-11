@@ -408,8 +408,8 @@ object AndroidClassExtractor extends JavaConversionHelpers {
       isDeprecated(cls))
   }
 
-  def extractTask = (moduleName, baseDirectory, streams) map {
-    (mName, baseDir, s) =>
+  def extractTask =
+    (moduleName, baseDirectory, streams) map { (mName, baseDir, s) =>
       if (mName == "parent") Map[String, AndroidClass]()
       else {
         s.log.info("Extracting class info from Android...")
@@ -465,5 +465,5 @@ object AndroidClassExtractor extends JavaConversionHelpers {
         s.log.info("Constructors: " + values.map(_.constructors).flatten.length)
         res
       }
-  }
+    }
 }

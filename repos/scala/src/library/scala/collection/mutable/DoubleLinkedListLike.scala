@@ -98,10 +98,11 @@ trait DoubleLinkedListLike[A, This <: Seq[A] with DoubleLinkedListLike[A, This]]
   @migration(
     "Double linked list now removes the current node from the list.",
     "2.9.0")
-  def remove(): Unit = if (nonEmpty) {
-    next.prev = prev
-    if (prev ne null) prev.next = next // because this could be the first node
-  }
+  def remove(): Unit =
+    if (nonEmpty) {
+      next.prev = prev
+      if (prev ne null) prev.next = next // because this could be the first node
+    }
 
   private def atLocation[T](n: Int)(f: This => T)(onOutOfBounds: => T) =
     if (isEmpty) onOutOfBounds

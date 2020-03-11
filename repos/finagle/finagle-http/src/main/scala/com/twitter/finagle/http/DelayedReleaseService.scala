@@ -26,11 +26,12 @@ private[finagle] class DelayedReleaseService[-Req <: Request](
     Response(
       in.httpResponse,
       new Reader {
-        def read(n: Int) = in.reader.read(n) respond {
-          case Return(None) => done()
-          case Throw(_)     => done()
-          case _            =>
-        }
+        def read(n: Int) =
+          in.reader.read(n) respond {
+            case Return(None) => done()
+            case Throw(_)     => done()
+            case _            =>
+          }
 
         def discard() = {
           // Note: Discarding the underlying reader terminates the session and

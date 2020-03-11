@@ -9,20 +9,20 @@ object Test {
     case b: B[u, v] => (new B[u, v] {}): A[u with v]
   } // OK
 
-  def f[T, U](p: A[T with U]): A[T with U] = p match {
-    case b: B[u, v] => new A[u with v] {}
-  } // Not OK
+  def f[T, U](p: A[T with U]): A[T with U] =
+    p match { case b: B[u, v] => new A[u with v] {} } // Not OK
 }
 
 object Test1 {
 
   trait T[U, V <: U]
 
-  def f(r: Any) = r match {
+  def f(r: Any) =
+    r match {
 
-    case t: T[u, v] => new T[u, v] {}
+      case t: T[u, v] => new T[u, v] {}
 
-  }
+    }
 
 }
 object Test2 {

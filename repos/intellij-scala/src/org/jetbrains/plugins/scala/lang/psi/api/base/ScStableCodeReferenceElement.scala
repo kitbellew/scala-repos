@@ -15,10 +15,11 @@ trait ScStableCodeReferenceElement
       case s: ScStableCodeReferenceElement => Some(s)
       case _                               => None
     }
-  def pathQualifier = getFirstChild match {
-    case s: ScPathElement => Some(s)
-    case _                => None
-  }
+  def pathQualifier =
+    getFirstChild match {
+      case s: ScPathElement => Some(s)
+      case _                => None
+    }
 
   def qualName: String = {
     qualifier match {

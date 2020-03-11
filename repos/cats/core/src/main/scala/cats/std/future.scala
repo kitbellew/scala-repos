@@ -20,9 +20,8 @@ trait FutureInstances extends FutureInstances1 {
         fa.flatMap(f)
 
       def handleErrorWith[A](fea: Future[A])(
-          f: Throwable => Future[A]): Future[A] = fea.recoverWith {
-        case t => f(t)
-      }
+          f: Throwable => Future[A]): Future[A] =
+        fea.recoverWith { case t => f(t) }
 
       def raiseError[A](e: Throwable): Future[A] = Future.failed(e)
       override def handleError[A](fea: Future[A])(

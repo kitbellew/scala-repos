@@ -237,11 +237,12 @@ object Source {
     * A graph with the shape of a source logically is a source, this method makes
     * it so also in type.
     */
-  def fromGraph[T, M](g: Graph[SourceShape[T], M]): Source[T, M] = g match {
-    case s: Source[T, M] ⇒ s
-    case s: javadsl.Source[T, M] ⇒ s.asScala
-    case other ⇒ new Source(other.module)
-  }
+  def fromGraph[T, M](g: Graph[SourceShape[T], M]): Source[T, M] =
+    g match {
+      case s: Source[T, M] ⇒ s
+      case s: javadsl.Source[T, M] ⇒ s.asScala
+      case other ⇒ new Source(other.module)
+    }
 
   /**
     * Helper to create [[Source]] from `Iterable`.

@@ -103,10 +103,11 @@ class PickResult(override val delegate: jfxsi.PickResult)
   def intersectedFace: Int = delegate.getIntersectedFace
 
   /** Returns the intersected node. Returns `None` if there was no intersection with any node and the scene was picked. */
-  def intersectedNode: Option[Node] = delegate.getIntersectedNode match {
-    case null => None
-    case v    => Some[Node](v)
-  }
+  def intersectedNode: Option[Node] =
+    delegate.getIntersectedNode match {
+      case null => None
+      case v    => Some[Node](v)
+    }
 
   /** Returns the intersected point in local coordinate of the picked Node. */
   def intersectedPoint: Point3D = delegate.getIntersectedPoint

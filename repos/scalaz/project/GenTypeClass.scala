@@ -300,26 +300,28 @@ object GenTypeClass {
     def extendsListText(
         suffix: String,
         parents: Seq[String] = extendsList,
-        cti: String = classifiedTypeIdent) = parents match {
-      case Seq() => ""
-      case es =>
-        es.map(n => n + suffix + "[" + cti + "]")
-          .mkString("extends ", " with ", "")
-    }
-    def extendsToSyntaxListText = kind match {
-      case Kind.*->* | Kind.*^*->* =>
-        "extends To" + typeClassName + "Ops0" + (extendsList match {
-          case Seq() => ""
-          case es =>
-            es.map(n => "To" + n + "Ops").mkString(" with ", " with ", "")
-        })
-      case _ =>
-        extendsList match {
-          case Seq() => ""
-          case es =>
-            es.map(n => "To" + n + "Ops").mkString("extends ", " with ", "")
-        }
-    }
+        cti: String = classifiedTypeIdent) =
+      parents match {
+        case Seq() => ""
+        case es =>
+          es.map(n => n + suffix + "[" + cti + "]")
+            .mkString("extends ", " with ", "")
+      }
+    def extendsToSyntaxListText =
+      kind match {
+        case Kind.*->* | Kind.*^*->* =>
+          "extends To" + typeClassName + "Ops0" + (extendsList match {
+            case Seq() => ""
+            case es =>
+              es.map(n => "To" + n + "Ops").mkString(" with ", " with ", "")
+          })
+        case _ =>
+          extendsList match {
+            case Seq() => ""
+            case es =>
+              es.map(n => "To" + n + "Ops").mkString("extends ", " with ", "")
+          }
+      }
     val extendsLikeList = extendsListText("")
 
     val syntaxPackString = tc.syntaxPack

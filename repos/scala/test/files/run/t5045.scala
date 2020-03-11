@@ -36,10 +36,11 @@ object Test extends App {
     Seq(List(y, m, d).mkString("-"), dateStr)
   }
 
-  def copyright(in: String): String = in match {
-    case dateP1(year, month, day) => "Copyright " + year
-    case _                        => "No copyright"
-  }
+  def copyright(in: String): String =
+    in match {
+      case dateP1(year, month, day) => "Copyright " + year
+      case _                        => "No copyright"
+    }
 
   test("copyright example has date") {
     Seq(copyright("Date of this document: " + dateStr), "Copyright " + yearStr)

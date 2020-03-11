@@ -122,16 +122,17 @@ class ListSet[A]
     *  @throws java.util.NoSuchElementException
     *  @return the new iterator
     */
-  def iterator: Iterator[A] = new AbstractIterator[A] {
-    var that: ListSet[A] = self
-    def hasNext = that.nonEmpty
-    def next: A =
-      if (hasNext) {
-        val res = that.head
-        that = that.tail
-        res
-      } else Iterator.empty.next()
-  }
+  def iterator: Iterator[A] =
+    new AbstractIterator[A] {
+      var that: ListSet[A] = self
+      def hasNext = that.nonEmpty
+      def next: A =
+        if (hasNext) {
+          val res = that.head
+          that = that.tail
+          res
+        } else Iterator.empty.next()
+    }
 
   /**
     *  @throws java.util.NoSuchElementException

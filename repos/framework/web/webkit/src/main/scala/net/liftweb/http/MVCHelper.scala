@@ -118,14 +118,15 @@ trait MVCHelper extends LiftRules.DispatchPF {
 
   private def templateForPath(req: Req): Box[NodeSeq] = {
 
-    def tryIt(path: List[String]): Box[NodeSeq] = path match {
-      case Nil => Empty
-      case xs =>
-        Templates(path) match {
-          case ret @ Full(_) => ret
-          case _             => tryIt(path.dropRight(1))
-        }
-    }
+    def tryIt(path: List[String]): Box[NodeSeq] =
+      path match {
+        case Nil => Empty
+        case xs =>
+          Templates(path) match {
+            case ret @ Full(_) => ret
+            case _             => tryIt(path.dropRight(1))
+          }
+      }
 
     tryIt(req.path.partPath)
   }
@@ -174,14 +175,16 @@ trait MVCHelper extends LiftRules.DispatchPF {
       }
 
     implicit def boxThinginy[T](box: Box[T])(
-        implicit f: T => MVCResponse): MVCResponse = new MVCResponse {
-      val toResponse: Box[LiftResponse] = boxToResp(box)(f)
-    }
+        implicit f: T => MVCResponse): MVCResponse =
+      new MVCResponse {
+        val toResponse: Box[LiftResponse] = boxToResp(box)(f)
+      }
 
     implicit def optionThinginy[T](box: Option[T])(
-        implicit f: T => MVCResponse): MVCResponse = new MVCResponse {
-      val toResponse: Box[LiftResponse] = boxToResp(box)(f)
-    }
+        implicit f: T => MVCResponse): MVCResponse =
+      new MVCResponse {
+        val toResponse: Box[LiftResponse] = boxToResp(box)(f)
+      }
   }
 
   /**
@@ -230,10 +233,11 @@ trait MVCHelper extends LiftRules.DispatchPF {
         def validate: List[FieldError];
         def save(): Boolean
       },
-      where: String) = () => {
-    what.validate match {
-      case Nil => what.save(); S.redirectTo(where)
-      case xs  => S.error(xs)
+      where: String) =
+    () => {
+      what.validate match {
+        case Nil => what.save(); S.redirectTo(where)
+        case xs  => S.error(xs)
+      }
     }
-  }
 }

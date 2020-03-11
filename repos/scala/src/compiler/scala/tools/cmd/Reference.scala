@@ -71,26 +71,29 @@ object Reference {
     }
 
     def addHelp(f: () => String): Unit = _help += f
-    def addHelpAlias(f: () => String) = mapHelp { s =>
-      val str = "alias for '%s'" format f()
-      def noHelp = (helpFormatStr.format("", "")).length == s.length
-      val str2 = if (noHelp) str else " (" + str + ")"
+    def addHelpAlias(f: () => String) =
+      mapHelp { s =>
+        val str = "alias for '%s'" format f()
+        def noHelp = (helpFormatStr.format("", "")).length == s.length
+        val str2 = if (noHelp) str else " (" + str + ")"
 
-      s + str2
-    }
-    def addHelpDefault(f: () => String): Unit = mapHelp { s =>
-      val str = "(default: %s)" format f()
+        s + str2
+      }
+    def addHelpDefault(f: () => String): Unit =
+      mapHelp { s =>
+        val str = "(default: %s)" format f()
 
-      if (s.length + str.length < MaxLine) s + " " + str
-      else defaultFormatStr.format(s, str)
-    }
-    def addHelpEnvDefault(name: String): Unit = mapHelp { s =>
-      val line1 = "%s (default: %s)".format(s, name)
-      val envNow = envOrNone(name) map ("'" + _ + "'") getOrElse "unset"
-      val line2 = defaultFormatStr.format("Currently " + envNow)
+        if (s.length + str.length < MaxLine) s + " " + str
+        else defaultFormatStr.format(s, str)
+      }
+    def addHelpEnvDefault(name: String): Unit =
+      mapHelp { s =>
+        val line1 = "%s (default: %s)".format(s, name)
+        val envNow = envOrNone(name) map ("'" + _ + "'") getOrElse "unset"
+        val line2 = defaultFormatStr.format("Currently " + envNow)
 
-      line1 + "\n" + line2
-    }
+        line1 + "\n" + line2
+      }
 
     lazy val unary = (_unary ++ _expand.keys).distinct
     lazy val binary = _binary.distinct

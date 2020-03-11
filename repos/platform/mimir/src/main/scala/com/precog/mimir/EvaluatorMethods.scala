@@ -45,12 +45,13 @@ trait EvaluatorMethodsModule[M[+_]]
   trait EvaluatorMethods extends OpFinder {
     def MorphContext(ctx: EvaluationContext, node: DepGraph): MorphContext
 
-    def rValueToCValue(rvalue: RValue): Option[CValue] = rvalue match {
-      case cvalue: CValue => Some(cvalue)
-      case RArray.empty   => Some(CEmptyArray)
-      case RObject.empty  => Some(CEmptyObject)
-      case _              => None
-    }
+    def rValueToCValue(rvalue: RValue): Option[CValue] =
+      rvalue match {
+        case cvalue: CValue => Some(cvalue)
+        case RArray.empty   => Some(CEmptyArray)
+        case RObject.empty  => Some(CEmptyObject)
+        case _              => None
+      }
 
     def transRValue[A <: SourceType](
         rvalue: RValue,
@@ -76,18 +77,19 @@ trait EvaluatorMethodsModule[M[+_]]
 
     def transFromBinOp[A <: SourceType](op: BinaryOperation, ctx: MorphContext)(
         left: TransSpec[A],
-        right: TransSpec[A]): TransSpec[A] = op match {
-      case Eq                      => trans.Equal[A](left, right)
-      case NotEq                   => op1ForUnOp(Comp).spec(ctx)(trans.Equal[A](left, right))
-      case instructions.WrapObject => WrapObjectDynamic(left, right)
-      case JoinObject              => InnerObjectConcat(left, right)
-      case JoinArray               => InnerArrayConcat(left, right)
-      case instructions.ArraySwap  => sys.error("nothing happens")
-      case DerefObject             => DerefObjectDynamic(left, right)
-      case DerefMetadata           => sys.error("cannot do a dynamic metadata deref")
-      case DerefArray              => DerefArrayDynamic(left, right)
-      case _                       => op2ForBinOp(op).get.spec(ctx)(left, right)
-    }
+        right: TransSpec[A]): TransSpec[A] =
+      op match {
+        case Eq                      => trans.Equal[A](left, right)
+        case NotEq                   => op1ForUnOp(Comp).spec(ctx)(trans.Equal[A](left, right))
+        case instructions.WrapObject => WrapObjectDynamic(left, right)
+        case JoinObject              => InnerObjectConcat(left, right)
+        case JoinArray               => InnerArrayConcat(left, right)
+        case instructions.ArraySwap  => sys.error("nothing happens")
+        case DerefObject             => DerefObjectDynamic(left, right)
+        case DerefMetadata           => sys.error("cannot do a dynamic metadata deref")
+        case DerefArray              => DerefArrayDynamic(left, right)
+        case _                       => op2ForBinOp(op).get.spec(ctx)(left, right)
+      }
 
     def combineTransSpecs(specs: List[TransSpec1]): TransSpec1 =
       specs map { trans.WrapArray(_): TransSpec1 } reduceLeftOption {

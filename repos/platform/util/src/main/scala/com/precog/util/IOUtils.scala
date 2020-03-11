@@ -42,24 +42,26 @@ object IOUtils extends Logging {
 
   def isNormalDirectory(f: File) = f.isDirectory && !dotDirs.contains(f.getName)
 
-  def walkSubdirs(root: File): IO[Seq[File]] = IO {
-    if (!root.isDirectory) List.empty
-    else root.listFiles.filter(isNormalDirectory)
-  }
+  def walkSubdirs(root: File): IO[Seq[File]] =
+    IO {
+      if (!root.isDirectory) List.empty
+      else root.listFiles.filter(isNormalDirectory)
+    }
 
-  def readFileToString(f: File): IO[String] = IO {
-    FileUtils.readFileToString(f, UTF8)
-  }
+  def readFileToString(f: File): IO[String] =
+    IO {
+      FileUtils.readFileToString(f, UTF8)
+    }
 
-  def readPropertiesFile(s: String): IO[Properties] = readPropertiesFile {
-    new File(s)
-  }
+  def readPropertiesFile(s: String): IO[Properties] =
+    readPropertiesFile { new File(s) }
 
-  def readPropertiesFile(f: File): IO[Properties] = IO {
-    val props = new Properties
-    props.load(new FileReader(f))
-    props
-  }
+  def readPropertiesFile(f: File): IO[Properties] =
+    IO {
+      val props = new Properties
+      props.load(new FileReader(f))
+      props
+    }
 
   def writeToFile(s: String, f: File, append: Boolean = false): IO[PrecogUnit] =
     IO {
@@ -67,10 +69,11 @@ object IOUtils extends Logging {
       PrecogUnit
     }
 
-  def writeSeqToFile[A](s0: Seq[A], f: File): IO[Unit] = IO {
-    val s = seqAsJavaList(s0)
-    FileUtils.writeLines(f, s)
-  }
+  def writeSeqToFile[A](s0: Seq[A], f: File): IO[Unit] =
+    IO {
+      val s = seqAsJavaList(s0)
+      FileUtils.writeLines(f, s)
+    }
 
   /** Performs a safe write to the file. Returns true
     * if the file was completely written, false otherwise
@@ -84,15 +87,17 @@ object IOUtils extends Logging {
     }
   }
 
-  def makeDirectory(dir: File): IO[PrecogUnit] = IO {
-    if (dir.isDirectory || dir.mkdirs) PrecogUnit
-    else throw new IOException("Failed to create directory " + dir)
-  }
+  def makeDirectory(dir: File): IO[PrecogUnit] =
+    IO {
+      if (dir.isDirectory || dir.mkdirs) PrecogUnit
+      else throw new IOException("Failed to create directory " + dir)
+    }
 
-  def recursiveDelete(dir: File): IO[PrecogUnit] = IO {
-    FileUtils.deleteDirectory(dir)
-    PrecogUnit
-  }
+  def recursiveDelete(dir: File): IO[PrecogUnit] =
+    IO {
+      FileUtils.deleteDirectory(dir)
+      PrecogUnit
+    }
 
   /** Recursively deletes empty directories, stopping at the first
     * non-empty dir.
@@ -123,23 +128,27 @@ object IOUtils extends Logging {
     }
   }
 
-  def createTmpDir(prefix: String): IO[File] = IO {
-    val tmpDir = Files.createTempDir()
-    Option(tmpDir.getParentFile)
-      .map { parent =>
-        val newTmpDir = new File(parent, prefix + tmpDir.getName)
-        if (!tmpDir.renameTo(newTmpDir)) {
-          sys.error("Error on tmpdir creation: rename to prefixed failed")
+  def createTmpDir(prefix: String): IO[File] =
+    IO {
+      val tmpDir = Files.createTempDir()
+      Option(tmpDir.getParentFile)
+        .map { parent =>
+          val newTmpDir = new File(parent, prefix + tmpDir.getName)
+          if (!tmpDir.renameTo(newTmpDir)) {
+            sys.error("Error on tmpdir creation: rename to prefixed failed")
+          }
+          newTmpDir
         }
-        newTmpDir
-      }
-      .getOrElse { sys.error("Error on tmpdir creation: no parent dir found") }
-  }
+        .getOrElse {
+          sys.error("Error on tmpdir creation: no parent dir found")
+        }
+    }
 
-  def copyFile(src: File, dest: File): IO[PrecogUnit] = IO {
-    FileUtils.copyFile(src, dest)
-    PrecogUnit
-  }
+  def copyFile(src: File, dest: File): IO[PrecogUnit] =
+    IO {
+      FileUtils.copyFile(src, dest)
+      PrecogUnit
+    }
 
 }
 

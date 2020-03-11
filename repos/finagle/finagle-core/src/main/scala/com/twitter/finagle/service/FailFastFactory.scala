@@ -156,80 +156,82 @@ private[finagle] class FailFastFactory[Req, Rep](
       }
     }
 
-  private[this] def getBackoffs(): Stream[Duration] = backoffs map { duration =>
-    // Add a 10% jitter to reduce correlation.
-    val ms = duration.inMilliseconds
-    (ms + ms * (rng.nextFloat() * 0.10)).toInt.milliseconds
-  }
+  private[this] def getBackoffs(): Stream[Duration] =
+    backoffs map { duration =>
+      // Add a 10% jitter to reduce correlation.
+      val ms = duration.inMilliseconds
+      (ms + ms * (rng.nextFloat() * 0.10)).toInt.milliseconds
+    }
 
   @volatile private[this] var state: State = Ok
 
   private[this] val update = new Updater[Observation.t] {
     def preprocess(elems: Seq[Observation.t]) = elems
 
-    def handle(o: Observation.t) = o match {
-      case Observation.Success if state != Ok =>
-        val Retrying(_, task, _, _) = state
-        task.cancel()
-        markedAvailableCounter.incr()
-        state = Ok
+    def handle(o: Observation.t) =
+      o match {
+        case Observation.Success if state != Ok =>
+          val Retrying(_, task, _, _) = state
+          task.cancel()
+          markedAvailableCounter.incr()
+          state = Ok
 
-      case Observation.Fail if state == Ok =>
-        val (wait, rest) = getBackoffs() match {
-          case Stream.Empty  => (Duration.Zero, Stream.empty[Duration])
-          case wait #:: rest => (wait, rest)
-        }
-        val now = Time.now
-        val task = timer.schedule(now + wait) {
-          this.apply(Observation.Timeout)
-        }
-        markedDeadCounter.incr()
+        case Observation.Fail if state == Ok =>
+          val (wait, rest) = getBackoffs() match {
+            case Stream.Empty  => (Duration.Zero, Stream.empty[Duration])
+            case wait #:: rest => (wait, rest)
+          }
+          val now = Time.now
+          val task = timer.schedule(now + wait) {
+            this.apply(Observation.Timeout)
+          }
+          markedDeadCounter.incr()
 
-        if (logger.isLoggable(Level.DEBUG))
-          logger.log(
-            Level.DEBUG,
-            s"""FailFastFactory marking connection to "$label" as dead. Remote Address: ${endpoint.toString}""")
+          if (logger.isLoggable(Level.DEBUG))
+            logger.log(
+              Level.DEBUG,
+              s"""FailFastFactory marking connection to "$label" as dead. Remote Address: ${endpoint.toString}""")
 
-        state = Retrying(now, task, 0, rest)
+          state = Retrying(now, task, 0, rest)
 
-      case Observation.Timeout if state != Ok =>
-        underlying(ClientConnection.nil).respond {
-          case Throw(_) => this.apply(Observation.TimeoutFail)
-          case Return(service) =>
-            this.apply(Observation.Success)
-            service.close()
-        }
+        case Observation.Timeout if state != Ok =>
+          underlying(ClientConnection.nil).respond {
+            case Throw(_) => this.apply(Observation.TimeoutFail)
+            case Return(service) =>
+              this.apply(Observation.Success)
+              service.close()
+          }
 
-      case Observation.TimeoutFail if state != Ok =>
-        state match {
-          case Retrying(_, task, _, Stream.Empty) =>
-            task.cancel()
-            // Backoff schedule exhausted. Optimistically become available in
-            // order to continue trying.
-            state = Ok
+        case Observation.TimeoutFail if state != Ok =>
+          state match {
+            case Retrying(_, task, _, Stream.Empty) =>
+              task.cancel()
+              // Backoff schedule exhausted. Optimistically become available in
+              // order to continue trying.
+              state = Ok
 
-          case Retrying(since, task, ntries, wait #:: rest) =>
-            task.cancel()
-            val newTask = timer.schedule(Time.now + wait) {
-              this.apply(Observation.Timeout)
-            }
-            state = Retrying(since, newTask, ntries + 1, rest)
+            case Retrying(since, task, ntries, wait #:: rest) =>
+              task.cancel()
+              val newTask = timer.schedule(Time.now + wait) {
+                this.apply(Observation.Timeout)
+              }
+              state = Retrying(since, newTask, ntries + 1, rest)
 
-          case Ok => assert(false)
-        }
+            case Ok => assert(false)
+          }
 
-      case Observation.Close =>
-        val oldState = state
-        state = Ok
-        oldState match {
-          case Retrying(_, task, _, _) =>
-            task.cancel()
-          case _ =>
-        }
+        case Observation.Close =>
+          val oldState = state
+          state = Ok
+          oldState match {
+            case Retrying(_, task, _, _) =>
+              task.cancel()
+            case _ =>
+          }
 
-      case _ => ()
+        case _ => ()
 
-    }
+      }
   }
 
   override def apply(conn: ClientConnection): Future[Service[Req, Rep]] = {
@@ -242,10 +244,11 @@ private[finagle] class FailFastFactory[Req, Rep](
       }
     }
   }
-  override def status = state match {
-    case Ok          => underlying.status
-    case _: Retrying => Status.Busy
-  }
+  override def status =
+    state match {
+      case Ok          => underlying.status
+      case _: Retrying => Status.Busy
+    }
 
   override val toString = "fail_fast_%s".format(underlying.toString)
 

@@ -30,18 +30,20 @@ class ScalaSimpleGetterProvider extends SimplePropertyGetterProvider {
     }
   }
 
-  private def isSimpleEnough(e: ScExpression): Boolean = e match {
-    case ref: ScReferenceExpression =>
-      ref.qualifier.forall(isSimpleEnough) && isGettable(ref.resolve())
-    case th: ScThisReference => true
-    case _                   => false
-  }
+  private def isSimpleEnough(e: ScExpression): Boolean =
+    e match {
+      case ref: ScReferenceExpression =>
+        ref.qualifier.forall(isSimpleEnough) && isGettable(ref.resolve())
+      case th: ScThisReference => true
+      case _                   => false
+    }
 
-  private def isGettable(resolve: PsiElement) = resolve match {
-    case null         => false
-    case m: PsiMethod => false
-    case o: ScObject  => true
-    case c: PsiClass  => false
-    case _            => true
-  }
+  private def isGettable(resolve: PsiElement) =
+    resolve match {
+      case null         => false
+      case m: PsiMethod => false
+      case o: ScObject  => true
+      case c: PsiClass  => false
+      case _            => true
+    }
 }

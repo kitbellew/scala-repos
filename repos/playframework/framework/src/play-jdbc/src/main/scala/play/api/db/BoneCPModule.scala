@@ -214,10 +214,11 @@ class BoneConnectionPool @Inject() (environment: Environment)
   /**
     * Close the given data source.
     */
-  def close(ds: DataSource): Unit = ds match {
-    case bcp: BoneCPDataSource => bcp.close()
-    case _                     => sys.error("Unable to close data source: not a BoneCPDataSource")
-  }
+  def close(ds: DataSource): Unit =
+    ds match {
+      case bcp: BoneCPDataSource => bcp.close()
+      case _                     => sys.error("Unable to close data source: not a BoneCPDataSource")
+    }
 
 }
 

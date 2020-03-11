@@ -200,9 +200,10 @@ package object saddle {
     * @param s  A value of type Seq[T]
     * @tparam T Type of elements of Vec
     */
-  implicit def seqToVec[T: ST](s: Seq[T]) = new {
-    def toVec: Vec[T] = Vec(s: _*)
-  }
+  implicit def seqToVec[T: ST](s: Seq[T]) =
+    new {
+      def toVec: Vec[T] = Vec(s: _*)
+    }
 
   /**
     * Augments Seq with a toIndex method that returns a new Index instance.
@@ -217,9 +218,10 @@ package object saddle {
     * @param ix A value of type Seq[X]
     * @tparam X Type of index elements
     */
-  implicit def seqToIndex[X: ST: ORD](ix: Seq[X]) = new {
-    def toIndex: Index[X] = Index(ix: _*)
-  }
+  implicit def seqToIndex[X: ST: ORD](ix: Seq[X]) =
+    new {
+      def toIndex: Index[X] = Index(ix: _*)
+    }
 
   /**
     * Augments Seq with a toSeries method that returns a new Series instance.
@@ -235,9 +237,10 @@ package object saddle {
     * @tparam T Type of data elements of Series
     * @tparam X Type of index elements of Series
     */
-  implicit def seqToSeries[T: ST, X: ST: ORD](s: Seq[(X, T)]) = new {
-    def toSeries: Series[X, T] = Series(s: _*)
-  }
+  implicit def seqToSeries[T: ST, X: ST: ORD](s: Seq[(X, T)]) =
+    new {
+      def toSeries: Series[X, T] = Series(s: _*)
+    }
 
   /**
     * Augments Seq with a toFrame method that returns a new Frame instance.
@@ -262,12 +265,13 @@ package object saddle {
     * @tparam CX Type of col index elements of Frame
     */
   implicit def seqToFrame[RX: ST: ORD, CX: ST: ORD, T: ST](
-      s: Seq[(RX, CX, T)]) = new {
-    def toFrame: Frame[RX, CX, T] = {
-      val grp = s.map { case (r, c, v) => ((r, c), v) }
-      grp.toSeries.pivot
+      s: Seq[(RX, CX, T)]) =
+    new {
+      def toFrame: Frame[RX, CX, T] = {
+        val grp = s.map { case (r, c, v) => ((r, c), v) }
+        grp.toSeries.pivot
+      }
     }
-  }
 
   /**
     * Constant used in string byte-level manipulation

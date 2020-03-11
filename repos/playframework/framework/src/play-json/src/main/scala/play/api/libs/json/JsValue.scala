@@ -143,10 +143,11 @@ case class JsObject(private val underlying: Map[String, JsValue])
     merge(this, other)
   }
 
-  override def equals(other: Any): Boolean = other match {
-    case that: JsObject => (that canEqual this) && fieldSet == that.fieldSet
-    case _              => false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case that: JsObject => (that canEqual this) && fieldSet == that.fieldSet
+      case _              => false
+    }
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[JsObject]
 

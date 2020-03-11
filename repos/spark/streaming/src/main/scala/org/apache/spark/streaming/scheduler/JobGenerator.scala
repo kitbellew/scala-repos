@@ -92,93 +92,96 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
   private var lastProcessedBatch: Time = null
 
   /** Start generation of jobs */
-  def start(): Unit = synchronized {
-    if (eventLoop != null) return // generator has already been started
+  def start(): Unit =
+    synchronized {
+      if (eventLoop != null) return // generator has already been started
 
-    // Call checkpointWriter here to initialize it before eventLoop uses it to avoid a deadlock.
-    // See SPARK-10125
-    checkpointWriter
+      // Call checkpointWriter here to initialize it before eventLoop uses it to avoid a deadlock.
+      // See SPARK-10125
+      checkpointWriter
 
-    eventLoop = new EventLoop[JobGeneratorEvent]("JobGenerator") {
-      override protected def onReceive(event: JobGeneratorEvent): Unit =
-        processEvent(event)
+      eventLoop = new EventLoop[JobGeneratorEvent]("JobGenerator") {
+        override protected def onReceive(event: JobGeneratorEvent): Unit =
+          processEvent(event)
 
-      override protected def onError(e: Throwable): Unit = {
-        jobScheduler.reportError("Error in job generator", e)
+        override protected def onError(e: Throwable): Unit = {
+          jobScheduler.reportError("Error in job generator", e)
+        }
+      }
+      eventLoop.start()
+
+      if (ssc.isCheckpointPresent) {
+        restart()
+      } else {
+        startFirstTime()
       }
     }
-    eventLoop.start()
-
-    if (ssc.isCheckpointPresent) {
-      restart()
-    } else {
-      startFirstTime()
-    }
-  }
 
   /**
     * Stop generation of jobs. processReceivedData = true makes this wait until jobs
     * of current ongoing time interval has been generated, processed and corresponding
     * checkpoints written.
     */
-  def stop(processReceivedData: Boolean): Unit = synchronized {
-    if (eventLoop == null) return // generator has already been stopped
+  def stop(processReceivedData: Boolean): Unit =
+    synchronized {
+      if (eventLoop == null) return // generator has already been stopped
 
-    if (processReceivedData) {
-      logInfo("Stopping JobGenerator gracefully")
-      val timeWhenStopStarted = System.currentTimeMillis()
-      val stopTimeoutMs = conf.getTimeAsMs(
-        "spark.streaming.gracefulStopTimeout",
-        s"${10 * ssc.graph.batchDuration.milliseconds}ms")
-      val pollTime = 100
+      if (processReceivedData) {
+        logInfo("Stopping JobGenerator gracefully")
+        val timeWhenStopStarted = System.currentTimeMillis()
+        val stopTimeoutMs = conf.getTimeAsMs(
+          "spark.streaming.gracefulStopTimeout",
+          s"${10 * ssc.graph.batchDuration.milliseconds}ms")
+        val pollTime = 100
 
-      // To prevent graceful stop to get stuck permanently
-      def hasTimedOut: Boolean = {
-        val timedOut =
-          (System.currentTimeMillis() - timeWhenStopStarted) > stopTimeoutMs
-        if (timedOut) {
-          logWarning(
-            "Timed out while stopping the job generator (timeout = " + stopTimeoutMs + ")")
+        // To prevent graceful stop to get stuck permanently
+        def hasTimedOut: Boolean = {
+          val timedOut =
+            (System.currentTimeMillis() - timeWhenStopStarted) > stopTimeoutMs
+          if (timedOut) {
+            logWarning(
+              "Timed out while stopping the job generator (timeout = " + stopTimeoutMs + ")")
+          }
+          timedOut
         }
-        timedOut
+
+        // Wait until all the received blocks in the network input tracker has
+        // been consumed by network input DStreams, and jobs have been generated with them
+        logInfo(
+          "Waiting for all received blocks to be consumed for job generation")
+        while (!hasTimedOut && jobScheduler.receiverTracker.hasUnallocatedBlocks) {
+          Thread.sleep(pollTime)
+        }
+        logInfo(
+          "Waited for all received blocks to be consumed for job generation")
+
+        // Stop generating jobs
+        val stopTime = timer.stop(interruptTimer = false)
+        graph.stop()
+        logInfo("Stopped generation timer")
+
+        // Wait for the jobs to complete and checkpoints to be written
+        def haveAllBatchesBeenProcessed: Boolean = {
+          lastProcessedBatch != null && lastProcessedBatch.milliseconds == stopTime
+        }
+        logInfo(
+          "Waiting for jobs to be processed and checkpoints to be written")
+        while (!hasTimedOut && !haveAllBatchesBeenProcessed) {
+          Thread.sleep(pollTime)
+        }
+        logInfo("Waited for jobs to be processed and checkpoints to be written")
+      } else {
+        logInfo("Stopping JobGenerator immediately")
+        // Stop timer and graph immediately, ignore unprocessed data and pending jobs
+        timer.stop(true)
+        graph.stop()
       }
 
-      // Wait until all the received blocks in the network input tracker has
-      // been consumed by network input DStreams, and jobs have been generated with them
-      logInfo(
-        "Waiting for all received blocks to be consumed for job generation")
-      while (!hasTimedOut && jobScheduler.receiverTracker.hasUnallocatedBlocks) {
-        Thread.sleep(pollTime)
-      }
-      logInfo(
-        "Waited for all received blocks to be consumed for job generation")
-
-      // Stop generating jobs
-      val stopTime = timer.stop(interruptTimer = false)
-      graph.stop()
-      logInfo("Stopped generation timer")
-
-      // Wait for the jobs to complete and checkpoints to be written
-      def haveAllBatchesBeenProcessed: Boolean = {
-        lastProcessedBatch != null && lastProcessedBatch.milliseconds == stopTime
-      }
-      logInfo("Waiting for jobs to be processed and checkpoints to be written")
-      while (!hasTimedOut && !haveAllBatchesBeenProcessed) {
-        Thread.sleep(pollTime)
-      }
-      logInfo("Waited for jobs to be processed and checkpoints to be written")
-    } else {
-      logInfo("Stopping JobGenerator immediately")
-      // Stop timer and graph immediately, ignore unprocessed data and pending jobs
-      timer.stop(true)
-      graph.stop()
+      // Stop the event loop and checkpoint writer
+      if (shouldCheckpoint) checkpointWriter.stop()
+      eventLoop.stop()
+      logInfo("Stopped JobGenerator")
     }
-
-    // Stop the event loop and checkpoint writer
-    if (shouldCheckpoint) checkpointWriter.stop()
-    eventLoop.stop()
-    logInfo("Stopped JobGenerator")
-  }
 
   /**
     * Callback called when a batch has been completely processed.

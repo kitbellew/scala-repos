@@ -723,82 +723,84 @@ private[hive] class HiveMetastoreCatalog(
     * For example, because of a CREATE TABLE X AS statement.
     */
   object CreateTables extends Rule[LogicalPlan] {
-    def apply(plan: LogicalPlan): LogicalPlan = plan transform {
-      // Wait until children are resolved.
-      case p: LogicalPlan if !p.childrenResolved => p
-      case p: LogicalPlan if p.resolved          => p
+    def apply(plan: LogicalPlan): LogicalPlan =
+      plan transform {
+        // Wait until children are resolved.
+        case p: LogicalPlan if !p.childrenResolved => p
+        case p: LogicalPlan if p.resolved          => p
 
-      case CreateViewAsSelect(table, child, allowExisting, replace, sql)
-          if conf.nativeView =>
-        if (allowExisting && replace) {
-          throw new AnalysisException(
-            "It is not allowed to define a view with both IF NOT EXISTS and OR REPLACE.")
-        }
-
-        val QualifiedTableName(dbName, tblName) = getQualifiedTableName(table)
-
-        execution.CreateViewAsSelect(
-          table.copy(name = TableIdentifier(tblName, Some(dbName))),
-          child,
-          allowExisting,
-          replace)
-
-      case CreateViewAsSelect(table, child, allowExisting, replace, sql) =>
-        HiveNativeCommand(sql)
-
-      case p @ CreateTableAsSelect(table, child, allowExisting) =>
-        val schema = if (table.schema.nonEmpty) {
-          table.schema
-        } else {
-          child.output.map { a =>
-            CatalogColumn(
-              a.name,
-              HiveMetastoreTypes.toMetastoreType(a.dataType),
-              a.nullable)
-          }
-        }
-
-        val desc = table.copy(schema = schema)
-
-        if (hive.convertCTAS && table.storage.serde.isEmpty) {
-          // Do the conversion when spark.sql.hive.convertCTAS is true and the query
-          // does not specify any storage format (file format and storage handler).
-          if (table.name.database.isDefined) {
+        case CreateViewAsSelect(table, child, allowExisting, replace, sql)
+            if conf.nativeView =>
+          if (allowExisting && replace) {
             throw new AnalysisException(
-              "Cannot specify database name in a CTAS statement " +
-                "when spark.sql.hive.convertCTAS is set to true.")
-          }
-
-          val mode =
-            if (allowExisting) SaveMode.Ignore else SaveMode.ErrorIfExists
-          CreateTableUsingAsSelect(
-            TableIdentifier(desc.name.table),
-            conf.defaultDataSourceName,
-            temporary = false,
-            Array.empty[String],
-            bucketSpec = None,
-            mode,
-            options = Map.empty[String, String],
-            child
-          )
-        } else {
-          val desc = if (table.storage.serde.isEmpty) {
-            // add default serde
-            table.withNewStorage(
-              serde =
-                Some("org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"))
-          } else {
-            table
+              "It is not allowed to define a view with both IF NOT EXISTS and OR REPLACE.")
           }
 
           val QualifiedTableName(dbName, tblName) = getQualifiedTableName(table)
 
-          execution.CreateTableAsSelect(
-            desc.copy(name = TableIdentifier(tblName, Some(dbName))),
+          execution.CreateViewAsSelect(
+            table.copy(name = TableIdentifier(tblName, Some(dbName))),
             child,
-            allowExisting)
-        }
-    }
+            allowExisting,
+            replace)
+
+        case CreateViewAsSelect(table, child, allowExisting, replace, sql) =>
+          HiveNativeCommand(sql)
+
+        case p @ CreateTableAsSelect(table, child, allowExisting) =>
+          val schema = if (table.schema.nonEmpty) {
+            table.schema
+          } else {
+            child.output.map { a =>
+              CatalogColumn(
+                a.name,
+                HiveMetastoreTypes.toMetastoreType(a.dataType),
+                a.nullable)
+            }
+          }
+
+          val desc = table.copy(schema = schema)
+
+          if (hive.convertCTAS && table.storage.serde.isEmpty) {
+            // Do the conversion when spark.sql.hive.convertCTAS is true and the query
+            // does not specify any storage format (file format and storage handler).
+            if (table.name.database.isDefined) {
+              throw new AnalysisException(
+                "Cannot specify database name in a CTAS statement " +
+                  "when spark.sql.hive.convertCTAS is set to true.")
+            }
+
+            val mode =
+              if (allowExisting) SaveMode.Ignore else SaveMode.ErrorIfExists
+            CreateTableUsingAsSelect(
+              TableIdentifier(desc.name.table),
+              conf.defaultDataSourceName,
+              temporary = false,
+              Array.empty[String],
+              bucketSpec = None,
+              mode,
+              options = Map.empty[String, String],
+              child
+            )
+          } else {
+            val desc = if (table.storage.serde.isEmpty) {
+              // add default serde
+              table.withNewStorage(
+                serde =
+                  Some("org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"))
+            } else {
+              table
+            }
+
+            val QualifiedTableName(dbName, tblName) =
+              getQualifiedTableName(table)
+
+            execution.CreateTableAsSelect(
+              desc.copy(name = TableIdentifier(tblName, Some(dbName))),
+              child,
+              allowExisting)
+          }
+      }
   }
 
   /**
@@ -806,13 +808,14 @@ private[hive] class HiveMetastoreCatalog(
     * that table.
     */
   object PreInsertionCasts extends Rule[LogicalPlan] {
-    def apply(plan: LogicalPlan): LogicalPlan = plan.transform {
-      // Wait until children are resolved.
-      case p: LogicalPlan if !p.childrenResolved => p
+    def apply(plan: LogicalPlan): LogicalPlan =
+      plan.transform {
+        // Wait until children are resolved.
+        case p: LogicalPlan if !p.childrenResolved => p
 
-      case p @ InsertIntoTable(table: MetastoreRelation, _, child, _, _) =>
-        castChildOutput(p, table, child)
-    }
+        case p @ InsertIntoTable(table: MetastoreRelation, _, child, _, _) =>
+          castChildOutput(p, table, child)
+      }
 
     def castChildOutput(
         p: InsertIntoTable,
@@ -946,14 +949,15 @@ private[hive] case class MetastoreRelation(
     with MultiInstanceRelation
     with FileRelation {
 
-  override def equals(other: Any): Boolean = other match {
-    case relation: MetastoreRelation =>
-      databaseName == relation.databaseName &&
-        tableName == relation.tableName &&
-        alias == relation.alias &&
-        output == relation.output
-    case _ => false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case relation: MetastoreRelation =>
+        databaseName == relation.databaseName &&
+          tableName == relation.tableName &&
+          alias == relation.alias &&
+          output == relation.output
+      case _ => false
+    }
 
   override def hashCode(): Int = {
     Objects.hashCode(databaseName, tableName, alias, output)
@@ -1150,25 +1154,27 @@ private[hive] object HiveMetastoreTypes {
         s"decimal($HiveShim.UNLIMITED_DECIMAL_PRECISION,$HiveShim.UNLIMITED_DECIMAL_SCALE)"
     }
 
-  def toMetastoreType(dt: DataType): String = dt match {
-    case ArrayType(elementType, _) => s"array<${toMetastoreType(elementType)}>"
-    case StructType(fields) =>
-      s"struct<${fields.map(f => s"${f.name}:${toMetastoreType(f.dataType)}").mkString(",")}>"
-    case MapType(keyType, valueType, _) =>
-      s"map<${toMetastoreType(keyType)},${toMetastoreType(valueType)}>"
-    case StringType              => "string"
-    case FloatType               => "float"
-    case IntegerType             => "int"
-    case ByteType                => "tinyint"
-    case ShortType               => "smallint"
-    case DoubleType              => "double"
-    case LongType                => "bigint"
-    case BinaryType              => "binary"
-    case BooleanType             => "boolean"
-    case DateType                => "date"
-    case d: DecimalType          => decimalMetastoreString(d)
-    case TimestampType           => "timestamp"
-    case NullType                => "void"
-    case udt: UserDefinedType[_] => toMetastoreType(udt.sqlType)
-  }
+  def toMetastoreType(dt: DataType): String =
+    dt match {
+      case ArrayType(elementType, _) =>
+        s"array<${toMetastoreType(elementType)}>"
+      case StructType(fields) =>
+        s"struct<${fields.map(f => s"${f.name}:${toMetastoreType(f.dataType)}").mkString(",")}>"
+      case MapType(keyType, valueType, _) =>
+        s"map<${toMetastoreType(keyType)},${toMetastoreType(valueType)}>"
+      case StringType              => "string"
+      case FloatType               => "float"
+      case IntegerType             => "int"
+      case ByteType                => "tinyint"
+      case ShortType               => "smallint"
+      case DoubleType              => "double"
+      case LongType                => "bigint"
+      case BinaryType              => "binary"
+      case BooleanType             => "boolean"
+      case DateType                => "date"
+      case d: DecimalType          => decimalMetastoreString(d)
+      case TimestampType           => "timestamp"
+      case NullType                => "void"
+      case udt: UserDefinedType[_] => toMetastoreType(udt.sqlType)
+    }
 }

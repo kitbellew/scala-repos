@@ -62,9 +62,10 @@ trait CRUDify[K, T <: Record[T] with KeyedEntity[K]] extends Crudify {
 
   protected class SquerylBridge(in: TheCrudType) extends CrudBridge {
 
-    def delete_! = inTransaction {
-      table.delete(in.id)
-    }
+    def delete_! =
+      inTransaction {
+        table.delete(in.id)
+      }
 
     def save = {
       if (in.isPersisted) {

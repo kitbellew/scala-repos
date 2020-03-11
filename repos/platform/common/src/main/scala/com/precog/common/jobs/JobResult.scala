@@ -33,22 +33,23 @@ import scalaz._
 case class JobResult(mimeTypes: List[MimeType], content: Array[Byte]) {
   override def hashCode: Int = mimeTypes.## * 23 + content.toList.##
 
-  override def equals(that: Any): Boolean = that match {
-    case JobResult(thoseMimeTypes, thatContent) =>
-      val len = content.length
-      (mimeTypes.toSet == thoseMimeTypes.toSet) && (len == thatContent.length) && {
-        var i = 0
-        var result = true
-        while (result && i < len) {
-          result = content(i) == thatContent(i)
-          i += 1
+  override def equals(that: Any): Boolean =
+    that match {
+      case JobResult(thoseMimeTypes, thatContent) =>
+        val len = content.length
+        (mimeTypes.toSet == thoseMimeTypes.toSet) && (len == thatContent.length) && {
+          var i = 0
+          var result = true
+          while (result && i < len) {
+            result = content(i) == thatContent(i)
+            i += 1
+          }
+          result
         }
-        result
-      }
 
-    case _ =>
-      false
-  }
+      case _ =>
+        false
+    }
 }
 
 object JobResult extends JobResultSerialization

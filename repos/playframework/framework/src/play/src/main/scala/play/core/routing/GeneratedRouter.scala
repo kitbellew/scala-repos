@@ -22,19 +22,20 @@ object Route {
   /**
     * Create a params extractor from the given method and path pattern.
     */
-  def apply(method: String, pathPattern: PathPattern) = new ParamsExtractor {
+  def apply(method: String, pathPattern: PathPattern) =
+    new ParamsExtractor {
 
-    def unapply(request: RequestHeader): Option[RouteParams] = {
-      if (method == request.method) {
-        pathPattern(request.path).map { groups =>
-          RouteParams(groups, request.queryString)
+      def unapply(request: RequestHeader): Option[RouteParams] = {
+        if (method == request.method) {
+          pathPattern(request.path).map { groups =>
+            RouteParams(groups, request.queryString)
+          }
+        } else {
+          None
         }
-      } else {
-        None
       }
-    }
 
-  }
+    }
 
 }
 
@@ -107,9 +108,13 @@ abstract class GeneratedRouter extends Router {
 
   def errorHandler: HttpErrorHandler
 
-  def badRequest(error: String) = Action.async { request =>
-    errorHandler.onClientError(request, play.api.http.Status.BAD_REQUEST, error)
-  }
+  def badRequest(error: String) =
+    Action.async { request =>
+      errorHandler.onClientError(
+        request,
+        play.api.http.Status.BAD_REQUEST,
+        error)
+    }
 
   def call(generator: => Handler): Handler = {
     generator

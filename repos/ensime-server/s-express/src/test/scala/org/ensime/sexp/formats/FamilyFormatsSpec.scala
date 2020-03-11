@@ -43,49 +43,51 @@ class FamilyFormatsSpec extends FormatSpec with FamilyFormats {
       // implicit val PreferTokenTH = typehint[PreferToken]
       // implicit val QualifierTokenTH = typehint[QualifierToken]
 
-      def write(obj: TokenTree): Sexp = obj match {
-        case f: FieldTerm        => wrap(f)
-        case b: BoundedTerm      => wrap(b)
-        case u: Unparsed         => wrap(u)
-        case i: Ignored          => wrap(i)
-        case u: Unclear          => wrap(u)
-        case i: InTerm           => wrap(i)
-        case like: LikeTerm      => wrap(like)
-        case a: AndCondition     => wrap(a)
-        case o: OrCondition      => wrap(o)
-        case prefer: PreferToken => wrap(prefer)
-        case q: QualifierToken   => wrap(q)
-        case SpecialToken        => wrap(SpecialToken)
-      }
+      def write(obj: TokenTree): Sexp =
+        obj match {
+          case f: FieldTerm        => wrap(f)
+          case b: BoundedTerm      => wrap(b)
+          case u: Unparsed         => wrap(u)
+          case i: Ignored          => wrap(i)
+          case u: Unclear          => wrap(u)
+          case i: InTerm           => wrap(i)
+          case like: LikeTerm      => wrap(like)
+          case a: AndCondition     => wrap(a)
+          case o: OrCondition      => wrap(o)
+          case prefer: PreferToken => wrap(prefer)
+          case q: QualifierToken   => wrap(q)
+          case SpecialToken        => wrap(SpecialToken)
+        }
 
-      def read(hint: SexpSymbol, value: Sexp): TokenTree = hint match {
-        case s if s == implicitly[TypeHint[FieldTerm]].hint =>
-          value.convertTo[FieldTerm]
-        case s if s == implicitly[TypeHint[BoundedTerm]].hint =>
-          value.convertTo[BoundedTerm]
-        case s if s == implicitly[TypeHint[Unparsed]].hint =>
-          value.convertTo[Unparsed]
-        case s if s == implicitly[TypeHint[Ignored]].hint =>
-          value.convertTo[Ignored]
-        case s if s == implicitly[TypeHint[Unclear]].hint =>
-          value.convertTo[Unclear]
-        case s if s == implicitly[TypeHint[InTerm]].hint =>
-          value.convertTo[InTerm]
-        case s if s == implicitly[TypeHint[LikeTerm]].hint =>
-          value.convertTo[LikeTerm]
-        case s if s == implicitly[TypeHint[AndCondition]].hint =>
-          value.convertTo[AndCondition]
-        case s if s == implicitly[TypeHint[OrCondition]].hint =>
-          value.convertTo[OrCondition]
-        case s if s == implicitly[TypeHint[PreferToken]].hint =>
-          value.convertTo[PreferToken]
-        case s if s == implicitly[TypeHint[QualifierToken]].hint =>
-          value.convertTo[QualifierToken]
-        case s if s == implicitly[TypeHint[SpecialToken.type]].hint =>
-          value.convertTo[SpecialToken.type]
-        // SAD FACE --- compiler doesn't catch typos on matches or missing impls
-        case _ => deserializationError(hint)
-      }
+      def read(hint: SexpSymbol, value: Sexp): TokenTree =
+        hint match {
+          case s if s == implicitly[TypeHint[FieldTerm]].hint =>
+            value.convertTo[FieldTerm]
+          case s if s == implicitly[TypeHint[BoundedTerm]].hint =>
+            value.convertTo[BoundedTerm]
+          case s if s == implicitly[TypeHint[Unparsed]].hint =>
+            value.convertTo[Unparsed]
+          case s if s == implicitly[TypeHint[Ignored]].hint =>
+            value.convertTo[Ignored]
+          case s if s == implicitly[TypeHint[Unclear]].hint =>
+            value.convertTo[Unclear]
+          case s if s == implicitly[TypeHint[InTerm]].hint =>
+            value.convertTo[InTerm]
+          case s if s == implicitly[TypeHint[LikeTerm]].hint =>
+            value.convertTo[LikeTerm]
+          case s if s == implicitly[TypeHint[AndCondition]].hint =>
+            value.convertTo[AndCondition]
+          case s if s == implicitly[TypeHint[OrCondition]].hint =>
+            value.convertTo[OrCondition]
+          case s if s == implicitly[TypeHint[PreferToken]].hint =>
+            value.convertTo[PreferToken]
+          case s if s == implicitly[TypeHint[QualifierToken]].hint =>
+            value.convertTo[QualifierToken]
+          case s if s == implicitly[TypeHint[SpecialToken.type]].hint =>
+            value.convertTo[SpecialToken.type]
+          // SAD FACE --- compiler doesn't catch typos on matches or missing impls
+          case _ => deserializationError(hint)
+        }
     }
     /////////////////// END OF BOILERPLATE /////////////////
 

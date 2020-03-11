@@ -27,46 +27,48 @@ import play.filters.gzip.GzipFilter
 object HttpBinApplication {
 
   private val requestHeaderWriter = new Writes[RequestHeader] {
-    def writes(r: RequestHeader): JsValue = Json.obj(
-      "origin" -> r.remoteAddress,
-      "url" -> "",
-      "args" -> r.queryString.mapValues(_.head),
-      "headers" -> r.headers.toSimpleMap
-    )
+    def writes(r: RequestHeader): JsValue =
+      Json.obj(
+        "origin" -> r.remoteAddress,
+        "url" -> "",
+        "args" -> r.queryString.mapValues(_.head),
+        "headers" -> r.headers.toSimpleMap
+      )
   }
 
-  private def requestWriter[A] = new Writes[Request[A]] {
-    def writes(r: Request[A]): JsValue =
-      requestHeaderWriter.writes(r).as[JsObject] ++
-        Json.obj(
-          "json" -> JsNull,
-          "data" -> "",
-          "form" -> JsObject(Nil)
-        ) ++ (r.body match {
-        // Json Body
-        case e: JsValue =>
-          Json.obj("json" -> e)
-        // X-WWW-Form-Encoded
-        case f: Map[String, Seq[String]] @unchecked =>
+  private def requestWriter[A] =
+    new Writes[Request[A]] {
+      def writes(r: Request[A]): JsValue =
+        requestHeaderWriter.writes(r).as[JsObject] ++
           Json.obj(
-            "form" -> JsObject(
-              f.mapValues(x => JsString(x.mkString(", "))).toSeq))
-        // Anything else
-        case m: play.api.mvc.AnyContentAsMultipartFormData @unchecked =>
-          Json.obj(
-            "form" -> m.mdf.dataParts.map {
-              case (k, v) => k -> JsString(v.mkString)
-            },
-            "file" -> JsString(
-              m.mdf
-                .file("upload")
-                .map(v => FileUtils.readFileToString(v.ref.file))
-                .getOrElse(""))
-          )
-        case b =>
-          Json.obj("data" -> JsString(b.toString))
-      })
-  }
+            "json" -> JsNull,
+            "data" -> "",
+            "form" -> JsObject(Nil)
+          ) ++ (r.body match {
+          // Json Body
+          case e: JsValue =>
+            Json.obj("json" -> e)
+          // X-WWW-Form-Encoded
+          case f: Map[String, Seq[String]] @unchecked =>
+            Json.obj(
+              "form" -> JsObject(
+                f.mapValues(x => JsString(x.mkString(", "))).toSeq))
+          // Anything else
+          case m: play.api.mvc.AnyContentAsMultipartFormData @unchecked =>
+            Json.obj(
+              "form" -> m.mdf.dataParts.map {
+                case (k, v) => k -> JsString(v.mkString)
+              },
+              "file" -> JsString(
+                m.mdf
+                  .file("upload")
+                  .map(v => FileUtils.readFileToString(v.ref.file))
+                  .getOrElse(""))
+            )
+          case b =>
+            Json.obj("data" -> JsString(b.toString))
+        })
+    }
 
   val getIp: Routes = {
     case GET(p"/ip") =>
@@ -340,30 +342,31 @@ object HttpBinApplication {
     new BuiltInComponentsFromContext(
       ApplicationLoader.createContext(Environment.simple()))
       with AhcWSComponents {
-      def router = SimpleRouter(
-        PartialFunction.empty
-          .orElse(getIp)
-          .orElse(getUserAgent)
-          .orElse(getHeaders)
-          .orElse(get)
-          .orElse(patch)
-          .orElse(post)
-          .orElse(put)
-          .orElse(delete)
-          .orElse(gzip)
-          .orElse(status)
-          .orElse(responseHeaders)
-          .orElse(redirect)
-          .orElse(redirectTo)
-          .orElse(cookies)
-          .orElse(cookiesSet)
-          .orElse(cookiesDelete)
-          .orElse(basicAuth)
-          .orElse(stream)
-          .orElse(delay)
-          .orElse(html)
-          .orElse(robots)
-      )
+      def router =
+        SimpleRouter(
+          PartialFunction.empty
+            .orElse(getIp)
+            .orElse(getUserAgent)
+            .orElse(getHeaders)
+            .orElse(get)
+            .orElse(patch)
+            .orElse(post)
+            .orElse(put)
+            .orElse(delete)
+            .orElse(gzip)
+            .orElse(status)
+            .orElse(responseHeaders)
+            .orElse(redirect)
+            .orElse(redirectTo)
+            .orElse(cookies)
+            .orElse(cookiesSet)
+            .orElse(cookiesDelete)
+            .orElse(basicAuth)
+            .orElse(stream)
+            .orElse(delay)
+            .orElse(html)
+            .orElse(robots)
+        )
     }.application
   }
 

@@ -18,42 +18,44 @@ object PomTest extends Build {
     )
   )
 
-  def checkPom = makePom map { pom =>
-    val expected = Seq(
-      ("a", None, false, None),
-      ("b", Some("runtime"), true, None),
-      ("c", None, true, None),
-      ("d", Some("test"), false, None),
-      ("e", None, false, None),
-      ("f", Some("runtime"), true, None),
-      ("g", Some("runtime"), false, Some("foo")),
-      ("h", Some("runtime"), true, Some("foo"))
-    )
-    val loaded = xml.XML.loadFile(pom)
-    val deps = loaded \\ "dependency"
-    expected foreach {
-      case (id, scope, opt, classifier) =>
-        val dep = deps
-          .find(d => (d \ "artifactId").text == id)
-          .getOrElse(
-            sys.error("Dependency '" + id + "' not written to pom:\n" + loaded))
-        val actualOpt = java.lang.Boolean.parseBoolean((dep \\ "optional").text)
-        assert(
-          opt == actualOpt,
-          "Invalid 'optional' section '" + (dep \\ "optional") + "' for " + id + ", expected optional=" + opt)
+  def checkPom =
+    makePom map { pom =>
+      val expected = Seq(
+        ("a", None, false, None),
+        ("b", Some("runtime"), true, None),
+        ("c", None, true, None),
+        ("d", Some("test"), false, None),
+        ("e", None, false, None),
+        ("f", Some("runtime"), true, None),
+        ("g", Some("runtime"), false, Some("foo")),
+        ("h", Some("runtime"), true, Some("foo"))
+      )
+      val loaded = xml.XML.loadFile(pom)
+      val deps = loaded \\ "dependency"
+      expected foreach {
+        case (id, scope, opt, classifier) =>
+          val dep = deps
+            .find(d => (d \ "artifactId").text == id)
+            .getOrElse(sys.error(
+              "Dependency '" + id + "' not written to pom:\n" + loaded))
+          val actualOpt =
+            java.lang.Boolean.parseBoolean((dep \\ "optional").text)
+          assert(
+            opt == actualOpt,
+            "Invalid 'optional' section '" + (dep \\ "optional") + "' for " + id + ", expected optional=" + opt)
 
-        val actualScope = (dep \\ "scope") match {
-          case Seq() => None; case x => Some(x.text)
-        }
-        val actualClassifier = (dep \\ "classifier") match {
-          case Seq() => None; case x => Some(x.text)
-        }
-        assert(
-          actualScope == scope,
-          "Invalid 'scope' section '" + (dep \\ "scope") + "' for " + id + ", expected scope=" + scope)
-        assert(
-          actualClassifier == classifier,
-          "Invalid 'classifier' section '" + (dep \\ "classifier") + "' for " + id + ", expected classifier=" + classifier)
+          val actualScope = (dep \\ "scope") match {
+            case Seq() => None; case x => Some(x.text)
+          }
+          val actualClassifier = (dep \\ "classifier") match {
+            case Seq() => None; case x => Some(x.text)
+          }
+          assert(
+            actualScope == scope,
+            "Invalid 'scope' section '" + (dep \\ "scope") + "' for " + id + ", expected scope=" + scope)
+          assert(
+            actualClassifier == classifier,
+            "Invalid 'classifier' section '" + (dep \\ "classifier") + "' for " + id + ", expected classifier=" + classifier)
+      }
     }
-  }
 }

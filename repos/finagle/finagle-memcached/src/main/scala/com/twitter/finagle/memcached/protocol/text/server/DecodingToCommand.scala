@@ -36,11 +36,12 @@ abstract class AbstractDecodingToCommand[C <: AnyRef] extends OneToOneDecoder {
   // Taken from memcached.c
   private val RealtimeMaxdelta = 60 * 60 * 24 * 30
 
-  def decode(ctx: ChannelHandlerContext, ch: Channel, m: AnyRef) = m match {
-    case Tokens(tokens) => parseNonStorageCommand(tokens)
-    case TokensWithData(tokens, data, _ /*ignore CAS*/ ) =>
-      parseStorageCommand(tokens, data)
-  }
+  def decode(ctx: ChannelHandlerContext, ch: Channel, m: AnyRef) =
+    m match {
+      case Tokens(tokens) => parseNonStorageCommand(tokens)
+      case TokensWithData(tokens, data, _ /*ignore CAS*/ ) =>
+        parseStorageCommand(tokens, data)
+    }
 
   protected def parseNonStorageCommand(tokens: Seq[Buf]): C
   protected def parseStorageCommand(tokens: Seq[Buf], data: Buf): C

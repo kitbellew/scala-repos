@@ -39,14 +39,16 @@ class OptionResultConverter[
     val v = ti.getValue(pr, idx)
     if (ti.wasNull(pr, idx)) None else Some(v)
   }
-  def update(value: Option[T], pr: ResultSet) = value match {
-    case Some(v) => ti.updateValue(v, pr, idx)
-    case _       => ti.updateNull(pr, idx)
-  }
-  def set(value: Option[T], pp: PreparedStatement) = value match {
-    case Some(v) => ti.setValue(v, pp, idx)
-    case _       => ti.setNull(pp, idx)
-  }
+  def update(value: Option[T], pr: ResultSet) =
+    value match {
+      case Some(v) => ti.updateValue(v, pr, idx)
+      case _       => ti.updateNull(pr, idx)
+    }
+  def set(value: Option[T], pp: PreparedStatement) =
+    value match {
+      case Some(v) => ti.setValue(v, pp, idx)
+      case _       => ti.setNull(pp, idx)
+    }
   override def getDumpInfo =
     super.getDumpInfo.copy(mainInfo = s"idx=$idx", attrInfo = ": " + ti)
   def width = 1

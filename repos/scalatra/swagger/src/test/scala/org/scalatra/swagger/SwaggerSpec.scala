@@ -89,18 +89,19 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
     JsonParser.parse(rdr)
   }
 
-  def listResources = get("/api-docs") {
-    val bd = JsonParser.parseOpt(body)
-    bd must beSome[JValue] and {
-      val j = bd.get
-      (j \ "apiVersion" must_== listResourceJValue \ "apiVersion") and
-        (j \ "swaggerVersion" must_== listResourceJValue \ "swaggerVersion") and
-        verifyInfo(j \ "info") and
-        verifyApis(j \ "apis") and
-        verifyAuthorizations(j \ "authorizations")
+  def listResources =
+    get("/api-docs") {
+      val bd = JsonParser.parseOpt(body)
+      bd must beSome[JValue] and {
+        val j = bd.get
+        (j \ "apiVersion" must_== listResourceJValue \ "apiVersion") and
+          (j \ "swaggerVersion" must_== listResourceJValue \ "swaggerVersion") and
+          verifyInfo(j \ "info") and
+          verifyApis(j \ "apis") and
+          verifyAuthorizations(j \ "authorizations")
 
+      }
     }
-  }
 
   def parseInt(i: String): Option[Int] =
     try {

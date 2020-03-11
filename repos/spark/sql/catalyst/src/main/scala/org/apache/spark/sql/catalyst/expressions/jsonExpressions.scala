@@ -51,9 +51,10 @@ private[this] object JsonPathParser extends RegexParsers {
 
   def root: Parser[Char] = '$'
 
-  def long: Parser[Long] = "\\d+".r ^? {
-    case x => x.toLong
-  }
+  def long: Parser[Long] =
+    "\\d+".r ^? {
+      case x => x.toLong
+    }
 
   // parse `[*]` and `[123]` subscripts
   def subscript: Parser[List[PathInstruction]] =

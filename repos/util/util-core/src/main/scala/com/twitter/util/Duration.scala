@@ -53,10 +53,11 @@ object Duration extends TimeLikeOps[Duration] {
       else if (that eq Top) 0
       else 1
 
-    override def equals(other: Any) = other match {
-      case d: Duration => d eq this
-      case _           => false
-    }
+    override def equals(other: Any) =
+      other match {
+        case d: Duration => d eq this
+        case _           => false
+      }
 
     override def *(x: Long): Duration =
       if (x == 0) Undefined
@@ -85,10 +86,11 @@ object Duration extends TimeLikeOps[Duration] {
     override def fromNow = Time.Top
     override def ago = Time.Bottom
     override def afterEpoch = Time.Top
-    override def +(delta: Duration) = delta match {
-      case Bottom | Undefined => Undefined
-      case _                  => this
-    }
+    override def +(delta: Duration) =
+      delta match {
+        case Bottom | Undefined => Undefined
+        case _                  => this
+      }
     override def unary_- = Bottom
     override def toString = "Duration.Top"
 
@@ -105,10 +107,11 @@ object Duration extends TimeLikeOps[Duration] {
     /** Bottom is equal to Bottom, but smaller than everything else */
     override def compare(that: Duration) = if (this eq that) 0 else -1
 
-    override def equals(other: Any) = other match {
-      case d: Duration => d eq this
-      case _           => false
-    }
+    override def equals(other: Any) =
+      other match {
+        case d: Duration => d eq this
+        case _           => false
+      }
 
     /** Scaling arithmetic is Bottom preserving. */
     override def *(x: Long): Duration =
@@ -140,10 +143,11 @@ object Duration extends TimeLikeOps[Duration] {
 
     override def isFinite = false
 
-    override def +(delta: Duration) = delta match {
-      case Top | Undefined => Undefined
-      case _               => this
-    }
+    override def +(delta: Duration) =
+      delta match {
+        case Top | Undefined => Undefined
+        case _               => this
+      }
 
     override def unary_- = Top
     override def toString = "Duration.Bottom"
@@ -156,10 +160,11 @@ object Duration extends TimeLikeOps[Duration] {
 
     override def compare(that: Duration) = if (this eq that) 0 else 1
 
-    override def equals(other: Any) = other match {
-      case d: Duration => d eq this
-      case _           => false
-    }
+    override def equals(other: Any) =
+      other match {
+        case d: Duration => d eq this
+        case _           => false
+      }
 
     override def *(x: Long): Duration = this
     override def *(x: Double): Duration = this
@@ -392,16 +397,17 @@ sealed class Duration private[util] (protected val nanos: Long) extends {
   /**
     * Scales this `Duration` by multiplying by `x`.
     */
-  def *(x: Double): Duration = (nanos * x) match {
-    case product if java.lang.Double.isNaN(product) => Undefined
-    case Double.PositiveInfinity                    => Top
-    case Double.NegativeInfinity                    => Bottom
-    case product =>
-      val productLong = product.toLong
-      if (productLong == Long.MaxValue) Top
-      else if (productLong == Long.MinValue) Bottom
-      else fromNanoseconds(productLong)
-  }
+  def *(x: Double): Duration =
+    (nanos * x) match {
+      case product if java.lang.Double.isNaN(product) => Undefined
+      case Double.PositiveInfinity                    => Top
+      case Double.NegativeInfinity                    => Bottom
+      case product =>
+        val productLong = product.toLong
+        if (productLong == Long.MaxValue) Top
+        else if (productLong == Long.MinValue) Bottom
+        else fromNanoseconds(productLong)
+    }
 
   /**
     * Scales this `Duration` by dividing by `x`.
@@ -422,11 +428,12 @@ sealed class Duration private[util] (protected val nanos: Long) extends {
   /**
     * Scales this `Duration` by modding by `x`.
     */
-  def %(x: Duration): Duration = x match {
-    case Undefined | Nanoseconds(0) => Undefined
-    case Nanoseconds(ns)            => fromNanoseconds(nanos % ns)
-    case Top | Bottom               => this
-  }
+  def %(x: Duration): Duration =
+    x match {
+      case Undefined | Nanoseconds(0) => Undefined
+      case Nanoseconds(ns)            => fromNanoseconds(nanos % ns)
+      case Top | Bottom               => this
+    }
 
   /**
     * Converts negative durations to positive durations.

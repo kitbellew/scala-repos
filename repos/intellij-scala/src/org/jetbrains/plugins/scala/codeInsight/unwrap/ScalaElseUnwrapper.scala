@@ -30,10 +30,11 @@ class ScalaElseUnwrapper extends ScalaElseUnwrapperBase {
 
   override def collectAffectedElements(
       e: PsiElement,
-      toExtract: util.List[PsiElement]) = elseBranch(e) match {
-    case Some((ifStmt: ScIfStmt, _)) =>
-      super.collectAffectedElements(e, toExtract)
-      maxIfStmt(ifStmt)
-    case _ => e
-  }
+      toExtract: util.List[PsiElement]) =
+    elseBranch(e) match {
+      case Some((ifStmt: ScIfStmt, _)) =>
+        super.collectAffectedElements(e, toExtract)
+        maxIfStmt(ifStmt)
+      case _ => e
+    }
 }

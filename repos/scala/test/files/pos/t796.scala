@@ -15,10 +15,11 @@ object Test extends App {
       else None
   }
 
-  def test(x: Int) = x match {
-    case Twice(y) => "x is two times " + y
-    case _        => "x is odd"
-  }
+  def test(x: Int) =
+    x match {
+      case Twice(y) => "x is two times " + y
+      case _        => "x is odd"
+    }
 
   Console.println(test(3))
   Console.println(test(4))

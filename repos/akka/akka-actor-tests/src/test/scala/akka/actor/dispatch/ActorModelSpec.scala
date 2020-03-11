@@ -494,10 +494,11 @@ abstract class ActorModelSpec(config: String)
                   System.err.println(
                     "Teammates left: " + team.size + " stopLatch: " + stopLatch.getCount + " inhab:" + dispatcher.inhabitants)
                   team.toArray sorted new Ordering[AnyRef] {
-                    def compare(l: AnyRef, r: AnyRef) = (l, r) match {
-                      case (ll: ActorCell, rr: ActorCell) ⇒
-                        ll.self.path compareTo rr.self.path
-                    }
+                    def compare(l: AnyRef, r: AnyRef) =
+                      (l, r) match {
+                        case (ll: ActorCell, rr: ActorCell) ⇒
+                          ll.self.path compareTo rr.self.path
+                      }
                   } foreach {
                     case cell: ActorCell ⇒
                       System.err.println(

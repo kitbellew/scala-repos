@@ -282,18 +282,19 @@ object Menu extends DispatchSnippet {
   def jsonMenu(ignore: NodeSeq): NodeSeq = {
     val toRender = renderWhat(true)
 
-    def buildItem(in: MenuItem): JsExp = in match {
-      case MenuItem(text, uri, kids, current, path, _) =>
-        JsObj(
-          "text" -> text.toString,
-          "uri" -> uri.toString,
-          "children" -> buildItems(kids),
-          "current" -> current,
-          "cssClass" -> Str(in.cssClass openOr ""),
-          "placeholder" -> in.placeholder_?,
-          "path" -> path
-        )
-    }
+    def buildItem(in: MenuItem): JsExp =
+      in match {
+        case MenuItem(text, uri, kids, current, path, _) =>
+          JsObj(
+            "text" -> text.toString,
+            "uri" -> uri.toString,
+            "children" -> buildItems(kids),
+            "current" -> current,
+            "cssClass" -> Str(in.cssClass openOr ""),
+            "placeholder" -> in.placeholder_?,
+            "path" -> path
+          )
+      }
 
     def buildItems(in: Seq[MenuItem]): JsExp =
       JsArray(in.map(buildItem): _*)

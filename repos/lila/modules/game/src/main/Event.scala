@@ -208,11 +208,12 @@ object Event {
   case class Castling(king: (Pos, Pos), rook: (Pos, Pos), color: Color)
       extends Event {
     def typ = "castling"
-    def data = Json.obj(
-      "king" -> Json.arr(king._1.key, king._2.key),
-      "rook" -> Json.arr(rook._1.key, rook._2.key),
-      "color" -> color
-    )
+    def data =
+      Json.obj(
+        "king" -> Json.arr(king._1.key, king._2.key),
+        "rook" -> Json.arr(rook._1.key, rook._2.key),
+        "color" -> color
+      )
   }
 
   case class RedirectOwner(color: Color, id: String, cookie: Option[JsObject])
@@ -232,10 +233,11 @@ object Event {
 
   case class Promotion(role: PromotableRole, pos: Pos) extends Event {
     def typ = "promotion"
-    def data = Json.obj(
-      "key" -> pos.key,
-      "pieceClass" -> role.toString.toLowerCase
-    )
+    def data =
+      Json.obj(
+        "key" -> pos.key,
+        "pieceClass" -> role.toString.toLowerCase
+      )
   }
 
   case class PlayerMessage(line: PlayerLine) extends Event {
@@ -300,10 +302,11 @@ object Event {
 
   case class CheckCount(white: Int, black: Int) extends Event {
     def typ = "checkCount"
-    def data = Json.obj(
-      "white" -> white,
-      "black" -> black
-    )
+    def data =
+      Json.obj(
+        "white" -> white,
+        "black" -> black
+      )
   }
 
   case class State(

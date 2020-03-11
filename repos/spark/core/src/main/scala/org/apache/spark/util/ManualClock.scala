@@ -39,27 +39,30 @@ private[spark] class ManualClock(private var time: Long) extends Clock {
   /**
     * @param timeToSet new time (in milliseconds) that the clock should represent
     */
-  def setTime(timeToSet: Long): Unit = synchronized {
-    time = timeToSet
-    notifyAll()
-  }
+  def setTime(timeToSet: Long): Unit =
+    synchronized {
+      time = timeToSet
+      notifyAll()
+    }
 
   /**
     * @param timeToAdd time (in milliseconds) to add to the clock's time
     */
-  def advance(timeToAdd: Long): Unit = synchronized {
-    time += timeToAdd
-    notifyAll()
-  }
+  def advance(timeToAdd: Long): Unit =
+    synchronized {
+      time += timeToAdd
+      notifyAll()
+    }
 
   /**
     * @param targetTime block until the clock time is set or advanced to at least this time
     * @return current time reported by the clock when waiting finishes
     */
-  def waitTillTime(targetTime: Long): Long = synchronized {
-    while (time < targetTime) {
-      wait(10)
+  def waitTillTime(targetTime: Long): Long =
+    synchronized {
+      while (time < targetTime) {
+        wait(10)
+      }
+      getTimeMillis()
     }
-    getTimeMillis()
-  }
 }

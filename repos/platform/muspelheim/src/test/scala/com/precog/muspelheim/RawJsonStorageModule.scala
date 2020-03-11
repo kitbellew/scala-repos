@@ -192,23 +192,24 @@ trait RawJsonColumnarTableStorageModule[M[+_]]
         unique: Boolean = false): M[Seq[Table]] =
       sys.error("Feature not implemented in test stub.")
 
-    def load(apiKey: APIKey, tpe: JType) = EitherT.right {
-      val pathsM = this.reduce {
-        new CReducer[Set[Path]] {
-          def reduce(schema: CSchema, range: Range): Set[Path] = {
-            schema.columns(JObjectFixedT(Map("value" -> JTextT))) flatMap {
-              case s: StrColumn =>
-                range.filter(s.isDefinedAt).map(i => Path(s(i)))
-              case _ => Set()
+    def load(apiKey: APIKey, tpe: JType) =
+      EitherT.right {
+        val pathsM = this.reduce {
+          new CReducer[Set[Path]] {
+            def reduce(schema: CSchema, range: Range): Set[Path] = {
+              schema.columns(JObjectFixedT(Map("value" -> JTextT))) flatMap {
+                case s: StrColumn =>
+                  range.filter(s.isDefinedAt).map(i => Path(s(i)))
+                case _ => Set()
+              }
             }
           }
         }
-      }
 
-      for (paths <- pathsM) yield {
-        fromJson(paths.toList.map(projectionData).flatten.toStream)
+        for (paths <- pathsM) yield {
+          fromJson(paths.toList.map(projectionData).flatten.toStream)
+        }
       }
-    }
   }
 }
 // vim: set ts=4 sw=4 et:

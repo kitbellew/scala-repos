@@ -43,29 +43,30 @@ trait LinearSeqLike[+A, +Repr <: LinearSeqLike[A, Repr]]
       .seqHash(seq) // TODO - can we get faster via "linearSeqHash" ?
 
   override /*IterableLike*/
-  def iterator: Iterator[A] = new AbstractIterator[A] {
-    var these = self
-    def hasNext: Boolean = !these.isEmpty
-    def next(): A =
-      if (hasNext) {
-        val result = these.head; these = these.tail; result
-      } else Iterator.empty.next()
+  def iterator: Iterator[A] =
+    new AbstractIterator[A] {
+      var these = self
+      def hasNext: Boolean = !these.isEmpty
+      def next(): A =
+        if (hasNext) {
+          val result = these.head; these = these.tail; result
+        } else Iterator.empty.next()
 
-    override def toList: List[A] = {
-      /* Have to clear `these` so the iterator is exhausted like
-       * it would be without the optimization.
-       *
-       * Calling "newBuilder.result()" in toList method
-       * prevents original seq from garbage collection,
-       * so we use these.take(0) here.
-       *
-       * Check SI-8924 for details
-       */
-      val xs = these.toList
-      these = these.take(0)
-      xs
+      override def toList: List[A] = {
+        /* Have to clear `these` so the iterator is exhausted like
+         * it would be without the optimization.
+         *
+         * Calling "newBuilder.result()" in toList method
+         * prevents original seq from garbage collection,
+         * so we use these.take(0) here.
+         *
+         * Check SI-8924 for details
+         */
+        val xs = these.toList
+        these = these.take(0)
+        xs
+      }
     }
-  }
 
   @tailrec override final def corresponds[B](that: GenSeq[B])(
       p: (A, B) => Boolean): Boolean = {

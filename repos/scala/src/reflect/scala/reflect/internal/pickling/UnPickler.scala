@@ -164,10 +164,11 @@ abstract class UnPickler {
       tag == CHILDREN
     }
 
-    private def maybeReadSymbol(): Either[Int, Symbol] = readNat() match {
-      case index if isSymbolRef(index) => Right(at(index, readSymbol))
-      case index                       => Left(index)
-    }
+    private def maybeReadSymbol(): Either[Int, Symbol] =
+      readNat() match {
+        case index if isSymbolRef(index) => Right(at(index, readSymbol))
+        case index                       => Left(index)
+      }
 
     /** Does entry represent a refinement symbol?
       *  pre: Entry is a class symbol
@@ -225,17 +226,18 @@ abstract class UnPickler {
 
         def adjust(sym: Symbol) = if (tag == EXTref) sym else sym.moduleClass
 
-        def fromName(name: Name) = name.toTermName match {
-          case nme.ROOT    => loadingMirror.RootClass
-          case nme.ROOTPKG => loadingMirror.RootPackage
-          case _ =>
-            val decl = owner match {
-              case stub: StubSymbol =>
-                NoSymbol // SI-8502 Don't call .info and fail the stub
-              case _ => owner.info.decl(name)
-            }
-            adjust(decl)
-        }
+        def fromName(name: Name) =
+          name.toTermName match {
+            case nme.ROOT    => loadingMirror.RootClass
+            case nme.ROOTPKG => loadingMirror.RootPackage
+            case _ =>
+              val decl = owner match {
+                case stub: StubSymbol =>
+                  NoSymbol // SI-8502 Don't call .info and fail the stub
+                case _ => owner.info.decl(name)
+              }
+              adjust(decl)
+          }
         def nestedObjectSymbol: Symbol = {
           // If the owner is overloaded (i.e. a method), it's not possible to select the
           // right member, so return NoSymbol. This can only happen when unpickling a tree.
@@ -409,19 +411,21 @@ abstract class UnPickler {
       // if the method is overloaded, the params cannot be determined (see readSymbol) => return NoType.
       // Only happen for trees, "case Apply" in readTree() takes care of selecting the correct
       // alternative after parsing the arguments.
-      def MethodTypeRef(restpe: Type, params: List[Symbol]): Type = (
-        if (restpe == NoType || (params contains NoSymbol)) NoType
-        else MethodType(params, restpe)
-      )
+      def MethodTypeRef(restpe: Type, params: List[Symbol]): Type =
+        (
+          if (restpe == NoType || (params contains NoSymbol)) NoType
+          else MethodType(params, restpe)
+        )
       def PolyOrNullaryType(restpe: Type, tparams: List[Symbol]): Type =
         tparams match {
           case Nil => NullaryMethodType(restpe)
           case _   => PolyType(tparams, restpe)
         }
-      def CompoundType(clazz: Symbol, parents: List[Type]): Type = tag match {
-        case REFINEDtpe   => RefinedType(parents, symScope(clazz), clazz)
-        case CLASSINFOtpe => ClassInfoType(parents, symScope(clazz), clazz)
-      }
+      def CompoundType(clazz: Symbol, parents: List[Type]): Type =
+        tag match {
+          case REFINEDtpe   => RefinedType(parents, symScope(clazz), clazz)
+          case CLASSINFOtpe => ClassInfoType(parents, symScope(clazz), clazz)
+        }
 
       def readThisType(): Type = {
         val sym = readSymbolRef() match {
@@ -506,12 +510,13 @@ abstract class UnPickler {
     /** Read an annotation argument, which is pickled either
       *  as a Constant or a Tree.
       */
-    protected def readAnnotArg(i: Int): Tree = bytes(index(i)) match {
-      case TREE => at(i, readTree)
-      case _ =>
-        val const = at(i, readConstant)
-        Literal(const) setType const.tpe
-    }
+    protected def readAnnotArg(i: Int): Tree =
+      bytes(index(i)) match {
+        case TREE => at(i, readTree)
+        case _ =>
+          val const = at(i, readConstant)
+          Literal(const) setType const.tpe
+      }
 
     /** Read a ClassfileAnnotArg (argument to a classfile annotation)
       */
@@ -592,68 +597,70 @@ abstract class UnPickler {
       def idRef() = readIdentRef()
       def termNameRef() = readNameRef().toTermName
       def typeNameRef() = readNameRef().toTypeName
-      def refTreeRef() = ref() match {
-        case t: RefTree => t
-        case t          => errorBadSignature("RefTree expected, found " + t.shortClass)
-      }
+      def refTreeRef() =
+        ref() match {
+          case t: RefTree => t
+          case t          => errorBadSignature("RefTree expected, found " + t.shortClass)
+        }
       def selectorsRef() = all(ImportSelector(nameRef(), -1, nameRef(), -1))
 
       /** A few of the most popular trees have been pulled to the top for
         *  switch efficiency purposes.
         */
-      def readTree(tpe: Type): Tree = (tag: @switch) match {
-        case IDENTtree  => Ident(nameRef)
-        case SELECTtree => Select(ref, nameRef)
-        case APPLYtree  => fixApply(Apply(ref, all(ref)), tpe) // !!!
-        case BINDtree   => Bind(nameRef, ref)
-        case BLOCKtree =>
-          all(ref) match { case stats :+ expr => Block(stats, expr) }
-        case IFtree           => If(ref, ref, ref)
-        case LITERALtree      => Literal(constRef)
-        case TYPEAPPLYtree    => TypeApply(ref, all(ref))
-        case TYPEDtree        => Typed(ref, ref)
-        case ALTERNATIVEtree  => Alternative(all(ref))
-        case ANNOTATEDtree    => Annotated(ref, ref)
-        case APPLIEDTYPEtree  => AppliedTypeTree(ref, all(ref))
-        case APPLYDYNAMICtree => ApplyDynamic(ref, all(ref))
-        case ARRAYVALUEtree   => ArrayValue(ref, all(ref))
-        case ASSIGNtree       => Assign(ref, ref)
-        case CASEtree         => CaseDef(ref, ref, ref)
-        case CLASStree =>
-          ClassDef(modsRef, typeNameRef, rep(tparamRef), implRef)
-        case COMPOUNDTYPEtree => CompoundTypeTree(implRef)
-        case DEFDEFtree =>
-          DefDef(
-            modsRef,
-            termNameRef,
-            rep(tparamRef),
-            rep(rep(vparamRef)),
-            ref,
-            ref)
-        case EXISTENTIALTYPEtree => ExistentialTypeTree(ref, all(memberRef))
-        case FUNCTIONtree        => Function(rep(vparamRef), ref)
-        case IMPORTtree          => Import(ref, selectorsRef)
-        case LABELtree           => LabelDef(termNameRef, rep(idRef), ref)
-        case MATCHtree           => Match(ref, all(caseRef))
-        case MODULEtree          => ModuleDef(modsRef, termNameRef, implRef)
-        case NEWtree             => New(ref)
-        case PACKAGEtree         => PackageDef(refTreeRef, all(ref))
-        case RETURNtree          => Return(ref)
-        case SELECTFROMTYPEtree  => SelectFromTypeTree(ref, typeNameRef)
-        case SINGLETONTYPEtree   => SingletonTypeTree(ref)
-        case STARtree            => Star(ref)
-        case SUPERtree           => Super(ref, typeNameRef)
-        case TEMPLATEtree        => Template(rep(ref), vparamRef, all(ref))
-        case THIStree            => This(typeNameRef)
-        case THROWtree           => Throw(ref)
-        case TREtree             => Try(ref, rep(caseRef), ref)
-        case TYPEBOUNDStree      => TypeBoundsTree(ref, ref)
-        case TYPEDEFtree         => TypeDef(modsRef, typeNameRef, rep(tparamRef), ref)
-        case TYPEtree            => TypeTree()
-        case UNAPPLYtree         => UnApply(ref, all(ref))
-        case VALDEFtree          => ValDef(modsRef, termNameRef, ref, ref)
-        case _                   => noSuchTreeTag(tag, end)
-      }
+      def readTree(tpe: Type): Tree =
+        (tag: @switch) match {
+          case IDENTtree  => Ident(nameRef)
+          case SELECTtree => Select(ref, nameRef)
+          case APPLYtree  => fixApply(Apply(ref, all(ref)), tpe) // !!!
+          case BINDtree   => Bind(nameRef, ref)
+          case BLOCKtree =>
+            all(ref) match { case stats :+ expr => Block(stats, expr) }
+          case IFtree           => If(ref, ref, ref)
+          case LITERALtree      => Literal(constRef)
+          case TYPEAPPLYtree    => TypeApply(ref, all(ref))
+          case TYPEDtree        => Typed(ref, ref)
+          case ALTERNATIVEtree  => Alternative(all(ref))
+          case ANNOTATEDtree    => Annotated(ref, ref)
+          case APPLIEDTYPEtree  => AppliedTypeTree(ref, all(ref))
+          case APPLYDYNAMICtree => ApplyDynamic(ref, all(ref))
+          case ARRAYVALUEtree   => ArrayValue(ref, all(ref))
+          case ASSIGNtree       => Assign(ref, ref)
+          case CASEtree         => CaseDef(ref, ref, ref)
+          case CLASStree =>
+            ClassDef(modsRef, typeNameRef, rep(tparamRef), implRef)
+          case COMPOUNDTYPEtree => CompoundTypeTree(implRef)
+          case DEFDEFtree =>
+            DefDef(
+              modsRef,
+              termNameRef,
+              rep(tparamRef),
+              rep(rep(vparamRef)),
+              ref,
+              ref)
+          case EXISTENTIALTYPEtree => ExistentialTypeTree(ref, all(memberRef))
+          case FUNCTIONtree        => Function(rep(vparamRef), ref)
+          case IMPORTtree          => Import(ref, selectorsRef)
+          case LABELtree           => LabelDef(termNameRef, rep(idRef), ref)
+          case MATCHtree           => Match(ref, all(caseRef))
+          case MODULEtree          => ModuleDef(modsRef, termNameRef, implRef)
+          case NEWtree             => New(ref)
+          case PACKAGEtree         => PackageDef(refTreeRef, all(ref))
+          case RETURNtree          => Return(ref)
+          case SELECTFROMTYPEtree  => SelectFromTypeTree(ref, typeNameRef)
+          case SINGLETONTYPEtree   => SingletonTypeTree(ref)
+          case STARtree            => Star(ref)
+          case SUPERtree           => Super(ref, typeNameRef)
+          case TEMPLATEtree        => Template(rep(ref), vparamRef, all(ref))
+          case THIStree            => This(typeNameRef)
+          case THROWtree           => Throw(ref)
+          case TREtree             => Try(ref, rep(caseRef), ref)
+          case TYPEBOUNDStree      => TypeBoundsTree(ref, ref)
+          case TYPEDEFtree         => TypeDef(modsRef, typeNameRef, rep(tparamRef), ref)
+          case TYPEtree            => TypeTree()
+          case UNAPPLYtree         => UnApply(ref, all(ref))
+          case VALDEFtree          => ValDef(modsRef, termNameRef, ref, ref)
+          case _                   => noSuchTreeTag(tag, end)
+        }
 
       val tpe = readTypeRef()
       val sym = if (isTreeSymbolPickled(tag)) readSymbolRef() else null

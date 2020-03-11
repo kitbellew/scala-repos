@@ -100,16 +100,18 @@ object AvroConversionUtil extends Serializable {
     bytearray
   }
 
-  def unpackArray(obj: Any, schema: Schema): JCollection[Any] = obj match {
-    case c: JCollection[_] =>
-      c.asScala.map(fromAvro(_, schema.getElementType)).toSeq.asJava
-    case arr: Array[_] if arr.getClass.getComponentType.isPrimitive =>
-      arr.toSeq.asJava.asInstanceOf[JCollection[Any]]
-    case arr: Array[_] =>
-      arr.map(fromAvro(_, schema.getElementType)).toSeq.asJava
-    case other =>
-      throw new SparkException(s"Unknown ARRAY type ${other.getClass.getName}")
-  }
+  def unpackArray(obj: Any, schema: Schema): JCollection[Any] =
+    obj match {
+      case c: JCollection[_] =>
+        c.asScala.map(fromAvro(_, schema.getElementType)).toSeq.asJava
+      case arr: Array[_] if arr.getClass.getComponentType.isPrimitive =>
+        arr.toSeq.asJava.asInstanceOf[JCollection[Any]]
+      case arr: Array[_] =>
+        arr.map(fromAvro(_, schema.getElementType)).toSeq.asJava
+      case other =>
+        throw new SparkException(
+          s"Unknown ARRAY type ${other.getClass.getName}")
+    }
 
   def unpackUnion(obj: Any, schema: Schema): Any = {
     schema.getTypes.asScala.toList match {

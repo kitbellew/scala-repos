@@ -282,13 +282,14 @@ object DebuggerUtil {
 
   private def parameterForJVMSignature(
       param: ScTypedDefinition,
-      subst: ScSubstitutor) = param match {
-    case p: ScParameter if p.isRepeatedParameter   => "Lscala/collection/Seq;"
-    case p: ScParameter if p.isCallByNameParameter => "Lscala/Function0;"
-    case _ =>
-      getJVMStringForType(
-        subst.subst(param.getType(TypingContext.empty).getOrAny))
-  }
+      subst: ScSubstitutor) =
+    param match {
+      case p: ScParameter if p.isRepeatedParameter   => "Lscala/collection/Seq;"
+      case p: ScParameter if p.isCallByNameParameter => "Lscala/Function0;"
+      case _ =>
+        getJVMStringForType(
+          subst.subst(param.getType(TypingContext.empty).getOrAny))
+    }
 
   def createValue(
       vm: VirtualMachineProxyImpl,
@@ -501,18 +502,19 @@ object DebuggerUtil {
 
   private def unwrapRuntimeRef(
       value: AnyRef,
-      typeNameCondition: String => Boolean) = value match {
-    case _ if !ScalaDebuggerSettings.getInstance().DONT_SHOW_RUNTIME_REFS =>
-      value
-    case objRef: ObjectReference =>
-      val refType = objRef.referenceType()
-      if (typeNameCondition(refType.name)) {
-        val elemField = refType.fieldByName("elem")
-        if (elemField != null) objRef.getValue(elemField)
-        else objRef
-      } else objRef
-    case _ => value
-  }
+      typeNameCondition: String => Boolean) =
+    value match {
+      case _ if !ScalaDebuggerSettings.getInstance().DONT_SHOW_RUNTIME_REFS =>
+        value
+      case objRef: ObjectReference =>
+        val refType = objRef.referenceType()
+        if (typeNameCondition(refType.name)) {
+          val elemField = refType.fieldByName("elem")
+          if (elemField != null) objRef.getValue(elemField)
+          else objRef
+        } else objRef
+      case _ => value
+    }
 
   def localParamsForFunDef(
       fun: ScFunctionDefinition,

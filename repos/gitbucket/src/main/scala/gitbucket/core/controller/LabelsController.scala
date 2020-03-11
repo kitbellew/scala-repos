@@ -125,31 +125,33 @@ trait LabelsControllerBase extends ControllerBase {
   /**
     * Constraint for the identifier such as user name, repository name or page name.
     */
-  private def labelName: Constraint = new Constraint() {
-    override def validate(
-        name: String,
-        value: String,
-        messages: Messages): Option[String] =
-      if (value.contains(',')) {
-        Some(s"${name} contains invalid character.")
-      } else if (value.startsWith("_") || value.startsWith("-")) {
-        Some(s"${name} starts with invalid character.")
-      } else {
-        None
-      }
-  }
-
-  private def uniqueLabelName: Constraint = new Constraint() {
-    override def validate(
-        name: String,
-        value: String,
-        params: Map[String, String],
-        messages: Messages): Option[String] = {
-      val owner = params("owner")
-      val repository = params("repository")
-      getLabel(owner, repository, value).map(_ =>
-        "Name has already been taken.")
+  private def labelName: Constraint =
+    new Constraint() {
+      override def validate(
+          name: String,
+          value: String,
+          messages: Messages): Option[String] =
+        if (value.contains(',')) {
+          Some(s"${name} contains invalid character.")
+        } else if (value.startsWith("_") || value.startsWith("-")) {
+          Some(s"${name} starts with invalid character.")
+        } else {
+          None
+        }
     }
-  }
+
+  private def uniqueLabelName: Constraint =
+    new Constraint() {
+      override def validate(
+          name: String,
+          value: String,
+          params: Map[String, String],
+          messages: Messages): Option[String] = {
+        val owner = params("owner")
+        val repository = params("repository")
+        getLabel(owner, repository, value).map(_ =>
+          "Name has already been taken.")
+      }
+    }
 
 }

@@ -35,8 +35,7 @@ object CaptureLogEvents {
     def clearEvents(): Unit = synchronized { events = Vector.empty }
     def getEvents: Vector[ILoggingEvent] = synchronized { events }
 
-    override def append(eventObject: ILoggingEvent): Unit = synchronized {
-      events :+= eventObject
-    }
+    override def append(eventObject: ILoggingEvent): Unit =
+      synchronized { events :+= eventObject }
   }
 }

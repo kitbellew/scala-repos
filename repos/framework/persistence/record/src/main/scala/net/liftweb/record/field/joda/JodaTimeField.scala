@@ -38,11 +38,12 @@ trait JodaTimeTypedField extends TypedField[DateTime] with JodaHelpers {
   def setFromAny(in: Any): Box[DateTime] =
     toDateTime(in).flatMap(d => setBox(Full(d))) or genericSetFromAny(in)
 
-  def setFromString(s: String): Box[DateTime] = s match {
-    case null | "" if optional_? => setBox(Empty)
-    case null | ""               => setBox(Failure(notOptionalErrorMessage))
-    case other                   => setBox(toDateTime(other))
-  }
+  def setFromString(s: String): Box[DateTime] =
+    s match {
+      case null | "" if optional_? => setBox(Empty)
+      case null | ""               => setBox(Failure(notOptionalErrorMessage))
+      case other                   => setBox(toDateTime(other))
+    }
 
   private def elem =
     S.fmapFunc(SFuncHolder(this.setFromAny(_))) { funcName =>
@@ -67,11 +68,12 @@ trait JodaTimeTypedField extends TypedField[DateTime] with JodaHelpers {
   def setFromJValue(jvalue: JValue) = setFromJInt(jvalue) { v => toDateTime(v) }
 
   protected def setFromJInt(jvalue: JValue)(
-      decode: BigInt => Box[MyType]): Box[MyType] = jvalue match {
-    case JNothing | JNull if optional_? => setBox(Empty)
-    case JInt(n)                        => setBox(decode(n))
-    case other                          => setBox(FieldHelpers.expectedA("JInt", other))
-  }
+      decode: BigInt => Box[MyType]): Box[MyType] =
+    jvalue match {
+      case JNothing | JNull if optional_? => setBox(Empty)
+      case JInt(n)                        => setBox(decode(n))
+      case other                          => setBox(FieldHelpers.expectedA("JInt", other))
+    }
 }
 
 class JodaTimeField[OwnerType <: Record[OwnerType]](rec: OwnerType)

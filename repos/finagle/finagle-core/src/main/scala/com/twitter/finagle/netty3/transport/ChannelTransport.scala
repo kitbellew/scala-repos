@@ -19,14 +19,15 @@ class ChannelTransport[In, Out](ch: Channel)
     extends Transport[In, Out]
     with ChannelUpstreamHandler {
   private[this] var nneed = 0
-  private[this] def need(n: Int): Unit = synchronized {
-    nneed += n
-    // Note: we buffer 1 message here so that we receive socket
-    // closes proactively.
-    val r = nneed >= 0
-    if (ch.isReadable != r && ch.isOpen)
-      ch.setReadable(r)
-  }
+  private[this] def need(n: Int): Unit =
+    synchronized {
+      nneed += n
+      // Note: we buffer 1 message here so that we receive socket
+      // closes proactively.
+      val r = nneed >= 0
+      if (ch.isReadable != r && ch.isOpen)
+        ch.setReadable(r)
+    }
 
   ch.getPipeline.addLast("finagleTransportBridge", this)
 

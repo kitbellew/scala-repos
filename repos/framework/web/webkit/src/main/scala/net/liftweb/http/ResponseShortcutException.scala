@@ -30,12 +30,13 @@ class ContinueResponseException(val continue: () => Nothing)
     extends LiftFlowOfControlException("Continue in new session")
 
 object ContinueResponseException {
-  def unapply(in: Throwable): Option[ContinueResponseException] = in match {
-    case null                           => None
-    case cre: ContinueResponseException => Some(cre)
-    case e: Exception                   => unapply(e.getCause)
-    case _                              => None
-  }
+  def unapply(in: Throwable): Option[ContinueResponseException] =
+    in match {
+      case null                           => None
+      case cre: ContinueResponseException => Some(cre)
+      case e: Exception                   => unapply(e.getCause)
+      case _                              => None
+    }
 
 }
 

@@ -40,9 +40,10 @@ abstract class XMapTest[
 
   implicit def NotNaturalBKC: BKC[NotNatural] = BKCF.contramap(OI)(_.id)
 
-  implicit def NotNaturalEqual: Equal[NotNatural] = new Equal[NotNatural] {
-    def equal(a1: NotNatural, a2: NotNatural): Boolean = a1.id == a2.id
-  }
+  implicit def NotNaturalEqual: Equal[NotNatural] =
+    new Equal[NotNatural] {
+      def equal(a1: NotNatural, a2: NotNatural): Boolean = a1.id == a2.id
+    }
 
   "map ordering" ! forAll {
     val O = implicitly[Order[Map[String, Int]]]

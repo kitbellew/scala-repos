@@ -177,18 +177,19 @@ object Extraction {
   def unflatten(map: Map[String, String]): JValue = {
     import scala.util.matching.Regex
 
-    def extractValue(value: String): JValue = value.toLowerCase match {
-      case ""      => JNothing
-      case "null"  => JNull
-      case "true"  => JBool(true)
-      case "false" => JBool(false)
-      case "[]"    => JArray(Nil)
-      case x @ _ =>
-        if (value.charAt(0).isDigit) {
-          if (value.indexOf('.') == -1) JInt(BigInt(value))
-          else JDouble(JsonParser.parseDouble(value))
-        } else JString(JsonParser.unquote(value.substring(1)))
-    }
+    def extractValue(value: String): JValue =
+      value.toLowerCase match {
+        case ""      => JNothing
+        case "null"  => JNull
+        case "true"  => JBool(true)
+        case "false" => JBool(false)
+        case "[]"    => JArray(Nil)
+        case x @ _ =>
+          if (value.charAt(0).isDigit) {
+            if (value.indexOf('.') == -1) JInt(BigInt(value))
+            else JDouble(JsonParser.parseDouble(value))
+          } else JString(JsonParser.unquote(value.substring(1)))
+      }
 
     def submap(prefix: String): Map[String, String] =
       Map(
@@ -410,28 +411,31 @@ object Extraction {
       }
     }
 
-    def build(root: JValue, mapping: Mapping): Any = mapping match {
-      case Value(targetType)      => convert(root, targetType, formats)
-      case c: Constructor         => newInstance(c, root)
-      case Cycle(targetType)      => build(root, mappingOf(targetType))
-      case Arg(path, m, optional) => mkValue(root, m, path, optional)
-      case Col(targetType, m) =>
-        val custom = formats.customDeserializer(formats)
-        val c = targetType.clazz
-        if (custom.isDefinedAt(targetType, root)) custom(targetType, root)
-        else if (c == classOf[List[_]]) newCollection(root, m, a => List(a: _*))
-        else if (c == classOf[Set[_]]) newCollection(root, m, a => Set(a: _*))
-        else if (c.isArray) newCollection(root, m, mkTypedArray(c))
-        else if (classOf[Seq[_]].isAssignableFrom(c))
-          newCollection(root, m, a => List(a: _*))
-        else if (c == classOf[Option[_]]) newOption(root, m)
-        else fail("Expected collection but got " + m + " for class " + c)
-      case Dict(m) =>
-        root match {
-          case JObject(xs) => Map(xs.map(x => (x.name, build(x.value, m))): _*)
-          case x           => fail("Expected object but got " + x)
-        }
-    }
+    def build(root: JValue, mapping: Mapping): Any =
+      mapping match {
+        case Value(targetType)      => convert(root, targetType, formats)
+        case c: Constructor         => newInstance(c, root)
+        case Cycle(targetType)      => build(root, mappingOf(targetType))
+        case Arg(path, m, optional) => mkValue(root, m, path, optional)
+        case Col(targetType, m) =>
+          val custom = formats.customDeserializer(formats)
+          val c = targetType.clazz
+          if (custom.isDefinedAt(targetType, root)) custom(targetType, root)
+          else if (c == classOf[List[_]])
+            newCollection(root, m, a => List(a: _*))
+          else if (c == classOf[Set[_]]) newCollection(root, m, a => Set(a: _*))
+          else if (c.isArray) newCollection(root, m, mkTypedArray(c))
+          else if (classOf[Seq[_]].isAssignableFrom(c))
+            newCollection(root, m, a => List(a: _*))
+          else if (c == classOf[Option[_]]) newOption(root, m)
+          else fail("Expected collection but got " + m + " for class " + c)
+        case Dict(m) =>
+          root match {
+            case JObject(xs) =>
+              Map(xs.map(x => (x.name, build(x.value, m))): _*)
+            case x => fail("Expected object but got " + x)
+          }
+      }
 
     def mkTypedArray(c: Class[_])(a: Array[_]) = {
       import java.lang.reflect.Array.{newInstance => newArray}
@@ -445,11 +449,12 @@ object Extraction {
         ._1
     }
 
-    def mkList(root: JValue, m: Mapping) = root match {
-      case JArray(arr)      => arr.map(build(_, m))
-      case JNothing | JNull => Nil
-      case x                => fail("Expected array but got " + x)
-    }
+    def mkList(root: JValue, m: Mapping) =
+      root match {
+        case JArray(arr)      => arr.map(build(_, m))
+        case JNothing | JNull => Nil
+        case x                => fail("Expected array but got " + x)
+      }
 
     def mkValue(
         root: JValue,
@@ -479,64 +484,67 @@ object Extraction {
   private def convert(
       json: JValue,
       targetType: Class[_],
-      formats: Formats): Any = json match {
-    case JInt(x) if (targetType == classOf[Int]) => x.intValue
-    case JInt(x) if (targetType == classOf[JavaInteger]) =>
-      new JavaInteger(x.intValue)
-    case JInt(x) if (targetType == classOf[BigInt]) => x
-    case JInt(x) if (targetType == classOf[Long])   => x.longValue
-    case JInt(x) if (targetType == classOf[JavaLong]) =>
-      new JavaLong(x.longValue)
-    case JInt(x) if (targetType == classOf[Double]) => x.doubleValue
-    case JInt(x) if (targetType == classOf[JavaDouble]) =>
-      new JavaDouble(x.doubleValue)
-    case JInt(x) if (targetType == classOf[Float]) => x.floatValue
-    case JInt(x) if (targetType == classOf[JavaFloat]) =>
-      new JavaFloat(x.floatValue)
-    case JInt(x) if (targetType == classOf[Short]) => x.shortValue
-    case JInt(x) if (targetType == classOf[JavaShort]) =>
-      new JavaShort(x.shortValue)
-    case JInt(x) if (targetType == classOf[Byte]) => x.byteValue
-    case JInt(x) if (targetType == classOf[JavaByte]) =>
-      new JavaByte(x.byteValue)
-    case JInt(x) if (targetType == classOf[String])        => x.toString
-    case JInt(x) if (targetType == classOf[Number])        => x.longValue
-    case JDouble(x) if (targetType == classOf[Double])     => x
-    case JDouble(x) if (targetType == classOf[JavaDouble]) => new JavaDouble(x)
-    case JDouble(x) if (targetType == classOf[Float])      => x.floatValue
-    case JDouble(x) if (targetType == classOf[JavaFloat]) =>
-      new JavaFloat(x.floatValue)
-    case JDouble(x) if (targetType == classOf[String]) => x.toString
-    case JDouble(x) if (targetType == classOf[Int])    => x.intValue
-    case JDouble(x) if (targetType == classOf[Long])   => x.longValue
-    case JDouble(x) if (targetType == classOf[Number]) => x
-    case JString(s) if (targetType == classOf[String]) => s
-    case JString(s) if (targetType == classOf[Symbol]) => Symbol(s)
-    case JString(s) if (targetType == classOf[Date]) =>
-      formats.dateFormat.parse(s).getOrElse(fail("Invalid date '" + s + "'"))
-    case JString(s) if (targetType == classOf[Timestamp]) =>
-      new Timestamp(
-        formats.dateFormat
-          .parse(s)
-          .getOrElse(fail("Invalid date '" + s + "'"))
-          .getTime)
-    case JBool(x) if (targetType == classOf[Boolean])     => x
-    case JBool(x) if (targetType == classOf[JavaBoolean]) => new JavaBoolean(x)
-    case j: JValue if (targetType == classOf[JValue])     => j
-    case j: JObject if (targetType == classOf[JObject])   => j
-    case j: JArray if (targetType == classOf[JArray])     => j
-    case JNull                                            => null
-    case JNothing =>
-      fail(
-        "Did not find value which can be converted into " + targetType.getName)
-    case _ =>
-      val custom = formats.customDeserializer(formats)
-      val typeInfo = TypeInfo(targetType, None)
+      formats: Formats): Any =
+    json match {
+      case JInt(x) if (targetType == classOf[Int]) => x.intValue
+      case JInt(x) if (targetType == classOf[JavaInteger]) =>
+        new JavaInteger(x.intValue)
+      case JInt(x) if (targetType == classOf[BigInt]) => x
+      case JInt(x) if (targetType == classOf[Long])   => x.longValue
+      case JInt(x) if (targetType == classOf[JavaLong]) =>
+        new JavaLong(x.longValue)
+      case JInt(x) if (targetType == classOf[Double]) => x.doubleValue
+      case JInt(x) if (targetType == classOf[JavaDouble]) =>
+        new JavaDouble(x.doubleValue)
+      case JInt(x) if (targetType == classOf[Float]) => x.floatValue
+      case JInt(x) if (targetType == classOf[JavaFloat]) =>
+        new JavaFloat(x.floatValue)
+      case JInt(x) if (targetType == classOf[Short]) => x.shortValue
+      case JInt(x) if (targetType == classOf[JavaShort]) =>
+        new JavaShort(x.shortValue)
+      case JInt(x) if (targetType == classOf[Byte]) => x.byteValue
+      case JInt(x) if (targetType == classOf[JavaByte]) =>
+        new JavaByte(x.byteValue)
+      case JInt(x) if (targetType == classOf[String])    => x.toString
+      case JInt(x) if (targetType == classOf[Number])    => x.longValue
+      case JDouble(x) if (targetType == classOf[Double]) => x
+      case JDouble(x) if (targetType == classOf[JavaDouble]) =>
+        new JavaDouble(x)
+      case JDouble(x) if (targetType == classOf[Float]) => x.floatValue
+      case JDouble(x) if (targetType == classOf[JavaFloat]) =>
+        new JavaFloat(x.floatValue)
+      case JDouble(x) if (targetType == classOf[String]) => x.toString
+      case JDouble(x) if (targetType == classOf[Int])    => x.intValue
+      case JDouble(x) if (targetType == classOf[Long])   => x.longValue
+      case JDouble(x) if (targetType == classOf[Number]) => x
+      case JString(s) if (targetType == classOf[String]) => s
+      case JString(s) if (targetType == classOf[Symbol]) => Symbol(s)
+      case JString(s) if (targetType == classOf[Date]) =>
+        formats.dateFormat.parse(s).getOrElse(fail("Invalid date '" + s + "'"))
+      case JString(s) if (targetType == classOf[Timestamp]) =>
+        new Timestamp(
+          formats.dateFormat
+            .parse(s)
+            .getOrElse(fail("Invalid date '" + s + "'"))
+            .getTime)
+      case JBool(x) if (targetType == classOf[Boolean]) => x
+      case JBool(x) if (targetType == classOf[JavaBoolean]) =>
+        new JavaBoolean(x)
+      case j: JValue if (targetType == classOf[JValue])   => j
+      case j: JObject if (targetType == classOf[JObject]) => j
+      case j: JArray if (targetType == classOf[JArray])   => j
+      case JNull                                          => null
+      case JNothing =>
+        fail(
+          "Did not find value which can be converted into " + targetType.getName)
+      case _ =>
+        val custom = formats.customDeserializer(formats)
+        val typeInfo = TypeInfo(targetType, None)
 
-      if (custom.isDefinedAt(typeInfo, json)) {
-        custom(typeInfo, json)
-      } else {
-        fail("Do not know how to convert " + json + " into " + targetType)
-      }
-  }
+        if (custom.isDefinedAt(typeInfo, json)) {
+          custom(typeInfo, json)
+        } else {
+          fail("Do not know how to convert " + json + " into " + targetType)
+        }
+    }
 }

@@ -167,22 +167,24 @@ trait ItemsList[T <: Mapper[T]] {
     current ++= successAdd
   }
 
-  def sortBy(field: MappedField[_, T]) = (sortField, ascending) match {
-    case (Some(f), true) if f eq field =>
-      ascending = false
-    case _ | null =>
-      sortField = Some(field)
-      ascending = true
-  }
-  def sortFn(field: MappedField[_, T]) = (sortField, ascending) match {
-    case (Some(f), true) if f eq field =>
-      () => ascending = false
-    case _ | null =>
-      () => {
+  def sortBy(field: MappedField[_, T]) =
+    (sortField, ascending) match {
+      case (Some(f), true) if f eq field =>
+        ascending = false
+      case _ | null =>
         sortField = Some(field)
         ascending = true
-      }
-  }
+    }
+  def sortFn(field: MappedField[_, T]) =
+    (sortField, ascending) match {
+      case (Some(f), true) if f eq field =>
+        () => ascending = false
+      case _ | null =>
+        () => {
+          sortField = Some(field)
+          ascending = true
+        }
+    }
 
   reload
 }

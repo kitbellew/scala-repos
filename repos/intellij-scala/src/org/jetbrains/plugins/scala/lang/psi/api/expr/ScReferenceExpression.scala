@@ -22,10 +22,11 @@ trait ScReferenceExpression
     with ScReferenceElement {
   def isQualified = qualifier.isDefined
 
-  def qualifier: Option[ScExpression] = getFirstChild match {
-    case e: ScExpression => Some(e)
-    case _               => None
-  }
+  def qualifier: Option[ScExpression] =
+    getFirstChild match {
+      case e: ScExpression => Some(e)
+      case _               => None
+    }
 
   protected var resolveFunction: () => Array[ResolveResult] = null
 

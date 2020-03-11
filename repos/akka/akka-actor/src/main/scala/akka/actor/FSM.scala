@@ -192,17 +192,18 @@ object FSM {
       *
       * Use Duration.Inf to deactivate an existing timeout.
       */
-    def forMax(timeout: Duration): State[S, D] = timeout match {
-      case f: FiniteDuration ⇒ copy(timeout = Some(f))
-      case Duration.Inf ⇒
-        copy(timeout =
-          SomeMaxFiniteDuration
-        ) // we map the Infinite duration to a special marker,
-      case _ ⇒
-        copy(timeout =
-          None
-        ) // that means "cancel stateTimeout". This marker is needed
-    } // so we do not have to break source/binary compat.
+    def forMax(timeout: Duration): State[S, D] =
+      timeout match {
+        case f: FiniteDuration ⇒ copy(timeout = Some(f))
+        case Duration.Inf ⇒
+          copy(timeout =
+            SomeMaxFiniteDuration
+          ) // we map the Infinite duration to a special marker,
+        case _ ⇒
+          copy(timeout =
+            None
+          ) // that means "cancel stateTimeout". This marker is needed
+      } // so we do not have to break source/binary compat.
     // TODO: Can be removed once we can break State#timeout signature to `Option[Duration]`
 
     /**
@@ -589,12 +590,13 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
   /**
     * Return next state data (available in onTransition handlers)
     */
-  final def nextStateData = nextState match {
-    case null ⇒
-      throw new IllegalStateException(
-        "nextStateData is only available during onTransition")
-    case x ⇒ x.stateData
-  }
+  final def nextStateData =
+    nextState match {
+      case null ⇒
+        throw new IllegalStateException(
+          "nextStateData is only available during onTransition")
+      case x ⇒ x.stateData
+    }
 
   /*
    * ****************************************************************
@@ -803,11 +805,12 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
     * By default [[FSM.Failure]] is logged at error level and other reason
     * types are not logged. It is possible to override this behavior.
     */
-  protected def logTermination(reason: Reason): Unit = reason match {
-    case Failure(ex: Throwable) ⇒ log.error(ex, "terminating due to Failure")
-    case Failure(msg: AnyRef) ⇒ log.error(msg.toString)
-    case _ ⇒
-  }
+  protected def logTermination(reason: Reason): Unit =
+    reason match {
+      case Failure(ex: Throwable) ⇒ log.error(ex, "terminating due to Failure")
+      case Failure(msg: AnyRef) ⇒ log.error(msg.toString)
+      case _ ⇒
+    }
 }
 
 /**

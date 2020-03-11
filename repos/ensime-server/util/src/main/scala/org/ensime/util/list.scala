@@ -12,10 +12,11 @@ package object list {
     /**
       * @return everything up to the last element, and the last element.
       */
-    def initLast: (List[T], T) = list.reverse match {
-      case head :: tail => (tail.reverse, head)
-      case _            => throw new IllegalArgumentException("list was empty")
-    }
+    def initLast: (List[T], T) =
+      list.reverse match {
+        case head :: tail => (tail.reverse, head)
+        case _            => throw new IllegalArgumentException("list was empty")
+      }
 
   }
 

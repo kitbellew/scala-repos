@@ -36,9 +36,10 @@ object GenerateRoundtripSources {
       .createModel(ignoreInvalidDefaults = false)
       .map(m =>
         new SourceCodeGenerator(m) {
-          override def Table = new Table(_) {
-            override def autoIncLastAsOption = true
-          }
+          override def Table =
+            new Table(_) {
+              override def autoIncLastAsOption = true
+            }
         })
     val db = Database.forURL(
       url = url,
@@ -244,39 +245,40 @@ class Tables(val profile: JdbcProfile) {
     def Option_java_sql_Option_Blob =
       column[Option[Option[java.sql.Blob]]]("Option_java_sql_Blob")
     //def Option_java_sql_Clob = column[Option[java.sql.Clob]]("Option_java_sql_Clob")
-    def * = (
-      `type`,
-      Boolean,
-      Byte,
-      Short,
-      Int,
-      Long,
-      Float,
-      Double,
-      String,
-      java_sql_Date,
-      java_sql_Time,
-      java_sql_Timestamp,
-      java_util_UUID,
-      java_sql_Blob //,java_sql_Clob
-      ,
-      None_Int,
+    def * =
       (
-        Option_Boolean,
-        Option_Byte,
-        Option_Short,
-        Option_Int,
-        Option_Long,
-        Option_Float,
-        Option_Double,
-        Option_String,
-        Option_java_sql_Date,
-        Option_java_sql_Time,
-        Option_java_sql_Timestamp,
-        Option_java_util_UUID,
-        Option_java_sql_Blob //,Option_java_sql_Clob
+        `type`,
+        Boolean,
+        Byte,
+        Short,
+        Int,
+        Long,
+        Float,
+        Double,
+        String,
+        java_sql_Date,
+        java_sql_Time,
+        java_sql_Timestamp,
+        java_util_UUID,
+        java_sql_Blob //,java_sql_Clob
+        ,
+        None_Int,
+        (
+          Option_Boolean,
+          Option_Byte,
+          Option_Short,
+          Option_Int,
+          Option_Long,
+          Option_Float,
+          Option_Double,
+          Option_String,
+          Option_java_sql_Date,
+          Option_java_sql_Time,
+          Option_java_sql_Timestamp,
+          Option_java_util_UUID,
+          Option_java_sql_Blob //,Option_java_sql_Clob
+        )
       )
-    )
     def pk = primaryKey("PK", (Int, Long))
   }
   val typeTest = TableQuery[TypeTest]

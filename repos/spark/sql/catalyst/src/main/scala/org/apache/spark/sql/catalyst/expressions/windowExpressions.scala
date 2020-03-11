@@ -53,41 +53,42 @@ case class WindowSpecDefinition(
     with WindowSpec
     with Unevaluable {
 
-  def validate: Option[String] = frameSpecification match {
-    case UnspecifiedFrame =>
-      Some(
-        "Found a UnspecifiedFrame. It should be converted to a SpecifiedWindowFrame " +
-          "during analysis. Please file a bug report.")
-    case frame: SpecifiedWindowFrame =>
-      frame.validate.orElse {
-        def checkValueBasedBoundaryForRangeFrame(): Option[String] = {
-          if (orderSpec.length > 1) {
-            // It is not allowed to have a value-based PRECEDING and FOLLOWING
-            // as the boundary of a Range Window Frame.
-            Some(
-              "This Range Window Frame only accepts at most one ORDER BY expression.")
-          } else if (orderSpec.nonEmpty && !orderSpec.head.dataType
-                       .isInstanceOf[NumericType]) {
-            Some(
-              "The data type of the expression in the ORDER BY clause should be a numeric type.")
-          } else {
-            None
+  def validate: Option[String] =
+    frameSpecification match {
+      case UnspecifiedFrame =>
+        Some(
+          "Found a UnspecifiedFrame. It should be converted to a SpecifiedWindowFrame " +
+            "during analysis. Please file a bug report.")
+      case frame: SpecifiedWindowFrame =>
+        frame.validate.orElse {
+          def checkValueBasedBoundaryForRangeFrame(): Option[String] = {
+            if (orderSpec.length > 1) {
+              // It is not allowed to have a value-based PRECEDING and FOLLOWING
+              // as the boundary of a Range Window Frame.
+              Some(
+                "This Range Window Frame only accepts at most one ORDER BY expression.")
+            } else if (orderSpec.nonEmpty && !orderSpec.head.dataType
+                         .isInstanceOf[NumericType]) {
+              Some(
+                "The data type of the expression in the ORDER BY clause should be a numeric type.")
+            } else {
+              None
+            }
+          }
+
+          (frame.frameType, frame.frameStart, frame.frameEnd) match {
+            case (RangeFrame, vp: ValuePreceding, _) =>
+              checkValueBasedBoundaryForRangeFrame()
+            case (RangeFrame, vf: ValueFollowing, _) =>
+              checkValueBasedBoundaryForRangeFrame()
+            case (RangeFrame, _, vp: ValuePreceding) =>
+              checkValueBasedBoundaryForRangeFrame()
+            case (RangeFrame, _, vf: ValueFollowing) =>
+              checkValueBasedBoundaryForRangeFrame()
+            case (_, _, _) => None
           }
         }
-
-        (frame.frameType, frame.frameStart, frame.frameEnd) match {
-          case (RangeFrame, vp: ValuePreceding, _) =>
-            checkValueBasedBoundaryForRangeFrame()
-          case (RangeFrame, vf: ValueFollowing, _) =>
-            checkValueBasedBoundaryForRangeFrame()
-          case (RangeFrame, _, vp: ValuePreceding) =>
-            checkValueBasedBoundaryForRangeFrame()
-          case (RangeFrame, _, vf: ValueFollowing) =>
-            checkValueBasedBoundaryForRangeFrame()
-          case (_, _, _) => None
-        }
-      }
-  }
+    }
 
   override def children: Seq[Expression] = partitionSpec ++ orderSpec
 
@@ -162,75 +163,81 @@ sealed trait FrameBoundary {
   */
 object FrameBoundary {
   def apply(boundary: FrameBoundary): Option[Int] = unapply(boundary)
-  def unapply(boundary: FrameBoundary): Option[Int] = boundary match {
-    case CurrentRow             => Some(0)
-    case ValuePreceding(offset) => Some(-offset)
-    case ValueFollowing(offset) => Some(offset)
-    case _                      => None
-  }
+  def unapply(boundary: FrameBoundary): Option[Int] =
+    boundary match {
+      case CurrentRow             => Some(0)
+      case ValuePreceding(offset) => Some(-offset)
+      case ValueFollowing(offset) => Some(offset)
+      case _                      => None
+    }
 }
 
 /** UNBOUNDED PRECEDING boundary. */
 case object UnboundedPreceding extends FrameBoundary {
-  def notFollows(other: FrameBoundary): Boolean = other match {
-    case UnboundedPreceding => true
-    case vp: ValuePreceding => true
-    case CurrentRow         => true
-    case vf: ValueFollowing => true
-    case UnboundedFollowing => true
-  }
+  def notFollows(other: FrameBoundary): Boolean =
+    other match {
+      case UnboundedPreceding => true
+      case vp: ValuePreceding => true
+      case CurrentRow         => true
+      case vf: ValueFollowing => true
+      case UnboundedFollowing => true
+    }
 
   override def toString: String = "UNBOUNDED PRECEDING"
 }
 
 /** <value> PRECEDING boundary. */
 case class ValuePreceding(value: Int) extends FrameBoundary {
-  def notFollows(other: FrameBoundary): Boolean = other match {
-    case UnboundedPreceding           => false
-    case ValuePreceding(anotherValue) => value >= anotherValue
-    case CurrentRow                   => true
-    case vf: ValueFollowing           => true
-    case UnboundedFollowing           => true
-  }
+  def notFollows(other: FrameBoundary): Boolean =
+    other match {
+      case UnboundedPreceding           => false
+      case ValuePreceding(anotherValue) => value >= anotherValue
+      case CurrentRow                   => true
+      case vf: ValueFollowing           => true
+      case UnboundedFollowing           => true
+    }
 
   override def toString: String = s"$value PRECEDING"
 }
 
 /** CURRENT ROW boundary. */
 case object CurrentRow extends FrameBoundary {
-  def notFollows(other: FrameBoundary): Boolean = other match {
-    case UnboundedPreceding => false
-    case vp: ValuePreceding => false
-    case CurrentRow         => true
-    case vf: ValueFollowing => true
-    case UnboundedFollowing => true
-  }
+  def notFollows(other: FrameBoundary): Boolean =
+    other match {
+      case UnboundedPreceding => false
+      case vp: ValuePreceding => false
+      case CurrentRow         => true
+      case vf: ValueFollowing => true
+      case UnboundedFollowing => true
+    }
 
   override def toString: String = "CURRENT ROW"
 }
 
 /** <value> FOLLOWING boundary. */
 case class ValueFollowing(value: Int) extends FrameBoundary {
-  def notFollows(other: FrameBoundary): Boolean = other match {
-    case UnboundedPreceding           => false
-    case vp: ValuePreceding           => false
-    case CurrentRow                   => false
-    case ValueFollowing(anotherValue) => value <= anotherValue
-    case UnboundedFollowing           => true
-  }
+  def notFollows(other: FrameBoundary): Boolean =
+    other match {
+      case UnboundedPreceding           => false
+      case vp: ValuePreceding           => false
+      case CurrentRow                   => false
+      case ValueFollowing(anotherValue) => value <= anotherValue
+      case UnboundedFollowing           => true
+    }
 
   override def toString: String = s"$value FOLLOWING"
 }
 
 /** UNBOUNDED FOLLOWING boundary. */
 case object UnboundedFollowing extends FrameBoundary {
-  def notFollows(other: FrameBoundary): Boolean = other match {
-    case UnboundedPreceding => false
-    case vp: ValuePreceding => false
-    case CurrentRow         => false
-    case vf: ValueFollowing => false
-    case UnboundedFollowing => true
-  }
+  def notFollows(other: FrameBoundary): Boolean =
+    other match {
+      case UnboundedPreceding => false
+      case vp: ValuePreceding => false
+      case CurrentRow         => false
+      case vf: ValueFollowing => false
+      case UnboundedFollowing => true
+    }
 
   override def toString: String = "UNBOUNDED FOLLOWING"
 }
@@ -251,29 +258,32 @@ case class SpecifiedWindowFrame(
     extends WindowFrame {
 
   /** If this WindowFrame is valid or not. */
-  def validate: Option[String] = (frameType, frameStart, frameEnd) match {
-    case (_, UnboundedFollowing, _) =>
-      Some(
-        s"$UnboundedFollowing is not allowed as the start of a Window Frame.")
-    case (_, _, UnboundedPreceding) =>
-      Some(s"$UnboundedPreceding is not allowed as the end of a Window Frame.")
-    // case (RowFrame, start, end) => ??? RowFrame specific rule
-    // case (RangeFrame, start, end) => ??? RangeFrame specific rule
-    case (_, start, end) =>
-      if (start.notFollows(end)) {
-        None
-      } else {
-        val reason =
-          s"The end of this Window Frame $end is smaller than the start of " +
-            s"this Window Frame $start."
-        Some(reason)
-      }
-  }
+  def validate: Option[String] =
+    (frameType, frameStart, frameEnd) match {
+      case (_, UnboundedFollowing, _) =>
+        Some(
+          s"$UnboundedFollowing is not allowed as the start of a Window Frame.")
+      case (_, _, UnboundedPreceding) =>
+        Some(
+          s"$UnboundedPreceding is not allowed as the end of a Window Frame.")
+      // case (RowFrame, start, end) => ??? RowFrame specific rule
+      // case (RangeFrame, start, end) => ??? RangeFrame specific rule
+      case (_, start, end) =>
+        if (start.notFollows(end)) {
+          None
+        } else {
+          val reason =
+            s"The end of this Window Frame $end is smaller than the start of " +
+              s"this Window Frame $start."
+          Some(reason)
+        }
+    }
 
-  override def toString: String = frameType match {
-    case RowFrame   => s"ROWS BETWEEN $frameStart AND $frameEnd"
-    case RangeFrame => s"RANGE BETWEEN $frameStart AND $frameEnd"
-  }
+  override def toString: String =
+    frameType match {
+      case RowFrame   => s"ROWS BETWEEN $frameStart AND $frameEnd"
+      case RangeFrame => s"RANGE BETWEEN $frameStart AND $frameEnd"
+    }
 }
 
 object SpecifiedWindowFrame {

@@ -34,13 +34,15 @@ object FuncJBridge extends FuncJBridge
   * function type to the corresponding Java function type.
   */
 class FuncJBridge {
-  implicit def lift[Z](f: Func0[Z]): Function0[Z] = new Function0[Z] {
-    def apply(): Z = f.apply()
-  }
+  implicit def lift[Z](f: Func0[Z]): Function0[Z] =
+    new Function0[Z] {
+      def apply(): Z = f.apply()
+    }
 
-  implicit def drop[Z](f: Function0[Z]): Func0[Z] = new Func0[Z] {
-    def apply(): Z = f.apply()
-  }
+  implicit def drop[Z](f: Function0[Z]): Func0[Z] =
+    new Func0[Z] {
+      def apply(): Z = f.apply()
+    }
 
   implicit def lift[A, Z](f: Func1[A, Z]): Function1[A, Z] =
     new Function1[A, Z] {

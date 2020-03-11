@@ -494,10 +494,11 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
     def whereOrAnd = if (wav) " AND " else { wav = true; " WHERE " }
 
     class DBFuncWrapper(dbFunc: Box[String]) {
-      def apply(field: String) = dbFunc match {
-        case Full(f) => f + "(" + field + ")"
-        case _       => field
-      }
+      def apply(field: String) =
+        dbFunc match {
+          case Full(f) => f + "(" + field + ")"
+          case _       => field
+        }
     }
 
     implicit def dbfToFunc(in: Box[String]): DBFuncWrapper =
@@ -1271,18 +1272,19 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
 
   protected def findApplier(
       name: String,
-      inst: AnyRef): Box[((A, AnyRef) => Unit)] = synchronized {
-    val clz = inst match {
-      case null => null
-      case _    => inst.getClass.asInstanceOf[Class[(C forSome { type C })]]
+      inst: AnyRef): Box[((A, AnyRef) => Unit)] =
+    synchronized {
+      val clz = inst match {
+        case null => null
+        case _    => inst.getClass.asInstanceOf[Class[(C forSome { type C })]]
+      }
+      val look = (name.toLowerCase, if (clz ne null) Full(clz) else Empty)
+      Box(mappedAppliers.get(look) orElse {
+        val newFunc = createApplier(name, inst)
+        mappedAppliers(look) = newFunc
+        Some(newFunc)
+      })
     }
-    val look = (name.toLowerCase, if (clz ne null) Full(clz) else Empty)
-    Box(mappedAppliers.get(look) orElse {
-      val newFunc = createApplier(name, inst)
-      mappedAppliers(look) = newFunc
-      Some(newFunc)
-    })
-  }
 
   private def createApplier(
       name: String,
@@ -2098,10 +2100,11 @@ object By {
     Cmp[O, T](field, Eql, Full(value), Empty, Empty)
   def apply[O <: Mapper[O], T](
       field: MappedNullableField[T, O],
-      value: Box[T]) = value match {
-    case Full(x) => Cmp[O, Box[T]](field, Eql, Full(value), Empty, Empty)
-    case _       => NullRef(field)
-  }
+      value: Box[T]) =
+    value match {
+      case Full(x) => Cmp[O, Box[T]](field, Eql, Full(value), Empty, Empty)
+      case _       => NullRef(field)
+    }
   def apply[O <: Mapper[O], T, Q <: KeyedMapper[T, Q]](
       field: MappedForeignKey[T, O, Q],
       value: Q) =
@@ -2151,10 +2154,11 @@ object NotBy {
 
   def apply[O <: Mapper[O], T](
       field: MappedNullableField[T, O],
-      value: Box[T]) = value match {
-    case Full(x) => Cmp[O, Box[T]](field, <>, Full(value), Empty, Empty)
-    case _       => NotNullRef(field)
-  }
+      value: Box[T]) =
+    value match {
+      case Full(x) => Cmp[O, Box[T]](field, <>, Full(value), Empty, Empty)
+      case _       => NotNullRef(field)
+    }
 
   def apply[O <: Mapper[O], T, Q <: KeyedMapper[T, Q]](
       field: MappedForeignKey[T, O, Q],
@@ -2319,10 +2323,11 @@ trait KeyedMetaMapper[Type, A <: KeyedMapper[Type, A]]
   /**
     * Find the element based on the first element of the List
     */
-  def find(key: List[String]): Box[A] = key match {
-    case Nil    => Empty
-    case x :: _ => find(x)
-  }
+  def find(key: List[String]): Box[A] =
+    key match {
+      case Nil    => Empty
+      case x :: _ => find(x)
+    }
 
   /**
     * Find an element by primary key or create a new one
@@ -2575,25 +2580,26 @@ class KeyObfuscator {
 
   def obscure[KeyType, MetaType <: KeyedMapper[KeyType, MetaType]](
       theType: KeyedMetaMapper[KeyType, MetaType],
-      key: KeyType): String = synchronized {
-    val local: Map[Any, String] =
-      to.getOrElse(theType._dbTableNameLC, Map.empty)
-    local.get(key) match {
-      case Some(s) => s
-      case _ =>
-        val ret = "r" + randomString(15)
+      key: KeyType): String =
+    synchronized {
+      val local: Map[Any, String] =
+        to.getOrElse(theType._dbTableNameLC, Map.empty)
+      local.get(key) match {
+        case Some(s) => s
+        case _ =>
+          val ret = "r" + randomString(15)
 
-        val l2: Map[Any, String] = local + ((key -> ret))
-        to = to + ((theType._dbTableNameLC -> l2))
+          val l2: Map[Any, String] = local + ((key -> ret))
+          to = to + ((theType._dbTableNameLC -> l2))
 
-        val lf: Map[String, Any] =
-          from.getOrElse(theType._dbTableNameLC, Map.empty) + ((ret -> key))
-        // lf(ret) = key
-        from = from + ((theType._dbTableNameLC -> lf))
+          val lf: Map[String, Any] =
+            from.getOrElse(theType._dbTableNameLC, Map.empty) + ((ret -> key))
+          // lf(ret) = key
+          from = from + ((theType._dbTableNameLC -> lf))
 
-        ret
+          ret
+      }
     }
-  }
 
   def obscure[KeyType, MetaType <: KeyedMapper[KeyType, MetaType]](
       what: KeyedMapper[KeyType, MetaType]): String = {
@@ -2614,12 +2620,13 @@ class KeyObfuscator {
 
   def recover[KeyType, MetaType <: KeyedMapper[KeyType, MetaType]](
       theType: KeyedMetaMapper[KeyType, MetaType],
-      id: String): Box[KeyType] = synchronized {
-    for {
-      map <- from.get(theType._dbTableNameLC)
-      item <- map.get(id)
-    } yield item.asInstanceOf[KeyType]
-  }
+      id: String): Box[KeyType] =
+    synchronized {
+      for {
+        map <- from.get(theType._dbTableNameLC)
+        item <- map.get(id)
+      } yield item.asInstanceOf[KeyType]
+    }
 }
 
 case class IHaveValidatedThisSQL(who: String, date: String)

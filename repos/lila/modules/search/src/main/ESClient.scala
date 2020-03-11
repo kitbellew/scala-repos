@@ -20,20 +20,23 @@ final class ESClientHttp(endpoint: String, val index: Index, writeable: Boolean)
   import play.api.libs.ws.WS
   import play.api.Play.current
 
-  def store(id: Id, doc: JsObject) = writeable ?? monitor("store") {
-    HTTP(s"store/${index.name}/${id.value}", doc)
-  }
+  def store(id: Id, doc: JsObject) =
+    writeable ?? monitor("store") {
+      HTTP(s"store/${index.name}/${id.value}", doc)
+    }
 
-  def search[Q: Writes](query: Q, from: From, size: Size) = monitor("search") {
-    HTTP(
-      s"search/${index.name}/${from.value}/${size.value}",
-      query,
-      SearchResponse.apply)
-  }
+  def search[Q: Writes](query: Q, from: From, size: Size) =
+    monitor("search") {
+      HTTP(
+        s"search/${index.name}/${from.value}/${size.value}",
+        query,
+        SearchResponse.apply)
+    }
 
-  def count[Q: Writes](query: Q) = monitor("count") {
-    HTTP(s"count/${index.name}", query, CountResponse.apply)
-  }
+  def count[Q: Writes](query: Q) =
+    monitor("count") {
+      HTTP(s"count/${index.name}", query, CountResponse.apply)
+    }
 
   def deleteById(id: lila.search.Id) =
     writeable ??

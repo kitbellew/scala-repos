@@ -130,16 +130,17 @@ trait Emitter
         }
       }
 
-    def emitPopLine: EmitterState = StateT.apply[Id, Emission, Unit] { e =>
-      e.lineStack match {
-        case Nil => (e, ())
+    def emitPopLine: EmitterState =
+      StateT.apply[Id, Emission, Unit] { e =>
+        e.lineStack match {
+          case Nil => (e, ())
 
-        case _ :: Nil => (e.copy(lineStack = Nil), ())
+          case _ :: Nil => (e.copy(lineStack = Nil), ())
 
-        case _ :: (stack @ (line, col, text) :: _) =>
-          emitInstr(Line(line, col, text))(e.copy(lineStack = stack))
+          case _ :: (stack @ (line, col, text) :: _) =>
+            emitInstr(Line(line, col, text))(e.copy(lineStack = stack))
+        }
       }
-    }
 
     def operandStackSizes(is: Vector[Instruction]): Vector[Int] = {
       (is
@@ -343,86 +344,90 @@ trait Emitter
         solve: ast.Solve,
         spec: BucketSpec,
         contextualDispatches: Map[Expr, Set[List[ast.Dispatch]]],
-        dispatches: Set[ast.Dispatch]): EmitterState = spec match {
-      case buckets.UnionBucketSpec(left, right) =>
-        emitBucketSpec(
-          solve,
-          left,
-          contextualDispatches,
-          dispatches) >> emitBucketSpec(
-          solve,
-          right,
-          contextualDispatches,
-          dispatches) >> emitInstr(MergeBuckets(false))
+        dispatches: Set[ast.Dispatch]): EmitterState =
+      spec match {
+        case buckets.UnionBucketSpec(left, right) =>
+          emitBucketSpec(
+            solve,
+            left,
+            contextualDispatches,
+            dispatches) >> emitBucketSpec(
+            solve,
+            right,
+            contextualDispatches,
+            dispatches) >> emitInstr(MergeBuckets(false))
 
-      case buckets.IntersectBucketSpec(left, right) =>
-        emitBucketSpec(
-          solve,
-          left,
-          contextualDispatches,
-          dispatches) >> emitBucketSpec(
-          solve,
-          right,
-          contextualDispatches,
-          dispatches) >> emitInstr(MergeBuckets(true))
+        case buckets.IntersectBucketSpec(left, right) =>
+          emitBucketSpec(
+            solve,
+            left,
+            contextualDispatches,
+            dispatches) >> emitBucketSpec(
+            solve,
+            right,
+            contextualDispatches,
+            dispatches) >> emitInstr(MergeBuckets(true))
 
-      case buckets.Group(origin, target, forest, dtrace) => {
-        nextId { id =>
-          val context = generateContext(target, contextualDispatches, dtrace)
+        case buckets.Group(origin, target, forest, dtrace) => {
+          nextId { id =>
+            val context = generateContext(target, contextualDispatches, dtrace)
 
-          emitBucketSpec(solve, forest, contextualDispatches, dispatches) >>
+            emitBucketSpec(solve, forest, contextualDispatches, dispatches) >>
+              prepareContext(context, dispatches) { dispatches =>
+                emitExpr(target, dispatches)
+              } >>
+              (origin map { labelGroup(_, id) } getOrElse mzero[
+                EmitterState]) >>
+              emitInstr(Group(id))
+          }
+        }
+
+        case buckets.UnfixedSolution(name, solution, dtrace) => {
+          val context = generateContext(solution, contextualDispatches, dtrace)
+
+          def state(id: Int) = {
             prepareContext(context, dispatches) { dispatches =>
-              emitExpr(target, dispatches)
+              emitExpr(solution, dispatches)
             } >>
-            (origin map { labelGroup(_, id) } getOrElse mzero[EmitterState]) >>
-            emitInstr(Group(id))
-        }
-      }
+              labelTicVar(solve, name)(emitInstr(PushKey(id))) >>
+              emitInstr(KeyPart(id))
+          }
 
-      case buckets.UnfixedSolution(name, solution, dtrace) => {
-        val context = generateContext(solution, contextualDispatches, dtrace)
-
-        def state(id: Int) = {
-          prepareContext(context, dispatches) { dispatches =>
-            emitExpr(solution, dispatches)
-          } >>
-            labelTicVar(solve, name)(emitInstr(PushKey(id))) >>
-            emitInstr(KeyPart(id))
-        }
-
-        StateT.apply[Id, Emission, Unit] { e =>
-          val s =
-            if (e.keyParts contains (solve -> name))
-              state(e.keyParts(solve -> name))
-            else {
-              nextId { id =>
-                state(id) >>
-                  (StateT.apply[Id, Emission, Unit] { e =>
-                    (e.copy(keyParts = e.keyParts + ((solve, name) -> id)), ())
-                  })
+          StateT.apply[Id, Emission, Unit] { e =>
+            val s =
+              if (e.keyParts contains (solve -> name))
+                state(e.keyParts(solve -> name))
+              else {
+                nextId { id =>
+                  state(id) >>
+                    (StateT.apply[Id, Emission, Unit] { e =>
+                      (
+                        e.copy(keyParts = e.keyParts + ((solve, name) -> id)),
+                        ())
+                    })
+                }
               }
-            }
 
-          s(e)
+            s(e)
+          }
+        }
+
+        case buckets.FixedSolution(_, solution, expr, dtrace) => {
+          val context = generateContext(solution, contextualDispatches, dtrace)
+
+          prepareContext(context, dispatches) { dispatches =>
+            emitMap(solution, expr, Eq, dispatches)
+          } >> emitInstr(Extra)
+        }
+
+        case buckets.Extra(expr, dtrace) => {
+          val context = generateContext(expr, contextualDispatches, dtrace)
+
+          prepareContext(context, dispatches) { dispatches =>
+            emitExpr(expr, dispatches)
+          } >> emitInstr(Extra)
         }
       }
-
-      case buckets.FixedSolution(_, solution, expr, dtrace) => {
-        val context = generateContext(solution, contextualDispatches, dtrace)
-
-        prepareContext(context, dispatches) { dispatches =>
-          emitMap(solution, expr, Eq, dispatches)
-        } >> emitInstr(Extra)
-      }
-
-      case buckets.Extra(expr, dtrace) => {
-        val context = generateContext(expr, contextualDispatches, dtrace)
-
-        prepareContext(context, dispatches) { dispatches =>
-          emitExpr(expr, dispatches)
-        } >> emitInstr(Extra)
-      }
-    }
 
     def generateContext(
         target: Expr,
@@ -445,21 +450,22 @@ trait Emitter
     def prepareContext(
         context: List[ast.Dispatch],
         dispatches: Set[ast.Dispatch])(
-        f: Set[ast.Dispatch] => EmitterState): EmitterState = context match {
-      case d :: tail => {
-        d.binding match {
-          case LetBinding(let) => {
-            emitDispatch(d, let, dispatches) { dispatches =>
-              prepareContext(tail, dispatches)(f)
+        f: Set[ast.Dispatch] => EmitterState): EmitterState =
+      context match {
+        case d :: tail => {
+          d.binding match {
+            case LetBinding(let) => {
+              emitDispatch(d, let, dispatches) { dispatches =>
+                prepareContext(tail, dispatches)(f)
+              }
             }
+
+            case _ => prepareContext(tail, dispatches)(f)
           }
-
-          case _ => prepareContext(tail, dispatches)(f)
         }
-      }
 
-      case Nil => f(dispatches)
-    }
+        case Nil => f(dispatches)
+      }
 
     def createJoins(
         provs: NEL[Provenance],

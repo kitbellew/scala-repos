@@ -147,10 +147,11 @@ trait CheckpointState[T] extends WaitingState[Interval[Timestamp]] {
       isRunning: AtomicBoolean,
       val batchToken: T)
       extends RunningState[Interval[Timestamp]] {
-    private def setStopped() = require(
-      isRunning.compareAndSet(true, false),
-      "Concurrent modification of HDFSState!"
-    )
+    private def setStopped() =
+      require(
+        isRunning.compareAndSet(true, false),
+        "Concurrent modification of HDFSState!"
+      )
 
     /**
       * On success, checkpoint successful batches

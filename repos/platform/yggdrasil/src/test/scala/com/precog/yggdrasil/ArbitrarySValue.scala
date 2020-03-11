@@ -98,31 +98,37 @@ trait CValueGenerators extends ArbitraryBigDecimal {
 
   def leafSchema: Gen[JSchema] = ctype map { t => (JPath.Identity -> t) :: Nil }
 
-  def ctype: Gen[CType] = oneOf(
-    CString,
-    CBoolean,
-    CLong,
-    CDouble,
-    CNum,
-    CNull,
-    CEmptyObject,
-    CEmptyArray
-  )
+  def ctype: Gen[CType] =
+    oneOf(
+      CString,
+      CBoolean,
+      CLong,
+      CDouble,
+      CNum,
+      CNull,
+      CEmptyObject,
+      CEmptyArray
+    )
 
   // FIXME: TODO Should this provide some form for CDate?
-  def jvalue(ctype: CType): Gen[JValue] = ctype match {
-    case CString  => alphaStr map (JString(_))
-    case CBoolean => arbitrary[Boolean] map (JBool(_))
-    case CLong =>
-      arbitrary[Long] map { ln => JNum(BigDecimal(ln, MathContext.UNLIMITED)) }
-    case CDouble =>
-      arbitrary[Double] map { d => JNum(BigDecimal(d, MathContext.UNLIMITED)) }
-    case CNum         => arbitrary[BigDecimal] map { bd => JNum(bd) }
-    case CNull        => JNull
-    case CEmptyObject => JObject.empty
-    case CEmptyArray  => JArray.empty
-    case CUndefined   => JUndefined
-  }
+  def jvalue(ctype: CType): Gen[JValue] =
+    ctype match {
+      case CString  => alphaStr map (JString(_))
+      case CBoolean => arbitrary[Boolean] map (JBool(_))
+      case CLong =>
+        arbitrary[Long] map { ln =>
+          JNum(BigDecimal(ln, MathContext.UNLIMITED))
+        }
+      case CDouble =>
+        arbitrary[Double] map { d =>
+          JNum(BigDecimal(d, MathContext.UNLIMITED))
+        }
+      case CNum         => arbitrary[BigDecimal] map { bd => JNum(bd) }
+      case CNull        => JNull
+      case CEmptyObject => JObject.empty
+      case CEmptyArray  => JArray.empty
+      case CUndefined   => JUndefined
+    }
 
   def jvalue(schema: Seq[(JPath, CType)]): Gen[JValue] = {
     schema.foldLeft(Gen.value[JValue](JUndefined)) {
@@ -208,16 +214,17 @@ trait SValueGenerators extends ArbitraryBigDecimal {
     } yield SArray(Vector(l: _*))
   }
 
-  def sleaf: Gen[SValue] = oneOf(
-    alphaStr map (SString(_: String)),
-    arbitrary[Boolean] map (SBoolean(_: Boolean)),
-    arbitrary[Long] map (l => SDecimal(BigDecimal(l))),
-    arbitrary[Double] map (d => SDecimal(BigDecimal(d))),
-    arbitrary[BigDecimal] map { bd =>
-      SDecimal(bd)
-    }, //scalacheck's BigDecimal gen will overflow at random
-    value(SNull)
-  )
+  def sleaf: Gen[SValue] =
+    oneOf(
+      alphaStr map (SString(_: String)),
+      arbitrary[Boolean] map (SBoolean(_: Boolean)),
+      arbitrary[Long] map (l => SDecimal(BigDecimal(l))),
+      arbitrary[Double] map (d => SDecimal(BigDecimal(d))),
+      arbitrary[BigDecimal] map { bd =>
+        SDecimal(bd)
+      }, //scalacheck's BigDecimal gen will overflow at random
+      value(SNull)
+    )
 
   def sevent(idCount: Int, vdepth: Int): Gen[SEvent] = {
     for {

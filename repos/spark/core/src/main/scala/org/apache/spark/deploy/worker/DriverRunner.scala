@@ -80,11 +80,12 @@ private[deploy] class DriverRunner(
           val driverDir = createWorkingDirectory()
           val localJarFilename = downloadUserJar(driverDir)
 
-          def substituteVariables(argument: String): String = argument match {
-            case "{{WORKER_URL}}" => workerUrl
-            case "{{USER_JAR}}"   => localJarFilename
-            case other            => other
-          }
+          def substituteVariables(argument: String): String =
+            argument match {
+              case "{{WORKER_URL}}" => workerUrl
+              case "{{USER_JAR}}"   => localJarFilename
+              case other            => other
+            }
 
           // TODO: If we add ability to submit multiple jars they should also be added here
           val builder = CommandUtils.buildProcessBuilder(

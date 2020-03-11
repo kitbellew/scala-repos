@@ -93,10 +93,11 @@ trait HomogeneousArrayColumn[@spec(Boolean, Long, Double) A]
   val tpe: CArrayType[A]
 
   def leafTpe: CValueType[_] = {
-    @tailrec def loop(a: CValueType[_]): CValueType[_] = a match {
-      case CArrayType(elemType) => loop(elemType)
-      case vType                => vType
-    }
+    @tailrec def loop(a: CValueType[_]): CValueType[_] =
+      a match {
+        case CArrayType(elemType) => loop(elemType)
+        case vType                => vType
+      }
 
     loop(tpe)
   }
@@ -201,13 +202,15 @@ trait BoolColumn extends Column with (Int => Boolean) {
 }
 
 object BoolColumn {
-  def True(definedAt: BitSet) = new BitsetColumn(definedAt) with BoolColumn {
-    def apply(row: Int) = true
-  }
+  def True(definedAt: BitSet) =
+    new BitsetColumn(definedAt) with BoolColumn {
+      def apply(row: Int) = true
+    }
 
-  def False(definedAt: BitSet) = new BitsetColumn(definedAt) with BoolColumn {
-    def apply(row: Int) = false
-  }
+  def False(definedAt: BitSet) =
+    new BitsetColumn(definedAt) with BoolColumn {
+      def apply(row: Int) = false
+    }
 
   def Either(definedAt: BitSet, values: BitSet) =
     new BitsetColumn(definedAt) with BoolColumn {
@@ -338,19 +341,20 @@ object NullColumn {
 }
 
 object UndefinedColumn {
-  def apply(col: Column) = new Column {
-    def rowEq(row1: Int, row2: Int): Boolean =
-      sys.error("Values in undefined columns SHOULD NOT BE ACCESSED")
-    def rowCompare(row1: Int, row2: Int): Int =
-      sys.error("Cannot compare undefined values.")
-    def isDefinedAt(row: Int) = false
-    val tpe = col.tpe
-    def jValue(row: Int) =
-      sys.error("Values in undefined columns SHOULD NOT BE ACCESSED")
-    def cValue(row: Int) = CUndefined
-    def strValue(row: Int) =
-      sys.error("Values in undefined columns SHOULD NOT BE ACCESSED")
-  }
+  def apply(col: Column) =
+    new Column {
+      def rowEq(row1: Int, row2: Int): Boolean =
+        sys.error("Values in undefined columns SHOULD NOT BE ACCESSED")
+      def rowCompare(row1: Int, row2: Int): Int =
+        sys.error("Cannot compare undefined values.")
+      def isDefinedAt(row: Int) = false
+      val tpe = col.tpe
+      def jValue(row: Int) =
+        sys.error("Values in undefined columns SHOULD NOT BE ACCESSED")
+      def cValue(row: Int) = CUndefined
+      def strValue(row: Int) =
+        sys.error("Values in undefined columns SHOULD NOT BE ACCESSED")
+    }
 
   val raw = new Column {
     def rowEq(row1: Int, row2: Int): Boolean =
@@ -383,35 +387,37 @@ case class MmixPrng(_seed: Long) {
 }
 
 object Column {
-  def rowOrder(col: Column): Order[Int] = new Order[Int] {
-    def compare(i: Int, j: Int): Int = {
-      if (col.isDefinedAt(i)) {
-        if (col.isDefinedAt(j)) {
-          col.rowCompare(i, j)
-        } else 1
-      } else if (col.isDefinedAt(j)) -1
-      else 0
-    }
+  def rowOrder(col: Column): Order[Int] =
+    new Order[Int] {
+      def compare(i: Int, j: Int): Int = {
+        if (col.isDefinedAt(i)) {
+          if (col.isDefinedAt(j)) {
+            col.rowCompare(i, j)
+          } else 1
+        } else if (col.isDefinedAt(j)) -1
+        else 0
+      }
 
-    def eqv(i: Int, j: Int): Boolean = {
-      if (col.isDefinedAt(i)) {
-        if (col.isDefinedAt(j)) col.rowEq(i, j) else false
-      } else !col.isDefinedAt(j)
+      def eqv(i: Int, j: Int): Boolean = {
+        if (col.isDefinedAt(i)) {
+          if (col.isDefinedAt(j)) col.rowEq(i, j) else false
+        } else !col.isDefinedAt(j)
+      }
     }
-  }
-  @inline def const(cv: CValue): Column = cv match {
-    case CBoolean(v)                         => const(v)
-    case CLong(v)                            => const(v)
-    case CDouble(v)                          => const(v)
-    case CNum(v)                             => const(v)
-    case CString(v)                          => const(v)
-    case CDate(v)                            => const(v)
-    case CArray(v, t @ CArrayType(elemType)) => const(v)(elemType)
-    case CEmptyObject                        => new InfiniteColumn with EmptyObjectColumn
-    case CEmptyArray                         => new InfiniteColumn with EmptyArrayColumn
-    case CNull                               => new InfiniteColumn with NullColumn
-    case CUndefined                          => UndefinedColumn.raw
-  }
+  @inline def const(cv: CValue): Column =
+    cv match {
+      case CBoolean(v)                         => const(v)
+      case CLong(v)                            => const(v)
+      case CDouble(v)                          => const(v)
+      case CNum(v)                             => const(v)
+      case CString(v)                          => const(v)
+      case CDate(v)                            => const(v)
+      case CArray(v, t @ CArrayType(elemType)) => const(v)(elemType)
+      case CEmptyObject                        => new InfiniteColumn with EmptyObjectColumn
+      case CEmptyArray                         => new InfiniteColumn with EmptyArrayColumn
+      case CNull                               => new InfiniteColumn with NullColumn
+      case CUndefined                          => UndefinedColumn.raw
+    }
 
   @inline def uniformDistribution(init: MmixPrng): (Column, MmixPrng) = {
     val col = new InfiniteColumn with DoubleColumn {
@@ -439,33 +445,40 @@ object Column {
     (col, init)
   }
 
-  @inline def const(v: Boolean) = new InfiniteColumn with BoolColumn {
-    def apply(row: Int) = v
-  }
+  @inline def const(v: Boolean) =
+    new InfiniteColumn with BoolColumn {
+      def apply(row: Int) = v
+    }
 
-  @inline def const(v: Long) = new InfiniteColumn with LongColumn {
-    def apply(row: Int) = v
-  }
+  @inline def const(v: Long) =
+    new InfiniteColumn with LongColumn {
+      def apply(row: Int) = v
+    }
 
-  @inline def const(v: Double) = new InfiniteColumn with DoubleColumn {
-    def apply(row: Int) = v
-  }
+  @inline def const(v: Double) =
+    new InfiniteColumn with DoubleColumn {
+      def apply(row: Int) = v
+    }
 
-  @inline def const(v: BigDecimal) = new InfiniteColumn with NumColumn {
-    def apply(row: Int) = v
-  }
+  @inline def const(v: BigDecimal) =
+    new InfiniteColumn with NumColumn {
+      def apply(row: Int) = v
+    }
 
-  @inline def const(v: String) = new InfiniteColumn with StrColumn {
-    def apply(row: Int) = v
-  }
+  @inline def const(v: String) =
+    new InfiniteColumn with StrColumn {
+      def apply(row: Int) = v
+    }
 
-  @inline def const(v: DateTime) = new InfiniteColumn with DateColumn {
-    def apply(row: Int) = v
-  }
+  @inline def const(v: DateTime) =
+    new InfiniteColumn with DateColumn {
+      def apply(row: Int) = v
+    }
 
-  @inline def const(v: Period) = new InfiniteColumn with PeriodColumn {
-    def apply(row: Int) = v
-  }
+  @inline def const(v: Period) =
+    new InfiniteColumn with PeriodColumn {
+      def apply(row: Int) = v
+    }
 
   @inline def const[@spec(Boolean, Long, Double) A: CValueType](v: Array[A]) =
     new InfiniteColumn with HomogeneousArrayColumn[A] {
@@ -473,57 +486,59 @@ object Column {
       def apply(row: Int) = v
     }
 
-  def lift(col: Column): HomogeneousArrayColumn[_] = col match {
-    case col: BoolColumn =>
-      new HomogeneousArrayColumn[Boolean] {
-        val tpe = CArrayType(CBoolean)
-        def isDefinedAt(row: Int) = col.isDefinedAt(row)
-        def apply(row: Int) = Array(col(row))
-      }
-    case col: LongColumn =>
-      new HomogeneousArrayColumn[Long] {
-        val tpe = CArrayType(CLong)
-        def isDefinedAt(row: Int) = col.isDefinedAt(row)
-        def apply(row: Int) = Array(col(row))
-      }
-    case col: DoubleColumn =>
-      new HomogeneousArrayColumn[Double] {
-        val tpe = CArrayType(CDouble)
-        def isDefinedAt(row: Int) = col.isDefinedAt(row)
-        def apply(row: Int) = Array(col(row))
-      }
-    case col: NumColumn =>
-      new HomogeneousArrayColumn[BigDecimal] {
-        val tpe = CArrayType(CNum)
-        def isDefinedAt(row: Int) = col.isDefinedAt(row)
-        def apply(row: Int) = Array(col(row))
-      }
-    case col: StrColumn =>
-      new HomogeneousArrayColumn[String] {
-        val tpe = CArrayType(CString)
-        def isDefinedAt(row: Int) = col.isDefinedAt(row)
-        def apply(row: Int) = Array(col(row))
-      }
-    case col: DateColumn =>
-      new HomogeneousArrayColumn[DateTime] {
-        val tpe = CArrayType(CDate)
-        def isDefinedAt(row: Int) = col.isDefinedAt(row)
-        def apply(row: Int) = Array(col(row))
-      }
-    case col: PeriodColumn =>
-      new HomogeneousArrayColumn[Period] {
-        val tpe = CArrayType(CPeriod)
-        def isDefinedAt(row: Int) = col.isDefinedAt(row)
-        def apply(row: Int) = Array(col(row))
-      }
-    case col: HomogeneousArrayColumn[a] =>
-      new HomogeneousArrayColumn[Array[a]] {
-        val tpe = CArrayType(col.tpe)
-        def isDefinedAt(row: Int) = col.isDefinedAt(row)
-        def apply(row: Int): Array[Array[a]] = Array(col(row))(col.tpe.manifest)
-      }
-    case _ => sys.error("Cannot lift non-value column.")
-  }
+  def lift(col: Column): HomogeneousArrayColumn[_] =
+    col match {
+      case col: BoolColumn =>
+        new HomogeneousArrayColumn[Boolean] {
+          val tpe = CArrayType(CBoolean)
+          def isDefinedAt(row: Int) = col.isDefinedAt(row)
+          def apply(row: Int) = Array(col(row))
+        }
+      case col: LongColumn =>
+        new HomogeneousArrayColumn[Long] {
+          val tpe = CArrayType(CLong)
+          def isDefinedAt(row: Int) = col.isDefinedAt(row)
+          def apply(row: Int) = Array(col(row))
+        }
+      case col: DoubleColumn =>
+        new HomogeneousArrayColumn[Double] {
+          val tpe = CArrayType(CDouble)
+          def isDefinedAt(row: Int) = col.isDefinedAt(row)
+          def apply(row: Int) = Array(col(row))
+        }
+      case col: NumColumn =>
+        new HomogeneousArrayColumn[BigDecimal] {
+          val tpe = CArrayType(CNum)
+          def isDefinedAt(row: Int) = col.isDefinedAt(row)
+          def apply(row: Int) = Array(col(row))
+        }
+      case col: StrColumn =>
+        new HomogeneousArrayColumn[String] {
+          val tpe = CArrayType(CString)
+          def isDefinedAt(row: Int) = col.isDefinedAt(row)
+          def apply(row: Int) = Array(col(row))
+        }
+      case col: DateColumn =>
+        new HomogeneousArrayColumn[DateTime] {
+          val tpe = CArrayType(CDate)
+          def isDefinedAt(row: Int) = col.isDefinedAt(row)
+          def apply(row: Int) = Array(col(row))
+        }
+      case col: PeriodColumn =>
+        new HomogeneousArrayColumn[Period] {
+          val tpe = CArrayType(CPeriod)
+          def isDefinedAt(row: Int) = col.isDefinedAt(row)
+          def apply(row: Int) = Array(col(row))
+        }
+      case col: HomogeneousArrayColumn[a] =>
+        new HomogeneousArrayColumn[Array[a]] {
+          val tpe = CArrayType(col.tpe)
+          def isDefinedAt(row: Int) = col.isDefinedAt(row)
+          def apply(row: Int): Array[Array[a]] =
+            Array(col(row))(col.tpe.manifest)
+        }
+      case _ => sys.error("Cannot lift non-value column.")
+    }
 
   object unionRightSemigroup extends Semigroup[Column] {
     def append(c1: Column, c2: => Column): Column = {

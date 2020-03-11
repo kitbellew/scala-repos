@@ -590,11 +590,12 @@ object Menu extends MenuSingleton {
       * The method to add a path element to the URL representing this menu item. This method is
       * typically only used to allow the <pre>**</pre> object mechanism for specifying head match.
       */
-    def /(pathElement: MenuPath): BuiltType = pathElement match {
-      case ** => buildOne(path, true)
-      case AMenuPath(pathItem) =>
-        buildOne(path ::: List(NormalLocPath(pathItem)), headMatch)
-    }
+    def /(pathElement: MenuPath): BuiltType =
+      pathElement match {
+        case ** => buildOne(path, true)
+        case AMenuPath(pathItem) =>
+          buildOne(path ::: List(NormalLocPath(pathItem)), headMatch)
+      }
 
     def path(pathElement: MenuPath): BuiltType = this./(pathElement)
 
@@ -757,10 +758,11 @@ case class Menu(loc: Loc[_], private val convertableKids: ConvertableToMenu*)
   }
 
   private[sitemap] def testParentAccess
-      : Either[Boolean, Box[() => LiftResponse]] = _parent match {
-    case Full(p) => p.testAccess
-    case _       => Left(true)
-  }
+      : Either[Boolean, Box[() => LiftResponse]] =
+    _parent match {
+      case Full(p) => p.testAccess
+      case _       => Left(true)
+    }
 
   override private[sitemap] def testAccess
       : Either[Boolean, Box[() => LiftResponse]] = loc.testAccess
@@ -807,21 +809,24 @@ case class Menu(loc: Loc[_], private val convertableKids: ConvertableToMenu*)
     if (loc.inGroup_?(group)) makeMenuItem(path)
     else Empty
 
-  private def _inPath(in: List[Loc[_]]): Boolean = in match {
-    case Nil                 => false
-    case x :: xs if x eq loc => true
-    case x :: xs             => _inPath(xs)
-  }
+  private def _inPath(in: List[Loc[_]]): Boolean =
+    in match {
+      case Nil                 => false
+      case x :: xs if x eq loc => true
+      case x :: xs             => _inPath(xs)
+    }
 
-  private def _lastInPath(path: List[Loc[_]]): Boolean = path match {
-    case Nil => false
-    case xs  => xs.last eq loc
-  }
+  private def _lastInPath(path: List[Loc[_]]): Boolean =
+    path match {
+      case Nil => false
+      case xs  => xs.last eq loc
+    }
 
-  def breadCrumbs: List[Loc[_]] = _parent match {
-    case Full(m: Menu) => m.loc.breadCrumbs
-    case _             => Nil
-  }
+  def breadCrumbs: List[Loc[_]] =
+    _parent match {
+      case Full(m: Menu) => m.loc.breadCrumbs
+      case _             => Nil
+    }
 }
 
 final class ParamLocLink[T](

@@ -92,10 +92,11 @@ private[akka] final class SerializedSuspendableExecutionContext(
     */
   final def size(): Int = count()
 
-  override final def toString: String = (state.get: @switch) match {
-    case 0 ⇒ "Off"
-    case 1 ⇒ "On"
-    case 2 ⇒ "Off & Suspended"
-    case 3 ⇒ "On & Suspended"
-  }
+  override final def toString: String =
+    (state.get: @switch) match {
+      case 0 ⇒ "Off"
+      case 1 ⇒ "On"
+      case 2 ⇒ "Off & Suspended"
+      case 3 ⇒ "On & Suspended"
+    }
 }

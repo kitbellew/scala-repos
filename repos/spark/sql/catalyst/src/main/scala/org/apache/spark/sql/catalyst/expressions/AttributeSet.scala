@@ -18,10 +18,11 @@
 package org.apache.spark.sql.catalyst.expressions
 
 protected class AttributeEquals(val a: Attribute) {
-  override def hashCode(): Int = a match {
-    case ar: AttributeReference => ar.exprId.hashCode()
-    case a                      => a.hashCode()
-  }
+  override def hashCode(): Int =
+    a match {
+      case ar: AttributeReference => ar.exprId.hashCode()
+      case a                      => a.hashCode()
+    }
 
   override def equals(other: Any): Boolean =
     (a, other.asInstanceOf[AttributeEquals].a) match {
@@ -66,13 +67,14 @@ class AttributeSet private (val baseSet: Set[AttributeEquals])
     with Serializable {
 
   /** Returns true if the members of this AttributeSet and other are the same. */
-  override def equals(other: Any): Boolean = other match {
-    case otherSet: AttributeSet =>
-      otherSet.size == baseSet.size && baseSet
-        .map(_.a)
-        .forall(otherSet.contains)
-    case _ => false
-  }
+  override def equals(other: Any): Boolean =
+    other match {
+      case otherSet: AttributeSet =>
+        otherSet.size == baseSet.size && baseSet
+          .map(_.a)
+          .forall(otherSet.contains)
+      case _ => false
+    }
 
   /** Returns true if this set contains an Attribute with the same expression id as `elem` */
   def contains(elem: NamedExpression): Boolean =

@@ -46,17 +46,19 @@ object LAPinger {
   /**
     * Re-create the underlying <code>SingleThreadScheduledExecutor</code>
     */
-  def restart: Unit = synchronized {
-    if ((service eq null) || service.isShutdown)
-      service = Executors.newSingleThreadScheduledExecutor(TF)
-  }
+  def restart: Unit =
+    synchronized {
+      if ((service eq null) || service.isShutdown)
+        service = Executors.newSingleThreadScheduledExecutor(TF)
+    }
 
   /**
     * Shut down the underlying <code>SingleThreadScheduledExecutor</code>
     */
-  def shutdown: Unit = synchronized {
-    service.shutdown
-  }
+  def shutdown: Unit =
+    synchronized {
+      service.shutdown
+    }
 
   /**
     * Schedules the sending of a message to occur after the specified delay.

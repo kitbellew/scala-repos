@@ -47,10 +47,11 @@ class ScalaMethodCallArgUnwrapper
     e match {
       case (expr: ScExpression) childOf ((_: ScArgumentExprList) childOf (call: ScMethodCall)) =>
         @tailrec
-        def maxCall(call: ScMethodCall): ScMethodCall = call.getParent match {
-          case parCall: ScMethodCall => maxCall(parCall)
-          case _                     => call
-        }
+        def maxCall(call: ScMethodCall): ScMethodCall =
+          call.getParent match {
+            case parCall: ScMethodCall => maxCall(parCall)
+            case _                     => call
+          }
         ifArg(expr, maxCall(call))
       case _ => ifNot
     }

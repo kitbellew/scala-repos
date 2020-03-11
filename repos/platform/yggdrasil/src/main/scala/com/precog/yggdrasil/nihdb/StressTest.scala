@@ -52,10 +52,11 @@ class StressTest {
 
   val actorSystem = ActorSystem("NIHDBActorSystem")
 
-  def makechef = new Chef(
-    VersionedCookedBlockFormat(Map(1 -> V1CookedBlockFormat)),
-    VersionedSegmentFormat(Map(1 -> V1SegmentFormat))
-  )
+  def makechef =
+    new Chef(
+      VersionedCookedBlockFormat(Map(1 -> V1CookedBlockFormat)),
+      VersionedSegmentFormat(Map(1 -> V1SegmentFormat))
+    )
 
   val chefs = (1 to 4).map { _ => actorSystem.actorOf(Props(makechef)) }
 

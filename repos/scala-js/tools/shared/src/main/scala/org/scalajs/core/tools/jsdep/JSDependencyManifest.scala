@@ -16,15 +16,16 @@ final class JSDependencyManifest(
 
   import JSDependencyManifest._
 
-  override def equals(that: Any): Boolean = that match {
-    case that: JSDependencyManifest =>
-      this.origin == that.origin &&
-        this.libDeps == that.libDeps &&
-        this.requiresDOM == that.requiresDOM &&
-        this.compliantSemantics == that.compliantSemantics
-    case _ =>
-      false
-  }
+  override def equals(that: Any): Boolean =
+    that match {
+      case that: JSDependencyManifest =>
+        this.origin == that.origin &&
+          this.libDeps == that.libDeps &&
+          this.requiresDOM == that.requiresDOM &&
+          this.compliantSemantics == that.compliantSemantics
+      case _ =>
+        false
+    }
 
   override def hashCode(): Int = {
     import scala.util.hashing.MurmurHash3._

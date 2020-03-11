@@ -27,25 +27,28 @@ object OrderingExamples extends App {
 
     implicit def hlistIsoOrdering[A, H <: HList](implicit
         gen: Generic.Aux[A, H],
-        oh: Ordering[H]): Ordering[A] = new Ordering[A] {
-      def compare(a1: A, a2: A) = oh.compare(gen to a1, gen to a2)
-    }
+        oh: Ordering[H]): Ordering[A] =
+      new Ordering[A] {
+        def compare(a1: A, a2: A) = oh.compare(gen to a1, gen to a2)
+      }
   }
 
   object GenericOrdering extends LowPriorityGenericOrdering {
-    implicit def hnilOrdering: Ordering[HNil] = new Ordering[HNil] {
-      def compare(a: HNil, b: HNil) = 0
-    }
+    implicit def hnilOrdering: Ordering[HNil] =
+      new Ordering[HNil] {
+        def compare(a: HNil, b: HNil) = 0
+      }
 
     implicit def hlistOrdering[H, T <: HList](implicit
         oh: Ordering[H],
-        ot: Ordering[T]): Ordering[H :: T] = new Ordering[H :: T] {
-      def compare(a: H :: T, b: H :: T) = {
-        val i = oh.compare(a.head, b.head)
-        if (i == 0) ot.compare(a.tail, b.tail)
-        else i
+        ot: Ordering[T]): Ordering[H :: T] =
+      new Ordering[H :: T] {
+        def compare(a: H :: T, b: H :: T) = {
+          val i = oh.compare(a.head, b.head)
+          if (i == 0) ot.compare(a.tail, b.tail)
+          else i
+        }
       }
-    }
   }
 
   import GenericOrdering._

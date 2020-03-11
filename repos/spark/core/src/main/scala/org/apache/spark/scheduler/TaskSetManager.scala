@@ -642,21 +642,22 @@ private[spark] class TaskSetManager(
   /**
     * Check whether has enough quota to fetch the result with `size` bytes
     */
-  def canFetchMoreResults(size: Long): Boolean = sched.synchronized {
-    totalResultSize += size
-    calculatedTasks += 1
-    if (maxResultSize > 0 && totalResultSize > maxResultSize) {
-      val msg =
-        s"Total size of serialized results of ${calculatedTasks} tasks " +
-          s"(${Utils.bytesToString(totalResultSize)}) is bigger than spark.driver.maxResultSize " +
-          s"(${Utils.bytesToString(maxResultSize)})"
-      logError(msg)
-      abort(msg)
-      false
-    } else {
-      true
+  def canFetchMoreResults(size: Long): Boolean =
+    sched.synchronized {
+      totalResultSize += size
+      calculatedTasks += 1
+      if (maxResultSize > 0 && totalResultSize > maxResultSize) {
+        val msg =
+          s"Total size of serialized results of ${calculatedTasks} tasks " +
+            s"(${Utils.bytesToString(totalResultSize)}) is bigger than spark.driver.maxResultSize " +
+            s"(${Utils.bytesToString(maxResultSize)})"
+        logError(msg)
+        abort(msg)
+        false
+      } else {
+        true
+      }
     }
-  }
 
   /**
     * Marks a task as successful and notifies the DAGScheduler that the task has ended.

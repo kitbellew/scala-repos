@@ -38,85 +38,86 @@ import akka.stream.Attributes
 private[http] object FrameEventParser extends ByteStringParser[FrameEvent] {
   import ByteStringParser._
 
-  override def createLogic(attr: Attributes) = new ParsingLogic {
-    startWith(ReadFrameHeader)
+  override def createLogic(attr: Attributes) =
+    new ParsingLogic {
+      startWith(ReadFrameHeader)
 
-    trait Step extends ParseStep[FrameEvent] {
-      override def onTruncation(): Unit =
-        failStage(new ProtocolException("Data truncated"))
-    }
-
-    object ReadFrameHeader extends Step {
-      override def parse(reader: ByteReader): ParseResult[FrameEvent] = {
-        import Protocol._
-
-        val flagsAndOp = reader.readByte()
-        val maskAndLength = reader.readByte()
-
-        val flags = flagsAndOp & FLAGS_MASK
-        val op = flagsAndOp & OP_MASK
-
-        val maskBit = (maskAndLength & MASK_MASK) != 0
-        val length7 = maskAndLength & LENGTH_MASK
-
-        val length =
-          length7 match {
-            case 126 ⇒ reader.readShortBE().toLong
-            case 127 ⇒ reader.readLongBE()
-            case x ⇒ x.toLong
-          }
-
-        if (length < 0)
-          throw new ProtocolException("Highest bit of 64bit length was set")
-
-        val mask =
-          if (maskBit) Some(reader.readIntBE())
-          else None
-
-        def isFlagSet(mask: Int): Boolean = (flags & mask) != 0
-        val header =
-          FrameHeader(
-            Opcode.forCode(op.toByte),
-            mask,
-            length,
-            fin = isFlagSet(FIN_MASK),
-            rsv1 = isFlagSet(RSV1_MASK),
-            rsv2 = isFlagSet(RSV2_MASK),
-            rsv3 = isFlagSet(RSV3_MASK))
-
-        val takeNow = (header.length min reader.remainingSize).toInt
-        val thisFrameData = reader.take(takeNow)
-        val noMoreData = thisFrameData.length == length
-
-        val nextState =
-          if (noMoreData) ReadFrameHeader
-          else new ReadData(length - thisFrameData.length)
-
-        ParseResult(
-          Some(FrameStart(header, thisFrameData.compact)),
-          nextState,
-          true)
+      trait Step extends ParseStep[FrameEvent] {
+        override def onTruncation(): Unit =
+          failStage(new ProtocolException("Data truncated"))
       }
-    }
 
-    class ReadData(_remaining: Long) extends Step {
-      override def canWorkWithPartialData = true
-      var remaining = _remaining
-      override def parse(reader: ByteReader): ParseResult[FrameEvent] =
-        if (reader.remainingSize < remaining) {
-          remaining -= reader.remainingSize
+      object ReadFrameHeader extends Step {
+        override def parse(reader: ByteReader): ParseResult[FrameEvent] = {
+          import Protocol._
+
+          val flagsAndOp = reader.readByte()
+          val maskAndLength = reader.readByte()
+
+          val flags = flagsAndOp & FLAGS_MASK
+          val op = flagsAndOp & OP_MASK
+
+          val maskBit = (maskAndLength & MASK_MASK) != 0
+          val length7 = maskAndLength & LENGTH_MASK
+
+          val length =
+            length7 match {
+              case 126 ⇒ reader.readShortBE().toLong
+              case 127 ⇒ reader.readLongBE()
+              case x ⇒ x.toLong
+            }
+
+          if (length < 0)
+            throw new ProtocolException("Highest bit of 64bit length was set")
+
+          val mask =
+            if (maskBit) Some(reader.readIntBE())
+            else None
+
+          def isFlagSet(mask: Int): Boolean = (flags & mask) != 0
+          val header =
+            FrameHeader(
+              Opcode.forCode(op.toByte),
+              mask,
+              length,
+              fin = isFlagSet(FIN_MASK),
+              rsv1 = isFlagSet(RSV1_MASK),
+              rsv2 = isFlagSet(RSV2_MASK),
+              rsv3 = isFlagSet(RSV3_MASK))
+
+          val takeNow = (header.length min reader.remainingSize).toInt
+          val thisFrameData = reader.take(takeNow)
+          val noMoreData = thisFrameData.length == length
+
+          val nextState =
+            if (noMoreData) ReadFrameHeader
+            else new ReadData(length - thisFrameData.length)
+
           ParseResult(
-            Some(FrameData(reader.takeAll(), lastPart = false)),
-            this,
-            true)
-        } else {
-          ParseResult(
-            Some(FrameData(reader.take(remaining.toInt), lastPart = true)),
-            ReadFrameHeader,
+            Some(FrameStart(header, thisFrameData.compact)),
+            nextState,
             true)
         }
+      }
+
+      class ReadData(_remaining: Long) extends Step {
+        override def canWorkWithPartialData = true
+        var remaining = _remaining
+        override def parse(reader: ByteReader): ParseResult[FrameEvent] =
+          if (reader.remainingSize < remaining) {
+            remaining -= reader.remainingSize
+            ParseResult(
+              Some(FrameData(reader.takeAll(), lastPart = false)),
+              this,
+              true)
+          } else {
+            ParseResult(
+              Some(FrameData(reader.take(remaining.toInt), lastPart = true)),
+              ReadFrameHeader,
+              true)
+          }
+      }
     }
-  }
 
   def mask(bytes: ByteString, _mask: Option[Int]): ByteString =
     _mask match {

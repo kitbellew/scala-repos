@@ -82,50 +82,54 @@ abstract class Duplicators extends Analyzer {
         mapOver(tpe)
       }
 
-      override def mapOver(tpe: Type): Type = tpe match {
-        case TypeRef(NoPrefix, sym, args) if sym.isTypeParameterOrSkolem =>
-          val sym1 = (
-            context.scope lookup sym.name orElse {
-              // try harder (look in outer scopes)
-              // with virtpatmat, this can happen when the sym is referenced in the scope of a LabelDef but
-              // is defined in the scope of an outer DefDef (e.g., in AbstractPartialFunction's andThen)
-              BodyDuplicator.super
-                .silent(_ typedType Ident(sym.name))
-                .fold(NoSymbol: Symbol)(_.symbol)
-            } filter (_ ne sym)
-          )
-          if (sym1.exists) {
-            debuglog(s"fixing $sym -> $sym1")
-            typeRef(NoPrefix, sym1, mapOverArgs(args, sym1.typeParams))
-          } else super.mapOver(tpe)
+      override def mapOver(tpe: Type): Type =
+        tpe match {
+          case TypeRef(NoPrefix, sym, args) if sym.isTypeParameterOrSkolem =>
+            val sym1 = (
+              context.scope lookup sym.name orElse {
+                // try harder (look in outer scopes)
+                // with virtpatmat, this can happen when the sym is referenced in the scope of a LabelDef but
+                // is defined in the scope of an outer DefDef (e.g., in AbstractPartialFunction's andThen)
+                BodyDuplicator.super
+                  .silent(_ typedType Ident(sym.name))
+                  .fold(NoSymbol: Symbol)(_.symbol)
+              } filter (_ ne sym)
+            )
+            if (sym1.exists) {
+              debuglog(s"fixing $sym -> $sym1")
+              typeRef(NoPrefix, sym1, mapOverArgs(args, sym1.typeParams))
+            } else super.mapOver(tpe)
 
-        case TypeRef(pre, sym, args) =>
-          val newsym = updateSym(sym)
-          if (newsym ne sym) {
-            debuglog("fixing " + sym + " -> " + newsym)
-            typeRef(mapOver(pre), newsym, mapOverArgs(args, newsym.typeParams))
-          } else
+          case TypeRef(pre, sym, args) =>
+            val newsym = updateSym(sym)
+            if (newsym ne sym) {
+              debuglog("fixing " + sym + " -> " + newsym)
+              typeRef(
+                mapOver(pre),
+                newsym,
+                mapOverArgs(args, newsym.typeParams))
+            } else
+              super.mapOver(tpe)
+
+          case SingleType(pre, sym) =>
+            val sym1 = updateSym(sym)
+            if (sym1 ne sym) {
+              debuglog("fixing " + sym + " -> " + sym1)
+              singleType(mapOver(pre), sym1)
+            } else
+              super.mapOver(tpe)
+
+          case ThisType(sym) =>
+            val sym1 = updateSym(sym)
+            if (sym1 ne sym) {
+              debuglog("fixing " + sym + " -> " + sym1)
+              ThisType(sym1)
+            } else
+              super.mapOver(tpe)
+
+          case _ =>
             super.mapOver(tpe)
-
-        case SingleType(pre, sym) =>
-          val sym1 = updateSym(sym)
-          if (sym1 ne sym) {
-            debuglog("fixing " + sym + " -> " + sym1)
-            singleType(mapOver(pre), sym1)
-          } else
-            super.mapOver(tpe)
-
-        case ThisType(sym) =>
-          val sym1 = updateSym(sym)
-          if (sym1 ne sym) {
-            debuglog("fixing " + sym + " -> " + sym1)
-            ThisType(sym1)
-          } else
-            super.mapOver(tpe)
-
-        case _ =>
-          super.mapOver(tpe)
-      }
+        }
     }
 
     /** Fix the given type by replacing invalid symbols with the new ones. */

@@ -22,12 +22,13 @@ class TwoPhaseSetSerializer(val system: ExtendedActorSystem)
 
   override def identifier = 99999
 
-  override def toBinary(obj: AnyRef): Array[Byte] = obj match {
-    case m: TwoPhaseSet ⇒ twoPhaseSetToProto(m).toByteArray
-    case _ ⇒
-      throw new IllegalArgumentException(
-        s"Can't serialize object of type ${obj.getClass}")
-  }
+  override def toBinary(obj: AnyRef): Array[Byte] =
+    obj match {
+      case m: TwoPhaseSet ⇒ twoPhaseSetToProto(m).toByteArray
+      case _ ⇒
+        throw new IllegalArgumentException(
+          s"Can't serialize object of type ${obj.getClass}")
+    }
 
   override def fromBinary(
       bytes: Array[Byte],
@@ -66,12 +67,13 @@ class TwoPhaseSetSerializer(val system: ExtendedActorSystem)
 class TwoPhaseSetSerializerWithCompression(system: ExtendedActorSystem)
     extends TwoPhaseSetSerializer(system) {
   //#compression
-  override def toBinary(obj: AnyRef): Array[Byte] = obj match {
-    case m: TwoPhaseSet ⇒ compress(twoPhaseSetToProto(m))
-    case _ ⇒
-      throw new IllegalArgumentException(
-        s"Can't serialize object of type ${obj.getClass}")
-  }
+  override def toBinary(obj: AnyRef): Array[Byte] =
+    obj match {
+      case m: TwoPhaseSet ⇒ compress(twoPhaseSetToProto(m))
+      case _ ⇒
+        throw new IllegalArgumentException(
+          s"Can't serialize object of type ${obj.getClass}")
+    }
 
   override def fromBinary(
       bytes: Array[Byte],

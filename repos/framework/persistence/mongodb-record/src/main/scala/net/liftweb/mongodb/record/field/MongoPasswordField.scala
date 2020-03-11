@@ -68,13 +68,13 @@ class MongoPasswordField[OwnerType <: BsonRecord[OwnerType]](
 
   override def validate: List[FieldError] = runValidation(validatorValue)
 
-  private def elem = S.fmapFunc(S.SFuncHolder(this.setPassword(_))) {
-    funcName =>
+  private def elem =
+    S.fmapFunc(S.SFuncHolder(this.setPassword(_))) { funcName =>
       <input type="password"
       name={funcName}
       value=""
       tabindex={tabIndex.toString}/>
-  }
+    }
 
   override def toForm: Box[NodeSeq] =
     uniqueFieldId match {
@@ -82,14 +82,15 @@ class MongoPasswordField[OwnerType <: BsonRecord[OwnerType]](
       case _        => Full(elem)
     }
 
-  private def validatePassword(pwd: Password): List[FieldError] = pwd match {
-    case null | Password("", _) | Password("*", _) |
-        Password(MongoPasswordField.blankPw, _) =>
-      Text(S.?("password.must.be.set"))
-    case Password(pwd, _) if pwd.length < minLen =>
-      Text(S.?("password.too.short"))
-    case _ => Nil
-  }
+  private def validatePassword(pwd: Password): List[FieldError] =
+    pwd match {
+      case null | Password("", _) | Password("*", _) |
+          Password(MongoPasswordField.blankPw, _) =>
+        Text(S.?("password.must.be.set"))
+      case Password(pwd, _) if pwd.length < minLen =>
+        Text(S.?("password.too.short"))
+      case _ => Nil
+    }
 
   override def validations = validatePassword _ :: Nil
 

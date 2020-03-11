@@ -56,16 +56,17 @@ trait UnCurry {
   }
 
   object DesugaredParameterType {
-    def unapply(tpe: Type): Option[Type] = tpe match {
-      case TypeRef(pre, ByNameParamClass, arg :: Nil) =>
-        Some(functionType(List(), arg))
-      case TypeRef(pre, RepeatedParamClass, arg :: Nil) =>
-        Some(seqType(arg))
-      case TypeRef(pre, JavaRepeatedParamClass, arg :: Nil) =>
-        Some(arrayType(if (isUnboundedGeneric(arg)) ObjectTpe else arg))
-      case _ =>
-        None
-    }
+    def unapply(tpe: Type): Option[Type] =
+      tpe match {
+        case TypeRef(pre, ByNameParamClass, arg :: Nil) =>
+          Some(functionType(List(), arg))
+        case TypeRef(pre, RepeatedParamClass, arg :: Nil) =>
+          Some(seqType(arg))
+        case TypeRef(pre, JavaRepeatedParamClass, arg :: Nil) =>
+          Some(arrayType(if (isUnboundedGeneric(arg)) ObjectTpe else arg))
+        case _ =>
+          None
+      }
   }
 
   private val uncurryType = new TypeMap {

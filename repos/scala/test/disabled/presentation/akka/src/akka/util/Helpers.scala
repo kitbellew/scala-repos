@@ -89,10 +89,11 @@ object Helpers {
         }
     }
 
-    def apply() = contents match {
-      case Left(result) => result
-      case Right(error) => throw error.fillInStackTrace
-    }
+    def apply() =
+      contents match {
+        case Left(result) => result
+        case Right(error) => throw error.fillInStackTrace
+      }
   }
   object ResultOrError {
     def apply[R](result: R) = new ResultOrError(result)

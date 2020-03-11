@@ -103,22 +103,25 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
 
   protected def createInterpreter(
       db: Backend#Database,
-      param: Any): QueryInterpreter = new QueryInterpreter(db, param) {
-    override def run(n: Node) = n match {
-      case ResultSetMapping(
-            _,
-            from,
-            CompiledMapping(converter, _)) :@ CollectionType(cons, el) =>
-        val fromV = run(from).asInstanceOf[TraversableOnce[Any]]
-        val b = cons.createBuilder(el.classTag).asInstanceOf[Builder[Any, Any]]
-        b ++= fromV.map(v =>
-          converter
-            .asInstanceOf[ResultConverter[MemoryResultConverterDomain, _]]
-            .read(v.asInstanceOf[QueryInterpreter.ProductValue]))
-        b.result()
-      case n => super.run(n)
+      param: Any): QueryInterpreter =
+    new QueryInterpreter(db, param) {
+      override def run(n: Node) =
+        n match {
+          case ResultSetMapping(
+                _,
+                from,
+                CompiledMapping(converter, _)) :@ CollectionType(cons, el) =>
+            val fromV = run(from).asInstanceOf[TraversableOnce[Any]]
+            val b =
+              cons.createBuilder(el.classTag).asInstanceOf[Builder[Any, Any]]
+            b ++= fromV.map(v =>
+              converter
+                .asInstanceOf[ResultConverter[MemoryResultConverterDomain, _]]
+                .read(v.asInstanceOf[QueryInterpreter.ProductValue]))
+            b.result()
+          case n => super.run(n)
+        }
     }
-  }
 
   def runSynchronousQuery[R](tree: Node, param: Any)(
       implicit session: Backend#Session): R =
@@ -240,19 +243,21 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
   class SchemaActionExtensionMethodsImpl(schema: SchemaDescription)
       extends super.SchemaActionExtensionMethodsImpl {
     protected[this] val tables = schema.asInstanceOf[DDL].tables
-    def create = dbAction { session =>
-      tables.foreach(t =>
-        session.database.createTable(
-          t.tableName,
-          t.create_*.map { fs =>
-            new HeapBackend.Column(fs, typeInfoFor(fs.tpe))
-          }.toIndexedSeq,
-          t.indexes.toIndexedSeq,
-          t.tableConstraints.toIndexedSeq))
-    }
-    def drop = dbAction { session =>
-      tables.foreach(t => session.database.dropTable(t.tableName))
-    }
+    def create =
+      dbAction { session =>
+        tables.foreach(t =>
+          session.database.createTable(
+            t.tableName,
+            t.create_*.map { fs =>
+              new HeapBackend.Column(fs, typeInfoFor(fs.tpe))
+            }.toIndexedSeq,
+            t.indexes.toIndexedSeq,
+            t.tableConstraints.toIndexedSeq))
+      }
+    def drop =
+      dbAction { session =>
+        tables.foreach(t => session.database.dropTable(t.tableName))
+      }
   }
 
   class InsertActionExtensionMethodsImpl[T](compiled: CompiledInsert)

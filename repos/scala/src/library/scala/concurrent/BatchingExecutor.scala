@@ -57,29 +57,30 @@ private[concurrent] trait BatchingExecutor extends Executor {
         try {
           parentBlockContext = prevBlockContext
 
-          @tailrec def processBatch(batch: List[Runnable]): Unit = batch match {
-            case Nil => ()
-            case head :: tail =>
-              _tasksLocal set tail
-              try {
-                head.run()
-              } catch {
-                case t: Throwable =>
-                  // if one task throws, move the
-                  // remaining tasks to another thread
-                  // so we can throw the exception
-                  // up to the invoking executor
-                  val remaining = _tasksLocal.get
-                  _tasksLocal set Nil
-                  unbatchedExecute(
-                    new Batch(remaining)
-                  ) //TODO what if this submission fails?
-                  throw t // rethrow
-              }
-              processBatch(
-                _tasksLocal.get
-              ) // since head.run() can add entries, always do _tasksLocal.get here
-          }
+          @tailrec def processBatch(batch: List[Runnable]): Unit =
+            batch match {
+              case Nil => ()
+              case head :: tail =>
+                _tasksLocal set tail
+                try {
+                  head.run()
+                } catch {
+                  case t: Throwable =>
+                    // if one task throws, move the
+                    // remaining tasks to another thread
+                    // so we can throw the exception
+                    // up to the invoking executor
+                    val remaining = _tasksLocal.get
+                    _tasksLocal set Nil
+                    unbatchedExecute(
+                      new Batch(remaining)
+                    ) //TODO what if this submission fails?
+                    throw t // rethrow
+                }
+                processBatch(
+                  _tasksLocal.get
+                ) // since head.run() can add entries, always do _tasksLocal.get here
+            }
 
           processBatch(initial)
         } finally {
@@ -125,8 +126,9 @@ private[concurrent] trait BatchingExecutor extends Executor {
   }
 
   /** Override this to define which runnables will be batched. */
-  def batchable(runnable: Runnable): Boolean = runnable match {
-    case _: OnCompleteRunnable => true
-    case _                     => false
-  }
+  def batchable(runnable: Runnable): Boolean =
+    runnable match {
+      case _: OnCompleteRunnable => true
+      case _                     => false
+    }
 }

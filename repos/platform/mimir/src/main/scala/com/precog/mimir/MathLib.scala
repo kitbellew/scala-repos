@@ -91,11 +91,12 @@ trait MathLibModule[M[+_]]
         f: Double => Double)
         extends Op1F1(MathNamespace, name) {
       val tpe = UnaryOperationType(JNumberT, JNumberT)
-      def f1(ctx: MorphContext): F1 = CF1P("builtin::math::op1dd::" + name) {
-        case c: DoubleColumn => new DoubleFrom.D(c, defined, f)
-        case c: LongColumn   => new DoubleFrom.L(c, defined, f)
-        case c: NumColumn    => new DoubleFrom.N(c, defined, f)
-      }
+      def f1(ctx: MorphContext): F1 =
+        CF1P("builtin::math::op1dd::" + name) {
+          case c: DoubleColumn => new DoubleFrom.D(c, defined, f)
+          case c: LongColumn   => new DoubleFrom.L(c, defined, f)
+          case c: NumColumn    => new DoubleFrom.N(c, defined, f)
+        }
     }
 
     object sinh extends Op1DD("sinh", doubleIsDefined, Math.sinh)
@@ -175,34 +176,35 @@ trait MathLibModule[M[+_]]
         f: (Double, Double) => Double)
         extends Op2F2(MathNamespace, name) {
       val tpe = BinaryOperationType(JNumberT, JNumberT, JNumberT)
-      def f2(ctx: MorphContext): F2 = CF2P("builtin::math::op2dd::" + name) {
-        case (c1: DoubleColumn, c2: DoubleColumn) =>
-          new DoubleFrom.DD(c1, c2, defined, f)
+      def f2(ctx: MorphContext): F2 =
+        CF2P("builtin::math::op2dd::" + name) {
+          case (c1: DoubleColumn, c2: DoubleColumn) =>
+            new DoubleFrom.DD(c1, c2, defined, f)
 
-        case (c1: DoubleColumn, c2: LongColumn) =>
-          new DoubleFrom.DL(c1, c2, defined, f)
+          case (c1: DoubleColumn, c2: LongColumn) =>
+            new DoubleFrom.DL(c1, c2, defined, f)
 
-        case (c1: DoubleColumn, c2: NumColumn) =>
-          new DoubleFrom.DN(c1, c2, defined, f)
+          case (c1: DoubleColumn, c2: NumColumn) =>
+            new DoubleFrom.DN(c1, c2, defined, f)
 
-        case (c1: LongColumn, c2: DoubleColumn) =>
-          new DoubleFrom.LD(c1, c2, defined, f)
+          case (c1: LongColumn, c2: DoubleColumn) =>
+            new DoubleFrom.LD(c1, c2, defined, f)
 
-        case (c1: NumColumn, c2: DoubleColumn) =>
-          new DoubleFrom.ND(c1, c2, defined, f)
+          case (c1: NumColumn, c2: DoubleColumn) =>
+            new DoubleFrom.ND(c1, c2, defined, f)
 
-        case (c1: LongColumn, c2: LongColumn) =>
-          new DoubleFrom.LL(c1, c2, defined, f)
+          case (c1: LongColumn, c2: LongColumn) =>
+            new DoubleFrom.LL(c1, c2, defined, f)
 
-        case (c1: LongColumn, c2: NumColumn) =>
-          new DoubleFrom.LN(c1, c2, defined, f)
+          case (c1: LongColumn, c2: NumColumn) =>
+            new DoubleFrom.LN(c1, c2, defined, f)
 
-        case (c1: NumColumn, c2: LongColumn) =>
-          new DoubleFrom.NL(c1, c2, defined, f)
+          case (c1: NumColumn, c2: LongColumn) =>
+            new DoubleFrom.NL(c1, c2, defined, f)
 
-        case (c1: NumColumn, c2: NumColumn) =>
-          new DoubleFrom.NN(c1, c2, defined, f)
-      }
+          case (c1: NumColumn, c2: NumColumn) =>
+            new DoubleFrom.NN(c1, c2, defined, f)
+        }
     }
 
     def bothDefined(x: Double, y: Double) =

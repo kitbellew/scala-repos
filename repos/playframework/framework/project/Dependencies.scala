@@ -191,10 +191,11 @@ object Dependencies {
       case _             => sys.error(s"Unsupported scala version: $scalaBinaryVersion")
     }
 
-  def forkRunDependencies(scalaBinaryVersion: String) = Seq(
-    sbtRcActorClient(scalaBinaryVersion),
-    jnotify
-  )
+  def forkRunDependencies(scalaBinaryVersion: String) =
+    Seq(
+      sbtRcActorClient(scalaBinaryVersion),
+      jnotify
+    )
 
   // use partial version so that non-standard scala binary versions from dbuild also work
   def sbtRcActorClient(scalaBinaryVersion: String): ModuleID =

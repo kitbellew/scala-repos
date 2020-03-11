@@ -187,19 +187,20 @@ object Multinomial {
 
     def mle(stats: SufficientStatistic) = log(stats.counts)
 
-    def likelihoodFunction(stats: SufficientStatistic) = new DiffFunction[T] {
-      def calculate(x: T) = {
-        val nn: T = logNormalize(x)
-        val lp = nn dot stats.counts
+    def likelihoodFunction(stats: SufficientStatistic) =
+      new DiffFunction[T] {
+        def calculate(x: T) = {
+          val nn: T = logNormalize(x)
+          val lp = nn dot stats.counts
 
-        val mysum = sum(stats.counts)
+          val mysum = sum(stats.counts)
 
-        val exped = numerics.exp(nn)
-        val grad = exped * mysum - stats.counts
+          val exped = numerics.exp(nn)
+          val grad = exped * mysum - stats.counts
 
-        (-lp, grad)
+          (-lp, grad)
+        }
       }
-    }
 
     def distribution(p: Parameter) = {
       new Multinomial(numerics.exp(p))

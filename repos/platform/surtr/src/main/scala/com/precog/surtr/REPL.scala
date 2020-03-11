@@ -137,124 +137,127 @@ trait REPL
   val Prompt = "quirrel> "
   val Follow = "       | "
 
-  def run = IO {
-    val terminal = TerminalFactory.getFlavor(TerminalFactory.Flavor.UNIX)
-    terminal.init()
+  def run =
+    IO {
+      val terminal = TerminalFactory.getFlavor(TerminalFactory.Flavor.UNIX)
+      terminal.init()
 
-    val color = new Color(true) // TODO
+      val color = new Color(true) // TODO
 
-    val reader = new ConsoleReader
-    // val out = new PrintWriter(reader.getTerminal.wrapOutIfNeeded(System.out))
-    val out = System.out
+      val reader = new ConsoleReader
+      // val out = new PrintWriter(reader.getTerminal.wrapOutIfNeeded(System.out))
+      val out = System.out
 
-    def compile(oldTree: Expr): Option[Expr] = {
-      bindRoot(oldTree, oldTree)
+      def compile(oldTree: Expr): Option[Expr] = {
+        bindRoot(oldTree, oldTree)
 
-      val tree = shakeTree(oldTree)
-      val strs = for (error <- tree.errors) yield showError(error)
+        val tree = shakeTree(oldTree)
+        val strs = for (error <- tree.errors) yield showError(error)
 
-      if (!tree.errors.isEmpty) {
-        out.println(color.red(strs mkString "\n"))
+        if (!tree.errors.isEmpty) {
+          out.println(color.red(strs mkString "\n"))
+        }
+
+        if (tree.errors filterNot isWarning isEmpty)
+          Some(tree)
+        else
+          None
       }
 
-      if (tree.errors filterNot isWarning isEmpty)
-        Some(tree)
-      else
-        None
-    }
+      def handle(c: Command) =
+        c match {
+          case Eval(tree) => {
+            val optTree = compile(tree)
 
-    def handle(c: Command) = c match {
-      case Eval(tree) => {
-        val optTree = compile(tree)
+            for (tree <- optTree) {
+              val bytecode = emit(tree)
+              val eitherGraph = decorate(bytecode)
 
-        for (tree <- optTree) {
-          val bytecode = emit(tree)
-          val eitherGraph = decorate(bytecode)
+              // TODO decoration errors
 
-          // TODO decoration errors
+              for (graph <- eitherGraph.right) {
+                val result = {
+                  consumeEval(graph, dummyEvaluationContext) fold (
+                    error =>
+                      "An error occurred processing your query: " + error.getMessage,
+                    results =>
+                      JArray(results.toList.map(_._2.toJValue)).renderPretty
+                  )
+                }
 
-          for (graph <- eitherGraph.right) {
-            val result = {
-              consumeEval(graph, dummyEvaluationContext) fold (
-                error =>
-                  "An error occurred processing your query: " + error.getMessage,
-                results =>
-                  JArray(results.toList.map(_._2.toJValue)).renderPretty
-              )
+                out.println()
+                out.println(color.cyan(result))
+              }
             }
 
+            true
+          }
+
+          case PrintTree(tree) => {
+            bindRoot(tree, tree)
+            val tree2 = shakeTree(tree)
+
             out.println()
-            out.println(color.cyan(result))
+            out.println(prettyPrint(tree2))
+
+            true
+          }
+
+          case Help => {
+            printHelp(out)
+            true
+          }
+
+          case Quit => {
+            terminal.restore()
+            false
           }
         }
 
-        true
-      }
+      def loop() {
+        val results = prompt(readNext(reader, color))
+        val successes = results collect { case Success(tree, _) => tree }
+        val failures = results collect { case f: Failure        => f }
 
-      case PrintTree(tree) => {
-        bindRoot(tree, tree)
-        val tree2 = shakeTree(tree)
-
-        out.println()
-        out.println(prettyPrint(tree2))
-
-        true
-      }
-
-      case Help => {
-        printHelp(out)
-        true
-      }
-
-      case Quit => {
-        terminal.restore()
-        false
-      }
-    }
-
-    def loop() {
-      val results = prompt(readNext(reader, color))
-      val successes = results collect { case Success(tree, _) => tree }
-      val failures = results collect { case f: Failure        => f }
-
-      if (successes.isEmpty) {
-        try {
-          handleFailures(failures)
-        } catch {
-          case pe: ParseException => {
-            out.println()
-            out.println(color.red(pe.mkString))
+        if (successes.isEmpty) {
+          try {
+            handleFailures(failures)
+          } catch {
+            case pe: ParseException => {
+              out.println()
+              out.println(color.red(pe.mkString))
+            }
           }
-        }
-        println()
-        loop()
-      } else {
-        val command =
-          if ((successes lengthCompare 1) > 0)
-            throw new AssertionError(
-              "Fatal error: ambiguous parse results: " + results.mkString(", "))
-          else
-            successes.head
-
-        if (handle(command)) {
-          out.println()
+          println()
           loop()
+        } else {
+          val command =
+            if ((successes lengthCompare 1) > 0)
+              throw new AssertionError(
+                "Fatal error: ambiguous parse results: " + results.mkString(
+                  ", "))
+            else
+              successes.head
+
+          if (handle(command)) {
+            out.println()
+            loop()
+          }
         }
       }
+
+      out.println(
+        "Welcome to Quirrel early access preview."
+      ) // TODO we should try to get this string from a file
+      out.println("Type in expressions to have them evaluated.")
+      out.println("Press Ctrl-D on a new line to evaluate an expression.")
+      out.println("Type in :help for more information.")
+      out.println()
+
+      loop()
+
+      PrecogUnit
     }
-
-    out.println(
-      "Welcome to Quirrel early access preview."
-    ) // TODO we should try to get this string from a file
-    out.println("Type in expressions to have them evaluated.")
-    out.println("Press Ctrl-D on a new line to evaluate an expression.")
-    out.println("Type in :help for more information.")
-    out.println()
-
-    loop()
-
-    PrecogUnit
-  }
 
   def readNext(reader: ConsoleReader, color: Color): String = {
     var input = reader.readLine(color.blue(Prompt))
@@ -301,9 +304,10 @@ trait REPL
 }
 
 object Console extends App {
-  def loadConfig(dataDir: Option[String]): IO[REPLConfig] = IO {
-    new REPLConfig(dataDir)
-  }
+  def loadConfig(dataDir: Option[String]): IO[REPLConfig] =
+    IO {
+      new REPLConfig(dataDir)
+    }
 
   val repl: IO[
     scalaz.Validation[blueeyes.json.serialization.Extractor.Error, Lifecycle]] =
@@ -379,13 +383,14 @@ object Console extends App {
 
           def startup = IO { PrecogUnit }
 
-          def shutdown = IO {
-            Await.result(
-              gracefulStop(projectionsActor, yggConfig.controlTimeout),
-              yggConfig.controlTimeout)
-            actorSystem.shutdown()
-            PrecogUnit
-          }
+          def shutdown =
+            IO {
+              Await.result(
+                gracefulStop(projectionsActor, yggConfig.controlTimeout),
+                yggConfig.controlTimeout)
+              actorSystem.shutdown()
+              PrecogUnit
+            }
         }
       }
     }

@@ -2,7 +2,8 @@
 // from the case I was knowingly fixing, I'm throwing it
 // in there.
 object HasArgs {
-  def boop(params: List[List[_]]) = params match {
-    case List(List()) => 2
-  }
+  def boop(params: List[List[_]]) =
+    params match {
+      case List(List()) => 2
+    }
 }

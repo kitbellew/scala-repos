@@ -71,16 +71,17 @@ object PathData {
   object DataType {
     implicit val decomposer: Decomposer[DataType] with Extractor[DataType] =
       new Decomposer[DataType] with Extractor[DataType] {
-        def decompose(t: DataType) = t match {
-          case BLOB(contentType) =>
-            JObject(
-              "type" -> JString("blob"),
-              "mimeType" -> JString(contentType.value))
-          case NIHDB =>
-            JObject(
-              "type" -> JString("nihdb"),
-              "mimeType" -> JString(FileContent.XQuirrelData.value))
-        }
+        def decompose(t: DataType) =
+          t match {
+            case BLOB(contentType) =>
+              JObject(
+                "type" -> JString("blob"),
+                "mimeType" -> JString(contentType.value))
+            case NIHDB =>
+              JObject(
+                "type" -> JString("nihdb"),
+                "mimeType" -> JString(FileContent.XQuirrelData.value))
+          }
 
         def validated(v: JValue) = {
           val mimeTypeV = v.validated[String]("mimeType").flatMap {

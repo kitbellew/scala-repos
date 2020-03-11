@@ -7,17 +7,19 @@ object lists {
     def prepend(x: a) = Cons[a](x, this);
   }
 
-  def Nil[b] = new List[b] {
-    def isEmpty: Boolean = true;
-    def head = sys.error("head of Nil");
-    def tail = sys.error("tail of Nil");
-  }
+  def Nil[b] =
+    new List[b] {
+      def isEmpty: Boolean = true;
+      def head = sys.error("head of Nil");
+      def tail = sys.error("tail of Nil");
+    }
 
-  def Cons[c](x: c, xs: List[c]): List[c] = new List[c] {
-    def isEmpty = false;
-    def head = x;
-    def tail = xs;
-  }
+  def Cons[c](x: c, xs: List[c]): List[c] =
+    new List[c] {
+      def isEmpty = false;
+      def head = x;
+      def tail = xs;
+    }
 
   def foo = {
     val intnil = Nil[Int];

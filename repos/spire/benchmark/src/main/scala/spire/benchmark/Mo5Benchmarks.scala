@@ -25,23 +25,25 @@ class Mo5Benchmarks extends MyBenchmark {
     as = init(len)(nextInt)
   }
 
-  def timeHBMo5(reps: Int) = run(reps) {
-    val a = as.clone()
-    var i = 0
-    while (i <= len - 5) {
-      mo5_hb.mo5(a, i, 1)
-      i += 5
+  def timeHBMo5(reps: Int) =
+    run(reps) {
+      val a = as.clone()
+      var i = 0
+      while (i <= len - 5) {
+        mo5_hb.mo5(a, i, 1)
+        i += 5
+      }
+      a.length
     }
-    a.length
-  }
 
-  def timeMMo5(reps: Int) = run(reps) {
-    val a = as.clone()
-    var i = 0
-    while (i <= len - 5) {
-      mo5_m.mo5(a, i, 1)
-      i += 5
+  def timeMMo5(reps: Int) =
+    run(reps) {
+      val a = as.clone()
+      var i = 0
+      while (i <= len - 5) {
+        mo5_m.mo5(a, i, 1)
+        i += 5
+      }
+      a.length
     }
-    a.length
-  }
 }

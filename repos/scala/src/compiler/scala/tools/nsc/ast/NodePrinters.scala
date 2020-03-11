@@ -45,10 +45,11 @@ abstract class NodePrinters {
       showPosition(lit) + lit.value.escapedStringValue
     def showTypeTree(tt: TypeTree) =
       showPosition(tt) + "<tpt>" + emptyOrComment(showType(tt))
-    def showName(name: Name) = name match {
-      case nme.EMPTY | tpnme.EMPTY => "<empty>"
-      case name                    => "\"" + name + "\""
-    }
+    def showName(name: Name) =
+      name match {
+        case nme.EMPTY | tpnme.EMPTY => "<empty>"
+        case name                    => "\"" + name + "\""
+      }
 
     def showSymbol(tree: Tree): String = {
       val sym = tree.symbol

@@ -194,71 +194,74 @@ object ScalaJSPluginInternal {
   /** Settings for the production key (e.g. fastOptJS) of a given stage */
   private def scalaJSStageSettings(
       stage: Stage,
-      key: TaskKey[Attributed[File]]): Seq[Setting[_]] = Seq(
-    scalaJSLinker in key := {
-      val opts = (scalaJSOptimizerOptions in key).value
+      key: TaskKey[Attributed[File]]): Seq[Setting[_]] =
+    Seq(
+      scalaJSLinker in key := {
+        val opts = (scalaJSOptimizerOptions in key).value
 
-      val semantics = (scalaJSSemantics in key).value
-      val outputMode = (scalaJSOutputMode in key).value
-      val withSourceMap = (emitSourceMaps in key).value
+        val semantics = (scalaJSSemantics in key).value
+        val outputMode = (scalaJSOutputMode in key).value
+        val withSourceMap = (emitSourceMaps in key).value
 
-      val relSourceMapBase = {
-        if ((relativeSourceMaps in key).value)
-          Some((artifactPath in key).value.getParentFile.toURI())
-        else
-          None
-      }
+        val relSourceMapBase = {
+          if ((relativeSourceMaps in key).value)
+            Some((artifactPath in key).value.getParentFile.toURI())
+          else
+            None
+        }
 
-      val frontendConfig = LinkerFrontend
-        .Config()
-        .withBypassLinkingErrorsInternal(opts.bypassLinkingErrors)
-        .withCheckIR(opts.checkScalaJSIR)
+        val frontendConfig = LinkerFrontend
+          .Config()
+          .withBypassLinkingErrorsInternal(opts.bypassLinkingErrors)
+          .withCheckIR(opts.checkScalaJSIR)
 
-      val backendConfig = LinkerBackend
-        .Config()
-        .withRelativizeSourceMapBase(relSourceMapBase)
-        .withCustomOutputWrapper(scalaJSOutputWrapper.value)
-        .withPrettyPrint(opts.prettyPrintFullOptJS)
+        val backendConfig = LinkerBackend
+          .Config()
+          .withRelativizeSourceMapBase(relSourceMapBase)
+          .withCustomOutputWrapper(scalaJSOutputWrapper.value)
+          .withPrettyPrint(opts.prettyPrintFullOptJS)
 
-      val newLinker = { () =>
-        Linker(
-          semantics,
-          outputMode,
-          withSourceMap,
-          opts.disableOptimizer,
-          opts.parallel,
-          opts.useClosureCompiler,
-          frontendConfig,
-          backendConfig)
-      }
+        val newLinker = { () =>
+          Linker(
+            semantics,
+            outputMode,
+            withSourceMap,
+            opts.disableOptimizer,
+            opts.parallel,
+            opts.useClosureCompiler,
+            frontendConfig,
+            backendConfig)
+        }
 
-      new ClearableLinker(newLinker, opts.batchMode)
-    },
-    usesScalaJSLinkerTag in key := {
-      val projectPart = thisProject.value.id
-      val configPart = configuration.value.name
+        new ClearableLinker(newLinker, opts.batchMode)
+      },
+      usesScalaJSLinkerTag in key := {
+        val projectPart = thisProject.value.id
+        val configPart = configuration.value.name
 
-      val stagePart = stage match {
-        case Stage.FastOpt => "fastopt"
-        case Stage.FullOpt => "fullopt"
-      }
+        val stagePart = stage match {
+          case Stage.FastOpt => "fastopt"
+          case Stage.FullOpt => "fullopt"
+        }
 
-      Tags.Tag(s"uses-scalajs-linker-$projectPart-$configPart-$stagePart")
-    },
-    // Prevent this linker from being used concurrently
-    concurrentRestrictions in Global +=
-      Tags.limit((usesScalaJSLinkerTag in key).value, 1),
-    key <<= Def.taskDyn {
-      val s = (streams in key).value
-      val log = s.log
-      val irInfo = (scalaJSIR in key).value
-      val realFiles = irInfo.get(scalaJSSourceFiles).get
-      val ir = irInfo.data
-      val output = (artifactPath in key).value
+        Tags.Tag(s"uses-scalajs-linker-$projectPart-$configPart-$stagePart")
+      },
+      // Prevent this linker from being used concurrently
+      concurrentRestrictions in Global +=
+        Tags.limit((usesScalaJSLinkerTag in key).value, 1),
+      key <<= Def.taskDyn {
+        val s = (streams in key).value
+        val log = s.log
+        val irInfo = (scalaJSIR in key).value
+        val realFiles = irInfo.get(scalaJSSourceFiles).get
+        val ir = irInfo.data
+        val output = (artifactPath in key).value
 
-      Def.task {
-        FileFunction
-          .cached(s.cacheDirectory, FilesInfo.lastModified, FilesInfo.exists) {
+        Def.task {
+          FileFunction.cached(
+            s.cacheDirectory,
+            FilesInfo.lastModified,
+            FilesInfo.exists) {
             _ => // We don't need the files
 
               val stageName = stage match {
@@ -278,26 +281,28 @@ object ScalaJSPluginInternal {
               Set(output)
           }(realFiles.toSet)
 
-        Attributed.blank(output)
-      } tag ((usesScalaJSLinkerTag in key).value)
-    },
-    key <<= key.dependsOn(packageJSDependencies, packageScalaJSLauncher),
-    scalaJSLinkedFile in key := new FileVirtualJSFile(key.value.data)
-  )
+          Attributed.blank(output)
+        } tag ((usesScalaJSLinkerTag in key).value)
+      },
+      key <<= key.dependsOn(packageJSDependencies, packageScalaJSLauncher),
+      scalaJSLinkedFile in key := new FileVirtualJSFile(key.value.data)
+    )
 
-  private def dispatchSettingKeySettings[T](key: SettingKey[T]) = Seq(
-    key <<= Def.settingDyn {
-      val stageKey = stageKeys(scalaJSStage.value)
-      Def.setting { (key in stageKey).value }
-    }
-  )
+  private def dispatchSettingKeySettings[T](key: SettingKey[T]) =
+    Seq(
+      key <<= Def.settingDyn {
+        val stageKey = stageKeys(scalaJSStage.value)
+        Def.setting { (key in stageKey).value }
+      }
+    )
 
-  private def dispatchTaskKeySettings[T](key: TaskKey[T]) = Seq(
-    key <<= Def.taskDyn {
-      val stageKey = stageKeys(scalaJSStage.value)
-      Def.task { (key in stageKey).value }
-    }
-  )
+  private def dispatchTaskKeySettings[T](key: TaskKey[T]) =
+    Seq(
+      key <<= Def.taskDyn {
+        val stageKey = stageKeys(scalaJSStage.value)
+        Def.task { (key in stageKey).value }
+      }
+    )
 
   private def scalajspSettings: Seq[Setting[_]] = {
     case class Options(

@@ -290,9 +290,10 @@ object Scoped {
     def get(settings: Settings[Scope]): Option[Task[S]] =
       settings.get(scope, key)
 
-    def ? : Initialize[Task[Option[S]]] = Def.optional(scopedKey) {
-      case None => mktask { None }; case Some(t) => t map some.fn
-    }
+    def ? : Initialize[Task[Option[S]]] =
+      Def.optional(scopedKey) {
+        case None => mktask { None }; case Some(t) => t map some.fn
+      }
     def ??[T >: S](or: => T): Initialize[Task[T]] =
       Def.optional(scopedKey)(_ getOrElse mktask(or))
     def or[T >: S](i: Initialize[Task[T]]): Initialize[Task[T]] =

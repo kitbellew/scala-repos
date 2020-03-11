@@ -212,20 +212,21 @@ class Model(var optionalFrogMap: Map[Int, Option[Frog]]) {
       (i, Some(`frog`)) <- optionalFrogMap
     } yield i
 
-  private def update(next: Int => Int) = (frog: Frog) => {
-    optionalFrogMap = for {
-      entry @ (i, _) <- optionalFrogMap
-      j <- positionSingleton(frog)
-    } yield {
-      if (i == j) {
-        i -> None
-      } else if (i == next(j)) {
-        i -> Some(frog)
-      } else {
-        entry
+  private def update(next: Int => Int) =
+    (frog: Frog) => {
+      optionalFrogMap = for {
+        entry @ (i, _) <- optionalFrogMap
+        j <- positionSingleton(frog)
+      } yield {
+        if (i == j) {
+          i -> None
+        } else if (i == next(j)) {
+          i -> Some(frog)
+        } else {
+          entry
+        }
       }
     }
-  }
 
   val position = (frog: Frog) => positionSingleton(frog).head
 

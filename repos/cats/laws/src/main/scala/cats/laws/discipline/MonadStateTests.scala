@@ -30,12 +30,13 @@ trait MonadStateTests[F[_], S] extends MonadTests[F] {
       def name: String = "monadState"
       def bases: Seq[(String, RuleSet)] = Nil
       def parents: Seq[RuleSet] = Seq(monad[A, B, C])
-      def props: Seq[(String, Prop)] = Seq(
-        "monadState get idempotent" -> laws.monadStateGetIdempotent,
-        "monadState set twice" -> forAll(laws.monadStateSetTwice _),
-        "monadState set get" -> forAll(laws.monadStateSetGet _),
-        "monadState get set" -> laws.monadStateGetSet
-      )
+      def props: Seq[(String, Prop)] =
+        Seq(
+          "monadState get idempotent" -> laws.monadStateGetIdempotent,
+          "monadState set twice" -> forAll(laws.monadStateSetTwice _),
+          "monadState set get" -> forAll(laws.monadStateSetGet _),
+          "monadState get set" -> laws.monadStateGetSet
+        )
     }
   }
 }
